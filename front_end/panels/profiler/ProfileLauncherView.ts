@@ -209,7 +209,7 @@ export class ProfileLauncherView extends Common.ObjectWrapper.eventMixin<EventTy
       const enabled = (id === typeId);
       profileType.setCustomContentEnabled(enabled);
     }
-    this.dispatchEventToListeners(Events.ProfileTypeSelected, type);
+    this.dispatchEventToListeners(Events.PROFILE_TYPE_SELECTED, type);
   }
 
   controlButtonClicked(): void {
@@ -224,7 +224,7 @@ export class ProfileLauncherView extends Common.ObjectWrapper.eventMixin<EventTy
                  }).profileType;
     type.setCustomContentEnabled(false);
     profileType.setCustomContentEnabled(true);
-    this.dispatchEventToListeners(Events.ProfileTypeSelected, profileType);
+    this.dispatchEventToListeners(Events.PROFILE_TYPE_SELECTED, profileType);
     this.isInstantProfile = profileType.isInstantProfile();
     this.isEnabled = profileType.isEnabled();
     this.updateControls();
@@ -237,9 +237,9 @@ export class ProfileLauncherView extends Common.ObjectWrapper.eventMixin<EventTy
 }
 
 export const enum Events {
-  ProfileTypeSelected = 'ProfileTypeSelected',
+  PROFILE_TYPE_SELECTED = 'ProfileTypeSelected',
 }
 
 export type EventTypes = {
-  [Events.ProfileTypeSelected]: ProfileType,
+  [Events.PROFILE_TYPE_SELECTED]: ProfileType,
 };

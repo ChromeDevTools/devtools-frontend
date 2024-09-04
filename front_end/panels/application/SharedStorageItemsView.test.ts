@@ -36,24 +36,25 @@ class SharedStorageItemsListener {
 
   constructor(dispatcher: Common.ObjectWrapper.ObjectWrapper<View.SharedStorageItemsDispatcher.EventTypes>) {
     this.#dispatcher = dispatcher;
-    this.#dispatcher.addEventListener(View.SharedStorageItemsDispatcher.Events.ItemsCleared, this.#itemsCleared, this);
+    this.#dispatcher.addEventListener(View.SharedStorageItemsDispatcher.Events.ITEMS_CLEARED, this.#itemsCleared, this);
     this.#dispatcher.addEventListener(
-        View.SharedStorageItemsDispatcher.Events.FilteredItemsCleared, this.#filteredItemsCleared, this);
+        View.SharedStorageItemsDispatcher.Events.FILTERED_ITEMS_CLEARED, this.#filteredItemsCleared, this);
     this.#dispatcher.addEventListener(
-        View.SharedStorageItemsDispatcher.Events.ItemsRefreshed, this.#itemsRefreshed, this);
-    this.#dispatcher.addEventListener(View.SharedStorageItemsDispatcher.Events.ItemDeleted, this.#itemDeleted, this);
-    this.#dispatcher.addEventListener(View.SharedStorageItemsDispatcher.Events.ItemEdited, this.#itemEdited, this);
+        View.SharedStorageItemsDispatcher.Events.ITEMS_REFRESHED, this.#itemsRefreshed, this);
+    this.#dispatcher.addEventListener(View.SharedStorageItemsDispatcher.Events.ITEM_DELETED, this.#itemDeleted, this);
+    this.#dispatcher.addEventListener(View.SharedStorageItemsDispatcher.Events.ITEM_EDITED, this.#itemEdited, this);
   }
 
   dispose(): void {
     this.#dispatcher.removeEventListener(
-        View.SharedStorageItemsDispatcher.Events.ItemsCleared, this.#itemsCleared, this);
+        View.SharedStorageItemsDispatcher.Events.ITEMS_CLEARED, this.#itemsCleared, this);
     this.#dispatcher.removeEventListener(
-        View.SharedStorageItemsDispatcher.Events.FilteredItemsCleared, this.#filteredItemsCleared, this);
+        View.SharedStorageItemsDispatcher.Events.FILTERED_ITEMS_CLEARED, this.#filteredItemsCleared, this);
     this.#dispatcher.removeEventListener(
-        View.SharedStorageItemsDispatcher.Events.ItemsRefreshed, this.#itemsRefreshed, this);
-    this.#dispatcher.removeEventListener(View.SharedStorageItemsDispatcher.Events.ItemDeleted, this.#itemDeleted, this);
-    this.#dispatcher.removeEventListener(View.SharedStorageItemsDispatcher.Events.ItemEdited, this.#itemEdited, this);
+        View.SharedStorageItemsDispatcher.Events.ITEMS_REFRESHED, this.#itemsRefreshed, this);
+    this.#dispatcher.removeEventListener(
+        View.SharedStorageItemsDispatcher.Events.ITEM_DELETED, this.#itemDeleted, this);
+    this.#dispatcher.removeEventListener(View.SharedStorageItemsDispatcher.Events.ITEM_EDITED, this.#itemEdited, this);
   }
 
   get deletedKeys(): Array<String> {
@@ -90,34 +91,34 @@ class SharedStorageItemsListener {
 
   async waitForItemsCleared(): Promise<void> {
     if (!this.#cleared) {
-      await this.#dispatcher.once(View.SharedStorageItemsDispatcher.Events.ItemsCleared);
+      await this.#dispatcher.once(View.SharedStorageItemsDispatcher.Events.ITEMS_CLEARED);
     }
     this.#cleared = true;
   }
 
   async waitForFilteredItemsCleared(): Promise<void> {
     if (!this.#filteredCleared) {
-      await this.#dispatcher.once(View.SharedStorageItemsDispatcher.Events.FilteredItemsCleared);
+      await this.#dispatcher.once(View.SharedStorageItemsDispatcher.Events.FILTERED_ITEMS_CLEARED);
     }
     this.#filteredCleared = true;
   }
 
   async waitForItemsRefreshed(): Promise<void> {
     if (!this.#refreshed) {
-      await this.#dispatcher.once(View.SharedStorageItemsDispatcher.Events.ItemsRefreshed);
+      await this.#dispatcher.once(View.SharedStorageItemsDispatcher.Events.ITEMS_REFRESHED);
     }
     this.#refreshed = true;
   }
 
   async waitForItemsDeletedTotal(total: number): Promise<void> {
     while (this.#deletedKeys.length < total) {
-      await this.#dispatcher.once(View.SharedStorageItemsDispatcher.Events.ItemDeleted);
+      await this.#dispatcher.once(View.SharedStorageItemsDispatcher.Events.ITEM_DELETED);
     }
   }
 
   async waitForItemsEditedTotal(total: number): Promise<void> {
     while (this.#editedEvents.length < total) {
-      await this.#dispatcher.once(View.SharedStorageItemsDispatcher.Events.ItemEdited);
+      await this.#dispatcher.once(View.SharedStorageItemsDispatcher.Events.ITEM_EDITED);
     }
   }
 }

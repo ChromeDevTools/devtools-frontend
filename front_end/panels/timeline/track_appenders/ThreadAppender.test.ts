@@ -109,16 +109,16 @@ describeWithEnvironment('ThreadAppender', function() {
     const {entryTypeByLevel} = await renderThreadAppendersFromTrace(this, 'simple-js-program.json.gz');
     // This includes all tracks rendered by the ThreadAppender.
     const execptedLevelTypes = [
-      Timeline.TimelineFlameChartDataProvider.EntryType.TrackAppender,
-      Timeline.TimelineFlameChartDataProvider.EntryType.TrackAppender,
-      Timeline.TimelineFlameChartDataProvider.EntryType.TrackAppender,
-      Timeline.TimelineFlameChartDataProvider.EntryType.TrackAppender,
-      Timeline.TimelineFlameChartDataProvider.EntryType.TrackAppender,
-      Timeline.TimelineFlameChartDataProvider.EntryType.TrackAppender,
-      Timeline.TimelineFlameChartDataProvider.EntryType.TrackAppender,
-      Timeline.TimelineFlameChartDataProvider.EntryType.TrackAppender,
-      Timeline.TimelineFlameChartDataProvider.EntryType.TrackAppender,
-      Timeline.TimelineFlameChartDataProvider.EntryType.TrackAppender,
+      Timeline.TimelineFlameChartDataProvider.EntryType.TRACK_APPENDER,
+      Timeline.TimelineFlameChartDataProvider.EntryType.TRACK_APPENDER,
+      Timeline.TimelineFlameChartDataProvider.EntryType.TRACK_APPENDER,
+      Timeline.TimelineFlameChartDataProvider.EntryType.TRACK_APPENDER,
+      Timeline.TimelineFlameChartDataProvider.EntryType.TRACK_APPENDER,
+      Timeline.TimelineFlameChartDataProvider.EntryType.TRACK_APPENDER,
+      Timeline.TimelineFlameChartDataProvider.EntryType.TRACK_APPENDER,
+      Timeline.TimelineFlameChartDataProvider.EntryType.TRACK_APPENDER,
+      Timeline.TimelineFlameChartDataProvider.EntryType.TRACK_APPENDER,
+      Timeline.TimelineFlameChartDataProvider.EntryType.TRACK_APPENDER,
     ];
     assert.deepStrictEqual(entryTypeByLevel, execptedLevelTypes);
   });

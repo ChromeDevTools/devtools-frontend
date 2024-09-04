@@ -69,25 +69,25 @@ const UIStrings = {
 
 const items: SelectButtonItem[] = [
   {
-    value: PlayRecordingSpeed.Normal,
+    value: PlayRecordingSpeed.NORMAL,
     buttonIconName: 'play',
     buttonLabel: () => i18nString(UIStrings.ReplayNormalButtonLabel),
     label: () => i18nString(UIStrings.ReplayNormalItemLabel),
   },
   {
-    value: PlayRecordingSpeed.Slow,
+    value: PlayRecordingSpeed.SLOW,
     buttonIconName: 'play',
     buttonLabel: () => i18nString(UIStrings.ReplaySlowButtonLabel),
     label: () => i18nString(UIStrings.ReplaySlowItemLabel),
   },
   {
-    value: PlayRecordingSpeed.VerySlow,
+    value: PlayRecordingSpeed.VERY_SLOW,
     buttonIconName: 'play',
     buttonLabel: () => i18nString(UIStrings.ReplayVerySlowButtonLabel),
     label: () => i18nString(UIStrings.ReplayVerySlowItemLabel),
   },
   {
-    value: PlayRecordingSpeed.ExtremelySlow,
+    value: PlayRecordingSpeed.EXTREMELY_SLOW,
     buttonIconName: 'play',
     buttonLabel: () => i18nString(UIStrings.ReplayExtremelySlowButtonLabel),
     label: () => i18nString(UIStrings.ReplayExtremelySlowItemLabel),
@@ -95,10 +95,10 @@ const items: SelectButtonItem[] = [
 ];
 
 const replaySpeedToMetricSpeedMap = {
-  [PlayRecordingSpeed.Normal]: Host.UserMetrics.RecordingReplaySpeed.NORMAL,
-  [PlayRecordingSpeed.Slow]: Host.UserMetrics.RecordingReplaySpeed.SLOW,
-  [PlayRecordingSpeed.VerySlow]: Host.UserMetrics.RecordingReplaySpeed.VERY_SLOW,
-  [PlayRecordingSpeed.ExtremelySlow]: Host.UserMetrics.RecordingReplaySpeed.EXTREMELY_SLOW,
+  [PlayRecordingSpeed.NORMAL]: Host.UserMetrics.RecordingReplaySpeed.NORMAL,
+  [PlayRecordingSpeed.SLOW]: Host.UserMetrics.RecordingReplaySpeed.SLOW,
+  [PlayRecordingSpeed.VERY_SLOW]: Host.UserMetrics.RecordingReplaySpeed.VERY_SLOW,
+  [PlayRecordingSpeed.EXTREMELY_SLOW]: Host.UserMetrics.RecordingReplaySpeed.EXTREMELY_SLOW,
 } as const;
 
 const str_ = i18n.i18n.registerUIStrings(
@@ -187,7 +187,7 @@ export class ReplaySection extends HTMLElement {
       );
       this.dispatchEvent(
           new StartReplayEvent(
-              PlayRecordingSpeed.Normal,
+              PlayRecordingSpeed.NORMAL,
               this.#replayExtensions[extensionIdx],
               ),
       );
@@ -198,7 +198,7 @@ export class ReplaySection extends HTMLElement {
       return;
     }
 
-    this.dispatchEvent(new StartReplayEvent(this.#settings ? this.#settings.speed : PlayRecordingSpeed.Normal));
+    this.dispatchEvent(new StartReplayEvent(this.#settings ? this.#settings.speed : PlayRecordingSpeed.NORMAL));
     void ComponentHelpers.ScheduledRender.scheduleRender(
         this,
         this.#boundRender,
@@ -231,11 +231,11 @@ export class ReplaySection extends HTMLElement {
       .variant=${SelectButtonVariant.PRIMARY}
       .showItemDivider=${false}
       .disabled=${this.#props.disabled}
-      .action=${Actions.RecorderActions.ReplayRecording}
+      .action=${Actions.RecorderActions.REPLAY_RECORDING}
       .value=${this.#settings?.replayExtension || this.#settings?.speed}
       .buttonLabel=${i18nString(UIStrings.Replay)}
       .groups=${groups}
-      jslog=${VisualLogging.action(Actions.RecorderActions.ReplayRecording).track({click: true})}>
+      jslog=${VisualLogging.action(Actions.RecorderActions.REPLAY_RECORDING).track({click: true})}>
     </${SelectButton.litTagName}>`,
       this.#shadow,
       { host: this },

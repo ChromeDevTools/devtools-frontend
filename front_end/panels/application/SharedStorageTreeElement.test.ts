@@ -26,13 +26,13 @@ class SharedStorageItemsListener {
                   .ObjectWrapper<Application.SharedStorageItemsView.SharedStorageItemsDispatcher.EventTypes>) {
     this.#dispatcher = dispatcher;
     this.#dispatcher.addEventListener(
-        Application.SharedStorageItemsView.SharedStorageItemsDispatcher.Events.ItemsRefreshed, this.#itemsRefreshed,
+        Application.SharedStorageItemsView.SharedStorageItemsDispatcher.Events.ITEMS_REFRESHED, this.#itemsRefreshed,
         this);
   }
 
   dispose(): void {
     this.#dispatcher.removeEventListener(
-        Application.SharedStorageItemsView.SharedStorageItemsDispatcher.Events.ItemsRefreshed, this.#itemsRefreshed,
+        Application.SharedStorageItemsView.SharedStorageItemsDispatcher.Events.ITEMS_REFRESHED, this.#itemsRefreshed,
         this);
   }
 
@@ -43,7 +43,7 @@ class SharedStorageItemsListener {
   async waitForItemsRefreshed(): Promise<void> {
     if (!this.#refreshed) {
       await this.#dispatcher.once(
-          Application.SharedStorageItemsView.SharedStorageItemsDispatcher.Events.ItemsRefreshed);
+          Application.SharedStorageItemsView.SharedStorageItemsDispatcher.Events.ITEMS_REFRESHED);
     }
     this.#refreshed = false;
   }

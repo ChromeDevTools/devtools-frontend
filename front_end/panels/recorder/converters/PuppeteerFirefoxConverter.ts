@@ -9,7 +9,7 @@ import {PuppeteerConverter} from './PuppeteerConverter.js';
 
 export class PuppeteerFirefoxConverter extends PuppeteerConverter {
   override getId(): string {
-    return Models.ConverterIds.ConverterIds.PuppeteerFirefox;
+    return Models.ConverterIds.ConverterIds.PUPPETEER_FIREFOX;
   }
 
   override createExtension(): PuppeteerReplay.PuppeteerStringifyExtension {

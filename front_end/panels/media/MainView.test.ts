@@ -32,7 +32,7 @@ describeWithMockConnection('MediaMainView', () => {
     mainView.show(document.body);
     const model = target.model(Media.MediaModel.MediaModel);
     assert.exists(model);
-    model.dispatchEventToListeners(Media.MediaModel.Events.PlayersCreated, [PLAYER_ID]);
+    model.dispatchEventToListeners(Media.MediaModel.Events.PLAYERS_CREATED, [PLAYER_ID]);
     const field = [{name: 'kResolution', value: '{}', data: {}, stack: [], cause: []}];
     const data = {playerId: PLAYER_ID, properties: field, events: field, messages: field, errors: field};
     model.dispatchEventToListeners(
@@ -44,17 +44,17 @@ describeWithMockConnection('MediaMainView', () => {
   };
 
   it('reacts to properties on in scope event',
-     testUiUpdate(Media.MediaModel.Events.PlayerPropertiesChanged, 'onProperty', true));
+     testUiUpdate(Media.MediaModel.Events.PLAYER_PROPERTIES_CHANGED, 'onProperty', true));
   it('does not react to properties on out of scope event',
-     testUiUpdate(Media.MediaModel.Events.PlayerPropertiesChanged, 'onProperty', false));
-  it('reacts to event on in scope event', testUiUpdate(Media.MediaModel.Events.PlayerEventsAdded, 'onEvent', true));
+     testUiUpdate(Media.MediaModel.Events.PLAYER_PROPERTIES_CHANGED, 'onProperty', false));
+  it('reacts to event on in scope event', testUiUpdate(Media.MediaModel.Events.PLAYER_EVENTS_ADDED, 'onEvent', true));
   it('does not react to event on out of scope event',
-     testUiUpdate(Media.MediaModel.Events.PlayerEventsAdded, 'onEvent', false));
+     testUiUpdate(Media.MediaModel.Events.PLAYER_EVENTS_ADDED, 'onEvent', false));
   it('reacts to messages on in scope event',
-     testUiUpdate(Media.MediaModel.Events.PlayerMessagesLogged, 'onMessage', true));
+     testUiUpdate(Media.MediaModel.Events.PLAYER_MESSAGES_LOGGED, 'onMessage', true));
   it('does not react to messages on out of scope event',
-     testUiUpdate(Media.MediaModel.Events.PlayerMessagesLogged, 'onMessage', false));
-  it('reacts to error on in scope event', testUiUpdate(Media.MediaModel.Events.PlayerErrorsRaised, 'onError', true));
+     testUiUpdate(Media.MediaModel.Events.PLAYER_MESSAGES_LOGGED, 'onMessage', false));
+  it('reacts to error on in scope event', testUiUpdate(Media.MediaModel.Events.PLAYER_ERRORS_RAISED, 'onError', true));
   it('does not react to error on out of scope event',
-     testUiUpdate(Media.MediaModel.Events.PlayerErrorsRaised, 'onError', false));
+     testUiUpdate(Media.MediaModel.Events.PLAYER_ERRORS_RAISED, 'onError', false));
 });

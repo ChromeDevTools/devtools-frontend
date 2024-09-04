@@ -251,13 +251,13 @@ export class ProfileView extends UI.View.SimpleView implements UI.SearchableView
   initialize(nodeFormatter: Formatter): void {
     this.nodeFormatter = nodeFormatter;
 
-    this.viewType = Common.Settings.Settings.instance().createSetting('profile-view', ViewTypes.Heavy);
-    const viewTypes = [ViewTypes.Flame, ViewTypes.Heavy, ViewTypes.Tree];
+    this.viewType = Common.Settings.Settings.instance().createSetting('profile-view', ViewTypes.HEAVY);
+    const viewTypes = [ViewTypes.FLAME, ViewTypes.HEAVY, ViewTypes.TREE];
 
     const optionNames = new Map([
-      [ViewTypes.Flame, i18nString(UIStrings.chart)],
-      [ViewTypes.Heavy, i18nString(UIStrings.heavyBottomUp)],
-      [ViewTypes.Tree, i18nString(UIStrings.treeTopDown)],
+      [ViewTypes.FLAME, i18nString(UIStrings.chart)],
+      [ViewTypes.HEAVY, i18nString(UIStrings.heavyBottomUp)],
+      [ViewTypes.TREE, i18nString(UIStrings.treeTopDown)],
     ]);
 
     const options = new Map(
@@ -444,18 +444,18 @@ export class ProfileView extends UI.View.SimpleView implements UI.SearchableView
     }
     this.viewType.set((this.viewSelectComboBox.selectedOption() as HTMLOptionElement).value as ViewTypes);
     switch (this.viewType.get()) {
-      case ViewTypes.Flame:
+      case ViewTypes.FLAME:
         this.ensureFlameChartCreated();
         this.visibleView = this.flameChart;
         this.searchableElement = this.flameChart;
         break;
-      case ViewTypes.Tree:
+      case ViewTypes.TREE:
         this.profileDataGridTree = this.getTopDownProfileDataGridTree();
         this.sortProfile();
         this.visibleView = this.dataGrid.asWidget();
         this.searchableElement = this.profileDataGridTree;
         break;
-      case ViewTypes.Heavy:
+      case ViewTypes.HEAVY:
         this.profileDataGridTree = this.getBottomUpProfileDataGridTree();
         this.sortProfile();
         this.visibleView = this.dataGrid.asWidget();
@@ -463,7 +463,7 @@ export class ProfileView extends UI.View.SimpleView implements UI.SearchableView
         break;
     }
 
-    const isFlame = this.viewType.get() === ViewTypes.Flame;
+    const isFlame = this.viewType.get() === ViewTypes.FLAME;
     this.focusButton.setVisible(!isFlame);
     this.excludeButton.setVisible(!isFlame);
     this.resetButton.setVisible(!isFlame);
@@ -540,9 +540,9 @@ export class ProfileView extends UI.View.SimpleView implements UI.SearchableView
 export const maxLinkLength = 30;
 
 export const enum ViewTypes {
-  Flame = 'Flame',
-  Tree = 'Tree',
-  Heavy = 'Heavy',
+  FLAME = 'Flame',
+  TREE = 'Tree',
+  HEAVY = 'Heavy',
 }
 
 export class WritableProfileHeader extends ProfileHeader implements Common.StringOutputStream.OutputStream {

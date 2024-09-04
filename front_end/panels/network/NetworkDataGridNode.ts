@@ -1347,7 +1347,7 @@ export class NetworkRequestNode extends NetworkNode {
             cell, i18nString(UIStrings.blockeds, {PH1: reason}), i18nString(UIStrings.blockedTooltip), () => {
               this.parentView().dispatchEventToListeners(Events.RequestActivated, {
                 showPanel: true,
-                tab: NetworkForward.UIRequestLocation.UIRequestTabs.HeadersComponent,
+                tab: NetworkForward.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT,
               });
             });
       } else {

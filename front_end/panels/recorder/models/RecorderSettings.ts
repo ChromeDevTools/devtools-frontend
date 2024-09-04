@@ -34,7 +34,7 @@ export class RecorderSettings {
   );
   #speed = Common.Settings.Settings.instance().createSetting(
       'recorder-panel-replay-speed',
-      PlayRecordingSpeed.Normal,
+      PlayRecordingSpeed.NORMAL,
   );
   #replayExtension = Common.Settings.Settings.instance().createSetting(
       'recorder-panel-replay-extension',

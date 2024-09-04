@@ -124,7 +124,7 @@ describeWithEnvironment('RecordingView', () => {
                      ) as Menus.SelectMenu.SelectMenu;
     assert.ok(menu);
 
-    const event = new Menus.SelectMenu.SelectMenuItemSelectedEvent(Models.ConverterIds.ConverterIds.Replay);
+    const event = new Menus.SelectMenu.SelectMenuItemSelectedEvent(Models.ConverterIds.ConverterIds.REPLAY);
     menu.dispatchEvent(event);
   }
 

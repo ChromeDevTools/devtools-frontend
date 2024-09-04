@@ -630,12 +630,12 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
     if ((!data || data === '{}') && !errors.length) {
       this.emptyView.showWidget();
       this.reportView.hideWidget();
-      this.dispatchEventToListeners(Events.ManifestDetected, false);
+      this.dispatchEventToListeners(Events.MANIFEST_DETECTED, false);
       return;
     }
     this.emptyView.hideWidget();
     this.reportView.showWidget();
-    this.dispatchEventToListeners(Events.ManifestDetected, true);
+    this.dispatchEventToListeners(Events.MANIFEST_DETECTED, true);
 
     const link = Components.Linkifier.Linkifier.linkifyURL(url);
     link.tabIndex = 0;
@@ -972,7 +972,7 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
     this.windowControlsSection.appendRow().appendChild(
         i18n.i18n.getFormatLocalizedString(str_, UIStrings.wcoNeedHelpReadMore, {PH1: wcoDocumentationLink}));
 
-    this.dispatchEventToListeners(Events.ManifestRendered);
+    this.dispatchEventToListeners(Events.MANIFEST_RENDERED);
   }
 
   getInstallabilityErrorMessages(installabilityErrors: Protocol.Page.InstallabilityError[]): string[] {
@@ -1285,11 +1285,11 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
 }
 
 export const enum Events {
-  ManifestDetected = 'ManifestDetected',
-  ManifestRendered = 'ManifestRendered',
+  MANIFEST_DETECTED = 'ManifestDetected',
+  MANIFEST_RENDERED = 'ManifestRendered',
 }
 
 export type EventTypes = {
-  [Events.ManifestDetected]: boolean,
-  [Events.ManifestRendered]: void,
+  [Events.MANIFEST_DETECTED]: boolean,
+  [Events.MANIFEST_RENDERED]: void,
 };

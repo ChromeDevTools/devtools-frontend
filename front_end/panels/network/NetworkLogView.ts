@@ -440,8 +440,8 @@ const str_ = i18n.i18n.registerUIStrings('panels/network/NetworkLogView.ts', UIS
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 const enum FetchStyle {
-  Browser = 0,
-  NodeJs = 1,
+  BROWSER = 0,
+  NODE_JS = 1,
 }
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
@@ -777,16 +777,16 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
 
   private static requestMixedContentFilter(
       value: NetworkForward.UIFilter.MixedContentFilterValues, request: SDK.NetworkRequest.NetworkRequest): boolean {
-    if (value === NetworkForward.UIFilter.MixedContentFilterValues.Displayed) {
+    if (value === NetworkForward.UIFilter.MixedContentFilterValues.DISPLAYED) {
       return request.mixedContentType === Protocol.Security.MixedContentType.OptionallyBlockable;
     }
-    if (value === NetworkForward.UIFilter.MixedContentFilterValues.Blocked) {
+    if (value === NetworkForward.UIFilter.MixedContentFilterValues.BLOCKED) {
       return request.mixedContentType === Protocol.Security.MixedContentType.Blockable && request.wasBlocked();
     }
-    if (value === NetworkForward.UIFilter.MixedContentFilterValues.BlockOverridden) {
+    if (value === NetworkForward.UIFilter.MixedContentFilterValues.BLOCK_OVERRIDDEN) {
       return request.mixedContentType === Protocol.Security.MixedContentType.Blockable && !request.wasBlocked();
     }
-    if (value === NetworkForward.UIFilter.MixedContentFilterValues.All) {
+    if (value === NetworkForward.UIFilter.MixedContentFilterValues.ALL) {
       return request.mixedContentType !== Protocol.Security.MixedContentType.None;
     }
 
@@ -1030,13 +1030,13 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
 
   private resetSuggestionBuilder(): void {
     this.suggestionBuilder.clear();
-    this.suggestionBuilder.addItem(NetworkForward.UIFilter.FilterType.Is, NetworkForward.UIFilter.IsFilterType.Running);
+    this.suggestionBuilder.addItem(NetworkForward.UIFilter.FilterType.Is, NetworkForward.UIFilter.IsFilterType.RUNNING);
     this.suggestionBuilder.addItem(
-        NetworkForward.UIFilter.FilterType.Is, NetworkForward.UIFilter.IsFilterType.FromCache);
+        NetworkForward.UIFilter.FilterType.Is, NetworkForward.UIFilter.IsFilterType.FROM_CACHE);
     this.suggestionBuilder.addItem(
-        NetworkForward.UIFilter.FilterType.Is, NetworkForward.UIFilter.IsFilterType.ServiceWorkerIntercepted);
+        NetworkForward.UIFilter.FilterType.Is, NetworkForward.UIFilter.IsFilterType.SERVICE_WORKER_INTERCEPTED);
     this.suggestionBuilder.addItem(
-        NetworkForward.UIFilter.FilterType.Is, NetworkForward.UIFilter.IsFilterType.ServiceWorkerInitiated);
+        NetworkForward.UIFilter.FilterType.Is, NetworkForward.UIFilter.IsFilterType.SERVICE_WORKER_INITIATED);
     this.suggestionBuilder.addItem(NetworkForward.UIFilter.FilterType.LargerThan, '100');
     this.suggestionBuilder.addItem(NetworkForward.UIFilter.FilterType.LargerThan, '10k');
     this.suggestionBuilder.addItem(NetworkForward.UIFilter.FilterType.LargerThan, '1M');
@@ -1657,17 +1657,17 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
 
     if (request.mixedContentType !== Protocol.Security.MixedContentType.None) {
       this.suggestionBuilder.addItem(
-          NetworkForward.UIFilter.FilterType.MixedContent, NetworkForward.UIFilter.MixedContentFilterValues.All);
+          NetworkForward.UIFilter.FilterType.MixedContent, NetworkForward.UIFilter.MixedContentFilterValues.ALL);
     }
 
     if (request.mixedContentType === Protocol.Security.MixedContentType.OptionallyBlockable) {
       this.suggestionBuilder.addItem(
-          NetworkForward.UIFilter.FilterType.MixedContent, NetworkForward.UIFilter.MixedContentFilterValues.Displayed);
+          NetworkForward.UIFilter.FilterType.MixedContent, NetworkForward.UIFilter.MixedContentFilterValues.DISPLAYED);
     }
 
     if (request.mixedContentType === Protocol.Security.MixedContentType.Blockable) {
-      const suggestion = request.wasBlocked() ? NetworkForward.UIFilter.MixedContentFilterValues.Blocked :
-                                                NetworkForward.UIFilter.MixedContentFilterValues.BlockOverridden;
+      const suggestion = request.wasBlocked() ? NetworkForward.UIFilter.MixedContentFilterValues.BLOCKED :
+                                                NetworkForward.UIFilter.MixedContentFilterValues.BLOCK_OVERRIDDEN;
       this.suggestionBuilder.addItem(NetworkForward.UIFilter.FilterType.MixedContent, suggestion);
     }
 
@@ -1770,10 +1770,10 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
           i18nString(UIStrings.copyAsPowershell), this.copyPowerShellCommand.bind(this, request),
           {disabled: disableIfBlob, jslogContext: 'copy-as-powershell'});
       copyMenu.defaultSection().appendItem(
-          i18nString(UIStrings.copyAsFetch), this.copyFetchCall.bind(this, request, FetchStyle.Browser),
+          i18nString(UIStrings.copyAsFetch), this.copyFetchCall.bind(this, request, FetchStyle.BROWSER),
           {disabled: disableIfBlob, jslogContext: 'copy-as-fetch'});
       copyMenu.defaultSection().appendItem(
-          i18nString(UIStrings.copyAsNodejsFetch), this.copyFetchCall.bind(this, request, FetchStyle.NodeJs),
+          i18nString(UIStrings.copyAsNodejsFetch), this.copyFetchCall.bind(this, request, FetchStyle.NODE_JS),
           {disabled: disableIfBlob, jslogContext: 'copy-as-nodejs-fetch'});
 
       if (Host.Platform.isWin()) {
@@ -1793,10 +1793,10 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
           this.copyAllPowerShellCommand.bind(this), {jslogContext: 'copy-all-as-powershell'});
       copyMenu.footerSection().appendItem(
           filtered ? i18nString(UIStrings.copyAllListedAsFetch) : i18nString(UIStrings.copyAllAsFetch),
-          this.copyAllFetchCall.bind(this, FetchStyle.Browser), {jslogContext: 'copy-all-as-fetch'});
+          this.copyAllFetchCall.bind(this, FetchStyle.BROWSER), {jslogContext: 'copy-all-as-fetch'});
       copyMenu.footerSection().appendItem(
           filtered ? i18nString(UIStrings.copyAllListedAsNodejsFetch) : i18nString(UIStrings.copyAllAsNodejsFetch),
-          this.copyAllFetchCall.bind(this, FetchStyle.NodeJs), {jslogContext: 'copy-all-as-nodejs-fetch'});
+          this.copyAllFetchCall.bind(this, FetchStyle.NODE_JS), {jslogContext: 'copy-all-as-nodejs-fetch'});
     }
     copyMenu.footerSection().appendItem(
         filtered ? i18nString(UIStrings.copyAllListedAsHar) : i18nString(UIStrings.copyAllAsHar),
@@ -2071,16 +2071,16 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
         return NetworkLogView.requestResponseHeaderSetCookieFilter.bind(null, value);
 
       case NetworkForward.UIFilter.FilterType.Is:
-        if (value.toLowerCase() === NetworkForward.UIFilter.IsFilterType.Running) {
+        if (value.toLowerCase() === NetworkForward.UIFilter.IsFilterType.RUNNING) {
           return NetworkLogView.runningRequestFilter;
         }
-        if (value.toLowerCase() === NetworkForward.UIFilter.IsFilterType.FromCache) {
+        if (value.toLowerCase() === NetworkForward.UIFilter.IsFilterType.FROM_CACHE) {
           return NetworkLogView.fromCacheRequestFilter;
         }
-        if (value.toLowerCase() === NetworkForward.UIFilter.IsFilterType.ServiceWorkerIntercepted) {
+        if (value.toLowerCase() === NetworkForward.UIFilter.IsFilterType.SERVICE_WORKER_INTERCEPTED) {
           return NetworkLogView.interceptedByServiceWorkerFilter;
         }
-        if (value.toLowerCase() === NetworkForward.UIFilter.IsFilterType.ServiceWorkerInitiated) {
+        if (value.toLowerCase() === NetworkForward.UIFilter.IsFilterType.SERVICE_WORKER_INITIATED) {
           return NetworkLogView.initiatedByServiceWorkerFilter;
         }
         break;
@@ -2298,7 +2298,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
       mode: 'cors',
     };
 
-    if (style === FetchStyle.NodeJs) {
+    if (style === FetchStyle.NODE_JS) {
       const cookieHeader = requestHeaders.find(header => header.name.toLowerCase() === 'cookie');
       const extraHeaders: HeadersInit = {};
       // According to https://www.npmjs.com/package/node-fetch#class-request the

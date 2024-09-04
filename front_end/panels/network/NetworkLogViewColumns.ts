@@ -208,8 +208,8 @@ export class NetworkLogViewColumns {
     this.popupLinkifier = new Components.Linkifier.Linkifier();
 
     this.calculatorsMap = new Map();
-    this.calculatorsMap.set(CalculatorTypes.Time, timeCalculator);
-    this.calculatorsMap.set(CalculatorTypes.Duration, durationCalculator);
+    this.calculatorsMap.set(CalculatorTypes.TIME, timeCalculator);
+    this.calculatorsMap.set(CalculatorTypes.DURATION, durationCalculator);
 
     this.lastWheelTime = 0;
 
@@ -713,10 +713,10 @@ export class NetworkLogViewColumns {
         {checked: this.activeWaterfallSortId === waterfallSortIds.Latency, jslogContext: 'latency'});
 
     function setWaterfallMode(this: NetworkLogViewColumns, sortId: WaterfallSortIds): void {
-      let calculator = this.calculatorsMap.get(CalculatorTypes.Time);
+      let calculator = this.calculatorsMap.get(CalculatorTypes.TIME);
       const waterfallSortIds = WaterfallSortIds;
       if (sortId === waterfallSortIds.Duration || sortId === waterfallSortIds.Latency) {
-        calculator = this.calculatorsMap.get(CalculatorTypes.Duration);
+        calculator = this.calculatorsMap.get(CalculatorTypes.DURATION);
       }
       this.networkLogView.setCalculator((calculator as NetworkTimeCalculator));
 
@@ -886,8 +886,8 @@ export class NetworkLogViewColumns {
 const INITIAL_SORT_COLUMN = 'waterfall';
 
 const enum CalculatorTypes {
-  Duration = 'Duration',
-  Time = 'Time',
+  DURATION = 'Duration',
+  TIME = 'Time',
 }
 
 const DEFAULT_COLUMN_CONFIG = {
@@ -1094,11 +1094,13 @@ const DEFAULT_COLUMNS = [
 const FILM_STRIP_DIVIDER_COLOR = '#fccc49';
 
 enum WaterfallSortIds {
+  /* eslint-disable @typescript-eslint/naming-convention -- Used by web_tests. */
   StartTime = 'startTime',
   ResponseTime = 'responseReceivedTime',
   EndTime = 'endTime',
   Duration = 'duration',
   Latency = 'latency',
+  /* eslint-enable @typescript-eslint/naming-convention */
 }
 export interface Descriptor {
   id: string;

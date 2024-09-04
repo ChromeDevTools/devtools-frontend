@@ -210,7 +210,7 @@ export class NetworkTimeCalculator extends Common.ObjectWrapper.ObjectWrapper<Ev
 
   boundaryChanged(): void {
     void this.boundryChangedEventThrottler.schedule(async () => {
-      this.dispatchEventToListeners(Events.BoundariesChanged);
+      this.dispatchEventToListeners(Events.BOUNDARIES_CHANGED);
     });
   }
 
@@ -299,11 +299,11 @@ export class NetworkTimeCalculator extends Common.ObjectWrapper.ObjectWrapper<Ev
 const MINIMUM_SPREAD = 0.1;
 
 export const enum Events {
-  BoundariesChanged = 'BoundariesChanged',
+  BOUNDARIES_CHANGED = 'BoundariesChanged',
 }
 
 export type EventTypes = {
-  [Events.BoundariesChanged]: void,
+  [Events.BOUNDARIES_CHANGED]: void,
 };
 
 export class NetworkTransferTimeCalculator extends NetworkTimeCalculator {

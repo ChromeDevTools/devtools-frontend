@@ -150,13 +150,13 @@ const str_ = i18n.i18n.registerUIStrings('panels/webauthn/WebauthnPane.ts', UISt
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 const enum Events {
-  ExportCredential = 'ExportCredential',
-  RemoveCredential = 'RemoveCredential',
+  EXPORT_CREDENTIAL = 'ExportCredential',
+  REMOVE_CREDENTIAL = 'RemoveCredential',
 }
 
 type EventTypes = {
-  [Events.ExportCredential]: Protocol.WebAuthn.Credential,
-  [Events.RemoveCredential]: Protocol.WebAuthn.Credential,
+  [Events.EXPORT_CREDENTIAL]: Protocol.WebAuthn.Credential,
+  [Events.REMOVE_CREDENTIAL]: Protocol.WebAuthn.Credential,
 };
 
 class DataGridNode extends DataGrid.DataGrid.DataGridNode<DataGridNode> {
@@ -178,7 +178,7 @@ class DataGridNode extends DataGrid.DataGrid.DataGridNode<DataGridNode> {
 
     const exportButton = UI.UIUtils.createTextButton(i18nString(UIStrings.export), () => {
       if (this.dataGrid) {
-        (this.dataGrid as WebauthnDataGrid).dispatchEventToListeners(Events.ExportCredential, this.credential);
+        (this.dataGrid as WebauthnDataGrid).dispatchEventToListeners(Events.EXPORT_CREDENTIAL, this.credential);
       }
     }, {jslogContext: 'webauthn.export-credential'});
 
@@ -186,7 +186,7 @@ class DataGridNode extends DataGrid.DataGrid.DataGridNode<DataGridNode> {
 
     const removeButton = UI.UIUtils.createTextButton(i18nString(UIStrings.remove), () => {
       if (this.dataGrid) {
-        (this.dataGrid as WebauthnDataGrid).dispatchEventToListeners(Events.RemoveCredential, this.credential);
+        (this.dataGrid as WebauthnDataGrid).dispatchEventToListeners(Events.REMOVE_CREDENTIAL, this.credential);
       }
     }, {jslogContext: 'webauthn.remove-credential'});
 
@@ -375,8 +375,8 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
     const dataGrid = new WebauthnDataGrid(dataGridConfig);
     dataGrid.renderInline();
     dataGrid.setStriped(true);
-    dataGrid.addEventListener(Events.ExportCredential, this.#handleExportCredential, this);
-    dataGrid.addEventListener(Events.RemoveCredential, this.#handleRemoveCredential.bind(this, authenticatorId));
+    dataGrid.addEventListener(Events.EXPORT_CREDENTIAL, this.#handleExportCredential, this);
+    dataGrid.addEventListener(Events.REMOVE_CREDENTIAL, this.#handleRemoveCredential.bind(this, authenticatorId));
     dataGrid.rootNode().appendChild(new EmptyDataGridNode());
 
     this.dataGrids.set(authenticatorId, dataGrid);

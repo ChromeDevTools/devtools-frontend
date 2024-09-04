@@ -43,19 +43,19 @@ export class CSSOverviewPanel extends UI.Panel.Panel implements SDK.TargetManage
     this.#controller = controller;
     this.#startView = new CSSOverviewComponents.CSSOverviewStartView.CSSOverviewStartView();
     this.#startView.addEventListener(
-        'overviewstartrequested', () => this.#controller.dispatchEventToListeners(Events.RequestOverviewStart));
+        'overviewstartrequested', () => this.#controller.dispatchEventToListeners(Events.REQUEST_OVERVIEW_START));
     this.#processingView = new CSSOverviewProcessingView(this.#controller);
     this.#completedView = new CSSOverviewCompletedView(this.#controller);
 
     SDK.TargetManager.TargetManager.instance().observeTargets(this);
 
-    this.#controller.addEventListener(Events.RequestOverviewStart, _event => {
+    this.#controller.addEventListener(Events.REQUEST_OVERVIEW_START, _event => {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.CaptureCssOverviewClicked);
       void this.#startOverview();
     }, this);
-    this.#controller.addEventListener(Events.OverviewCompleted, this.#overviewCompleted, this);
-    this.#controller.addEventListener(Events.Reset, this.#reset, this);
-    this.#controller.addEventListener(Events.RequestNodeHighlight, this.#requestNodeHighlight, this);
+    this.#controller.addEventListener(Events.OVERVIEW_COMPLETED, this.#overviewCompleted, this);
+    this.#controller.addEventListener(Events.RESET, this.#reset, this);
+    this.#controller.addEventListener(Events.REQUEST_NODE_HIGHLIGHT, this.#requestNodeHighlight, this);
 
     this.#reset();
   }
@@ -196,7 +196,7 @@ export class CSSOverviewPanel extends UI.Panel.Panel implements SDK.TargetManage
       this.#unusedDeclarations = unusedDeclarations;
     }
 
-    this.#controller.dispatchEventToListeners(Events.OverviewCompleted);
+    this.#controller.dispatchEventToListeners(Events.OVERVIEW_COMPLETED);
   }
 
   #overviewCompleted(): void {

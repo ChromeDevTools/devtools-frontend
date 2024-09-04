@@ -40,9 +40,9 @@ export interface EventDisplayColumnConfig {
 }
 
 export const enum MediaEventColumnKeys {
-  Timestamp = 'display-timestamp',
-  Event = 'event',
-  Value = 'value',
+  TIMESTAMP = 'display-timestamp',
+  EVENT = 'event',
+  VALUE = 'value',
 }
 
 export class EventNode extends DataGrid.DataGrid.DataGridNode<EventNode> {
@@ -56,7 +56,7 @@ export class EventNode extends DataGrid.DataGrid.DataGridNode<EventNode> {
   override createCell(columnId: string): HTMLElement {
     const cell = this.createTD(columnId);
     const cellData = this.data[columnId] as string;
-    if (columnId === MediaEventColumnKeys.Value) {
+    if (columnId === MediaEventColumnKeys.VALUE) {
       const enclosed = cell.createChild('div', 'event-display-table-contents-json-wrapper');
       this.expandableElement =
           new SourceFrame.JSONView.JSONView(new SourceFrame.JSONView.ParsedJSON(cellData, '', ''), true);
@@ -85,14 +85,14 @@ export class PlayerEventsView extends UI.Widget.VBox {
 
     this.dataGrid = this.createDataGrid([
       {
-        id: MediaEventColumnKeys.Timestamp,
+        id: MediaEventColumnKeys.TIMESTAMP,
         title: i18nString(UIStrings.timestamp),
         weight: 1,
         sortable: false,
       },
-      {id: MediaEventColumnKeys.Event, title: i18nString(UIStrings.eventName), weight: 2, sortable: false},
+      {id: MediaEventColumnKeys.EVENT, title: i18nString(UIStrings.eventName), weight: 2, sortable: false},
       {
-        id: MediaEventColumnKeys.Value,
+        id: MediaEventColumnKeys.VALUE,
         title: i18nString(UIStrings.value),
         weight: 7,
         sortable: false,

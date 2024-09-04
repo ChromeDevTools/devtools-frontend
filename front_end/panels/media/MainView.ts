@@ -185,19 +185,19 @@ export class MainView extends UI.Panel.PanelWithSidebar implements SDK.TargetMan
 
   private addEventListeners(mediaModel: MediaModel): void {
     mediaModel.ensureEnabled();
-    mediaModel.addEventListener(Events.PlayerPropertiesChanged, this.propertiesChanged, this);
-    mediaModel.addEventListener(Events.PlayerEventsAdded, this.eventsAdded, this);
-    mediaModel.addEventListener(Events.PlayerMessagesLogged, this.messagesLogged, this);
-    mediaModel.addEventListener(Events.PlayerErrorsRaised, this.errorsRaised, this);
-    mediaModel.addEventListener(Events.PlayersCreated, this.playersCreated, this);
+    mediaModel.addEventListener(Events.PLAYER_PROPERTIES_CHANGED, this.propertiesChanged, this);
+    mediaModel.addEventListener(Events.PLAYER_EVENTS_ADDED, this.eventsAdded, this);
+    mediaModel.addEventListener(Events.PLAYER_MESSAGES_LOGGED, this.messagesLogged, this);
+    mediaModel.addEventListener(Events.PLAYER_ERRORS_RAISED, this.errorsRaised, this);
+    mediaModel.addEventListener(Events.PLAYERS_CREATED, this.playersCreated, this);
   }
 
   private removeEventListeners(mediaModel: MediaModel): void {
-    mediaModel.removeEventListener(Events.PlayerPropertiesChanged, this.propertiesChanged, this);
-    mediaModel.removeEventListener(Events.PlayerEventsAdded, this.eventsAdded, this);
-    mediaModel.removeEventListener(Events.PlayerMessagesLogged, this.messagesLogged, this);
-    mediaModel.removeEventListener(Events.PlayerErrorsRaised, this.errorsRaised, this);
-    mediaModel.removeEventListener(Events.PlayersCreated, this.playersCreated, this);
+    mediaModel.removeEventListener(Events.PLAYER_PROPERTIES_CHANGED, this.propertiesChanged, this);
+    mediaModel.removeEventListener(Events.PLAYER_EVENTS_ADDED, this.eventsAdded, this);
+    mediaModel.removeEventListener(Events.PLAYER_MESSAGES_LOGGED, this.messagesLogged, this);
+    mediaModel.removeEventListener(Events.PLAYER_ERRORS_RAISED, this.errorsRaised, this);
+    mediaModel.removeEventListener(Events.PLAYERS_CREATED, this.playersCreated, this);
   }
 
   private onPlayerCreated(playerID: string): void {

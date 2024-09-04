@@ -204,9 +204,11 @@ export class AnimationModel extends SDK.SDKModel.SDKModel<EventTypes> {
 }
 
 export enum Events {
+  /* eslint-disable @typescript-eslint/naming-convention -- Used by web_tests. */
   AnimationGroupStarted = 'AnimationGroupStarted',
   AnimationGroupUpdated = 'AnimationGroupUpdated',
   ModelReset = 'ModelReset',
+  /* eslint-enable @typescript-eslint/naming-convention */
 }
 
 export type EventTypes = {

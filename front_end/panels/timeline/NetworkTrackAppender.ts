@@ -117,9 +117,9 @@ export class NetworkTrackAppender implements TrackAppender {
       useDecoratorsForOverview: true,
     });
     const legends: PerfUI.FlameChart.Legend[] = [];
-    for (const category in NetworkCategory) {
+    for (const category of Object.values(NetworkCategory)) {
       legends.push({
-        color: Utils.colorForNetworkCategory(category as NetworkCategory),
+        color: Utils.colorForNetworkCategory(category),
         category,
       });
     }

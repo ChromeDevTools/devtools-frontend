@@ -148,7 +148,7 @@ export class HeaderSectionRow extends HTMLElement {
       row: true,
       'header-highlight': Boolean(this.#header.highlight),
       'header-overridden': Boolean(this.#header.isOverride) || this.#isHeaderValueEdited,
-      'header-editable': this.#header.valueEditable === EditingAllowedStatus.Enabled,
+      'header-editable': this.#header.valueEditable === EditingAllowedStatus.ENABLED,
       'header-deleted': Boolean(this.#header.isDeleted),
     });
 
@@ -167,7 +167,7 @@ export class HeaderSectionRow extends HTMLElement {
     // This ensures the header name's editability reacts correctly to enabling or
     // disabling local overrides.
     const isHeaderNameEditable =
-        this.#header.nameEditable && this.#header.valueEditable === EditingAllowedStatus.Enabled;
+        this.#header.nameEditable && this.#header.valueEditable === EditingAllowedStatus.ENABLED;
 
     // Case 1: Headers which were just now added via the 'Add header button'.
     //         'nameEditable' is true only for such headers.
@@ -237,9 +237,9 @@ export class HeaderSectionRow extends HTMLElement {
       return this.#renderXClientDataHeader(this.#header);
     }
 
-    if (this.#header.isDeleted || this.#header.valueEditable !== EditingAllowedStatus.Enabled) {
+    if (this.#header.isDeleted || this.#header.valueEditable !== EditingAllowedStatus.ENABLED) {
       const showEditHeaderButton = this.#header.isResponseHeader && !this.#header.isDeleted &&
-          this.#header.valueEditable !== EditingAllowedStatus.Forbidden;
+          this.#header.valueEditable !== EditingAllowedStatus.FORBIDDEN;
       // clang-format off
       return html`
       ${this.#header.value || ''}
@@ -546,9 +546,9 @@ interface BlockedDetailsDescriptor {
 }
 
 export const enum EditingAllowedStatus {
-  Disabled = 0,   // Local overrides are currently disabled.
-  Enabled = 1,    // The header is free to be edited.
-  Forbidden = 2,  // Editing this header is forbidden even when local overrides are enabled.
+  DISABLED = 0,   // Local overrides are currently disabled.
+  ENABLED = 1,    // The header is free to be edited.
+  FORBIDDEN = 2,  // Editing this header is forbidden even when local overrides are enabled.
 }
 
 export interface HeaderDetailsDescriptor {

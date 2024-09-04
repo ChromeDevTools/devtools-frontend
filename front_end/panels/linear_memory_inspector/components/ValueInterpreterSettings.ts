@@ -28,21 +28,21 @@ export interface ValueInterpreterSettingsData {
 }
 
 const enum ValueTypeGroup {
-  Integer = 'Integer',
-  Float = 'Floating point',
-  Other = 'Other',
+  INTEGER = 'Integer',
+  FLOAT = 'Floating point',
+  OTHER = 'Other',
 }
 
 const GROUP_TO_TYPES = new Map(
     [
-      [ValueTypeGroup.Integer, [ValueType.Int8, ValueType.Int16, ValueType.Int32, ValueType.Int64]],
-      [ValueTypeGroup.Float, [ValueType.Float32, ValueType.Float64]],
-      [ValueTypeGroup.Other, [ValueType.Pointer32, ValueType.Pointer64]],
+      [ValueTypeGroup.INTEGER, [ValueType.INT8, ValueType.INT16, ValueType.INT32, ValueType.INT64]],
+      [ValueTypeGroup.FLOAT, [ValueType.FLOAT32, ValueType.FLOAT64]],
+      [ValueTypeGroup.OTHER, [ValueType.POINTER32, ValueType.POINTER64]],
     ],
 );
 
 function valueTypeGroupToLocalizedString(group: ValueTypeGroup): string {
-  if (group === ValueTypeGroup.Other) {
+  if (group === ValueTypeGroup.OTHER) {
     return i18nString(UIStrings.otherGroup);
   }
 

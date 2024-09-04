@@ -756,13 +756,13 @@ export class SecurityPanel extends UI.Panel.PanelWithSidebar implements
       return;
     }
 
-    let filterKey: string = NetworkForward.UIFilter.MixedContentFilterValues.All;
+    let filterKey: string = NetworkForward.UIFilter.MixedContentFilterValues.ALL;
     if (request.wasBlocked()) {
-      filterKey = NetworkForward.UIFilter.MixedContentFilterValues.Blocked;
+      filterKey = NetworkForward.UIFilter.MixedContentFilterValues.BLOCKED;
     } else if (request.mixedContentType === Protocol.Security.MixedContentType.Blockable) {
-      filterKey = NetworkForward.UIFilter.MixedContentFilterValues.BlockOverridden;
+      filterKey = NetworkForward.UIFilter.MixedContentFilterValues.BLOCK_OVERRIDDEN;
     } else if (request.mixedContentType === Protocol.Security.MixedContentType.OptionallyBlockable) {
-      filterKey = NetworkForward.UIFilter.MixedContentFilterValues.Displayed;
+      filterKey = NetworkForward.UIFilter.MixedContentFilterValues.DISPLAYED;
     }
 
     const currentCount = this.filterRequestCounts.get(filterKey);
@@ -1006,10 +1006,12 @@ export class SecurityPanelSidebarTree extends UI.TreeOutline.TreeOutlineInShadow
 }
 
 export enum OriginGroup {
+  /* eslint-disable @typescript-eslint/naming-convention -- Used by web_tests. */
   MainOrigin = 'MainOrigin',
   NonSecure = 'NonSecure',
   Secure = 'Secure',
   Unknown = 'Unknown',
+  /* eslint-enable @typescript-eslint/naming-convention */
 }
 
 export class SecurityPanelSidebarTreeElement extends UI.TreeOutline.TreeElement {
@@ -1451,11 +1453,11 @@ export class SecurityMainView extends UI.Widget.VBox {
           case Protocol.Security.MixedContentType.Blockable:
             this.addMixedContentExplanation(
                 this.securityExplanationsMain, explanation,
-                NetworkForward.UIFilter.MixedContentFilterValues.BlockOverridden);
+                NetworkForward.UIFilter.MixedContentFilterValues.BLOCK_OVERRIDDEN);
             break;
           case Protocol.Security.MixedContentType.OptionallyBlockable:
             this.addMixedContentExplanation(
-                this.securityExplanationsMain, explanation, NetworkForward.UIFilter.MixedContentFilterValues.Displayed);
+                this.securityExplanationsMain, explanation, NetworkForward.UIFilter.MixedContentFilterValues.DISPLAYED);
             break;
           default:
             this.addExplanation(this.securityExplanationsMain, explanation);
@@ -1464,7 +1466,7 @@ export class SecurityMainView extends UI.Widget.VBox {
       }
     }
 
-    if (this.panel.filterRequestCount(NetworkForward.UIFilter.MixedContentFilterValues.Blocked) > 0) {
+    if (this.panel.filterRequestCount(NetworkForward.UIFilter.MixedContentFilterValues.BLOCKED) > 0) {
       const explanation = {
         securityState: Protocol.Security.SecurityState.Info,
         summary: i18nString(UIStrings.blockedMixedContent),
@@ -1474,7 +1476,7 @@ export class SecurityMainView extends UI.Widget.VBox {
         title: '',
       } as Protocol.Security.SecurityStateExplanation;
       this.addMixedContentExplanation(
-          this.securityExplanationsMain, explanation, NetworkForward.UIFilter.MixedContentFilterValues.Blocked);
+          this.securityExplanationsMain, explanation, NetworkForward.UIFilter.MixedContentFilterValues.BLOCKED);
     }
   }
 

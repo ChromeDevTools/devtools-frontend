@@ -313,7 +313,7 @@ export class PaintProfilerView extends Common.ObjectWrapper.eventMixin<EventType
   }
 
   private onWindowChanged(): void {
-    this.dispatchEventToListeners(Events.WindowChanged);
+    this.dispatchEventToListeners(Events.WINDOW_CHANGED);
     this.updatePieChart();
     if (this.updateImageTimer) {
       return;
@@ -418,11 +418,11 @@ export class PaintProfilerView extends Common.ObjectWrapper.eventMixin<EventType
 }
 
 export const enum Events {
-  WindowChanged = 'WindowChanged',
+  WINDOW_CHANGED = 'WindowChanged',
 }
 
 export type EventTypes = {
-  [Events.WindowChanged]: void,
+  [Events.WINDOW_CHANGED]: void,
 };
 
 export class PaintProfilerCommandLogView extends UI.ThrottledWidget.ThrottledWidget {

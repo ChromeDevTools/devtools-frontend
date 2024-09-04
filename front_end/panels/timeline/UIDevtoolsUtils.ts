@@ -209,6 +209,7 @@ export class UIDevtoolsUtils {
 }
 
 export enum RecordType {
+  /* eslint-disable @typescript-eslint/naming-convention -- Used by web_tests. */
   ViewPaint = 'View::Paint',
   ViewOnPaint = 'View::OnPaint',
   ViewPaintChildren = 'View::PaintChildren',
@@ -224,4 +225,5 @@ export enum RecordType {
   DrawFrame = 'DrawFrame',
   NeedsBeginFrameChanged = 'NeedsBeginFrameChanged',
   ThreadControllerImplRunTask = 'ThreadControllerImpl::RunTask',
+  /* eslint-enable @typescript-eslint/naming-convention */
 }

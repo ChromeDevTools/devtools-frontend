@@ -145,14 +145,14 @@ export class LinearMemoryInspector extends HTMLElement {
   #address = -1;
   #highlightInfo?: HighlightInfo;
 
-  #currentNavigatorMode = Mode.Submitted;
+  #currentNavigatorMode = Mode.SUBMITTED;
   #currentNavigatorAddressLine = `${this.#address}`;
 
   #numBytesPerPage = 4;
 
   #valueTypeModes = getDefaultValueTypeMapping();
   #valueTypes = new Set(this.#valueTypeModes.keys());
-  #endianness = Endianness.Little;
+  #endianness = Endianness.LITTLE;
 
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [linearMemoryInspectorStyles];
@@ -190,7 +190,7 @@ export class LinearMemoryInspector extends HTMLElement {
   #render(): void {
     const {start, end} = this.#getPageRangeForAddress(this.#address, this.#numBytesPerPage);
 
-    const navigatorAddressToShow = this.#currentNavigatorMode === Mode.Submitted ? formatAddress(this.#address) :
+    const navigatorAddressToShow = this.#currentNavigatorMode === Mode.SUBMITTED ? formatAddress(this.#address) :
                                                                                    this.#currentNavigatorAddressLine;
     const navigatorAddressIsValid = this.#isValidAddress(navigatorAddressToShow);
 
@@ -224,7 +224,7 @@ export class LinearMemoryInspector extends HTMLElement {
             memory: this.#memory.slice(start - this.#memoryOffset,
             end - this.#memoryOffset),
             address: this.#address, memoryOffset: start,
-            focus: this.#currentNavigatorMode === Mode.Submitted,
+            focus: this.#currentNavigatorMode === Mode.SUBMITTED,
             highlightInfo: this.#highlightInfo,
             focusedMemoryHighlight: focusedMemoryHighlight } as LinearMemoryViewerData}
           @byteselected=${this.#onByteSelected}
@@ -255,7 +255,7 @@ export class LinearMemoryInspector extends HTMLElement {
   #onJumpToAddress(e: JumpToPointerAddressEvent|JumpToHighlightedMemoryEvent): void {
     // Stop event from bubbling up, since no element further up needs the event.
     e.stopPropagation();
-    this.#currentNavigatorMode = Mode.Submitted;
+    this.#currentNavigatorMode = Mode.SUBMITTED;
     const addressInRange = Math.max(0, Math.min(e.data, this.#outerMemoryLength - 1));
     this.#jumpToAddress(addressInRange);
   }
@@ -266,7 +266,7 @@ export class LinearMemoryInspector extends HTMLElement {
   }
 
   #onByteSelected(e: ByteSelectedEvent): void {
-    this.#currentNavigatorMode = Mode.Submitted;
+    this.#currentNavigatorMode = Mode.SUBMITTED;
     const addressInRange = Math.max(0, Math.min(e.data, this.#outerMemoryLength - 1));
     this.#jumpToAddress(addressInRange);
   }
@@ -298,10 +298,10 @@ export class LinearMemoryInspector extends HTMLElement {
       return;
     }
 
-    if (mode === Mode.Submitted && !isValid) {
-      this.#currentNavigatorMode = Mode.InvalidSubmit;
+    if (mode === Mode.SUBMITTED && !isValid) {
+      this.#currentNavigatorMode = Mode.INVALID_SUBMIT;
     } else {
-      this.#currentNavigatorMode = Mode.Edit;
+      this.#currentNavigatorMode = Mode.EDIT;
     }
 
     this.#render();
@@ -327,12 +327,12 @@ export class LinearMemoryInspector extends HTMLElement {
   }
 
   #navigateHistory(e: HistoryNavigationEvent): boolean {
-    return e.data === Navigation.Forward ? this.#history.rollover() : this.#history.rollback();
+    return e.data === Navigation.FORWARD ? this.#history.rollover() : this.#history.rollback();
   }
 
   #navigatePage(e: PageNavigationEvent): void {
     const newAddress =
-        e.data === Navigation.Forward ? this.#address + this.#numBytesPerPage : this.#address - this.#numBytesPerPage;
+        e.data === Navigation.FORWARD ? this.#address + this.#numBytesPerPage : this.#address - this.#numBytesPerPage;
     const addressInRange = Math.max(0, Math.min(newAddress, this.#outerMemoryLength - 1));
     this.#jumpToAddress(addressInRange);
   }

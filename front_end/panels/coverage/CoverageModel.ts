@@ -12,20 +12,22 @@ import * as Workspace from '../../models/workspace/workspace.js';
 
 export const enum CoverageType {
   CSS = (1 << 0),
-  JavaScript = (1 << 1),
-  JavaScriptPerFunction = (1 << 2),
+  JAVA_SCRIPT = (1 << 1),
+  JAVA_SCRIPT_PER_FUNCTION = (1 << 2),
 }
 
 export const enum SuspensionState {
-  Active = 'Active',
-  Suspending = 'Suspending',
-  Suspended = 'Suspended',
+  ACTIVE = 'Active',
+  SUSPENDING = 'Suspending',
+  SUSPENDED = 'Suspended',
 }
 
 export enum Events {
+  /* eslint-disable @typescript-eslint/naming-convention -- Used by web_tests. */
   CoverageUpdated = 'CoverageUpdated',
   CoverageReset = 'CoverageReset',
   SourceMapResolved = 'SourceMapResolved',
+  /* eslint-enable @typescript-eslint/naming-convention */
 }
 
 export type EventTypes = {
@@ -77,7 +79,7 @@ export class CoverageModel extends SDK.SDKModel.SDKModel<EventTypes> {
     // an update was received at a certain time, but did not result in a coverage change.
     this.coverageUpdateTimes = new Set();
 
-    this.suspensionState = SuspensionState.Active;
+    this.suspensionState = SuspensionState.ACTIVE;
     this.pollTimer = null;
     this.currentPollPromise = null;
     this.shouldResumePollingOnResume = false;
@@ -89,7 +91,7 @@ export class CoverageModel extends SDK.SDKModel.SDKModel<EventTypes> {
   }
 
   async start(jsCoveragePerBlock: boolean): Promise<boolean> {
-    if (this.suspensionState !== SuspensionState.Active) {
+    if (this.suspensionState !== SuspensionState.ACTIVE) {
       throw Error('Cannot start CoverageModel while it is not active.');
     }
     const promises = [];
@@ -183,7 +185,7 @@ export class CoverageModel extends SDK.SDKModel.SDKModel<EventTypes> {
   }
 
   async startPolling(): Promise<void> {
-    if (this.currentPollPromise || this.suspensionState !== SuspensionState.Active) {
+    if (this.currentPollPromise || this.suspensionState !== SuspensionState.ACTIVE) {
       return;
     }
     await this.pollLoop();
@@ -193,7 +195,7 @@ export class CoverageModel extends SDK.SDKModel.SDKModel<EventTypes> {
     this.clearTimer();
     this.currentPollPromise = this.pollAndCallback();
     await this.currentPollPromise;
-    if (this.suspensionState === SuspensionState.Active || this.performanceTraceRecording) {
+    if (this.suspensionState === SuspensionState.ACTIVE || this.performanceTraceRecording) {
       this.pollTimer = window.setTimeout(() => this.pollLoop(), COVERAGE_POLLING_PERIOD_MS);
     }
   }
@@ -207,14 +209,14 @@ export class CoverageModel extends SDK.SDKModel.SDKModel<EventTypes> {
   }
 
   private async pollAndCallback(): Promise<void> {
-    if (this.suspensionState === SuspensionState.Suspended && !this.performanceTraceRecording) {
+    if (this.suspensionState === SuspensionState.SUSPENDED && !this.performanceTraceRecording) {
       return;
     }
     const updates = await this.takeAllCoverage();
     // This conditional should never trigger, as all intended ways to stop
     // polling are awaiting the `_currentPollPromise` before suspending.
     console.assert(
-        this.suspensionState !== SuspensionState.Suspended || Boolean(this.performanceTraceRecording),
+        this.suspensionState !== SuspensionState.SUSPENDED || Boolean(this.performanceTraceRecording),
         'CoverageModel was suspended while polling.');
     if (updates.length) {
       this.dispatchEventToListeners(Events.CoverageUpdated, updates);
@@ -233,10 +235,10 @@ export class CoverageModel extends SDK.SDKModel.SDKModel<EventTypes> {
    * due because it changes the state to suspending.
    */
   override async preSuspendModel(reason?: string): Promise<void> {
-    if (this.suspensionState !== SuspensionState.Active) {
+    if (this.suspensionState !== SuspensionState.ACTIVE) {
       return;
     }
-    this.suspensionState = SuspensionState.Suspending;
+    this.suspensionState = SuspensionState.SUSPENDING;
     if (reason === 'performance-timeline') {
       this.performanceTraceRecording = true;
       // Keep polling to the backlog if a performance trace is recorded.
@@ -249,7 +251,7 @@ export class CoverageModel extends SDK.SDKModel.SDKModel<EventTypes> {
   }
 
   override async suspendModel(_reason?: string): Promise<void> {
-    this.suspensionState = SuspensionState.Suspended;
+    this.suspensionState = SuspensionState.SUSPENDED;
   }
 
   override async resumeModel(): Promise<void> {
@@ -260,7 +262,7 @@ export class CoverageModel extends SDK.SDKModel.SDKModel<EventTypes> {
    * because starting polling is idempotent.
    */
   override async postResumeModel(): Promise<void> {
-    this.suspensionState = SuspensionState.Active;
+    this.suspensionState = SuspensionState.ACTIVE;
     this.performanceTraceRecording = false;
     if (this.shouldResumePollingOnResume) {
       this.shouldResumePollingOnResume = false;
@@ -330,7 +332,7 @@ export class CoverageModel extends SDK.SDKModel.SDKModel<EventTypes> {
     if (freshRawCoverageData.length > 0) {
       this.jsBacklog.push({rawCoverageData: freshRawCoverageData, stamp: freshTimestamp});
     }
-    if (this.suspensionState !== SuspensionState.Active) {
+    if (this.suspensionState !== SuspensionState.ACTIVE) {
       return [];
     }
     const ascendingByTimestamp = (x: {stamp: number}, y: {stamp: number}): number => x.stamp - y.stamp;
@@ -359,14 +361,14 @@ export class CoverageModel extends SDK.SDKModel.SDKModel<EventTypes> {
       }
 
       const ranges = [];
-      let type = CoverageType.JavaScript;
+      let type = CoverageType.JAVA_SCRIPT;
       for (const func of entry.functions) {
         // Do not coerce undefined to false, i.e. only consider blockLevel to be false
         // if back-end explicitly provides blockLevel field, otherwise presume blockLevel
         // coverage is not available. Also, ignore non-block level functions that weren't
         // ever called.
         if (func.isBlockCoverage === false && !(func.ranges.length === 1 && !func.ranges[0].count)) {
-          type |= CoverageType.JavaScriptPerFunction;
+          type |= CoverageType.JAVA_SCRIPT_PER_FUNCTION;
         }
         for (const range of func.ranges) {
           ranges.push(range);
@@ -388,7 +390,7 @@ export class CoverageModel extends SDK.SDKModel.SDKModel<EventTypes> {
 
   private async takeCSSCoverage(): Promise<CoverageInfo[]> {
     // Don't poll if we have no model, or are suspended.
-    if (!this.cssModel || this.suspensionState !== SuspensionState.Active) {
+    if (!this.cssModel || this.suspensionState !== SuspensionState.ACTIVE) {
       return [];
     }
     const {coverage, timestamp} = await this.cssModel.takeCoverageDelta();
@@ -401,7 +403,7 @@ export class CoverageModel extends SDK.SDKModel.SDKModel<EventTypes> {
     if (freshRawCoverageData.length > 0) {
       this.cssBacklog.push({rawCoverageData: freshRawCoverageData, stamp: freshTimestamp});
     }
-    if (this.suspensionState !== SuspensionState.Active) {
+    if (this.suspensionState !== SuspensionState.ACTIVE) {
       return [];
     }
     const ascendingByTimestamp = (x: {stamp: number}, y: {stamp: number}): number => x.stamp - y.stamp;
@@ -774,7 +776,7 @@ export class URLCoverageInfo extends Common.ObjectWrapper.ObjectWrapper<URLCover
     const key = `${lineOffset}:${columnOffset}`;
     let entry = this.coverageInfoByLocation.get(key);
 
-    if ((type & CoverageType.JavaScript) && !this.coverageInfoByLocation.size &&
+    if ((type & CoverageType.JAVA_SCRIPT) && !this.coverageInfoByLocation.size &&
         contentProvider instanceof SDK.Script.Script) {
       this.isContentScriptInternal = (contentProvider as SDK.Script.Script).isContentScript();
     }
@@ -785,7 +787,7 @@ export class URLCoverageInfo extends Common.ObjectWrapper.ObjectWrapper<URLCover
       return entry;
     }
 
-    if ((type & CoverageType.JavaScript) && !this.coverageInfoByLocation.size &&
+    if ((type & CoverageType.JAVA_SCRIPT) && !this.coverageInfoByLocation.size &&
         contentProvider instanceof SDK.Script.Script) {
       this.isContentScriptInternal = (contentProvider as SDK.Script.Script).isContentScript();
     }
@@ -877,7 +879,9 @@ export class SourceURLCoverageInfo extends URLCoverageInfo {
 
 export namespace URLCoverageInfo {
   export enum Events {
+    /* eslint-disable @typescript-eslint/naming-convention -- Used by web_tests. */
     SizesChanged = 'SizesChanged',
+    /* eslint-enable @typescript-eslint/naming-convention */
   }
 
   export type EventTypes = {

@@ -63,13 +63,13 @@ describe('ResourceTimingView', () => {
     const sendStart = timingInfo.sendStart as number;
 
     const routerEvaluation = timeRanges.find(
-        timeRange => timeRange.name === RequestTimingView.RequestTimeRangeNames.ServiceWorkerRouterEvaluation);
+        timeRange => timeRange.name === RequestTimingView.RequestTimeRangeNames.SERVICE_WORKER_ROUTER_EVALUATION);
     assert.isTrue(Boolean(routerEvaluation), 'worker router evaluation exists');
     assert.strictEqual(routerEvaluation?.start, timingInfo.requestTime + routerEvaluationTime / 1000);
     assert.strictEqual(routerEvaluation?.end, timingInfo.requestTime + sendStart / 1000);
 
     const cacheLookup = timeRanges.find(
-        timeRange => timeRange.name === RequestTimingView.RequestTimeRangeNames.ServiceWorkerCacheLookup);
+        timeRange => timeRange.name === RequestTimingView.RequestTimeRangeNames.SERVICE_WORKER_CACHE_LOOKUP);
     assert.isFalse(Boolean(cacheLookup), 'worker cache lookup does not exist');
   });
 
@@ -82,13 +82,13 @@ describe('ResourceTimingView', () => {
     const workerStart = timingInfo.workerStart as number;
 
     const routerEvaluation = timeRanges.find(
-        timeRange => timeRange.name === RequestTimingView.RequestTimeRangeNames.ServiceWorkerRouterEvaluation);
+        timeRange => timeRange.name === RequestTimingView.RequestTimeRangeNames.SERVICE_WORKER_ROUTER_EVALUATION);
     assert.isTrue(Boolean(routerEvaluation), 'worker router evaluation exists');
     assert.strictEqual(routerEvaluation?.start, timingInfo.requestTime + routerEvaluationTime / 1000);
     assert.strictEqual(routerEvaluation?.end, timingInfo.requestTime + workerStart / 1000);
 
     const cacheLookup = timeRanges.find(
-        timeRange => timeRange.name === RequestTimingView.RequestTimeRangeNames.ServiceWorkerCacheLookup);
+        timeRange => timeRange.name === RequestTimingView.RequestTimeRangeNames.SERVICE_WORKER_CACHE_LOOKUP);
     assert.isFalse(Boolean(cacheLookup), 'worker cache lookup does not exist');
   });
 
@@ -101,13 +101,13 @@ describe('ResourceTimingView', () => {
     const cacheLookupStart = timingInfo.workerCacheLookupStart as number;
 
     const routerEvaluation = timeRanges.find(
-        timeRange => timeRange.name === RequestTimingView.RequestTimeRangeNames.ServiceWorkerRouterEvaluation);
+        timeRange => timeRange.name === RequestTimingView.RequestTimeRangeNames.SERVICE_WORKER_ROUTER_EVALUATION);
     assert.isTrue(Boolean(routerEvaluation), 'worker router evaluation exists');
     assert.strictEqual(routerEvaluation?.start, timingInfo.requestTime + routerEvaluationTime / 1000);
     assert.strictEqual(routerEvaluation?.end, timingInfo.requestTime + cacheLookupStart / 1000);
 
     const cacheLookup = timeRanges.find(
-        timeRange => timeRange.name === RequestTimingView.RequestTimeRangeNames.ServiceWorkerCacheLookup);
+        timeRange => timeRange.name === RequestTimingView.RequestTimeRangeNames.SERVICE_WORKER_CACHE_LOOKUP);
     assert.isTrue(Boolean(cacheLookup), 'worker cache lookup does not exist');
     assert.strictEqual(cacheLookup?.start, timingInfo.requestTime + cacheLookupStart / 1000);
     assert.strictEqual(cacheLookup?.end, timingInfo.requestTime + timingInfo.receiveHeadersStart / 1000);
@@ -122,13 +122,13 @@ describe('ResourceTimingView', () => {
     const cacheLookupStart = timingInfo.workerCacheLookupStart as number;
 
     const routerEvaluation = timeRanges.find(
-        timeRange => timeRange.name === RequestTimingView.RequestTimeRangeNames.ServiceWorkerRouterEvaluation);
+        timeRange => timeRange.name === RequestTimingView.RequestTimeRangeNames.SERVICE_WORKER_ROUTER_EVALUATION);
     assert.isTrue(Boolean(routerEvaluation), 'worker router evaluation exists');
     assert.strictEqual(routerEvaluation?.start, timingInfo.requestTime + routerEvaluationTime / 1000);
     assert.strictEqual(routerEvaluation?.end, timingInfo.requestTime + cacheLookupStart / 1000);
 
     const cacheLookup = timeRanges.find(
-        timeRange => timeRange.name === RequestTimingView.RequestTimeRangeNames.ServiceWorkerCacheLookup);
+        timeRange => timeRange.name === RequestTimingView.RequestTimeRangeNames.SERVICE_WORKER_CACHE_LOOKUP);
     assert.isTrue(Boolean(cacheLookup), 'worker cache lookup does not exist');
     assert.strictEqual(cacheLookup?.start, timingInfo.requestTime + cacheLookupStart / 1000);
     assert.strictEqual(cacheLookup?.end, timingInfo.requestTime + timingInfo.sendStart / 1000);

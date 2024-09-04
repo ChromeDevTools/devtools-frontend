@@ -66,16 +66,16 @@ export class TransformController extends Common.ObjectWrapper.ObjectWrapper<Even
     if (!disableRotate) {
       const panModeButton = new UI.Toolbar.ToolbarToggle(
           i18nString(UIStrings.panModeX), '3d-pan', undefined, 'layers.3d-pan', /* toggleOnClick */ false);
-      panModeButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, this.setMode.bind(this, Modes.Pan));
-      this.modeButtons[Modes.Pan] = panModeButton;
+      panModeButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, this.setMode.bind(this, Modes.PAN));
+      this.modeButtons[Modes.PAN] = panModeButton;
       this.controlPanelToolbar.appendToolbarItem(panModeButton);
       const rotateModeButton = new UI.Toolbar.ToolbarToggle(
           i18nString(UIStrings.rotateModeV), '3d-rotate', undefined, 'layers.3d-rotate', /* toggleOnClick */ false);
-      rotateModeButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, this.setMode.bind(this, Modes.Rotate));
-      this.modeButtons[Modes.Rotate] = rotateModeButton;
+      rotateModeButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, this.setMode.bind(this, Modes.ROTATE));
+      this.modeButtons[Modes.ROTATE] = rotateModeButton;
       this.controlPanelToolbar.appendToolbarItem(rotateModeButton);
     }
-    this.setMode(Modes.Pan);
+    this.setMode(Modes.PAN);
 
     const resetButton =
         new UI.Toolbar.ToolbarButton(i18nString(UIStrings.resetTransform), '3d-center', undefined, 'layers.3d-center');
@@ -97,11 +97,11 @@ export class TransformController extends Common.ObjectWrapper.ObjectWrapper<Even
         return true;
       },
       'layers.pan-mode': async () => {
-        this.setMode(Modes.Pan);
+        this.setMode(Modes.PAN);
         return true;
       },
       'layers.rotate-mode': async () => {
-        this.setMode(Modes.Rotate);
+        this.setMode(Modes.ROTATE);
         return true;
       },
       'layers.zoom-in': this.onKeyboardZoom.bind(this, zoomFactor),
@@ -114,7 +114,7 @@ export class TransformController extends Common.ObjectWrapper.ObjectWrapper<Even
   }
 
   private postChangeEvent(): void {
-    this.dispatchEventToListeners(Events.TransformChanged);
+    this.dispatchEventToListeners(Events.TRANSFORM_CHANGED);
   }
 
   private reset(): void {
@@ -209,7 +209,7 @@ export class TransformController extends Common.ObjectWrapper.ObjectWrapper<Even
     const panStepInPixels = 6;
     const rotateStepInDegrees = 5;
 
-    if (this.mode === Modes.Rotate) {
+    if (this.mode === Modes.ROTATE) {
       // Sic! onRotate treats X and Y as "rotate around X" and "rotate around Y", so swap X/Y multiplers.
       this.onRotate(
           this.rotateXInternal + yMultiplier * rotateStepInDegrees,
@@ -234,7 +234,7 @@ export class TransformController extends Common.ObjectWrapper.ObjectWrapper<Even
 
   private onDrag(event: Event): void {
     const {clientX, clientY} = event as MouseEvent;
-    if (this.mode === Modes.Rotate) {
+    if (this.mode === Modes.ROTATE) {
       this.onRotate(
           this.oldRotateX + (this.originY - clientY) / this.element.clientHeight * 180,
           this.oldRotateY - (this.originX - clientX) / this.element.clientWidth * 180);
@@ -263,14 +263,14 @@ export class TransformController extends Common.ObjectWrapper.ObjectWrapper<Even
 }
 
 export const enum Events {
-  TransformChanged = 'TransformChanged',
+  TRANSFORM_CHANGED = 'TransformChanged',
 }
 
 export type EventTypes = {
-  [Events.TransformChanged]: void,
+  [Events.TRANSFORM_CHANGED]: void,
 };
 
 export const enum Modes {
-  Pan = 'Pan',
-  Rotate = 'Rotate',
+  PAN = 'Pan',
+  ROTATE = 'Rotate',
 }

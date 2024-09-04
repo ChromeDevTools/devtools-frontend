@@ -59,7 +59,7 @@ export class ComputedStyleModel extends Common.ObjectWrapper.ObjectWrapper<Event
 
   private onComputedStyleChanged(event: Common.EventTarget.EventTargetEvent<ComputedStyleChangedEvent>|null): void {
     delete this.computedStylePromise;
-    this.dispatchEventToListeners(Events.ComputedStyleChanged, event?.data ?? null);
+    this.dispatchEventToListeners(Events.COMPUTED_STYLE_CHANGED, event?.data ?? null);
   }
 
   private onDOMModelChanged(event: Common.EventTarget.EventTargetEvent<SDK.DOMModel.DOMNode>): void {
@@ -121,7 +121,7 @@ export class ComputedStyleModel extends Common.ObjectWrapper.ObjectWrapper<Event
 }
 
 export const enum Events {
-  ComputedStyleChanged = 'ComputedStyleChanged',
+  COMPUTED_STYLE_CHANGED = 'ComputedStyleChanged',
 }
 
 export type ComputedStyleChangedEvent = SDK.CSSStyleSheetHeader.CSSStyleSheetHeader|
@@ -129,7 +129,7 @@ export type ComputedStyleChangedEvent = SDK.CSSStyleSheetHeader.CSSStyleSheetHea
                                         null;
 
 export type EventTypes = {
-  [Events.ComputedStyleChanged]: ComputedStyleChangedEvent,
+  [Events.COMPUTED_STYLE_CHANGED]: ComputedStyleChangedEvent,
 };
 
 export class ComputedStyle {

@@ -73,13 +73,13 @@ export class NodeView {
    * when the whole NodeView will be gone.
    */
   addParamPort(paramId: string, paramType: string): void {
-    const paramPorts = this.getPortsByType(PortTypes.Param);
+    const paramPorts = this.getPortsByType(PortTypes.PARAM);
     const numberOfParams = paramPorts.length;
 
     const {x, y} = calculateParamPortXY(numberOfParams, this.layout.inputPortSectionHeight);
     this.addPort({
       id: generateParamPortId(this.id, paramId),
-      type: PortTypes.Param,
+      type: PortTypes.PARAM,
       label: paramType,
       x,
       y,
@@ -157,7 +157,7 @@ export class NodeView {
   private setupInputPorts(): void {
     for (let i = 0; i < this.numberOfInputs; i++) {
       const {x, y} = calculateInputPortXY(i);
-      this.addPort({id: generateInputPortId(this.id, i), type: PortTypes.In, x, y, label: undefined});
+      this.addPort({id: generateInputPortId(this.id, i), type: PortTypes.IN, x, y, label: undefined});
     }
   }
 
@@ -176,7 +176,7 @@ export class NodeView {
         port.x = x;
         port.y = y;
       } else {
-        this.addPort({id: portId, type: PortTypes.Out, x, y, label: undefined});
+        this.addPort({id: portId, type: PortTypes.OUT, x, y, label: undefined});
       }
     }
   }

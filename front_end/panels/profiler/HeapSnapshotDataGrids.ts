@@ -411,9 +411,11 @@ export class HeapSnapshotSortableDataGrid extends
 }
 
 export enum HeapSnapshotSortableDataGridEvents {
+  /* eslint-disable @typescript-eslint/naming-convention -- Used by web_tests. */
   ContentShown = 'ContentShown',
   SortingComplete = 'SortingComplete',
   ExpandRetainersComplete = 'ExpandRetainersComplete',
+  /* eslint-enable @typescript-eslint/naming-convention */
 }
 
 export type EventTypes = {
@@ -768,7 +770,9 @@ export class HeapSnapshotRetainmentDataGrid extends HeapSnapshotContainmentDataG
 
 // TODO(crbug.com/1228674): Remove this enum, it is only used in web tests.
 export enum HeapSnapshotRetainmentDataGridEvents {
+  /* eslint-disable @typescript-eslint/naming-convention -- Used by web_tests. */
   ExpandRetainersComplete = 'ExpandRetainersComplete',
+  /* eslint-enable @typescript-eslint/naming-convention */
 }
 
 export class HeapSnapshotConstructorsDataGrid extends HeapSnapshotViewportDataGrid {

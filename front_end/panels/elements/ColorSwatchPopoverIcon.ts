@@ -115,11 +115,11 @@ export class BezierPopoverIcon {
 }
 
 export const enum ColorSwatchPopoverIconEvents {
-  ColorChanged = 'colorchanged',
+  COLOR_CHANGED = 'colorchanged',
 }
 
 export type ColorSwatchPopoverIconEventTypes = {
-  [ColorSwatchPopoverIconEvents.ColorChanged]: string,
+  [ColorSwatchPopoverIconEvents.COLOR_CHANGED]: string,
 };
 
 export class ColorSwatchPopoverIcon extends Common.ObjectWrapper.ObjectWrapper<ColorSwatchPopoverIconEventTypes> {
@@ -243,7 +243,7 @@ export class ColorSwatchPopoverIcon extends Common.ObjectWrapper.ObjectWrapper<C
 
     // `asString` somehow can return null.
     if (text) {
-      this.dispatchEventToListeners(ColorSwatchPopoverIconEvents.ColorChanged, text);
+      this.dispatchEventToListeners(ColorSwatchPopoverIconEvents.COLOR_CHANGED, text);
     }
   }
 
@@ -271,11 +271,11 @@ export class ColorSwatchPopoverIcon extends Common.ObjectWrapper.ObjectWrapper<C
 }
 
 export const enum ShadowEvents {
-  ShadowChanged = 'shadowChanged',
+  SHADOW_CHANGED = 'shadowChanged',
 }
 
 export interface ShadowEventTypes {
-  [ShadowEvents.ShadowChanged]: InlineEditor.CSSShadowEditor.CSSShadowModel;
+  [ShadowEvents.SHADOW_CHANGED]: InlineEditor.CSSShadowEditor.CSSShadowModel;
 }
 
 export class ShadowSwatchPopoverHelper extends Common.ObjectWrapper.ObjectWrapper<ShadowEventTypes> {
@@ -336,7 +336,7 @@ export class ShadowSwatchPopoverHelper extends Common.ObjectWrapper.ObjectWrappe
   }
 
   private shadowChanged(event: Common.EventTarget.EventTargetEvent<InlineEditor.CSSShadowEditor.CSSShadowModel>): void {
-    this.dispatchEventToListeners(ShadowEvents.ShadowChanged, event.data);
+    this.dispatchEventToListeners(ShadowEvents.SHADOW_CHANGED, event.data);
   }
 
   private onScroll(_event: Event): void {

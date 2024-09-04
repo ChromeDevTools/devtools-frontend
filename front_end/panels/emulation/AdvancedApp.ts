@@ -47,7 +47,7 @@ export class AdvancedApp implements Common.App.App {
     UI.InspectorView.InspectorView.instance().setOwnerSplit(this.rootSplitWidget);
 
     this.inspectedPagePlaceholder = InspectedPagePlaceholder.instance();
-    this.inspectedPagePlaceholder.addEventListener(Events.Update, this.onSetInspectedPageBounds.bind(this), this);
+    this.inspectedPagePlaceholder.addEventListener(Events.UPDATE, this.onSetInspectedPageBounds.bind(this), this);
     this.deviceModeView =
         DeviceModeWrapper.instance({inspectedPagePlaceholder: this.inspectedPagePlaceholder, forceNew: false});
 

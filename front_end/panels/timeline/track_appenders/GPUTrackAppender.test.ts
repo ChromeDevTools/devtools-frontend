@@ -45,7 +45,7 @@ describeWithEnvironment('GPUTrackAppender', function() {
       const levelCount = 1;
       assert.strictEqual(entryTypeByLevel.length, levelCount);
       const allEntriesAreTrackAppender =
-          entryTypeByLevel.every(type => type === Timeline.TimelineFlameChartDataProvider.EntryType.TrackAppender);
+          entryTypeByLevel.every(type => type === Timeline.TimelineFlameChartDataProvider.EntryType.TRACK_APPENDER);
       assert.isTrue(allEntriesAreTrackAppender);
     });
 

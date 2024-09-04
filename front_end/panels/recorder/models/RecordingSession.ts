@@ -263,7 +263,7 @@ export class RecordingSession extends Common.ObjectWrapper.ObjectWrapper<EventTy
     }
     this.#updateTimeout = setTimeout(() => {
                             // Making a copy to prevent mutations of this.userFlow by event consumers.
-                            this.dispatchEventToListeners(Events.RecordingUpdated, structuredClone(this.#userFlow));
+                            this.dispatchEventToListeners(Events.RECORDING_UPDATED, structuredClone(this.#userFlow));
                             this.#updateTimeout = undefined;
                             for (const resolve of this.#updateListeners) {
                               resolve();
@@ -384,7 +384,7 @@ export class RecordingSession extends Common.ObjectWrapper.ObjectWrapper<EventTy
       this.#userFlow.steps.pop();
     }
 
-    this.dispatchEventToListeners(Events.RecordingStopped, structuredClone(this.#userFlow));
+    this.dispatchEventToListeners(Events.RECORDING_STOPPED, structuredClone(this.#userFlow));
   }
 
   #receiveBindingCalled(
@@ -769,11 +769,11 @@ export class RecordingSession extends Common.ObjectWrapper.ObjectWrapper<EventTy
 }
 
 export const enum Events {
-  RecordingUpdated = 'recordingupdated',
-  RecordingStopped = 'recordingstopped',
+  RECORDING_UPDATED = 'recordingupdated',
+  RECORDING_STOPPED = 'recordingstopped',
 }
 
 type EventTypes = {
-  [Events.RecordingUpdated]: UserFlow,
-  [Events.RecordingStopped]: UserFlow,
+  [Events.RECORDING_UPDATED]: UserFlow,
+  [Events.RECORDING_STOPPED]: UserFlow,
 };

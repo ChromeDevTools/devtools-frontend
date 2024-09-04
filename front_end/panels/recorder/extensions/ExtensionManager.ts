@@ -62,7 +62,7 @@ export class ExtensionManager extends Common.ObjectWrapper.ObjectWrapper<EventTy
   }
 
   #handlePlugin = (): void => {
-    this.dispatchEventToListeners(Events.ExtensionsUpdated, this.extensions());
+    this.dispatchEventToListeners(Events.EXTENSIONS_UPDATED, this.extensions());
   };
 
   #handleView = (event: {data: Extensions.RecorderPluginManager.ViewDescriptor}): void => {
@@ -118,9 +118,9 @@ class ExtensionIframe {
 }
 
 export const enum Events {
-  ExtensionsUpdated = 'extensionsUpdated',
+  EXTENSIONS_UPDATED = 'extensionsUpdated',
 }
 
 export type EventTypes = {
-  [Events.ExtensionsUpdated]: Extension[],
+  [Events.EXTENSIONS_UPDATED]: Extension[],
 };

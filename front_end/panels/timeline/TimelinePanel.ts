@@ -434,7 +434,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
         i18nString(UIStrings.dropTimelineFileOrUrlHere), this.handleDrop.bind(this));
 
     this.recordingOptionUIControls = [];
-    this.state = State.Idle;
+    this.state = State.IDLE;
     this.recordingPageReload = false;
     this.millisecondsToRecordAfterLoadEvent = 5000;
     this.toggleRecordAction = UI.ActionRegistry.ActionRegistry.instance().getAction('timeline.toggle-recording');
@@ -607,7 +607,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   }
 
   loadFromEvents(events: TraceEngine.Types.TraceEvents.TraceEventData[]): void {
-    if (this.state !== State.Idle) {
+    if (this.state !== State.IDLE) {
       return;
     }
     this.prepareToLoadTimeline();
@@ -802,7 +802,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   }
 
   private loadFromCpuProfile(profile: Protocol.Profiler.Profile|null): void {
-    if (this.state !== State.Idle || profile === null) {
+    if (this.state !== State.IDLE || profile === null) {
       return;
     }
     this.prepareToLoadTimeline();
@@ -1011,8 +1011,8 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   }
 
   private prepareToLoadTimeline(): void {
-    console.assert(this.state === State.Idle);
-    this.setState(State.Loading);
+    console.assert(this.state === State.IDLE);
+    this.setState(State.LOADING);
   }
 
   private createFileSelector(): void {
@@ -1037,7 +1037,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   }
 
   async saveToFile(isEnhancedTraces: boolean = false): Promise<void> {
-    if (this.state !== State.Idle) {
+    if (this.state !== State.IDLE) {
       return;
     }
     if (this.#viewMode.mode !== 'VIEWING_TRACE') {
@@ -1150,7 +1150,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   }
 
   async loadFromFile(file: File): Promise<void> {
-    if (this.state !== State.Idle) {
+    if (this.state !== State.IDLE) {
       return;
     }
     this.prepareToLoadTimeline();
@@ -1159,7 +1159,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   }
 
   async loadFromURL(url: Platform.DevToolsPath.UrlString): Promise<void> {
-    if (this.state !== State.Idle) {
+    if (this.state !== State.IDLE) {
       return;
     }
     this.prepareToLoadTimeline();
@@ -1396,7 +1396,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
   private async startRecording(): Promise<void> {
     console.assert(!this.statusPane, 'Status pane is already opened.');
-    this.setState(State.StartPending);
+    this.setState(State.START_PENDING);
     this.showRecordingStarted();
 
     if (isNode) {
@@ -1412,7 +1412,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       this.statusPane.updateStatus(i18nString(UIStrings.stoppingTimeline));
       this.statusPane.updateProgressBar(i18nString(UIStrings.received), 0);
     }
-    this.setState(State.StopPending);
+    this.setState(State.STOP_PENDING);
     if (this.controller) {
       await this.controller.stopRecording();
       this.setUIControlsEnabled(true);
@@ -1422,7 +1422,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     }
     if (this.cpuProfiler) {
       const profile = await this.cpuProfiler.stopRecording();
-      this.setState(State.Idle);
+      this.setState(State.IDLE);
       this.loadFromCpuProfile(profile);
 
       this.setUIControlsEnabled(true);
@@ -1462,7 +1462,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       this.statusPane.enableDownloadOfEvents(rawEvents);
     }
 
-    this.setState(State.RecordingFailed);
+    this.setState(State.RECORDING_FAILED);
     this.traceLoadStart = null;
     this.setUIControlsEnabled(true);
     if (this.controller) {
@@ -1483,33 +1483,33 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   }
 
   private updateTimelineControls(): void {
-    this.toggleRecordAction.setToggled(this.state === State.Recording);
-    this.toggleRecordAction.setEnabled(this.state === State.Recording || this.state === State.Idle);
-    this.recordReloadAction.setEnabled(isNode ? false : this.state === State.Idle);
-    this.#historyManager.setEnabled(this.state === State.Idle);
-    this.clearButton.setEnabled(this.state === State.Idle);
-    this.panelToolbar.setEnabled(this.state !== State.Loading);
-    this.panelRightToolbar.setEnabled(this.state !== State.Loading);
-    this.dropTarget.setEnabled(this.state === State.Idle);
-    this.loadButton.setEnabled(this.state === State.Idle);
-    this.saveButton.setEnabled(this.state === State.Idle && this.#hasActiveTrace());
+    this.toggleRecordAction.setToggled(this.state === State.RECORDING);
+    this.toggleRecordAction.setEnabled(this.state === State.RECORDING || this.state === State.IDLE);
+    this.recordReloadAction.setEnabled(isNode ? false : this.state === State.IDLE);
+    this.#historyManager.setEnabled(this.state === State.IDLE);
+    this.clearButton.setEnabled(this.state === State.IDLE);
+    this.panelToolbar.setEnabled(this.state !== State.LOADING);
+    this.panelRightToolbar.setEnabled(this.state !== State.LOADING);
+    this.dropTarget.setEnabled(this.state === State.IDLE);
+    this.loadButton.setEnabled(this.state === State.IDLE);
+    this.saveButton.setEnabled(this.state === State.IDLE && this.#hasActiveTrace());
     if (this.#viewMode.mode === 'VIEWING_TRACE') {
       this.#addSidebarIconToToolbar();
     }
   }
 
   async toggleRecording(): Promise<void> {
-    if (this.state === State.Idle) {
+    if (this.state === State.IDLE) {
       this.recordingPageReload = false;
       await this.startRecording();
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.TimelineStarted);
-    } else if (this.state === State.Recording) {
+    } else if (this.state === State.RECORDING) {
       await this.stopRecording();
     }
   }
 
   recordReload(): void {
-    if (this.state !== State.Idle) {
+    if (this.state !== State.IDLE) {
       return;
     }
     this.recordingPageReload = true;
@@ -1760,7 +1760,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     }
 
     this.#changeView({mode: 'STATUS_PANE_OVERLAY'});
-    this.setState(State.Recording);
+    this.setState(State.RECORDING);
     this.showRecordingStarted();
     if (this.statusPane) {
       this.statusPane.enableAndFocusButton();
@@ -1870,9 +1870,9 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     // be StopPending. Whereas if it was an existing trace they loaded via a
     // file, it will be State.Loading. This means we can tell the recording is
     // fresh by checking the state value.
-    const recordingIsFresh = this.state === State.StopPending;
+    const recordingIsFresh = this.state === State.STOP_PENDING;
 
-    this.setState(State.Idle);
+    this.setState(State.IDLE);
 
     if (collectedEvents.length === 0) {
       // 0 collected events indicates probably an invalid file was imported.
@@ -2002,7 +2002,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       event: Common.EventTarget
           .EventTargetEvent<{resourceTreeModel: SDK.ResourceTreeModel.ResourceTreeModel, loadTime: number}>):
       Promise<void> {
-    if (this.state !== State.Recording || !this.recordingPageReload || !this.controller ||
+    if (this.state !== State.RECORDING || !this.recordingPageReload || !this.controller ||
         this.controller.primaryPageTarget !== event.data.resourceTreeModel.target()) {
       return;
     }
@@ -2010,7 +2010,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     await new Promise(r => window.setTimeout(r, this.millisecondsToRecordAfterLoadEvent));
 
     // Check if we're still in the same recording session.
-    if (controller !== this.controller || this.state !== State.Recording) {
+    if (controller !== this.controller || this.state !== State.RECORDING) {
       return;
     }
     void this.stopRecording();
@@ -2156,12 +2156,12 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 }
 
 export const enum State {
-  Idle = 'Idle',
-  StartPending = 'StartPending',
-  Recording = 'Recording',
-  StopPending = 'StopPending',
-  Loading = 'Loading',
-  RecordingFailed = 'RecordingFailed',
+  IDLE = 'Idle',
+  START_PENDING = 'StartPending',
+  RECORDING = 'Recording',
+  STOP_PENDING = 'StopPending',
+  LOADING = 'Loading',
+  RECORDING_FAILED = 'RecordingFailed',
 }
 
 // Define row and header height, should be in sync with styles for timeline graphs.

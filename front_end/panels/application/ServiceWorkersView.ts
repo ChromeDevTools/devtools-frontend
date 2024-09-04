@@ -795,7 +795,7 @@ export class Section {
     void Common.Revealer.reveal(NetworkForward.UIFilter.UIRequestFilter.filters([
       {
         filterType: NetworkForward.UIFilter.FilterType.Is,
-        filterValue: NetworkForward.UIFilter.IsFilterType.ServiceWorkerIntercepted,
+        filterValue: NetworkForward.UIFilter.IsFilterType.SERVICE_WORKER_INTERCEPTED,
       },
     ]));
 
@@ -814,7 +814,7 @@ export class Section {
     }
     if (lastRequest) {
       const requestLocation = NetworkForward.UIRequestLocation.UIRequestLocation.tab(
-          lastRequest, NetworkForward.UIRequestLocation.UIRequestTabs.Timing, {clearFilter: false});
+          lastRequest, NetworkForward.UIRequestLocation.UIRequestTabs.TIMING, {clearFilter: false});
       void Common.Revealer.reveal(requestLocation);
     }
 

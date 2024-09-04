@@ -151,7 +151,7 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar implements DataDisp
 
     this.profileGroups = {};
     this.launcherView = new ProfileLauncherView(this);
-    this.launcherView.addEventListener(ProfileLauncherEvents.ProfileTypeSelected, this.onProfileTypeSelected, this);
+    this.launcherView.addEventListener(ProfileLauncherEvents.PROFILE_TYPE_SELECTED, this.onProfileTypeSelected, this);
 
     this.profileToView = [];
 
@@ -338,10 +338,10 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar implements DataDisp
       this.showProfile(event.data);
     }
 
-    profileType.addEventListener(ProfileTypeEvents.ViewUpdated, this.updateProfileTypeSpecificUI, this);
-    profileType.addEventListener(ProfileTypeEvents.AddProfileHeader, onAddProfileHeader, this);
-    profileType.addEventListener(ProfileTypeEvents.RemoveProfileHeader, onRemoveProfileHeader, this);
-    profileType.addEventListener(ProfileTypeEvents.ProfileComplete, profileComplete, this);
+    profileType.addEventListener(ProfileTypeEvents.VIEW_UPDATED, this.updateProfileTypeSpecificUI, this);
+    profileType.addEventListener(ProfileTypeEvents.ADD_PROFILE_HEADER, onAddProfileHeader, this);
+    profileType.addEventListener(ProfileTypeEvents.REMOVE_PROFILE_HEADER, onRemoveProfileHeader, this);
+    profileType.addEventListener(ProfileTypeEvents.PROFILE_COMPLETE, profileComplete, this);
 
     const profiles = profileType.getProfiles();
     for (let i = 0; i < profiles.length; i++) {

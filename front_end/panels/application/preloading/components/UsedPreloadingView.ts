@@ -127,12 +127,12 @@ export interface UsedPreloadingViewData {
 }
 
 export const enum UsedKind {
-  DowngradedPrerenderToPrefetchAndUsed = 'DowngradedPrerenderToPrefetchAndUsed',
-  PrefetchUsed = 'PrefetchUsed',
-  PrerenderUsed = 'PrerenderUsed',
-  PrefetchFailed = 'PrefetchFailed',
-  PrerenderFailed = 'PrerenderFailed',
-  NoPreloads = 'NoPreloads',
+  DOWNGRADED_PRERENDER_TO_PREFETCH_AND_USED = 'DowngradedPrerenderToPrefetchAndUsed',
+  PREFETCH_USED = 'PrefetchUsed',
+  PRERENDER_USED = 'PrerenderUsed',
+  PREFETCH_FAILED = 'PrefetchFailed',
+  PRERENDER_FAILED = 'PrerenderFailed',
+  NO_PRELOADS = 'NoPreloads',
 }
 
 // TODO(kenoss): Rename this class and file once https://crrev.com/c/4933567 landed.
@@ -194,60 +194,60 @@ export class UsedPreloadingView extends LegacyWrapper.LegacyWrapper.WrappableCom
     const prerender =
         forThisPage.filter(attempt => attempt.key.action === Protocol.Preload.SpeculationAction.Prerender)[0];
 
-    let kind = UsedKind.NoPreloads;
+    let kind = UsedKind.NO_PRELOADS;
     // Prerender -> prefetch downgrade case
     //
     // This code does not handle the case SpecRules designate these preloads rather than prerenderer automatically downgrade prerendering.
     // TODO(https://crbug.com/1410709): Improve this logic once automatic downgrade implemented.
     if (prerender?.status === SDK.PreloadingModel.PreloadingStatus.FAILURE &&
         prefetch?.status === SDK.PreloadingModel.PreloadingStatus.SUCCESS) {
-      kind = UsedKind.DowngradedPrerenderToPrefetchAndUsed;
+      kind = UsedKind.DOWNGRADED_PRERENDER_TO_PREFETCH_AND_USED;
     } else if (prefetch?.status === SDK.PreloadingModel.PreloadingStatus.SUCCESS) {
-      kind = UsedKind.PrefetchUsed;
+      kind = UsedKind.PREFETCH_USED;
     } else if (prerender?.status === SDK.PreloadingModel.PreloadingStatus.SUCCESS) {
-      kind = UsedKind.PrerenderUsed;
+      kind = UsedKind.PRERENDER_USED;
     } else if (prefetch?.status === SDK.PreloadingModel.PreloadingStatus.FAILURE) {
-      kind = UsedKind.PrefetchFailed;
+      kind = UsedKind.PREFETCH_FAILED;
     } else if (prerender?.status === SDK.PreloadingModel.PreloadingStatus.FAILURE) {
-      kind = UsedKind.PrerenderFailed;
+      kind = UsedKind.PRERENDER_FAILED;
     } else {
-      kind = UsedKind.NoPreloads;
+      kind = UsedKind.NO_PRELOADS;
     }
 
     let badge;
     let basicMessage;
     switch (kind) {
-      case UsedKind.DowngradedPrerenderToPrefetchAndUsed:
+      case UsedKind.DOWNGRADED_PRERENDER_TO_PREFETCH_AND_USED:
         badge = this.#badgeSuccess();
         basicMessage = LitHtml.html`${i18nString(UIStrings.downgradedPrefetchUsed)}`;
         break;
-      case UsedKind.PrefetchUsed:
+      case UsedKind.PREFETCH_USED:
         badge = this.#badgeSuccess();
         basicMessage = LitHtml.html`${i18nString(UIStrings.prefetchUsed)}`;
         break;
-      case UsedKind.PrerenderUsed:
+      case UsedKind.PRERENDER_USED:
         badge = this.#badgeSuccess();
         basicMessage = LitHtml.html`${i18nString(UIStrings.prerenderUsed)}`;
         break;
-      case UsedKind.PrefetchFailed:
+      case UsedKind.PREFETCH_FAILED:
         badge = this.#badgeFailure();
         basicMessage = LitHtml.html`${i18nString(UIStrings.prefetchFailed)}`;
         break;
-      case UsedKind.PrerenderFailed:
+      case UsedKind.PRERENDER_FAILED:
         badge = this.#badgeFailure();
         basicMessage = LitHtml.html`${i18nString(UIStrings.prerenderFailed)}`;
         break;
-      case UsedKind.NoPreloads:
+      case UsedKind.NO_PRELOADS:
         badge = this.#badgeNeutral(i18nString(UIStrings.badgeNoSpeculativeLoads));
         basicMessage = LitHtml.html`${i18nString(UIStrings.noPreloads)}`;
         break;
     }
 
     let maybeFailureReasonMessage;
-    if (kind === UsedKind.PrefetchFailed) {
+    if (kind === UsedKind.PREFETCH_FAILED) {
       assertNotNullOrUndefined(prefetch);
       maybeFailureReasonMessage = prefetchFailureReason(prefetch as SDK.PreloadingModel.PrefetchAttempt);
-    } else if (kind === UsedKind.PrerenderFailed || kind === UsedKind.DowngradedPrerenderToPrefetchAndUsed) {
+    } else if (kind === UsedKind.PRERENDER_FAILED || kind === UsedKind.DOWNGRADED_PRERENDER_TO_PREFETCH_AND_USED) {
       assertNotNullOrUndefined(prerender);
       maybeFailureReasonMessage = prerenderFailureReason(prerender as SDK.PreloadingModel.PrerenderAttempt);
     }
@@ -291,7 +291,7 @@ export class UsedPreloadingView extends LegacyWrapper.LegacyWrapper.WrappableCom
   }
 
   #maybeMismatchedSections(kind: UsedKind): LitHtml.LitTemplate {
-    if (kind !== UsedKind.NoPreloads || this.#data.previousAttempts.length === 0) {
+    if (kind !== UsedKind.NO_PRELOADS || this.#data.previousAttempts.length === 0) {
       return LitHtml.nothing;
     }
 

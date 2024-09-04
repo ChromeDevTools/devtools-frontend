@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 export enum FilterType {
+  /* eslint-disable @typescript-eslint/naming-convention -- Used by web_tests. */
   Domain = 'domain',
   HasResponseHeader = 'has-response-header',
   HasOverrides = 'has-overrides',
@@ -24,20 +25,21 @@ export enum FilterType {
   CookieValue = 'cookie-value',
   StatusCode = 'status-code',
   Url = 'url',
+  /* eslint-enable @typescript-eslint/naming-convention */
 }
 
 export const enum IsFilterType {
-  Running = 'running',
-  FromCache = 'from-cache',
-  ServiceWorkerIntercepted = 'service-worker-intercepted',
-  ServiceWorkerInitiated = 'service-worker-initiated',
+  RUNNING = 'running',
+  FROM_CACHE = 'from-cache',
+  SERVICE_WORKER_INTERCEPTED = 'service-worker-intercepted',
+  SERVICE_WORKER_INITIATED = 'service-worker-initiated',
 }
 
 export const enum MixedContentFilterValues {
-  All = 'all',
-  Displayed = 'displayed',
-  Blocked = 'blocked',
-  BlockOverridden = 'block-overridden',
+  ALL = 'all',
+  DISPLAYED = 'displayed',
+  BLOCKED = 'blocked',
+  BLOCK_OVERRIDDEN = 'block-overridden',
 }
 
 interface UIFilter {

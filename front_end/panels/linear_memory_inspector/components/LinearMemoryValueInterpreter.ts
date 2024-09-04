@@ -66,7 +66,7 @@ export class LinearMemoryValueInterpreter extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-linear-memory-inspector-interpreter`;
 
   readonly #shadow = this.attachShadow({mode: 'open'});
-  #endianness = Endianness.Little;
+  #endianness = Endianness.LITTLE;
   #buffer = new ArrayBuffer(0);
   #valueTypes: Set<ValueType> = new Set();
   #valueTypeModeConfig: Map<ValueType, ValueTypeMode> = new Map();
@@ -142,7 +142,7 @@ export class LinearMemoryValueInterpreter extends HTMLElement {
         jslog=${VisualLogging.dropDown('linear-memory-inspector.endianess').track({change: true})}
         style="border: none; background-color: transparent; cursor: pointer;"
         data-endianness="true" @change=${onEnumSettingChange}>
-        ${[Endianness.Little, Endianness.Big].map(endianness => {
+        ${[Endianness.LITTLE, Endianness.BIG].map(endianness => {
             return html`<option value=${endianness} .selected=${this.#endianness === endianness}
             jslog=${VisualLogging.item(Platform.StringUtilities.toKebabCase(endianness)).track({click: true})}>${
                 i18n.i18n.lockedString(endianness)}</option>`;

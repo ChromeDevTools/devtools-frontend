@@ -352,7 +352,7 @@ export class UISourceCodeFrame extends
       }
     }
 
-    this.dispatchEventToListeners(Events.ToolbarItemsChanged);
+    this.dispatchEventToListeners(Events.TOOLBAR_ITEMS_CHANGED);
   }
 
   private disposePlugins(): void {
@@ -574,11 +574,11 @@ function getIconDataForMessage(message: RowMessage): IconButton.Icon.IconData {
 }
 
 export const enum Events {
-  ToolbarItemsChanged = 'ToolbarItemsChanged',
+  TOOLBAR_ITEMS_CHANGED = 'ToolbarItemsChanged',
 }
 
 export type EventTypes = {
-  [Events.ToolbarItemsChanged]: void,
+  [Events.TOOLBAR_ITEMS_CHANGED]: void,
 };
 
 const pluginCompartment = new CodeMirror.Compartment();

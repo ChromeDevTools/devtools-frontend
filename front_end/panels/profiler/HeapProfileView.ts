@@ -144,13 +144,13 @@ export class HeapProfileView extends ProfileView implements UI.SearchableView.Se
     this.timelineOverview = new HeapTimelineOverview();
 
     if (Root.Runtime.experiments.isEnabled('sampling-heap-profiler-timeline')) {
-      this.timelineOverview.addEventListener(Events.IdsRangeChanged, this.onIdsRangeChanged.bind(this));
+      this.timelineOverview.addEventListener(Events.IDS_RANGE_CHANGED, this.onIdsRangeChanged.bind(this));
       this.timelineOverview.show(this.element, this.element.firstChild);
       this.timelineOverview.start();
 
-      this.profileType.addEventListener(SamplingHeapProfileType.Events.StatsUpdate, this.onStatsUpdate, this);
-      void this.profileType.once(ProfileEvents.ProfileComplete).then(() => {
-        this.profileType.removeEventListener(SamplingHeapProfileType.Events.StatsUpdate, this.onStatsUpdate, this);
+      this.profileType.addEventListener(SamplingHeapProfileType.Events.STATS_UPDATE, this.onStatsUpdate, this);
+      void this.profileType.once(ProfileEvents.PROFILE_COMPLETE).then(() => {
+        this.profileType.removeEventListener(SamplingHeapProfileType.Events.STATS_UPDATE, this.onStatsUpdate, this);
         this.timelineOverview.stop();
         this.timelineOverview.updateGrid();
       });
@@ -312,7 +312,7 @@ export class SamplingHeapProfileTypeBase extends
     if (wasClearedDuringRecording) {
       return;
     }
-    this.dispatchEventToListeners(ProfileEvents.ProfileComplete, recordedProfile);
+    this.dispatchEventToListeners(ProfileEvents.PROFILE_COMPLETE, recordedProfile);
   }
 
   override createProfileLoadedFromFile(title: string): ProfileHeader {
@@ -392,7 +392,7 @@ export class SamplingHeapProfileType extends SamplingHeapProfileTypeBase {
   override async stopSampling(): Promise<Protocol.HeapProfiler.SamplingHeapProfile> {
     window.clearTimeout(this.updateTimer);
     this.updateTimer = 0;
-    this.dispatchEventToListeners(SamplingHeapProfileType.Events.RecordingStopped);
+    this.dispatchEventToListeners(SamplingHeapProfileType.Events.RECORDING_STOPPED);
     const heapProfilerModel = this.obtainRecordingProfile();
     if (!heapProfilerModel) {
       throw new Error('No heap profiler model');
@@ -415,7 +415,7 @@ export class SamplingHeapProfileType extends SamplingHeapProfileTypeBase {
     if (!this.updateTimer) {
       return;
     }
-    this.dispatchEventToListeners(SamplingHeapProfileType.Events.StatsUpdate, profile);
+    this.dispatchEventToListeners(SamplingHeapProfileType.Events.STATS_UPDATE, profile);
     this.updateTimer = window.setTimeout(() => {
       void this.updateStats();
     }, this.updateIntervalMs);
@@ -427,13 +427,13 @@ export class SamplingHeapProfileType extends SamplingHeapProfileTypeBase {
 
 export namespace SamplingHeapProfileType {
   export const enum Events {
-    RecordingStopped = 'RecordingStopped',
-    StatsUpdate = 'StatsUpdate',
+    RECORDING_STOPPED = 'RecordingStopped',
+    STATS_UPDATE = 'StatsUpdate',
   }
 
   export type EventTypes = {
-    [Events.RecordingStopped]: void,
-    [Events.StatsUpdate]: Protocol.HeapProfiler.SamplingHeapProfile|null,
+    [Events.RECORDING_STOPPED]: void,
+    [Events.STATS_UPDATE]: Protocol.HeapProfiler.SamplingHeapProfile|null,
   };
 }
 

@@ -329,7 +329,7 @@ export class ConsoleView extends UI.Widget.VBox implements
     this.searchableViewInternal.setPlaceholder(i18nString(UIStrings.findStringInLogs));
     this.searchableViewInternal.setMinimalSearchQuerySize(0);
     this.sidebar = new ConsoleSidebar();
-    this.sidebar.addEventListener(Events.FilterSelected, this.onFilterChanged.bind(this));
+    this.sidebar.addEventListener(Events.FILTER_SELECTED, this.onFilterChanged.bind(this));
     this.isSidebarOpen = false;
     this.filter = new ConsoleViewFilter(this.onFilterChanged.bind(this));
 
@@ -532,7 +532,7 @@ export class ConsoleView extends UI.Widget.VBox implements
     this.prompt = new ConsolePrompt();
     this.prompt.show(this.promptElement);
     this.prompt.element.addEventListener('keydown', this.promptKeyDown.bind(this), true);
-    this.prompt.addEventListener(ConsolePromptEvents.TextChanged, this.promptTextChanged, this);
+    this.prompt.addEventListener(ConsolePromptEvents.TEXT_CHANGED, this.promptTextChanged, this);
 
     this.messagesElement.addEventListener('keydown', this.messagesKeyDown.bind(this), false);
     this.prompt.element.addEventListener('focusin', () => {

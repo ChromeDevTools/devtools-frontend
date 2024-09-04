@@ -379,7 +379,7 @@ export class ColorRenderer implements MatchRenderer<ColorMatch> {
     if (editable) {
       const swatchIcon =
           new ColorSwatchPopoverIcon(this.treeElement, this.treeElement.parentPane().swatchPopoverHelper(), swatch);
-      swatchIcon.addEventListener(ColorSwatchPopoverIconEvents.ColorChanged, ev => {
+      swatchIcon.addEventListener(ColorSwatchPopoverIconEvents.COLOR_CHANGED, ev => {
         const color = Common.Color.parse(ev.data);
         if (color) {
           swatch.setColorText(color);
@@ -642,23 +642,23 @@ export class LinkableNameRenderer implements MatchRenderer<LinkableNameMatch> {
   #getLinkData(match: LinkableNameMatch):
       {jslogContext: string, metric: null|Host.UserMetrics.SwatchType, ruleBlock: string, isDefined: boolean} {
     switch (match.properyName) {
-      case LinkableNameProperties.Animation:
-      case LinkableNameProperties.AnimationName:
+      case LinkableNameProperties.ANIMATION:
+      case LinkableNameProperties.ANIMATION_NAME:
         return {
           jslogContext: 'css-animation-name',
           metric: Host.UserMetrics.SwatchType.ANIMATION_NAME_LINK,
           ruleBlock: '@keyframes',
           isDefined: Boolean(this.#treeElement.matchedStyles().keyframes().find(kf => kf.name().text === match.text)),
         };
-      case LinkableNameProperties.FontPalette:
+      case LinkableNameProperties.FONT_PALETTE:
         return {
           jslogContext: 'css-font-palette',
           metric: null,
           ruleBlock: '@font-palette-values',
           isDefined: this.#treeElement.matchedStyles().fontPaletteValuesRule()?.name().text === match.text,
         };
-      case LinkableNameProperties.PositionTry:
-      case LinkableNameProperties.PositionTryFallbacks:
+      case LinkableNameProperties.POSITION_TRY:
+      case LinkableNameProperties.POSITION_TRY_FALLBACKS:
         return {
           jslogContext: 'css-position-try',
           metric: Host.UserMetrics.SwatchType.POSITION_TRY_LINK,
@@ -723,10 +723,10 @@ export class BezierRenderer implements MatchRenderer<BezierMatch> {
 export const enum ShadowPropertyType {
   X = 'x',
   Y = 'y',
-  Spread = 'spread',
-  Blur = 'blur',
-  Inset = 'inset',
-  Color = 'color',
+  SPREAD = 'spread',
+  BLUR = 'blur',
+  INSET = 'inset',
+  COLOR = 'color',
 }
 
 type ShadowProperty = {
@@ -738,7 +738,7 @@ type ShadowProperty = {
 
 type ShadowLengthProperty = ShadowProperty&{
   length: InlineEditor.CSSShadowEditor.CSSLength,
-  propertyType: Exclude<ShadowPropertyType, ShadowPropertyType.Inset|ShadowPropertyType.Color>,
+  propertyType: Exclude<ShadowPropertyType, ShadowPropertyType.INSET|ShadowPropertyType.COLOR>,
 };
 
 // The shadow model is an abstraction over the various shadow properties on the one hand and the order they were defined
@@ -756,10 +756,10 @@ export class ShadowModel implements InlineEditor.CSSShadowEditor.CSSShadowModel 
     this.#context = context;
   }
   isBoxShadow(): boolean {
-    return this.#shadowType === ShadowType.BoxShadow;
+    return this.#shadowType === ShadowType.BOX_SHADOW;
   }
   inset(): boolean {
-    return Boolean(this.#properties.find(property => property.propertyType === ShadowPropertyType.Inset));
+    return Boolean(this.#properties.find(property => property.propertyType === ShadowPropertyType.INSET));
   }
   #length(lengthType: ShadowLengthProperty['propertyType']): InlineEditor.CSSShadowEditor.CSSLength {
     return this.#properties.find((property): property is ShadowLengthProperty => property.propertyType === lengthType)
@@ -773,10 +773,10 @@ export class ShadowModel implements InlineEditor.CSSShadowEditor.CSSShadowModel 
     return this.#length(ShadowPropertyType.Y);
   }
   blurRadius(): InlineEditor.CSSShadowEditor.CSSLength {
-    return this.#length(ShadowPropertyType.Blur);
+    return this.#length(ShadowPropertyType.BLUR);
   }
   spreadRadius(): InlineEditor.CSSShadowEditor.CSSLength {
-    return this.#length(ShadowPropertyType.Spread);
+    return this.#length(ShadowPropertyType.SPREAD);
   }
 
   #needsExpansion(property: ShadowProperty): boolean {
@@ -810,7 +810,7 @@ export class ShadowModel implements InlineEditor.CSSShadowEditor.CSSShadowModel 
       return;
     }
 
-    const {property, index} = this.#expandOrGetProperty(ShadowPropertyType.Inset);
+    const {property, index} = this.#expandOrGetProperty(ShadowPropertyType.INSET);
     if (property) {
       // For `inset`, remove the entry if value is false, otherwise don't touch it.
       if (!inset) {
@@ -818,7 +818,7 @@ export class ShadowModel implements InlineEditor.CSSShadowEditor.CSSShadowModel 
       }
     } else {
       this.#properties.unshift(
-          {value: 'inset', source: null, expansionContext: null, propertyType: ShadowPropertyType.Inset});
+          {value: 'inset', source: null, expansionContext: null, propertyType: ShadowPropertyType.INSET});
     }
   }
   #setLength(value: InlineEditor.CSSShadowEditor.CSSLength, propertyType: ShadowLengthProperty['propertyType']): void {
@@ -834,7 +834,7 @@ export class ShadowModel implements InlineEditor.CSSShadowEditor.CSSShadowModel 
       const insertionIdx = 1 +
           this.#properties.findLastIndex(
               property => property.propertyType === ShadowPropertyType.Y ||
-                  (propertyType === ShadowPropertyType.Spread && property.propertyType === ShadowPropertyType.Blur));
+                  (propertyType === ShadowPropertyType.SPREAD && property.propertyType === ShadowPropertyType.BLUR));
       if (insertionIdx > 0 && insertionIdx < this.#properties.length &&
           this.#needsExpansion(this.#properties[insertionIdx]) &&
           this.#properties[insertionIdx - 1].source === this.#properties[insertionIdx].source) {
@@ -855,11 +855,11 @@ export class ShadowModel implements InlineEditor.CSSShadowEditor.CSSShadowModel 
     this.#setLength(value, ShadowPropertyType.Y);
   }
   setBlurRadius(value: InlineEditor.CSSShadowEditor.CSSLength): void {
-    this.#setLength(value, ShadowPropertyType.Blur);
+    this.#setLength(value, ShadowPropertyType.BLUR);
   }
   setSpreadRadius(value: InlineEditor.CSSShadowEditor.CSSLength): void {
     if (this.isBoxShadow()) {
-      this.#setLength(value, ShadowPropertyType.Spread);
+      this.#setLength(value, ShadowPropertyType.SPREAD);
     }
   }
 
@@ -895,7 +895,7 @@ export class ShadowRenderer implements MatchRenderer<ShadowMatch> {
   shadowModel(shadow: CodeMirror.SyntaxNode[], shadowType: ShadowType, context: RenderingContext): null|ShadowModel {
     const properties: Array<ShadowProperty|ShadowLengthProperty> = [];
     const missingLengths: ShadowLengthProperty['propertyType'][] =
-        [ShadowPropertyType.Spread, ShadowPropertyType.Blur, ShadowPropertyType.Y, ShadowPropertyType.X];
+        [ShadowPropertyType.SPREAD, ShadowPropertyType.BLUR, ShadowPropertyType.Y, ShadowPropertyType.X];
     let stillAcceptsLengths = true;
 
     // We're parsing the individual shadow properties into an array here retaining the ordering. This also looks through
@@ -919,7 +919,7 @@ export class ShadowRenderer implements MatchRenderer<ShadowMatch> {
         }
         const propertyType = missingLengths.pop();
         if (propertyType === undefined ||
-            (propertyType === ShadowPropertyType.Spread && shadowType === ShadowType.TextShadow)) {
+            (propertyType === ShadowPropertyType.SPREAD && shadowType === ShadowType.TEXT_SHADOW)) {
           return null;
         }
         const length = InlineEditor.CSSShadowEditor.CSSLength.parse(text);
@@ -951,16 +951,16 @@ export class ShadowRenderer implements MatchRenderer<ShadowMatch> {
         // property, we will not allow any future lengths.
         stillAcceptsLengths = missingLengths.length === 4;
         if (value.name === 'ValueName' && text.toLowerCase() === 'inset') {
-          if (shadowType === ShadowType.TextShadow ||
-              properties.find(({propertyType}) => propertyType === ShadowPropertyType.Inset)) {
+          if (shadowType === ShadowType.TEXT_SHADOW ||
+              properties.find(({propertyType}) => propertyType === ShadowPropertyType.INSET)) {
             return null;
           }
-          properties.push({value, source, propertyType: ShadowPropertyType.Inset, expansionContext});
+          properties.push({value, source, propertyType: ShadowPropertyType.INSET, expansionContext});
         } else if (match instanceof ColorMatch || match instanceof ColorMixMatch) {
-          if (properties.find(({propertyType}) => propertyType === ShadowPropertyType.Color)) {
+          if (properties.find(({propertyType}) => propertyType === ShadowPropertyType.COLOR)) {
             return null;
           }
-          properties.push({value, source, propertyType: ShadowPropertyType.Color, expansionContext});
+          properties.push({value, source, propertyType: ShadowPropertyType.COLOR, expansionContext});
         } else if (value.name !== 'Comment' && value.name !== 'Important') {
           return null;
         }
@@ -999,7 +999,7 @@ export class ShadowRenderer implements MatchRenderer<ShadowMatch> {
       model.renderContents(swatch);
       const popoverHelper = new ShadowSwatchPopoverHelper(
           this.#treeElement, this.#treeElement.parentPane().swatchPopoverHelper(), swatch);
-      popoverHelper.addEventListener(ShadowEvents.ShadowChanged, () => {
+      popoverHelper.addEventListener(ShadowEvents.SHADOW_CHANGED, () => {
         model.renderContents(swatch);
         void this.#treeElement.applyStyleText(this.#treeElement.renderedPropertyText(), false);
       });

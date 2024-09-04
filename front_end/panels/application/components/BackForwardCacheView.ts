@@ -144,8 +144,8 @@ const str_ = i18n.i18n.registerUIStrings('panels/application/components/BackForw
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 const enum ScreenStatusType {
-  Running = 'Running',
-  Result = 'Result',
+  RUNNING = 'Running',
+  RESULT = 'Result',
 }
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
@@ -153,7 +153,7 @@ const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 export class BackForwardCacheView extends LegacyWrapper.LegacyWrapper.WrappableComponent {
   static readonly litTagName = LitHtml.literal`devtools-resources-back-forward-cache-view`;
   readonly #shadow = this.attachShadow({mode: 'open'});
-  #screenStatus = ScreenStatusType.Result;
+  #screenStatus = ScreenStatusType.RESULT;
   #nextNodeId = 0;
   #historyIndex = 0;
 
@@ -198,7 +198,7 @@ export class BackForwardCacheView extends LegacyWrapper.LegacyWrapper.WrappableC
     SDK.TargetManager.TargetManager.instance().removeModelListener(
         SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.FrameNavigated,
         this.#renderBackForwardCacheTestResult, this);
-    this.#screenStatus = ScreenStatusType.Result;
+    this.#screenStatus = ScreenStatusType.RESULT;
     void this.render();
   }
 
@@ -240,7 +240,7 @@ export class BackForwardCacheView extends LegacyWrapper.LegacyWrapper.WrappableC
       return;
     }
     this.#historyIndex = historyResults.currentIndex;
-    this.#screenStatus = ScreenStatusType.Running;
+    this.#screenStatus = ScreenStatusType.RUNNING;
     void this.render();
 
     // This event listener is removed inside of onNavigatedAway().
@@ -269,7 +269,7 @@ export class BackForwardCacheView extends LegacyWrapper.LegacyWrapper.WrappableC
       `;
       // clang-format on
     }
-    const isTestRunning = (this.#screenStatus === ScreenStatusType.Running);
+    const isTestRunning = (this.#screenStatus === ScreenStatusType.RUNNING);
     // Prevent running BFCache test on the DevTools window itself via DevTools on DevTools
     const isTestingForbidden = Common.ParsedURL.schemeIs(frame.url, 'devtools:');
     // clang-format off

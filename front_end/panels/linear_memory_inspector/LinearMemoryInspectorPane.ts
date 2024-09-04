@@ -83,16 +83,16 @@ export class LinearMemoryInspectorPane extends Common.ObjectWrapper.eventMixin<E
 
   #tabClosed(event: Common.EventTarget.EventTargetEvent<UI.TabbedPane.EventData>): void {
     const {tabId} = event.data;
-    this.dispatchEventToListeners(Events.ViewClosed, tabId);
+    this.dispatchEventToListeners(Events.VIEW_CLOSED, tabId);
   }
 }
 
 export const enum Events {
-  ViewClosed = 'ViewClosed',
+  VIEW_CLOSED = 'ViewClosed',
 }
 
 export type EventTypes = {
-  [Events.ViewClosed]: string,
+  [Events.VIEW_CLOSED]: string,
 };
 
 class LinearMemoryInspectorView extends UI.Widget.VBox {

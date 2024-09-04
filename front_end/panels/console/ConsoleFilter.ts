@@ -148,7 +148,9 @@ export class ConsoleFilter {
 }
 
 export enum FilterType {
+  /* eslint-disable @typescript-eslint/naming-convention -- Used by web_tests. */
   Context = 'context',
   Source = 'source',
   Url = 'url',
+  /* eslint-enable @typescript-eslint/naming-convention */
 }

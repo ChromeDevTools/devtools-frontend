@@ -102,7 +102,7 @@ export class GraphView extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
    * Add a Node-to-Node connection to the graph.
    */
   addNodeToNodeConnection(edgeData: NodesConnectionData): void {
-    const edge = new EdgeView(edgeData, EdgeTypes.NodeToNode);
+    const edge = new EdgeView(edgeData, EdgeTypes.NODE_TO_NODE);
     this.addEdge(edge);
   }
 
@@ -113,7 +113,7 @@ export class GraphView extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
     if (edgeData.destinationId) {
       // Remove a single edge if destinationId is specified.
       const edgePortIds =
-          generateEdgePortIdsByData((edgeData as NodesDisconnectionDataWithDestination), EdgeTypes.NodeToNode);
+          generateEdgePortIdsByData((edgeData as NodesDisconnectionDataWithDestination), EdgeTypes.NODE_TO_NODE);
 
       if (!edgePortIds) {
         throw new Error('Unable to generate edge port IDs');
@@ -131,7 +131,7 @@ export class GraphView extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
    * Add a Node-to-Param connection to the graph.
    */
   addNodeToParamConnection(edgeData: NodeParamConnectionData): void {
-    const edge = new EdgeView(edgeData, EdgeTypes.NodeToParam);
+    const edge = new EdgeView(edgeData, EdgeTypes.NODE_TO_PARAM);
     this.addEdge(edge);
   }
 
@@ -139,7 +139,7 @@ export class GraphView extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
    * Remove a Node-to-Param connection from the graph.
    */
   removeNodeToParamConnection(edgeData: NodeParamDisconnectionData): void {
-    const edgePortIds = generateEdgePortIdsByData(edgeData, EdgeTypes.NodeToParam);
+    const edgePortIds = generateEdgePortIdsByData(edgeData, EdgeTypes.NODE_TO_PARAM);
     if (!edgePortIds) {
       throw new Error('Unable to generate edge port IDs');
     }
@@ -199,14 +199,14 @@ export class GraphView extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   }
 
   private notifyShouldRedraw(): void {
-    this.dispatchEventToListeners(Events.ShouldRedraw, this);
+    this.dispatchEventToListeners(Events.SHOULD_REDRAW, this);
   }
 }
 
 export const enum Events {
-  ShouldRedraw = 'ShouldRedraw',
+  SHOULD_REDRAW = 'ShouldRedraw',
 }
 
 export type EventTypes = {
-  [Events.ShouldRedraw]: GraphView,
+  [Events.SHOULD_REDRAW]: GraphView,
 };

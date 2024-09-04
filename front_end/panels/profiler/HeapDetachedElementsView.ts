@@ -127,7 +127,7 @@ export class DetachedElementsProfileType extends
     const profile: DetachedElementsProfileHeader = new DetachedElementsProfileHeader(heapProfilerModel, this, data);
     this.addProfile(profile);
 
-    this.dispatchEventToListeners(ProfileTypeEvents.ProfileComplete, profile);
+    this.dispatchEventToListeners(ProfileTypeEvents.PROFILE_COMPLETE, profile);
   }
 
   override get treeItemTitle(): Common.UIString.LocalizedString {
@@ -144,15 +144,15 @@ export class DetachedElementsProfileType extends
 
 export namespace DetachedElementsProfileType {
   export const enum Events {
-    RecordingStopped = 'RecordingStopped',
-    StatsUpdate = 'StatsUpdate',
-    DetachedElementsObtained = 'DetachedElementsObtained',
+    RECORDING_STOPPED = 'RecordingStopped',
+    STATS_UPDATE = 'StatsUpdate',
+    DETACHED_ELEMENTS_OBTAINED = 'DetachedElementsObtained',
   }
 
   export type EventTypes = {
-    [Events.RecordingStopped]: void,
-    [Events.StatsUpdate]: Protocol.HeapProfiler.SamplingHeapProfile|null,
-    [Events.DetachedElementsObtained]: Protocol.DOM.DetachedElementInfo[]|null,
+    [Events.RECORDING_STOPPED]: void,
+    [Events.STATS_UPDATE]: Protocol.HeapProfiler.SamplingHeapProfile|null,
+    [Events.DETACHED_ELEMENTS_OBTAINED]: Protocol.DOM.DetachedElementInfo[]|null,
   };
 }
 

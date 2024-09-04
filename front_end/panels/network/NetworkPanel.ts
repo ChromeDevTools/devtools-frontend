@@ -731,7 +731,7 @@ export class NetworkPanel extends UI.Panel.Panel implements
                     .showView('network')
                     .then(this.networkLogView.resetFilter.bind(this.networkLogView))
                     .then(this.selectAndActivateRequest.bind(
-                        this, request.request, NetworkForward.UIRequestLocation.UIRequestTabs.HeadersComponent,
+                        this, request.request, NetworkForward.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT,
                         /* FilterOptions= */ undefined)),
           {jslogContext: 'timeline.reveal-in-network'});
     };

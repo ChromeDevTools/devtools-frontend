@@ -1,26 +1,27 @@
 // Copyright 2024 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
 import type * as TraceEngine from '../../../models/trace/trace.js';
 import * as ThemeSupport from '../../../ui/legacy/theme_support/theme_support.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 export enum NetworkCategory {
-  Doc = 'Doc',
+  DOC = 'Doc',
   CSS = 'CSS',
   JS = 'JS',
-  Font = 'Font',
-  Img = 'Img',
-  Media = 'Media',
-  Wasm = 'Wasm',
-  Other = 'Other',
+  FONT = 'Font',
+  IMG = 'Img',
+  MEDIA = 'Media',
+  WASM = 'Wasm',
+  OTHER = 'Other',
 }
 
 function syntheticNetworkRequestCategory(request: TraceEngine.Types.TraceEvents.SyntheticNetworkRequest):
     NetworkCategory {
   switch (request.args.data.mimeType) {
     case 'text/html':
-      return NetworkCategory.Doc;
+      return NetworkCategory.DOC;
     case 'application/javascript':
     case 'application/x-javascript':
     case 'text/javascript':
@@ -33,7 +34,7 @@ function syntheticNetworkRequestCategory(request: TraceEngine.Types.TraceEvents.
     case 'image/svg+xml':
     case 'image/webp':
     case 'image/x-icon':
-      return NetworkCategory.Img;
+      return NetworkCategory.IMG;
     case 'audio/aac':
     case 'audio/midi':
     case 'audio/x-midi':
@@ -41,23 +42,23 @@ function syntheticNetworkRequestCategory(request: TraceEngine.Types.TraceEvents.
     case 'audio/ogg':
     case 'audio/wav':
     case 'audio/webm':
-      return NetworkCategory.Media;
+      return NetworkCategory.MEDIA;
     case 'font/opentype':
     case 'font/woff2':
     case 'font/ttf':
     case 'application/font-woff':
-      return NetworkCategory.Font;
+      return NetworkCategory.FONT;
     case 'application/wasm':
-      return NetworkCategory.Wasm;
+      return NetworkCategory.WASM;
     default:
-      return NetworkCategory.Other;
+      return NetworkCategory.OTHER;
   }
 }
 
 export function colorForNetworkCategory(category: NetworkCategory): string {
   let cssVarName = '--app-color-system';
   switch (category) {
-    case NetworkCategory.Doc:
+    case NetworkCategory.DOC:
       cssVarName = '--app-color-doc';
       break;
     case NetworkCategory.JS:
@@ -66,19 +67,19 @@ export function colorForNetworkCategory(category: NetworkCategory): string {
     case NetworkCategory.CSS:
       cssVarName = '--app-color-css';
       break;
-    case NetworkCategory.Img:
+    case NetworkCategory.IMG:
       cssVarName = '--app-color-image';
       break;
-    case NetworkCategory.Media:
+    case NetworkCategory.MEDIA:
       cssVarName = '--app-color-media';
       break;
-    case NetworkCategory.Font:
+    case NetworkCategory.FONT:
       cssVarName = '--app-color-font';
       break;
-    case NetworkCategory.Wasm:
+    case NetworkCategory.WASM:
       cssVarName = '--app-color-wasm';
       break;
-    case NetworkCategory.Other:
+    case NetworkCategory.OTHER:
     default:
       cssVarName = '--app-color-system';
       break;

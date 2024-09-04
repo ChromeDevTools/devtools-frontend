@@ -17,7 +17,7 @@ export class PuppeteerConverter implements Converter {
   }
 
   getId(): string {
-    return Models.ConverterIds.ConverterIds.Puppeteer;
+    return Models.ConverterIds.ConverterIds.PUPPETEER;
   }
 
   createExtension(): PuppeteerReplay.PuppeteerStringifyExtension {

@@ -29,7 +29,7 @@ describeWithEnvironment('ReplaySection', () => {
   }
 
   afterEach(() => {
-    settings.speed = Models.RecordingPlayer.PlayRecordingSpeed.Normal;
+    settings.speed = Models.RecordingPlayer.PlayRecordingSpeed.NORMAL;
   });
 
   it('should change the button value when another option is selected in select menu', async () => {
@@ -39,18 +39,18 @@ describeWithEnvironment('ReplaySection', () => {
     );
     assert.strictEqual(
         selectButton?.value,
-        Models.RecordingPlayer.PlayRecordingSpeed.Normal,
+        Models.RecordingPlayer.PlayRecordingSpeed.NORMAL,
     );
 
     selectButton?.dispatchEvent(
         new RecorderComponents.SelectButton.SelectMenuSelectedEvent(
-            Models.RecordingPlayer.PlayRecordingSpeed.Slow,
+            Models.RecordingPlayer.PlayRecordingSpeed.SLOW,
             ),
     );
     await coordinator.done();
     assert.strictEqual(
         selectButton?.value,
-        Models.RecordingPlayer.PlayRecordingSpeed.Slow,
+        Models.RecordingPlayer.PlayRecordingSpeed.SLOW,
     );
   });
 
@@ -67,7 +67,7 @@ describeWithEnvironment('ReplaySection', () => {
     );
     selectButton?.dispatchEvent(
         new RecorderComponents.SelectButton.SelectMenuSelectedEvent(
-            Models.RecordingPlayer.PlayRecordingSpeed.Slow,
+            Models.RecordingPlayer.PlayRecordingSpeed.SLOW,
             ),
     );
     selectButton?.dispatchEvent(
@@ -77,7 +77,7 @@ describeWithEnvironment('ReplaySection', () => {
     const event = await onceClicked;
     assert.deepEqual(
         event.speed,
-        Models.RecordingPlayer.PlayRecordingSpeed.Slow,
+        Models.RecordingPlayer.PlayRecordingSpeed.SLOW,
     );
   });
 
@@ -89,18 +89,18 @@ describeWithEnvironment('ReplaySection', () => {
 
     selectButton?.dispatchEvent(
         new RecorderComponents.SelectButton.SelectMenuSelectedEvent(
-            Models.RecordingPlayer.PlayRecordingSpeed.Slow,
+            Models.RecordingPlayer.PlayRecordingSpeed.SLOW,
             ),
     );
 
     assert.strictEqual(
         settings.speed,
-        Models.RecordingPlayer.PlayRecordingSpeed.Slow,
+        Models.RecordingPlayer.PlayRecordingSpeed.SLOW,
     );
   });
 
   it('should load the saved button on initial render', async () => {
-    settings.speed = Models.RecordingPlayer.PlayRecordingSpeed.Slow;
+    settings.speed = Models.RecordingPlayer.PlayRecordingSpeed.SLOW;
 
     const component = await createReplaySection();
 
@@ -109,7 +109,7 @@ describeWithEnvironment('ReplaySection', () => {
     );
     assert.strictEqual(
         selectButton?.value,
-        Models.RecordingPlayer.PlayRecordingSpeed.Slow,
+        Models.RecordingPlayer.PlayRecordingSpeed.SLOW,
     );
   });
 });

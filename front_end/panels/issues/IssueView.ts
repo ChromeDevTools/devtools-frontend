@@ -94,11 +94,11 @@ class AffectedRequestsView extends AffectedResourcesView {
       element.classList.add('affected-resource-request');
       const category = this.issue.getCategory();
       const tab =
-          issueTypeToNetworkHeaderMap.get(category) || NetworkForward.UIRequestLocation.UIRequestTabs.HeadersComponent;
+          issueTypeToNetworkHeaderMap.get(category) || NetworkForward.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT;
       element.appendChild(this.createRequestCell(affectedRequest, {
         networkTab: tab,
         additionalOnClickAction() {
-          Host.userMetrics.issuesPanelResourceOpened(category, AffectedItem.Request);
+          Host.userMetrics.issuesPanelResourceOpened(category, AffectedItem.REQUEST);
         },
       }));
       this.affectedResources.appendChild(element);
@@ -133,15 +133,15 @@ const issueTypeToNetworkHeaderMap =
     new Map<IssuesManager.Issue.IssueCategory, NetworkForward.UIRequestLocation.UIRequestTabs>([
       [
         IssuesManager.Issue.IssueCategory.COOKIE,
-        NetworkForward.UIRequestLocation.UIRequestTabs.Cookies,
+        NetworkForward.UIRequestLocation.UIRequestTabs.COOKIES,
       ],
       [
         IssuesManager.Issue.IssueCategory.CROSS_ORIGIN_EMBEDDER_POLICY,
-        NetworkForward.UIRequestLocation.UIRequestTabs.HeadersComponent,
+        NetworkForward.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT,
       ],
       [
         IssuesManager.Issue.IssueCategory.MIXED_CONTENT,
-        NetworkForward.UIRequestLocation.UIRequestTabs.HeadersComponent,
+        NetworkForward.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT,
       ],
     ]);
 
@@ -173,12 +173,12 @@ class AffectedMixedContentView extends AffectedResourcesView {
 
     if (mixedContent.request) {
       const networkTab = issueTypeToNetworkHeaderMap.get(this.issue.getCategory()) ||
-          NetworkForward.UIRequestLocation.UIRequestTabs.HeadersComponent;
+          NetworkForward.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT;
       element.appendChild(this.createRequestCell(mixedContent.request, {
         networkTab,
         additionalOnClickAction() {
           Host.userMetrics.issuesPanelResourceOpened(
-              IssuesManager.Issue.IssueCategory.MIXED_CONTENT, AffectedItem.Request);
+              IssuesManager.Issue.IssueCategory.MIXED_CONTENT, AffectedItem.REQUEST);
         },
       }));
     } else {

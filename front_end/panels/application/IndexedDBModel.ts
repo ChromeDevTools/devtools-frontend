@@ -478,11 +478,13 @@ export class IndexedDBModel extends SDK.SDKModel.SDKModel<EventTypes> implements
 SDK.SDKModel.SDKModel.register(IndexedDBModel, {capabilities: SDK.Target.Capability.STORAGE, autostart: false});
 
 export enum Events {
+  /* eslint-disable @typescript-eslint/naming-convention -- Used by web_tests. */
   DatabaseAdded = 'DatabaseAdded',
   DatabaseRemoved = 'DatabaseRemoved',
   DatabaseLoaded = 'DatabaseLoaded',
   DatabaseNamesRefreshed = 'DatabaseNamesRefreshed',
   IndexedDBContentUpdated = 'IndexedDBContentUpdated',
+  /* eslint-enable @typescript-eslint/naming-convention */
 }
 
 export type EventTypes = {

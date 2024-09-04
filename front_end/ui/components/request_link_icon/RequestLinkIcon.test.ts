@@ -297,7 +297,7 @@ describeWithEnvironment('RequestLinkIcon', () => {
 
       assert.isTrue(revealOverride.called);
       assert.isTrue(revealOverride.calledOnceWith(
-          sinon.match({tab: NetworkForward.UIRequestLocation.UIRequestTabs.HeadersComponent})));
+          sinon.match({tab: NetworkForward.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT})));
     });
   });
 });

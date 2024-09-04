@@ -74,11 +74,11 @@ interface WrappedEntry {
 
 export namespace SharedStorageItemsDispatcher {
   export const enum Events {
-    FilteredItemsCleared = 'FilteredItemsCleared',
-    ItemDeleted = 'ItemDeleted',
-    ItemEdited = 'ItemEdited',
-    ItemsCleared = 'ItemsCleared',
-    ItemsRefreshed = 'ItemsRefreshed',
+    FILTERED_ITEMS_CLEARED = 'FilteredItemsCleared',
+    ITEM_DELETED = 'ItemDeleted',
+    ITEM_EDITED = 'ItemEdited',
+    ITEMS_CLEARED = 'ItemsCleared',
+    ITEMS_REFRESHED = 'ItemsRefreshed',
   }
 
   export interface ItemDeletedEvent {
@@ -92,11 +92,11 @@ export namespace SharedStorageItemsDispatcher {
   }
 
   export type EventTypes = {
-    [Events.FilteredItemsCleared]: void,
-    [Events.ItemDeleted]: ItemDeletedEvent,
-    [Events.ItemEdited]: ItemEditedEvent,
-    [Events.ItemsCleared]: void,
-    [Events.ItemsRefreshed]: void,
+    [Events.FILTERED_ITEMS_CLEARED]: void,
+    [Events.ITEM_DELETED]: ItemDeletedEvent,
+    [Events.ITEM_EDITED]: ItemEditedEvent,
+    [Events.ITEMS_CLEARED]: void,
+    [Events.ITEMS_REFRESHED]: void,
   };
 }
 
@@ -175,7 +175,7 @@ export class SharedStorageItemsView extends StorageItemsView {
     this.#sharedStorage = sharedStorage;
     this.#eventListeners = [
       this.#sharedStorage.addEventListener(
-          SharedStorageForOrigin.Events.SharedStorageChanged, this.#sharedStorageChanged, this),
+          SharedStorageForOrigin.Events.SHARED_STORAGE_CHANGED, this.#sharedStorageChanged, this),
     ];
 
     this.sharedStorageItemsDispatcher =
@@ -209,7 +209,7 @@ export class SharedStorageItemsView extends StorageItemsView {
     }
     await this.#metadataView.getComponent().render();
     await this.updateEntriesOnly();
-    this.sharedStorageItemsDispatcher.dispatchEventToListeners(SharedStorageItemsDispatcher.Events.ItemsRefreshed);
+    this.sharedStorageItemsDispatcher.dispatchEventToListeners(SharedStorageItemsDispatcher.Events.ITEMS_REFRESHED);
   }
 
   override async deleteSelectedItem(): Promise<void> {
@@ -224,7 +224,7 @@ export class SharedStorageItemsView extends StorageItemsView {
     if (!this.hasFilter()) {
       await this.#sharedStorage.clear();
       await this.refreshItems();
-      this.sharedStorageItemsDispatcher.dispatchEventToListeners(SharedStorageItemsDispatcher.Events.ItemsCleared);
+      this.sharedStorageItemsDispatcher.dispatchEventToListeners(SharedStorageItemsDispatcher.Events.ITEMS_CLEARED);
       UI.ARIAUtils.alert(i18nString(UIStrings.sharedStorageItemsCleared));
       return;
     }
@@ -235,7 +235,7 @@ export class SharedStorageItemsView extends StorageItemsView {
 
     await this.refreshItems();
     this.sharedStorageItemsDispatcher.dispatchEventToListeners(
-        SharedStorageItemsDispatcher.Events.FilteredItemsCleared);
+        SharedStorageItemsDispatcher.Events.FILTERED_ITEMS_CLEARED);
     UI.ARIAUtils.alert(i18nString(UIStrings.sharedStorageFilteredItemsCleared));
   }
 
@@ -258,7 +258,7 @@ export class SharedStorageItemsView extends StorageItemsView {
 
     await this.refreshItems();
     this.sharedStorageItemsDispatcher.dispatchEventToListeners(
-        SharedStorageItemsDispatcher.Events.ItemEdited,
+        SharedStorageItemsDispatcher.Events.ITEM_EDITED,
         {columnIdentifier, oldText, newText} as SharedStorageItemsDispatcher.ItemEditedEvent);
     UI.ARIAUtils.alert(i18nString(UIStrings.sharedStorageItemEdited));
   }
@@ -295,7 +295,7 @@ export class SharedStorageItemsView extends StorageItemsView {
     await this.#sharedStorage.deleteEntry(key);
     await this.refreshItems();
     this.sharedStorageItemsDispatcher.dispatchEventToListeners(
-        SharedStorageItemsDispatcher.Events.ItemDeleted, {key} as SharedStorageItemsDispatcher.ItemDeletedEvent);
+        SharedStorageItemsDispatcher.Events.ITEM_DELETED, {key} as SharedStorageItemsDispatcher.ItemDeletedEvent);
     UI.ARIAUtils.alert(i18nString(UIStrings.sharedStorageItemDeleted));
   }
 

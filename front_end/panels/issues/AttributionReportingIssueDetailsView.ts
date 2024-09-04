@@ -158,7 +158,7 @@ export class AttributionReportingIssueDetailsView extends AffectedResourcesView 
     const opts = {
       additionalOnClickAction(): void {
         Host.userMetrics.issuesPanelResourceOpened(
-            IssuesManager.Issue.IssueCategory.ATTRIBUTION_REPORTING, AffectedItem.Request);
+            IssuesManager.Issue.IssueCategory.ATTRIBUTION_REPORTING, AffectedItem.REQUEST);
       },
     };
     parent.appendChild(this.createRequestCell(request, opts));

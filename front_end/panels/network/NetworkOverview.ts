@@ -201,7 +201,7 @@ export class NetworkOverview extends PerfUI.TimelineOverviewPane.TimelineOvervie
       const timeRanges = RequestTimingView.calculateRequestTimeRanges(request, this.calculator().minimumBoundary());
       for (let j = 0; j < timeRanges.length; ++j) {
         const type = timeRanges[j].name;
-        if (band !== -1 || type === RequestTimeRangeNames.Total) {
+        if (band !== -1 || type === RequestTimeRangeNames.TOTAL) {
           addLine(type, y, timeRanges[j].start * 1000, timeRanges[j].end * 1000);
         }
       }
@@ -211,19 +211,19 @@ export class NetworkOverview extends PerfUI.TimelineOverviewPane.TimelineOvervie
     context.save();
     context.scale(window.devicePixelRatio, window.devicePixelRatio);
     context.lineWidth = 2;
-    drawLines(RequestTimeRangeNames.Total);
-    drawLines(RequestTimeRangeNames.Blocking);
-    drawLines(RequestTimeRangeNames.Connecting);
-    drawLines(RequestTimeRangeNames.ServiceWorker);
-    drawLines(RequestTimeRangeNames.ServiceWorkerPreparation);
-    drawLines(RequestTimeRangeNames.ServiceWorkerRespondWith);
-    drawLines(RequestTimeRangeNames.Push);
-    drawLines(RequestTimeRangeNames.Proxy);
+    drawLines(RequestTimeRangeNames.TOTAL);
+    drawLines(RequestTimeRangeNames.BLOCKING);
+    drawLines(RequestTimeRangeNames.CONNECTING);
+    drawLines(RequestTimeRangeNames.SERVICE_WORKER);
+    drawLines(RequestTimeRangeNames.SERVICE_WORKER_PREPARATION);
+    drawLines(RequestTimeRangeNames.SERVICE_WORKER_RESPOND_WITH);
+    drawLines(RequestTimeRangeNames.PUSH);
+    drawLines(RequestTimeRangeNames.PROXY);
     drawLines(RequestTimeRangeNames.DNS);
     drawLines(RequestTimeRangeNames.SSL);
-    drawLines(RequestTimeRangeNames.Sending);
-    drawLines(RequestTimeRangeNames.Waiting);
-    drawLines(RequestTimeRangeNames.Receiving);
+    drawLines(RequestTimeRangeNames.SENDING);
+    drawLines(RequestTimeRangeNames.WAITING);
+    drawLines(RequestTimeRangeNames.RECEIVING);
 
     if (this.highlightedRequest) {
       const size = 5;
@@ -246,7 +246,7 @@ export class NetworkOverview extends PerfUI.TimelineOverviewPane.TimelineOvervie
 
       for (let j = 0; j < timeRanges.length; ++j) {
         const type = timeRanges[j].name;
-        if (band !== -1 || type === RequestTimeRangeNames.Total) {
+        if (band !== -1 || type === RequestTimeRangeNames.TOTAL) {
           context.beginPath();
           context.strokeStyle =
               ThemeSupport.ThemeSupport.instance().getComputedValue(RequestTimeRangeNameToColor[type]);
@@ -299,20 +299,20 @@ export class NetworkOverview extends PerfUI.TimelineOverviewPane.TimelineOvervie
 }
 
 export const RequestTimeRangeNameToColor = {
-  [RequestTimeRangeNames.Total]: '--network-overview-total',
-  [RequestTimeRangeNames.Blocking]: '--network-overview-blocking',
-  [RequestTimeRangeNames.Connecting]: '--network-overview-connecting',
-  [RequestTimeRangeNames.ServiceWorker]: '--network-overview-service-worker',
-  [RequestTimeRangeNames.ServiceWorkerPreparation]: '--network-overview-service-worker',
-  [RequestTimeRangeNames.ServiceWorkerRespondWith]: '--network-overview-service-worker-respond-with',
-  [RequestTimeRangeNames.Push]: '--network-overview-push',
-  [RequestTimeRangeNames.Proxy]: '--override-network-overview-proxy',
+  [RequestTimeRangeNames.TOTAL]: '--network-overview-total',
+  [RequestTimeRangeNames.BLOCKING]: '--network-overview-blocking',
+  [RequestTimeRangeNames.CONNECTING]: '--network-overview-connecting',
+  [RequestTimeRangeNames.SERVICE_WORKER]: '--network-overview-service-worker',
+  [RequestTimeRangeNames.SERVICE_WORKER_PREPARATION]: '--network-overview-service-worker',
+  [RequestTimeRangeNames.SERVICE_WORKER_RESPOND_WITH]: '--network-overview-service-worker-respond-with',
+  [RequestTimeRangeNames.PUSH]: '--network-overview-push',
+  [RequestTimeRangeNames.PROXY]: '--override-network-overview-proxy',
   [RequestTimeRangeNames.DNS]: '--network-overview-dns',
   [RequestTimeRangeNames.SSL]: '--network-overview-ssl',
-  [RequestTimeRangeNames.Sending]: '--override-network-overview-sending',
-  [RequestTimeRangeNames.Waiting]: '--network-overview-waiting',
-  [RequestTimeRangeNames.Receiving]: '--network-overview-receiving',
-  [RequestTimeRangeNames.Queueing]: '--network-overview-queueing',
+  [RequestTimeRangeNames.SENDING]: '--override-network-overview-sending',
+  [RequestTimeRangeNames.WAITING]: '--network-overview-waiting',
+  [RequestTimeRangeNames.RECEIVING]: '--network-overview-receiving',
+  [RequestTimeRangeNames.QUEUEING]: '--network-overview-queueing',
 } as {[key: string]: string};
 
 const BAND_HEIGHT = 3;

@@ -146,12 +146,12 @@ declare global {
 }
 
 export const enum State {
-  Default = 'default',
-  Success = 'success',
-  Current = 'current',
-  Outstanding = 'outstanding',
-  Error = 'error',
-  Stopped = 'stopped',
+  DEFAULT = 'default',
+  SUCCESS = 'success',
+  CURRENT = 'current',
+  OUTSTANDING = 'outstanding',
+  ERROR = 'error',
+  STOPPED = 'stopped',
 }
 
 export interface StepViewData {
@@ -422,11 +422,11 @@ function viewFunction(input: ViewInput, _output: ViewOutput, target: HTMLElement
   const stepClasses = {
     step: true,
     expanded: input.showDetails,
-    'is-success': input.state === State.Success,
-    'is-current': input.state === State.Current,
-    'is-outstanding': input.state === State.Outstanding,
-    'is-error': input.state === State.Error,
-    'is-stopped': input.state === State.Stopped,
+    'is-success': input.state === State.SUCCESS,
+    'is-current': input.state === State.CURRENT,
+    'is-outstanding': input.state === State.OUTSTANDING,
+    'is-error': input.state === State.ERROR,
+    'is-stopped': input.state === State.STOPPED,
     'is-start-of-group': input.isStartOfGroup,
     'is-first-section': input.isFirstSection,
     'has-breakpoint': input.hasBreakpoint,
@@ -534,7 +534,7 @@ export class StepView extends HTMLElement {
     this.#viewInput.isVisible = result[0].isIntersecting;
   });
   #viewInput: ViewInput = {
-    state: State.Default,
+    state: State.DEFAULT,
     showDetails: false,
     isEndOfGroup: false,
     isStartOfGroup: false,

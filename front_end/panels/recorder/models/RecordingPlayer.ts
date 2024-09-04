@@ -13,22 +13,22 @@ import type * as puppeteer from '../../../third_party/puppeteer/puppeteer.js';
 import {type Step, type UserFlow} from './Schema.js';
 
 export const enum PlayRecordingSpeed {
-  Normal = 'normal',
-  Slow = 'slow',
-  VerySlow = 'very_slow',
-  ExtremelySlow = 'extremely_slow',
+  NORMAL = 'normal',
+  SLOW = 'slow',
+  VERY_SLOW = 'very_slow',
+  EXTREMELY_SLOW = 'extremely_slow',
 }
 
 const speedDelayMap: Record<PlayRecordingSpeed, number> = {
-  [PlayRecordingSpeed.Normal]: 0,
-  [PlayRecordingSpeed.Slow]: 500,
-  [PlayRecordingSpeed.VerySlow]: 1000,
-  [PlayRecordingSpeed.ExtremelySlow]: 2000,
+  [PlayRecordingSpeed.NORMAL]: 0,
+  [PlayRecordingSpeed.SLOW]: 500,
+  [PlayRecordingSpeed.VERY_SLOW]: 1000,
+  [PlayRecordingSpeed.EXTREMELY_SLOW]: 2000,
 } as const;
 
 export const enum ReplayResult {
-  Failure = 'Failure',
-  Success = 'Success',
+  FAILURE = 'Failure',
+  SUCCESS = 'Success',
 }
 
 export const defaultTimeout = 5000;  // ms
@@ -247,7 +247,7 @@ export class RecordingPlayer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
         const promise = new Promise<void>(r => {
           resolver = r;
         });
-        player.dispatchEventToListeners(Events.Step, {
+        player.dispatchEventToListeners(Events.STEP, {
           step,
           resolve: resolver,
         });
@@ -256,9 +256,9 @@ export class RecordingPlayer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
         const shouldStopAtCurrentStep = player.steppingOver || player.breakpointIndexes.has(currentStepIndex);
         const shouldWaitForSpeed = step.type !== 'setViewport' && step.type !== 'navigate' && !player.aborted;
         if (shouldStopAtCurrentStep) {
-          player.dispatchEventToListeners(Events.Stop);
+          player.dispatchEventToListeners(Events.STOP);
           await player.stop();
-          player.dispatchEventToListeners(Events.Continue);
+          player.dispatchEventToListeners(Events.CONTINUE);
         } else if (shouldWaitForSpeed) {
           await Promise.race([
             new Promise(
@@ -302,29 +302,29 @@ export class RecordingPlayer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       await RecordingPlayer.disconnectPuppeteer(browser);
     }
     if (this.aborted) {
-      this.dispatchEventToListeners(Events.Abort);
+      this.dispatchEventToListeners(Events.ABORT);
     } else if (error) {
-      this.dispatchEventToListeners(Events.Error, error);
+      this.dispatchEventToListeners(Events.ERROR, error);
     } else {
-      this.dispatchEventToListeners(Events.Done);
+      this.dispatchEventToListeners(Events.DONE);
     }
   }
 }
 
 export const enum Events {
-  Abort = 'Abort',
-  Done = 'Done',
-  Step = 'Step',
-  Stop = 'Stop',
-  Error = 'Error',
-  Continue = 'Continue',
+  ABORT = 'Abort',
+  DONE = 'Done',
+  STEP = 'Step',
+  STOP = 'Stop',
+  ERROR = 'Error',
+  CONTINUE = 'Continue',
 }
 
 type EventTypes = {
-  [Events.Abort]: void,
-  [Events.Done]: void,
-  [Events.Step]: {step: Step, resolve: () => void},
-  [Events.Stop]: void,
-  [Events.Continue]: void,
-  [Events.Error]: Error,
+  [Events.ABORT]: void,
+  [Events.DONE]: void,
+  [Events.STEP]: {step: Step, resolve: () => void},
+  [Events.STOP]: void,
+  [Events.CONTINUE]: void,
+  [Events.ERROR]: Error,
 };

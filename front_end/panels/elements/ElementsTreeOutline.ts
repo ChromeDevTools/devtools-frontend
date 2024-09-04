@@ -1609,8 +1609,10 @@ export class ElementsTreeOutline extends
 
 export namespace ElementsTreeOutline {
   export enum Events {
+    /* eslint-disable @typescript-eslint/naming-convention -- Used by web_tests. */
     SelectedNodeChanged = 'SelectedNodeChanged',
     ElementsTreeUpdated = 'ElementsTreeUpdated',
+    /* eslint-enable @typescript-eslint/naming-convention */
   }
 
   export type EventTypes = {

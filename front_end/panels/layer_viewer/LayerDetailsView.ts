@@ -224,9 +224,9 @@ export class LayerDetailsView extends Common.ObjectWrapper.eventMixin<EventTypes
       return;
     }
     const snapshotSelection =
-        this.selection.type() === Type.Snapshot ? this.selection : this.layerSnapshotMap.get(this.selection.layer());
+        this.selection.type() === Type.SNAPSHOT ? this.selection : this.layerSnapshotMap.get(this.selection.layer());
     if (snapshotSelection) {
-      this.dispatchEventToListeners(Events.PaintProfilerRequested, snapshotSelection);
+      this.dispatchEventToListeners(Events.PAINT_PROFILER_REQUESTED, snapshotSelection);
     }
   }
 
@@ -321,7 +321,7 @@ export class LayerDetailsView extends Common.ObjectWrapper.eventMixin<EventTypes
     this.scrollRectsCell.removeChildren();
     layer.scrollRects().forEach(this.createScrollRectElement.bind(this));
     this.populateStickyPositionConstraintCell(layer.stickyPositionConstraint());
-    const snapshot = this.selection && this.selection.type() === Type.Snapshot ?
+    const snapshot = this.selection && this.selection.type() === Type.SNAPSHOT ?
         (this.selection as SnapshotSelection).snapshot() :
         null;
 
@@ -371,11 +371,11 @@ export class LayerDetailsView extends Common.ObjectWrapper.eventMixin<EventTypes
 }
 
 export const enum Events {
-  PaintProfilerRequested = 'PaintProfilerRequested',
+  PAINT_PROFILER_REQUESTED = 'PaintProfilerRequested',
 }
 
 export type EventTypes = {
-  [Events.PaintProfilerRequested]: Selection,
+  [Events.PAINT_PROFILER_REQUESTED]: Selection,
 };
 
 export const slowScrollRectNames = new Map([

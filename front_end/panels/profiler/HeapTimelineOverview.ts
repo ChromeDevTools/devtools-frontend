@@ -250,12 +250,12 @@ export class HeapTimelineOverview extends Common.ObjectWrapper.eventMixin<EventT
     const minId = minIndex > 0 ? ids[minIndex - 1] : 0;
     const maxId = maxIndex < ids.length ? ids[maxIndex] : Infinity;
 
-    this.dispatchEventToListeners(Events.IdsRangeChanged, {minId, maxId, size});
+    this.dispatchEventToListeners(Events.IDS_RANGE_CHANGED, {minId, maxId, size});
   }
 }
 
 export const enum Events {
-  IdsRangeChanged = 'IdsRangeChanged',
+  IDS_RANGE_CHANGED = 'IdsRangeChanged',
 }
 
 export interface IdsRangeChangedEvent {
@@ -265,7 +265,7 @@ export interface IdsRangeChangedEvent {
 }
 
 export type EventTypes = {
-  [Events.IdsRangeChanged]: IdsRangeChangedEvent,
+  [Events.IDS_RANGE_CHANGED]: IdsRangeChangedEvent,
 };
 
 export class SmoothScale {

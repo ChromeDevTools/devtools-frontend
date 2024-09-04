@@ -34,13 +34,13 @@ export class TimelineLayersView extends UI.SplitWidget.SplitWidget {
 
     this.layers3DView = new LayerViewer.Layers3DView.Layers3DView(this.layerViewHost);
     this.layers3DView.addEventListener(
-        LayerViewer.Layers3DView.Events.PaintProfilerRequested, this.onPaintProfilerRequested, this);
+        LayerViewer.Layers3DView.Events.PAINT_PROFILER_REQUESTED, this.onPaintProfilerRequested, this);
     this.rightSplitWidget.setMainWidget(this.layers3DView);
 
     const layerDetailsView = new LayerViewer.LayerDetailsView.LayerDetailsView(this.layerViewHost);
     this.rightSplitWidget.setSidebarWidget(layerDetailsView);
     layerDetailsView.addEventListener(
-        LayerViewer.LayerDetailsView.Events.PaintProfilerRequested, this.onPaintProfilerRequested, this);
+        LayerViewer.LayerDetailsView.Events.PAINT_PROFILER_REQUESTED, this.onPaintProfilerRequested, this);
   }
 
   showLayerTree(frameLayerTree: TimelineModel.TracingLayerTree.TracingFrameLayerTree): void {

@@ -72,14 +72,14 @@ const str_ = i18n.i18n.registerUIStrings('panels/media/PlayerMessagesView.ts', U
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 const enum MessageLevelBitfield {
-  Error = 0b0001,
-  Warning = 0b0010,
-  Info = 0b0100,
-  Debug = 0b1000,
+  ERROR = 0b0001,
+  WARNING = 0b0010,
+  INFO = 0b0100,
+  DEBUG = 0b1000,
 
-  Default = 0b0111,  // Error, Warning, Info
-  All = 0b1111,      // Error, Warning, Info, Debug
-  Custom = 0,
+  DEFAULT = 0b0111,  // Error, Warning, Info
+  ALL = 0b1111,      // Error, Warning, Info, Debug
+  CUSTOM = 0,
 }
 
 interface SelectableLevel {
@@ -109,8 +109,8 @@ class MessageLevelSelector implements UI.SoftDropDown.Delegate<SelectableLevel> 
 
     this.hiddenLevels = [];
 
-    this.bitFieldValue = MessageLevelBitfield.Default;
-    this.savedBitFieldValue = MessageLevelBitfield.Default;
+    this.bitFieldValue = MessageLevelBitfield.DEFAULT;
+    this.savedBitFieldValue = MessageLevelBitfield.DEFAULT;
 
     this.defaultTitleInternal = i18nString(UIStrings.default);
     this.customTitle = i18nString(UIStrings.custom);
@@ -132,7 +132,7 @@ class MessageLevelSelector implements UI.SoftDropDown.Delegate<SelectableLevel> 
       title: this.defaultTitleInternal,
       overwrite: true,
       stringValue: '',
-      value: MessageLevelBitfield.Default,
+      value: MessageLevelBitfield.DEFAULT,
       selectable: undefined,
     });
 
@@ -140,7 +140,7 @@ class MessageLevelSelector implements UI.SoftDropDown.Delegate<SelectableLevel> 
       title: this.allTitle,
       overwrite: true,
       stringValue: '',
-      value: MessageLevelBitfield.All,
+      value: MessageLevelBitfield.ALL,
       selectable: undefined,
     });
 
@@ -148,7 +148,7 @@ class MessageLevelSelector implements UI.SoftDropDown.Delegate<SelectableLevel> 
       title: i18nString(UIStrings.error),
       overwrite: false,
       stringValue: 'error',
-      value: MessageLevelBitfield.Error,
+      value: MessageLevelBitfield.ERROR,
       selectable: undefined,
     });
 
@@ -156,7 +156,7 @@ class MessageLevelSelector implements UI.SoftDropDown.Delegate<SelectableLevel> 
       title: i18nString(UIStrings.warning),
       overwrite: false,
       stringValue: 'warning',
-      value: MessageLevelBitfield.Warning,
+      value: MessageLevelBitfield.WARNING,
       selectable: undefined,
     });
 
@@ -164,7 +164,7 @@ class MessageLevelSelector implements UI.SoftDropDown.Delegate<SelectableLevel> 
       title: i18nString(UIStrings.info),
       overwrite: false,
       stringValue: 'info',
-      value: MessageLevelBitfield.Info,
+      value: MessageLevelBitfield.INFO,
       selectable: undefined,
     });
 
@@ -172,7 +172,7 @@ class MessageLevelSelector implements UI.SoftDropDown.Delegate<SelectableLevel> 
       title: i18nString(UIStrings.debug),
       overwrite: false,
       stringValue: 'debug',
-      value: MessageLevelBitfield.Debug,
+      value: MessageLevelBitfield.DEBUG,
       selectable: undefined,
     });
   }
@@ -203,11 +203,11 @@ class MessageLevelSelector implements UI.SoftDropDown.Delegate<SelectableLevel> 
       this.bitFieldValue ^= item.value;
     }
 
-    if (this.bitFieldValue === MessageLevelBitfield.Default) {
+    if (this.bitFieldValue === MessageLevelBitfield.DEFAULT) {
       return this.defaultTitleInternal;
     }
 
-    if (this.bitFieldValue === MessageLevelBitfield.All) {
+    if (this.bitFieldValue === MessageLevelBitfield.ALL) {
       return this.allTitle;
     }
 

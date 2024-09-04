@@ -170,7 +170,7 @@ export class ProfileFlameChart extends
     this.mainPane.addEventListener(PerfUI.FlameChart.Events.ENTRY_INVOKED, this.onEntryInvoked, this);
     this.entrySelected = false;
     this.mainPane.addEventListener(PerfUI.FlameChart.Events.CANVAS_FOCUSED, this.onEntrySelected, this);
-    this.overviewPane.addEventListener(OverviewPaneEvents.WindowChanged, this.onWindowChanged, this);
+    this.overviewPane.addEventListener(OverviewPaneEvents.WINDOW_CHANGED, this.onWindowChanged, this);
     this.dataProvider = dataProvider;
     this.searchResults = [];
   }
@@ -355,7 +355,7 @@ export class OverviewPane extends Common.ObjectWrapper.eventMixin<OverviewPaneEv
     this.windowTimeLeft = windowPosition.windowTimeLeft;
     this.windowTimeRight = windowPosition.windowTimeRight;
 
-    this.dispatchEventToListeners(OverviewPaneEvents.WindowChanged, windowPosition);
+    this.dispatchEventToListeners(OverviewPaneEvents.WINDOW_CHANGED, windowPosition);
   }
 
   timelineData(): PerfUI.FlameChart.FlameChartTimelineData|null {
@@ -449,7 +449,7 @@ export class OverviewPane extends Common.ObjectWrapper.eventMixin<OverviewPaneEv
 }
 
 export const enum OverviewPaneEvents {
-  WindowChanged = 'WindowChanged',
+  WINDOW_CHANGED = 'WindowChanged',
 }
 
 export interface OverviewPaneWindowChangedEvent {
@@ -458,5 +458,5 @@ export interface OverviewPaneWindowChangedEvent {
 }
 
 export type OverviewPaneEventTypes = {
-  [OverviewPaneEvents.WindowChanged]: OverviewPaneWindowChangedEvent,
+  [OverviewPaneEvents.WINDOW_CHANGED]: OverviewPaneWindowChangedEvent,
 };

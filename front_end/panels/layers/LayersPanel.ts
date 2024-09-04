@@ -71,7 +71,7 @@ export class LayersPanel extends UI.Panel.PanelWithSidebar implements SDK.Target
     this.layerViewHost = new LayerViewer.LayerViewHost.LayerViewHost();
     this.layerTreeOutline = new LayerViewer.LayerTreeOutline.LayerTreeOutline(this.layerViewHost);
     this.layerTreeOutline.addEventListener(
-        LayerViewer.LayerTreeOutline.Events.PaintProfilerRequested, this.onPaintProfileRequested, this);
+        LayerViewer.LayerTreeOutline.Events.PAINT_PROFILER_REQUESTED, this.onPaintProfileRequested, this);
     this.panelSidebarElement().appendChild(this.layerTreeOutline.element);
     this.setDefaultFocusedElement(this.layerTreeOutline.element);
 
@@ -81,15 +81,15 @@ export class LayersPanel extends UI.Panel.PanelWithSidebar implements SDK.Target
     this.layers3DView = new LayerViewer.Layers3DView.Layers3DView(this.layerViewHost);
     this.rightSplitWidget.setMainWidget(this.layers3DView);
     this.layers3DView.addEventListener(
-        LayerViewer.Layers3DView.Events.PaintProfilerRequested, this.onPaintProfileRequested, this);
-    this.layers3DView.addEventListener(LayerViewer.Layers3DView.Events.ScaleChanged, this.onScaleChanged, this);
+        LayerViewer.Layers3DView.Events.PAINT_PROFILER_REQUESTED, this.onPaintProfileRequested, this);
+    this.layers3DView.addEventListener(LayerViewer.Layers3DView.Events.SCALE_CHANGED, this.onScaleChanged, this);
 
     this.tabbedPane = new UI.TabbedPane.TabbedPane();
     this.rightSplitWidget.setSidebarWidget(this.tabbedPane);
 
     this.layerDetailsView = new LayerViewer.LayerDetailsView.LayerDetailsView(this.layerViewHost);
     this.layerDetailsView.addEventListener(
-        LayerViewer.LayerDetailsView.Events.PaintProfilerRequested, this.onPaintProfileRequested, this);
+        LayerViewer.LayerDetailsView.Events.PAINT_PROFILER_REQUESTED, this.onPaintProfileRequested, this);
     this.tabbedPane.appendTab(DetailsViewTabs.Details, i18nString(UIStrings.details), this.layerDetailsView);
 
     this.paintProfilerView = new LayerPaintProfilerView(this.showImage.bind(this));

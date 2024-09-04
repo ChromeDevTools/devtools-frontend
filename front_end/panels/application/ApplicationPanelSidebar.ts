@@ -222,7 +222,7 @@ function assertNotMainTarget(targetId: Protocol.Target.TargetID|'main'): asserts
 
 export namespace SharedStorageTreeElementDispatcher {
   export const enum Events {
-    SharedStorageTreeElementAdded = 'SharedStorageTreeElementAdded',
+    SHARED_STORAGE_TREE_ELEMENT_ADDED = 'SharedStorageTreeElementAdded',
   }
 
   export interface SharedStorageTreeElementAddedEvent {
@@ -230,7 +230,7 @@ export namespace SharedStorageTreeElementDispatcher {
   }
 
   export type EventTypes = {
-    [Events.SharedStorageTreeElementAdded]: SharedStorageTreeElementAddedEvent,
+    [Events.SHARED_STORAGE_TREE_ELEMENT_ADDED]: SharedStorageTreeElementAddedEvent,
   };
 }
 
@@ -467,7 +467,8 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
 
     const interestGroupModel = target.model(InterestGroupStorageModel);
     if (interestGroupModel) {
-      interestGroupModel.addEventListener(InterestGroupModelEvents.InterestGroupAccess, this.interestGroupAccess, this);
+      interestGroupModel.addEventListener(
+          InterestGroupModelEvents.INTEREST_GROUP_ACCESS, this.interestGroupAccess, this);
     }
 
     const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
@@ -500,7 +501,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
     const interestGroupModel = target.model(InterestGroupStorageModel);
     if (interestGroupModel) {
       interestGroupModel.removeEventListener(
-          InterestGroupModelEvents.InterestGroupAccess, this.interestGroupAccess, this);
+          InterestGroupModelEvents.INTEREST_GROUP_ACCESS, this.interestGroupAccess, this);
     }
 
     this.resetWithFrames();
@@ -540,14 +541,14 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
   private domStorageModelAdded(model: DOMStorageModel): void {
     model.enable();
     model.storages().forEach(this.addDOMStorage.bind(this));
-    model.addEventListener(DOMStorageModelEvents.DOMStorageAdded, this.domStorageAdded, this);
-    model.addEventListener(DOMStorageModelEvents.DOMStorageRemoved, this.domStorageRemoved, this);
+    model.addEventListener(DOMStorageModelEvents.DOM_STORAGE_ADDED, this.domStorageAdded, this);
+    model.addEventListener(DOMStorageModelEvents.DOM_STORAGE_REMOVED, this.domStorageRemoved, this);
   }
 
   private domStorageModelRemoved(model: DOMStorageModel): void {
     model.storages().forEach(this.removeDOMStorage.bind(this));
-    model.removeEventListener(DOMStorageModelEvents.DOMStorageAdded, this.domStorageAdded, this);
-    model.removeEventListener(DOMStorageModelEvents.DOMStorageRemoved, this.domStorageRemoved, this);
+    model.removeEventListener(DOMStorageModelEvents.DOM_STORAGE_ADDED, this.domStorageAdded, this);
+    model.removeEventListener(DOMStorageModelEvents.DOM_STORAGE_REMOVED, this.domStorageRemoved, this);
   }
 
   private indexedDBModelAdded(model: IndexedDBModel): void {
@@ -561,12 +562,12 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
 
   private interestGroupModelAdded(model: InterestGroupStorageModel): void {
     model.enable();
-    model.addEventListener(InterestGroupModelEvents.InterestGroupAccess, this.interestGroupAccess, this);
+    model.addEventListener(InterestGroupModelEvents.INTEREST_GROUP_ACCESS, this.interestGroupAccess, this);
   }
 
   private interestGroupModelRemoved(model: InterestGroupStorageModel): void {
     model.disable();
-    model.removeEventListener(InterestGroupModelEvents.InterestGroupAccess, this.interestGroupAccess, this);
+    model.removeEventListener(InterestGroupModelEvents.INTEREST_GROUP_ACCESS, this.interestGroupAccess, this);
   }
 
   private async sharedStorageModelAdded(model: SharedStorageModel): Promise<void> {
@@ -574,9 +575,9 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
     for (const storage of model.storages()) {
       await this.addSharedStorage(storage);
     }
-    model.addEventListener(SharedStorageModelEvents.SharedStorageAdded, this.sharedStorageAdded, this);
-    model.addEventListener(SharedStorageModelEvents.SharedStorageRemoved, this.sharedStorageRemoved, this);
-    model.addEventListener(SharedStorageModelEvents.SharedStorageAccess, this.sharedStorageAccess, this);
+    model.addEventListener(SharedStorageModelEvents.SHARED_STORAGE_ADDED, this.sharedStorageAdded, this);
+    model.addEventListener(SharedStorageModelEvents.SHARED_STORAGE_REMOVED, this.sharedStorageRemoved, this);
+    model.addEventListener(SharedStorageModelEvents.SHARED_STORAGE_ACCESS, this.sharedStorageAccess, this);
   }
 
   private sharedStorageModelRemoved(model: SharedStorageModel): void {
@@ -584,9 +585,9 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
     for (const storage of model.storages()) {
       this.removeSharedStorage(storage);
     }
-    model.removeEventListener(SharedStorageModelEvents.SharedStorageAdded, this.sharedStorageAdded, this);
-    model.removeEventListener(SharedStorageModelEvents.SharedStorageRemoved, this.sharedStorageRemoved, this);
-    model.removeEventListener(SharedStorageModelEvents.SharedStorageAccess, this.sharedStorageAccess, this);
+    model.removeEventListener(SharedStorageModelEvents.SHARED_STORAGE_ADDED, this.sharedStorageAdded, this);
+    model.removeEventListener(SharedStorageModelEvents.SHARED_STORAGE_REMOVED, this.sharedStorageRemoved, this);
+    model.removeEventListener(SharedStorageModelEvents.SHARED_STORAGE_ACCESS, this.sharedStorageAccess, this);
   }
 
   private storageBucketsModelAdded(model: SDK.StorageBucketsModel.StorageBucketsModel): void {
@@ -732,7 +733,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
     this.sharedStorageTreeElements.set(sharedStorage.securityOrigin, sharedStorageTreeElement);
     this.sharedStorageListTreeElement.appendChild(sharedStorageTreeElement);
     this.sharedStorageTreeElementDispatcher.dispatchEventToListeners(
-        SharedStorageTreeElementDispatcher.Events.SharedStorageTreeElementAdded,
+        SharedStorageTreeElementDispatcher.Events.SHARED_STORAGE_TREE_ELEMENT_ADDED,
         {origin: sharedStorage.securityOrigin});
   }
 
@@ -949,7 +950,7 @@ export class AppManifestTreeElement extends ApplicationPanelTreeElement {
     const handleExpansion = (hasManifest: boolean): void => {
       this.setExpandable(hasManifest);
     };
-    this.view.addEventListener(AppManifestViewEvents.ManifestDetected, event => handleExpansion(event.data));
+    this.view.addEventListener(AppManifestViewEvents.MANIFEST_DETECTED, event => handleExpansion(event.data));
   }
 
   override get itemURL(): Platform.DevToolsPath.UrlString {

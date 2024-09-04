@@ -49,7 +49,7 @@ describeWithEnvironment('InteractionsTrackAppender', function() {
       // All events fit on the top level
       assert.strictEqual(entryTypeByLevel.length, 1);
       assert.deepEqual(entryTypeByLevel, [
-        Timeline.TimelineFlameChartDataProvider.EntryType.TrackAppender,
+        Timeline.TimelineFlameChartDataProvider.EntryType.TRACK_APPENDER,
       ]);
     });
 

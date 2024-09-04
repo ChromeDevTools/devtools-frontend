@@ -497,7 +497,7 @@ export class CompatibilityTracksAppender {
     this.#trackForLevel.set(level, appender);
     const index = this.#entryData.length;
     this.#entryData.push(event);
-    this.#legacyEntryTypeByLevel[level] = EntryType.TrackAppender;
+    this.#legacyEntryTypeByLevel[level] = EntryType.TRACK_APPENDER;
     this.#flameChartData.entryLevels[index] = level;
     this.#flameChartData.entryStartTimes[index] = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(event.ts);
     const dur = event.dur || TraceEngine.Helpers.Timing.millisecondsToMicroseconds(InstantEventVisibleDurationMs);
@@ -538,7 +538,7 @@ export class CompatibilityTracksAppender {
     }
 
     this.#legacyEntryTypeByLevel.length = trackStartLevel + lastTimestampByLevel.length;
-    this.#legacyEntryTypeByLevel.fill(EntryType.TrackAppender, trackStartLevel);
+    this.#legacyEntryTypeByLevel.fill(EntryType.TRACK_APPENDER, trackStartLevel);
     return trackStartLevel + lastTimestampByLevel.length;
   }
 

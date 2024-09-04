@@ -15,7 +15,7 @@ export class PuppeteerReplayConverter implements Converter {
   }
 
   getId(): string {
-    return Models.ConverterIds.ConverterIds.Replay;
+    return Models.ConverterIds.ConverterIds.REPLAY;
   }
 
   getFormatName(): string {

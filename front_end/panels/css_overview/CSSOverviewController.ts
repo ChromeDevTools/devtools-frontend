@@ -25,7 +25,7 @@ export class OverviewController extends Common.ObjectWrapper.ObjectWrapper<Event
     }
 
     this.currentUrl = SDK.TargetManager.TargetManager.instance().inspectedURL();
-    this.dispatchEventToListeners(Events.Reset);
+    this.dispatchEventToListeners(Events.RESET);
   }
 }
 
@@ -57,19 +57,19 @@ export type PopulateNodesEventNodes = PopulateNodesEvent['nodes'];
 export type PopulateNodesEventNodeTypes = PopulateNodesEventNodes[0];
 
 export const enum Events {
-  RequestOverviewStart = 'RequestOverviewStart',
-  RequestNodeHighlight = 'RequestNodeHighlight',
-  PopulateNodes = 'PopulateNodes',
-  RequestOverviewCancel = 'RequestOverviewCancel',
-  OverviewCompleted = 'OverviewCompleted',
-  Reset = 'Reset',
+  REQUEST_OVERVIEW_START = 'RequestOverviewStart',
+  REQUEST_NODE_HIGHLIGHT = 'RequestNodeHighlight',
+  POPULATE_NODES = 'PopulateNodes',
+  REQUEST_OVERVIEW_CANCEL = 'RequestOverviewCancel',
+  OVERVIEW_COMPLETED = 'OverviewCompleted',
+  RESET = 'Reset',
 }
 
 export type EventTypes = {
-  [Events.RequestOverviewStart]: void,
-  [Events.RequestNodeHighlight]: number,
-  [Events.PopulateNodes]: {payload: PopulateNodesEvent},
-  [Events.RequestOverviewCancel]: void,
-  [Events.OverviewCompleted]: void,
-  [Events.Reset]: void,
+  [Events.REQUEST_OVERVIEW_START]: void,
+  [Events.REQUEST_NODE_HIGHLIGHT]: number,
+  [Events.POPULATE_NODES]: {payload: PopulateNodesEvent},
+  [Events.REQUEST_OVERVIEW_CANCEL]: void,
+  [Events.OVERVIEW_COMPLETED]: void,
+  [Events.RESET]: void,
 };

@@ -154,7 +154,7 @@ export class RecordingListView extends HTMLElement {
               @click=${this.#onCreateClick}
               title=${Models.Tooltip.getTooltipForActions(
                 i18nString(UIStrings.createRecording),
-                Actions.RecorderActions.CreateRecording,
+                Actions.RecorderActions.CREATE_RECORDING,
               )}
               .jslogContext=${'create-recording'}
             >

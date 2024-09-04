@@ -37,7 +37,7 @@ describeWithEnvironment('StepView', () => {
     component.data = {
       step: opts.step !== undefined ? step : undefined,
       section: opts.section !== undefined ? section : undefined,
-      state: Components.StepView.State.Default,
+      state: Components.StepView.State.DEFAULT,
       isEndOfGroup: opts.isEndOfGroup ?? false,
       isStartOfGroup: opts.isStartOfGroup ?? false,
       isFirstSection: opts.isFirstSection ?? false,

@@ -30,7 +30,7 @@ export class CSSOverviewProcessingView extends UI.Widget.Widget {
 
   #render(): void {
     const cancelButton = UI.UIUtils.createTextButton(
-        i18nString(UIStrings.cancel), () => this.#controller.dispatchEventToListeners(Events.RequestOverviewCancel),
+        i18nString(UIStrings.cancel), () => this.#controller.dispatchEventToListeners(Events.REQUEST_OVERVIEW_CANCEL),
         {jslogContext: 'css-overview.cancel-processing', variant: Buttons.Button.Variant.OUTLINED});
     this.setDefaultFocusedElement(cancelButton);
 

@@ -17,10 +17,10 @@ export const DISPLAY_JUMP_TO_POINTER_BUTTON_SELECTOR = '[data-jump]';
 
 describeWithLocale('ValueInterpreterDisplay', () => {
   const combinationsForNumbers = [
-    {endianness: LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.Endianness.Little, signed: true},
-    {endianness: LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.Endianness.Little, signed: false},
-    {endianness: LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.Endianness.Big, signed: false},
-    {endianness: LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.Endianness.Big, signed: true},
+    {endianness: LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.Endianness.LITTLE, signed: true},
+    {endianness: LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.Endianness.LITTLE, signed: false},
+    {endianness: LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.Endianness.BIG, signed: false},
+    {endianness: LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.Endianness.BIG, signed: true},
   ];
 
   function testNumberFormatCombinations(
@@ -37,39 +37,39 @@ describeWithLocale('ValueInterpreterDisplay', () => {
       const {endianness, signed} = combinations[i];
       let expectedValue;
       const isLittleEndian =
-          endianness === LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.Endianness.Little;
+          endianness === LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.Endianness.LITTLE;
       const view = new DataView(baseData.buffer);
       switch (baseData.type) {
-        case LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.Int8:
+        case LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.INT8:
           expectedValue = signed ? -expectedIntValue : expectedIntValue;
           signed ? view.setInt8(0, expectedValue) : view.setInt8(0, expectedValue);
           break;
-        case LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.Int16:
+        case LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.INT16:
           expectedValue = signed ? -expectedIntValue : expectedIntValue;
           signed ? view.setInt16(0, expectedValue, isLittleEndian) : view.setUint16(0, expectedValue, isLittleEndian);
           break;
-        case LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.Int32:
+        case LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.INT32:
           expectedValue = signed ? -expectedIntValue : expectedIntValue;
           signed ? view.setInt32(0, expectedValue, isLittleEndian) : view.setUint32(0, expectedValue, isLittleEndian);
           break;
-        case LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.Int64:
+        case LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.INT64:
           expectedValue = signed ? -expectedIntValue : expectedIntValue;
           signed ? view.setBigInt64(0, BigInt(expectedValue), isLittleEndian) :
                    view.setBigUint64(0, BigInt(expectedValue), isLittleEndian);
           break;
-        case LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.Float32:
+        case LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.FLOAT32:
           expectedValue = expectedFloatValue;
           view.setFloat32(0, expectedValue, isLittleEndian);
           break;
-        case LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.Float64:
+        case LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.FLOAT64:
           expectedValue = expectedFloatValue;
           view.setFloat64(0, expectedValue, isLittleEndian);
           break;
-        case LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.Pointer32:
+        case LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.POINTER32:
           expectedValue = '0x' + expectedIntValue.toString(16);
           view.setInt32(0, expectedIntValue, isLittleEndian);
           break;
-        case LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.Pointer64:
+        case LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.POINTER64:
           expectedValue = '0x' + expectedIntValue.toString(16);
           view.setBigUint64(0, BigInt(expectedIntValue), isLittleEndian);
           break;
@@ -85,8 +85,8 @@ describeWithLocale('ValueInterpreterDisplay', () => {
   it('correctly formats signed/unsigned and endianness for Integer 8-bit (decimal)', () => {
     const formatData = {
       buffer: new ArrayBuffer(1),
-      type: LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.Int8,
-      mode: LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueTypeMode.Decimal,
+      type: LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.INT8,
+      mode: LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueTypeMode.DECIMAL,
     };
     testNumberFormatCombinations(formatData, combinationsForNumbers);
   });
@@ -94,8 +94,8 @@ describeWithLocale('ValueInterpreterDisplay', () => {
   it('correctly formats signed/unsigned and endianness for Integer 16-bit (decimal)', () => {
     const formatData = {
       buffer: new ArrayBuffer(2),
-      type: LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.Int16,
-      mode: LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueTypeMode.Decimal,
+      type: LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.INT16,
+      mode: LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueTypeMode.DECIMAL,
     };
 
     testNumberFormatCombinations(formatData, combinationsForNumbers);
@@ -104,8 +104,8 @@ describeWithLocale('ValueInterpreterDisplay', () => {
   it('correctly formats signed/unsigned and endianness for Integer 32-bit (decimal)', () => {
     const formatData = {
       buffer: new ArrayBuffer(4),
-      type: LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.Int32,
-      mode: LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueTypeMode.Decimal,
+      type: LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.INT32,
+      mode: LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueTypeMode.DECIMAL,
     };
 
     testNumberFormatCombinations(formatData, combinationsForNumbers);
@@ -114,8 +114,8 @@ describeWithLocale('ValueInterpreterDisplay', () => {
   it('correctly formats signed/unsigned and endianness for Integer 64-bit (decimal)', () => {
     const formatData = {
       buffer: new ArrayBuffer(8),
-      type: LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.Int64,
-      mode: LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueTypeMode.Decimal,
+      type: LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.INT64,
+      mode: LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueTypeMode.DECIMAL,
     };
 
     testNumberFormatCombinations(formatData, combinationsForNumbers);
@@ -124,8 +124,8 @@ describeWithLocale('ValueInterpreterDisplay', () => {
   it('correctly formats endianness for Float 32-bit (decimal)', () => {
     const formatData = {
       buffer: new ArrayBuffer(4),
-      type: LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.Float32,
-      mode: LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueTypeMode.Decimal,
+      type: LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.FLOAT32,
+      mode: LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueTypeMode.DECIMAL,
     };
 
     testNumberFormatCombinations(formatData, combinationsForNumbers);
@@ -134,8 +134,8 @@ describeWithLocale('ValueInterpreterDisplay', () => {
   it('correctly formats endianness for Float 64-bit (decimal)', () => {
     const formatData = {
       buffer: new ArrayBuffer(8),
-      type: LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.Float64,
-      mode: LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueTypeMode.Decimal,
+      type: LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.FLOAT64,
+      mode: LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueTypeMode.DECIMAL,
     };
 
     testNumberFormatCombinations(formatData, combinationsForNumbers);
@@ -144,8 +144,8 @@ describeWithLocale('ValueInterpreterDisplay', () => {
   it('correctly formats endianness for Pointer 32-bit', () => {
     const formatData = {
       buffer: new ArrayBuffer(4),
-      type: LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.Pointer32,
-      mode: LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueTypeMode.Hexadecimal,
+      type: LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.POINTER32,
+      mode: LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueTypeMode.HEXADECIMAL,
     };
 
     testNumberFormatCombinations(formatData, combinationsForNumbers);
@@ -154,8 +154,8 @@ describeWithLocale('ValueInterpreterDisplay', () => {
   it('correctly formats endianness for Pointer 64-bit', () => {
     const formatData = {
       buffer: new ArrayBuffer(8),
-      type: LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.Pointer64,
-      mode: LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueTypeMode.Hexadecimal,
+      type: LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.POINTER64,
+      mode: LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueTypeMode.HEXADECIMAL,
     };
 
     testNumberFormatCombinations(formatData, combinationsForNumbers);
@@ -164,49 +164,49 @@ describeWithLocale('ValueInterpreterDisplay', () => {
   it('correctly formats floats in decimal mode', () => {
     const expectedFloat = 341.34;
     const actualValue = LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.formatFloat(
-        expectedFloat, LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueTypeMode.Decimal);
+        expectedFloat, LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueTypeMode.DECIMAL);
     assert.strictEqual(actualValue, '341.34');
   });
 
   it('correctly formats floats in scientific mode', () => {
     const expectedFloat = 341.34;
     const actualValue = LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.formatFloat(
-        expectedFloat, LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueTypeMode.Scientific);
+        expectedFloat, LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueTypeMode.SCIENTIFIC);
     assert.strictEqual(actualValue, '3.41e+2');
   });
 
   it('correctly formats integers in decimal mode', () => {
     const expectedInteger = 120;
     const actualValue = LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.formatInteger(
-        expectedInteger, LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueTypeMode.Decimal);
+        expectedInteger, LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueTypeMode.DECIMAL);
     assert.strictEqual(actualValue, '120');
   });
 
   it('correctly formats integers in hexadecimal mode', () => {
     const expectedInteger = 16;
     const actualValue = LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.formatInteger(
-        expectedInteger, LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueTypeMode.Hexadecimal);
+        expectedInteger, LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueTypeMode.HEXADECIMAL);
     assert.strictEqual(actualValue, '0x10');
   });
 
   it('returns N/A for negative hex numbers', () => {
     const negativeInteger = -16;
     const actualValue = LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.formatInteger(
-        negativeInteger, LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueTypeMode.Hexadecimal);
+        negativeInteger, LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueTypeMode.HEXADECIMAL);
     assert.strictEqual(actualValue, 'N/A');
   });
 
   it('correctly formats integers in octal mode', () => {
     const expectedInteger = 16;
     const actualValue = LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.formatInteger(
-        expectedInteger, LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueTypeMode.Octal);
+        expectedInteger, LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueTypeMode.OCTAL);
     assert.strictEqual(actualValue, '20');
   });
 
   it('returns N/A for negative octal numbers', () => {
     const expectedInteger = -16;
     const actualValue = LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.formatInteger(
-        expectedInteger, LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueTypeMode.Octal);
+        expectedInteger, LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueTypeMode.OCTAL);
     assert.strictEqual(actualValue, 'N/A');
   });
 
@@ -215,10 +215,10 @@ describeWithLocale('ValueInterpreterDisplay', () => {
     const array = [1, 132, 172, 71, 43, 12, 12, 66];
     component.data = {
       buffer: new Uint8Array(array).buffer,
-      endianness: LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.Endianness.Little,
+      endianness: LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.Endianness.LITTLE,
       valueTypes: new Set([
-        LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.Pointer32,
-        LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.Pointer64,
+        LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.POINTER32,
+        LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.POINTER64,
       ]),
       memoryLength: array.length,
     };
@@ -237,10 +237,10 @@ describeWithLocale('ValueInterpreterDisplay', () => {
     const array = [1, 132, 172, 71];
     component.data = {
       buffer: new Uint8Array(array).buffer,
-      endianness: LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.Endianness.Little,
+      endianness: LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.Endianness.LITTLE,
       valueTypes: new Set([
-        LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.Int16,
-        LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.Float32,
+        LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.INT16,
+        LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.FLOAT32,
       ]),
       memoryLength: array.length,
     };
@@ -259,24 +259,24 @@ describeWithLocale('ValueInterpreterDisplay', () => {
     const array = [0xC8, 0xC9, 0xCA, 0XCB];
     component.data = {
       buffer: new Uint8Array(array).buffer,
-      endianness: LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.Endianness.Little,
+      endianness: LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.Endianness.LITTLE,
       valueTypes: new Set([
-        LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.Int8,
-        LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.Int16,
-        LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.Int32,
+        LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.INT8,
+        LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.INT16,
+        LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.INT32,
       ]),
       valueTypeModes: new Map([
         [
-          LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.Int8,
-          LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueTypeMode.Octal,
+          LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.INT8,
+          LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueTypeMode.OCTAL,
         ],
         [
-          LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.Int16,
-          LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueTypeMode.Hexadecimal,
+          LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.INT16,
+          LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueTypeMode.HEXADECIMAL,
         ],
         [
-          LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.Int32,
-          LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueTypeMode.Decimal,
+          LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.INT32,
+          LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueTypeMode.DECIMAL,
         ],
       ]),
       memoryLength: array.length,
@@ -294,17 +294,17 @@ describeWithLocale('ValueInterpreterDisplay', () => {
   it('triggers a value changed event on selecting a new mode', async () => {
     const component = new LinearMemoryInspectorComponents.ValueInterpreterDisplay.ValueInterpreterDisplay();
     const array = [1, 132, 172, 71];
-    const oldMode = LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueTypeMode.Decimal;
-    const newMode = LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueTypeMode.Scientific;
+    const oldMode = LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueTypeMode.DECIMAL;
+    const newMode = LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueTypeMode.SCIENTIFIC;
 
     const mapping = LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.getDefaultValueTypeMapping();
-    mapping.set(LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.Float32, oldMode);
+    mapping.set(LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.FLOAT32, oldMode);
 
     component.data = {
       buffer: new Uint8Array(array).buffer,
-      endianness: LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.Endianness.Little,
+      endianness: LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.Endianness.LITTLE,
       valueTypes: new Set([
-        LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.Float32,
+        LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.FLOAT32,
       ]),
       valueTypeModes: mapping,
       memoryLength: array.length,
@@ -321,7 +321,7 @@ describeWithLocale('ValueInterpreterDisplay', () => {
     const event = await eventPromise;
     assert.deepEqual(
         event.data,
-        {type: LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.Float32, mode: newMode});
+        {type: LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.FLOAT32, mode: newMode});
   });
 
   it('triggers an event on jumping to an address from a 32-bit pointer', async () => {
@@ -329,9 +329,9 @@ describeWithLocale('ValueInterpreterDisplay', () => {
     const array = [1, 0, 0, 0];
     component.data = {
       buffer: new Uint8Array(array).buffer,
-      endianness: LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.Endianness.Little,
+      endianness: LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.Endianness.LITTLE,
       valueTypes: new Set([
-        LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.Pointer32,
+        LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.POINTER32,
       ]),
       memoryLength: array.length,
     };
@@ -351,9 +351,9 @@ describeWithLocale('ValueInterpreterDisplay', () => {
     const array = [1, 0, 0, 0, 0, 0, 0, 0];
     component.data = {
       buffer: new Uint8Array(array).buffer,
-      endianness: LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.Endianness.Little,
+      endianness: LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.Endianness.LITTLE,
       valueTypes: new Set([
-        LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.Pointer64,
+        LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.POINTER64,
       ]),
       memoryLength: array.length,
     };
@@ -373,10 +373,10 @@ describeWithLocale('ValueInterpreterDisplay', () => {
     const array = [8, 0, 0, 0, 0, 0, 0, 0];
     component.data = {
       buffer: new Uint8Array(array).buffer,
-      endianness: LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.Endianness.Little,
+      endianness: LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.Endianness.LITTLE,
       valueTypes: new Set([
-        LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.Pointer32,
-        LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.Pointer64,
+        LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.POINTER32,
+        LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.POINTER64,
       ]),
       memoryLength: array.length,
     };
@@ -397,12 +397,12 @@ describeWithLocale('ValueInterpreterDisplay', () => {
     const array = [1, 132, 172, 71];
     component.data = {
       buffer: new Uint8Array(array).buffer,
-      endianness: LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.Endianness.Little,
+      endianness: LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.Endianness.LITTLE,
       valueTypes: new Set([
-        LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.Int8,
-        LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.Int16,
-        LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.Float32,
-        LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.Pointer32,
+        LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.INT8,
+        LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.INT16,
+        LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.FLOAT32,
+        LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType.POINTER32,
       ]),
       memoryLength: array.length,
     };

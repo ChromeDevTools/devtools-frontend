@@ -187,8 +187,8 @@ export class RecordingFinishedEvent extends Event {
 }
 
 export const enum TargetPanel {
-  PerformancePanel = 'timeline',
-  Default = 'chrome-recorder',
+  PERFORMANCE_PANEL = 'timeline',
+  DEFAULT = 'chrome-recorder',
 }
 
 interface PlayRecordingEventData {
@@ -202,8 +202,8 @@ export class PlayRecordingEvent extends Event {
   readonly data: PlayRecordingEventData;
   constructor(
       data: PlayRecordingEventData = {
-        targetPanel: TargetPanel.Default,
-        speed: PlayRecordingSpeed.Normal,
+        targetPanel: TargetPanel.DEFAULT,
+        speed: PlayRecordingSpeed.NORMAL,
       },
   ) {
     super(PlayRecordingEvent.eventName);
@@ -277,12 +277,12 @@ function converterIdToFlowMetric(
     converterId: string,
     ): Host.UserMetrics.RecordingCopiedToClipboard {
   switch (converterId) {
-    case Models.ConverterIds.ConverterIds.Puppeteer:
-    case Models.ConverterIds.ConverterIds.PuppeteerFirefox:
+    case Models.ConverterIds.ConverterIds.PUPPETEER:
+    case Models.ConverterIds.ConverterIds.PUPPETEER_FIREFOX:
       return Host.UserMetrics.RecordingCopiedToClipboard.COPIED_RECORDING_WITH_PUPPETEER;
     case Models.ConverterIds.ConverterIds.JSON:
       return Host.UserMetrics.RecordingCopiedToClipboard.COPIED_RECORDING_WITH_JSON;
-    case Models.ConverterIds.ConverterIds.Replay:
+    case Models.ConverterIds.ConverterIds.REPLAY:
       return Host.UserMetrics.RecordingCopiedToClipboard.COPIED_RECORDING_WITH_REPLAY;
     default:
       return Host.UserMetrics.RecordingCopiedToClipboard.COPIED_RECORDING_WITH_EXTENSION;
@@ -293,12 +293,12 @@ function converterIdToStepMetric(
     converterId: string,
     ): Host.UserMetrics.RecordingCopiedToClipboard {
   switch (converterId) {
-    case Models.ConverterIds.ConverterIds.Puppeteer:
-    case Models.ConverterIds.ConverterIds.PuppeteerFirefox:
+    case Models.ConverterIds.ConverterIds.PUPPETEER:
+    case Models.ConverterIds.ConverterIds.PUPPETEER_FIREFOX:
       return Host.UserMetrics.RecordingCopiedToClipboard.COPIED_STEP_WITH_PUPPETEER;
     case Models.ConverterIds.ConverterIds.JSON:
       return Host.UserMetrics.RecordingCopiedToClipboard.COPIED_STEP_WITH_JSON;
-    case Models.ConverterIds.ConverterIds.Replay:
+    case Models.ConverterIds.ConverterIds.REPLAY:
       return Host.UserMetrics.RecordingCopiedToClipboard.COPIED_STEP_WITH_REPLAY;
     default:
       return Host.UserMetrics.RecordingCopiedToClipboard.COPIED_STEP_WITH_EXTENSION;
@@ -406,7 +406,7 @@ export class RecordingView extends HTMLElement {
   #handleTogglePlaying(event: StartReplayEvent): void {
     this.dispatchEvent(
         new PlayRecordingEvent({
-          targetPanel: TargetPanel.Default,
+          targetPanel: TargetPanel.DEFAULT,
           speed: event.speed,
           extension: event.extension,
         }),
@@ -415,35 +415,35 @@ export class RecordingView extends HTMLElement {
 
   #getStepState(step: Models.Schema.Step): State {
     if (!this.#currentStep) {
-      return State.Default;
+      return State.DEFAULT;
     }
     if (step === this.#currentStep) {
       if (this.#currentError) {
-        return State.Error;
+        return State.ERROR;
       }
       if (!this.#replayState.isPlaying) {
-        return State.Success;
+        return State.SUCCESS;
       }
 
       if (this.#replayState.isPausedOnBreakpoint) {
-        return State.Stopped;
+        return State.STOPPED;
       }
 
-      return State.Current;
+      return State.CURRENT;
     }
     const currentIndex = this.#steps.indexOf(this.#currentStep);
     if (currentIndex === -1) {
-      return State.Default;
+      return State.DEFAULT;
     }
 
     const index = this.#steps.indexOf(step);
-    return index < currentIndex ? State.Success : State.Outstanding;
+    return index < currentIndex ? State.SUCCESS : State.OUTSTANDING;
   }
 
   #getSectionState(section: Models.Section.Section): State {
     const currentStep = this.#currentStep;
     if (!currentStep) {
-      return State.Default;
+      return State.DEFAULT;
     }
 
     const currentSection = this.#sections.find(
@@ -452,17 +452,17 @@ export class RecordingView extends HTMLElement {
 
     if (!currentSection) {
       if (this.#currentError) {
-        return State.Error;
+        return State.ERROR;
       }
     }
 
     if (section === currentSection) {
-      return State.Success;
+      return State.SUCCESS;
     }
 
     const index = this.#sections.indexOf(currentSection);
     const ownIndex = this.#sections.indexOf(section);
-    return index >= ownIndex ? State.Success : State.Outstanding;
+    return index >= ownIndex ? State.SUCCESS : State.OUTSTANDING;
   }
 
   #renderStep(
@@ -649,7 +649,7 @@ export class RecordingView extends HTMLElement {
 
     event.preventDefault();
     await this.#copyCurrentSelection(this.#selectedStep);
-    Host.userMetrics.keyboardShortcutFired(Actions.RecorderActions.CopyRecordingOrStep);
+    Host.userMetrics.keyboardShortcutFired(Actions.RecorderActions.COPY_RECORDING_OR_STEP);
   }
 
   #renderSettings(): LitHtml.TemplateResult {
@@ -909,7 +909,7 @@ export class RecordingView extends HTMLElement {
               <${Buttons.Button.Button.litTagName}
                 title=${Models.Tooltip.getTooltipForActions(
                   i18nString(UIStrings.hideCode),
-                  Actions.RecorderActions.ToggleCodeView,
+                  Actions.RecorderActions.TOGGLE_CODE_VIEW,
                 )}
                 .data=${
                   {
@@ -978,8 +978,8 @@ export class RecordingView extends HTMLElement {
 
     this.dispatchEvent(
         new PlayRecordingEvent({
-          targetPanel: TargetPanel.PerformancePanel,
-          speed: PlayRecordingSpeed.Normal,
+          targetPanel: TargetPanel.PERFORMANCE_PANEL,
+          speed: PlayRecordingSpeed.NORMAL,
         }),
     );
   }
@@ -1090,11 +1090,11 @@ export class RecordingView extends HTMLElement {
               variant: Buttons.Button.Variant.OUTLINED,
               title: Models.Tooltip.getTooltipForActions(
                 i18nString(UIStrings.showCode),
-                Actions.RecorderActions.ToggleCodeView,
+                Actions.RecorderActions.TOGGLE_CODE_VIEW,
               ),
             } as Buttons.Button.ButtonData
           }
-          jslog=${VisualLogging.toggleSubpane(Actions.RecorderActions.ToggleCodeView).track({click: true})}
+          jslog=${VisualLogging.toggleSubpane(Actions.RecorderActions.TOGGLE_CODE_VIEW).track({click: true})}
         >
           ${i18nString(UIStrings.showCode)}
         </${Buttons.Button.Button.litTagName}>
@@ -1128,7 +1128,7 @@ export class RecordingView extends HTMLElement {
                         isRecording: this.#isRecording,
                         isPlaying: this.#replayState.isPlaying,
                         error:
-                          this.#getSectionState(section) === State.Error
+                          this.#getSectionState(section) === State.ERROR
                             ? this.#currentError
                             : undefined,
                         hasBreakpoint: false,
@@ -1262,7 +1262,7 @@ export class RecordingView extends HTMLElement {
             .label=${translation}
             title=${Models.Tooltip.getTooltipForActions(
               translation,
-              Actions.RecorderActions.StartRecording,
+              Actions.RecorderActions.START_RECORDING,
             )}
           >
           </devtools-control-button>
@@ -1277,8 +1277,8 @@ export class RecordingView extends HTMLElement {
       wrapper: true,
       'is-recording': this.#isRecording,
       'is-playing': this.#replayState.isPlaying,
-      'was-successful': this.#lastReplayResult === Models.RecordingPlayer.ReplayResult.Success,
-      'was-failure': this.#lastReplayResult === Models.RecordingPlayer.ReplayResult.Failure,
+      'was-successful': this.#lastReplayResult === Models.RecordingPlayer.ReplayResult.SUCCESS,
+      'was-failure': this.#lastReplayResult === Models.RecordingPlayer.ReplayResult.FAILURE,
     };
 
     // clang-format off

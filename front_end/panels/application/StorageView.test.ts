@@ -45,9 +45,9 @@ describeWithMockConnection('StorageView', () => {
     assert.isTrue(spyClearDataForStorageKey.calledOnce);
     assert.strictEqual(dispatcherSpy.callCount, 4);
     sinon.assert.calledWith(
-        dispatcherSpy, Resources.DOMStorageModel.Events.DOMStorageRemoved as unknown as sinon.SinonMatcher);
+        dispatcherSpy, Resources.DOMStorageModel.Events.DOM_STORAGE_REMOVED as unknown as sinon.SinonMatcher);
     sinon.assert.calledWith(
-        dispatcherSpy, Resources.DOMStorageModel.Events.DOMStorageAdded as unknown as sinon.SinonMatcher);
+        dispatcherSpy, Resources.DOMStorageModel.Events.DOM_STORAGE_ADDED as unknown as sinon.SinonMatcher);
   });
 
   it('changes subtitle on MainStorageKeyChanged event', () => {

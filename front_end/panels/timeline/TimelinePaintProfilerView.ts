@@ -40,7 +40,7 @@ export class TimelinePaintProfilerView extends UI.SplitWidget.SplitWidget {
     this.paintProfilerView =
         new LayerViewer.PaintProfilerView.PaintProfilerView(this.imageView.showImage.bind(this.imageView));
     this.paintProfilerView.addEventListener(
-        LayerViewer.PaintProfilerView.Events.WindowChanged, this.onWindowChanged, this);
+        LayerViewer.PaintProfilerView.Events.WINDOW_CHANGED, this.onWindowChanged, this);
     this.setSidebarWidget(this.paintProfilerView);
 
     this.logTreeView = new LayerViewer.PaintProfilerView.PaintProfilerCommandLogView();
@@ -221,7 +221,7 @@ export class TimelinePaintImageView extends UI.Widget.Widget {
     this.transformController =
         new LayerViewer.TransformController.TransformController((this.contentElement as HTMLElement), true);
     this.transformController.addEventListener(
-        LayerViewer.TransformController.Events.TransformChanged, this.updateImagePosition, this);
+        LayerViewer.TransformController.Events.TRANSFORM_CHANGED, this.updateImagePosition, this);
   }
 
   override onResize(): void {

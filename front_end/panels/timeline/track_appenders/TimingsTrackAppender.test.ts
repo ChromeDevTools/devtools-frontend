@@ -49,7 +49,7 @@ describeWithEnvironment('TimingTrackAppender', function() {
       const levelCount = 7;
       assert.strictEqual(entryTypeByLevel.length, levelCount);
       const allEntriesAreTrackAppender =
-          entryTypeByLevel.every(type => type === Timeline.TimelineFlameChartDataProvider.EntryType.TrackAppender);
+          entryTypeByLevel.every(type => type === Timeline.TimelineFlameChartDataProvider.EntryType.TRACK_APPENDER);
       assert.isTrue(allEntriesAreTrackAppender);
     });
     it('creates a flamechart group for the timings track', () => {

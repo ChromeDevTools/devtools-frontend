@@ -315,13 +315,13 @@ export class CorsIssueDetailsView extends AffectedResourcesView {
     const corsError = details.corsErrorStatus.corsError;
 
     const highlightHeader = {
-      section: NetworkForward.UIRequestLocation.UIHeaderSection.Response,
+      section: NetworkForward.UIRequestLocation.UIHeaderSection.RESPONSE,
       name: CorsIssueDetailsView.getHeaderFromError(corsError),
     };
 
     const opts = {
       additionalOnClickAction(): void {
-        Host.userMetrics.issuesPanelResourceOpened(IssuesManager.Issue.IssueCategory.CORS, AffectedItem.Request);
+        Host.userMetrics.issuesPanelResourceOpened(IssuesManager.Issue.IssueCategory.CORS, AffectedItem.REQUEST);
       },
     };
 
@@ -354,7 +354,7 @@ export class CorsIssueDetailsView extends AffectedResourcesView {
         this.#appendStatus(element, details.isWarning);
         const specialHighlightHeader = corsError === Protocol.Network.CorsError.PreflightInvalidStatus ?
             {
-              section: NetworkForward.UIRequestLocation.UIHeaderSection.General,
+              section: NetworkForward.UIRequestLocation.UIHeaderSection.GENERAL,
               name: 'Status-Code',
             } :
             highlightHeader;
@@ -412,7 +412,7 @@ export class CorsIssueDetailsView extends AffectedResourcesView {
         element.appendChild(this.createRequestCell(details.request, {
           ...opts,
           highlightHeader: {
-            section: NetworkForward.UIRequestLocation.UIHeaderSection.Request,
+            section: NetworkForward.UIRequestLocation.UIHeaderSection.REQUEST,
             name: corsErrorStatus.failedParameter,
           },
         }));
@@ -421,7 +421,7 @@ export class CorsIssueDetailsView extends AffectedResourcesView {
           ...opts,
           linkToPreflight: true,
           highlightHeader: {
-            section: NetworkForward.UIRequestLocation.UIHeaderSection.Response,
+            section: NetworkForward.UIRequestLocation.UIHeaderSection.RESPONSE,
             name: 'Access-Control-Allow-Headers',
           },
         }));
@@ -431,7 +431,7 @@ export class CorsIssueDetailsView extends AffectedResourcesView {
         element.appendChild(this.createRequestCell(details.request, {
           ...opts,
           highlightHeader: {
-            section: NetworkForward.UIRequestLocation.UIHeaderSection.Response,
+            section: NetworkForward.UIRequestLocation.UIHeaderSection.RESPONSE,
             name: CorsIssueDetailsView.getHeaderFromError(corsError),
           },
         }));
@@ -447,7 +447,7 @@ export class CorsIssueDetailsView extends AffectedResourcesView {
         element.appendChild(this.createRequestCell(details.request, {
           ...opts,
           highlightHeader: {
-            section: NetworkForward.UIRequestLocation.UIHeaderSection.Response,
+            section: NetworkForward.UIRequestLocation.UIHeaderSection.RESPONSE,
             name: CorsIssueDetailsView.getHeaderFromError(corsError),
           },
         }));

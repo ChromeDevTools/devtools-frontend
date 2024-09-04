@@ -225,7 +225,7 @@ export class LayerTreeOutline extends Common.ObjectWrapper.eventMixin<EventTypes
       if (this.layerSnapshotMap.has(layer)) {
         contextMenu.defaultSection().appendItem(
             i18nString(UIStrings.showPaintProfiler),
-            () => this.dispatchEventToListeners(Events.PaintProfilerRequested, selection as Selection),
+            () => this.dispatchEventToListeners(Events.PAINT_PROFILER_REQUESTED, selection as Selection),
             {jslogContext: 'layers.paint-profiler'});
       }
     }
@@ -238,11 +238,11 @@ export class LayerTreeOutline extends Common.ObjectWrapper.eventMixin<EventTypes
 }
 
 export const enum Events {
-  PaintProfilerRequested = 'PaintProfilerRequested',
+  PAINT_PROFILER_REQUESTED = 'PaintProfilerRequested',
 }
 
 export type EventTypes = {
-  [Events.PaintProfilerRequested]: Selection,
+  [Events.PAINT_PROFILER_REQUESTED]: Selection,
 };
 
 export class LayerTreeElement extends UI.TreeOutline.TreeElement {

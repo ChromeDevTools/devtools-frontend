@@ -165,7 +165,7 @@ export class HeapSnapshotWorkerProxy extends Common.ObjectWrapper.ObjectWrapper<
       }
     }
     const hasLongRunningCalls = Boolean(this.previousCallbacks.size);
-    this.dispatchEventToListeners(HeapSnapshotWorkerProxy.Events.Wait, hasLongRunningCalls);
+    this.dispatchEventToListeners(HeapSnapshotWorkerProxy.Events.WAIT, hasLongRunningCalls);
     for (const callId of this.callbacks.keys()) {
       this.previousCallbacks.add(callId);
     }
@@ -206,13 +206,12 @@ export class HeapSnapshotWorkerProxy extends Common.ObjectWrapper.ObjectWrapper<
 }
 
 export namespace HeapSnapshotWorkerProxy {
-
   export const enum Events {
-    Wait = 'Wait',
+    WAIT = 'Wait',
   }
 
   export type EventTypes = {
-    [Events.Wait]: boolean,
+    [Events.WAIT]: boolean,
   };
 }
 

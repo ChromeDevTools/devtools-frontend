@@ -103,7 +103,7 @@ export class StartView extends HTMLElement {
             <${Buttons.Button.Button.litTagName} .variant=${
         Buttons.Button.Variant.PRIMARY
       } @click=${this.#onClick}
-              .jslogContext=${Actions.RecorderActions.CreateRecording}>
+              .jslogContext=${Actions.RecorderActions.CREATE_RECORDING}>
               ${i18nString(UIStrings.createRecording)}
             </${Buttons.Button.Button.litTagName}>
           </div>

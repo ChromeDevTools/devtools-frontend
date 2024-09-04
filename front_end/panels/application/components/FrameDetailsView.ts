@@ -403,7 +403,7 @@ export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappabl
         const request = resource.request;
         return renderIconLink('arrow-up-down-circle', i18nString(UIStrings.clickToRevealInNetworkPanel), () => {
           const requestLocation = NetworkForward.UIRequestLocation.UIRequestLocation.tab(
-              request, NetworkForward.UIRequestLocation.UIRequestTabs.HeadersComponent);
+              request, NetworkForward.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT);
           return Common.Revealer.reveal(requestLocation);
         }, 'reveal-in-network');
       }

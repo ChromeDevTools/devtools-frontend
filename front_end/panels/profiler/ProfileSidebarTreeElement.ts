@@ -65,7 +65,7 @@ export class ProfileSidebarTreeElement extends UI.TreeOutline.TreeElement {
     this.small = false;
     this.dataDisplayDelegate = dataDisplayDelegate;
     this.profile = profile;
-    profile.addEventListener(ProfileHeaderEvents.UpdateStatus, this.updateStatus, this);
+    profile.addEventListener(ProfileHeaderEvents.UPDATE_STATUS, this.updateStatus, this);
   }
 
   updateStatus(event: Common.EventTarget.EventTargetEvent<StatusUpdate>): void {
@@ -107,7 +107,7 @@ export class ProfileSidebarTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   dispose(): void {
-    this.profile.removeEventListener(ProfileHeaderEvents.UpdateStatus, this.updateStatus, this);
+    this.profile.removeEventListener(ProfileHeaderEvents.UPDATE_STATUS, this.updateStatus, this);
   }
 
   override onselect(): boolean {

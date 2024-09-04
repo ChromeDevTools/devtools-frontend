@@ -369,22 +369,22 @@ export class ResourceWebSocketFrameView extends UI.Widget.VBox {
 }
 
 const enum OpCodes {
-  ContinuationFrame = 0,
-  TextFrame = 1,
-  BinaryFrame = 2,
-  ConnectionCloseFrame = 8,
-  PingFrame = 9,
-  PongFrame = 10,
+  CONTINUATION_FRAME = 0,
+  TEXT_FRAME = 1,
+  BINARY_FRAME = 2,
+  CONNECTION_CLOSE_FRAME = 8,
+  PING_FRAME = 9,
+  PONG_FRAME = 10,
 }
 
 export const opCodeDescriptions: (() => string)[] = (function(): (() => Common.UIString.LocalizedString)[] {
   const map = [];
-  map[OpCodes.ContinuationFrame] = i18nLazyString(UIStrings.continuationFrame);
-  map[OpCodes.TextFrame] = i18nLazyString(UIStrings.textMessage);
-  map[OpCodes.BinaryFrame] = i18nLazyString(UIStrings.binaryMessage);
-  map[OpCodes.ConnectionCloseFrame] = i18nLazyString(UIStrings.connectionCloseMessage);
-  map[OpCodes.PingFrame] = i18nLazyString(UIStrings.pingMessage);
-  map[OpCodes.PongFrame] = i18nLazyString(UIStrings.pongMessage);
+  map[OpCodes.CONTINUATION_FRAME] = i18nLazyString(UIStrings.continuationFrame);
+  map[OpCodes.TEXT_FRAME] = i18nLazyString(UIStrings.textMessage);
+  map[OpCodes.BINARY_FRAME] = i18nLazyString(UIStrings.binaryMessage);
+  map[OpCodes.CONNECTION_CLOSE_FRAME] = i18nLazyString(UIStrings.connectionCloseMessage);
+  map[OpCodes.PING_FRAME] = i18nLazyString(UIStrings.pingMessage);
+  map[OpCodes.PONG_FRAME] = i18nLazyString(UIStrings.pongMessage);
   return map;
 })();
 
@@ -412,7 +412,7 @@ export class ResourceWebSocketFrameNode extends DataGrid.SortableDataGrid.Sortab
 
     let dataText: string = frame.text;
     let description = ResourceWebSocketFrameView.opCodeDescription(frame.opCode, frame.mask);
-    const isTextFrame = frame.opCode === OpCodes.TextFrame;
+    const isTextFrame = frame.opCode === OpCodes.TEXT_FRAME;
 
     if (frame.type === SDK.NetworkRequest.WebSocketFrameType.Error) {
       description = dataText;
@@ -421,7 +421,7 @@ export class ResourceWebSocketFrameNode extends DataGrid.SortableDataGrid.Sortab
     } else if (isTextFrame) {
       description = dataText;
 
-    } else if (frame.opCode === OpCodes.BinaryFrame) {
+    } else if (frame.opCode === OpCodes.BINARY_FRAME) {
       length = Platform.NumberUtilities.bytesToString(Platform.StringUtilities.base64ToSize(frame.text));
       description = opCodeDescriptions[frame.opCode]();
 

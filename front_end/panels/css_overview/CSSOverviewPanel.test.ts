@@ -23,7 +23,7 @@ describeWithMockConnection('CSSOverviewPanel', () => {
   it('reacts to start event and sends completion event', async () => {
     const controller = new CSSOverview.CSSOverviewController.OverviewController();
     new CSSOverview.CSSOverviewPanel.CSSOverviewPanel(controller);
-    const overviewCompleted = controller.once(CSSOverview.CSSOverviewController.Events.OverviewCompleted);
+    const overviewCompleted = controller.once(CSSOverview.CSSOverviewController.Events.OVERVIEW_COMPLETED);
     sinon.stub(target.runtimeAgent(), 'invoke_evaluate').resolves({
       result: {},
     } as unknown as Protocol.Runtime.EvaluateResponse);
@@ -34,7 +34,7 @@ describeWithMockConnection('CSSOverviewPanel', () => {
       medias: [],
     } as unknown as Protocol.CSS.GetMediaQueriesResponse);
 
-    controller.dispatchEventToListeners(CSSOverview.CSSOverviewController.Events.RequestOverviewStart);
+    controller.dispatchEventToListeners(CSSOverview.CSSOverviewController.Events.REQUEST_OVERVIEW_START);
     await overviewCompleted;
   });
 });

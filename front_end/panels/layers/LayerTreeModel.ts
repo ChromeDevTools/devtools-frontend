@@ -143,8 +143,10 @@ export class LayerTreeModel extends SDK.SDKModel.SDKModel<EventTypes> {
 SDK.SDKModel.SDKModel.register(LayerTreeModel, {capabilities: SDK.Target.Capability.DOM, autostart: false});
 
 export enum Events {
+  /* eslint-disable @typescript-eslint/naming-convention -- Used by web_tests. */
   LayerTreeChanged = 'LayerTreeChanged',
   LayerPainted = 'LayerPainted',
+  /* eslint-enable @typescript-eslint/naming-convention */
 }
 
 export type EventTypes = {

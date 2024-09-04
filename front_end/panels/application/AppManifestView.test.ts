@@ -54,21 +54,21 @@ describeWithMockConnection('AppManifestView', () => {
     view.show(document.body);
 
     await new Promise(resolve => {
-      view.addEventListener(Application.AppManifestView.Events.ManifestDetected, resolve, {once: true});
+      view.addEventListener(Application.AppManifestView.Events.MANIFEST_DETECTED, resolve, {once: true});
     });
     assert.isTrue(emptyView.isShowing());
     assert.isFalse(reportView.isShowing());
 
     resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.DOMContentLoaded, 42);
     await new Promise(resolve => {
-      view.addEventListener(Application.AppManifestView.Events.ManifestDetected, resolve, {once: true});
+      view.addEventListener(Application.AppManifestView.Events.MANIFEST_DETECTED, resolve, {once: true});
     });
     assert.isTrue(emptyView.isShowing());
     assert.isFalse(reportView.isShowing());
 
     resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.DOMContentLoaded, 42);
     await new Promise(resolve => {
-      view.addEventListener(Application.AppManifestView.Events.ManifestDetected, resolve, {once: true});
+      view.addEventListener(Application.AppManifestView.Events.MANIFEST_DETECTED, resolve, {once: true});
     });
     assert.isFalse(emptyView.isShowing());
     assert.isTrue(reportView.isShowing());
@@ -91,7 +91,7 @@ describeWithMockConnection('AppManifestView', () => {
 
     resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.DOMContentLoaded, 42);
     await new Promise(resolve => {
-      view.addEventListener(Application.AppManifestView.Events.ManifestDetected, resolve, {once: true});
+      view.addEventListener(Application.AppManifestView.Events.MANIFEST_DETECTED, resolve, {once: true});
     });
 
     const manifestSections = view.getStaticSections();
@@ -134,7 +134,7 @@ describeWithMockConnection('AppManifestView', () => {
     view.show(document.body);
 
     await new Promise(resolve => {
-      view.addEventListener(Application.AppManifestView.Events.ManifestRendered, resolve, {once: true});
+      view.addEventListener(Application.AppManifestView.Events.MANIFEST_RENDERED, resolve, {once: true});
     });
 
     const warningSection = reportView.element.shadowRoot?.querySelector('.report-section');

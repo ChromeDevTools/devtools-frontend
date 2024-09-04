@@ -41,8 +41,8 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const {render, html} = LitHtml;
 
 export const enum Navigation {
-  Backward = 'Backward',
-  Forward = 'Forward',
+  BACKWARD = 'Backward',
+  FORWARD = 'Forward',
 }
 
 export class AddressInputChangedEvent extends Event {
@@ -92,9 +92,9 @@ export interface LinearMemoryNavigatorData {
 }
 
 export const enum Mode {
-  Edit = 'Edit',
-  Submitted = 'Submitted',
-  InvalidSubmit = 'InvalidSubmit',
+  EDIT = 'Edit',
+  SUBMITTED = 'Submitted',
+  INVALID_SUBMIT = 'InvalidSubmit',
 }
 
 export class LinearMemoryNavigator extends HTMLElement {
@@ -121,9 +121,9 @@ export class LinearMemoryNavigator extends HTMLElement {
 
     const addressInput = this.#shadow.querySelector<HTMLInputElement>('.address-input');
     if (addressInput) {
-      if (data.mode === Mode.Submitted) {
+      if (data.mode === Mode.SUBMITTED) {
         addressInput.blur();
-      } else if (data.mode === Mode.InvalidSubmit) {
+      } else if (data.mode === Mode.INVALID_SUBMIT) {
         addressInput.select();
       }
     }
@@ -136,19 +136,19 @@ export class LinearMemoryNavigator extends HTMLElement {
       <div class="navigator">
         <div class="navigator-item">
           ${this.#createButton({icon: 'undo', title: i18nString(UIStrings.goBackInAddressHistory),
-              event: new HistoryNavigationEvent(Navigation.Backward), enabled: this.#canGoBackInHistory,
+              event: new HistoryNavigationEvent(Navigation.BACKWARD), enabled: this.#canGoBackInHistory,
               jslogContext:'linear-memory-inspector.history-back'})}
           ${this.#createButton({icon: 'redo', title: i18nString(UIStrings.goForwardInAddressHistory),
-              event: new HistoryNavigationEvent(Navigation.Forward), enabled: this.#canGoForwardInHistory,
+              event: new HistoryNavigationEvent(Navigation.FORWARD), enabled: this.#canGoForwardInHistory,
               jslogContext:'linear-memory-inspector.history-forward'})}
         </div>
         <div class="navigator-item">
           ${this.#createButton({icon: 'chevron-left', title: i18nString(UIStrings.previousPage),
-              event: new PageNavigationEvent(Navigation.Backward), enabled: true,
+              event: new PageNavigationEvent(Navigation.BACKWARD), enabled: true,
               jslogContext:'linear-memory-inspector.previous-page'})}
           ${this.#createAddressInput()}
           ${this.#createButton({icon: 'chevron-right', title: i18nString(UIStrings.nextPage),
-              event: new PageNavigationEvent(Navigation.Forward), enabled: true,
+              event: new PageNavigationEvent(Navigation.FORWARD), enabled: true,
               jslogContext:'linear-memory-inspector.next-page'})}
         </div>
         ${this.#createButton({icon: 'refresh', title: i18nString(UIStrings.refresh),
@@ -171,7 +171,7 @@ export class LinearMemoryNavigator extends HTMLElement {
       change: true,
     })}
         title=${this.#valid ? i18nString(UIStrings.enterAddress) : this.#error} @change=${
-        this.#onAddressChange.bind(this, Mode.Submitted)} @input=${this.#onAddressChange.bind(this, Mode.Edit)}/>`;
+        this.#onAddressChange.bind(this, Mode.SUBMITTED)} @input=${this.#onAddressChange.bind(this, Mode.EDIT)}/>`;
   }
 
   #onAddressChange(mode: Mode, event: Event): void {

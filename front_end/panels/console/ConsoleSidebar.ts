@@ -78,21 +78,21 @@ export class ConsoleSidebar extends Common.ObjectWrapper.eventMixin<EventTypes, 
       regex: undefined,
     }];
     this.appendGroup(
-        GroupName.All, [], ConsoleFilter.allLevelsFilterValue(), IconButton.Icon.create('list'), selectedFilterSetting);
+        GroupName.ALL, [], ConsoleFilter.allLevelsFilterValue(), IconButton.Icon.create('list'), selectedFilterSetting);
     this.appendGroup(
-        GroupName.ConsoleAPI, consoleAPIParsedFilters, ConsoleFilter.allLevelsFilterValue(),
+        GroupName.CONSOLE_API, consoleAPIParsedFilters, ConsoleFilter.allLevelsFilterValue(),
         IconButton.Icon.create('profile'), selectedFilterSetting);
     this.appendGroup(
-        GroupName.Error, [], ConsoleFilter.singleLevelMask(Protocol.Log.LogEntryLevel.Error),
+        GroupName.ERROR, [], ConsoleFilter.singleLevelMask(Protocol.Log.LogEntryLevel.Error),
         IconButton.Icon.create('cross-circle'), selectedFilterSetting);
     this.appendGroup(
-        GroupName.Warning, [], ConsoleFilter.singleLevelMask(Protocol.Log.LogEntryLevel.Warning),
+        GroupName.WARNING, [], ConsoleFilter.singleLevelMask(Protocol.Log.LogEntryLevel.Warning),
         IconButton.Icon.create('warning'), selectedFilterSetting);
     this.appendGroup(
-        GroupName.Info, [], ConsoleFilter.singleLevelMask(Protocol.Log.LogEntryLevel.Info),
+        GroupName.INFO, [], ConsoleFilter.singleLevelMask(Protocol.Log.LogEntryLevel.Info),
         IconButton.Icon.create('info'), selectedFilterSetting);
     this.appendGroup(
-        GroupName.Verbose, [], ConsoleFilter.singleLevelMask(Protocol.Log.LogEntryLevel.Verbose),
+        GroupName.VERBOSE, [], ConsoleFilter.singleLevelMask(Protocol.Log.LogEntryLevel.Verbose),
         IconButton.Icon.create('bug'), selectedFilterSetting);
     const selectedTreeElementName = selectedFilterSetting.get();
     const defaultTreeElement =
@@ -130,7 +130,7 @@ export class ConsoleSidebar extends Common.ObjectWrapper.eventMixin<EventTypes, 
 
   private selectionChanged(event: Common.EventTarget.EventTargetEvent<UI.TreeOutline.TreeElement>): void {
     this.selectedTreeElement = event.data;
-    this.dispatchEventToListeners(Events.FilterSelected);
+    this.dispatchEventToListeners(Events.FILTER_SELECTED);
   }
 
   override wasShown(): void {
@@ -140,11 +140,11 @@ export class ConsoleSidebar extends Common.ObjectWrapper.eventMixin<EventTypes, 
 }
 
 export const enum Events {
-  FilterSelected = 'FilterSelected',
+  FILTER_SELECTED = 'FilterSelected',
 }
 
 export type EventTypes = {
-  [Events.FilterSelected]: void,
+  [Events.FILTER_SELECTED]: void,
 };
 
 class ConsoleSidebarTreeElement extends UI.TreeOutline.TreeElement {
@@ -179,12 +179,12 @@ export class URLGroupTreeElement extends ConsoleSidebarTreeElement {
 }
 
 const enum GroupName {
-  ConsoleAPI = 'user message',
-  All = 'message',
-  Error = 'error',
-  Warning = 'warning',
-  Info = 'info',
-  Verbose = 'verbose',
+  CONSOLE_API = 'user message',
+  ALL = 'message',
+  ERROR = 'error',
+  WARNING = 'warning',
+  INFO = 'info',
+  VERBOSE = 'verbose',
 }
 
 /**
@@ -193,12 +193,12 @@ const enum GroupName {
  * construct a filter or get a new message.
  */
 const stringForFilterSidebarItemMap = new Map<GroupName, string>([
-  [GroupName.ConsoleAPI, UIStrings.dUserMessages],
-  [GroupName.All, UIStrings.dMessages],
-  [GroupName.Error, UIStrings.dErrors],
-  [GroupName.Warning, UIStrings.dWarnings],
-  [GroupName.Info, UIStrings.dInfo],
-  [GroupName.Verbose, UIStrings.dVerbose],
+  [GroupName.CONSOLE_API, UIStrings.dUserMessages],
+  [GroupName.ALL, UIStrings.dMessages],
+  [GroupName.ERROR, UIStrings.dErrors],
+  [GroupName.WARNING, UIStrings.dWarnings],
+  [GroupName.INFO, UIStrings.dInfo],
+  [GroupName.VERBOSE, UIStrings.dVerbose],
 ]);
 
 export class FilterTreeElement extends ConsoleSidebarTreeElement {

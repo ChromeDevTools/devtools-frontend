@@ -28,13 +28,13 @@ class SharedStorageTreeElementListener {
     this.#sidebar = sidebar;
 
     this.#sidebar.sharedStorageTreeElementDispatcher.addEventListener(
-        Application.ApplicationPanelSidebar.SharedStorageTreeElementDispatcher.Events.SharedStorageTreeElementAdded,
+        Application.ApplicationPanelSidebar.SharedStorageTreeElementDispatcher.Events.SHARED_STORAGE_TREE_ELEMENT_ADDED,
         this.#treeElementAdded, this);
   }
 
   dispose(): void {
     this.#sidebar.sharedStorageTreeElementDispatcher.removeEventListener(
-        Application.ApplicationPanelSidebar.SharedStorageTreeElementDispatcher.Events.SharedStorageTreeElementAdded,
+        Application.ApplicationPanelSidebar.SharedStorageTreeElementDispatcher.Events.SHARED_STORAGE_TREE_ELEMENT_ADDED,
         this.#treeElementAdded, this);
   }
 
@@ -47,7 +47,8 @@ class SharedStorageTreeElementListener {
   async waitForElementsAdded(expectedCount: number): Promise<void> {
     while (this.#originsAdded.length < expectedCount) {
       await this.#sidebar.sharedStorageTreeElementDispatcher.once(
-          Application.ApplicationPanelSidebar.SharedStorageTreeElementDispatcher.Events.SharedStorageTreeElementAdded);
+          Application.ApplicationPanelSidebar.SharedStorageTreeElementDispatcher.Events
+              .SHARED_STORAGE_TREE_ELEMENT_ADDED);
     }
   }
 }
@@ -187,7 +188,7 @@ describeWithMockConnection('ApplicationPanelSidebar', () => {
 
     sidebar.sharedStorageListTreeElement.view.setDefaultIdForTesting(ID);
     for (const event of EVENTS) {
-      sharedStorageModel.dispatchEventToListeners(Application.SharedStorageModel.Events.SharedStorageAccess, event);
+      sharedStorageModel.dispatchEventToListeners(Application.SharedStorageModel.Events.SHARED_STORAGE_ACCESS, event);
     }
 
     assert.deepEqual(sidebar.sharedStorageListTreeElement.view.getEventsForTesting(), EVENTS);
@@ -226,23 +227,23 @@ describeWithMockConnection('ApplicationPanelSidebar', () => {
 
   it('adds interest group event on in scope event',
      testUiUpdate(
-         Application.InterestGroupStorageModel.Events.InterestGroupAccess,
+         Application.InterestGroupStorageModel.Events.INTEREST_GROUP_ACCESS,
          Application.InterestGroupStorageModel.InterestGroupStorageModel, 'interestGroupTreeElement.addEvent', true));
   // Failing on the toolbar button CL together with some AnimationTimeline tests
   it.skip(
       '[crbug.com/354673294] does not add interest group event on out of scope event',
       testUiUpdate(
-          Application.InterestGroupStorageModel.Events.InterestGroupAccess,
+          Application.InterestGroupStorageModel.Events.INTEREST_GROUP_ACCESS,
           Application.InterestGroupStorageModel.InterestGroupStorageModel, 'interestGroupTreeElement.addEvent', false));
   it('adds DOM storage on in scope event',
      testUiUpdate(
-         Application.DOMStorageModel.Events.DOMStorageAdded, Application.DOMStorageModel.DOMStorageModel,
+         Application.DOMStorageModel.Events.DOM_STORAGE_ADDED, Application.DOMStorageModel.DOMStorageModel,
          'sessionStorageListTreeElement.appendChild', true));
   // Failing on the toolbar button CL together with some AnimationTimeline tests
   it.skip(
       '[crbug.com/354673294] does not add DOM storage on out of scope event',
       testUiUpdate(
-          Application.DOMStorageModel.Events.DOMStorageAdded, Application.DOMStorageModel.DOMStorageModel,
+          Application.DOMStorageModel.Events.DOM_STORAGE_ADDED, Application.DOMStorageModel.DOMStorageModel,
           'sessionStorageListTreeElement.appendChild', false));
 
   it('adds indexed DB on in scope event',
@@ -258,13 +259,13 @@ describeWithMockConnection('ApplicationPanelSidebar', () => {
 
   it('adds shared storage on in scope event',
      testUiUpdate(
-         Application.SharedStorageModel.Events.SharedStorageAdded, Application.SharedStorageModel.SharedStorageModel,
+         Application.SharedStorageModel.Events.SHARED_STORAGE_ADDED, Application.SharedStorageModel.SharedStorageModel,
          'sharedStorageListTreeElement.appendChild', true));
   // Failing on the toolbar button CL together with some AnimationTimeline tests
   it.skip(
       '[crbug.com/354673294] does not add shared storage on out of scope event',
       testUiUpdate(
-          Application.SharedStorageModel.Events.SharedStorageAdded, Application.SharedStorageModel.SharedStorageModel,
+          Application.SharedStorageModel.Events.SHARED_STORAGE_ADDED, Application.SharedStorageModel.SharedStorageModel,
           'sharedStorageListTreeElement.appendChild', false));
 
   const MOCK_GETTER_ITEM = {

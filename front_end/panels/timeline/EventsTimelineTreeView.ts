@@ -46,7 +46,7 @@ export class EventsTimelineTreeView extends TimelineTreeView {
     super();
     this.element.setAttribute('jslog', `${VisualLogging.pane('event-log').track({resize: true})}`);
     this.filtersControl = new Filters();
-    this.filtersControl.addEventListener(Events.FilterChanged, this.onFilterChanged, this);
+    this.filtersControl.addEventListener(Events.FILTER_CHANGED, this.onFilterChanged, this);
     this.init();
     this.delegate = delegate;
     this.dataGrid.markColumnAsSortedBy('start-time', DataGrid.DataGrid.Order.Ascending);
@@ -208,16 +208,16 @@ export class Filters extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   }
 
   private notifyFiltersChanged(): void {
-    this.dispatchEventToListeners(Events.FilterChanged);
+    this.dispatchEventToListeners(Events.FILTER_CHANGED);
   }
 
   private static readonly durationFilterPresetsMs = [0, 1, 15];
 }
 
 const enum Events {
-  FilterChanged = 'FilterChanged',
+  FILTER_CHANGED = 'FilterChanged',
 }
 
 type EventTypes = {
-  [Events.FilterChanged]: void,
+  [Events.FILTER_CHANGED]: void,
 };

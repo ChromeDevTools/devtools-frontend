@@ -277,13 +277,13 @@ export class IssueAggregator extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     for (const issue of this.issuesManager.issues()) {
       this.#aggregateIssue(issue);
     }
-    this.dispatchEventToListeners(Events.FullUpdateRequired);
+    this.dispatchEventToListeners(Events.FULL_UPDATE_REQUIRED);
   }
 
   #aggregateIssue(issue: IssuesManager.Issue.Issue): AggregatedIssue {
     const map = issue.isHidden() ? this.#hiddenAggregatedIssuesByKey : this.#aggregatedIssuesByKey;
     const aggregatedIssue = this.#aggregateIssueByStatus(map, issue);
-    this.dispatchEventToListeners(Events.AggregatedIssueUpdated, aggregatedIssue);
+    this.dispatchEventToListeners(Events.AGGREGATED_ISSUE_UPDATED, aggregatedIssue);
     return aggregatedIssue;
   }
 
@@ -341,11 +341,11 @@ export class IssueAggregator extends Common.ObjectWrapper.ObjectWrapper<EventTyp
 }
 
 export const enum Events {
-  AggregatedIssueUpdated = 'AggregatedIssueUpdated',
-  FullUpdateRequired = 'FullUpdateRequired',
+  AGGREGATED_ISSUE_UPDATED = 'AggregatedIssueUpdated',
+  FULL_UPDATE_REQUIRED = 'FullUpdateRequired',
 }
 
 export type EventTypes = {
-  [Events.AggregatedIssueUpdated]: AggregatedIssue,
-  [Events.FullUpdateRequired]: void,
+  [Events.AGGREGATED_ISSUE_UPDATED]: AggregatedIssue,
+  [Events.FULL_UPDATE_REQUIRED]: void,
 };

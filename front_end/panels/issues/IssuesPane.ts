@@ -209,8 +209,8 @@ export class IssuesPane extends UI.Widget.VBox {
 
     this.#issuesManager = IssuesManager.IssuesManager.IssuesManager.instance();
     this.#aggregator = new IssueAggregator(this.#issuesManager);
-    this.#aggregator.addEventListener(IssueAggregatorEvents.AggregatedIssueUpdated, this.#issueUpdated, this);
-    this.#aggregator.addEventListener(IssueAggregatorEvents.FullUpdateRequired, this.#onFullUpdate, this);
+    this.#aggregator.addEventListener(IssueAggregatorEvents.AGGREGATED_ISSUE_UPDATED, this.#issueUpdated, this);
+    this.#aggregator.addEventListener(IssueAggregatorEvents.FULL_UPDATE_REQUIRED, this.#onFullUpdate, this);
     this.#hiddenIssuesRow.hidden = this.#issuesManager.numberOfHiddenIssues() === 0;
     this.#onFullUpdate();
     this.#issuesManager.addEventListener(

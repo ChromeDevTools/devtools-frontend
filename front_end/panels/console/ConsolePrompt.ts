@@ -192,7 +192,7 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
           asSoonAsPossible ? Common.Throttler.Scheduling.AS_SOON_AS_POSSIBLE : Common.Throttler.Scheduling.DEFAULT);
     }
     this.updatePromptIcon();
-    this.dispatchEventToListeners(Events.TextChanged);
+    this.dispatchEventToListeners(Events.TEXT_CHANGED);
   }
 
   private async requestPreview(): Promise<void> {
@@ -412,9 +412,9 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, t
 }
 
 export const enum Events {
-  TextChanged = 'TextChanged',
+  TEXT_CHANGED = 'TextChanged',
 }
 
 export type EventTypes = {
-  [Events.TextChanged]: void,
+  [Events.TEXT_CHANGED]: void,
 };

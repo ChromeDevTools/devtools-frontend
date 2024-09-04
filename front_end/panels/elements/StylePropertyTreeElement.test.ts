@@ -1090,13 +1090,13 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
           value: blur,
           source: variable,
           expansionContext,
-          propertyType: Elements.StylePropertyTreeElement.ShadowPropertyType.Blur,
+          propertyType: Elements.StylePropertyTreeElement.ShadowPropertyType.BLUR,
         },
         {
           value: spread,
           source: variable,
           expansionContext,
-          propertyType: Elements.StylePropertyTreeElement.ShadowPropertyType.Spread,
+          propertyType: Elements.StylePropertyTreeElement.ShadowPropertyType.SPREAD,
         },
       ];
 
@@ -1127,7 +1127,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
         };
       });
       const model = new Elements.StylePropertyTreeElement.ShadowModel(
-          Elements.PropertyMatchers.ShadowType.BoxShadow, properties, renderingContext);
+          Elements.PropertyMatchers.ShadowType.BOX_SHADOW, properties, renderingContext);
 
       const container = document.createElement('div');
       model.renderContents(container);

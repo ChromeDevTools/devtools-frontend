@@ -15,7 +15,7 @@ export class LighthouseConverter implements Converter {
   }
 
   getId(): string {
-    return Models.ConverterIds.ConverterIds.Lighthouse;
+    return Models.ConverterIds.ConverterIds.LIGHTHOUSE;
   }
 
   getFormatName(): string {

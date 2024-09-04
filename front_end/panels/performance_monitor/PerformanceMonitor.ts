@@ -98,7 +98,7 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox implements
     UI.ARIAUtils.setLabel(this.canvas, i18nString(UIStrings.graphsDisplayingARealtimeViewOf));
     this.contentElement.createChild('div', 'perfmon-chart-suspend-overlay fill').createChild('div').textContent =
         i18nString(UIStrings.paused);
-    this.controlPane.addEventListener(Events.MetricChanged, this.recalcChartHeight, this);
+    this.controlPane.addEventListener(Events.METRIC_CHANGED, this.recalcChartHeight, this);
     SDK.TargetManager.TargetManager.instance().observeModels(SDK.PerformanceMetricsModel.PerformanceMetricsModel, this);
   }
 
@@ -431,8 +431,8 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox implements
 }
 
 export const enum Format {
-  Percent = 'Percent',
-  Bytes = 'Bytes',
+  PERCENT = 'Percent',
+  BYTES = 'Bytes',
 }
 
 export class ControlPane extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
@@ -487,7 +487,7 @@ export class ControlPane extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
                 themeSupport.getComputedValue('--override-color-perf-monitor-cpu-recalc-style-duration', this.element),
           },
         ],
-        format: Format.Percent,
+        format: Format.PERCENT,
         smooth: true,
         stacked: true,
         color: themeSupport.getComputedValue('--override-color-perf-monitor-cpu', this.element),
@@ -507,7 +507,7 @@ export class ControlPane extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
             color: themeSupport.getComputedValue('--override-color-perf-monitor-jsheap-used-size', this.element),
           },
         ],
-        format: Format.Bytes,
+        format: Format.BYTES,
         color: themeSupport.getComputedValue('--override-color-perf-monitor-jsheap'),
       },
       {
@@ -591,7 +591,7 @@ export class ControlPane extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
       this.enabledCharts.delete(chartName);
     }
     this.enabledChartsSetting.set(Array.from(this.enabledCharts));
-    this.dispatchEventToListeners(Events.MetricChanged);
+    this.dispatchEventToListeners(Events.METRIC_CHANGED);
   }
 
   charts(): ChartInfo[] {
@@ -616,11 +616,11 @@ export class ControlPane extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
 }
 
 const enum Events {
-  MetricChanged = 'MetricChanged',
+  METRIC_CHANGED = 'MetricChanged',
 }
 
 type EventTypes = {
-  [Events.MetricChanged]: void,
+  [Events.METRIC_CHANGED]: void,
 };
 
 let numberFormatter: Intl.NumberFormat;
@@ -655,9 +655,9 @@ export class MetricIndicator {
       percentFormatter = new Intl.NumberFormat('en-US', {maximumFractionDigits: 1, style: 'percent'});
     }
     switch (info.format) {
-      case Format.Percent:
+      case Format.PERCENT:
         return percentFormatter.format(value);
-      case Format.Bytes:
+      case Format.BYTES:
         return Platform.NumberUtilities.bytesToString(value);
       default:
         return numberFormatter.format(value);

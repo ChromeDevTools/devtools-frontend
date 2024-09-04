@@ -47,7 +47,7 @@ describeWithEnvironment('LayoutShiftsTrackAppender', function() {
     // Only one row of layout shifts.
     assert.strictEqual(entryTypeByLevel.length, 1);
     assert.deepEqual(entryTypeByLevel, [
-      Timeline.TimelineFlameChartDataProvider.EntryType.TrackAppender,
+      Timeline.TimelineFlameChartDataProvider.EntryType.TRACK_APPENDER,
     ]);
   });
 

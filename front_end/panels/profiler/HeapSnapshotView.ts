@@ -330,8 +330,8 @@ export class HeapSnapshotView extends UI.View.SimpleView implements DataDisplayD
     this.linkifier = new Components.Linkifier.Linkifier();
     const profileType = profile.profileType();
 
-    profileType.addEventListener(HeapSnapshotProfileTypeEvents.SnapshotReceived, this.onReceiveSnapshot, this);
-    profileType.addEventListener(ProfileTypeEvents.RemoveProfileHeader, this.onProfileHeaderRemoved, this);
+    profileType.addEventListener(HeapSnapshotProfileTypeEvents.SNAPSHOT_RECEIVED, this.onReceiveSnapshot, this);
+    profileType.addEventListener(ProfileTypeEvents.REMOVE_PROFILE_HEADER, this.onProfileHeaderRemoved, this);
 
     const isHeapTimeline = profileType.id === TrackingHeapSnapshotProfileType.TypeId;
     if (isHeapTimeline) {
@@ -479,19 +479,19 @@ export class HeapSnapshotView extends UI.View.SimpleView implements DataDisplayD
     this.searchThrottler = new Common.Throttler.Throttler(0);
 
     for (const existingProfile of this.profiles()) {
-      existingProfile.addEventListener(ProfileHeaderEvents.ProfileTitleChanged, this.updateControls, this);
+      existingProfile.addEventListener(ProfileHeaderEvents.PROFILE_TITLE_CHANGED, this.updateControls, this);
     }
   }
 
   createOverview(): void {
     const profileType = this.profile.profileType();
     this.trackingOverviewGrid = new HeapTimelineOverview();
-    this.trackingOverviewGrid.addEventListener(Events.IdsRangeChanged, this.onIdsRangeChanged.bind(this));
+    this.trackingOverviewGrid.addEventListener(Events.IDS_RANGE_CHANGED, this.onIdsRangeChanged.bind(this));
     if (!this.profile.fromFile() && profileType.profileBeingRecorded() === this.profile) {
       (profileType as TrackingHeapSnapshotProfileType)
-          .addEventListener(TrackingHeapSnapshotProfileTypeEvents.HeapStatsUpdate, this.onHeapStatsUpdate, this);
+          .addEventListener(TrackingHeapSnapshotProfileTypeEvents.HEAP_STATS_UPDATE, this.onHeapStatsUpdate, this);
       (profileType as TrackingHeapSnapshotProfileType)
-          .addEventListener(TrackingHeapSnapshotProfileTypeEvents.TrackingStopped, this.onStopTracking, this);
+          .addEventListener(TrackingHeapSnapshotProfileTypeEvents.TRACKING_STOPPED, this.onStopTracking, this);
       this.trackingOverviewGrid.start();
     }
   }
@@ -499,8 +499,8 @@ export class HeapSnapshotView extends UI.View.SimpleView implements DataDisplayD
   onStopTracking(): void {
     const profileType = this.profile.profileType() as TrackingHeapSnapshotProfileType;
     profileType.removeEventListener(
-        TrackingHeapSnapshotProfileTypeEvents.HeapStatsUpdate, this.onHeapStatsUpdate, this);
-    profileType.removeEventListener(TrackingHeapSnapshotProfileTypeEvents.TrackingStopped, this.onStopTracking, this);
+        TrackingHeapSnapshotProfileTypeEvents.HEAP_STATS_UPDATE, this.onHeapStatsUpdate, this);
+    profileType.removeEventListener(TrackingHeapSnapshotProfileTypeEvents.TRACKING_STOPPED, this.onStopTracking, this);
     if (this.trackingOverviewGrid) {
       this.trackingOverviewGrid.stop();
     }
@@ -1050,19 +1050,19 @@ export class HeapSnapshotView extends UI.View.SimpleView implements DataDisplayD
   onReceiveSnapshot(event: Common.EventTarget.EventTargetEvent<ProfileHeader>): void {
     this.updateControls();
     const profile = event.data;
-    profile.addEventListener(ProfileHeaderEvents.ProfileTitleChanged, this.updateControls, this);
+    profile.addEventListener(ProfileHeaderEvents.PROFILE_TITLE_CHANGED, this.updateControls, this);
   }
 
   onProfileHeaderRemoved(event: Common.EventTarget.EventTargetEvent<ProfileHeader>): void {
     const profile = event.data;
-    profile.removeEventListener(ProfileHeaderEvents.ProfileTitleChanged, this.updateControls, this);
+    profile.removeEventListener(ProfileHeaderEvents.PROFILE_TITLE_CHANGED, this.updateControls, this);
 
     if (this.profile === profile) {
       this.detach();
       this.profile.profileType().removeEventListener(
-          HeapSnapshotProfileTypeEvents.SnapshotReceived, this.onReceiveSnapshot, this);
+          HeapSnapshotProfileTypeEvents.SNAPSHOT_RECEIVED, this.onReceiveSnapshot, this);
       this.profile.profileType().removeEventListener(
-          ProfileTypeEvents.RemoveProfileHeader, this.onProfileHeaderRemoved, this);
+          ProfileTypeEvents.REMOVE_PROFILE_HEADER, this.onProfileHeaderRemoved, this);
       this.dispose();
     } else {
       this.updateControls();
@@ -1080,7 +1080,7 @@ export class HeapSnapshotView extends UI.View.SimpleView implements DataDisplayD
     }
     this.onStopTracking();
     if (this.trackingOverviewGrid) {
-      this.trackingOverviewGrid.removeEventListener(Events.IdsRangeChanged, this.onIdsRangeChanged.bind(this));
+      this.trackingOverviewGrid.removeEventListener(Events.IDS_RANGE_CHANGED, this.onIdsRangeChanged.bind(this));
     }
   }
 }
@@ -1358,7 +1358,7 @@ export class HeapSnapshotProfileType extends
     profile.title = i18nString(UIStrings.snapshotD, {PH1: profile.uid});
     profile.finishLoad();
     this.setProfileBeingRecorded(null);
-    this.dispatchEventToListeners(ProfileTypeEvents.ProfileComplete, profile);
+    this.dispatchEventToListeners(ProfileTypeEvents.PROFILE_COMPLETE, profile);
   }
 
   addHeapSnapshotChunk(event: Common.EventTarget.EventTargetEvent<string>): void {
@@ -1395,7 +1395,7 @@ export class HeapSnapshotProfileType extends
     if (this.profileBeingRecorded() === profile) {
       this.setProfileBeingRecorded(null);
     }
-    this.dispatchEventToListeners(HeapSnapshotProfileTypeEvents.SnapshotReceived, profile);
+    this.dispatchEventToListeners(HeapSnapshotProfileTypeEvents.SNAPSHOT_RECEIVED, profile);
   }
 
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -1406,11 +1406,11 @@ export class HeapSnapshotProfileType extends
 }
 
 export const enum HeapSnapshotProfileTypeEvents {
-  SnapshotReceived = 'SnapshotReceived',
+  SNAPSHOT_RECEIVED = 'SnapshotReceived',
 }
 
 export type HeapSnapshotProfileTypeEventTypes = {
-  [HeapSnapshotProfileTypeEvents.SnapshotReceived]: ProfileHeader,
+  [HeapSnapshotProfileTypeEvents.SNAPSHOT_RECEIVED]: ProfileHeader,
 };
 
 export class TrackingHeapSnapshotProfileType extends
@@ -1475,7 +1475,7 @@ export class TrackingHeapSnapshotProfileType extends
       profileSamples.totalTime *= 2;
     }
     if (this.profileSamples) {
-      this.dispatchEventToListeners(TrackingHeapSnapshotProfileTypeEvents.HeapStatsUpdate, this.profileSamples);
+      this.dispatchEventToListeners(TrackingHeapSnapshotProfileTypeEvents.HEAP_STATS_UPDATE, this.profileSamples);
     }
     const profile = this.profileBeingRecorded();
     if (profile) {
@@ -1541,7 +1541,7 @@ export class TrackingHeapSnapshotProfileType extends
     this.recording = true;
     this.addProfile((this.profileBeingRecorded() as ProfileHeader));
     (this.profileBeingRecorded() as HeapProfileHeader).updateStatus(i18nString(UIStrings.recording));
-    this.dispatchEventToListeners(TrackingHeapSnapshotProfileTypeEvents.TrackingStarted);
+    this.dispatchEventToListeners(TrackingHeapSnapshotProfileTypeEvents.TRACKING_STARTED);
     return heapProfilerModel;
   }
 
@@ -1551,7 +1551,7 @@ export class TrackingHeapSnapshotProfileType extends
     const stopPromise =
         (profile.heapProfilerModel() as SDK.HeapProfilerModel.HeapProfilerModel).stopTrackingHeapObjects(true);
     this.recording = false;
-    this.dispatchEventToListeners(TrackingHeapSnapshotProfileTypeEvents.TrackingStopped);
+    this.dispatchEventToListeners(TrackingHeapSnapshotProfileTypeEvents.TRACKING_STOPPED);
     await stopPromise;
     profile = (this.profileBeingRecorded() as HeapProfileHeader);
     if (!profile) {
@@ -1560,7 +1560,7 @@ export class TrackingHeapSnapshotProfileType extends
     profile.finishLoad();
     this.profileSamples = null;
     this.setProfileBeingRecorded(null);
-    this.dispatchEventToListeners(ProfileTypeEvents.ProfileComplete, profile);
+    this.dispatchEventToListeners(ProfileTypeEvents.PROFILE_COMPLETE, profile);
   }
 
   toggleRecording(): boolean {
@@ -1612,15 +1612,15 @@ export class TrackingHeapSnapshotProfileType extends
 }
 
 export const enum TrackingHeapSnapshotProfileTypeEvents {
-  HeapStatsUpdate = 'HeapStatsUpdate',
-  TrackingStarted = 'TrackingStarted',
-  TrackingStopped = 'TrackingStopped',
+  HEAP_STATS_UPDATE = 'HeapStatsUpdate',
+  TRACKING_STARTED = 'TrackingStarted',
+  TRACKING_STOPPED = 'TrackingStopped',
 }
 
 export type TrackingHeapSnapshotProfileTypeEventTypes = {
-  [TrackingHeapSnapshotProfileTypeEvents.HeapStatsUpdate]: Samples,
-  [TrackingHeapSnapshotProfileTypeEvents.TrackingStarted]: void,
-  [TrackingHeapSnapshotProfileTypeEvents.TrackingStopped]: void,
+  [TrackingHeapSnapshotProfileTypeEvents.HEAP_STATS_UPDATE]: Samples,
+  [TrackingHeapSnapshotProfileTypeEvents.TRACKING_STARTED]: void,
+  [TrackingHeapSnapshotProfileTypeEvents.TRACKING_STOPPED]: void,
 };
 
 export class HeapProfileHeader extends ProfileHeader {
@@ -1709,7 +1709,7 @@ export class HeapProfileHeader extends ProfileHeader {
   setupWorker(): void {
     console.assert(!this.workerProxy, 'HeapSnapshotWorkerProxy already exists');
     this.workerProxy = new HeapSnapshotWorkerProxy(this.handleWorkerEvent.bind(this));
-    this.workerProxy.addEventListener(HeapSnapshotWorkerProxy.Events.Wait, event => {
+    this.workerProxy.addEventListener(HeapSnapshotWorkerProxy.Events.WAIT, event => {
       this.updateStatus(null, event.data);
     }, this);
     this.receiver = this.workerProxy.createLoader(this.uid, this.snapshotReceived.bind(this));

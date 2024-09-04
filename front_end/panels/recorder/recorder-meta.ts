@@ -86,7 +86,7 @@ UI.ViewManager.registerViewExtension({
 
 UI.ActionRegistration.registerActionExtension({
   category: UI.ActionRegistration.ActionCategory.RECORDER,
-  actionId: Actions.RecorderActions.CreateRecording,
+  actionId: Actions.RecorderActions.CREATE_RECORDING,
   title: i18nLazyString(UIStrings.createRecording),
   async loadActionDelegate() {
     const Recorder = await loadRecorderModule();
@@ -96,12 +96,12 @@ UI.ActionRegistration.registerActionExtension({
 
 UI.ActionRegistration.registerActionExtension({
   category: UI.ActionRegistration.ActionCategory.RECORDER,
-  actionId: Actions.RecorderActions.StartRecording,
+  actionId: Actions.RecorderActions.START_RECORDING,
   title: i18nLazyString(UIStrings.startStopRecording),
   contextTypes() {
     return maybeRetrieveContextTypes(
         Recorder => [Recorder.RecorderPanel.RecorderPanel],
-        Actions.RecorderActions.StartRecording,
+        Actions.RecorderActions.START_RECORDING,
     );
   },
   async loadActionDelegate() {
@@ -119,12 +119,12 @@ UI.ActionRegistration.registerActionExtension({
 
 UI.ActionRegistration.registerActionExtension({
   category: UI.ActionRegistration.ActionCategory.RECORDER,
-  actionId: Actions.RecorderActions.ReplayRecording,
+  actionId: Actions.RecorderActions.REPLAY_RECORDING,
   title: i18nLazyString(UIStrings.replayRecording),
   contextTypes() {
     return maybeRetrieveContextTypes(
         Recorder => [Recorder.RecorderPanel.RecorderPanel],
-        Actions.RecorderActions.ReplayRecording,
+        Actions.RecorderActions.REPLAY_RECORDING,
     );
   },
   async loadActionDelegate() {
@@ -142,12 +142,12 @@ UI.ActionRegistration.registerActionExtension({
 
 UI.ActionRegistration.registerActionExtension({
   category: UI.ActionRegistration.ActionCategory.RECORDER,
-  actionId: Actions.RecorderActions.ToggleCodeView,
+  actionId: Actions.RecorderActions.TOGGLE_CODE_VIEW,
   title: i18nLazyString(UIStrings.toggleCode),
   contextTypes() {
     return maybeRetrieveContextTypes(
         Recorder => [Recorder.RecorderPanel.RecorderPanel],
-        Actions.RecorderActions.ToggleCodeView,
+        Actions.RecorderActions.TOGGLE_CODE_VIEW,
     );
   },
   async loadActionDelegate() {

@@ -51,10 +51,10 @@ const str_ = i18n.i18n.registerUIStrings('panels/media/PlayerDetailView.ts', UIS
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export const enum PlayerDetailViewTabs {
-  Events = 'events',
-  Properties = 'properties',
-  Messages = 'messages',
-  Timeline = 'timeline',
+  EVENTS = 'events',
+  PROPERTIES = 'properties',
+  MESSAGES = 'messages',
+  TIMELINE = 'timeline',
 }
 
 export class PlayerDetailView extends UI.TabbedPane.TabbedPane implements TriggerHandler {
@@ -72,15 +72,15 @@ export class PlayerDetailView extends UI.TabbedPane.TabbedPane implements Trigge
     this.timelineView = new PlayerEventsTimeline();
 
     this.appendTab(
-        PlayerDetailViewTabs.Properties, i18nString(UIStrings.properties), this.propertyView,
+        PlayerDetailViewTabs.PROPERTIES, i18nString(UIStrings.properties), this.propertyView,
         i18nString(UIStrings.playerProperties));
     this.appendTab(
-        PlayerDetailViewTabs.Events, i18nString(UIStrings.events), this.eventView, i18nString(UIStrings.playerEvents));
+        PlayerDetailViewTabs.EVENTS, i18nString(UIStrings.events), this.eventView, i18nString(UIStrings.playerEvents));
     this.appendTab(
-        PlayerDetailViewTabs.Messages, i18nString(UIStrings.messages), this.messageView,
+        PlayerDetailViewTabs.MESSAGES, i18nString(UIStrings.messages), this.messageView,
         i18nString(UIStrings.playerMessages));
     this.appendTab(
-        PlayerDetailViewTabs.Timeline, i18nString(UIStrings.timeline), this.timelineView,
+        PlayerDetailViewTabs.TIMELINE, i18nString(UIStrings.timeline), this.timelineView,
         i18nString(UIStrings.playerTimeline));
   }
 

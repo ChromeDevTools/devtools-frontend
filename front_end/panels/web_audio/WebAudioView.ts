@@ -68,7 +68,7 @@ export class WebAudioView extends UI.ThrottledWidget.ThrottledWidget implements
     this.summaryBarContainer = this.contentContainer.createChild('div', 'web-audio-summary-container');
 
     this.contextSelector.addEventListener(
-        SelectorEvents.ContextSelected,
+        SelectorEvents.CONTEXT_SELECTED,
         (event: Common.EventTarget.EventTargetEvent<Protocol.WebAudio.BaseAudioContext|null>) => {
           const context = event.data;
           if (context) {
@@ -111,40 +111,41 @@ export class WebAudioView extends UI.ThrottledWidget.ThrottledWidget implements
 
   private addEventListeners(webAudioModel: WebAudioModel): void {
     webAudioModel.ensureEnabled();
-    webAudioModel.addEventListener(ModelEvents.ContextCreated, this.contextCreated, this);
-    webAudioModel.addEventListener(ModelEvents.ContextDestroyed, this.contextDestroyed, this);
-    webAudioModel.addEventListener(ModelEvents.ContextChanged, this.contextChanged, this);
-    webAudioModel.addEventListener(ModelEvents.ModelReset, this.reset, this);
-    webAudioModel.addEventListener(ModelEvents.ModelSuspend, this.suspendModel, this);
-    webAudioModel.addEventListener(ModelEvents.AudioListenerCreated, this.audioListenerCreated, this);
-    webAudioModel.addEventListener(ModelEvents.AudioListenerWillBeDestroyed, this.audioListenerWillBeDestroyed, this);
-    webAudioModel.addEventListener(ModelEvents.AudioNodeCreated, this.audioNodeCreated, this);
-    webAudioModel.addEventListener(ModelEvents.AudioNodeWillBeDestroyed, this.audioNodeWillBeDestroyed, this);
-    webAudioModel.addEventListener(ModelEvents.AudioParamCreated, this.audioParamCreated, this);
-    webAudioModel.addEventListener(ModelEvents.AudioParamWillBeDestroyed, this.audioParamWillBeDestroyed, this);
-    webAudioModel.addEventListener(ModelEvents.NodesConnected, this.nodesConnected, this);
-    webAudioModel.addEventListener(ModelEvents.NodesDisconnected, this.nodesDisconnected, this);
-    webAudioModel.addEventListener(ModelEvents.NodeParamConnected, this.nodeParamConnected, this);
-    webAudioModel.addEventListener(ModelEvents.NodeParamDisconnected, this.nodeParamDisconnected, this);
+    webAudioModel.addEventListener(ModelEvents.CONTEXT_CREATED, this.contextCreated, this);
+    webAudioModel.addEventListener(ModelEvents.CONTEXT_DESTROYED, this.contextDestroyed, this);
+    webAudioModel.addEventListener(ModelEvents.CONTEXT_CHANGED, this.contextChanged, this);
+    webAudioModel.addEventListener(ModelEvents.MODEL_RESET, this.reset, this);
+    webAudioModel.addEventListener(ModelEvents.MODEL_SUSPEND, this.suspendModel, this);
+    webAudioModel.addEventListener(ModelEvents.AUDIO_LISTENER_CREATED, this.audioListenerCreated, this);
+    webAudioModel.addEventListener(
+        ModelEvents.AUDIO_LISTENER_WILL_BE_DESTROYED, this.audioListenerWillBeDestroyed, this);
+    webAudioModel.addEventListener(ModelEvents.AUDIO_NODE_CREATED, this.audioNodeCreated, this);
+    webAudioModel.addEventListener(ModelEvents.AUDIO_NODE_WILL_BE_DESTROYED, this.audioNodeWillBeDestroyed, this);
+    webAudioModel.addEventListener(ModelEvents.AUDIO_PARAM_CREATED, this.audioParamCreated, this);
+    webAudioModel.addEventListener(ModelEvents.AUDIO_PARAM_WILL_BE_DESTROYED, this.audioParamWillBeDestroyed, this);
+    webAudioModel.addEventListener(ModelEvents.NODES_CONNECTED, this.nodesConnected, this);
+    webAudioModel.addEventListener(ModelEvents.NODES_DISCONNECTED, this.nodesDisconnected, this);
+    webAudioModel.addEventListener(ModelEvents.NODE_PARAM_CONNECTED, this.nodeParamConnected, this);
+    webAudioModel.addEventListener(ModelEvents.NODE_PARAM_DISCONNECTED, this.nodeParamDisconnected, this);
   }
 
   private removeEventListeners(webAudioModel: WebAudioModel): void {
-    webAudioModel.removeEventListener(ModelEvents.ContextCreated, this.contextCreated, this);
-    webAudioModel.removeEventListener(ModelEvents.ContextDestroyed, this.contextDestroyed, this);
-    webAudioModel.removeEventListener(ModelEvents.ContextChanged, this.contextChanged, this);
-    webAudioModel.removeEventListener(ModelEvents.ModelReset, this.reset, this);
-    webAudioModel.removeEventListener(ModelEvents.ModelSuspend, this.suspendModel, this);
-    webAudioModel.removeEventListener(ModelEvents.AudioListenerCreated, this.audioListenerCreated, this);
+    webAudioModel.removeEventListener(ModelEvents.CONTEXT_CREATED, this.contextCreated, this);
+    webAudioModel.removeEventListener(ModelEvents.CONTEXT_DESTROYED, this.contextDestroyed, this);
+    webAudioModel.removeEventListener(ModelEvents.CONTEXT_CHANGED, this.contextChanged, this);
+    webAudioModel.removeEventListener(ModelEvents.MODEL_RESET, this.reset, this);
+    webAudioModel.removeEventListener(ModelEvents.MODEL_SUSPEND, this.suspendModel, this);
+    webAudioModel.removeEventListener(ModelEvents.AUDIO_LISTENER_CREATED, this.audioListenerCreated, this);
     webAudioModel.removeEventListener(
-        ModelEvents.AudioListenerWillBeDestroyed, this.audioListenerWillBeDestroyed, this);
-    webAudioModel.removeEventListener(ModelEvents.AudioNodeCreated, this.audioNodeCreated, this);
-    webAudioModel.removeEventListener(ModelEvents.AudioNodeWillBeDestroyed, this.audioNodeWillBeDestroyed, this);
-    webAudioModel.removeEventListener(ModelEvents.AudioParamCreated, this.audioParamCreated, this);
-    webAudioModel.removeEventListener(ModelEvents.AudioParamWillBeDestroyed, this.audioParamWillBeDestroyed, this);
-    webAudioModel.removeEventListener(ModelEvents.NodesConnected, this.nodesConnected, this);
-    webAudioModel.removeEventListener(ModelEvents.NodesDisconnected, this.nodesDisconnected, this);
-    webAudioModel.removeEventListener(ModelEvents.NodeParamConnected, this.nodeParamConnected, this);
-    webAudioModel.removeEventListener(ModelEvents.NodeParamDisconnected, this.nodeParamDisconnected, this);
+        ModelEvents.AUDIO_LISTENER_WILL_BE_DESTROYED, this.audioListenerWillBeDestroyed, this);
+    webAudioModel.removeEventListener(ModelEvents.AUDIO_NODE_CREATED, this.audioNodeCreated, this);
+    webAudioModel.removeEventListener(ModelEvents.AUDIO_NODE_WILL_BE_DESTROYED, this.audioNodeWillBeDestroyed, this);
+    webAudioModel.removeEventListener(ModelEvents.AUDIO_PARAM_CREATED, this.audioParamCreated, this);
+    webAudioModel.removeEventListener(ModelEvents.AUDIO_PARAM_WILL_BE_DESTROYED, this.audioParamWillBeDestroyed, this);
+    webAudioModel.removeEventListener(ModelEvents.NODES_CONNECTED, this.nodesConnected, this);
+    webAudioModel.removeEventListener(ModelEvents.NODES_DISCONNECTED, this.nodesDisconnected, this);
+    webAudioModel.removeEventListener(ModelEvents.NODE_PARAM_CONNECTED, this.nodeParamConnected, this);
+    webAudioModel.removeEventListener(ModelEvents.NODE_PARAM_DISCONNECTED, this.nodeParamDisconnected, this);
   }
 
   private contextCreated(event: Common.EventTarget.EventTargetEvent<Protocol.WebAudio.BaseAudioContext>): void {

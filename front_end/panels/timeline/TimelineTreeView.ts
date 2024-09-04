@@ -748,7 +748,7 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
     this.groupBySetting.addChangeListener(this.refreshTree.bind(this));
     this.init();
     this.stackView = new TimelineStackView(this);
-    this.stackView.addEventListener(TimelineStackView.Events.SelectionChanged, this.onStackViewSelectionChanged, this);
+    this.stackView.addEventListener(TimelineStackView.Events.SELECTION_CHANGED, this.onStackViewSelectionChanged, this);
   }
 
   setGroupBySettingForTests(groupBy: AggregatedTimelineTreeView.GroupBy): void {
@@ -965,6 +965,7 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
 }
 export namespace AggregatedTimelineTreeView {
   export enum GroupBy {
+    /* eslint-disable @typescript-eslint/naming-convention -- Used by web_tests. */
     None = 'None',
     EventName = 'EventName',
     Category = 'Category',
@@ -972,6 +973,7 @@ export namespace AggregatedTimelineTreeView {
     Subdomain = 'Subdomain',
     URL = 'URL',
     Frame = 'Frame',
+    /* eslint-enable @typescript-eslint/naming-convention */
   }
 }
 
@@ -1052,16 +1054,16 @@ export class TimelineStackView extends
   }
 
   private onSelectionChanged(): void {
-    this.dispatchEventToListeners(TimelineStackView.Events.SelectionChanged);
+    this.dispatchEventToListeners(TimelineStackView.Events.SELECTION_CHANGED);
   }
 }
 
 export namespace TimelineStackView {
   export const enum Events {
-    SelectionChanged = 'SelectionChanged',
+    SELECTION_CHANGED = 'SelectionChanged',
   }
 
   export type EventTypes = {
-    [Events.SelectionChanged]: void,
+    [Events.SELECTION_CHANGED]: void,
   };
 }

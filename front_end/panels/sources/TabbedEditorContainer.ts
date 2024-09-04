@@ -341,7 +341,7 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper<Ev
       previousView: previousView,
       userGesture: userGesture,
     };
-    this.dispatchEventToListeners(Events.EditorSelected, eventData);
+    this.dispatchEventToListeners(Events.EDITOR_SELECTED, eventData);
   }
 
   private titleForFile(uiSourceCode: Workspace.UISourceCode.UISourceCode): string {
@@ -580,7 +580,7 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper<Ev
     if (uiSourceCode) {
       this.removeUISourceCodeListeners(uiSourceCode);
 
-      this.dispatchEventToListeners(Events.EditorClosed, uiSourceCode);
+      this.dispatchEventToListeners(Events.EDITOR_CLOSED, uiSourceCode);
 
       if (isUserGesture) {
         this.editorClosedByUserAction(uiSourceCode);
@@ -679,8 +679,8 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper<Ev
 }
 
 export const enum Events {
-  EditorSelected = 'EditorSelected',
-  EditorClosed = 'EditorClosed',
+  EDITOR_SELECTED = 'EditorSelected',
+  EDITOR_CLOSED = 'EditorClosed',
 }
 
 export interface EditorSelectedEvent {
@@ -691,8 +691,8 @@ export interface EditorSelectedEvent {
 }
 
 export type EventTypes = {
-  [Events.EditorSelected]: EditorSelectedEvent,
-  [Events.EditorClosed]: Workspace.UISourceCode.UISourceCode,
+  [Events.EDITOR_SELECTED]: EditorSelectedEvent,
+  [Events.EDITOR_CLOSED]: Workspace.UISourceCode.UISourceCode,
 };
 
 const MAX_PREVIOUSLY_VIEWED_FILES_COUNT = 30;

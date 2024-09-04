@@ -253,7 +253,7 @@ export class CSSOverviewCompletedView extends UI.Widget.VBox {
     this.#elementContainer = new DetailsView();
 
     // If closing the last tab, collapse the sidebar.
-    this.#elementContainer.addEventListener(Events.TabClosed, evt => {
+    this.#elementContainer.addEventListener(Events.TAB_CLOSED, evt => {
       if (evt.data === 0) {
         this.#mainContainer.setSidebarMinimized(true);
       }
@@ -283,10 +283,10 @@ export class CSSOverviewCompletedView extends UI.Widget.VBox {
     this.#sideBar.addItem(i18nString(UIStrings.mediaQueries), 'media-queries');
     this.#sideBar.select('summary', false);
 
-    this.#sideBar.addEventListener(SidebarEvents.ItemSelected, this.#sideBarItemSelected, this);
-    this.#sideBar.addEventListener(SidebarEvents.Reset, this.#sideBarReset, this);
-    this.#controller.addEventListener(CSSOverViewControllerEvents.Reset, this.#reset, this);
-    this.#controller.addEventListener(CSSOverViewControllerEvents.PopulateNodes, this.#createElementsView, this);
+    this.#sideBar.addEventListener(SidebarEvents.ITEM_SELECTED, this.#sideBarItemSelected, this);
+    this.#sideBar.addEventListener(SidebarEvents.RESET, this.#sideBarReset, this);
+    this.#controller.addEventListener(CSSOverViewControllerEvents.RESET, this.#reset, this);
+    this.#controller.addEventListener(CSSOverViewControllerEvents.POPULATE_NODES, this.#createElementsView, this);
     this.#resultsContainer.element.addEventListener('click', this.#onClick.bind(this));
 
     this.#data = null;
@@ -326,7 +326,7 @@ export class CSSOverviewCompletedView extends UI.Widget.VBox {
   }
 
   #sideBarReset(): void {
-    this.#controller.dispatchEventToListeners(CSSOverViewControllerEvents.Reset);
+    this.#controller.dispatchEventToListeners(CSSOverViewControllerEvents.RESET);
   }
 
   #reset(): void {
@@ -466,7 +466,7 @@ export class CSSOverviewCompletedView extends UI.Widget.VBox {
     }
 
     evt.consume();
-    this.#controller.dispatchEventToListeners(CSSOverViewControllerEvents.PopulateNodes, {payload});
+    this.#controller.dispatchEventToListeners(CSSOverViewControllerEvents.POPULATE_NODES, {payload});
     this.#mainContainer.setSidebarMinimized(false);
   }
 
@@ -855,7 +855,7 @@ export class DetailsView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
     this.#tabbedPane = new UI.TabbedPane.TabbedPane();
     this.#tabbedPane.show(this.element);
     this.#tabbedPane.addEventListener(UI.TabbedPane.Events.TabClosed, () => {
-      this.dispatchEventToListeners(Events.TabClosed, this.#tabbedPane.tabIds().length);
+      this.dispatchEventToListeners(Events.TAB_CLOSED, this.#tabbedPane.tabIds().length);
     });
   }
 
@@ -874,11 +874,11 @@ export class DetailsView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
 }
 
 export const enum Events {
-  TabClosed = 'TabClosed',
+  TAB_CLOSED = 'TabClosed',
 }
 
 export type EventTypes = {
-  [Events.TabClosed]: number,
+  [Events.TAB_CLOSED]: number,
 };
 
 export class ElementDetailsView extends UI.Widget.Widget {
@@ -1009,7 +1009,7 @@ export class ElementDetailsView extends UI.Widget.Widget {
     }
 
     const backendNodeId = Number(node.dataset.backendNodeId);
-    this.#controller.dispatchEventToListeners(CSSOverViewControllerEvents.RequestNodeHighlight, backendNodeId);
+    this.#controller.dispatchEventToListeners(CSSOverViewControllerEvents.REQUEST_NODE_HIGHLIGHT, backendNodeId);
   }
 
   async populateNodes(data: PopulateNodesEventNodes): Promise<void> {

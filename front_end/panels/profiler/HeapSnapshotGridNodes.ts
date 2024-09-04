@@ -531,7 +531,9 @@ export class HeapSnapshotGridNode extends
 
 export namespace HeapSnapshotGridNode {
   export enum Events {
+    /* eslint-disable @typescript-eslint/naming-convention -- Used by web_tests. */
     PopulateComplete = 'PopulateComplete',
+    /* eslint-enable @typescript-eslint/naming-convention */
   }
 
   export type EventTypes = {

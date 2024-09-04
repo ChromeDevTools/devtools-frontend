@@ -83,10 +83,10 @@ export class DOMStorage extends Common.ObjectWrapper.ObjectWrapper<DOMStorage.Ev
 
 export namespace DOMStorage {
   export const enum Events {
-    DOMStorageItemsCleared = 'DOMStorageItemsCleared',
-    DOMStorageItemRemoved = 'DOMStorageItemRemoved',
-    DOMStorageItemAdded = 'DOMStorageItemAdded',
-    DOMStorageItemUpdated = 'DOMStorageItemUpdated',
+    DOM_STORAGE_ITEMS_CLEARED = 'DOMStorageItemsCleared',
+    DOM_STORAGE_ITEM_REMOVED = 'DOMStorageItemRemoved',
+    DOM_STORAGE_ITEM_ADDED = 'DOMStorageItemAdded',
+    DOM_STORAGE_ITEM_UPDATED = 'DOMStorageItemUpdated',
   }
 
   export interface DOMStorageItemRemovedEvent {
@@ -105,10 +105,10 @@ export namespace DOMStorage {
   }
 
   export type EventTypes = {
-    [Events.DOMStorageItemsCleared]: void,
-    [Events.DOMStorageItemRemoved]: DOMStorageItemRemovedEvent,
-    [Events.DOMStorageItemAdded]: DOMStorageItemAddedEvent,
-    [Events.DOMStorageItemUpdated]: DOMStorageItemUpdatedEvent,
+    [Events.DOM_STORAGE_ITEMS_CLEARED]: void,
+    [Events.DOM_STORAGE_ITEM_REMOVED]: DOMStorageItemRemovedEvent,
+    [Events.DOM_STORAGE_ITEM_ADDED]: DOMStorageItemAddedEvent,
+    [Events.DOM_STORAGE_ITEM_UPDATED]: DOMStorageItemUpdatedEvent,
   };
 }
 
@@ -179,7 +179,7 @@ export class DOMStorageModel extends SDK.SDKModel.SDKModel<EventTypes> {
       console.assert(!this.storagesInternal[key]);
       const storage = new DOMStorage(this, storageKey, isLocal);
       this.storagesInternal[key] = storage;
-      this.dispatchEventToListeners(Events.DOMStorageAdded, storage);
+      this.dispatchEventToListeners(Events.DOM_STORAGE_ADDED, storage);
     }
   }
 
@@ -195,7 +195,7 @@ export class DOMStorageModel extends SDK.SDKModel.SDKModel<EventTypes> {
         continue;
       }
       delete this.storagesInternal[key];
-      this.dispatchEventToListeners(Events.DOMStorageRemoved, storage);
+      this.dispatchEventToListeners(Events.DOM_STORAGE_REMOVED, storage);
     }
   }
 
@@ -209,7 +209,7 @@ export class DOMStorageModel extends SDK.SDKModel.SDKModel<EventTypes> {
       return;
     }
 
-    domStorage.dispatchEventToListeners(DOMStorage.Events.DOMStorageItemsCleared);
+    domStorage.dispatchEventToListeners(DOMStorage.Events.DOM_STORAGE_ITEMS_CLEARED);
   }
 
   domStorageItemRemoved(storageId: Protocol.DOMStorage.StorageId, key: string): void {
@@ -219,7 +219,7 @@ export class DOMStorageModel extends SDK.SDKModel.SDKModel<EventTypes> {
     }
 
     const eventData = {key: key};
-    domStorage.dispatchEventToListeners(DOMStorage.Events.DOMStorageItemRemoved, eventData);
+    domStorage.dispatchEventToListeners(DOMStorage.Events.DOM_STORAGE_ITEM_REMOVED, eventData);
   }
 
   domStorageItemAdded(storageId: Protocol.DOMStorage.StorageId, key: string, value: string): void {
@@ -229,7 +229,7 @@ export class DOMStorageModel extends SDK.SDKModel.SDKModel<EventTypes> {
     }
 
     const eventData = {key: key, value: value};
-    domStorage.dispatchEventToListeners(DOMStorage.Events.DOMStorageItemAdded, eventData);
+    domStorage.dispatchEventToListeners(DOMStorage.Events.DOM_STORAGE_ITEM_ADDED, eventData);
   }
 
   domStorageItemUpdated(storageId: Protocol.DOMStorage.StorageId, key: string, oldValue: string, value: string): void {
@@ -239,7 +239,7 @@ export class DOMStorageModel extends SDK.SDKModel.SDKModel<EventTypes> {
     }
 
     const eventData = {key: key, oldValue: oldValue, value: value};
-    domStorage.dispatchEventToListeners(DOMStorage.Events.DOMStorageItemUpdated, eventData);
+    domStorage.dispatchEventToListeners(DOMStorage.Events.DOM_STORAGE_ITEM_UPDATED, eventData);
   }
 
   storageForId(storageId: Protocol.DOMStorage.StorageId): DOMStorage {
@@ -259,13 +259,13 @@ export class DOMStorageModel extends SDK.SDKModel.SDKModel<EventTypes> {
 SDK.SDKModel.SDKModel.register(DOMStorageModel, {capabilities: SDK.Target.Capability.DOM, autostart: false});
 
 export const enum Events {
-  DOMStorageAdded = 'DOMStorageAdded',
-  DOMStorageRemoved = 'DOMStorageRemoved',
+  DOM_STORAGE_ADDED = 'DOMStorageAdded',
+  DOM_STORAGE_REMOVED = 'DOMStorageRemoved',
 }
 
 export type EventTypes = {
-  [Events.DOMStorageAdded]: DOMStorage,
-  [Events.DOMStorageRemoved]: DOMStorage,
+  [Events.DOM_STORAGE_ADDED]: DOMStorage,
+  [Events.DOM_STORAGE_REMOVED]: DOMStorage,
 };
 
 export class DOMStorageDispatcher implements ProtocolProxyApi.DOMStorageDispatcher {

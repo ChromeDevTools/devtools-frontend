@@ -118,9 +118,9 @@ export function coverageTypeToString(type: CoverageType): string {
   if (type & CoverageType.CSS) {
     types.push(i18nString(UIStrings.css));
   }
-  if (type & CoverageType.JavaScriptPerFunction) {
+  if (type & CoverageType.JAVA_SCRIPT_PER_FUNCTION) {
     types.push(i18nString(UIStrings.jsPerFunction));
-  } else if (type & CoverageType.JavaScript) {
+  } else if (type & CoverageType.JAVA_SCRIPT) {
     types.push(i18nString(UIStrings.jsPerBlock));
   }
   return types.join('+');
@@ -414,9 +414,9 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<Gri
       }
       case 'type': {
         cell.textContent = coverageTypeToString(this.coverageInfo.type());
-        if (this.coverageInfo.type() & CoverageType.JavaScriptPerFunction) {
+        if (this.coverageInfo.type() & CoverageType.JAVA_SCRIPT_PER_FUNCTION) {
           UI.Tooltip.Tooltip.install(cell, i18nString(UIStrings.jsCoverageWithPerFunction));
-        } else if (this.coverageInfo.type() & CoverageType.JavaScript) {
+        } else if (this.coverageInfo.type() & CoverageType.JAVA_SCRIPT) {
           UI.Tooltip.Tooltip.install(cell, i18nString(UIStrings.jsCoverageWithPerBlock));
         }
         break;
@@ -449,13 +449,13 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<Gri
         if (this.coverageInfo.unusedSize() > 0) {
           const unusedSizeBar = barContainer.createChild('div', 'bar bar-unused-size');
           unusedSizeBar.style.width = ((this.coverageInfo.unusedSize() / this.maxSize) * 100 || 0) + '%';
-          if (this.coverageInfo.type() & CoverageType.JavaScriptPerFunction) {
+          if (this.coverageInfo.type() & CoverageType.JAVA_SCRIPT_PER_FUNCTION) {
             UI.Tooltip.Tooltip.install(
                 unusedSizeBar,
                 i18nString(
                     UIStrings.sBytesSBelongToFunctionsThatHave,
                     {PH1: this.coverageInfo.unusedSize(), PH2: unusedPercent}));
-          } else if (this.coverageInfo.type() & CoverageType.JavaScript) {
+          } else if (this.coverageInfo.type() & CoverageType.JAVA_SCRIPT) {
             UI.Tooltip.Tooltip.install(
                 unusedSizeBar,
                 i18nString(
@@ -465,13 +465,13 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<Gri
         if (this.coverageInfo.usedSize() > 0) {
           const usedSizeBar = barContainer.createChild('div', 'bar bar-used-size');
           usedSizeBar.style.width = ((this.coverageInfo.usedSize() / this.maxSize) * 100 || 0) + '%';
-          if (this.coverageInfo.type() & CoverageType.JavaScriptPerFunction) {
+          if (this.coverageInfo.type() & CoverageType.JAVA_SCRIPT_PER_FUNCTION) {
             UI.Tooltip.Tooltip.install(
                 usedSizeBar,
                 i18nString(
                     UIStrings.sBytesSBelongToFunctionsThatHaveExecuted,
                     {PH1: this.coverageInfo.usedSize(), PH2: usedPercent}));
-          } else if (this.coverageInfo.type() & CoverageType.JavaScript) {
+          } else if (this.coverageInfo.type() & CoverageType.JAVA_SCRIPT) {
             UI.Tooltip.Tooltip.install(
                 usedSizeBar,
                 i18nString(

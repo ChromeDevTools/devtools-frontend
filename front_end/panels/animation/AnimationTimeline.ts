@@ -334,7 +334,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
     this.#controlButton = new UI.Toolbar.ToolbarButton(
         i18nString(UIStrings.replayTimeline), 'replay', undefined, 'animations.play-replay-pause-animation-group');
     this.#controlButton.element.classList.add('toolbar-state-on');
-    this.#controlState = ControlState.Replay;
+    this.#controlState = ControlState.REPLAY;
     this.#controlButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, this.controlButtonToggle.bind(this));
     toolbar.appendToolbarItem(this.#controlButton);
 
@@ -421,9 +421,9 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
   }
 
   private controlButtonToggle(): void {
-    if (this.#controlState === ControlState.Play) {
+    if (this.#controlState === ControlState.PLAY) {
       this.togglePause(false);
-    } else if (this.#controlState === ControlState.Replay) {
+    } else if (this.#controlState === ControlState.REPLAY) {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.AnimationGroupReplayed);
       this.replay();
     } else {
@@ -439,19 +439,19 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
     this.#controlButton.setEnabled(
         Boolean(this.#selectedGroup) && this.hasAnimationGroupActiveNodes() && !this.#selectedGroup?.isScrollDriven());
     if (this.#selectedGroup && this.#selectedGroup.paused()) {
-      this.#controlState = ControlState.Play;
+      this.#controlState = ControlState.PLAY;
       this.#controlButton.element.classList.toggle('toolbar-state-on', true);
       this.#controlButton.setTitle(i18nString(UIStrings.playTimeline));
       this.#controlButton.setGlyph('play');
     } else if (
         !this.#scrubberPlayer || !this.#scrubberPlayer.currentTime ||
         typeof this.#scrubberPlayer.currentTime !== 'number' || this.#scrubberPlayer.currentTime >= this.duration()) {
-      this.#controlState = ControlState.Replay;
+      this.#controlState = ControlState.REPLAY;
       this.#controlButton.element.classList.toggle('toolbar-state-on', true);
       this.#controlButton.setTitle(i18nString(UIStrings.replayTimeline));
       this.#controlButton.setGlyph('replay');
     } else {
-      this.#controlState = ControlState.Pause;
+      this.#controlState = ControlState.PAUSE;
       this.#controlButton.element.classList.toggle('toolbar-state-on', false);
       this.#controlButton.setTitle(i18nString(UIStrings.pauseTimeline));
       this.#controlButton.setGlyph('pause');
@@ -1124,9 +1124,9 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
 export const GlobalPlaybackRates = [1, 0.25, 0.1];
 
 const enum ControlState {
-  Play = 'play-outline',
-  Replay = 'replay-outline',
-  Pause = 'pause-outline',
+  PLAY = 'play-outline',
+  REPLAY = 'replay-outline',
+  PAUSE = 'pause-outline',
 }
 
 export class NodeUI {

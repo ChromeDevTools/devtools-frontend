@@ -110,7 +110,7 @@ class ResponseHeaderSectionBase extends HTMLElement {
   }
 
   protected highlightHeaders(data: ResponseHeaderSectionData): void {
-    if (data.toReveal?.section === NetworkForward.UIRequestLocation.UIHeaderSection.Response) {
+    if (data.toReveal?.section === NetworkForward.UIRequestLocation.UIHeaderSection.RESPONSE) {
       this.headerDetails.filter(header => compareHeaders(header.name, data.toReveal?.header?.toLowerCase()))
           .forEach(header => {
             header.highlight = true;
@@ -158,14 +158,14 @@ export class ResponseHeaderSection extends ResponseHeaderSectionBase {
   #headerEditors: HeaderEditorDescriptor[] = [];
   #uiSourceCode: Workspace.UISourceCode.UISourceCode|null = null;
   #overrides: Persistence.NetworkPersistenceManager.HeaderOverride[] = [];
-  #isEditingAllowed = EditingAllowedStatus.Disabled;
+  #isEditingAllowed = EditingAllowedStatus.DISABLED;
 
   set data(data: ResponseHeaderSectionData) {
     this.#request = data.request;
     this.#isEditingAllowed =
         Persistence.NetworkPersistenceManager.NetworkPersistenceManager.isForbiddenNetworkUrl(this.#request.url()) ?
-        EditingAllowedStatus.Forbidden :
-        EditingAllowedStatus.Disabled;
+        EditingAllowedStatus.FORBIDDEN :
+        EditingAllowedStatus.DISABLED;
     // If the request has been locally overridden, its 'sortedResponseHeaders'
     // contains no 'set-cookie' headers, because they have been filtered out by
     // the Chromium backend. DevTools therefore uses previously stored values.
@@ -256,8 +256,8 @@ export class ResponseHeaderSection extends ResponseHeaderSectionBase {
     }
     this.#isEditingAllowed =
         Persistence.NetworkPersistenceManager.NetworkPersistenceManager.isForbiddenNetworkUrl(this.#request.url()) ?
-        EditingAllowedStatus.Forbidden :
-        EditingAllowedStatus.Disabled;
+        EditingAllowedStatus.FORBIDDEN :
+        EditingAllowedStatus.DISABLED;
     this.#headerEditors = this.headerDetails.map(header => ({
                                                    name: header.name,
                                                    value: header.value,
@@ -288,8 +288,8 @@ export class ResponseHeaderSection extends ResponseHeaderSectionBase {
         throw 'Type mismatch after parsing';
       }
       if (Common.Settings.Settings.instance().moduleSetting('persistence-network-overrides-enabled').get() &&
-          this.#isEditingAllowed === EditingAllowedStatus.Disabled) {
-        this.#isEditingAllowed = EditingAllowedStatus.Enabled;
+          this.#isEditingAllowed === EditingAllowedStatus.DISABLED) {
+        this.#isEditingAllowed = EditingAllowedStatus.ENABLED;
       }
       for (const header of this.#headerEditors) {
         header.valueEditable = this.#isEditingAllowed;
@@ -516,7 +516,7 @@ export class ResponseHeaderSection extends ResponseHeaderSectionBase {
       value: i18n.i18n.lockedString('header value'),
       isOverride: true,
       nameEditable: true,
-      valueEditable: EditingAllowedStatus.Enabled,
+      valueEditable: EditingAllowedStatus.ENABLED,
     });
     const index = this.#headerEditors.length - 1;
     this.#updateOverrides(this.#headerEditors[index].name, this.#headerEditors[index].value || '', index);
@@ -549,7 +549,7 @@ export class ResponseHeaderSection extends ResponseHeaderSectionBase {
             jslog=${VisualLogging.item('response-header')}
         ></${HeaderSectionRow.litTagName}>
       `)}
-      ${this.#isEditingAllowed === EditingAllowedStatus.Enabled ? html`
+      ${this.#isEditingAllowed === EditingAllowedStatus.ENABLED ? html`
         <${Buttons.Button.Button.litTagName}
           class="add-header-button"
           .variant=${Buttons.Button.Variant.OUTLINED}

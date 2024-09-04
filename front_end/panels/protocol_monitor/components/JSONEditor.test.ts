@@ -492,7 +492,7 @@ describeWithEnvironment('JSONEditor', () => {
       jsonEditor.parameters = [
         {
           name: 'test',
-          type: ProtocolComponents.JSONEditor.ParameterType.String,
+          type: ProtocolComponents.JSONEditor.ParameterType.STRING,
           description: 'test',
           optional: false,
           value: 'test',
@@ -1092,7 +1092,7 @@ describeWithEnvironment('JSONEditor', () => {
          jsonEditor.parameters = [
            {
              name: 'testName',
-             type: ProtocolComponents.JSONEditor.ParameterType.String,
+             type: ProtocolComponents.JSONEditor.ParameterType.STRING,
              description: 'test',
              optional: false,
              value: 'testValue',
@@ -1177,7 +1177,7 @@ describeWithEnvironment('JSONEditor', () => {
     jsonEditor.parameters = [
       {
         name: 'test',
-        type: ProtocolComponents.JSONEditor.ParameterType.String,
+        type: ProtocolComponents.JSONEditor.ParameterType.STRING,
         description: 'test',
         optional: false,
         value: 'test',

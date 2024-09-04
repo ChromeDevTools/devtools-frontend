@@ -215,7 +215,7 @@ function ruleSetRenderer(
       }
 
       const requestLocation = NetworkForward.UIRequestLocation.UIRequestLocation.tab(
-          request, NetworkForward.UIRequestLocation.UIRequestTabs.Preview, {clearFilter: false});
+          request, NetworkForward.UIRequestLocation.UIRequestTabs.PREVIEW, {clearFilter: false});
       await Common.Revealer.reveal(requestLocation);
     };
 

@@ -757,12 +757,12 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
         this.appendToolbarItem(this.#copyChangesButton);
         this.#copyChangesButton.element.classList.add('hidden');
       }
-      this.dispatchEventToListeners(Events.InitialUpdateCompleted);
+      this.dispatchEventToListeners(Events.INITIAL_UPDATE_COMPLETED);
     }
 
     this.nodeStylesUpdatedForTest((this.node() as SDK.DOMModel.DOMNode), true);
 
-    this.dispatchEventToListeners(Events.StylesUpdateCompleted, {hasMatchedStyles: this.hasMatchedStyles});
+    this.dispatchEventToListeners(Events.STYLES_UPDATE_COMPLETED, {hasMatchedStyles: this.hasMatchedStyles});
   }
 
   private async fetchComputedStylesFor(nodeId: Protocol.DOM.NodeId|undefined): Promise<Map<string, string>|null> {
@@ -1013,7 +1013,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     // Record the elements tool load time after the sidepane has loaded.
     Host.userMetrics.panelLoaded('elements', 'DevTools.Launch.Elements');
 
-    this.dispatchEventToListeners(Events.StylesUpdateCompleted, {hasMatchedStyles: false});
+    this.dispatchEventToListeners(Events.STYLES_UPDATE_COMPLETED, {hasMatchedStyles: false});
   }
 
   private nodeStylesUpdatedForTest(_node: SDK.DOMModel.DOMNode, _rebuild: boolean): void {
@@ -1603,8 +1603,8 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
 }
 
 export const enum Events {
-  InitialUpdateCompleted = 'InitialUpdateCompleted',
-  StylesUpdateCompleted = 'StylesUpdateCompleted',
+  INITIAL_UPDATE_COMPLETED = 'InitialUpdateCompleted',
+  STYLES_UPDATE_COMPLETED = 'StylesUpdateCompleted',
 }
 
 export interface StylesUpdateCompletedEvent {
@@ -1616,8 +1616,8 @@ interface CompletionResult extends UI.SuggestBox.Suggestion {
 }
 
 export type EventTypes = {
-  [Events.InitialUpdateCompleted]: void,
-  [Events.StylesUpdateCompleted]: StylesUpdateCompletedEvent,
+  [Events.INITIAL_UPDATE_COMPLETED]: void,
+  [Events.STYLES_UPDATE_COMPLETED]: StylesUpdateCompletedEvent,
 };
 
 type ChangeTracker = {

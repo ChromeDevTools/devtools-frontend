@@ -57,10 +57,10 @@ describeWithMockConnection('NetworkItemView', () => {
 
     assert.isTrue(headersViewComponentSpy.notCalled);
 
-    networkItemView.revealHeader(NetworkForward.UIRequestLocation.UIHeaderSection.Response, 'headerName');
+    networkItemView.revealHeader(NetworkForward.UIRequestLocation.UIHeaderSection.RESPONSE, 'headerName');
 
     assert.isTrue(
-        headersViewComponentSpy.calledWith(NetworkForward.UIRequestLocation.UIHeaderSection.Response, 'headerName'));
+        headersViewComponentSpy.calledWith(NetworkForward.UIRequestLocation.UIHeaderSection.RESPONSE, 'headerName'));
     networkItemView.detach();
   });
 });
@@ -136,8 +136,8 @@ describeWithEnvironment('NetworkItemView', () => {
     request.mimeType = 'text/event-stream';
     const networkItemView = renderNetworkItemView(request);
 
-    assert.isTrue(networkItemView.hasTab(NetworkForward.UIRequestLocation.UIRequestTabs.EventSource));
-    assert.isTrue(networkItemView.hasTab(NetworkForward.UIRequestLocation.UIRequestTabs.Response));
+    assert.isTrue(networkItemView.hasTab(NetworkForward.UIRequestLocation.UIRequestTabs.EVENT_SOURCE));
+    assert.isTrue(networkItemView.hasTab(NetworkForward.UIRequestLocation.UIRequestTabs.RESPONSE));
 
     networkItemView.detach();
   });

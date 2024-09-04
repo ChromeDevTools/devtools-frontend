@@ -439,6 +439,7 @@ export class TimelineDetailsView extends UI.Widget.VBox {
 }
 
 export enum Tab {
+  /* eslint-disable @typescript-eslint/naming-convention -- Used by web_tests. */
   Details = 'details',
   EventLog = 'event-log',
   CallTree = 'call-tree',
@@ -446,4 +447,5 @@ export enum Tab {
   PaintProfiler = 'paint-profiler',
   LayerViewer = 'layer-viewer',
   SelectorStats = 'selector-stats',
+  /* eslint-enable @typescript-eslint/naming-convention */
 }

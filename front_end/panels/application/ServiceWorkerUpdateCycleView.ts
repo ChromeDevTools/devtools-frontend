@@ -61,18 +61,18 @@ export class ServiceWorkerUpdateCycleView {
         ranges: Array<ServiceWorkerUpdateRange>, id: string, startInstallTime: number, endInstallTime: number,
         startActivateTime: number, endActivateTime: number,
         status: Protocol.ServiceWorker.ServiceWorkerVersionStatus): void {
-      addRange(ranges, {id, phase: ServiceWorkerUpdateNames.Install, start: startInstallTime, end: endInstallTime});
+      addRange(ranges, {id, phase: ServiceWorkerUpdateNames.INSTALL, start: startInstallTime, end: endInstallTime});
       if (status === Protocol.ServiceWorker.ServiceWorkerVersionStatus.Activating ||
           status === Protocol.ServiceWorker.ServiceWorkerVersionStatus.Activated ||
           status === Protocol.ServiceWorker.ServiceWorkerVersionStatus.Redundant) {
         addRange(ranges, {
           id,
-          phase: ServiceWorkerUpdateNames.Wait,
+          phase: ServiceWorkerUpdateNames.WAIT,
           start: endInstallTime,
           end: startActivateTime,
         });
         addRange(
-            ranges, {id, phase: ServiceWorkerUpdateNames.Activate, start: startActivateTime, end: endActivateTime});
+            ranges, {id, phase: ServiceWorkerUpdateNames.ACTIVATE, start: startActivateTime, end: endActivateTime});
       }
     }
 
@@ -362,9 +362,9 @@ export class ServiceWorkerUpdateCycleView {
 }
 
 export const enum ServiceWorkerUpdateNames {
-  Install = 'Install',
-  Wait = 'Wait',
-  Activate = 'Activate',
+  INSTALL = 'Install',
+  WAIT = 'Wait',
+  ACTIVATE = 'Activate',
 }
 
 export interface ServiceWorkerUpdateRange {

@@ -133,7 +133,7 @@ export class AudioContextSelector extends Common.ObjectWrapper.ObjectWrapper<Eve
       this.toolbarItemInternal.setTitle(i18nString(UIStrings.audioContextS, {PH1: this.titleFor(item)}));
     }
 
-    this.dispatchEventToListeners(Events.ContextSelected, item);
+    this.dispatchEventToListeners(Events.CONTEXT_SELECTED, item);
   }
 
   reset(): void {
@@ -150,9 +150,9 @@ export class AudioContextSelector extends Common.ObjectWrapper.ObjectWrapper<Eve
 }
 
 export const enum Events {
-  ContextSelected = 'ContextSelected',
+  CONTEXT_SELECTED = 'ContextSelected',
 }
 
 export type EventTypes = {
-  [Events.ContextSelected]: Protocol.WebAudio.BaseAudioContext|null,
+  [Events.CONTEXT_SELECTED]: Protocol.WebAudio.BaseAudioContext|null,
 };

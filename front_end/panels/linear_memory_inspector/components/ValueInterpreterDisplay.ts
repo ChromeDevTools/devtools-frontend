@@ -90,7 +90,7 @@ export class ValueInterpreterDisplay extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-linear-memory-inspector-interpreter-display`;
 
   readonly #shadow = this.attachShadow({mode: 'open'});
-  #endianness = Endianness.Little;
+  #endianness = Endianness.LITTLE;
   #buffer = new ArrayBuffer(0);
   #valueTypes: Set<ValueType> = new Set();
   #valueTypeModeConfig: Map<ValueType, ValueTypeMode> = getDefaultValueTypeMapping();
@@ -209,7 +209,7 @@ export class ValueInterpreterDisplay extends HTMLElement {
     const signedValue = this.#parse({type, signed: true});
     const mode = this.#valueTypeModeConfig.get(type);
     const showSignedAndUnsigned =
-        signedValue !== unsignedValue && mode !== ValueTypeMode.Hexadecimal && mode !== ValueTypeMode.Octal;
+        signedValue !== unsignedValue && mode !== ValueTypeMode.HEXADECIMAL && mode !== ValueTypeMode.OCTAL;
 
     const unsignedRendered = html`<span class="value-type-cell selectable-text"  title=${
         i18nString(UIStrings.unsignedValue)} data-value="true">${unsignedValue}</span>`;
@@ -218,7 +218,7 @@ export class ValueInterpreterDisplay extends HTMLElement {
     }
 
     // Some values are too long to show in one line, we're putting them into the next line.
-    const showInMultipleLines = type === ValueType.Int32 || type === ValueType.Int64;
+    const showInMultipleLines = type === ValueType.INT32 || type === ValueType.INT64;
     const signedRendered = html`<span class="selectable-text" data-value="true" title=${
         i18nString(UIStrings.signedValue)}>${signedValue}</span>`;
 

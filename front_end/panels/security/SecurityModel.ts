@@ -79,7 +79,9 @@ export function securityStateCompare(a: Protocol.Security.SecurityState, b: Prot
 SDK.SDKModel.SDKModel.register(SecurityModel, {capabilities: SDK.Target.Capability.SECURITY, autostart: false});
 
 export enum Events {
+  /* eslint-disable @typescript-eslint/naming-convention -- Used by web_tests. */
   VisibleSecurityStateChanged = 'VisibleSecurityStateChanged',
+  /* eslint-enable @typescript-eslint/naming-convention */
 }
 
 export type EventTypes = {

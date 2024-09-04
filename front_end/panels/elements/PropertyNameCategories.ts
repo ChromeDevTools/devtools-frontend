@@ -5,29 +5,29 @@
 import * as SDK from '../../core/sdk/sdk.js';
 
 export const enum Category {
-  Layout = 'Layout',
-  Text = 'Text',
-  Appearance = 'Appearance',
-  Animation = 'Animation',
-  Grid = 'Grid',
-  Flex = 'Flex',
-  Table = 'Table',
-  CSSVariables = 'CSS Variables',
-  GeneratedContent = 'Generated Content',
-  Other = 'Other',
+  LAYOUT = 'Layout',
+  TEXT = 'Text',
+  APPEARANCE = 'Appearance',
+  ANIMATION = 'Animation',
+  GRID = 'Grid',
+  FLEX = 'Flex',
+  TABLE = 'Table',
+  CSS_VARIABLES = 'CSS Variables',
+  GENERATED_CONTENT = 'Generated Content',
+  OTHER = 'Other',
 }
 
 export const DefaultCategoryOrder = [
-  Category.Layout,
-  Category.Text,
-  Category.Appearance,
-  Category.Animation,
-  Category.CSSVariables,
-  Category.Grid,
-  Category.Flex,
-  Category.Table,
-  Category.GeneratedContent,
-  Category.Other,
+  Category.LAYOUT,
+  Category.TEXT,
+  Category.APPEARANCE,
+  Category.ANIMATION,
+  Category.CSS_VARIABLES,
+  Category.GRID,
+  Category.FLEX,
+  Category.TABLE,
+  Category.GENERATED_CONTENT,
+  Category.OTHER,
 ];
 
 // These categories are manually updated for now. In the future
@@ -36,7 +36,7 @@ export const DefaultCategoryOrder = [
 // https://crbug.com/1117405
 const CategorizedProperties = new Map([
   [
-    Category.Layout,
+    Category.LAYOUT,
     [
       'display',       'margin',      'padding',         'height',         'width',           'position',
       'top',           'right',       'bottom',          'left',           'z-index',         'float',
@@ -48,7 +48,7 @@ const CategorizedProperties = new Map([
     ],
   ],
   [
-    Category.Text,
+    Category.TEXT,
     [
       'font',
       'font-family',
@@ -83,7 +83,7 @@ const CategorizedProperties = new Map([
     ],
   ],
   [
-    Category.Appearance,
+    Category.APPEARANCE,
     [
       'color',
       'outline',
@@ -101,7 +101,7 @@ const CategorizedProperties = new Map([
     ],
   ],
   [
-    Category.Animation,
+    Category.ANIMATION,
     [
       'animation',
       'animation-delay',
@@ -120,7 +120,7 @@ const CategorizedProperties = new Map([
     ],
   ],
   [
-    Category.Grid,
+    Category.GRID,
     [
       'grid',
       'grid-column',
@@ -132,7 +132,7 @@ const CategorizedProperties = new Map([
     ],
   ],
   [
-    Category.Flex,
+    Category.FLEX,
     [
       'flex',
       'order',
@@ -142,7 +142,7 @@ const CategorizedProperties = new Map([
     ],
   ],
   [
-    Category.Table,
+    Category.TABLE,
     [
       'border-collapse',
       'border-spacing',
@@ -152,7 +152,7 @@ const CategorizedProperties = new Map([
     ],
   ],
   [
-    Category.GeneratedContent,
+    Category.GENERATED_CONTENT,
     [
       'content',
       'quotes',
@@ -179,7 +179,7 @@ const matchCategoriesByPropertyName = (propertyName: string): Category[] => {
     return CategoriesByPropertyName.get(propertyName) as Category[];
   }
   if (propertyName.startsWith('--')) {
-    return [Category.CSSVariables];
+    return [Category.CSS_VARIABLES];
   }
   return [];
 };
@@ -210,5 +210,5 @@ export const categorizePropertyName = (propertyName: string): Category[] => {
     }
   }
 
-  return [Category.Other];
+  return [Category.OTHER];
 };

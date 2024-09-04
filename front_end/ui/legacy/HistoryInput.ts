@@ -38,12 +38,12 @@ export class HistoryInput extends HTMLInputElement {
     if (event.keyCode === Keys.Up.code) {
       this.historyPosition = Math.max(this.historyPosition - 1, 0);
       this.value = this.history[this.historyPosition];
-      this.dispatchEvent(new Event('input', {'bubbles': true, 'cancelable': true}));
+      this.dispatchEvent(new Event('input', {bubbles: true, cancelable: true}));
       event.consume(true);
     } else if (event.keyCode === Keys.Down.code) {
       this.historyPosition = Math.min(this.historyPosition + 1, this.history.length - 1);
       this.value = this.history[this.historyPosition];
-      this.dispatchEvent(new Event('input', {'bubbles': true, 'cancelable': true}));
+      this.dispatchEvent(new Event('input', {bubbles: true, cancelable: true}));
       event.consume(true);
     } else if (event.keyCode === Keys.Enter.code) {
       this.saveToHistory();

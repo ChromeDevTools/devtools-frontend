@@ -50,7 +50,7 @@ const DISABLED_RULES = {
   'audio-caption': {
     enabled: false,
   },
-  'blink': {
+  blink: {
     enabled: false,
   },
   'form-field-multiple-labels': {
@@ -92,7 +92,7 @@ const DISABLED_RULES = {
   'landmark-unique': {
     enabled: false,
   },
-  'marquee': {
+  marquee: {
     enabled: false,
   },
   'meta-refresh': {

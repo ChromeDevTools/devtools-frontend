@@ -194,11 +194,11 @@ describeWithEnvironment('SamplesHandler', function() {
       });
       const tree = profilesFirstProcess?.get(threadId)?.profileTree;
       const expectedResult = [
-        {'id': 2, 'dur': 392, 'ts': 643496962681, 'selfTime': 392, 'children': []},
-        {'id': 3, 'dur': 682, 'ts': 643496963073, 'selfTime': 0, 'children': [4]},
-        {'id': 4, 'dur': 682, 'ts': 643496963073, 'selfTime': 160, 'children': [5]},
-        {'id': 5, 'dur': 522, 'ts': 643496963233, 'selfTime': 178, 'children': [6, 7]},
-        {'id': 6, 'dur': 175, 'ts': 643496963411, 'selfTime': 175, 'children': []},
+        {id: 2, dur: 392, ts: 643496962681, selfTime: 392, children: []},
+        {id: 3, dur: 682, ts: 643496963073, selfTime: 0, children: [4]},
+        {id: 4, dur: 682, ts: 643496963073, selfTime: 160, children: [5]},
+        {id: 5, dur: 522, ts: 643496963233, selfTime: 178, children: [6, 7]},
+        {id: 6, dur: 175, ts: 643496963411, selfTime: 175, children: []},
       ];
       assert.exists(tree?.roots);
       if (!tree?.roots) {

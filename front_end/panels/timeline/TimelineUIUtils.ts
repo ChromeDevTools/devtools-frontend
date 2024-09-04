@@ -1573,7 +1573,7 @@ export class TimelineUIUtils {
     [x: string]: number,
   } {
     if (!events.length) {
-      return {'idle': endTime - startTime};
+      return {idle: endTime - startTime};
     }
 
     buildRangeStatsCacheIfNeeded(events);

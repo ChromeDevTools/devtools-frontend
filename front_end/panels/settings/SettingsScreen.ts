@@ -525,7 +525,7 @@ export class ExperimentsSettingsTab extends SettingsTab {
 
   setFilter(filterText: string): void {
     this.#inputElement.value = filterText;
-    this.#inputElement.dispatchEvent(new Event('input', {'bubbles': true, 'cancelable': true}));
+    this.#inputElement.dispatchEvent(new Event('input', {bubbles: true, cancelable: true}));
   }
 
   override wasShown(): void {

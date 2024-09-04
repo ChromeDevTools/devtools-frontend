@@ -38,10 +38,10 @@ describeWithEnvironment('UISourceCodeDiff', () => {
     const uiSourceCodeDiff = new WorkspaceDiff.WorkspaceDiff.UISourceCodeDiff(uiSourceCode);
     const {diff, formattedCurrentMapping} = (await uiSourceCodeDiff.requestDiff({shouldFormatDiff: true}))!;
     assert.deepEqual(diff, [
-      {'0': 0, '1': ['const data = {']},
-      {'0': -1, '1': ['    original: true']},
-      {'0': 1, '1': ['    modified: true,', '    original: false']},
-      {'0': 0, '1': ['}', '']},
+      {0: 0, 1: ['const data = {']},
+      {0: -1, 1: ['    original: true']},
+      {0: 1, 1: ['    modified: true,', '    original: false']},
+      {0: 0, 1: ['}', '']},
     ]);
     assert.deepEqual(formattedCurrentMapping!.originalToFormatted(0, 'const data={'.length), [1, 4]);
     assert.deepEqual(formattedCurrentMapping!.originalToFormatted(0, 'const data={modified:true,'.length), [2, 4]);

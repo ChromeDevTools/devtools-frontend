@@ -785,8 +785,8 @@ describe('NetworkPersistenceManager', () => {
       value: '0',
     }];
     const overrideHeaders = [{
-      'name': 'accept-ranges',
-      'value': 'bytes',
+      name: 'accept-ranges',
+      value: 'bytes',
     }];
     const merged = [
       {name: 'accept-ranges', value: 'bytes'},

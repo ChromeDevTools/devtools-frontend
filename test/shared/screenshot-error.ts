@@ -43,7 +43,7 @@ export class ScreenshotError extends Error {
    */
   static fromMessage(message: string, generatedImgPath: string) {
     const screenshots = {
-      'generated': {filePath: this.stashArtifact(generatedImgPath, 'generated')},
+      generated: {filePath: this.stashArtifact(generatedImgPath, 'generated')},
     };
     return new ScreenshotError(screenshots, message, undefined);
   }
@@ -54,9 +54,9 @@ export class ScreenshotError extends Error {
    */
   static fromError(error: Error, goldenImgPath: string, generatedImgPath: string, diffImgPath: string) {
     const screenshots = {
-      'expected_image': {filePath: this.stashArtifact(goldenImgPath, 'expected')},
-      'actual_image': {filePath: this.stashArtifact(generatedImgPath, 'actual')},
-      'image_diff': {filePath: this.stashArtifact(diffImgPath, 'diff')},
+      expected_image: {filePath: this.stashArtifact(goldenImgPath, 'expected')},
+      actual_image: {filePath: this.stashArtifact(generatedImgPath, 'actual')},
+      image_diff: {filePath: this.stashArtifact(diffImgPath, 'diff')},
     };
     return new ScreenshotError(screenshots, undefined, error);
   }
@@ -71,8 +71,8 @@ export class ScreenshotError extends Error {
       return error;
     }
     const screenshots = {
-      'target': {filePath: this.saveArtifact(targetScreenshot)},
-      'frontend': {filePath: this.saveArtifact(frontendScreenshot)},
+      target: {filePath: this.saveArtifact(targetScreenshot)},
+      frontend: {filePath: this.saveArtifact(frontendScreenshot)},
     };
     return new ScreenshotError(screenshots, undefined, error as Error);
   }

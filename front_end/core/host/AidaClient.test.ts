@@ -292,7 +292,7 @@ describeWithEnvironment('AidaClient', () => {
 
   it('throws a readable error on 403', async () => {
     sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'doAidaConversation').callsArgWith(2, {
-      'statusCode': 403,
+      statusCode: 403,
     });
     const provider = new Host.AidaClient.AidaClient();
     try {
@@ -305,7 +305,7 @@ describeWithEnvironment('AidaClient', () => {
 
   it('throws an error for other codes', async () => {
     sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'doAidaConversation').callsArgWith(2, {
-      'statusCode': 418,
+      statusCode: 418,
     });
     const provider = new Host.AidaClient.AidaClient();
     try {
@@ -318,8 +318,8 @@ describeWithEnvironment('AidaClient', () => {
 
   it('throws an error with all details for other failures', async () => {
     sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'doAidaConversation').callsArgWith(2, {
-      'error': 'Cannot get OAuth credentials',
-      'detail': '{\'@type\': \'type.googleapis.com/google.rpc.DebugInfo\', \'detail\': \'DETAILS\'}',
+      error: 'Cannot get OAuth credentials',
+      detail: '{\'@type\': \'type.googleapis.com/google.rpc.DebugInfo\', \'detail\': \'DETAILS\'}',
     });
     const provider = new Host.AidaClient.AidaClient();
     try {

@@ -19,20 +19,20 @@ describe('PageFramesHandler', () => {
       [
         '25D2F12F1818C70B5BD4325CC9ACD8FF',
         {
-          'frame': '25D2F12F1818C70B5BD4325CC9ACD8FF',
-          'name': '',
-          'processId': TraceEngine.Types.TraceEvents.ProcessID(90812),
-          'url': 'https://web.dev/',
+          frame: '25D2F12F1818C70B5BD4325CC9ACD8FF',
+          name: '',
+          processId: TraceEngine.Types.TraceEvents.ProcessID(90812),
+          url: 'https://web.dev/',
         },
       ],
       [
         'DD911DEB03F2AAB573DE9CA330486E80',
         {
-          'frame': 'DD911DEB03F2AAB573DE9CA330486E80',
-          'name': '',
-          'parent': '25D2F12F1818C70B5BD4325CC9ACD8FF',
-          'processId': TraceEngine.Types.TraceEvents.ProcessID(90824),
-          'url': 'https://shared-storage-demo-content-producer.web.app/paa/scripts/private-aggregation-test.html',
+          frame: 'DD911DEB03F2AAB573DE9CA330486E80',
+          name: '',
+          parent: '25D2F12F1818C70B5BD4325CC9ACD8FF',
+          processId: TraceEngine.Types.TraceEvents.ProcessID(90824),
+          url: 'https://shared-storage-demo-content-producer.web.app/paa/scripts/private-aggregation-test.html',
         },
       ],
     ]);

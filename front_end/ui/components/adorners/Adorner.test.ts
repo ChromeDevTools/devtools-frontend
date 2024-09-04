@@ -62,7 +62,7 @@ describe('Adorner', () => {
     assert.strictEqual(
         adorner.getAttribute('aria-pressed'), 'true', 'toggle adorner didn\'t have correct active aria-pressed value');
 
-    adorner.dispatchEvent(new KeyboardEvent('keydown', {'code': 'Enter'}));
+    adorner.dispatchEvent(new KeyboardEvent('keydown', {code: 'Enter'}));
     assert.strictEqual(clickCounter, 2, 'interactive adorner was not triggered by Enter key');
     assert.strictEqual(
         adorner.getAttribute('aria-label'), ariaLabelDefault,
@@ -71,7 +71,7 @@ describe('Adorner', () => {
         adorner.getAttribute('aria-pressed'), 'false',
         'toggle adorner didn\'t have correct inactive aria-pressed value');
 
-    adorner.dispatchEvent(new KeyboardEvent('keydown', {'code': 'Space'}));
+    adorner.dispatchEvent(new KeyboardEvent('keydown', {code: 'Space'}));
     assert.strictEqual(clickCounter, 3, 'interactive adorner was not triggered by Space key');
     assert.strictEqual(
         adorner.getAttribute('aria-label'), ariaLabelActive,

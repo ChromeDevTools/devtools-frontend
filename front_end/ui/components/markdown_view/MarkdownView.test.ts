@@ -27,34 +27,34 @@ describeWithEnvironment('MarkdownView', () => {
     it('tokenizers links in single quotes', () => {
       assert.deepStrictEqual(Marked.Marked.lexer('\'https://example.com\''), [
         {
-          'raw': '\'https://example.com\'',
-          'text': '\'https://example.com\'',
-          'tokens': [
+          raw: '\'https://example.com\'',
+          text: '\'https://example.com\'',
+          tokens: [
             {
-              'raw': '\'',
-              'text': '&#39;',
-              'type': 'text',
+              raw: '\'',
+              text: '&#39;',
+              type: 'text',
             },
             {
-              'href': 'https://example.com',
-              'raw': 'https://example.com',
-              'text': 'https://example.com',
-              'tokens': [
+              href: 'https://example.com',
+              raw: 'https://example.com',
+              text: 'https://example.com',
+              tokens: [
                 {
-                  'raw': 'https://example.com',
-                  'text': 'https://example.com',
-                  'type': 'text',
+                  raw: 'https://example.com',
+                  text: 'https://example.com',
+                  type: 'text',
                 },
               ],
-              'type': 'link',
+              type: 'link',
             },
             {
-              'raw': '\'',
-              'text': '&#39;',
-              'type': 'text',
+              raw: '\'',
+              text: '&#39;',
+              type: 'text',
             },
           ],
-          'type': 'paragraph',
+          type: 'paragraph',
         },
       ] as unknown as Marked.Marked.TokensList);
     });

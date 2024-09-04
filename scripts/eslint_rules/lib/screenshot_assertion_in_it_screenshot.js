@@ -12,7 +12,7 @@ module.exports = {
       category: 'Possible Errors',
     },
     messages: {
-      'itScreenshotRequired': 'A screenshot assertion must be within an itScreenshot() test, not an it() test.',
+      itScreenshotRequired: 'A screenshot assertion must be within an itScreenshot() test, not an it() test.',
     },
     fixable: 'code',
     schema: []  // no options

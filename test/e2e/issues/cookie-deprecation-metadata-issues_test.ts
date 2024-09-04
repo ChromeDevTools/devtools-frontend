@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import {assertNotNullOrUndefined, getBrowserAndPages, goToResource} from '../../shared/helper.js';
-
 import {
   ensureResourceSectionIsExpanded,
   expandIssue,
@@ -23,26 +22,26 @@ describe('Cookie Deprecation Metadata issue', () => {
     const {frontend} = getBrowserAndPages();
     frontend.evaluate(() => {
       const issue = {
-        'code': 'CookieDeprecationMetadataIssue',
-        'details': {
-          'cookieDeprecationMetadataIssueDetails': {
-            'allowedSites': ['example_1.test'],
-            'optOutPercentage': 25,
-            'isOptOutTopLevel': true,
-            'operation': 'ReadCookie',
+        code: 'CookieDeprecationMetadataIssue',
+        details: {
+          cookieDeprecationMetadataIssueDetails: {
+            allowedSites: ['example_1.test'],
+            optOutPercentage: 25,
+            isOptOutTopLevel: true,
+            operation: 'ReadCookie',
           },
         },
       };
       // @ts-ignore
       window.addIssueForTest(issue);
       const issue2 = {
-        'code': 'CookieDeprecationMetadataIssue',
-        'details': {
-          'cookieDeprecationMetadataIssueDetails': {
-            'allowedSites': ['example_2.test'],
-            'optOutPercentage': 50,
-            'isOptOutTopLevel': false,
-            'operation': 'ReadCookie',
+        code: 'CookieDeprecationMetadataIssue',
+        details: {
+          cookieDeprecationMetadataIssueDetails: {
+            allowedSites: ['example_2.test'],
+            optOutPercentage: 50,
+            isOptOutTopLevel: false,
+            operation: 'ReadCookie',
           },
         },
       };

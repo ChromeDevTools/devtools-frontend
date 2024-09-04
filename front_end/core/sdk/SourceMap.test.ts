@@ -473,7 +473,7 @@ describeWithEnvironment('SourceMap', () => {
       };
       const payload2 = {
         ...payload1,
-        'ignoreList': [0],
+        ignoreList: [0],
       };
       const sourceMap1 = new SDK.SourceMap.SourceMap(compiledURL, sourceMappingURL, payload1);
       const sourceMap2 = new SDK.SourceMap.SourceMap(compiledURL, sourceMappingURL, payload2);
@@ -904,10 +904,10 @@ describeWithEnvironment('SourceMap', () => {
 
       assert.deepEqual(sourceMap.findRanges(url => sourceMap.hasIgnoreListHint(url)) as [], [
         {
-          'startLine': 0,
-          'startColumn': 0,
-          'endLine': 3,
-          'endColumn': 0,
+          startLine: 0,
+          startColumn: 0,
+          endLine: 3,
+          endColumn: 0,
         },
       ]);
     });
@@ -944,22 +944,22 @@ describeWithEnvironment('SourceMap', () => {
 
       assert.deepEqual(sourceMap.findRanges(url => sourceMap.hasIgnoreListHint(url)) as [], [
         {
-          'startLine': 11,
-          'startColumn': 8,
-          'endLine': 13,
-          'endColumn': 6,
+          startLine: 11,
+          startColumn: 8,
+          endLine: 13,
+          endColumn: 6,
         },
         {
-          'startLine': 14,
-          'startColumn': 5,
-          'endLine': 17,
-          'endColumn': 2,
+          startLine: 14,
+          startColumn: 5,
+          endLine: 17,
+          endColumn: 2,
         },
         {
-          'startLine': 19,
-          'startColumn': 0,
-          'endLine': 2147483647,
-          'endColumn': 2147483647,
+          startLine: 19,
+          startColumn: 0,
+          endLine: 2147483647,
+          endColumn: 2147483647,
         },
       ]);
     });
@@ -988,19 +988,19 @@ describeWithEnvironment('SourceMap', () => {
 
       assert.deepEqual(sourceMap.findRanges(url => sourceMap.hasIgnoreListHint(url)) as [], [
         {
-          'startLine': 10,   // By default, unmapped code (before 10:9) is not considered
-          'startColumn': 9,  // special, and will therefore not be included in the range.
-          'endLine': 13,
-          'endColumn': 6,
+          startLine: 10,   // By default, unmapped code (before 10:9) is not considered
+          startColumn: 9,  // special, and will therefore not be included in the range.
+          endLine: 13,
+          endColumn: 6,
         },
       ]);
 
       assert.deepEqual(sourceMap.findRanges(url => sourceMap.hasIgnoreListHint(url), {isStartMatching: true}) as [], [
         {
-          'startLine': 0,    // Starting at 0:0 instead of 10:9 because all the code until
-          'startColumn': 0,  // the initial mapping is now assumed to match the predicate.
-          'endLine': 13,
-          'endColumn': 6,
+          startLine: 0,    // Starting at 0:0 instead of 10:9 because all the code until
+          startColumn: 0,  // the initial mapping is now assumed to match the predicate.
+          endLine: 13,
+          endColumn: 6,
         },
       ]);
     });
@@ -1030,25 +1030,25 @@ describeWithEnvironment('SourceMap', () => {
 
       assert.deepEqual(sourceMap.findRanges(url => sourceMap.hasIgnoreListHint(url)) as [], [
         {
-          'startLine': 10,   // By default, unmapped code (before 5:5) is not considered
-          'startColumn': 9,  // special, and will therefore not be included in the range.
-          'endLine': 13,
-          'endColumn': 6,
+          startLine: 10,   // By default, unmapped code (before 5:5) is not considered
+          startColumn: 9,  // special, and will therefore not be included in the range.
+          endLine: 13,
+          endColumn: 6,
         },
       ]);
 
       assert.deepEqual(sourceMap.findRanges(url => sourceMap.hasIgnoreListHint(url), {isStartMatching: true}) as [], [
         {
-          'startLine': 0,    // Starting at 0:0 instead of 10:9 because all the code until
-          'startColumn': 0,  // the initial mapping is now assumed to match the predicate.
-          'endLine': 5,      // And because the first source url is not hinted as being on
-          'endColumn': 5,    // the ignore-list, there's now an extra initial range.
+          startLine: 0,    // Starting at 0:0 instead of 10:9 because all the code until
+          startColumn: 0,  // the initial mapping is now assumed to match the predicate.
+          endLine: 5,      // And because the first source url is not hinted as being on
+          endColumn: 5,    // the ignore-list, there's now an extra initial range.
         },
         {
-          'startLine': 10,
-          'startColumn': 9,
-          'endLine': 13,
-          'endColumn': 6,
+          startLine: 10,
+          startColumn: 9,
+          endLine: 13,
+          endColumn: 6,
         },
       ]);
     });

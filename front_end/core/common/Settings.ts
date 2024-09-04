@@ -709,25 +709,25 @@ export class VersionController {
     const settingNames: {
       [x: string]: string,
     } = {
-      'FileSystemViewSidebarWidth': 'fileSystemViewSplitViewState',
-      'elementsSidebarWidth': 'elementsPanelSplitViewState',
-      'StylesPaneSplitRatio': 'stylesPaneSplitViewState',
-      'heapSnapshotRetainersViewSize': 'heapSnapshotSplitViewState',
+      FileSystemViewSidebarWidth: 'fileSystemViewSplitViewState',
+      elementsSidebarWidth: 'elementsPanelSplitViewState',
+      StylesPaneSplitRatio: 'stylesPaneSplitViewState',
+      heapSnapshotRetainersViewSize: 'heapSnapshotSplitViewState',
       'InspectorView.splitView': 'InspectorView.splitViewState',
       'InspectorView.screencastSplitView': 'InspectorView.screencastSplitViewState',
       'Inspector.drawerSplitView': 'Inspector.drawerSplitViewState',
-      'layerDetailsSplitView': 'layerDetailsSplitViewState',
-      'networkSidebarWidth': 'networkPanelSplitViewState',
-      'sourcesSidebarWidth': 'sourcesPanelSplitViewState',
-      'scriptsPanelNavigatorSidebarWidth': 'sourcesPanelNavigatorSplitViewState',
-      'sourcesPanelSplitSidebarRatio': 'sourcesPanelDebuggerSidebarSplitViewState',
+      layerDetailsSplitView: 'layerDetailsSplitViewState',
+      networkSidebarWidth: 'networkPanelSplitViewState',
+      sourcesSidebarWidth: 'sourcesPanelSplitViewState',
+      scriptsPanelNavigatorSidebarWidth: 'sourcesPanelNavigatorSplitViewState',
+      sourcesPanelSplitSidebarRatio: 'sourcesPanelDebuggerSidebarSplitViewState',
       'timeline-details': 'timelinePanelDetailsSplitViewState',
       'timeline-split': 'timelinePanelRecorsSplitViewState',
       'timeline-view': 'timelinePanelTimelineStackSplitViewState',
-      'auditsSidebarWidth': 'auditsPanelSplitViewState',
-      'layersSidebarWidth': 'layersPanelSplitViewState',
-      'profilesSidebarWidth': 'profilesPanelSplitViewState',
-      'resourcesSidebarWidth': 'resourcesPanelSplitViewState',
+      auditsSidebarWidth: 'auditsPanelSplitViewState',
+      layersSidebarWidth: 'layersPanelSplitViewState',
+      profilesSidebarWidth: 'profilesPanelSplitViewState',
+      resourcesSidebarWidth: 'resourcesPanelSplitViewState',
     };
     const empty = {};
     for (const oldName in settingNames) {
@@ -763,8 +763,8 @@ export class VersionController {
     const settingNames: {
       [x: string]: string,
     } = {
-      'debuggerSidebarHidden': 'sourcesPanelSplitViewState',
-      'navigatorHidden': 'sourcesPanelNavigatorSplitViewState',
+      debuggerSidebarHidden: 'sourcesPanelSplitViewState',
+      navigatorHidden: 'sourcesPanelNavigatorSplitViewState',
       'WebInspector.Drawer.showOnLoad': 'Inspector.drawerSplitViewState',
     };
 
@@ -801,10 +801,10 @@ export class VersionController {
 
   private updateVersionFrom6To7(): void {
     const settingNames = {
-      'sourcesPanelNavigatorSplitViewState': 'sourcesPanelNavigatorSplitViewState',
-      'elementsPanelSplitViewState': 'elementsPanelSplitViewState',
-      'stylesPaneSplitViewState': 'stylesPaneSplitViewState',
-      'sourcesPanelDebuggerSidebarSplitViewState': 'sourcesPanelDebuggerSidebarSplitViewState',
+      sourcesPanelNavigatorSplitViewState: 'sourcesPanelNavigatorSplitViewState',
+      elementsPanelSplitViewState: 'elementsPanelSplitViewState',
+      stylesPaneSplitViewState: 'stylesPaneSplitViewState',
+      sourcesPanelDebuggerSidebarSplitViewState: 'sourcesPanelDebuggerSidebarSplitViewState',
     };
 
     const empty = {};
@@ -913,7 +913,7 @@ export class VersionController {
   }
 
   private updateVersionFrom13To14(): void {
-    const defaultValue = {'throughput': -1, 'latency': 0};
+    const defaultValue = {throughput: -1, latency: 0};
     Settings.instance().createSetting('networkConditions', defaultValue).set(defaultValue);
   }
 

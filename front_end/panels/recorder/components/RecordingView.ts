@@ -1190,7 +1190,7 @@ export class RecordingView extends HTMLElement {
                   jslog=${VisualLogging.value('title').track({change: true})}
                   class=${LitHtml.Directives.classMap({
                     'has-error': this.#isTitleInvalid,
-                    'disabled': !isTitleEditable,
+                    disabled: !isTitleEditable,
                   })}
                   .innerText=${LitHtml.Directives.live(title)}></span>
             <div class="title-button-bar">

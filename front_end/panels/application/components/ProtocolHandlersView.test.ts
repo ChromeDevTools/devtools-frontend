@@ -25,12 +25,12 @@ describeWithEnvironment('ProtocolHandlersView', () => {
   it('renders view when protocols are detected', async () => {
     const protocols = [
       {
-        'protocol': 'web+coffee',
-        'url': './?coffee=%s',
+        protocol: 'web+coffee',
+        url: './?coffee=%s',
       },
       {
-        'protocol': 'web+pwinter',
-        'url': 'index.html?colors=%s',
+        protocol: 'web+pwinter',
+        url: 'index.html?colors=%s',
       },
       {
         'invalid-protocol': 'this is an invalid protocol entry for testing purposes',

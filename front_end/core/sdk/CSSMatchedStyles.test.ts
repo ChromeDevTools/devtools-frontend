@@ -440,8 +440,8 @@ describeWithMockConnection('NodeCascade', () => {
     nestedRule.rule.nestingSelectors = ['a'];
     nestedRule.rule.selectorList = {selectors: [], text: '&'};
     nestedRule.rule.supports = [{
-      'text': '(--var:s)',
-      'active': true,
+      text: '(--var:s)',
+      active: true,
       styleSheetId: nestedRule.rule.styleSheetId,
     }];
     const matchedStyles = await createMatchedStyles({

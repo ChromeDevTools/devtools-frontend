@@ -17,10 +17,10 @@ const defaultBounds = {
 describe('getPositionFromLabelType', () => {
   type PositionId = 'to'|'ab'|'be'|'bo';
   const expectedPositions = {
-    'to': defaultBounds.minY,
-    'ab': defaultBounds.minY - labelHeight,
-    'be': defaultBounds.maxY,
-    'bo': defaultBounds.maxY - labelHeight,
+    to: defaultBounds.minY,
+    ab: defaultBounds.minY - labelHeight,
+    be: defaultBounds.maxY,
+    bo: defaultBounds.maxY - labelHeight,
   };
 
   for (const positionType of positionTypes) {

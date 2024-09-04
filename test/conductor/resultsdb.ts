@@ -81,8 +81,8 @@ export function sendTestResult(results: TestResult): void {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': `ResultSink ${sinkData.authToken}`,
+      Accept: 'application/json',
+      Authorization: `ResultSink ${sinkData.authToken}`,
     },
   };
 

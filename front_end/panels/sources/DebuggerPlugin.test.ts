@@ -75,11 +75,11 @@ describeWithMockConnection('Inline variable view scope helpers', () => {
     const expectedOffsets = parseScopeChain(originalScopes);
 
     const sourceMapContent = {
-      'version': 3,
-      'names': ['unminified', 'par1', 'par2', 'console', 'log'],
-      'sources': ['index.js'],
-      'sourcesContent': [originalSource],
-      'mappings': 'AAAA,SAASA,EAAWC,EAAMC,GACxBC,QAAQC,IAAIH,EAAMC,EACpB,CACAF,EAAW,EAAG',
+      version: 3,
+      names: ['unminified', 'par1', 'par2', 'console', 'log'],
+      sources: ['index.js'],
+      sourcesContent: [originalSource],
+      mappings: 'AAAA,SAASA,EAAWC,EAAMC,GACxBC,QAAQC,IAAIH,EAAMC,EACpB,CACAF,EAAW,EAAG',
     };
     const sourceMapJson = JSON.stringify(sourceMapContent);
 
@@ -121,11 +121,11 @@ describeWithMockConnection('Inline variable view scope helpers', () => {
     const expectedOffsets = parseScopeChain(originalScopes);
 
     const sourceMapContent = {
-      'version': 3,
-      'names': ['f', 'n', 'c', 'console', 'log', 'bind', 'i'],
-      'sources': ['index.js'],
-      'sourcesContent': [originalSource],
-      'mappings':
+      version: 3,
+      names: ['f', 'n', 'c', 'console', 'log', 'bind', 'i'],
+      sources: ['index.js'],
+      sourcesContent: [originalSource],
+      mappings:
           'AAAA,SAASA,EAAEC,GACT,MAAMC,EAAIC,QAAQC,IAAIC,KAAKF,SAC3B,IAAK,IAAIG,EAAI,EAAGA,EAAIL,EAAGK,IAAKJ,EAAEI,EAChC,CACAN,EAAE',
     };
     const sourceMapJson = JSON.stringify(sourceMapContent);

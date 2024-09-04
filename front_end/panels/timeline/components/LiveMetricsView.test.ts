@@ -77,7 +77,7 @@ function createMockFieldData() {
         origin: 'https://example.com',
       },
       metrics: {
-        'largest_contentful_paint': {
+        largest_contentful_paint: {
           histogram: [
             {start: 0, end: 2500, density: 0.5},
             {start: 2500, end: 4000, density: 0.3},
@@ -85,7 +85,7 @@ function createMockFieldData() {
           ],
           percentiles: {p75: 1000},
         },
-        'cumulative_layout_shift': {
+        cumulative_layout_shift: {
           histogram: [
             {start: 0, end: 0.1},
             {start: 0.1, end: 0.25, density: 0.2},
@@ -93,10 +93,10 @@ function createMockFieldData() {
           ],
           percentiles: {p75: 0.25},
         },
-        'round_trip_time': {
+        round_trip_time: {
           percentiles: {p75: 150},
         },
-        'form_factors': {
+        form_factors: {
           fractions: {
             desktop: 0.6,
             phone: 0.3,

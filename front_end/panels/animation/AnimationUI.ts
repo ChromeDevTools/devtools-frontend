@@ -257,7 +257,7 @@ export class AnimationUI {
     } else {
       const stepFunction = StepTimingFunction.parse(easing);
       group.removeChildren();
-      const offsetMap: {[x: string]: number} = {'start': 0, 'middle': 0.5, 'end': 1};
+      const offsetMap: {[x: string]: number} = {start: 0, middle: 0.5, end: 1};
       if (stepFunction) {
         const offsetWeight = offsetMap[stepFunction.stepAtPosition];
         for (let i = 0; i < stepFunction.steps; i++) {

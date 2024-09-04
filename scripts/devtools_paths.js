@@ -101,9 +101,9 @@ function devToolsThirdPartyPath() {
 
 function nodePath() {
   const paths = {
-    'darwin': path.join('mac', process.arch === 'arm64' ? 'node-darwin-arm64' : 'node-darwin-x64', 'bin', 'node'),
-    'linux': path.join('linux', 'node-linux-x64', 'bin', 'node'),
-    'win32': path.join('win', 'node.exe'),
+    darwin: path.join('mac', process.arch === 'arm64' ? 'node-darwin-arm64' : 'node-darwin-x64', 'bin', 'node'),
+    linux: path.join('linux', 'node-linux-x64', 'bin', 'node'),
+    win32: path.join('win', 'node.exe'),
   };
   return path.join(thirdPartyPath(), 'node', paths[os.platform()]);
 }
@@ -125,10 +125,9 @@ function mochaExecutablePath() {
 
 function downloadedChromeBinaryPath() {
   const paths = {
-    'linux': path.join('chrome-linux', 'chrome'),
-    'darwin':
-        path.join('chrome-mac', 'Google Chrome for Testing.app', 'Contents', 'MacOS', 'Google Chrome for Testing'),
-    'win32': path.join('chrome-win', 'chrome.exe'),
+    linux: path.join('chrome-linux', 'chrome'),
+    darwin: path.join('chrome-mac', 'Google Chrome for Testing.app', 'Contents', 'MacOS', 'Google Chrome for Testing'),
+    win32: path.join('chrome-win', 'chrome.exe'),
   };
   return path.join(devToolsThirdPartyPath(), 'chrome', paths[os.platform()]);
 }

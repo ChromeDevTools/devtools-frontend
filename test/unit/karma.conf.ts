@@ -98,7 +98,7 @@ module.exports = function(config: any) {
 
     browsers: ['BrowserWithArgs'],
     customLaunchers: {
-      'BrowserWithArgs': {
+      BrowserWithArgs: {
         base: CustomChrome.prototype.name,
         flags: [
           '--remote-allow-origins=*',

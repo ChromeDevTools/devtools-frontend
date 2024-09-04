@@ -379,8 +379,8 @@ export class FreestylerChatUi extends HTMLElement {
     }
 
     const iconClasses = LitHtml.Directives.classMap({
-      'loading': isLoading,
-      'paused': Boolean(step.sideEffect),
+      loading: isLoading,
+      paused: Boolean(step.sideEffect),
     });
 
     // clang-format off

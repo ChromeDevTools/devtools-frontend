@@ -70,7 +70,7 @@ export class IconButton extends HTMLElement {
     const buttonClasses = LitHtml.Directives.classMap({
       'icon-button': true,
       'with-click-handler': Boolean(this.#clickHandler),
-      'compact': this.#compact,
+      compact: this.#compact,
     });
     const filteredGroups = this.#groups.filter(counter => counter.text !== undefined)
                                .filter((_, index) => this.#compact ? index === 0 : true);

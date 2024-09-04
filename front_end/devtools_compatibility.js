@@ -69,7 +69,7 @@ const DevToolsAPIImpl = class {
     if (callback) {
       this._callbacks[callId] = callback;
     }
-    const message = {'id': callId, 'method': method};
+    const message = {id: callId, method: method};
     if (args.length) {
       message.params = args;
     }

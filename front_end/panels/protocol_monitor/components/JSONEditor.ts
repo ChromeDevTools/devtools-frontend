@@ -259,12 +259,12 @@ export class JSONEditor extends LitElement {
 
     const displayedParameters = this.#convertObjectToParameterSchema(
                                         '', parameters, {
-                                          'typeRef': DUMMY_DATA,
-                                          'type': ParameterType.OBJECT,
-                                          'name': '',
-                                          'description': '',
-                                          'optional': true,
-                                          'value': [],
+                                          typeRef: DUMMY_DATA,
+                                          type: ParameterType.OBJECT,
+                                          name: '',
+                                          description: '',
+                                          optional: true,
+                                          value: [],
                                         },
                                         schema.parameters)
                                     .value as Parameter[];
@@ -414,9 +414,9 @@ export class JSONEditor extends LitElement {
       box: hintElement.boxInWindow(),
       show: async (popover: UI.GlassPane.GlassPane) => {
         const popupElement = new ElementsComponents.CSSHintDetailsView.CSSHintDetailsView({
-          'getMessage': () => `<code><span>${head}</span></code>`,
-          'getPossibleFixMessage': () => popupContent,
-          'getLearnMoreLink': () =>
+          getMessage: () => `<code><span>${head}</span></code>`,
+          getPossibleFixMessage: () => popupContent,
+          getLearnMoreLink: () =>
               `https://chromedevtools.github.io/devtools-protocol/tot/${this.command.split('.')[0]}/`,
         });
         popover.contentElement.appendChild(popupElement);
@@ -938,7 +938,7 @@ export class JSONEditor extends LitElement {
           const canClearParameter = (isArray && !isParamValueUndefined && parameter.value?.length !== 0) || (isObject && !isParamValueUndefined);
           const parametersClasses = {
             'optional-parameter': parameter.optional,
-            'parameter': true,
+            parameter: true,
             'undefined-parameter': parameter.value === undefined && parameter.optional,
           };
           const inputClasses = {

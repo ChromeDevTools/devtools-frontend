@@ -16,7 +16,7 @@ module.exports = {
     },
     fixable: 'code',
     messages: {
-      'needsFunction': 'Test should use a function keyword, not an arrow function.'
+      needsFunction: 'Test should use a function keyword, not an arrow function.'
     },
     schema: []  // no options
   },

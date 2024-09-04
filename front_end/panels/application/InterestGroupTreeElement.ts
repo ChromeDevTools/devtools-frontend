@@ -44,8 +44,7 @@ export class InterestGroupTreeElement extends ApplicationPanelTreeElement {
     if (!mainTarget) {
       return null;
     }
-    const response =
-        await mainTarget.storageAgent().invoke_getInterestGroupDetails({'ownerOrigin': owner, 'name': name});
+    const response = await mainTarget.storageAgent().invoke_getInterestGroupDetails({ownerOrigin: owner, name: name});
     return response.details;
   }
 

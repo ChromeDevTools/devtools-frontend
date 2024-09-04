@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import {assertNotNullOrUndefined, getBrowserAndPages, goToResource} from '../../shared/helper.js';
-
 import {
   ensureResourceSectionIsExpanded,
   expandIssue,
@@ -23,24 +22,24 @@ describe('Heavy Ad issue', () => {
     const {frontend} = getBrowserAndPages();
     frontend.evaluate(() => {
       const issue = {
-        'code': 'HeavyAdIssue',
-        'details': {
-          'heavyAdIssueDetails': {
-            'resolution': 'HeavyAdBlocked',
-            'reason': 'NetworkTotalLimit',
-            'frame': {frameId: 'main'},
+        code: 'HeavyAdIssue',
+        details: {
+          heavyAdIssueDetails: {
+            resolution: 'HeavyAdBlocked',
+            reason: 'NetworkTotalLimit',
+            frame: {frameId: 'main'},
           },
         },
       };
       // @ts-ignore
       window.addIssueForTest(issue);
       const issue2 = {
-        'code': 'HeavyAdIssue',
-        'details': {
-          'heavyAdIssueDetails': {
-            'resolution': 'HeavyAdWarning',
-            'reason': 'CpuPeakLimit',
-            'frame': {frameId: 'main'},
+        code: 'HeavyAdIssue',
+        details: {
+          heavyAdIssueDetails: {
+            resolution: 'HeavyAdWarning',
+            reason: 'CpuPeakLimit',
+            frame: {frameId: 'main'},
           },
         },
       };

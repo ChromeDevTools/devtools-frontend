@@ -5,7 +5,6 @@
 import {assert} from 'chai';
 
 import {$, click, getBrowserAndPages, goToResource, typeText, waitForFunction} from '../../shared/helper.js';
-
 import {CONSOLE_TAB_SELECTOR, focusConsolePrompt, STACK_PREVIEW_CONTAINER} from '../helpers/console-helpers.js';
 import {openSettingsTab} from '../helpers/settings-helpers.js';
 
@@ -68,15 +67,15 @@ describe('The Console Tab', () => {
       {text: '\nshown3 @ showMe.js:10', classes: {}},
       {text: '\nshown2 @ showMe.js:6', classes: {}},
       {text: '\nshown1 @ showMe.js:2', classes: {}},
-      {text: '\n(anonymous) @ ignoreMe.js:21', classes: {'0': 'hidden-row'}},
-      {text: '\nPromise.then', classes: {'0': 'hidden-row'}},
-      {text: '\nignoreListed4 @ ignoreMe.js:20', classes: {'0': 'hidden-row'}},
-      {text: '\nignoreListed3 @ ignoreMe.js:16', classes: {'0': 'hidden-row'}},
-      {text: '\nignoreListed2 @ ignoreMe.js:12', classes: {'0': 'hidden-row'}},
-      {text: '\nignoreListed1 @ ignoreMe.js:8', classes: {'0': 'hidden-row'}},
-      {text: '\n(anonymous) @ ignoreMe.js:5', classes: {'0': 'hidden-row'}},
-      {text: '\nShow 6 more frames', classes: {'0': 'show-all-link'}},
-      {text: '\nShow less', classes: {'0': 'show-less-link'}},
+      {text: '\n(anonymous) @ ignoreMe.js:21', classes: {0: 'hidden-row'}},
+      {text: '\nPromise.then', classes: {0: 'hidden-row'}},
+      {text: '\nignoreListed4 @ ignoreMe.js:20', classes: {0: 'hidden-row'}},
+      {text: '\nignoreListed3 @ ignoreMe.js:16', classes: {0: 'hidden-row'}},
+      {text: '\nignoreListed2 @ ignoreMe.js:12', classes: {0: 'hidden-row'}},
+      {text: '\nignoreListed1 @ ignoreMe.js:8', classes: {0: 'hidden-row'}},
+      {text: '\n(anonymous) @ ignoreMe.js:5', classes: {0: 'hidden-row'}},
+      {text: '\nShow 6 more frames', classes: {0: 'show-all-link'}},
+      {text: '\nShow less', classes: {0: 'show-less-link'}},
     ];
 
     await waitForFunction(async () => {

@@ -17,8 +17,8 @@ module.exports = {
     },
     fixable: 'code',
     messages: {
-      'invalidEventName': 'Custom events must be named in all lower case with no punctuation.',
-      'invalidEventNameReference': 'When referencing a custom event name, it must be accessed as ClassName.eventName.'
+      invalidEventName: 'Custom events must be named in all lower case with no punctuation.',
+      invalidEventNameReference: 'When referencing a custom event name, it must be accessed as ClassName.eventName.'
     },
     schema: []  // no options
   },

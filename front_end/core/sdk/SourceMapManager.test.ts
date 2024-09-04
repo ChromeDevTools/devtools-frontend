@@ -11,10 +11,10 @@ import type * as Platform from '../platform/platform.js';
 import * as SDK from './sdk.js';
 
 const content = JSON.stringify({
-  'version': 3,
-  'file': '/script.js',
-  'mappings': '',
-  'sources': [
+  version: 3,
+  file: '/script.js',
+  mappings: '',
+  sources: [
     '/original-script.js',
   ],
 });

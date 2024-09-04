@@ -152,33 +152,33 @@ describeWithEnvironment('TraceProcessor', function() {
 
     it('sorts handlers satisfying their dependencies 1', function() {
       const handlersDeps: {[key: string]: {deps ? () : TraceModel.Handlers.Types.TraceEventHandlerName[]}} = {
-        'Meta': {},
-        'GPU': {
+        Meta: {},
+        GPU: {
           deps() {
             return ['Meta'];
           },
         },
-        'LayoutShifts': {
+        LayoutShifts: {
           deps() {
             return ['GPU'];
           },
         },
-        'NetworkRequests': {
+        NetworkRequests: {
           deps() {
             return ['LayoutShifts'];
           },
         },
-        'PageLoadMetrics': {
+        PageLoadMetrics: {
           deps() {
             return ['Renderer', 'GPU'];
           },
         },
-        'Renderer': {
+        Renderer: {
           deps() {
             return ['Screenshots'];
           },
         },
-        'Screenshots': {
+        Screenshots: {
           deps() {
             return ['NetworkRequests', 'LayoutShifts'];
           },
@@ -192,17 +192,17 @@ describeWithEnvironment('TraceProcessor', function() {
     });
     it('sorts handlers satisfying their dependencies 2', function() {
       const handlersDeps: {[key: string]: {deps ? () : TraceModel.Handlers.Types.TraceEventHandlerName[]}} = {
-        'GPU': {
+        GPU: {
           deps() {
             return ['LayoutShifts', 'NetworkRequests'];
           },
         },
-        'LayoutShifts': {
+        LayoutShifts: {
           deps() {
             return ['NetworkRequests'];
           },
         },
-        'NetworkRequests': {},
+        NetworkRequests: {},
       };
       const handlers = fillHandlers(handlersDeps);
 
@@ -211,23 +211,23 @@ describeWithEnvironment('TraceProcessor', function() {
     });
     it('throws an error when a dependency cycle is present among handlers', function() {
       const handlersDeps: {[key: string]: {deps ? () : TraceModel.Handlers.Types.TraceEventHandlerName[]}} = {
-        'Meta': {},
-        'GPU': {
+        Meta: {},
+        GPU: {
           deps() {
             return ['Meta'];
           },
         },
-        'LayoutShifts': {
+        LayoutShifts: {
           deps() {
             return ['GPU', 'Renderer'];
           },
         },
-        'NetworkRequests': {
+        NetworkRequests: {
           deps() {
             return ['LayoutShifts'];
           },
         },
-        'Renderer': {
+        Renderer: {
           deps() {
             return ['NetworkRequests'];
           },

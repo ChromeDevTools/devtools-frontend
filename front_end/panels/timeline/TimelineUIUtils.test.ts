@@ -154,14 +154,14 @@ describeWithMockConnection('TimelineUIUtils', function() {
       // Register mock script and source map.
 
       const sourceMapContent = JSON.stringify({
-        'version': 3,
-        'names': ['unminified', 'par1', 'par2', 'console', 'log'],
-        'sources': [
+        version: 3,
+        names: ['unminified', 'par1', 'par2', 'console', 'log'],
+        sources: [
           '/original-script.ts',
         ],
-        'file': '/test.js',
-        'sourcesContent': ['function unminified(par1, par2) {\n  console.log(par1, par2);\n}\n'],
-        'mappings': 'AAAA,SAASA,EAAWC,EAAMC,GACxBC,QAAQC,IAAIH,EAAMC',
+        file: '/test.js',
+        sourcesContent: ['function unminified(par1, par2) {\n  console.log(par1, par2);\n}\n'],
+        mappings: 'AAAA,SAASA,EAAWC,EAAMC,GACxBC,QAAQC,IAAIH,EAAMC',
       });
       setupPageResourceLoaderForSourceMap(sourceMapContent);
       target.setInspectedURL('https://google.com' as Platform.DevToolsPath.UrlString);
@@ -237,11 +237,11 @@ describeWithMockConnection('TimelineUIUtils', function() {
           'function', 10, 100, TraceEngine.Types.TraceEvents.ProcessID(1), TraceEngine.Types.TraceEvents.ThreadID(1));
 
       profileCall.callFrame = {
-        'columnNumber': columnNumber,
-        'functionName': 'minified',
-        'lineNumber': 0,
-        'scriptId': script.scriptId,
-        'url': 'file://gen.js',
+        columnNumber: columnNumber,
+        functionName: 'minified',
+        lineNumber: 0,
+        scriptId: script.scriptId,
+        url: 'file://gen.js',
       };
       const workersData: TraceEngine.Handlers.ModelHandlers.Workers.WorkersData = {
         workerSessionIdEvents: [],
@@ -781,7 +781,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
               value: 'This is a child task',
             },
             {title: 'Tip', value: 'Do something about it'},
-            {'title': undefined, 'value': 'appendACorgi @ localhost:3000/static/js/bundle.js:274:19'},
+            {title: undefined, value: 'appendACorgi @ localhost:3000/static/js/bundle.js:274:19'},
           ],
       );
     });
@@ -808,7 +808,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
               title: 'Description',
               value: 'This marks the start of a task',
             },
-            {'title': undefined, 'value': 'mockChangeDetection @ localhost:3000/static/js/bundle.js:295:17'},
+            {title: undefined, value: 'mockChangeDetection @ localhost:3000/static/js/bundle.js:295:17'},
           ],
       );
     });
@@ -1044,7 +1044,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
            {title: 'URL', value: 'wss://socketsbay.com/wss/v2/1/demo/'},
            // The 'First Invalidated' Stack trace
            {title: undefined, value: 'connect @ socketsbay.com/test-websockets:314:25'},
-           {title: 'Initiated by', 'value': 'Create WebSocket'},
+           {title: 'Initiated by', value: 'Create WebSocket'},
            {title: 'Pending for', value: '72.0 ms'},
          ];
          assert.deepEqual(
@@ -1076,7 +1076,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
            // The initiator stack trace
            {title: undefined, value: 'connect @ socketsbay.com/test-websockets:314:25'},
            // The 2 entries under "Initiator for" are displayed as seperate links and in the UI it is obvious they are seperate
-           {title: 'Initiator for', 'value': 'Send WebSocket Handshake Receive WebSocket Handshake'},
+           {title: 'Initiator for', value: 'Send WebSocket Handshake Receive WebSocket Handshake'},
          ];
          assert.deepEqual(
              rowData,
@@ -1129,7 +1129,6 @@ describeWithMockConnection('TimelineUIUtils', function() {
         },
       ]);
     });
-
   });
 
   it('can generate details for a frame', async function() {

@@ -37,7 +37,7 @@ export class TimelineJSProfileProcessor {
     const events: TraceEngine.Types.TraceEvents.TraceEventData[] = [];
 
     const threadName = i18nString(UIStrings.threadS, {PH1: tid});
-    appendEvent('TracingStartedInPage', {data: {'sessionId': '1'}}, 0, 0, TraceEngine.Types.TraceEvents.Phase.METADATA);
+    appendEvent('TracingStartedInPage', {data: {sessionId: '1'}}, 0, 0, TraceEngine.Types.TraceEvents.Phase.METADATA);
     appendEvent(
         TraceEngine.Types.TraceEvents.KnownEventName.THREAD_NAME, {name: threadName}, 0, 0,
         TraceEngine.Types.TraceEvents.Phase.METADATA, '__metadata');
@@ -55,8 +55,7 @@ export class TimelineJSProfileProcessor {
 
     // TODO: create a `Profile` event instead, as `cpuProfile` is legacy
     appendEvent(
-        'CpuProfile', {data: {'cpuProfile': profile}}, profile.endTime, 0,
-        TraceEngine.Types.TraceEvents.Phase.COMPLETE);
+        'CpuProfile', {data: {cpuProfile: profile}}, profile.endTime, 0, TraceEngine.Types.TraceEvents.Phase.COMPLETE);
     return events;
 
     function appendEvent(

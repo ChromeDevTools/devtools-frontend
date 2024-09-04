@@ -215,7 +215,7 @@ describe('NetworkDispatcher', () => {
       const earlyHintsEvent = {
         requestId: 'mockId' as Protocol.Network.RequestId,
         headers: {
-          'link': '</style.css>; as=style;',
+          link: '</style.css>; as=style;',
         } as Protocol.Network.Headers,
       };
       networkDispatcher.requestWillBeSent(requestWillBeSentEvent);

@@ -221,9 +221,9 @@ function eventSourceMessageNodeComparator(
 export const Comparators: {
   [x: string]: (arg0: EventSourceMessageNode, arg1: EventSourceMessageNode) => number,
 } = {
-  'id': eventSourceMessageNodeComparator.bind(null, message => message.eventId),
-  'type': eventSourceMessageNodeComparator.bind(null, message => message.eventName),
-  'time': eventSourceMessageNodeComparator.bind(null, message => message.time),
+  id: eventSourceMessageNodeComparator.bind(null, message => message.eventId),
+  type: eventSourceMessageNodeComparator.bind(null, message => message.eventName),
+  time: eventSourceMessageNodeComparator.bind(null, message => message.time),
 };
 
 const clearMessageOffsets = new WeakMap<SDK.NetworkRequest.NetworkRequest, number>();

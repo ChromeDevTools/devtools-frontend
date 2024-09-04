@@ -100,8 +100,8 @@ module.exports = {
 
     // key-spacing is disabled, as some objects use value-aligned spacing, some not.
     'key-spacing': ['off', {'beforeColon': false, 'afterColon': true, 'align': 'value'}],
-    // quote-props is diabled, as property quoting styles are too varied to enforce.
-    'quote-props': ['off', 'as-needed'],
+
+    'quote-props': ['error', 'as-needed'],
 
     // no-implicit-globals will prevent accidental globals
     'no-implicit-globals': 'off',

@@ -63,7 +63,7 @@ class BaseLinkSwatch extends HTMLElement {
       'link-style': true,
       'text-button': true,
       'link-swatch-link': true,
-      'undefined': !isDefined,
+      undefined: !isDefined,
     });
     // The linkText's space must be removed, otherwise it cannot be triggered when clicked.
     const onActivate = isDefined ? this.onLinkActivate.bind(this, text.trim()) : null;

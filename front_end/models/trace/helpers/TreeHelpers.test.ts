@@ -33,8 +33,8 @@ describe('TreeHelpers', () => {
 
       const rootsEvents = [...tree.roots].map(n => n ? n.entry : null);
       assert.deepEqual(rootsEvents.map(e => e ? {name: e.name, ts: e.ts, dur: e.dur} : null) as unknown[], [
-        {'name': 'A', 'ts': 0, 'dur': 10},
-        {'name': 'E', 'ts': 11, 'dur': 3},
+        {name: 'A', ts: 0, dur: 10},
+        {name: 'E', ts: 11, dur: 3},
       ]);
 
       const nodeA = [...tree.roots].at(0);
@@ -46,8 +46,8 @@ describe('TreeHelpers', () => {
 
       const childrenOfA = getEventsIn(nodeA.children.values());
       assert.deepEqual(childrenOfA.map(e => e ? {name: e.name, ts: e.ts, dur: e.dur} : null) as unknown[], [
-        {'name': 'B', 'ts': 1, 'dur': 3},
-        {'name': 'D', 'ts': 5, 'dur': 3},
+        {name: 'B', ts: 1, dur: 3},
+        {name: 'D', ts: 5, dur: 3},
       ]);
 
       const childrenOfE = getEventsIn(nodeE.children.values());
@@ -62,7 +62,7 @@ describe('TreeHelpers', () => {
 
       const childrenOfB = getEventsIn(nodeB.children.values());
       assert.deepEqual(childrenOfB.map(e => e ? {name: e.name, ts: e.ts, dur: e.dur} : null) as unknown[], [
-        {'name': 'C', 'ts': 2, 'dur': 1},
+        {name: 'C', ts: 2, dur: 1},
       ]);
 
       const childrenOfD = getEventsIn(nodeD.children.values());
@@ -100,7 +100,7 @@ describe('TreeHelpers', () => {
 
       const rootsEvents = [...tree.roots].map(n => n.entry);
       assert.deepEqual(rootsEvents.map(e => e ? {name: e.name, ts: e.ts, dur: e.dur} : null) as unknown[], [
-        {'name': 'A', 'ts': 0, 'dur': 10},
+        {name: 'A', ts: 0, dur: 10},
       ]);
 
       const nodeA = [...tree.roots].at(0);
@@ -111,7 +111,7 @@ describe('TreeHelpers', () => {
 
       const childrenOfA = getEventsIn(nodeA.children.values());
       assert.deepEqual(childrenOfA.map(e => e ? {name: e.name, ts: e.ts, dur: e.dur} : null) as unknown[], [
-        {'name': 'D', 'ts': 5, 'dur': 3},
+        {name: 'D', ts: 5, dur: 3},
       ]);
 
       const nodeD = [...nodeA.children].at(0);
@@ -145,8 +145,8 @@ describe('TreeHelpers', () => {
 
       const rootsEvents = [...tree.roots].map(n => n.entry);
       assert.deepEqual(rootsEvents.map(e => e ? {name: e.name, ts: e.ts, dur: e.dur} : null) as unknown[], [
-        {'name': 'A', 'ts': 0, 'dur': 10},
-        {'name': 'E', 'ts': 10, 'dur': 3},
+        {name: 'A', ts: 0, dur: 10},
+        {name: 'E', ts: 10, dur: 3},
       ]);
 
       const nodeA = [...tree.roots].at(0);
@@ -158,8 +158,8 @@ describe('TreeHelpers', () => {
 
       const childrenOfA = getEventsIn(nodeA.children.values());
       assert.deepEqual(childrenOfA.map(e => e ? {name: e.name, ts: e.ts, dur: e.dur} : null) as unknown[], [
-        {'name': 'B', 'ts': 0, 'dur': 3},
-        {'name': 'D', 'ts': 3, 'dur': 3},
+        {name: 'B', ts: 0, dur: 3},
+        {name: 'D', ts: 3, dur: 3},
       ]);
 
       const childrenOfE = getEventsIn(nodeE.children.values());
@@ -174,7 +174,7 @@ describe('TreeHelpers', () => {
 
       const childrenOfB = getEventsIn(nodeB.children.values());
       assert.deepEqual(childrenOfB.map(e => e ? {name: e.name, ts: e.ts, dur: e.dur} : null) as unknown[], [
-        {'name': 'C', 'ts': 2, 'dur': 1},
+        {name: 'C', ts: 2, dur: 1},
       ]);
 
       const childrenOfD = getEventsIn(nodeD.children.values());

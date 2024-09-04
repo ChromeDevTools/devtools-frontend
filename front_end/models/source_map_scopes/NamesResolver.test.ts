@@ -173,8 +173,8 @@ describeWithMockConnection('NameResolver', () => {
   ];
 
   const dummyMapContent = JSON.stringify({
-    'version': 3,
-    'sources': [],
+    version: 3,
+    sources: [],
   });
 
   for (const test of tests) {
@@ -204,11 +204,11 @@ describeWithMockConnection('NameResolver', () => {
     const sourceMapUrl = 'file:///tmp/example.js.min.map';
     // This was minified with 'esbuild --sourcemap=linked --minify' v0.14.31.
     const sourceMapContent = JSON.stringify({
-      'version': 3,
-      'sources': ['index.js'],
-      'sourcesContent': ['function f(par1, par2) {\n  console.log(par1, par2);\n}\nf(1, 2);\n'],
-      'mappings': 'AAAA,WAAW,EAAM,EAAM,CACrB,QAAQ,IAAI,EAAM,CAAI,CACxB,CACA,EAAE,EAAG,CAAC',
-      'names': [],
+      version: 3,
+      sources: ['index.js'],
+      sourcesContent: ['function f(par1, par2) {\n  console.log(par1, par2);\n}\nf(1, 2);\n'],
+      mappings: 'AAAA,WAAW,EAAM,EAAM,CACrB,QAAQ,IAAI,EAAM,CAAI,CACxB,CACA,EAAE,EAAG,CAAC',
+      names: [],
     });
 
     const source = `function f(o,n){console.log(o,n)}f(1,2);\n//# sourceMappingURL=${sourceMapUrl}`;
@@ -229,11 +229,11 @@ describeWithMockConnection('NameResolver', () => {
     const sourceMapUrl = 'file:///tmp/example.js.min.map';
     // This was minified with 'esbuild --sourcemap=linked --minify' v0.14.31.
     const sourceMapContent = JSON.stringify({
-      'version': 3,
-      'sources': ['index.js'],
-      'sourcesContent': ['function f(n) {\n  for (let i = 0; i < n; i++) {\n    console.log("hi");\n  }\n}\nf(10);\n'],
-      'mappings': 'AAAA,WAAW,EAAG,CACZ,OAAS,GAAI,EAAG,EAAI,EAAG,IACrB,QAAQ,IAAI,IAAI,CAEpB,CACA,EAAE,EAAE',
-      'names': [],
+      version: 3,
+      sources: ['index.js'],
+      sourcesContent: ['function f(n) {\n  for (let i = 0; i < n; i++) {\n    console.log("hi");\n  }\n}\nf(10);\n'],
+      mappings: 'AAAA,WAAW,EAAG,CACZ,OAAS,GAAI,EAAG,EAAI,EAAG,IACrB,QAAQ,IAAI,IAAI,CAEpB,CACA,EAAE,EAAE',
+      names: [],
     });
 
     const source = `function f(i){for(let o=0;o<i;o++)console.log("hi")}f(10);\n//# sourceMappingURL=${sourceMapUrl}`;
@@ -254,11 +254,11 @@ describeWithMockConnection('NameResolver', () => {
     const sourceMapUrl = 'file:///tmp/example.js.min.map';
     // This was minified with 'terser -m -o example.min.js --source-map "includeSources;url=example.min.js.map" --toplevel' v5.7.0.
     const sourceMapContent = JSON.stringify({
-      'version': 3,
-      'names': ['f', 'par1', 'par2', 'console', 'log'],
-      'sources': ['index.js'],
-      'sourcesContent': ['function f(par1, par2) {\n  console.log(par1, par2);\n}\nf(1, 2);\n'],
-      'mappings': 'AAAA,SAASA,EAAEC,EAAMC,GACfC,QAAQC,IAAIH,EAAMC,GAEpBF,EAAE,EAAG',
+      version: 3,
+      names: ['f', 'par1', 'par2', 'console', 'log'],
+      sources: ['index.js'],
+      sourcesContent: ['function f(par1, par2) {\n  console.log(par1, par2);\n}\nf(1, 2);\n'],
+      mappings: 'AAAA,SAASA,EAAEC,EAAMC,GACfC,QAAQC,IAAIH,EAAMC,GAEpBF,EAAE,EAAG',
     });
 
     const source = `function o(o,n){console.log(o,n)}o(1,2);\n//# sourceMappingURL=${sourceMapUrl}`;
@@ -279,10 +279,10 @@ describeWithMockConnection('NameResolver', () => {
     const sourceMapUrl = 'file:///tmp/example.js.min.map';
     // This was minified with 'terser -m -o example.min.js --source-map "includeSources;url=example.min.js.map"' v5.7.0.
     const sourceMapContent = JSON.stringify({
-      'version': 3,
-      'names': ['C', 'B', 'constructor', 'par1', 'super', 'console', 'log'],
-      'sources': ['index.js'],
-      'mappings': 'AAAA,MAAMA,UAAUC,EACdC,YAAYC,GACVC,MAAMD,GACNE,QAAQC,IAAIH',
+      version: 3,
+      names: ['C', 'B', 'constructor', 'par1', 'super', 'console', 'log'],
+      sources: ['index.js'],
+      mappings: 'AAAA,MAAMA,UAAUC,EACdC,YAAYC,GACVC,MAAMD,GACNE,QAAQC,IAAIH',
     });
 
     const source = `class C extends B{constructor(s){super(s),console.log(s)}}\n//# sourceMappingURL=${sourceMapUrl}`;
@@ -303,13 +303,13 @@ describeWithMockConnection('NameResolver', () => {
     const sourceMapUrl = 'file:///tmp/example.js.min.map';
     // This was minified with 'terser -m -o example.min.js --source-map "includeSources;url=example.min.js.map" v5.7.0.
     const sourceMapContent = JSON.stringify({
-      'version': 3,
-      'names': ['adder', 'arg1', 'arg2', 'console', 'log', 'result'],
-      'sources': ['index.js'],
-      'sourcesContent': [
+      version: 3,
+      names: ['adder', 'arg1', 'arg2', 'console', 'log', 'result'],
+      sources: ['index.js'],
+      sourcesContent: [
         'function adder(arg1, arg2) {\n  console.log(arg1, arg2);\n  const result = arg1 + arg2;\n  return result;\n}\n',
       ],
-      'mappings': 'AAAA,SAASA,MAAMC,EAAMC,GACnBC,QAAQC,IAAIH,EAAMC,GAClB,MAAMG,EAASJ,EAAOC,EACtB,OAAOG,CACT',
+      mappings: 'AAAA,SAASA,MAAMC,EAAMC,GACnBC,QAAQC,IAAIH,EAAMC,GAClB,MAAMG,EAASJ,EAAOC,EACtB,OAAOG,CACT',
     });
 
     const source = `function adder(n,o){console.log(n,o);const c=n+o;return c}\n//# sourceMappingURL=${sourceMapUrl}`;
@@ -335,17 +335,17 @@ describeWithMockConnection('NameResolver', () => {
     const sourceMapUrl = 'file:///tmp/index.js.map';
     // The source map was obtained with 'tsc --target es5 --sourceMap --inlineSources index.ts'.
     const sourceMapContent = JSON.stringify({
-      'version': 3,
-      'file': 'index.js',
-      'sourceRoot': '',
-      'sources': ['index.ts'],
-      'names': [],
-      'mappings': 'AAAA,SAAS,CAAC;IACR,IAAI,GAAG,GAAG,EAAE,CAAC;' +
+      version: 3,
+      file: 'index.js',
+      sourceRoot: '',
+      sources: ['index.ts'],
+      names: [],
+      mappings: 'AAAA,SAAS,CAAC;IACR,IAAI,GAAG,GAAG,EAAE,CAAC;' +
           'IACb,KAAK,IAAI,KAAG,GAAG,CAAC,EAAE,KAAG,GAAG,CAAC,EAAE,KAAG,EAAE,EAAE;' +
           'QAChC,OAAO,CAAC,GAAG,CAAC,KAAG,CAAC,CAAC;KAClB;' +
           'AACH,CAAC;' +
           'AACD,CAAC,EAAE,CAAC',
-      'sourcesContent': [
+      sourcesContent: [
         'function f() {\n  let pos = 10;\n  for (let pos = 0; pos < 5; pos++) {\n    console.log(pos);\n  }\n}\nf();\n',
       ],
     });
@@ -386,11 +386,11 @@ describeWithMockConnection('NameResolver', () => {
       const sourceMapUrl = 'file:///tmp/example.js.min.map';
       // This was minified with 'terser -m -o example.min.js --source-map "includeSources;url=example.min.js.map"' v5.7.0.
       const sourceMapContent = JSON.stringify({
-        'version': 3,
-        'names': ['unminified', 'par1', 'par2', 'console', 'log'],
-        'sources': ['index.js'],
-        'sourcesContent': ['function unminified(par1, par2) {\n  console.log(par1, par2);\n}\n'],
-        'mappings': 'AAAA,SAASA,EAAWC,EAAMC,GACxBC,QAAQC,IAAIH,EAAMC',
+        version: 3,
+        names: ['unminified', 'par1', 'par2', 'console', 'log'],
+        sources: ['index.js'],
+        sourcesContent: ['function unminified(par1, par2) {\n  console.log(par1, par2);\n}\n'],
+        mappings: 'AAAA,SAASA,EAAWC,EAAMC,GACxBC,QAAQC,IAAIH,EAAMC',
       });
 
       const source = `function o(o,n){console.log(o,n)}o(1,2);\n//# sourceMappingURL=${sourceMapUrl}`;
@@ -429,19 +429,19 @@ describeWithMockConnection('NameResolver', () => {
 
       const sourceMapUrl = 'file:///tmp/example.js.min.map';
       const sourceMapContent = JSON.stringify({
-        'version': 3,
-        'names': [
+        version: 3,
+        names: [
           '<toplevel>',
           '<anonymous>',
           'log',
           'main',
         ],
-        'sources': ['main.js'],
-        'sourcesContent': [
+        sources: ['main.js'],
+        sourcesContent: [
           '(function () {\n  function log(m) {\n    console.log(m);\n  }\n\n  function main() {\n\t  log("hello");\n\t  log("world");\n  }\n  \n  main();\n})();',
         ],
-        'mappings': 'CAAA,WACE,SAAS,EAAI,GACX,QAAQ,IAAI,EACd,CAEA,SAAS,IACR,EAAI,SACJ,EAAI,QACL,CAEA,GACD,EAXD',
-        'x_com_bloomberg_sourcesFunctionMappings': ['AAAWK,CACAJ,CCCRE,CIAKA'],
+        mappings: 'CAAA,WACE,SAAS,EAAI,GACX,QAAQ,IAAI,EACd,CAEA,SAAS,IACR,EAAI,SACJ,EAAI,QACL,CAEA,GACD,EAXD',
+        x_com_bloomberg_sourcesFunctionMappings: ['AAAWK,CACAJ,CCCRE,CIAKA'],
       });
 
       const source = '(function(){function o(o){console.log(o)}function n(){o("hello");o("world")}n()})();\n';
@@ -461,11 +461,11 @@ describeWithMockConnection('NameResolver', () => {
     const sourceMapUrl = 'file:///tmp/example.js.min.map';
     // This was minified with 'terser -m -o example.min.js --source-map "includeSources;url=example.min.js.map"' v5.7.0.
     const sourceMapContent = JSON.stringify({
-      'version': 3,
-      'names': ['unminified', 'par1', 'console', 'log'],
-      'sources': ['index.js'],
-      'sourcesContent': ['const unminified = par1 => {\n  console.log(par1);\n}\n'],
-      'mappings': 'AAAA,MAAMA,EAAaC,IACjBC,QAAQC,IAAIF',
+      version: 3,
+      names: ['unminified', 'par1', 'console', 'log'],
+      sources: ['index.js'],
+      sourcesContent: ['const unminified = par1 => {\n  console.log(par1);\n}\n'],
+      mappings: 'AAAA,MAAMA,EAAaC,IACjBC,QAAQC,IAAIF',
     });
 
     const source = `const o=o=>{console.log(o)};\n//# sourceMappingURL=${sourceMapUrl}`;

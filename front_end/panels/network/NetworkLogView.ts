@@ -2591,10 +2591,10 @@ export function isRequestFilteredOut(request: NetworkRequestNode): boolean {
 }
 
 export const HTTPSchemas = {
-  'http': true,
-  'https': true,
-  'ws': true,
-  'wss': true,
+  http: true,
+  https: true,
+  ws: true,
+  wss: true,
 };
 
 const searchKeys: string[] = Object.values(NetworkForward.UIFilter.FilterType);

@@ -11,7 +11,6 @@ import {
   goToResource,
   waitFor,
 } from '../../shared/helper.js';
-
 import {
   getGroupByKindChecked,
   getHiddenIssuesRow,
@@ -31,12 +30,12 @@ describe('Hide issues menu', () => {
     const {frontend} = getBrowserAndPages();
     frontend.evaluate(() => {
       const issue = {
-        'code': 'HeavyAdIssue',
-        'details': {
-          'heavyAdIssueDetails': {
-            'resolution': 'HeavyAdBlocked',
-            'reason': 'NetworkTotalLimit',
-            'frame': {frameId: 'main'},
+        code: 'HeavyAdIssue',
+        details: {
+          heavyAdIssueDetails: {
+            resolution: 'HeavyAdBlocked',
+            reason: 'NetworkTotalLimit',
+            frame: {frameId: 'main'},
           },
         },
       };

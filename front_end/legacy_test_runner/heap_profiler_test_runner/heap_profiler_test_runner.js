@@ -134,17 +134,17 @@ HeapProfilerTestRunner.createHeapSnapshotMockFactories = function() {
   };
 
   HeapProfilerTestRunner.HeapNode.Type = {
-    'hidden': 'hidden',
-    'array': 'array',
-    'string': 'string',
-    'object': 'object',
-    'code': 'code',
-    'closure': 'closure',
-    'regexp': 'regexp',
-    'number': 'number',
-    'native': 'native',
-    'synthetic': 'synthetic',
-    'bigint': 'bigint'
+    hidden: 'hidden',
+    array: 'array',
+    string: 'string',
+    object: 'object',
+    code: 'code',
+    closure: 'closure',
+    regexp: 'regexp',
+    number: 'number',
+    native: 'native',
+    synthetic: 'synthetic',
+    bigint: 'bigint'
   };
 
   HeapProfilerTestRunner.HeapNode.prototype = {
@@ -217,13 +217,13 @@ HeapProfilerTestRunner.createHeapSnapshotMockFactories = function() {
   };
 
   HeapProfilerTestRunner.HeapEdge.Type = {
-    'context': 'context',
-    'element': 'element',
-    'property': 'property',
-    'internal': 'internal',
-    'hidden': 'hidden',
-    'shortcut': 'shortcut',
-    'weak': 'weak'
+    context: 'context',
+    element: 'element',
+    property: 'property',
+    internal: 'internal',
+    hidden: 'hidden',
+    shortcut: 'shortcut',
+    weak: 'weak'
   };
 
   HeapProfilerTestRunner.HeapSnapshotBuilder = function() {
@@ -254,19 +254,19 @@ HeapProfilerTestRunner.createHeapSnapshotMockFactories = function() {
   HeapProfilerTestRunner.HeapSnapshotBuilder.prototype = {
     generateSnapshot: function() {
       const rawSnapshot = {
-        'snapshot': {
-          'meta': {
-            'node_fields': ['type', 'name', 'id', 'self_size', 'retained_size', 'dominator', 'edge_count'],
-            'node_types': [this.nodeTypesArray, 'string', 'number', 'number', 'number', 'number', 'number'],
-            'edge_fields': ['type', 'name_or_index', 'to_node'],
-            'edge_types': [this.edgeTypesArray, 'string_or_number', 'node']
+        snapshot: {
+          meta: {
+            node_fields: ['type', 'name', 'id', 'self_size', 'retained_size', 'dominator', 'edge_count'],
+            node_types: [this.nodeTypesArray, 'string', 'number', 'number', 'number', 'number', 'number'],
+            edge_fields: ['type', 'name_or_index', 'to_node'],
+            edge_types: [this.edgeTypesArray, 'string_or_number', 'node']
           }
         },
 
-        'nodes': [],
-        'edges': [],
-        'locations': [],
-        'strings': []
+        nodes: [],
+        edges: [],
+        locations: [],
+        strings: []
       };
 
       for (let i = 0; i < this.nodes.length; ++i) {

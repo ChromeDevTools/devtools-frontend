@@ -405,33 +405,33 @@ const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export const PrefetchReasonDescription: {[key: string]: {name: () => Platform.UIString.LocalizedString}} = {
-  'PrefetchFailedIneligibleRedirect': {name: i18nLazyString(UIStrings.PrefetchFailedIneligibleRedirect)},
-  'PrefetchFailedInvalidRedirect': {name: i18nLazyString(UIStrings.PrefetchFailedInvalidRedirect)},
-  'PrefetchFailedMIMENotSupported': {name: i18nLazyString(UIStrings.PrefetchFailedMIMENotSupported)},
-  'PrefetchFailedNetError': {name: i18nLazyString(UIStrings.PrefetchFailedNetError)},
-  'PrefetchFailedNon2XX': {name: i18nLazyString(UIStrings.PrefetchFailedNon2XX)},
-  'PrefetchIneligibleRetryAfter': {name: i18nLazyString(UIStrings.PrefetchIneligibleRetryAfter)},
-  'PrefetchIsPrivacyDecoy': {name: i18nLazyString(UIStrings.PrefetchIsPrivacyDecoy)},
-  'PrefetchIsStale': {name: i18nLazyString(UIStrings.PrefetchIsStale)},
-  'PrefetchNotEligibleBrowserContextOffTheRecord':
+  PrefetchFailedIneligibleRedirect: {name: i18nLazyString(UIStrings.PrefetchFailedIneligibleRedirect)},
+  PrefetchFailedInvalidRedirect: {name: i18nLazyString(UIStrings.PrefetchFailedInvalidRedirect)},
+  PrefetchFailedMIMENotSupported: {name: i18nLazyString(UIStrings.PrefetchFailedMIMENotSupported)},
+  PrefetchFailedNetError: {name: i18nLazyString(UIStrings.PrefetchFailedNetError)},
+  PrefetchFailedNon2XX: {name: i18nLazyString(UIStrings.PrefetchFailedNon2XX)},
+  PrefetchIneligibleRetryAfter: {name: i18nLazyString(UIStrings.PrefetchIneligibleRetryAfter)},
+  PrefetchIsPrivacyDecoy: {name: i18nLazyString(UIStrings.PrefetchIsPrivacyDecoy)},
+  PrefetchIsStale: {name: i18nLazyString(UIStrings.PrefetchIsStale)},
+  PrefetchNotEligibleBrowserContextOffTheRecord:
       {name: i18nLazyString(UIStrings.PrefetchNotEligibleBrowserContextOffTheRecord)},
-  'PrefetchNotEligibleDataSaverEnabled': {name: i18nLazyString(UIStrings.PrefetchNotEligibleDataSaverEnabled)},
-  'PrefetchNotEligibleExistingProxy': {name: i18nLazyString(UIStrings.PrefetchNotEligibleExistingProxy)},
-  'PrefetchNotEligibleHostIsNonUnique': {name: i18nLazyString(UIStrings.PrefetchNotEligibleHostIsNonUnique)},
-  'PrefetchNotEligibleNonDefaultStoragePartition':
+  PrefetchNotEligibleDataSaverEnabled: {name: i18nLazyString(UIStrings.PrefetchNotEligibleDataSaverEnabled)},
+  PrefetchNotEligibleExistingProxy: {name: i18nLazyString(UIStrings.PrefetchNotEligibleExistingProxy)},
+  PrefetchNotEligibleHostIsNonUnique: {name: i18nLazyString(UIStrings.PrefetchNotEligibleHostIsNonUnique)},
+  PrefetchNotEligibleNonDefaultStoragePartition:
       {name: i18nLazyString(UIStrings.PrefetchNotEligibleNonDefaultStoragePartition)},
-  'PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy':
+  PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy:
       {name: i18nLazyString(UIStrings.PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy)},
-  'PrefetchNotEligibleSchemeIsNotHttps': {name: i18nLazyString(UIStrings.PrefetchNotEligibleSchemeIsNotHttps)},
-  'PrefetchNotEligibleUserHasCookies': {name: i18nLazyString(UIStrings.PrefetchNotEligibleUserHasCookies)},
-  'PrefetchNotEligibleUserHasServiceWorker': {name: i18nLazyString(UIStrings.PrefetchNotEligibleUserHasServiceWorker)},
-  'PrefetchNotUsedCookiesChanged': {name: i18nLazyString(UIStrings.PrefetchNotUsedCookiesChanged)},
-  'PrefetchProxyNotAvailable': {name: i18nLazyString(UIStrings.PrefetchProxyNotAvailable)},
-  'PrefetchNotUsedProbeFailed': {name: i18nLazyString(UIStrings.PrefetchNotUsedProbeFailed)},
-  'PrefetchEvictedForNewerPrefetch': {name: i18nLazyString(UIStrings.PrefetchEvictedForNewerPrefetch)},
-  'PrefetchEvictedAfterCandidateRemoved': {name: i18nLazyString(UIStrings.PrefetchEvictedAfterCandidateRemoved)},
-  'PrefetchNotEligibleBatterySaverEnabled': {name: i18nLazyString(UIStrings.PrefetchNotEligibleBatterySaverEnabled)},
-  'PrefetchNotEligiblePreloadingDisabled': {name: i18nLazyString(UIStrings.PrefetchNotEligiblePreloadingDisabled)},
+  PrefetchNotEligibleSchemeIsNotHttps: {name: i18nLazyString(UIStrings.PrefetchNotEligibleSchemeIsNotHttps)},
+  PrefetchNotEligibleUserHasCookies: {name: i18nLazyString(UIStrings.PrefetchNotEligibleUserHasCookies)},
+  PrefetchNotEligibleUserHasServiceWorker: {name: i18nLazyString(UIStrings.PrefetchNotEligibleUserHasServiceWorker)},
+  PrefetchNotUsedCookiesChanged: {name: i18nLazyString(UIStrings.PrefetchNotUsedCookiesChanged)},
+  PrefetchProxyNotAvailable: {name: i18nLazyString(UIStrings.PrefetchProxyNotAvailable)},
+  PrefetchNotUsedProbeFailed: {name: i18nLazyString(UIStrings.PrefetchNotUsedProbeFailed)},
+  PrefetchEvictedForNewerPrefetch: {name: i18nLazyString(UIStrings.PrefetchEvictedForNewerPrefetch)},
+  PrefetchEvictedAfterCandidateRemoved: {name: i18nLazyString(UIStrings.PrefetchEvictedAfterCandidateRemoved)},
+  PrefetchNotEligibleBatterySaverEnabled: {name: i18nLazyString(UIStrings.PrefetchNotEligibleBatterySaverEnabled)},
+  PrefetchNotEligiblePreloadingDisabled: {name: i18nLazyString(UIStrings.PrefetchNotEligiblePreloadingDisabled)},
 };
 
 // Decoding PrefetchFinalStatus prefetchAttempt to failure description.

@@ -12,32 +12,32 @@ export const DeviceModeTestRunner = {};
 DeviceModeTestRunner.buildFakePhone = function(overrides) {
   const StandardPhoneJSON = {
     'show-by-default': false,
-    'title': 'Fake Phone 1',
+    title: 'Fake Phone 1',
 
-    'screen': {
-      'horizontal': {'width': 480, 'height': 320},
+    screen: {
+      horizontal: {width: 480, height: 320},
 
       'device-pixel-ratio': 2,
 
-      'vertical': {'width': 320, 'height': 480}
+      vertical: {width: 320, height: 480}
     },
 
-    'capabilities': ['touch', 'mobile'],
+    capabilities: ['touch', 'mobile'],
     'user-agent': 'fakeUserAgent',
-    'type': 'phone',
+    type: 'phone',
 
-    'modes': [
+    modes: [
       {
-        'title': 'default',
-        'orientation': 'vertical',
+        title: 'default',
+        orientation: 'vertical',
 
-        'insets': {'left': 0, 'top': 0, 'right': 0, 'bottom': 0}
+        insets: {left: 0, top: 0, right: 0, bottom: 0}
       },
       {
-        'title': 'default',
-        'orientation': 'horizontal',
+        title: 'default',
+        orientation: 'horizontal',
 
-        'insets': {'left': 0, 'top': 0, 'right': 0, 'bottom': 0}
+        insets: {left: 0, top: 0, right: 0, bottom: 0}
       }
     ]
   };

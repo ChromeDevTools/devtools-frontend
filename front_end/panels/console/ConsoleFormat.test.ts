@@ -46,8 +46,8 @@ describe('ConsoleFormat', () => {
     });
 
     it('deals with %o and %O', () => {
-      const argFirst = SDK.RemoteObject.RemoteObject.fromLocalObject({'first': 1});
-      const argSecond = SDK.RemoteObject.RemoteObject.fromLocalObject({'second': 2});
+      const argFirst = SDK.RemoteObject.RemoteObject.fromLocalObject({first: 1});
+      const argSecond = SDK.RemoteObject.RemoteObject.fromLocalObject({second: 2});
       const {tokens} = Console.ConsoleFormat.format('%o %O', [argFirst, argSecond]);
       assert.lengthOf(tokens, 3);
       assert.propertyVal(tokens[0], 'type', 'optimal');
@@ -75,9 +75,9 @@ describe('ConsoleFormat', () => {
     });
 
     it('eats arguments with %_', () => {
-      const argFirst = SDK.RemoteObject.RemoteObject.fromLocalObject({'first': 1});
-      const argSecond = SDK.RemoteObject.RemoteObject.fromLocalObject({'second': 2});
-      const argThird = SDK.RemoteObject.RemoteObject.fromLocalObject({'third': 3});
+      const argFirst = SDK.RemoteObject.RemoteObject.fromLocalObject({first: 1});
+      const argSecond = SDK.RemoteObject.RemoteObject.fromLocalObject({second: 2});
+      const argThird = SDK.RemoteObject.RemoteObject.fromLocalObject({third: 3});
       const {tokens, args} = Console.ConsoleFormat.format('This is%_ some %_text!', [argFirst, argSecond, argThird]);
       assert.lengthOf(args, 1);
       assert.strictEqual(args[0], argThird);

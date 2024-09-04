@@ -145,7 +145,7 @@ export class IssueLinkIcon extends HTMLElement {
     return coordinator.write(() => {
       // clang-format off
       LitHtml.render(LitHtml.html`
-      <button class=${LitHtml.Directives.classMap({'link': Boolean(this.#issue)})}
+      <button class=${LitHtml.Directives.classMap({link: Boolean(this.#issue)})}
               title=${this.#getTooltip()}
               jslog=${VisualLogging.link('issue').track({click: true})}
               @click=${this.handleClick}>

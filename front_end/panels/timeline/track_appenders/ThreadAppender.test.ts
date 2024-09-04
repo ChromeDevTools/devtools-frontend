@@ -350,7 +350,7 @@ describeWithEnvironment('ThreadAppender', function() {
       {type: PerfUI.FlameChart.FlameChartDecorationType.WARNING_TRIANGLE},
       {
         type: PerfUI.FlameChart.FlameChartDecorationType.CANDY,
-        'startAtTime': TraceModel.Types.Timing.MicroSeconds(50_000),
+        startAtTime: TraceModel.Types.Timing.MicroSeconds(50_000),
       },
     ]);
   });

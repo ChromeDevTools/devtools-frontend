@@ -180,7 +180,7 @@ export class RequestLinkIcon extends HTMLElement {
     return coordinator.write(() => {
       // clang-format off
       LitHtml.render(LitHtml.html`
-      <button class=${LitHtml.Directives.classMap({'link': Boolean(this.#request)})}
+      <button class=${LitHtml.Directives.classMap({link: Boolean(this.#request)})}
               title=${this.#getTooltip()}
               jslog=${VisualLogging.link('request').track({click: true})}
               @click=${this.handleClick}>

@@ -348,7 +348,7 @@ export class SuggestionInput extends LitElement {
     return html`<devtools-editable-content
         ?disabled=${this.disabled}
         class=${classMap({
-          'strikethrough': !this.strikethrough,
+          strikethrough: !this.strikethrough,
         })}
         .enterKeyHint=${'done'}
         .value=${this.value}

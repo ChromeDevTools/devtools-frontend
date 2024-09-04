@@ -11,7 +11,6 @@ import {
   goToResource,
   waitFor,
 } from '../../shared/helper.js';
-
 import {
   getCoverageData,
   startInstrumentingCoverage,
@@ -28,7 +27,7 @@ describe('Coverage Panel', function() {
     const resultsElement = await waitFor('.coverage-results');
     await click('#tab-coverage');  // Make sure the focus is on the coverage tab.
     const {frontend} = getBrowserAndPages();
-    await frontend.keyboard.press('Enter');       // Focus on coverage view
+    await frontend.keyboard.press('Enter');  // Focus on coverage view
     await waitFor(
         '.data-grid-data-grid-node.revealed.parent', resultsElement);  // wait for the parent node to be loaded
     await frontend.keyboard.press('ArrowDown');                        // select the parent node
@@ -47,29 +46,29 @@ describe('Coverage Panel', function() {
     const URL_PREFIX = `https://localhost:${getTestServerPort()}/test/e2e/resources/coverage`;
     const expected = [
       {
-        'total': '1,445',
-        'unused': '783',
-        'url': `${URL_PREFIX}/with-source-map.js`,
+        total: '1,445',
+        unused: '783',
+        url: `${URL_PREFIX}/with-source-map.js`,
       },
       {
-        'total': '897',
-        'unused': '531',
-        'url': `${URL_PREFIX}/webpack/bootstrap.js`,
+        total: '897',
+        unused: '531',
+        url: `${URL_PREFIX}/webpack/bootstrap.js`,
       },
       {
-        'total': '335',
-        'unused': '147',
-        'url': `${URL_PREFIX}/src/script.ts`,
+        total: '335',
+        unused: '147',
+        url: `${URL_PREFIX}/src/script.ts`,
       },
       {
-        'total': '120',
-        'unused': '66',
-        'url': `${URL_PREFIX}/src/users.ts`,
+        total: '120',
+        unused: '66',
+        url: `${URL_PREFIX}/src/users.ts`,
       },
       {
-        'total': '42',
-        'unused': '39',
-        'url': `${URL_PREFIX}/src/animal.ts`,
+        total: '42',
+        unused: '39',
+        url: `${URL_PREFIX}/src/animal.ts`,
       },
     ];
     assert.deepEqual(await getCoverageData(5), expected);
@@ -85,30 +84,30 @@ describe('Coverage Panel', function() {
     result.pop();  // remove the last item, which is the coverage for the eval code
     const expected = [
       {
-        'total': '1,445',
-        'unused': '682',
-        'url': `${URL_PREFIX}/with-source-map.js`,
+        total: '1,445',
+        unused: '682',
+        url: `${URL_PREFIX}/with-source-map.js`,
       },
       {
-        'total': '897',
-        'unused': '531',
-        'url': `${URL_PREFIX}/webpack/bootstrap.js`,
+        total: '897',
+        unused: '531',
+        url: `${URL_PREFIX}/webpack/bootstrap.js`,
       },
       {
-        'total': '335',
-        'unused': '84',
-        'url': `${URL_PREFIX}/src/script.ts`,
+        total: '335',
+        unused: '84',
+        url: `${URL_PREFIX}/src/script.ts`,
       },
       {
-        'total': '42',
-        'unused': '39',
-        'url': `${URL_PREFIX}/src/animal.ts`,
+        total: '42',
+        unused: '39',
+        url: `${URL_PREFIX}/src/animal.ts`,
       },
       // Some code in users.ts file has been executed, so the unused lines are now less than animal.ts
       {
-        'total': '120',
-        'unused': '28',
-        'url': `${URL_PREFIX}/src/users.ts`,
+        total: '120',
+        unused: '28',
+        url: `${URL_PREFIX}/src/users.ts`,
       },
     ];
     assert.deepEqual(result, expected);

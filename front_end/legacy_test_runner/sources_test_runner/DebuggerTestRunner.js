@@ -631,7 +631,7 @@ export const debuggerPlugin = function(sourceFrame) {
 export const setEventListenerBreakpoint = function(id, enabled, targetName) {
   const pane = BrowserDebugger.EventListenerBreakpointsSidebarPane.EventListenerBreakpointsSidebarPane.instance();
 
-  const auxData = {'eventName': id};
+  const auxData = {eventName: id};
 
   if (targetName) {
     auxData.targetName = targetName;

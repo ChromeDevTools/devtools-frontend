@@ -18,10 +18,10 @@ module.exports = {
       invalidImport : 'It is banned to import this module from this file\'s directory',
     },
     schema : [{
-      'type' : 'object',
-      'properties' : {
-        'bannedImportPaths' : {
-          'type' : 'array',
+      type : 'object',
+      properties : {
+        bannedImportPaths : {
+          type : 'array',
         },
       },
       additionalProperties : false,

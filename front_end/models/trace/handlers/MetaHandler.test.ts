@@ -268,13 +268,13 @@ describe('MetaHandler', function() {
     const windowMinTime = 1143381875846;
     assert.deepStrictEqual(
         [...rendererProcesses?.values()], [[{
-          'frame': {
-            'frame': '1D148CB660D1F96ED70D78DC6A53267B',
-            'name': '',
-            'processId': 3601132,
-            'url': 'https://threejs.org/examples/',
+          frame: {
+            frame: '1D148CB660D1F96ED70D78DC6A53267B',
+            name: '',
+            processId: 3601132,
+            url: 'https://threejs.org/examples/',
           },
-          'window': {'min': windowMinTime, 'max': data.traceBounds.max, 'range': data.traceBounds.max - windowMinTime},
+          window: {min: windowMinTime, max: data.traceBounds.max, range: data.traceBounds.max - windowMinTime},
         }]]);
   });
 
@@ -307,31 +307,31 @@ describe('MetaHandler', function() {
     assert.deepStrictEqual([...rendererProcesses?.keys()], [78450, 78473, 79194]);
     assert.deepStrictEqual([...rendererProcesses?.values()], [
       [{
-        'frame': {
-          'frame': 'E70A9327100EBD78F1C03582BBBE8E5F',
-          'name': '',
-          'processId': 78450,
-          'url': 'http://127.0.0.1:8081/',
+        frame: {
+          frame: 'E70A9327100EBD78F1C03582BBBE8E5F',
+          name: '',
+          processId: 78450,
+          url: 'http://127.0.0.1:8081/',
         },
-        'window': {'min': 3550803491779, 'max': 3550805534872, 'range': 2043093},
+        window: {min: 3550803491779, max: 3550805534872, range: 2043093},
       }],
       [{
-        'frame': {
-          'frame': 'E70A9327100EBD78F1C03582BBBE8E5F',
-          'name': '',
-          'processId': 78473,
-          'url': 'http://localhost:8080/',
+        frame: {
+          frame: 'E70A9327100EBD78F1C03582BBBE8E5F',
+          name: '',
+          processId: 78473,
+          url: 'http://localhost:8080/',
         },
-        'window': {'min': 3550805534873, 'max': 3550807444740, 'range': 1909867},
+        window: {min: 3550805534873, max: 3550807444740, range: 1909867},
       }],
       [{
-        'frame': {
-          'frame': 'E70A9327100EBD78F1C03582BBBE8E5F',
-          'name': '',
-          'processId': 79194,
-          'url': 'https://www.google.com/',
+        frame: {
+          frame: 'E70A9327100EBD78F1C03582BBBE8E5F',
+          name: '',
+          processId: 79194,
+          url: 'https://www.google.com/',
         },
-        'window': {'min': windowMinTime, 'max': data.traceBounds.max, 'range': data.traceBounds.max - windowMinTime},
+        window: {min: windowMinTime, max: data.traceBounds.max, range: data.traceBounds.max - windowMinTime},
       }],
     ]);
   });
@@ -364,29 +364,29 @@ describe('MetaHandler', function() {
     assert.deepStrictEqual([...rendererProcesses?.values()], [
       [
         {
-          'frame': {
-            'frame': '1F729458403A23CF1D8D246095129AC4',
-            'name': '',
-            'processId': 2080,
-            'url': 'about:blank',
+          frame: {
+            frame: '1F729458403A23CF1D8D246095129AC4',
+            name: '',
+            processId: 2080,
+            url: 'about:blank',
           },
-          'window': {
-            'min': 251126654355,
-            'max': 251126663397,
-            'range': 9042,
+          window: {
+            min: 251126654355,
+            max: 251126663397,
+            range: 9042,
           },
         },
         {
-          'frame': {
-            'frame': '1F729458403A23CF1D8D246095129AC4',
-            'name': '',
-            'processId': 2080,
-            'url': 'https://www.google.com',
+          frame: {
+            frame: '1F729458403A23CF1D8D246095129AC4',
+            name: '',
+            processId: 2080,
+            url: 'https://www.google.com',
           },
-          'window': {
-            'min': 251126663398,
-            'max': 251128073034,
-            'range': 1409636,
+          window: {
+            min: 251126663398,
+            max: 251128073034,
+            range: 1409636,
           },
         },
       ],

@@ -224,7 +224,7 @@ describeWithMockConnection('NetworkLogView', () => {
       function makeHarEntry(url: Platform.DevToolsPath.UrlString) {
         return {
           request: {method: 'GET', url: url, headersSize: -1, bodySize: 0},
-          response: {status: 0, content: {'size': 0, 'mimeType': 'x-unknown'}, headersSize: -1, bodySize: -1},
+          response: {status: 0, content: {size: 0, mimeType: 'x-unknown'}, headersSize: -1, bodySize: -1},
           startedDateTime: null,
           time: null,
           timings: {blocked: null, dns: -1, ssl: -1, connect: -1, send: 0, wait: 0, receive: 0},
@@ -554,7 +554,7 @@ describeWithMockConnection('NetworkLogView', () => {
   it('correctly shows and hides waterfall column', async () => {
     const columnSettings = Common.Settings.Settings.instance().createSetting('network-log-columns', {});
     columnSettings.set({
-      'waterfall': {visible: false, title: 'waterfall'},
+      waterfall: {visible: false, title: 'waterfall'},
     });
     networkLogView = createNetworkLogView();
     let columns = networkLogView.columns();
@@ -564,7 +564,7 @@ describeWithMockConnection('NetworkLogView', () => {
         (networkColumnWidget as UI.SplitWidget.SplitWidget).showMode(), UI.SplitWidget.ShowMode.ONLY_MAIN);
 
     columnSettings.set({
-      'waterfall': {visible: true, title: 'waterfall'},
+      waterfall: {visible: true, title: 'waterfall'},
     });
     networkLogView = createNetworkLogView();
     columns = networkLogView.columns();

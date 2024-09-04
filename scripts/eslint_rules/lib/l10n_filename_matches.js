@@ -35,10 +35,10 @@ module.exports = {
     },
     fixable: 'code',
     schema: [{
-      'type': 'object',
-      'properties': {
-        'rootFrontendDirectory': {
-          'type': 'string',
+      type: 'object',
+      properties: {
+        rootFrontendDirectory: {
+          type: 'string',
         },
       },
       additionalProperties: false,

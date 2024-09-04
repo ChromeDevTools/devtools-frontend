@@ -337,12 +337,12 @@ describeWithMockConnection('Linkifier', () => {
       const lineNumber = 1;
       const url = 'https://www.google.com/script.js' as Platform.DevToolsPath.UrlString;
       const sourceMapContent = JSON.stringify({
-        'version': 3,
-        'names': ['adder', 'param1', 'param2', 'result'],
-        'sources': ['/original-script.js'],
-        'sourcesContent':
+        version: 3,
+        names: ['adder', 'param1', 'param2', 'result'],
+        sources: ['/original-script.js'],
+        sourcesContent:
             ['function adder(param1, param2) {\n  const result = param1 + param2;\n  return result;\n}\n\n'],
-        'mappings': 'AAAA,SAASA,MAAMC,EAAQC,GACrB,MAAMC,EAASF,EAASC,EACxB,OAAOC,CACT',
+        mappings: 'AAAA,SAASA,MAAMC,EAAQC,GACrB,MAAMC,EAASF,EAASC,EACxB,OAAOC,CACT',
       });
 
       const script = await backend.addScript(target, {content: 'function adder(n,r){const t=n+r;return t}', url}, {

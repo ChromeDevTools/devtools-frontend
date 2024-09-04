@@ -73,11 +73,11 @@ describeWithMockConnection('BreakpointManager', () => {
 
   // Created with `terser -m -o script.min.js --source-map "includeSources;url=script.min.js.map" original-script.js`
   const sourceMapContent = JSON.stringify({
-    'version': 3,
-    'names': ['foo', 'console', 'log'],
-    'sources': ['/original-script.js'],
-    'sourcesContent': [ORIGINAL_SCRIPT_SOURCES_CONTENT],
-    'mappings': 'AAAA,SAASA,MACPC,QAAQC,IAAI,QACd',
+    version: 3,
+    names: ['foo', 'console', 'log'],
+    sources: ['/original-script.js'],
+    sourcesContent: [ORIGINAL_SCRIPT_SOURCES_CONTENT],
+    mappings: 'AAAA,SAASA,MACPC,QAAQC,IAAI,QACd',
   });
 
   let target: SDK.Target.Target;
@@ -275,12 +275,12 @@ describeWithMockConnection('BreakpointManager', () => {
       const scriptInfo = {url: URL, content: 'function adder(n,r){const t=n+r;return t}'};
       // Created with `terser -m -o script.min.js --source-map "includeSources;url=script.min.js.map" original-script.js`
       const sourceMapContent = JSON.stringify({
-        'version': 3,
-        'names': ['adder', 'param1', 'param2', 'result'],
-        'sources': ['/original-script.js'],
-        'sourcesContent':
+        version: 3,
+        names: ['adder', 'param1', 'param2', 'result'],
+        sources: ['/original-script.js'],
+        sourcesContent:
             ['function adder(param1, param2) {\n  const result = param1 + param2;\n  return result;\n}\n\n'],
-        'mappings': 'AAAA,SAASA,MAAMC,EAAQC,GACrB,MAAMC,EAASF,EAASC,EACxB,OAAOC,CACT',
+        mappings: 'AAAA,SAASA,MAAMC,EAAQC,GACrB,MAAMC,EAASF,EAASC,EACxB,OAAOC,CACT',
       });
       const sourceMapInfo = {url: SOURCE_MAP_URL, content: sourceMapContent};
       const script = await backend.addScript(target, scriptInfo, sourceMapInfo);
@@ -329,12 +329,11 @@ describeWithMockConnection('BreakpointManager', () => {
     // The source map is the same for both 'bundles'.
     // Created with `terser -m -o script.min.js --source-map "includeSources;url=script.min.js.map" original-script.js`
     const sourceMapContent = JSON.stringify({
-      'version': 3,
-      'names': ['adder', 'param1', 'param2', 'result'],
-      'sources': ['/original-script.js'],
-      'sourcesContent':
-          ['function adder(param1, param2) {\n  const result = param1 + param2;\n  return result;\n}\n\n'],
-      'mappings': 'AAAA,SAASA,MAAMC,EAAQC,GACrB,MAAMC,EAASF,EAASC,EACxB,OAAOC,CACT',
+      version: 3,
+      names: ['adder', 'param1', 'param2', 'result'],
+      sources: ['/original-script.js'],
+      sourcesContent: ['function adder(param1, param2) {\n  const result = param1 + param2;\n  return result;\n}\n\n'],
+      mappings: 'AAAA,SAASA,MAAMC,EAAQC,GACrB,MAAMC,EAASF,EAASC,EACxB,OAAOC,CACT',
     });
     const sourceMapInfo = {url: SOURCE_MAP_URL, content: sourceMapContent};
     await Promise.all([
@@ -750,7 +749,6 @@ describeWithMockConnection('BreakpointManager', () => {
     });
     SDK.TargetManager.TargetManager.instance().setScopeTarget(createTarget());
     await breakpointSetPromise;
-
   });
 
   it('saves generated location into storage', async () => {
@@ -804,7 +802,6 @@ describeWithMockConnection('BreakpointManager', () => {
                        columnNumber: 15,
                        condition: '' as SDK.DebuggerModel.BackendCondition,
                      }]);
-
   });
 
   it('restores latest breakpoints from storage', async () => {

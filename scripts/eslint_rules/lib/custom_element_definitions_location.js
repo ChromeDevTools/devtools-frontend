@@ -21,10 +21,10 @@ module.exports = {
           'E.g. `panels/elements/components/`.'
     },
     schema: [{
-      'type': 'object',
-      'properties': {
-        'rootFrontendDirectory': {
-          'type': 'string',
+      type: 'object',
+      properties: {
+        rootFrontendDirectory: {
+          type: 'string',
         },
       },
       additionalProperties: false,

@@ -4,10 +4,10 @@
 
 import type * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import * as UI from '../../ui/legacy/legacy.js';
 import type * as Protocol from '../../generated/protocol.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
-import {MediaModel, Events, type PlayerEvent} from './MediaModel.js';
+import {Events, MediaModel, type PlayerEvent} from './MediaModel.js';
 import {PlayerDetailView} from './PlayerDetailView.js';
 import {PlayerListView} from './PlayerListView.js';
 
@@ -60,7 +60,7 @@ class PlayerDataCollection implements TriggerHandler {
     events: PlayerEvent[],
     errors: Protocol.Media.PlayerError[],
   } {
-    return {'properties': this.properties, 'messages': this.messages, 'events': this.events, 'errors': this.errors};
+    return {properties: this.properties, messages: this.messages, events: this.events, errors: this.errors};
   }
 }
 

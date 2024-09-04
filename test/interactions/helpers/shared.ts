@@ -6,9 +6,9 @@ import {TestConfig} from '../../conductor/test_config.js';
 import {getBrowserAndPages, getTestServerPort, platform} from '../../shared/helper.js';
 
 const fontsByPlatform = {
-  'mac': 'Helvetica Neue',
-  'win32': 'Tahoma',
-  'linux': '"Liberation Sans"',
+  mac: 'Helvetica Neue',
+  win32: 'Tahoma',
+  linux: '"Liberation Sans"',
 };
 
 export const loadComponentDocExample = async (urlComponent: string) => {

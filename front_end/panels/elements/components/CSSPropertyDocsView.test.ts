@@ -10,15 +10,15 @@ import * as ElementsComponents from './components.js';
 describeWithEnvironment('CSSPropertyDocsView', () => {
   it('renders every section', async () => {
     const cssProperty = {
-      'name': 'display',
-      'description':
+      name: 'display',
+      description:
           'In combination with \'float\' and \'position\', determines the type of box or boxes that are generated for an element.',
-      'syntax':
+      syntax:
           '[ <display-outside> || <display-inside> ] | <display-listitem> | <display-internal> | <display-box> | <display-legacy>',
-      'references': [
+      references: [
         {
-          'name': 'MDN Reference',
-          'url': 'https://developer.mozilla.org/docs/Web/CSS/display',
+          name: 'MDN Reference',
+          url: 'https://developer.mozilla.org/docs/Web/CSS/display',
         },
       ],
     };

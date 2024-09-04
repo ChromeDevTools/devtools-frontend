@@ -51,7 +51,7 @@ async function checkGoldensForPlatform(platform) {
                                             unixRelativeGoldenPath}" -CaseSensitive` :
                                         `grep -r ${unixRelativeGoldenPath} ${interactionTestRoot}`;
       // If this doesn't throw, that means we found a match and we're fine.
-      await exec(textSearchCommand, isWin ? {'shell': 'powershell.exe'} : undefined);
+      await exec(textSearchCommand, isWin ? {shell: 'powershell.exe'} : undefined);
     } catch (error) {
       if (error.code === 1) {
         // This is what grep returns when the image is missing

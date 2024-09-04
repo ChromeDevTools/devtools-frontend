@@ -18,8 +18,8 @@ describe('ModificationsManager', () => {
     assert.strictEqual(entriesFilter.expandableEntries().length, 1);
     assert.strictEqual(entriesFilter.invisibleEntries().length, 108);
     assert.deepEqual(modificationsManager.getTimelineBreadcrumbs().initialBreadcrumb, {
-      'window': {'min': 1020034823047, 'max': 1020036087961, 'range': 1264914},
-      'child': {'window': {'min': 1020034823047, 'max': 1020035228006.5569, 'range': 404959.5568847656}, 'child': null},
+      window: {min: 1020034823047, max: 1020036087961, range: 1264914},
+      child: {window: {min: 1020034823047, max: 1020035228006.5569, range: 404959.5568847656}, child: null},
     } as TraceEngine.Types.File.Breadcrumb);
     // Make sure the saved Label Annotation is applied
     const labelAnnotation = modificationsManager.getAnnotations()[0];
@@ -45,8 +45,8 @@ describe('ModificationsManager', () => {
     assert.strictEqual(modifications.entriesModifications.expandableEntries.length, 1);
     assert.strictEqual(modifications.entriesModifications.hiddenEntries.length, 108);
     assert.deepEqual(modifications.initialBreadcrumb, {
-      'window': {'min': 1020034823047, 'max': 1020036087961, 'range': 1264914},
-      'child': {'window': {'min': 1020034823047, 'max': 1020035228006.5569, 'range': 404959.5568847656}, 'child': null},
+      window: {min: 1020034823047, max: 1020036087961, range: 1264914},
+      child: {window: {min: 1020034823047, max: 1020035228006.5569, range: 404959.5568847656}, child: null},
     } as TraceEngine.Types.File.Breadcrumb);
     assert.deepEqual(modifications.annotations.entryLabels, [
       {entry: 'p-73704-775-2151-457', label: 'Initialize App'},

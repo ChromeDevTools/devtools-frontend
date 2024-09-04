@@ -11,11 +11,11 @@
  * the values are bitwise or'd.
  */
 export const SPECS = {
-  'html': 1,
-  'dom': 2,
-  'uievents': 4,
-  'pointerevents': 8,
-  'cssom': 16,
+  html: 1,
+  dom: 2,
+  uievents: 4,
+  pointerevents: 8,
+  cssom: 16,
   'wai-aria': 32
 };
 

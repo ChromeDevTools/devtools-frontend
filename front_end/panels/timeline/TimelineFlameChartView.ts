@@ -779,11 +779,19 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
       index: number, dataProvider: TimelineFlameChartDataProvider|TimelineFlameChartNetworkDataProvider):
       TraceEngine.Types.TraceEvents.TraceEventData|TraceEngine.Types.TraceEvents.SyntheticNetworkRequest|null {
     const selection = dataProvider.createSelection(index);
-    if (selection &&
-        (TimelineSelection.isTraceEventSelection(selection.object) ||
-         TimelineSelection.isSyntheticNetworkRequestDetailsEventSelection(selection.object))) {
+    if (!selection) {
+      return null;
+    }
+
+    if (TimelineSelection.isTraceEventSelection(selection.object) ||
+        TimelineSelection.isSyntheticNetworkRequestDetailsEventSelection(selection.object)) {
       return selection.object;
     }
+
+    if (TimelineSelection.isFrameObject(selection.object)) {
+      return selection.object as TraceEngine.Types.TraceEvents.LegacyTimelineFrame;
+    }
+
     return null;
   }
 

@@ -7252,6 +7252,22 @@ export const NativeFunctions = [
     signatures: [["input","?options"]]
   },
   {
+    name: "supportsType",
+    signatures: [["type"]]
+  },
+  {
+    name: "supportsFormat",
+    signatures: [["format"]]
+  },
+  {
+    name: "supportsLength",
+    signatures: [["length"]]
+  },
+  {
+    name: "supportsInputLanguage",
+    signatures: [["languageTag"]]
+  },
+  {
     name: "promptStreaming",
     signatures: [["input"]]
   },

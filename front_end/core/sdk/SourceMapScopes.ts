@@ -30,6 +30,7 @@ export interface OriginalScope {
   name?: string;
   variables: string[];
   children: OriginalScope[];
+  parent?: OriginalScope;
 }
 
 /**
@@ -121,6 +122,7 @@ function decodeOriginalScope(encodedOriginalScope: string, names: string[]): Ori
         // We are done. There might be more top-level scopes but we only allow one.
         return {root: scope, scopeForItemIndex};
       }
+      scope.parent = scopeStack[scopeStack.length - 1];
       scopeStack[scopeStack.length - 1].children.push(scope);
     }
   }

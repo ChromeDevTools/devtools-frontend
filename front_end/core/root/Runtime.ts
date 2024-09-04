@@ -285,7 +285,6 @@ export const enum ExperimentName {
   HEADER_OVERRIDES = 'header-overrides',
   INSTRUMENTATION_BREAKPOINTS = 'instrumentation-breakpoints',
   AUTHORED_DEPLOYED_GROUPING = 'authored-deployed-grouping',
-  IMPORTANT_DOM_PROPERTIES = 'important-dom-properties',
   JUST_MY_CODE = 'just-my-code',
   PRELOADING_STATUS_PANEL = 'preloading-status-panel',
   OUTERMOST_TARGET_SELECTOR = 'outermost-target-selector',

@@ -1001,7 +1001,6 @@ export enum DevtoolsExperiments {
   'styles-pane-css-changes' = 55,
   'instrumentation-breakpoints' = 61,
   'authored-deployed-grouping' = 63,
-  'important-dom-properties' = 64,
   'just-my-code' = 65,
   'preloading-status-panel' = 68,
   'outermost-target-selector' = 71,

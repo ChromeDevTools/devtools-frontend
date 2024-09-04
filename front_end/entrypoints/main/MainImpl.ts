@@ -365,11 +365,6 @@ export class MainImpl {
     Root.Runtime.experiments.register(
         Root.Runtime.ExperimentName.JUST_MY_CODE, 'Hide ignore-listed code in Sources tree view');
 
-    // Highlight important DOM properties in the Object Properties viewer.
-    Root.Runtime.experiments.register(
-        Root.Runtime.ExperimentName.IMPORTANT_DOM_PROPERTIES,
-        'Highlight important DOM properties in the Properties tab');
-
     Root.Runtime.experiments.register(
         Root.Runtime.ExperimentName.PRELOADING_STATUS_PANEL, 'Enable speculative loads panel in Application panel',
         true);

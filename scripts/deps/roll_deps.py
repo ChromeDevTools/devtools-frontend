@@ -118,15 +118,6 @@ def generate_signatures(options):
     ])
 
 
-def generate_dom_pinned_properties(options):
-    print('generating DOM pinned properties dataset from .idl definitions')
-    subprocess.check_call([
-        node_path(options),
-        os.path.join(options.devtools_dir, 'scripts', 'webidl-properties',
-                     'index.js'), options.devtools_dir
-    ])
-
-
 def generate_protocol_resources(options):
     print('generating protocol resources')
     subprocess.check_call([
@@ -200,7 +191,6 @@ if __name__ == '__main__':
         sync_node(OPTIONS)
     copy_files(OPTIONS)
     generate_signatures(OPTIONS)
-    generate_dom_pinned_properties(OPTIONS)
     generate_protocol_resources(OPTIONS)
     if files_changed(OPTIONS):
         run_git_cl_format(OPTIONS)

@@ -32,9 +32,7 @@ import * as Common from '../../../../core/common/common.js';
 import * as Host from '../../../../core/host/host.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
-import * as Root from '../../../../core/root/root.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
-import * as JavaScriptMetaData from '../../../../models/javascript_metadata/javascript_metadata.js';
 import * as TextUtils from '../../../../models/text_utils/text_utils.js';
 import * as IconButton from '../../../components/icon_button/icon_button.js';
 import * as TextEditor from '../../../components/text_editor/text_editor.js';
@@ -138,8 +136,6 @@ const EXPANDABLE_MAX_DEPTH = 100;
 
 const parentMap = new WeakMap<SDK.RemoteObject.RemoteObjectProperty, SDK.RemoteObject.RemoteObject|null>();
 const objectPropertiesSectionMap = new WeakMap<Element, ObjectPropertiesSection>();
-const domPinnedProperties =
-    JavaScriptMetaData.JavaScriptMetadata.JavaScriptMetadataImpl.domPinnedProperties.DOMPinnedProperties;
 
 export const getObjectPropertiesSectionFrom = (element: Element): ObjectPropertiesSection|undefined => {
   return objectPropertiesSectionMap.get(element);
@@ -213,55 +209,6 @@ export class ObjectPropertiesSection extends UI.TreeOutline.TreeOutlineInShadow 
     }
 
     return objectPropertiesSection;
-  }
-
-  static assignWebIDLMetadata(
-      value: SDK.RemoteObject.RemoteObject|null, properties: SDK.RemoteObject.RemoteObjectProperty[]): void {
-    if (!value) {
-      return;
-    }
-
-    const isInstance = value.type === 'object' && value.className !== null;
-    const webIdlType = isInstance ? domPinnedProperties[value.className] : undefined;
-    if (webIdlType) {
-      value.webIdl = {info: webIdlType, state: new Map()};
-    } else {
-      return;
-    }
-
-    const includedWebIdlTypes = webIdlType.includes?.map(className => domPinnedProperties[className]) ?? [];
-    const includedWebIdlProps = includedWebIdlTypes.flatMap(webIdlType => Object.entries(webIdlType?.props ?? {}));
-    const webIdlProps = {...webIdlType.props, ...Object.fromEntries(includedWebIdlProps)};
-
-    for (const property of properties) {
-      const webIdlProperty = webIdlProps[property.name];
-      if (webIdlProperty) {
-        property.webIdl = {info: webIdlProperty};
-      }
-    }
-
-    const names = ObjectPropertiesSection.getPropertyValuesByNames(properties);
-    const parentRules = value.webIdl.info.rules;
-    if (parentRules) {
-      for (const {when: name, is: expected} of parentRules) {
-        if (names.get(name)?.value === expected) {
-          value.webIdl.state.set(name, expected);
-        }
-      }
-    }
-
-    for (const property of properties) {
-      if (property.webIdl) {
-        const parentState = value.webIdl.state;
-        const propertyRules = property.webIdl.info.rules;
-        if (!parentRules && !propertyRules) {
-          property.webIdl.applicable = true;
-        } else {
-          property.webIdl.applicable =
-              !propertyRules || propertyRules?.some(rule => parentState.get(rule.when) === rule.is);
-        }
-      }
-    }
   }
 
   static getPropertyValuesByNames(properties: SDK.RemoteObject.RemoteObjectProperty[]):
@@ -824,8 +771,6 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
       internalProperties: SDK.RemoteObject.RemoteObjectProperty[]|null, skipProto: boolean,
       skipGettersAndSetters: boolean, value: SDK.RemoteObject.RemoteObject|null,
       linkifier?: Components.Linkifier.Linkifier, emptyPlaceholder?: string|null): void {
-    ObjectPropertiesSection.assignWebIDLMetadata(value, properties);
-
     properties.sort(ObjectPropertiesSection.compareProperties);
     internalProperties = internalProperties || [];
 
@@ -1138,23 +1083,8 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
       this.expandedValueElement = this.createExpandedValueElement(this.property.value, this.property.synthetic);
     }
 
-    const experiment = Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.IMPORTANT_DOM_PROPERTIES);
-
-    let adorner: Element|string = '';
+    const adorner: Element|string = '';
     let container: Element;
-
-    if (this.property.webIdl?.applicable && experiment) {
-      const icon = new IconButton.Icon.Icon();
-      icon.data = {
-        iconName: 'star',
-        color: 'var(--icon-default)',
-        width: '16px',
-        height: '16px',
-      };
-      adorner = UI.Fragment.html`
-         <span class='adorner'>${icon}</span>
-       `;
-    }
 
     if (isInternalEntries) {
       container = UI.Fragment.html`
@@ -1170,10 +1100,6 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
     this.listItemElement.removeChildren();
     this.rowContainer = (container as HTMLElement);
     this.listItemElement.appendChild(this.rowContainer);
-
-    if (experiment) {
-      this.listItemElement.dataset.webidl = this.property.webIdl?.applicable ? 'true' : 'false';
-    }
   }
 
   private updatePropertyPath(): void {

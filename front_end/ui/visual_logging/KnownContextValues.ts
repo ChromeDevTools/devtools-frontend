@@ -1506,7 +1506,6 @@ export const knownContextValues = new Set([
   'import-har',
   'import-recording',
   'important',
-  'important-dom-properties',
   'in-range',
   'indeterminate',
   'indexed-db',

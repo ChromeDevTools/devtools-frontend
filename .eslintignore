@@ -1,7 +1,6 @@
 front_end/.eslintrc.js
 front_end/diff/diff_match_patch.jD
 front_end/models/javascript_metadata/NativeFunctions.js
-front_end/models/javascript_metadata/DOMPinnedProperties.ts
 
 // All of these scripts are auto-generated so don't lint them.
 front_end/generated/ARIAProperties.js

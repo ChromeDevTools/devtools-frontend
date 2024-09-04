@@ -1112,6 +1112,7 @@ export const knownContextValues = new Set([
   'elements.event-listeners',
   'elements.generic-sidebar-popover',
   'elements.hide-element',
+  'elements.image-preview',
   'elements.jump-to-style',
   'elements.layout',
   'elements.new-style-rule',

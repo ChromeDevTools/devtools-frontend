@@ -67,10 +67,18 @@
   color: var(--sys-color-state-disabled);
 }
 
-.chat-input-disclaimer {
-  text-align: center;
-  color: var(--sys-color-on-surface-subtle);
-  margin-bottom: var(--sys-size-4);
+.disclaimer {
+  display: flex;
+  justify-content: center;
+  border-top: var(--sys-size-1) solid var(--sys-color-divider);
+
+  .disclaimer-text {
+    max-width: var(--sys-size-36);
+    color: var(--sys-color-on-surface-subtle);
+    font: var(--sys-typescale-body5-regular);
+    text-wrap: pretty;
+    padding: var(--sys-size-5);
+  }
 }
 
 .messages-scroll-container {

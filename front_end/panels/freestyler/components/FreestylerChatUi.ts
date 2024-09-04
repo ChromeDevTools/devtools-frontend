@@ -34,7 +34,7 @@ const UIStringsTemp = {
    *@description Disclaimer text right after the chat input.
    */
   inputDisclaimer:
-      'Chat messages and data from this page will be sent to Google, reviewed by humans, and used to improve the feature. Do not use on pages with personal or sensitive information. AI assistant may display inaccurate information.',
+      'Chat messages and any data the inspected page can access via Web APIs are sent to Google and may be seen by human reviewers to improve this feature. This is an experimental AI feature and won\'t always get it right.',
   /**
    *@description Title for the send icon button.
    */
@@ -668,7 +668,9 @@ export class FreestylerChatUi extends HTMLElement {
                     ></${Buttons.Button.Button.litTagName}>`
               }
           </div>
-          <span class="chat-input-disclaimer">${i18nString(
+        </form>
+        <div class="disclaimer">
+          <div class="disclaimer-text">${i18nString(
             UIStringsTemp.inputDisclaimer,
           )} See <x-link
               class="link"
@@ -676,8 +678,9 @@ export class FreestylerChatUi extends HTMLElement {
               jslog=${VisualLogging.link('freestyler.dogfood-info').track({
                 click: true,
               })}
-            >dogfood terms</x-link>.</span>
-        </form>
+            >dogfood terms</x-link>.
+          </div>
+        </div>
       </div>
     `;
     // clang-format on

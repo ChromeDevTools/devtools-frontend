@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../../core/common/common.js';
+import * as Platform from '../../../core/platform/platform.js';
 import * as TraceEngine from '../../../models/trace/trace.js';
 import * as TraceBounds from '../../../services/trace_bounds/trace_bounds.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
@@ -43,6 +45,13 @@ export class SidebarAnnotationsTab extends HTMLElement {
 
     if (TraceEngine.Types.TraceEvents.isProfileCall(annotation.entry)) {
       return annotation.entry.callFrame.functionName;
+    }
+
+    if (TraceEngine.Types.TraceEvents.isSyntheticNetworkRequestEvent(annotation.entry)) {
+      const parsedURL = new Common.ParsedURL.ParsedURL(annotation.entry.args.data.url);
+      const text = parsedURL.isValid ? `${parsedURL.displayName} (${parsedURL.host})` :
+                                       annotation.entry.args.data.url || 'Network request';
+      return Platform.StringUtilities.trimEndWithMaxLength(text, 40);
     }
 
     return annotation.entry.name;

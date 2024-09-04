@@ -476,7 +476,7 @@ describe('ExtensionTraceDataHandler', function() {
       const trackGroupData = extensionHandlerOutput.extensionTrackData[0];
       const testDataTrack1 = trackGroupData.entriesByTrack['Track 1'].map(entry => {
         const selfTime = extensionHandlerOutput.entryToNode.get(entry)?.selfTime as number;
-        return {name: entry.name, selfTime: selfTime};
+        return {name: entry.name, selfTime};
       });
       assert.deepEqual(testDataTrack1, [
         {name: 'Measurement 1', selfTime: 40},

@@ -48,7 +48,7 @@ export function fromTraceData(traceData: HandlerDataWithScreenshots, customZeroT
     }
     const frame: Frame = {
       index: frames.length,
-      screenshotEvent: screenshotEvent,
+      screenshotEvent,
     };
     frames.push(frame);
   }

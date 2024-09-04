@@ -120,7 +120,7 @@ function createCodeMirrorFakeEvent(editor, eventType, code, charCode, modifiers)
     _handled: false,
     type: eventType,
     keyCode: code,
-    charCode: charCode,
+    charCode,
     preventDefault: eventPreventDefault,
     stopPropagation: function() {},
     target: editor.codeMirror().display.input.textarea

@@ -285,7 +285,7 @@ export class NetworkLog extends Common.ObjectWrapper.ObjectWrapper<EventTypes> i
         }
       }
     }
-    return {initiators: this.initiatorChain(request), initiated: initiated};
+    return {initiators: this.initiatorChain(request), initiated};
   }
 
   private initiatorChain(request: SDK.NetworkRequest.NetworkRequest): Set<SDK.NetworkRequest.NetworkRequest> {

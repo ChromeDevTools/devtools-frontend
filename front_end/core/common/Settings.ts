@@ -512,10 +512,10 @@ export class Setting<V> {
       return this.#registration.options.map(opt => {
         const {value, title, text, raw} = opt;
         return {
-          value: value,
+          value,
           title: title(),
           text: typeof text === 'function' ? text() : text,
-          raw: raw,
+          raw,
         };
       });
     }

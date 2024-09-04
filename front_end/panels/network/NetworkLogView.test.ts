@@ -223,7 +223,7 @@ describeWithMockConnection('NetworkLogView', () => {
       const URL_2 = 'http://example.com/favicon.ico' as Platform.DevToolsPath.UrlString;
       function makeHarEntry(url: Platform.DevToolsPath.UrlString) {
         return {
-          request: {method: 'GET', url: url, headersSize: -1, bodySize: 0},
+          request: {method: 'GET', url, headersSize: -1, bodySize: 0},
           response: {status: 0, content: {size: 0, mimeType: 'x-unknown'}, headersSize: -1, bodySize: -1},
           startedDateTime: null,
           time: null,

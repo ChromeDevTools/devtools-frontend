@@ -257,7 +257,7 @@ export class HighlightOverlay extends Overlay {
     }
     this.context.restore();
 
-    return {bounds: bounds};
+    return {bounds};
   }
 
   drawGridHighlight(highlight: GridHighlight) {

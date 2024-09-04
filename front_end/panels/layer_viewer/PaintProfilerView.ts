@@ -563,7 +563,7 @@ export class LogPropertyTreeElement extends UI.TreeOutline.TreeElement {
   static appendLogPropertyItem(
       element: UI.TreeOutline.TreeElement, name: string,
       value: SDK.PaintProfiler.RawPaintProfilerLogItemParamValue): void {
-    const treeElement = new LogPropertyTreeElement({name: name, value: value});
+    const treeElement = new LogPropertyTreeElement({name, value});
     element.appendChild(treeElement);
     if (value && typeof value === 'object') {
       for (const property in value) {

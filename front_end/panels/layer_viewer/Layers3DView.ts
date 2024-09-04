@@ -195,7 +195,7 @@ export class Layers3DView extends Common.ObjectWrapper.eventMixin<EventTypes, ty
     }
     void UI.UIUtils.loadImage(imageURL).then(image => {
       const texture = image && LayerTextureManager.createTextureForImage(this.gl || null, image);
-      this.layerTexture = texture ? {layer: layer, texture: texture} : null;
+      this.layerTexture = texture ? {layer, texture} : null;
       this.update();
     });
   }

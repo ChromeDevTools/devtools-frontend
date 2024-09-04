@@ -147,22 +147,22 @@ function devtoolsTestInterface(suite: Mocha.Suite) {
         function describe(title: string, fn: SuiteFunction) {
           return common.suite.create({
             title: describeTitle(title),
-            file: file,
-            fn: fn,
+            file,
+            fn,
           });
         }
         describe.only = function(title: string, fn: ExclusiveSuiteFunction) {
           return common.suite.only({
             title: describeTitle(title),
-            file: file,
-            fn: fn,
+            file,
+            fn,
           });
         };
         describe.skip = function(title: string, fn: SuiteFunction) {
           return common.suite.skip({
             title: describeTitle(title),
-            file: file,
-            fn: fn,
+            file,
+            fn,
           });
         };
         // @ts-expect-error Custom interface.

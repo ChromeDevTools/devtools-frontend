@@ -208,10 +208,10 @@ export class RuntimeModel extends SDKModel<EventTypes> {
       expression: string, sourceURL: string, persistScript: boolean,
       executionContextId: Protocol.Runtime.ExecutionContextId): Promise<CompileScriptResult|null> {
     const response = await this.agent.invoke_compileScript({
-      expression: expression,
-      sourceURL: sourceURL,
-      persistScript: persistScript,
-      executionContextId: executionContextId,
+      expression,
+      sourceURL,
+      persistScript,
+      executionContextId,
     });
 
     if (response.getError()) {
@@ -239,7 +239,7 @@ export class RuntimeModel extends SDKModel<EventTypes> {
     const error = response.getError();
     if (error) {
       console.error(error);
-      return {error: error};
+      return {error};
     }
     return {object: this.createRemoteObject(response.result), exceptionDetails: response.exceptionDetails};
   }
@@ -253,7 +253,7 @@ export class RuntimeModel extends SDKModel<EventTypes> {
     const error = response.getError();
     if (error) {
       console.error(error);
-      return {error: error};
+      return {error};
     }
     return {objects: this.createRemoteObject(response.objects)};
   }
@@ -333,7 +333,7 @@ export class RuntimeModel extends SDKModel<EventTypes> {
         .callFunctionJSON(toStringForClipboard, [{
                             value: {
                               subtype: object.subtype,
-                              indent: indent,
+                              indent,
                             },
                           }])
         .then(Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText.bind(
@@ -383,7 +383,7 @@ export class RuntimeModel extends SDKModel<EventTypes> {
   }
 
   exceptionThrown(timestamp: number, exceptionDetails: Protocol.Runtime.ExceptionDetails): void {
-    const exceptionWithTimestamp = {timestamp: timestamp, details: exceptionDetails};
+    const exceptionWithTimestamp = {timestamp, details: exceptionDetails};
     this.dispatchEventToListeners(Events.ExceptionThrown, exceptionWithTimestamp);
   }
 
@@ -395,12 +395,12 @@ export class RuntimeModel extends SDKModel<EventTypes> {
       type: Protocol.Runtime.ConsoleAPICalledEventType, args: Protocol.Runtime.RemoteObject[],
       executionContextId: number, timestamp: number, stackTrace?: Protocol.Runtime.StackTrace, context?: string): void {
     const consoleAPICall = {
-      type: type,
-      args: args,
-      executionContextId: executionContextId,
-      timestamp: timestamp,
-      stackTrace: stackTrace,
-      context: context,
+      type,
+      args,
+      executionContextId,
+      timestamp,
+      stackTrace,
+      context,
     };
     this.dispatchEventToListeners(Events.ConsoleAPICalled, consoleAPICall);
   }
@@ -625,11 +625,11 @@ export class ExecutionContext {
   globalObject(objectGroup: string, generatePreview: boolean): Promise<EvaluationResult> {
     const evaluationOptions = {
       expression: 'this',
-      objectGroup: objectGroup,
+      objectGroup,
       includeCommandLineAPI: false,
       silent: true,
       returnByValue: false,
-      generatePreview: generatePreview,
+      generatePreview,
     };
     return this.evaluateGlobal((evaluationOptions as EvaluationOptions), false, false);
   }
@@ -648,8 +648,8 @@ export class ExecutionContext {
       silent: options.silent,
       returnByValue: options.returnByValue,
       generatePreview: options.generatePreview,
-      userGesture: userGesture,
-      awaitPromise: awaitPromise,
+      userGesture,
+      awaitPromise,
       throwOnSideEffect: options.throwOnSideEffect,
       timeout: options.timeout,
       disableBreaks: options.disableBreaks,
@@ -663,7 +663,7 @@ export class ExecutionContext {
     const error = response.getError();
     if (error) {
       console.error(error);
-      return {error: error};
+      return {error};
     }
     return {object: this.runtimeModel.createRemoteObject(response.result), exceptionDetails: response.exceptionDetails};
   }

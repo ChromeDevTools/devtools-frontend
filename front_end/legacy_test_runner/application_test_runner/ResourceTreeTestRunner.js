@@ -16,9 +16,9 @@ export const dumpResources = function(formatter) {
 
   function formatterWrapper(resource) {
     if (formatter) {
-      results.push({resource: resource, text: formatter(resource)});
+      results.push({resource, text: formatter(resource)});
     } else {
-      results.push({resource: resource, text: resource.url});
+      results.push({resource, text: resource.url});
     }
   }
 

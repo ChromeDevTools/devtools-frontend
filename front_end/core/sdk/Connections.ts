@@ -199,7 +199,7 @@ export class StubConnection implements ProtocolClient.InspectorBackend.Connectio
       data: messageObject,
     };
     if (this.onMessage) {
-      this.onMessage.call(null, {id: messageObject.id, error: error});
+      this.onMessage.call(null, {id: messageObject.id, error});
     }
   }
 

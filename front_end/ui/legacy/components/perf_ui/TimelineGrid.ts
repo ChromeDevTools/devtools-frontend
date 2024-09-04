@@ -106,10 +106,10 @@ export class TimelineGrid {
       if (positionFromTime < (freeZoneAtLeft || 0)) {
         continue;
       }
-      offsets.push({position: Math.floor(positionFromTime), time: time});
+      offsets.push({position: Math.floor(positionFromTime), time});
     }
 
-    return {offsets: offsets, precision: Math.max(0, -Math.floor(Math.log(gridSliceTime * 1.01) / Math.LN10))};
+    return {offsets, precision: Math.max(0, -Math.floor(Math.log(gridSliceTime * 1.01) / Math.LN10))};
   }
 
   static drawCanvasGrid(context: CanvasRenderingContext2D, dividersData: DividersData): void {

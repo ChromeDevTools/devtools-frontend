@@ -370,7 +370,7 @@ export class AgentLayer implements SDK.LayerTreeBase.Layer {
       if (!snapshot) {
         return null;
       }
-      return {rect: {x: 0, y: 0, width: this.width(), height: this.height()}, snapshot: snapshot};
+      return {rect: {x: 0, y: 0, width: this.width(), height: this.height()}, snapshot};
     });
     return [promise];
   }

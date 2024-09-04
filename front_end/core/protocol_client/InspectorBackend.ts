@@ -329,7 +329,7 @@ export class SessionRouter {
     const messageId = this.nextMessageId();
     const messageObject: Message = {
       id: messageId,
-      method: method,
+      method,
     };
 
     if (params) {

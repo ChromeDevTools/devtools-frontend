@@ -25,7 +25,7 @@ const memoryInspector = new LinearMemoryInspectorComponents.LinearMemoryInspecto
 document.getElementById('container')?.appendChild(memoryInspector);
 
 memoryInspector.data = {
-  memory: memory,
+  memory,
   address: 0,
   memoryOffset: 0,
   outerMemoryLength: memory.length,

@@ -190,7 +190,7 @@ export class NetworkTimeCalculator extends Common.ObjectWrapper.ObjectWrapper<Ev
       start = 0;
     }
 
-    return {start: start, middle: middle, end: end};
+    return {start, middle, end};
   }
 
   computePercentageFromEventTime(eventTime: number): number {
@@ -253,7 +253,7 @@ export class NetworkTimeCalculator extends Common.ObjectWrapper.ObjectWrapper<Ev
     } else if (request.cached()) {
       tooltip = i18nString(UIStrings.sFromCache, {PH1: String(tooltip)});
     }
-    return {left: leftLabel, right: rightLabel, tooltip: tooltip};
+    return {left: leftLabel, right: rightLabel, tooltip};
   }
 
   updateBoundaries(request: SDK.NetworkRequest.NetworkRequest): void {

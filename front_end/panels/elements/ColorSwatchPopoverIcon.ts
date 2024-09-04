@@ -169,7 +169,7 @@ export class ColorSwatchPopoverIcon extends Common.ObjectWrapper.ObjectWrapper<C
       colors.push(value.value);
       colorNames.push(cssVariable);
     }
-    return {title: 'CSS Variables', mutable: false, matchUserFormat: true, colors: colors, colorNames: colorNames};
+    return {title: 'CSS Variables', mutable: false, matchUserFormat: true, colors, colorNames};
   }
 
   setContrastInfo(contrastInfo: ColorPicker.ContrastInfo.ContrastInfo): void {

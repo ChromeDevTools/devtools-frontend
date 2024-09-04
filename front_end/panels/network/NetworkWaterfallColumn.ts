@@ -172,10 +172,10 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
       waitingStyleMap.set(
           // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
           // @ts-expect-error
-          resourceType, {fillStyle: toWaitingColor((color as string)), lineWidth: 1, borderColor: borderColor});
+          resourceType, {fillStyle: toWaitingColor((color as string)), lineWidth: 1, borderColor});
       // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
       // @ts-expect-error
-      downloadingStyleMap.set(resourceType, {fillStyle: color, lineWidth: 1, borderColor: borderColor});
+      downloadingStyleMap.set(resourceType, {fillStyle: color, lineWidth: 1, borderColor});
     }
     return [waitingStyleMap, downloadingStyleMap];
 

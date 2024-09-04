@@ -76,7 +76,7 @@ export class HeapSnapshotWorkerProxy extends Common.ObjectWrapper.ObjectWrapper<
     this.postMessage({
       callId: this.nextCallId++,
       disposition: 'createLoader',
-      objectId: objectId,
+      objectId,
     });
     return proxy;
   }
@@ -89,13 +89,13 @@ export class HeapSnapshotWorkerProxy extends Common.ObjectWrapper.ObjectWrapper<
   }
 
   disposeObject(objectId: number): void {
-    this.postMessage({callId: this.nextCallId++, disposition: 'dispose', objectId: objectId});
+    this.postMessage({callId: this.nextCallId++, disposition: 'dispose', objectId});
   }
 
   evaluateForTest(script: string, callback: (...arg0: any[]) => void): void {
     const callId = this.nextCallId++;
     this.callbacks.set(callId, callback);
-    this.postMessage({callId: callId, disposition: 'evaluateForTest', source: script});
+    this.postMessage({callId, disposition: 'evaluateForTest', source: script});
   }
 
   callFactoryMethod<T extends Object>(
@@ -115,22 +115,22 @@ export class HeapSnapshotWorkerProxy extends Common.ObjectWrapper.ObjectWrapper<
         callback(remoteResult ? new proxyConstructor(this, newObjectId) : null);
       });
       this.postMessage({
-        callId: callId,
+        callId,
         disposition: 'factory',
-        objectId: objectId,
-        methodName: methodName,
-        methodArguments: methodArguments,
-        newObjectId: newObjectId,
+        objectId,
+        methodName,
+        methodArguments,
+        newObjectId,
       });
       return null;
     }
     this.postMessage({
-      callId: callId,
+      callId,
       disposition: 'factory',
-      objectId: objectId,
-      methodName: methodName,
-      methodArguments: methodArguments,
-      newObjectId: newObjectId,
+      objectId,
+      methodName,
+      methodArguments,
+      newObjectId,
     });
     return new proxyConstructor(this, newObjectId);
   }
@@ -142,11 +142,11 @@ export class HeapSnapshotWorkerProxy extends Common.ObjectWrapper.ObjectWrapper<
       this.callbacks.set(callId, callback);
     }
     this.postMessage({
-      callId: callId,
+      callId,
       disposition: 'method',
-      objectId: objectId,
-      methodName: methodName,
-      methodArguments: methodArguments,
+      objectId,
+      methodName,
+      methodArguments,
     });
   }
 

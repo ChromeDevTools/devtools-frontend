@@ -265,7 +265,7 @@ export function showPanel(panel) {
  */
 export function createKeyEvent(key, ctrlKey, altKey, shiftKey, metaKey) {
   return new KeyboardEvent('keydown', {
-    key: key,
+    key,
     bubbles: true,
     cancelable: true,
     ctrlKey: Boolean(ctrlKey),
@@ -537,7 +537,7 @@ export function evaluateFunctionInOverlay(func, callback) {
   mainContext
       .evaluate(
           {
-            expression: expression,
+            expression,
             objectGroup: '',
             includeCommandLineAPI: false,
             silent: false,

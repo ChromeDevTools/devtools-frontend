@@ -199,7 +199,7 @@ export class DataGridWithPreview {
     for (const item of filteredList) {
       const key = item[0];
       const value = item[1];
-      const node = new DataGridNode({key: key, value: value}, false);
+      const node = new DataGridNode({key, value}, false);
       node.selectable = true;
       rootNode.appendChild(node);
       if (!selectedNode || key === selectedKey) {

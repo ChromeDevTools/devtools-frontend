@@ -93,7 +93,7 @@ UI.ActionRegistration.registerActionExtension({
 });
 
 const actionRegistry = UI.ActionRegistry.ActionRegistry.instance();
-UI.ShortcutRegistry.ShortcutRegistry.instance({forceNew: true, actionRegistry: actionRegistry});
+UI.ShortcutRegistry.ShortcutRegistry.instance({forceNew: true, actionRegistry});
 Common.Settings.settingForTest('flamechart-mouse-wheel-action').set('zoom');
 const params = new URLSearchParams(window.location.search);
 const traceFileName = params.get('trace');

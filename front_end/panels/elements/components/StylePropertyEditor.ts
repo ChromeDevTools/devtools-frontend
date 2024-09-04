@@ -131,7 +131,7 @@ export class StylePropertyEditor extends HTMLElement {
     const transform = `transform: rotate(${iconInfo.rotate}deg) scale(${iconInfo.scaleX}, ${iconInfo.scaleY})`;
     const classes = Directives.classMap({
       button: true,
-      selected: selected,
+      selected,
     });
     const values = {propertyName, propertyValue};
     const title = selected ? i18nString(UIStrings.deselectButton, values) : i18nString(UIStrings.selectButton, values);

@@ -1777,7 +1777,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     if (result) {
       result += text.substring(lastIndexAfterEntity);
     }
-    return {text: result || text, entityRanges: entityRanges};
+    return {text: result || text, entityRanges};
   }
 
   private nodeTitleInfo(updateRecord: UpdateRecord|null): DocumentFragment {

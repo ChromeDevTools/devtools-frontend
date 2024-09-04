@@ -685,7 +685,7 @@ export class HeapFlameChartDataProvider extends ProfileFlameChartDataProvider {
       value: string,
     }[] = [];
     function pushEntryInfoRow(title: string, value: string): void {
-      entryInfo.push({title: title, value: value});
+      entryInfo.push({title, value});
     }
     pushEntryInfoRow(i18nString(UIStrings.name), UI.UIUtils.beautifyFunctionName(node.functionName));
     pushEntryInfoRow(i18nString(UIStrings.selfSize), Platform.NumberUtilities.bytesToString(node.self));

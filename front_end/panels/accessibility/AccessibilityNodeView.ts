@@ -312,15 +312,14 @@ export class AXNodePropertyTreeElement extends UI.TreeOutline.TreeElement {
   appendRelatedNode(relatedNode: Protocol.Accessibility.AXRelatedNode, _index: number): void {
     const deferredNode =
         new SDK.DOMModel.DeferredDOMNode(this.axNode.accessibilityModel().target(), relatedNode.backendDOMNodeId);
-    const nodeTreeElement =
-        new AXRelatedNodeSourceTreeElement({deferredNode: deferredNode, idref: undefined}, relatedNode);
+    const nodeTreeElement = new AXRelatedNodeSourceTreeElement({deferredNode, idref: undefined}, relatedNode);
     this.appendChild(nodeTreeElement);
   }
 
   appendRelatedNodeInline(relatedNode: Protocol.Accessibility.AXRelatedNode): void {
     const deferredNode =
         new SDK.DOMModel.DeferredDOMNode(this.axNode.accessibilityModel().target(), relatedNode.backendDOMNodeId);
-    const linkedNode = new AXRelatedNodeElement({deferredNode: deferredNode, idref: undefined}, relatedNode);
+    const linkedNode = new AXRelatedNodeElement({deferredNode, idref: undefined}, relatedNode);
     this.listItemElement.appendChild(linkedNode.render());
   }
 
@@ -408,7 +407,7 @@ export class AXValueSourceTreeElement extends AXNodePropertyTreeElement {
   appendRelatedNodeWithIdref(relatedNode: Protocol.Accessibility.AXRelatedNode, idref: string): void {
     const deferredNode =
         new SDK.DOMModel.DeferredDOMNode(this.axNode.accessibilityModel().target(), relatedNode.backendDOMNodeId);
-    const nodeTreeElement = new AXRelatedNodeSourceTreeElement({deferredNode: deferredNode, idref: idref}, relatedNode);
+    const nodeTreeElement = new AXRelatedNodeSourceTreeElement({deferredNode, idref}, relatedNode);
     this.appendChild(nodeTreeElement);
   }
 
@@ -440,9 +439,9 @@ export class AXValueSourceTreeElement extends AXNodePropertyTreeElement {
       if (matchingNode) {
         this.appendRelatedNodeWithIdref(matchingNode, idref);
       } else if (idrefs.length === 1) {
-        this.listItemElement.appendChild(new AXRelatedNodeElement({deferredNode: undefined, idref: idref}).render());
+        this.listItemElement.appendChild(new AXRelatedNodeElement({deferredNode: undefined, idref}).render());
       } else {
-        this.appendChild(new AXRelatedNodeSourceTreeElement({deferredNode: undefined, idref: idref}));
+        this.appendChild(new AXRelatedNodeSourceTreeElement({deferredNode: undefined, idref}));
       }
     }
   }

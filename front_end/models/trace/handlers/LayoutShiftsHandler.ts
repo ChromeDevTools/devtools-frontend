@@ -464,7 +464,7 @@ export function data(): LayoutShifts {
 
   return {
     clusters,
-    sessionMaxScore: sessionMaxScore,
+    sessionMaxScore,
     clsWindowID,
     prePaintEvents,
     layoutInvalidationEvents,

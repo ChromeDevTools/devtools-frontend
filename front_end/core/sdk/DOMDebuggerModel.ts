@@ -172,7 +172,7 @@ export class DOMDebuggerModel extends SDKModel<EventTypes> {
       insertion = auxData['insertion'] || false;
       targetNode = this.#domModel.nodeForId(auxData['targetNodeId']);
     }
-    return {type: type, node: node, targetNode: targetNode, insertion: insertion};
+    return {type, node, targetNode, insertion};
   }
 
   private currentURL(): Platform.DevToolsPath.UrlString {
@@ -709,7 +709,7 @@ export class DOMDebuggerManager implements SDKModelObserver<DOMDebuggerModel> {
 
   private updateCSPViolationBreakpointsForModel(
       model: DOMDebuggerModel, violationTypes: Protocol.DOMDebugger.CSPViolationType[]): void {
-    void model.agent.invoke_setBreakOnCSPViolation({violationTypes: violationTypes});
+    void model.agent.invoke_setBreakOnCSPViolation({violationTypes});
   }
 
   xhrBreakpoints(): Map<string, boolean> {
@@ -719,7 +719,7 @@ export class DOMDebuggerManager implements SDKModelObserver<DOMDebuggerModel> {
   private saveXHRBreakpoints(): void {
     const breakpoints = [];
     for (const url of this.#xhrBreakpointsInternal.keys()) {
-      breakpoints.push({url: url, enabled: this.#xhrBreakpointsInternal.get(url) || false});
+      breakpoints.push({url, enabled: this.#xhrBreakpointsInternal.get(url) || false});
     }
     this.#xhrBreakpointsSetting.set(breakpoints);
   }
@@ -760,7 +760,7 @@ export class DOMDebuggerManager implements SDKModelObserver<DOMDebuggerModel> {
   modelAdded(domDebuggerModel: DOMDebuggerModel): void {
     for (const url of this.#xhrBreakpointsInternal.keys()) {
       if (this.#xhrBreakpointsInternal.get(url)) {
-        void domDebuggerModel.agent.invoke_setXHRBreakpoint({url: url});
+        void domDebuggerModel.agent.invoke_setXHRBreakpoint({url});
       }
     }
     for (const breakpoint of this.#eventListenerBreakpointsInternal) {

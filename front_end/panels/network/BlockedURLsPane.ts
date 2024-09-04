@@ -174,9 +174,9 @@ export class BlockedURLsPane extends UI.Widget.VBox implements
     const url = editor.control('url').value as Platform.DevToolsPath.UrlString;
     const patterns = this.manager.blockedPatterns();
     if (isNew) {
-      patterns.push({enabled: true, url: url});
+      patterns.push({enabled: true, url});
     } else {
-      patterns.splice(patterns.indexOf(item), 1, {enabled: true, url: url});
+      patterns.splice(patterns.indexOf(item), 1, {enabled: true, url});
     }
 
     this.manager.setBlockedPatterns(patterns);

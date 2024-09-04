@@ -77,7 +77,7 @@ describeWithEnvironment('SamplesHandler', function() {
         pid,
         tid: TraceModel.Types.TraceEvents.ThreadID(0),
         ts: TraceModel.Types.Timing.MicroSeconds(ts),
-        id: id,
+        id,
         args: {
           data: {
             cpuProfile: {

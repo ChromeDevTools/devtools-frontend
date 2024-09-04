@@ -382,7 +382,7 @@ export class JSONEditor extends LitElement {
     return {
       type: ParameterType.ARRAY,
       name: key,
-      optional: optional,
+      optional,
       typeRef: schema?.typeRef,
       value: objectValues,
       description,
@@ -651,9 +651,9 @@ export class JSONEditor extends LitElement {
 
       return {
         type: ParameterType.OBJECT,
-        name: name,
+        name,
         optional: type.optional,
-        typeRef: typeRef,
+        typeRef,
         value: nestedValue,
         isCorrectType: true,
         description: type.description,
@@ -661,7 +661,7 @@ export class JSONEditor extends LitElement {
     }
     return {
       type: type.type,
-      name: name,
+      name,
       optional: type.optional,
       isCorrectType: true,
       typeRef: type.typeRef,
@@ -701,10 +701,10 @@ export class JSONEditor extends LitElement {
           parameter.value = [];
         }
         parameter.value.push({
-          type: type,
+          type,
           name: String(parameter.value.length),
           optional: true,
-          typeRef: typeRef,
+          typeRef,
           value: nestedValue.length !== 0 ? nestedValue : '',
           description: '',
           isCorrectType: true,
@@ -743,7 +743,7 @@ export class JSONEditor extends LitElement {
             type: ParameterType.OBJECT,
             name: '',
             optional: true,
-            typeRef: typeRef,
+            typeRef,
             value: nestedValue,
             isCorrectType: true,
             description: '',

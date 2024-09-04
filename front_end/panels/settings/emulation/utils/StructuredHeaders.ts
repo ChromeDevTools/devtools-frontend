@@ -317,7 +317,7 @@ function parseInnerList(input: Input): InnerList|Error {
       }
       return {
         kind: ResultKind.INNER_LIST,
-        items: items,
+        items,
         parameters: params,
       };
     }

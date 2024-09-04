@@ -76,7 +76,7 @@ export class PerformanceMetricsModel extends SDKModel<void> {
       }
       metrics.set(metric.name, value);
     }
-    return {metrics: metrics, timestamp: timestamp};
+    return {metrics, timestamp};
   }
 }
 

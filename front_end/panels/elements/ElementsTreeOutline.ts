@@ -422,7 +422,7 @@ export class ElementsTreeOutline extends
     }
 
     void node.copyNode();
-    this.setClipboardData({node: node, isCut: isCut});
+    this.setClipboardData({node, isCut});
   }
 
   canPaste(targetNode: SDK.DOMModel.DOMNode): boolean {
@@ -605,7 +605,7 @@ export class ElementsTreeOutline extends
 
   selectedNodeChanged(focus: boolean): void {
     this.dispatchEventToListeners(
-        ElementsTreeOutline.Events.SelectedNodeChanged, {node: this.selectedDOMNodeInternal, focus: focus});
+        ElementsTreeOutline.Events.SelectedNodeChanged, {node: this.selectedDOMNodeInternal, focus});
   }
 
   private fireElementsTreeUpdated(nodes: SDK.DOMModel.DOMNode[]): void {

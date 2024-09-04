@@ -469,8 +469,8 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
     this.searchableViewInternal.resetSearch();
 
     const data = {
-      uiSourceCode: uiSourceCode,
-      wasSelected: wasSelected,
+      uiSourceCode,
+      wasSelected,
     };
     this.dispatchEventToListeners(Events.EDITOR_CLOSED, data);
   }

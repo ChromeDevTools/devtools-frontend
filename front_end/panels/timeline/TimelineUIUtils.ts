@@ -877,7 +877,7 @@ export class TimelineUIUtils {
           scriptId: unsafeEventData['scriptId'],
           url: unsafeEventData['url'],
           lineNumber: lineNumber || 0,
-          columnNumber: columnNumber,
+          columnNumber,
           target,
           isFreshRecording,
           linkifier,
@@ -1731,7 +1731,7 @@ export class TimelineUIUtils {
 
   static stackTraceFromCallFrames(callFrames: Protocol.Runtime.CallFrame[]|
                                   TraceEngine.Types.TraceEvents.TraceEventCallFrame[]): Protocol.Runtime.StackTrace {
-    return {callFrames: callFrames} as Protocol.Runtime.StackTrace;
+    return {callFrames} as Protocol.Runtime.StackTrace;
   }
 
   private static async generateCauses(
@@ -2216,7 +2216,7 @@ export class TimelineUIUtils {
             TraceEngine.Helpers.Trace.eventHasCategory(event, TraceEngine.Types.TraceEvents.Categories.Console) ||
         TraceEngine.Helpers.Trace.eventHasCategory(event, TraceEngine.Types.TraceEvents.Categories.UserTiming)) {
       return {
-        title: title,
+        title,
         dashStyle: tallMarkerDashStyle,
         lineWidth: 0.5,
         color: TraceEngine.Helpers.Trace.eventHasCategory(event, TraceEngine.Types.TraceEvents.Categories.Console) ?
@@ -2262,11 +2262,11 @@ export class TimelineUIUtils {
         break;
     }
     return {
-      title: title,
+      title,
       dashStyle: tallMarkerDashStyle,
       lineWidth: 0.5,
-      color: color,
-      tall: tall,
+      color,
+      tall,
       lowPriority: false,
     };
   }

@@ -429,7 +429,7 @@ export class ResourceWebSocketFrameNode extends DataGrid.SortableDataGrid.Sortab
       dataText = description;
     }
 
-    super({data: description, length: length, time: timeNode});
+    super({data: description, length, time: timeNode});
 
     this.url = url;
     this.frame = frame;

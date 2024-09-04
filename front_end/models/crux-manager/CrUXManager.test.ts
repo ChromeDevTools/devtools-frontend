@@ -76,7 +76,7 @@ describeWithMockConnection('CrUXManager', () => {
       Common.Settings.Settings.instance({
         forceNew: true,
         syncedStorage: dummyStorage,
-        globalStorage: globalStorage,
+        globalStorage,
         localStorage: dummyStorage,
         config: {
           isOffTheRecord: false,

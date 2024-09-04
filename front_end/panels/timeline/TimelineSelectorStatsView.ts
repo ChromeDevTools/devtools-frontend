@@ -354,7 +354,7 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
       }
 
       // get the locations from cache if available
-      const key: string = JSON.stringify({selectorText: selectorText, styleSheetId: styleSheetId});
+      const key: string = JSON.stringify({selectorText, styleSheetId});
       let ranges = selectorLocations.get(key);
       if (!ranges) {
         const result = await cssModel.agent.invoke_getLocationForSelector({styleSheetId, selectorText});

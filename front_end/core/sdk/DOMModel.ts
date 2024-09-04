@@ -535,7 +535,7 @@ export class DOMNode {
   }
 
   async getSubtree(depth: number, pierce: boolean): Promise<DOMNode[]|null> {
-    const response = await this.#agent.invoke_requestChildNodes({nodeId: this.id, depth: depth, pierce: pierce});
+    const response = await this.#agent.invoke_requestChildNodes({nodeId: this.id, depth, pierce});
     return response.getError() ? null : this.childrenInternal;
   }
 
@@ -772,7 +772,7 @@ export class DOMNode {
   }
 
   private addAttribute(name: string, value: string): void {
-    const attr = {name: name, value: value, _node: this};
+    const attr = {name, value, _node: this};
     this.#attributesInternal.set(name, attr);
   }
 
@@ -1273,7 +1273,7 @@ export class DOMModel extends SDKModel<EventTypes> {
     }
 
     node.setAttributeInternal(name, value);
-    this.dispatchEventToListeners(Events.AttrModified, {node: node, name: name});
+    this.dispatchEventToListeners(Events.AttrModified, {node, name});
     this.scheduleMutationEvent(node);
   }
 
@@ -1283,7 +1283,7 @@ export class DOMModel extends SDKModel<EventTypes> {
       return;
     }
     node.removeAttributeInternal(name);
-    this.dispatchEventToListeners(Events.AttrRemoved, {node: node, name: name});
+    this.dispatchEventToListeners(Events.AttrRemoved, {node, name});
     this.scheduleMutationEvent(node);
   }
 
@@ -1307,7 +1307,7 @@ export class DOMModel extends SDKModel<EventTypes> {
           return;
         }
         if (node.setAttributesPayload(attributes)) {
-          this.dispatchEventToListeners(Events.AttrModified, {node: node, name: 'style'});
+          this.dispatchEventToListeners(Events.AttrModified, {node, name: 'style'});
           this.scheduleMutationEvent(node);
         }
       });
@@ -1414,7 +1414,7 @@ export class DOMModel extends SDKModel<EventTypes> {
     }
     parent.removeChild(node);
     this.unbind(node);
-    this.dispatchEventToListeners(Events.NodeRemoved, {node: node, parent: parent});
+    this.dispatchEventToListeners(Events.NodeRemoved, {node, parent});
     this.scheduleMutationEvent(node);
   }
 
@@ -1487,7 +1487,7 @@ export class DOMModel extends SDKModel<EventTypes> {
     }
     parent.removeChild(pseudoElement);
     this.unbind(pseudoElement);
-    this.dispatchEventToListeners(Events.NodeRemoved, {node: pseudoElement, parent: parent});
+    this.dispatchEventToListeners(Events.NodeRemoved, {node: pseudoElement, parent});
     this.scheduleMutationEvent(pseudoElement);
   }
 

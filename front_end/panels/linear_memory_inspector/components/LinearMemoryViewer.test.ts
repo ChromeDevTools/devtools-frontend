@@ -42,7 +42,7 @@ describe('LinearMemoryViewer', () => {
     };
     const dataWithHighlightInfo = {
       ...data,
-      highlightInfo: highlightInfo,
+      highlightInfo,
     };
 
     const eventPromise =
@@ -115,7 +115,7 @@ describe('LinearMemoryViewer', () => {
     const eventPromise = getEventPromise<LinearMemoryInspectorComponents.LinearMemoryViewer.ByteSelectedEvent>(
         component, 'byteselected');
     const view = getElementWithinComponent(component, '.view', HTMLDivElement);
-    view.dispatchEvent(new KeyboardEvent('keydown', {code: code}));
+    view.dispatchEvent(new KeyboardEvent('keydown', {code}));
     const event = await eventPromise;
     assert.strictEqual(event.data, expectedAddress);
   }

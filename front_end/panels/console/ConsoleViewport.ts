@@ -348,7 +348,7 @@ export class ConsoleViewport {
     node: Node,
     offset: number,
   } {
-    return {item: itemIndex, node: node, offset: offset};
+    return {item: itemIndex, node, offset};
   }
 
   private updateSelectionModel(selection: Selection|null): boolean {

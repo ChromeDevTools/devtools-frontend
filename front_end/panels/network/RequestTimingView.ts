@@ -276,7 +276,7 @@ export class RequestTimingView extends UI.Widget.VBox {
     const result: RequestTimeRange[] = [];
     function addRange(name: RequestTimeRangeNames, start: number, end: number): void {
       if (start < Number.MAX_VALUE && start <= end) {
-        result.push({name: name, start: start, end: end});
+        result.push({name, start, end});
       }
     }
 

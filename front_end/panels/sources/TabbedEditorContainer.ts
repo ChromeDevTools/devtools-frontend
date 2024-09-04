@@ -338,8 +338,8 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.ObjectWrapper<Ev
     const eventData = {
       currentFile: this.currentFileInternal,
       currentView: this.currentView,
-      previousView: previousView,
-      userGesture: userGesture,
+      previousView,
+      userGesture,
     };
     this.dispatchEventToListeners(Events.EDITOR_SELECTED, eventData);
   }

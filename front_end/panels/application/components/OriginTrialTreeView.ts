@@ -168,7 +168,7 @@ interface TokenField {
 
 function renderTokenDetails(node: TreeNode<OriginTrialTreeNodeData>): LitHtml.TemplateResult {
   return LitHtml.html`
-    <${OriginTrialTokenRows.litTagName} .data=${{node: node} as OriginTrialTokenRowsData}>
+    <${OriginTrialTokenRows.litTagName} .data=${{node} as OriginTrialTokenRowsData}>
     </${OriginTrialTokenRows.litTagName}>
     `;
 }

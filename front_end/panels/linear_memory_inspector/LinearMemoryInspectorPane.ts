@@ -190,8 +190,8 @@ class LinearMemoryInspectorView extends UI.Widget.VBox {
 
     void LinearMemoryInspectorController.getMemoryRange(this.#memoryWrapper, start, end).then(memory => {
       this.#inspector.data = {
-        memory: memory,
-        address: address,
+        memory,
+        address,
         memoryOffset: start,
         outerMemoryLength: this.#memoryWrapper.length(),
         highlightInfo: this.#getHighlightInfo(),

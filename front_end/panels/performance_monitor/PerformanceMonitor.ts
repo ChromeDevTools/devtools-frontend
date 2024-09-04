@@ -187,7 +187,7 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox implements
     const data = await this.model.requestMetrics();
     const timestamp = data.timestamp;
     const metrics = data.metrics;
-    this.metricsBuffer.push({timestamp, metrics: metrics});
+    this.metricsBuffer.push({timestamp, metrics});
     const millisPerWidth = this.width / this.pixelsPerMs;
     // Multiply by 2 as the pollInterval has some jitter and to have some extra samples if window is resized.
     const maxCount = Math.ceil(millisPerWidth / this.pollIntervalMs * 2);

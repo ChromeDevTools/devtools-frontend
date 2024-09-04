@@ -19,7 +19,7 @@ import {
  */
 export const calculateInputPortXY = (portIndex: number): Point => {
   const y = InputPortRadius + LeftSideTopPadding + portIndex * TotalInputPortHeight;
-  return {x: 0, y: y};
+  return {x: 0, y};
 };
 
 /**

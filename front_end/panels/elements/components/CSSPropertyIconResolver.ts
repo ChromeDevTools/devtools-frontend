@@ -104,7 +104,7 @@ export function rotateFlexDirectionIcon(direction: PhysicalDirection): IconInfo 
 
   return {
     iconName: 'flex-direction',
-    rotate: rotate,
+    rotate,
     scaleX: flipX ? -1 : 1,
     scaleY: flipY ? -1 : 1,
   };

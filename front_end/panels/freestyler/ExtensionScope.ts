@@ -59,7 +59,7 @@ export class ExtensionScope {
     this.#listeners.push(handler);
     await target.runtimeAgent().invoke_addBinding({
       name: FREESTYLER_BINDING_NAME,
-      executionContextId: executionContextId,
+      executionContextId,
     });
     await this.#simpleEval(isolatedWorldContext, freestylerBinding);
     await this.#simpleEval(isolatedWorldContext, functions);

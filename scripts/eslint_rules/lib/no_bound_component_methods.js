@@ -68,7 +68,7 @@ module.exports = {
       }
 
       context.report({
-        node: node,
+        node,
         messageId: 'nonRenderBindFound',
         data: {componentName: className, methodName: node.value.callee.object.property.name}
       });

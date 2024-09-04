@@ -805,7 +805,7 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
       case AggregatedTimelineTreeView.GroupBy.Domain:
       case AggregatedTimelineTreeView.GroupBy.Subdomain: {
         const domainName = id ? this.beautifyDomainName(id) : undefined;
-        return {name: domainName || unattributed, color: color, icon: undefined};
+        return {name: domainName || unattributed, color, icon: undefined};
       }
 
       case AggregatedTimelineTreeView.GroupBy.EventName: {
@@ -814,7 +814,7 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
         }
         const name = TimelineUIUtils.eventTitle(node.event);
         return {
-          name: name,
+          name,
           color,
           icon: undefined,
         };
@@ -826,13 +826,13 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
       case AggregatedTimelineTreeView.GroupBy.Frame: {
         const frame = id ? this.traceParseData()?.PageFrames.frames.get(id) : undefined;
         const frameName = frame ? TimelineUIUtils.displayNameForFrame(frame) : i18nString(UIStrings.page);
-        return {name: frameName, color: color, icon: undefined};
+        return {name: frameName, color, icon: undefined};
       }
 
       default:
         console.assert(false, 'Unexpected grouping type');
     }
-    return {name: id || unattributed, color: color, icon: undefined};
+    return {name: id || unattributed, color, icon: undefined};
   }
 
   override populateToolbar(toolbar: UI.Toolbar.Toolbar): void {

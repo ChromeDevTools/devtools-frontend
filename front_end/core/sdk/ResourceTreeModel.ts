@@ -141,7 +141,7 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
     if (!this.framesInternal.has(frameId)) {
       return null;
     }
-    const response = await this.storageAgent.invoke_getStorageKeyForFrame({frameId: frameId});
+    const response = await this.storageAgent.invoke_getStorageKeyForFrame({frameId});
     if (response.getError() === 'Frame tree node for given frame not found') {
       return null;
     }
@@ -544,9 +544,9 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
       }
     }
     return {
-      securityOrigins: securityOrigins,
-      mainSecurityOrigin: mainSecurityOrigin,
-      unreachableMainSecurityOrigin: unreachableMainSecurityOrigin,
+      securityOrigins,
+      mainSecurityOrigin,
+      unreachableMainSecurityOrigin,
     };
   }
 
@@ -567,7 +567,7 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
       }
     }
 
-    return {storageKeys: storageKeys, mainStorageKey: mainStorageKey};
+    return {storageKeys, mainStorageKey};
   }
 
   private updateSecurityOrigins(): void {

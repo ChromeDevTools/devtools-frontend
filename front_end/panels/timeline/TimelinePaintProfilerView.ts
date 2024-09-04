@@ -159,7 +159,7 @@ export class TimelinePaintProfilerView extends UI.SplitWidget.SplitWidget {
       if (snapshotEvent) {
         const encodedData = snapshotEvent.args.snapshot.skp64;
         snapshotPromise = this.paintProfilerModel.loadSnapshot(encodedData).then(snapshot => {
-          return snapshot && {rect: null, snapshot: snapshot};
+          return snapshot && {rect: null, snapshot};
         });
       } else {
         snapshotPromise = Promise.resolve(null);

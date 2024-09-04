@@ -217,11 +217,11 @@ export class ServiceWorkerCacheModel extends SDKModel<EventTypes> implements Pro
   }
 
   private cacheAdded(cache: Cache): void {
-    this.dispatchEventToListeners(Events.CACHE_ADDED, {model: this, cache: cache});
+    this.dispatchEventToListeners(Events.CACHE_ADDED, {model: this, cache});
   }
 
   private cacheRemoved(cache: Cache): void {
-    this.dispatchEventToListeners(Events.CACHE_REMOVED, {model: this, cache: cache});
+    this.dispatchEventToListeners(Events.CACHE_REMOVED, {model: this, cache});
   }
 
   private async requestEntries(

@@ -323,7 +323,7 @@ export class TracingLayer implements SDK.LayerTreeBase.Layer {
         return null;
       }
       const rect = {x: snapshot.rect[0], y: snapshot.rect[1], width: snapshot.rect[2], height: snapshot.rect[3]};
-      return {rect: rect, snapshot: snapshot.snapshot};
+      return {rect, snapshot: snapshot.snapshot};
     });
   }
 
@@ -345,7 +345,7 @@ export class TracingLayer implements SDK.LayerTreeBase.Layer {
       // Rect is in layer content coordinates, make it relative to picture by offsetting to the top left corner.
       const rect = {x: targetRect[0] - x0, y: targetRect[1] - y0, width: targetRect[2], height: targetRect[3]};
       return this.paintProfilerModel.loadSnapshotFromFragments(fragments).then(
-          snapshot => snapshot ? {rect: rect, snapshot: snapshot} : null);
+          snapshot => snapshot ? {rect, snapshot} : null);
     });
 
     function segmentsOverlap(a1: number, a2: number, b1: number, b2: number): boolean {
@@ -361,7 +361,7 @@ export class TracingLayer implements SDK.LayerTreeBase.Layer {
 
   private scrollRectsFromParams(params: number[], type: Protocol.LayerTree.ScrollRectType):
       Protocol.LayerTree.ScrollRect {
-    return {rect: {x: params[0], y: params[1], width: params[2], height: params[3]}, type: type};
+    return {rect: {x: params[0], y: params[1], width: params[2], height: params[3]}, type};
   }
 
   private createScrollRects(payload: TracingLayerPayload): void {
@@ -443,5 +443,5 @@ async function getPaintProfilerSnapshot(
     return null;
   }
   const snapshot = await paintProfilerModel.loadSnapshot(picture.serializedPicture);
-  return snapshot ? {rect: picture.rect, snapshot: snapshot} : null;
+  return snapshot ? {rect: picture.rect, snapshot} : null;
 }

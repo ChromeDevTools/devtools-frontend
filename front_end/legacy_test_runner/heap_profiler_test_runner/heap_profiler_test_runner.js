@@ -743,7 +743,7 @@ HeapProfilerTestRunner.waitUntilProfileViewIsShown = function(title, callback) {
       profilesPanel.visibleView.profileHeader.title === title) {
     callback(profilesPanel.visibleView);
   } else {
-    HeapProfilerTestRunner.waitUntilProfileViewIsShownCallback = {title: title, callback: callback};
+    HeapProfilerTestRunner.waitUntilProfileViewIsShownCallback = {title, callback};
   }
 };
 

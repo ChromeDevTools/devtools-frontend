@@ -477,7 +477,7 @@ export class CoverageModel extends SDK.SDKModel.SDKModel<EventTypes> {
           return;
         }
       }
-      result.push({end: end, count: count, stamp: stamp});
+      result.push({end, count, stamp});
     }
 
     return result;
@@ -611,7 +611,7 @@ export class CoverageModel extends SDK.SDKModel.SDKModel<EventTypes> {
     const segments = CoverageModel.convertToDisjointSegments(ranges, stamp);
     const last = segments[segments.length - 1];
     if (last && last.end < contentLength) {
-      segments.push({end: contentLength, stamp: stamp, count: 0});
+      segments.push({end: contentLength, stamp, count: 0});
     }
     const usedSizeDelta = coverageInfo.mergeCoverage(segments);
     if (!isNewUrlCoverage && usedSizeDelta === 0) {
@@ -902,7 +902,7 @@ export const mergeSegments = (segmentsA: CoverageSegment[], segmentsB: CoverageS
     const last = result[result.length - 1];
     const stamp = Math.min(a.stamp, b.stamp);
     if (!last || last.count !== count || last.stamp !== stamp) {
-      result.push({end: end, count: count, stamp: stamp});
+      result.push({end, count, stamp});
     } else {
       last.end = end;
     }

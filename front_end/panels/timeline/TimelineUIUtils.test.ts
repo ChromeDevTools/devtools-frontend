@@ -237,7 +237,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
           'function', 10, 100, TraceEngine.Types.TraceEvents.ProcessID(1), TraceEngine.Types.TraceEvents.ThreadID(1));
 
       profileCall.callFrame = {
-        columnNumber: columnNumber,
+        columnNumber,
         functionName: 'minified',
         lineNumber: 0,
         scriptId: script.scriptId,
@@ -1217,7 +1217,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
           cat: 'disabled-by-default-devtools.timeline',
           name: 'TracingStartedInBrowser',
           ph: TraceEngine.Types.TraceEvents.Phase.INSTANT,
-          pid: pid,
+          pid,
           tid: mainThread,
           ts: microsec(100),
           args: {
@@ -1232,7 +1232,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
           cat: 'disabled-by-default-devtools.timeline',
           name: 'SetLayerTreeId',
           ph: TraceEngine.Types.TraceEvents.Phase.INSTANT,
-          pid: pid,
+          pid,
           tid: mainThread,
           ts: microsec(101),
           args: {data: {frame: 'frame1', layerTreeId: 17}},
@@ -1244,7 +1244,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
           ts: microsec(100000),
           dur: microsec(3000),
           tid: mainThread,
-          pid: pid,
+          pid,
           args: {},
         },
         {
@@ -1254,7 +1254,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
           ts: microsec(100500),
           dur: microsec(1500),
           tid: mainThread,
-          pid: pid,
+          pid,
           args: {},
         },
         {
@@ -1264,7 +1264,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
           ts: microsec(101000),
           dur: microsec(1000),
           tid: mainThread,
-          pid: pid,
+          pid,
           args: {
             beginData: {
               frame: 'FAKE_FRAME_ID',
@@ -1283,7 +1283,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
           ts: microsec(104000),
           dur: microsec(4000),
           tid: mainThread,
-          pid: pid,
+          pid,
           args: {},
         },
         {
@@ -1293,7 +1293,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
           ts: microsec(104000),
           dur: microsec(1000),
           tid: mainThread,
-          pid: pid,
+          pid,
           args: {},
         },
         {
@@ -1303,7 +1303,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
           ts: microsec(105000),
           dur: microsec(1000),
           tid: mainThread,
-          pid: pid,
+          pid,
           args: {},
         },
         {
@@ -1313,7 +1313,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
           ts: microsec(107000),
           dur: microsec(1000),
           tid: mainThread,
-          pid: pid,
+          pid,
           args: {
             beginData: {
               frame: 'FAKE_FRAME_ID',

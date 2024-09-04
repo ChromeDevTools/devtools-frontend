@@ -98,7 +98,7 @@ export class WebBundleInfoView extends LegacyWrapper.LegacyWrapper.WrappableComp
               hideable: false,
             },
           ],
-          rows: rows,
+          rows,
           activeSort: null,
         } as DataGrid.DataGrid.DataGridData}>
         </${DataGrid.DataGrid.DataGrid.litTagName}>

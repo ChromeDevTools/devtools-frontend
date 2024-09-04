@@ -69,7 +69,7 @@ const DevToolsAPIImpl = class {
     if (callback) {
       this._callbacks[callId] = callback;
     }
-    const message = {id: callId, method: method};
+    const message = {id: callId, method};
     if (args.length) {
       message.params = args;
     }
@@ -1405,7 +1405,7 @@ function installObjectObserve() {
       scheduled = false;
       const changes = /** @type {!Array<!{name: string}>} */ ([]);
       changedProperties.forEach(function(name) {
-        changes.push({name: name});
+        changes.push({name});
       });
       changedProperties.clear();
       observer.call(null, changes);

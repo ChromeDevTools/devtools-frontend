@@ -84,7 +84,7 @@ export function serializeBrandsList(brands: Protocol.Emulation.UserAgentBrandVer
 export function validateAsStructuredHeadersString(value: string, errorString: string): UI.ListWidget.ValidatorResult {
   const parsedResult = serializeItem({
     kind: ResultKind.ITEM,
-    value: {kind: ResultKind.STRING, value: value},
+    value: {kind: ResultKind.STRING, value},
     parameters: {kind: ResultKind.PARAMETERS, items: []},
   });
   if (parsedResult.kind === ResultKind.ERROR) {

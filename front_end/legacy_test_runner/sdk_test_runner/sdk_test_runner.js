@@ -112,14 +112,14 @@ SDKTestRunner.PageMock = class {
       context = this.createExecutionContext(this.mainFrame, isContentScript);
       this.executionContexts.push(context);
 
-      this.fireEvent('Runtime.executionContextCreated', {context: context});
+      this.fireEvent('Runtime.executionContextCreated', {context});
     }
 
     const text = new TextUtils.Text.Text(content);
 
     const script = {
       scriptId: id,
-      url: url,
+      url,
       startLine: 0,
       startColumn: 0,
       endLine: text.lineCount(),
@@ -160,7 +160,7 @@ SDKTestRunner.PageMock = class {
     this.executionContexts.push(this.createExecutionContext(this.mainFrame, false));
 
     for (const context of this.executionContexts) {
-      this.fireEvent('Runtime.executionContextCreated', {context: context});
+      this.fireEvent('Runtime.executionContextCreated', {context});
     }
 
     this.fireEvent('Page.frameNavigated', {frame: this.mainFrame});
@@ -209,7 +209,7 @@ SDKTestRunner.PageMock = class {
     this.sendResponse(id, {});
 
     for (const context of this.executionContexts) {
-      this.fireEvent('Runtime.executionContextCreated', {context: context});
+      this.fireEvent('Runtime.executionContextCreated', {context});
     }
   }
 
@@ -255,7 +255,7 @@ SDKTestRunner.PageMock = class {
   }
 
   sendResponse(id, result, error) {
-    const message = {id: id, result: result, error: error};
+    const message = {id, result, error};
     if (this.root) {
       message.sessionId = this.sessionId;
       this.root.connection.sendMessageToDevTools(message);
@@ -271,7 +271,7 @@ SDKTestRunner.PageMock = class {
       return;
     }
 
-    const message = {method: methodName, params: params};
+    const message = {method: methodName, params};
     if (this.root) {
       message.sessionId = this.sessionId;
       this.root.connection.sendMessageToDevTools(message);

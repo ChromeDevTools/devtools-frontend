@@ -135,8 +135,8 @@ export class ViewportDataGrid<T> extends Common.ObjectWrapper.eventMixin<EventTy
     this.stickToBottom = end === nodes.length;
 
     return {
-      topPadding: topPadding,
-      bottomPadding: bottomPadding,
+      topPadding,
+      bottomPadding,
       contentHeight: y - topPadding,
       visibleNodes: nodes.slice(start, end),
       offset: start,

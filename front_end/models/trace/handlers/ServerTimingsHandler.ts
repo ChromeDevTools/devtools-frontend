@@ -129,7 +129,7 @@ export function data(): {serverTimings: Types.TraceEvents.SyntheticServerTiming[
   }
 
   return {
-    serverTimings: serverTimings,
+    serverTimings,
   };
 }
 

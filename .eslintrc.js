@@ -49,6 +49,8 @@ module.exports = {
     'func-call-spacing': 'error',
     'arrow-parens': ['error', 'as-needed'],
     'eol-last': 'error',
+    'object-shorthand': ['error', 'properties'],
+    'no-useless-rename': 'error',
 
     // anti-patterns
     'no-caller': 'error',

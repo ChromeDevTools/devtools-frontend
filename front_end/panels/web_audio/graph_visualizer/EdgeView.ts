@@ -50,8 +50,8 @@ export const generateEdgePortIdsByData = (data: NodesConnectionData|NodeParamCon
 
   return {
     edgeId: `${sourcePortId}->${destinationPortId}`,
-    sourcePortId: sourcePortId,
-    destinationPortId: destinationPortId,
+    sourcePortId,
+    destinationPortId,
   };
 
   /**

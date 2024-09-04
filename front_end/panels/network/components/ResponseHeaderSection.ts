@@ -142,7 +142,7 @@ export class EarlyHintsHeaderSection extends ResponseHeaderSectionBase {
     render(html`
       ${this.headerDetails.map(header => html`
         <${HeaderSectionRow.litTagName} .data=${{
-        header: header,
+        header,
       } as HeaderSectionRowData}></${HeaderSectionRow.litTagName}>
       `)}
     `, this.shadow, { host: this });

@@ -49,7 +49,7 @@ export class DOMStorage extends Common.ObjectWrapper.ObjectWrapper<DOMStorage.Ev
   }
 
   static storageId(storageKey: string, isLocalStorage: boolean): Protocol.DOMStorage.StorageId {
-    return {storageKey: storageKey, isLocalStorage: isLocalStorage};
+    return {storageKey, isLocalStorage};
   }
 
   get id(): Protocol.DOMStorage.StorageId {
@@ -218,7 +218,7 @@ export class DOMStorageModel extends SDK.SDKModel.SDKModel<EventTypes> {
       return;
     }
 
-    const eventData = {key: key};
+    const eventData = {key};
     domStorage.dispatchEventToListeners(DOMStorage.Events.DOM_STORAGE_ITEM_REMOVED, eventData);
   }
 
@@ -228,7 +228,7 @@ export class DOMStorageModel extends SDK.SDKModel.SDKModel<EventTypes> {
       return;
     }
 
-    const eventData = {key: key, value: value};
+    const eventData = {key, value};
     domStorage.dispatchEventToListeners(DOMStorage.Events.DOM_STORAGE_ITEM_ADDED, eventData);
   }
 
@@ -238,7 +238,7 @@ export class DOMStorageModel extends SDK.SDKModel.SDKModel<EventTypes> {
       return;
     }
 
-    const eventData = {key: key, oldValue: oldValue, value: value};
+    const eventData = {key, oldValue, value};
     domStorage.dispatchEventToListeners(DOMStorage.Events.DOM_STORAGE_ITEM_UPDATED, eventData);
   }
 

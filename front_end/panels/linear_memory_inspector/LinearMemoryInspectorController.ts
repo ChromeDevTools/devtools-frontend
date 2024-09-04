@@ -137,7 +137,7 @@ export class LinearMemoryInspectorController extends SDK.TargetManager.SDKModelO
     const memoryChunkStart = Math.max(0, address - MEMORY_TRANSFER_MIN_CHUNK_SIZE / 2);
     const memoryChunkEnd = memoryChunkStart + MEMORY_TRANSFER_MIN_CHUNK_SIZE;
     const memory = await memoryWrapper.getRange(memoryChunkStart, memoryChunkEnd);
-    return {memory: memory, offset: memoryChunkStart};
+    return {memory, offset: memoryChunkStart};
   }
 
   static async getMemoryRange(memoryWrapper: LazyUint8Array, start: number, end: number): Promise<Uint8Array> {

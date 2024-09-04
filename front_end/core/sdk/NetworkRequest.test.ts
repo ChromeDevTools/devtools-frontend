@@ -190,7 +190,7 @@ describe('NetworkRequest', () => {
       cookiePartitionKey: undefined,
       cookiePartitionKeyOpaque: undefined,
       exemptedResponseCookies: [{
-        cookie: cookie,
+        cookie,
         cookieLine: cookie.getCookieLine() as string,
         exemptionReason: Protocol.Network.CookieExemptionReason.TPCDHeuristics,
       }],

@@ -216,7 +216,7 @@ describeWithMockConnection('IssueAggregator', () => {
       const aggregator = new Issues.IssueAggregator.IssueAggregator(mockManager);
       for (const issue of [issue1, issue2, issue3, issue4]) {
         mockManager.dispatchEventToListeners(
-            IssuesManager.IssuesManager.Events.ISSUE_ADDED, {issuesModel: model, issue: issue});
+            IssuesManager.IssuesManager.Events.ISSUE_ADDED, {issuesModel: model, issue});
       }
 
       const issues = Array.from(aggregator.aggregatedIssues());

@@ -88,7 +88,7 @@ export class RequestHeaderSection extends HTMLElement {
       ${this.#maybeRenderProvisionalHeadersWarning()}
       ${this.#headers.map(header => html`
         <${HeaderSectionRow.litTagName}
-          .data=${{header: header} as HeaderSectionRowData}
+          .data=${{header} as HeaderSectionRowData}
           jslog=${VisualLogging.item('request-header')}
         ></${HeaderSectionRow.litTagName}>
       `)}

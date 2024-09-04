@@ -61,7 +61,7 @@ export class RenderBlockingRequests extends BaseInsight {
           <${SidebarInsight.SidebarInsight.litTagName} .data=${{
             title: this.userVisibleTitle,
             expanded: this.isActive(),
-            estimatedSavings: estimatedSavings,
+            estimatedSavings,
           } as SidebarInsight.InsightDetails}
           @insighttoggleclick=${this.onSidebarClick}
         >

@@ -359,7 +359,7 @@ export function makeProfileCall(
     callFrame: {
       functionName,
       scriptId: '' as Protocol.Runtime.ScriptId,
-      url: url,
+      url,
       lineNumber: -1,
       columnNumber: -1,
     },

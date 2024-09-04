@@ -218,7 +218,7 @@ primaryToggleIconButton.data = {
   variant: Buttons.Button.Variant.ICON_TOGGLE,
   toggleType: Buttons.Button.ToggleType.PRIMARY,
   iconName: testIcon,
-  toggledIconName: toggledIconName,
+  toggledIconName,
   toggled: false,
 };
 appendButton(primaryToggleIconButton);
@@ -230,7 +230,7 @@ redToggleIconButton.data = {
   variant: Buttons.Button.Variant.ICON_TOGGLE,
   toggleType: Buttons.Button.ToggleType.RED,
   iconName: testIcon,
-  toggledIconName: toggledIconName,
+  toggledIconName,
   toggled: true,
 };
 appendButton(redToggleIconButton);

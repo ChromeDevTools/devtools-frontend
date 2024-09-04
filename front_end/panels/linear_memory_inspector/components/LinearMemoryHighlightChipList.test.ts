@@ -80,7 +80,7 @@ describeWithLocale('LinearMemoryInspectorHighlightChipList', () => {
       },
     ];
     component.data = {
-      highlightInfos: highlightInfos,
+      highlightInfos,
     };
     const chips = component.shadowRoot!.querySelectorAll(HIGHLIGHT_CHIP);
     assert.strictEqual(chips.length, highlightInfos.length);

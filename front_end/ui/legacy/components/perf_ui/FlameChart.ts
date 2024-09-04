@@ -787,7 +787,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       this.updatePopoverOffset();
     }
     this.lastPopoverState = {
-      groupIndex: groupIndex,
+      groupIndex,
       entryIndex: -1,
       hiddenEntriesPopover: false,
     };
@@ -1794,20 +1794,20 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
           if (this.#inTrackConfigEditMode) {
             if (mouseInHeaderRow) {
               if (UP_ICON_LEFT <= x && x < UP_ICON_LEFT + EDIT_ICON_WIDTH) {
-                return {groupIndex: groupIndex, hoverType: HoverType.TRACK_CONFIG_UP_BUTTON};
+                return {groupIndex, hoverType: HoverType.TRACK_CONFIG_UP_BUTTON};
               }
               if (DOWN_ICON_LEFT <= x && x < DOWN_ICON_LEFT + EDIT_ICON_WIDTH) {
-                return {groupIndex: groupIndex, hoverType: HoverType.TRACK_CONFIG_DOWN_BUTTON};
+                return {groupIndex, hoverType: HoverType.TRACK_CONFIG_DOWN_BUTTON};
               }
               if (HIDE_ICON_LEFT <= x && x < HIDE_ICON_LEFT + EDIT_ICON_WIDTH) {
                 return {
-                  groupIndex: groupIndex,
+                  groupIndex,
                   hoverType: groups[groupIndex].hidden ? HoverType.TRACK_CONFIG_SHOW_BUTTON :
                                                          HoverType.TRACK_CONFIG_HIDE_BUTTON,
                 };
               }
               if (mouseInHeaderRow && x <= headerRight) {
-                return {groupIndex: groupIndex, hoverType: HoverType.INSIDE_TRACK_HEADER};
+                return {groupIndex, hoverType: HoverType.INSIDE_TRACK_HEADER};
               }
             }
             // Ignore any other actions when user is customizing the tracks.
@@ -1815,9 +1815,9 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
           } else {
             // User is not in edit mode so they can either be in the header, or in the track.
             if (mouseInHeaderRow && x <= headerRight) {
-              return {groupIndex: groupIndex, hoverType: HoverType.INSIDE_TRACK_HEADER};
+              return {groupIndex, hoverType: HoverType.INSIDE_TRACK_HEADER};
             }
-            return {groupIndex: groupIndex, hoverType: HoverType.INSIDE_TRACK};
+            return {groupIndex, hoverType: HoverType.INSIDE_TRACK};
           }
         }
       }

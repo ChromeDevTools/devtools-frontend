@@ -219,8 +219,7 @@ export class BottomUpProfileDataGridTree extends ProfileDataGridTree {
             visitedNodes.add(uid);
           }
 
-          this.remainingNodeInfos.push(
-              {ancestor: profileNode, focusNode: profileNode, totalAccountedFor: totalAccountedFor});
+          this.remainingNodeInfos.push({ancestor: profileNode, focusNode: profileNode, totalAccountedFor});
         }
 
         const children = profileNode.children;

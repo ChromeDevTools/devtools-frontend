@@ -86,7 +86,7 @@ export const getFirstNodeForEventListener = async (listenerTypeSelector: string)
   });
 
   return {
-    firstListenerText: firstListenerText,
+    firstListenerText,
     listenerSelector: listenerNodesSelector,
   };
 };

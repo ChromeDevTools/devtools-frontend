@@ -144,7 +144,7 @@ export function setupMockedUISourceCode(url: string = 'https://example.com/') {
 
   const uiSourceCode = new Workspace.UISourceCode.UISourceCode(projectStub, urlStringTagExample, contentTypeStub);
 
-  return {sut: uiSourceCode, projectStub: projectStub, contentTypeStub: contentTypeStub};
+  return {sut: uiSourceCode, projectStub, contentTypeStub};
 }
 
 export function createFakeScriptMapping(

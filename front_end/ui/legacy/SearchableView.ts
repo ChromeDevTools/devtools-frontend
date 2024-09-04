@@ -131,7 +131,7 @@ function createClearButton(jslogContext: string): Buttons.Button.Button {
   button.data = {
     variant: Buttons.Button.Variant.ICON,
     size: Buttons.Button.Size.SMALL,
-    jslogContext: jslogContext,
+    jslogContext,
     title: i18nString(UIStrings.clearInput),
     iconName: 'cross-circle-filled',
   };

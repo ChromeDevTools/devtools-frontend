@@ -20,7 +20,7 @@ module.exports = {
             node.callee.property.name === 'recordEnumeratedHistogram') {
           if (node?.arguments[2]?.property?.name !== 'MAX_VALUE') {
             context.report({
-              node: node,
+              node,
               message:
                   'When calling \'recordEnumeratedHistogram\' the third argument should be of the form \'SomeEnum.MAX_VALUE\'.'
             });

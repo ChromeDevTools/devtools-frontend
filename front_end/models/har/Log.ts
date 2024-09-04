@@ -155,8 +155,8 @@ export class Entry {
       // IPv6 address should not have square brackets per (https://tools.ietf.org/html/rfc2373#section-2.2).
       serverIPAddress: ipAddress.replace(/\[\]/g, ''),
       startedDateTime: Log.pseudoWallTime(harEntry.request, harEntry.request.issueTime()).toJSON(),
-      time: time,
-      timings: timings,
+      time,
+      timings,
     };
 
     // Chrome specific.

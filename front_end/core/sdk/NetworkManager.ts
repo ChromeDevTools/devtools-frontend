@@ -188,8 +188,8 @@ export class NetworkManager extends SDKModel<EventTypes> {
     if (!manager || !requestId || request.isRedirect()) {
       return [];
     }
-    const response = await manager.#networkAgent.invoke_searchInResponseBody(
-        {requestId, query: query, caseSensitive: caseSensitive, isRegex: isRegex});
+    const response =
+        await manager.#networkAgent.invoke_searchInResponseBody({requestId, query, caseSensitive, isRegex});
     return TextUtils.TextUtils.performSearchInSearchMatches(response.result || [], query, caseSensitive, isRegex);
   }
 
@@ -527,7 +527,7 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
     for (const name in headersMap) {
       const values = headersMap[name].split('\n');
       for (let i = 0; i < values.length; ++i) {
-        result.push({name: name, value: values[i]});
+        result.push({name, value: values[i]});
       }
     }
     return result;
@@ -764,7 +764,7 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
       const eventData: RequestUpdateDroppedEventData = {
         url: response.url as Platform.DevToolsPath.UrlString,
         frameId: frameId ?? null,
-        loaderId: loaderId,
+        loaderId,
         resourceType: type,
         mimeType: response.mimeType,
         lastModified: lastModifiedHeader ? new Date(lastModifiedHeader) : null,
@@ -828,8 +828,7 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
       networkRequest.setBlockedReason(blockedReason);
       if (blockedReason === Protocol.Network.BlockedReason.Inspector) {
         const message = i18nString(UIStrings.requestWasBlockedByDevtoolsS, {PH1: networkRequest.url()});
-        this.#manager.dispatchEventToListeners(
-            Events.MessageGenerated, {message: message, requestId: requestId, warning: true});
+        this.#manager.dispatchEventToListeners(Events.MessageGenerated, {message, requestId, warning: true});
       }
     }
     if (corsErrorStatus) {
@@ -1120,7 +1119,7 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
       }
 
       this.#manager.dispatchEventToListeners(
-          Events.MessageGenerated, {message: message, requestId: networkRequest.requestId(), warning: false});
+          Events.MessageGenerated, {message, requestId: networkRequest.requestId(), warning: false});
     }
   }
 
@@ -1466,7 +1465,7 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
     const userAgent = this.currentUserAgent();
     for (const agent of this.#networkAgents) {
       void agent.invoke_setUserAgentOverride(
-          {userAgent: userAgent, userAgentMetadata: this.#userAgentMetadataOverride || undefined});
+          {userAgent, userAgentMetadata: this.#userAgentMetadataOverride || undefined});
     }
   }
 

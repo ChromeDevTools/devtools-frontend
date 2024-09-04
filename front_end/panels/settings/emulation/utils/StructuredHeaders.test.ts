@@ -144,12 +144,12 @@ function makeItemWithParams(
 }
 
 function makeList(items: StructuredHeaders.ListMember[]): StructuredHeaders.List {
-  return {kind: StructuredHeaders.ResultKind.LIST, items: items};
+  return {kind: StructuredHeaders.ResultKind.LIST, items};
 }
 
 function makeInnerList(
     items: StructuredHeaders.Item[], params: [string, StructuredHeaders.BareItem][]): StructuredHeaders.InnerList {
-  return {kind: StructuredHeaders.ResultKind.INNER_LIST, items: items, parameters: makeParams(params)};
+  return {kind: StructuredHeaders.ResultKind.INNER_LIST, items, parameters: makeParams(params)};
 }
 
 describe('StructuredHeaders', () => {

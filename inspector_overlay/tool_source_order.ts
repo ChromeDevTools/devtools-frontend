@@ -97,7 +97,7 @@ export class SourceOrderOverlay extends Overlay {
     }
     this.context.restore();
 
-    return {bounds: bounds};
+    return {bounds};
   }
 
   private drawSourceOrderLabel(sourceOrder: number, color: string, bounds: PathBounds) {

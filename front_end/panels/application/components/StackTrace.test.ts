@@ -81,7 +81,7 @@ describeWithLocale('StackTrace', () => {
     const component = new ApplicationComponents.StackTrace.StackTrace();
     renderElementIntoDOM(component);
     component.data = {
-      frame: frame,
+      frame,
       buildStackTraceRows: mockBuildStackTraceRows,
     };
 
@@ -134,7 +134,7 @@ describeWithLocale('StackTrace', () => {
     const component = new ApplicationComponents.StackTrace.StackTrace();
     renderElementIntoDOM(component);
     component.data = {
-      frame: frame,
+      frame,
       buildStackTraceRows: mockBuildStackTraceRows,
     };
 

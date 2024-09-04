@@ -1062,8 +1062,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   private appendHeader(title: string, style: PerfUI.FlameChart.GroupStyle, selectable: boolean, expanded?: boolean):
       PerfUI.FlameChart.Group {
     const group =
-        ({startLevel: this.currentLevel, name: title, style: style, selectable: selectable, expanded} as
-         PerfUI.FlameChart.Group);
+        ({startLevel: this.currentLevel, name: title, style, selectable, expanded} as PerfUI.FlameChart.Group);
     (this.timelineDataInternal as PerfUI.FlameChart.FlameChartTimelineData).groups.push(group);
     return group;
   }

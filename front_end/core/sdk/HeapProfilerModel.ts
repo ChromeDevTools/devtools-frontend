@@ -126,8 +126,7 @@ export class HeapProfilerModel extends SDKModel<EventTypes> {
   }
 
   lastSeenObjectId(lastSeenObjectId: number, timestamp: number): void {
-    this.dispatchEventToListeners(
-        Events.LAST_SEEN_OBJECT_ID, {lastSeenObjectId: lastSeenObjectId, timestamp: timestamp});
+    this.dispatchEventToListeners(Events.LAST_SEEN_OBJECT_ID, {lastSeenObjectId, timestamp});
   }
 
   addHeapSnapshotChunk(chunk: string): void {
@@ -135,7 +134,7 @@ export class HeapProfilerModel extends SDKModel<EventTypes> {
   }
 
   reportHeapSnapshotProgress(done: number, total: number, finished?: boolean): void {
-    this.dispatchEventToListeners(Events.REPORT_HEAP_SNAPSHOT_PROGRESS, {done: done, total: total, finished: finished});
+    this.dispatchEventToListeners(Events.REPORT_HEAP_SNAPSHOT_PROGRESS, {done, total, finished});
   }
 
   resetProfiles(): void {

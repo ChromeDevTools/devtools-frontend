@@ -222,7 +222,7 @@ PerformanceTestRunner.printTraceEventProperties = function(traceEvent) {
   const object = {
     data: traceEvent.args['data'] || traceEvent.args,
     endTime: traceEvent.endTime || traceEvent.startTime,
-    frameId: frameId,
+    frameId,
     startTime: traceEvent.startTime,
     type: traceEvent.name
   };

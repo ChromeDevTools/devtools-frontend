@@ -149,7 +149,7 @@ export class CookiesTable extends UI.Widget.VBox {
         sort: DataGrid.DataGrid.Order.Ascending,
         longText: true,
         weight: 24,
-        editable: editable,
+        editable,
       },
       {
         id: SDK.Cookie.Attribute.VALUE,
@@ -157,28 +157,28 @@ export class CookiesTable extends UI.Widget.VBox {
         sortable: true,
         longText: true,
         weight: 34,
-        editable: editable,
+        editable,
       },
       {
         id: SDK.Cookie.Attribute.DOMAIN,
         title: 'Domain',
         sortable: true,
         weight: 7,
-        editable: editable,
+        editable,
       },
       {
         id: SDK.Cookie.Attribute.PATH,
         title: 'Path',
         sortable: true,
         weight: 7,
-        editable: editable,
+        editable,
       },
       {
         id: SDK.Cookie.Attribute.EXPIRES,
         title: 'Expires / Max-Age',
         sortable: true,
         weight: 7,
-        editable: editable,
+        editable,
       },
       {
         id: SDK.Cookie.Attribute.SIZE,
@@ -210,14 +210,14 @@ export class CookiesTable extends UI.Widget.VBox {
         title: 'SameSite',
         sortable: true,
         weight: 7,
-        editable: editable,
+        editable,
       },
       {
         id: SDK.Cookie.Attribute.PARTITION_KEY_SITE,
         title: 'Partition Key Site',
         sortable: true,
         weight: 7,
-        editable: editable,
+        editable,
       },
       {
         id: SDK.Cookie.Attribute.HAS_CROSS_SITE_ANCESTOR,
@@ -233,7 +233,7 @@ export class CookiesTable extends UI.Widget.VBox {
         title: 'Priority',
         sortable: true,
         weight: 7,
-        editable: editable,
+        editable,
       },
     ] as DataGrid.DataGrid.ColumnDescriptor[];
 
@@ -245,7 +245,7 @@ export class CookiesTable extends UI.Widget.VBox {
           sortable: true,
           align: DataGrid.DataGrid.Align.CENTER,
           weight: 7,
-          editable: editable,
+          editable,
         },
         {
           id: SDK.Cookie.Attribute.SOURCE_PORT,
@@ -253,7 +253,7 @@ export class CookiesTable extends UI.Widget.VBox {
           sortable: true,
           align: DataGrid.DataGrid.Align.CENTER,
           weight: 7,
-          editable: editable,
+          editable,
         },
       ] as DataGrid.DataGrid.ColumnDescriptor[];
       columns.push(...additionalColumns);
@@ -309,7 +309,7 @@ export class CookiesTable extends UI.Widget.VBox {
       cookies: SDK.Cookie.Cookie[],
       cookieToBlockedReasons?: ReadonlyMap<SDK.Cookie.Cookie, SDK.CookieModel.BlockedReason[]>,
       cookieToExemptionReason?: ReadonlyMap<SDK.Cookie.Cookie, SDK.CookieModel.ExemptionReason>): void {
-    this.setCookieFolders([{cookies: cookies, folderName: null}], cookieToBlockedReasons, cookieToExemptionReason);
+    this.setCookieFolders([{cookies, folderName: null}], cookieToBlockedReasons, cookieToExemptionReason);
   }
 
   setCookieFolders(

@@ -214,8 +214,8 @@ export function data(): EnhancedTracesData {
   }
 
   return {
-    targets: targets,
-    executionContexts: executionContexts,
-    scripts: scripts,
+    targets,
+    executionContexts,
+    scripts,
   };
 }

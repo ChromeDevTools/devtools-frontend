@@ -206,8 +206,8 @@ export class CSSModel extends SDKModel<EventTypes> {
     try {
       await this.ensureOriginalStyleSheetText(styleSheetId);
 
-      const {styles} = await this.agent.invoke_setStyleTexts(
-          {edits: [{styleSheetId: styleSheetId, range: range.serializeToObject(), text}]});
+      const {styles} =
+          await this.agent.invoke_setStyleTexts({edits: [{styleSheetId, range: range.serializeToObject(), text}]});
       if (!styles || styles.length !== 1) {
         return false;
       }
@@ -449,7 +449,7 @@ export class CSSModel extends SDKModel<EventTypes> {
       return false;
     }
     void this.agent.invoke_forcePseudoState({nodeId: node.id, forcedPseudoClasses});
-    this.dispatchEventToListeners(Events.PseudoStateForced, {node: node, pseudoClass: pseudoClass, enable: enable});
+    this.dispatchEventToListeners(Events.PseudoStateForced, {node, pseudoClass, enable});
     return true;
   }
 
@@ -622,7 +622,7 @@ export class CSSModel extends SDKModel<EventTypes> {
   }
 
   fireStyleSheetChanged(styleSheetId: Protocol.CSS.StyleSheetId, edit?: Edit): void {
-    this.dispatchEventToListeners(Events.StyleSheetChanged, {styleSheetId: styleSheetId, edit: edit});
+    this.dispatchEventToListeners(Events.StyleSheetChanged, {styleSheetId, edit});
   }
 
   private ensureOriginalStyleSheetText(styleSheetId: Protocol.CSS.StyleSheetId): Promise<string|null> {

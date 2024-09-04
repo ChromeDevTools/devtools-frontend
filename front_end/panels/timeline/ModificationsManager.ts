@@ -230,8 +230,8 @@ export class ModificationsManager extends EventTarget {
             .filter(entry => entry !== null) as TraceEngine.Types.File.TraceEventSerializableKey[];
     this.#modifications = {
       entriesModifications: {
-        hiddenEntries: hiddenEntries,
-        expandableEntries: expandableEntries,
+        hiddenEntries,
+        expandableEntries,
       },
       initialBreadcrumb: this.#timelineBreadcrumbs.initialBreadcrumb,
       annotations: this.#annotationsJSON(),

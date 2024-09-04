@@ -82,8 +82,7 @@ export class InplaceEditor<T> {
     }
 
     const config = inputConfig || new Config(function() {}, function() {});
-    const editingContext:
-        EditingContext<T> = {element: element, config: config, oldRole: null, oldTabIndex: null, oldText: null};
+    const editingContext: EditingContext<T> = {element, config, oldRole: null, oldTabIndex: null, oldText: null};
     const committedCallback = config.commitHandler;
     const cancelledCallback = config.cancelHandler;
     const pasteCallback = config.pasteHandler;

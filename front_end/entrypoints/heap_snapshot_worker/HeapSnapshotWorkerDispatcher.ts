@@ -56,7 +56,7 @@ export class HeapSnapshotWorkerDispatcher {
   }
 
   sendEvent(name: string, data: unknown): void {
-    this.#postMessage({eventName: name, data: data});
+    this.#postMessage({eventName: name, data});
   }
 
   dispatchMessage({data}: {data: HeapSnapshotModel.HeapSnapshotModel.WorkerCommand}): void {

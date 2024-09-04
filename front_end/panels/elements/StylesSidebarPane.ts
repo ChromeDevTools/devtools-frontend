@@ -1095,7 +1095,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
       pseudoStyles: SDK.CSSStyleDeclaration.CSSStyleDeclaration[],
     }[] = Array.from(matchedStyles.customHighlightPseudoNames()).map(highlightName => {
       return {
-        highlightName: highlightName,
+        highlightName,
         pseudoType: Protocol.DOM.PseudoType.Highlight,
         pseudoStyles: matchedStyles.customHighlightPseudoStyles(highlightName),
       };
@@ -1106,7 +1106,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
       pseudoType: Protocol.DOM.PseudoType,
       pseudoStyles: SDK.CSSStyleDeclaration.CSSStyleDeclaration[],
     }[] = [...matchedStyles.pseudoTypes()].map(pseudoType => {
-      return {highlightName: null, pseudoType: pseudoType, pseudoStyles: matchedStyles.pseudoStyles(pseudoType)};
+      return {highlightName: null, pseudoType, pseudoStyles: matchedStyles.pseudoStyles(pseudoType)};
     });
 
     const pseudoRulesets = customHighlightPseudoRulesets.concat(otherPseudoRulesets).sort((a, b) => {

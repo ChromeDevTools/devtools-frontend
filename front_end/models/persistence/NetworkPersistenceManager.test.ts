@@ -34,7 +34,7 @@ const setUpEnvironmentWithUISourceCode =
 
       workspace.addProject(project);
 
-      return {workspace, project: project, uiSourceCode, networkPersistenceManager};
+      return {workspace, project, uiSourceCode, networkPersistenceManager};
     };
 
 describeWithMockConnection('NetworkPersistenceManager', () => {

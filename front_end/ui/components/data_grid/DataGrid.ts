@@ -369,7 +369,7 @@ export class DataGrid extends HTMLElement {
     }
 
     const nextFocusedCell = handleArrowKeyNavigation({
-      key: key,
+      key,
       currentFocusedCell: this.#cellUserHasFocused,
       columns: this.#columns,
       rows: this.#rows,

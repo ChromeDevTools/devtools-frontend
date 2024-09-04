@@ -1099,7 +1099,7 @@ async function decorateAnchorForAnchorLink(container: HTMLElement, treeElement: 
   const anchorNode = await treeElement.node()?.getAnchorBySpecifier(options.identifier) ?? undefined;
   const link = new ElementsComponents.AnchorFunctionLinkSwatch.AnchorFunctionLinkSwatch({
     identifier: options.identifier,
-    anchorNode: anchorNode,
+    anchorNode,
     needsSpace: options.needsSpace,
     onLinkActivate: () => {
       if (!anchorNode) {

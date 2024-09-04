@@ -576,7 +576,7 @@ export class FreestylerAgent {
       debugLog(`Iteration: ${i}`, 'Request', request, 'Response', response);
       structuredLog.push({
         request: structuredClone(request),
-        response: response,
+        response,
       });
 
       const addToHistory = (text: string): void => {

@@ -222,7 +222,7 @@ class SourceScopeRemoteObject extends SDK.RemoteObject.RemoteObjectImpl {
       properties.push(makeProperty(namespace, (namespaces[namespace] as SDK.RemoteObject.RemoteObject)));
     }
 
-    return {properties: properties, internalProperties: []};
+    return {properties, internalProperties: []};
   }
 }
 
@@ -832,7 +832,7 @@ export class DebuggerLanguagePluginManager implements
                 const resourceUrl = resource as Platform.DevToolsPath.UrlString;
                 return {resourceUrl, initiator};
               });
-              return {missingSymbolFiles: missingSymbolFiles};
+              return {missingSymbolFiles};
             }
             const sourceFileURLs = addModuleResult as Platform.DevToolsPath.UrlString[];
             if (sourceFileURLs.length === 0) {

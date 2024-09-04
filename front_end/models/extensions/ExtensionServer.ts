@@ -1080,7 +1080,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
 
   private dispatchCallback(requestId: unknown, port: MessagePort, result: unknown): void {
     if (requestId) {
-      port.postMessage({command: 'callback', requestId: requestId, result: result});
+      port.postMessage({command: 'callback', requestId, result});
     }
   }
 
@@ -1139,7 +1139,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       startColumn: range.startColumn,
       endLine: range.endLine,
       endColumn: range.endColumn,
-      url: url,
+      url,
     });
   }
 
@@ -1401,11 +1401,11 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     void context
         .evaluate(
             {
-              expression: expression,
+              expression,
               objectGroup: 'extension',
               includeCommandLineAPI: exposeCommandLineAPI,
               silent: true,
-              returnByValue: returnByValue,
+              returnByValue,
               generatePreview: false,
             },
             /* userGesture */ false, /* awaitPromise */ false)

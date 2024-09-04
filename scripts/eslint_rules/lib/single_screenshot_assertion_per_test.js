@@ -62,7 +62,7 @@ module.exports = {
       const totalScreenshotAssertions = countScreenshotAssertions(bodyNodes);
       if (totalScreenshotAssertions > 1) {
         context.report({
-          node: node,
+          node,
           messageId: 'moreThanOneScreenshotAssertionFound',
         });
       }

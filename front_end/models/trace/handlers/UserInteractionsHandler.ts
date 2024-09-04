@@ -330,7 +330,7 @@ export async function finalize(): Promise<void> {
                                    args: {
                                      data: {
                                        beginEvent: interactionStartEvent,
-                                       endEvent: endEvent,
+                                       endEvent,
                                        frame: frameId,
                                        navigationId,
                                      },

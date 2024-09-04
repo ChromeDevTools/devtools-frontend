@@ -75,7 +75,7 @@ export class NodeChildTargetManager extends SDK.SDKModel.SDKModel<void> implemen
       const parts = address.split(':');
       const port = parseInt(parts[1], 10);
       if (parts[0] && port) {
-        locations.push({host: parts[0], port: port});
+        locations.push({host: parts[0], port});
       }
     }
     void this.#targetAgent.invoke_setRemoteLocations({locations});

@@ -65,13 +65,13 @@ module.exports = {
         for (const indexOfDataSetterCall of findIndexOfDataSetterUsageForNode(node)) {
           const dataUsageHasTypeCast = dataSetterUsesTypeCast(node, indexOfDataSetterCall);
           if (!dataUsageHasTypeCast) {
-            context.report({node: node, message: 'LitHtml .data=${} calls must be typecast (.data=${{...} as X}).'});
+            context.report({node, message: 'LitHtml .data=${} calls must be typecast (.data=${{...} as X}).'});
             continue;
           }
 
           if (!dataSetterAsUsesInterface(node, indexOfDataSetterCall)) {
             context.report({
-              node: node,
+              node,
               message:
                   'LitHtml .data=${} calls must be typecast to a type reference (e.g. `as FooInterface`), not a literal.'
             });

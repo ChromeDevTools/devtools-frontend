@@ -293,6 +293,6 @@ filterTextInput?.addEventListener('input', event => {
   const filters = filterParser.parse(newText);
   component.data = {
     ...component.data,
-    filters: filters,
+    filters,
   };
 });

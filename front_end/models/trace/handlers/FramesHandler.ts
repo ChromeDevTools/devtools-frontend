@@ -463,7 +463,7 @@ export class LayerPaintEvent implements Types.TraceEvents.LegacyLayerPaintEvent 
   picture(): Types.TraceEvents.LegacyLayerPaintEventPicture|null {
     const rect = this.#snapshot.args.snapshot.params?.layer_rect;
     const pictureData = this.#snapshot.args.snapshot.skp64;
-    return rect && pictureData ? {rect: rect, serializedPicture: pictureData} : null;
+    return rect && pictureData ? {rect, serializedPicture: pictureData} : null;
   }
 }
 

@@ -38,7 +38,7 @@ describeWithMockConnection('SourceMapsResolver', () => {
         'function', 10, 100, TraceEngine.Types.TraceEvents.ProcessID(1), TraceEngine.Types.TraceEvents.ThreadID(1));
 
     profileCall.callFrame = {
-      columnNumber: columnNumber,
+      columnNumber,
       functionName: 'minified',
       lineNumber: 0,
       scriptId: script.scriptId,

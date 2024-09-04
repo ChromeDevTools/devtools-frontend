@@ -216,7 +216,7 @@ export class LinearMemoryInspector extends HTMLElement {
           @pagenavigation=${this.#navigatePage}
           @historynavigation=${this.#navigateHistory}></${LinearMemoryNavigator.litTagName}>
           <${LinearMemoryHighlightChipList.litTagName}
-          .data=${{highlightInfos: highlightedMemoryAreas, focusedMemoryHighlight: focusedMemoryHighlight } as LinearMemoryHighlightChipListData}
+          .data=${{highlightInfos: highlightedMemoryAreas, focusedMemoryHighlight } as LinearMemoryHighlightChipListData}
           @jumptohighlightedmemory=${this.#onJumpToAddress}>
           </${LinearMemoryHighlightChipList.litTagName}>
         <${LinearMemoryViewer.litTagName}
@@ -226,7 +226,7 @@ export class LinearMemoryInspector extends HTMLElement {
             address: this.#address, memoryOffset: start,
             focus: this.#currentNavigatorMode === Mode.SUBMITTED,
             highlightInfo: this.#highlightInfo,
-            focusedMemoryHighlight: focusedMemoryHighlight } as LinearMemoryViewerData}
+            focusedMemoryHighlight } as LinearMemoryViewerData}
           @byteselected=${this.#onByteSelected}
           @resize=${this.#resize}>
         </${LinearMemoryViewer.litTagName}>

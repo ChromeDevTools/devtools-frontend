@@ -293,11 +293,11 @@ export class IndexedDBModel extends SDK.SDKModel.SDKModel<EventTypes> implements
   }
 
   private databaseAddedForStorageBucket(databaseId: DatabaseId): void {
-    this.dispatchEventToListeners(Events.DatabaseAdded, {model: this, databaseId: databaseId});
+    this.dispatchEventToListeners(Events.DatabaseAdded, {model: this, databaseId});
   }
 
   private databaseRemovedForStorageBucket(databaseId: DatabaseId): void {
-    this.dispatchEventToListeners(Events.DatabaseRemoved, {model: this, databaseId: databaseId});
+    this.dispatchEventToListeners(Events.DatabaseRemoved, {model: this, databaseId});
   }
 
   private async loadDatabaseNamesByStorageBucket(storageBucket: Protocol.Storage.StorageBucket): Promise<string[]> {
@@ -344,8 +344,7 @@ export class IndexedDBModel extends SDK.SDKModel.SDKModel<EventTypes> implements
       databaseModel.objectStores.set(objectStoreModel.name, objectStoreModel);
     }
 
-    this.dispatchEventToListeners(
-        Events.DatabaseLoaded, {model: this, database: databaseModel, entriesUpdated: entriesUpdated});
+    this.dispatchEventToListeners(Events.DatabaseLoaded, {model: this, database: databaseModel, entriesUpdated});
   }
 
   loadObjectStoreData(
@@ -439,8 +438,7 @@ export class IndexedDBModel extends SDK.SDKModel.SDKModel<EventTypes> implements
     const storageBucket = this.storageBucketModel?.getBucketById(bucketId)?.bucket;
     if (storageBucket) {
       const databaseId = new DatabaseId(storageBucket, databaseName);
-      this.dispatchEventToListeners(
-          Events.IndexedDBContentUpdated, {databaseId: databaseId, objectStoreName: objectStoreName, model: this});
+      this.dispatchEventToListeners(Events.IndexedDBContentUpdated, {databaseId, objectStoreName, model: this});
     }
   }
   attributionReportingTriggerRegistered(_event: Protocol.Storage.AttributionReportingTriggerRegisteredEvent): void {

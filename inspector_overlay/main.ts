@@ -73,7 +73,7 @@ const overlays: Overlays = {
   screenshot: screenshotOverlay,
   sourceOrder: sourceOrderOverlay,
   viewportSize: viewportSizeOverlay,
-  windowControlsOverlay: windowControlsOverlay,
+  windowControlsOverlay,
 };
 
 let currentOverlay: Overlays[keyof Overlays];

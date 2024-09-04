@@ -95,7 +95,7 @@ export const Utils = {
         matches.push({
           value: match,
           position: startIndex + result.index,
-          regexIndex: regexIndex,
+          regexIndex,
           captureGroups: result.slice(1),
         });
         currentIndex = result.index + match.length;

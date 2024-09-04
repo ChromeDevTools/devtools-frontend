@@ -31,7 +31,7 @@ class InterestGroupDetailsGetter {
   async getInterestGroupDetails(owner: string, name: string): Promise<object|null> {
     return {
       ownerOrigin: owner,
-      name: name,
+      name,
       expirationTime: 2,
       joiningOrigin: 'https://joiner.com',
       trustedBiddingSignalsKeys: [],

@@ -431,7 +431,7 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar implements DataDisp
     }
     const view = profile.createView(this);
     view.element.classList.add('profile-view');
-    this.profileToView.push({profile: profile, view: view});
+    this.profileToView.push({profile, view});
     return view;
   }
 

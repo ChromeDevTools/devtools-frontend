@@ -71,7 +71,7 @@
      * Key event with given key identifier.
      */
     static createKeyEvent(key) {
-      return new KeyboardEvent('keydown', {bubbles: true, cancelable: true, key: key});
+      return new KeyboardEvent('keydown', {bubbles: true, cancelable: true, key});
     }
   };
 

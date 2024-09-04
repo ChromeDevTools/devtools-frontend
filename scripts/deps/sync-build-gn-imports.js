@@ -367,7 +367,7 @@ function validateDirectory(dirPath) {
     }
 
     for (const missingDep of diffWithGN.inOnlySourceCode) {
-      result.missingBuildGNDeps.push({importPath: missingDep, sourceFile: sourceFile});
+      result.missingBuildGNDeps.push({importPath: missingDep, sourceFile});
     }
   }
   return result;

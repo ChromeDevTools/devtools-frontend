@@ -120,7 +120,7 @@ module.exports = {
           },
           {
             'selector': 'enumMember',
-            'format': ['PascalCase', 'UPPER_CASE'],
+            'format': ['UPPER_CASE'],
           },
           {
             'selector': ['typeLike'],
@@ -133,7 +133,7 @@ module.exports = {
           },
           {
             // Ignore type properties that require quotes
-            'selector': ['typeProperty', 'enumMember'],
+            'selector': ['typeProperty'],
             'format': null,
             'modifiers': ['requiresQuotes']
           }

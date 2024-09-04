@@ -518,6 +518,12 @@ export class DOMNode {
     this.#domModelInternal.markUndoableState();
   }
 
+  getChildNodesPromise(): Promise<DOMNode[]|null> {
+    return new Promise(resolve => {
+      return this.getChildNodes(childNodes => resolve(childNodes));
+    });
+  }
+
   getChildNodes(callback: (arg0: Array<DOMNode>|null) => void): void {
     if (this.childrenInternal) {
       callback(this.children());

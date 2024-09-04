@@ -268,7 +268,8 @@ export class FreestylerPanel extends UI.Panel.Panel {
 
     let step: Step = {isLoading: true};
 
-    for await (const data of this.#agent.run(text, {signal, isFixQuery})) {
+    for await (
+        const data of this.#agent.run(text, {signal, selectedElement: this.#viewProps.selectedElement, isFixQuery})) {
       step.sideEffect = undefined;
       switch (data.type) {
         case ResponseType.QUERYING: {

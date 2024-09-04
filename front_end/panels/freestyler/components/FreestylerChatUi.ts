@@ -133,7 +133,7 @@ const UIStringsTemp = {
   /**
    *@description The fallback text when a step has no title yet
    */
-  performingAction: 'Performing action',
+  investigating: 'Investigating',
   /**
    *@description Prefix to the title of each thinking step of a user action is required to continue
    */
@@ -333,13 +333,10 @@ export class FreestylerChatUi extends HTMLElement {
   }
 
   #renderTitle(step: Step): LitHtml.LitTemplate {
-    if (step.isLoading) {
-      return LitHtml.html`<span>Loading...</span>`;
-    }
-    const paused = step.sideEffect ? `${i18nString(UIStringsTemp.paused)}:` : '';
-    const actionTitle = step.title ?? i18nString(UIStringsTemp.performingAction);
+    const paused = step.sideEffect ? `${i18nString(UIStringsTemp.paused)}: ` : '';
+    const actionTitle = step.title ?? `${i18nString(UIStringsTemp.investigating)}…`;
 
-    return LitHtml.html`<span>${paused}${actionTitle}</span>`;
+    return LitHtml.html`<span class="title">${paused}${actionTitle}</span>`;
   }
 
   #renderStepDetails(step: Step, options: {isLast: boolean}): LitHtml.LitTemplate {
@@ -379,19 +376,26 @@ export class FreestylerChatUi extends HTMLElement {
     }
 
     const iconClasses = LitHtml.Directives.classMap({
+      indicator: true,
       loading: isLoading,
       paused: Boolean(step.sideEffect),
     });
 
     // clang-format off
     return LitHtml.html`
-      <details class="step" open>
+      <details class="step" .open=${Boolean(step.sideEffect)}>
         <summary>
-          <${IconButton.Icon.Icon.litTagName}
-            class=${iconClasses}
-            .name=${iconName}
-          ></${IconButton.Icon.Icon.litTagName}>
-          ${this.#renderTitle(step)}
+          <div class="summary">
+            <${IconButton.Icon.Icon.litTagName}
+              class=${iconClasses}
+              .name=${iconName}
+            ></${IconButton.Icon.Icon.litTagName}>
+            ${this.#renderTitle(step)}
+            <${IconButton.Icon.Icon.litTagName}
+              class="arrow"
+              .name=${'chevron-down'}
+            ></${IconButton.Icon.Icon.litTagName}>
+          </div>
         </summary>
         ${this.#renderStepDetails(step, {
           isLast: options.isLast,

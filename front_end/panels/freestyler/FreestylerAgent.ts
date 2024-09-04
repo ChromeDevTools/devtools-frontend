@@ -388,8 +388,13 @@ export class FreestylerAgent {
     observation: string,
     sideEffect: boolean,
   }> {
-    const actionExpression = `{const scope = {$0, $1, getEventListeners}; with (scope) {${
-        action};((typeof data !== "undefined") ? data : undefined)}}`;
+    const actionExpression = `{
+      const scope = {$0, $1, getEventListeners};
+      with (scope) {
+        ${action}
+        ;((typeof data !== "undefined") ? data : undefined)
+      }
+    }`;
     try {
       const runConfirmed = await confirm ?? Promise.resolve(true);
       if (!runConfirmed) {

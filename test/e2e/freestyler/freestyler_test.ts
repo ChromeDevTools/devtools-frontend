@@ -165,6 +165,48 @@ STOP`,
     assert.deepStrictEqual(result.at(-1)!.request.input, 'OBSERVATION: {"color":"rgb(0, 0, 0)"}');
   });
 
+  it('gets handles trailing ;', async () => {
+    const result = await runWithMessages('Change the background color for this element to blue', [
+      `THOUGHT: I can change the background color of an element by setting the background-color CSS property.
+TITLE: changing the property
+ACTION
+const originalWidth = $0.style.width;
+const originalHeight = $0.style.height;
+$0.removeAttribute('width');
+$0.removeAttribute('height');
+const computedStyles = window.getComputedStyle($0);
+const data = {
+  aspectRatio: computedStyles['aspect-ratio'],
+};
+$0.style.width = originalWidth; // Restore original width
+$0.style.height = originalHeight;
+STOP`,
+      'ANSWER: changed styles',
+    ]);
+    assert.deepStrictEqual(result.at(-1)!.request.input, 'OBSERVATION: {"aspectRatio":"auto"}');
+  });
+
+  it('gets handles comments', async () => {
+    const result = await runWithMessages('Change the background color for this element to blue', [
+      `THOUGHT: I can change the background color of an element by setting the background-color CSS property.
+TITLE: changing the property
+ACTION
+const originalWidth = $0.style.width;
+const originalHeight = $0.style.height;
+$0.removeAttribute('width');
+$0.removeAttribute('height');
+const computedStyles = window.getComputedStyle($0);
+const data = {
+  aspectRatio: computedStyles['aspect-ratio'],
+};
+$0.style.width = originalWidth; // Restore original width
+$0.style.height = originalHeight; // Restore original height
+STOP`,
+      'ANSWER: changed styles',
+    ]);
+    assert.deepStrictEqual(result.at(-1)!.request.input, 'OBSERVATION: {"aspectRatio":"auto"}');
+  });
+
   it('modifes the inline styles using the extension functions', async () => {
     await runWithMessages('Change the background color for this element to blue', [
       `THOUGHT: I can change the background color of an element by setting the background-color CSS property.

@@ -21,7 +21,10 @@ devtools_entrypoint("bundle") {
 
   deps = [ ":third-party-web" ]
 
-  visibility = [ "../../entrypoints/lighthouse_worker/*" ]
+  visibility = [
+    "../../entrypoints/lighthouse_worker/*",
+    "../../models/trace/insights/*",
+  ]
 
   visibility += devtools_third_party_visibility
 }

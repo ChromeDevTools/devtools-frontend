@@ -1055,6 +1055,7 @@ grd_files_debug_sources = [
   "front_end/models/trace/insights/InteractionToNextPaint.js",
   "front_end/models/trace/insights/LargestContentfulPaint.js",
   "front_end/models/trace/insights/RenderBlocking.js",
+  "front_end/models/trace/insights/ThirdPartyWeb.js",
   "front_end/models/trace/insights/Viewport.js",
   "front_end/models/trace/insights/types.js",
   "front_end/models/trace/lantern/core/LanternError.js",

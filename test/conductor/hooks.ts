@@ -49,6 +49,10 @@ const windowWidth = viewportWidth + 50;
 const windowHeight = viewportHeight + 200;
 
 const headless = !TestConfig.debug;
+// CDP commands in e2e and interaction should not generally take
+// more than 20 seconds.
+const protocolTimeout = TestConfig.debug ? 0 : 20_000;
+
 const envSlowMo = process.env['STRESS'] ? 50 : undefined;
 const envThrottleRate = process.env['STRESS'] ? 3 : 1;
 const envLatePromises = process.env['LATE_PROMISES'] !== undefined ?
@@ -102,9 +106,9 @@ function launchChrome() {
   ];
 
   const disabledFeatures = [
-    'DeferRendererTasksAfterInput',           // crbug.com/361078921
-    'PMProcessPriorityPolicy',                // crbug.com/361252079
-    'RenderDocument',                         // crbug.com/361519377
+    'DeferRendererTasksAfterInput',  // crbug.com/361078921
+    'PMProcessPriorityPolicy',       // crbug.com/361252079
+    'RenderDocument',                // crbug.com/361519377
   ];
   const launchArgs = [
     '--remote-allow-origins=*',
@@ -126,9 +130,7 @@ function launchChrome() {
     executablePath: TestConfig.chromeBinary,
     dumpio: !headless || Boolean(process.env['LUCI_CONTEXT']),
     slowMo: envSlowMo,
-    // CDP commands in e2e and interaction should not generally take
-    // more than 20 seconds.
-    protocolTimeout: 20_000,
+    protocolTimeout,
   };
 
   // Always set the default viewport because setting only the window size for

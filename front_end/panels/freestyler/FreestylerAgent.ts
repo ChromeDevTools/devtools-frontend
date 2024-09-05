@@ -251,6 +251,7 @@ export class FreestylerAgent {
         // TODO: disable logging based on query params.
         disable_user_content_logging: !(opts.serverSideLoggingEnabled ?? false),
         string_session_id: opts.sessionId,
+        user_tier: Host.AidaClient.convertToUserTierEnum(config.devToolsFreestylerDogfood?.userTier),
       },
       // eslint-disable-next-line @typescript-eslint/naming-convention
       functionality_type: Host.AidaClient.FunctionalityType.CHAT,

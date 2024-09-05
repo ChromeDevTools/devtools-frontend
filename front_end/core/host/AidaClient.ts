@@ -42,6 +42,15 @@ export enum ClientFeature {
   CHROME_FREESTYLER = 2,
 }
 
+export enum UserTier {
+  // Unspecified user tier.
+  USER_TIER_UNSPECIFIED = 0,
+  // Users who are internal testers.
+  TESTERS = 1,
+  // Users in the general public.
+  PUBLIC = 3,
+}
+
 export interface AidaRequest {
   input: string;
   preamble?: string;
@@ -58,6 +67,8 @@ export interface AidaRequest {
     disable_user_content_logging: boolean,
     // eslint-disable-next-line @typescript-eslint/naming-convention
     string_session_id?: string,
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    user_tier?: UserTier,
   };
   // eslint-disable-next-line @typescript-eslint/naming-convention
   functionality_type?: FunctionalityType;
@@ -286,4 +297,16 @@ export class AidaClient {
 
     return promise;
   }
+}
+
+export function convertToUserTierEnum(userTier: string|undefined): UserTier {
+  if (userTier) {
+    switch (userTier) {
+      case 'TESTERS':
+        return UserTier.TESTERS;
+      case 'PUBLIC':
+        return UserTier.PUBLIC;
+    }
+  }
+  return UserTier.TESTERS;
 }

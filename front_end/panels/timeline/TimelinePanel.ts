@@ -119,6 +119,14 @@ const UIStrings = {
    */
   saveProfile: 'Save profile…',
   /**
+   *@description An option to save profile that appears in the menu of the toolbar download button
+   */
+  saveProfileMenuOption: 'Save profile',
+  /**
+   *@description An option to save profile with annotations that appears in the menu of the toolbar download button
+   */
+  saveProfileWithAnnotationsMenuOption: 'Save profile with annotations',
+  /**
    *@description Text to take screenshots
    */
   captureScreenshots: 'Capture screenshots',
@@ -357,7 +365,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   private brickBreakerToolbarButton: UI.Toolbar.ToolbarButton;
   private brickBreakerToolbarButtonAdded = false;
   private loadButton!: UI.Toolbar.ToolbarButton;
-  private saveButton!: UI.Toolbar.ToolbarButton;
+  private saveButton!: UI.Toolbar.ToolbarButton|UI.Toolbar.ToolbarMenuButton;
   private statusPane!: StatusPane|null;
   private landingPage!: UI.Widget.Widget;
   private loader?: TimelineLoader;
@@ -849,6 +857,17 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.panelToolbar.removeToolbarItem(this.#sidebarToggleButton);
   }
 
+  private populateDownloadMenu(contextMenu: UI.ContextMenu.ContextMenu): void {
+    contextMenu.viewSection().appendItem(i18nString(UIStrings.saveProfileMenuOption), () => {
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.PerfPanelTraceExported);
+      void this.saveToFile();
+    });
+    contextMenu.viewSection().appendItem(i18nString(UIStrings.saveProfileWithAnnotationsMenuOption), () => {
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.PerfPanelTraceExported);
+      void this.saveToFile(/* isEnhancedTraces */ false, /* addModifications */ true);
+    });
+  }
+
   private populateToolbar(): void {
     // Record
     this.panelToolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButton(this.toggleRecordAction));
@@ -864,12 +883,19 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.PerfPanelTraceImported);
       this.selectFileToLoad();
     });
-    this.saveButton =
-        new UI.Toolbar.ToolbarButton(i18nString(UIStrings.saveProfile), 'download', undefined, 'timeline.save-to-file');
-    this.saveButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, _event => {
-      Host.userMetrics.actionTaken(Host.UserMetrics.Action.PerfPanelTraceExported);
-      void this.saveToFile();
-    });
+
+    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_ANNOTATIONS)) {
+      this.saveButton = new UI.Toolbar.ToolbarMenuButton(
+          this.populateDownloadMenu.bind(this), true, true, 'more-options', 'download');
+      this.saveButton.setTitle(i18nString(UIStrings.saveProfile));
+    } else {
+      this.saveButton = new UI.Toolbar.ToolbarButton(
+          i18nString(UIStrings.saveProfile), 'download', undefined, 'timeline.save-to-file');
+      this.saveButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, _event => {
+        Host.userMetrics.actionTaken(Host.UserMetrics.Action.PerfPanelTraceExported);
+        void this.saveToFile();
+      });
+    }
 
     if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_ENHANCED_TRACES)) {
       this.saveButton.element.addEventListener('contextmenu', event => {
@@ -1036,7 +1062,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     void contextMenu.show();
   }
 
-  async saveToFile(isEnhancedTraces: boolean = false): Promise<void> {
+  async saveToFile(isEnhancedTraces: boolean = false, addModifications: boolean = false): Promise<void> {
     if (this.state !== State.IDLE) {
       return;
     }
@@ -1046,7 +1072,8 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     const traceEvents = this.#traceEngineModel.rawTraceEvents(this.#viewMode.traceIndex);
     const metadata = this.#traceEngineModel.metadata(this.#viewMode.traceIndex);
     // Save modifications into the metadata if modifications experiment is on
-    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_ANNOTATIONS) && metadata) {
+    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_ANNOTATIONS) && metadata &&
+        addModifications) {
       metadata.modifications = ModificationsManager.activeManager()?.toJSON();
     }
     if (metadata && isEnhancedTraces) {

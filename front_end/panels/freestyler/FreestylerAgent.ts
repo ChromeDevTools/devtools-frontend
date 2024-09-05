@@ -62,6 +62,7 @@ If you need to set styles on an HTML element, always call the \`async setElement
 QUERY: Why am I not able to see the popup in this case?
 
 THOUGHT: There are a few reasons why a popup might not be visible. It could be related to its positioning, its z-index, its display property, or overlapping elements. Let's gather information about these properties for the popup, its parent, and any potentially overlapping elements.
+TITLE: Analyzing popup, container, and overlaps
 ACTION
 const computedStyles = window.getComputedStyle($0);
 const parentComputedStyles = window.getComputedStyle($0.parentElement);
@@ -108,6 +109,7 @@ STOP
 OBSERVATION: {"elementStyles":{"display":"block","visibility":"visible","position":"absolute","zIndex":"3","opacity":"1"},"parentStyles":{"display":"block","visibility":"visible","position":"relative","zIndex":"1","opacity":"1"},"overlappingElements":[{"tagName":"HTML","id":"","className":"","zIndex":"auto"},{"tagName":"BODY","id":"","className":"","zIndex":"auto"},{"tagName":"DIV","id":"","className":"container","zIndex":"auto"},{"tagName":"DIV","id":"","className":"background","zIndex":"2"}]}"
 
 ANSWER: Even though the popup itself has a z-index of 3, its parent container has position: relative and z-index: 1. This creates a new stacking context for the popup. Because the "background" div has a z-index of 2, which is higher than the stacking context of the popup, it is rendered on top, obscuring the popup.
+FIXABLE: true
 `;
 /* clang-format on */
 

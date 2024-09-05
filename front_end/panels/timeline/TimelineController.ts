@@ -28,9 +28,7 @@ export class TimelineController implements TraceEngine.TracingManager.TracingMan
   #collectedEvents: TraceEngine.Types.TraceEvents.TraceEventData[] = [];
   #recordingStartTime: number|null = null;
   private readonly client: Client;
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private tracingCompleteCallback?: ((value: any) => void)|null;
+  private tracingCompletePromise: PromiseWithResolvers<void>|null = null;
 
   /**
    * We always need to profile against the DevTools root target, which is
@@ -137,7 +135,6 @@ export class TimelineController implements TraceEngine.TracingManager.TracingMan
     this.#recordingStartTime = Date.now();
     const response = await this.startRecordingWithCategories(categoriesArray.join(','));
     if (response.getError()) {
-      await this.waitForTracingToStop(false);
       await SDK.TargetManager.TargetManager.instance().resumeAllTargets();
     }
     return response;
@@ -149,21 +146,16 @@ export class TimelineController implements TraceEngine.TracingManager.TracingMan
     }
 
     this.client.loadingStarted();
-    await this.waitForTracingToStop(true);
+    await this.waitForTracingToStop();
     await this.allSourcesFinished();
 
     await LiveMetrics.LiveMetrics.instance().enable();
   }
 
-  private async waitForTracingToStop(awaitTracingCompleteCallback: boolean): Promise<void> {
-    const tracingStoppedPromises = [];
-    if (this.tracingManager && awaitTracingCompleteCallback) {
-      tracingStoppedPromises.push(new Promise(resolve => {
-        this.tracingCompleteCallback = resolve;
-      }));
+  private async waitForTracingToStop(): Promise<void> {
+    if (this.tracingManager) {
+      await this.tracingCompletePromise?.promise;
     }
-
-    await Promise.all(tracingStoppedPromises);
   }
 
   private async startRecordingWithCategories(categories: string): Promise<Protocol.ProtocolResponseWithError> {
@@ -174,6 +166,7 @@ export class TimelineController implements TraceEngine.TracingManager.TracingMan
     // caused by starting CPU profiler, that needs to traverse JS heap to collect
     // all the functions data.
     await SDK.TargetManager.TargetManager.instance().suspendAllTargets('performance-timeline');
+    this.tracingCompletePromise = Promise.withResolvers();
     const response = await this.tracingManager.start(this, categories, '');
     await this.warmupJsProfiler();
     Extensions.ExtensionServer.ExtensionServer.instance().profilingStarted();
@@ -201,11 +194,11 @@ export class TimelineController implements TraceEngine.TracingManager.TracingMan
   }
 
   tracingComplete(): void {
-    if (!this.tracingCompleteCallback) {
+    if (!this.tracingCompletePromise) {
       return;
     }
-    this.tracingCompleteCallback(undefined);
-    this.tracingCompleteCallback = null;
+    this.tracingCompletePromise.resolve(undefined);
+    this.tracingCompletePromise = null;
   }
 
   private async allSourcesFinished(): Promise<void> {

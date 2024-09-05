@@ -2,7 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Protocol from '../../generated/protocol.js';
+
+import {type CallFrame, type ScopeChainEntry} from './DebuggerModel.js';
 import {type SourceMap, type SourceMapV3Object} from './SourceMap.js';
+import {SourceMapScopeChainEntry} from './SourceMapScopeChainEntry.js';
 import {
   decodeGeneratedRanges,
   decodeOriginalScopes,
@@ -121,6 +125,67 @@ export class SourceMapScopesInfo {
       return false;
     }
     return walkTree(this.#originalScopes) && walkTree(this.#generatedRanges);
+  }
+
+  /**
+   * Constructs a scope chain based on the CallFrame's paused position.
+   *
+   * The algorithm to obtain the original scope chain is straight-forward:
+   *
+   *   1) Find the inner-most generated range that contains the CallFrame's
+   *      paused position.
+   *
+   *   2) Does the found range have an associated original scope?
+   *
+   *      2a) If no, return null. This is a "hidden" range and technically
+   *          we shouldn't be pausing here in the first place. This code doesn't
+   *          correspond to anything in the authored code.
+   *
+   *      2b) If yes, the associated original scope is the inner-most
+   *          original scope in the resulting scope chain.
+   *
+   *   3) Walk the parent chain of the found original scope outwards. This is
+   *      our scope view. For each original scope we also try to find a
+   *      corresponding generated range that contains the CallFrame's
+   *      paused position. We need the generated range to resolve variable
+   *      values.
+   */
+  resolveMappedScopeChain(callFrame: CallFrame): ScopeChainEntry[]|null {
+    const rangeChain =
+        this.#findGeneratedRangeChain(callFrame.location().lineNumber, callFrame.location().columnNumber);
+    const innerMostOriginalScope = rangeChain.at(-1)?.originalScope;
+    if (innerMostOriginalScope === undefined) {
+      return null;
+    }
+
+    // TODO(crbug.com/40277685): Add a sanity check here where we map the paused position using
+    //         the source map's mappings, find the inner-most original scope with that mapped paused
+    //         position and compare that result with `innerMostOriginalScope`. If they don't match we
+    //         should emit a warning about the broken source map as mappings and scopes are inconsistent
+    //         w.r.t. each other.
+
+    let seenFunctionScope = false;
+    const result: SourceMapScopeChainEntry[] = [];
+    // Walk the original scope chain outwards and try to find the corresponding generated range along the way.
+    for (let originalScope = rangeChain.at(-1)?.originalScope; originalScope; originalScope = originalScope.parent) {
+      const range = rangeChain.findLast(r => r.originalScope === originalScope);
+      const isFunctionScope = originalScope.kind === 'function';
+      const isInnerMostFunction = isFunctionScope && !seenFunctionScope;
+      const returnValue = isInnerMostFunction ? callFrame.returnValue() : null;
+      result.push(
+          new SourceMapScopeChainEntry(callFrame, originalScope, range, isInnerMostFunction, returnValue ?? undefined));
+      seenFunctionScope ||= isFunctionScope;
+    }
+
+    // If we are paused on a return statement, we need to drop inner block scopes. This is because V8 only emits a
+    // single return bytecode and "gotos" at the functions' end, where we are now paused.
+    if (callFrame.returnValue() !== null) {
+      while (result.length && result[0].type() !== Protocol.Debugger.ScopeType.Local) {
+        result.shift();
+      }
+    }
+
+    return result;
   }
 }
 

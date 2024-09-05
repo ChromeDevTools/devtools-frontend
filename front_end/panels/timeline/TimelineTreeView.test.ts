@@ -219,6 +219,31 @@ describeWithEnvironment('TimelineTreeView', function() {
       ]);
     });
 
+    it('can group entries by third parties', async function() {
+      const {traceData} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+      const callTreeView = new Timeline.TimelineTreeView.BottomUpTimelineTreeView();
+      const startTime = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(traceData.Meta.traceBounds.min);
+      const endTime = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(traceData.Meta.traceBounds.max);
+
+      callTreeView.setRange(startTime, endTime);
+      callTreeView.setGroupBySettingForTests(Timeline.TimelineTreeView.AggregatedTimelineTreeView.GroupBy.ThirdParties);
+      callTreeView.setModelWithEvents(traceData.Renderer.allTraceEntries, traceData);
+
+      const tree = callTreeView.buildTree();
+      const topLevelGroupNodes = Array.from(tree.children().entries());
+
+      assert.deepEqual(topLevelGroupNodes.map(node => node[0]), [
+        '',
+        'web.dev',
+        'extensions::',
+        'chrome-extension://noondiphcddnnabmjcihcjfbhfklnnep',
+        'imgix',
+        'Google Tag Manager',
+        'Google Analytics',
+        'shared-storage-demo-content-producer.web.app',
+      ]);
+    });
+
     it('can group entries by frame', async function() {
       const {traceData} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
       const callTreeView = new Timeline.TimelineTreeView.BottomUpTimelineTreeView();

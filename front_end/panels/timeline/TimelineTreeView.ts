@@ -8,6 +8,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 import * as TraceEngine from '../../models/trace/trace.js';
+import * as ThirdPartyWeb from '../../third_party/third-party-web/third-party-web.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -99,6 +100,10 @@ const UIStrings = {
    *@description Text in Timeline Tree View of the Performance panel
    */
   groupByUrl: 'Group by URL',
+  /**
+   *@description Text in Timeline Tree View of the Performance panel
+   */
+  groupByThirdParties: 'Group by Third Parties',
   /**
    *@description Aria-label for grouping combo box in Timeline Details View
    */
@@ -803,7 +808,8 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
       }
 
       case AggregatedTimelineTreeView.GroupBy.Domain:
-      case AggregatedTimelineTreeView.GroupBy.Subdomain: {
+      case AggregatedTimelineTreeView.GroupBy.Subdomain:
+      case AggregatedTimelineTreeView.GroupBy.ThirdParties: {
         const domainName = id ? this.beautifyDomainName(id) : undefined;
         return {name: domainName || unattributed, color, icon: undefined};
       }
@@ -846,6 +852,7 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
       {label: i18nString(UIStrings.groupByFrame), value: groupBy.Frame},
       {label: i18nString(UIStrings.groupBySubdomain), value: groupBy.Subdomain},
       {label: i18nString(UIStrings.groupByUrl), value: groupBy.URL},
+      {label: i18nString(UIStrings.groupByThirdParties), value: groupBy.ThirdParties},
     ];
     toolbar.appendToolbarItem(
         new UI.Toolbar.ToolbarSettingComboBox(options, this.groupBySetting, i18nString(UIStrings.groupBy)));
@@ -891,7 +898,8 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
     return true;
   }
 
-  protected groupingFunction(groupBy: string): ((arg0: TraceEngine.Types.TraceEvents.TraceEventData) => string)|null {
+  protected groupingFunction(groupBy: AggregatedTimelineTreeView.GroupBy):
+      ((arg0: TraceEngine.Types.TraceEvents.TraceEventData) => string)|null {
     const GroupBy = AggregatedTimelineTreeView.GroupBy;
     switch (groupBy) {
       case GroupBy.None:
@@ -901,9 +909,9 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
       case GroupBy.Category:
         return (event: TraceEngine.Types.TraceEvents.TraceEventData) => TimelineUIUtils.eventStyle(event).category.name;
       case GroupBy.Subdomain:
-        return this.domainByEvent.bind(this, false);
       case GroupBy.Domain:
-        return this.domainByEvent.bind(this, true);
+      case GroupBy.ThirdParties:
+        return this.domainByEvent.bind(this, groupBy);
       case GroupBy.URL:
         return (event: TraceEngine.Types.TraceEvents.TraceEventData) => {
           const traceParsedData = this.traceParseData();
@@ -920,7 +928,8 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
     }
   }
 
-  private domainByEvent(groupSubdomains: boolean, event: TraceEngine.Types.TraceEvents.TraceEventData): string {
+  private domainByEvent(
+      groupBy: AggregatedTimelineTreeView.GroupBy, event: TraceEngine.Types.TraceEvents.TraceEventData): string {
     const traceParsedData = this.traceParseData();
     if (!traceParsedData) {
       return '';
@@ -942,7 +951,14 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
     if (parsedURL.scheme === 'chrome-extension') {
       return parsedURL.scheme + '://' + parsedURL.host;
     }
-    if (!groupSubdomains) {
+    if (groupBy === AggregatedTimelineTreeView.GroupBy.ThirdParties) {
+      const entity = ThirdPartyWeb.ThirdPartyWeb.getEntity(url);
+      if (!entity) {
+        return parsedURL.host;
+      }
+      return entity.name;
+    }
+    if (groupBy === AggregatedTimelineTreeView.GroupBy.Subdomain) {
       return parsedURL.host;
     }
     if (/^[.0-9]+$/.test(parsedURL.host)) {
@@ -973,6 +989,7 @@ export namespace AggregatedTimelineTreeView {
     Subdomain = 'Subdomain',
     URL = 'URL',
     Frame = 'Frame',
+    ThirdParties = 'ThirdParties',
     /* eslint-enable @typescript-eslint/naming-convention */
   }
 }

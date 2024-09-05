@@ -91,6 +91,10 @@
 .dl-title {
   font-weight: bold;
 }
+/* right-align the right-most header cells */
+dd.dl-title {
+  text-align: right;
+}
 
 dd.dl-title {
   text-align: right;

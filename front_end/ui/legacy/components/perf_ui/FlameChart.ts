@@ -29,7 +29,6 @@
  */
 
 import * as Common from '../../../../core/common/common.js';
-import * as Host from '../../../../core/host/host.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import * as Root from '../../../../core/root/root.js';
@@ -344,6 +343,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.canvas.addEventListener('mousemove', this.onMouseMove.bind(this), false);
     this.canvas.addEventListener('mouseout', this.onMouseOut.bind(this), false);
     this.canvas.addEventListener('click', this.onClick.bind(this), false);
+    this.canvas.addEventListener('dblclick', this.#onDblClick.bind(this), false);
     this.canvas.addEventListener('keydown', this.onKeyDown.bind(this), false);
     this.canvas.addEventListener('contextmenu', this.onContextMenu.bind(this), false);
 
@@ -615,9 +615,8 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
    *   2. Inside a track header -> mouse style will be a "pointer", indicating track can be focused
    *   3. Inside a track -> update the highlight of hovered event
    */
-  private onMouseMove(event: Event): void {
+  private onMouseMove(mouseEvent: MouseEvent): void {
     this.#searchResultEntryIndex = -1;
-    const mouseEvent = (event as MouseEvent);
     this.lastMouseOffsetX = mouseEvent.offsetX;
     this.lastMouseOffsetY = mouseEvent.offsetY;
     if (!this.enabled()) {
@@ -828,6 +827,25 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
   }
 
   /**
+   * Handle double mouse click event in flame chart.
+   */
+  #onDblClick(mouseEvent: MouseEvent): void {
+    this.focus();
+    const {groupIndex} = this.coordinatesToGroupIndexAndHoverType(mouseEvent.offsetX, mouseEvent.offsetY);
+
+    /**
+     * When a hovered entry on any track is double clicked, create a label for it.
+     *
+     * Checking the existance of `highlightedEntryIndex` is enough to make sure that the double
+     * click happenned on the entry since an entry is only highlighted if the mouse is hovering it.
+     */
+    if (this.highlightedEntryIndex !== -1) {
+      this.#selectGroup(groupIndex);
+      this.dispatchEventToListeners(Events.ENTRY_LABEL_ANNOTATION_ADDED, this.highlightedEntryIndex);
+    }
+  }
+
+  /**
    * Handle mouse click event in flame chart
    *
    * And the handle priority will be:
@@ -836,11 +854,9 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
    * 2. Inside a track header -> Select and Expand/Collapse a track
    * 3. Inside a track -> Select a track
    * 3.1 shift + click -> Select the time range of clicked event
-   * 3.2 cmd or ctrl + click -> Create entry label annotation on the clicked entry
-   * 3.3 click -> update highlight (handle in other functions)
+   * 3.2 click -> update highlight (handle in other functions)
    */
-  private onClick(event: Event): void {
-    const mouseEvent = (event as MouseEvent);
+  private onClick(mouseEvent: MouseEvent): void {
     this.focus();
     // onClick comes after dragStart and dragEnd events.
     // So if there was drag (mouse move) in the middle of that events
@@ -878,13 +894,10 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
           this.#selectGroup(groupIndex);
 
           const timelineData = this.timelineData();
-          const isMetaOrControl = Host.Platform.isMac() ? mouseEvent.metaKey : mouseEvent.ctrlKey;
           if (mouseEvent.shiftKey && this.highlightedEntryIndex !== -1 && timelineData) {
             const start = timelineData.entryStartTimes[this.highlightedEntryIndex];
             const end = start + timelineData.entryTotalTimes[this.highlightedEntryIndex];
             this.chartViewport.setRangeSelection(start, end);
-          } else if (isMetaOrControl && this.highlightedEntryIndex !== -1 && timelineData) {
-            this.dispatchEventToListeners(Events.ENTRY_LABEL_ANNOTATION_ADDED, this.highlightedEntryIndex);
           } else {
             this.chartViewport.onClick(mouseEvent);
             this.dispatchEventToListeners(Events.ENTRY_INVOKED, this.highlightedEntryIndex);
@@ -1234,14 +1247,13 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
           this.dispatchEventToListeners(Events.ENTRY_LABEL_ANNOTATION_ADDED, this.selectedEntryIndex);
         });
 
-        const prefix = Host.Platform.isMac() ? 'Cmd' : 'Ctrl';
-        labelEntryAnnotationOption.setShortcut(`${prefix} + Click`);
+        labelEntryAnnotationOption.setShortcut('Double Click');
 
         const linkEntriesAnnotationOption = annotationSection.appendItem(i18nString(UIStrings.linkEntries), () => {
           this.dispatchEventToListeners(
               Events.ENTRIES_LINK_ANNOTATION_CREATED, {entryFromIndex: this.selectedEntryIndex});
         });
-        linkEntriesAnnotationOption.setShortcut(`${prefix} + Click`);
+        linkEntriesAnnotationOption.setShortcut('Double Click');
       }
 
       void this.contextMenu.show();

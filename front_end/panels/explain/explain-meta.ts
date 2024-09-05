@@ -4,7 +4,7 @@
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import type * as Root from '../../core/root/root.js';
+import * as Root from '../../core/root/root.js';
 import * as Console from '../../panels/console/console.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -105,11 +105,13 @@ function isFeatureEnabled(config?: Root.Runtime.HostConfig): boolean {
 }
 
 Common.Settings.registerSettingExtension({
+  // TODO(crbug.com/350668580) SettingCategory.NONE once experiment GEN_AI_SETTINGS_PANEL is enabled
   category: Common.Settings.SettingCategory.CONSOLE,
   settingName: setting,
   settingType: Common.Settings.SettingType.BOOLEAN,
   title: i18nLazyString(UIStrings.enableConsoleInsights),
   defaultValue: true,
+  // TODO(crbug.com/350668580) set to false once experiment GEN_AI_SETTINGS_PANEL is enabled
   reloadRequired: true,
   condition: config => isFeatureEnabled(config),
   disabledCondition: config => {
@@ -129,18 +131,29 @@ Common.Settings.registerSettingExtension({
   },
 });
 
+function getConsoleInsightsEnabledSetting(): Common.Settings.Setting<unknown>|undefined {
+  try {
+    return Common.Settings.moduleSetting('console-insights-enabled');
+  } catch {
+    return;
+  }
+}
+
 for (const action of actions) {
   UI.ActionRegistration.registerActionExtension({
     ...action,
-    setting,
     category: UI.ActionRegistration.ActionCategory.CONSOLE,
     async loadActionDelegate() {
       const Explain = await import('./explain.js');
       return new Explain.ActionDelegate();
     },
     condition: config => {
-      return isFeatureEnabled(config) && !isAgeRestricted(config) && !isGeoRestricted(config) &&
-          !isLocaleRestricted() && !isPolicyRestricted(config);
+      if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.GEN_AI_SETTINGS_PANEL)) {
+        return isFeatureEnabled(config) && !isPolicyRestricted(config);
+      }
+      const consoleInsightsSetting = getConsoleInsightsEnabledSetting();
+      return (consoleInsightsSetting?.get() === true) && isFeatureEnabled(config) && !isAgeRestricted(config) &&
+          !isGeoRestricted(config) && !isLocaleRestricted() && !isPolicyRestricted(config);
     },
   });
 }

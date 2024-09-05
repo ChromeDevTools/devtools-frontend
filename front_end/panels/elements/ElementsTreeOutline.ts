@@ -1147,6 +1147,7 @@ export class ElementsTreeOutline extends
     domModel.addEventListener(SDK.DOMModel.Events.ChildNodeCountUpdated, this.childNodeCountUpdated, this);
     domModel.addEventListener(SDK.DOMModel.Events.DistributedNodesChanged, this.distributedNodesChanged, this);
     domModel.addEventListener(SDK.DOMModel.Events.TopLayerElementsChanged, this.topLayerElementsChanged, this);
+    domModel.addEventListener(SDK.DOMModel.Events.ScrollableFlagUpdated, this.scrollableFlagUpdated, this);
   }
 
   unwireFromDOMModel(domModel: SDK.DOMModel.DOMModel): void {
@@ -1160,6 +1161,7 @@ export class ElementsTreeOutline extends
     domModel.removeEventListener(SDK.DOMModel.Events.ChildNodeCountUpdated, this.childNodeCountUpdated, this);
     domModel.removeEventListener(SDK.DOMModel.Events.DistributedNodesChanged, this.distributedNodesChanged, this);
     domModel.removeEventListener(SDK.DOMModel.Events.TopLayerElementsChanged, this.topLayerElementsChanged, this);
+    domModel.removeEventListener(SDK.DOMModel.Events.ScrollableFlagUpdated, this.scrollableFlagUpdated, this);
     elementsTreeOutlineByDOMModel.delete(domModel);
   }
 
@@ -1601,6 +1603,21 @@ export class ElementsTreeOutline extends
         parent.appendChild(container);
       }
       container.hidden = container.currentTopLayerDOMNodes.size === 0;
+    }
+  }
+
+  private scrollableFlagUpdated(event: Common.EventTarget.EventTargetEvent<{node: SDK.DOMModel.DOMNode}>): void {
+    let {node} = event.data;
+    if (node.nodeName() === '#document') {
+      // We show the scroll badge of the document on the <html> element.
+      if (!node.ownerDocument?.documentElement) {
+        return;
+      }
+      node = node.ownerDocument.documentElement;
+    }
+    const treeElement = this.treeElementByNode.get(node);
+    if (treeElement) {
+      treeElement.updateScrollAdorner();
     }
   }
 

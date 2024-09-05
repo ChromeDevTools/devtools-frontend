@@ -11,6 +11,7 @@ copy_to_gen("elements") {
     "adornment-container-query.html",
     "adornment-media.html",
     "adornment-scroll-snap.html",
+    "adornment-scroll.html",
     "adornment-shadow.html",
     "adornment.html",
     "at-property.html",

@@ -22,6 +22,7 @@ import {
   waitFor,
   waitForAria,
   waitForFunction,
+  waitForNone,
 } from '../../shared/helper.js';
 
 import {openSoftContextMenuAndClickOnItem} from './context-menu-helpers.js';
@@ -171,7 +172,11 @@ export const waitForAdornerOnSelectedNode = async (expectedAdornerText: string) 
   });
   await expectVeEvents([veImpressionsUnder(
       'Panel: elements > Tree: elements > TreeItem', [veImpression('Adorner', expectedAdornerText)])]);
+};
 
+export const waitForNoAdornersOnSelectedNode = async () => {
+  const selectedNode = await waitFor(SELECTED_TREE_ELEMENT_SELECTOR);
+  await waitForNone(ADORNER_SELECTOR, selectedNode);
 };
 
 export const toggleElementCheckboxInLayoutPane = async () => {

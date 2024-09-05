@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      .scroller {
+        height: 200px;
+        width: 200px;
+        border: 1px solid black;
+      }
+      .scroller .contents {
+        height: 200%;
+        width: 100%;
+      }
+      #scroller {
+        overflow: scroll;
+      }
+      #overflow-hidden {
+        overflow: hidden;
+      }
+      #overflow-visible {
+        overflow: visible;
+      }
+      #overflow-scroll {
+        overflow: scroll;
+      }
+      #content-shrinking {
+        overflow: scroll;
+      }
+      #content-shrinking.shrunk .contents {
+        height: 80%;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="scroller" id="scroller">
+      <div class="contents"></div>
+    </div>
+
+    <div class="scroller" id="overflow-hidden">
+      <div class="contents"></div>
+    </div>
+
+    <div class="scroller" id="overflow-visible">
+      <div class="contents"></div>
+    </div>
+
+    <div class="scroller" id="overflow-scroll">
+      <div class="contents"></div>
+    </div>
+
+    <div class="scroller" id="content-shrinking">
+      <div class="contents"></div>
+    </div>
+
+    <iframe
+      id="iframe"
+      srcdoc="
+      <html>
+        <style>
+          body { height: 3000px; }
+        </style>
+        <body>iframe document</body>
+      </html>"
+    >
+    </iframe>
+
+    <iframe
+      id="iframe-with-scrollable-body"
+      srcdoc="
+      <!DOCTYPE html>
+      <html>
+        <style>
+          html { height: 100%; overflow: hidden; }
+          body { height: 100%; overflow: scroll; }
+          div { height: 1000px; }
+        </style>
+        <body>
+          <div>contents</div>
+        </body>
+      </html>"
+    >
+    </iframe>
+
+    <iframe
+      id="iframe-with-shrinking-body"
+      srcdoc="
+    <html id='body-shrinking'>
+      <style>
+        body { height: 3000px; }
+        html.shrunk body {height: 80%;}
+      </style>
+      <body>iframe document</body>
+    </html>"
+    >
+    </iframe>
+  </body>
+</html>

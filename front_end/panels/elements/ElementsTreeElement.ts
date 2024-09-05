@@ -207,6 +207,10 @@ const UIStrings = {
    *@description Text of a tooltip to redirect to another element in the Elements panel
    */
   showPopoverTarget: 'Show popover target',
+  /**
+   *@description Text of the tooltip for scroll adorner.
+   */
+  elementHasScrollableOverflow: 'This element has a scrollable overflow',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/elements/ElementsTreeElement.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -310,6 +314,8 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         const adorner = this.adorn(config);
         UI.Tooltip.Tooltip.install(adorner, i18nString(UIStrings.thisFrameWasIdentifiedAsAnAd));
       }
+
+      this.updateScrollAdorner();
     }
     this.expandAllButtonElement = null;
   }
@@ -2442,6 +2448,30 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     });
 
     context.styleAdorners.push(adorner);
+  }
+
+  updateScrollAdorner(): void {
+    if (!isOpeningTag(this.tagTypeContext)) {
+      return;
+    }
+    // Check if the node is scrollable, or if it's the <html> element and the document is scrollable because the top-level document (#document) doesn't have a corresponding tree element.
+    if ((this.node().nodeName() === 'HTML' && this.node().ownerDocument?.isScrollable()) ||
+        (this.node().nodeName() !== '#document' && this.node().isScrollable())) {
+      this.pushScrollAdorner();
+    } else {
+      const scrollAdorner = this.tagTypeContext.adorners.find(x => x.name === 'scroll');
+      if (scrollAdorner) {
+        this.removeAdorner(scrollAdorner, this.tagTypeContext);
+      }
+    }
+  }
+
+  pushScrollAdorner(): void {
+    const config = ElementsComponents.AdornerManager.getRegisteredAdorner(
+        ElementsComponents.AdornerManager.RegisteredAdorners.SCROLL);
+    const adorner = this.adorn(config);
+    UI.Tooltip.Tooltip.install(adorner, i18nString(UIStrings.elementHasScrollableOverflow));
+    adorner.classList.add('scroll');
   }
 }
 

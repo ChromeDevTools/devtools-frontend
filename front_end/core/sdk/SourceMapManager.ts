@@ -6,13 +6,9 @@ import * as Common from '../common/common.js';
 import * as Platform from '../platform/platform.js';
 
 import {type FrameAssociated} from './FrameAssociated.js';
-
-import {Type, type Target} from './Target.js';
-import {Events as TargetManagerEvents, TargetManager} from './TargetManager.js';
-
 import {PageResourceLoader, type PageResourceLoadInitiator} from './PageResourceLoader.js';
-
 import {parseSourceMap, SourceMap, type SourceMapV3} from './SourceMap.js';
+import {type Target, Type} from './Target.js';
 
 export class SourceMapManager<T extends FrameAssociated> extends Common.ObjectWrapper.ObjectWrapper<EventTypes<T>> {
   readonly #target: Target;
@@ -29,9 +25,6 @@ export class SourceMapManager<T extends FrameAssociated> extends Common.ObjectWr
     this.#attachingClient = null;
     this.#clientData = new Map();
     this.#sourceMaps = new Map();
-
-    TargetManager.instance().addEventListener(
-        TargetManagerEvents.INSPECTED_URL_CHANGED, this.inspectedURLChanged, this);
   }
 
   setEnabled(isEnabled: boolean): void {
@@ -63,21 +56,6 @@ export class SourceMapManager<T extends FrameAssociated> extends Common.ObjectWr
       Platform.DevToolsPath.UrlString {
     url = Common.ParsedURL.ParsedURL.completeURL(SourceMapManager.getBaseUrl(target), url) ?? url;
     return url;
-  }
-
-  private inspectedURLChanged(event: Common.EventTarget.EventTargetEvent<Target>): void {
-    if (event.data !== this.#target) {
-      return;
-    }
-
-    // We need this copy, because `this.#clientData` is getting modified
-    // in the loop body and trying to iterate over it at the same time
-    // leads to an infinite loop.
-    const clientData = [...this.#clientData.entries()];
-    for (const [client, {relativeSourceURL, relativeSourceMapURL}] of clientData) {
-      this.detachSourceMap(client);
-      this.attachSourceMap(client, relativeSourceURL, relativeSourceMapURL);
-    }
   }
 
   sourceMapForClient(client: T): SourceMap|undefined {
@@ -193,11 +171,6 @@ export class SourceMapManager<T extends FrameAssociated> extends Common.ObjectWr
     } else {
       this.dispatchEventToListeners(Events.SourceMapFailedToAttach, {client});
     }
-  }
-
-  dispose(): void {
-    TargetManager.instance().removeEventListener(
-        TargetManagerEvents.INSPECTED_URL_CHANGED, this.inspectedURLChanged, this);
   }
 }
 

@@ -881,7 +881,6 @@ export class CSSModel extends SDKModel<EventTypes> {
   override dispose(): void {
     this.disableCSSPropertyTracker();
     super.dispose();
-    this.#sourceMapManager.dispose();
     this.dispatchEventToListeners(Events.ModelDisposed, this);
   }
 

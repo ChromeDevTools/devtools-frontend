@@ -918,7 +918,6 @@ export class DebuggerModel extends SDKModel<EventTypes> {
   }
 
   override dispose(): void {
-    this.#sourceMapManagerInternal.dispose();
     if (this.#debuggerId) {
       debuggerIdToModel.delete(this.#debuggerId);
     }

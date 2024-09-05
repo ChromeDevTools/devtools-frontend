@@ -1086,8 +1086,9 @@ export class Overlays extends EventTarget {
     div.classList.add('overlay-item', `overlay-type-${overlay.type}`);
     switch (overlay.type) {
       case 'ENTRY_LABEL': {
+        const shouldDrawLabelBelowEntry = TraceEngine.Types.TraceEvents.isLegacyTimelineFrame(overlay.entry);
         const component = new Components.EntryLabelOverlay.EntryLabelOverlay(
-            overlay.label, this.#chartForOverlayEntry(overlay.entry) === 'main');
+            overlay.label, this.#chartForOverlayEntry(overlay.entry) === 'main', shouldDrawLabelBelowEntry);
         component.addEventListener(Components.EntryLabelOverlay.EmptyEntryLabelRemoveEvent.eventName, () => {
           this.dispatchEvent(new AnnotationOverlayActionEvent(overlay, 'Remove'));
         });

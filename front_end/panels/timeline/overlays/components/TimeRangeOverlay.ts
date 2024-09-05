@@ -4,6 +4,7 @@
 import * as i18n from '../../../../core/i18n/i18n.js';
 import type * as TraceEngine from '../../../../models/trace/trace.js';
 import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js';
+import * as IconButton from '../../../../ui/components/icon_button/icon_button.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 
 import styles from './timeRangeOverlay.css.js';
@@ -46,7 +47,7 @@ export class TimeRangeOverlay extends HTMLElement {
   constructor(initialLabel: string) {
     super();
     this.#render();
-    this.#rangeContainer = this.#shadow.querySelector<HTMLElement>('.label');
+    this.#rangeContainer = this.#shadow.querySelector<HTMLElement>('.range-container');
     this.#labelBox = this.#rangeContainer?.querySelector<HTMLElement>('.label-text') ?? null;
     this.#label = initialLabel;
     if (!this.#labelBox) {
@@ -223,7 +224,14 @@ export class TimeRangeOverlay extends HTMLElement {
     LitHtml.render(
         LitHtml.html`
           <span
-            class="label">
+            class="range-container">
+            <${IconButton.Icon.Icon.litTagName} class="user-created-icon" .data=${{
+                  iconName: 'profile',
+                  color: 'var(--ref-palette-pink55)',
+                  width: '16px',
+                  height: '17px',
+                  } as IconButton.Icon.IconData}>
+              </${IconButton.Icon.Icon.litTagName}>
             <span
              class="label-text"
              @focusout=${() => this.#setLabelEditability(false)}

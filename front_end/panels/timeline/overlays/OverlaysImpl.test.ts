@@ -488,10 +488,10 @@ describeWithEnvironment('Overlays', () => {
       const component = overlayDOM?.querySelector('devtools-time-range-overlay');
       assert.isOk(component?.shadowRoot);
       component.connectedCallback();
-      const label = component.shadowRoot.querySelector<HTMLElement>('.label');
-      assert.isOk(label);
+      const rangeContainer = component.shadowRoot.querySelector<HTMLElement>('.range-container');
+      assert.isOk(rangeContainer);
 
-      const labelBox = label.querySelector<HTMLElement>('.label-text');
+      const labelBox = rangeContainer.querySelector<HTMLElement>('.label-text');
       assert.isOk(labelBox);
 
       // Double click on the label box to make it editable and focus on it
@@ -529,10 +529,10 @@ describeWithEnvironment('Overlays', () => {
          const component = overlayDOM?.querySelector('devtools-time-range-overlay');
          assert.isOk(component?.shadowRoot);
          component.connectedCallback();
-         const label = component.shadowRoot.querySelector<HTMLElement>('.label');
-         assert.isOk(label);
+         const rangeContainer = component.shadowRoot.querySelector<HTMLElement>('.range-container');
+         assert.isOk(rangeContainer);
 
-         const labelBox = label.querySelector<HTMLElement>('.label-text');
+         const labelBox = rangeContainer.querySelector<HTMLElement>('.label-text');
          assert.isOk(labelBox);
 
          // Double click on the label box to make it editable and focus on it
@@ -731,9 +731,9 @@ describeWithEnvironment('Overlays', () => {
       const overlayDOM = container.querySelector<HTMLElement>('.overlay-type-TIME_RANGE');
       const component = overlayDOM?.querySelector('devtools-time-range-overlay');
       assert.isOk(component?.shadowRoot);
-      const label = component.shadowRoot.querySelector<HTMLElement>('.label');
-      assert.isOk(label);
-      const duration = label.querySelector<HTMLElement>('.duration');
+      const rangeContainer = component.shadowRoot.querySelector<HTMLElement>('.range-container');
+      assert.isOk(rangeContainer);
+      const duration = rangeContainer.querySelector<HTMLElement>('.duration');
       assert.isOk(duration);
       assert.strictEqual(duration?.innerText, '1.26\xA0s');
     });

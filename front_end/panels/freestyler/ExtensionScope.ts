@@ -189,7 +189,10 @@ const functions = `async function setElementStyles(el, styles) {
 
   // Remove inline styles with the same keys so that the edit applies.
   for (const [key, value] of Object.entries(styles)) {
+    // if it's kebap case.
     el.style.removeProperty(key);
+    // If it's camel case.
+    el.style[key] = '';
   }
 
   await freestyler({

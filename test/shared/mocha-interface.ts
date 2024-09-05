@@ -37,7 +37,16 @@ async function takeScreenshots(): Promise<{target?: string, frontend?: string}> 
 async function createScreenshotError(error: Error): Promise<Error> {
   console.error('Taking screenshots for the error', error);
   if (!TestConfig.debug) {
-    const {target, frontend} = await takeScreenshots();
+    const screenshotTimeout = 5_000;
+    const {target, frontend} = await Promise.race([
+      takeScreenshots(),
+      new Promise(resolve => {
+        setTimeout(resolve, screenshotTimeout);
+      }).then(() => {
+        console.error(`Could not take screenshots within ${screenshotTimeout}ms.`);
+        return {target: undefined, frontend: undefined};
+      }),
+    ]);
     return ScreenshotError.fromBase64Images(error, target, frontend);
   }
   return error;

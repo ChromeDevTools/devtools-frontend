@@ -202,6 +202,17 @@ c`;
             fixable: false,
           },
       );
+
+      assert.deepStrictEqual(
+          FreestylerAgent.parseResponse(`ACTION\n\n${payload}\n\nANSWER: answer`),
+          {
+            action: payload,
+            title: undefined,
+            thought: undefined,
+            answer: 'answer',
+            fixable: false,
+          },
+      );
     });
     it('parses a thought and title', async () => {
       const payload = 'some response';

@@ -270,6 +270,11 @@ export class FreestylerAgent {
     let answer: string|undefined;
     let fixable = false;
     let i = 0;
+    const isInstructionStart = (line: string): boolean => {
+      const trimmed = line.trim();
+      return trimmed.startsWith('THOUGHT:') || trimmed.startsWith('OBSERVATION:') || trimmed.startsWith('TITLE:') ||
+          trimmed.startsWith('ACTION') || trimmed.startsWith('ANSWER:') || trimmed.startsWith('FIXABLE:');
+    };
     while (i < lines.length) {
       const trimmed = lines[i].trim();
       if (trimmed.startsWith('THOUGHT:') && !thought) {
@@ -281,18 +286,24 @@ export class FreestylerAgent {
         i++;
       } else if (trimmed.startsWith('ACTION') && !action) {
         const actionLines = [];
-        let j = i + 1;
-        while (j < lines.length && lines[j].trim() !== 'STOP') {
-          // Sometimes the code block is in the form of "`````\njs\n{code}`````"
-          if (lines[j].trim() !== 'js') {
-            actionLines.push(lines[j]);
+        i++;
+        while (i < lines.length) {
+          if (lines[i].trim() === 'STOP') {
+            i++;
+            break;
           }
-          j++;
+          if (isInstructionStart(lines[i])) {
+            break;
+          }
+          // Sometimes the code block is in the form of "`````\njs\n{code}`````"
+          if (lines[i].trim() !== 'js') {
+            actionLines.push(lines[i]);
+          }
+          i++;
         }
         // TODO: perhaps trying to parse with a Markdown parser would
         // yield more reliable results.
         action = actionLines.join('\n').replaceAll('```', '').replaceAll('``', '').trim();
-        i = j + 1;
       } else if (trimmed.startsWith('ANSWER:') && !answer) {
         const answerLines = [
           trimmed.substring('ANSWER:'.length).trim(),
@@ -300,8 +311,7 @@ export class FreestylerAgent {
         let j = i + 1;
         while (j < lines.length) {
           const line = lines[j].trim();
-          if (line.startsWith('ACTION') || line.startsWith('OBSERVATION:') || line.startsWith('THOUGHT:') ||
-              line.startsWith('FIXABLE:')) {
+          if (isInstructionStart(line)) {
             break;
           }
           answerLines.push(lines[j]);

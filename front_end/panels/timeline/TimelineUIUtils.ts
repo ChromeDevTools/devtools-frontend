@@ -2141,7 +2141,7 @@ export class TimelineUIUtils {
   }
 
   static generateDetailsContentForFrame(
-      frame: TraceEngine.Handlers.ModelHandlers.Frames.TimelineFrame, filmStrip: TraceEngine.Extras.FilmStrip.Data|null,
+      frame: TraceEngine.Types.TraceEvents.LegacyTimelineFrame, filmStrip: TraceEngine.Extras.FilmStrip.Data|null,
       filmStripFrame: TraceEngine.Extras.FilmStrip.Frame|null): DocumentFragment {
     const contentHelper = new TimelineDetailsContentHelper(null, null);
     contentHelper.addSection(i18nString(UIStrings.frame));
@@ -2165,7 +2165,7 @@ export class TimelineUIUtils {
     return contentHelper.fragment;
   }
 
-  static frameDuration(frame: TraceEngine.Handlers.ModelHandlers.Frames.TimelineFrame): Element {
+  static frameDuration(frame: TraceEngine.Types.TraceEvents.LegacyTimelineFrame): Element {
     const offsetMilli = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(frame.startTimeOffset);
     const durationMilli = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(
         TraceEngine.Types.Timing.MicroSeconds(frame.endTime - frame.startTime));

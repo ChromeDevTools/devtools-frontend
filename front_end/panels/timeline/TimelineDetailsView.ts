@@ -257,7 +257,7 @@ export class TimelineDetailsView extends UI.Widget.VBox {
     this.updateContents();
   }
 
-  #getFilmStripFrame(frame: TraceEngine.Handlers.ModelHandlers.Frames.TimelineFrame): TraceEngine.Extras.FilmStrip.Frame
+  #getFilmStripFrame(frame: TraceEngine.Types.TraceEvents.LegacyTimelineFrame): TraceEngine.Extras.FilmStrip.Frame
       |null {
     if (!this.#filmStrip) {
       return null;
@@ -296,7 +296,7 @@ export class TimelineDetailsView extends UI.Widget.VBox {
       const traceEventDetails =
           await TimelineUIUtils.buildTraceEventDetails(this.#traceEngineData, event, this.detailsLinkifier, true);
       this.appendDetailsTabsForTraceEventAndShowDetails(event, traceEventDetails);
-    } else if (TimelineSelection.isFrameObject(selectionObject)) {
+    } else if (TimelineSelection.isLegacyTimelineFrame(selectionObject)) {
       const frame = selectionObject;
       const matchedFilmStripFrame = this.#getFilmStripFrame(frame);
       this.setContent(TimelineUIUtils.generateDetailsContentForFrame(frame, this.#filmStrip, matchedFilmStripFrame));

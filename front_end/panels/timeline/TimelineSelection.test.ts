@@ -17,7 +17,7 @@ describeWithEnvironment('TimelineSelection', function() {
     assert.strictEqual(selection.object, frame);
     assert.strictEqual(selection.startTime, TraceEngine.Helpers.Timing.microSecondsToMilliseconds(frame.startTime));
     assert.strictEqual(selection.endTime, TraceEngine.Helpers.Timing.microSecondsToMilliseconds(frame.endTime));
-    assert.isTrue(Timeline.TimelineSelection.TimelineSelection.isFrameObject(selection.object));
+    assert.isTrue(Timeline.TimelineSelection.TimelineSelection.isLegacyTimelineFrame(selection.object));
   });
 
   it('can be created with a network request', async function() {

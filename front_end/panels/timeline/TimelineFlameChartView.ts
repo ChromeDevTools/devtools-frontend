@@ -727,7 +727,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     if (selection &&
         (TimelineSelection.isTraceEventSelection(selection.object) ||
          TimelineSelection.isSyntheticNetworkRequestDetailsEventSelection(selection.object) ||
-         TimelineSelection.isFrameObject(selection.object))) {
+         TimelineSelection.isLegacyTimelineFrame(selection.object))) {
       this.addOverlay({
         type: 'ENTRY_SELECTED',
         entry: selection.object,
@@ -758,7 +758,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     if (selection &&
         (TimelineSelection.isTraceEventSelection(selection.object) ||
          TimelineSelection.isSyntheticNetworkRequestDetailsEventSelection(selection.object) ||
-         TimelineSelection.isFrameObject(selection.object))) {
+         TimelineSelection.isLegacyTimelineFrame(selection.object))) {
       this.setSelectionAndReveal(selection);
       ModificationsManager.activeManager()?.createAnnotation({
         type: 'ENTRY_LABEL',
@@ -795,7 +795,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
       return selection.object;
     }
 
-    if (TimelineSelection.isFrameObject(selection.object)) {
+    if (TimelineSelection.isLegacyTimelineFrame(selection.object)) {
       return selection.object as TraceEngine.Types.TraceEvents.LegacyTimelineFrame;
     }
 

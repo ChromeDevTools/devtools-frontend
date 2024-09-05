@@ -2848,17 +2848,18 @@ export interface LegacyTimelineFrame extends TraceEventData {
   startTimeOffset: MicroSeconds;
   endTime: MicroSeconds;
   duration: MicroSeconds;
+  idle: boolean;
   dropped: boolean;
   isPartial: boolean;
   layerTree: LegacyFrameLayerTreeData|null;
   paints: LegacyLayerPaintEvent[];
-  mainFrameId: number|undefined;
+  mainFrameId?: number;
   readonly seqId: number;
   index: number;
 }
 
 export function isLegacyTimelineFrame(data: TraceEventData): data is LegacyTimelineFrame {
-  return 'mainFrameId' in data && typeof data.mainFrameId === 'number';
+  return 'idle' in data && typeof data.idle === 'boolean';
 }
 
 export interface LegacyFrameLayerTreeData {

@@ -69,13 +69,13 @@ describeWithEnvironment('LargestContentfulPaint', function() {
     assert.strictEqual(shouldIncreasePriorityHint, true);
   });
 
-  it('calculates the LCP optimal time as the main request download start time', async () => {
+  it('calculates the LCP optimal time as the document request download start time', async () => {
     const {data, insights} = await processTrace(this, 'web-dev-with-commit.json.gz');
     const firstNav = Array.from(data.Meta.navigationsByNavigationId.keys())[0];
     const insight = getInsight(insights, firstNav);
     assert.strictEqual(
         insight.earliestDiscoveryTimeTs,
-        // this is the TTFB for the main request
+        // this is the TTFB for the document request
         122411004828,
     );
   });

@@ -11,7 +11,7 @@ import {
 } from '../../e2e/helpers/context-menu-helpers.js';
 import {getDataGrid, getDataGridController, getInnerTextOfDataGridCells} from '../../e2e/helpers/datagrid-helpers.js';
 import {$, $$, click, waitFor, waitForFunction} from '../../shared/helper.js';
-import {loadComponentDocExample, preloadForCodeCoverage} from '../helpers/shared.js';
+import {loadComponentDocExample} from '../helpers/shared.js';
 
 async function activateContextMenuOnColumnHeader(headerText: string) {
   const dataGridController = await getDataGridController();
@@ -36,8 +36,6 @@ async function activateContextMenuOnBodyCell(cellText: string) {
 }
 
 describe('data grid controller', () => {
-  preloadForCodeCoverage('data_grid_controller/basic.html');
-
   // Flaky
   it.skip('[crbug.com/1502498] lets the user right click on a header to show the context menu', async () => {
     await loadComponentDocExample('data_grid_controller/basic.html');

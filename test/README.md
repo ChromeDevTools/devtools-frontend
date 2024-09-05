@@ -37,9 +37,9 @@ The current test status can be seen at the
 ### Obtaining code coverage
 
 We can collect code coverage for the source code that is tested: `npm run test -- --coverage`. This is available for
-interactions and unit tests.
+unit tests.
 
-The code coverage output is written to `/karma-coverage` or `/interactions-coverage` in the repository root. The
+The code coverage output is written to `/karma-coverage` in the repository root. The
 location can be overriden with `--artifacts-dir`.  You can open `/karma-coverage/index.html` in a browser to inspect
 coverage for individual files.
 

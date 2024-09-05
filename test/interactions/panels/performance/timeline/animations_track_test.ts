@@ -4,14 +4,12 @@
 
 import {waitFor} from '../../../../shared/helper.js';
 import {assertElementScreenshotUnchanged} from '../../../../shared/screenshots.js';
-import {loadComponentDocExample, preloadForCodeCoverage} from '../../../helpers/shared.js';
+import {loadComponentDocExample} from '../../../helpers/shared.js';
 
 describe('Animations track', function() {
   if (this.timeout() !== 0) {
     this.timeout(20000);
   }
-  preloadForCodeCoverage('performance_panel/track_example.html');
-
   const urlForTest = 'performance_panel/track_example.html?track=Animations&fileName=animation';
 
   itScreenshot('renders the expanded animations track correctly', async () => {

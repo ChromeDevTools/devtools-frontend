@@ -7,10 +7,10 @@ import {assert} from 'chai';
 import type * as TraceEngine from '../../../../../front_end/models/trace/trace.js';
 import type * as Timeline from '../../../../../front_end/panels/timeline/timeline.js';
 import {getBrowserAndPages, waitFor, waitForMany} from '../../../../shared/helper.js';
-import {loadComponentDocExample, preloadForCodeCoverage} from '../../../helpers/shared.js';
+import {loadComponentDocExample} from '../../../helpers/shared.js';
 
 describe('FlameChart', function() {
-  preloadForCodeCoverage('performance_panel/basic.html');
+  ('performance_panel/basic.html');
   // TODO(crbug.com/1472155): Improve perf panel trace load speed to prevent timeout bump.
   if (this.timeout() !== 0) {
     this.timeout(20_000);

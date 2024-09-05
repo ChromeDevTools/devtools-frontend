@@ -5,12 +5,9 @@ import {assert} from 'chai';
 
 import {waitFor, waitForMany} from '../../../../shared/helper.js';
 import {assertElementScreenshotUnchanged} from '../../../../shared/screenshots.js';
-import {loadComponentDocExample, preloadForCodeCoverage} from '../../../helpers/shared.js';
+import {loadComponentDocExample} from '../../../helpers/shared.js';
 
 describe('Performance panel overview/minimap', function() {
-  preloadForCodeCoverage('performance_panel/overview.html');
-  preloadForCodeCoverage('performance_panel/basic.html');
-
   // b/336787201
   itScreenshot.skip('renders the overview', async () => {
     await loadComponentDocExample('performance_panel/overview.html?trace=web-dev');

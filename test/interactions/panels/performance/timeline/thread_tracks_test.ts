@@ -4,11 +4,9 @@
 
 import {waitFor} from '../../../../shared/helper.js';
 import {assertElementScreenshotUnchanged} from '../../../../shared/screenshots.js';
-import {loadComponentDocExample, preloadForCodeCoverage} from '../../../helpers/shared.js';
+import {loadComponentDocExample} from '../../../helpers/shared.js';
 
 describe('Perf Panel Main Thread', function() {
-  preloadForCodeCoverage('performance_panel/flamechart.html');
-
   itScreenshot('renders some events onto the timeline', async () => {
     await loadComponentDocExample('performance_panel/basic.html?trace=one-second-interaction');
     await waitFor('.timeline-flamechart');
@@ -18,7 +16,6 @@ describe('Perf Panel Main Thread', function() {
 });
 
 describe('Main thread by new engine', () => {
-  preloadForCodeCoverage('performance_panel/track_example.html');
   itScreenshot('correctly renders the main thread', async () => {
     const urlForTest =
         'performance_panel/track_example.html?track=Thread&fileName=react-hello-world&trackFilter=Main&windowStart=410167020.225&windowEnd=410167037.286';
@@ -43,8 +40,6 @@ describe('Main thread by new engine', () => {
 });
 
 describe('Rasterizer', function() {
-  preloadForCodeCoverage('performance_panel/track_example.html');
-
   itScreenshot('correctly renders the Raster track', async () => {
     const urlForTest =
         'performance_panel/track_example.html?track=Thread&fileName=web-dev&trackFilter=Raster&windowStart=1020034891.352&windowEnd=1020035181.509';
@@ -60,7 +55,6 @@ describe('Workers', function() {
   if (this.timeout() !== 0) {
     this.timeout(20_000);
   }
-  preloadForCodeCoverage('performance_panel/track_example.html');
   itScreenshot('correctly renders the Worker track', async () => {
     const urlForTest =
         'performance_panel/track_example.html?track=Thread&fileName=two-workers&trackFilter=Worker&windowStart=107351290.697&windowEnd=107351401.004';
@@ -73,7 +67,6 @@ describe('Workers', function() {
 });
 
 describe('ThreadPool', () => {
-  preloadForCodeCoverage('performance_panel/track_example.html');
   itScreenshot('correctly renders the threadpool track', async () => {
     const urlForTest =
         'performance_panel/track_example.html?track=Thread&fileName=web-dev&trackFilter=Thread&windowStart=1020034891.352&windowEnd=1020035181.509';
@@ -84,7 +77,6 @@ describe('ThreadPool', () => {
 });
 
 describe('Other', () => {
-  preloadForCodeCoverage('performance_panel/track_example.html');
   itScreenshot('correctly renders tracks for generic threads with no specific type', async () => {
     const urlForTest =
         'performance_panel/track_example.html?track=Thread&fileName=web-dev&trackFilter=IOThread&windowStart=1020035010.258&windowEnd=1020035076.320';

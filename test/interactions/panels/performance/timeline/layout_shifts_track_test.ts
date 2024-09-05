@@ -4,11 +4,9 @@
 
 import {waitFor} from '../../../../shared/helper.js';
 import {assertElementScreenshotUnchanged} from '../../../../shared/screenshots.js';
-import {loadComponentDocExample, preloadForCodeCoverage} from '../../../helpers/shared.js';
+import {loadComponentDocExample} from '../../../helpers/shared.js';
 
 describe('Layout shifts track', function() {
-  preloadForCodeCoverage('performance_panel/track_example.html');
-
   const urlForTest = 'performance_panel/track_example.html?track=LayoutShifts&fileName=cls-single-frame';
 
   itScreenshot('renders the layout shifts track correctly', async () => {

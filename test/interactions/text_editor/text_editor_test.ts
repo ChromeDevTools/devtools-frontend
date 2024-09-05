@@ -3,12 +3,11 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-
-import {click, pressKey, typeText, waitFor} from '../../shared/helper.js';
-import {loadComponentDocExample, preloadForCodeCoverage} from '../helpers/shared.js';
-
 import {type ElementHandle} from 'puppeteer-core';
+
 import type * as TextEditor from '../../../front_end/ui/components/text_editor/text_editor.js';
+import {click, pressKey, typeText, waitFor} from '../../shared/helper.js';
+import {loadComponentDocExample} from '../helpers/shared.js';
 
 async function getEditorContent(textEditor: ElementHandle): Promise<string> {
   return textEditor.evaluate(node => (node as TextEditor.TextEditor.TextEditor).state.doc.toString());
@@ -22,8 +21,6 @@ async function getEditorSelection(textEditor: ElementHandle): Promise<{anchor: n
 }
 
 describe('text editor', () => {
-  preloadForCodeCoverage('text_editor/basic.html');
-
   it('can insert and delete some text', async () => {
     await loadComponentDocExample('text_editor/basic.html');
     const textEditor = await waitFor('devtools-text-editor');

@@ -8,14 +8,11 @@ import {type DevToolsRecorder} from '../../../../../front_end/panels/recorder/in
 import {type Schema} from '../../../../../front_end/panels/recorder/models/models.js';
 import {
   loadComponentDocExample,
-  preloadForCodeCoverage,
 } from '../../../../../test/interactions/helpers/shared.js';
 import {getBrowserAndPages} from '../../../../../test/shared/helper.js';
 import {assertMatchesJSONSnapshot} from '../../../../../test/shared/snapshots.js';
 
 describe('Injected', () => {
-  preloadForCodeCoverage('recorder_injected/basic.html');
-
   beforeEach(async () => {
     await loadComponentDocExample('recorder_injected/basic.html');
 

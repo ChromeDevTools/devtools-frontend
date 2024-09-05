@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {TestConfig} from '../../conductor/test_config.js';
 import {getBrowserAndPages, getTestServerPort, platform} from '../../shared/helper.js';
 
 const fontsByPlatform = {
@@ -20,22 +19,4 @@ export const loadComponentDocExample = async (urlComponent: string) => {
   });
   // Hide the outer UI to prevent interaction tests from accidentally clicking on it.
   await frontend.evaluate(() => window.dispatchEvent(new Event('hidecomponentdocsui')));
-};
-
-export const preloadForCodeCoverage = (name: string) => {
-  if (!TestConfig.coverage) {
-    return;
-  }
-
-  before(async function() {
-    this.timeout(0);
-    const {frontend} = getBrowserAndPages();
-    // Double Puppeteer's Default
-    frontend.setDefaultNavigationTimeout(60_000);
-    await frontend.setExtraHTTPHeaders({
-      'devtools-compute-coverage': '1',
-    });
-    await loadComponentDocExample(name);
-    await frontend.setExtraHTTPHeaders({});
-  });
 };

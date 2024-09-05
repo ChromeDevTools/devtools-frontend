@@ -4,12 +4,10 @@ Interaction tests are used to test individual pieces of DevTools in isolation - 
 
 Interaction tests are run against examples on the [Components Server](../../scripts/component_server/README.md), so your first step to writing an Interaction test is to create the required examples you want to test against.
 
-When writing an interactions test, you should use the `loadComponentDocExample()` helper to instruct the test to navigate to a particular example within the component server. Any pages that you load must also be passed into the `preloadForCodeCoverage` function, which enables the coverage instrumentation.
+When writing an interactions test, you should use the `loadComponentDocExample()` helper to instruct the test to navigate to a particular example within the component server.
 
 ```ts
 describe('Example test', () => {
-  preloadForCodeCoverage('performance_panel/basic.html');
-
   it('does something', async () => {
     await loadComponentDocExample('performance_panel/basic.html?trace=basic');
     // Assertions go here

@@ -6,11 +6,9 @@ import {assert} from 'chai';
 
 import {click, getBrowserAndPages, timeout, waitFor, waitForFunction} from '../../../../shared/helper.js';
 import {assertElementScreenshotUnchanged} from '../../../../shared/screenshots.js';
-import {loadComponentDocExample, preloadForCodeCoverage} from '../../../helpers/shared.js';
+import {loadComponentDocExample} from '../../../helpers/shared.js';
 
 describe('Performance panel', function() {
-  preloadForCodeCoverage('performance_panel/basic.html');
-
   itScreenshot('loads a trace file and renders it in the timeline', async () => {
     await loadComponentDocExample('performance_panel/basic.html?trace=basic');
     await waitFor('.timeline-flamechart');

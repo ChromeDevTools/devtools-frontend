@@ -4,13 +4,11 @@
 
 import {waitFor} from '../../../shared/helper.js';
 import {assertElementScreenshotUnchanged} from '../../../shared/screenshots.js';
-import {loadComponentDocExample, preloadForCodeCoverage} from '../../helpers/shared.js';
+import {loadComponentDocExample} from '../../helpers/shared.js';
 
 // The UI will change frequently and for now, there is no need for screenshot tests.
 // We'll re-enable these after the UI is more stable.
 describe.skip('[crbug.com/348613769] Freestyler', function() {
-  preloadForCodeCoverage('freestyler/basic.html');
-
   // eslint-disable-next-line rulesdir/ban_screenshot_test_outside_perf_panel
   itScreenshot('renders the empty state', async () => {
     await loadComponentDocExample('freestyler/empty_state.html');

@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 
 import type * as Menus from '../../../../front_end/ui/components/menus/menus.js';
-import {loadComponentDocExample, preloadForCodeCoverage} from '../../../../test/interactions/helpers/shared.js';
+import {loadComponentDocExample} from '../../../../test/interactions/helpers/shared.js';
 import {
   $,
   activeElement,
@@ -61,8 +61,6 @@ async function testScreenshotOnPlaceholder(placeholderSelector: string, screensh
 }
 
 describe('SelectMenu', () => {
-  preloadForCodeCoverage('select_menu/basic.html');
-
   it('shows the button to open the menu', async () => {
     const selectMenu = await getSelectMenu();
     const button = await $('button', selectMenu);

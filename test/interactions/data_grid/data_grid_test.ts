@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import {type ElementHandle} from 'puppeteer-core';
 
 import {
   assertDataGridNotScrolled,
@@ -15,9 +16,7 @@ import {
   waitForScrollTopOfDataGrid,
 } from '../../e2e/helpers/datagrid-helpers.js';
 import {$, $$, click, getBrowserAndPages, waitFor, waitForFunction} from '../../shared/helper.js';
-import {loadComponentDocExample, preloadForCodeCoverage} from '../helpers/shared.js';
-
-import {type ElementHandle} from 'puppeteer-core';
+import {loadComponentDocExample} from '../helpers/shared.js';
 
 function assertNumberBetween(number: number, min: number, max: number) {
   assert.isAbove(number, min);
@@ -58,8 +57,6 @@ async function getColumnPercentageWidthsRounded(dataGrid: ElementHandle<Element>
 // Constantly failing in autoroll not because of the tests itself but
 // because of the code coverage in afterEach.
 describe.skip('[crbug.com/1463394]: data grid', () => {
-  preloadForCodeCoverage('data_grid/basic.html');
-
   it('lists the data grid contents', async () => {
     await loadComponentDocExample('data_grid/basic.html');
     const dataGrid = await getDataGrid();
@@ -326,26 +323,25 @@ describe.skip('[crbug.com/1463394]: data grid', () => {
          await waitForScrollTopOfDataGrid(dataGrid, 89);
        });
 
-    it(
-        'will resume autoscroll if the user clicks a cell but then scrolls to the bottom', async () => {
-          const {frontend} = getBrowserAndPages();
-          const dataGrid = await getDataGrid();
-          await assertDataGridNotScrolled(dataGrid);
+    it('will resume autoscroll if the user clicks a cell but then scrolls to the bottom', async () => {
+      const {frontend} = getBrowserAndPages();
+      const dataGrid = await getDataGrid();
+      await assertDataGridNotScrolled(dataGrid);
 
-          await click('tr[aria-rowindex="1"] > td[aria-colindex="1"]');
-          await waitFor('tr.selected', dataGrid);
-          // And new row and ensure we have not auto scrolled as we have a cell selected.
-          await frontend.evaluate('window.addNewRow()');
-          await getDataGridRows(11, dataGrid);
-          await waitForScrollTopOfDataGrid(dataGrid, 0);
+      await click('tr[aria-rowindex="1"] > td[aria-colindex="1"]');
+      await waitFor('tr.selected', dataGrid);
+      // And new row and ensure we have not auto scrolled as we have a cell selected.
+      await frontend.evaluate('window.addNewRow()');
+      await getDataGridRows(11, dataGrid);
+      await waitForScrollTopOfDataGrid(dataGrid, 0);
 
-          // Now scroll down to the very bottom of the grid
-          await scrollDataGridDown(dataGrid, 89);
-          await frontend.evaluate('window.addNewRow()');
-          await getDataGridRows(12, dataGrid);
-          // Ensure the scrollTop has changed: we are auto-scrolling again as the
-          // user scrolled to the bottom
-          await waitForScrollTopOfDataGrid(dataGrid, 109);
-        });
+      // Now scroll down to the very bottom of the grid
+      await scrollDataGridDown(dataGrid, 89);
+      await frontend.evaluate('window.addNewRow()');
+      await getDataGridRows(12, dataGrid);
+      // Ensure the scrollTop has changed: we are auto-scrolling again as the
+      // user scrolled to the bottom
+      await waitForScrollTopOfDataGrid(dataGrid, 109);
+    });
   });
 });

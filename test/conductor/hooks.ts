@@ -8,8 +8,6 @@
 // https://github.com/evanw/esbuild/issues/587#issuecomment-901397213
 import puppeteer = require('puppeteer-core');
 
-import {type CoverageMapData} from 'istanbul-lib-coverage';
-
 import {
   clearPuppeteerState,
   getBrowserAndPages,
@@ -267,12 +265,6 @@ export async function postFileTeardown() {
 
   clearPuppeteerState();
   dumpCollectedErrors();
-}
-
-export function collectCoverageFromPage(): Promise<CoverageMapData|undefined> {
-  const {frontend} = getBrowserAndPages();
-
-  return frontend.evaluate('window.__coverage__') as Promise<CoverageMapData|undefined>;
 }
 
 export function getDevToolsFrontendHostname(): string {

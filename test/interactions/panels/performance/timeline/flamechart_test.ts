@@ -6,11 +6,9 @@ import type * as puppeteer from 'puppeteer-core';
 
 import {waitFor, waitForFunction} from '../../../../shared/helper.js';
 import {assertElementScreenshotUnchanged} from '../../../../shared/screenshots.js';
-import {loadComponentDocExample, preloadForCodeCoverage} from '../../../helpers/shared.js';
+import {loadComponentDocExample} from '../../../helpers/shared.js';
 
 describe('FlameChart', function() {
-  preloadForCodeCoverage('performance_panel/flamechart.html');
-
   async function getFlameChartContainerWhenReady(selector: string): Promise<puppeteer.ElementHandle<HTMLDivElement>> {
     // The container element exists immediately, but we want to wait for the
     // flamechart widget to expand and fill the space.

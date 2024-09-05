@@ -48,6 +48,10 @@ const UIStringsTemp = {
    */
   selectAnElement: 'Select an element',
   /**
+   *@description Label for the "select an element" button.
+   */
+  noElementSelected: 'No element selected',
+  /**
    *@description Text for the empty state of the Freestyler panel.
    */
   emptyStateText: 'How can I help you?',
@@ -523,39 +527,37 @@ export class FreestylerChatUi extends HTMLElement {
   };
 
   #renderSelectAnElement = (): LitHtml.TemplateResult => {
-    const data: Omit<Buttons.Button.ButtonData, 'variant'> = {
-      size: Buttons.Button.Size.SMALL,
-      iconName: 'select-element',
-      toggledIconName: 'select-element',
-      toggleType: Buttons.Button.ToggleType.PRIMARY,
-      toggled: this.#props.inspectElementToggled,
-      title: i18nString(UIStringsTemp.selectAnElement),
-      jslogContext: 'select-element',
-    };
+    const resourceClass = LitHtml.Directives.classMap({
+      'not-selected': !this.#props.selectedElement,
+      'resource-link': true,
+    });
 
     // clang-format off
-    return this.#props.selectedElement
-      ? LitHtml.html`
+    return LitHtml.html`
+      <div class="select-element">
         <${Buttons.Button.Button.litTagName}
           .data=${{
-            variant: Buttons.Button.Variant.ICON_TOGGLE,
-            ...data,
+              variant: Buttons.Button.Variant.ICON_TOGGLE,
+              size: Buttons.Button.Size.REGULAR,
+              iconName: 'select-element',
+              toggledIconName: 'select-element',
+              toggleType: Buttons.Button.ToggleType.PRIMARY,
+              toggled: this.#props.inspectElementToggled,
+              title: i18nString(UIStringsTemp.selectAnElement),
+              jslogContext: 'select-element',
           } as Buttons.Button.ButtonData}
           @click=${this.#props.onInspectElementClick}
         ></${Buttons.Button.Button.litTagName}>
-        ${LitHtml.Directives.until(
-          Common.Linkifier.Linkifier.linkify(this.#props.selectedElement),
-        )}`
-      : LitHtml.html`
-        <${Buttons.Button.Button.litTagName}
-          .data=${{
-            variant: Buttons.Button.Variant.TEXT,
-            ...data,
-          } as Buttons.Button.ButtonData}
-          @click=${this.#props.onInspectElementClick}
-        ><span class="select-an-element-text">${i18nString(
-          UIStringsTemp.selectAnElement,
-        )}</span></${Buttons.Button.Button.litTagName}>`;
+        <div class=${resourceClass}>${
+          this.#props.selectedElement
+            ? LitHtml.Directives.until(
+                  Common.Linkifier.Linkifier.linkify(this.#props.selectedElement),
+                )
+            : LitHtml.html`<span>${
+              i18nString(UIStringsTemp.noElementSelected)
+            }</span>`
+        }</div>
+      </div>`;
     // clang-format on
   };
 

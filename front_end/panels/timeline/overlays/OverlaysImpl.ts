@@ -53,9 +53,7 @@ export interface EntrySelected {
 export interface EntryOutline {
   type: 'ENTRY_OUTLINE';
   entry: OverlayEntry;
-  // Currently the only supported use-case is highlighting errors, but we may
-  // want to expand this in the future and have the outline appear differently.
-  outlineReason: 'ERROR';
+  outlineReason: 'ERROR'|'INFO';
 }
 
 /**

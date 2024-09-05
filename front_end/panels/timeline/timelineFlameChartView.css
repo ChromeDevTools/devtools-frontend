@@ -43,6 +43,10 @@
   &.outline-reason-ERROR {
     border-color: var(--sys-color-error-bright);
   }
+
+  &.outline-reason-INFO {
+    border-color: var(--sys-color-primary);
+  }
 }
 
 .overlay-type-CANDY_STRIPED_TIME_RANGE {

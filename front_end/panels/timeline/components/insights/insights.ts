@@ -10,6 +10,7 @@ import * as LCPPhases from './LCPPhases.js';
 import * as NodeLink from './NodeLink.js';
 import * as RenderBlocking from './RenderBlocking.js';
 import * as SidebarInsight from './SidebarInsight.js';
+import * as ThirdParties from './ThirdParties.js';
 import * as Types from './types.js';
 import * as Viewport from './Viewport.js';
 
@@ -22,6 +23,7 @@ export {
   NodeLink,
   RenderBlocking,
   SidebarInsight,
+  ThirdParties,
   Types,
   Viewport,
 };

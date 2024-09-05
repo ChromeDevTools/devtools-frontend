@@ -18,8 +18,7 @@ type Entity = typeof ThirdPartyWeb.ThirdPartyWeb.entities[number];
 
 interface Summary {
   transferSize: number;
-  // Microseconds.
-  mainThreadTime: number;
+  mainThreadTime: Types.Timing.MicroSeconds;
 }
 
 export type ThirdPartyWebInsightResult = InsightResult<{
@@ -27,6 +26,8 @@ export type ThirdPartyWebInsightResult = InsightResult<{
   requestsByEntity: Map<Entity, Types.TraceEvents.SyntheticNetworkRequest[]>,
   summaryByRequest: Map<Types.TraceEvents.SyntheticNetworkRequest, Summary>,
   summaryByEntity: Map<Entity, Summary>,
+  /** The entity for this navigation's URL. Any other entity is from a third party. */
+  firstPartyEntity?: Entity,
 }>;
 
 /**
@@ -155,12 +156,13 @@ function getSummaries(
     selfTimeByUrl: Map<string, number>): SummaryMaps {
   const byRequest = new Map<Types.TraceEvents.SyntheticNetworkRequest, Summary>();
   const byEntity = new Map<Entity, Summary>();
-  const defaultSummary = {transferSize: 0, mainThreadTime: 0};
+  const defaultSummary: Summary = {transferSize: 0, mainThreadTime: Types.Timing.MicroSeconds(0)};
 
   for (const request of requests) {
     const urlSummary = byRequest.get(request) || {...defaultSummary};
     urlSummary.transferSize += request.args.data.encodedDataLength;
-    urlSummary.mainThreadTime += selfTimeByUrl.get(request.args.data.url) ?? 0;
+    urlSummary.mainThreadTime =
+        Types.Timing.MicroSeconds(urlSummary.mainThreadTime + (selfTimeByUrl.get(request.args.data.url) ?? 0));
     byRequest.set(request, urlSummary);
   }
 
@@ -175,7 +177,8 @@ function getSummaries(
 
     const entitySummary = byEntity.get(entity) || {...defaultSummary};
     entitySummary.transferSize += requestSummary.transferSize;
-    entitySummary.mainThreadTime += requestSummary.mainThreadTime;
+    entitySummary.mainThreadTime =
+        Types.Timing.MicroSeconds(entitySummary.mainThreadTime + requestSummary.mainThreadTime);
     byEntity.set(entity, entitySummary);
 
     const entityRequests = requestsByEntity.get(entity) || [];
@@ -214,10 +217,15 @@ export function generateInsight(
   const selfTimeByUrl = getSelfTimeByUrl(traceData, context);
   const summaries = getSummaries(networkRequests, entityByRequest, selfTimeByUrl);
 
+  const firstPartyUrl = context.navigation.args.data?.url ?? traceData.Meta.mainFrameURL;
+  const firstPartyEntity =
+      ThirdPartyWeb.ThirdPartyWeb.getEntity(firstPartyUrl) || makeUpEntity(madeUpEntityCache, firstPartyUrl);
+
   return {
     entityByRequest,
     requestsByEntity: summaries.requestsByEntity,
     summaryByRequest: summaries.byRequest,
     summaryByEntity: summaries.byEntity,
+    firstPartyEntity,
   };
 }

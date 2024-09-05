@@ -378,7 +378,12 @@ const resolveScope = async(script: SDK.Script.Script, scopeChain: Formatter.Form
 export const resolveScopeChain =
     async function(callFrame: SDK.DebuggerModel.CallFrame): Promise<SDK.DebuggerModel.ScopeChainEntry[]> {
   const {pluginManager} = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
-  const scopeChain = await pluginManager.resolveScopeChain(callFrame);
+  let scopeChain: SDK.DebuggerModel.ScopeChainEntry[]|null|undefined = await pluginManager.resolveScopeChain(callFrame);
+  if (scopeChain) {
+    return scopeChain;
+  }
+
+  scopeChain = callFrame.script.sourceMap()?.resolveScopeChain(callFrame);
   if (scopeChain) {
     return scopeChain;
   }

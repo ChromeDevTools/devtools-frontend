@@ -422,19 +422,19 @@ describe('decodeGeneratedRanges', () => {
     ]);
   });
 
-  it('decodes the "isScope" flag', () => {
+  it('decodes the "isFunctionScope" flag', () => {
     const range = new GeneratedRangeBuilder([])
                       .start(0, 0)
-                      .start(5, 0, {isScope: true})
+                      .start(5, 0, {isFunctionScope: true})
                       .end(10, 0)
-                      .start(20, 4, {isScope: false})
+                      .start(20, 4, {isFunctionScope: false})
                       .end(30, 0)
                       .end(40, 0)
                       .build();
 
     const [generatedRange] = decodeGeneratedRanges(range, [], []);
     assert.lengthOf(generatedRange.children, 2);
-    assert.isTrue(generatedRange.children[0].isScope);
-    assert.isFalse(generatedRange.children[1].isScope);
+    assert.isTrue(generatedRange.children[0].isFunctionScope);
+    assert.isFalse(generatedRange.children[1].isFunctionScope);
   });
 });

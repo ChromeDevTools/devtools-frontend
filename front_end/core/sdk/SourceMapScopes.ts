@@ -42,9 +42,9 @@ export interface GeneratedRange {
   originalScope?: OriginalScope;
 
   /**
-   * Whether this generated range is an actual JavaScript scope in the generated code.
+   * Whether this generated range is an actual JavaScript function in the generated code.
    */
-  isScope: boolean;
+  isFunctionScope: boolean;
 
   /**
    * If this `GeneratedRange` is the result of inlining `originalScope`, then `callsite`
@@ -196,7 +196,7 @@ export function decodeGeneratedRanges(
   const rangeStack: GeneratedRange[] = [{
     start: {line: 0, column: 0},
     end: {line: 0, column: 0},
-    isScope: false,
+    isFunctionScope: false,
     children: [],
     values: [],
   }];
@@ -207,7 +207,7 @@ export function decodeGeneratedRanges(
       const range: GeneratedRange = {
         start: {line: item.line, column: item.column},
         end: {line: item.line, column: item.column},
-        isScope: Boolean(item.flags & EncodedGeneratedRangeFlag.IS_SCOPE),
+        isFunctionScope: Boolean(item.flags & EncodedGeneratedRangeFlag.IS_FUNCTION_SCOPE),
         values: [],
         children: [],
       };
@@ -308,7 +308,7 @@ interface EncodedGeneratedRangeEnd {
 export const enum EncodedGeneratedRangeFlag {
   HAS_DEFINITION = 0x1,
   HAS_CALLSITE = 0x2,
-  IS_SCOPE = 0x4,
+  IS_FUNCTION_SCOPE = 0x4,
 }
 
 function isRangeStart(item: EncodedGeneratedRangeStart|EncodedGeneratedRangeEnd): item is EncodedGeneratedRangeStart {

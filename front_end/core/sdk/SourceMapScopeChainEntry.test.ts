@@ -50,7 +50,7 @@ describeWithMockConnection('SourceMapScopeRemoteObject', () => {
     const range: SDK.SourceMapScopes.GeneratedRange = {
       start: {line: 0, column: 0},
       end: {line: 0, column: 200},
-      isScope: false,
+      isFunctionScope: false,
       values: ['a'],
       children: [],
     };
@@ -83,7 +83,7 @@ describeWithMockConnection('SourceMapScopeRemoteObject', () => {
     const range: SDK.SourceMapScopes.GeneratedRange = {
       start: {line: 0, column: 0},
       end: {line: 0, column: 200},
-      isScope: false,
+      isFunctionScope: false,
       values: [[
         {from: {line: 0, column: 0}, to: {line: 0, column: 50}, value: 'a'},     // From 0..50 available as 'a'.
         {from: {line: 0, column: 50}, to: {line: 0, column: 150}},               // From 50..150 unavailable.

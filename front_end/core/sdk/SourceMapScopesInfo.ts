@@ -61,10 +61,10 @@ export class SourceMapScopesInfo {
 
       // Record the name if the range corresponds to a function scope in the authored code. And it's either a scope in the
       // generated code as well or it has a callsite info (which indicates inlining).
-      if (originalScope?.kind === 'function' && (range.isScope || range.callsite)) {
+      if (originalScope?.kind === 'function' && (range.isFunctionScope || range.callsite)) {
         result.push({name: originalScope.name ?? '', callsite: range.callsite});
 
-        if (range.isScope) {
+        if (range.isFunctionScope) {
           break;
         }
       }

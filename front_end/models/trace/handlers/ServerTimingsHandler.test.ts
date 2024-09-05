@@ -2,10 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as TraceEngine from '../trace.js';
 
-describe('ServerTimingsHandler', () => {
+describeWithEnvironment('ServerTimingsHandler', () => {
   it('extracts server timings from network request trace events', async function() {
     const traceEngineData = await TraceLoader.traceEngine(this, 'server-timings.json.gz');
     const events = traceEngineData.traceData.ServerTimings.serverTimings;

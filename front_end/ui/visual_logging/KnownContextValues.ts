@@ -371,6 +371,7 @@ export const knownContextValues = new Set([
   'animations.playback-rate-100',
   'animations.playback-rate-25',
   'animations.remove-preview',
+  'annotations-hidden',
   'another_id',
   'answer',
   'apca',

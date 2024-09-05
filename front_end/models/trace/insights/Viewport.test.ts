@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as TraceModel from '../trace.js';
 
@@ -26,7 +27,7 @@ function getInsight(insights: TraceModel.Insights.Types.TraceInsightData, naviga
   return insight;
 }
 
-describe('Viewport', function() {
+describeWithEnvironment('Viewport', function() {
   it('detects mobile optimized viewport', async () => {
     const {data, insights} = await processTrace(this, 'lcp-images.json.gz');
     const insight = getInsight(insights, data.Meta.navigationsByNavigationId.keys().next().value);

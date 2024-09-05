@@ -163,6 +163,7 @@ export async function initializeGlobalVars({reset = true} = {}) {
     createSettingValue(Common.Settings.SettingCategory.ELEMENTS, 'show-detailed-inspect-tooltip', true),
     createSettingValue(Common.Settings.SettingCategory.ELEMENTS, 'show-html-comments', true),
     createSettingValue(Common.Settings.SettingCategory.ELEMENTS, 'show-ua-shadow-dom', false),
+    createSettingValue(Common.Settings.SettingCategory.PERFORMANCE, 'annotations-hidden', false),
     createSettingValue(Common.Settings.SettingCategory.NETWORK, 'cache-disabled', false),
     createSettingValue(Common.Settings.SettingCategory.RENDERING, 'avif-format-disabled', false),
     createSettingValue(

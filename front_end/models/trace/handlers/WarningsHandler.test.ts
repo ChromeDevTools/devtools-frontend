@@ -2,10 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as TraceEngine from '../trace.js';
 
-describe('WarningsHandler', function() {
+describeWithEnvironment('WarningsHandler', function() {
   beforeEach(() => {
     TraceEngine.Handlers.ModelHandlers.Warnings.reset();
   });

@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as TraceEngine from '../../models/trace/trace.js';
+import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {getMainThread} from '../../testing/TraceHelpers.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
 
@@ -19,7 +20,7 @@ function findFirstEntry(
   return entry;
 }
 
-describe('EventsSerializer', () => {
+describeWithEnvironment('EventsSerializer', () => {
   it('correctly implements a bidirectional key <-> event mapping', async function() {
     const {traceData} = await TraceLoader.traceEngine(this, 'basic-stack.json.gz');
     const eventsSerializer = new Timeline.EventsSerializer.EventsSerializer();

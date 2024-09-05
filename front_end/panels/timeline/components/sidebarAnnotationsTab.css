@@ -6,11 +6,18 @@
 
 :host {
   display: block;
+  height: 100%;
 }
 
 .annotations {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
   padding: 0;
+}
+
+.visibility-setting {
+  margin-top: auto;
 }
 
 .bin-icon {

@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import type * as TraceModel from '../trace.js';
 
@@ -26,7 +27,7 @@ function getInsight(insights: TraceModel.Insights.Types.TraceInsightData, naviga
   return insight;
 }
 
-describe('RenderBlockingRequests', function() {
+describeWithEnvironment('RenderBlockingRequests', function() {
   it('finds render blocking requests', async () => {
     const {data, insights} = await processTrace(this, 'load-simple.json.gz');
     assert.strictEqual(insights.size, 1);

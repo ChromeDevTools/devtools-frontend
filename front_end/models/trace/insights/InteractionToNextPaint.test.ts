@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as TraceModel from '../trace.js';
 
@@ -14,7 +15,7 @@ export async function processTrace(testContext: Mocha.Suite|Mocha.Context|null, 
   return {data: traceData, insights};
 }
 
-describe('InteractionToNextPaint', function() {
+describeWithEnvironment('InteractionToNextPaint', function() {
   const test = (traceFile: string, longest?: number, highPercentile?: number) => {
     if (highPercentile === undefined) {
       highPercentile = longest;

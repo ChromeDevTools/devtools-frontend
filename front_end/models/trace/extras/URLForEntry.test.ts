@@ -2,10 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as TraceEngine from '../trace.js';
 
-describe('URLForEntry', () => {
+describeWithEnvironment('URLForEntry', () => {
   it('returns the URL in event.args.data if it has one', async function() {
     const {traceData} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
     const commitLoadEvent =

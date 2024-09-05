@@ -2,11 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
 import * as TimelineModel from '../timeline_model/timeline_model.js';
 import * as TraceEngine from '../trace/trace.js';
 
-describe('TimelineModelFilter', () => {
+describeWithEnvironment('TimelineModelFilter', () => {
   describe('TimelineVisibleEventsFilter', () => {
     it('accepts events that are set in the constructor and rejects other events', async function() {
       const {traceData} = await TraceLoader.traceEngine(this, 'user-timings.json.gz');

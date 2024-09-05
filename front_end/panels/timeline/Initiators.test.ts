@@ -3,11 +3,12 @@
 // found in the LICENSE file.
 
 import * as TraceEngine from '../../models/trace/trace.js';
+import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
 
 import * as Timeline from './timeline.js';
 
-describe('Initiators', () => {
+describeWithEnvironment('Initiators', () => {
   it('returns the initiator data', async function() {
     const {traceData} = await TraceLoader.traceEngine(this, 'set-timeout-long-task.json.gz');
 

@@ -2327,7 +2327,7 @@ export class StatusPane extends UI.Widget.VBox {
 
   startTimer(): void {
     this.startTime = Date.now();
-    this.timeUpdateTimer = window.setInterval(this.updateTimer.bind(this, false), 1000);
+    this.timeUpdateTimer = window.setInterval(this.updateTimer.bind(this), 1000);
     this.updateTimer();
   }
 
@@ -2336,17 +2336,17 @@ export class StatusPane extends UI.Widget.VBox {
       return;
     }
     clearInterval(this.timeUpdateTimer);
-    this.updateTimer(true);
+    this.updateTimer();
     delete this.timeUpdateTimer;
   }
 
-  private updateTimer(precise?: boolean): void {
+  private updateTimer(): void {
     this.arrangeDialog((this.element.parentNode as HTMLElement));
     if (!this.timeUpdateTimer || !this.time) {
       return;
     }
     const elapsed = (Date.now() - this.startTime) / 1000;
-    this.time.textContent = i18nString(UIStrings.ssec, {PH1: elapsed.toFixed(precise ? 1 : 0)});
+    this.time.textContent = i18nString(UIStrings.ssec, {PH1: Math.round(elapsed)});
   }
 
   private arrangeDialog(parent: Element): void {

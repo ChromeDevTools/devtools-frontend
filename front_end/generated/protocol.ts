@@ -3797,6 +3797,12 @@ export namespace DOM {
     ViewTransitionImagePair = 'view-transition-image-pair',
     ViewTransitionOld = 'view-transition-old',
     ViewTransitionNew = 'view-transition-new',
+    Placeholder = 'placeholder',
+    FileSelectorButton = 'file-selector-button',
+    DetailsContent = 'details-content',
+    SelectFallbackButton = 'select-fallback-button',
+    SelectFallbackButtonText = 'select-fallback-button-text',
+    Picker = 'picker',
   }
 
   /**
@@ -11575,6 +11581,7 @@ export namespace Page {
     ClipboardRead = 'clipboard-read',
     ClipboardWrite = 'clipboard-write',
     ComputePressure = 'compute-pressure',
+    ControlledFrame = 'controlled-frame',
     CrossOriginIsolated = 'cross-origin-isolated',
     DeferredFetch = 'deferred-fetch',
     DigitalCredentialsGet = 'digital-credentials-get',

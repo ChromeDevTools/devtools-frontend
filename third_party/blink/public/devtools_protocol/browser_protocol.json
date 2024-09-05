@@ -5680,7 +5680,13 @@
                         "view-transition-group",
                         "view-transition-image-pair",
                         "view-transition-old",
-                        "view-transition-new"
+                        "view-transition-new",
+                        "placeholder",
+                        "file-selector-button",
+                        "details-content",
+                        "select-fallback-button",
+                        "select-fallback-button-text",
+                        "picker"
                     ]
                 },
                 {
@@ -17181,6 +17187,7 @@
                         "clipboard-read",
                         "clipboard-write",
                         "compute-pressure",
+                        "controlled-frame",
                         "cross-origin-isolated",
                         "deferred-fetch",
                         "digital-credentials-get",

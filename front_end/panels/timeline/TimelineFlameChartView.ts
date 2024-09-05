@@ -307,6 +307,10 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     if (insight) {
       const newInsightOverlays = insight.createOverlayFn();
       this.#currentInsightOverlays = newInsightOverlays;
+      if (this.#currentInsightOverlays.length === 0) {
+        return;
+      }
+
       const entries: TraceEngine.Types.TraceEvents.TraceEventData[] = [];
 
       for (const overlay of this.#currentInsightOverlays) {
@@ -318,14 +322,17 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
           }
         }
       }
-      if (entries.length > 0) {
-        const earliestEntry =
-            entries.reduce((earliest, current) => (earliest.ts < current.ts ? earliest : current), entries[0]);
-        // Reveal the earliest event found from the overlays.
-        this.revealEvent(earliestEntry);
+
+      if (entries.length === 0) {
+        return;
       }
 
-      const overlaysBounds = this.calculateOverlaysTraceWindow(this.#currentInsightOverlays);
+      const earliestEntry =
+          entries.reduce((earliest, current) => (earliest.ts < current.ts ? earliest : current), entries[0]);
+      // Reveal the earliest event found from the overlays.
+      this.revealEvent(earliestEntry);
+
+      const overlaysBounds = this.#calculateOverlaysTraceWindow(this.#currentInsightOverlays);
       // Trace window covering all overlays expanded by 100% so that the overlays cover 50% of the visible window.
       const expandedBounds =
           TraceEngine.Helpers.Timing.expandWindowByPercentOrToOneMillisecond(overlaysBounds, minimapBounds, 100);
@@ -334,7 +341,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
   }
 
   // Returns a trace windows that covers all provided overlays.
-  calculateOverlaysTraceWindow(overlays: Overlays.Overlays.TimelineOverlay[]):
+  #calculateOverlaysTraceWindow(overlays: Overlays.Overlays.TimelineOverlay[]):
       TraceEngine.Types.Timing.TraceWindowMicroSeconds {
     const allOverlayBounds: TraceEngine.Types.Timing.MicroSeconds[] = [];
 

@@ -310,10 +310,14 @@ export class FreestylerPanel extends UI.Panel.Panel {
           break;
         }
         case ResponseType.ANSWER: {
-          step.isLoading = false;
           systemMessage.suggestingFix = data.fixable;
           systemMessage.answer = data.text;
           systemMessage.rpcId = data.rpcId;
+          // When there is an answer without any thinking steps, we don't want to show the thinking step.
+          if (systemMessage.steps.length === 1 && systemMessage.steps[0].isLoading) {
+            systemMessage.steps.pop();
+          }
+          step.isLoading = false;
           this.#viewProps.isLoading = false;
           break;
         }

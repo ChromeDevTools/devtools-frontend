@@ -176,8 +176,17 @@
   width: fit-content;
   background-color: var(--sys-color-surface3);
   border-radius: var(--sys-size-6);
+  position: relative;
 
-  &:not(&[open]):hover {
+  &:not(&[open]):hover::after {
+    content: "";
+    height: 100%;
+    width: 100%;
+    border-radius: inherit;
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
     background-color: var(--sys-color-state-hover-on-subtle);
   }
 

@@ -5,7 +5,6 @@
 import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
-import * as Platform from '../../../core/platform/platform.js';
 import * as TraceEngine from '../../../models/trace/trace.js';
 import * as TraceBounds from '../../../services/trace_bounds/trace_bounds.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
@@ -13,6 +12,7 @@ import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as Settings from '../../../ui/components/settings/settings.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
+import {nameForEntry} from './EntryName.js';
 import {RemoveAnnotation} from './Sidebar.js';
 import sidebarAnnotationsTabStyles from './sidebarAnnotationsTab.css.js';
 
@@ -82,25 +82,6 @@ export class SidebarAnnotationsTab extends HTMLElement {
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
 
-  #entryNameForLabel(annotation: TraceEngine.Types.File.EntryLabelAnnotation): string {
-    if (TraceEngine.Types.TraceEvents.isLegacyTimelineFrame(annotation.entry)) {
-      return 'Frame';
-    }
-
-    if (TraceEngine.Types.TraceEvents.isProfileCall(annotation.entry)) {
-      return annotation.entry.callFrame.functionName;
-    }
-
-    if (TraceEngine.Types.TraceEvents.isSyntheticNetworkRequestEvent(annotation.entry)) {
-      const parsedURL = new Common.ParsedURL.ParsedURL(annotation.entry.args.data.url);
-      const text = parsedURL.isValid ? `${parsedURL.displayName} (${parsedURL.host})` :
-                                       annotation.entry.args.data.url || 'Network request';
-      return Platform.StringUtilities.trimEndWithMaxLength(text, 40);
-    }
-
-    return annotation.entry.name;
-  }
-
   /**
    * Renders the Annotation 'identifier' or 'name' in the annotations list.
    * This is the text rendered before the annotation label that we use to indentify the annotation.
@@ -115,7 +96,7 @@ export class SidebarAnnotationsTab extends HTMLElement {
   #renderAnnotationIdentifier(annotation: TraceEngine.Types.File.Annotation): LitHtml.LitTemplate {
     switch (annotation.type) {
       case 'ENTRY_LABEL': {
-        const entryName = this.#entryNameForLabel(annotation);
+        const entryName = nameForEntry(annotation.entry);
         const color = this.#annotationEntryToColorMap.get(annotation.entry);
 
         return LitHtml.html`

@@ -29,6 +29,7 @@ devtools_module("components") {
     "BreadcrumbsUI.ts",
     "CPUThrottlingSelector.ts",
     "DetailsView.ts",
+    "EntryName.ts",
     "FieldSettingsDialog.ts",
     "InteractionBreakdown.ts",
     "LiveMetricsView.ts",
@@ -94,6 +95,7 @@ ts_library("unittests") {
   sources = [
     "BreadcrumbsUI.test.ts",
     "CPUThrottlingSelector.test.ts",
+    "EntryName.test.ts",
     "FieldSettingsDialog.test.ts",
     "InteractionBreakdown.test.ts",
     "Invalidations.test.ts",
@@ -107,6 +109,7 @@ ts_library("unittests") {
   deps = [
     ":bundle",
     "../../../core/sdk:bundle",
+    "../../../models/cpu_profile:bundle",
     "../../../models/trace:bundle",
     "../../../testing",
     "../../../ui/components/render_coordinator:bundle",

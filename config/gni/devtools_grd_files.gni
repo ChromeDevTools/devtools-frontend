@@ -1763,6 +1763,7 @@ grd_files_debug_sources = [
   "front_end/panels/timeline/components/BreadcrumbsUI.js",
   "front_end/panels/timeline/components/CPUThrottlingSelector.js",
   "front_end/panels/timeline/components/DetailsView.js",
+  "front_end/panels/timeline/components/EntryName.js",
   "front_end/panels/timeline/components/FieldSettingsDialog.js",
   "front_end/panels/timeline/components/InteractionBreakdown.js",
   "front_end/panels/timeline/components/LiveMetricsView.js",

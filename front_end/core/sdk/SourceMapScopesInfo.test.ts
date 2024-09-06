@@ -415,5 +415,95 @@ describe('SourceMapScopesInfo', () => {
       assert.isUndefined(properties[1].value);
       assert.isUndefined(properties[1].getter);
     });
+
+    it('returns the correct scopes for inlined functions', async () => {
+      //
+      //     orig. code                       gen. code
+      //              10        20                     10        20
+      //     012345678901234567890            012345678901234567890
+      //
+      //  0: function inner(x) {              print(42);debugger;
+      //  1:   print(x);
+      //  2:   debugger;
+      //  3: }
+      //  4:
+      //  5: function outer(y) {
+      //  6:   if (y) {
+      //  7:     inner(y);
+      //  8:   }
+      //  9: }
+      // 10:
+      // 11:  outer(42);
+      //
+      // Expectation: The scopes for the virtual call frame of outer are accurate.
+      //              In particular we also add a block scope that must be there.
+
+      const names: string[] = [];
+      const originalScopes = [new OriginalScopeBuilder(names)
+                                  .start(0, 0, 'global', undefined, ['inner', 'outer'])
+                                  .start(0, 14, 'function', 'inner', ['x'])
+                                  .end(3, 1)
+                                  .start(5, 14, 'function', 'outer', ['y'])
+                                  .start(6, 9, 'block')
+                                  .end(8, 3)
+                                  .end(9, 1)
+                                  .end(12, 0)
+                                  .build()];
+
+      const generatedRanges = new GeneratedRangeBuilder(names)
+                                  .start(0, 0, {definition: {sourceIdx: 0, scopeIdx: 0}})
+                                  .start(0, 0, {
+                                    definition: {sourceIdx: 0, scopeIdx: 3},
+                                    callsite: {sourceIdx: 0, line: 11, column: 0},
+                                    bindings: ['42'],
+                                  })
+                                  .start(0, 0, {definition: {sourceIdx: 0, scopeIdx: 4}})
+                                  .start(0, 0, {
+                                    definition: {sourceIdx: 0, scopeIdx: 1},
+                                    callsite: {sourceIdx: 0, line: 7, column: 4},
+                                    bindings: ['42'],
+                                  })
+                                  .end(0, 19)
+                                  .end(0, 19)
+                                  .end(0, 19)
+                                  .end(0, 19)
+                                  .build();
+
+      const {sourceMap, callFrame} = setUpCallFrameAndSourceMap({
+        generatedPausedPosition: {line: 0, column: 10},
+        mappedPausedPosition: {sourceIndex: 0, line: 3, column: 2},
+      });
+      const info = SourceMapScopesInfo.parseFromMap(sourceMap, {names, originalScopes, generatedRanges});
+
+      {
+        const scopeChain = info.resolveMappedScopeChain(callFrame);
+        assert.isNotNull(scopeChain);
+        assert.lengthOf(scopeChain, 2);
+        assert.strictEqual(scopeChain[0].type(), Protocol.Debugger.ScopeType.Local);
+        assert.strictEqual(scopeChain[0].name(), 'inner');
+      }
+
+      // @ts-expect-error stubbing readonly property.
+      callFrame['inlineFrameIndex'] = 1;
+
+      {
+        const scopeChain = info.resolveMappedScopeChain(callFrame);
+        assert.isNotNull(scopeChain);
+        assert.lengthOf(scopeChain, 3);
+        assert.strictEqual(scopeChain[0].type(), Protocol.Debugger.ScopeType.Block);
+        assert.strictEqual(scopeChain[1].type(), Protocol.Debugger.ScopeType.Local);
+        assert.strictEqual(scopeChain[1].name(), 'outer');
+      }
+
+      // @ts-expect-error stubbing readonly property.
+      callFrame['inlineFrameIndex'] = 2;
+
+      {
+        const scopeChain = info.resolveMappedScopeChain(callFrame);
+        assert.isNotNull(scopeChain);
+        assert.lengthOf(scopeChain, 1);
+        assert.strictEqual(scopeChain[0].type(), Protocol.Debugger.ScopeType.Global);
+      }
+    });
   });
 });

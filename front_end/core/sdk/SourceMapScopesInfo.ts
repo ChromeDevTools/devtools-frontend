@@ -151,8 +151,7 @@ export class SourceMapScopesInfo {
    *      values.
    */
   resolveMappedScopeChain(callFrame: CallFrame): ScopeChainEntry[]|null {
-    const rangeChain =
-        this.#findGeneratedRangeChain(callFrame.location().lineNumber, callFrame.location().columnNumber);
+    const rangeChain = this.#findGeneratedRangeChainForFrame(callFrame);
     const innerMostOriginalScope = rangeChain.at(-1)?.originalScope;
     if (innerMostOriginalScope === undefined) {
       return null;
@@ -186,6 +185,25 @@ export class SourceMapScopesInfo {
     }
 
     return result;
+  }
+
+  /** Similar to #findGeneratedRangeChain, but takes inlineFrameIndex of virtual call frames into account */
+  #findGeneratedRangeChainForFrame(callFrame: CallFrame): GeneratedRange[] {
+    const rangeChain =
+        this.#findGeneratedRangeChain(callFrame.location().lineNumber, callFrame.location().columnNumber);
+    if (callFrame.inlineFrameIndex === 0) {
+      return rangeChain;
+    }
+
+    // Drop ranges in the chain until we reach our desired inlined range.
+    for (let inlineIndex = 0; inlineIndex < callFrame.inlineFrameIndex;) {
+      const range = rangeChain.pop();
+      if (range?.callsite) {
+        ++inlineIndex;
+      }
+    }
+
+    return rangeChain;
   }
 }
 

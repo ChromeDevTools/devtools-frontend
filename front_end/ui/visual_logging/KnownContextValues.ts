@@ -3106,6 +3106,7 @@ export const knownContextValues = new Set([
   'url',
   'usage',
   'usb',
+  'use-browser-theme-colors',
   'use-code-with-caution',
   'use-custom-accepted-encodings',
   'use-source-map-scopes',

@@ -84,8 +84,8 @@
 }
 
 .device-mode-preset-bar {
-  border-left: 2px solid var(--sys-color-on-base-divider);
-  border-right: 2px solid var(--sys-color-on-base-divider);
+  border-left: 2px solid var(--sys-color-divider);
+  border-right: 2px solid var(--sys-color-divider);
   pointer-events: auto;
   text-align: center;
   flex: none;

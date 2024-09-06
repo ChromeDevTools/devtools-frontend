@@ -17,38 +17,48 @@ import * as Emulation from './emulation.js';
 describeWithMockConnection('AdvancedApp', () => {
   beforeEach(async () => {
     await deinitializeGlobalVars();
-    Common.Settings.registerSettingsForTest([{
-      category: Common.Settings.SettingCategory.GLOBAL,
-      settingName: 'currentDockState',
-      settingType: Common.Settings.SettingType.ENUM,
-      defaultValue: 'right',
-      options: [
-        {
-          value: 'right',
-          text: () => 'right' as Platform.UIString.LocalizedString,
-          title: () => 'Dock to right' as Platform.UIString.LocalizedString,
-          raw: false,
-        },
-        {
-          value: 'bottom',
-          text: () => 'bottom' as Platform.UIString.LocalizedString,
-          title: () => 'Dock to bottom' as Platform.UIString.LocalizedString,
-          raw: false,
-        },
-        {
-          value: 'left',
-          text: () => 'left' as Platform.UIString.LocalizedString,
-          title: () => 'Dock to left' as Platform.UIString.LocalizedString,
-          raw: false,
-        },
-        {
-          value: 'undocked',
-          text: () => 'undocked' as Platform.UIString.LocalizedString,
-          title: () => 'Undock' as Platform.UIString.LocalizedString,
-          raw: false,
-        },
-      ],
-    }]);
+    Common.Settings.registerSettingsForTest([
+      {
+        category: Common.Settings.SettingCategory.GLOBAL,
+        settingName: 'currentDockState',
+        settingType: Common.Settings.SettingType.ENUM,
+        defaultValue: 'right',
+        options: [
+          {
+            value: 'right',
+            text: () => 'right' as Platform.UIString.LocalizedString,
+            title: () => 'Dock to right' as Platform.UIString.LocalizedString,
+            raw: false,
+          },
+          {
+            value: 'bottom',
+            text: () => 'bottom' as Platform.UIString.LocalizedString,
+            title: () => 'Dock to bottom' as Platform.UIString.LocalizedString,
+            raw: false,
+          },
+          {
+            value: 'left',
+            text: () => 'left' as Platform.UIString.LocalizedString,
+            title: () => 'Dock to left' as Platform.UIString.LocalizedString,
+            raw: false,
+          },
+          {
+            value: 'undocked',
+            text: () => 'undocked' as Platform.UIString.LocalizedString,
+            title: () => 'Undock' as Platform.UIString.LocalizedString,
+            raw: false,
+          },
+        ],
+      },
+      {
+        category: Common.Settings.SettingCategory.APPEARANCE,
+        storageType: Common.Settings.SettingStorageType.SYNCED,
+        settingName: 'use-browser-theme-colors',
+        settingType: Common.Settings.SettingType.BOOLEAN,
+        defaultValue: true,
+        reloadRequired: true,
+      },
+    ]);
     await initializeGlobalVars({reset: false});
   });
 

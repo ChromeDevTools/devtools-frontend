@@ -205,6 +205,11 @@ const UIStrings = {
    * elements panel, only when the user presses Enter.
    */
   searchOnEnterCommand: 'Disable search as you type (press Enter to search)',
+  /**
+   * @description Label of a checkbox under the Appearance category in Settings. Allows developers
+   * to opt-in / opt-out of syncing DevTools' color theme with browser's color theme.
+   */
+  useBrowserThemeColors: 'Use browser theme colors',
 };
 const str_ = i18n.i18n.registerUIStrings('entrypoints/main/main-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
@@ -601,6 +606,16 @@ Common.Settings.registerSettingExtension({
     i18nLazyString(UIStrings.darkLower),
     i18nLazyString(UIStrings.lightLower),
   ],
+});
+
+Common.Settings.registerSettingExtension({
+  category: Common.Settings.SettingCategory.APPEARANCE,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
+  title: i18nLazyString(UIStrings.useBrowserThemeColors),
+  settingName: 'use-browser-theme-colors',
+  settingType: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: true,
+  reloadRequired: true,
 });
 
 Common.Settings.registerSettingExtension({

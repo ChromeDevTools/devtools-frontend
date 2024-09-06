@@ -49,24 +49,29 @@ export class SourceMapScopesInfo {
    * @returns a list with inlined functions. Every entry in the list has a callsite in the orignal code,
    * except the last function (since the last function didn't get inlined).
    */
-  findInlinedFunctions(generatedLine: number, generatedColumn: number): {name: string, callsite?: OriginalPosition}[] {
-    const result: {name: string, callsite?: OriginalPosition}[] = [];
+  findInlinedFunctions(generatedLine: number, generatedColumn: number): InlineInfo {
     const rangeChain = this.#findGeneratedRangeChain(generatedLine, generatedColumn);
+    const result: InlineInfo = {
+      inlinedFunctions: [],
+      originalFunctionName: '',
+    };
 
     // Walk the generated ranges from the innermost containing range outwards as long as we don't
     // encounter a range that is a scope in the generated code and a function scope originally.
     for (let i = rangeChain.length - 1; i >= 0; --i) {
       const range = rangeChain[i];
-      const originalScope = range.originalScope;
 
-      // Record the name if the range corresponds to a function scope in the authored code. And it's either a scope in the
-      // generated code as well or it has a callsite info (which indicates inlining).
-      if (originalScope?.kind === 'function' && (range.isFunctionScope || range.callsite)) {
-        result.push({name: originalScope.name ?? '', callsite: range.callsite});
-
-        if (range.isFunctionScope) {
-          break;
-        }
+      if (range.callsite) {
+        // Record the name and call-site if the range corresponds to an inlined function.
+        result.inlinedFunctions.push({name: range.originalScope?.name ?? '', callsite: range.callsite});
+      }
+      if (range.isFunctionScope) {
+        // We arrived at an actual generated JS function, don't go further.
+        // The corresponding original scope could not actually be a function
+        // (e.g. a block scope transpiled down to a JS function), but we'll
+        // filter that out later.
+        result.originalFunctionName = range.originalScope?.name ?? '';
+        break;
       }
     }
 
@@ -205,6 +210,20 @@ export class SourceMapScopesInfo {
 
     return rangeChain;
   }
+}
+
+/**
+ * Represents the inlining information for a given generated position.
+ *
+ * It contains a list of all the inlined original functions at the generated position
+ * as well as the original function name of the generated position's surrounding
+ * function.
+ *
+ * The inlined functions are sorted from inner to outer (or top to bottom on the stack).
+ */
+export interface InlineInfo {
+  inlinedFunctions: {name: string, callsite: OriginalPosition}[];
+  originalFunctionName: string;
 }
 
 export function contains(range: Pick<GeneratedRange, 'start'|'end'>, line: number, column: number): boolean {

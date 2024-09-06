@@ -33,7 +33,7 @@ describe('SourceMapScopesInfo', () => {
       const info = SourceMapScopesInfo.parseFromMap(
           sinon.createStubInstance(SDK.SourceMap.SourceMap), {names, originalScopes, generatedRanges});
 
-      assert.deepEqual(info.findInlinedFunctions(0, 3), [{name: 'foo', callsite: undefined}]);
+      assert.deepEqual(info.findInlinedFunctions(0, 3), {originalFunctionName: 'foo', inlinedFunctions: []});
     });
 
     it('returns the names of the surrounding function plus all the inlined function names', () => {
@@ -65,12 +65,14 @@ describe('SourceMapScopesInfo', () => {
       const info = SourceMapScopesInfo.parseFromMap(
           sinon.createStubInstance(SDK.SourceMap.SourceMap), {names, originalScopes, generatedRanges});
 
-      assert.deepEqual(info.findInlinedFunctions(0, 4), [{name: 'foo', callsite: undefined}]);
-      assert.deepEqual(info.findInlinedFunctions(0, 7), [
-        {name: 'baz', callsite: {sourceIndex: 0, line: 35, column: 0}},
-        {name: 'bar', callsite: {sourceIndex: 0, line: 15, column: 0}},
-        {name: 'foo', callsite: undefined},
-      ]);
+      assert.deepEqual(info.findInlinedFunctions(0, 4), {originalFunctionName: 'foo', inlinedFunctions: []});
+      assert.deepEqual(info.findInlinedFunctions(0, 7), {
+        originalFunctionName: 'foo',
+        inlinedFunctions: [
+          {name: 'baz', callsite: {sourceIndex: 0, line: 35, column: 0}},
+          {name: 'bar', callsite: {sourceIndex: 0, line: 15, column: 0}},
+        ],
+      });
     });
   });
 

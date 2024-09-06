@@ -74,6 +74,11 @@ const UIStringsTemp = {
    */
   syncIsOff: 'This feature requires you to turn on Chrome sync',
   /**
+   * @description The error message when the LLM loop is stopped for some reason (Max steps reached or request to LLM failed)
+   */
+  systemError:
+      'I apologize, but it seems that an unexpected error has occurred. Please try asking a different question or rephrasing your previous one',
+  /**
    * @description Message shown when the user is offline.
    */
   offline: 'Check your internet connection and try again',
@@ -515,6 +520,9 @@ export class FreestylerChatUi extends HTMLElement {
           message.answer !== undefined
             ? LitHtml.html`<p class="answer-step">${this.#renderTextAsMarkdown(message.answer)}</p>`
             : LitHtml.nothing
+        }
+        ${
+          (!message.answer && message.error) ? this.#renderTextAsMarkdown(i18nString(UIStringsTemp.systemError)) : LitHtml.nothing
         }
         <div class="actions">
           ${

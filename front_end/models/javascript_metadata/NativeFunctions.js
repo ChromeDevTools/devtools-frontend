@@ -7887,6 +7887,10 @@ export const NativeFunctions = [
     signatures: [["input","outputDataType","?options"]]
   },
   {
+    name: "dequantizeLinear",
+    signatures: [["input","scale","zeroPoint","?options"]]
+  },
+  {
     name: "elu",
     signatures: [["x","?options"]]
   },
@@ -7969,6 +7973,10 @@ export const NativeFunctions = [
   {
     name: "prelu",
     signatures: [["x","slope","?options"]]
+  },
+  {
+    name: "quantizeLinear",
+    signatures: [["input","scale","zeroPoint","?options"]]
   },
   {
     name: "reduceL1",

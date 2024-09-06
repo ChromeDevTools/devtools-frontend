@@ -2,9 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as i18n from '../../core/i18n/i18n.js';
-import * as TraceEngine from '../../models/trace/trace.js';
-import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
+import * as i18n from '../../../core/i18n/i18n.js';
+import * as TraceEngine from '../../../models/trace/trace.js';
+import * as ThemeSupport from '../../../ui/legacy/theme_support/theme_support.js';
 
 const UIStrings = {
   /**
@@ -513,7 +513,7 @@ export enum EventCategory {
 
 let mainEventCategories: EventCategory[];
 
-const str_ = i18n.i18n.registerUIStrings('panels/timeline/EventUICategory.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/EntryStyles.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class TimelineRecordStyle {
@@ -533,7 +533,7 @@ export class TimelineCategory {
   visible: boolean;
   childColor: string;
   colorInternal: string;
-  private hiddenInternal?: boolean;
+  #hidden?: boolean;
 
   constructor(name: EventCategory, title: string, visible: boolean, childColor: string, color: string) {
     this.name = name;
@@ -545,7 +545,7 @@ export class TimelineCategory {
   }
 
   get hidden(): boolean {
-    return Boolean(this.hiddenInternal);
+    return Boolean(this.#hidden);
   }
 
   get color(): string {
@@ -560,7 +560,7 @@ export class TimelineCategory {
   }
 
   set hidden(hidden: boolean) {
-    this.hiddenInternal = hidden;
+    this.#hidden = hidden;
   }
 }
 

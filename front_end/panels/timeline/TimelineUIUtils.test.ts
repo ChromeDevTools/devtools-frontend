@@ -32,6 +32,7 @@ import {TraceLoader} from '../../testing/TraceLoader.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 
+import * as TimelineComponents from './components/components.js';
 import * as Timeline from './timeline.js';
 
 describeWithMockConnection('TimelineUIUtils', function() {
@@ -411,12 +412,12 @@ describeWithMockConnection('TimelineUIUtils', function() {
     });
 
     it('should return the correct rgb value for a corresponding CSS variable', function() {
-      const parsedColor = Timeline.EventUICategory.getCategoryStyles().scripting.getComputedColorValue();
+      const parsedColor = TimelineComponents.EntryStyles.getCategoryStyles().scripting.getComputedColorValue();
       assert.strictEqual('rgb(2 2 2)', parsedColor);
     });
 
     it('should return the color as a CSS variable', function() {
-      const cssVariable = Timeline.EventUICategory.getCategoryStyles().scripting.getCSSValue();
+      const cssVariable = TimelineComponents.EntryStyles.getCategoryStyles().scripting.getCSSValue();
       assert.strictEqual('var(--app-color-scripting)', cssVariable);
     });
 

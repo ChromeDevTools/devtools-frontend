@@ -11,7 +11,6 @@ import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 import {AnimationsTrackAppender} from './AnimationsTrackAppender.js';
 import {getEventLevel, type LastTimestampByLevel} from './AppenderUtils.js';
 import * as TimelineComponents from './components/components.js';
-import {getEventStyle} from './EventUICategory.js';
 import {ExtensionDataGatherer} from './ExtensionDataGatherer.js';
 import {ExtensionTrackAppender} from './ExtensionTrackAppender.js';
 import {GPUTrackAppender} from './GPUTrackAppender.js';
@@ -63,7 +62,8 @@ export function entryIsVisibleInTimeline(
 
   // Default styles are globally defined for each event name. Some
   // events are hidden by default.
-  const eventStyle = getEventStyle(entry.name as TraceEngine.Types.TraceEvents.KnownEventName);
+  const eventStyle =
+      TimelineComponents.EntryStyles.getEventStyle(entry.name as TraceEngine.Types.TraceEvents.KnownEventName);
   const eventIsTiming = TraceEngine.Types.TraceEvents.isTraceEventConsoleTime(entry) ||
       TraceEngine.Types.TraceEvents.isTraceEventPerformanceMeasure(entry) ||
       TraceEngine.Types.TraceEvents.isTraceEventPerformanceMark(entry);

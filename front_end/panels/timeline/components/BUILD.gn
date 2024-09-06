@@ -30,6 +30,7 @@ devtools_module("components") {
     "CPUThrottlingSelector.ts",
     "DetailsView.ts",
     "EntryName.ts",
+    "EntryStyles.ts",
     "FieldSettingsDialog.ts",
     "InteractionBreakdown.ts",
     "LiveMetricsView.ts",
@@ -85,6 +86,9 @@ devtools_entrypoint("bundle") {
   visibility = [
     ":*",
     "..:*",
+
+    # only for use in tests
+    "../../../models/trace/handlers/*",
     "../../../ui/components/docs/*",
   ]
 }

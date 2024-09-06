@@ -24,7 +24,7 @@ import {
   type TrackAppenderName,
   VisualLoggingTrackName,
 } from './CompatibilityTracksAppender.js';
-import {getCategoryStyles, getEventStyle} from './EventUICategory.js';
+import * as Components from './components/components.js';
 import * as ModificationsManager from './ModificationsManager.js';
 
 const UIStrings = {
@@ -573,19 +573,20 @@ export class ThreadAppender implements TrackAppender {
 
     if (TraceEngine.Types.TraceEvents.isProfileCall(event)) {
       if (event.callFrame.functionName === '(idle)') {
-        return getCategoryStyles().idle.getComputedColorValue();
+        return Components.EntryStyles.getCategoryStyles().idle.getComputedColorValue();
       }
       if (event.callFrame.scriptId === '0') {
         // If we can not match this frame to a script, return the
         // generic "scripting" color.
-        return getCategoryStyles().scripting.getComputedColorValue();
+        return Components.EntryStyles.getCategoryStyles().scripting.getComputedColorValue();
       }
       // Otherwise, return a color created based on its URL.
       return this.#colorGenerator.colorForID(event.callFrame.url);
     }
     const defaultColor =
-        getEventStyle(event.name as TraceEngine.Types.TraceEvents.KnownEventName)?.category.getComputedColorValue();
-    return defaultColor || getCategoryStyles().other.getComputedColorValue();
+        Components.EntryStyles.getEventStyle(event.name as TraceEngine.Types.TraceEvents.KnownEventName)
+            ?.category.getComputedColorValue();
+    return defaultColor || Components.EntryStyles.getCategoryStyles().other.getComputedColorValue();
   }
 
   /**
@@ -622,7 +623,8 @@ export class ThreadAppender implements TrackAppender {
       return i18nString(UIStrings.eventDispatchS, {PH1: entry.args.data.type});
     }
 
-    const defaultName = getEventStyle(entry.name as TraceEngine.Types.TraceEvents.KnownEventName)?.title;
+    const defaultName =
+        Components.EntryStyles.getEventStyle(entry.name as TraceEngine.Types.TraceEvents.KnownEventName)?.title;
     return defaultName || entry.name;
   }
 

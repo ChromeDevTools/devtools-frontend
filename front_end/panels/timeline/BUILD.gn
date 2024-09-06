@@ -60,7 +60,6 @@ devtools_module("timeline") {
     "CompatibilityTracksAppender.ts",
     "CountersGraph.ts",
     "EntriesFilter.ts",
-    "EventUICategory.ts",
     "EventsSerializer.ts",
     "EventsTimelineTreeView.ts",
     "ExtensionDataGatherer.ts",

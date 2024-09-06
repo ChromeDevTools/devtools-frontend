@@ -56,14 +56,6 @@ import * as UI from '../../ui/legacy/legacy.js';
 
 import {CLSRect} from './CLSLinkifier.js';
 import * as TimelineComponents from './components/components.js';
-import {
-  type CategoryPalette,
-  getCategoryStyles,
-  getEventStyle,
-  type TimelineCategory,
-  TimelineRecordStyle,
-  visibleTypes,
-} from './EventUICategory.js';
 import * as Extensions from './extensions/extensions.js';
 import {Tracker} from './FreshRecording.js';
 import {titleForInteractionEvent} from './InteractionsTrackAppender.js';
@@ -594,18 +586,22 @@ export class TimelineUIUtils {
     }
   }
 
-  static eventStyle(event: TraceEngine.Types.TraceEvents.TraceEventData): TimelineRecordStyle {
+  static eventStyle(event: TraceEngine.Types.TraceEvents.TraceEventData):
+      TimelineComponents.EntryStyles.TimelineRecordStyle {
     if (TraceEngine.Types.TraceEvents.isProfileCall(event) && event.callFrame.functionName === '(idle)') {
-      return new TimelineRecordStyle(event.name, getCategoryStyles().idle);
+      return new TimelineComponents.EntryStyles.TimelineRecordStyle(
+          event.name, TimelineComponents.EntryStyles.getCategoryStyles().idle);
     }
 
     if (event.cat === TraceEngine.Types.TraceEvents.Categories.Console ||
         event.cat === TraceEngine.Types.TraceEvents.Categories.UserTiming) {
-      return new TimelineRecordStyle(event.name, getCategoryStyles()['scripting']);
+      return new TimelineComponents.EntryStyles.TimelineRecordStyle(
+          event.name, TimelineComponents.EntryStyles.getCategoryStyles()['scripting']);
     }
 
-    return getEventStyle(event.name as TraceEngine.Types.TraceEvents.KnownEventName) ??
-        new TimelineRecordStyle(event.name, getCategoryStyles().other);
+    return TimelineComponents.EntryStyles.getEventStyle(event.name as TraceEngine.Types.TraceEvents.KnownEventName) ??
+        new TimelineComponents.EntryStyles.TimelineRecordStyle(
+            event.name, TimelineComponents.EntryStyles.getCategoryStyles().other);
   }
 
   static eventColor(event: TraceEngine.Types.TraceEvents.TraceEventData): string {
@@ -622,7 +618,7 @@ export class TimelineUIUtils {
     // This event is considered idle time but still rendered as a scripting event here
     // to connect the StreamingCompileScriptParsing events it belongs to.
     if (event.name === TraceEngine.Types.TraceEvents.KnownEventName.STREAMING_COMPILE_SCRIPT_WAITING) {
-      parsedColor = getCategoryStyles().scripting.getComputedColorValue();
+      parsedColor = TimelineComponents.EntryStyles.getCategoryStyles().scripting.getComputedColorValue();
       if (!parsedColor) {
         throw new Error('Unable to parse color from getCategoryStyles().scripting.color');
       }
@@ -1676,8 +1672,10 @@ export class TimelineUIUtils {
 
       function onStartEvent(e: TraceEngine.Types.TraceEvents.TraceEventData): void {
         const {startTime} = TraceEngine.Helpers.Timing.eventTimingsMilliSeconds(e);
-        const category = getEventStyle(e.name as TraceEngine.Types.TraceEvents.KnownEventName)?.category.name ||
-            getCategoryStyles().other.name;
+        const category =
+            TimelineComponents.EntryStyles.getEventStyle(e.name as TraceEngine.Types.TraceEvents.KnownEventName)
+                ?.category.name ||
+            TimelineComponents.EntryStyles.getCategoryStyles().other.name;
         const parentCategory = categoryStack.length ? categoryStack[categoryStack.length - 1] : null;
         if (category !== parentCategory) {
           categoryChange(parentCategory || null, category, startTime);
@@ -2059,20 +2057,21 @@ export class TimelineUIUtils {
   }
 
   static visibleEventsFilter(): TimelineModel.TimelineModelFilter.TimelineModelFilter {
-    return new TimelineModel.TimelineModelFilter.TimelineVisibleEventsFilter(visibleTypes());
+    return new TimelineModel.TimelineModelFilter.TimelineVisibleEventsFilter(
+        TimelineComponents.EntryStyles.visibleTypes());
   }
 
   // Included only for layout tests.
   // TODO(crbug.com/1386091): Fix/port layout tests and remove.
-  static categories(): CategoryPalette {
-    return getCategoryStyles();
+  static categories(): TimelineComponents.EntryStyles.CategoryPalette {
+    return TimelineComponents.EntryStyles.getCategoryStyles();
   }
 
   static generatePieChart(
       aggregatedStats: {
         [x: string]: number,
       },
-      selfCategory?: TimelineCategory, selfTime?: number): Element {
+      selfCategory?: TimelineComponents.EntryStyles.TimelineCategory, selfTime?: number): Element {
     let total = 0;
     for (const categoryName in aggregatedStats) {
       total += aggregatedStats[categoryName];
@@ -2114,8 +2113,9 @@ export class TimelineUIUtils {
     }
 
     // Add other categories.
-    for (const categoryName in getCategoryStyles()) {
-      const category = getCategoryStyles()[categoryName as keyof CategoryPalette];
+    for (const categoryName in TimelineComponents.EntryStyles.getCategoryStyles()) {
+      const category = TimelineComponents.EntryStyles
+                           .getCategoryStyles()[categoryName as keyof TimelineComponents.EntryStyles.CategoryPalette];
       if (categoryName === selfCategory?.name) {
         // Do not add an entry for this event's self category because 2
         // entries for it where added just before this for loop (for

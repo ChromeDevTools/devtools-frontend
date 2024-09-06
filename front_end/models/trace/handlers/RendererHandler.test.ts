@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Timeline from '../../../panels/timeline/timeline.js';
+import * as Components from '../../../panels/timeline/components/components.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {
   getAllNodes,
@@ -122,13 +122,11 @@ describeWithEnvironment('RendererHandler', function() {
     const thread = [...frame.threads.values()].find(thread => thread.name === 'CrRendererMain');
     if (!thread) {
       assert(false, 'Main thread was not found');
-      return;
     }
 
     const tree = thread.tree;
     if (!tree) {
       assert(false, 'Main thread has no tree of events');
-      return;
     }
     assert.deepEqual([...tree.roots].map(root => root.id), [
       0,    1,    2,    3,    4,    5,    16,   18,   29,   38,   49,   58,   77,   183,  184,  185,  186,  188,  189,
@@ -165,13 +163,11 @@ describeWithEnvironment('RendererHandler', function() {
     const thread = [...frame.threads.values()].find(thread => thread.name === 'CrRendererMain');
     if (!thread) {
       assert(false, 'Main thread was not found');
-      return;
     }
 
     const tree = thread.tree;
     if (!tree) {
       assert(false, 'Main thread has no tree of events');
-      return;
     }
     assert.deepEqual(
         [...tree.roots].map(root => root.id), [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 16, 17, 18, 19, 20]);
@@ -184,13 +180,11 @@ describeWithEnvironment('RendererHandler', function() {
     const thread = [...frame.threads.values()].find(thread => thread.name === 'CrRendererMain');
     if (!thread) {
       assert(false, 'Main thread was not found');
-      return;
     }
 
     const tree = thread.tree;
     if (!tree) {
       assert(false, 'Main thread has no tree of events');
-      return;
     }
 
     const isRoot = (node: TraceModel.Helpers.TreeHelpers.TraceEntryNode) => node.depth === 0;
@@ -201,7 +195,7 @@ describeWithEnvironment('RendererHandler', function() {
     const isIncluded =
         (node: TraceModel.Helpers.TreeHelpers.TraceEntryNode, event: TraceModel.Types.TraceEvents.TraceEventData) =>
             (!isRoot(node) || isInstant(event) || isLong(event)) &&
-        Boolean(Timeline.EventUICategory.getEventStyle(event.name as TraceModel.Types.TraceEvents.KnownEventName));
+        Boolean(Components.EntryStyles.getEventStyle(event.name as TraceModel.Types.TraceEvents.KnownEventName));
     assert.strictEqual(prettyPrint(tree, isIncluded), `
 ............
 -RunTask [2.21ms]
@@ -393,17 +387,15 @@ describeWithEnvironment('RendererHandler', function() {
     const thread = [...frame.threads.values()].find(thread => thread.name === 'CrRendererMain');
     if (!thread) {
       assert(false, 'Main thread was not found');
-      return;
     }
 
     const tree = thread.tree;
     if (!tree) {
       assert(false, 'Main thread has no tree of events');
-      return;
     }
     const isIncluded =
         (_node: TraceModel.Helpers.TreeHelpers.TraceEntryNode, event: TraceModel.Types.TraceEvents.TraceEventData) =>
-            Boolean(Timeline.EventUICategory.getEventStyle(event.name as TraceModel.Types.TraceEvents.KnownEventName));
+            Boolean(Components.EntryStyles.getEventStyle(event.name as TraceModel.Types.TraceEvents.KnownEventName));
     assert.strictEqual(prettyPrint(tree, isIncluded), `
 -RunTask [0.13ms]
 -RunTask [0.005ms]
@@ -435,13 +427,11 @@ describeWithEnvironment('RendererHandler', function() {
     const thread = [...frame.threads.values()].find(thread => thread.name === 'CrRendererMain');
     if (!thread) {
       assert(false, 'Main thread was not found');
-      return;
     }
 
     const tree = thread.tree;
     if (!tree) {
       assert(false, 'Main thread has no tree of events');
-      return;
     }
 
     const event0 = getRootAt(thread, 1).entry;
@@ -497,13 +487,11 @@ describeWithEnvironment('RendererHandler', function() {
     const thread = [...frame.threads.values()].find(thread => thread.name === 'CrRendererMain');
     if (!thread) {
       assert(false, 'Main thread was not found');
-      return;
     }
 
     const tree = thread.tree;
     if (!tree) {
       assert(false, 'Main thread has no tree of events');
-      return;
     }
 
     const event0 = getRootAt(thread, 0).entry;
@@ -688,7 +676,6 @@ describeWithEnvironment('RendererHandler', function() {
 
     if (!firstThread.tree || !secondThread.tree) {
       assert(false, 'Trees not found');
-      return;
     }
 
     assert.strictEqual(firstThread.tree.maxDepth, 3, 'Got the correct tree max depth for the first thread');
@@ -954,7 +941,7 @@ describeWithEnvironment('RendererHandler', function() {
       const onlyLongTasksPredicate =
           (_node: TraceModel.Helpers.TreeHelpers.TraceEntryNode, event: TraceModel.Types.TraceEvents.TraceEventData) =>
               Boolean(event.dur && event.dur > 1000) &&
-          Boolean(Timeline.EventUICategory.getEventStyle(event.name as TraceModel.Types.TraceEvents.KnownEventName));
+          Boolean(Components.EntryStyles.getEventStyle(event.name as TraceModel.Types.TraceEvents.KnownEventName));
       assert.strictEqual(prettyPrint(thread.tree, onlyLongTasksPredicate), `
 .............
 -RunTask [17.269ms]

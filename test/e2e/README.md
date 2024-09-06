@@ -55,6 +55,12 @@ side by inspecting the Node.js process that runs the e2e suite. Either open
 connect to the puppeteer process. You can step through the puppeteer test
 code this way.
 
+To listen to the frontend's console:
+
+```js
+getBrowserAndPages().frontend.on('console', msg => console.log(msg.text()));
+```
+
 ### Debugging E2E tests with VSCode
 
 There's experimental support for running unit tests directly from

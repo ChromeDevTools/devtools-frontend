@@ -15,7 +15,6 @@ import {
   step,
   waitFor,
   waitForElementWithTextContent,
-  waitForFunction,
 } from '../../../shared/helper.js';
 
 import {
@@ -27,58 +26,23 @@ import {
   toggleRegExButtonBottomUp,
 } from '../../helpers/performance-helpers.js';
 
-async function checkActivityTree(
-    frontend: puppeteer.Page, expectedActivities: string[], expandSubTree: boolean = false) {
-  let index = 0;
-  let parentItem: puppeteer.ElementHandle<Element>|undefined = undefined;
-  let result = false;
-  do {
-    result = await waitForFunction(async () => {
-      if (parentItem) {
-        parentItem.evaluate(e => e.scrollIntoView());
-      }
-      const treeItem = await $<HTMLElement>('.data-grid-data-grid-node.selected.revealed .activity-name');
-      if (!treeItem) {
-        return false;
-      }
-      const treeItemText = await treeItem.evaluate(el => el.innerText);
-      if (expectedActivities[index] === treeItemText) {
-        parentItem = treeItem;
-        return true;
-      }
-      return false;
-    });
-    index++;
+async function expandNodeRecursively(rootActivity: puppeteer.ElementHandle) {
+  const {frontend} = getBrowserAndPages();
 
-    if (expandSubTree) {
-      await frontend.keyboard.press('ArrowRight');
-    }
-
-    await frontend.keyboard.press('ArrowDown');
-  } while (index < expectedActivities.length);
-
-  return result;
+  // Trigger an alt-click on the disclosure triangle. Requires getting the event.pageX correctly placed.
+  await frontend.keyboard.down('Alt');
+  const DISTANCE_BETWEEN_DISCLOSURE_TRIANGLE_AND_ACTIVITY_NAME_PX = 35;
+  await rootActivity.click({offset: {x: -DISTANCE_BETWEEN_DISCLOSURE_TRIANGLE_AND_ACTIVITY_NAME_PX, y: 0}});
+  await frontend.keyboard.up('Alt');
 }
 
-async function validateTreeParentActivities(expectedActivities: string[]) {
-  return await waitForFunction(async () => {
-    let result = true;
-    const treeItems = await $$<HTMLElement>('.data-grid-data-grid-node.parent.revealed .activity-name');
-    if (!treeItems || expectedActivities.length !== treeItems.length) {
-      return false;
-    }
+async function enumerateTreeItems() {
+  const {frontend} = getBrowserAndPages();
+  await frontend.evaluate(() => new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r))));
 
-    for (let i = 0; i < treeItems.length; i++) {
-      const treeItem = treeItems[i];
-      const treeItemText = await treeItem.evaluate(el => el.innerText);
-      if (expectedActivities.filter(el => el === treeItemText).length === 0) {
-        result = false;
-        break;
-      }
-    }
-
-    return result;
-  });
+  const els = await $$<HTMLElement>('.data-grid-data-grid-node.revealed .activity-name');
+  const elTexts = await Promise.all(els.map(e => e.evaluate(e => e.innerText)));
+  return elTexts;
 }
 
 describe('The Performance tool, Bottom-up panel', function() {
@@ -113,12 +77,13 @@ describe('The Performance tool, Bottom-up panel', function() {
       }
       await toggleCaseSensitive();
       await setFilter('H2');
-      assert.isTrue(await validateTreeParentActivities(['H2']), 'Tree does not contain expected activities');
+      const foundActivities = await enumerateTreeItems();
+      assert.deepStrictEqual(foundActivities, ['H2']);
     });
   });
 
   it('regex button is working as expected', async () => {
-    const expectedActivities = ['h2', 'H2', 'h2_with_suffix'];
+    const allActivities = ['H2', 'h2_with_suffix', 'h2'];
 
     await step('navigate to the Bottom Up tab', async () => {
       await navigateToBottomUpTab();
@@ -126,13 +91,14 @@ describe('The Performance tool, Bottom-up panel', function() {
 
     await step('click on the "Regex Button" and validate activities', async () => {
       const timelineTree = await $('.timeline-tree-view') as puppeteer.ElementHandle<HTMLSelectElement>;
-      const rootActivity = await waitForElementWithTextContent(expectedActivities[0], timelineTree);
+      const rootActivity = await waitForElementWithTextContent(allActivities[0], timelineTree);
       if (!rootActivity) {
-        assert.fail(`Could not find ${expectedActivities[0]} in frontend.`);
+        assert.fail(`Could not find ${allActivities[0]} in frontend.`);
       }
       await toggleRegExButtonBottomUp();
       await setFilter('h2$');
-      assert.isTrue(await validateTreeParentActivities(['h2', 'H2']), 'Tree does not contain expected activities');
+      const foundActivities = await enumerateTreeItems();
+      assert.deepStrictEqual(foundActivities, ['H2', 'h2']);
     });
   });
 
@@ -151,12 +117,14 @@ describe('The Performance tool, Bottom-up panel', function() {
       }
       await toggleMatchWholeWordButtonBottomUp();
       await setFilter('function');
-      assert.isTrue(await validateTreeParentActivities(['Function Call']), 'Tree does not contain expected activities');
+
+      const foundActivities = await enumerateTreeItems();
+      assert.deepStrictEqual(foundActivities, ['Function Call']);
     });
   });
 
   it('simple filter is working as expected', async () => {
-    const expectedActivities = ['h2', 'H2', 'h2_with_suffix'];
+    const expectedActivities = ['H2', 'h2_with_suffix', 'h2'];
 
     await step('navigate to the Bottom Up tab', async () => {
       await navigateToBottomUpTab();
@@ -169,13 +137,13 @@ describe('The Performance tool, Bottom-up panel', function() {
         assert.fail(`Could not find ${expectedActivities[0]} in frontend.`);
       }
       await setFilter('h2');
-      assert.isTrue(
-          await validateTreeParentActivities(expectedActivities), 'Tree does not contain expected activities');
+      const foundActivities = await enumerateTreeItems();
+      assert.deepStrictEqual(foundActivities, expectedActivities);
     });
   });
 
   it('group by', async () => {
-    const expectedActivities = ['Scripting', 'System', 'Loading', 'Rendering', 'Painting'];
+    const expectedActivities = ['Scripting', 'System', 'Rendering', 'Painting', 'Loading'];
     await step('navigate to the Bottom Up tab', async () => {
       await navigateToBottomUpTab();
     });
@@ -192,14 +160,13 @@ describe('The Performance tool, Bottom-up panel', function() {
         el.dispatchEvent(new Event('change'));
       });
 
-      assert.isTrue(
-          await validateTreeParentActivities(expectedActivities), 'Tree does not contain expected activities');
+      const foundActivities = await enumerateTreeItems();
+      assert.deepStrictEqual(foundActivities, expectedActivities);
     });
   });
 
   it('filtered results keep context', async () => {
-    const {frontend} = getBrowserAndPages();
-    const expectedActivities = ['h2_with_suffix', 'container2', 'Function Call', 'Timer Fired'];
+    const expectedActivities = ['h2_with_suffix', 'container2', 'Function Call', 'Timer Fired', 'Profiling Overhead'];
 
     await step('navigate to the Bottom Up tab', async () => {
       await navigateToBottomUpTab();
@@ -214,14 +181,18 @@ describe('The Performance tool, Bottom-up panel', function() {
       if (!rootActivity) {
         assert.fail(`Could not find ${expectedActivities[0]} in frontend.`);
       }
-      await rootActivity.click();
-      assert.isTrue(
-          await checkActivityTree(frontend, expectedActivities, true), 'Tree does not contain expected activities');
+
+      const initialActivities = await enumerateTreeItems();
+      assert.deepStrictEqual(initialActivities, [expectedActivities.at(0)]);
+
+      await expandNodeRecursively(rootActivity);
+
+      const foundActivities = await enumerateTreeItems();
+      assert.deepStrictEqual(foundActivities, expectedActivities);
     });
   });
 
   it('sorting "Title" column is working as expected', async () => {
-    const {frontend} = getBrowserAndPages();
     const expectedActivities = ['Commit', 'Function Call', 'h2_with_suffix', 'h2', 'H2', 'Layerize', 'Layout'];
 
     await step('navigate to the Bottom Up tab', async () => {
@@ -238,11 +209,9 @@ describe('The Performance tool, Bottom-up panel', function() {
       if (!rootActivity) {
         assert.fail(`Could not find ${expectedActivities[0]} in frontend.`);
       }
-      await rootActivity.click();
-
-      assert.isTrue(
-          await checkActivityTree(frontend, expectedActivities),
-          'Tree does not contain activities in the expected order');
+      await expandNodeRecursively(rootActivity);
+      const foundActivities = await enumerateTreeItems();
+      assert.deepStrictEqual(foundActivities, expectedActivities);
     });
   });
 });

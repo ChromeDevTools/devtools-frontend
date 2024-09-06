@@ -1616,6 +1616,15 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
         traceParsedData.Meta.traceBounds,
     );
 
+    // Set up the modifications manager for the newly active trace.
+    // The order is important: this needs to happen before we trigger a flame chart redraw by setting the model.
+    // (it could happen after, but then we would need to trigger a fresh redraw so let's not do that)
+    const currentManager = ModificationsManager.initAndActivateModificationsManager(this.#traceEngineModel, traceIndex);
+
+    if (!currentManager) {
+      console.error('ModificationsManager could not be created or activated.');
+    }
+
     const isCpuProfile =
         this.#traceEngineModel.metadata(traceIndex)?.dataOrigin === TraceEngine.Types.File.DataOrigin.CPU_PROFILE;
     this.flameChart.setModel(traceParsedData, isCpuProfile);
@@ -1628,13 +1637,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
     const exclusiveFilter = this.#exclusiveFilterPerTrace.get(traceIndex) ?? null;
     this.#applyActiveFilters(traceParsedData.Meta.traceIsGeneric, exclusiveFilter);
-
-    // Set up the modifications manager for the newly active trace.
-    const currentManager = ModificationsManager.initAndActivateModificationsManager(this.#traceEngineModel, traceIndex);
-
-    if (!currentManager) {
-      console.error('ModificationsManager could not be created or activated.');
-    }
 
     // Add ModificationsManager listeners for annotations change to update the Annotation Overlays.
     currentManager?.addEventListener(AnnotationModifiedEvent.eventName, event => {

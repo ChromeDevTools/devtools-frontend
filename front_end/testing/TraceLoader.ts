@@ -152,6 +152,7 @@ export class TraceLoader {
       }
       TraceEngine.Helpers.SyntheticEvents.SyntheticEventsManager.activate(syntheticEventsManager);
       TraceLoader.initTraceBoundsManager(fromCache.traceData);
+      Timeline.ModificationsManager.ModificationsManager.reset();
       Timeline.ModificationsManager.ModificationsManager.initAndActivateModificationsManager(fromCache.model, 0);
       return {traceData: fromCache.traceData, insights: fromCache.insights};
     }
@@ -169,6 +170,7 @@ export class TraceLoader {
     traceEngineCache.set(name, cacheByName);
 
     TraceLoader.initTraceBoundsManager(traceEngineData.traceData);
+    Timeline.ModificationsManager.ModificationsManager.reset();
     Timeline.ModificationsManager.ModificationsManager.initAndActivateModificationsManager(traceEngineData.model, 0);
     return {
       traceData: traceEngineData.traceData,

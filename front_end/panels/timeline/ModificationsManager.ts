@@ -54,6 +54,11 @@ export class ModificationsManager extends EventTarget {
     return activeManager;
   }
 
+  static reset(): void {
+    modificationsManagerByTraceIndex.length = 0;
+    activeManager = null;
+  }
+
   /**
    * Initializes a ModificationsManager instance for a parsed trace or changes the active manager for an existing one.
    * This needs to be called if and a trace has been parsed or switched to.
@@ -62,6 +67,10 @@ export class ModificationsManager extends EventTarget {
       ModificationsManager|null {
     // If a manager for a given index has already been created, active it.
     if (modificationsManagerByTraceIndex[traceIndex]) {
+      if (activeManager === modificationsManagerByTraceIndex[traceIndex]) {
+        return activeManager;
+      }
+
       activeManager = modificationsManagerByTraceIndex[traceIndex];
       ModificationsManager.activeManager()?.applyModificationsIfPresent();
     }
@@ -301,53 +310,78 @@ export class ModificationsManager extends EventTarget {
     if (!this.#modifications || !this.#modifications.annotations) {
       return;
     }
+
     const hiddenEntries = this.#modifications.entriesModifications.hiddenEntries;
     const expandableEntries = this.#modifications.entriesModifications.expandableEntries;
-    this.#applyEntriesFilterModifications(hiddenEntries, expandableEntries);
+
     this.#timelineBreadcrumbs.setInitialBreadcrumbFromLoadedModifications(this.#modifications.initialBreadcrumb);
+    this.#applyEntriesFilterModifications(hiddenEntries, expandableEntries);
+    this.#applyStoredAnnotations(this.#modifications.annotations);
+  }
 
-    // Assign annotations to an empty array if they don't exist to not
-    // break the traces that were saved before those annotations were implemented
-    const entryLabels = this.#modifications.annotations.entryLabels ?? [];
-    entryLabels.forEach(entryLabel => {
-      this.createAnnotation(
-          {
-            type: 'ENTRY_LABEL',
-            entry: this.#eventsSerializer.eventForKey(entryLabel.entry, this.#traceParsedData),
-            label: entryLabel.label,
-          },
-          true);
-    });
+  #applyStoredAnnotations(annotations: TraceEngine.Types.File.SerializedAnnotations): void {
+    try {
+      // Assign annotations to an empty array if they don't exist to not
+      // break the traces that were saved before those annotations were implemented
+      const entryLabels = annotations.entryLabels ?? [];
+      entryLabels.forEach(entryLabel => {
+        this.createAnnotation(
+            {
+              type: 'ENTRY_LABEL',
+              entry: this.#eventsSerializer.eventForKey(entryLabel.entry, this.#traceParsedData),
+              label: entryLabel.label,
+            },
+            true);
+      });
 
-    const timeRanges = this.#modifications.annotations.labelledTimeRanges ?? [];
-    timeRanges.forEach(timeRange => {
-      this.createAnnotation(
-          {
-            type: 'TIME_RANGE',
-            bounds: timeRange.bounds,
-            label: timeRange.label,
-          },
-          true);
-    });
+      const timeRanges = annotations.labelledTimeRanges ?? [];
+      timeRanges.forEach(timeRange => {
+        this.createAnnotation(
+            {
+              type: 'TIME_RANGE',
+              bounds: timeRange.bounds,
+              label: timeRange.label,
+            },
+            true);
+      });
 
-    const linksBetweenEntries = this.#modifications.annotations.linksBetweenEntries ?? [];
-    linksBetweenEntries.forEach(linkBetweenEntries => {
-      this.createAnnotation(
-          {
-            type: 'ENTRIES_LINK',
-            entryFrom: this.#eventsSerializer.eventForKey(linkBetweenEntries.entryFrom, this.#traceParsedData),
-            entryTo: this.#eventsSerializer.eventForKey(linkBetweenEntries.entryTo, this.#traceParsedData),
-          },
-          true);
-    });
+      const linksBetweenEntries = annotations.linksBetweenEntries ?? [];
+      linksBetweenEntries.forEach(linkBetweenEntries => {
+        this.createAnnotation(
+            {
+              type: 'ENTRIES_LINK',
+              entryFrom: this.#eventsSerializer.eventForKey(linkBetweenEntries.entryFrom, this.#traceParsedData),
+              entryTo: this.#eventsSerializer.eventForKey(linkBetweenEntries.entryTo, this.#traceParsedData),
+            },
+            true);
+      });
+    } catch (err) {
+      // This function is wrapped in a try/catch just in case we get any incoming
+      // trace files with broken event keys. Shouldn't happen of course, but if
+      // it does, we can discard all the data and then continue loading the
+      // trace, rather than have the panel entirely break. This also prevents any
+      // issue where we accidentally break the event serializer and break people
+      // loading traces; let's at least make sure they can load the panel, even
+      // if their annotations are gone.
+      console.warn('Failed to apply stored annotations', err);
+    }
   }
 
   #applyEntriesFilterModifications(
       hiddenEntriesKeys: TraceEngine.Types.File.TraceEventSerializableKey[],
       expandableEntriesKeys: TraceEngine.Types.File.TraceEventSerializableKey[]): void {
-    const hiddenEntries = hiddenEntriesKeys.map(key => this.#eventsSerializer.eventForKey(key, this.#traceParsedData));
-    const expandableEntries =
-        expandableEntriesKeys.map(key => this.#eventsSerializer.eventForKey(key, this.#traceParsedData));
-    this.#entriesFilter.setHiddenAndExpandableEntries(hiddenEntries, expandableEntries);
+    try {
+      const hiddenEntries =
+          hiddenEntriesKeys.map(key => this.#eventsSerializer.eventForKey(key, this.#traceParsedData));
+      const expandableEntries =
+          expandableEntriesKeys.map(key => this.#eventsSerializer.eventForKey(key, this.#traceParsedData));
+      this.#entriesFilter.setHiddenAndExpandableEntries(hiddenEntries, expandableEntries);
+    } catch (err) {
+      console.warn('Failed to apply entriesFilter modifications', err);
+      // If there was some invalid data, let's just back out and clear it
+      // entirely. This is better than applying a subset of all the hidden
+      // entries, which could cause an odd state in the flamechart.
+      this.#entriesFilter.setHiddenAndExpandableEntries([], []);
+    }
   }
 }

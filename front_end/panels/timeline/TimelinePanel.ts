@@ -119,13 +119,13 @@ const UIStrings = {
    */
   saveProfile: 'Save profile…',
   /**
-   *@description An option to save profile that appears in the menu of the toolbar download button
+   *@description An option to save trace with annotations that appears in the menu of the toolbar download button. This is the expected default option, therefore it does not mention annotations.
    */
-  saveProfileMenuOption: 'Save profile',
+  saveTraceWithAnnotationsMenuOption: 'Save trace',
   /**
-   *@description An option to save profile with annotations that appears in the menu of the toolbar download button
+   *@description An option to save trace without annotations that appears in the menu of the toolbar download button
    */
-  saveProfileWithAnnotationsMenuOption: 'Save profile with annotations',
+  saveTraceWithoutAnnotationsMenuOption: 'Save trace without annotations',
   /**
    *@description Text to take screenshots
    */
@@ -858,13 +858,13 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   }
 
   private populateDownloadMenu(contextMenu: UI.ContextMenu.ContextMenu): void {
-    contextMenu.viewSection().appendItem(i18nString(UIStrings.saveProfileMenuOption), () => {
-      Host.userMetrics.actionTaken(Host.UserMetrics.Action.PerfPanelTraceExported);
-      void this.saveToFile();
-    });
-    contextMenu.viewSection().appendItem(i18nString(UIStrings.saveProfileWithAnnotationsMenuOption), () => {
+    contextMenu.viewSection().appendItem(i18nString(UIStrings.saveTraceWithAnnotationsMenuOption), () => {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.PerfPanelTraceExported);
       void this.saveToFile(/* isEnhancedTraces */ false, /* addModifications */ true);
+    });
+    contextMenu.viewSection().appendItem(i18nString(UIStrings.saveTraceWithoutAnnotationsMenuOption), () => {
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.PerfPanelTraceExported);
+      void this.saveToFile();
     });
   }
 
@@ -1075,6 +1075,8 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_ANNOTATIONS) && metadata &&
         addModifications) {
       metadata.modifications = ModificationsManager.activeManager()?.toJSON();
+    } else if (metadata) {
+      delete metadata.modifications;
     }
     if (metadata && isEnhancedTraces) {
       metadata.enhancedTraceVersion = TraceEngine.Handlers.ModelHandlers.EnhancedTraces.EnhancedTracesVersion;

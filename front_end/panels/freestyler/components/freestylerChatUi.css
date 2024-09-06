@@ -140,6 +140,14 @@
     border-bottom: 0;
   }
 
+  &.query {
+    .message-content {
+      line-height: 18px;
+      white-space: pre;
+      text-wrap: wrap;
+    }
+  }
+
   .message-info {
     display: flex;
     align-items: center;

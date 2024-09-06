@@ -466,8 +466,9 @@ export class FreestylerChatUi extends HTMLElement {
   }
 
   #renderChatMessage = (message: ChatMessage, {isLast}: {isLast: boolean}): LitHtml.TemplateResult => {
+    // TODO(b/365068104): Render user's message as markdown too.
     if (message.entity === ChatMessageEntity.USER) {
-      // TODO(b/359768313):
+      // TODO(b/359768313): Surface user's name in DevTools
       const name = i18nString(UIStringsTemp.you);
       const image = this.#props.userInfo.accountImage ?
           LitHtml.html`<img src="data:image/png;base64, ${this.#props.userInfo.accountImage}" alt="Account avatar" />` :
@@ -485,7 +486,7 @@ export class FreestylerChatUi extends HTMLElement {
             <span>${name}</span>
           </div>
         </div>
-        <div>${this.#renderTextAsMarkdown(message.text)}</div>
+        <div class="message-content">${message.text}</div>
       </div>`;
       // clang-format on
     }

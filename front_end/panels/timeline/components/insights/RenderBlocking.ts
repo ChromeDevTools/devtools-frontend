@@ -2,13 +2,26 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as i18n from '../../../../core/i18n/i18n.js';
 import type * as TraceEngine from '../../../../models/trace/trace.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
-import {BaseInsight, shouldRenderForCategory} from './Helpers.js';
+import {BaseInsight, md, shouldRenderForCategory} from './Helpers.js';
 import * as SidebarInsight from './SidebarInsight.js';
 import {InsightsCategories} from './types.js';
+
+const UIStrings = {
+  /**
+   * @description Text to describe that there are requests blocking rendering, which may affect LCP.
+   */
+  description: 'Requests are blocking the page\'s initial render, which may delay LCP. ' +
+      '[Deferring or inlining](https://web.dev/learn/performance/understanding-the-critical-path#render-blocking_resources/) ' +
+      'can move these network requests out of the critical path.',
+};
+
+const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/RenderBlocking.ts', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export function getRenderBlockingInsight(
     insights: TraceEngine.Insights.Types.TraceInsightData|null,
@@ -66,8 +79,7 @@ export class RenderBlockingRequests extends BaseInsight {
           @insighttoggleclick=${this.onSidebarClick}
         >
           <div slot="insight-description" class="insight-description">
-            Requests are blocking the page's initial render. <x-link class="link" href="https://web.dev/learn/performance/understanding-the-critical-path#render-blocking_resources">Deferring or inlining</x-link>
-             can move these network requests out of the critical path.
+            ${md(i18nString(UIStrings.description))}
           </div>
         </${SidebarInsight.SidebarInsight}>
       </div>`;

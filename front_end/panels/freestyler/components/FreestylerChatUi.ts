@@ -127,9 +127,9 @@ const UIStringsTemp = {
    */
   fixThisIssue: 'Fix this issue',
   /**
-   *@description The name of the CSS assistant that helps you debug CSS issues
+   *@description The generic name of the AI Assistant (do not translate)
    */
-  cssAssistant: 'CSS assistant',
+  aiAssistant: 'AI assistant',
   /**
    *@description The fallback text when we can't find the user full name
    */
@@ -495,10 +495,10 @@ export class FreestylerChatUi extends HTMLElement {
       <div class="chat-message answer" jslog=${VisualLogging.section('answer')}>
         <div class="message-info">
           <${IconButton.Icon.Icon.litTagName}
-            name="pen-spark"
+            name="smart-assistant"
           ></${IconButton.Icon.Icon.litTagName}>
           <div class="message-name">
-            <span>${i18nString(UIStringsTemp.cssAssistant)}</span>
+            <span>${i18nString(UIStringsTemp.aiAssistant)}</span>
           </div>
         </div>
         ${LitHtml.Directives.repeat(

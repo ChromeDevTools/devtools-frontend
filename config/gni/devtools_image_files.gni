@@ -229,6 +229,7 @@ devtools_svg_sources = [
   "send.svg",
   "shadow.svg",
   "small-status-dot.svg",
+  "smart-assistant.svg",
   "snippet.svg",
   "spark-info.svg",
   "spark.svg",

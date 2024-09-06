@@ -79,6 +79,30 @@ export class SourceMapScopesInfo {
   }
 
   /**
+   * Takes a V8 provided call frame and expands any inlined frames into virtual call frames.
+   *
+   * For call frames where nothing was inlined, the result contains only a single element,
+   * the provided frame but with the original name.
+   *
+   * For call frames where we are paused in inlined code, this function returns a list of
+   * call frames from "inner to outer". This is the call frame at index 0
+   * signifies the top of this stack trace fragment.
+   *
+   * The rest are "virtual" call frames and will have an "inlineFrameIndex" set in ascending
+   * order, so the condition `result[index] === result[index].inlineFrameIndex` always holds.
+   */
+  expandCallFrame(callFrame: CallFrame): CallFrame[] {
+    const {originalFunctionName, inlinedFunctions} =
+        this.findInlinedFunctions(callFrame.location().lineNumber, callFrame.location().columnNumber);
+    const result: CallFrame[] = [];
+    for (const [index, fn] of inlinedFunctions.entries()) {
+      result.push(callFrame.createVirtualCallFrame(index, fn.name));
+    }
+    result.push(callFrame.createVirtualCallFrame(result.length, originalFunctionName));
+    return result;
+  }
+
+  /**
    * Given a generated position, this returns all the surrounding generated ranges from outer
    * to inner.
    */

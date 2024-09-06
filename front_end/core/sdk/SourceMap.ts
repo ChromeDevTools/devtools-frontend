@@ -832,14 +832,7 @@ export class SourceMap {
       return [frame];
     }
 
-    const {inlinedFunctions, originalFunctionName} =
-        this.#scopesInfo.findInlinedFunctions(frame.location().lineNumber, frame.location().columnNumber);
-    const result: CallFrame[] = [];
-    for (const [index, fn] of inlinedFunctions.entries()) {
-      result.push(frame.createVirtualCallFrame(index, fn.name));
-    }
-    result.push(frame.createVirtualCallFrame(result.length, originalFunctionName));
-    return result;
+    return this.#scopesInfo.expandCallFrame(frame);
   }
 
   resolveScopeChain(frame: CallFrame): ScopeChainEntry[]|null {

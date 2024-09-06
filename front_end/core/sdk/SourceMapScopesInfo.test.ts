@@ -76,6 +76,234 @@ describe('SourceMapScopesInfo', () => {
     });
   });
 
+  describeWithMockConnection('expandCallFrame', () => {
+    function setUpCallFrame(generatedPausedPosition: {line: number, column: number}, name: string) {
+      const target = createTarget();
+      const callFrame = new SDK.DebuggerModel.CallFrame(
+          target.model(SDK.DebuggerModel.DebuggerModel)!, sinon.createStubInstance(SDK.Script.Script), {
+            callFrameId: '0' as Protocol.Debugger.CallFrameId,
+            location: {
+              lineNumber: generatedPausedPosition.line,
+              columnNumber: generatedPausedPosition.column,
+              scriptId: '0' as Protocol.Runtime.ScriptId,
+            },
+            functionName: name,
+            scopeChain: [],
+            this: {type: Protocol.Runtime.RemoteObjectType.Undefined},
+            url: '',
+          },
+          undefined, name);
+
+      return callFrame;
+    }
+
+    it('does nothing for frames that don\'t contain inlined code', () => {
+      //
+      //    orig. code                         gen. code
+      //             10        20                       10        20        30
+      //    012345678901234567890              0123456789012345678901234567890
+      //
+      // 0: function inner() {                 function n(){print('hello')}
+      // 1:   print('hello');                  function m(){if(true){n()}}
+      // 2: }                                  m();
+      // 3:
+      // 4: function outer() {
+      // 5:   if (true) {
+      // 6:     inner();
+      // 7:   }
+      // 8: }
+      // 9:
+      // 10: outer();
+
+      const names: string[] = [];
+      const originalScopes = [new OriginalScopeBuilder(names)
+                                  .start(0, 0, 'global')
+                                  .start(0, 14, 'function', 'inner')
+                                  .end(2, 1)
+                                  .start(4, 14, 'function', 'outer')
+                                  .start(5, 12, 'block')
+                                  .end(7, 3)
+                                  .end(8, 1)
+                                  .end(11, 0)
+                                  .build()];
+
+      const generatedRanges = new GeneratedRangeBuilder(names)
+                                  .start(0, 0, {definition: {sourceIdx: 0, scopeIdx: 0}})
+                                  .start(0, 10, {definition: {sourceIdx: 0, scopeIdx: 1}, isFunctionScope: true})
+                                  .end(0, 28)
+                                  .start(1, 10, {definition: {sourceIdx: 0, scopeIdx: 3}, isFunctionScope: true})
+                                  .start(1, 21, {definition: {sourceIdx: 0, scopeIdx: 4}})
+                                  .end(1, 26)
+                                  .end(1, 27)
+                                  .end(3, 0)
+                                  .build();
+
+      const info = SourceMapScopesInfo.parseFromMap(
+          sinon.createStubInstance(SDK.SourceMap.SourceMap), {names, originalScopes, generatedRanges});
+
+      {
+        const callFrame = setUpCallFrame({line: 0, column: 13}, 'n');  // Pause on 'print'.
+        const expandedFrames = info.expandCallFrame(callFrame);
+
+        assert.lengthOf(expandedFrames, 1);
+        assert.strictEqual(expandedFrames[0].functionName, 'inner');
+        assert.strictEqual(expandedFrames[0].inlineFrameIndex, 0);
+      }
+
+      {
+        const callFrame = setUpCallFrame({line: 1, column: 22}, 'm');  // Pause on 'n()'.
+        const expandedFrames = info.expandCallFrame(callFrame);
+
+        assert.lengthOf(expandedFrames, 1);
+        assert.strictEqual(expandedFrames[0].functionName, 'outer');
+        assert.strictEqual(expandedFrames[0].inlineFrameIndex, 0);
+      }
+
+      {
+        const callFrame = setUpCallFrame({line: 2, column: 0}, '');  // Pause on 'm()'.
+        const expandedFrames = info.expandCallFrame(callFrame);
+
+        assert.lengthOf(expandedFrames, 1);
+        assert.strictEqual(expandedFrames[0].functionName, '');
+        assert.strictEqual(expandedFrames[0].inlineFrameIndex, 0);
+      }
+    });
+
+    it('returns two frames for a function inlined into another', () => {
+      //
+      //    orig. code                         gen. code
+      //             10        20                       10        20        30        40
+      //    012345678901234567890              01234567890123456789012345678901234567890
+      //
+      // 0: function inner() {                 function m(){if(true){print('hello')}}
+      // 1:   print('hello');                  m();
+      // 2: }
+      // 3:
+      // 4: function outer() {
+      // 5:   if (true) {
+      // 6:     inner();
+      // 7:   }
+      // 8: }
+      // 9:
+      // 10: outer();
+
+      const names: string[] = [];
+      const originalScopes = [new OriginalScopeBuilder(names)
+                                  .start(0, 0, 'global')
+                                  .start(0, 14, 'function', 'inner')
+                                  .end(2, 1)
+                                  .start(4, 14, 'function', 'outer')
+                                  .start(5, 12, 'block')
+                                  .end(7, 3)
+                                  .end(8, 1)
+                                  .end(11, 0)
+                                  .build()];
+
+      const generatedRanges =
+          new GeneratedRangeBuilder(names)
+              .start(0, 0, {definition: {sourceIdx: 0, scopeIdx: 0}})
+              .start(0, 10, {definition: {sourceIdx: 0, scopeIdx: 3}, isFunctionScope: true})
+              .start(0, 21, {definition: {sourceIdx: 0, scopeIdx: 4}})
+              .start(0, 22, {definition: {sourceIdx: 0, scopeIdx: 1}, callsite: {sourceIdx: 0, line: 6, column: 4}})
+              .end(0, 36)
+              .end(0, 37)
+              .end(0, 38)
+              .end(2, 0)
+              .build();
+
+      const info = SourceMapScopesInfo.parseFromMap(
+          sinon.createStubInstance(SDK.SourceMap.SourceMap), {names, originalScopes, generatedRanges});
+
+      {
+        const callFrame = setUpCallFrame({line: 0, column: 22}, 'm');  // Pause on 'print'.
+        const expandedFrames = info.expandCallFrame(callFrame);
+
+        assert.lengthOf(expandedFrames, 2);
+        assert.strictEqual(expandedFrames[0].functionName, 'inner');
+        assert.strictEqual(expandedFrames[0].inlineFrameIndex, 0);
+        assert.strictEqual(expandedFrames[1].functionName, 'outer');
+        assert.strictEqual(expandedFrames[1].inlineFrameIndex, 1);
+      }
+
+      {
+        const callFrame = setUpCallFrame({line: 0, column: 13}, 'm');  // Pause on 'if'.
+        const expandedFrames = info.expandCallFrame(callFrame);
+
+        assert.lengthOf(expandedFrames, 1);
+        assert.strictEqual(expandedFrames[0].functionName, 'outer');
+        assert.strictEqual(expandedFrames[0].inlineFrameIndex, 0);
+      }
+
+      {
+        const callFrame = setUpCallFrame({line: 1, column: 0}, 'm');  // Pause on 'm'.
+        const expandedFrames = info.expandCallFrame(callFrame);
+
+        assert.lengthOf(expandedFrames, 1);
+        assert.strictEqual(expandedFrames[0].functionName, '');
+        assert.strictEqual(expandedFrames[0].inlineFrameIndex, 0);
+      }
+    });
+
+    it('returns three frames for two functions inlined into the global scope', () => {
+      //
+      //    orig. code                         gen. code
+      //             10        20                       10        20
+      //    012345678901234567890              012345678901234567890
+      //
+      // 0: function inner() {                 print('hello')
+      // 1:   print('hello');
+      // 2: }
+      // 3:
+      // 4: function outer() {
+      // 5:   if (true) {
+      // 6:     inner();
+      // 7:   }
+      // 8: }
+      // 9:
+      // 10: outer();
+
+      const names: string[] = [];
+      const originalScopes = [new OriginalScopeBuilder(names)
+                                  .start(0, 0, 'global')
+                                  .start(0, 14, 'function', 'inner')
+                                  .end(2, 1)
+                                  .start(4, 14, 'function', 'outer')
+                                  .start(5, 12, 'block')
+                                  .end(7, 3)
+                                  .end(8, 1)
+                                  .end(11, 0)
+                                  .build()];
+
+      const generatedRanges =
+          new GeneratedRangeBuilder(names)
+              .start(0, 0, {definition: {sourceIdx: 0, scopeIdx: 0}})
+              .start(0, 0, {definition: {sourceIdx: 0, scopeIdx: 3}, callsite: {sourceIdx: 0, line: 10, column: 0}})
+              .start(0, 0, {definition: {sourceIdx: 0, scopeIdx: 4}})
+              .start(0, 0, {definition: {sourceIdx: 0, scopeIdx: 1}, callsite: {sourceIdx: 0, line: 6, column: 4}})
+              .end(0, 14)
+              .end(0, 14)
+              .end(0, 14)
+              .end(1, 0)
+              .build();
+
+      const info = SourceMapScopesInfo.parseFromMap(
+          sinon.createStubInstance(SDK.SourceMap.SourceMap), {names, originalScopes, generatedRanges});
+
+      {
+        const callFrame = setUpCallFrame({line: 0, column: 0}, '');  // Pause on 'print'.
+        const expandedFrames = info.expandCallFrame(callFrame);
+
+        assert.lengthOf(expandedFrames, 3);
+        assert.strictEqual(expandedFrames[0].functionName, 'inner');
+        assert.strictEqual(expandedFrames[0].inlineFrameIndex, 0);
+        assert.strictEqual(expandedFrames[1].functionName, 'outer');
+        assert.strictEqual(expandedFrames[1].inlineFrameIndex, 1);
+        assert.strictEqual(expandedFrames[2].functionName, '');
+        assert.strictEqual(expandedFrames[2].inlineFrameIndex, 2);
+      }
+    });
+  });
+
   describe('hasVariablesAndBindings', () => {
     it('returns false for scope info without variables or bindings', () => {
       const names: string[] = [];

@@ -35,7 +35,7 @@
     ReportGenerator: () => ReportGenerator
   });
 
-  // replace-modules:/Users/cjamcl/src/lighthouse/report/generator/flow-report-assets.js
+  // replace-modules:/Users/asraine/lighthouse/report/generator/flow-report-assets.js
   var flowReportAssets = {};
 
   // report/generator/report-assets.js

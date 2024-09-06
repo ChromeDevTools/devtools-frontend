@@ -24,6 +24,7 @@ devtools_module("insights") {
     "NodeLink.ts",
     "RenderBlocking.ts",
     "SidebarInsight.ts",
+    "SlowCSSSelector.ts",
     "ThirdParties.ts",
     "Viewport.ts",
     "types.ts",

@@ -178,6 +178,14 @@ export class SidebarSingleNavigation extends HTMLElement {
       </${Insights.RenderBlocking.RenderBlockingRequests}>
     </div>
     <div>
+      <${Insights.SlowCSSSelector.SlowCSSSelector.litTagName}
+        .insights=${insights}
+        .navigationId=${navigationId}
+        .activeInsight=${this.#data.activeInsight}
+        .activeCategory=${this.#data.activeCategory}
+      </${Insights.SlowCSSSelector.SlowCSSSelector}>
+    </div>
+    <div>
       <${Insights.CLSCulprits.CLSCulprits.litTagName}
         .insights=${insights}
         .navigationId=${navigationId}
@@ -186,13 +194,14 @@ export class SidebarSingleNavigation extends HTMLElement {
       </${Insights.CLSCulprits.CLSCulprits}>
     </div>
     <div>
+    </div>
       <${Insights.DocumentLatency.DocumentLatency.litTagName}
         .insights=${insights}
         .navigationId=${navigationId}
         .activeInsight=${this.#data.activeInsight}
         .activeCategory=${this.#data.activeCategory}
       </${Insights.DocumentLatency.DocumentLatency}>
-    </div>
+    <div>
     <div>
       <${Insights.ThirdParties.ThirdParties.litTagName}
         .insights=${insights}

@@ -15,6 +15,7 @@ devtools_module("insights") {
     "InteractionToNextPaint.ts",
     "LargestContentfulPaint.ts",
     "RenderBlocking.ts",
+    "SlowCSSSelector.ts",
     "ThirdPartyWeb.ts",
     "Viewport.ts",
     "types.ts",
@@ -48,6 +49,7 @@ ts_library("unittests") {
     "InteractionToNextPaint.test.ts",
     "LargestContentfulPaint.test.ts",
     "RenderBlocking.test.ts",
+    "SlowCSSSelector.test.ts",
     "ThirdPartyWeb.test.ts",
     "Viewport.test.ts",
   ]

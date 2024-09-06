@@ -1768,6 +1768,16 @@ export interface SelectorTiming {
   'match_count': number;
 }
 
+export enum SelectorTimingsKey {
+  Elapsed = 'elapsed (us)',
+  RejectPercentage = 'reject_percentage',
+  FastRejectCount = 'fast_reject_count',
+  MatchAttempts = 'match_attempts',
+  MatchCount = 'match_count',
+  Selector = 'selector',
+  StyleSheetId = 'style_sheet_id',
+}
+
 export interface SelectorStats {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   selector_timings: SelectorTiming[];

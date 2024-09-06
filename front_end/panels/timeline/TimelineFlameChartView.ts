@@ -440,7 +440,11 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     this.mainFlameChart.setWindowTimes(visibleWindow.min, visibleWindow.max, shouldAnimate);
     this.networkDataProvider.setWindowTimes(visibleWindow.min, visibleWindow.max);
     this.networkFlameChart.setWindowTimes(visibleWindow.min, visibleWindow.max, shouldAnimate);
-    this.updateSearchResults(false, false);
+    // Updating search results can be very expensive. Debounce to avoid over-calling it.
+    const debouncedUpdate = Common.Debouncer.debounce(() => {
+      this.updateSearchResults(false, false);
+    }, 100);
+    debouncedUpdate();
   }
 
   isNetworkTrackShownForTests(): boolean {

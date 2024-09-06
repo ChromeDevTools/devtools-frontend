@@ -595,18 +595,17 @@ export class TimelineUIUtils {
   }
 
   static eventStyle(event: TraceEngine.Types.TraceEvents.TraceEventData): TimelineRecordStyle {
-    if (TraceEngine.Helpers.Trace.eventHasCategory(event, TraceEngine.Types.TraceEvents.Categories.Console) ||
-        TraceEngine.Helpers.Trace.eventHasCategory(event, TraceEngine.Types.TraceEvents.Categories.UserTiming)) {
+    if (TraceEngine.Types.TraceEvents.isProfileCall(event) && event.callFrame.functionName === '(idle)') {
+      return new TimelineRecordStyle(event.name, getCategoryStyles().idle);
+    }
+
+    if (event.cat === TraceEngine.Types.TraceEvents.Categories.Console ||
+        event.cat === TraceEngine.Types.TraceEvents.Categories.UserTiming) {
       return new TimelineRecordStyle(event.name, getCategoryStyles()['scripting']);
     }
 
-    if (TraceEngine.Types.TraceEvents.isProfileCall(event)) {
-      if (event.callFrame.functionName === '(idle)') {
-        return new TimelineRecordStyle(event.name, getCategoryStyles().idle);
-      }
-    }
-    const defaultStyles = new TimelineRecordStyle(event.name, getCategoryStyles().other);
-    return getEventStyle(event.name as TraceEngine.Types.TraceEvents.KnownEventName) || defaultStyles;
+    return getEventStyle(event.name as TraceEngine.Types.TraceEvents.KnownEventName) ??
+        new TimelineRecordStyle(event.name, getCategoryStyles().other);
   }
 
   static eventColor(event: TraceEngine.Types.TraceEvents.TraceEventData): string {

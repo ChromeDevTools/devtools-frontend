@@ -1213,51 +1213,48 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       return;
     }
 
-    if (this.dataProvider.customizedContextMenu) {
-      // Update the selected index to match the highlighted index, which
-      // represents the entry under the cursor where the user has right clicked
-      // to trigger a context menu.
-      this.dispatchEventToListeners(Events.ENTRY_INVOKED, this.highlightedEntryIndex);
-      this.setSelectedEntry(this.highlightedEntryIndex);
-      // Update the selected group as well.
-      this.#selectGroup(groupIndex);
-      // Build the context menu for right clicking individual entries.
-      // The context menu only applies if the user is hovering over an individual
-      // entry, and we are not in edit mode (which we know we cannot be in given
-      // the conditional checks above)
-      // If the flame chart provider can build a customized context menu for the
-      // given entry, we will use that, otherwise just do nothing and fall back to
-      // default context menu.
-      // We need to use |selectedEntryIndex| instead of |highlightedEntryIndex|.
-      // The reason is when we call the |setSelectedEntry| and |#selectGroup|,
-      // the flame chart will be redrawn, so the |highlightedEntryIndex| will be
-      // reset to -1.
-      // In real life, because we might trigger the |mousemove| event again, the
-      // |highlightedEntryIndex| might be correct, but to make the code easier
-      // to maintain, let's use |selectedEntryIndex|.
-      this.contextMenu = this.dataProvider.customizedContextMenu(event, this.selectedEntryIndex, groupIndex);
-      if (!this.contextMenu) {
-        return;
-      }
+    // Update the selected index to match the highlighted index, which
+    // represents the entry under the cursor where the user has right clicked
+    // to trigger a context menu.
+    this.dispatchEventToListeners(Events.ENTRY_INVOKED, this.highlightedEntryIndex);
+    this.setSelectedEntry(this.highlightedEntryIndex);
+    // Update the selected group as well.
+    this.#selectGroup(groupIndex);
 
-      if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_ANNOTATIONS)) {
-        const annotationSection = this.contextMenu.section('annotations');
+    // Build the context menu for right clicking individual entries.
+    // The context menu only applies if the user is hovering over an individual
+    // entry, and we are not in edit mode (which we know we cannot be in given
+    // the conditional checks above)
+    // If the flame chart provider can build a customized context menu for the
+    // given entry, we will use that, otherwise just do nothing and fall back to
+    // default context menu.
+    // We need to use |selectedEntryIndex| instead of |highlightedEntryIndex|.
+    // The reason is when we call the |setSelectedEntry| and |#selectGroup|,
+    // the flame chart will be redrawn, so the |highlightedEntryIndex| will be
+    // reset to -1.
+    // In real life, because we might trigger the |mousemove| event again, the
+    // |highlightedEntryIndex| might be correct, but to make the code easier
+    // to maintain, let's use |selectedEntryIndex|.
+    this.contextMenu = this.dataProvider.customizedContextMenu?.(event, this.selectedEntryIndex, groupIndex) ??
+        new UI.ContextMenu.ContextMenu(event, {useSoftMenu: true});
 
-        const labelEntryAnnotationOption = annotationSection.appendItem(i18nString(UIStrings.labelEntry), () => {
-          this.dispatchEventToListeners(Events.ENTRY_LABEL_ANNOTATION_ADDED, this.selectedEntryIndex);
-        });
+    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_ANNOTATIONS)) {
+      const annotationSection = this.contextMenu.section('annotations');
 
-        labelEntryAnnotationOption.setShortcut('Double Click');
+      const labelEntryAnnotationOption = annotationSection.appendItem(i18nString(UIStrings.labelEntry), () => {
+        this.dispatchEventToListeners(Events.ENTRY_LABEL_ANNOTATION_ADDED, this.selectedEntryIndex);
+      });
 
-        const linkEntriesAnnotationOption = annotationSection.appendItem(i18nString(UIStrings.linkEntries), () => {
-          this.dispatchEventToListeners(
-              Events.ENTRIES_LINK_ANNOTATION_CREATED, {entryFromIndex: this.selectedEntryIndex});
-        });
-        linkEntriesAnnotationOption.setShortcut('Double Click');
-      }
+      labelEntryAnnotationOption.setShortcut('Double Click');
 
-      void this.contextMenu.show();
+      const linkEntriesAnnotationOption = annotationSection.appendItem(i18nString(UIStrings.linkEntries), () => {
+        this.dispatchEventToListeners(
+            Events.ENTRIES_LINK_ANNOTATION_CREATED, {entryFromIndex: this.selectedEntryIndex});
+      });
+      linkEntriesAnnotationOption.setShortcut('Double Click');
     }
+
+    void this.contextMenu.show();
   }
 
   #handleFlameChartTransformEvent(event: KeyboardEvent): void {

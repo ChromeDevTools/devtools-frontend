@@ -262,12 +262,12 @@ export class FreestylerChatUi extends HTMLElement {
   }
 
   focusTextInput(): void {
-    const input = this.#shadow.querySelector('.chat-input') as HTMLInputElement;
-    if (!input) {
+    const textArea = this.#shadow.querySelector('.chat-input') as HTMLTextAreaElement;
+    if (!textArea) {
       return;
     }
 
-    input.focus();
+    textArea.focus();
   }
 
   scrollToLastMessage(): void {
@@ -280,12 +280,28 @@ export class FreestylerChatUi extends HTMLElement {
 
   #handleSubmit = (ev: SubmitEvent): void => {
     ev.preventDefault();
-    const input = this.#shadow.querySelector('.chat-input') as HTMLInputElement;
-    if (!input || !input.value) {
+    const textArea = this.#shadow.querySelector('.chat-input') as HTMLTextAreaElement;
+    if (!textArea || !textArea.value) {
       return;
     }
-    this.#props.onTextSubmit(input.value);
-    input.value = '';
+    this.#props.onTextSubmit(textArea.value);
+    textArea.value = '';
+  };
+
+  #handleTextAreaKeyDown = (ev: KeyboardEvent): void => {
+    if (!ev.target || !(ev.target instanceof HTMLTextAreaElement)) {
+      return;
+    }
+
+    if (ev.key === 'Enter' && !ev.shiftKey) {
+      // Do not go to a new line whenver Shift + Enter is pressed.
+      ev.preventDefault();
+      // Only submit the text when there isn't a request already in flight.
+      if (!this.#props.isLoading) {
+        this.#props.onTextSubmit(ev.target.value);
+        ev.target.value = '';
+      }
+    }
   };
 
   #handleCancel = (ev: SubmitEvent): void => {
@@ -469,9 +485,7 @@ export class FreestylerChatUi extends HTMLElement {
             <span>${name}</span>
           </div>
         </div>
-        <div>${
-          message.text
-        }</div>
+        <div>${this.#renderTextAsMarkdown(message.text)}</div>
       </div>`;
       // clang-format on
     }
@@ -605,7 +619,7 @@ export class FreestylerChatUi extends HTMLElement {
     // clang-format on
   };
 
-  #renderChatUi = (): LitHtml.TemplateResult => {
+  #renderChatInput = (): LitHtml.TemplateResult => {
     // TODO(ergunsh): Show a better UI for the states where Aida client is not available.
     const isAidaAvailable = this.#props.aidaAvailability === Host.AidaClient.AidaAccessPreconditions.AVAILABLE;
     const showsSideEffects = this.#props.messages.some(message => {
@@ -615,6 +629,51 @@ export class FreestylerChatUi extends HTMLElement {
     });
     const isInputDisabled = !Boolean(this.#props.selectedElement) || !isAidaAvailable || showsSideEffects;
 
+    // clang-format off
+    return LitHtml.html`
+      <div class="chat-input-container">
+        <textarea class="chat-input"
+          .disabled=${isInputDisabled}
+          wrap="hard"
+          @keydown=${this.#handleTextAreaKeyDown}
+          placeholder=${getInputPlaceholderString(this.#props.aidaAvailability)}
+          jslog=${VisualLogging.textField('query').track({ keydown: 'Enter' })}></textarea>
+          ${this.#props.isLoading
+            ? LitHtml.html`<${Buttons.Button.Button.litTagName}
+              class="chat-input-button"
+              aria-label=${i18nString(UIStringsTemp.cancelButtonTitle)}
+              @click=${this.#handleCancel}
+              .data=${
+                {
+                  variant: Buttons.Button.Variant.PRIMARY,
+                  size: Buttons.Button.Size.SMALL,
+                  disabled: isInputDisabled,
+                  iconName: 'stop',
+                  title: i18nString(UIStringsTemp.cancelButtonTitle),
+                  jslogContext: 'stop',
+                } as Buttons.Button.ButtonData
+              }
+            ></${Buttons.Button.Button.litTagName}>`
+            : LitHtml.html`<${Buttons.Button.Button.litTagName}
+              class="chat-input-button"
+              aria-label=${i18nString(UIStringsTemp.sendButtonTitle)}
+              .data=${
+                {
+                  type: 'submit',
+                  variant: Buttons.Button.Variant.ICON,
+                  size: Buttons.Button.Size.SMALL,
+                  disabled: isInputDisabled,
+                  iconName: 'send',
+                  title: i18nString(UIStringsTemp.sendButtonTitle),
+                  jslogContext: 'send',
+                } as Buttons.Button.ButtonData
+              }
+            ></${Buttons.Button.Button.litTagName}>`}
+      </div>`;
+    // clang-format on
+  };
+
+  #renderChatUi = (): LitHtml.TemplateResult => {
     // clang-format off
     return LitHtml.html`
       <div class="chat-ui">
@@ -632,48 +691,7 @@ export class FreestylerChatUi extends HTMLElement {
               ${this.#renderFeedbackLink()}
             </div>
           </div>
-          <div class="chat-input-container">
-            <input type="text" class="chat-input" .disabled=${isInputDisabled}
-              placeholder=${getInputPlaceholderString(
-                this.#props.aidaAvailability,
-              )}
-              jslog=${VisualLogging.textField('query').track({ keydown: 'Enter' })}
-            >${
-                this.#props.isLoading
-                  ? LitHtml.html`
-                    <${Buttons.Button.Button.litTagName}
-                      class="step-actions"
-                      aria-label=${i18nString(UIStringsTemp.cancelButtonTitle)}
-                      @click=${this.#handleCancel}
-                      .data=${
-                        {
-                          variant: Buttons.Button.Variant.PRIMARY,
-                          size: Buttons.Button.Size.SMALL,
-                          disabled: isInputDisabled,
-                          iconName: 'stop',
-                          title: i18nString(UIStringsTemp.cancelButtonTitle),
-                          jslogContext: 'stop',
-                        } as Buttons.Button.ButtonData
-                      }
-                    ></${Buttons.Button.Button.litTagName}>`
-                  : LitHtml.html`
-                    <${Buttons.Button.Button.litTagName}
-                      class="step-actions"
-                      aria-label=${i18nString(UIStringsTemp.sendButtonTitle)}
-                      .data=${
-                        {
-                          type: 'submit',
-                          variant: Buttons.Button.Variant.ICON,
-                          size: Buttons.Button.Size.SMALL,
-                          disabled: isInputDisabled,
-                          iconName: 'send',
-                          title: i18nString(UIStringsTemp.sendButtonTitle),
-                          jslogContext: 'send',
-                        } as Buttons.Button.ButtonData
-                      }
-                    ></${Buttons.Button.Button.litTagName}>`
-              }
-          </div>
+          ${this.#renderChatInput()}
         </form>
         <div class="disclaimer">
           <div class="disclaimer-text">${i18nString(

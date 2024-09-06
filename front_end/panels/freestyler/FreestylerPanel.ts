@@ -214,11 +214,13 @@ export class FreestylerPanel extends UI.Panel.Panel {
   handleAction(actionId: string): void {
     switch (actionId) {
       case 'freestyler.element-panel-context': {
+        this.#viewOutput.freestylerChatUi?.focusTextInput();
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.FreestylerOpenedFromElementsPanel);
         this.doUpdate();
         break;
       }
       case 'freestyler.style-tab-context': {
+        this.#viewOutput.freestylerChatUi?.focusTextInput();
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.FreestylerOpenedFromStylesTab);
         this.doUpdate();
         break;

@@ -146,6 +146,7 @@ devtools_svg_sources = [
   "gears.svg",
   "google.svg",
   "goto-filled.svg",
+  "group.svg",
   "heap-snapshot.svg",
   "heap-snapshots.svg",
   "help.svg",

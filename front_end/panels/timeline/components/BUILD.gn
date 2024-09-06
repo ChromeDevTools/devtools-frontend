@@ -10,6 +10,7 @@ import("../../../../scripts/build/typescript/typescript.gni")
 generate_css("css_files") {
   sources = [
     "breadcrumbsUI.css",
+    "cpuThrottlingSelector.css",
     "fieldSettingsDialog.css",
     "interactionBreakdown.css",
     "liveMetricsView.css",
@@ -17,6 +18,7 @@ generate_css("css_files") {
     "metricValueStyles.css",
     "networkRequestDetails.css",
     "networkRequestTooltip.css",
+    "networkThrottlingSelector.css",
     "sidebarAnnotationsTab.css",
     "sidebarInsightsTab.css",
     "sidebarSingleNavigation.css",

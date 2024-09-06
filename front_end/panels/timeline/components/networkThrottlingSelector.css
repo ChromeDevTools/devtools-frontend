@@ -1,0 +1,15 @@
+/*
+ * Copyright 2024 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+:host {
+  display: inline-block;
+  max-width: 100%;
+  min-width: 50px;
+}
+
+devtools-select-menu {
+  max-width: 100%;
+}

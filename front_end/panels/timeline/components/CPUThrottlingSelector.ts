@@ -10,6 +10,8 @@ import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as MobileThrottling from '../../mobile_throttling/mobile_throttling.js';
 
+import cpuThrottlingSelectorStyles from './cpuThrottlingSelector.css.js';
+
 const {html} = LitHtml;
 
 const UIStrings = {
@@ -50,6 +52,7 @@ export class CPUThrottlingSelector extends HTMLElement {
   }
 
   connectedCallback(): void {
+    this.#shadow.adoptedStyleSheets = [cpuThrottlingSelectorStyles];
     SDK.CPUThrottlingManager.CPUThrottlingManager.instance().addEventListener(
         SDK.CPUThrottlingManager.Events.RATE_CHANGED, this.#onRateChange, this);
   }

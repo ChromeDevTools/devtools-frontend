@@ -12,6 +12,8 @@ import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as MobileThrottling from '../../mobile_throttling/mobile_throttling.js';
 
+import networkThrottlingSelectorStyles from './networkThrottlingSelector.css.js';
+
 const {html, nothing} = LitHtml;
 
 const UIStrings = {
@@ -71,6 +73,7 @@ export class NetworkThrottlingSelector extends HTMLElement {
   }
 
   connectedCallback(): void {
+    this.#shadow.adoptedStyleSheets = [networkThrottlingSelectorStyles];
     SDK.NetworkManager.MultitargetNetworkManager.instance().addEventListener(
         SDK.NetworkManager.MultitargetNetworkManager.Events.CONDITIONS_CHANGED, this.#onConditionsChanged, this);
     this.#customNetworkConditionsSetting.addChangeListener(this.#onSettingChanged, this);

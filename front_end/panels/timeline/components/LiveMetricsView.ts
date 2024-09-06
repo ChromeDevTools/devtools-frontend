@@ -4,7 +4,7 @@
 
 import * as Common from '../../../core/common/common.js';
 import * as i18n from '../../../core/i18n/i18n.js';
-import * as SDK from '../../../core/sdk/sdk.js';
+import type * as SDK from '../../../core/sdk/sdk.js';
 import * as CrUXManager from '../../../models/crux-manager/crux-manager.js';
 import * as EmulationModel from '../../../models/emulation/emulation.js';
 import * as LiveMetrics from '../../../models/live-metrics/live-metrics.js';
@@ -58,9 +58,9 @@ const UIStrings = {
    */
   fieldData: 'Field data',
   /**
-   * @description Title of a section that shows recording settings.
+   * @description Title of a section that shows settings to control the developers local testing environment.
    */
-  recordingSettings: 'Recording settings',
+  environmentSettings: 'Environment settings',
   /**
    * @description Label for an select box that selects which device type field data be shown for (e.g. desktop/mobile/all devices/etc).
    * @example {Mobile} PH1
@@ -126,27 +126,44 @@ const UIStrings = {
    */
   showFieldDataForPage: 'Show field data for {PH1}',
   /**
-   * @description Text block recommendation instructing the user to disable network throttling to best match real user network data.
+   * @description Tooltip text explaining that real user connections are similar to a test environment with no throttling. "latencies" refers to the time it takes for a website server to respond. "throttling" is when the network is intentionally slowed down to simulate a slower connection.
    */
-  tryDisablingThrottling: 'Try disabling network throttling to approximate the network latency measured by real users.',
+  tryDisablingThrottling:
+      'The 75th percentile of real users experienced network latencies similar to a connection with no throttling.',
   /**
-   * @description Text block recommendation instructing the user to enable a throttling preset to best match real user network data.
+   * @description Tooltip text explaining that real user connections are similar to a specif network throttling setup. "latencies" refers to the time it takes for a website server to respond. "throttling" is when the network is intentionally slowed down to simulate a slower connection.
    * @example {Slow 4G} PH1
    */
-  tryUsingThrottling:
-      'Try using {PH1} network throttling to approximate real-user network latencies measured on this page by the Chrome UX Report.',
+  tryUsingThrottling: 'The 75th percentile of real users experienced network latencies similar to {PH1} throttling.',
   /**
-   * @description Text block recommendation instructing the user to emulate a mobile device to match most real users.
+   * @description Tooltip text explaining that a majority of users are using a mobile form factor with the specific percentage.
+   * @example {60%} PH1
    */
-  mostUsersMobile: 'A majority of users are on mobile. Try simulating a mobile device that matches real users.',
+  mostUsersMobile: '{PH1} of users are on mobile.',
   /**
-   * @description Text block recommendation instructing the user to emulate different desktop window sizes to match most real users.
+   * @description Tooltip text explaining that a majority of users are using a desktop form factor with the specific percentage.
+   * @example {60%} PH1
    */
-  mostUsersDesktop: 'A majority of users are on desktop. Try simulating a desktop window size that matches real users.',
+  mostUsersDesktop: '{PH1} of users are on desktop.',
   /**
-   * @description Text block that becomes a link to documentation about how to simulate different mobile and desktop devices.
+   * @description Text for a percentage value.
+   * @example {60} PH1
    */
-  learnMoreDevices: 'Learn more about simulating different devices.',
+  percentage: '{PH1}%',
+  /**
+   * @description Text block explaining how to simulate different mobile and desktop devices. The placeholder at the end will be a link with the text "simulate different devices" translated separately.
+   * @example {simulate different devices} PH1
+   */
+  useDeviceToolbar: 'Use the device toolbar to {PH1}.',
+  /**
+   * @description Text for a link that is inserted inside a larger text block that explains how to simulate different mobile and desktop devices.
+   */
+  simulateDifferentDevices: 'simulate different devices',
+  /**
+   * @description Tooltip text that explains how disabling the network cache can simulate the network connections of users that are visiting a page for the first time.
+   */
+  networkCacheExplanation:
+      'Disabling the network cache will simulate a network experience similar to a first time visitor.',
   /**
    * @description Text label for a checkbox that controls if the network cache is disabled.
    */
@@ -420,7 +437,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
     // clang-format on
   }
 
-  #getClosestNetworkPreset(): SDK.NetworkManager.Conditions|null {
+  #getNetworkRec(): string|null {
     const response = this.#getFieldMetricData('round_trip_time');
     if (!response?.percentiles) {
       return null;
@@ -432,7 +449,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
     }
 
     if (rtt < RTT_MINIMUM) {
-      return SDK.NetworkManager.NoThrottlingConditions;
+      return i18nString(UIStrings.tryDisablingThrottling);
     }
 
     let closestPreset: SDK.NetworkManager.Conditions|null = null;
@@ -456,7 +473,13 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
       smallestDiff = diff;
     }
 
-    return closestPreset;
+    if (!closestPreset) {
+      return null;
+    }
+
+    const title = typeof closestPreset.title === 'function' ? closestPreset.title() : closestPreset.title;
+
+    return i18nString(UIStrings.tryUsingThrottling, {PH1: title});
   }
 
   #getDeviceRec(): Common.UIString.LocalizedString|null {
@@ -467,52 +490,68 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
     }
 
     if (fractions.desktop > 0.5) {
-      return i18nString(UIStrings.mostUsersDesktop);
+      const percentage = i18nString(UIStrings.percentage, {PH1: Math.round(fractions.desktop * 100)});
+      return i18nString(UIStrings.mostUsersDesktop, {PH1: percentage});
     }
 
     if (fractions.phone > 0.5) {
-      return i18nString(UIStrings.mostUsersMobile);
+      const percentage = i18nString(UIStrings.percentage, {PH1: Math.round(fractions.phone * 100)});
+      return i18nString(UIStrings.mostUsersMobile, {PH1: percentage});
     }
 
     return null;
   }
 
   #renderRecordingSettings(): LitHtml.LitTemplate {
-    const throttlingRec = this.#getClosestNetworkPreset();
+    const networkRec = this.#getNetworkRec();
     const deviceRec = this.#getDeviceRec();
 
-    let networkRecEl;
-    if (throttlingRec) {
-      if (throttlingRec === SDK.NetworkManager.NoThrottlingConditions) {
-        networkRecEl = i18nString(UIStrings.tryDisablingThrottling);
-      } else {
-        const title = typeof throttlingRec.title === 'function' ? throttlingRec.title() : throttlingRec.title;
-
-        const recValueEl = document.createElement('span');
-        recValueEl.classList.add('throttling-recommendation-value');
-        recValueEl.textContent = title;
-
-        networkRecEl = i18n.i18n.getFormatLocalizedString(str_, UIStrings.tryUsingThrottling, {PH1: recValueEl});
-      }
-    }
+    const deviceLinkEl = UI.XLink.XLink.create(
+        'https://developer.chrome.com/docs/devtools/device-mode', i18nString(UIStrings.simulateDifferentDevices));
+    const deviceMessage = i18n.i18n.getFormatLocalizedString(str_, UIStrings.useDeviceToolbar, {PH1: deviceLinkEl});
 
     // clang-format off
     return html`
-      <h3 class="card-title">${i18nString(UIStrings.recordingSettings)}</h3>
-      ${deviceRec ? html`
-        <div id="device-recommendation" class="setting-recommendation">
-          ${deviceRec}
-          <x-link href="https://developer.chrome.com/docs/devtools/device-mode">${i18nString(UIStrings.learnMoreDevices)}</x-link>
+      <h3 class="card-title">${i18nString(UIStrings.environmentSettings)}</h3>
+      <div class="device-toolbar-description">
+        ${deviceMessage}
+        ${deviceRec ? html`
+          <${IconButton.Icon.Icon.litTagName}
+            id="device-recommendation"
+            class="field-data-hint"
+            name="group"
+            title=${deviceRec}
+          ></${IconButton.Icon.Icon.litTagName}>
+        ` : nothing}
+      </div>
+      <div class="environment-option">
+        <${CPUThrottlingSelector.litTagName}></${CPUThrottlingSelector.litTagName}>
+      </div>
+      <div class="environment-option">
+        <${NetworkThrottlingSelector.litTagName}></${NetworkThrottlingSelector.litTagName}>
+        ${networkRec ? html`
+          <${IconButton.Icon.Icon.litTagName}
+            id="network-recommendation"
+            class="field-data-hint"
+            name="group"
+            title=${networkRec}
+          ></${IconButton.Icon.Icon.litTagName}>
+        ` : nothing}
+      </div>
+      <div class="environment-option">
+        <${Settings.SettingCheckbox.SettingCheckbox.litTagName}
+          class="network-cache-setting"
+          .data=${{
+            setting: Common.Settings.Settings.instance().moduleSetting('cache-disabled'),
+            textOverride: i18nString(UIStrings.disableNetworkCache),
+          } as Settings.SettingCheckbox.SettingCheckboxData}
+        ></${Settings.SettingCheckbox.SettingCheckbox.litTagName}>
+        <${IconButton.Icon.Icon.litTagName}
+          class="field-data-hint"
+          name="help"
+          title=${i18nString(UIStrings.networkCacheExplanation)}
+        ></${IconButton.Icon.Icon.litTagName}>
         </div>
-      ` : nothing}
-      ${networkRecEl ? html`<div id="network-recommendation" class="setting-recommendation">${networkRecEl}</div>` : nothing}
-      <${CPUThrottlingSelector.litTagName} class="live-metrics-option"></${CPUThrottlingSelector.litTagName}>
-      <${NetworkThrottlingSelector.litTagName} class="live-metrics-option"></${NetworkThrottlingSelector.litTagName}>
-      <${Settings.SettingCheckbox.SettingCheckbox.litTagName} class="live-metrics-option" .data=${{
-        setting: Common.Settings.Settings.instance().moduleSetting('cache-disabled'),
-        textOverride: i18nString(UIStrings.disableNetworkCache),
-      } as Settings.SettingCheckbox.SettingCheckboxData}>
-      </${Settings.SettingCheckbox.SettingCheckbox.litTagName}>
     `;
     // clang-format on
   }
@@ -554,7 +593,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
     return html`
       <${Menus.SelectMenu.SelectMenu.litTagName}
         id="page-scope-select"
-        class="live-metrics-option"
+        class="field-data-option"
         @selectmenuselected=${this.#onPageScopeMenuItemSelected}
         .showDivider=${true}
         .showArrow=${true}
@@ -652,7 +691,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
     return html`
       <${Menus.SelectMenu.SelectMenu.litTagName}
         id="device-scope-select"
-        class="live-metrics-option"
+        class="field-data-option"
         @selectmenuselected=${this.#onDeviceOptionMenuItemSelected}
         .showDivider=${true}
         .showArrow=${true}

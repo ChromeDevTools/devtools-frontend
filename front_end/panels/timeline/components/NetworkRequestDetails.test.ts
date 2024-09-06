@@ -22,7 +22,7 @@ describeWithMockConnection('NetworkRequestDetails', () => {
 
     const details =
         new TimelineComponents.NetworkRequestDetails.NetworkRequestDetails(new Components.Linkifier.Linkifier());
-    await details.setData(cssRequest, Timeline.TargetForEvent.targetForEvent(traceData, cssRequest));
+    await details.setData(traceData, cssRequest, Timeline.TargetForEvent.targetForEvent(traceData, cssRequest));
 
     if (!details.shadowRoot) {
       throw new Error('Could not find expected element to test.');
@@ -48,6 +48,10 @@ describeWithMockConnection('NetworkRequestDetails', () => {
           {title: 'Mime Type', value: 'text/css'},
           {title: 'Encoded Data', value: ' (from cache)'},
           {title: 'Decoded Body', value: '96 B'},
+          {
+            title: 'Initiated by',
+            value: 'chromedevtools.github.io/performance-stories/lcp-web-font/index.html',
+          },
           {title: 'From cache', value: 'Yes'},
           {title: 'Duration', value: durationInnerText},
         ],

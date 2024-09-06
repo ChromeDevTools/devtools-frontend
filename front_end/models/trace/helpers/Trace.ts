@@ -25,7 +25,8 @@ type MatchingPairableAsyncEvents = {
  * one based this function can yield unexpected results when used
  * indiscriminately.
  */
-function stackTraceForEvent(event: Types.TraceEvents.TraceEventData): Types.TraceEvents.TraceEventCallFrame[]|null {
+export function stackTraceForEvent(event: Types.TraceEvents.TraceEventData): Types.TraceEvents.TraceEventCallFrame[]|
+    null {
   if (event.args?.data?.stackTrace) {
     return event.args.data.stackTrace;
   }

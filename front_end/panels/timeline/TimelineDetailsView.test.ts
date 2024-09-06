@@ -71,6 +71,10 @@ describeWithEnvironment('TimelineDetailsView', function() {
           {title: 'Mime Type', value: 'text/css'},
           {title: 'Encoded Data', value: ' (from cache)'},
           {title: 'Decoded Body', value: '96 B'},
+          {
+            title: 'Initiated by',
+            value: 'chromedevtools.github.io/performance-stories/lcp-web-font/index.html',
+          },
           {title: 'From cache', value: 'Yes'},
           {title: 'Duration', value: durationInnerText},
         ],

@@ -27,7 +27,7 @@ async function renderDetails() {
   const maybeTarget = Timeline.TargetForEvent.targetForEvent(traceData, networkEvent);
 
   const details = new TimelineComponents.NetworkRequestDetails.NetworkRequestDetails(detailsLinkifier);
-  await details.setData(networkEvent, maybeTarget);
+  await details.setData(traceData, networkEvent, maybeTarget);
 
   container.appendChild(details);
 }

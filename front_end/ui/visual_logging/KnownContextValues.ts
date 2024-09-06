@@ -3017,6 +3017,7 @@ export const knownContextValues = new Set([
   'timeline.thread.other',
   'timeline.thread.pool',
   'timeline.thread.rasterizer',
+  'timeline.thread.worker',
   'timeline.timings',
   'timeline.toggle-insight',
   'timeline.toggle-recording',

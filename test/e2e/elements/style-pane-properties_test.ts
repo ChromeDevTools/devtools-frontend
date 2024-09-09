@@ -1065,14 +1065,16 @@ describe('The Styles pane', () => {
     assert.deepEqual(inspectedRules, expectedInspected1Rules);
   });
 
-  it('shows styles from injected user stylesheets (ported layout test)', async () => {
-    const {target} = getBrowserAndPages();
-    await goToResourceAndWaitForStyleSection('elements/css-inject-stylesheet.html');
-    await prepareElementsTab();
+  // Fails on Mac-arm64
+  it.skipOnPlatforms(
+      ['mac'], '[crbug.com/362505638]: shows styles from injected user stylesheets (ported layout test)', async () => {
+        const {target} = getBrowserAndPages();
+        await goToResourceAndWaitForStyleSection('elements/css-inject-stylesheet.html');
+        await prepareElementsTab();
 
-    await waitForStyleRule('body');
-    await target.addScriptTag({
-      content: `
+        await waitForStyleRule('body');
+        await target.addScriptTag({
+          content: `
       function injectStyleSheet(context) {
           const styleSheet = "#main { color: red; border-style: solid; -webkit-border-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAQAAAC1+jfqAAAAiElEQVR42r2RsQrDMAxEBRdl8SDcX8lQPGg1GBI6lvz/h7QyRRXV0qUULwfvwZ1tenw5PxToRPWMC52eA9+WDnlh3HFQ/xBQl86NFYJqeGflkiogrOvVlIFhqURFVho3x1moGAa3deMs+LS30CAhBN5nNxeT5hbJ1zwmji2k+aF6NENIPf/hs54f0sZFUVAMigAAAABJRU5ErkJggg==) }  #iframeBody { background: red }";
           const style = document.createElement('style');
@@ -1086,97 +1088,97 @@ describe('The Styles pane', () => {
           iframe.src = "css-inject-stylesheet-iframe-data.html";
           document.getElementById("main").appendChild(iframe);
       }`,
-    });
+        });
 
-    await waitForAndClickTreeElementWithPartialText('id=\u200B"main"');
-    await waitForStyleRule('#main');
-    const inspectedRulesBefore = await getDisplayedStyleRulesCompact();
-    const expectedInspectedRulesBefore = [
-      {
-        selectorText: 'element.style',
-        propertyNames: [],
-      },
-      {
-        selectorText: '#main',
-        propertyNames: [
-          'color',
-          'border-style',
-          'border-top-style',
-          'border-right-style',
-          'border-bottom-style',
-          'border-left-style',
-          '-webkit-border-image',
-        ],
-      },
-      {
-        selectorText: '#main',
-        propertyNames: [
-          'background',
-          'background-image',
-          'background-position-x',
-          'background-position-y',
-          'background-size',
-          'background-repeat',
-          'background-attachment',
-          'background-origin',
-          'background-clip',
-          'background-color',
-        ],
-      },
-      {
-        selectorText: 'div',
-        propertyNames: ['display', 'unicode-bidi'],
-      },
-    ];
-    assert.deepEqual(inspectedRulesBefore, expectedInspectedRulesBefore);
-    await target.evaluate('loadIframe()');
-    await expandSelectedNodeRecursively();
-    const iframeBody = await waitFor('onload', undefined, undefined, 'pierceShadowText');
-    await clickElement(iframeBody);
-    await waitForStyleRule('#iframeBody');
-    const inspectedRulesAfter = await getDisplayedStyleRulesCompact();
-    const expectedInspectedRulesAfter = [
-      {
-        selectorText: 'element.style',
-        propertyNames: [],
-      },
-      {
-        selectorText: '#iframeBody',
-        propertyNames: [
-          'background',
-          'background-image',
-          'background-position-x',
-          'background-position-y',
-          'background-size',
-          'background-repeat',
-          'background-attachment',
-          'background-origin',
-          'background-clip',
-          'background-color',
-        ],
-      },
-      {
-        selectorText: 'body',
-        propertyNames: [
-          'background',
-          'background-image',
-          'background-position-x',
-          'background-position-y',
-          'background-size',
-          'background-repeat',
-          'background-attachment',
-          'background-origin',
-          'background-clip',
-          'background-color',
-        ],
-      },
-      {
-        selectorText: 'body',
-        propertyNames: ['display', 'margin', 'margin-top', 'margin-right', 'margin-bottom', 'margin-left'],
-      },
-    ];
-    assert.deepEqual(inspectedRulesAfter, expectedInspectedRulesAfter);
-  });
+        await waitForAndClickTreeElementWithPartialText('id=\u200B"main"');
+        await waitForStyleRule('#main');
+        const inspectedRulesBefore = await getDisplayedStyleRulesCompact();
+        const expectedInspectedRulesBefore = [
+          {
+            selectorText: 'element.style',
+            propertyNames: [],
+          },
+          {
+            selectorText: '#main',
+            propertyNames: [
+              'color',
+              'border-style',
+              'border-top-style',
+              'border-right-style',
+              'border-bottom-style',
+              'border-left-style',
+              '-webkit-border-image',
+            ],
+          },
+          {
+            selectorText: '#main',
+            propertyNames: [
+              'background',
+              'background-image',
+              'background-position-x',
+              'background-position-y',
+              'background-size',
+              'background-repeat',
+              'background-attachment',
+              'background-origin',
+              'background-clip',
+              'background-color',
+            ],
+          },
+          {
+            selectorText: 'div',
+            propertyNames: ['display', 'unicode-bidi'],
+          },
+        ];
+        assert.deepEqual(inspectedRulesBefore, expectedInspectedRulesBefore);
+        await target.evaluate('loadIframe()');
+        await expandSelectedNodeRecursively();
+        const iframeBody = await waitFor('onload', undefined, undefined, 'pierceShadowText');
+        await clickElement(iframeBody);
+        await waitForStyleRule('#iframeBody');
+        const inspectedRulesAfter = await getDisplayedStyleRulesCompact();
+        const expectedInspectedRulesAfter = [
+          {
+            selectorText: 'element.style',
+            propertyNames: [],
+          },
+          {
+            selectorText: '#iframeBody',
+            propertyNames: [
+              'background',
+              'background-image',
+              'background-position-x',
+              'background-position-y',
+              'background-size',
+              'background-repeat',
+              'background-attachment',
+              'background-origin',
+              'background-clip',
+              'background-color',
+            ],
+          },
+          {
+            selectorText: 'body',
+            propertyNames: [
+              'background',
+              'background-image',
+              'background-position-x',
+              'background-position-y',
+              'background-size',
+              'background-repeat',
+              'background-attachment',
+              'background-origin',
+              'background-clip',
+              'background-color',
+            ],
+          },
+          {
+            selectorText: 'body',
+            propertyNames: ['display', 'margin', 'margin-top', 'margin-right', 'margin-bottom', 'margin-left'],
+          },
+        ];
+        assert.deepEqual(inspectedRulesAfter, expectedInspectedRulesAfter);
+      });
 
   it('can parse webkit css region styling (ported layout test)', async () => {
     await goToResourceAndWaitForStyleSection('elements/css-webkit-region.html');

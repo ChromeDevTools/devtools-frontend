@@ -160,6 +160,14 @@ export class Settings {
     return Platform.StringUtilities.toKebabCase(name);
   }
 
+  /**
+   * Prefer a module setting if this setting is one that you might not want to
+   * surface to the user to control themselves. Examples of these are settings
+   * to store UI state such as how a user choses to position a split widget or
+   * which panel they last opened.
+   * If you are creating a setting that you expect the user to control, and
+   * sync, prefer {@see createSetting}
+   */
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   moduleSetting<T = any>(settingName: string): Setting<T> {

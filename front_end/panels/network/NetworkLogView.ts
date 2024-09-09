@@ -1871,7 +1871,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
   }
 
   private async copyAllAsHAR(): Promise<void> {
-    const harArchive = {log: await HAR.Log.Log.build(this.harRequests())};
+    const harArchive = {log: await HAR.Log.Log.build(this.harRequests(), {sanitize: false})};
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(JSON.stringify(harArchive, null, 2));
   }
 
@@ -1931,7 +1931,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
 
     const progressIndicator = new UI.ProgressIndicator.ProgressIndicator();
     this.progressBarContainer.appendChild(progressIndicator.element);
-    await HAR.Writer.Writer.write(stream, this.harRequests(), progressIndicator);
+    await HAR.Writer.Writer.write(stream, this.harRequests(), {sanitize: false}, progressIndicator);
     progressIndicator.done();
     void stream.close();
   }

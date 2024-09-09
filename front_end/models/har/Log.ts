@@ -39,16 +39,20 @@ import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 
+export type BuildOptions = {
+  sanitize: boolean,
+};
+
 export class Log {
   static pseudoWallTime(request: SDK.NetworkRequest.NetworkRequest, monotonicTime: number): Date {
     return new Date(request.pseudoWallTime(monotonicTime) * 1000);
   }
 
-  static async build(requests: SDK.NetworkRequest.NetworkRequest[]): Promise<LogDTO> {
+  static async build(requests: SDK.NetworkRequest.NetworkRequest[], options: BuildOptions): Promise<LogDTO> {
     const log = new Log();
     const entryPromises = [];
     for (const request of requests) {
-      entryPromises.push(Entry.build(request));
+      entryPromises.push(Entry.build(request, options));
     }
     const entries = await Promise.all(entryPromises);
     return {version: '1.2', creator: log.creator(), pages: log.buildPages(requests), entries};
@@ -106,7 +110,7 @@ export class Entry {
     return time === -1 ? -1 : time * 1000;
   }
 
-  static async build(request: SDK.NetworkRequest.NetworkRequest): Promise<EntryDTO> {
+  static async build(request: SDK.NetworkRequest.NetworkRequest, options: BuildOptions): Promise<EntryDTO> {
     const harEntry = new Entry(request);
     let ipAddress = harEntry.request.remoteAddress();
     const portPositionInString = ipAddress.lastIndexOf(':');
@@ -158,6 +162,17 @@ export class Entry {
       time,
       timings,
     };
+
+    // Sanitize HAR to remove sensitive data.
+
+    if (options.sanitize) {
+      entry.response.cookies = [];
+      entry.response.headers =
+          entry.response.headers.filter(({name}) => !['set-cookie'].includes(name.toLocaleLowerCase()));
+      entry.request.cookies = [];
+      entry.request.headers =
+          entry.request.headers.filter(({name}) => !['authorization', 'cookie'].includes(name.toLocaleLowerCase()));
+    }
 
     // Chrome specific.
 
@@ -466,7 +481,7 @@ export interface Request {
   method: string;
   url: Platform.DevToolsPath.UrlString;
   httpVersion: string;
-  headers: Object;
+  headers: {name: string, value: string, comment?: string}[];
   queryString: Parameter[];
   cookies: CookieDTO[];
   headersSize: number;
@@ -478,7 +493,7 @@ export interface Response {
   status: number;
   statusText: string;
   httpVersion: string;
-  headers: Object;
+  headers: {name: string, value: string, comment?: string}[];
   cookies: CookieDTO[];
   content: Content;
   redirectURL: string;

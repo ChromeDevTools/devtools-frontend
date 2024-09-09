@@ -38,7 +38,7 @@ describeWithLocale('HARWriter', () => {
           req2,
           req1,
         ],
-        compositeProgress);
+        {sanitize: false}, compositeProgress);
     const resultEntries = JSON.parse(result).log.entries;
     assert.strictEqual(resultEntries[0].startedDateTime, req1Time.toJSON(), 'earlier request should come first');
     assert.strictEqual(resultEntries[1].startedDateTime, req2Time.toJSON(), 'earlier request should come first');

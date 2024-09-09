@@ -10,6 +10,14 @@
   box-sizing: border-box;
 }
 
+:host {
+  /**
+    Adjusts the max height of the code area.
+    This can be changed from outside by targeting `devtools-code-block` element.
+  */
+  --max-code-height: none;
+}
+
 code {
   color: var(--sys-color-on-surface);
   font-size: 11px;
@@ -21,12 +29,12 @@ code {
 .codeblock {
   margin-bottom: 8px;
   box-sizing: border-box;
-  border-radius: 4px;
-  background-color: var(--sys-color-surface5);
   color: var(--sys-color-on-surface);
 }
 
 .codeblock .toolbar {
+  border-top-left-radius: var(--sys-shape-corner-extra-small);
+  border-top-right-radius: var(--sys-shape-corner-extra-small);
   box-sizing: border-box;
   display: flex;
   height: 28px;
@@ -36,12 +44,31 @@ code {
   font-style: normal;
   font-weight: 400;
   line-height: 16px;
+  background-color: var(--sys-color-surface5);
 }
 
 .codeblock .editor-wrapper {
   color: var(--sys-color-on-surface);
   background: var(--sys-color-surface1);
-  padding: 10px 5px;
+  padding: 10px 5px 0;
+  border-bottom-left-radius: var(--sys-shape-corner-extra-small);
+  border-bottom-right-radius: var(--sys-shape-corner-extra-small);
+}
+
+.codeblock:not(:has(.toolbar)) .editor-wrapper {
+  border-radius: var(--sys-shape-corner-extra-small);
+}
+
+.codeblock .editor-wrapper .code {
+  max-height: var(--max-code-height);
+  overflow: auto;
+  padding-bottom: 10px;
+}
+
+.heading-text {
+  font: var(--sys-typescale-body5-bold);
+  padding-left: 6px;
+  padding-right: 2px;
 }
 
 .codeblock .lang {
@@ -75,10 +102,13 @@ code {
 }
 
 .notice {
-  margin-top: 3px;
-  margin-left: 3px;
+  margin-top: 2px;
+  padding: var(--sys-size-4) var(--sys-size-5);
+  background-color: var(--sys-color-surface1);
+  border-radius: var(--sys-shape-corner-extra-small);
 
   .link {
+    font: var(--sys-typescale-body4-regular);
     color: var(--sys-color-primary);
     text-decoration-line: underline;
   }

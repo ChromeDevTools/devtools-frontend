@@ -1,0 +1,30 @@
+<!--
+  Copyright 2021 The Chromium Authors. All rights reserved.
+  Use of this source code is governed by a BSD-style license that can be
+  found in the LICENSE file.
+-->
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Code Block - Markdown View example</title>
+    <style>
+      #container {
+        max-width: 100vw;
+        max-height: 100vh;
+        border: 1px solid black;
+        padding: 24px;
+        overflow: auto;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="container"></div>
+
+    <script type="module" src="./code-block.js"></script>
+  </body>
+</html>

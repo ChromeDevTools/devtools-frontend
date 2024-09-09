@@ -147,6 +147,14 @@ const UIStringsTemp = {
    *@description Prefix to the title of each thinking step of a user action is required to continue
    */
   paused: 'Paused',
+  /**
+   *@description Heading text for the code block that shows the executed code.
+   */
+  codeExecuted: 'Code executed',
+  /**
+   *@description Heading text for the code block that shows the returned data.
+   */
+  dataReturned: 'Data returned',
 };
 // const str_ = i18n.i18n.registerUIStrings('panels/freestyler/components/FreestylerChatUi.ts', UIStrings);
 // const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -368,17 +376,28 @@ export class FreestylerChatUi extends HTMLElement {
     const sideEffects =
         options.isLast && step.sideEffect ? this.#renderSideEffectConfirmationUi(step) : LitHtml.nothing;
     const thought = step.thought ? LitHtml.html`<p>${this.#renderTextAsMarkdown(step.thought)}</p>` : LitHtml.nothing;
-    const code = step.code ? LitHtml.html`
-          <div class="action-result">
-              <${MarkdownView.CodeBlock.CodeBlock.litTagName}
-                .code=${step.code.trim()}
-                .codeLang=${'js'}
-                .displayToolbar=${false}
-                .displayNotice=${true}
-              ></${MarkdownView.CodeBlock.CodeBlock.litTagName}>
-          </div>` :
+    // If there is output, we don't show notice on this code block and instead show
+    // it in the data returned code block.
+    const code = step.code ? LitHtml.html`<div class="action-result">
+        <${MarkdownView.CodeBlock.CodeBlock.litTagName}
+          .code=${step.code.trim()}
+          .codeLang=${'js'}
+          .displayToolbar=${false}
+          .displayNotice=${!Boolean(step.output)}
+          .headingText=${i18nString(UIStringsTemp.codeExecuted)}
+        ></${MarkdownView.CodeBlock.CodeBlock.litTagName}>
+    </div>` :
                              LitHtml.nothing;
-    const output = step.output ? LitHtml.html`<div class="js-code-output">${step.output}</div>` : LitHtml.nothing;
+    const output = step.output ? LitHtml.html`<div class="js-code-output">
+      <${MarkdownView.CodeBlock.CodeBlock.litTagName}
+        .code=${step.output}
+        .codeLang=${'js'}
+        .displayToolbar=${false}
+        .displayNotice=${true}
+        .headingText=${i18nString(UIStringsTemp.dataReturned)}
+      ></${MarkdownView.CodeBlock.CodeBlock.litTagName}>
+    </div>` :
+                                 LitHtml.nothing;
 
     // clang-format off
     return LitHtml.html`<div class="step-details">

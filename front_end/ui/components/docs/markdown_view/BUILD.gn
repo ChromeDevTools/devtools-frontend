@@ -7,7 +7,10 @@ import("../../../../../scripts/build/typescript/typescript.gni")
 
 ts_library("ts") {
   testonly = true
-  sources = [ "basic.ts" ]
+  sources = [
+    "basic.ts",
+    "code-block.ts",
+  ]
 
   deps = [
     "../../../../testing",
@@ -19,7 +22,10 @@ ts_library("ts") {
 
 copy_to_gen("markdown_view") {
   testonly = true
-  sources = [ "basic.html" ]
+  sources = [
+    "basic.html",
+    "code-block.html",
+  ]
 
   deps = [ ":ts" ]
 }

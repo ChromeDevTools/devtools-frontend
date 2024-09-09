@@ -203,6 +203,15 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
         networkChart: this.networkFlameChart,
         networkProvider: this.networkDataProvider,
       },
+      entryQueries: {
+        isEntryCollapsedByUser: (entry: TraceEngine.Types.TraceEvents.TraceEventData): boolean => {
+          return ModificationsManager.activeManager()?.getEntriesFilter().entryIsInvisible(entry) ?? false;
+        },
+        firstVisibleParentForEntry(entry) {
+          return ModificationsManager.activeManager()?.getEntriesFilter().firstVisibleParentEntryForEntry(entry) ??
+              null;
+        },
+      },
     });
 
     this.#overlays.addEventListener(Overlays.Overlays.AnnotationOverlayActionEvent.eventName, event => {

@@ -1827,7 +1827,7 @@ export class TimelineUIUtils {
         traceBoundsState.micro.minimapTraceBounds.max < entry.ts;
 
     // Check if it is in the hidden array
-    const isEntryHidden = ModificationsManager.activeManager()?.getEntriesFilter().inEntryInvisible(entry);
+    const isEntryHidden = ModificationsManager.activeManager()?.getEntriesFilter().entryIsInvisible(entry);
 
     if (!isEntryOutsideBreadcrumb) {
       link.classList.add('devtools-link');

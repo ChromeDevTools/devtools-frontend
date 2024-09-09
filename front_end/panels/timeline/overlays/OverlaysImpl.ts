@@ -181,6 +181,12 @@ export interface TimelineCharts {
   networkProvider: PerfUI.FlameChart.FlameChartDataProvider;
 }
 
+export interface OverlayEntryQueries {
+  isEntryCollapsedByUser: (entry: TraceEngine.Types.TraceEvents.TraceEventData) => boolean;
+  firstVisibleParentForEntry:
+      (entry: TraceEngine.Types.TraceEvents.TraceEventData) => TraceEngine.Types.TraceEvents.TraceEventData | null;
+}
+
 // An event dispatched when one of the Annotation Overlays (overlay created by the user,
 // ex. EntryLabel) is removed or updated. When one of the Annotation Overlays is removed or updated,
 // ModificationsManager listens to this event and updates the current annotations.
@@ -191,6 +197,13 @@ export class AnnotationOverlayActionEvent extends Event {
   constructor(public overlay: TimelineOverlay, public action: UpdateAction) {
     super(AnnotationOverlayActionEvent.eventName);
   }
+}
+
+interface EntriesLinkVisibleEntries {
+  entryFrom: TraceEngine.Types.TraceEvents.TraceEventData;
+  entryTo: TraceEngine.Types.TraceEvents.TraceEventData|undefined;
+  entryFromIsSource: boolean;
+  entryToIsSource: boolean;
 }
 
 /**
@@ -251,6 +264,14 @@ export class Overlays extends EventTarget {
   // It is switched on/off from the annotations tab in the sidebar.
   readonly #annotationsHiddenSetting: Common.Settings.Setting<boolean>;
 
+  /**
+   * The OverlaysManager sometimes needs to find out if an entry is visible or
+   * not, and if not, why not - for example, if the user has collapsed its
+   * parent. We define these query functions that must be supplied in order to
+   * answer these questions.
+   */
+  #queries: OverlayEntryQueries;
+
   constructor(init: {
     container: HTMLElement,
     flameChartsContainers: {
@@ -258,10 +279,12 @@ export class Overlays extends EventTarget {
       network: HTMLElement,
     },
     charts: TimelineCharts,
+    entryQueries: OverlayEntryQueries,
   }) {
     super();
     this.#overlaysContainer = init.container;
     this.#charts = init.charts;
+    this.#queries = init.entryQueries;
     this.#entriesLinkInProgress = null;
     this.#annotationsHiddenSetting = Common.Settings.Settings.instance().moduleSetting('annotations-hidden');
     this.#annotationsHiddenSetting.addChangeListener(this.update.bind(this));
@@ -614,7 +637,13 @@ export class Overlays extends EventTarget {
       }
       case 'ENTRIES_LINK': {
         this.#setOverlayElementVisibility(element, !annotationsAreHidden);
-        this.#positionEntriesLinkOverlay(overlay, element);
+
+        const entriesToConnect = this.#calculateFromAndToForEntriesLink(overlay);
+        if (entriesToConnect === null) {
+          this.#setOverlayElementVisibility(element, false);
+        } else {
+          this.#positionEntriesLinkOverlay(overlay, element, entriesToConnect);
+        }
         break;
       }
       case 'TIMESPAN_BREAKDOWN': {
@@ -752,22 +781,31 @@ export class Overlays extends EventTarget {
     }
   }
 
-  #positionEntriesLinkOverlay(overlay: EntriesLink, element: HTMLElement): void {
+  /**
+   * Positions the arrow between two entries. Takes in the entriesToConnect
+   * because if one of the original entries is hidden in a collapsed main thread
+   * icicle, we use its parent to connect to.
+   */
+  #positionEntriesLinkOverlay(overlay: EntriesLink, element: HTMLElement, entriesToConnect: EntriesLinkVisibleEntries):
+      void {
     const component = element.querySelector('devtools-entries-link-overlay');
-
     if (component) {
-      const fromEntryStartX = this.xPixelForEventStartOnChart(overlay.entryFrom) ?? 0;
-      const fromEntryEndX = this.xPixelForEventEndOnChart(overlay.entryFrom) ?? 0;
+      const {entryFrom, entryTo, entryFromIsSource, entryToIsSource} = entriesToConnect;
+      const fromEntryStartX = this.xPixelForEventStartOnChart(entryFrom) ?? 0;
+      const fromEntryEndX = this.xPixelForEventEndOnChart(entryFrom) ?? 0;
       const fromEntryLength = fromEntryEndX - fromEntryStartX;
-      const fromEntryHeight = this.pixelHeightForEventOnChart(overlay.entryFrom) ?? 0;
+      const fromEntryHeight = this.pixelHeightForEventOnChart(entryFrom) ?? 0;
 
-      const entryFromVisibility = this.entryIsVisibleOnChart(overlay.entryFrom);
-      const entryToVisibility = overlay.entryTo ? this.entryIsVisibleOnChart(overlay.entryTo) : false;
+      const entryFromVisibility = this.entryIsVisibleOnChart(entryFrom);
+      const entryToVisibility = entryTo ? this.entryIsVisibleOnChart(entryTo) : false;
 
       // If the 'from' entry is visible, set the entry Y as an arrow start coordinate. Ff not, get the canvas edge coordinate to for the arrow to start from.
-      const yPixelForFromArrow = (entryFromVisibility ? this.yPixelForEventOnChart(overlay.entryFrom) :
-                                                        this.#yCoordinateForNotVisibleEntry(overlay.entryFrom)) ??
+      const yPixelForFromArrow = (entryFromVisibility ? this.yPixelForEventOnChart(entryFrom) :
+                                                        this.#yCoordinateForNotVisibleEntry(entryFrom)) ??
           0;
+
+      component.fromEntryIsSource = entryFromIsSource;
+      component.toEntryIsSource = entryToIsSource;
 
       component.entriesVisibility = {
         fromEntryVisibility: entryFromVisibility,
@@ -779,16 +817,16 @@ export class Overlays extends EventTarget {
 
       // If entryTo exists, pass the coordinates and dimentions of the entry that the arrow snaps to.
       // If it does not, the event tracking mouse coordinates updates 'to coordinates' so the arrow follows the mouse instead.
-      if (overlay.entryTo) {
-        const toEntryStartX = this.xPixelForEventStartOnChart(overlay.entryTo) ?? 0;
-        const toEntryEndX = this.xPixelForEventEndOnChart(overlay.entryTo) ?? 0;
+      if (entryTo) {
+        const toEntryStartX = this.xPixelForEventStartOnChart(entryTo) ?? 0;
+        const toEntryEndX = this.xPixelForEventEndOnChart(entryTo) ?? 0;
         const toEntryWidth = toEntryEndX - toEntryStartX;
-        const toEntryHeight = this.pixelHeightForEventOnChart(overlay.entryTo) ?? 0;
+        const toEntryHeight = this.pixelHeightForEventOnChart(entryTo) ?? 0;
 
         // If the 'to' entry is visible, set the entry Y as an arrow coordinate to point ot. Ff not, get the canvas edge coordate to point the arrow to.
         const yPixelForToArrow =
-            ((this.entryIsVisibleOnChart(overlay.entryTo)) ? this.yPixelForEventOnChart(overlay.entryTo) :
-                                                             this.#yCoordinateForNotVisibleEntry(overlay.entryTo)) ??
+            ((this.entryIsVisibleOnChart(entryTo)) ? this.yPixelForEventOnChart(entryTo) :
+                                                     this.#yCoordinateForNotVisibleEntry(entryTo)) ??
             0;
         component.toEntryCoordinateAndDimentions = {
           x: toEntryStartX ?? 0,
@@ -1093,6 +1131,51 @@ export class Overlays extends EventTarget {
     element.style.left = `${x}px`;
   }
 
+  /**
+   * We draw an arrow between connected entries but this can get complicated
+   * depending on if the entries are visible or not. For example, the user might
+   * draw a connection to an entry in the main thread but then collapse the
+   * parent of that entry. In this case the entry we want to draw to is the
+   * first visible parent of that entry rather than the (invisible) entry.
+   */
+  #calculateFromAndToForEntriesLink(overlay: EntriesLink): EntriesLinkVisibleEntries|null {
+    if (!overlay.entryTo) {
+      // This case is where the user has clicked on the first entry and needs
+      // to pick a second. In this case they can only pick from visible
+      // entries, so we don't need to do any checks and can just return.
+      return {
+        entryFrom: overlay.entryFrom,
+        entryTo: overlay.entryTo,
+        entryFromIsSource: true,
+        entryToIsSource: true,
+      };
+    }
+
+    let entryFrom: OverlayEntry|null = overlay.entryFrom;
+    let entryTo: OverlayEntry|null = overlay.entryTo ?? null;
+
+    if (this.#queries.isEntryCollapsedByUser(overlay.entryFrom)) {
+      entryFrom = this.#queries.firstVisibleParentForEntry(overlay.entryFrom);
+    }
+    if (overlay.entryTo && this.#queries.isEntryCollapsedByUser(overlay.entryTo)) {
+      entryTo = this.#queries.firstVisibleParentForEntry(overlay.entryTo);
+    }
+
+    if (entryFrom === null || entryTo === null) {
+      // We cannot draw this overlay; so return null;
+      // The only valid case of entryTo being null/undefined has been dealt
+      // with already at the start of this function.
+      return null;
+    }
+
+    return {
+      entryFrom,
+      entryFromIsSource: entryFrom === overlay.entryFrom,
+      entryTo,
+      entryToIsSource: entryTo === overlay.entryTo,
+    };
+  }
+
   #createElementForNewOverlay(overlay: TimelineOverlay): HTMLElement {
     const div = document.createElement('div');
     div.classList.add('overlay-item', `overlay-type-${overlay.type}`);
@@ -1113,11 +1196,18 @@ export class Overlays extends EventTarget {
         return div;
       }
       case 'ENTRIES_LINK': {
-        const entryEndX = this.xPixelForEventEndOnChart(overlay.entryFrom) ?? 0;
-        const entryStartX = this.xPixelForEventEndOnChart(overlay.entryFrom) ?? 0;
-        const entryStartY = (this.yPixelForEventOnChart(overlay.entryFrom) ?? 0);
+        const entries = this.#calculateFromAndToForEntriesLink(overlay);
+        if (entries === null) {
+          // For some reason, we don't have two entries we can draw between
+          // (can happen if the user has collapsed an icicle in the flame
+          // chart, or a track), so just draw an empty div.
+          return div;
+        }
+        const entryEndX = this.xPixelForEventEndOnChart(entries.entryFrom) ?? 0;
+        const entryStartX = this.xPixelForEventEndOnChart(entries.entryFrom) ?? 0;
+        const entryStartY = (this.yPixelForEventOnChart(entries.entryFrom) ?? 0);
         const entryWidth = entryEndX - entryStartX;
-        const entryHeight = this.pixelHeightForEventOnChart(overlay.entryFrom) ?? 0;
+        const entryHeight = this.pixelHeightForEventOnChart(entries.entryFrom) ?? 0;
 
         const component = new Components.EntriesLinkOverlay.EntriesLinkOverlay(
             {x: entryEndX, y: entryStartY, width: entryWidth, height: entryHeight});

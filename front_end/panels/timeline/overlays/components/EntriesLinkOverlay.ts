@@ -22,6 +22,13 @@ export class EntriesLinkOverlay extends HTMLElement {
   #entryFromVisible: boolean = true;
   #entryToVisible: boolean = true;
 
+  // These flags let us know if the entry we are drawing from/to are the
+  // originals, or if they are the parent, which can happen if an entry is
+  // collapsed. We care about this because if the entry is not the source, we
+  // draw the border as dashed, not solid.
+  #fromEntryIsSource: boolean = true;
+  #toEntryIsSource: boolean = true;
+
   constructor(initialFromEntryCoordinateAndDimentions: {x: number, y: number, width: number, height: number}) {
     super();
     this.#render();
@@ -63,6 +70,22 @@ export class EntriesLinkOverlay extends HTMLElement {
     }
 
     this.#redrawConnectionArrow();
+  }
+
+  set fromEntryIsSource(x: boolean) {
+    if (x === this.#fromEntryIsSource) {
+      return;
+    }
+    this.#fromEntryIsSource = x;
+    this.#render();
+  }
+
+  set toEntryIsSource(x: boolean) {
+    if (x === this.#toEntryIsSource) {
+      return;
+    }
+    this.#toEntryIsSource = x;
+    this.#render();
   }
 
   #redrawConnectionArrow(): void {
@@ -151,15 +174,19 @@ export class EntriesLinkOverlay extends HTMLElement {
             </defs>
             <line marker-end='url(#arrow)'/>
             <rect
-              class="entryFromWrapper" fill="none" stroke="black" />
+              class="entryFromWrapper" fill="none" stroke="black" stroke-dasharray=${this.#fromEntryIsSource ? 'none' : DASHED_STROKE_AMOUNT} />
             <rect
-              class="entryToWrapper" fill="none" stroke="black" />
+              class="entryToWrapper" fill="none" stroke="black" stroke-dasharray=${this.#toEntryIsSource ? 'none' : DASHED_STROKE_AMOUNT} />
           </svg>
         `,
         this.#shadow, {host: this});
     // clang-format on
   }
 }
+
+// Defines the gap in the border when we are drawing a dashed outline.
+// https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stroke-dasharray
+const DASHED_STROKE_AMOUNT = 4;
 
 customElements.define('devtools-entries-link-overlay', EntriesLinkOverlay);
 

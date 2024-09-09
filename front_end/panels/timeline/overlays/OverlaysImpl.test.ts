@@ -19,6 +19,15 @@ import * as Overlays from './overlays.js';
 
 const coordinator = RenderCoordinator.RenderCoordinator.RenderCoordinator.instance();
 
+const FAKE_OVERLAY_ENTRY_QUERIES: Overlays.Overlays.OverlayEntryQueries = {
+  isEntryCollapsedByUser() {
+    return false;
+  },
+  firstVisibleParentForEntry() {
+    return null;
+  },
+};
+
 /**
  * The Overlays expects to be provided with both the main and network charts
  * and data providers. This function creates all of those and optionally sets
@@ -68,6 +77,7 @@ describeWithEnvironment('Overlays', () => {
         network: networkFlameChartsContainer,
       },
       charts: createCharts(),
+      entryQueries: FAKE_OVERLAY_ENTRY_QUERIES,
     });
 
     // Set up the dimensions so it is 100px wide
@@ -112,6 +122,7 @@ describeWithEnvironment('Overlays', () => {
         network: networkFlameChartsContainer,
       },
       charts,
+      entryQueries: FAKE_OVERLAY_ENTRY_QUERIES,
     });
 
     overlays.updateChartDimensions('main', {
@@ -157,6 +168,7 @@ describeWithEnvironment('Overlays', () => {
         network: networkFlameChartsContainer,
       },
       charts,
+      entryQueries: FAKE_OVERLAY_ENTRY_QUERIES,
     });
 
     overlays.updateChartDimensions('main', {
@@ -203,6 +215,7 @@ describeWithEnvironment('Overlays', () => {
         network: networkFlameChartsContainer,
       },
       charts,
+      entryQueries: FAKE_OVERLAY_ENTRY_QUERIES,
     });
 
     overlays.updateChartDimensions('main', {
@@ -256,6 +269,7 @@ describeWithEnvironment('Overlays', () => {
           network: networkFlameChartsContainer,
         },
         charts,
+        entryQueries: FAKE_OVERLAY_ENTRY_QUERIES,
       });
       const currManager = Timeline.ModificationsManager.ModificationsManager.activeManager();
       // The Annotations Overlays are added through the ModificationsManager listener

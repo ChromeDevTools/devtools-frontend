@@ -3,10 +3,11 @@
 // found in the LICENSE file.
 import * as Platform from '../../core/platform/platform.js';
 import * as TraceEngine from '../../models/trace/trace.js';
+import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
+
 import {
   entryIsVisibleInTimeline,
 } from './CompatibilityTracksAppender.js';
-import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 
 type EntryToNodeMap = Map<TraceEngine.Types.TraceEvents.TraceEventData, TraceEngine.Helpers.TreeHelpers.TraceEntryNode>;
 
@@ -34,7 +35,8 @@ export class EntriesFilter {
   #expandableEntries: TraceEngine.Types.TraceEvents.TraceEventData[] = [];
   // Cache for descendants of entry that have already been gathered. The descendants
   // will never change so we can avoid running the potentially expensive search again.
-  #entryToDescendantsMap: Map<TraceEngine.Helpers.TreeHelpers.TraceEntryNode, TraceEngine.Types.TraceEvents.TraceEventData[]> = new Map();
+  #entryToDescendantsMap:
+      Map<TraceEngine.Helpers.TreeHelpers.TraceEntryNode, TraceEngine.Types.TraceEvents.TraceEventData[]> = new Map();
 
   constructor(entryToNodeMap: EntryToNodeMap) {
     this.#entryToNode = entryToNodeMap;
@@ -105,7 +107,7 @@ export class EntriesFilter {
     this.#expandableEntries.push(...expandableEntries);
   }
 
-  inEntryInvisible(entry: TraceEngine.Types.TraceEvents.TraceEventData): boolean {
+  entryIsInvisible(entry: TraceEngine.Types.TraceEvents.TraceEventData): boolean {
     return this.#invisibleEntries.includes(entry);
   }
 
@@ -137,7 +139,7 @@ export class EntriesFilter {
         entriesToHide.add(action.entry);
         // If parent node exists, add it to expandableEntries, so it would be possible to uncollapse its children.
         const actionNode = this.#entryToNode.get(action.entry) || null;
-        const parentNode = actionNode && this.#findNextVisibleParent(actionNode);
+        const parentNode = actionNode && this.#firstVisibleParentNodeForEntryNode(actionNode);
         if (parentNode) {
           this.#addExpandableEntry(parentNode.entry);
         }
@@ -207,16 +209,29 @@ export class EntriesFilter {
     }
   }
 
+  firstVisibleParentEntryForEntry(entry: TraceEngine.Types.TraceEvents.TraceEventData):
+      TraceEngine.Types.TraceEvents.TraceEventData|null {
+    const node = this.#entryToNode.get(entry);
+    if (!node) {
+      return null;
+    }
+    const parent = this.#firstVisibleParentNodeForEntryNode(node);
+    return parent ? parent.entry : null;
+  }
+
   // The direct parent might be hidden by other actions, therefore we look for the next visible parent.
-  #findNextVisibleParent(node: TraceEngine.Helpers.TreeHelpers.TraceEntryNode): TraceEngine.Helpers.TreeHelpers.TraceEntryNode|null {
+  #firstVisibleParentNodeForEntryNode(node: TraceEngine.Helpers.TreeHelpers.TraceEntryNode):
+      TraceEngine.Helpers.TreeHelpers.TraceEntryNode|null {
     let parent = node.parent;
-    while ((parent && this.#invisibleEntries.includes(parent.entry)) || (parent && !entryIsVisibleInTimeline(parent.entry))) {
+    while ((parent && this.#invisibleEntries.includes(parent.entry)) ||
+           (parent && !entryIsVisibleInTimeline(parent.entry))) {
       parent = parent.parent;
     }
     return parent;
   }
 
-  #findAllDescendantsOfNode(root: TraceEngine.Helpers.TreeHelpers.TraceEntryNode): TraceEngine.Types.TraceEvents.TraceEventData[] {
+  #findAllDescendantsOfNode(root: TraceEngine.Helpers.TreeHelpers.TraceEntryNode):
+      TraceEngine.Types.TraceEvents.TraceEventData[] {
     const cachedDescendants = this.#entryToDescendantsMap.get(root);
     if (cachedDescendants) {
       return cachedDescendants;

@@ -126,7 +126,7 @@ export class ProvideFeedback extends HTMLElement {
     return LitHtml.html`
       <${Buttons.Button.Button.litTagName}
         .data=${{
-          variant: Buttons.Button.Variant.ICON_TOGGLE,
+          variant: Buttons.Button.Variant.ICON,
           size: Buttons.Button.Size.SMALL,
           iconName: 'thumb-up',
           toggledIconName: 'thumb-up',

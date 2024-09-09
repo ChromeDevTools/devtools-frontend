@@ -62,7 +62,10 @@
 }
 
 .chat-input {
-  --right-padding: calc(var(--sys-size-5) + 26px + var(--sys-size-4)); /* Gap between the button and the edge + icon's width + gap between icon and the textarea */
+  --right-padding:
+    calc(
+      var(--sys-size-5) + 26px + var(--sys-size-4)
+    ); /* Gap between the button and the edge + icon's width + gap between icon and the textarea */
 
   field-sizing: content; /* stylelint-disable-line property-no-unknown */
   resize: none;
@@ -73,7 +76,9 @@
   font: var(--sys-typescale-body4-regular);
   line-height: 18px;
   min-height: var(--sys-size-11);
-  padding: var(--sys-size-3) var(--right-padding) var(--sys-size-3) var(--sys-size-5);
+  padding:
+    var(--sys-size-3) var(--right-padding) var(--sys-size-3)
+    var(--sys-size-5);
   color: var(--sys-color-on-surface);
   background-color: var(--sys-color-cdt-base-container);
 
@@ -272,13 +277,43 @@
 .empty-state-container {
   display: flex;
   flex-direction: column;
-  width: 100%;
-  height: 100%;
   align-items: center;
   justify-content: center;
-  gap: 4px;
-  font-size: 16px;
-  opacity: 70%;
+  font: var(--sys-typescale-headline4);
+  gap: var(--sys-size-11);
+  height: 100%;
+
+  .header {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    gap: var(--sys-size-5);
+
+    .icon {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: var(--sys-size-14);
+      width: var(--sys-size-14);
+      border-radius: var(--sys-shape-corner-small);
+      background:
+        linear-gradient(
+          135deg,
+          var(--sys-color-gradient-primary),
+          var(--sys-color-gradient-tertiary)
+        );
+    }
+  }
+
+  .suggestions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sys-size-5);
+    align-items: center;
+    justify-content: center;
+  }
 }
 
 .action-result {

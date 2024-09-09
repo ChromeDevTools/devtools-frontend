@@ -620,10 +620,38 @@ export class FreestylerChatUi extends HTMLElement {
   };
 
   #renderEmptyState = (): LitHtml.TemplateResult => {
+    const suggestions: string[] = [
+      'Why is the element not visible?',
+      'Why is this element overlapping another element?',
+      'How can I center this element?',
+    ];
+
     // clang-format off
     return LitHtml.html`<div class="empty-state-container">
-      <${IconButton.Icon.Icon.litTagName} name="spark" style="width: 36px; height: 36px;"></${IconButton.Icon.Icon.litTagName}>
-      ${i18nString(UIStringsTemp.emptyStateText)}
+      <div class="header">
+        <div class="icon">
+          <${IconButton.Icon.Icon.litTagName}
+            name="smart-assistant"
+          ></${IconButton.Icon.Icon.litTagName}>
+        </div>
+        ${i18nString(UIStringsTemp.emptyStateText)}
+      </div>
+      <div class="suggestions">
+        ${suggestions.map(suggestion => {
+          return LitHtml.html`<${Buttons.Button.Button.litTagName}
+            class="suggestion"
+            @click=${() => this.#props.onTextSubmit(suggestion)}
+            .data=${
+              {
+                variant: Buttons.Button.Variant.OUTLINED,
+                size: Buttons.Button.Size.REGULAR,
+                title: suggestion,
+                jslogContext: 'suggestion',
+              } as Buttons.Button.ButtonData
+            }
+          >${suggestion}</${Buttons.Button.Button.litTagName}>`;
+        })}
+      </div>
     </div>`;
     // clang-format on
   };

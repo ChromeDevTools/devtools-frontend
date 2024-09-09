@@ -315,7 +315,7 @@ Common.Settings.registerSettingExtension({
 
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.PERFORMANCE,
-  storageType: Common.Settings.SettingStorageType.SESSION,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
   settingName: 'annotations-hidden',
   settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: true,

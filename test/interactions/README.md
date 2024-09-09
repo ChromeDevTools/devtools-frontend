@@ -17,6 +17,8 @@ describe('Example test', () => {
 
 ## Screenshot tests
 
+> Ensure you are a member of the g/devtools-dev group, otherwise the `update_goldens_v2.py` tool will not work.
+
 Interaction tests also have the ability to store a screenshot of an element and in future tests ensure that the screenshot has not changed. These should be used sparingly - our usage so far has found that you should prefer HTML assertions if possible - but they are useful particularly for `<canvas>` based UI.
 
 To create a screenshot test, query for an element and call the `assertElementScreenshotUnchanged` function, passing in the element and the file name:
@@ -44,7 +46,7 @@ npm run test -- $TESTPATH --on-diff=update
 This tells the test runner to update any screenshots that fail. Once you've done this, the process is identical to when you add a new screenshot:
 
 1. Commit the changes for your platform locally.
-2. Trigger a CQ run and wait for it to finish.
+2. Trigger a CQ run and wait for it to finish using `git cl try`.
 3. Fetch the new screenshots from the bots by using `./scripts/tools/update_goldens_v2.py`.
 
 Note that if you do this step on Linux, you shouldn't need to then get the updates from the bot, because the bots also test and run on Linux.

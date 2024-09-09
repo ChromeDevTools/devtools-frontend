@@ -126,10 +126,12 @@ export class ProvideFeedback extends HTMLElement {
     return LitHtml.html`
       <${Buttons.Button.Button.litTagName}
         .data=${{
-          variant: Buttons.Button.Variant.ICON,
+          variant: Buttons.Button.Variant.ICON_TOGGLE,
           size: Buttons.Button.Size.SMALL,
           iconName: 'thumb-up',
-          active: this.#currentRating === Host.AidaClient.Rating.POSITIVE,
+          toggledIconName: 'thumb-up',
+          toggled: this.#currentRating === Host.AidaClient.Rating.POSITIVE,
+          toggleType: Buttons.Button.ToggleType.PRIMARY,
           title: i18nString(UIStringsTemp.thumbsUp),
           jslogContext: 'thumbs-up',
         } as Buttons.Button.ButtonData}
@@ -140,7 +142,9 @@ export class ProvideFeedback extends HTMLElement {
           variant: Buttons.Button.Variant.ICON,
           size: Buttons.Button.Size.SMALL,
           iconName: 'thumb-down',
-          active: this.#currentRating === Host.AidaClient.Rating.NEGATIVE,
+          toggledIconName: 'thumb-down',
+          toggled: this.#currentRating === Host.AidaClient.Rating.NEGATIVE,
+          toggleType: Buttons.Button.ToggleType.PRIMARY,
           title: i18nString(UIStringsTemp.thumbsDown),
           jslogContext: 'thumbs-down',
         } as Buttons.Button.ButtonData}

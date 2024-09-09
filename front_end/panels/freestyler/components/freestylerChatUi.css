@@ -216,6 +216,7 @@
     grid-template-columns: auto 1fr auto;
     padding: var(--sys-size-3);
     line-height: var(--sys-size-9);
+    cursor: default;
 
     .title {
       text-overflow: ellipsis;

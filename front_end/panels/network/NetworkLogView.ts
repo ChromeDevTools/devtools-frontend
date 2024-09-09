@@ -388,10 +388,6 @@ const UIStrings = {
   /**
    *@description A context menu item in the Network Log View of the Network panel
    */
-  saveAllAsHarWithContent: 'Save all as `HAR` with content',
-  /**
-   *@description A context menu item in the Network Log View of the Network panel
-   */
   clearBrowserCache: 'Clear browser cache',
   /**
    *@description A context menu item in the Network Log View of the Network panel
@@ -1802,9 +1798,6 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
         filtered ? i18nString(UIStrings.copyAllListedAsHar) : i18nString(UIStrings.copyAllAsHar),
         this.copyAllAsHAR.bind(this), {jslogContext: 'copy-all-as-har'});
 
-    contextMenu.saveSection().appendItem(
-        i18nString(UIStrings.saveAllAsHarWithContent), this.exportAll.bind(this),
-        {jslogContext: 'save-all-as-har-with-content'});
     contextMenu.overrideSection().appendItem(
         i18nString(UIStrings.overrideHeaders), this.#handleCreateResponseHeaderOverrideClick.bind(this, request), {
           disabled:

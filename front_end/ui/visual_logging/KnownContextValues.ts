@@ -2468,7 +2468,6 @@ export const knownContextValues = new Set([
   'samsung-galaxy-s20-ultra',
   'samsung-galaxy-s8',
   'sans-serif',
-  'save-all-as-har-with-content',
   'save-as',
   'save-image',
   'save-name',

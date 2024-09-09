@@ -137,7 +137,7 @@ p {
   font-weight: 450;
 }
 
-.body.children {
+.issue-body.children {
   border-bottom: 1px solid var(--sys-color-divider);
   padding: 6px 0;
   position: relative;
@@ -154,7 +154,7 @@ p {
 }
 
 /* Show a colored border on the left side of opened issues. */
-.body::before {
+.issue-body::before {
   content: "";
   display: block;
   position: absolute;
@@ -164,16 +164,20 @@ p {
   width: 2px;
 }
 
-.issue-kind-breaking-change.body::before {
+.issue-kind-breaking-change.issue-body::before {
   border-left: 2px solid var(--issue-color-yellow);
 }
 
-.issue-kind-page-error.body::before {
+.issue-kind-page-error.issue-body::before {
   border-left: 2px solid var(--issue-color-red);
 }
 
-.issue-kind-improvement.body::before {
+.issue-kind-improvement.issue-body::before {
   border-left: 2px solid var(--issue-color-blue);
+}
+
+.tree-outline .issue-body li:hover:not(:has(span[is="dt-checkbox"])) .selection {
+  background-color: unset;
 }
 
 devtools-icon.leading-issue-icon {

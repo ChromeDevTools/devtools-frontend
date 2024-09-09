@@ -49,7 +49,7 @@ const UIStrings = {
    * @description text to show in Console panel when a third-party cookie accessed.
    */
   consoleTpcdWarningMessage:
-      'Chrome is moving towards a new experience that lets people make an informed choice with respect to third-party cookies.',
+      'Chrome is moving towards a new experience that allows users to choose to browse without third-party cookies.',
   /**
    * @description text to show in Console panel when a third-party cookie is blocked in Chrome.
    */

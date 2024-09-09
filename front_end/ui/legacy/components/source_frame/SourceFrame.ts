@@ -307,16 +307,14 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
       this.wasmDisassemblyInternal ? markNonBreakableLines(this.wasmDisassemblyInternal) : nonBreakableLines,
       this.options.lineWrapping ? CodeMirror.EditorView.lineWrapping : [],
       this.options.lineNumbers !== false ? CodeMirror.lineNumbers() : [],
-      Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.INDENTATION_MARKERS_TEMP_DISABLE) ?
-          [] :
-          CodeMirror.indentationMarkers({
-            colors: {
-              light: 'var(--sys-color-divider)',
-              activeLight: 'var(--sys-color-divider-prominent)',
-              dark: 'var(--sys-color-divider)',
-              activeDark: 'var(--sys-color-divider-prominent)',
-            },
-          }),
+      CodeMirror.indentationMarkers({
+        colors: {
+          light: 'var(--sys-color-divider)',
+          activeLight: 'var(--sys-color-divider-prominent)',
+          dark: 'var(--sys-color-divider)',
+          activeDark: 'var(--sys-color-divider-prominent)',
+        },
+      }),
     ];
   }
 

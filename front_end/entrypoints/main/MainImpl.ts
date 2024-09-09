@@ -306,12 +306,6 @@ export class MainImpl {
         Root.Runtime.ExperimentName.TIMELINE_DEBUG_MODE,
         'Performance panel: Enable debug mode (trace event details, etc)', true);
 
-    // Sources
-    Root.Runtime.experiments.register(
-        Root.Runtime.ExperimentName.INDENTATION_MARKERS_TEMP_DISABLE, 'Disable indentation markers temporarily',
-        /* unstable= */ false, 'https://developer.chrome.com/blog/new-in-devtools-121/#indentation',
-        'https://crbug.com/1479986');
-
     // Debugging
     Root.Runtime.experiments.register('instrumentation-breakpoints', 'Enable instrumentation breakpoints', true);
     Root.Runtime.experiments.register('use-source-map-scopes', 'Use scope information from source maps', true);

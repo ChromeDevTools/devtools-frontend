@@ -313,6 +313,14 @@ Common.Settings.registerSettingExtension({
   defaultValue: false,
 });
 
+Common.Settings.registerSettingExtension({
+  category: Common.Settings.SettingCategory.PERFORMANCE,
+  storageType: Common.Settings.SettingStorageType.SESSION,
+  settingName: 'annotations-hidden',
+  settingType: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: true,
+});
+
 Common.Linkifier.registerLinkifier({
   contextTypes() {
     return maybeRetrieveContextTypes(Timeline => [Timeline.CLSLinkifier.CLSRect]);

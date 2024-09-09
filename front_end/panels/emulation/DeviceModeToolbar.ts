@@ -413,9 +413,9 @@ export class DeviceModeToolbar {
 
   private fillOptionsToolbar(toolbar: UI.Toolbar.Toolbar): void {
     toolbar.appendToolbarItem(this.wrapToolbarItem(this.createEmptyToolbarElement()));
-    const moreOptionsButton =
-        new UI.Toolbar.ToolbarMenuButton(this.appendOptionsMenuItems.bind(this), undefined, undefined, 'more-options');
-    setTitleForButton(moreOptionsButton, i18nString(UIStrings.moreOptions));
+    const moreOptionsButton = new UI.Toolbar.ToolbarMenuButton(
+        this.appendOptionsMenuItems.bind(this), true, undefined, 'more-options', 'dots-vertical');
+    moreOptionsButton.setTitle(i18nString(UIStrings.moreOptions));
     toolbar.appendToolbarItem(moreOptionsButton);
   }
 

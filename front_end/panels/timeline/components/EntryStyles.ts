@@ -62,15 +62,15 @@ const UIStrings = {
   /**
    *@description Text in Timeline UIUtils of the Performance panel
    */
-  requestMainThreadFrame: 'Request Main Thread Frame',
+  requestMainThreadFrame: 'Request main thread frame',
   /**
    *@description Text in Timeline UIUtils of the Performance panel
    */
-  frameStart: 'Frame Start',
+  frameStart: 'Frame start',
   /**
    *@description Text in Timeline UIUtils of the Performance panel
    */
-  onMessage: 'On Message',
+  onMessage: 'On message',
   /**
    *@description Text in Timeline UIUtils of the Performance panel
    */
@@ -82,32 +82,32 @@ const UIStrings = {
   /**
    *@description Text in Timeline UIUtils of the Performance panel
    */
-  frameStartMainThread: 'Frame Start (main thread)',
+  frameStartMainThread: 'Frame start (main thread)',
   /**
    *@description Text in Timeline UIUtils of the Performance panel
    */
-  drawFrame: 'Draw Frame',
+  drawFrame: 'Draw frame',
   /**
    *@description Noun for an event in the Performance panel. This marks time
     spent in an operation that only happens when the profiler is active.
    */
-  profilingOverhead: 'Profiling Overhead',
+  profilingOverhead: 'Profiling overhead',
   /**
    *@description The process the browser uses to determine a target element for a
    *pointer event. Typically, this is determined by considering the pointer's
    *location and also the visual layout of elements on the screen.
    */
-  hitTest: 'Hit Test',
+  hitTest: 'Hit test',
   /**
    *@description Noun for an event in the Performance panel. The browser has decided
    *that the styles for some elements need to be recalculated and scheduled that
    *recalculation process at some time in the future.
    */
-  scheduleStyleRecalculation: 'Schedule Style Recalculation',
+  scheduleStyleRecalculation: 'Schedule style recalculation',
   /**
    *@description Text in Timeline UIUtils of the Performance panel
    */
-  recalculateStyle: 'Recalculate Style',
+  recalculateStyle: 'Recalculate style',
   /**
    *@description Text in Timeline UIUtils of the Performance panel
    */
@@ -126,27 +126,27 @@ const UIStrings = {
    *step before the 'Paint' event. A paint event is when the browser draws pixels
    *to the screen. This step is the setup beforehand.
    */
-  paintSetup: 'Paint Setup',
+  paintSetup: 'Paint setup',
   /**
    *@description Noun for a paint event in the Performance panel, where an image
    *was being painted. A paint event is when the browser draws pixels to the
    *screen, in this case specifically for an image in a website.
    */
-  paintImage: 'Paint Image',
+  paintImage: 'Paint image',
   /**
    *@description Noun for an event in the Performance panel. Pre-paint is a
    *step before the 'Paint' event. A paint event is when the browser records the
    *instructions for drawing the page. This step is the setup beforehand.
    */
-  prePaint: 'Pre-Paint',
+  prePaint: 'Pre-paint',
   /**
    *@description Text in Timeline UIUtils of the Performance panel
    */
-  updateLayer: 'Update Layer',
+  updateLayer: 'Update layer',
   /**
    *@description Text in Timeline UIUtils of the Performance panel
    */
-  updateLayerTree: 'Update Layer Tree',
+  updateLayerTree: 'Update layer tree',
   /**
    *@description Noun for a paint event in the Performance panel. A paint event is when the browser draws pixels to the screen.
    */
@@ -154,7 +154,7 @@ const UIStrings = {
   /**
    *@description Text in Timeline UIUtils of the Performance panel
    */
-  rasterizePaint: 'Rasterize Paint',
+  rasterizePaint: 'Rasterize paint',
   /**
    *@description The action to scroll
    */
@@ -169,11 +169,11 @@ const UIStrings = {
   /**
    *@description Text in Timeline UIUtils of the Performance panel
    */
-  compositeLayers: 'Composite Layers',
+  compositeLayers: 'Composite layers',
   /**
    *@description Text in Timeline UIUtils of the Performance panel
    */
-  computeIntersections: 'Compute Intersections',
+  computeIntersections: 'Compute intersections',
   /**
    *@description Text in Timeline UIUtils of the Performance panel
    */
@@ -181,117 +181,117 @@ const UIStrings = {
   /**
    *@description Text in Timeline UIUtils of the Performance panel
    */
-  parseStylesheet: 'Parse Stylesheet',
+  parseStylesheet: 'Parse stylesheet',
   /**
    *@description Text in Timeline UIUtils of the Performance panel
    */
-  installTimer: 'Install Timer',
+  installTimer: 'Install timer',
   /**
    *@description Text in Timeline UIUtils of the Performance panel
    */
-  removeTimer: 'Remove Timer',
+  removeTimer: 'Remove timer',
   /**
    *@description Text in Timeline UIUtils of the Performance panel
    */
-  timerFired: 'Timer Fired',
+  timerFired: 'Timer fired',
   /**
    *@description Text for an event. Shown in the timeline in the Performance panel.
    * XHR refers to XmlHttpRequest, a Web API. This particular Web API has a property
    * named 'readyState' (https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/readyState). When
    * the 'readyState' property changes the text is shown.
    */
-  xhrReadyStateChange: '`XHR` Ready State Change',
+  xhrReadyStateChange: '`XHR` `readyState` change',
   /**
    * @description Text for an event. Shown in the timeline in the Perforamnce panel.
    * XHR refers to XmlHttpRequest, a Web API. (see https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest)
    * The text is shown when a XmlHttpRequest load event happens on the inspected page.
    */
-  xhrLoad: '`XHR` Load',
+  xhrLoad: '`XHR` load',
   /**
    *@description Text in Timeline UIUtils of the Performance panel
    */
-  compileScript: 'Compile Script',
+  compileScript: 'Compile script',
   /**
    *@description Text in Timeline UIUtils of the Performance panel
    */
-  cacheScript: 'Cache Script Code',
+  cacheScript: 'Cache script code',
   /**
    *@description Text in Timeline UIUtils of the Performance panel
    */
-  compileCode: 'Compile Code',
+  compileCode: 'Compile code',
   /**
    *@description Text in Timeline UIUtils of the Performance panel
    */
-  optimizeCode: 'Optimize Code',
+  optimizeCode: 'Optimize code',
   /**
    *@description Text in Timeline UIUtils of the Performance panel
    */
-  evaluateScript: 'Evaluate Script',
+  evaluateScript: 'Evaluate script',
   /**
    *@description Text in Timeline UIUtils of the Performance panel
    */
-  compileModule: 'Compile Module',
+  compileModule: 'Compile module',
   /**
    *@description Text in Timeline UIUtils of the Performance panel
    */
-  cacheModule: 'Cache Module Code',
+  cacheModule: 'Cache module code',
   /**
    * @description Text for an event. Shown in the timeline in the Perforamnce panel.
    * "Module" refers to JavaScript modules: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules
    * JavaScript modules are a way to organize JavaScript code.
    * "Evaluate" is the phase when the JavaScript code of a module is executed.
    */
-  evaluateModule: 'Evaluate Module',
+  evaluateModule: 'Evaluate module',
   /**
    *@description Noun indicating that a compile task (type: streaming) happened.
    */
-  streamingCompileTask: 'Streaming Compile Task',
+  streamingCompileTask: 'Streaming compile task',
   /**
    *@description Text in Timeline UIUtils of the Performance panel
    */
-  waitingForNetwork: 'Waiting for Network',
+  waitingForNetwork: 'Waiting for network',
   /**
    *@description Text in Timeline UIUtils of the Performance panel
    */
-  parseAndCompile: 'Parse and Compile',
+  parseAndCompile: 'Parse and compile',
   /**
    * @description Text in Timeline UIUtils of the Performance panel.
    * "Code Cache" refers to JavaScript bytecode cache: https://v8.dev/blog/code-caching-for-devs
    * "Deserialize" refers to the process of reading the code cache.
    */
-  deserializeCodeCache: 'Deserialize Code Cache',
+  deserializeCodeCache: 'Deserialize code cache',
   /**
    *@description Text in Timeline UIUtils of the Performance panel
    */
-  streamingWasmResponse: 'Streaming Wasm Response',
+  streamingWasmResponse: 'Streaming Wasm response',
   /**
    *@description Text in Timeline UIUtils of the Performance panel
    */
-  compiledWasmModule: 'Compiled Wasm Module',
+  compiledWasmModule: 'Compiled Wasm module',
   /**
    *@description Text in Timeline UIUtils of the Performance panel
    */
-  cachedWasmModule: 'Cached Wasm Module',
+  cachedWasmModule: 'Cached Wasm module',
   /**
    *@description Text in Timeline UIUtils of the Performance panel
    */
-  wasmModuleCacheHit: 'Wasm Module Cache Hit',
+  wasmModuleCacheHit: 'Wasm module cache hit',
   /**
    *@description Text in Timeline UIUtils of the Performance panel
    */
-  wasmModuleCacheInvalid: 'Wasm Module Cache Invalid',
+  wasmModuleCacheInvalid: 'Wasm module cache invalid',
   /**
    *@description Text in Timeline UIUtils of the Performance panel
    */
-  frameStartedLoading: 'Frame Started Loading',
+  frameStartedLoading: 'Frame started loading',
   /**
    *@description Text in Timeline UIUtils of the Performance panel
    */
-  onloadEvent: 'Onload Event',
+  onloadEvent: 'Onload event',
   /**
    *@description Text in Timeline UIUtils of the Performance panel
    */
-  domcontentloadedEvent: 'DOMContentLoaded Event',
+  domcontentloadedEvent: 'DOMContentLoaded event',
   /**
    *@description Text in Timeline UIUtils of the Performance panel
    */
@@ -315,45 +315,45 @@ const UIStrings = {
    * the duration of something, e.g. the user will emit two time events at the
    * start and end of some interesting task.
    */
-  consoleTime: 'Console Time',
+  consoleTime: 'Console time',
   /**
    *@description Text in Timeline UIUtils of the Performance panel
    */
-  userTiming: 'User Timing',
+  userTiming: 'User timing',
   /**
    * @description Name for an event shown in the Performance panel. When a network
    * request is about to be sent by the browser, the time is recorded and DevTools
    * is notified that a network request will be sent momentarily.
    */
-  willSendRequest: 'Will Send Request',
+  willSendRequest: 'Will send request',
   /**
    *@description Text in Timeline UIUtils of the Performance panel
    */
-  sendRequest: 'Send Request',
+  sendRequest: 'Send request',
   /**
    *@description Text in Timeline UIUtils of the Performance panel
    */
-  receiveResponse: 'Receive Response',
+  receiveResponse: 'Receive response',
   /**
    *@description Text in Timeline UIUtils of the Performance panel
    */
-  finishLoading: 'Finish Loading',
+  finishLoading: 'Finish loading',
   /**
    *@description Text in Timeline UIUtils of the Performance panel
    */
-  receiveData: 'Receive Data',
+  receiveData: 'Receive data',
   /**
    *@description Event category in the Performance panel for time spent to execute microtasks in JavaScript
    */
-  runMicrotasks: 'Run Microtasks',
+  runMicrotasks: 'Run microtasks',
   /**
    *@description Text in Timeline UIUtils of the Performance panel
    */
-  functionCall: 'Function Call',
+  functionCall: 'Function call',
   /**
    *@description Text in Timeline UIUtils of the Performance panel
    */
-  gcEvent: 'GC Event',
+  gcEvent: 'GC event',
   /**
    *@description Event category in the Performance panel for time spent to perform a full Garbage Collection pass
    */
@@ -365,27 +365,27 @@ const UIStrings = {
   /**
    *@description Text for the request animation frame event
    */
-  requestAnimationFrame: 'Request Animation Frame',
+  requestAnimationFrame: 'Request animation frame',
   /**
    *@description Text to cancel the animation frame
    */
-  cancelAnimationFrame: 'Cancel Animation Frame',
+  cancelAnimationFrame: 'Cancel animation frame',
   /**
    *@description Text for the event that an animation frame is fired
    */
-  animationFrameFired: 'Animation Frame Fired',
+  animationFrameFired: 'Animation frame fired',
   /**
    *@description Text in Timeline UIUtils of the Performance panel
    */
-  requestIdleCallback: 'Request Idle Callback',
+  requestIdleCallback: 'Request idle callback',
   /**
    *@description Text in Timeline UIUtils of the Performance panel
    */
-  cancelIdleCallback: 'Cancel Idle Callback',
+  cancelIdleCallback: 'Cancel idle callback',
   /**
    *@description Text in Timeline UIUtils of the Performance panel
    */
-  fireIdleCallback: 'Fire Idle Callback',
+  fireIdleCallback: 'Fire idle callback',
   /**
    *@description Text in Timeline UIUtils of the Performance panel
    */
@@ -393,19 +393,19 @@ const UIStrings = {
   /**
    *@description Text in Timeline UIUtils of the Performance panel
    */
-  sendWebsocketHandshake: 'Send WebSocket Handshake',
+  sendWebsocketHandshake: 'Send WebSocket handshake',
   /**
    *@description Text in Timeline UIUtils of the Performance panel
    */
-  receiveWebsocketHandshake: 'Receive WebSocket Handshake',
+  receiveWebsocketHandshake: 'Receive WebSocket handshake',
   /**
    *@description Text in Timeline Flame Chart Data Provider of the Performance panel
    */
-  wsMessageReceived: 'Receive WebSocket Message',
+  wsMessageReceived: 'Receive WebSocket message',
   /**
    *@description Text in Timeline Flame Chart Data Provider of the Performance panel
    */
-  wsMessageSent: 'Send WebSocket Message',
+  wsMessageSent: 'Send WebSocket message',
   /**
    *@description Text in Timeline UIUtils of the Performance panel
    */
@@ -413,11 +413,11 @@ const UIStrings = {
   /**
    *@description Event category in the Performance panel for time spent in the embedder of the WebView
    */
-  embedderCallback: 'Embedder Callback',
+  embedderCallback: 'Embedder callback',
   /**
    *@description Event category in the Performance panel for time spent decoding an image
    */
-  imageDecode: 'Image Decode',
+  imageDecode: 'Image decode',
   /**
    *@description Event category in the Performance panel for time spent to perform Garbage Collection for the Document Object Model
    */
@@ -433,7 +433,7 @@ const UIStrings = {
   /**
    *@description Text in Timeline UIUtils of the Performance panel
    */
-  encryptReply: 'Encrypt Reply',
+  encryptReply: 'Encrypt reply',
   /**
    *@description Event category in the Performance panel for time spent to perform decryption
    */
@@ -441,7 +441,7 @@ const UIStrings = {
   /**
    *@description Text in Timeline UIUtils of the Performance panel
    */
-  decryptReply: 'Decrypt Reply',
+  decryptReply: 'Decrypt reply',
   /**
    * @description Noun phrase meaning 'the browser was preparing the digest'.
    * Digest: https://developer.mozilla.org/en-US/docs/Glossary/Digest
@@ -451,7 +451,7 @@ const UIStrings = {
    *@description Noun phrase meaning 'the browser was preparing the digest
    *reply'. Digest: https://developer.mozilla.org/en-US/docs/Glossary/Digest
    */
-  digestReply: 'Digest Reply',
+  digestReply: 'Digest reply',
   /**
    *@description The 'sign' stage of a web crypto event. Shown when displaying what the website was doing at a particular point in time.
    */
@@ -460,7 +460,7 @@ const UIStrings = {
    * @description Noun phrase for an event of the Web Crypto API. The event is recorded when the signing process is concluded.
    * Signature: https://developer.mozilla.org/en-US/docs/Glossary/Signature/Security
    */
-  signReply: 'Sign Reply',
+  signReply: 'Sign reply',
   /**
    *@description Text in Timeline UIUtils of the Performance panel
    */
@@ -468,11 +468,11 @@ const UIStrings = {
   /**
    *@description Text in Timeline UIUtils of the Performance panel
    */
-  verifyReply: 'Verify Reply',
+  verifyReply: 'Verify reply',
   /**
    *@description Text in Timeline UIUtils of the Performance panel
    */
-  asyncTask: 'Async Task',
+  asyncTask: 'Async task',
   /**
    *@description Text in Timeline for Layout Shift records
    */
@@ -480,11 +480,11 @@ const UIStrings = {
   /**
    *@description Text in Timeline for an Event Timing record
    */
-  eventTiming: 'Event Timing',
+  eventTiming: 'Event timing',
   /**
    *@description Event category in the Performance panel for JavaScript nodes in CPUProfile
    */
-  jsFrame: 'JS Frame',
+  jsFrame: 'JS frame',
   /**
    *@description Text in UIDevtools Utils of the Performance panel
    */

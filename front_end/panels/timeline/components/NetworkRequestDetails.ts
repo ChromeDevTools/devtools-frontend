@@ -22,11 +22,11 @@ const UIStrings = {
   /**
    *@description Text that refers to updated priority of network request
    */
-  initialPriority: 'Initial Priority',
+  initialPriority: 'Initial priority',
   /**
    *@description Text that refers to the network request method
    */
-  requestMethod: 'Request Method',
+  requestMethod: 'Request method',
   /**
    *@description Text to show the priority of an item
    */
@@ -34,11 +34,11 @@ const UIStrings = {
   /**
    *@description Text used when referring to the data sent in a network request that is encoded as a particular file format.
    */
-  encodedData: 'Encoded Data',
+  encodedData: 'Encoded data',
   /**
    *@description Text used to refer to the data sent in a network request that has been decoded.
    */
-  decodedBody: 'Decoded Body',
+  decodedBody: 'Decoded body',
   /**
    *@description Text in Timeline indicating that input has happened recently
    */
@@ -66,7 +66,7 @@ const UIStrings = {
   /**
    *@description Text used to show the mime-type of the data transferred with a network request (e.g. "application/json").
    */
-  mimeType: 'Mime Type',
+  mimeType: 'MIME type',
   /**
    *@description Text used to show the user that a request was served from the browser's in-memory cache.
    */

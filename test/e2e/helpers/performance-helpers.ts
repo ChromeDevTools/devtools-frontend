@@ -32,13 +32,13 @@ export const RECORD_BUTTON_SELECTOR = '[aria-label="Record"]';
 export const RELOAD_AND_RECORD_BUTTON_SELECTOR = '[aria-label="Record and reload"]';
 export const STOP_BUTTON_SELECTOR = '[aria-label="Stop"]';
 export const SUMMARY_TAB_SELECTOR = '[aria-label="Summary"]';
-export const BOTTOM_UP_SELECTOR = '[aria-label="Bottom-Up"]';
-export const CALL_TREE_SELECTOR = '[aria-label="Call Tree"]';
+export const BOTTOM_UP_SELECTOR = '[aria-label="Bottom-up"]';
+export const CALL_TREE_SELECTOR = '[aria-label="Call tree"]';
 export const ACTIVITY_COLUMN_SELECTOR = '.activity-column.disclosure';
 export const TOTAL_TIME_SELECTOR =
     'div:nth-child(1) > div.vbox.timeline-details-chip-body > div:nth-child(1) > div.timeline-details-view-row-value';
-const RECALCULATE_STYLE_TITLE = 'Recalculate Style';
-const SELECTOR_STATS_SELECTOR = '[aria-label="Selector Stats"]';
+const RECALCULATE_STYLE_TITLE = 'Recalculate style';
+const SELECTOR_STATS_SELECTOR = '[aria-label="Selector stats"]';
 const CSS_SELECTOR_STATS_TITLE = 'Enable CSS selector stats (slow)';
 const TIMELINE_SETTINGS_PANE = '.timeline-settings-pane';
 
@@ -175,13 +175,13 @@ export async function setFilter(filter: string) {
 }
 
 export async function toggleCaseSensitive() {
-  const matchCaseButton = await waitForAria('Match Case');
+  const matchCaseButton = await waitForAria('Match case');
   await matchCaseButton.click();
   await expectVeEvents([veClick('Panel: timeline > Pane: bottom-up > Toolbar > Toggle: match-case')]);
 }
 
 export async function toggleRegExButtonBottomUp() {
-  const regexButton = await waitFor('[aria-label="Use Regular Expression"]');
+  const regexButton = await waitFor('[aria-label="Use regular expression"]');
   await regexButton.click();
   await expectVeEvents([veClick('Panel: timeline > Pane: bottom-up > Toolbar > Toggle: regular-expression')]);
 }

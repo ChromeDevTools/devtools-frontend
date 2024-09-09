@@ -37,11 +37,11 @@ const UIStrings = {
   /**
    *@description Text in Timeline UIUtils of the Performance panel
    */
-  frameStart: 'Frame Start',
+  frameStart: 'Frame start',
   /**
    *@description Text in Timeline UIUtils of the Performance panel
    */
-  drawFrame: 'Draw Frame',
+  drawFrame: 'Draw frame',
   /**
    *@description Text in Timeline UIUtils of the Performance panel
    */

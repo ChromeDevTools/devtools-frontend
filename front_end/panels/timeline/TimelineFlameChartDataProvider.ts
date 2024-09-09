@@ -57,15 +57,15 @@ const UIStrings = {
   /**
    *@description Text in Timeline Flame Chart Data Provider of the Performance panel
    */
-  idleFrame: 'Idle Frame',
+  idleFrame: 'Idle frame',
   /**
    *@description Text in Timeline Frame Chart Data Provider of the Performance panel
    */
-  droppedFrame: 'Dropped Frame',
+  droppedFrame: 'Dropped frame',
   /**
    *@description Text in Timeline Frame Chart Data Provider of the Performance panel
    */
-  partiallyPresentedFrame: 'Partially Presented Frame',
+  partiallyPresentedFrame: 'Partially-presented frame',
   /**
    *@description Text for a rendering frame
    */

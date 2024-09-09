@@ -79,17 +79,17 @@ const UIStrings = {
   /**
    *@description Threads used for background tasks.
    */
-  threadPool: 'Thread Pool',
+  threadPool: 'Thread pool',
   /**
    *@description Name for a thread that rasterizes graphics in a website.
    *@example {2} PH1
    */
-  rasterizerThreadS: 'Rasterizer Thread {PH1}',
+  rasterizerThreadS: 'Rasterizer thread {PH1}',
   /**
    *@description Text in Timeline Flame Chart Data Provider of the Performance panel
    *@example {2} PH1
    */
-  threadPoolThreadS: 'Thread Pool Worker {PH1}',
+  threadPoolThreadS: 'Thread pool worker {PH1}',
   /**
    *@description Title of a bidder auction worklet with known URL in the timeline flame chart of the Performance panel
    *@example {https://google.com} PH1
@@ -113,7 +113,7 @@ const UIStrings = {
   /**
    *@description Title of control thread of a service process for an auction worklet in the timeline flame chart of the Performance panel with an unknown URL
    */
-  workletService: 'Auction Worklet Service',
+  workletService: 'Auction Worklet service',
 
   /**
    *@description Title of a seller auction worklet with known URL in the timeline flame chart of the Performance panel
@@ -131,7 +131,7 @@ const UIStrings = {
    *@description Title of control thread of a service process for an auction worklet with known URL in the timeline flame chart of the Performance panel
    * @example {https://google.com} PH1
    */
-  workletServiceS: 'Auction Worklet Service — {PH1}',
+  workletServiceS: 'Auction Worklet service — {PH1}',
   /**
    *@description Text used to show an EventDispatch event which has a type associated with it
    *@example {click} PH1

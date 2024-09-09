@@ -21,7 +21,7 @@ const UIStrings = {
   /**
    *@description Text for the start time of an activity
    */
-  startTime: 'Start Time',
+  startTime: 'Start time',
   /**
    *@description Screen reader label for a select box that filters the Performance panel Event Log by duration.
    */

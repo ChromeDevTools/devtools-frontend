@@ -161,11 +161,11 @@ const UIStrings = {
   /**
    *@description Text for the total time of something
    */
-  totalTime: 'Total Time',
+  totalTime: 'Total time',
   /**
    *@description Time of a single activity, as opposed to the total time
    */
-  selfTime: 'Self Time',
+  selfTime: 'Self time',
   /**
    *@description Label in the summary view in the Performance panel for a number which indicates how much managed memory has been reclaimed by performing Garbage Collection
    */
@@ -213,11 +213,11 @@ const UIStrings = {
   /**
    *@description Text to indicate to the user the size of the cache (as a filesize - e.g. 5mb).
    */
-  producedCacheSize: 'Produced Cache Size',
+  producedCacheSize: 'Produced cache size',
   /**
    *@description Text to indicate to the user the amount of the cache (as a filesize - e.g. 5mb) that has been used.
    */
-  consumedCacheSize: 'Consumed Cache Size',
+  consumedCacheSize: 'Consumed cache size',
   /**
    *@description Title for a group of cities
    */
@@ -241,11 +241,11 @@ const UIStrings = {
   /**
    *@description Related node label in Timeline UIUtils of the Performance panel
    */
-  layerRoot: 'Layer Root',
+  layerRoot: 'Layer root',
   /**
    *@description Related node label in Timeline UIUtils of the Performance panel
    */
-  ownerElement: 'Owner Element',
+  ownerElement: 'Owner element',
   /**
    *@description Text used to show the user the URL of the image they are viewing.
    */
@@ -257,11 +257,11 @@ const UIStrings = {
   /**
    *@description Text used next to a number to show the user how many elements were affected.
    */
-  elementsAffected: 'Elements Affected',
+  elementsAffected: 'Elements affected',
   /**
    *@description Text used next to a number to show the user how many nodes required the browser to update and re-layout the page.
    */
-  nodesThatNeedLayout: 'Nodes That Need Layout',
+  nodesThatNeedLayout: 'Nodes that need layout',
   /**
    *@description Text used to show the amount in a subset - e.g. "2 of 10".
    *@example {2} PH1
@@ -279,7 +279,7 @@ const UIStrings = {
   /**
    *@description Text used to tell the user they are viewing an event that has a function embedded in it, which is referred to as the "callback function".
    */
-  callbackFunction: 'Callback Function',
+  callbackFunction: 'Callback function',
   /**
    *@description The current state of an item
    */
@@ -291,11 +291,11 @@ const UIStrings = {
   /**
    *@description Text used to refer to the amount of time some event or code was given to complete within.
    */
-  allottedTime: 'Allotted Time',
+  allottedTime: 'Allotted time',
   /**
    *@description Text used to tell a user that a particular event or function was automatically run by a timeout.
    */
-  invokedByTimeout: 'Invoked by Timeout',
+  invokedByTimeout: 'Invoked by timeout',
   /**
    *@description Text that refers to some types
    */
@@ -333,15 +333,15 @@ const UIStrings = {
   /**
    *@description Text in Timeline for the cumulative CLS score
    */
-  cumulativeScore: 'Cumulative Score',
+  cumulativeScore: 'Cumulative score',
   /**
    *@description Text in Timeline for the current CLS score
    */
-  currentClusterScore: 'Current Cluster Score',
+  currentClusterScore: 'Current cluster score',
   /**
    *@description Text in Timeline for the current CLS cluster
    */
-  currentClusterId: 'Current Cluster ID',
+  currentClusterId: 'Current cluster ID',
   /**
    *@description Text in Timeline for whether input happened recently
    */
@@ -365,7 +365,7 @@ const UIStrings = {
   /**
    *@description Text that indicates a particular HTML element or node is related to what the user is viewing.
    */
-  relatedNode: 'Related Node',
+  relatedNode: 'Related node',
   /**
    *@description Text for previewing items
    */
@@ -373,7 +373,7 @@ const UIStrings = {
   /**
    *@description Text used to refer to the total time summed up across multiple events.
    */
-  aggregatedTime: 'Aggregated Time',
+  aggregatedTime: 'Aggregated time',
   /**
    *@description Text for the duration of something
    */
@@ -381,7 +381,7 @@ const UIStrings = {
   /**
    *@description Text for the stack trace of the initiator of something. The Initiator is the event or factor that directly triggered or precipitated a subsequent action.
    */
-  initiatorStackTrace: 'Initiator Stack Trace',
+  initiatorStackTrace: 'Initiator stack trace',
   /**
    *@description Text for the event initiated by another one
    */
@@ -393,35 +393,35 @@ const UIStrings = {
   /**
    *@description Text for the underlying data behing a specific flamechart selection. Trace events are the browser instrumentation that are emitted as JSON objects.
    */
-  traceEvent: 'Trace Event',
+  traceEvent: 'Trace event',
   /**
    *@description Call site stack label in Timeline UIUtils of the Performance panel
    */
-  timerInstalled: 'Timer Installed',
+  timerInstalled: 'Timer installed',
   /**
    *@description Call site stack label in Timeline UIUtils of the Performance panel
    */
-  animationFrameRequested: 'Animation Frame Requested',
+  animationFrameRequested: 'Animation frame requested',
   /**
    *@description Call site stack label in Timeline UIUtils of the Performance panel
    */
-  idleCallbackRequested: 'Idle Callback Requested',
+  idleCallbackRequested: 'Idle callback requested',
   /**
    *@description Stack label in Timeline UIUtils of the Performance panel
    */
-  recalculationForced: 'Recalculation Forced',
+  recalculationForced: 'Recalculation forced',
   /**
    *@description Call site stack label in Timeline UIUtils of the Performance panel
    */
-  firstLayoutInvalidation: 'First Layout Invalidation',
+  firstLayoutInvalidation: 'First layout invalidation',
   /**
    *@description Stack label in Timeline UIUtils of the Performance panel
    */
-  layoutForced: 'Layout Forced',
+  layoutForced: 'Layout forced',
   /**
    *@description Text for the execution stack trace
    */
-  stackTrace: 'Stack Trace',
+  stackTrace: 'Stack trace',
   /**
    *@description Text used to show any invalidations for a particular event that caused the browser to have to do more work to update the page.
    * @example {2} PH1
@@ -436,11 +436,11 @@ const UIStrings = {
   /**
    *@description Noun label for a stack trace which indicates the first time some condition was invalidated.
    */
-  firstInvalidated: 'First Invalidated',
+  firstInvalidated: 'First invalidated',
   /**
    *@description Title of the paint profiler, old name of the performance pane
    */
-  paintProfiler: 'Paint Profiler',
+  paintProfiler: 'Paint profiler',
   /**
    *@description Text in Timeline Flame Chart View of the Performance panel
    *@example {Frame} PH1
@@ -492,7 +492,7 @@ const UIStrings = {
   /**
    * @description Title of a row in the details view for a `Recalculate Styles` event that contains more info about selector stats tracing.
    */
-  selectorStatsTitle: 'Selector Stats',
+  selectorStatsTitle: 'Selector stats',
   /**
    * @description Info text that explains to the user how to enable selector stats tracing.
    * @example {Setting Name} PH1

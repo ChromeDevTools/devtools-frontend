@@ -258,12 +258,12 @@ const UIStrings = {
    *
    * @description Text for exporting basic traces
    */
-  exportNormalTraces: 'Basic Performance Traces',
+  exportNormalTraces: 'Basic performance traces',
   /**
    *
    * @description Text for exporting enhanced traces
    */
-  exportEnhancedTraces: 'Enhanced Performance Traces',
+  exportEnhancedTraces: 'Enhanced performance traces',
   /**
    *@description Tooltip description for a checkbox that toggles the visibility of data added by extensions of this panel (Performance).
    */

@@ -17,7 +17,7 @@ const UIStrings = {
   /**
    *@description Label for selector stats data table
    */
-  selectorStats: 'Selector Stats',
+  selectorStats: 'Selector stats',
   /**
    *@description Column name and time unit for elapsed time spent computing a style rule
    */
@@ -25,7 +25,7 @@ const UIStrings = {
   /**
    *@description Column name and percentage of slow mach non-matches computing a style rule
    */
-  rejectPercentage: '% of Slow-Path Non-Matches',
+  rejectPercentage: '% of slow-path non-matches',
   /**
    *@description Tooltip description '% of slow-path non-matches'
    */
@@ -34,11 +34,11 @@ const UIStrings = {
   /**
    *@description Column name for count of elements that the engine attempted to match against a style rule
    */
-  matchAttempts: 'Match Attempts',
+  matchAttempts: 'Match attempts',
   /**
    *@description Column name for count of elements that matched a style rule
    */
-  matchCount: 'Match Count',
+  matchCount: 'Match count',
   /**
    *@description Column name for a style rule's CSS selector text
    */
@@ -50,7 +50,7 @@ const UIStrings = {
   /**
    *@description A context menu item in data grids to copy entire table to clipboard
    */
-  copyTable: 'Copy Table',
+  copyTable: 'Copy table',
   /**
    *@description A cell value displayed in table when no source file can be traced via css style
    */

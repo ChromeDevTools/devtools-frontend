@@ -102,7 +102,7 @@ describe('FlameChart', function() {
 
     const piechartTitleHandle = mainEntryTitles1[1];
     const piechartTitle = await piechartTitleHandle.evaluate(element => element.innerHTML);
-    assert.isTrue(piechartTitle.includes('Aggregated Time'));
+    assert.isTrue(piechartTitle.includes('Aggregated time'));
 
     // Ensure details are still visible after some time.
     await new Promise(res => setTimeout(res, 200));
@@ -122,7 +122,7 @@ describe('FlameChart', function() {
     const margin = 3;
 
     // Click on an entry that has an initiator and click the initiator link.
-    const titleForTimerFire = 'Timer Fired';
+    const titleForTimerFire = 'Timer fired';
     const timeStampForTimerFire = 1020035170393;
     const {x: timerFireEntryX, y: timerFireEntryY} =
         await getCoordinatesForEntryWithTitleAndTs(titleForTimerFire, timeStampForTimerFire);
@@ -130,13 +130,13 @@ describe('FlameChart', function() {
 
     const timerFireHandle = await waitFor('.timeline-details-chip-title');
     const timerFireTitle = await timerFireHandle.evaluate(element => element.innerHTML);
-    assert.isTrue(timerFireTitle.includes('Timer Fired'));
+    assert.isTrue(timerFireTitle.includes('Timer fired'));
     const initiatorLink = await waitFor('[data-row-title="Initiated by"] .timeline-details-view-row-value');
     await initiatorLink.click();
 
     // Make sure the highlighting element is on the initiator, with some
     // margin error.
-    const titleForTimerInstall = 'Install Timer';
+    const titleForTimerInstall = 'Install timer';
     const timeStampForTimerInstall = 1020035169385;
     const {x: timerInstallEntryX, y: timerInstallEntryY} =
         await getCoordinatesForEntryWithTitleAndTs(titleForTimerInstall, timeStampForTimerInstall);
@@ -154,7 +154,7 @@ describe('FlameChart', function() {
     // Make sure the initiator details are visible.
     const installTimerHandle = await waitFor('.timeline-details-chip-title');
     const installTimerTitle = await installTimerHandle.evaluate(element => element.innerHTML);
-    assert.isTrue(installTimerTitle.includes('Install Timer'));
+    assert.isTrue(installTimerTitle.includes('Install timer'));
   });
 
   it('navigates to the event\'s initiator and back to the initiated event in the flamechart ', async () => {
@@ -167,7 +167,7 @@ describe('FlameChart', function() {
     const margin = 3;
 
     // Click on an entry that has an initiator and click the initiator link.
-    const titleForTimerFire = 'Timer Fired';
+    const titleForTimerFire = 'Timer fired';
     const timeStampForTimerFire = 1020035170393;
     const {x: timerFireEntryX, y: timerFireEntryY} =
         await getCoordinatesForEntryWithTitleAndTs(titleForTimerFire, timeStampForTimerFire);
@@ -175,26 +175,26 @@ describe('FlameChart', function() {
 
     let timerFireHandle = await waitFor('.timeline-details-chip-title');
     let timerFireTitle = await timerFireHandle.evaluate(element => element.innerHTML);
-    assert.isTrue(timerFireTitle.includes('Timer Fired'));
+    assert.isTrue(timerFireTitle.includes('Timer fired'));
     let initiatorLink = await waitFor('[data-row-title="Initiated by"] .timeline-details-view-row-value');
     await initiatorLink.click();
 
     // Make sure that the summary now contains the initiator info
     const installTimerHandle = await waitFor('.timeline-details-chip-title');
     const installTimerTitle = await installTimerHandle.evaluate(element => element.innerHTML);
-    assert.isTrue(installTimerTitle.includes('Install Timer'));
+    assert.isTrue(installTimerTitle.includes('Install timer'));
 
     // Find the field that has a link this event initiated and click it.
     timerFireHandle = await waitFor('.timeline-details-chip-title');
     timerFireTitle = await timerFireHandle.evaluate(element => element.innerHTML);
-    assert.isTrue(timerFireTitle.includes('Install Timer'));
+    assert.isTrue(timerFireTitle.includes('Install timer'));
     initiatorLink = await waitFor('[data-row-title="Initiator for"] .timeline-details-view-row-value');
 
     await initiatorLink.click();
     // Make sure the details contain the initial event name
     timerFireHandle = await waitFor('.timeline-details-chip-title');
     timerFireTitle = await timerFireHandle.evaluate(element => element.innerHTML);
-    assert.isTrue(timerFireTitle.includes('Timer Fired'));
+    assert.isTrue(timerFireTitle.includes('Timer fired'));
   });
 
   it('the initiator link changes to text if the link is for an entry that is outside of the current breadcrumb',
@@ -208,7 +208,7 @@ describe('FlameChart', function() {
        const margin = 3;
 
        // Click on an entry that has an initiator.
-       const titleForTimerFire = 'Timer Fired';
+       const titleForTimerFire = 'Timer fired';
        const timeStampForTimerFire = 1020035170393;
        const {x: timerFireEntryX, y: timerFireEntryY} =
            await getCoordinatesForEntryWithTitleAndTs(titleForTimerFire, timeStampForTimerFire);
@@ -216,7 +216,7 @@ describe('FlameChart', function() {
 
        let timerFireHandle = await waitFor('.timeline-details-chip-title');
        let timerFireTitle = await timerFireHandle.evaluate(element => element.innerHTML);
-       assert.isTrue(timerFireTitle.includes('Timer Fired'));
+       assert.isTrue(timerFireTitle.includes('Timer fired'));
        let initiatorLink = await waitFor('[data-row-title="Initiated by"] .timeline-details-view-row-value');
 
        // Before a breadcrumb is created, the link to the entry initiator is activated. Check it by getting the 'role' attribute and ckecking if it is 'link'.
@@ -225,7 +225,7 @@ describe('FlameChart', function() {
        assert.strictEqual(initiatorLinkRole, 'link');
        // When the initiator link is active, its' text is the name of an entry it is linking to.
        let initiatorLinkText = await initiatorLink.evaluate(element => element.textContent);
-       assert.strictEqual(initiatorLinkText, 'Install Timer');
+       assert.strictEqual(initiatorLinkText, 'Install timer');
 
        // Create a breadcrumb that is outside of the entry the displayed link is linking to.
        const breadcrumbStart = 1020034823 as TraceEngine.Types.Timing.MilliSeconds;
@@ -234,11 +234,11 @@ describe('FlameChart', function() {
 
        timerFireHandle = await waitFor('.timeline-details-chip-title');
        timerFireTitle = await timerFireHandle.evaluate(element => element.innerHTML);
-       assert.isTrue(timerFireTitle.includes('Timer Fired'));
+       assert.isTrue(timerFireTitle.includes('Timer fired'));
        // The link to the initiator is now deactivated and the name is followed by 'outside of the breadcrumb range'
        initiatorLink = await waitFor('[data-row-title="Initiated by"] .timeline-details-view-row-value');
        initiatorLinkText = await initiatorLink.evaluate(element => element.textContent);
-       assert.strictEqual(initiatorLinkText, 'Install Timer (outside of the breadcrumb range)');
+       assert.strictEqual(initiatorLinkText, 'Install timer (outside of the breadcrumb range)');
 
        // The link to the entry should not be active.
        initiatorLinkRole = await initiatorLink.evaluate(element => element.querySelector('span')?.getAttribute('role'));
@@ -249,7 +249,7 @@ describe('FlameChart', function() {
     await waitFor('.timeline-flamechart');
     const {frontend} = getBrowserAndPages();
     const margin = 3;
-    const trackName = 'A track group — Custom Track';
+    const trackName = 'A track group — Custom track';
     const groupOffset = await getOffsetForGroupWithName(trackName);
     await frontend.mouse.move(margin, groupOffset);
     const popoverHandle = await waitFor('.timeline-entry-tooltip-element');

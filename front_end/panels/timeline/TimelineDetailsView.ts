@@ -31,19 +31,19 @@ const UIStrings = {
   /**
    *@description Text in Timeline Details View of the Performance panel
    */
-  bottomup: 'Bottom-Up',
+  bottomup: 'Bottom-up',
   /**
    *@description Text in Timeline Details View of the Performance panel
    */
-  callTree: 'Call Tree',
+  callTree: 'Call tree',
   /**
    *@description Text in Timeline Details View of the Performance panel
    */
-  eventLog: 'Event Log',
+  eventLog: 'Event log',
   /**
    *@description Title of the paint profiler, old name of the performance pane
    */
-  paintProfiler: 'Paint Profiler',
+  paintProfiler: 'Paint profiler',
   /**
    *@description Title of the Layers tool
    */
@@ -57,7 +57,7 @@ const UIStrings = {
   /**
    *@description Title of the selector stats tab
    */
-  selectorStats: 'Selector Stats',
+  selectorStats: 'Selector stats',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineDetailsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

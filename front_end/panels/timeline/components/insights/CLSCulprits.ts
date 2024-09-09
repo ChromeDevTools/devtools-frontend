@@ -32,7 +32,7 @@ export class CLSCulprits extends BaseInsight {
   static readonly litTagName = LitHtml.literal`devtools-performance-cls-culprits`;
   override insightCategory: InsightsCategories = InsightsCategories.CLS;
   override internalName: string = 'cls-culprits';
-  override userVisibleTitle: string = 'Layout Shift Culprits';
+  override userVisibleTitle: string = 'Layout shift culprits';
 
   override createOverlays(): Overlays.Overlays.TimelineOverlay[] {
     // TODO: create overlays

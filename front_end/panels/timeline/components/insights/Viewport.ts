@@ -46,7 +46,7 @@ export class Viewport extends BaseInsight {
   static readonly litTagName = LitHtml.literal`devtools-performance-viewport`;
   override insightCategory: InsightsCategories = InsightsCategories.INP;
   override internalName: string = 'viewport';
-  override userVisibleTitle: string = 'Mobile-Optimized Viewport';
+  override userVisibleTitle: string = 'Mobile-optimized viewport';
 
   override createOverlays(): Overlays.Overlays.TimelineOverlay[] {
     // TODO(b/351757418): create overlay for synthetic input delay events

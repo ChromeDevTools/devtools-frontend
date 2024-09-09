@@ -137,9 +137,9 @@ describe('The Performance panel', function() {
       ['mac'], '[crbug.com/1510890]: is able to inspect the call stack for a wasm function from the bottom up',
       async () => {
         const {frontend} = getBrowserAndPages();
-        const expectedActivities = ['mainWasm', 'js-to-wasm::i', '(anonymous)', 'Run Microtasks'];
+        const expectedActivities = ['mainWasm', 'js-to-wasm::i', '(anonymous)', 'Run microtasks'];
 
-        await step('navigate to the Bottom Up tab', async () => {
+        await step('navigate to the Bottom-up tab', async () => {
           await navigateToBottomUpTab();
         });
 
@@ -161,7 +161,7 @@ describe('The Performance panel', function() {
       async () => {
         const {frontend} = getBrowserAndPages();
         const expectedActivities = [
-          'Run Microtasks',
+          'Run microtasks',
           '(anonymous)',
           'js-to-wasm::i',
           'mainWasm',
@@ -174,7 +174,7 @@ describe('The Performance panel', function() {
         });
 
         await step(
-            'expand the tree for the "Run Microtasks" activity and check that it displays the correct values',
+            'expand the tree for the "Run microtasks" activity and check that it displays the correct values',
             async () => {
               const timelineTree = await $('.timeline-tree-view') as puppeteer.ElementHandle<HTMLSelectElement>;
               const rootActivity = await waitForElementWithTextContent(expectedActivities[0], timelineTree);

@@ -128,10 +128,10 @@ describeWithEnvironment('ThreadAppender', function() {
     const expectedTrackNames = [
       'Main — https://output.jsbin.com/zajamil/quiet',
       'Raster',
-      'Rasterizer Thread 1',
-      'Rasterizer Thread 2',
-      'Thread Pool',
-      'Thread Pool Worker 1',
+      'Rasterizer thread 1',
+      'Rasterizer thread 2',
+      'Thread pool',
+      'Thread pool worker 1',
     ];
     assert.deepStrictEqual(flameChartData.groups.map(g => g.name), expectedTrackNames);
   });
@@ -147,11 +147,11 @@ describeWithEnvironment('ThreadAppender', function() {
     // These groups correspond to the raster tracks titles, or the
     // individual raster tracks themselves. They are selectable and
     // nested
-    assert.strictEqual(flameChartData.groups[2].name, 'Rasterizer Thread 1');
+    assert.strictEqual(flameChartData.groups[2].name, 'Rasterizer thread 1');
     assert.strictEqual(flameChartData.groups[2].selectable, true);
     assert.strictEqual(flameChartData.groups[2].style.nestingLevel, 1);
 
-    assert.strictEqual(flameChartData.groups[3].name, 'Rasterizer Thread 2');
+    assert.strictEqual(flameChartData.groups[3].name, 'Rasterizer thread 2');
     assert.strictEqual(flameChartData.groups[3].selectable, true);
     assert.strictEqual(flameChartData.groups[3].style.nestingLevel, 1);
   });
@@ -160,9 +160,9 @@ describeWithEnvironment('ThreadAppender', function() {
     const {flameChartData} = await renderThreadAppendersFromTrace(this, 'simple-js-program.json.gz');
     const expectedTrackNames = [
       'Main — https://www.google.com',
-      'Thread Pool',
-      'Thread Pool Worker 1',
-      'Thread Pool Worker 2',
+      'Thread pool',
+      'Thread pool worker 1',
+      'Thread pool worker 2',
     ];
     assert.deepStrictEqual(flameChartData.groups.map(g => g.name), expectedTrackNames);
   });
@@ -192,9 +192,9 @@ describeWithEnvironment('ThreadAppender', function() {
       'Main — https://chromedevtools.github.io/performance-stories/two-workers/index.html',
       'Worker — https://chromedevtools.github.io/performance-stories/two-workers/fib-worker.js',
       'Worker — https://chromedevtools.github.io/performance-stories/two-workers/fib-worker.js',
-      'Thread Pool',
-      'Thread Pool Worker 1',
-      'Thread Pool Worker 2',
+      'Thread pool',
+      'Thread pool worker 1',
+      'Thread pool worker 2',
     ];
     assert.deepStrictEqual(flameChartData.groups.map(g => g.name), expectedTrackNames);
   });
@@ -371,13 +371,13 @@ describeWithEnvironment('ThreadAppender', function() {
     const {flameChartData} = await renderThreadAppendersFromTrace(this, 'one-second-interaction.json.gz');
     const expectedTrackNames = [
       'Main — https://chromedevtools.github.io/performance-stories/long-interaction/index.html?x=40',
-      'Thread Pool',
+      'Thread pool',
       // There are multiple ThreadPoolForegroundWorker threads present in
       // the trace, but only one of these has trace events we deem as
       // "visible".
-      'Thread Pool Worker 1',
+      'Thread pool worker 1',
       // This second "worker" is the ThreadPoolServiceThread. TODO: perhaps hide ThreadPoolServiceThread completely?
-      'Thread Pool Worker 2',
+      'Thread pool worker 2',
     ];
     assert.deepStrictEqual(flameChartData.groups.map(g => g.name), expectedTrackNames);
   });
@@ -588,7 +588,7 @@ describeWithEnvironment('ThreadAppender', function() {
       if (!appender) {
         throw new Error('Could not find expected thread appender');
       }
-      assert.strictEqual(appender.trackName(), 'Auction Worklet Service — https://ssp-fledge-demo.glitch.me');
+      assert.strictEqual(appender.trackName(), 'Auction Worklet service — https://ssp-fledge-demo.glitch.me');
     });
 
     it('sets the title correctly for an Auction Worklet seller service', async function() {

@@ -42,7 +42,7 @@ const UIStrings = {
   /**
    *@description Text for a heap profile type
    */
-  jsHeap: 'JS Heap',
+  jsHeap: 'JS heap',
   /**
    *@description Text for documents, a type of resources
    */
@@ -58,7 +58,7 @@ const UIStrings = {
   /**
    *@description Text in Counters Graph of the Performance panel
    */
-  gpuMemory: 'GPU Memory',
+  gpuMemory: 'GPU memory',
   /**
    *@description Range text content in Counters Graph of the Performance panel
    *@example {2} PH1

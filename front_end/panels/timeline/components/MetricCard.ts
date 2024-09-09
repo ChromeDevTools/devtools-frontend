@@ -31,7 +31,7 @@ const UIStrings = {
   /**
    * @description Label for the 75th percentile of a metric according to data collected from real users in the field.
    */
-  field75thPercentile: 'Field 75th Percentile',
+  field75thPercentile: 'Field 75th percentile',
   /**
    * @description Text label for values that are classified as "good".
    */

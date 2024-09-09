@@ -570,11 +570,11 @@ describeWithMockConnection('TimelineUIUtils', function() {
       const rowData = getRowDataForDetailsElement(details);
       assert.deepEqual(rowData, [
         {
-          title: 'Elements Affected',
+          title: 'Elements affected',
           value: '3',
         },
         {
-          title: 'Selector Stats',
+          title: 'Selector stats',
           value: 'Select "" to collect detailed CSS selector matching statistics.',
         },
         {
@@ -585,7 +585,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
         },
         {
           title: 'Initiated by',
-          value: 'Schedule Style Recalculation',
+          value: 'Schedule style recalculation',
         },
         {
           title: 'Pending for',
@@ -748,13 +748,13 @@ describeWithMockConnection('TimelineUIUtils', function() {
               value: 'Cumulative Layout Shifts can result in poor user experiences. It has recently evolved.',
             },
             {title: 'Score', value: '0.04218'},
-            {title: 'Cumulative Score', value: '0.04218'},
-            {title: 'Current Cluster ID', value: '1'},
-            {title: 'Current Cluster Score', value: '0.2952'},
+            {title: 'Cumulative score', value: '0.04218'},
+            {title: 'Current cluster ID', value: '1'},
+            {title: 'Current cluster score', value: '0.2952'},
             {title: 'Had recent input', value: 'No'},
             {title: 'Moved from', value: 'Location: [120,670], Size: [900x900]'},
             {title: 'Moved to', value: 'Location: [120,1270], Size: [900x478]'},
-            {title: 'Related Node', value: 'A test node name'},
+            {title: 'Related node', value: 'A test node name'},
           ],
       );
     });
@@ -1077,7 +1077,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
            // The initiator stack trace
            {title: undefined, value: 'connect @ socketsbay.com/test-websockets:314:25'},
            // The 2 entries under "Initiator for" are displayed as seperate links and in the UI it is obvious they are seperate
-           {title: 'Initiator for', value: 'Send WebSocket Handshake Receive WebSocket Handshake'},
+           {title: 'Initiator for', value: 'Send WebSocket handshake Receive WebSocket handshake'},
          ];
          assert.deepEqual(
              rowData,

@@ -75,14 +75,14 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
           'Frames',
           'Timings',
           'Interactions',
-          'A track group — Custom Track',
+          'A track group — Custom track',
           'Another Extension Track',
-          'An Extension Track — Custom Track',
+          'An Extension Track — Custom track',
           'Main — http://localhost:3000/',
-          'Thread Pool',
-          'Thread Pool Worker 1',
-          'Thread Pool Worker 2',
-          'Thread Pool Worker 3',
+          'Thread pool',
+          'Thread pool worker 1',
+          'Thread pool worker 2',
+          'Thread pool worker 3',
           'StackSamplingProfiler',
           'GPU',
         ],
@@ -193,7 +193,7 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
     dataProvider.setModel(traceData);
 
     const bounds = traceData.Meta.traceBounds;
-    const filter = new Timeline.TimelineFilters.TimelineRegExp(/Evaluate Script/);
+    const filter = new Timeline.TimelineFilters.TimelineRegExp(/Evaluate script/);
     const results = dataProvider.search(bounds, filter);
     assert.lengthOf(results, 12);
     assert.deepEqual(results[0], {index: 154, startTimeMilli: 122411041.395, provider: 'main'});

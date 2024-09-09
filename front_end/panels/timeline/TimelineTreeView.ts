@@ -31,11 +31,11 @@ const UIStrings = {
   /**
    *@description Time of a single activity, as opposed to the total time
    */
-  selfTime: 'Self Time',
+  selfTime: 'Self time',
   /**
    *@description Text for the total time of something
    */
-  totalTime: 'Total Time',
+  totalTime: 'Total time',
   /**
    *@description Text in Timeline Tree View of the Performance panel
    */
@@ -75,27 +75,27 @@ const UIStrings = {
   /**
    *@description Text in Timeline Tree View of the Performance panel
    */
-  noGrouping: 'No Grouping',
+  noGrouping: 'No grouping',
   /**
    *@description Text in Timeline Tree View of the Performance panel
    */
-  groupByActivity: 'Group by Activity',
+  groupByActivity: 'Group by activity',
   /**
    *@description Text in Timeline Tree View of the Performance panel
    */
-  groupByCategory: 'Group by Category',
+  groupByCategory: 'Group by category',
   /**
    *@description Text in Timeline Tree View of the Performance panel
    */
-  groupByDomain: 'Group by Domain',
+  groupByDomain: 'Group by domain',
   /**
    *@description Text in Timeline Tree View of the Performance panel
    */
-  groupByFrame: 'Group by Frame',
+  groupByFrame: 'Group by frame',
   /**
    *@description Text in Timeline Tree View of the Performance panel
    */
-  groupBySubdomain: 'Group by Subdomain',
+  groupBySubdomain: 'Group by subdomain',
   /**
    *@description Text in Timeline Tree View of the Performance panel
    */
@@ -117,12 +117,12 @@ const UIStrings = {
    * @description Tooltip for the the Heaviest stack sidebar toggle in the Timeline Tree View of the
    * Performance panel. Command to open/show the sidebar.
    */
-  showHeaviestStack: 'Show Heaviest stack',
+  showHeaviestStack: 'Show heaviest stack',
   /**
    * @description Tooltip for the the Heaviest stack sidebar toggle in the Timeline Tree View of the
    * Performance panel. Command to close/hide the sidebar.
    */
-  hideHeaviestStack: 'Hide Heaviest stack',
+  hideHeaviestStack: 'Hide heaviest stack',
   /**
    * @description Screen reader announcement when the heaviest stack sidebar is shown in the Performance panel.
    */
@@ -134,15 +134,15 @@ const UIStrings = {
   /**
    *@description Data grid name for Timeline Stack data grids
    */
-  timelineStack: 'Timeline Stack',
+  timelineStack: 'Timeline stack',
   /**
   /*@description Text to search by matching case of the input button
    */
-  matchCase: 'Match Case',
+  matchCase: 'Match case',
   /**
    *@description Text for searching with regular expression button
    */
-  useRegularExpression: 'Use Regular Expression',
+  useRegularExpression: 'Use regular expression',
   /**
    * @description Text for Match whole word button
    */

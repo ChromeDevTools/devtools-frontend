@@ -433,8 +433,13 @@ describeWithEnvironment('Overlays', () => {
       const elementsWrapper = component.shadowRoot.querySelector<HTMLElement>('.label-parts-wrapper');
       assert.isOk(elementsWrapper);
 
-      const label = elementsWrapper.querySelector<HTMLElement>('.label-box');
-      assert.strictEqual(label?.innerText, 'entry label');
+      const labelBox = elementsWrapper.querySelector<HTMLElement>('.label-box');
+      assert.isOk(labelBox);
+
+      const inputField = labelBox.querySelector<HTMLElement>('.input-field');
+      assert.isOk(inputField);
+
+      assert.strictEqual(inputField?.innerText, 'entry label');
     });
 
     it('Inputting `Enter`into label overlay makes it non-editable', async function() {
@@ -464,18 +469,20 @@ describeWithEnvironment('Overlays', () => {
 
       const label = elementsWrapper.querySelector<HTMLElement>('.label-box');
       assert.isOk(label);
+      const inputField = label.querySelector<HTMLElement>('.input-field');
+      assert.isOk(inputField);
 
       // Double click on the label box to make it editable and focus on it
-      label.dispatchEvent(new FocusEvent('dblclick', {bubbles: true}));
+      inputField.dispatchEvent(new FocusEvent('dblclick', {bubbles: true}));
 
       // Ensure the label content is editable
-      assert.isTrue(label.isContentEditable);
+      assert.isTrue(inputField.isContentEditable);
 
       // Press `Enter` to make the lable not editable
-      label.dispatchEvent(new KeyboardEvent('keydown', {key: 'Enter', cancelable: true, bubbles: true}));
+      inputField.dispatchEvent(new KeyboardEvent('keydown', {key: 'Enter', cancelable: true, bubbles: true}));
 
       // Ensure the label content is not editable
-      assert.isFalse(label.isContentEditable);
+      assert.isFalse(inputField.isContentEditable);
     });
 
     it('Inputting `Enter` into time range label field when the label is empty removes the overlay', async function() {
@@ -609,15 +616,18 @@ describeWithEnvironment('Overlays', () => {
       const label = elementsWrapper.querySelector<HTMLElement>('.label-box');
       assert.isOk(label);
 
+      const inputField = elementsWrapper.querySelector<HTMLElement>('.input-field');
+      assert.isOk(inputField);
+
       // Double click on the label box to make it editable and focus on it
-      label.dispatchEvent(new FocusEvent('dblclick', {bubbles: true}));
+      inputField.dispatchEvent(new FocusEvent('dblclick', {bubbles: true}));
 
       // Ensure that the entry has 1 overlay
       assert.strictEqual(overlays.overlaysForEntry(event).length, 1);
 
       // Change the content to not editable by changing the element blur like when clicking outside of it.
       // The label is empty since no initial value was passed into it and no characters were entered.
-      label.dispatchEvent(new FocusEvent('blur', {bubbles: true}));
+      inputField.dispatchEvent(new FocusEvent('blur', {bubbles: true}));
 
       // Ensure that the entry overlay has been removed because it was saved empty
       assert.strictEqual(overlays.overlaysForEntry(event).length, 0);
@@ -851,8 +861,10 @@ describeWithEnvironment('Overlays', () => {
       const elementsWrapper = component.shadowRoot.querySelector<HTMLElement>('.label-parts-wrapper');
       const labelBox = elementsWrapper?.querySelector<HTMLElement>('.label-box') as HTMLSpanElement;
 
+      const inputField = labelBox.querySelector<HTMLElement>('.input-field');
+      assert.isOk(inputField);
       // The label input box should be editable after it is created and before anything else happened
-      assert.isTrue(labelBox.isContentEditable);
+      assert.isTrue(inputField.isContentEditable);
     });
 
     it('the label entry field is in focus after being double clicked on', async function() {
@@ -879,17 +891,20 @@ describeWithEnvironment('Overlays', () => {
       assert.isOk(elementsWrapper);
       const labelBox = elementsWrapper.querySelector<HTMLElement>('.label-box') as HTMLSpanElement;
 
+      const inputField = labelBox.querySelector<HTMLElement>('.input-field');
+      assert.isOk(inputField);
+
       // The label input box should be editable after it is created and before anything else happened
-      assert.isTrue(labelBox.isContentEditable);
+      assert.isTrue(inputField.isContentEditable);
 
       // Make the content to editable by changing the element blur like when clicking outside of it.
       // When that happens, the content should be set to not editable.
-      labelBox.dispatchEvent(new FocusEvent('blur', {bubbles: true}));
-      assert.isFalse(labelBox.isContentEditable);
+      inputField.dispatchEvent(new FocusEvent('blur', {bubbles: true}));
+      assert.isFalse(inputField.isContentEditable);
 
       // Double click on the label to make it editable again
-      labelBox.dispatchEvent(new FocusEvent('dblclick', {bubbles: true}));
-      assert.isTrue(labelBox.isContentEditable);
+      inputField.dispatchEvent(new FocusEvent('dblclick', {bubbles: true}));
+      assert.isTrue(inputField.isContentEditable);
     });
   });
 });

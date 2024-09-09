@@ -3,21 +3,15 @@
   Use of this source code is governed by a BSD-style license that can be
   found in the LICENSE file.
 -->
-<!doctype html>
+<!DOCTYPE html>
 <html>
-    <head>
-        <style type="text/css" media="screen">
-         body { background:green; }
-        </style>
-        <script>
-         function iframeOnload()
-         {
-             window.parent.injectStyleSheet(window);
-             console.log("iframe loaded");
-         }
-        </script>
-    </head>
+  <head>
+    <style type="text/css" media="screen">
+      body {
+        background: green;
+      }
+    </style>
+  </head>
 
-    <body onload="iframeOnload()" id="iframeBody">
-    </body>
+  <body id="iframeBody"></body>
 </html>

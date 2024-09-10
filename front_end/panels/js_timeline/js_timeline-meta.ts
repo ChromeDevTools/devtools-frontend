@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import type * as Timeline from '../timeline/timeline.js';
@@ -147,4 +148,14 @@ UI.ActionRegistration.registerActionExtension({
       shortcut: 'Meta+Shift+E',
     },
   ],
+});
+
+// IMPORTANT: if you are updating this, you should also update the setting in
+// timeline-meta.
+Common.Settings.registerSettingExtension({
+  category: Common.Settings.SettingCategory.PERFORMANCE,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
+  settingName: 'annotations-hidden',
+  settingType: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: true,
 });

@@ -1812,6 +1812,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       this.#splitWidget.hideSidebar();
     }
   }
+
   #showLandingPage(): void {
     this.updateSettingsPaneVisibility();
     this.#removeSidebarIconFromToolbar();

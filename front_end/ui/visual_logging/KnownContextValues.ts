@@ -2031,6 +2031,7 @@ export const knownContextValues = new Set([
   'network.search',
   'network.search-network-tab',
   'network.show-options-to-generate-har-with-sensitive-data',
+  'network.show-options-to-generate-har-with-sensitive-data-documentation',
   'network.show-options-to-generate-har-with-sensitive-data-false',
   'network.show-options-to-generate-har-with-sensitive-data-true',
   'network.toggle-recording',

@@ -132,6 +132,12 @@ const UIStrings = {
    *              HAR (not translatable) with sensitive data.
    */
   dontAllowToGenerateHarWithSensitiveData: 'Don\'t allow to generate `HAR` (with sensitive data)',
+  /**
+   * @description Tooltip shown as documentation when hovering the (?) icon next to the "Allow to generate
+   *              HAR (with sensitive data)" option in the Settings panel.
+   */
+  allowToGenerateHarWithSensitiveDataDocumentation:
+      'By default generated HAR logs are sanitized and don\'t include `Cookie`, `Set-Cookie`, or `Authorization` HTTP headers. When this setting is enabled, options to export/copy HAR with sensitive data are provided.',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/network/network-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
@@ -364,6 +370,10 @@ Common.Settings.registerSettingExtension({
       title: i18nLazyString(UIStrings.dontAllowToGenerateHarWithSensitiveData),
     },
   ],
+  learnMore: {
+    url: 'https://goo.gle/devtools-export-hars',
+    tooltip: i18nLazyString(UIStrings.allowToGenerateHarWithSensitiveDataDocumentation),
+  },
 });
 
 Common.Settings.registerSettingExtension({

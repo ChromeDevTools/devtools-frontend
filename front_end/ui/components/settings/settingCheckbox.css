@@ -34,3 +34,12 @@ p {
   width: 16px;
   height: 16px;
 }
+
+#learn-more {
+  margin-left: 2px;
+
+  & > .link-icon {
+    width: 16px;
+    height: 16px;
+  }
+}

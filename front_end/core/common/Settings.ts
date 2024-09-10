@@ -37,6 +37,7 @@ import {ObjectWrapper} from './Object.js';
 import {
   getLocalizedSettingsCategory,
   getRegisteredSettings as getRegisteredSettingsInternal,
+  type LearnMore,
   maybeRemoveSettingExtension,
   type RegExpSettingItem,
   registerSettingExtension,
@@ -549,6 +550,10 @@ export class Setting<V> {
       return this.#registration.order || null;
     }
     return null;
+  }
+
+  learnMore(): LearnMore|null {
+    return this.#registration?.learnMore ?? null;
   }
 
   get deprecation(): Deprecation|null {

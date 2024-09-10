@@ -45,13 +45,33 @@ export class SettingCheckbox extends HTMLElement {
     this.#render();
   }
 
-  #deprecationIcon(): LitHtml.TemplateResult|undefined {
-    if (!this.#setting?.deprecation) {
+  icon(): LitHtml.TemplateResult|undefined {
+    if (!this.#setting) {
       return undefined;
     }
 
-    return LitHtml.html`<${SettingDeprecationWarning.litTagName} .data=${
-        this.#setting.deprecation as Common.Settings.Deprecation}></${SettingDeprecationWarning.litTagName}>`;
+    if (this.#setting.deprecation) {
+      return LitHtml.html`<${SettingDeprecationWarning.litTagName} .data=${
+          this.#setting.deprecation as Common.Settings.Deprecation}></${SettingDeprecationWarning.litTagName}>`;
+    }
+
+    const learnMore = this.#setting.learnMore();
+    if (learnMore) {
+      const jslog = VisualLogging.link()
+                        .track({click: true, keydown: 'Enter|Space'})
+                        .context(this.#setting.name + '-documentation');
+      return LitHtml.html`<x-link id="learn-more"
+                                  href=${learnMore.url}
+                                  title=${learnMore.tooltip()}
+                                  jslog=${jslog}
+                                  tabIndex="0"
+                                  class="devtools-link">
+                            <${IconButton.Icon.Icon.litTagName} name="help" class="link-icon"></${
+          IconButton.Icon.Icon.litTagName}>
+                          </x-link>`;
+    }
+
+    return undefined;
   }
 
   #render(): void {
@@ -59,7 +79,7 @@ export class SettingCheckbox extends HTMLElement {
       throw new Error('No "Setting" object provided for rendering');
     }
 
-    const icon = this.#deprecationIcon();
+    const icon = this.icon();
     const reason = this.#setting.disabledReason() ?
         LitHtml.html`
       <${IconButton.Icon.Icon.litTagName} class="disabled-reason" name="info" title=${
@@ -78,8 +98,9 @@ export class SettingCheckbox extends HTMLElement {
             jslog=${VisualLogging.toggle().track({click: true}).context(this.#setting.name)}
             aria-label=${this.#setting.title()}
           />
-          ${this.#textOverride || this.#setting.title()}${reason}${icon}
+          ${this.#textOverride || this.#setting.title()}${reason}
         </label>
+        ${icon}
       </p>`,
         this.#shadow, {host: this});
   }

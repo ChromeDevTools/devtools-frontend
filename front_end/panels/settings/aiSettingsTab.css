@@ -42,6 +42,7 @@
   line-height: var(--sys-typescale-body5-line-height);
   min-width: var(--sys-size-28);
   max-width: var(--sys-size-35);
+  background-color: var(--app-color-card-background);
 }
 
 .accordion-header {

@@ -227,10 +227,6 @@ const UIStrings = {
    /**
     *@description Tooltip to explain why the cookie should have been blocked by third-party cookie phaseout but is exempted.
     */
-   exemptionReasonCorsOptIn: 'This cookie is allowed by CORS opt-in. Learn more: goo.gle/cors',
-   /**
-    *@description Tooltip to explain why the cookie should have been blocked by third-party cookie phaseout but is exempted.
-    */
     exemptionReasonScheme: 'This cookie is allowed by the top-level url scheme',
 };
 // clang-format on
@@ -1858,8 +1854,6 @@ export const cookieExemptionReasonToUiString = function(exemptionReason: Protoco
           return i18nString(UIStrings.exemptionReasonStorageAccessAPI);
         case Protocol.Network.CookieExemptionReason.TopLevelStorageAccess:
           return i18nString(UIStrings.exemptionReasonTopLevelStorageAccessAPI);
-        case Protocol.Network.CookieExemptionReason.CorsOptIn:
-          return i18nString(UIStrings.exemptionReasonCorsOptIn);
         case Protocol.Network.CookieExemptionReason.Scheme:
           return i18nString(UIStrings.exemptionReasonScheme);
       }

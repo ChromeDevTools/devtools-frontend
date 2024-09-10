@@ -2789,8 +2789,12 @@ export const NativeFunctions = [
     receivers: ["PaymentRequest"]
   },
   {
+    name: "showPopover",
+    signatures: [["?options"]]
+  },
+  {
     name: "togglePopover",
-    signatures: [["?force"]]
+    signatures: [["?force"],["?options"]]
   },
   {
     name: "requestSubmit",

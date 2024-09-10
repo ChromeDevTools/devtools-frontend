@@ -9037,7 +9037,6 @@ export namespace Network {
     EnterprisePolicy = 'EnterprisePolicy',
     StorageAccess = 'StorageAccess',
     TopLevelStorageAccess = 'TopLevelStorageAccess',
-    CorsOptIn = 'CorsOptIn',
     Scheme = 'Scheme',
   }
 

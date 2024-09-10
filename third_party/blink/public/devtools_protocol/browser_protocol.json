@@ -13513,7 +13513,6 @@
                         "EnterprisePolicy",
                         "StorageAccess",
                         "TopLevelStorageAccess",
-                        "CorsOptIn",
                         "Scheme"
                     ]
                 },

@@ -122,6 +122,9 @@ export const generatedProperties = [
   "name": "-webkit-line-break"
  },
  {
+  "keywords": [
+   "none"
+  ],
   "name": "-webkit-line-clamp"
  },
  {
@@ -4359,6 +4362,11 @@ export const generatedPropertyValues = {
    "strict",
    "after-white-space",
    "anywhere"
+  ]
+ },
+ "-webkit-line-clamp": {
+  "values": [
+   "none"
   ]
  },
  "-webkit-print-color-adjust": {

@@ -122,6 +122,16 @@ const UIStrings = {
    *@description Title of an action in the Network request blocking panel to clear all URL patterns.
    */
   removeAllNetworkRequestBlockingPatterns: 'Remove all network request blocking patterns',
+  /**
+   * @description Title of an action in the Network panel (and title of a setting in the Network category)
+   *              that enables options in the UI to copy or export HAR (not translatable) with sensitive data.
+   */
+  allowToGenerateHarWithSensitiveData: 'Allow to generate `HAR` (with sensitive data)',
+  /**
+   * @description Title of an action in the Network panel that disables options in the UI to copy or export
+   *              HAR (not translatable) with sensitive data.
+   */
+  dontAllowToGenerateHarWithSensitiveData: 'Don\'t allow to generate `HAR` (with sensitive data)',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/network/network-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
@@ -332,6 +342,28 @@ UI.ActionRegistration.registerActionExtension({
     const Network = await loadNetworkModule();
     return new Network.BlockedURLsPane.ActionDelegate();
   },
+});
+
+Common.Settings.registerSettingExtension({
+  category: Common.Settings.SettingCategory.NETWORK,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
+  title: i18nLazyString(UIStrings.allowToGenerateHarWithSensitiveData),
+  settingName: 'network.show-options-to-generate-har-with-sensitive-data',
+  settingType: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  tags: [
+    i18n.i18n.lockedLazyString('HAR'),
+  ],
+  options: [
+    {
+      value: true,
+      title: i18nLazyString(UIStrings.allowToGenerateHarWithSensitiveData),
+    },
+    {
+      value: false,
+      title: i18nLazyString(UIStrings.dontAllowToGenerateHarWithSensitiveData),
+    },
+  ],
 });
 
 Common.Settings.registerSettingExtension({

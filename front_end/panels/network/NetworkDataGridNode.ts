@@ -42,6 +42,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
+import type * as HAR from '../../models/har/har.js';
 import * as Logs from '../../models/logs/logs.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as NetworkForward from '../../panels/network/forward/forward.js';
@@ -359,7 +360,7 @@ export interface NetworkLogViewInterface extends Common.EventTarget.EventTarget<
   switchViewMode(gridMode: boolean): void;
   handleContextMenuForRequest(contextMenu: UI.ContextMenu.ContextMenu, request: SDK.NetworkRequest.NetworkRequest):
       void;
-  exportAll(): Promise<void>;
+  exportAll(options: HAR.Log.BuildOptions): Promise<void>;
   revealAndHighlightRequest(request: SDK.NetworkRequest.NetworkRequest): void;
   selectRequest(request: SDK.NetworkRequest.NetworkRequest): void;
   removeAllNodeHighlights(): void;

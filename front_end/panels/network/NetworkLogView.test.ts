@@ -204,7 +204,7 @@ describeWithMockConnection('NetworkLogView', () => {
         FINISHED_REQUEST_2,
         UNFINISHED_REQUEST,
       ]);
-      await networkLogView.exportAll();
+      await networkLogView.exportAll({sanitize: false});
 
       if (inScope) {
         assert.isTrue(

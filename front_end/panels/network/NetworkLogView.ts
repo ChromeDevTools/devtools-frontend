@@ -375,16 +375,32 @@ const UIStrings = {
   copyAllListedAsCurl: 'Copy all listed as `cURL`',
   /**
    * @description Text in Network Log View of the Network panel. An action that copies data to the
-   * clipboard. It will copy the data in the HAR (not translatable) format. 'all' refers to every
-   * network request that is currently shown.
+   * clipboard. It will copy the data in the HAR (not translatable) format and scrub all potentially
+   * sensitive data from the network requests. 'all' refers to every network request that is currently
+   * shown.
    */
-  copyAllAsHar: 'Copy all as `HAR`',
+  copyAllAsHarSanitized: 'Copy all as `HAR` (sanitized)',
   /**
    * @description Text in Network Log View of the Network panel. An action that copies data to the
-   * clipboard. It will copy the data in the HAR (not translatable) format. 'all' refers to every
-   * network request that is currently shown (after applying the Network filter).
+   * clipboard. It will copy the data in the HAR (not translatable) format and include potentially
+   * sensitive data from the network requests. 'all' refers to every network request that is currently
+   * shown.
    */
-  copyAllListedAsHar: 'Copy all listed as `HAR`',
+  copyAllAsHarWithSensitiveData: 'Copy all as `HAR` (with sensitive data)',
+  /**
+   * @description Text in Network Log View of the Network panel. An action that copies data to the
+   * clipboard. It will copy the data in the HAR (not translatable) format and scrub all potentially
+   * sensitive data from the network requests. 'all' refers to every network request that is currently
+   * shown (after applying the Network filter).
+   */
+  copyAllListedAsHarSanitized: 'Copy all listed as `HAR` (sanitized)',
+  /**
+   * @description Text in Network Log View of the Network panel. An action that copies data to the
+   * clipboard. It will copy the data in the HAR (not translatable) format and include potentially
+   * sensitive data from the network requests. 'all' refers to every network request that is currently
+   * shown (after applying the Network filter).
+   */
+  copyAllListedAsHarWithSensitiveData: 'Copy all listed as `HAR` (with sensitive data)',
   /**
    *@description A context menu item in the Network Log View of the Network panel
    */
@@ -451,6 +467,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
   private readonly networkOnlyBlockedRequestsSetting: Common.Settings.Setting<boolean>;
   private readonly networkOnlyThirdPartySetting: Common.Settings.Setting<boolean>;
   private readonly networkResourceTypeFiltersSetting: Common.Settings.Setting<{[key: string]: boolean}>;
+  private readonly networkShowOptionsToGenerateHarWithSensitiveData: Common.Settings.Setting<boolean>;
   private rawRowHeight: number;
   private readonly progressBarContainer: Element;
   private readonly networkLogLargeRowsSetting: Common.Settings.Setting<boolean>;
@@ -510,6 +527,8 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
         Common.Settings.Settings.instance().createSetting('network-only-third-party-setting', false);
     this.networkResourceTypeFiltersSetting =
         Common.Settings.Settings.instance().createSetting('network-resource-type-filters', {});
+    this.networkShowOptionsToGenerateHarWithSensitiveData = Common.Settings.Settings.instance().createSetting(
+        'network.show-options-to-generate-har-with-sensitive-data', false);
 
     this.rawRowHeight = 0;
     this.progressBarContainer = progressBarContainer;
@@ -1795,8 +1814,14 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
           this.copyAllFetchCall.bind(this, FetchStyle.NODE_JS), {jslogContext: 'copy-all-as-nodejs-fetch'});
     }
     copyMenu.footerSection().appendItem(
-        filtered ? i18nString(UIStrings.copyAllListedAsHar) : i18nString(UIStrings.copyAllAsHar),
-        this.copyAllAsHAR.bind(this), {jslogContext: 'copy-all-as-har'});
+        filtered ? i18nString(UIStrings.copyAllListedAsHarSanitized) : i18nString(UIStrings.copyAllAsHarSanitized),
+        this.copyAllAsHAR.bind(this, {sanitize: true}), {jslogContext: 'copy-all-as-har'});
+    if (this.networkShowOptionsToGenerateHarWithSensitiveData) {
+      copyMenu.footerSection().appendItem(
+          filtered ? i18nString(UIStrings.copyAllListedAsHarWithSensitiveData) :
+                     i18nString(UIStrings.copyAllAsHarWithSensitiveData),
+          this.copyAllAsHAR.bind(this, {sanitize: false}), {jslogContext: 'copy-all-as-har-with-sensitive-data'});
+    }
 
     contextMenu.overrideSection().appendItem(
         i18nString(UIStrings.overrideHeaders), this.#handleCreateResponseHeaderOverrideClick.bind(this, request), {
@@ -1870,8 +1895,8 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
     });
   }
 
-  private async copyAllAsHAR(): Promise<void> {
-    const harArchive = {log: await HAR.Log.Log.build(this.harRequests(), {sanitize: false})};
+  private async copyAllAsHAR(options: HAR.Log.BuildOptions): Promise<void> {
+    const harArchive = {log: await HAR.Log.Log.build(this.harRequests(), options)};
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(JSON.stringify(harArchive, null, 2));
   }
 
@@ -1915,7 +1940,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(commands);
   }
 
-  async exportAll(): Promise<void> {
+  async exportAll(options: HAR.Log.BuildOptions): Promise<void> {
     const mainTarget = SDK.TargetManager.TargetManager.instance().scopeTarget();
     if (!mainTarget) {
       return;
@@ -1931,7 +1956,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
 
     const progressIndicator = new UI.ProgressIndicator.ProgressIndicator();
     this.progressBarContainer.appendChild(progressIndicator.element);
-    await HAR.Writer.Writer.write(stream, this.harRequests(), {sanitize: false}, progressIndicator);
+    await HAR.Writer.Writer.write(stream, this.harRequests(), options, progressIndicator);
     progressIndicator.done();
     void stream.close();
   }

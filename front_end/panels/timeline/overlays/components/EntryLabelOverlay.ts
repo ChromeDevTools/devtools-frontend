@@ -125,6 +125,10 @@ Otherwise, the entry label overlay object only gets repositioned.
     // Therefore, if the new key is `Enter` key, treat it
     // as the end of the label input and blur the input field.
     if (event.key === 'Enter' || event.key === 'Escape') {
+      // In DevTools, the `Escape` button will by default toggle the console
+      // drawer, which we don't want here, so we need to call
+      // `stopPropagation()`.
+      event.stopPropagation();
       this.#inputField.dispatchEvent(new FocusEvent('blur', {bubbles: true}));
       return false;
     }

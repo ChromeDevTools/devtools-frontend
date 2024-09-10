@@ -28,7 +28,7 @@ const UIStrings = {
   /**
    * @description Text for how to create an entry label.
    */
-  entryLabelDescription: 'Double click on an entry to create  an entry label.',
+  entryLabelDescription: 'Double click on an entry to create an entry label. Press Esc or Enter to complete.',
   /**
    * @description  Title for diagram.
    */
@@ -44,7 +44,8 @@ const UIStrings = {
   /**
    * @description Text for how to create a time range selection and add note.
    */
-  timeRangeDescription: 'Shift and drag on the canvas to create a time range.',
+  timeRangeDescription:
+      'Shift and drag on the canvas to create a time range and add a label. Press Esc or Enter to complete.',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/SidebarAnnotationsTab.ts', UIStrings);

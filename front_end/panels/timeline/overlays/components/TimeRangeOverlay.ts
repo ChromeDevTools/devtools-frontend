@@ -208,6 +208,10 @@ export class TimeRangeOverlay extends HTMLElement {
     // If the text field is empty when `Enter` or `Escape` are pressed,
     // dispatch an event to remove the time range.
     if (event.key === 'Enter' || event.key === 'Escape') {
+      // In DevTools, the `Escape` button will by default toggle the console
+      // drawer, which we don't want here, so we need to call
+      // `stopPropagation()`.
+      event.stopPropagation();
       if (this.#label === '') {
         this.dispatchEvent(new TimeRangeRemoveEvent());
       }

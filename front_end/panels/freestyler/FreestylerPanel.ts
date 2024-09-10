@@ -28,9 +28,9 @@ import freestylerPanelStyles from './freestylerPanel.css.js';
   */
 const UIStringsTemp = {
   /**
-   *@description Freestyler UI text for creating a new chat.
+   *@description Freestyler UI text for clearing messages.
    */
-  newChat: 'New chat',
+  clearMessages: 'Clear messages',
   /**
    *@description Freestyler UI text for sending feedback.
    */
@@ -53,15 +53,15 @@ type ViewOutput = {
 type View = (input: FreestylerChatUiProps, output: ViewOutput, target: HTMLElement) => void;
 
 // TODO(ergunsh): Use the WidgetElement instead of separately creating the toolbar.
-function createToolbar(target: HTMLElement, {onNewChatClick}: {onNewChatClick: () => void}): void {
+function createToolbar(target: HTMLElement, {onClearClick}: {onClearClick: () => void}): void {
   const toolbarContainer = target.createChild('div', 'freestyler-toolbar-container');
   const leftToolbar = new UI.Toolbar.Toolbar('', toolbarContainer);
   const rightToolbar = new UI.Toolbar.Toolbar('freestyler-right-toolbar', toolbarContainer);
 
-  const newChatButton = new UI.Toolbar.ToolbarButton(
-      i18nString(UIStringsTemp.newChat), 'plus', i18nString(UIStringsTemp.newChat), 'freestyler.new-chat');
-  newChatButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, onNewChatClick);
-  leftToolbar.appendToolbarItem(newChatButton);
+  const clearButton =
+      new UI.Toolbar.ToolbarButton(i18nString(UIStringsTemp.clearMessages), 'clear', undefined, 'freestyler.clear');
+  clearButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, onClearClick);
+  leftToolbar.appendToolbarItem(clearButton);
 
   rightToolbar.appendSeparator();
   const helpButton =
@@ -109,7 +109,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
   }) {
     super(FreestylerPanel.panelName);
 
-    createToolbar(this.contentElement, {onNewChatClick: this.#createNewConversation.bind(this)});
+    createToolbar(this.contentElement, {onClearClick: this.#clearMessages.bind(this)});
     this.#toggleSearchElementAction =
         UI.ActionRegistry.ActionRegistry.instance().getAction('elements.toggle-element-search');
     this.#aidaClient = aidaClient;
@@ -229,7 +229,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
     }
   }
 
-  #createNewConversation(): void {
+  #clearMessages(): void {
     this.#viewProps.messages = [];
     this.#viewProps.isLoading = false;
     this.#agent = this.#createAgent();

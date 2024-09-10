@@ -11,6 +11,7 @@ generate_css("css_files") {
   sources = [
     "lcpDiscovery.css",
     "sidebarInsight.css",
+    "table.css",
   ]
 }
 
@@ -25,6 +26,7 @@ devtools_module("insights") {
     "RenderBlocking.ts",
     "SidebarInsight.ts",
     "SlowCSSSelector.ts",
+    "Table.ts",
     "ThirdParties.ts",
     "Viewport.ts",
     "types.ts",

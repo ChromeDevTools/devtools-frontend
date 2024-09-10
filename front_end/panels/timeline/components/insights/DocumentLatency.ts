@@ -98,8 +98,6 @@ export class DocumentLatency extends BaseInsight {
               </li>
             </ul>
         </div>
-        <div slot="insight-content" class="table-container">
-        </div>
       </${SidebarInsight.SidebarInsight}>
     </div>`;
     // clang-format on

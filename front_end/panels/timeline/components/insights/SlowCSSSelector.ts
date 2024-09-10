@@ -10,6 +10,7 @@ import type * as Overlays from '../../overlays/overlays.js';
 
 import {BaseInsight, shouldRenderForCategory} from './Helpers.js';
 import * as SidebarInsight from './SidebarInsight.js';
+import {Table, type TableData} from './Table.js';
 import {InsightsCategories} from './types.js';
 
 export class SlowCSSSelector extends BaseInsight {
@@ -73,40 +74,33 @@ export class SlowCSSSelector extends BaseInsight {
           } as SidebarInsight.InsightDetails}
           @insighttoggleclick=${this.onSidebarClick}
         >
-          <div slot="insight-description" class="insight-description">
-            Slow CSS selectors.
-          </div>
-          <div slot="insight-content" class="table-container">
-            <dl>
-              <dt class="dl-title">Total</dt>
-              <dd class="dl-title">Stats</dd>
-              <dt>Elapsed in ms</dt>
-              <dd>${this.#slowCSSSelector.totalElapsedMs}</dd>
-              <dt>Match Attempts</dt>
-              <dd>${this.#slowCSSSelector.totalMatchAttempts}</dd>
-              <dt>Match Count</dt>
-              <dd>${this.#slowCSSSelector.totalMatchCount}</dd>
-            </dl>
-            <dl>
-              <dt class="dl-title">Top Selectors</dt>
-              <dd class="dl-title">Elapsed Time (ms)</dd>
-              ${this.#slowCSSSelector.topElapsedMs.map(selector => {
-                  return LitHtml.html`
-                      <dt>${selector.selector}</dt>
-                      <dd>${selector['elapsed (us)']/1000.0}</dd>
-                  `;
-              })}
-            </dl>
-            <dl>
-              <dt class="dl-title">Top Selectors</dt>
-              <dd class="dl-title">Match Attempts</dd>
-              ${this.#slowCSSSelector.topMatchAttempts.map(selector => {
-                  return LitHtml.html`
-                      <dt>${selector.selector}</dt>
-                      <dd>${selector['match_attempts']}</dd>
-                  `;
-              })}
-            </dl>
+          <div slot="insight-content">
+            ${LitHtml.html`<${Table.litTagName}
+              .data=${{
+                headers: ['Total', 'Stats'],
+                rows: [
+                  ['Elapsed in ms', this.#slowCSSSelector.totalElapsedMs],
+                  ['Match Attempts', this.#slowCSSSelector.totalMatchAttempts],
+                  ['Match Count', this.#slowCSSSelector.totalMatchCount],
+                ],
+              } as TableData}>
+            </${Table.litTagName}>`}
+            ${LitHtml.html`<${Table.litTagName}
+              .data=${{
+                headers: ['Top Selectors', 'Elapsed Time (ms)'],
+                rows: this.#slowCSSSelector.topElapsedMs.map(selector => {
+                  return [selector.selector, selector['elapsed (us)'] / 1000.0];
+                }),
+              } as TableData}>
+            </${Table.litTagName}>`}
+            ${LitHtml.html`<${Table.litTagName}
+              .data=${{
+                headers: ['Top Selectors', 'Match Attempts'],
+                rows: this.#slowCSSSelector.topMatchAttempts.map(selector => {
+                  return [selector.selector, selector['match_attempts']];
+                }),
+              } as TableData}>
+            </${Table.litTagName}>`}
           </div>
         </${SidebarInsight}>
       </div>` : LitHtml.nothing;

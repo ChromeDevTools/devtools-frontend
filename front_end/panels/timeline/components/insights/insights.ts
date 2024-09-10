@@ -11,6 +11,7 @@ import * as NodeLink from './NodeLink.js';
 import * as RenderBlocking from './RenderBlocking.js';
 import * as SidebarInsight from './SidebarInsight.js';
 import * as SlowCSSSelector from './SlowCSSSelector.js';
+import * as Table from './Table.js';
 import * as ThirdParties from './ThirdParties.js';
 import * as Types from './types.js';
 import * as Viewport from './Viewport.js';
@@ -25,6 +26,7 @@ export {
   RenderBlocking,
   SidebarInsight,
   SlowCSSSelector,
+  Table,
   ThirdParties,
   Types,
   Viewport,

@@ -22,12 +22,8 @@ function getFieldMetricValue(view: Element, metric: string): HTMLElement|null {
   return card!.shadowRoot!.querySelector('#field-value .metric-value');
 }
 
-function getThrottlingRecommendation(view: Element): string|null {
-  return view.shadowRoot!.querySelector<HTMLElement>('#network-recommendation')?.title ?? null;
-}
-
-function getDeviceRecommendation(view: Element): string|null {
-  return view.shadowRoot!.querySelector<HTMLElement>('#device-recommendation')?.title ?? null;
+function getEnvironmentRecs(view: Element): HTMLElement[] {
+  return Array.from(view.shadowRoot!.querySelectorAll<HTMLElement>('.environment-recs li'));
 }
 
 function getInteractions(view: Element): HTMLElement[] {
@@ -310,11 +306,8 @@ describeWithMockConnection('LiveMetricsView', () => {
 
       await coordinator.done();
 
-      const throttlingRec = getThrottlingRecommendation(view);
-      assert.isNull(throttlingRec);
-
-      const deviceRec = getDeviceRecommendation(view);
-      assert.isNull(deviceRec);
+      const envRecs = getEnvironmentRecs(view);
+      assert.lengthOf(envRecs, 0);
 
       const fieldMessage = getFieldMessage(view);
       assert.match(fieldMessage!.innerText, /See how your local metrics compare/);
@@ -343,11 +336,10 @@ describeWithMockConnection('LiveMetricsView', () => {
 
       await coordinator.done();
 
-      const throttlingRec = getThrottlingRecommendation(view)!;
-      assert.match(throttlingRec, /Slow 4G/);
-
-      const deviceRec = getDeviceRecommendation(view)!;
-      assert.match(deviceRec, /60%.*desktop/);
+      const envRecs = getEnvironmentRecs(view);
+      assert.lengthOf(envRecs, 2);
+      assert.match(envRecs[0].textContent!, /60%.*desktop/);
+      assert.match(envRecs[1].textContent!, /Slow 4G/);
 
       const fieldMessage = getFieldMessage(view);
       // We can't match the exact string because we format the dates based on
@@ -378,11 +370,8 @@ describeWithMockConnection('LiveMetricsView', () => {
 
       await coordinator.done();
 
-      const throttlingRec = getThrottlingRecommendation(view);
-      assert.isNull(throttlingRec);
-
-      const deviceRec = getDeviceRecommendation(view);
-      assert.isNull(deviceRec);
+      const envRecs = getEnvironmentRecs(view);
+      assert.lengthOf(envRecs, 0);
 
       const fieldMessage = getFieldMessage(view);
       assert.isNull(fieldMessage);
@@ -544,8 +533,10 @@ describeWithMockConnection('LiveMetricsView', () => {
 
         await coordinator.done();
 
-        const throttlingRec = getThrottlingRecommendation(view)!;
-        assert.match(throttlingRec, /Slow 4G/);
+        const envRecs = getEnvironmentRecs(view);
+        assert.lengthOf(envRecs, 2);
+        assert.match(envRecs[0].textContent!, /60%.*desktop/);
+        assert.match(envRecs[1].textContent!, /Slow 4G/);
       });
 
       it('should hide if no RTT data', async () => {
@@ -557,8 +548,9 @@ describeWithMockConnection('LiveMetricsView', () => {
 
         await coordinator.done();
 
-        const throttlingRec = getThrottlingRecommendation(view);
-        assert.isNull(throttlingRec);
+        const envRecs = getEnvironmentRecs(view);
+        assert.lengthOf(envRecs, 1);
+        assert.match(envRecs[0].textContent!, /60%.*desktop/);
       });
 
       it('should suggest no throttling for very low latency', async () => {
@@ -573,8 +565,10 @@ describeWithMockConnection('LiveMetricsView', () => {
 
         await coordinator.done();
 
-        const throttlingRec = getThrottlingRecommendation(view)!;
-        assert.match(throttlingRec, /no throttling/);
+        const envRecs = getEnvironmentRecs(view);
+        assert.lengthOf(envRecs, 2);
+        assert.match(envRecs[0].textContent!, /60%.*desktop/);
+        assert.match(envRecs[1].textContent!, /no throttling/);
       });
 
       it('should ignore presets that are generally too far off', async () => {
@@ -589,8 +583,9 @@ describeWithMockConnection('LiveMetricsView', () => {
 
         await coordinator.done();
 
-        const throttlingRec = getThrottlingRecommendation(view);
-        assert.isNull(throttlingRec);
+        const envRecs = getEnvironmentRecs(view);
+        assert.lengthOf(envRecs, 1);
+        assert.match(envRecs[0].textContent!, /60%.*desktop/);
       });
     });
 
@@ -603,8 +598,10 @@ describeWithMockConnection('LiveMetricsView', () => {
 
         await coordinator.done();
 
-        const deviceRec = getDeviceRecommendation(view)!;
-        assert.match(deviceRec, /60%.*desktop/);
+        const envRecs = getEnvironmentRecs(view);
+        assert.lengthOf(envRecs, 2);
+        assert.match(envRecs[0].textContent!, /60%.*desktop/);
+        assert.match(envRecs[1].textContent!, /Slow 4G/);
       });
 
       it('should recommend mobile if it is the majority', async () => {
@@ -621,8 +618,10 @@ describeWithMockConnection('LiveMetricsView', () => {
 
         await coordinator.done();
 
-        const deviceRec = getDeviceRecommendation(view)!;
-        assert.match(deviceRec, /80%.*mobile/);
+        const envRecs = getEnvironmentRecs(view);
+        assert.lengthOf(envRecs, 2);
+        assert.match(envRecs[0].textContent!, /80%.*mobile/);
+        assert.match(envRecs[1].textContent!, /Slow 4G/);
       });
 
       it('should recommend nothing if there is no majority', async () => {
@@ -639,8 +638,9 @@ describeWithMockConnection('LiveMetricsView', () => {
 
         await coordinator.done();
 
-        const deviceRec = getDeviceRecommendation(view);
-        assert.isNull(deviceRec);
+        const envRecs = getEnvironmentRecs(view);
+        assert.lengthOf(envRecs, 1);
+        assert.match(envRecs[0].textContent!, /Slow 4G/);
       });
     });
   });

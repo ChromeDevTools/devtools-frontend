@@ -36,10 +36,10 @@ p {
 }
 
 #learn-more {
-  margin-left: 2px;
+  margin-left: var(--sys-size-2);
 
   & > .link-icon {
-    width: 16px;
-    height: 16px;
+    width: var(--sys-size-8);
+    height: var(--sys-size-8);
   }
 }

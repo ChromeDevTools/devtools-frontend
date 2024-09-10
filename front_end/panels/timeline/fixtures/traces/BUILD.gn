@@ -76,6 +76,7 @@ copy_to_gen("traces") {
     "selector-stats.json.gz",
     "server-timings.json.gz",
     "set-timeout-long-task.json.gz",
+    "shift-attribution.json.gz",
     "simple-js-program.json.gz",
     "slow-interaction-button-click.json.gz",
     "slow-interaction-keydown.json.gz",

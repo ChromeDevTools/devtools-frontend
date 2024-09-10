@@ -10,6 +10,7 @@ ts_library("ts") {
   sources = [
     "basic.ts",
     "flamechart.ts",
+    "layout_shift_details.ts",
     "network_request_details.ts",
     "network_request_tooltip.ts",
     "overview.ts",
@@ -36,6 +37,7 @@ copy_to_gen("performance_panel") {
   sources = [
     "basic.html",
     "flamechart.html",
+    "layout_shift_details.html",
     "network_request_details.html",
     "network_request_tooltip.html",
     "overview.html",

@@ -49,6 +49,7 @@ interface LayoutShifts {
   scheduleStyleInvalidationEvents: readonly Types.TraceEvents.TraceEventScheduleStyleInvalidationTracking[];
   styleRecalcInvalidationEvents: readonly Types.TraceEvents.TraceEventStyleRecalcInvalidationTracking[];
   renderFrameImplCreateChildFrameEvents: readonly Types.TraceEvents.TraceEventRenderFrameImplCreateChildFrame[];
+  domLoadingEvents: readonly Types.TraceEvents.TraceEventDomLoading[];
   scoreRecords: readonly ScoreRecord[];
   // TODO(crbug/41484172): should be readonly
   backendNodeIds: Protocol.DOM.BackendNodeId[];
@@ -77,6 +78,7 @@ const layoutInvalidationEvents: Types.TraceEvents.TraceEventLayoutInvalidationTr
 const scheduleStyleInvalidationEvents: Types.TraceEvents.TraceEventScheduleStyleInvalidationTracking[] = [];
 const styleRecalcInvalidationEvents: Types.TraceEvents.TraceEventStyleRecalcInvalidationTracking[] = [];
 const renderFrameImplCreateChildFrameEvents: Types.TraceEvents.TraceEventRenderFrameImplCreateChildFrame[] = [];
+const domLoadingEvents: Types.TraceEvents.TraceEventDomLoading[] = [];
 
 const backendNodeIds = new Set<Protocol.DOM.BackendNodeId>();
 
@@ -121,6 +123,7 @@ export function reset(): void {
   styleRecalcInvalidationEvents.length = 0;
   prePaintEvents.length = 0;
   renderFrameImplCreateChildFrameEvents.length = 0;
+  domLoadingEvents.length = 0;
   backendNodeIds.clear();
   clusters.length = 0;
   sessionMaxScore = 0;
@@ -154,6 +157,9 @@ export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
   }
   if (Types.TraceEvents.isTraceEventRenderFrameImplCreateChildFrame(event)) {
     renderFrameImplCreateChildFrameEvents.push(event);
+  }
+  if (Types.TraceEvents.isTraceEventDomLoading(event)) {
+    domLoadingEvents.push(event);
   }
 }
 
@@ -230,6 +236,7 @@ export async function finalize(): Promise<void> {
   prePaintEvents.sort((a, b) => a.ts - b.ts);
   layoutInvalidationEvents.sort((a, b) => a.ts - b.ts);
   renderFrameImplCreateChildFrameEvents.sort((a, b) => a.ts - b.ts);
+  domLoadingEvents.sort((a, b) => a.ts - b.ts);
 
   // Each function transforms the data used by the next, as such the invoke order
   // is important.
@@ -471,6 +478,7 @@ export function data(): LayoutShifts {
     scheduleStyleInvalidationEvents,
     styleRecalcInvalidationEvents: [],
     renderFrameImplCreateChildFrameEvents,
+    domLoadingEvents,
     scoreRecords,
     // TODO(crbug/41484172): change the type so no need to clone
     backendNodeIds: [...backendNodeIds],

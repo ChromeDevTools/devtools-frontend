@@ -406,6 +406,12 @@ export class MainImpl {
         'Performance panel: enable server timings in the timeline',
     );
 
+    Root.Runtime.experiments.register(
+        Root.Runtime.ExperimentName.TIMELINE_LAYOUT_SHIFT_DETAILS,
+        'Performance panel: enable new summary details view for layout shift events',
+        true,
+    );
+
     Root.Runtime.experiments.enableExperimentsByDefault([
       'css-type-component-length-deprecate',
       Root.Runtime.ExperimentName.AUTOFILL_VIEW,

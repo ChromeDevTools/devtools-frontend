@@ -68,7 +68,7 @@ export class CLSCulprits extends BaseInsight {
           continue;
         }
         const fontReq = culprits.fontRequests;
-        const iframes = culprits.iframes;
+        const iframes = culprits.iframeIds;
 
         for (let i = 0; i < fontReq.length && causes.length < MAX_TOP_CULPRITS; i++) {
           causes.push('Font request');

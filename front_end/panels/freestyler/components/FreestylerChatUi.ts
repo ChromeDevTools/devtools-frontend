@@ -258,6 +258,7 @@ export class FreestylerChatUi extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-freestyler-chat-ui`;
   readonly #shadow = this.attachShadow({mode: 'open'});
   readonly #markdownRenderer = new MarkdownRendererWithCodeBlock();
+  #scrollTop?: number;
   #props: Props;
 
   constructor(props: Props) {
@@ -284,6 +285,19 @@ export class FreestylerChatUi extends HTMLElement {
     textArea.focus();
   }
 
+  restoreScrollPosition(): void {
+    if (this.#scrollTop === undefined) {
+      return;
+    }
+
+    const scrollContainer = this.#shadow.querySelector('.messages-scroll-container') as HTMLElement;
+    if (!scrollContainer) {
+      return;
+    }
+
+    scrollContainer.scrollTop = this.#scrollTop;
+  }
+
   scrollToLastMessage(): void {
     const message = this.#shadow.querySelector('.chat-message:last-child') as HTMLDivElement;
     if (!message) {
@@ -291,6 +305,14 @@ export class FreestylerChatUi extends HTMLElement {
     }
     message.scrollIntoViewIfNeeded();
   }
+
+  #handleScroll = (ev: Event): void => {
+    if (!ev.target || !(ev.target instanceof HTMLElement)) {
+      return;
+    }
+
+    this.#scrollTop = ev.target.scrollTop;
+  };
 
   #handleSubmit = (ev: SubmitEvent): void => {
     ev.preventDefault();
@@ -634,7 +656,7 @@ export class FreestylerChatUi extends HTMLElement {
   #renderMessages = (): LitHtml.TemplateResult => {
     // clang-format off
     return LitHtml.html`
-      <div class="messages-scroll-container">
+      <div class="messages-scroll-container" @scroll=${this.#handleScroll}>
         <div class="messages-container">
           ${this.#props.messages.map((message, _, array) =>
             this.#renderChatMessage(message, {

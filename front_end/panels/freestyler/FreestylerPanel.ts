@@ -179,6 +179,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
 
   override wasShown(): void {
     this.registerCSSFiles([freestylerPanelStyles]);
+    this.#viewOutput.freestylerChatUi?.restoreScrollPosition();
     this.#viewOutput.freestylerChatUi?.focusTextInput();
   }
 

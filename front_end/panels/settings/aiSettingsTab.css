@@ -148,7 +148,12 @@
   border-top: 1px solid var(--sys-color-divider);
   display: flex;
   flex-direction: column;
-  align-items: center;
+}
+
+@media (min-width: 640px) {
+  .settings-container-wrapper {
+    align-items: center;
+  }
 }
 
 header {

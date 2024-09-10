@@ -325,11 +325,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     insight.addEventListener('close', () => {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightClosed);
       this.elementInternal?.classList.toggle('has-insight', false);
-      insight.addEventListener('animationend', () => {
-        this.elementInternal?.removeChild(insight);
-      }, {
-        once: true,
-      });
+      this.elementInternal?.removeChild(insight);
     }, {once: true});
   }
 

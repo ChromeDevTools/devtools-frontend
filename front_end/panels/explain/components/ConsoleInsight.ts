@@ -332,11 +332,6 @@ export class ConsoleInsight extends HTMLElement {
       e.stopPropagation();
     });
     this.focus();
-    // Measure the height of the element after an animation. `--actual-height` can
-    // be used as the `from` value for the subsequent animation.
-    this.addEventListener('animationend', () => {
-      this.style.setProperty('--actual-height', `${this.offsetHeight}px`);
-    });
   }
 
   // The 'console-insights-enabled'-setting controls different things, depending on the 'gen-ai-settings-panel' experiment.
@@ -403,9 +398,6 @@ export class ConsoleInsight extends HTMLElement {
   #transitionTo(newState: StateData): void {
     const previousState = this.#state;
     this.#state = newState;
-    if (newState.type !== previousState.type && previousState.type === State.LOADING) {
-      this.classList.add('loaded');
-    }
     this.#render();
     if (newState.type !== previousState.type) {
       this.#focusHeader();
@@ -447,7 +439,9 @@ export class ConsoleInsight extends HTMLElement {
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightsOnboardingCanceledOnPage2);
       }
     }
-    this.dispatchEvent(new CloseEvent());
+    this.shadowRoot?.addEventListener('animationend', () => {
+      this.dispatchEvent(new CloseEvent());
+    }, {once: true});
     this.classList.add('closing');
   }
 
@@ -606,7 +600,9 @@ export class ConsoleInsight extends HTMLElement {
   }
 
   #focusHeader(): void {
-    (this.#shadow.querySelector('header h2') as HTMLElement | undefined)?.focus();
+    this.addEventListener('animationend', () => {
+      (this.#shadow.querySelector('header h2') as HTMLElement | undefined)?.focus();
+    }, {once: true});
   }
 
   #termsChecked(): boolean {
@@ -1187,9 +1183,11 @@ export class ConsoleInsight extends HTMLElement {
     // clang-format off
     render(html`
       <div class="wrapper" jslog=${VisualLogging.pane('console-insights').track({resize: true})}>
-        ${this.#renderHeader()}
-        ${this.#renderMain()}
-        ${this.#renderFooter()}
+        <div class="animation-wrapper">
+          ${this.#renderHeader()}
+          ${this.#renderMain()}
+          ${this.#renderFooter()}
+        </div>
       </div>
     `, this.#shadow, {
       host: this,

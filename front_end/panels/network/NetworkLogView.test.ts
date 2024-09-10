@@ -137,7 +137,7 @@ describeWithMockConnection('NetworkLogView', () => {
     );
     assert.strictEqual(
         await Network.NetworkLogView.NetworkLogView.generateCurlCommand(request, 'win'),
-        'curl "http://localhost" -H ^"cookie: eva=^\\^"Sg4=^\\^"^"',
+        'curl ^"http://localhost^" -H ^"cookie: eva=^\\^"Sg4=^\\^"^"',
     );
   });
 
@@ -151,7 +151,21 @@ describeWithMockConnection('NetworkLogView', () => {
     );
     assert.strictEqual(
         await Network.NetworkLogView.NetworkLogView.generateCurlCommand(request, 'win'),
-        'curl "http://localhost" -H ^"cookie: eva=^%^22Sg4^%^3D^%^22^"',
+        'curl ^"http://localhost^" -H ^"cookie: eva=^%^22Sg4^%^3D^%^22^"',
+    );
+  });
+
+  it('generates a valid curl command when header values contain newline and ampersand', async () => {
+    const request = createNetworkRequest('http://localhost' as Platform.DevToolsPath.UrlString, {
+      requestHeaders: [{name: 'cookie', value: 'query=evil\n\n & cmd /c calc.exe \n\n'}],
+    });
+    assert.strictEqual(
+        await Network.NetworkLogView.NetworkLogView.generateCurlCommand(request, 'unix'),
+        'curl \'http://localhost\' -H $\'cookie: query=evil\\n\\n & cmd /c calc.exe \\n\\n\'',
+    );
+    assert.strictEqual(
+        await Network.NetworkLogView.NetworkLogView.generateCurlCommand(request, 'win'),
+        'curl ^\"http://localhost^\" -H ^\"cookie: query=evil^\n\n^\n\n ^& cmd /c calc.exe ^\n\n^\n\n^\"',
     );
   });
 

@@ -2363,7 +2363,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
         new Set<string>(['accept-encoding', 'host', 'method', 'path', 'scheme', 'version', 'authority', 'protocol']);
 
     function escapeStringWin(str: string): string {
-      /* Only escape the " characters when necessary.
+      /* Always escape the " characters so that we can use caret escaping.
 
          Because cmd.exe parser and MS Crt arguments parsers use some of the
          same escape characters, they can interact with each other in
@@ -2389,11 +2389,11 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
          new line is there to enact the escape command the second is the character
          to escape (in this case new line).
         */
-      const encapsChars = /[\r\n]|[^a-zA-Z0-9\s_\-:=+~'\/.',?;()*`&]/.test(str) ? '^"' : '"';
+      const encapsChars = '^"';
       return encapsChars +
           str.replace(/\\/g, '\\\\')
               .replace(/"/g, '\\"')
-              .replace(/[^a-zA-Z0-9\s_\-:=+~'\/.',?;()*`&]/g, '^$&')
+              .replace(/[^a-zA-Z0-9\s_\-:=+~'\/.',?;()*`]/g, '^$&')
               .replace(/%(?=[a-zA-Z0-9_])/g, '%^')
               .replace(/\r?\n/g, '^\n\n') +
           encapsChars;

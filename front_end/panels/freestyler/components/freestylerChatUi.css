@@ -119,8 +119,9 @@
 }
 
 .messages-scroll-container {
-  overflow: overlay;
+  overflow: auto;
   flex-grow: 1;
+  scrollbar-gutter: stable;
 }
 
 .messages-container {

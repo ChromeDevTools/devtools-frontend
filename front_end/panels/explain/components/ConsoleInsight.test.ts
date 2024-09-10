@@ -84,8 +84,40 @@ describeWithEnvironment('ConsoleInsight', () => {
       );
     });
 
+    it('shows opt-in teaser when setting is disabled via disabledCondition', async () => {
+      Common.Settings.settingForTest('console-insights-onboarding-finished').set(true);
+      const setting = Common.Settings.settingForTest('console-insights-enabled');
+      setting.set(true);
+      setting.setRegistration({
+        settingName: 'console-insights-enabled',
+        settingType: Common.Settings.SettingType.BOOLEAN,
+        defaultValue: true,
+        disabledCondition: () => {
+          return {disabled: true, reason: 'disabled for test'};
+        },
+      });
+      const component = new Explain.ConsoleInsight(
+          getTestPromptBuilder(), getTestAidaClient(), Host.AidaClient.AidaAccessPreconditions.AVAILABLE);
+      renderElementIntoDOM(component);
+      await drainMicroTasks();
+      assert.isNotNull(component.shadowRoot);
+      assert.deepEqual(
+          getCleanTextContentFromElements(component.shadowRoot, 'main'),
+          [
+            'Turn on Console insights in Settings to receive AI assistance for understanding and addressing console warnings and errors. Learn more',
+          ],
+      );
+
+      setting.setRegistration({
+        settingName: 'console-insights-enabled',
+        settingType: Common.Settings.SettingType.BOOLEAN,
+        defaultValue: false,
+      });
+    });
+
     it('shows reminder on first run of console insights', async () => {
       Common.Settings.settingForTest('console-insights-enabled').set(true);
+      Common.Settings.settingForTest('console-insights-onboarding-finished').set(false);
       const component = new Explain.ConsoleInsight(
           getTestPromptBuilder(), getTestAidaClient(), Host.AidaClient.AidaAccessPreconditions.AVAILABLE);
       renderElementIntoDOM(component);

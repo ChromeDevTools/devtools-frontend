@@ -150,6 +150,16 @@ const UIStrings = {
    */
   reloadRecommendation:
       'Reload the page to capture related network request data for this message in order to create a better insight.',
+  /**
+   * @description Shown to the user when they need to enable the console insights feature in settings in order to use it.
+   * @example {Console insights in Settings} PH1
+   */
+  turnOnInSettings:
+      'Turn on {PH1} to receive AI assistance for understanding and addressing console warnings and errors.',
+  /**
+   * @description Text for a link to Chrome DevTools Settings.
+   */
+  settingsLink: 'Console insights in Settings',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/explain/components/ConsoleInsight.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -264,6 +274,13 @@ export class ConsoleInsight extends HTMLElement {
     switch (aidaAvailability) {
       case Host.AidaClient.AidaAccessPreconditions.AVAILABLE:
         if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.GEN_AI_SETTINGS_PANEL)) {
+          if (this.#consoleInsightsEnabledSetting?.disabled()) {
+            this.#state = {
+              type: State.CONSENT_ONBOARDING,
+              page: ConsentOnboardingPage.PAGE1,
+            };
+            break;
+          }
           // Allows skipping the consent reminder if the user enabled the feature via settings in the current session
           const skipReminder =
               Common.Settings.Settings.instance()
@@ -840,8 +857,15 @@ export class ConsoleInsight extends HTMLElement {
             </${ConsoleInsightSourcesList.litTagName}>
           </main>
         `;
-      case State.CONSENT_ONBOARDING:
+      case State.CONSENT_ONBOARDING: {
         if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.GEN_AI_SETTINGS_PANEL)) {
+          const settingsLink = document.createElement('button');
+          settingsLink.textContent = i18nString(UIStrings.settingsLink);
+          settingsLink.classList.add('link');
+          UI.ARIAUtils.markAsLink(settingsLink);
+          settingsLink.addEventListener('click', this.#onGoToAISettings);
+          settingsLink.setAttribute('jslog', `${VisualLogging.action('open-ai-settings').track({click: true})}`);
+
           return html`<main class="opt-in-teaser" jslog=${jslog}>
             <div class="badge">
               <${IconButton.Icon.Icon.litTagName} .data=${{
@@ -852,16 +876,7 @@ export class ConsoleInsight extends HTMLElement {
               </${IconButton.Icon.Icon.litTagName}>
             </div>
             <div>
-              Turn on
-              <button
-                class="link"
-                role="link"
-                @click=${this.#onGoToAISettings}
-                jslog=${VisualLogging.action('open-ai-settings').track({click: true})}
-              >
-                Console insights in Settings
-              </button>
-              to receive AI assistance for understanding and addressing console warnings and errors.
+              ${i18n.i18n.getFormatLocalizedString(str_, UIStrings.turnOnInSettings, {PH1: settingsLink})}
               ${this.#renderLearnMoreAboutInsights()}
             </div>
           </main>`;
@@ -895,6 +910,7 @@ export class ConsoleInsight extends HTMLElement {
             </p>
             </main>`;
         }
+      }
       case State.NOT_LOGGED_IN:
         return html`
           <main jslog=${jslog}>

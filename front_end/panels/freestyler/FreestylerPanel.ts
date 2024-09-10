@@ -306,6 +306,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
           step.isLoading = false;
           step.code = data.code;
           step.output = data.output;
+          step.canceled = data.canceled;
           if (systemMessage.steps.at(-1) !== step) {
             systemMessage.steps.push(step);
           }

@@ -193,6 +193,7 @@ devtools_svg_sources = [
   "mouse.svg",
   "network-settings.svg",
   "open-externally.svg",
+  "pause-circle.svg",
   "pause.svg",
   "pen-spark.svg",
   "performance-panel-diagram.svg",

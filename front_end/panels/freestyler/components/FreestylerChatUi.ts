@@ -180,6 +180,7 @@ export interface Step {
   title?: string;
   code?: string;
   output?: string;
+  canceled?: boolean;
   sideEffect?: ConfirmSideEffectDialog;
 }
 
@@ -366,7 +367,8 @@ export class FreestylerChatUi extends HTMLElement {
   }
 
   #renderTitle(step: Step): LitHtml.LitTemplate {
-    const paused = step.sideEffect ? `${i18nString(UIStringsTemp.paused)}: ` : '';
+    const paused = step.sideEffect ? LitHtml.html`<span class="paused">${i18nString(UIStringsTemp.paused)}: </span>` :
+                                     LitHtml.nothing;
     const actionTitle = step.title ?? `${i18nString(UIStringsTemp.investigating)}…`;
 
     return LitHtml.html`<span class="title">${paused}${actionTitle}</span>`;
@@ -409,11 +411,13 @@ export class FreestylerChatUi extends HTMLElement {
     // clang-format on
   }
 
-  #renderStep(step: Step, options: {isLast: boolean}): LitHtml.LitTemplate {
+  #renderStepBadge(step: Step, options: {isLast: boolean}): LitHtml.LitTemplate {
     const isLoading = this.#props.isLoading && options.isLast && !step.sideEffect;
     let iconName: string = 'checkmark';
     if (options.isLast && step.sideEffect) {
-      iconName = 'pause';
+      iconName = 'pause-circle';
+    } else if (step.canceled) {
+      iconName = 'cross-circle';
     } else if (isLoading) {
       // TODO: Use correct loading image
       iconName = 'dots-horizontal';
@@ -423,17 +427,22 @@ export class FreestylerChatUi extends HTMLElement {
       indicator: true,
       loading: isLoading,
       paused: Boolean(step.sideEffect),
+      canceled: Boolean(step.canceled),
     });
 
+    return LitHtml.html`<${IconButton.Icon.Icon.litTagName}
+        class=${iconClasses}
+        .name=${iconName}
+      ></${IconButton.Icon.Icon.litTagName}>`;
+  }
+
+  #renderStep(step: Step, options: {isLast: boolean}): LitHtml.LitTemplate {
     // clang-format off
     return LitHtml.html`
       <details class="step" .open=${Boolean(step.sideEffect)}>
         <summary>
           <div class="summary">
-            <${IconButton.Icon.Icon.litTagName}
-              class=${iconClasses}
-              .name=${iconName}
-            ></${IconButton.Icon.Icon.litTagName}>
+            ${this.#renderStepBadge(step, options)}
             ${this.#renderTitle(step)}
             <${IconButton.Icon.Icon.litTagName}
               class="arrow"

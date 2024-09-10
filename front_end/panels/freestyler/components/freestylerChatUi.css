@@ -206,8 +206,9 @@
       color: var(--sys-color-blue-bright);
     }
 
-    &.paused {
-      color: var(--sys-color-on-surface);
+    &.paused,
+    &.canceled {
+      color: var(--sys-color-on-surface-subtle);
     }
   }
 
@@ -217,11 +218,19 @@
     padding: var(--sys-size-3);
     line-height: var(--sys-size-9);
     cursor: default;
+    gap: var(--sys-size-3);
+    justify-content: center;
+    align-items: center;
 
     .title {
       text-overflow: ellipsis;
       white-space: nowrap;
       overflow: hidden;
+      font: var(--sys-typescale-body4-regular);
+
+      .paused {
+        font: var(--sys-typescale-body4-bold);
+      }
     }
   }
 

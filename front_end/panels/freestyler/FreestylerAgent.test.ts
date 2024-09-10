@@ -939,6 +939,7 @@ ANSWER: this is the answer`,
           type: Freestyler.ResponseType.ACTION,
           code: 'console.log(\'hello\');',
           output: 'hello',
+          canceled: false,
           rpcId: undefined,
         },
         {

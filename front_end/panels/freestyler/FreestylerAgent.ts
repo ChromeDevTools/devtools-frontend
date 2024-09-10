@@ -155,6 +155,7 @@ export interface ActionResponse {
   type: ResponseType.ACTION;
   code: string;
   output: string;
+  canceled: boolean;
   rpcId?: number;
 }
 
@@ -400,6 +401,7 @@ export class FreestylerAgent {
       ): Promise<{
     observation: string,
     sideEffect: boolean,
+    canceled: boolean,
   }> {
     const actionExpression = `{
       const scope = {$0, $1, getEventListeners};
@@ -411,7 +413,11 @@ export class FreestylerAgent {
     try {
       const runConfirmed = await confirm ?? Promise.resolve(true);
       if (!runConfirmed) {
-        throw new Error(denyErrorMessage ?? 'Code execution is not allowed');
+        return {
+          observation: `Error: ${denyErrorMessage ?? 'Code execution is not allowed'}`,
+          sideEffect: false,
+          canceled: true,
+        };
       }
       const result = await this.#execJs(
           actionExpression,
@@ -424,18 +430,21 @@ export class FreestylerAgent {
       return {
         observation: result,
         sideEffect: false,
+        canceled: false,
       };
     } catch (error) {
       if (error instanceof SideEffectError) {
         return {
           observation: error.message,
           sideEffect: true,
+          canceled: false,
         };
       }
 
       return {
         observation: `Error: ${error.message}`,
         sideEffect: false,
+        canceled: false,
       };
     }
   }
@@ -646,6 +655,7 @@ STOP`);
             type: ResponseType.ACTION,
             code: action,
             output: result.observation,
+            canceled: result.canceled,
             rpcId,
           };
 

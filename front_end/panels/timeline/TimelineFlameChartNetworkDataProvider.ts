@@ -182,6 +182,13 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
     return index;
   }
 
+  groupForEvent(_entryIndex: number): PerfUI.FlameChart.Group|null {
+    // Because the network track only contains one group, we don't actually
+    // need to do any lookups here.
+    const group = this.#networkTrackAppender?.group() ?? null;
+    return group;
+  }
+
   entryColor(index: number): string {
     if (!this.#networkTrackAppender) {
       throw new Error('networkTrackAppender should not be empty');

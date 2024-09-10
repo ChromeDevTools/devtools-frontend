@@ -3839,6 +3839,8 @@ export interface FlameChartDataProvider {
   findPossibleContextMenuActions?(node: number): PossibleFilterActions|void;
 
   handleFlameChartTransformKeyboardEvent?(event: KeyboardEvent, entryIndex: number, groupIndex: number): void;
+
+  groupForEvent?(entryIndex: number): Group|null;
 }
 
 export interface FlameChartMarker {

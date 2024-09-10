@@ -484,6 +484,14 @@ export class CompatibilityTracksAppender {
     this.#trackForLevel.set(level, appender);
   }
 
+  groupForLevel(level: number): PerfUI.FlameChart.Group|null {
+    const appenderForLevel = this.#trackForLevel.get(level);
+    if (!appenderForLevel) {
+      return null;
+    }
+    return this.groupForAppender(appenderForLevel);
+  }
+
   /**
    * Adds an event to the flame chart data at a defined level.
    * @param event the event to be appended,

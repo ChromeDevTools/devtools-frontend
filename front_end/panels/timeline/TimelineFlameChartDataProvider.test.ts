@@ -88,11 +88,29 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
         ],
     );
   });
+
+  it('can return the FlameChart group for a given event', async function() {
+    setupIgnoreListManagerEnvironment();
+    const dataProvider = new Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider();
+    const {traceData} = await TraceLoader.traceEngine(this, 'one-second-interaction.json.gz');
+    dataProvider.setModel(traceData);
+    // Force the track appenders to run and populate the chart data.
+    dataProvider.timelineData();
+
+    const longest = traceData.UserInteractions.longestInteractionEvent;
+    assert.isOk(longest);
+    const index = dataProvider.indexForEvent(longest);
+    assert.isNotNull(index);
+    const group = dataProvider.groupForEvent(index);
+    assert.strictEqual(group?.name, 'Interactions');
+  });
+
   it('adds candy stripe and triangle decorations to long tasks in the main thread', async function() {
     setupIgnoreListManagerEnvironment();
     const dataProvider = new Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider();
     const {traceData} = await TraceLoader.traceEngine(this, 'one-second-interaction.json.gz');
     dataProvider.setModel(traceData);
+    dataProvider.timelineData();
 
     const {entryDecorations} = dataProvider.timelineData();
     const stripingTitles: string[] = [];

@@ -636,12 +636,28 @@ export class Overlays extends EventTarget {
         break;
       }
       case 'ENTRIES_LINK': {
-        this.#setOverlayElementVisibility(element, !annotationsAreHidden);
-
+        // The exact entries that are linked to could be collapsed in a flame
+        // chart, so we figure out the best visible entry pairs to draw
+        // between.
         const entriesToConnect = this.#calculateFromAndToForEntriesLink(overlay);
         if (entriesToConnect === null) {
+          // Unexpected situation: hide the overlay and move on
           this.#setOverlayElementVisibility(element, false);
-        } else {
+          break;
+        }
+
+        // If either entry is in a track that the user has collapsed, we do not show the connection at all.
+        const fromEntryInCollapsedTrack = this.#entryIsInCollapsedTrack(entriesToConnect.entryFrom);
+        const toEntryInCollapsedTrack =
+            entriesToConnect.entryTo && this.#entryIsInCollapsedTrack(entriesToConnect.entryTo);
+        if (fromEntryInCollapsedTrack || toEntryInCollapsedTrack) {
+          this.#setOverlayElementVisibility(element, false);
+          break;
+        }
+
+        const isVisible = !annotationsAreHidden;
+        this.#setOverlayElementVisibility(element, isVisible);
+        if (isVisible) {
           this.#positionEntriesLinkOverlay(overlay, element, entriesToConnect);
         }
         break;
@@ -1316,6 +1332,23 @@ export class Overlays extends EventTarget {
       bounds: this.#dimensions.trace.visibleWindow,
       timeRange: entryTimeRange,
     });
+  }
+
+  #entryIsInCollapsedTrack(entry: OverlayEntry): boolean {
+    const chartName = this.#chartForOverlayEntry(entry);
+    const provider = chartName === 'main' ? this.#charts.mainProvider : this.#charts.networkProvider;
+
+    const entryIndex = provider.indexForEvent?.(entry) ?? null;
+    if (entryIndex === null) {
+      return false;
+    }
+
+    const group = provider.groupForEvent?.(entryIndex) ?? null;
+    if (!group) {
+      return false;
+    }
+
+    return Boolean(group.expanded) === false;
   }
 
   /**

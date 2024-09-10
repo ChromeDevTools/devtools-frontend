@@ -158,7 +158,7 @@ UI.ActionRegistration.registerActionExtension({
   setting,
   category: UI.ActionRegistration.ActionCategory.GLOBAL,
   title: i18nLazyString(UIStringsTemp.askAiAssistant),
-  iconClass: UI.ActionRegistration.IconClass.SPARK,
+  iconClass: UI.ActionRegistration.IconClass.SMART_ASSISTANT,
   async loadActionDelegate() {
     const Freestyler = await loadFreestylerModule();
     return new Freestyler.ActionDelegate();

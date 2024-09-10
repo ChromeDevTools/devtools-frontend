@@ -27,7 +27,7 @@ code {
 }
 
 .codeblock {
-  margin-bottom: 8px;
+  margin-bottom: var(--sys-size-5);
   box-sizing: border-box;
   color: var(--sys-color-on-surface);
 }
@@ -37,13 +37,13 @@ code {
   border-top-right-radius: var(--sys-shape-corner-extra-small);
   box-sizing: border-box;
   display: flex;
-  height: 28px;
+  height: var(--sys-size-12);
   flex-direction: row;
   padding: 0 11px;
   font-size: 11px;
   font-style: normal;
   font-weight: 400;
-  line-height: 16px;
+  line-height: var(--sys-size-8);
   background-color: var(--sys-color-surface5);
 }
 
@@ -67,17 +67,17 @@ code {
 
 .heading-text {
   font: var(--sys-typescale-body5-bold);
-  padding-left: 6px;
-  padding-right: 2px;
+  padding-left: var(--sys-size-4);
+  padding-right: var(--sys-size-2);
 }
 
 .codeblock .lang {
-  padding: 6px 0;
+  padding: var(--sys-size-4) 0;
   flex: 1;
 }
 
 .codeblock .copy {
-  padding: 4px 0;
+  padding: var(--sys-size-3) 0;
   align-items: center;
   display: flex;
 }
@@ -92,7 +92,7 @@ code {
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 4px;
+  gap: var(--sys-size-3);
 }
 
 .codeblock .copy-button.copied {
@@ -102,7 +102,7 @@ code {
 }
 
 .notice {
-  margin-top: 2px;
+  margin-top: var(--sys-size-2);
   padding: var(--sys-size-4) var(--sys-size-5);
   background-color: var(--sys-color-surface1);
   border-radius: var(--sys-shape-corner-extra-small);

@@ -194,14 +194,13 @@ export class SidebarSingleNavigation extends HTMLElement {
       </${Insights.CLSCulprits.CLSCulprits}>
     </div>
     <div>
-    </div>
       <${Insights.DocumentLatency.DocumentLatency.litTagName}
         .insights=${insights}
         .navigationId=${navigationId}
         .activeInsight=${this.#data.activeInsight}
         .activeCategory=${this.#data.activeCategory}
       </${Insights.DocumentLatency.DocumentLatency}>
-    <div>
+    </div>
     <div>
       <${Insights.ThirdParties.ThirdParties.litTagName}
         .insights=${insights}

@@ -392,11 +392,9 @@ export class FreestylerAgent {
       {
         throwOnSideEffect,
         confirmExecJs: confirm,
-        execJsDeniedMessage: denyErrorMessage,
       }: {
         throwOnSideEffect: boolean,
         confirmExecJs?: Promise<boolean>,
-        execJsDeniedMessage?: string,
       },
       ): Promise<{
     observation: string,
@@ -414,7 +412,7 @@ export class FreestylerAgent {
       const runConfirmed = await confirm ?? Promise.resolve(true);
       if (!runConfirmed) {
         return {
-          observation: `Error: ${denyErrorMessage ?? 'Code execution is not allowed'}`,
+          observation: 'Error: User denied code execution with side effects.',
           sideEffect: false,
           canceled: true,
         };
@@ -648,7 +646,6 @@ STOP`);
             result = await this.#generateObservation(action, {
               throwOnSideEffect: false,
               confirmExecJs: sideEffectConfirmationPromiseWithResolvers.promise,
-              execJsDeniedMessage: result.observation,
             });
           }
           yield {

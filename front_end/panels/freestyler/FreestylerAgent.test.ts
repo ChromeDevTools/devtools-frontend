@@ -642,7 +642,7 @@ c`;
 
         const actionStep = responses.find(response => response.type === Freestyler.ResponseType.ACTION)!;
 
-        assert.strictEqual(actionStep.output, 'Error: EvalError: Possible side-effect in debug-evaluate');
+        assert.strictEqual(actionStep.output, 'Error: User denied code execution with side effects.');
         assert.strictEqual(execJs.getCalls().length, 1);
       });
 

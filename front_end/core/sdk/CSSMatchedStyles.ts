@@ -1086,7 +1086,8 @@ class DOMInheritanceCascade {
     const accumulatedCSSVariables = new Map<string, CSSVariableValue|null>();
     for (const rule of this.#registeredProperties) {
       const initialValue = rule.initialValue();
-      accumulatedCSSVariables.set(rule.propertyName(), initialValue ? {value: initialValue, declaration: rule} : null);
+      accumulatedCSSVariables.set(
+          rule.propertyName(), initialValue !== null ? {value: initialValue, declaration: rule} : null);
     }
     for (let i = this.#nodeCascades.length - 1; i >= 0; --i) {
       const nodeCascade = this.#nodeCascades[i];

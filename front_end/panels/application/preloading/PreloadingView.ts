@@ -32,6 +32,11 @@ const UIStrings = {
    */
   filterAllPreloads: 'All speculative loads',
   /**
+   *@description Dropdown subtitle for filtering preloading attempts by rule set
+   *             when there are no rule sets in the page.
+   */
+  noRuleSets: 'no rule sets',
+  /**
    *@description Text in grid: Rule set is valid
    */
   validityValid: 'Valid',
@@ -613,7 +618,7 @@ class PreloadingRuleSetSelector implements
     const convertedId = this.translateItemIdToRuleSetId(id);
     const countsByStatus = this.model.getPreloadCountsByRuleSetId().get(convertedId) ||
         new Map<SDK.PreloadingModel.PreloadingStatus, number>();
-    return PreloadingUIUtils.preloadsStatusSummary(countsByStatus);
+    return PreloadingUIUtils.preloadsStatusSummary(countsByStatus) || `(${i18nString(UIStrings.noRuleSets)})`;
   }
 
   // Method for UI.SoftDropDown.Delegate<Protocol.Preload.RuleSetId|typeof AllRuleSetRootId>

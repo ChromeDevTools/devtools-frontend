@@ -81,11 +81,17 @@ describe('Timeline breadcrumbs', () => {
     assert.deepEqual(crumbs.activeBreadcrumb, breadcrumb2);
 
     // Make sure breadcrumb 1 can be actived
-    crumbs.setActiveBreadcrumb(breadcrumb1);
+    crumbs.setActiveBreadcrumb(breadcrumb1, {
+      removeChildBreadcrumbs: false,
+      updateVisibleWindow: true,
+    });
     assert.deepEqual(crumbs.activeBreadcrumb, breadcrumb1);
 
     // Make sure initial breadcrumb can be actived
-    crumbs.setActiveBreadcrumb(initialBreadcrumb);
+    crumbs.setActiveBreadcrumb(initialBreadcrumb, {
+      removeChildBreadcrumbs: false,
+      updateVisibleWindow: true,
+    });
     assert.deepEqual(crumbs.activeBreadcrumb, initialBreadcrumb);
 
     // No breadcrumb were removed
@@ -115,7 +121,10 @@ describe('Timeline breadcrumbs', () => {
     // In this test we want to check if the children of the activated breadcrumb will be overwrritten if a new one is added
     // Make the initial breadcrumb active:
     // initialBreadcrumb(activated) -> breadcrumb1 -> breadcrumb2
-    crumbs.setActiveBreadcrumb(initialBreadcrumb);
+    crumbs.setActiveBreadcrumb(initialBreadcrumb, {
+      removeChildBreadcrumbs: false,
+      updateVisibleWindow: true,
+    });
     assert.deepEqual(crumbs.activeBreadcrumb, initialBreadcrumb);
 
     // Add a new breadcrumb
@@ -152,7 +161,10 @@ describe('Timeline breadcrumbs', () => {
         TimelineComponents.Breadcrumbs.flattenBreadcrumbs(initialBreadcrumb),
         [initialBreadcrumb, breadcrumb1, breadcrumb2]);
     assert.deepEqual(crumbs.activeBreadcrumb, breadcrumb2);
-    crumbs.setActiveBreadcrumb(breadcrumb1, /* removeChildBreadcrumbs*/ true);
+    crumbs.setActiveBreadcrumb(breadcrumb1, {
+      removeChildBreadcrumbs: true,
+      updateVisibleWindow: true,
+    });
 
     assert.deepEqual(
         TimelineComponents.Breadcrumbs.flattenBreadcrumbs(initialBreadcrumb), [initialBreadcrumb, breadcrumb1]);
@@ -242,5 +254,28 @@ describe('Timeline breadcrumbs', () => {
     // Make sure the TimelineVisibleWindow was correctly set to the last breadcrumb bounds
     assert.deepEqual(
         TraceBounds.TraceBounds.BoundsManager.instance().state()?.micro.minimapTraceBounds, breadcrumb2.window);
+  });
+
+  it('it will not update the trace window when activating a breadcrumb if the option is set to false', () => {
+    const {initialBreadcrumb, breadcrumb1, breadcrumb2} = nestedBreadcrumbs();
+    TraceBounds.TraceBounds.BoundsManager.instance({forceNew: true}).resetWithNewBounds(initialBreadcrumb.window);
+    const crumbs = new TimelineComponents.Breadcrumbs.Breadcrumbs(initialBreadcrumb.window);
+    crumbs.setInitialBreadcrumbFromLoadedModifications(initialBreadcrumb);
+    // Make sure the trace bounds were correctly set to the last breadcrumb bounds
+    assert.deepEqual(
+        TraceBounds.TraceBounds.BoundsManager.instance().state()?.micro.minimapTraceBounds, breadcrumb2.window);
+
+    // Now activate breadcrumb1, but tell it not to update the bounds
+    crumbs.setActiveBreadcrumb(breadcrumb1, {removeChildBreadcrumbs: false, updateVisibleWindow: false});
+
+    // The visible window is still breadcrumb2.
+    assert.deepEqual(
+        TraceBounds.TraceBounds.BoundsManager.instance().state()?.micro.timelineTraceWindow, breadcrumb2.window);
+
+    // Now activate breadcrumb1, but ask it to update the bounds this time
+    crumbs.setActiveBreadcrumb(breadcrumb1, {removeChildBreadcrumbs: false, updateVisibleWindow: true});
+    // Now the window has changed.
+    assert.deepEqual(
+        TraceBounds.TraceBounds.BoundsManager.instance().state()?.micro.timelineTraceWindow, breadcrumb1.window);
   });
 });

@@ -142,10 +142,20 @@ export class BoundsManager extends EventTarget {
     this.dispatchEvent(new StateChangedEvent(this.state() as State, 'MINIMAP_BOUNDS'));
   }
 
+  /**
+   * Updates the visible part of the trace that the user can see.
+   * @param options.ignoreMiniMapBounds - by default the visible window will be
+   * bound by the minimap bounds. If you set this to `true` then the timeline
+   * visible window will not be constrained by the minimap bounds. Be careful
+   * with this! Unless you deal with this situation, the UI of the performance
+   * panel will break.
+   */
   setTimelineVisibleWindow(newWindow: TraceEngine.Types.Timing.TraceWindowMicroSeconds, options: {
-    shouldAnimate: boolean,
+    shouldAnimate?: boolean,
+    ignoreMiniMapBounds?: boolean,
   } = {
     shouldAnimate: false,
+    ignoreMiniMapBounds: false,
   }): void {
     if (!this.#currentState) {
       // This is a weird state to be in: we can't change the visible timeline
@@ -166,11 +176,13 @@ export class BoundsManager extends EventTarget {
       return;
     }
 
-    // Ensure that the setTimelineVisibleWindow can never go outside the bounds of the minimap bounds.
-    newWindow.min =
-        TraceEngine.Types.Timing.MicroSeconds(Math.max(this.#currentState.minimapTraceBounds.min, newWindow.min));
-    newWindow.max =
-        TraceEngine.Types.Timing.MicroSeconds(Math.min(this.#currentState.minimapTraceBounds.max, newWindow.max));
+    if (!options.ignoreMiniMapBounds) {
+      // Ensure that the setTimelineVisibleWindow can never go outside the bounds of the minimap bounds.
+      newWindow.min =
+          TraceEngine.Types.Timing.MicroSeconds(Math.max(this.#currentState.minimapTraceBounds.min, newWindow.min));
+      newWindow.max =
+          TraceEngine.Types.Timing.MicroSeconds(Math.min(this.#currentState.minimapTraceBounds.max, newWindow.max));
+    }
 
     this.#currentState.timelineTraceWindow = newWindow;
     this.dispatchEvent(

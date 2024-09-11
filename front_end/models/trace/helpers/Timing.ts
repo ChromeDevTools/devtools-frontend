@@ -176,3 +176,11 @@ export function timestampIsInBounds(
     bounds: Types.Timing.TraceWindowMicroSeconds, timestamp: Types.Timing.MicroSeconds): boolean {
   return timestamp >= bounds.min && timestamp <= bounds.max;
 }
+
+export interface WindowFitsInsideBounds {
+  window: Types.Timing.TraceWindowMicroSeconds;
+  bounds: Types.Timing.TraceWindowMicroSeconds;
+}
+export function windowFitsInsideBounds(data: WindowFitsInsideBounds): boolean {
+  return data.window.min >= data.bounds.min && data.window.max <= data.bounds.max;
+}

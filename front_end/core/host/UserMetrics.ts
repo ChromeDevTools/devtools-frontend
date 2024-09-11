@@ -567,7 +567,16 @@ export enum Action {
   InsightsOnboardingNextPage = 157,
   InsightsOnboardingPrevPage = 158,
   InsightsOnboardingFeatureDisabled = 159,
-  MAX_VALUE = 160,
+  InsightsOptInTeaserShown = 160,
+  InsightsOptInTeaserSettingsLinkClicked = 161,
+  InsightsOptInTeaserConfirmedInSettings = 162,
+  InsightsReminderTeaserShown = 163,
+  InsightsReminderTeaserConfirmed = 164,
+  InsightsReminderTeaserCanceled = 165,
+  InsightsReminderTeaserSettingsLinkClicked = 166,
+  InsightsReminderTeaserAbortedInSettings = 167,
+  GeneratingInsightWithoutDisclaimer = 168,
+  MAX_VALUE = 169,
   /* eslint-enable @typescript-eslint/naming-convention */
 }
 

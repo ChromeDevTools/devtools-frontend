@@ -366,6 +366,10 @@ export class ConsoleInsight extends HTMLElement {
     this.#shadow.adoptedStyleSheets = [styles, Input.checkboxStyles];
     this.classList.add('opening');
     this.#consoleInsightsEnabledSetting?.addChangeListener(this.#onConsoleInsightsSettingChanged, this);
+    if (this.#state.type === State.LOADING && this.#state.consentOnboardingFinished &&
+        this.#state.consentReminderConfirmed) {
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.GeneratingInsightWithoutDisclaimer);
+    }
     void this.#generateInsightIfNeeded();
   }
 
@@ -384,6 +388,7 @@ export class ConsoleInsight extends HTMLElement {
           consentReminderConfirmed: true,
           consentOnboardingFinished: true,
         });
+        Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightsOptInTeaserConfirmedInSettings);
         void this.#generateInsightIfNeeded();
       }
       if (this.#state.type === State.CONSENT_REMINDER && this.#consoleInsightsEnabledSetting?.get() === false) {
@@ -392,6 +397,7 @@ export class ConsoleInsight extends HTMLElement {
           consentReminderConfirmed: false,
           consentOnboardingFinished: false,
         });
+        Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightsReminderTeaserAbortedInSettings);
         void this.#generateInsightIfNeeded();
       }
     }
@@ -415,7 +421,11 @@ export class ConsoleInsight extends HTMLElement {
         type: State.CONSENT_ONBOARDING,
         page: ConsentOnboardingPage.PAGE1,
       });
-      Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightsOnboardingShown);
+      if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.GEN_AI_SETTINGS_PANEL)) {
+        Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightsOptInTeaserShown);
+      } else {
+        Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightsOnboardingShown);
+      }
       return;
     }
     if (!this.#state.consentReminderConfirmed) {
@@ -425,7 +435,11 @@ export class ConsoleInsight extends HTMLElement {
         sources,
         isPageReloadRecommended,
       });
-      Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightConsentReminderShown);
+      if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.GEN_AI_SETTINGS_PANEL)) {
+        Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightsReminderTeaserShown);
+      } else {
+        Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightConsentReminderShown);
+      }
       return;
     }
     await this.#generateInsight();
@@ -433,7 +447,11 @@ export class ConsoleInsight extends HTMLElement {
 
   #onClose(): void {
     if (this.#state.type === State.CONSENT_REMINDER) {
-      Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightConsentReminderCanceled);
+      if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.GEN_AI_SETTINGS_PANEL)) {
+        Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightsReminderTeaserCanceled);
+      } else {
+        Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightConsentReminderCanceled);
+      }
     } else if (this.#state.type === State.CONSENT_ONBOARDING) {
       if (this.#state.page === ConsentOnboardingPage.PAGE1) {
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightsOnboardingCanceledOnPage1);
@@ -495,12 +513,12 @@ export class ConsoleInsight extends HTMLElement {
       consentReminderConfirmed: true,
       consentOnboardingFinished: true,
     });
-    Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightConsentReminderConfirmed);
+    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.GEN_AI_SETTINGS_PANEL)) {
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightsReminderTeaserConfirmed);
+    } else {
+      Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightConsentReminderConfirmed);
+    }
     await this.#generateInsight();
-  }
-
-  #onGoToAISettings(): void {
-    void UI.ViewManager.ViewManager.instance().showView('chrome-ai');
   }
 
   async #generateInsight(): Promise<void> {
@@ -862,7 +880,10 @@ export class ConsoleInsight extends HTMLElement {
           settingsLink.textContent = i18nString(UIStrings.settingsLink);
           settingsLink.classList.add('link');
           UI.ARIAUtils.markAsLink(settingsLink);
-          settingsLink.addEventListener('click', this.#onGoToAISettings);
+          settingsLink.addEventListener('click', () => {
+            Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightsOptInTeaserSettingsLinkClicked);
+            void UI.ViewManager.ViewManager.instance().showView('chrome-ai');
+          });
           settingsLink.setAttribute('jslog', `${VisualLogging.action('open-ai-settings').track({click: true})}`);
 
           return html`<main class="opt-in-teaser" jslog=${jslog}>
@@ -988,7 +1009,10 @@ export class ConsoleInsight extends HTMLElement {
             <div class="filler"></div>
             <div class="buttons">
               <${Buttons.Button.Button.litTagName}
-                @click=${this.#onGoToAISettings}
+                @click=${() => {
+                  Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightsReminderTeaserSettingsLinkClicked);
+                  void UI.ViewManager.ViewManager.instance().showView('chrome-ai');
+                }}
                 .data=${
                   {
                     variant: Buttons.Button.Variant.TONAL,

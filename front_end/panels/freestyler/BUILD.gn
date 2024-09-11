@@ -34,6 +34,7 @@ devtools_module("freestyler") {
     "../../core/i18n:bundle",
     "../../third_party/marked:bundle",
     "../../ui/components/markdown_view:bundle",
+    "../../ui/components/spinners:bundle",
     "../../ui/legacy:bundle",
     "../../ui/lit-html:bundle",
   ]

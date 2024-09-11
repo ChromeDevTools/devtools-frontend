@@ -203,14 +203,15 @@
   .indicator {
     color: var(--sys-color-green-bright);
 
-    &.loading {
-      color: var(--sys-color-blue-bright);
-    }
-
     &.paused,
     &.canceled {
       color: var(--sys-color-on-surface-subtle);
     }
+  }
+
+  devtools-spinner {
+    margin: var(--sys-size-4);
+    vertical-align: sub;
   }
 
   .summary {

@@ -11,6 +11,7 @@ import * as Marked from '../../../third_party/marked/marked.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as MarkdownView from '../../../ui/components/markdown_view/markdown_view.js';
+import * as Spinners from '../../../ui/components/spinners/spinners.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
@@ -441,8 +442,7 @@ export class FreestylerChatUi extends HTMLElement {
     } else if (step.canceled) {
       iconName = 'cross-circle';
     } else if (isLoading) {
-      // TODO: Use correct loading image
-      iconName = 'dots-horizontal';
+      return LitHtml.html`<${Spinners.Spinner.Spinner.litTagName}></${Spinners.Spinner.Spinner.litTagName}>`;
     }
 
     const iconClasses = LitHtml.Directives.classMap({

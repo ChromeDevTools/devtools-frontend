@@ -5,6 +5,7 @@
 import * as CLSCulprits from './CLSCulprits.js';
 import * as DocumentLatency from './DocumentLatency.js';
 import * as Helpers from './Helpers.js';
+import * as InteractionToNextPaint from './InteractionToNextPaint.js';
 import * as LCPDiscovery from './LCPDiscovery.js';
 import * as LCPPhases from './LCPPhases.js';
 import * as NodeLink from './NodeLink.js';
@@ -20,6 +21,7 @@ export {
   CLSCulprits,
   DocumentLatency,
   Helpers,
+  InteractionToNextPaint,
   LCPDiscovery,
   LCPPhases,
   NodeLink,

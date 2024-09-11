@@ -162,6 +162,14 @@ export class SidebarSingleNavigation extends HTMLElement {
       </${Insights.LCPPhases.LCPPhases}>
     </div>
     <div>
+      <${Insights.InteractionToNextPaint.InteractionToNextPaint.litTagName}
+        .insights=${insights}
+        .navigationId=${navigationId}
+        .activeInsight=${this.#data.activeInsight}
+        .activeCategory=${this.#data.activeCategory}
+      </${Insights.InteractionToNextPaint.InteractionToNextPaint}>
+    </div>
+    <div>
       <${Insights.LCPDiscovery.LCPDiscovery.litTagName}
         .insights=${insights}
         .navigationId=${navigationId}

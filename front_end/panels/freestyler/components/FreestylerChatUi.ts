@@ -228,7 +228,7 @@ export interface Props {
   selectedElement: SDK.DOMModel.DOMNode|null;
   isLoading: boolean;
   canShowFeedbackForm: boolean;
-  userInfo: Pick<Host.InspectorFrontendHostAPI.SyncInformation, 'accountImage'>;
+  userInfo: Pick<Host.InspectorFrontendHostAPI.SyncInformation, 'accountImage'|'accountFullName'>;
 }
 
 // The model returns multiline code blocks in an erroneous way with the language being in new line.
@@ -523,8 +523,7 @@ export class FreestylerChatUi extends HTMLElement {
   #renderChatMessage = (message: ChatMessage, {isLast}: {isLast: boolean}): LitHtml.TemplateResult => {
     // TODO(b/365068104): Render user's message as markdown too.
     if (message.entity === ChatMessageEntity.USER) {
-      // TODO(b/359768313): Surface user's name in DevTools
-      const name = i18nString(UIStringsTemp.you);
+      const name = this.#props.userInfo.accountFullName || i18nString(UIStringsTemp.you);
       const image = this.#props.userInfo.accountImage ?
           LitHtml.html`<img src="data:image/png;base64, ${this.#props.userInfo.accountImage}" alt="Account avatar" />` :
           LitHtml.html`<${IconButton.Icon.Icon.litTagName}

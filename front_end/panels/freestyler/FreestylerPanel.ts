@@ -135,6 +135,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
       canShowFeedbackForm: this.#serverSideLoggingEnabled,
       userInfo: {
         accountImage: syncInfo.accountImage,
+        accountFullName: syncInfo.accountFullName,
       },
     };
     this.#toggleSearchElementAction.addEventListener(UI.ActionRegistration.Events.TOGGLED, ev => {

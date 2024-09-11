@@ -425,6 +425,8 @@ export interface SyncInformation {
   accountEmail?: string;
   /** The image of the account used for syncing. Its a base64 encoded PNG */
   accountImage?: string;
+  /** The full name of the account used for syncing */
+  accountFullName?: string;
 }
 
 /**

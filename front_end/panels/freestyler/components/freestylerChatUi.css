@@ -210,8 +210,9 @@
   }
 
   devtools-spinner {
-    margin: var(--sys-size-4);
-    vertical-align: sub;
+    width: var(--sys-size-9);
+    height: var(--sys-size-9);
+    padding: var(--sys-size-2);
   }
 
   .summary {

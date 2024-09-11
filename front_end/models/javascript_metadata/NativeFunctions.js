@@ -8035,6 +8035,10 @@ export const NativeFunctions = [
     signatures: [["input","?options"]]
   },
   {
+    name: "scatterND",
+    signatures: [["input","indices","updates","?options"]]
+  },
+  {
     name: "sigmoid",
     signatures: [["input","?options"]]
   },

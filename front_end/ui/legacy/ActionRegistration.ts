@@ -401,7 +401,6 @@ export const enum IconClass {
   UNDO = 'undo',
   COPY = 'copy',
   IMPORT = 'import',
-  SMART_ASSISTANT = 'smart-assistant',
 }
 
 export const enum KeybindSet {

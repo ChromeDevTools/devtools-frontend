@@ -220,12 +220,6 @@ export class FreestylerPanel extends UI.Panel.Panel {
         this.doUpdate();
         break;
       }
-      case 'freestyler.style-tab-context': {
-        this.#viewOutput.freestylerChatUi?.focusTextInput();
-        Host.userMetrics.actionTaken(Host.UserMetrics.Action.FreestylerOpenedFromStylesTab);
-        this.doUpdate();
-        break;
-      }
     }
   }
 
@@ -345,8 +339,7 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
       actionId: string,
       ): boolean {
     switch (actionId) {
-      case 'freestyler.element-panel-context':
-      case 'freestyler.style-tab-context': {
+      case 'freestyler.element-panel-context': {
         void (async () => {
           const view = UI.ViewManager.ViewManager.instance().view(
               FreestylerPanel.panelName,

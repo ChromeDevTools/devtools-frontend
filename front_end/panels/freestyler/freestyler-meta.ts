@@ -149,19 +149,3 @@ UI.ActionRegistration.registerActionExtension({
   },
   condition: config => isFeatureAvailable(config) && !isPolicyRestricted(config),
 });
-
-UI.ActionRegistration.registerActionExtension({
-  actionId: 'freestyler.style-tab-context',
-  contextTypes(): [] {
-    return [];
-  },
-  setting,
-  category: UI.ActionRegistration.ActionCategory.GLOBAL,
-  title: i18nLazyString(UIStringsTemp.askAiAssistant),
-  iconClass: UI.ActionRegistration.IconClass.SMART_ASSISTANT,
-  async loadActionDelegate() {
-    const Freestyler = await loadFreestylerModule();
-    return new Freestyler.ActionDelegate();
-  },
-  condition: config => isFeatureAvailable(config) && !isPolicyRestricted(config),
-});

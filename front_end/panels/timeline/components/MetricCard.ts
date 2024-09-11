@@ -194,18 +194,19 @@ export class MetricCard extends HTMLElement {
 
     tooltipEl.style.removeProperty('left');
     tooltipEl.style.removeProperty('visibility');
+    tooltipEl.style.removeProperty('display');
     tooltipEl.style.removeProperty('transition-delay');
   }
 
   #showTooltip(delayMs = 0): void {
     const tooltipEl = this.#tooltipEl;
-    if (!tooltipEl || tooltipEl.style.visibility === 'visible') {
+    if (!tooltipEl || tooltipEl.style.visibility || tooltipEl.style.display) {
       return;
     }
 
     document.body.addEventListener('keydown', this.#hideTooltipOnEsc);
 
-    tooltipEl.style.visibility = 'visible';
+    tooltipEl.style.display = 'block';
     tooltipEl.style.transitionDelay = `${Math.round(delayMs)}ms`;
 
     const container = this.#data.tooltipContainer;
@@ -231,6 +232,7 @@ export class MetricCard extends HTMLElement {
       }
 
       tooltipEl.style.left = `calc(50% - ${offset}px)`;
+      tooltipEl.style.visibility = 'visible';
     });
   }
 

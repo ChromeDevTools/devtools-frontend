@@ -121,6 +121,7 @@ export interface AidaResponseMetadata {
 export interface AidaResponse {
   explanation: string;
   metadata: AidaResponseMetadata;
+  completed: boolean;
 }
 
 export const enum AidaAccessPreconditions {
@@ -131,6 +132,8 @@ export const enum AidaAccessPreconditions {
 }
 
 export const CLIENT_NAME = 'CHROME_DEVTOOLS';
+
+const CODE_CHUNK_SEPARATOR = '\n`````\n';
 
 export class AidaClient {
   static buildConsoleInsightsRequest(input: string): AidaRequest {
@@ -244,7 +247,7 @@ export class AidaClient {
       } catch (error) {
         throw new Error('Cannot parse chunk: ' + chunk, {cause: error});
       }
-      const CODE_CHUNK_SEPARATOR = '\n`````\n';
+
       for (const result of results) {
         if ('metadata' in result) {
           metadata.rpcGlobalId = result.metadata.rpcGlobalId;
@@ -279,9 +282,15 @@ export class AidaClient {
         yield {
           explanation: text.join('') + (inCodeChunk ? CODE_CHUNK_SEPARATOR : ''),
           metadata,
+          completed: false,
         };
       }
     }
+    yield {
+      explanation: text.join('') + (inCodeChunk ? CODE_CHUNK_SEPARATOR : ''),
+      metadata,
+      completed: true,
+    };
   }
 
   registerClientEvent(clientEvent: AidaDoConversationClientEvent): Promise<AidaClientResult> {

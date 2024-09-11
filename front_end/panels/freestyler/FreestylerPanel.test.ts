@@ -12,7 +12,7 @@ function getTestAidaClient() {
   return {
     async *
         fetch() {
-          yield {explanation: 'test', metadata: {}};
+          yield {explanation: 'test', metadata: {}, completed: true};
         },
     registerClientEvent: sinon.spy(),
   };

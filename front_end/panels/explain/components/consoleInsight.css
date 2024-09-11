@@ -82,6 +82,10 @@ header:focus-visible {
 }
 
 header > .filler {
+  display: flex;
+  flex-direction: row;
+  gap: var(--sys-size-5);
+  align-items: center;
   flex: 1;
 }
 

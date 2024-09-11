@@ -31,6 +31,7 @@ devtools_module("explain") {
     "../../models/logs:bundle",
     "../../third_party/marked:bundle",
     "../../ui/components/markdown_view:bundle",
+    "../../ui/components/spinners:bundle",
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/source_frame:bundle",
     "../console:bundle",

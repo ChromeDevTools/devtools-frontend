@@ -86,7 +86,7 @@ export class ThirdParties extends BaseInsight {
   }
 
   #render(data: TraceEngine.Insights.Types.InsightResults['ThirdPartyWeb']): LitHtml.TemplateResult {
-    const entries = [...data.summaryByEntity.entries()];
+    const entries = [...data.summaryByEntity.entries()].filter(kv => kv[0] !== data.firstPartyEntity);
     // clang-format off
     const rows1 = entries
       .sort((a, b) => b[1].transferSize - a[1].transferSize)

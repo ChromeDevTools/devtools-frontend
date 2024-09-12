@@ -114,7 +114,7 @@ export interface TrackAppender {
   /**
    * Returns the title an event is shown with in the timeline.
    */
-  titleForEvent(event: TraceEngine.Types.TraceEvents.TraceEventData): string;
+  titleForEvent?(event: TraceEngine.Types.TraceEvents.TraceEventData): string;
   /**
    * Returns the info shown when an event in the timeline is hovered.
    */
@@ -602,7 +602,16 @@ export class CompatibilityTracksAppender {
     if (!track) {
       throw new Error('Track not found for level');
     }
-    return track.titleForEvent(event);
+
+    // Historically all tracks would have a titleForEvent() method.
+    // However, we are working on migrating all event title logic into one place (components/EntryName)
+    // TODO(crbug.com/365047728):
+    // Once this migration is complete, no tracks will have a custom
+    // titleForEvent method and we can remove titleForEvent entirely.
+    if (track.titleForEvent) {
+      return track.titleForEvent(event);
+    }
+    return TimelineComponents.EntryName.nameForEntry(event, this.#traceParsedData);
   }
   /**
    * Returns the info shown when an event in the timeline is hovered.

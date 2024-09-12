@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import type * as TimelineModel from '../../models/timeline_model/timeline_model.js';
@@ -202,12 +201,7 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
 
   entryTitle(index: number): string|null {
     const event = this.#events[index];
-    if (TraceEngine.Types.TraceEvents.isWebSocketTraceEvent(event) ||
-        TraceEngine.Types.TraceEvents.isSyntheticWebSocketConnectionEvent(event)) {
-      return this.#networkTrackAppender?.titleForWebSocketEvent(event) || '';
-    }
-    const parsedURL = new Common.ParsedURL.ParsedURL(event.args.data.url);
-    return parsedURL.isValid ? `${parsedURL.displayName} (${parsedURL.host})` : event.args.data.url || null;
+    return TimelineComponents.EntryName.nameForEntry(event);
   }
 
   entryFont(_index: number): string|null {

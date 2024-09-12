@@ -58,7 +58,6 @@ import {CLSRect} from './CLSLinkifier.js';
 import * as TimelineComponents from './components/components.js';
 import * as Extensions from './extensions/extensions.js';
 import {Tracker} from './FreshRecording.js';
-import {titleForInteractionEvent} from './InteractionsTrackAppender.js';
 import {ModificationsManager} from './ModificationsManager.js';
 import {SourceMapsResolver} from './SourceMapsResolver.js';
 import {targetForEvent} from './TargetForEvent.js';
@@ -636,7 +635,8 @@ export class TimelineUIUtils {
       return displayName;
     }
     if (event.name === 'EventTiming' && TraceEngine.Types.TraceEvents.isSyntheticInteractionEvent(event)) {
-      return titleForInteractionEvent(event);
+      // TODO(crbug.com/365047728): replace this entire method with this call.
+      return TimelineComponents.EntryName.nameForEntry(event);
     }
     const title = TimelineUIUtils.eventStyle(event).title;
     if (TraceEngine.Helpers.Trace.eventHasCategory(event, TraceEngine.Types.TraceEvents.Categories.Console)) {

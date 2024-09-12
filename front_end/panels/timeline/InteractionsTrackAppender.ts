@@ -14,6 +14,7 @@ import {
   type TrackAppenderName,
   VisualLoggingTrackName,
 } from './CompatibilityTracksAppender.js';
+import * as Components from './components/components.js';
 
 const UIStrings = {
   /**
@@ -137,7 +138,7 @@ export class InteractionsTrackAppender implements TrackAppender {
    * Gets the color an event added by this appender should be rendered with.
    */
   colorForEvent(event: TraceEngine.Types.TraceEvents.TraceEventData): string {
-    let idForColorGeneration = this.titleForEvent(event);
+    let idForColorGeneration = Components.EntryName.nameForEntry(event, this.#traceParsedData);
     if (TraceEngine.Types.TraceEvents.isSyntheticInteractionEvent(event)) {
       // Append the ID so that we vary the colours, ensuring that two events of
       // the same type are coloured differently.
@@ -147,42 +148,11 @@ export class InteractionsTrackAppender implements TrackAppender {
   }
 
   /**
-   * Gets the title an event added by this appender should be rendered with.
-   */
-  titleForEvent(event: TraceEngine.Types.TraceEvents.TraceEventData): string {
-    if (TraceEngine.Types.TraceEvents.isSyntheticInteractionEvent(event)) {
-      return titleForInteractionEvent(event);
-    }
-    return event.name;
-  }
-
-  /**
    * Returns the info shown when an event added by this appender
    * is hovered in the timeline.
    */
   highlightedEntryInfo(event: TraceEngine.Types.TraceEvents.TraceEventData): HighlightedEntryInfo {
-    const title = this.titleForEvent(event);
+    const title = Components.EntryName.nameForEntry(event, this.#traceParsedData);
     return {title, formattedTime: getFormattedTime(event.dur)};
   }
-}
-
-/**
- * Return the title to use for a given interaction event.
- * Exported so the title in the DetailsView can re-use the same logic
- **/
-export function titleForInteractionEvent(event: TraceEngine.Types.TraceEvents.SyntheticInteractionPair): string {
-  const category = TraceEngine.Handlers.ModelHandlers.UserInteractions.categoryOfInteraction(event);
-  // Because we hide nested interactions, we do not want to show the
-  // specific type of the interaction that was not hidden, so instead we
-  // show just the category of that interaction.
-  if (category === 'OTHER') {
-    return 'Other';
-  }
-  if (category === 'KEYBOARD') {
-    return 'Keyboard';
-  }
-  if (category === 'POINTER') {
-    return 'Pointer';
-  }
-  return event.type;
 }

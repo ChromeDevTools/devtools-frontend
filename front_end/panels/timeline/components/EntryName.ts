@@ -7,6 +7,8 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as TraceEngine from '../../../models/trace/trace.js';
 
+import {getEventStyle} from './EntryStyles.js';
+
 const UIStrings = {
   /**
    *@description Text shown for an entry in the flame chart that has no explict name.
@@ -21,15 +23,32 @@ const UIStrings = {
    *@description Text shown for an entry in the flame chart that represents a frame.
    */
   frame: 'Frame',
+  /**
+   *@description Text in Timeline Flame Chart Data Provider of the Performance panel
+   */
+  wsConnectionOpened: 'WebSocket opened',
+  /**
+   *@description Text in Timeline Flame Chart Data Provider of the Performance panel
+   *@example {ws://example.com} PH1
+   */
+  wsConnectionOpenedWithUrl: 'WebSocket opened: {PH1}',
+  /**
+   *@description Text in Timeline Flame Chart Data Provider of the Performance panel
+   */
+  wsConnectionClosed: 'WebSocket closed',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/EntryName.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 /**
- * Calculates the display name for a given entry. If the trace data is provided
+ * Calculates the display name for a given entry.
+ * @param traceParsedData - If the trace data is provided
  * as the second argument it can be used to find source map resolved names for
  * profile calls.
+ * Use this function to customise the user visible name for an entry. If no
+ * custom name is found, we will fallback to the `name` property in the trace
+ * entry.
  */
 export function nameForEntry(
     entry: TraceEngine.Types.TraceEvents.TraceEventData,
@@ -65,5 +84,40 @@ export function nameForEntry(
     return Platform.StringUtilities.trimEndWithMaxLength(text, 40);
   }
 
-  return entry.name;
+  if (TraceEngine.Types.TraceEvents.isTraceEventWebSocketCreate(entry)) {
+    if (entry.args.data.url) {
+      return i18nString(UIStrings.wsConnectionOpenedWithUrl, {PH1: entry.args.data.url});
+    }
+
+    return i18nString(UIStrings.wsConnectionOpened);
+  }
+
+  if (TraceEngine.Types.TraceEvents.isTraceEventWebSocketDestroy(entry)) {
+    return i18nString(UIStrings.wsConnectionClosed);
+  }
+
+  if (TraceEngine.Types.TraceEvents.isSyntheticInteractionEvent(entry)) {
+    return nameForInteractionEvent(entry);
+  }
+
+  const eventStyleCustomName = getEventStyle(entry.name as TraceEngine.Types.TraceEvents.KnownEventName)?.title;
+
+  return eventStyleCustomName || entry.name;
+}
+
+function nameForInteractionEvent(event: TraceEngine.Types.TraceEvents.SyntheticInteractionPair): string {
+  const category = TraceEngine.Handlers.ModelHandlers.UserInteractions.categoryOfInteraction(event);
+  // Because we hide nested interactions, we do not want to show the
+  // specific type of the interaction that was not hidden, so instead we
+  // show just the category of that interaction.
+  if (category === 'OTHER') {
+    return 'Other';
+  }
+  if (category === 'KEYBOARD') {
+    return 'Keyboard';
+  }
+  if (category === 'POINTER') {
+    return 'Pointer';
+  }
+  return event.type;
 }

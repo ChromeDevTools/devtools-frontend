@@ -56,15 +56,12 @@ describeWithEnvironment('NetworkTrackAppender', function() {
     });
   });
 
-  describe('colorForEvent and titleForEvent', function() {
-    it('returns the correct color and title for GPU tasks', function() {
-      const networkRequests = traceData.NetworkRequests.byTime;
-      for (const event of networkRequests) {
-        assert.strictEqual(networkTrackAppender.titleForEvent(event), event.name);
-        const color = TimelineComponents.Utils.colorForNetworkRequest(event);
-        assert.strictEqual(networkTrackAppender.colorForEvent(event), color);
-      }
-    });
+  it('returns the correct color for network events', function() {
+    const networkRequests = traceData.NetworkRequests.byTime;
+    for (const event of networkRequests) {
+      const color = TimelineComponents.Utils.colorForNetworkRequest(event);
+      assert.strictEqual(networkTrackAppender.colorForEvent(event), color);
+    }
   });
 
   describe('highlightedEntryInfo', function() {

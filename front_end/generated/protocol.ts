@@ -3773,6 +3773,7 @@ export namespace DOM {
     After = 'after',
     Marker = 'marker',
     Backdrop = 'backdrop',
+    Column = 'column',
     Selection = 'selection',
     SearchText = 'search-text',
     TargetText = 'target-text',

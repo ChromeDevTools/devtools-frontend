@@ -1880,6 +1880,7 @@ export const knownContextValues = new Set([
   'mask-repeat',
   'mask-size',
   'mask-type',
+  'masonry-slack',
   'masonry-template-tracks',
   'masonry-track',
   'masonry-track-end',

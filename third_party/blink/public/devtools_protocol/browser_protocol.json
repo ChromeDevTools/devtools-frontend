@@ -5657,6 +5657,7 @@
                         "after",
                         "marker",
                         "backdrop",
+                        "column",
                         "selection",
                         "search-text",
                         "target-text",

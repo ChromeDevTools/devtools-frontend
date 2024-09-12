@@ -559,6 +559,7 @@ export const generatedProperties = [
    "mask-repeat",
    "mask-size",
    "mask-type",
+   "masonry-slack",
    "masonry-template-tracks",
    "masonry-track-end",
    "masonry-track-start",
@@ -2785,6 +2786,12 @@ export const generatedProperties = [
    "alpha"
   ],
   "name": "mask-type"
+ },
+ {
+  "keywords": [
+   "normal"
+  ],
+  "name": "masonry-slack"
  },
  {
   "name": "masonry-template-tracks"
@@ -5570,6 +5577,11 @@ export const generatedPropertyValues = {
   "values": [
    "luminance",
    "alpha"
+  ]
+ },
+ "masonry-slack": {
+  "values": [
+   "normal"
   ]
  },
  "masonry-track-end": {

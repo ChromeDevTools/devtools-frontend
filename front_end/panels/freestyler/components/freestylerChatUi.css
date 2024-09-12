@@ -171,11 +171,15 @@
     }
   }
 
-  & .actions {
+  .actions {
     display: flex;
     gap: var(--sys-size-8);
     justify-content: space-between;
     align-items: flex-end;
+  }
+
+  .aborted {
+    color: var(--sys-color-state-disabled);
   }
 }
 

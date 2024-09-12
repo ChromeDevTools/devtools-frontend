@@ -35,10 +35,6 @@ const UIStringsTemp = {
    *@description Freestyler UI text for sending feedback.
    */
   sendFeedback: 'Send feedback',
-  /**
-   *@description Displayed when the user stop the response
-   */
-  stoppedResponse: 'You stopped this response',
 };
 
 // TODO(nvitkov): b/346933425
@@ -248,6 +244,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
     this.#viewProps.isLoading = true;
     const systemMessage: ModelChatMessage = {
       entity: ChatMessageEntity.MODEL,
+      aborted: false,
       suggestingFix: false,
       steps: [],
     };
@@ -259,9 +256,16 @@ export class FreestylerPanel extends UI.Panel.Panel {
     const signal = this.#runAbortController.signal;
     signal.addEventListener('abort', () => {
       systemMessage.rpcId = undefined;
+      systemMessage.aborted = true;
       systemMessage.suggestingFix = false;
-      systemMessage.error = i18nString(UIStringsTemp.stoppedResponse);
+      const lastStep = systemMessage.steps.at(-1);
+      // Mark the last step as cancelled to make the UI feel better.
+      if (lastStep) {
+        lastStep.canceled = true;
+      }
       this.#viewProps.isLoading = false;
+      this.doUpdate();
+      this.#viewOutput.freestylerChatUi?.scrollToLastMessage();
     });
 
     let step: Step = {isLoading: true};

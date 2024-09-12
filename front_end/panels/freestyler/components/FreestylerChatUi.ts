@@ -80,6 +80,10 @@ const UIStringsTemp = {
   systemError:
       'I apologize, but it seems that an unexpected error has occurred. Please try asking a different question or rephrasing your previous one',
   /**
+   *@description Displayed when the user stop the response
+   */
+  stoppedResponse: 'You stopped this response',
+  /**
    * @description Message shown when the user is offline.
    */
   offline: 'Check your internet connection and try again',
@@ -204,6 +208,7 @@ export interface ModelChatMessage {
   steps: Step[];
   answer?: string;
   error?: string;
+  aborted: boolean;
   rpcId?: number;
 }
 
@@ -519,6 +524,18 @@ export class FreestylerChatUi extends HTMLElement {
     // clang-format on
   }
 
+  #renderError(message: ModelChatMessage): LitHtml.LitTemplate {
+    if (message.aborted) {
+      return LitHtml.html`<p class="aborted">${i18nString(UIStringsTemp.stoppedResponse)}</p>`;
+    }
+
+    if (message.error) {
+      return LitHtml.html`<p class="error">${i18nString(UIStringsTemp.systemError)}</p>`;
+    }
+
+    return LitHtml.nothing;
+  }
+
   #renderChatMessage = (message: ChatMessage, {isLast}: {isLast: boolean}): LitHtml.TemplateResult => {
     // TODO(b/365068104): Render user's message as markdown too.
     if (message.entity === ChatMessageEntity.USER) {
@@ -565,13 +582,11 @@ export class FreestylerChatUi extends HTMLElement {
           },
         )}
         ${
-          message.answer !== undefined
-            ? LitHtml.html`<p class="answer-step">${this.#renderTextAsMarkdown(message.answer)}</p>`
+          message.answer
+            ? LitHtml.html`<p>${this.#renderTextAsMarkdown(message.answer)}</p>`
             : LitHtml.nothing
         }
-        ${
-          (!message.answer && message.error) ? this.#renderTextAsMarkdown(i18nString(UIStringsTemp.systemError)) : LitHtml.nothing
-        }
+        ${this.#renderError(message)}
         <div class="actions">
           ${
             message.rpcId !== undefined

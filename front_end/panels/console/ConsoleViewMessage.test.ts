@@ -100,7 +100,7 @@ describeWithMockConnection('ConsoleViewMessage', () => {
           runtimeModel, Common.Console.FrontendMessageSource.ConsoleAPI, Protocol.Log.LogEntryLevel.Error, 'got here');
       const {message} = createConsoleViewMessageWithStubDeps(rawMessage);
       const messageElement = message.toMessageElement();  // Trigger rendering.
-      const button = messageElement.querySelector('[aria-label=\'Understand this error\']');
+      const button = messageElement.querySelector('[aria-label=\'Understand this error. Powered by AI.\']');
       assert.strictEqual(button?.textContent, 'Understand this errorAI');
     });
 
@@ -114,7 +114,7 @@ describeWithMockConnection('ConsoleViewMessage', () => {
           runtimeModel, Common.Console.FrontendMessageSource.ConsoleAPI, Protocol.Log.LogEntryLevel.Error, '');
       const {message} = createConsoleViewMessageWithStubDeps(rawMessage);
       const messageElement = message.toMessageElement();  // Trigger rendering.
-      const button = messageElement.querySelector('[aria-label=\'Understand this error\']');
+      const button = messageElement.querySelector('[aria-label=\'Understand this error. Powered by AI.\']');
       assert.isNull(button);
     });
 
@@ -129,7 +129,7 @@ describeWithMockConnection('ConsoleViewMessage', () => {
           'Don’t paste code...');
       const {message} = createConsoleViewMessageWithStubDeps(rawMessage);
       const messageElement = message.toMessageElement();  // Trigger rendering.
-      const button = messageElement.querySelector('[aria-label=\'Understand this warning\']');
+      const button = messageElement.querySelector('[aria-label=\'Understand this warning. Powered by AI.\']');
       assert.isNull(button);
     });
   });

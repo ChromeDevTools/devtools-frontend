@@ -94,6 +94,10 @@ header > .filler {
   background-color: var(--sys-color-surface4);
   padding: var(--sys-size-8);
   font-weight: var(--ref-typeface-weight-medium);
+
+  h3 {
+    font: inherit;
+  }
 }
 
 .reminder-items {

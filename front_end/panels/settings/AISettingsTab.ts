@@ -49,13 +49,13 @@ const UIStrings = {
    */
   helpUnderstandConsole: 'Helps you understand and fix console warnings and errors',
   /**
-   *@description Label for a button to collapse an accordion
-   */
-  collapse: 'collapse',
-  /**
    *@description Label for a button to expand an accordion
    */
-  expand: 'expand',
+  showMore: 'Show more',
+  /**
+   *@description Label for a button to collapse an accordion
+   */
+  showLess: 'Show less',
   /**
    *@description Header for a list of feature attributes. 'When (the feature is turned) on, you'll be able to ...'
    */
@@ -120,6 +120,14 @@ const UIStrings = {
    *@description Header for the Chrome AI settings page
    */
   chromeAi: 'Chrome AI',
+  /**
+   *@description Label for a toggle to enable the Console Insights feature
+   */
+  enableConsoleInsights: 'Enable Console Insights',
+  /**
+   *@description Label for a toggle to enable the Freestyler feature
+   */
+  enableFreestyler: 'Enable Freestyler',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/settings/AISettingsTab.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -233,7 +241,7 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
     return LitHtml.html`
       <div class="shared-disclaimer">
         <h2>${i18nString(UIStrings.boostYourProductivity)}</h2>
-        <span class="disclaimer-list-header">${i18nString(UIStrings.thingsToConsider)}</span>
+        <h3 class="disclaimer-list-header">${i18nString(UIStrings.thingsToConsider)}</h3>
         <div class="disclaimer-list">
           ${bulletPoints.map(item => this.#renderSharedDisclaimerItem(item.icon, item.text))}
         </div>
@@ -280,13 +288,13 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
           <${IconButton.Icon.Icon.litTagName} name="lightbulb-spark"></${IconButton.Icon.Icon.litTagName}>
         </div>
         <div class="setting-card">
-          <div>${i18n.i18n.lockedString('Console Insights')}</div>
+          <h2>${i18n.i18n.lockedString('Console Insights')}</h2>
           <div class="setting-description">${i18nString(UIStrings.helpUnderstandConsole)}</div>
         </div>
         <div class="dropdown centered">
           <${Buttons.Button.Button.litTagName}
             .data=${{
-              title: this.#isConsoleInsightsSettingExpanded ? i18nString(UIStrings.collapse) : i18nString(UIStrings.expand),
+              title: this.#isConsoleInsightsSettingExpanded ? i18nString(UIStrings.showLess) : i18nString(UIStrings.showMore),
               size: Buttons.Button.Size.SMALL,
               iconUrl: this.#isConsoleInsightsSettingExpanded ? chevronUpIconUrl : chevronDownIconUrl,
               variant: Buttons.Button.Variant.ICON,
@@ -303,15 +311,16 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
           .disabled=${this.#consoleInsightsSetting?.disabled()}
           title=${this.#consoleInsightsSetting?.disabledReason()}
           @switchchange=${this.#toggleConsoleInsightsSetting.bind(this)}
+          aria-label=${this.#consoleInsightsSetting?.disabledReason() || i18nString(UIStrings.enableConsoleInsights)}
         ></${Switch.Switch.Switch.litTagName}>
       </div>
       <div class=${LitHtml.Directives.classMap(detailsClasses)}>
         <div class="overflow-hidden">
           <div class="expansion-grid">
-            <div class="expansion-grid-whole-row">${i18nString(UIStrings.whenOn)}</div>
+            <h3 class="expansion-grid-whole-row">${i18nString(UIStrings.whenOn)}</h3>
             ${this.#renderSettingItem('lightbulb', i18nString(UIStrings.explainConsole))}
             ${this.#renderSettingItem('code', i18nString(UIStrings.receiveSuggestions))}
-            <div class="expansion-grid-whole-row">${i18nString(UIStrings.thingsToConsider)}</div>
+            <h3 class="expansion-grid-whole-row">${i18nString(UIStrings.thingsToConsider)}</h3>
             ${this.#renderSettingItem('google', i18nString(UIStrings.consoleInsightsSendsData))}
             ${this.#renderSettingItem('policy', LitHtml.html`
               ${i18n.i18n.getFormatLocalizedString(str_, UIStrings.termsOfServicePrivacyNotice, {
@@ -368,13 +377,13 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
           <${IconButton.Icon.Icon.litTagName} name="pen-spark"></${IconButton.Icon.Icon.litTagName}>
         </div>
         <div class="setting-card">
-          <div>${i18n.i18n.lockedString('Freestyler')}</div>
+          <h2>${i18n.i18n.lockedString('Freestyler')}</h2>
           <div class="setting-description">${i18nString(UIStrings.helpUnderstandStyling)}</div>
         </div>
         <div class="dropdown centered">
           <${Buttons.Button.Button.litTagName}
             .data=${{
-              title: this.#isFreestylerSettingExpanded ? i18nString(UIStrings.collapse) : i18nString(UIStrings.expand),
+              title: this.#isFreestylerSettingExpanded ? i18nString(UIStrings.showLess) : i18nString(UIStrings.showMore),
               size: Buttons.Button.Size.SMALL,
               iconUrl: this.#isFreestylerSettingExpanded ? chevronUpIconUrl : chevronDownIconUrl,
               variant: Buttons.Button.Variant.ICON,
@@ -391,15 +400,16 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
           .disabled=${this.#freestylerSetting?.disabled()}
           title=${this.#freestylerSetting?.disabledReason()}
           @switchchange=${this.#toggleFreestylerSetting.bind(this)}
+          aria-label=${this.#freestylerSetting?.disabledReason() || i18nString(UIStrings.enableFreestyler)}
         ></${Switch.Switch.Switch.litTagName}>
       </div>
       <div class=${LitHtml.Directives.classMap(detailsClasses)}>
         <div class="overflow-hidden">
           <div class="expansion-grid">
-            <div class="expansion-grid-whole-row">${i18nString(UIStrings.whenOn)}</div>
+            <h3 class="expansion-grid-whole-row">${i18nString(UIStrings.whenOn)}</h3>
             ${this.#renderSettingItem('lightbulb', i18nString(UIStrings.explainStyling))}
             ${this.#renderSettingItem('code', i18nString(UIStrings.receiveStylingSuggestions))}
-            <div class="expansion-grid-whole-row">${i18nString(UIStrings.thingsToConsider)}</div>
+            <h3 class="expansion-grid-whole-row">${i18nString(UIStrings.thingsToConsider)}</h3>
             ${this.#renderSettingItem('google', i18nString(UIStrings.freestylerSendsData))}
             ${this.#renderSettingItem('policy', LitHtml.html`
               ${i18n.i18n.getFormatLocalizedString(str_, UIStrings.termsOfServicePrivacyNotice, {
@@ -428,7 +438,9 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     LitHtml.render(LitHtml.html`
-      <header>${i18nString(UIStrings.chromeAi)}</header>
+      <header>
+        <h1>${i18nString(UIStrings.chromeAi)}</h1>
+      </header>
       <div class="settings-container-wrapper" jslog=${VisualLogging.pane('chrome-ai')}>
         ${this.#renderSharedDisclaimer()}
         ${this.#consoleInsightsSetting || this.#freestylerSetting ? LitHtml.html`

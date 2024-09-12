@@ -48,7 +48,7 @@ describeWithEnvironment('AISettingsTab', () => {
     const sharedDisclaimerHeader = view.shadowRoot.querySelector('.shared-disclaimer h2');
     assert.strictEqual(sharedDisclaimerHeader?.textContent, 'Boost your productivity with Chrome AI');
 
-    const settingCards = view.shadowRoot.querySelectorAll('.setting-card div:first-child');
+    const settingCards = view.shadowRoot.querySelectorAll('.setting-card h2');
     const settingNames = Array.from(settingCards).map(element => element.textContent);
     assert.deepEqual(settingNames, ['Console Insights', 'Freestyler']);
   });

@@ -4,6 +4,7 @@
  * found in the LICENSE file.
  */
 
+/* stylelint-disable no-descending-specificity */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -196,17 +197,29 @@
     background-color: var(--sys-color-state-hover-on-subtle);
   }
 
+  &.paused {
+    .indicator {
+      color: var(--sys-color-on-surface-subtle);
+    }
+  }
+
+  &.canceled {
+    .summary {
+      color: var(--sys-color-state-disabled);
+      text-decoration: line-through;
+    }
+
+    .indicator {
+      color: var(--sys-color-state-disabled);
+    }
+  }
+
   devtools-icon {
     vertical-align: bottom;
   }
 
   .indicator {
     color: var(--sys-color-green-bright);
-
-    &.paused,
-    &.canceled {
-      color: var(--sys-color-on-surface-subtle);
-    }
   }
 
   devtools-spinner {
@@ -374,3 +387,5 @@
     font-weight: 500;
   }
 }
+
+/* stylelint-enable no-descending-specificity */

@@ -97,7 +97,7 @@ const createSettingSelect = function(
 
   let reloadWarning: HTMLElement|(Element | null) = (null as Element | null);
   if (requiresReload) {
-    reloadWarning = container.createChild('span', 'reload-warning hidden');
+    reloadWarning = container.createChild('p', 'reload-warning hidden');
     reloadWarning.textContent = i18nString(UIStrings.srequiresReload);
     ARIAUtils.markAsAlert(reloadWarning);
   }

@@ -320,11 +320,20 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
         return;
       }
 
+      const entries: TraceEngine.Types.TraceEvents.TraceEventData[] = [];
+
       for (const overlay of this.#currentInsightOverlays) {
         this.addOverlay(overlay);
+
+        entries.push(...Overlays.Overlays.entriesForOverlay(overlay));
       }
 
-      const overlaysBounds = this.#calculateOverlaysTraceWindow(this.#currentInsightOverlays);
+      for (const entry of entries) {
+        // Ensure that the track for the entries are open.
+        this.#expandEntryTrack(entry);
+      }
+
+      const overlaysBounds = Overlays.Overlays.traceWindowContainingOverlays(this.#currentInsightOverlays);
       // Trace window covering all overlays expanded by 100% so that the overlays cover 50% of the visible window.
       const expandedBounds =
           TraceEngine.Helpers.Timing.expandWindowByPercentOrToOneMillisecond(overlaysBounds, traceBounds, 100);
@@ -339,39 +348,28 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     }
   }
 
-  // Returns a trace windows that covers all provided overlays.
-  #calculateOverlaysTraceWindow(overlays: Overlays.Overlays.TimelineOverlay[]):
-      TraceEngine.Types.Timing.TraceWindowMicroSeconds {
-    const allOverlayBounds: TraceEngine.Types.Timing.MicroSeconds[] = [];
+  /**
+   * Expands the track / group that the given entry is in.
+   */
+  #expandEntryTrack(entry: TraceEngine.Types.TraceEvents.TraceEventData): void {
+    const chartName = Overlays.Overlays.chartForEntry(entry);
+    const provider = chartName === 'main' ? this.mainDataProvider : this.networkDataProvider;
+    const entryChart = chartName === 'main' ? this.mainFlameChart : this.networkFlameChart;
 
-    for (const overlay of overlays) {
-      switch (overlay.type) {
-        case 'ENTRY_OUTLINE': {
-          const {startTime, endTime} = this.#overlays.timingsForOverlayEntry(overlay.entry);
-          allOverlayBounds.push(startTime, endTime);
-          break;
-        }
-        case 'CANDY_STRIPED_TIME_RANGE':
-          allOverlayBounds.push(overlay.bounds.min, overlay.bounds.max);
-          break;
-        case 'TIMESPAN_BREAKDOWN':
-          if (overlay.type === 'TIMESPAN_BREAKDOWN') {
-            for (const section of overlay.sections) {
-              allOverlayBounds.push(section.bounds.min, section.bounds.max);
-            }
-          }
-          break;
-      }
+    const entryIndex = provider.indexForEvent?.(entry) ?? null;
+    if (entryIndex === null) {
+      return;
     }
 
-    const min = Math.min(...allOverlayBounds);
-    const max = Math.max(...allOverlayBounds);
+    const group = provider.groupForEvent?.(entryIndex) ?? null;
+    if (!group) {
+      return;
+    }
+    const groupIndex = provider.timelineData().groups.indexOf(group);
 
-    return {
-      min: TraceEngine.Types.Timing.MicroSeconds(min),
-      max: TraceEngine.Types.Timing.MicroSeconds(max),
-      range: TraceEngine.Types.Timing.MicroSeconds(max - min),
-    };
+    if (!group.expanded && groupIndex > -1) {
+      entryChart.toggleGroupExpand(groupIndex);
+    }
   }
 
   #processFlameChartMouseMoveEvent(data: PerfUI.FlameChart.EventTypes['MouseMove']): void {

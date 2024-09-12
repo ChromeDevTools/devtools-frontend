@@ -1,7 +1,6 @@
 // Copyright 2024 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-
 import * as TraceEngine from '../../../models/trace/trace.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {
@@ -905,6 +904,33 @@ describeWithEnvironment('Overlays', () => {
       // Double click on the label to make it editable again
       inputField.dispatchEvent(new FocusEvent('dblclick', {bubbles: true}));
       assert.isTrue(inputField.isContentEditable);
+    });
+  });
+
+  describe('traceWindowContainingOverlays', () => {
+    it('calculates the smallest window that fits the overlay inside', () => {
+      const FAKE_EVENT_1 = {
+        ts: 0,
+        dur: 10,
+      } as TraceEngine.Types.TraceEvents.TraceEventData;
+      const FAKE_EVENT_2 = {
+        ts: 5,
+        dur: 100,
+      } as TraceEngine.Types.TraceEvents.TraceEventData;
+
+      const overlay1: Overlays.Overlays.EntryOutline = {
+        entry: FAKE_EVENT_1,
+        type: 'ENTRY_OUTLINE',
+        outlineReason: 'INFO',
+      };
+      const overlay2: Overlays.Overlays.EntryOutline = {
+        entry: FAKE_EVENT_2,
+        type: 'ENTRY_OUTLINE',
+        outlineReason: 'INFO',
+      };
+      const traceWindow = Overlays.Overlays.traceWindowContainingOverlays([overlay1, overlay2]);
+      assert.strictEqual(traceWindow.min, 0);
+      assert.strictEqual(traceWindow.max, 105);
     });
   });
 });

@@ -980,7 +980,13 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.chartViewport.setScrollOffset(scrollTop, scrollHeight);
   }
 
-  private toggleGroupExpand(groupIndex: number): void {
+  /**
+   * Toggle a group's expanded state.
+   * @param groupIndex - the index of this group in the timelineData.groups
+   * array. Note that this is the array index, and not the startLevel of the
+   * group.
+   */
+  toggleGroupExpand(groupIndex: number): void {
     if (groupIndex < 0 || !this.isGroupCollapsible(groupIndex)) {
       return;
     }

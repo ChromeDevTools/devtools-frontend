@@ -75,7 +75,14 @@ describeWithLocale('millisToString', () => {
   it('formats when number is zero', () => {
     const inputNumber = 0;
     const outputString = i18n.TimeUtilities.millisToString(inputNumber);
-    assert.strictEqual(outputString, '0');
+    assert.strictEqual(outputString, '0\xA0ms');
+  });
+
+  it('formats when number is zero (higherResolution)', () => {
+    const inputNumber = 0;
+    const higherResolution = true;
+    const outputString = i18n.TimeUtilities.millisToString(inputNumber, higherResolution);
+    assert.strictEqual(outputString, '0\xA0μs');
   });
 
   it('formats with higher resolution and a number less that 0.1', () => {

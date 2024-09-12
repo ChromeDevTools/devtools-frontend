@@ -125,17 +125,18 @@ describe('Performance panel', function() {
     await loadComponentDocExample('performance_panel/basic.html?cpuprofile=basic');
     let timingTitleHandle = await waitFor('.timeline-details-chip-title');
     let timingTitle = await timingTitleHandle.evaluate(element => element.innerHTML);
-    assert.isTrue(timingTitle.includes('0 – 2.38'));
+    assert.isTrue(timingTitle.includes('0&nbsp;ms – 2.38&nbsp;s'), `got: ${timingTitle}`);
     const {frontend} = getBrowserAndPages();
 
     // load another profile and ensure the time range is updated correctly.
     await frontend.evaluate(`(async () => {
       await loadFromFile('node-fibonacci-website.cpuprofile.gz');
     })()`);
-    await waitForFunction(async () => {
+    const didUpdate = await waitForFunction(async () => {
       timingTitleHandle = await waitFor('.timeline-details-chip-title');
       timingTitle = await timingTitleHandle.evaluate(element => element.innerHTML);
-      return timingTitle.includes('0 – 2.66');
+      return timingTitle.includes('0&nbsp;ms – 2.66&nbsp;s');
     });
+    assert(didUpdate);
   });
 });

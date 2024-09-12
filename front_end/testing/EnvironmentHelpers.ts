@@ -523,6 +523,10 @@ export function getGetHostConfigStub(config: Root.Runtime.HostConfig): sinon.Sin
       enabled: true,
       testing: false,
     },
+    devToolsPrivacyUI: {
+      enabled: false,
+      ...config.devToolsPrivacyUI,
+    } as Root.Runtime.HostConfigPrivacyUI,
     isOffTheRecord: false,
   });
 }

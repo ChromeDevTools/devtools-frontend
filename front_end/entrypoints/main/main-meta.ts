@@ -207,9 +207,13 @@ const UIStrings = {
   searchOnEnterCommand: 'Disable search as you type (press Enter to search)',
   /**
    * @description Label of a checkbox under the Appearance category in Settings. Allows developers
-   * to opt-in / opt-out of syncing DevTools' color theme with browser's color theme.
+   * to opt-in / opt-out of syncing DevTools' color theme with Chrome's color theme.
    */
-  useBrowserThemeColors: 'Use browser theme colors',
+  matchChromeColorScheme: 'Match Chrome color scheme',
+  /**
+   * @description Tooltip for the learn more link of the Match Chrome color scheme Setting.
+   */
+  matchChromeColorSchemeDocumentation: 'Match DevTools colors to your customized Chrome theme (when enabled)',
 };
 const str_ = i18n.i18n.registerUIStrings('entrypoints/main/main-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
@@ -611,11 +615,15 @@ Common.Settings.registerSettingExtension({
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.APPEARANCE,
   storageType: Common.Settings.SettingStorageType.SYNCED,
-  title: i18nLazyString(UIStrings.useBrowserThemeColors),
-  settingName: 'use-browser-theme-colors',
+  title: i18nLazyString(UIStrings.matchChromeColorScheme),
+  settingName: 'chrome-theme-colors',
   settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: true,
   reloadRequired: true,
+  learnMore: {
+    url: 'https://goo.gle/devtools-customize-theme',
+    tooltip: i18nLazyString(UIStrings.matchChromeColorSchemeDocumentation),
+  },
 });
 
 Common.Settings.registerSettingExtension({

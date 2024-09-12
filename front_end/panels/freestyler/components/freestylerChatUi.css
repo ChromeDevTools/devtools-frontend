@@ -214,6 +214,10 @@
     }
   }
 
+  devtools-markdown-view {
+    --code-background-color: var(--sys-color-surface1);
+  }
+
   devtools-icon {
     vertical-align: bottom;
   }

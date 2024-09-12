@@ -4,6 +4,10 @@
  * found in the LICENSE file.
  */
 
+:host {
+  --code-background-color: var(--sys-color-surface4);
+}
+
 .message {
   line-height: 18px;
   font-size: 12px;
@@ -37,7 +41,8 @@
   font-size: 11px;
   user-select: text;
   cursor: text;
-  background-color: var(--sys-color-surface4);
+  /* This is still using design tokens because `--code-background-color` is defined with them by default */
+  background-color: var(--code-background-color); /* stylelint-disable-line plugin/use_theme_colors */
   border-radius: 2px;
   padding: 1px 3px;
 }

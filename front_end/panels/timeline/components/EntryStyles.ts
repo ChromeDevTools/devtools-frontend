@@ -478,6 +478,10 @@ const UIStrings = {
    */
   layoutShift: 'Layout shift',
   /**
+   *@description Text in Timeline for Layout Shift records
+   */
+  layoutShiftCluster: 'Layout shift cluster',
+  /**
    *@description Text in Timeline for an Event Timing record
    */
   eventTiming: 'Event timing',
@@ -1018,6 +1022,9 @@ export function maybeInitSylesMap(): EventStylesMap {
 
     [TraceEngine.Types.TraceEvents.KnownEventName.LAYOUT_SHIFT]:
         new TimelineRecordStyle(i18nString(UIStrings.layoutShift), defaultCategoryStyles.experience),
+
+    [TraceEngine.Types.TraceEvents.KnownEventName.SYNTHETIC_LAYOUT_SHIFT_CLUSTER]:
+        new TimelineRecordStyle(i18nString(UIStrings.layoutShiftCluster), defaultCategoryStyles.experience),
 
     [TraceEngine.Types.TraceEvents.KnownEventName.EVENT_TIMING]:
         new TimelineRecordStyle(i18nString(UIStrings.eventTiming), defaultCategoryStyles.experience),

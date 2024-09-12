@@ -894,7 +894,7 @@ export interface SyntheticLayoutShift extends TraceEventLayoutShift, SyntheticBa
  * of this as a trace event.
  */
 export interface SyntheticLayoutShiftCluster {
-  name: 'LayoutShiftCluster';
+  name: 'SyntheticLayoutShiftCluster';
   clusterWindow: TraceWindowMicroSeconds;
   clusterCumulativeScore: number;
   events: SyntheticLayoutShift[];
@@ -910,10 +910,14 @@ export interface SyntheticLayoutShiftCluster {
   navigationId?: string;
   worstShiftEvent?: TraceEventData;
   // This is the start of the cluster: the start of the first layout shift of the cluster.
-  ts?: MicroSeconds;
+  ts: MicroSeconds;
   // The duration of the cluster. This should include up until the end of the last
   // layout shift in this cluster.
   dur?: MicroSeconds;
+  cat: '';
+  ph: Phase.COMPLETE;
+  pid: ProcessID;
+  tid: ThreadID;
 }
 
 export type FetchPriorityHint = 'low'|'high'|'auto';
@@ -2219,6 +2223,11 @@ export function isSyntheticLayoutShift(traceEventData: TraceEventData): traceEve
   return 'rawEvent' in traceEventData.args.data;
 }
 
+export function isSyntheticLayoutShiftCluster(traceEventData: TraceEventData):
+    traceEventData is SyntheticLayoutShiftCluster {
+  return traceEventData.name === KnownEventName.SYNTHETIC_LAYOUT_SHIFT_CLUSTER;
+}
+
 export function isProfileCall(event: TraceEventData): event is SyntheticProfileCall {
   return 'callFrame' in event;
 }
@@ -2733,6 +2742,7 @@ export const enum KnownEventName {
   PRE_PAINT = 'PrePaint',
   LAYERIZE = 'Layerize',
   LAYOUT_SHIFT = 'LayoutShift',
+  SYNTHETIC_LAYOUT_SHIFT_CLUSTER = 'SyntheticLayoutShiftCluster',
   UPDATE_LAYER_TREE = 'UpdateLayerTree',
   SCHEDULE_STYLE_INVALIDATION_TRACKING = 'ScheduleStyleInvalidationTracking',
   STYLE_RECALC_INVALIDATION_TRACKING = 'StyleRecalcInvalidationTracking',

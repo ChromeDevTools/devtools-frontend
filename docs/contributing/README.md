@@ -7,7 +7,8 @@ This page assumes a working Chromium DevTools [checkout and build](../get_the_co
 1.   [Quick Start](#Quick-Start)
 2.   [Design Documents](./design.md)
 3.   [Contributing changes](./changes.md)
-4.   [Legal Stuff](#Legal-Stuff)
+4.   [Issues Guidelines](./issues.md)
+5.   [Legal Stuff](#Legal-Stuff)
 
 
 ## Quick Start

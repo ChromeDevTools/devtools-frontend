@@ -8,12 +8,13 @@ in particular the established culture and processes around design artifacts.
 ## Writing a design document
 
 Any non-trivial technical effort that will significantly impact Chromium DevTools
-should have a design doc ([template](https://goo.gle/devtools-design-doc-template)).
-Specifically, we require design docs (DDs) in the following cases:
+should have a design doc ([template](https://goo.gle/devtools-design-doc-template)),
+sometimes also referred to as _bluedoc_. Specifically, we require design docs
+(DDs) in the following cases:
 
 1.  When writing code that will have a large impact on DevTools as a whole, e.g.
-    when you are changing behavior of a critical component like the *Console* or
-    *Sources* panel.
+    when you are changing behavior of a critical component like the Console or
+    Sources panel.
 1.  When beginning a large technical undertaking that should be documented for
     historical reasons (>1 person-month of work can be used as a general
     guideline).

@@ -11,23 +11,34 @@ its developer tools).
 
 ## Creating a change
 
-Usual [steps](https://chromium.googlesource.com/chromium/src/+/main/docs/contributing.md#creating-a-change) for creating a change work out of the box, when executed in the DevTools frontend repository.
+Check out the documentation about [creating a change in Chromium] and [uploading
+a change for review in Chromium], what's said in there basically applies to the
+`devtools-frontend` repository as well.
 
-Tips to create meaningful CL descriptions:
+At least two committers need to have been involved in the CL (change list) either
+as reviewer or author. See the [committers policy] for more information.
 
-- Provide information on what was changed and why
-- Provide before/after screenshots (if applicable)
-- Provide relevant link to demo or example (if applicable)
-- Provide link to design doc (if applicable)
-
-At least two committers need to have been involved in the CL either as reviewer or author. See [committers policy](https://chromium.googlesource.com/devtools/devtools-frontend/+/main/docs/committers_policy.md) for more information.
+*** promo
+**BEST PRACTICE:** Favor [Small CLs] whenever possible, because they are much
+easier to review in general, easier to reason about, and less likely to introduce
+bugs. Apply common sense however, and don't take this to the extreme for the
+sake of making a CL as small as possible, for example when fixing a bug, land
+the actual code change together with the test in one CL.
+***
 
 ### Change descriptions
 
-Descriptions for change lists (CLs) must follow the [Chromium guidelines](https://chromium.googlesource.com/chromium/src/+/main/docs/contributing.md#Chromium_specific-description-tips)
-and best practices. We strive to have CL descriptions that properly capture
-both the **what** and the **why** of the change and ideally make sense on
-their own:
+In a nutshell, optimize for meaningful CL (change list) descriptions:
+
+- Provide information on what was changed and why.
+- Provide before/after screenshots (if applicable).
+- Provide relevant link to demo or example (if applicable).
+- Provide link to design doc (if applicable).
+
+Descriptions for CLs should comply with [Google's Best Practices for good CL
+descriptions] and follow the [Chromium-specific CL description tips]. We strive
+to have CL descriptions that properly capture both the **what** and the **why**
+of the change and ideally make sense on their own:
 
 -   A CL description is a public record of what change is being made and why it
     was made. It will become a permanent part of our version control history,
@@ -64,7 +75,7 @@ The individual items here are as follows:
 1.  The first line should be a short summary of **what** exactly changed with
     this CL. The `[area]` is optional, but strongly encouraged to give an
     immediate idea of what's affected (the most) by the change. For example if
-    you fix a bug in the *Sources* panel, prefixing the first line with
+    you fix a bug in the Sources panel, prefixing the first line with
     `[sources]` makes this clear.
 1.  The description should briefly describe the motivation for the change when
     appropriate (the **why**) and then go into a detailed description of
@@ -159,5 +170,11 @@ You can then resolve any conflicts, run tests, build DevTools, etc, locally to v
 **Make sure you remove the Change-ID: line** from the description to avoid issues when uploading the CL.
 
 
+  [creating a change in Chromium]: https://chromium.googlesource.com/chromium/src/+/main/docs/contributing.md#creating-a-change
+  [uploading a change for review in Chromium]: https://chromium.googlesource.com/chromium/src/+/main/docs/contributing.md#uploading-a-change-for-review
+  [committers policy]: https://chromium.googlesource.com/devtools/devtools-frontend/+/main/docs/committers_policy.md
+  [Small CLs]: https://google.github.io/eng-practices/review/developer/small-cls.html
+  [Google's Best Practices for good CL descriptions]: https://google.github.io/eng-practices/review/developer/cl-descriptions.html
+  [Chromium-specific CL description tips]: https://chromium.googlesource.com/chromium/src/+/main/docs/contributing.md#Chromium_specific-description-tips
   [ChromeDevTools/devtools-dbg-stories]: https://github.com/ChromeDevTools/devtools-dbg-stories
   [devtools-dbg-stories.netlify.app]: https://devtools-dbg-stories.netlify.app

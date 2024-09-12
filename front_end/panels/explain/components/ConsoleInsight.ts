@@ -291,7 +291,7 @@ export class ConsoleInsight extends HTMLElement {
           this.#state = {
             type: State.LOADING,
             consentReminderConfirmed: this.#getOnboardingCompletedSetting().get() || skipReminder,
-            consentOnboardingFinished: this.#consoleInsightsEnabledSetting?.get() === true,
+            consentOnboardingFinished: this.#consoleInsightsEnabledSetting?.getIfNotDisabled() === true,
           };
         } else {
           this.#state = {
@@ -379,10 +379,11 @@ export class ConsoleInsight extends HTMLElement {
 
   #onConsoleInsightsSettingChanged(): void {
     if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.GEN_AI_SETTINGS_PANEL)) {
-      if (this.#consoleInsightsEnabledSetting?.get() === true) {
+      if (this.#consoleInsightsEnabledSetting?.getIfNotDisabled() === true) {
         this.#getOnboardingCompletedSetting().set(true);
       }
-      if (this.#state.type === State.CONSENT_ONBOARDING && this.#consoleInsightsEnabledSetting?.get() === true) {
+      if (this.#state.type === State.CONSENT_ONBOARDING &&
+          this.#consoleInsightsEnabledSetting?.getIfNotDisabled() === true) {
         this.#transitionTo({
           type: State.LOADING,
           consentReminderConfirmed: true,
@@ -391,7 +392,8 @@ export class ConsoleInsight extends HTMLElement {
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightsOptInTeaserConfirmedInSettings);
         void this.#generateInsightIfNeeded();
       }
-      if (this.#state.type === State.CONSENT_REMINDER && this.#consoleInsightsEnabledSetting?.get() === false) {
+      if (this.#state.type === State.CONSENT_REMINDER &&
+          this.#consoleInsightsEnabledSetting?.getIfNotDisabled() === false) {
         this.#transitionTo({
           type: State.LOADING,
           consentReminderConfirmed: false,

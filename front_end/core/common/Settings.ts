@@ -451,6 +451,16 @@ export class Setting<V> {
     return this.#value;
   }
 
+  // Prefer this getter for settings which are "disableable". The plain getter returns `this.#value`,
+  // even if the setting is disabled, which means the callsite has to explicitly call the `disabled()`
+  // getter and add its own logic for the disabled state.
+  getIfNotDisabled(): V|undefined {
+    if (this.disabled()) {
+      return;
+    }
+    return this.get();
+  }
+
   async forceGet(): Promise<V> {
     const name = this.name;
     const oldValue = this.storage.get(name);

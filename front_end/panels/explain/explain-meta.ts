@@ -152,8 +152,8 @@ for (const action of actions) {
         return isFeatureEnabled(config) && !isPolicyRestricted(config);
       }
       const consoleInsightsSetting = getConsoleInsightsEnabledSetting();
-      return (consoleInsightsSetting?.get() === true) && isFeatureEnabled(config) && !isAgeRestricted(config) &&
-          !isGeoRestricted(config) && !isLocaleRestricted() && !isPolicyRestricted(config);
+      return (consoleInsightsSetting?.getIfNotDisabled() === true) && isFeatureEnabled(config) &&
+          !isAgeRestricted(config) && !isGeoRestricted(config) && !isLocaleRestricted() && !isPolicyRestricted(config);
     },
   });
 }

@@ -3090,6 +3090,7 @@ export const knownContextValues = new Set([
   'ui-theme',
   'ui-theme-dark',
   'ui-theme-default',
+  'ui-theme-system-preferred',
   'uiTheme',
   'uk',
   'unavailable',

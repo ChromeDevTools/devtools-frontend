@@ -460,6 +460,7 @@ export class FreestylerChatUi extends HTMLElement {
   #renderStep(step: Step, options: {isLast: boolean}): LitHtml.LitTemplate {
     const stepClasses = LitHtml.Directives.classMap({
       step: true,
+      empty: !step.thought,
       paused: Boolean(step.sideEffect),
       canceled: Boolean(step.canceled),
     });

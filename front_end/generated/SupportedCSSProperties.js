@@ -4239,7 +4239,8 @@ export const generatedProperties = [
   "keywords": [
    "visible",
    "hidden",
-   "collapse"
+   "collapse",
+   "inert"
   ],
   "name": "visibility"
  },
@@ -6385,7 +6386,8 @@ export const generatedPropertyValues = {
   "values": [
    "visible",
    "hidden",
-   "collapse"
+   "collapse",
+   "inert"
   ]
  },
  "white-space-collapse": {

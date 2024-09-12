@@ -202,13 +202,11 @@ export class TimelineController implements TraceEngine.TracingManager.TracingMan
   }
 
   private async allSourcesFinished(): Promise<void> {
-    this.client.processingStarted();
-    await this.finalizeTrace();
-  }
-
-  private async finalizeTrace(): Promise<void> {
+    // TODO(crbug.com/366072294): Report the progress of this resumption, as it can be lengthy on heavy pages.
     await SDK.TargetManager.TargetManager.instance().resumeAllTargets();
     Extensions.ExtensionServer.ExtensionServer.instance().profilingStopped();
+
+    this.client.processingStarted();
     await this.client.loadingComplete(
         this.#collectedEvents, /* exclusiveFilter= */ null, /* isCpuProfile= */ false, this.#recordingStartTime,
         /* metadata= */ null);

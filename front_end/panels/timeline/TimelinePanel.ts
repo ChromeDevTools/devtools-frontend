@@ -201,6 +201,10 @@ const UIStrings = {
    */
   received: 'Received',
   /**
+   *@description Text in Timeline Panel of the Performance panel
+   */
+  processed: 'Processed',
+  /**
    *@description Text to close something
    */
   close: 'Close',
@@ -435,6 +439,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     config.debugMode = Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_DEBUG_MODE);
 
     this.#traceEngineModel = TraceEngine.TraceModel.Model.createWithAllHandlers(config);
+    this.#listenForProcessingProgress();
 
     this.element.addEventListener('contextmenu', this.contextMenu.bind(this), false);
     this.dropTarget = new UI.DropTarget.DropTarget(
@@ -727,9 +732,9 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       }
 
       case 'VIEWING_TRACE': {
-        this.#removeStatusPane();
         this.#hideLandingPage();
         this.#setModelForActiveTrace();
+        this.#removeStatusPane();
         this.#showSidebarIfRequired();
         return;
       }
@@ -1624,6 +1629,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     if (!currentManager) {
       console.error('ModificationsManager could not be created or activated.');
     }
+    this.statusPane?.updateProgressBar(i18nString(UIStrings.processed), 70);
 
     const isCpuProfile =
         this.#traceEngineModel.metadata(traceIndex)?.dataOrigin === TraceEngine.Types.File.DataOrigin.CPU_PROFILE;
@@ -1702,7 +1708,9 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.#sourceMapsResolver.addEventListener(NodeNamesUpdated.eventName, this.#onSourceMapsNodeNamesResolvedBound);
     void this.#sourceMapsResolver.install();
 
+    this.statusPane?.updateProgressBar(i18nString(UIStrings.processed), 80);
     this.updateMiniMap();
+    this.statusPane?.updateProgressBar(i18nString(UIStrings.processed), 90);
     this.updateTimelineControls();
 
     this.#setActiveInsight(null);
@@ -1867,9 +1875,24 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   }
 
   async processingStarted(): Promise<void> {
-    if (this.statusPane) {
-      this.statusPane.updateStatus(i18nString(UIStrings.processingProfile));
-    }
+    this.statusPane?.updateStatus(i18nString(UIStrings.processingProfile));
+  }
+
+  #listenForProcessingProgress(): void {
+    this.#traceEngineModel.addEventListener(TraceEngine.TraceModel.ModelUpdateEvent.eventName, e => {
+      const updateEvent = e as TraceEngine.TraceModel.ModelUpdateEvent;
+      const str = i18nString(UIStrings.processed);
+
+      // TraceEngine will report progress from [0...1] but we still have more work to do. So, scale them down a bit.
+      const traceParseMaxProgress = 0.7;
+
+      if (updateEvent.data.type === TraceEngine.TraceModel.ModelUpdateType.COMPLETE) {
+        this.statusPane?.updateProgressBar(str, 100 * traceParseMaxProgress);
+      } else if (updateEvent.data.type === TraceEngine.TraceModel.ModelUpdateType.PROGRESS_UPDATE) {
+        const data = updateEvent.data.data;
+        this.statusPane?.updateProgressBar(str, data.percent * 100 * traceParseMaxProgress);
+      }
+    });
   }
 
   #onSourceMapsNodeNamesResolved(): void {

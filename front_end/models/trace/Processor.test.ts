@@ -127,9 +127,10 @@ describeWithEnvironment('TraceProcessor', function() {
     });
 
     const rawEvents = await TraceLoader.rawEvents(this, 'web-dev-outermost-frames.json.gz');
-    // This trace has 106,110 events. At default of 50k chunks we should see 2 updates
+    // This trace has 106,110 events. At default of 50k chunks we should see 2 updates.
+    // Additional progress updates are emitted for handers, etc.
     await processor.parse(rawEvents).then(() => {
-      assert.strictEqual(updateEventCount, 2);
+      assert.isAtLeast(updateEventCount, 2);
     });
   });
 

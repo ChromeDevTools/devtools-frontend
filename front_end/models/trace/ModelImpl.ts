@@ -248,8 +248,7 @@ export type ModelUpdateEventProgress = {
 };
 
 export type TraceParseEventProgressData = {
-  index: number,
-  total: number,
+  percent: number,
 };
 
 export class ModelUpdateEvent extends Event {

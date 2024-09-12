@@ -17,9 +17,8 @@ describeWithEnvironment('TraceModel', function() {
     });
 
     await TraceLoader.rawEvents(this, 'basic.json.gz').then(events => model.parse(events));
-    // This trace is small, so there are no PROGRESS_UPDATE events, just a COMPLETE
-    // A larger trace would have 1+ PROGRESS_UPDATE events as well.
-    assert.deepStrictEqual(events, ['COMPLETE']);
+    assert.ok(events.includes('PROGRESS_UPDATE'));
+    assert.ok(events.includes('COMPLETE'));
   });
 
   it('supports parsing a generic trace that has no browser specific details', async function() {

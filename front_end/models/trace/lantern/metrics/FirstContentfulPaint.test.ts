@@ -2,15 +2,16 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {TraceLoader} from '../../../../testing/TraceLoader.js';
 import * as Lantern from '../lantern.js';
-import {getComputationDataFromFixture, loadTrace} from '../testing/testing.js';
+import {getComputationDataFromFixture, toLanternTrace} from '../testing/testing.js';
 
 const {FirstContentfulPaint} = Lantern.Metrics;
 
 describe('Metrics: Lantern FCP', () => {
   let trace: Lantern.Types.Trace;
   before(async function() {
-    trace = await loadTrace(this, 'lantern/progressive-app/trace.json.gz');
+    trace = toLanternTrace(await TraceLoader.rawEvents(this, 'lantern/progressive-app/trace.json.gz'));
   });
 
   it('should compute predicted value', async () => {

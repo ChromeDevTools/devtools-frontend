@@ -7,7 +7,7 @@
 import * as path from 'path';
 
 import {formatAsPatch, resultAssertionsDiff, ResultsDBReporter} from '../../test/conductor/karma-resultsdb-reporter.js';
-import {GEN_DIR, SOURCE_ROOT} from '../../test/conductor/paths.js';
+import {CHECKOUT_ROOT, GEN_DIR, SOURCE_ROOT} from '../../test/conductor/paths.js';
 // eslint-disable-next-line  rulesdir/es_modules_import
 import * as ResultsDb from '../../test/conductor/resultsdb.js';
 import {loadTests, TestConfig} from '../../test/conductor/test_config.js';
@@ -69,7 +69,7 @@ const coveragePreprocessors = TestConfig.coverage ? {
 module.exports = function(config: any) {
   const targetDir = path.relative(SOURCE_ROOT, GEN_DIR);
   const options = {
-    basePath: SOURCE_ROOT,
+    basePath: CHECKOUT_ROOT,
     autoWatchBatchDelay: 3000,
 
     files: [

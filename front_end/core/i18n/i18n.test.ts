@@ -148,8 +148,7 @@ describe('fetchAndRegisterLocaleData', () => {
     // this test. This means we only check the last part of the URL with which `fetch`
     // was called.
     const actualUrl = fetchStub.args[0][0];
-    assert.isTrue(
-        actualUrl.endsWith('gen/front_end/core/i18n/locales/en-US.json'), `Actually called with ${actualUrl}`);
+    assert.isTrue(actualUrl.endsWith('front_end/core/i18n/locales/en-US.json'), `Actually called with ${actualUrl}`);
   });
 
   it('fetches non-bundled locale files from the remote service endpoint', async () => {

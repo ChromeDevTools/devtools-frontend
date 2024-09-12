@@ -92,6 +92,11 @@ function isFeatureAvailable(config?: Root.Runtime.HostConfig): boolean {
   return (config?.aidaAvailability?.enabled && config?.devToolsFreestylerDogfood?.enabled) === true;
 }
 
+function isDrJonesFeatureAvailable(config?: Root.Runtime.HostConfig): boolean {
+  return (config?.aidaAvailability?.enabled && config?.devToolsFreestylerDogfood?.enabled &&
+          config?.devToolsExplainThisResourceDogfood?.enabled) === true;
+}
+
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.DRAWER_VIEW,
   id: 'freestyler',
@@ -148,4 +153,19 @@ UI.ActionRegistration.registerActionExtension({
     return new Freestyler.ActionDelegate();
   },
   condition: config => isFeatureAvailable(config) && !isPolicyRestricted(config),
+});
+
+UI.ActionRegistration.registerActionExtension({
+  actionId: 'drjones.network-panel-context',
+  contextTypes(): [] {
+    return [];
+  },
+  setting,
+  category: UI.ActionRegistration.ActionCategory.GLOBAL,
+  title: i18nLazyString(UIStringsTemp.askAiAssistant),
+  async loadActionDelegate() {
+    const Freestyler = await loadFreestylerModule();
+    return new Freestyler.ActionDelegate();
+  },
+  condition: config => isDrJonesFeatureAvailable(config) && !isPolicyRestricted(config),
 });

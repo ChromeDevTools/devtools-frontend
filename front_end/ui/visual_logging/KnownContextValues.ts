@@ -1079,6 +1079,7 @@ export const knownContextValues = new Set([
   'dragstart',
   'drawer',
   'drawer-view-closeableTabs',
+  'drjones.network-panel-context',
   'drop',
   'duration',
   'durationchange',

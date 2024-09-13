@@ -439,8 +439,8 @@ export class FreestylerChatUi extends HTMLElement {
     const thought = step.thought ? LitHtml.html`<p>${this.#renderTextAsMarkdown(step.thought)}</p>` : LitHtml.nothing;
     // If there is no "output" yet, it means we didn't execute the code yet (e.g. maybe it is still waiting for confirmation from the user)
     // thus we show "Code to execute" text rather than "Code executed" text on the heading of the code block.
-    const codeHeadingText =
-        step.output ? i18nString(UIStringsTemp.codeExecuted) : i18nString(UIStringsTemp.codeToExecute);
+    const codeHeadingText = (step.output && !step.canceled) ? i18nString(UIStringsTemp.codeExecuted) :
+                                                              i18nString(UIStringsTemp.codeToExecute);
     // If there is output, we don't show notice on this code block and instead show
     // it in the data returned code block.
     // clang-format off
@@ -499,7 +499,7 @@ export class FreestylerChatUi extends HTMLElement {
   #renderStep(step: Step, options: {isLast: boolean}): LitHtml.LitTemplate {
     const stepClasses = LitHtml.Directives.classMap({
       step: true,
-      empty: !step.thought,
+      empty: !step.thought && !step.code,
       paused: Boolean(step.sideEffect),
       canceled: Boolean(step.canceled),
     });

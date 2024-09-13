@@ -157,6 +157,10 @@ const UIStringsTemp = {
    */
   codeExecuted: 'Code executed',
   /**
+   *@description Heading text for the code block that shows the code to be executed after side effect confirmation.
+   */
+  codeToExecute: 'Code to execute',
+  /**
    *@description Heading text for the code block that shows the returned data.
    */
   dataReturned: 'Data returned',
@@ -406,6 +410,10 @@ export class FreestylerChatUi extends HTMLElement {
     const sideEffects =
         options.isLast && step.sideEffect ? this.#renderSideEffectConfirmationUi(step) : LitHtml.nothing;
     const thought = step.thought ? LitHtml.html`<p>${this.#renderTextAsMarkdown(step.thought)}</p>` : LitHtml.nothing;
+    // If there is no "output" yet, it means we didn't execute the code yet (e.g. maybe it is still waiting for confirmation from the user)
+    // thus we show "Code to execute" text rather than "Code executed" text on the heading of the code block.
+    const codeHeadingText =
+        step.output ? i18nString(UIStringsTemp.codeExecuted) : i18nString(UIStringsTemp.codeToExecute);
     // If there is output, we don't show notice on this code block and instead show
     // it in the data returned code block.
     const code = step.code ? LitHtml.html`<div class="action-result">
@@ -414,7 +422,7 @@ export class FreestylerChatUi extends HTMLElement {
           .codeLang=${'js'}
           .displayToolbar=${false}
           .displayNotice=${!Boolean(step.output)}
-          .headingText=${i18nString(UIStringsTemp.codeExecuted)}
+          .headingText=${codeHeadingText}
         ></${MarkdownView.CodeBlock.CodeBlock.litTagName}>
     </div>` :
                              LitHtml.nothing;

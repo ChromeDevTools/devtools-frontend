@@ -5,6 +5,7 @@ Version: 1.1.1
 License: Apache
 License File: package/LICENSE
 Security Critical: no
+Shipped: yes
 
 Description:
 CSP Evaluator allows developers and security experts to check if a Content Security Policy (CSP) serves as a strong mitigation against cross-site scripting attacks.

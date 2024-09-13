@@ -438,28 +438,32 @@ export class FreestylerChatUi extends HTMLElement {
         step.output ? i18nString(UIStringsTemp.codeExecuted) : i18nString(UIStringsTemp.codeToExecute);
     // If there is output, we don't show notice on this code block and instead show
     // it in the data returned code block.
+    // clang-format off
     const code = step.code ? LitHtml.html`<div class="action-result">
         <${MarkdownView.CodeBlock.CodeBlock.litTagName}
           .code=${step.code.trim()}
           .codeLang=${'js'}
           .displayToolbar=${false}
           .displayNotice=${!Boolean(step.output)}
-          .headingText=${codeHeadingText}
+          .heading=${{
+            text: codeHeadingText,
+            showCopyButton: true,
+          }}
         ></${MarkdownView.CodeBlock.CodeBlock.litTagName}>
-    </div>` :
-                             LitHtml.nothing;
+    </div>` : LitHtml.nothing;
     const output = step.output ? LitHtml.html`<div class="js-code-output">
       <${MarkdownView.CodeBlock.CodeBlock.litTagName}
         .code=${step.output}
         .codeLang=${'js'}
         .displayToolbar=${false}
         .displayNotice=${true}
-        .headingText=${i18nString(UIStringsTemp.dataReturned)}
+        .heading=${{
+          text: i18nString(UIStringsTemp.dataReturned),
+          showCopyButton: false,
+        }}
       ></${MarkdownView.CodeBlock.CodeBlock.litTagName}>
-    </div>` :
-                                 LitHtml.nothing;
+    </div>` : LitHtml.nothing;
 
-    // clang-format off
     return LitHtml.html`<div class="step-details">
       ${thought}
       ${code}

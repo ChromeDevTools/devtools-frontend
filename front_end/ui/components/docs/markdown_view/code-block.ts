@@ -11,7 +11,8 @@ await FrontendHelpers.initializeGlobalVars();
 
 const container = document.getElementById('container');
 
-function appendCodeBlock(data: {displayNotice: boolean, displayToolbar: boolean, headingText?: string}): void {
+function appendCodeBlock(
+    data: {displayNotice: boolean, displayToolbar: boolean, heading?: MarkdownView.CodeBlock.Heading}): void {
   const component = new MarkdownView.CodeBlock.CodeBlock();
   container?.appendChild(document.createTextNode(JSON.stringify(data)));
   container?.appendChild(component);
@@ -30,15 +31,20 @@ function appendCodeBlock(data: {displayNotice: boolean, displayToolbar: boolean,
   });`;
   component.displayNotice = data.displayNotice;
   component.displayToolbar = data.displayToolbar;
-  if (data.headingText) {
-    component.headingText = data.headingText;
+  if (data.heading) {
+    component.heading = data.heading;
   }
 }
 
-appendCodeBlock({displayNotice: true, displayToolbar: true, headingText: 'Code executed'});
-appendCodeBlock({displayNotice: false, displayToolbar: true, headingText: 'Code executed'});
-appendCodeBlock({displayNotice: true, displayToolbar: false, headingText: 'Code executed'});
-appendCodeBlock({displayNotice: false, displayToolbar: false, headingText: 'Code executed'});
+appendCodeBlock({displayNotice: true, displayToolbar: true, heading: {text: 'Code executed', showCopyButton: false}});
+appendCodeBlock({displayNotice: false, displayToolbar: true, heading: {text: 'Code executed', showCopyButton: false}});
+appendCodeBlock({displayNotice: true, displayToolbar: false, heading: {text: 'Code executed', showCopyButton: false}});
+appendCodeBlock({displayNotice: false, displayToolbar: false, heading: {text: 'Code executed', showCopyButton: false}});
+
+appendCodeBlock({displayNotice: true, displayToolbar: true, heading: {text: 'Code executed', showCopyButton: true}});
+appendCodeBlock({displayNotice: false, displayToolbar: true, heading: {text: 'Code executed', showCopyButton: true}});
+appendCodeBlock({displayNotice: true, displayToolbar: false, heading: {text: 'Code executed', showCopyButton: true}});
+appendCodeBlock({displayNotice: false, displayToolbar: false, heading: {text: 'Code executed', showCopyButton: true}});
 
 appendCodeBlock({displayNotice: true, displayToolbar: true});
 appendCodeBlock({displayNotice: false, displayToolbar: true});

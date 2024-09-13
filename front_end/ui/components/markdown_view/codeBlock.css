@@ -55,6 +55,10 @@ code {
   border-bottom-right-radius: var(--sys-shape-corner-extra-small);
 }
 
+.codeblock .editor-wrapper:has(.heading) {
+  padding: var(--sys-size-3) var(--sys-size-4) 0 5px;
+}
+
 .codeblock:not(:has(.toolbar)) .editor-wrapper {
   border-radius: var(--sys-shape-corner-extra-small);
 }
@@ -63,6 +67,13 @@ code {
   max-height: var(--max-code-height);
   overflow: auto;
   padding-bottom: 10px;
+}
+
+.heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: var(--sys-size-11);
 }
 
 .heading-text {
@@ -93,12 +104,20 @@ code {
   flex-direction: row;
   align-items: center;
   gap: var(--sys-size-3);
+
+  devtools-icon {
+    width: var(--sys-size-8);
+    height: var(--sys-size-8);
+    color: var(--icon-default);
+  }
 }
 
 .codeblock .copy-button.copied {
   color: var(--sys-color-primary);
 
-  --copy-icon-color: var(--sys-color-primary);
+  devtools-icon {
+    color: var(--sys-color-primary);
+  }
 }
 
 .notice {

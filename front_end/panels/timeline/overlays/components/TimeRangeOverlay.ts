@@ -9,6 +9,15 @@ import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 
 import styles from './timeRangeOverlay.css.js';
 
+const UIStrings = {
+  /**
+   *@description Accessible label used to explain to a user that they are viewing an entry label.
+   */
+  timeRange: 'Time range',
+};
+const str_ = i18n.i18n.registerUIStrings('panels/timeline/overlays/components/TimeRangeOverlay.ts', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+
 export class TimeRangeLabelChangeEvent extends Event {
   static readonly eventName = 'timerangelabelchange';
 
@@ -55,6 +64,9 @@ export class TimeRangeOverlay extends HTMLElement {
       return;
     }
     this.#labelBox.innerText = initialLabel;
+    if (initialLabel) {
+      this.#labelBox?.setAttribute('aria-label', initialLabel);
+    }
   }
 
   set canvasRect(rect: DOMRect|null) {
@@ -199,6 +211,7 @@ export class TimeRangeOverlay extends HTMLElement {
     if (labelBoxTextContent !== this.#label) {
       this.#label = labelBoxTextContent;
       this.dispatchEvent(new TimeRangeLabelChangeEvent(this.#label));
+      this.#labelBox?.setAttribute('aria-label', labelBoxTextContent);
     }
   }
 
@@ -227,8 +240,7 @@ export class TimeRangeOverlay extends HTMLElement {
     // clang-format off
     LitHtml.render(
         LitHtml.html`
-          <span
-            class="range-container">
+          <span class="range-container" role="region" aria-label=${i18nString(UIStrings.timeRange)}>
             <${IconButton.Icon.Icon.litTagName} class="user-created-icon" .data=${{
                   iconName: 'profile',
                   color: 'var(--ref-palette-pink55)',
@@ -238,11 +250,12 @@ export class TimeRangeOverlay extends HTMLElement {
               </${IconButton.Icon.Icon.litTagName}>
             <span
              class="label-text"
+             role="textbox"
              @focusout=${() => this.#setLabelEditability(false)}
              @dblclick=${() => this.#setLabelEditability(true)}
              @keydown=${this.#handleLabelInputKeyDown}
              @keyup=${this.#handleLabelInputKeyUp}
-             contenteditable=${this.#isLabelEditable}>
+             contenteditable=${this.#isLabelEditable ? 'plaintext-only' : false}>
             </span>
             <span
             class="duration">${durationText}</span>

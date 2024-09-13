@@ -19,6 +19,7 @@ generate_css("css_files") {
 devtools_module("freestyler") {
   sources = [
     "ChangeManager.ts",
+    "DrJonesNetworkAgent.ts",
     "ExtensionScope.ts",
     "FreestylerAgent.ts",
     "FreestylerEvaluateAction.ts",

@@ -38,6 +38,16 @@
     font: var(--sys-typescale-body4-size);
     border: var(--sys-size-1) solid var(--sys-color-divider);
     border-radius: var(--sys-shape-corner-extra-small);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: var(--sys-size-32);
+
+    devtools-icon[name="file-script"] {
+      color: var(--icon-file-script);
+      vertical-align: top;
+      margin-right: var(--sys-size-1);
+    }
   }
 
   .resource-link.not-selected {

@@ -500,15 +500,15 @@ describeWithMockConnection('TimelineUIUtils', function() {
         },
         {
           title: 'Input delay',
-          value: '1.00\xA0ms',
+          value: '1\xA0ms',
         },
         {
           title: 'Processing duration',
-          value: '977.00\xA0ms',
+          value: '977\xA0ms',
         },
         {
           title: 'Presentation delay',
-          value: '1.97\xA0ms',
+          value: '2\xA0ms',
         },
       ]);
     });

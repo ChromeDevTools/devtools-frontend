@@ -1458,9 +1458,9 @@ export class TimelineUIUtils {
           contentHelper.appendElementRow(i18nString(UIStrings.details), detailsNode);
         }
         if (TraceEngine.Types.TraceEvents.isSyntheticInteractionEvent(event)) {
-          const inputDelay = i18n.TimeUtilities.formatMicroSecondsTime(event.inputDelay);
-          const mainThreadTime = i18n.TimeUtilities.formatMicroSecondsTime(event.mainThreadHandling);
-          const presentationDelay = i18n.TimeUtilities.formatMicroSecondsTime(event.presentationDelay);
+          const inputDelay = i18n.TimeUtilities.formatMicroSecondsAsMillisFixed(event.inputDelay);
+          const mainThreadTime = i18n.TimeUtilities.formatMicroSecondsAsMillisFixed(event.mainThreadHandling);
+          const presentationDelay = i18n.TimeUtilities.formatMicroSecondsAsMillisFixed(event.presentationDelay);
           contentHelper.appendTextRow(i18nString(UIStrings.interactionID), event.interactionId);
           contentHelper.appendTextRow(i18nString(UIStrings.inputDelay), inputDelay);
           contentHelper.appendTextRow(i18nString(UIStrings.processingDuration), mainThreadTime);

@@ -75,7 +75,7 @@ export class SidebarSingleNavigation extends HTMLElement {
    * as if there are no navigations, we do not want to show the user the INP
    * score.
    */
-  #calculateINPScore(
+  #calculateINP(
       traceParsedData: TraceEngine.Handlers.Types.TraceParseData,
       navigationId: string,
       ): TraceEngine.Types.Timing.MicroSeconds|null {
@@ -122,7 +122,7 @@ export class SidebarSingleNavigation extends HTMLElement {
     const lcpMetric = forNavigation?.get(TraceEngine.Handlers.ModelHandlers.PageLoadMetrics.MetricName.LCP);
 
     const {maxScore: clsScore, worstShfitEvent} = this.#calculateCLSScore(traceParsedData, navigationId);
-    const inpScore = this.#calculateINPScore(traceParsedData, navigationId);
+    const inp = this.#calculateINP(traceParsedData, navigationId);
 
     return LitHtml.html`
     <div class="metrics-row">
@@ -137,12 +137,11 @@ export class SidebarSingleNavigation extends HTMLElement {
             TraceEngine.Handlers.ModelHandlers.LayoutShifts.scoreClassificationForLayoutShift(clsScore),
             worstShfitEvent)}
     ${
-        inpScore ? this.#renderMetricValue(
-                       'INP', i18n.TimeUtilities.formatMicroSecondsTime(inpScore),
-                       TraceEngine.Handlers.ModelHandlers.UserInteractions.scoreClassificationForInteractionToNextPaint(
-                           inpScore),
-                       null) :
-                   LitHtml.nothing}
+        inp ? this.#renderMetricValue(
+                  'INP', i18n.TimeUtilities.formatMicroSecondsAsMillisFixed(inp),
+                  TraceEngine.Handlers.ModelHandlers.UserInteractions.scoreClassificationForInteractionToNextPaint(inp),
+                  null) :
+              LitHtml.nothing}
     </div>
     `;
   }

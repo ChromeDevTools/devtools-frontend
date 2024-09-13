@@ -53,6 +53,13 @@ export function formatMicroSecondsTime(
   return millisToString(Platform.Timing.microSecondsToMilliSeconds(time), true);
 }
 
+export function formatMicroSecondsAsMillisFixed(time: Platform.Timing.MicroSeconds, fractionDigits = 0): string {
+  const milliseconds = Platform.Timing.microSecondsToMilliSeconds(
+      time,
+  );
+  return i18nString(UIStrings.fms, {PH1: milliseconds.toFixed(fractionDigits)});
+}
+
 export function formatMicroSecondsAsSeconds(time: Platform.Timing.MicroSeconds): string {
   const milliseconds = Platform.Timing.microSecondsToMilliSeconds(
       time,

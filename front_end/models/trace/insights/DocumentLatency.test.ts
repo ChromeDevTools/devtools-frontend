@@ -40,6 +40,7 @@ describeWithEnvironment('DocumentLatency', function() {
     const {data, insights} = await processTrace(this, 'lantern/paul/trace.json.gz');
     const insight = getInsight(insights, data.Meta.navigationsByNavigationId.keys().next().value);
     assert.strictEqual(insight.serverResponseTime, 43);
+    assert(!insight.serverResponseTooSlow);
     assert.deepEqual(insight.metricSavings, {FCP: 0, LCP: 0});
   });
 
@@ -72,6 +73,7 @@ describeWithEnvironment('DocumentLatency', function() {
     };
     const insight = TraceModel.Insights.InsightRunners.DocumentLatency.generateInsight(data, context);
     assert.strictEqual(insight.serverResponseTime, 1043);
+    assert(insight.serverResponseTooSlow);
     assert.deepEqual(insight.metricSavings, {FCP: 943, LCP: 943});
   });
 

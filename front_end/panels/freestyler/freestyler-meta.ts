@@ -27,7 +27,7 @@ const UIStringsTemp = {
    * @description The setting title to enable the freestyler via
    * the settings tab.
    */
-  enableFreestyler: 'Enable Freestyler',
+  enableFreestyler: 'Enable AI assistant',
   /**
    *@description Text of a tooltip to redirect to the AI assistant panel with
    *the current element as context

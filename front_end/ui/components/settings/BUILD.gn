@@ -25,8 +25,8 @@ devtools_module("settings") {
     "../../../core/common:bundle",
     "../../lit-html:bundle",
     "../../visual_logging:bundle",
+    "../buttons:bundle",
     "../helpers:bundle",
-    "../icon_button:bundle",
     "../input:bundle",
   ]
 }

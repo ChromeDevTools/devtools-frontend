@@ -26,8 +26,10 @@
   min-height: 30px;
 }
 
-.ignore-list-option devtools-icon {
-  margin-bottom: -1px;
+.ignore-list-option devtools-button {
+  position: relative;
+  top: var(--sys-size-2);
+  margin-left: var(--sys-size-2);
 }
 
 .ignore-list-option-group {

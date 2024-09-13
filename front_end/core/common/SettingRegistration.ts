@@ -302,7 +302,7 @@ export interface SettingRegistration {
  */
 export interface LearnMore {
   tooltip: () => Platform.UIString.LocalizedString;
-  url: string;
+  url: Platform.DevToolsPath.UrlString;
 }
 
 interface LocalizedSettingExtensionOption {

@@ -33,7 +33,7 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
-import * as IconButton from '../../ui/components/icon_button/icon_button.js';
+import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -488,18 +488,21 @@ export class ExperimentsSettingsTab extends SettingsTab {
     }
     p.appendChild(label);
 
-    if (experiment.docLink) {
-      const link = UI.XLink.XLink.create(
-          experiment.docLink, undefined, undefined, undefined, `${experiment.name}-documentation`);
-      link.textContent = '';
-      link.setAttribute('aria-label', i18nString(UIStrings.learnMore));
+    const experimentLink = experiment.docLink;
+    if (experimentLink) {
+      const linkButton = new Buttons.Button.Button();
+      linkButton.data = {
+        iconName: 'help',
+        variant: Buttons.Button.Variant.ICON,
+        size: Buttons.Button.Size.SMALL,
+        jslogContext: `${experiment.name}-documentation`,
+      };
+      linkButton.addEventListener(
+          'click', () => Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(experimentLink));
+      linkButton.ariaLabel = i18nString(UIStrings.learnMore);
+      linkButton.classList.add('link-icon');
 
-      const linkIcon = new IconButton.Icon.Icon();
-      linkIcon.data = {iconName: 'help', color: 'var(--icon-default)', width: '16px', height: '16px'};
-      linkIcon.classList.add('link-icon');
-      link.prepend(linkIcon);
-
-      p.appendChild(link);
+      p.appendChild(linkButton);
     }
 
     if (experiment.feedbackLink) {

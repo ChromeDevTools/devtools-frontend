@@ -3,9 +3,10 @@
 // found in the LICENSE file.
 
 import type * as Common from '../../../core/common/common.js';
+import * as Host from '../../../core/host/host.js';
 import * as LitHtml from '../../lit-html/lit-html.js';
 import * as VisualLogging from '../../visual_logging/visual_logging.js';
-import * as IconButton from '../icon_button/icon_button.js';
+import * as Buttons from '../buttons/buttons.js';
 import * as Input from '../input/input.js';
 
 import settingCheckboxStyles from './settingCheckbox.css.js';
@@ -60,15 +61,11 @@ export class SettingCheckbox extends HTMLElement {
       const jslog = VisualLogging.link()
                         .track({click: true, keydown: 'Enter|Space'})
                         .context(this.#setting.name + '-documentation');
-      return LitHtml.html`<x-link id="learn-more"
-                                  href=${learnMore.url}
-                                  title=${learnMore.tooltip()}
-                                  jslog=${jslog}
-                                  tabIndex="0"
-                                  class="devtools-link">
-                            <${IconButton.Icon.Icon.litTagName} name="help" class="link-icon"></${
-          IconButton.Icon.Icon.litTagName}>
-                          </x-link>`;
+      return LitHtml.html`<${Buttons.Button.Button.litTagName} .iconName=${'help'} .size=${
+          Buttons.Button.Size.SMALL} .variant=${Buttons.Button.Variant.ICON} .title=${learnMore.tooltip()} jslog=${
+          jslog} @click=${
+          () => Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(
+              learnMore.url)} class="learn-more"></${Buttons.Button.Button.litTagName}>`;
     }
 
     return undefined;
@@ -82,8 +79,9 @@ export class SettingCheckbox extends HTMLElement {
     const icon = this.icon();
     const reason = this.#setting.disabledReason() ?
         LitHtml.html`
-      <${IconButton.Icon.Icon.litTagName} class="disabled-reason" name="info" title=${
-            this.#setting.disabledReason()} @click=${onclick}></${IconButton.Icon.Icon.litTagName}>
+      <${Buttons.Button.Button.litTagName} class="disabled-reason" .iconName=${'info'} .variant=${
+            Buttons.Button.Variant.ICON} .size=${Buttons.Button.Size.SMALL} title=${
+            this.#setting.disabledReason()} @click=${onclick}></${Buttons.Button.Button.litTagName}>
     ` :
         LitHtml.nothing;
     LitHtml.render(

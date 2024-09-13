@@ -213,7 +213,7 @@ def try_pair(
 try_pair("dtf_linux", "rel", dimensions.default_ubuntu, "Ubuntu-22.04", "x86-64")
 try_pair("dtf_win64", "rel", dimensions.win10, "Windows-10-19045", "x86-64")
 try_pair("dtf_mac", "rel", dimensions.mac, "Mac-14", "x86-64")
-try_pair("dtf_mac_arm64", "rel", dimensions.mac, "Mac-14", "arm64")
+try_pair("dtf_mac_arm64", "rel", dimensions.mac_arm64, "Mac-14", "arm64")
 try_pair(
     "dtf_linux",
     "dbg",

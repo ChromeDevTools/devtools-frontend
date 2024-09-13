@@ -829,7 +829,7 @@ c`;
         {
           rpcId: undefined,
           type: Freestyler.ResponseType.ERROR,
-          error: 'Sorry, I could not help you with this query.',
+          error: Freestyler.ErrorType.UNKNOWN,
         },
       ]);
     });
@@ -891,7 +891,7 @@ c`;
         },
         {
           type: Freestyler.ResponseType.ERROR,
-          error: 'Sorry, I could not help you with this query.',
+          error: Freestyler.ErrorType.UNKNOWN,
           rpcId: undefined,
         },
       ]);

@@ -51,7 +51,6 @@ export interface AnswerResponse {
 
 export interface ErrorResponse {
   type: DrJonesNetworkAgentResponseType.ERROR;
-  error: string;
   rpcId?: number;
 }
 
@@ -146,7 +145,6 @@ export class DrJonesNetworkAgent {
   async * run(query: string, options: {
     signal?: AbortSignal, selectedNetworkRequest: SDK.NetworkRequest.NetworkRequest|null,
   }): AsyncGenerator<ResponseData, void, void> {
-    const genericErrorMessage = 'Sorry, I could not help you with this query.';
     const structuredLog = [];
     query = `${
         options.selectedNetworkRequest ?
@@ -181,7 +179,6 @@ export class DrJonesNetworkAgent {
 
       yield {
         type: DrJonesNetworkAgentResponseType.ERROR,
-        error: genericErrorMessage,
         rpcId,
       };
       return;

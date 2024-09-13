@@ -23,7 +23,7 @@ import {
   DrJonesNetworkAgent,
   DrJonesNetworkAgentResponseType,
 } from './DrJonesNetworkAgent.js';
-import {FIX_THIS_ISSUE_PROMPT, FreestylerAgent, ResponseType} from './FreestylerAgent.js';
+import {ErrorType, FIX_THIS_ISSUE_PROMPT, FreestylerAgent, ResponseType} from './FreestylerAgent.js';
 import freestylerPanelStyles from './freestylerPanel.css.js';
 
 /*
@@ -409,7 +409,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
 
         case DrJonesNetworkAgentResponseType.ERROR: {
           step.isLoading = false;
-          systemMessage.error = data.error;
+          systemMessage.error = ErrorType.UNKNOWN;
           this.#viewProps.isLoading = false;
         }
       }

@@ -14,6 +14,7 @@ import * as MarkdownView from '../../../ui/components/markdown_view/markdown_vie
 import * as Spinners from '../../../ui/components/spinners/spinners.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
+import {ErrorType} from '../FreestylerAgent.js';
 
 import freestylerChatUiStyles from './freestylerChatUi.css.js';
 import {ProvideFeedback, type ProvideFeedbackProps} from './ProvideFeedback.js';
@@ -87,7 +88,11 @@ const UIStringsTemp = {
    * @description The error message when the LLM loop is stopped for some reason (Max steps reached or request to LLM failed)
    */
   systemError:
-      'I apologize, but it seems that an unexpected error has occurred. Please try asking a different question or rephrasing your previous one',
+      'Something unforeseen happened and I can no longer continue. Try your request again and see if that resolves the issue.',
+  /**
+   * @description The error message when the LLM loop is stopped for some reason (Max steps reached or request to LLM failed)
+   */
+  maxStepsError: 'Seems like I am stuck with the investigation. It would be better if you start over.',
   /**
    *@description Displayed when the user stop the response
    */
@@ -226,7 +231,7 @@ export interface ModelChatMessage {
   suggestingFix: boolean;
   steps: Step[];
   answer?: string;
-  error?: string;
+  error?: ErrorType;
   aborted: boolean;
   rpcId?: number;
 }
@@ -565,7 +570,17 @@ export class FreestylerChatUi extends HTMLElement {
     }
 
     if (message.error) {
-      return LitHtml.html`<p class="error">${i18nString(UIStringsTemp.systemError)}</p>`;
+      let errorMessage;
+      switch (message.error) {
+        case ErrorType.UNKNOWN:
+          errorMessage = UIStringsTemp.systemError;
+          break;
+        case ErrorType.MAX_STEPS:
+          errorMessage = UIStringsTemp.maxStepsError;
+          break;
+      }
+
+      return LitHtml.html`<p class="error">${i18nString(errorMessage)}</p>`;
     }
 
     return LitHtml.nothing;

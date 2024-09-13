@@ -131,9 +131,14 @@ export interface AnswerResponse {
   fixable: boolean;
 }
 
+export const enum ErrorType {
+  UNKNOWN = 'unknown',
+  MAX_STEPS = 'max-steps',
+}
+
 export interface ErrorResponse {
   type: ResponseType.ERROR;
-  error: string;
+  error: ErrorType;
   rpcId?: number;
 }
 
@@ -530,7 +535,6 @@ export class FreestylerAgent {
   async * run(query: string, options: {
     signal?: AbortSignal, selectedElement: SDK.DOMModel.DOMNode|null, isFixQuery: boolean,
   }): AsyncGenerator<ResponseData, void, void> {
-    const genericErrorMessage = 'Sorry, I could not help you with this query.';
     const structuredLog = [];
     query = `${
         options.selectedElement ?
@@ -570,7 +574,7 @@ export class FreestylerAgent {
 
         yield {
           type: ResponseType.ERROR,
-          error: genericErrorMessage,
+          error: ErrorType.UNKNOWN,
           rpcId,
         };
         break;
@@ -673,7 +677,7 @@ STOP`);
         addToHistory(response);
         yield {
           type: ResponseType.ERROR,
-          error: genericErrorMessage,
+          error: ErrorType.UNKNOWN,
           rpcId,
         };
         break;
@@ -682,7 +686,7 @@ STOP`);
       if (i === MAX_STEPS - 1) {
         yield {
           type: ResponseType.ERROR,
-          error: 'Max steps reached, please try again.',
+          error: ErrorType.MAX_STEPS,
         };
         break;
       }

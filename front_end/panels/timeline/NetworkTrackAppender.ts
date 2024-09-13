@@ -11,11 +11,9 @@ import {
   buildGroupStyle,
   buildTrackHeader,
   getEventLevel,
-  getFormattedTime,
   type LastTimestampByLevel,
 } from './AppenderUtils.js';
 import {
-  type HighlightedEntryInfo,
   type TrackAppender,
   type TrackAppenderName,
   VisualLoggingTrackName,
@@ -246,14 +244,5 @@ export class NetworkTrackAppender implements TrackAppender {
       throw new Error(`Unexpected Network Request: The event's type is '${event.name}'`);
     }
     return Components.Utils.colorForNetworkRequest(event);
-  }
-
-  /**
-   * Returns the info shown when an event added by this appender
-   * is hovered in the timeline.
-   */
-  highlightedEntryInfo(event: TraceEngine.Types.TraceEvents.TraceEventData): HighlightedEntryInfo {
-    const title = Components.EntryName.nameForEntry(event);
-    return {title, formattedTime: getFormattedTime(event.dur)};
   }
 }

@@ -63,13 +63,4 @@ describeWithEnvironment('NetworkTrackAppender', function() {
       assert.strictEqual(networkTrackAppender.colorForEvent(event), color);
     }
   });
-
-  describe('highlightedEntryInfo', function() {
-    it('returns the info for a entry correctly', function() {
-      const networkRequests = traceData.NetworkRequests.byTime;
-      const highlightedEntryInfo = networkTrackAppender.highlightedEntryInfo(networkRequests[0]);
-      // The i18n encodes spaces using the u00A0 unicode character.
-      assert.strictEqual(highlightedEntryInfo.formattedTime, '286.21\u00A0ms');
-    });
-  });
 });

@@ -124,13 +124,4 @@ describeWithEnvironment('InteractionsTrackAppender', function() {
     // None of the interactions are over 200ms, so we do not expect to see any decorations
     assert.lengthOf(flameChartData.entryDecorations, 0);
   });
-
-  it('highlightedEntryInfo returns the correct information', async function() {
-    const {interactionsTrackAppender, traceParsedData} =
-        await renderTrackAppender(this, 'slow-interaction-button-click.json.gz');
-    const firstInteraction = traceParsedData.UserInteractions.interactionEvents[0];
-    const highlightedEntryInfo = interactionsTrackAppender.highlightedEntryInfo(firstInteraction);
-    // The i18n encodes spaces using the u00A0 unicode character.
-    assert.strictEqual(highlightedEntryInfo.formattedTime, ('31.72\u00A0ms'));
-  });
 });

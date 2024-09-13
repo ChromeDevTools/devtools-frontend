@@ -9,7 +9,7 @@ import type * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 
 import {AnimationsTrackAppender} from './AnimationsTrackAppender.js';
-import {getEventLevel, type LastTimestampByLevel} from './AppenderUtils.js';
+import {getEventLevel, getFormattedTime, type LastTimestampByLevel} from './AppenderUtils.js';
 import * as TimelineComponents from './components/components.js';
 import {ExtensionDataGatherer} from './ExtensionDataGatherer.js';
 import {ExtensionTrackAppender} from './ExtensionTrackAppender.js';
@@ -118,7 +118,7 @@ export interface TrackAppender {
   /**
    * Returns the info shown when an event in the timeline is hovered.
    */
-  highlightedEntryInfo(event: TraceEngine.Types.TraceEvents.TraceEventData): HighlightedEntryInfo;
+  highlightedEntryInfo?(event: TraceEngine.Types.TraceEvents.TraceEventData): Partial<HighlightedEntryInfo>;
 }
 
 export const TrackNames = [
@@ -629,11 +629,27 @@ export class CompatibilityTracksAppender {
     const warningElements: HTMLSpanElement[] =
         TimelineComponents.DetailsView.buildWarningElementsForEvent(event, this.#traceParsedData);
 
-    const {title, formattedTime, warningElements: extraWarningElements} = track.highlightedEntryInfo(event);
+    let title = this.titleForEvent(event, level);
+    let formattedTime = getFormattedTime(event.dur);
+
+    // If the track defines a custom highlight, call it and use its values.
+    if (track.highlightedEntryInfo) {
+      const {title: customTitle, formattedTime: customFormattedTime, warningElements: extraWarningElements} =
+          track.highlightedEntryInfo(event);
+      if (customTitle) {
+        title = customTitle;
+      }
+      if (customFormattedTime) {
+        formattedTime = customFormattedTime;
+      }
+      if (extraWarningElements) {
+        warningElements.push(...extraWarningElements);
+      }
+    }
     return {
       title,
       formattedTime,
-      warningElements: warningElements.concat(extraWarningElements || []),
+      warningElements,
     };
   }
 }

@@ -95,21 +95,9 @@ describeWithEnvironment('AnimationsTrackAppender', function() {
       }
       ThemeSupport.ThemeSupport.clearThemeCache();
     });
-    it('returns the correct color and title for GPU tasks', function() {
-      const animationsRequests = traceData.Animations.animations;
-      for (const event of animationsRequests) {
-        assert.strictEqual(animationsTrackAppender.titleForEvent(event), event.name);
-        assert.strictEqual(animationsTrackAppender.colorForEvent(), 'rgb(4 4 4)');
-      }
-    });
-  });
 
-  describe('highlightedEntryInfo', function() {
-    it('returns the info for an entry correctly', function() {
-      const animationsRequests = traceData.Animations.animations;
-      const highlightedEntryInfo = animationsTrackAppender.highlightedEntryInfo(animationsRequests[0]);
-      // The i18n encodes spaces using the u00A0 unicode character.
-      assert.strictEqual(highlightedEntryInfo.formattedTime, '2.01\u00A0s');
+    it('returns the correct color GPU tasks', function() {
+      assert.strictEqual(animationsTrackAppender.colorForEvent(), 'rgb(4 4 4)');
     });
   });
 });

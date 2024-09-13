@@ -322,7 +322,6 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
   }
 
   protected onFocus(): void {
-    this.resetCurrentSearchResultIndex();
   }
 
   protected onPaste(): boolean {

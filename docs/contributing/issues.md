@@ -12,6 +12,45 @@ In 2024 the Chromium project migrated [crbug] to the [Google Issue Tracker], cal
 to all Chromium contributors, some of it is limited to Googlers, and can only
 be accessed via [Buganizer] internally.
 
+## Bug reporting guidelines
+
+The process for reporting a bug in Chromium DevTools follows the Chromium-wide
+[Bug Life Cycle and Reporting Guidelines], and we encourage you to first read
+through the [How to file a good browser bug] article. Proceed according to the
+check list below:
+
+1.  Try to verify that it is indeed a bug and not the intended behavior of a
+    certain feature.
+1.  Check if there is already a bug report for it, by searching in the list of
+    [Open Chromium DevTools Bugs]. If you find an existing bug report, click
+    the **+1** button in the upper-right corner of the page to indicate that
+    you are also affected by this.
+1.  If there's no existing bug report that matches your issue, start reporting
+    a new bug.
+
+### Report the bug
+
+You can use the shortlink [goo.gle/devtools-bug] or the **Help > Report a
+DevTools issue** menu item to start a new bug report.
+
+![Report a DevTools Issues](./images/issues-report-a-devtools-issue.png)
+
+You might need to login to the [Google Issue Tracker] first with a Google
+account in order to proceed from there. Afterwards the **Defect from user**
+template opens, where you can describe the bug. Note that the template defaults
+to Markdown (with a preview below the text input box).
+
+![Create Issue Template](./images/issues-report-template.png)
+
+1.  Please enter a meaningful title.
+1.  Replace `<from chrome://version/>` and `<OS version>` with the relevant
+    version information.
+1.  Outline exact steps to reproduce the problem. Make sure to provide steps
+    that are easy and accessible. Ideally create a minified test case on
+    [glitch.com](http://glitch.com) or [GitHub](http://github.com). Also
+    make sure to include screenshots and videos that help us to reproduce
+    and understand the problem you are facing.
+
 ## Overview
 
 Check out the [Issues Overview] for a general introduction to the [Google Issue
@@ -200,6 +239,10 @@ refreshed every 2-4 hours, to see SLO compliance for a given lead.
   [Chrome DevTools TaskFlow Hotlists]: https://issues.chromium.org/bookmark-groups/895270
   [Chromium-wide triage guidelines]: https://www.chromium.org/for-testers/bug-reporting-guidelines/#bug-life-cycle
   [Triage Best Practices]: https://www.chromium.org/for-testers/bug-reporting-guidelines/triage-best-practices
+  [Bug Life Cycle and Reporting Guidelines]: https://www.chromium.org/for-testers/bug-reporting-guidelines
+  [How to file a good browser bug]: https://web.dev/articles/how-to-file-a-good-bug
+  [Open Chromium DevTools Bugs]: https://issues.chromium.org/issues?q=status:open%20componentid:1457055%2B%20type:bug
+  [goo.gle/devtools-bug]: https://goo.gle/devtools-bug
   [Chrome DevTools SLO Policy]: https://b.corp.google.com/slos/61348
   [Chrome SLO Policy]: https://b.corp.google.com/slos/1834
   [go/chrome-slo]: http://go/chrome-slo

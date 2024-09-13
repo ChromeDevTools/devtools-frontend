@@ -22,7 +22,6 @@ import {
 import {
   DrJonesNetworkAgent,
   DrJonesNetworkAgentResponseType,
-  EXPLAIN_THIS_NETWORK_REQUEST,
 } from './DrJonesNetworkAgent.js';
 import {FIX_THIS_ISSUE_PROMPT, FreestylerAgent, ResponseType} from './FreestylerAgent.js';
 import freestylerPanelStyles from './freestylerPanel.css.js';
@@ -249,9 +248,9 @@ export class FreestylerPanel extends UI.Panel.Panel {
       }
       case 'drjones.network-panel-context': {
         // TODO(samiyac): Add UMA
+        this.#viewOutput.freestylerChatUi?.focusTextInput();
         this.#viewProps.agentType = AgentType.DRJONES_NETWORK_REQUEST;
         this.doUpdate();
-        void this.#startConversation(EXPLAIN_THIS_NETWORK_REQUEST, false);
         break;
       }
     }
@@ -308,7 +307,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
     if (this.#viewProps.agentType === AgentType.FREESTYLER) {
       await this.#conversationStepsForFreestylerAgent(text, isFixQuery, signal, systemMessage);
     } else if (this.#viewProps.agentType === AgentType.DRJONES_NETWORK_REQUEST) {
-      await this.#conversationStepsForDrJonesNetworkAgent(signal, systemMessage);
+      await this.#conversationStepsForDrJonesNetworkAgent(text, signal, systemMessage);
     }
   }
 
@@ -383,7 +382,8 @@ export class FreestylerPanel extends UI.Panel.Panel {
     }
   }
 
-  async #conversationStepsForDrJonesNetworkAgent(signal: AbortSignal, systemMessage: ModelChatMessage): Promise<void> {
+  async #conversationStepsForDrJonesNetworkAgent(text: string, signal: AbortSignal, systemMessage: ModelChatMessage):
+      Promise<void> {
     // TODO(samiyac): Improve loading generator
     const step: Step = {isLoading: true};
     if (!systemMessage.steps.length) {
@@ -393,7 +393,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
     this.#viewOutput.freestylerChatUi?.scrollToLastMessage();
 
     for await (const data of this.#drJonesNetworkAgent.run(
-        {signal, selectedNetworkRequest: this.#viewProps.selectedNetworkRequest})) {
+        text, {signal, selectedNetworkRequest: this.#viewProps.selectedNetworkRequest})) {
       switch (data.type) {
         case DrJonesNetworkAgentResponseType.ANSWER: {
           systemMessage.answer = data.text;

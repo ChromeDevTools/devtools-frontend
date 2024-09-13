@@ -38,8 +38,6 @@ This request aims to retrieve a list of products matching the search query "lapt
 
 const MAX_HEADERS_SIZE = 1000;
 
-export const EXPLAIN_THIS_NETWORK_REQUEST = 'Explain this network request';
-
 export enum DrJonesNetworkAgentResponseType {
   ANSWER = 'answer',
   ERROR = 'error',
@@ -145,16 +143,16 @@ export class DrJonesNetworkAgent {
   }
 
   #runId = 0;
-  async * run(options: {
+  async * run(query: string, options: {
     signal?: AbortSignal, selectedNetworkRequest: SDK.NetworkRequest.NetworkRequest|null,
   }): AsyncGenerator<ResponseData, void, void> {
     const genericErrorMessage = 'Sorry, I could not help you with this query.';
     const structuredLog = [];
-    const query = `${
+    query = `${
         options.selectedNetworkRequest ?
             `# Selected network request \n${
                 formatNetworkRequest(options.selectedNetworkRequest)}\n\n# User request\n\n` :
-            ''}${EXPLAIN_THIS_NETWORK_REQUEST}`;
+            ''}${query}`;
     const currentRunId = ++this.#runId;
 
     options.signal?.addEventListener('abort', () => {

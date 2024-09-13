@@ -782,8 +782,7 @@ export class FreestylerChatUi extends HTMLElement {
       });
     });
     const isInputDisabledCheckForFreestylerAgent = !Boolean(this.#props.selectedElement) || showsSideEffects;
-    // Currently input is disabled for DrJonesNetworkAgent
-    const isInputDisabledCheckForDrJonesNetworkAgent = true;
+    const isInputDisabledCheckForDrJonesNetworkAgent = !Boolean(this.#props.selectedNetworkRequest);
     const isInputDisabled =
         (this.#props.agentType === AgentType.FREESTYLER && isInputDisabledCheckForFreestylerAgent) ||
         (this.#props.agentType === AgentType.DRJONES_NETWORK_REQUEST && isInputDisabledCheckForDrJonesNetworkAgent) ||

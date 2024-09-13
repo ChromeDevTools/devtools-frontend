@@ -177,6 +177,7 @@ describeWithMockConnection('FieldSettingsDialog', () => {
     assert.isFalse(view.shadowRoot!.querySelector('devtools-dialog')!.shadowRoot!.querySelector('dialog')!.open);
     assert.isTrue(cruxManager.getConfigSetting().get().enabled);
     assert.strictEqual(cruxManager.getConfigSetting().get().override, 'https://example.com');
+    assert.isTrue(cruxManager.getConfigSetting().get().overrideEnabled);
   });
 
   it('should still set URL override on disable', async () => {
@@ -207,6 +208,7 @@ describeWithMockConnection('FieldSettingsDialog', () => {
     assert.isFalse(view.shadowRoot!.querySelector('devtools-dialog')!.shadowRoot!.querySelector('dialog')!.open);
     assert.isFalse(cruxManager.getConfigSetting().get().enabled);
     assert.strictEqual(cruxManager.getConfigSetting().get().override, 'https://example.com');
+    assert.isTrue(cruxManager.getConfigSetting().get().overrideEnabled);
   });
 
   it('should show message for URL override with no data', async () => {
@@ -270,6 +272,50 @@ describeWithMockConnection('FieldSettingsDialog', () => {
     assert.isTrue(view.shadowRoot!.querySelector('devtools-dialog')!.shadowRoot!.querySelector('dialog')!.open);
     assert.isFalse(cruxManager.getConfigSetting().get().enabled);
     assert.strictEqual(cruxManager.getConfigSetting().get().override, '');
+  });
+
+  it('should restore URL override from setting', async () => {
+    cruxManager.getConfigSetting().set({
+      enabled: true,
+      override: 'https://example.com',
+      overrideEnabled: true,
+    });
+
+    const view = new Components.FieldSettingsDialog.FieldSettingsDialog();
+    renderElementIntoDOM(view);
+    await coordinator.done();
+
+    view.shadowRoot!.querySelector<HTMLElement>(OPEN_BUTTON_SELECTOR)!.click();
+
+    await coordinator.done();
+
+    const checked = view.shadowRoot!.querySelector<HTMLInputElement>(OVERRIDE_CHECKBOX_SELECTOR)!.checked;
+    const urlOverride = view.shadowRoot!.querySelector<HTMLInputElement>(OVERRIDE_TEXT_SELECTOR)!.value;
+
+    assert.strictEqual(urlOverride, 'https://example.com');
+    assert.isTrue(checked);
+  });
+
+  it('should restore URL override from setting if override disabled', async () => {
+    cruxManager.getConfigSetting().set({
+      enabled: true,
+      override: 'https://example.com',
+      overrideEnabled: false,
+    });
+
+    const view = new Components.FieldSettingsDialog.FieldSettingsDialog();
+    renderElementIntoDOM(view);
+    await coordinator.done();
+
+    view.shadowRoot!.querySelector<HTMLElement>(OPEN_BUTTON_SELECTOR)!.click();
+
+    await coordinator.done();
+
+    const checked = view.shadowRoot!.querySelector<HTMLInputElement>(OVERRIDE_CHECKBOX_SELECTOR)!.checked;
+    const urlOverride = view.shadowRoot!.querySelector<HTMLInputElement>(OVERRIDE_TEXT_SELECTOR)!.value;
+
+    assert.strictEqual(urlOverride, 'https://example.com');
+    assert.isFalse(checked);
   });
 
   describe('origin mapping', () => {

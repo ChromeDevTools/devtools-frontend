@@ -161,8 +161,8 @@ export class FieldSettingsDialog extends HTMLElement {
 
   #resetToSettingState(): void {
     const configSetting = this.#configSetting.get();
-    this.#urlOverride = configSetting.override;
-    this.#urlOverrideEnabled = Boolean(this.#urlOverride);
+    this.#urlOverride = configSetting.override || '';
+    this.#urlOverrideEnabled = configSetting.overrideEnabled || false;
     this.#originMappings = configSetting.originMappings || [];
     this.#urlOverrideWarning = '';
     this.#originMapWarning = '';
@@ -174,8 +174,9 @@ export class FieldSettingsDialog extends HTMLElement {
   #flushToSetting(enabled: boolean): void {
     this.#configSetting.set({
       enabled,
-      override: this.#urlOverrideEnabled ? this.#urlOverride : '',
+      override: this.#urlOverride,
       originMappings: this.#originMappings,
+      overrideEnabled: this.#urlOverrideEnabled,
     });
   }
 
@@ -608,6 +609,7 @@ export class FieldSettingsDialog extends HTMLElement {
                 @change=${this.#onUrlOverrideChange}
                 class="devtools-text-input"
                 .disabled=${!this.#urlOverrideEnabled}
+                .value=${this.#urlOverride}
                 placeholder=${this.#urlOverrideEnabled ? i18nString(UIStrings.url) : undefined}
               />
               ${

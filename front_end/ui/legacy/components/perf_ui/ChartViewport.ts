@@ -180,11 +180,27 @@ export class ChartViewport extends UI.Widget.VBox {
     this.vScrollElement.scrollTop = this.scrollTop;
   }
 
-  setScrollOffset(offset: number, height?: number): void {
+  /**
+   * @param centered - If true, scrolls offset to where it is centered on the chart,
+   * based on current the this.offsetHeight value.
+   */
+  setScrollOffset(offset: number, height?: number, centered?: boolean): void {
     height = height || 0;
-    if (this.vScrollElement.scrollTop > offset) {
-      this.vScrollElement.scrollTop = offset;
-    } else if (this.vScrollElement.scrollTop < offset - this.offsetHeight + height) {
+    if (centered) {
+      // Half of the height for padding.
+      const halfPadding = Math.floor(this.offsetHeight / 2);
+
+      if (this.vScrollElement.scrollTop > offset) {
+        // Need to scroll up, include height.
+        this.vScrollElement.scrollTop = offset - (height + halfPadding);
+      }
+    } else {
+      if (this.vScrollElement.scrollTop > offset) {
+        this.vScrollElement.scrollTop = offset;
+      }
+    }
+
+    if (this.vScrollElement.scrollTop < offset - this.offsetHeight + height) {
       this.vScrollElement.scrollTop = offset - this.offsetHeight + height;
     }
   }

@@ -577,6 +577,15 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     return this.rawTimelineData || null;
   }
 
+  revealEntryVertically(entryIndex: number): void {
+    const timelineData = this.timelineData();
+    if (!timelineData) {
+      return;
+    }
+    const level = timelineData.entryLevels[entryIndex];
+    this.chartViewport.setScrollOffset(this.levelToOffset(level), this.levelHeight(level), true);
+  }
+
   revealEntry(entryIndex: number): void {
     const timelineData = this.timelineData();
     if (!timelineData) {

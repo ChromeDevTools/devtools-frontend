@@ -271,7 +271,7 @@ export class CrUXManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
   async #getScopedData(normalizedUrl: URL, pageScope: PageScope, deviceScope: DeviceScope): Promise<CrUXResponse|null> {
     const {origin, href: url, hostname} = normalizedUrl;
 
-    if (hostname === 'localhost') {
+    if (hostname === 'localhost' || hostname === '127.0.0.1' || !origin.startsWith('http')) {
       return null;
     }
 

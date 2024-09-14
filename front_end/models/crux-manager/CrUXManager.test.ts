@@ -284,12 +284,16 @@ describeWithMockConnection('CrUXManager', () => {
       assert.strictEqual(mockFetch.callCount, 6);
     });
 
-    it('should exit early for localhost', async () => {
+    it('should exit early for localhost and non-public URLs', async () => {
       mockFetch.callsFake(async () => new Response(JSON.stringify(mockResponse()), {
                             status: 200,
                           }));
 
       await cruxManager.getFieldDataForPage('https://localhost:8080/');
+      await cruxManager.getFieldDataForPage('https://127.0.0.1:8000/');
+      await cruxManager.getFieldDataForPage('about:blank');
+      await cruxManager.getFieldDataForPage('chrome://tracing');
+      await cruxManager.getFieldDataForPage('chrome-extension://sdkfsddsdsisdof/dashboard.html');
 
       assert.strictEqual(mockFetch.callCount, 0);
     });

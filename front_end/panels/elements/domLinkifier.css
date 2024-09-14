@@ -14,6 +14,11 @@
   pointer-events: auto;
   outline-offset: 2px;
 
+  /* If the element has lots of classes, don't let the label get too wide */
+  text-overflow: ellipsis;
+  overflow: hidden;
+  max-width: 550px;
+
   &:focus-visible {
     outline-width: unset;
   }

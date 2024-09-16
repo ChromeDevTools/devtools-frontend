@@ -288,6 +288,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     }, this);
 
     this.element.addEventListener('keydown', this.#keydownHandler.bind(this));
+    this.element.addEventListener('pointerdown', this.#pointerDownHandler.bind(this));
     this.#boundRefreshAfterIgnoreList = this.#refreshAfterIgnoreList.bind(this);
     this.#selectedEvents = null;
 
@@ -400,8 +401,32 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     }
   }
 
+  #pointerDownHandler(event: PointerEvent): void {
+    /**
+     * If the user is in the middle of creating an entry link annotation and
+     * right clicks, let's take that as a sign to exit and cancel.
+     * (buttons === 2 indicates a right click)
+     */
+    if (event.buttons === 2 && this.#linkSelectionAnnotation) {
+      ModificationsManager.activeManager()?.removeAnnotation(this.#linkSelectionAnnotation);
+      this.#linkSelectionAnnotation = null;
+      event.stopPropagation();
+    }
+  }
+
   #keydownHandler(event: KeyboardEvent): void {
     const keyCombo = 'fixme';
+
+    /**
+     * If the user is in the middle of creating an entry link and hits Esc,
+     * cancel and clear out the pending annotation.
+     */
+    if (event.key === 'Escape' && this.#linkSelectionAnnotation) {
+      ModificationsManager.activeManager()?.removeAnnotation(this.#linkSelectionAnnotation);
+      this.#linkSelectionAnnotation = null;
+      event.stopPropagation();
+    }
+
     if (event.key === keyCombo[this.#gameKeyMatches]) {
       this.#gameKeyMatches++;
       clearTimeout(this.#gameTimeout);

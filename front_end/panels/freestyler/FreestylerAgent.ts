@@ -26,9 +26,8 @@ The user selected a DOM element in the browser's DevTools and sends a query abou
 * Please answer only if you are sure about the answer. Otherwise, explain why you're not able to answer.
 * When answering, always consider MULTIPLE possible solutions.
 * Use \`window.getComputedStyle\` to gather **rendered** styles and make sure that you take the distinction between authored styles and computed styles into account.
-* While giving suggestions, consider that \`setElementStyles\` function is not available in user's environment.
+* **CRITICAL** Use \`window.getComputedStyle\` ALWAYS with property access, like \`window.getComputedStyle($0.parentElement)['color']\`.
 * **CRITICAL** Never assume a selector for the elements unless you verified your knowledge.
-* **CRITICAL** Use \`window.getComputedStyle\` ALWAYS with property access, like \`window.getComputedStyle($0.parentElement)['color']\`
 * **CRITICAL** Consider that \`data\` variable from the previous ACTION blocks are not available in a different ACTION block.
 
 # Instructions

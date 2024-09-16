@@ -14,7 +14,7 @@ import * as Overlays from './overlays/overlays.js';
 const modificationsManagerByTraceIndex: ModificationsManager[] = [];
 let activeManager: ModificationsManager|null;
 
-export type UpdateAction = 'Remove'|'Add'|'UpdateLabel'|'UpdateTimeRange'|'UpdateLinkToEntry';
+export type UpdateAction = 'Remove'|'Add'|'UpdateLabel'|'UpdateTimeRange'|'UpdateLinkToEntry'|'EnterLabelEditState';
 
 // Event dispatched after an annotation was added, removed or updated.
 // The event argument is the Overlay that needs to be created,removed
@@ -126,6 +126,15 @@ export class ModificationsManager extends EventTarget {
   }
 
   createAnnotation(newAnnotation: TraceEngine.Types.File.Annotation, loadedFromFile: boolean = false): void {
+    // If a label already exists on an entry and a user is trying to create a new one, start editing an existing label instead.
+    if (newAnnotation.type === 'ENTRY_LABEL') {
+      const overlay = this.#findLabelOverlayForEntry(newAnnotation.entry);
+      if (overlay) {
+        this.dispatchEvent(new AnnotationModifiedEvent(overlay, 'EnterLabelEditState'));
+        return;
+      }
+    }
+
     // If the new annotation created was not loaded from the file, set the annotations visibility setting to true. That way we make sure
     // the annotations are on when a new one is created.
     if (!loadedFromFile) {
@@ -138,6 +147,17 @@ export class ModificationsManager extends EventTarget {
     const newOverlay = this.#createOverlayFromAnnotation(newAnnotation);
     this.#overlayForAnnotation.set(newAnnotation, newOverlay);
     this.dispatchEvent(new AnnotationModifiedEvent(newOverlay, 'Add'));
+  }
+
+  #findLabelOverlayForEntry(entry: TraceEngine.Types.TraceEvents.TraceEventData): Overlays.Overlays.TimelineOverlay
+      |null {
+    for (const [annotation, overlay] of this.#overlayForAnnotation.entries()) {
+      if (annotation.type === 'ENTRY_LABEL' && annotation.entry === entry) {
+        return overlay;
+      }
+    }
+
+    return null;
   }
 
   #createOverlayFromAnnotation(annotation: TraceEngine.Types.File.Annotation): Overlays.Overlays.EntryLabel

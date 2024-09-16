@@ -779,6 +779,10 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     this.#overlays.update();
   }
 
+  enterLabelEditMode(overlay: Overlays.Overlays.EntryLabel): void {
+    this.#overlays.enterLabelEditMode(overlay);
+  }
+
   private onAddEntryLabelAnnotation(
       dataProvider: TimelineFlameChartDataProvider|TimelineFlameChartNetworkDataProvider,
       event: Common.EventTarget.EventTargetEvent<number>): void {

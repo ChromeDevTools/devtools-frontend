@@ -250,6 +250,9 @@ export function isTimeRangeLabel(annotation: TimelineOverlay): annotation is Tim
 export function isEntriesLink(annotation: TimelineOverlay): annotation is EntriesLink {
   return annotation.type === 'ENTRIES_LINK';
 }
+export function isEntryLabel(annotation: TimelineOverlay): annotation is EntryLabel {
+  return annotation.type === 'ENTRY_LABEL';
+}
 
 /**
  * Used to highlight with a red-candy stripe a time range. It takes an entry
@@ -529,6 +532,17 @@ export class Overlays extends EventTarget {
       // Object.entries doesn't carry that information.
       const k = key as keyof T;
       existingOverlay[k] = value;
+    }
+  }
+
+  enterLabelEditMode(overlay: EntryLabel): void {
+    // Entry edit state can be triggered from outside the label component by clicking on the
+    // Entry that already has a label. Instead of creating a new label, set the existing entry
+    // label into an editable state.
+    const element = this.#overlaysToElements.get(overlay);
+    const component = element?.querySelector('devtools-entry-label-overlay');
+    if (component) {
+      component.setLabelEditabilityAndRemoveEmptyLabel(true);
     }
   }
 

@@ -100,7 +100,7 @@ Otherwise, the entry label overlay object only gets repositioned.
     // If the label is not empty, it was loaded from the trace file.
     // In that case, do not auto-focus it as if the user were creating it for the first time
     if (label !== '') {
-      this.#setLabelEditabilityAndRemoveEmptyLabel(false);
+      this.setLabelEditabilityAndRemoveEmptyLabel(false);
       this.#inputField?.setAttribute('aria-label', this.#label);
     }
 
@@ -330,7 +330,7 @@ Otherwise, the entry label overlay object only gets repositioned.
     this.#inputField.focus();
   }
 
-  #setLabelEditabilityAndRemoveEmptyLabel(editable: boolean): void {
+  setLabelEditabilityAndRemoveEmptyLabel(editable: boolean): void {
     this.#isLabelEditable = editable;
     this.#render();
     // If the label is editable, focus cursor on it
@@ -359,8 +359,8 @@ Otherwise, the entry label overlay object only gets repositioned.
             <span
               class="input-field"
               role="textbox"
-              @dblclick=${() => this.#setLabelEditabilityAndRemoveEmptyLabel(true)}
-              @blur=${() => this.#setLabelEditabilityAndRemoveEmptyLabel(false)}
+              @dblclick=${() => this.setLabelEditabilityAndRemoveEmptyLabel(true)}
+              @blur=${() => this.setLabelEditabilityAndRemoveEmptyLabel(false)}
               @keydown=${this.#handleLabelInputKeyDown}
               @paste=${this.#handleLabelInputPaste}
               @keyup=${this.#handleLabelInputKeyUp}

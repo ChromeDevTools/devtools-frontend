@@ -1659,6 +1659,8 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
         this.flameChart.updateExistingOverlay(overlay, {
           entryTo: overlay.entryTo,
         });
+      } else if (action === 'EnterLabelEditState' && Overlays.Overlays.isEntryLabel(overlay)) {
+        this.flameChart.enterLabelEditMode(overlay);
       }
 
       const annotations = currentManager.getAnnotations();

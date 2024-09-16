@@ -1752,7 +1752,6 @@ export const knownContextValues = new Set([
   'legend',
   'length',
   'less',
-  'lets-go',
   'letter-spacing',
   'letter-spacing-unit',
   'letter-spacing-value-type',

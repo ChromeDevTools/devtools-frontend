@@ -1026,17 +1026,17 @@ export class ConsoleInsight extends HTMLElement {
                 Settings
               </${Buttons.Button.Button.litTagName}>
               <${Buttons.Button.Button.litTagName}
-                class='lets-go-button'
+                class='continue-button'
                 @click=${this.#onConsentReminderConfirmed}
                 .data=${
                   {
                     variant: Buttons.Button.Variant.PRIMARY,
-                    jslogContext: 'lets-go',
-                    title: 'Let\'s go',
+                    jslogContext: 'continue',
+                    title: 'continue',
                   } as Buttons.Button.ButtonData
                 }
                >
-                Let's go
+                Continue
               </${Buttons.Button.Button.litTagName}>
             </div>
           </footer>`;

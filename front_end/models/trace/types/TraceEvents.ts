@@ -1152,10 +1152,10 @@ export interface TraceEventParseMetaViewport extends TraceEventInstant {
   name: KnownEventName.PARSE_META_VIEWPORT;
   args: TraceEventArgs&{
     data: {
-      frame: string,
       // eslint-disable-next-line @typescript-eslint/naming-convention
       node_id: Protocol.DOM.BackendNodeId,
       content: string,
+      frame?: string,
     },
   };
 }

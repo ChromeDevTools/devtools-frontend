@@ -266,7 +266,19 @@ export class ConsolePin {
         {
           key: 'Tab',
           run: (view: CodeMirror.EditorView) => {
-            if (CodeMirror.completionStatus !== null) {
+            if (CodeMirror.completionStatus(this.editor.state) !== null) {
+              return false;
+            }
+            // User should be able to tab out of edit field after auto complete is done
+            view.dispatch({changes: {from: 0, to: view.state.doc.length, insert: this.committedExpression}});
+            this.focusOut();
+            return true;
+          },
+        },
+        {
+          key: 'Shift-Tab',
+          run: (view: CodeMirror.EditorView) => {
+            if (CodeMirror.completionStatus(this.editor.state) !== null) {
               return false;
             }
             // User should be able to tab out of edit field after auto complete is done

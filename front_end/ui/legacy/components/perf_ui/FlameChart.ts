@@ -402,7 +402,12 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
   }
 
   canvasBoundingClientRect(): DOMRect|null {
-    if (this.#canvasBoundingClientRect) {
+    // If we have a rect already, and it has width & height, use it by default.
+    // The reason we check the dimensions is because otherwise if this method was
+    // called before the FlameChart was fully rendered it might have been
+    // calculated with a width or height of 0, and that is clearly incorrect.
+    if (this.#canvasBoundingClientRect && this.#canvasBoundingClientRect.width > 0 &&
+        this.#canvasBoundingClientRect.height > 0) {
       return this.#canvasBoundingClientRect;
     }
     this.#canvasBoundingClientRect = this.canvas.getBoundingClientRect();

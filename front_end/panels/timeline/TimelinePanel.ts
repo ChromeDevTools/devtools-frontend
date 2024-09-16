@@ -1679,12 +1679,10 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     // Add overlays for annotations loaded from the trace file
     const currModificationManager = ModificationsManager.activeManager();
     if (currModificationManager) {
-      currModificationManager.getOverlays().forEach(overlay => {
-        this.flameChart.addOverlay(overlay);
-      });
       const annotations = currModificationManager.getAnnotations();
       const annotationEntryToColorMap = this.buildColorsAnnotationsMap(annotations);
       this.#sideBar.setAnnotations(annotations, annotationEntryToColorMap);
+      this.flameChart.bulkAddOverlays(currModificationManager.getOverlays());
     }
 
     // Set up line level profiling with CPU profiles, if we found any.

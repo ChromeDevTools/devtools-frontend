@@ -35,6 +35,9 @@ export class TimespanBreakdownOverlay extends HTMLElement {
   }
 
   set canvasRect(rect: DOMRect|null) {
+    if (this.#canvasRect && rect && this.#canvasRect.width === rect.width && this.#canvasRect.height === rect.height) {
+      return;
+    }
     this.#canvasRect = rect;
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
@@ -53,7 +56,7 @@ export class TimespanBreakdownOverlay extends HTMLElement {
    * If the label is off to the left or right, we fix it to that corner and
    * align the text so the label is visible as long as possible.
    */
-  afterOverlayUpdate(): void {
+  checkSectionLabelPositioning(): void {
     const sections = this.#shadow.querySelectorAll<HTMLElement>('.timespan-breakdown-overlay-section');
     if (!sections) {
       return;
@@ -168,6 +171,7 @@ export class TimespanBreakdownOverlay extends HTMLElement {
 
   #render(): void {
     LitHtml.render(LitHtml.html`${this.#sections?.map(this.renderSection)}`, this.#shadow, {host: this});
+    this.checkSectionLabelPositioning();
   }
 }
 

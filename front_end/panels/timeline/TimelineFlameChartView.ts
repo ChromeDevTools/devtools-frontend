@@ -754,6 +754,15 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     }
   }
 
+  /**
+   * Used to create multiple overlays at once without triggering a redraw for each one.
+   */
+  bulkAddOverlays(overlays: Overlays.Overlays.TimelineOverlay[]): void {
+    for (const overlay of overlays) {
+      this.#overlays.add(overlay);
+    }
+    this.#overlays.update();
+  }
   addOverlay<T extends Overlays.Overlays.TimelineOverlay>(newOverlay: T): T {
     const overlay = this.#overlays.add(newOverlay);
     this.#overlays.update();

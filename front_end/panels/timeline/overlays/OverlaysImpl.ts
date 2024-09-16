@@ -631,14 +631,18 @@ export class Overlays extends EventTarget {
     const timeRangeOverlays: TimeRangeLabel[] = [];
     for (const [overlay, existingElement] of this.#overlaysToElements) {
       const element = existingElement || this.#createElementForNewOverlay(overlay);
-      if (existingElement) {
-        this.#updateOverlayElementIfRequired(overlay, element);
-      } else {
+      if (!existingElement) {
         // This is a new overlay, so we have to store the element and add it to the DOM.
         this.#overlaysToElements.set(overlay, element);
         this.#overlaysContainer.appendChild(element);
       }
+
+      // Now we position the overlay on the timeline.
       this.#positionOverlay(overlay, element);
+
+      // And now we give every overlay a chance to react to its new position, if it needs to
+      this.#updateOverlayElementAfterPositioning(overlay, element);
+
       if (overlay.type === 'TIME_RANGE') {
         timeRangeOverlays.push(overlay);
       }
@@ -739,10 +743,6 @@ export class Overlays extends EventTarget {
           this.#setOverlayElementVisibility(element, !annotationsAreHidden);
         }
         this.#positionTimeRangeOverlay(overlay, element);
-        const component = element.querySelector('devtools-time-range-overlay');
-        if (component) {
-          component.afterOverlayUpdate();
-        }
         break;
       }
       case 'ENTRY_LABEL': {
@@ -786,10 +786,6 @@ export class Overlays extends EventTarget {
       }
       case 'TIMESPAN_BREAKDOWN': {
         this.#positionTimespanBreakdownOverlay(overlay, element);
-        const component = element.querySelector('devtools-timespan-breakdown-overlay');
-        if (component) {
-          component.afterOverlayUpdate();
-        }
         // TODO: Have the timespan squeeze instead.
         if (overlay.entry) {
           const {visibleWindow} = this.#dimensions.trace;
@@ -1388,7 +1384,7 @@ export class Overlays extends EventTarget {
    * Some of the HTML elements for overlays might need updating between each render
    * (for example, if a time range has changed, we update its duration text)
    */
-  #updateOverlayElementIfRequired(overlay: TimelineOverlay, element: HTMLElement): void {
+  #updateOverlayElementAfterPositioning(overlay: TimelineOverlay, element: HTMLElement): void {
     switch (overlay.type) {
       case 'ENTRY_SELECTED':
         // Nothing to do here.
@@ -1398,6 +1394,7 @@ export class Overlays extends EventTarget {
         if (component) {
           component.duration = overlay.showDuration ? overlay.bounds.range : null;
           component.canvasRect = this.#charts.mainChart.canvasBoundingClientRect();
+          component.updateLabelPositioning();
         }
         break;
       }
@@ -1414,6 +1411,7 @@ export class Overlays extends EventTarget {
         if (component) {
           component.sections = overlay.sections;
           component.canvasRect = this.#charts.mainChart.canvasBoundingClientRect();
+          component.checkSectionLabelPositioning();
         }
         break;
       }

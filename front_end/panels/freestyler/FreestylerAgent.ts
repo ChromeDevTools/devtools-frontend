@@ -32,11 +32,6 @@ The user selected a DOM element in the browser's DevTools and sends a query abou
 * **CRITICAL** Use \`window.getComputedStyle\` ALWAYS with property access, like \`window.getComputedStyle($0.parentElement)['color']\`
 * **CRITICAL** Consider that \`data\` variable from the previous ACTION blocks are not available in a different ACTION block.
 
-# Abstract rules
-P = "problem"
-multilevel(P) = p₁ v p₂ v p₃ ... pₙ
-P ∈ multilevel(P) → collect_data_for(p₁, p₂, p₃, ... pₙ)
-
 # Instructions
 You are going to answer to the query in these steps:
 * THOUGHT

@@ -42,7 +42,7 @@ const Utils = {
 
     // Function to determine the maximum width of a column
     const getColumnWidth = (colName, index) => {
-      const columnLengths = rowData.map(singleRow => singleRow[index].length);
+      const columnLengths = rowData.map(singleRow => singleRow[index]?.length || 0);
       return Math.max(
           colName.length,
           ...columnLengths,
@@ -74,6 +74,64 @@ const Utils = {
     ].join('\n');
 
     return table;
+  },
+  toCsv(data) {
+    const escapeCell = val => `"${(String(val)).replaceAll('"', '""')}"`;
+
+    data.sort((datum1, datum2) => {
+      if (datum1.exampleId === datum2.exampleId) {
+        return 0;
+      }
+
+      if (datum1.exampleId > datum2.exampleId) {
+        return 1;
+      }
+
+      return -1;
+    });
+
+    const evaluationToRate = evaluation => {
+      const regex = /\((.*)\)/;
+      const result = regex.exec(evaluation);
+      return result?.[1] || '';
+    };
+
+    const evaluationToFinalRate = evaluation => {
+      if (evaluation !== 'Correct' && evaluation !== 'Wrong') {
+        return '';
+      }
+
+      return evaluation === 'Correct' ? 1 : -1;
+    };
+
+    let csv = 'exampleId, evaluation, rate, finalRate';
+    const evalDataByExampleId = {};
+    for (let i = 0; i < data.length; i++) {
+      const datum = data[i];
+      const isFinalRating = datum.evaluation === 'Correct' || datum.evaluation === 'Wrong';
+      if (!evalDataByExampleId[datum.exampleId]) {
+        evalDataByExampleId[datum.exampleId] = {exampleId: datum.exampleId, evals: [], finalRate: undefined};
+      }
+
+      if (isFinalRating) {
+        evalDataByExampleId[datum.exampleId].finalRate = datum.evaluation;
+      } else {
+        evalDataByExampleId[datum.exampleId].evals.push(datum.evaluation);
+      }
+    }
+
+    for (const key of Object.keys(evalDataByExampleId)) {
+      const evalData = evalDataByExampleId[key];
+      for (let i = 0; i < evalData.evals.length; i++) {
+        const evaluation = evalData.evals[i];
+        csv += `\n${escapeCell(evalData.exampleId)}, ${escapeCell(evaluation)}, ${
+            escapeCell(evaluationToRate(evaluation))},`;
+        if (i + 1 === evalData.evals.length) {
+          csv += ` ${escapeCell(evaluationToFinalRate(evalData.finalRate))}`;
+        }
+      }
+    }
+    return csv;
   }
 };
 
@@ -332,9 +390,36 @@ async function renderMainPage() {
     const resultsSummary = document.createElement('summary');
     resultsSummary.innerHTML = `Expand to see evaluation table for <strong>${viewState.dataId}</strong>`;
     resultsText.textContent = result;
+
+    const exportButton = document.createElement('button');
+    exportButton.setAttribute('style', `
+      margin-top: 12px;
+    `);
+    exportButton.textContent = 'Export as CSV';
+    exportButton.addEventListener('click', async () => {
+      exportButton.textContent = 'Copied (or check console)';
+      setTimeout(() => {
+        exportButton.textContent = 'Export as CSV';
+      }, 3000);
+
+      const csvText = Utils.toCsv(evaluationsForDataset);
+
+      const blob = new Blob([csvText], {type: 'text/csv;charset=utf-8;'});
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.setAttribute('href', url);
+      link.setAttribute('download', `${viewState.dataId}-eval.csv`);
+      link.click();
+
+      console.log('Paste the below CSV text to a sheet, then click Data > Split text to columns');
+      console.log(csvText);
+      await navigator.clipboard.writeText(csvText);
+    });
+
     resultsContainer.appendChild(resultsSummary);
     resultsContainer.appendChild(resultsText);
     exportContainer.appendChild(resultsContainer);
+    exportContainer.appendChild(exportButton);
   }
 
   const exampleDescriptionContainer = document.createElement('div');

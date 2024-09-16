@@ -768,19 +768,30 @@ export class Overlays extends EventTarget {
           break;
         }
 
-        // If either entry is in a track that the user has collapsed, we do not show the connection at all.
+        // If both entries are in collapsed tracks, we hide the overlay completely.
         const fromEntryInCollapsedTrack = this.#entryIsInCollapsedTrack(entriesToConnect.entryFrom);
         const toEntryInCollapsedTrack =
             entriesToConnect.entryTo && this.#entryIsInCollapsedTrack(entriesToConnect.entryTo);
-        if (fromEntryInCollapsedTrack || toEntryInCollapsedTrack) {
+        const bothEntriesInCollapsedTrack = Boolean(fromEntryInCollapsedTrack && toEntryInCollapsedTrack);
+        if (bothEntriesInCollapsedTrack) {
           this.#setOverlayElementVisibility(element, false);
-          break;
+          return;
         }
 
         const isVisible = !annotationsAreHidden;
         this.#setOverlayElementVisibility(element, isVisible);
         if (isVisible) {
           this.#positionEntriesLinkOverlay(overlay, element, entriesToConnect);
+
+          // If either entry (but not both) is in a track that the user has collapsed, we do not
+          // show the connection at all, but we still show the borders around
+          // the entry. So in this case we mark the overlay as visible, but
+          // tell it to not draw the arrow.
+          const hideArrow = Boolean(fromEntryInCollapsedTrack || toEntryInCollapsedTrack);
+          const component = element.querySelector('devtools-entries-link-overlay');
+          if (component) {
+            component.hideArrow = hideArrow;
+          }
         }
         break;
       }

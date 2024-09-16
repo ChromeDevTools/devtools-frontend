@@ -58,6 +58,16 @@ export class EntriesLinkOverlay extends HTMLElement {
     this.#shadow.adoptedStyleSheets = [styles];
   }
 
+  /**
+   * If one entry that is linked is in a collapsed track, we show the outlines
+   * but hide only the arrow.
+   */
+  set hideArrow(shouldHide: boolean) {
+    if (this.#connector) {
+      this.#connector.style.display = shouldHide ? 'none' : 'block';
+    }
+  }
+
   set fromEntryCoordinateAndDimentions(fromEntryParams: {x: number, y: number, length: number, height: number}) {
     this.#coordinateFrom = {x: fromEntryParams.x, y: fromEntryParams.y};
     this.#fromEntryDimentions = {width: fromEntryParams.length, height: fromEntryParams.height};

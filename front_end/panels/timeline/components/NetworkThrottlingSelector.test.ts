@@ -82,6 +82,19 @@ describeWithEnvironment('NetworkThrottlingSelector', () => {
     assert.strictEqual(networkManager.networkConditions().i18nTitleKey, 'Fast 4G');
   });
 
+  it('reacts to changes when it is unmounted and then remounted', async () => {
+    const view = new Components.NetworkThrottlingSelector.NetworkThrottlingSelector();
+    // Change the conditions before the component is put into the DOM.
+    networkManager.setNetworkConditions(MobileThrottling.ThrottlingPresets.ThrottlingPresets.networkPresets[1]);
+
+    renderElementIntoDOM(view);
+    await coordinator.done();
+    // Ensure that the component picks up the new changes and has selected the right thorttling setting
+    const items = view.shadowRoot!.querySelectorAll('devtools-menu-item');
+    assert.isTrue(items[2].innerText.includes('Slow 4G'));
+    assert.isTrue(items[2].selected);
+  });
+
   it('reacts to network manager changes', async () => {
     const view = new Components.NetworkThrottlingSelector.NetworkThrottlingSelector();
     renderElementIntoDOM(view);

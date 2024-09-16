@@ -76,6 +76,12 @@ export class NetworkThrottlingSelector extends HTMLElement {
     this.#shadow.adoptedStyleSheets = [networkThrottlingSelectorStyles];
     SDK.NetworkManager.MultitargetNetworkManager.instance().addEventListener(
         SDK.NetworkManager.MultitargetNetworkManager.Events.CONDITIONS_CHANGED, this.#onConditionsChanged, this);
+
+    // Also call onConditionsChanged immediately to make sure we get the
+    // latest snapshot. Otherwise if another panel updated this value and this
+    // component wasn't in the DOM, this component will not update itself
+    // when it is put into the page
+    this.#onConditionsChanged();
     this.#customNetworkConditionsSetting.addChangeListener(this.#onSettingChanged, this);
   }
 

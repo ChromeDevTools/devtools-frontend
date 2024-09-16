@@ -1129,35 +1129,32 @@ export class AnchorFunctionRenderer implements MatchRenderer<AnchorFunctionMatch
   anchorDecoratedForTest(): void {
   }
 
-  async #decorateAnchor(container: HTMLElement, identifier?: string): Promise<void> {
+  async #decorateAnchor(container: HTMLElement, addSpace: boolean, identifier?: string): Promise<void> {
     await decorateAnchorForAnchorLink(container, this.#treeElement, {
       identifier,
-      needsSpace: true,
+      needsSpace: addSpace,
     });
     this.anchorDecoratedForTest();
   }
 
   render(match: AnchorFunctionMatch, context: RenderingContext): Node[] {
     const content = document.createElement('span');
-    content.appendChild(document.createTextNode(`${match.functionName}(`));
-
-    const firstArgText = match.matching.ast.text(match.args[0]);
-    const hasDashedIdentifier = firstArgText.startsWith('--');
-    const linkContainer = document.createElement('span');
-    if (hasDashedIdentifier) {
-      linkContainer.textContent = `${firstArgText} `;
-    }
-    content.appendChild(linkContainer);
-
-    const remainingArgsContainer = content.appendChild(document.createElement('span'));
-    if (hasDashedIdentifier) {
-      Renderer.renderInto(match.args.slice(1), context, remainingArgsContainer);
+    if (match.node.name === 'VariableName') {
+      // Link an anchor double-dashed ident to its matching anchor element.
+      content.appendChild(document.createTextNode(match.text));
+      void this.#decorateAnchor(content, /* addSpace */ false, match.text);
     } else {
-      Renderer.renderInto(match.args, context, remainingArgsContainer);
+      // The matcher passes a 'CallExpression' node with a functionName
+      // ('anchor' or 'anchor-size') if the arguments need to have an implicit
+      // anchor link swatch rendered.
+      content.appendChild(document.createTextNode(`${match.functionName}(`));
+      const swatchContainer = document.createElement('span');
+      content.appendChild(swatchContainer);
+      const args = ASTUtils.children(match.node.getChild('ArgList'));
+      const remainingArgs = args.splice(1);
+      void this.#decorateAnchor(swatchContainer, /* addSpace */ remainingArgs.length > 1);
+      Renderer.renderInto(remainingArgs, context, content);
     }
-
-    void this.#decorateAnchor(linkContainer, hasDashedIdentifier ? firstArgText : undefined);
-    content.appendChild(document.createTextNode(')'));
     return [content];
   }
 

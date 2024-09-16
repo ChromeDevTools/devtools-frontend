@@ -7847,6 +7847,10 @@ export const NativeFunctions = [
     signatures: [["input","filter","?options"]]
   },
   {
+    name: "cumulativeSum",
+    signatures: [["input","axis","?options"]]
+  },
+  {
     name: "equal",
     signatures: [["a","b","?options"]]
   },

@@ -327,10 +327,16 @@ export class FreestylerPanel extends UI.Panel.Panel {
 
           break;
         }
+        case ResponseType.TITLE: {
+          step.title = data.title;
+          if (systemMessage.steps.at(-1) !== step) {
+            systemMessage.steps.push(step);
+          }
+          break;
+        }
         case ResponseType.THOUGHT: {
           step.isLoading = false;
           step.thought = data.thought;
-          step.title = data.title;
           if (systemMessage.steps.at(-1) !== step) {
             systemMessage.steps.push(step);
           }

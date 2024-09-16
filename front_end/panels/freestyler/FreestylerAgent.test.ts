@@ -949,7 +949,6 @@ ANSWER: this is the answer`,
         {
           type: Freestyler.ResponseType.THOUGHT,
           thought: 'I am thinking.',
-          title: undefined,
           rpcId: undefined,
         },
         {

@@ -109,6 +109,7 @@ FIXABLE: true
 export const FIX_THIS_ISSUE_PROMPT = 'Fix this issue using JavaScript code execution';
 
 export enum ResponseType {
+  TITLE = 'title',
   THOUGHT = 'thought',
   ACTION = 'action',
   SIDE_EFFECT = 'side-effect',
@@ -135,10 +136,15 @@ export interface ErrorResponse {
   rpcId?: number;
 }
 
+export interface TitleResponse {
+  type: ResponseType.TITLE;
+  title: string;
+  rpcId?: number;
+}
+
 export interface ThoughtResponse {
   type: ResponseType.THOUGHT;
   thought: string;
-  title?: string;
   rpcId?: number;
 }
 
@@ -161,7 +167,8 @@ export interface QueryResponse {
   type: ResponseType.QUERYING;
 }
 
-export type ResponseData = AnswerResponse|ErrorResponse|ActionResponse|SideEffectResponse|ThoughtResponse|QueryResponse;
+export type ResponseData =
+    AnswerResponse|ErrorResponse|ActionResponse|SideEffectResponse|ThoughtResponse|TitleResponse|QueryResponse;
 
 // TODO: this should use the current execution context pased on the
 // node.
@@ -612,6 +619,14 @@ export class FreestylerAgent {
       // since the answer is not based on the observation resulted from
       // the action.
       if (action) {
+        if (title) {
+          yield {
+            type: ResponseType.TITLE,
+            title,
+            rpcId,
+          };
+        }
+
         if (thought) {
           addToHistory(`THOUGHT: ${thought}
 TITLE: ${title}
@@ -621,7 +636,6 @@ STOP`);
           yield {
             type: ResponseType.THOUGHT,
             thought,
-            title,
             rpcId,
           };
         } else {

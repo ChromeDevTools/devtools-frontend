@@ -17,6 +17,7 @@ ts_library("testing") {
     "ExpectStubCall.ts",
     "ExtensionHelpers.ts",
     "FileManagerHelpers.ts",
+    "InsightHelpers.ts",
     "LanguagePluginHelpers.ts",
     "MockConnection.ts",
     "MockExecutionContext.ts",

@@ -5,7 +5,7 @@
 import * as Helpers from '../helpers/helpers.js';
 import type * as Types from '../types/types.js';
 
-import {type InsightResult, InsightWarning, type NavigationInsightContext, type RequiredData} from './types.js';
+import {type BoundedInsightContext, type InsightResult, InsightWarning, type RequiredData} from './types.js';
 
 export function deps(): ['Meta', 'UserInteractions'] {
   return ['Meta', 'UserInteractions'];
@@ -17,7 +17,12 @@ export type ViewportInsightResult = InsightResult<{
 }>;
 
 export function generateInsight(
-    traceParsedData: RequiredData<typeof deps>, context: NavigationInsightContext): ViewportInsightResult {
+    traceParsedData: RequiredData<typeof deps>, context: BoundedInsightContext): ViewportInsightResult {
+  // TODO(b/366049346)
+  if (!context.navigation) {
+    return {mobileOptimized: null};
+  }
+
   const compositorEvents = traceParsedData.UserInteractions.beginCommitCompositorFrameEvents.filter(event => {
     if (event.args.frame !== context.frameId) {
       return false;

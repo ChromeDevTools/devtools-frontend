@@ -81,18 +81,22 @@ export class DocumentLatency extends BaseInsight {
 
   override createOverlays(): Overlays.Overlays.TimelineOverlay[] {
     const insight = getDocumentLatencyInsight(this.data.insights, this.data.navigationId);
-    if (!insight?.documentRequest) {
+    if (!insight?.data?.documentRequest) {
       return [];
     }
 
     // TODO(crbug.com/352244434) add breakdown for server response time, queing, redirects, etc...
     return [{
       type: 'ENTRY_SELECTED',
-      entry: insight.documentRequest,
+      entry: insight.data.documentRequest,
     }];
   }
 
   #renderInsight(insight: TraceEngine.Insights.Types.InsightResults['DocumentLatency']): LitHtml.LitTemplate {
+    if (!insight.data) {
+      return LitHtml.nothing;
+    }
+
     // clang-format off
     return LitHtml.html`
     <div class="insights">
@@ -106,15 +110,15 @@ export class DocumentLatency extends BaseInsight {
         <div slot="insight-description" class="insight-description">
           <ul class="insight-results insight-icon-results">
               <li class="insight-entry">
-                ${this.#check(insight.redirectDuration === 0,
+                ${this.#check(insight.data.redirectDuration === 0,
                   i18nString(UIStrings.passingRedirects), i18nString(UIStrings.failedRedirects))}
               </li>
               <li class="insight-entry">
-                ${this.#check(!insight.serverResponseTooSlow,
+                ${this.#check(!insight.data.serverResponseTooSlow,
                   i18nString(UIStrings.passingServerResponseTime), i18nString(UIStrings.failedServerResponseTime))}
               </li>
               <li class="insight-entry">
-                ${this.#check(insight.uncompressedResponseBytes === 0,
+                ${this.#check(insight.data.uncompressedResponseBytes === 0,
                   i18nString(UIStrings.passingTextCompression), i18nString(UIStrings.failedTextCompression))}
               </li>
             </ul>
@@ -130,7 +134,7 @@ export class DocumentLatency extends BaseInsight {
       activeCategory: this.data.activeCategory,
       insightCategory: this.insightCategory,
     });
-    const output = matchesCategory && insight ? this.#renderInsight(insight) : LitHtml.nothing;
+    const output = matchesCategory && insight?.data ? this.#renderInsight(insight) : LitHtml.nothing;
     LitHtml.render(output, this.shadow, {host: this});
   }
 }

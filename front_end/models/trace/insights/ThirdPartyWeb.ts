@@ -8,7 +8,7 @@ import type * as Handlers from '../handlers/handlers.js';
 import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
 
-import {type InsightResult, type NavigationInsightContext, type RequiredData} from './types.js';
+import {type BoundedInsightContext, type InsightResult, type RequiredData} from './types.js';
 
 export function deps(): ['Meta', 'NetworkRequests', 'Renderer', 'ImagePainting'] {
   return ['Meta', 'NetworkRequests', 'Renderer', 'ImagePainting'];
@@ -107,12 +107,7 @@ interface SummaryMaps {
   requestsByEntity: Map<Entity, Types.TraceEvents.SyntheticNetworkRequest[]>;
 }
 
-function getSelfTimeByUrl(
-    traceData: RequiredData<typeof deps>, context: NavigationInsightContext): Map<string, number> {
-  const startTime = Types.Timing.MicroSeconds(context.navigation.ts);
-  // TODO: we should also pass a time window for this navigation to each insight. Use infinity for now.
-  const endTime = Types.Timing.MicroSeconds(Number.POSITIVE_INFINITY);
-  const bounds = Helpers.Timing.traceWindowFromMicroSeconds(startTime, endTime);
+function getSelfTimeByUrl(traceData: RequiredData<typeof deps>, context: BoundedInsightContext): Map<string, number> {
   const selfTimeByUrl = new Map<string, number>();
 
   for (const process of traceData.Renderer.processes.values()) {
@@ -127,7 +122,7 @@ function getSelfTimeByUrl(
         }
 
         for (const event of thread.entries) {
-          if (!Helpers.Timing.eventIsInBounds(event, bounds)) {
+          if (!Helpers.Timing.eventIsInBounds(event, context.bounds)) {
             continue;
           }
 
@@ -190,9 +185,13 @@ function getSummaries(
 }
 
 export function generateInsight(
-    traceData: RequiredData<typeof deps>, context: NavigationInsightContext): ThirdPartyWebInsightResult {
+    traceData: RequiredData<typeof deps>, context: BoundedInsightContext): ThirdPartyWebInsightResult {
   const networkRequests = [];
   for (const req of traceData.NetworkRequests.byTime) {
+    if (!context.navigation) {
+      break;
+    }
+
     if (req.args.data.frame !== context.frameId) {
       continue;
     }
@@ -217,7 +216,7 @@ export function generateInsight(
   const selfTimeByUrl = getSelfTimeByUrl(traceData, context);
   const summaries = getSummaries(networkRequests, entityByRequest, selfTimeByUrl);
 
-  const firstPartyUrl = context.navigation.args.data?.url ?? traceData.Meta.mainFrameURL;
+  const firstPartyUrl = context.navigation?.args.data?.url ?? traceData.Meta.mainFrameURL;
   const firstPartyEntity =
       ThirdPartyWeb.ThirdPartyWeb.getEntity(firstPartyUrl) || makeUpEntity(madeUpEntityCache, firstPartyUrl);
 

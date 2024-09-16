@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
+import {createContextForNavigation, getFirstOrError, getInsight} from '../../../testing/InsightHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as TraceModel from '../trace.js';
 import * as Types from '../types/types.js';
@@ -16,31 +17,21 @@ export async function processTrace(testContext: Mocha.Suite|Mocha.Context|null, 
   return {data: traceData, insights};
 }
 
-function getInsight(insights: TraceModel.Insights.Types.TraceInsightData, navigationId: string) {
-  const navInsights = insights.get(navigationId);
-  if (!navInsights) {
-    throw new Error('missing navInsights');
-  }
-  const insight = navInsights.DocumentLatency;
-  if (insight instanceof Error) {
-    throw insight;
-  }
-  return insight;
-}
-
 describeWithEnvironment('DocumentLatency', function() {
   it('reports savings for main document with redirects', async () => {
     const {data, insights} = await processTrace(this, 'lantern/redirect/trace.json.gz');
-    const insight = getInsight(insights, data.Meta.navigationsByNavigationId.keys().next().value);
-    assert.strictEqual(insight.redirectDuration, 1779);
+    const insight =
+        getInsight('DocumentLatency', insights, getFirstOrError(data.Meta.navigationsByNavigationId.values()));
+    assert.strictEqual(insight.data?.redirectDuration, 1779);
     assert.deepEqual(insight.metricSavings, {FCP: 1779, LCP: 1779});
   });
 
   it('reports no savings for server with low response time', async () => {
     const {data, insights} = await processTrace(this, 'lantern/paul/trace.json.gz');
-    const insight = getInsight(insights, data.Meta.navigationsByNavigationId.keys().next().value);
-    assert.strictEqual(insight.serverResponseTime, 43);
-    assert(!insight.serverResponseTooSlow);
+    const insight =
+        getInsight('DocumentLatency', insights, getFirstOrError(data.Meta.navigationsByNavigationId.values()));
+    assert.strictEqual(insight.data?.serverResponseTime, 43);
+    assert(!insight.data?.serverResponseTooSlow);
     assert.deepEqual(insight.metricSavings, {FCP: 0, LCP: 0});
   });
 
@@ -65,22 +56,19 @@ describeWithEnvironment('DocumentLatency', function() {
       throw new Error('missing traceParsedData');
     }
 
-    const [navigationId, navigation] = data.Meta.navigationsByNavigationId.entries().next().value;
-    const context = {
-      frameId: data.Meta.mainFrameId,
-      navigation,
-      navigationId,
-    };
+    const navigation = getFirstOrError(data.Meta.navigationsByNavigationId.values());
+    const context = createContextForNavigation(navigation, data.Meta.mainFrameId);
     const insight = TraceModel.Insights.InsightRunners.DocumentLatency.generateInsight(data, context);
-    assert.strictEqual(insight.serverResponseTime, 1043);
-    assert(insight.serverResponseTooSlow);
+    assert.strictEqual(insight.data?.serverResponseTime, 1043);
+    assert(insight.data?.serverResponseTooSlow);
     assert.deepEqual(insight.metricSavings, {FCP: 943, LCP: 943});
   });
 
   it('reports no compression savings for compressed text', async () => {
     const {data, insights} = await processTrace(this, 'lantern/paul/trace.json.gz');
-    const insight = getInsight(insights, data.Meta.navigationsByNavigationId.keys().next().value);
-    assert.strictEqual(insight.uncompressedResponseBytes, 0);
+    const insight =
+        getInsight('DocumentLatency', insights, getFirstOrError(data.Meta.navigationsByNavigationId.values()));
+    assert.strictEqual(insight.data?.uncompressedResponseBytes, 0);
     assert.deepEqual(insight.metricSavings, {FCP: 0, LCP: 0});
   });
 
@@ -102,14 +90,10 @@ describeWithEnvironment('DocumentLatency', function() {
       throw new Error('missing traceParsedData');
     }
 
-    const [navigationId, navigation] = data.Meta.navigationsByNavigationId.entries().next().value;
-    const context = {
-      frameId: data.Meta.mainFrameId,
-      navigation,
-      navigationId,
-    };
+    const navigation = getFirstOrError(data.Meta.navigationsByNavigationId.values());
+    const context = createContextForNavigation(navigation, data.Meta.mainFrameId);
     const insight = TraceModel.Insights.InsightRunners.DocumentLatency.generateInsight(data, context);
-    assert.strictEqual(insight.uncompressedResponseBytes, 39799);
+    assert.strictEqual(insight.data?.uncompressedResponseBytes, 39799);
     assert.deepEqual(insight.metricSavings, {FCP: 0, LCP: 0});
   });
 });

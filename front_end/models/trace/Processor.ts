@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as Handlers from './handlers/handlers.js';
+import * as Helpers from './helpers/helpers.js';
 import * as Insights from './insights/insights.js';
 import * as Lantern from './lantern/lantern.js';
 import * as LanternComputationData from './LanternComputationData.js';
@@ -329,6 +330,24 @@ export class TraceProcessor extends EventTarget {
     return {graph, simulator, metrics};
   }
 
+  #computeBoundedInsightData(
+      traceParsedData: Handlers.Types.TraceParseData, insightRunners: Partial<typeof Insights.InsightRunners>,
+      context: Insights.Types.BoundedInsightContext): Insights.Types.BoundedInsightData {
+    const boundedInsightData = {} as Insights.Types.BoundedInsightData;
+
+    for (const [name, insight] of Object.entries(insightRunners)) {
+      let insightResult;
+      try {
+        insightResult = insight.generateInsight(traceParsedData, context);
+      } catch (err) {
+        insightResult = err;
+      }
+      Object.assign(boundedInsightData, {[name]: insightResult});
+    }
+
+    return boundedInsightData;
+  }
+
   /**
    * Run all the insights and set the result to `#insights`.
    */
@@ -338,12 +357,41 @@ export class TraceProcessor extends EventTarget {
 
     const enabledInsightRunners = TraceProcessor.getEnabledInsightRunners(traceParsedData);
 
-    for (const navigation of traceParsedData.Meta.mainFrameNavigations) {
-      const frameId = navigation.args.frame;
-      const navigationId = navigation.args.data?.navigationId;
-      if (!frameId || !navigationId) {
-        continue;
+    const navigations = traceParsedData.Meta.mainFrameNavigations.filter(
+        navigation => navigation.args.frame && navigation.args.data?.navigationId);
+
+    // Check if there is a meaningful chunk of work happening prior to the first navigation.
+    // If so, we run the insights on that initial bounds.
+    // Otherwise, there are no navigations and we do a no-navigation insights pass on the entire trace.
+    if (navigations.length) {
+      const bounds =
+          Helpers.Timing.traceWindowFromMicroSeconds(traceParsedData.Meta.traceBounds.min, navigations[0].ts);
+      // It really shouldn't take more than a few ms for a navigation to trigger via the "Record and reload" option.
+      // TODO(b/366049346): after some user testing (by us), possibly update or remove this threshold.
+      const threshold = Helpers.Timing.millisecondsToMicroseconds(1000 as Types.Timing.MilliSeconds);
+      if (bounds.range > threshold) {
+        const context: Insights.Types.BoundedInsightContext = {
+          bounds,
+          frameId: traceParsedData.Meta.mainFrameId,
+        };
+        const boundedInsightData = this.#computeBoundedInsightData(traceParsedData, enabledInsightRunners, context);
+        this.#insights.set(Insights.Types.NO_NAVIGATION, boundedInsightData);
       }
+      // If threshold is not met, then the beginning of the trace will be processed by the first navigation bounds.
+    } else {
+      const context: Insights.Types.BoundedInsightContext = {
+        bounds: traceParsedData.Meta.traceBounds,
+        frameId: traceParsedData.Meta.mainFrameId,
+      };
+      const boundedInsightData = this.#computeBoundedInsightData(traceParsedData, enabledInsightRunners, context);
+      this.#insights.set(Insights.Types.NO_NAVIGATION, boundedInsightData);
+    }
+
+    // Now run the insights for each navigation in isolation.
+    for (const [i, navigation] of navigations.entries()) {
+      // The above filter guarantees these are present.
+      const frameId = navigation.args.frame;
+      const navigationId = navigation.args.data?.navigationId as string;
 
       // The lantern sub-context is optional on NavigationInsightContext, so not setting it is OK.
       // This is also a hedge against an error inside Lantern resulting in breaking the entire performance panel.
@@ -373,25 +421,21 @@ export class TraceProcessor extends EventTarget {
         }
       }
 
-      const context: Insights.Types.NavigationInsightContext = {
+      // The bounds should start at the beginning of the trace, but only if there hasn't been a non-navigation
+      // insight set created already. This ensures every trace event is covered.
+      const min = i === 0 && this.#insights.size === 0 ? traceParsedData.Meta.traceBounds.min : navigation.ts;
+      const max = i + 1 < navigations.length ? navigations[i + 1].ts : traceParsedData.Meta.traceBounds.max;
+      const bounds = Helpers.Timing.traceWindowFromMicroSeconds(min, max);
+      const context: Insights.Types.BoundedInsightContext = {
+        bounds,
         frameId,
         navigation,
         navigationId,
         lantern,
       };
 
-      const navInsightData = {} as Insights.Types.NavigationInsightData;
-      for (const [name, insight] of Object.entries(enabledInsightRunners)) {
-        let insightResult;
-        try {
-          insightResult = insight.generateInsight(traceParsedData, context);
-        } catch (err) {
-          insightResult = err;
-        }
-        Object.assign(navInsightData, {[name]: insightResult});
-      }
-
-      this.#insights.set(context.navigationId, navInsightData);
+      const boundedInsightData = this.#computeBoundedInsightData(traceParsedData, enabledInsightRunners, context);
+      this.#insights.set(context.navigationId, boundedInsightData);
     }
   }
 }

@@ -7,7 +7,7 @@ import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
 
 import {findLCPRequest} from './Common.js';
-import {type InsightResult, InsightWarning, type NavigationInsightContext, type RequiredData} from './types.js';
+import {type BoundedInsightContext, type InsightResult, InsightWarning, type RequiredData} from './types.js';
 
 export function deps(): ['NetworkRequests', 'PageLoadMetrics', 'LargestImagePaint', 'Meta'] {
   return ['NetworkRequests', 'PageLoadMetrics', 'LargestImagePaint', 'Meta'];
@@ -84,7 +84,12 @@ function breakdownPhases(
 }
 
 export function generateInsight(
-    traceParsedData: RequiredData<typeof deps>, context: NavigationInsightContext): LCPInsightResult {
+    traceParsedData: RequiredData<typeof deps>, context: BoundedInsightContext): LCPInsightResult {
+  // TODO(b/366049346) make this work w/o a navigation.
+  if (!context.navigation) {
+    return {};
+  }
+
   const networkRequests = traceParsedData.NetworkRequests;
 
   const frameMetrics = traceParsedData.PageLoadMetrics.metricScoresByFrameId.get(context.frameId);

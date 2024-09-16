@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
+import {createContextForNavigation, getFirstOrError, getInsight} from '../../../testing/InsightHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as TraceModel from '../trace.js';
 
@@ -15,36 +16,18 @@ export async function processTrace(testContext: Mocha.Suite|Mocha.Context|null, 
   return {data: traceData, insights};
 }
 
-function getInsight(insights: TraceModel.Insights.Types.TraceInsightData, navigationId: string) {
-  const navInsights = insights.get(navigationId);
-  if (!navInsights) {
-    throw new Error('missing navInsights');
-  }
-  const insight = navInsights.Viewport;
-  if (insight instanceof Error) {
-    throw insight;
-  }
-  return insight;
-}
-
 describeWithEnvironment('Viewport', function() {
   it('detects mobile optimized viewport', async () => {
     const {data, insights} = await processTrace(this, 'lcp-images.json.gz');
-    const insight = getInsight(insights, data.Meta.navigationsByNavigationId.keys().next().value);
+    const insight = getInsight('Viewport', insights, getFirstOrError(data.Meta.navigationsByNavigationId.values()));
 
     assert.strictEqual(insight.mobileOptimized, true);
   });
 
   it('detects mobile unoptimized viewport', async () => {
     const {data} = await processTrace(this, 'lcp-images.json.gz');
-
-    const [navigationId, navigation] = data.Meta.navigationsByNavigationId.entries().next().value;
-    const context = {
-      frameId: data.Meta.mainFrameId,
-      navigationId,
-      navigation,
-    };
-
+    const navigation = getFirstOrError(data.Meta.navigationsByNavigationId.values());
+    const context = createContextForNavigation(navigation, data.Meta.mainFrameId);
     const events =
         data.UserInteractions.beginCommitCompositorFrameEvents.filter(event => event.args.frame === context.frameId);
     assert.isNotEmpty(events);

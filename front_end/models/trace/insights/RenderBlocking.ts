@@ -10,10 +10,11 @@ import * as Types from '../types/types.js';
 
 import {findLCPRequest} from './Common.js';
 import {
+  type BoundedInsightContext,
+  type BoundedInsightContextWithNavigation,
   type InsightResult,
   InsightWarning,
   type LanternContext,
-  type NavigationInsightContext,
   type RequiredData,
 } from './types.js';
 
@@ -82,7 +83,8 @@ function estimateSavingsWithGraphs(deferredIds: Set<string>, lanternContext: Lan
   return Math.round(Math.max(estimateBeforeInline - estimateAfterInline, 0));
 }
 
-function hasImageLCP(traceParsedData: RequiredData<typeof deps>, context: NavigationInsightContext): boolean {
+function hasImageLCP(
+    traceParsedData: RequiredData<typeof deps>, context: BoundedInsightContextWithNavigation): boolean {
   const frameMetrics = traceParsedData.PageLoadMetrics.metricScoresByFrameId.get(context.frameId);
   if (!frameMetrics) {
     throw new Error('no frame metrics');
@@ -102,7 +104,7 @@ function hasImageLCP(traceParsedData: RequiredData<typeof deps>, context: Naviga
 }
 
 function computeSavings(
-    traceParsedData: RequiredData<typeof deps>, context: NavigationInsightContext,
+    traceParsedData: RequiredData<typeof deps>, context: BoundedInsightContextWithNavigation,
     renderBlockingRequests: Types.TraceEvents.SyntheticNetworkRequest[]):
     Pick<RenderBlockingInsightResult, 'metricSavings'|'requestIdToWastedMs'>|undefined {
   if (!context.lantern) {
@@ -148,7 +150,14 @@ function computeSavings(
 }
 
 export function generateInsight(
-    traceParsedData: RequiredData<typeof deps>, context: NavigationInsightContext): RenderBlockingInsightResult {
+    traceParsedData: RequiredData<typeof deps>, context: BoundedInsightContext): RenderBlockingInsightResult {
+  // TODO(b/366049346) make this work w/o a navigation.
+  if (!context.navigation) {
+    return {
+      renderBlockingRequests: [],
+    };
+  }
+
   const firstPaintTs = traceParsedData.PageLoadMetrics.metricScoresByFrameId.get(context.frameId)
                            ?.get(context.navigationId)
                            ?.get(Handlers.ModelHandlers.PageLoadMetrics.MetricName.FP)

@@ -5,7 +5,7 @@
 import {type SelectorTiming, SelectorTimingsKey} from '../types/TraceEvents.js';
 import * as Types from '../types/types.js';
 
-import {type InsightResult, type NavigationInsightContext, type RequiredData} from './types.js';
+import {type BoundedInsightContext, type InsightResult, type RequiredData} from './types.js';
 
 export function deps(): ['SelectorStats'] {
   return ['SelectorStats'];
@@ -43,18 +43,15 @@ function aggregateSelectorStats(data: Map<Types.TraceEvents.TraceEventUpdateLayo
 }
 
 export function generateInsight(
-    traceParsedData: RequiredData<typeof deps>, context: NavigationInsightContext): SlowCSSSelectorInsightResult {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    traceParsedData: RequiredData<typeof deps>, context: BoundedInsightContext): SlowCSSSelectorInsightResult {
   const selectorStatsData = traceParsedData.SelectorStats;
-
-  const nav = traceParsedData.Meta.navigationsByNavigationId.get(context.navigationId);
-  if (!nav) {
-    throw new Error('no trace navigation');
-  }
 
   if (!selectorStatsData) {
     throw new Error('no selector stats data');
   }
 
+  // TODO(b/357047902): this needs to be scoped to the context.window.
   const selectorTimings = aggregateSelectorStats(selectorStatsData.dataForUpdateLayoutEvent);
 
   let totalElapsedUs = 0;

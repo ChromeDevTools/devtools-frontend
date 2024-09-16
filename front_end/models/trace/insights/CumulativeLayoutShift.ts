@@ -7,8 +7,8 @@ import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
 
 import {
+  type BoundedInsightContext,
   type InsightResult,
-  type NavigationInsightContext,
   type RequiredData,
 } from './types.js';
 
@@ -270,7 +270,14 @@ function getFontRootCauses(
 }
 
 export function generateInsight(
-    traceParsedData: RequiredData<typeof deps>, context: NavigationInsightContext): CLSInsightResult {
+    traceParsedData: RequiredData<typeof deps>, context: BoundedInsightContext): CLSInsightResult {
+  // TODO(b/366049346) make this work w/o a navigation.
+  if (!context.navigation) {
+    return {
+      clusters: [],
+    };
+  }
+
   const isWithinSameNavigation = ((event: Types.TraceEvents.TraceEventData): boolean => {
     const nav =
         Helpers.Trace.getNavigationForTraceEvent(event, context.frameId, traceParsedData.Meta.navigationsByFrameId);

@@ -86,6 +86,7 @@ export class SidebarInsightsTab extends HTMLElement {
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
 
+  // TODO(b/366049346): display insights w/o a navigation.
   #render(): void {
     if (!this.#traceParsedData || !this.#insights) {
       LitHtml.render(LitHtml.nothing, this.#shadow, {host: this});

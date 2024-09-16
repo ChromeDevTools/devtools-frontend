@@ -5,6 +5,7 @@
 import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
+import * as Platform from '../../../core/platform/platform.js';
 import * as TraceEngine from '../../../models/trace/trace.js';
 import * as TraceBounds from '../../../services/trace_bounds/trace_bounds.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
@@ -122,17 +123,11 @@ export class SidebarAnnotationsTab extends HTMLElement {
         `;
       }
       case 'ENTRIES_LINK': {
-        const entryFromName = TraceEngine.Types.TraceEvents.isProfileCall(annotation.entryFrom) ?
-            annotation.entryFrom.callFrame.functionName :
-            annotation.entryFrom.name;
-
-        const entryToName = (!annotation.entryTo) ? '' :
-            TraceEngine.Types.TraceEvents.isProfileCall(annotation.entryTo) ?
-                                                    annotation.entryTo.callFrame.functionName :
-                                                    annotation.entryTo.name;
-
+        const entryFromName = nameForEntry(annotation.entryFrom);
         const fromColor = this.#annotationEntryToColorMap.get(annotation.entryFrom);
-        const toColor = (annotation.entryTo) ? this.#annotationEntryToColorMap.get(annotation.entryTo) : '';
+
+        const entryToName = annotation.entryTo ? nameForEntry(annotation.entryTo) : '';
+        const toColor = annotation.entryTo ? this.#annotationEntryToColorMap.get(annotation.entryTo) : '';
 
         // clang-format off
         return LitHtml.html`
@@ -154,6 +149,8 @@ export class SidebarAnnotationsTab extends HTMLElement {
       `;
         // clang-format on
       }
+      default:
+        Platform.assertNever(annotation, 'Unsupported annotation type');
     }
   }
 

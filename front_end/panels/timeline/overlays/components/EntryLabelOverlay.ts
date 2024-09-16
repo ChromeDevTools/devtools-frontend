@@ -45,7 +45,7 @@ export class EntryLabelOverlay extends HTMLElement {
       EntryLabelOverlay.LABEL_HEIGHT + EntryLabelOverlay.LABEL_PADDING * 2 + EntryLabelOverlay.LABEL_CONNECTOR_HEIGHT;
   // Set the max label length to avoid labels that could signicantly increase the file size.
   static readonly MAX_LABEL_LENGTH = 100;
-  // Width of the icon next to the label input field
+  // Width of the icon next to the label input field. This is same as the width in CSS.
   static readonly USER_CREATED_ICON_WIDTH = 16;
 
   static readonly litTagName = LitHtml.literal`devtools-entry-label-overlay`;
@@ -349,13 +349,8 @@ Otherwise, the entry label overlay object only gets repositioned.
         LitHtml.html`
         <span class="label-parts-wrapper" role="region" aria-label=${i18nString(UIStrings.entryLabel)}>
           <div class="label-box">
-            <${IconButton.Icon.Icon.litTagName} class="user-created-icon" .data=${{
-                  iconName: 'profile',
-                  color: 'var(--sys-color-token-variable)',
-                  width: EntryLabelOverlay.USER_CREATED_ICON_WIDTH + 'px',
-                  height: '16px',
-                  } as IconButton.Icon.IconData}>
-              </${IconButton.Icon.Icon.litTagName}>
+            <${IconButton.Icon.Icon.litTagName} class='user-created-icon' name='profile'>
+            </${IconButton.Icon.Icon.litTagName}>
             <span
               class="input-field"
               role="textbox"

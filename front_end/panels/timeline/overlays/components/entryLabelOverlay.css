@@ -49,4 +49,8 @@
 
 .user-created-icon {
   margin: var(--sys-size-3);
+  color: var(--sys-color-token-variable);
+  /* USER_CREATED_ICON_WIDTH */
+  width: 16px;
+  height: 16px;
 }

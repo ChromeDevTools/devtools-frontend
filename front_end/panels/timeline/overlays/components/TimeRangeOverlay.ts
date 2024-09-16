@@ -251,13 +251,8 @@ export class TimeRangeOverlay extends HTMLElement {
     LitHtml.render(
         LitHtml.html`
           <span class="range-container" role="region" aria-label=${i18nString(UIStrings.timeRange)}>
-            <${IconButton.Icon.Icon.litTagName} class="user-created-icon" .data=${{
-                  iconName: 'profile',
-                  color: 'var(--ref-palette-pink55)',
-                  width: '16px',
-                  height: '17px',
-                  } as IconButton.Icon.IconData}>
-              </${IconButton.Icon.Icon.litTagName}>
+            <${IconButton.Icon.Icon.litTagName} class="user-created-icon" name='profile'}>
+            </${IconButton.Icon.Icon.litTagName}>
             <span
              class="label-text"
              role="textbox"

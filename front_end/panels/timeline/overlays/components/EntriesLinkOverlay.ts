@@ -4,6 +4,7 @@
 // found in the LICENSE file.
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js';
+import * as ThemeSupport from '../../../../ui/legacy/theme_support/theme_support.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 
 const UIStrings = {
@@ -160,7 +161,8 @@ export class EntriesLinkOverlay extends HTMLElement {
       this.#connector.setAttribute('y2', this.#coordinateTo.y.toString());
     }
 
-    this.#connector.setAttribute('stroke', 'black');
+    const arrowColor = ThemeSupport.ThemeSupport.instance().getComputedValue('--color-text-primary');
+    this.#connector.setAttribute('stroke', arrowColor);
     this.#connector.setAttribute('stroke-width', '2');
 
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
@@ -177,6 +179,7 @@ export class EntriesLinkOverlay extends HTMLElement {
                  ➘ |_____entry______|
   */
   #render(): void {
+    const arrowColor = ThemeSupport.ThemeSupport.instance().getComputedValue('--color-text-primary');
     // clang-format off
     LitHtml.render(
         LitHtml.html`
@@ -189,14 +192,12 @@ export class EntriesLinkOverlay extends HTMLElement {
                 markerHeight='4'
                 refX='4'
                 refY='2'>
-                <path d='M0,0 V4 L4,2 Z' fill="black" />
+                <path d='M0,0 V4 L4,2 Z' fill=${arrowColor} />
               </marker>
             </defs>
             <line marker-end='url(#arrow)'/>
-            <rect
-              class="entryFromWrapper" fill="none" stroke="black" stroke-dasharray=${this.#fromEntryIsSource ? 'none' : DASHED_STROKE_AMOUNT} />
-            <rect
-              class="entryToWrapper" fill="none" stroke="black" stroke-dasharray=${this.#toEntryIsSource ? 'none' : DASHED_STROKE_AMOUNT} />
+            <rect class="entryFromWrapper" fill="none" stroke=${arrowColor} stroke-dasharray=${this.#fromEntryIsSource ? 'none' : DASHED_STROKE_AMOUNT} />
+            <rect class="entryToWrapper" fill="none" stroke=${arrowColor} stroke-dasharray=${this.#toEntryIsSource ? 'none' : DASHED_STROKE_AMOUNT} />
           </svg>
         `,
         this.#shadow, {host: this});

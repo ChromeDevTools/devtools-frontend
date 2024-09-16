@@ -274,10 +274,10 @@ export class SidebarAnnotationsTab extends HTMLElement {
                   </div>`,
               )}
               <${Settings.SettingCheckbox.SettingCheckbox.litTagName} class="visibility-setting" .data=${{
-              setting: this.#annotationsHiddenSetting,
-              textOverride: 'Hide annotations',
-            } as Settings.SettingCheckbox.SettingCheckboxData}>
-            </${Settings.SettingCheckbox.SettingCheckbox.litTagName}>
+                setting: this.#annotationsHiddenSetting,
+                textOverride: 'Hide annotations',
+              } as Settings.SettingCheckbox.SettingCheckboxData}>
+              </${Settings.SettingCheckbox.SettingCheckbox.litTagName}>
         </span>`
       }`,
     this.#shadow, {host: this});

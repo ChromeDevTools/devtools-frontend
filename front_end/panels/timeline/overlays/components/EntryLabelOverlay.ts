@@ -4,6 +4,7 @@
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js';
 import * as IconButton from '../../../../ui/components/icon_button/icon_button.js';
+import * as ThemeSupport from '../../../../ui/legacy/theme_support/theme_support.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 
 import styles from './entryLabelOverlay.css.js';
@@ -64,25 +65,25 @@ export class EntryLabelOverlay extends HTMLElement {
   #label: string;
   #entryIsInMainChart: boolean;
   #shouldDrawBelowEntry: boolean;
-  /*
-The entry label overlay consists of 3 parts - the label part with the label string inside,
-the line connecting the label to the entry, and a black box around an entry to highlight the entry with a label.
-________
-|_label__|                <-- label part with the label string inside
-    \
-     \                   <-- line connecting the label to the entry with a circle at the end
-      \
-_______◯_________
-|_____entry______|         <--- box around an entry
-
-`drawLabel` method below draws the first part.
-`drawConnector` method below draws the second part - the connector line with a circle and the svg container for them.
-`drawEntryHighlightWrapper` draws the third part.
-We only rerender the first part if the label changes and the third part if the size of the entry changes.
-The connector and circle shapes never change so we only draw the second part when the component is created.
-
-Otherwise, the entry label overlay object only gets repositioned.
-*/
+  /**
+   * The entry label overlay consists of 3 parts - the label part with the label string inside,
+   * the line connecting the label to the entry, and a black box around an entry to highlight the entry with a label.
+   * ________
+   * |_label__|                <-- label part with the label string inside
+   *     \
+   *      \                   <-- line connecting the label to the entry with a circle at the end
+   *       \
+   * _______◯_________
+   * |_____entry______|         <--- box around an entry
+   *
+   * `drawLabel` method below draws the first part.
+   * `drawConnector` method below draws the second part - the connector line with a circle and the svg container for them.
+   * `drawEntryHighlightWrapper` draws the third part.
+   * We only rerender the first part if the label changes and the third part if the size of the entry changes.
+   * The connector and circle shapes never change so we only draw the second part when the component is created.
+   *
+   * Otherwise, the entry label overlay object only gets repositioned.
+   */
 
   constructor(label: string, entryIsInMainChart: boolean, shouldDrawBelowEntry: boolean = false) {
     super();
@@ -191,6 +192,8 @@ Otherwise, the entry label overlay object only gets repositioned.
     if (entryLabelParams.height === this.#entryLabelParams?.height &&
         entryLabelParams.width === this.#entryLabelParams?.width &&
         entryLabelParams.cutOffEntryHeight === this.#entryLabelParams?.cutOffEntryHeight) {
+      // Even the position is not changed, the theme color might change, so we need to redraw the connector here.
+      this.#drawConnector();
       return;
     }
 
@@ -235,14 +238,15 @@ Otherwise, the entry label overlay object only gets repositioned.
     // Finish drawing in middle of the connector container.
     connector.setAttribute('x2', EntryLabelOverlay.LABEL_AND_CONNECTOR_SHIFT_LENGTH.toString());
     connector.setAttribute('y2', EntryLabelOverlay.LABEL_CONNECTOR_HEIGHT.toString());
-    connector.setAttribute('stroke', 'black');
+    const connectorColor = ThemeSupport.ThemeSupport.instance().getComputedValue('--color-text-primary');
+    connector.setAttribute('stroke', connectorColor);
     connector.setAttribute('stroke-width', '2');
 
     // Draw the circle at the bottom of the connector
     circle.setAttribute('cx', EntryLabelOverlay.LABEL_AND_CONNECTOR_SHIFT_LENGTH.toString());
     circle.setAttribute('cy', EntryLabelOverlay.LABEL_CONNECTOR_HEIGHT.toString());
     circle.setAttribute('r', '3');
-    circle.setAttribute('fill', 'black');
+    circle.setAttribute('fill', connectorColor);
   }
 
   #drawLabel(initialLabel?: string): void {

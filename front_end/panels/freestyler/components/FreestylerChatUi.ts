@@ -67,16 +67,6 @@ const UIStringsTemp = {
    */
   emptyStateText: 'How can I help you?',
   /**
-   * @description The title of the button that allows submitting positive
-   * feedback about the response for freestyler.
-   */
-  thumbsUp: 'Thumbs up',
-  /**
-   * @description The title of the button that allows submitting negative
-   * feedback about the response for freestyler.
-   */
-  thumbsDown: 'Thumbs down',
-  /**
    * @description The error message when the user is not logged in into Chrome.
    */
   notLoggedIn: 'This feature is only available when you sign into Chrome with your Google account',

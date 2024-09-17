@@ -108,9 +108,6 @@ export class CommandMenu {
         if (setting.name === 'emulate-page-focus') {
           Host.userMetrics.actionTaken(Host.UserMetrics.Action.ToggleEmulateFocusedPageFromCommandMenu);
         }
-        if (setting.name === 'show-web-vitals') {
-          Host.userMetrics.actionTaken(Host.UserMetrics.Action.ToggleShowWebVitals);
-        }
 
         if (reloadRequired) {
           UI.InspectorView.InspectorView.instance().displayReloadRequiredWarning(

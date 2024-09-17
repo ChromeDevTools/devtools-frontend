@@ -200,7 +200,6 @@ export async function initializeGlobalVars({reset = true} = {}) {
     createSettingValue(Common.Settings.SettingCategory.RENDERING, 'show-debug-borders', false),
     createSettingValue(Common.Settings.SettingCategory.RENDERING, 'show-fps-counter', false),
     createSettingValue(Common.Settings.SettingCategory.RENDERING, 'show-scroll-bottleneck-rects', false),
-    createSettingValue(Common.Settings.SettingCategory.RENDERING, 'show-web-vitals', false),
     createSettingValue(Common.Settings.SettingCategory.RENDERING, 'webp-format-disabled', false),
     createSettingValue(Common.Settings.SettingCategory.SOURCES, 'allow-scroll-past-eof', true),
     createSettingValue(Common.Settings.SettingCategory.SOURCES, 'css-source-maps-enabled', true),

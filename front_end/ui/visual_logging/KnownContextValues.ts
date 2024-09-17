@@ -2694,8 +2694,6 @@ export const knownContextValues = new Set([
   'show-third-party-issues',
   'show-ua-shadow-dom',
   'show-url-decoded',
-  'show-web-vitals',
-  'show-web-vitals-true',
   'show-whitespaces-in-editor',
   'show-whitespaces-in-editor-all',
   'show-whitespaces-in-editor-none',

@@ -131,14 +131,6 @@ const UIStrings = {
    */
   hideLayerBorders: 'Hide layer borders',
   /**
-   *@description Title of a setting under the Rendering drawer that can be invoked through the Command Menu
-   */
-  showCoreWebVitalsOverlay: 'Show Core Web Vitals overlay',
-  /**
-   *@description Title of a setting under the Rendering drawer that can be invoked through the Command Menu
-   */
-  hideCoreWebVitalsOverlay: 'Hide Core Web Vitals overlay',
-  /**
    *@description Title of a setting under the Rendering category that can be invoked through the Command Menu
    */
   showFramesPerSecondFpsMeter: 'Show frames per second (FPS) meter',
@@ -619,24 +611,6 @@ Common.Settings.registerSettingExtension({
     {
       value: false,
       title: i18nLazyString(UIStrings.hideLayerBorders),
-    },
-  ],
-  defaultValue: false,
-});
-
-Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategory.RENDERING,
-  settingName: 'show-web-vitals',
-  settingType: Common.Settings.SettingType.BOOLEAN,
-  storageType: Common.Settings.SettingStorageType.SESSION,
-  options: [
-    {
-      value: true,
-      title: i18nLazyString(UIStrings.showCoreWebVitalsOverlay),
-    },
-    {
-      value: false,
-      title: i18nLazyString(UIStrings.hideCoreWebVitalsOverlay),
     },
   ],
   defaultValue: false,

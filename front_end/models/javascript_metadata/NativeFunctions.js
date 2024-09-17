@@ -3747,11 +3747,6 @@ export const NativeFunctions = [
     receivers: ["Window"]
   },
   {
-    name: "prompt",
-    signatures: [["input"]],
-    receivers: ["AITextSession"]
-  },
-  {
     name: "watchAvailability",
     signatures: [["callback"]]
   },
@@ -7270,10 +7265,6 @@ export const NativeFunctions = [
   {
     name: "supportsInputLanguage",
     signatures: [["languageTag"]]
-  },
-  {
-    name: "promptStreaming",
-    signatures: [["input"]]
   },
   {
     name: "writeStreaming",

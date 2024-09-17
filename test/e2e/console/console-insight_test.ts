@@ -73,7 +73,7 @@ describe('ConsoleInsight', function() {
     await waitForNone('.hover-button');
   });
 
-  it('does not show the hover button if locale is not supported', async () => {
+  it('shows the hover button even if locale is not supported', async () => {
     const {target} = getBrowserAndPages();
     await setDevToolsSettings({language: 'zh'});
     await setupMocks({}, {enabled: true});
@@ -82,10 +82,10 @@ describe('ConsoleInsight', function() {
       console.error(new Error('Unexpected error'));
     });
     await waitFor('.console-message', undefined, undefined, 'pierce');
-    await waitForNone('.hover-button', undefined, undefined, 'pierce');
+    await waitFor('.hover-button', undefined, undefined, 'pierce');
   });
 
-  it('does not show the hover button if age check is not passing', async () => {
+  it('shows the hover button even if age check is not passing', async () => {
     const {target} = getBrowserAndPages();
     await setupMocks({blockedByAge: true}, {enabled: true});
     await click(CONSOLE_TAB_SELECTOR);
@@ -93,7 +93,7 @@ describe('ConsoleInsight', function() {
       console.error(new Error('Unexpected error'));
     });
     await waitFor('.console-message', undefined, undefined, 'pierce');
-    await waitForNone('.hover-button', undefined, undefined, 'pierce');
+    await waitFor('.hover-button', undefined, undefined, 'pierce');
   });
 
   it('does not show the hover button if policy does not allow it', async () => {
@@ -107,7 +107,7 @@ describe('ConsoleInsight', function() {
     await waitForNone('.hover-button', undefined, undefined, 'pierce');
   });
 
-  it('does not show the hover button if it is restriced by geography', async () => {
+  it('shows the hover button even if it is restriced by geography', async () => {
     const {target} = getBrowserAndPages();
     await setupMocks({blockedByGeo: true}, {enabled: true});
     await click(CONSOLE_TAB_SELECTOR);
@@ -115,7 +115,7 @@ describe('ConsoleInsight', function() {
       console.error(new Error('Unexpected error'));
     });
     await waitFor('.console-message', undefined, undefined, 'pierce');
-    await waitForNone('.hover-button', undefined, undefined, 'pierce');
+    await waitFor('.hover-button', undefined, undefined, 'pierce');
   });
 
   it('gets console message texts', async () => {

@@ -105,13 +105,13 @@ function isFeatureEnabled(config?: Root.Runtime.HostConfig): boolean {
 }
 
 Common.Settings.registerSettingExtension({
-  // TODO(crbug.com/350668580) SettingCategory.NONE once experiment GEN_AI_SETTINGS_PANEL is enabled
+  // TODO(crbug.com/350668580) SettingCategory.NONE once experiment GEN_AI_SETTINGS_PANEL is removed
   category: Common.Settings.SettingCategory.CONSOLE,
   settingName: setting,
   settingType: Common.Settings.SettingType.BOOLEAN,
   title: i18nLazyString(UIStrings.enableConsoleInsights),
-  defaultValue: true,
-  // TODO(crbug.com/350668580) set to false once experiment GEN_AI_SETTINGS_PANEL is enabled
+  defaultValue: false,
+  // TODO(crbug.com/350668580) set to false once experiment GEN_AI_SETTINGS_PANEL is removed
   reloadRequired: true,
   condition: config => isFeatureEnabled(config),
   disabledCondition: config => {

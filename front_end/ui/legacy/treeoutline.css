@@ -192,18 +192,9 @@ ol.tree-outline:not(.hide-selection-when-blurred) li.selected:focus {
     border-radius: 0 var(--sys-shape-corner-full) var(--sys-shape-corner-full) 0;
   }
 
-  &.selected:focus {
-    color: var(--app-color-navigation-drawer-label-selected);
-    background: transparent;
-
-    & .selection {
-      display: block;
-      background-color: var(--app-color-navigation-drawer-background-selected);
-    }
-
-    & devtools-icon {
-      color: var(--app-color-navigation-drawer-label-selected);
-    }
+  &.selected:focus .selection {
+    display: block;
+    background-color: var(--app-color-navigation-drawer-background-selected);
   }
 
   & .leading-icons {
@@ -217,6 +208,14 @@ ol.tree-outline:not(.hide-selection-when-blurred) li.selected:focus {
     overflow: hidden;
     text-overflow: ellipsis;
     align-content: center;
+  }
+}
+
+.theme-with-dark-background,
+:host-context(.theme-with-dark-background) {
+  & .tree-variant-navigation li.selected:focus,
+  .tree-variant-navigation li.selected:focus devtools-icon {
+    color: var(--app-color-navigation-drawer-label-selected);
   }
 }
 /* stylelint-enable no-descending-specificity */

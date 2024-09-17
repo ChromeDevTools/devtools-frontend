@@ -11,6 +11,7 @@ const preamble = `You are the most advanced network request debugging assistant 
 The user selected a network request in the browser's DevTools Network Panel and sends a query to understand the request.
 Provide a comprehensive analysis of the network request, focusing on areas crucial for a software engineer. Your analysis should include:
 * Briefly explain the purpose of the request based on the URL, method, and any relevant headers or payload.
+* Analyze timing information to identify potential bottlenecks or areas for optimization.
 * Highlight potential issues indicated by the status code.
 
 # Considerations
@@ -271,10 +272,28 @@ export function allowHeader(header: SDK.NetworkRequest.NameValue): boolean {
   return true;
 }
 
-export function formatNetworkRequest(
-    request:
-        Pick<SDK.NetworkRequest.NetworkRequest, 'url'|'requestHeaders'|'responseHeaders'|'statusCode'|'statusText'>):
-    string {
+function formatNetworkRequestTiming(request: SDK.NetworkRequest.NetworkRequest): string {
+  const timing = request.timing;
+
+  return `
+Request start time: ${request.startTime}
+Request end time: ${request.endTime}
+Receiving response headers start time: ${timing?.receiveHeadersStart}
+Receiving response headers end time: ${timing?.receiveHeadersEnd}
+Proxy negotiation start time: ${timing?.proxyStart}
+Proxy negotiation end time: ${timing?.proxyEnd}
+DNS lookup start time: ${timing?.dnsStart}
+DNS lookup end time: ${timing?.dnsEnd}
+TCP start time: ${timing?.connectStart}
+TCP end time: ${timing?.connectEnd}
+SSL start time: ${timing?.sslStart}
+SSL end time: ${timing?.sslEnd}
+Sending start: ${timing?.sendStart}
+Sending end: ${timing?.sendEnd}
+  `;
+}
+
+export function formatNetworkRequest(request: SDK.NetworkRequest.NetworkRequest): string {
   const formatHeaders = (title: string, headers: SDK.NetworkRequest.NameValue[]): string => formatLines(
       title, headers.filter(allowHeader).map(header => header.name + ': ' + header.value + '\n'), MAX_HEADERS_SIZE);
   // TODO: anything else that might be relavant?
@@ -285,7 +304,9 @@ ${formatHeaders('Request headers:', request.requestHeaders())}
 
 ${formatHeaders('Response headers:', request.responseHeaders)}
 
-Response status: ${request.statusCode} ${request.statusText}`;
+Response status: ${request.statusCode} ${request.statusText}
+
+Request Timing:\n ${formatNetworkRequestTiming(request)}`;
 }
 
 // @ts-ignore

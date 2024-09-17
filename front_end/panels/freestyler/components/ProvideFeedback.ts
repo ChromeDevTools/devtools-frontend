@@ -21,12 +21,12 @@ const UIStringsTemp = {
 
   /**
    * @description The title of the button that allows submitting positive
-   * feedback about the response for freestyler.
+   * feedback about the response for AI assistant.
    */
   thumbsUp: 'Thumbs up',
   /**
    * @description The title of the button that allows submitting negative
-   * feedback about the response for freestyler.
+   * feedback about the response for AI assistant.
    */
   thumbsDown: 'Thumbs down',
   /**
@@ -52,7 +52,7 @@ const UIStringsTemp = {
   close: 'Close',
   /**
    * @description The title of the button that opens a page to report a legal
-   * issue with the Freestyler message.
+   * issue with the AI assistant message.
    */
   report: 'Report legal issue',
 };

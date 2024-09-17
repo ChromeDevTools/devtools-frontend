@@ -33,11 +33,11 @@ import freestylerPanelStyles from './freestylerPanel.css.js';
   */
 const UIStringsTemp = {
   /**
-   *@description Freestyler UI text for clearing messages.
+   *@description AI assistant UI text for clearing messages.
    */
   clearMessages: 'Clear messages',
   /**
-   *@description Freestyler UI text for sending feedback.
+   *@description AI assistant UI text for sending feedback.
    */
   sendFeedback: 'Send feedback',
 };

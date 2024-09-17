@@ -84,7 +84,7 @@ const UIStrings = {
    */
   generatedSnippets: 'Use generated code snippets with caution',
   /**
-   *@description Text describing the 'Freestyler' feature
+   *@description Text describing the 'AI assistant' feature
    */
   helpUnderstandStyling: 'Helps you understand and fix styling issues',
   /**
@@ -92,15 +92,15 @@ const UIStrings = {
    */
   learnMore: 'Learn more',
   /**
-   *@description Description of the Freestyler feature
+   *@description Description of the AI assistant feature
    */
   explainStyling: 'Get explanations and additional context for styling behaviors',
   /**
-   *@description Description of the Freestyler feature
+   *@description Description of the AI assistant feature
    */
   receiveStylingSuggestions: 'Receive suggestions and code samples for fixing styling issues',
   /**
-   *@description Explainer for which data is being sent by the Freestyler feature
+   *@description Explainer for which data is being sent by the AI assistant feature
    */
   freestylerSendsData:
       'Any data the inspected page can access via Web APIs may be sent to Google to generate explanations. This data may be seen by human reviewers to improve this feature.',
@@ -125,9 +125,9 @@ const UIStrings = {
    */
   enableConsoleInsights: 'Enable Console Insights',
   /**
-   *@description Label for a toggle to enable the Freestyler feature
+   *@description Label for a toggle to enable the AI assistant feature
    */
-  enableFreestyler: 'Enable Freestyler',
+  enableAiAssistant: 'Enable AI assistant',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/settings/AISettingsTab.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -377,7 +377,7 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
           <${IconButton.Icon.Icon.litTagName} name="pen-spark"></${IconButton.Icon.Icon.litTagName}>
         </div>
         <div class="setting-card">
-          <h2>${i18n.i18n.lockedString('Freestyler')}</h2>
+          <h2>${i18n.i18n.lockedString('AI assistant')}</h2>
           <div class="setting-description">${i18nString(UIStrings.helpUnderstandStyling)}</div>
         </div>
         <div class="dropdown centered">
@@ -400,7 +400,7 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
           .disabled=${this.#freestylerSetting?.disabled()}
           title=${this.#freestylerSetting?.disabledReason()}
           @switchchange=${this.#toggleFreestylerSetting.bind(this)}
-          aria-label=${this.#freestylerSetting?.disabledReason() || i18nString(UIStrings.enableFreestyler)}
+          aria-label=${this.#freestylerSetting?.disabledReason() || i18nString(UIStrings.enableAiAssistant)}
         ></${Switch.Switch.Switch.litTagName}>
       </div>
       <div class=${LitHtml.Directives.classMap(detailsClasses)}>

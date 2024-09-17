@@ -63,7 +63,7 @@ const UIStringsTemp = {
    */
   noElementSelected: 'No element selected',
   /**
-   *@description Text for the empty state of the Freestyler panel.
+   *@description Text for the empty state of the AI assistant panel.
    */
   emptyStateText: 'How can I help you?',
   /**

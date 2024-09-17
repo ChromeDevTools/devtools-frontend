@@ -455,7 +455,7 @@ export class FreestylerAgent {
   }
 
   static async describeElement(element: SDK.DOMModel.DOMNode): Promise<string> {
-    let output = `\n* Its selector is \`${element.simpleSelector()}\``;
+    let output = `* Its selector is \`${element.simpleSelector()}\``;
     const childNodes = await element.getChildNodesPromise();
     if (childNodes) {
       const textChildNodes = childNodes.filter(childNode => childNode.nodeType() === Node.TEXT_NODE);
@@ -538,11 +538,11 @@ export class FreestylerAgent {
     signal?: AbortSignal, selectedElement: SDK.DOMModel.DOMNode|null, isFixQuery: boolean,
   }): AsyncGenerator<ResponseData, void, void> {
     const structuredLog = [];
-    query = `${
-        options.selectedElement ?
-            `# Inspected element\n${
-                await FreestylerAgent.describeElement(options.selectedElement)}\n\n# User request\n\n` :
-            ''}QUERY: ${query}`;
+    const elementEnchantmentQuery = options.selectedElement ?
+        `# Inspected element\n\n${
+            await FreestylerAgent.describeElement(options.selectedElement)}\n\n# User request\n\n` :
+        '';
+    query = `${elementEnchantmentQuery}QUERY: ${query}`;
     const currentRunId = ++this.#runId;
 
     options.signal?.addEventListener('abort', () => {

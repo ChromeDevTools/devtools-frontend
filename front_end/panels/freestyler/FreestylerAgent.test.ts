@@ -317,7 +317,7 @@ c`;
 
       const result = await FreestylerAgent.describeElement(element);
 
-      assert.strictEqual(result, '\n* Its selector is `div#myElement`');
+      assert.strictEqual(result, '* Its selector is `div#myElement`');
     });
 
     it('should describe an element with child element and text nodes', async () => {
@@ -339,8 +339,7 @@ c`;
       element.parentNode = null;
 
       const result = await FreestylerAgent.describeElement(element);
-      const expectedOutput = `
-* Its selector is \`div#parentElement\`
+      const expectedOutput = `* Its selector is \`div#parentElement\`
 * It has 2 child element nodes: \`span.child1\`, \`span.child2\`
 * It only has 1 child text node`;
 
@@ -371,8 +370,7 @@ c`;
       element.parentNode = parentNode;
 
       const result = await FreestylerAgent.describeElement(element);
-      const expectedOutput = `
-* Its selector is \`div#parentElement\`
+      const expectedOutput = `* Its selector is \`div#parentElement\`
 * It has a next sibling and it is an element node
 * It has a previous sibling and it is a non element node
 * Its parent's selector is \`div#grandparentElement\`

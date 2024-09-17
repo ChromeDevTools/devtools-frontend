@@ -14,19 +14,18 @@ import {Table, type TableData} from './Table.js';
 import {InsightsCategories} from './types.js';
 
 const UIStrings = {
-  /** Title of a diagnostic audit that provides details about the code on a web page that the user doesn't control (referred to as "third-party code"). */
-  title: 'Minimize third-party usage',
+  /** Title of an insight that provides details about the code on a web page that the user doesn't control (referred to as "third-party code"). */
+  title: 'Third parties',
   /**
    * @description Description of a DevTools insight that identifies the code on the page that the user doesn't control.
    * This is displayed after a user expands the section to see more. No character length limits.
    * The last sentence starting with 'Learn' becomes link text to additional documentation.
    */
-  description: 'Third-party code can significantly impact load performance. ' +
-      'Limit the number of redundant third-party providers and try to load third-party code after ' +
-      'your page has primarily finished loading. ' +
-      '[Learn how to minimize third-party impact](https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/loading-third-party-javascript/).',
+  description: 'Third party code can significantly impact load performance. ' +
+      'Assess and reduce the ' +
+      '[amount of third party code](https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/loading-third-party-javascript/) on the page, and try to load what you can after the page has finished loading the main content.',
   /** Label for a table column that displays the name of a third-party provider. */
-  columnThirdParty: 'Third-party',
+  columnThirdParty: 'Third party',
   /** Label for a column in a data table; entries will be the download size of a web resource in kilobytes. */
   columnTransferSize: 'Transfer size',
   /** Label for a table column that displays how much time each row spent blocking other work on the main thread, entries will be the number of milliseconds spent. */

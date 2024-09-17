@@ -8949,6 +8949,14 @@ export const NativeFunctions = [
     signatures: [["queryIndex"]]
   },
   {
+    name: "multiDrawIndirect",
+    signatures: [["indirectBuffer","indirectOffset","maxDrawCount","?drawCountBuffer","?drawCountBufferOffset"]]
+  },
+  {
+    name: "multiDrawIndexedIndirect",
+    signatures: [["indirectBuffer","indirectOffset","maxDrawCount","?drawCountBuffer","?drawCountBufferOffset"]]
+  },
+  {
     name: "createView",
     signatures: [["?descriptor"]]
   },

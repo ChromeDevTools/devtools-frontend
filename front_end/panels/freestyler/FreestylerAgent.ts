@@ -127,6 +127,7 @@ export interface AnswerResponse {
 
 export const enum ErrorType {
   UNKNOWN = 'unknown',
+  ABORT = 'abort',
   MAX_STEPS = 'max-steps',
 }
 
@@ -377,12 +378,18 @@ export class FreestylerAgent {
     return this.#getHistoryEntry;
   }
 
-  async #aidaFetch(request: Host.AidaClient.AidaRequest):
-      Promise<{response: string, rpcId: number|undefined, rawResponse: Host.AidaClient.AidaResponse|undefined}> {
+  async #aidaFetch(
+      request: Host.AidaClient.AidaRequest,
+      options?: {signal?: AbortSignal},
+      ): Promise<{
+    response: string,
+    rpcId: number|undefined,
+    rawResponse: Host.AidaClient.AidaResponse|undefined,
+  }> {
     let rawResponse: Host.AidaClient.AidaResponse|undefined = undefined;
     let response = '';
     let rpcId;
-    for await (rawResponse of this.#aidaClient.fetch(request)) {
+    for await (rawResponse of this.#aidaClient.fetch(request, options)) {
       response = rawResponse.explanation;
       rpcId = rawResponse.metadata.rpcGlobalId ?? rpcId;
       if (rawResponse.metadata.attributionMetadata?.some(
@@ -565,14 +572,22 @@ export class FreestylerAgent {
       let rpcId: number|undefined;
       let rawResponse: Host.AidaClient.AidaResponse|undefined;
       try {
-        const fetchResult = await this.#aidaFetch(request);
+        const fetchResult = await this.#aidaFetch(
+            request,
+            {signal: options.signal},
+        );
         response = fetchResult.response;
         rpcId = fetchResult.rpcId;
         rawResponse = fetchResult.rawResponse;
       } catch (err) {
         debugLog('Error calling the AIDA API', err);
 
-        if (options.signal?.aborted) {
+        if (err instanceof Host.AidaClient.AidaAbortError) {
+          yield {
+            type: ResponseType.ERROR,
+            error: ErrorType.ABORT,
+            rpcId,
+          };
           break;
         }
 

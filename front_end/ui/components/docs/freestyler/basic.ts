@@ -21,7 +21,6 @@ const messages: Freestyler.ChatMessage[] = [
   {
     entity: Freestyler.ChatMessageEntity.MODEL,
     suggestingFix: true,
-    aborted: false,
     steps: [
       {
         isLoading: false,

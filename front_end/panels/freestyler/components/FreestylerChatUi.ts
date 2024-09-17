@@ -222,7 +222,6 @@ export interface ModelChatMessage {
   steps: Step[];
   answer?: string;
   error?: ErrorType;
-  aborted: boolean;
   rpcId?: number;
 }
 
@@ -555,10 +554,6 @@ export class FreestylerChatUi extends HTMLElement {
   }
 
   #renderError(message: ModelChatMessage): LitHtml.LitTemplate {
-    if (message.aborted) {
-      return LitHtml.html`<p class="aborted">${i18nString(UIStringsTemp.stoppedResponse)}</p>`;
-    }
-
     if (message.error) {
       let errorMessage;
       switch (message.error) {
@@ -568,6 +563,8 @@ export class FreestylerChatUi extends HTMLElement {
         case ErrorType.MAX_STEPS:
           errorMessage = UIStringsTemp.maxStepsError;
           break;
+        case ErrorType.ABORT:
+          return LitHtml.html`<p class="aborted">${i18nString(UIStringsTemp.stoppedResponse)}</p>`;
       }
 
       return LitHtml.html`<p class="error">${i18nString(errorMessage)}</p>`;

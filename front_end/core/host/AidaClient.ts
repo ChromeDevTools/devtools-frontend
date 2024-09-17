@@ -135,6 +135,8 @@ export const CLIENT_NAME = 'CHROME_DEVTOOLS';
 
 const CODE_CHUNK_SEPARATOR = '\n`````\n';
 
+export class AidaAbortError extends Error {}
+
 export class AidaClient {
   static buildConsoleInsightsRequest(input: string): AidaRequest {
     const request: AidaRequest = {
@@ -186,12 +188,15 @@ export class AidaClient {
     return AidaAccessPreconditions.AVAILABLE;
   }
 
-  async * fetch(request: AidaRequest): AsyncGenerator<AidaResponse, void, void> {
+  async * fetch(request: AidaRequest, options?: {signal?: AbortSignal}): AsyncGenerator<AidaResponse, void, void> {
     if (!InspectorFrontendHostInstance.doAidaConversation) {
       throw new Error('doAidaConversation is not available');
     }
     const stream = (() => {
       let {promise, resolve, reject} = Promise.withResolvers<string|null>();
+      options?.signal?.addEventListener('abort', () => {
+        reject(new AidaAbortError());
+      });
       return {
         write: async(data: string): Promise<void> => {
           resolve(data);

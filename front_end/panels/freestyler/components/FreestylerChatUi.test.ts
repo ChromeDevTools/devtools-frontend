@@ -68,7 +68,6 @@ css
           {
             entity: Freestyler.ChatMessageEntity.MODEL,
             suggestingFix: false,
-            aborted: false,
             steps: [
               {
                 isLoading: false,

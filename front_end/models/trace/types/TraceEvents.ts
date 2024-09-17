@@ -541,7 +541,7 @@ export interface TraceEventAnimation extends TraceEventData {
   args: TraceEventArgs&{
     data: TraceEventArgsData & {
       nodeName?: string,
-      nodeId?: number,
+      nodeId?: Protocol.DOM.BackendNodeId,
       displayName?: string,
       id?: string,
       name?: string,
@@ -1991,6 +1991,17 @@ export function isTraceEventAnimation(
     ): traceEventData is TraceEventAnimation {
   // We've found some rare traces with an Animtation trace event from a different category: https://crbug.com/1472375#comment7
   return traceEventData.name === 'Animation' && traceEventData.cat.includes('devtools.timeline');
+}
+
+export function isSyntheticAnimation(traceEventData: TraceEventData): traceEventData is SyntheticAnimationPair {
+  if (traceEventData.name !== 'Animation' || !traceEventData.cat.includes('devtools.timeline')) {
+    return false;
+  }
+  const data = traceEventData.args?.data;
+  if (!data) {
+    return false;
+  }
+  return 'beginEvent' in data && 'endEvent' in data;
 }
 
 export function isTraceEventLayoutShift(

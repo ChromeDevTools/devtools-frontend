@@ -63,7 +63,6 @@ export interface IssueCounterData {
   compact?: boolean;
 }
 
-// @ts-ignore Remove this comment once Intl.ListFormat is in type defs.
 const listFormat = new Intl.ListFormat(navigator.language, {type: 'unit', style: 'short'});
 
 export function getIssueCountsEnumeration(

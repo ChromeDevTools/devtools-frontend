@@ -280,10 +280,6 @@ const UIStrings = {
    */
   callbackFunction: 'Callback function',
   /**
-   *@description The current state of an item
-   */
-  state: 'State',
-  /**
    *@description Text used to show the relevant range of a file - e.g. "lines 2-10".
    */
   range: 'Range',
@@ -417,6 +413,33 @@ const UIStrings = {
    *@description Stack label in Timeline UIUtils of the Performance panel
    */
   layoutForced: 'Layout forced',
+  /**
+   *@description Label in front of CSS property (eg `opacity`) being animated or a CSS animation name (eg `layer-4-fade-in-out`)
+   */
+  animating: 'Animating',
+  /**
+   *@description Label in front of reasons why a CSS animation wasn't composited (aka hardware accelerated)
+   */
+  compositingFailed: 'Compositing failed',
+  /**
+   * @description [ICU Syntax] Descriptive reason for why a user-provided animation failed to be optimized by the browser due to the animated CSS property not being supported on the compositor. Shown in a table with a list of other potential failure reasons.
+   * @example {height, width} properties
+   */
+  unsupportedCSSProperty: `{propertyCount, plural,
+    =1 {Unsupported CSS property: {properties}}
+    other {Unsupported CSS properties: {properties}}
+  }`,
+  /** Descriptive reason for why a user-provided animation failed to be optimized by the browser due to a `transform` property being dependent on the size of the element itself. Shown in a table with a list of other potential failure reasons.  */
+  transformDependsBoxSize: 'Transform-related property depends on box size',
+  /** Descriptive reason for why a user-provided animation failed to be optimized by the browser due to a `filter` property possibly moving pixels. Shown in a table with a list of other potential failure reasons.  */
+  filterMayMovePixels: 'Filter-related property may move pixels',
+  /** Descriptive reason for why a user-provided animation failed to be optimized by the browser due to an effect having a composite mode which is not `replace`. Shown in a table with a list of other potential failure reasons.  */
+  nonReplaceCompositeMode: 'Effect has composite mode other than "replace"',
+  /** Descriptive reason for why a user-provided animation failed to be optimized by the browser due to another animation on the same target being incompatible. Shown in a table with a list of other potential failure reasons.  */
+  incompatibleAnimations: 'Target has another animation which is incompatible',
+  /** Descriptive reason for why a user-provided animation failed to be optimized by the browser due to an effect having unsupported timing parameters. Shown in a table with a list of other potential failure reasons.  */
+  unsupportedTimingParameters: 'Effect has unsupported timing parameters',
+
   /**
    *@description Text for the execution stack trace
    */
@@ -766,10 +789,6 @@ export class TimelineUIUtils {
 
       case TraceEngine.Types.TraceEvents.KnownEventName.EMBEDDER_CALLBACK:
         detailsText = unsafeEventData['callbackName'];
-        break;
-
-      case TraceEngine.Types.TraceEvents.KnownEventName.ANIMATION:
-        detailsText = unsafeEventData && unsafeEventData['name'];
         break;
 
       case TraceEngine.Types.TraceEvents.KnownEventName.ASYNC_TASK:
@@ -1389,9 +1408,57 @@ export class TimelineUIUtils {
       }
 
       case TraceEngine.Types.TraceEvents.KnownEventName.ANIMATION: {
-        if (event.ph === TraceEngine.Types.TraceEvents.Phase.ASYNC_NESTABLE_INSTANT) {
-          contentHelper.appendTextRow(i18nString(UIStrings.state), unsafeEventData['state']);
+        if (!TraceEngine.Types.TraceEvents.isSyntheticAnimation(event)) {
+          break;
         }
+        const {displayName, nodeName} = event.args.data.beginEvent.args.data;
+        displayName && contentHelper.appendTextRow(i18nString(UIStrings.animating), displayName);
+        // If relatedNodes is empty (maybe saved trace), then print the text description of the DOM node.
+        if (!relatedNodesMap?.size && nodeName) {
+          contentHelper.appendTextRow(i18nString(UIStrings.relatedNode), nodeName);
+        }
+
+        const CLSInsight = TraceEngine.Insights.InsightRunners.CumulativeLayoutShift;
+        const failures = CLSInsight.getNonCompositedFailure(event);
+        if (!failures.length) {
+          break;
+        }
+
+        const failureReasons = new Set(failures.map(f => f.failureReasons).flat().filter(Boolean));
+        const unsupportedProperties =
+            new Set(failures.map(f => f.unsupportedProperties).flat().filter(Boolean)) as Set<string>;
+
+        for (const reason of failureReasons) {
+          let str;
+          switch (reason) {
+            case CLSInsight.AnimationFailureReasons.UNSUPPORTED_CSS_PROPERTY:
+              str = i18nString(UIStrings.unsupportedCSSProperty, {
+                propertyCount: unsupportedProperties.size,
+                properties:
+                    new Intl.ListFormat(undefined, {style: 'short', type: 'conjunction'}).format(unsupportedProperties),
+              });
+              break;
+            case CLSInsight.AnimationFailureReasons.TRANSFROM_BOX_SIZE_DEPENDENT:
+              str = i18nString(UIStrings.transformDependsBoxSize);
+              break;
+            case CLSInsight.AnimationFailureReasons.FILTER_MAY_MOVE_PIXELS:
+              str = i18nString(UIStrings.filterMayMovePixels);
+              break;
+            case CLSInsight.AnimationFailureReasons.NON_REPLACE_COMPOSITE_MODE:
+              str = i18nString(UIStrings.nonReplaceCompositeMode);
+              break;
+            case CLSInsight.AnimationFailureReasons.INCOMPATIBLE_ANIMATIONS:
+              str = i18nString(UIStrings.incompatibleAnimations);
+              break;
+            case CLSInsight.AnimationFailureReasons.UNSUPPORTED_TIMING_PARAMS:
+              str = i18nString(UIStrings.unsupportedTimingParameters);
+              break;
+            default:
+              break;
+          }
+          str && contentHelper.appendElementRow(i18nString(UIStrings.compositingFailed), str, true);
+        }
+
         break;
       }
 

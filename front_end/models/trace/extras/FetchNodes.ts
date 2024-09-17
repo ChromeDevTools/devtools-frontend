@@ -81,6 +81,10 @@ export function nodeIdsForEvent(
     foundIds.add(event.args.data.nodeId);
   } else if (Types.TraceEvents.isTraceEventScrollLayer(event) && typeof event.args.data.nodeId !== 'undefined') {
     foundIds.add(event.args.data.nodeId);
+  } else if (
+      Types.TraceEvents.isSyntheticAnimation(event) &&
+      typeof event.args.data.beginEvent.args.data.nodeId !== 'undefined') {
+    foundIds.add(event.args.data.beginEvent.args.data.nodeId);
   } else if (Types.TraceEvents.isTraceEventDecodeImage(event)) {
     // For a DecodeImage event, we can use the ImagePaintingHandler, which has
     // done the work to build the relationship between a DecodeImage event and

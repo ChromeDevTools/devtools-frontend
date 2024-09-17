@@ -95,35 +95,29 @@ function isInInvalidationWindow(
   return eventEnd < targetEvent.ts && eventEnd >= targetEvent.ts - INVALIDATION_WINDOW;
 }
 
-/**
- * Returns a list of NoncompositedAnimationFailures.
- */
-function getNonCompositedAnimations(animations: readonly Types.TraceEvents.SyntheticAnimationPair[]):
+export function getNonCompositedFailure(event: Types.TraceEvents.SyntheticAnimationPair):
     NoncompositedAnimationFailure[] {
   const failures: NoncompositedAnimationFailure[] = [];
-  for (const event of animations) {
-    const beginEvent = event.args.data.beginEvent;
-    const instantEvents = event.args.data.instantEvents || [];
-    /**
-     * Animation events containing composite information are ASYNC_NESTABLE_INSTANT ('n').
-     * An animation may also contain multiple 'n' events, so we look through those with useful non-composited data.
-     */
-    for (const event of instantEvents) {
-      const failureMask = event.args.data.compositeFailed;
-      const unsupportedProperties = event.args.data.unsupportedProperties;
-      if (!failureMask || !unsupportedProperties) {
-        continue;
-      }
-      const failureReasons = ACTIONABLE_FAILURE_REASONS.filter(reason => failureMask & reason.flag).map(reason => {
-        return reason.failure;
-      });
-      const failure: NoncompositedAnimationFailure = {
-        name: beginEvent.args.data.displayName,
-        failureReasons,
-        unsupportedProperties,
-      };
-      failures.push(failure);
+  const beginEvent = event.args.data.beginEvent;
+  const instantEvents = event.args.data.instantEvents || [];
+  /**
+   * Animation events containing composite information are ASYNC_NESTABLE_INSTANT ('n').
+   * An animation may also contain multiple 'n' events, so we look through those with useful non-composited data.
+   */
+  for (const event of instantEvents) {
+    const failureMask = event.args.data.compositeFailed;
+    const unsupportedProperties = event.args.data.unsupportedProperties;
+    if (!failureMask || !unsupportedProperties) {
+      continue;
     }
+    const failureReasons =
+        ACTIONABLE_FAILURE_REASONS.filter(reason => failureMask & reason.flag).map(reason => reason.failure);
+    const failure: NoncompositedAnimationFailure = {
+      name: beginEvent.args.data.displayName,
+      failureReasons,
+      unsupportedProperties,
+    };
+    failures.push(failure);
   }
   return failures;
 }
@@ -285,7 +279,7 @@ export function generateInsight(
   });
 
   const compositeAnimationEvents = traceParsedData.Animations.animations.filter(isWithinSameNavigation);
-  const animationFailures = getNonCompositedAnimations(compositeAnimationEvents);
+  const animationFailures = compositeAnimationEvents.map(getNonCompositedFailure).flat();
 
   const iframeEvents =
       traceParsedData.LayoutShifts.renderFrameImplCreateChildFrameEvents.filter(isWithinSameNavigation);

@@ -47,6 +47,8 @@ export enum UserTier {
   USER_TIER_UNSPECIFIED = 0,
   // Users who are internal testers.
   TESTERS = 1,
+  // Users who are early adopters.
+  BETA = 2,
   // Users in the general public.
   PUBLIC = 3,
 }
@@ -318,9 +320,11 @@ export function convertToUserTierEnum(userTier: string|undefined): UserTier {
     switch (userTier) {
       case 'TESTERS':
         return UserTier.TESTERS;
+      case 'BETA':
+        return UserTier.BETA;
       case 'PUBLIC':
         return UserTier.PUBLIC;
     }
   }
-  return UserTier.TESTERS;
+  return UserTier.BETA;
 }

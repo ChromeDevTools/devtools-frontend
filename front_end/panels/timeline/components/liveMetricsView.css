@@ -11,6 +11,7 @@
   font-size: var(--sys-typescale-body4-size);
   line-height: var(--sys-typescale-body4-line-height);
   font-weight: var(--ref-typeface-weight-regular);
+  user-select: text;
 }
 
 .live-metrics-view {

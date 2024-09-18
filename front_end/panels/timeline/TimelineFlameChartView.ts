@@ -112,6 +112,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
   #linkSelectionAnnotation: TraceEngine.Types.File.EntriesLinkAnnotation|null = null;
 
   #currentInsightOverlays: Array<Overlays.Overlays.TimelineOverlay> = [];
+  #currentStoredOverlays: Array<Overlays.Overlays.TimelineOverlay>|null = null;
   #activeInsight: TimelineComponents.Sidebar.ActiveInsight|null = null;
 
   #tooltipElement = document.createElement('div');
@@ -320,6 +321,50 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     TraceBounds.TraceBounds.onChange(this.#onTraceBoundsChangeBound);
   }
 
+  #setOverlays(overlays: Overlays.Overlays.TimelineOverlay[]): void {
+    this.#currentInsightOverlays = overlays;
+    if (this.#currentInsightOverlays.length === 0) {
+      return;
+    }
+
+    const traceBounds = TraceBounds.TraceBounds.BoundsManager.instance().state()?.micro.entireTraceBounds;
+    if (!traceBounds) {
+      return;
+    }
+
+    this.bulkAddOverlays(this.#currentInsightOverlays);
+
+    const entries: TraceEngine.Types.TraceEvents.TraceEventData[] = [];
+    for (const overlay of this.#currentInsightOverlays) {
+      entries.push(...Overlays.Overlays.entriesForOverlay(overlay));
+    }
+
+    for (const entry of entries) {
+      // Ensure that the track for the entries are open.
+      this.#expandEntryTrack(entry);
+    }
+
+    const overlaysBounds = Overlays.Overlays.traceWindowContainingOverlays(this.#currentInsightOverlays);
+    // Trace window covering all overlays expanded by 100% so that the overlays cover 50% of the visible window.
+    const expandedBounds =
+        TraceEngine.Helpers.Timing.expandWindowByPercentOrToOneMillisecond(overlaysBounds, traceBounds, 100);
+
+    // Set the timeline visible window and ignore the minimap bounds. This
+    // allows us to pick a visible window even if the overlays are outside of
+    // the current breadcrumb. If this happens, the event listener for
+    // BoundsManager changes in TimelineMiniMap will detect it and activate
+    // the correct breadcrumb for us.
+    TraceBounds.TraceBounds.BoundsManager.instance().setTimelineVisibleWindow(
+        expandedBounds, {ignoreMiniMapBounds: true, shouldAnimate: true});
+
+    // Reveal entry if we have one.
+    if (entries.length !== 0) {
+      const earliestEntry =
+          entries.reduce((earliest, current) => (earliest.ts < current.ts ? earliest : current), entries[0]);
+      this.revealEventVertically(earliestEntry);
+    }
+  }
+
   revealAnnotation(annotation: TraceEngine.Types.File.Annotation): void {
     const traceBounds = TraceBounds.TraceBounds.BoundsManager.instance().state()?.micro.entireTraceBounds;
     if (!traceBounds) {
@@ -350,11 +395,9 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
 
   setActiveInsight(insight: TimelineComponents.Sidebar.ActiveInsight|null): void {
     this.#activeInsight = insight;
+    this.#currentStoredOverlays = null;
     const traceBounds = TraceBounds.TraceBounds.BoundsManager.instance().state()?.micro.entireTraceBounds;
-
-    for (const overlay of this.#currentInsightOverlays) {
-      this.removeOverlay(overlay);
-    }
+    this.bulkRemoveOverlays(this.#currentInsightOverlays);
 
     if (!this.#activeInsight || !traceBounds) {
       return;
@@ -362,44 +405,24 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
 
     if (insight) {
       const newInsightOverlays = insight.createOverlayFn();
-      this.#currentInsightOverlays = newInsightOverlays;
-      if (this.#currentInsightOverlays.length === 0) {
-        return;
-      }
-
-      const entries: TraceEngine.Types.TraceEvents.TraceEventData[] = [];
-
-      for (const overlay of this.#currentInsightOverlays) {
-        this.addOverlay(overlay);
-
-        entries.push(...Overlays.Overlays.entriesForOverlay(overlay));
-      }
-
-      for (const entry of entries) {
-        // Ensure that the track for the entries are open.
-        this.#expandEntryTrack(entry);
-      }
-
-      const overlaysBounds = Overlays.Overlays.traceWindowContainingOverlays(this.#currentInsightOverlays);
-      // Trace window covering all overlays expanded by 100% so that the overlays cover 50% of the visible window.
-      const expandedBounds =
-          TraceEngine.Helpers.Timing.expandWindowByPercentOrToOneMillisecond(overlaysBounds, traceBounds, 100);
-
-      // Set the timeline visible window and ignore the minimap bounds. This
-      // allows us to pick a visible window even if the overlays are outside of
-      // the current breadcrumb. If this happens, the event listener for
-      // BoundsManager changes in TimelineMiniMap will detect it and activate
-      // the correct breadcrumb for us.
-      TraceBounds.TraceBounds.BoundsManager.instance().setTimelineVisibleWindow(
-          expandedBounds, {ignoreMiniMapBounds: true, shouldAnimate: true});
-
-      // Reveal entry if we have one.
-      if (entries.length !== 0) {
-        const earliestEntry =
-            entries.reduce((earliest, current) => (earliest.ts < current.ts ? earliest : current), entries[0]);
-        this.revealEventVertically(earliestEntry);
-      }
+      this.#setOverlays(newInsightOverlays);
     }
+  }
+
+  /**
+   * Replaces any existing overlays with the ones provided to this method.
+   * If `overlays` is null, reverts back to the original overlays provided by
+   * the insight.
+   */
+  setOverlaysOverride(overlays: Overlays.Overlays.TimelineOverlay[]|null): void {
+    this.bulkRemoveOverlays(this.#currentInsightOverlays);
+
+    if (!this.#currentStoredOverlays) {
+      // This allows us to not need to call `createOverlayFn` multiple times.
+      this.#currentStoredOverlays = this.#currentInsightOverlays;
+    }
+
+    this.#setOverlays(overlays ?? this.#currentStoredOverlays);
   }
 
   /**
@@ -842,6 +865,12 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     return overlay;
   }
 
+  bulkRemoveOverlays(overlays: Overlays.Overlays.TimelineOverlay[]): void {
+    for (const overlay of overlays) {
+      this.#overlays.remove(overlay);
+    }
+    this.#overlays.update();
+  }
   removeOverlay(removedOverlay: Overlays.Overlays.TimelineOverlay): void {
     this.#overlays.remove(removedOverlay);
     this.#overlays.update();

@@ -376,6 +376,7 @@
   --app-color-performance-sidebar-time-range: var(--ref-palette-pink60);
   --app-color-performance-sidebar-time-range-text: rgb(255 255 255);
   --app-color-performance-sidebar-label-text: rgb(0 0 0);
+  --app-color-performance-sidebar-table-row-hover: #f0f3f9;
 
   /**
    * Colors for cards.

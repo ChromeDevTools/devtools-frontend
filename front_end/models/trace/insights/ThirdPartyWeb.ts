@@ -14,7 +14,7 @@ export function deps(): ['Meta', 'NetworkRequests', 'Renderer', 'ImagePainting']
   return ['Meta', 'NetworkRequests', 'Renderer', 'ImagePainting'];
 }
 
-type Entity = typeof ThirdPartyWeb.ThirdPartyWeb.entities[number];
+export type Entity = typeof ThirdPartyWeb.ThirdPartyWeb.entities[number];
 
 interface Summary {
   transferSize: number;

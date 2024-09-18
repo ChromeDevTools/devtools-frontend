@@ -46,10 +46,19 @@ export class InsightDeactivated extends Event {
   }
 }
 
+export class InsightOverlayOverride extends Event {
+  static readonly eventName = 'insightoverlayoverride';
+
+  constructor(public overlays: Array<Overlays.Overlays.TimelineOverlay>|null) {
+    super(InsightOverlayOverride.eventName, {bubbles: true, composed: true});
+  }
+}
+
 declare global {
   interface GlobalEventHandlersEventMap {
     [InsightActivated.eventName]: InsightActivated;
     [InsightDeactivated.eventName]: InsightDeactivated;
+    [InsightOverlayOverride.eventName]: InsightOverlayOverride;
   }
 }
 

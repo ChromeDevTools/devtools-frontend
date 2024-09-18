@@ -100,6 +100,14 @@ export abstract class BaseInsight extends HTMLElement {
         ));
   }
 
+  protected onOverlayOverride(overlays: Overlays.Overlays.TimelineOverlay[]|null): void {
+    if (!this.isActive()) {
+      return;
+    }
+
+    this.dispatchEvent(new SidebarInsight.InsightOverlayOverride(overlays));
+  }
+
   abstract createOverlays(): Overlays.Overlays.TimelineOverlay[];
 
   abstract render(): void;

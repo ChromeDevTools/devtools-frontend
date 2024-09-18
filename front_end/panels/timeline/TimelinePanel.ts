@@ -530,6 +530,11 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       this.#setActiveInsight({name, navigationId, createOverlayFn});
     });
 
+    this.#sideBar.element.addEventListener(TimelineInsights.SidebarInsight.InsightOverlayOverride.eventName, event => {
+      const {overlays} = event;
+      this.flameChart.setOverlaysOverride(overlays);
+    });
+
     this.#sideBar.contentElement.addEventListener(TimelineComponents.Sidebar.EventReferenceClick.eventName, event => {
       const {metricEvent} = event;
       this.flameChart.setSelectionAndReveal(TimelineSelection.fromTraceEvent(metricEvent));

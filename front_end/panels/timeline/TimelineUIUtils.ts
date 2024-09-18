@@ -50,8 +50,6 @@ import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 // eslint-disable-next-line rulesdir/es_modules_import
 import imagePreviewStyles from '../../ui/legacy/components/utils/imagePreview.css.js';
 import * as LegacyComponents from '../../ui/legacy/components/utils/utils.js';
-// eslint-disable-next-line rulesdir/es_modules_import
-import inspectorCommonStyles from '../../ui/legacy/inspectorCommon.css.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {CLSRect} from './CLSLinkifier.js';
@@ -1784,8 +1782,8 @@ export class TimelineUIUtils {
 
     // Use CodeHighlighter for syntax highlighting.
     const highlightContainer = document.createElement('div');
-    const shadowRoot = highlightContainer.attachShadow({mode: 'open'});
-    shadowRoot.adoptedStyleSheets = [inspectorCommonStyles, codeHighlighterStyles];
+    const shadowRoot =
+        UI.UIUtils.createShadowRootWithCoreStyles(highlightContainer, {cssFile: [codeHighlighterStyles]});
     const elem = shadowRoot.createChild('div');
     elem.classList.add('monospace', 'source-code');
     elem.textContent = eventStr;

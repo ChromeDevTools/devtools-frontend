@@ -111,6 +111,13 @@ export class ExtensionTransport {
                             sessionId: 'pageTargetSessionId',
                         },
                     });
+                    this.#dispatchResponse({
+                        id: parsed.id,
+                        sessionId: parsed.sessionId,
+                        method: parsed.method,
+                        result: {},
+                    });
+                    return;
                 }
                 else if (!parsed.sessionId) {
                     this.#dispatchResponse({
@@ -120,14 +127,14 @@ export class ExtensionTransport {
                             sessionId: 'tabTargetSessionId',
                         },
                     });
+                    this.#dispatchResponse({
+                        id: parsed.id,
+                        sessionId: parsed.sessionId,
+                        method: parsed.method,
+                        result: {},
+                    });
+                    return;
                 }
-                this.#dispatchResponse({
-                    id: parsed.id,
-                    sessionId: parsed.sessionId,
-                    method: parsed.method,
-                    result: {},
-                });
-                return;
             }
         }
         if (parsed.sessionId === 'pageTargetSessionId') {

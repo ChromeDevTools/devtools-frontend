@@ -17,6 +17,9 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/overlays/components/EntriesLinkOverlay.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
+// In other overlays, the border line width is set to 2px.
+const BORDER_LINE_WIDTH = 2;
+
 import styles from './entriesLinkOverlay.css.js';
 
 export class EntriesLinkOverlay extends HTMLElement {
@@ -169,11 +172,15 @@ export class EntriesLinkOverlay extends HTMLElement {
       this.#entryFromConnector.setAttribute('cx', endConnectionPointX);
       this.#entryFromConnector.setAttribute('cy', endConnectionPointY);
 
+      const adjustedEntryFromWrapperX = String(this.#coordinateFrom.x + BORDER_LINE_WIDTH / 2);
+      const adjustedEntryFromWrapperY = String(this.#coordinateFrom.y + BORDER_LINE_WIDTH / 2);
+      const adjustedWidth = String(this.#fromEntryDimentions.width - BORDER_LINE_WIDTH);
+      const adjustedHeight = String(this.#fromEntryDimentions.height - BORDER_LINE_WIDTH);
       this.#entryFromWrapper.setAttribute('visibility', 'visible');
-      this.#entryFromWrapper.setAttribute('x', this.#coordinateFrom.x.toString());
-      this.#entryFromWrapper.setAttribute('y', this.#coordinateFrom.y.toString());
-      this.#entryFromWrapper.setAttribute('width', this.#fromEntryDimentions.width.toString());
-      this.#entryFromWrapper.setAttribute('height', this.#fromEntryDimentions.height.toString());
+      this.#entryFromWrapper.setAttribute('x', adjustedEntryFromWrapperX);
+      this.#entryFromWrapper.setAttribute('y', adjustedEntryFromWrapperY);
+      this.#entryFromWrapper.setAttribute('width', adjustedWidth);
+      this.#entryFromWrapper.setAttribute('height', adjustedHeight);
     } else {
       this.#connector.setAttribute('x1', (this.#coordinateFrom.x + this.#fromEntryDimentions.width).toString());
       this.#connector.setAttribute('y1', this.#coordinateFrom.y.toString());
@@ -186,11 +193,15 @@ export class EntriesLinkOverlay extends HTMLElement {
     // Otherwise, the arrow is following the mouse so we assign it to the provided coordinates.
     if (this.#toEntryDimentions) {
       if (this.#entryToVisible) {
+        const adjustedEntryToWrapperX = String(this.#coordinateTo.x + BORDER_LINE_WIDTH / 2);
+        const adjustedEntryToWrapperY = String(this.#coordinateTo.y + BORDER_LINE_WIDTH / 2);
+        const adjustedWidth = String(this.#toEntryDimentions.width - BORDER_LINE_WIDTH);
+        const adjustedHeight = String(this.#toEntryDimentions.height - BORDER_LINE_WIDTH);
         this.#entryToWrapper.setAttribute('visibility', 'visible');
-        this.#entryToWrapper.setAttribute('x', this.#coordinateTo.x.toString());
-        this.#entryToWrapper.setAttribute('y', this.#coordinateTo.y.toString());
-        this.#entryToWrapper.setAttribute('width', this.#toEntryDimentions.width.toString());
-        this.#entryToWrapper.setAttribute('height', this.#toEntryDimentions.height.toString());
+        this.#entryToWrapper.setAttribute('x', adjustedEntryToWrapperX);
+        this.#entryToWrapper.setAttribute('y', adjustedEntryToWrapperY);
+        this.#entryToWrapper.setAttribute('width', adjustedWidth);
+        this.#entryToWrapper.setAttribute('height', adjustedHeight);
 
         const connectionPointX = String(this.#coordinateTo.x);
         const connectionPointY = String(this.#coordinateTo.y + this.#toEntryDimentions.height / 2);
@@ -319,9 +330,9 @@ export class EntriesLinkOverlay extends HTMLElement {
               />
 
             <rect
-              class="entryFromWrapper" fill="none" stroke="black" stroke-dasharray=${this.#fromEntryIsSource ? 'none' : DASHED_STROKE_AMOUNT} />
+              class="entryFromWrapper" fill="none" stroke="black" stroke-width=${BORDER_LINE_WIDTH} stroke-dasharray=${this.#fromEntryIsSource ? 'none' : DASHED_STROKE_AMOUNT} />
             <rect
-              class="entryToWrapper" fill="none" stroke="black" stroke-dasharray=${this.#toEntryIsSource ? 'none' : DASHED_STROKE_AMOUNT} />
+              class="entryToWrapper" fill="none" stroke="black" stroke-width=${BORDER_LINE_WIDTH} stroke-dasharray=${this.#toEntryIsSource ? 'none' : DASHED_STROKE_AMOUNT} />
 
             <circle class="entryFromConnector" fill="none" stroke=${arrowColor} stroke-width=${CONNECTOR_CIRCLE_STROKE_WIDTH} r=${CONNECTOR_CIRCLE_RADIUS} />
             <circle class="entryToConnector" fill="none" stroke=${arrowColor} stroke-width=${CONNECTOR_CIRCLE_STROKE_WIDTH} r=${CONNECTOR_CIRCLE_RADIUS} />

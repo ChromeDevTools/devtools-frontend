@@ -346,14 +346,14 @@ export class Button extends HTMLElement {
       'text-with-icon': hasIcon && !isEmpty,
       'only-icon': hasIcon && isEmpty,
       micro: this.#props.size === Size.MICRO,
-      small: Boolean(this.#props.size === Size.SMALL),
+      small: this.#props.size === Size.SMALL,
       'reduced-focus-ring': Boolean(this.#props.reducedFocusRing),
       active: this.#props.active,
     };
     const spinnerClasses = {
       primary: this.#props.variant === Variant.PRIMARY,
       outlined: this.#props.variant === Variant.OUTLINED,
-      disabled: Boolean(this.#props.disabled),
+      disabled: this.#props.disabled,
       spinner: true,
     };
     const jslog =

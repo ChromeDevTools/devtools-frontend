@@ -54,6 +54,7 @@ devtools_module("timeline") {
   sources = [
     "ActiveFilters.ts",
     "AnimationsTrackAppender.ts",
+    "AnnotationHelpers.ts",
     "AppenderUtils.ts",
     "BenchmarkEvents.ts",
     "CLSLinkifier.ts",
@@ -184,6 +185,7 @@ ts_library("unittests") {
   testonly = true
 
   sources = [
+    "AnnotationHelpers.test.ts",
     "Breadcrumbs.test.ts",
     "EntriesFilter.test.ts",
     "EventsSerializer.test.ts",

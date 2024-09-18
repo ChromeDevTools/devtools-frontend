@@ -433,6 +433,7 @@ export class TimelineFrame implements Types.TraceEvents.LegacyTimelineFrame {
   setIndex(i: number): void {
     this.index = i;
   }
+
   setEndTime(endTime: Types.Timing.MicroSeconds): void {
     this.endTime = endTime;
     this.duration = Types.Timing.MicroSeconds(this.endTime - this.startTime);
@@ -440,6 +441,14 @@ export class TimelineFrame implements Types.TraceEvents.LegacyTimelineFrame {
 
   setLayerTree(layerTree: Types.TraceEvents.LegacyFrameLayerTreeData|null): void {
     this.layerTree = layerTree;
+  }
+
+  /**
+   * Fake the `dur` field to meet the expected value given that we pretend
+   * these TimelineFrame classes are trace events across the codebase.
+   */
+  get dur(): Types.Timing.MicroSeconds {
+    return this.duration;
   }
 }
 

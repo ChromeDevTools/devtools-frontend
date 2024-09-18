@@ -540,6 +540,10 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       ModificationsManager.activeManager()?.removeAnnotation(removedAnnotation);
     });
 
+    this.#sideBar.element.addEventListener(TimelineComponents.Sidebar.RevealAnnotation.eventName, event => {
+      this.flameChart.revealAnnotation(event.annotation);
+    });
+
     this.onModeChanged();
     this.populateToolbar();
     // The viewMode is set by default to the landing page, so we don't call

@@ -25,6 +25,14 @@ export class RemoveAnnotation extends Event {
   }
 }
 
+export class RevealAnnotation extends Event {
+  static readonly eventName = 'revealannotation';
+
+  constructor(public annotation: TraceEngine.Types.File.Annotation) {
+    super(RevealAnnotation.eventName, {bubbles: true, composed: true});
+  }
+}
+
 export class EventReferenceClick extends Event {
   static readonly eventName = 'sidebarmetricclick';
 
@@ -36,6 +44,7 @@ export class EventReferenceClick extends Event {
 declare global {
   interface GlobalEventHandlersEventMap {
     [EventReferenceClick.eventName]: EventReferenceClick;
+    [RevealAnnotation.eventName]: RevealAnnotation;
   }
 }
 

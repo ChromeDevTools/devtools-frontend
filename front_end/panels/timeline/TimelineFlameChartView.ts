@@ -14,6 +14,7 @@ import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
+import {getAnnotationEntries, getAnnotationWindow} from './AnnotationHelpers.js';
 import type * as TimelineComponents from './components/components.js';
 import {CountersGraph} from './CountersGraph.js';
 import {SHOULD_SHOW_EASTER_EGG} from './EasterEgg.js';
@@ -298,6 +299,34 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     this.refreshMainFlameChart();
 
     TraceBounds.TraceBounds.onChange(this.#onTraceBoundsChangeBound);
+  }
+
+  revealAnnotation(annotation: TraceEngine.Types.File.Annotation): void {
+    const traceBounds = TraceBounds.TraceBounds.BoundsManager.instance().state()?.micro.entireTraceBounds;
+    if (!traceBounds) {
+      return;
+    }
+
+    const annotationWindow = getAnnotationWindow(annotation);
+    if (!annotationWindow) {
+      return;
+    }
+
+    const annotationEntries = getAnnotationEntries(annotation);
+
+    for (const entry of annotationEntries) {
+      this.#expandEntryTrack(entry);
+    }
+    const firstEntry = annotationEntries.at(0);
+    if (firstEntry) {
+      this.revealEventVertically(firstEntry);
+    }
+
+    // Trace window covering all overlays expanded by 100% so that the overlays cover 50% of the visible window.
+    const expandedBounds =
+        TraceEngine.Helpers.Timing.expandWindowByPercentOrToOneMillisecond(annotationWindow, traceBounds, 100);
+    TraceBounds.TraceBounds.BoundsManager.instance().setTimelineVisibleWindow(
+        expandedBounds, {ignoreMiniMapBounds: true, shouldAnimate: true});
   }
 
   setActiveInsight(insight: TimelineComponents.Sidebar.ActiveInsight|null): void {

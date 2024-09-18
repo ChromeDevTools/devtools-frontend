@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as AnimationsTrackAppender from './AnimationsTrackAppender.js';
+import * as AnnotationHelpers from './AnnotationHelpers.js';
 import * as AppenderUtils from './AppenderUtils.js';
 import * as BenchmarkEvents from './BenchmarkEvents.js';
 import * as CLSLinkifier from './CLSLinkifier.js';
@@ -47,6 +48,7 @@ import * as UIDevtoolsUtils from './UIDevtoolsUtils.js';
 
 export {
   AnimationsTrackAppender,
+  AnnotationHelpers,
   AppenderUtils,
   BenchmarkEvents,
   CLSLinkifier,

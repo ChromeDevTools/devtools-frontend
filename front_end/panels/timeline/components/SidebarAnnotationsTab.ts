@@ -14,7 +14,7 @@ import * as Settings from '../../../ui/components/settings/settings.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
 import {nameForEntry} from './EntryName.js';
-import {RemoveAnnotation} from './Sidebar.js';
+import {RemoveAnnotation, RevealAnnotation} from './Sidebar.js';
 import sidebarAnnotationsTabStyles from './sidebarAnnotationsTab.css.js';
 
 const diagramImageUrl = new URL('../../../Images/performance-panel-diagram.svg', import.meta.url).toString();
@@ -154,65 +154,8 @@ export class SidebarAnnotationsTab extends HTMLElement {
     }
   }
 
-  // When an annotations are clicked in the sidebar, zoom into it.
-  #zoomIntoAnnotation(annotation: TraceEngine.Types.File.Annotation): void {
-    let annotationWindow: TraceEngine.Types.Timing.TraceWindowMicroSeconds|null = null;
-    const minVisibleEntryDuration = TraceEngine.Types.Timing.MilliSeconds(1);
-
-    switch (annotation.type) {
-      case 'ENTRY_LABEL': {
-        const eventDuration = annotation.entry.dur ?? minVisibleEntryDuration;
-
-        annotationWindow = {
-          min: annotation.entry.ts,
-          max: TraceEngine.Types.Timing.MicroSeconds(annotation.entry.ts + eventDuration),
-          range: TraceEngine.Types.Timing.MicroSeconds(eventDuration),
-        };
-        break;
-      }
-      case 'TIME_RANGE': {
-        annotationWindow = annotation.bounds;
-        break;
-      }
-      case 'ENTRIES_LINK': {
-        // If entryTo does not exist, the annotation is in the process of being created.
-        // Do not allow to zoom into it in this case.
-        if (!annotation.entryTo) {
-          break;
-        }
-
-        const fromEventDuration = (annotation.entryFrom.dur) ?? minVisibleEntryDuration;
-        const toEventDuration = annotation.entryTo.dur ?? minVisibleEntryDuration;
-
-        // To choose window max, check which entry ends later
-        const fromEntryEndTS = (annotation.entryFrom.ts + fromEventDuration);
-        const toEntryEndTS = (annotation.entryTo.ts + toEventDuration);
-        const maxTimestamp = Math.max(fromEntryEndTS, toEntryEndTS);
-
-        annotationWindow = {
-          min: annotation.entryFrom.ts,
-          max: TraceEngine.Types.Timing.MicroSeconds(maxTimestamp),
-          range: TraceEngine.Types.Timing.MicroSeconds(maxTimestamp - annotation.entryFrom.ts),
-        };
-      }
-    }
-
-    const traceBounds = TraceBounds.TraceBounds.BoundsManager.instance().state()?.micro.entireTraceBounds;
-    if (annotationWindow && traceBounds) {
-      // Expand the bounds by 20% to make the new window 40% bigger than the annotation so it is not taking the whole visible window.
-      // Pass the trace bounds window to make sure we do not set a window outside of the trace bounds.
-      const newVisibleWindow =
-          TraceEngine.Helpers.Timing.expandWindowByPercentOrToOneMillisecond(annotationWindow, traceBounds, 40);
-      // Set the timeline visible window and ignore the minimap bounds. This
-      // allows us to pick a visible window even if the overlays are outside of
-      // the current breadcrumb. If this happens, the event listener for
-      // BoundsManager changes in TimelineMiniMap will detect it and activate
-      // the correct breadcrumb for us.
-      TraceBounds.TraceBounds.BoundsManager.instance().setTimelineVisibleWindow(
-          newVisibleWindow, {ignoreMiniMapBounds: true, shouldAnimate: true});
-    } else {
-      console.error('Could not calculate zoom in window for ', annotation);
-    }
+  #revealAnnotation(annotation: TraceEngine.Types.File.Annotation): void {
+    this.dispatchEvent(new RevealAnnotation(annotation));
   }
 
   #renderTutorialCard(): LitHtml.TemplateResult {
@@ -254,7 +197,7 @@ export class SidebarAnnotationsTab extends HTMLElement {
             LitHtml.html`
               ${this.#annotations.map(annotation =>
                 LitHtml.html`
-                  <div class="annotation-container" @click=${() => this.#zoomIntoAnnotation(annotation)}>
+                  <div class="annotation-container" @click=${() => this.#revealAnnotation(annotation)}>
                     <div class="annotation">
                       ${this.#renderAnnotationIdentifier(annotation)}
                       <span class="label">

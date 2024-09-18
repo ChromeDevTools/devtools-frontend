@@ -1058,6 +1058,7 @@ grd_files_debug_sources = [
   "front_end/models/trace/insights/Common.js",
   "front_end/models/trace/insights/CumulativeLayoutShift.js",
   "front_end/models/trace/insights/DocumentLatency.js",
+  "front_end/models/trace/insights/FontDisplay.js",
   "front_end/models/trace/insights/InsightRunners.js",
   "front_end/models/trace/insights/InteractionToNextPaint.js",
   "front_end/models/trace/insights/LargestContentfulPaint.js",

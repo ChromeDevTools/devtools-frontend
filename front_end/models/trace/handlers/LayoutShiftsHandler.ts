@@ -50,6 +50,7 @@ interface LayoutShifts {
   styleRecalcInvalidationEvents: readonly Types.TraceEvents.TraceEventStyleRecalcInvalidationTracking[];
   renderFrameImplCreateChildFrameEvents: readonly Types.TraceEvents.TraceEventRenderFrameImplCreateChildFrame[];
   domLoadingEvents: readonly Types.TraceEvents.TraceEventDomLoading[];
+  beginRemoteFontLoadEvents: readonly Types.TraceEvents.TraceEventBeginRemoteFontLoad[];
   scoreRecords: readonly ScoreRecord[];
   // TODO(crbug/41484172): should be readonly
   backendNodeIds: Protocol.DOM.BackendNodeId[];
@@ -79,6 +80,7 @@ const scheduleStyleInvalidationEvents: Types.TraceEvents.TraceEventScheduleStyle
 const styleRecalcInvalidationEvents: Types.TraceEvents.TraceEventStyleRecalcInvalidationTracking[] = [];
 const renderFrameImplCreateChildFrameEvents: Types.TraceEvents.TraceEventRenderFrameImplCreateChildFrame[] = [];
 const domLoadingEvents: Types.TraceEvents.TraceEventDomLoading[] = [];
+const beginRemoteFontLoadEvents: Types.TraceEvents.TraceEventBeginRemoteFontLoad[] = [];
 
 const backendNodeIds = new Set<Protocol.DOM.BackendNodeId>();
 
@@ -124,6 +126,7 @@ export function reset(): void {
   prePaintEvents.length = 0;
   renderFrameImplCreateChildFrameEvents.length = 0;
   domLoadingEvents.length = 0;
+  beginRemoteFontLoadEvents.length = 0;
   backendNodeIds.clear();
   clusters.length = 0;
   sessionMaxScore = 0;
@@ -160,6 +163,9 @@ export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
   }
   if (Types.TraceEvents.isTraceEventDomLoading(event)) {
     domLoadingEvents.push(event);
+  }
+  if (Types.TraceEvents.isTraceEventBeginRemoteFontLoad(event)) {
+    beginRemoteFontLoadEvents.push(event);
   }
 }
 
@@ -237,6 +243,7 @@ export async function finalize(): Promise<void> {
   layoutInvalidationEvents.sort((a, b) => a.ts - b.ts);
   renderFrameImplCreateChildFrameEvents.sort((a, b) => a.ts - b.ts);
   domLoadingEvents.sort((a, b) => a.ts - b.ts);
+  beginRemoteFontLoadEvents.sort((a, b) => a.ts - b.ts);
 
   // Each function transforms the data used by the next, as such the invoke order
   // is important.
@@ -485,6 +492,7 @@ export function data(): LayoutShifts {
     styleRecalcInvalidationEvents: [],
     renderFrameImplCreateChildFrameEvents,
     domLoadingEvents,
+    beginRemoteFontLoadEvents,
     scoreRecords,
     // TODO(crbug/41484172): change the type so no need to clone
     backendNodeIds: [...backendNodeIds],

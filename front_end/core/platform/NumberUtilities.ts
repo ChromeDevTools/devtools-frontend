@@ -48,6 +48,15 @@ export const toFixedIfFloating = (value: string): string => {
  * Rounds a number (including float) down.
  */
 export const floor = (value: number, precision: number = 0): number => {
+  // Allows for rounding to the nearest whole number.
+  // Ex: 1 / 10 -> round down to nearest 10th place
+  // Ex: 1 / 5 -> round down to nearest 5
+  // Ex: 1 / 50 -> round down to nearest 50
+  if (precision > 0 && precision < 1) {
+    precision = 1 / precision;
+    return Math.floor(value / precision) * precision;
+  }
+
   const mult = Math.pow(10, precision);
   return Math.floor(value * mult) / mult;
 };

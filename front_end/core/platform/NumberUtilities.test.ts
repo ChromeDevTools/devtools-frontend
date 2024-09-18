@@ -84,6 +84,16 @@ describe('NumberUtilities', () => {
       assert.strictEqual(1.9, Platform.NumberUtilities.floor(1.9999, 1));
       assert.strictEqual(1.99, Platform.NumberUtilities.floor(1.9999, 2));
     });
+
+    it('it can round down to the nearest 5*', () => {
+      assert.strictEqual(115, Platform.NumberUtilities.floor(116.1, 1 / 5));
+      assert.strictEqual(1150, Platform.NumberUtilities.floor(1167.31, 1 / 50));
+    });
+
+    it('it can round down to the nearest 10*', () => {
+      assert.strictEqual(110, Platform.NumberUtilities.floor(111.1, 1 / 10));
+      assert.strictEqual(1100, Platform.NumberUtilities.floor(1161.31, 1 / 100));
+    });
   });
 
   describe('greatestCommonDivisor', () => {

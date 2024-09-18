@@ -11,6 +11,7 @@ devtools_module("insights") {
     "Common.ts",
     "CumulativeLayoutShift.ts",
     "DocumentLatency.ts",
+    "FontDisplay.ts",
     "InsightRunners.ts",
     "InteractionToNextPaint.ts",
     "LargestContentfulPaint.ts",
@@ -46,6 +47,7 @@ ts_library("unittests") {
   sources = [
     "CumulativeLayoutShift.test.ts",
     "DocumentLatency.test.ts",
+    "FontDisplay.test.ts",
     "InteractionToNextPaint.test.ts",
     "LargestContentfulPaint.test.ts",
     "RenderBlocking.test.ts",

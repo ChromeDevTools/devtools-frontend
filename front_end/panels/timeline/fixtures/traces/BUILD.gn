@@ -21,6 +21,7 @@ copy_to_gen("traces") {
     "enhanced-traces.json.gz",
     "extension-tracks-and-marks.json.gz",
     "fenced-frame-fledge.json.gz",
+    "font-display.json.gz",
     "forced-layouts-and-no-gpu.json.gz",
     "generic-about-tracing.json.gz",
     "idle-callback.json.gz",

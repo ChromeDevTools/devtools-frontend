@@ -47,6 +47,7 @@ export type WebSocketTraceData = WebSocketTraceDataForFrame|WebSocketTraceDataFo
 
 const webSocketData: Map<number, WebSocketTraceData> = new Map();
 interface NetworkRequestData {
+  byId: Map<string, Types.TraceEvents.SyntheticNetworkRequest>;
   byOrigin: Map<string, {
     renderBlocking: Types.TraceEvents.SyntheticNetworkRequest[],
     nonRenderBlocking: Types.TraceEvents.SyntheticNetworkRequest[],
@@ -58,6 +59,7 @@ interface NetworkRequestData {
 }
 
 const requestMap = new Map<string, TraceEventsForNetworkRequest>();
+const requestsById = new Map<string, Types.TraceEvents.SyntheticNetworkRequest>();
 const requestsByOrigin = new Map<string, {
   renderBlocking: Types.TraceEvents.SyntheticNetworkRequest[],
   nonRenderBlocking: Types.TraceEvents.SyntheticNetworkRequest[],
@@ -105,6 +107,7 @@ function firstPositiveValueInList(entries: number[]): number {
 let handlerState = HandlerState.UNINITIALIZED;
 
 export function reset(): void {
+  requestsById.clear();
   requestsByOrigin.clear();
   requestMap.clear();
   requestsByTime.length = 0;
@@ -481,6 +484,7 @@ export async function finalize(): Promise<void> {
     // the captured requests, so here we store all of them together.
     requests.all.push(networkEvent);
     requestsByTime.push(networkEvent);
+    requestsById.set(networkEvent.args.data.requestId, networkEvent);
 
     const initiatorUrl = networkEvent.args.data.initiator?.url ||
         Helpers.Trace.getZeroIndexedStackTraceForEvent(networkEvent)?.at(0)?.url;
@@ -511,6 +515,7 @@ export function data(): NetworkRequestData {
   }
 
   return {
+    byId: requestsById,
     byOrigin: requestsByOrigin,
     byTime: requestsByTime,
     eventToInitiator: eventToInitiatorMap,

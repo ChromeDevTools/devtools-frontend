@@ -631,7 +631,7 @@ export class FreestylerChatUi extends HTMLElement {
               : LitHtml.nothing
           }
           ${
-            message.suggestingFix
+            message.suggestingFix && isLast
               ? LitHtml.html`<${Buttons.Button.Button.litTagName}
                   .data=${{
                       variant: Buttons.Button.Variant.OUTLINED,

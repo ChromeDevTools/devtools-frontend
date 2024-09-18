@@ -7,6 +7,7 @@ import * as TraceEngine from '../../../models/trace/trace.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
+import {type BaseInsight} from './insights/Helpers.js';
 import * as Insights from './insights/insights.js';
 import {type ActiveInsight, EventReferenceClick} from './Sidebar.js';
 import {InsightsCategories} from './SidebarInsightsTab.js';
@@ -49,19 +50,32 @@ export class SidebarSingleNavigation extends HTMLElement {
     return label === this.#data.activeCategory;
   }
 
-  #referenceEvent(event: TraceEngine.Types.TraceEvents.TraceEventData) {
-    return () => {
-      this.dispatchEvent(new EventReferenceClick(event));
-    };
+  #onClickMetric(event: TraceEngine.Types.TraceEvents.TraceEventData, insightComponentName: string): void {
+    const el = this.shadowRoot?.querySelector(insightComponentName) as BaseInsight;
+    if (el && this.#data.navigationId) {
+      this.dispatchEvent(new Insights.SidebarInsight.InsightActivated(
+          el.internalName,
+          this.#data.navigationId,
+          el.createOverlays.bind(el),
+          ));
+    }
+
+    this.dispatchEvent(new EventReferenceClick(event));
   }
 
   #renderMetricValue(
       label: 'LCP'|'CLS'|'INP', value: string,
       classification: TraceEngine.Handlers.ModelHandlers.PageLoadMetrics.ScoreClassification,
       event: TraceEngine.Types.TraceEvents.TraceEventData|null): LitHtml.LitTemplate {
+    const insightComponentName = {
+      LCP: Insights.LCPPhases.LCPPhases.litTagName.value as string,
+      CLS: Insights.CLSCulprits.CLSCulprits.litTagName.value as string,
+      INP: Insights.InteractionToNextPaint.InteractionToNextPaint.litTagName.value as string,
+    }[label];
+
     // clang-format off
     return this.#metricIsVisible(label) ? LitHtml.html`
-      <div class="metric" @click=${event ? this.#referenceEvent(event): null}>
+      <div class="metric" @click=${event ? this.#onClickMetric.bind(this, event, insightComponentName) : null}>
         <div class="metric-value metric-value-${classification}">${value}</div>
         <div class="metric-label">${label}</div>
       </div>

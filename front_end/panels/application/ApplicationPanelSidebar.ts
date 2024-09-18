@@ -36,6 +36,7 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
+import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
@@ -52,6 +53,11 @@ import {BackgroundServiceView} from './BackgroundServiceView.js';
 import {BounceTrackingMitigationsTreeElement} from './BounceTrackingMitigationsTreeElement.js';
 import * as ApplicationComponents from './components/components.js';
 import {type DOMStorage, DOMStorageModel, Events as DOMStorageModelEvents} from './DOMStorageModel.js';
+import {
+  Events as ExtensionStorageModelEvents,
+  type ExtensionStorage,
+  ExtensionStorageModel,
+} from './ExtensionStorageModel.js';
 import {
   type Database as IndexedDBModelDatabase,
   type DatabaseId,
@@ -101,6 +107,10 @@ const UIStrings = {
    *@description Text in Application Panel Sidebar of the Application panel
    */
   sessionStorage: 'Session storage',
+  /**
+   *@description Text in Application Panel Sidebar of the Application panel
+   */
+  extensionStorage: 'Extension storage',
   /**
    *@description Text for web cookies
    */
@@ -240,6 +250,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
   serviceWorkersTreeElement: ServiceWorkersTreeElement;
   localStorageListTreeElement: ExpandableApplicationPanelTreeElement;
   sessionStorageListTreeElement: ExpandableApplicationPanelTreeElement;
+  extensionStorageListTreeElement: ExpandableApplicationPanelTreeElement|undefined;
   indexedDBListTreeElement: IndexedDBTreeElement;
   interestGroupTreeElement: InterestGroupTreeElement;
   cookieListTreeElement: ExpandableApplicationPanelTreeElement;
@@ -259,6 +270,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
   preloadingSummaryTreeElement: PreloadingSummaryTreeElement|undefined;
   private readonly resourcesSection: ResourcesSection;
   private domStorageTreeElements: Map<DOMStorage, DOMStorageTreeElement>;
+  private extensionStorageTreeElements: Map<ExtensionStorage, ExtensionStorageTreeElement>;
   private sharedStorageTreeElements: Map<string, SharedStorageTreeElement>;
   private domains: {
     [x: string]: boolean,
@@ -318,6 +330,19 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
     this.sessionStorageListTreeElement.setLeadingIcons([sessionStorageIcon]);
 
     storageTreeElement.appendChild(this.sessionStorageListTreeElement);
+
+    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.EXTENSION_STORAGE_VIEWER)) {
+      this.extensionStorageListTreeElement =
+          new ExpandableApplicationPanelTreeElement(panel, i18nString(UIStrings.extensionStorage), 'extension-storage');
+      this.extensionStorageListTreeElement.setLink(
+          'https://developer.chrome.com/docs/extensions/reference/api/storage/?utm_source=devtools' as
+          Platform.DevToolsPath.UrlString);
+      const extensionStorageIcon = IconButton.Icon.create('table');
+      this.extensionStorageListTreeElement.setLeadingIcons([extensionStorageIcon]);
+
+      storageTreeElement.appendChild(this.extensionStorageListTreeElement);
+    }
+
     this.indexedDBListTreeElement = new IndexedDBTreeElement(panel);
     this.indexedDBListTreeElement.setLink(
         'https://developer.chrome.com/docs/devtools/storage/indexeddb/?utm_source=devtools' as
@@ -388,6 +413,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
     this.resourcesSection = new ResourcesSection(panel, resourcesTreeElement);
 
     this.domStorageTreeElements = new Map();
+    this.extensionStorageTreeElements = new Map();
     this.sharedStorageTreeElements = new Map();
     this.domains = {};
 
@@ -410,6 +436,16 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
           modelRemoved: (model: DOMStorageModel) => this.domStorageModelRemoved(model),
         },
         {scoped: true});
+
+    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.EXTENSION_STORAGE_VIEWER)) {
+      SDK.TargetManager.TargetManager.instance().observeModels(
+          ExtensionStorageModel, {
+            modelAdded: (model: ExtensionStorageModel) => this.extensionStorageModelAdded(model),
+            modelRemoved: (model: ExtensionStorageModel) => this.extensionStorageModelRemoved(model),
+          },
+          {scoped: true});
+    }
+
     SDK.TargetManager.TargetManager.instance().observeModels(
         IndexedDBModel, {
           modelAdded: (model: IndexedDBModel) => this.indexedDBModelAdded(model),
@@ -545,6 +581,20 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
     model.storages().forEach(this.removeDOMStorage.bind(this));
     model.removeEventListener(DOMStorageModelEvents.DOM_STORAGE_ADDED, this.domStorageAdded, this);
     model.removeEventListener(DOMStorageModelEvents.DOM_STORAGE_REMOVED, this.domStorageRemoved, this);
+  }
+
+  private extensionStorageModelAdded(model: ExtensionStorageModel): void {
+    model.enable();
+    model.storages().forEach(this.addExtensionStorage.bind(this));
+    model.addEventListener(ExtensionStorageModelEvents.EXTENSION_STORAGE_ADDED, this.extensionStorageAdded, this);
+    model.addEventListener(ExtensionStorageModelEvents.EXTENSION_STORAGE_REMOVED, this.extensionStorageRemoved, this);
+  }
+
+  private extensionStorageModelRemoved(model: ExtensionStorageModel): void {
+    model.storages().forEach(this.removeExtensionStorage.bind(this));
+    model.removeEventListener(ExtensionStorageModelEvents.EXTENSION_STORAGE_ADDED, this.extensionStorageAdded, this);
+    model.removeEventListener(
+        ExtensionStorageModelEvents.EXTENSION_STORAGE_REMOVED, this.extensionStorageRemoved, this);
   }
 
   private indexedDBModelAdded(model: IndexedDBModel): void {
@@ -713,6 +763,47 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
       }
     }
     this.domStorageTreeElements.delete(domStorage);
+  }
+
+  private extensionStorageAdded(event: Common.EventTarget.EventTargetEvent<ExtensionStorage>): void {
+    const extensionStorage = event.data;
+    this.addExtensionStorage(extensionStorage);
+  }
+
+  private addExtensionStorage(extensionStorage: ExtensionStorage): void {
+    console.assert(Boolean(this.extensionStorageListTreeElement));
+    console.assert(!this.extensionStorageTreeElements.get(extensionStorage));
+
+    const extensionStorageTreeElement = new ExtensionStorageTreeElement(this.panel, extensionStorage);
+    this.extensionStorageTreeElements.set(extensionStorage, extensionStorageTreeElement);
+    this.extensionStorageListTreeElement?.appendChild(extensionStorageTreeElement, comparator);
+
+    function comparator(a: UI.TreeOutline.TreeElement, b: UI.TreeOutline.TreeElement): number {
+      const aTitle = a.titleAsText().toLocaleLowerCase();
+      const bTitle = b.titleAsText().toLocaleUpperCase();
+      return aTitle.localeCompare(bTitle);
+    }
+  }
+
+  private extensionStorageRemoved(event: Common.EventTarget.EventTargetEvent<ExtensionStorage>): void {
+    const extensionStorage = event.data;
+    this.removeExtensionStorage(extensionStorage);
+  }
+
+  private removeExtensionStorage(extensionStorage: ExtensionStorage): void {
+    const treeElement = this.extensionStorageTreeElements.get(extensionStorage);
+    if (!treeElement) {
+      return;
+    }
+    const wasSelected = treeElement.selected;
+    const parentListTreeElement = treeElement.parent;
+    if (parentListTreeElement) {
+      parentListTreeElement.removeChild(treeElement);
+      if (wasSelected) {
+        parentListTreeElement.select();
+      }
+    }
+    this.extensionStorageTreeElements.delete(extensionStorage);
   }
 
   private async sharedStorageAdded(event: Common.EventTarget.EventTargetEvent<SharedStorageForOrigin>): Promise<void> {
@@ -1564,6 +1655,45 @@ export class DOMStorageTreeElement extends ApplicationPanelTreeElement {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     contextMenu.defaultSection().appendItem(
         i18nString(UIStrings.clear), () => this.domStorage.clear(), {jslogContext: 'clear'});
+    void contextMenu.show();
+  }
+}
+
+export class ExtensionStorageTreeElement extends ApplicationPanelTreeElement {
+  private readonly extensionStorage: ExtensionStorage;
+  constructor(storagePanel: ResourcesPanel, extensionStorage: ExtensionStorage) {
+    super(
+        storagePanel, extensionStorage.name + ` (${extensionStorage.storageArea})`, false,
+        'extension-storage-for-domain');
+    this.extensionStorage = extensionStorage;
+    const icon = IconButton.Icon.create('table');
+    this.setLeadingIcons([icon]);
+  }
+
+  override get itemURL(): Platform.DevToolsPath.UrlString {
+    return 'storage://' + this.extensionStorage.extensionId + '/' + this.extensionStorage.storageArea as
+        Platform.DevToolsPath.UrlString;
+  }
+
+  override onselect(selectedByUser?: boolean): boolean {
+    super.onselect(selectedByUser);
+    Host.userMetrics.panelShown('dom-storage');
+
+    // TODO(crbug.com/40963428): Call this.resourcesPanel to show extension
+    // storage view
+
+    return false;
+  }
+
+  override onattach(): void {
+    super.onattach();
+    this.listItemElement.addEventListener('contextmenu', this.handleContextMenuEvent.bind(this), true);
+  }
+
+  private handleContextMenuEvent(event: MouseEvent): void {
+    const contextMenu = new UI.ContextMenu.ContextMenu(event);
+    contextMenu.defaultSection().appendItem(
+        i18nString(UIStrings.clear), () => this.extensionStorage.clear(), {jslogContext: 'clear'});
     void contextMenu.show();
   }
 }

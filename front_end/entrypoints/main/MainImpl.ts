@@ -412,6 +412,11 @@ export class MainImpl {
         true,
     );
 
+    Root.Runtime.experiments.register(
+        Root.Runtime.ExperimentName.EXTENSION_STORAGE_VIEWER,
+        'Extension storage in Application panel',
+    );
+
     Root.Runtime.experiments.enableExperimentsByDefault([
       'css-type-component-length-deprecate',
       Root.Runtime.ExperimentName.AUTOFILL_VIEW,

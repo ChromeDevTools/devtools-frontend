@@ -668,6 +668,10 @@ export class TargetBase {
     return this.getAgent('EventBreakpoints');
   }
 
+  extensionsAgent(): ProtocolProxyApi.ExtensionsApi {
+    return this.getAgent('Extensions');
+  }
+
   fetchAgent(): ProtocolProxyApi.FetchApi {
     return this.getAgent('Fetch');
   }

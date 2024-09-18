@@ -1026,10 +1026,11 @@ export enum DevtoolsExperiments {
   'gen-ai-settings-panel' = 97,
   'timeline-server-timings' = 98,
   'timeline-layout-shift-details' = 99,
+  'extension-storage-viewer' = 100,
   /* eslint-enable @typescript-eslint/naming-convention */
 
   // Increment this when new experiments are added.
-  MAX_VALUE = 100,
+  MAX_VALUE = 101,
 }
 
 export const enum ColorPickerOpenedFrom {

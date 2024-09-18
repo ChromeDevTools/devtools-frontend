@@ -204,9 +204,9 @@ export class EntriesLinkOverlay extends HTMLElement {
 
     this.#connector.setAttribute('stroke-width', '2');
 
-    if (this.#entryFromVisible && !this.#entryToVisible) {
+    if (this.#toEntryDimentions && this.#entryFromVisible && !this.#entryToVisible) {
       this.#connector.setAttribute('stroke', 'url(#fromVisibleLineGradient)');
-    } else if (this.#entryToVisible && !this.#entryFromVisible) {
+    } else if (this.#toEntryDimentions && this.#entryToVisible && !this.#entryFromVisible) {
       this.#connector.setAttribute('stroke', 'url(#toVisibleLineGradient)');
     } else {
       const arrowColor = ThemeSupport.ThemeSupport.instance().getComputedValue('--color-text-primary');

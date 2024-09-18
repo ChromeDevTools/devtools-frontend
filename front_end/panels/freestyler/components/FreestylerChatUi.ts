@@ -244,6 +244,7 @@ export interface Props {
   onAcceptConsentClick: () => void;
   onCancelClick: () => void;
   onFixThisIssueClick: () => void;
+  onSelectedNetworkRequestClick: () => void | Promise<void>;
   inspectElementToggled: boolean;
   state: State;
   aidaAvailability: Host.AidaClient.AidaAccessPreconditions;
@@ -677,9 +678,11 @@ export class FreestylerChatUi extends HTMLElement {
       'not-selected': !this.#props.selectedNetworkRequest,
       'resource-link': true,
     });
+
     // clang-format off
     return LitHtml.html`<div class="select-element">
-      <div class=${resourceClass}>
+      <div class=${resourceClass}
+      @click=${this.#props.onSelectedNetworkRequestClick}>
         <${IconButton.Icon.Icon.litTagName} name="file-script"></${IconButton.Icon.Icon.litTagName}>
         ${this.#props.selectedNetworkRequest?.name()}
       </div></div>`;

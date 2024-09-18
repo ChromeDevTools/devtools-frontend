@@ -5,6 +5,7 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as NetworkForward from '../../panels/network/forward/forward.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as LitHtml from '../../ui/lit-html/lit-html.js';
 
@@ -137,6 +138,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
       onFixThisIssueClick: () => {
         void this.#startConversation(FIX_THIS_ISSUE_PROMPT, true);
       },
+      onSelectedNetworkRequestClick: this.#handleSelectedNetworkRequestClick.bind(this),
       canShowFeedbackForm: this.#serverSideLoggingEnabled,
       userInfo: {
         accountImage: syncInfo.accountImage,
@@ -235,6 +237,14 @@ export class FreestylerPanel extends UI.Panel.Panel {
     this.#consentViewAcceptedSetting.set(true);
     this.#viewProps.state = FreestylerChatUiState.CHAT_VIEW;
     this.doUpdate();
+  }
+
+  #handleSelectedNetworkRequestClick(): void|Promise<void> {
+    if (this.#viewProps.selectedNetworkRequest) {
+      const requestLocation = NetworkForward.UIRequestLocation.UIRequestLocation.tab(
+          this.#viewProps.selectedNetworkRequest, NetworkForward.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT);
+      return Common.Revealer.reveal(requestLocation);
+    }
   }
 
   handleAction(actionId: string): void {

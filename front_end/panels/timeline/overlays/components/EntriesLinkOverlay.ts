@@ -321,6 +321,14 @@ export class EntriesLinkOverlay extends HTMLElement {
   }
 }
 
+export class CreateEntriesLinkRemoveEvent extends Event {
+  static readonly eventName = 'createentrieslinkremoveevent';
+
+  constructor() {
+    super(CreateEntriesLinkRemoveEvent.eventName);
+  }
+}
+
 export class CreateEntriesLinkOverlay extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-create-entries-link-overlay`;
   readonly #shadow = this.attachShadow({mode: 'open'});
@@ -332,6 +340,9 @@ export class CreateEntriesLinkOverlay extends HTMLElement {
     this.#render();
     this.#fromEntryData = initialFromEntryParams;
     this.#updateCreateLinkBox();
+    const createLinkBox = this.#shadow.querySelector<HTMLElement>('.create-link-box');
+    const createLinkIcon = createLinkBox?.querySelector<HTMLElement>('.create-link-icon') ?? null;
+    createLinkIcon?.addEventListener('click', this.#onClick.bind(this));
   }
 
   connectedCallback(): void {
@@ -345,8 +356,8 @@ export class CreateEntriesLinkOverlay extends HTMLElement {
   }
 
   #updateCreateLinkBox(): void {
-    const createLinkBox = this.#shadow.querySelector<HTMLElement>('.crate-link-box');
-    const createLinkIcon = createLinkBox?.querySelector<HTMLElement>('.crate-link-icon') ?? null;
+    const createLinkBox = this.#shadow.querySelector<HTMLElement>('.create-link-box');
+    const createLinkIcon = createLinkBox?.querySelector<HTMLElement>('.create-link-icon') ?? null;
     const entryHighlightWrapper = createLinkBox?.querySelector<HTMLElement>('.entry-highlight-wrapper') ?? null;
 
     if (!createLinkBox || !createLinkIcon || !entryHighlightWrapper) {
@@ -364,14 +375,18 @@ export class CreateEntriesLinkOverlay extends HTMLElement {
     entryHighlightWrapper.style.height = `${entryHeight}px`;
   }
 
+  #onClick(): void {
+    this.dispatchEvent(new CreateEntriesLinkRemoveEvent());
+  }
+
   #render(): void {
     // clang-format off
     LitHtml.render(
       LitHtml.html`
-        <div class='crate-link-box'>
+        <div class='create-link-box'>
           <div class="entry-highlight-wrapper"></div>
           <${IconButton.Icon.Icon.litTagName}
-            class='crate-link-icon'
+            class='create-link-icon'
             name='arrow-right-circle'>
           </${IconButton.Icon.Icon.litTagName}>
         </div>

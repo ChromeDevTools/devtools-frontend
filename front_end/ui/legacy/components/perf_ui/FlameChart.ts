@@ -855,7 +855,8 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
      */
     if (this.highlightedEntryIndex !== -1) {
       this.#selectGroup(groupIndex);
-      this.dispatchEventToListeners(Events.ENTRY_LABEL_ANNOTATION_ADDED, this.highlightedEntryIndex);
+      this.dispatchEventToListeners(
+          Events.ENTRY_LABEL_ANNOTATION_ADDED, {entryIndex: this.highlightedEntryIndex, withLinkCreationButton: true});
     }
   }
 
@@ -1262,7 +1263,8 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       const annotationSection = this.contextMenu.section('annotations');
 
       const labelEntryAnnotationOption = annotationSection.appendItem(i18nString(UIStrings.labelEntry), () => {
-        this.dispatchEventToListeners(Events.ENTRY_LABEL_ANNOTATION_ADDED, this.selectedEntryIndex);
+        this.dispatchEventToListeners(
+            Events.ENTRY_LABEL_ANNOTATION_ADDED, {entryIndex: this.selectedEntryIndex, withLinkCreationButton: false});
       });
 
       labelEntryAnnotationOption.setShortcut('Double Click');
@@ -3913,7 +3915,10 @@ export const enum Events {
 }
 
 export type EventTypes = {
-  [Events.ENTRY_LABEL_ANNOTATION_ADDED]: number,
+  [Events.ENTRY_LABEL_ANNOTATION_ADDED]: {
+    entryIndex: number,
+    withLinkCreationButton: boolean,
+  },
   [Events.ENTRIES_LINK_ANNOTATION_CREATED]: {
     entryFromIndex: number,
   },

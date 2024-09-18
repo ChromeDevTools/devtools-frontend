@@ -75,6 +75,15 @@ export interface EntriesLink {
 }
 
 /**
+ * Represents an object created when a user double click an entry and before
+ * creating a link between two entries.
+ */
+export interface CreateEntriesLink {
+  type: 'ENTRIES_LINK_CREATE_BUTTON';
+  entry: OverlayEntry;
+}
+
+/**
  * Represents a time range on the trace. Also used when the user shift+clicks
  * and drags to create a time range.
  */
@@ -152,7 +161,12 @@ function traceWindowForOverlay(overlay: TimelineOverlay): TraceEngine.Types.Timi
 
       break;
     }
-
+    case 'ENTRIES_LINK_CREATE_BUTTON': {
+      const timings = timingsForOverlayEntry(overlay.entry);
+      overlayMinBounds.push(timings.startTime);
+      overlayMaxBounds.push(timings.endTime);
+      break;
+    }
     case 'TIMESPAN_BREAKDOWN': {
       if (overlay.entry) {
         const timings = timingsForOverlayEntry(overlay.entry);
@@ -214,6 +228,10 @@ export function entriesForOverlay(overlay: TimelineOverlay): readonly OverlayEnt
       if (overlay.entryTo) {
         entries.push(overlay.entryTo);
       }
+      break;
+    }
+    case 'ENTRIES_LINK_CREATE_BUTTON': {
+      entries.push(overlay.entry);
       break;
     }
     case 'TIMESPAN_BREAKDOWN': {
@@ -283,17 +301,18 @@ export interface CursorTimestampMarker {
 /**
  * All supported overlay types. Expected to grow in time!
  */
-export type TimelineOverlay = EntrySelected|EntryOutline|TimeRangeLabel|EntryLabel|EntriesLink|TimespanBreakdown|
-    CursorTimestampMarker|CandyStripedTimeRange;
+export type TimelineOverlay = EntrySelected|EntryOutline|TimeRangeLabel|EntryLabel|EntriesLink|CreateEntriesLink|
+    TimespanBreakdown|CursorTimestampMarker|CandyStripedTimeRange;
 
 /**
  * Denotes overlays that are singletons; only one of these will be allowed to
  * exist at any given time. If one exists and the add() method is called, the
  * new overlay will replace the existing one.
  */
-type SingletonOverlay = EntrySelected|CursorTimestampMarker;
+type SingletonOverlay = EntrySelected|CursorTimestampMarker|CreateEntriesLink;
 export function overlayIsSingleton(overlay: TimelineOverlay): overlay is SingletonOverlay {
-  return overlay.type === 'CURSOR_TIMESTAMP_MARKER' || overlay.type === 'ENTRY_SELECTED';
+  return overlay.type === 'CURSOR_TIMESTAMP_MARKER' || overlay.type === 'ENTRY_SELECTED' ||
+      overlay.type === 'ENTRIES_LINK_CREATE_BUTTON';
 }
 
 /**
@@ -809,6 +828,14 @@ export class Overlays extends EventTarget {
         }
         break;
       }
+      case 'ENTRIES_LINK_CREATE_BUTTON': {
+        const isVisible = this.entryIsVisibleOnChart(overlay.entry);
+        this.#setOverlayElementVisibility(element, isVisible);
+        if (isVisible) {
+          this.#positionCreateEntriesLinkOverlay(overlay, element);
+        }
+        break;
+      }
       case 'TIMESPAN_BREAKDOWN': {
         this.#positionTimespanBreakdownOverlay(overlay, element);
         // TODO: Have the timespan squeeze instead.
@@ -940,6 +967,22 @@ export class Overlays extends EventTarget {
     }
   }
 
+  #positionCreateEntriesLinkOverlay(overlay: CreateEntriesLink, element: HTMLElement): void {
+    const componentDefault = element.querySelector('devtools-create-entries-link-overlay');
+
+    if (componentDefault) {
+      const component = componentDefault.querySelector('devtools-entries-link-overlay');
+      if (!component) {
+        const entryStartX = this.xPixelForEventStartOnChart(overlay.entry) ?? 0;
+        const entryEndX = this.xPixelForEventEndOnChart(overlay.entry) ?? 0;
+        const entryWidth = entryEndX - entryStartX;
+        const entryStartY = (this.yPixelForEventOnChart(overlay.entry) ?? 0);
+        const entryHeight = this.pixelHeightForEventOnChart(overlay.entry) ?? 0;
+
+        componentDefault.fromEntryData = {entryStartX, entryStartY, entryWidth, entryHeight};
+      }
+    }
+  }
   /**
    * Positions the arrow between two entries. Takes in the entriesToConnect
    * because if one of the original entries is hidden in a collapsed main thread
@@ -1370,7 +1413,18 @@ export class Overlays extends EventTarget {
 
         const component = new Components.EntriesLinkOverlay.EntriesLinkOverlay(
             {x: entryEndX, y: entryStartY, width: entryWidth, height: entryHeight});
-        component.canvasRect = this.#charts.mainChart.canvasBoundingClientRect();
+        div.appendChild(component);
+        return div;
+      }
+      case 'ENTRIES_LINK_CREATE_BUTTON': {
+        const entryStartX = this.xPixelForEventStartOnChart(overlay.entry) ?? 0;
+        const entryEndX = this.xPixelForEventEndOnChart(overlay.entry) ?? 0;
+        const entryWidth = entryEndX - entryStartX;
+        const entryStartY = (this.yPixelForEventOnChart(overlay.entry) ?? 0);
+        const entryHeight = this.pixelHeightForEventOnChart(overlay.entry) ?? 0;
+
+        const component = new Components.EntriesLinkOverlay.CreateEntriesLinkOverlay(
+            {entryStartX, entryStartY, entryWidth, entryHeight});
         div.appendChild(component);
         return div;
       }
@@ -1424,16 +1478,16 @@ export class Overlays extends EventTarget {
         }
         break;
       }
+      case 'ENTRY_LABEL':
       case 'ENTRY_OUTLINE':
+      case 'ENTRIES_LINK_CREATE_BUTTON':
+        // Nothing to do here.
         break;
       case 'ENTRIES_LINK': {
         const component = element.querySelector('devtools-entries-link-overlay');
         if (component) {
           component.canvasRect = this.#charts.mainChart.canvasBoundingClientRect();
         }
-        break;
-      }
-      case 'ENTRY_LABEL': {
         break;
       }
       case 'TIMESPAN_BREAKDOWN': {

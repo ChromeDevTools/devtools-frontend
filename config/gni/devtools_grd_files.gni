@@ -41,6 +41,7 @@ grd_files_release_sources = [
   "front_end/Images/arrow-drop-down-dark.svg",
   "front_end/Images/arrow-drop-down-light.svg",
   "front_end/Images/arrow-forward.svg",
+  "front_end/Images/arrow-right-circle.svg",
   "front_end/Images/arrow-up-down-circle.svg",
   "front_end/Images/arrow-up-down.svg",
   "front_end/Images/arrow-up.svg",

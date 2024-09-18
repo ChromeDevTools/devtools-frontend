@@ -72,8 +72,14 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
   private readonly countersView: CountersGraph;
   private readonly detailsSplitWidget: UI.SplitWidget.SplitWidget;
   private readonly detailsView: TimelineDetailsView;
-  private readonly onMainAddEntryLabelAnnotation: (event: Common.EventTarget.EventTargetEvent<number>) => void;
-  private readonly onNetworkAddEntryLabelAnnotation: (event: Common.EventTarget.EventTargetEvent<number>) => void;
+  private readonly onMainAddEntryLabelAnnotation: (event: Common.EventTarget.EventTargetEvent<{
+    entryIndex: number,
+    withLinkCreationButton: boolean,
+  }>) => void;
+  private readonly onNetworkAddEntryLabelAnnotation: (event: Common.EventTarget.EventTargetEvent<{
+    entryIndex: number,
+    withLinkCreationButton: boolean,
+  }>) => void;
   readonly #onMainEntriesLinkAnnotationCreated:
       (event: Common.EventTarget.EventTargetEvent<{entryFromIndex: number}>) => void;
   readonly #onNetworkEntriesLinkAnnotationCreated:
@@ -774,6 +780,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
 
     // Clear any existing entry selection.
     this.#overlays.removeOverlaysOfType('ENTRY_SELECTED');
+    this.#overlays.removeOverlaysOfType('ENTRIES_LINK_CREATE_BUTTON');
     // If:
     // 1. There is no selection, or the selection is not a range selection
     // AND 2. we have an active time range selection overlay
@@ -815,6 +822,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     }
     this.#overlays.update();
   }
+
   addOverlay<T extends Overlays.Overlays.TimelineOverlay>(newOverlay: T): T {
     const overlay = this.#overlays.add(newOverlay);
     this.#overlays.update();
@@ -837,8 +845,8 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
 
   private onAddEntryLabelAnnotation(
       dataProvider: TimelineFlameChartDataProvider|TimelineFlameChartNetworkDataProvider,
-      event: Common.EventTarget.EventTargetEvent<number>): void {
-    const selection = dataProvider.createSelection(event.data);
+      event: Common.EventTarget.EventTargetEvent<{entryIndex: number, withLinkCreationButton: boolean}>): void {
+    const selection = dataProvider.createSelection(event.data.entryIndex);
     if (selection &&
         (TimelineSelection.isTraceEventSelection(selection.object) ||
          TimelineSelection.isSyntheticNetworkRequestDetailsEventSelection(selection.object) ||
@@ -849,6 +857,12 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
         entry: selection.object,
         label: '',
       });
+      if (event.data.withLinkCreationButton) {
+        this.addOverlay({
+          type: 'ENTRIES_LINK_CREATE_BUTTON',
+          entry: selection.object,
+        });
+      }
     }
   }
 

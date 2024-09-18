@@ -5,7 +5,7 @@
    icon set.
 
 2. Add respective entries to `.gni` files.
-   - Update the `devtols_image_files` list in `config/gni/devtools_image_files.gni`.
+   - Update the `devtools_image_files` list in `config/gni/devtools_image_files.gni`.
    - Update the `grd_files_release_sources` list in `config/gni/devtools_grd_files.gni`.
 
 3. Use Icon component in the DevTools front-end:

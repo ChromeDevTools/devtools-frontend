@@ -96,6 +96,8 @@ To render an overlay, call the `add()` method and pass in the overlay you would 
 
 > When the user pans/scrolls/zooms the timeline, the `update()` method is called automatically.
 
+To remove one or some overlays, check out the `remove()` or `removeOverlaysOfType()`.
+
 ### Creating a new overlay
 
 To create a new overlay, first define its type. This is done as an interface, and must contain a `type` field.
@@ -122,6 +124,8 @@ Once you have created the overlay, you now need to teach the Overlays class how 
 1. `#xPixelForEventOnChart` will calculate the X position from a given `OverlayEntry` (e.g. an entry from the main thread).
 1. `pixelHeightForEventOnChart` will calculate the pixel height of an entry.
 1. `#yPixelForEventOnChart` will calculate the Y pixel for an entry on the timeline.
+
+Now you are ready to use this new type of overlays, to add/remove it you can check the [Overlays](#overlays) section.
 
 ### Charts
 

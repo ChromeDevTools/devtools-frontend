@@ -48,6 +48,7 @@ devtools_svg_sources = [
   "arrow-drop-down-dark.svg",
   "arrow-drop-down-light.svg",
   "arrow-forward.svg",
+  "arrow-right-circle.svg",
   "arrow-up-down-circle.svg",
   "arrow-up-down.svg",
   "arrow-up.svg",

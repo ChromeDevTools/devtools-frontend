@@ -17,7 +17,7 @@
   /* If the element has lots of classes, don't let the label get too wide */
   text-overflow: ellipsis;
   overflow: hidden;
-  max-width: 550px;
+  max-width: min(100%, 550px);
 
   &:focus-visible {
     outline-width: unset;

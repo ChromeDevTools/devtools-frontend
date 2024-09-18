@@ -92,14 +92,13 @@ export class DrJonesNetworkAgent {
       chat_history: opts.chatHistory,
       client: Host.AidaClient.CLIENT_NAME,
       options: {
-        temperature: config.devToolsFreestylerDogfood?.temperature ?? 0,
-        model_id: config.devToolsFreestylerDogfood?.modelId ?? undefined,
+        temperature: config.devToolsExplainThisResourceDogfood?.temperature ?? 0,
+        model_id: config.devToolsExplainThisResourceDogfood?.modelId ?? undefined,
       },
       metadata: {
         // TODO: disable logging based on query params.
         disable_user_content_logging: !(opts.serverSideLoggingEnabled ?? false),
         string_session_id: opts.sessionId,
-        user_tier: Host.AidaClient.convertToUserTierEnum(config.devToolsFreestylerDogfood?.userTier),
       },
       // eslint-disable-next-line @typescript-eslint/naming-convention
       functionality_type: Host.AidaClient.FunctionalityType.CHAT,

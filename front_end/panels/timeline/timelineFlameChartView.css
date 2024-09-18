@@ -22,6 +22,11 @@
   left: 0;
 }
 
+.overlay-type-ENTRY_LABEL {
+  /* keep these above the selected entry overline, else they can become hard to read */
+  z-index: 2;
+}
+
 .overlay-type-ENTRY_SELECTED,
 .overlay-type-ENTRY_OUTLINE {
   pointer-events: none;

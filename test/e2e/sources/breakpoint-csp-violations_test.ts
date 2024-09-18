@@ -25,7 +25,9 @@ describe('Breakpoints on CSP Violation', () => {
     await click('[aria-label="Resume script execution"]');
     const status2 = await getPausedMessages();
     assert.strictEqual(status2.statusMain, 'Paused on exception');
-    assert.strictEqual(status2.statusSub, 'TypeError: Policy "policy2" disallowed.');
+    assert.strictEqual(
+        status2.statusSub,
+        'TypeError: Failed to execute \'createPolicy\' on \'TrustedTypePolicyFactory\': Policy "policy2" disallowed.');
 
     await click('[aria-label="Resume script execution"]');
     await resource;

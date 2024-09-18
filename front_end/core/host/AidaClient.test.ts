@@ -422,16 +422,16 @@ describeWithEnvironment('AidaClient', () => {
       assert.strictEqual(result, Host.AidaClient.AidaAccessPreconditions.NO_ACCOUNT_EMAIL);
     });
 
-    it('should return NO_ACTIVE_SYNC when the syncInfo.isSyncActive is not true', async () => {
-      mockGetSyncInformation({accountEmail: 'some-email', isSyncActive: false});
+    it('should return AVAILABLE when navigator is online, accountEmail exists and isSyncActive is true', async () => {
+      mockGetSyncInformation({accountEmail: 'some-email', isSyncActive: true});
 
       const result = await Host.AidaClient.AidaClient.checkAccessPreconditions();
 
-      assert.strictEqual(result, Host.AidaClient.AidaAccessPreconditions.NO_ACTIVE_SYNC);
+      assert.strictEqual(result, Host.AidaClient.AidaAccessPreconditions.AVAILABLE);
     });
 
-    it('should return AVAILABLE when navigator is online, accountEmail exists and isSyncActive is true', async () => {
-      mockGetSyncInformation({accountEmail: 'some-email', isSyncActive: true});
+    it('should return AVAILABLE when navigator is online, accountEmail exists and isSyncActive is false', async () => {
+      mockGetSyncInformation({accountEmail: 'some-email', isSyncActive: false});
 
       const result = await Host.AidaClient.AidaClient.checkAccessPreconditions();
 

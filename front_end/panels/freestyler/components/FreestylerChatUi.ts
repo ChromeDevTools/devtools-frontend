@@ -71,10 +71,6 @@ const UIStringsTemp = {
    */
   notLoggedIn: 'This feature is only available when you sign into Chrome with your Google account',
   /**
-   * @description The error message when the user is not logged in into Chrome.
-   */
-  syncIsOff: 'This feature requires you to turn on Chrome sync',
-  /**
    * @description The error message when the LLM loop is stopped for some reason (Max steps reached or request to LLM failed)
    */
   systemError:
@@ -186,8 +182,6 @@ function getInputPlaceholderString(
       }
     case Host.AidaClient.AidaAccessPreconditions.NO_ACCOUNT_EMAIL:
       return i18nString(UIStringsTemp.notLoggedIn);
-    case Host.AidaClient.AidaAccessPreconditions.NO_ACTIVE_SYNC:
-      return i18nString(UIStringsTemp.syncIsOff);
     case Host.AidaClient.AidaAccessPreconditions.NO_INTERNET:
       return i18nString(UIStringsTemp.offline);
   }

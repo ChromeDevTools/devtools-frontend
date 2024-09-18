@@ -323,15 +323,6 @@ describeWithEnvironment('ConsoleInsight', () => {
     assert.strictEqual(content, 'This feature is only available when you sign into Chrome with your Google account.');
   });
 
-  it('report if the sync is not enabled', async () => {
-    const component = new Explain.ConsoleInsight(
-        getTestPromptBuilder(), getTestAidaClient(), Host.AidaClient.AidaAccessPreconditions.NO_ACTIVE_SYNC);
-    renderElementIntoDOM(component);
-    await drainMicroTasks();
-    const content = component.shadowRoot!.querySelector('main')!.innerText.trim();
-    assert.strictEqual(content, 'This feature requires you to turn on Chrome sync.');
-  });
-
   it('report if the navigator is offline', async () => {
     const component = new Explain.ConsoleInsight(
         getTestPromptBuilder(), getTestAidaClient(), Host.AidaClient.AidaAccessPreconditions.NO_INTERNET);

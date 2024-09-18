@@ -91,17 +91,9 @@ const UIStrings = {
    */
   learnMore: 'Learn more',
   /**
-   * @description The title of the message when the console insight is not available for some reason.
-   */
-  notAvailable: 'This feature is not available',
-  /**
    * @description The error message when the user is not logged in into Chrome.
    */
   notLoggedIn: 'This feature is only available when you sign into Chrome with your Google account.',
-  /**
-   * @description The error message when the user is not logged in into Chrome.
-   */
-  syncIsOff: 'This feature requires you to turn on Chrome sync.',
   /**
    * @description The title of the button that opens Chrome settings.
    */
@@ -206,7 +198,6 @@ const enum State {
   CONSENT_ONBOARDING = 'consent-onboarding',
   CONSENT_REMINDER = 'consent-reminder',
   NOT_LOGGED_IN = 'not-logged-in',
-  SYNC_IS_OFF = 'sync-is-off',
   OFFLINE = 'offline',
 }
 
@@ -238,8 +229,6 @@ type StateData = {
   page: ConsentOnboardingPage,
 }|{
   type: State.NOT_LOGGED_IN,
-}|{
-  type: State.SYNC_IS_OFF,
 }|{
   type: State.OFFLINE,
 };
@@ -304,11 +293,6 @@ export class ConsoleInsight extends HTMLElement {
       case Host.AidaClient.AidaAccessPreconditions.NO_ACCOUNT_EMAIL:
         this.#state = {
           type: State.NOT_LOGGED_IN,
-        };
-        break;
-      case Host.AidaClient.AidaAccessPreconditions.NO_ACTIVE_SYNC:
-        this.#state = {
-          type: State.SYNC_IS_OFF,
         };
         break;
       case Host.AidaClient.AidaAccessPreconditions.NO_INTERNET:
@@ -938,11 +922,6 @@ export class ConsoleInsight extends HTMLElement {
           <main jslog=${jslog}>
             <div class="error">${i18nString(UIStrings.notLoggedIn)}</div>
           </main>`;
-      case State.SYNC_IS_OFF:
-        return html`
-          <main jslog=${jslog}>
-            <div class="error">${i18nString(UIStrings.syncIsOff)}</div>
-          </main>`;
       case State.OFFLINE:
         return html`
           <main jslog=${jslog}>
@@ -988,7 +967,6 @@ export class ConsoleInsight extends HTMLElement {
           </div>
         </footer>`;
       case State.NOT_LOGGED_IN:
-      case State.SYNC_IS_OFF:
         return html`<footer jslog=${VisualLogging.section('footer')}>
         <div class="filler"></div>
         <div>
@@ -1141,8 +1119,6 @@ export class ConsoleInsight extends HTMLElement {
     switch (this.#state.type) {
       case State.NOT_LOGGED_IN:
         return i18nString(UIStrings.signInToUse);
-      case State.SYNC_IS_OFF:
-        return i18nString(UIStrings.notAvailable);
       case State.OFFLINE:
         return i18nString(UIStrings.offlineHeader);
       case State.LOADING:

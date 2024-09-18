@@ -129,7 +129,6 @@ export interface AidaResponse {
 export const enum AidaAccessPreconditions {
   AVAILABLE = 'available',
   NO_ACCOUNT_EMAIL = 'no-account-email',
-  NO_ACTIVE_SYNC = 'no-active-sync',
   NO_INTERNET = 'no-internet',
 }
 
@@ -181,10 +180,6 @@ export class AidaClient {
         resolve => InspectorFrontendHostInstance.getSyncInformation(syncInfo => resolve(syncInfo)));
     if (!syncInfo.accountEmail) {
       return AidaAccessPreconditions.NO_ACCOUNT_EMAIL;
-    }
-
-    if (!syncInfo.isSyncActive) {
-      return AidaAccessPreconditions.NO_ACTIVE_SYNC;
     }
 
     return AidaAccessPreconditions.AVAILABLE;

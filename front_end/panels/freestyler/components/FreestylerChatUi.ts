@@ -746,7 +746,7 @@ export class FreestylerChatUi extends HTMLElement {
     const suggestions: string[] = this.#getSuggestions();
 
     // clang-format off
-    return LitHtml.html`<div class="empty-state-container">
+    return LitHtml.html`<div class="empty-state-container messages-scroll-container">
       <div class="header">
         <div class="icon">
           <${IconButton.Icon.Icon.litTagName}

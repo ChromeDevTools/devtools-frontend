@@ -327,13 +327,13 @@
 }
 
 .empty-state-container {
-  display: flex;
-  flex-direction: column;
+  display: grid;
   align-items: center;
   justify-content: center;
   font: var(--sys-typescale-headline4);
   gap: var(--sys-size-11);
   height: 100%;
+  padding: var(--sys-size-3);
 
   .header {
     display: flex;
@@ -341,6 +341,7 @@
     width: 100%;
     align-items: center;
     justify-content: center;
+    align-self: end;
     gap: var(--sys-size-5);
 
     .icon {
@@ -365,6 +366,7 @@
     gap: var(--sys-size-5);
     align-items: center;
     justify-content: center;
+    align-self: start;
   }
 }
 

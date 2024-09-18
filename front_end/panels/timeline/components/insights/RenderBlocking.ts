@@ -3,13 +3,18 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../../../core/i18n/i18n.js';
+import type * as Platform from '../../../../core/platform/platform.js';
 import type * as TraceEngine from '../../../../models/trace/trace.js';
+import * as LegacyComponents from '../../../../ui/legacy/components/utils/utils.js';
+import * as UI from '../../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
 import {BaseInsight, md, shouldRenderForCategory} from './Helpers.js';
 import * as SidebarInsight from './SidebarInsight.js';
 import {InsightsCategories} from './types.js';
+
+const MAX_URL_LENGTH = 80;
 
 const UIStrings = {
   /**
@@ -48,6 +53,12 @@ export class RenderBlockingRequests extends BaseInsight {
   override internalName: string = 'render-blocking-requests';
   override userVisibleTitle: string = 'Render-blocking requests';
 
+  override connectedCallback(): void {
+    super.connectedCallback();
+    // Button style for linkified url.
+    UI.UIUtils.injectTextButtonStyles(this.shadow);
+  }
+
   override createOverlays(): Overlays.Overlays.TimelineOverlay[] {
     const renderBlockingResults = getRenderBlockingInsight(this.data.insights, this.data.navigationId);
     if (!renderBlockingResults) {
@@ -65,9 +76,24 @@ export class RenderBlockingRequests extends BaseInsight {
     return entryOutlineOverlays;
   }
 
+  #linkifyUrl(url: string): HTMLElement {
+    const options = {
+      tabStop: true,
+      showColumnNumber: false,
+      inlineFrameIndex: 0,
+      maxLength: MAX_URL_LENGTH,
+    };
+
+    const linkifiedURL =
+        LegacyComponents.Linkifier.Linkifier.linkifyURL(url as Platform.DevToolsPath.UrlString, options);
+    return linkifiedURL;
+  }
+
   #renderRenderBlocking(insightResult: TraceEngine.Insights.Types.InsightResults['RenderBlocking']):
       LitHtml.TemplateResult {
     const estimatedSavings = insightResult.metricSavings?.FCP;
+    const MAX_REQUESTS = 3;
+    const topRequests = insightResult.renderBlockingRequests.slice(0, MAX_REQUESTS);
     // clang-format off
     return LitHtml.html`
         <div class="insights">
@@ -80,6 +106,18 @@ export class RenderBlockingRequests extends BaseInsight {
         >
           <div slot="insight-description" class="insight-description">
             ${md(i18nString(UIStrings.description))}
+          </div>
+          <div slot="insight-content" style="insight-content">
+            <p>
+              Longest blocking requests:
+              <ul class="url-list">
+                ${topRequests.map(req => {
+                  return LitHtml.html `
+                    <li>${this.#linkifyUrl(req.args.data.url)}</li>
+                  `;
+                })}
+              </ul>
+            <p>
           </div>
         </${SidebarInsight.SidebarInsight}>
       </div>`;

@@ -199,9 +199,11 @@ export class LCPPhases extends BaseInsight {
         @insighttoggleclick=${this.onSidebarClick}
       >
         <div slot="insight-description" class="insight-description">
-          Each
-          <x-link class="link" href="https://web.dev/articles/optimize-lcp#lcp-breakdown">phase has specific recommendations to improve.</x-link>
-          In an ideal load, the two delay phases should be quite short.
+          <p>
+            Each
+            <x-link class="link" href="https://web.dev/articles/optimize-lcp#lcp-breakdown">phase has specific recommendations to improve.</x-link>
+            In an ideal load, the two delay phases should be quite short.
+          </p>
         </div>
         <div slot="insight-content">
           ${LitHtml.html`<${Table.litTagName}

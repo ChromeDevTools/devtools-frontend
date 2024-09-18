@@ -30,6 +30,8 @@ export class EntriesLinkOverlay extends HTMLElement {
   #connector: SVGLineElement|null = null;
   #entryFromWrapper: SVGLineElement|null = null;
   #entryToWrapper: SVGLineElement|null = null;
+  #entryFromConnector: SVGCircleElement|null = null;
+  #entryToConnector: SVGCircleElement|null = null;
   #entryFromVisible: boolean = true;
   #entryToVisible: boolean = true;
   #canvasRect: DOMRect|null = null;
@@ -54,6 +56,8 @@ export class EntriesLinkOverlay extends HTMLElement {
     this.#connector = this.#connectorLineContainer?.querySelector('line') ?? null;
     this.#entryFromWrapper = this.#connectorLineContainer?.querySelector('.entryFromWrapper') ?? null;
     this.#entryToWrapper = this.#connectorLineContainer?.querySelector('.entryToWrapper') ?? null;
+    this.#entryFromConnector = this.#connectorLineContainer?.querySelector('.entryFromConnector') ?? null;
+    this.#entryToConnector = this.#connectorLineContainer?.querySelector('.entryToConnector') ?? null;
   }
 
   set canvasRect(rect: DOMRect|null) {
@@ -122,18 +126,36 @@ export class EntriesLinkOverlay extends HTMLElement {
   }
 
   #redrawConnectionArrow(): void {
-    if (!this.#connector || !this.#entryFromWrapper || !this.#entryToWrapper) {
+    if (!this.#connector || !this.#entryFromWrapper || !this.#entryToWrapper || !this.#entryFromConnector ||
+        !this.#entryToConnector) {
       console.error('`connector` element is missing.');
       return;
     }
+
+    // We do not draw the connectors if the entry is not visible, or if the
+    // entry we are connecting to isn't the actual source entry.
+    // We also don't draw them if an entry is completely hidden, in which case
+    // we aren't drawing the arrows, so it doesn't make sense to draw the
+    // connectors.
+    const drawFromEntryConnectorCircle = this.#entryFromVisible && this.#entryToVisible && this.#fromEntryIsSource;
+    const drawToEntryConnectorCircle = this.#entryFromVisible && this.#entryToVisible && this.#toEntryIsSource;
+
+    this.#entryFromConnector.setAttribute('visibility', drawFromEntryConnectorCircle ? 'visible' : 'hidden');
+    this.#entryToConnector.setAttribute('visibility', drawToEntryConnectorCircle ? 'visible' : 'hidden');
 
     // If the entry is visible, the entry arrow starts from the end on the X axis and middle of the Y axis.
     // If not, draw it to the same y point without the entry height offset and the box around the entry.
     // This way it will be attached to the track edge.
     if (this.#entryFromVisible) {
       const halfEntryHeight = this.#fromEntryDimentions.height / 2;
-      this.#connector.setAttribute('x1', (this.#coordinateFrom.x + this.#fromEntryDimentions.width).toString());
-      this.#connector.setAttribute('y1', (this.#coordinateFrom.y + Number(halfEntryHeight)).toString());
+      const endConnectionPointX = String(this.#coordinateFrom.x + this.#fromEntryDimentions.width);
+      const endConnectionPointY = String(this.#coordinateFrom.y + halfEntryHeight);
+
+      this.#connector.setAttribute('x1', endConnectionPointX);
+      this.#connector.setAttribute('y1', endConnectionPointY);
+
+      this.#entryFromConnector.setAttribute('cx', endConnectionPointX);
+      this.#entryFromConnector.setAttribute('cy', endConnectionPointY);
 
       this.#entryFromWrapper.setAttribute('visibility', 'visible');
       this.#entryFromWrapper.setAttribute('x', this.#coordinateFrom.x.toString());
@@ -158,8 +180,14 @@ export class EntriesLinkOverlay extends HTMLElement {
         this.#entryToWrapper.setAttribute('width', this.#toEntryDimentions.width.toString());
         this.#entryToWrapper.setAttribute('height', this.#toEntryDimentions.height.toString());
 
-        this.#connector.setAttribute('x2', this.#coordinateTo.x.toString());
-        this.#connector.setAttribute('y2', (this.#coordinateTo.y + this.#toEntryDimentions.height / 2).toString());
+        const connectionPointX = String(this.#coordinateTo.x);
+        const connectionPointY = String(this.#coordinateTo.y + this.#toEntryDimentions.height / 2);
+
+        this.#connector.setAttribute('x2', connectionPointX);
+        this.#connector.setAttribute('y2', connectionPointY);
+
+        this.#entryToConnector.setAttribute('cx', connectionPointX);
+        this.#entryToConnector.setAttribute('cy', connectionPointY);
 
       } else {
         this.#entryToWrapper.setAttribute('visibility', 'hidden');
@@ -277,10 +305,14 @@ export class EntriesLinkOverlay extends HTMLElement {
               stroke-dasharray=${!this.#fromEntryIsSource || !this.#toEntryIsSource ? DASHED_STROKE_AMOUNT : 'none'}
               stroke-opacity=${!this.#entryFromVisible && !this.#entryToVisible ? OUT_OF_VIEW_STROKE_OPACITY : 1}
               />
+
             <rect
               class="entryFromWrapper" fill="none" stroke="black" stroke-dasharray=${this.#fromEntryIsSource ? 'none' : DASHED_STROKE_AMOUNT} />
             <rect
               class="entryToWrapper" fill="none" stroke="black" stroke-dasharray=${this.#toEntryIsSource ? 'none' : DASHED_STROKE_AMOUNT} />
+
+            <circle class="entryFromConnector" fill="none" stroke=${arrowColor} stroke-width="2" cx="50" cy="50" r="3" />
+            <circle class="entryToConnector" fill="none" stroke=${arrowColor} stroke-width="2" cx="50" cy="50" r="3" />
           </svg>
         `,
         this.#shadow, {host: this});

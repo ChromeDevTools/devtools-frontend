@@ -16941,7 +16941,8 @@
                 },
                 {
                     "name": "setShowWebVitals",
-                    "description": "Request that backend shows an overlay with web vital metrics.",
+                    "description": "Deprecated, no longer has any effect.",
+                    "deprecated": true,
                     "parameters": [
                         {
                             "name": "show",

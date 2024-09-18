@@ -62,9 +62,22 @@ describeWithEnvironment('AppenderUtils', () => {
   });
 
   describe('getFormattedTime', () => {
+    // Helper method. Treat input as milliseconds
+    const getFormattedTime = (tot: number, self: number): string => {
+      const totalTime =
+          TraceEngine.Helpers.Timing.millisecondsToMicroseconds(TraceEngine.Types.Timing.MilliSeconds(tot));
+      const selfTime =
+          TraceEngine.Helpers.Timing.millisecondsToMicroseconds(TraceEngine.Types.Timing.MilliSeconds(self));
+      return Timeline.AppenderUtils.getFormattedTime(totalTime, selfTime);
+    };
+
     it('returns the time info for a entry with no duration correctly', async () => {
-      const formattedTime = Timeline.AppenderUtils.getFormattedTime(defaultTraceEvent.dur);
+      const totalTime = TraceEngine.Types.Timing.MicroSeconds(0);
+      const formattedTime = Timeline.AppenderUtils.getFormattedTime(totalTime);
       assert.strictEqual(formattedTime, '');
+
+      const formattedTime2 = Timeline.AppenderUtils.getFormattedTime(undefined);
+      assert.strictEqual(formattedTime2, '');
     });
 
     it('returns the time info for given total time correctly', async () => {
@@ -88,6 +101,32 @@ describeWithEnvironment('AppenderUtils', () => {
       const formattedTime = Timeline.AppenderUtils.getFormattedTime(totalTime, selfTime);
       // The i18n encodes spaces using the u00A0 unicode character.
       assert.strictEqual(formattedTime, '10.00\u00A0ms');
+    });
+
+    it('has appropriate rounding', () => {
+      assert.strictEqual(getFormattedTime(10, 9), '10.00\u00A0ms (self 9.00\u00A0ms)');
+      assert.strictEqual(getFormattedTime(10, 9.99), '10.00\u00A0ms (self 9.99\u00A0ms)');
+      assert.strictEqual(getFormattedTime(10, 9.999), '10.00\u00A0ms (self 10.00\u00A0ms)');
+      assert.strictEqual(getFormattedTime(10, 9.9999), '10.00\u00A0ms (self 10.00\u00A0ms)');
+
+      assert.strictEqual(getFormattedTime(8.9, 7), '8.90\u00A0ms (self 7.00\u00A0ms)');
+      assert.strictEqual(getFormattedTime(8.99, 7), '8.99\u00A0ms (self 7.00\u00A0ms)');
+      assert.strictEqual(getFormattedTime(8.999, 7), '9.00\u00A0ms (self 7.00\u00A0ms)');
+    });
+
+    it('selfTime is omitted if we hit minSignificance', async () => {
+      // Total and self are really close
+      assert.strictEqual(getFormattedTime(5, 5.00001), '5.00\u00A0ms (self 5.00\u00A0ms)');
+      assert.strictEqual(getFormattedTime(5, 5.000001), '5.00\u00A0ms (self 5.00\u00A0ms)');
+      assert.strictEqual(getFormattedTime(5, 5.0000001), '5.00\u00A0ms');  // minSignificance hit!
+
+      // The self is almost zero
+      assert.strictEqual(getFormattedTime(10, 0.1), '10.00\u00A0ms (self 0.10\u00A0ms)');
+      assert.strictEqual(getFormattedTime(10, 0.01), '10.00\u00A0ms (self 10\u00A0μs)');
+      assert.strictEqual(getFormattedTime(10, 0.001), '10.00\u00A0ms (self 1\u00A0μs)');
+      assert.strictEqual(getFormattedTime(10, 0.0001), '10.00\u00A0ms (self 0\u00A0μs)');
+      assert.strictEqual(getFormattedTime(10, 0.00001), '10.00\u00A0ms (self 0\u00A0μs)');
+      assert.strictEqual(getFormattedTime(10, 0.000001), '10.00\u00A0ms');  // minSignificance hit!
     });
   });
 

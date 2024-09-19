@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Helpers from '../helpers/helpers.js';
 import {type SyntheticInteractionPair} from '../types/TraceEvents.js';
 
 import {type BoundedInsightContext, type InsightResult, type RequiredData} from './types.js';
@@ -17,18 +18,8 @@ export type INPInsightResult = InsightResult<{
 
 export function generateInsight(
     traceParsedData: RequiredData<typeof deps>, context: BoundedInsightContext): INPInsightResult {
-  // TODO(b/366049346): Change how this works w/o a navigation (use context.windows)
-  // Would have just returned early for no-navigation, but some of the traces tested in INP.test.ts
-  // (the ones with no navigations) have user interaction events with an undefined navigation id.
-  // I don't know if they are just old traces, or if no navigationId is to be expected, but the
-  // result is that right now the tests expect those traces to return a result.
-  let navigationId: string|undefined;
-  if (context.navigation) {
-    navigationId = context.navigationId;
-  }
-
   const interactionEvents = traceParsedData.UserInteractions.interactionEvents.filter(event => {
-    return event.args.data.navigationId === navigationId;
+    return Helpers.Timing.eventIsInBounds(event, context.bounds);
   });
 
   if (!interactionEvents.length) {

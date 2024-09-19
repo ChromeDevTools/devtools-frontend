@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+// TODO(crbug.com/366049346): rename file
+
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as TraceEngine from '../../../models/trace/trace.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
@@ -197,12 +199,6 @@ export class SidebarSingleNavigation extends HTMLElement {
       navigationId,
     } = this.#data;
     if (!traceParsedData || !insights || !navigationId) {
-      LitHtml.render(LitHtml.html``, this.#shadow, {host: this});
-      return;
-    }
-
-    const navigation = traceParsedData.Meta.navigationsByNavigationId.get(navigationId);
-    if (!navigation) {
       LitHtml.render(LitHtml.html``, this.#shadow, {host: this});
       return;
     }

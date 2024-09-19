@@ -196,6 +196,7 @@ export function generateInsight(
       continue;
     }
 
+    // TODO(crbug.com/366049346): use context.bounds instead
     const navigation =
         Helpers.Trace.getNavigationForTraceEvent(req, context.frameId, traceData.Meta.navigationsByFrameId);
     if (navigation === context.navigation) {
@@ -214,6 +215,7 @@ export function generateInsight(
   }
 
   const selfTimeByUrl = getSelfTimeByUrl(traceData, context);
+  // TODO(crbug.com/352244718): re-work to still collect main thread activity if no request is present
   const summaries = getSummaries(networkRequests, entityByRequest, selfTimeByUrl);
 
   const firstPartyUrl = context.navigation?.args.data?.url ?? traceData.Meta.mainFrameURL;

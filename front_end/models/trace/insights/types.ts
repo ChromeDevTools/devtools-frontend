@@ -77,7 +77,7 @@ export type InsightResults = {
  *
  * If the analyzed trace started after the navigation, and has meaningful work with that span, there is no
  * navigation to map it to. In this case NO_NAVIGATION is used for the key.
- * TODO(b/366049346): Consider using a symbol. Wait until no-navigation insights are shown in the panel.
+ * TODO(crbug.com/366049346): Consider using a symbol. Wait until no-navigation insights are shown in the panel.
  */
 export type TraceInsightData = Map<string, BoundedInsightData>;
 export const NO_NAVIGATION = 'NO_NAVIGATION';

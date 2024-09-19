@@ -82,7 +82,7 @@ export class Viewport extends BaseInsight {
 
   override render(): void {
     const viewportInsight = getViewportInsight(this.data.insights, this.data.navigationId);
-    const shouldShow = viewportInsight && !viewportInsight.mobileOptimized;
+    const shouldShow = viewportInsight && viewportInsight.mobileOptimized === false;
 
     const matchesCategory = shouldRenderForCategory({
       activeCategory: this.data.activeCategory,

@@ -18,7 +18,7 @@ const UIStrings = {
    * @description Text to tell the user about the longest user interaction.
    */
   description:
-      'Improve user responsiveness by improving the Interaction to Next Paint metric. Learn how to [Optimize INP](https://web.dev/articles/optimize-inp).',
+      'Optimize user responsiveness by [improving the Interaction to Next Paint metric](https://web.dev/articles/optimize-inp).',
   /**
    * @description Title for the performance insight "INP by phase", which shows a breakdown of INP by phases / sections.
    */

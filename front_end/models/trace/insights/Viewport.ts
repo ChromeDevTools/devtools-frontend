@@ -18,7 +18,7 @@ export type ViewportInsightResult = InsightResult<{
 
 export function generateInsight(
     traceParsedData: RequiredData<typeof deps>, context: BoundedInsightContext): ViewportInsightResult {
-  // TODO(b/366049346)
+  // TODO(crbug.com/366049346)
   if (!context.navigation) {
     return {mobileOptimized: null};
   }

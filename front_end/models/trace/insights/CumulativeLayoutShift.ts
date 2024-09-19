@@ -265,7 +265,7 @@ function getFontRootCauses(
 
 export function generateInsight(
     traceParsedData: RequiredData<typeof deps>, context: BoundedInsightContext): CLSInsightResult {
-  // TODO(b/366049346) make this work w/o a navigation.
+  // TODO(crbug.com/366049346) make this work w/o a navigation.
   if (!context.navigation) {
     return {
       clusters: [],

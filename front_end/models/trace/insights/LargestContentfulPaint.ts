@@ -85,7 +85,7 @@ function breakdownPhases(
 
 export function generateInsight(
     traceParsedData: RequiredData<typeof deps>, context: BoundedInsightContext): LCPInsightResult {
-  // TODO(b/366049346) make this work w/o a navigation.
+  // TODO(crbug.com/366049346) make this work w/o a navigation.
   if (!context.navigation) {
     return {};
   }

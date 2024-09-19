@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as TraceEngine from '../../../models/trace/trace.js';
+import * as TraceEngine from '../../../models/trace/trace.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
@@ -20,6 +20,14 @@ export enum InsightsCategories {
   OTHER = 'Other',
 }
 
+/** Represents the portion of the trace that insights have been collected for. */
+interface InsightSet {
+  /** If for a navigation, this is the navigationId. Else it is NO_NAVIGATION. */
+  id: string;
+  /** The URL. Shown in the accordion list. */
+  label: string;
+}
+
 export class SidebarInsightsTab extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-performance-sidebar-insights`;
   readonly #boundRender = this.#render.bind(this);
@@ -27,6 +35,7 @@ export class SidebarInsightsTab extends HTMLElement {
 
   #traceParsedData: TraceEngine.Handlers.Types.TraceParseData|null = null;
   #insights: TraceEngine.Insights.Types.TraceInsightData|null = null;
+  #insightSets: InsightSet[]|null = null;
   #activeInsight: ActiveInsight|null = null;
   #selectedCategory: InsightsCategories = InsightsCategories.ALL;
   /**
@@ -45,12 +54,8 @@ export class SidebarInsightsTab extends HTMLElement {
       return;
     }
     this.#traceParsedData = data;
-    // When the trace data gets set, we clear the active navigation ID (as any old
-    // navigation ID is now outdated) and we auto-set the first ID to be
-    // active.
-    if (data) {
-      this.#activeNavigationId = data.Meta.mainFrameNavigations.at(0)?.args.data?.navigationId ?? null;
-    }
+    this.#activeNavigationId = null;
+
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
 
@@ -58,7 +63,36 @@ export class SidebarInsightsTab extends HTMLElement {
     if (data === this.#insights) {
       return;
     }
+
     this.#insights = data;
+    this.#insightSets = [];
+    this.#activeNavigationId = null;
+    if (!this.#insights || !this.#traceParsedData) {
+      return;
+    }
+
+    const navigationlessInsights = this.#insights.get(TraceEngine.Insights.Types.NO_NAVIGATION);
+    if (navigationlessInsights) {
+      // TODO(crbug.com/366049346): move "shouldShow" logic to insight result (rather than the component),
+      // and if none are visible, don't push the insight set.
+      this.#insightSets.push({
+        id: TraceEngine.Insights.Types.NO_NAVIGATION,
+        label: this.#traceParsedData.Meta.mainFrameURL,
+      });
+    }
+
+    const navigations = this.#traceParsedData.Meta.mainFrameNavigations ?? [];
+    for (const navigation of navigations) {
+      const id = navigation.args.data?.navigationId;
+      const label = navigation.args.data?.documentLoaderURL;
+      const navigationInsights = id && this.#insights.get(id);
+      if (navigationInsights && label) {
+        this.#insightSets.push({id, label});
+      }
+    }
+
+    this.#activeNavigationId = this.#insightSets[0]?.id ?? null;
+
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
 
@@ -86,16 +120,13 @@ export class SidebarInsightsTab extends HTMLElement {
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
 
-  // TODO(b/366049346): display insights w/o a navigation.
   #render(): void {
-    if (!this.#traceParsedData || !this.#insights) {
+    if (!this.#traceParsedData || !this.#insights || !this.#insightSets) {
       LitHtml.render(LitHtml.nothing, this.#shadow, {host: this});
       return;
     }
 
-    const navigations = this.#traceParsedData.Meta.mainFrameNavigations ?? [];
-
-    const hasMultipleNavigations = navigations.length > 1;
+    const hasMultipleInsightSets = this.#insightSets.length > 1;
 
     // clang-format off
     const html = LitHtml.html`
@@ -113,16 +144,11 @@ export class SidebarInsightsTab extends HTMLElement {
       </select>
 
       <div class="navigations-wrapper">
-        ${navigations.map(navigation => {
-          const id = navigation.args.data?.navigationId;
-          const url = navigation.args.data?.documentLoaderURL;
-          if(!id || !url) {
-            return LitHtml.nothing;
-          }
+        ${this.#insightSets.map(({id, label}) => {
           const data = {
-            traceParsedData: this.#traceParsedData ?? null,
+            traceParsedData: this.#traceParsedData,
             insights: this.#insights,
-            navigationId: id,
+            navigationId: id, // TODO(crbug.com/366049346): rename `navigationId`.
             activeCategory: this.#selectedCategory,
             activeInsight: this.#activeInsight,
           };
@@ -133,12 +159,12 @@ export class SidebarInsightsTab extends HTMLElement {
             </${SidebarSingleNavigation.litTagName}>
           `;
 
-          if(hasMultipleNavigations) {
+          if (hasMultipleInsightSets) {
             return LitHtml.html`<details
               ?open=${id === this.#activeNavigationId}
               class="navigation-wrapper"
             >
-              <summary @click=${() => this.#navigationClicked(id)}>${url}</summary>
+              <summary @click=${() => this.#navigationClicked(id)}>${label}</summary>
               ${contents}
             </details>`;
           }

@@ -367,7 +367,7 @@ export class TraceProcessor extends EventTarget {
       const bounds =
           Helpers.Timing.traceWindowFromMicroSeconds(traceParsedData.Meta.traceBounds.min, navigations[0].ts);
       // It really shouldn't take more than a few ms for a navigation to trigger via the "Record and reload" option.
-      // TODO(b/366049346): after some user testing (by us), possibly update or remove this threshold.
+      // TODO(crbug.com/366049346): after some user testing (by us), possibly update or remove this threshold.
       const threshold = Helpers.Timing.millisecondsToMicroseconds(1000 as Types.Timing.MilliSeconds);
       if (bounds.range > threshold) {
         const context: Insights.Types.BoundedInsightContext = {

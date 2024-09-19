@@ -92,7 +92,7 @@ const UIStrings = {
    */
   showMoreInformationInRequestRows: 'Show more information in request rows',
   /**
-   *@description Text in Network Panel of the Network panel
+   *@description Text in Network Panel used to toggle the "big request rows" setting.
    */
   useLargeRequestRows: 'Big request rows',
   /**
@@ -100,7 +100,7 @@ const UIStrings = {
    */
   showOverviewOfNetworkRequests: 'Show overview of network requests',
   /**
-   *@description Text in Network Panel of the Network panel
+   *@description Text in Network Panel used to show the overview for a given network request.
    */
   showOverview: 'Overview',
   /**
@@ -108,7 +108,7 @@ const UIStrings = {
    */
   groupRequestsByTopLevelRequest: 'Group requests by top level request frame',
   /**
-   *@description Text in Network Panel of the Network panel
+   *@description Text for group by frame network setting
    */
   groupByFrame: 'Group by frame',
   /**
@@ -142,7 +142,7 @@ const UIStrings = {
    */
   throttling: 'Throttling',
   /**
-   *@description Text in Network Panel of the Network panel
+   *@description Text in Network Panel to tell the user to reload the page to capture screenshots.
    *@example {Ctrl + R} PH1
    */
   hitSToReloadAndCaptureFilmstrip: 'Hit {PH1} to reload and capture filmstrip.',
@@ -151,11 +151,11 @@ const UIStrings = {
    */
   revealInNetworkPanel: 'Reveal in Network panel',
   /**
-   *@description Text in Network Panel of the Network panel
+   *@description Text in Network Panel that is displayed whilst the recording is in progress.
    */
   recordingFrames: 'Recording frames...',
   /**
-   *@description Text in Network Panel of the Network panel
+   *@description Text in Network Panel that is displayed when frames are being fetched.
    */
   fetchingFrames: 'Fetching frames...',
   /**

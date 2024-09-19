@@ -227,6 +227,14 @@ export interface PossibleFilterActions {
   [FilterAction.UNDO_ALL_ACTIONS]: boolean;
 }
 
+export interface PositionOverride {
+  x: number;
+  width: number;
+}
+
+export type DrawOverride = (context: CanvasRenderingContext2D, x: number, y: number, width: number, height: number) =>
+    PositionOverride;
+
 export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.VBox>(UI.Widget.VBox)
     implements Calculator, ChartViewportDelegate {
   private readonly groupExpansionSetting?: Common.Settings.Setting<GroupExpansionState>;
@@ -264,10 +272,8 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
    **/
   private selectedEntryIndex: number;
   private rawTimelineDataLength: number;
-  private readonly markerPositions: Map<number, {
-    x: number,
-    width: number,
-  }>;
+  private readonly markerPositions: Map<number, PositionOverride>;
+  private readonly customDrawnPositions: Map<number, PositionOverride>;
   private lastMouseOffsetX: number;
   private selectedGroupIndex: number;
   private keyboardFocusedGroup: number;
@@ -300,6 +306,8 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
   // Stored because we cache this value to save extra lookups and layoffs.
   #canvasBoundingClientRect: DOMRect|null = null;
   #selectedElementOutlineEnabled = true;
+
+  #indexToDrawOverride = new Map<number, DrawOverride>();
 
   constructor(
       dataProvider: FlameChartDataProvider, flameChartDelegate: FlameChartDelegate,
@@ -380,6 +388,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.#searchResultEntryIndex = -1;
     this.rawTimelineDataLength = 0;
     this.markerPositions = new Map();
+    this.customDrawnPositions = new Map();
 
     this.lastMouseOffsetX = 0;
     this.selectedGroupIndex = -1;
@@ -1613,7 +1622,17 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       return -1;
     }
 
-    // Check markers first.
+    // Check custom drawn entries first.
+    for (const [index, pos] of this.customDrawnPositions) {
+      if (timelineData.entryLevels[index] !== cursorLevel) {
+        continue;
+      }
+      if (pos.x <= x && x < pos.x + pos.width) {
+        return index as number;
+      }
+    }
+
+    // Check markers.
     for (const [index, pos] of this.markerPositions) {
       if (timelineData.entryLevels[index] !== cursorLevel) {
         continue;
@@ -1965,6 +1984,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     }
     this.dispatchEventToListeners(Events.CHART_PLAYABLE_STATE_CHANGED, wideEntryExists);
 
+    this.#drawCustomSymbols(context, timelineData);
     this.drawMarkers(context, timelineData, markerIndices);
 
     this.drawEventTitles(context, timelineData, titleIndices, canvasWidth);
@@ -2037,6 +2057,12 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     context.beginPath();
     for (let i = 0; i < indexes.length; ++i) {
       const entryIndex = indexes[i];
+
+      // If there is a draw override, then this is not a generic event.
+      if (this.#indexToDrawOverride.has(entryIndex)) {
+        continue;
+      }
+
       this.#drawEventRect(context, timelineData, entryIndex);
     }
     context.fillStyle = color;
@@ -2546,7 +2572,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     // Markers are sorted top to bottom, right to left.
     for (let m = markerIndices.length - 1; m >= 0; --m) {
       const entryIndex = markerIndices[m];
-      const title = this.dataProvider.entryTitle(entryIndex);
+      const title = this.entryTitle(entryIndex);
       if (!title) {
         continue;
       }
@@ -2570,6 +2596,23 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     }
     context.strokeStyle = 'rgba(0, 0, 0, 0.2)';
     context.stroke();
+    context.restore();
+  }
+
+  #drawCustomSymbols(context: CanvasRenderingContext2D, timelineData: FlameChartTimelineData): void {
+    const {entryStartTimes, entryLevels} = timelineData;
+    this.customDrawnPositions.clear();
+    context.save();
+    for (const [entryIndex, drawOverride] of this.#indexToDrawOverride.entries()) {
+      const entryStartTime = entryStartTimes[entryIndex];
+      const level = entryLevels[entryIndex];
+      const x = this.chartViewport.timeToPosition(entryStartTime);
+      const y = this.levelToOffset(level);
+      const height = this.levelHeight(level);
+      const width = this.#eventBarWidth(timelineData, entryIndex);
+      const pos = drawOverride(context, x, y, width, height);
+      this.customDrawnPositions.set(entryIndex, pos);
+    }
     context.restore();
   }
 
@@ -3046,9 +3089,14 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.rawTimelineDataLength = timelineData.entryStartTimes.length;
     this.forceDecorationCache = new Array(this.rawTimelineDataLength);
     this.entryColorsCache = new Array(this.rawTimelineDataLength);
+    this.#indexToDrawOverride.clear();
     for (let i = 0; i < this.rawTimelineDataLength; ++i) {
       this.forceDecorationCache[i] = this.dataProvider.forceDecoration(i) ?? false;
       this.entryColorsCache[i] = this.dataProvider.entryColor(i);
+      const drawOverride = this.dataProvider.getDrawOverride?.(i);
+      if (drawOverride) {
+        this.#indexToDrawOverride.set(i, drawOverride);
+      }
     }
 
     const entryCounters = new Uint32Array(this.dataProvider.maxStackDepth() + 1);
@@ -3449,7 +3497,12 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     return false;
   }
 
-  getMarkerPixelsForEntryIndex(entryIndex: number): {x: number, width: number}|null {
+  getCustomDrawnPositionForEntryIndex(entryIndex: number): PositionOverride|null {
+    const customPos = this.customDrawnPositions.get(entryIndex);
+    if (customPos) {
+      return customPos;
+    }
+
     return this.markerPositions.get(entryIndex) ?? null;
   }
 
@@ -3476,7 +3529,13 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     let barX = 0;
     let barWidth = 0;
     let visible = true;
-    if (Number.isNaN(duration)) {
+
+    const customPos = this.customDrawnPositions.get(entryIndex);
+
+    if (customPos) {
+      barX = customPos.x;
+      barWidth = customPos.width;
+    } else if (Number.isNaN(duration)) {
       const position = this.markerPositions.get(entryIndex);
       if (position) {
         barX = position.x;
@@ -3863,6 +3922,8 @@ export interface FlameChartDataProvider {
   handleFlameChartTransformKeyboardEvent?(event: KeyboardEvent, entryIndex: number, groupIndex: number): void;
 
   groupForEvent?(entryIndex: number): Group|null;
+
+  getDrawOverride?(entryIndex: number): DrawOverride|undefined;
 }
 
 export interface FlameChartMarker {

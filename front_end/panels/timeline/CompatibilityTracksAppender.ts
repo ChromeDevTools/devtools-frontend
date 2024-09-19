@@ -119,6 +119,10 @@ export interface TrackAppender {
    * Returns the info shown when an event in the timeline is hovered.
    */
   highlightedEntryInfo?(event: TraceEngine.Types.TraceEvents.TraceEventData): Partial<HighlightedEntryInfo>;
+  /**
+   * Returns the a callback function to draw an event to overrides the normal rectangle draw operation.
+   */
+  getDrawOverride?(event: TraceEngine.Types.TraceEvents.TraceEventData): DrawOverride|undefined;
 }
 
 export const TrackNames = [
@@ -135,6 +139,8 @@ export const TrackNames = [
 // Network track will use TrackAppender interface, but it won't be shown in Main flamechart.
 // So manually add it to TrackAppenderName.
 export type TrackAppenderName = typeof TrackNames[number]|'Network';
+
+export type DrawOverride = PerfUI.FlameChart.DrawOverride;
 
 /**
  * Used as the context when a track (aka group) is selected and we log
@@ -582,6 +588,14 @@ export class CompatibilityTracksAppender {
       return;
     }
     this.#visibleTrackNames = visibleTracks;
+  }
+
+  getDrawOverride(event: TraceEngine.Types.TraceEvents.TraceEventData, level: number): DrawOverride|undefined {
+    const track = this.#trackForLevel.get(level);
+    if (!track) {
+      throw new Error('Track not found for level');
+    }
+    return track.getDrawOverride?.(event);
   }
 
   /**

@@ -39,7 +39,7 @@ import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 
-import {CompatibilityTracksAppender, type TrackAppenderName} from './CompatibilityTracksAppender.js';
+import {CompatibilityTracksAppender, type DrawOverride, type TrackAppenderName} from './CompatibilityTracksAppender.js';
 import * as Components from './components/components.js';
 import {ExtensionDataGatherer} from './ExtensionDataGatherer.js';
 import {initiatorsDataToDraw} from './Initiators.js';
@@ -794,6 +794,18 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     contents.createChild('span', 'timeline-info-title').textContent = hiddenEntriesAmount + ' hidden';
 
     return element;
+  }
+
+  getDrawOverride(entryIndex: number): DrawOverride|undefined {
+    const entryType = this.#entryTypeForIndex(entryIndex);
+    if (entryType !== EntryType.TRACK_APPENDER) {
+      return;
+    }
+
+    const timelineData = (this.timelineDataInternal as PerfUI.FlameChart.FlameChartTimelineData);
+    const eventLevel = timelineData.entryLevels[entryIndex];
+    const event = (this.entryData[entryIndex] as TraceEngine.Types.TraceEvents.TraceEventData);
+    return this.compatibilityTracksAppender?.getDrawOverride(event, eventLevel);
   }
 
   entryColor(entryIndex: number): string {

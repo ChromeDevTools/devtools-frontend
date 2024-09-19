@@ -9,6 +9,7 @@ import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 import {buildGroupStyle, buildTrackHeader, getFormattedTime} from './AppenderUtils.js';
 import {
   type CompatibilityTracksAppender,
+  type DrawOverride,
   type HighlightedEntryInfo,
   type TrackAppender,
   type TrackAppenderName,
@@ -105,10 +106,12 @@ export class LayoutShiftsTrackAppender implements TrackAppender {
     let shiftLevel = currentLevel;
     if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_LAYOUT_SHIFT_DETAILS)) {
       const allClusters = this.#traceParsedData.LayoutShifts.clusters;
-      this.#compatibilityBuilder.appendEventsAtLevel(allClusters, currentLevel, this, setFlameChartEntryTotalTime);
+      this.#compatibilityBuilder.appendEventsAtLevel(allClusters, currentLevel + 1, this, setFlameChartEntryTotalTime);
 
       // layout shifts should be below clusters.
-      shiftLevel = currentLevel + 1;
+      shiftLevel = currentLevel + 2;
+
+      return this.#compatibilityBuilder.appendEventsAtLevel(allLayoutShifts, shiftLevel, this);
     }
 
     return this.#compatibilityBuilder.appendEventsAtLevel(
@@ -149,5 +152,44 @@ export class LayoutShiftsTrackAppender implements TrackAppender {
   highlightedEntryInfo(event: TraceEngine.Types.TraceEvents.TraceEventLayoutShift): HighlightedEntryInfo {
     const title = this.titleForEvent(event);
     return {title, formattedTime: getFormattedTime(event.dur)};
+  }
+
+  getDrawOverride(event: TraceEngine.Types.TraceEvents.TraceEventData): DrawOverride|undefined {
+    if (!Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_LAYOUT_SHIFT_DETAILS)) {
+      return;
+    }
+
+    if (!TraceEngine.Types.TraceEvents.isTraceEventLayoutShift(event)) {
+      return;
+    }
+
+    const score = event.args.data?.weighted_score_delta || 0;
+
+    // `buffer` is how much space is between the actual diamond shape and the
+    // edge of its select box. The select box will have a constant size
+    // so a larger `buffer` will create a smaller diamond.
+    //
+    // This logic will scale the size of the diamond based on the layout shift score.
+    // A LS score of >=0.1 will create a diamond of maximum size
+    // A LS score of ~0 will create a diamond of minimum size (exactly 0 should not happen in practice)
+    const bufferScale = 1 - Math.min(score / 0.1, 1);
+    const buffer = Math.round(bufferScale * 3);
+
+    return (context, x, y, _width, height) => {
+      const boxSize = height;
+      const halfSize = boxSize / 2;
+      context.beginPath();
+      context.moveTo(x, y + buffer);
+      context.lineTo(x + halfSize - buffer, y + halfSize);
+      context.lineTo(x, y + height - buffer);
+      context.lineTo(x - halfSize + buffer, y + halfSize);
+      context.closePath();
+      context.fillStyle = this.colorForEvent(event);
+      context.fill();
+      return {
+        x: x - halfSize,
+        width: boxSize,
+      };
+    };
   }
 }

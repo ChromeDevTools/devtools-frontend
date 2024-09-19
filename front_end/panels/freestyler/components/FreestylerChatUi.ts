@@ -882,8 +882,8 @@ export class FreestylerChatUi extends HTMLElement {
           </div>
           ${this.#renderChatInput()}
         </form>
-        <div class="disclaimer">
-          <div class="disclaimer-text">${i18nString(
+        <footer class="disclaimer">
+          <p class="disclaimer-text">${i18nString(
             this.#getDisclaimerText(),
           )} See <x-link
               class="link"
@@ -892,8 +892,8 @@ export class FreestylerChatUi extends HTMLElement {
                 click: true,
               })}
             >dogfood terms</x-link>.
-          </div>
-        </div>
+          </p>
+        </footer>
       </div>
     `;
     // clang-format on

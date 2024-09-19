@@ -125,7 +125,7 @@
     color: var(--sys-color-on-surface-subtle);
     font: var(--sys-typescale-body5-regular);
     text-wrap: pretty;
-    padding: var(--sys-size-5);
+    padding: var(--sys-size-4) var(--sys-size-5);
   }
 }
 

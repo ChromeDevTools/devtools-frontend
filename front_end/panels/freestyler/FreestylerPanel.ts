@@ -13,6 +13,7 @@ import {ChangeManager} from './ChangeManager.js';
 import {
   AgentType,
   ChatMessageEntity,
+  type ContextDetail,
   DOGFOOD_INFO,
   FreestylerChatUi,
   type ModelChatMessage,
@@ -23,6 +24,8 @@ import {
 import {
   DrJonesNetworkAgent,
   DrJonesNetworkAgentResponseType,
+  formatHeaders,
+  formatNetworkRequestTiming,
 } from './DrJonesNetworkAgent.js';
 import {ErrorType, FIX_THIS_ISSUE_PROMPT, FreestylerAgent, ResponseType} from './FreestylerAgent.js';
 import freestylerPanelStyles from './freestylerPanel.css.js';
@@ -41,6 +44,43 @@ const UIStringsTemp = {
    *@description AI assistant UI tooltip text for the help button.
    */
   help: 'Help',
+  /**
+   *@description Title text for thinking step of DrJones Network agent.
+   */
+  inspectingNetworkData: 'Inspecting network data',
+  /**
+   *@description Thought text for thinking step of DrJones Network agent.
+   */
+  dataUsedToGenerateThisResponse: 'Data used to generate this response',
+  /**
+   *@description Heading text for the block that shows the network request details.
+   */
+  request: 'Request',
+  /**
+   *@description Heading text for the block that shows the network response details.
+   */
+  response: 'Response',
+  /**
+   *@description Prefix text for request URL.
+   */
+  requestUrl: 'Request URL',
+  /**
+   *@description Title text for request headers.
+   */
+  requestHeaders: 'Request Headers',
+  /**
+   *@description Title text for request timing details.
+   */
+  timing: 'Timing',
+  /**
+   *@description Title text for response headers.
+   */
+  responseHeaders: 'Response Headers',
+  /**
+   *@description Prefix text for response status.
+   */
+  responseStatus: 'Response Status',
+
 };
 
 // TODO(nvitkov): b/346933425
@@ -394,8 +434,14 @@ export class FreestylerPanel extends UI.Panel.Panel {
 
   async #conversationStepsForDrJonesNetworkAgent(text: string, signal: AbortSignal, systemMessage: ModelChatMessage):
       Promise<void> {
-    // TODO(samiyac): Improve loading generator
-    const step: Step = {isLoading: true};
+    // TODO(samiyac): Only display the thinking step with context details when it is the first message
+    const step: Step = {
+      isLoading: true,
+      title: UIStringsTemp.inspectingNetworkData,
+      thought: UIStringsTemp.dataUsedToGenerateThisResponse,
+      contextDetails: this.#createContextDetailsForDrJonesNetworkAgent(),
+    };
+
     if (!systemMessage.steps.length) {
       systemMessage.steps.push(step);
     }
@@ -408,10 +454,6 @@ export class FreestylerPanel extends UI.Panel.Panel {
         case DrJonesNetworkAgentResponseType.ANSWER: {
           systemMessage.answer = data.text;
           systemMessage.rpcId = data.rpcId;
-          // When there is an answer without any thinking steps, we don't want to show the thinking step.
-          if (systemMessage.steps.length === 1 && systemMessage.steps[0].isLoading) {
-            systemMessage.steps.pop();
-          }
           step.isLoading = false;
           this.#viewProps.isLoading = false;
           break;
@@ -427,6 +469,32 @@ export class FreestylerPanel extends UI.Panel.Panel {
       this.doUpdate();
       this.#viewOutput.freestylerChatUi?.scrollToLastMessage();
     }
+  }
+
+  #createContextDetailsForDrJonesNetworkAgent(): ContextDetail[] {
+    if (this.#viewProps.selectedNetworkRequest) {
+      const requestContextDetail: ContextDetail = {
+        title: UIStringsTemp.request,
+        text: UIStringsTemp.requestUrl + ': ' + this.#viewProps.selectedNetworkRequest.url() + '\n\n' +
+            formatHeaders(UIStringsTemp.requestHeaders, this.#viewProps.selectedNetworkRequest.requestHeaders()),
+      };
+      const responseContextDetail: ContextDetail = {
+        title: UIStringsTemp.response,
+        text: UIStringsTemp.responseStatus + ': ' + this.#viewProps.selectedNetworkRequest.statusCode + ' ' +
+            this.#viewProps.selectedNetworkRequest.statusText + '\n\n' +
+            formatHeaders(UIStringsTemp.responseHeaders, this.#viewProps.selectedNetworkRequest.responseHeaders),
+      };
+      const timingContextDetail: ContextDetail = {
+        title: UIStringsTemp.timing,
+        text: formatNetworkRequestTiming(this.#viewProps.selectedNetworkRequest),
+      };
+      return [
+        requestContextDetail,
+        responseContextDetail,
+        timingContextDetail,
+      ];
+    }
+    return [];
   }
 }
 

@@ -381,6 +381,12 @@
   }
 }
 
+.context-details {
+  devtools-code-block {
+    --max-code-height: 80px;
+  }
+}
+
 .error-step {
   color: var(--sys-color-error);
 }

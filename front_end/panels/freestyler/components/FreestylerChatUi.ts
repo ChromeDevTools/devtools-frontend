@@ -201,10 +201,16 @@ export interface Step {
   output?: string;
   canceled?: boolean;
   sideEffect?: ConfirmSideEffectDialog;
+  contextDetails?: ContextDetail[];
 }
 
 interface ConfirmSideEffectDialog {
   onAnswer: (result: boolean) => void;
+}
+
+export interface ContextDetail {
+  title: string;
+  text: string;
 }
 
 export const enum ChatMessageEntity {
@@ -472,14 +478,33 @@ export class FreestylerChatUi extends HTMLElement {
         }}
       ></${MarkdownView.CodeBlock.CodeBlock.litTagName}>
     </div>` : LitHtml.nothing;
+    const contextDetails = step.contextDetails && step.contextDetails?.length > 0 ?
+    LitHtml.html`${LitHtml.Directives.repeat(
+      step.contextDetails,
+        contextDetail => {
+          return LitHtml.html`<div class="context-details">
+        <${MarkdownView.CodeBlock.CodeBlock.litTagName}
+          .code=${contextDetail.text}
+          .codeLang=${'js'}
+          .displayToolbar=${false}
+          .displayNotice=${false}
+          .heading=${{
+            text: i18nString(contextDetail.title),
+            showCopyButton: true,
+          }}
+        ></${MarkdownView.CodeBlock.CodeBlock.litTagName}>
+      </div>`;
+        },
+      )}` : LitHtml.nothing;
 
     return LitHtml.html`<div class="step-details">
       ${thought}
       ${code}
       ${sideEffects}
       ${output}
+      ${contextDetails}
     </div>`;
-    // clang-format on
+        // clang-format on
   }
 
   #renderStepBadge(step: Step, options: {isLast: boolean}): LitHtml.LitTemplate {

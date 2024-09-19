@@ -302,16 +302,24 @@
   justify-content: space-between;
   margin-bottom: 2px;
   line-height: 20px;
+  gap: var(--sys-size-8);
 
   & .feedback-icon {
     width: var(--sys-size-8);
     height: var(--sys-size-8);
   }
 
+  & .header-link-container:first-of-type {
+    flex-shrink: 1;
+    flex-basis: 100%;
+    min-width: 0;
+  }
+
   & .header-link-container {
     display: inline-flex;
     align-items: center;
     gap: var(--sys-size-2);
+    flex-shrink: 0;
   }
 }
 

@@ -42,6 +42,7 @@ import * as DebuggerModel from './DebuggerModel.js';
 import * as DOMDebuggerModel from './DOMDebuggerModel.js';
 import * as DOMModel from './DOMModel.js';
 import * as EmulationModel from './EmulationModel.js';
+import * as EnhancedTracesParser from './EnhancedTracesParser.js';
 import * as EventBreakpointsModel from './EventBreakpointsModel.js';
 import * as FrameAssociated from './FrameAssociated.js';
 import * as FrameManager from './FrameManager.js';
@@ -119,6 +120,7 @@ export {
   DOMDebuggerModel,
   DOMModel,
   EmulationModel,
+  EnhancedTracesParser,
   EventBreakpointsModel,
   FrameAssociated,
   FrameManager,

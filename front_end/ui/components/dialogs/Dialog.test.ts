@@ -553,3 +553,58 @@ describe('Dialog', () => {
     });
   });
 });
+
+describe('closing the dialog with click', () => {
+  let devtoolsDialog: Dialogs.Dialog.Dialog;
+  beforeEach(async () => {
+    devtoolsDialog = new Dialogs.Dialog.Dialog();
+    const container = document.createElement('div');
+
+    const host = document.createElement('div');
+
+    const content = document.createElement('div');
+    content.innerHTML = 'Hello, World<br/> I am <br/> a Dialog!';
+
+    devtoolsDialog.origin = Dialogs.Dialog.MODAL;
+
+    host.addEventListener('click', () => devtoolsDialog.setDialogVisible(true));
+    devtoolsDialog.addEventListener('clickoutsidedialog', () => devtoolsDialog.setDialogVisible(false));
+
+    container.appendChild(host);
+    container.appendChild(devtoolsDialog);
+    Helpers.renderElementIntoDOM(container);
+    await coordinator.done();
+    devtoolsDialog.appendChild(content);
+
+    // Open the dialog.
+    Helpers.dispatchClickEvent(host);
+    await coordinator.done();
+  });
+
+  it('Only closes the dialog if the click falls outside its content', async () => {
+    let dialog = devtoolsDialog.shadowRoot?.querySelector('dialog[open]');
+    if (!dialog) {
+      assert.fail('Dialog not found');
+      return;
+    }
+    const {x, width, bottom} = dialog.getBoundingClientRect();
+
+    // Click just inside must not close the dialog.
+    Helpers.dispatchClickEvent(dialog, {clientX: x + width / 2, clientY: bottom - 1});
+    await coordinator.done();
+    dialog = devtoolsDialog.shadowRoot?.querySelector('dialog[open]');
+    if (!dialog) {
+      assert.fail('Dialog closed when it should not');
+      return;
+    }
+    Helpers.dispatchClickEvent(dialog, {clientX: x + width / 2, clientY: bottom + 1});
+    await coordinator.done();
+
+    // Click just outside must close the dialog.
+    dialog = devtoolsDialog.shadowRoot?.querySelector('dialog[open]');
+    if (dialog) {
+      assert.fail('Dialog did not close');
+      return;
+    }
+  });
+});

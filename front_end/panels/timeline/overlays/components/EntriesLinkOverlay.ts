@@ -43,6 +43,7 @@ export class EntriesLinkOverlay extends HTMLElement {
   // draw the border as dashed, not solid.
   #fromEntryIsSource: boolean = true;
   #toEntryIsSource: boolean = true;
+  #arrowHidden: boolean = false;
 
   constructor(initialFromEntryCoordinateAndDimentions: {x: number, y: number, width: number, height: number}) {
     super();
@@ -81,6 +82,7 @@ export class EntriesLinkOverlay extends HTMLElement {
    * but hide only the arrow.
    */
   set hideArrow(shouldHide: boolean) {
+    this.#arrowHidden = shouldHide;
     if (this.#connector) {
       this.#connector.style.display = shouldHide ? 'none' : 'block';
     }
@@ -133,13 +135,22 @@ export class EntriesLinkOverlay extends HTMLElement {
       return;
     }
 
+    // If the user is zoomed out, the connector circles can be as large as the
+    // event itself. So if the rectangle for this entry is too small, we
+    // don't draw the circles.
+    const minWidthToDrawConnectorCircles = 8;
+
     // We do not draw the connectors if the entry is not visible, or if the
     // entry we are connecting to isn't the actual source entry.
     // We also don't draw them if an entry is completely hidden, in which case
     // we aren't drawing the arrows, so it doesn't make sense to draw the
     // connectors.
-    const drawFromEntryConnectorCircle = this.#entryFromVisible && this.#entryToVisible && this.#fromEntryIsSource;
-    const drawToEntryConnectorCircle = this.#entryFromVisible && this.#entryToVisible && this.#toEntryIsSource;
+    const drawFromEntryConnectorCircle = this.#entryFromVisible && !this.#arrowHidden && this.#fromEntryIsSource &&
+        this.#fromEntryDimentions.width >= minWidthToDrawConnectorCircles;
+
+    const widthOfToEntry = this.#toEntryDimentions?.width ?? 0;
+    const drawToEntryConnectorCircle = !this.#arrowHidden && this.#entryToVisible && this.#toEntryIsSource &&
+        widthOfToEntry >= minWidthToDrawConnectorCircles && !this.#arrowHidden;
 
     this.#entryFromConnector.setAttribute('visibility', drawFromEntryConnectorCircle ? 'visible' : 'hidden');
     this.#entryToConnector.setAttribute('visibility', drawToEntryConnectorCircle ? 'visible' : 'hidden');
@@ -312,14 +323,17 @@ export class EntriesLinkOverlay extends HTMLElement {
             <rect
               class="entryToWrapper" fill="none" stroke="black" stroke-dasharray=${this.#toEntryIsSource ? 'none' : DASHED_STROKE_AMOUNT} />
 
-            <circle class="entryFromConnector" fill="none" stroke=${arrowColor} stroke-width="2" cx="50" cy="50" r="3" />
-            <circle class="entryToConnector" fill="none" stroke=${arrowColor} stroke-width="2" cx="50" cy="50" r="3" />
+            <circle class="entryFromConnector" fill="none" stroke=${arrowColor} stroke-width=${CONNECTOR_CIRCLE_STROKE_WIDTH} r=${CONNECTOR_CIRCLE_RADIUS} />
+            <circle class="entryToConnector" fill="none" stroke=${arrowColor} stroke-width=${CONNECTOR_CIRCLE_STROKE_WIDTH} r=${CONNECTOR_CIRCLE_RADIUS} />
           </svg>
         `,
         this.#shadow, {host: this});
     // clang-format on
   }
 }
+
+const CONNECTOR_CIRCLE_RADIUS = 2;
+const CONNECTOR_CIRCLE_STROKE_WIDTH = 1;
 
 export class CreateEntriesLinkRemoveEvent extends Event {
   static readonly eventName = 'createentrieslinkremoveevent';

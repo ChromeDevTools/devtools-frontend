@@ -53,8 +53,10 @@ export function flattenTemplate(strings: TemplateStringsArray, ...values: Templa
 }
 
 export function html(strings: TemplateStringsArray, ...values: TemplateValues[]): Lit.TemplateResult {
-  if (values.some(value => isStaticLiteral(value))) {
-    return htmlWithStatics(strings, ...values);
+  const staticValues = values.filter(value => isStaticLiteral(value));
+  if (staticValues.length) {
+    const key = staticValues.map(v => v.value as string).join(' ');
+    return htmlWithStatics(strings, values, key);
   }
 
   return Lit.html(strings, ...values);
@@ -71,25 +73,34 @@ function isStaticLiteral(item: TemplateValues|unknown): item is Static {
   return typeof item === 'object' && (item !== null && '$$static$$' in item);
 }
 
-const flattenedTemplates = new WeakMap<TemplateStringsArray, FlattenedTemplateValues>();
-function htmlWithStatics(strings: TemplateStringsArray, ...values: TemplateValues[]): Lit.TemplateResult {
+// While this is a WeakMap, that doesn't help because TemplateStringsArray are objects in a global registry
+// managed by the V8 runtime. They are never garbage collected.
+// We use a double-keyed cache in order to support dynamically changing the static literal: for example,
+// within a loop that dynamically selects what custom component to render.
+const flattenedTemplates = new WeakMap<TemplateStringsArray, Map<string, FlattenedTemplateValues>>();
+
+function htmlWithStatics(
+    strings: TemplateStringsArray, values: TemplateValues[], staticValuesKey: string): Lit.TemplateResult {
   // Check to see if we've already converted this before.
-  const existing = flattenedTemplates.get(strings);
-  if (existing) {
-    const filteredValues = values.filter((a, index) => {
-      if (!existing) {
-        return false;
-      }
-
-      return existing.valueMap[index];
-    });
-
-    // Pass through to Lit.
-    return Lit.html(existing.strings, ...filteredValues);
+  // Cache key is the TemplateStringsArray, which works because the same usage of template string reuses the same array object.
+  // See: https://tc39.es/ecma262/multipage/ecmascript-language-expressions.html#sec-gettemplateobject
+  //      13.2.8.4 GetTemplateObject, step 3.
+  let flattened;
+  let secondaryMap = flattenedTemplates.get(strings);
+  if (!secondaryMap) {
+    secondaryMap = new Map();
+    flattenedTemplates.set(strings, secondaryMap);
   }
 
-  flattenedTemplates.set(strings, flattenTemplate(strings, ...values));
-  return htmlWithStatics(strings, ...values);
+  flattened = secondaryMap.get(staticValuesKey);
+  if (!flattened) {
+    flattened = flattenTemplate(strings, ...values);
+    secondaryMap.set(staticValuesKey, flattened);
+  }
+
+  // Pass through to Lit.
+  const filteredValues = values.filter((_, index) => flattened.valueMap[index]);
+  return Lit.html(flattened.strings, ...filteredValues);
 }
 
 /**

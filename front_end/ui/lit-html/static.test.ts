@@ -89,6 +89,21 @@ describe('Static', () => {
       assert.strictEqual(target.innerText, '123, Hello, everyone!! Static value!');
       assert.isNotNull(target.querySelector('div'));
     });
+
+    it('renders dynamic literals', () => {
+      const tag1 = LitHtml.literal`div`;
+      const tag2 = LitHtml.literal`p`;
+      const tmpls = [tag1, tag2].map(tag => {
+        return LitHtml.html`<${tag}>I am ${tag.value}</${tag}>`;
+      });
+
+      const target = document.createElement('div');
+      LitHtml.render(tmpls, target, {host: this});
+
+      assert.strictEqual(target.innerText, 'I am divI am p');
+      assert.isNotNull(target.querySelector('div'));
+      assert.isNotNull(target.querySelector('p'));
+    });
   });
 
   describe('i18nTemplate', () => {

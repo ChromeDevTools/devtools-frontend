@@ -73,7 +73,7 @@ export abstract class BaseInsight extends HTMLElement {
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
 
-  set activeInsight(activeInsight: ActiveInsight) {
+  set activeInsight(activeInsight: ActiveInsight|null) {
     this.data.activeInsight = activeInsight;
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }

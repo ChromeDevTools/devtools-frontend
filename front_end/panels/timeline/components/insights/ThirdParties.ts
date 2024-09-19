@@ -13,6 +13,11 @@ import * as SidebarInsight from './SidebarInsight.js';
 import {Table, type TableData} from './Table.js';
 import {InsightsCategories} from './types.js';
 
+type ThirdPartiesEntires = Array<[
+  TraceEngine.Insights.InsightRunners.ThirdPartyWeb.Entity,
+  TraceEngine.Insights.InsightRunners.ThirdPartyWeb.Summary,
+]>;
+
 const UIStrings = {
   /** Title of an insight that provides details about the code on a web page that the user doesn't control (referred to as "third-party code"). */
   title: 'Third parties',
@@ -125,8 +130,7 @@ export class ThirdParties extends BaseInsight {
     this.#currentSelectionIsSticky = sticky;
   }
 
-  #render(data: TraceEngine.Insights.Types.InsightResults['ThirdPartyWeb']): LitHtml.TemplateResult {
-    const entries = [...data.summaryByEntity.entries()].filter(kv => kv[0] !== data.firstPartyEntity);
+  #render(entries: ThirdPartiesEntires): LitHtml.TemplateResult {
     const topTransferSizeEntries = entries.sort((a, b) => b[1].transferSize - a[1].transferSize).slice(0, 6);
     const topMainThreadTimeEntries = entries.sort((a, b) => b[1].mainThreadTime - a[1].mainThreadTime).slice(0, 6);
 
@@ -174,13 +178,14 @@ export class ThirdParties extends BaseInsight {
 
   override render(): void {
     const insight = getThirdPartiesInsight(this.data.insights, this.data.navigationId);
-    const shouldShow = insight && insight.summaryByEntity.size;
+    const entries = insight && [...insight.summaryByEntity.entries()].filter(kv => kv[0] !== insight.firstPartyEntity);
+    const shouldShow = entries?.length;
 
     const matchesCategory = shouldRenderForCategory({
       activeCategory: this.data.activeCategory,
       insightCategory: this.insightCategory,
     });
-    const output = shouldShow && matchesCategory ? this.#render(insight) : LitHtml.nothing;
+    const output = shouldShow && matchesCategory ? this.#render(entries) : LitHtml.nothing;
     LitHtml.render(output, this.shadow, {host: this});
   }
 }

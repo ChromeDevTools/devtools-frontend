@@ -16,7 +16,7 @@ export function deps(): ['Meta', 'NetworkRequests', 'Renderer', 'ImagePainting']
 
 export type Entity = typeof ThirdPartyWeb.ThirdPartyWeb.entities[number];
 
-interface Summary {
+export interface Summary {
   transferSize: number;
   mainThreadTime: Types.Timing.MicroSeconds;
 }

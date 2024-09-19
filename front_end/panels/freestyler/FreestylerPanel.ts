@@ -38,9 +38,9 @@ const UIStringsTemp = {
    */
   clearMessages: 'Clear messages',
   /**
-   *@description AI assistant UI text for sending feedback.
+   *@description AI assistant UI tooltip text for the help button.
    */
-  sendFeedback: 'Send feedback',
+  help: 'Help',
 };
 
 // TODO(nvitkov): b/346933425
@@ -66,8 +66,7 @@ function createToolbar(target: HTMLElement, {onClearClick}: {onClearClick: () =>
   leftToolbar.appendToolbarItem(clearButton);
 
   rightToolbar.appendSeparator();
-  const helpButton =
-      new UI.Toolbar.ToolbarButton(i18nString(UIStringsTemp.sendFeedback), 'help', undefined, 'freestyler.feedback');
+  const helpButton = new UI.Toolbar.ToolbarButton(i18nString(UIStringsTemp.help), 'help', undefined, 'freestyler.help');
   helpButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, () => {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(DOGFOOD_INFO);
   });

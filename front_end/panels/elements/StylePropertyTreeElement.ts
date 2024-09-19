@@ -289,14 +289,14 @@ export class ColorRenderer implements MatchRenderer<ColorMatch> {
   }
 
   matcher(): ColorMatcher {
-    return new ColorMatcher();
+    const getCurrentColorCallback = (): string|null => this.treeElement.getComputedStyle('color');
+    return new ColorMatcher(getCurrentColorCallback);
   }
 
   #getValueChild(match: ColorMatch, context: RenderingContext):
       {valueChild: HTMLSpanElement, cssControls?: SDK.CSSPropertyParser.CSSControlMap} {
     const valueChild = document.createElement('span');
-    if (match.node.name === 'ColorLiteral' ||
-        (match.node.name === 'ValueName' && Common.Color.Nicknames.has(match.text))) {
+    if (match.node.name === 'ColorLiteral' || match.node.name === 'ValueName') {
       valueChild.appendChild(document.createTextNode(match.text));
       return {valueChild};
     }

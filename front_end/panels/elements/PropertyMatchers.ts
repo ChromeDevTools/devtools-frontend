@@ -170,12 +170,19 @@ export class LinearGradientMatcher extends matcherBase(LinearGradientMatch) {
 }
 
 export class ColorMatch implements Match {
-  constructor(readonly text: string, readonly node: CodeMirror.SyntaxNode) {
+  computedText: (() => string | null)|undefined;
+  constructor(
+      readonly text: string, readonly node: CodeMirror.SyntaxNode,
+      private readonly currentColorCallback?: () => string | null) {
+    this.computedText = currentColorCallback;
   }
 }
 
 // clang-format off
 export class ColorMatcher extends matcherBase(ColorMatch) {
+  constructor(private readonly currentColorCallback?: () => string|null) {
+      super();
+  }
   // clang-format on
   override accepts(propertyName: string): boolean {
     return SDK.CSSMetadata.cssMetadata().isColorAwareProperty(propertyName);
@@ -186,8 +193,14 @@ export class ColorMatcher extends matcherBase(ColorMatch) {
     if (node.name === 'ColorLiteral') {
       return new ColorMatch(text, node);
     }
-    if (node.name === 'ValueName' && Common.Color.Nicknames.has(text)) {
-      return new ColorMatch(text, node);
+    if (node.name === 'ValueName') {
+      if (Common.Color.Nicknames.has(text)) {
+        return new ColorMatch(text, node);
+      }
+      if (text.toLowerCase() === 'currentcolor' && this.currentColorCallback) {
+        const callback = this.currentColorCallback;
+        return new ColorMatch(text, node, () => callback() ?? text);
+      }
     }
     if (node.name === 'CallExpression') {
       const callee = node.getChild('Callee');

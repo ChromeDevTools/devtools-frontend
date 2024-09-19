@@ -608,7 +608,7 @@ export class FreestylerChatUi extends HTMLElement {
             <span>${name}</span>
           </div>
         </div>
-        <div class="message-content">${message.text}</div>
+        <div class="message-content">${this.#renderTextAsMarkdown(message.text)}</div>
       </div>`;
       // clang-format on
     }

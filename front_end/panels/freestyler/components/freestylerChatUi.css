@@ -159,9 +159,8 @@
 
   &.query {
     .message-content {
-      line-height: 18px;
-      white-space: pre;
-      text-wrap: wrap;
+      /* devtools-markdown-view's paragraphs add 10px bottom margin. This negative margin is here to offset that. */
+      margin-bottom: -10px;
     }
   }
 

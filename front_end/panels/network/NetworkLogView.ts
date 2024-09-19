@@ -1726,7 +1726,6 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
     const copyMenu = contextMenu.clipboardSection().appendSubMenuItem(i18nString(UIStrings.copy), false, 'copy');
     if (request) {
       if (UI.ActionRegistry.ActionRegistry.instance().hasAction('drjones.network-panel-context')) {
-        UI.Context.Context.instance().setFlavor(SDK.NetworkRequest.NetworkRequest, request);
         contextMenu.headerSection().appendAction(
             'drjones.network-panel-context',
         );

@@ -682,6 +682,7 @@ export class NetworkPanel extends UI.Panel.Panel implements
     this.currentRequest = request;
     this.networkOverview.setHighlightedRequest(request);
     this.updateNetworkItemView();
+    UI.Context.Context.instance().setFlavor(SDK.NetworkRequest.NetworkRequest, request);
   }
 
   private onRequestActivated(event: Common.EventTarget.EventTargetEvent<RequestActivatedEvent>): void {

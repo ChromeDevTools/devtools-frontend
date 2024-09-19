@@ -46,7 +46,7 @@ if (!fs.existsSync(cwd)) {
   }
 }
 
-if (!fs.existsSync(cwd) || !fs.statSync(cwd).isDirectory()) {
+if (!fs.existsSync(cwd) || !fs.statSync(cwd).isDirectory() || !fs.existsSync(path.join(cwd, 'build.ninja'))) {
   console.error(
       `Target path ${cwd} does not exist or is not a directory. Please run 'gn gen out/${target}' first.`);
   process.exit(1);

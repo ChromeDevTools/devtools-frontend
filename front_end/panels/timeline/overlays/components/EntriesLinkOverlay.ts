@@ -292,11 +292,11 @@ export class EntriesLinkOverlay extends HTMLElement {
                 x1="0%" y1="0%" x2="100%" y2="0%">
                 <stop
                   offset="0%"
-                  stop-color="black"
+                  stop-color=${arrowColor}
                   stop-opacity="1" />
                 <stop
                   offset="${this.#partlyVisibleConnectionLinePercentage()}%"
-                  stop-color="black"
+                  stop-color=${arrowColor}
                   stop-opacity="0" />
               </linearGradient>
 
@@ -305,11 +305,11 @@ export class EntriesLinkOverlay extends HTMLElement {
                 x1="0%" y1="0%" x2="100%" y2="0%">
                 <stop
                   offset="${100 - this.#partlyVisibleConnectionLinePercentage()}%"
-                  stop-color="black"
+                  stop-color=${arrowColor}
                   stop-opacity="0" />
                 <stop
                   offset="100%"
-                  stop-color="black"
+                  stop-color=${arrowColor}
                   stop-opacity="1" />
               </linearGradient>
               <marker
@@ -330,9 +330,9 @@ export class EntriesLinkOverlay extends HTMLElement {
               />
 
             <rect
-              class="entryFromWrapper" fill="none" stroke="black" stroke-width=${BORDER_LINE_WIDTH} stroke-dasharray=${this.#fromEntryIsSource ? 'none' : DASHED_STROKE_AMOUNT} />
+              class="entryFromWrapper" fill="none" stroke=${arrowColor} stroke-width=${BORDER_LINE_WIDTH} stroke-dasharray=${this.#fromEntryIsSource ? 'none' : DASHED_STROKE_AMOUNT} />
             <rect
-              class="entryToWrapper" fill="none" stroke="black" stroke-width=${BORDER_LINE_WIDTH} stroke-dasharray=${this.#toEntryIsSource ? 'none' : DASHED_STROKE_AMOUNT} />
+              class="entryToWrapper" fill="none" stroke=${arrowColor} stroke-width=${BORDER_LINE_WIDTH} stroke-dasharray=${this.#toEntryIsSource ? 'none' : DASHED_STROKE_AMOUNT} />
 
             <circle class="entryFromConnector" fill="none" stroke=${arrowColor} stroke-width=${CONNECTOR_CIRCLE_STROKE_WIDTH} r=${CONNECTOR_CIRCLE_RADIUS} />
             <circle class="entryToConnector" fill="none" stroke=${arrowColor} stroke-width=${CONNECTOR_CIRCLE_STROKE_WIDTH} r=${CONNECTOR_CIRCLE_RADIUS} />

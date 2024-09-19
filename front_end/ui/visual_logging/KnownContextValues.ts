@@ -245,6 +245,7 @@ export const knownContextValues = new Set([
   'aaa',
   'abort',
   'abort-replay',
+  'aborted',
   'about-gpu',
   'accent-color',
   'accept',

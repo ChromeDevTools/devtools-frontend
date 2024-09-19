@@ -504,7 +504,7 @@ export class FreestylerChatUi extends HTMLElement {
       ${output}
       ${contextDetails}
     </div>`;
-        // clang-format on
+    // clang-format on
   }
 
   #renderStepBadge(step: Step, options: {isLast: boolean}): LitHtml.LitTemplate {
@@ -534,7 +534,9 @@ export class FreestylerChatUi extends HTMLElement {
     });
     // clang-format off
     return LitHtml.html`
-      <details class=${stepClasses} .open=${Boolean(step.sideEffect)}>
+      <details class=${stepClasses}
+        jslog=${VisualLogging.section('step')}
+        .open=${Boolean(step.sideEffect)}>
         <summary>
           <div class="summary">
             ${this.#renderStepBadge(step, options)}
@@ -604,10 +606,11 @@ export class FreestylerChatUi extends HTMLElement {
           errorMessage = UIStringsTemp.maxStepsError;
           break;
         case ErrorType.ABORT:
-          return LitHtml.html`<p class="aborted">${i18nString(UIStringsTemp.stoppedResponse)}</p>`;
+          return LitHtml.html`<p class="aborted" jslog=${VisualLogging.section('aborted')}>${
+              i18nString(UIStringsTemp.stoppedResponse)}</p>`;
       }
 
-      return LitHtml.html`<p class="error">${i18nString(errorMessage)}</p>`;
+      return LitHtml.html`<p class="error" jslog=${VisualLogging.section('error')}>${i18nString(errorMessage)}</p>`;
     }
 
     return LitHtml.nothing;

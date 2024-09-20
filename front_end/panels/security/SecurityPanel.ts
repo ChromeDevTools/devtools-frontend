@@ -1040,7 +1040,10 @@ export class SecurityPanelSidebarTreeElement extends UI.TreeOutline.TreeElement 
   setSecurityState(newSecurityState: Protocol.Security.SecurityState): void {
     this.securityStateInternal = newSecurityState;
     this.setLeadingIcons([this.#getIconForSecurityState(newSecurityState)]);
-    this.listItemElement.replaceChildren(this.#getTitleForSecurityState(newSecurityState));
+    if (this.listItemElement.lastChild) {
+      this.listItemElement.removeChild(this.listItemElement.lastChild);
+    }
+    this.listItemElement.appendChild(this.#getTitleForSecurityState(newSecurityState));
   }
 
   securityState(): Protocol.Security.SecurityState|null {

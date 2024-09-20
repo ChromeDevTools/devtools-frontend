@@ -171,24 +171,26 @@ export interface QueryResponse {
 export type ResponseData =
     AnswerResponse|ErrorResponse|ActionResponse|SideEffectResponse|ThoughtResponse|TitleResponse|QueryResponse;
 
-// TODO: this should use the current execution context pased on the
-// node.
 async function executeJsCode(code: string, {throwOnSideEffect}: {throwOnSideEffect: boolean}): Promise<string> {
-  const target = UI.Context.Context.instance().flavor(SDK.Target.Target);
+  const selectedNode = UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
+  const target = selectedNode?.domModel().target() ?? UI.Context.Context.instance().flavor(SDK.Target.Target);
+
   if (!target) {
     throw new Error('Target is not found for executing code');
   }
 
   const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
-  const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
-  const pageAgent = target.pageAgent();
-  if (!resourceTreeModel?.mainFrame) {
+  const frameId = selectedNode?.frameId() ?? resourceTreeModel?.mainFrame?.id;
+
+  if (!frameId) {
     throw new Error('Main frame is not found for executing code');
   }
 
+  const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
+  const pageAgent = target.pageAgent();
+
   // This returns previously created world if it exists for the frame.
-  const {executionContextId} = await pageAgent.invoke_createIsolatedWorld(
-      {frameId: resourceTreeModel.mainFrame.id, worldName: FREESTYLER_WORLD_NAME});
+  const {executionContextId} = await pageAgent.invoke_createIsolatedWorld({frameId, worldName: FREESTYLER_WORLD_NAME});
   const executionContext = runtimeModel?.executionContext(executionContextId);
   if (!executionContext) {
     throw new Error('Execution context is not found for executing code');

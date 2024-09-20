@@ -20,8 +20,8 @@ export class ExtensionScope {
                       data: Protocol.Runtime.BindingCalledEvent,
                     }) => Promise<void>> = [];
   #changeManager: ChangeManager;
-  #frameId: Protocol.Page.FrameId;
-  #target: SDK.Target.Target;
+  #frameId?: Protocol.Page.FrameId|null;
+  #target?: SDK.Target.Target;
 
   readonly #bindingMutex = new Common.Mutex.Mutex();
 
@@ -31,23 +31,43 @@ export class ExtensionScope {
 
     const frameId = selectedNode?.frameId();
     const target = selectedNode?.domModel().target();
-
-    if (!frameId || !target) {
-      throw new Error('Frame is not found');
-    }
     this.#target = target;
     this.#frameId = frameId;
   }
 
+  get target(): SDK.Target.Target {
+    if (this.#target) {
+      return this.#target;
+    }
+
+    const target = UI.Context.Context.instance().flavor(SDK.Target.Target);
+    if (!target) {
+      throw new Error('Target is not found for executing code');
+    }
+
+    return target;
+  }
+
+  get frameId(): Protocol.Page.FrameId {
+    if (this.#frameId) {
+      return this.#frameId;
+    }
+
+    const resourceTreeModel = this.target.model(SDK.ResourceTreeModel.ResourceTreeModel);
+    if (!resourceTreeModel?.mainFrame) {
+      throw new Error('Main frame is not found for executing code');
+    }
+
+    return resourceTreeModel.mainFrame.id;
+  }
+
   async install(): Promise<void> {
-    const target = this.#target;
-    const frameId = this.#frameId;
-    const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
-    const pageAgent = target.pageAgent();
+    const runtimeModel = this.target.model(SDK.RuntimeModel.RuntimeModel);
+    const pageAgent = this.target.pageAgent();
 
     // This returns previously created world if it exists for the frame.
     const {executionContextId} =
-        await pageAgent.invoke_createIsolatedWorld({frameId, worldName: FREESTYLER_WORLD_NAME});
+        await pageAgent.invoke_createIsolatedWorld({frameId: this.frameId, worldName: FREESTYLER_WORLD_NAME});
 
     const isolatedWorldContext = runtimeModel?.executionContext(executionContextId);
     if (!isolatedWorldContext) {
@@ -57,7 +77,7 @@ export class ExtensionScope {
     const handler = this.#bindingCalled.bind(this, isolatedWorldContext);
     runtimeModel?.addEventListener(SDK.RuntimeModel.Events.BindingCalled, handler);
     this.#listeners.push(handler);
-    await target.runtimeAgent().invoke_addBinding({
+    await this.target.runtimeAgent().invoke_addBinding({
       name: FREESTYLER_BINDING_NAME,
       executionContextId,
     });
@@ -66,14 +86,14 @@ export class ExtensionScope {
   }
 
   async uninstall(): Promise<void> {
-    const runtimeModel = this.#target.model(SDK.RuntimeModel.RuntimeModel);
+    const runtimeModel = this.target.model(SDK.RuntimeModel.RuntimeModel);
 
     for (const handler of this.#listeners) {
       runtimeModel?.removeEventListener(SDK.RuntimeModel.Events.BindingCalled, handler);
     }
     this.#listeners = [];
 
-    await this.#target.runtimeAgent().invoke_removeBinding({
+    await this.target.runtimeAgent().invoke_removeBinding({
       name: FREESTYLER_BINDING_NAME,
     });
   }
@@ -116,17 +136,16 @@ export class ExtensionScope {
       return;
     }
     await this.#bindingMutex.run(async () => {
-      const target = this.#target;
       const id = data.payload;
       const {object} = await this.#simpleEval(executionContext, `freestyler.getArgs(${id})`);
       const arg = JSON.parse(object.value);
       const selector = arg.selector;
       const className = arg.className;
-      const cssModel = target.model(SDK.CSSModel.CSSModel);
+      const cssModel = this.target.model(SDK.CSSModel.CSSModel);
       if (!cssModel) {
         throw new Error('CSSModel is not found');
       }
-      await this.#changeManager.addChange(cssModel, this.#frameId, {
+      await this.#changeManager.addChange(cssModel, this.frameId, {
         selector,
         className,
         styles: arg.styles,

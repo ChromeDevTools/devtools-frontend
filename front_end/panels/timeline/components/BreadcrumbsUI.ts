@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../../core/i18n/i18n.js';
-import * as TraceEngine from '../../../models/trace/trace.js';
+import * as Trace from '../../../models/trace/trace.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as UI from '../../../ui/legacy/legacy.js';
@@ -38,14 +38,14 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 //
 // `activeBreadcrumb` is the currently active breadcrumb that the timeline is limited to.
 export interface BreadcrumbsUIData {
-  initialBreadcrumb: TraceEngine.Types.File.Breadcrumb;
-  activeBreadcrumb: TraceEngine.Types.File.Breadcrumb;
+  initialBreadcrumb: Trace.Types.File.Breadcrumb;
+  activeBreadcrumb: Trace.Types.File.Breadcrumb;
 }
 
 export class BreadcrumbActivatedEvent extends Event {
   static readonly eventName = 'breadcrumbactivated';
 
-  constructor(public breadcrumb: TraceEngine.Types.File.Breadcrumb, public childBreadcrumbsRemoved?: boolean) {
+  constructor(public breadcrumb: Trace.Types.File.Breadcrumb, public childBreadcrumbsRemoved?: boolean) {
     super(BreadcrumbActivatedEvent.eventName);
   }
 }
@@ -54,8 +54,8 @@ export class BreadcrumbsUI extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-breadcrumbs-ui`;
   readonly #shadow = this.attachShadow({mode: 'open'});
   readonly #boundRender = this.#render.bind(this);
-  #initialBreadcrumb: TraceEngine.Types.File.Breadcrumb|null = null;
-  #activeBreadcrumb: TraceEngine.Types.File.Breadcrumb|null = null;
+  #initialBreadcrumb: Trace.Types.File.Breadcrumb|null = null;
+  #activeBreadcrumb: Trace.Types.File.Breadcrumb|null = null;
 
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [breadcrumbsUIStyles];
@@ -67,7 +67,7 @@ export class BreadcrumbsUI extends HTMLElement {
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
 
-  #activateBreadcrumb(breadcrumb: TraceEngine.Types.File.Breadcrumb): void {
+  #activateBreadcrumb(breadcrumb: Trace.Types.File.Breadcrumb): void {
     this.#activeBreadcrumb = breadcrumb;
     this.dispatchEvent(new BreadcrumbActivatedEvent(breadcrumb));
   }
@@ -96,7 +96,7 @@ export class BreadcrumbsUI extends HTMLElement {
     });
   }
 
-  #onContextMenu(event: Event, breadcrumb: TraceEngine.Types.File.Breadcrumb): void {
+  #onContextMenu(event: Event, breadcrumb: Trace.Types.File.Breadcrumb): void {
     const menu = new UI.ContextMenu.ContextMenu(event);
 
     menu.defaultSection().appendItem(i18nString(UIStrings.activateBreadcrumb), () => {
@@ -110,8 +110,8 @@ export class BreadcrumbsUI extends HTMLElement {
     void menu.show();
   }
 
-  #renderElement(breadcrumb: TraceEngine.Types.File.Breadcrumb, index: number): LitHtml.LitTemplate {
-    const breadcrumbRange = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(breadcrumb.window.range);
+  #renderElement(breadcrumb: Trace.Types.File.Breadcrumb, index: number): LitHtml.LitTemplate {
+    const breadcrumbRange = Trace.Helpers.Timing.microSecondsToMilliseconds(breadcrumb.window.range);
     // clang-format off
     return html`
           <div class="breadcrumb" @contextmenu=${(event: Event) => this.#onContextMenu(event, breadcrumb)} @click=${() => this.#activateBreadcrumb(breadcrumb)}

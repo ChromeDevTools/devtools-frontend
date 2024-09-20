@@ -4,7 +4,7 @@
 
 import type * as Common from '../../../../core/common/common.js';
 import type * as Platform from '../../../../core/platform/platform.js';
-import * as TraceEngine from '../../../../models/trace/trace.js';
+import * as Trace from '../../../../models/trace/trace.js';
 import {renderElementIntoDOM} from '../../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../../testing/EnvironmentHelpers.js';
 import {
@@ -18,11 +18,11 @@ describeWithEnvironment('FlameChart', () => {
   it('sorts decorations, putting candy striping before warning triangles', async () => {
     const decorations: PerfUI.FlameChart.FlameChartDecoration[] = [
       {type: PerfUI.FlameChart.FlameChartDecorationType.WARNING_TRIANGLE},
-      {type: PerfUI.FlameChart.FlameChartDecorationType.CANDY, startAtTime: TraceEngine.Types.Timing.MicroSeconds(10)},
+      {type: PerfUI.FlameChart.FlameChartDecorationType.CANDY, startAtTime: Trace.Types.Timing.MicroSeconds(10)},
     ];
     PerfUI.FlameChart.sortDecorationsForRenderingOrder(decorations);
     assert.deepEqual(decorations, [
-      {type: PerfUI.FlameChart.FlameChartDecorationType.CANDY, startAtTime: TraceEngine.Types.Timing.MicroSeconds(10)},
+      {type: PerfUI.FlameChart.FlameChartDecorationType.CANDY, startAtTime: Trace.Types.Timing.MicroSeconds(10)},
       {type: PerfUI.FlameChart.FlameChartDecorationType.WARNING_TRIANGLE},
     ]);
   });

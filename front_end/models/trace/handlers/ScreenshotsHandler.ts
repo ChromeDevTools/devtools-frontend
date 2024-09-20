@@ -5,27 +5,27 @@
 import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
 
-import {type TraceEventHandlerName} from './types.js';
+import {type HandlerName} from './types.js';
 
 // Each thread contains events. Events indicate the thread and process IDs, which are
 // used to store the event in the correct process thread entry below.
-const unpairedAsyncEvents: Types.TraceEvents.TraceEventPipelineReporter[] = [];
+const unpairedAsyncEvents: Types.Events.PipelineReporter[] = [];
 
-const snapshotEvents: Types.TraceEvents.TraceEventScreenshot[] = [];
-const syntheticScreenshotEvents: Types.TraceEvents.SyntheticScreenshot[] = [];
+const snapshotEvents: Types.Events.Screenshot[] = [];
+const syntheticScreenshots: Types.Events.SyntheticScreenshot[] = [];
 let frameSequenceToTs: Record<string, Types.Timing.MicroSeconds> = {};
 
 export function reset(): void {
   unpairedAsyncEvents.length = 0;
   snapshotEvents.length = 0;
-  syntheticScreenshotEvents.length = 0;
+  syntheticScreenshots.length = 0;
   frameSequenceToTs = {};
 }
 
-export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
-  if (Types.TraceEvents.isTraceEventScreenshot(event)) {
+export function handleEvent(event: Types.Events.Event): void {
+  if (Types.Events.isScreenshot(event)) {
     snapshotEvents.push(event);
-  } else if (Types.TraceEvents.isTraceEventPipelineReporter(event)) {
+  } else if (Types.Events.isPipelineReporter(event)) {
     unpairedAsyncEvents.push(event);
   }
 }
@@ -41,8 +41,8 @@ export async function finalize(): Promise<void> {
 
   for (const snapshotEvent of snapshotEvents) {
     const {cat, name, ph, pid, tid} = snapshotEvent;
-    const syntheticEvent = Helpers.SyntheticEvents.SyntheticEventsManager.registerSyntheticBasedEvent<
-        Types.TraceEvents.SyntheticScreenshot>({
+    const syntheticEvent = Helpers.SyntheticEvents.SyntheticEventsManager.registerSyntheticEvent<
+        Types.Events.SyntheticScreenshot>({
       rawSourceEvent: snapshotEvent,
       cat,
       name,
@@ -55,7 +55,7 @@ export async function finalize(): Promise<void> {
         dataUri: `data:image/jpg;base64,${snapshotEvent.args.snapshot}`,
       },
     });
-    syntheticScreenshotEvents.push(syntheticEvent);
+    syntheticScreenshots.push(syntheticEvent);
   }
 }
 
@@ -65,7 +65,7 @@ export async function finalize(): Promise<void> {
  * We match that up with the "PipelineReporter" trace events as they terminate at presentation.
  * Presentation == when the pixels hit the screen. AKA Swap on the GPU
  */
-function getPresentationTimestamp(screenshotEvent: Types.TraceEvents.TraceEventScreenshot): Types.Timing.MicroSeconds {
+function getPresentationTimestamp(screenshotEvent: Types.Events.Screenshot): Types.Timing.MicroSeconds {
   const frameSequence = parseInt(screenshotEvent.id, 16);
   // If it's 1, then it's an old trace (before https://crrev.com/c/4957973) and cannot be corrected.
   if (frameSequence === 1) {
@@ -84,10 +84,10 @@ function getPresentationTimestamp(screenshotEvent: Types.TraceEvents.TraceEventS
 }
 
 // TODO(crbug/41484172): should be readonly
-export function data(): Types.TraceEvents.SyntheticScreenshot[] {
-  return syntheticScreenshotEvents;
+export function data(): Types.Events.SyntheticScreenshot[] {
+  return syntheticScreenshots;
 }
 
-export function deps(): TraceEventHandlerName[] {
+export function deps(): HandlerName[] {
   return ['Meta'];
 }

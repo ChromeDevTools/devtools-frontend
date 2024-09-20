@@ -3,28 +3,28 @@
 // found in the LICENSE file.
 
 import {TraceLoader} from '../../../testing/TraceLoader.js';
-import * as TraceModel from '../trace.js';
+import * as Trace from '../trace.js';
 
 async function processTrace(context: Mocha.Suite|Mocha.Context|null, url: string): Promise<void> {
-  TraceModel.Handlers.ModelHandlers.Meta.reset();
-  TraceModel.Handlers.ModelHandlers.Meta.initialize();
+  Trace.Handlers.ModelHandlers.Meta.reset();
+  Trace.Handlers.ModelHandlers.Meta.initialize();
 
-  TraceModel.Handlers.ModelHandlers.LayoutShifts.reset();
-  TraceModel.Handlers.ModelHandlers.LayoutShifts.initialize();
+  Trace.Handlers.ModelHandlers.LayoutShifts.reset();
+  Trace.Handlers.ModelHandlers.LayoutShifts.initialize();
 
   try {
     const events = await TraceLoader.rawEvents(context, url);
     for (const event of events) {
-      TraceModel.Handlers.ModelHandlers.Meta.handleEvent(event);
-      TraceModel.Handlers.ModelHandlers.Screenshots.handleEvent(event);
-      TraceModel.Handlers.ModelHandlers.LayoutShifts.handleEvent(event);
+      Trace.Handlers.ModelHandlers.Meta.handleEvent(event);
+      Trace.Handlers.ModelHandlers.Screenshots.handleEvent(event);
+      Trace.Handlers.ModelHandlers.LayoutShifts.handleEvent(event);
     }
   } catch (error) {
     assert.fail(error);
   }
-  await TraceModel.Handlers.ModelHandlers.Meta.finalize();
-  await TraceModel.Handlers.ModelHandlers.Screenshots.finalize();
-  await TraceModel.Handlers.ModelHandlers.LayoutShifts.finalize();
+  await Trace.Handlers.ModelHandlers.Meta.finalize();
+  await Trace.Handlers.ModelHandlers.Screenshots.finalize();
+  await Trace.Handlers.ModelHandlers.LayoutShifts.finalize();
 }
 
 describe('LayoutShiftsHandler', function() {
@@ -32,16 +32,16 @@ describe('LayoutShiftsHandler', function() {
     // The layout shifts handler stores by process, so to make life easier we
     // run the meta handler here, too, so that later on we can get the IDs of
     // the main renderer process and thread.
-    TraceModel.Handlers.ModelHandlers.Meta.reset();
-    TraceModel.Handlers.ModelHandlers.Meta.initialize();
+    Trace.Handlers.ModelHandlers.Meta.reset();
+    Trace.Handlers.ModelHandlers.Meta.initialize();
 
-    TraceModel.Handlers.ModelHandlers.LayoutShifts.reset();
+    Trace.Handlers.ModelHandlers.LayoutShifts.reset();
   });
 
   it('clusters a single frame correctly', async function() {
     await processTrace(this, 'cls-single-frame.json.gz');
 
-    const layoutShifts = TraceModel.Handlers.ModelHandlers.LayoutShifts.data();
+    const layoutShifts = Trace.Handlers.ModelHandlers.LayoutShifts.data();
     assert.strictEqual(layoutShifts.clusters.length, 1);
     assert.strictEqual(layoutShifts.clusters[0].clusterCumulativeScore, 0.29522728495836237);
   });
@@ -49,7 +49,7 @@ describe('LayoutShiftsHandler', function() {
   it('creates a cluster after the maximum time gap between shifts', async function() {
     await processTrace(this, 'cls-cluster-max-timeout.json.gz');
 
-    const layoutShifts = TraceModel.Handlers.ModelHandlers.LayoutShifts.data();
+    const layoutShifts = Trace.Handlers.ModelHandlers.LayoutShifts.data();
     assert.strictEqual(layoutShifts.clusters.length, 3);
     // The first cluster should end because the maximum time gap between
     // shifts ends, and thus the time between the last shift and the window
@@ -59,7 +59,7 @@ describe('LayoutShiftsHandler', function() {
 
     assert.strictEqual(
         firstCluster.clusterWindow.max - firstClusterEvents[firstClusterEvents.length - 1].ts,
-        TraceModel.Handlers.ModelHandlers.LayoutShifts.MAX_SHIFT_TIME_DELTA);
+        Trace.Handlers.ModelHandlers.LayoutShifts.MAX_SHIFT_TIME_DELTA);
 
     // There are seven shifts in quick succession in the first cluster,
     // only one shift in the second cluster and only one shift in the
@@ -72,8 +72,8 @@ describe('LayoutShiftsHandler', function() {
   it('creates a cluster after a navigation', async function() {
     await processTrace(this, 'cls-cluster-navigation.json.gz');
 
-    const layoutShifts = TraceModel.Handlers.ModelHandlers.LayoutShifts.data();
-    const {navigationsByFrameId, mainFrameId} = TraceModel.Handlers.ModelHandlers.Meta.data();
+    const layoutShifts = Trace.Handlers.ModelHandlers.LayoutShifts.data();
+    const {navigationsByFrameId, mainFrameId} = Trace.Handlers.ModelHandlers.Meta.data();
 
     const navigations = navigationsByFrameId.get(mainFrameId);
     if (!navigations || navigations.length === 0) {
@@ -101,27 +101,27 @@ describe('LayoutShiftsHandler', function() {
   it('creates a cluster after exceeding the continuous shift limit', async function() {
     await processTrace(this, 'cls-cluster-max-duration.json.gz');
 
-    const layoutShifts = TraceModel.Handlers.ModelHandlers.LayoutShifts.data();
+    const layoutShifts = Trace.Handlers.ModelHandlers.LayoutShifts.data();
     assert.strictEqual(layoutShifts.clusters.length, 2);
     // Cluster must be closed as soon as MAX_CLUSTER_DURATION is reached, even if
     // there is a gap greater than MAX_SHIFT_TIME_DELTA right after the max window
     // length happens.
     assert.strictEqual(
         layoutShifts.clusters[0].clusterWindow.max - layoutShifts.clusters[0].clusterWindow.min,
-        TraceModel.Handlers.ModelHandlers.LayoutShifts.MAX_CLUSTER_DURATION);
+        Trace.Handlers.ModelHandlers.LayoutShifts.MAX_CLUSTER_DURATION);
   });
   it('sets the end of the last session window to the trace end time correctly', async function() {
     await processTrace(this, 'cls-cluster-max-duration.json.gz');
 
-    const layoutShifts = TraceModel.Handlers.ModelHandlers.LayoutShifts.data();
+    const layoutShifts = Trace.Handlers.ModelHandlers.LayoutShifts.data();
     assert.strictEqual(
-        layoutShifts.clusters.at(-1)?.clusterWindow.max, TraceModel.Handlers.ModelHandlers.Meta.data().traceBounds.max);
+        layoutShifts.clusters.at(-1)?.clusterWindow.max, Trace.Handlers.ModelHandlers.Meta.data().traceBounds.max);
   });
 
   it('sets the end of the last session window to the max gap between duration correctly', async function() {
     await processTrace(this, 'cls-cluster-max-timeout.json.gz');
 
-    const layoutShifts = TraceModel.Handlers.ModelHandlers.LayoutShifts.data();
+    const layoutShifts = Trace.Handlers.ModelHandlers.LayoutShifts.data();
     const lastWindow = layoutShifts.clusters.at(-1)?.clusterWindow;
     const lastShiftInWindow = layoutShifts.clusters.at(-1)?.events.at(-1);
     if (!lastWindow) {
@@ -132,12 +132,12 @@ describe('LayoutShiftsHandler', function() {
       assert.fail('Session window not found.');
     }
     assert.strictEqual(
-        lastWindow.max, lastShiftInWindow.ts + TraceModel.Handlers.ModelHandlers.LayoutShifts.MAX_SHIFT_TIME_DELTA);
-    assert.isBelow(lastWindow.range, TraceModel.Handlers.ModelHandlers.LayoutShifts.MAX_CLUSTER_DURATION);
+        lastWindow.max, lastShiftInWindow.ts + Trace.Handlers.ModelHandlers.LayoutShifts.MAX_SHIFT_TIME_DELTA);
+    assert.isBelow(lastWindow.range, Trace.Handlers.ModelHandlers.LayoutShifts.MAX_CLUSTER_DURATION);
   });
   it('sets the end of the last session window to the max session duration correctly', async function() {
     await processTrace(this, 'cls-last-cluster-max-duration.json.gz');
-    const layoutShifts = TraceModel.Handlers.ModelHandlers.LayoutShifts.data();
+    const layoutShifts = Trace.Handlers.ModelHandlers.LayoutShifts.data();
     const lastWindow = layoutShifts.clusters.at(-1)?.clusterWindow;
     const lastShiftInWindow = layoutShifts.clusters.at(-1)?.events.at(-1);
     if (!lastWindow) {
@@ -147,13 +147,13 @@ describe('LayoutShiftsHandler', function() {
     if (!lastShiftInWindow) {
       assert.fail('Session window not found.');
     }
-    assert.strictEqual(lastWindow.range, TraceModel.Handlers.ModelHandlers.LayoutShifts.MAX_CLUSTER_DURATION);
+    assert.strictEqual(lastWindow.range, Trace.Handlers.ModelHandlers.LayoutShifts.MAX_CLUSTER_DURATION);
   });
 
   it('demarcates cluster score windows correctly', async function() {
     await processTrace(this, 'cls-multiple-frames.json.gz');
 
-    const layoutShifts = TraceModel.Handlers.ModelHandlers.LayoutShifts.data();
+    const layoutShifts = Trace.Handlers.ModelHandlers.LayoutShifts.data();
     assert.strictEqual(layoutShifts.clusters.length, 5);
 
     for (const cluster of layoutShifts.clusters) {
@@ -164,9 +164,9 @@ describe('LayoutShiftsHandler', function() {
 
         // Here we've crossed the threshold from Good to NI (but not Bad) so
         // check that both the Good and NI windows values are set as expected.
-        if (scoreBeforeEvent < TraceModel.Handlers.ModelHandlers.LayoutShifts.LayoutShiftsThreshold.NEEDS_IMPROVEMENT &&
-            clusterScore >= TraceModel.Handlers.ModelHandlers.LayoutShifts.LayoutShiftsThreshold.NEEDS_IMPROVEMENT &&
-            clusterScore < TraceModel.Handlers.ModelHandlers.LayoutShifts.LayoutShiftsThreshold.BAD) {
+        if (scoreBeforeEvent < Trace.Handlers.ModelHandlers.LayoutShifts.LayoutShiftsThreshold.NEEDS_IMPROVEMENT &&
+            clusterScore >= Trace.Handlers.ModelHandlers.LayoutShifts.LayoutShiftsThreshold.NEEDS_IMPROVEMENT &&
+            clusterScore < Trace.Handlers.ModelHandlers.LayoutShifts.LayoutShiftsThreshold.BAD) {
           assert.strictEqual(cluster.scoreWindows.good.max, event.ts - 1);
           if (!cluster.scoreWindows.needsImprovement) {
             assert.fail('No Needs Improvement window');
@@ -177,8 +177,8 @@ describe('LayoutShiftsHandler', function() {
         // Here we have transitioned from eiter Good or NI to Bad, so
         // again we assert that the Bad window starts when expected,
         // and that either the NI or Good window finishes just prior.
-        if (scoreBeforeEvent < TraceModel.Handlers.ModelHandlers.LayoutShifts.LayoutShiftsThreshold.BAD &&
-            clusterScore >= TraceModel.Handlers.ModelHandlers.LayoutShifts.LayoutShiftsThreshold.BAD) {
+        if (scoreBeforeEvent < Trace.Handlers.ModelHandlers.LayoutShifts.LayoutShiftsThreshold.BAD &&
+            clusterScore >= Trace.Handlers.ModelHandlers.LayoutShifts.LayoutShiftsThreshold.BAD) {
           if (!cluster.scoreWindows.bad) {
             assert.fail('No Bad window');
           }
@@ -197,7 +197,7 @@ describe('LayoutShiftsHandler', function() {
   it('calculates Cumulative Layout Shift correctly for multiple session windows', async function() {
     await processTrace(this, 'cls-cluster-max-timeout.json.gz');
 
-    const layoutShifts = TraceModel.Handlers.ModelHandlers.LayoutShifts.data();
+    const layoutShifts = Trace.Handlers.ModelHandlers.LayoutShifts.data();
     assert.strictEqual(layoutShifts.clusters.length, 3);
 
     let globalCLS = 0;
@@ -230,13 +230,13 @@ describe('LayoutShiftsHandler', function() {
   it('calculates worst shift correctly for clusters', async function() {
     await processTrace(this, 'cls-cluster-max-timeout.json.gz');
 
-    const clusters = TraceModel.Handlers.ModelHandlers.LayoutShifts.data().clusters;
+    const clusters = Trace.Handlers.ModelHandlers.LayoutShifts.data().clusters;
     assert.isNotEmpty(clusters);
 
     for (const cluster of clusters) {
       // Get the max shift score from the list of layout shifts.
       const maxShiftScore = Math.max(...cluster.events.map(s => s.args.data?.score ?? 0));
-      const gotShift = cluster.worstShiftEvent as TraceModel.Types.TraceEvents.SyntheticLayoutShift;
+      const gotShift = cluster.worstShiftEvent as Trace.Types.Events.SyntheticLayoutShift;
       assert.isNotNull(gotShift);
       // Make sure the worstShiftEvent's data matches the maxShiftScore.
       assert.strictEqual(gotShift.args.data?.score ?? 0, maxShiftScore);
@@ -246,7 +246,7 @@ describe('LayoutShiftsHandler', function() {
   it('correctly calculates the duration and start time of the clusters', async function() {
     await processTrace(this, 'cls-cluster-max-timeout.json.gz');
 
-    const clusters = TraceModel.Handlers.ModelHandlers.LayoutShifts.data().clusters;
+    const clusters = Trace.Handlers.ModelHandlers.LayoutShifts.data().clusters;
     assert.isNotEmpty(clusters);
 
     for (const cluster of clusters) {
@@ -258,11 +258,9 @@ describe('LayoutShiftsHandler', function() {
       // earliest layout shift ts should be the cluster's ts.
       assert.strictEqual(cluster.ts, earliestLayoutShiftTs);
 
-      const lastShiftTimings =
-          TraceModel.Helpers.Timing.eventTimingsMicroSeconds(cluster.events[cluster.events.length - 1]);
-      const wantEndTime =
-          lastShiftTimings.endTime + TraceModel.Handlers.ModelHandlers.LayoutShifts.MAX_SHIFT_TIME_DELTA;
-      const dur = TraceModel.Types.Timing.MicroSeconds(wantEndTime - earliestLayoutShiftTs);
+      const lastShiftTimings = Trace.Helpers.Timing.eventTimingsMicroSeconds(cluster.events[cluster.events.length - 1]);
+      const wantEndTime = lastShiftTimings.endTime + Trace.Handlers.ModelHandlers.LayoutShifts.MAX_SHIFT_TIME_DELTA;
+      const dur = Trace.Types.Timing.MicroSeconds(wantEndTime - earliestLayoutShiftTs);
       assert.strictEqual(cluster.dur || 0, dur);
     }
   });

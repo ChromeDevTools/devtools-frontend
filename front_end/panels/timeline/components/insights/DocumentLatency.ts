@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../../../core/i18n/i18n.js';
-import type * as TraceEngine from '../../../../models/trace/trace.js';
+import type * as Trace from '../../../../models/trace/trace.js';
 import * as IconButton from '../../../../ui/components/icon_button/icon_button.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import type * as Overlays from '../../overlays/overlays.js';
@@ -43,8 +43,8 @@ const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/Do
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export function getDocumentLatencyInsight(
-    insights: TraceEngine.Insights.Types.TraceInsightData|null,
-    navigationId: string|null): TraceEngine.Insights.Types.InsightResults['DocumentLatency']|null {
+    insights: Trace.Insights.Types.TraceInsightSets|null,
+    navigationId: string|null): Trace.Insights.Types.InsightResults['DocumentLatency']|null {
   if (!insights || !navigationId) {
     return null;
   }
@@ -92,7 +92,7 @@ export class DocumentLatency extends BaseInsight {
     }];
   }
 
-  #renderInsight(insight: TraceEngine.Insights.Types.InsightResults['DocumentLatency']): LitHtml.LitTemplate {
+  #renderInsight(insight: Trace.Insights.Types.InsightResults['DocumentLatency']): LitHtml.LitTemplate {
     if (!insight.data) {
       return LitHtml.nothing;
     }

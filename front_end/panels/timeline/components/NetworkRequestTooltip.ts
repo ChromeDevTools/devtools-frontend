@@ -4,7 +4,7 @@
 
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
-import * as TraceEngine from '../../../models/trace/trace.js';
+import * as Trace from '../../../models/trace/trace.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as PerfUI from '../../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
@@ -45,14 +45,14 @@ export class NetworkRequestTooltip extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-performance-network-request-tooltip`;
   readonly #shadow = this.attachShadow({mode: 'open'});
 
-  #networkRequest?: TraceEngine.Types.TraceEvents.SyntheticNetworkRequest|null;
+  #networkRequest?: Trace.Types.Events.SyntheticNetworkRequest|null;
 
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [networkRequestTooltipStyles];
     this.#render();
   }
 
-  set networkRequest(networkRequest: TraceEngine.Types.TraceEvents.SyntheticNetworkRequest) {
+  set networkRequest(networkRequest: Trace.Types.Events.SyntheticNetworkRequest) {
     if (this.#networkRequest === networkRequest) {
       return;
     }
@@ -103,12 +103,12 @@ export class NetworkRequestTooltip extends HTMLElement {
       return null;
     }
     const syntheticData = this.#networkRequest.args.data.syntheticData;
-    const queueing = (syntheticData.sendStartTime - this.#networkRequest.ts) as TraceEngine.Types.Timing.MicroSeconds;
+    const queueing = (syntheticData.sendStartTime - this.#networkRequest.ts) as Trace.Types.Timing.MicroSeconds;
     const requestPlusWaiting =
-        (syntheticData.downloadStart - syntheticData.sendStartTime) as TraceEngine.Types.Timing.MicroSeconds;
-    const download = (syntheticData.finishTime - syntheticData.downloadStart) as TraceEngine.Types.Timing.MicroSeconds;
+        (syntheticData.downloadStart - syntheticData.sendStartTime) as Trace.Types.Timing.MicroSeconds;
+    const download = (syntheticData.finishTime - syntheticData.downloadStart) as Trace.Types.Timing.MicroSeconds;
     const waitingOnMainThread = (this.#networkRequest.ts + this.#networkRequest.dur - syntheticData.finishTime) as
-        TraceEngine.Types.Timing.MicroSeconds;
+        Trace.Types.Timing.MicroSeconds;
 
     const color = colorForNetworkRequest(this.#networkRequest);
     const styleForWaiting = {
@@ -157,7 +157,7 @@ export class NetworkRequestTooltip extends HTMLElement {
 
         <div class="divider"></div>
         ${this.#renderPriority()}
-        ${TraceEngine.Helpers.Network.isSyntheticNetworkRequestEventRenderBlocking(this.#networkRequest) ?
+        ${Trace.Helpers.Network.isSyntheticNetworkRequestEventRenderBlocking(this.#networkRequest) ?
           LitHtml.html`<div class="render-blocking"> ${UIStrings.renderBlocking} </div>` :  LitHtml.nothing
         }
         <div class="divider"></div>

@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../../../core/common/common.js';
-import type * as TraceEngine from '../../../../models/trace/trace.js';
+import type * as Trace from '../../../../models/trace/trace.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import type * as Components from '../../overlays/components/components.js';
 import type * as Overlays from '../../overlays/overlays.js';
@@ -18,10 +18,10 @@ export class SlowCSSSelector extends BaseInsight {
   override insightCategory: InsightsCategories = InsightsCategories.OTHER;
   override internalName: string = 'slow-css-selector';
   override userVisibleTitle: string = 'Slow CSS Selectors';
-  #slowCSSSelector: TraceEngine.Insights.InsightRunners.SlowCSSSelector.SlowCSSSelectorInsightResult|null = null;
+  #slowCSSSelector: Trace.Insights.InsightRunners.SlowCSSSelector.SlowCSSSelectorInsightResult|null = null;
 
-  getSlowCSSSelectorData(insights: TraceEngine.Insights.Types.TraceInsightData|null, navigationId: string|null):
-      TraceEngine.Insights.InsightRunners.SlowCSSSelector.SlowCSSSelectorInsightResult|null {
+  getSlowCSSSelectorData(insights: Trace.Insights.Types.TraceInsightSets|null, navigationId: string|null):
+      Trace.Insights.InsightRunners.SlowCSSSelector.SlowCSSSelectorInsightResult|null {
     if (!insights || !navigationId) {
       return null;
     }
@@ -50,7 +50,7 @@ export class SlowCSSSelector extends BaseInsight {
       return [];
     }
 
-    const scsInsight: Error|TraceEngine.Insights.InsightRunners.SlowCSSSelector.SlowCSSSelectorInsightResult =
+    const scsInsight: Error|Trace.Insights.InsightRunners.SlowCSSSelector.SlowCSSSelectorInsightResult =
         insightsByNavigation.data.SlowCSSSelector;
     if (scsInsight instanceof Error) {
       return [];

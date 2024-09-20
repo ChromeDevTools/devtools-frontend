@@ -13,7 +13,7 @@ export interface Data {
 }
 
 export interface Frame {
-  screenshotEvent: Types.TraceEvents.SyntheticScreenshot;
+  screenshotEvent: Types.Events.SyntheticScreenshot;
   index: number;
 }
 
@@ -32,17 +32,18 @@ export type HandlerDataWithScreenshots = Handlers.Types.EnabledHandlerDataWithMe
 // 2. The start time.
 const filmStripCache = new Map<HandlerDataWithScreenshots, Map<Types.Timing.MicroSeconds, Data>>();
 
-export function fromTraceData(traceData: HandlerDataWithScreenshots, customZeroTime?: Types.Timing.MicroSeconds): Data {
+export function fromParsedTrace(
+    parsedTrace: HandlerDataWithScreenshots, customZeroTime?: Types.Timing.MicroSeconds): Data {
   const frames: Frame[] = [];
 
-  const zeroTime = typeof customZeroTime !== 'undefined' ? customZeroTime : traceData.Meta.traceBounds.min;
-  const spanTime = traceData.Meta.traceBounds.range;
-  const fromCache = filmStripCache.get(traceData)?.get(zeroTime);
+  const zeroTime = typeof customZeroTime !== 'undefined' ? customZeroTime : parsedTrace.Meta.traceBounds.min;
+  const spanTime = parsedTrace.Meta.traceBounds.range;
+  const fromCache = filmStripCache.get(parsedTrace)?.get(zeroTime);
   if (fromCache) {
     return fromCache;
   }
 
-  for (const screenshotEvent of traceData.Screenshots) {
+  for (const screenshotEvent of parsedTrace.Screenshots) {
     if (screenshotEvent.ts < zeroTime) {
       continue;
     }
@@ -59,8 +60,8 @@ export function fromTraceData(traceData: HandlerDataWithScreenshots, customZeroT
     frames: Array.from(frames),
   };
 
-  const cachedForData =
-      Platform.MapUtilities.getWithDefault(filmStripCache, traceData, () => new Map<Types.Timing.MicroSeconds, Data>());
+  const cachedForData = Platform.MapUtilities.getWithDefault(
+      filmStripCache, parsedTrace, () => new Map<Types.Timing.MicroSeconds, Data>());
   cachedForData.set(zeroTime, result);
 
   return result;

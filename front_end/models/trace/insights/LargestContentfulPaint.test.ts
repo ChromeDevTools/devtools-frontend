@@ -8,12 +8,12 @@ import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as Types from '../types/types.js';
 
 export async function processTrace(testContext: Mocha.Suite|Mocha.Context|null, traceFile: string) {
-  const {traceData, insights} = await TraceLoader.traceEngine(testContext, traceFile);
+  const {parsedTrace, insights} = await TraceLoader.traceEngine(testContext, traceFile);
   if (!insights) {
     throw new Error('No insights');
   }
 
-  return {data: traceData, insights};
+  return {data: parsedTrace, insights};
 }
 
 describeWithEnvironment('LargestContentfulPaint', function() {

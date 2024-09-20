@@ -2,16 +2,16 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as TraceEngine from '../../../models/trace/trace.js';
+import * as Trace from '../../../models/trace/trace.js';
 import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 
 import * as TimelineComponents from './components.js';
 
-function milliToMicro(x: number): TraceEngine.Types.Timing.MicroSeconds {
-  return TraceEngine.Helpers.Timing.millisecondsToMicroseconds(
-      TraceEngine.Types.Timing.MilliSeconds(x),
+function milliToMicro(x: number): Trace.Types.Timing.MicroSeconds {
+  return Trace.Helpers.Timing.millisecondsToMicroseconds(
+      Trace.Types.Timing.MilliSeconds(x),
   );
 }
 
@@ -39,13 +39,13 @@ describeWithEnvironment('BreadcrumbsUI', () => {
     const component = new BreadcrumbsUI();
     renderElementIntoDOM(component);
 
-    const traceWindow: TraceEngine.Types.Timing.TraceWindowMicroSeconds = {
+    const traceWindow: Trace.Types.Timing.TraceWindowMicroSeconds = {
       min: milliToMicro(1),
       max: milliToMicro(10),
       range: milliToMicro(9),
     };
 
-    const breadcrumb: TraceEngine.Types.File.Breadcrumb = {
+    const breadcrumb: Trace.Types.File.Breadcrumb = {
       window: traceWindow,
       child: null,
     };
@@ -65,24 +65,24 @@ describeWithEnvironment('BreadcrumbsUI', () => {
     const component = new BreadcrumbsUI();
     renderElementIntoDOM(component);
 
-    const traceWindow2: TraceEngine.Types.Timing.TraceWindowMicroSeconds = {
+    const traceWindow2: Trace.Types.Timing.TraceWindowMicroSeconds = {
       min: milliToMicro(2),
       max: milliToMicro(9),
       range: milliToMicro(7),
     };
 
-    const traceWindow: TraceEngine.Types.Timing.TraceWindowMicroSeconds = {
+    const traceWindow: Trace.Types.Timing.TraceWindowMicroSeconds = {
       min: milliToMicro(1),
       max: milliToMicro(10),
       range: milliToMicro(9),
     };
 
-    const breadcrumb2: TraceEngine.Types.File.Breadcrumb = {
+    const breadcrumb2: Trace.Types.File.Breadcrumb = {
       window: traceWindow2,
       child: null,
     };
 
-    const breadcrumb: TraceEngine.Types.File.Breadcrumb = {
+    const breadcrumb: Trace.Types.File.Breadcrumb = {
       window: traceWindow,
       child: breadcrumb2,
     };

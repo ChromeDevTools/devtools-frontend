@@ -2,10 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as TraceEngine from '../../../models/trace/trace.js';
+import type * as Trace from '../../../models/trace/trace.js';
 import * as ThemeSupport from '../../../ui/legacy/theme_support/theme_support.js';
 
-export function extensionEntryColor(event: TraceEngine.Types.Extensions.SyntheticExtensionEntry): string {
+export function extensionEntryColor(event: Trace.Types.Extensions.SyntheticExtensionEntry): string {
   const color = event.args.color;
   // Use a default value for when the color of the extension entry
   // was not passed or was set an unknown value.

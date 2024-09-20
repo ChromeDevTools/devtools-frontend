@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as SDK from '../../core/sdk/sdk.js';
-import type * as TraceEngine from '../../models/trace/trace.js';
+import type * as Trace from '../../models/trace/trace.js';
 
 /**
  * If the event's thread was identified as belonging to a worker, this will
@@ -11,10 +11,9 @@ import type * as TraceEngine from '../../models/trace/trace.js';
  * page's target.
  **/
 export function targetForEvent(
-    traceParsedData: TraceEngine.Handlers.Types.TraceParseData,
-    event: TraceEngine.Types.TraceEvents.TraceEventData): SDK.Target.Target|null {
+    parsedTrace: Trace.Handlers.Types.ParsedTrace, event: Trace.Types.Events.Event): SDK.Target.Target|null {
   const targetManager = SDK.TargetManager.TargetManager.instance();
-  const workerId = traceParsedData.Workers.workerIdByThread.get(event.tid);
+  const workerId = parsedTrace.Workers.workerIdByThread.get(event.tid);
   if (workerId) {
     return targetManager.targetById(workerId);
   }

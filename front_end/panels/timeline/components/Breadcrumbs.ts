@@ -2,13 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as TraceEngine from '../../../models/trace/trace.js';
+import type * as Trace from '../../../models/trace/trace.js';
 import * as TraceBounds from '../../../services/trace_bounds/trace_bounds.js';
 
-export function flattenBreadcrumbs(initialBreadcrumb: TraceEngine.Types.File.Breadcrumb):
-    TraceEngine.Types.File.Breadcrumb[] {
-  const allBreadcrumbs: TraceEngine.Types.File.Breadcrumb[] = [initialBreadcrumb];
-  let breadcrumbsIter: TraceEngine.Types.File.Breadcrumb = initialBreadcrumb;
+export function flattenBreadcrumbs(initialBreadcrumb: Trace.Types.File.Breadcrumb): Trace.Types.File.Breadcrumb[] {
+  const allBreadcrumbs: Trace.Types.File.Breadcrumb[] = [initialBreadcrumb];
+  let breadcrumbsIter: Trace.Types.File.Breadcrumb = initialBreadcrumb;
 
   while (breadcrumbsIter.child !== null) {
     const iterChild = breadcrumbsIter.child;
@@ -27,10 +26,10 @@ export interface SetActiveBreadcrumbOptions {
 }
 
 export class Breadcrumbs {
-  initialBreadcrumb: TraceEngine.Types.File.Breadcrumb;
-  activeBreadcrumb: TraceEngine.Types.File.Breadcrumb;
+  initialBreadcrumb: Trace.Types.File.Breadcrumb;
+  activeBreadcrumb: Trace.Types.File.Breadcrumb;
 
-  constructor(initialTraceWindow: TraceEngine.Types.Timing.TraceWindowMicroSeconds) {
+  constructor(initialTraceWindow: Trace.Types.Timing.TraceWindowMicroSeconds) {
     this.initialBreadcrumb = {
       window: initialTraceWindow,
       child: null,
@@ -42,7 +41,7 @@ export class Breadcrumbs {
     this.activeBreadcrumb = lastBreadcrumb;
   }
 
-  add(newBreadcrumbTraceWindow: TraceEngine.Types.Timing.TraceWindowMicroSeconds): TraceEngine.Types.File.Breadcrumb {
+  add(newBreadcrumbTraceWindow: Trace.Types.Timing.TraceWindowMicroSeconds): Trace.Types.File.Breadcrumb {
     if (!this.isTraceWindowWithinTraceWindow(newBreadcrumbTraceWindow, this.activeBreadcrumb.window)) {
       throw new Error('Can not add a breadcrumb that is equal to or is outside of the parent breadcrumb TimeWindow');
     }
@@ -60,14 +59,13 @@ export class Breadcrumbs {
 
   // Breadcumb should be within the bounds of the parent and can not have both start and end be equal to the parent
   isTraceWindowWithinTraceWindow(
-      child: TraceEngine.Types.Timing.TraceWindowMicroSeconds,
-      parent: TraceEngine.Types.Timing.TraceWindowMicroSeconds): boolean {
+      child: Trace.Types.Timing.TraceWindowMicroSeconds, parent: Trace.Types.Timing.TraceWindowMicroSeconds): boolean {
     return (child.min >= parent.min && child.max <= parent.max) &&
         !(child.min === parent.min && child.max === parent.max);
   }
 
   // Used to set an initial breadcrumbs from modifications loaded from a file
-  setInitialBreadcrumbFromLoadedModifications(initialBreadcrumb: TraceEngine.Types.File.Breadcrumb): void {
+  setInitialBreadcrumbFromLoadedModifications(initialBreadcrumb: Trace.Types.File.Breadcrumb): void {
     this.initialBreadcrumb = initialBreadcrumb;
     // Make last breadcrumb active
     let lastBreadcrumb = initialBreadcrumb;
@@ -87,7 +85,7 @@ export class Breadcrumbs {
    * are activating the breadcrumb to show the user that they are now within
    * this breadcrumb. This is used when revealing insights and annotations.
    */
-  setActiveBreadcrumb(activeBreadcrumb: TraceEngine.Types.File.Breadcrumb, options: SetActiveBreadcrumbOptions): void {
+  setActiveBreadcrumb(activeBreadcrumb: Trace.Types.File.Breadcrumb, options: SetActiveBreadcrumbOptions): void {
     // If the children of the activated breadcrumb need to be removed, set the child on the
     // activated breadcrumb to null. Since breadcrumbs are a linked list, this will remove all
     // of the following children.

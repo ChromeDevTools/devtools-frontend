@@ -5,15 +5,15 @@ import type * as Protocol from '../../../generated/protocol.js';
 
 import {type TraceWindowMicroSeconds} from './Timing.js';
 import {
+  type Event,
   type LegacyTimelineFrame,
   type ProcessID,
   type SampleIndex,
   type ThreadID,
-  type TraceEventData,
 } from './TraceEvents.js';
 
 export type TraceFile = {
-  traceEvents: readonly TraceEventData[],
+  traceEvents: readonly Event[],
   metadata: MetaData,
 };
 
@@ -50,7 +50,7 @@ export interface SerializedAnnotations {
  */
 export interface EntryLabelAnnotation {
   type: 'ENTRY_LABEL';
-  entry: TraceEventData|LegacyTimelineFrame;
+  entry: Event|LegacyTimelineFrame;
   label: string;
 }
 
@@ -68,15 +68,15 @@ export interface TimeRangeAnnotation {
  */
 export interface EntriesLinkAnnotation {
   type: 'ENTRIES_LINK';
-  entryFrom: TraceEventData;
-  entryTo?: TraceEventData;
+  entryFrom: Event;
+  entryTo?: Event;
 }
 
 /**
  * Represents an object that is saved in the file when a user creates a label for an entry in the timeline.
  */
 export interface EntryLabelAnnotationSerialized {
-  entry: TraceEventSerializableKey;
+  entry: SerializableKey;
   label: string;
 }
 
@@ -92,8 +92,8 @@ export interface TimeRangeAnnotationSerialized {
  * Represents an object that is saved in the file when a user creates a link between entries in the timeline.
  */
 export interface EntriesLinkAnnotationSerialized {
-  entryFrom: TraceEventSerializableKey;
-  entryTo: TraceEventSerializableKey;
+  entryFrom: SerializableKey;
+  entryTo: SerializableKey;
 }
 
 /**
@@ -125,7 +125,7 @@ export type RawEventKey = `${EventKeyType.RAW_EVENT}-${number}`;
 export type SyntheticEventKey = `${EventKeyType.SYNTHETIC_EVENT}-${number}`;
 export type ProfileCallKey = `${EventKeyType.PROFILE_CALL}-${ProcessID}-${ThreadID}-${SampleIndex}-${Protocol.integer}`;
 export type LegacyTimelineFrameKey = `${EventKeyType.LEGACY_TIMELINE_FRAME}-${number}`;
-export type TraceEventSerializableKey = RawEventKey|ProfileCallKey|SyntheticEventKey|LegacyTimelineFrameKey;
+export type SerializableKey = RawEventKey|ProfileCallKey|SyntheticEventKey|LegacyTimelineFrameKey;
 
 // Serializable keys values objects contain data that maps the keys to original Trace Events
 export type RawEventKeyValues = {
@@ -151,15 +151,15 @@ export type LegacyTimelineFrameKeyValues = {
   rawIndex: number,
 };
 
-export type TraceEventSerializableKeyValues =
+export type SerializableKeyValues =
     RawEventKeyValues|ProfileCallKeyValues|SyntheticEventKeyValues|LegacyTimelineFrameKeyValues;
 
 export interface Modifications {
   entriesModifications: {
     // Entries hidden by the user
-    hiddenEntries: TraceEventSerializableKey[],
+    hiddenEntries: SerializableKey[],
     // Entries that parent a hiddenEntry
-    expandableEntries: TraceEventSerializableKey[],
+    expandableEntries: SerializableKey[],
   };
   initialBreadcrumb: Breadcrumb;
   annotations: SerializedAnnotations;
@@ -181,9 +181,9 @@ export interface MetaData {
   enhancedTraceVersion?: number;
 }
 
-export type Contents = TraceFile|TraceEventData[];
+export type Contents = TraceFile|Event[];
 
-export function traceEventKeyToValues(key: TraceEventSerializableKey): TraceEventSerializableKeyValues {
+export function traceEventKeyToValues(key: SerializableKey): SerializableKeyValues {
   const parts = key.split('-');
   const type = parts[0];
 

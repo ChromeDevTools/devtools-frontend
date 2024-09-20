@@ -1,11 +1,11 @@
 // Copyright 2024 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-import type * as TraceEngine from '../../models/trace/trace.js';
+import type * as Trace from '../../models/trace/trace.js';
 
 import {TimelinePanel} from './TimelinePanel.js';
 
-type ExtensionData = TraceEngine.Handlers.ModelHandlers.ExtensionTraceData.ExtensionTraceData;
+type ExtensionData = Trace.Handlers.ModelHandlers.ExtensionTraceData.ExtensionTraceData;
 
 let extensionDataGathererInstance: ExtensionDataGatherer|undefined;
 
@@ -14,8 +14,8 @@ let extensionDataGathererInstance: ExtensionDataGatherer|undefined;
  * single access point to the performance panel for extension data.
  */
 export class ExtensionDataGatherer {
-  #traceParsedData: TraceEngine.Handlers.Types.TraceParseData|null = null;
-  #extensionDataByModel: Map<TraceEngine.Handlers.Types.TraceParseData, ExtensionData> = new Map();
+  #parsedTrace: Trace.Handlers.Types.ParsedTrace|null = null;
+  #extensionDataByModel: Map<Trace.Handlers.Types.ParsedTrace, ExtensionData> = new Map();
   static instance(): ExtensionDataGatherer {
     if (extensionDataGathererInstance) {
       return extensionDataGathererInstance;
@@ -33,33 +33,33 @@ export class ExtensionDataGatherer {
    */
   getExtensionData(): ExtensionData {
     const extensionDataEnabled = TimelinePanel.extensionDataVisibilitySetting().get();
-    if (!extensionDataEnabled || !this.#traceParsedData || !this.#traceParsedData.ExtensionTraceData) {
+    if (!extensionDataEnabled || !this.#parsedTrace || !this.#parsedTrace.ExtensionTraceData) {
       return {extensionMarkers: [], extensionTrackData: [], entryToNode: new Map()};
     }
-    const maybeCachedData = this.#extensionDataByModel.get(this.#traceParsedData);
+    const maybeCachedData = this.#extensionDataByModel.get(this.#parsedTrace);
     if (maybeCachedData) {
       return maybeCachedData;
     }
-    return this.#traceParsedData.ExtensionTraceData;
+    return this.#parsedTrace.ExtensionTraceData;
   }
 
   saveCurrentModelData(): void {
-    if (this.#traceParsedData && !this.#extensionDataByModel.has(this.#traceParsedData)) {
-      this.#extensionDataByModel.set(this.#traceParsedData, this.getExtensionData());
+    if (this.#parsedTrace && !this.#extensionDataByModel.has(this.#parsedTrace)) {
+      this.#extensionDataByModel.set(this.#parsedTrace, this.getExtensionData());
     }
   }
 
-  modelChanged(traceParsedData: TraceEngine.Handlers.Types.TraceParseData|null): void {
-    if (traceParsedData === this.#traceParsedData) {
+  modelChanged(parsedTrace: Trace.Handlers.Types.ParsedTrace|null): void {
+    if (parsedTrace === this.#parsedTrace) {
       return;
     }
-    if (this.#traceParsedData !== null) {
+    if (this.#parsedTrace !== null) {
       // DevTools extension data is assumed to be useful only for the current
       // trace data (model). As such, if the model changes, we cache the devtools
       // extension data we have collected for the previous model and listen
       // for new data that applies to the new model.
       this.saveCurrentModelData();
     }
-    this.#traceParsedData = traceParsedData;
+    this.#parsedTrace = parsedTrace;
   }
 }

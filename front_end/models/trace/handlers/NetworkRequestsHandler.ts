@@ -8,7 +8,7 @@ import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
 
 import {data as metaHandlerData} from './MetaHandler.js';
-import {HandlerState, type TraceEventHandlerName} from './types.js';
+import {type HandlerName, HandlerState} from './types.js';
 
 const MILLISECONDS_TO_MICROSECONDS = 1000;
 const SECONDS_TO_MICROSECONDS = 1000000;
@@ -22,54 +22,53 @@ const SECONDS_TO_MICROSECONDS = 1000000;
 // these 5 types of trace records to a synthetic complete event that
 // represents a composite of these trace records.
 interface TraceEventsForNetworkRequest {
-  changePriority?: Types.TraceEvents.TraceEventResourceChangePriority;
-  willSendRequests?: Types.TraceEvents.TraceEventResourceWillSendRequest[];
-  sendRequests?: Types.TraceEvents.TraceEventResourceSendRequest[];
-  receiveResponse?: Types.TraceEvents.TraceEventResourceReceiveResponse;
-  resourceFinish?: Types.TraceEvents.TraceEventResourceFinish;
-  receivedData?: Types.TraceEvents.TraceEventResourceReceivedData[];
-  resourceMarkAsCached?: Types.TraceEvents.TraceEventResourceMarkAsCached;
+  changePriority?: Types.Events.ResourceChangePriority;
+  willSendRequests?: Types.Events.ResourceWillSendRequest[];
+  sendRequests?: Types.Events.ResourceSendRequest[];
+  receiveResponse?: Types.Events.ResourceReceiveResponse;
+  resourceFinish?: Types.Events.ResourceFinish;
+  receivedData?: Types.Events.ResourceReceivedData[];
+  resourceMarkAsCached?: Types.Events.ResourceMarkAsCached;
 }
 
 export interface WebSocketTraceDataForFrame {
   frame: string;
   webSocketIdentifier: number;
-  events: Types.TraceEvents.WebSocketEvent[];
-  syntheticConnectionEvent: Types.TraceEvents.SyntheticWebSocketConnectionEvent|null;
+  events: Types.Events.WebSocketEvent[];
+  syntheticConnection: Types.Events.SyntheticWebSocketConnection|null;
 }
 export interface WebSocketTraceDataForWorker {
   workerId: string;
   webSocketIdentifier: number;
-  events: Types.TraceEvents.WebSocketEvent[];
-  syntheticConnectionEvent: Types.TraceEvents.SyntheticWebSocketConnectionEvent|null;
+  events: Types.Events.WebSocketEvent[];
+  syntheticConnection: Types.Events.SyntheticWebSocketConnection|null;
 }
 export type WebSocketTraceData = WebSocketTraceDataForFrame|WebSocketTraceDataForWorker;
 
 const webSocketData: Map<number, WebSocketTraceData> = new Map();
 interface NetworkRequestData {
-  byId: Map<string, Types.TraceEvents.SyntheticNetworkRequest>;
+  byId: Map<string, Types.Events.SyntheticNetworkRequest>;
   byOrigin: Map<string, {
-    renderBlocking: Types.TraceEvents.SyntheticNetworkRequest[],
-    nonRenderBlocking: Types.TraceEvents.SyntheticNetworkRequest[],
-    all: Types.TraceEvents.SyntheticNetworkRequest[],
+    renderBlocking: Types.Events.SyntheticNetworkRequest[],
+    nonRenderBlocking: Types.Events.SyntheticNetworkRequest[],
+    all: Types.Events.SyntheticNetworkRequest[],
   }>;
-  byTime: Types.TraceEvents.SyntheticNetworkRequest[];
-  eventToInitiator: Map<Types.TraceEvents.SyntheticNetworkRequest, Types.TraceEvents.SyntheticNetworkRequest>;
+  byTime: Types.Events.SyntheticNetworkRequest[];
+  eventToInitiator: Map<Types.Events.SyntheticNetworkRequest, Types.Events.SyntheticNetworkRequest>;
   webSocket: WebSocketTraceData[];
 }
 
 const requestMap = new Map<string, TraceEventsForNetworkRequest>();
-const requestsById = new Map<string, Types.TraceEvents.SyntheticNetworkRequest>();
+const requestsById = new Map<string, Types.Events.SyntheticNetworkRequest>();
 const requestsByOrigin = new Map<string, {
-  renderBlocking: Types.TraceEvents.SyntheticNetworkRequest[],
-  nonRenderBlocking: Types.TraceEvents.SyntheticNetworkRequest[],
-  all: Types.TraceEvents.SyntheticNetworkRequest[],
+  renderBlocking: Types.Events.SyntheticNetworkRequest[],
+  nonRenderBlocking: Types.Events.SyntheticNetworkRequest[],
+  all: Types.Events.SyntheticNetworkRequest[],
 }>();
-const requestsByTime: Types.TraceEvents.SyntheticNetworkRequest[] = [];
+const requestsByTime: Types.Events.SyntheticNetworkRequest[] = [];
 
-const networkRequestEventByInitiatorUrl = new Map<string, Types.TraceEvents.SyntheticNetworkRequest[]>();
-const eventToInitiatorMap =
-    new Map<Types.TraceEvents.SyntheticNetworkRequest, Types.TraceEvents.SyntheticNetworkRequest>();
+const networkRequestEventByInitiatorUrl = new Map<string, Types.Events.SyntheticNetworkRequest[]>();
+const eventToInitiatorMap = new Map<Types.Events.SyntheticNetworkRequest, Types.Events.SyntheticNetworkRequest>();
 
 function storeTraceEventWithRequestId<K extends keyof TraceEventsForNetworkRequest>(
     requestId: string, key: K, value: TraceEventsForNetworkRequest[K]): void {
@@ -83,8 +82,8 @@ function storeTraceEventWithRequestId<K extends keyof TraceEventsForNetworkReque
   }
 
   if (Array.isArray(traceEvents[key])) {
-    const target = traceEvents[key] as Types.TraceEvents.TraceEventData[];
-    const values = value as Types.TraceEvents.TraceEventData[];
+    const target = traceEvents[key] as Types.Events.Event[];
+    const values = value as Types.Events.Event[];
     target.push(...values);
   } else {
     traceEvents[key] = value;
@@ -122,48 +121,48 @@ export function initialize(): void {
   handlerState = HandlerState.INITIALIZED;
 }
 
-export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
+export function handleEvent(event: Types.Events.Event): void {
   if (handlerState !== HandlerState.INITIALIZED) {
     throw new Error('Network Request handler is not initialized');
   }
 
-  if (Types.TraceEvents.isTraceEventResourceChangePriority(event)) {
+  if (Types.Events.isResourceChangePriority(event)) {
     storeTraceEventWithRequestId(event.args.data.requestId, 'changePriority', event);
     return;
   }
 
-  if (Types.TraceEvents.isTraceEventResourceWillSendRequest(event)) {
+  if (Types.Events.isResourceWillSendRequest(event)) {
     storeTraceEventWithRequestId(event.args.data.requestId, 'willSendRequests', [event]);
     return;
   }
 
-  if (Types.TraceEvents.isTraceEventResourceSendRequest(event)) {
+  if (Types.Events.isResourceSendRequest(event)) {
     storeTraceEventWithRequestId(event.args.data.requestId, 'sendRequests', [event]);
     return;
   }
 
-  if (Types.TraceEvents.isTraceEventResourceReceiveResponse(event)) {
+  if (Types.Events.isResourceReceiveResponse(event)) {
     storeTraceEventWithRequestId(event.args.data.requestId, 'receiveResponse', event);
     return;
   }
 
-  if (Types.TraceEvents.isTraceEventResourceReceivedData(event)) {
+  if (Types.Events.isResourceReceivedData(event)) {
     storeTraceEventWithRequestId(event.args.data.requestId, 'receivedData', [event]);
     return;
   }
 
-  if (Types.TraceEvents.isTraceEventResourceFinish(event)) {
+  if (Types.Events.isResourceFinish(event)) {
     storeTraceEventWithRequestId(event.args.data.requestId, 'resourceFinish', event);
     return;
   }
 
-  if (Types.TraceEvents.isTraceEventResourceMarkAsCached(event)) {
+  if (Types.Events.isResourceMarkAsCached(event)) {
     storeTraceEventWithRequestId(event.args.data.requestId, 'resourceMarkAsCached', event);
     return;
   }
 
-  if (Types.TraceEvents.isTraceEventWebSocketCreate(event) || Types.TraceEvents.isTraceEventWebSocketInfo(event) ||
-      Types.TraceEvents.isTraceEventWebSocketTransfer(event)) {
+  if (Types.Events.isWebSocketCreate(event) || Types.Events.isWebSocketInfo(event) ||
+      Types.Events.isWebSocketTransfer(event)) {
     const identifier = event.args.data.identifier;
     if (!webSocketData.has(identifier)) {
       if (event.args.data.frame) {
@@ -171,14 +170,14 @@ export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
           frame: event.args.data.frame,
           webSocketIdentifier: identifier,
           events: [],
-          syntheticConnectionEvent: null,
+          syntheticConnection: null,
         });
       } else if (event.args.data.workerId) {
         webSocketData.set(identifier, {
           workerId: event.args.data.workerId,
           webSocketIdentifier: identifier,
           events: [],
-          syntheticConnectionEvent: null,
+          syntheticConnection: null,
         });
       }
     }
@@ -210,7 +209,7 @@ export async function finalize(): Promise<void> {
     // url, priority etc since it contains those values, but we use the
     // willSendRequest (if it exists) to calculate the timestamp and durations
     // of redirects.
-    const redirects: Types.TraceEvents.SyntheticNetworkRedirect[] = [];
+    const redirects: Types.Events.SyntheticNetworkRedirect[] = [];
     for (let i = 0; i < request.sendRequests.length - 1; i++) {
       const sendRequest = request.sendRequests[i];
       const nextSendRequest = request.sendRequests[i + 1];
@@ -395,74 +394,74 @@ export async function finalize(): Promise<void> {
     const requestingFrameUrl =
         Helpers.Trace.activeURLForFrameAtTime(frame, finalSendRequest.ts, rendererProcessesByFrame) || '';
     // Construct a synthetic trace event for this network request.
-    const networkEvent = Helpers.SyntheticEvents.SyntheticEventsManager
-                             .registerSyntheticBasedEvent<Types.TraceEvents.SyntheticNetworkRequest>({
-                               rawSourceEvent: finalSendRequest,
-                               args: {
-                                 data: {
-                                   // All data we create from trace events should be added to |syntheticData|.
-                                   syntheticData: {
-                                     dnsLookup,
-                                     download,
-                                     downloadStart,
-                                     finishTime,
-                                     initialConnection,
-                                     isDiskCached,
-                                     isHttps,
-                                     isMemoryCached,
-                                     isPushedResource,
-                                     networkDuration,
-                                     processingDuration,
-                                     proxyNegotiation,
-                                     queueing,
-                                     redirectionDuration,
-                                     requestSent,
-                                     sendStartTime,
-                                     ssl,
-                                     stalled,
-                                     totalTime,
-                                     waiting,
-                                   },
-                                   // All fields below are from TraceEventsForNetworkRequest.
-                                   decodedBodyLength,
-                                   encodedDataLength,
-                                   frame,
-                                   fromServiceWorker: request.receiveResponse.args.data.fromServiceWorker,
-                                   isLinkPreload: finalSendRequest.args.data.isLinkPreload || false,
-                                   mimeType: request.receiveResponse.args.data.mimeType,
-                                   priority: finalPriority,
-                                   initialPriority,
-                                   protocol: request.receiveResponse.args.data.protocol ?? 'unknown',
-                                   redirects,
-                                   // In the event the property isn't set, assume non-blocking.
-                                   renderBlocking: renderBlocking ?? 'non_blocking',
-                                   requestId,
-                                   requestingFrameUrl,
-                                   requestMethod: finalSendRequest.args.data.requestMethod,
-                                   resourceType: finalSendRequest.args.data.resourceType,
-                                   statusCode: request.receiveResponse.args.data.statusCode,
-                                   responseHeaders: request.receiveResponse.args.data.headers || [],
-                                   fetchPriorityHint: finalSendRequest.args.data.fetchPriorityHint,
-                                   initiator: finalSendRequest.args.data.initiator,
-                                   stackTrace: finalSendRequest.args.data.stackTrace,
-                                   timing,
-                                   url,
-                                   failed: request.resourceFinish?.args.data.didFail ?? false,
-                                   finished: Boolean(request.resourceFinish),
-                                   connectionId: request.receiveResponse.args.data.connectionId,
-                                   connectionReused: request.receiveResponse.args.data.connectionReused,
-                                 },
-                               },
-                               cat: 'loading',
-                               name: 'SyntheticNetworkRequest',
-                               ph: Types.TraceEvents.Phase.COMPLETE,
-                               dur: Types.Timing.MicroSeconds(endTime - startTime),
-                               tdur: Types.Timing.MicroSeconds(endTime - startTime),
-                               ts: Types.Timing.MicroSeconds(startTime),
-                               tts: Types.Timing.MicroSeconds(startTime),
-                               pid: finalSendRequest.pid,
-                               tid: finalSendRequest.tid,
-                             });
+    const networkEvent =
+        Helpers.SyntheticEvents.SyntheticEventsManager.registerSyntheticEvent<Types.Events.SyntheticNetworkRequest>({
+          rawSourceEvent: finalSendRequest,
+          args: {
+            data: {
+              // All data we create from trace events should be added to |syntheticData|.
+              syntheticData: {
+                dnsLookup,
+                download,
+                downloadStart,
+                finishTime,
+                initialConnection,
+                isDiskCached,
+                isHttps,
+                isMemoryCached,
+                isPushedResource,
+                networkDuration,
+                processingDuration,
+                proxyNegotiation,
+                queueing,
+                redirectionDuration,
+                requestSent,
+                sendStartTime,
+                ssl,
+                stalled,
+                totalTime,
+                waiting,
+              },
+              // All fields below are from TraceEventsForNetworkRequest.
+              decodedBodyLength,
+              encodedDataLength,
+              frame,
+              fromServiceWorker: request.receiveResponse.args.data.fromServiceWorker,
+              isLinkPreload: finalSendRequest.args.data.isLinkPreload || false,
+              mimeType: request.receiveResponse.args.data.mimeType,
+              priority: finalPriority,
+              initialPriority,
+              protocol: request.receiveResponse.args.data.protocol ?? 'unknown',
+              redirects,
+              // In the event the property isn't set, assume non-blocking.
+              renderBlocking: renderBlocking ?? 'non_blocking',
+              requestId,
+              requestingFrameUrl,
+              requestMethod: finalSendRequest.args.data.requestMethod,
+              resourceType: finalSendRequest.args.data.resourceType,
+              statusCode: request.receiveResponse.args.data.statusCode,
+              responseHeaders: request.receiveResponse.args.data.headers || [],
+              fetchPriorityHint: finalSendRequest.args.data.fetchPriorityHint,
+              initiator: finalSendRequest.args.data.initiator,
+              stackTrace: finalSendRequest.args.data.stackTrace,
+              timing,
+              url,
+              failed: request.resourceFinish?.args.data.didFail ?? false,
+              finished: Boolean(request.resourceFinish),
+              connectionId: request.receiveResponse.args.data.connectionId,
+              connectionReused: request.receiveResponse.args.data.connectionReused,
+            },
+          },
+          cat: 'loading',
+          name: 'SyntheticNetworkRequest',
+          ph: Types.Events.Phase.COMPLETE,
+          dur: Types.Timing.MicroSeconds(endTime - startTime),
+          tdur: Types.Timing.MicroSeconds(endTime - startTime),
+          ts: Types.Timing.MicroSeconds(startTime),
+          tts: Types.Timing.MicroSeconds(startTime),
+          pid: finalSendRequest.pid,
+          tid: finalSendRequest.tid,
+        });
 
     const requests = Platform.MapUtilities.getWithDefault(requestsByOrigin, parsedUrl.host, () => {
       return {
@@ -523,7 +522,7 @@ export function data(): NetworkRequestData {
   };
 }
 
-export function deps(): TraceEventHandlerName[] {
+export function deps(): HandlerName[] {
   return ['Meta'];
 }
 
@@ -534,36 +533,35 @@ function finalizeWebSocketData(): void {
   // for the end. So each WebSocketTraceData will have
   // {
   //    events:  the list of WebSocket events
-  //    syntheticConnectionEvent:  the synthetic event representing the entire WebSocket connection
+  //    syntheticConnection:  the synthetic event representing the entire WebSocket connection
   // }
   webSocketData.forEach(data => {
-    let startEvent: Types.TraceEvents.WebSocketEvent|null = null;
-    let endEvent: Types.TraceEvents.TraceEventWebSocketDestroy|null = null;
+    let startEvent: Types.Events.WebSocketEvent|null = null;
+    let endEvent: Types.Events.WebSocketDestroy|null = null;
     for (const event of data.events) {
-      if (Types.TraceEvents.isTraceEventWebSocketCreate(event)) {
+      if (Types.Events.isWebSocketCreate(event)) {
         startEvent = event;
       }
-      if (Types.TraceEvents.isTraceEventWebSocketDestroy(event)) {
+      if (Types.Events.isWebSocketDestroy(event)) {
         endEvent = event;
       }
     }
-    data.syntheticConnectionEvent = createSyntheticWebSocketConnectionEvent(startEvent, endEvent, data.events[0]);
+    data.syntheticConnection = createSyntheticWebSocketConnection(startEvent, endEvent, data.events[0]);
   });
 }
 
-function createSyntheticWebSocketConnectionEvent(
-    startEvent: Types.TraceEvents.TraceEventWebSocketCreate|null,
-    endEvent: Types.TraceEvents.TraceEventWebSocketDestroy|null,
-    firstRecordedEvent: Types.TraceEvents.WebSocketEvent): Types.TraceEvents.SyntheticWebSocketConnectionEvent {
+function createSyntheticWebSocketConnection(
+    startEvent: Types.Events.WebSocketCreate|null, endEvent: Types.Events.WebSocketDestroy|null,
+    firstRecordedEvent: Types.Events.WebSocketEvent): Types.Events.SyntheticWebSocketConnection {
   const {traceBounds} = metaHandlerData();
   const startTs = startEvent ? startEvent.ts : traceBounds.min;
   const endTs = endEvent ? endEvent.ts : traceBounds.max;
   const duration = endTs - startTs;
   const mainEvent = startEvent || endEvent || firstRecordedEvent;
   return {
-    name: 'SyntheticWebSocketConnectionEvent',
+    name: 'SyntheticWebSocketConnection',
     cat: mainEvent.cat,
-    ph: Types.TraceEvents.Phase.COMPLETE,
+    ph: Types.Events.Phase.COMPLETE,
     ts: startTs,
     dur: duration as Types.Timing.MicroSeconds,
     pid: mainEvent.pid,

@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../core/i18n/i18n.js';
-import type * as TraceEngine from '../../models/trace/trace.js';
+import type * as Trace from '../../models/trace/trace.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 
 import {buildGroupStyle, buildTrackHeader, getFormattedTime} from './AppenderUtils.js';
@@ -29,16 +29,15 @@ export class AnimationsTrackAppender implements TrackAppender {
   readonly appenderName: TrackAppenderName = 'Animations';
 
   #compatibilityBuilder: CompatibilityTracksAppender;
-  #traceParsedData: Readonly<TraceEngine.Handlers.Types.TraceParseData>;
+  #parsedTrace: Readonly<Trace.Handlers.Types.ParsedTrace>;
 
-  constructor(
-      compatibilityBuilder: CompatibilityTracksAppender, traceParsedData: TraceEngine.Handlers.Types.TraceParseData) {
+  constructor(compatibilityBuilder: CompatibilityTracksAppender, parsedTrace: Trace.Handlers.Types.ParsedTrace) {
     this.#compatibilityBuilder = compatibilityBuilder;
-    this.#traceParsedData = traceParsedData;
+    this.#parsedTrace = parsedTrace;
   }
 
   appendTrackAtLevel(trackStartLevel: number, expanded?: boolean|undefined): number {
-    const animations = this.#traceParsedData.Animations.animations;
+    const animations = this.#parsedTrace.Animations.animations;
     if (animations.length === 0) {
       return trackStartLevel;
     }
@@ -58,12 +57,12 @@ export class AnimationsTrackAppender implements TrackAppender {
     return ThemeSupport.ThemeSupport.instance().getComputedValue('--app-color-rendering');
   }
 
-  titleForEvent(event: TraceEngine.Types.TraceEvents.SyntheticAnimationPair): string {
+  titleForEvent(event: Trace.Types.Events.SyntheticAnimationPair): string {
     const {displayName} = event.args.data.beginEvent.args.data;
     return displayName || event.name;
   }
 
-  highlightedEntryInfo(event: TraceEngine.Types.TraceEvents.SyntheticAnimationPair): HighlightedEntryInfo {
+  highlightedEntryInfo(event: Trace.Types.Events.SyntheticAnimationPair): HighlightedEntryInfo {
     const title = this.titleForEvent(event);
     return {title, formattedTime: getFormattedTime(event.dur)};
   }

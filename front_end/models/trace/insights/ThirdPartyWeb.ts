@@ -8,7 +8,7 @@ import type * as Handlers from '../handlers/handlers.js';
 import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
 
-import {type BoundedInsightContext, type InsightResult, type RequiredData} from './types.js';
+import {type InsightResult, type InsightSetContext, type RequiredData} from './types.js';
 
 export function deps(): ['Meta', 'NetworkRequests', 'Renderer', 'ImagePainting'] {
   return ['Meta', 'NetworkRequests', 'Renderer', 'ImagePainting'];
@@ -22,9 +22,9 @@ export interface Summary {
 }
 
 export type ThirdPartyWebInsightResult = InsightResult<{
-  entityByRequest: Map<Types.TraceEvents.SyntheticNetworkRequest, Entity>,
-  requestsByEntity: Map<Entity, Types.TraceEvents.SyntheticNetworkRequest[]>,
-  summaryByRequest: Map<Types.TraceEvents.SyntheticNetworkRequest, Summary>,
+  entityByRequest: Map<Types.Events.SyntheticNetworkRequest, Entity>,
+  requestsByEntity: Map<Entity, Types.Events.SyntheticNetworkRequest[]>,
+  summaryByRequest: Map<Types.Events.SyntheticNetworkRequest, Summary>,
   summaryByEntity: Map<Entity, Summary>,
   /** The entity for this navigation's URL. Any other entity is from a third party. */
   firstPartyEntity?: Entity,
@@ -103,14 +103,14 @@ function makeUpEntity(entityCache: Map<string, Entity>, url: string): Entity|und
 
 interface SummaryMaps {
   byEntity: Map<Entity, Summary>;
-  byRequest: Map<Types.TraceEvents.SyntheticNetworkRequest, Summary>;
-  requestsByEntity: Map<Entity, Types.TraceEvents.SyntheticNetworkRequest[]>;
+  byRequest: Map<Types.Events.SyntheticNetworkRequest, Summary>;
+  requestsByEntity: Map<Entity, Types.Events.SyntheticNetworkRequest[]>;
 }
 
-function getSelfTimeByUrl(traceData: RequiredData<typeof deps>, context: BoundedInsightContext): Map<string, number> {
+function getSelfTimeByUrl(parsedTrace: RequiredData<typeof deps>, context: InsightSetContext): Map<string, number> {
   const selfTimeByUrl = new Map<string, number>();
 
-  for (const process of traceData.Renderer.processes.values()) {
+  for (const process of parsedTrace.Renderer.processes.values()) {
     if (!process.isOnMainFrame) {
       continue;
     }
@@ -126,12 +126,12 @@ function getSelfTimeByUrl(traceData: RequiredData<typeof deps>, context: Bounded
             continue;
           }
 
-          const node = traceData.Renderer.entryToNode.get(event);
+          const node = parsedTrace.Renderer.entryToNode.get(event);
           if (!node || !node.selfTime) {
             continue;
           }
 
-          const url = Extras.URLForEntry.get(traceData as Handlers.Types.TraceParseData, event);
+          const url = Extras.URLForEntry.get(parsedTrace as Handlers.Types.ParsedTrace, event);
           if (!url) {
             continue;
           }
@@ -146,10 +146,10 @@ function getSelfTimeByUrl(traceData: RequiredData<typeof deps>, context: Bounded
 }
 
 function getSummaries(
-    requests: Types.TraceEvents.SyntheticNetworkRequest[],
-    entityByRequest: Map<Types.TraceEvents.SyntheticNetworkRequest, Entity>,
+    requests: Types.Events.SyntheticNetworkRequest[],
+    entityByRequest: Map<Types.Events.SyntheticNetworkRequest, Entity>,
     selfTimeByUrl: Map<string, number>): SummaryMaps {
-  const byRequest = new Map<Types.TraceEvents.SyntheticNetworkRequest, Summary>();
+  const byRequest = new Map<Types.Events.SyntheticNetworkRequest, Summary>();
   const byEntity = new Map<Entity, Summary>();
   const defaultSummary: Summary = {transferSize: 0, mainThreadTime: Types.Timing.MicroSeconds(0)};
 
@@ -162,7 +162,7 @@ function getSummaries(
   }
 
   // Map each request's stat to a particular entity.
-  const requestsByEntity = new Map<Entity, Types.TraceEvents.SyntheticNetworkRequest[]>();
+  const requestsByEntity = new Map<Entity, Types.Events.SyntheticNetworkRequest[]>();
   for (const [request, requestSummary] of byRequest.entries()) {
     const entity = entityByRequest.get(request);
     if (!entity) {
@@ -185,9 +185,9 @@ function getSummaries(
 }
 
 export function generateInsight(
-    traceData: RequiredData<typeof deps>, context: BoundedInsightContext): ThirdPartyWebInsightResult {
+    parsedTrace: RequiredData<typeof deps>, context: InsightSetContext): ThirdPartyWebInsightResult {
   const networkRequests = [];
-  for (const req of traceData.NetworkRequests.byTime) {
+  for (const req of parsedTrace.NetworkRequests.byTime) {
     if (!context.navigation) {
       break;
     }
@@ -198,13 +198,13 @@ export function generateInsight(
 
     // TODO(crbug.com/366049346): use context.bounds instead
     const navigation =
-        Helpers.Trace.getNavigationForTraceEvent(req, context.frameId, traceData.Meta.navigationsByFrameId);
+        Helpers.Trace.getNavigationForTraceEvent(req, context.frameId, parsedTrace.Meta.navigationsByFrameId);
     if (navigation === context.navigation) {
       networkRequests.push(req);
     }
   }
 
-  const entityByRequest = new Map<Types.TraceEvents.SyntheticNetworkRequest, Entity>();
+  const entityByRequest = new Map<Types.Events.SyntheticNetworkRequest, Entity>();
   const madeUpEntityCache = new Map<string, Entity>();
   for (const request of networkRequests) {
     const url = request.args.data.url;
@@ -214,11 +214,11 @@ export function generateInsight(
     }
   }
 
-  const selfTimeByUrl = getSelfTimeByUrl(traceData, context);
+  const selfTimeByUrl = getSelfTimeByUrl(parsedTrace, context);
   // TODO(crbug.com/352244718): re-work to still collect main thread activity if no request is present
   const summaries = getSummaries(networkRequests, entityByRequest, selfTimeByUrl);
 
-  const firstPartyUrl = context.navigation?.args.data?.url ?? traceData.Meta.mainFrameURL;
+  const firstPartyUrl = context.navigation?.args.data?.url ?? parsedTrace.Meta.mainFrameURL;
   const firstPartyEntity =
       ThirdPartyWeb.ThirdPartyWeb.getEntity(firstPartyUrl) || makeUpEntity(madeUpEntityCache, firstPartyUrl);
 

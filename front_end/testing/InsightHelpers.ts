@@ -2,18 +2,17 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as TraceModel from '../models/trace/trace.js';
+import * as Trace from '../models/trace/trace.js';
 
-export function createContextForNavigation(
-    navigation: TraceModel.Types.TraceEvents.TraceEventNavigationStart,
-    frameId: string): TraceModel.Insights.Types.BoundedInsightContextWithNavigation {
+export function createContextForNavigation(navigation: Trace.Types.Events.NavigationStart, frameId: string):
+    Trace.Insights.Types.InsightSetContextWithNavigation {
   if (!navigation.args.data?.navigationId) {
     throw new Error('expected navigationId');
   }
 
   const min = navigation.ts;
-  const max = (navigation.ts + (navigation?.dur ?? 0)) as TraceModel.Types.Timing.MicroSeconds;
-  const bounds = TraceModel.Helpers.Timing.traceWindowFromMicroSeconds(min, max);
+  const max = (navigation.ts + (navigation?.dur ?? 0)) as Trace.Types.Timing.MicroSeconds;
+  const bounds = Trace.Helpers.Timing.traceWindowFromMicroSeconds(min, max);
 
   return {
     bounds,
@@ -23,10 +22,9 @@ export function createContextForNavigation(
   };
 }
 
-export function getInsight<Key extends keyof TraceModel.Insights.Types.InsightResults>(
-    insightKey: Key, insights: TraceModel.Insights.Types.TraceInsightData,
-    navigation?: TraceModel.Types.TraceEvents.TraceEventNavigationStart):
-    TraceModel.Insights.Types.InsightResults[Key] {
+export function getInsight<Key extends keyof Trace.Insights.Types.InsightResults>(
+    insightKey: Key, insights: Trace.Insights.Types.TraceInsightSets,
+    navigation?: Trace.Types.Events.NavigationStart): Trace.Insights.Types.InsightResults[Key] {
   let key;
   if (navigation) {
     if (!navigation.args.data?.navigationId) {
@@ -34,21 +32,21 @@ export function getInsight<Key extends keyof TraceModel.Insights.Types.InsightRe
     }
     key = navigation.args.data.navigationId;
   } else {
-    key = TraceModel.Insights.Types.NO_NAVIGATION;
+    key = Trace.Insights.Types.NO_NAVIGATION;
   }
 
-  const boundedInsights = insights.get(key);
-  if (!boundedInsights) {
+  const insightSets = insights.get(key);
+  if (!insightSets) {
     throw new Error('missing navInsights');
   }
 
-  const insight = boundedInsights.data[insightKey];
+  const insight = insightSets.data[insightKey];
   if (insight instanceof Error) {
     throw insight;
   }
 
   // For some reason typescript won't narrow the type by removing Error, so do it manually.
-  return insight as TraceModel.Insights.Types.InsightResults[Key];
+  return insight as Trace.Insights.Types.InsightResults[Key];
 }
 
 export function getFirstOrError<T>(iterator: IterableIterator<T>): T {

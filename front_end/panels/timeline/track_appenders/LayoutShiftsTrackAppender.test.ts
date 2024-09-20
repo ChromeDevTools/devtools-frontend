@@ -2,19 +2,19 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as TraceModel from '../../../models/trace/trace.js';
+import * as Trace from '../../../models/trace/trace.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as PerfUI from '../../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as Timeline from '../timeline.js';
 
 function initTrackAppender(
-    flameChartData: PerfUI.FlameChart.FlameChartTimelineData, traceParsedData: TraceModel.Handlers.Types.TraceParseData,
+    flameChartData: PerfUI.FlameChart.FlameChartTimelineData, parsedTrace: Trace.Handlers.Types.ParsedTrace,
     entryData: Timeline.TimelineFlameChartDataProvider.TimelineFlameChartEntry[],
     entryTypeByLevel: Timeline.TimelineFlameChartDataProvider.EntryType[]):
     Timeline.LayoutShiftsTrackAppender.LayoutShiftsTrackAppender {
   const compatibilityTracksAppender = new Timeline.CompatibilityTracksAppender.CompatibilityTracksAppender(
-      flameChartData, traceParsedData, entryData, entryTypeByLevel);
+      flameChartData, parsedTrace, entryData, entryTypeByLevel);
   return compatibilityTracksAppender.layoutShiftsTrackAppender();
 }
 
@@ -24,18 +24,18 @@ describeWithEnvironment('LayoutShiftsTrackAppender', function() {
     flameChartData: PerfUI.FlameChart.FlameChartTimelineData,
     layoutShiftsTrackAppender: Timeline.LayoutShiftsTrackAppender.LayoutShiftsTrackAppender,
     entryData: Timeline.TimelineFlameChartDataProvider.TimelineFlameChartEntry[],
-    traceParsedData: Readonly<TraceModel.Handlers.Types.TraceParseData>,
+    parsedTrace: Readonly<Trace.Handlers.Types.ParsedTrace>,
   }> {
     const entryTypeByLevel: Timeline.TimelineFlameChartDataProvider.EntryType[] = [];
     const entryData: Timeline.TimelineFlameChartDataProvider.TimelineFlameChartEntry[] = [];
     const flameChartData = PerfUI.FlameChart.FlameChartTimelineData.createEmpty();
-    const {traceData} = await TraceLoader.traceEngine(context, trace);
-    const layoutShiftsTrackAppender = initTrackAppender(flameChartData, traceData, entryData, entryTypeByLevel);
+    const {parsedTrace} = await TraceLoader.traceEngine(context, trace);
+    const layoutShiftsTrackAppender = initTrackAppender(flameChartData, parsedTrace, entryData, entryTypeByLevel);
     layoutShiftsTrackAppender.appendTrackAtLevel(0);
 
     return {
       entryTypeByLevel,
-      traceParsedData: traceData,
+      parsedTrace,
       flameChartData,
       layoutShiftsTrackAppender,
       entryData,
@@ -64,19 +64,19 @@ describeWithEnvironment('LayoutShiftsTrackAppender', function() {
   });
 
   it('adds all layout shifts with the correct start times', async function() {
-    const {flameChartData, traceParsedData, entryData} = await renderTrackAppender(this, 'cls-single-frame.json.gz');
-    const events = traceParsedData.LayoutShifts.clusters.flatMap(c => c.events);
+    const {flameChartData, parsedTrace, entryData} = await renderTrackAppender(this, 'cls-single-frame.json.gz');
+    const events = parsedTrace.LayoutShifts.clusters.flatMap(c => c.events);
     for (const event of events) {
       const markerIndex = entryData.indexOf(event);
       assert.exists(markerIndex);
       assert.strictEqual(
-          flameChartData.entryStartTimes[markerIndex], TraceModel.Helpers.Timing.microSecondsToMilliseconds(event.ts));
+          flameChartData.entryStartTimes[markerIndex], Trace.Helpers.Timing.microSecondsToMilliseconds(event.ts));
     }
   });
 
   it('sets all layout shifts to be 5ms in duration', async function() {
-    const {flameChartData, traceParsedData, entryData} = await renderTrackAppender(this, 'cls-single-frame.json.gz');
-    const events = traceParsedData.LayoutShifts.clusters.flatMap(c => c.events);
+    const {flameChartData, parsedTrace, entryData} = await renderTrackAppender(this, 'cls-single-frame.json.gz');
+    const events = parsedTrace.LayoutShifts.clusters.flatMap(c => c.events);
     for (const event of events) {
       const markerIndex = entryData.indexOf(event);
       assert.exists(markerIndex);
@@ -85,15 +85,15 @@ describeWithEnvironment('LayoutShiftsTrackAppender', function() {
   });
 
   it('returns the correct title for a layout shift', async function() {
-    const {layoutShiftsTrackAppender, traceParsedData} = await renderTrackAppender(this, 'cls-single-frame.json.gz');
-    const shifts = traceParsedData.LayoutShifts.clusters.flatMap(c => c.events);
+    const {layoutShiftsTrackAppender, parsedTrace} = await renderTrackAppender(this, 'cls-single-frame.json.gz');
+    const shifts = parsedTrace.LayoutShifts.clusters.flatMap(c => c.events);
     const title = layoutShiftsTrackAppender.titleForEvent(shifts[0]);
     assert.strictEqual(title, 'Layout shift');
   });
 
   it('shows "Layout shift" text on hover', async function() {
-    const {layoutShiftsTrackAppender, traceParsedData} = await renderTrackAppender(this, 'cls-single-frame.json.gz');
-    const shifts = traceParsedData.LayoutShifts.clusters.flatMap(c => c.events);
+    const {layoutShiftsTrackAppender, parsedTrace} = await renderTrackAppender(this, 'cls-single-frame.json.gz');
+    const shifts = parsedTrace.LayoutShifts.clusters.flatMap(c => c.events);
     const info = layoutShiftsTrackAppender.highlightedEntryInfo(shifts[0]);
     assert.deepEqual(info, {
       title: 'Layout shift',

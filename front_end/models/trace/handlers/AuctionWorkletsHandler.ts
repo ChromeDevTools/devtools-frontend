@@ -25,20 +25,17 @@ import * as Types from '../types/types.js';
  * Similarly, it is also possible to see a DoneWithProcess event without a
  * RunningInProcess event, if the user started recording after the auction
  * worklets started. Therefore we are happy to create
- * SyntheticAuctionWorkletEvents as long as we see just one of these events.
+ * SyntheticAuctionWorklets as long as we see just one of these events.
  *
  * If we do get two events and need to pair them, we can use the
  * args.data.target property, which is a string ID shared by both
  * events.
  */
-const runningInProcessEvents:
-    Map<Types.TraceEvents.ProcessID, Types.TraceEvents.TraceEventAuctionWorkletRunningInProcess> = new Map();
-const doneWithProcessEvents:
-    Map<Types.TraceEvents.ProcessID, Types.TraceEvents.TraceEventAuctionWorkletDoneWithProcess> = new Map();
+const runningInProcessEvents: Map<Types.Events.ProcessID, Types.Events.AuctionWorkletRunningInProcess> = new Map();
+const doneWithProcessEvents: Map<Types.Events.ProcessID, Types.Events.AuctionWorkletDoneWithProcess> = new Map();
 
 // Keyed by the PID defined in  `args.data.pid` on AuctionWorklet trace events..
-const createdSyntheticEvents: Map<Types.TraceEvents.ProcessID, Types.TraceEvents.SyntheticAuctionWorkletEvent> =
-    new Map();
+const createdSyntheticEvents: Map<Types.Events.ProcessID, Types.Events.SyntheticAuctionWorklet> = new Map();
 
 // Each AuctonWorklet takes over a process and has 2 threads (that we care
 // about and want to show as tracks):
@@ -47,8 +44,8 @@ const createdSyntheticEvents: Map<Types.TraceEvents.ProcessID, Types.TraceEvents
 //    either a "Seller" or a "Bidder"
 // To detect these we look for the metadata thread_name events. We key these by
 // PID so that we can easily look them up later without having to loop through.
-const utilityThreads: Map<Types.TraceEvents.ProcessID, Types.TraceEvents.TraceEventThreadName> = new Map();
-const v8HelperThreads: Map<Types.TraceEvents.ProcessID, Types.TraceEvents.TraceEventThreadName> = new Map();
+const utilityThreads: Map<Types.Events.ProcessID, Types.Events.ThreadName> = new Map();
+const v8HelperThreads: Map<Types.Events.ProcessID, Types.Events.ThreadName> = new Map();
 
 export function reset(): void {
   runningInProcessEvents.clear();
@@ -58,18 +55,18 @@ export function reset(): void {
   v8HelperThreads.clear();
 }
 
-export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
-  if (Types.TraceEvents.isTraceEventAuctionWorkletRunningInProcess(event)) {
+export function handleEvent(event: Types.Events.Event): void {
+  if (Types.Events.isAuctionWorkletRunningInProcess(event)) {
     runningInProcessEvents.set(event.args.data.pid, event);
     return;
   }
 
-  if (Types.TraceEvents.isTraceEventAuctionWorkletDoneWithProcess(event)) {
+  if (Types.Events.isAuctionWorkletDoneWithProcess(event)) {
     doneWithProcessEvents.set(event.args.data.pid, event);
     return;
   }
 
-  if (Types.TraceEvents.isThreadName(event)) {
+  if (Types.Events.isThreadName(event)) {
     if (event.args.name === 'auction_worklet.CrUtilityMain') {
       utilityThreads.set(event.pid, event);
       return;
@@ -80,14 +77,14 @@ export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
   }
 }
 
-function workletType(input: string): Types.TraceEvents.AuctionWorkletType {
+function workletType(input: string): Types.Events.AuctionWorkletType {
   switch (input) {
     case 'seller':
-      return Types.TraceEvents.AuctionWorkletType.SELLER;
+      return Types.Events.AuctionWorkletType.SELLER;
     case 'bidder':
-      return Types.TraceEvents.AuctionWorkletType.BIDDER;
+      return Types.Events.AuctionWorkletType.BIDDER;
     default:
-      return Types.TraceEvents.AuctionWorkletType.UNKNOWN;
+      return Types.Events.AuctionWorkletType.UNKNOWN;
   }
 }
 
@@ -96,18 +93,18 @@ function workletType(input: string): Types.TraceEvents.AuctionWorkletType {
  * create everything other than the `args` field, as those are identical
  * regardless of the type of event.
  */
-function makeSyntheticEventBase(event: Types.TraceEvents.TraceEventAuctionWorkletDoneWithProcess|
-                                Types.TraceEvents.TraceEventAuctionWorkletRunningInProcess):
-    Omit<Types.TraceEvents.SyntheticAuctionWorkletEvent, 'args'> {
+function makeSyntheticEventBase(event: Types.Events.AuctionWorkletDoneWithProcess|
+                                Types.Events.AuctionWorkletRunningInProcess):
+    Omit<Types.Events.SyntheticAuctionWorklet, 'args'> {
   return Helpers.SyntheticEvents.SyntheticEventsManager
-      .registerSyntheticBasedEvent<Omit<Types.TraceEvents.SyntheticAuctionWorkletEvent, 'args'>>({
+      .registerSyntheticEvent<Omit<Types.Events.SyntheticAuctionWorklet, 'args'>>({
         rawSourceEvent: event,
-        name: 'SyntheticAuctionWorkletEvent',
-        s: Types.TraceEvents.TraceEventScope.THREAD,
+        name: 'SyntheticAuctionWorklet',
+        s: Types.Events.Scope.THREAD,
         cat: event.cat,
         tid: event.tid,
         ts: event.ts,
-        ph: Types.TraceEvents.Phase.INSTANT,
+        ph: Types.Events.Phase.INSTANT,
         pid: event.args.data.pid,
         host: event.args.data.host,
         target: event.args.data.target,
@@ -137,7 +134,7 @@ export async function finalize(): Promise<void> {
     // the worklet as we do not have enough information to create the synthetic
     // event.
 
-    let syntheticEvent: Types.TraceEvents.SyntheticAuctionWorkletEvent|null = null;
+    let syntheticEvent: Types.Events.SyntheticAuctionWorklet|null = null;
 
     if (runningEvent) {
       syntheticEvent = {
@@ -176,7 +173,7 @@ export async function finalize(): Promise<void> {
 }
 
 export interface AuctionWorkletsData {
-  worklets: Map<Types.TraceEvents.ProcessID, Types.TraceEvents.SyntheticAuctionWorkletEvent>;
+  worklets: Map<Types.Events.ProcessID, Types.Events.SyntheticAuctionWorklet>;
 }
 
 export function data(): AuctionWorkletsData {

@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 import type * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import * as TraceEngine from '../../models/trace/trace.js';
+import * as Trace from '../../models/trace/trace.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 
 import {buildGroupStyle, buildTrackHeader} from './AppenderUtils.js';
@@ -30,14 +30,14 @@ export class InteractionsTrackAppender implements TrackAppender {
 
   #colorGenerator: Common.Color.Generator;
   #compatibilityBuilder: CompatibilityTracksAppender;
-  #traceParsedData: Readonly<TraceEngine.Handlers.Types.TraceParseData>;
+  #parsedTrace: Readonly<Trace.Handlers.Types.ParsedTrace>;
 
   constructor(
-      compatibilityBuilder: CompatibilityTracksAppender, traceParsedData: TraceEngine.Handlers.Types.TraceParseData,
+      compatibilityBuilder: CompatibilityTracksAppender, parsedTrace: Trace.Handlers.Types.ParsedTrace,
       colorGenerator: Common.Color.Generator) {
     this.#compatibilityBuilder = compatibilityBuilder;
     this.#colorGenerator = colorGenerator;
-    this.#traceParsedData = traceParsedData;
+    this.#parsedTrace = parsedTrace;
   }
 
   /**
@@ -50,7 +50,7 @@ export class InteractionsTrackAppender implements TrackAppender {
    * appended the track's events.
    */
   appendTrackAtLevel(trackStartLevel: number, expanded?: boolean): number {
-    if (this.#traceParsedData.UserInteractions.interactionEvents.length === 0) {
+    if (this.#parsedTrace.UserInteractions.interactionEvents.length === 0) {
       return trackStartLevel;
     }
     this.#appendTrackHeaderAtLevel(trackStartLevel, expanded);
@@ -67,7 +67,7 @@ export class InteractionsTrackAppender implements TrackAppender {
    * appended.
    */
   #appendTrackHeaderAtLevel(currentLevel: number, expanded?: boolean): void {
-    const trackIsCollapsible = this.#traceParsedData.UserInteractions.interactionEvents.length > 0;
+    const trackIsCollapsible = this.#parsedTrace.UserInteractions.interactionEvents.length > 0;
     const style = buildGroupStyle({collapsible: trackIsCollapsible, useDecoratorsForOverview: true});
     const group = buildTrackHeader(
         VisualLoggingTrackName.INTERACTIONS, currentLevel, i18nString(UIStrings.interactions), style,
@@ -85,10 +85,10 @@ export class InteractionsTrackAppender implements TrackAppender {
    * interactions (the first available level to append more data).
    */
   #appendInteractionsAtLevel(trackStartLevel: number): number {
-    const {interactionEventsWithNoNesting, interactionsOverThreshold} = this.#traceParsedData.UserInteractions;
+    const {interactionEventsWithNoNesting, interactionsOverThreshold} = this.#parsedTrace.UserInteractions;
 
     const addCandyStripeToLongInteraction =
-        (event: TraceEngine.Types.TraceEvents.SyntheticInteractionPair, index: number): void => {
+        (event: Trace.Types.Events.SyntheticInteractionPair, index: number): void => {
           // Each interaction that we drew that is over the INP threshold needs to be
           // candy-striped.
           const overThreshold = interactionsOverThreshold.has(event);
@@ -106,14 +106,14 @@ export class InteractionsTrackAppender implements TrackAppender {
     return newLevel;
   }
 
-  #addCandyStripeAndWarningForLongInteraction(
-      entry: TraceEngine.Types.TraceEvents.SyntheticInteractionPair, eventIndex: number): void {
+  #addCandyStripeAndWarningForLongInteraction(entry: Trace.Types.Events.SyntheticInteractionPair, eventIndex: number):
+      void {
     const decorationsForEvent =
         this.#compatibilityBuilder.getFlameChartTimelineData().entryDecorations[eventIndex] || [];
     decorationsForEvent.push(
         {
           type: PerfUI.FlameChart.FlameChartDecorationType.CANDY,
-          startAtTime: TraceEngine.Handlers.ModelHandlers.UserInteractions.LONG_INTERACTION_THRESHOLD,
+          startAtTime: Trace.Handlers.ModelHandlers.UserInteractions.LONG_INTERACTION_THRESHOLD,
           // Interaction events have whiskers, so we do not want to candy stripe
           // the entire duration. The box represents processing duration, so we only
           // candystripe up to the end of processing.
@@ -136,9 +136,9 @@ export class InteractionsTrackAppender implements TrackAppender {
   /**
    * Gets the color an event added by this appender should be rendered with.
    */
-  colorForEvent(event: TraceEngine.Types.TraceEvents.TraceEventData): string {
-    let idForColorGeneration = Components.EntryName.nameForEntry(event, this.#traceParsedData);
-    if (TraceEngine.Types.TraceEvents.isSyntheticInteractionEvent(event)) {
+  colorForEvent(event: Trace.Types.Events.Event): string {
+    let idForColorGeneration = Components.EntryName.nameForEntry(event, this.#parsedTrace);
+    if (Trace.Types.Events.isSyntheticInteraction(event)) {
       // Append the ID so that we vary the colours, ensuring that two events of
       // the same type are coloured differently.
       idForColorGeneration += event.interactionId;

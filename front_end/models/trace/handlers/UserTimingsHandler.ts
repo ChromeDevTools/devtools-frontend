@@ -12,36 +12,36 @@ import {HandlerState} from './types.js';
  * See UserTimings.md in this directory for some handy documentation on
  * UserTimings and the trace events we parse currently.
  **/
-let syntheticEvents: Types.TraceEvents.SyntheticEventPair<Types.TraceEvents.TraceEventPairableAsync>[] = [];
-const performanceMeasureEvents: Types.TraceEvents.TraceEventPerformanceMeasure[] = [];
-const performanceMarkEvents: Types.TraceEvents.TraceEventPerformanceMark[] = [];
+let syntheticEvents: Types.Events.SyntheticEventPair<Types.Events.PairableAsync>[] = [];
+const performanceMeasureEvents: Types.Events.PerformanceMeasure[] = [];
+const performanceMarkEvents: Types.Events.PerformanceMark[] = [];
 
-const consoleTimings: (Types.TraceEvents.TraceEventConsoleTimeBegin|Types.TraceEvents.TraceEventConsoleTimeEnd)[] = [];
+const consoleTimings: (Types.Events.ConsoleTimeBegin|Types.Events.ConsoleTimeEnd)[] = [];
 
-const timestampEvents: Types.TraceEvents.TraceEventTimeStamp[] = [];
+const timestampEvents: Types.Events.TimeStamp[] = [];
 
 export interface UserTimingsData {
   /**
    * Events triggered with the performance.measure() API.
    * https://developer.mozilla.org/en-US/docs/Web/API/Performance/measure
    */
-  performanceMeasures: readonly Types.TraceEvents.SyntheticUserTimingPair[];
+  performanceMeasures: readonly Types.Events.SyntheticUserTimingPair[];
   /**
    * Events triggered with the performance.mark() API.
    * https://developer.mozilla.org/en-US/docs/Web/API/Performance/mark
    */
-  performanceMarks: readonly Types.TraceEvents.TraceEventPerformanceMark[];
+  performanceMarks: readonly Types.Events.PerformanceMark[];
   /**
    * Events triggered with the console.time(), console.timeEnd() and
    * console.timeLog() API.
    * https://developer.mozilla.org/en-US/docs/Web/API/console/time
    */
-  consoleTimings: readonly Types.TraceEvents.SyntheticConsoleTimingPair[];
+  consoleTimings: readonly Types.Events.SyntheticConsoleTimingPair[];
   /**
    * Events triggered with the console.timeStamp() API
    * https://developer.mozilla.org/en-US/docs/Web/API/console/timeStamp
    */
-  timestampEvents: readonly Types.TraceEvents.TraceEventTimeStamp[];
+  timestampEvents: readonly Types.Events.TimeStamp[];
 }
 let handlerState = HandlerState.UNINITIALIZED;
 
@@ -98,7 +98,7 @@ const navTimingNames = [
 // flame chart).
 const ignoredNames = [...resourceTimingNames, ...navTimingNames];
 
-export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
+export function handleEvent(event: Types.Events.Event): void {
   if (handlerState !== HandlerState.INITIALIZED) {
     throw new Error('UserTimings handler is not initialized');
   }
@@ -107,17 +107,17 @@ export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
     return;
   }
 
-  if (Types.TraceEvents.isTraceEventPerformanceMeasure(event)) {
+  if (Types.Events.isPerformanceMeasure(event)) {
     performanceMeasureEvents.push(event);
     return;
   }
-  if (Types.TraceEvents.isTraceEventPerformanceMark(event)) {
+  if (Types.Events.isPerformanceMark(event)) {
     performanceMarkEvents.push(event);
   }
-  if (Types.TraceEvents.isTraceEventConsoleTime(event)) {
+  if (Types.Events.isConsoleTime(event)) {
     consoleTimings.push(event);
   }
-  if (Types.TraceEvents.isTraceEventTimeStamp(event)) {
+  if (Types.Events.isTimeStamp(event)) {
     timestampEvents.push(event);
   }
 }
@@ -139,9 +139,8 @@ export function data(): UserTimingsData {
 
   return {
     performanceMeasures: syntheticEvents.filter(e => e.cat === 'blink.user_timing') as
-        Types.TraceEvents.SyntheticUserTimingPair[],
-    consoleTimings: syntheticEvents.filter(e => e.cat === 'blink.console') as
-        Types.TraceEvents.SyntheticConsoleTimingPair[],
+        Types.Events.SyntheticUserTimingPair[],
+    consoleTimings: syntheticEvents.filter(e => e.cat === 'blink.console') as Types.Events.SyntheticConsoleTimingPair[],
     // TODO(crbug/41484172): UserTimingsHandler.test.ts fails if this is not copied.
     performanceMarks: [...performanceMarkEvents],
     timestampEvents: [...timestampEvents],

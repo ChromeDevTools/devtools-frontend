@@ -10,11 +10,10 @@ import * as Types from '../types/types.js';
 
 import {HandlerState} from './types.js';
 
-const events =
-    new Map<Types.TraceEvents.ProcessID, Map<Types.TraceEvents.ThreadID, Types.TraceEvents.TraceEventComplete[]>>();
+const events = new Map<Types.Events.ProcessID, Map<Types.Events.ThreadID, Types.Events.Complete[]>>();
 
-const profilesInProcess = new Map<Types.TraceEvents.ProcessID, Map<Types.TraceEvents.ThreadID, ProfileData>>();
-const entryToNode = new Map<Types.TraceEvents.TraceEventData, Helpers.TreeHelpers.TraceEntryNode>();
+const profilesInProcess = new Map<Types.Events.ProcessID, Map<Types.Events.ThreadID, ProfileData>>();
+const entryToNode = new Map<Types.Events.Event, Helpers.TreeHelpers.TraceEntryNode>();
 
 // The profile head, containing its metadata like its start
 // time, comes in a "Profile" event. The sample data comes in
@@ -25,7 +24,7 @@ const entryToNode = new Map<Types.TraceEvents.TraceEventData, Helpers.TreeHelper
 // For this reason, we have a preprocessed data structure, where events
 // are matched by profile id, which we then finish processing to export
 // events matched by thread id.
-const preprocessedData = new Map<Types.TraceEvents.ProcessID, Map<Types.TraceEvents.ProfileID, PreprocessedData>>();
+const preprocessedData = new Map<Types.Events.ProcessID, Map<Types.Events.ProfileID, PreprocessedData>>();
 
 let handlerState = HandlerState.UNINITIALIZED;
 
@@ -122,7 +121,7 @@ export function initialize(): void {
   handlerState = HandlerState.INITIALIZED;
 }
 
-export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
+export function handleEvent(event: Types.Events.Event): void {
   if (handlerState !== HandlerState.INITIALIZED) {
     throw new Error('Samples Handler is not initialized');
   }
@@ -131,7 +130,7 @@ export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
    * A fake trace event created to support CDP.Profiler.Profiles in the
    * trace engine.
    */
-  if (Types.TraceEvents.isSyntheticCpuProfile(event)) {
+  if (Types.Events.isSyntheticCpuProfile(event)) {
     // At the moment we are attaching to a single node target so we
     // should only get a single CPU profile. The values of the process
     // id and thread id are not really important, so we use the data
@@ -140,14 +139,14 @@ export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
     const pid = event.pid;
     const tid = event.tid;
     // Create an arbitrary profile id.
-    const profileId = '0x1' as Types.TraceEvents.ProfileID;
+    const profileId = '0x1' as Types.Events.ProfileID;
     const profileData = getOrCreatePreProcessedData(pid, profileId);
     profileData.rawProfile = event.args.data.cpuProfile;
     profileData.threadId = tid;
     return;
   }
 
-  if (Types.TraceEvents.isTraceEventProfile(event)) {
+  if (Types.Events.isProfile(event)) {
     // Do not use event.args.data.startTime as it is in CLOCK_MONOTONIC domain,
     // but use profileEvent.ts which has been translated to Perfetto's clock
     // domain. Also convert from ms to us.
@@ -158,11 +157,10 @@ export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
     profileData.threadId = event.tid;
     return;
   }
-  if (Types.TraceEvents.isTraceEventProfileChunk(event)) {
+  if (Types.Events.isProfileChunk(event)) {
     const profileData = getOrCreatePreProcessedData(event.pid, event.id);
     const cdpProfile = profileData.rawProfile;
-    const nodesAndSamples: Types.TraceEvents.TraceEventPartialProfile|undefined =
-        event.args?.data?.cpuProfile || {samples: []};
+    const nodesAndSamples: Types.Events.PartialProfile|undefined = event.args?.data?.cpuProfile || {samples: []};
     const samples = nodesAndSamples?.samples || [];
     const nodes: CPUProfile.CPUProfileDataModel.ExtendedProfileNode[] = [];
     for (const n of nodesAndSamples?.nodes || []) {
@@ -223,9 +221,9 @@ export function data(): SamplesHandlerData {
 }
 
 function getOrCreatePreProcessedData(
-    processId: Types.TraceEvents.ProcessID, profileId: Types.TraceEvents.ProfileID): PreprocessedData {
+    processId: Types.Events.ProcessID, profileId: Types.Events.ProfileID): PreprocessedData {
   const profileById = Platform.MapUtilities.getWithDefault(preprocessedData, processId, () => new Map());
-  return Platform.MapUtilities.getWithDefault<Types.TraceEvents.ProfileID, PreprocessedData>(
+  return Platform.MapUtilities.getWithDefault<Types.Events.ProfileID, PreprocessedData>(
       profileById, profileId, () => ({
                                 rawProfile: {
                                   startTime: 0,
@@ -245,7 +243,7 @@ export interface SamplesHandlerData {
 }
 
 export type ProfileData = {
-  profileId: Types.TraceEvents.ProfileID,
+  profileId: Types.Events.ProfileID,
   rawProfile: CPUProfile.CPUProfileDataModel.ExtendedProfile,
   parsedProfile: CPUProfile.CPUProfileDataModel.CPUProfileDataModel,
   /**
@@ -258,7 +256,7 @@ export type ProfileData = {
    * If you need the profile calls from a CPU profile obtained from a
    * web trace, use the data exported by the RendererHandler instead.
    */
-  profileCalls: Types.TraceEvents.SyntheticProfileCall[],
+  profileCalls: Types.Events.SyntheticProfileCall[],
   /**
    * Contains the call tree built from the CPU profile samples.
    * Similar to the profileCalls field, this tree does not contain nor
@@ -270,8 +268,8 @@ export type ProfileData = {
 
 type PreprocessedData = {
   rawProfile: CPUProfile.CPUProfileDataModel.ExtendedProfile,
-  profileId: Types.TraceEvents.ProfileID,
-  threadId?: Types.TraceEvents.ThreadID,
+  profileId: Types.Events.ProfileID,
+  threadId?: Types.Events.ThreadID,
 };
 
 /**
@@ -282,8 +280,7 @@ type PreprocessedData = {
  * we fall back to the function name that was in the callframe that we got
  * when parsing the profile's trace data.
  */
-export function getProfileCallFunctionName(
-    data: SamplesHandlerData, entry: Types.TraceEvents.SyntheticProfileCall): string {
+export function getProfileCallFunctionName(data: SamplesHandlerData, entry: Types.Events.SyntheticProfileCall): string {
   const profile = data.profilesInProcess.get(entry.pid)?.get(entry.tid);
   const node = profile?.parsedProfile.nodeById(entry.nodeId);
   if (node?.functionName) {

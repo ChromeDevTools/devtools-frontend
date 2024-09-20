@@ -7,11 +7,11 @@ import * as Types from '../types/types.js';
 
 import {HandlerState} from './types.js';
 
-const animations: Types.TraceEvents.TraceEventAnimation[] = [];
-const animationsSyntheticEvents: Types.TraceEvents.SyntheticAnimationPair[] = [];
+const animations: Types.Events.Animation[] = [];
+const animationsSyntheticEvents: Types.Events.SyntheticAnimationPair[] = [];
 
 export interface AnimationData {
-  animations: readonly Types.TraceEvents.SyntheticAnimationPair[];
+  animations: readonly Types.Events.SyntheticAnimationPair[];
 }
 let handlerState = HandlerState.UNINITIALIZED;
 
@@ -20,8 +20,8 @@ export function reset(): void {
   animationsSyntheticEvents.length = 0;
 }
 
-export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
-  if (Types.TraceEvents.isTraceEventAnimation(event)) {
+export function handleEvent(event: Types.Events.Event): void {
+  if (Types.Events.isAnimation(event)) {
     animations.push(event);
     return;
   }

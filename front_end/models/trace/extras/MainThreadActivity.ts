@@ -12,12 +12,12 @@ const IDLE_FUNCTION_CALL_NAMES = new Set([
 
 export function calculateWindow(
     traceBounds: Types.Timing.TraceWindowMicroSeconds,
-    mainThreadEntries: readonly Types.TraceEvents.TraceEventData[]): Types.Timing.TraceWindowMicroSeconds {
+    mainThreadEntries: readonly Types.Events.Event[]): Types.Timing.TraceWindowMicroSeconds {
   if (!mainThreadEntries.length) {
     return traceBounds;
   }
   const entriesWithIdleRemoved = mainThreadEntries.filter(entry => {
-    if (Types.TraceEvents.isProfileCall(entry) &&
+    if (Types.Events.isProfileCall(entry) &&
         (IDLE_FUNCTION_CALL_NAMES.has(entry.callFrame.functionName) || !entry.callFrame.functionName)) {
       return false;
     }

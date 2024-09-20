@@ -6,23 +6,21 @@ import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
 
 import {data as metaHandlerData} from './MetaHandler.js';
-import {HandlerState, type TraceEventHandlerName} from './types.js';
+import {type HandlerName, HandlerState} from './types.js';
 
 let handlerState = HandlerState.UNINITIALIZED;
 
-const paintEvents: Types.TraceEvents.TraceEventPaint[] = [];
-const snapshotEvents: Types.TraceEvents.TraceEventDisplayItemListSnapshot[] = [];
-const paintToSnapshotMap =
-    new Map<Types.TraceEvents.TraceEventPaint, Types.TraceEvents.TraceEventDisplayItemListSnapshot>();
+const paintEvents: Types.Events.Paint[] = [];
+const snapshotEvents: Types.Events.DisplayItemListSnapshot[] = [];
+const paintToSnapshotMap = new Map<Types.Events.Paint, Types.Events.DisplayItemListSnapshot>();
 
-let lastPaintForLayerId: Record<number, Types.TraceEvents.TraceEventPaint> = {};
+let lastPaintForLayerId: Record<number, Types.Events.Paint> = {};
 
 let currentMainFrameLayerTreeId: number|null = null;
-const updateLayerEvents: Types.TraceEvents.TraceEventUpdateLayer[] = [];
+const updateLayerEvents: Types.Events.UpdateLayer[] = [];
 
-type RelevantLayerTreeEvent = Types.TraceEvents.TraceEventPaint|
-                              Types.TraceEvents.TraceEventDisplayItemListSnapshot|
-                              Types.TraceEvents.TraceEventUpdateLayer|Types.TraceEvents.TraceEventSetLayerTreeId;
+type RelevantLayerTreeEvent =
+    Types.Events.Paint|Types.Events.DisplayItemListSnapshot|Types.Events.UpdateLayer|Types.Events.SetLayerTreeId;
 
 const relevantEvents: RelevantLayerTreeEvent[] = [];
 export function reset(): void {
@@ -45,13 +43,13 @@ export function initialize(): void {
   handlerState = HandlerState.INITIALIZED;
 }
 
-export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
+export function handleEvent(event: Types.Events.Event): void {
   // We gather up the events here but do all the processing in finalize(). This
   // is because we need to have all the events before we process them, and we
   // need the Meta handler to be finalized() so we can use its data as we need
   // the mainFrameId to know which Layer(s) to care about.
-  if (Types.TraceEvents.isTraceEventPaint(event) || Types.TraceEvents.isTraceEventDisplayListItemListSnapshot(event) ||
-      Types.TraceEvents.isTraceEventUpdateLayer(event) || Types.TraceEvents.isTraceEventSetLayerId(event)) {
+  if (Types.Events.isPaint(event) || Types.Events.isDisplayListItemListSnapshot(event) ||
+      Types.Events.isUpdateLayer(event) || Types.Events.isSetLayerId(event)) {
     relevantEvents.push(event);
   }
 }
@@ -65,19 +63,19 @@ export async function finalize(): Promise<void> {
   Helpers.Trace.sortTraceEventsInPlace(relevantEvents);
 
   for (const event of relevantEvents) {
-    if (Types.TraceEvents.isTraceEventSetLayerId(event)) {
+    if (Types.Events.isSetLayerId(event)) {
       if (metaData.mainFrameId !== event.args.data.frame) {
         // We only care about LayerId changes that affect the main frame.
         continue;
       }
       currentMainFrameLayerTreeId = event.args.data.layerTreeId;
-    } else if (Types.TraceEvents.isTraceEventUpdateLayer(event)) {
+    } else if (Types.Events.isUpdateLayer(event)) {
       // We don't do anything with this event, but we need to store it because
       // the information in it determines if we need to care about future
       // snapshot events - we need to know what the active layer is when we see a
       // snapshot.
       updateLayerEvents.push(event);
-    } else if (Types.TraceEvents.isTraceEventPaint(event)) {
+    } else if (Types.Events.isPaint(event)) {
       if (!event.args.data.layerId) {
         // Note that this check purposefully includes excluding an event with a layerId of 0.
         // 0 indicates that this paint was for a subframe - we do not want these
@@ -87,12 +85,12 @@ export async function finalize(): Promise<void> {
       paintEvents.push(event);
       lastPaintForLayerId[event.args.data.layerId] = event;
       continue;
-    } else if (Types.TraceEvents.isTraceEventDisplayListItemListSnapshot(event)) {
+    } else if (Types.Events.isDisplayListItemListSnapshot(event)) {
       // First we figure out which layer is active for this event's thread. To
       // do this we work backwards through the list of UpdateLayerEvents,
       // finding the first one (i.e. the most recent one) with the same pid and
       // tid.
-      let lastUpdateLayerEventForThread: Types.TraceEvents.TraceEventUpdateLayer|null = null;
+      let lastUpdateLayerEventForThread: Types.Events.UpdateLayer|null = null;
       for (let i = updateLayerEvents.length - 1; i > -1; i--) {
         const updateEvent = updateLayerEvents[i];
         if (updateEvent.pid === event.pid && updateEvent.tid === event.tid) {
@@ -124,9 +122,9 @@ export async function finalize(): Promise<void> {
 }
 
 export interface LayerTreeData {
-  paints: Types.TraceEvents.TraceEventPaint[];
-  snapshots: Types.TraceEvents.TraceEventDisplayItemListSnapshot[];
-  paintsToSnapshots: Map<Types.TraceEvents.TraceEventPaint, Types.TraceEvents.TraceEventDisplayItemListSnapshot>;
+  paints: Types.Events.Paint[];
+  snapshots: Types.Events.DisplayItemListSnapshot[];
+  paintsToSnapshots: Map<Types.Events.Paint, Types.Events.DisplayItemListSnapshot>;
 }
 
 export function data(): LayerTreeData {
@@ -137,6 +135,6 @@ export function data(): LayerTreeData {
   };
 }
 
-export function deps(): TraceEventHandlerName[] {
+export function deps(): HandlerName[] {
   return ['Meta'];
 }

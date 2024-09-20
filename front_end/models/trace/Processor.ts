@@ -55,19 +55,18 @@ export class TraceProcessor extends EventTarget {
   readonly #traceHandlers: Partial<Handlers.Types.Handlers>;
   #status = Status.IDLE;
   #modelConfiguration = Types.Configuration.defaults();
-  #data: Handlers.Types.TraceParseData|null = null;
-  #insights: Insights.Types.TraceInsightData|null = null;
+  #data: Handlers.Types.ParsedTrace|null = null;
+  #insights: Insights.Types.TraceInsightSets|null = null;
 
   static createWithAllHandlers(): TraceProcessor {
     return new TraceProcessor(Handlers.ModelHandlers, Types.Configuration.defaults());
   }
 
-  static getEnabledInsightRunners(traceParsedData: Handlers.Types.TraceParseData):
-      Partial<Insights.Types.InsightRunnersType> {
+  static getEnabledInsightRunners(parsedTrace: Handlers.Types.ParsedTrace): Partial<Insights.Types.InsightRunnersType> {
     const enabledInsights = {} as Insights.Types.InsightRunnersType;
     for (const [name, insight] of Object.entries(Insights.InsightRunners)) {
       const deps = insight.deps();
-      if (deps.some(dep => !traceParsedData[dep])) {
+      if (deps.some(dep => !parsedTrace[dep])) {
         continue;
       }
       Object.assign(enabledInsights, {[name]: insight});
@@ -115,9 +114,9 @@ export class TraceProcessor extends EventTarget {
     if (Object.keys(providedHandlers).length === Object.keys(Handlers.ModelHandlers).length) {
       return;
     }
-    const requiredHandlerKeys: Set<Handlers.Types.TraceEventHandlerName> = new Set();
+    const requiredHandlerKeys: Set<Handlers.Types.HandlerName> = new Set();
     for (const [handlerName, handler] of Object.entries(providedHandlers)) {
-      requiredHandlerKeys.add(handlerName as Handlers.Types.TraceEventHandlerName);
+      requiredHandlerKeys.add(handlerName as Handlers.Types.HandlerName);
       const deps = 'deps' in handler ? handler.deps() : [];
       for (const depName of deps) {
         requiredHandlerKeys.add(depName);
@@ -152,13 +151,13 @@ export class TraceProcessor extends EventTarget {
     this.#status = Status.IDLE;
   }
 
-  async parse(traceEvents: readonly Types.TraceEvents.TraceEventData[], freshRecording = false): Promise<void> {
+  async parse(traceEvents: readonly Types.Events.Event[], freshRecording = false): Promise<void> {
     if (this.#status !== Status.IDLE) {
       throw new Error(`Trace processor can't start parsing when not idle. Current state: ${this.#status}`);
     }
     try {
       this.#status = Status.PARSING;
-      await this.#computeTraceParsedData(traceEvents, freshRecording);
+      await this.#computeParsedTrace(traceEvents, freshRecording);
       if (this.#data) {
         this.#computeInsights(this.#data, traceEvents);
       }
@@ -172,8 +171,7 @@ export class TraceProcessor extends EventTarget {
   /**
    * Run all the handlers and set the result to `#data`.
    */
-  async #computeTraceParsedData(traceEvents: readonly Types.TraceEvents.TraceEventData[], freshRecording: boolean):
-      Promise<void> {
+  async #computeParsedTrace(traceEvents: readonly Types.Events.Event[], freshRecording: boolean): Promise<void> {
     /**
      * We want to yield regularly to maintain responsiveness. If we yield too often, we're wasting idle time.
      * We could do this by checking `performance.now()` regularly, but it's an expensive call in such a hot loop.
@@ -250,17 +248,17 @@ export class TraceProcessor extends EventTarget {
       return value;
     };
 
-    const traceParsedData = {};
+    const parsedTrace = {};
     for (const [name, handler] of Object.entries(this.#traceHandlers)) {
       const data = shallowClone(handler.data());
-      Object.assign(traceParsedData, {[name]: data});
+      Object.assign(parsedTrace, {[name]: data});
     }
     this.dispatchEvent(new TraceParseProgressEvent({percent: ProgressPhase.CLONE}));
 
-    this.#data = traceParsedData as Handlers.Types.TraceParseData;
+    this.#data = parsedTrace as Handlers.Types.ParsedTrace;
   }
 
-  get traceParsedData(): Handlers.Types.TraceParseData|null {
+  get parsedTrace(): Handlers.Types.ParsedTrace|null {
     if (this.#status !== Status.FINISHED_PARSING) {
       return null;
     }
@@ -268,7 +266,7 @@ export class TraceProcessor extends EventTarget {
     return this.#data;
   }
 
-  get insights(): Insights.Types.TraceInsightData|null {
+  get insights(): Insights.Types.TraceInsightSets|null {
     if (this.#status !== Status.FINISHED_PARSING) {
       return null;
     }
@@ -277,17 +275,17 @@ export class TraceProcessor extends EventTarget {
   }
 
   #createLanternContext(
-      traceParsedData: Handlers.Types.TraceParseData, traceEvents: readonly Types.TraceEvents.TraceEventData[],
-      frameId: string, navigationId: string): Insights.Types.LanternContext|undefined {
+      parsedTrace: Handlers.Types.ParsedTrace, traceEvents: readonly Types.Events.Event[], frameId: string,
+      navigationId: string): Insights.Types.LanternContext|undefined {
     // Check for required handlers.
-    if (!traceParsedData.NetworkRequests || !traceParsedData.Workers || !traceParsedData.PageLoadMetrics) {
+    if (!parsedTrace.NetworkRequests || !parsedTrace.Workers || !parsedTrace.PageLoadMetrics) {
       return;
     }
-    if (!traceParsedData.NetworkRequests.byTime.length) {
+    if (!parsedTrace.NetworkRequests.byTime.length) {
       throw new Lantern.Core.LanternError('No network requests found in trace');
     }
 
-    const navStarts = traceParsedData.Meta.navigationsByFrameId.get(frameId);
+    const navStarts = parsedTrace.Meta.navigationsByFrameId.get(frameId);
     const navStartIndex = navStarts?.findIndex(n => n.args.data?.navigationId === navigationId);
     if (!navStarts || navStartIndex === undefined || navStartIndex === -1) {
       throw new Lantern.Core.LanternError('Could not find navigation start');
@@ -297,19 +295,18 @@ export class TraceProcessor extends EventTarget {
     const endTime = navStartIndex + 1 < navStarts.length ? navStarts[navStartIndex + 1].ts : Number.POSITIVE_INFINITY;
     const boundedTraceEvents = traceEvents.filter(e => e.ts >= startTime && e.ts < endTime);
 
-    // Lantern.Types.TraceEvent and Types.TraceEvents.TraceEventData represent the same
+    // Lantern.Types.TraceEvent and Types.Events.Event represent the same
     // object - a trace event - but one is more flexible than the other. It should be safe to cast between them.
     const trace: Lantern.Types.Trace = {
       traceEvents: boundedTraceEvents as unknown as Lantern.Types.TraceEvent[],
     };
 
-    const requests = LanternComputationData.createNetworkRequests(trace, traceParsedData, startTime, endTime);
-    const graph = LanternComputationData.createGraph(requests, trace, traceParsedData);
-    const processedNavigation =
-        LanternComputationData.createProcessedNavigation(traceParsedData, frameId, navigationId);
+    const requests = LanternComputationData.createNetworkRequests(trace, parsedTrace, startTime, endTime);
+    const graph = LanternComputationData.createGraph(requests, trace, parsedTrace);
+    const processedNavigation = LanternComputationData.createProcessedNavigation(parsedTrace, frameId, navigationId);
 
     const networkAnalysis = Lantern.Core.NetworkAnalyzer.analyze(requests);
-    const simulator: Lantern.Simulation.Simulator<Types.TraceEvents.SyntheticNetworkRequest> =
+    const simulator: Lantern.Simulation.Simulator<Types.Events.SyntheticNetworkRequest> =
         Lantern.Simulation.Simulator.createSimulator({
           networkAnalysis,
           throttlingMethod: 'simulate',
@@ -330,15 +327,15 @@ export class TraceProcessor extends EventTarget {
     return {graph, simulator, metrics};
   }
 
-  #computeBoundedInsights(
-      insights: Insights.Types.TraceInsightData, traceParsedData: Handlers.Types.TraceParseData,
-      insightRunners: Partial<typeof Insights.InsightRunners>, context: Insights.Types.BoundedInsightContext): void {
-    const data = {} as Insights.Types.BoundedInsights['data'];
+  #computeInsightSets(
+      insights: Insights.Types.TraceInsightSets, parsedTrace: Handlers.Types.ParsedTrace,
+      insightRunners: Partial<typeof Insights.InsightRunners>, context: Insights.Types.InsightSetContext): void {
+    const data = {} as Insights.Types.InsightSets['data'];
 
     for (const [name, insight] of Object.entries(insightRunners)) {
       let insightResult;
       try {
-        insightResult = insight.generateInsight(traceParsedData, context);
+        insightResult = insight.generateInsight(parsedTrace, context);
       } catch (err) {
         insightResult = err;
       }
@@ -348,14 +345,14 @@ export class TraceProcessor extends EventTarget {
     let id, label, navigation;
     if (context.navigation) {
       id = context.navigationId;
-      label = context.navigation.args.data?.documentLoaderURL ?? traceParsedData.Meta.mainFrameURL;
+      label = context.navigation.args.data?.documentLoaderURL ?? parsedTrace.Meta.mainFrameURL;
       navigation = context.navigation;
     } else {
       id = Insights.Types.NO_NAVIGATION;
-      label = traceParsedData.Meta.mainFrameURL;
+      label = parsedTrace.Meta.mainFrameURL;
     }
 
-    const boundedInsights = {
+    const insightSets = {
       id,
       label,
       navigation,
@@ -363,43 +360,41 @@ export class TraceProcessor extends EventTarget {
       bounds: context.bounds,
       data,
     };
-    insights.set(boundedInsights.id, boundedInsights);
+    insights.set(insightSets.id, insightSets);
   }
 
   /**
    * Run all the insights and set the result to `#insights`.
    */
-  #computeInsights(
-      traceParsedData: Handlers.Types.TraceParseData, traceEvents: readonly Types.TraceEvents.TraceEventData[]): void {
+  #computeInsights(parsedTrace: Handlers.Types.ParsedTrace, traceEvents: readonly Types.Events.Event[]): void {
     this.#insights = new Map();
 
-    const enabledInsightRunners = TraceProcessor.getEnabledInsightRunners(traceParsedData);
+    const enabledInsightRunners = TraceProcessor.getEnabledInsightRunners(parsedTrace);
 
-    const navigations = traceParsedData.Meta.mainFrameNavigations.filter(
+    const navigations = parsedTrace.Meta.mainFrameNavigations.filter(
         navigation => navigation.args.frame && navigation.args.data?.navigationId);
 
     // Check if there is a meaningful chunk of work happening prior to the first navigation.
     // If so, we run the insights on that initial bounds.
     // Otherwise, there are no navigations and we do a no-navigation insights pass on the entire trace.
     if (navigations.length) {
-      const bounds =
-          Helpers.Timing.traceWindowFromMicroSeconds(traceParsedData.Meta.traceBounds.min, navigations[0].ts);
+      const bounds = Helpers.Timing.traceWindowFromMicroSeconds(parsedTrace.Meta.traceBounds.min, navigations[0].ts);
       // When using "Record and reload" option, it typically takes ~5ms. So use 50ms to be safe.
       const threshold = Helpers.Timing.millisecondsToMicroseconds(50 as Types.Timing.MilliSeconds);
       if (bounds.range > threshold) {
-        const context: Insights.Types.BoundedInsightContext = {
+        const context: Insights.Types.InsightSetContext = {
           bounds,
-          frameId: traceParsedData.Meta.mainFrameId,
+          frameId: parsedTrace.Meta.mainFrameId,
         };
-        this.#computeBoundedInsights(this.#insights, traceParsedData, enabledInsightRunners, context);
+        this.#computeInsightSets(this.#insights, parsedTrace, enabledInsightRunners, context);
       }
       // If threshold is not met, then the very beginning of the trace is ignored by the insights engine.
     } else {
-      const context: Insights.Types.BoundedInsightContext = {
-        bounds: traceParsedData.Meta.traceBounds,
-        frameId: traceParsedData.Meta.mainFrameId,
+      const context: Insights.Types.InsightSetContext = {
+        bounds: parsedTrace.Meta.traceBounds,
+        frameId: parsedTrace.Meta.mainFrameId,
       };
-      this.#computeBoundedInsights(this.#insights, traceParsedData, enabledInsightRunners, context);
+      this.#computeInsightSets(this.#insights, parsedTrace, enabledInsightRunners, context);
     }
 
     // Now run the insights for each navigation in isolation.
@@ -413,7 +408,7 @@ export class TraceProcessor extends EventTarget {
       // Additionally, many trace fixtures are too old to be processed by Lantern.
       let lantern;
       try {
-        lantern = this.#createLanternContext(traceParsedData, traceEvents, frameId, navigationId);
+        lantern = this.#createLanternContext(parsedTrace, traceEvents, frameId, navigationId);
       } catch (e) {
         // Don't allow an error in constructing the Lantern graphs to break the rest of the trace processor.
         // Log unexpected errors, but suppress anything that occurs from a trace being too old.
@@ -437,9 +432,9 @@ export class TraceProcessor extends EventTarget {
       }
 
       const min = navigation.ts;
-      const max = i + 1 < navigations.length ? navigations[i + 1].ts : traceParsedData.Meta.traceBounds.max;
+      const max = i + 1 < navigations.length ? navigations[i + 1].ts : parsedTrace.Meta.traceBounds.max;
       const bounds = Helpers.Timing.traceWindowFromMicroSeconds(min, max);
-      const context: Insights.Types.BoundedInsightContext = {
+      const context: Insights.Types.InsightSetContext = {
         bounds,
         frameId,
         navigation,
@@ -447,7 +442,7 @@ export class TraceProcessor extends EventTarget {
         lantern,
       };
 
-      this.#computeBoundedInsights(this.#insights, traceParsedData, enabledInsightRunners, context);
+      this.#computeInsightSets(this.#insights, parsedTrace, enabledInsightRunners, context);
     }
   }
 }
@@ -458,12 +453,11 @@ export class TraceProcessor extends EventTarget {
  * @returns A map from trace event handler name to trace event hander whose entries
  * iterate in such a way that each handler is visited after its dependencies.
  */
-export function sortHandlers(
-    traceHandlers: Partial<{[key in Handlers.Types.TraceEventHandlerName]: Handlers.Types.TraceEventHandler}>):
-    Map<Handlers.Types.TraceEventHandlerName, Handlers.Types.TraceEventHandler> {
-  const sortedMap = new Map<Handlers.Types.TraceEventHandlerName, Handlers.Types.TraceEventHandler>();
-  const visited = new Set<Handlers.Types.TraceEventHandlerName>();
-  const visitHandler = (handlerName: Handlers.Types.TraceEventHandlerName): void => {
+export function sortHandlers(traceHandlers: Partial<{[key in Handlers.Types.HandlerName]: Handlers.Types.Handler}>):
+    Map<Handlers.Types.HandlerName, Handlers.Types.Handler> {
+  const sortedMap = new Map<Handlers.Types.HandlerName, Handlers.Types.Handler>();
+  const visited = new Set<Handlers.Types.HandlerName>();
+  const visitHandler = (handlerName: Handlers.Types.HandlerName): void => {
     if (sortedMap.has(handlerName)) {
       return;
     }
@@ -490,7 +484,7 @@ export function sortHandlers(
   };
 
   for (const handlerName of Object.keys(traceHandlers)) {
-    visitHandler(handlerName as Handlers.Types.TraceEventHandlerName);
+    visitHandler(handlerName as Handlers.Types.HandlerName);
   }
   return sortedMap;
 }

@@ -5,15 +5,15 @@
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {createContextForNavigation, getFirstOrError, getInsight} from '../../../testing/InsightHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
-import * as TraceModel from '../trace.js';
+import * as Trace from '../trace.js';
 
 export async function processTrace(testContext: Mocha.Suite|Mocha.Context|null, traceFile: string) {
-  const {traceData, insights} = await TraceLoader.traceEngine(testContext, traceFile);
+  const {parsedTrace, insights} = await TraceLoader.traceEngine(testContext, traceFile);
   if (!insights) {
     throw new Error('No insights');
   }
 
-  return {data: traceData, insights};
+  return {data: parsedTrace, insights};
 }
 
 describeWithEnvironment('Viewport', function() {
@@ -35,7 +35,7 @@ describeWithEnvironment('Viewport', function() {
       event.args.is_mobile_optimized = false;
     }
 
-    const insight = TraceModel.Insights.InsightRunners.Viewport.generateInsight(data, context);
+    const insight = Trace.Insights.InsightRunners.Viewport.generateInsight(data, context);
     assert.strictEqual(insight.mobileOptimized, false);
   });
 });

@@ -4,10 +4,10 @@
 
 import * as Types from '../types/types.js';
 
-let lastUpdateLayoutTreeEvent: Types.TraceEvents.TraceEventUpdateLayoutTree|null = null;
+let lastUpdateLayoutTreeEvent: Types.Events.UpdateLayoutTree|null = null;
 
-const selectorDataForUpdateLayoutTree = new Map<Types.TraceEvents.TraceEventUpdateLayoutTree, {
-  timings: Types.TraceEvents.SelectorTiming[],
+const selectorDataForUpdateLayoutTree = new Map<Types.Events.UpdateLayoutTree, {
+  timings: Types.Events.SelectorTiming[],
 }>();
 
 export function reset(): void {
@@ -15,23 +15,23 @@ export function reset(): void {
   selectorDataForUpdateLayoutTree.clear();
 }
 
-export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
-  if (Types.TraceEvents.isTraceEventSelectorStats(event) && lastUpdateLayoutTreeEvent && event.args.selector_stats) {
+export function handleEvent(event: Types.Events.Event): void {
+  if (Types.Events.isSelectorStats(event) && lastUpdateLayoutTreeEvent && event.args.selector_stats) {
     selectorDataForUpdateLayoutTree.set(lastUpdateLayoutTreeEvent, {
       timings: event.args.selector_stats.selector_timings,
     });
     return;
   }
 
-  if (Types.TraceEvents.isTraceEventUpdateLayoutTree(event)) {
+  if (Types.Events.isUpdateLayoutTree(event)) {
     lastUpdateLayoutTreeEvent = event;
     return;
   }
 }
 
 export interface SelectorStatsData {
-  dataForUpdateLayoutEvent: Map<Types.TraceEvents.TraceEventUpdateLayoutTree, {
-    timings: Types.TraceEvents.SelectorTiming[],
+  dataForUpdateLayoutEvent: Map<Types.Events.UpdateLayoutTree, {
+    timings: Types.Events.SelectorTiming[],
   }>;
 }
 

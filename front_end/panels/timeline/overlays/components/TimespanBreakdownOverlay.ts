@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as i18n from '../../../../core/i18n/i18n.js';
-import * as TraceEngine from '../../../../models/trace/trace.js';
+import * as Trace from '../../../../models/trace/trace.js';
 import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 
@@ -12,7 +12,7 @@ import styles from './timespanBreakdownOverlay.css.js';
  * An EntryBreakdown, or section, that makes up a TimespanBreakdown.
  */
 export type EntryBreakdown = {
-  bounds: TraceEngine.Types.Timing.TraceWindowMicroSeconds,
+  bounds: Trace.Types.Timing.TraceWindowMicroSeconds,
   label: string|LitHtml.LitTemplate,
   showDuration: boolean,
 };
@@ -154,7 +154,7 @@ export class TimespanBreakdownOverlay extends HTMLElement {
   }
 
   renderSection(section: EntryBreakdown): LitHtml.TemplateResult {
-    const sectionRange = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(section.bounds.range);
+    const sectionRange = Trace.Helpers.Timing.microSecondsToMilliseconds(section.bounds.range);
     // clang-format off
     return LitHtml.html`
       <div class="timespan-breakdown-overlay-section">

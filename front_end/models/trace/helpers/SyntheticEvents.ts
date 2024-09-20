@@ -11,17 +11,17 @@ export class SyntheticEventsManager {
    * All synthetic entries created in a trace from a corresponding trace events.
    * (ProfileCalls are excluded because they are not based on a real trace event)
    */
-  #syntheticTraceEvents: Types.TraceEvents.SyntheticBasedEvent[] = [];
+  #syntheticTraces: Types.Events.SyntheticBased[] = [];
   /**
    * All raw entries from a trace.
    */
-  #rawTraceEvents: readonly Types.TraceEvents.TraceEventData[] = [];
+  #rawTraceEvents: readonly Types.Events.Event[] = [];
 
   static activate(manager: SyntheticEventsManager): void {
     activeManager = manager;
   }
 
-  static createAndActivate(rawEvents: readonly Types.TraceEvents.TraceEventData[]): SyntheticEventsManager {
+  static createAndActivate(rawEvents: readonly Types.Events.Event[]): SyntheticEventsManager {
     const manager = new SyntheticEventsManager(rawEvents);
     SyntheticEventsManager.activate(manager);
     return manager;
@@ -38,10 +38,9 @@ export class SyntheticEventsManager {
     activeManager = null;
   }
 
-  static registerSyntheticBasedEvent<T extends Types.TraceEvents.SyntheticBasedEvent>(syntheticEvent: Omit<T, '_tag'>):
-      T {
+  static registerSyntheticEvent<T extends Types.Events.SyntheticBased>(syntheticEvent: Omit<T, '_tag'>): T {
     try {
-      return SyntheticEventsManager.getActiveManager().registerSyntheticBasedEvent(syntheticEvent);
+      return SyntheticEventsManager.getActiveManager().registerSyntheticEvent(syntheticEvent);
     } catch (e) {
       // If no active manager has been initialized, we assume the trace engine is
       // not running as part of the Performance panel. In this case we don't
@@ -51,13 +50,13 @@ export class SyntheticEventsManager {
     }
   }
 
-  static registerServerTiming(syntheticEvent: Omit<Types.TraceEvents.SyntheticServerTiming, '_tag'>):
-      Types.TraceEvents.SyntheticServerTiming {
+  static registerServerTiming(syntheticEvent: Omit<Types.Events.SyntheticServerTiming, '_tag'>):
+      Types.Events.SyntheticServerTiming {
     // TODO(crbug.com/340811171): Implement
-    return syntheticEvent as Types.TraceEvents.SyntheticServerTiming;
+    return syntheticEvent as Types.Events.SyntheticServerTiming;
   }
 
-  private constructor(rawEvents: readonly Types.TraceEvents.TraceEventData[]) {
+  private constructor(rawEvents: readonly Types.Events.Event[]) {
     this.#rawTraceEvents = rawEvents;
   }
 
@@ -66,29 +65,29 @@ export class SyntheticEventsManager {
    * be created with this method to ensure they are registered and made
    * available to load events using serialized keys.
    */
-  registerSyntheticBasedEvent<T extends Types.TraceEvents.SyntheticBasedEvent>(syntheticEvent: Omit<T, '_tag'>): T {
+  registerSyntheticEvent<T extends Types.Events.SyntheticBased>(syntheticEvent: Omit<T, '_tag'>): T {
     const rawIndex = this.#rawTraceEvents.indexOf(syntheticEvent.rawSourceEvent);
     if (rawIndex < 0) {
       throw new Error('Attempted to register a synthetic event paired to an unknown raw event.');
     }
     const eventAsSynthetic = syntheticEvent as T;
-    this.#syntheticTraceEvents[rawIndex] = eventAsSynthetic;
+    this.#syntheticTraces[rawIndex] = eventAsSynthetic;
     return eventAsSynthetic;
   }
 
-  syntheticEventForRawEventIndex(rawEventIndex: number): Types.TraceEvents.SyntheticBasedEvent {
-    const syntheticEvent = this.#syntheticTraceEvents.at(rawEventIndex);
+  syntheticEventForRawEventIndex(rawEventIndex: number): Types.Events.SyntheticBased {
+    const syntheticEvent = this.#syntheticTraces.at(rawEventIndex);
     if (!syntheticEvent) {
       throw new Error(`Attempted to get a synthetic event from an unknown raw event index: ${rawEventIndex}`);
     }
     return syntheticEvent;
   }
 
-  getSyntheticTraceEvents(): Types.TraceEvents.SyntheticBasedEvent[] {
-    return this.#syntheticTraceEvents;
+  getSyntheticTraces(): Types.Events.SyntheticBased[] {
+    return this.#syntheticTraces;
   }
 
-  getRawTraceEvents(): readonly Types.TraceEvents.TraceEventData[] {
+  getRawTraceEvents(): readonly Types.Events.Event[] {
     return this.#rawTraceEvents;
   }
 }

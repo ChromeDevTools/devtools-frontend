@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
-import * as TraceEngine from '../../models/trace/trace.js';
+import * as Trace from '../../models/trace/trace.js';
 import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
@@ -24,7 +24,7 @@ import miniMapStyles from './timelineMiniMap.css.js';
 import {TimelineUIUtils} from './TimelineUIUtils.js';
 
 export interface OverviewData {
-  traceParsedData: TraceEngine.Handlers.Types.TraceParseData;
+  parsedTrace: Trace.Handlers.Types.ParsedTrace;
   isCpuProfile?: boolean;
   settings: {
     showScreenshots: boolean,
@@ -86,8 +86,8 @@ export class TimelineMiniMap extends
 
   #onOverviewPanelWindowChanged(
       event: Common.EventTarget.EventTargetEvent<PerfUI.TimelineOverviewPane.OverviewPaneWindowChangedEvent>): void {
-    const traceData = this.#data?.traceParsedData;
-    if (!traceData) {
+    const parsedTrace = this.#data?.parsedTrace;
+    if (!parsedTrace) {
       return;
     }
 
@@ -101,9 +101,9 @@ export class TimelineMiniMap extends
         Number.isFinite(event.data.endTime) ? event.data.endTime : traceBoundsState.milli.entireTraceBounds.max;
 
     TraceBounds.TraceBounds.BoundsManager.instance().setTimelineVisibleWindow(
-        TraceEngine.Helpers.Timing.traceWindowFromMilliSeconds(
-            TraceEngine.Types.Timing.MilliSeconds(left),
-            TraceEngine.Types.Timing.MilliSeconds(right),
+        Trace.Helpers.Timing.traceWindowFromMilliSeconds(
+            Trace.Types.Timing.MilliSeconds(left),
+            Trace.Types.Timing.MilliSeconds(right),
             ),
         {
           shouldAnimate: true,
@@ -123,7 +123,7 @@ export class TimelineMiniMap extends
       // applies if the user has created breadcrumbs, which scope the
       // minimap. If they have not, the entire trace is the minimap, and
       // therefore there is no work to be done.
-      const newWindowFitsBounds = TraceEngine.Helpers.Timing.windowFitsInsideBounds({
+      const newWindowFitsBounds = Trace.Helpers.Timing.windowFitsInsideBounds({
         window: event.state.micro.timelineTraceWindow,
         bounds: event.state.micro.minimapTraceBounds,
       });
@@ -138,7 +138,7 @@ export class TimelineMiniMap extends
     }
   }
 
-  #updateMiniMapBoundsToFitNewWindow(newWindow: TraceEngine.Types.Timing.TraceWindowMicroSeconds): void {
+  #updateMiniMapBoundsToFitNewWindow(newWindow: Trace.Types.Timing.TraceWindowMicroSeconds): void {
     if (!this.breadcrumbs) {
       return;
     }
@@ -146,11 +146,11 @@ export class TimelineMiniMap extends
     // Breadcrumbs are a linked list from largest to smallest so we have to
     // walk through until we find one that does not fit, and pick the last
     // before that.
-    let currentBreadcrumb: TraceEngine.Types.File.Breadcrumb|null = this.breadcrumbs.initialBreadcrumb;
-    let lastBreadcrumbThatFits: TraceEngine.Types.File.Breadcrumb = this.breadcrumbs.initialBreadcrumb;
+    let currentBreadcrumb: Trace.Types.File.Breadcrumb|null = this.breadcrumbs.initialBreadcrumb;
+    let lastBreadcrumbThatFits: Trace.Types.File.Breadcrumb = this.breadcrumbs.initialBreadcrumb;
 
     while (currentBreadcrumb) {
-      const fits = TraceEngine.Helpers.Timing.windowFitsInsideBounds({
+      const fits = Trace.Helpers.Timing.windowFitsInsideBounds({
         window: newWindow,
         bounds: currentBreadcrumb.window,
       });
@@ -185,12 +185,12 @@ export class TimelineMiniMap extends
     // this case we change them to be the min and max values of the minimap
     // bounds.
     const breadcrumbTimes = {
-      startTime: TraceEngine.Types.Timing.MilliSeconds(Math.max(startTime, bounds.min)),
-      endTime: TraceEngine.Types.Timing.MilliSeconds(Math.min(endTime, bounds.max)),
+      startTime: Trace.Types.Timing.MilliSeconds(Math.max(startTime, bounds.min)),
+      endTime: Trace.Types.Timing.MilliSeconds(Math.min(endTime, bounds.max)),
     };
 
     const newVisibleTraceWindow =
-        TraceEngine.Helpers.Timing.traceWindowFromMilliSeconds(breadcrumbTimes.startTime, breadcrumbTimes.endTime);
+        Trace.Helpers.Timing.traceWindowFromMilliSeconds(breadcrumbTimes.startTime, breadcrumbTimes.endTime);
 
     const addedBreadcrumb = this.breadcrumbs.add(newVisibleTraceWindow);
 
@@ -200,7 +200,7 @@ export class TimelineMiniMap extends
     };
   }
 
-  highlightBounds(bounds: TraceEngine.Types.Timing.TraceWindowMicroSeconds): void {
+  highlightBounds(bounds: Trace.Types.Timing.TraceWindowMicroSeconds): void {
     this.#overviewComponent.highlightBounds(bounds);
   }
   clearBoundsHighlight(): void {
@@ -213,7 +213,7 @@ export class TimelineMiniMap extends
    * @param options.updateVisibleWindow - if true, the visible window will be updated to match the bounds of the breadcrumb
    */
   #activateBreadcrumb(
-      breadcrumb: TraceEngine.Types.File.Breadcrumb,
+      breadcrumb: Trace.Types.File.Breadcrumb,
       options: TimelineComponents.Breadcrumbs.SetActiveBreadcrumbOptions): void {
     if (!this.breadcrumbs) {
       return;
@@ -237,31 +237,31 @@ export class TimelineMiniMap extends
     this.#overviewComponent.reset();
   }
 
-  #setMarkers(traceParsedData: TraceEngine.Handlers.Types.TraceParseData): void {
+  #setMarkers(parsedTrace: Trace.Handlers.Types.ParsedTrace): void {
     const markers = new Map<number, Element>();
 
-    const {Meta, PageLoadMetrics} = traceParsedData;
+    const {Meta, PageLoadMetrics} = parsedTrace;
 
     // Add markers for navigation start times.
     const navStartEvents = Meta.mainFrameNavigations;
-    const minTimeInMilliseconds = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(Meta.traceBounds.min);
+    const minTimeInMilliseconds = Trace.Helpers.Timing.microSecondsToMilliseconds(Meta.traceBounds.min);
 
     for (const event of navStartEvents) {
-      const {startTime} = TraceEngine.Helpers.Timing.eventTimingsMilliSeconds(event);
+      const {startTime} = Trace.Helpers.Timing.eventTimingsMilliSeconds(event);
       markers.set(startTime, TimelineUIUtils.createEventDivider(event, minTimeInMilliseconds));
     }
 
     // Now add markers for the page load events
     for (const event of PageLoadMetrics.allMarkerEvents) {
-      const {startTime} = TraceEngine.Helpers.Timing.eventTimingsMilliSeconds(event);
+      const {startTime} = Trace.Helpers.Timing.eventTimingsMilliSeconds(event);
       markers.set(startTime, TimelineUIUtils.createEventDivider(event, minTimeInMilliseconds));
     }
 
     this.#overviewComponent.setMarkers(markers);
   }
 
-  #setNavigationStartEvents(traceParsedData: TraceEngine.Handlers.Types.TraceParseData): void {
-    this.#overviewComponent.setNavStartTimes(traceParsedData.Meta.mainFrameNavigations);
+  #setNavigationStartEvents(parsedTrace: Trace.Handlers.Types.ParsedTrace): void {
+    this.#overviewComponent.setNavStartTimes(parsedTrace.Meta.mainFrameNavigations);
   }
 
   getControls(): TimelineEventOverview[] {
@@ -269,26 +269,26 @@ export class TimelineMiniMap extends
   }
 
   setData(data: OverviewData): void {
-    if (this.#data?.traceParsedData === data.traceParsedData) {
+    if (this.#data?.parsedTrace === data.parsedTrace) {
       return;
     }
     this.#data = data;
     this.#controls = [];
 
-    this.#setMarkers(data.traceParsedData);
-    this.#setNavigationStartEvents(data.traceParsedData);
-    this.#controls.push(new TimelineEventOverviewResponsiveness(data.traceParsedData));
-    this.#controls.push(new TimelineEventOverviewCPUActivity(data.traceParsedData));
+    this.#setMarkers(data.parsedTrace);
+    this.#setNavigationStartEvents(data.parsedTrace);
+    this.#controls.push(new TimelineEventOverviewResponsiveness(data.parsedTrace));
+    this.#controls.push(new TimelineEventOverviewCPUActivity(data.parsedTrace));
 
-    this.#controls.push(new TimelineEventOverviewNetwork(data.traceParsedData));
+    this.#controls.push(new TimelineEventOverviewNetwork(data.parsedTrace));
     if (data.settings.showScreenshots) {
-      const filmStrip = TraceEngine.Extras.FilmStrip.fromTraceData(data.traceParsedData);
+      const filmStrip = Trace.Extras.FilmStrip.fromParsedTrace(data.parsedTrace);
       if (filmStrip.frames.length) {
         this.#controls.push(new TimelineFilmStripOverview(filmStrip));
       }
     }
     if (data.settings.showMemory) {
-      this.#controls.push(new TimelineEventOverviewMemory(data.traceParsedData));
+      this.#controls.push(new TimelineEventOverviewMemory(data.parsedTrace));
     }
     this.#overviewComponent.setOverviewControls(this.#controls);
     this.#overviewComponent.showingScreenshots = data.settings.showScreenshots;

@@ -26,15 +26,15 @@ describeWithEnvironment('TimelineHistoryManager', function() {
 
   it('shows the dropdown including a landing page link if the observations experiment is enabled', async function() {
     Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.TIMELINE_OBSERVATIONS);
-    const {traceData} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
     historyManager.addRecording(
         {
           data: {
-            traceParseDataIndex: 1,
+            parsedTraceIndex: 1,
             type: 'TRACE_INDEX',
           },
           filmStripForPreview: null,
-          traceParsedData: traceData,
+          parsedTrace,
           startTime: null,
         },
     );
@@ -57,15 +57,15 @@ describeWithEnvironment('TimelineHistoryManager', function() {
   });
 
   it('does not show if observations experiment is disabled + the user has not imported 2 traces', async function() {
-    const {traceData} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
     historyManager.addRecording(
         {
           data: {
-            traceParseDataIndex: 1,
+            parsedTraceIndex: 1,
             type: 'TRACE_INDEX',
           },
           filmStripForPreview: null,
-          traceParsedData: traceData,
+          parsedTrace,
           startTime: null,
         },
     );
@@ -79,27 +79,27 @@ describeWithEnvironment('TimelineHistoryManager', function() {
   });
 
   it('does not show the landing page link if the observations experiment is disabled', async function() {
-    const {traceData: traceData1} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const {parsedTrace: parsedTrace1} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
     historyManager.addRecording(
         {
           data: {
-            traceParseDataIndex: 1,
+            parsedTraceIndex: 1,
             type: 'TRACE_INDEX',
           },
           filmStripForPreview: null,
-          traceParsedData: traceData1,
+          parsedTrace: parsedTrace1,
           startTime: null,
         },
     );
-    const {traceData: traceData2} = await TraceLoader.traceEngine(this, 'timings-track.json.gz');
+    const {parsedTrace: parsedTrace2} = await TraceLoader.traceEngine(this, 'timings-track.json.gz');
     historyManager.addRecording(
         {
           data: {
-            traceParseDataIndex: 2,
+            parsedTraceIndex: 2,
             type: 'TRACE_INDEX',
           },
           filmStripForPreview: null,
-          traceParsedData: traceData2,
+          parsedTrace: parsedTrace2,
           startTime: null,
         },
     );
@@ -126,36 +126,36 @@ describeWithEnvironment('TimelineHistoryManager', function() {
 
   it('can select from multiple parsed data objects', async function() {
     // Add two parsed data objects to the history manager.
-    const {traceData: trace1Data} = await TraceLoader.traceEngine(this, 'slow-interaction-button-click.json.gz');
+    const {parsedTrace: trace1Data} = await TraceLoader.traceEngine(this, 'slow-interaction-button-click.json.gz');
     historyManager.addRecording(
         {
           data: {
-            traceParseDataIndex: 1,
+            parsedTraceIndex: 1,
             type: 'TRACE_INDEX',
           },
           filmStripForPreview: null,
-          traceParsedData: trace1Data,
+          parsedTrace: trace1Data,
           startTime: null,
         },
     );
 
-    const {traceData: trace2Data} = await TraceLoader.traceEngine(this, 'slow-interaction-keydown.json.gz');
+    const {parsedTrace: trace2Data} = await TraceLoader.traceEngine(this, 'slow-interaction-keydown.json.gz');
     historyManager.addRecording({
       data: {
-        traceParseDataIndex: 2,
+        parsedTraceIndex: 2,
         type: 'TRACE_INDEX',
       },
       filmStripForPreview: null,
-      traceParsedData: trace2Data,
+      parsedTrace: trace2Data,
       startTime: null,
     });
 
     // Make sure the correct model is returned when
     // using the history manager to navigate between trace files..
     const previousRecording = historyManager.navigate(1);
-    assert.strictEqual(previousRecording?.traceParseDataIndex, 1);
+    assert.strictEqual(previousRecording?.parsedTraceIndex, 1);
 
     const nextRecording = historyManager.navigate(-1);
-    assert.strictEqual(nextRecording?.traceParseDataIndex, 2);
+    assert.strictEqual(nextRecording?.parsedTraceIndex, 2);
   });
 });

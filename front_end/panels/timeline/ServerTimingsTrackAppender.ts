@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
-import type * as TraceEngine from '../../models/trace/trace.js';
+import type * as Trace from '../../models/trace/trace.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 
 import {buildGroupStyle, buildTrackHeader, getFormattedTime} from './AppenderUtils.js';
@@ -34,11 +34,10 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class ServerTimingsTrackAppender implements TrackAppender {
   readonly appenderName: TrackAppenderName = 'ServerTimings';
 
-  #traceParsedData: Readonly<TraceEngine.Handlers.Types.TraceParseData>;
+  #parsedTrace: Readonly<Trace.Handlers.Types.ParsedTrace>;
   #compatibilityBuilder: CompatibilityTracksAppender;
-  constructor(
-      compatibilityBuilder: CompatibilityTracksAppender, traceParsedData: TraceEngine.Handlers.Types.TraceParseData) {
-    this.#traceParsedData = traceParsedData;
+  constructor(compatibilityBuilder: CompatibilityTracksAppender, parsedTrace: Trace.Handlers.Types.ParsedTrace) {
+    this.#parsedTrace = parsedTrace;
     this.#compatibilityBuilder = compatibilityBuilder;
   }
 
@@ -46,12 +45,12 @@ export class ServerTimingsTrackAppender implements TrackAppender {
     if (!Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_SERVER_TIMINGS)) {
       return trackStartLevel;
     }
-    if (this.#traceParsedData.ServerTimings.serverTimings.length === 0) {
+    if (this.#parsedTrace.ServerTimings.serverTimings.length === 0) {
       return trackStartLevel;
     }
     let lastLevel = trackStartLevel;
-    const serverTimingsByOrigin = Object.groupBy(
-        this.#traceParsedData.ServerTimings.serverTimings, serverTiming => serverTiming.args.data.origin);
+    const serverTimingsByOrigin =
+        Object.groupBy(this.#parsedTrace.ServerTimings.serverTimings, serverTiming => serverTiming.args.data.origin);
     for (const [origin, serverTimings] of Object.entries(serverTimingsByOrigin)) {
       if (!serverTimings || serverTimings.length === 0) {
         continue;
@@ -78,8 +77,7 @@ export class ServerTimingsTrackAppender implements TrackAppender {
     this.#compatibilityBuilder.registerTrackForGroup(group, this);
   }
 
-  #appendServerTimings(trackStartLevel: number, serverTimings: TraceEngine.Types.TraceEvents.SyntheticServerTiming[]):
-      number {
+  #appendServerTimings(trackStartLevel: number, serverTimings: Trace.Types.Events.SyntheticServerTiming[]): number {
     let currentStartLevel = trackStartLevel;
     currentStartLevel = this.#compatibilityBuilder.appendEventsAtLevel(serverTimings, currentStartLevel, this);
     return currentStartLevel;
@@ -89,7 +87,7 @@ export class ServerTimingsTrackAppender implements TrackAppender {
     return ThemeSupport.ThemeSupport.instance().getComputedValue('--ref-palette-primary70');
   }
 
-  titleForEvent(event: TraceEngine.Types.TraceEvents.TraceEventData): string {
+  titleForEvent(event: Trace.Types.Events.Event): string {
     return event.name;
   }
 
@@ -97,7 +95,7 @@ export class ServerTimingsTrackAppender implements TrackAppender {
    * Returns the info shown when an event added by this appender
    * is hovered in the timeline.
    */
-  highlightedEntryInfo(event: TraceEngine.Types.TraceEvents.TraceEventData): HighlightedEntryInfo {
+  highlightedEntryInfo(event: Trace.Types.Events.Event): HighlightedEntryInfo {
     return {title: event.name, formattedTime: getFormattedTime(event.dur)};
   }
 }

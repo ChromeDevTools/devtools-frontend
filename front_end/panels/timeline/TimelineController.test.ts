@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as SDK from '../../core/sdk/sdk.js';
-import type * as TraceEngine from '../../models/trace/trace.js';
+import type * as Trace from '../../models/trace/trace.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithRealConnection} from '../../testing/RealConnection.js';
 
@@ -21,7 +21,7 @@ describeWithRealConnection('TimelineController', () => {
       processingStarted: sinon.stub(),
       loadingProgress: sinon.stub(),
       loadingComplete: sinon.stub().callsFake(function(
-          _collectedEvents: TraceEngine.Types.TraceEvents.TraceEventData[],
+          _collectedEvents: Trace.Types.Events.Event[],
       ) {}),
     };
     const client: Timeline.TimelineController.Client = {
@@ -77,7 +77,7 @@ describeWithRealConnection('TimelineController', () => {
     assert.strictEqual(stubs.loadingStarted.callCount, 1);
     assert.isAtLeast(stubs.loadingProgress.callCount, 1);
     assert.strictEqual(stubs.loadingComplete.callCount, 1);
-    const [collectedEvents] = stubs.loadingComplete.getCall(0).args as [TraceEngine.Types.TraceEvents.TraceEventData[]];
+    const [collectedEvents] = stubs.loadingComplete.getCall(0).args as [Trace.Types.Events.Event[]];
     // Ensure we collected events during tracing.
     assert.isTrue(collectedEvents.length > 0);
   });

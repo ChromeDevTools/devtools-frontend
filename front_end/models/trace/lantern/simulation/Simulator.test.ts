@@ -5,9 +5,9 @@
 // @ts-nocheck TODO(crbug.com/348449529)
 
 import {TraceLoader} from '../../../../testing/TraceLoader.js';
-import * as TraceModel from '../../trace.js';
+import * as Trace from '../../trace.js';
 import * as Lantern from '../lantern.js';
-import {runTraceEngine, toLanternTrace} from '../testing/testing.js';
+import {runTrace, toLanternTrace} from '../testing/testing.js';
 
 const {NetworkNode, CPUNode} = Lantern.Graph;
 const {Simulator, DNSCache} = Lantern.Simulation;
@@ -16,9 +16,9 @@ let nextRequestId = 1;
 let nextTid = 1;
 
 async function createGraph(trace: Lantern.Trace) {
-  const traceEngineData = await runTraceEngine(trace);
-  const requests = TraceModel.LanternComputationData.createNetworkRequests(trace, traceEngineData);
-  return TraceModel.LanternComputationData.createGraph(requests, trace, traceEngineData);
+  const parsedTrace = await runTrace(trace);
+  const requests = Trace.LanternComputationData.createNetworkRequests(trace, parsedTrace);
+  return Trace.LanternComputationData.createGraph(requests, trace, parsedTrace);
 }
 
 function request(opts) {

@@ -5,7 +5,7 @@
 import * as Helpers from '../helpers/helpers.js';
 import {type SyntheticInteractionPair} from '../types/TraceEvents.js';
 
-import {type BoundedInsightContext, type InsightResult, type RequiredData} from './types.js';
+import {type InsightResult, type InsightSetContext, type RequiredData} from './types.js';
 
 export function deps(): ['UserInteractions'] {
   return ['UserInteractions'];
@@ -16,9 +16,8 @@ export type INPInsightResult = InsightResult<{
   highPercentileInteractionEvent?: SyntheticInteractionPair,
 }>;
 
-export function generateInsight(
-    traceParsedData: RequiredData<typeof deps>, context: BoundedInsightContext): INPInsightResult {
-  const interactionEvents = traceParsedData.UserInteractions.interactionEvents.filter(event => {
+export function generateInsight(parsedTrace: RequiredData<typeof deps>, context: InsightSetContext): INPInsightResult {
+  const interactionEvents = parsedTrace.UserInteractions.interactionEvents.filter(event => {
     return Helpers.Timing.eventIsInBounds(event, context.bounds);
   });
 

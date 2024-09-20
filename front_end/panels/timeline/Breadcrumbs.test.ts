@@ -2,45 +2,45 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as TraceEngine from '../../models/trace/trace.js';
+import * as Trace from '../../models/trace/trace.js';
 import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
 
 import * as TimelineComponents from './components/components.js';
 
 function nestedBreadcrumbs(): {
-  initialBreadcrumb: TraceEngine.Types.File.Breadcrumb,
-  breadcrumb1: TraceEngine.Types.File.Breadcrumb,
-  breadcrumb2: TraceEngine.Types.File.Breadcrumb,
+  initialBreadcrumb: Trace.Types.File.Breadcrumb,
+  breadcrumb1: Trace.Types.File.Breadcrumb,
+  breadcrumb2: Trace.Types.File.Breadcrumb,
 } {
-  const initialTraceWindow: TraceEngine.Types.Timing.TraceWindowMicroSeconds = {
-    min: TraceEngine.Types.Timing.MicroSeconds(1000),
-    max: TraceEngine.Types.Timing.MicroSeconds(10000),
-    range: TraceEngine.Types.Timing.MicroSeconds(9000),
+  const initialTraceWindow: Trace.Types.Timing.TraceWindowMicroSeconds = {
+    min: Trace.Types.Timing.MicroSeconds(1000),
+    max: Trace.Types.Timing.MicroSeconds(10000),
+    range: Trace.Types.Timing.MicroSeconds(9000),
   };
 
-  const traceWindow1: TraceEngine.Types.Timing.TraceWindowMicroSeconds = {
-    min: TraceEngine.Types.Timing.MicroSeconds(3000),
-    max: TraceEngine.Types.Timing.MicroSeconds(9000),
-    range: TraceEngine.Types.Timing.MicroSeconds(6000),
+  const traceWindow1: Trace.Types.Timing.TraceWindowMicroSeconds = {
+    min: Trace.Types.Timing.MicroSeconds(3000),
+    max: Trace.Types.Timing.MicroSeconds(9000),
+    range: Trace.Types.Timing.MicroSeconds(6000),
   };
 
-  const traceWindow2: TraceEngine.Types.Timing.TraceWindowMicroSeconds = {
-    min: TraceEngine.Types.Timing.MicroSeconds(4000),
-    max: TraceEngine.Types.Timing.MicroSeconds(6000),
-    range: TraceEngine.Types.Timing.MicroSeconds(2000),
+  const traceWindow2: Trace.Types.Timing.TraceWindowMicroSeconds = {
+    min: Trace.Types.Timing.MicroSeconds(4000),
+    max: Trace.Types.Timing.MicroSeconds(6000),
+    range: Trace.Types.Timing.MicroSeconds(2000),
   };
 
-  const breadcrumb2: TraceEngine.Types.File.Breadcrumb = {
+  const breadcrumb2: Trace.Types.File.Breadcrumb = {
     window: traceWindow2,
     child: null,
   };
 
-  const breadcrumb1: TraceEngine.Types.File.Breadcrumb = {
+  const breadcrumb1: Trace.Types.File.Breadcrumb = {
     window: traceWindow1,
     child: breadcrumb2,
   };
 
-  const initialBreadcrumb: TraceEngine.Types.File.Breadcrumb = {
+  const initialBreadcrumb: Trace.Types.File.Breadcrumb = {
     window: initialTraceWindow,
     child: breadcrumb1,
   };
@@ -128,13 +128,13 @@ describe('Timeline breadcrumbs', () => {
     assert.deepEqual(crumbs.activeBreadcrumb, initialBreadcrumb);
 
     // Add a new breadcrumb
-    const traceWindow4: TraceEngine.Types.Timing.TraceWindowMicroSeconds = {
-      min: TraceEngine.Types.Timing.MicroSeconds(2000),
-      max: TraceEngine.Types.Timing.MicroSeconds(5000),
-      range: TraceEngine.Types.Timing.MicroSeconds(3000),
+    const traceWindow4: Trace.Types.Timing.TraceWindowMicroSeconds = {
+      min: Trace.Types.Timing.MicroSeconds(2000),
+      max: Trace.Types.Timing.MicroSeconds(5000),
+      range: Trace.Types.Timing.MicroSeconds(3000),
     };
 
-    const breadcrumb4: TraceEngine.Types.File.Breadcrumb = {
+    const breadcrumb4: Trace.Types.File.Breadcrumb = {
       window: traceWindow4,
       child: null,
     };
@@ -179,7 +179,7 @@ describe('Timeline breadcrumbs', () => {
 
       const crumbs = new TimelineComponents.Breadcrumbs.Breadcrumbs(initialBreadcrumb.window);
 
-      const equalTraceWindow: TraceEngine.Types.Timing.TraceWindowMicroSeconds = {
+      const equalTraceWindow: Trace.Types.Timing.TraceWindowMicroSeconds = {
         min: initialBreadcrumb.window.min,
         max: initialBreadcrumb.window.max,
         range: initialBreadcrumb.window.range,
@@ -190,41 +190,41 @@ describe('Timeline breadcrumbs', () => {
   });
 
   it('can create breadcrumbs with equal start or end as the parent breadcrumb', () => {
-    const initialTraceWindow: TraceEngine.Types.Timing.TraceWindowMicroSeconds = {
-      min: TraceEngine.Types.Timing.MicroSeconds(1000),
-      max: TraceEngine.Types.Timing.MicroSeconds(10000),
-      range: TraceEngine.Types.Timing.MicroSeconds(9000),
+    const initialTraceWindow: Trace.Types.Timing.TraceWindowMicroSeconds = {
+      min: Trace.Types.Timing.MicroSeconds(1000),
+      max: Trace.Types.Timing.MicroSeconds(10000),
+      range: Trace.Types.Timing.MicroSeconds(9000),
     };
     TraceBounds.TraceBounds.BoundsManager.instance({forceNew: true}).resetWithNewBounds(initialTraceWindow);
 
     const crumbs = new TimelineComponents.Breadcrumbs.Breadcrumbs(initialTraceWindow);
 
-    const traceWindow1: TraceEngine.Types.Timing.TraceWindowMicroSeconds = {
-      min: TraceEngine.Types.Timing.MicroSeconds(1000),
-      max: TraceEngine.Types.Timing.MicroSeconds(9000),
-      range: TraceEngine.Types.Timing.MicroSeconds(8000),
+    const traceWindow1: Trace.Types.Timing.TraceWindowMicroSeconds = {
+      min: Trace.Types.Timing.MicroSeconds(1000),
+      max: Trace.Types.Timing.MicroSeconds(9000),
+      range: Trace.Types.Timing.MicroSeconds(8000),
     };
 
-    const traceWindow2: TraceEngine.Types.Timing.TraceWindowMicroSeconds = {
-      min: TraceEngine.Types.Timing.MicroSeconds(3000),
-      max: TraceEngine.Types.Timing.MicroSeconds(9000),
-      range: TraceEngine.Types.Timing.MicroSeconds(6000),
+    const traceWindow2: Trace.Types.Timing.TraceWindowMicroSeconds = {
+      min: Trace.Types.Timing.MicroSeconds(3000),
+      max: Trace.Types.Timing.MicroSeconds(9000),
+      range: Trace.Types.Timing.MicroSeconds(6000),
     };
 
     crumbs.add(traceWindow1);
     crumbs.add(traceWindow2);
 
-    const breadcrumb2: TraceEngine.Types.File.Breadcrumb = {
+    const breadcrumb2: Trace.Types.File.Breadcrumb = {
       window: traceWindow2,
       child: null,
     };
 
-    const breadcrumb1: TraceEngine.Types.File.Breadcrumb = {
+    const breadcrumb1: Trace.Types.File.Breadcrumb = {
       window: traceWindow1,
       child: breadcrumb2,
     };
 
-    const initialBreadcrumb: TraceEngine.Types.File.Breadcrumb = {
+    const initialBreadcrumb: Trace.Types.File.Breadcrumb = {
       window: initialTraceWindow,
       child: breadcrumb1,
     };

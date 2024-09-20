@@ -9,7 +9,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as PublicExtensions from '../../models/extensions/extensions.js';
-import type * as TraceEngine from '../../models/trace/trace.js';
+import type * as Trace from '../../models/trace/trace.js';
 import * as Emulation from '../../panels/emulation/emulation.js';
 import * as Timeline from '../../panels/timeline/timeline.js';
 import * as Tracing from '../../services/tracing/tracing.js';
@@ -550,8 +550,7 @@ export class RecorderController extends LitElement {
       await UI.InspectorView.InspectorView.instance().showPanel(event.data?.targetPanel as string);
       switch (event.data?.targetPanel) {
         case Components.RecordingView.TargetPanel.PERFORMANCE_PANEL:
-          Timeline.TimelinePanel.TimelinePanel.instance().loadFromEvents(
-              events as TraceEngine.Types.TraceEvents.TraceEventData[]);
+          Timeline.TimelinePanel.TimelinePanel.instance().loadFromEvents(events as Trace.Types.Events.Event[]);
           break;
       }
     }

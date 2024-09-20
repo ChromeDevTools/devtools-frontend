@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 import * as Common from '../../../core/common/common.js';
 import * as Platform from '../../../core/platform/platform.js';
-import * as TraceEngine from '../../../models/trace/trace.js';
+import * as Trace from '../../../models/trace/trace.js';
 import type * as PerfUI from '../../../ui/legacy/components/perf_ui/perf_ui.js';
 
 import * as Components from './components/components.js';
@@ -13,7 +13,7 @@ import * as Components from './components/components.js';
 // set it to a small duration so that the user is able to see and click
 // them more easily. Long term we will explore a better UI solution to
 // allow us to do this properly and not hack around it.
-export const LAYOUT_SHIFT_SYNTHETIC_DURATION = TraceEngine.Types.Timing.MicroSeconds(5_000);
+export const LAYOUT_SHIFT_SYNTHETIC_DURATION = Trace.Types.Timing.MicroSeconds(5_000);
 
 /**
  * Below the network track there is a resize bar the user can click and drag.
@@ -36,8 +36,7 @@ export type EntryChartLocation = 'main'|'network';
  * support TimelineFrame instances (which themselves will be removed from the
  * codebase.)
  */
-export type OverlayEntry =
-    TraceEngine.Types.TraceEvents.TraceEventData|TraceEngine.Types.TraceEvents.LegacyTimelineFrame;
+export type OverlayEntry = Trace.Types.Events.Event|Trace.Types.Events.LegacyTimelineFrame;
 
 /**
  * Represents when a user has selected an entry in the timeline
@@ -89,7 +88,7 @@ export interface CreateEntriesLink {
  */
 export interface TimeRangeLabel {
   type: 'TIME_RANGE';
-  bounds: TraceEngine.Types.Timing.TraceWindowMicroSeconds;
+  bounds: Trace.Types.Timing.TraceWindowMicroSeconds;
   label: string;
   showDuration: boolean;
 }
@@ -98,10 +97,9 @@ export interface TimeRangeLabel {
  * Given a list of overlays, this method will calculate the smallest possible
  * trace window that will contain all of the overlays.
  */
-export function traceWindowContainingOverlays(overlays: TimelineOverlay[]):
-    TraceEngine.Types.Timing.TraceWindowMicroSeconds {
-  let minTime = TraceEngine.Types.Timing.MicroSeconds(Number.POSITIVE_INFINITY);
-  let maxTime = TraceEngine.Types.Timing.MicroSeconds(Number.NEGATIVE_INFINITY);
+export function traceWindowContainingOverlays(overlays: TimelineOverlay[]): Trace.Types.Timing.TraceWindowMicroSeconds {
+  let minTime = Trace.Types.Timing.MicroSeconds(Number.POSITIVE_INFINITY);
+  let maxTime = Trace.Types.Timing.MicroSeconds(Number.NEGATIVE_INFINITY);
 
   for (const overlay of overlays) {
     const windowForOverlay = traceWindowForOverlay(overlay);
@@ -113,12 +111,12 @@ export function traceWindowContainingOverlays(overlays: TimelineOverlay[]):
     }
   }
 
-  return TraceEngine.Helpers.Timing.traceWindowFromMicroSeconds(minTime, maxTime);
+  return Trace.Helpers.Timing.traceWindowFromMicroSeconds(minTime, maxTime);
 }
 
-function traceWindowForOverlay(overlay: TimelineOverlay): TraceEngine.Types.Timing.TraceWindowMicroSeconds {
-  const overlayMinBounds: TraceEngine.Types.Timing.MicroSeconds[] = [];
-  const overlayMaxBounds: TraceEngine.Types.Timing.MicroSeconds[] = [];
+function traceWindowForOverlay(overlay: TimelineOverlay): Trace.Types.Timing.TraceWindowMicroSeconds {
+  const overlayMinBounds: Trace.Types.Timing.MicroSeconds[] = [];
+  const overlayMaxBounds: Trace.Types.Timing.MicroSeconds[] = [];
 
   switch (overlay.type) {
     case 'ENTRY_SELECTED': {
@@ -195,9 +193,9 @@ function traceWindowForOverlay(overlay: TimelineOverlay): TraceEngine.Types.Timi
       Platform.TypeScriptUtilities.assertNever(overlay, `Unexpected overlay ${overlay}`);
   }
 
-  const min = TraceEngine.Types.Timing.MicroSeconds(Math.min(...overlayMinBounds));
-  const max = TraceEngine.Types.Timing.MicroSeconds(Math.max(...overlayMaxBounds));
-  return TraceEngine.Helpers.Timing.traceWindowFromMicroSeconds(min, max);
+  const min = Trace.Types.Timing.MicroSeconds(Math.min(...overlayMinBounds));
+  const max = Trace.Types.Timing.MicroSeconds(Math.max(...overlayMaxBounds));
+  return Trace.Helpers.Timing.traceWindowFromMicroSeconds(min, max);
 }
 
 /**
@@ -254,7 +252,7 @@ export function entriesForOverlay(overlay: TimelineOverlay): readonly OverlayEnt
   return entries;
 }
 export function chartForEntry(entry: OverlayEntry): EntryChartLocation {
-  if (TraceEngine.Types.TraceEvents.isNetworkTrackEntry(entry)) {
+  if (Trace.Types.Events.isNetworkTrackEntry(entry)) {
     return 'network';
   }
 
@@ -279,8 +277,8 @@ export function isEntryLabel(annotation: TimelineOverlay): annotation is EntryLa
  */
 export interface CandyStripedTimeRange {
   type: 'CANDY_STRIPED_TIME_RANGE';
-  bounds: TraceEngine.Types.Timing.TraceWindowMicroSeconds;
-  entry: TraceEngine.Types.TraceEvents.TraceEventData;
+  bounds: Trace.Types.Timing.TraceWindowMicroSeconds;
+  entry: Trace.Types.Events.Event;
 }
 
 /**
@@ -290,12 +288,12 @@ export interface CandyStripedTimeRange {
 export interface TimespanBreakdown {
   type: 'TIMESPAN_BREAKDOWN';
   sections: Array<Components.TimespanBreakdownOverlay.EntryBreakdown>;
-  entry?: TraceEngine.Types.TraceEvents.TraceEventData;
+  entry?: Trace.Types.Events.Event;
 }
 
 export interface CursorTimestampMarker {
   type: 'CURSOR_TIMESTAMP_MARKER';
-  timestamp: TraceEngine.Types.Timing.MicroSeconds;
+  timestamp: Trace.Types.Timing.MicroSeconds;
 }
 
 /**
@@ -329,7 +327,7 @@ export function overlayIsSingleton(overlay: TimelineOverlay): overlay is Singlet
  */
 interface ActiveDimensions {
   trace: {
-    visibleWindow: TraceEngine.Types.Timing.TraceWindowMicroSeconds|null,
+    visibleWindow: Trace.Types.Timing.TraceWindowMicroSeconds|null,
   };
   charts: {
     main: FlameChartDimensions|null,
@@ -362,9 +360,8 @@ export interface TimelineCharts {
 }
 
 export interface OverlayEntryQueries {
-  isEntryCollapsedByUser: (entry: TraceEngine.Types.TraceEvents.TraceEventData) => boolean;
-  firstVisibleParentForEntry:
-      (entry: TraceEngine.Types.TraceEvents.TraceEventData) => TraceEngine.Types.TraceEvents.TraceEventData | null;
+  isEntryCollapsedByUser: (entry: Trace.Types.Events.Event) => boolean;
+  firstVisibleParentForEntry: (entry: Trace.Types.Events.Event) => Trace.Types.Events.Event | null;
 }
 
 // An event dispatched when one of the Annotation Overlays (overlay created by the user,
@@ -380,8 +377,8 @@ export class AnnotationOverlayActionEvent extends Event {
 }
 
 interface EntriesLinkVisibleEntries {
-  entryFrom: TraceEngine.Types.TraceEvents.TraceEventData;
-  entryTo: TraceEngine.Types.TraceEvents.TraceEventData|undefined;
+  entryFrom: Trace.Types.Events.Event;
+  entryTo: Trace.Types.Events.Event|undefined;
   entryFromIsSource: boolean;
   entryToIsSource: boolean;
 }
@@ -634,7 +631,7 @@ export class Overlays extends EventTarget {
    * Update the visible window of the UI.
    * IMPORTANT: this does not trigger a re-draw. You must call the render() method manually.
    */
-  updateVisibleWindow(visibleWindow: TraceEngine.Types.Timing.TraceWindowMicroSeconds): void {
+  updateVisibleWindow(visibleWindow: Trace.Types.Timing.TraceWindowMicroSeconds): void {
     this.#dimensions.trace.visibleWindow = visibleWindow;
   }
 
@@ -711,7 +708,7 @@ export class Overlays extends EventTarget {
       // Walk through subsequent overlays and find stop when you find the next one that does not overlap.
       for (let j = i + 1; j < overlaysSorted.length; j++) {
         const next = overlaysSorted[j];
-        const currentAndNextOverlap = TraceEngine.Helpers.Timing.boundsIncludeTimeRange({
+        const currentAndNextOverlap = Trace.Helpers.Timing.boundsIncludeTimeRange({
           bounds: current.bounds,
           timeRange: next.bounds,
         });
@@ -843,7 +840,7 @@ export class Overlays extends EventTarget {
           const {visibleWindow} = this.#dimensions.trace;
           const isVisible = Boolean(
               visibleWindow && this.#entryIsVerticallyVisibleOnChart(overlay.entry) &&
-                  TraceEngine.Helpers.Timing.boundsIncludeTimeRange({
+                  Trace.Helpers.Timing.boundsIncludeTimeRange({
                     bounds: visibleWindow,
                     timeRange: overlay.sections[0].bounds,
                   }),
@@ -858,7 +855,7 @@ export class Overlays extends EventTarget {
         // Only update the position if the timestamp of this marker is within
         // the visible bounds.
         const isVisible =
-            Boolean(visibleWindow && TraceEngine.Helpers.Timing.timestampIsInBounds(visibleWindow, overlay.timestamp));
+            Boolean(visibleWindow && Trace.Helpers.Timing.timestampIsInBounds(visibleWindow, overlay.timestamp));
         this.#setOverlayElementVisibility(element, isVisible);
         if (isVisible) {
           this.#positionTimestampMarker(overlay, element);
@@ -873,7 +870,7 @@ export class Overlays extends EventTarget {
 
         const isVisible = Boolean(
             visibleWindow && this.#entryIsVerticallyVisibleOnChart(overlay.entry) &&
-            TraceEngine.Helpers.Timing.boundsIncludeTimeRange({
+            Trace.Helpers.Timing.boundsIncludeTimeRange({
               bounds: visibleWindow,
               timeRange: overlay.bounds,
             }));
@@ -1373,7 +1370,7 @@ export class Overlays extends EventTarget {
     div.classList.add('overlay-item', `overlay-type-${overlay.type}`);
     switch (overlay.type) {
       case 'ENTRY_LABEL': {
-        const shouldDrawLabelBelowEntry = TraceEngine.Types.TraceEvents.isLegacyTimelineFrame(overlay.entry);
+        const shouldDrawLabelBelowEntry = Trace.Types.Events.isLegacyTimelineFrame(overlay.entry);
         const component = new Components.EntryLabelOverlay.EntryLabelOverlay(
             overlay.label, chartForEntry(overlay.entry) === 'main', shouldDrawLabelBelowEntry);
         component.addEventListener(Components.EntryLabelOverlay.EmptyEntryLabelRemoveEvent.eventName, () => {
@@ -1524,9 +1521,9 @@ export class Overlays extends EventTarget {
     }
     const {startTime, endTime} = timingsForOverlayEntry(entry);
 
-    const entryTimeRange = TraceEngine.Helpers.Timing.traceWindowFromMicroSeconds(startTime, endTime);
+    const entryTimeRange = Trace.Helpers.Timing.traceWindowFromMicroSeconds(startTime, endTime);
 
-    return TraceEngine.Helpers.Timing.boundsIncludeTimeRange({
+    return Trace.Helpers.Timing.boundsIncludeTimeRange({
       bounds: this.#dimensions.trace.visibleWindow,
       timeRange: entryTimeRange,
     });
@@ -1649,7 +1646,7 @@ export class Overlays extends EventTarget {
    * how far along the timeline the event is. We can then multiply that by the
    * width of the canvas to get its pixel position.
    */
-  #xPixelForMicroSeconds(chart: EntryChartLocation, timestamp: TraceEngine.Types.Timing.MicroSeconds): number|null {
+  #xPixelForMicroSeconds(chart: EntryChartLocation, timestamp: Trace.Types.Timing.MicroSeconds): number|null {
     if (this.#dimensions.trace.visibleWindow === null) {
       console.error('Cannot calculate xPixel without visible trace window.');
       return null;
@@ -1778,21 +1775,21 @@ export class Overlays extends EventTarget {
  * of entry.
  */
 export function timingsForOverlayEntry(entry: OverlayEntry):
-    TraceEngine.Helpers.Timing.EventTimingsData<TraceEngine.Types.Timing.MicroSeconds> {
-  if (TraceEngine.Types.TraceEvents.isLegacyTimelineFrame(entry)) {
+    Trace.Helpers.Timing.EventTimingsData<Trace.Types.Timing.MicroSeconds> {
+  if (Trace.Types.Events.isLegacyTimelineFrame(entry)) {
     return {
       startTime: entry.startTime,
       endTime: entry.endTime,
       duration: entry.duration,
     };
   }
-  if (TraceEngine.Types.TraceEvents.isSyntheticLayoutShift(entry)) {
-    const endTime = TraceEngine.Types.Timing.MicroSeconds(entry.ts + LAYOUT_SHIFT_SYNTHETIC_DURATION);
+  if (Trace.Types.Events.isSyntheticLayoutShift(entry)) {
+    const endTime = Trace.Types.Timing.MicroSeconds(entry.ts + LAYOUT_SHIFT_SYNTHETIC_DURATION);
     return {
       endTime,
       duration: LAYOUT_SHIFT_SYNTHETIC_DURATION,
       startTime: entry.ts,
     };
   }
-  return TraceEngine.Helpers.Timing.eventTimingsMicroSeconds(entry);
+  return Trace.Helpers.Timing.eventTimingsMicroSeconds(entry);
 }

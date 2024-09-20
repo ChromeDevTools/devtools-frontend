@@ -7,7 +7,7 @@ import * as Types from '../types/types.js';
 
 import {data as metaHandlerData} from './MetaHandler.js';
 import {ScoreClassification} from './PageLoadMetricsHandler.js';
-import {HandlerState, type TraceEventHandlerName} from './types.js';
+import {type HandlerName, HandlerState} from './types.js';
 
 // This handler serves two purposes. It generates a list of events that are
 // used to show user clicks in the timeline. It is also used to gather
@@ -16,10 +16,10 @@ import {HandlerState, type TraceEventHandlerName} from './types.js';
 
 // We don't need to know which process / thread these events occurred in,
 // because they are effectively global, so we just track all that we find.
-const allEvents: Types.TraceEvents.TraceEventEventTiming[] = [];
+const allEvents: Types.Events.EventTiming[] = [];
 
-const beginCommitCompositorFrameEvents: Types.TraceEvents.TraceEventBeginCommitCompositorFrame[] = [];
-const parseMetaViewportEvents: Types.TraceEvents.TraceEventParseMetaViewport[] = [];
+const beginCommitCompositorFrameEvents: Types.Events.BeginCommitCompositorFrame[] = [];
+const parseMetaViewportEvents: Types.Events.ParseMetaViewport[] = [];
 
 export const LONG_INTERACTION_THRESHOLD = Helpers.Timing.millisecondsToMicroseconds(Types.Timing.MilliSeconds(200));
 
@@ -28,15 +28,15 @@ const INP_MEDIUM_TIMING = Helpers.Timing.millisecondsToMicroseconds(Types.Timing
 
 export interface UserInteractionsData {
   /** All the user events we found in the trace */
-  allEvents: readonly Types.TraceEvents.TraceEventEventTiming[];
+  allEvents: readonly Types.Events.EventTiming[];
   /** All the BeginCommitCompositorFrame events we found in the trace */
-  beginCommitCompositorFrameEvents: readonly Types.TraceEvents.TraceEventBeginCommitCompositorFrame[];
+  beginCommitCompositorFrameEvents: readonly Types.Events.BeginCommitCompositorFrame[];
   /** All the ParseMetaViewport events we found in the trace */
-  parseMetaViewportEvents: readonly Types.TraceEvents.TraceEventParseMetaViewport[];
+  parseMetaViewportEvents: readonly Types.Events.ParseMetaViewport[];
   /** All the interaction events we found in the trace that had an
    * interactionId and a duration > 0
    **/
-  interactionEvents: readonly Types.TraceEvents.SyntheticInteractionPair[];
+  interactionEvents: readonly Types.Events.SyntheticInteractionPair[];
   /** If the user rapidly generates interaction events (think typing into a
    * text box), in the UI we only really want to show the user the longest
    * interaction in that set.
@@ -51,19 +51,19 @@ export interface UserInteractionsData {
    * all the interaction events filtered down, removing any nested interactions
    * entirely.
    **/
-  interactionEventsWithNoNesting: readonly Types.TraceEvents.SyntheticInteractionPair[];
+  interactionEventsWithNoNesting: readonly Types.Events.SyntheticInteractionPair[];
   // The longest duration interaction event. Can be null if the trace has no interaction events.
-  longestInteractionEvent: Readonly<Types.TraceEvents.SyntheticInteractionPair>|null;
+  longestInteractionEvent: Readonly<Types.Events.SyntheticInteractionPair>|null;
   // All interactions that went over the interaction threshold (200ms, see https://web.dev/inp/)
-  interactionsOverThreshold: Readonly<Set<Types.TraceEvents.SyntheticInteractionPair>>;
+  interactionsOverThreshold: Readonly<Set<Types.Events.SyntheticInteractionPair>>;
 }
 
-let longestInteractionEvent: Types.TraceEvents.SyntheticInteractionPair|null = null;
+let longestInteractionEvent: Types.Events.SyntheticInteractionPair|null = null;
 
-const interactionEvents: Types.TraceEvents.SyntheticInteractionPair[] = [];
-const interactionEventsWithNoNesting: Types.TraceEvents.SyntheticInteractionPair[] = [];
-const eventTimingEndEventsById = new Map<string, Types.TraceEvents.TraceEventEventTimingEnd>();
-const eventTimingStartEventsForInteractions: Types.TraceEvents.TraceEventEventTimingBegin[] = [];
+const interactionEvents: Types.Events.SyntheticInteractionPair[] = [];
+const interactionEventsWithNoNesting: Types.Events.SyntheticInteractionPair[] = [];
+const eventTimingEndEventsById = new Map<string, Types.Events.EventTimingEnd>();
+const eventTimingStartEventsForInteractions: Types.Events.EventTimingBegin[] = [];
 let handlerState = HandlerState.UNINITIALIZED;
 
 export function reset(): void {
@@ -78,26 +78,26 @@ export function reset(): void {
   handlerState = HandlerState.INITIALIZED;
 }
 
-export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
+export function handleEvent(event: Types.Events.Event): void {
   if (handlerState !== HandlerState.INITIALIZED) {
     throw new Error('Handler is not initialized');
   }
 
-  if (Types.TraceEvents.isTraceEventBeginCommitCompositorFrame(event)) {
+  if (Types.Events.isBeginCommitCompositorFrame(event)) {
     beginCommitCompositorFrameEvents.push(event);
     return;
   }
 
-  if (Types.TraceEvents.isTraceEventParseMetaViewport(event)) {
+  if (Types.Events.isParseMetaViewport(event)) {
     parseMetaViewportEvents.push(event);
     return;
   }
 
-  if (!Types.TraceEvents.isTraceEventEventTiming(event)) {
+  if (!Types.Events.isEventTiming(event)) {
     return;
   }
 
-  if (Types.TraceEvents.isTraceEventEventTimingEnd(event)) {
+  if (Types.Events.isEventTimingEnd(event)) {
     // Store the end event; for each start event that is an interaction, we need the matching end event to calculate the duration correctly.
     eventTimingEndEventsById.set(event.id, event);
   }
@@ -107,7 +107,7 @@ export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
   // From this point on we want to find events that represent interactions.
   // These events are always start events - those are the ones that contain all
   // the metadata about the interaction.
-  if (!event.args.data || !Types.TraceEvents.isTraceEventEventTimingStart(event)) {
+  if (!event.args.data || !Types.Events.isEventTimingStart(event)) {
     return;
   }
   const {duration, interactionId} = event.args.data;
@@ -149,7 +149,7 @@ const keyboardEventTypes = new Set([
 ]);
 
 export type InteractionCategory = 'KEYBOARD'|'POINTER'|'OTHER';
-export function categoryOfInteraction(interaction: Types.TraceEvents.SyntheticInteractionPair): InteractionCategory {
+export function categoryOfInteraction(interaction: Types.Events.SyntheticInteractionPair): InteractionCategory {
   if (pointerEventTypes.has(interaction.type)) {
     return 'POINTER';
   }
@@ -183,20 +183,20 @@ export function categoryOfInteraction(interaction: Types.TraceEvents.SyntheticIn
  *    ====C=[pointerdown]=
  *         =D=[pointerup]=
  **/
-export function removeNestedInteractions(interactions: readonly Types.TraceEvents.SyntheticInteractionPair[]):
-    readonly Types.TraceEvents.SyntheticInteractionPair[] {
+export function removeNestedInteractions(interactions: readonly Types.Events.SyntheticInteractionPair[]):
+    readonly Types.Events.SyntheticInteractionPair[] {
   /**
    * Because we nest events only that are in the same category, we store the
    * longest event for a given end time by category.
    **/
   const earliestEventForEndTimePerCategory:
-      Record<InteractionCategory, Map<Types.Timing.MicroSeconds, Types.TraceEvents.SyntheticInteractionPair>> = {
+      Record<InteractionCategory, Map<Types.Timing.MicroSeconds, Types.Events.SyntheticInteractionPair>> = {
         POINTER: new Map(),
         KEYBOARD: new Map(),
         OTHER: new Map(),
       };
 
-  function storeEventIfEarliestForCategoryAndEndTime(interaction: Types.TraceEvents.SyntheticInteractionPair): void {
+  function storeEventIfEarliestForCategoryAndEndTime(interaction: Types.Events.SyntheticInteractionPair): void {
     const category = categoryOfInteraction(interaction);
     const earliestEventForEndTime = earliestEventForEndTimePerCategory[category];
     const endTime = Types.Timing.MicroSeconds(interaction.ts + interaction.dur);
@@ -260,7 +260,7 @@ export function removeNestedInteractions(interactions: readonly Types.TraceEvent
   return keptEvents;
 }
 
-function writeSyntheticTimespans(event: Types.TraceEvents.SyntheticInteractionPair): void {
+function writeSyntheticTimespans(event: Types.Events.SyntheticInteractionPair): void {
   const startEvent = event.args.data.beginEvent;
   const endEvent = event.args.data.endEvent;
 
@@ -312,34 +312,34 @@ export async function finalize(): Promise<void> {
     const frameId = interactionStartEvent.args.frame ?? interactionStartEvent.args.data.frame;
     const navigation = Helpers.Trace.getNavigationForTraceEvent(interactionStartEvent, frameId, navigationsByFrameId);
     const navigationId = navigation?.args.data?.navigationId;
-    const interactionEvent = Helpers.SyntheticEvents.SyntheticEventsManager
-                                 .registerSyntheticBasedEvent<Types.TraceEvents.SyntheticInteractionPair>({
-                                   // Use the start event to define the common fields.
-                                   rawSourceEvent: interactionStartEvent,
-                                   cat: interactionStartEvent.cat,
-                                   name: interactionStartEvent.name,
-                                   pid: interactionStartEvent.pid,
-                                   tid: interactionStartEvent.tid,
-                                   ph: interactionStartEvent.ph,
-                                   processingStart: processingStartRelativeToTraceTime,
-                                   processingEnd: processingEndRelativeToTraceTime,
-                                   // These will be set in writeSyntheticTimespans()
-                                   inputDelay: Types.Timing.MicroSeconds(-1),
-                                   mainThreadHandling: Types.Timing.MicroSeconds(-1),
-                                   presentationDelay: Types.Timing.MicroSeconds(-1),
-                                   args: {
-                                     data: {
-                                       beginEvent: interactionStartEvent,
-                                       endEvent,
-                                       frame: frameId,
-                                       navigationId,
-                                     },
-                                   },
-                                   ts: interactionStartEvent.ts,
-                                   dur: Types.Timing.MicroSeconds(endEvent.ts - interactionStartEvent.ts),
-                                   type: interactionStartEvent.args.data.type,
-                                   interactionId: interactionStartEvent.args.data.interactionId,
-                                 });
+    const interactionEvent =
+        Helpers.SyntheticEvents.SyntheticEventsManager.registerSyntheticEvent<Types.Events.SyntheticInteractionPair>({
+          // Use the start event to define the common fields.
+          rawSourceEvent: interactionStartEvent,
+          cat: interactionStartEvent.cat,
+          name: interactionStartEvent.name,
+          pid: interactionStartEvent.pid,
+          tid: interactionStartEvent.tid,
+          ph: interactionStartEvent.ph,
+          processingStart: processingStartRelativeToTraceTime,
+          processingEnd: processingEndRelativeToTraceTime,
+          // These will be set in writeSyntheticTimespans()
+          inputDelay: Types.Timing.MicroSeconds(-1),
+          mainThreadHandling: Types.Timing.MicroSeconds(-1),
+          presentationDelay: Types.Timing.MicroSeconds(-1),
+          args: {
+            data: {
+              beginEvent: interactionStartEvent,
+              endEvent,
+              frame: frameId,
+              navigationId,
+            },
+          },
+          ts: interactionStartEvent.ts,
+          dur: Types.Timing.MicroSeconds(endEvent.ts - interactionStartEvent.ts),
+          type: interactionStartEvent.args.data.type,
+          interactionId: interactionStartEvent.args.data.interactionId,
+        });
     writeSyntheticTimespans(interactionEvent);
 
     interactionEvents.push(interactionEvent);
@@ -371,7 +371,7 @@ export function data(): UserInteractionsData {
   };
 }
 
-export function deps(): TraceEventHandlerName[] {
+export function deps(): HandlerName[] {
   return ['Meta'];
 }
 

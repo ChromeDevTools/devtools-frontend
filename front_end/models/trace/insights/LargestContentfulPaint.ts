@@ -7,7 +7,7 @@ import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
 
 import {findLCPRequest} from './Common.js';
-import {type BoundedInsightContext, type InsightResult, InsightWarning, type RequiredData} from './types.js';
+import {type InsightResult, type InsightSetContext, InsightWarning, type RequiredData} from './types.js';
 
 export function deps(): ['NetworkRequests', 'PageLoadMetrics', 'LargestImagePaint', 'Meta'] {
   return ['NetworkRequests', 'PageLoadMetrics', 'LargestImagePaint', 'Meta'];
@@ -43,13 +43,13 @@ export type LCPInsightResult = InsightResult<{
   shouldIncreasePriorityHint?: boolean,
   shouldPreloadImage?: boolean,
   /** The network request for the LCP image, if there was one. */
-  lcpRequest?: Types.TraceEvents.SyntheticNetworkRequest,
+  lcpRequest?: Types.Events.SyntheticNetworkRequest,
   earliestDiscoveryTimeTs?: Types.Timing.MicroSeconds,
 }>;
 
 function breakdownPhases(
-    nav: Types.TraceEvents.TraceEventNavigationStart, docRequest: Types.TraceEvents.SyntheticNetworkRequest,
-    lcpMs: Types.Timing.MilliSeconds, lcpRequest: Types.TraceEvents.SyntheticNetworkRequest|null): LCPPhases {
+    nav: Types.Events.NavigationStart, docRequest: Types.Events.SyntheticNetworkRequest,
+    lcpMs: Types.Timing.MilliSeconds, lcpRequest: Types.Events.SyntheticNetworkRequest|null): LCPPhases {
   const docReqTiming = docRequest.args.data.timing;
   if (!docReqTiming) {
     throw new Error('no timing for document request');
@@ -83,16 +83,15 @@ function breakdownPhases(
   };
 }
 
-export function generateInsight(
-    traceParsedData: RequiredData<typeof deps>, context: BoundedInsightContext): LCPInsightResult {
+export function generateInsight(parsedTrace: RequiredData<typeof deps>, context: InsightSetContext): LCPInsightResult {
   // TODO(crbug.com/366049346) make this work w/o a navigation.
   if (!context.navigation) {
     return {};
   }
 
-  const networkRequests = traceParsedData.NetworkRequests;
+  const networkRequests = parsedTrace.NetworkRequests;
 
-  const frameMetrics = traceParsedData.PageLoadMetrics.metricScoresByFrameId.get(context.frameId);
+  const frameMetrics = parsedTrace.PageLoadMetrics.metricScoresByFrameId.get(context.frameId);
   if (!frameMetrics) {
     throw new Error('no frame metrics');
   }
@@ -103,7 +102,7 @@ export function generateInsight(
   }
   const metricScore = navMetrics.get(Handlers.ModelHandlers.PageLoadMetrics.MetricName.LCP);
   const lcpEvent = metricScore?.event;
-  if (!lcpEvent || !Types.TraceEvents.isTraceEventLargestContentfulPaintCandidate(lcpEvent)) {
+  if (!lcpEvent || !Types.Events.isLargestContentfulPaintCandidate(lcpEvent)) {
     return {warnings: [InsightWarning.NO_LCP]};
   }
 
@@ -111,7 +110,7 @@ export function generateInsight(
   const lcpMs = Helpers.Timing.microSecondsToMilliseconds(metricScore.timing);
   // This helps position things on the timeline's UI accurately for a trace.
   const lcpTs = metricScore.event?.ts ? Helpers.Timing.microSecondsToMilliseconds(metricScore.event?.ts) : undefined;
-  const lcpRequest = findLCPRequest(traceParsedData, context, lcpEvent);
+  const lcpRequest = findLCPRequest(parsedTrace, context, lcpEvent);
   const docRequest = networkRequests.byTime.find(req => req.args.data.requestId === context.navigationId);
   if (!docRequest) {
     return {lcpMs, lcpTs, warnings: [InsightWarning.NO_DOCUMENT_REQUEST]};

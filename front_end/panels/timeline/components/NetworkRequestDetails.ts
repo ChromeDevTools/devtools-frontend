@@ -5,7 +5,7 @@
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
 import type * as SDK from '../../../core/sdk/sdk.js';
-import * as TraceEngine from '../../../models/trace/trace.js';
+import * as Trace from '../../../models/trace/trace.js';
 import * as RequestLinkIcon from '../../../ui/components/request_link_icon/request_link_icon.js';
 import * as PerfUI from '../../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as LegacyComponents from '../../../ui/legacy/components/utils/utils.js';
@@ -111,11 +111,11 @@ export class NetworkRequestDetails extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-performance-network-request-details`;
   readonly #shadow = this.attachShadow({mode: 'open'});
 
-  #networkRequest: TraceEngine.Types.TraceEvents.SyntheticNetworkRequest|null = null;
+  #networkRequest: Trace.Types.Events.SyntheticNetworkRequest|null = null;
   #maybeTarget: SDK.Target.Target|null = null;
-  #requestPreviewElements = new WeakMap<TraceEngine.Types.TraceEvents.SyntheticNetworkRequest, HTMLImageElement>();
+  #requestPreviewElements = new WeakMap<Trace.Types.Events.SyntheticNetworkRequest, HTMLImageElement>();
   #linkifier: LegacyComponents.Linkifier.Linkifier;
-  #traceParsedData: TraceEngine.Handlers.Types.TraceParseData|null = null;
+  #parsedTrace: Trace.Handlers.Types.ParsedTrace|null = null;
   constructor(linkifier: LegacyComponents.Linkifier.Linkifier) {
     super();
     this.#linkifier = linkifier;
@@ -126,13 +126,12 @@ export class NetworkRequestDetails extends HTMLElement {
   }
 
   async setData(
-      traceParsedData: TraceEngine.Handlers.Types.TraceParseData,
-      networkRequest: TraceEngine.Types.TraceEvents.SyntheticNetworkRequest,
+      parsedTrace: Trace.Handlers.Types.ParsedTrace, networkRequest: Trace.Types.Events.SyntheticNetworkRequest,
       maybeTarget: SDK.Target.Target|null): Promise<void> {
-    if (this.#networkRequest === networkRequest && traceParsedData === this.#traceParsedData) {
+    if (this.#networkRequest === networkRequest && parsedTrace === this.#parsedTrace) {
       return;
     }
-    this.#traceParsedData = traceParsedData;
+    this.#parsedTrace = parsedTrace;
     this.#networkRequest = networkRequest;
     this.#maybeTarget = maybeTarget;
     await this.#render();
@@ -263,11 +262,11 @@ export class NetworkRequestDetails extends HTMLElement {
       return null;
     }
 
-    const hasStackTrace = TraceEngine.Helpers.Trace.stackTraceForEvent(this.#networkRequest) !== null;
+    const hasStackTrace = Trace.Helpers.Trace.stackTraceForEvent(this.#networkRequest) !== null;
 
     // If we have a stack trace, that is the most reliable way to get the initiator data and display a link to the source.
     if (hasStackTrace) {
-      const topFrame = TraceEngine.Helpers.Trace.getZeroIndexedStackTraceForEvent(this.#networkRequest)?.at(0) ?? null;
+      const topFrame = Trace.Helpers.Trace.getZeroIndexedStackTraceForEvent(this.#networkRequest)?.at(0) ?? null;
       if (topFrame) {
         const link = this.#linkifier.maybeLinkifyConsoleCallFrame(
             this.#maybeTarget, topFrame, {tabStop: true, inlineFrameIndex: 0, showColumnNumber: true});
@@ -277,7 +276,7 @@ export class NetworkRequestDetails extends HTMLElement {
       }
     }
     // If we do not, we can see if the network handler found an initiator and try to link by URL
-    const initiator = this.#traceParsedData?.NetworkRequests.eventToInitiator.get(this.#networkRequest);
+    const initiator = this.#parsedTrace?.NetworkRequests.eventToInitiator.get(this.#networkRequest);
     if (initiator) {
       const link = this.#linkifier.maybeLinkifyScriptLocation(
           this.#maybeTarget,
@@ -341,12 +340,12 @@ export class NetworkRequestDetails extends HTMLElement {
       return null;
     }
     const syntheticData = this.#networkRequest.args.data.syntheticData;
-    const queueing = (syntheticData.sendStartTime - this.#networkRequest.ts) as TraceEngine.Types.Timing.MicroSeconds;
+    const queueing = (syntheticData.sendStartTime - this.#networkRequest.ts) as Trace.Types.Timing.MicroSeconds;
     const requestPlusWaiting =
-        (syntheticData.downloadStart - syntheticData.sendStartTime) as TraceEngine.Types.Timing.MicroSeconds;
-    const download = (syntheticData.finishTime - syntheticData.downloadStart) as TraceEngine.Types.Timing.MicroSeconds;
+        (syntheticData.downloadStart - syntheticData.sendStartTime) as Trace.Types.Timing.MicroSeconds;
+    const download = (syntheticData.finishTime - syntheticData.downloadStart) as Trace.Types.Timing.MicroSeconds;
     const waitingOnMainThread = (this.#networkRequest.ts + this.#networkRequest.dur - syntheticData.finishTime) as
-        TraceEngine.Types.Timing.MicroSeconds;
+        Trace.Types.Timing.MicroSeconds;
 
     const color = colorForNetworkRequest(this.#networkRequest);
     const styleForWaiting = {

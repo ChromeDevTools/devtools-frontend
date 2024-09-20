@@ -2,20 +2,20 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as TraceEngine from '../../models/trace/trace.js';
+import * as Trace from '../../models/trace/trace.js';
 
 import * as SDK from './sdk.js';
 
 describe('TraceObject', () => {
   describe('constructor', () => {
     it('returns an instance with identical values', () => {
-      const event: TraceEngine.Types.TraceEvents.TraceEventData = {
+      const event: Trace.Types.Events.Event = {
         cat: 'disabled-by-default-devtools.timeline',
         name: 'thing',
-        ph: TraceEngine.Types.TraceEvents.Phase.COMPLETE,
-        pid: TraceEngine.Types.TraceEvents.ProcessID(1),
-        tid: TraceEngine.Types.TraceEvents.ThreadID(4),
-        ts: TraceEngine.Types.Timing.MicroSeconds(5e7),
+        ph: Trace.Types.Events.Phase.COMPLETE,
+        pid: Trace.Types.Events.ProcessID(1),
+        tid: Trace.Types.Events.ThreadID(4),
+        ts: Trace.Types.Timing.MicroSeconds(5e7),
         args: {
           data: {frame: '0xA'},
         },

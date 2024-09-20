@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as TraceEngine from '../../../models/trace/trace.js';
+import type * as Trace from '../../../models/trace/trace.js';
 import * as ThemeSupport from '../../../ui/legacy/theme_support/theme_support.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
@@ -17,8 +17,7 @@ export enum NetworkCategory {
   OTHER = 'Other',
 }
 
-function syntheticNetworkRequestCategory(request: TraceEngine.Types.TraceEvents.SyntheticNetworkRequest):
-    NetworkCategory {
+function syntheticNetworkRequestCategory(request: Trace.Types.Events.SyntheticNetworkRequest): NetworkCategory {
   switch (request.args.data.mimeType) {
     case 'text/html':
       return NetworkCategory.DOC;
@@ -87,7 +86,7 @@ export function colorForNetworkCategory(category: NetworkCategory): string {
   return ThemeSupport.ThemeSupport.instance().getComputedValue(cssVarName);
 }
 
-export function colorForNetworkRequest(request: TraceEngine.Types.TraceEvents.SyntheticNetworkRequest): string {
+export function colorForNetworkRequest(request: Trace.Types.Events.SyntheticNetworkRequest): string {
   const category = syntheticNetworkRequestCategory(request);
   return colorForNetworkCategory(category);
 }

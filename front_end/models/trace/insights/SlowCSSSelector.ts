@@ -5,7 +5,7 @@
 import {type SelectorTiming, SelectorTimingsKey} from '../types/TraceEvents.js';
 import * as Types from '../types/types.js';
 
-import {type BoundedInsightContext, type InsightResult, type RequiredData} from './types.js';
+import {type InsightResult, type InsightSetContext, type RequiredData} from './types.js';
 
 export function deps(): ['SelectorStats'] {
   return ['SelectorStats'];
@@ -15,12 +15,12 @@ export type SlowCSSSelectorInsightResult = InsightResult<{
   totalElapsedMs: Types.Timing.MilliSeconds,
   totalMatchAttempts: number,
   totalMatchCount: number,
-  topElapsedMs: Types.TraceEvents.SelectorTiming[],
-  topMatchAttempts: Types.TraceEvents.SelectorTiming[],
+  topElapsedMs: Types.Events.SelectorTiming[],
+  topMatchAttempts: Types.Events.SelectorTiming[],
 }>;
 
-function aggregateSelectorStats(data: Map<Types.TraceEvents.TraceEventUpdateLayoutTree, {
-  timings: Types.TraceEvents.SelectorTiming[],
+function aggregateSelectorStats(data: Map<Types.Events.UpdateLayoutTree, {
+  timings: Types.Events.SelectorTiming[],
 }>): SelectorTiming[] {
   const selectorMap = new Map<String, SelectorTiming>();
 
@@ -44,8 +44,8 @@ function aggregateSelectorStats(data: Map<Types.TraceEvents.TraceEventUpdateLayo
 
 export function generateInsight(
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    traceParsedData: RequiredData<typeof deps>, context: BoundedInsightContext): SlowCSSSelectorInsightResult {
-  const selectorStatsData = traceParsedData.SelectorStats;
+    parsedTrace: RequiredData<typeof deps>, context: InsightSetContext): SlowCSSSelectorInsightResult {
+  const selectorStatsData = parsedTrace.SelectorStats;
 
   if (!selectorStatsData) {
     throw new Error('no selector stats data');

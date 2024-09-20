@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as TraceEngine from '../../models/trace/trace.js';
+import * as Trace from '../../models/trace/trace.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
 
@@ -11,12 +11,12 @@ import * as Timeline from './timeline.js';
 describeWithEnvironment('TimelineFlameChartNetworkDataProvider', function() {
   it('renders the network track correctly', async function() {
     const dataProvider = new Timeline.TimelineFlameChartNetworkDataProvider.TimelineFlameChartNetworkDataProvider();
-    const {traceData} = await TraceLoader.traceEngine(this, 'load-simple.json.gz');
+    const {parsedTrace} = await TraceLoader.traceEngine(this, 'load-simple.json.gz');
 
-    const minTime = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(traceData.Meta.traceBounds.min);
-    const maxTime = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(traceData.Meta.traceBounds.max);
+    const minTime = Trace.Helpers.Timing.microSecondsToMilliseconds(parsedTrace.Meta.traceBounds.min);
+    const maxTime = Trace.Helpers.Timing.microSecondsToMilliseconds(parsedTrace.Meta.traceBounds.max);
 
-    dataProvider.setModel(traceData);
+    dataProvider.setModel(parsedTrace);
     dataProvider.setWindowTimes(minTime, maxTime);
 
     // TimelineFlameChartNetworkDataProvider only has network track, so should always be one track group.
@@ -26,11 +26,11 @@ describeWithEnvironment('TimelineFlameChartNetworkDataProvider', function() {
     assert.deepEqual(dataProvider.minimumBoundary(), minTime);
     assert.deepEqual(dataProvider.totalTime(), maxTime - minTime);
 
-    const networkEvents = traceData.NetworkRequests.byTime;
+    const networkEvents = parsedTrace.NetworkRequests.byTime;
     const networkEventsStartTimes =
-        networkEvents.map(request => TraceEngine.Helpers.Timing.microSecondsToMilliseconds(request.ts));
+        networkEvents.map(request => Trace.Helpers.Timing.microSecondsToMilliseconds(request.ts));
     const networkEventsTotalTimes = networkEvents.map(request => {
-      const {startTime, endTime} = TraceEngine.Helpers.Timing.eventTimingsMilliSeconds(request);
+      const {startTime, endTime} = Trace.Helpers.Timing.eventTimingsMilliSeconds(request);
       return endTime - startTime;
     });
     assert.deepEqual(dataProvider.timelineData().entryLevels.length, 6);
@@ -57,8 +57,8 @@ describeWithEnvironment('TimelineFlameChartNetworkDataProvider', function() {
 
   it('can return the group for a given entryIndex', async function() {
     const dataProvider = new Timeline.TimelineFlameChartNetworkDataProvider.TimelineFlameChartNetworkDataProvider();
-    const {traceData} = await TraceLoader.traceEngine(this, 'load-simple.json.gz');
-    dataProvider.setModel(traceData);
+    const {parsedTrace} = await TraceLoader.traceEngine(this, 'load-simple.json.gz');
+    dataProvider.setModel(parsedTrace);
     dataProvider.timelineData();
 
     assert.strictEqual(
@@ -69,15 +69,15 @@ describeWithEnvironment('TimelineFlameChartNetworkDataProvider', function() {
 
   it('filters navigations to only return those that happen on the main frame', async function() {
     const dataProvider = new Timeline.TimelineFlameChartNetworkDataProvider.TimelineFlameChartNetworkDataProvider();
-    const {traceData} = await TraceLoader.traceEngine(this, 'multiple-navigations-with-iframes.json.gz');
+    const {parsedTrace} = await TraceLoader.traceEngine(this, 'multiple-navigations-with-iframes.json.gz');
 
-    const minTime = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(traceData.Meta.traceBounds.min);
-    const maxTime = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(traceData.Meta.traceBounds.max);
+    const minTime = Trace.Helpers.Timing.microSecondsToMilliseconds(parsedTrace.Meta.traceBounds.min);
+    const maxTime = Trace.Helpers.Timing.microSecondsToMilliseconds(parsedTrace.Meta.traceBounds.max);
 
-    dataProvider.setModel(traceData);
+    dataProvider.setModel(parsedTrace);
     dataProvider.setWindowTimes(minTime, maxTime);
 
-    const mainFrameID = traceData.Meta.mainFrameId;
+    const mainFrameID = parsedTrace.Meta.mainFrameId;
     const navigationEvents = dataProvider.mainFrameNavigationStartEvents();
     // Ensure that every navigation event that we return is for the main frame.
     assert.isTrue(navigationEvents.every(navEvent => {
@@ -87,8 +87,8 @@ describeWithEnvironment('TimelineFlameChartNetworkDataProvider', function() {
 
   it('can provide the index for an event and the event for a given index', async function() {
     const dataProvider = new Timeline.TimelineFlameChartNetworkDataProvider.TimelineFlameChartNetworkDataProvider();
-    const {traceData} = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
-    dataProvider.setModel(traceData);
+    const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+    dataProvider.setModel(parsedTrace);
 
     const event = dataProvider.eventByIndex(0);
     assert.isOk(event);
@@ -97,12 +97,12 @@ describeWithEnvironment('TimelineFlameChartNetworkDataProvider', function() {
 
   it('does not render the network track if there is no network requests', async function() {
     const dataProvider = new Timeline.TimelineFlameChartNetworkDataProvider.TimelineFlameChartNetworkDataProvider();
-    const {traceData} = await TraceLoader.traceEngine(this, 'basic.json.gz');
+    const {parsedTrace} = await TraceLoader.traceEngine(this, 'basic.json.gz');
 
-    const minTime = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(traceData.Meta.traceBounds.min);
-    const maxTime = TraceEngine.Helpers.Timing.microSecondsToMilliseconds(traceData.Meta.traceBounds.max);
+    const minTime = Trace.Helpers.Timing.microSecondsToMilliseconds(parsedTrace.Meta.traceBounds.min);
+    const maxTime = Trace.Helpers.Timing.microSecondsToMilliseconds(parsedTrace.Meta.traceBounds.max);
 
-    dataProvider.setModel(traceData);
+    dataProvider.setModel(parsedTrace);
     dataProvider.setWindowTimes(minTime, maxTime);
 
     // Network track appender won't append the network track if there is no network requests.
@@ -128,7 +128,7 @@ describeWithEnvironment('TimelineFlameChartNetworkDataProvider', function() {
 
   it('decorate a event correctly', async function() {
     const dataProvider = new Timeline.TimelineFlameChartNetworkDataProvider.TimelineFlameChartNetworkDataProvider();
-    const {traceData} = await TraceLoader.traceEngine(this, 'cls-cluster-max-timeout.json.gz');
+    const {parsedTrace} = await TraceLoader.traceEngine(this, 'cls-cluster-max-timeout.json.gz');
     // The field that is important of this test:
     // {
     // "ts": 183752441.977,
@@ -147,7 +147,7 @@ describeWithEnvironment('TimelineFlameChartNetworkDataProvider', function() {
     //   "responseTime": 1634222299.776
     // ...
     // }
-    const event = traceData.NetworkRequests.byTime[1];
+    const event = parsedTrace.NetworkRequests.byTime[1];
     // So for this request:
     // The earliest event belonging to this request starts at 183752441.977.
     // This is used in flamechart to calculate unclippedBarX.
@@ -178,13 +178,13 @@ describeWithEnvironment('TimelineFlameChartNetworkDataProvider', function() {
 
   it('can search for entries within a given time-range', async function() {
     const dataProvider = new Timeline.TimelineFlameChartNetworkDataProvider.TimelineFlameChartNetworkDataProvider();
-    const {traceData} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
-    dataProvider.setModel(traceData);
-    const boundsMs = TraceEngine.Helpers.Timing.traceWindowMilliSeconds(traceData.Meta.traceBounds);
+    const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    dataProvider.setModel(parsedTrace);
+    const boundsMs = Trace.Helpers.Timing.traceWindowMilliSeconds(parsedTrace.Meta.traceBounds);
     dataProvider.setWindowTimes(boundsMs.min, boundsMs.max);
 
     const filter = new Timeline.TimelineFilters.TimelineRegExp(/app\.js/i);
-    const results = dataProvider.search(traceData.Meta.traceBounds, filter);
+    const results = dataProvider.search(parsedTrace.Meta.traceBounds, filter);
     assert.lengthOf(results, 1);
     assert.deepEqual(results[0], {index: 8, startTimeMilli: 122411056.533, provider: 'network'});
   });

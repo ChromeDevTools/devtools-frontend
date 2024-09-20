@@ -7,15 +7,15 @@ import * as Types from '../types/types.js';
 import {HandlerState} from './types.js';
 
 export interface WorkersData {
-  workerSessionIdEvents: readonly Types.TraceEvents.TraceEventTracingSessionIdForWorker[];
-  workerIdByThread: Map<Types.TraceEvents.ThreadID, Types.TraceEvents.WorkerId>;
-  workerURLById: Map<Types.TraceEvents.WorkerId, string>;
+  workerSessionIdEvents: readonly Types.Events.TracingSessionIdForWorker[];
+  workerIdByThread: Map<Types.Events.ThreadID, Types.Events.WorkerId>;
+  workerURLById: Map<Types.Events.WorkerId, string>;
 }
 let handlerState = HandlerState.UNINITIALIZED;
 
-const sessionIdEvents: Types.TraceEvents.TraceEventTracingSessionIdForWorker[] = [];
-const workerIdByThread: Map<Types.TraceEvents.ThreadID, Types.TraceEvents.WorkerId> = new Map();
-const workerURLById: Map<Types.TraceEvents.WorkerId, string> = new Map();
+const sessionIdEvents: Types.Events.TracingSessionIdForWorker[] = [];
+const workerIdByThread: Map<Types.Events.ThreadID, Types.Events.WorkerId> = new Map();
+const workerURLById: Map<Types.Events.WorkerId, string> = new Map();
 
 export function initialize(): void {
   if (handlerState !== HandlerState.UNINITIALIZED) {
@@ -32,11 +32,11 @@ export function reset(): void {
   handlerState = HandlerState.UNINITIALIZED;
 }
 
-export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
+export function handleEvent(event: Types.Events.Event): void {
   if (handlerState !== HandlerState.INITIALIZED) {
     throw new Error('Workers Handler is not initialized');
   }
-  if (Types.TraceEvents.isTraceEventTracingSessionIdForWorker(event)) {
+  if (Types.Events.isTracingSessionIdForWorker(event)) {
     sessionIdEvents.push(event);
   }
 }

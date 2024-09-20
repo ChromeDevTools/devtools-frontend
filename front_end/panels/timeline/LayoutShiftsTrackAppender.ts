@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
-import * as TraceEngine from '../../models/trace/trace.js';
+import * as Trace from '../../models/trace/trace.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 
 import {buildGroupStyle, buildTrackHeader, getFormattedTime} from './AppenderUtils.js';
@@ -31,18 +31,17 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 // set it to a small duration so that the user is able to see and click
 // them more easily. Long term we will explore a better UI solution to
 // allow us to do this properly and not hack around it.
-export const LAYOUT_SHIFT_SYNTHETIC_DURATION = TraceEngine.Types.Timing.MicroSeconds(5_000);
+export const LAYOUT_SHIFT_SYNTHETIC_DURATION = Trace.Types.Timing.MicroSeconds(5_000);
 
 export class LayoutShiftsTrackAppender implements TrackAppender {
   readonly appenderName: TrackAppenderName = 'LayoutShifts';
 
   #compatibilityBuilder: CompatibilityTracksAppender;
-  #traceParsedData: Readonly<TraceEngine.Handlers.Types.TraceParseData>;
+  #parsedTrace: Readonly<Trace.Handlers.Types.ParsedTrace>;
 
-  constructor(
-      compatibilityBuilder: CompatibilityTracksAppender, traceParsedData: TraceEngine.Handlers.Types.TraceParseData) {
+  constructor(compatibilityBuilder: CompatibilityTracksAppender, parsedTrace: Trace.Handlers.Types.ParsedTrace) {
     this.#compatibilityBuilder = compatibilityBuilder;
-    this.#traceParsedData = traceParsedData;
+    this.#parsedTrace = parsedTrace;
   }
 
   /**
@@ -55,7 +54,7 @@ export class LayoutShiftsTrackAppender implements TrackAppender {
    * appended the track's events.
    */
   appendTrackAtLevel(trackStartLevel: number, expanded?: boolean): number {
-    if (this.#traceParsedData.LayoutShifts.clusters.length === 0) {
+    if (this.#parsedTrace.LayoutShifts.clusters.length === 0) {
       return trackStartLevel;
     }
     this.#appendTrackHeaderAtLevel(trackStartLevel, expanded);
@@ -88,24 +87,23 @@ export class LayoutShiftsTrackAppender implements TrackAppender {
    * layout shifts (the first available level to append more data).
    */
   #appendLayoutShiftsAtLevel(currentLevel: number): number {
-    const allLayoutShifts = this.#traceParsedData.LayoutShifts.clusters.flatMap(cluster => cluster.events);
+    const allLayoutShifts = this.#parsedTrace.LayoutShifts.clusters.flatMap(cluster => cluster.events);
     const setFlameChartEntryTotalTime =
-        (_event: TraceEngine.Types.TraceEvents.SyntheticLayoutShift|
-         TraceEngine.Types.TraceEvents.SyntheticLayoutShiftCluster,
+        (_event: Trace.Types.Events.SyntheticLayoutShift|Trace.Types.Events.SyntheticLayoutShiftCluster,
          index: number): void => {
           let totalTime = LAYOUT_SHIFT_SYNTHETIC_DURATION;
-          if (TraceEngine.Types.TraceEvents.isSyntheticLayoutShiftCluster(_event)) {
+          if (Trace.Types.Events.isSyntheticLayoutShiftCluster(_event)) {
             // This is to handle the cases where there is a singular shift for a cluster.
             // A single shift would make the cluster duration 0 and hard to read.
             // So in this case, give it the LAYOUT_SHIFT_SYNTHETIC_DURATION duration.
             totalTime = _event.dur || LAYOUT_SHIFT_SYNTHETIC_DURATION;
           }
           this.#compatibilityBuilder.getFlameChartTimelineData().entryTotalTimes[index] =
-              TraceEngine.Helpers.Timing.microSecondsToMilliseconds(totalTime);
+              Trace.Helpers.Timing.microSecondsToMilliseconds(totalTime);
         };
     let shiftLevel = currentLevel;
     if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_LAYOUT_SHIFT_DETAILS)) {
-      const allClusters = this.#traceParsedData.LayoutShifts.clusters;
+      const allClusters = this.#parsedTrace.LayoutShifts.clusters;
       this.#compatibilityBuilder.appendEventsAtLevel(allClusters, currentLevel + 1, this, setFlameChartEntryTotalTime);
 
       // layout shifts should be below clusters.
@@ -128,18 +126,18 @@ export class LayoutShiftsTrackAppender implements TrackAppender {
   /**
    * Gets the color an event added by this appender should be rendered with.
    */
-  colorForEvent(_event: TraceEngine.Types.TraceEvents.TraceEventData): string {
+  colorForEvent(_event: Trace.Types.Events.Event): string {
     return ThemeSupport.ThemeSupport.instance().getComputedValue('--app-color-rendering');
   }
 
   /**
    * Gets the title an event added by this appender should be rendered with.
    */
-  titleForEvent(event: TraceEngine.Types.TraceEvents.TraceEventData): string {
-    if (TraceEngine.Types.TraceEvents.isTraceEventLayoutShift(event)) {
+  titleForEvent(event: Trace.Types.Events.Event): string {
+    if (Trace.Types.Events.isLayoutShift(event)) {
       return 'Layout shift';
     }
-    if (TraceEngine.Types.TraceEvents.isSyntheticLayoutShiftCluster(event)) {
+    if (Trace.Types.Events.isSyntheticLayoutShiftCluster(event)) {
       return 'Layout shift cluster';
     }
     return event.name;
@@ -149,17 +147,17 @@ export class LayoutShiftsTrackAppender implements TrackAppender {
    * Returns the info shown when an event added by this appender
    * is hovered in the timeline.
    */
-  highlightedEntryInfo(event: TraceEngine.Types.TraceEvents.TraceEventLayoutShift): HighlightedEntryInfo {
+  highlightedEntryInfo(event: Trace.Types.Events.LayoutShift): HighlightedEntryInfo {
     const title = this.titleForEvent(event);
     return {title, formattedTime: getFormattedTime(event.dur)};
   }
 
-  getDrawOverride(event: TraceEngine.Types.TraceEvents.TraceEventData): DrawOverride|undefined {
+  getDrawOverride(event: Trace.Types.Events.Event): DrawOverride|undefined {
     if (!Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_LAYOUT_SHIFT_DETAILS)) {
       return;
     }
 
-    if (!TraceEngine.Types.TraceEvents.isTraceEventLayoutShift(event)) {
+    if (!Trace.Types.Events.isLayoutShift(event)) {
       return;
     }
 

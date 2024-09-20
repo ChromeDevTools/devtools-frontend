@@ -2,12 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as TraceEngine from '../../models/trace/trace.js';
+import * as Trace from '../../models/trace/trace.js';
 
 export abstract class TimelineModelFilter {
-  abstract accept(
-      _event: TraceEngine.Types.TraceEvents.TraceEventData,
-      traceParsedData?: TraceEngine.Handlers.Types.TraceParseData): boolean;
+  abstract accept(_event: Trace.Types.Events.Event, parsedTrace?: Trace.Handlers.Types.ParsedTrace): boolean;
 }
 
 export class TimelineVisibleEventsFilter extends TimelineModelFilter {
@@ -17,47 +15,47 @@ export class TimelineVisibleEventsFilter extends TimelineModelFilter {
     this.visibleTypes = new Set(visibleTypes);
   }
 
-  accept(event: TraceEngine.Types.TraceEvents.TraceEventData): boolean {
-    if (TraceEngine.Types.Extensions.isSyntheticExtensionEntry(event)) {
+  accept(event: Trace.Types.Events.Event): boolean {
+    if (Trace.Types.Extensions.isSyntheticExtensionEntry(event)) {
       return true;
     }
     return this.visibleTypes.has(TimelineVisibleEventsFilter.eventType(event));
   }
 
-  static eventType(event: TraceEngine.Types.TraceEvents.TraceEventData): TraceEngine.Types.TraceEvents.KnownEventName {
+  static eventType(event: Trace.Types.Events.Event): Trace.Types.Events.Name {
     // Any blink.console category events are treated as ConsoleTime events
-    if (TraceEngine.Helpers.Trace.eventHasCategory(event, 'blink.console')) {
-      return TraceEngine.Types.TraceEvents.KnownEventName.CONSOLE_TIME;
+    if (Trace.Helpers.Trace.eventHasCategory(event, 'blink.console')) {
+      return Trace.Types.Events.Name.CONSOLE_TIME;
     }
     // Any blink.user_timing egory events are treated as UserTiming events
-    if (TraceEngine.Helpers.Trace.eventHasCategory(event, 'blink.user_timing')) {
-      return TraceEngine.Types.TraceEvents.KnownEventName.USER_TIMING;
+    if (Trace.Helpers.Trace.eventHasCategory(event, 'blink.user_timing')) {
+      return Trace.Types.Events.Name.USER_TIMING;
     }
-    return event.name as TraceEngine.Types.TraceEvents.KnownEventName;
+    return event.name as Trace.Types.Events.Name;
   }
 }
 
 export class TimelineInvisibleEventsFilter extends TimelineModelFilter {
-  #invisibleTypes: Set<TraceEngine.Types.TraceEvents.KnownEventName>;
+  #invisibleTypes: Set<Trace.Types.Events.Name>;
 
-  constructor(invisibleTypes: TraceEngine.Types.TraceEvents.KnownEventName[]) {
+  constructor(invisibleTypes: Trace.Types.Events.Name[]) {
     super();
     this.#invisibleTypes = new Set(invisibleTypes);
   }
 
-  accept(event: TraceEngine.Types.TraceEvents.TraceEventData): boolean {
+  accept(event: Trace.Types.Events.Event): boolean {
     return !this.#invisibleTypes.has(TimelineVisibleEventsFilter.eventType(event));
   }
 }
 
 export class ExclusiveNameFilter extends TimelineModelFilter {
-  #excludeNames: Set<TraceEngine.Types.TraceEvents.KnownEventName>;
-  constructor(excludeNames: TraceEngine.Types.TraceEvents.KnownEventName[]) {
+  #excludeNames: Set<Trace.Types.Events.Name>;
+  constructor(excludeNames: Trace.Types.Events.Name[]) {
     super();
     this.#excludeNames = new Set(excludeNames);
   }
 
-  accept(event: TraceEngine.Types.TraceEvents.TraceEventData): boolean {
-    return !this.#excludeNames.has(event.name as TraceEngine.Types.TraceEvents.KnownEventName);
+  accept(event: Trace.Types.Events.Event): boolean {
+    return !this.#excludeNames.has(event.name as Trace.Types.Events.Name);
   }
 }

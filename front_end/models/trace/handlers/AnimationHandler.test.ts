@@ -3,19 +3,19 @@
 // found in the LICENSE file.
 
 import {TraceLoader} from '../../../testing/TraceLoader.js';
-import * as TraceModel from '../trace.js';
+import * as Trace from '../trace.js';
 
 describe('AnimationHandler', function() {
   it('calculates the amount of animation events correctly', async function() {
     const events = await TraceLoader.rawEvents(this, 'animation.json.gz');
 
     for (const event of events) {
-      TraceModel.Handlers.ModelHandlers.Animations.handleEvent(event);
+      Trace.Handlers.ModelHandlers.Animations.handleEvent(event);
     }
 
-    await TraceModel.Handlers.ModelHandlers.Animations.finalize();
+    await Trace.Handlers.ModelHandlers.Animations.finalize();
 
-    const eventsAmount = TraceModel.Handlers.ModelHandlers.Animations.data().animations.length;
+    const eventsAmount = Trace.Handlers.ModelHandlers.Animations.data().animations.length;
     assert.strictEqual(eventsAmount, 1);
   });
 
@@ -23,12 +23,12 @@ describe('AnimationHandler', function() {
     const events = await TraceLoader.rawEvents(this, 'invalid-animation-events.json.gz');
 
     for (const event of events) {
-      TraceModel.Handlers.ModelHandlers.Animations.handleEvent(event);
+      Trace.Handlers.ModelHandlers.Animations.handleEvent(event);
     }
 
-    await TraceModel.Handlers.ModelHandlers.Animations.finalize();
+    await Trace.Handlers.ModelHandlers.Animations.finalize();
 
-    const animations = TraceModel.Handlers.ModelHandlers.Animations.data().animations;
+    const animations = Trace.Handlers.ModelHandlers.Animations.data().animations;
     // This trace contains 57 'Animation' events but all are from `cat: 'power'`
     // These events are only possible if the trace is captured with 'Show All Events' on.
     assert.lengthOf(animations, 0);
@@ -38,11 +38,11 @@ describe('AnimationHandler', function() {
     const events = await TraceLoader.rawEvents(this, 'animation.json.gz');
 
     for (const event of events) {
-      TraceModel.Handlers.ModelHandlers.Animations.handleEvent(event);
+      Trace.Handlers.ModelHandlers.Animations.handleEvent(event);
     }
 
-    await TraceModel.Handlers.ModelHandlers.Animations.finalize();
-    const animations = TraceModel.Handlers.ModelHandlers.Animations.data().animations;
+    await Trace.Handlers.ModelHandlers.Animations.finalize();
+    const animations = Trace.Handlers.ModelHandlers.Animations.data().animations;
     const eventDuration = animations[0].dur;
     assert.strictEqual(eventDuration, 2006450);
 

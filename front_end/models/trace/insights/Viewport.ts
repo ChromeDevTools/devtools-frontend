@@ -5,7 +5,7 @@
 import * as Helpers from '../helpers/helpers.js';
 import type * as Types from '../types/types.js';
 
-import {type BoundedInsightContext, type InsightResult, InsightWarning, type RequiredData} from './types.js';
+import {type InsightResult, type InsightSetContext, InsightWarning, type RequiredData} from './types.js';
 
 export function deps(): ['Meta', 'UserInteractions'] {
   return ['Meta', 'UserInteractions'];
@@ -13,23 +13,23 @@ export function deps(): ['Meta', 'UserInteractions'] {
 
 export type ViewportInsightResult = InsightResult<{
   mobileOptimized: boolean | null,
-  viewportEvent?: Types.TraceEvents.TraceEventParseMetaViewport,
+  viewportEvent?: Types.Events.ParseMetaViewport,
 }>;
 
 export function generateInsight(
-    traceParsedData: RequiredData<typeof deps>, context: BoundedInsightContext): ViewportInsightResult {
+    parsedTrace: RequiredData<typeof deps>, context: InsightSetContext): ViewportInsightResult {
   // TODO(crbug.com/366049346)
   if (!context.navigation) {
     return {mobileOptimized: null};
   }
 
-  const compositorEvents = traceParsedData.UserInteractions.beginCommitCompositorFrameEvents.filter(event => {
+  const compositorEvents = parsedTrace.UserInteractions.beginCommitCompositorFrameEvents.filter(event => {
     if (event.args.frame !== context.frameId) {
       return false;
     }
 
     const navigation =
-        Helpers.Trace.getNavigationForTraceEvent(event, context.frameId, traceParsedData.Meta.navigationsByFrameId);
+        Helpers.Trace.getNavigationForTraceEvent(event, context.frameId, parsedTrace.Meta.navigationsByFrameId);
     return navigation === context.navigation;
   });
 
@@ -41,13 +41,13 @@ export function generateInsight(
     };
   }
 
-  const viewportEvent = traceParsedData.UserInteractions.parseMetaViewportEvents.find(event => {
+  const viewportEvent = parsedTrace.UserInteractions.parseMetaViewportEvents.find(event => {
     if (event.args.data.frame !== context.frameId) {
       return false;
     }
 
     const navigation =
-        Helpers.Trace.getNavigationForTraceEvent(event, context.frameId, traceParsedData.Meta.navigationsByFrameId);
+        Helpers.Trace.getNavigationForTraceEvent(event, context.frameId, parsedTrace.Meta.navigationsByFrameId);
     return navigation === context.navigation;
   });
 

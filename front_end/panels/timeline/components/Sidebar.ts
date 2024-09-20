@@ -4,7 +4,7 @@
 
 import * as Common from '../../../core/common/common.js';
 import * as Root from '../../../core/root/root.js';
-import type * as TraceEngine from '../../../models/trace/trace.js';
+import type * as Trace from '../../../models/trace/trace.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import type * as Overlays from '../overlays/overlays.js';
 
@@ -20,7 +20,7 @@ export interface ActiveInsight {
 export class RemoveAnnotation extends Event {
   static readonly eventName = 'removeannotation';
 
-  constructor(public removedAnnotation: TraceEngine.Types.File.Annotation) {
+  constructor(public removedAnnotation: Trace.Types.File.Annotation) {
     super(RemoveAnnotation.eventName, {bubbles: true, composed: true});
   }
 }
@@ -28,7 +28,7 @@ export class RemoveAnnotation extends Event {
 export class RevealAnnotation extends Event {
   static readonly eventName = 'revealannotation';
 
-  constructor(public annotation: TraceEngine.Types.File.Annotation) {
+  constructor(public annotation: Trace.Types.File.Annotation) {
     super(RevealAnnotation.eventName, {bubbles: true, composed: true});
   }
 }
@@ -36,7 +36,7 @@ export class RevealAnnotation extends Event {
 export class EventReferenceClick extends Event {
   static readonly eventName = 'sidebarmetricclick';
 
-  constructor(public metricEvent: TraceEngine.Types.TraceEvents.TraceEventData) {
+  constructor(public metricEvent: Trace.Types.Events.Event) {
     super(EventReferenceClick.eventName, {bubbles: true, composed: true});
   }
 }
@@ -102,16 +102,16 @@ export class SidebarWidget extends UI.Widget.VBox {
   }
 
   setAnnotations(
-      updatedAnnotations: TraceEngine.Types.File.Annotation[],
-      annotationEntryToColorMap: Map<TraceEngine.Types.TraceEvents.TraceEventData, string>): void {
+      updatedAnnotations: Trace.Types.File.Annotation[],
+      annotationEntryToColorMap: Map<Trace.Types.Events.Event, string>): void {
     this.#annotationsView.setAnnotations(updatedAnnotations, annotationEntryToColorMap);
   }
 
-  setTraceParsedData(traceParsedData: TraceEngine.Handlers.Types.TraceParseData|null): void {
-    this.#insightsView.setTraceParsedData(traceParsedData);
+  setParsedTrace(parsedTrace: Trace.Handlers.Types.ParsedTrace|null): void {
+    this.#insightsView.setParsedTrace(parsedTrace);
   }
 
-  setInsights(insights: TraceEngine.Insights.Types.TraceInsightData|null): void {
+  setInsights(insights: Trace.Insights.Types.TraceInsightSets|null): void {
     this.#insightsView.setInsights(insights);
   }
 
@@ -129,11 +129,11 @@ class InsightsView extends UI.Widget.VBox {
     this.element.appendChild(this.#component);
   }
 
-  setTraceParsedData(data: TraceEngine.Handlers.Types.TraceParseData|null): void {
-    this.#component.traceParsedData = data;
+  setParsedTrace(data: Trace.Handlers.Types.ParsedTrace|null): void {
+    this.#component.parsedTrace = data;
   }
 
-  setInsights(data: TraceEngine.Insights.Types.TraceInsightData|null): void {
+  setInsights(data: Trace.Insights.Types.TraceInsightSets|null): void {
     this.#component.insights = data;
   }
 
@@ -152,8 +152,8 @@ class AnnotationsView extends UI.Widget.VBox {
   }
 
   setAnnotations(
-      annotations: TraceEngine.Types.File.Annotation[],
-      annotationEntryToColorMap: Map<TraceEngine.Types.TraceEvents.TraceEventData, string>): void {
+      annotations: Trace.Types.File.Annotation[],
+      annotationEntryToColorMap: Map<Trace.Types.Events.Event, string>): void {
     this.#component.annotationEntryToColorMap = annotationEntryToColorMap;
     this.#component.annotations = annotations;
   }

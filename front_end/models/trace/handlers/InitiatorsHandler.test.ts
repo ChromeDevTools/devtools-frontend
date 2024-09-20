@@ -3,34 +3,33 @@
 // found in the LICENSE file.
 
 import {TraceLoader} from '../../../testing/TraceLoader.js';
-import * as TraceModel from '../trace.js';
+import * as Trace from '../trace.js';
 
 describe('InitiatorsHandler', () => {
   beforeEach(() => {
-    TraceModel.Handlers.ModelHandlers.Initiators.reset();
-    TraceModel.Handlers.ModelHandlers.Initiators.initialize();
+    Trace.Handlers.ModelHandlers.Initiators.reset();
+    Trace.Handlers.ModelHandlers.Initiators.initialize();
   });
 
   it('for an UpdateLayoutTree event it sets the initiator to the previous ScheduledStyleRecalculation event',
      async function() {
        const traceEvents = await TraceLoader.rawEvents(this, 'web-dev-with-commit.json.gz');
        for (const event of traceEvents) {
-         TraceModel.Handlers.ModelHandlers.Initiators.handleEvent(event);
+         Trace.Handlers.ModelHandlers.Initiators.handleEvent(event);
        }
-       await TraceModel.Handlers.ModelHandlers.Initiators.finalize();
-       const data = TraceModel.Handlers.ModelHandlers.Initiators.data();
+       await Trace.Handlers.ModelHandlers.Initiators.finalize();
+       const data = Trace.Handlers.ModelHandlers.Initiators.data();
        const updateLayoutTreeEvent = traceEvents.find(event => {
-         return TraceModel.Types.TraceEvents.isTraceEventUpdateLayoutTree(event) && event.ts === 122411039965;
+         return Trace.Types.Events.isUpdateLayoutTree(event) && event.ts === 122411039965;
        });
-       if (!updateLayoutTreeEvent ||
-           !TraceModel.Types.TraceEvents.isTraceEventUpdateLayoutTree(updateLayoutTreeEvent)) {
+       if (!updateLayoutTreeEvent || !Trace.Types.Events.isUpdateLayoutTree(updateLayoutTreeEvent)) {
          throw new Error('Could not find layout tree event.');
        }
        const initiator = data.eventToInitiator.get(updateLayoutTreeEvent);
        if (!initiator) {
          throw new Error('Did not find expected initiator for updateLayoutTreeEvent');
        }
-       assert.isTrue(TraceModel.Types.TraceEvents.isTraceEventScheduleStyleRecalculation(initiator));
+       assert.isTrue(Trace.Types.Events.isScheduleStyleRecalculation(initiator));
        assert.strictEqual(updateLayoutTreeEvent.args.beginData?.frame, '25D2F12F1818C70B5BD4325CC9ACD8FF');
        assert.strictEqual(updateLayoutTreeEvent.args.beginData?.frame, initiator.args?.data?.frame);
      });
@@ -38,22 +37,22 @@ describe('InitiatorsHandler', () => {
   it('for a Layout event it sets the initiator to the last InvalidateLayout event on that frame', async function() {
     const traceEvents = await TraceLoader.rawEvents(this, 'web-dev-with-commit.json.gz');
     for (const event of traceEvents) {
-      TraceModel.Handlers.ModelHandlers.Initiators.handleEvent(event);
+      Trace.Handlers.ModelHandlers.Initiators.handleEvent(event);
     }
-    await TraceModel.Handlers.ModelHandlers.Initiators.finalize();
-    const data = TraceModel.Handlers.ModelHandlers.Initiators.data();
+    await Trace.Handlers.ModelHandlers.Initiators.finalize();
+    const data = Trace.Handlers.ModelHandlers.Initiators.data();
 
     const layoutEvent = traceEvents.find(event => {
-      return TraceModel.Types.TraceEvents.isTraceEventLayout(event) && event.ts === 122411039994;
+      return Trace.Types.Events.isLayout(event) && event.ts === 122411039994;
     });
-    if (!layoutEvent || !TraceModel.Types.TraceEvents.isTraceEventLayout(layoutEvent)) {
+    if (!layoutEvent || !Trace.Types.Events.isLayout(layoutEvent)) {
       throw new Error('Could not find layout event.');
     }
     const initiator = data.eventToInitiator.get(layoutEvent);
     if (!initiator) {
       throw new Error('Did not find expected initiator for LayoutEvent');
     }
-    assert.isTrue(TraceModel.Types.TraceEvents.isTraceEventInvalidateLayout(initiator));
+    assert.isTrue(Trace.Types.Events.isInvalidateLayout(initiator));
     assert.strictEqual(initiator.ts, 122411036517);
   });
 
@@ -61,38 +60,38 @@ describe('InitiatorsHandler', () => {
      async function() {
        const traceEvents = await TraceLoader.rawEvents(this, 'web-dev-with-commit.json.gz');
        for (const event of traceEvents) {
-         TraceModel.Handlers.ModelHandlers.Initiators.handleEvent(event);
+         Trace.Handlers.ModelHandlers.Initiators.handleEvent(event);
        }
-       await TraceModel.Handlers.ModelHandlers.Initiators.finalize();
-       const data = TraceModel.Handlers.ModelHandlers.Initiators.data();
+       await Trace.Handlers.ModelHandlers.Initiators.finalize();
+       const data = Trace.Handlers.ModelHandlers.Initiators.data();
 
        const layoutEvent = traceEvents.find(event => {
-         return TraceModel.Types.TraceEvents.isTraceEventLayout(event) && event.ts === 122411054960;
+         return Trace.Types.Events.isLayout(event) && event.ts === 122411054960;
        });
-       if (!layoutEvent || !TraceModel.Types.TraceEvents.isTraceEventLayout(layoutEvent)) {
+       if (!layoutEvent || !Trace.Types.Events.isLayout(layoutEvent)) {
          throw new Error('Could not find layout event.');
        }
        const initiator = data.eventToInitiator.get(layoutEvent);
        if (!initiator) {
          throw new Error('Did not find expected initiator for LayoutEvent');
        }
-       assert.isTrue(TraceModel.Types.TraceEvents.isTraceEventScheduleStyleRecalculation(initiator));
+       assert.isTrue(Trace.Types.Events.isScheduleStyleRecalculation(initiator));
        assert.strictEqual(initiator.ts, 122411054482);
      });
 
   it('for a FireAnimationFrame event it sets the initiator to the RequestAnimationFrame event', async function() {
     const traceEvents = await TraceLoader.rawEvents(this, 'timer-initiators.json.gz');
     for (const event of traceEvents) {
-      TraceModel.Handlers.ModelHandlers.Initiators.handleEvent(event);
+      Trace.Handlers.ModelHandlers.Initiators.handleEvent(event);
     }
-    await TraceModel.Handlers.ModelHandlers.Initiators.finalize();
-    const data = TraceModel.Handlers.ModelHandlers.Initiators.data();
+    await Trace.Handlers.ModelHandlers.Initiators.finalize();
+    const data = Trace.Handlers.ModelHandlers.Initiators.data();
 
-    const fireAnimationFrameEvent = traceEvents.find(TraceModel.Types.TraceEvents.isTraceEventFireAnimationFrame);
+    const fireAnimationFrameEvent = traceEvents.find(Trace.Types.Events.isFireAnimationFrame);
     if (!fireAnimationFrameEvent) {
       throw new Error('Could not find FireAnimationFrame event');
     }
-    const requestAnimationFrameEvent = traceEvents.find(TraceModel.Types.TraceEvents.isTraceEventRequestAnimationFrame);
+    const requestAnimationFrameEvent = traceEvents.find(Trace.Types.Events.isRequestAnimationFrame);
     if (!requestAnimationFrameEvent) {
       throw new Error('Could not find RequestAnimationFrame event');
     }
@@ -104,16 +103,16 @@ describe('InitiatorsHandler', () => {
   it('for a TimerFire event sets the initiator to the TimerInstall', async function() {
     const traceEvents = await TraceLoader.rawEvents(this, 'timer-initiators.json.gz');
     for (const event of traceEvents) {
-      TraceModel.Handlers.ModelHandlers.Initiators.handleEvent(event);
+      Trace.Handlers.ModelHandlers.Initiators.handleEvent(event);
     }
-    await TraceModel.Handlers.ModelHandlers.Initiators.finalize();
-    const data = TraceModel.Handlers.ModelHandlers.Initiators.data();
+    await Trace.Handlers.ModelHandlers.Initiators.finalize();
+    const data = Trace.Handlers.ModelHandlers.Initiators.data();
 
-    const timerFireEvent = traceEvents.find(TraceModel.Types.TraceEvents.isTraceEventTimerFire);
+    const timerFireEvent = traceEvents.find(Trace.Types.Events.isTimerFire);
     if (!timerFireEvent) {
       throw new Error('Could not find TimerFire event');
     }
-    const timerInstallEvent = traceEvents.find(TraceModel.Types.TraceEvents.isTraceEventTimerInstall);
+    const timerInstallEvent = traceEvents.find(Trace.Types.Events.isTimerInstall);
     if (!timerInstallEvent) {
       throw new Error('Could not find TimerInstall event');
     }
@@ -125,16 +124,16 @@ describe('InitiatorsHandler', () => {
   it('for a FireIdleCallback event sets the initiator to the RequestIdleCallback', async function() {
     const traceEvents = await TraceLoader.rawEvents(this, 'timer-initiators.json.gz');
     for (const event of traceEvents) {
-      TraceModel.Handlers.ModelHandlers.Initiators.handleEvent(event);
+      Trace.Handlers.ModelHandlers.Initiators.handleEvent(event);
     }
-    await TraceModel.Handlers.ModelHandlers.Initiators.finalize();
-    const data = TraceModel.Handlers.ModelHandlers.Initiators.data();
+    await Trace.Handlers.ModelHandlers.Initiators.finalize();
+    const data = Trace.Handlers.ModelHandlers.Initiators.data();
 
-    const fireIdleCallbackEvent = traceEvents.find(TraceModel.Types.TraceEvents.isTraceEventFireIdleCallback);
+    const fireIdleCallbackEvent = traceEvents.find(Trace.Types.Events.isFireIdleCallback);
     if (!fireIdleCallbackEvent) {
       throw new Error('Could not find FireIdleCallback event');
     }
-    const requestIdleCallbackEvent = traceEvents.find(TraceModel.Types.TraceEvents.isTraceEventRequestIdleCallback);
+    const requestIdleCallbackEvent = traceEvents.find(Trace.Types.Events.isRequestIdleCallback);
     if (!requestIdleCallbackEvent) {
       throw new Error('Could not find RequestIdleCallback event');
     }
@@ -146,18 +145,17 @@ describe('InitiatorsHandler', () => {
   it('for a WebSocketSendHandshakeRequest the initiator is the WebSocketCreate event', async function() {
     const traceEvents = await TraceLoader.rawEvents(this, 'web-sockets.json.gz');
     for (const event of traceEvents) {
-      TraceModel.Handlers.ModelHandlers.Initiators.handleEvent(event);
+      Trace.Handlers.ModelHandlers.Initiators.handleEvent(event);
     }
-    await TraceModel.Handlers.ModelHandlers.Initiators.finalize();
-    const data = TraceModel.Handlers.ModelHandlers.Initiators.data();
+    await Trace.Handlers.ModelHandlers.Initiators.finalize();
+    const data = Trace.Handlers.ModelHandlers.Initiators.data();
 
-    const webSocketCreateEvent = traceEvents.find(TraceModel.Types.TraceEvents.isTraceEventWebSocketCreate);
+    const webSocketCreateEvent = traceEvents.find(Trace.Types.Events.isWebSocketCreate);
     if (!webSocketCreateEvent) {
       throw new Error('Could not fnd WebSocketCreateEvent');
     }
 
-    const webSocketSendHandshakeRequestEvent =
-        traceEvents.find(TraceModel.Types.TraceEvents.isTraceEventWebSocketSendHandshakeRequest);
+    const webSocketSendHandshakeRequestEvent = traceEvents.find(Trace.Types.Events.isWebSocketSendHandshakeRequest);
     if (!webSocketSendHandshakeRequestEvent) {
       throw new Error('Could not find WebSocketSendHandshakeRequest');
     }
@@ -168,23 +166,22 @@ describe('InitiatorsHandler', () => {
   it('for a WebSocketReceiveHandshakeResponse the initiator is the WebSocketCreate event', async function() {
     const traceEvents = await TraceLoader.rawEvents(this, 'web-sockets.json.gz');
     for (const event of traceEvents) {
-      TraceModel.Handlers.ModelHandlers.Initiators.handleEvent(event);
+      Trace.Handlers.ModelHandlers.Initiators.handleEvent(event);
     }
-    await TraceModel.Handlers.ModelHandlers.Initiators.finalize();
-    const data = TraceModel.Handlers.ModelHandlers.Initiators.data();
+    await Trace.Handlers.ModelHandlers.Initiators.finalize();
+    const data = Trace.Handlers.ModelHandlers.Initiators.data();
 
-    const webSocketCreateEvent = traceEvents.find(TraceModel.Types.TraceEvents.isTraceEventWebSocketCreate);
+    const webSocketCreateEvent = traceEvents.find(Trace.Types.Events.isWebSocketCreate);
     if (!webSocketCreateEvent) {
       throw new Error('Could not fnd WebSocketCreateEvent');
     }
 
     const webSocketReceieveHandshakeResponseEvent =
-        traceEvents.find(TraceModel.Types.TraceEvents.isTraceEventWebSocketReceiveHandshakeResponse);
+        traceEvents.find(Trace.Types.Events.isWebSocketReceiveHandshakeResponse);
     if (!webSocketReceieveHandshakeResponseEvent) {
       throw new Error('Could not find WebSocketReceiveHandshakeResponse event');
     }
-    const webSocketSendHandshakeRequestEvent =
-        traceEvents.find(TraceModel.Types.TraceEvents.isTraceEventWebSocketSendHandshakeRequest);
+    const webSocketSendHandshakeRequestEvent = traceEvents.find(Trace.Types.Events.isWebSocketSendHandshakeRequest);
     if (!webSocketSendHandshakeRequestEvent) {
       throw new Error('Could not find WebSocketSendHandshakeRequest');
     }
@@ -198,17 +195,17 @@ describe('InitiatorsHandler', () => {
   it('for a PostMessage Handler event the initiator is the PostMessage Dispatch event', async function() {
     const traceEvents = await TraceLoader.rawEvents(this, 'postmessage-initiators.json.gz');
     for (const event of traceEvents) {
-      TraceModel.Handlers.ModelHandlers.Initiators.handleEvent(event);
+      Trace.Handlers.ModelHandlers.Initiators.handleEvent(event);
     }
-    await TraceModel.Handlers.ModelHandlers.Initiators.finalize();
-    const data = TraceModel.Handlers.ModelHandlers.Initiators.data();
+    await Trace.Handlers.ModelHandlers.Initiators.finalize();
+    const data = Trace.Handlers.ModelHandlers.Initiators.data();
 
-    const schedulePostMessageEvent = traceEvents.find(TraceModel.Types.TraceEvents.isTraceEventSchedulePostMessage);
+    const schedulePostMessageEvent = traceEvents.find(Trace.Types.Events.isSchedulePostMessage);
     if (!schedulePostMessageEvent) {
       throw new Error('Could not find schedulePostMessageEvent event');
     }
 
-    const handlePostMessageEvent = traceEvents.find(TraceModel.Types.TraceEvents.isTraceEventHandlePostMessage);
+    const handlePostMessageEvent = traceEvents.find(Trace.Types.Events.isHandlePostMessage);
     if (!handlePostMessageEvent) {
       throw new Error('Could not find handlePostMessageEvent event');
     }

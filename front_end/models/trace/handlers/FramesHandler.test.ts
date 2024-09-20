@@ -4,11 +4,11 @@
 
 import {describeWithMockConnection} from '../../../testing/MockConnection.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
-import * as TraceEngine from '../trace.js';
+import * as Trace from '../trace.js';
 
-async function processTrace(events: readonly TraceEngine.Types.TraceEvents.TraceEventData[]): Promise<void> {
+async function processTrace(events: readonly Trace.Types.Events.Event[]): Promise<void> {
   // The FramesHandler depends on a few other handlers, so we run all of them as part of these tests.
-  const handlersInOrder: TraceEngine.Handlers.Types.TraceEventHandlerName[] = [
+  const handlersInOrder: Trace.Handlers.Types.HandlerName[] = [
     'Meta',
     'Samples',
     'AuctionWorklets',
@@ -17,7 +17,7 @@ async function processTrace(events: readonly TraceEngine.Types.TraceEvents.Trace
     'Frames',
   ];
   for (const handlerName of handlersInOrder) {
-    const handler = TraceEngine.Handlers.ModelHandlers[handlerName];
+    const handler = Trace.Handlers.ModelHandlers[handlerName];
     handler.reset();
     if ('initialize' in handler) {
       handler.initialize();
@@ -25,11 +25,11 @@ async function processTrace(events: readonly TraceEngine.Types.TraceEvents.Trace
   }
   for (const event of events) {
     for (const handlerName of handlersInOrder) {
-      TraceEngine.Handlers.ModelHandlers[handlerName].handleEvent(event);
+      Trace.Handlers.ModelHandlers[handlerName].handleEvent(event);
     }
   }
   for (const handlerName of handlersInOrder) {
-    const handler = TraceEngine.Handlers.ModelHandlers[handlerName];
+    const handler = Trace.Handlers.ModelHandlers[handlerName];
     if ('finalize' in handler) {
       await handler.finalize();
     }
@@ -41,7 +41,7 @@ describeWithMockConnection('FramesHandler', () => {
     const rawEvents = await TraceLoader.rawEvents(this, 'web-dev-with-commit.json.gz');
     await processTrace(rawEvents);
 
-    const parsedFrames = TraceEngine.Handlers.ModelHandlers.Frames.data().frames;
+    const parsedFrames = Trace.Handlers.ModelHandlers.Frames.data().frames;
     assert.lengthOf(parsedFrames, 18);
 
     // Assert a couple of frames to check the data, including one that is partial and was dropped.
@@ -60,7 +60,7 @@ describeWithMockConnection('FramesHandler', () => {
     const rawEvents = await TraceLoader.rawEvents(this, 'web-dev-with-commit.json.gz');
     await processTrace(rawEvents);
 
-    const parsedFrames = TraceEngine.Handlers.ModelHandlers.Frames.data().frames;
+    const parsedFrames = Trace.Handlers.ModelHandlers.Frames.data().frames;
     assert.lengthOf(parsedFrames, 18);
 
     parsedFrames.forEach((frame, arrayIndex) => {
@@ -77,7 +77,7 @@ describeWithMockConnection('FramesHandler', () => {
 
     const rawEvents = await TraceLoader.rawEvents(this, 'web-dev-with-advanced-instrumentation.json.gz');
     await processTrace(rawEvents);
-    const parsedFrames = TraceEngine.Handlers.ModelHandlers.Frames.data().frames;
+    const parsedFrames = Trace.Handlers.ModelHandlers.Frames.data().frames;
     assert.lengthOf(parsedFrames, 25);
     const frameWithPaints = parsedFrames.at(2);
     if (!frameWithPaints) {
@@ -92,13 +92,12 @@ describeWithMockConnection('FramesHandler', () => {
     const rawEvents = await TraceLoader.rawEvents(this, 'web-dev-with-commit.json.gz');
     await processTrace(rawEvents);
 
-    const parsedFrames = TraceEngine.Handlers.ModelHandlers.Frames.data().frames;
+    const parsedFrames = Trace.Handlers.ModelHandlers.Frames.data().frames;
     assert.lengthOf(parsedFrames, 18);
 
-    const startTime = TraceEngine.Types.Timing.MicroSeconds(parsedFrames[0].startTime);
-    const endTime = TraceEngine.Types.Timing.MicroSeconds(parsedFrames[3].endTime);
-    const framesWithinWindow =
-        TraceEngine.Handlers.ModelHandlers.Frames.framesWithinWindow(parsedFrames, startTime, endTime);
+    const startTime = Trace.Types.Timing.MicroSeconds(parsedFrames[0].startTime);
+    const endTime = Trace.Types.Timing.MicroSeconds(parsedFrames[3].endTime);
+    const framesWithinWindow = Trace.Handlers.ModelHandlers.Frames.framesWithinWindow(parsedFrames, startTime, endTime);
     assert.deepEqual(framesWithinWindow, [
       parsedFrames[0],
       parsedFrames[1],
@@ -110,29 +109,29 @@ describeWithMockConnection('FramesHandler', () => {
 
 describe('FramesHandler', () => {
   it('visualizes zero frames when no BeginFrames are added', () => {
-    const beginFrameQueue = new TraceEngine.Handlers.ModelHandlers.Frames.TimelineFrameBeginFrameQueue();
+    const beginFrameQueue = new Trace.Handlers.ModelHandlers.Frames.TimelineFrameBeginFrameQueue();
     const framesToVisualize = beginFrameQueue.processPendingBeginFramesOnDrawFrame(100);
 
     assert.isEmpty(framesToVisualize);
   });
 
   it('visualizes zero frames when no BeginFrame in queue matches DrawFrame', () => {
-    const beginFrameQueue = new TraceEngine.Handlers.ModelHandlers.Frames.TimelineFrameBeginFrameQueue();
-    beginFrameQueue.addFrameIfNotExists(100, TraceEngine.Types.Timing.MicroSeconds(1000000), false, false);
-    beginFrameQueue.addFrameIfNotExists(101, TraceEngine.Types.Timing.MicroSeconds(1000016), false, false);
-    beginFrameQueue.addFrameIfNotExists(102, TraceEngine.Types.Timing.MicroSeconds(1000032), false, false);
+    const beginFrameQueue = new Trace.Handlers.ModelHandlers.Frames.TimelineFrameBeginFrameQueue();
+    beginFrameQueue.addFrameIfNotExists(100, Trace.Types.Timing.MicroSeconds(1000000), false, false);
+    beginFrameQueue.addFrameIfNotExists(101, Trace.Types.Timing.MicroSeconds(1000016), false, false);
+    beginFrameQueue.addFrameIfNotExists(102, Trace.Types.Timing.MicroSeconds(1000032), false, false);
     const framesToVisualize = beginFrameQueue.processPendingBeginFramesOnDrawFrame(103);
 
     assert.isEmpty(framesToVisualize);
   });
 
   it('ignores BeginFrames without corresponding DrawFrames', () => {
-    const beginFrameQueue = new TraceEngine.Handlers.ModelHandlers.Frames.TimelineFrameBeginFrameQueue();
-    beginFrameQueue.addFrameIfNotExists(100, TraceEngine.Types.Timing.MicroSeconds(1000000), false, false);
-    beginFrameQueue.addFrameIfNotExists(101, TraceEngine.Types.Timing.MicroSeconds(1000016), false, false);
-    beginFrameQueue.addFrameIfNotExists(102, TraceEngine.Types.Timing.MicroSeconds(1000032), false, false);
+    const beginFrameQueue = new Trace.Handlers.ModelHandlers.Frames.TimelineFrameBeginFrameQueue();
+    beginFrameQueue.addFrameIfNotExists(100, Trace.Types.Timing.MicroSeconds(1000000), false, false);
+    beginFrameQueue.addFrameIfNotExists(101, Trace.Types.Timing.MicroSeconds(1000016), false, false);
+    beginFrameQueue.addFrameIfNotExists(102, Trace.Types.Timing.MicroSeconds(1000032), false, false);
     beginFrameQueue.addFrameIfNotExists(
-        103, TraceEngine.Types.Timing.MicroSeconds(TraceEngine.Types.Timing.MicroSeconds(1000048)), false, false);
+        103, Trace.Types.Timing.MicroSeconds(Trace.Types.Timing.MicroSeconds(1000048)), false, false);
 
     const framesToVisualize = beginFrameQueue.processPendingBeginFramesOnDrawFrame(102);
 
@@ -142,18 +141,18 @@ describe('FramesHandler', () => {
     assert.lengthOf(framesToVisualize, 1);
     assert.isFalse(framesToVisualize[0].isDropped);
     assert.strictEqual(framesToVisualize[0].seqId, 102);
-    assert.strictEqual(framesToVisualize[0].startTime, TraceEngine.Types.Timing.MicroSeconds(1000032));
+    assert.strictEqual(framesToVisualize[0].startTime, Trace.Types.Timing.MicroSeconds(1000032));
   });
 
   it('visualizes dropped BeginFrames before a presented frame', () => {
-    const beginFrameQueue = new TraceEngine.Handlers.ModelHandlers.Frames.TimelineFrameBeginFrameQueue();
-    beginFrameQueue.addFrameIfNotExists(100, TraceEngine.Types.Timing.MicroSeconds(1000000), false, false);
-    beginFrameQueue.addFrameIfNotExists(101, TraceEngine.Types.Timing.MicroSeconds(1000016), true, false);
-    beginFrameQueue.addFrameIfNotExists(102, TraceEngine.Types.Timing.MicroSeconds(1000032), false, false);
-    beginFrameQueue.addFrameIfNotExists(103, TraceEngine.Types.Timing.MicroSeconds(1000048), true, false);
-    beginFrameQueue.addFrameIfNotExists(104, TraceEngine.Types.Timing.MicroSeconds(1000064), false, false);
-    beginFrameQueue.addFrameIfNotExists(105, TraceEngine.Types.Timing.MicroSeconds(1000080), false, false);
-    beginFrameQueue.addFrameIfNotExists(106, TraceEngine.Types.Timing.MicroSeconds(1000096), false, false);
+    const beginFrameQueue = new Trace.Handlers.ModelHandlers.Frames.TimelineFrameBeginFrameQueue();
+    beginFrameQueue.addFrameIfNotExists(100, Trace.Types.Timing.MicroSeconds(1000000), false, false);
+    beginFrameQueue.addFrameIfNotExists(101, Trace.Types.Timing.MicroSeconds(1000016), true, false);
+    beginFrameQueue.addFrameIfNotExists(102, Trace.Types.Timing.MicroSeconds(1000032), false, false);
+    beginFrameQueue.addFrameIfNotExists(103, Trace.Types.Timing.MicroSeconds(1000048), true, false);
+    beginFrameQueue.addFrameIfNotExists(104, Trace.Types.Timing.MicroSeconds(1000064), false, false);
+    beginFrameQueue.addFrameIfNotExists(105, Trace.Types.Timing.MicroSeconds(1000080), false, false);
+    beginFrameQueue.addFrameIfNotExists(106, Trace.Types.Timing.MicroSeconds(1000096), false, false);
 
     const framesToVisualize = beginFrameQueue.processPendingBeginFramesOnDrawFrame(105);
 
@@ -164,27 +163,27 @@ describe('FramesHandler', () => {
 
     assert.isTrue(framesToVisualize[0].isDropped);
     assert.strictEqual(framesToVisualize[0].seqId, 101);
-    assert.strictEqual(framesToVisualize[0].startTime, TraceEngine.Types.Timing.MicroSeconds(1000016));
+    assert.strictEqual(framesToVisualize[0].startTime, Trace.Types.Timing.MicroSeconds(1000016));
 
     assert.isTrue(framesToVisualize[1].isDropped);
     assert.strictEqual(framesToVisualize[1].seqId, 103);
-    assert.strictEqual(framesToVisualize[1].startTime, TraceEngine.Types.Timing.MicroSeconds(1000048));
+    assert.strictEqual(framesToVisualize[1].startTime, Trace.Types.Timing.MicroSeconds(1000048));
 
     assert.isFalse(framesToVisualize[2].isDropped);
     assert.strictEqual(framesToVisualize[2].seqId, 105);
-    assert.strictEqual(framesToVisualize[2].startTime, TraceEngine.Types.Timing.MicroSeconds(1000080));
+    assert.strictEqual(framesToVisualize[2].startTime, Trace.Types.Timing.MicroSeconds(1000080));
   });
 
   it('changes dropped status of specified frames via setDropped()', () => {
-    const beginFrameQueue = new TraceEngine.Handlers.ModelHandlers.Frames.TimelineFrameBeginFrameQueue();
-    beginFrameQueue.addFrameIfNotExists(100, TraceEngine.Types.Timing.MicroSeconds(1000000), false, false);
+    const beginFrameQueue = new Trace.Handlers.ModelHandlers.Frames.TimelineFrameBeginFrameQueue();
+    beginFrameQueue.addFrameIfNotExists(100, Trace.Types.Timing.MicroSeconds(1000000), false, false);
     beginFrameQueue.setDropped(100, true);
-    beginFrameQueue.addFrameIfNotExists(101, TraceEngine.Types.Timing.MicroSeconds(1000016), true, false);
-    beginFrameQueue.addFrameIfNotExists(102, TraceEngine.Types.Timing.MicroSeconds(1000032), false, false);
-    beginFrameQueue.addFrameIfNotExists(103, TraceEngine.Types.Timing.MicroSeconds(1000048), true, false);
-    beginFrameQueue.addFrameIfNotExists(104, TraceEngine.Types.Timing.MicroSeconds(1000064), false, false);
-    beginFrameQueue.addFrameIfNotExists(105, TraceEngine.Types.Timing.MicroSeconds(1000080), false, false);
-    beginFrameQueue.addFrameIfNotExists(106, TraceEngine.Types.Timing.MicroSeconds(1000096), true, false);
+    beginFrameQueue.addFrameIfNotExists(101, Trace.Types.Timing.MicroSeconds(1000016), true, false);
+    beginFrameQueue.addFrameIfNotExists(102, Trace.Types.Timing.MicroSeconds(1000032), false, false);
+    beginFrameQueue.addFrameIfNotExists(103, Trace.Types.Timing.MicroSeconds(1000048), true, false);
+    beginFrameQueue.addFrameIfNotExists(104, Trace.Types.Timing.MicroSeconds(1000064), false, false);
+    beginFrameQueue.addFrameIfNotExists(105, Trace.Types.Timing.MicroSeconds(1000080), false, false);
+    beginFrameQueue.addFrameIfNotExists(106, Trace.Types.Timing.MicroSeconds(1000096), true, false);
     beginFrameQueue.setDropped(101, false);
 
     const framesToVisualize = beginFrameQueue.processPendingBeginFramesOnDrawFrame(105);
@@ -196,26 +195,26 @@ describe('FramesHandler', () => {
 
     assert.isTrue(framesToVisualize[0].isDropped);
     assert.strictEqual(framesToVisualize[0].seqId, 100);
-    assert.strictEqual(framesToVisualize[0].startTime, TraceEngine.Types.Timing.MicroSeconds(1000000));
+    assert.strictEqual(framesToVisualize[0].startTime, Trace.Types.Timing.MicroSeconds(1000000));
 
     assert.isTrue(framesToVisualize[1].isDropped);
     assert.strictEqual(framesToVisualize[1].seqId, 103);
-    assert.strictEqual(framesToVisualize[1].startTime, TraceEngine.Types.Timing.MicroSeconds(1000048));
+    assert.strictEqual(framesToVisualize[1].startTime, Trace.Types.Timing.MicroSeconds(1000048));
 
     assert.isFalse(framesToVisualize[2].isDropped);
     assert.strictEqual(framesToVisualize[2].seqId, 105);
-    assert.strictEqual(framesToVisualize[2].startTime, TraceEngine.Types.Timing.MicroSeconds(1000080));
+    assert.strictEqual(framesToVisualize[2].startTime, Trace.Types.Timing.MicroSeconds(1000080));
   });
 
   it('pops processed frames out of the queue', () => {
-    const beginFrameQueue = new TraceEngine.Handlers.ModelHandlers.Frames.TimelineFrameBeginFrameQueue();
-    beginFrameQueue.addFrameIfNotExists(100, TraceEngine.Types.Timing.MicroSeconds(1000000), true, false);
-    beginFrameQueue.addFrameIfNotExists(101, TraceEngine.Types.Timing.MicroSeconds(1000016), false, false);
-    beginFrameQueue.addFrameIfNotExists(102, TraceEngine.Types.Timing.MicroSeconds(1000032), false, false);
-    beginFrameQueue.addFrameIfNotExists(103, TraceEngine.Types.Timing.MicroSeconds(1000048), true, false);
-    beginFrameQueue.addFrameIfNotExists(104, TraceEngine.Types.Timing.MicroSeconds(1000064), false, false);
-    beginFrameQueue.addFrameIfNotExists(105, TraceEngine.Types.Timing.MicroSeconds(1000080), true, false);
-    beginFrameQueue.addFrameIfNotExists(106, TraceEngine.Types.Timing.MicroSeconds(1000096), true, false);
+    const beginFrameQueue = new Trace.Handlers.ModelHandlers.Frames.TimelineFrameBeginFrameQueue();
+    beginFrameQueue.addFrameIfNotExists(100, Trace.Types.Timing.MicroSeconds(1000000), true, false);
+    beginFrameQueue.addFrameIfNotExists(101, Trace.Types.Timing.MicroSeconds(1000016), false, false);
+    beginFrameQueue.addFrameIfNotExists(102, Trace.Types.Timing.MicroSeconds(1000032), false, false);
+    beginFrameQueue.addFrameIfNotExists(103, Trace.Types.Timing.MicroSeconds(1000048), true, false);
+    beginFrameQueue.addFrameIfNotExists(104, Trace.Types.Timing.MicroSeconds(1000064), false, false);
+    beginFrameQueue.addFrameIfNotExists(105, Trace.Types.Timing.MicroSeconds(1000080), true, false);
+    beginFrameQueue.addFrameIfNotExists(106, Trace.Types.Timing.MicroSeconds(1000096), true, false);
 
     // Pop frame 100, 101 (not visualized) and 102 from queue.
     let framesToVisualize = beginFrameQueue.processPendingBeginFramesOnDrawFrame(102);
@@ -224,11 +223,11 @@ describe('FramesHandler', () => {
 
     assert.isTrue(framesToVisualize[0].isDropped);
     assert.strictEqual(framesToVisualize[0].seqId, 100);
-    assert.strictEqual(framesToVisualize[0].startTime, TraceEngine.Types.Timing.MicroSeconds(1000000));
+    assert.strictEqual(framesToVisualize[0].startTime, Trace.Types.Timing.MicroSeconds(1000000));
 
     assert.isFalse(framesToVisualize[1].isDropped);
     assert.strictEqual(framesToVisualize[1].seqId, 102);
-    assert.strictEqual(framesToVisualize[1].startTime, TraceEngine.Types.Timing.MicroSeconds(1000032));
+    assert.strictEqual(framesToVisualize[1].startTime, Trace.Types.Timing.MicroSeconds(1000032));
 
     // Pop frame 103, 104 (not visualized) and 105 from queue
     framesToVisualize = beginFrameQueue.processPendingBeginFramesOnDrawFrame(105);
@@ -237,11 +236,11 @@ describe('FramesHandler', () => {
 
     assert.isTrue(framesToVisualize[0].isDropped);
     assert.strictEqual(framesToVisualize[0].seqId, 103);
-    assert.strictEqual(framesToVisualize[0].startTime, TraceEngine.Types.Timing.MicroSeconds(1000048));
+    assert.strictEqual(framesToVisualize[0].startTime, Trace.Types.Timing.MicroSeconds(1000048));
 
     assert.isTrue(framesToVisualize[1].isDropped);
     assert.strictEqual(framesToVisualize[1].seqId, 105);
-    assert.strictEqual(framesToVisualize[1].startTime, TraceEngine.Types.Timing.MicroSeconds(1000080));
+    assert.strictEqual(framesToVisualize[1].startTime, Trace.Types.Timing.MicroSeconds(1000080));
 
     // Pop frame 106 from queue
     framesToVisualize = beginFrameQueue.processPendingBeginFramesOnDrawFrame(106);
@@ -250,6 +249,6 @@ describe('FramesHandler', () => {
 
     assert.isTrue(framesToVisualize[0].isDropped);
     assert.strictEqual(framesToVisualize[0].seqId, 106);
-    assert.strictEqual(framesToVisualize[0].startTime, TraceEngine.Types.Timing.MicroSeconds(1000096));
+    assert.strictEqual(framesToVisualize[0].startTime, Trace.Types.Timing.MicroSeconds(1000096));
   });
 });

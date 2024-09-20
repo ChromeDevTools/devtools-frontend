@@ -30,8 +30,8 @@ export class NodeLink extends HTMLElement {
   }
 
   async #linkify(): Promise<Node|undefined> {
-    // TODO: consider using `TraceEngine.Extras.FetchNodes.extractRelatedDOMNodesFromEvent`, which
-    // requires traceParsedData.
+    // TODO: consider using `Trace.Extras.FetchNodes.extractRelatedDOMNodesFromEvent`, which
+    // requires parsedTrace.
 
     if (this.#backendNodeId === undefined) {
       return;

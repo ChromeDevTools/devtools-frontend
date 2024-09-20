@@ -5,9 +5,9 @@ import * as Common from '../../../core/common/common.js';
 import type * as Platform from '../../../core/platform/platform.js';
 import type * as SDK from '../../../core/sdk/sdk.js';
 import * as Bindings from '../../../models/bindings/bindings.js';
-import type * as TraceEngine from '../../../models/trace/trace.js';
+import type * as Trace from '../../../models/trace/trace.js';
 
-export function getNetworkRequest(syntheticNetworkRequest: TraceEngine.Types.TraceEvents.SyntheticNetworkRequest):
+export function getNetworkRequest(syntheticNetworkRequest: Trace.Types.Events.SyntheticNetworkRequest):
     SDK.NetworkRequest.NetworkRequest|undefined|null {
   const url = syntheticNetworkRequest.args.data.url as Platform.DevToolsPath.UrlString;
   const urlWithoutHash = Common.ParsedURL.ParsedURL.urlWithoutHash(url) as Platform.DevToolsPath.UrlString;
@@ -15,8 +15,8 @@ export function getNetworkRequest(syntheticNetworkRequest: TraceEngine.Types.Tra
   return resource?.request;
 }
 
-export function createTimelineNetworkRequest(
-    syntheticNetworkRequest: TraceEngine.Types.TraceEvents.SyntheticNetworkRequest): TimelineNetworkRequest|null {
+export function createTimelineNetworkRequest(syntheticNetworkRequest: Trace.Types.Events.SyntheticNetworkRequest):
+    TimelineNetworkRequest|null {
   const request = getNetworkRequest(syntheticNetworkRequest);
   return request ? new TimelineNetworkRequest(request) : null;
 }

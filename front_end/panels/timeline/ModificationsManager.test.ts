@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as TraceEngine from '../../models/trace/trace.js';
+import * as Trace from '../../models/trace/trace.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
 
@@ -21,7 +21,7 @@ describeWithEnvironment('ModificationsManager', () => {
     assert.deepEqual(modificationsManager.getTimelineBreadcrumbs().initialBreadcrumb, {
       window: {min: 1020034823047, max: 1020036087961, range: 1264914},
       child: {window: {min: 1020034823047, max: 1020035228006.5569, range: 404959.5568847656}, child: null},
-    } as TraceEngine.Types.File.Breadcrumb);
+    } as Trace.Types.File.Breadcrumb);
     // Make sure the saved Label Annotation is applied
     const labelAnnotation = modificationsManager.getAnnotations()[0];
     const label = (labelAnnotation.type === 'ENTRY_LABEL') ? labelAnnotation.label : '';
@@ -48,7 +48,7 @@ describeWithEnvironment('ModificationsManager', () => {
     assert.deepEqual(modifications.initialBreadcrumb, {
       window: {min: 1020034823047, max: 1020036087961, range: 1264914},
       child: {window: {min: 1020034823047, max: 1020035228006.5569, range: 404959.5568847656}, child: null},
-    } as TraceEngine.Types.File.Breadcrumb);
+    } as Trace.Types.File.Breadcrumb);
     assert.deepEqual(modifications.annotations.entryLabels, [
       {entry: 'p-73704-775-2151-457', label: 'Initialize App'},
     ]);
@@ -61,10 +61,10 @@ describeWithEnvironment('ModificationsManager', () => {
   });
 
   it('creates annotations and generates correct json for annotations', async function() {
-    const traceParsedData = (await TraceLoader.traceEngine(null, 'web-dev-with-commit.json.gz')).traceData;
+    const parsedTrace = (await TraceLoader.traceEngine(null, 'web-dev-with-commit.json.gz')).parsedTrace;
     // Get any entres to create a label and a link with.
-    const entry = traceParsedData.Renderer.allTraceEntries[0];
-    const entry2 = traceParsedData.Renderer.allTraceEntries[1];
+    const entry = parsedTrace.Renderer.allTraceEntries[0];
+    const entry2 = parsedTrace.Renderer.allTraceEntries[1];
 
     const modificationsManager = Timeline.ModificationsManager.ModificationsManager.activeManager();
     assert.isOk(modificationsManager);
@@ -84,9 +84,9 @@ describeWithEnvironment('ModificationsManager', () => {
     modificationsManager.createAnnotation({
       type: 'TIME_RANGE',
       bounds: {
-        min: TraceEngine.Types.Timing.MicroSeconds(0),
-        max: TraceEngine.Types.Timing.MicroSeconds(10),
-        range: TraceEngine.Types.Timing.MicroSeconds(10),
+        min: Trace.Types.Timing.MicroSeconds(0),
+        max: Trace.Types.Timing.MicroSeconds(10),
+        range: Trace.Types.Timing.MicroSeconds(10),
       },
       label: 'range label',
     });
@@ -99,9 +99,9 @@ describeWithEnvironment('ModificationsManager', () => {
       }],
       labelledTimeRanges: [{
         bounds: {
-          min: TraceEngine.Types.Timing.MicroSeconds(0),
-          max: TraceEngine.Types.Timing.MicroSeconds(10),
-          range: TraceEngine.Types.Timing.MicroSeconds(10),
+          min: Trace.Types.Timing.MicroSeconds(0),
+          max: Trace.Types.Timing.MicroSeconds(10),
+          range: Trace.Types.Timing.MicroSeconds(10),
         },
         label: 'range label',
       }],
@@ -114,10 +114,10 @@ describeWithEnvironment('ModificationsManager', () => {
 
   it('does not add the annotation link between entries into the json saved into metadata if `entryTo` does not exist',
      async function() {
-       const traceParsedData = (await TraceLoader.traceEngine(null, 'web-dev-with-commit.json.gz')).traceData;
+       const parsedTrace = (await TraceLoader.traceEngine(null, 'web-dev-with-commit.json.gz')).parsedTrace;
        // Get any entry to create links with.
-       const entry = traceParsedData.Renderer.allTraceEntries[0];
-       const entry2 = traceParsedData.Renderer.allTraceEntries[1];
+       const entry = parsedTrace.Renderer.allTraceEntries[0];
+       const entry2 = parsedTrace.Renderer.allTraceEntries[1];
 
        const modificationsManager = Timeline.ModificationsManager.ModificationsManager.activeManager();
        assert.isOk(modificationsManager);

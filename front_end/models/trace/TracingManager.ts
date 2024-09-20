@@ -28,7 +28,7 @@ export class TracingManager extends SDK.SDKModel.SDKModel<void> {
     }
   }
 
-  eventsCollected(events: Types.TraceEvents.TraceEventData[]): void {
+  eventsCollected(events: Types.Events.Event[]): void {
     if (!this.#activeClient) {
       return;
     }
@@ -102,7 +102,7 @@ export class TracingManager extends SDK.SDKModel.SDKModel<void> {
 }
 
 export interface TracingManagerClient {
-  traceEventsCollected(events: Types.TraceEvents.TraceEventData[]): void;
+  traceEventsCollected(events: Types.Events.Event[]): void;
 
   tracingComplete(): void;
   tracingBufferUsage(usage: number): void;

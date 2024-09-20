@@ -7,17 +7,17 @@ import type * as Types from '../types/types.js';
 
 import {type AuctionWorkletsData} from './AuctionWorkletsHandler.js';
 import type * as Renderer from './RendererHandler.js';
-import {type TraceParseData} from './types.js';
+import {type ParsedTrace} from './types.js';
 
 export interface ThreadData {
-  pid: Types.TraceEvents.ProcessID;
-  tid: Types.TraceEvents.ThreadID;
-  entries: readonly Types.TraceEvents.TraceEventData[];
+  pid: Types.Events.ProcessID;
+  tid: Types.Events.ThreadID;
+  entries: readonly Types.Events.Event[];
   processIsOnMainFrame: boolean;
   tree: Helpers.TreeHelpers.TraceEntryTree;
   type: ThreadType;
   name: string|null;
-  entryToNode: Map<Types.TraceEvents.TraceEventData, Helpers.TreeHelpers.TraceEntryNode>;
+  entryToNode: Map<Types.Events.Event, Helpers.TreeHelpers.TraceEntryNode>;
 }
 
 export const enum ThreadType {
@@ -31,7 +31,7 @@ export const enum ThreadType {
 }
 
 function getThreadTypeForRendererThread(
-    pid: Types.TraceEvents.ProcessID, thread: Renderer.RendererThread,
+    pid: Types.Events.ProcessID, thread: Renderer.RendererThread,
     auctionWorkletsData: AuctionWorkletsData): ThreadType {
   let threadType = ThreadType.OTHER;
   if (thread.name === 'CrRendererMain') {
@@ -89,19 +89,19 @@ export function threadsInRenderer(
  * can use this helper to iterate over threads in confidence that it will work
  * for both trace types.
  */
-export function threadsInTrace(traceParseData: TraceParseData): readonly ThreadData[] {
+export function threadsInTrace(parsedTrace: ParsedTrace): readonly ThreadData[] {
   // If we have Renderer threads, we prefer to use those. In the event that a
   // trace is a CPU Profile trace, we will never have Renderer threads, so we
   // know if there are no Renderer threads that we can fallback to using the
   // data from the SamplesHandler.
-  const threadsFromRenderer = threadsInRenderer(traceParseData.Renderer, traceParseData.AuctionWorklets);
+  const threadsFromRenderer = threadsInRenderer(parsedTrace.Renderer, parsedTrace.AuctionWorklets);
   if (threadsFromRenderer.length) {
     return threadsFromRenderer;
   }
 
   const foundThreads: ThreadData[] = [];
-  if (traceParseData.Samples.profilesInProcess.size) {
-    for (const [pid, process] of traceParseData.Samples.profilesInProcess) {
+  if (parsedTrace.Samples.profilesInProcess.size) {
+    for (const [pid, process] of parsedTrace.Samples.profilesInProcess) {
       for (const [tid, thread] of process) {
         if (!thread.profileTree) {
           // Drop threads where we could not create the tree; this indicates
@@ -120,7 +120,7 @@ export function threadsInTrace(traceParseData: TraceParseData): readonly ThreadD
           processIsOnMainFrame: false,
           tree: thread.profileTree,
           type: ThreadType.CPU_PROFILE,
-          entryToNode: traceParseData.Samples.entryToNode,
+          entryToNode: parsedTrace.Samples.entryToNode,
         });
       }
     }

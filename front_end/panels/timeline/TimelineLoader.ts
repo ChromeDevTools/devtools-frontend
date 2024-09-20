@@ -9,7 +9,7 @@ import type * as Platform from '../../core/platform/platform.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
-import * as TraceEngine from '../../models/trace/trace.js';
+import * as Trace from '../../models/trace/trace.js';
 
 import {type Client} from './TimelineController.js';
 
@@ -38,8 +38,8 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
   private totalSize!: number;
   private filter: TimelineModel.TimelineModelFilter.TimelineModelFilter|null;
   #traceIsCPUProfile: boolean;
-  #collectedEvents: TraceEngine.Types.TraceEvents.TraceEventData[] = [];
-  #metadata: TraceEngine.Types.File.MetaData|null;
+  #collectedEvents: Trace.Types.Events.Event[] = [];
+  #metadata: Trace.Types.File.MetaData|null;
 
   #traceFinalizedCallbackForTest?: () => void;
   #traceFinalizedPromiseForTest: Promise<void>;
@@ -75,7 +75,7 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
     return loader;
   }
 
-  static loadFromEvents(events: TraceEngine.Types.TraceEvents.TraceEventData[], client: Client): TimelineLoader {
+  static loadFromEvents(events: Trace.Types.Events.Event[], client: Client): TimelineLoader {
     const loader = new TimelineLoader(client);
     window.setTimeout(async () => {
       void loader.addEvents(events);
@@ -89,7 +89,7 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
 
     try {
       const events = TimelineModel.TimelineJSProfile.TimelineJSProfileProcessor.createFakeTraceFromCpuProfile(
-          profile, TraceEngine.Types.TraceEvents.ThreadID(1));
+          profile, Trace.Types.Events.ThreadID(1));
 
       window.setTimeout(async () => {
         void loader.addEvents(events);
@@ -151,7 +151,7 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
     }
   }
 
-  async addEvents(events: TraceEngine.Types.TraceEvents.TraceEventData[]): Promise<void> {
+  async addEvents(events: Trace.Types.Events.Event[]): Promise<void> {
     await this.client?.loadingStarted();
     /**
      * See the `eventsPerChunk` comment in `models/trace/types/Configuration.ts`.
@@ -162,7 +162,7 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
     const eventsPerChunk = 150_000;
     for (let i = 0; i < events.length; i += eventsPerChunk) {
       const chunk = events.slice(i, i + eventsPerChunk);
-      this.#collectEvents(chunk as unknown as TraceEngine.Types.TraceEvents.TraceEventData[]);
+      this.#collectEvents(chunk as unknown as Trace.Types.Events.Event[]);
       await this.client?.loadingProgress((i + chunk.length) / events.length);
       await new Promise(r => window.setTimeout(r, 0));  // Yield event loop to paint.
     }
@@ -250,12 +250,12 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
 
   #parseCPUProfileFormatFromFile(parsedTrace: Protocol.Profiler.Profile): void {
     const traceEvents = TimelineModel.TimelineJSProfile.TimelineJSProfileProcessor.createFakeTraceFromCpuProfile(
-        parsedTrace, TraceEngine.Types.TraceEvents.ThreadID(1));
+        parsedTrace, Trace.Types.Events.ThreadID(1));
 
     this.#collectEvents(traceEvents);
   }
 
-  #collectEvents(events: readonly TraceEngine.Types.TraceEvents.TraceEventData[]): void {
+  #collectEvents(events: readonly Trace.Types.Events.Event[]): void {
     this.#collectedEvents = this.#collectedEvents.concat(events);
   }
 }
@@ -263,4 +263,4 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
 /**
  * Used when we parse the input, but do not yet know if it is a raw CPU Profile or a Trace
  **/
-type ParsedJSONFile = TraceEngine.Types.File.Contents|Protocol.Profiler.Profile;
+type ParsedJSONFile = Trace.Types.File.Contents|Protocol.Profiler.Profile;

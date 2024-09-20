@@ -22,10 +22,10 @@ export const microSecondsToSeconds = (value: Types.Timing.MicroSeconds): Types.T
     Types.Timing.Seconds(value / 1000 / 1000);
 
 export function timeStampForEventAdjustedByClosestNavigation(
-    event: Types.TraceEvents.TraceEventData,
+    event: Types.Events.Event,
     traceBounds: Types.Timing.TraceWindowMicroSeconds,
-    navigationsByNavigationId: Map<string, Types.TraceEvents.TraceEventNavigationStart>,
-    navigationsByFrameId: Map<string, Types.TraceEvents.TraceEventNavigationStart[]>,
+    navigationsByNavigationId: Map<string, Types.Events.NavigationStart>,
+    navigationsByFrameId: Map<string, Types.Events.NavigationStart[]>,
     ): Types.Timing.MicroSeconds {
   let eventTimeStamp = event.ts - traceBounds.min;
   if (event.args?.data?.navigationId) {
@@ -77,16 +77,14 @@ export interface EventTimingsData<
   duration: ValueType;
 }
 
-export function eventTimingsMicroSeconds(event: Types.TraceEvents.TraceEventData):
-    EventTimingsData<Types.Timing.MicroSeconds> {
+export function eventTimingsMicroSeconds(event: Types.Events.Event): EventTimingsData<Types.Timing.MicroSeconds> {
   return {
     startTime: event.ts,
     endTime: Types.Timing.MicroSeconds(event.ts + (event.dur ?? Types.Timing.MicroSeconds(0))),
     duration: Types.Timing.MicroSeconds(event.dur || 0),
   };
 }
-export function eventTimingsMilliSeconds(event: Types.TraceEvents.TraceEventData):
-    EventTimingsData<Types.Timing.MilliSeconds> {
+export function eventTimingsMilliSeconds(event: Types.Events.Event): EventTimingsData<Types.Timing.MilliSeconds> {
   const microTimes = eventTimingsMicroSeconds(event);
   return {
     startTime: microSecondsToMilliseconds(microTimes.startTime),
@@ -94,7 +92,7 @@ export function eventTimingsMilliSeconds(event: Types.TraceEvents.TraceEventData
     duration: microSecondsToMilliseconds(microTimes.duration),
   };
 }
-export function eventTimingsSeconds(event: Types.TraceEvents.TraceEventData): EventTimingsData<Types.Timing.Seconds> {
+export function eventTimingsSeconds(event: Types.Events.Event): EventTimingsData<Types.Timing.Seconds> {
   const microTimes = eventTimingsMicroSeconds(event);
   return {
     startTime: microSecondsToSeconds(microTimes.startTime),
@@ -166,8 +164,7 @@ export function boundsIncludeTimeRange(data: BoundsIncludeTimeRange): boolean {
 }
 
 /** Checks to see if the event is within or overlaps the bounds */
-export function eventIsInBounds(
-    event: Types.TraceEvents.TraceEventData, bounds: Types.Timing.TraceWindowMicroSeconds): boolean {
+export function eventIsInBounds(event: Types.Events.Event, bounds: Types.Timing.TraceWindowMicroSeconds): boolean {
   const startTime = event.ts;
   return startTime <= bounds.max && bounds.min <= (startTime + (event.dur ?? 0));
 }

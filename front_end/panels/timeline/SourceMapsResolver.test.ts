@@ -5,7 +5,7 @@
 import {type Chrome} from '../../../extension-api/ExtensionAPI.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
-import * as TraceEngine from '../../models/trace/trace.js';
+import * as Trace from '../../models/trace/trace.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {TestPlugin} from '../../testing/LanguagePluginHelpers.js';
 import {
@@ -25,8 +25,8 @@ const AUTHORED_FUNCTION_NAME = 'someFunction';
 describeWithMockConnection('SourceMapsResolver', () => {
   let target: SDK.Target.Target;
   let script: SDK.Script.Script;
-  let traceParsedData: TraceEngine.Handlers.Types.TraceParseData;
-  let profileCall: TraceEngine.Types.TraceEvents.SyntheticProfileCall;
+  let parsedTrace: Trace.Handlers.Types.ParsedTrace;
+  let profileCall: Trace.Types.Events.SyntheticProfileCall;
   beforeEach(async function() {
     target = createTarget();
     script = (await loadBasicSourceMapExample(target)).script;
@@ -34,8 +34,7 @@ describeWithMockConnection('SourceMapsResolver', () => {
     // map however the current status of the source map helpers makes
     // it difficult to do so.
     const columnNumber = 51;
-    profileCall = makeProfileCall(
-        'function', 10, 100, TraceEngine.Types.TraceEvents.ProcessID(1), TraceEngine.Types.TraceEvents.ThreadID(1));
+    profileCall = makeProfileCall('function', 10, 100, Trace.Types.Events.ProcessID(1), Trace.Types.Events.ThreadID(1));
 
     profileCall.callFrame = {
       columnNumber,
@@ -45,25 +44,25 @@ describeWithMockConnection('SourceMapsResolver', () => {
       url: 'file://gen.js',
     };
 
-    const workersData: TraceEngine.Handlers.ModelHandlers.Workers.WorkersData = {
+    const workersData: Trace.Handlers.ModelHandlers.Workers.WorkersData = {
       workerSessionIdEvents: [],
       workerIdByThread: new Map(),
       workerURLById: new Map(),
     };
     // This only includes data used in the SourceMapsResolver
-    traceParsedData = {
+    parsedTrace = {
       Samples: makeMockSamplesHandlerData([profileCall]),
       Workers: workersData,
-    } as TraceEngine.Handlers.Types.TraceParseData;
+    } as Trace.Handlers.Types.ParsedTrace;
   });
 
   it('renames nodes from the profile models when the corresponding scripts and source maps have loaded',
      async function() {
-       const resolver = new Timeline.SourceMapsResolver.SourceMapsResolver(traceParsedData);
+       const resolver = new Timeline.SourceMapsResolver.SourceMapsResolver(parsedTrace);
 
        // Test the node's name is minified before the script and source maps load.
        assert.strictEqual(
-           TraceEngine.Handlers.ModelHandlers.Samples.getProfileCallFunctionName(traceParsedData.Samples, profileCall),
+           Trace.Handlers.ModelHandlers.Samples.getProfileCallFunctionName(parsedTrace.Samples, profileCall),
            MINIFIED_FUNCTION_NAME);
 
        await resolver.install();
@@ -71,7 +70,7 @@ describeWithMockConnection('SourceMapsResolver', () => {
        // Now that the script and source map have loaded, test that the model has been automatically
        // reparsed to resolve function names.
        assert.strictEqual(
-           TraceEngine.Handlers.ModelHandlers.Samples.getProfileCallFunctionName(traceParsedData.Samples, profileCall),
+           Trace.Handlers.ModelHandlers.Samples.getProfileCallFunctionName(parsedTrace.Samples, profileCall),
            AUTHORED_FUNCTION_NAME);
 
        // Ensure we populate the cache
@@ -98,10 +97,10 @@ describeWithMockConnection('SourceMapsResolver', () => {
 
     const {pluginManager} = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
     pluginManager.addPlugin(new Plugin());
-    const resolver = new Timeline.SourceMapsResolver.SourceMapsResolver(traceParsedData);
+    const resolver = new Timeline.SourceMapsResolver.SourceMapsResolver(parsedTrace);
     await resolver.install();
     assert.strictEqual(
-        TraceEngine.Handlers.ModelHandlers.Samples.getProfileCallFunctionName(traceParsedData.Samples, profileCall),
+        Trace.Handlers.ModelHandlers.Samples.getProfileCallFunctionName(parsedTrace.Samples, profileCall),
         PLUGIN_FUNCTION_NAME);
   });
 });

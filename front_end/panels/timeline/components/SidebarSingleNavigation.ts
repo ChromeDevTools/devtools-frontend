@@ -5,7 +5,7 @@
 // TODO(crbug.com/366049346): rename file
 
 import * as i18n from '../../../core/i18n/i18n.js';
-import * as TraceEngine from '../../../models/trace/trace.js';
+import * as Trace from '../../../models/trace/trace.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
@@ -16,8 +16,8 @@ import {InsightsCategories} from './SidebarInsightsTab.js';
 import styles from './sidebarSingleNavigation.css.js';
 
 export interface SidebarSingleNavigationData {
-  traceParsedData: TraceEngine.Handlers.Types.TraceParseData|null;
-  insights: TraceEngine.Insights.Types.TraceInsightData|null;
+  parsedTrace: Trace.Handlers.Types.ParsedTrace|null;
+  insights: Trace.Insights.Types.TraceInsightSets|null;
   navigationId: string|null;
   activeCategory: InsightsCategories;
   activeInsight: ActiveInsight|null;
@@ -29,7 +29,7 @@ export class SidebarSingleNavigation extends HTMLElement {
   #renderBound = this.#render.bind(this);
 
   #data: SidebarSingleNavigationData = {
-    traceParsedData: null,
+    parsedTrace: null,
     insights: null,
     navigationId: null,
     activeCategory: InsightsCategories.ALL,
@@ -52,7 +52,7 @@ export class SidebarSingleNavigation extends HTMLElement {
     return label === this.#data.activeCategory;
   }
 
-  #onClickMetric(event: TraceEngine.Types.TraceEvents.TraceEventData, insightComponentName: string): void {
+  #onClickMetric(event: Trace.Types.Events.Event, insightComponentName: string): void {
     const el = this.shadowRoot?.querySelector(insightComponentName) as BaseInsight;
     if (el && this.#data.navigationId) {
       this.dispatchEvent(new Insights.SidebarInsight.InsightActivated(
@@ -67,8 +67,8 @@ export class SidebarSingleNavigation extends HTMLElement {
 
   #renderMetricValue(
       label: 'LCP'|'CLS'|'INP', value: string,
-      classification: TraceEngine.Handlers.ModelHandlers.PageLoadMetrics.ScoreClassification,
-      event: TraceEngine.Types.TraceEvents.TraceEventData|null): LitHtml.LitTemplate {
+      classification: Trace.Handlers.ModelHandlers.PageLoadMetrics.ScoreClassification,
+      event: Trace.Types.Events.Event|null): LitHtml.LitTemplate {
     const insightComponentName = {
       LCP: Insights.LCPPhases.LCPPhases.litTagName.value as string,
       CLS: Insights.CLSCulprits.CLSCulprits.litTagName.value as string,
@@ -92,17 +92,17 @@ export class SidebarSingleNavigation extends HTMLElement {
    * score.
    */
   #calculateINP(
-      traceParsedData: TraceEngine.Handlers.Types.TraceParseData,
+      parsedTrace: Trace.Handlers.Types.ParsedTrace,
       navigationId: string,
-      ): TraceEngine.Types.Timing.MicroSeconds|null {
-    const eventsForNavigation = traceParsedData.UserInteractions.interactionEventsWithNoNesting.filter(e => {
+      ): Trace.Types.Timing.MicroSeconds|null {
+    const eventsForNavigation = parsedTrace.UserInteractions.interactionEventsWithNoNesting.filter(e => {
       return e.args.data.navigationId === navigationId;
     });
     if (eventsForNavigation.length === 0) {
       return null;
     }
 
-    let maxDuration = TraceEngine.Types.Timing.MicroSeconds(0);
+    let maxDuration = Trace.Types.Timing.MicroSeconds(0);
     for (const event of eventsForNavigation) {
       if (event.dur > maxDuration) {
         maxDuration = event.dur;
@@ -113,11 +113,11 @@ export class SidebarSingleNavigation extends HTMLElement {
   }
 
   #calculateCLSScore(
-      traceParsedData: TraceEngine.Handlers.Types.TraceParseData,
+      parsedTrace: Trace.Handlers.Types.ParsedTrace,
       navigationId: string,
-      ): {maxScore: number, worstShfitEvent: TraceEngine.Types.TraceEvents.TraceEventData|null} {
+      ): {maxScore: number, worstShfitEvent: Trace.Types.Events.Event|null} {
     // Find all clusers associated with this navigation
-    const clustersForNavigation = traceParsedData.LayoutShifts.clusters.filter(c => c.navigationId === navigationId);
+    const clustersForNavigation = parsedTrace.LayoutShifts.clusters.filter(c => c.navigationId === navigationId);
     let maxScore = 0;
     let worstCluster;
     for (const cluster of clustersForNavigation) {
@@ -130,15 +130,15 @@ export class SidebarSingleNavigation extends HTMLElement {
   }
 
   #renderMetrics(
-      traceParsedData: TraceEngine.Handlers.Types.TraceParseData,
+      parsedTrace: Trace.Handlers.Types.ParsedTrace,
       navigationId: string,
       ): LitHtml.TemplateResult {
     const forNavigation =
-        traceParsedData.PageLoadMetrics.metricScoresByFrameId.get(traceParsedData.Meta.mainFrameId)?.get(navigationId);
-    const lcpMetric = forNavigation?.get(TraceEngine.Handlers.ModelHandlers.PageLoadMetrics.MetricName.LCP);
+        parsedTrace.PageLoadMetrics.metricScoresByFrameId.get(parsedTrace.Meta.mainFrameId)?.get(navigationId);
+    const lcpMetric = forNavigation?.get(Trace.Handlers.ModelHandlers.PageLoadMetrics.MetricName.LCP);
 
-    const {maxScore: clsScore, worstShfitEvent} = this.#calculateCLSScore(traceParsedData, navigationId);
-    const inp = this.#calculateINP(traceParsedData, navigationId);
+    const {maxScore: clsScore, worstShfitEvent} = this.#calculateCLSScore(parsedTrace, navigationId);
+    const inp = this.#calculateINP(parsedTrace, navigationId);
 
     return LitHtml.html`
     <div class="metrics-row">
@@ -150,20 +150,19 @@ export class SidebarSingleNavigation extends HTMLElement {
     ${
         this.#renderMetricValue(
             'CLS', clsScore.toFixed(2),
-            TraceEngine.Handlers.ModelHandlers.LayoutShifts.scoreClassificationForLayoutShift(clsScore),
-            worstShfitEvent)}
+            Trace.Handlers.ModelHandlers.LayoutShifts.scoreClassificationForLayoutShift(clsScore), worstShfitEvent)}
     ${
-        inp ? this.#renderMetricValue(
-                  'INP', i18n.TimeUtilities.formatMicroSecondsAsMillisFixed(inp),
-                  TraceEngine.Handlers.ModelHandlers.UserInteractions.scoreClassificationForInteractionToNextPaint(inp),
-                  null) :
-              LitHtml.nothing}
+        inp ?
+            this.#renderMetricValue(
+                'INP', i18n.TimeUtilities.formatMicroSecondsAsMillisFixed(inp),
+                Trace.Handlers.ModelHandlers.UserInteractions.scoreClassificationForInteractionToNextPaint(inp), null) :
+            LitHtml.nothing}
     </div>
     `;
   }
 
   #renderInsights(
-      insights: TraceEngine.Insights.Types.TraceInsightData|null,
+      insights: Trace.Insights.Types.TraceInsightSets|null,
       navigationId: string,
       ): LitHtml.TemplateResult {
     // TODO(crbug.com/368135130): sort this in a smart way!
@@ -194,11 +193,11 @@ export class SidebarSingleNavigation extends HTMLElement {
 
   #render(): void {
     const {
-      traceParsedData,
+      parsedTrace,
       insights,
       navigationId,
     } = this.#data;
-    if (!traceParsedData || !insights || !navigationId) {
+    if (!parsedTrace || !insights || !navigationId) {
       LitHtml.render(LitHtml.html``, this.#shadow, {host: this});
       return;
     }
@@ -206,7 +205,7 @@ export class SidebarSingleNavigation extends HTMLElement {
     // clang-format off
     LitHtml.render(LitHtml.html`
       <div class="navigation">
-        ${this.#renderMetrics(traceParsedData, navigationId)}
+        ${this.#renderMetrics(parsedTrace, navigationId)}
         ${this.#renderInsights(insights, navigationId)}
         </div>
       `, this.#shadow, {host: this});

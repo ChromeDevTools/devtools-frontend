@@ -40,7 +40,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import type * as Extensions from '../../models/extensions/extensions.js';
 import * as Logs from '../../models/logs/logs.js';
-import * as TraceEngine from '../../models/trace/trace.js';
+import * as Trace from '../../models/trace/trace.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as NetworkForward from '../../panels/network/forward/forward.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
@@ -531,13 +531,13 @@ export class NetworkPanel extends UI.Panel.Panel implements
     }
   }
 
-  private filmStripAvailable(filmStrip: TraceEngine.Extras.FilmStrip.Data): void {
+  private filmStripAvailable(filmStrip: Trace.Extras.FilmStrip.Data): void {
     if (this.filmStripView) {
       this.filmStripView.setModel(filmStrip);
     }
     const timestamps = filmStrip.frames.map(frame => {
       // The network view works in seconds.
-      return TraceEngine.Helpers.Timing.microSecondsToSeconds(frame.screenshotEvent.ts);
+      return Trace.Helpers.Timing.microSecondsToSeconds(frame.screenshotEvent.ts);
     });
 
     this.networkLogView.addFilmStripFrames(timestamps);
@@ -827,8 +827,8 @@ export class NetworkPanel extends UI.Panel.Panel implements
     this.calculator.updateBoundaries(request);
     // FIXME: Unify all time units across the frontend!
     this.overviewPane.setBounds(
-        TraceEngine.Types.Timing.MilliSeconds(this.calculator.minimumBoundary() * 1000),
-        TraceEngine.Types.Timing.MilliSeconds(this.calculator.maximumBoundary() * 1000));
+        Trace.Types.Timing.MilliSeconds(this.calculator.minimumBoundary() * 1000),
+        Trace.Types.Timing.MilliSeconds(this.calculator.maximumBoundary() * 1000));
     this.networkOverview.updateRequest(request);
   }
 
@@ -868,19 +868,19 @@ export class NetworkLogWithFilterRevealer implements
   }
 }
 
-export class FilmStripRecorder implements TraceEngine.TracingManager.TracingManagerClient {
-  private tracingManager: TraceEngine.TracingManager.TracingManager|null;
+export class FilmStripRecorder implements Trace.TracingManager.TracingManagerClient {
+  private tracingManager: Trace.TracingManager.TracingManager|null;
   private resourceTreeModel: SDK.ResourceTreeModel.ResourceTreeModel|null;
   private readonly timeCalculator: NetworkTimeCalculator;
   private readonly filmStripView: PerfUI.FilmStripView.FilmStripView;
-  private callback: ((filmStrip: TraceEngine.Extras.FilmStrip.Data) => void)|null;
+  private callback: ((filmStrip: Trace.Extras.FilmStrip.Data) => void)|null;
   // Used to fetch screenshots of the page load and show them in the panel.
-  #traceEngine: TraceEngine.TraceModel.Model;
-  #collectedTraceEvents: TraceEngine.Types.TraceEvents.TraceEventData[] = [];
+  #traceEngine: Trace.TraceModel.Model;
+  #collectedTraceEvents: Trace.Types.Events.Event[] = [];
 
   constructor(timeCalculator: NetworkTimeCalculator, filmStripView: PerfUI.FilmStripView.FilmStripView) {
-    this.#traceEngine = TraceEngine.TraceModel.Model.createWithSubsetOfHandlers({
-      Screenshots: TraceEngine.Handlers.ModelHandlers.Screenshots,
+    this.#traceEngine = Trace.TraceModel.Model.createWithSubsetOfHandlers({
+      Screenshots: Trace.Handlers.ModelHandlers.Screenshots,
     });
 
     this.tracingManager = null;
@@ -890,7 +890,7 @@ export class FilmStripRecorder implements TraceEngine.TracingManager.TracingMana
     this.callback = null;
   }
 
-  traceEventsCollected(events: TraceEngine.Types.TraceEvents.TraceEventData[]): void {
+  traceEventsCollected(events: Trace.Types.Events.Event[]): void {
     this.#collectedTraceEvents.push(...events);
   }
 
@@ -901,14 +901,14 @@ export class FilmStripRecorder implements TraceEngine.TracingManager.TracingMana
     this.tracingManager = null;
     await this.#traceEngine.parse(this.#collectedTraceEvents);
 
-    const data = this.#traceEngine.traceParsedData(this.#traceEngine.size() - 1) as
-        TraceEngine.Extras.FilmStrip.HandlerDataWithScreenshots;
+    const data = this.#traceEngine.parsedTrace(this.#traceEngine.size() - 1) as
+        Trace.Extras.FilmStrip.HandlerDataWithScreenshots;
     if (!data) {
       return;
     }
-    const zeroTimeInSeconds = TraceEngine.Types.Timing.Seconds(this.timeCalculator.minimumBoundary());
-    const filmStrip = TraceEngine.Extras.FilmStrip.fromTraceData(
-        data, TraceEngine.Helpers.Timing.secondsToMicroseconds(zeroTimeInSeconds));
+    const zeroTimeInSeconds = Trace.Types.Timing.Seconds(this.timeCalculator.minimumBoundary());
+    const filmStrip =
+        Trace.Extras.FilmStrip.fromParsedTrace(data, Trace.Helpers.Timing.secondsToMicroseconds(zeroTimeInSeconds));
 
     if (this.callback) {
       this.callback(filmStrip);
@@ -936,7 +936,7 @@ export class FilmStripRecorder implements TraceEngine.TracingManager.TracingMana
     this.filmStripView.reset();
     this.filmStripView.setStatusText(i18nString(UIStrings.recordingFrames));
     const tracingManager =
-        SDK.TargetManager.TargetManager.instance().scopeTarget()?.model(TraceEngine.TracingManager.TracingManager);
+        SDK.TargetManager.TargetManager.instance().scopeTarget()?.model(Trace.TracingManager.TracingManager);
     if (this.tracingManager || !tracingManager) {
       return;
     }
@@ -952,7 +952,7 @@ export class FilmStripRecorder implements TraceEngine.TracingManager.TracingMana
     return Boolean(this.tracingManager);
   }
 
-  stopRecording(callback: (filmStrip: TraceEngine.Extras.FilmStrip.Data) => void): void {
+  stopRecording(callback: (filmStrip: Trace.Extras.FilmStrip.Data) => void): void {
     if (!this.tracingManager) {
       return;
     }

@@ -43,9 +43,9 @@ Profile calls are the result of processing CPU profile data to determine the exe
 Built Sync events data is added to the flame chart data by the [ThreadAppender]. An instance of this appender is created for each unique thread in a trace. The implementation is rather simple given that the data exported by the [RendererHandler] is already in hierarchical order.
 
 #### Styles
-Styles for trace events tracked in the [KnownEventName](../../models/trace/types/TraceEvents.ts)  are defined in `EventStyles` in [EventUICategory]. An event style contains the event's label and the color we use to denote its category. This styles definitions are queried by the ThreadAppender to assign the corresponding styles when the timeline is rendered.
+Styles for trace events tracked in the [`Name`](../../models/trace/types/TraceEvents.ts)  are defined in `EventStyles` in [EventUICategory]. An event style contains the event's label and the color we use to denote its category. This styles definitions are queried by the ThreadAppender to assign the corresponding styles when the timeline is rendered.
 
-Given that profile calls are synthetically formatted as trace events, they are not included in the KnownEventName enum and as such don't have predefined styles. Instead, a color is generated using their script url as a seed. This way, calls from the same script are shown with the same color. Also, the name used for profile calls is the name of the function they represent.
+Given that profile calls are synthetically formatted as trace events, they are not included in the `Name` enum and as such don't have predefined styles. Instead, a color is generated using their script url as a seed. This way, calls from the same script are shown with the same color. Also, the name used for profile calls is the name of the function they represent.
 
 
 [MetaHandler]: ../../models/trace/handlers/MetaHandler.ts

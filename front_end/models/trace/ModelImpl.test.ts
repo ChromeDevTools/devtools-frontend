@@ -4,15 +4,15 @@
 
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
-import * as TraceModel from '../trace/trace.js';
+import * as Trace from '../trace/trace.js';
 
 describeWithEnvironment('TraceModel', function() {
   it('dispatches an end event when the trace is done', async function() {
-    const model = TraceModel.TraceModel.Model.createWithAllHandlers();
+    const model = Trace.TraceModel.Model.createWithAllHandlers();
     const events: string[] = [];
 
-    model.addEventListener(TraceModel.TraceModel.ModelUpdateEvent.eventName, (evt: Event) => {
-      const updateEvent = evt as TraceModel.TraceModel.ModelUpdateEvent;
+    model.addEventListener(Trace.TraceModel.ModelUpdateEvent.eventName, (evt: Event) => {
+      const updateEvent = evt as Trace.TraceModel.ModelUpdateEvent;
       events.push(updateEvent.data.type);
     });
 
@@ -22,23 +22,23 @@ describeWithEnvironment('TraceModel', function() {
   });
 
   it('supports parsing a generic trace that has no browser specific details', async function() {
-    const model = TraceModel.TraceModel.Model.createWithAllHandlers();
+    const model = Trace.TraceModel.Model.createWithAllHandlers();
     const file1 = await TraceLoader.rawEvents(this, 'generic-about-tracing.json.gz');
     await model.parse(file1);
     assert.strictEqual(model.size(), 1);
   });
 
   it('supports being given a set of handlers to run and will run just those and the Meta handler', async function() {
-    const model = new TraceModel.TraceModel.Model({
-      Animations: TraceModel.Handlers.ModelHandlers.Animations,
-    } as TraceModel.Handlers.Types.Handlers);
+    const model = new Trace.TraceModel.Model({
+      Animations: Trace.Handlers.ModelHandlers.Animations,
+    } as Trace.Handlers.Types.Handlers);
     const file1 = await TraceLoader.rawEvents(this, 'animation.json.gz');
     await model.parse(file1);
-    assert.deepEqual(Object.keys(model.traceParsedData(0) || {}), ['Meta', 'Animations']);
+    assert.deepEqual(Object.keys(model.parsedTrace(0) || {}), ['Meta', 'Animations']);
   });
 
   it('supports parsing multiple traces', async function() {
-    const model = TraceModel.TraceModel.Model.createWithAllHandlers();
+    const model = Trace.TraceModel.Model.createWithAllHandlers();
     const file1 = await TraceLoader.rawEvents(this, 'basic.json.gz');
     const file2 = await TraceLoader.rawEvents(this, 'slow-interaction-keydown.json.gz');
 
@@ -50,14 +50,14 @@ describeWithEnvironment('TraceModel', function() {
     model.resetProcessor();
 
     assert.strictEqual(model.size(), 2);
-    assert.isNotNull(model.traceParsedData(0));
+    assert.isNotNull(model.parsedTrace(0));
     assert.isNotNull(model.traceInsights(0));
-    assert.isNotNull(model.traceParsedData(1));
+    assert.isNotNull(model.parsedTrace(1));
     assert.isNotNull(model.traceInsights(1));
   });
 
   it('supports deleting traces', async function() {
-    const model = TraceModel.TraceModel.Model.createWithAllHandlers();
+    const model = Trace.TraceModel.Model.createWithAllHandlers();
     const file1 = await TraceLoader.rawEvents(this, 'basic.json.gz');
     const file2 = await TraceLoader.rawEvents(this, 'slow-interaction-keydown.json.gz');
 
@@ -70,17 +70,17 @@ describeWithEnvironment('TraceModel', function() {
     assert.strictEqual(model.size(), 2);
     model.deleteTraceByIndex(0);
     assert.strictEqual(model.size(), 1);
-    assert.isNotNull(model.traceParsedData(0));
+    assert.isNotNull(model.parsedTrace(0));
     assert.isNotNull(model.traceInsights(0));
 
     model.deleteTraceByIndex(0);
     assert.strictEqual(model.size(), 0);
-    assert.isNull(model.traceParsedData(0));
+    assert.isNull(model.parsedTrace(0));
     assert.isNull(model.traceInsights(0));
   });
 
   it('names traces using their origin and defaults to "Trace n" when no origin is found', async function() {
-    const model = TraceModel.TraceModel.Model.createWithAllHandlers();
+    const model = Trace.TraceModel.Model.createWithAllHandlers();
     const traceFiles = [
       await TraceLoader.rawEvents(this, 'threejs-gpu.json.gz'),
       await TraceLoader.rawEvents(this, 'web-dev.json.gz'),
@@ -104,7 +104,7 @@ describeWithEnvironment('TraceModel', function() {
   });
 
   it('supports overriding modifications in metadata', async function() {
-    const model = TraceModel.TraceModel.Model.createWithAllHandlers();
+    const model = Trace.TraceModel.Model.createWithAllHandlers();
     const file1 = await TraceLoader.rawEvents(this, 'basic.json.gz');
     await model.parse(file1);
 
@@ -113,9 +113,9 @@ describeWithEnvironment('TraceModel', function() {
 
     const initialBreadcrumb = {
       window: {
-        max: 0 as TraceModel.Types.Timing.MicroSeconds,
-        min: 10 as TraceModel.Types.Timing.MicroSeconds,
-        range: 10 as TraceModel.Types.Timing.MicroSeconds,
+        max: 0 as Trace.Types.Timing.MicroSeconds,
+        min: 10 as Trace.Types.Timing.MicroSeconds,
+        range: 10 as Trace.Types.Timing.MicroSeconds,
       },
       child: null,
     };
@@ -123,7 +123,7 @@ describeWithEnvironment('TraceModel', function() {
     const entriesModifications = {
       hiddenEntries: ['r-1', 'r-2', 'r-3'],
       expandableEntries: ['r-4'],
-    } as TraceModel.Types.File.Modifications['entriesModifications'];
+    } as Trace.Types.File.Modifications['entriesModifications'];
 
     const annotations = {
       entryLabels: [
@@ -135,9 +135,9 @@ describeWithEnvironment('TraceModel', function() {
       labelledTimeRanges: [
         {
           bounds: {
-            min: TraceModel.Types.Timing.MicroSeconds(0),
-            max: TraceModel.Types.Timing.MicroSeconds(10),
-            range: TraceModel.Types.Timing.MicroSeconds(10),
+            min: Trace.Types.Timing.MicroSeconds(0),
+            max: Trace.Types.Timing.MicroSeconds(10),
+            range: Trace.Types.Timing.MicroSeconds(10),
           },
           label: 'range label',
         },
@@ -146,7 +146,7 @@ describeWithEnvironment('TraceModel', function() {
         entryFrom: 'r-10',
         entryTo: 'r-11',
       }],
-    } as TraceModel.Types.File.Modifications['annotations'];
+    } as Trace.Types.File.Modifications['annotations'];
 
     const modifications = {
       entriesModifications,

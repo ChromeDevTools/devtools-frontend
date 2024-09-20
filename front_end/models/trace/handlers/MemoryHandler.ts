@@ -6,7 +6,7 @@ import * as Platform from '../../../core/platform/platform.js';
 import * as Types from '../types/types.js';
 
 export interface MemoryData {
-  updateCountersByProcess: Map<Types.TraceEvents.ProcessID, Types.TraceEvents.TraceEventUpdateCounters[]>;
+  updateCountersByProcess: Map<Types.Events.ProcessID, Types.Events.UpdateCounters[]>;
 }
 
 const updateCountersByProcess: MemoryData['updateCountersByProcess'] = new Map();
@@ -15,8 +15,8 @@ export function reset(): void {
   updateCountersByProcess.clear();
 }
 
-export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
-  if (Types.TraceEvents.isTraceEventUpdateCounters(event)) {
+export function handleEvent(event: Types.Events.Event): void {
+  if (Types.Events.isUpdateCounters(event)) {
     const countersForProcess = Platform.MapUtilities.getWithDefault(updateCountersByProcess, event.pid, () => []);
     countersForProcess.push(event);
     updateCountersByProcess.set(event.pid, countersForProcess);

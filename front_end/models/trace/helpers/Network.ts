@@ -4,6 +4,6 @@
 
 import {type SyntheticNetworkRequest} from '../types/TraceEvents.js';
 
-export function isSyntheticNetworkRequestEventRenderBlocking(traceEventData: SyntheticNetworkRequest): boolean {
-  return traceEventData.args.data.renderBlocking !== 'non_blocking';
+export function isSyntheticNetworkRequestEventRenderBlocking(event: SyntheticNetworkRequest): boolean {
+  return event.args.data.renderBlocking !== 'non_blocking';
 }

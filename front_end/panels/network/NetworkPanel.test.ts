@@ -5,7 +5,7 @@
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Logs from '../../models/logs/logs.js';
-import * as TraceEngine from '../../models/trace/trace.js';
+import * as Trace from '../../models/trace/trace.js';
 import {createTarget, registerNoopActions} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import * as Coordinator from '../../ui/components/render_coordinator/render_coordinator.js';
@@ -55,7 +55,7 @@ describeWithMockConnection('NetworkPanel', () => {
       Common.Settings.Settings.instance().moduleSetting('network-record-film-strip-setting').set(true);
       const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
       assert.exists(resourceTreeModel);
-      const tracingManager = target.model(TraceEngine.TracingManager.TracingManager);
+      const tracingManager = target.model(Trace.TracingManager.TracingManager);
       assert.exists(tracingManager);
       const tracingStart = sinon.spy(tracingManager, 'start');
       resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.WillReloadPage);
@@ -67,7 +67,7 @@ describeWithMockConnection('NetworkPanel', () => {
       Common.Settings.Settings.instance().moduleSetting('network-record-film-strip-setting').set(true);
       const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
       assert.exists(resourceTreeModel);
-      const tracingManager = target.model(TraceEngine.TracingManager.TracingManager);
+      const tracingManager = target.model(Trace.TracingManager.TracingManager);
       assert.exists(tracingManager);
       resourceTreeModel.dispatchEventToListeners(SDK.ResourceTreeModel.Events.WillReloadPage);
       SDK.TargetManager.TargetManager.instance().setScopeTarget(inScope ? target : null);

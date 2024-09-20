@@ -11,25 +11,25 @@ import type * as InsightsRunners from './InsightRunners.js';
 /**
  * Context for the portion of the trace an insight should look at.
  */
-export type BoundedInsightContext = BoundedInsightContextWithoutNavigation|BoundedInsightContextWithNavigation;
+export type InsightSetContext = InsightSetContextWithoutNavigation|InsightSetContextWithNavigation;
 
-export interface BoundedInsightContextWithoutNavigation {
+export interface InsightSetContextWithoutNavigation {
   bounds: Types.Timing.TraceWindowMicroSeconds;
   frameId: string;
   navigation?: never;
 }
 
-export interface BoundedInsightContextWithNavigation {
+export interface InsightSetContextWithNavigation {
   bounds: Types.Timing.TraceWindowMicroSeconds;
   frameId: string;
-  navigation: Types.TraceEvents.TraceEventNavigationStart;
+  navigation: Types.Events.NavigationStart;
   navigationId: string;
   lantern?: LanternContext;
 }
 
 export interface LanternContext {
-  graph: Lantern.Graph.Node<Types.TraceEvents.SyntheticNetworkRequest>;
-  simulator: Lantern.Simulation.Simulator<Types.TraceEvents.SyntheticNetworkRequest>;
+  graph: Lantern.Graph.Node<Types.Events.SyntheticNetworkRequest>;
+  simulator: Lantern.Simulation.Simulator<Types.Events.SyntheticNetworkRequest>;
   metrics: Record<string, Lantern.Metrics.MetricResult>;
 }
 
@@ -61,13 +61,13 @@ export type InsightResult<R extends Record<string, unknown>> = R&{
  * this could instead represent the duration from the beginning of the trace up to the first recorded
  * navigation (or the end of the trace).
  */
-export type BoundedInsights = {
+export type InsightSets = {
   id: string,
   label: string,
   frameId: string,
   bounds: Types.Timing.TraceWindowMicroSeconds,
   data: InsightResults,
-  navigation?: Types.TraceEvents.TraceEventNavigationStart,
+  navigation?: Types.Events.NavigationStart,
 };
 
 /**
@@ -84,7 +84,7 @@ export type InsightResults = {
  * navigation to map it to. In this case NO_NAVIGATION is used for the key.
  * TODO(crbug.com/366049346): Consider using a symbol. Wait until no-navigation insights are shown in the panel.
  */
-export type TraceInsightData = Map<string, BoundedInsights>;
+export type TraceInsightSets = Map<string, InsightSets>;
 export const NO_NAVIGATION = 'NO_NAVIGATION';
 
 /**

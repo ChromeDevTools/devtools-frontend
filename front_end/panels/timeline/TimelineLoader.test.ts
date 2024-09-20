@@ -4,7 +4,7 @@
 
 import type * as Protocol from '../../generated/protocol.js';
 import type * as TimelineModel from '../../models/timeline_model/timeline_model.js';
-import type * as TraceEngine from '../../models/trace/trace.js';
+import type * as Trace from '../../models/trace/trace.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {makeInstantEvent} from '../../testing/TraceHelpers.js';
 
@@ -49,7 +49,7 @@ describeWithEnvironment('TimelineLoader', () => {
       processingStartedSpy();
     },
     async loadingComplete(
-        collectedEvents: TraceEngine.Types.TraceEvents.TraceEventData[],
+        collectedEvents: Trace.Types.Events.Event[],
         exclusiveFilter: TimelineModel.TimelineModelFilter.TimelineModelFilter|null,
         isCpuProfile: boolean,
     ) {
@@ -121,7 +121,7 @@ describeWithEnvironment('TimelineLoader', () => {
   });
 
   it('can load recorded trace events correctly', async () => {
-    const testTraceEvents: TraceEngine.Types.TraceEvents.TraceEventData[] = [
+    const testTraceEvents: Trace.Types.Events.Event[] = [
       makeInstantEvent('test-event-1', 1),
       makeInstantEvent('test-event-2', 2),
     ];

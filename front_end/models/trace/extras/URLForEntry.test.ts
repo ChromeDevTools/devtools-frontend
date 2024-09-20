@@ -4,62 +4,61 @@
 
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
-import * as TraceEngine from '../trace.js';
+import * as Trace from '../trace.js';
 
 describeWithEnvironment('URLForEntry', () => {
   it('returns the URL in event.args.data if it has one', async function() {
-    const {traceData} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
-    const commitLoadEvent =
-        traceData.Renderer.allTraceEntries.find(TraceEngine.Types.TraceEvents.isTraceEventCommitLoad);
+    const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const commitLoadEvent = parsedTrace.Renderer.allTraceEntries.find(Trace.Types.Events.isCommitLoad);
     assert.isOk(commitLoadEvent);
-    const url = TraceEngine.Extras.URLForEntry.get(traceData, commitLoadEvent);
+    const url = Trace.Extras.URLForEntry.get(parsedTrace, commitLoadEvent);
     assert.isNotNull(url);
     assert.strictEqual(url, commitLoadEvent.args.data?.url);
   });
 
   it('returns the URL for a ProfileCall from the callframe', async function() {
-    const {traceData} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
-    const profileCall = traceData.Renderer.allTraceEntries.find(TraceEngine.Types.TraceEvents.isProfileCall);
+    const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const profileCall = parsedTrace.Renderer.allTraceEntries.find(Trace.Types.Events.isProfileCall);
     assert.isOk(profileCall);
-    const url = TraceEngine.Extras.URLForEntry.get(traceData, profileCall);
+    const url = Trace.Extras.URLForEntry.get(parsedTrace, profileCall);
     assert.isNotNull(url);
     assert.strictEqual(url, profileCall.callFrame.url);
   });
 
   it('uses the request URL for a network request', async function() {
-    const {traceData} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
-    const request = traceData.NetworkRequests.byTime[0];
+    const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const request = parsedTrace.NetworkRequests.byTime[0];
     assert.isOk(request);
-    const url = TraceEngine.Extras.URLForEntry.get(traceData, request);
+    const url = Trace.Extras.URLForEntry.get(parsedTrace, request);
     assert.isNotNull(url);
     assert.strictEqual(url, request.args.data.url);
   });
 
   it('for a generic event with a stackTrace property, it uses the URL of the top frame', async function() {
-    const {traceData} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
-    const eventDispatch = traceData.Renderer.allTraceEntries.find(entry => {
-      return TraceEngine.Types.TraceEvents.isTraceEventDispatch(entry) && entry.args.data.stackTrace;
+    const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const eventDispatch = parsedTrace.Renderer.allTraceEntries.find(entry => {
+      return Trace.Types.Events.isDispatch(entry) && entry.args.data.stackTrace;
     });
     assert.isOk(eventDispatch);
-    const url = TraceEngine.Extras.URLForEntry.get(traceData, eventDispatch);
+    const url = Trace.Extras.URLForEntry.get(parsedTrace, eventDispatch);
     assert.isNotNull(url);
     assert.strictEqual(url, eventDispatch.args?.data?.stackTrace?.[0].url);
   });
 
   it('finds the URL for a ParseHTML event', async function() {
-    const {traceData} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
-    const parseHTMLEvent = traceData.Renderer.allTraceEntries.find(TraceEngine.Types.TraceEvents.isTraceEventParseHTML);
+    const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const parseHTMLEvent = parsedTrace.Renderer.allTraceEntries.find(Trace.Types.Events.isParseHTML);
     assert.isOk(parseHTMLEvent);
-    const url = TraceEngine.Extras.URLForEntry.get(traceData, parseHTMLEvent);
+    const url = Trace.Extras.URLForEntry.get(parsedTrace, parseHTMLEvent);
     assert.isNotNull(url);
     assert.strictEqual(url, parseHTMLEvent.args.beginData.url);
   });
 
   it('uses the PaintImage URL for a DecodeImage event', async function() {
-    const {traceData} = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
-    const decodeImage = traceData.Renderer.allTraceEntries.find(TraceEngine.Types.TraceEvents.isTraceEventDecodeImage);
+    const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+    const decodeImage = parsedTrace.Renderer.allTraceEntries.find(Trace.Types.Events.isDecodeImage);
     assert.isOk(decodeImage);
-    const url = TraceEngine.Extras.URLForEntry.get(traceData, decodeImage);
+    const url = Trace.Extras.URLForEntry.get(parsedTrace, decodeImage);
     assert.isNotNull(url);
     assert.strictEqual(
         url, 'https://web-dev.imgix.net/image/admin/WkMOiDtaDgiAA2YkRZ5H.jpg?fit=crop&h=64&w=64&dpr=1&q=75');

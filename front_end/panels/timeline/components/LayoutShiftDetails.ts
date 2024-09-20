@@ -7,7 +7,7 @@ import type * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import * as Helpers from '../../../models/trace/helpers/helpers.js';
-import * as TraceEngine from '../../../models/trace/trace.js';
+import * as Trace from '../../../models/trace/trace.js';
 import * as LegacyComponents from '../../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
@@ -67,9 +67,9 @@ export class LayoutShiftDetails extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-performance-layout-shift-details`;
   readonly #shadow = this.attachShadow({mode: 'open'});
 
-  #layoutShift?: TraceEngine.Types.TraceEvents.SyntheticLayoutShift|null;
-  #traceInsightsData: TraceEngine.Insights.Types.TraceInsightData|null = null;
-  #traceEngineData: TraceEngine.Handlers.Types.TraceParseData|null = null;
+  #layoutShift?: Trace.Types.Events.SyntheticLayoutShift|null;
+  #traceInsightsSets: Trace.Insights.Types.TraceInsightSets|null = null;
+  #parsedTrace: Trace.Handlers.Types.ParsedTrace|null = null;
   #isFreshRecording: Boolean = false;
 
   connectedCallback(): void {
@@ -80,15 +80,15 @@ export class LayoutShiftDetails extends HTMLElement {
   }
 
   setData(
-      layoutShift: TraceEngine.Types.TraceEvents.SyntheticLayoutShift,
-      traceInsightsData: TraceEngine.Insights.Types.TraceInsightData|null,
-      traceEngineData: TraceEngine.Handlers.Types.TraceParseData|null, isFreshRecording: Boolean): void {
+      layoutShift: Trace.Types.Events.SyntheticLayoutShift,
+      traceInsightsSets: Trace.Insights.Types.TraceInsightSets|null, parsedTrace: Trace.Handlers.Types.ParsedTrace|null,
+      isFreshRecording: Boolean): void {
     if (this.#layoutShift === layoutShift) {
       return;
     }
     this.#layoutShift = layoutShift;
-    this.#traceInsightsData = traceInsightsData;
-    this.#traceEngineData = traceEngineData;
+    this.#traceInsightsSets = traceInsightsSets;
+    this.#parsedTrace = parsedTrace;
     this.#isFreshRecording = isFreshRecording;
     this.#render();
   }
@@ -113,8 +113,7 @@ export class LayoutShiftDetails extends HTMLElement {
     `;
   }
 
-  #renderShiftedElements(elementsShifted: TraceEngine.Types.TraceEvents.TraceImpactedNode[]|
-                         undefined): LitHtml.LitTemplate {
+  #renderShiftedElements(elementsShifted: Trace.Types.Events.TraceImpactedNode[]|undefined): LitHtml.LitTemplate {
     // clang-format off
     return LitHtml.html`
       ${elementsShifted?.map(el => {
@@ -145,7 +144,7 @@ export class LayoutShiftDetails extends HTMLElement {
     return LitHtml.html`<tr><td>${el}</td></tr>`;
   }
 
-  #renderFontRequest(request: TraceEngine.Types.TraceEvents.SyntheticNetworkRequest): LitHtml.TemplateResult|null {
+  #renderFontRequest(request: Trace.Types.Events.SyntheticNetworkRequest): LitHtml.TemplateResult|null {
     const options = {
       tabStop: true,
       showColumnNumber: false,
@@ -159,8 +158,7 @@ export class LayoutShiftDetails extends HTMLElement {
     return LitHtml.html`<tr><td>${linkifiedURL}</td></tr>`;
   }
 
-  #renderRootCauseValues(rootCauses:
-                             TraceEngine.Insights.InsightRunners.CumulativeLayoutShift.LayoutShiftRootCausesData|
+  #renderRootCauseValues(rootCauses: Trace.Insights.InsightRunners.CumulativeLayoutShift.LayoutShiftRootCausesData|
                          undefined): LitHtml.TemplateResult|null {
     return LitHtml.html`
       ${rootCauses?.fontRequests.map(fontReq => this.#renderFontRequest(fontReq))}
@@ -169,18 +167,18 @@ export class LayoutShiftDetails extends HTMLElement {
   }
 
   #renderDetailsTable(
-      layoutShift: TraceEngine.Types.TraceEvents.SyntheticLayoutShift,
-      traceInsightsData: TraceEngine.Insights.Types.TraceInsightData,
-      traceEngineData: TraceEngine.Handlers.Types.TraceParseData,
+      layoutShift: Trace.Types.Events.SyntheticLayoutShift,
+      traceInsightsSets: Trace.Insights.Types.TraceInsightSets,
+      parsedTrace: Trace.Handlers.Types.ParsedTrace,
       ): LitHtml.TemplateResult|null {
     const score = layoutShift.args.data?.score;
     if (!score) {
       return null;
     }
 
-    const ts = TraceEngine.Types.Timing.MicroSeconds(layoutShift.ts - traceEngineData.Meta.traceBounds.min);
-    const insightsId = layoutShift.args.data?.navigationId ?? TraceEngine.Insights.Types.NO_NAVIGATION;
-    const clsInsight = traceInsightsData.get(insightsId)?.data.CumulativeLayoutShift;
+    const ts = Trace.Types.Timing.MicroSeconds(layoutShift.ts - parsedTrace.Meta.traceBounds.min);
+    const insightsId = layoutShift.args.data?.navigationId ?? Trace.Insights.Types.NO_NAVIGATION;
+    const clsInsight = traceInsightsSets.get(insightsId)?.data.CumulativeLayoutShift;
     if (clsInsight instanceof Error) {
       return null;
     }
@@ -240,7 +238,7 @@ export class LayoutShiftDetails extends HTMLElement {
   }
 
   #render(): void {
-    if (!this.#layoutShift || !this.#traceInsightsData || !this.#traceEngineData) {
+    if (!this.#layoutShift || !this.#traceInsightsSets || !this.#parsedTrace) {
       return;
     }
     // clang-format off
@@ -248,7 +246,7 @@ export class LayoutShiftDetails extends HTMLElement {
       <div class="layout-shift-summary-details">
         ${this.#renderInsightTitleCard()}
         ${this.#renderDetailsChip()}
-        ${this.#renderDetailsTable(this.#layoutShift, this.#traceInsightsData, this.#traceEngineData)}
+        ${this.#renderDetailsTable(this.#layoutShift, this.#traceInsightsSets, this.#parsedTrace)}
       </div>
     `;
     // clang-format on

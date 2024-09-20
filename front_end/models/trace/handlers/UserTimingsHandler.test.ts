@@ -3,19 +3,19 @@
 // found in the LICENSE file.
 
 import {TraceLoader} from '../../../testing/TraceLoader.js';
-import * as TraceModel from '../trace.js';
+import * as Trace from '../trace.js';
 
 describe('UserTimingsHandler', function() {
-  let timingsData: TraceModel.Handlers.ModelHandlers.UserTimings.UserTimingsData;
+  let timingsData: Trace.Handlers.ModelHandlers.UserTimings.UserTimingsData;
   describe('performance timings', function() {
-    async function getTimingsDataFromEvents(events: readonly TraceModel.Types.TraceEvents.TraceEventData[]):
-        Promise<TraceModel.Handlers.ModelHandlers.UserTimings.UserTimingsData> {
-      TraceModel.Handlers.ModelHandlers.UserTimings.reset();
+    async function getTimingsDataFromEvents(events: readonly Trace.Types.Events.Event[]):
+        Promise<Trace.Handlers.ModelHandlers.UserTimings.UserTimingsData> {
+      Trace.Handlers.ModelHandlers.UserTimings.reset();
       for (const event of events) {
-        TraceModel.Handlers.ModelHandlers.UserTimings.handleEvent(event);
+        Trace.Handlers.ModelHandlers.UserTimings.handleEvent(event);
       }
-      await TraceModel.Handlers.ModelHandlers.UserTimings.finalize();
-      return TraceModel.Handlers.ModelHandlers.UserTimings.data();
+      await Trace.Handlers.ModelHandlers.UserTimings.finalize();
+      return Trace.Handlers.ModelHandlers.UserTimings.data();
     }
     before(async function() {
       const events = await TraceLoader.rawEvents(this, 'user-timings.json.gz');
@@ -25,15 +25,15 @@ describe('UserTimingsHandler', function() {
       it('parses the start and end events and returns a list of blocks', async () => {
         assert.lengthOf(timingsData.performanceMeasures, 3);
         assert.strictEqual(
-            TraceModel.Helpers.Trace.extractId(timingsData.performanceMeasures[0]),
+            Trace.Helpers.Trace.extractId(timingsData.performanceMeasures[0]),
             'blink.user_timing:0x9072211:first measure');
         assert.strictEqual(timingsData.performanceMeasures[0].name, 'first measure');
         assert.strictEqual(
-            TraceModel.Helpers.Trace.extractId(timingsData.performanceMeasures[1]),
+            Trace.Helpers.Trace.extractId(timingsData.performanceMeasures[1]),
             'blink.user_timing:0x6ece31c8:second measure');
         assert.strictEqual(timingsData.performanceMeasures[1].name, 'second measure');
         assert.strictEqual(
-            TraceModel.Helpers.Trace.extractId(timingsData.performanceMeasures[2]),
+            Trace.Helpers.Trace.extractId(timingsData.performanceMeasures[2]),
             'blink.user_timing:0x10c31982:third measure');
         assert.strictEqual(timingsData.performanceMeasures[2].name, 'third measure');
 
@@ -43,25 +43,24 @@ describe('UserTimingsHandler', function() {
         for (let i = 0; i < timingsData.performanceMeasures.length; i++) {
           assert.strictEqual(
               timingsData.performanceMeasures[i].args.data.beginEvent.ph,
-              TraceModel.Types.TraceEvents.Phase.ASYNC_NESTABLE_START);
+              Trace.Types.Events.Phase.ASYNC_NESTABLE_START);
           assert.strictEqual(
-              timingsData.performanceMeasures[i].args.data.endEvent.ph,
-              TraceModel.Types.TraceEvents.Phase.ASYNC_NESTABLE_END);
+              timingsData.performanceMeasures[i].args.data.endEvent.ph, Trace.Types.Events.Phase.ASYNC_NESTABLE_END);
         }
       });
 
       it('sorts the blocks to ensure they are in time order', async function() {
         const events = await TraceLoader.rawEvents(this, 'user-timings.json.gz');
-        TraceModel.Handlers.ModelHandlers.UserTimings.reset();
+        Trace.Handlers.ModelHandlers.UserTimings.reset();
         // Reverse the array so that the events are in the wrong order.
         // This _shouldn't_ ever happen in a real trace, but it's best for us to
         // sort the blocks once we've parsed them just in case.
         const reversed = events.slice().reverse();
         for (const event of reversed) {
-          TraceModel.Handlers.ModelHandlers.UserTimings.handleEvent(event);
+          Trace.Handlers.ModelHandlers.UserTimings.handleEvent(event);
         }
-        await TraceModel.Handlers.ModelHandlers.UserTimings.finalize();
-        const data = TraceModel.Handlers.ModelHandlers.UserTimings.data();
+        await Trace.Handlers.ModelHandlers.UserTimings.finalize();
+        const data = Trace.Handlers.ModelHandlers.UserTimings.data();
         assert.lengthOf(data.performanceMeasures, 3);
         assert.isTrue(data.performanceMeasures[0].ts <= data.performanceMeasures[1].ts);
         assert.isTrue(data.performanceMeasures[1].ts <= data.performanceMeasures[2].ts);
@@ -69,12 +68,12 @@ describe('UserTimingsHandler', function() {
 
       it('calculates the duration correctly from the begin/end event timestamps', async function() {
         const events = await TraceLoader.rawEvents(this, 'user-timings.json.gz');
-        TraceModel.Handlers.ModelHandlers.UserTimings.reset();
+        Trace.Handlers.ModelHandlers.UserTimings.reset();
         for (const event of events) {
-          TraceModel.Handlers.ModelHandlers.UserTimings.handleEvent(event);
+          Trace.Handlers.ModelHandlers.UserTimings.handleEvent(event);
         }
-        await TraceModel.Handlers.ModelHandlers.UserTimings.finalize();
-        const data = TraceModel.Handlers.ModelHandlers.UserTimings.data();
+        await Trace.Handlers.ModelHandlers.UserTimings.finalize();
+        const data = Trace.Handlers.ModelHandlers.UserTimings.data();
         for (const timing of data.performanceMeasures) {
           // Ensure for each timing pair we've set the dur correctly.
           assert.strictEqual(timing.dur, timing.args.data.endEvent.ts - timing.args.data.beginEvent.ts);
@@ -125,22 +124,22 @@ describe('UserTimingsHandler', function() {
   describe('console timings', function() {
     before(async function() {
       const events = await TraceLoader.rawEvents(this, 'timings-track.json.gz');
-      TraceModel.Handlers.ModelHandlers.UserTimings.reset();
+      Trace.Handlers.ModelHandlers.UserTimings.reset();
       for (const event of events) {
-        TraceModel.Handlers.ModelHandlers.UserTimings.handleEvent(event);
+        Trace.Handlers.ModelHandlers.UserTimings.handleEvent(event);
       }
-      await TraceModel.Handlers.ModelHandlers.UserTimings.finalize();
-      timingsData = TraceModel.Handlers.ModelHandlers.UserTimings.data();
+      await Trace.Handlers.ModelHandlers.UserTimings.finalize();
+      timingsData = Trace.Handlers.ModelHandlers.UserTimings.data();
     });
     describe('console.time events parsing', function() {
       it('parses the start and end events and returns a list of blocks', async () => {
         assert.lengthOf(timingsData.consoleTimings, 3);
         assert.strictEqual(
-            TraceModel.Helpers.Trace.extractId(timingsData.consoleTimings[0]),
+            Trace.Helpers.Trace.extractId(timingsData.consoleTimings[0]),
             'blink.console:0x12c00282160:first console time');
         assert.strictEqual(timingsData.consoleTimings[0].name, 'first console time');
         assert.strictEqual(
-            TraceModel.Helpers.Trace.extractId(timingsData.consoleTimings[1]),
+            Trace.Helpers.Trace.extractId(timingsData.consoleTimings[1]),
             'blink.console:0x12c00282160:second console time');
         assert.strictEqual(timingsData.consoleTimings[1].name, 'second console time');
 
@@ -149,26 +148,24 @@ describe('UserTimingsHandler', function() {
         // ASYNC_NESTABLE_END.
         for (let i = 0; i < timingsData.consoleTimings.length; i++) {
           assert.strictEqual(
-              timingsData.consoleTimings[i].args.data.beginEvent.ph,
-              TraceModel.Types.TraceEvents.Phase.ASYNC_NESTABLE_START);
+              timingsData.consoleTimings[i].args.data.beginEvent.ph, Trace.Types.Events.Phase.ASYNC_NESTABLE_START);
           assert.strictEqual(
-              timingsData.consoleTimings[i].args.data.endEvent.ph,
-              TraceModel.Types.TraceEvents.Phase.ASYNC_NESTABLE_END);
+              timingsData.consoleTimings[i].args.data.endEvent.ph, Trace.Types.Events.Phase.ASYNC_NESTABLE_END);
         }
       });
 
       it('sorts the blocks to ensure they are in time order', async function() {
         const events = await TraceLoader.rawEvents(this, 'timings-track.json.gz');
-        TraceModel.Handlers.ModelHandlers.UserTimings.reset();
+        Trace.Handlers.ModelHandlers.UserTimings.reset();
         // Reverse the array so that the events are in the wrong order.
         // This _shouldn't_ ever happen in a real trace, but it's best for us to
         // sort the blocks once we've parsed them just in case.
         const reversed = events.slice().reverse();
         for (const event of reversed) {
-          TraceModel.Handlers.ModelHandlers.UserTimings.handleEvent(event);
+          Trace.Handlers.ModelHandlers.UserTimings.handleEvent(event);
         }
-        await TraceModel.Handlers.ModelHandlers.UserTimings.finalize();
-        const data = TraceModel.Handlers.ModelHandlers.UserTimings.data();
+        await Trace.Handlers.ModelHandlers.UserTimings.finalize();
+        const data = Trace.Handlers.ModelHandlers.UserTimings.data();
         assert.lengthOf(data.consoleTimings, 3);
         assert.isTrue(data.consoleTimings[0].ts <= data.consoleTimings[1].ts);
         assert.isTrue(data.consoleTimings[1].ts <= data.consoleTimings[2].ts);

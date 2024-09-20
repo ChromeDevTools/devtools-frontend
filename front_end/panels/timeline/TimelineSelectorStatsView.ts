@@ -6,7 +6,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
-import * as TraceEngine from '../../models/trace/trace.js';
+import * as Trace from '../../models/trace/trace.js';
 import * as DataGrid from '../../ui/components/data_grid/data_grid.js';
 import * as Linkifier from '../../ui/components/linkifier/linkifier.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -79,12 +79,12 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineSelectorStatsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-const SelectorTimingsKey = TraceEngine.Types.TraceEvents.SelectorTimingsKey;
+const SelectorTimingsKey = Trace.Types.Events.SelectorTimingsKey;
 
 export class TimelineSelectorStatsView extends UI.Widget.VBox {
   #datagrid: DataGrid.DataGridController.DataGridController;
   #selectorLocations: Map<string, Protocol.CSS.SourceRange[]>;
-  #traceParsedData: TraceEngine.Handlers.Types.TraceParseData|null = null;
+  #parsedTrace: Trace.Handlers.Types.ParsedTrace|null = null;
   /**
    * We store the last event (or array of events) that we renderered. We do
    * this because as the user zooms around the panel this view is updated,
@@ -93,16 +93,15 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
    * If the user views a single event, this will be set to that single event, but if they are viewing a range of events, this will be set to an array.
    * If it's null, that means we have not rendered yet.
    */
-  #lastStatsSourceEventOrEvents: TraceEngine.Types.TraceEvents.TraceEventUpdateLayoutTree|
-      TraceEngine.Types.TraceEvents.TraceEventUpdateLayoutTree[]|null = null;
+  #lastStatsSourceEventOrEvents: Trace.Types.Events.UpdateLayoutTree|Trace.Types.Events.UpdateLayoutTree[]|null = null;
 
-  constructor(traceParsedData: TraceEngine.Handlers.Types.TraceParseData|null) {
+  constructor(parsedTrace: Trace.Handlers.Types.ParsedTrace|null) {
     super();
 
     this.#datagrid = new DataGrid.DataGridController.DataGridController();
     this.element.setAttribute('jslog', `${VisualLogging.pane('selector-stats').track({resize: true})}`);
     this.#selectorLocations = new Map<string, Protocol.CSS.SourceRange[]>();
-    this.#traceParsedData = traceParsedData;
+    this.#parsedTrace = parsedTrace;
 
     this.#datagrid.data = {
       label: i18nString(UIStrings.selectorStats),
@@ -217,8 +216,8 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
     this.contentElement.appendChild(this.#datagrid);
   }
 
-  setEvent(event: TraceEngine.Types.TraceEvents.TraceEventUpdateLayoutTree): boolean {
-    if (!this.#traceParsedData) {
+  setEvent(event: Trace.Types.Events.UpdateLayoutTree): boolean {
+    if (!this.#parsedTrace) {
       return false;
     }
 
@@ -230,13 +229,13 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
 
     this.#lastStatsSourceEventOrEvents = event;
 
-    const selectorStats = this.#traceParsedData.SelectorStats.dataForUpdateLayoutEvent.get(event);
+    const selectorStats = this.#parsedTrace.SelectorStats.dataForUpdateLayoutEvent.get(event);
     if (!selectorStats) {
       this.#datagrid.data = {...this.#datagrid.data, rows: []};
       return false;
     }
 
-    const timings: TraceEngine.Types.TraceEvents.SelectorTiming[] = selectorStats.timings;
+    const timings: Trace.Types.Events.SelectorTiming[] = selectorStats.timings;
     void this.createRowsForTable(timings).then(rows => {
       this.#datagrid.data = {...this.#datagrid.data, rows};
     });
@@ -244,11 +243,11 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
     return true;
   }
 
-  setAggregatedEvents(events: TraceEngine.Types.TraceEvents.TraceEventUpdateLayoutTree[]): void {
-    const timings: TraceEngine.Types.TraceEvents.SelectorTiming[] = [];
-    const selectorMap = new Map<String, TraceEngine.Types.TraceEvents.SelectorTiming>();
+  setAggregatedEvents(events: Trace.Types.Events.UpdateLayoutTree[]): void {
+    const timings: Trace.Types.Events.SelectorTiming[] = [];
+    const selectorMap = new Map<String, Trace.Types.Events.SelectorTiming>();
 
-    if (!this.#traceParsedData) {
+    if (!this.#parsedTrace) {
       return;
     }
 
@@ -270,8 +269,7 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
             // This is true due to the isArray check, but without this cast TS
             // would want us to repeat the isArray() check inside this callback,
             // but we want to avoid that extra work.
-            const previousEvents =
-                this.#lastStatsSourceEventOrEvents as TraceEngine.Types.TraceEvents.TraceEventUpdateLayoutTree[];
+            const previousEvents = this.#lastStatsSourceEventOrEvents as Trace.Types.Events.UpdateLayoutTree[];
             return event === previousEvents[index];
           })) {
         return;
@@ -282,11 +280,11 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
 
     for (let i = 0; i < events.length; i++) {
       const event = events[i];
-      const selectorStats = event ? this.#traceParsedData.SelectorStats.dataForUpdateLayoutEvent.get(event) : undefined;
+      const selectorStats = event ? this.#parsedTrace.SelectorStats.dataForUpdateLayoutEvent.get(event) : undefined;
       if (!selectorStats) {
         continue;
       } else {
-        const data: TraceEngine.Types.TraceEvents.SelectorTiming[] = selectorStats.timings;
+        const data: Trace.Types.Events.SelectorTiming[] = selectorStats.timings;
         for (const timing of data) {
           const key = timing[SelectorTimingsKey.Selector] + '_' + timing[SelectorTimingsKey.StyleSheetId];
           const findTiming = selectorMap.get(key);
@@ -331,7 +329,7 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
     });
   }
 
-  private async createRowsForTable(timings: TraceEngine.Types.TraceEvents.SelectorTiming[]):
+  private async createRowsForTable(timings: Trace.Types.Events.SelectorTiming[]):
       Promise<DataGrid.DataGridUtils.Row[]> {
     async function toSourceFileLocation(
         cssModel: SDK.CSSModel.CSSModel, styleSheetId: Protocol.CSS.StyleSheetId, selectorText: string,

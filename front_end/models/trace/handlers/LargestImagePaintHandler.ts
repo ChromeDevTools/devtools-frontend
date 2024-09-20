@@ -21,14 +21,14 @@ import type * as Protocol from '../../../generated/protocol.js';
  * candidate also contains a `imageUrl` property, which will have the full URL
  * to the image.
  **/
-const imageByDOMNodeId = new Map<Protocol.DOM.BackendNodeId, Types.TraceEvents.TraceEventLargestImagePaintCandidate>();
+const imageByDOMNodeId = new Map<Protocol.DOM.BackendNodeId, Types.Events.LargestImagePaintCandidate>();
 
 export function reset(): void {
   imageByDOMNodeId.clear();
 }
 
-export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
-  if (!Types.TraceEvents.isTraceEventLargestImagePaintCandidate(event)) {
+export function handleEvent(event: Types.Events.Event): void {
+  if (!Types.Events.isLargestImagePaintCandidate(event)) {
     return;
   }
 
@@ -39,6 +39,6 @@ export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
   imageByDOMNodeId.set(event.args.data.DOMNodeId, event);
 }
 
-export function data(): Map<Protocol.DOM.BackendNodeId, Types.TraceEvents.TraceEventLargestImagePaintCandidate> {
+export function data(): Map<Protocol.DOM.BackendNodeId, Types.Events.LargestImagePaintCandidate> {
   return imageByDOMNodeId;
 }

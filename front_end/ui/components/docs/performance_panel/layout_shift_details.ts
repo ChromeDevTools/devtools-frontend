@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as TraceEngine from '../../../../models/trace/trace.js';
+import type * as Trace from '../../../../models/trace/trace.js';
 import * as TimelineComponents from '../../../../panels/timeline/components/components.js';
 import * as EnvironmentHelpers from '../../../../testing/EnvironmentHelpers.js';
 import * as TraceLoader from '../../../../testing/TraceLoader.js';
@@ -20,13 +20,13 @@ async function renderDetails() {
     throw new Error('No container');
   }
 
-  const {traceData, insights} =
+  const {parsedTrace, insights} =
       await TraceLoader.TraceLoader.traceEngine(/* mocha context */ null, 'shift-attribution.json.gz');
 
   const shiftEventIframe =
-      traceData.LayoutShifts.clusters[0].worstShiftEvent as TraceEngine.Types.TraceEvents.SyntheticLayoutShift;
+      parsedTrace.LayoutShifts.clusters[0].worstShiftEvent as Trace.Types.Events.SyntheticLayoutShift;
   const details = new TimelineComponents.LayoutShiftDetails.LayoutShiftDetails();
-  details.setData(shiftEventIframe, insights, traceData, false);
+  details.setData(shiftEventIframe, insights, parsedTrace, false);
 
   container.appendChild(details);
 }

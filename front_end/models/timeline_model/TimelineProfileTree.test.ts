@@ -12,7 +12,7 @@ import {
 } from '../../testing/TraceHelpers.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
 import * as TimelineModel from '../timeline_model/timeline_model.js';
-import * as TraceEngine from '../trace/trace.js';
+import * as Trace from '../trace/trace.js';
 
 describeWithEnvironment('TimelineProfileTree', () => {
   describe('TopDownRootNode', () => {
@@ -29,7 +29,7 @@ describeWithEnvironment('TimelineProfileTree', () => {
         eventC,
       ];
       const root = new TimelineModel.TimelineProfileTree.TopDownRootNode(
-          events, [], TraceEngine.Types.Timing.MilliSeconds(0), TraceEngine.Types.Timing.MilliSeconds(200_000));
+          events, [], Trace.Types.Timing.MilliSeconds(0), Trace.Types.Timing.MilliSeconds(200_000));
 
       const children = root.children();
       assert.strictEqual(children.size, 3);
@@ -57,7 +57,7 @@ describeWithEnvironment('TimelineProfileTree', () => {
         eventB,
       ];
       const root = new TimelineModel.TimelineProfileTree.TopDownRootNode(
-          events, [], TraceEngine.Types.Timing.MilliSeconds(0), TraceEngine.Types.Timing.MilliSeconds(200_000));
+          events, [], Trace.Types.Timing.MilliSeconds(0), Trace.Types.Timing.MilliSeconds(200_000));
 
       const rootChildren = root.children();
       assert.strictEqual(rootChildren.size, 2);
@@ -92,7 +92,7 @@ describeWithEnvironment('TimelineProfileTree', () => {
         eventD,
       ];
       const root = new TimelineModel.TimelineProfileTree.TopDownRootNode(
-          events, [], TraceEngine.Types.Timing.MilliSeconds(0), TraceEngine.Types.Timing.MilliSeconds(200_000));
+          events, [], Trace.Types.Timing.MilliSeconds(0), Trace.Types.Timing.MilliSeconds(200_000));
 
       const rootChildren = root.children();
       assert.strictEqual(rootChildren.size, 2);
@@ -130,36 +130,36 @@ describeWithEnvironment('TimelineProfileTree', () => {
         eventE,
       ];
       const root = new TimelineModel.TimelineProfileTree.TopDownRootNode(
-          events, [], TraceEngine.Types.Timing.MilliSeconds(0), TraceEngine.Types.Timing.MilliSeconds(200_000));
+          events, [], Trace.Types.Timing.MilliSeconds(0), Trace.Types.Timing.MilliSeconds(200_000));
 
       const rootChildren = root.children();
       assert.strictEqual(rootChildren.size, 2);
 
       const rootChildIterator = rootChildren.values();
       assert.strictEqual(
-          rootChildIterator.next().value.selfTime, TraceEngine.Helpers.Timing.microSecondsToMilliseconds(eventA.dur));
+          rootChildIterator.next().value.selfTime, Trace.Helpers.Timing.microSecondsToMilliseconds(eventA.dur));
 
       const nodeB = rootChildIterator.next().value as TimelineModel.TimelineProfileTree.TopDownNode;
-      const nodeBSelfTime = TraceEngine.Types.Timing.MicroSeconds(eventB.dur - eventC.dur - eventD.dur);
-      assert.strictEqual(nodeB.selfTime, TraceEngine.Helpers.Timing.microSecondsToMilliseconds(nodeBSelfTime));
+      const nodeBSelfTime = Trace.Types.Timing.MicroSeconds(eventB.dur - eventC.dur - eventD.dur);
+      assert.strictEqual(nodeB.selfTime, Trace.Helpers.Timing.microSecondsToMilliseconds(nodeBSelfTime));
 
       const nodeBChildren = nodeB.children();
       assert.strictEqual(nodeBChildren.size, 2);
 
       const nodeBChildIterator = nodeBChildren.values();
       assert.strictEqual(
-          nodeBChildIterator.next().value.selfTime, TraceEngine.Helpers.Timing.microSecondsToMilliseconds(eventC.dur));
+          nodeBChildIterator.next().value.selfTime, Trace.Helpers.Timing.microSecondsToMilliseconds(eventC.dur));
 
       const nodeD = nodeBChildIterator.next().value;
-      const nodeDSelfTime = TraceEngine.Types.Timing.MicroSeconds(eventD.dur - eventE.dur);
-      assert.strictEqual(nodeD.selfTime, TraceEngine.Helpers.Timing.microSecondsToMilliseconds(nodeDSelfTime));
+      const nodeDSelfTime = Trace.Types.Timing.MicroSeconds(eventD.dur - eventE.dur);
+      assert.strictEqual(nodeD.selfTime, Trace.Helpers.Timing.microSecondsToMilliseconds(nodeDSelfTime));
 
       const nodeDChildren = nodeD.children();
       assert.strictEqual(nodeDChildren.size, 1);
 
       const nodeDChildIterator = nodeDChildren.values();
       const nodeE = nodeDChildIterator.next().value;
-      assert.strictEqual(nodeE.selfTime, TraceEngine.Helpers.Timing.microSecondsToMilliseconds(eventE.dur));
+      assert.strictEqual(nodeE.selfTime, Trace.Helpers.Timing.microSecondsToMilliseconds(eventE.dur));
     });
   });
 
@@ -177,7 +177,7 @@ describeWithEnvironment('TimelineProfileTree', () => {
         eventC,
       ];
       const root = new TimelineModel.TimelineProfileTree.TopDownRootNode(
-          events, [], TraceEngine.Types.Timing.MilliSeconds(0), TraceEngine.Types.Timing.MilliSeconds(200_000));
+          events, [], Trace.Types.Timing.MilliSeconds(0), Trace.Types.Timing.MilliSeconds(200_000));
 
       const children = root.children();
       assert.strictEqual(children.size, 3);
@@ -206,7 +206,7 @@ describeWithEnvironment('TimelineProfileTree', () => {
       ];
       const root = new TimelineModel.TimelineProfileTree.BottomUpRootNode(
           events, new TimelineModel.TimelineModelFilter.TimelineInvisibleEventsFilter([]), [],
-          TraceEngine.Types.Timing.MilliSeconds(0), TraceEngine.Types.Timing.MilliSeconds(200_000), null);
+          Trace.Types.Timing.MilliSeconds(0), Trace.Types.Timing.MilliSeconds(200_000), null);
       const rootChildren = root.children();
       assert.strictEqual(rootChildren.size, 4);
 
@@ -260,7 +260,7 @@ describeWithEnvironment('TimelineProfileTree', () => {
 
       const root = new TimelineModel.TimelineProfileTree.BottomUpRootNode(
           events, new TimelineModel.TimelineModelFilter.TimelineInvisibleEventsFilter([]), [],
-          TraceEngine.Types.Timing.MilliSeconds(0), TraceEngine.Types.Timing.MilliSeconds(200_000), null);
+          Trace.Types.Timing.MilliSeconds(0), Trace.Types.Timing.MilliSeconds(200_000), null);
       const rootChildren = root.children();
       assert.strictEqual(rootChildren.size, 4);
 
@@ -316,41 +316,41 @@ describeWithEnvironment('TimelineProfileTree', () => {
       ];
       const root = new TimelineModel.TimelineProfileTree.BottomUpRootNode(
           events, new TimelineModel.TimelineModelFilter.TimelineInvisibleEventsFilter([]), [],
-          TraceEngine.Types.Timing.MilliSeconds(0), TraceEngine.Types.Timing.MilliSeconds(200_000), null);
+          Trace.Types.Timing.MilliSeconds(0), Trace.Types.Timing.MilliSeconds(200_000), null);
 
       const rootChildren = root.children();
       assert.strictEqual(rootChildren.size, 5);
 
       const rootChildIterator = rootChildren.values();
       assert.strictEqual(
-          rootChildIterator.next().value.selfTime, TraceEngine.Helpers.Timing.microSecondsToMilliseconds(eventA.dur));
+          rootChildIterator.next().value.selfTime, Trace.Helpers.Timing.microSecondsToMilliseconds(eventA.dur));
 
       const nodeC = rootChildIterator.next().value as TimelineModel.TimelineProfileTree.TopDownNode;
-      assert.strictEqual(nodeC.selfTime, TraceEngine.Helpers.Timing.microSecondsToMilliseconds(eventC.dur));
+      assert.strictEqual(nodeC.selfTime, Trace.Helpers.Timing.microSecondsToMilliseconds(eventC.dur));
 
       const nodeE = rootChildIterator.next().value as TimelineModel.TimelineProfileTree.TopDownNode;
-      assert.strictEqual(nodeE.selfTime, TraceEngine.Helpers.Timing.microSecondsToMilliseconds(eventE.dur));
+      assert.strictEqual(nodeE.selfTime, Trace.Helpers.Timing.microSecondsToMilliseconds(eventE.dur));
 
       const nodeD = rootChildIterator.next().value as TimelineModel.TimelineProfileTree.TopDownNode;
-      const nodeDSelfTime = TraceEngine.Types.Timing.MicroSeconds(eventD.dur - eventE.dur);
-      assert.strictEqual(nodeD.selfTime, TraceEngine.Helpers.Timing.microSecondsToMilliseconds(nodeDSelfTime));
+      const nodeDSelfTime = Trace.Types.Timing.MicroSeconds(eventD.dur - eventE.dur);
+      assert.strictEqual(nodeD.selfTime, Trace.Helpers.Timing.microSecondsToMilliseconds(nodeDSelfTime));
 
       const nodeB = rootChildIterator.next().value as TimelineModel.TimelineProfileTree.TopDownNode;
-      const nodeBSelfTime = TraceEngine.Types.Timing.MicroSeconds(eventB.dur - eventC.dur - eventD.dur);
-      assert.strictEqual(nodeB.selfTime, TraceEngine.Helpers.Timing.microSecondsToMilliseconds(nodeBSelfTime));
+      const nodeBSelfTime = Trace.Types.Timing.MicroSeconds(eventB.dur - eventC.dur - eventD.dur);
+      assert.strictEqual(nodeB.selfTime, Trace.Helpers.Timing.microSecondsToMilliseconds(nodeBSelfTime));
     });
 
     it('correctly keeps ProfileCall nodes and uses them to build up the tree', async function() {
-      const {traceData} = await TraceLoader.traceEngine(this, 'mainWasm_profile.json.gz');
-      const mainThread = getMainThread(traceData.Renderer);
-      const bounds = TraceEngine.Helpers.Timing.traceWindowMilliSeconds(traceData.Meta.traceBounds);
+      const {parsedTrace} = await TraceLoader.traceEngine(this, 'mainWasm_profile.json.gz');
+      const mainThread = getMainThread(parsedTrace.Renderer);
+      const bounds = Trace.Helpers.Timing.traceWindowMilliSeconds(parsedTrace.Meta.traceBounds);
 
       // Replicate the filters as they would be when renderering in the actual panel.
       const textFilter = new Timeline.TimelineFilters.TimelineRegExp();
       const modelFilters = [
         Timeline.TimelineUIUtils.TimelineUIUtils.visibleEventsFilter(),
         new TimelineModel.TimelineModelFilter.ExclusiveNameFilter([
-          TraceEngine.Types.TraceEvents.KnownEventName.RUN_TASK,
+          Trace.Types.Events.Name.RUN_TASK,
         ]),
       ];
       const root = new TimelineModel.TimelineProfileTree.BottomUpRootNode(
@@ -360,9 +360,9 @@ describeWithEnvironment('TimelineProfileTree', () => {
       // Find the list of profile calls that have been calculated as the top level rows in the Bottom Up table.
       const profileCalls = values
                                .filter(
-                                   node => node.event && TraceEngine.Types.TraceEvents.isProfileCall(node.event) &&
+                                   node => node.event && Trace.Types.Events.isProfileCall(node.event) &&
                                        node.event.callFrame.functionName.length > 0)
-                               .map(n => n.event as TraceEngine.Types.TraceEvents.SyntheticProfileCall);
+                               .map(n => n.event as Trace.Types.Events.SyntheticProfileCall);
       const functionNames = profileCalls.map(entry => entry.callFrame.functionName);
       assert.deepEqual(
           functionNames, ['fetch', 'getTime', 'wasm-to-js::l-imports.getTime', 'mainWasm', 'js-to-wasm::i']);
@@ -371,10 +371,10 @@ describeWithEnvironment('TimelineProfileTree', () => {
 
   describe('generateEventID', () => {
     it('generates the right ID for new engine profile call events', async function() {
-      const {traceData} = await TraceLoader.traceEngine(this, 'react-hello-world.json.gz');
-      const mainThread = getMainThread(traceData.Renderer);
+      const {parsedTrace} = await TraceLoader.traceEngine(this, 'react-hello-world.json.gz');
+      const mainThread = getMainThread(parsedTrace.Renderer);
       const profileCallEntry = mainThread.entries.find(entry => {
-        return TraceEngine.Types.TraceEvents.isProfileCall(entry) &&
+        return Trace.Types.Events.isProfileCall(entry) &&
             entry.callFrame.functionName === 'performConcurrentWorkOnRoot';
       });
       if (!profileCallEntry) {
@@ -385,14 +385,14 @@ describeWithEnvironment('TimelineProfileTree', () => {
     });
 
     it('generates the right ID for new engine native profile call events', async function() {
-      const {traceData} = await TraceLoader.traceEngine(this, 'invalid-animation-events.json.gz', {
-        ...TraceEngine.Types.Configuration.defaults(),
+      const {parsedTrace} = await TraceLoader.traceEngine(this, 'invalid-animation-events.json.gz', {
+        ...Trace.Types.Configuration.defaults(),
         includeRuntimeCallStats: true,
       });
 
-      const mainThread = getMainThread(traceData.Renderer);
+      const mainThread = getMainThread(parsedTrace.Renderer);
       const profileCallEntry = mainThread.entries.find(entry => {
-        return TraceEngine.Types.TraceEvents.isProfileCall(entry) && entry.callFrame.url === 'native V8Runtime';
+        return Trace.Types.Events.isProfileCall(entry) && entry.callFrame.url === 'native V8Runtime';
       });
       if (!profileCallEntry) {
         throw new Error('Could not find a profile call');

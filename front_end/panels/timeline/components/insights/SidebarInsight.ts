@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../../../core/i18n/i18n.js';
-import type * as TraceEngine from '../../../../models/trace/trace.js';
+import type * as Trace from '../../../../models/trace/trace.js';
 import * as Buttons from '../../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
@@ -48,7 +48,7 @@ export class InsightDeactivated extends Event {
 
 export class NavigationBoundsHovered extends Event {
   static readonly eventName = 'navigationhovered';
-  constructor(public bounds?: TraceEngine.Types.Timing.TraceWindowMicroSeconds) {
+  constructor(public bounds?: Trace.Types.Timing.TraceWindowMicroSeconds) {
     super(NavigationBoundsHovered.eventName, {bubbles: true, composed: true});
   }
 }
@@ -130,7 +130,7 @@ export class SidebarInsight extends HTMLElement {
           ${this.#estimatedSavings && this.#estimatedSavings > 0 ?
             LitHtml.html`
             <slot name="insight-savings" class="insight-savings">
-              ${i18nString(UIStrings.estimatedSavings, {PH1: i18n.TimeUtilities.millisToString(this.#estimatedSavings as TraceEngine.Types.Timing.MilliSeconds)})}
+              ${i18nString(UIStrings.estimatedSavings, {PH1: i18n.TimeUtilities.millisToString(this.#estimatedSavings as Trace.Types.Timing.MilliSeconds)})}
             </slot>
           </div>`
           : LitHtml.nothing}

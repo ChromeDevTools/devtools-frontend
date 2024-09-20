@@ -3,35 +3,35 @@
 // found in the LICENSE file.
 
 import {TraceLoader} from '../../../testing/TraceLoader.js';
-import * as TraceEngine from '../trace.js';
+import * as Trace from '../trace.js';
 
 describe('AuctionWorkletsHandler', function() {
   beforeEach(() => {
-    TraceEngine.Handlers.ModelHandlers.AuctionWorklets.reset();
+    Trace.Handlers.ModelHandlers.AuctionWorklets.reset();
   });
 
   const expectedPIDsAndTypes = [
     {
-      pid: 776435 as TraceEngine.Types.TraceEvents.ProcessID,
-      type: TraceEngine.Types.TraceEvents.AuctionWorkletType.SELLER,
+      pid: 776435 as Trace.Types.Events.ProcessID,
+      type: Trace.Types.Events.AuctionWorkletType.SELLER,
     },
     {
-      pid: 776436 as TraceEngine.Types.TraceEvents.ProcessID,
-      type: TraceEngine.Types.TraceEvents.AuctionWorkletType.BIDDER,
+      pid: 776436 as Trace.Types.Events.ProcessID,
+      type: Trace.Types.Events.AuctionWorkletType.BIDDER,
     },
     {
-      pid: 776449 as TraceEngine.Types.TraceEvents.ProcessID,
-      type: TraceEngine.Types.TraceEvents.AuctionWorkletType.BIDDER,
+      pid: 776449 as Trace.Types.Events.ProcessID,
+      type: Trace.Types.Events.AuctionWorkletType.BIDDER,
     },
   ];
 
   it('parses and finds worklets from the metadata events', async function() {
     const events = await TraceLoader.rawEvents(this, 'fenced-frame-fledge.json.gz');
     for (const event of events) {
-      TraceEngine.Handlers.ModelHandlers.AuctionWorklets.handleEvent(event);
+      Trace.Handlers.ModelHandlers.AuctionWorklets.handleEvent(event);
     }
-    await TraceEngine.Handlers.ModelHandlers.AuctionWorklets.finalize();
-    const data = TraceEngine.Handlers.ModelHandlers.AuctionWorklets.data();
+    await Trace.Handlers.ModelHandlers.AuctionWorklets.finalize();
+    const data = Trace.Handlers.ModelHandlers.AuctionWorklets.data();
     assert.strictEqual(data.worklets.size, 3);
 
     const actualPIDsAndTypes =
@@ -43,23 +43,23 @@ describe('AuctionWorkletsHandler', function() {
   it('finds the utility thread for each worklet', async function() {
     const events = await TraceLoader.rawEvents(this, 'fenced-frame-fledge.json.gz');
     for (const event of events) {
-      TraceEngine.Handlers.ModelHandlers.AuctionWorklets.handleEvent(event);
+      Trace.Handlers.ModelHandlers.AuctionWorklets.handleEvent(event);
     }
-    await TraceEngine.Handlers.ModelHandlers.AuctionWorklets.finalize();
-    const data = TraceEngine.Handlers.ModelHandlers.AuctionWorklets.data();
+    await Trace.Handlers.ModelHandlers.AuctionWorklets.finalize();
+    const data = Trace.Handlers.ModelHandlers.AuctionWorklets.data();
 
     const expectedCrUtilityPIDsAndTIDs = [
       {
-        pid: 776435 as TraceEngine.Types.TraceEvents.ProcessID,
-        tid: 1 as TraceEngine.Types.TraceEvents.ThreadID,
+        pid: 776435 as Trace.Types.Events.ProcessID,
+        tid: 1 as Trace.Types.Events.ThreadID,
       },
       {
-        pid: 776436 as TraceEngine.Types.TraceEvents.ProcessID,
-        tid: 1 as TraceEngine.Types.TraceEvents.ThreadID,
+        pid: 776436 as Trace.Types.Events.ProcessID,
+        tid: 1 as Trace.Types.Events.ThreadID,
       },
       {
-        pid: 776449 as TraceEngine.Types.TraceEvents.ProcessID,
-        tid: 1 as TraceEngine.Types.TraceEvents.ThreadID,
+        pid: 776449 as Trace.Types.Events.ProcessID,
+        tid: 1 as Trace.Types.Events.ThreadID,
       },
     ];
 
@@ -73,23 +73,23 @@ describe('AuctionWorkletsHandler', function() {
   it('finds the AuctionV8HelperThread thread for each worklet', async function() {
     const events = await TraceLoader.rawEvents(this, 'fenced-frame-fledge.json.gz');
     for (const event of events) {
-      TraceEngine.Handlers.ModelHandlers.AuctionWorklets.handleEvent(event);
+      Trace.Handlers.ModelHandlers.AuctionWorklets.handleEvent(event);
     }
-    await TraceEngine.Handlers.ModelHandlers.AuctionWorklets.finalize();
-    const data = TraceEngine.Handlers.ModelHandlers.AuctionWorklets.data();
+    await Trace.Handlers.ModelHandlers.AuctionWorklets.finalize();
+    const data = Trace.Handlers.ModelHandlers.AuctionWorklets.data();
 
     const expectedAuctionV8PIDsAndTIDs = [
       {
-        pid: 776435 as TraceEngine.Types.TraceEvents.ProcessID,
-        tid: 6 as TraceEngine.Types.TraceEvents.ThreadID,
+        pid: 776435 as Trace.Types.Events.ProcessID,
+        tid: 6 as Trace.Types.Events.ThreadID,
       },
       {
-        pid: 776436 as TraceEngine.Types.TraceEvents.ProcessID,
-        tid: 6 as TraceEngine.Types.TraceEvents.ThreadID,
+        pid: 776436 as Trace.Types.Events.ProcessID,
+        tid: 6 as Trace.Types.Events.ThreadID,
       },
       {
-        pid: 776449 as TraceEngine.Types.TraceEvents.ProcessID,
-        tid: 6 as TraceEngine.Types.TraceEvents.ThreadID,
+        pid: 776449 as Trace.Types.Events.ProcessID,
+        tid: 6 as Trace.Types.Events.ThreadID,
       },
     ];
 
@@ -105,10 +105,10 @@ describe('AuctionWorkletsHandler', function() {
     // AuctionWorkletsHandler for more information on these events.)
     const events = await TraceLoader.rawEvents(this, 'fenced-frame-fledge.json.gz');
     for (const event of events) {
-      TraceEngine.Handlers.ModelHandlers.AuctionWorklets.handleEvent(event);
+      Trace.Handlers.ModelHandlers.AuctionWorklets.handleEvent(event);
     }
-    await TraceEngine.Handlers.ModelHandlers.AuctionWorklets.finalize();
-    const data = TraceEngine.Handlers.ModelHandlers.AuctionWorklets.data();
+    await Trace.Handlers.ModelHandlers.AuctionWorklets.finalize();
+    const data = Trace.Handlers.ModelHandlers.AuctionWorklets.data();
     assert.strictEqual(data.worklets.size, 3);
 
     for (const worklet of data.worklets.values()) {
@@ -121,14 +121,14 @@ describe('AuctionWorkletsHandler', function() {
     const actualEvents = await TraceLoader.rawEvents(this, 'fenced-frame-fledge.json.gz');
     const events = actualEvents.filter(e => {
       // Remove all RunningWith events
-      return TraceEngine.Types.TraceEvents.isTraceEventAuctionWorkletRunningInProcess(e) === false;
+      return Trace.Types.Events.isAuctionWorkletRunningInProcess(e) === false;
     });
 
     for (const event of events) {
-      TraceEngine.Handlers.ModelHandlers.AuctionWorklets.handleEvent(event);
+      Trace.Handlers.ModelHandlers.AuctionWorklets.handleEvent(event);
     }
-    await TraceEngine.Handlers.ModelHandlers.AuctionWorklets.finalize();
-    const data = TraceEngine.Handlers.ModelHandlers.AuctionWorklets.data();
+    await Trace.Handlers.ModelHandlers.AuctionWorklets.finalize();
+    const data = Trace.Handlers.ModelHandlers.AuctionWorklets.data();
     assert.strictEqual(data.worklets.size, 3);
 
     // The expected data is ordered by PID; this order is correct in the
@@ -145,14 +145,14 @@ describe('AuctionWorkletsHandler', function() {
     const actualEvents = await TraceLoader.rawEvents(this, 'fenced-frame-fledge.json.gz');
     const events = actualEvents.filter(e => {
       // Remove all DoneWith events
-      return TraceEngine.Types.TraceEvents.isTraceEventAuctionWorkletDoneWithProcess(e) === false;
+      return Trace.Types.Events.isAuctionWorkletDoneWithProcess(e) === false;
     });
 
     for (const event of events) {
-      TraceEngine.Handlers.ModelHandlers.AuctionWorklets.handleEvent(event);
+      Trace.Handlers.ModelHandlers.AuctionWorklets.handleEvent(event);
     }
-    await TraceEngine.Handlers.ModelHandlers.AuctionWorklets.finalize();
-    const data = TraceEngine.Handlers.ModelHandlers.AuctionWorklets.data();
+    await Trace.Handlers.ModelHandlers.AuctionWorklets.finalize();
+    const data = Trace.Handlers.ModelHandlers.AuctionWorklets.data();
     assert.strictEqual(data.worklets.size, 3);
 
     // The expected data is ordered by PID; this order is correct in the

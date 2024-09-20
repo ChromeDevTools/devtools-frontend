@@ -3,26 +3,26 @@
 // found in the LICENSE file.
 
 import {TraceLoader} from '../../../testing/TraceLoader.js';
-import * as TraceModel from '../trace.js';
+import * as Trace from '../trace.js';
 
 describe('GPUHandler', function() {
   beforeEach(() => {
-    TraceModel.Handlers.ModelHandlers.Meta.reset();
-    TraceModel.Handlers.ModelHandlers.Meta.initialize();
-    TraceModel.Handlers.ModelHandlers.GPU.initialize();
+    Trace.Handlers.ModelHandlers.Meta.reset();
+    Trace.Handlers.ModelHandlers.Meta.initialize();
+    Trace.Handlers.ModelHandlers.GPU.initialize();
   });
 
   it('finds all the GPU Tasks for the main GPU Thread', async function() {
     const events = await TraceLoader.rawEvents(this, 'threejs-gpu.json.gz');
 
     for (const event of events) {
-      TraceModel.Handlers.ModelHandlers.Meta.handleEvent(event);
-      TraceModel.Handlers.ModelHandlers.GPU.handleEvent(event);
+      Trace.Handlers.ModelHandlers.Meta.handleEvent(event);
+      Trace.Handlers.ModelHandlers.GPU.handleEvent(event);
     }
-    await TraceModel.Handlers.ModelHandlers.Meta.finalize();
-    await TraceModel.Handlers.ModelHandlers.GPU.finalize();
+    await Trace.Handlers.ModelHandlers.Meta.finalize();
+    await Trace.Handlers.ModelHandlers.GPU.finalize();
 
-    const gpuEvents = TraceModel.Handlers.ModelHandlers.GPU.data().mainGPUThreadTasks;
+    const gpuEvents = Trace.Handlers.ModelHandlers.GPU.data().mainGPUThreadTasks;
     assert.lengthOf(gpuEvents, 201);
   });
 });

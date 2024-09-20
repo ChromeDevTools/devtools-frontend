@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as i18n from '../../core/i18n/i18n.js';
-import * as TraceEngine from '../../models/trace/trace.js';
+import * as Trace from '../../models/trace/trace.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 
 import {buildGroupStyle, buildTrackHeader} from './AppenderUtils.js';
@@ -27,12 +27,11 @@ export class GPUTrackAppender implements TrackAppender {
   readonly appenderName: TrackAppenderName = 'GPU';
 
   #compatibilityBuilder: CompatibilityTracksAppender;
-  #traceParsedData: Readonly<TraceEngine.Handlers.Types.TraceParseData>;
+  #parsedTrace: Readonly<Trace.Handlers.Types.ParsedTrace>;
 
-  constructor(
-      compatibilityBuilder: CompatibilityTracksAppender, traceParsedData: TraceEngine.Handlers.Types.TraceParseData) {
+  constructor(compatibilityBuilder: CompatibilityTracksAppender, parsedTrace: Trace.Handlers.Types.ParsedTrace) {
     this.#compatibilityBuilder = compatibilityBuilder;
-    this.#traceParsedData = traceParsedData;
+    this.#parsedTrace = parsedTrace;
   }
 
   /**
@@ -45,7 +44,7 @@ export class GPUTrackAppender implements TrackAppender {
    * appended the track's events.
    */
   appendTrackAtLevel(trackStartLevel: number, expanded?: boolean|undefined): number {
-    const gpuEvents = this.#traceParsedData.GPU.mainGPUThreadTasks;
+    const gpuEvents = this.#parsedTrace.GPU.mainGPUThreadTasks;
     if (gpuEvents.length === 0) {
       return trackStartLevel;
     }
@@ -80,8 +79,8 @@ export class GPUTrackAppender implements TrackAppender {
   /**
    * Gets the color an event added by this appender should be rendered with.
    */
-  colorForEvent(event: TraceEngine.Types.TraceEvents.TraceEventData): string {
-    if (!TraceEngine.Types.TraceEvents.isTraceEventGPUTask(event)) {
+  colorForEvent(event: Trace.Types.Events.Event): string {
+    if (!Trace.Types.Events.isGPUTask(event)) {
       throw new Error(`Unexpected GPU Task: The event's type is '${event.name}'`);
     }
     return ThemeSupport.ThemeSupport.instance().getComputedValue('--app-color-painting');

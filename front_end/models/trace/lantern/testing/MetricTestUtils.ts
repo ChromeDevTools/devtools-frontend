@@ -2,22 +2,22 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as TraceModel from '../../trace.js';
+import * as Trace from '../../trace.js';
 import * as Lantern from '../lantern.js';
 
-function toLanternTrace(traceEvents: readonly TraceModel.Types.TraceEvents.TraceEventData[]): Lantern.Types.Trace {
+function toLanternTrace(traceEvents: readonly Trace.Types.Events.Event[]): Lantern.Types.Trace {
   return {
     traceEvents: traceEvents as unknown as Lantern.Types.TraceEvent[],
   };
 }
 
-async function runTraceEngine(trace: Lantern.Types.Trace) {
-  const processor = TraceModel.Processor.TraceProcessor.createWithAllHandlers();
-  await processor.parse(trace.traceEvents as TraceModel.Types.TraceEvents.TraceEventData[]);
-  if (!processor.traceParsedData) {
+async function runTrace(trace: Lantern.Types.Trace) {
+  const processor = Trace.Processor.TraceProcessor.createWithAllHandlers();
+  await processor.parse(trace.traceEvents as Trace.Types.Events.Event[]);
+  if (!processor.parsedTrace) {
     throw new Error('No data');
   }
-  return processor.traceParsedData;
+  return processor.parsedTrace;
 }
 
 async function getComputationDataFromFixture({trace, settings, url}: {
@@ -29,25 +29,24 @@ async function getComputationDataFromFixture({trace, settings, url}: {
   if (!settings.throttlingMethod) {
     settings.throttlingMethod = 'simulate';
   }
-  const traceEngineData = await runTraceEngine(trace);
-  const requests = TraceModel.LanternComputationData.createNetworkRequests(trace, traceEngineData);
+  const parsedTrace = await runTrace(trace);
+  const requests = Trace.LanternComputationData.createNetworkRequests(trace, parsedTrace);
   const networkAnalysis = Lantern.Core.NetworkAnalyzer.analyze(requests);
-  const frameId = traceEngineData.Meta.mainFrameId;
-  const navigationId = traceEngineData.Meta.mainFrameNavigations[0].args.data?.navigationId;
+  const frameId = parsedTrace.Meta.mainFrameId;
+  const navigationId = parsedTrace.Meta.mainFrameNavigations[0].args.data?.navigationId;
   if (!navigationId) {
     throw new Error('no navigation id found');
   }
 
   return {
     simulator: Lantern.Simulation.Simulator.createSimulator({...settings, networkAnalysis}),
-    graph: TraceModel.LanternComputationData.createGraph(requests, trace, traceEngineData, url),
-    processedNavigation:
-        TraceModel.LanternComputationData.createProcessedNavigation(traceEngineData, frameId, navigationId),
+    graph: Trace.LanternComputationData.createGraph(requests, trace, parsedTrace, url),
+    processedNavigation: Trace.LanternComputationData.createProcessedNavigation(parsedTrace, frameId, navigationId),
   };
 }
 
 export {
   toLanternTrace,
-  runTraceEngine,
+  runTrace,
   getComputationDataFromFixture,
 };

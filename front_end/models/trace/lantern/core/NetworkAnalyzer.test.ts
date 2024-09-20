@@ -5,15 +5,15 @@
 // @ts-nocheck TODO(crbug.com/348449529)
 
 import {TraceLoader} from '../../../../testing/TraceLoader.js';
-import * as TraceModel from '../../trace.js';
+import * as Trace from '../../trace.js';
 import * as Lantern from '../lantern.js';
-import {runTraceEngine, toLanternTrace} from '../testing/testing.js';
+import {runTrace, toLanternTrace} from '../testing/testing.js';
 
 const {NetworkAnalyzer} = Lantern.Core;
 
 async function createRequests(trace: Lantern.Types.Trace) {
-  const traceEngineData = await runTraceEngine(trace);
-  return TraceModel.LanternComputationData.createNetworkRequests(trace, traceEngineData);
+  const parsedTrace = await runTrace(trace);
+  return Trace.LanternComputationData.createNetworkRequests(trace, parsedTrace);
 }
 
 describe('NetworkAnalyzer', () => {

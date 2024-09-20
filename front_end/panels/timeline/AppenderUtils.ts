@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 import type * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import * as TraceEngine from '../../models/trace/trace.js';
+import * as Trace from '../../models/trace/trace.js';
 import type * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 
@@ -86,15 +86,15 @@ export function buildTrackHeader(
  * @returns the formatted time string for highlightedEntryInfo
  */
 export function getFormattedTime(
-    totalTime?: TraceEngine.Types.Timing.MicroSeconds, selfTime?: TraceEngine.Types.Timing.MicroSeconds): string {
+    totalTime?: Trace.Types.Timing.MicroSeconds, selfTime?: Trace.Types.Timing.MicroSeconds): string {
   const formattedTotalTime =
-      TraceEngine.Helpers.Timing.microSecondsToMilliseconds((totalTime || 0) as TraceEngine.Types.Timing.MicroSeconds);
-  if (formattedTotalTime === TraceEngine.Types.Timing.MilliSeconds(0)) {
+      Trace.Helpers.Timing.microSecondsToMilliseconds((totalTime || 0) as Trace.Types.Timing.MicroSeconds);
+  if (formattedTotalTime === Trace.Types.Timing.MilliSeconds(0)) {
     return '';
   }
 
   const formattedSelfTime =
-      TraceEngine.Helpers.Timing.microSecondsToMilliseconds((selfTime || 0) as TraceEngine.Types.Timing.MicroSeconds);
+      Trace.Helpers.Timing.microSecondsToMilliseconds((selfTime || 0) as Trace.Types.Timing.MicroSeconds);
   const minSelfTimeSignificance = 1e-6;
   const formattedTime = Math.abs(formattedTotalTime - formattedSelfTime) > minSelfTimeSignificance &&
           formattedSelfTime > minSelfTimeSignificance ?
@@ -109,8 +109,7 @@ export function getFormattedTime(
 /**
  * Returns the first level that is available for an event.
  */
-export function getEventLevel(
-    event: TraceEngine.Types.TraceEvents.TraceEventData, lastTimestampByLevel: LastTimestampByLevel): number {
+export function getEventLevel(event: Trace.Types.Events.Event, lastTimestampByLevel: LastTimestampByLevel): number {
   let level = 0;
   const startTime = event.ts;
   const endTime = event.ts + (event.dur || 0);

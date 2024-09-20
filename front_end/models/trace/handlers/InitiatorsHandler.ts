@@ -9,36 +9,36 @@ import {HandlerState} from './types.js';
 
 let handlerState = HandlerState.UNINITIALIZED;
 
-const lastScheduleStyleRecalcByFrame = new Map<string, Types.TraceEvents.TraceEventScheduleStyleRecalculation>();
+const lastScheduleStyleRecalcByFrame = new Map<string, Types.Events.ScheduleStyleRecalculation>();
 
 // This tracks the last event that is considered to have invalidated the layout
 // for a given frame.
 // Note that although there is an InvalidateLayout event, there are also other
 // events (ScheduleStyleRecalculation) that could be the reason a layout was
 // invalidated.
-const lastInvalidationEventForFrame = new Map<string, Types.TraceEvents.TraceEventData>();
+const lastInvalidationEventForFrame = new Map<string, Types.Events.Event>();
 
 // Important: although the event is called UpdateLayoutTree, in the UI we
 // present these to the user as "Recalculate Style". So don't get confused!
 // These are the same - just UpdateLayoutTree is what the event from Chromium
 // is called.
-const lastUpdateLayoutTreeByFrame = new Map<string, Types.TraceEvents.TraceEventUpdateLayoutTree>();
+const lastUpdateLayoutTreeByFrame = new Map<string, Types.Events.UpdateLayoutTree>();
 
 // This tracks postmessage dispatch and handler events for creating initiator association
-const postMessageHandlerEvents: Types.TraceEvents.TraceEventHandlePostMessage[] = [];
-const schedulePostMessageEventByTraceId: Map<string, Types.TraceEvents.TraceEventSchedulePostMessage> = new Map();
+const postMessageHandlerEvents: Types.Events.HandlePostMessage[] = [];
+const schedulePostMessageEventByTraceId: Map<string, Types.Events.SchedulePostMessage> = new Map();
 
 // These two maps store the same data but in different directions.
 // For a given event, tell me what its initiator was. An event can only have one initiator.
-const eventToInitiatorMap = new Map<Types.TraceEvents.TraceEventData, Types.TraceEvents.TraceEventData>();
+const eventToInitiatorMap = new Map<Types.Events.Event, Types.Events.Event>();
 // For a given event, tell me what events it initiated. An event can initiate
 // multiple events, hence why the value for this map is an array.
-const initiatorToEventsMap = new Map<Types.TraceEvents.TraceEventData, Types.TraceEvents.TraceEventData[]>();
+const initiatorToEventsMap = new Map<Types.Events.Event, Types.Events.Event[]>();
 
-const requestAnimationFrameEventsById: Map<number, Types.TraceEvents.TraceEventRequestAnimationFrame> = new Map();
-const timerInstallEventsById: Map<number, Types.TraceEvents.TraceEventTimerInstall> = new Map();
-const requestIdleCallbackEventsById: Map<number, Types.TraceEvents.TraceEventRequestIdleCallback> = new Map();
-const webSocketCreateEventsById: Map<number, Types.TraceEvents.TraceEventWebSocketCreate> = new Map();
+const requestAnimationFrameEventsById: Map<number, Types.Events.RequestAnimationFrame> = new Map();
+const timerInstallEventsById: Map<number, Types.Events.TimerInstall> = new Map();
+const requestIdleCallbackEventsById: Map<number, Types.Events.RequestIdleCallback> = new Map();
+const webSocketCreateEventsById: Map<number, Types.Events.WebSocketCreate> = new Map();
 
 export function reset(): void {
   lastScheduleStyleRecalcByFrame.clear();
@@ -64,18 +64,17 @@ export function initialize(): void {
   handlerState = HandlerState.INITIALIZED;
 }
 
-function storeInitiator(data: {initiator: Types.TraceEvents.TraceEventData, event: Types.TraceEvents.TraceEventData}):
-    void {
+function storeInitiator(data: {initiator: Types.Events.Event, event: Types.Events.Event}): void {
   eventToInitiatorMap.set(data.event, data.initiator);
   const eventsForInitiator = initiatorToEventsMap.get(data.initiator) || [];
   eventsForInitiator.push(data.event);
   initiatorToEventsMap.set(data.initiator, eventsForInitiator);
 }
 
-export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
-  if (Types.TraceEvents.isTraceEventScheduleStyleRecalculation(event)) {
+export function handleEvent(event: Types.Events.Event): void {
+  if (Types.Events.isScheduleStyleRecalculation(event)) {
     lastScheduleStyleRecalcByFrame.set(event.args.data.frame, event);
-  } else if (Types.TraceEvents.isTraceEventUpdateLayoutTree(event)) {
+  } else if (Types.Events.isUpdateLayoutTree(event)) {
     // IMPORTANT: although the trace event is called UpdateLayoutTree, this
     // represents a Styles Recalculation. This event in the timeline is shown to
     // the user as "Recalculate Styles."
@@ -94,9 +93,9 @@ export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
         });
       }
     }
-  } else if (Types.TraceEvents.isTraceEventInvalidateLayout(event)) {
+  } else if (Types.Events.isInvalidateLayout(event)) {
     // By default, the InvalidateLayout event is what triggered the layout invalidation for this frame.
-    let invalidationInitiator: Types.TraceEvents.TraceEventData = event;
+    let invalidationInitiator: Types.Events.Event = event;
 
     // However, if we have not had any prior invalidations for this frame, we
     // want to consider StyleRecalculation events as they might be the actual
@@ -118,7 +117,7 @@ export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
       }
     }
     lastInvalidationEventForFrame.set(event.args.data.frame, invalidationInitiator);
-  } else if (Types.TraceEvents.isTraceEventLayout(event)) {
+  } else if (Types.Events.isLayout(event)) {
     // The initiator of a Layout event is the last Invalidation event.
     const lastInvalidation = lastInvalidationEventForFrame.get(event.args.beginData.frame);
     if (lastInvalidation) {
@@ -129,9 +128,9 @@ export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
     }
     // Now clear the last invalidation for the frame: the last invalidation has been linked to a Layout event, so it cannot be the initiator for any future layouts.
     lastInvalidationEventForFrame.delete(event.args.beginData.frame);
-  } else if (Types.TraceEvents.isTraceEventRequestAnimationFrame(event)) {
+  } else if (Types.Events.isRequestAnimationFrame(event)) {
     requestAnimationFrameEventsById.set(event.args.data.id, event);
-  } else if (Types.TraceEvents.isTraceEventFireAnimationFrame(event)) {
+  } else if (Types.Events.isFireAnimationFrame(event)) {
     // If we get a fire event, that means we should have had the
     // RequestAnimationFrame event by now. If so, we can set that as the
     // initiator for the fire event.
@@ -142,16 +141,16 @@ export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
         initiator: matchingRequestEvent,
       });
     }
-  } else if (Types.TraceEvents.isTraceEventTimerInstall(event)) {
+  } else if (Types.Events.isTimerInstall(event)) {
     timerInstallEventsById.set(event.args.data.timerId, event);
-  } else if (Types.TraceEvents.isTraceEventTimerFire(event)) {
+  } else if (Types.Events.isTimerFire(event)) {
     const matchingInstall = timerInstallEventsById.get(event.args.data.timerId);
     if (matchingInstall) {
       storeInitiator({event, initiator: matchingInstall});
     }
-  } else if (Types.TraceEvents.isTraceEventRequestIdleCallback(event)) {
+  } else if (Types.Events.isRequestIdleCallback(event)) {
     requestIdleCallbackEventsById.set(event.args.data.id, event);
-  } else if (Types.TraceEvents.isTraceEventFireIdleCallback(event)) {
+  } else if (Types.Events.isFireIdleCallback(event)) {
     const matchingRequestEvent = requestIdleCallbackEventsById.get(event.args.data.id);
     if (matchingRequestEvent) {
       storeInitiator({
@@ -159,10 +158,9 @@ export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
         initiator: matchingRequestEvent,
       });
     }
-  } else if (Types.TraceEvents.isTraceEventWebSocketCreate(event)) {
+  } else if (Types.Events.isWebSocketCreate(event)) {
     webSocketCreateEventsById.set(event.args.data.identifier, event);
-  } else if (
-      Types.TraceEvents.isTraceEventWebSocketInfo(event) || Types.TraceEvents.isTraceEventWebSocketTransfer(event)) {
+  } else if (Types.Events.isWebSocketInfo(event) || Types.Events.isWebSocketTransfer(event)) {
     const matchingCreateEvent = webSocketCreateEventsById.get(event.args.data.identifier);
     if (matchingCreateEvent) {
       storeInitiator({
@@ -173,9 +171,9 @@ export function handleEvent(event: Types.TraceEvents.TraceEventData): void {
   }
   // Store schedulePostMessage Events by their traceIds.
   // so they can be reconciled later with matching handlePostMessage events with same traceIds.
-  else if (Types.TraceEvents.isTraceEventHandlePostMessage(event)) {
+  else if (Types.Events.isHandlePostMessage(event)) {
     postMessageHandlerEvents.push(event);
-  } else if (Types.TraceEvents.isTraceEventSchedulePostMessage(event)) {
+  } else if (Types.Events.isSchedulePostMessage(event)) {
     const traceId = event.args.data?.traceId;
     if (traceId) {
       schedulePostMessageEventByTraceId.set(traceId, event);
@@ -208,8 +206,8 @@ export async function finalize(): Promise<void> {
 }
 
 export interface InitiatorsData {
-  eventToInitiator: Map<Types.TraceEvents.TraceEventData, Types.TraceEvents.TraceEventData>;
-  initiatorToEvents: Map<Types.TraceEvents.TraceEventData, Types.TraceEvents.TraceEventData[]>;
+  eventToInitiator: Map<Types.Events.Event, Types.Events.Event>;
+  initiatorToEvents: Map<Types.Events.Event, Types.Events.Event[]>;
 }
 
 export function data(): InitiatorsData {

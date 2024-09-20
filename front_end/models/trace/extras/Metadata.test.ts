@@ -4,7 +4,7 @@
 
 import * as SDK from '../../../core/sdk/sdk.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
-import * as TraceEngine from '../trace.js';
+import * as Trace from '../trace.js';
 
 describeWithEnvironment('Trace Metadata', () => {
   it('returns the associated metadata', async () => {
@@ -19,13 +19,13 @@ describeWithEnvironment('Trace Metadata', () => {
       upload: 1,
       latency: 1,
     });
-    const metadata = await TraceEngine.Extras.Metadata.forNewRecording(/* isCpuProfile= */ false);
+    const metadata = await Trace.Extras.Metadata.forNewRecording(/* isCpuProfile= */ false);
     assert.deepEqual(metadata, {
       source: 'DevTools',
       startTime: undefined,
       cpuThrottling: 2,
       networkThrottling: 'Slow 3G',
-      dataOrigin: TraceEngine.Types.File.DataOrigin.TRACE_EVENTS,
+      dataOrigin: Trace.Types.File.DataOrigin.TRACE_EVENTS,
       hardwareConcurrency: 1,
     });
   });
@@ -42,13 +42,13 @@ describeWithEnvironment('Trace Metadata', () => {
       upload: 1,
       latency: 1,
     });
-    const metadata = await TraceEngine.Extras.Metadata.forNewRecording(/* isCpuProfile= */ false);
+    const metadata = await Trace.Extras.Metadata.forNewRecording(/* isCpuProfile= */ false);
     assert.deepEqual(metadata, {
       source: 'DevTools',
       startTime: undefined,
       cpuThrottling: 2,
       networkThrottling: 'Slow 3G',
-      dataOrigin: TraceEngine.Types.File.DataOrigin.TRACE_EVENTS,
+      dataOrigin: Trace.Types.File.DataOrigin.TRACE_EVENTS,
       hardwareConcurrency: 1,
     });
   });
@@ -65,13 +65,13 @@ describeWithEnvironment('Trace Metadata', () => {
       upload: 1,
       latency: 1,
     });
-    const metadata = await TraceEngine.Extras.Metadata.forNewRecording(/* isCpuProfile= */ false);
+    const metadata = await Trace.Extras.Metadata.forNewRecording(/* isCpuProfile= */ false);
     assert.deepEqual(metadata, {
       source: 'DevTools',
       startTime: undefined,
       cpuThrottling: 2,
       networkThrottling: 'Slow 3G',
-      dataOrigin: TraceEngine.Types.File.DataOrigin.TRACE_EVENTS,
+      dataOrigin: Trace.Types.File.DataOrigin.TRACE_EVENTS,
       hardwareConcurrency: undefined,
     });
     assert.strictEqual(getHardwareConcurrencyStub.callCount, 0);

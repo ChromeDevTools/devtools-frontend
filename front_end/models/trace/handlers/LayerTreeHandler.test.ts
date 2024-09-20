@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {TraceLoader} from '../../../testing/TraceLoader.js';
-import * as TraceModel from '../trace.js';
+import * as Trace from '../trace.js';
 
 describe('LayerTreeHandler', function() {
   // The trace file used here is large because it has all the
@@ -13,23 +13,23 @@ describe('LayerTreeHandler', function() {
   this.timeout(20_000);
 
   beforeEach(() => {
-    TraceModel.Handlers.ModelHandlers.Meta.reset();
-    TraceModel.Handlers.ModelHandlers.LayerTree.reset();
-    TraceModel.Handlers.ModelHandlers.Meta.initialize();
-    TraceModel.Handlers.ModelHandlers.LayerTree.initialize();
+    Trace.Handlers.ModelHandlers.Meta.reset();
+    Trace.Handlers.ModelHandlers.LayerTree.reset();
+    Trace.Handlers.ModelHandlers.Meta.initialize();
+    Trace.Handlers.ModelHandlers.LayerTree.initialize();
   });
 
   it('creates a relationship between paint events and the snapshot event', async function() {
     const events = await TraceLoader.rawEvents(this, 'web-dev-with-advanced-instrumentation.json.gz');
 
     for (const event of events) {
-      TraceModel.Handlers.ModelHandlers.Meta.handleEvent(event);
-      TraceModel.Handlers.ModelHandlers.LayerTree.handleEvent(event);
+      Trace.Handlers.ModelHandlers.Meta.handleEvent(event);
+      Trace.Handlers.ModelHandlers.LayerTree.handleEvent(event);
     }
-    await TraceModel.Handlers.ModelHandlers.Meta.finalize();
-    await TraceModel.Handlers.ModelHandlers.LayerTree.finalize();
+    await Trace.Handlers.ModelHandlers.Meta.finalize();
+    await Trace.Handlers.ModelHandlers.LayerTree.finalize();
 
-    const data = TraceModel.Handlers.ModelHandlers.LayerTree.data();
+    const data = Trace.Handlers.ModelHandlers.LayerTree.data();
 
     assert.lengthOf(data.paints, 49);
     assert.strictEqual(data.paintsToSnapshots.size, 35);

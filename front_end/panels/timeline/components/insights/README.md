@@ -6,7 +6,7 @@ If you want to add an insight to the Performance panel sidebar, you need to crea
 
 When creating your component, extend the `BaseInsight` class (defined in `insights/Helpers.ts`). This class will set up some of the setters and data you need. Your component will then have access to a `this.data` object which will have on it:
 
-1. `insights`: the `TraceEngineInsightData` generated for the current trace.
+1. `insights`: the `TraceInsightSets` generated for the current trace.
 2. `navigationId`: the currently active navigation ID (as some Insights are per-navigation).
 3. `activeInsight`: an object representing the current active (meaning the user has clicked to expand it) insight.
 4. `activeCategory`: an `InsightsCategories` enum member representing if the user has chosen a category from the dropdown.

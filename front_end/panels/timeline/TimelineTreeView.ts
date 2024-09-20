@@ -7,7 +7,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
-import * as TraceEngine from '../../models/trace/trace.js';
+import * as Trace from '../../models/trace/trace.js';
 import * as ThirdPartyWeb from '../../third_party/third-party-web/third-party-web.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
@@ -151,15 +151,15 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineTreeView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class TimelineTreeView extends UI.Widget.VBox implements UI.SearchableView.Searchable {
-  #selectedEvents: TraceEngine.Types.TraceEvents.TraceEventData[]|null;
+  #selectedEvents: Trace.Types.Events.Event[]|null;
   private searchResults: TimelineModel.TimelineProfileTree.Node[];
   linkifier!: Components.Linkifier.Linkifier;
   dataGrid!: DataGrid.SortableDataGrid.SortableDataGrid<GridNode>;
   private lastHoveredProfileNode!: TimelineModel.TimelineProfileTree.Node|null;
   private textFilterInternal!: TimelineRegExp;
   private taskFilter!: TimelineModel.TimelineModelFilter.ExclusiveNameFilter;
-  protected startTime!: TraceEngine.Types.Timing.MilliSeconds;
-  protected endTime!: TraceEngine.Types.Timing.MilliSeconds;
+  protected startTime!: Trace.Types.Timing.MilliSeconds;
+  protected endTime!: Trace.Types.Timing.MilliSeconds;
   splitWidget!: UI.SplitWidget.SplitWidget;
   detailsView!: UI.Widget.Widget;
   private searchableView!: UI.SearchableView.SearchableView;
@@ -174,7 +174,7 @@ export class TimelineTreeView extends UI.Widget.VBox implements UI.SearchableVie
   private regexButton: UI.Toolbar.ToolbarToggle|undefined;
   private matchWholeWord: UI.Toolbar.ToolbarToggle|undefined;
 
-  #traceParseData: TraceEngine.Handlers.Types.TraceParseData|null = null;
+  #parsedTrace: Trace.Handlers.Types.ParsedTrace|null = null;
 
   constructor() {
     super();
@@ -184,12 +184,12 @@ export class TimelineTreeView extends UI.Widget.VBox implements UI.SearchableVie
     this.searchResults = [];
   }
 
-  #eventNameForSorting(event: TraceEngine.Types.TraceEvents.TraceEventData): string {
+  #eventNameForSorting(event: Trace.Types.Events.Event): string {
     const name = TimelineUIUtils.eventTitle(event) || event.name;
-    if (!this.#traceParseData) {
+    if (!this.#parsedTrace) {
       return name;
     }
-    return name + ':@' + TraceEngine.Extras.URLForEntry.get(this.#traceParseData, event);
+    return name + ':@' + Trace.Extras.URLForEntry.get(this.#parsedTrace, event);
   }
 
   setSearchableView(searchableView: UI.SearchableView.SearchableView): void {
@@ -197,22 +197,22 @@ export class TimelineTreeView extends UI.Widget.VBox implements UI.SearchableVie
   }
 
   setModelWithEvents(
-      selectedEvents: TraceEngine.Types.TraceEvents.TraceEventData[]|null,
-      traceParseData: TraceEngine.Handlers.Types.TraceParseData|null = null,
+      selectedEvents: Trace.Types.Events.Event[]|null,
+      parsedTrace: Trace.Handlers.Types.ParsedTrace|null = null,
       ): void {
-    this.#traceParseData = traceParseData;
+    this.#parsedTrace = parsedTrace;
     this.#selectedEvents = selectedEvents;
   }
 
-  traceParseData(): TraceEngine.Handlers.Types.TraceParseData|null {
-    return this.#traceParseData;
+  parsedTrace(): Trace.Handlers.Types.ParsedTrace|null {
+    return this.#parsedTrace;
   }
 
   init(): void {
     this.linkifier = new Components.Linkifier.Linkifier();
 
     this.taskFilter = new TimelineModel.TimelineModelFilter.ExclusiveNameFilter([
-      TraceEngine.Types.TraceEvents.KnownEventName.RUN_TASK,
+      Trace.Types.Events.Name.RUN_TASK,
     ]);
     this.textFilterInternal = new TimelineRegExp();
 
@@ -262,7 +262,7 @@ export class TimelineTreeView extends UI.Widget.VBox implements UI.SearchableVie
     this.setRange(selection.startTime, selection.endTime);
   }
 
-  setRange(startTime: TraceEngine.Types.Timing.MilliSeconds, endTime: TraceEngine.Types.Timing.MilliSeconds): void {
+  setRange(startTime: Trace.Types.Timing.MilliSeconds, endTime: Trace.Types.Timing.MilliSeconds): void {
     this.startTime = startTime;
     this.endTime = endTime;
     this.refreshTree();
@@ -312,7 +312,7 @@ export class TimelineTreeView extends UI.Widget.VBox implements UI.SearchableVie
     toolbar.appendToolbarItem(textFilterUI);
   }
 
-  selectedEvents(): TraceEngine.Types.TraceEvents.TraceEventData[] {
+  selectedEvents(): Trace.Types.Events.Event[] {
     // TODO: can we make this type readonly?
     return this.#selectedEvents || [];
   }
@@ -354,7 +354,7 @@ export class TimelineTreeView extends UI.Widget.VBox implements UI.SearchableVie
     }
     this.linkifier.reset();
     this.dataGrid.rootNode().removeChildren();
-    if (!this.#traceParseData) {
+    if (!this.#parsedTrace) {
       this.updateDetailsForSelection();
       return;
     }
@@ -387,8 +387,7 @@ export class TimelineTreeView extends UI.Widget.VBox implements UI.SearchableVie
     throw new Error('Not Implemented');
   }
 
-  buildTopDownTree(
-      doNotAggregate: boolean, groupIdCallback: ((arg0: TraceEngine.Types.TraceEvents.TraceEventData) => string)|null):
+  buildTopDownTree(doNotAggregate: boolean, groupIdCallback: ((arg0: Trace.Types.Events.Event) => string)|null):
       TimelineModel.TimelineProfileTree.Node {
     return new TimelineModel.TimelineProfileTree.TopDownRootNode(
         this.selectedEvents(), this.filters(), this.startTime, this.endTime, doNotAggregate, groupIdCallback);
@@ -424,7 +423,7 @@ export class TimelineTreeView extends UI.Widget.VBox implements UI.SearchableVie
           if (!eventA || !eventB) {
             return 0;
           }
-          if (!this.#traceParseData) {
+          if (!this.#parsedTrace) {
             return 0;
           }
           const nameA = this.#eventNameForSorting(eventA);
@@ -569,7 +568,7 @@ export class TimelineTreeView extends UI.Widget.VBox implements UI.SearchableVie
     }
     const searchRegex = searchConfig.toSearchRegex();
     this.searchResults = this.root.searchTree(
-        event => TimelineUIUtils.testContentMatching(event, searchRegex.regex, this.#traceParseData || undefined));
+        event => TimelineUIUtils.testContentMatching(event, searchRegex.regex, this.#parsedTrace || undefined));
     this.searchableView.updateSearchMatchesCount(this.searchResults.length);
   }
 
@@ -644,10 +643,10 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<Gri
       }
     } else if (event) {
       name.textContent = TimelineUIUtils.eventTitle(event);
-      const traceData = this.treeView.traceParseData();
-      const target = traceData ? targetForEvent(traceData, event) : null;
+      const parsedTrace = this.treeView.parsedTrace();
+      const target = parsedTrace ? targetForEvent(parsedTrace, event) : null;
       const linkifier = this.treeView.linkifier;
-      const isFreshRecording = Boolean(traceData && Tracker.instance().recordingIsFresh(traceData));
+      const isFreshRecording = Boolean(parsedTrace && Tracker.instance().recordingIsFresh(parsedTrace));
       this.linkElement = TimelineUIUtils.linkifyTopCallFrame(event, target, linkifier, isFreshRecording);
       if (this.linkElement) {
         container.createChild('div', 'activity-link').appendChild(this.linkElement);
@@ -656,7 +655,7 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<Gri
       const eventCategory = eventStyle.category;
       UI.ARIAUtils.setLabel(icon, eventCategory.title);
       icon.style.backgroundColor = eventCategory.getComputedColorValue();
-      if (TraceEngine.Types.Extensions.isSyntheticExtensionEntry(event)) {
+      if (Trace.Types.Extensions.isSyntheticExtensionEntry(event)) {
         icon.style.backgroundColor = Extensions.ExtensionUI.extensionEntryColor(event);
       }
     }
@@ -671,17 +670,17 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<Gri
     let showPercents = false;
     let value: number;
     let maxTime: number|undefined;
-    let event: TraceEngine.Types.TraceEvents.TraceEventData|null;
+    let event: Trace.Types.Events.Event|null;
     switch (columnId) {
       case 'start-time': {
         event = this.profileNode.event;
-        const traceParseData = this.treeView.traceParseData();
-        if (!traceParseData) {
+        const parsedTrace = this.treeView.parsedTrace();
+        if (!parsedTrace) {
           throw new Error('Unable to load trace data for tree view');
         }
-        const timings = event && TraceEngine.Helpers.Timing.eventTimingsMilliSeconds(event);
+        const timings = event && Trace.Helpers.Timing.eventTimingsMilliSeconds(event);
         const startTime = timings?.startTime ?? 0;
-        value = startTime - TraceEngine.Helpers.Timing.microSecondsToMilliseconds(traceParseData.Meta.traceBounds.min);
+        value = startTime - Trace.Helpers.Timing.microSecondsToMilliseconds(parsedTrace.Meta.traceBounds.min);
       } break;
       case 'self':
         value = this.profileNode.selfTime;
@@ -830,7 +829,7 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
         break;
 
       case AggregatedTimelineTreeView.GroupBy.Frame: {
-        const frame = id ? this.traceParseData()?.PageFrames.frames.get(id) : undefined;
+        const frame = id ? this.parsedTrace()?.PageFrames.frames.get(id) : undefined;
         const frameName = frame ? TimelineUIUtils.displayNameForFrame(frame) : i18nString(UIStrings.page);
         return {name: frameName, color, icon: undefined};
       }
@@ -899,28 +898,28 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
   }
 
   protected groupingFunction(groupBy: AggregatedTimelineTreeView.GroupBy):
-      ((arg0: TraceEngine.Types.TraceEvents.TraceEventData) => string)|null {
+      ((arg0: Trace.Types.Events.Event) => string)|null {
     const GroupBy = AggregatedTimelineTreeView.GroupBy;
     switch (groupBy) {
       case GroupBy.None:
         return null;
       case GroupBy.EventName:
-        return (event: TraceEngine.Types.TraceEvents.TraceEventData) => TimelineUIUtils.eventStyle(event).title;
+        return (event: Trace.Types.Events.Event) => TimelineUIUtils.eventStyle(event).title;
       case GroupBy.Category:
-        return (event: TraceEngine.Types.TraceEvents.TraceEventData) => TimelineUIUtils.eventStyle(event).category.name;
+        return (event: Trace.Types.Events.Event) => TimelineUIUtils.eventStyle(event).category.name;
       case GroupBy.Subdomain:
       case GroupBy.Domain:
       case GroupBy.ThirdParties:
         return this.domainByEvent.bind(this, groupBy);
       case GroupBy.URL:
-        return (event: TraceEngine.Types.TraceEvents.TraceEventData) => {
-          const traceParsedData = this.traceParseData();
-          return traceParsedData ? TraceEngine.Extras.URLForEntry.get(traceParsedData, event) ?? '' : '';
+        return (event: Trace.Types.Events.Event) => {
+          const parsedTrace = this.parsedTrace();
+          return parsedTrace ? Trace.Extras.URLForEntry.get(parsedTrace, event) ?? '' : '';
         };
       case GroupBy.Frame:
-        return (event: TraceEngine.Types.TraceEvents.TraceEventData) => {
-          const frameId = TraceEngine.Helpers.Trace.frameIDForEvent(event);
-          return frameId || this.traceParseData()?.Meta.mainFrameId || '';
+        return (event: Trace.Types.Events.Event) => {
+          const frameId = Trace.Helpers.Trace.frameIDForEvent(event);
+          return frameId || this.parsedTrace()?.Meta.mainFrameId || '';
         };
       default:
         console.assert(false, `Unexpected aggregation setting: ${groupBy}`);
@@ -928,13 +927,12 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
     }
   }
 
-  private domainByEvent(
-      groupBy: AggregatedTimelineTreeView.GroupBy, event: TraceEngine.Types.TraceEvents.TraceEventData): string {
-    const traceParsedData = this.traceParseData();
-    if (!traceParsedData) {
+  private domainByEvent(groupBy: AggregatedTimelineTreeView.GroupBy, event: Trace.Types.Events.Event): string {
+    const parsedTrace = this.parsedTrace();
+    if (!parsedTrace) {
       return '';
     }
-    const url = TraceEngine.Extras.URLForEntry.get(traceParsedData, event);
+    const url = Trace.Extras.URLForEntry.get(parsedTrace, event);
     if (!url) {
       return '';
     }

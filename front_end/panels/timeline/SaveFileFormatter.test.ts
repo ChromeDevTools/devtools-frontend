@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as TraceEngine from '../../models/trace/trace.js';
+import type * as Trace from '../../models/trace/trace.js';
 import {defaultTraceEvent} from '../../testing/TraceHelpers.js';
 
 import * as Timeline from './timeline.js';
@@ -35,7 +35,7 @@ describe('SaveFileFormatter', () => {
       const eventOne = {...defaultTraceEvent, name: 'event_one'};
       const eventTwo = {...defaultTraceEvent, name: 'event_two'};
       const events = [eventOne, eventTwo];
-      const metadata: TraceEngine.Types.File.MetaData = {
+      const metadata: Trace.Types.File.MetaData = {
         source: 'DevTools',
         startTime: '1234',
         networkThrottling: '4',

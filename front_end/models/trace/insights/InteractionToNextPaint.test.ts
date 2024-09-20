@@ -5,15 +5,15 @@
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {createContextForNavigation, getFirst} from '../../../testing/InsightHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
-import * as TraceModel from '../trace.js';
+import * as Trace from '../trace.js';
 
 export async function processTrace(testContext: Mocha.Suite|Mocha.Context|null, traceFile: string) {
-  const {traceData, insights} = await TraceLoader.traceEngine(testContext, traceFile);
+  const {parsedTrace, insights} = await TraceLoader.traceEngine(testContext, traceFile);
   if (!insights) {
     throw new Error('No insights');
   }
 
-  return {data: traceData, insights};
+  return {data: parsedTrace, insights};
 }
 
 describeWithEnvironment('InteractionToNextPaint', function() {
@@ -29,7 +29,7 @@ describeWithEnvironment('InteractionToNextPaint', function() {
         bounds: data.Meta.traceBounds,
         frameId: data.Meta.mainFrameId,
       };
-      const insight = TraceModel.Insights.InsightRunners.InteractionToNextPaint.generateInsight(data, context);
+      const insight = Trace.Insights.InsightRunners.InteractionToNextPaint.generateInsight(data, context);
       assert.strictEqual(insight.longestInteractionEvent?.dur, longest);
       assert.strictEqual(insight.highPercentileInteractionEvent?.dur, highPercentile);
     });

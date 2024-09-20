@@ -3,12 +3,12 @@
 // found in the LICENSE file.
 
 import * as Platform from '../../core/platform/platform.js';
-import * as TraceEngine from '../../models/trace/trace.js';
+import * as Trace from '../../models/trace/trace.js';
 
 export function getAnnotationEntries(
-    annotation: TraceEngine.Types.File.Annotation,
-    ): TraceEngine.Types.TraceEvents.TraceEventData[] {
-  const entries: TraceEngine.Types.TraceEvents.TraceEventData[] = [];
+    annotation: Trace.Types.File.Annotation,
+    ): Trace.Types.Events.Event[] {
+  const entries: Trace.Types.Events.Event[] = [];
   switch (annotation.type) {
     case 'ENTRY_LABEL':
       entries.push(annotation.entry);
@@ -33,19 +33,19 @@ export function getAnnotationEntries(
  * example.)
  */
 export function getAnnotationWindow(
-    annotation: TraceEngine.Types.File.Annotation,
-    ): TraceEngine.Types.Timing.TraceWindowMicroSeconds|null {
-  let annotationWindow: TraceEngine.Types.Timing.TraceWindowMicroSeconds|null = null;
-  const minVisibleEntryDuration = TraceEngine.Types.Timing.MilliSeconds(1);
+    annotation: Trace.Types.File.Annotation,
+    ): Trace.Types.Timing.TraceWindowMicroSeconds|null {
+  let annotationWindow: Trace.Types.Timing.TraceWindowMicroSeconds|null = null;
+  const minVisibleEntryDuration = Trace.Types.Timing.MilliSeconds(1);
 
   switch (annotation.type) {
     case 'ENTRY_LABEL': {
       const eventDuration =
-          annotation.entry.dur ?? TraceEngine.Helpers.Timing.millisecondsToMicroseconds(minVisibleEntryDuration);
+          annotation.entry.dur ?? Trace.Helpers.Timing.millisecondsToMicroseconds(minVisibleEntryDuration);
 
-      annotationWindow = TraceEngine.Helpers.Timing.traceWindowFromMicroSeconds(
+      annotationWindow = Trace.Helpers.Timing.traceWindowFromMicroSeconds(
           annotation.entry.ts,
-          TraceEngine.Types.Timing.MicroSeconds(annotation.entry.ts + eventDuration),
+          Trace.Types.Timing.MicroSeconds(annotation.entry.ts + eventDuration),
       );
 
       break;
@@ -69,9 +69,9 @@ export function getAnnotationWindow(
       const toEntryEndTS = (annotation.entryTo.ts + toEventDuration);
       const maxTimestamp = Math.max(fromEntryEndTS, toEntryEndTS);
 
-      annotationWindow = TraceEngine.Helpers.Timing.traceWindowFromMicroSeconds(
+      annotationWindow = Trace.Helpers.Timing.traceWindowFromMicroSeconds(
           annotation.entryFrom.ts,
-          TraceEngine.Types.Timing.MicroSeconds(maxTimestamp),
+          Trace.Types.Timing.MicroSeconds(maxTimestamp),
       );
       break;
     }

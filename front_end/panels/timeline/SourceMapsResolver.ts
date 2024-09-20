@@ -4,7 +4,7 @@
 
 import * as SDK from '../../core/sdk/sdk.js';
 import * as SourceMapScopes from '../../models/source_map_scopes/source_map_scopes.js';
-import type * as TraceEngine from '../../models/trace/trace.js';
+import type * as Trace from '../../models/trace/trace.js';
 
 export class NodeNamesUpdated extends Event {
   static readonly eventName = 'nodenamesupdated';
@@ -21,12 +21,11 @@ export class NodeNamesUpdated extends Event {
 // Because NodeIDs could conflict, we key these based on:
 // ProcessID=>ThreadID=>NodeId=>resolved function name.
 // Keying it by the IDs rather than the Node itself means we can avoid passing around trace data in order to get or set values in this map.
-const resolvedNodeNames:
-    Map<TraceEngine.Types.TraceEvents.ProcessID,
-        Map<TraceEngine.Types.TraceEvents.ThreadID, Map<number, string|null>>> = new Map();
+const resolvedNodeNames: Map<Trace.Types.Events.ProcessID, Map<Trace.Types.Events.ThreadID, Map<number, string|null>>> =
+    new Map();
 
 export class SourceMapsResolver extends EventTarget {
-  #traceData: TraceEngine.Handlers.Types.TraceParseData;
+  #parsedTrace: Trace.Handlers.Types.ParsedTrace;
 
   #isResolvingNames = false;
 
@@ -37,24 +36,24 @@ export class SourceMapsResolver extends EventTarget {
   // those workers too.
   #debuggerModelsToListen = new Set<SDK.DebuggerModel.DebuggerModel>();
 
-  constructor(traceData: TraceEngine.Handlers.Types.TraceParseData) {
+  constructor(parsedTrace: Trace.Handlers.Types.ParsedTrace) {
     super();
-    this.#traceData = traceData;
+    this.#parsedTrace = parsedTrace;
   }
 
   static clearResolvedNodeNames(): void {
     resolvedNodeNames.clear();
   }
 
-  static resolvedNodeNameForEntry(entry: TraceEngine.Types.TraceEvents.SyntheticProfileCall): string|null {
+  static resolvedNodeNameForEntry(entry: Trace.Types.Events.SyntheticProfileCall): string|null {
     return resolvedNodeNames.get(entry.pid)?.get(entry.tid)?.get(entry.nodeId) ?? null;
   }
 
   static storeResolvedNodeNameForEntry(
-      pid: TraceEngine.Types.TraceEvents.ProcessID, tid: TraceEngine.Types.TraceEvents.ThreadID, nodeId: number,
+      pid: Trace.Types.Events.ProcessID, tid: Trace.Types.Events.ThreadID, nodeId: number,
       resolvedFunctionName: string|null): void {
     const resolvedForPid =
-        resolvedNodeNames.get(pid) || new Map<TraceEngine.Types.TraceEvents.ThreadID, Map<number, string|null>>();
+        resolvedNodeNames.get(pid) || new Map<Trace.Types.Events.ThreadID, Map<number, string|null>>();
     const resolvedForTid = resolvedForPid.get(tid) || new Map<number, string|null>();
     resolvedForTid.set(nodeId, resolvedFunctionName);
     resolvedForPid.set(tid, resolvedForTid);
@@ -65,11 +64,11 @@ export class SourceMapsResolver extends EventTarget {
     // Required as during the migration we might not always run the Renderer/Samples
     // handlers. Once we are fully migrated, this check can go as that data will
     // always be present.
-    if (!this.#traceData.Samples) {
+    if (!this.#parsedTrace.Samples) {
       return;
     }
 
-    for (const threadToProfileMap of this.#traceData.Samples.profilesInProcess.values()) {
+    for (const threadToProfileMap of this.#parsedTrace.Samples.profilesInProcess.values()) {
       for (const [tid, profile] of threadToProfileMap) {
         const nodes = profile.parsedProfile.nodes();
         if (!nodes || nodes.length === 0) {
@@ -117,11 +116,11 @@ export class SourceMapsResolver extends EventTarget {
   }
 
   async #resolveNamesForNodes(): Promise<void> {
-    if (!this.#traceData.Samples) {
+    if (!this.#parsedTrace.Samples) {
       return;
     }
 
-    for (const [pid, threadsInProcess] of this.#traceData.Samples.profilesInProcess) {
+    for (const [pid, threadsInProcess] of this.#parsedTrace.Samples.profilesInProcess) {
       for (const [tid, threadProfile] of threadsInProcess) {
         const nodes = threadProfile.parsedProfile.nodes() ?? [];
         const target = this.#targetForThread(tid);
@@ -161,8 +160,8 @@ export class SourceMapsResolver extends EventTarget {
 
   // Figure out the target for the node. If it is in a worker thread,
   // that is the target, otherwise we use the primary page target.
-  #targetForThread(tid: TraceEngine.Types.TraceEvents.ThreadID): SDK.Target.Target|null {
-    const maybeWorkerId = this.#traceData.Workers.workerIdByThread.get(tid);
+  #targetForThread(tid: Trace.Types.Events.ThreadID): SDK.Target.Target|null {
+    const maybeWorkerId = this.#parsedTrace.Workers.workerIdByThread.get(tid);
     if (maybeWorkerId) {
       return SDK.TargetManager.TargetManager.instance().targetById(maybeWorkerId);
     }

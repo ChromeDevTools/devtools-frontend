@@ -23,12 +23,12 @@ const UIStringsTemp = {
    * @description The title of the button that allows submitting positive
    * feedback about the response for AI assistant.
    */
-  thumbsUp: 'Thumbs up',
+  thumbsUp: 'Good response',
   /**
    * @description The title of the button that allows submitting negative
    * feedback about the response for AI assistant.
    */
-  thumbsDown: 'Thumbs down',
+  thumbsDown: 'Bad response',
   /**
    * @description The placeholder text for the feedback input.
    */

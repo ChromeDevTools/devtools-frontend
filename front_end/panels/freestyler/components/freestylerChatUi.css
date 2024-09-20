@@ -43,6 +43,7 @@
     text-overflow: ellipsis;
     white-space: nowrap;
     max-width: var(--sys-size-32);
+    cursor: pointer;
 
     devtools-icon[name="file-script"] {
       color: var(--icon-file-script);

@@ -110,6 +110,15 @@ export class SidebarInsightsTab extends HTMLElement {
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
 
+  #navigationHovered(id: string): void {
+    const data = this.#insights?.get(id);
+    data && this.dispatchEvent(new Insights.SidebarInsight.NavigationBoundsHovered(data.bounds));
+  }
+
+  #navigationUnhovered(): void {
+    this.dispatchEvent(new Insights.SidebarInsight.NavigationBoundsHovered());
+  }
+
   #render(): void {
     if (!this.#traceParsedData || !this.#insights || !this.#insightSets) {
       LitHtml.render(LitHtml.nothing, this.#shadow, {host: this});
@@ -154,7 +163,11 @@ export class SidebarInsightsTab extends HTMLElement {
               ?open=${id === this.#activeNavigationId}
               class="navigation-wrapper"
             >
-              <summary @click=${() => this.#navigationClicked(id)}>${label}</summary>
+              <summary
+                @click=${() => this.#navigationClicked(id)}
+                @mouseenter=${() => this.#navigationHovered(id)}
+                @mouseleave=${() => this.#navigationUnhovered()}
+                >${label}</summary>
               ${contents}
             </details>`;
           }

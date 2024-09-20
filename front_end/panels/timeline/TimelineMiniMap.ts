@@ -200,6 +200,13 @@ export class TimelineMiniMap extends
     };
   }
 
+  highlightBounds(bounds: TraceEngine.Types.Timing.TraceWindowMicroSeconds): void {
+    this.#overviewComponent.highlightBounds(bounds);
+  }
+  clearBoundsHighlight(): void {
+    this.#overviewComponent.clearBoundsHighlight();
+  }
+
   /**
    * Activates a given breadcrumb.
    * @param options.removeChildBreadcrumbs - if true, any child breadcrumbs will be removed.

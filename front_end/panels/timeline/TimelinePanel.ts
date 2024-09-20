@@ -549,6 +549,14 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       this.flameChart.revealAnnotation(event.annotation);
     });
 
+    this.#sideBar.element.addEventListener(TimelineInsights.SidebarInsight.NavigationBoundsHovered.eventName, event => {
+      if (event.bounds) {
+        this.#minimapComponent.highlightBounds(event.bounds);
+      } else {
+        this.#minimapComponent.clearBoundsHighlight();
+      }
+    });
+
     this.onModeChanged();
     this.populateToolbar();
     // The viewMode is set by default to the landing page, so we don't call

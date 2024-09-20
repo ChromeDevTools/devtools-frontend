@@ -53,7 +53,7 @@ export class LCPPhases extends BaseInsight {
     if (!insightsByNavigation) {
       return [];
     }
-    const lcpInsight = insightsByNavigation.LargestContentfulPaint;
+    const lcpInsight = insightsByNavigation.data.LargestContentfulPaint;
     if (lcpInsight instanceof Error) {
       return [];
     }
@@ -112,7 +112,7 @@ export class LCPPhases extends BaseInsight {
       return [];
     }
 
-    const lcpInsight = insightsByNavigation.LargestContentfulPaint;
+    const lcpInsight = insightsByNavigation.data.LargestContentfulPaint;
     if (lcpInsight instanceof Error) {
       return [];
     }

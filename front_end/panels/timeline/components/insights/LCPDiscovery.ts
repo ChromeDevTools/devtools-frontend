@@ -59,7 +59,7 @@ export function getLCPInsightData(
     return null;
   }
 
-  const lcpInsight = insightsByNavigation.LargestContentfulPaint;
+  const lcpInsight = insightsByNavigation.data.LargestContentfulPaint;
   if (lcpInsight instanceof Error) {
     return null;
   }

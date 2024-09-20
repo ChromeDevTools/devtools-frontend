@@ -278,8 +278,8 @@ describeWithEnvironment('TraceProcessor', function() {
 
       const insights = Array.from(processor.insights.values());
       assert.strictEqual(insights.length, 2);
-      assert(insights[1].RenderBlocking instanceof Error, 'RenderBlocking did not throw an error');
-      assert.strictEqual(insights[1].RenderBlocking.message, 'forced error');
+      assert(insights[1].data.RenderBlocking instanceof Error, 'RenderBlocking did not throw an error');
+      assert.strictEqual(insights[1].data.RenderBlocking.message, 'forced error');
     });
 
     it('skips insights that are missing one or more dependencies', async function() {
@@ -299,8 +299,8 @@ describeWithEnvironment('TraceProcessor', function() {
       ]);
 
       const insights = Array.from(processor.insights.values());
-      assert.isUndefined(insights[0].RenderBlocking);
-      assert.isUndefined(insights[1].RenderBlocking);
+      assert.isUndefined(insights[0].data.RenderBlocking);
+      assert.isUndefined(insights[1].data.RenderBlocking);
     });
 
     it('returns insights for a navigation', async function() {
@@ -318,15 +318,15 @@ describeWithEnvironment('TraceProcessor', function() {
       ]);
 
       const insights = Array.from(processor.insights.values());
-      if (insights[0].RenderBlocking instanceof Error) {
+      if (insights[0].data.RenderBlocking instanceof Error) {
         throw new Error('RenderBlocking threw an error');
       }
-      if (insights[1].RenderBlocking instanceof Error) {
+      if (insights[1].data.RenderBlocking instanceof Error) {
         throw new Error('RenderBlocking threw an error');
       }
 
-      assert.strictEqual(insights[0].RenderBlocking.renderBlockingRequests.length, 0);
-      assert.strictEqual(insights[1].RenderBlocking.renderBlockingRequests.length, 2);
+      assert.strictEqual(insights[0].data.RenderBlocking.renderBlockingRequests.length, 0);
+      assert.strictEqual(insights[1].data.RenderBlocking.renderBlockingRequests.length, 2);
     });
 
     it('returns insights for multiple navigations', async function() {
@@ -346,23 +346,23 @@ describeWithEnvironment('TraceProcessor', function() {
       ]);
 
       const insights = Array.from(processor.insights.values());
-      if (insights[0].RenderBlocking instanceof Error) {
+      if (insights[0].data.RenderBlocking instanceof Error) {
         throw new Error('RenderBlocking threw an error');
       }
-      if (insights[1].RenderBlocking instanceof Error) {
+      if (insights[1].data.RenderBlocking instanceof Error) {
         throw new Error('RenderBlocking threw an error');
       }
-      if (insights[2].RenderBlocking instanceof Error) {
+      if (insights[2].data.RenderBlocking instanceof Error) {
         throw new Error('RenderBlocking threw an error');
       }
-      if (insights[3].RenderBlocking instanceof Error) {
+      if (insights[3].data.RenderBlocking instanceof Error) {
         throw new Error('RenderBlocking threw an error');
       }
 
-      assert.strictEqual(insights[0].RenderBlocking.renderBlockingRequests.length, 0);
-      assert.strictEqual(insights[1].RenderBlocking.renderBlockingRequests.length, 0);
-      assert.strictEqual(insights[2].RenderBlocking.renderBlockingRequests.length, 0);
-      assert.strictEqual(insights[3].RenderBlocking.renderBlockingRequests.length, 1);
+      assert.strictEqual(insights[0].data.RenderBlocking.renderBlockingRequests.length, 0);
+      assert.strictEqual(insights[1].data.RenderBlocking.renderBlockingRequests.length, 0);
+      assert.strictEqual(insights[2].data.RenderBlocking.renderBlockingRequests.length, 0);
+      assert.strictEqual(insights[3].data.RenderBlocking.renderBlockingRequests.length, 1);
     });
   });
 });

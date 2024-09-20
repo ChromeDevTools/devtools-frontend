@@ -37,12 +37,12 @@ export function getInsight<Key extends keyof TraceModel.Insights.Types.InsightRe
     key = TraceModel.Insights.Types.NO_NAVIGATION;
   }
 
-  const navInsights = insights.get(key);
-  if (!navInsights) {
+  const boundedInsights = insights.get(key);
+  if (!boundedInsights) {
     throw new Error('missing navInsights');
   }
 
-  const insight = navInsights[insightKey];
+  const insight = boundedInsights.data[insightKey];
   if (insight instanceof Error) {
     throw insight;
   }

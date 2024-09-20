@@ -35,7 +35,7 @@ export function getViewportInsight(
     return null;
   }
 
-  const viewportInsight = insightsByNavigation.Viewport;
+  const viewportInsight = insightsByNavigation.data.Viewport;
   if (viewportInsight instanceof Error) {
     return null;
   }

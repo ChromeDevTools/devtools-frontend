@@ -31,7 +31,7 @@ export function getCLSInsight(insights: TraceEngine.Insights.Types.TraceInsightD
     return null;
   }
 
-  const clsInsight = insightsByNavigation.CumulativeLayoutShift;
+  const clsInsight = insightsByNavigation.data.CumulativeLayoutShift;
   if (clsInsight instanceof Error) {
     return null;
   }

@@ -330,10 +330,10 @@ export class TraceProcessor extends EventTarget {
     return {graph, simulator, metrics};
   }
 
-  #computeBoundedInsightData(
-      traceParsedData: Handlers.Types.TraceParseData, insightRunners: Partial<typeof Insights.InsightRunners>,
-      context: Insights.Types.BoundedInsightContext): Insights.Types.BoundedInsightData {
-    const boundedInsightData = {} as Insights.Types.BoundedInsightData;
+  #computeBoundedInsights(
+      insights: Insights.Types.TraceInsightData, traceParsedData: Handlers.Types.TraceParseData,
+      insightRunners: Partial<typeof Insights.InsightRunners>, context: Insights.Types.BoundedInsightContext): void {
+    const data = {} as Insights.Types.BoundedInsights['data'];
 
     for (const [name, insight] of Object.entries(insightRunners)) {
       let insightResult;
@@ -342,10 +342,28 @@ export class TraceProcessor extends EventTarget {
       } catch (err) {
         insightResult = err;
       }
-      Object.assign(boundedInsightData, {[name]: insightResult});
+      Object.assign(data, {[name]: insightResult});
     }
 
-    return boundedInsightData;
+    let id, label, navigation;
+    if (context.navigation) {
+      id = context.navigationId;
+      label = context.navigation.args.data?.documentLoaderURL ?? traceParsedData.Meta.mainFrameURL;
+      navigation = context.navigation;
+    } else {
+      id = Insights.Types.NO_NAVIGATION;
+      label = traceParsedData.Meta.mainFrameURL;
+    }
+
+    const boundedInsights = {
+      id,
+      label,
+      navigation,
+      frameId: context.frameId,
+      bounds: context.bounds,
+      data,
+    };
+    insights.set(boundedInsights.id, boundedInsights);
   }
 
   /**
@@ -373,8 +391,7 @@ export class TraceProcessor extends EventTarget {
           bounds,
           frameId: traceParsedData.Meta.mainFrameId,
         };
-        const boundedInsightData = this.#computeBoundedInsightData(traceParsedData, enabledInsightRunners, context);
-        this.#insights.set(Insights.Types.NO_NAVIGATION, boundedInsightData);
+        this.#computeBoundedInsights(this.#insights, traceParsedData, enabledInsightRunners, context);
       }
       // If threshold is not met, then the very beginning of the trace is ignored by the insights engine.
     } else {
@@ -382,8 +399,7 @@ export class TraceProcessor extends EventTarget {
         bounds: traceParsedData.Meta.traceBounds,
         frameId: traceParsedData.Meta.mainFrameId,
       };
-      const boundedInsightData = this.#computeBoundedInsightData(traceParsedData, enabledInsightRunners, context);
-      this.#insights.set(Insights.Types.NO_NAVIGATION, boundedInsightData);
+      this.#computeBoundedInsights(this.#insights, traceParsedData, enabledInsightRunners, context);
     }
 
     // Now run the insights for each navigation in isolation.
@@ -431,8 +447,7 @@ export class TraceProcessor extends EventTarget {
         lantern,
       };
 
-      const boundedInsightData = this.#computeBoundedInsightData(traceParsedData, enabledInsightRunners, context);
-      this.#insights.set(context.navigationId, boundedInsightData);
+      this.#computeBoundedInsights(this.#insights, traceParsedData, enabledInsightRunners, context);
     }
   }
 }

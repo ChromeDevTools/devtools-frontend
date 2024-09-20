@@ -54,7 +54,7 @@ export function getDocumentLatencyInsight(
     return null;
   }
 
-  const insight = insightsByNavigation.DocumentLatency;
+  const insight = insightsByNavigation.data.DocumentLatency;
   if (insight instanceof Error) {
     return null;
   }

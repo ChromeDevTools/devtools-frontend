@@ -179,7 +179,7 @@ export class LayoutShiftDetails extends HTMLElement {
     }
 
     const ts = TraceEngine.Types.Timing.MicroSeconds(layoutShift.ts - traceEngineData.Meta.traceBounds.min);
-    const clsInsight = traceInsightsData.get(layoutShift.args.data?.navigationId ?? '')?.CumulativeLayoutShift;
+    const clsInsight = traceInsightsData.get(layoutShift.args.data?.navigationId ?? '')?.data.CumulativeLayoutShift;
     if (clsInsight instanceof Error) {
       return null;
     }

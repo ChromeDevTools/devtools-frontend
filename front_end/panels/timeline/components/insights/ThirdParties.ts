@@ -52,7 +52,7 @@ export function getThirdPartiesInsight(
     return null;
   }
 
-  const thirdPartiesInsight = insightsByNavigation.ThirdPartyWeb;
+  const thirdPartiesInsight = insightsByNavigation.data.ThirdPartyWeb;
   if (thirdPartiesInsight instanceof Error) {
     return null;
   }

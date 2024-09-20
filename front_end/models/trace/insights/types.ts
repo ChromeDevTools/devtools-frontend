@@ -61,8 +61,13 @@ export type InsightResult<R extends Record<string, unknown>> = R&{
  * this could instead represent the duration from the beginning of the trace up to the first recorded
  * navigation (or the end of the trace).
  */
-export type BoundedInsightData = {
-  [I in keyof InsightRunnersType]: ReturnType<InsightRunnersType[I]['generateInsight']>|Error;
+export type BoundedInsights = {
+  id: string,
+  label: string,
+  frameId: string,
+  bounds: Types.Timing.TraceWindowMicroSeconds,
+  data: InsightResults,
+  navigation?: Types.TraceEvents.TraceEventNavigationStart,
 };
 
 /**
@@ -79,7 +84,7 @@ export type InsightResults = {
  * navigation to map it to. In this case NO_NAVIGATION is used for the key.
  * TODO(crbug.com/366049346): Consider using a symbol. Wait until no-navigation insights are shown in the panel.
  */
-export type TraceInsightData = Map<string, BoundedInsightData>;
+export type TraceInsightData = Map<string, BoundedInsights>;
 export const NO_NAVIGATION = 'NO_NAVIGATION';
 
 /**

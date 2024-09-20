@@ -65,7 +65,7 @@ export function getINPInsight(insights: TraceEngine.Insights.Types.TraceInsightD
     return null;
   }
 
-  const insight = insightsByNavigation.InteractionToNextPaint;
+  const insight = insightsByNavigation.data.InteractionToNextPaint;
   if (insight instanceof Error) {
     return null;
   }

@@ -40,7 +40,7 @@ export function getRenderBlockingInsight(
     return null;
   }
 
-  const insight = insightsByNavigation.RenderBlocking;
+  const insight = insightsByNavigation.data.RenderBlocking;
   if (insight instanceof Error) {
     return null;
   }

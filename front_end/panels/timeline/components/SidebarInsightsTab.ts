@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as TraceEngine from '../../../models/trace/trace.js';
+import type * as TraceEngine from '../../../models/trace/trace.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
@@ -71,24 +71,13 @@ export class SidebarInsightsTab extends HTMLElement {
       return;
     }
 
-    const navigationlessInsights = this.#insights.get(TraceEngine.Insights.Types.NO_NAVIGATION);
-    if (navigationlessInsights) {
+    for (const boundedInsights of this.#insights.values()) {
       // TODO(crbug.com/366049346): move "shouldShow" logic to insight result (rather than the component),
       // and if none are visible, don't push the insight set.
       this.#insightSets.push({
-        id: TraceEngine.Insights.Types.NO_NAVIGATION,
-        label: this.#traceParsedData.Meta.mainFrameURL,
+        id: boundedInsights.id,
+        label: boundedInsights.label,
       });
-    }
-
-    const navigations = this.#traceParsedData.Meta.mainFrameNavigations ?? [];
-    for (const navigation of navigations) {
-      const id = navigation.args.data?.navigationId;
-      const label = navigation.args.data?.documentLoaderURL;
-      const navigationInsights = id && this.#insights.get(id);
-      if (navigationInsights && label) {
-        this.#insightSets.push({id, label});
-      }
     }
 
     // TODO(crbug.com/366049346): skip the first insight set if trivial.

@@ -20,7 +20,7 @@ export async function processTrace(testContext: Mocha.Suite|Mocha.Context|null, 
 describeWithEnvironment('RenderBlockingRequests', function() {
   it('finds render blocking requests', async () => {
     const {data, insights} = await processTrace(this, 'load-simple.json.gz');
-    assert.deepStrictEqual([...insights.keys()], ['0BCFC23BC7D7BEDC9F93E912DCCEC1DA']);
+    assert.deepStrictEqual([...insights.keys()], [Types.NO_NAVIGATION, '0BCFC23BC7D7BEDC9F93E912DCCEC1DA']);
     const insight = getInsight('RenderBlocking', insights, data.Meta.navigationsByNavigationId.values().next().value);
 
     assert.strictEqual(insight.renderBlockingRequests.length, 2);

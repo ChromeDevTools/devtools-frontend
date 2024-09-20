@@ -18,7 +18,7 @@ export async function processTrace(testContext: Mocha.Suite|Mocha.Context|null, 
 describeWithEnvironment('FontDisplay', function() {
   it('finds no requests for remote fonts', async () => {
     const {data, insights} = await processTrace(this, 'load-simple.json.gz');
-    assert.strictEqual(insights.size, 1);
+    assert.strictEqual(insights.size, 2);
     const insight = getInsight('FontDisplay', insights, getFirstOrError(data.Meta.navigationsByNavigationId.values()));
 
     assert.strictEqual(insight.fonts.length, 0);

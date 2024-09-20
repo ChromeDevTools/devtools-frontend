@@ -91,6 +91,7 @@ export class SidebarInsightsTab extends HTMLElement {
       }
     }
 
+    // TODO(crbug.com/366049346): skip the first insight set if trivial.
     this.#activeNavigationId = this.#insightSets[0]?.id ?? null;
 
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);

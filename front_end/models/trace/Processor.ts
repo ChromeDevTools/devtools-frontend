@@ -366,9 +366,8 @@ export class TraceProcessor extends EventTarget {
     if (navigations.length) {
       const bounds =
           Helpers.Timing.traceWindowFromMicroSeconds(traceParsedData.Meta.traceBounds.min, navigations[0].ts);
-      // It really shouldn't take more than a few ms for a navigation to trigger via the "Record and reload" option.
-      // TODO(crbug.com/366049346): after some user testing (by us), possibly update or remove this threshold.
-      const threshold = Helpers.Timing.millisecondsToMicroseconds(1000 as Types.Timing.MilliSeconds);
+      // When using "Record and reload" option, it typically takes ~5ms. So use 50ms to be safe.
+      const threshold = Helpers.Timing.millisecondsToMicroseconds(50 as Types.Timing.MilliSeconds);
       if (bounds.range > threshold) {
         const context: Insights.Types.BoundedInsightContext = {
           bounds,
@@ -377,7 +376,7 @@ export class TraceProcessor extends EventTarget {
         const boundedInsightData = this.#computeBoundedInsightData(traceParsedData, enabledInsightRunners, context);
         this.#insights.set(Insights.Types.NO_NAVIGATION, boundedInsightData);
       }
-      // If threshold is not met, then the beginning of the trace will be processed by the first navigation bounds.
+      // If threshold is not met, then the very beginning of the trace is ignored by the insights engine.
     } else {
       const context: Insights.Types.BoundedInsightContext = {
         bounds: traceParsedData.Meta.traceBounds,
@@ -421,9 +420,7 @@ export class TraceProcessor extends EventTarget {
         }
       }
 
-      // The bounds should start at the beginning of the trace, but only if there hasn't been a non-navigation
-      // insight set created already. This ensures every trace event is covered.
-      const min = i === 0 && this.#insights.size === 0 ? traceParsedData.Meta.traceBounds.min : navigation.ts;
+      const min = navigation.ts;
       const max = i + 1 < navigations.length ? navigations[i + 1].ts : traceParsedData.Meta.traceBounds.max;
       const bounds = Helpers.Timing.traceWindowFromMicroSeconds(min, max);
       const context: Insights.Types.BoundedInsightContext = {

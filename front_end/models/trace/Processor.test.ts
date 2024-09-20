@@ -277,9 +277,9 @@ describeWithEnvironment('TraceProcessor', function() {
       }
 
       const insights = Array.from(processor.insights.values());
-      assert.strictEqual(insights.length, 1);
-      assert(insights[0].RenderBlocking instanceof Error, 'RenderBlocking did not throw an error');
-      assert.strictEqual(insights[0].RenderBlocking.message, 'forced error');
+      assert.strictEqual(insights.length, 2);
+      assert(insights[1].RenderBlocking instanceof Error, 'RenderBlocking did not throw an error');
+      assert.strictEqual(insights[1].RenderBlocking.message, 'forced error');
     });
 
     it('skips insights that are missing one or more dependencies', async function() {
@@ -294,11 +294,13 @@ describeWithEnvironment('TraceProcessor', function() {
       }
 
       assert.deepStrictEqual([...processor.insights.keys()], [
+        TraceModel.Insights.Types.NO_NAVIGATION,
         '0BCFC23BC7D7BEDC9F93E912DCCEC1DA',
       ]);
 
       const insights = Array.from(processor.insights.values());
       assert.isUndefined(insights[0].RenderBlocking);
+      assert.isUndefined(insights[1].RenderBlocking);
     });
 
     it('returns insights for a navigation', async function() {
@@ -311,6 +313,7 @@ describeWithEnvironment('TraceProcessor', function() {
       }
 
       assert.deepStrictEqual([...processor.insights.keys()], [
+        TraceModel.Insights.Types.NO_NAVIGATION,
         '0BCFC23BC7D7BEDC9F93E912DCCEC1DA',
       ]);
 
@@ -318,8 +321,12 @@ describeWithEnvironment('TraceProcessor', function() {
       if (insights[0].RenderBlocking instanceof Error) {
         throw new Error('RenderBlocking threw an error');
       }
+      if (insights[1].RenderBlocking instanceof Error) {
+        throw new Error('RenderBlocking threw an error');
+      }
 
-      assert.strictEqual(insights[0].RenderBlocking.renderBlockingRequests.length, 2);
+      assert.strictEqual(insights[0].RenderBlocking.renderBlockingRequests.length, 0);
+      assert.strictEqual(insights[1].RenderBlocking.renderBlockingRequests.length, 2);
     });
 
     it('returns insights for multiple navigations', async function() {

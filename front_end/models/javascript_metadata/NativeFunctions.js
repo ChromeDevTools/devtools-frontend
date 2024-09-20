@@ -7902,6 +7902,10 @@ export const NativeFunctions = [
     signatures: [["input","indices","?options"]]
   },
   {
+    name: "gatherND",
+    signatures: [["input","indices","?options"]]
+  },
+  {
     name: "gelu",
     signatures: [["input","?options"]]
   },

@@ -11587,6 +11587,7 @@ export namespace Page {
     DeferredFetch = 'deferred-fetch',
     DigitalCredentialsGet = 'digital-credentials-get',
     DirectSockets = 'direct-sockets',
+    DirectSocketsPrivate = 'direct-sockets-private',
     DisplayCapture = 'display-capture',
     DocumentDomain = 'document-domain',
     EncryptedMedia = 'encrypted-media',

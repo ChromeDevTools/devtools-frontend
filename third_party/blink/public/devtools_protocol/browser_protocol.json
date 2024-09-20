@@ -17194,6 +17194,7 @@
                         "deferred-fetch",
                         "digital-credentials-get",
                         "direct-sockets",
+                        "direct-sockets-private",
                         "display-capture",
                         "document-domain",
                         "encrypted-media",

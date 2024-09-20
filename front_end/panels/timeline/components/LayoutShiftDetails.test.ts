@@ -16,7 +16,7 @@ describeWithMockConnection('LayoutShiftDetails', () => {
     assert.isNotNull(shiftEvent);
 
     const details = new TimelineComponents.LayoutShiftDetails.LayoutShiftDetails();
-    await details.setData(shiftEvent, insights, traceData, false);
+    details.setData(shiftEvent, insights, traceData, false);
 
     assert.isNotNull(details.shadowRoot);
     const decorativeChip = details.shadowRoot.querySelector('.timeline-details-chip-decorative-title');

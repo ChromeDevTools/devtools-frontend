@@ -40,9 +40,57 @@ This request aims to retrieve a list of products matching the search query "lapt
 
 const MAX_HEADERS_SIZE = 1000;
 
+const UIStringsTemp = {
+  inspectingNetworkData: 'Inspecting network data',
+  /**
+   *@description Thought text for thinking step of DrJones Network agent.
+   */
+  dataUsedToGenerateThisResponse: 'Data used to generate this response',
+  /**
+   *@description Heading text for the block that shows the network request details.
+   */
+  request: 'Request',
+  /**
+   *@description Heading text for the block that shows the network response details.
+   */
+  response: 'Response',
+  /**
+   *@description Prefix text for request URL.
+   */
+  requestUrl: 'Request URL',
+  /**
+   *@description Title text for request headers.
+   */
+  requestHeaders: 'Request Headers',
+  /**
+   *@description Title text for request timing details.
+   */
+  timing: 'Timing',
+  /**
+   *@description Title text for response headers.
+   */
+  responseHeaders: 'Response Headers',
+  /**
+   *@description Prefix text for response status.
+   */
+  responseStatus: 'Response Status',
+  /**
+   *@description Title text for request initiator chain.
+   */
+  requestInitiatorChain: 'Request Initiator Chain',
+
+};
+
 export enum DrJonesNetworkAgentResponseType {
   ANSWER = 'answer',
+  TITLE = 'title',
+  THOUGHT = 'thought',
   ERROR = 'error',
+}
+
+export interface ContextDetail {
+  title: string;
+  text: string;
 }
 
 export interface AnswerResponse {
@@ -56,7 +104,20 @@ export interface ErrorResponse {
   rpcId?: number;
 }
 
-export type ResponseData = AnswerResponse|ErrorResponse;
+export interface TitleResponse {
+  type: DrJonesNetworkAgentResponseType.TITLE;
+  title: string;
+  rpcId?: number;
+}
+
+export interface ThoughtResponse {
+  type: DrJonesNetworkAgentResponseType.THOUGHT;
+  thought: string;
+  contextDetails: ContextDetail[];
+  rpcId?: number;
+}
+
+export type ResponseData = AnswerResponse|ErrorResponse|ThoughtResponse|TitleResponse;
 
 type HistoryChunk = {
   text: string,
@@ -169,6 +230,17 @@ export class DrJonesNetworkAgent {
     let response: string;
     let rpcId: number|undefined;
     try {
+      yield {
+        type: DrJonesNetworkAgentResponseType.TITLE,
+        title: UIStringsTemp.inspectingNetworkData,
+        rpcId,
+      };
+      yield {
+        type: DrJonesNetworkAgentResponseType.THOUGHT,
+        thought: UIStringsTemp.dataUsedToGenerateThisResponse,
+        contextDetails: createContextDetailsForDrJonesNetworkAgent(options.selectedNetworkRequest),
+        rpcId,
+      };
       const fetchResult = await this.#aidaFetch(request);
       response = fetchResult.response;
       rpcId = fetchResult.rpcId;
@@ -344,6 +416,36 @@ Response status: ${request.statusCode} ${request.statusText}
 Request Timing:\n ${formatNetworkRequestTiming(request)}
 
 Request Initiator Chain:\n ${formatRequestInitiatorChain(request)}`;
+}
+
+function createContextDetailsForDrJonesNetworkAgent(request: SDK.NetworkRequest.NetworkRequest|null): ContextDetail[] {
+  if (request) {
+    const requestContextDetail: ContextDetail = {
+      title: UIStringsTemp.request,
+      text: UIStringsTemp.requestUrl + ': ' + request.url() + '\n\n' +
+          formatHeaders(UIStringsTemp.requestHeaders, request.requestHeaders()),
+    };
+    const responseContextDetail: ContextDetail = {
+      title: UIStringsTemp.response,
+      text: UIStringsTemp.responseStatus + ': ' + request.statusCode + ' ' + request.statusText + '\n\n' +
+          formatHeaders(UIStringsTemp.responseHeaders, request.responseHeaders),
+    };
+    const timingContextDetail: ContextDetail = {
+      title: UIStringsTemp.timing,
+      text: formatNetworkRequestTiming(request),
+    };
+    const initiatorChainContextDetail: ContextDetail = {
+      title: UIStringsTemp.requestInitiatorChain,
+      text: formatRequestInitiatorChain(request),
+    };
+    return [
+      requestContextDetail,
+      responseContextDetail,
+      timingContextDetail,
+      initiatorChainContextDetail,
+    ];
+  }
+  return [];
 }
 
 // @ts-ignore

@@ -14,6 +14,7 @@ import * as MarkdownView from '../../../ui/components/markdown_view/markdown_vie
 import * as Spinners from '../../../ui/components/spinners/spinners.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
+import {type ContextDetail} from '../DrJonesNetworkAgent.js';
 import {ErrorType} from '../FreestylerAgent.js';
 
 import freestylerChatUiStyles from './freestylerChatUi.css.js';
@@ -201,11 +202,6 @@ export interface Step {
 
 interface ConfirmSideEffectDialog {
   onAnswer: (result: boolean) => void;
-}
-
-export interface ContextDetail {
-  title: string;
-  text: string;
 }
 
 export const enum ChatMessageEntity {

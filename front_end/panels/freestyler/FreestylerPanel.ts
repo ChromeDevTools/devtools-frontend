@@ -13,7 +13,6 @@ import {ChangeManager} from './ChangeManager.js';
 import {
   AgentType,
   ChatMessageEntity,
-  type ContextDetail,
   DOGFOOD_INFO,
   FreestylerChatUi,
   type ModelChatMessage,
@@ -24,8 +23,6 @@ import {
 import {
   DrJonesNetworkAgent,
   DrJonesNetworkAgentResponseType,
-  formatHeaders,
-  formatNetworkRequestTiming,
 } from './DrJonesNetworkAgent.js';
 import {ErrorType, FIX_THIS_ISSUE_PROMPT, FreestylerAgent, ResponseType} from './FreestylerAgent.js';
 import freestylerPanelStyles from './freestylerPanel.css.js';
@@ -80,6 +77,10 @@ const UIStringsTemp = {
    *@description Prefix text for response status.
    */
   responseStatus: 'Response Status',
+  /**
+   *@description Title text for request initiator chain.
+   */
+  requestInitiatorChain: 'Request Initiator Chain',
 
 };
 
@@ -435,22 +436,28 @@ export class FreestylerPanel extends UI.Panel.Panel {
   async #conversationStepsForDrJonesNetworkAgent(text: string, signal: AbortSignal, systemMessage: ModelChatMessage):
       Promise<void> {
     // TODO(samiyac): Only display the thinking step with context details when it is the first message
-    const step: Step = {
-      isLoading: true,
-      title: UIStringsTemp.inspectingNetworkData,
-      thought: UIStringsTemp.dataUsedToGenerateThisResponse,
-      contextDetails: this.#createContextDetailsForDrJonesNetworkAgent(),
-    };
-
-    if (!systemMessage.steps.length) {
-      systemMessage.steps.push(step);
-    }
-    this.doUpdate();
-    this.#viewOutput.freestylerChatUi?.scrollToLastMessage();
+    const step: Step = {isLoading: true};
 
     for await (const data of this.#drJonesNetworkAgent.run(
         text, {signal, selectedNetworkRequest: this.#viewProps.selectedNetworkRequest})) {
       switch (data.type) {
+        case DrJonesNetworkAgentResponseType.TITLE: {
+          step.title = data.title;
+          if (systemMessage.steps.at(-1) !== step) {
+            systemMessage.steps.push(step);
+          }
+          break;
+        }
+        case DrJonesNetworkAgentResponseType.THOUGHT: {
+          step.isLoading = false;
+          step.thought = data.thought;
+          step.contextDetails = data.contextDetails;
+          if (systemMessage.steps.at(-1) !== step) {
+            systemMessage.steps.push(step);
+          }
+          break;
+        }
+
         case DrJonesNetworkAgentResponseType.ANSWER: {
           systemMessage.answer = data.text;
           systemMessage.rpcId = data.rpcId;
@@ -469,32 +476,6 @@ export class FreestylerPanel extends UI.Panel.Panel {
       this.doUpdate();
       this.#viewOutput.freestylerChatUi?.scrollToLastMessage();
     }
-  }
-
-  #createContextDetailsForDrJonesNetworkAgent(): ContextDetail[] {
-    if (this.#viewProps.selectedNetworkRequest) {
-      const requestContextDetail: ContextDetail = {
-        title: UIStringsTemp.request,
-        text: UIStringsTemp.requestUrl + ': ' + this.#viewProps.selectedNetworkRequest.url() + '\n\n' +
-            formatHeaders(UIStringsTemp.requestHeaders, this.#viewProps.selectedNetworkRequest.requestHeaders()),
-      };
-      const responseContextDetail: ContextDetail = {
-        title: UIStringsTemp.response,
-        text: UIStringsTemp.responseStatus + ': ' + this.#viewProps.selectedNetworkRequest.statusCode + ' ' +
-            this.#viewProps.selectedNetworkRequest.statusText + '\n\n' +
-            formatHeaders(UIStringsTemp.responseHeaders, this.#viewProps.selectedNetworkRequest.responseHeaders),
-      };
-      const timingContextDetail: ContextDetail = {
-        title: UIStringsTemp.timing,
-        text: formatNetworkRequestTiming(this.#viewProps.selectedNetworkRequest),
-      };
-      return [
-        requestContextDetail,
-        responseContextDetail,
-        timingContextDetail,
-      ];
-    }
-    return [];
   }
 }
 

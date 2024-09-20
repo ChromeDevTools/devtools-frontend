@@ -503,7 +503,6 @@ c`;
             },
             options: {
               model_id: 'test model',
-              temperature: 0,
             },
             client_feature: 2,
             functionality_type: 1,

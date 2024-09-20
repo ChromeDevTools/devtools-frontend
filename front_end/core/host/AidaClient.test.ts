@@ -61,6 +61,23 @@ describeWithEnvironment('AidaClient', () => {
     stub.restore();
   });
 
+  it('ignores a negative model temperature', () => {
+    const stub = getGetHostConfigStub({
+      devToolsConsoleInsights: {
+        enabled: true,
+        temperature: -1,
+      },
+    });
+    const request = Host.AidaClient.AidaClient.buildConsoleInsightsRequest('foo');
+    assert.deepStrictEqual(request, {
+      input: 'foo',
+      client: 'CHROME_DEVTOOLS',
+      client_feature: 1,
+      functionality_type: 2,
+    });
+    stub.restore();
+  });
+
   it('adds a model id and temperature', () => {
     const stub = getGetHostConfigStub({
       devToolsConsoleInsights: {

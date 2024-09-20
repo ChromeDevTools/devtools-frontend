@@ -86,6 +86,7 @@ interface AidaRequestOptions {
 export class DrJonesNetworkAgent {
   static buildRequest(opts: AidaRequestOptions): Host.AidaClient.AidaRequest {
     const config = Common.Settings.Settings.instance().getHostConfig();
+    const temperature = config.devToolsExplainThisResourceDogfood?.temperature;
     const request: Host.AidaClient.AidaRequest = {
       input: opts.input,
       preamble: opts.preamble,
@@ -93,7 +94,7 @@ export class DrJonesNetworkAgent {
       chat_history: opts.chatHistory,
       client: Host.AidaClient.CLIENT_NAME,
       options: {
-        temperature: config.devToolsExplainThisResourceDogfood?.temperature ?? 0,
+        ...(temperature !== undefined && temperature >= 0) && {temperature},
         model_id: config.devToolsExplainThisResourceDogfood?.modelId ?? undefined,
       },
       metadata: {

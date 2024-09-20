@@ -246,6 +246,7 @@ interface AidaRequestOptions {
 export class FreestylerAgent {
   static buildRequest(opts: AidaRequestOptions): Host.AidaClient.AidaRequest {
     const config = Common.Settings.Settings.instance().getHostConfig();
+    const temperature = config.devToolsFreestylerDogfood?.temperature;
     const request: Host.AidaClient.AidaRequest = {
       input: opts.input,
       preamble: opts.preamble,
@@ -253,7 +254,7 @@ export class FreestylerAgent {
       chat_history: opts.chatHistory,
       client: Host.AidaClient.CLIENT_NAME,
       options: {
-        temperature: config.devToolsFreestylerDogfood?.temperature ?? 0,
+        ...(temperature !== undefined && temperature >= 0) && {temperature},
         model_id: config.devToolsFreestylerDogfood?.modelId ?? undefined,
       },
       metadata: {

@@ -414,12 +414,12 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
       },
       devToolsConsoleInsights: {
         modelId: '',
-        temperature: 0,
+        temperature: -1,
         enabled: false,
       },
       devToolsFreestylerDogfood: {
         modelId: '',
-        temperature: 0,
+        temperature: -1,
         enabled: false,
       },
       devToolsVeLogging: {

@@ -510,12 +510,12 @@ export function getGetHostConfigStub(config: Root.Runtime.HostConfig): sinon.Sin
     devToolsConsoleInsights: {
       enabled: false,
       modelId: '',
-      temperature: 0.2,
+      temperature: -1,
       ...config.devToolsConsoleInsights,
     } as Root.Runtime.HostConfigConsoleInsights,
     devToolsFreestylerDogfood: {
       modelId: '',
-      temperature: 0,
+      temperature: -1,
       enabled: false,
       ...config.devToolsFreestylerDogfood,
     } as Root.Runtime.HostConfigFreestylerDogfood,

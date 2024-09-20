@@ -5,6 +5,7 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import type * as SDK from '../../core/sdk/sdk.js';
+import * as Logs from '../../models/logs/logs.js';
 
 /* clang-format off */
 const preamble = `You are the most advanced network request debugging assistant integrated into Chrome DevTools.
@@ -297,6 +298,35 @@ Sending end: ${timing?.sendEnd}
   `;
 }
 
+function formatRequestInitiated(
+    request: SDK.NetworkRequest.NetworkRequest, initiatorChain: string, lineStart: string): string {
+  const initiated = Logs.NetworkLog.NetworkLog.instance().initiatorGraphForRequest(request).initiated;
+  initiated.forEach((k, initiatedRequest) => {
+    if (request === k) {
+      initiatorChain = initiatorChain + lineStart + initiatedRequest.url() + '\n';
+      initiatorChain = formatRequestInitiated(initiatedRequest, initiatorChain, '\t' + lineStart);
+    }
+  });
+  return initiatorChain;
+}
+
+function formatRequestInitiatorChain(request: SDK.NetworkRequest.NetworkRequest): string {
+  let initiatorChain = '';
+  let lineStart = '- URL: ';
+  const initiators = Logs.NetworkLog.NetworkLog.instance().initiatorGraphForRequest(request).initiators;
+
+  for (const initator of Array.from(initiators).reverse()) {
+    initiatorChain = initiatorChain + lineStart + initator.url() + '\n';
+    lineStart = '\t' + lineStart;
+    if (initator === request) {
+      initiatorChain = formatRequestInitiated(initator, initiatorChain, lineStart);
+      break;
+    }
+  }
+
+  return initiatorChain;
+}
+
 export function formatNetworkRequest(request: SDK.NetworkRequest.NetworkRequest): string {
   const formatHeaders = (title: string, headers: SDK.NetworkRequest.NameValue[]): string => formatLines(
       title, headers.filter(allowHeader).map(header => header.name + ': ' + header.value + '\n'), MAX_HEADERS_SIZE);
@@ -310,7 +340,9 @@ ${formatHeaders('Response headers:', request.responseHeaders)}
 
 Response status: ${request.statusCode} ${request.statusText}
 
-Request Timing:\n ${formatNetworkRequestTiming(request)}`;
+Request Timing:\n ${formatNetworkRequestTiming(request)}
+
+Request Initiator Chain:\n ${formatRequestInitiatorChain(request)}`;
 }
 
 // @ts-ignore

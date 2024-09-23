@@ -803,10 +803,28 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     return this.compatibilityTracksAppender?.getDrawOverride(event, eventLevel);
   }
 
+  #entryColorForFrame(entryIndex: number): string {
+    const frame = (this.entryData[entryIndex] as Trace.Handlers.ModelHandlers.Frames.TimelineFrame);
+    if (frame.idle) {
+      return 'white';
+    }
+    if (frame.dropped) {
+      if (frame.isPartial) {
+        // For partially presented frame boxes, paint a yellow background with
+        // a sparse white dashed-line pattern overlay.
+        return '#f0e442';
+      }
+      // For dropped frame boxes, paint a red background with a dense white
+      // solid-line pattern overlay.
+      return '#f08080';
+    }
+    return '#d7f0d1';
+  }
+
   entryColor(entryIndex: number): string {
     const entryType = this.#entryTypeForIndex(entryIndex);
     if (entryType === EntryType.FRAME) {
-      return 'white';
+      return this.#entryColorForFrame(entryIndex);
     }
     if (entryType === EntryType.TRACK_APPENDER) {
       const timelineData = (this.timelineDataInternal as PerfUI.FlameChart.FlameChartTimelineData);
@@ -860,13 +878,12 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     const frame = (this.entryData[entryIndex] as Trace.Handlers.ModelHandlers.Frames.TimelineFrame);
     barX += hPadding;
     barWidth -= 2 * hPadding;
-    if (frame.idle) {
-      context.fillStyle = 'white';
-    } else if (frame.dropped) {
+    context.fillStyle = this.entryColor(entryIndex);
+
+    if (frame.dropped) {
       if (frame.isPartial) {
         // For partially presented frame boxes, paint a yellow background with
         // a sparse white dashed-line pattern overlay.
-        context.fillStyle = '#f0e442';
         context.fillRect(barX, barY, barWidth, barHeight);
 
         const overlay = context.createPattern(this.partialFramePatternCanvas, 'repeat');
@@ -874,14 +891,11 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       } else {
         // For dropped frame boxes, paint a red background with a dense white
         // solid-line pattern overlay.
-        context.fillStyle = '#f08080';
         context.fillRect(barX, barY, barWidth, barHeight);
 
         const overlay = context.createPattern(this.droppedFramePatternCanvas, 'repeat');
         context.fillStyle = overlay || context.fillStyle;
       }
-    } else {
-      context.fillStyle = '#d7f0d1';
     }
     context.fillRect(barX, barY, barWidth, barHeight);
 

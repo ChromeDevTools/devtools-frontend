@@ -1779,11 +1779,17 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   private getEntryColorByEntry(entry: Trace.Types.Events.Event): string {
     const mainIndex = this.flameChart.getMainDataProvider().indexForEvent(entry);
     const networkIndex = this.flameChart.getNetworkDataProvider().indexForEvent(entry);
-    if (mainIndex) {
+    if (mainIndex !== null) {
       const color = this.flameChart.getMainDataProvider().entryColor(mainIndex);
+
+      // The color for idle frames will be white in flame chart, which will display weird in the sidebar, so just use a
+      // light gray color instead.
+      if (color === 'white') {
+        return ThemeSupport.ThemeSupport.instance().getComputedValue('--app-color-system');
+      }
       return color;
     }
-    if (networkIndex) {
+    if (networkIndex !== null) {
       const color = this.flameChart.getNetworkDataProvider().entryColor(networkIndex);
       return color;
     }

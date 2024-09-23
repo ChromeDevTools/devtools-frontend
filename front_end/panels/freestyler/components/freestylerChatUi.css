@@ -32,6 +32,7 @@
   display: flex;
   gap: var(--sys-size-3);
   align-items: center;
+  width: 100%;
 
   .resource-link {
     padding: var(--sys-size-2) var(--sys-size-4);
@@ -311,7 +312,6 @@
 
   & .header-link-container:first-of-type {
     flex-shrink: 1;
-    flex-basis: 100%;
     min-width: 0;
   }
 

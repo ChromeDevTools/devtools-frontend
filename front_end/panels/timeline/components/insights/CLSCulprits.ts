@@ -7,15 +7,35 @@ import * as Trace from '../../../../models/trace/trace.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
-import {BaseInsight, shouldRenderForCategory} from './Helpers.js';
+import {BaseInsight, md, shouldRenderForCategory} from './Helpers.js';
 import * as SidebarInsight from './SidebarInsight.js';
 import {InsightsCategories} from './types.js';
 
 const UIStrings = {
+  /** Title of an insight that provides details about why elements shift/move on the page. The causes for these shifts are referred to as culprits ("reasons"). */
+  title: 'Layout shift culprits',
+  /**
+   * @description Description of a DevTools insight that identifies the reasons that elements shift on the page.
+   * This is displayed after a user expands the section to see more. No character length limits.
+   */
+  description:
+      'Layout shifts occur when elements move absent any user interaction. [Investigate the causes of layout shifts](https://web.dev/articles/optimize-cls), such as elements being added, removed, or their fonts changing as the page loads.',
   /**
    *@description Text indicating the worst layout shift cluster.
    */
   worstCluster: 'Worst layout shift cluster',
+  /**
+   *@description Text indicating the biggest reasons for the layout shifts.
+   */
+  topCulprits: 'Top layout shift culprits',
+  /**
+   * @description Text for a culprit type of Injected iframe.
+   */
+  injectedIframe: 'Injected iframe',
+  /**
+   * @description Text for a culprit type of Font request.
+   */
+  fontRequest: 'Font request',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/CLSCulprits.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -24,7 +44,7 @@ export class CLSCulprits extends BaseInsight {
   static readonly litTagName = LitHtml.literal`devtools-performance-cls-culprits`;
   override insightCategory: InsightsCategories = InsightsCategories.CLS;
   override internalName: string = 'cls-culprits';
-  override userVisibleTitle: string = 'Layout shift culprits';
+  override userVisibleTitle: string = i18nString(UIStrings.title);
 
   override createOverlays(): Overlays.Overlays.TimelineOverlay[] {
     const insight =
@@ -81,10 +101,10 @@ export class CLSCulprits extends BaseInsight {
         const iframes = culprits.iframeIds;
 
         for (let i = 0; i < fontReq.length && causes.length < MAX_TOP_CULPRITS; i++) {
-          causes.push('Font request');
+          causes.push(i18nString(UIStrings.fontRequest));
         }
         for (let i = 0; i < iframes.length && causes.length < MAX_TOP_CULPRITS; i++) {
-          causes.push('Injected iframe');
+          causes.push(i18nString(UIStrings.injectedIframe));
         }
       }
     }
@@ -102,15 +122,11 @@ export class CLSCulprits extends BaseInsight {
             } as SidebarInsight.InsightDetails}
             @insighttoggleclick=${this.onSidebarClick}>
                 <div slot="insight-description" class="insight-description">
-                  <p>
-                    Layout shifts happen when existing elements unexpectedly move.
-                    Shifts are caused by nodes changing size or newly added. Investigate
-                    and fix these culprits.
-                  </p>
+                  ${md(i18nString(UIStrings.description))}
                 </div>
                 <div slot="insight-content" style="insight-content">
                   <p>
-                    Top layout shift culprits:
+                    <h3>${i18nString(UIStrings.topCulprits)}</h3>
                     ${culprits.map(culprit => {
                       return LitHtml.html `
                         <li>${culprit}</li>

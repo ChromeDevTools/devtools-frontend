@@ -13,6 +13,8 @@ import * as SidebarInsight from './SidebarInsight.js';
 import {InsightsCategories} from './types.js';
 
 const UIStrings = {
+  /** Title of an insight that provides details about if the page's viewport is optimized for mobile viewing. */
+  title: 'Mobile-optimized viewport',
   /**
    * @description Text to tell the user how a viewport meta element can improve performance.
    */
@@ -27,7 +29,7 @@ export class Viewport extends BaseInsight {
   static readonly litTagName = LitHtml.literal`devtools-performance-viewport`;
   override insightCategory: InsightsCategories = InsightsCategories.INP;
   override internalName: string = 'viewport';
-  override userVisibleTitle: string = 'Mobile-optimized viewport';
+  override userVisibleTitle: string = i18nString(UIStrings.title);
 
   override createOverlays(): Overlays.Overlays.TimelineOverlay[] {
     // TODO(b/351757418): create overlay for synthetic input delay events

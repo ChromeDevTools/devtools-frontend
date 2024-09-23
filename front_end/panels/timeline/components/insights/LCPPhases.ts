@@ -7,12 +7,22 @@ import * as Trace from '../../../../models/trace/trace.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
-import {BaseInsight, shouldRenderForCategory} from './Helpers.js';
+import {BaseInsight, md, shouldRenderForCategory} from './Helpers.js';
 import * as SidebarInsight from './SidebarInsight.js';
 import {Table, type TableData} from './Table.js';
 import {InsightsCategories} from './types.js';
 
 const UIStrings = {
+  /**
+   *@description Title of an insight that provides details about the LCP metric, broken down by phases / parts.
+   */
+  title: 'LCP by phase',
+  /**
+   * @description Description of a DevTools insight that presents a breakdown for the LCP metric by phases.
+   * This is displayed after a user expands the section to see more. No character length limits.
+   */
+  description:
+      'Learn about the [strategies for improving each phase of LCP](https://web.dev/articles/optimize-lcp#lcp-breakdown). Pages with great LCP have minimal durations for "Resource load delay" and "Element render delay".',
   /**
    *@description Time to first byte title for the Largest Contentful Paint's phases timespan breakdown.
    */
@@ -29,6 +39,14 @@ const UIStrings = {
    *@description Element render delay title for the Largest Contentful Paint phases timespan breakdown.
    */
   elementRenderDelay: 'Element render delay',
+  /**
+   *@description Label used for the phase/component/stage/section of a larger duration.
+   */
+  phase: 'Phase',
+  /**
+   *@description Label used for the percentage a single phase/component/stage/section takes up of a larger duration.
+   */
+  percentLCP: '% of LCP',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/LCPPhases.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -43,7 +61,7 @@ export class LCPPhases extends BaseInsight {
   static readonly litTagName = LitHtml.literal`devtools-performance-lcp-by-phases`;
   override insightCategory: InsightsCategories = InsightsCategories.LCP;
   override internalName: string = 'lcp-by-phase';
-  override userVisibleTitle: string = 'LCP by phase';
+  override userVisibleTitle: string = i18nString(UIStrings.title);
 
   #getPhaseData(insights: Trace.Insights.Types.TraceInsightSets|null, navigationId: string|null): PhaseData[] {
     if (!insights || !navigationId) {
@@ -199,16 +217,12 @@ export class LCPPhases extends BaseInsight {
         @insighttoggleclick=${this.onSidebarClick}
       >
         <div slot="insight-description" class="insight-description">
-          <p>
-            Each
-            <x-link class="link" href="https://web.dev/articles/optimize-lcp#lcp-breakdown">phase has specific recommendations to improve.</x-link>
-            In an ideal load, the two delay phases should be quite short.
-          </p>
+          ${md(i18nString(UIStrings.description))}
         </div>
         <div slot="insight-content">
           ${LitHtml.html`<${Table.litTagName}
             .data=${{
-              headers: ['Phase', '% of LCP'],
+              headers: [i18nString(UIStrings.phase), i18nString(UIStrings.percentLCP)],
               rows,
             } as TableData}>
           </${Table.litTagName}>`}

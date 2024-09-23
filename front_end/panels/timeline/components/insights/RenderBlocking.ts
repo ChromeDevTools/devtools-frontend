@@ -23,6 +23,10 @@ const UIStrings = {
   description: 'Requests are blocking the page\'s initial render, which may delay LCP. ' +
       '[Deferring or inlining](https://web.dev/learn/performance/understanding-the-critical-path#render-blocking_resources/) ' +
       'can move these network requests out of the critical path.',
+  /**
+   * @description Label to describe the blocking requests that took the longest to load.
+   */
+  longestBlockingRequests: 'Longest render-blocking requests',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/RenderBlocking.ts', UIStrings);
@@ -32,7 +36,7 @@ export class RenderBlockingRequests extends BaseInsight {
   static readonly litTagName = LitHtml.literal`devtools-performance-render-blocking-requests`;
   override insightCategory: InsightsCategories = InsightsCategories.LCP;
   override internalName: string = 'render-blocking-requests';
-  override userVisibleTitle: string = 'Render-blocking requests';
+  override userVisibleTitle: string = i18nString(UIStrings.description);
 
   override connectedCallback(): void {
     super.connectedCallback();
@@ -90,7 +94,7 @@ export class RenderBlockingRequests extends BaseInsight {
           </div>
           <div slot="insight-content" style="insight-content">
             <p>
-              Longest blocking requests:
+              <h3>${i18nString(UIStrings.longestBlockingRequests)}</h3>
               <ul class="url-list">
                 ${topRequests.map(req => {
                   return LitHtml.html `

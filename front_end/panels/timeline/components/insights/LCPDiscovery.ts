@@ -17,6 +17,10 @@ import {InsightsCategories} from './types.js';
 
 const UIStrings = {
   /**
+   *@description Title of an insight that provides details about the LCP metric, and the network requests necessary to load it.
+   */
+  title: 'LCP request discovery',
+  /**
    * @description Text to tell the user how long after the earliest discovery time their LCP element loaded.
    * @example {401ms} PH1
    */
@@ -90,7 +94,7 @@ export class LCPDiscovery extends BaseInsight {
   static readonly litTagName = LitHtml.literal`devtools-performance-lcp-discovery`;
   override insightCategory: InsightsCategories = InsightsCategories.LCP;
   override internalName: string = 'lcp-discovery';
-  override userVisibleTitle: string = 'LCP request discovery';
+  override userVisibleTitle: string = i18nString(UIStrings.title);
 
   override connectedCallback(): void {
     super.connectedCallback();

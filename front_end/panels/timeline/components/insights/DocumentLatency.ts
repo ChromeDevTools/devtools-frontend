@@ -14,6 +14,10 @@ import {InsightsCategories} from './types.js';
 
 const UIStrings = {
   /**
+   *@description Title of an insight that provides a breakdown for how long it took to download the main document.
+   */
+  title: 'Document request latency',
+  /**
    * @description Text to tell the user that the document request does not have redirects.
    */
   passingRedirects: 'Avoids redirects',
@@ -46,7 +50,7 @@ export class DocumentLatency extends BaseInsight {
   static readonly litTagName = LitHtml.literal`devtools-performance-document-latency`;
   override insightCategory: InsightsCategories = InsightsCategories.OTHER;
   override internalName: string = 'document-latency';
-  override userVisibleTitle: string = 'Document request latency';
+  override userVisibleTitle: string = i18nString(UIStrings.title);
 
   #check(didPass: boolean, good: string, bad: string): LitHtml.TemplateResult {
     const icon = didPass ? 'check-circle' : 'clear';

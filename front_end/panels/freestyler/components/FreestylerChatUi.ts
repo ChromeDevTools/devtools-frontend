@@ -755,7 +755,7 @@ export class FreestylerChatUi extends HTMLElement {
           class="feedback-icon"
         ></${IconButton.Icon.Icon.litTagName}>
         <span>${i18nString(UIStringsTemp.dogfood)}</span>
-        <span>-</span>
+        <span aria-hidden="true">-</span>
         <x-link href=${DOGFOOD_FEEDBACK_URL}
           class="link"
           jslog=${VisualLogging.link('freestyler.feedback').track({

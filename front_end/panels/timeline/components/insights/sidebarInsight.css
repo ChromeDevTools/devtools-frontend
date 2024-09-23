@@ -14,6 +14,7 @@
   overflow: hidden;
   border: var(--sys-size-1) solid var(--sys-color-divider);
   background-color: var(--sys-color-base);
+  user-select: text;
 
   &.closed {
     background-color: var(--sys-color-surface3);
@@ -35,6 +36,7 @@
   right: var(--sys-size-5);
   border: none;
   width: var(--sys-size-9);
+  user-select: none;
   height: var(--sys-size-9);
   box-shadow: var(--sys-elevation-level1);
   border-radius: var(--sys-shape-corner-full);

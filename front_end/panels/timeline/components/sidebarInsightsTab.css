@@ -33,6 +33,7 @@
     padding: 2px 5px;
     text-overflow: ellipsis;
     white-space: nowrap;
+    user-select: text;
     font: var(--sys-typescale-body4-medium);
 
     &:focus {

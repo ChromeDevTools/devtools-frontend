@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../../../core/i18n/i18n.js';
-import type * as Trace from '../../../../models/trace/trace.js';
+import * as Trace from '../../../../models/trace/trace.js';
 import * as IconButton from '../../../../ui/components/icon_button/icon_button.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import type * as Overlays from '../../overlays/overlays.js';
@@ -42,25 +42,6 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/DocumentLatency.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export function getDocumentLatencyInsight(
-    insights: Trace.Insights.Types.TraceInsightSets|null,
-    navigationId: string|null): Trace.Insights.Types.InsightResults['DocumentLatency']|null {
-  if (!insights || !navigationId) {
-    return null;
-  }
-
-  const insightsByNavigation = insights.get(navigationId);
-  if (!insightsByNavigation) {
-    return null;
-  }
-
-  const insight = insightsByNavigation.data.DocumentLatency;
-  if (insight instanceof Error) {
-    return null;
-  }
-  return insight;
-}
-
 export class DocumentLatency extends BaseInsight {
   static readonly litTagName = LitHtml.literal`devtools-performance-document-latency`;
   override insightCategory: InsightsCategories = InsightsCategories.OTHER;
@@ -80,7 +61,7 @@ export class DocumentLatency extends BaseInsight {
   }
 
   override createOverlays(): Overlays.Overlays.TimelineOverlay[] {
-    const insight = getDocumentLatencyInsight(this.data.insights, this.data.navigationId);
+    const insight = Trace.Insights.Common.getInsight('DocumentLatency', this.data.insights, this.data.insightSetKey);
     if (!insight?.data?.documentRequest) {
       return [];
     }
@@ -130,7 +111,7 @@ export class DocumentLatency extends BaseInsight {
   }
 
   override render(): void {
-    const insight = getDocumentLatencyInsight(this.data.insights, this.data.navigationId);
+    const insight = Trace.Insights.Common.getInsight('DocumentLatency', this.data.insights, this.data.insightSetKey);
     const matchesCategory = shouldRenderForCategory({
       activeCategory: this.data.activeCategory,
       insightCategory: this.insightCategory,

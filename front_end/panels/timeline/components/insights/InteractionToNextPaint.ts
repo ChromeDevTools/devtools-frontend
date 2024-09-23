@@ -54,24 +54,6 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/InteractionToNextPaint.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export function getINPInsight(insights: Trace.Insights.Types.TraceInsightSets|null, navigationId: string|null):
-    Trace.Insights.Types.InsightResults['InteractionToNextPaint']|null {
-  if (!insights || !navigationId) {
-    return null;
-  }
-
-  const insightsByNavigation = insights.get(navigationId);
-  if (!insightsByNavigation) {
-    return null;
-  }
-
-  const insight = insightsByNavigation.data.InteractionToNextPaint;
-  if (insight instanceof Error) {
-    return null;
-  }
-  return insight;
-}
-
 export class InteractionToNextPaint extends BaseInsight {
   static readonly litTagName = LitHtml.literal`devtools-performance-inp`;
   override insightCategory: InsightsCategories = InsightsCategories.INP;
@@ -79,17 +61,8 @@ export class InteractionToNextPaint extends BaseInsight {
   override userVisibleTitle: string = i18nString(UIStrings.title);
 
   override createOverlays(): Overlays.Overlays.TimelineOverlay[] {
-    if (!this.data.insights || !this.data.navigationId) {
-      return [];
-    }
-    const {navigationId, insights} = this.data;
-
-    const insightsByNavigation = insights.get(navigationId);
-    if (!insightsByNavigation) {
-      return [];
-    }
-
-    const insight = getINPInsight(insights, this.data.navigationId);
+    const insight =
+        Trace.Insights.Common.getInsight('InteractionToNextPaint', this.data.insights, this.data.insightSetKey);
     if (!insight) {
       return [];
     }
@@ -165,7 +138,8 @@ export class InteractionToNextPaint extends BaseInsight {
   }
 
   override render(): void {
-    const insight = getINPInsight(this.data.insights, this.data.navigationId);
+    const insight =
+        Trace.Insights.Common.getInsight('InteractionToNextPaint', this.data.insights, this.data.insightSetKey);
     const event = insight?.longestInteractionEvent;
 
     const matchesCategory = shouldRenderForCategory({

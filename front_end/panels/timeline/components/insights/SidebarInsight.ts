@@ -34,7 +34,7 @@ export class InsightActivated extends Event {
   static readonly eventName = 'insightactivated';
 
   constructor(
-      public name: string, public navigationId: string,
+      public name: string, public insightSetKey: string,
       public createOverlayFn: () => Array<Overlays.Overlays.TimelineOverlay>) {
     super(InsightActivated.eventName, {bubbles: true, composed: true});
   }

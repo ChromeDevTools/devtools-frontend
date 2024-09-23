@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
-import {createContextForNavigation, getFirstOrError, getInsight} from '../../../testing/InsightHelpers.js';
+import {createContextForNavigation, getFirstOrError, getInsightOrError} from '../../../testing/InsightHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as Trace from '../trace.js';
 
@@ -19,7 +19,8 @@ export async function processTrace(testContext: Mocha.Suite|Mocha.Context|null, 
 describeWithEnvironment('Viewport', function() {
   it('detects mobile optimized viewport', async () => {
     const {data, insights} = await processTrace(this, 'lcp-images.json.gz');
-    const insight = getInsight('Viewport', insights, getFirstOrError(data.Meta.navigationsByNavigationId.values()));
+    const insight =
+        getInsightOrError('Viewport', insights, getFirstOrError(data.Meta.navigationsByNavigationId.values()));
 
     assert.strictEqual(insight.mobileOptimized, true);
   });

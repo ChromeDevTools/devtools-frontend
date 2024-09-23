@@ -14,7 +14,7 @@ import {SidebarInsightsTab} from './SidebarInsightsTab.js';
 
 export interface ActiveInsight {
   name: string;
-  navigationId: string;
+  insightSetKey: string;
   createOverlayFn: (() => Overlays.Overlays.TimelineOverlay[]);
 }
 

@@ -20,24 +20,6 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/CLSCulprits.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export function getCLSInsight(insights: Trace.Insights.Types.TraceInsightSets|null, navigationId: string|null):
-    Trace.Insights.Types.InsightResults['CumulativeLayoutShift']|null {
-  if (!insights || !navigationId) {
-    return null;
-  }
-
-  const insightsByNavigation = insights.get(navigationId);
-  if (!insightsByNavigation) {
-    return null;
-  }
-
-  const clsInsight = insightsByNavigation.data.CumulativeLayoutShift;
-  if (clsInsight instanceof Error) {
-    return null;
-  }
-  return clsInsight;
-}
-
 export class CLSCulprits extends BaseInsight {
   static readonly litTagName = LitHtml.literal`devtools-performance-cls-culprits`;
   override insightCategory: InsightsCategories = InsightsCategories.CLS;
@@ -45,12 +27,15 @@ export class CLSCulprits extends BaseInsight {
   override userVisibleTitle: string = 'Layout shift culprits';
 
   override createOverlays(): Overlays.Overlays.TimelineOverlay[] {
-    const insight = getCLSInsight(this.data.insights, this.data.navigationId);
+    const insight =
+        Trace.Insights.Common.getInsight('CumulativeLayoutShift', this.data.insights, this.data.insightSetKey);
+
     // Clusters are sorted by bad scores, so we can grab the first.
     const worstCluster = insight?.clusters[0];
     if (!worstCluster) {
       return [];
     }
+
     const range = Trace.Types.Timing.MicroSeconds(worstCluster.dur ?? 0);
     const max = Trace.Types.Timing.MicroSeconds(worstCluster.ts + range);
 
@@ -139,9 +124,10 @@ export class CLSCulprits extends BaseInsight {
   }
 
   override render(): void {
-    const clsInsight = getCLSInsight(this.data.insights, this.data.navigationId);
-    const culpritsByShift = clsInsight?.shifts;
-    const clusters = clsInsight?.clusters ?? [];
+    const insight =
+        Trace.Insights.Common.getInsight('CumulativeLayoutShift', this.data.insights, this.data.insightSetKey);
+    const culpritsByShift = insight?.shifts;
+    const clusters = insight?.clusters ?? [];
 
     const causes = this.getTopCulprits(clusters, culpritsByShift);
     const hasCulprits = causes.length > 0;

@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
-import {getFirstOrError, getInsight} from '../../../testing/InsightHelpers.js';
+import {getFirstOrError, getInsightOrError} from '../../../testing/InsightHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as Types from '../types/types.js';
 
@@ -20,7 +20,7 @@ describeWithEnvironment('LargestContentfulPaint', function() {
   it('calculates text lcp phases', async () => {
     const {data, insights} = await processTrace(this, 'lcp-web-font.json.gz');
     const firstNav = getFirstOrError(data.Meta.navigationsByNavigationId.values());
-    const insight = getInsight('LargestContentfulPaint', insights, firstNav);
+    const insight = getInsightOrError('LargestContentfulPaint', insights, firstNav);
 
     assert.strictEqual(insight.lcpMs, 106.482);
 
@@ -32,7 +32,7 @@ describeWithEnvironment('LargestContentfulPaint', function() {
   it('calculates image lcp phases', async () => {
     const {data, insights} = await processTrace(this, 'lcp-images.json.gz');
     const firstNav = getFirstOrError(data.Meta.navigationsByNavigationId.values());
-    const insight = getInsight('LargestContentfulPaint', insights, firstNav);
+    const insight = getInsightOrError('LargestContentfulPaint', insights, firstNav);
 
     assert.strictEqual(insight.lcpMs, 109.623);
 
@@ -52,7 +52,7 @@ describeWithEnvironment('LargestContentfulPaint', function() {
   it('calculates image lcp attributes', async () => {
     const {data, insights} = await processTrace(this, 'lcp-images.json.gz');
     const firstNav = getFirstOrError(data.Meta.navigationsByNavigationId.values());
-    const insight = getInsight('LargestContentfulPaint', insights, firstNav);
+    const insight = getInsightOrError('LargestContentfulPaint', insights, firstNav);
     const {shouldIncreasePriorityHint, shouldPreloadImage, shouldRemoveLazyLoading} = insight;
 
     assert.strictEqual(shouldRemoveLazyLoading, false);
@@ -63,7 +63,7 @@ describeWithEnvironment('LargestContentfulPaint', function() {
   it('calculates the LCP optimal time as the document request download start time', async () => {
     const {data, insights} = await processTrace(this, 'web-dev-with-commit.json.gz');
     const firstNav = getFirstOrError(data.Meta.navigationsByNavigationId.values());
-    const insight = getInsight('LargestContentfulPaint', insights, firstNav);
+    const insight = getInsightOrError('LargestContentfulPaint', insights, firstNav);
     assert.strictEqual(
         insight.earliestDiscoveryTimeTs,
         // this is the TTFB for the document request
@@ -75,7 +75,7 @@ describeWithEnvironment('LargestContentfulPaint', function() {
     it('warns when there is no lcp', async () => {
       const {data, insights} = await processTrace(this, 'user-timings.json.gz');
       const firstNav = getFirstOrError(data.Meta.navigationsByNavigationId.values());
-      const insight = getInsight('LargestContentfulPaint', insights, firstNav);
+      const insight = getInsightOrError('LargestContentfulPaint', insights, firstNav);
 
       assert.strictEqual(insight.lcpMs, undefined);
       assert.strictEqual(insight.phases, undefined);
@@ -85,7 +85,7 @@ describeWithEnvironment('LargestContentfulPaint', function() {
     it('no main document url', async () => {
       const {data, insights} = await processTrace(this, 'about-blank-first.json.gz');
       const firstNav = getFirstOrError(data.Meta.navigationsByNavigationId.values());
-      const insight = getInsight('LargestContentfulPaint', insights, firstNav);
+      const insight = getInsightOrError('LargestContentfulPaint', insights, firstNav);
 
       assert.strictEqual(insight.lcpMs, 204.909);
       assert.strictEqual(insight.phases, undefined);

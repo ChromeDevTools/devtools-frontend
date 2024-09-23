@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
-import {getInsight} from '../../../testing/InsightHelpers.js';
+import {getInsightOrError} from '../../../testing/InsightHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 
 import {Types} from './insights.js';
@@ -21,7 +21,8 @@ describeWithEnvironment('RenderBlockingRequests', function() {
   it('finds render blocking requests', async () => {
     const {data, insights} = await processTrace(this, 'load-simple.json.gz');
     assert.deepStrictEqual([...insights.keys()], [Types.NO_NAVIGATION, '0BCFC23BC7D7BEDC9F93E912DCCEC1DA']);
-    const insight = getInsight('RenderBlocking', insights, data.Meta.navigationsByNavigationId.values().next().value);
+    const insight =
+        getInsightOrError('RenderBlocking', insights, data.Meta.navigationsByNavigationId.values().next().value);
 
     assert.strictEqual(insight.renderBlockingRequests.length, 2);
     assert.deepEqual(insight.renderBlockingRequests.map(r => r.args.data.url), [
@@ -33,7 +34,8 @@ describeWithEnvironment('RenderBlockingRequests', function() {
   it('returns a warning if navigation does not have a first paint event', async () => {
     const {data, insights} = await processTrace(this, 'user-timings.json.gz');
     assert.strictEqual(insights.size, 1);
-    const insight = getInsight('RenderBlocking', insights, data.Meta.navigationsByNavigationId.values().next().value);
+    const insight =
+        getInsightOrError('RenderBlocking', insights, data.Meta.navigationsByNavigationId.values().next().value);
 
     assert.strictEqual(insight.renderBlockingRequests.length, 0);
     assert.strictEqual(insight.warnings?.length, 1);
@@ -46,7 +48,7 @@ describeWithEnvironment('RenderBlockingRequests', function() {
         [...insights.keys()],
         [Types.NO_NAVIGATION, '8671F33ECE0C8DBAEFBC2F9A2D1D6107', '1AE2016BBCC48AA090FDAE2CBBA01900']);
     const navigations = Array.from(data.Meta.navigationsByNavigationId.values());
-    const insight = getInsight('RenderBlocking', insights, navigations[0]);
+    const insight = getInsightOrError('RenderBlocking', insights, navigations[0]);
 
     assert(insight.renderBlockingRequests.length > 0, 'no render blocking requests found');
 
@@ -62,9 +64,9 @@ describeWithEnvironment('RenderBlockingRequests', function() {
     const {data, insights} = await processTrace(this, 'multiple-navigations-render-blocking.json.gz');
     assert.strictEqual(insights.size, 3);
     const navigations = Array.from(data.Meta.navigationsByNavigationId.values());
-    const insightOne = getInsight('RenderBlocking', insights);
-    const insightTwo = getInsight('RenderBlocking', insights, navigations[0]);
-    const insightThree = getInsight('RenderBlocking', insights, navigations[1]);
+    const insightOne = getInsightOrError('RenderBlocking', insights);
+    const insightTwo = getInsightOrError('RenderBlocking', insights, navigations[0]);
+    const insightThree = getInsightOrError('RenderBlocking', insights, navigations[1]);
     assert.deepStrictEqual(insightOne.renderBlockingRequests.map(r => r.args.data.requestId), []);
     assert.deepStrictEqual(insightTwo.renderBlockingRequests.map(r => r.args.data.requestId), ['99116.2']);
     assert.deepStrictEqual(insightThree.renderBlockingRequests.map(r => r.args.data.requestId), ['99116.5']);
@@ -74,7 +76,7 @@ describeWithEnvironment('RenderBlockingRequests', function() {
     const {data, insights} = await processTrace(this, 'render-blocking-in-iframe.json.gz');
     assert.strictEqual(insights.size, 1);
     const navigations = Array.from(data.Meta.navigationsByNavigationId.values());
-    const insight = getInsight('RenderBlocking', insights, navigations[0]);
+    const insight = getInsightOrError('RenderBlocking', insights, navigations[0]);
 
     assert(insight.renderBlockingRequests.length > 0, 'no render blocking requests found');
 
@@ -86,7 +88,8 @@ describeWithEnvironment('RenderBlockingRequests', function() {
   it('ignores blocking request after first paint', async () => {
     const {data, insights} = await processTrace(this, 'parser-blocking-after-paint.json.gz');
     assert.strictEqual(insights.size, 1);
-    const insight = getInsight('RenderBlocking', insights, data.Meta.navigationsByNavigationId.values().next().value);
+    const insight =
+        getInsightOrError('RenderBlocking', insights, data.Meta.navigationsByNavigationId.values().next().value);
 
     assert.strictEqual(insight.renderBlockingRequests.length, 0);
   });
@@ -94,7 +97,8 @@ describeWithEnvironment('RenderBlockingRequests', function() {
   it('correctly handles body parser blocking requests', async () => {
     const {data, insights} = await processTrace(this, 'render-blocking-body.json.gz');
     assert.strictEqual(insights.size, 1);
-    const insight = getInsight('RenderBlocking', insights, data.Meta.navigationsByNavigationId.values().next().value);
+    const insight =
+        getInsightOrError('RenderBlocking', insights, data.Meta.navigationsByNavigationId.values().next().value);
 
     assert.deepStrictEqual(insight.renderBlockingRequests.map(r => r.args.data.url), [
       'http://localhost:8080/render-blocking/style.css',
@@ -105,7 +109,8 @@ describeWithEnvironment('RenderBlockingRequests', function() {
   it('estimates savings with Lantern (image LCP)', async () => {
     const {data, insights} = await processTrace(this, 'lantern/render-blocking/trace.json.gz');
     assert.strictEqual(insights.size, 1);
-    const insight = getInsight('RenderBlocking', insights, data.Meta.navigationsByNavigationId.values().next().value);
+    const insight =
+        getInsightOrError('RenderBlocking', insights, data.Meta.navigationsByNavigationId.values().next().value);
 
     assert.deepStrictEqual(insight.metricSavings, {
       FCP: 2250,
@@ -126,7 +131,8 @@ describeWithEnvironment('RenderBlockingRequests', function() {
   it('estimates savings with Lantern (text LCP)', async () => {
     const {data, insights} = await processTrace(this, 'lantern/typescript-angular/trace.json.gz');
     assert.strictEqual(insights.size, 1);
-    const insight = getInsight('RenderBlocking', insights, data.Meta.navigationsByNavigationId.values().next().value);
+    const insight =
+        getInsightOrError('RenderBlocking', insights, data.Meta.navigationsByNavigationId.values().next().value);
 
     assert.deepStrictEqual(insight.metricSavings, {
       FCP: 13,

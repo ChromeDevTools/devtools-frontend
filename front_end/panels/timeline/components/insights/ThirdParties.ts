@@ -4,7 +4,7 @@
 
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
-import type * as Trace from '../../../../models/trace/trace.js';
+import * as Trace from '../../../../models/trace/trace.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
@@ -40,24 +40,6 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/ThirdParties.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export function getThirdPartiesInsight(insights: Trace.Insights.Types.TraceInsightSets|null, navigationId: string|null):
-    Trace.Insights.Types.InsightResults['ThirdPartyWeb']|null {
-  if (!insights || !navigationId) {
-    return null;
-  }
-
-  const insightsByNavigation = insights.get(navigationId);
-  if (!insightsByNavigation) {
-    return null;
-  }
-
-  const thirdPartiesInsight = insightsByNavigation.data.ThirdPartyWeb;
-  if (thirdPartiesInsight instanceof Error) {
-    return null;
-  }
-  return thirdPartiesInsight;
-}
-
 export class ThirdParties extends BaseInsight {
   static readonly litTagName = LitHtml.literal`devtools-performance-third-parties`;
   override insightCategory: InsightsCategories = InsightsCategories.OTHER;
@@ -72,7 +54,7 @@ export class ThirdParties extends BaseInsight {
   override createOverlays(): Overlays.Overlays.TimelineOverlay[] {
     this.#overlaysForEntity.clear();
 
-    const insight = getThirdPartiesInsight(this.data.insights, this.data.navigationId);
+    const insight = Trace.Insights.Common.getInsight('ThirdPartyWeb', this.data.insights, this.data.insightSetKey);
     if (!insight) {
       return [];
     }
@@ -176,7 +158,7 @@ export class ThirdParties extends BaseInsight {
   }
 
   override render(): void {
-    const insight = getThirdPartiesInsight(this.data.insights, this.data.navigationId);
+    const insight = Trace.Insights.Common.getInsight('ThirdPartyWeb', this.data.insights, this.data.insightSetKey);
     const entries = insight && [...insight.summaryByEntity.entries()].filter(kv => kv[0] !== insight.firstPartyEntity);
     const shouldShow = entries?.length;
 

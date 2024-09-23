@@ -4,7 +4,7 @@
 
 import * as i18n from '../../../../core/i18n/i18n.js';
 import type * as Platform from '../../../../core/platform/platform.js';
-import type * as Trace from '../../../../models/trace/trace.js';
+import * as Trace from '../../../../models/trace/trace.js';
 import * as LegacyComponents from '../../../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
@@ -28,25 +28,6 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/RenderBlocking.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export function getRenderBlockingInsight(
-    insights: Trace.Insights.Types.TraceInsightSets|null,
-    navigationId: string|null): Trace.Insights.Types.InsightResults['RenderBlocking']|null {
-  if (!insights || !navigationId) {
-    return null;
-  }
-
-  const insightsByNavigation = insights.get(navigationId);
-  if (!insightsByNavigation) {
-    return null;
-  }
-
-  const insight = insightsByNavigation.data.RenderBlocking;
-  if (insight instanceof Error) {
-    return null;
-  }
-  return insight;
-}
-
 export class RenderBlockingRequests extends BaseInsight {
   static readonly litTagName = LitHtml.literal`devtools-performance-render-blocking-requests`;
   override insightCategory: InsightsCategories = InsightsCategories.LCP;
@@ -60,13 +41,13 @@ export class RenderBlockingRequests extends BaseInsight {
   }
 
   override createOverlays(): Overlays.Overlays.TimelineOverlay[] {
-    const renderBlockingResults = getRenderBlockingInsight(this.data.insights, this.data.navigationId);
-    if (!renderBlockingResults) {
+    const insight = Trace.Insights.Common.getInsight('RenderBlocking', this.data.insights, this.data.insightSetKey);
+    if (!insight) {
       return [];
     }
 
     const entryOutlineOverlays: Array<Overlays.Overlays.EntryOutline> =
-        renderBlockingResults.renderBlockingRequests.map(req => {
+        insight.renderBlockingRequests.map(req => {
           return {
             type: 'ENTRY_OUTLINE',
             entry: req,
@@ -125,15 +106,13 @@ export class RenderBlockingRequests extends BaseInsight {
   }
 
   override render(): void {
-    const renderBlockingResults = getRenderBlockingInsight(this.data.insights, this.data.navigationId);
-    const hasBlockingRequests =
-        renderBlockingResults?.renderBlockingRequests && renderBlockingResults.renderBlockingRequests.length > 0;
+    const insight = Trace.Insights.Common.getInsight('RenderBlocking', this.data.insights, this.data.insightSetKey);
+    const hasBlockingRequests = insight?.renderBlockingRequests && insight.renderBlockingRequests.length > 0;
     const matchesCategory = shouldRenderForCategory({
       activeCategory: this.data.activeCategory,
       insightCategory: this.insightCategory,
     });
-    const output =
-        hasBlockingRequests && matchesCategory ? this.#renderRenderBlocking(renderBlockingResults) : LitHtml.nothing;
+    const output = hasBlockingRequests && matchesCategory ? this.#renderRenderBlocking(insight) : LitHtml.nothing;
     LitHtml.render(output, this.shadow, {host: this});
   }
 }

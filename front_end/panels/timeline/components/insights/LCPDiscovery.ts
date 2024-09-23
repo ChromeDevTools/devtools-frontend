@@ -47,38 +47,20 @@ interface LCPImageDiscoveryData {
   discoveryDelay: Trace.Types.Timing.MicroSeconds|null;
 }
 
-export function getLCPInsightData(insights: Trace.Insights.Types.TraceInsightSets|null, navigationId: string|null):
-    Trace.Insights.Types.InsightResults['LargestContentfulPaint']|null {
-  if (!insights || !navigationId) {
-    return null;
-  }
-
-  const insightsByNavigation = insights.get(navigationId);
-  if (!insightsByNavigation) {
-    return null;
-  }
-
-  const lcpInsight = insightsByNavigation.data.LargestContentfulPaint;
-  if (lcpInsight instanceof Error) {
-    return null;
-  }
-  return lcpInsight;
-}
-
 function getImageData(
-    insights: Trace.Insights.Types.TraceInsightSets|null, navigationId: string|null): LCPImageDiscoveryData|null {
-  const lcpInsight = getLCPInsightData(insights, navigationId);
-  if (!lcpInsight) {
+    insights: Trace.Insights.Types.TraceInsightSets|null, insightSetKey: string|null): LCPImageDiscoveryData|null {
+  const insight = Trace.Insights.Common.getInsight('LargestContentfulPaint', insights, insightSetKey);
+  if (!insight) {
     return null;
   }
 
-  if (lcpInsight.lcpRequest === undefined) {
+  if (insight.lcpRequest === undefined) {
     return null;
   }
 
-  const shouldIncreasePriorityHint = lcpInsight.shouldIncreasePriorityHint;
-  const shouldPreloadImage = lcpInsight.shouldPreloadImage;
-  const shouldRemoveLazyLoading = lcpInsight.shouldRemoveLazyLoading;
+  const shouldIncreasePriorityHint = insight.shouldIncreasePriorityHint;
+  const shouldPreloadImage = insight.shouldPreloadImage;
+  const shouldRemoveLazyLoading = insight.shouldRemoveLazyLoading;
 
   const imageLCP = shouldIncreasePriorityHint !== undefined && shouldPreloadImage !== undefined &&
       shouldRemoveLazyLoading !== undefined;
@@ -92,12 +74,12 @@ function getImageData(
     shouldIncreasePriorityHint,
     shouldPreloadImage,
     shouldRemoveLazyLoading,
-    request: lcpInsight.lcpRequest,
+    request: insight.lcpRequest,
     discoveryDelay: null,
   };
 
-  if (lcpInsight.earliestDiscoveryTimeTs && lcpInsight.lcpRequest) {
-    const discoveryDelay = lcpInsight.lcpRequest.ts - lcpInsight.earliestDiscoveryTimeTs;
+  if (insight.earliestDiscoveryTimeTs && insight.lcpRequest) {
+    const discoveryDelay = insight.lcpRequest.ts - insight.earliestDiscoveryTimeTs;
     data.discoveryDelay = Trace.Types.Timing.MicroSeconds(discoveryDelay);
   }
 
@@ -134,7 +116,7 @@ export class LCPDiscovery extends BaseInsight {
   }
 
   override createOverlays(): Overlays.Overlays.TimelineOverlay[] {
-    const imageResults = getImageData(this.data.insights, this.data.navigationId);
+    const imageResults = getImageData(this.data.insights, this.data.insightSetKey);
     if (!imageResults || !imageResults.discoveryDelay) {
       return [];
     }
@@ -210,7 +192,7 @@ export class LCPDiscovery extends BaseInsight {
   }
 
   override render(): void {
-    const imageResults = getImageData(this.data.insights, this.data.navigationId);
+    const imageResults = getImageData(this.data.insights, this.data.insightSetKey);
     const matchesCategory = shouldRenderForCategory({
       activeCategory: this.data.activeCategory,
       insightCategory: this.insightCategory,

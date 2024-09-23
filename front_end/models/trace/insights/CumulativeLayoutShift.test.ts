@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
-import {getFirstOrError, getInsight} from '../../../testing/InsightHelpers.js';
+import {getFirstOrError, getInsightOrError} from '../../../testing/InsightHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
@@ -27,7 +27,7 @@ describeWithEnvironment('CumulativeLayoutShift', function() {
     it('gets the correct non composited animations', async function() {
       const {data, insights} = await processTrace(this, 'non-composited-animation.json.gz');
       const firstNav = getFirstOrError(data.Meta.navigationsByNavigationId.values());
-      const insight = getInsight('CumulativeLayoutShift', insights, firstNav);
+      const insight = getInsightOrError('CumulativeLayoutShift', insights, firstNav);
       const {animationFailures} = insight;
 
       const expected: InsightRunners.CumulativeLayoutShift.NoncompositedAnimationFailure[] = [
@@ -47,7 +47,7 @@ describeWithEnvironment('CumulativeLayoutShift', function() {
     it('returns no insights when there are no non-composited animations', async function() {
       const {data, insights} = await processTrace(this, 'lcp-images.json.gz');
       const firstNav = getFirstOrError(data.Meta.navigationsByNavigationId.values());
-      const insight = getInsight('CumulativeLayoutShift', insights, firstNav);
+      const insight = getInsightOrError('CumulativeLayoutShift', insights, firstNav);
       const {animationFailures} = insight;
 
       assert.isEmpty(animationFailures);
@@ -57,7 +57,7 @@ describeWithEnvironment('CumulativeLayoutShift', function() {
     it('returns correct layout shifts', async function() {
       const {data, insights} = await processTrace(this, 'cls-single-frame.json.gz');
       const firstNav = getFirstOrError(data.Meta.navigationsByNavigationId.values());
-      const insight = getInsight('CumulativeLayoutShift', insights, firstNav);
+      const insight = getInsightOrError('CumulativeLayoutShift', insights, firstNav);
       const {shifts} = insight;
 
       assert.exists(shifts);
@@ -69,7 +69,7 @@ describeWithEnvironment('CumulativeLayoutShift', function() {
         // Trace has a single iframe that gets created before the first layout shift and causes a layout shift.
         const {data, insights} = await processTrace(this, 'iframe-shift.json.gz');
         const firstNav = getFirstOrError(data.Meta.navigationsByNavigationId.values());
-        const insight = getInsight('CumulativeLayoutShift', insights, firstNav);
+        const insight = getInsightOrError('CumulativeLayoutShift', insights, firstNav);
         const {shifts} = insight;
 
         assert.exists(shifts);
@@ -101,7 +101,7 @@ describeWithEnvironment('CumulativeLayoutShift', function() {
         // Trace has font load before the second layout shift.
         const {data, insights} = await processTrace(this, 'iframe-shift.json.gz');
         const firstNav = getFirstOrError(data.Meta.navigationsByNavigationId.values());
-        const insight = getInsight('CumulativeLayoutShift', insights, firstNav);
+        const insight = getInsightOrError('CumulativeLayoutShift', insights, firstNav);
         const {shifts} = insight;
 
         assert.exists(shifts);
@@ -137,7 +137,7 @@ describeWithEnvironment('CumulativeLayoutShift', function() {
     it('returns clusters correctly', async function() {
       const {data, insights} = await processTrace(this, 'iframe-shift.json.gz');
       const firstNav = getFirstOrError(data.Meta.navigationsByNavigationId.values());
-      const insight = getInsight('CumulativeLayoutShift', insights, firstNav);
+      const insight = getInsightOrError('CumulativeLayoutShift', insights, firstNav);
       const {shifts, clusters} = insight;
 
       assert.exists(clusters);

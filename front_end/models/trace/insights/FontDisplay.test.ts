@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
-import {getFirstOrError, getInsight} from '../../../testing/InsightHelpers.js';
+import {getFirstOrError, getInsightOrError} from '../../../testing/InsightHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 
 export async function processTrace(testContext: Mocha.Suite|Mocha.Context|null, traceFile: string) {
@@ -19,7 +19,8 @@ describeWithEnvironment('FontDisplay', function() {
   it('finds no requests for remote fonts', async () => {
     const {data, insights} = await processTrace(this, 'load-simple.json.gz');
     assert.strictEqual(insights.size, 2);
-    const insight = getInsight('FontDisplay', insights, getFirstOrError(data.Meta.navigationsByNavigationId.values()));
+    const insight =
+        getInsightOrError('FontDisplay', insights, getFirstOrError(data.Meta.navigationsByNavigationId.values()));
 
     assert.strictEqual(insight.fonts.length, 0);
   });
@@ -27,7 +28,8 @@ describeWithEnvironment('FontDisplay', function() {
   it('finds requests for remote fonts', async () => {
     const {data, insights} = await processTrace(this, 'font-display.json.gz');
     assert.strictEqual(insights.size, 1);
-    const insight = getInsight('FontDisplay', insights, getFirstOrError(data.Meta.navigationsByNavigationId.values()));
+    const insight =
+        getInsightOrError('FontDisplay', insights, getFirstOrError(data.Meta.navigationsByNavigationId.values()));
 
     assert.deepStrictEqual(insight.fonts.map(f => ({...f, request: f.request.args.data.url})), [
       {

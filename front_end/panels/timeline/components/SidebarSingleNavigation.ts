@@ -18,7 +18,7 @@ import styles from './sidebarSingleNavigation.css.js';
 export interface SidebarSingleNavigationData {
   parsedTrace: Trace.Handlers.Types.ParsedTrace|null;
   insights: Trace.Insights.Types.TraceInsightSets|null;
-  navigationId: string|null;
+  insightSetKey: string|null;
   activeCategory: InsightsCategories;
   activeInsight: ActiveInsight|null;
 }
@@ -31,7 +31,7 @@ export class SidebarSingleNavigation extends HTMLElement {
   #data: SidebarSingleNavigationData = {
     parsedTrace: null,
     insights: null,
-    navigationId: null,
+    insightSetKey: null,
     activeCategory: InsightsCategories.ALL,
     activeInsight: null,
   };
@@ -54,10 +54,10 @@ export class SidebarSingleNavigation extends HTMLElement {
 
   #onClickMetric(event: Trace.Types.Events.Event, insightComponentName: string): void {
     const el = this.shadowRoot?.querySelector(insightComponentName) as BaseInsight;
-    if (el && this.#data.navigationId) {
+    if (el && this.#data.insightSetKey) {
       this.dispatchEvent(new Insights.SidebarInsight.InsightActivated(
           el.internalName,
-          this.#data.navigationId,
+          this.#data.insightSetKey,
           el.createOverlays.bind(el),
           ));
     }
@@ -163,7 +163,7 @@ export class SidebarSingleNavigation extends HTMLElement {
 
   #renderInsights(
       insights: Trace.Insights.Types.TraceInsightSets|null,
-      navigationId: string,
+      insightSetKey: string,
       ): LitHtml.TemplateResult {
     // TODO(crbug.com/368135130): sort this in a smart way!
     const insightComponents = [
@@ -182,7 +182,7 @@ export class SidebarSingleNavigation extends HTMLElement {
       return LitHtml.html`<div>
         <${component.litTagName}
           .insights=${insights}
-          .navigationId=${navigationId}
+          .insightSetKey=${insightSetKey}
           .activeInsight=${this.#data.activeInsight}
           .activeCategory=${this.#data.activeCategory}>
         </${component.litTagName}>
@@ -195,9 +195,9 @@ export class SidebarSingleNavigation extends HTMLElement {
     const {
       parsedTrace,
       insights,
-      navigationId,
+      insightSetKey,
     } = this.#data;
-    if (!parsedTrace || !insights || !navigationId) {
+    if (!parsedTrace || !insights || !insightSetKey) {
       LitHtml.render(LitHtml.html``, this.#shadow, {host: this});
       return;
     }
@@ -205,8 +205,8 @@ export class SidebarSingleNavigation extends HTMLElement {
     // clang-format off
     LitHtml.render(LitHtml.html`
       <div class="navigation">
-        ${this.#renderMetrics(parsedTrace, navigationId)}
-        ${this.#renderInsights(insights, navigationId)}
+        ${this.#renderMetrics(parsedTrace, insightSetKey)}
+        ${this.#renderInsights(insights, insightSetKey)}
         </div>
       `, this.#shadow, {host: this});
     // clang-format on

@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../../../core/i18n/i18n.js';
-import type * as Trace from '../../../../models/trace/trace.js';
+import * as Trace from '../../../../models/trace/trace.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
@@ -22,24 +22,6 @@ const UIStrings = {
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/Viewport.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-
-export function getViewportInsight(insights: Trace.Insights.Types.TraceInsightSets|null, navigationId: string|null):
-    Trace.Insights.Types.InsightResults['Viewport']|null {
-  if (!insights || !navigationId) {
-    return null;
-  }
-
-  const insightsByNavigation = insights.get(navigationId);
-  if (!insightsByNavigation) {
-    return null;
-  }
-
-  const viewportInsight = insightsByNavigation.data.Viewport;
-  if (viewportInsight instanceof Error) {
-    return null;
-  }
-  return viewportInsight;
-}
 
 export class Viewport extends BaseInsight {
   static readonly litTagName = LitHtml.literal`devtools-performance-viewport`;
@@ -81,7 +63,7 @@ export class Viewport extends BaseInsight {
   }
 
   override render(): void {
-    const viewportInsight = getViewportInsight(this.data.insights, this.data.navigationId);
+    const viewportInsight = Trace.Insights.Common.getInsight('Viewport', this.data.insights, this.data.insightSetKey);
     const shouldShow = viewportInsight && viewportInsight.mobileOptimized === false;
 
     const matchesCategory = shouldRenderForCategory({

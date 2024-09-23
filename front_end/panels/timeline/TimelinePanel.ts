@@ -526,8 +526,8 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     });
 
     this.#sideBar.element.addEventListener(TimelineInsights.SidebarInsight.InsightActivated.eventName, event => {
-      const {name, navigationId, createOverlayFn} = event;
-      this.#setActiveInsight({name, navigationId, createOverlayFn});
+      const {name, insightSetKey, createOverlayFn} = event;
+      this.#setActiveInsight({name, insightSetKey, createOverlayFn});
     });
 
     this.#sideBar.element.addEventListener(TimelineInsights.SidebarInsight.InsightOverlayOverride.eventName, event => {

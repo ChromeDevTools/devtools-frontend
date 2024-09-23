@@ -14,6 +14,6 @@ export enum InsightsCategories {
 
 export interface ActiveInsight {
   name: string;
-  navigationId: string;
+  insightSetKey: string;
   createOverlayFn: (() => Overlays.Overlays.TimelineOverlay[]);
 }

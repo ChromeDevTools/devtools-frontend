@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
-import {createContextForNavigation, getFirstOrError, getInsight} from '../../../testing/InsightHelpers.js';
+import {createContextForNavigation, getFirstOrError, getInsightOrError} from '../../../testing/InsightHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as Trace from '../trace.js';
 import * as Types from '../types/types.js';
@@ -21,7 +21,7 @@ describeWithEnvironment('DocumentLatency', function() {
   it('reports savings for main document with redirects', async () => {
     const {data, insights} = await processTrace(this, 'lantern/redirect/trace.json.gz');
     const insight =
-        getInsight('DocumentLatency', insights, getFirstOrError(data.Meta.navigationsByNavigationId.values()));
+        getInsightOrError('DocumentLatency', insights, getFirstOrError(data.Meta.navigationsByNavigationId.values()));
     assert.strictEqual(insight.data?.redirectDuration, 1779);
     assert.deepEqual(insight.metricSavings, {FCP: 1779, LCP: 1779});
   });
@@ -29,7 +29,7 @@ describeWithEnvironment('DocumentLatency', function() {
   it('reports no savings for server with low response time', async () => {
     const {data, insights} = await processTrace(this, 'lantern/paul/trace.json.gz');
     const insight =
-        getInsight('DocumentLatency', insights, getFirstOrError(data.Meta.navigationsByNavigationId.values()));
+        getInsightOrError('DocumentLatency', insights, getFirstOrError(data.Meta.navigationsByNavigationId.values()));
     assert.strictEqual(insight.data?.serverResponseTime, 43);
     assert(!insight.data?.serverResponseTooSlow);
     assert.deepEqual(insight.metricSavings, {FCP: 0, LCP: 0});
@@ -67,7 +67,7 @@ describeWithEnvironment('DocumentLatency', function() {
   it('reports no compression savings for compressed text', async () => {
     const {data, insights} = await processTrace(this, 'lantern/paul/trace.json.gz');
     const insight =
-        getInsight('DocumentLatency', insights, getFirstOrError(data.Meta.navigationsByNavigationId.values()));
+        getInsightOrError('DocumentLatency', insights, getFirstOrError(data.Meta.navigationsByNavigationId.values()));
     assert.strictEqual(insight.data?.uncompressedResponseBytes, 0);
     assert.deepEqual(insight.metricSavings, {FCP: 0, LCP: 0});
   });

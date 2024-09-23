@@ -39,11 +39,12 @@ export class SidebarInsightsTab extends HTMLElement {
   #activeInsight: ActiveInsight|null = null;
   #selectedCategory: InsightsCategories = InsightsCategories.ALL;
   /**
-   * When a trace has multiple navigations, we show an accordion with each
-   * navigation in. You can only have one of these open at any time, and we
-   * track it via this ID.
+   * When a trace has sets of insights, we show an accordion with each
+   * set within. A set can be specific to a single navigation, or include the
+   * beginning of the trace up to the first navigation.
+   * You can only have one of these open at any time, and we track it via this ID.
    */
-  #activeNavigationId: string|null = null;
+  #insightSetKey: string|null = null;
 
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [styles];
@@ -54,7 +55,7 @@ export class SidebarInsightsTab extends HTMLElement {
       return;
     }
     this.#parsedTrace = data;
-    this.#activeNavigationId = null;
+    this.#insightSetKey = null;
 
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
@@ -66,22 +67,22 @@ export class SidebarInsightsTab extends HTMLElement {
 
     this.#insights = data;
     this.#insightSets = [];
-    this.#activeNavigationId = null;
+    this.#insightSetKey = null;
     if (!this.#insights || !this.#parsedTrace) {
       return;
     }
 
-    for (const insightSets of this.#insights.values()) {
+    for (const insightSet of this.#insights.values()) {
       // TODO(crbug.com/366049346): move "shouldShow" logic to insight result (rather than the component),
       // and if none are visible, don't push the insight set.
       this.#insightSets.push({
-        id: insightSets.id,
-        label: insightSets.label,
+        id: insightSet.id,
+        label: insightSet.label,
       });
     }
 
     // TODO(crbug.com/366049346): skip the first insight set if trivial.
-    this.#activeNavigationId = this.#insightSets[0]?.id ?? null;
+    this.#insightSetKey = this.#insightSets[0]?.id ?? null;
 
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
@@ -103,10 +104,10 @@ export class SidebarInsightsTab extends HTMLElement {
 
   #navigationClicked(id: string): void {
     // New navigation clicked. Update the active insight.
-    if (id !== this.#activeInsight?.navigationId) {
+    if (id !== this.#activeInsight?.insightSetKey) {
       this.dispatchEvent(new Insights.SidebarInsight.InsightDeactivated());
     }
-    this.#activeNavigationId = id;
+    this.#insightSetKey = id;
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
 
@@ -147,7 +148,7 @@ export class SidebarInsightsTab extends HTMLElement {
           const data = {
             parsedTrace: this.#parsedTrace,
             insights: this.#insights,
-            navigationId: id, // TODO(crbug.com/366049346): rename `navigationId`.
+            insightSetKey: id,
             activeCategory: this.#selectedCategory,
             activeInsight: this.#activeInsight,
           };
@@ -160,7 +161,7 @@ export class SidebarInsightsTab extends HTMLElement {
 
           if (hasMultipleInsightSets) {
             return LitHtml.html`<details
-              ?open=${id === this.#activeNavigationId}
+              ?open=${id === this.#insightSetKey}
               class="navigation-wrapper"
             >
               <summary

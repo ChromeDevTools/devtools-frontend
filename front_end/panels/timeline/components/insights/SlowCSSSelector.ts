@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../../../core/common/common.js';
-import type * as Trace from '../../../../models/trace/trace.js';
+import * as Trace from '../../../../models/trace/trace.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import type * as Components from '../../overlays/components/components.js';
 import type * as Overlays from '../../overlays/overlays.js';
@@ -20,30 +20,11 @@ export class SlowCSSSelector extends BaseInsight {
   override userVisibleTitle: string = 'Slow CSS Selectors';
   #slowCSSSelector: Trace.Insights.InsightRunners.SlowCSSSelector.SlowCSSSelectorInsightResult|null = null;
 
-  getSlowCSSSelectorData(insights: Trace.Insights.Types.TraceInsightSets|null, navigationId: string|null):
-      Trace.Insights.InsightRunners.SlowCSSSelector.SlowCSSSelectorInsightResult|null {
-    if (!insights || !navigationId) {
-      return null;
-    }
-
-    const insightsByNavigation = insights.get(navigationId);
-    if (!insightsByNavigation) {
-      return null;
-    }
-
-    const slowCSSSelector = insightsByNavigation.data.SlowCSSSelector;
-    if (slowCSSSelector instanceof Error) {
-      return null;
-    }
-
-    return slowCSSSelector;
-  }
-
   override createOverlays(): Overlays.Overlays.TimelineOverlay[] {
-    if (!this.data.insights || !this.data.navigationId) {
+    if (!this.data.insights || !this.data.insightSetKey) {
       return [];
     }
-    const {navigationId, insights} = this.data;
+    const {insightSetKey: navigationId, insights} = this.data;
 
     const insightsByNavigation = insights.get(navigationId);
     if (!insightsByNavigation) {
@@ -112,7 +93,7 @@ export class SlowCSSSelector extends BaseInsight {
     const selectorStatsFeatureEnabled =
         Common.Settings.Settings.instance().createSetting('timeline-capture-selector-stats', false);
     this.#slowCSSSelector = selectorStatsFeatureEnabled.get() ?
-        this.getSlowCSSSelectorData(this.data.insights, this.data.navigationId) :
+        Trace.Insights.Common.getInsight('SlowCSSSelector', this.data.insights, this.data.insightSetKey) :
         null;
     return this.#slowCSSSelector !== null;
   }

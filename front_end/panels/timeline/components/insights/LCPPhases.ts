@@ -102,10 +102,10 @@ export class LCPPhases extends BaseInsight {
   }
 
   override createOverlays(): Overlays.Overlays.TimelineOverlay[] {
-    if (!this.data.insights || !this.data.navigationId) {
+    if (!this.data.insights || !this.data.insightSetKey) {
       return [];
     }
-    const {navigationId, insights} = this.data;
+    const {insightSetKey: navigationId, insights} = this.data;
 
     const insightsByNavigation = insights.get(navigationId);
     if (!insightsByNavigation) {
@@ -223,7 +223,7 @@ export class LCPPhases extends BaseInsight {
   }
 
   override render(): void {
-    const phaseData = this.#getPhaseData(this.data.insights, this.data.navigationId);
+    const phaseData = this.#getPhaseData(this.data.insights, this.data.insightSetKey);
     const matchesCategory = shouldRenderForCategory({
       activeCategory: this.data.activeCategory,
       insightCategory: this.insightCategory,

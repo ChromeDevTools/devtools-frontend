@@ -6,7 +6,27 @@ import type * as Handlers from '../handlers/handlers.js';
 import * as Helpers from '../helpers/helpers.js';
 import type * as Types from '../types/types.js';
 
-import {type InsightSetContextWithNavigation} from './types.js';
+import {type InsightResults, type InsightSetContextWithNavigation, type TraceInsightSets} from './types.js';
+
+export function getInsight<InsightName extends keyof InsightResults>(
+    insightName: InsightName, insights: TraceInsightSets|null, key: string|null): InsightResults[InsightName]|null {
+  if (!insights || !key) {
+    return null;
+  }
+
+  const insightSets = insights.get(key);
+  if (!insightSets) {
+    return null;
+  }
+
+  const insight = insightSets.data[insightName];
+  if (insight instanceof Error) {
+    return null;
+  }
+
+  // For some reason typescript won't narrow the type by removing Error, so do it manually.
+  return insight as InsightResults[InsightName];
+}
 
 /**
  * Finds a network request given a navigation context and URL.

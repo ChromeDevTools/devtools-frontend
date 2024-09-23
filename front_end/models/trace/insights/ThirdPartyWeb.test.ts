@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
-import {getFirstOrError, getInsight} from '../../../testing/InsightHelpers.js';
+import {getFirstOrError, getInsightOrError} from '../../../testing/InsightHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 
 export async function processTrace(testContext: Mocha.Suite|Mocha.Context|null, traceFile: string) {
@@ -20,7 +20,7 @@ describeWithEnvironment('ThirdPartyWeb', function() {
     const {data, insights} = await processTrace(this, 'load-simple.json.gz');
     assert.strictEqual(insights.size, 2);
     const insight =
-        getInsight('ThirdPartyWeb', insights, getFirstOrError(data.Meta.navigationsByNavigationId.values()));
+        getInsightOrError('ThirdPartyWeb', insights, getFirstOrError(data.Meta.navigationsByNavigationId.values()));
 
     const entityByRequestResult = [...insight.entityByRequest.entries()].map(([request, entity]) => {
       return [request.args.data.url, entity.name];
@@ -72,7 +72,7 @@ describeWithEnvironment('ThirdPartyWeb', function() {
     const {data, insights} = await processTrace(this, 'lantern/paul/trace.json.gz');
     assert.strictEqual(insights.size, 1);
     const insight =
-        getInsight('ThirdPartyWeb', insights, getFirstOrError(data.Meta.navigationsByNavigationId.values()));
+        getInsightOrError('ThirdPartyWeb', insights, getFirstOrError(data.Meta.navigationsByNavigationId.values()));
 
     const entityNames = [...insight.entityByRequest.values()].map(entity => entity.name);
     assert.deepEqual([...new Set(entityNames)], [

@@ -5,6 +5,7 @@
 import * as Common from '../../../core/common/common.js';
 import * as Root from '../../../core/root/root.js';
 import type * as Trace from '../../../models/trace/trace.js';
+import * as Adorners from '../../../ui/components/adorners/adorners.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import type * as Overlays from '../overlays/overlays.js';
 
@@ -63,6 +64,8 @@ export class SidebarWidget extends UI.Widget.VBox {
   #insightsView = new InsightsView();
   #annotationsView = new AnnotationsView();
 
+  #annotationCount = 0;
+
   /**
    * Track if the user has opened the sidebar before. We do this so that the
    * very first time they record/import a trace after the sidebar ships, we can
@@ -96,6 +99,7 @@ export class SidebarWidget extends UI.Widget.VBox {
       this.#tabbedPane.appendTab(
           'annotations', 'Annotations', this.#annotationsView, undefined, undefined, false, false, 1,
           'timeline.annotations-tab');
+      this.#updateAnnotationsCountBadge();
     }
     // TODO: automatically select the right tab depending on what content is
     // available to us.
@@ -105,6 +109,23 @@ export class SidebarWidget extends UI.Widget.VBox {
       updatedAnnotations: Trace.Types.File.Annotation[],
       annotationEntryToColorMap: Map<Trace.Types.Events.Event, string>): void {
     this.#annotationsView.setAnnotations(updatedAnnotations, annotationEntryToColorMap);
+    this.#annotationCount = updatedAnnotations.length;
+    this.#updateAnnotationsCountBadge();
+  }
+
+  #updateAnnotationsCountBadge(): void {
+    let countAdorner: Adorners.Adorner.Adorner|null = null;
+    if (this.#annotationCount > 0) {
+      countAdorner = new Adorners.Adorner.Adorner();
+      const countSpan = document.createElement('span');
+      countSpan.textContent = this.#annotationCount.toString();
+      countAdorner.data = {
+        name: 'countWrapper',
+        content: countSpan,
+      };
+      countAdorner.classList.add('annotations-count');
+    }
+    this.#tabbedPane.setSuffixElement('annotations', countAdorner);
   }
 
   setParsedTrace(parsedTrace: Trace.Handlers.Types.ParsedTrace|null): void {

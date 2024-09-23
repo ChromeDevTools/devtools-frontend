@@ -123,6 +123,11 @@
   margin-left: -1px;
 }
 
+.tabbed-pane-header-tab-suffix-element {
+  width: 20px;
+  padding: 4px;
+}
+
 .tabbed-pane-header-tab {
   float: left;
   padding: 2px 0.8em;

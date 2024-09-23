@@ -259,17 +259,6 @@ export function chartForEntry(entry: OverlayEntry): EntryChartLocation {
   return 'main';
 }
 
-export function isTimeRangeLabel(annotation: TimelineOverlay): annotation is TimeRangeLabel {
-  return annotation.type === 'TIME_RANGE';
-}
-
-export function isEntriesLink(annotation: TimelineOverlay): annotation is EntriesLink {
-  return annotation.type === 'ENTRIES_LINK';
-}
-export function isEntryLabel(annotation: TimelineOverlay): annotation is EntryLabel {
-  return annotation.type === 'ENTRY_LABEL';
-}
-
 /**
  * Used to highlight with a red-candy stripe a time range. It takes an entry
  * because this entry is the row that will be used to place the candy stripe,
@@ -1146,8 +1135,8 @@ export class Overlays extends EventTarget {
 
     // Position the start of label overlay at the start of the entry + length of connector + legth of the label element
     element.style.top = `${topOffset}px`;
-    // Position the start of the entry label overlay in the the middle of the entry.
-    element.style.left = `${x + entryWidth / 2}px`;
+    element.style.left = `${x}px`;
+    element.style.width = `${entryWidth}px`;
 
     return {height: entryHeight, width: entryWidth, cutOffEntryHeight, chart: chartName};
   }

@@ -5,11 +5,6 @@
  */
 
 .label-parts-wrapper {
-  /* Move element by half of its own width to position so now it is covering the whole entry.
-    The reason we cannot directly place it in the middle of the entry is that the width of the whole entry label overlay
-    depends of which element is wider - the label or the entry it belongs to. Therefore we cannot make sure the
-    label won't be positioned in front of the entry box.  */
-  transform: translate(-50%);
   display: flex;
   flex-direction: column;
   align-items: center;

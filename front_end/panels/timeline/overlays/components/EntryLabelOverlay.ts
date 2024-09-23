@@ -276,7 +276,6 @@ export class EntryLabelOverlay extends HTMLElement {
       // Move the label down from above the entry to below it. The label is positioned by default quite far above the entry, hence why we add:
       // 1. the height of the entry + of the label (inc its padding)
       // 2. the height of the connector (*2), so we have room to draw it
-      // 3. another 4 px, because it looks nicer than if we don't have that :)
       const verticalTransform = this.#entryLabelParams.height - this.#entryLabelParams.cutOffEntryHeight +
           EntryLabelOverlay.LABEL_HEIGHT + EntryLabelOverlay.LABEL_PADDING * 2 +
           EntryLabelOverlay.LABEL_CONNECTOR_HEIGHT * 2;

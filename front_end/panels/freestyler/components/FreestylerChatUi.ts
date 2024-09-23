@@ -181,6 +181,7 @@ function getInputPlaceholderString(
           return i18nString(UIStringsTemp.inputPlaceholderForDrJonesNetworkAgent);
       }
     case Host.AidaClient.AidaAccessPreconditions.NO_ACCOUNT_EMAIL:
+    case Host.AidaClient.AidaAccessPreconditions.SYNC_IS_PAUSED:
       return i18nString(UIStringsTemp.notLoggedIn);
     case Host.AidaClient.AidaAccessPreconditions.NO_INTERNET:
       return i18nString(UIStringsTemp.offline);

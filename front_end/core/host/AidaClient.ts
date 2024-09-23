@@ -130,6 +130,9 @@ export const enum AidaAccessPreconditions {
   AVAILABLE = 'available',
   NO_ACCOUNT_EMAIL = 'no-account-email',
   NO_INTERNET = 'no-internet',
+  // This is the state (mostly enterprise) users are in, when they are automatically logged out from
+  // Chrome after a certain time period. For making AIDA requests, they need to log in again.
+  SYNC_IS_PAUSED = 'sync-is-paused',
 }
 
 export const CLIENT_NAME = 'CHROME_DEVTOOLS';
@@ -180,6 +183,10 @@ export class AidaClient {
         resolve => InspectorFrontendHostInstance.getSyncInformation(syncInfo => resolve(syncInfo)));
     if (!syncInfo.accountEmail) {
       return AidaAccessPreconditions.NO_ACCOUNT_EMAIL;
+    }
+
+    if (syncInfo.isSyncPaused) {
+      return AidaAccessPreconditions.SYNC_IS_PAUSED;
     }
 
     return AidaAccessPreconditions.AVAILABLE;

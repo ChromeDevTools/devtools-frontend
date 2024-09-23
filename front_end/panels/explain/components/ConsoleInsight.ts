@@ -198,6 +198,7 @@ const enum State {
   CONSENT_ONBOARDING = 'consent-onboarding',
   CONSENT_REMINDER = 'consent-reminder',
   NOT_LOGGED_IN = 'not-logged-in',
+  SYNC_IS_PAUSED = 'sync-is-paused',
   OFFLINE = 'offline',
 }
 
@@ -229,6 +230,8 @@ type StateData = {
   page: ConsentOnboardingPage,
 }|{
   type: State.NOT_LOGGED_IN,
+}|{
+  type: State.SYNC_IS_PAUSED,
 }|{
   type: State.OFFLINE,
 };
@@ -293,6 +296,11 @@ export class ConsoleInsight extends HTMLElement {
       case Host.AidaClient.AidaAccessPreconditions.NO_ACCOUNT_EMAIL:
         this.#state = {
           type: State.NOT_LOGGED_IN,
+        };
+        break;
+      case Host.AidaClient.AidaAccessPreconditions.SYNC_IS_PAUSED:
+        this.#state = {
+          type: State.SYNC_IS_PAUSED,
         };
         break;
       case Host.AidaClient.AidaAccessPreconditions.NO_INTERNET:
@@ -918,6 +926,7 @@ export class ConsoleInsight extends HTMLElement {
         }
       }
       case State.NOT_LOGGED_IN:
+      case State.SYNC_IS_PAUSED:
         return html`
           <main jslog=${jslog}>
             <div class="error">${i18nString(UIStrings.notLoggedIn)}</div>
@@ -967,6 +976,7 @@ export class ConsoleInsight extends HTMLElement {
           </div>
         </footer>`;
       case State.NOT_LOGGED_IN:
+      case State.SYNC_IS_PAUSED:
         return html`<footer jslog=${VisualLogging.section('footer')}>
         <div class="filler"></div>
         <div>
@@ -1118,6 +1128,7 @@ export class ConsoleInsight extends HTMLElement {
   #getHeader(): string {
     switch (this.#state.type) {
       case State.NOT_LOGGED_IN:
+      case State.SYNC_IS_PAUSED:
         return i18nString(UIStrings.signInToUse);
       case State.OFFLINE:
         return i18nString(UIStrings.offlineHeader);

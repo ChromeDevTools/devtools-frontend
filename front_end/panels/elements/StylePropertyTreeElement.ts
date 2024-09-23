@@ -38,6 +38,8 @@ import {
   ColorMatcher,
   ColorMixMatch,
   ColorMixMatcher,
+  type CSSWideKeywordMatch,
+  CSSWideKeywordMatcher,
   type FontMatch,
   FontMatcher,
   type GridTemplateMatch,
@@ -151,6 +153,43 @@ interface StylePropertyTreeElementParams {
   newProperty: boolean;
 }
 
+export class CSSWideKeywordRenderer implements MatchRenderer<CSSWideKeywordMatch> {
+  #treeElement: StylePropertyTreeElement;
+  constructor(treeElement: StylePropertyTreeElement) {
+    this.#treeElement = treeElement;
+  }
+
+  matcher(): SDK.CSSPropertyParser.Matcher<CSSWideKeywordMatch> {
+    return new CSSWideKeywordMatcher(this.#treeElement.property, this.#treeElement.matchedStyles());
+  }
+
+  render(match: CSSWideKeywordMatch, context: RenderingContext): Node[] {
+    const resolvedProperty = match.resolveProperty();
+    if (!resolvedProperty) {
+      return [document.createTextNode(match.text)];
+    }
+
+    const swatch = new InlineEditor.LinkSwatch.LinkSwatch();
+    UI.UIUtils.createTextChild(swatch, match.text);
+    swatch.data = {
+      text: match.text,
+      isDefined: Boolean(resolvedProperty),
+      onLinkActivate: () => resolvedProperty && this.#treeElement.parentPane().jumpToDeclaration(resolvedProperty),
+      jslogContext: 'css-wide-keyword-link',
+    };
+
+    if (SDK.CSSMetadata.cssMetadata().isColorAwareProperty(resolvedProperty.name) ||
+        SDK.CSSMetadata.cssMetadata().isCustomProperty(resolvedProperty.name)) {
+      const color = Common.Color.parse(context.matchedResult.getComputedText(match.node));
+      if (color) {
+        return [new ColorRenderer(this.#treeElement).renderColorSwatch(color, swatch)];
+      }
+    }
+
+    return [swatch];
+  }
+}
+
 export class VariableRenderer implements MatchRenderer<SDK.CSSPropertyParser.VariableMatch> {
   readonly #treeElement: StylePropertyTreeElement;
   readonly #style: SDK.CSSStyleDeclaration.CSSStyleDeclaration;
@@ -243,17 +282,17 @@ export class VariableRenderer implements MatchRenderer<SDK.CSSPropertyParser.Var
     return this.#treeElement.matchedStyles();
   }
 
-  #handleVarDefinitionActivate(variable: string|SDK.CSSProperty.CSSProperty|
-                               SDK.CSSMatchedStyles.CSSRegisteredProperty): void {
+  #handleVarDefinitionActivate(variable: string|SDK.CSSMatchedStyles.CSSValueSource): void {
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.CustomPropertyLinkClicked);
     Host.userMetrics.swatchActivated(Host.UserMetrics.SwatchType.VAR_LINK);
-    if (variable instanceof SDK.CSSProperty.CSSProperty) {
-      this.#pane.revealProperty(variable);
-    } else if (variable instanceof SDK.CSSMatchedStyles.CSSRegisteredProperty) {
-      this.#pane.jumpToProperty('initial-value', variable.propertyName(), REGISTERED_PROPERTY_SECTION_NAME);
-    } else {
+
+    if (typeof variable === 'string') {
       this.#pane.jumpToProperty(variable) ||
           this.#pane.jumpToProperty('initial-value', variable, REGISTERED_PROPERTY_SECTION_NAME);
+    } else if (variable.declaration instanceof SDK.CSSProperty.CSSProperty) {
+      this.#pane.revealProperty(variable.declaration);
+    } else if (variable.declaration instanceof SDK.CSSMatchedStyles.CSSRegisteredProperty) {
+      this.#pane.jumpToProperty('initial-value', variable.name, REGISTERED_PROPERTY_SECTION_NAME);
     }
   }
 }
@@ -1608,12 +1647,13 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
           new BezierRenderer(this),
           new StringRenderer(),
           new ShadowRenderer(this),
-          new FontRenderer(this),
+          new CSSWideKeywordRenderer(this),
           new LightDarkColorRenderer(this),
           new GridTemplateRenderer(),
           new LinearGradientRenderer(),
           new AnchorFunctionRenderer(this),
           new PositionAnchorRenderer(this),
+          new FontRenderer(this),
         ] :
         [];
 

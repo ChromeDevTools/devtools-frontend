@@ -584,6 +584,7 @@ export class AnchorFunctionMatch implements Match {
 
 // clang-format off
 export class AnchorFunctionMatcher extends matcherBase(AnchorFunctionMatch) {
+  // clang-format on
   anchorFunction(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): string|null {
     if (node.name !== 'CallExpression') {
       return null;
@@ -624,7 +625,6 @@ export class AnchorFunctionMatcher extends matcherBase(AnchorFunctionMatch) {
     return new AnchorFunctionMatch(matching.ast.text(node), node, calleeText);
   }
 }
-// clang-format on
 
 // For linking `position-anchor: --anchor-name`.
 export class PositionAnchorMatch implements Match {
@@ -634,6 +634,7 @@ export class PositionAnchorMatch implements Match {
 
 // clang-format off
 export class PositionAnchorMatcher extends matcherBase(PositionAnchorMatch) {
+  // clang-format on
   override accepts(propertyName: string): boolean {
     return propertyName === 'position-anchor';
   }
@@ -647,4 +648,44 @@ export class PositionAnchorMatcher extends matcherBase(PositionAnchorMatch) {
     return new PositionAnchorMatch(dashedIdentifier, matching, node);
   }
 }
-// clang-format on
+
+export class CSSWideKeywordMatch implements Match {
+  constructor(
+      readonly text: SDK.CSSMetadata.CSSWideKeyword, readonly node: CodeMirror.SyntaxNode,
+      readonly property: SDK.CSSProperty.CSSProperty, readonly matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles) {
+  }
+  resolveProperty(): SDK.CSSMatchedStyles.CSSValueSource|null {
+    return this.matchedStyles.resolveGlobalKeyword(this.property, this.text);
+  }
+  computedText?(): string|null {
+    return this.resolveProperty()?.value ?? null;
+  }
+}
+
+// clang-format off
+export class CSSWideKeywordMatcher extends matcherBase(CSSWideKeywordMatch) {
+  // clang-format on
+  constructor(
+      readonly property: SDK.CSSProperty.CSSProperty, readonly matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles) {
+    super();
+  }
+
+  override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): Match|null {
+    const parentNode = node.parent;
+    if (node.name !== 'ValueName' || parentNode?.name !== 'Declaration') {
+      return null;
+    }
+
+    if (Array.from(ASTUtils.stripComments(ASTUtils.siblings(ASTUtils.declValue(parentNode))))
+            .some(child => !ASTUtils.equals(child, node))) {
+      return null;
+    }
+
+    const text = matching.ast.text(node);
+    if (!SDK.CSSMetadata.CSSMetadata.isCSSWideKeyword(text)) {
+      return null;
+    }
+
+    return new CSSWideKeywordMatch(text, node, this.property, this.matchedStyles);
+  }
+}

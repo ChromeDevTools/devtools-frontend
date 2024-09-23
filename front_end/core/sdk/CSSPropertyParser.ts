@@ -489,6 +489,10 @@ export namespace ASTUtils {
 
     return split(args);
   }
+
+  export function equals(a: CodeMirror.SyntaxNode, b: CodeMirror.SyntaxNode): boolean {
+    return a.name === b.name && a.from === b.from && a.to === b.to;
+  }
 }
 
 export class VariableMatch implements Match {

@@ -5,9 +5,9 @@
 import * as Protocol from '../../generated/protocol.js';
 import * as Platform from '../platform/platform.js';
 
-import {cssMetadata} from './CSSMetadata.js';
+import {CSSMetadata, cssMetadata, CSSWideKeyword} from './CSSMetadata.js';
 import {type CSSModel} from './CSSModel.js';
-import {type CSSProperty} from './CSSProperty.js';
+import {CSSProperty} from './CSSProperty.js';
 import * as PropertyParser from './CSSPropertyParser.js';
 import {
   CSSFontPaletteValuesRule,
@@ -703,13 +703,18 @@ export class CSSMatchedStyles {
   }
 
   availableCSSVariables(style: CSSStyleDeclaration): string[] {
-    const domCascade = this.#styleToDOMCascade.get(style) || null;
+    const domCascade = this.#styleToDOMCascade.get(style);
     return domCascade ? domCascade.findAvailableCSSVariables(style) : [];
   }
 
   computeCSSVariable(style: CSSStyleDeclaration, variableName: string): CSSVariableValue|null {
-    const domCascade = this.#styleToDOMCascade.get(style) || null;
+    const domCascade = this.#styleToDOMCascade.get(style);
     return domCascade ? domCascade.computeCSSVariable(style, variableName) : null;
+  }
+
+  resolveGlobalKeyword(property: CSSProperty, keyword: CSSWideKeyword): CSSValueSource|null {
+    const resolved = this.#styleToDOMCascade.get(property.ownerStyle)?.resolveGlobalKeyword(property, keyword);
+    return resolved ? new CSSValueSource(resolved) : null;
   }
 
   isInherited(style: CSSStyleDeclaration): boolean {
@@ -826,10 +831,31 @@ class NodeCascade {
   }
 }
 
+function isRegular(declaration: CSSProperty|CSSRegisteredProperty): declaration is CSSProperty {
+  return 'ownerStyle' in declaration;
+}
+export class CSSValueSource {
+  readonly declaration: CSSProperty|CSSRegisteredProperty;
+  constructor(declaration: CSSProperty|CSSRegisteredProperty) {
+    this.declaration = declaration;
+  }
+
+  get value(): string|null {
+    return isRegular(this.declaration) ? this.declaration.value : this.declaration.initialValue();
+  }
+  get style(): CSSStyleDeclaration {
+    return isRegular(this.declaration) ? this.declaration.ownerStyle : this.declaration.style();
+  }
+  get name(): string {
+    return isRegular(this.declaration) ? this.declaration.name : this.declaration.propertyName();
+  }
+}
+
 export interface CSSVariableValue {
   value: string;
-  declaration: CSSProperty|CSSRegisteredProperty;
+  declaration: CSSValueSource;
 }
+
 class SCCRecordEntry {
   private rootDiscoveryTime: number;
   get isRootEntry(): boolean {
@@ -879,6 +905,13 @@ class SCCRecord {
   }
 }
 
+function* forEach<T>(array: T[], startAfter?: T): Generator<T> {
+  const startIdx = startAfter !== undefined ? array.indexOf(startAfter) + 1 : 0;
+  for (let i = startIdx; i < array.length; ++i) {
+    yield array[i];
+  }
+}
+
 class DOMInheritanceCascade {
   readonly #nodeCascades: NodeCascade[];
   readonly #propertiesState: Map<CSSProperty, PropertyState>;
@@ -916,6 +949,91 @@ class DOMInheritanceCascade {
     return Array.from(availableCSSVariables.keys());
   }
 
+  #findPropertyInPreviousStyle(property: CSSProperty, filter: (property: CSSProperty) => boolean): CSSProperty|null {
+    const cascade = this.#styleToNodeCascade.get(property.ownerStyle);
+    if (!cascade) {
+      return null;
+    }
+
+    for (const style of forEach(cascade.styles, property.ownerStyle)) {
+      const candidate =
+          style.allProperties().findLast(candidate => candidate.name === property.name && filter(candidate));
+      if (candidate) {
+        return candidate;
+      }
+    }
+    return null;
+  }
+
+  #findPropertyInParentCascade(property: CSSProperty): CSSProperty|null {
+    const nodeCascade = this.#styleToNodeCascade.get(property.ownerStyle);
+    if (!nodeCascade) {
+      return null;
+    }
+    for (const cascade of forEach(this.#nodeCascades, nodeCascade)) {
+      for (const style of cascade.styles) {
+        const inheritedProperty =
+            style.allProperties().findLast(inheritedProperty => inheritedProperty.name === property.name);
+        if (inheritedProperty) {
+          return inheritedProperty;
+        }
+      }
+    }
+    return null;
+  }
+
+  #findPropertyInParentCascadeIfInherited(property: CSSProperty): CSSProperty|null {
+    if (!cssMetadata().isPropertyInherited(property.name) ||
+        !(this.#findCustomPropertyRegistration(property)?.inherits() ?? true)) {
+      return null;
+    }
+    return this.#findPropertyInParentCascade(property);
+  }
+
+  #findCustomPropertyRegistration(property: CSSProperty): CSSRegisteredProperty|null {
+    const registration = this.#registeredProperties.find(registration => registration.propertyName() === property.name);
+    return registration ? registration : null;
+  }
+
+  resolveGlobalKeyword(property: CSSProperty, keyword: CSSWideKeyword): null|CSSProperty|CSSRegisteredProperty {
+    const isPreviousLayer = (other: CSSProperty): boolean => {
+      // If there's no parent rule on then it isn't layered and is thus not in a previous one.
+      if (!(other.ownerStyle.parentRule instanceof CSSStyleRule)) {
+        return false;
+      }
+      // Element-attached style -> author origin counts as a previous layer transition for revert-layer.
+      if (property.ownerStyle.type === Type.Inline) {
+        return true;
+      }
+      // Compare layers
+      if (property.ownerStyle.parentRule instanceof CSSStyleRule &&
+          other.ownerStyle.parentRule?.origin === Protocol.CSS.StyleSheetOrigin.Regular) {
+        return JSON.stringify(other.ownerStyle.parentRule.layers) !==
+            JSON.stringify(property.ownerStyle.parentRule.layers);
+      }
+      return false;
+    };
+
+    switch (keyword) {
+      case CSSWideKeyword.INITIAL:
+        return this.#findCustomPropertyRegistration(property);
+      case CSSWideKeyword.INHERIT:
+        return this.#findPropertyInParentCascade(property) ?? this.#findCustomPropertyRegistration(property);
+      case CSSWideKeyword.REVERT:
+        return this.#findPropertyInPreviousStyle(
+                   property,
+                   other => other.ownerStyle.parentRule !== null &&
+                       other.ownerStyle.parentRule.origin !==
+                           (property.ownerStyle.parentRule?.origin ?? Protocol.CSS.StyleSheetOrigin.Regular)) ??
+            this.resolveGlobalKeyword(property, CSSWideKeyword.UNSET);
+      case CSSWideKeyword.REVERT_LAYER:
+        return this.#findPropertyInPreviousStyle(property, isPreviousLayer) ??
+            this.resolveGlobalKeyword(property, CSSWideKeyword.REVERT);
+      case CSSWideKeyword.UNSET:
+        return this.#findPropertyInParentCascadeIfInherited(property) ?? this.#findCustomPropertyRegistration(property);
+    }
+  }
+
   computeCSSVariable(style: CSSStyleDeclaration, variableName: string): CSSVariableValue|null {
     const nodeCascade = this.#styleToNodeCascade.get(style);
     if (!nodeCascade) {
@@ -937,9 +1055,24 @@ class DOMInheritanceCascade {
       return computedCSSVariables.get(variableName) || null;
     }
 
-    const definedValue = availableCSSVariables.get(variableName);
+    let definedValue = availableCSSVariables.get(variableName);
     if (definedValue === undefined || definedValue === null) {
       return null;
+    }
+
+    if (definedValue.declaration.declaration instanceof CSSProperty && definedValue.declaration.value &&
+        CSSMetadata.isCSSWideKeyword(definedValue.declaration.value)) {
+      const resolvedProperty =
+          this.resolveGlobalKeyword(definedValue.declaration.declaration, definedValue.declaration.value);
+      if (!resolvedProperty) {
+        return definedValue;
+      }
+      const declaration = new CSSValueSource(resolvedProperty);
+      const {value} = declaration;
+      if (!value) {
+        return definedValue;
+      }
+      definedValue = {declaration, value};
     }
 
     const ast = PropertyParser.tokenizeDeclaration(`--${variableName}`, definedValue.value);
@@ -959,8 +1092,7 @@ class DOMInheritanceCascade {
 
     const matching = PropertyParser.BottomUpTreeMatching.walk(
         ast, [new PropertyParser.VariableMatcher((match: PropertyParser.VariableMatch) => {
-          const parentStyle = 'ownerStyle' in definedValue.declaration ? definedValue.declaration.ownerStyle :
-                                                                         definedValue.declaration.style();
+          const parentStyle = definedValue.declaration.style;
           const nodeCascade = this.#styleToNodeCascade.get(parentStyle);
           if (!nodeCascade) {
             return null;
@@ -1087,7 +1219,8 @@ class DOMInheritanceCascade {
     for (const rule of this.#registeredProperties) {
       const initialValue = rule.initialValue();
       accumulatedCSSVariables.set(
-          rule.propertyName(), initialValue !== null ? {value: initialValue, declaration: rule} : null);
+          rule.propertyName(),
+          initialValue !== null ? {value: initialValue, declaration: new CSSValueSource(rule)} : null);
     }
     for (let i = this.#nodeCascades.length - 1; i >= 0; --i) {
       const nodeCascade = this.#nodeCascades[i];
@@ -1096,7 +1229,7 @@ class DOMInheritanceCascade {
         const propertyName = (entry[0] as string);
         const property = (entry[1] as CSSProperty);
         if (propertyName.startsWith('--')) {
-          accumulatedCSSVariables.set(propertyName, {value: property.value, declaration: property});
+          accumulatedCSSVariables.set(propertyName, {value: property.value, declaration: new CSSValueSource(property)});
           variableNames.push(propertyName);
         }
       }

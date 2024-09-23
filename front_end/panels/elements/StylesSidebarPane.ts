@@ -518,6 +518,14 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     return this.decorator.findAndHighlightPropertyName(propertyName, sectionName, blockName);
   }
 
+  jumpToDeclaration(valueSource: SDK.CSSMatchedStyles.CSSValueSource): void {
+    if (valueSource.declaration instanceof SDK.CSSProperty.CSSProperty) {
+      this.revealProperty(valueSource.declaration);
+    } else {
+      this.jumpToProperty('initial-value', valueSource.name, REGISTERED_PROPERTY_SECTION_NAME);
+    }
+  }
+
   jumpToSection(sectionName: string, blockName: string): void {
     this.decorator.findAndHighlightSection(sectionName, blockName);
   }

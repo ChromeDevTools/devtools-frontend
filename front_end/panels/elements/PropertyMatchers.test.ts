@@ -518,4 +518,20 @@ describe('Matchers for SDK.CSSPropertyParser.BottomUpTreeMatching', () => {
     assert.exists(match, text);
     assert.strictEqual(match.text, '100px');
   });
+
+  it('match css keywords', () => {
+    const propertyStub = sinon.createStubInstance(SDK.CSSProperty.CSSProperty);
+    const matchedStylesStub = sinon.createStubInstance(SDK.CSSMatchedStyles.CSSMatchedStyles);
+    for (const keyword of SDK.CSSMetadata.CSSWideKeywords) {
+      const {match, text} = matchSingleValue(
+          '--property', keyword, new Elements.PropertyMatchers.CSSWideKeywordMatcher(propertyStub, matchedStylesStub));
+      assert.exists(match, text);
+      assert.strictEqual(match.text, keyword);
+    }
+
+    const {match, text} = matchSingleValue(
+        '--property', '1px inherits',
+        new Elements.PropertyMatchers.CSSWideKeywordMatcher(propertyStub, matchedStylesStub));
+    assert.notExists(match, text);
+  });
 });

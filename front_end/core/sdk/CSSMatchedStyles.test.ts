@@ -26,9 +26,12 @@ function ruleMatch(
   };
 }
 
-function createMatchedStyles(payload: Partial<SDK.CSSMatchedStyles.CSSMatchedStylesPayload>) {
-  const node = sinon.createStubInstance(SDK.DOMModel.DOMNode);
-  node.id = 1 as Protocol.DOM.NodeId;
+function createMatchedStyles(
+    payload: Partial<SDK.CSSMatchedStyles.CSSMatchedStylesPayload>, node?: SDK.DOMModel.DOMNode) {
+  if (!node) {
+    node = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+    node.id = 1 as Protocol.DOM.NodeId;
+  }
   return SDK.CSSMatchedStyles.CSSMatchedStyles.create({
     cssModel: sinon.createStubInstance(SDK.CSSModel.CSSModel),
     node,
@@ -144,7 +147,7 @@ describe('CSSMatchedStyles', () => {
            expectedDeclaration: SDK.CSSProperty.CSSProperty|SDK.CSSMatchedStyles.CSSRegisteredProperty) => {
             const {value, declaration} = matchedStyles.computeCSSVariable(startingCascade, name)!;
             assert.strictEqual(value, expectedValue);
-            assert.strictEqual(declaration, expectedDeclaration);
+            assert.strictEqual(declaration.declaration, expectedDeclaration);
           };
 
       const styles = matchedStyles.nodeStyles();
@@ -211,6 +214,22 @@ describe('CSSMatchedStyles', () => {
 
     it('should correctly resolve the `var()` reference for complex inheritance case', async () => {
       await testCssValueEquals('--non-inherited', 'inherited and overloaded');
+    });
+
+    it('resolves vars with css keywords', async () => {
+      const node = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+      node.id = 1 as Protocol.DOM.NodeId;
+      const parent = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+      parent.id = 2 as Protocol.DOM.NodeId;
+      node.parentNode = parent;
+      const matchedStyles = await createMatchedStyles(
+          {
+            matchedPayload: [ruleMatch('div', [{name: '--color', value: 'inherit'}])],
+            inheritedPayload: [{matchedCSSRules: [ruleMatch('div', [{name: '--color', value: 'inherited-color'}])]}],
+          },
+          node);
+      assert.strictEqual(
+          matchedStyles.computeCSSVariable(matchedStyles.nodeStyles()[0], '--color')?.value, 'inherited-color');
     });
 
     it('correcty handles cycles', async () => {
@@ -378,6 +397,296 @@ describe('CSSMatchedStyles', () => {
              ['--var: red;'],
            ]);
      });
+
+  describe('resolveGlobalKeyword', () => {
+    const inheritedPayload: Protocol.CSS.InheritedStyleEntry[] = [{
+      matchedCSSRules: [ruleMatch(
+          '.parent',
+          [
+            {name: 'color', value: 'color-inherited'},
+            {name: 'border', value: 'border-inherited'},
+            {name: '--inherited-is-inherited', value: 'inherited-is-inherited'},
+            {name: '--non-inherited-is-inherited', value: 'non-inherited-is-inherited'},
+            {name: '--unregistered-is-inherited', value: 'unregistered-is-inherited'},
+          ])],
+    }];
+    const cssPropertyRegistrations: Protocol.CSS.CSSPropertyRegistration[] = [
+      {
+        propertyName: '--inherited-is-inherited',
+        syntax: '"<color>"',
+        initialValue: {text: 'inherited-is-inherited-initial'},
+        inherits: true,
+      },
+      {
+        propertyName: '--inherited-is-not-inherited',
+        syntax: '"<color>"',
+        initialValue: {text: 'inherited-is-not-inherited-initial'},
+        inherits: true,
+      },
+      {
+        propertyName: '--non-inherited-is-inherited',
+        syntax: '"<color>"',
+        initialValue: {text: 'non-inherited-is-inherited-initial'},
+        inherits: false,
+      },
+      {
+        propertyName: '--non-inherited-is-not-inherited',
+        syntax: '"<color>"',
+        initialValue: {text: 'non-inherited-is-not-inherited-initial'},
+        inherits: false,
+      },
+    ];
+    const node = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+    node.id = 1 as Protocol.DOM.NodeId;
+    node.nodeType.returns(Node.ELEMENT_NODE);
+    const parent = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+    parent.id = 2 as Protocol.DOM.NodeId;
+    parent.nodeType.returns(Node.ELEMENT_NODE);
+    node.parentNode = parent;
+
+    function checkResolution(
+        matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles,
+        properties: Array<Protocol.CSS.CSSProperty&{expectedValue?: string}>): void {
+      const ownProperties = new Map(matchedStyles.nodeStyles()
+                                        .find(style => style.type === SDK.CSSStyleDeclaration.Type.Regular)
+                                        ?.allProperties()
+                                        .map(property => [property.name, property]));
+
+      for (const {name: propertyName, expectedValue} of properties) {
+        const property = ownProperties.get(propertyName);
+        assert.isOk(property);
+
+        let resolvedValue: SDK.CSSMatchedStyles.CSSValueSource|null = new SDK.CSSMatchedStyles.CSSValueSource(property);
+        while (resolvedValue?.value && SDK.CSSMetadata.CSSMetadata.isCSSWideKeyword(resolvedValue?.value)) {
+          const {declaration, value} = resolvedValue;
+          if (!(declaration instanceof SDK.CSSProperty.CSSProperty)) {
+            break;
+          }
+          resolvedValue = matchedStyles.resolveGlobalKeyword(declaration, value);
+        }
+        assert.strictEqual(resolvedValue?.value, expectedValue, propertyName);
+      }
+    }
+
+    it('correctly resolves the keyword `unset`', async () => {
+      const properties = [
+        // Value is undefined
+        {name: 'background-color', value: 'unset', expectedValue: undefined},
+        // Property inherits, Value is inherited
+        {name: 'color', value: 'unset', expectedValue: 'color-inherited'},
+        // Property inherits, Value is not inherited
+        {name: 'font-size', value: 'unset', expectedValue: undefined},
+        // Value is not inherited
+        {name: 'border', value: 'unset', expectedValue: undefined},
+        // Value is not inherited
+        {name: 'margin', value: 'unset', expectedValue: undefined},
+        // Property inherits, Value is inherited
+        {name: '--inherited-is-inherited', value: 'unset', expectedValue: 'inherited-is-inherited'},
+        // Property inherits, Value is not inherited, so fall back to initial
+        {name: '--inherited-is-not-inherited', value: 'unset', expectedValue: 'inherited-is-not-inherited-initial'},
+        // Value is not inherited, so fall back to initial
+        {name: '--non-inherited-is-inherited', value: 'unset', expectedValue: 'non-inherited-is-inherited-initial'},
+        // Value is not inherited, so fall back to initial
+        {
+          name: '--non-inherited-is-not-inherited',
+          value: 'unset',
+          expectedValue: 'non-inherited-is-not-inherited-initial',
+        },
+        // Value is inherited
+        {name: '--unregistered-is-inherited', value: 'unset', expectedValue: 'unregistered-is-inherited'},
+        // Value is undefined
+        {name: '--unregistered-is-not-inherited', value: 'unset', expectedValue: undefined},
+      ];
+      const matchedStyles = await createMatchedStyles(
+          {matchedPayload: [ruleMatch('div', properties)], inheritedPayload, cssPropertyRegistrations}, node);
+      checkResolution(matchedStyles, properties);
+    });
+
+    it('correctly resolves the keyword `inherits`', async () => {
+      const properties = [
+        // Value is undefined
+        {name: 'background-color', value: 'inherit', expectedValue: undefined},
+        // Property inherits, Value is inherited
+        {name: 'color', value: 'inherit', expectedValue: 'color-inherited'},
+        // Property inherits, Value is not inherited
+        {name: 'font-size', value: 'inherit', expectedValue: undefined},
+        // Property doesn't inherit, but Value is inherited
+        {name: 'border', value: 'inherit', expectedValue: 'border-inherited'},
+        // Value is not inherited
+        {name: 'margin', value: 'inherit', expectedValue: undefined},
+        // Property inherits, Value is inherited
+        {name: '--inherited-is-inherited', value: 'inherit', expectedValue: 'inherited-is-inherited'},
+        // Property inherits, Value is not inherited, so fall back to initial
+        {name: '--inherited-is-not-inherited', value: 'inherit', expectedValue: 'inherited-is-not-inherited-initial'},
+        // Property doesn't inherit, but Value is inherited
+        {name: '--non-inherited-is-inherited', value: 'inherit', expectedValue: 'non-inherited-is-inherited'},
+        // Value is not inherited, so fall back to initial
+        {
+          name: '--non-inherited-is-not-inherited',
+          value: 'inherit',
+          expectedValue: 'non-inherited-is-not-inherited-initial',
+        },
+        // Value is inherited
+        {name: '--unregistered-is-inherited', value: 'inherit', expectedValue: 'unregistered-is-inherited'},
+        // Value is undefined
+        {name: '--unregistered-is-not-inherited', value: 'inherit', expectedValue: undefined},
+      ];
+      const matchedStyles = await createMatchedStyles(
+          {matchedPayload: [ruleMatch('div', properties)], inheritedPayload, cssPropertyRegistrations}, node);
+      checkResolution(matchedStyles, properties);
+    });
+
+    it('correctly resolves the keyword `initial`', async () => {
+      const properties = [
+        // Value is undefined
+        {name: 'background-color', value: 'initial', expectedValue: undefined},
+        // Property inherits, Value is inherited
+        {name: 'color', value: 'initial', expectedValue: undefined},
+        // Property inherits, Value is not inherited
+        {name: 'font-size', value: 'initial', expectedValue: undefined},
+        // Property doesn't inherit
+        {name: 'border', value: 'initial', expectedValue: undefined},
+        // Value is not inherited
+        {name: 'margin', value: 'initial', expectedValue: undefined},
+        // Property inherits, Value is inherited
+        {name: '--inherited-is-inherited', value: 'initial', expectedValue: 'inherited-is-inherited-initial'},
+        // Property inherits, Value is not inherited
+        {name: '--inherited-is-not-inherited', value: 'initial', expectedValue: 'inherited-is-not-inherited-initial'},
+        // Value is not inherited
+        {name: '--non-inherited-is-inherited', value: 'initial', expectedValue: 'non-inherited-is-inherited-initial'},
+        // Value is not inherited
+        {
+          name: '--non-inherited-is-not-inherited',
+          value: 'initial',
+          expectedValue: 'non-inherited-is-not-inherited-initial',
+        },
+        // Value is inherited
+        {name: '--unregistered-is-inherited', value: 'initial', expectedValue: undefined},
+        // Value is undefined
+        {name: '--unregistered-is-not-inherited', value: 'initial', expectedValue: undefined},
+      ];
+      const matchedStyles = await createMatchedStyles(
+          {matchedPayload: [ruleMatch('div', properties)], inheritedPayload, cssPropertyRegistrations}, node);
+      checkResolution(matchedStyles, properties);
+    });
+
+    it('correctly resolves the keyword `revert`', async () => {
+      const properties = [
+        // authored -> user
+        {name: 'font-variant', value: 'revert', expectedValue: 'user-font-variant'},
+        // authored -> user -> ua
+        {name: 'font-size', value: 'revert', expectedValue: 'ua-font-size'},
+        // authored -> ua
+        {name: 'font-weight', value: 'revert', expectedValue: 'ua-font-weight'},
+        // authored -> user -> ua -> void
+        {name: 'font-family', value: 'revert', expectedValue: undefined},
+        // authored -> inherited
+        {name: 'color', value: 'revert', expectedValue: 'color-inherited'},
+        {name: '--inherited-is-inherited', value: 'revert', expectedValue: 'inherited-is-inherited'},
+        // authored -> initial
+        {name: '--inherited-is-not-inherited', value: 'revert', expectedValue: 'inherited-is-not-inherited-initial'},
+        {name: '--non-inherited-is-inherited', value: 'revert', expectedValue: 'non-inherited-is-inherited-initial'},
+        {
+          name: '--non-inherited-is-not-inherited',
+          value: 'revert',
+          expectedValue: 'non-inherited-is-not-inherited-initial',
+        },
+      ];
+      const userRule = ruleMatch('div', [
+        {name: 'font-variant', value: 'user-font-variant'},
+        {name: 'font-size', value: 'revert'},
+        {name: 'font-family', value: 'revert'},
+      ]);
+      userRule.rule.origin = Protocol.CSS.StyleSheetOrigin.Injected;
+      const uaRule = ruleMatch('div', [
+        {name: 'font-variant', value: 'ua-font-variant'},
+        {name: 'font-size', value: 'ua-font-size'},
+        {name: 'font-weight', value: 'ua-font-weight'},
+        {name: 'font-family', value: 'revert'},
+      ]);
+      uaRule.rule.origin = Protocol.CSS.StyleSheetOrigin.UserAgent;
+      const matchedStyles = await createMatchedStyles(
+          {
+            matchedPayload: [uaRule, userRule, ruleMatch('div', properties)],
+            inheritedPayload,
+            cssPropertyRegistrations,
+          },
+          node);
+      checkResolution(matchedStyles, properties);
+    });
+
+    it('correctly resolves the keyword `revert-layer`', async () => {
+      const inlinePayload = ruleMatch('', [{name: '--element-attached', value: 'revert-layer'}]).rule.style;
+      const properties = [
+        {name: '--element-attached', value: 'author-origin', expectedValue: 'author-origin'},
+        {name: 'font-family', value: 'revert-layer', expectedValue: 'next-layer'},
+        {name: 'font-weight', value: 'revert-layer', expectedValue: 'one-more-layer'},
+        // Value is undefined
+        {name: 'background-color', value: 'revert-layer', expectedValue: undefined},
+        // Property inherits, Value is inherited
+        {name: 'color', value: 'revert-layer', expectedValue: 'color-inherited'},
+        // Property inherits, Value is not inherited
+        {name: 'font-size', value: 'revert-layer', expectedValue: undefined},
+        // Property doesn't inherit
+        {name: 'border', value: 'revert-layer', expectedValue: undefined},
+        // Value is not inherited
+        {name: 'margin', value: 'revert-layer', expectedValue: undefined},
+        // Property inherits, Value is inherited
+        {name: '--inherited-is-inherited', value: 'revert-layer', expectedValue: 'inherited-is-inherited'},
+        // Property inherits, Value is not inherited
+        {
+          name: '--inherited-is-not-inherited',
+          value: 'revert-layer',
+          expectedValue: 'inherited-is-not-inherited-initial',
+        },
+        // Value is not inherited
+        {
+          name: '--non-inherited-is-inherited',
+          value: 'revert-layer',
+          expectedValue: 'non-inherited-is-inherited-initial',
+        },
+        // Value is not inherited
+        {
+          name: '--non-inherited-is-not-inherited',
+          value: 'revert-layer',
+          expectedValue: 'non-inherited-is-not-inherited-initial',
+        },
+        // Value is inherited
+        {name: '--unregistered-is-inherited', value: 'revert-layer', expectedValue: 'unregistered-is-inherited'},
+        // Value is undefined
+        {name: '--unregistered-is-not-inherited', value: 'revert-layer', expectedValue: undefined},
+      ];
+
+      const mainRule = ruleMatch('div', properties);
+      mainRule.rule.layers = [{text: 'layer1'}];
+      const sameLayer = ruleMatch('div', [{name: 'font-family', value: 'same-layer'}]);
+      sameLayer.rule.layers = mainRule.rule.layers;
+      const nextLayer = ruleMatch('div', [{name: 'font-family', value: 'next-layer'}]);
+      nextLayer.rule.layers = [{text: 'layer2'}];
+      const oneMoreLayer = ruleMatch('div', [{name: 'font-weight', value: 'one-more-layer'}]);
+      oneMoreLayer.rule.layers = [{text: 'outer'}, {text: 'layer3'}];
+      const uaRule = ruleMatch('div', [{name: 'font-variant', value: 'ua-font-variant'}]);
+      uaRule.rule.origin = Protocol.CSS.StyleSheetOrigin.UserAgent;
+      const matchedStyles = await createMatchedStyles(
+          {
+            inlinePayload,
+            matchedPayload: [uaRule, oneMoreLayer, nextLayer, sameLayer, mainRule],
+            inheritedPayload,
+            cssPropertyRegistrations,
+          },
+          node);
+      checkResolution(matchedStyles, properties);
+
+      // Check for inline style
+      const inlineProperty = matchedStyles.nodeStyles()
+                                 .find(style => style.type === SDK.CSSStyleDeclaration.Type.Inline)
+                                 ?.allProperties()
+                                 ?.find(property => property.name === '--element-attached');
+      assert.isOk(inlineProperty);
+      const resolved = matchedStyles.resolveGlobalKeyword(inlineProperty, SDK.CSSMetadata.CSSWideKeyword.REVERT_LAYER);
+      assert.strictEqual(resolved?.value, 'author-origin');
+    });
+  });
 });
 
 describeWithMockConnection('NodeCascade', () => {

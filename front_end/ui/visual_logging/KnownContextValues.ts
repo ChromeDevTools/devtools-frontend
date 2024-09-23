@@ -901,6 +901,7 @@ export const knownContextValues = new Set([
   'css-type-component-length-deprecate-documentation',
   'css-type-component-length-deprecate-feedback',
   'css-variable',
+  'css-wide-keyword-link',
   'cssAngleEditor',
   'cssShadowEditor',
   'cssoverview',

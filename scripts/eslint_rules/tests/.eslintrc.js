@@ -8,7 +8,7 @@ const rulesDirPlugin = require('eslint-plugin-rulesdir');
 rulesDirPlugin.RULES_DIR = path.join(__dirname, '..', 'lib');
 
 module.exports = {
-  'rules' : {
+  rules : {
     'rulesdir/no_only_eslint_tests' : 'error',
     // errors on it('test') with no body
     'mocha/no-pending-tests' : 'error',

@@ -4,8 +4,8 @@
 
 module.exports = {
   overrides : [{
-    'files' : ['*.ts'],
-    'rules' : {
+    files : ['*.ts'],
+    rules : {
       // This makes the component doc examples very verbose and doesn't add
       // anything, so we leave return types to the developer within the
       // component_docs folder.

@@ -8,7 +8,7 @@ const rulesDirPlugin = require('eslint-plugin-rulesdir');
 rulesDirPlugin.RULES_DIR = path.join(__dirname, '..', 'scripts', 'eslint_rules', 'lib');
 
 module.exports = {
-  'rules': {
+  rules: {
     // L10n rules are only relevant in 'front_end'.
     'rulesdir/l10n_filename_matches': [
       'error', {
@@ -24,15 +24,15 @@ module.exports = {
       rootFrontendDirectory: __dirname,
     }],
   },
-  'overrides': [
+  overrides: [
     {
-      'files': ['*.ts'],
-      'rules': {
+      files: ['*.ts'],
+      rules: {
         '@typescript-eslint/explicit-function-return-type': [
             'error', {
-              'allowExpressions': true,
-              'allowConciseArrowFunctionExpressionsStartingWithVoid': true,
-              'allowIIFEs':true,
+              allowExpressions: true,
+              allowConciseArrowFunctionExpressionsStartingWithVoid: true,
+              allowIIFEs:true,
             },
         ],
         'rulesdir/no_importing_images_from_src': 'error',
@@ -60,35 +60,35 @@ module.exports = {
       }
     },
     {
-      'files': ['*-meta.ts'],
-      'rules': {
+      files: ['*-meta.ts'],
+      rules: {
         '@typescript-eslint/naming-convention': [
           'error', {
-            'selector': 'parameter',
-            'format': ['camelCase', 'PascalCase'],
-            'leadingUnderscore': 'allow',
+            selector: 'parameter',
+            format: ['camelCase', 'PascalCase'],
+            leadingUnderscore: 'allow',
           }
         ]
       }
     },
     {
-      'files': ['*.test.ts', '**/testing/*.ts'],
-      'rules': {
+      files: ['*.test.ts', '**/testing/*.ts'],
+      rules: {
         'rulesdir/check_component_naming': 'off',
         'rulesdir/custom_element_definitions_location': 'off',
         '@typescript-eslint/explicit-function-return-type': 'off',
       },
     },
     {
-      'files': ['panels/**/components/*.ts', 'ui/components/**/*.ts', 'entrypoints/**/*.ts'],
-      'rules': {
+      files: ['panels/**/components/*.ts', 'ui/components/**/*.ts', 'entrypoints/**/*.ts'],
+      rules: {
         'rulesdir/use_private_class_members': 'error',
       }
     },
     // TODO(crbug/1402569): Remove once LitElement is fully adopted.
     {
-      'files': ['panels/recorder/**/*.ts', 'panels/protocol_monitor/**/*.ts', 'ui/components/suggestion_input/*.ts'],
-      'rules': {
+      files: ['panels/recorder/**/*.ts', 'panels/protocol_monitor/**/*.ts', 'ui/components/suggestion_input/*.ts'],
+      rules: {
         'rulesdir/check_component_naming': 'off',
         'rulesdir/ban_literal_devtools_component_tag_names': 'off',
         // TODO(crbug/1402569): Reenable once https://github.com/microsoft/TypeScript/issues/48885 is closed.
@@ -96,8 +96,8 @@ module.exports = {
       }
     },
     {
-      'files': ['generated/SupportedCSSProperties.js'],
-      'rules': {
+      files: ['generated/SupportedCSSProperties.js'],
+      rules: {
         'rulesdir/jslog_context_list': 'error',
       }
     }

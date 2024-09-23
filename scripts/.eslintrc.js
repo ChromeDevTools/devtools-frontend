@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 module.exports = {
-  'rules': {
-    'no-console': 'off',
+  rules : {
+    'no-console' : 'off',
   }
 };

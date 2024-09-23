@@ -7,7 +7,7 @@ const rulesDirPlugin = require('eslint-plugin-rulesdir');
 rulesDirPlugin.RULES_DIR = path.join(__dirname, '..', '..', 'scripts', 'eslint_rules', 'lib');
 
 module.exports = {
-  'rules' : {
+  rules : {
     'rulesdir/es_modules_import' : 'off',
   }
 };

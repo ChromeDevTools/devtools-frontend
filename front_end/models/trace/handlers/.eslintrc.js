@@ -8,7 +8,7 @@ const rulesDirPlugin = require('eslint-plugin-rulesdir');
 rulesDirPlugin.RULES_DIR = path.join(__dirname, '..', '..', '..', '..', 'scripts', 'eslint_rules', 'lib');
 
 module.exports = {
-  'rules': {
+  rules: {
     'rulesdir/ban_imports_in_directory': [
       'error', {
         bannedImportPaths: [path.join(__dirname, '..', '..', '..', 'core', 'sdk', 'sdk.js')]

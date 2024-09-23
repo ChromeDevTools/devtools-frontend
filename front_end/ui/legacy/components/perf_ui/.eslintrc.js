@@ -7,7 +7,7 @@ const rulesDirPlugin = require('eslint-plugin-rulesdir');
 rulesDirPlugin.RULES_DIR = path.join(__dirname, '..', '..', '..', '..', '..', 'scripts', 'eslint_rules', 'lib');
 
 module.exports = {
-  'rules' : {
+  rules : {
     // Enable tracking of canvas save() and
     // restore() calls to try and catch bugs. Only
     // enabled in this folder because it is an

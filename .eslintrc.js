@@ -9,13 +9,13 @@ const rulesDirPlugin = require('eslint-plugin-rulesdir');
 rulesDirPlugin.RULES_DIR = path.join(__dirname, 'scripts', 'eslint_rules', 'lib');
 
 module.exports = {
-  'root': true,
+  root: true,
 
-  'env': {'browser': true, 'es6': true},
+  env: {browser: true, es6: true},
 
-  'parser': '@typescript-eslint/parser',
+  parser: '@typescript-eslint/parser',
 
-  'plugins': [
+  plugins: [
     '@typescript-eslint',
     'mocha',
     'rulesdir',
@@ -23,28 +23,28 @@ module.exports = {
     'jsdoc',
   ],
 
-  'parserOptions': {'ecmaVersion': 9, 'sourceType': 'module'},
+  parserOptions: {ecmaVersion: 9, sourceType: 'module'},
 
   /**
    * ESLint rules
    *
    * All available rules: http://eslint.org/docs/rules/
    */
-  'rules': {
+  rules: {
     /**
      * Enforced rules
      */
 
     // syntax preferences
-    'quotes': ['error', 'single', {'avoidEscape': true, 'allowTemplateLiterals': false}],
-    'semi': 'error',
+    quotes: ['error', 'single', {avoidEscape: true, allowTemplateLiterals: false}],
+    semi: 'error',
     'no-extra-semi': 'error',
     'comma-style': ['error', 'last'],
     'wrap-iife': ['error', 'inside'],
-    'spaced-comment': ['error', 'always', {'markers': ['*']}],
-    'eqeqeq': 'error',
-    'accessor-pairs': ['error', {'getWithoutSet': false, 'setWithoutGet': false}],
-    'curly': 'error',
+    'spaced-comment': ['error', 'always', {markers: ['*']}],
+    eqeqeq: 'error',
+    'accessor-pairs': ['error', {getWithoutSet: false, setWithoutGet: false}],
+    curly: 'error',
     'new-parens': 'error',
     'func-call-spacing': 'error',
     'arrow-parens': ['error', 'as-needed'],
@@ -56,11 +56,11 @@ module.exports = {
     'no-caller': 'error',
     'no-case-declarations': 'error',
     'no-cond-assign': 'error',
-    'no-console': ['error', {'allow': ['assert', 'context', 'error', 'timeStamp', 'time', 'timeEnd', 'warn']}],
+    'no-console': ['error', {allow: ['assert', 'context', 'error', 'timeStamp', 'time', 'timeEnd', 'warn']}],
     'no-debugger': 'error',
     'no-dupe-keys': 'error',
     'no-duplicate-case': 'error',
-    'no-else-return': ['error', {'allowElseIf': false}],
+    'no-else-return': ['error', {allowElseIf: false}],
     'no-empty-character-class': 'error',
     'no-global-assign': 'error',
     'no-implied-eval': 'error',
@@ -72,11 +72,11 @@ module.exports = {
     'no-shadow-restricted-names': 'error',
     'no-unreachable': 'error',
     'no-unsafe-negation': 'error',
-    'no-unused-vars': ['error', {'args': 'none', 'vars': 'local'}],
+    'no-unused-vars': ['error', {args: 'none', vars: 'local'}],
     'no-var': 'error',
     'no-with': 'error',
     'prefer-const': 'error',
-    'radix': 'error',
+    radix: 'error',
     'valid-typeof': 'error',
     'no-return-assign': ['error', 'always'],
     'no-implicit-coercion': 'error',
@@ -86,7 +86,7 @@ module.exports = {
     'template-curly-spacing': ['error', 'never'],
 
     // file whitespace
-    'no-multiple-empty-lines': ['error', {'max': 1}],
+    'no-multiple-empty-lines': ['error', {max: 1}],
     'no-mixed-spaces-and-tabs': 'error',
     'no-trailing-spaces': 'error',
     'linebreak-style': ['error', 'unix'],
@@ -95,13 +95,13 @@ module.exports = {
      * Disabled, aspirational rules
      */
 
-    'indent': ['off', 2, {'SwitchCase': 1, 'CallExpression': {'arguments': 2}, 'MemberExpression': 2}],
+    indent: ['off', 2, {SwitchCase: 1, CallExpression: {arguments: 2}, MemberExpression: 2}],
 
     // brace-style is disabled, as eslint cannot enforce 1tbs as default, but allman for functions
-    'brace-style': ['off', 'allman', {'allowSingleLine': true}],
+    'brace-style': ['off', 'allman', {allowSingleLine: true}],
 
     // key-spacing is disabled, as some objects use value-aligned spacing, some not.
-    'key-spacing': ['off', {'beforeColon': false, 'afterColon': true, 'align': 'value'}],
+    'key-spacing': ['off', {beforeColon: false, afterColon: true, align: 'value'}],
 
     'quote-props': ['error', 'as-needed'],
 
@@ -111,12 +111,12 @@ module.exports = {
 
     // forbids interfaces starting with an I prefix.
     '@typescript-eslint/naming-convention':
-        ['error', {'selector': 'interface', 'format': ['PascalCase'], 'custom': {'regex': '^I[A-Z]', 'match': false}}],
+        ['error', {selector: 'interface', format: ['PascalCase'], custom: {regex: '^I[A-Z]', match: false}}],
     '@typescript-eslint/explicit-member-accessibility': 'off',
     '@typescript-eslint/no-explicit-any': [
-      "error",
+      'error',
       {
-        "ignoreRestArgs": true
+        ignoreRestArgs: true
       }
     ],
 
@@ -145,35 +145,35 @@ module.exports = {
      */
     'jsdoc/check-alignment': 'error',
   },
-  'overrides': [{
-    'files': ['*.ts'],
-    'parserOptions': {
-      'allowAutomaticSingleRunInference': true,
-      'project': path.join(__dirname, 'config', 'typescript', 'tsconfig.eslint.json'),
+  overrides: [{
+    files: ['*.ts'],
+    parserOptions: {
+      allowAutomaticSingleRunInference: true,
+      project: path.join(__dirname, 'config', 'typescript', 'tsconfig.eslint.json'),
     },
-    'rules': {
-      '@typescript-eslint/explicit-member-accessibility': ['error', {'accessibility': 'no-public'}],
+    rules: {
+      '@typescript-eslint/explicit-member-accessibility': ['error', {accessibility: 'no-public'}],
       'comma-dangle': 'off',
       '@typescript-eslint/comma-dangle': ['error', 'always-multiline'],
 
       // run just the TypeScript unused-vars rule, else we get duplicate errors
       'no-unused-vars': 'off',
-      '@typescript-eslint/no-unused-vars': ['error', {'argsIgnorePattern': '^_'}],
+      '@typescript-eslint/no-unused-vars': ['error', {argsIgnorePattern: '^_'}],
       // run just the TypeScript semi rule, else we get duplicate errors
-      'semi': 'off',
+      semi: 'off',
       '@typescript-eslint/semi': 'error',
       '@typescript-eslint/member-delimiter-style': [
         'error', {
-          'multiline': {'delimiter': 'semi', 'requireLast': true},
-          'singleline': {'delimiter': 'comma', 'requireLast': false},
-          'overrides': {
-            'interface': {
-              'singleline': {'delimiter': 'semi', 'requireLast': false},
-              'multiline': {'delimiter': 'semi', 'requireLast': true}
+          multiline: {delimiter: 'semi', requireLast: true},
+          singleline: {delimiter: 'comma', requireLast: false},
+          overrides: {
+            interface: {
+              singleline: {delimiter: 'semi', requireLast: false},
+              multiline: {delimiter: 'semi', requireLast: true}
             },
-            'typeLiteral': {
-              'singleline': {'delimiter': 'comma', 'requireLast': false},
-              'multiline': {'delimiter': 'comma', 'requireLast': true}
+            typeLiteral: {
+              singleline: {delimiter: 'comma', requireLast: false},
+              multiline: {delimiter: 'comma', requireLast: true}
             }
           }
         }
@@ -199,87 +199,87 @@ module.exports = {
       'rulesdir/inline_type_imports': 'error',
     }
   }, {
-    'files': "test/shared/mocha-interface.ts",
-    'rules': {
+    files: 'test/shared/mocha-interface.ts',
+    rules: {
       'rulesdir/es_modules_import': 'off',
     }
   }, {
-    'files' : ['*.ts'],
-    'rules' : {
+    files : ['*.ts'],
+    rules : {
       '@typescript-eslint/naming-convention' :
       [
         'error', {
-          'selector' : ['function', 'accessor', 'method', 'property', 'parameterProperty'],
-          'format' : ['camelCase'],
+          selector : ['function', 'accessor', 'method', 'property', 'parameterProperty'],
+          format : ['camelCase'],
         },
         {
-          'selector': 'variable',
-          'filter': {
+          selector: 'variable',
+          filter: {
             // Ignore localization variables.
-            'regex': '^(UIStrings|str_)$',
-            'match': false
+            regex: '^(UIStrings|str_)$',
+            match: false
           },
-          'format': ['camelCase'],
+          format: ['camelCase'],
         },
         {
           // We are using camelCase, PascalCase and UPPER_CASE for top-level constants, allow the for now.
-          'selector': 'variable',
-          'modifiers': ['const'],
-          'filter': {
+          selector: 'variable',
+          modifiers: ['const'],
+          filter: {
             // Ignore localization variables.
-            'regex': '^(UIStrings|str_)$',
-            'match': false
+            regex: '^(UIStrings|str_)$',
+            match: false
           },
-          'format': ['camelCase', 'UPPER_CASE', 'PascalCase'],
+          format: ['camelCase', 'UPPER_CASE', 'PascalCase'],
         },
         {
-          'selector' : 'classProperty',
-          'modifiers' : ['static', 'readonly'],
-          'format' : ['UPPER_CASE', 'camelCase'],
+          selector : 'classProperty',
+          modifiers : ['static', 'readonly'],
+          format : ['UPPER_CASE', 'camelCase'],
         },
         {
-          'selector' : 'enumMember',
-          'format' : ['UPPER_CASE'],
+          selector : 'enumMember',
+          format : ['UPPER_CASE'],
         },
         {
-          'selector' : ['typeLike'],
-          'format' : ['PascalCase'],
+          selector : ['typeLike'],
+          format : ['PascalCase'],
         },
         {
-          'selector' : 'parameter',
-          'format' : ['camelCase'],
-          'leadingUnderscore' : 'allow',
+          selector : 'parameter',
+          format : ['camelCase'],
+          leadingUnderscore : 'allow',
         },
         {
           // Public methods are currently in transition and may still have leading underscores.
-          'selector': 'method',
-          'modifiers': ['public'],
-          'format': ['camelCase'],
-          'leadingUnderscore': 'allow',
+          selector: 'method',
+          modifiers: ['public'],
+          format: ['camelCase'],
+          leadingUnderscore: 'allow',
         },
         {
-          'selector': 'property',
-          'modifiers': ['public'],
-          'format': ['camelCase'],
-          'leadingUnderscore': 'allow',
+          selector: 'property',
+          modifiers: ['public'],
+          format: ['camelCase'],
+          leadingUnderscore: 'allow',
         },
         {
           // Object literals may be constructed as arguments to external libraries which follow different styles.
-          'selector': ['objectLiteralMethod', 'objectLiteralProperty'],
-          'modifiers': ['public'],
-          'format': null,
+          selector: ['objectLiteralMethod', 'objectLiteralProperty'],
+          modifiers: ['public'],
+          format: null,
         },
         {
           // Ignore type properties that require quotes
-          'selector' : 'typeProperty',
-          'format' : null,
-          'modifiers' : ['requiresQuotes']
+          selector : 'typeProperty',
+          format : null,
+          modifiers : ['requiresQuotes']
         }
       ]
     }
   }, {
-    'files': ['*.test.ts', 'test/**/*.ts', '**/testing/*.ts'],
-    'rules': {
+    files: ['*.test.ts', 'test/**/*.ts', '**/testing/*.ts'],
+    rules: {
       // errors on it('test') with no body
       'mocha/no-pending-tests' : 'error',
 
@@ -298,14 +298,14 @@ module.exports = {
       'rulesdir/trace_engine_test_timeouts' : 'error',
       '@typescript-eslint/no-non-null-assertion' : 'off',
     },
-    'settings': {
+    settings: {
       'mocha/additionalCustomNames': [
-        { 'name': 'describeWithDevtoolsExtension', 'type': 'suite', 'interfaces': [ 'BDD', 'TDD' ] },
-        { 'name': 'describeWithEnvironment', 'type': 'suite', 'interfaces': [ 'BDD', 'TDD' ] },
-        { 'name': 'describeWithLocale', 'type': 'suite', 'interfaces': [ 'BDD', 'TDD' ] },
-        { 'name': 'describeWithMockConnection', 'type': 'suite', 'interfaces': [ 'BDD', 'TDD' ] },
-        { 'name': 'describeWithRealConnection', 'type': 'suite', 'interfaces': [ 'BDD', 'TDD' ] },
-        { 'name': 'itScreenshot', 'type': 'testCase', 'interfaces': [ 'BDD', 'TDD' ] },
+        { name: 'describeWithDevtoolsExtension', type: 'suite', interfaces: [ 'BDD', 'TDD' ] },
+        { name: 'describeWithEnvironment', type: 'suite', interfaces: [ 'BDD', 'TDD' ] },
+        { name: 'describeWithLocale', type: 'suite', interfaces: [ 'BDD', 'TDD' ] },
+        { name: 'describeWithMockConnection', type: 'suite', interfaces: [ 'BDD', 'TDD' ] },
+        { name: 'describeWithRealConnection', type: 'suite', interfaces: [ 'BDD', 'TDD' ] },
+        { name: 'itScreenshot', type: 'testCase', interfaces: [ 'BDD', 'TDD' ] },
       ]
     }
   }],

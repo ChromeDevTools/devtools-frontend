@@ -7,7 +7,7 @@ const rulesDirPlugin = require('eslint-plugin-rulesdir');
 rulesDirPlugin.RULES_DIR = path.join(__dirname, '..', '..', '..', 'scripts', 'eslint_rules', 'lib');
 
 module.exports = {
-  'rules' : {
+  rules : {
     // The code is rolled up and tree-shaken independently from the regular entrypoints.
     'rulesdir/es_modules_import' : 'off',
   }

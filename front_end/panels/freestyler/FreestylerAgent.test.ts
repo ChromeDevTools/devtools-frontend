@@ -519,7 +519,8 @@ c`;
     });
 
     function mockAidaClient(
-        fetch: () => AsyncGenerator<Host.AidaClient.AidaResponse, void, void>,
+        fetch: (_: unknown, options?: {signal: AbortSignal}) =>
+            AsyncGenerator<Host.AidaClient.AidaResponse, void, void>,
         ): Host.AidaClient.AidaClient {
       return {
         fetch,
@@ -1035,7 +1036,10 @@ ANSWER: this is the answer`,
 
     it('stops when aborted', async () => {
       let count = 0;
-      async function* generateMultipleTimes() {
+      async function* generateAndAbort(_: unknown, options?: {signal: AbortSignal}) {
+        if (options?.signal.aborted) {
+          throw new Host.AidaClient.AidaAbortError();
+        }
         if (count === 3) {
           yield {
             explanation: 'ANSWER: this is the answer',
@@ -1054,10 +1058,9 @@ ANSWER: this is the answer`,
 
       const execJs = sinon.spy();
       const agent = new FreestylerAgent({
-        aidaClient: mockAidaClient(generateMultipleTimes),
+        aidaClient: mockAidaClient(generateAndAbort),
         createExtensionScope,
         execJs,
-
       });
 
       const controller = new AbortController();

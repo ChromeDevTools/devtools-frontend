@@ -555,10 +555,6 @@ export class FreestylerAgent {
     query = `${elementEnchantmentQuery}QUERY: ${query}`;
     const currentRunId = ++this.#runId;
 
-    options.signal?.addEventListener('abort', () => {
-      this.#chatHistory.delete(currentRunId);
-    });
-
     for (let i = 0; i < MAX_STEPS; i++) {
       yield {
         type: ResponseType.QUERYING,
@@ -586,6 +582,7 @@ export class FreestylerAgent {
         debugLog('Error calling the AIDA API', err);
 
         if (err instanceof Host.AidaClient.AidaAbortError) {
+          this.#chatHistory.delete(currentRunId);
           yield {
             type: ResponseType.ERROR,
             error: ErrorType.ABORT,
@@ -599,10 +596,6 @@ export class FreestylerAgent {
           error: ErrorType.UNKNOWN,
           rpcId,
         };
-        break;
-      }
-
-      if (options.signal?.aborted) {
         break;
       }
 

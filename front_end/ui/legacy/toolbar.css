@@ -155,7 +155,7 @@ select.toolbar-item:disabled + .toolbar-dropdown-arrow {
   }
 
   &:focus-visible {
-    border: 2px solid var(--sys-color-state-focus-ring);
+    outline: 2px solid var(--sys-color-state-focus-ring);
   }
 
   &[disabled] {

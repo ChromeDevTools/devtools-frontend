@@ -104,7 +104,7 @@ export const mochaHooks = {
 };
 
 function copyGoldens() {
-  if (TestConfig.artifactsDir === SOURCE_ROOT) {
+  if (TestConfig.artifactsDir === SOURCE_ROOT || !TestConfig.copyScreenshotGoldens) {
     return;
   }
   fs.cpSync(

@@ -27,6 +27,7 @@ interface Config {
   onDiff: {update: boolean|string[], throw: boolean};
   shuffle: boolean;
   mochaGrep: {invert?: boolean, grep?: string}|{invert?: boolean, fgrep?: string};
+  copyScreenshotGoldens: boolean;
 }
 
 function sliceArrayFromElement(array: string[], element: string) {
@@ -88,6 +89,7 @@ export const TestConfig: Config = {
   },
   shuffle: options['shuffle'],
   mochaGrep: mochaGrep(),
+  copyScreenshotGoldens: false,
 };
 
 export function loadTests(testDirectory: string) {

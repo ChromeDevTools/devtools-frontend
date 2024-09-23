@@ -7,6 +7,7 @@ import * as path from 'path';
 import {loadTests, ServerType, TestConfig} from '../conductor/test_config.js';
 
 TestConfig.serverType = ServerType.COMPONENT_DOCS;
+TestConfig.copyScreenshotGoldens = true;
 
 module.exports = {
   require : [path.join(path.dirname(__dirname), 'conductor', 'mocha_hooks.js'), 'source-map-support/register'],

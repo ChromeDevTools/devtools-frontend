@@ -98,6 +98,7 @@ export class RenderBlockingRequests extends BaseInsight {
         <div class="insights">
           <${SidebarInsight.SidebarInsight.litTagName} .data=${{
             title: this.userVisibleTitle,
+            internalName: this.internalName,
             expanded: this.isActive(),
             estimatedSavings,
           } as SidebarInsight.InsightDetails}

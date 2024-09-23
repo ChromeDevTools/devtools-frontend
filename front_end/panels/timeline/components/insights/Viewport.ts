@@ -59,8 +59,9 @@ export class Viewport extends BaseInsight {
     return LitHtml.html`
         <div class="insights">
             <${SidebarInsight.SidebarInsight.litTagName} .data=${{
-            title: this.userVisibleTitle,
-            expanded: this.isActive(),
+              title: this.userVisibleTitle,
+              expanded: this.isActive(),
+              internalName: this.internalName,
             } as SidebarInsight.InsightDetails}
             @insighttoggleclick=${this.onSidebarClick}>
                 <div slot="insight-description" class="insight-description">

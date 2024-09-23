@@ -184,7 +184,7 @@ export class SidebarSingleNavigation extends HTMLElement {
           .insights=${insights}
           .navigationId=${navigationId}
           .activeInsight=${this.#data.activeInsight}
-          .activeCategory=${this.#data.activeCategory}
+          .activeCategory=${this.#data.activeCategory}>
         </${component.litTagName}>
       </div>`;
     })}`;

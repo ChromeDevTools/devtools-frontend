@@ -14,7 +14,7 @@ describeWithEnvironment('SidebarInsight', () => {
   describe('sidebar insight component rendering', () => {
     it('renders insight title', async () => {
       const component = new SidebarInsight();
-      component.data = {title: 'LCP by Phase', expanded: true};
+      component.data = {title: 'LCP by Phase', expanded: true, internalName: 'lcp-by-phase'};
       renderElementIntoDOM(component);
 
       await coordinator.done();
@@ -28,7 +28,7 @@ describeWithEnvironment('SidebarInsight', () => {
     describe('insight toggling', () => {
       it('renders only insight title when not toggled', async () => {
         const component = new SidebarInsight();
-        component.data = {title: 'LCP by Phase', expanded: false};
+        component.data = {title: 'LCP by Phase', expanded: false, internalName: 'lcp-by-phase'};
         renderElementIntoDOM(component);
 
         await coordinator.done();
@@ -45,7 +45,7 @@ describeWithEnvironment('SidebarInsight', () => {
 
       it('renders title, description and content when toggled', async () => {
         const component = new SidebarInsight();
-        component.data = {title: 'LCP by Phase', expanded: true};
+        component.data = {title: 'LCP by Phase', expanded: true, internalName: 'lcp-by-phase'};
         renderElementIntoDOM(component);
 
         await coordinator.done();

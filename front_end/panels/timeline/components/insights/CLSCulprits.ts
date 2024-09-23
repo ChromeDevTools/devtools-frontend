@@ -111,8 +111,9 @@ export class CLSCulprits extends BaseInsight {
     return LitHtml.html`
         <div class="insights">
             <${SidebarInsight.SidebarInsight.litTagName} .data=${{
-            title: this.userVisibleTitle,
-            expanded: this.isActive(),
+              title: this.userVisibleTitle,
+              internalName: this.internalName,
+              expanded: this.isActive(),
             } as SidebarInsight.InsightDetails}
             @insighttoggleclick=${this.onSidebarClick}>
                 <div slot="insight-description" class="insight-description">

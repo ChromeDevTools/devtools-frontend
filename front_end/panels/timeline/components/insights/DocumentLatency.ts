@@ -103,6 +103,7 @@ export class DocumentLatency extends BaseInsight {
       <${SidebarInsight.SidebarInsight.litTagName} .data=${{
             title: this.userVisibleTitle,
             expanded: this.isActive(),
+            internalName: this.internalName,
             estimatedSavings: insight.metricSavings?.FCP,
         } as SidebarInsight.InsightDetails}
         @insighttoggleclick=${this.onSidebarClick}

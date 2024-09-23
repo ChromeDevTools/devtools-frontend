@@ -25,6 +25,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export interface InsightDetails {
   title: string;
+  internalName: string;
   expanded: boolean;
   estimatedSavings?: number|undefined;
 }
@@ -74,12 +75,15 @@ export class SidebarInsight extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-performance-sidebar-insight`;
   readonly #shadow = this.attachShadow({mode: 'open'});
   readonly #boundRender = this.#render.bind(this);
+
   #insightTitle: string = '';
+  #insightInternalName: string = '';
   #expanded: boolean = false;
   #estimatedSavings: number|undefined = undefined;
 
   set data(data: InsightDetails) {
     this.#insightTitle = data.title;
+    this.#insightInternalName = data.internalName;
     this.#expanded = data.expanded;
     this.#estimatedSavings = data.estimatedSavings;
 
@@ -124,7 +128,7 @@ export class SidebarInsight extends HTMLElement {
     // clang-format off
     const output = LitHtml.html`
       <div class=${containerClasses}>
-        <header @click=${this.#dispatchInsightToggle} jslog=${VisualLogging.action('timeline.toggle-insight').track({click: true})}>
+        <header @click=${this.#dispatchInsightToggle} jslog=${VisualLogging.action(`timeline.toggle-insight.${this.#insightInternalName}`).track({click: true})}>
           ${this.#renderHoverIcon(this.#expanded)}
           <h3 class="insight-title">${this.#insightTitle}</h3>
           ${this.#estimatedSavings && this.#estimatedSavings > 0 ?

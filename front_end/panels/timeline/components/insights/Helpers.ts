@@ -7,6 +7,7 @@ import * as Marked from '../../../../third_party/marked/marked.js';
 import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js';
 import * as MarkdownView from '../../../../ui/components/markdown_view/markdown_view.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
+import * as VisualLogging from '../../../../ui/visual_logging/visual_logging.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
 import sidebarInsightStyles from './sidebarInsight.css.js';
@@ -61,6 +62,7 @@ export abstract class BaseInsight extends HTMLElement {
 
   connectedCallback(): void {
     this.shadow.adoptedStyleSheets.push(sidebarInsightStyles);
+    this.setAttribute('jslog', `${VisualLogging.section(`timeline.insights.${this.internalName}`)}`);
   }
 
   set insights(insights: Trace.Insights.Types.TraceInsightSets|null) {

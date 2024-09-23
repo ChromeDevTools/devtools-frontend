@@ -99,13 +99,15 @@ export class ThrottlingManager {
   private lastNetworkThrottlingConditions!: SDK.NetworkManager.Conditions;
   private readonly cpuThrottlingManager: SDK.CPUThrottlingManager.CPUThrottlingManager;
   #hardwareConcurrencyOverrideEnabled = false;
-
   get hardwareConcurrencyOverrideEnabled(): boolean {
     return this.#hardwareConcurrencyOverrideEnabled;
   }
 
   private constructor() {
     this.cpuThrottlingManager = SDK.CPUThrottlingManager.CPUThrottlingManager.instance();
+    this.cpuThrottlingManager.addEventListener(
+        SDK.CPUThrottlingManager.Events.RATE_CHANGED,
+        (event: Common.EventTarget.EventTargetEvent<number>) => this.onCPUThrottlingRateChangedOnSDK(event.data));
     this.cpuThrottlingControls = new Set();
     this.cpuThrottlingRates = ThrottlingPresets.cpuThrottlingPresets;
     this.customNetworkConditionsSetting =
@@ -286,7 +288,11 @@ export class ThrottlingManager {
   }
 
   setCPUThrottlingRate(rate: number): void {
+    // This will transitively call onCPUThrottlingRateChangedOnSDK.
     this.cpuThrottlingManager.setCPUThrottlingRate(rate);
+  }
+
+  onCPUThrottlingRateChangedOnSDK(rate: number): void {
     if (rate !== SDK.CPUThrottlingManager.CPUThrottlingRates.NO_THROTTLING) {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.CpuThrottlingEnabled);
     }

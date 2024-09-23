@@ -80,4 +80,16 @@ describeWithEnvironment('CPUThrottlingSelector', () => {
 
     assert.isTrue(menuItems[2].selected);
   });
+  it('reacts to changes in CPU throttling manager when it is unmounted and then remounted', async () => {
+    const view = new Components.CPUThrottlingSelector.CPUThrottlingSelector();
+    // Change the conditions before the component is put into the DOM.
+    cpuThrottlingManager.setCPUThrottlingRate(6);
+
+    renderElementIntoDOM(view);
+    await coordinator.done();
+    // Ensure that the component picks up the new changes and has selected the right thorttling setting
+    const menuItems = view.shadowRoot!.querySelectorAll('devtools-menu-item') as NodeListOf<Menus.Menu.MenuItem>;
+    assert.isTrue(menuItems[2].selected);
+  });
+
 });

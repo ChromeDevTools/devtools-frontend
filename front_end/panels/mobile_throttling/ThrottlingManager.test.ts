@@ -61,4 +61,23 @@ describeWithEnvironment('ThrottlingManager', () => {
       assert.strictEqual(SDK.NetworkManager.Slow3GConditions, multiTargetNetworkManager.networkConditions());
     });
   });
+  describe('CPU throttling', () => {
+    it('listens to changes in cpu throttling setting', () => {
+      const cpuThrottlingPresets = MobileThrottling.ThrottlingPresets.ThrottlingPresets.cpuThrottlingPresets;
+      const throttlingManager = MobileThrottling.ThrottlingManager.throttlingManager();
+      const selector = throttlingManager.createCPUThrottlingSelector();
+      assert.strictEqual(
+          cpuThrottlingPresets[selector.selectedIndex()], SDK.CPUThrottlingManager.CPUThrottlingRates.NO_THROTTLING);
+
+      SDK.CPUThrottlingManager.CPUThrottlingManager.instance().setCPUThrottlingRate(
+          SDK.CPUThrottlingManager.CPUThrottlingRates.EXTRA_SLOW);
+      assert.strictEqual(
+          cpuThrottlingPresets[selector.selectedIndex()], SDK.CPUThrottlingManager.CPUThrottlingRates.EXTRA_SLOW);
+
+      SDK.CPUThrottlingManager.CPUThrottlingManager.instance().setCPUThrottlingRate(
+          SDK.CPUThrottlingManager.CPUThrottlingRates.NO_THROTTLING);
+      assert.strictEqual(
+          cpuThrottlingPresets[selector.selectedIndex()], SDK.CPUThrottlingManager.CPUThrottlingRates.NO_THROTTLING);
+    });
+  });
 });

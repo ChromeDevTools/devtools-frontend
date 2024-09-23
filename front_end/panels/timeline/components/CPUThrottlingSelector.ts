@@ -55,6 +55,7 @@ export class CPUThrottlingSelector extends HTMLElement {
     this.#shadow.adoptedStyleSheets = [cpuThrottlingSelectorStyles];
     SDK.CPUThrottlingManager.CPUThrottlingManager.instance().addEventListener(
         SDK.CPUThrottlingManager.Events.RATE_CHANGED, this.#onRateChange, this);
+    this.#onRateChange();
   }
 
   disconnectedCallback(): void {
@@ -62,8 +63,9 @@ export class CPUThrottlingSelector extends HTMLElement {
         SDK.CPUThrottlingManager.Events.RATE_CHANGED, this.#onRateChange, this);
   }
 
-  #onRateChange(event: {data: SDK.CPUThrottlingManager.EventTypes['RateChanged']}): void {
-    this.#currentRate = event.data;
+  #onRateChange(): void {
+    this.#currentRate = SDK.CPUThrottlingManager.CPUThrottlingManager.instance().cpuThrottlingRate();
+
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
 

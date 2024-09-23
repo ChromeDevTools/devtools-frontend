@@ -1658,7 +1658,7 @@ export class DataGridNode<T> {
   parent: DataGridNode<T>|null;
   previousSibling: DataGridNode<T>|null;
   nextSibling: DataGridNode<T>|null;
-  #disclosureToggleWidth: number = 15;
+  #disclosureToggleHitBoxWidth: number = 20;
   selectable: boolean;
   isRoot: boolean;
   nodeAccessibleText: string;
@@ -2363,7 +2363,7 @@ export class DataGridNode<T> {
     }
 
     const left = cell.getBoundingClientRect().left + this.leftPadding;
-    return event.pageX >= left && event.pageX <= left + this.#disclosureToggleWidth;
+    return event.pageX >= left && event.pageX <= left + this.#disclosureToggleHitBoxWidth;
   }
 
   private attach(): void {

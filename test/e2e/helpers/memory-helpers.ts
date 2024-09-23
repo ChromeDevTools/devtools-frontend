@@ -362,7 +362,8 @@ export async function getAddedCountFromComparisonRow(text: string) {
 export async function clickOnContextMenuForRetainer(retainerName: string, menuItem: string) {
   const retainersPane = await waitFor('.retaining-paths-view');
   const element = await waitFor(`//span[text()="${retainerName}"]`, retainersPane, undefined, 'xpath');
-  await clickElement(element, {clickOptions: {button: 'right'}});
+  // Push the click right a bit further to avoid the disclosure triangle.
+  await clickElement(element, {clickOptions: {button: 'right', offset: {x: 35, y: 0}}});
   const button = await waitForAria(menuItem);
   await clickElement(button);
 }

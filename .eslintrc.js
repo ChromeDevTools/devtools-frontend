@@ -197,6 +197,11 @@ module.exports = {
       'rulesdir/no_underscored_properties': 'error',
       'rulesdir/prefer_readonly_keyword': 'error',
       'rulesdir/inline_type_imports': 'error',
+      'rulesdir/enforce_default_import_name': ['error', {
+        // Enforce that any import of models/trace/trace.js names the import Trace.
+        modulePath: path.join(__dirname, 'front_end', 'models', 'trace', 'trace.js'),
+        importName: 'Trace'
+      }]
     }
   }, {
     files: 'test/shared/mocha-interface.ts',

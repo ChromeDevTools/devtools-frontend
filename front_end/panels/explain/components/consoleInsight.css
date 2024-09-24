@@ -17,7 +17,6 @@
 }
 
 .wrapper {
-  padding: var(--sys-size-6) var(--sys-size-8);
   background-color: var(--sys-color-cdt-base-container);
   border-radius: 16px;
   /* stylelint-disable-next-line property-no-unknown */
@@ -54,6 +53,7 @@
 
 .animation-wrapper {
   overflow: hidden;
+  padding: var(--sys-size-6) var(--sys-size-8);
 }
 
 .wrapper.top {

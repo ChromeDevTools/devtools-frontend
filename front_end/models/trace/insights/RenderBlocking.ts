@@ -150,7 +150,6 @@ function computeSavings(
 
 export function generateInsight(
     parsedTrace: RequiredData<typeof deps>, context: InsightSetContext): RenderBlockingInsightResult {
-  // TODO(crbug.com/366049346) make this work w/o a navigation.
   if (!context.navigation) {
     return {
       renderBlockingRequests: [],

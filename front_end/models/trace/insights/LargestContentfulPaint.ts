@@ -84,7 +84,6 @@ function breakdownPhases(
 }
 
 export function generateInsight(parsedTrace: RequiredData<typeof deps>, context: InsightSetContext): LCPInsightResult {
-  // TODO(crbug.com/366049346) make this work w/o a navigation.
   if (!context.navigation) {
     return {};
   }

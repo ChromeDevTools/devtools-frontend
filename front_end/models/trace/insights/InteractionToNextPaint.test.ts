@@ -25,7 +25,7 @@ describeWithEnvironment('InteractionToNextPaint', function() {
     it(`process ${traceFile}`, async () => {
       const {data} = await processTrace(this, traceFile);
       const navigation = getFirst(data.Meta.navigationsByNavigationId.values());
-      const context = navigation ? createContextForNavigation(navigation, data.Meta.mainFrameId) : {
+      const context = navigation ? createContextForNavigation(data, navigation, data.Meta.mainFrameId) : {
         bounds: data.Meta.traceBounds,
         frameId: data.Meta.mainFrameId,
       };

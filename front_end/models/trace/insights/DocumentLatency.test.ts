@@ -57,7 +57,7 @@ describeWithEnvironment('DocumentLatency', function() {
     }
 
     const navigation = getFirstOrError(data.Meta.navigationsByNavigationId.values());
-    const context = createContextForNavigation(navigation, data.Meta.mainFrameId);
+    const context = createContextForNavigation(data, navigation, data.Meta.mainFrameId);
     const insight = Trace.Insights.InsightRunners.DocumentLatency.generateInsight(data, context);
     assert.strictEqual(insight.data?.serverResponseTime, 1043);
     assert(insight.data?.serverResponseTooSlow);
@@ -91,7 +91,7 @@ describeWithEnvironment('DocumentLatency', function() {
     }
 
     const navigation = getFirstOrError(data.Meta.navigationsByNavigationId.values());
-    const context = createContextForNavigation(navigation, data.Meta.mainFrameId);
+    const context = createContextForNavigation(data, navigation, data.Meta.mainFrameId);
     const insight = Trace.Insights.InsightRunners.DocumentLatency.generateInsight(data, context);
     assert.strictEqual(insight.data?.uncompressedResponseBytes, 39799);
     assert.deepEqual(insight.metricSavings, {FCP: 0, LCP: 0});

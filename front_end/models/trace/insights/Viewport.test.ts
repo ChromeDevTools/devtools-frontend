@@ -28,7 +28,7 @@ describeWithEnvironment('Viewport', function() {
   it('detects mobile unoptimized viewport', async () => {
     const {data} = await processTrace(this, 'lcp-images.json.gz');
     const navigation = getFirstOrError(data.Meta.navigationsByNavigationId.values());
-    const context = createContextForNavigation(navigation, data.Meta.mainFrameId);
+    const context = createContextForNavigation(data, navigation, data.Meta.mainFrameId);
     const events =
         data.UserInteractions.beginCommitCompositorFrameEvents.filter(event => event.args.frame === context.frameId);
     assert.isNotEmpty(events);

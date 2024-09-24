@@ -18,6 +18,7 @@ generate_css("css_files") {
 
 devtools_module("freestyler") {
   sources = [
+    "AiAgent.ts",
     "ChangeManager.ts",
     "DrJonesNetworkAgent.ts",
     "ExtensionScope.ts",

@@ -7,6 +7,15 @@ import * as Host from '../../core/host/host.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 import * as Logs from '../../models/logs/logs.js';
 
+import {
+  type AidaRequestOptions,
+  type ContextDetail,
+  ErrorType,
+  type HistoryChunk,
+  type ResponseData,
+  ResponseType,
+} from './AiAgent.js';
+
 /* clang-format off */
 const preamble = `You are the most advanced network request debugging assistant integrated into Chrome DevTools.
 The user selected a network request in the browser's DevTools Network Panel and sends a query to understand the request.
@@ -81,64 +90,10 @@ const UIStringsTemp = {
 
 };
 
-export enum DrJonesNetworkAgentResponseType {
-  ANSWER = 'answer',
-  TITLE = 'title',
-  THOUGHT = 'thought',
-  ERROR = 'error',
-}
-
-export interface ContextDetail {
-  title: string;
-  text: string;
-}
-
-export interface AnswerResponse {
-  type: DrJonesNetworkAgentResponseType.ANSWER;
-  text: string;
-  rpcId?: number;
-}
-
-export interface ErrorResponse {
-  type: DrJonesNetworkAgentResponseType.ERROR;
-  rpcId?: number;
-}
-
-export interface TitleResponse {
-  type: DrJonesNetworkAgentResponseType.TITLE;
-  title: string;
-  rpcId?: number;
-}
-
-export interface ThoughtResponse {
-  type: DrJonesNetworkAgentResponseType.THOUGHT;
-  thought: string;
-  contextDetails: ContextDetail[];
-  rpcId?: number;
-}
-
-export type ResponseData = AnswerResponse|ErrorResponse|ThoughtResponse|TitleResponse;
-
-type HistoryChunk = {
-  text: string,
-  entity: Host.AidaClient.Entity,
-};
-
 type AgentOptions = {
   aidaClient: Host.AidaClient.AidaClient,
   serverSideLoggingEnabled?: boolean,
 };
-
-interface AidaRequestOptions {
-  input: string;
-  preamble?: string;
-  chatHistory?: Host.AidaClient.Chunk[];
-  /**
-   * @default false
-   */
-  serverSideLoggingEnabled?: boolean;
-  sessionId?: string;
-}
 
 /**
  * One agent instance handles one conversation. Create a new agent
@@ -231,12 +186,12 @@ export class DrJonesNetworkAgent {
     let rpcId: number|undefined;
     try {
       yield {
-        type: DrJonesNetworkAgentResponseType.TITLE,
+        type: ResponseType.TITLE,
         title: UIStringsTemp.inspectingNetworkData,
         rpcId,
       };
       yield {
-        type: DrJonesNetworkAgentResponseType.THOUGHT,
+        type: ResponseType.THOUGHT,
         thought: UIStringsTemp.dataUsedToGenerateThisResponse,
         contextDetails: createContextDetailsForDrJonesNetworkAgent(options.selectedNetworkRequest),
         rpcId,
@@ -252,7 +207,8 @@ export class DrJonesNetworkAgent {
       }
 
       yield {
-        type: DrJonesNetworkAgentResponseType.ERROR,
+        type: ResponseType.ERROR,
+        error: ErrorType.UNKNOWN,
         rpcId,
       };
       return;
@@ -285,8 +241,10 @@ export class DrJonesNetworkAgent {
     const currentRunEntries = this.#chatHistory.get(currentRunId) ?? [];
     addToHistory(response);
     yield {
-      type: DrJonesNetworkAgentResponseType.ANSWER,
+      type: ResponseType.ANSWER,
       text: response,
+      // TODO: Remove this need.
+      fixable: false,
       rpcId,
     };
     if (isDebugMode()) {

@@ -1377,6 +1377,7 @@ grd_files_debug_sources = [
   "front_end/panels/explain/components/ConsoleInsight.js",
   "front_end/panels/explain/components/consoleInsight.css.js",
   "front_end/panels/explain/components/consoleInsightSourcesList.css.js",
+  "front_end/panels/freestyler/AiAgent.js",
   "front_end/panels/freestyler/ChangeManager.js",
   "front_end/panels/freestyler/DrJonesNetworkAgent.js",
   "front_end/panels/freestyler/ExtensionScope.js",

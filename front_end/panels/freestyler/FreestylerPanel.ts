@@ -9,6 +9,7 @@ import * as NetworkForward from '../../panels/network/forward/forward.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as LitHtml from '../../ui/lit-html/lit-html.js';
 
+import {ErrorType, ResponseType} from './AiAgent.js';
 import {ChangeManager} from './ChangeManager.js';
 import {
   AgentType,
@@ -22,9 +23,8 @@ import {
 } from './components/FreestylerChatUi.js';
 import {
   DrJonesNetworkAgent,
-  DrJonesNetworkAgentResponseType,
 } from './DrJonesNetworkAgent.js';
-import {ErrorType, FreestylerAgent, ResponseType} from './FreestylerAgent.js';
+import {FreestylerAgent} from './FreestylerAgent.js';
 import freestylerPanelStyles from './freestylerPanel.css.js';
 
 /*
@@ -438,14 +438,14 @@ export class FreestylerPanel extends UI.Panel.Panel {
     for await (const data of this.#drJonesNetworkAgent.run(
         text, {signal, selectedNetworkRequest: this.#viewProps.selectedNetworkRequest})) {
       switch (data.type) {
-        case DrJonesNetworkAgentResponseType.TITLE: {
+        case ResponseType.TITLE: {
           step.title = data.title;
           if (systemMessage.steps.at(-1) !== step) {
             systemMessage.steps.push(step);
           }
           break;
         }
-        case DrJonesNetworkAgentResponseType.THOUGHT: {
+        case ResponseType.THOUGHT: {
           step.isLoading = false;
           step.thought = data.thought;
           step.contextDetails = data.contextDetails;
@@ -455,7 +455,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
           break;
         }
 
-        case DrJonesNetworkAgentResponseType.ANSWER: {
+        case ResponseType.ANSWER: {
           systemMessage.answer = data.text;
           systemMessage.rpcId = data.rpcId;
           step.isLoading = false;
@@ -463,7 +463,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
           break;
         }
 
-        case DrJonesNetworkAgentResponseType.ERROR: {
+        case ResponseType.ERROR: {
           step.isLoading = false;
           systemMessage.error = ErrorType.UNKNOWN;
           this.#viewProps.isLoading = false;

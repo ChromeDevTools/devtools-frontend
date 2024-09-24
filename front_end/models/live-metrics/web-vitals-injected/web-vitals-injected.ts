@@ -113,6 +113,12 @@ function initialize(): void {
     const event: Spec.LCPChangeEvent = {
       name: 'LCP',
       value: metric.value,
+      phases: {
+        timeToFirstByte: metric.attribution.timeToFirstByte,
+        resourceLoadDelay: metric.attribution.resourceLoadDelay,
+        resourceLoadTime: metric.attribution.resourceLoadDuration,
+        elementRenderDelay: metric.attribution.elementRenderDelay,
+      },
     };
 
     const element = metric.attribution.lcpEntry?.element;

@@ -45,6 +45,16 @@ function getEnvironmentRecs(view: Element): string[] {
   return recs.map(rec => rec.textContent!);
 }
 
+function getPhaseTable(view: Element): string[][]|null {
+  const phaseTable = view.shadowRoot!.querySelector('.phase-table');
+  if (!phaseTable) {
+    return null;
+  }
+
+  const rowEls = Array.from(phaseTable.querySelectorAll('.phase-table-row:not(.phase-table-header-row)'));
+  return rowEls.map(rowEl => Array.from(rowEl.querySelectorAll('[role="cell"]')).map(cellEl => cellEl.textContent!));
+}
+
 function createMockHistogram() {
   // start/end values aren't actually used but they are filled out just in case
   // the histogram is therefore usable by all metrics
@@ -165,6 +175,49 @@ describeWithMockConnection('MetricCard', () => {
     assert.match(histogramLabels[0], /Good\s+\(≤2.50 s\)/);
     assert.match(histogramLabels[1], /Needs improvement\s+\(2.50 s-4.00 s\)/);
     assert.match(histogramLabels[2], /Poor\s+\(>4.00 s\)/);
+  });
+
+  describe('phase table', () => {
+    it('should not show if there is no phase data', async () => {
+      const view = new Components.MetricCard.MetricCard();
+      view.data = {
+        metric: 'LCP',
+        localValue: 100,
+        fieldValue: 200,
+        histogram: createMockHistogram(),
+      };
+      renderElementIntoDOM(view);
+
+      await coordinator.done();
+
+      const phaseTable = getPhaseTable(view);
+      assert.isNull(phaseTable);
+    });
+
+    it('should display phases in a table format', async () => {
+      const view = new Components.MetricCard.MetricCard();
+      view.data = {
+        metric: 'LCP',
+        localValue: 100,
+        fieldValue: 200,
+        histogram: createMockHistogram(),
+        phases: [
+          ['TTFB', 500],
+          ['Phase 1', 0],
+          ['Phase 2', 123.783458345],
+        ],
+      };
+      renderElementIntoDOM(view);
+
+      await coordinator.done();
+
+      const phaseTable = getPhaseTable(view);
+      assert.deepStrictEqual(phaseTable, [
+        ['TTFB', '500'],
+        ['Phase 1', '0'],
+        ['Phase 2', '124'],
+      ]);
+    });
   });
 
   describe('field data', () => {

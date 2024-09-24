@@ -138,6 +138,7 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
       case 'LCP': {
         const lcpEvent: LCPValue = {
           value: webVitalsEvent.value,
+          phases: webVitalsEvent.phases,
         };
         if (webVitalsEvent.nodeIndex !== undefined) {
           const node = await this.#resolveDomNode(webVitalsEvent.nodeIndex, executionContextId);
@@ -389,6 +390,7 @@ export const enum Events {
 export type MetricValue = Pick<Spec.MetricChangeEvent, 'value'>;
 
 export interface LCPValue extends MetricValue {
+  phases: Spec.LCPPhases;
   node?: SDK.DOMModel.DOMNode;
 }
 

@@ -9,8 +9,16 @@ export const INTERNAL_KILL_SWITCH = '__chromium_devtools_kill_live_metrics';
 
 export type MetricChangeEvent = Pick<MetricType, 'name'|'value'>;
 
+export interface LCPPhases {
+  timeToFirstByte: number;
+  resourceLoadDelay: number;
+  resourceLoadTime: number;
+  elementRenderDelay: number;
+}
+
 export interface LCPChangeEvent extends MetricChangeEvent {
   name: 'LCP';
+  phases: LCPPhases;
   nodeIndex?: number;
 }
 

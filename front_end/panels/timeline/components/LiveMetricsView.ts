@@ -218,6 +218,22 @@ const UIStrings = {
    * @description Title for an expandable section that contains more information about real user environments. This message is meant to prompt the user to understand the conditions experienced by real users.
    */
   considerRealUser: 'Consider real user environments',
+  /**
+   * @description Title for a page load phase that measures the time between when the page load starts and the time when the first byte of the initial document is downloaded.
+   */
+  timeToFirstByte: 'Time to first byte',
+  /**
+   * @description Title for a page load phase that measures the time between when the first byte of the initial document is downloaded and when the request for the largest image content starts.
+   */
+  resourceLoadDelay: 'Resource load delay',
+  /**
+   * @description Title for a page load phase that measures the time between when the request for the largest image content starts and when it finishes.
+   */
+  resourceLoadDuration: 'Resource load duration',
+  /**
+   * @description Title for a page load phase that measures the time between when the request for the largest image content finishes and when the largest image element is rendered on the page.
+   */
+  elementRenderDelay: 'Element render delay',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/LiveMetricsView.ts', UIStrings);
@@ -362,6 +378,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
   #renderLcpCard(): LitHtml.LitTemplate {
     const fieldData = this.#getFieldMetricData('largest_contentful_paint');
     const node = this.#lcpValue?.node;
+    const phases = this.#lcpValue?.phases;
 
     // clang-format off
     return html`
@@ -371,6 +388,12 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
         fieldValue: fieldData?.percentiles?.p75,
         histogram: fieldData?.histogram,
         tooltipContainer: this.#tooltipContainerEl,
+        phases: phases && [
+          [i18nString(UIStrings.timeToFirstByte), phases.timeToFirstByte],
+          [i18nString(UIStrings.resourceLoadDelay), phases.resourceLoadDelay],
+          [i18nString(UIStrings.resourceLoadDuration), phases.resourceLoadTime],
+          [i18nString(UIStrings.elementRenderDelay), phases.elementRenderDelay],
+        ],
       } as MetricCardData}>
         ${node ? html`
             <div class="related-element-info" slot="extra-info">

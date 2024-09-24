@@ -209,6 +209,10 @@ export class Button extends HTMLElement {
     this.#render();
   }
 
+  get disabled(): boolean {
+    return this.#props.disabled;
+  }
+
   set disabled(disabled: boolean) {
     this.#setDisabledProperty(disabled);
     this.#render();

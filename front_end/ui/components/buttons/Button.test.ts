@@ -46,6 +46,14 @@ describe('Button', () => {
     assert.strictEqual(clicks, expectedClickCount);
   }
 
+  it('changes to `disabled` state are reflect in the property', () => {
+    const button = renderButton();
+    button.disabled = false;
+    assert.isFalse(button.disabled);
+    button.disabled = true;
+    assert.isTrue(button.disabled);
+  });
+
   it('primary button can be clicked', () => {
     testClick({
       variant: Buttons.Button.Variant.PRIMARY,

@@ -11,9 +11,14 @@ import styles from './entryLabelOverlay.css.js';
 
 const UIStrings = {
   /**
-   *@description Accessible label used to explain to a user that they are viewing an entry label.
+   * @description Accessible label used to explain to a user that they are viewing an entry label.
    */
   entryLabel: 'Entry label',
+  /**
+   *@description Accessible label used to prompt the user to input text into the field.
+   */
+  inputTextPrompt: 'Enter an annotation label',
+
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/overlays/components/EntryLabelOverlay.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -100,8 +105,9 @@ export class EntryLabelOverlay extends HTMLElement {
     // In that case, do not auto-focus it as if the user were creating it for the first time
     if (label !== '') {
       this.setLabelEditabilityAndRemoveEmptyLabel(false);
-      this.#inputField?.setAttribute('aria-label', this.#label);
     }
+    const ariaLabel = label === '' ? i18nString(UIStrings.inputTextPrompt) : label;
+    this.#inputField?.setAttribute('aria-label', ariaLabel);
 
     this.#drawConnector();
   }

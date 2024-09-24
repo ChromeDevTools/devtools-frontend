@@ -10,7 +10,7 @@ import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as Insights from './insights/insights.js';
 import {type ActiveInsight} from './Sidebar.js';
 import styles from './sidebarInsightsTab.css.js';
-import {SidebarSingleNavigation, type SidebarSingleNavigationData} from './SidebarSingleNavigation.js';
+import {SidebarSingleInsightSet, type SidebarSingleInsightSetData} from './SidebarSingleInsightSet.js';
 
 export enum InsightsCategories {
   ALL = 'All',
@@ -102,8 +102,8 @@ export class SidebarInsightsTab extends HTMLElement {
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
 
-  #navigationClicked(id: string): void {
-    // New navigation clicked. Update the active insight.
+  #insightSetClicked(id: string): void {
+    // Update the active insight set.
     if (id !== this.#activeInsight?.insightSetKey) {
       this.dispatchEvent(new Insights.SidebarInsight.InsightDeactivated());
     }
@@ -111,13 +111,13 @@ export class SidebarInsightsTab extends HTMLElement {
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
 
-  #navigationHovered(id: string): void {
+  #insightSetHovered(id: string): void {
     const data = this.#insights?.get(id);
-    data && this.dispatchEvent(new Insights.SidebarInsight.NavigationBoundsHovered(data.bounds));
+    data && this.dispatchEvent(new Insights.SidebarInsight.InsightSetHovered(data.bounds));
   }
 
-  #navigationUnhovered(): void {
-    this.dispatchEvent(new Insights.SidebarInsight.NavigationBoundsHovered());
+  #insightSetUnhovered(): void {
+    this.dispatchEvent(new Insights.SidebarInsight.InsightSetHovered());
   }
 
   #render(): void {
@@ -143,7 +143,7 @@ export class SidebarInsightsTab extends HTMLElement {
         })}
       </select>
 
-      <div class="navigations-wrapper">
+      <div class="insight-sets-wrapper">
         ${this.#insightSets.map(({id, label}) => {
           const data = {
             parsedTrace: this.#parsedTrace,
@@ -154,20 +154,19 @@ export class SidebarInsightsTab extends HTMLElement {
           };
 
           const contents = LitHtml.html`
-            <${SidebarSingleNavigation.litTagName}
-              .data=${data as SidebarSingleNavigationData}>
-            </${SidebarSingleNavigation.litTagName}>
+            <${SidebarSingleInsightSet.litTagName}
+              .data=${data as SidebarSingleInsightSetData}>
+            </${SidebarSingleInsightSet.litTagName}>
           `;
 
           if (hasMultipleInsightSets) {
             return LitHtml.html`<details
               ?open=${id === this.#insightSetKey}
-              class="navigation-wrapper"
             >
               <summary
-                @click=${() => this.#navigationClicked(id)}
-                @mouseenter=${() => this.#navigationHovered(id)}
-                @mouseleave=${() => this.#navigationUnhovered()}
+                @click=${() => this.#insightSetClicked(id)}
+                @mouseenter=${() => this.#insightSetHovered(id)}
+                @mouseleave=${() => this.#insightSetUnhovered()}
                 >${label}</summary>
               ${contents}
             </details>`;

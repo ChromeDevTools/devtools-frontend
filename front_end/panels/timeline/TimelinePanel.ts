@@ -549,7 +549,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       this.flameChart.revealAnnotation(event.annotation);
     });
 
-    this.#sideBar.element.addEventListener(TimelineInsights.SidebarInsight.NavigationBoundsHovered.eventName, event => {
+    this.#sideBar.element.addEventListener(TimelineInsights.SidebarInsight.InsightSetHovered.eventName, event => {
       if (event.bounds) {
         this.#minimapComponent.highlightBounds(event.bounds);
       } else {

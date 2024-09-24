@@ -78,4 +78,4 @@ override connectedCallback(): void {
 
 ## 5. Render!
 
-Add your insight to the UI in `SidebarSingleNavigation.ts` in the `#renderInsights` method.
+Add your insight to the UI in `SidebarSingleInsightSet.ts` in the `#renderInsights` method.

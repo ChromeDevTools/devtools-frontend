@@ -22,7 +22,7 @@ generate_css("css_files") {
     "networkThrottlingSelector.css",
     "sidebarAnnotationsTab.css",
     "sidebarInsightsTab.css",
-    "sidebarSingleNavigation.css",
+    "sidebarSingleInsightSet.css",
   ]
 }
 
@@ -46,7 +46,7 @@ devtools_module("components") {
     "Sidebar.ts",
     "SidebarAnnotationsTab.ts",
     "SidebarInsightsTab.ts",
-    "SidebarSingleNavigation.ts",
+    "SidebarSingleInsightSet.ts",
     "Utils.ts",
   ]
 

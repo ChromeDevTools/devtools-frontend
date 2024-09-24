@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// TODO(crbug.com/366049346): rename file
-
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Trace from '../../../models/trace/trace.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
@@ -13,9 +11,9 @@ import {type BaseInsight} from './insights/Helpers.js';
 import * as Insights from './insights/insights.js';
 import {type ActiveInsight, EventReferenceClick} from './Sidebar.js';
 import {InsightsCategories} from './SidebarInsightsTab.js';
-import styles from './sidebarSingleNavigation.css.js';
+import styles from './sidebarSingleInsightSet.css.js';
 
-export interface SidebarSingleNavigationData {
+export interface SidebarSingleInsightSetData {
   parsedTrace: Trace.Handlers.Types.ParsedTrace|null;
   insights: Trace.Insights.Types.TraceInsightSets|null;
   insightSetKey: string|null;
@@ -23,12 +21,12 @@ export interface SidebarSingleNavigationData {
   activeInsight: ActiveInsight|null;
 }
 
-export class SidebarSingleNavigation extends HTMLElement {
+export class SidebarSingleInsightSet extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-performance-sidebar-single-navigation`;
   readonly #shadow = this.attachShadow({mode: 'open'});
   #renderBound = this.#render.bind(this);
 
-  #data: SidebarSingleNavigationData = {
+  #data: SidebarSingleInsightSetData = {
     parsedTrace: null,
     insights: null,
     insightSetKey: null,
@@ -36,7 +34,7 @@ export class SidebarSingleNavigation extends HTMLElement {
     activeInsight: null,
   };
 
-  set data(data: SidebarSingleNavigationData) {
+  set data(data: SidebarSingleInsightSetData) {
     this.#data = data;
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#renderBound);
   }
@@ -215,8 +213,8 @@ export class SidebarSingleNavigation extends HTMLElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'devtools-performance-sidebar-single-navigation': SidebarSingleNavigation;
+    'devtools-performance-sidebar-single-navigation': SidebarSingleInsightSet;
   }
 }
 
-customElements.define('devtools-performance-sidebar-single-navigation', SidebarSingleNavigation);
+customElements.define('devtools-performance-sidebar-single-navigation', SidebarSingleInsightSet);

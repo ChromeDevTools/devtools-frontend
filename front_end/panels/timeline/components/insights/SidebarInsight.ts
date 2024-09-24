@@ -47,10 +47,10 @@ export class InsightDeactivated extends Event {
   }
 }
 
-export class NavigationBoundsHovered extends Event {
+export class InsightSetHovered extends Event {
   static readonly eventName = 'navigationhovered';
   constructor(public bounds?: Trace.Types.Timing.TraceWindowMicroSeconds) {
-    super(NavigationBoundsHovered.eventName, {bubbles: true, composed: true});
+    super(InsightSetHovered.eventName, {bubbles: true, composed: true});
   }
 }
 
@@ -66,7 +66,7 @@ declare global {
   interface GlobalEventHandlersEventMap {
     [InsightActivated.eventName]: InsightActivated;
     [InsightDeactivated.eventName]: InsightDeactivated;
-    [NavigationBoundsHovered.eventName]: NavigationBoundsHovered;
+    [InsightSetHovered.eventName]: InsightSetHovered;
     [InsightOverlayOverride.eventName]: InsightOverlayOverride;
   }
 }

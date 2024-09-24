@@ -3,10 +3,11 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../core/i18n/i18n.js';
-import type * as Trace from '../../models/trace/trace.js';
+import * as Trace from '../../models/trace/trace.js';
+import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 
-import {buildGroupStyle, buildTrackHeader, getFormattedTime} from './AppenderUtils.js';
+import {addDecorationToEvent, buildGroupStyle, buildTrackHeader, getFormattedTime} from './AppenderUtils.js';
 import {
   type CompatibilityTracksAppender,
   type HighlightedEntryInfo,
@@ -30,6 +31,7 @@ export class AnimationsTrackAppender implements TrackAppender {
 
   #compatibilityBuilder: CompatibilityTracksAppender;
   #parsedTrace: Readonly<Trace.Handlers.Types.ParsedTrace>;
+  #eventAppendedCallback = this.#eventAppendedCallbackFunction.bind(this);
 
   constructor(compatibilityBuilder: CompatibilityTracksAppender, parsedTrace: Trace.Handlers.Types.ParsedTrace) {
     this.#compatibilityBuilder = compatibilityBuilder;
@@ -42,7 +44,8 @@ export class AnimationsTrackAppender implements TrackAppender {
       return trackStartLevel;
     }
     this.#appendTrackHeaderAtLevel(trackStartLevel, expanded);
-    return this.#compatibilityBuilder.appendEventsAtLevel(animations, trackStartLevel, this);
+    return this.#compatibilityBuilder.appendEventsAtLevel(
+        animations, trackStartLevel, this, this.#eventAppendedCallback);
   }
 
   #appendTrackHeaderAtLevel(currentLevel: number, expanded?: boolean): void {
@@ -51,6 +54,18 @@ export class AnimationsTrackAppender implements TrackAppender {
         VisualLoggingTrackName.ANIMATIONS, currentLevel, i18nString(UIStrings.animations), style,
         /* selectable= */ true, expanded);
     this.#compatibilityBuilder.registerTrackForGroup(group, this);
+  }
+
+  #eventAppendedCallbackFunction(event: Trace.Types.Events.Event, index: number): void {
+    if (event && Trace.Types.Events.isSyntheticAnimation(event)) {
+      const CLSInsight = Trace.Insights.InsightRunners.CumulativeLayoutShift;
+      const failures = CLSInsight.getNonCompositedFailure(event);
+      if (failures.length) {
+        addDecorationToEvent(this.#compatibilityBuilder.getFlameChartTimelineData(), index, {
+          type: PerfUI.FlameChart.FlameChartDecorationType.WARNING_TRIANGLE,
+        });
+      }
+    }
   }
 
   colorForEvent(): string {

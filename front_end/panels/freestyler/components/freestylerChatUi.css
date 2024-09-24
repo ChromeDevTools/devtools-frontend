@@ -75,7 +75,10 @@
 }
 
 .chat-input {
-  --right-padding: calc(var(--sys-size-4) + 26px); /* Gap between the button and the edge + icon's width */
+  --right-padding:
+    calc(
+      var(--sys-size-4) + 26px
+    ); /* Gap between the button and the edge + icon's width */
 
   scrollbar-width: none;
   field-sizing: content; /* stylelint-disable-line property-no-unknown */
@@ -88,9 +91,7 @@
   line-height: 18px;
   min-height: var(--sys-size-11);
   padding:
-    var(--sys-size-4)
-    var(--right-padding)
-    var(--sys-size-4)
+    var(--sys-size-4) var(--right-padding) var(--sys-size-4)
     var(--sys-size-4);
   color: var(--sys-color-on-surface);
   background-color: var(--sys-color-cdt-base-container);
@@ -190,7 +191,7 @@
   }
 
   .aborted {
-    color: var(--sys-color-state-disabled);
+    color: var(--sys-color-on-surface-subtle);
   }
 }
 

@@ -269,8 +269,15 @@ export class FreestylerAgent {
     return request;
   }
 
-  static parseResponse(response: string):
-      {thought?: string, title?: string, action?: string, answer?: string, fixable: boolean} {
+  static parseResponse(response: string): {
+    thought?: string,
+    title?: string,
+    action?: string,
+  }|{
+  answer:
+    string, fixable: boolean,
+  }
+  {
     const lines = response.split('\n');
     let thought: string|undefined;
     let title: string|undefined;
@@ -334,12 +341,35 @@ export class FreestylerAgent {
         i++;
       }
     }
+
+    // Sometimes the answer will follow an action and a thought. In
+    // that case, we only use the action and the thought (if present)
+    // since the answer is not based on the observation resulted from
+    // the action.
+    if (action) {
+      return {
+        title,
+        thought,
+        action,
+      };
+    }
+
+    // If we have a thought and an answer we want to give priority
+    // to the answer as no observation is happening.
+    if (thought && !answer) {
+      return {
+        title,
+        thought,
+      };
+    }
+
     // If we could not parse the parts, consider the response to be an
     // answer.
-    if (!answer && !thought && !action) {
+    if (!answer) {
       answer = response;
     }
-    return {thought, title, action, answer, fixable};
+
+    return {answer, fixable};
   }
 
   #aidaClient: Host.AidaClient.AidaClient;
@@ -622,36 +652,64 @@ export class FreestylerAgent {
         ]);
       };
       const currentRunEntries = this.#chatHistory.get(currentRunId) ?? [];
-      const {thought, title, action, answer, fixable} = FreestylerAgent.parseResponse(response);
-      // Sometimes the answer will follow an action and a thought. In
-      // that case, we only use the action and the thought (if present)
-      // since the answer is not based on the observation resulted from
-      // the action.
-      if (action) {
-        if (title) {
+      const parsedResponse = FreestylerAgent.parseResponse(response);
+
+      if ('answer' in parsedResponse) {
+        const {
+          answer,
+          fixable,
+        } = parsedResponse;
+        if (answer) {
+          addToHistory(`ANSWER: ${answer}`);
           yield {
-            type: ResponseType.TITLE,
-            title,
+            type: ResponseType.ANSWER,
+            text: answer,
+            rpcId,
+            fixable,
+          };
+        } else {
+          yield {
+            type: ResponseType.ERROR,
+            error: ErrorType.UNKNOWN,
             rpcId,
           };
         }
 
-        if (thought) {
-          addToHistory(`THOUGHT: ${thought}
+        break;
+      }
+
+      const {
+        title,
+        thought,
+        action,
+      } = parsedResponse;
+
+      if (title) {
+        yield {
+          type: ResponseType.TITLE,
+          title,
+          rpcId,
+        };
+      }
+
+      if (thought) {
+        addToHistory(`THOUGHT: ${thought}
 TITLE: ${title}
 ACTION
 ${action}
 STOP`);
-          yield {
-            type: ResponseType.THOUGHT,
-            thought,
-            rpcId,
-          };
-        } else {
-          addToHistory(`ACTION
+        yield {
+          type: ResponseType.THOUGHT,
+          thought,
+          rpcId,
+        };
+      } else {
+        addToHistory(`ACTION
 ${action}
 STOP`);
-        }
+      }
+
+      if (action) {
         debugLog(`Action to execute: ${action}`);
         const scope = this.#createExtensionScope(this.#changes);
         await scope.install();
@@ -689,23 +747,6 @@ STOP`);
         } finally {
           await scope.uninstall();
         }
-      } else if (answer) {
-        addToHistory(`ANSWER: ${answer}`);
-        yield {
-          type: ResponseType.ANSWER,
-          text: answer,
-          rpcId,
-          fixable,
-        };
-        break;
-      } else {
-        addToHistory(response);
-        yield {
-          type: ResponseType.ERROR,
-          error: ErrorType.UNKNOWN,
-          rpcId,
-        };
-        break;
       }
 
       if (i === MAX_STEPS - 1) {

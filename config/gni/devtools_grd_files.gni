@@ -1779,6 +1779,7 @@ grd_files_debug_sources = [
   "front_end/panels/timeline/components/EntryStyles.js",
   "front_end/panels/timeline/components/FieldSettingsDialog.js",
   "front_end/panels/timeline/components/InteractionBreakdown.js",
+  "front_end/panels/timeline/components/LayoutShiftClusterDetails.js",
   "front_end/panels/timeline/components/LayoutShiftDetails.js",
   "front_end/panels/timeline/components/LiveMetricsView.js",
   "front_end/panels/timeline/components/MetricCard.js",

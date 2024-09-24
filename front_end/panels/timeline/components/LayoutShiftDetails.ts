@@ -23,13 +23,13 @@ const UIStrings = {
    */
   insight: 'Insight',
   /**
-   * @description Title for a Layout Shift event insight.
+   * @description Title for a Layout shift event insight.
    */
-  layoutShiftCulprits: 'Layout Shift culprits',
+  layoutShiftCulprits: 'Layout shift culprits',
   /**
-   * @description Text indicating a Layout Shift.
+   * @description Text indicating a Layout shift.
    */
-  layoutShift: 'Layout Shift',
+  layoutShift: 'Layout shift',
   /**
    * @description Text for a table header referring to the start time of a Layout Shift event.
    */
@@ -98,17 +98,20 @@ export class LayoutShiftDetails extends HTMLElement {
       return null;
     }
 
+    // clang-format off
     return LitHtml.html`
       <div class="timeline-details-chip-decorative-title">
-        <div class="insight-keyword">${UIStrings.insight}</div>${UIStrings.layoutShiftCulprits}</div>
+        <div class="insight-keyword">${i18nString(UIStrings.insight)} </div>${i18nString(UIStrings.layoutShiftCulprits)}
+      </div>
     `;
+    // clang-format on
   }
 
   #renderDetailsChip(): LitHtml.TemplateResult {
     return LitHtml.html`
       <div class="layout-shift-details-title">
         <div class="layout-shift-event-chip"></div>
-        ${UIStrings.layoutShift}
+        ${i18nString(UIStrings.layoutShift)}
       </div>
     `;
   }

@@ -64,3 +64,40 @@
 .devtools-link.invalid-link {
   color: var(--sys-color-state-disabled);
 }
+
+.cluster-details-title {
+  padding: var(--sys-size-5);
+  display: flex;
+  align-items: center;
+
+  .cluster-event-chip {
+    background-color: var(--app-color-rendering);
+    width: var(--sys-size-6);
+    height: var(--sys-size-6);
+    border: var(--sys-size-1) solid var(--sys-color-divider);
+    display: inline-block;
+    margin-right: var(--sys-size-3);
+  }
+}
+
+.details-row {
+  display: flex;
+  padding: 0 var(--sys-size-5);
+  min-height: var(--sys-size-9);
+}
+
+.title {
+  color: var(--sys-color-token-subtle);
+  overflow: hidden;
+  padding-right: var(--sys-size-5);
+  display: inline-block;
+  vertical-align: top;
+}
+
+.value {
+  display: inline-block;
+  user-select: text;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  padding: 0 var(--sys-size-3);
+}

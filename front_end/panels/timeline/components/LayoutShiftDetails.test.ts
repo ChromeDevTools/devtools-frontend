@@ -21,9 +21,9 @@ describeWithMockConnection('LayoutShiftDetails', () => {
     const decorativeChip = details.shadowRoot.querySelector('.timeline-details-chip-decorative-title');
     assert.isNotNull(decorativeChip);
 
-    assert.include(decorativeChip?.textContent, 'Layout Shift culprits');
+    assert.include(decorativeChip?.textContent, 'Layout shift culprits');
     const eventTitle = details.shadowRoot.querySelector('.layout-shift-details-title');
-    assert.include(eventTitle?.textContent, 'Layout Shift');
+    assert.include(eventTitle?.textContent, 'Layout shift');
 
     const table = details.shadowRoot.querySelector('.layout-shift-details-table');
 

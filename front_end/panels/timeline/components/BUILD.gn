@@ -36,6 +36,7 @@ devtools_module("components") {
     "EntryStyles.ts",
     "FieldSettingsDialog.ts",
     "InteractionBreakdown.ts",
+    "LayoutShiftClusterDetails.ts",
     "LayoutShiftDetails.ts",
     "LiveMetricsView.ts",
     "MetricCard.ts",

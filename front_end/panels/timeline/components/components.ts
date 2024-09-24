@@ -10,6 +10,7 @@ import * as EntryName from './EntryName.js';
 import * as EntryStyles from './EntryStyles.js';
 import * as FieldSettingsDialog from './FieldSettingsDialog.js';
 import * as InteractionBreakdown from './InteractionBreakdown.js';
+import * as LayoutShiftClusterDetails from './LayoutShiftClusterDetails.js';
 import * as LayoutShiftDetails from './LayoutShiftDetails.js';
 import * as LiveMetricsView from './LiveMetricsView.js';
 import * as MetricCard from './MetricCard.js';
@@ -29,6 +30,7 @@ export {
   EntryStyles,
   FieldSettingsDialog,
   InteractionBreakdown,
+  LayoutShiftClusterDetails,
   LayoutShiftDetails,
   LiveMetricsView,
   MetricCard,

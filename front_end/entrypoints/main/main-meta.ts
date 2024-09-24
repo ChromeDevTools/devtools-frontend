@@ -74,11 +74,11 @@ const UIStrings = {
   /**
    *@description Title of a setting under the Appearance category that can be invoked through the Command Menu
    */
-  switchToBrowserPreferredColor: 'Switch to browser\'s preferred color theme',
+  switchToBrowserPreferredTheme: 'Switch to browser\'s preferred theme',
   /**
-   *@description A drop-down menu option to switch to the browser's preferred color theme
+   *@description A drop-down menu option to switch to the same (light or dark) theme as the browser
    */
-  browserPreference: 'Browser preference',
+  autoTheme: 'Auto',
   /**
    *@description Title of a setting under the Appearance category that can be invoked through the Command Menu
    */
@@ -592,8 +592,8 @@ Common.Settings.registerSettingExtension({
   reloadRequired: false,
   options: [
     {
-      title: i18nLazyString(UIStrings.switchToBrowserPreferredColor),
-      text: i18nLazyString(UIStrings.browserPreference),
+      title: i18nLazyString(UIStrings.switchToBrowserPreferredTheme),
+      text: i18nLazyString(UIStrings.autoTheme),
       value: 'systemPreferred',
     },
     {

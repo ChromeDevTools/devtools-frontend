@@ -14,9 +14,11 @@ import * as PreloadingComponents from './components.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
-async function renderRuleSetDetailsView(data: PreloadingComponents.RuleSetDetailsView.RuleSetDetailsViewData):
-    Promise<HTMLElement> {
+async function renderRuleSetDetailsView(
+    data: PreloadingComponents.RuleSetDetailsView.RuleSetDetailsViewData,
+    shouldPrettyPrint: boolean): Promise<HTMLElement> {
   const component = new PreloadingComponents.RuleSetDetailsView.RuleSetDetailsView();
+  component.shouldPrettyPrint = shouldPrettyPrint;
   component.data = data;
   renderElementIntoDOM(component);
   assert.isNotNull(component.shadowRoot);
@@ -29,7 +31,8 @@ describeWithEnvironment('RuleSetDetailsView', () => {
   it('renders nothing if not selected', async () => {
     const data = null;
 
-    const component = await renderRuleSetDetailsView(data);
+    const component = await renderRuleSetDetailsView(data, false);
+    await coordinator.done({waitForWork: true});
     assert.isNotNull(component.shadowRoot);
     assert.strictEqual(component.shadowRoot.textContent, '');
   });
@@ -50,7 +53,8 @@ describeWithEnvironment('RuleSetDetailsView', () => {
 `,
       backendNodeId: 1 as Protocol.DOM.BackendNodeId,
     };
-    const component = await renderRuleSetDetailsView(data);
+    const component = await renderRuleSetDetailsView(data, false);
+    await coordinator.done({waitForWork: true});
     assert.deepEqual(component.shadowRoot?.getElementById('error-message-text')?.textContent, undefined);
 
     const textEditor = component.shadowRoot?.querySelector('devtools-text-editor') as TextEditor.TextEditor.TextEditor;
@@ -74,7 +78,8 @@ describeWithEnvironment('RuleSetDetailsView', () => {
       url: 'https://example.com/speculationrules.json',
       requestId: 'reqeustId' as Protocol.Network.RequestId,
     };
-    const component = await renderRuleSetDetailsView(data);
+    const component = await renderRuleSetDetailsView(data, false);
+    await coordinator.done({waitForWork: true});
     assert.deepEqual(component.shadowRoot?.getElementById('error-message-text')?.textContent, undefined);
     const textEditor = component.shadowRoot?.querySelector('devtools-text-editor') as TextEditor.TextEditor.TextEditor;
     assert.strictEqual(textEditor.state.doc.toString(), data.sourceText);
@@ -94,7 +99,8 @@ describeWithEnvironment('RuleSetDetailsView', () => {
       errorType: Protocol.Preload.RuleSetErrorType.SourceIsNotJsonObject,
       errorMessage: 'Line: 6, column: 1, Syntax error.',
     };
-    const component = await renderRuleSetDetailsView(data);
+    const component = await renderRuleSetDetailsView(data, false);
+    await coordinator.done({waitForWork: true});
     assert.deepEqual(
         component.shadowRoot?.getElementById('error-message-text')?.textContent, 'Line: 6, column: 1, Syntax error.');
     const textEditor = component.shadowRoot?.querySelector('devtools-text-editor') as TextEditor.TextEditor.TextEditor;
@@ -118,11 +124,38 @@ describeWithEnvironment('RuleSetDetailsView', () => {
       errorType: Protocol.Preload.RuleSetErrorType.InvalidRulesSkipped,
       errorMessage: 'A list rule must have a "urls" array.',
     };
-    const component = await renderRuleSetDetailsView(data);
+    const component = await renderRuleSetDetailsView(data, false);
+    await coordinator.done({waitForWork: true});
     assert.deepEqual(
         component.shadowRoot?.getElementById('error-message-text')?.textContent,
         'A list rule must have a "urls" array.');
     const textEditor = component.shadowRoot?.querySelector('devtools-text-editor') as TextEditor.TextEditor.TextEditor;
     assert.strictEqual(textEditor.state.doc.toString(), data.sourceText);
+  });
+
+  it('renders formatted rule set', async () => {
+    const data: Protocol.Preload.RuleSet = {
+      id: 'ruleSetId:1' as Protocol.Preload.RuleSetId,
+      loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
+      sourceText: '{"prefetch":[{"source": "list","urls": ["/subresource.js"]}]}',
+      backendNodeId: 1 as Protocol.DOM.BackendNodeId,
+    };
+    const component = await renderRuleSetDetailsView(data, true);
+    await coordinator.done({waitForWork: true});
+    assert.deepEqual(component.shadowRoot?.getElementById('error-message-text')?.textContent, undefined);
+
+    const textEditor = component.shadowRoot?.querySelector('devtools-text-editor') as TextEditor.TextEditor.TextEditor;
+    // Formatted sourceText should be different from the data.sourceText in this case.
+    assert.notEqual(textEditor.state.doc.toString(), data.sourceText);
+    assert.strictEqual(textEditor.state.doc.toString(), `{
+    "prefetch": [
+        {
+            "source": "list",
+            "urls": [
+                "/subresource.js"
+            ]
+        }
+    ]
+}`);
   });
 });

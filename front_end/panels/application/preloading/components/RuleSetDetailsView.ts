@@ -5,6 +5,7 @@
 import {assertNotNullOrUndefined} from '../../../../core/platform/platform.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../../generated/protocol.js';
+import * as Formatter from '../../../../models/formatter/formatter.js';
 import * as CodeMirror from '../../../../third_party/codemirror.next/codemirror.next.js';
 import * as CodeHighlighter from '../../../../ui/components/code_highlighter/code_highlighter.js';
 import * as IconButton from '../../../../ui/components/icon_button/icon_button.js';
@@ -26,6 +27,7 @@ export type RuleSetDetailsViewData = RuleSet|null;
 export class RuleSetDetailsView extends LegacyWrapper.LegacyWrapper.WrappableComponent<UI.Widget.VBox> {
   readonly #shadow = this.attachShadow({mode: 'open'});
   #data: RuleSetDetailsViewData = null;
+  #shouldPrettyPrint: boolean = true;
   #editorState?: CodeMirror.EditorState;
 
   connectedCallback(): void {
@@ -37,7 +39,13 @@ export class RuleSetDetailsView extends LegacyWrapper.LegacyWrapper.WrappableCom
     void this.#render();
   }
 
+  set shouldPrettyPrint(shouldPrettyPrint: boolean) {
+    this.#shouldPrettyPrint = shouldPrettyPrint;
+  }
+
   async #render(): Promise<void> {
+    const sourceText = await this.#getSourceText();
+
     await coordinator.write('RuleSetDetailsView render', () => {
       if (this.#data === null) {
         LitHtml.render(LitHtml.nothing, this.#shadow, {host: this});
@@ -52,7 +60,7 @@ export class RuleSetDetailsView extends LegacyWrapper.LegacyWrapper.WrappableCom
           ${this.#maybeError()}
         </div>
         <div class="text-ellipsis">
-          ${this.#renderSource()}
+          ${this.#renderSource(sourceText)}
         </div>
       `, this.#shadow, {host: this});
       // clang-format on
@@ -85,27 +93,36 @@ export class RuleSetDetailsView extends LegacyWrapper.LegacyWrapper.WrappableCom
     // clang-format on
   }
 
-  #renderSource(): LitHtml.LitTemplate {
+  #renderSource(sourceText: string): LitHtml.LitTemplate {
     this.#editorState = CodeMirror.EditorState.create({
-      doc: this.#data?.sourceText,
+      doc: sourceText,
       extensions: [
-        TextEditor.Config.baseConfiguration(this.#data?.sourceText || ''),
+        TextEditor.Config.baseConfiguration(sourceText || ''),
         CodeMirror.lineNumbers(),
         CodeMirror.EditorState.readOnly.of(true),
         codeMirrorJsonType as CodeMirror.Extension,
         CodeMirror.syntaxHighlighting(CodeHighlighter.CodeHighlighter.highlightStyle),
       ],
     });
-
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     // TODO(https://crbug.com/1425354): Add Raw button.
-      return LitHtml.html`
-        <${TextEditor.TextEditor.TextEditor.litTagName} .style.flexGrow = '1' .state=${
-          this.#editorState
-        }></${TextEditor.TextEditor.TextEditor.litTagName}>
-      `;
+    return LitHtml.html`
+      <${TextEditor.TextEditor.TextEditor.litTagName} .style.flexGrow = '1' .state=${
+        this.#editorState
+      }></${TextEditor.TextEditor.TextEditor.litTagName}>
+    `;
     // clang-format on
+  }
+
+  async #getSourceText(): Promise<string> {
+    if (this.#shouldPrettyPrint && this.#data?.sourceText !== undefined) {
+      const formattedResult =
+          await Formatter.ScriptFormatter.formatScriptContent('application/json', this.#data.sourceText);
+      return formattedResult.formattedContent;
+    }
+
+    return this.#data?.sourceText || '';
   }
 }
 

@@ -564,7 +564,7 @@ c`;
         });
 
         promise.resolve(true);
-        await Array.fromAsync(agent.run('test', {selectedElement: element, isFixQuery: false}));
+        await Array.fromAsync(agent.run('test', {selectedElement: element}));
 
         sinon.assert.match(execJs.getCall(0).args[1], sinon.match({throwOnSideEffect: true}));
       });
@@ -603,7 +603,7 @@ c`;
 
         });
         promise.resolve(true);
-        await Array.fromAsync(agent.run('test', {selectedElement: element, isFixQuery: false}));
+        await Array.fromAsync(agent.run('test', {selectedElement: element}));
 
         assert.strictEqual(execJs.getCalls().length, 2);
         sinon.assert.match(execJs.getCall(1).args[1], sinon.match({throwOnSideEffect: false}));
@@ -642,48 +642,12 @@ c`;
 
         });
         promise.resolve(false);
-        const responses = await Array.fromAsync(agent.run('test', {selectedElement: element, isFixQuery: false}));
+        const responses = await Array.fromAsync(agent.run('test', {selectedElement: element}));
 
         const actionStep = responses.find(response => response.type === Freestyler.ResponseType.ACTION)!;
 
         assert.strictEqual(actionStep.output, 'Error: User denied code execution with side effects.');
         assert.strictEqual(execJs.getCalls().length, 1);
-      });
-
-      it('calls execJs with allowing side effects when the query includes "Fix this issue" prompt', async () => {
-        let count = 0;
-        async function* generateActionAndAnswer() {
-          if (count === 0) {
-            yield {
-              explanation: `ACTION
-              $0.style.backgroundColor = 'red'
-              STOP`,
-              metadata: {},
-              completed: true,
-            };
-          } else {
-            yield {
-              explanation: 'ANSWER: This is the answer',
-              metadata: {},
-              completed: true,
-            };
-          }
-
-          count++;
-        }
-        const execJs = sinon.mock().once();
-        const agent = new FreestylerAgent({
-          aidaClient: mockAidaClient(generateActionAndAnswer),
-          createExtensionScope,
-          execJs,
-
-        });
-
-        await Array.fromAsync(
-            agent.run(Freestyler.FIX_THIS_ISSUE_PROMPT, {selectedElement: element, isFixQuery: true}));
-
-        const optionsArg = execJs.lastCall.args[1];
-        sinon.assert.match(optionsArg, sinon.match({throwOnSideEffect: false}));
       });
     });
 
@@ -716,7 +680,7 @@ c`;
 
         });
 
-        const result = await Array.fromAsync(agent.run('test', {selectedElement: element, isFixQuery: false}));
+        const result = await Array.fromAsync(agent.run('test', {selectedElement: element}));
         const actionSteps = result.filter(step => {
           return step.type === Freestyler.ResponseType.ACTION;
         });
@@ -742,7 +706,7 @@ c`;
 
       });
 
-      const responses = await Array.fromAsync(agent.run('test', {selectedElement: element, isFixQuery: false}));
+      const responses = await Array.fromAsync(agent.run('test', {selectedElement: element}));
       assert.deepStrictEqual(responses, [
         {
           type: Freestyler.ResponseType.QUERYING,
@@ -784,7 +748,7 @@ c`;
 
       });
 
-      const responses = await Array.fromAsync(agent.run('test', {selectedElement: element, isFixQuery: false}));
+      const responses = await Array.fromAsync(agent.run('test', {selectedElement: element}));
       assert.deepStrictEqual(responses, [
         {
           type: Freestyler.ResponseType.QUERYING,
@@ -819,7 +783,7 @@ c`;
 
       });
 
-      const responses = await Array.fromAsync(agent.run('test', {selectedElement: element, isFixQuery: false}));
+      const responses = await Array.fromAsync(agent.run('test', {selectedElement: element}));
       assert.deepStrictEqual(responses, [
         {
           type: Freestyler.ResponseType.QUERYING,
@@ -853,7 +817,7 @@ c`;
 
       });
 
-      const responses = await Array.fromAsync(agent.run('test', {selectedElement: element, isFixQuery: false}));
+      const responses = await Array.fromAsync(agent.run('test', {selectedElement: element}));
       assert.deepStrictEqual(responses, [
         {
           type: Freestyler.ResponseType.QUERYING,
@@ -882,7 +846,7 @@ c`;
         execJs,
 
       });
-      const responses = await Array.fromAsync(agent.run('test', {selectedElement: element, isFixQuery: false}));
+      const responses = await Array.fromAsync(agent.run('test', {selectedElement: element}));
       assert.deepStrictEqual(responses, [
         {
           type: Freestyler.ResponseType.QUERYING,
@@ -939,7 +903,7 @@ ANSWER: this is the answer`,
         execJs,
 
       });
-      const responses = await Array.fromAsync(agent.run('test', {selectedElement: element, isFixQuery: false}));
+      const responses = await Array.fromAsync(agent.run('test', {selectedElement: element}));
       assert.deepStrictEqual(responses, [
         {
           type: Freestyler.ResponseType.QUERYING,
@@ -996,7 +960,7 @@ ANSWER: this is the answer`,
 
       });
 
-      await Array.fromAsync(agent.run('test', {selectedElement: element, isFixQuery: false}));
+      await Array.fromAsync(agent.run('test', {selectedElement: element}));
 
       assert.deepStrictEqual(agent.chatHistoryForTesting, [
         {
@@ -1065,8 +1029,7 @@ ANSWER: this is the answer`,
 
       const controller = new AbortController();
       controller.abort();
-      await Array.fromAsync(
-          agent.run('test', {selectedElement: element, signal: controller.signal, isFixQuery: false}));
+      await Array.fromAsync(agent.run('test', {selectedElement: element, signal: controller.signal}));
 
       assert.deepStrictEqual(agent.chatHistoryForTesting, []);
     });

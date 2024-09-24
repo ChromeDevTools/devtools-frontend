@@ -20,6 +20,7 @@ import {ErrorType} from '../FreestylerAgent.js';
 import freestylerChatUiStyles from './freestylerChatUi.css.js';
 import {ProvideFeedback, type ProvideFeedbackProps} from './ProvideFeedback.js';
 
+const FIX_THIS_ISSUE_PROMPT = 'Fix this issue using JavaScript code execution';
 const DOGFOOD_FEEDBACK_URL = 'https://goo.gle/freestyler-feedback' as Platform.DevToolsPath.UrlString;
 export const DOGFOOD_INFO = 'https://goo.gle/freestyler-dogfood' as Platform.DevToolsPath.UrlString;
 
@@ -240,7 +241,6 @@ export interface Props {
   onFeedbackSubmit: (rpcId: number, rate: Host.AidaClient.Rating, feedback?: string) => void;
   onAcceptConsentClick: () => void;
   onCancelClick: () => void;
-  onFixThisIssueClick: () => void;
   onSelectedNetworkRequestClick: () => void | Promise<void>;
   inspectElementToggled: boolean;
   state: State;
@@ -330,6 +330,15 @@ export class FreestylerChatUi extends HTMLElement {
     message.scrollIntoViewIfNeeded();
   }
 
+  #setInputText(text: string): void {
+    const textArea = this.#shadow.querySelector('.chat-input') as HTMLTextAreaElement;
+    if (!textArea) {
+      return;
+    }
+
+    textArea.value = text;
+  }
+
   #isTextInputDisabled = (): boolean => {
     const isAidaAvailable = this.#props.aidaAvailability === Host.AidaClient.AidaAccessPreconditions.AVAILABLE;
     const showsSideEffects = this.#props.messages.some(message => {
@@ -386,6 +395,11 @@ export class FreestylerChatUi extends HTMLElement {
     }
 
     this.#props.onCancelClick();
+  };
+
+  #handleSuggestionClick = (suggestion: string): void => {
+    this.#setInputText(suggestion);
+    this.focusTextInput();
   };
 
   #renderRateButtons(rpcId: number): LitHtml.TemplateResult {
@@ -671,7 +685,7 @@ export class FreestylerChatUi extends HTMLElement {
                       variant: Buttons.Button.Variant.OUTLINED,
                       jslogContext: 'fix-this-issue',
                   } as Buttons.Button.ButtonData}
-                  @click=${this.#props.onFixThisIssueClick}
+                  @click=${() => this.#handleSuggestionClick(FIX_THIS_ISSUE_PROMPT)}
                 >${i18nString(
                   UIStringsTemp.fixThisIssue,
                 )}</${Buttons.Button.Button.litTagName}>`
@@ -795,7 +809,7 @@ export class FreestylerChatUi extends HTMLElement {
         ${suggestions.map(suggestion => {
           return LitHtml.html`<${Buttons.Button.Button.litTagName}
             class="suggestion"
-            @click=${() => this.#props.onTextSubmit(suggestion)}
+            @click=${() => this.#handleSuggestionClick(suggestion)}
             .data=${
               {
                 variant: Buttons.Button.Variant.OUTLINED,

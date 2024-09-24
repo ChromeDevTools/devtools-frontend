@@ -106,8 +106,6 @@ FIXABLE: true
 `;
 /* clang-format on */
 
-export const FIX_THIS_ISSUE_PROMPT = 'Fix this issue using JavaScript code execution';
-
 export enum ResponseType {
   TITLE = 'title',
   THOUGHT = 'thought',
@@ -545,7 +543,7 @@ export class FreestylerAgent {
 
   #runId = 0;
   async * run(query: string, options: {
-    signal?: AbortSignal, selectedElement: SDK.DOMModel.DOMNode|null, isFixQuery: boolean,
+    signal?: AbortSignal, selectedElement: SDK.DOMModel.DOMNode|null,
   }): AsyncGenerator<ResponseData, void, void> {
     const structuredLog = [];
     const elementEnchantmentQuery = options.selectedElement ?
@@ -658,7 +656,7 @@ STOP`);
         const scope = this.#createExtensionScope(this.#changes);
         await scope.install();
         try {
-          let result = await this.#generateObservation(action, {throwOnSideEffect: !options.isFixQuery});
+          let result = await this.#generateObservation(action, {throwOnSideEffect: true});
           debugLog(`Action result: ${JSON.stringify(result)}`);
           if (result.sideEffect) {
             const sideEffectConfirmationPromiseWithResolvers = this.#confirmSideEffect<boolean>();

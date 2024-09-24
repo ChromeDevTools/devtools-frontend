@@ -145,10 +145,11 @@ export class DrJonesNetworkAgent {
     return this.#getHistoryEntry;
   }
 
-  async #aidaFetch(request: Host.AidaClient.AidaRequest): Promise<{response: string, rpcId: number|undefined}> {
+  async #aidaFetch(request: Host.AidaClient.AidaRequest, options: {signal?: AbortSignal}):
+      Promise<{response: string, rpcId: number|undefined}> {
     let response = '';
     let rpcId;
-    for await (const lastResult of this.#aidaClient.fetch(request)) {
+    for await (const lastResult of this.#aidaClient.fetch(request, options)) {
       response = lastResult.explanation;
       rpcId = lastResult.metadata.rpcGlobalId ?? rpcId;
       if (lastResult.metadata.attributionMetadata?.some(
@@ -171,10 +172,6 @@ export class DrJonesNetworkAgent {
             ''}${query}`;
     const currentRunId = ++this.#runId;
 
-    options.signal?.addEventListener('abort', () => {
-      this.#chatHistory.delete(currentRunId);
-    });
-
     const request = DrJonesNetworkAgent.buildRequest({
       input: query,
       preamble,
@@ -196,13 +193,18 @@ export class DrJonesNetworkAgent {
         contextDetails: createContextDetailsForDrJonesNetworkAgent(options.selectedNetworkRequest),
         rpcId,
       };
-      const fetchResult = await this.#aidaFetch(request);
+      const fetchResult = await this.#aidaFetch(request, {signal: options.signal});
       response = fetchResult.response;
       rpcId = fetchResult.rpcId;
     } catch (err) {
       debugLog('Error calling the AIDA API', err);
-
-      if (options.signal?.aborted) {
+      if (err instanceof Host.AidaClient.AidaAbortError) {
+        this.#chatHistory.delete(currentRunId);
+        yield {
+          type: ResponseType.ERROR,
+          error: ErrorType.ABORT,
+          rpcId,
+        };
         return;
       }
 

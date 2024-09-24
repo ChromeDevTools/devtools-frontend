@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Trace from '../../../models/trace/trace.js';
+import * as Trace from '../../../models/trace/trace.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
@@ -20,14 +20,6 @@ export enum InsightsCategories {
   OTHER = 'Other',
 }
 
-/** Represents the portion of the trace that insights have been collected for. */
-interface InsightSet {
-  /** If for a navigation, this is the navigationId. Else it is NO_NAVIGATION. */
-  id: string;
-  /** The URL. Shown in the accordion list. */
-  label: string;
-}
-
 export class SidebarInsightsTab extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-performance-sidebar-insights`;
   readonly #boundRender = this.#render.bind(this);
@@ -35,7 +27,6 @@ export class SidebarInsightsTab extends HTMLElement {
 
   #parsedTrace: Trace.Handlers.Types.ParsedTrace|null = null;
   #insights: Trace.Insights.Types.TraceInsightSets|null = null;
-  #insightSets: InsightSet[]|null = null;
   #activeInsight: ActiveInsight|null = null;
   #selectedCategory: InsightsCategories = InsightsCategories.ALL;
   /**
@@ -65,24 +56,24 @@ export class SidebarInsightsTab extends HTMLElement {
       return;
     }
 
+    // TODO(crbug.com/366049346): move "shouldShow" logic to insight result (rather than the component),
+    // and if none are visible, exclude it here.
     this.#insights = data;
-    this.#insightSets = [];
     this.#insightSetKey = null;
     if (!this.#insights || !this.#parsedTrace) {
       return;
     }
 
-    for (const insightSet of this.#insights.values()) {
-      // TODO(crbug.com/366049346): move "shouldShow" logic to insight result (rather than the component),
-      // and if none are visible, don't push the insight set.
-      this.#insightSets.push({
-        id: insightSet.id,
-        label: insightSet.label,
-      });
-    }
-
-    // TODO(crbug.com/366049346): skip the first insight set if trivial.
-    this.#insightSetKey = this.#insightSets[0]?.id ?? null;
+    // Select by default the first non-trivial insight set:
+    // - greater than 5s in duration
+    // - or, has a navigation
+    // In practice this means selecting either the first or the second insight set.
+    const trivialThreshold = Trace.Helpers.Timing.millisecondsToMicroseconds(Trace.Types.Timing.MilliSeconds(5000));
+    const insightSets = [...this.#insights.values()];
+    this.#insightSetKey =
+        insightSets.find(insightSet => insightSet.navigation || insightSet.bounds.range > trivialThreshold)?.id
+        // If everything is "trivial", just select the first one.
+        ?? insightSets[0]?.id ?? null;
 
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
@@ -121,12 +112,12 @@ export class SidebarInsightsTab extends HTMLElement {
   }
 
   #render(): void {
-    if (!this.#parsedTrace || !this.#insights || !this.#insightSets) {
+    if (!this.#parsedTrace || !this.#insights) {
       LitHtml.render(LitHtml.nothing, this.#shadow, {host: this});
       return;
     }
 
-    const hasMultipleInsightSets = this.#insightSets.length > 1;
+    const hasMultipleInsightSets = this.#insights.size > 1;
 
     // clang-format off
     const html = LitHtml.html`
@@ -144,7 +135,7 @@ export class SidebarInsightsTab extends HTMLElement {
       </select>
 
       <div class="insight-sets-wrapper">
-        ${this.#insightSets.map(({id, label}) => {
+        ${[...this.#insights.values()].map(({id, label}) => {
           const data = {
             parsedTrace: this.#parsedTrace,
             insights: this.#insights,

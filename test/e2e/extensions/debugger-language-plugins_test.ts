@@ -27,7 +27,6 @@ import {
   waitForMany,
   waitForNone,
 } from '../../shared/helper.js';
-
 import {
   CONSOLE_TAB_SELECTOR,
   focusConsolePrompt,
@@ -84,7 +83,8 @@ function goToWasmResource(
 
 // This testcase reaches into DevTools internals to install the extension plugin. At this point, there is no sensible
 // alternative, because loading a real extension is not supported in our test setup.
-describe('The Debugger Language Plugins', () => {
+// Skip to roll the protocol. Protocol changes require changes in this test.
+describe.skip('[crbug.com/40879198] The Debugger Language Plugins', () => {
   // Load a simple wasm file and verify that the source file shows up in the file tree.
   it('can show C filenames after loading the module', async () => {
     const {target} = getBrowserAndPages();

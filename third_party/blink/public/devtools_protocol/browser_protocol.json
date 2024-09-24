@@ -27404,7 +27404,6 @@
                             "description": "Type of the debug symbols.",
                             "type": "string",
                             "enum": [
-                                "None",
                                 "SourceMap",
                                 "EmbeddedDWARF",
                                 "ExternalDWARF"
@@ -28486,10 +28485,13 @@
                         },
                         {
                             "name": "debugSymbols",
-                            "description": "If the scriptLanguage is WebASsembly, the source of debug symbols for the module.",
+                            "description": "If the scriptLanguage is WebAssembly, the source of debug symbols for the module.",
                             "experimental": true,
                             "optional": true,
-                            "$ref": "Debugger.DebugSymbols"
+                            "type": "array",
+                            "items": {
+                                "$ref": "Debugger.DebugSymbols"
+                            }
                         },
                         {
                             "name": "embedderName",

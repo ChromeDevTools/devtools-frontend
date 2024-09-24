@@ -24,7 +24,7 @@ vars = {
   'inspector_protocol_revision': 'ccf6613682a24413db28656da6f9c52948331bad',
 
   # Keeping track of the last time we rollerd the browser protocol files.
-  'chromium_browser_protocol_revision' : '612b00ee0c0227f60d96c1702685b52186d92120',
+  'chromium_browser_protocol_revision' : '3585abaa071f83fdcbf097abe7833d42d3744963',
 
   'clang_format_url': 'https://chromium.googlesource.com/external/github.com/llvm/llvm-project/clang/tools/clang-format.git',
   'clang_format_revision': '3c0acd2d4e73dd911309d9e970ba09d58bf23a62',
@@ -49,7 +49,7 @@ vars = {
   # Chrome version used for tests. It should be regularly updated to
   # match the Canary version listed here:
   # https://googlechromelabs.github.io/chrome-for-testing/last-known-good-versions.json
-  'chrome': '131.0.6735.0',
+  'chrome': '131.0.6736.0',
 
   # 'magic' text to tell depot_tools that git submodules should be accepted but
   # but parity with DEPS file is expected.

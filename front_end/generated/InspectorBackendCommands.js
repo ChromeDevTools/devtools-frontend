@@ -1358,7 +1358,7 @@ inspectorBackend.registerType("BluetoothEmulation.ScanEntry", [{"name": "deviceA
 inspectorBackend.registerEnum("Debugger.ScopeType", {Global: "global", Local: "local", With: "with", Closure: "closure", Catch: "catch", Block: "block", Script: "script", Eval: "eval", Module: "module", WasmExpressionStack: "wasm-expression-stack"});
 inspectorBackend.registerEnum("Debugger.BreakLocationType", {DebuggerStatement: "debuggerStatement", Call: "call", Return: "return"});
 inspectorBackend.registerEnum("Debugger.ScriptLanguage", {JavaScript: "JavaScript", WebAssembly: "WebAssembly"});
-inspectorBackend.registerEnum("Debugger.DebugSymbolsType", {None: "None", SourceMap: "SourceMap", EmbeddedDWARF: "EmbeddedDWARF", ExternalDWARF: "ExternalDWARF"});
+inspectorBackend.registerEnum("Debugger.DebugSymbolsType", {SourceMap: "SourceMap", EmbeddedDWARF: "EmbeddedDWARF", ExternalDWARF: "ExternalDWARF"});
 inspectorBackend.registerEvent("Debugger.breakpointResolved", ["breakpointId", "location"]);
 inspectorBackend.registerEnum("Debugger.PausedEventReason", {Ambiguous: "ambiguous", Assert: "assert", CSPViolation: "CSPViolation", DebugCommand: "debugCommand", DOM: "DOM", EventListener: "EventListener", Exception: "exception", Instrumentation: "instrumentation", OOM: "OOM", Other: "other", PromiseRejection: "promiseRejection", XHR: "XHR", Step: "step"});
 inspectorBackend.registerEvent("Debugger.paused", ["callFrames", "reason", "data", "hitBreakpoints", "asyncStackTrace", "asyncStackTraceId", "asyncCallStackTraceId"]);

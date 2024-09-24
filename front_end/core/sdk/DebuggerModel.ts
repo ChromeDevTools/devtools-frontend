@@ -708,7 +708,7 @@ export class DebuggerModel extends SDKModel<EventTypes> {
       executionContextId: number, hash: string, executionContextAuxData: any, isLiveEdit: boolean,
       sourceMapURL: string|undefined, hasSourceURLComment: boolean, hasSyntaxError: boolean, length: number,
       isModule: boolean|null, originStackTrace: Protocol.Runtime.StackTrace|null, codeOffset: number|null,
-      scriptLanguage: string|null, debugSymbols: Protocol.Debugger.DebugSymbols|null,
+      scriptLanguage: string|null, debugSymbols: Protocol.Debugger.DebugSymbols[]|null,
       embedderName: Platform.DevToolsPath.UrlString|null): Script {
     const knownScript = this.#scriptsInternal.get(scriptId);
     if (knownScript) {
@@ -718,10 +718,16 @@ export class DebuggerModel extends SDKModel<EventTypes> {
     if (executionContextAuxData && ('isDefault' in executionContextAuxData)) {
       isContentScript = !executionContextAuxData['isDefault'];
     }
+
+    let selectedDebugSymbol = null;
+    if (debugSymbols && debugSymbols.length > 0) {
+      // TODO(crbug.com/40879198): Adapt to prioritize DWARF information.
+      selectedDebugSymbol = debugSymbols[0];
+    }
     const script = new Script(
         this, scriptId, sourceURL, startLine, startColumn, endLine, endColumn, executionContextId, hash,
         isContentScript, isLiveEdit, sourceMapURL, hasSourceURLComment, length, isModule, originStackTrace, codeOffset,
-        scriptLanguage, debugSymbols, embedderName);
+        scriptLanguage, selectedDebugSymbol, embedderName);
     this.registerScript(script);
     this.dispatchEventToListeners(Events.ParsedScriptSource, script);
 

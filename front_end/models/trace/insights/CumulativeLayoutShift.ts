@@ -23,12 +23,25 @@ export function deps(): ['Meta', 'Animations', 'LayoutShifts', 'NetworkRequests'
 }
 
 export const enum AnimationFailureReasons {
-  UNSUPPORTED_CSS_PROPERTY = 'UNSUPPORTED_CSS_PROPERTY',
+  ACCELERATED_ANIMATIONS_DISABLED = 'ACCELERATED_ANIMATIONS_DISABLED',
+  EFFECT_SUPPRESSED_BY_DEVTOOLS = 'EFFECT_SUPPRESSED_BY_DEVTOOLS',
+  INVALID_ANIMATION_OR_EFFECT = 'INVALID_ANIMATION_OR_EFFECT',
+  EFFECT_HAS_UNSUPPORTED_TIMING_PARAMS = 'EFFECT_HAS_UNSUPPORTED_TIMING_PARAMS',
+  EFFECT_HAS_NON_REPLACE_COMPOSITE_MODE = 'EFFECT_HAS_NON_REPLACE_COMPOSITE_MODE',
+  TARGET_HAS_INVALID_COMPOSITING_STATE = 'TARGET_HAS_INVALID_COMPOSITING_STATE',
+  TARGET_HAS_INCOMPATIBLE_ANIMATIONS = 'TARGET_HAS_INCOMPATIBLE_ANIMATIONS',
+  TARGET_HAS_CSS_OFFSET = 'TARGET_HAS_CSS_OFFSET',
+  ANIMATION_AFFECTS_NON_CSS_PROPERTIES = 'ANIMATION_AFFECTS_NON_CSS_PROPERTIES',
+  TRANSFORM_RELATED_PROPERTY_CANNOT_BE_ACCELERATED_ON_TARGET =
+      'TRANSFORM_RELATED_PROPERTY_CANNOT_BE_ACCELERATED_ON_TARGET',
   TRANSFROM_BOX_SIZE_DEPENDENT = 'TRANSFROM_BOX_SIZE_DEPENDENT',
-  FILTER_MAY_MOVE_PIXELS = 'FILTER_MAY_MOVE_PIXELS',
-  NON_REPLACE_COMPOSITE_MODE = 'NON_REPLACE_COMPOSITE_MODE',
-  INCOMPATIBLE_ANIMATIONS = 'INCOMPATIBLE_ANIMATIONS',
-  UNSUPPORTED_TIMING_PARAMS = 'UNSUPPORTED_TIMING_PARAMS',
+  FILTER_RELATED_PROPERTY_MAY_MOVE_PIXELS = 'FILTER_RELATED_PROPERTY_MAY_MOVE_PIXELS',
+  UNSUPPORTED_CSS_PROPERTY = 'UNSUPPORTED_CSS_PROPERTY',
+  MIXED_KEYFRAME_VALUE_TYPES = 'MIXED_KEYFRAME_VALUE_TYPES',
+  TIMELINE_SOURCE_HAS_INVALID_COMPOSITING_STATE = 'TIMELINE_SOURCE_HAS_INVALID_COMPOSITING_STATE',
+  ANIMATION_HAS_NO_VISIBLE_CHANGE = 'ANIMATION_HAS_NO_VISIBLE_CHANGE',
+  AFFECTS_IMPORTANT_PROPERTY = 'AFFECTS_IMPORTANT_PROPERTY',
+  SVG_TARGET_HAS_INDEPENDENT_TRANSFORM_PROPERTY = 'SVG_TARGET_HAS_INDEPENDENT_TRANSFORM_PROPERTY',
 }
 
 export interface NoncompositedAnimationFailure {
@@ -55,8 +68,45 @@ export interface NoncompositedAnimationFailure {
  */
 const ACTIONABLE_FAILURE_REASONS = [
   {
-    flag: 1 << 13,
-    failure: AnimationFailureReasons.UNSUPPORTED_CSS_PROPERTY,
+    flag: 1 << 0,
+    failure: AnimationFailureReasons.ACCELERATED_ANIMATIONS_DISABLED,
+  },
+  {
+    flag: 1 << 1,
+    failure: AnimationFailureReasons.EFFECT_SUPPRESSED_BY_DEVTOOLS,
+  },
+  {
+    flag: 1 << 2,
+    failure: AnimationFailureReasons.INVALID_ANIMATION_OR_EFFECT,
+  },
+  {
+    flag: 1 << 3,
+    failure: AnimationFailureReasons.EFFECT_HAS_UNSUPPORTED_TIMING_PARAMS,
+  },
+  {
+    flag: 1 << 4,
+    failure: AnimationFailureReasons.EFFECT_HAS_NON_REPLACE_COMPOSITE_MODE,
+  },
+  {
+    flag: 1 << 5,
+    failure: AnimationFailureReasons.TARGET_HAS_INVALID_COMPOSITING_STATE,
+  },
+  {
+    flag: 1 << 6,
+    failure: AnimationFailureReasons.TARGET_HAS_INCOMPATIBLE_ANIMATIONS,
+  },
+  {
+    flag: 1 << 7,
+    failure: AnimationFailureReasons.TARGET_HAS_CSS_OFFSET,
+  },
+  // The failure 1 << 8 is marked as obsolete in Blink
+  {
+    flag: 1 << 9,
+    failure: AnimationFailureReasons.ANIMATION_AFFECTS_NON_CSS_PROPERTIES,
+  },
+  {
+    flag: 1 << 10,
+    failure: AnimationFailureReasons.TRANSFORM_RELATED_PROPERTY_CANNOT_BE_ACCELERATED_ON_TARGET,
   },
   {
     flag: 1 << 11,
@@ -64,19 +114,32 @@ const ACTIONABLE_FAILURE_REASONS = [
   },
   {
     flag: 1 << 12,
-    failure: AnimationFailureReasons.FILTER_MAY_MOVE_PIXELS,
+    failure: AnimationFailureReasons.FILTER_RELATED_PROPERTY_MAY_MOVE_PIXELS,
   },
   {
-    flag: 1 << 4,
-    failure: AnimationFailureReasons.NON_REPLACE_COMPOSITE_MODE,
+    flag: 1 << 13,
+    failure: AnimationFailureReasons.UNSUPPORTED_CSS_PROPERTY,
+  },
+  // The failure 1 << 14 is marked as obsolete in Blink
+  {
+    flag: 1 << 15,
+    failure: AnimationFailureReasons.MIXED_KEYFRAME_VALUE_TYPES,
   },
   {
-    flag: 1 << 6,
-    failure: AnimationFailureReasons.INCOMPATIBLE_ANIMATIONS,
+    flag: 1 << 16,
+    failure: AnimationFailureReasons.TIMELINE_SOURCE_HAS_INVALID_COMPOSITING_STATE,
   },
   {
-    flag: 1 << 3,
-    failure: AnimationFailureReasons.UNSUPPORTED_TIMING_PARAMS,
+    flag: 1 << 17,
+    failure: AnimationFailureReasons.ANIMATION_HAS_NO_VISIBLE_CHANGE,
+  },
+  {
+    flag: 1 << 18,
+    failure: AnimationFailureReasons.AFFECTS_IMPORTANT_PROPERTY,
+  },
+  {
+    flag: 1 << 19,
+    failure: AnimationFailureReasons.SVG_TARGET_HAS_INDEPENDENT_TRANSFORM_PROPERTY,
   },
 ];
 
@@ -106,7 +169,7 @@ export function getNonCompositedFailure(event: Types.Events.SyntheticAnimationPa
   for (const event of instantEvents) {
     const failureMask = event.args.data.compositeFailed;
     const unsupportedProperties = event.args.data.unsupportedProperties;
-    if (!failureMask || !unsupportedProperties) {
+    if (!failureMask) {
       continue;
     }
     const failureReasons =

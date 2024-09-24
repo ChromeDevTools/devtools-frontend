@@ -419,24 +419,51 @@ const UIStrings = {
    *@description Label in front of reasons why a CSS animation wasn't composited (aka hardware accelerated)
    */
   compositingFailed: 'Compositing failed',
+  /** Descriptive reason for why a user-provided animation failed to be optimized by the browser due to accelerated animations being disabled. Shown in a table with a list of other potential failure reasons.  */
+  compositingFailedAcceleratedAnimationsDisabled: 'Accelerated animations disabled',
+  /** Descriptive reason for why a user-provided animation failed to be optimized by the browser due to DevTools suppressing the effect. Shown in a table with a list of other potential failure reasons.  */
+  compositingFailedEffectSuppressedByDevtools: 'Effect suppressed by DevTools ',
+  /** Descriptive reason for why a user-provided animation failed to be optimized by the browser due to the animation or effect being invalid. Shown in a table with a list of other potential failure reasons.  */
+  compositingFailedInvalidAnimationOrEffect: 'Invalid animation or effect',
+  /** Descriptive reason for why a user-provided animation failed to be optimized by the browser due to an effect having unsupported timing parameters. Shown in a table with a list of other potential failure reasons.  */
+  compositingFailedEffectHasUnsupportedTimingParams: 'Effect has unsupported timing parameters',
+  /** Descriptive reason for why a user-provided animation failed to be optimized by the browser due to an effect having a composite mode which is not `replace`. Shown in a table with a list of other potential failure reasons.  */
+  compositingFailedEffectHasNonReplaceCompositeMode: 'Effect has composite mode other than "replace"',
+  /** Descriptive reason for why a user-provided animation failed to be optimized by the browser due to the target being in an invalid compositing state. Shown in a table with a list of other potential failure reasons.  */
+  compositingFailedTargetHasInvalidCompositingState: 'Target has invalid compositing state',
+  /** Descriptive reason for why a user-provided animation failed to be optimized by the browser due to another animation on the same target being incompatible. Shown in a table with a list of other potential failure reasons.  */
+  compositingFailedTargetHasIncompatibleAnimations: 'Target has another animation which is incompatible',
+  /** Descriptive reason for why a user-provided animation failed to be optimized by the browser due to the target having a CSS offset. Shown in a table with a list of other potential failure reasons.  */
+  compositingFailedTargetHasCSSOffset: 'Target has CSS offset',
+  /** Descriptive reason for why a user-provided animation failed to be optimized by the browser due to the animation affecting non-CSS properties. Shown in a table with a list of other potential failure reasons.  */
+  compositingFailedAnimationAffectsNonCSSProperties: 'Animation affects non-CSS properties',
+  /** Descriptive reason for why a user-provided animation failed to be optimized by the browser due to the transform-related property not being able to be animated on the target. Shown in a table with a list of other potential failure reasons.  */
+  compositingFailedTransformRelatedPropertyCannotBeAcceleratedOnTarget:
+      'Transform-related property cannot be accelerated on target',
+  /** Descriptive reason for why a user-provided animation failed to be optimized by the browser due to a `transform` property being dependent on the size of the element itself. Shown in a table with a list of other potential failure reasons.  */
+  compositingFailedTransformDependsBoxSize: 'Transform-related property depends on box size',
+  /** Descriptive reason for why a user-provided animation failed to be optimized by the browser due to a `filter` property possibly moving pixels. Shown in a table with a list of other potential failure reasons.  */
+  compositingFailedFilterRelatedPropertyMayMovePixels: 'Filter-related property may move pixels',
   /**
    * @description [ICU Syntax] Descriptive reason for why a user-provided animation failed to be optimized by the browser due to the animated CSS property not being supported on the compositor. Shown in a table with a list of other potential failure reasons.
    * @example {height, width} properties
    */
-  unsupportedCSSProperty: `{propertyCount, plural,
+  compositingFailedUnsupportedCSSProperty: `{propertyCount, plural,
     =1 {Unsupported CSS property: {properties}}
     other {Unsupported CSS properties: {properties}}
   }`,
-  /** Descriptive reason for why a user-provided animation failed to be optimized by the browser due to a `transform` property being dependent on the size of the element itself. Shown in a table with a list of other potential failure reasons.  */
-  transformDependsBoxSize: 'Transform-related property depends on box size',
-  /** Descriptive reason for why a user-provided animation failed to be optimized by the browser due to a `filter` property possibly moving pixels. Shown in a table with a list of other potential failure reasons.  */
-  filterMayMovePixels: 'Filter-related property may move pixels',
-  /** Descriptive reason for why a user-provided animation failed to be optimized by the browser due to an effect having a composite mode which is not `replace`. Shown in a table with a list of other potential failure reasons.  */
-  nonReplaceCompositeMode: 'Effect has composite mode other than "replace"',
-  /** Descriptive reason for why a user-provided animation failed to be optimized by the browser due to another animation on the same target being incompatible. Shown in a table with a list of other potential failure reasons.  */
-  incompatibleAnimations: 'Target has another animation which is incompatible',
-  /** Descriptive reason for why a user-provided animation failed to be optimized by the browser due to an effect having unsupported timing parameters. Shown in a table with a list of other potential failure reasons.  */
-  unsupportedTimingParameters: 'Effect has unsupported timing parameters',
+  /** Descriptive reason for why a user-provided animation failed to be optimized by the browser due to mixing keyframe value types. Shown in a table with a list of other potential failure reasons.  */
+  compositingFailedMixedKeyframeValueTypes: 'Mixed keyframe value types',
+  /** Descriptive reason for why a user-provided animation failed to be optimized by the browser due to the timeline source being in an invalid compositing state. Shown in a table with a list of other potential failure reasons.  */
+  compositingFailedTimelineSourceHasInvalidCompositingState: 'Timeline source has invalid compositing state',
+  /** Descriptive reason for why a user-provided animation failed to be optimized by the browser due to the animation having no visible change. Shown in a table with a list of other potential failure reasons.  */
+  compositingFailedAnimationHasNoVisibleChange: 'Animation has no visible change',
+  /** Descriptive reason for why a user-provided animation failed to be optimized by the browser due to an effect affecting an important property. Shown in a table with a list of other potential failure reasons.  */
+  compositingFailedAffectsImportantProperty: 'Effect affects a property with !important',
+  /** Descriptive reason for why a user-provided animation failed to be optimized by the browser due to the SVG target having an independent transfrom property. Shown in a table with a list of other potential failure reasons.  */
+  compositingFailedSVGTargetHasIndependentTransformProperty: 'SVG target has independent transform property',
+  /** Descriptive reason for why a user-provided animation failed to be optimized by the browser due to an unknown reason. Shown in a table with a list of other potential failure reasons.  */
+  compositingFailedUnknownReason: 'Unknown Reason',
 
   /**
    *@description Text for the execution stack trace
@@ -1419,35 +1446,81 @@ export class TimelineUIUtils {
         const unsupportedProperties =
             new Set(failures.map(f => f.unsupportedProperties).flat().filter(Boolean)) as Set<string>;
 
-        for (const reason of failureReasons) {
-          let str;
-          switch (reason) {
-            case CLSInsight.AnimationFailureReasons.UNSUPPORTED_CSS_PROPERTY:
-              str = i18nString(UIStrings.unsupportedCSSProperty, {
-                propertyCount: unsupportedProperties.size,
-                properties:
-                    new Intl.ListFormat(undefined, {style: 'short', type: 'conjunction'}).format(unsupportedProperties),
-              });
-              break;
-            case CLSInsight.AnimationFailureReasons.TRANSFROM_BOX_SIZE_DEPENDENT:
-              str = i18nString(UIStrings.transformDependsBoxSize);
-              break;
-            case CLSInsight.AnimationFailureReasons.FILTER_MAY_MOVE_PIXELS:
-              str = i18nString(UIStrings.filterMayMovePixels);
-              break;
-            case CLSInsight.AnimationFailureReasons.NON_REPLACE_COMPOSITE_MODE:
-              str = i18nString(UIStrings.nonReplaceCompositeMode);
-              break;
-            case CLSInsight.AnimationFailureReasons.INCOMPATIBLE_ANIMATIONS:
-              str = i18nString(UIStrings.incompatibleAnimations);
-              break;
-            case CLSInsight.AnimationFailureReasons.UNSUPPORTED_TIMING_PARAMS:
-              str = i18nString(UIStrings.unsupportedTimingParameters);
-              break;
-            default:
-              break;
+        // The failureReasons can be empty when Blink added a new failure reason that is
+        // not supported by DevTools yet
+        if (failureReasons.size === 0) {
+          contentHelper.appendElementRow(
+              i18nString(UIStrings.compositingFailed), i18nString(UIStrings.compositingFailedUnknownReason), true);
+        } else {
+          for (const reason of failureReasons) {
+            let str;
+            switch (reason) {
+              case CLSInsight.AnimationFailureReasons.ACCELERATED_ANIMATIONS_DISABLED:
+                str = i18nString(UIStrings.compositingFailedAcceleratedAnimationsDisabled);
+                break;
+              case CLSInsight.AnimationFailureReasons.EFFECT_SUPPRESSED_BY_DEVTOOLS:
+                str = i18nString(UIStrings.compositingFailedEffectSuppressedByDevtools);
+                break;
+              case CLSInsight.AnimationFailureReasons.INVALID_ANIMATION_OR_EFFECT:
+                str = i18nString(UIStrings.compositingFailedInvalidAnimationOrEffect);
+                break;
+              case CLSInsight.AnimationFailureReasons.EFFECT_HAS_UNSUPPORTED_TIMING_PARAMS:
+                str = i18nString(UIStrings.compositingFailedEffectHasUnsupportedTimingParams);
+                break;
+              case CLSInsight.AnimationFailureReasons.EFFECT_HAS_NON_REPLACE_COMPOSITE_MODE:
+                str = i18nString(UIStrings.compositingFailedEffectHasNonReplaceCompositeMode);
+                break;
+              case CLSInsight.AnimationFailureReasons.TARGET_HAS_INVALID_COMPOSITING_STATE:
+                str = i18nString(UIStrings.compositingFailedTargetHasInvalidCompositingState);
+                break;
+              case CLSInsight.AnimationFailureReasons.TARGET_HAS_INCOMPATIBLE_ANIMATIONS:
+                str = i18nString(UIStrings.compositingFailedTargetHasIncompatibleAnimations);
+                break;
+              case CLSInsight.AnimationFailureReasons.TARGET_HAS_CSS_OFFSET:
+                str = i18nString(UIStrings.compositingFailedTargetHasCSSOffset);
+                break;
+              case CLSInsight.AnimationFailureReasons.ANIMATION_AFFECTS_NON_CSS_PROPERTIES:
+                str = i18nString(UIStrings.compositingFailedAnimationAffectsNonCSSProperties);
+                break;
+              case CLSInsight.AnimationFailureReasons.TRANSFORM_RELATED_PROPERTY_CANNOT_BE_ACCELERATED_ON_TARGET:
+                str = i18nString(UIStrings.compositingFailedTransformRelatedPropertyCannotBeAcceleratedOnTarget);
+                break;
+              case CLSInsight.AnimationFailureReasons.TRANSFROM_BOX_SIZE_DEPENDENT:
+                str = i18nString(UIStrings.compositingFailedTransformDependsBoxSize);
+                break;
+              case CLSInsight.AnimationFailureReasons.FILTER_RELATED_PROPERTY_MAY_MOVE_PIXELS:
+                str = i18nString(UIStrings.compositingFailedFilterRelatedPropertyMayMovePixels);
+                break;
+              case CLSInsight.AnimationFailureReasons.UNSUPPORTED_CSS_PROPERTY:
+                str = i18nString(UIStrings.compositingFailedUnsupportedCSSProperty, {
+                  propertyCount: unsupportedProperties.size,
+                  properties: new Intl.ListFormat(undefined, {style: 'short', type: 'conjunction'})
+                                  .format(unsupportedProperties),
+                });
+                break;
+              case CLSInsight.AnimationFailureReasons.MIXED_KEYFRAME_VALUE_TYPES:
+                str = i18nString(UIStrings.compositingFailedMixedKeyframeValueTypes);
+                break;
+              case CLSInsight.AnimationFailureReasons.TIMELINE_SOURCE_HAS_INVALID_COMPOSITING_STATE:
+                str = i18nString(UIStrings.compositingFailedTimelineSourceHasInvalidCompositingState);
+                break;
+              case CLSInsight.AnimationFailureReasons.ANIMATION_HAS_NO_VISIBLE_CHANGE:
+                str = i18nString(UIStrings.compositingFailedAnimationHasNoVisibleChange);
+                break;
+              case CLSInsight.AnimationFailureReasons.AFFECTS_IMPORTANT_PROPERTY:
+                str = i18nString(UIStrings.compositingFailedAffectsImportantProperty);
+                break;
+              case CLSInsight.AnimationFailureReasons.SVG_TARGET_HAS_INDEPENDENT_TRANSFORM_PROPERTY:
+                str = i18nString(UIStrings.compositingFailedSVGTargetHasIndependentTransformProperty);
+                break;
+              default:
+                // We should never actually end up here, as adding a new AnimationFailureReason
+                // should also require adding a UIString that describes it
+                str = i18nString(UIStrings.compositingFailedUnknownReason);
+                break;
+            }
+            str && contentHelper.appendElementRow(i18nString(UIStrings.compositingFailed), str, true);
           }
-          str && contentHelper.appendElementRow(i18nString(UIStrings.compositingFailed), str, true);
         }
 
         break;

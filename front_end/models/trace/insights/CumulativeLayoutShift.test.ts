@@ -38,7 +38,10 @@ describeWithEnvironment('CumulativeLayoutShift', function() {
         },
         {
           name: 'top',
-          failureReasons: [InsightRunners.CumulativeLayoutShift.AnimationFailureReasons.UNSUPPORTED_CSS_PROPERTY],
+          failureReasons: [
+            InsightRunners.CumulativeLayoutShift.AnimationFailureReasons.TARGET_HAS_INVALID_COMPOSITING_STATE,
+            InsightRunners.CumulativeLayoutShift.AnimationFailureReasons.UNSUPPORTED_CSS_PROPERTY,
+          ],
           unsupportedProperties: ['top'],
         },
       ];

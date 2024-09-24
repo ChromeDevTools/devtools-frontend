@@ -175,6 +175,8 @@ class AnnotationsView extends UI.Widget.VBox {
   setAnnotations(
       annotations: Trace.Types.File.Annotation[],
       annotationEntryToColorMap: Map<Trace.Types.Events.Event, string>): void {
+    // The component will only re-render when set the annotations, so we should
+    // set the `annotationEntryToColorMap` first.
     this.#component.annotationEntryToColorMap = annotationEntryToColorMap;
     this.#component.annotations = annotations;
   }

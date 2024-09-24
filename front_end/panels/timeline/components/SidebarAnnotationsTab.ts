@@ -73,7 +73,26 @@ export class SidebarAnnotationsTab extends HTMLElement {
   }
 
   set annotations(annotations: Trace.Types.File.Annotation[]) {
-    this.#annotations = annotations;
+    this.#annotations = annotations.sort((firstAnnotation, secondAnnotation) => {
+      function getAnnotationTimestamp(annotation: Trace.Types.File.Annotation): Trace.Types.Timing.MicroSeconds {
+        if (Trace.Types.File.isEntryLabelAnnotation(annotation)) {
+          return annotation.entry.ts;
+        }
+        if (Trace.Types.File.isEntriesLinkAnnotation(annotation)) {
+          return annotation.entryFrom.ts;
+        }
+        if (Trace.Types.File.isTimeRangeAnnotation(annotation)) {
+          return annotation.bounds.min;
+        }
+        // This part of code shouldn't be reached. If it is here then the annotation has an invalid type, so return the
+        // max timestamp to push it to the end.
+        console.error('Invalid annotation type.');
+        // Since we need to compare the values, so use `MAX_SAFE_INTEGER` instead of `MAX_VALUE`.
+        return Trace.Types.Timing.MicroSeconds(Number.MAX_SAFE_INTEGER);
+      }
+
+      return getAnnotationTimestamp(firstAnnotation) - getAnnotationTimestamp(secondAnnotation);
+    });
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
 

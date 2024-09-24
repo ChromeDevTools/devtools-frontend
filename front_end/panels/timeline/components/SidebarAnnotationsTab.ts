@@ -47,6 +47,10 @@ const UIStrings = {
    */
   timeRangeDescription:
       'Shift and drag on the canvas to create a time range and add a label. Press Esc or Enter to complete.',
+  /**
+   * @description Text used to describe the delete button to screen readers
+   **/
+  deleteButton: 'Delete this annotation',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/SidebarAnnotationsTab.ts', UIStrings);
@@ -202,16 +206,21 @@ export class SidebarAnnotationsTab extends HTMLElement {
                         ${(annotation.type === 'ENTRY_LABEL' || annotation.type === 'TIME_RANGE') ? annotation.label : ''}
                       </span>
                     </div>
-                    <${IconButton.Icon.Icon.litTagName} class="bin-icon" .data=${{
-                            iconName: 'bin',
-                            color: 'var(--icon-default)',
-                            width: '20px',
-                            height: '20px',
-                          } as IconButton.Icon.IconData} @click=${(event: Event) => {
-                            // Stop propagation to not zoom into the annotation when the delete button is clicked
-                            event.stopPropagation();
-                            this.dispatchEvent(new RemoveAnnotation(annotation));
-                    }}>
+                    <span class="delete-button" role="button" aria-label=${i18nString(UIStrings.deleteButton)}>
+                      <${IconButton.Icon.Icon.litTagName}
+                        class="bin-icon"
+                        .data=${{
+                          iconName: 'bin',
+                          color: 'var(--icon-default)',
+                          width: '20px',
+                          height: '20px',
+                        } as IconButton.Icon.IconData}
+                        @click=${(event: Event) => {
+                          // Stop propagation to not zoom into the annotation when the delete button is clicked
+                          event.stopPropagation();
+                          this.dispatchEvent(new RemoveAnnotation(annotation));
+                      }}>
+                    </span>
                   </div>`,
               )}
               <${Settings.SettingCheckbox.SettingCheckbox.litTagName} class="visibility-setting" .data=${{

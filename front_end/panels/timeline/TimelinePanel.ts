@@ -730,6 +730,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     }
 
     this.#viewMode = newMode;
+    this.updateTimelineControls();
 
     /**
      * Note that the TimelinePanel UI is really rendered in two distinct layers.

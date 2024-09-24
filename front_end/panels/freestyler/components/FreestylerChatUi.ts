@@ -779,7 +779,7 @@ export class FreestylerChatUi extends HTMLElement {
   };
 
   #renderEmptyState = (): LitHtml.TemplateResult => {
-    const suggestions: string[] = this.#getSuggestions();
+    const suggestions = this.#getSuggestions();
 
     // clang-format off
     return LitHtml.html`<div class="empty-state-container messages-scroll-container">
@@ -816,9 +816,9 @@ export class FreestylerChatUi extends HTMLElement {
     switch (this.#props.agentType) {
       case AgentType.FREESTYLER:
         return [
-          'Why is the element not visible?',
-          'Why is this element overlapping another element?',
-          'How can I center this element?',
+          'Why isn\'t this element visible?',
+          'Why does this element overlap another?',
+          'How do I center this element?',
         ];
       case AgentType.DRJONES_NETWORK_REQUEST:
         return [

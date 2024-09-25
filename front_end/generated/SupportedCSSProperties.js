@@ -3839,7 +3839,7 @@ export const generatedProperties = [
   "name": "text-box"
  },
  {
-  "inherited": true,
+  "inherited": false,
   "name": "text-box-edge"
  },
  {

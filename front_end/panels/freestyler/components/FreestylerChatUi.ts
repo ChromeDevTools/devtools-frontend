@@ -23,67 +23,11 @@ const FIX_THIS_ISSUE_PROMPT = 'Fix this issue using JavaScript code execution';
 const DOGFOOD_FEEDBACK_URL = 'https://goo.gle/freestyler-feedback' as Platform.DevToolsPath.UrlString;
 export const DOGFOOD_INFO = 'https://goo.gle/freestyler-dogfood' as Platform.DevToolsPath.UrlString;
 
-/*
-  * TODO(nvitkov): b/346933425
-  * Temporary string that should not be translated
-  * as they may change often during development.
-  */
-const UIStringsTemp = {
-  /**
-   *@description Placeholder text for the chat UI input.
-   */
-  inputPlaceholderForFreestylerAgent: 'Ask a question about the selected element',
-  /**
-   *@description Placeholder text for the chat UI input.
-   */
-  inputPlaceholderForDrJonesNetworkAgent: 'Ask a question about the selected network request',
-  /**
-   *@description Disclaimer text right after the chat input.
-   */
-  inputDisclaimerForFreestylerAgent:
-      'Chat messages and any data the inspected page can access via Web APIs are sent to Google and may be seen by human reviewers to improve this feature. This is an experimental AI feature and won\'t always get it right.',
-  /**
-   *@description Disclaimer text right after the chat input.
-   */
-  inputDisclaimerForDrJonesNetworkAgent:
-      'Chat messages and the selected network request are sent to Google and may be seen by human reviewers to improve this feature. This is an experimental AI feature and won\'t always get it right.',
-  /**
-   *@description Title for the send icon button.
-   */
-  sendButtonTitle: 'Send',
-  /**
-   *@description Title for the cancel icon button.
-   */
-  cancelButtonTitle: 'Cancel',
-  /**
-   *@description Label for the "select an element" button.
-   */
-  selectAnElement: 'Select an element',
-  /**
-   *@description Label for the "select an element" button.
-   */
-  noElementSelected: 'No element selected',
-  /**
-   *@description Text for the empty state of the AI assistant panel.
-   */
-  emptyStateText: 'How can I help you?',
+const UIStrings = {
   /**
    * @description The error message when the user is not logged in into Chrome.
    */
   notLoggedIn: 'This feature is only available when you sign into Chrome with your Google account',
-  /**
-   * @description The error message when the LLM loop is stopped for some reason (Max steps reached or request to LLM failed)
-   */
-  systemError:
-      'Something unforeseen happened and I can no longer continue. Try your request again and see if that resolves the issue.',
-  /**
-   * @description The error message when the LLM loop is stopped for some reason (Max steps reached or request to LLM failed)
-   */
-  maxStepsError: 'Seems like I am stuck with the investigation. It would be better if you start over.',
-  /**
-   *@description Displayed when the user stop the response
-   */
-  stoppedResponse: 'You stopped this response',
   /**
    * @description Message shown when the user is offline.
    */
@@ -113,6 +57,63 @@ const UIStringsTemp = {
    *@description Consent view data visibility text
    */
   consentTextVisibilityDisclaimer: 'Data may be seen by human reviewers and can be used to improve this feature.',
+};
+
+/*
+* Strings that don't need to be translated at this time.
+*/
+const UIStringsNotTranslate = {
+  /**
+   *@description Disclaimer text right after the chat input.
+   */
+  inputDisclaimerForFreestylerAgent:
+      'Chat messages and any data the inspected page can access via Web APIs are sent to Google and may be seen by human reviewers to improve this feature. This is an experimental AI feature and won\'t always get it right.',
+  /**
+   *@description Disclaimer text right after the chat input.
+   */
+  inputDisclaimerForDrJonesNetworkAgent:
+      'Chat messages and the selected network request are sent to Google and may be seen by human reviewers to improve this feature. This is an experimental AI feature and won\'t always get it right.',
+  /**
+   *@description Placeholder text for the chat UI input.
+   */
+  inputPlaceholderForFreestylerAgent: 'Ask a question about the selected element',
+  /**
+   *@description Placeholder text for the chat UI input.
+   */
+  inputPlaceholderForDrJonesNetworkAgent: 'Ask a question about the selected network request',
+  /**
+   *@description Title for the send icon button.
+   */
+  sendButtonTitle: 'Send',
+  /**
+   *@description Title for the cancel icon button.
+   */
+  cancelButtonTitle: 'Cancel',
+  /**
+   *@description Label for the "select an element" button.
+   */
+  selectAnElement: 'Select an element',
+  /**
+   *@description Label for the "select an element" button.
+   */
+  noElementSelected: 'No element selected',
+  /**
+   *@description Text for the empty state of the AI assistant panel.
+   */
+  emptyStateText: 'How can I help you?',
+  /**
+   * @description The error message when the LLM loop is stopped for some reason (Max steps reached or request to LLM failed)
+   */
+  systemError:
+      'Something unforeseen happened and I can no longer continue. Try your request again and see if that resolves the issue.',
+  /**
+   * @description The error message when the LLM loop is stopped for some reason (Max steps reached or request to LLM failed)
+   */
+  maxStepsError: 'Seems like I am stuck with the investigation. It would be better if you start over.',
+  /**
+   *@description Displayed when the user stop the response
+   */
+  stoppedResponse: 'You stopped this response',
   /**
    * @description Side effect confirmation text
    */
@@ -166,10 +167,10 @@ const UIStringsTemp = {
    */
   dataReturned: 'Data returned',
 };
-// const str_ = i18n.i18n.registerUIStrings('panels/freestyler/components/FreestylerChatUi.ts', UIStrings);
-// const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-/* eslint-disable  rulesdir/l10n_i18nString_call_only_with_uistrings */
-const i18nString = i18n.i18n.lockedString;
+
+const str_ = i18n.i18n.registerUIStrings('panels/freestyler/components/FreestylerChatUi.ts', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+const lockedString = i18n.i18n.lockedString;
 
 function getInputPlaceholderString(
     aidaAvailability: Host.AidaClient.AidaAccessPreconditions, agentType: AgentType): string {
@@ -177,15 +178,15 @@ function getInputPlaceholderString(
     case Host.AidaClient.AidaAccessPreconditions.AVAILABLE:
       switch (agentType) {
         case AgentType.FREESTYLER:
-          return i18nString(UIStringsTemp.inputPlaceholderForFreestylerAgent);
+          return lockedString(UIStringsNotTranslate.inputPlaceholderForFreestylerAgent);
         case AgentType.DRJONES_NETWORK_REQUEST:
-          return i18nString(UIStringsTemp.inputPlaceholderForDrJonesNetworkAgent);
+          return lockedString(UIStringsNotTranslate.inputPlaceholderForDrJonesNetworkAgent);
       }
     case Host.AidaClient.AidaAccessPreconditions.NO_ACCOUNT_EMAIL:
     case Host.AidaClient.AidaAccessPreconditions.SYNC_IS_PAUSED:
-      return i18nString(UIStringsTemp.notLoggedIn);
+      return i18nString(UIStrings.notLoggedIn);
     case Host.AidaClient.AidaAccessPreconditions.NO_INTERNET:
-      return i18nString(UIStringsTemp.offline);
+      return i18nString(UIStrings.offline);
   }
 }
 
@@ -440,9 +441,10 @@ export class FreestylerChatUi extends HTMLElement {
   }
 
   #renderTitle(step: Step): LitHtml.LitTemplate {
-    const paused = step.sideEffect ? LitHtml.html`<span class="paused">${i18nString(UIStringsTemp.paused)}: </span>` :
-                                     LitHtml.nothing;
-    const actionTitle = step.title ?? `${i18nString(UIStringsTemp.investigating)}…`;
+    const paused = step.sideEffect ?
+        LitHtml.html`<span class="paused">${lockedString(UIStringsNotTranslate.paused)}: </span>` :
+        LitHtml.nothing;
+    const actionTitle = step.title ?? `${lockedString(UIStringsNotTranslate.investigating)}…`;
 
     return LitHtml.html`<span class="title">${paused}${actionTitle}</span>`;
   }
@@ -453,8 +455,8 @@ export class FreestylerChatUi extends HTMLElement {
     const thought = step.thought ? LitHtml.html`<p>${this.#renderTextAsMarkdown(step.thought)}</p>` : LitHtml.nothing;
     // If there is no "output" yet, it means we didn't execute the code yet (e.g. maybe it is still waiting for confirmation from the user)
     // thus we show "Code to execute" text rather than "Code executed" text on the heading of the code block.
-    const codeHeadingText = (step.output && !step.canceled) ? i18nString(UIStringsTemp.codeExecuted) :
-                                                              i18nString(UIStringsTemp.codeToExecute);
+    const codeHeadingText = (step.output && !step.canceled) ? lockedString(UIStringsNotTranslate.codeExecuted) :
+                                                              lockedString(UIStringsNotTranslate.codeToExecute);
     // If there is output, we don't show notice on this code block and instead show
     // it in the data returned code block.
     // clang-format off
@@ -477,7 +479,7 @@ export class FreestylerChatUi extends HTMLElement {
         .displayToolbar=${false}
         .displayNotice=${true}
         .heading=${{
-          text: i18nString(UIStringsTemp.dataReturned),
+          text: lockedString(UIStringsNotTranslate.dataReturned),
           showCopyButton: false,
         }}
       ></${MarkdownView.CodeBlock.CodeBlock.litTagName}>
@@ -493,7 +495,7 @@ export class FreestylerChatUi extends HTMLElement {
           .displayToolbar=${false}
           .displayNotice=${false}
           .heading=${{
-            text: i18nString(contextDetail.title),
+            text: lockedString(contextDetail.title),
             showCopyButton: true,
           }}
         ></${MarkdownView.CodeBlock.CodeBlock.litTagName}>
@@ -569,7 +571,7 @@ export class FreestylerChatUi extends HTMLElement {
       class="side-effect-confirmation"
       jslog=${VisualLogging.section('side-effect-confirmation')}
     >
-      <p>${i18nString(UIStringsTemp.sideEffectConfirmationDescription)}</p>
+      <p>${lockedString(UIStringsNotTranslate.sideEffectConfirmationDescription)}</p>
       <div class="side-effect-buttons-container">
         <${Buttons.Button.Button.litTagName}
           .data=${
@@ -579,8 +581,8 @@ export class FreestylerChatUi extends HTMLElement {
             } as Buttons.Button.ButtonData
           }
           @click=${() => sideEffectAction(false)}
-        >${i18nString(
-          UIStringsTemp.negativeSideEffectConfirmation,
+        >${lockedString(
+          UIStringsNotTranslate.negativeSideEffectConfirmation,
         )}</${Buttons.Button.Button.litTagName}>
         <${Buttons.Button.Button.litTagName}
           .data=${
@@ -592,7 +594,7 @@ export class FreestylerChatUi extends HTMLElement {
           }
           @click=${() => sideEffectAction(true)}
         >${
-            i18nString(UIStringsTemp.positiveSideEffectConfirmation)
+            lockedString(UIStringsNotTranslate.positiveSideEffectConfirmation)
         }</${Buttons.Button.Button.litTagName}>
       </div>
     </div>`;
@@ -604,17 +606,17 @@ export class FreestylerChatUi extends HTMLElement {
       let errorMessage;
       switch (message.error) {
         case ErrorType.UNKNOWN:
-          errorMessage = UIStringsTemp.systemError;
+          errorMessage = UIStringsNotTranslate.systemError;
           break;
         case ErrorType.MAX_STEPS:
-          errorMessage = UIStringsTemp.maxStepsError;
+          errorMessage = UIStringsNotTranslate.maxStepsError;
           break;
         case ErrorType.ABORT:
           return LitHtml.html`<p class="aborted" jslog=${VisualLogging.section('aborted')}>${
-              i18nString(UIStringsTemp.stoppedResponse)}</p>`;
+              lockedString(UIStringsNotTranslate.stoppedResponse)}</p>`;
       }
 
-      return LitHtml.html`<p class="error" jslog=${VisualLogging.section('error')}>${i18nString(errorMessage)}</p>`;
+      return LitHtml.html`<p class="error" jslog=${VisualLogging.section('error')}>${lockedString(errorMessage)}</p>`;
     }
 
     return LitHtml.nothing;
@@ -623,7 +625,7 @@ export class FreestylerChatUi extends HTMLElement {
   #renderChatMessage = (message: ChatMessage, {isLast}: {isLast: boolean}): LitHtml.TemplateResult => {
     // TODO(b/365068104): Render user's message as markdown too.
     if (message.entity === ChatMessageEntity.USER) {
-      const name = this.#props.userInfo.accountFullName || i18nString(UIStringsTemp.you);
+      const name = this.#props.userInfo.accountFullName || lockedString(UIStringsNotTranslate.you);
       const image = this.#props.userInfo.accountImage ?
           LitHtml.html`<img src="data:image/png;base64, ${this.#props.userInfo.accountImage}" alt="Account avatar" />` :
           LitHtml.html`<${IconButton.Icon.Icon.litTagName}
@@ -653,7 +655,7 @@ export class FreestylerChatUi extends HTMLElement {
             name="smart-assistant"
           ></${IconButton.Icon.Icon.litTagName}>
           <div class="message-name">
-            <span>${i18nString(UIStringsTemp.aiAssistant)}</span>
+            <span>${lockedString(UIStringsNotTranslate.aiAssistant)}</span>
           </div>
         </div>
         ${LitHtml.Directives.repeat(
@@ -685,8 +687,8 @@ export class FreestylerChatUi extends HTMLElement {
                       jslogContext: 'fix-this-issue',
                   } as Buttons.Button.ButtonData}
                   @click=${() => this.#handleSuggestionClick(FIX_THIS_ISSUE_PROMPT)}
-                >${i18nString(
-                  UIStringsTemp.fixThisIssue,
+                >${lockedString(
+                  UIStringsNotTranslate.fixThisIssue,
                 )}</${Buttons.Button.Button.litTagName}>`
               : LitHtml.nothing
           }
@@ -738,7 +740,7 @@ export class FreestylerChatUi extends HTMLElement {
               toggledIconName: 'select-element',
               toggleType: Buttons.Button.ToggleType.PRIMARY,
               toggled: this.#props.inspectElementToggled,
-              title: i18nString(UIStringsTemp.selectAnElement),
+              title: lockedString(UIStringsNotTranslate.selectAnElement),
               jslogContext: 'select-element',
           } as Buttons.Button.ButtonData}
           @click=${this.#props.onInspectElementClick}
@@ -749,7 +751,7 @@ export class FreestylerChatUi extends HTMLElement {
                   Common.Linkifier.Linkifier.linkify(this.#props.selectedElement),
                 )
             : LitHtml.html`<span>${
-              i18nString(UIStringsTemp.noElementSelected)
+              lockedString(UIStringsNotTranslate.noElementSelected)
             }</span>`
         }</div>
       </div>`;
@@ -763,14 +765,14 @@ export class FreestylerChatUi extends HTMLElement {
           name="dog-paw"
           class="feedback-icon"
         ></${IconButton.Icon.Icon.litTagName}>
-        <span>${i18nString(UIStringsTemp.dogfood)}</span>
+        <span>${lockedString(UIStringsNotTranslate.dogfood)}</span>
         <span aria-hidden="true">-</span>
         <x-link href=${DOGFOOD_FEEDBACK_URL}
           class="link"
           jslog=${VisualLogging.link('freestyler.feedback').track({
           click: true,
         })}>${
-          i18nString(UIStringsTemp.feedbackLink)
+          lockedString(UIStringsNotTranslate.feedbackLink)
         }</x-link>`;
     // clang-format on
   };
@@ -802,7 +804,7 @@ export class FreestylerChatUi extends HTMLElement {
             name="smart-assistant"
           ></${IconButton.Icon.Icon.litTagName}>
         </div>
-        ${i18nString(UIStringsTemp.emptyStateText)}
+        ${lockedString(UIStringsNotTranslate.emptyStateText)}
       </div>
       <div class="suggestions">
         ${suggestions.map(suggestion => {
@@ -853,7 +855,7 @@ export class FreestylerChatUi extends HTMLElement {
           ${this.#props.isLoading
             ? LitHtml.html`<${Buttons.Button.Button.litTagName}
               class="chat-input-button"
-              aria-label=${i18nString(UIStringsTemp.cancelButtonTitle)}
+              aria-label=${lockedString(UIStringsNotTranslate.cancelButtonTitle)}
               @click=${this.#handleCancel}
               .data=${
                 {
@@ -861,14 +863,14 @@ export class FreestylerChatUi extends HTMLElement {
                   size: Buttons.Button.Size.SMALL,
                   disabled: this.#isTextInputDisabled(),
                   iconName: 'stop',
-                  title: i18nString(UIStringsTemp.cancelButtonTitle),
+                  title: lockedString(UIStringsNotTranslate.cancelButtonTitle),
                   jslogContext: 'stop',
                 } as Buttons.Button.ButtonData
               }
             ></${Buttons.Button.Button.litTagName}>`
             : LitHtml.html`<${Buttons.Button.Button.litTagName}
               class="chat-input-button"
-              aria-label=${i18nString(UIStringsTemp.sendButtonTitle)}
+              aria-label=${lockedString(UIStringsNotTranslate.sendButtonTitle)}
               .data=${
                 {
                   type: 'submit',
@@ -876,7 +878,7 @@ export class FreestylerChatUi extends HTMLElement {
                   size: Buttons.Button.Size.SMALL,
                   disabled: this.#isTextInputDisabled(),
                   iconName: 'send',
-                  title: i18nString(UIStringsTemp.sendButtonTitle),
+                  title: lockedString(UIStringsNotTranslate.sendButtonTitle),
                   jslogContext: 'send',
                 } as Buttons.Button.ButtonData
               }
@@ -885,12 +887,12 @@ export class FreestylerChatUi extends HTMLElement {
     // clang-format on
   };
 
-  #getDisclaimerText = (): string => {
+  #getDisclaimerText = (): Platform.UIString.LocalizedString => {
     switch (this.#props.agentType) {
       case AgentType.FREESTYLER:
-        return UIStringsTemp.inputDisclaimerForFreestylerAgent;
+        return lockedString(UIStringsNotTranslate.inputDisclaimerForFreestylerAgent);
       case AgentType.DRJONES_NETWORK_REQUEST:
-        return UIStringsTemp.inputDisclaimerForDrJonesNetworkAgent;
+        return lockedString(UIStringsNotTranslate.inputDisclaimerForDrJonesNetworkAgent);
     }
   };
 
@@ -915,7 +917,7 @@ export class FreestylerChatUi extends HTMLElement {
           ${this.#renderChatInput()}
         </form>
         <footer class="disclaimer">
-          <p class="disclaimer-text">${i18nString(
+          <p class="disclaimer-text">${lockedString(
             this.#getDisclaimerText(),
           )} See <x-link
               class="link"
@@ -936,14 +938,14 @@ export class FreestylerChatUi extends HTMLElement {
     return LitHtml.html`
       <div class="consent-view">
         <h2 tabindex="-1">
-          ${i18nString(UIStringsTemp.consentScreenHeading)}
+          ${i18nString(UIStrings.consentScreenHeading)}
         </h2>
         <main>
-          ${i18nString(UIStringsTemp.consentTextAiDisclaimer)}
+          ${i18nString(UIStrings.consentTextAiDisclaimer)}
           <ul>
-            <li>${i18nString(UIStringsTemp.consentTextDataDisclaimer)}</li>
-            <li>${i18nString(UIStringsTemp.consentTextVisibilityDisclaimer)}</li>
-            <li>${i18nString(UIStringsTemp.consentTextDoNotUseDisclaimer)}</li>
+            <li>${i18nString(UIStrings.consentTextDataDisclaimer)}</li>
+            <li>${i18nString(UIStrings.consentTextVisibilityDisclaimer)}</li>
+            <li>${i18nString(UIStrings.consentTextDoNotUseDisclaimer)}</li>
             <li>See <x-link
               class="link"
               href=${DOGFOOD_INFO}
@@ -960,7 +962,7 @@ export class FreestylerChatUi extends HTMLElement {
               jslogContext: 'accept',
             } as Buttons.Button.ButtonData}
           >${
-            i18nString(UIStringsTemp.acceptButtonTitle)
+            i18nString(UIStrings.acceptButtonTitle)
           }</${Buttons.Button.Button.litTagName}>
         </main>
       </div>

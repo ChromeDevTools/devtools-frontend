@@ -28,11 +28,9 @@ import {FreestylerAgent} from './FreestylerAgent.js';
 import freestylerPanelStyles from './freestylerPanel.css.js';
 
 /*
-  * TODO(nvitkov): b/346933425
-  * Temporary string that should not be translated
-  * as they may change often during development.
-  */
-const UIStringsTemp = {
+* Strings that don't need to be translated at this time.
+*/
+const UIStringsNotTranslate = {
   /**
    *@description AI assistant UI text for clearing messages.
    */
@@ -41,54 +39,9 @@ const UIStringsTemp = {
    *@description AI assistant UI tooltip text for the help button.
    */
   help: 'Help',
-  /**
-   *@description Title text for thinking step of DrJones Network agent.
-   */
-  inspectingNetworkData: 'Inspecting network data',
-  /**
-   *@description Thought text for thinking step of DrJones Network agent.
-   */
-  dataUsedToGenerateThisResponse: 'Data used to generate this response',
-  /**
-   *@description Heading text for the block that shows the network request details.
-   */
-  request: 'Request',
-  /**
-   *@description Heading text for the block that shows the network response details.
-   */
-  response: 'Response',
-  /**
-   *@description Prefix text for request URL.
-   */
-  requestUrl: 'Request URL',
-  /**
-   *@description Title text for request headers.
-   */
-  requestHeaders: 'Request Headers',
-  /**
-   *@description Title text for request timing details.
-   */
-  timing: 'Timing',
-  /**
-   *@description Title text for response headers.
-   */
-  responseHeaders: 'Response Headers',
-  /**
-   *@description Prefix text for response status.
-   */
-  responseStatus: 'Response Status',
-  /**
-   *@description Title text for request initiator chain.
-   */
-  requestInitiatorChain: 'Request Initiator Chain',
-
 };
 
-// TODO(nvitkov): b/346933425
-// const str_ = i18n.i18n.registerUIStrings('panels/freestyler/FreestylerPanel.ts', UIStrings);
-// const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-/* eslint-disable  rulesdir/l10n_i18nString_call_only_with_uistrings */
-const i18nString = i18n.i18n.lockedString;
+const lockedString = i18n.i18n.lockedString;
 
 type ViewOutput = {
   freestylerChatUi?: FreestylerChatUi,
@@ -101,13 +54,14 @@ function createToolbar(target: HTMLElement, {onClearClick}: {onClearClick: () =>
   const leftToolbar = new UI.Toolbar.Toolbar('', toolbarContainer);
   const rightToolbar = new UI.Toolbar.Toolbar('freestyler-right-toolbar', toolbarContainer);
 
-  const clearButton =
-      new UI.Toolbar.ToolbarButton(i18nString(UIStringsTemp.clearMessages), 'clear', undefined, 'freestyler.clear');
+  const clearButton = new UI.Toolbar.ToolbarButton(
+      lockedString(UIStringsNotTranslate.clearMessages), 'clear', undefined, 'freestyler.clear');
   clearButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, onClearClick);
   leftToolbar.appendToolbarItem(clearButton);
 
   rightToolbar.appendSeparator();
-  const helpButton = new UI.Toolbar.ToolbarButton(i18nString(UIStringsTemp.help), 'help', undefined, 'freestyler.help');
+  const helpButton =
+      new UI.Toolbar.ToolbarButton(lockedString(UIStringsNotTranslate.help), 'help', undefined, 'freestyler.help');
   helpButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, () => {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(DOGFOOD_INFO);
   });

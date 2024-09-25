@@ -13,11 +13,9 @@ import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import provideFeedbackStyles from './provideFeedback.css.js';
 
 /*
-  * TODO(nvitkov): b/346933425
-  * Temporary string that should not be translated
-  * as they may change often during development.
-  */
-const UIStringsTemp = {
+* Strings that don't need to be translated at this time.
+*/
+const UIStringsNotTranslate = {
 
   /**
    * @description The title of the button that allows submitting positive
@@ -56,10 +54,8 @@ const UIStringsTemp = {
    */
   report: 'Report legal issue',
 };
-// const str_ = i18n.i18n.registerUIStrings('panels/freestyler/components/AiRatings.ts', UIStrings);
-// const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-/* eslint-disable  rulesdir/l10n_i18nString_call_only_with_uistrings */
-const i18nString = i18n.i18n.lockedString;
+
+const lockedString = i18n.i18n.lockedString;
 
 const REPORT_URL = 'https://support.google.com/legal/troubleshooter/1114905?hl=en#ts=1115658%2C13380504' as
     Platform.DevToolsPath.UrlString;
@@ -132,7 +128,7 @@ export class ProvideFeedback extends HTMLElement {
           toggledIconName: 'thumb-up-filled',
           toggled: this.#currentRating === Host.AidaClient.Rating.POSITIVE,
           toggleType: Buttons.Button.ToggleType.PRIMARY,
-          title: i18nString(UIStringsTemp.thumbsUp),
+          title: lockedString(UIStringsNotTranslate.thumbsUp),
           jslogContext: 'thumbs-up',
         } as Buttons.Button.ButtonData}
         @click=${() => this.#handleRateClick(Host.AidaClient.Rating.POSITIVE)}
@@ -145,7 +141,7 @@ export class ProvideFeedback extends HTMLElement {
           toggledIconName: 'thumb-down-filled',
           toggled: this.#currentRating === Host.AidaClient.Rating.NEGATIVE,
           toggleType: Buttons.Button.ToggleType.PRIMARY,
-          title: i18nString(UIStringsTemp.thumbsDown),
+          title: lockedString(UIStringsNotTranslate.thumbsDown),
           jslogContext: 'thumbs-down',
         } as Buttons.Button.ButtonData}
         @click=${() => this.#handleRateClick(Host.AidaClient.Rating.NEGATIVE)}
@@ -156,7 +152,7 @@ export class ProvideFeedback extends HTMLElement {
           {
             variant: Buttons.Button.Variant.ICON,
             size: Buttons.Button.Size.SMALL,
-            title: i18nString(UIStringsTemp.report),
+            title: lockedString(UIStringsNotTranslate.report),
             iconName: 'report',
             jslogContext: 'report',
           } as Buttons.Button.ButtonData
@@ -172,18 +168,18 @@ export class ProvideFeedback extends HTMLElement {
     return LitHtml.html`
       <form class="feedback-form" @submit=${this.#handleSubmit}>
         <div class="feedback-header">
-          <h4 class="feedback-title">${i18nString(
-              UIStringsTemp.whyThisRating,
+          <h4 class="feedback-title">${lockedString(
+              UIStringsNotTranslate.whyThisRating,
           )}</h4>
           <${Buttons.Button.Button.litTagName}
-            aria-label=${i18nString(UIStringsTemp.close)}
+            aria-label=${lockedString(UIStringsNotTranslate.close)}
             @click=${this.#handleClose}
             .data=${
               {
                 variant: Buttons.Button.Variant.ICON,
                 iconName: 'cross',
                 size: Buttons.Button.Size.SMALL,
-                title: i18nString(UIStringsTemp.close),
+                title: lockedString(UIStringsNotTranslate.close),
                 jslogContext: 'close',
               } as Buttons.Button.ButtonData
             }
@@ -192,27 +188,27 @@ export class ProvideFeedback extends HTMLElement {
         <input
           type="text"
           class="devtools-text-input feedback-input"
-          placeholder=${i18nString(
-           UIStringsTemp.provideFeedbackPlaceholder,
+          placeholder=${lockedString(
+           UIStringsNotTranslate.provideFeedbackPlaceholder,
           )}
           jslog=${VisualLogging.textField('feedback').track({ keydown: 'Enter' })}
         >
         <span class="feedback-disclaimer">${
-          i18nString(UIStringsTemp.disclaimer)
+          lockedString(UIStringsNotTranslate.disclaimer)
         }</span>
         <${Buttons.Button.Button.litTagName}
-        aria-label=${i18nString(UIStringsTemp.submit)}
+        aria-label=${lockedString(UIStringsNotTranslate.submit)}
         .data=${
           {
               type: 'submit',
               variant: Buttons.Button.Variant.OUTLINED,
               size: Buttons.Button.Size.SMALL,
-              title: i18nString(UIStringsTemp.submit),
+              title: lockedString(UIStringsNotTranslate.submit),
               jslogContext: 'send',
             } as Buttons.Button.ButtonData
           }
         >${
-          i18nString(UIStringsTemp.submit)
+          lockedString(UIStringsNotTranslate.submit)
         }</${Buttons.Button.Button.litTagName}>
       </div>
     `;

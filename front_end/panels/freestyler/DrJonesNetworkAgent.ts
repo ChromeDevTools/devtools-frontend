@@ -49,7 +49,10 @@ This request aims to retrieve a list of products matching the search query "lapt
 
 const MAX_HEADERS_SIZE = 1000;
 
-const UIStringsTemp = {
+/*
+* Strings that don't need to be translated at this time.
+*/
+const UIStringsNotTranslate = {
   inspectingNetworkData: 'Inspecting network data',
   /**
    *@description Thought text for thinking step of DrJones Network agent.
@@ -184,12 +187,12 @@ export class DrJonesNetworkAgent {
     try {
       yield {
         type: ResponseType.TITLE,
-        title: UIStringsTemp.inspectingNetworkData,
+        title: UIStringsNotTranslate.inspectingNetworkData,
         rpcId,
       };
       yield {
         type: ResponseType.THOUGHT,
-        thought: UIStringsTemp.dataUsedToGenerateThisResponse,
+        thought: UIStringsNotTranslate.dataUsedToGenerateThisResponse,
         contextDetails: createContextDetailsForDrJonesNetworkAgent(options.selectedNetworkRequest),
         rpcId,
       };
@@ -381,21 +384,21 @@ Request Initiator Chain:\n ${formatRequestInitiatorChain(request)}`;
 function createContextDetailsForDrJonesNetworkAgent(request: SDK.NetworkRequest.NetworkRequest|null): ContextDetail[] {
   if (request) {
     const requestContextDetail: ContextDetail = {
-      title: UIStringsTemp.request,
-      text: UIStringsTemp.requestUrl + ': ' + request.url() + '\n\n' +
-          formatHeaders(UIStringsTemp.requestHeaders, request.requestHeaders()),
+      title: UIStringsNotTranslate.request,
+      text: UIStringsNotTranslate.requestUrl + ': ' + request.url() + '\n\n' +
+          formatHeaders(UIStringsNotTranslate.requestHeaders, request.requestHeaders()),
     };
     const responseContextDetail: ContextDetail = {
-      title: UIStringsTemp.response,
-      text: UIStringsTemp.responseStatus + ': ' + request.statusCode + ' ' + request.statusText + '\n\n' +
-          formatHeaders(UIStringsTemp.responseHeaders, request.responseHeaders),
+      title: UIStringsNotTranslate.response,
+      text: UIStringsNotTranslate.responseStatus + ': ' + request.statusCode + ' ' + request.statusText + '\n\n' +
+          formatHeaders(UIStringsNotTranslate.responseHeaders, request.responseHeaders),
     };
     const timingContextDetail: ContextDetail = {
-      title: UIStringsTemp.timing,
+      title: UIStringsNotTranslate.timing,
       text: formatNetworkRequestTiming(request),
     };
     const initiatorChainContextDetail: ContextDetail = {
-      title: UIStringsTemp.requestInitiatorChain,
+      title: UIStringsNotTranslate.requestInitiatorChain,
       text: formatRequestInitiatorChain(request),
     };
     return [

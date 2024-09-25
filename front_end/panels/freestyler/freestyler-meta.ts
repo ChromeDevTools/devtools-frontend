@@ -14,15 +14,15 @@ import type * as Freestyler from './freestyler.js';
   * Temporary string that should not be translated
   * as they may change often during development.
   */
-const UIStringsTemp = {
-  /**
-   * @description The title of the command menu action for showing the AI assistant panel.
-   */
-  showAiAssistant: 'Show  AI assistant',
+const UIStrings = {
   /**
    * @description The title of the AI assistant panel.
    */
   aiAssistant: 'AI assistant',
+  /**
+   * @description The title of the command menu action for showing the AI assistant panel.
+   */
+  showAiAssistant: 'Show AI assistant',
   /**
    * @description The setting title to enable the AI assistant via
    * the settings tab.
@@ -30,7 +30,7 @@ const UIStringsTemp = {
   enableAiAssistant: 'Enable AI assistant',
   /**
    *@description Text of a tooltip to redirect to the AI assistant panel with
-   *the current element as context
+   * the current element as context
    */
   askAiAssistant: 'Ask AI assistant',
   /**
@@ -54,12 +54,9 @@ const UIStringsTemp = {
   policyRestricted: 'Your organization turned off this feature. Contact your administrators for more information',
 };
 
-// TODO(nvitkov): b/346933425
-// const str_ = i18n.i18n.registerUIStrings('panels/freestyler/freestyler-meta.ts', UIStrings);
-// const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
-/* eslint-disable  rulesdir/l10n_i18nString_call_only_with_uistrings */
-const i18nLazyString = i18n.i18n.lockedLazyString;
-const i18nString = i18n.i18n.lockedString;
+const str_ = i18n.i18n.registerUIStrings('panels/freestyler/freestyler-meta.ts', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
 const setting = 'freestyler-enabled';
 
@@ -100,8 +97,8 @@ function isDrJonesFeatureAvailable(config?: Root.Runtime.HostConfig): boolean {
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.DRAWER_VIEW,
   id: 'freestyler',
-  commandPrompt: i18nLazyString(UIStringsTemp.showAiAssistant),
-  title: i18nLazyString(UIStringsTemp.aiAssistant),
+  commandPrompt: i18nLazyString(UIStrings.showAiAssistant),
+  title: i18nLazyString(UIStrings.aiAssistant),
   order: 10,
   isPreviewFeature: true,
   persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
@@ -118,22 +115,22 @@ Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.GLOBAL,
   settingName: setting,
   settingType: Common.Settings.SettingType.BOOLEAN,
-  title: i18nLazyString(UIStringsTemp.enableAiAssistant),
+  title: i18nLazyString(UIStrings.enableAiAssistant),
   defaultValue: isFeatureAvailable,
   reloadRequired: true,
   condition: isFeatureAvailable,
   disabledCondition: config => {
     if (isLocaleRestricted()) {
-      return {disabled: true, reason: i18nString(UIStringsTemp.wrongLocale)};
+      return {disabled: true, reason: i18nString(UIStrings.wrongLocale)};
     }
     if (isAgeRestricted(config)) {
-      return {disabled: true, reason: i18nString(UIStringsTemp.ageRestricted)};
+      return {disabled: true, reason: i18nString(UIStrings.ageRestricted)};
     }
     if (isGeoRestricted(config)) {
-      return {disabled: true, reason: i18nString(UIStringsTemp.geoRestricted)};
+      return {disabled: true, reason: i18nString(UIStrings.geoRestricted)};
     }
     if (isPolicyRestricted(config)) {
-      return {disabled: true, reason: i18nString(UIStringsTemp.policyRestricted)};
+      return {disabled: true, reason: i18nString(UIStrings.policyRestricted)};
     }
 
     return {disabled: false};
@@ -147,7 +144,7 @@ UI.ActionRegistration.registerActionExtension({
   },
   setting,
   category: UI.ActionRegistration.ActionCategory.GLOBAL,
-  title: i18nLazyString(UIStringsTemp.askAiAssistant),
+  title: i18nLazyString(UIStrings.askAiAssistant),
   async loadActionDelegate() {
     const Freestyler = await loadFreestylerModule();
     return new Freestyler.ActionDelegate();
@@ -162,7 +159,7 @@ UI.ActionRegistration.registerActionExtension({
   },
   setting,
   category: UI.ActionRegistration.ActionCategory.GLOBAL,
-  title: i18nLazyString(UIStringsTemp.askAiAssistant),
+  title: i18nLazyString(UIStrings.askAiAssistant),
   async loadActionDelegate() {
     const Freestyler = await loadFreestylerModule();
     return new Freestyler.ActionDelegate();

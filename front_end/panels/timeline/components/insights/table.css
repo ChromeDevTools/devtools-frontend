@@ -16,6 +16,10 @@ table {
   margin: 5px 0;
 }
 
+thead {
+  white-space: nowrap;
+}
+
 table tr > * {
   text-align: right;
 }

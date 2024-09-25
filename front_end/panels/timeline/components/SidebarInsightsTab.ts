@@ -103,6 +103,7 @@ export class SidebarInsightsTab extends HTMLElement {
     this.dispatchEvent(new Insights.SidebarInsight.InsightSetHovered());
   }
 
+  // TODO(crbug.com/368170718): use a shorter label for each insight set/url when possible.
   #render(): void {
     if (!this.#parsedTrace || !this.#insights) {
       LitHtml.render(LitHtml.nothing, this.#shadow, {host: this});

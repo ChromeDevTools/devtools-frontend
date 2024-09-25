@@ -39,8 +39,11 @@ export function generateInsight(parsedTrace: RequiredData<typeof deps>, context:
     if (/^(block|fallback|auto)$/.test(display)) {
       const wastedTimeMicro = Types.Timing.MicroSeconds(
           request.args.data.syntheticData.finishTime - request.args.data.syntheticData.sendStartTime);
+      // TODO(crbug.com/352244504): should really end at the time of the next Commit trace event.
       wastedTime = Platform.NumberUtilities.floor(Helpers.Timing.microSecondsToMilliseconds(wastedTimeMicro), 1 / 5) as
           Types.Timing.MilliSeconds;
+      // All browsers wait for no more than 3s.
+      wastedTime = Math.min(wastedTime, 3000) as Types.Timing.MilliSeconds;
     }
 
     fonts.push({
@@ -49,6 +52,8 @@ export function generateInsight(parsedTrace: RequiredData<typeof deps>, context:
       wastedTime,
     });
   }
+
+  fonts.sort((a, b) => b.wastedTime - a.wastedTime);
 
   return {
     fonts,

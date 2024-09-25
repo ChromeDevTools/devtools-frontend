@@ -64,6 +64,7 @@ export class RenderBlockingRequests extends BaseInsight {
     return entryOutlineOverlays;
   }
 
+  // TODO(crbug.com/368170718): handle long urls better than this.
   #linkifyUrl(url: string): HTMLElement {
     const options = {
       tabStop: true,

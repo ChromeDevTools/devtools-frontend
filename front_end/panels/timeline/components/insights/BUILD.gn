@@ -19,6 +19,7 @@ devtools_module("insights") {
   sources = [
     "CLSCulprits.ts",
     "DocumentLatency.ts",
+    "FontDisplay.ts",
     "Helpers.ts",
     "InteractionToNextPaint.ts",
     "LCPDiscovery.ts",

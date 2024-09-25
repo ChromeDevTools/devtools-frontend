@@ -1798,6 +1798,7 @@ grd_files_debug_sources = [
   "front_end/panels/timeline/components/fieldSettingsDialog.css.js",
   "front_end/panels/timeline/components/insights/CLSCulprits.js",
   "front_end/panels/timeline/components/insights/DocumentLatency.js",
+  "front_end/panels/timeline/components/insights/FontDisplay.js",
   "front_end/panels/timeline/components/insights/Helpers.js",
   "front_end/panels/timeline/components/insights/InteractionToNextPaint.js",
   "front_end/panels/timeline/components/insights/LCPDiscovery.js",

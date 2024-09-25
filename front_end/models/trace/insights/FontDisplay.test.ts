@@ -33,19 +33,14 @@ describeWithEnvironment('FontDisplay', function() {
 
     assert.deepStrictEqual(insight.fonts.map(f => ({...f, request: f.request.args.data.url})), [
       {
-        request: 'https://fonts.gstatic.com/s/droidsans/v18/SlGVmQWMvZQIdix7AFxXkHNSbRYXags.woff2',
-        display: 'auto',
-        wastedTime: 15,
-      },
-      {
-        request: 'https://fonts.gstatic.com/s/lato/v24/S6u9w4BMUTPHh6UVSwiPGQ3q5d0.woff2',
-        display: 'auto',
-        wastedTime: 10,
-      },
-      {
         request: 'https://fonts.gstatic.com/s/ptsans/v17/jizaRExUiTo99u79D0KExcOPIDU.woff2',
         display: 'auto',
         wastedTime: 20,
+      },
+      {
+        request: 'https://fonts.gstatic.com/s/droidsans/v18/SlGVmQWMvZQIdix7AFxXkHNSbRYXags.woff2',
+        display: 'auto',
+        wastedTime: 15,
       },
       {
         request: 'https://fonts.gstatic.com/s/ptsans/v17/jizfRExUiTo99u79B_mh0O6tLR8a8zI.woff2',
@@ -61,6 +56,11 @@ describeWithEnvironment('FontDisplay', function() {
         request: 'https://fonts.gstatic.com/s/ptserif/v18/EJRVQgYoZZY2vCFuvAFWzr-_dSb_.woff2',
         display: 'auto',
         wastedTime: 15,
+      },
+      {
+        request: 'https://fonts.gstatic.com/s/lato/v24/S6u9w4BMUTPHh6UVSwiPGQ3q5d0.woff2',
+        display: 'auto',
+        wastedTime: 10,
       },
     ]);
   });

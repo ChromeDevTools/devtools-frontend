@@ -164,15 +164,16 @@ export class SidebarSingleInsightSet extends HTMLElement {
       ): LitHtml.TemplateResult {
     // TODO(crbug.com/368135130): sort this in a smart way!
     const insightComponents = [
-      Insights.LCPPhases.LCPPhases,
       Insights.InteractionToNextPaint.InteractionToNextPaint,
+      Insights.LCPPhases.LCPPhases,
       Insights.LCPDiscovery.LCPDiscovery,
-      Insights.RenderBlocking.RenderBlockingRequests,
-      Insights.SlowCSSSelector.SlowCSSSelector,
       Insights.CLSCulprits.CLSCulprits,
+      Insights.RenderBlocking.RenderBlockingRequests,
       Insights.DocumentLatency.DocumentLatency,
-      Insights.ThirdParties.ThirdParties,
+      Insights.FontDisplay.FontDisplay,
       Insights.Viewport.Viewport,
+      Insights.ThirdParties.ThirdParties,
+      Insights.SlowCSSSelector.SlowCSSSelector,
     ];
     // clang-format off
     return LitHtml.html`${insightComponents.map(component => {

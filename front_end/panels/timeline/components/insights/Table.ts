@@ -10,7 +10,7 @@ import tableStyles from './table.css.js';
 export interface TableData {
   headers: string[];
   /** Each row is a tuple of values. */
-  rows: Array<Array<string|number>>;
+  rows: Array<string[]>;
   onHoverRow?: (index: number, rowEl: HTMLElement) => void;
   onClickRow?: (index: number, rowEl: HTMLElement) => void;
   onMouseLeave?: () => void;
@@ -22,7 +22,7 @@ export class Table extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
   readonly #boundRender = this.#render.bind(this);
   #headers?: string[];
-  #rows?: Array<Array<string|number>>;
+  #rows?: Array<string[]>;
   #onHoverRowCallback?: (index: number, rowEl: HTMLElement) => void;
   #onClickRowCallback?: (index: number, rowEl: HTMLElement) => void;
   #onMouseLeaveCallback?: () => void;

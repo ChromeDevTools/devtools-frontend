@@ -20,6 +20,8 @@ You will have to define 4 properties on your component:
 3. `override internalName: string` is a name used to identify the insight. It **must be unique across all insights** and is used to track if it is active or not.
 4. `override userVisibleTitle: string` is the user facing name used in the sidebar when the insight is rendered.
 
+> Go to KnownContextValues.ts and add your insight: `timeline.toggle-insight.your-insight-name` and `timeline.insights.your-insight-name`.
+
 > Note that in most components, we use private methods and variables for storing this data, but because we are extending a base class, these are all `protected` instead.
 
 ## 2. override the `render` method

@@ -19,12 +19,12 @@ const UIStringsNotTranslate = {
 
   /**
    * @description The title of the button that allows submitting positive
-   * feedback about the response for AI assistant.
+   * feedback about the response for AI assistance.
    */
   thumbsUp: 'Good response',
   /**
    * @description The title of the button that allows submitting negative
-   * feedback about the response for AI assistant.
+   * feedback about the response for AI assistance.
    */
   thumbsDown: 'Bad response',
   /**
@@ -50,7 +50,7 @@ const UIStringsNotTranslate = {
   close: 'Close',
   /**
    * @description The title of the button that opens a page to report a legal
-   * issue with the AI assistant message.
+   * issue with the AI assistance message.
    */
   report: 'Report legal issue',
 };

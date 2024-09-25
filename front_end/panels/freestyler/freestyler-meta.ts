@@ -16,23 +16,23 @@ import type * as Freestyler from './freestyler.js';
   */
 const UIStrings = {
   /**
-   * @description The title of the AI assistant panel.
+   * @description The title of the AI assistance panel.
    */
-  aiAssistant: 'AI assistant',
+  aiAssistance: 'AI assistance',
   /**
-   * @description The title of the command menu action for showing the AI assistant panel.
+   * @description The title of the command menu action for showing the AI assistance panel.
    */
-  showAiAssistant: 'Show AI assistant',
+  showAiAssistance: 'Show AI assistance',
   /**
-   * @description The setting title to enable the AI assistant via
+   * @description The setting title to enable the AI assistance via
    * the settings tab.
    */
-  enableAiAssistant: 'Enable AI assistant',
+  enableAiAssistance: 'Enable AI assistance',
   /**
-   *@description Text of a tooltip to redirect to the AI assistant panel with
+   *@description Text of a tooltip to redirect to the AI assistance panel with
    * the current element as context
    */
-  askAiAssistant: 'Ask AI assistant',
+  askAiAssistance: 'Ask AI assistance',
   /**
    * @description Message shown to the user if the DevTools locale is not
    * supported.
@@ -97,8 +97,8 @@ function isDrJonesFeatureAvailable(config?: Root.Runtime.HostConfig): boolean {
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.DRAWER_VIEW,
   id: 'freestyler',
-  commandPrompt: i18nLazyString(UIStrings.showAiAssistant),
-  title: i18nLazyString(UIStrings.aiAssistant),
+  commandPrompt: i18nLazyString(UIStrings.showAiAssistance),
+  title: i18nLazyString(UIStrings.aiAssistance),
   order: 10,
   isPreviewFeature: true,
   persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
@@ -115,7 +115,7 @@ Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.NONE,
   settingName: setting,
   settingType: Common.Settings.SettingType.BOOLEAN,
-  title: i18nLazyString(UIStrings.enableAiAssistant),
+  title: i18nLazyString(UIStrings.enableAiAssistance),
   defaultValue: isFeatureAvailable,
   reloadRequired: true,
   condition: isFeatureAvailable,
@@ -144,7 +144,7 @@ UI.ActionRegistration.registerActionExtension({
   },
   setting,
   category: UI.ActionRegistration.ActionCategory.GLOBAL,
-  title: i18nLazyString(UIStrings.askAiAssistant),
+  title: i18nLazyString(UIStrings.askAiAssistance),
   async loadActionDelegate() {
     const Freestyler = await loadFreestylerModule();
     return new Freestyler.ActionDelegate();
@@ -159,7 +159,7 @@ UI.ActionRegistration.registerActionExtension({
   },
   setting,
   category: UI.ActionRegistration.ActionCategory.GLOBAL,
-  title: i18nLazyString(UIStrings.askAiAssistant),
+  title: i18nLazyString(UIStrings.askAiAssistance),
   async loadActionDelegate() {
     const Freestyler = await loadFreestylerModule();
     return new Freestyler.ActionDelegate();

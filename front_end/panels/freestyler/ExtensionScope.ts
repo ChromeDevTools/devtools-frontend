@@ -7,7 +7,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import {AI_ASSISTANT_CSS_CLASS_NAME, type ChangeManager} from './ChangeManager.js';
+import {AI_ASSISTANCE_CSS_CLASS_NAME, type ChangeManager} from './ChangeManager.js';
 
 export const FREESTYLER_WORLD_NAME = 'devtools_freestyler';
 export const FREESTYLER_BINDING_NAME = '__freestyler';
@@ -190,7 +190,7 @@ const functions = `async function setElementStyles(el, styles) {
   } else if (el.classList.length) {
     const parts = [];
     for (const cls of el.classList) {
-      if (cls.startsWith('${AI_ASSISTANT_CSS_CLASS_NAME}')) {
+      if (cls.startsWith('${AI_ASSISTANCE_CSS_CLASS_NAME}')) {
         continue;
       }
       parts.push('.' + cls);
@@ -202,7 +202,7 @@ const functions = `async function setElementStyles(el, styles) {
 
   // __freestylerClassName is not exposed to the page due to this being
   // run in the isolated world.
-  const className = el.__freestylerClassName ?? '${AI_ASSISTANT_CSS_CLASS_NAME}-' + freestyler.id;
+  const className = el.__freestylerClassName ?? '${AI_ASSISTANCE_CSS_CLASS_NAME}-' + freestyler.id;
   el.__freestylerClassName = className;
   el.classList.add(className);
 

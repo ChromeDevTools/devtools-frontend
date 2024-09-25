@@ -32,11 +32,11 @@ import freestylerPanelStyles from './freestylerPanel.css.js';
 */
 const UIStringsNotTranslate = {
   /**
-   *@description AI assistant UI text for clearing messages.
+   *@description AI assistance UI text for clearing messages.
    */
   clearMessages: 'Clear messages',
   /**
-   *@description AI assistant UI tooltip text for the help button.
+   *@description AI assistance UI tooltip text for the help button.
    */
   help: 'Help',
 };

@@ -88,7 +88,7 @@ describe.skip('[crbug.com/365038585] Freestyler', function() {
     const {frontend} = getBrowserAndPages();
     await frontend.locator('aria/Customize and control DevTools').click();
     await frontend.locator('aria/More tools').click();
-    await frontend.locator('aria/AI assistant').click();
+    await frontend.locator('aria/AI assistance').click();
     // Accept consent.
     await frontend.locator('aria/Accept').click();
   }

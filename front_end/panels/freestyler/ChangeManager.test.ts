@@ -42,14 +42,14 @@ describe('ChangeManager', () => {
     const cssModel = createModel();
     await changeManager.addChange(cssModel, frameId, {
       selector: 'div',
-      className: 'ai-assistant-change-1',
+      className: 'ai-style-change-1',
       styles: {
         color: 'blue',
       },
     });
     assert(cssModel.setStyleSheetText.calledOnce);
     assert.deepStrictEqual(cssModel.setStyleSheetText.args, [
-      [styleSheetId, '.ai-assistant-change-1 {\n  div& {\n    color: blue;\n  }\n}', true],
+      [styleSheetId, '.ai-style-change-1 {\n  div& {\n    color: blue;\n  }\n}', true],
     ]);
   });
 
@@ -58,22 +58,22 @@ describe('ChangeManager', () => {
     const cssModel = createModel();
     await changeManager.addChange(cssModel, frameId, {
       selector: 'div',
-      className: 'ai-assistant-change-1',
+      className: 'ai-style-change-1',
       styles: {
         color: 'blue',
       },
     });
     await changeManager.addChange(cssModel, frameId, {
       selector: 'span',
-      className: 'ai-assistant-change-1',
+      className: 'ai-style-change-1',
       styles: {
         color: 'green',
       },
     });
     assert(cssModel.setStyleSheetText.calledTwice);
     assert.deepStrictEqual(cssModel.setStyleSheetText.args, [
-      [styleSheetId, '.ai-assistant-change-1 {\n  div& {\n    color: blue;\n  }\n}', true],
-      [styleSheetId, '.ai-assistant-change-1 {\n  div& {\n    color: green;\n  }\n}', true],
+      [styleSheetId, '.ai-style-change-1 {\n  div& {\n    color: blue;\n  }\n}', true],
+      [styleSheetId, '.ai-style-change-1 {\n  div& {\n    color: green;\n  }\n}', true],
     ]);
   });
 
@@ -82,22 +82,22 @@ describe('ChangeManager', () => {
     const cssModel = createModel();
     await changeManager.addChange(cssModel, frameId, {
       selector: 'div',
-      className: 'ai-assistant-change-1',
+      className: 'ai-style-change-1',
       styles: {
         color: 'blue',
       },
     });
     await changeManager.addChange(cssModel, frameId, {
       selector: 'div',
-      className: 'ai-assistant-change-1',
+      className: 'ai-style-change-1',
       styles: {
         color: 'green',
       },
     });
     assert(cssModel.setStyleSheetText.calledTwice);
     assert.deepStrictEqual(cssModel.setStyleSheetText.args, [
-      [styleSheetId, '.ai-assistant-change-1 {\n  div& {\n    color: blue;\n  }\n}', true],
-      [styleSheetId, '.ai-assistant-change-1 {\n  div& {\n    color: green;\n  }\n}', true],
+      [styleSheetId, '.ai-style-change-1 {\n  div& {\n    color: blue;\n  }\n}', true],
+      [styleSheetId, '.ai-style-change-1 {\n  div& {\n    color: green;\n  }\n}', true],
     ]);
   });
 
@@ -106,27 +106,27 @@ describe('ChangeManager', () => {
     const cssModel = createModel();
     await changeManager.addChange(cssModel, frameId, {
       selector: 'div',
-      className: 'ai-assistant-change-1',
+      className: 'ai-style-change-1',
       styles: {
         color: 'blue',
       },
     });
     assert(cssModel.setStyleSheetText.calledOnce);
     assert.deepStrictEqual(cssModel.setStyleSheetText.args, [
-      [styleSheetId, '.ai-assistant-change-1 {\n  div& {\n    color: blue;\n  }\n}', true],
+      [styleSheetId, '.ai-style-change-1 {\n  div& {\n    color: blue;\n  }\n}', true],
     ]);
     await changeManager.clear();
     await changeManager.addChange(cssModel, frameId, {
       selector: 'body',
-      className: 'ai-assistant-change-1',
+      className: 'ai-style-change-1',
       styles: {
         color: 'green',
       },
     });
     assert(cssModel.setStyleSheetText.calledTwice);
     assert.deepStrictEqual(cssModel.setStyleSheetText.args, [
-      [styleSheetId, '.ai-assistant-change-1 {\n  div& {\n    color: blue;\n  }\n}', true],  // before clear().
-      [styleSheetId, '.ai-assistant-change-1 {\n  body& {\n    color: green;\n  }\n}', true],
+      [styleSheetId, '.ai-style-change-1 {\n  div& {\n    color: blue;\n  }\n}', true],  // before clear().
+      [styleSheetId, '.ai-style-change-1 {\n  body& {\n    color: green;\n  }\n}', true],
     ]);
   });
 });

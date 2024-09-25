@@ -98,7 +98,7 @@ const UIStringsNotTranslate = {
    */
   noElementSelected: 'No element selected',
   /**
-   *@description Text for the empty state of the AI assistant panel.
+   *@description Text for the empty state of the AI assistance panel.
    */
   emptyStateText: 'How can I help you?',
   /**
@@ -139,9 +139,9 @@ const UIStringsNotTranslate = {
    */
   fixThisIssue: 'Fix this issue',
   /**
-   *@description The generic name of the AI Assistant (do not translate)
+   *@description The generic name of the AI assistance (do not translate)
    */
-  aiAssistant: 'AI assistant',
+  aiAssistance: 'AI assistance',
   /**
    *@description The fallback text when we can't find the user full name
    */
@@ -655,7 +655,7 @@ export class FreestylerChatUi extends HTMLElement {
             name="smart-assistant"
           ></${IconButton.Icon.Icon.litTagName}>
           <div class="message-name">
-            <span>${lockedString(UIStringsNotTranslate.aiAssistant)}</span>
+            <span>${lockedString(UIStringsNotTranslate.aiAssistance)}</span>
           </div>
         </div>
         ${LitHtml.Directives.repeat(

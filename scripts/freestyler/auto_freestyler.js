@@ -224,12 +224,12 @@ class Example {
     await devtoolsPage.keyboard.type(`inspect(globalThis.__commentElements[${idx}].targetElement)`);
     await devtoolsPage.keyboard.press('Enter');
 
-    this.log('[Info]: Locating AI assistant tab');
+    this.log('[Info]: Locating AI assistance tab');
     await devtoolsPage.locator(':scope >>> #tab-elements').click();
     await devtoolsPage.locator('aria/Customize and control DevTools').click();
     await devtoolsPage.locator('aria/More tools').click();
-    await devtoolsPage.locator('aria/AI assistant').click();
-    this.log('[Info]: Opened AI assistant tab');
+    await devtoolsPage.locator('aria/AI assistance').click();
+    this.log('[Info]: Opened AI assistance tab');
 
     this.#page = page;
     this.#devtoolsPage = devtoolsPage;

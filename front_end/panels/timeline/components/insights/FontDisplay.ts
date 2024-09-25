@@ -11,7 +11,7 @@ import type * as Overlays from '../../overlays/overlays.js';
 import {BaseInsight, md, shouldRenderForCategory} from './Helpers.js';
 import * as SidebarInsight from './SidebarInsight.js';
 import {Table, type TableData} from './Table.js';
-import {InsightsCategories} from './types.js';
+import {Category} from './types.js';
 
 const UIStrings = {
   /** Title of an insight that provides details about the fonts used on the page, and the value of their `font-display` properties. */
@@ -32,7 +32,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class FontDisplay extends BaseInsight {
   static readonly litTagName = LitHtml.literal`devtools-performance-font-display`;
-  override insightCategory = InsightsCategories.INP;
+  override insightCategory = Category.INP;
   override internalName: string = 'font-display';
   override userVisibleTitle: string = i18nString(UIStrings.title);
 

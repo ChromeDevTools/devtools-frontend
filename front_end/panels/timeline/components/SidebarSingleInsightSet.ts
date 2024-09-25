@@ -177,7 +177,7 @@ export class SidebarSingleInsightSet extends HTMLElement {
     ];
     // clang-format off
     return LitHtml.html`${insightComponents.map(component => {
-      return LitHtml.html`<div>
+      return LitHtml.html`<div data-single-insight-wrapper>
         <${component.litTagName}
           .insights=${insights}
           .insightSetKey=${insightSetKey}

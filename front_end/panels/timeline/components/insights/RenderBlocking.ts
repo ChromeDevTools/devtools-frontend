@@ -18,6 +18,10 @@ const MAX_URL_LENGTH = 80;
 
 const UIStrings = {
   /**
+   * @description Title of an insight that provides the user with the list of network requests that blocked and therefore slowed down the page rendering and becoming visible to the user.
+   */
+  title: 'Render blocking requests',
+  /**
    * @description Text to describe that there are requests blocking rendering, which may affect LCP.
    */
   description: 'Requests are blocking the page\'s initial render, which may delay LCP. ' +
@@ -36,7 +40,7 @@ export class RenderBlockingRequests extends BaseInsight {
   static readonly litTagName = LitHtml.literal`devtools-performance-render-blocking-requests`;
   override insightCategory: InsightsCategories = InsightsCategories.LCP;
   override internalName: string = 'render-blocking-requests';
-  override userVisibleTitle: string = i18nString(UIStrings.description);
+  override userVisibleTitle: string = i18nString(UIStrings.title);
 
   override connectedCallback(): void {
     super.connectedCallback();
@@ -50,14 +54,13 @@ export class RenderBlockingRequests extends BaseInsight {
       return [];
     }
 
-    const entryOutlineOverlays: Array<Overlays.Overlays.EntryOutline> =
-        insight.renderBlockingRequests.map(req => {
-          return {
-            type: 'ENTRY_OUTLINE',
-            entry: req,
-            outlineReason: 'ERROR',
-          };
-        });
+    const entryOutlineOverlays: Array<Overlays.Overlays.EntryOutline> = insight.renderBlockingRequests.map(req => {
+      return {
+        type: 'ENTRY_OUTLINE',
+        entry: req,
+        outlineReason: 'ERROR',
+      };
+    });
     return entryOutlineOverlays;
   }
 

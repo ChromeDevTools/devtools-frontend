@@ -114,6 +114,8 @@ ts_library("unittests") {
     "NetworkRequestDetails.test.ts",
     "NetworkThrottlingSelector.test.ts",
     "SidebarAnnotationsTab.test.ts",
+    "SidebarInsightsTab.test.ts",
+    "SidebarSingleInsightSet.test.ts",
   ]
 
   deps = [

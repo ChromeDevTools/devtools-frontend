@@ -87,6 +87,14 @@ export class SidebarInsight extends HTMLElement {
     this.#expanded = data.expanded;
     this.#estimatedSavings = data.estimatedSavings;
 
+    // Used for testing.
+    this.dataset.insightTitle = data.title;
+    if (data.expanded) {
+      this.dataset.insightExpanded = '';
+    } else {
+      delete this.dataset.insightExpanded;
+    }
+
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
 

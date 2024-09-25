@@ -64,6 +64,8 @@ export abstract class BaseInsight extends HTMLElement {
   connectedCallback(): void {
     this.shadow.adoptedStyleSheets.push(sidebarInsightStyles);
     this.setAttribute('jslog', `${VisualLogging.section(`timeline.insights.${this.internalName}`)}`);
+    // Used for unit test purposes when querying the DOM.
+    this.dataset.insightName = this.internalName;
   }
 
   set insights(insights: Trace.Insights.Types.TraceInsightSets|null) {

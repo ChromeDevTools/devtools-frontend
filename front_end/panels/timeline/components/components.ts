@@ -19,6 +19,8 @@ import * as NetworkRequestTooltip from './NetworkRequestTooltip.js';
 import * as NetworkThrottlingSelector from './NetworkThrottlingSelector.js';
 import * as Sidebar from './Sidebar.js';
 import * as SidebarAnnotationsTab from './SidebarAnnotationsTab.js';
+import * as SidebarInsightsTab from './SidebarInsightsTab.js';
+import * as SidebarSingleInsightSet from './SidebarSingleInsightSet.js';
 import * as Utils from './Utils.js';
 
 export {
@@ -39,5 +41,7 @@ export {
   NetworkThrottlingSelector,
   Sidebar,
   SidebarAnnotationsTab,
+  SidebarInsightsTab,
+  SidebarSingleInsightSet,
   Utils,
 };

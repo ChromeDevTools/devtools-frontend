@@ -234,6 +234,18 @@ const UIStrings = {
    * @description Title for a page load phase that measures the time between when the request for the largest image content finishes and when the largest image element is rendered on the page.
    */
   elementRenderDelay: 'Element render delay',
+  /**
+   * @description Title for a phase during a user interaction that measures the time between when the interaction starts and when the browser starts running interaction handlers.
+   */
+  inputDelay: 'Input delay',
+  /**
+   * @description Title for a phase during a user interaction that measures the time between when the browser starts running interaction handlers and when the browser finishes running interaction handlers.
+   */
+  processingDuration: 'Processing duration',
+  /**
+   * @description Title for a phase during a user interaction that measures the time between when the browser finishes running interaction handlers and when the browser renders the next visual frame that shows the result of the interaction.
+   */
+  presentationDelay: 'Presentation delay',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/LiveMetricsView.ts', UIStrings);
@@ -426,6 +438,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
 
   #renderInpCard(): LitHtml.LitTemplate {
     const fieldData = this.#getFieldMetricData('interaction_to_next_paint');
+    const phases = this.#inpValue?.phases;
 
     // clang-format off
     return html`
@@ -435,6 +448,11 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
         fieldValue: fieldData?.percentiles?.p75,
         histogram: fieldData?.histogram,
         tooltipContainer: this.#tooltipContainerEl,
+        phases: phases && [
+          [i18nString(UIStrings.inputDelay), phases.inputDelay],
+          [i18nString(UIStrings.processingDuration), phases.processingDuration],
+          [i18nString(UIStrings.presentationDelay), phases.presentationDelay],
+        ],
       } as MetricCardData}>
       </${MetricCard.litTagName}>
     `;

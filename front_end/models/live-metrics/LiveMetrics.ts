@@ -160,6 +160,7 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
       case 'INP': {
         const inpEvent: INPValue = {
           value: webVitalsEvent.value,
+          phases: webVitalsEvent.phases,
         };
         this.#inpValue = inpEvent;
         break;
@@ -394,7 +395,10 @@ export interface LCPValue extends MetricValue {
   node?: SDK.DOMModel.DOMNode;
 }
 
-export type INPValue = MetricValue;
+export interface INPValue extends MetricValue {
+  phases: Spec.INPPhases;
+}
+
 export type CLSValue = MetricValue;
 
 export type InteractionValue = Pick<Spec.InteractionEvent, 'interactionType'|'duration'>&{

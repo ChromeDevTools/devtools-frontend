@@ -140,6 +140,11 @@ function initialize(): void {
     const event: Spec.INPChangeEvent = {
       name: 'INP',
       value: metric.value,
+      phases: {
+        inputDelay: metric.attribution.inputDelay,
+        processingDuration: metric.attribution.processingDuration,
+        presentationDelay: metric.attribution.presentationDelay,
+      },
       interactionType: metric.attribution.interactionType,
     };
     const element = metric.attribution.interactionTargetElement;

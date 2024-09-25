@@ -185,7 +185,14 @@ describeWithMockConnection('LiveMetricsView', () => {
     const view = new Components.LiveMetricsView.LiveMetricsView();
     renderElementIntoDOM(view);
     LiveMetrics.LiveMetrics.instance().dispatchEventToListeners(LiveMetrics.Events.STATUS, {
-      inp: {value: 50},
+      inp: {
+        value: 50,
+        phases: {
+          inputDelay: 10,
+          processingDuration: 30,
+          presentationDelay: 10,
+        },
+      },
       interactions: [
         {duration: 50, interactionType: 'keyboard'},
         {duration: 500, interactionType: 'pointer'},
@@ -226,7 +233,14 @@ describeWithMockConnection('LiveMetricsView', () => {
     assert.lengthOf(getInteractions(view), 0);
 
     LiveMetrics.LiveMetrics.instance().dispatchEventToListeners(LiveMetrics.Events.STATUS, {
-      inp: {value: 50},
+      inp: {
+        value: 50,
+        phases: {
+          inputDelay: 10,
+          processingDuration: 30,
+          presentationDelay: 10,
+        },
+      },
       interactions: [
         {duration: 50, interactionType: 'keyboard'},
         {duration: 500, interactionType: 'pointer'},

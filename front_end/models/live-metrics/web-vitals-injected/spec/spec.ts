@@ -16,6 +16,12 @@ export interface LCPPhases {
   elementRenderDelay: number;
 }
 
+export interface INPPhases {
+  inputDelay: number;
+  processingDuration: number;
+  presentationDelay: number;
+}
+
 export interface LCPChangeEvent extends MetricChangeEvent {
   name: 'LCP';
   phases: LCPPhases;
@@ -29,6 +35,7 @@ export interface CLSChangeEvent extends MetricChangeEvent {
 export interface INPChangeEvent extends MetricChangeEvent {
   name: 'INP';
   interactionType: INPAttribution['interactionType'];
+  phases: INPPhases;
   nodeIndex?: number;
 }
 

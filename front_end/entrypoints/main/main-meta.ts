@@ -215,6 +215,14 @@ const UIStrings = {
    * @description Tooltip for the learn more link of the Match Chrome color scheme Setting.
    */
   matchChromeColorSchemeDocumentation: 'Match DevTools colors to your customized Chrome theme (when enabled)',
+  /**
+   * @description Command to turn the browser color scheme matching on through the command menu.
+   */
+  matchChromeColorSchemeCommand: 'Match Chrome color scheme',
+  /**
+   * @description Command to turn the browser color scheme matching off through the command menu.
+   */
+  dontMatchChromeColorSchemeCommand: 'Don\'t match Chrome color scheme',
 };
 const str_ = i18n.i18n.registerUIStrings('entrypoints/main/main-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
@@ -620,6 +628,16 @@ Common.Settings.registerSettingExtension({
   settingName: 'chrome-theme-colors',
   settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: true,
+  options: [
+    {
+      value: true,
+      title: i18nLazyString(UIStrings.matchChromeColorSchemeCommand),
+    },
+    {
+      value: false,
+      title: i18nLazyString(UIStrings.dontMatchChromeColorSchemeCommand),
+    },
+  ],
   reloadRequired: true,
   learnMore: {
     url: 'https://goo.gle/devtools-customize-theme' as Platform.DevToolsPath.UrlString,

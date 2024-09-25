@@ -628,6 +628,7 @@ export const knownContextValues = new Set([
   'chrome-settings-sync-setup-advanced',
   'chrome-theme-colors',
   'chrome-theme-colors-documentation',
+  'chrome-theme-colors-false',
   'chrome-windows',
   'city',
   'clear',

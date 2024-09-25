@@ -398,10 +398,6 @@ export class MainImpl {
     );
 
     Root.Runtime.experiments.register(
-        Root.Runtime.ExperimentName.GEN_AI_SETTINGS_PANEL,
-        'Dedicated panel for generative AI settings',
-    );
-    Root.Runtime.experiments.register(
         Root.Runtime.ExperimentName.TIMELINE_SERVER_TIMINGS,
         'Performance panel: enable server timings in the timeline',
     );
@@ -422,7 +418,6 @@ export class MainImpl {
       Root.Runtime.ExperimentName.AUTOFILL_VIEW,
       Root.Runtime.ExperimentName.TIMELINE_OBSERVATIONS,
       Root.Runtime.ExperimentName.NETWORK_PANEL_FILTER_BAR_REDESIGN,
-      Root.Runtime.ExperimentName.GEN_AI_SETTINGS_PANEL,
       ...(Root.Runtime.Runtime.queryParam('isChromeForTesting') ? ['protocol-monitor'] : []),
     ]);
 

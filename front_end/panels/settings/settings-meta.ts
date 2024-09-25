@@ -89,7 +89,6 @@ UI.ViewManager.registerViewExtension({
 });
 
 UI.ViewManager.registerViewExtension({
-  experiment: Root.Runtime.ExperimentName.GEN_AI_SETTINGS_PANEL,
   location: UI.ViewManager.ViewLocationValues.SETTINGS_VIEW,
   id: 'chrome-ai',
   title: i18nLazyString(UIStrings.chromeAI),

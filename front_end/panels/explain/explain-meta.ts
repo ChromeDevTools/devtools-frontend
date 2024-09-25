@@ -4,7 +4,7 @@
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import * as Root from '../../core/root/root.js';
+import type * as Root from '../../core/root/root.js';
 import * as Console from '../../panels/console/console.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -105,14 +105,12 @@ function isFeatureEnabled(config?: Root.Runtime.HostConfig): boolean {
 }
 
 Common.Settings.registerSettingExtension({
-  // TODO(crbug.com/350668580) SettingCategory.NONE once experiment GEN_AI_SETTINGS_PANEL is removed
-  category: Common.Settings.SettingCategory.CONSOLE,
+  category: Common.Settings.SettingCategory.NONE,
   settingName: setting,
   settingType: Common.Settings.SettingType.BOOLEAN,
   title: i18nLazyString(UIStrings.enableConsoleInsights),
   defaultValue: false,
-  // TODO(crbug.com/350668580) set to false once experiment GEN_AI_SETTINGS_PANEL is removed
-  reloadRequired: true,
+  reloadRequired: false,
   condition: config => isFeatureEnabled(config),
   disabledCondition: config => {
     if (isLocaleRestricted()) {
@@ -131,14 +129,6 @@ Common.Settings.registerSettingExtension({
   },
 });
 
-function getConsoleInsightsEnabledSetting(): Common.Settings.Setting<unknown>|undefined {
-  try {
-    return Common.Settings.moduleSetting('console-insights-enabled');
-  } catch {
-    return;
-  }
-}
-
 for (const action of actions) {
   UI.ActionRegistration.registerActionExtension({
     ...action,
@@ -148,12 +138,7 @@ for (const action of actions) {
       return new Explain.ActionDelegate();
     },
     condition: config => {
-      if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.GEN_AI_SETTINGS_PANEL)) {
         return isFeatureEnabled(config) && !isPolicyRestricted(config);
-      }
-      const consoleInsightsSetting = getConsoleInsightsEnabledSetting();
-      return (consoleInsightsSetting?.getIfNotDisabled() === true) && isFeatureEnabled(config) &&
-          !isAgeRestricted(config) && !isGeoRestricted(config) && !isLocaleRestricted() && !isPolicyRestricted(config);
     },
   });
 }

@@ -131,7 +131,6 @@ const REGISTERED_EXPERIMENTS = [
   Root.Runtime.ExperimentName.FULL_ACCESSIBILITY_TREE,
   Root.Runtime.ExperimentName.TIMELINE_SHOW_POST_MESSAGE_EVENTS,
   Root.Runtime.ExperimentName.TIMELINE_ENHANCED_TRACES,
-  Root.Runtime.ExperimentName.GEN_AI_SETTINGS_PANEL,
   Root.Runtime.ExperimentName.TIMELINE_LAYOUT_SHIFT_DETAILS,
   Root.Runtime.ExperimentName.EXTENSION_STORAGE_VIEWER,
 ];
@@ -263,10 +262,9 @@ export async function initializeGlobalVars({reset = true} = {}) {
         Common.Settings.SettingCategory.CONSOLE, 'console-timestamps-enabled', false,
         Common.Settings.SettingType.BOOLEAN),
     createSettingValue(
-        Common.Settings.SettingCategory.CONSOLE, 'console-insights-enabled', false,
-        Common.Settings.SettingType.BOOLEAN),
+        Common.Settings.SettingCategory.CONSOLE, 'console-insights-enabled', true, Common.Settings.SettingType.BOOLEAN),
     createSettingValue(
-        Common.Settings.SettingCategory.CONSOLE, 'console-insights-onboarding-finished', false,
+        Common.Settings.SettingCategory.CONSOLE, 'console-insights-onboarding-finished', true,
         Common.Settings.SettingType.BOOLEAN),
     createSettingValue(
         Common.Settings.SettingCategory.CONSOLE, 'console-history-autocomplete', false,

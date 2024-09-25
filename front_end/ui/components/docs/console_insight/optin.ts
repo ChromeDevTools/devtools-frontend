@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../../../core/common/common.js';
 import * as Host from '../../../../core/host/host.js';
 import * as Explain from '../../../../panels/explain/explain.js';
 import * as FrontendHelpers from '../../../../testing/EnvironmentHelpers.js';
@@ -9,6 +10,7 @@ import * as ComponentHelpers from '../../helpers/helpers.js';
 
 await ComponentHelpers.ComponentServerSetup.setup();
 await FrontendHelpers.initializeGlobalVars();
+Common.Settings.moduleSetting('console-insights-enabled').set(false);
 
 const ConsoleInsight = Explain.ConsoleInsight;
 
@@ -23,23 +25,9 @@ const component = new ConsoleInsight(
     },
     {
       async *
+          // eslint-disable-next-line require-yield
           fetch() {
-            await new Promise(_resolve => {});
-            yield {
-              explanation: `## Result
-
-Some text with \`code\`. Some code:
-\`\`\`ts
-console.log('test');
-document.querySelector('test').style = 'black';
-\`\`\`
-
-Links: [https://example.com](https://example.com)
-Images: ![https://example.com](https://example.com)
-`,
-              metadata: {},
-              completed: true,
-            };
+            throw new Error('Could not connect to the server');
           },
       registerClientEvent: () => Promise.resolve({}),
     },

@@ -112,7 +112,7 @@ UI.ViewManager.registerViewExtension({
 });
 
 Common.Settings.registerSettingExtension({
-  category: Common.Settings.SettingCategory.GLOBAL,
+  category: Common.Settings.SettingCategory.NONE,
   settingName: setting,
   settingType: Common.Settings.SettingType.BOOLEAN,
   title: i18nLazyString(UIStrings.enableAiAssistant),

@@ -813,7 +813,7 @@ describeWithEnvironment('TimelineFlameChartView', function() {
          const entryFrom = flameChartView.getMainDataProvider().eventByIndex(204);
 
          // Hover on another entry to complete the link
-         flameChartView.updateLinkSelectionAnnotation(flameChartView.getMainDataProvider(), 245);
+         flameChartView.updateLinkSelectionAnnotationWithToEntry(flameChartView.getMainDataProvider(), 245);
          const entryTo = flameChartView.getMainDataProvider().eventByIndex(245);
          // Make sure the entry 'to' is set
          assert.exists(flameChartView.getLinkSelectionAnnotation()?.entryTo);
@@ -843,7 +843,7 @@ describeWithEnvironment('TimelineFlameChartView', function() {
       const entryFrom = flameChartView.getMainDataProvider().eventByIndex(245);
 
       // Hover on another entry that starts before the entry that the link is being created from
-      flameChartView.updateLinkSelectionAnnotation(flameChartView.getMainDataProvider(), 204);
+      flameChartView.updateLinkSelectionAnnotationWithToEntry(flameChartView.getMainDataProvider(), 204);
       const entryTo = flameChartView.getMainDataProvider().eventByIndex(204);
 
       // Select the other entry to complete the link and set the one in progress to null

@@ -124,6 +124,9 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
   // loggable even if the group gets rebuilt at some point in time.
   #loggableForGroupByLogContext: Map<string, Symbol> = new Map();
 
+  #onMainEntryInvoked: (event: Common.EventTarget.EventTargetEvent<number>) => void;
+  #onNetworkEntryInvoked: (event: Common.EventTarget.EventTargetEvent<number>) => void;
+
   constructor(delegate: TimelineModeViewDelegate) {
     super();
     this.element.classList.add('timeline-flamechart');
@@ -294,18 +297,29 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
       this.networkFlameChart.addEventListener(
           PerfUI.FlameChart.Events.ENTRIES_LINK_ANNOTATION_CREATED, this.#onNetworkEntriesLinkAnnotationCreated, this);
     }
+
+    /**
+     * NOTE: ENTRY_SELECTED, ENTRY_INVOKED and ENTRY_HOVERED are not always super obvious:
+     * ENTRY_SELECTED: is KEYBOARD ONLY selection of events (e.g. navigating through the flamechart with your arrow keys)
+     * ENTRY_HOVERED: is MOUSE ONLY when an event is hovered over with the mouse.
+     * ENTRY_INVOKED: is when the user cilcks on an event, or hits the "enter" key whilst an event is selected.
+     */
     this.onMainEntrySelected = this.onEntrySelected.bind(this, this.mainDataProvider);
     this.onNetworkEntrySelected = this.onEntrySelected.bind(this, this.networkDataProvider);
     this.mainFlameChart.addEventListener(PerfUI.FlameChart.Events.ENTRY_SELECTED, this.onMainEntrySelected, this);
-    this.mainFlameChart.addEventListener(PerfUI.FlameChart.Events.ENTRY_INVOKED, this.onMainEntrySelected, this);
     this.networkFlameChart.addEventListener(PerfUI.FlameChart.Events.ENTRY_SELECTED, this.onNetworkEntrySelected, this);
-    this.networkFlameChart.addEventListener(PerfUI.FlameChart.Events.ENTRY_INVOKED, this.onNetworkEntrySelected, this);
+
+    this.#onMainEntryInvoked = this.#onEntryInvoked.bind(this, this.mainDataProvider);
+    this.#onNetworkEntryInvoked = this.#onEntryInvoked.bind(this, this.networkDataProvider);
+    this.mainFlameChart.addEventListener(PerfUI.FlameChart.Events.ENTRY_INVOKED, this.#onMainEntryInvoked, this);
+    this.networkFlameChart.addEventListener(PerfUI.FlameChart.Events.ENTRY_INVOKED, this.#onNetworkEntryInvoked, this);
+
     this.mainFlameChart.addEventListener(PerfUI.FlameChart.Events.ENTRY_HOVERED, event => {
       this.onEntryHovered(event);
-      this.updateLinkSelectionAnnotation(this.mainDataProvider, event.data);
+      this.updateLinkSelectionAnnotationWithToEntry(this.mainDataProvider, event.data);
     }, this);
     this.networkFlameChart.addEventListener(PerfUI.FlameChart.Events.ENTRY_HOVERED, event => {
-      this.updateLinkSelectionAnnotation(this.networkDataProvider, event.data);
+      this.updateLinkSelectionAnnotationWithToEntry(this.networkDataProvider, event.data);
     }, this);
 
     this.element.addEventListener('keydown', this.#keydownHandler.bind(this));
@@ -717,7 +731,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
   }
 
   // If an entry is hovered over and a creation of link annotation is in progress, update that annotation with a hovered entry.
-  updateLinkSelectionAnnotation(
+  updateLinkSelectionAnnotationWithToEntry(
       dataProvider: TimelineFlameChartDataProvider|TimelineFlameChartNetworkDataProvider, entryIndex: number): void {
     if (!this.#linkSelectionAnnotation) {
       return;
@@ -942,7 +956,24 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     return null;
   }
 
-  private onEntrySelected(
+  /**
+   * Called when the user either:
+   * 1. clicks with their mouse on an entry
+   * 2. Uses the keyboard and presses "enter" whilst an entry is selected
+   */
+  #onEntryInvoked(
+      dataProvider: TimelineFlameChartDataProvider|TimelineFlameChartNetworkDataProvider,
+      event: Common.EventTarget.EventTargetEvent<number>): void {
+    this.#updateSelectedEntryStatus(dataProvider, event);
+
+    const entryIndex = event.data;
+    // If we have a pending link connection, create it if we can now the final entry has been pressed.
+    if (this.#linkSelectionAnnotation) {
+      this.handleToEntryOfLinkBetweenEntriesSelection(entryIndex);
+    }
+  }
+
+  #updateSelectedEntryStatus(
       dataProvider: TimelineFlameChartDataProvider|TimelineFlameChartNetworkDataProvider,
       event: Common.EventTarget.EventTargetEvent<number>): void {
     const data = dataProvider.timelineData();
@@ -964,9 +995,23 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
 
     dataProvider.buildFlowForInitiator(entryIndex);
     this.delegate.select(dataProvider.createSelection(entryIndex));
+  }
 
-    if (this.#linkSelectionAnnotation) {
-      this.handleToEntryOfLinkBetweenEntriesSelection(entryIndex);
+  /**
+   * This is invoked when the user uses their KEYBOARD ONLY to navigate between
+   * events.
+   * It IS NOT called when the user uses the mouse. See `onEntryInvoked`.
+   */
+  private onEntrySelected(
+      dataProvider: TimelineFlameChartDataProvider|TimelineFlameChartNetworkDataProvider,
+      event: Common.EventTarget.EventTargetEvent<number>): void {
+    this.#updateSelectedEntryStatus(dataProvider, event);
+
+    // Update any pending link selection to point the entryTo to what the user has selected.
+    const entryIndex = event.data;
+    const toSelectionObject = this.#selectionIfTraceEvent(entryIndex, dataProvider);
+    if (toSelectionObject && toSelectionObject !== this.#linkSelectionAnnotation?.entryTo) {
+      this.updateLinkSelectionAnnotationWithToEntry(dataProvider, entryIndex);
     }
   }
 

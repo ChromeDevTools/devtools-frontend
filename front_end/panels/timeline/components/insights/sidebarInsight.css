@@ -14,7 +14,6 @@
   overflow: hidden;
   border: var(--sys-size-1) solid var(--sys-color-divider);
   background-color: var(--sys-color-base);
-  user-select: text;
 
   &.closed {
     background-color: var(--sys-color-surface3);
@@ -55,6 +54,12 @@
   &.active devtools-button {
     transform: rotate(180deg);
   }
+}
+
+.insight-description,
+.insight-body,
+.insight-title {
+  user-select: text;
 }
 
 .insight-body {

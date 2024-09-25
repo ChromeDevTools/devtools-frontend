@@ -293,7 +293,19 @@ const UIStrings = {
    * @description Screen reader announcement when the sidebar is hidden in the Performance panel.
    */
   sidebarHidden: 'Performance sidebar hidden',
-
+  /**
+   * @description Screen reader announcement when the user clears their selection
+   */
+  selectionCleared: 'Selection cleared',
+  /**
+   * @description Screen reader announcement when the user selects a frame.
+   */
+  frameSelected: 'Frame selected',
+  /**
+   * @description Screen reader announcement when the user selects a trace event.
+   * @example {Paint} PH1
+   */
+  eventSelected: 'Event {PH1} selected',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelinePanel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -378,7 +390,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   private networkThrottlingSelect?: UI.Toolbar.ToolbarComboBox;
   private cpuThrottlingSelect?: UI.Toolbar.ToolbarComboBox;
   private fileSelectorElement?: HTMLInputElement;
-  private selection?: TimelineSelection|null;
+  private selection: TimelineSelection|null = null;
   private traceLoadStart!: Trace.Types.Timing.MilliSeconds|null;
   private primaryPageTargetPromiseCallback = (_target: SDK.Target.Target): void => {};
   // Note: this is technically unused, but we need it to define the promiseCallback function above.
@@ -413,6 +425,13 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
    * widgets, to avoid this complexity.
    */
   #restoreSidebarVisibilityOnTraceLoad: boolean = false;
+
+  /**
+   * Used to track an aria announcement that we need to alert for
+   * screen-readers. We track these because we debounce announcements to not
+   * overwhelm.
+   */
+  #pendingAriaMessage: string|null = null;
 
   constructor() {
     super('timeline');
@@ -1598,6 +1617,31 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   }
 
   /**
+   * If we generate a lot of the same aria announcements very quickly, we don't
+   * want to send them all to the user.
+   */
+  #ariaDebouncer = Common.Debouncer.debounce(() => {
+    if (this.#pendingAriaMessage) {
+      UI.ARIAUtils.alert(this.#pendingAriaMessage);
+    }
+  }, 1_000);
+
+  #makeAriaAnnouncement(message: string): void {
+    // If we already have one pending, don't queue this one.
+    if (message === this.#pendingAriaMessage) {
+      return;
+    }
+
+    // If the pending message is different, immediately announce the pending
+    // message + then update the pending message to the new one.
+    if (this.#pendingAriaMessage) {
+      UI.ARIAUtils.alert(this.#pendingAriaMessage);
+    }
+    this.#pendingAriaMessage = message;
+    this.#ariaDebouncer();
+  }
+
+  /**
    * Called when we update the active trace that is being shown to the user.
    * This is called from {@see changeView} when we change the UI to show a
    * trace - either one the user has just recorded/imported, or one they have
@@ -1662,6 +1706,12 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
     // Add ModificationsManager listeners for annotations change to update the Annotation Overlays.
     currentManager?.addEventListener(AnnotationModifiedEvent.eventName, event => {
+      // Update screen readers.
+      const announcementText = AnnotationHelpers.ariaAnnouncementForModifiedEvent(event as AnnotationModifiedEvent);
+      if (announcementText) {
+        this.#makeAriaAnnouncement(announcementText);
+      }
+
       const {overlay, action} = (event as AnnotationModifiedEvent);
       if (action === 'Add') {
         this.flameChart.addOverlay(overlay);
@@ -2143,7 +2193,31 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     return true;
   }
 
+  #announceSelectionToAria(oldSelection: TimelineSelection|null, newSelection: TimelineSelection|null): void {
+    if (oldSelection !== null && newSelection === null) {
+      UI.ARIAUtils.alert(i18nString(UIStrings.selectionCleared));
+    }
+    if (newSelection === null) {
+      return;
+    }
+
+    if (TimelineSelection.isRangeSelection(newSelection.object)) {
+      // We don't announce here; within the annotations code we announce when
+      // the user creates a new time range selection. So if we also announce
+      // here we will duplicate and overwhelm rather than be useful.
+      return;
+    }
+    if (TimelineSelection.isLegacyTimelineFrame(newSelection.object)) {
+      UI.ARIAUtils.alert(i18nString(UIStrings.frameSelected));
+      return;
+    }
+    // At this point we know the object is a trace event
+    const name = TimelineComponents.EntryName.nameForEntry(newSelection.object);
+    UI.ARIAUtils.alert(i18nString(UIStrings.eventSelected, {PH1: name}));
+  }
+
   select(selection: TimelineSelection|null): void {
+    this.#announceSelectionToAria(this.selection, selection);
     this.selection = selection;
     this.flameChart.setSelectionAndReveal(selection);
   }

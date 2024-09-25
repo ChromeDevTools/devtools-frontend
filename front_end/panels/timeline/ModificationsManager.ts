@@ -239,8 +239,8 @@ export class ModificationsManager extends EventTarget {
         (updatedOverlay.type === 'TIME_RANGE' && annotationForUpdatedOverlay.type === 'TIME_RANGE')) {
       this.#annotationsHiddenSetting.set(false);
       annotationForUpdatedOverlay.label = updatedOverlay.label;
+      this.dispatchEvent(new AnnotationModifiedEvent(updatedOverlay, 'UpdateLabel'));
     }
-    this.dispatchEvent(new AnnotationModifiedEvent(updatedOverlay, 'UpdateLabel'));
   }
 
   getAnnotationByOverlay(overlay: Overlays.Overlays.TimelineOverlay): Trace.Types.File.Annotation|null {

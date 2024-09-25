@@ -3,7 +3,9 @@
 // found in the LICENSE file.
 
 import * as Trace from '../../models/trace/trace.js';
+import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 
+import type * as Overlays from './overlays/overlays.js';
 import * as Timeline from './timeline.js';
 
 const {
@@ -96,6 +98,72 @@ describe('AnnotationHelpers', () => {
         max: 25,
         range: 24,
       });
+    });
+  });
+
+  describeWithEnvironment('Aria Announcement', () => {
+    const {ariaAnnouncementForModifiedEvent} = Timeline.AnnotationHelpers;
+    const FAKE_ENTRY_1 = {
+      name: 'fake-one',
+      ts: 1,
+      dur: 10,
+    } as unknown as Trace.Types.Events.Event;
+    const FAKE_ENTRY_2 = {
+      name: 'fake-two',
+      ts: 10,
+      dur: 10,
+    } as unknown as Trace.Types.Events.Event;
+
+    it('returns text for an annotation being removed', () => {
+      const overlay: Overlays.Overlays.EntryLabel = {type: 'ENTRY_LABEL', entry: FAKE_ENTRY_1, label: 'Hello world'};
+      const event = new Timeline.ModificationsManager.AnnotationModifiedEvent(overlay, 'Remove');
+      const text = ariaAnnouncementForModifiedEvent(event);
+      assert.strictEqual(text, 'The entry label annotation has been removed');
+    });
+
+    it('returns text for entering the edit state on a label', () => {
+      const overlay: Overlays.Overlays.EntryLabel = {type: 'ENTRY_LABEL', entry: FAKE_ENTRY_1, label: 'Hello world'};
+      const event = new Timeline.ModificationsManager.AnnotationModifiedEvent(overlay, 'EnterLabelEditState');
+      const text = ariaAnnouncementForModifiedEvent(event);
+      assert.strictEqual(text, 'Editing the annotation label text');
+    });
+
+    it('returns text for an annotation being added', async () => {
+      const overlay: Overlays.Overlays.EntryLabel = {type: 'ENTRY_LABEL', entry: FAKE_ENTRY_1, label: 'Hello world'};
+      const event = new Timeline.ModificationsManager.AnnotationModifiedEvent(overlay, 'Add');
+      const text = ariaAnnouncementForModifiedEvent(event);
+      assert.strictEqual(text, 'The entry label annotation has been added');
+    });
+
+    it('returns text for an annotation having its label updated', async () => {
+      const overlay: Overlays.Overlays.EntryLabel = {type: 'ENTRY_LABEL', entry: FAKE_ENTRY_1, label: 'Hello world'};
+      const event = new Timeline.ModificationsManager.AnnotationModifiedEvent(overlay, 'UpdateLabel');
+      const text = ariaAnnouncementForModifiedEvent(event);
+      assert.strictEqual(text, 'Label updated to Hello world');
+    });
+
+    it('returns text for a time range having its bounds updated', async () => {
+      const timeRange: Overlays.Overlays.TimeRangeLabel = {
+        type: 'TIME_RANGE',
+        bounds: Trace.Helpers.Timing.traceWindowFromMicroSeconds(
+            Trace.Types.Timing.MicroSeconds(0), Trace.Types.Timing.MicroSeconds(10)),
+        label: 'hello',
+        showDuration: true,
+      };
+      const event = new Timeline.ModificationsManager.AnnotationModifiedEvent(timeRange, 'UpdateTimeRange');
+      const text = ariaAnnouncementForModifiedEvent(event);
+      assert.strictEqual(text, 'Time range bounds updated');
+    });
+
+    it('returns text when an entries link has its entries connected', async () => {
+      const link: Overlays.Overlays.EntriesLink = {
+        type: 'ENTRIES_LINK',
+        entryFrom: FAKE_ENTRY_1,
+        entryTo: FAKE_ENTRY_2,
+      };
+      const event = new Timeline.ModificationsManager.AnnotationModifiedEvent(link, 'UpdateLinkToEntry');
+      const text = ariaAnnouncementForModifiedEvent(event);
+      assert.strictEqual(text, 'The connected entries annotation now links from fake-one to fake-two');
     });
   });
 });

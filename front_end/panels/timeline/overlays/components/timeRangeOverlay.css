@@ -29,7 +29,7 @@
   padding: 0 3px;
   pointer-events: all;
   user-select: none;
-  color: var(--ref-palette-pink55);
+  color: var(--sys-color-pink);
 
   &.labelHidden {
     /* Have to use this not display: none so it maintains its width */
@@ -51,7 +51,6 @@
   text-overflow: ellipsis;
   max-height: 40px;
   overflow: hidden;
-  color: var(--ref-palette-pink55);
   margin-bottom: 3px;
   display: -webkit-box;
   white-space: break-spaces;
@@ -68,7 +67,7 @@
   position: absolute;
   left: 4px;
   bottom: 5px;
-  color: var(--ref-palette-pink55);
+  color: inherit;
   width: 16px;
   height: 17px;
 }

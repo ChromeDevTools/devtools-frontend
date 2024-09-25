@@ -183,14 +183,31 @@ export class MarkdownInsightRenderer extends MarkdownLitRenderer {
     return template;
   }
 
+  sanitizeUrl(maybeUrl: string): string|null {
+    try {
+      const url = new URL(maybeUrl);
+      if (url.protocol === 'https:' || url.protocol === 'http:') {
+        return url.toString();
+      }
+      return null;
+    } catch {
+      return null;
+    }
+  }
+
   override templateForToken(token: Marked.Marked.Token): LitHtml.TemplateResult|null {
     switch (token.type) {
       case 'heading':
         return html`<strong>${this.renderText(token)}</strong>`;
       case 'link':
-      case 'image':
+      case 'image': {
+        const sanitizedUrl = this.sanitizeUrl(token.href);
+        if (!sanitizedUrl) {
+          return null;
+        }
         return LitHtml.html`${
-            UI.XLink.XLink.create(token.href, token.text, undefined, undefined, 'link-in-explanation')}`;
+            UI.XLink.XLink.create(sanitizedUrl, token.text, undefined, undefined, 'link-in-explanation')}`;
+        }
       case 'code':
         return LitHtml.html`<${CodeBlock.litTagName}
           .code=${this.unescape(token.text)}

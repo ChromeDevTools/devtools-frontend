@@ -51,6 +51,24 @@ const UIStrings = {
    * @description Text used to describe the delete button to screen readers
    **/
   deleteButton: 'Delete this annotation',
+  /**
+   * @description label used to describe an annotation on an entry
+   *@example {Paint} PH1
+   *@example {"Hello world"} PH2
+   */
+  entryLabelDescriptionLabel: 'A "{PH1}" event annotated with the text "{PH2}"',
+  /**
+   * @description label used to describe a time range annotation
+   *@example {2.5 milliseconds} PH1
+   *@example {13.5 milliseconds} PH2
+   */
+  timeRangeDescriptionLabel: 'A time range starting at {PH1} and ending at {PH2}',
+  /**
+   * @description label used to describe a link from one entry to another.
+   *@example {Paint} PH1
+   *@example {Recalculate styles} PH2
+   */
+  entryLinkDescriptionLabel: 'A link between a "{PH1}" event and a "{PH2}" event',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/SidebarAnnotationsTab.ts', UIStrings);
@@ -216,9 +234,10 @@ export class SidebarAnnotationsTab extends HTMLElement {
           ${this.#annotations.length === 0 ?
             this.#renderTutorialCard() :
             LitHtml.html`
-              ${this.#annotations.map(annotation =>
-                LitHtml.html`
-                  <div class="annotation-container" @click=${() => this.#revealAnnotation(annotation)}>
+              ${this.#annotations.map(annotation => {
+                const label = detailedAriaDescriptionForAnnotation(annotation);
+                return LitHtml.html`
+                  <div class="annotation-container" @click=${() => this.#revealAnnotation(annotation)} aria-label=${label}>
                     <div class="annotation">
                       ${this.#renderAnnotationIdentifier(annotation)}
                       <span class="label">
@@ -240,8 +259,8 @@ export class SidebarAnnotationsTab extends HTMLElement {
                           this.dispatchEvent(new RemoveAnnotation(annotation));
                       }}>
                     </span>
-                  </div>`,
-              )}
+                  </div>`;
+              })}
               <${Settings.SettingCheckbox.SettingCheckbox.litTagName} class="visibility-setting" .data=${{
                 setting: this.#annotationsHiddenSetting,
                 textOverride: 'Hide annotations',
@@ -259,5 +278,39 @@ customElements.define('devtools-performance-sidebar-annotations', SidebarAnnotat
 declare global {
   interface HTMLElementTagNameMap {
     'devtools-performance-sidebar-annotations': SidebarAnnotationsTab;
+  }
+}
+
+function detailedAriaDescriptionForAnnotation(annotation: Trace.Types.File.Annotation): string {
+  switch (annotation.type) {
+    case 'ENTRY_LABEL': {
+      const name = nameForEntry(annotation.entry);
+      return i18nString(UIStrings.entryLabelDescriptionLabel, {
+        PH1: name,
+        PH2: annotation.label,
+      });
+    }
+    case 'TIME_RANGE': {
+      const from = i18n.TimeUtilities.formatMicroSecondsAsMillisFixedExpanded(annotation.bounds.min);
+      const to = i18n.TimeUtilities.formatMicroSecondsAsMillisFixedExpanded(annotation.bounds.max);
+      return i18nString(UIStrings.timeRangeDescriptionLabel, {
+        PH1: from,
+        PH2: to,
+      });
+    }
+    case 'ENTRIES_LINK': {
+      if (!annotation.entryTo) {
+        // Only label it if it is completed.
+        return '';
+      }
+      const nameFrom = nameForEntry(annotation.entryFrom);
+      const nameTo = nameForEntry(annotation.entryTo);
+      return i18nString(UIStrings.entryLinkDescriptionLabel, {
+        PH1: nameFrom,
+        PH2: nameTo,
+      });
+    }
+    default:
+      Platform.assertNever(annotation, 'Unsupported annotation');
   }
 }

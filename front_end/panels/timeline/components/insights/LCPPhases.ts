@@ -10,7 +10,7 @@ import type * as Overlays from '../../overlays/overlays.js';
 import {BaseInsight, md, shouldRenderForCategory} from './Helpers.js';
 import * as SidebarInsight from './SidebarInsight.js';
 import {Table, type TableData} from './Table.js';
-import {InsightsCategories} from './types.js';
+import {Category} from './types.js';
 
 const UIStrings = {
   /**
@@ -59,7 +59,7 @@ interface PhaseData {
 
 export class LCPPhases extends BaseInsight {
   static readonly litTagName = LitHtml.literal`devtools-performance-lcp-by-phases`;
-  override insightCategory: InsightsCategories = InsightsCategories.LCP;
+  override insightCategory: Category = Category.LCP;
   override internalName: string = 'lcp-by-phase';
   override userVisibleTitle: string = i18nString(UIStrings.title);
 

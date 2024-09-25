@@ -10,14 +10,13 @@ import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import {type BaseInsight} from './insights/Helpers.js';
 import * as Insights from './insights/insights.js';
 import {type ActiveInsight, EventReferenceClick} from './Sidebar.js';
-import {InsightsCategories} from './SidebarInsightsTab.js';
 import styles from './sidebarSingleInsightSet.css.js';
 
 export interface SidebarSingleInsightSetData {
   parsedTrace: Trace.Handlers.Types.ParsedTrace|null;
   insights: Trace.Insights.Types.TraceInsightSets|null;
   insightSetKey: string|null;
-  activeCategory: InsightsCategories;
+  activeCategory: Insights.Types.Category;
   activeInsight: ActiveInsight|null;
 }
 
@@ -30,7 +29,7 @@ export class SidebarSingleInsightSet extends HTMLElement {
     parsedTrace: null,
     insights: null,
     insightSetKey: null,
-    activeCategory: InsightsCategories.ALL,
+    activeCategory: Insights.Types.Category.ALL,
     activeInsight: null,
   };
 
@@ -44,7 +43,7 @@ export class SidebarSingleInsightSet extends HTMLElement {
   }
 
   #metricIsVisible(label: 'LCP'|'CLS'|'INP'): boolean {
-    if (this.#data.activeCategory === InsightsCategories.ALL) {
+    if (this.#data.activeCategory === Insights.Types.Category.ALL) {
       return true;
     }
     return label === this.#data.activeCategory;

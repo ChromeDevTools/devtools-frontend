@@ -13,7 +13,7 @@ import type * as Overlays from '../../overlays/overlays.js';
 import {BaseInsight, shouldRenderForCategory} from './Helpers.js';
 import discoveryStyles from './lcpDiscovery.css.js';
 import * as SidebarInsight from './SidebarInsight.js';
-import {InsightsCategories} from './types.js';
+import {Category} from './types.js';
 
 const UIStrings = {
   /**
@@ -92,7 +92,7 @@ function getImageData(
 
 export class LCPDiscovery extends BaseInsight {
   static readonly litTagName = LitHtml.literal`devtools-performance-lcp-discovery`;
-  override insightCategory: InsightsCategories = InsightsCategories.LCP;
+  override insightCategory: Category = Category.LCP;
   override internalName: string = 'lcp-discovery';
   override userVisibleTitle: string = i18nString(UIStrings.title);
 

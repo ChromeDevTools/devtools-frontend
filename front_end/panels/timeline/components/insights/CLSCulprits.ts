@@ -9,7 +9,7 @@ import type * as Overlays from '../../overlays/overlays.js';
 
 import {BaseInsight, md, shouldRenderForCategory} from './Helpers.js';
 import * as SidebarInsight from './SidebarInsight.js';
-import {InsightsCategories} from './types.js';
+import {Category} from './types.js';
 
 const UIStrings = {
   /** Title of an insight that provides details about why elements shift/move on the page. The causes for these shifts are referred to as culprits ("reasons"). */
@@ -42,7 +42,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class CLSCulprits extends BaseInsight {
   static readonly litTagName = LitHtml.literal`devtools-performance-cls-culprits`;
-  override insightCategory: InsightsCategories = InsightsCategories.CLS;
+  override insightCategory: Category = Category.CLS;
   override internalName: string = 'cls-culprits';
   override userVisibleTitle: string = i18nString(UIStrings.title);
 

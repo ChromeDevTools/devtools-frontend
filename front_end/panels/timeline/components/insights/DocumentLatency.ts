@@ -10,7 +10,7 @@ import type * as Overlays from '../../overlays/overlays.js';
 
 import {BaseInsight, shouldRenderForCategory} from './Helpers.js';
 import * as SidebarInsight from './SidebarInsight.js';
-import {InsightsCategories} from './types.js';
+import {Category} from './types.js';
 
 const UIStrings = {
   /**
@@ -48,7 +48,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class DocumentLatency extends BaseInsight {
   static readonly litTagName = LitHtml.literal`devtools-performance-document-latency`;
-  override insightCategory: InsightsCategories = InsightsCategories.OTHER;
+  override insightCategory: Category = Category.ALL;
   override internalName: string = 'document-latency';
   override userVisibleTitle: string = i18nString(UIStrings.title);
 

@@ -11,7 +11,7 @@ import type * as Overlays from '../../overlays/overlays.js';
 import {BaseInsight, md, shouldRenderForCategory} from './Helpers.js';
 import * as SidebarInsight from './SidebarInsight.js';
 import {Table, type TableData} from './Table.js';
-import {InsightsCategories} from './types.js';
+import {Category} from './types.js';
 
 const UIStrings = {
   /**
@@ -56,7 +56,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class InteractionToNextPaint extends BaseInsight {
   static readonly litTagName = LitHtml.literal`devtools-performance-inp`;
-  override insightCategory: InsightsCategories = InsightsCategories.INP;
+  override insightCategory: Category = Category.INP;
   override internalName: string = 'inp';
   override userVisibleTitle: string = i18nString(UIStrings.title);
 

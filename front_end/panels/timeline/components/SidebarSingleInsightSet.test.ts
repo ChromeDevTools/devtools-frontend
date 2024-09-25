@@ -8,7 +8,7 @@ import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 
 import * as Components from './components.js';
-import type * as InsightComponents from './insights/insights.js';
+import * as InsightComponents from './insights/insights.js';
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 function getUserVisibleInsights(component: Components.SidebarSingleInsightSet.SidebarSingleInsightSet):
@@ -57,7 +57,7 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
       parsedTrace,
       insights,
       insightSetKey: navigationId,
-      activeCategory: Components.SidebarInsightsTab.InsightsCategories.ALL,
+      activeCategory: InsightComponents.Types.Category.ALL,
       activeInsight: null,
     };
     await coordinator.done();
@@ -90,7 +90,7 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
       parsedTrace,
       insights,
       insightSetKey: navigationId,
-      activeCategory: Components.SidebarInsightsTab.InsightsCategories.ALL,
+      activeCategory: InsightComponents.Types.Category.ALL,
       activeInsight: {
         name: 'lcp-by-phase',
         insightSetKey: navigationId,

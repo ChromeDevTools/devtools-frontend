@@ -11,7 +11,7 @@ import type * as Overlays from '../../overlays/overlays.js';
 import {BaseInsight, md, shouldRenderForCategory} from './Helpers.js';
 import * as SidebarInsight from './SidebarInsight.js';
 import {Table, type TableData} from './Table.js';
-import {InsightsCategories} from './types.js';
+import {Category} from './types.js';
 
 type ThirdPartiesEntires = Array<[
   Trace.Insights.InsightRunners.ThirdPartyWeb.Entity,
@@ -41,7 +41,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class ThirdParties extends BaseInsight {
   static readonly litTagName = LitHtml.literal`devtools-performance-third-parties`;
-  override insightCategory: InsightsCategories = InsightsCategories.OTHER;
+  override insightCategory: Category = Category.ALL;
   override internalName: string = 'third-parties';
   override userVisibleTitle: string = i18nString(UIStrings.title);
 

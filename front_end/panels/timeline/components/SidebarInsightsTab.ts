@@ -12,14 +12,6 @@ import {type ActiveInsight} from './Sidebar.js';
 import styles from './sidebarInsightsTab.css.js';
 import {SidebarSingleInsightSet, type SidebarSingleInsightSetData} from './SidebarSingleInsightSet.js';
 
-export enum InsightsCategories {
-  ALL = 'All',
-  INP = 'INP',
-  LCP = 'LCP',
-  CLS = 'CLS',
-  OTHER = 'Other',
-}
-
 export class SidebarInsightsTab extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-performance-sidebar-insights`;
   readonly #boundRender = this.#render.bind(this);
@@ -28,7 +20,7 @@ export class SidebarInsightsTab extends HTMLElement {
   #parsedTrace: Trace.Handlers.Types.ParsedTrace|null = null;
   #insights: Trace.Insights.Types.TraceInsightSets|null = null;
   #activeInsight: ActiveInsight|null = null;
-  #selectedCategory: InsightsCategories = InsightsCategories.ALL;
+  #selectedCategory = Insights.Types.Category.ALL;
   /**
    * When a trace has sets of insights, we show an accordion with each
    * set within. A set can be specific to a single navigation, or include the
@@ -88,7 +80,7 @@ export class SidebarInsightsTab extends HTMLElement {
 
   #onCategoryDropdownChange(event: Event): void {
     const target = event.target as HTMLOptionElement;
-    const value = target.value as InsightsCategories;
+    const value = target.value as Insights.Types.Category;
     this.#selectedCategory = value;
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
@@ -125,7 +117,7 @@ export class SidebarInsightsTab extends HTMLElement {
         @change=${this.#onCategoryDropdownChange}
         jslog=${VisualLogging.dropDown('timeline.sidebar-insights-category-select').track({click: true})}
       >
-        ${Object.values(InsightsCategories).map(insightsCategory => {
+        ${Object.values(Insights.Types.Category).map(insightsCategory => {
           return LitHtml.html`
             <option value=${insightsCategory}>
               ${insightsCategory}

@@ -12,13 +12,13 @@ import type * as Overlays from '../../overlays/overlays.js';
 
 import sidebarInsightStyles from './sidebarInsight.css.js';
 import * as SidebarInsight from './SidebarInsight.js';
-import {type ActiveInsight, InsightsCategories} from './types.js';
+import {type ActiveInsight, Category} from './types.js';
 
 export function shouldRenderForCategory(options: {
-  activeCategory: InsightsCategories,
-  insightCategory: InsightsCategories,
+  activeCategory: Category,
+  insightCategory: Category,
 }): boolean {
-  return options.activeCategory === InsightsCategories.ALL || options.activeCategory === options.insightCategory;
+  return options.activeCategory === Category.ALL || options.activeCategory === options.insightCategory;
 }
 
 export function insightIsActive(options: {
@@ -36,14 +36,14 @@ export interface BaseInsightData {
   /** The key into `insights` that contains this particular insight. */
   insightSetKey: string|null;
   activeInsight: ActiveInsight|null;
-  activeCategory: InsightsCategories;
+  activeCategory: Category;
 }
 
 // This is an abstract base class so the component naming rules do not apply.
 // eslint-disable-next-line rulesdir/check_component_naming
 export abstract class BaseInsight extends HTMLElement {
   abstract internalName: string;
-  abstract insightCategory: InsightsCategories;
+  abstract insightCategory: Category;
   abstract userVisibleTitle: string;
 
   protected readonly shadow = this.attachShadow({mode: 'open'});
@@ -52,7 +52,7 @@ export abstract class BaseInsight extends HTMLElement {
     insights: null,
     insightSetKey: null,
     activeInsight: null,
-    activeCategory: InsightsCategories.ALL,
+    activeCategory: Category.ALL,
   };
 
   readonly #boundRender = this.render.bind(this);
@@ -83,7 +83,7 @@ export abstract class BaseInsight extends HTMLElement {
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
 
-  set activeCategory(activeCategory: InsightsCategories) {
+  set activeCategory(activeCategory: Category) {
     this.data.activeCategory = activeCategory;
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }

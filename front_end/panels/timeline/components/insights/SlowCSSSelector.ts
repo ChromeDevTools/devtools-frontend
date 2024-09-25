@@ -13,7 +13,7 @@ import type * as Overlays from '../../overlays/overlays.js';
 import {BaseInsight, md, shouldRenderForCategory} from './Helpers.js';
 import * as SidebarInsight from './SidebarInsight.js';
 import {Table, type TableData} from './Table.js';
-import {InsightsCategories} from './types.js';
+import {Category} from './types.js';
 
 const UIStrings = {
   /**
@@ -53,7 +53,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class SlowCSSSelector extends BaseInsight {
   static readonly litTagName = LitHtml.literal`devtools-performance-slow-css-selector`;
-  override insightCategory: InsightsCategories = InsightsCategories.OTHER;
+  override insightCategory: Category = Category.ALL;
   override internalName: string = 'slow-css-selector';
   override userVisibleTitle: string = i18nString(UIStrings.title);
   #slowCSSSelector: Trace.Insights.InsightRunners.SlowCSSSelector.SlowCSSSelectorInsightResult|null = null;

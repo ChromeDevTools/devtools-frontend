@@ -12,7 +12,7 @@ import type * as Overlays from '../../overlays/overlays.js';
 
 import {BaseInsight, md, shouldRenderForCategory} from './Helpers.js';
 import * as SidebarInsight from './SidebarInsight.js';
-import {InsightsCategories} from './types.js';
+import {Category} from './types.js';
 
 const MAX_URL_LENGTH = 80;
 
@@ -38,7 +38,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class RenderBlockingRequests extends BaseInsight {
   static readonly litTagName = LitHtml.literal`devtools-performance-render-blocking-requests`;
-  override insightCategory: InsightsCategories = InsightsCategories.LCP;
+  override insightCategory: Category = Category.LCP;
   override internalName: string = 'render-blocking-requests';
   override userVisibleTitle: string = i18nString(UIStrings.title);
 

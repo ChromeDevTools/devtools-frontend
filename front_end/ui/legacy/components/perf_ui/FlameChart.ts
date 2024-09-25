@@ -1296,9 +1296,41 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.dataProvider.handleFlameChartTransformKeyboardEvent?.(event, this.selectedEntryIndex, this.selectedGroupIndex);
   }
 
+  /**
+   * Triggers a context menu as if the user had clicked on the selected entry.
+   * To do this we calculate the (x, y) of the selected entry, and create a
+   * fake mouse event to pretend the user has clicked on that coordinate.
+   * We then dispatch the event as a "contextmenu" event, thus triggering the
+   * usual contextmenu code path.
+   */
+  #triggerContextMenuFromKeyPress(): void {
+    const startTime = this.timelineData()?.entryStartTimes[this.selectedEntryIndex];
+    const level = this.timelineData()?.entryLevels[this.selectedEntryIndex];
+    if (!startTime || !level) {
+      return;
+    }
+    const boundingRect = this.canvasBoundingClientRect();
+    if (!boundingRect) {
+      return;
+    }
+    // If we use the (x, y) of the entry, that is relative to the canvas, so we
+    // add on the left / top of the canvas' rect to place the contextmenu in
+    // the correct place within the entire DevTools window.
+    const x = this.chartViewport.timeToPosition(startTime) + boundingRect.left;
+    const y = this.levelToOffset(level) - this.getScrollOffset() + boundingRect.top;
+
+    const event = new MouseEvent('contextmenu', {clientX: x, clientY: y});
+    this.canvas.dispatchEvent(event);
+  }
+
   private onKeyDown(e: KeyboardEvent): void {
     if (!UI.KeyboardShortcut.KeyboardShortcut.hasNoModifiers(e) || !this.timelineData()) {
       return;
+    }
+
+    if (e.key === ' ' && this.selectedEntryIndex > -1) {
+      this.#triggerContextMenuFromKeyPress();
+      // If the user has an event selected, and there is a selected entry, then we open the context menu at this event.
     }
 
     let eventHandled = this.handleSelectionNavigation(e);

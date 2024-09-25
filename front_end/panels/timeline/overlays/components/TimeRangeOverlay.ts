@@ -262,8 +262,7 @@ export class TimeRangeOverlay extends HTMLElement {
              @keyup=${this.#handleLabelInputKeyUp}
              contenteditable=${this.#isLabelEditable ? 'plaintext-only' : false}>
             </span>
-            <span
-            class="duration">${durationText}</span>
+            <span class="duration">${durationText}</span>
           </span>
           `,
         this.#shadow, {host: this});

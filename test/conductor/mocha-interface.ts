@@ -4,105 +4,14 @@
 
 import * as Mocha from 'mocha';
 // @ts-expect-error
-import * as commonInterface from 'mocha/lib/interfaces/common.js';
+import * as commonInterface from 'mocha/lib/interfaces/common.js';  // eslint-disable-line rulesdir/es_modules_import
 import * as Path from 'path';
 
-import {getBrowserAndPages} from '../conductor/puppeteer-state.js';
-import {TestConfig} from '../conductor/test_config.js';
-import {ScreenshotError} from '../shared/screenshot-error.js';
-
-import {AsyncScope} from './async-scope.js';
-import {platform, type Platform} from './helper.js';
+import {makeInstrumentedTestFunction, platform, type Platform} from './mocha-interface-helpers.js';
+import {TestConfig} from './test_config.js';
 
 type SuiteFunction = ((this: Mocha.Suite) => void)|undefined;
 type ExclusiveSuiteFunction = (this: Mocha.Suite) => void;
-
-async function takeScreenshots(): Promise<{target?: string, frontend?: string}> {
-  try {
-    const {target, frontend} = getBrowserAndPages();
-    const opts = {
-      encoding: 'base64' as 'base64',
-    };
-    await target.bringToFront();
-    const targetScreenshot = await target.screenshot(opts);
-    await frontend.bringToFront();
-    const frontendScreenshot = await frontend.screenshot(opts);
-    return {target: targetScreenshot, frontend: frontendScreenshot};
-  } catch (err) {
-    console.error('Error taking a screenshot', err);
-    return {};
-  }
-}
-
-async function createScreenshotError(error: Error): Promise<Error> {
-  console.error('Taking screenshots for the error', error);
-  if (!TestConfig.debug) {
-    const screenshotTimeout = 5_000;
-    const {target, frontend} = await Promise.race([
-      takeScreenshots(),
-      new Promise(resolve => {
-        setTimeout(resolve, screenshotTimeout);
-      }).then(() => {
-        console.error(`Could not take screenshots within ${screenshotTimeout}ms.`);
-        return {target: undefined, frontend: undefined};
-      }),
-    ]);
-    return ScreenshotError.fromBase64Images(error, target, frontend);
-  }
-  return error;
-}
-
-function makeInstrumentedTestFunction(fn: Mocha.AsyncFunc) {
-  return async function testFunction(this: Mocha.Context) {
-    const abortController = new AbortController();
-    let resolver;
-    let rejecter: (reason?: unknown) => void;
-    const testPromise = new Promise((resolve, reject) => {
-      resolver = resolve;
-      rejecter = reject;
-    });
-    // AbortSignal for the current test function.
-    AsyncScope.abortSignal = abortController.signal;
-    // Promisify the function in case it is sync.
-    const promise = (async () => fn.call(this))();
-    const timeout = this.timeout();
-    // Disable test timeout.
-    this.timeout(0);
-    const actualTimeout = timeout;
-    const t = actualTimeout !== 0 ? setTimeout(async () => {
-      abortController.abort();
-      const stacks = [];
-      const scopes = AsyncScope.scopes;
-      for (const scope of scopes.values()) {
-        const {descriptions, stack} = scope;
-        if (stack) {
-          const stepDescription = descriptions ? `${descriptions.join(' > ')}:\n` : '';
-          stacks.push(`${stepDescription}${stack.join('\n')}\n`);
-        }
-      }
-      const err = new Error('Test timed out');
-      if (stacks.length > 0) {
-        const msg = `Pending async operations during timeout:\n${stacks.join('\n\n')}`;
-        err.cause = new Error(msg);
-      }
-      rejecter(await createScreenshotError(err));
-    }, actualTimeout) : 0;
-    promise
-        .then(
-            resolver,
-            async err => {
-              // Suppress errors after the test was aborted.
-              if (abortController.signal.aborted) {
-                return;
-              }
-              rejecter(await createScreenshotError(err));
-            })
-        .finally(() => {
-          clearTimeout(t);
-        });
-    return testPromise;
-  };
-}
 
 function devtoolsTestInterface(suite: Mocha.Suite) {
   const suites: [Mocha.Suite] = [suite];

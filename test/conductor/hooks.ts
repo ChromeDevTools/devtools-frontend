@@ -63,34 +63,6 @@ let targetTab: TargetTab;
 
 const envChromeFeatures = process.env['CHROME_FEATURES'];
 
-export async function watchForHang<T>(
-    currentTest: string|undefined, stepFn: (currentTest: string|undefined) => Promise<T>): Promise<T> {
-  const stepName = stepFn.name || stepFn.toString();
-  const stackTrace = new Error().stack;
-  function logTime(label: string) {
-    const end = performance.now();
-    console.error(`\n${stepName} ${label} ${end - start}ms\nTrace: ${stackTrace}\nTest: ${currentTest}\n`);
-  }
-  let tripped = false;
-  const timerId = setTimeout(() => {
-    logTime('takes at least');
-    tripped = true;
-  }, 10000);
-  const start = performance.now();
-  try {
-    const result = await stepFn(currentTest);
-    if (tripped) {
-      logTime('succeded after');
-    }
-    return result;
-  } catch (err) {
-    logTime('errored after');
-    throw err;
-  } finally {
-    clearTimeout(timerId);
-  }
-}
-
 function launchChrome() {
   // Use port 0 to request any free port.
   const enabledFeatures = [
@@ -195,24 +167,24 @@ export async function unregisterAllServiceWorkers() {
   });
 }
 
-export async function setupPages(currentTest: string|undefined) {
+export async function setupPages() {
   const {frontend} = getBrowserAndPages();
-  await watchForHang(currentTest, () => throttleCPUIfRequired(frontend));
-  await watchForHang(currentTest, () => delayPromisesIfRequired(frontend));
+  await throttleCPUIfRequired(frontend);
+  await delayPromisesIfRequired(frontend);
 }
 
-export async function resetPages(currentTest: string|undefined) {
+export async function resetPages() {
   const {frontend, target} = getBrowserAndPages();
 
-  await watchForHang(currentTest, () => target.bringToFront());
-  await watchForHang(currentTest, () => targetTab.reset());
-  await watchForHang(currentTest, () => frontend.bringToFront());
+  await target.bringToFront();
+  await targetTab.reset();
+  await frontend.bringToFront();
 
   if (TestConfig.serverType === 'hosted-mode') {
-    await watchForHang(currentTest, () => frontendTab.reset());
+    await frontendTab.reset();
   } else if (TestConfig.serverType === 'component-docs') {
     // Reset the frontend back to an empty page for the component docs server.
-    await watchForHang(currentTest, () => loadEmptyPageAndWaitForContent(frontend));
+    await loadEmptyPageAndWaitForContent(frontend);
   }
 }
 

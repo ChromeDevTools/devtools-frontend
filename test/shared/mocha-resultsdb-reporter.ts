@@ -10,7 +10,7 @@ import * as path from 'path';
 import * as ResultsDb from '../conductor/resultsdb.js';
 import {
   ScreenshotError,
-} from '../shared/screenshot-error.js';
+} from '../conductor/screenshot-error.js';
 
 const {
   EVENT_TEST_FAIL,

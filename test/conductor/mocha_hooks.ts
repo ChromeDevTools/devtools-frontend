@@ -11,8 +11,8 @@ import {
   resetPages,
   setupPages,
   unregisterAllServiceWorkers,
-  watchForHang,
 } from './hooks.js';
+import {makeInstrumentedTestFunction} from './mocha-interface-helpers.js';
 import {SOURCE_ROOT} from './paths.js';
 import {TestConfig} from './test_config.js';
 import {startServer, stopServer} from './test_server.js';
@@ -66,11 +66,11 @@ export const mochaHooks = {
     copyGoldens();
   },
   // In both modes, run before each test.
-  beforeEach: async function(this: Mocha.Context) {
-    // Sets the timeout higher for this hook only.
-    this.timeout(20000);
-    const currentTest = this.currentTest?.fullTitle();
-    await watchForHang(currentTest, setupPages);
+  beforeEach: makeInstrumentedTestFunction(async function(this: Mocha.Context) {
+    const paused = TestConfig.debug && !didPauseAtBeginning;
+    // Sets the timeout higher for this hook only and if not waiting for user input..
+    this.timeout(paused ? 0 : 20000);
+    await setupPages();
 
     // Pause when running interactively in debug mode. This is mututally
     // exclusive with parallel mode.
@@ -78,7 +78,6 @@ export const mochaHooks = {
     // and target tab are not available to us to set breakpoints in.
     // We still only want to pause once, so we remember that we did pause.
     if (TestConfig.debug && !didPauseAtBeginning) {
-      this.timeout(0);
       didPauseAtBeginning = true;
 
       console.log('Running in debug mode.');
@@ -94,13 +93,12 @@ export const mochaHooks = {
         });
       });
     }
-  },
-  afterEach: async function(this: Mocha.Context) {
+  }),
+  afterEach: makeInstrumentedTestFunction(async function(this: Mocha.Context) {
     this.timeout(20000);
-    const currentTest = this.currentTest?.fullTitle();
-    await watchForHang(currentTest, resetPages);
-    await watchForHang(currentTest, unregisterAllServiceWorkers);
-  },
+    await resetPages();
+    await unregisterAllServiceWorkers();
+  }),
 };
 
 function copyGoldens() {

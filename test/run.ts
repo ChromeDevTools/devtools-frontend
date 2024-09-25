@@ -129,7 +129,7 @@ class MochaTests extends Tests {
           '--config',
           path.join(this.suite.buildPath, 'mocharc.js'),
           '-u',
-          path.join(this.suite.buildPath, '..', 'shared', 'mocha-interface.js'),
+          path.join(this.suite.buildPath, '..', 'conductor', 'mocha-interface.js'),
         ],
         /* positionalTestArgs= */ false,  // Mocha interprets positional arguments as test files itself. Work around
                                           // that by passing the tests as dashed args instead.

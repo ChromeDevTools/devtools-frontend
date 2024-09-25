@@ -6,12 +6,9 @@ import("../../scripts/build/typescript/typescript.gni")
 
 node_ts_library("shared") {
   sources = [
-    "async-scope.ts",
     "debug-check.ts",
     "helper.ts",
-    "mocha-interface.ts",
     "mocha-resultsdb-reporter.ts",
-    "screenshot-error.ts",
     "screenshots.ts",
     "snapshots.ts",
   ]

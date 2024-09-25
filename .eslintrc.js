@@ -204,11 +204,6 @@ module.exports = {
       }]
     }
   }, {
-    files: 'test/shared/mocha-interface.ts',
-    rules: {
-      'rulesdir/es_modules_import': 'off',
-    }
-  }, {
     files : ['*.ts'],
     rules : {
       '@typescript-eslint/naming-convention' :

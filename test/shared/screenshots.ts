@@ -11,15 +11,15 @@ import * as fs from 'fs';
 import * as path from 'path';
 import type * as puppeteer from 'puppeteer-core';
 
+import {platform} from '../conductor/mocha-interface-helpers.js';
 import {SOURCE_ROOT} from '../conductor/paths.js';
+import {ScreenshotError} from '../conductor/screenshot-error.js';
 import {TestConfig} from '../conductor/test_config.js';
 import {
   getBrowserAndPages,
-  platform,
   timeout,
   waitFor,
 } from '../shared/helper.js';
-import {ScreenshotError} from '../shared/screenshot-error.js';
 
 /**
  * The goldens screenshot folder is always taken from the source directory (NOT

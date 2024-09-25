@@ -372,7 +372,7 @@ class Init(RunnerCommand):
             'ui':
             repo_path(options.build_root,
                       get_artifact_dir('devtools-frontend'),
-                      'gen/test/shared/mocha-interface.js'),
+                      'gen/test/conductor/mocha-interface.js'),
             'spec': [
                 repo_path(
                     options.build_root,

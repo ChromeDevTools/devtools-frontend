@@ -4,7 +4,7 @@
 import {assert} from 'chai';
 import type * as puppeteer from 'puppeteer-core';
 
-import {AsyncScope} from '../../shared/async-scope.js';
+import {AsyncScope} from '../../conductor/async-scope.js';
 import {
   $,
   $$,

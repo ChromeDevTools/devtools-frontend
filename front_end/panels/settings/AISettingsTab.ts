@@ -28,22 +28,22 @@ const UIStrings = {
    *@description Text describing a fact to consider when using AI features
    */
   experimentalFeatures:
-      'These features are experimental. They use generative AI and may provide inaccurate or offensive information that does not represent Google’s views.',
+      'These features are experimental. They use generative AI and may provide inaccurate or offensive information that doesn’t represent Google’s views.',
   /**
    *@description Text describing a fact to consider when using AI features
    */
   sendsDataToGoogle:
-      'Using these features sends data relevant for the feature to Google. Google collects this data and feedback to improve its products and services with the help of human reviewers. Avoid sharing sensitive or personal information.',
+      'These features send relevant data to Google. Google collects this data and feedback to improve its products and services with the help of human reviewers. Avoid sharing sensitive or personal information.',
   /**
    *@description Text describing a fact to consider when using AI features
    */
   retainData:
-      'Usage data will be retained for up to 18 months and stored in a way where Google cannot tell who provided it.',
+      'Usage data will be retained for up to 18 months and stored in such a way that Google can’t tell who provided it.',
   /**
    *@description Text describing a fact to consider when using AI features
    */
   adminSettings:
-      'Depending on your Google account management and/or region, Google may refrain from data collection. Depending on their organization’s settings, features available to managed users may vary.',
+      'Depending on your Google account management and/or region, Google may refrain from data collection. Depending on your organization’s settings, features available to managed users may vary.',
   /**
    *@description Text describing the 'Console Insights' feature
    */

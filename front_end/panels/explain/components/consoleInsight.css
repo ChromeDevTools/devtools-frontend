@@ -280,6 +280,7 @@ details {
 
   overflow: hidden;
   height: var(--collapsed-height);
+  margin-top: 10px;
 }
 
 details[open] {

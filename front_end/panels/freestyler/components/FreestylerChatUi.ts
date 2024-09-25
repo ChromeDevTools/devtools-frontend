@@ -435,8 +435,12 @@ export class FreestylerChatUi extends HTMLElement {
 
     // clang-format off
     return LitHtml.html`<${MarkdownView.MarkdownView.MarkdownView.litTagName}
-      .data=${{tokens, renderer: this.#markdownRenderer} as MarkdownView.MarkdownView.MarkdownViewData}>
-    </${MarkdownView.MarkdownView.MarkdownView.litTagName}>`;
+      .data=${
+        {
+          tokens,
+          renderer: this.#markdownRenderer,
+        } as MarkdownView.MarkdownView.MarkdownViewData
+      }></${MarkdownView.MarkdownView.MarkdownView.litTagName}>`;
     // clang-format on
   }
 

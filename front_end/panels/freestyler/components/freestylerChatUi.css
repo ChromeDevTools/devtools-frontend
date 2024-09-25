@@ -296,7 +296,15 @@
   }
 
   .step-details {
-    padding: 0 var(--sys-size-10) var(--sys-size-3);
+    padding: 0 var(--sys-size-5) var(--sys-size-4) var(--sys-size-12);
+    display: flex;
+    flex-direction: column;
+    gap: var(--sys-size-6);
+
+    p {
+      margin: 0;
+      padding: 0;
+    }
   }
 }
 
@@ -402,11 +410,10 @@
 }
 
 .side-effect-confirmation {
-  p {
-    margin: 0;
-    margin-bottom: 12px;
-    padding: 0;
-  }
+  display: flex;
+  flex-direction: column;
+  gap: var(--sys-size-5);
+  padding-bottom: var(--sys-size-4);
 }
 
 .side-effect-buttons-container {

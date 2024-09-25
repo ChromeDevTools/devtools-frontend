@@ -146,9 +146,17 @@ module.exports = stylelint.createPlugin(RULE_NAME, function(primary, secondary, 
       }
 
       if (cssValueToCheck.includes('var(')) {
-        const [match, variableName] = /var\((--[\w-]+)/.exec(cssValueToCheck);
+        const execArray = /var\(\s*(--[\w-]+)\s*/.exec(cssValueToCheck);
+        if (!execArray) {
+          throw new Error(
+              `Could not parse CSS variable usage: ${cssValueToCheck}`,
+          );
+        }
+        const [match, variableName] = execArray;
         if (!match) {
-          throw new Error(`Could not parse CSS variable usage: ${cssValueToCheck}`);
+          throw new Error(
+              `Could not parse CSS variable usage: ${cssValueToCheck}`,
+          );
         }
 
         /**

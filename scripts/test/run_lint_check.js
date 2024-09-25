@@ -110,6 +110,6 @@ run()
       process.exit(succeed ? 0 : 1);
     })
     .catch(err => {
-      console.log(`[lint]: ${err.message}`);
+      console.log(`[lint]: ${err.message}`, err.stack);
       process.exit(1);
     });

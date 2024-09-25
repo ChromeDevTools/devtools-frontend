@@ -113,7 +113,7 @@ export class SidebarSingleInsightSet extends HTMLElement {
   #calculateCLSScore(
       parsedTrace: Trace.Handlers.Types.ParsedTrace,
       navigationId: string,
-      ): {maxScore: number, worstShfitEvent: Trace.Types.Events.Event|null} {
+      ): {maxScore: number, worstShiftEvent: Trace.Types.Events.Event|null} {
     // Find all clusers associated with this navigation
     const clustersForNavigation = parsedTrace.LayoutShifts.clusters.filter(c => c.navigationId === navigationId);
     let maxScore = 0;
@@ -124,7 +124,7 @@ export class SidebarSingleInsightSet extends HTMLElement {
         worstCluster = cluster;
       }
     }
-    return {maxScore, worstShfitEvent: worstCluster?.worstShiftEvent ?? null};
+    return {maxScore, worstShiftEvent: worstCluster?.worstShiftEvent ?? null};
   }
 
   #renderMetrics(
@@ -135,7 +135,7 @@ export class SidebarSingleInsightSet extends HTMLElement {
         parsedTrace.PageLoadMetrics.metricScoresByFrameId.get(parsedTrace.Meta.mainFrameId)?.get(navigationId);
     const lcpMetric = forNavigation?.get(Trace.Handlers.ModelHandlers.PageLoadMetrics.MetricName.LCP);
 
-    const {maxScore: clsScore, worstShfitEvent} = this.#calculateCLSScore(parsedTrace, navigationId);
+    const {maxScore: clsScore, worstShiftEvent} = this.#calculateCLSScore(parsedTrace, navigationId);
     const inp = this.#calculateINP(parsedTrace, navigationId);
 
     return LitHtml.html`
@@ -148,7 +148,7 @@ export class SidebarSingleInsightSet extends HTMLElement {
     ${
         this.#renderMetricValue(
             'CLS', clsScore.toFixed(2),
-            Trace.Handlers.ModelHandlers.LayoutShifts.scoreClassificationForLayoutShift(clsScore), worstShfitEvent)}
+            Trace.Handlers.ModelHandlers.LayoutShifts.scoreClassificationForLayoutShift(clsScore), worstShiftEvent)}
     ${
         inp ?
             this.#renderMetricValue(

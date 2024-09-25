@@ -899,15 +899,10 @@ export abstract class HeapSnapshot {
     this.calculateFlags();
     this.#progress.updateStatus('Calculating distances…');
     this.calculateDistances(/* isForRetainersView=*/ false);
-    this.#progress.updateStatus('Building postorder index…');
-    const result = this.buildPostOrderIndex();
-    // Actually it is array that maps node ordinal number to dominator node ordinal number.
-    this.#progress.updateStatus('Building dominator tree…');
-    this.dominatorsTree = this.buildDominatorTree(result.postOrderIndex2NodeOrdinal, result.nodeOrdinal2PostOrderIndex);
     this.#progress.updateStatus('Calculating shallow sizes…');
     this.calculateShallowSizes();
     this.#progress.updateStatus('Calculating retained sizes…');
-    this.calculateRetainedSizes(result.postOrderIndex2NodeOrdinal);
+    this.buildDominatorTreeAndCalculateRetainedSizes();
     this.#progress.updateStatus('Building dominated nodes…');
     this.buildDominatedNodes();
     this.#progress.updateStatus('Calculating object names…');
@@ -1574,6 +1569,12 @@ export abstract class HeapSnapshot {
       return false;
     }
 
+    const childNodeIndex = this.containmentEdges.getValue(edgeIndex + this.edgeToNodeOffset);
+    // Ignore self edges.
+    if (nodeIndex === childNodeIndex) {
+      return false;
+    }
+
     if (nodeIndex !== this.rootNodeIndex) {
       // Shortcuts at the root node have special meaning of marking user global objects.
       if (edgeType === this.edgeShortcutType) {
@@ -1583,7 +1584,6 @@ export abstract class HeapSnapshot {
       const flags = userObjectsMapAndFlag ? userObjectsMapAndFlag.map : null;
       const userObjectFlag = userObjectsMapAndFlag ? userObjectsMapAndFlag.flag : 0;
       const nodeOrdinal = nodeIndex / this.nodeFieldCount;
-      const childNodeIndex = this.containmentEdges.getValue(edgeIndex + this.edgeToNodeOffset);
       const childNodeOrdinal = childNodeIndex / this.nodeFieldCount;
       const nodeFlag = !flags || (flags[nodeOrdinal] & userObjectFlag);
       const childNodeFlag = !flags || (flags[childNodeOrdinal] & userObjectFlag);
@@ -1597,10 +1597,9 @@ export abstract class HeapSnapshot {
     return true;
   }
 
-  /**
-   * The function checks whether the edge should be considered during building
-   * postorder iterator and dominator tree.
-   */
+  // Returns whether the edge should be considered when building the dominator tree.
+  // The first call to this function computes essential edges and caches them.
+  // Subsequent calls just lookup from the cache and are much faster.
   private isEssentialEdge(edgeIndex: number): boolean {
     let essentialEdges = this.#essentialEdges;
 
@@ -1624,119 +1623,6 @@ export abstract class HeapSnapshot {
     return essentialEdges.getBit(edgeIndex / this.edgeFieldsCount);
   }
 
-  private buildPostOrderIndex(): {postOrderIndex2NodeOrdinal: Uint32Array, nodeOrdinal2PostOrderIndex: Uint32Array} {
-    const nodeFieldCount = this.nodeFieldCount;
-    const nodeCount = this.nodeCount;
-    const rootNodeOrdinal = this.rootNodeIndexInternal / nodeFieldCount;
-
-    const edgeFieldsCount = this.edgeFieldsCount;
-    const edgeToNodeOffset = this.edgeToNodeOffset;
-    const firstEdgeIndexes = this.firstEdgeIndexes;
-    const containmentEdges = this.containmentEdges;
-
-    const stackNodes = new Uint32Array(nodeCount);
-    const stackCurrentEdge = new Uint32Array(nodeCount);
-    const postOrderIndex2NodeOrdinal = new Uint32Array(nodeCount);
-    const nodeOrdinal2PostOrderIndex = new Uint32Array(nodeCount);
-    const visited = new Uint8Array(nodeCount);
-    let postOrderIndex = 0;
-
-    let stackTop = 0;
-    stackNodes[0] = rootNodeOrdinal;
-    stackCurrentEdge[0] = firstEdgeIndexes[rootNodeOrdinal];
-    visited[rootNodeOrdinal] = 1;
-
-    let iteration = 0;
-    while (true) {
-      ++iteration;
-      while (stackTop >= 0) {
-        const nodeOrdinal = stackNodes[stackTop];
-        const edgeIndex = stackCurrentEdge[stackTop];
-        const edgesEnd = firstEdgeIndexes[nodeOrdinal + 1];
-
-        if (edgeIndex < edgesEnd) {
-          stackCurrentEdge[stackTop] += edgeFieldsCount;
-          if (!this.isEssentialEdge(edgeIndex)) {
-            continue;
-          }
-          const childNodeIndex = containmentEdges.getValue(edgeIndex + edgeToNodeOffset);
-          const childNodeOrdinal = childNodeIndex / nodeFieldCount;
-          if (visited[childNodeOrdinal]) {
-            continue;
-          }
-          ++stackTop;
-          stackNodes[stackTop] = childNodeOrdinal;
-          stackCurrentEdge[stackTop] = firstEdgeIndexes[childNodeOrdinal];
-          visited[childNodeOrdinal] = 1;
-        } else {
-          // Done with all the node children
-          nodeOrdinal2PostOrderIndex[nodeOrdinal] = postOrderIndex;
-          postOrderIndex2NodeOrdinal[postOrderIndex++] = nodeOrdinal;
-          --stackTop;
-        }
-      }
-
-      if (postOrderIndex === nodeCount || iteration > 1) {
-        break;
-      }
-      const errors = new HeapSnapshotProblemReport(`Heap snapshot: ${
-          nodeCount - postOrderIndex} nodes are unreachable from the root. Following nodes have only weak retainers:`);
-      const dumpNode = this.rootNode();
-      // Remove root from the result (last node in the array) and put it at the bottom of the stack so that it is
-      // visited after all orphan nodes and their subgraphs.
-      --postOrderIndex;
-      stackTop = 0;
-      stackNodes[0] = rootNodeOrdinal;
-      stackCurrentEdge[0] = firstEdgeIndexes[rootNodeOrdinal + 1];  // no need to reiterate its edges
-      for (let i = 0; i < nodeCount; ++i) {
-        if (visited[i] || !this.hasOnlyWeakRetainers(i)) {
-          continue;
-        }
-
-        // Add all nodes that have only weak retainers to traverse their subgraphs.
-        stackNodes[++stackTop] = i;
-        stackCurrentEdge[stackTop] = firstEdgeIndexes[i];
-        visited[i] = 1;
-
-        dumpNode.nodeIndex = i * nodeFieldCount;
-        const retainers = [];
-        for (let it = dumpNode.retainers(); it.hasNext(); it.next()) {
-          retainers.push(`${it.item().node().name()}@${it.item().node().id()}.${it.item().name()}`);
-        }
-        errors.addError(`${dumpNode.name()} @${dumpNode.id()}  weak retainers: ${retainers.join(', ')}`);
-      }
-      console.warn(errors.toString());
-    }
-
-    // If we already processed all orphan nodes that have only weak retainers and still have some orphans...
-    if (postOrderIndex !== nodeCount) {
-      const errors = new HeapSnapshotProblemReport(
-          'Still found ' + (nodeCount - postOrderIndex) + ' unreachable nodes in heap snapshot:');
-      const dumpNode = this.rootNode();
-      // Remove root from the result (last node in the array) and put it at the bottom of the stack so that it is
-      // visited after all orphan nodes and their subgraphs.
-      --postOrderIndex;
-      for (let i = 0; i < nodeCount; ++i) {
-        if (visited[i]) {
-          continue;
-        }
-        dumpNode.nodeIndex = i * nodeFieldCount;
-        errors.addError(dumpNode.name() + ' @' + dumpNode.id());
-        // Fix it by giving the node a postorder index anyway.
-        nodeOrdinal2PostOrderIndex[i] = postOrderIndex;
-        postOrderIndex2NodeOrdinal[postOrderIndex++] = i;
-      }
-      nodeOrdinal2PostOrderIndex[rootNodeOrdinal] = postOrderIndex;
-      postOrderIndex2NodeOrdinal[postOrderIndex++] = rootNodeOrdinal;
-      console.warn(errors.toString());
-    }
-
-    return {
-      postOrderIndex2NodeOrdinal,
-      nodeOrdinal2PostOrderIndex,
-    };
-  }
-
   private hasOnlyWeakRetainers(nodeOrdinal: number): boolean {
     const retainingEdges = this.retainingEdges;
     const beginRetainerIndex = this.firstRetainerIndex[nodeOrdinal];
@@ -1750,158 +1636,215 @@ export abstract class HeapSnapshot {
     return true;
   }
 
-  // The algorithm is based on the article:
-  // K. Cooper, T. Harvey and K. Kennedy "A Simple, Fast Dominance Algorithm"
-  // Softw. Pract. Exper. 4 (2001), pp. 1-10.
-  private buildDominatorTree(postOrderIndex2NodeOrdinal: Uint32Array, nodeOrdinal2PostOrderIndex: Uint32Array):
-      Uint32Array {
+  // The algorithm for building the dominator tree is from the paper:
+  // Thomas Lengauer and Robert Endre Tarjan. 1979. A fast algorithm for finding dominators in a flowgraph.
+  // ACM Trans. Program. Lang. Syst. 1, 1 (July 1979), 121–141. https://doi.org/10.1145/357062.357071
+  private buildDominatorTreeAndCalculateRetainedSizes(): void {
+    // Preload fields into local variables for better performance.
+    const nodeCount = this.nodeCount;
+    const firstEdgeIndexes = this.firstEdgeIndexes;
+    const edgeFieldsCount = this.edgeFieldsCount;
+    const containmentEdges = this.containmentEdges;
+    const edgeToNodeOffset = this.edgeToNodeOffset;
     const nodeFieldCount = this.nodeFieldCount;
     const firstRetainerIndex = this.firstRetainerIndex;
-    const retainingNodes = this.retainingNodes;
     const retainingEdges = this.retainingEdges;
-    const edgeFieldsCount = this.edgeFieldsCount;
-    const edgeToNodeOffset = this.edgeToNodeOffset;
-    const firstEdgeIndexes = this.firstEdgeIndexes;
-    const containmentEdges = this.containmentEdges;
+    const retainingNodes = this.retainingNodes;
+    const rootNodeOrdinal = this.rootNodeIndexInternal / nodeFieldCount;
+    const isEssentialEdge = this.isEssentialEdge.bind(this);
+    const hasOnlyWeakRetainers = this.hasOnlyWeakRetainers.bind(this);
 
-    const nodesCount = postOrderIndex2NodeOrdinal.length;
-    const rootPostOrderedIndex = nodesCount - 1;
-    const noEntry = nodesCount;
-    const dominators = new Uint32Array(nodesCount);
-    for (let i = 0; i < rootPostOrderedIndex; ++i) {
-      dominators[i] = noEntry;
-    }
-    dominators[rootPostOrderedIndex] = rootPostOrderedIndex;
+    // The Lengauer-Tarjan algorithm expects vectors to be numbered from 1 to n
+    // and uses 0 as an invalid value, so use 1-indexing for all the arrays.
+    // Convert between ordinals and vertex numbers by adding/subtracting 1.
+    const arrayLength = nodeCount + 1;
+    const parent = new Uint32Array(arrayLength);
+    const ancestor = new Uint32Array(arrayLength);
+    const vertex = new Uint32Array(arrayLength);
+    const label = new Uint32Array(arrayLength);
+    const semi = new Uint32Array(arrayLength);
+    const bucket = new Array<Set<number>>(arrayLength);
+    let n = 0;
 
-    // The affected array is used to mark entries which dominators have to be
-    // recalculated because of changes in their retainers. This is just a
-    // heuristic to guide the fixpoint algorithm below so that it can visit
-    // nodes that are more likely to need modification; see crbug.com/361372448
-    // for an example where visiting only affected nodes is insufficient.
-    const affected = Platform.TypedArrayUtilities.createBitVector(nodesCount);
-    let nodeOrdinal;
-
-    // Time wasters are nodes with lots of predecessors which didn't change the
-    // last time we visited them. We'll avoid marking such nodes as affected.
-    const timeWasters = Platform.TypedArrayUtilities.createBitVector(nodesCount);
-
-    {  // Mark the root direct children as affected.
-      nodeOrdinal = this.rootNodeIndexInternal / nodeFieldCount;
-      const endEdgeIndex = firstEdgeIndexes[nodeOrdinal + 1];
-      for (let edgeIndex = firstEdgeIndexes[nodeOrdinal]; edgeIndex < endEdgeIndex; edgeIndex += edgeFieldsCount) {
-        if (!this.isEssentialEdge(edgeIndex)) {
-          continue;
+    // Iterative DFS since the recursive version can cause stack overflows.
+    // Use an array to keep track of the next edge index to be examined for each node.
+    const nextEdgeIndex = new Uint32Array(arrayLength);
+    const dfs = (root: number): void => {
+      const rootOrdinal = root - 1;
+      nextEdgeIndex[rootOrdinal] = firstEdgeIndexes[rootOrdinal];
+      let v = root;
+      while (v !== 0) {
+        // First process v if not done already.
+        if (semi[v] === 0) {
+          semi[v] = ++n;
+          vertex[n] = label[v] = v;
         }
-        const childNodeOrdinal = containmentEdges.getValue(edgeIndex + edgeToNodeOffset) / nodeFieldCount;
-        affected.setBit(nodeOrdinal2PostOrderIndex[childNodeOrdinal]);
-      }
-    }
 
-    let changed = true;
-    let shouldVisitEveryNode = false;
-    while (changed || !shouldVisitEveryNode) {
-      // The original Cooper-Harvey-Kennedy algorithm visits every node on every traversal,
-      // but that is far too expensive for the graph shapes encountered in heap snapshots.
-      // Instead, we use the `affected` bitvector to guide iteration most of the time, and
-      // only do a full traversal if the previous bitvector-based traversal found nothing
-      // to change. The order in which nodes are visited doesn't matter for correctness.
-      shouldVisitEveryNode = !changed;
-      function getPrevious(postOrderIndex: number): number {
-        return shouldVisitEveryNode ? postOrderIndex - 1 : affected.previous(postOrderIndex);
-      }
-      changed = false;
-      for (let postOrderIndex = getPrevious(rootPostOrderedIndex); postOrderIndex >= 0;
-           postOrderIndex = getPrevious(postOrderIndex)) {
-        affected.clearBit(postOrderIndex);
-        // If dominator of the entry has already been set to root,
-        // then it can't propagate any further.
-        if (dominators[postOrderIndex] === rootPostOrderedIndex) {
-          continue;
-        }
-        nodeOrdinal = postOrderIndex2NodeOrdinal[postOrderIndex];
-        let newDominatorIndex: number = noEntry;
-        const beginRetainerIndex = firstRetainerIndex[nodeOrdinal];
-        const endRetainerIndex = firstRetainerIndex[nodeOrdinal + 1];
-        const edgeCount = endRetainerIndex - beginRetainerIndex;
-        let orphanNode = true;
-        for (let retainerIndex = beginRetainerIndex; retainerIndex < endRetainerIndex; ++retainerIndex) {
-          const retainerEdgeIndex = retainingEdges[retainerIndex];
-          const retainerNodeIndex = retainingNodes[retainerIndex];
-          if (!this.isEssentialEdge(retainerEdgeIndex)) {
+        // The next node to process is the first unprocessed successor w of v,
+        // or parent[v] if all of v's successors have already been processed.
+        let vNext = parent[v];
+        const vOrdinal = v - 1;
+        for (; nextEdgeIndex[vOrdinal] < firstEdgeIndexes[vOrdinal + 1]; nextEdgeIndex[vOrdinal] += edgeFieldsCount) {
+          const edgeIndex = nextEdgeIndex[vOrdinal];
+          if (!isEssentialEdge(edgeIndex)) {
             continue;
           }
-          orphanNode = false;
-          const retainerNodeOrdinal = retainerNodeIndex / nodeFieldCount;
-          let retainerPostOrderIndex: number = nodeOrdinal2PostOrderIndex[retainerNodeOrdinal];
-          if (dominators[retainerPostOrderIndex] !== noEntry) {
-            if (newDominatorIndex === noEntry) {
-              newDominatorIndex = retainerPostOrderIndex;
-            } else {
-              while (retainerPostOrderIndex !== newDominatorIndex) {
-                while (retainerPostOrderIndex < newDominatorIndex) {
-                  retainerPostOrderIndex = dominators[retainerPostOrderIndex];
-                }
-                while (newDominatorIndex < retainerPostOrderIndex) {
-                  newDominatorIndex = dominators[newDominatorIndex];
-                }
-              }
-            }
-            // If item has already reached the root, it doesn't make sense
-            // to check other retainers.
-            if (newDominatorIndex === rootPostOrderedIndex) {
-              break;
-            }
+          const wOrdinal = containmentEdges.getValue(edgeIndex + edgeToNodeOffset) / nodeFieldCount;
+          const w = wOrdinal + 1;
+          if (semi[w] === 0) {
+            parent[w] = v;
+            nextEdgeIndex[wOrdinal] = firstEdgeIndexes[wOrdinal];
+            vNext = w;
+            break;
           }
         }
-        // Make root dominator of orphans.
-        if (orphanNode) {
-          newDominatorIndex = rootPostOrderedIndex;
+        v = vNext;
+      }
+    };
+
+    // Iterative version since the recursive version can cause stack overflows.
+    // Preallocate a stack since compress() is called several times.
+    // The stack cannot grow larger than the number of nodes since we walk up
+    // the tree represented by the ancestor array.
+    const compressionStack = new Uint32Array(arrayLength);
+    const compress = (v: number): void => {
+      let stackPointer = 0;
+      while (ancestor[ancestor[v]] !== 0) {
+        compressionStack[++stackPointer] = v;
+        v = ancestor[v];
+      }
+      while (stackPointer > 0) {
+        const w = compressionStack[stackPointer--] as number;
+        if (semi[label[ancestor[w]]] < semi[label[w]]) {
+          label[w] = label[ancestor[w]];
         }
-        if (newDominatorIndex !== noEntry && dominators[postOrderIndex] !== newDominatorIndex) {
-          timeWasters.clearBit(postOrderIndex);  // It's not a waste of time if we changed something.
-          dominators[postOrderIndex] = newDominatorIndex;
-          changed = true;
-          nodeOrdinal = postOrderIndex2NodeOrdinal[postOrderIndex];
-          const beginEdgeToNodeFieldIndex = firstEdgeIndexes[nodeOrdinal] + edgeToNodeOffset;
-          const endEdgeToNodeFieldIndex = firstEdgeIndexes[nodeOrdinal + 1];
-          for (let toNodeFieldIndex = beginEdgeToNodeFieldIndex; toNodeFieldIndex < endEdgeToNodeFieldIndex;
-               toNodeFieldIndex += edgeFieldsCount) {
-            const childNodeOrdinal = containmentEdges.getValue(toNodeFieldIndex) / nodeFieldCount;
-            const childPostOrderIndex = nodeOrdinal2PostOrderIndex[childNodeOrdinal];
-            // Mark the child node as affected, unless it's unlikely to be beneficial.
-            if (childPostOrderIndex !== postOrderIndex && !timeWasters.getBit(childPostOrderIndex)) {
-              affected.setBit(childPostOrderIndex);
-            }
-          }
-        } else if (edgeCount > 1000) {
-          timeWasters.setBit(postOrderIndex);
+        ancestor[w] = ancestor[ancestor[w]];
+      }
+    };
+
+    // Simple versions of eval and link from the paper.
+    const evaluate = (v: number): number => {
+      if (ancestor[v] === 0) {
+        return v;
+      }
+      compress(v);
+      return label[v];
+    };
+
+    const link = (v: number, w: number): void => {
+      ancestor[w] = v;
+    };
+
+    // Algorithm begins here. The variable names are as per the paper.
+    const r = rootNodeOrdinal + 1;
+    n = 0;
+    const dom = new Uint32Array(arrayLength);
+
+    // First perform DFS from the root.
+    dfs(r);
+
+    // Then perform DFS from orphan nodes (ones with only weak retainers) if any.
+    if (n < nodeCount) {
+      const errors =
+          new HeapSnapshotProblemReport(`Heap snapshot: ${nodeCount - n} nodes are unreachable from the root.`);
+      errors.addError('The following nodes have only weak retainers:');
+      const dumpNode = this.rootNode();
+      for (let v = 1; v <= nodeCount; v++) {
+        const vOrdinal = v - 1;
+        if (semi[v] === 0 && hasOnlyWeakRetainers(vOrdinal)) {
+          dumpNode.nodeIndex = vOrdinal * nodeFieldCount;
+          errors.addError(`${dumpNode.name()} @${dumpNode.id()}`);
+          parent[v] = r;
+          dfs(v);
         }
+      }
+      console.warn(errors.toString());
+    }
+
+    // If there are unreachable nodes still, visit them individually from the root.
+    // This can happen when there is a clique of nodes retained by one another.
+    if (n < nodeCount) {
+      const errors = new HeapSnapshotProblemReport(`Heap snapshot: Still found ${nodeCount - n} unreachable nodes:`);
+      const dumpNode = this.rootNode();
+      for (let v = 1; v <= nodeCount; v++) {
+        if (semi[v] === 0) {
+          const vOrdinal = v - 1;
+          dumpNode.nodeIndex = vOrdinal * nodeFieldCount;
+          errors.addError(`${dumpNode.name()} @${dumpNode.id()}`);
+          parent[v] = r;
+          semi[v] = ++n;
+          vertex[n] = label[v] = v;
+        }
+      }
+      console.warn(errors.toString());
+    }
+
+    // Main loop. Process the vertices in decreasing order by DFS number.
+    for (let i = n; i >= 2; --i) {
+      const w = vertex[i];
+      // Iterate over all predecessors v of w.
+      const wOrdinal = w - 1;
+      let isOrphanNode = true;
+      for (let retainerIndex = firstRetainerIndex[wOrdinal]; retainerIndex < firstRetainerIndex[wOrdinal + 1];
+           retainerIndex++) {
+        if (!isEssentialEdge(retainingEdges[retainerIndex])) {
+          continue;
+        }
+        isOrphanNode = false;
+        const vOrdinal = retainingNodes[retainerIndex] / nodeFieldCount;
+        const v = vOrdinal + 1;
+        const u = evaluate(v);
+        if (semi[u] < semi[w]) {
+          semi[w] = semi[u];
+        }
+      }
+      if (isOrphanNode) {
+        // We treat orphan nodes as having a single predecessor - the root.
+        // semi[r] is always less than any semi[w] so set it unconditionally.
+        semi[w] = semi[r];
+      }
+
+      if (bucket[vertex[semi[w]]] === undefined) {
+        bucket[vertex[semi[w]]] = new Set<number>();
+      }
+      bucket[vertex[semi[w]]].add(w);
+      link(parent[w], w);
+
+      // Process all vertices v in bucket(parent(w)).
+      if (bucket[parent[w]] !== undefined) {
+        for (const v of bucket[parent[w]]) {
+          const u = evaluate(v);
+          dom[v] = semi[u] < semi[v] ? u : parent[w];
+        }
+        bucket[parent[w]].clear();
       }
     }
 
-    const dominatorsTree = new Uint32Array(nodesCount);
-    for (let postOrderIndex = 0, l = dominators.length; postOrderIndex < l; ++postOrderIndex) {
-      nodeOrdinal = postOrderIndex2NodeOrdinal[postOrderIndex];
-      dominatorsTree[nodeOrdinal] = postOrderIndex2NodeOrdinal[dominators[postOrderIndex]];
+    // Final step. Fill in the immediate dominators not explicitly computed above.
+    // Unlike the paper, we consider the root to be its own dominator and
+    // set dom[0] to r to propagate the root as the dominator of unreachable nodes.
+    dom[0] = dom[r] = r;
+    for (let i = 2; i <= n; i++) {
+      const w = vertex[i];
+      if (dom[w] !== vertex[semi[w]]) {
+        dom[w] = dom[dom[w]];
+      }
     }
-    return dominatorsTree;
-  }
+    // Algorithm ends here.
 
-  private calculateRetainedSizes(postOrderIndex2NodeOrdinal: Uint32Array): void {
-    const nodeCount = this.nodeCount;
+    // Transform the dominators into an ordinal-indexed array and populate the self sizes.
     const nodes = this.nodes;
     const nodeSelfSizeOffset = this.nodeSelfSizeOffset;
-    const nodeFieldCount = this.nodeFieldCount;
-    const dominatorsTree = this.dominatorsTree;
+    const dominatorsTree = this.dominatorsTree = new Uint32Array(nodeCount);
     const retainedSizes = this.retainedSizes;
-
-    for (let nodeOrdinal = 0; nodeOrdinal < nodeCount; ++nodeOrdinal) {
+    for (let nodeOrdinal = 0; nodeOrdinal < nodeCount; nodeOrdinal++) {
+      dominatorsTree[nodeOrdinal] = dom[nodeOrdinal + 1] - 1;
       retainedSizes[nodeOrdinal] = nodes.getValue(nodeOrdinal * nodeFieldCount + nodeSelfSizeOffset);
     }
 
-    // Propagate retained sizes for each node excluding root.
-    for (let postOrderIndex = 0; postOrderIndex < nodeCount - 1; ++postOrderIndex) {
-      const nodeOrdinal = postOrderIndex2NodeOrdinal[postOrderIndex];
+    // Then propagate up the retained sizes for each traversed node excluding the root.
+    for (let i = n; i > 1; i--) {
+      const nodeOrdinal = vertex[i] - 1;
       const dominatorOrdinal = dominatorsTree[nodeOrdinal];
       retainedSizes[dominatorOrdinal] += retainedSizes[nodeOrdinal];
     }

@@ -19,7 +19,7 @@ const UIStrings = {
   /**
    *@description Header text for for a list of things to consider in the context of generative AI features
    */
-  boostYourProductivity: 'Boost your productivity with Chrome AI',
+  boostYourProductivity: 'Boost your productivity with AI',
   /**
    *@description Text announcing a list of facts to consider (when using a GenAI feature)
    */
@@ -117,9 +117,9 @@ const UIStrings = {
    */
   oneOrMoreSettingsHaveChanged: 'One or more settings have changed which requires a reload to take effect.',
   /**
-   *@description Header for the Chrome AI settings page
+   *@description Header for the AI innovations settings page
    */
-  chromeAi: 'Chrome AI',
+  aiInnovations: 'AI innovations',
   /**
    *@description Label for a toggle to enable the Console Insights feature
    */
@@ -439,7 +439,7 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
     // clang-format off
     LitHtml.render(LitHtml.html`
       <header>
-        <h1>${i18nString(UIStrings.chromeAi)}</h1>
+        <h1>${i18nString(UIStrings.aiInnovations)}</h1>
       </header>
       <div class="settings-container-wrapper" jslog=${VisualLogging.pane('chrome-ai')}>
         ${this.#renderSharedDisclaimer()}

@@ -54,13 +54,13 @@ const UIStrings = {
    */
   documentation: 'Documentation',
   /**
-   *@description Text for Chrome AI settings
+   *@description Text for AI innovation settings
    */
-  chromeAI: 'Chrome AI',
+  aiInnovations: 'AI innovations',
   /**
-   *@description Command for showing the Chrome AI settings
+   *@description Command for showing the AI innovation settings
    */
-  showChromeAI: 'Show Chrome AI',
+  showAiInnovations: 'Show AI innovations',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/settings/settings-meta.ts', UIStrings);
@@ -91,8 +91,8 @@ UI.ViewManager.registerViewExtension({
 UI.ViewManager.registerViewExtension({
   location: UI.ViewManager.ViewLocationValues.SETTINGS_VIEW,
   id: 'chrome-ai',
-  title: i18nLazyString(UIStrings.chromeAI),
-  commandPrompt: i18nLazyString(UIStrings.showChromeAI),
+  title: i18nLazyString(UIStrings.aiInnovations),
+  commandPrompt: i18nLazyString(UIStrings.showAiInnovations),
   order: 2,
   async loadView() {
     const Settings = await loadSettingsModule();

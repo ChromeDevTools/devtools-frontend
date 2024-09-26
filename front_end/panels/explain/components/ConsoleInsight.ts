@@ -689,7 +689,7 @@ export class ConsoleInsight extends HTMLElement {
   #renderDisclaimer(): LitHtml.LitTemplate {
     // clang-format off
     return LitHtml.html`<span>
-      Chrome AI may generate inaccurate info that does not represent Google's views. Data sent to Google may be seen by human reviewers to improve this feature.
+      AI tools may generate inaccurate info that doesn't represent Google's views. Data sent to Google may be seen by human reviewers to improve this feature.
       <button class="link" role="link" @click=${() => UI.ViewManager.ViewManager.instance().showView('chrome-ai')}
         jslog=${VisualLogging.action('open-ai-settings').track({click: true})}
       >Open settings</button>
@@ -837,7 +837,7 @@ export class ConsoleInsight extends HTMLElement {
       case State.ERROR:
         return i18nString(UIStrings.error);
       case State.CONSENT_REMINDER:
-        return 'Understand console messages with Chrome AI';
+        return 'Understand console messages with AI';
       case State.SETTING_DISABLED:
         return '';  // not reached
     }

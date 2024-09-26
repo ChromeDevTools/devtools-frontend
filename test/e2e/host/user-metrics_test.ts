@@ -312,7 +312,7 @@ describe('User Metrics', () => {
 
   it('dispatches an event when experiments are enabled and disabled', async () => {
     await openSettingsTab('Experiments');
-    const customThemeCheckbox = await waitFor('[title="Allow extensions to load custom stylesheets"]');
+    const customThemeCheckbox = await waitFor('[title="Protocol Monitor"]');
     // Enable the experiment
     await customThemeCheckbox.click();
     // Disable the experiment
@@ -329,11 +329,11 @@ describe('User Metrics', () => {
       },
       {
         actionName: 'DevTools.ExperimentEnabled',
-        actionCode: 0,  // Allow extensions to load custom stylesheets
+        actionCode: 13,  // Protocol Monitor
       },
       {
         actionName: 'DevTools.ExperimentDisabled',
-        actionCode: 0,  // Allow extensions to load custom stylesheets
+        actionCode: 13,  // Protocol Monitor
       },
     ]);
   });

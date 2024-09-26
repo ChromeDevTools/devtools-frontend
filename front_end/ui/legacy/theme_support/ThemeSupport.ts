@@ -43,7 +43,6 @@ const themeValueByTargetByName = new Map<Element|null, Map<string, string>>();
 
 export class ThemeSupport extends EventTarget {
   private themeNameInternal = 'default';
-  private customSheets: Set<string> = new Set();
   private computedStyleOfHTML = Common.Lazy.lazy(() => window.getComputedStyle(document.documentElement));
 
   readonly #documentsToTheme: Set<Document> = new Set([document]);
@@ -159,18 +158,6 @@ export class ThemeSupport extends EventTarget {
     node.appendChild(styleElement);
   }
 
-  injectCustomStyleSheets(element: Element|ShadowRoot): void {
-    for (const sheet of this.customSheets) {
-      const styleElement = document.createElement('style');
-      styleElement.textContent = sheet;
-      element.appendChild(styleElement);
-    }
-  }
-
-  addCustomStylesheet(sheetText: string): void {
-    this.customSheets.add(sheetText);
-  }
-
   #applyTheme(): void {
     for (const document of this.#documentsToTheme) {
       this.#applyThemeToDocument(document);
@@ -204,7 +191,6 @@ export class ThemeSupport extends EventTarget {
 
     // In the event the theme changes we need to clear caches and notify subscribers.
     themeValueByTargetByName.clear();
-    this.customSheets.clear();
     this.dispatchEvent(new ThemeChangeEvent());
   }
 

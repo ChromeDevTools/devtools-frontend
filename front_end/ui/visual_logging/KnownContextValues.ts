@@ -380,7 +380,6 @@ export const knownContextValues = new Set([
   'app-region',
   'appearance',
   'application',
-  'apply-custom-stylesheet',
   'ar',
   'architecture',
   'aria-attributes',

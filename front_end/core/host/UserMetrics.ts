@@ -993,7 +993,6 @@ export const enum IssueOpener {
  */
 export enum DevtoolsExperiments {
   /* eslint-disable @typescript-eslint/naming-convention */
-  'apply-custom-stylesheet' = 0,
   'capture-node-creation-stacks' = 1,
   'live-heap-profile' = 11,
   'protocol-monitor' = 13,

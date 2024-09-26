@@ -1838,7 +1838,6 @@ export function injectCoreStyles(root: Element|ShadowRoot): void {
   ThemeSupport.ThemeSupport.instance().appendStyle(root, tokens);
 
   ThemeSupport.ThemeSupport.instance().injectHighlightStyleSheets(root);
-  ThemeSupport.ThemeSupport.instance().injectCustomStyleSheets(root);
 }
 
 export function injectTextButtonStyles(root: Element|ShadowRoot): void {

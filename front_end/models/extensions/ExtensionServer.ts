@@ -37,7 +37,6 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as _ProtocolClient from '../../core/protocol_client/protocol_client.js';  // eslint-disable-line @typescript-eslint/no-unused-vars
-import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as Logs from '../../models/logs/logs.js';
@@ -184,7 +183,6 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     this.extensionsEnabled = true;
 
     this.registerHandler(PrivateAPI.Commands.AddRequestHeaders, this.onAddRequestHeaders.bind(this));
-    this.registerHandler(PrivateAPI.Commands.ApplyStyleSheet, this.onApplyStyleSheet.bind(this));
     this.registerHandler(PrivateAPI.Commands.CreatePanel, this.onCreatePanel.bind(this));
     this.registerHandler(PrivateAPI.Commands.CreateSidebarPane, this.onCreateSidebarPane.bind(this));
     this.registerHandler(PrivateAPI.Commands.CreateToolbarButton, this.onCreateToolbarButton.bind(this));
@@ -600,28 +598,6 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     }
 
     SDK.NetworkManager.MultitargetNetworkManager.instance().setExtraHTTPHeaders(allHeaders);
-    return undefined;
-  }
-
-  private onApplyStyleSheet(message: PrivateAPI.ExtensionServerRequestMessage): Record|undefined {
-    if (message.command !== PrivateAPI.Commands.ApplyStyleSheet) {
-      return this.status.E_BADARG('command', `expected ${PrivateAPI.Commands.ApplyStyleSheet}`);
-    }
-    if (!Root.Runtime.experiments.isEnabled('apply-custom-stylesheet')) {
-      return;
-    }
-
-    const styleSheet = document.createElement('style');
-    styleSheet.textContent = message.styleSheet;
-    document.head.appendChild(styleSheet);
-
-    ThemeSupport.ThemeSupport.instance().addCustomStylesheet(message.styleSheet);
-    // Add to all the shadow roots that have already been created
-    for (let node: (Node|null)|HTMLElement = document.body; node; node = node.traverseNextNode(document.body)) {
-      if (node instanceof ShadowRoot) {
-        ThemeSupport.ThemeSupport.instance().injectCustomStyleSheets(node);
-      }
-    }
     return undefined;
   }
 

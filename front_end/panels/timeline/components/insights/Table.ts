@@ -154,7 +154,7 @@ export class Table extends HTMLElement {
     LitHtml.render(
         LitHtml.html`<table
           class=${LitHtml.Directives.classMap({
-          hoverable: this.#interactive,
+          interactive: this.#interactive,
         })}
           @mouseleave=${this.#interactive ? this.#onMouseLeave : null}>
         <thead>

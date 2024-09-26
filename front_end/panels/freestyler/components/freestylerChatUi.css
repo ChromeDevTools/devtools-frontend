@@ -160,13 +160,6 @@
     border-bottom: 0;
   }
 
-  &.query {
-    .message-content {
-      /* devtools-markdown-view's paragraphs add 10px bottom margin. This negative margin is here to offset that. */
-      margin-bottom: -10px;
-    }
-  }
-
   .message-info {
     display: flex;
     align-items: center;
@@ -299,11 +292,9 @@
     padding: 0 var(--sys-size-5) var(--sys-size-4) var(--sys-size-12);
     display: flex;
     flex-direction: column;
-    gap: var(--sys-size-6);
 
     p {
-      margin: 0;
-      padding: 0;
+      margin-bottom: var(--sys-size-5);
     }
   }
 }

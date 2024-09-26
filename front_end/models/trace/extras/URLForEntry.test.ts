@@ -11,7 +11,7 @@ describeWithEnvironment('URLForEntry', () => {
     const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
     const commitLoadEvent = parsedTrace.Renderer.allTraceEntries.find(Trace.Types.Events.isCommitLoad);
     assert.isOk(commitLoadEvent);
-    const url = Trace.Extras.URLForEntry.get(parsedTrace, commitLoadEvent);
+    const url = Trace.Extras.URLForEntry.getNonResolved(parsedTrace, commitLoadEvent);
     assert.isNotNull(url);
     assert.strictEqual(url, commitLoadEvent.args.data?.url);
   });
@@ -20,7 +20,7 @@ describeWithEnvironment('URLForEntry', () => {
     const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
     const profileCall = parsedTrace.Renderer.allTraceEntries.find(Trace.Types.Events.isProfileCall);
     assert.isOk(profileCall);
-    const url = Trace.Extras.URLForEntry.get(parsedTrace, profileCall);
+    const url = Trace.Extras.URLForEntry.getNonResolved(parsedTrace, profileCall);
     assert.isNotNull(url);
     assert.strictEqual(url, profileCall.callFrame.url);
   });
@@ -29,7 +29,7 @@ describeWithEnvironment('URLForEntry', () => {
     const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
     const request = parsedTrace.NetworkRequests.byTime[0];
     assert.isOk(request);
-    const url = Trace.Extras.URLForEntry.get(parsedTrace, request);
+    const url = Trace.Extras.URLForEntry.getNonResolved(parsedTrace, request);
     assert.isNotNull(url);
     assert.strictEqual(url, request.args.data.url);
   });
@@ -40,7 +40,7 @@ describeWithEnvironment('URLForEntry', () => {
       return Trace.Types.Events.isDispatch(entry) && entry.args.data.stackTrace;
     });
     assert.isOk(eventDispatch);
-    const url = Trace.Extras.URLForEntry.get(parsedTrace, eventDispatch);
+    const url = Trace.Extras.URLForEntry.getNonResolved(parsedTrace, eventDispatch);
     assert.isNotNull(url);
     assert.strictEqual(url, eventDispatch.args?.data?.stackTrace?.[0].url);
   });
@@ -49,7 +49,7 @@ describeWithEnvironment('URLForEntry', () => {
     const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
     const parseHTMLEvent = parsedTrace.Renderer.allTraceEntries.find(Trace.Types.Events.isParseHTML);
     assert.isOk(parseHTMLEvent);
-    const url = Trace.Extras.URLForEntry.get(parsedTrace, parseHTMLEvent);
+    const url = Trace.Extras.URLForEntry.getNonResolved(parsedTrace, parseHTMLEvent);
     assert.isNotNull(url);
     assert.strictEqual(url, parseHTMLEvent.args.beginData.url);
   });
@@ -58,7 +58,7 @@ describeWithEnvironment('URLForEntry', () => {
     const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
     const decodeImage = parsedTrace.Renderer.allTraceEntries.find(Trace.Types.Events.isDecodeImage);
     assert.isOk(decodeImage);
-    const url = Trace.Extras.URLForEntry.get(parsedTrace, decodeImage);
+    const url = Trace.Extras.URLForEntry.getNonResolved(parsedTrace, decodeImage);
     assert.isNotNull(url);
     assert.strictEqual(
         url, 'https://web-dev.imgix.net/image/admin/WkMOiDtaDgiAA2YkRZ5H.jpg?fit=crop&h=64&w=64&dpr=1&q=75');

@@ -27,7 +27,7 @@ beforeEach(() => {
     handler.reset();
   }
   Trace.Helpers.SyntheticEvents.SyntheticEventsManager.reset();
-  Timeline.SourceMapsResolver.SourceMapsResolver.clearResolvedNodeNames();
+  Timeline.Utils.SourceMapsResolver.SourceMapsResolver.clearResolvedNodeNames();
 
   // Don't retain host binding listeners across tests. Set this up before initializing ThemeSupport as
   // ThemeSupport adds a host binding listener.

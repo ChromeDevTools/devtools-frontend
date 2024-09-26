@@ -131,7 +131,7 @@ function getSelfTimeByUrl(parsedTrace: RequiredData<typeof deps>, context: Insig
             continue;
           }
 
-          const url = Extras.URLForEntry.get(parsedTrace as Handlers.Types.ParsedTrace, event);
+          const url = Extras.URLForEntry.getNonResolved(parsedTrace as Handlers.Types.ParsedTrace, event);
           if (!url) {
             continue;
           }

@@ -6,14 +6,21 @@ import("../../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("utils") {
-  sources = [ "NetworkRequest.ts" ]
+  sources = [
+    "IgnoreList.ts",
+    "NetworkRequest.ts",
+    "SourceMapsResolver.ts",
+  ]
 
   deps = [
     "../../../core/common:bundle",
     "../../../core/platform:bundle",
     "../../../core/sdk:bundle",
+    "../../../generated",
     "../../../models/bindings:bundle",
+    "../../../models/source_map_scopes:bundle",
     "../../../models/trace:bundle",
+    "../../../models/workspace:bundle",
   ]
 }
 
@@ -27,5 +34,28 @@ devtools_entrypoint("bundle") {
     "..:*",
     "../../network/*",
     "../components:*",
+  ]
+}
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [
+    "IgnoreList.test.ts",
+    "SourceMapsResolver.test.ts",
+  ]
+
+  deps = [
+    ":bundle",
+    "../../../core/platform:bundle",
+    "../../../core/root:bundle",
+    "../../../core/sdk:bundle",
+    "../../../core/sdk:bundle",
+    "../../../models/bindings:bundle",
+    "../../../models/timeline_model:bundle",
+    "../../../models/trace:bundle",
+    "../../../models/trace:bundle",
+    "../../../models/workspace:bundle",
+    "../../../testing",
   ]
 }

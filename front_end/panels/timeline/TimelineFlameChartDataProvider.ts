@@ -30,7 +30,6 @@
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import type * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import type * as TimelineModel from '../../models/timeline_model/timeline_model.js';
@@ -48,6 +47,7 @@ import {ThreadAppender} from './ThreadAppender.js';
 import timelineFlamechartPopoverStyles from './timelineFlamechartPopover.css.js';
 import {FlameChartStyle, Selection} from './TimelineFlameChartView.js';
 import {TimelineSelection} from './TimelineSelection.js';
+import * as Utils from './utils/utils.js';
 
 const UIStrings = {
   /**
@@ -256,26 +256,27 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     });
 
     const entry = this.eventByIndex(entryIndex);
-    if (entry && entry instanceof Trace.Handlers.ModelHandlers.Frames.TimelineFrame === false) {
-      const url = (Trace.Types.Events.isProfileCall(entry)) ? entry.callFrame.url as Platform.DevToolsPath.UrlString :
-                                                              undefined;
-      if (url) {
-        if (Bindings.IgnoreListManager.IgnoreListManager.instance().isUserIgnoreListedURL(url)) {
-          contextMenu.defaultSection().appendItem(i18nString(UIStrings.removeScriptFromIgnoreList), () => {
-            Bindings.IgnoreListManager.IgnoreListManager.instance().unIgnoreListURL(url);
-            this.dispatchEventToListeners(Events.DATA_CHANGED);
-          }, {
-            jslogContext: 'remove-from-ignore-list',
-          });
-        } else {
-          contextMenu.defaultSection().appendItem(i18nString(UIStrings.addScriptToIgnoreList), () => {
-            Bindings.IgnoreListManager.IgnoreListManager.instance().ignoreListURL(url);
-            this.dispatchEventToListeners(Events.DATA_CHANGED);
-          }, {
-            jslogContext: 'add-to-ignore-list',
-          });
-        }
-      }
+    if (!entry || entry instanceof Trace.Handlers.ModelHandlers.Frames.TimelineFrame || !this.parsedTrace) {
+      return contextMenu;
+    }
+    const url = Utils.SourceMapsResolver.SourceMapsResolver.resolvedURLForEntry(this.parsedTrace, entry);
+    if (!url) {
+      return contextMenu;
+    }
+    if (Utils.IgnoreList.isIgnoreListedEntry(entry)) {
+      contextMenu.defaultSection().appendItem(i18nString(UIStrings.removeScriptFromIgnoreList), () => {
+        Bindings.IgnoreListManager.IgnoreListManager.instance().unIgnoreListURL(url);
+        this.dispatchEventToListeners(Events.DATA_CHANGED);
+      }, {
+        jslogContext: 'remove-from-ignore-list',
+      });
+    } else {
+      contextMenu.defaultSection().appendItem(i18nString(UIStrings.addScriptToIgnoreList), () => {
+        Bindings.IgnoreListManager.IgnoreListManager.instance().ignoreListURL(url);
+        this.dispatchEventToListeners(Events.DATA_CHANGED);
+      }, {
+        jslogContext: 'add-to-ignore-list',
+      });
     }
 
     return contextMenu;
@@ -437,7 +438,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     if (!TimelineFlameChartDataProvider.timelineEntryIsTraceEvent(event)) {
       return FlameChartStyle.textColor;
     }
-    return this.isIgnoreListedEvent(event) ? '#888' : FlameChartStyle.textColor;
+    return Utils.IgnoreList.isIgnoreListedEntry(event) ? '#888' : FlameChartStyle.textColor;
   }
 
   entryFont(_index: number): string|null {
@@ -624,17 +625,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       }
     }
     return results;
-  }
-
-  isIgnoreListedEvent(event: Trace.Types.Events.Event): boolean {
-    if (Trace.Types.Events.isProfileCall(event)) {
-      return this.isIgnoreListedURL(event.callFrame.url as Platform.DevToolsPath.UrlString);
-    }
-    return false;
-  }
-
-  private isIgnoreListedURL(url: Platform.DevToolsPath.UrlString): boolean {
-    return Bindings.IgnoreListManager.IgnoreListManager.instance().isUserIgnoreListedURL(url);
   }
 
   getEntryTypeForLevel(level: number): EntryType {

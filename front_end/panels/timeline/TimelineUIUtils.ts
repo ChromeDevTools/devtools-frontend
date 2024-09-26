@@ -57,10 +57,10 @@ import * as TimelineComponents from './components/components.js';
 import * as Extensions from './extensions/extensions.js';
 import {Tracker} from './FreshRecording.js';
 import {ModificationsManager} from './ModificationsManager.js';
-import {SourceMapsResolver} from './SourceMapsResolver.js';
 import {targetForEvent} from './TargetForEvent.js';
 import {TimelinePanel} from './TimelinePanel.js';
 import {TimelineSelection} from './TimelineSelection.js';
+import * as Utils from './utils/utils.js';
 
 const UIStrings = {
   /**
@@ -574,7 +574,7 @@ export class TimelineUIUtils {
       }
     }
     if (parsedTrace) {
-      const url = Trace.Extras.URLForEntry.get(parsedTrace, traceEvent);
+      const url = Trace.Extras.URLForEntry.getNonResolved(parsedTrace, traceEvent);
       if (url) {
         tokens.push(url);
       }
@@ -647,8 +647,8 @@ export class TimelineUIUtils {
     // need to check for profile calls in the beginning of this
     // function.
     if (Trace.Types.Events.isProfileCall(event)) {
-      const maybeResolvedName = SourceMapsResolver.resolvedNodeNameForEntry(event);
-      const displayName = maybeResolvedName || TimelineUIUtils.frameDisplayName(event.callFrame);
+      const maybeResolvedData = Utils.SourceMapsResolver.SourceMapsResolver.resolvedCodeLocationForEntry(event);
+      const displayName = maybeResolvedData?.name || TimelineUIUtils.frameDisplayName(event.callFrame);
       return displayName;
     }
     if (event.name === 'EventTiming' && Trace.Types.Events.isSyntheticInteraction(event)) {
@@ -773,7 +773,7 @@ export class TimelineUIUtils {
       case Trace.Types.Events.Name.PAINT_IMAGE:
       case Trace.Types.Events.Name.DECODE_IMAGE:
       case Trace.Types.Events.Name.DECODE_LAZY_PIXEL_REF: {
-        const url = Trace.Extras.URLForEntry.get(parsedTrace, event);
+        const url = Trace.Extras.URLForEntry.getNonResolved(parsedTrace, event);
         if (url) {
           detailsText = Bindings.ResourceUtils.displayNameForURL(url);
         }
@@ -855,7 +855,7 @@ export class TimelineUIUtils {
       case Trace.Types.Events.Name.RESOURCE_RECEIVE_DATA:
       case Trace.Types.Events.Name.RESOURCE_RECEIVE_RESPONSE:
       case Trace.Types.Events.Name.RESOURCE_FINISH: {
-        const url = Trace.Extras.URLForEntry.get(parsedTrace, event);
+        const url = Trace.Extras.URLForEntry.getNonResolved(parsedTrace, event);
         if (url) {
           const options = {
             tabStop: true,
@@ -943,8 +943,8 @@ export class TimelineUIUtils {
         if (!Trace.Types.Events.isProfileCall(event)) {
           break;
         }
-        const maybeResolvedName = SourceMapsResolver.resolvedNodeNameForEntry(event);
-        const functionName = maybeResolvedName || TimelineUIUtils.frameDisplayName(event.callFrame);
+        const maybeResolvedData = Utils.SourceMapsResolver.SourceMapsResolver.resolvedCodeLocationForEntry(event);
+        const functionName = maybeResolvedData?.name || TimelineUIUtils.frameDisplayName(event.callFrame);
         UI.UIUtils.createTextChild(details, functionName);
         const location = this.linkifyLocation({
           scriptId: event.callFrame['scriptId'],
@@ -1091,7 +1091,7 @@ export class TimelineUIUtils {
       // @ts-ignore TODO(crbug.com/1011811): Remove symbol usage.
       if (typeof event[previewElementSymbol] === 'undefined') {
         let previewElement: (Element|null)|null = null;
-        const url = Trace.Extras.URLForEntry.get(parsedTrace, event);
+        const url = Trace.Extras.URLForEntry.getNonResolved(parsedTrace, event);
         if (url) {
           previewElement = await LegacyComponents.ImagePreview.ImagePreview.build(maybeTarget, url, false, {
             imageAltText: LegacyComponents.ImagePreview.ImagePreview.defaultAltTextForImageURL(url),
@@ -1323,7 +1323,7 @@ export class TimelineUIUtils {
       case Trace.Types.Events.Name.DECODE_IMAGE:
       case Trace.Types.Events.Name.DRAW_LAZY_PIXEL_REF: {
         relatedNodeLabel = i18nString(UIStrings.ownerElement);
-        url = Trace.Extras.URLForEntry.get(parsedTrace, event);
+        url = Trace.Extras.URLForEntry.getNonResolved(parsedTrace, event);
         if (url) {
           const options = {
             tabStop: true,

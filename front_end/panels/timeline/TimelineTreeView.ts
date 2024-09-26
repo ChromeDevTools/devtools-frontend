@@ -189,7 +189,7 @@ export class TimelineTreeView extends UI.Widget.VBox implements UI.SearchableVie
     if (!this.#parsedTrace) {
       return name;
     }
-    return name + ':@' + Trace.Extras.URLForEntry.get(this.#parsedTrace, event);
+    return name + ':@' + Trace.Extras.URLForEntry.getNonResolved(this.#parsedTrace, event);
   }
 
   setSearchableView(searchableView: UI.SearchableView.SearchableView): void {
@@ -914,7 +914,7 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
       case GroupBy.URL:
         return (event: Trace.Types.Events.Event) => {
           const parsedTrace = this.parsedTrace();
-          return parsedTrace ? Trace.Extras.URLForEntry.get(parsedTrace, event) ?? '' : '';
+          return parsedTrace ? Trace.Extras.URLForEntry.getNonResolved(parsedTrace, event) ?? '' : '';
         };
       case GroupBy.Frame:
         return (event: Trace.Types.Events.Event) => {
@@ -932,7 +932,7 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
     if (!parsedTrace) {
       return '';
     }
-    const url = Trace.Extras.URLForEntry.get(parsedTrace, event);
+    const url = Trace.Extras.URLForEntry.getNonResolved(parsedTrace, event);
     if (!url) {
       return '';
     }

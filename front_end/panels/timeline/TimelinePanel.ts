@@ -63,7 +63,6 @@ import historyToolbarButtonStyles from './historyToolbarButton.css.js';
 import {IsolateSelector} from './IsolateSelector.js';
 import {AnnotationModifiedEvent, ModificationsManager} from './ModificationsManager.js';
 import {cpuprofileJsonGenerator, traceJsonGenerator} from './SaveFileFormatter.js';
-import {NodeNamesUpdated, SourceMapsResolver} from './SourceMapsResolver.js';
 import {type Client, TimelineController} from './TimelineController.js';
 import {TimelineFlameChartView} from './TimelineFlameChartView.js';
 import {TimelineHistoryManager} from './TimelineHistoryManager.js';
@@ -76,6 +75,7 @@ import timelineStatusDialogStyles from './timelineStatusDialog.css.js';
 import {TimelineUIUtils} from './TimelineUIUtils.js';
 import {UIDevtoolsController} from './UIDevtoolsController.js';
 import {UIDevtoolsUtils} from './UIDevtoolsUtils.js';
+import * as Utils from './utils/utils.js';
 
 const UIStrings = {
   /**
@@ -399,7 +399,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   });
 
   #traceEngineModel: Trace.TraceModel.Model;
-  #sourceMapsResolver: SourceMapsResolver|null = null;
+  #sourceMapsResolver: Utils.SourceMapsResolver.SourceMapsResolver|null = null;
   #onSourceMapsNodeNamesResolvedBound = this.#onSourceMapsNodeNamesResolved.bind(this);
   readonly #onChartPlayableStateChangeBound: (event: Common.EventTarget.EventTargetEvent<boolean>) => void;
   #sidebarToggleButton = this.#splitWidget.createShowHideSidebarButton(
@@ -697,10 +697,10 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       // this set of NodeNames is cached by PIDs, so we clear it so we don't
       // use incorrect names from another trace that might happen to share
       // PID/TIDs.
-      SourceMapsResolver.clearResolvedNodeNames();
+      Utils.SourceMapsResolver.SourceMapsResolver.clearResolvedNodeNames();
 
       this.#sourceMapsResolver.removeEventListener(
-          NodeNamesUpdated.eventName, this.#onSourceMapsNodeNamesResolvedBound);
+          Utils.SourceMapsResolver.SourceMappingsUpdated.eventName, this.#onSourceMapsNodeNamesResolvedBound);
       this.#sourceMapsResolver.uninstall();
       this.#sourceMapsResolver = null;
     }
@@ -1771,8 +1771,9 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
     // Set up SourceMapsResolver to ensure we resolve any function names in
     // profile calls.
-    this.#sourceMapsResolver = new SourceMapsResolver(parsedTrace);
-    this.#sourceMapsResolver.addEventListener(NodeNamesUpdated.eventName, this.#onSourceMapsNodeNamesResolvedBound);
+    this.#sourceMapsResolver = new Utils.SourceMapsResolver.SourceMapsResolver(parsedTrace);
+    this.#sourceMapsResolver.addEventListener(
+        Utils.SourceMapsResolver.SourceMappingsUpdated.eventName, this.#onSourceMapsNodeNamesResolvedBound);
     void this.#sourceMapsResolver.install();
 
     this.statusPane?.updateProgressBar(i18nString(UIStrings.processed), 80);
@@ -1968,7 +1969,12 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   }
 
   #onSourceMapsNodeNamesResolved(): void {
-    this.flameChart.refreshMainFlameChart();
+    // Source maps can change the way calls hierarchies should look in
+    // the flame chart (f.e. if some calls are ignore listed after
+    // resolving source maps). Thus, we must reappend the flamechart
+    // entries.
+    this.flameChart.getMainDataProvider().timelineData(true);
+    this.flameChart.getMainFlameChart().update();
   }
 
   /**

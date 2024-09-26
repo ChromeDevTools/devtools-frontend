@@ -176,7 +176,7 @@ export class LayoutShiftDetails extends HTMLElement {
       traceInsightsSets: Trace.Insights.Types.TraceInsightSets,
       parsedTrace: Trace.Handlers.Types.ParsedTrace,
       ): LitHtml.TemplateResult|null {
-    const score = layoutShift.args.data?.score;
+    const score = layoutShift.args.data?.weighted_score_delta;
     if (!score) {
       return null;
     }

@@ -21,8 +21,6 @@ import freestylerChatUiStyles from './freestylerChatUi.css.js';
 import {ProvideFeedback, type ProvideFeedbackProps} from './ProvideFeedback.js';
 
 const FIX_THIS_ISSUE_PROMPT = 'Fix this issue using JavaScript code execution';
-const DOGFOOD_FEEDBACK_URL = 'https://goo.gle/freestyler-feedback' as Platform.DevToolsPath.UrlString;
-export const DOGFOOD_INFO = 'https://goo.gle/freestyler-dogfood' as Platform.DevToolsPath.UrlString;
 
 const UIStrings = {
   /**
@@ -119,10 +117,6 @@ const UIStringsNotTranslate = {
    * @description Side effect confirmation text for the button that says "Cancel"
    */
   negativeSideEffectConfirmation: 'Cancel',
-  /**
-   *@description Name of the dogfood program.
-   */
-  dogfood: 'Dogfood',
   /**
    *@description Link text for redirecting to feedback form
    */
@@ -767,25 +761,6 @@ export class FreestylerChatUi extends HTMLElement {
     // clang-format on
   };
 
-  #renderFeedbackLink = (): LitHtml.TemplateResult => {
-    // clang-format off
-    return  LitHtml.html`
-        <${IconButton.Icon.Icon.litTagName}
-          name="dog-paw"
-          class="feedback-icon"
-        ></${IconButton.Icon.Icon.litTagName}>
-        <span>${lockedString(UIStringsNotTranslate.dogfood)}</span>
-        <span aria-hidden="true">-</span>
-        <x-link href=${DOGFOOD_FEEDBACK_URL}
-          class="link"
-          jslog=${VisualLogging.link('freestyler.feedback').track({
-          click: true,
-        })}>${
-          lockedString(UIStringsNotTranslate.feedbackLink)
-        }</x-link>`;
-    // clang-format on
-  };
-
   #renderMessages = (): LitHtml.TemplateResult => {
     // clang-format off
     return LitHtml.html`
@@ -840,7 +815,7 @@ export class FreestylerChatUi extends HTMLElement {
     switch (this.#props.agentType) {
       case AgentType.FREESTYLER:
         return [
-          'Why isn\'t this element visible?',
+          'Why isn’t this element visible?',
           'Why does this element overlap another?',
           'How do I center this element?',
         ];
@@ -954,9 +929,6 @@ export class FreestylerChatUi extends HTMLElement {
             <div class="input-header">
               <div class="header-link-container">
                 ${this.#renderSelection()}
-              </div>
-              <div class="header-link-container">
-                ${this.#renderFeedbackLink()}
               </div>
             </div>
           ` : LitHtml.nothing}

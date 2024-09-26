@@ -316,8 +316,7 @@ export function formatHeaders(title: string, headers: SDK.NetworkRequest.NameVal
 export function formatNetworkRequestTiming(request: SDK.NetworkRequest.NetworkRequest): string {
   const timing = request.timing;
 
-  return `
-Request start time: ${request.startTime}
+  return `Request start time: ${request.startTime}
 Request end time: ${request.endTime}
 Receiving response headers start time: ${timing?.receiveHeadersStart}
 Receiving response headers end time: ${timing?.receiveHeadersEnd}
@@ -331,14 +330,14 @@ SSL start time: ${timing?.sslStart}
 SSL end time: ${timing?.sslEnd}
 Sending start: ${timing?.sendStart}
 Sending end: ${timing?.sendEnd}
-  `;
+`;
 }
 
 function formatRequestInitiated(
     request: SDK.NetworkRequest.NetworkRequest, initiatorChain: string, lineStart: string): string {
   const initiated = Logs.NetworkLog.NetworkLog.instance().initiatorGraphForRequest(request).initiated;
-  initiated.forEach((k, initiatedRequest) => {
-    if (request === k) {
+  initiated.forEach((v, initiatedRequest) => {
+    if (request === v) {
       initiatorChain = initiatorChain + lineStart + initiatedRequest.url() + '\n';
       initiatorChain = formatRequestInitiated(initiatedRequest, initiatorChain, '\t' + lineStart);
     }
@@ -376,9 +375,9 @@ ${formatHeaders('Response headers:', request.responseHeaders)}
 
 Response status: ${request.statusCode} ${request.statusText}
 
-Request Timing:\n ${formatNetworkRequestTiming(request)}
+Request Timing:\n${formatNetworkRequestTiming(request)}
 
-Request Initiator Chain:\n ${formatRequestInitiatorChain(request)}`;
+Request Initiator Chain:\n${formatRequestInitiatorChain(request)}`;
 }
 
 function createContextDetailsForDrJonesNetworkAgent(request: SDK.NetworkRequest.NetworkRequest|null): ContextDetail[] {

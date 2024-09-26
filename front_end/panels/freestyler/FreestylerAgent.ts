@@ -26,6 +26,7 @@ The user selected a DOM element in the browser's DevTools and sends a query abou
 * When presenting solutions, clearly distinguish between the primary cause and contributing factors.
 * Please answer only if you are sure about the answer. Otherwise, explain why you're not able to answer.
 * When answering, always consider MULTIPLE possible solutions.
+* You're also capable of executing the fix for the issue user mentioned. Reflect this in your suggestions.
 * Use \`window.getComputedStyle\` to gather **rendered** styles and make sure that you take the distinction between authored styles and computed styles into account.
 * **CRITICAL** Use \`window.getComputedStyle\` ALWAYS with property access, like \`window.getComputedStyle($0.parentElement)['color']\`.
 * **CRITICAL** Never assume a selector for the elements unless you verified your knowledge.
@@ -38,7 +39,7 @@ You are going to answer to the query in these steps:
 * TITLE
 * ACTION
 * ANSWER
-* FIXABLE
+* SUGGESTIONS
 Use THOUGHT to explain why you take the ACTION. Use TITLE to provide a short summary of the thought.
 Use ACTION to evaluate JavaScript code on the page to gather all the data needed to answer the query and put it inside the data variable - then return STOP.
 You have access to a special $0 variable referencing the current element in the scope of the JavaScript code.
@@ -48,7 +49,7 @@ Please run ACTION again if the information you received is not enough to answer 
 Please answer only if you are sure about the answer. Otherwise, explain why you're not able to answer.
 When answering, remember to consider CSS concepts such as the CSS cascade, explicit and implicit stacking contexts and various CSS layout types.
 When answering, always consider MULTIPLE possible solutions.
-After the ANSWER, output FIXABLE: true if the user request needs a fix using JavaScript or Web APIs and it has not been fixed previously.
+After the ANSWER, output SUGGESTIONS: string[] for the potential responses the user might give. Make sure that the array and the \`SUGGESTIONS: \` text is in the same line.
 
 If you need to set styles on an HTML element, always call the \`async setElementStyles(el: Element, styles: object)\` function.
 
@@ -104,7 +105,7 @@ STOP
 OBSERVATION: {"elementStyles":{"display":"block","visibility":"visible","position":"absolute","zIndex":"3","opacity":"1"},"parentStyles":{"display":"block","visibility":"visible","position":"relative","zIndex":"1","opacity":"1"},"overlappingElements":[{"tagName":"HTML","id":"","className":"","zIndex":"auto"},{"tagName":"BODY","id":"","className":"","zIndex":"auto"},{"tagName":"DIV","id":"","className":"container","zIndex":"auto"},{"tagName":"DIV","id":"","className":"background","zIndex":"2"}]}"
 
 ANSWER: Even though the popup itself has a z-index of 3, its parent container has position: relative and z-index: 1. This creates a new stacking context for the popup. Because the "background" div has a z-index of 2, which is higher than the stacking context of the popup, it is rendered on top, obscuring the popup.
-FIXABLE: true
+SUGGESTIONS: ["What is a stacking context?", "How can I change the stacking order?"]
 `;
 /* clang-format on */
 
@@ -204,7 +205,7 @@ export class FreestylerAgent {
     action?: string,
   }|{
   answer:
-    string, fixable: boolean,
+    string, suggestions: string[],
   }
   {
     const lines = response.split('\n');
@@ -212,12 +213,12 @@ export class FreestylerAgent {
     let title: string|undefined;
     let action: string|undefined;
     let answer: string|undefined;
-    let fixable = false;
+    let suggestions: string[] = [];
     let i = 0;
     const isInstructionStart = (line: string): boolean => {
       const trimmed = line.trim();
       return trimmed.startsWith('THOUGHT:') || trimmed.startsWith('OBSERVATION:') || trimmed.startsWith('TITLE:') ||
-          trimmed.startsWith('ACTION') || trimmed.startsWith('ANSWER:') || trimmed.startsWith('FIXABLE:');
+          trimmed.startsWith('ACTION') || trimmed.startsWith('ANSWER:') || trimmed.startsWith('SUGGESTIONS:');
     };
     while (i < lines.length) {
       const trimmed = lines[i].trim();
@@ -263,8 +264,13 @@ export class FreestylerAgent {
         }
         answer = answerLines.join('\n').trim();
         i = j;
-      } else if (trimmed.startsWith('FIXABLE: true')) {
-        fixable = true;
+      } else if (trimmed.startsWith('SUGGESTIONS:')) {
+        try {
+          suggestions = JSON.parse(trimmed.substring('SUGGESTIONS:'.length).trim());
+        } catch (err) {
+          suggestions = [];
+        }
+
         i++;
       } else {
         i++;
@@ -296,7 +302,7 @@ export class FreestylerAgent {
       // If we could not parse the parts, consider the response to be an
       // answer.
       answer: answer || response,
-      fixable,
+      suggestions,
     };
   }
 
@@ -585,7 +591,7 @@ export class FreestylerAgent {
       if ('answer' in parsedResponse) {
         const {
           answer,
-          fixable,
+          suggestions,
         } = parsedResponse;
         if (answer) {
           addToHistory(`ANSWER: ${answer}`);
@@ -593,7 +599,7 @@ export class FreestylerAgent {
             type: ResponseType.ANSWER,
             text: answer,
             rpcId,
-            fixable,
+            suggestions,
           };
         } else {
           yield {

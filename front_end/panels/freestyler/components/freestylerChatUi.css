@@ -183,6 +183,53 @@
     align-items: flex-end;
   }
 
+  /*
+    Scroll driven animation below is used for generating shadows
+    when the `.suggestions` area is scrollable.
+  */
+  .suggestions {
+    display: flex;
+    overflow-y: hidden;
+    overflow-x: auto;
+    scrollbar-width: none;
+    gap: var(--sys-size-3);
+    scroll-timeline: --scroll-timeline x; /* stylelint-disable-line property-no-unknown */
+    animation: detect-scroll;
+    animation-timeline: --scroll-timeline; /* stylelint-disable-line property-no-unknown */
+    animation-fill-mode: none;
+    position: relative;
+  }
+
+  .suggestions::before,
+  .suggestions::after {
+    content: "";
+    display: block;
+    position: sticky;
+    min-width: var(--sys-size-3);
+    height: var(--sys-size-11);
+    left: 0;
+    right: 0;
+    z-index: 999;
+    animation-name: reveal;
+    animation-timeline: --scroll-timeline; /* stylelint-disable-line property-no-unknown */
+    animation-fill-mode: both;
+  }
+
+  .suggestions::before {
+    top: 0;
+    visibility: var(--visibility-if-can-scroll, hidden);
+    animation-range: var(--sys-size-6) var(--sys-size-11); /* stylelint-disable-line property-no-unknown */
+    background: radial-gradient(farthest-side at 0 50%, var(--color-background-inverted-opacity-30), var(--color-background-inverted-opacity-0));
+  }
+
+  .suggestions::after {
+    bottom: 0;
+    visibility: var(--visibility-if-can-scroll, hidden);
+    animation-direction: reverse;
+    animation-range: calc(100% - var(--sys-size-11)) calc(100% - var(--sys-size-6)); /* stylelint-disable-line property-no-unknown */
+    background: radial-gradient(farthest-side at 100% 50%, var(--color-background-inverted-opacity-30), var(--color-background-inverted-opacity-0));
+  }
+
   .aborted {
     color: var(--sys-color-on-surface-subtle);
   }
@@ -439,4 +486,16 @@ button.link {
 .side-effect-buttons-container {
   display: flex;
   gap: var(--sys-size-4);
+}
+
+@keyframes reveal {
+  0% { opacity: 0%; }
+  100% { opacity: 100%; }
+}
+
+@keyframes detect-scroll {
+  from,
+  to {
+    --visibility-if-can-scroll: visible;
+  }
 }

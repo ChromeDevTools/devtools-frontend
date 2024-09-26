@@ -20,8 +20,6 @@ import {type ContextDetail, ErrorType} from '../AiAgent.js';
 import freestylerChatUiStyles from './freestylerChatUi.css.js';
 import {ProvideFeedback, type ProvideFeedbackProps} from './ProvideFeedback.js';
 
-const FIX_THIS_ISSUE_PROMPT = 'Fix this issue using JavaScript code execution';
-
 const UIStrings = {
   /**
    * @description The error message when the user is not logged in into Chrome.
@@ -219,7 +217,7 @@ export interface UserChatMessage {
 }
 export interface ModelChatMessage {
   entity: ChatMessageEntity.MODEL;
-  suggestingFix: boolean;
+  suggestions: string[];
   steps: Step[];
   answer?: string;
   error?: ErrorType;
@@ -649,6 +647,7 @@ export class FreestylerChatUi extends HTMLElement {
       // clang-format on
     }
 
+    const shouldShowSuggestions = (isLast && !this.#props.isLoading && message.suggestions?.length > 0);
     // clang-format off
     return LitHtml.html`
       <div class="chat-message answer" jslog=${VisualLogging.section('answer')}>
@@ -681,19 +680,16 @@ export class FreestylerChatUi extends HTMLElement {
               ? this.#renderRateButtons(message.rpcId)
               : LitHtml.nothing
           }
-          ${
-            message.suggestingFix && isLast
-              ? LitHtml.html`<${Buttons.Button.Button.litTagName}
+          ${shouldShowSuggestions ?
+            LitHtml.html`<div class="suggestions">
+              ${message.suggestions.map(suggestion => LitHtml.html`<${Buttons.Button.Button.litTagName}
                   .data=${{
                       variant: Buttons.Button.Variant.OUTLINED,
                       jslogContext: 'fix-this-issue',
                   } as Buttons.Button.ButtonData}
-                  @click=${() => this.#handleSuggestionClick(FIX_THIS_ISSUE_PROMPT)}
-                >${lockedString(
-                  UIStringsNotTranslate.fixThisIssue,
-                )}</${Buttons.Button.Button.litTagName}>`
-              : LitHtml.nothing
-          }
+                  @click=${() => this.#handleSuggestionClick(suggestion)}
+                >${suggestion}</${Buttons.Button.Button.litTagName}>`)}
+            </div>` : LitHtml.nothing}
         </div>
       </div>
     `;

@@ -24,7 +24,7 @@ export interface AnswerResponse {
   type: ResponseType.ANSWER;
   text: string;
   rpcId?: number;
-  fixable: boolean;
+  suggestions: string[];
 }
 
 export interface ErrorResponse {

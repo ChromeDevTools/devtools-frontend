@@ -297,7 +297,7 @@ Sending end: 900
           type: ResponseType.ANSWER,
           text: 'This is the answer',
           rpcId: 123,
-          fixable: false,
+          suggestions: [],
         },
       ]);
       assert.deepStrictEqual(agent.chatHistoryForTesting, [

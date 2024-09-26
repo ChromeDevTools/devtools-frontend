@@ -308,7 +308,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
     this.#viewProps.isLoading = true;
     const systemMessage: ModelChatMessage = {
       entity: ChatMessageEntity.MODEL,
-      suggestingFix: false,
+      suggestions: [],
       steps: [],
     };
     this.#viewProps.messages.push(systemMessage);
@@ -317,7 +317,6 @@ export class FreestylerPanel extends UI.Panel.Panel {
     this.#runAbortController = new AbortController();
 
     const signal = this.#runAbortController.signal;
-
     if (this.#viewProps.agentType === AgentType.FREESTYLER) {
       await this.#conversationStepsForFreestylerAgent(text, signal, systemMessage);
     } else if (this.#viewProps.agentType === AgentType.DRJONES_NETWORK_REQUEST) {
@@ -378,7 +377,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
           break;
         }
         case ResponseType.ANSWER: {
-          systemMessage.suggestingFix = data.fixable;
+          systemMessage.suggestions = data.suggestions || [];
           systemMessage.answer = data.text;
           systemMessage.rpcId = data.rpcId;
           // When there is an answer without any thinking steps, we don't want to show the thinking step.
@@ -393,7 +392,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
         case ResponseType.ERROR: {
           step.isLoading = false;
           systemMessage.error = data.error;
-          systemMessage.suggestingFix = false;
+          systemMessage.suggestions = [];
           systemMessage.rpcId = undefined;
           this.#viewProps.isLoading = false;
           if (data.error === ErrorType.ABORT) {

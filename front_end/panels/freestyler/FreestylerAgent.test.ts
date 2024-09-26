@@ -63,21 +63,21 @@ describeWithEnvironment('FreestylerAgent', () => {
           FreestylerAgent.parseResponse(`ANSWER: ${payload}`),
           {
             answer: payload,
-            fixable: false,
+            suggestions: [],
           },
       );
       assert.deepStrictEqual(
           FreestylerAgent.parseResponse(`   ANSWER: ${payload}`),
           {
             answer: payload,
-            fixable: false,
+            suggestions: [],
           },
       );
       assert.deepStrictEqual(
           FreestylerAgent.parseResponse(`Something\n   ANSWER: ${payload}`),
           {
             answer: payload,
-            fixable: false,
+            suggestions: [],
           },
       );
     });
@@ -89,28 +89,28 @@ c`;
           FreestylerAgent.parseResponse(`ANSWER: ${payload}`),
           {
             answer: payload,
-            fixable: false,
+            suggestions: [],
           },
       );
       assert.deepStrictEqual(
           FreestylerAgent.parseResponse(`   ANSWER: ${payload}`),
           {
             answer: payload,
-            fixable: false,
+            suggestions: [],
           },
       );
       assert.deepStrictEqual(
           FreestylerAgent.parseResponse(`Something\n   ANSWER: ${payload}`),
           {
             answer: payload,
-            fixable: false,
+            suggestions: [],
           },
       );
       assert.deepStrictEqual(
           FreestylerAgent.parseResponse(`ANSWER: ${payload}\nTHOUGHT: thought`),
           {
             answer: payload,
-            fixable: false,
+            suggestions: [],
           },
       );
       assert.deepStrictEqual(
@@ -119,7 +119,7 @@ c`;
               ),
           {
             answer: payload,
-            fixable: false,
+            suggestions: [],
           },
       );
       assert.deepStrictEqual(
@@ -241,7 +241,22 @@ c`;
               ),
           {
             answer: answerPayload,
-            fixable: false,
+            suggestions: [],
+          },
+      );
+    });
+
+    it('parses an answer and suggestions', async () => {
+      const answerPayload = 'answer';
+      const suggestions = ['suggestion'];
+      const suggestionsText = JSON.stringify(suggestions);
+      assert.deepStrictEqual(
+          FreestylerAgent.parseResponse(
+              `ANSWER:${answerPayload}\nSUGGESTIONS: ${suggestionsText}`,
+              ),
+          {
+            answer: answerPayload,
+            suggestions,
           },
       );
     });
@@ -272,7 +287,7 @@ c`;
               ),
           {
             answer: 'This is also an answer',
-            fixable: false,
+            suggestions: [],
           },
       );
     });
@@ -693,7 +708,7 @@ c`;
           type: Freestyler.ResponseType.ANSWER,
           text: 'this is the answer',
           rpcId: undefined,
-          fixable: false,
+          suggestions: [],
         },
       ]);
       sinon.assert.notCalled(execJs);
@@ -735,7 +750,7 @@ c`;
           type: Freestyler.ResponseType.ANSWER,
           text: 'this is the answer',
           rpcId: 123,
-          fixable: false,
+          suggestions: [],
         },
       ]);
     });
@@ -804,7 +819,7 @@ c`;
           type: Freestyler.ResponseType.ANSWER,
           text: 'this is the answer',
           rpcId: 123,
-          fixable: false,
+          suggestions: [],
         },
       ]);
     });
@@ -896,7 +911,7 @@ ANSWER: this is the answer`,
           type: Freestyler.ResponseType.ANSWER,
           text: 'this is the actual answer',
           rpcId: undefined,
-          fixable: false,
+          suggestions: [],
         },
       ]);
       sinon.assert.calledOnce(execJs);

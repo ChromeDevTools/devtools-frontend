@@ -186,11 +186,15 @@ export class ThemeSupport extends EventTarget {
     document.documentElement.classList.toggle('theme-with-dark-background', this.themeNameInternal === 'dark');
 
     const useChromeTheme = Common.Settings.moduleSetting('chrome-theme-colors').get();
-    if (useChromeTheme) {
-      // Baseline is the name of Chrome's default color theme and there are two of these: default and grayscale.
-      // The collective name for the rest of the color themes is dynamic.
-      // In the baseline themes Chrome uses custom values for surface colors, whereas for dynamic themes these are color-mixed.
-      // To match Chrome we need to know if any of the baseline themes is currently active and assign specific values to surface colors.
+    const hostConfig = Common.Settings.Settings.instance().getHostConfig();
+    const isIncognito = !hostConfig || hostConfig.isOffTheRecord === true;
+    // Baseline is the name of Chrome's default color theme and there are two of these: default and grayscale.
+    // The collective name for the rest of the color themes is dynamic.
+    // In the baseline themes Chrome uses custom values for surface colors, whereas for dynamic themes these are color-mixed.
+    // To match Chrome we need to know if any of the baseline themes is currently active and assign specific values to surface colors.
+    if (isIncognito) {
+      document.documentElement.classList.toggle('baseline-grayscale', true);
+    } else if (useChromeTheme) {
       const selectedTheme = getComputedStyle(document.body).getPropertyValue('--user-color-source');
       document.documentElement.classList.toggle('baseline-default', selectedTheme === 'baseline-default');
       document.documentElement.classList.toggle('baseline-grayscale', selectedTheme === 'baseline-grayscale');

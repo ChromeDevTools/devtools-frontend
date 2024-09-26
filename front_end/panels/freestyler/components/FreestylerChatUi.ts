@@ -12,6 +12,7 @@ import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as MarkdownView from '../../../ui/components/markdown_view/markdown_view.js';
 import * as Spinners from '../../../ui/components/spinners/spinners.js';
+import * as UI from '../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import {type ContextDetail, ErrorType} from '../AiAgent.js';
@@ -67,12 +68,12 @@ const UIStringsNotTranslate = {
    *@description Disclaimer text right after the chat input.
    */
   inputDisclaimerForFreestylerAgent:
-      'Chat messages and any data the inspected page can access via Web APIs are sent to Google and may be seen by human reviewers to improve this feature. This is an experimental AI feature and won\'t always get it right.',
+      'Chat messages and any data the inspected page can access via Web APIs are sent to Google and may be seen by human reviewers to improve this feature. This is an experimental AI feature and won’t always get it right.',
   /**
    *@description Disclaimer text right after the chat input.
    */
   inputDisclaimerForDrJonesNetworkAgent:
-      'Chat messages and the selected network request are sent to Google and may be seen by human reviewers to improve this feature. This is an experimental AI feature and won\'t always get it right.',
+      'Chat messages and the selected call stack are sent to Google and may be seen by human reviewers to improve this feature. This is an experimental AI feature and won’t always get it right.',
   /**
    *@description Placeholder text for the chat UI input.
    */
@@ -166,6 +167,10 @@ const UIStringsNotTranslate = {
    *@description Heading text for the code block that shows the returned data.
    */
   dataReturned: 'Data returned',
+  /**
+   *@description The footer disclaimer that links to more information about the AI feature.
+   */
+  learnAbout: 'Learn about AI in DevTools',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/freestyler/components/FreestylerChatUi.ts', UIStrings);
@@ -435,12 +440,8 @@ export class FreestylerChatUi extends HTMLElement {
 
     // clang-format off
     return LitHtml.html`<${MarkdownView.MarkdownView.MarkdownView.litTagName}
-      .data=${
-        {
-          tokens,
-          renderer: this.#markdownRenderer,
-        } as MarkdownView.MarkdownView.MarkdownViewData
-      }></${MarkdownView.MarkdownView.MarkdownView.litTagName}>`;
+      .data=${{tokens, renderer: this.#markdownRenderer} as MarkdownView.MarkdownView.MarkdownViewData}>
+    </${MarkdownView.MarkdownView.MarkdownView.litTagName}>`;
     // clang-format on
   }
 
@@ -923,13 +924,19 @@ export class FreestylerChatUi extends HTMLElement {
         <footer class="disclaimer">
           <p class="disclaimer-text">${lockedString(
             this.#getDisclaimerText(),
-          )} See <x-link
+          )} <x-link
+              href="#"
               class="link"
-              href=${DOGFOOD_INFO}
-              jslog=${VisualLogging.link('freestyler.dogfood-info').track({
+              jslog=${VisualLogging.link('open-ai-settings').track({
                 click: true,
               })}
-            >dogfood terms</x-link>.
+              @click=${(event: Event) => {
+                event.preventDefault();
+                void UI.ViewManager.ViewManager.instance().showView(
+                  'chrome-ai',
+                );
+              }}
+            >${lockedString(UIStringsNotTranslate.learnAbout)}</x-link>
           </p>
         </footer>
       </div>

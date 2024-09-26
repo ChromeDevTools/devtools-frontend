@@ -496,7 +496,7 @@ export class FreestylerChatUi extends HTMLElement {
           .displayToolbar=${false}
           .displayNotice=${false}
           .heading=${{
-            text: lockedString(contextDetail.title),
+            text: contextDetail.title,
             showCopyButton: true,
           }}
         ></${MarkdownView.CodeBlock.CodeBlock.litTagName}>

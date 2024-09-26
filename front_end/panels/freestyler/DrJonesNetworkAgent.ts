@@ -4,6 +4,7 @@
 
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
+import * as i18n from '../../core/i18n/i18n.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 import * as Logs from '../../models/logs/logs.js';
 
@@ -91,8 +92,9 @@ const UIStringsNotTranslate = {
    *@description Title text for request initiator chain.
    */
   requestInitiatorChain: 'Request Initiator Chain',
-
 };
+
+const lockedString = i18n.i18n.lockedString;
 
 type AgentOptions = {
   aidaClient: Host.AidaClient.AidaClient,
@@ -189,12 +191,12 @@ export class DrJonesNetworkAgent {
     try {
       yield {
         type: ResponseType.TITLE,
-        title: UIStringsNotTranslate.inspectingNetworkData,
+        title: lockedString(UIStringsNotTranslate.inspectingNetworkData),
         rpcId,
       };
       yield {
         type: ResponseType.THOUGHT,
-        thought: UIStringsNotTranslate.dataUsedToGenerateThisResponse,
+        thought: lockedString(UIStringsNotTranslate.dataUsedToGenerateThisResponse),
         contextDetails: createContextDetailsForDrJonesNetworkAgent(options.selectedNetworkRequest),
         rpcId,
       };
@@ -385,21 +387,21 @@ Request Initiator Chain:\n${formatRequestInitiatorChain(request)}`;
 function createContextDetailsForDrJonesNetworkAgent(request: SDK.NetworkRequest.NetworkRequest|null): ContextDetail[] {
   if (request) {
     const requestContextDetail: ContextDetail = {
-      title: UIStringsNotTranslate.request,
-      text: UIStringsNotTranslate.requestUrl + ': ' + request.url() + '\n\n' +
-          formatHeaders(UIStringsNotTranslate.requestHeaders, request.requestHeaders()),
+      title: lockedString(UIStringsNotTranslate.request),
+      text: lockedString(UIStringsNotTranslate.requestUrl) + ': ' + request.url() + '\n\n' +
+          formatHeaders(lockedString(UIStringsNotTranslate.requestHeaders), request.requestHeaders()),
     };
     const responseContextDetail: ContextDetail = {
-      title: UIStringsNotTranslate.response,
-      text: UIStringsNotTranslate.responseStatus + ': ' + request.statusCode + ' ' + request.statusText + '\n\n' +
-          formatHeaders(UIStringsNotTranslate.responseHeaders, request.responseHeaders),
+      title: lockedString(UIStringsNotTranslate.response),
+      text: lockedString(UIStringsNotTranslate.responseStatus) + ': ' + request.statusCode + ' ' + request.statusText +
+          '\n\n' + formatHeaders(lockedString(UIStringsNotTranslate.responseHeaders), request.responseHeaders),
     };
     const timingContextDetail: ContextDetail = {
-      title: UIStringsNotTranslate.timing,
+      title: lockedString(UIStringsNotTranslate.timing),
       text: formatNetworkRequestTiming(request),
     };
     const initiatorChainContextDetail: ContextDetail = {
-      title: UIStringsNotTranslate.requestInitiatorChain,
+      title: lockedString(UIStringsNotTranslate.requestInitiatorChain),
       text: formatRequestInitiatorChain(request),
     };
     return [

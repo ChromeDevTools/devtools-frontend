@@ -4,7 +4,6 @@
  * found in the LICENSE file.
  */
 
-/* stylelint-disable no-descending-specificity */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -195,6 +194,32 @@
   }
 }
 
+.indicator {
+  color: var(--sys-color-green-bright);
+}
+
+.summary {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  padding: var(--sys-size-3);
+  line-height: var(--sys-size-9);
+  cursor: default;
+  gap: var(--sys-size-3);
+  justify-content: center;
+  align-items: center;
+
+  .title {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    font: var(--sys-typescale-body4-regular);
+
+    .paused {
+      font: var(--sys-typescale-body4-bold);
+    }
+  }
+}
+
 .step {
   width: fit-content;
   background-color: var(--sys-color-surface3);
@@ -246,36 +271,10 @@
     vertical-align: bottom;
   }
 
-  .indicator {
-    color: var(--sys-color-green-bright);
-  }
-
   devtools-spinner {
     width: var(--sys-size-9);
     height: var(--sys-size-9);
     padding: var(--sys-size-2);
-  }
-
-  .summary {
-    display: grid;
-    grid-template-columns: auto 1fr auto;
-    padding: var(--sys-size-3);
-    line-height: var(--sys-size-9);
-    cursor: default;
-    gap: var(--sys-size-3);
-    justify-content: center;
-    align-items: center;
-
-    .title {
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      overflow: hidden;
-      font: var(--sys-typescale-body4-regular);
-
-      .paused {
-        font: var(--sys-typescale-body4-bold);
-      }
-    }
   }
 
   &[open] {
@@ -321,22 +320,29 @@
     height: var(--sys-size-8);
   }
 
-  & .header-link-container:first-of-type {
-    flex-shrink: 1;
-    min-width: 0;
-  }
-
   & .header-link-container {
     display: inline-flex;
     align-items: center;
     gap: var(--sys-size-2);
     flex-shrink: 0;
   }
+
+  & .header-link-container:first-of-type {
+    flex-shrink: 1;
+    min-width: 0;
+  }
 }
 
 .link {
   color: var(--text-link);
   text-decoration: underline;
+}
+
+button.link {
+  border: none;
+  background: none;
+  cursor: pointer;
+  font: inherit;
 }
 
 .select-an-element-text {
@@ -387,6 +393,28 @@
   }
 }
 
+.opt-in {
+  border-radius: var(--sys-shape-corner-small);
+  padding: var(--sys-size-6) var(--sys-size-8);
+  box-shadow: var(--drop-shadow);
+  font: var(--sys-typescale-body4-regular);
+  margin: var(--sys-size-8);
+  max-width: var(--sys-size-34);
+  display: flex;
+
+  .opt-in-icon-container {
+    border-radius: var(--sys-shape-corner-extra-small);
+    width: var(--sys-size-9);
+    height: var(--sys-size-9);
+    background: linear-gradient(135deg, var(--sys-color-gradient-primary), var(--sys-color-gradient-tertiary));
+    margin-right: var(--sys-size-5);
+
+    devtools-icon {
+      margin: var(--sys-size-2);
+    }
+  }
+}
+
 .action-result {
   /* devtools-code-block adds `margin-top: 8px` however we want the margin between `.action-result` and `.js-code-output` to be 2px
   that's why we use -6px here. */
@@ -420,22 +448,3 @@
   display: flex;
   gap: var(--sys-size-4);
 }
-
-.consent-view {
-  padding: 24px;
-  text-wrap: pretty;
-
-  .accept-button {
-    margin-top: 8px;
-  }
-
-  ul {
-    padding: 0 13px;
-  }
-
-  h2 {
-    font-weight: 500;
-  }
-}
-
-/* stylelint-enable no-descending-specificity */

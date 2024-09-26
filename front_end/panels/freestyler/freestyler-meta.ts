@@ -103,8 +103,7 @@ UI.ViewManager.registerViewExtension({
   isPreviewFeature: true,
   persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
   hasToolbar: false,
-  condition: config => isFeatureAvailable(config) && !isPolicyRestricted(config) &&
-      Common.Settings.Settings.instance().moduleSetting(setting).get(),
+  condition: config => isFeatureAvailable(config) && !isPolicyRestricted(config),
   async loadView() {
     const Freestyler = await loadFreestylerModule();
     return Freestyler.FreestylerPanel.instance();
@@ -116,8 +115,8 @@ Common.Settings.registerSettingExtension({
   settingName: setting,
   settingType: Common.Settings.SettingType.BOOLEAN,
   title: i18nLazyString(UIStrings.enableAiAssistance),
-  defaultValue: isFeatureAvailable,
-  reloadRequired: true,
+  defaultValue: false,
+  reloadRequired: false,
   condition: isFeatureAvailable,
   disabledCondition: config => {
     if (isLocaleRestricted()) {
@@ -142,7 +141,6 @@ UI.ActionRegistration.registerActionExtension({
   contextTypes(): [] {
     return [];
   },
-  setting,
   category: UI.ActionRegistration.ActionCategory.GLOBAL,
   title: i18nLazyString(UIStrings.askAiAssistance),
   async loadActionDelegate() {
@@ -157,7 +155,6 @@ UI.ActionRegistration.registerActionExtension({
   contextTypes(): [] {
     return [];
   },
-  setting,
   category: UI.ActionRegistration.ActionCategory.GLOBAL,
   title: i18nLazyString(UIStrings.askAiAssistance),
   async loadActionDelegate() {

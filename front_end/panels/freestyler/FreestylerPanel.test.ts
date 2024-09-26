@@ -33,8 +33,6 @@ describeWithEnvironment('FreestylerPanel', () => {
 
   describe('consent view', () => {
     it('should render consent view when the consent is not given before', async () => {
-      Common.Settings.settingForTest('freestyler-dogfood-consent-onboarding-finished').set(false);
-
       new Freestyler.FreestylerPanel(mockView, {
         aidaClient: getTestAidaClient(),
         aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
@@ -44,27 +42,23 @@ describeWithEnvironment('FreestylerPanel', () => {
       sinon.assert.calledWith(mockView, sinon.match({state: Freestyler.State.CONSENT_VIEW}));
     });
 
-    it('should set the setting to true and render chat view on accept click', async () => {
-      const setting = Common.Settings.settingForTest('freestyler-dogfood-consent-onboarding-finished');
-      setting.set(false);
-
-      new Freestyler.FreestylerPanel(mockView, {
+    it('should switch from consent view to chat view when enabling setting', async () => {
+      const panel = new Freestyler.FreestylerPanel(mockView, {
         aidaClient: getTestAidaClient(),
         aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
-
         syncInfo: getTestSyncInfo(),
       });
+      panel.markAsRoot();
+      panel.show(document.body);
+      sinon.assert.calledWith(mockView, sinon.match({state: Freestyler.State.CONSENT_VIEW}));
 
-      const callArgs = mockView.getCall(0).args[0];
-      mockView.reset();
-      callArgs.onAcceptConsentClick();
-
-      assert.isTrue(setting.get());
+      Common.Settings.moduleSetting('freestyler-enabled').set(true);
       sinon.assert.calledWith(mockView, sinon.match({state: Freestyler.State.CHAT_VIEW}));
+      panel.detach();
     });
 
     it('should render chat view when the consent is given before', async () => {
-      Common.Settings.settingForTest('freestyler-dogfood-consent-onboarding-finished').set(true);
+      Common.Settings.moduleSetting('freestyler-enabled').set(true);
 
       new Freestyler.FreestylerPanel(mockView, {
         aidaClient: getTestAidaClient(),
@@ -77,10 +71,6 @@ describeWithEnvironment('FreestylerPanel', () => {
   });
 
   describe('on rate click', () => {
-    beforeEach(() => {
-      Common.Settings.settingForTest('freestyler-dogfood-consent-onboarding-finished').set(true);
-    });
-
     afterEach(() => {
       // @ts-expect-error global test variable
       setFreestylerServerSideLoggingEnabled(false);

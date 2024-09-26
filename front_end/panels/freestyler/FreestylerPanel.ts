@@ -107,8 +107,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
   #viewProps: FreestylerChatUiProps;
   #viewOutput: ViewOutput = {};
   #serverSideLoggingEnabled = isFreestylerServerSideLoggingEnabled();
-  #consentViewAcceptedSetting =
-      Common.Settings.Settings.instance().createLocalSetting('freestyler-dogfood-consent-onboarding-finished', false);
+  #freestylerEnabledSetting: Common.Settings.Setting<boolean>|undefined;
   #changeManager = new ChangeManager();
 
   constructor(private view: View = defaultView, {aidaClient, aidaAvailability, syncInfo}: {
@@ -117,6 +116,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
     syncInfo: Host.InspectorFrontendHostAPI.SyncInformation,
   }) {
     super(FreestylerPanel.panelName);
+    this.#freestylerEnabledSetting = this.#getFreestylerEnabledSetting();
 
     createToolbar(this.contentElement, {onClearClick: this.#clearMessages.bind(this)});
     this.#toggleSearchElementAction =
@@ -127,8 +127,8 @@ export class FreestylerPanel extends UI.Panel.Panel {
     this.#selectedElement = UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
     this.#selectedNetworkRequest = UI.Context.Context.instance().flavor(SDK.NetworkRequest.NetworkRequest);
     this.#viewProps = {
-      state: this.#consentViewAcceptedSetting.get() ? FreestylerChatUiState.CHAT_VIEW :
-                                                      FreestylerChatUiState.CONSENT_VIEW,
+      state: this.#freestylerEnabledSetting?.get() ? FreestylerChatUiState.CHAT_VIEW :
+                                                     FreestylerChatUiState.CONSENT_VIEW,
       aidaAvailability,
       messages: [],
       inspectElementToggled: this.#toggleSearchElementAction.toggled(),
@@ -138,7 +138,6 @@ export class FreestylerPanel extends UI.Panel.Panel {
       onTextSubmit: this.#startConversation.bind(this),
       onInspectElementClick: this.#handleSelectElementClick.bind(this),
       onFeedbackSubmit: this.#handleFeedbackSubmit.bind(this),
-      onAcceptConsentClick: this.#handleAcceptConsentClick.bind(this),
       onCancelClick: this.#cancel.bind(this),
       onSelectedNetworkRequestClick: this.#handleSelectedNetworkRequestClick.bind(this),
       canShowFeedbackForm: this.#serverSideLoggingEnabled,
@@ -173,6 +172,14 @@ export class FreestylerPanel extends UI.Panel.Panel {
       this.doUpdate();
     });
     this.doUpdate();
+  }
+
+  #getFreestylerEnabledSetting(): Common.Settings.Setting<boolean>|undefined {
+    try {
+      return Common.Settings.moduleSetting('freestyler-enabled') as Common.Settings.Setting<boolean>;
+    } catch {
+      return;
+    }
   }
 
   #createFreestylerAgent(): FreestylerAgent {
@@ -210,6 +217,17 @@ export class FreestylerPanel extends UI.Panel.Panel {
     this.registerCSSFiles([freestylerPanelStyles]);
     this.#viewOutput.freestylerChatUi?.restoreScrollPosition();
     this.#viewOutput.freestylerChatUi?.focusTextInput();
+    this.#freestylerEnabledSetting?.addChangeListener(this.#handleFreestylerEnabledSettingChanged, this);
+  }
+
+  override willHide(): void {
+    this.#freestylerEnabledSetting?.removeChangeListener(this.#handleFreestylerEnabledSettingChanged, this);
+  }
+
+  #handleFreestylerEnabledSettingChanged(): void {
+    this.#viewProps.state =
+        this.#freestylerEnabledSetting?.get() ? FreestylerChatUiState.CHAT_VIEW : FreestylerChatUiState.CONSENT_VIEW;
+    this.doUpdate();
   }
 
   doUpdate(): void {
@@ -233,12 +251,6 @@ export class FreestylerPanel extends UI.Panel.Panel {
         },
       },
     });
-  }
-
-  #handleAcceptConsentClick(): void {
-    this.#consentViewAcceptedSetting.set(true);
-    this.#viewProps.state = FreestylerChatUiState.CHAT_VIEW;
-    this.doUpdate();
   }
 
   #handleSelectedNetworkRequestClick(): void|Promise<void> {

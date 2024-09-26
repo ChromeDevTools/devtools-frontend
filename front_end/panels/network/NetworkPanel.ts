@@ -78,7 +78,7 @@ const UIStrings = {
   /**
    *@description Text to disable cache while DevTools is open
    */
-  disableCacheWhileDevtoolsIsOpen: 'Disable cache (while DevTools is open)',
+  disableCacheWhileDevtoolsIsOpen: 'Disable cache while DevTools is open',
   /**
    *@description Text in Network Config View of the Network panel
    */

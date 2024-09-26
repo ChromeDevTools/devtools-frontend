@@ -304,7 +304,7 @@ const UIStrings = {
   /**
    * @description Title of a setting under the Network category that can be invoked through the Command Menu
    */
-  disableCache: 'Disable cache (while DevTools is open)',
+  disableCache: 'Disable cache while DevTools is open',
   /**
    * @description The name of a checkbox setting in the Rendering tool. This setting
    * emulates that the webpage is in auto dark mode.

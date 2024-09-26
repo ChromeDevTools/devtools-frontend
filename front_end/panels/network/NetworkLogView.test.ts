@@ -61,6 +61,12 @@ describeWithMockConnection('NetworkLogView', () => {
     target = createTarget({parentTarget: tabTarget});
   });
 
+  afterEach(() => {
+    if (networkLogView) {
+      networkLogView.detach();
+    }
+  });
+
   let nextId = 0;
   function createNetworkRequest(
       url: string,
@@ -265,8 +271,6 @@ describeWithMockConnection('NetworkLogView', () => {
       networkLogView.setTextFilterValue('favicon');
       assert.deepEqual(
           rootNode.children.map(n => (n as Network.NetworkDataGridNode.NetworkNode).request()?.url()), [URL_2]);
-
-      networkLogView.detach();
     });
 
     it('shows summary toolbar with content', () => {
@@ -301,7 +305,6 @@ describeWithMockConnection('NetworkLogView', () => {
       } else {
         assert.strictEqual(textElements.length, 0);
       }
-      networkLogView.detach();
     });
   };
   describe('in scope', tests(true));
@@ -330,8 +333,6 @@ describeWithMockConnection('NetworkLogView', () => {
     assert.deepEqual(
         rootNode.children.map(n => (n as Network.NetworkDataGridNode.NetworkNode).request()),
         preserveLog ? [request1, request2, request3] : [request3]);
-
-    networkLogView.detach();
   };
 
   it('replaces requests when switching scope with preserve log off', handlesSwitchingScope(false));
@@ -360,7 +361,6 @@ describeWithMockConnection('NetworkLogView', () => {
     assert.deepEqual(
         rootNode.children.map(n => (n as Network.NetworkDataGridNode.NetworkNode).request()),
         [request1, request2, request3]);
-    networkLogView.detach();
   });
 
   it('hide Chrome extension requests from checkbox', async () => {
@@ -379,8 +379,6 @@ describeWithMockConnection('NetworkLogView', () => {
     assert.deepEqual(
         rootNode.children.map(n => (n as Network.NetworkDataGridNode.NetworkNode).request()?.url()),
         ['url2' as Platform.DevToolsPath.UrlString]);
-
-    networkLogView.detach();
   });
 
   it('can hide Chrome extension requests from dropdown', async () => {
@@ -411,7 +409,6 @@ describeWithMockConnection('NetworkLogView', () => {
         ['url2' as Platform.DevToolsPath.UrlString]);
 
     dropdown.discard();
-    networkLogView.detach();
   });
 
   it('displays correct count for more filters', async () => {
@@ -433,7 +430,6 @@ describeWithMockConnection('NetworkLogView', () => {
     assert.isFalse(getCountAdorner(filterBar)?.classList.contains('hidden'));
 
     dropdown.discard();
-    networkLogView.detach();
   });
 
   it('can filter requests with blocked response cookies from checkbox', async () => {
@@ -452,8 +448,6 @@ describeWithMockConnection('NetworkLogView', () => {
     assert.deepEqual(rootNode.children.map(n => (n as Network.NetworkDataGridNode.NetworkNode).request()?.url()), [
       'url1' as Platform.DevToolsPath.UrlString,
     ]);
-
-    networkLogView.detach();
   });
 
   it('can filter requests with blocked response cookies from dropdown', async () => {
@@ -494,7 +488,6 @@ describeWithMockConnection('NetworkLogView', () => {
     dropdown.discard();
     assert.isTrue(umaCountSpy.calledOnceWith(1));
     assert.isTrue(umaItemSpy.calledOnceWith('Blocked response cookies'));
-    networkLogView.detach();
   });
 
   it('lists selected options in more filters tooltip', async () => {
@@ -522,7 +515,6 @@ describeWithMockConnection('NetworkLogView', () => {
     assert.isTrue(umaItemSpy.calledTwice);
     assert.isTrue(umaItemSpy.calledWith('Hide extension URLs'));
     assert.isTrue(umaItemSpy.calledWith('Blocked response cookies'));
-    networkLogView.detach();
   });
 
   it('updates tooltip to default when more filters option deselected', async () => {
@@ -547,7 +539,6 @@ describeWithMockConnection('NetworkLogView', () => {
     assert.strictEqual(button.title, 'Show only/hide requests');
 
     dropdown.discard();
-    networkLogView.detach();
   });
 
   it('can remove requests', async () => {
@@ -561,8 +552,6 @@ describeWithMockConnection('NetworkLogView', () => {
 
     networkLog.dispatchEventToListeners(Logs.NetworkLog.Events.RequestRemoved, {request});
     assert.strictEqual(rootNode.children.length, 0);
-
-    networkLogView.detach();
   });
 
   it('correctly shows and hides waterfall column', async () => {
@@ -626,8 +615,6 @@ describeWithMockConnection('NetworkLogView', () => {
       urlContentOverridden,
       urlHeaderAndContentOverridden,
     ]);
-
-    networkLogView.detach();
   });
 
   it('can apply filter - has-overrides:no', async () => {
@@ -644,8 +631,6 @@ describeWithMockConnection('NetworkLogView', () => {
     assert.deepEqual(rootNode.children.map(n => (n as Network.NetworkDataGridNode.NetworkNode).request()?.url()), [
       urlNotOverridden,
     ]);
-
-    networkLogView.detach();
   });
 
   it('can apply filter - has-overrides:headers', async () => {
@@ -663,8 +648,6 @@ describeWithMockConnection('NetworkLogView', () => {
       urlHeaderOverridden,
       urlHeaderAndContentOverridden,
     ]);
-
-    networkLogView.detach();
   });
 
   it('can apply filter - has-overrides:content', async () => {
@@ -682,8 +665,6 @@ describeWithMockConnection('NetworkLogView', () => {
       urlContentOverridden,
       urlHeaderAndContentOverridden,
     ]);
-
-    networkLogView.detach();
   });
 
   it('can apply filter - has-overrides:tent', async () => {
@@ -701,8 +682,6 @@ describeWithMockConnection('NetworkLogView', () => {
       urlContentOverridden,
       urlHeaderAndContentOverridden,
     ]);
-
-    networkLogView.detach();
   });
 
   it('"Copy all" commands respects filters', async () => {
@@ -835,8 +814,6 @@ Invoke-WebRequest -UseBasicParsing -Uri "url-header-overridden";\r
 Invoke-WebRequest -UseBasicParsing -Uri "url-content-overridden";\r
 Invoke-WebRequest -UseBasicParsing -Uri "url-header-und-content-overridden"`]);
     copyText.resetHistory();
-
-    networkLogView.detach();
   });
 
   it('skips unknown columns without title in persistence setting', async () => {

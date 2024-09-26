@@ -300,7 +300,7 @@ def generate_ci_configs(configurations, builders):
 cq_acls = [
     acl.entry(
         [acl.CQ_COMMITTER],
-        groups = ["project-devtools-committers"],
+        groups = ["project-devtools-submit-access"],
     ),
     acl.entry(
         [acl.CQ_DRY_RUNNER],

@@ -112,7 +112,6 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
   #linkSelectionAnnotation: Trace.Types.File.EntriesLinkAnnotation|null = null;
 
   #currentInsightOverlays: Array<Overlays.Overlays.TimelineOverlay> = [];
-  #currentStoredOverlays: Array<Overlays.Overlays.TimelineOverlay>|null = null;
   #activeInsight: TimelineComponents.Sidebar.ActiveInsight|null = null;
 
   #tooltipElement = document.createElement('div');
@@ -322,8 +321,10 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     TraceBounds.TraceBounds.onChange(this.#onTraceBoundsChangeBound);
   }
 
-  #setOverlays(overlays: Overlays.Overlays.TimelineOverlay[], options: Overlays.Overlays.TimelineOverlaySetOptions):
+  setOverlays(overlays: Overlays.Overlays.TimelineOverlay[], options: Overlays.Overlays.TimelineOverlaySetOptions):
       void {
+    this.bulkRemoveOverlays(this.#currentInsightOverlays);
+
     this.#currentInsightOverlays = overlays;
     if (this.#currentInsightOverlays.length === 0) {
       return;
@@ -399,7 +400,6 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
 
   setActiveInsight(insight: TimelineComponents.Sidebar.ActiveInsight|null): void {
     this.#activeInsight = insight;
-    this.#currentStoredOverlays = null;
     const traceBounds = TraceBounds.TraceBounds.BoundsManager.instance().state()?.micro.entireTraceBounds;
     this.bulkRemoveOverlays(this.#currentInsightOverlays);
 
@@ -407,34 +407,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
       return;
     }
 
-    if (insight) {
-      const newInsightOverlays = insight.createOverlayFn();
-      this.#setOverlays(newInsightOverlays, {updateTraceWindow: true});
-    }
-  }
-
-  /**
-   * Replaces any existing overlays with the ones provided to this method.
-   * If `overlays` is null, reverts back to the original overlays provided by
-   * the insight.
-   *
-   * This allows insights to provide an initial set of overlays (via `setActiveInsight`),
-   * and later temporarily replace all of those insights with a different set (for the hover/click interactions).
-   */
-  setTemporaryOverlayOverrides(
-      overlays: Overlays.Overlays.TimelineOverlay[]|null, options?: Overlays.Overlays.TimelineOverlaySetOptions): void {
-    // This allows us to not need to call `createOverlayFn` multiple times.
-    if (!this.#currentStoredOverlays) {
-      this.#currentStoredOverlays = this.#currentInsightOverlays;
-    }
-
-    this.bulkRemoveOverlays(this.#currentInsightOverlays);
-    if (overlays) {
-      this.#setOverlays(overlays, options ?? {updateTraceWindow: true});
-    } else {
-      // If `overlays` is null, we revert to the stored overlays.
-      this.#setOverlays(this.#currentStoredOverlays ?? [], {updateTraceWindow: true});
-    }
+    this.setOverlays(this.#activeInsight.overlays, {updateTraceWindow: true});
   }
 
   /**
@@ -891,6 +864,10 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
   }
 
   bulkRemoveOverlays(overlays: Overlays.Overlays.TimelineOverlay[]): void {
+    if (!overlays.length) {
+      return;
+    }
+
     for (const overlay of overlays) {
       this.#overlays.remove(overlay);
     }

@@ -10,7 +10,7 @@ import type * as Overlays from '../../overlays/overlays.js';
 
 import {BaseInsight, md, shouldRenderForCategory} from './Helpers.js';
 import * as SidebarInsight from './SidebarInsight.js';
-import {Table, type TableData, type TableState} from './Table.js';
+import {Table, type TableData} from './Table.js';
 import {Category} from './types.js';
 
 type ThirdPartiesEntries = Array<[
@@ -47,10 +47,6 @@ export class ThirdParties extends BaseInsight {
 
   #overlaysForEntity =
       new Map<Trace.Insights.InsightRunners.ThirdPartyWeb.Entity, Overlays.Overlays.TimelineOverlay[]>();
-  #tableState: TableState = {
-    selectedRowEl: null,
-    selectionIsSticky: false,
-  };
 
   override createOverlays(): Overlays.Overlays.TimelineOverlay[] {
     this.#overlaysForEntity.clear();
@@ -102,7 +98,7 @@ export class ThirdParties extends BaseInsight {
                 <div slot="insight-content">
                   ${LitHtml.html`<${Table.litTagName}
                     .data=${{
-                      state: this.#tableState,
+                      insight: this,
                       headers: [i18nString(UIStrings.columnThirdParty), i18nString(UIStrings.columnTransferSize)],
                       rows: topTransferSizeEntries.map(([entity, summary]) => ({
                         values: [
@@ -115,7 +111,7 @@ export class ThirdParties extends BaseInsight {
                   </${Table.litTagName}>`}
                   ${LitHtml.html`<${Table.litTagName}
                     .data=${{
-                      state: this.#tableState,
+                      insight: this,
                       headers: [i18nString(UIStrings.columnThirdParty), i18nString(UIStrings.columnBlockingTime)],
                       rows: topMainThreadTimeEntries.map(([entity, summary]) => ({
                         values: [

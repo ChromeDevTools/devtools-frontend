@@ -33,9 +33,7 @@ export interface InsightDetails {
 export class InsightActivated extends Event {
   static readonly eventName = 'insightactivated';
 
-  constructor(
-      public name: string, public insightSetKey: string,
-      public createOverlayFn: () => Array<Overlays.Overlays.TimelineOverlay>) {
+  constructor(public name: string, public insightSetKey: string, public overlays: Overlays.Overlays.TimelineOverlay[]) {
     super(InsightActivated.eventName, {bubbles: true, composed: true});
   }
 }
@@ -54,13 +52,13 @@ export class InsightSetHovered extends Event {
   }
 }
 
-export class InsightOverlayOverride extends Event {
-  static readonly eventName = 'insightoverlayoverride';
+export class InsightProvideOverlays extends Event {
+  static readonly eventName = 'insightprovideoverlays';
 
   constructor(
-      public overlays: Array<Overlays.Overlays.TimelineOverlay>|null,
-      public options?: Overlays.Overlays.TimelineOverlaySetOptions) {
-    super(InsightOverlayOverride.eventName, {bubbles: true, composed: true});
+      public overlays: Array<Overlays.Overlays.TimelineOverlay>,
+      public options: Overlays.Overlays.TimelineOverlaySetOptions) {
+    super(InsightProvideOverlays.eventName, {bubbles: true, composed: true});
   }
 }
 
@@ -69,7 +67,7 @@ declare global {
     [InsightActivated.eventName]: InsightActivated;
     [InsightDeactivated.eventName]: InsightDeactivated;
     [InsightSetHovered.eventName]: InsightSetHovered;
-    [InsightOverlayOverride.eventName]: InsightOverlayOverride;
+    [InsightProvideOverlays.eventName]: InsightProvideOverlays;
   }
 }
 

@@ -67,6 +67,7 @@ export class FontDisplay extends BaseInsight {
                 <div slot="insight-content">
                   ${LitHtml.html`<${Table.litTagName}
                     .data=${{
+                      insight: this,
                       headers: [i18nString(UIStrings.fontColumn), 'font-display', i18nString(UIStrings.wastedTimeColumn)],
                       rows: data.fonts.map(font => ({
                         values: [

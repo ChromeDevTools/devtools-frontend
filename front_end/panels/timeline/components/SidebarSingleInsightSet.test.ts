@@ -94,9 +94,7 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
       activeInsight: {
         name: 'lcp-by-phase',
         insightSetKey: navigationId,
-        createOverlayFn() {
-          return [];
-        },
+        overlays: [],
       },
     };
     await coordinator.done();

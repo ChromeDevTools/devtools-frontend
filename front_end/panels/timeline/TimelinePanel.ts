@@ -546,14 +546,14 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     });
 
     this.#sideBar.element.addEventListener(TimelineInsights.SidebarInsight.InsightActivated.eventName, event => {
-      const {name, insightSetKey, createOverlayFn} = event;
-      this.#setActiveInsight({name, insightSetKey, createOverlayFn});
+      const {name, insightSetKey, overlays} = event;
+      this.#setActiveInsight({name, insightSetKey, overlays});
     });
 
-    this.#sideBar.element.addEventListener(TimelineInsights.SidebarInsight.InsightOverlayOverride.eventName, event => {
+    this.#sideBar.element.addEventListener(TimelineInsights.SidebarInsight.InsightProvideOverlays.eventName, event => {
       const {overlays, options} = event;
 
-      this.flameChart.setTemporaryOverlayOverrides(overlays, options);
+      this.flameChart.setOverlays(overlays, options);
 
       const overlaysBounds = overlays && Overlays.Overlays.traceWindowContainingOverlays(overlays);
       if (overlaysBounds) {

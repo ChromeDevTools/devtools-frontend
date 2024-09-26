@@ -102,6 +102,7 @@ export class SlowCSSSelector extends BaseInsight {
           <div slot="insight-content">
             ${LitHtml.html`<${Table.litTagName}
               .data=${{
+                insight: this,
                 headers: [i18nString(UIStrings.total), ''],
                 rows: [
                   {values: [i18nString(UIStrings.elapsed), i18n.TimeUtilities.millisToString(this.#slowCSSSelector.totalElapsedMs)]},
@@ -112,6 +113,7 @@ export class SlowCSSSelector extends BaseInsight {
             </${Table.litTagName}>`}
             ${LitHtml.html`<${Table.litTagName}
               .data=${{
+                insight: this,
                 headers: [i18nString(UIStrings.topSelectors), i18nString(UIStrings.elapsed)],
                 rows: this.#slowCSSSelector.topElapsedMs.map(selector => {
                   return {
@@ -122,6 +124,7 @@ export class SlowCSSSelector extends BaseInsight {
             </${Table.litTagName}>`}
             ${LitHtml.html`<${Table.litTagName}
               .data=${{
+                insight: this,
                 headers: [i18nString(UIStrings.topSelectors), i18nString(UIStrings.matchAttempts)],
                 rows: this.#slowCSSSelector.topMatchAttempts.map(selector => {
                   return {

@@ -123,6 +123,7 @@ export class InteractionToNextPaint extends BaseInsight {
                 <div slot="insight-content">
                   ${LitHtml.html`<${Table.litTagName}
                     .data=${{
+                      insight: this,
                       headers: [i18nString(UIStrings.phase), i18nString(UIStrings.duration)],
                       rows: [
                         {values: [i18nString(UIStrings.inputDelay), time(event.inputDelay)]},

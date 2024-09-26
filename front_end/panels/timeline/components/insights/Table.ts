@@ -6,7 +6,7 @@ import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js'
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
-import * as SidebarInsight from './SidebarInsight.js';
+import {type BaseInsight} from './Helpers.js';
 import tableStyles from './table.css.js';
 
 /**
@@ -32,13 +32,7 @@ export type TableState = {
 };
 
 export interface TableData {
-  /**
-   * Higher components pass the current selection state to this component.
-   * This allow components to have a common source of truth for what is currently selected.
-   *
-   * Only needed if the table is interactive.
-   */
-  state?: TableState;
+  insight: BaseInsight;
   headers: string[];
   rows: TableDataRow[];
 }
@@ -53,15 +47,20 @@ export class Table extends HTMLElement {
 
   readonly #shadow = this.attachShadow({mode: 'open'});
   readonly #boundRender = this.#render.bind(this);
+  #insight?: BaseInsight;
   #state?: TableState;
   #headers?: string[];
   #rows?: TableDataRow[];
+  #interactive: boolean = false;
   #currentHoverIndex: number|null = null;
 
   set data(data: TableData) {
-    this.#state = data.state;
+    this.#insight = data.insight;
+    this.#state = data.insight.sharedTableState;
     this.#headers = data.headers;
     this.#rows = data.rows;
+    // If this table isn't interactive, don't attach mouse listeners or use CSS :hover.
+    this.#interactive = this.#rows.some(row => row.overlays);
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
 
@@ -118,7 +117,7 @@ export class Table extends HTMLElement {
     sticky?: boolean,
     isHover?: boolean,
   } = {}): void {
-    if (!this.#rows || !this.#state) {
+    if (!this.#rows || !this.#state || !this.#insight) {
       return;
     }
 
@@ -135,10 +134,10 @@ export class Table extends HTMLElement {
     if (rowEl && rowIndex !== null) {
       const overlays = this.#rows[rowIndex].overlays;
       if (overlays) {
-        this.#onOverlayOverride(overlays, {updateTraceWindow: !opts.isHover});
+        this.#insight.toggleTemporaryOverlays(overlays, {updateTraceWindow: !opts.isHover});
       }
     } else {
-      this.#onOverlayOverride(null);
+      this.#insight.toggleTemporaryOverlays(null);
     }
 
     this.#state.selectedRowEl?.classList.remove('selected');
@@ -147,33 +146,25 @@ export class Table extends HTMLElement {
     this.#state.selectionIsSticky = opts.sticky ?? false;
   }
 
-  #onOverlayOverride(
-      overlays: Overlays.Overlays.TimelineOverlay[]|null, options?: Overlays.Overlays.TimelineOverlaySetOptions): void {
-    this.dispatchEvent(new SidebarInsight.InsightOverlayOverride(overlays, options));
-  }
-
   async #render(): Promise<void> {
     if (!this.#headers || !this.#rows) {
       return;
     }
 
-    // If this table isn't interactive, don't attach mouse listeners or use CSS :hover.
-    const interactive = Boolean(this.#state);
-
     LitHtml.render(
         LitHtml.html`<table
           class=${LitHtml.Directives.classMap({
-          hoverable: interactive,
+          hoverable: this.#interactive,
         })}
-          @mouseleave=${interactive ? this.#onMouseLeave : null}>
+          @mouseleave=${this.#interactive ? this.#onMouseLeave : null}>
         <thead>
           <tr>
           ${this.#headers.map(h => LitHtml.html`<th scope="col">${h}</th>`)}
           </tr>
         </thead>
         <tbody
-          @mouseover=${interactive ? this.#onHoverRow : null}
-          @click=${interactive ? this.#onClickRow : null}
+          @mouseover=${this.#interactive ? this.#onHoverRow : null}
+          @click=${this.#interactive ? this.#onClickRow : null}
         >
           ${this.#rows.map(row => {
           const rowsEls = row.values.map(

@@ -55,7 +55,7 @@ export class SidebarSingleInsightSet extends HTMLElement {
       this.dispatchEvent(new Insights.SidebarInsight.InsightActivated(
           el.internalName,
           this.#data.insightSetKey,
-          el.createOverlays.bind(el),
+          el.getInitialOverlays(),
           ));
     }
 

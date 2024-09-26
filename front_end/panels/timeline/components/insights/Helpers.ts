@@ -12,6 +12,7 @@ import type * as Overlays from '../../overlays/overlays.js';
 
 import sidebarInsightStyles from './sidebarInsight.css.js';
 import * as SidebarInsight from './SidebarInsight.js';
+import {type TableState} from './Table.js';
 import {type ActiveInsight, Category} from './types.js';
 
 export function shouldRenderForCategory(options: {
@@ -56,6 +57,11 @@ export abstract class BaseInsight extends HTMLElement {
   };
 
   readonly #boundRender = this.render.bind(this);
+  readonly sharedTableState: TableState = {
+    selectedRowEl: null,
+    selectionIsSticky: false,
+  };
+  #initialOverlays: Overlays.Overlays.TimelineOverlay[]|null = null;
 
   protected scheduleRender(): void {
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
@@ -98,22 +104,48 @@ export abstract class BaseInsight extends HTMLElement {
       return;
     }
 
+    this.sharedTableState.selectedRowEl?.classList.remove('selected');
+    this.sharedTableState.selectedRowEl = null;
+    this.sharedTableState.selectionIsSticky = false;
+
     this.dispatchEvent(new SidebarInsight.InsightActivated(
         this.internalName,
         this.data.insightSetKey,
-        this.createOverlays.bind(this),
+        this.getInitialOverlays(),
         ));
   }
 
-  protected onOverlayOverride(overlays: Overlays.Overlays.TimelineOverlay[]|null): void {
+  /**
+   * Replaces the initial insight overlays with the ones provided.
+   *
+   * If `overlays` is null, reverts back to the initial overlays.
+   *
+   * This allows insights to provide an initial set of overlays,
+   * and later temporarily replace all of those insights with a different set.
+   * This enables the hover/click table interactions.
+   */
+  toggleTemporaryOverlays(
+      overlays: Overlays.Overlays.TimelineOverlay[]|null, options?: Overlays.Overlays.TimelineOverlaySetOptions): void {
     if (!this.isActive()) {
       return;
     }
 
-    this.dispatchEvent(new SidebarInsight.InsightOverlayOverride(overlays));
+    if (!options) {
+      options = {updateTraceWindow: true};
+    }
+    this.dispatchEvent(new SidebarInsight.InsightProvideOverlays(overlays ?? this.getInitialOverlays(), options));
   }
 
-  abstract createOverlays(): Overlays.Overlays.TimelineOverlay[];
+  getInitialOverlays(): Overlays.Overlays.TimelineOverlay[] {
+    if (this.#initialOverlays) {
+      return this.#initialOverlays;
+    }
+
+    this.#initialOverlays = this.createOverlays();
+    return this.#initialOverlays;
+  }
+
+  protected abstract createOverlays(): Overlays.Overlays.TimelineOverlay[];
 
   abstract render(): void;
 

@@ -15,7 +15,7 @@ import {SidebarInsightsTab} from './SidebarInsightsTab.js';
 export interface ActiveInsight {
   name: string;
   insightSetKey: string;
-  createOverlayFn: (() => Overlays.Overlays.TimelineOverlay[]);
+  overlays: Overlays.Overlays.TimelineOverlay[];
 }
 
 export class RemoveAnnotation extends Event {

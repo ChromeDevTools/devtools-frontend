@@ -4,8 +4,9 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import * as IconButton from '../../ui/components/icon_button/icon_button.js';
+import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
@@ -118,17 +119,20 @@ export class ElementStatePaneWidget extends UI.Widget.Widget {
           });
       UI.Tooltip.Tooltip.install(label.textElement, i18nString(UIStrings.emulatesAFocusedPage));
 
-      const link = UI.XLink.XLink.create(
-          'https://goo.gle/devtools-emulate-focused-page', undefined, undefined, undefined, 'learn-more');
-      link.textContent = '';
-      link.style.setProperty('display', 'inline-flex');
-
-      const icon = new IconButton.Icon.Icon();
-      icon.data = {iconName: 'help', color: 'var(--icon-default)', width: '16px', height: '16px'};
-      link.prepend(icon);
+      const learnMoreButton = new Buttons.Button.Button();
+      learnMoreButton.data = {
+        variant: Buttons.Button.Variant.ICON,
+        iconName: 'help',
+        size: Buttons.Button.Size.SMALL,
+        jslogContext: 'learn-more',
+      };
+      learnMoreButton.addEventListener(
+          'click',
+          () => Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(
+              'https://goo.gle/devtools-emulate-focused-page' as Platform.DevToolsPath.UrlString));
 
       div.appendChild(label);
-      div.appendChild(link);
+      div.appendChild(learnMoreButton);
       return div;
     };
 

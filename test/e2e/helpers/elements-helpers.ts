@@ -429,7 +429,7 @@ export const forcePseudoState = async (pseudoState: string) => {
     veImpressionsUnder('Panel: elements > Pane: styles', [veImpression(
                                                              'Pane', 'element-states',
                                                              [
-                                                               veImpression('Link: learn-more'),
+                                                               veImpression('Action: learn-more'),
                                                                veImpression('Toggle: active'),
                                                                veImpression('Toggle: focus'),
                                                                veImpression('Toggle: focus-visible'),

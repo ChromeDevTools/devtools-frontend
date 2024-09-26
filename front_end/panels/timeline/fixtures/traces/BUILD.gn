@@ -74,6 +74,7 @@ copy_to_gen("traces") {
     "reload-no-tti.json.gz",
     "render-blocking-body.json.gz",
     "render-blocking-in-iframe.json.gz",
+    "selector-stats-frame-test.json.gz",
     "selector-stats.json.gz",
     "server-timings.json.gz",
     "set-timeout-long-task.json.gz",

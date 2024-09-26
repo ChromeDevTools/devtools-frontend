@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Helpers from '../helpers/helpers.js';
 import {type SelectorTiming, SelectorTimingsKey} from '../types/TraceEvents.js';
 import * as Types from '../types/types.js';
 
@@ -19,12 +20,20 @@ export type SlowCSSSelectorInsightResult = InsightResult<{
   topMatchAttempts: Types.Events.SelectorTiming[],
 }>;
 
-function aggregateSelectorStats(data: Map<Types.Events.UpdateLayoutTree, {
-  timings: Types.Events.SelectorTiming[],
-}>): SelectorTiming[] {
+function aggregateSelectorStats(
+    data: Map<Types.Events.UpdateLayoutTree, {
+      timings: Types.Events.SelectorTiming[],
+    }>,
+    context: InsightSetContext): SelectorTiming[] {
   const selectorMap = new Map<String, SelectorTiming>();
 
-  for (const value of data.values()) {
+  for (const [event, value] of data) {
+    if (event.args.beginData?.frame !== context.frameId) {
+      continue;
+    }
+    if (!Helpers.Timing.eventIsInBounds(event, context.bounds)) {
+      continue;
+    }
     for (const timing of value.timings) {
       const key = timing[SelectorTimingsKey.Selector] + '_' + timing[SelectorTimingsKey.StyleSheetId];
       const findTiming = selectorMap.get(key);
@@ -43,7 +52,6 @@ function aggregateSelectorStats(data: Map<Types.Events.UpdateLayoutTree, {
 }
 
 export function generateInsight(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     parsedTrace: RequiredData<typeof deps>, context: InsightSetContext): SlowCSSSelectorInsightResult {
   const selectorStatsData = parsedTrace.SelectorStats;
 
@@ -51,8 +59,7 @@ export function generateInsight(
     throw new Error('no selector stats data');
   }
 
-  // TODO(b/357047902): this needs to be scoped to the context.window.
-  const selectorTimings = aggregateSelectorStats(selectorStatsData.dataForUpdateLayoutEvent);
+  const selectorTimings = aggregateSelectorStats(selectorStatsData.dataForUpdateLayoutEvent, context);
 
   let totalElapsedUs = 0;
   let totalMatchAttempts = 0;

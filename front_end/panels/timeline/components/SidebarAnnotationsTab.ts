@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as Common from '../../../core/common/common.js';
-import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as Trace from '../../../models/trace/trace.js';
@@ -29,7 +28,8 @@ const UIStrings = {
   /**
    * @description Text for how to create an entry label.
    */
-  entryLabelDescription: 'Double click on an entry to create an entry label. Press Esc or Enter to complete.',
+  entryLabelDescription:
+      'Double click on an entry to create an entry label or select `Label Entry` from the entry context menu. Press Esc or Enter to complete.',
   /**
    * @description  Title for diagram.
    */
@@ -37,7 +37,8 @@ const UIStrings = {
   /**
    * @description Text for how to create a diagram between entries.
    */
-  diagramDescription: 'Double click on an entry to create a diagram.',
+  diagramDescription:
+      'Double click on an entry to create a diagram or select `Link Entries` from the entry context menu. Click empty space to delete the current connection.',
   /**
    * @description  Title for time range.
    */
@@ -205,7 +206,7 @@ export class SidebarAnnotationsTab extends HTMLElement {
           <div class="tutorial-image"> <img src=${entryLabelImageUrl}></img></div>
           <div class="tutorial-title">${i18nString(UIStrings.entryLabel)}</div>
           <div class="tutorial-description">${i18nString(UIStrings.entryLabelDescription)}</div>
-          <div class="tutorial-shortcut">${Host.Platform.isMac() ? 'Cmd' : 'Ctrl'} + Click</div>
+          <div class="tutorial-shortcut">Double Click</div>
         </div>
         <div class="tutorial-card">
           <div class="tutorial-image"> <img src=${diagramImageUrl}></img></div>
@@ -213,7 +214,7 @@ export class SidebarAnnotationsTab extends HTMLElement {
           <div class="tutorial-description">${i18nString(UIStrings.diagramDescription)}</div>
           <div class="tutorial-shortcut">
             <div class="keybinds-shortcut">
-              <span class="keybinds-key">${Host.Platform.isMac() ? 'Cmd' : 'Ctrl'} + Click</span>
+              <span class="keybinds-key">Double Click</span>
             </div>
           </div>
         </div>

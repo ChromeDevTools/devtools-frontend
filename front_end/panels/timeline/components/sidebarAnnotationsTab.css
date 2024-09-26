@@ -20,20 +20,23 @@
   margin-top: auto;
 }
 
-.bin-icon {
-  visibility: hidden;
-}
-
 .annotation-container {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 0 10px;
 
-  &:hover {
+  .delete-button {
+    visibility: hidden;
+    border: none;
+    background: none;
+  }
+
+  &:hover,
+  &:focus-within {
     background-color: var(--sys-color-neutral-container);
 
-    .bin-icon {
+    button.delete-button {
       visibility: visible;
     }
   }
@@ -44,7 +47,7 @@
   flex-direction: column;
   align-items: flex-start;
   word-break: break-word;
-  padding-top: 15px;
+  padding: var(--sys-size-8) 0;
   gap: 6px;
 }
 

@@ -237,14 +237,19 @@ export class SidebarAnnotationsTab extends HTMLElement {
               ${this.#annotations.map(annotation => {
                 const label = detailedAriaDescriptionForAnnotation(annotation);
                 return LitHtml.html`
-                  <div class="annotation-container" @click=${() => this.#revealAnnotation(annotation)} aria-label=${label}>
+                  <div class="annotation-container" @click=${() => this.#revealAnnotation(annotation)} aria-label=${label} tabindex="0">
                     <div class="annotation">
                       ${this.#renderAnnotationIdentifier(annotation)}
                       <span class="label">
                         ${(annotation.type === 'ENTRY_LABEL' || annotation.type === 'TIME_RANGE') ? annotation.label : ''}
                       </span>
                     </div>
-                    <span class="delete-button" role="button" aria-label=${i18nString(UIStrings.deleteButton)}>
+                    <button class="delete-button" aria-label=${i18nString(UIStrings.deleteButton)} @click=${(event: Event) => {
+                      // Stop propagation to not zoom into the annotation when
+                      // the delete button is clicked
+                      event.stopPropagation();
+                      this.dispatchEvent(new RemoveAnnotation(annotation));
+                    }}>
                       <${IconButton.Icon.Icon.litTagName}
                         class="bin-icon"
                         .data=${{
@@ -253,12 +258,8 @@ export class SidebarAnnotationsTab extends HTMLElement {
                           width: '20px',
                           height: '20px',
                         } as IconButton.Icon.IconData}
-                        @click=${(event: Event) => {
-                          // Stop propagation to not zoom into the annotation when the delete button is clicked
-                          event.stopPropagation();
-                          this.dispatchEvent(new RemoveAnnotation(annotation));
-                      }}>
-                    </span>
+                      >
+                    </button>
                   </div>`;
               })}
               <${Settings.SettingCheckbox.SettingCheckbox.litTagName} class="visibility-setting" .data=${{

@@ -1,11 +1,11 @@
 /// <reference types="node" />
 
 import type { ChildProcess } from 'child_process';
-import type { ParseSelector } from 'typed-query-selector/parser.js';
+type ParseSelector<T extends string> = any;
 import { PassThrough } from 'stream';
 import { Protocol } from 'devtools-protocol';
 import type { ProtocolMapping } from 'devtools-protocol/types/protocol-mapping.js';
-import { Session } from 'chromium-bidi/lib/cjs/protocol/protocol.js';
+type Session = any;
 
 /**
  * The Accessibility class provides methods for inspecting the browser's
@@ -30,7 +30,7 @@ import { Session } from 'chromium-bidi/lib/cjs/protocol/protocol.js';
  * @public
  */
 export declare class Accessibility {
-    #private;
+    
     /* Excluded from this release type: __constructor */
     /**
      * Captures the current state of the accessibility tree.
@@ -457,7 +457,7 @@ export declare interface BrowserConnectOptions {
  * @public
  */
 export declare abstract class BrowserContext extends EventEmitter<BrowserContextEvents> {
-    #private;
+    
     /* Excluded from this release type: __constructor */
     /**
      * Gets all active {@link Target | targets} inside this
@@ -710,7 +710,7 @@ export declare interface BrowserLaunchArgumentOptions {
  * @public
  */
 export declare abstract class BrowserLauncher {
-    #private;
+    
     /* Excluded from this release type: puppeteer */
     /* Excluded from this release type: __constructor */
     get browser(): SupportedBrowser;
@@ -1051,7 +1051,7 @@ connect: (options: ConnectOptions) => Promise<Browser>;
  * @public
  */
 export declare class Connection extends EventEmitter<CDPSessionEvents> {
-    #private;
+    
     constructor(url: string, transport: ConnectionTransport, delay?: number, timeout?: number);
     static fromSession(session: CDPSession): Connection | undefined;
     /* Excluded from this release type: delay */
@@ -1125,7 +1125,7 @@ export declare interface ConnectOptions extends BrowserConnectOptions {
  * @public
  */
 export declare class ConsoleMessage {
-    #private;
+    
     /* Excluded from this release type: __constructor */
     /**
      * The type of the console message.
@@ -1390,7 +1390,7 @@ export declare type CookieSourceScheme = 'Unset' | 'NonSecure' | 'Secure';
  * @public
  */
 export declare class Coverage {
-    #private;
+    
     /* Excluded from this release type: __constructor */
     /* Excluded from this release type: updateClient */
     /**
@@ -1475,7 +1475,7 @@ export declare interface Credentials {
  * @public
  */
 export declare class CSSCoverage {
-    #private;
+    
     constructor(client: CDPSession);
     /* Excluded from this release type: updateClient */
     start(options?: {
@@ -1524,7 +1524,7 @@ declare interface CustomQuerySelector {
  * This class mimics the injected {@link CustomQuerySelectorRegistry}.
  */
 declare class CustomQuerySelectorRegistry {
-    #private;
+    
     register(name: string, handler: CustomQueryHandler): void;
     unregister(name: string): void;
     get(name: string): CustomQuerySelector | undefined;
@@ -1640,7 +1640,7 @@ export declare interface Device {
  * @public
  */
 export declare class DeviceRequestPrompt {
-    #private;
+    
     /**
      * Current list of selectable devices.
      */
@@ -1706,7 +1706,7 @@ export declare class DeviceRequestPromptDevice {
  * @public
  */
 export declare abstract class Dialog {
-    #private;
+    
     /* Excluded from this release type: handled */
     /* Excluded from this release type: __constructor */
     /**
@@ -1782,7 +1782,7 @@ export declare type ElementFor<TagName extends keyof HTMLElementTagNameMap | key
  * @public
  */
 export declare abstract class ElementHandle<ElementType extends Node = Element> extends JSHandle<ElementType> {
-    #private;
+    
     /* Excluded from this release type: [_isElementHandle] */
     /* Excluded from this release type: isolatedHandle */
     /* Excluded from this release type: bindIsolatedHandle */
@@ -2275,7 +2275,7 @@ export declare type EvaluateFuncWith<V, T extends unknown[]> = (...params: [V, .
  * @public
  */
 export declare class EventEmitter<Events extends Record<EventType, unknown>> implements CommonEventEmitter<EventsWithWildcard<Events>> {
-    #private;
+    
     /* Excluded from this release type: __constructor */
     /**
      * Bind an event listener to fire when an event occurs.
@@ -2371,7 +2371,7 @@ export declare type ExperimentsConfiguration = Record<string, never>;
  * @public
  */
 export declare class ExtensionTransport implements ConnectionTransport {
-    #private;
+    
     static connectTab(tabId: number): Promise<ExtensionTransport>;
     onmessage?: (message: string) => void;
     onclose?: () => void;
@@ -2405,7 +2405,7 @@ export declare class ExtensionTransport implements ConnectionTransport {
  * @public
  */
 export declare class FileChooser {
-    #private;
+    
     /* Excluded from this release type: __constructor */
     /**
      * Whether file chooser allow for
@@ -2537,7 +2537,7 @@ export declare type FlattenHandle<T> = T extends HandleOr<infer U> ? U : never;
  * @public
  */
 export declare abstract class Frame extends EventEmitter<FrameEvents> {
-    #private;
+    
     /* Excluded from this release type: _id */
     /* Excluded from this release type: _parentId */
     /* Excluded from this release type: _name */
@@ -3630,7 +3630,7 @@ export declare interface InternalNetworkConditions extends NetworkConditions {
  * @public
  */
 export declare class JSCoverage {
-    #private;
+    
     /* Excluded from this release type: __constructor */
     /* Excluded from this release type: updateClient */
     start(options?: {
@@ -4092,7 +4092,7 @@ export declare interface LaunchOptions {
  * @public
  */
 export declare abstract class Locator<T> extends EventEmitter<LocatorEvents> {
-    #private;
+    
     /**
      * Creates a race between multiple locators trying to locate elements in
      * parallel but ensures that only a single element receives the action.
@@ -4651,7 +4651,7 @@ export declare interface Offset {
  * @public
  */
 export declare abstract class Page extends EventEmitter<PageEvents> {
-    #private;
+    
     /* Excluded from this release type: _isDragging */
     /* Excluded from this release type: _timeoutSettings */
     /* Excluded from this release type: __constructor */
@@ -6812,7 +6812,7 @@ export { Protocol }
  * @public
  */
 export declare class ProtocolError extends PuppeteerError {
-    #private;
+    
     set code(code: number | undefined);
     /**
      * @readonly
@@ -6992,7 +6992,7 @@ export declare type PuppeteerLifeCycleEvent =
  * @public
  */
 export declare class PuppeteerNode extends Puppeteer {
-    #private;
+    
     /* Excluded from this release type: defaultBrowserRevision */
     /* Excluded from this release type: configuration */
     /* Excluded from this release type: __constructor */
@@ -7220,7 +7220,7 @@ export declare interface ScreencastOptions {
  * @public
  */
 export declare class ScreenRecorder extends PassThrough {
-    #private;
+    
     /* Excluded from this release type: __constructor */
     /**
      * Stops the recorder.
@@ -7313,7 +7313,7 @@ export declare interface ScreenshotOptions {
  * @public
  */
 export declare class SecurityDetails {
-    #private;
+    
     /* Excluded from this release type: __constructor */
     /**
      * The name of the issuer of the certificate.
@@ -7473,7 +7473,7 @@ export declare interface SupportedWebDriverCapabilities {
     alwaysMatch?: SupportedWebDriverCapability;
 }
 
-export declare type SupportedWebDriverCapability = Exclude<Session.CapabilityRequest, 'unhandledPromptBehavior' | 'acceptInsecureCerts'>;
+export declare type SupportedWebDriverCapability = any;
 
 /**
  * Target represents a
@@ -7636,7 +7636,7 @@ export declare abstract class Touchscreen {
  * @public
  */
 export declare class Tracing {
-    #private;
+    
     /* Excluded from this release type: __constructor */
     /* Excluded from this release type: updateClient */
     /**
@@ -7889,7 +7889,7 @@ export declare interface WaitTimeoutOptions {
  * @public
  */
 export declare abstract class WebWorker extends EventEmitter<Record<EventType, unknown>> {
-    #private;
+    
     /* Excluded from this release type: timeoutSettings */
     /* Excluded from this release type: __constructor */
     /* Excluded from this release type: mainRealm */

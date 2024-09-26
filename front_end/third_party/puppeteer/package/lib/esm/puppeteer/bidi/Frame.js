@@ -57,6 +57,20 @@ import { BidiJSHandle } from './JSHandle.js';
 import { BidiFrameRealm } from './Realm.js';
 import { rewriteNavigationError } from './util.js';
 import { BidiWebWorker } from './WebWorker.js';
+// TODO: Remove this and map CDP the correct method.
+// Requires breaking change.
+function convertConsoleMessageLevel(method) {
+    switch (method) {
+        case 'group':
+            return 'startGroup';
+        case 'groupCollapsed':
+            return 'startGroupCollapsed';
+        case 'groupEnd':
+            return 'endGroup';
+        default:
+            return method;
+    }
+}
 let BidiFrame = (() => {
     var _a;
     let _classSuper = Frame;
@@ -223,7 +237,7 @@ let BidiFrame = (() => {
                         return `${value} ${parsedValue}`;
                     }, '')
                         .slice(1);
-                    this.page().trustedEmitter.emit("console" /* PageEvent.Console */, new ConsoleMessage(entry.method, text, args, getStackTraceLocations(entry.stackTrace)));
+                    this.page().trustedEmitter.emit("console" /* PageEvent.Console */, new ConsoleMessage(convertConsoleMessageLevel(entry.method), text, args, getStackTraceLocations(entry.stackTrace)));
                 }
                 else if (isJavaScriptLogEntry(entry)) {
                     const error = new Error(entry.text ?? '');

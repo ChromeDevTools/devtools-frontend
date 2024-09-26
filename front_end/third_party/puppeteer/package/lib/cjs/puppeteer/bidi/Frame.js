@@ -60,6 +60,20 @@ const JSHandle_js_1 = require("./JSHandle.js");
 const Realm_js_1 = require("./Realm.js");
 const util_js_2 = require("./util.js");
 const WebWorker_js_1 = require("./WebWorker.js");
+// TODO: Remove this and map CDP the correct method.
+// Requires breaking change.
+function convertConsoleMessageLevel(method) {
+    switch (method) {
+        case 'group':
+            return 'startGroup';
+        case 'groupCollapsed':
+            return 'startGroupCollapsed';
+        case 'groupEnd':
+            return 'endGroup';
+        default:
+            return method;
+    }
+}
 let BidiFrame = (() => {
     var _a;
     let _classSuper = Frame_js_1.Frame;
@@ -226,7 +240,7 @@ let BidiFrame = (() => {
                         return `${value} ${parsedValue}`;
                     }, '')
                         .slice(1);
-                    this.page().trustedEmitter.emit("console" /* PageEvent.Console */, new ConsoleMessage_js_1.ConsoleMessage(entry.method, text, args, getStackTraceLocations(entry.stackTrace)));
+                    this.page().trustedEmitter.emit("console" /* PageEvent.Console */, new ConsoleMessage_js_1.ConsoleMessage(convertConsoleMessageLevel(entry.method), text, args, getStackTraceLocations(entry.stackTrace)));
                 }
                 else if (isJavaScriptLogEntry(entry)) {
                     const error = new Error(entry.text ?? '');

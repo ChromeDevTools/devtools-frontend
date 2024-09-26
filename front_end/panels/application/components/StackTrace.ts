@@ -5,6 +5,7 @@
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
+import * as Bindings from '../../../models/bindings/bindings.js';
 import * as ExpandableList from '../../../ui/components/expandable_list/expandable_list.js';
 import * as Components from '../../../ui/legacy/components/utils/utils.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
@@ -166,7 +167,20 @@ export class StackTrace extends HTMLElement {
     const expandableRows = [];
     let hiddenCallFramesCount = 0;
     for (const item of this.#stackTraceRows) {
-      if (this.#showHidden || !item.ignoreListHide) {
+      let ignoreListHide = false;
+      // TODO(crbug.com/1183325): fix race condition with uiLocation still being null here
+      // Note: This has always checked whether the call frame location *in the generated
+      // code* is ignore-listed or not. This can change after the live location updates,
+      // and is handled again in the linkifier live location update callback.
+      if ('link' in item && item.link) {
+        const uiLocation = Components.Linkifier.Linkifier.uiLocation(item.link);
+        if (uiLocation &&
+            Bindings.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(
+                uiLocation.uiSourceCode)) {
+          ignoreListHide = true;
+        }
+      }
+      if (this.#showHidden || !ignoreListHide) {
         if ('functionName' in item) {
           expandableRows.push(LitHtml.html`
           <${StackTraceRow.litTagName} data-stack-trace-row .data=${{
@@ -179,7 +193,7 @@ export class StackTrace extends HTMLElement {
           `);
         }
       }
-      if ('functionName' in item && item.ignoreListHide) {
+      if ('functionName' in item && ignoreListHide) {
         hiddenCallFramesCount++;
       }
     }

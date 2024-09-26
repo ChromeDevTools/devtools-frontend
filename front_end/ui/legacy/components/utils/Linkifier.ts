@@ -148,6 +148,10 @@ export class Linkifier extends Common.ObjectWrapper.ObjectWrapper<EventTypes> im
     sourceCodeAnchors.add(anchor);
   }
 
+  static bindUILocationForTest(anchor: Element, uiLocation: Workspace.UISourceCode.UILocation): void {
+    Linkifier.bindUILocation(anchor, uiLocation);
+  }
+
   private static unbindUILocation(anchor: Element): void {
     const info = Linkifier.linkInfo(anchor);
     if (!info || !info.uiLocation) {

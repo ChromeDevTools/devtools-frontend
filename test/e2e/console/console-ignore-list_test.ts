@@ -27,22 +27,21 @@ describe('Ignore list', function() {
     await target.evaluate('wrapper(() => {console.trace("test");});');
 
     await waitFor('.stack-preview-container:not(.show-hidden-rows)');
+    await waitForVisible('.show-all-link');
 
     const minimized = [
       '(anonymous) @ (index):1',
       '(anonymous) @ (index):1',
-      'Show 2 more frames',
     ];
     const full = [
       '(anonymous) @ (index):1',
       'innercall @ multi-files-thirdparty.js:8',
       'callfunc @ multi-files-thirdparty.js:16',
       '(anonymous) @ (index):1',
-      'Show less',
     ];
 
     assert.deepEqual(
-        (await getVisibleTextContents('.stack-preview-container tr'))
+        (await getVisibleTextContents('.stack-preview-container tbody tr'))
             .map(value => value ? replacePuppeteerUrl(value) : value),
         minimized);
 
@@ -51,15 +50,16 @@ describe('Ignore list', function() {
     await waitForVisible('.show-less-link');
 
     assert.deepEqual(
-        (await getVisibleTextContents('.stack-preview-container tr'))
+        (await getVisibleTextContents('.stack-preview-container tbody tr'))
             .map(value => value ? replacePuppeteerUrl(value) : value),
         full);
 
     await click('.show-less-link .link');
     await waitFor('.stack-preview-container:not(.show-hidden-rows)');
+    await waitForVisible('.show-all-link');
 
     assert.deepEqual(
-        (await getVisibleTextContents('.stack-preview-container tr'))
+        (await getVisibleTextContents('.stack-preview-container tbody tr'))
             .map(value => value ? replacePuppeteerUrl(value) : value),
         minimized);
   });

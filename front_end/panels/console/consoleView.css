@@ -134,11 +134,6 @@
   margin-top: -1px;
 }
 
-.repeated-message .console-message-stack-trace-toggle,
-.repeated-message > .console-message-text {
-  flex: 1;
-}
-
 .console-error-level .repeated-message,
 .console-warning-level .repeated-message,
 .console-verbose-level .repeated-message,
@@ -323,10 +318,6 @@
   --message-corner-rounder-background: var(--sys-color-surface-yellow);
 }
 
-.console-warning-level .console-message-text {
-  color: var(--sys-color-on-surface-yellow);
-}
-
 .console-view-object-properties-section {
   padding: 0;
   position: relative;
@@ -347,11 +338,6 @@
 
 .console-view-object-properties-section:not(.expanded) .info-note {
   display: none;
-}
-
-.console-error-level .console-message-text,
-.console-error-level .console-view-object-properties-section {
-  color: var(--override-error-text-color) !important; /* stylelint-disable-line declaration-no-important */
 }
 
 .console-system-type.console-info-level {
@@ -384,15 +370,70 @@
   flex-shrink: 0;
 }
 
-.console-message-text .object-value-node {
-  display: inline-block;
+.console-message-text {
+  .object-value-node {
+    display: inline-block;
+  }
+
+  .object-value-string,
+  .object-value-regexp,
+  .object-value-symbol {
+    white-space: pre-wrap;
+    word-break: break-all;
+  }
+
+  .formatted-stack-frame:has(.ignore-list-link) {
+    display: var(--display-ignored-formatted-stack-frame);
+    opacity: 60%;
+  }
 }
 
-.console-message-text .object-value-string,
-.console-message-text .object-value-regexp,
-.console-message-text .object-value-symbol {
-  white-space: pre-wrap;
-  word-break: break-all;
+.console-message-stack-trace-wrapper {
+  --override-display-stack-preview-toggle-link: none;
+
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+
+  &:has(div > .stack-preview-container.show-hidden-rows) {
+    --display-ignored-formatted-stack-frame: inherit;
+  }
+
+  &:has(.formatted-stack-frame .ignore-list-link):has(.formatted-stack-frame .devtools-link:not(.ignore-list-link)) {
+    /* If there are ignored frames and unignored frames, then we want
+    to enable the show more/less links. To do that we override some
+    variables to always display the structured stack trace, but possibly
+    only the links at the bottom of it, as we share its show more/less links. */
+    --override-display-stack-preview-toggle-link: table-row;
+    --override-display-stack-preview-hidden-div: block;
+
+    &:not(:has(div > .stack-preview-container.show-hidden-rows)) {
+      --display-ignored-formatted-stack-frame: none;
+    }
+  }
+
+  & > .hidden-stack-trace {
+    /* Always hide the body of the structured stack trace if this class
+    is set, but we may still show it for the Show more/less links at the bottom. */
+    display: var(--override-display-stack-preview-hidden-div, none);
+
+    --override-display-stack-preview-tbody: none;
+  }
+}
+
+.repeated-message .console-message-stack-trace-toggle,
+.repeated-message > .console-message-text {
+  flex: 1;
+}
+
+.console-warning-level .console-message-text {
+  color: var(--sys-color-on-surface-yellow);
+}
+
+.console-error-level .console-message-text,
+.console-error-level .console-view-object-properties-section {
+  color: var(--override-error-text-color) !important; /* stylelint-disable-line declaration-no-important */
 }
 
 .console-message-formatted-table {
@@ -436,13 +477,6 @@
 .console-object {
   white-space: pre-wrap;
   word-break: break-all;
-}
-
-.console-message-stack-trace-wrapper {
-  flex: 1 1 auto;
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
 }
 
 .console-message-stack-trace-wrapper > * {

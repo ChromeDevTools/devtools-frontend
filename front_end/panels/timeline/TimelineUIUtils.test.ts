@@ -310,8 +310,8 @@ describeWithMockConnection('TimelineUIUtils', function() {
   });
 
   function getInnerTextAcrossShadowRoots(root: Node|null): string {
-    // Don't recurse into STYLE elements
-    if (!root || root.nodeName === 'STYLE') {
+    // Don't recurse into elements that are not displayed
+    if (!root || (root instanceof HTMLElement && !root.checkVisibility())) {
       return '';
     }
     if (root.nodeType === Node.TEXT_NODE) {
@@ -324,7 +324,10 @@ describeWithMockConnection('TimelineUIUtils', function() {
   }
 
   function getRowDataForDetailsElement(details: DocumentFragment) {
-    return Array.from(details.querySelectorAll<HTMLDivElement>('.timeline-details-view-row')).map(row => {
+    const container = document.createElement('div');
+    renderElementIntoDOM(container);
+    container.appendChild(details);
+    return Array.from(container.querySelectorAll<HTMLDivElement>('.timeline-details-view-row')).map(row => {
       const title = row.querySelector<HTMLDivElement>('.timeline-details-view-row-title')?.innerText;
       const valueEl = row.querySelector<HTMLDivElement>('.timeline-details-view-row-value') ??
           row.querySelector<HTMLElement>('div,span');
@@ -346,7 +349,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
     if (!stackTraceContainer) {
       return null;
     }
-    return Array.from(stackTraceContainer.querySelectorAll<HTMLTableRowElement>('tr')).map(row => {
+    return Array.from(stackTraceContainer.querySelectorAll<HTMLTableRowElement>('tbody tr')).map(row => {
       const functionName = row.querySelector<HTMLElement>('.function-name')?.innerText;
       const url = row.querySelector<HTMLElement>('.link')?.innerText;
       return `${functionName || ''} @ ${url || ''}`;
@@ -870,6 +873,11 @@ describeWithMockConnection('TimelineUIUtils', function() {
           new Components.Linkifier.Linkifier(),
           false,
       );
+      const stackTraceData = getStackTraceForDetailsElement(details);
+      assert.deepEqual(
+          stackTraceData,
+          ['(anonymous) @ web.dev/js/app.js?v=1423cda3:1:183'],
+      );
       const rowData = getRowDataForDetailsElement(details)[0];
       assert.deepEqual(
           rowData,
@@ -877,11 +885,6 @@ describeWithMockConnection('TimelineUIUtils', function() {
             title: 'Details',
             value: 'web.dev/js/app.js?v=1423cda3:1:183',
           },
-      );
-      const stackTraceData = getStackTraceForDetailsElement(details);
-      assert.deepEqual(
-          stackTraceData,
-          ['(anonymous) @ web.dev/js/app.js?v=1423cda3:1:183'],
       );
     });
 

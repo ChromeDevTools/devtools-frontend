@@ -27,22 +27,24 @@ describe('The Console Tab', () => {
     const stack = await $(STACK_PREVIEW_CONTAINER);
 
     const expected = [
-      {text: '\nshown3 @ showMe.js:10', classes: {}},
-      {text: '\nshown2 @ showMe.js:6', classes: {}},
-      {text: '\nshown1 @ showMe.js:2', classes: {}},
-      {text: '\n(anonymous) @ ignoreMe.js:21', classes: {}},
-      {text: '\nPromise.then', classes: {}},
-      {text: '\nignoreListed4 @ ignoreMe.js:20', classes: {}},
-      {text: '\nignoreListed3 @ ignoreMe.js:16', classes: {}},
-      {text: '\nignoreListed2 @ ignoreMe.js:12', classes: {}},
-      {text: '\nignoreListed1 @ ignoreMe.js:8', classes: {}},
-      {text: '\n(anonymous) @ ignoreMe.js:5', classes: {}},
+      {text: '\nshown3 @ showMe.js:10', visible: true},
+      {text: '\nshown2 @ showMe.js:6', visible: true},
+      {text: '\nshown1 @ showMe.js:2', visible: true},
+      {text: '\n(anonymous) @ ignoreMe.js:21', visible: true},
+      {text: '\nPromise.then', visible: true},
+      {text: '\nignoreListed4 @ ignoreMe.js:20', visible: true},
+      {text: '\nignoreListed3 @ ignoreMe.js:16', visible: true},
+      {text: '\nignoreListed2 @ ignoreMe.js:12', visible: true},
+      {text: '\nignoreListed1 @ ignoreMe.js:8', visible: true},
+      {text: '\n(anonymous) @ ignoreMe.js:5', visible: true},
+      {text: '', visible: false},
+      {text: '', visible: false},
     ];
 
     await waitForFunction(async () => {
       const stackTraceRows = await frontend.evaluate((stack: Element) => {
         return Array.from(stack.querySelectorAll('tr'))
-            .map(node => ({text: node.textContent, classes: node.classList}));
+            .map(node => ({text: node.textContent, visible: node.checkVisibility()}));
       }, stack);
       return JSON.stringify(stackTraceRows) === JSON.stringify(expected);
     });
@@ -64,24 +66,24 @@ describe('The Console Tab', () => {
     const stack = await $(STACK_PREVIEW_CONTAINER);
 
     const expected = [
-      {text: '\nshown3 @ showMe.js:10', classes: {}},
-      {text: '\nshown2 @ showMe.js:6', classes: {}},
-      {text: '\nshown1 @ showMe.js:2', classes: {}},
-      {text: '\n(anonymous) @ ignoreMe.js:21', classes: {0: 'hidden-row'}},
-      {text: '\nPromise.then', classes: {0: 'hidden-row'}},
-      {text: '\nignoreListed4 @ ignoreMe.js:20', classes: {0: 'hidden-row'}},
-      {text: '\nignoreListed3 @ ignoreMe.js:16', classes: {0: 'hidden-row'}},
-      {text: '\nignoreListed2 @ ignoreMe.js:12', classes: {0: 'hidden-row'}},
-      {text: '\nignoreListed1 @ ignoreMe.js:8', classes: {0: 'hidden-row'}},
-      {text: '\n(anonymous) @ ignoreMe.js:5', classes: {0: 'hidden-row'}},
-      {text: '\nShow 6 more frames', classes: {0: 'show-all-link'}},
-      {text: '\nShow less', classes: {0: 'show-less-link'}},
+      {text: '\nshown3 @ showMe.js:10', visible: true},
+      {text: '\nshown2 @ showMe.js:6', visible: true},
+      {text: '\nshown1 @ showMe.js:2', visible: true},
+      {text: '\n(anonymous) @ ignoreMe.js:21', visible: false},
+      {text: '\nPromise.then', visible: false},
+      {text: '\nignoreListed4 @ ignoreMe.js:20', visible: false},
+      {text: '\nignoreListed3 @ ignoreMe.js:16', visible: false},
+      {text: '\nignoreListed2 @ ignoreMe.js:12', visible: false},
+      {text: '\nignoreListed1 @ ignoreMe.js:8', visible: false},
+      {text: '\n(anonymous) @ ignoreMe.js:5', visible: false},
+      {text: '', visible: true},
+      {text: '', visible: false},
     ];
 
     await waitForFunction(async () => {
       const stackTraceRows = await frontend.evaluate((stack: Element) => {
         return Array.from(stack.querySelectorAll('tr'))
-            .map(node => ({text: node.textContent, classes: node.classList}));
+            .map(node => ({text: node.textContent, visible: node.checkVisibility()}));
       }, stack);
       return JSON.stringify(stackTraceRows) === JSON.stringify(expected);
     });
@@ -94,6 +96,29 @@ describe('The Console Tab', () => {
     await click(SHOW_MORE_LINK);
     showHidden = stack ? await stack.evaluate(x => x.classList.contains('show-hidden-rows')) : null;
     assert.strictEqual(showHidden, true);
+
+    const expectedUnhidden = [
+      {text: '\nshown3 @ showMe.js:10', visible: true},
+      {text: '\nshown2 @ showMe.js:6', visible: true},
+      {text: '\nshown1 @ showMe.js:2', visible: true},
+      {text: '\n(anonymous) @ ignoreMe.js:21', visible: true},
+      {text: '\nPromise.then', visible: true},
+      {text: '\nignoreListed4 @ ignoreMe.js:20', visible: true},
+      {text: '\nignoreListed3 @ ignoreMe.js:16', visible: true},
+      {text: '\nignoreListed2 @ ignoreMe.js:12', visible: true},
+      {text: '\nignoreListed1 @ ignoreMe.js:8', visible: true},
+      {text: '\n(anonymous) @ ignoreMe.js:5', visible: true},
+      {text: '', visible: false},
+      {text: '', visible: true},
+    ];
+
+    await waitForFunction(async () => {
+      const stackTraceRows = await frontend.evaluate((stack: Element) => {
+        return Array.from(stack.querySelectorAll('tr'))
+            .map(node => ({text: node.textContent, visible: node.checkVisibility()}));
+      }, stack);
+      return JSON.stringify(stackTraceRows) === JSON.stringify(expectedUnhidden);
+    });
 
     // assert that after clicking 'show less'-button, hidden rows are hidden again
     await click(SHOW_LESS_LINK);

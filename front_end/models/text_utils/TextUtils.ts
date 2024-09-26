@@ -151,7 +151,7 @@ export class FilterParser {
         try {
           parsedFilters.push({
             key: undefined,
-            regex: new RegExp((parsedRegex as string), 'i'),
+            regex: new RegExp((parsedRegex as string), 'im'),
             text: undefined,
             negative: Boolean(startsWithMinus),
           });

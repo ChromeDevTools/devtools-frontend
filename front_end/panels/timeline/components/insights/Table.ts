@@ -12,17 +12,17 @@ import tableStyles from './table.css.js';
 /**
  * @fileoverview An interactive table component.
  *
- * TODO(crbug.com/369102516): make the below all true :)
  * On hover:
  *           desaturates the relevant time range (in both the minimap and the flamegraph), and
  *           replaces the current insight's overlays with the overlays attached to that row.
  *           The currently selected trace bounds does not change.
+ *           TODO(crbug.com/369102516): make the "desaturates the flamegraph" part true
  *
- *           Removing the mouse from the table without clicking on the row restores the original
+ *           Removing the mouse from the table without clicking on any row restores the original
  *           overlays.
  *
  * On click:
- *           "sticks" the selection, replaces overlays like hover does, and additionaly reduces
+ *           "sticks" the selection, replaces overlays like hover does, and additionally updates
  *           the current trace bounds to fit the bounds of the row's overlays.
  */
 
@@ -86,7 +86,7 @@ export class Table extends HTMLElement {
 
     this.#currentHoverIndex = index;
     // Temporarily selects the row, but only if there is not already a sticky selection.
-    this.#onSelectedRowChanged(rowEl, index, false);
+    this.#onSelectedRowChanged(rowEl, index, {isHover: true});
   }
 
   #onClickRow(e: MouseEvent): void {
@@ -105,34 +105,37 @@ export class Table extends HTMLElement {
     }
 
     // Select the row and make it sticky.
-    this.#onSelectedRowChanged(rowEl, index, true);
+    this.#onSelectedRowChanged(rowEl, index, {sticky: true});
   }
 
   #onMouseLeave(): void {
     this.#currentHoverIndex = null;
     // Unselect the row, unless it's sticky.
-    this.#onSelectedRowChanged(null, null, false);
+    this.#onSelectedRowChanged(null, null);
   }
 
-  #onSelectedRowChanged(rowEl: HTMLElement|null, rowIndex: number|null, sticky: boolean): void {
+  #onSelectedRowChanged(rowEl: HTMLElement|null, rowIndex: number|null, opts: {
+    sticky?: boolean,
+    isHover?: boolean,
+  } = {}): void {
     if (!this.#rows || !this.#state) {
       return;
     }
 
-    if (this.#state.selectionIsSticky && !sticky) {
+    if (this.#state.selectionIsSticky && !opts.sticky) {
       return;
     }
 
     // Unselect a sticky-selection when clicking it for a second time.
     if (this.#state.selectionIsSticky && rowEl === this.#state.selectedRowEl) {
       rowEl = null;
-      sticky = false;
+      opts.sticky = false;
     }
 
     if (rowEl && rowIndex !== null) {
       const overlays = this.#rows[rowIndex].overlays;
       if (overlays) {
-        this.#onOverlayOverride(overlays);
+        this.#onOverlayOverride(overlays, {updateTraceWindow: !opts.isHover});
       }
     } else {
       this.#onOverlayOverride(null);
@@ -141,11 +144,12 @@ export class Table extends HTMLElement {
     this.#state.selectedRowEl?.classList.remove('selected');
     rowEl?.classList.add('selected');
     this.#state.selectedRowEl = rowEl;
-    this.#state.selectionIsSticky = sticky;
+    this.#state.selectionIsSticky = opts.sticky ?? false;
   }
 
-  #onOverlayOverride(overlays: Overlays.Overlays.TimelineOverlay[]|null): void {
-    this.dispatchEvent(new SidebarInsight.InsightOverlayOverride(overlays));
+  #onOverlayOverride(
+      overlays: Overlays.Overlays.TimelineOverlay[]|null, options?: Overlays.Overlays.TimelineOverlaySetOptions): void {
+    this.dispatchEvent(new SidebarInsight.InsightOverlayOverride(overlays, options));
   }
 
   async #render(): Promise<void> {

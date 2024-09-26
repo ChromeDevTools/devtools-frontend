@@ -322,7 +322,8 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     TraceBounds.TraceBounds.onChange(this.#onTraceBoundsChangeBound);
   }
 
-  #setOverlays(overlays: Overlays.Overlays.TimelineOverlay[]): void {
+  #setOverlays(overlays: Overlays.Overlays.TimelineOverlay[], options: Overlays.Overlays.TimelineOverlaySetOptions):
+      void {
     this.#currentInsightOverlays = overlays;
     if (this.#currentInsightOverlays.length === 0) {
       return;
@@ -345,18 +346,20 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
       this.#expandEntryTrack(entry);
     }
 
-    const overlaysBounds = Overlays.Overlays.traceWindowContainingOverlays(this.#currentInsightOverlays);
-    // Trace window covering all overlays expanded by 100% so that the overlays cover 50% of the visible window.
-    const expandedBounds =
-        Trace.Helpers.Timing.expandWindowByPercentOrToOneMillisecond(overlaysBounds, traceBounds, 100);
+    if (options.updateTraceWindow) {
+      const overlaysBounds = Overlays.Overlays.traceWindowContainingOverlays(this.#currentInsightOverlays);
+      // Trace window covering all overlays expanded by 100% so that the overlays cover 50% of the visible window.
+      const expandedBounds =
+          Trace.Helpers.Timing.expandWindowByPercentOrToOneMillisecond(overlaysBounds, traceBounds, 100);
 
-    // Set the timeline visible window and ignore the minimap bounds. This
-    // allows us to pick a visible window even if the overlays are outside of
-    // the current breadcrumb. If this happens, the event listener for
-    // BoundsManager changes in TimelineMiniMap will detect it and activate
-    // the correct breadcrumb for us.
-    TraceBounds.TraceBounds.BoundsManager.instance().setTimelineVisibleWindow(
-        expandedBounds, {ignoreMiniMapBounds: true, shouldAnimate: true});
+      // Set the timeline visible window and ignore the minimap bounds. This
+      // allows us to pick a visible window even if the overlays are outside of
+      // the current breadcrumb. If this happens, the event listener for
+      // BoundsManager changes in TimelineMiniMap will detect it and activate
+      // the correct breadcrumb for us.
+      TraceBounds.TraceBounds.BoundsManager.instance().setTimelineVisibleWindow(
+          expandedBounds, {ignoreMiniMapBounds: true, shouldAnimate: true});
+    }
 
     // Reveal entry if we have one.
     if (entries.length !== 0) {
@@ -406,7 +409,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
 
     if (insight) {
       const newInsightOverlays = insight.createOverlayFn();
-      this.#setOverlays(newInsightOverlays);
+      this.#setOverlays(newInsightOverlays, {updateTraceWindow: true});
     }
   }
 
@@ -414,16 +417,24 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
    * Replaces any existing overlays with the ones provided to this method.
    * If `overlays` is null, reverts back to the original overlays provided by
    * the insight.
+   *
+   * This allows insights to provide an initial set of overlays (via `setActiveInsight`),
+   * and later temporarily replace all of those insights with a different set (for the hover/click interactions).
    */
-  setOverlaysOverride(overlays: Overlays.Overlays.TimelineOverlay[]|null): void {
-    this.bulkRemoveOverlays(this.#currentInsightOverlays);
-
+  setTemporaryOverlayOverrides(
+      overlays: Overlays.Overlays.TimelineOverlay[]|null, options?: Overlays.Overlays.TimelineOverlaySetOptions): void {
+    // This allows us to not need to call `createOverlayFn` multiple times.
     if (!this.#currentStoredOverlays) {
-      // This allows us to not need to call `createOverlayFn` multiple times.
       this.#currentStoredOverlays = this.#currentInsightOverlays;
     }
 
-    this.#setOverlays(overlays ?? this.#currentStoredOverlays);
+    this.bulkRemoveOverlays(this.#currentInsightOverlays);
+    if (overlays) {
+      this.#setOverlays(overlays, options ?? {updateTraceWindow: true});
+    } else {
+      // If `overlays` is null, we revert to the stored overlays.
+      this.#setOverlays(this.#currentStoredOverlays ?? [], {updateTraceWindow: true});
+    }
   }
 
   /**

@@ -48,7 +48,7 @@ export class InsightDeactivated extends Event {
 }
 
 export class InsightSetHovered extends Event {
-  static readonly eventName = 'navigationhovered';
+  static readonly eventName = 'insightsethovered';
   constructor(public bounds?: Trace.Types.Timing.TraceWindowMicroSeconds) {
     super(InsightSetHovered.eventName, {bubbles: true, composed: true});
   }
@@ -57,7 +57,9 @@ export class InsightSetHovered extends Event {
 export class InsightOverlayOverride extends Event {
   static readonly eventName = 'insightoverlayoverride';
 
-  constructor(public overlays: Array<Overlays.Overlays.TimelineOverlay>|null) {
+  constructor(
+      public overlays: Array<Overlays.Overlays.TimelineOverlay>|null,
+      public options?: Overlays.Overlays.TimelineOverlaySetOptions) {
     super(InsightOverlayOverride.eventName, {bubbles: true, composed: true});
   }
 }

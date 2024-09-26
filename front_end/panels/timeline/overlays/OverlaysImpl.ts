@@ -85,6 +85,7 @@ export interface TimeRangeLabel {
 /**
  * Given a list of overlays, this method will calculate the smallest possible
  * trace window that will contain all of the overlays.
+ * `overlays` is expected to be non-empty.
  */
 export function traceWindowContainingOverlays(overlays: TimelineOverlay[]): Trace.Types.Timing.TraceWindowMicroSeconds {
   let minTime = Trace.Types.Timing.MicroSeconds(Number.POSITIVE_INFINITY);
@@ -269,6 +270,10 @@ export interface CursorTimestampMarker {
  */
 export type TimelineOverlay = EntrySelected|EntryOutline|TimeRangeLabel|EntryLabel|EntriesLink|TimespanBreakdown|
     CursorTimestampMarker|CandyStripedTimeRange;
+
+export interface TimelineOverlaySetOptions {
+  updateTraceWindow: boolean;
+}
 
 /**
  * Denotes overlays that are singletons; only one of these will be allowed to

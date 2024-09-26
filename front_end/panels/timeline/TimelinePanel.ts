@@ -62,6 +62,7 @@ import {Tracker} from './FreshRecording.js';
 import historyToolbarButtonStyles from './historyToolbarButton.css.js';
 import {IsolateSelector} from './IsolateSelector.js';
 import {AnnotationModifiedEvent, ModificationsManager} from './ModificationsManager.js';
+import * as Overlays from './overlays/overlays.js';
 import {cpuprofileJsonGenerator, traceJsonGenerator} from './SaveFileFormatter.js';
 import {type Client, TimelineController} from './TimelineController.js';
 import {TimelineFlameChartView} from './TimelineFlameChartView.js';
@@ -550,8 +551,16 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     });
 
     this.#sideBar.element.addEventListener(TimelineInsights.SidebarInsight.InsightOverlayOverride.eventName, event => {
-      const {overlays} = event;
-      this.flameChart.setOverlaysOverride(overlays);
+      const {overlays, options} = event;
+
+      this.flameChart.setTemporaryOverlayOverrides(overlays, options);
+
+      const overlaysBounds = overlays && Overlays.Overlays.traceWindowContainingOverlays(overlays);
+      if (overlaysBounds) {
+        this.#minimapComponent.highlightBounds(overlaysBounds);
+      } else {
+        this.#minimapComponent.clearBoundsHighlight();
+      }
     });
 
     this.#sideBar.contentElement.addEventListener(TimelineComponents.Sidebar.EventReferenceClick.eventName, event => {

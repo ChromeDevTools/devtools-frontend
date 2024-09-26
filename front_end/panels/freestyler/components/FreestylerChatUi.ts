@@ -843,10 +843,10 @@ export class FreestylerChatUi extends HTMLElement {
               @click=${this.#handleCancel}
               .data=${
                 {
-                  variant: Buttons.Button.Variant.PRIMARY,
-                  size: Buttons.Button.Size.SMALL,
+                  variant: Buttons.Button.Variant.ICON,
+                  size: Buttons.Button.Size.REGULAR,
                   disabled: this.#isTextInputDisabled(),
-                  iconName: 'stop',
+                  iconName: 'record-stop',
                   title: lockedString(UIStringsNotTranslate.cancelButtonTitle),
                   jslogContext: 'stop',
                 } as Buttons.Button.ButtonData
@@ -859,7 +859,7 @@ export class FreestylerChatUi extends HTMLElement {
                 {
                   type: 'submit',
                   variant: Buttons.Button.Variant.ICON,
-                  size: Buttons.Button.Size.SMALL,
+                  size: Buttons.Button.Size.REGULAR,
                   disabled: this.#isTextInputDisabled(),
                   iconName: 'send',
                   title: lockedString(UIStringsNotTranslate.sendButtonTitle),

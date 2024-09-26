@@ -77,7 +77,7 @@ export class Toolbar extends LitElement {
           jslog=${VisualLogging.action('protocol-monitor.copy-command').track({click: true})}
         ></${Buttons.Button.Button.litTagName}>
         <${Buttons.Button.Button.litTagName}
-          .size=${Buttons.Button.Size.SMALL}
+          .size=${Buttons.Button.Size.REGULAR}
           title=${Host.Platform.isMac() ? i18nString(UIStrings.sendCommandCmdEnter) : i18nString(UIStrings.sendCommandCtrlEnter)}
           .iconUrl=${sendIconUrl}
           .variant=${Buttons.Button.Variant.PRIMARY_TOOLBAR}

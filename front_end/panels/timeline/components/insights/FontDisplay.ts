@@ -8,7 +8,7 @@ import * as Trace from '../../../../models/trace/trace.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
-import {BaseInsight, md, shouldRenderForCategory} from './Helpers.js';
+import {BaseInsight, shouldRenderForCategory} from './Helpers.js';
 import * as SidebarInsight from './SidebarInsight.js';
 import {Table, type TableData} from './Table.js';
 import {Category} from './types.js';
@@ -35,6 +35,7 @@ export class FontDisplay extends BaseInsight {
   override insightCategory = Category.INP;
   override internalName: string = 'font-display';
   override userVisibleTitle: string = i18nString(UIStrings.title);
+  override description: string = i18nString(UIStrings.description);
 
   override createOverlays(): Overlays.Overlays.TimelineOverlay[] {
     const insight = Trace.Insights.Common.getInsight('FontDisplay', this.data.insights, this.data.insightSetKey);
@@ -57,14 +58,12 @@ export class FontDisplay extends BaseInsight {
         <div class="insights">
             <${SidebarInsight.SidebarInsight.litTagName} .data=${{
               title: this.userVisibleTitle,
+              description: this.description,
               expanded: this.isActive(),
               internalName: this.internalName,
             } as SidebarInsight.InsightDetails}
             @insighttoggleclick=${this.onSidebarClick}>
-                <div slot="insight-description" class="insight-description">
-                  ${md(i18nString(UIStrings.description))}
-                </div>
-                <div slot="insight-content">
+                <div slot="insight-content" class="insight-section">
                   ${LitHtml.html`<${Table.litTagName}
                     .data=${{
                       insight: this,

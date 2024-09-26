@@ -10,6 +10,7 @@ import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../../ui/visual_logging/visual_logging.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
+import {md} from './Helpers.js';
 import sidebarInsightStyles from './sidebarInsight.css.js';
 
 const UIStrings = {
@@ -25,6 +26,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export interface InsightDetails {
   title: string;
+  description: string;
   internalName: string;
   expanded: boolean;
   estimatedSavings?: number|undefined;
@@ -77,12 +79,14 @@ export class SidebarInsight extends HTMLElement {
   readonly #boundRender = this.#render.bind(this);
 
   #insightTitle: string = '';
+  #insightDescription: string = '';
   #insightInternalName: string = '';
   #expanded: boolean = false;
   #estimatedSavings: number|undefined = undefined;
 
   set data(data: InsightDetails) {
     this.#insightTitle = data.title;
+    this.#insightDescription = data.description;
     this.#insightInternalName = data.internalName;
     this.#expanded = data.expanded;
     this.#estimatedSavings = data.estimatedSavings;
@@ -149,8 +153,10 @@ export class SidebarInsight extends HTMLElement {
         </header>
         ${this.#expanded ? LitHtml.html`
           <div class="insight-body">
-            <slot name="insight-description"></slot>
-            <slot name="insight-content"></slot>
+            <div class="insight-description">${this.#insightDescription ? md(this.#insightDescription) : LitHtml.nothing}</div>
+            <div class="insight-content">
+              <slot name="insight-content"></slot>
+            </div>
           </div>`
           : LitHtml.nothing
         }

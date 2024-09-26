@@ -8,7 +8,7 @@ import * as Trace from '../../../../models/trace/trace.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
-import {BaseInsight, md, shouldRenderForCategory} from './Helpers.js';
+import {BaseInsight, shouldRenderForCategory} from './Helpers.js';
 import * as SidebarInsight from './SidebarInsight.js';
 import {Table, type TableData} from './Table.js';
 import {Category} from './types.js';
@@ -44,6 +44,7 @@ export class ThirdParties extends BaseInsight {
   override insightCategory: Category = Category.ALL;
   override internalName: string = 'third-parties';
   override userVisibleTitle: string = i18nString(UIStrings.title);
+  override description: string = i18nString(UIStrings.description);
 
   #overlaysForEntity =
       new Map<Trace.Insights.InsightRunners.ThirdPartyWeb.Entity, Overlays.Overlays.TimelineOverlay[]>();
@@ -88,40 +89,43 @@ export class ThirdParties extends BaseInsight {
         <div class="insights">
             <${SidebarInsight.SidebarInsight.litTagName} .data=${{
               title: this.userVisibleTitle,
+              description: this.description,
               internalName: this.internalName,
               expanded: this.isActive(),
             } as SidebarInsight.InsightDetails}
             @insighttoggleclick=${this.onSidebarClick}>
-                <div slot="insight-description" class="insight-description">
-                  ${md(i18nString(UIStrings.description))}
-                </div>
                 <div slot="insight-content">
-                  ${LitHtml.html`<${Table.litTagName}
-                    .data=${{
-                      insight: this,
-                      headers: [i18nString(UIStrings.columnThirdParty), i18nString(UIStrings.columnTransferSize)],
-                      rows: topTransferSizeEntries.map(([entity, summary]) => ({
-                        values: [
-                          entity.name,
-                          Platform.NumberUtilities.bytesToString(summary.transferSize),
-                        ],
-                        overlays: this.#overlaysForEntity.get(entity),
-                      })),
-                    } as TableData}>
-                  </${Table.litTagName}>`}
-                  ${LitHtml.html`<${Table.litTagName}
-                    .data=${{
-                      insight: this,
-                      headers: [i18nString(UIStrings.columnThirdParty), i18nString(UIStrings.columnBlockingTime)],
-                      rows: topMainThreadTimeEntries.map(([entity, summary]) => ({
-                        values: [
-                          entity.name,
-                          i18n.TimeUtilities.millisToString(Platform.Timing.microSecondsToMilliSeconds(summary.mainThreadTime)),
-                        ],
-                        overlays: this.#overlaysForEntity.get(entity),
-                      })),
-                    } as TableData}>
-                  </${Table.litTagName}>`}
+                  <div class="insight-section">
+                    ${LitHtml.html`<${Table.litTagName}
+                      .data=${{
+                        insight: this,
+                        headers: [i18nString(UIStrings.columnThirdParty), i18nString(UIStrings.columnTransferSize)],
+                        rows: topTransferSizeEntries.map(([entity, summary]) => ({
+                          values: [
+                            entity.name,
+                            Platform.NumberUtilities.bytesToString(summary.transferSize),
+                          ],
+                          overlays: this.#overlaysForEntity.get(entity),
+                        })),
+                      } as TableData}>
+                    </${Table.litTagName}>`}
+                  </div>
+
+                  <div class="insight-section">
+                    ${LitHtml.html`<${Table.litTagName}
+                      .data=${{
+                        insight: this,
+                        headers: [i18nString(UIStrings.columnThirdParty), i18nString(UIStrings.columnBlockingTime)],
+                        rows: topMainThreadTimeEntries.map(([entity, summary]) => ({
+                          values: [
+                            entity.name,
+                            i18n.TimeUtilities.millisToString(Platform.Timing.microSecondsToMilliSeconds(summary.mainThreadTime)),
+                          ],
+                          overlays: this.#overlaysForEntity.get(entity),
+                        })),
+                      } as TableData}>
+                    </${Table.litTagName}>`}
+                  </div>
                 </div>
             </${SidebarInsight.SidebarInsight}>
         </div>`;

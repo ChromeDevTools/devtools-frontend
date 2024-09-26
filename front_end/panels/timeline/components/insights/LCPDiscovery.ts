@@ -95,6 +95,7 @@ export class LCPDiscovery extends BaseInsight {
   override insightCategory: Category = Category.LCP;
   override internalName: string = 'lcp-discovery';
   override userVisibleTitle: string = i18nString(UIStrings.title);
+  override description: string = '';
 
   override connectedCallback(): void {
     super.connectedCallback();
@@ -161,33 +162,37 @@ export class LCPDiscovery extends BaseInsight {
         <div class="insights">
           <${SidebarInsight.SidebarInsight.litTagName} .data=${{
             title: this.userVisibleTitle,
+            description: this.description,
             internalName: this.internalName,
             expanded: this.isActive(),
           } as SidebarInsight.InsightDetails}
           @insighttoggleclick=${this.onSidebarClick}
         >
-          <div slot="insight-description" class="insight-description">
-          ${imageData.discoveryDelay ? LitHtml.html`<div class="discovery-delay">${this.#renderDiscoveryDelay(imageData.discoveryDelay)}</div>` : LitHtml.nothing}
-            <ul class="insight-results insight-icon-results">
-              <li class="insight-entry">
-                ${this.#adviceIcon(imageData.shouldIncreasePriorityHint)}
-                <span>${i18nString(UIStrings.fetchPriorityApplied)}</span>
-              </li>
-              <li class="insight-entry">
-                ${this.#adviceIcon(imageData.shouldPreloadImage)}
-                <span>${i18nString(UIStrings.requestDiscoverable)}</span>
-              </li>
-              <li class="insight-entry">
-                ${this.#adviceIcon(imageData.shouldRemoveLazyLoading)}
-                <span>${i18nString(UIStrings.lazyLoadNotApplied)}</span>
-              </li>
-            </ul>
-          </div>
-          <div slot="insight-content" class="insight-content">
-            <img class="element-img" data-src=${imageData.request.args.data.url} src=${imageData.request.args.data.url}>
-            <div class="element-img-details">
-              ${Common.ParsedURL.ParsedURL.extractName(imageData.request.args.data.url ?? '')}
-              <div class="element-img-details-size">${Platform.NumberUtilities.bytesToString(imageData.request.args.data.decodedBodyLength ?? 0)}</div>
+          <div slot="insight-content" class="insight-section">
+            <div>
+              ${imageData.discoveryDelay ? LitHtml.html`<div class="discovery-delay">${this.#renderDiscoveryDelay(imageData.discoveryDelay)}</div>` : LitHtml.nothing}
+              <ul class="insight-results insight-icon-results">
+                <li class="insight-entry">
+                  ${this.#adviceIcon(imageData.shouldIncreasePriorityHint)}
+                  <span>${i18nString(UIStrings.fetchPriorityApplied)}</span>
+                </li>
+                <li class="insight-entry">
+                  ${this.#adviceIcon(imageData.shouldPreloadImage)}
+                  <span>${i18nString(UIStrings.requestDiscoverable)}</span>
+                </li>
+                <li class="insight-entry">
+                  ${this.#adviceIcon(imageData.shouldRemoveLazyLoading)}
+                  <span>${i18nString(UIStrings.lazyLoadNotApplied)}</span>
+                </li>
+              </ul>
+            </div>
+
+            <div>
+              <img class="element-img" data-src=${imageData.request.args.data.url} src=${imageData.request.args.data.url}>
+              <div class="element-img-details">
+                ${Common.ParsedURL.ParsedURL.extractName(imageData.request.args.data.url ?? '')}
+                <div class="element-img-details-size">${Platform.NumberUtilities.bytesToString(imageData.request.args.data.decodedBodyLength ?? 0)}</div>
+              </div>
             </div>
           </div>
         </${SidebarInsight.SidebarInsight}>

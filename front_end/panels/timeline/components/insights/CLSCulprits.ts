@@ -7,7 +7,7 @@ import * as Trace from '../../../../models/trace/trace.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
-import {BaseInsight, md, shouldRenderForCategory} from './Helpers.js';
+import {BaseInsight, shouldRenderForCategory} from './Helpers.js';
 import * as SidebarInsight from './SidebarInsight.js';
 import {Category} from './types.js';
 
@@ -45,6 +45,7 @@ export class CLSCulprits extends BaseInsight {
   override insightCategory: Category = Category.CLS;
   override internalName: string = 'cls-culprits';
   override userVisibleTitle: string = i18nString(UIStrings.title);
+  override description: string = i18nString(UIStrings.description);
 
   override createOverlays(): Overlays.Overlays.TimelineOverlay[] {
     const insight =
@@ -117,14 +118,12 @@ export class CLSCulprits extends BaseInsight {
         <div class="insights">
             <${SidebarInsight.SidebarInsight.litTagName} .data=${{
               title: this.userVisibleTitle,
+              description: this.description,
               internalName: this.internalName,
               expanded: this.isActive(),
             } as SidebarInsight.InsightDetails}
             @insighttoggleclick=${this.onSidebarClick}>
-                <div slot="insight-description" class="insight-description">
-                  ${md(i18nString(UIStrings.description))}
-                </div>
-                <div slot="insight-content" style="insight-content">
+                <div slot="insight-content" class="insight-section">
                   <p>
                     <h3>${i18nString(UIStrings.topCulprits)}</h3>
                     ${culprits.map(culprit => {

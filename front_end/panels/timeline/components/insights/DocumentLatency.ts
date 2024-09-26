@@ -51,6 +51,7 @@ export class DocumentLatency extends BaseInsight {
   override insightCategory: Category = Category.ALL;
   override internalName: string = 'document-latency';
   override userVisibleTitle: string = i18nString(UIStrings.title);
+  override description: string = '';
 
   #check(didPass: boolean, good: string, bad: string): LitHtml.TemplateResult {
     const icon = didPass ? 'check-circle' : 'clear';
@@ -87,27 +88,28 @@ export class DocumentLatency extends BaseInsight {
     <div class="insights">
       <${SidebarInsight.SidebarInsight.litTagName} .data=${{
             title: this.userVisibleTitle,
+            description: this.description,
             expanded: this.isActive(),
             internalName: this.internalName,
             estimatedSavings: insight.metricSavings?.FCP,
         } as SidebarInsight.InsightDetails}
         @insighttoggleclick=${this.onSidebarClick}
       >
-        <div slot="insight-description" class="insight-description">
+        <div slot="insight-content" class="insight-section">
           <ul class="insight-results insight-icon-results">
-              <li class="insight-entry">
-                ${this.#check(insight.data.redirectDuration === 0,
-                  i18nString(UIStrings.passingRedirects), i18nString(UIStrings.failedRedirects))}
-              </li>
-              <li class="insight-entry">
-                ${this.#check(!insight.data.serverResponseTooSlow,
-                  i18nString(UIStrings.passingServerResponseTime), i18nString(UIStrings.failedServerResponseTime))}
-              </li>
-              <li class="insight-entry">
-                ${this.#check(insight.data.uncompressedResponseBytes === 0,
-                  i18nString(UIStrings.passingTextCompression), i18nString(UIStrings.failedTextCompression))}
-              </li>
-            </ul>
+            <li class="insight-entry">
+              ${this.#check(insight.data.redirectDuration === 0,
+                i18nString(UIStrings.passingRedirects), i18nString(UIStrings.failedRedirects))}
+            </li>
+            <li class="insight-entry">
+              ${this.#check(!insight.data.serverResponseTooSlow,
+                i18nString(UIStrings.passingServerResponseTime), i18nString(UIStrings.failedServerResponseTime))}
+            </li>
+            <li class="insight-entry">
+              ${this.#check(insight.data.uncompressedResponseBytes === 0,
+                i18nString(UIStrings.passingTextCompression), i18nString(UIStrings.failedTextCompression))}
+            </li>
+          </ul>
         </div>
       </${SidebarInsight.SidebarInsight}>
     </div>`;

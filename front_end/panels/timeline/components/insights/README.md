@@ -46,18 +46,19 @@ Within your `renderMyInsight` method (please choose a better name!), you should 
 ```
 <${SidebarInsight.SidebarInsight.litTagName} .data=${{
   title: this.userVisibleTitle,
+  description: this.description,
   expanded: this.isActive(),
 } as SidebarInsight.InsightDetails}
 @insighttoggleclick=${this.onSidebarClick}
 >
-  <div slot="insight-description" class="insight-description">
-    <!-- the description (in the UI, this is above the border when expanded) goes here-->
-  </div>
-  <div slot="insight-content" class="insight-content">
+  <div slot="insight-content" class="insight-section">
     <!-- this content will be shown below the border in expanded mode -->
   </div>
 </${SidebarInsight.SidebarInsight}>
 ```
+
+If the content of your insight has multiple sections, remove `class="insight-section"` from the slot and place each section
+in its own `<div class="insight-section">` inside the slot.
 
 ## 3. Override the `createOverlays()` method
 

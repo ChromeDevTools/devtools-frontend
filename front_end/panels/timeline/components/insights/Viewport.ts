@@ -7,7 +7,7 @@ import * as Trace from '../../../../models/trace/trace.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
-import {BaseInsight, md, shouldRenderForCategory} from './Helpers.js';
+import {BaseInsight, shouldRenderForCategory} from './Helpers.js';
 import {NodeLink, type NodeLinkData} from './NodeLink.js';
 import * as SidebarInsight from './SidebarInsight.js';
 import {Category} from './types.js';
@@ -30,6 +30,7 @@ export class Viewport extends BaseInsight {
   override insightCategory: Category = Category.INP;
   override internalName: string = 'viewport';
   override userVisibleTitle: string = i18nString(UIStrings.title);
+  override description: string = i18nString(UIStrings.description);
 
   override createOverlays(): Overlays.Overlays.TimelineOverlay[] {
     // TODO(b/351757418): create overlay for synthetic input delay events
@@ -44,14 +45,12 @@ export class Viewport extends BaseInsight {
         <div class="insights">
             <${SidebarInsight.SidebarInsight.litTagName} .data=${{
               title: this.userVisibleTitle,
+              description: this.description,
               expanded: this.isActive(),
               internalName: this.internalName,
             } as SidebarInsight.InsightDetails}
             @insighttoggleclick=${this.onSidebarClick}>
-                <div slot="insight-description" class="insight-description">
-                  ${md(i18nString(UIStrings.description))}
-                </div>
-                <div slot="insight-content" class="insight-content">
+                <div slot="insight-content" class="insight-section">
                   ${backendNodeId !== undefined ? LitHtml.html`<${NodeLink.litTagName}
                     .data=${{
                       backendNodeId,

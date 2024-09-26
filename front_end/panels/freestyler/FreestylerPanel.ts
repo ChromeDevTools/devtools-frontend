@@ -39,6 +39,10 @@ const UIStringsNotTranslate = {
    *@description AI assistance UI tooltip text for the help button.
    */
   help: 'Help',
+  /**
+   *@description AI assistant UI tooltip text for the settings button (gear icon).
+   */
+  settings: 'Settings',
 };
 
 const lockedString = i18n.i18n.lockedString;
@@ -66,6 +70,13 @@ function createToolbar(target: HTMLElement, {onClearClick}: {onClearClick: () =>
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(DOGFOOD_INFO);
   });
   rightToolbar.appendToolbarItem(helpButton);
+
+  const settingsButton = new UI.Toolbar.ToolbarButton(
+      lockedString(UIStringsNotTranslate.settings), 'gear', undefined, 'freestyler.settings');
+  settingsButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, () => {
+    void UI.ViewManager.ViewManager.instance().showView('chrome-ai');
+  });
+  rightToolbar.appendToolbarItem(settingsButton);
 }
 
 function defaultView(input: FreestylerChatUiProps, output: ViewOutput, target: HTMLElement): void {

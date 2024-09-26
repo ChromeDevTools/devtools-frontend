@@ -5,6 +5,7 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import {describeWithEnvironment, registerNoopActions} from '../../testing/EnvironmentHelpers.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Freestyler from './freestyler.js';
 
@@ -83,6 +84,22 @@ describeWithEnvironment('FreestylerPanel', () => {
     afterEach(() => {
       // @ts-expect-error global test variable
       setFreestylerServerSideLoggingEnabled(false);
+    });
+
+    it('renders a button linking to settings', () => {
+      const stub = sinon.stub(UI.ViewManager.ViewManager.instance(), 'showView');
+
+      const panel = new Freestyler.FreestylerPanel(mockView, {
+        aidaClient: getTestAidaClient(),
+        aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
+        syncInfo: getTestSyncInfo(),
+      });
+      const toolbar = panel.contentElement.querySelector('.freestyler-right-toolbar');
+      const button = toolbar!.shadowRoot!.querySelector('devtools-button[aria-label=\'Settings\']');
+      assert.instanceOf(button, HTMLElement);
+      button.click();
+      assert.isTrue(stub.calledWith('chrome-ai'));
+      stub.restore();
     });
 
     it('should allow logging if configured', () => {

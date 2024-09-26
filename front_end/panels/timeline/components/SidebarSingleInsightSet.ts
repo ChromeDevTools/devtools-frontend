@@ -82,78 +82,75 @@ export class SidebarSingleInsightSet extends HTMLElement {
     // clang-format on
   }
 
-  /**
-   * @returns the duration of the longest interaction for the navigation. If
-   * there are no interactions, we return `null`. This distinction is important
-   * as if there are no navigations, we do not want to show the user the INP
-   * score.
-   */
-  #calculateINP(
-      parsedTrace: Trace.Handlers.Types.ParsedTrace,
-      navigationId: string,
-      ): Trace.Types.Timing.MicroSeconds|null {
-    const eventsForNavigation = parsedTrace.UserInteractions.interactionEventsWithNoNesting.filter(e => {
-      return e.args.data.navigationId === navigationId;
-    });
-    if (eventsForNavigation.length === 0) {
+  #getINP(insightSetKey: string):
+      {value: Trace.Types.Timing.MicroSeconds, event: Trace.Types.Events.SyntheticInteractionPair}|null {
+    const insight = Trace.Insights.Common.getInsight('InteractionToNextPaint', this.#data.insights, insightSetKey);
+    if (!insight?.longestInteractionEvent?.dur) {
       return null;
     }
 
-    let maxDuration = Trace.Types.Timing.MicroSeconds(0);
-    for (const event of eventsForNavigation) {
-      if (event.dur > maxDuration) {
-        maxDuration = event.dur;
-      }
-    }
-
-    return maxDuration;
+    const value = insight.longestInteractionEvent.dur;
+    return {value, event: insight.longestInteractionEvent};
   }
 
-  #calculateCLSScore(
-      parsedTrace: Trace.Handlers.Types.ParsedTrace,
-      navigationId: string,
-      ): {maxScore: number, worstShiftEvent: Trace.Types.Events.Event|null} {
-    // Find all clusers associated with this navigation
-    const clustersForNavigation = parsedTrace.LayoutShifts.clusters.filter(c => c.navigationId === navigationId);
+  #getLCP(insightSetKey: string):
+      {value: Trace.Types.Timing.MicroSeconds, event: Trace.Types.Events.LargestContentfulPaintCandidate}|null {
+    const insight = Trace.Insights.Common.getInsight('LargestContentfulPaint', this.#data.insights, insightSetKey);
+    if (!insight || !insight.lcpMs || !insight.lcpEvent) {
+      return null;
+    }
+
+    const value = Trace.Helpers.Timing.millisecondsToMicroseconds(insight.lcpMs);
+    return {value, event: insight.lcpEvent};
+  }
+
+  #getCLS(insightSetKey: string): {value: number, worstShiftEvent: Trace.Types.Events.Event|null} {
+    const insight = Trace.Insights.Common.getInsight('CumulativeLayoutShift', this.#data.insights, insightSetKey);
+    if (!insight) {
+      // Unlike the other metrics, there is still a value for this metric even with no data.
+      // This means this view will always display a CLS score.
+      return {value: 0, worstShiftEvent: null};
+    }
+
+    // TODO(crbug.com/366049346): buildLayoutShiftsClusters is dropping non-nav clusters,
+    //                            so `insight.clusters` is always empty for non-navs.
+    // TODO(cjamcl): the CLS insight be doing this for us.
     let maxScore = 0;
     let worstCluster;
-    for (const cluster of clustersForNavigation) {
+    for (const cluster of insight.clusters) {
       if (cluster.clusterCumulativeScore > maxScore) {
         maxScore = cluster.clusterCumulativeScore;
         worstCluster = cluster;
       }
     }
-    return {maxScore, worstShiftEvent: worstCluster?.worstShiftEvent ?? null};
+
+    return {value: maxScore, worstShiftEvent: worstCluster?.worstShiftEvent ?? null};
   }
 
-  #renderMetrics(
-      parsedTrace: Trace.Handlers.Types.ParsedTrace,
-      navigationId: string,
-      ): LitHtml.TemplateResult {
-    const forNavigation =
-        parsedTrace.PageLoadMetrics.metricScoresByFrameId.get(parsedTrace.Meta.mainFrameId)?.get(navigationId);
-    const lcpMetric = forNavigation?.get(Trace.Handlers.ModelHandlers.PageLoadMetrics.MetricName.LCP);
-
-    const {maxScore: clsScore, worstShiftEvent} = this.#calculateCLSScore(parsedTrace, navigationId);
-    const inp = this.#calculateINP(parsedTrace, navigationId);
+  #renderMetrics(insightSetKey: string): LitHtml.TemplateResult {
+    const lcp = this.#getLCP(insightSetKey);
+    const cls = this.#getCLS(insightSetKey);
+    const inp = this.#getINP(insightSetKey);
 
     return LitHtml.html`
     <div class="metrics-row">
     ${
-        lcpMetric ? this.#renderMetricValue(
-                        'LCP', i18n.TimeUtilities.formatMicroSecondsAsSeconds(lcpMetric.timing),
-                        lcpMetric.classification, lcpMetric.event ?? null) :
-                    LitHtml.nothing}
+        lcp ? this.#renderMetricValue(
+                  'LCP', i18n.TimeUtilities.formatMicroSecondsAsSeconds(lcp.value),
+                  Trace.Handlers.ModelHandlers.PageLoadMetrics.scoreClassificationForLargestContentfulPaint(lcp.value),
+                  lcp.event ?? null) :
+              LitHtml.nothing}
     ${
         this.#renderMetricValue(
-            'CLS', clsScore.toFixed(2),
-            Trace.Handlers.ModelHandlers.LayoutShifts.scoreClassificationForLayoutShift(clsScore), worstShiftEvent)}
+            'CLS', cls.value.toFixed(2),
+            Trace.Handlers.ModelHandlers.LayoutShifts.scoreClassificationForLayoutShift(cls.value),
+            cls.worstShiftEvent)}
     ${
-        inp ?
-            this.#renderMetricValue(
-                'INP', i18n.TimeUtilities.formatMicroSecondsAsMillisFixed(inp),
-                Trace.Handlers.ModelHandlers.UserInteractions.scoreClassificationForInteractionToNextPaint(inp), null) :
-            LitHtml.nothing}
+        inp ? this.#renderMetricValue(
+                  'INP', i18n.TimeUtilities.formatMicroSecondsAsMillisFixed(inp.value),
+                  Trace.Handlers.ModelHandlers.UserInteractions.scoreClassificationForInteractionToNextPaint(inp.value),
+                  inp.event) :
+              LitHtml.nothing}
     </div>
     `;
   }
@@ -203,7 +200,7 @@ export class SidebarSingleInsightSet extends HTMLElement {
     // clang-format off
     LitHtml.render(LitHtml.html`
       <div class="navigation">
-        ${this.#renderMetrics(parsedTrace, insightSetKey)}
+        ${this.#renderMetrics(insightSetKey)}
         ${this.#renderInsights(insights, insightSetKey)}
         </div>
       `, this.#shadow, {host: this});

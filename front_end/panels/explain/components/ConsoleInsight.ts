@@ -173,7 +173,7 @@ const enum State {
   INSIGHT = 'insight',
   LOADING = 'loading',
   ERROR = 'error',
-  CONSENT_ONBOARDING = 'consent-onboarding',
+  SETTING_DISABLED = 'setting-disabled',
   CONSENT_REMINDER = 'consent-reminder',
   NOT_LOGGED_IN = 'not-logged-in',
   SYNC_IS_PAUSED = 'sync-is-paused',
@@ -182,8 +182,7 @@ const enum State {
 
 type StateData = {
   type: State.LOADING,
-  consentOnboardingFinished: boolean,
-  consentReminderConfirmed: boolean,
+  consentOnboardingCompleted: boolean,
 }|{
   type: State.INSIGHT,
   tokens: MarkdownView.MarkdownView.MarkdownViewData['tokens'],
@@ -199,7 +198,7 @@ type StateData = {
   sources: Source[],
   isPageReloadRecommended: boolean,
 }|{
-  type: State.CONSENT_ONBOARDING,
+  type: State.SETTING_DISABLED,
 }|{
   type: State.NOT_LOGGED_IN,
 }|{
@@ -241,7 +240,7 @@ export class ConsoleInsight extends HTMLElement {
       case Host.AidaClient.AidaAccessPreconditions.AVAILABLE: {
         if (this.#consoleInsightsEnabledSetting?.disabled()) {
           this.#state = {
-            type: State.CONSENT_ONBOARDING,
+            type: State.SETTING_DISABLED,
           };
           break;
         }
@@ -252,8 +251,7 @@ export class ConsoleInsight extends HTMLElement {
                 .get();
         this.#state = {
           type: State.LOADING,
-          consentReminderConfirmed: this.#getOnboardingCompletedSetting().get() || skipReminder,
-          consentOnboardingFinished: this.#consoleInsightsEnabledSetting?.getIfNotDisabled() === true,
+          consentOnboardingCompleted: this.#getOnboardingCompletedSetting().get() || skipReminder,
         };
         break;
       }
@@ -312,8 +310,8 @@ export class ConsoleInsight extends HTMLElement {
     this.#shadow.adoptedStyleSheets = [styles, Input.checkboxStyles];
     this.classList.add('opening');
     this.#consoleInsightsEnabledSetting?.addChangeListener(this.#onConsoleInsightsSettingChanged, this);
-    if (this.#state.type === State.LOADING && this.#state.consentOnboardingFinished &&
-        this.#state.consentReminderConfirmed) {
+    if (this.#state.type === State.LOADING && this.#consoleInsightsEnabledSetting?.getIfNotDisabled() === true &&
+        this.#state.consentOnboardingCompleted) {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.GeneratingInsightWithoutDisclaimer);
     }
     void this.#generateInsightIfNeeded();
@@ -327,12 +325,11 @@ export class ConsoleInsight extends HTMLElement {
     if (this.#consoleInsightsEnabledSetting?.getIfNotDisabled() === true) {
       this.#getOnboardingCompletedSetting().set(true);
     }
-    if (this.#state.type === State.CONSENT_ONBOARDING &&
+    if (this.#state.type === State.SETTING_DISABLED &&
         this.#consoleInsightsEnabledSetting?.getIfNotDisabled() === true) {
       this.#transitionTo({
         type: State.LOADING,
-        consentReminderConfirmed: true,
-        consentOnboardingFinished: true,
+        consentOnboardingCompleted: true,
       });
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightsOptInTeaserConfirmedInSettings);
       void this.#generateInsightIfNeeded();
@@ -341,8 +338,7 @@ export class ConsoleInsight extends HTMLElement {
         this.#consoleInsightsEnabledSetting?.getIfNotDisabled() === false) {
       this.#transitionTo({
         type: State.LOADING,
-        consentReminderConfirmed: false,
-        consentOnboardingFinished: false,
+        consentOnboardingCompleted: false,
       });
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightsReminderTeaserAbortedInSettings);
       void this.#generateInsightIfNeeded();
@@ -362,14 +358,14 @@ export class ConsoleInsight extends HTMLElement {
     if (this.#state.type !== State.LOADING) {
       return;
     }
-    if (!this.#state.consentOnboardingFinished) {
+    if (this.#consoleInsightsEnabledSetting?.getIfNotDisabled() !== true) {
       this.#transitionTo({
-        type: State.CONSENT_ONBOARDING,
+        type: State.SETTING_DISABLED,
       });
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightsOptInTeaserShown);
       return;
     }
-    if (!this.#state.consentReminderConfirmed) {
+    if (!this.#state.consentOnboardingCompleted) {
       const {sources, isPageReloadRecommended} = await this.#promptBuilder.buildPrompt();
       this.#transitionTo({
         type: State.CONSENT_REMINDER,
@@ -437,8 +433,7 @@ export class ConsoleInsight extends HTMLElement {
     this.#getOnboardingCompletedSetting().set(true);
     this.#transitionTo({
       type: State.LOADING,
-      consentReminderConfirmed: true,
-      consentOnboardingFinished: true,
+      consentOnboardingCompleted: true,
     });
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightsReminderTeaserConfirmed);
     await this.#generateInsight();
@@ -650,7 +645,7 @@ export class ConsoleInsight extends HTMLElement {
             </div>
           </main>
         `;
-      case State.CONSENT_ONBOARDING: {
+      case State.SETTING_DISABLED: {
         const settingsLink = document.createElement('button');
         settingsLink.textContent = i18nString(UIStrings.settingsLink);
         settingsLink.classList.add('link');
@@ -711,7 +706,7 @@ export class ConsoleInsight extends HTMLElement {
     // clang-format off
     switch (this.#state.type) {
       case State.LOADING:
-      case State.CONSENT_ONBOARDING:
+      case State.SETTING_DISABLED:
         return LitHtml.nothing;
       case State.ERROR:
       case State.OFFLINE:
@@ -843,7 +838,7 @@ export class ConsoleInsight extends HTMLElement {
         return i18nString(UIStrings.error);
       case State.CONSENT_REMINDER:
         return 'Understand console messages with Chrome AI';
-      case State.CONSENT_ONBOARDING:
+      case State.SETTING_DISABLED:
         return '';  // not reached
     }
   }
@@ -858,7 +853,7 @@ export class ConsoleInsight extends HTMLElement {
   }
 
   #renderHeader(): LitHtml.LitTemplate {
-    if (this.#state.type === State.CONSENT_ONBOARDING) {
+    if (this.#state.type === State.SETTING_DISABLED) {
       return LitHtml.nothing;
     }
     const hasIcon = this.#state.type === State.CONSENT_REMINDER;

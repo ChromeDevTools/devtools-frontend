@@ -2626,6 +2626,7 @@ export const knownContextValues = new Set([
   'set-to-browser-language',
   'set-to-specific-language',
   'setting',
+  'setting-disabled',
   'setting1',
   'setting2',
   'settings',

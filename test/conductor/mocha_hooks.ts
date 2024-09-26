@@ -62,6 +62,8 @@ export const mochaHooks = {
   // In serial mode, run after all tests end, once only.
   // In parallel mode, run after all tests end, for each file.
   afterAll: async function(this: Mocha.Suite) {
+    // Closing the browser can take some time.
+    this.timeout(20000);
     await postFileTeardown();
     copyGoldens();
   },

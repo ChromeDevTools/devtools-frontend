@@ -68,13 +68,15 @@ export class FontDisplay extends BaseInsight {
                   ${LitHtml.html`<${Table.litTagName}
                     .data=${{
                       headers: [i18nString(UIStrings.fontColumn), 'font-display', i18nString(UIStrings.wastedTimeColumn)],
-                      rows: data.fonts.map(font => [
-                        // TODO(crbug.com/369422196): the font name would be nicer here.
-                        Platform.StringUtilities.trimMiddle(font.request.args.data.url.split('/').at(-1) ?? '', 20),
-                        font.display,
-                        i18n.TimeUtilities.millisToString(font.wastedTime),
-                        // TODO(crbug.com/369102516): hover?
-                      ]),
+                      rows: data.fonts.map(font => ({
+                        values: [
+                          // TODO(crbug.com/369422196): the font name would be nicer here.
+                          Platform.StringUtilities.trimMiddle(font.request.args.data.url.split('/').at(-1) ?? '', 20),
+                          font.display,
+                          i18n.TimeUtilities.millisToString(font.wastedTime),
+                          // TODO(crbug.com/369102516): hover?
+                        ],
+                      })),
                     } as TableData}>
                   </${Table.litTagName}>`}
                 </div>

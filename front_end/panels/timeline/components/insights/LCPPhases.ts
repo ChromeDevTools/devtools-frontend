@@ -204,7 +204,7 @@ export class LCPPhases extends BaseInsight {
   }
 
   #renderLCPPhases(phaseData: PhaseData[]): LitHtml.LitTemplate {
-    const rows = phaseData.map(({phase, percent}) => [phase, percent]);
+    const rows = phaseData.map(({phase, percent}) => ({values: [phase, percent]}));
 
     // clang-format off
     return LitHtml.html`

@@ -105,9 +105,9 @@ export class SlowCSSSelector extends BaseInsight {
               .data=${{
                 headers: [i18nString(UIStrings.total), ''],
                 rows: [
-                  [i18nString(UIStrings.elapsed), i18n.TimeUtilities.millisToString(this.#slowCSSSelector.totalElapsedMs)],
-                  [i18nString(UIStrings.matchAttempts), this.#slowCSSSelector.totalMatchAttempts],
-                  [i18nString(UIStrings.matchCount), this.#slowCSSSelector.totalMatchCount],
+                  {values: [i18nString(UIStrings.elapsed), i18n.TimeUtilities.millisToString(this.#slowCSSSelector.totalElapsedMs)]},
+                  {values: [i18nString(UIStrings.matchAttempts), this.#slowCSSSelector.totalMatchAttempts]},
+                  {values: [i18nString(UIStrings.matchCount), this.#slowCSSSelector.totalMatchCount]},
                 ],
               } as TableData}>
             </${Table.litTagName}>`}
@@ -115,7 +115,9 @@ export class SlowCSSSelector extends BaseInsight {
               .data=${{
                 headers: [i18nString(UIStrings.topSelectors), i18nString(UIStrings.elapsed)],
                 rows: this.#slowCSSSelector.topElapsedMs.map(selector => {
-                  return [selector.selector, time(Trace.Types.Timing.MicroSeconds(selector['elapsed (us)']))];
+                  return {
+                    values: [selector.selector, time(Trace.Types.Timing.MicroSeconds(selector['elapsed (us)']))],
+                  };
                 }),
               } as TableData}>
             </${Table.litTagName}>`}
@@ -123,7 +125,9 @@ export class SlowCSSSelector extends BaseInsight {
               .data=${{
                 headers: [i18nString(UIStrings.topSelectors), i18nString(UIStrings.matchAttempts)],
                 rows: this.#slowCSSSelector.topMatchAttempts.map(selector => {
-                  return [selector.selector, selector['match_attempts']];
+                  return {
+                    values: [selector.selector, selector['match_attempts']],
+                  };
                 }),
               } as TableData}>
             </${Table.litTagName}>`}

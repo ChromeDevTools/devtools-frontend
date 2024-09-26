@@ -125,9 +125,9 @@ export class InteractionToNextPaint extends BaseInsight {
                     .data=${{
                       headers: [i18nString(UIStrings.phase), i18nString(UIStrings.duration)],
                       rows: [
-                        [i18nString(UIStrings.inputDelay), time(event.inputDelay)],
-                        [i18nString(UIStrings.processingDuration), time(event.mainThreadHandling)],
-                        [i18nString(UIStrings.presentationDelay), time(event.presentationDelay)],
+                        {values: [i18nString(UIStrings.inputDelay), time(event.inputDelay)]},
+                        {values: [i18nString(UIStrings.processingDuration), time(event.mainThreadHandling)]},
+                        {values: [i18nString(UIStrings.presentationDelay), time(event.presentationDelay)]},
                       ],
                     } as TableData}>
                   </${Table.litTagName}>`}

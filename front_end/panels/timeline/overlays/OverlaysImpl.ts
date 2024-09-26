@@ -286,7 +286,7 @@ export interface CursorTimestampMarker {
 }
 
 /**
- * All supported overlay types. Expected to grow in time!
+ * All supported overlay types.
  */
 export type TimelineOverlay = EntrySelected|EntryOutline|TimeRangeLabel|EntryLabel|EntriesLink|CreateEntriesLink|
     TimespanBreakdown|CursorTimestampMarker|CandyStripedTimeRange;

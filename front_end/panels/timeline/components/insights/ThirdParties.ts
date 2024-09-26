@@ -10,10 +10,10 @@ import type * as Overlays from '../../overlays/overlays.js';
 
 import {BaseInsight, md, shouldRenderForCategory} from './Helpers.js';
 import * as SidebarInsight from './SidebarInsight.js';
-import {Table, type TableData} from './Table.js';
+import {Table, type TableData, type TableState} from './Table.js';
 import {Category} from './types.js';
 
-type ThirdPartiesEntires = Array<[
+type ThirdPartiesEntries = Array<[
   Trace.Insights.InsightRunners.ThirdPartyWeb.Entity,
   Trace.Insights.InsightRunners.ThirdPartyWeb.Summary,
 ]>;
@@ -47,8 +47,10 @@ export class ThirdParties extends BaseInsight {
 
   #overlaysForEntity =
       new Map<Trace.Insights.InsightRunners.ThirdPartyWeb.Entity, Overlays.Overlays.TimelineOverlay[]>();
-  #currentSelectedRowEl: HTMLElement|null = null;
-  #currentSelectionIsSticky = false;
+  #tableState: TableState = {
+    selectedRowEl: null,
+    selectionIsSticky: false,
+  };
 
   override createOverlays(): Overlays.Overlays.TimelineOverlay[] {
     this.#overlaysForEntity.clear();
@@ -81,35 +83,7 @@ export class ThirdParties extends BaseInsight {
     return overlays;
   }
 
-  #onSelectedRowChanged(
-      entity: Trace.Insights.InsightRunners.ThirdPartyWeb.Entity|null, rowEl: HTMLElement|null, sticky: boolean): void {
-    if (this.#currentSelectionIsSticky && !sticky) {
-      return;
-    }
-
-    // Unselect a sticky-selection when clicking it for a second time.
-    if (this.#currentSelectionIsSticky && rowEl === this.#currentSelectedRowEl) {
-      entity = null;
-      rowEl = null;
-      sticky = false;
-    }
-
-    if (entity) {
-      const overlays = this.#overlaysForEntity.get(entity);
-      if (overlays) {
-        this.onOverlayOverride(overlays);
-      }
-    } else {
-      this.onOverlayOverride(null);
-    }
-
-    this.#currentSelectedRowEl?.classList.remove('selected');
-    rowEl?.classList.add('selected');
-    this.#currentSelectedRowEl = rowEl;
-    this.#currentSelectionIsSticky = sticky;
-  }
-
-  #render(entries: ThirdPartiesEntires): LitHtml.TemplateResult {
+  #render(entries: ThirdPartiesEntries): LitHtml.TemplateResult {
     const topTransferSizeEntries = entries.sort((a, b) => b[1].transferSize - a[1].transferSize).slice(0, 6);
     const topMainThreadTimeEntries = entries.sort((a, b) => b[1].mainThreadTime - a[1].mainThreadTime).slice(0, 6);
 
@@ -128,26 +102,28 @@ export class ThirdParties extends BaseInsight {
                 <div slot="insight-content">
                   ${LitHtml.html`<${Table.litTagName}
                     .data=${{
+                      state: this.#tableState,
                       headers: [i18nString(UIStrings.columnThirdParty), i18nString(UIStrings.columnTransferSize)],
-                      rows: topTransferSizeEntries.map(([entity, summary]) => [
-                        entity.name,
-                        Platform.NumberUtilities.bytesToString(summary.transferSize),
-                      ]),
-                      onHoverRow: (index: number, rowEl: HTMLElement) => this.#onSelectedRowChanged(topTransferSizeEntries[index][0], rowEl, false),
-                      onClickRow: (index: number, rowEl: HTMLElement) => this.#onSelectedRowChanged(topTransferSizeEntries[index][0], rowEl, true),
-                      onMouseLeave: () => this.#onSelectedRowChanged(null, null, false),
+                      rows: topTransferSizeEntries.map(([entity, summary]) => ({
+                        values: [
+                          entity.name,
+                          Platform.NumberUtilities.bytesToString(summary.transferSize),
+                        ],
+                        overlays: this.#overlaysForEntity.get(entity),
+                      })),
                     } as TableData}>
                   </${Table.litTagName}>`}
                   ${LitHtml.html`<${Table.litTagName}
                     .data=${{
+                      state: this.#tableState,
                       headers: [i18nString(UIStrings.columnThirdParty), i18nString(UIStrings.columnBlockingTime)],
-                      rows: topMainThreadTimeEntries.map(([entity, summary]) => [
-                        entity.name,
-                        i18n.TimeUtilities.millisToString(Platform.Timing.microSecondsToMilliSeconds(summary.mainThreadTime)),
-                      ]),
-                      onHoverRow: (index: number, rowEl: HTMLElement) => this.#onSelectedRowChanged(topMainThreadTimeEntries[index][0], rowEl, false),
-                      onClickRow: (index: number, rowEl: HTMLElement) => this.#onSelectedRowChanged(topMainThreadTimeEntries[index][0], rowEl, true),
-                      onMouseLeave: () => this.#onSelectedRowChanged(null, null, false),
+                      rows: topMainThreadTimeEntries.map(([entity, summary]) => ({
+                        values: [
+                          entity.name,
+                          i18n.TimeUtilities.millisToString(Platform.Timing.microSecondsToMilliSeconds(summary.mainThreadTime)),
+                        ],
+                        overlays: this.#overlaysForEntity.get(entity),
+                      })),
                     } as TableData}>
                   </${Table.litTagName}>`}
                 </div>

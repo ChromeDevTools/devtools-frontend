@@ -626,7 +626,6 @@ export class FreestylerChatUi extends HTMLElement {
   }
 
   #renderChatMessage = (message: ChatMessage, {isLast}: {isLast: boolean}): LitHtml.TemplateResult => {
-    // TODO(b/365068104): Render user's message as markdown too.
     if (message.entity === ChatMessageEntity.USER) {
       const name = this.#props.userInfo.accountFullName || lockedString(UIStringsNotTranslate.you);
       const image = this.#props.userInfo.accountImage ?

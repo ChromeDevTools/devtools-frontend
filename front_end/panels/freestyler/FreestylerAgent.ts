@@ -186,7 +186,6 @@ export class FreestylerAgent {
         model_id: config.devToolsFreestylerDogfood?.modelId ?? undefined,
       },
       metadata: {
-        // TODO: disable logging based on query params.
         disable_user_content_logging: !(opts.serverSideLoggingEnabled ?? false),
         string_session_id: opts.sessionId,
         user_tier: Host.AidaClient.convertToUserTierEnum(config.devToolsFreestylerDogfood?.userTier),

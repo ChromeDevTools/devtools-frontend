@@ -141,6 +141,7 @@ describeWithEnvironment('DrJonesNetworkAgent', () => {
             metadata: {
               disable_user_content_logging: false,
               string_session_id: 'sessionId',
+              user_tier: 2,
             },
             options: {
               model_id: 'test model',

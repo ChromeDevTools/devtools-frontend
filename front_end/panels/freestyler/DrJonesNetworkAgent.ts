@@ -118,9 +118,10 @@ export class DrJonesNetworkAgent {
         model_id: config.devToolsExplainThisResourceDogfood?.modelId ?? undefined,
       },
       metadata: {
-        // TODO: disable logging based on query params.
         disable_user_content_logging: !(opts.serverSideLoggingEnabled ?? false),
         string_session_id: opts.sessionId,
+        // TODO(b/369822364): use a feature param instead.
+        user_tier: Host.AidaClient.convertToUserTierEnum('BETA'),
       },
       // eslint-disable-next-line @typescript-eslint/naming-convention
       functionality_type: Host.AidaClient.FunctionalityType.CHAT,

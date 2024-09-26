@@ -77,6 +77,7 @@ describeWithEnvironment('ModificationsManager', () => {
 
     modificationsManager.createAnnotation({
       type: 'ENTRIES_LINK',
+      state: Trace.Types.File.EntriesLinkState.CONNECTED,
       entryFrom: entry,
       entryTo: entry2,
     });
@@ -124,12 +125,14 @@ describeWithEnvironment('ModificationsManager', () => {
 
        modificationsManager.createAnnotation({
          type: 'ENTRIES_LINK',
+         state: Trace.Types.File.EntriesLinkState.CONNECTED,
          entryFrom: entry,
          entryTo: entry2,
        });
 
        modificationsManager.createAnnotation({
          type: 'ENTRIES_LINK',
+         state: Trace.Types.File.EntriesLinkState.PENDING_TO_EVENT,
          entryFrom: entry2,
        });
 

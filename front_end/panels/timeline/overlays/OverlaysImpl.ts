@@ -64,22 +64,11 @@ export interface EntryLabel {
   label: string;
 }
 
-/**
- * Represents an object created when a user creates a link between two entries.
- */
 export interface EntriesLink {
   type: 'ENTRIES_LINK';
+  state: Trace.Types.File.EntriesLinkState;
   entryFrom: OverlayEntry;
   entryTo?: OverlayEntry;
-}
-
-/**
- * Represents an object created when a user double click an entry and before
- * creating a link between two entries.
- */
-export interface CreateEntriesLink {
-  type: 'ENTRIES_LINK_CREATE_BUTTON';
-  entry: OverlayEntry;
 }
 
 /**
@@ -159,12 +148,6 @@ function traceWindowForOverlay(overlay: TimelineOverlay): Trace.Types.Timing.Tra
 
       break;
     }
-    case 'ENTRIES_LINK_CREATE_BUTTON': {
-      const timings = timingsForOverlayEntry(overlay.entry);
-      overlayMinBounds.push(timings.startTime);
-      overlayMaxBounds.push(timings.endTime);
-      break;
-    }
     case 'TIMESPAN_BREAKDOWN': {
       if (overlay.entry) {
         const timings = timingsForOverlayEntry(overlay.entry);
@@ -228,10 +211,6 @@ export function entriesForOverlay(overlay: TimelineOverlay): readonly OverlayEnt
       }
       break;
     }
-    case 'ENTRIES_LINK_CREATE_BUTTON': {
-      entries.push(overlay.entry);
-      break;
-    }
     case 'TIMESPAN_BREAKDOWN': {
       if (overlay.entry) {
         entries.push(overlay.entry);
@@ -288,18 +267,17 @@ export interface CursorTimestampMarker {
 /**
  * All supported overlay types.
  */
-export type TimelineOverlay = EntrySelected|EntryOutline|TimeRangeLabel|EntryLabel|EntriesLink|CreateEntriesLink|
-    TimespanBreakdown|CursorTimestampMarker|CandyStripedTimeRange;
+export type TimelineOverlay = EntrySelected|EntryOutline|TimeRangeLabel|EntryLabel|EntriesLink|TimespanBreakdown|
+    CursorTimestampMarker|CandyStripedTimeRange;
 
 /**
  * Denotes overlays that are singletons; only one of these will be allowed to
  * exist at any given time. If one exists and the add() method is called, the
  * new overlay will replace the existing one.
  */
-type SingletonOverlay = EntrySelected|CursorTimestampMarker|CreateEntriesLink;
+type SingletonOverlay = EntrySelected|CursorTimestampMarker;
 export function overlayIsSingleton(overlay: TimelineOverlay): overlay is SingletonOverlay {
-  return overlay.type === 'CURSOR_TIMESTAMP_MARKER' || overlay.type === 'ENTRY_SELECTED' ||
-      overlay.type === 'ENTRIES_LINK_CREATE_BUTTON';
+  return overlay.type === 'CURSOR_TIMESTAMP_MARKER' || overlay.type === 'ENTRY_SELECTED';
 }
 
 /**
@@ -356,7 +334,7 @@ export interface OverlayEntryQueries {
 // An event dispatched when one of the Annotation Overlays (overlay created by the user,
 // ex. EntryLabel) is removed or updated. When one of the Annotation Overlays is removed or updated,
 // ModificationsManager listens to this event and updates the current annotations.
-export type UpdateAction = 'Remove'|'Update'|'CreateLink';
+export type UpdateAction = 'Remove'|'Update';
 export class AnnotationOverlayActionEvent extends Event {
   static readonly eventName = 'annotationoverlayactionsevent';
 
@@ -472,7 +450,7 @@ export class Overlays extends EventTarget {
     this.#lastMouseOffsetX = mouseEvent.offsetX;
     this.#lastMouseOffsetY = mouseEvent.offsetY;
 
-    if (!this.#entriesLinkInProgress || this.#entriesLinkInProgress.entryTo) {
+    if (this.#entriesLinkInProgress?.state !== Trace.Types.File.EntriesLinkState.PENDING_TO_EVENT) {
       return;
     }
 
@@ -814,14 +792,6 @@ export class Overlays extends EventTarget {
         }
         break;
       }
-      case 'ENTRIES_LINK_CREATE_BUTTON': {
-        const isVisible = this.entryIsVisibleOnChart(overlay.entry);
-        this.#setOverlayElementVisibility(element, isVisible);
-        if (isVisible) {
-          this.#positionCreateEntriesLinkOverlay(overlay, element);
-        }
-        break;
-      }
       case 'TIMESPAN_BREAKDOWN': {
         this.#positionTimespanBreakdownOverlay(overlay, element);
         // TODO: Have the timespan squeeze instead.
@@ -949,22 +919,6 @@ export class Overlays extends EventTarget {
     }
   }
 
-  #positionCreateEntriesLinkOverlay(overlay: CreateEntriesLink, element: HTMLElement): void {
-    const componentDefault = element.querySelector('devtools-create-entries-link-overlay');
-
-    if (componentDefault) {
-      const component = componentDefault.querySelector('devtools-entries-link-overlay');
-      if (!component) {
-        const entryStartX = this.xPixelForEventStartOnChart(overlay.entry) ?? 0;
-        const entryEndX = this.xPixelForEventEndOnChart(overlay.entry) ?? 0;
-        const entryWidth = entryEndX - entryStartX;
-        const entryStartY = (this.yPixelForEventOnChart(overlay.entry) ?? 0);
-        const entryHeight = this.pixelHeightForEventOnChart(overlay.entry) ?? 0;
-
-        componentDefault.fromEntryData = {entryStartX, entryStartY, entryWidth, entryHeight};
-      }
-    }
-  }
   /**
    * Positions the arrow between two entries. Takes in the entriesToConnect
    * because if one of the original entries is hidden in a collapsed main thread
@@ -982,6 +936,12 @@ export class Overlays extends EventTarget {
 
       const entryFromVisibility = this.entryIsVisibleOnChart(entryFrom);
       const entryToVisibility = entryTo ? this.entryIsVisibleOnChart(entryTo) : false;
+
+      // If `fromEntry` is not visible and the link creation is not started yet, meaning that
+      // only the button to create the link is displayed, delete the whole overlay.
+      if (!entryFromVisibility && overlay.state === Trace.Types.File.EntriesLinkState.CREATION_NOT_STARTED) {
+        this.dispatchEvent(new AnnotationOverlayActionEvent(overlay, 'Remove'));
+      }
 
       // If the 'from' entry is visible, set the entry Y as an arrow start coordinate. Ff not, get the canvas edge coordinate to for the arrow to start from.
       const yPixelForFromArrow = (entryFromVisibility ? this.yPixelForEventOnChart(entryFrom) :
@@ -1377,22 +1337,11 @@ export class Overlays extends EventTarget {
         const entryHeight = this.pixelHeightForEventOnChart(entries.entryFrom) ?? 0;
 
         const component = new Components.EntriesLinkOverlay.EntriesLinkOverlay(
-            {x: entryEndX, y: entryStartY, width: entryWidth, height: entryHeight});
-        div.appendChild(component);
-        return div;
-      }
-      case 'ENTRIES_LINK_CREATE_BUTTON': {
-        const entryStartX = this.xPixelForEventStartOnChart(overlay.entry) ?? 0;
-        const entryEndX = this.xPixelForEventEndOnChart(overlay.entry) ?? 0;
-        const entryWidth = entryEndX - entryStartX;
-        const entryStartY = (this.yPixelForEventOnChart(overlay.entry) ?? 0);
-        const entryHeight = this.pixelHeightForEventOnChart(overlay.entry) ?? 0;
+            {x: entryEndX, y: entryStartY, width: entryWidth, height: entryHeight}, overlay.state);
 
-        const component = new Components.EntriesLinkOverlay.CreateEntriesLinkOverlay(
-            {entryStartX, entryStartY, entryWidth, entryHeight});
-
-        component.addEventListener(Components.EntriesLinkOverlay.CreateEntriesLinkRemoveEvent.eventName, () => {
-          this.dispatchEvent(new AnnotationOverlayActionEvent(overlay, 'CreateLink'));
+        component.addEventListener(Components.EntriesLinkOverlay.EntryLinkStartCreating.eventName, () => {
+          overlay.state = Trace.Types.File.EntriesLinkState.PENDING_TO_EVENT;
+          this.dispatchEvent(new AnnotationOverlayActionEvent(overlay, 'Update'));
         });
         div.appendChild(component);
         return div;
@@ -1449,9 +1398,6 @@ export class Overlays extends EventTarget {
       }
       case 'ENTRY_LABEL':
       case 'ENTRY_OUTLINE':
-      case 'ENTRIES_LINK_CREATE_BUTTON':
-        // Nothing to do here.
-        break;
       case 'ENTRIES_LINK': {
         const component = element.querySelector('devtools-entries-link-overlay');
         if (component) {

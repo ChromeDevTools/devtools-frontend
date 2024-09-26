@@ -40,9 +40,10 @@ describe('AnnotationHelpers', () => {
 
     it('returns both entries for a link', async () => {
       const annotation: Trace.Types.File.EntriesLinkAnnotation = {
+        type: 'ENTRIES_LINK',
+        state: Trace.Types.File.EntriesLinkState.CONNECTED,
         entryFrom: FAKE_ENTRY_1,
         entryTo: FAKE_ENTRY_2,
-        type: 'ENTRIES_LINK',
       };
       assert.deepEqual(getAnnotationEntries(annotation), [FAKE_ENTRY_1, FAKE_ENTRY_2]);
     });
@@ -89,9 +90,10 @@ describe('AnnotationHelpers', () => {
 
     it('returns the bounds based on the start and end entry for an ENTRIES_LINK', async () => {
       const annotation: Trace.Types.File.EntriesLinkAnnotation = {
+        type: 'ENTRIES_LINK',
+        state: Trace.Types.File.EntriesLinkState.CONNECTED,
         entryFrom: FAKE_ENTRY_1,
         entryTo: FAKE_ENTRY_2,
-        type: 'ENTRIES_LINK',
       };
       assert.deepEqual(getAnnotationWindow(annotation), {
         min: 1,
@@ -158,6 +160,7 @@ describe('AnnotationHelpers', () => {
     it('returns text when an entries link has its entries connected', async () => {
       const link: Overlays.Overlays.EntriesLink = {
         type: 'ENTRIES_LINK',
+        state: Trace.Types.File.EntriesLinkState.CONNECTED,
         entryFrom: FAKE_ENTRY_1,
         entryTo: FAKE_ENTRY_2,
       };

@@ -27,6 +27,18 @@ export const enum DataOrigin {
   TRACE_EVENTS = 'TraceEvents',
 }
 
+/**
+ * The Entries link can have 3 stated:
+ *  1. The Link creation is not started yet, meaning only the button that needs to be clicked to start creating the link is visible.
+ *  2. Pending to event - the creation is started, but the entry that the link points to has not been chosen yet
+ *  3. Link connected - final state, both entries present
+ */
+export const enum EntriesLinkState {
+  CREATION_NOT_STARTED = 'creation_not_started',
+  PENDING_TO_EVENT = 'pending_to_event',
+  CONNECTED = 'connected',
+}
+
 export const enum EventKeyType {
   RAW_EVENT = 'r',
   SYNTHETIC_EVENT = 's',
@@ -63,11 +75,9 @@ export interface TimeRangeAnnotation {
   bounds: TraceWindowMicroSeconds;
 }
 
-/**
- * Represents an object that is used to store the Entries link Annotation.
- */
 export interface EntriesLinkAnnotation {
   type: 'ENTRIES_LINK';
+  state: EntriesLinkState;
   entryFrom: Event;
   entryTo?: Event;
 }

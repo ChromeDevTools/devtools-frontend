@@ -179,6 +179,7 @@ export class ModificationsManager extends EventTarget {
       case 'ENTRIES_LINK':
         return {
           type: 'ENTRIES_LINK',
+          state: annotation.state,
           entryFrom: annotation.entryFrom,
           entryTo: annotation.entryTo,
         };
@@ -219,6 +220,7 @@ export class ModificationsManager extends EventTarget {
     } else if (
         overlay && AnnotationHelpers.isEntriesLink(overlay) &&
         Trace.Types.File.isEntriesLinkAnnotation(updatedAnnotation)) {
+      overlay.state = updatedAnnotation.state;
       overlay.entryFrom = updatedAnnotation.entryFrom;
       overlay.entryTo = updatedAnnotation.entryTo;
       this.dispatchEvent(new AnnotationModifiedEvent(overlay, 'UpdateLinkToEntry'));
@@ -240,6 +242,11 @@ export class ModificationsManager extends EventTarget {
       this.#annotationsHiddenSetting.set(false);
       annotationForUpdatedOverlay.label = updatedOverlay.label;
       this.dispatchEvent(new AnnotationModifiedEvent(updatedOverlay, 'UpdateLabel'));
+    }
+
+    if ((updatedOverlay.type === 'ENTRIES_LINK' && annotationForUpdatedOverlay.type === 'ENTRIES_LINK')) {
+      this.#annotationsHiddenSetting.set(false);
+      annotationForUpdatedOverlay.state = updatedOverlay.state;
     }
   }
 
@@ -369,6 +376,7 @@ export class ModificationsManager extends EventTarget {
         this.createAnnotation(
             {
               type: 'ENTRIES_LINK',
+              state: Trace.Types.File.EntriesLinkState.CONNECTED,
               entryFrom: this.#eventsSerializer.eventForKey(linkBetweenEntries.entryFrom, this.#parsedTrace),
               entryTo: this.#eventsSerializer.eventForKey(linkBetweenEntries.entryTo, this.#parsedTrace),
             },

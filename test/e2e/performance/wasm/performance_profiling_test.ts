@@ -111,7 +111,7 @@ describe('The Performance panel', function() {
   }
 
   beforeEach(async () => {
-    await step('navigate to the Performance tab and uplaod performance profile', async () => {
+    await step('navigate to the Performance tab and upload performance profile', async () => {
       await navigateToPerformanceTab('wasm/profiling');
 
       const uploadProfileHandle = await waitFor<HTMLInputElement>('input[type=file]');

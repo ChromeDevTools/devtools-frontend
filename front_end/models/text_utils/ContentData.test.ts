@@ -151,4 +151,12 @@ describe('ContentData', () => {
       assert.isTrue(content1.contentEqualTo(content2));
     });
   });
+
+  describe('isTextContent', () => {
+    it('returns true for binary mime types if it was created with text data', () => {
+      const content = new ContentData('a simple text', false, 'application/octet-stream', 'utf-8');
+
+      assert.isTrue(content.isTextContent);
+    });
+  });
 });

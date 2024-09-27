@@ -21,13 +21,13 @@ export function extensionEntryColor(event: Trace.Types.Extensions.SyntheticExten
       themeColor = '--ref-palette-primary60';
       break;
     case 'secondary':
-      themeColor = '--ref-palette-secondary70';
+      themeColor = '--ref-palette-purple80';
       break;
     case 'secondary-light':
-      themeColor = '--ref-palette-secondary80';
+      themeColor = '--ref-palette-purple90';
       break;
     case 'secondary-dark':
-      themeColor = '--ref-palette-secondary60';
+      themeColor = '--ref-palette-purple70';
       break;
     case 'tertiary':
       themeColor = '--ref-palette-tertiary70';

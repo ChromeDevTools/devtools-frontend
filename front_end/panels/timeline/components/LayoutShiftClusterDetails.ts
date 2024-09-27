@@ -57,14 +57,14 @@ export class LayoutShiftClusterDetails extends HTMLElement {
     this.#render();
   }
 
-  #renderInsightTitleCard(): LitHtml.TemplateResult|null {
+  #renderInsightChip(): LitHtml.TemplateResult|null {
     if (!this.#cluster) {
       return null;
     }
 
     // clang-format off
     return LitHtml.html`
-      <div class="timeline-details-chip-decorative-title">
+      <div class="insight-chip">
         <div class="insight-keyword">${i18nString(UIStrings.insight)}</div>
         ${i18nString(UIStrings.layoutShiftCulprits)}
       </div>
@@ -72,10 +72,10 @@ export class LayoutShiftClusterDetails extends HTMLElement {
     // clang-format on
   }
 
-  #renderDetailsChip(): LitHtml.TemplateResult {
+  #renderTitle(): LitHtml.TemplateResult {
     return LitHtml.html`
       <div class="cluster-details-title">
-        <div class="cluster-event-chip"></div>${i18nString(UIStrings.layoutShiftCluster)}</div>
+        <div class="cluster-event-title"></div>${i18nString(UIStrings.layoutShiftCluster)}</div>
     `;
   }
 
@@ -102,9 +102,13 @@ export class LayoutShiftClusterDetails extends HTMLElement {
     // clang-format off
     const output = LitHtml.html`
       <div class="layout-shift-cluster-summary-details">
-        ${this.#renderInsightTitleCard()}
-        ${this.#renderDetailsChip()}
-        ${this.#renderDetails(this.#cluster, this.#parsedTrace)}
+      <div class="event-details">
+          ${this.#renderTitle()}
+          ${this.#renderDetails(this.#cluster, this.#parsedTrace)}
+        </div>
+        <div class="insight-categories">
+          ${this.#renderInsightChip()}
+        </div>
       </div>
     `;
     // clang-format on

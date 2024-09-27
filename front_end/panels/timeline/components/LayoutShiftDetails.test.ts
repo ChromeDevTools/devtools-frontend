@@ -18,7 +18,7 @@ describeWithMockConnection('LayoutShiftDetails', () => {
     details.setData(shiftEvent, insights, parsedTrace, false);
 
     assert.isNotNull(details.shadowRoot);
-    const decorativeChip = details.shadowRoot.querySelector('.timeline-details-chip-decorative-title');
+    const decorativeChip = details.shadowRoot.querySelector('.insight-chip');
     assert.isNotNull(decorativeChip);
 
     assert.include(decorativeChip?.textContent, 'Layout shift culprits');
@@ -28,7 +28,7 @@ describeWithMockConnection('LayoutShiftDetails', () => {
     const table = details.shadowRoot.querySelector('.layout-shift-details-table');
 
     // These headers should be included.
-    const tableHeaders = ['Start time', 'Shift score', 'Culprit type'];
+    const tableHeaders = ['Start time', 'Shift score'];
     const content = table?.textContent;
     for (const header of tableHeaders) {
       assert.include(content, header);

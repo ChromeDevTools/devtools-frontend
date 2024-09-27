@@ -144,6 +144,10 @@ export class KeyboardShortcut {
     return !keyboardEvent.ctrlKey && !keyboardEvent.shiftKey && !keyboardEvent.altKey && !keyboardEvent.metaKey;
   }
 
+  static hasAtLeastOneModifier(event: Event): boolean {
+    return KeyboardShortcut.hasNoModifiers(event) === false;
+  }
+
   static makeDescriptor(key: string|Key, modifiers?: number): Descriptor {
     return {
       key: KeyboardShortcut.makeKey(typeof key === 'string' ? key : key.code, modifiers),

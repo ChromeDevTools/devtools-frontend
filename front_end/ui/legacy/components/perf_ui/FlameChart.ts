@@ -46,6 +46,13 @@ import {type Calculator, TimelineGrid} from './TimelineGrid.js';
 
 const UIStrings = {
   /**
+   *@description Aria alert used to notify the user when an event has been selected because they tabbed into a group.
+   *@example {Paint} PH1
+   *@example {Main thread} PH2
+   *
+   */
+  eventSelectedFromGroup: 'Selected a {PH1} event within {PH2}. Press "enter" to focus this event.',
+  /**
    *@description Aria accessible name in Flame Chart of the Performance panel
    */
   flameChart: 'Flame Chart',
@@ -1327,7 +1334,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
   }
 
   private onKeyDown(e: KeyboardEvent): void {
-    if (!UI.KeyboardShortcut.KeyboardShortcut.hasNoModifiers(e) || !this.timelineData()) {
+    if (UI.KeyboardShortcut.KeyboardShortcut.hasAtLeastOneModifier(e) || !this.timelineData()) {
       return;
     }
 
@@ -1399,7 +1406,11 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     const filteredTitleIndices = titleIndices.filter(entryIndexIsInTrack);
     this.drawEventTitles(context, timelineData, filteredTitleIndices, canvasWidth);
     context.restore();
-    return {top: groupOffsets[trackIndex], height: nextOffset - groupTop, visibleEntries: new Set(allFilteredIndexes)};
+    return {
+      top: groupOffsets[trackIndex],
+      height: nextOffset - groupTop,
+      visibleEntries: new Set(allFilteredIndexes),
+    };
   }
 
   private handleKeyboardGroupNavigation(event: Event): boolean {
@@ -1438,6 +1449,10 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     return handled;
   }
 
+  /**
+   * Used when the user presses "enter" when a group is selected, so that we
+   * move their selection into an event in the group.
+   */
   private selectFirstEntryInCurrentGroup(): boolean {
     if (!this.rawTimelineData) {
       return false;
@@ -1470,10 +1485,33 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       return false;
     }
 
-    // Get first (default) entry in startLevel of selected group
-    const firstEntryIndex = this.timelineLevels[startLevelInGroup][0];
+    const timelineData = this.timelineData();
+    if (!timelineData) {
+      return false;
+    }
+    // Get the first entry within the group that is at least 1ms long.
+    // Otherwise the panel can select a tiny event which is really hard to see
+    // even at maximum zoom. We hedge our bets that the user probably doesn't
+    // care for such a tiny event, at least not by default. Better to take them
+    // to an event that is slightly more prominent in the UI.
+    const minDurationOfFirstEntry = Trace.Types.Timing.MilliSeconds(1);
+    let firstEntryIndex = this.timelineLevels[startLevelInGroup].find((i => {
+      const duration = timelineData.entryTotalTimes[i];
+      return !Number.isNaN(duration) && duration >= minDurationOfFirstEntry;
+    }));
+    if (typeof firstEntryIndex === 'undefined') {
+      // If we didn't find a 1ms+ event, fallback to the first, regardless of duration.
+      firstEntryIndex = this.timelineLevels[startLevelInGroup][0];
+    }
 
     this.expandGroup(this.keyboardFocusedGroup, true /* setExpanded */);
+    const eventName = this.dataProvider.entryTitle(firstEntryIndex);
+    if (eventName) {
+      UI.ARIAUtils.alert(i18nString(UIStrings.eventSelectedFromGroup, {
+        PH1: eventName,
+        PH2: group.name,
+      }));
+    }
     this.setSelectedEntry(firstEntryIndex);
     return true;
   }

@@ -8,6 +8,7 @@ This page assumes a working Chromium DevTools [checkout and build](../get_the_co
 2.   [Design Documents](./design.md)
 3.   [Contributing changes](./changes.md)
 4.   [Issues Guidelines](./issues.md)
+5.   [Settings, Experiments, and Features](./settings-experiments-features.md)
 5.   [Legal Stuff](#Legal-Stuff)
 
 

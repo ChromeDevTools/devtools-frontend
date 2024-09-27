@@ -2642,7 +2642,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     for (const [entryIndex, drawOverride] of this.#indexToDrawOverride.entries()) {
       const entryStartTime = entryStartTimes[entryIndex];
       const level = entryLevels[entryIndex];
-      const x = this.chartViewport.timeToPosition(entryStartTime);
+      const x = this.timeToPositionClipped(entryStartTime);
       const y = this.levelToOffset(level);
       const height = this.levelHeight(level);
       const width = this.#eventBarWidth(timelineData, entryIndex);

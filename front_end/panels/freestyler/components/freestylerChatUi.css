@@ -219,7 +219,7 @@
     top: 0;
     visibility: var(--visibility-if-can-scroll, hidden);
     animation-range: var(--sys-size-6) var(--sys-size-11); /* stylelint-disable-line property-no-unknown */
-    background: radial-gradient(farthest-side at 0 50%, var(--color-background-inverted-opacity-30), var(--color-background-inverted-opacity-0));
+    background: radial-gradient(farthest-side at 0 50%, var(--app-color-scroll-area-shadow-start), transparent);
   }
 
   .suggestions::after {
@@ -227,7 +227,7 @@
     visibility: var(--visibility-if-can-scroll, hidden);
     animation-direction: reverse;
     animation-range: calc(100% - var(--sys-size-11)) calc(100% - var(--sys-size-6)); /* stylelint-disable-line property-no-unknown */
-    background: radial-gradient(farthest-side at 100% 50%, var(--color-background-inverted-opacity-30), var(--color-background-inverted-opacity-0));
+    background: radial-gradient(farthest-side at 100% 50%, var(--app-color-scroll-area-shadow-start), transparent);
   }
 
   .aborted {

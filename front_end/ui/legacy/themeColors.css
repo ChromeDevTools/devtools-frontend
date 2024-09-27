@@ -382,6 +382,11 @@
    * Colors for cards.
    */
   --app-color-card-background: var(--sys-color-base-container-elevated);
+
+  /**
+  * Color for scrollable area shadow gradient
+  */
+  --app-color-scroll-area-shadow-start: color-mix(in sRGB, var(--ref-palette-neutral0) 30%, transparent);
 }
 
 :root.baseline-default {
@@ -751,4 +756,9 @@
    * Colors for cards.
    */
   --app-color-card-background: var(--sys-color-surface2);
+
+  /**
+  * Color for scrollable area shadow gradient
+  */
+  --app-color-scroll-area-shadow-start: color-mix(in sRGB, var(--ref-palette-neutral100) 30%, transparent);
 }

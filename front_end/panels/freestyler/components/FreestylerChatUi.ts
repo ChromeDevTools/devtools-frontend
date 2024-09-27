@@ -24,7 +24,7 @@ const UIStrings = {
   /**
    * @description The error message when the user is not logged in into Chrome.
    */
-  notLoggedIn: 'This feature is only available when you sign into Chrome with your Google account',
+  notLoggedIn: 'This feature is only available when you are signed into Chrome with your Google account',
   /**
    * @description Message shown when the user is offline.
    */
@@ -61,7 +61,7 @@ const UIStringsNotTranslate = {
    *@description Disclaimer text right after the chat input.
    */
   inputDisclaimerForDrJonesNetworkAgent:
-      'Chat messages and the selected call stack are sent to Google and may be seen by human reviewers to improve this feature. This is an experimental AI feature and won’t always get it right.',
+      'Chat messages and the selected network request are sent to Google and may be seen by human reviewers to improve this feature. This is an experimental AI feature and won’t always get it right.',
   /**
    *@description Placeholder text for the chat UI input.
    */
@@ -106,7 +106,7 @@ const UIStringsNotTranslate = {
   /**
    * @description Side effect confirmation text
    */
-  sideEffectConfirmationDescription: 'The code contains side effects. Do you wish to continue?',
+  sideEffectConfirmationDescription: 'This code may modify page content. Continue?',
   /**
    * @description Side effect confirmation text for the button that says "Continue"
    */

@@ -86,7 +86,7 @@ const UIStrings = {
   /**
    *@description Text describing the 'AI assistance' feature
    */
-  helpUnderstandStyling: 'Helps you understand and fix styling issues',
+  helpUnderstandStyling: 'Get help with understanding CSS styles',
   /**
    *@description Text which is a hyperlink to more documentation
    */
@@ -94,16 +94,16 @@ const UIStrings = {
   /**
    *@description Description of the AI assistance feature
    */
-  explainStyling: 'Get explanations and additional context for styling behaviors',
+  explainStyling: 'Understand CSS styles with AI-powered insights',
   /**
    *@description Description of the AI assistance feature
    */
-  receiveStylingSuggestions: 'Receive suggestions and code samples for fixing styling issues',
+  receiveStylingSuggestions: 'Improve your development workflow with contextual explanations and suggestions',
   /**
    *@description Explainer for which data is being sent by the AI assistance feature
    */
   freestylerSendsData:
-      'Any data the inspected page can access via Web APIs may be sent to Google to generate explanations. This data may be seen by human reviewers to improve this feature.',
+      'Any data the inspected page can access via Web APIs are sent to Google to generate explanations. This data may be seen by human reviewers to improve this feature. Don’t use on pages with personal or sensitive information',
   /**
    *@description Label for a link to the terms of service
    */
@@ -374,7 +374,7 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
     return LitHtml.html`
       <div class="accordion-header" @click=${this.#expandFreestylerSetting}>
         <div class="icon-container centered">
-          <${IconButton.Icon.Icon.litTagName} name="pen-spark"></${IconButton.Icon.Icon.litTagName}>
+          <${IconButton.Icon.Icon.litTagName} name="smart-assistant"></${IconButton.Icon.Icon.litTagName}>
         </div>
         <div class="setting-card">
           <h2>${i18n.i18n.lockedString('AI assistance')}</h2>
@@ -407,8 +407,8 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
         <div class="overflow-hidden">
           <div class="expansion-grid">
             <h3 class="expansion-grid-whole-row">${i18nString(UIStrings.whenOn)}</h3>
-            ${this.#renderSettingItem('lightbulb', i18nString(UIStrings.explainStyling))}
-            ${this.#renderSettingItem('code', i18nString(UIStrings.receiveStylingSuggestions))}
+            ${this.#renderSettingItem('info', i18nString(UIStrings.explainStyling))}
+            ${this.#renderSettingItem('pen-spark', i18nString(UIStrings.receiveStylingSuggestions))}
             <h3 class="expansion-grid-whole-row">${i18nString(UIStrings.thingsToConsider)}</h3>
             ${this.#renderSettingItem('google', i18nString(UIStrings.freestylerSendsData))}
             ${this.#renderSettingItem('policy', LitHtml.html`
@@ -416,16 +416,6 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
                 PH1: tosLink,
                 PH2: privacyNoticeLink,
               })}
-            `)}
-            ${this.#renderSettingItem('warning', LitHtml.html`
-              <x-link
-                href="https://support.google.com/legal/answer/13505487"
-                class="link"
-                tabindex=${tabindex}
-                jslog=${VisualLogging.link('code-snippets-explainer.freestyler').track({
-                  click: true,
-                })}
-              >${i18nString(UIStrings.generatedSnippets)}</x-link>
             `)}
           </div>
         </div>

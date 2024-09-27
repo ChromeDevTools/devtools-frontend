@@ -16,11 +16,12 @@ const UIStrings = {
   /**
    *@description Header text content in Framework Ignore List Settings Tab of the Settings
    */
-  frameworkIgnoreList: 'Framework Ignore List',
+  frameworkIgnoreList: 'Framework ignore list',
   /**
    *@description Text in Framework Ignore List Settings Tab of the Settings
    */
-  debuggerWillSkipThroughThe: 'Debugger will skip through the scripts and will not stop on exceptions thrown by them.',
+  debuggerWillSkipThroughThe:
+      'Debugger won\'t step through these scripts or break on exceptions that only affect them and Performance panel will collapse flamechart items that match.',
   /**
    *@description Text in Framework Ignore List Settings Tab of the Settings
    */
@@ -32,7 +33,7 @@ const UIStrings = {
   /**
    *@description Text in Framework Ignore List Settings Tab of the Settings
    */
-  enableIgnoreListing: 'Enable Ignore Listing',
+  enableIgnoreListing: 'Enable ignore listing',
   /**
    *@description Text in Framework Ignore List Settings Tab of the Settings
    */
@@ -48,11 +49,11 @@ const UIStrings = {
   /**
    *@description Text of the add pattern button in Framework Ignore List Settings Tab of the Settings
    */
-  addPattern: 'Add pattern...',
+  addPattern: 'Add regex rule...',
   /**
    *@description Aria accessible name in Framework Ignore List Settings Tab of the Settings
    */
-  addFilenamePattern: 'Add filename pattern',
+  addFilenamePattern: 'Add a regular expression rule for the script\'s URL',
   /**
    *@description Pattern title in Framework Ignore List Settings Tab of the Settings
    *@example {ad.*?} PH1
@@ -62,19 +63,19 @@ const UIStrings = {
    *@description Aria accessible name in Framework Ignore List Settings Tab of the Settings. It labels the input
    * field used to add new or edit existing regular expressions that match file names to ignore in the debugger.
    */
-  pattern: 'Add Pattern',
+  pattern: 'Add a regular expression rule for the script\'s URL',
   /**
    *@description Error message in Framework Ignore List settings pane that declares pattern must not be empty
    */
-  patternCannotBeEmpty: 'Pattern cannot be empty',
+  patternCannotBeEmpty: 'Rule can\'t be empty',
   /**
    *@description Error message in Framework Ignore List settings pane that declares pattern already exits
    */
-  patternAlreadyExists: 'Pattern already exists',
+  patternAlreadyExists: 'Rule already exists',
   /**
    *@description Error message in Framework Ignore List settings pane that declares pattern must be a valid regular expression
    */
-  patternMustBeAValidRegular: 'Pattern must be a valid regular expression',
+  patternMustBeAValidRegular: 'Rule must be a valid regular expression',
   /**
    *@description Text that is usually a hyperlink to more documentation
    */

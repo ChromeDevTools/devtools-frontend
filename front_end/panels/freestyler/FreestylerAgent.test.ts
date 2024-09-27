@@ -291,6 +291,18 @@ c`;
           },
       );
     });
+
+    it('parses a response with no instruction tags as an answer and correctly parses suggestions', async () => {
+      assert.deepStrictEqual(
+          FreestylerAgent.parseResponse(
+              'This is also an answer\nSUGGESTIONS: [\"suggestion\"]',
+              ),
+          {
+            answer: 'This is also an answer',
+            suggestions: ['suggestion'],
+          },
+      );
+    });
   });
 
   describe('describeElement', () => {
@@ -837,7 +849,6 @@ c`;
       const agent = new FreestylerAgent({
         aidaClient: mockAidaClient(generateNothing),
         execJs,
-
       });
       const responses = await Array.fromAsync(agent.run('test', {selectedElement: element}));
       assert.deepStrictEqual(responses, [

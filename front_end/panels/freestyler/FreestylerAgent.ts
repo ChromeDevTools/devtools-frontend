@@ -208,6 +208,11 @@ export class FreestylerAgent {
     string, suggestions: string[],
   }
   {
+    // We're returning an empty answer to denote the erroneous case.
+    if (!response) {
+      return {answer: '', suggestions: []};
+    }
+
     const lines = response.split('\n');
     let thought: string|undefined;
     let title: string|undefined;
@@ -215,11 +220,30 @@ export class FreestylerAgent {
     let answer: string|undefined;
     let suggestions: string[] = [];
     let i = 0;
+
+    // If one of these is present, it means we're going to follow the instruction tags
+    // to parse the response. If none of these is present, we'll assume the whole `response`
+    // to be the `answer`.
+    const isDefiningInstructionStart = (line: string): boolean => {
+      const trimmed = line.trim();
+      return trimmed.startsWith('THOUGHT:') || trimmed.startsWith('ACTION') || trimmed.startsWith('ANSWER:');
+    };
+
     const isInstructionStart = (line: string): boolean => {
       const trimmed = line.trim();
-      return trimmed.startsWith('THOUGHT:') || trimmed.startsWith('OBSERVATION:') || trimmed.startsWith('TITLE:') ||
-          trimmed.startsWith('ACTION') || trimmed.startsWith('ANSWER:') || trimmed.startsWith('SUGGESTIONS:');
+      return isDefiningInstructionStart(line) || trimmed.startsWith('OBSERVATION:') || trimmed.startsWith('TITLE:') ||
+          trimmed.startsWith('SUGGESTIONS:');
     };
+
+    // Sometimes agent answers with no "ANSWER: " tag at the start, and also does not
+    // include any "defining instructions". Then we use the whole `response` as the answer.
+    // However, that case sometimes includes `SUGGESTIONS: ` tag in the response which is then shown to the user.
+    // The block below ensures that the response we parse always contains a defining instruction tag.
+    const hasDefiningInstruction = lines.some(line => isDefiningInstructionStart(line));
+    if (!hasDefiningInstruction) {
+      return FreestylerAgent.parseResponse(`ANSWER: ${response}`);
+    }
+
     while (i < lines.length) {
       const trimmed = lines[i].trim();
       if (trimmed.startsWith('THOUGHT:') && !thought) {

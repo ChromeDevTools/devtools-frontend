@@ -26,9 +26,9 @@ const UIStrings = {
    */
   experiments: 'Experiments',
   /**
-   *@description Title of Ignore List settings
+   *@description Title of Ignore list settings
    */
-  ignoreList: 'Ignore List',
+  ignoreList: 'Ignore list',
   /**
    *@description Command for showing the keyboard shortcuts in Settings
    */
@@ -42,9 +42,9 @@ const UIStrings = {
    */
   showExperiments: 'Show Experiments',
   /**
-   *@description Command for showing the Ignore List settings
+   *@description Command for showing the Ignore list settings
    */
-  showIgnoreList: 'Show Ignore List',
+  showIgnoreList: 'Show Ignore list',
   /**
    *@description Name of the Settings view
    */

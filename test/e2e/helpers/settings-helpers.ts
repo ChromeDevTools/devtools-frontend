@@ -74,7 +74,7 @@ export const togglePreferenceInSettingsTab = async (label: string, shouldBeCheck
 };
 
 export const setIgnoreListPattern = async (pattern: string) => {
-  await openSettingsTab('Ignore List');
+  await openSettingsTab('Ignore list');
   await click('[aria-label="Add filename pattern"]');
   const textBox = await waitFor('[aria-label="Add Pattern"]');
   await clickElement(textBox);
@@ -85,7 +85,7 @@ export const setIgnoreListPattern = async (pattern: string) => {
 };
 
 export const toggleIgnoreListing = async (enable: boolean) => {
-  await openSettingsTab('Ignore List');
+  await openSettingsTab('Ignore list');
   const enabledPattern = '.ignore-list-options:not(.ignore-listing-disabled)';
   const disabledPattern = '.ignore-list-options.ignore-listing-disabled';
   await waitFor(enable ? disabledPattern : enabledPattern);

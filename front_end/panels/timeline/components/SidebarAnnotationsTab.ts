@@ -10,6 +10,7 @@ import * as TraceBounds from '../../../services/trace_bounds/trace_bounds.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as Settings from '../../../ui/components/settings/settings.js';
+import * as ThemeSupport from '../../../ui/legacy/theme_support/theme_support.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
 import {nameForEntry} from './EntryName.js';
@@ -124,6 +125,25 @@ export class SidebarAnnotationsTab extends HTMLElement {
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
 
+  #renderEntryToIdentifier(annotation: Trace.Types.File.EntriesLinkAnnotation): LitHtml.LitTemplate {
+    if (annotation.entryTo) {
+      const entryToName = nameForEntry(annotation.entryTo);
+      const toBackgroundColor = this.#annotationEntryToColorMap.get(annotation.entryTo) ?? '';
+      const toTextColor = findTextColorForContrast(toBackgroundColor);
+      const styleForToAnnotationIdentifier = {
+        backgroundColor: toBackgroundColor,
+        color: toTextColor,
+      };
+      // clang-format off
+      return LitHtml.html`
+        <span class="annotation-identifier" style=${LitHtml.Directives.styleMap(styleForToAnnotationIdentifier)}>
+          ${entryToName}
+        </span>`;
+      // clang-format on
+    }
+    return LitHtml.nothing;
+  }
+
   /**
    * Renders the Annotation 'identifier' or 'name' in the annotations list.
    * This is the text rendered before the annotation label that we use to indentify the annotation.
@@ -139,10 +159,14 @@ export class SidebarAnnotationsTab extends HTMLElement {
     switch (annotation.type) {
       case 'ENTRY_LABEL': {
         const entryName = nameForEntry(annotation.entry);
-        const color = this.#annotationEntryToColorMap.get(annotation.entry);
-
+        const backgroundColor = this.#annotationEntryToColorMap.get(annotation.entry) ?? '';
+        const color = findTextColorForContrast(backgroundColor);
+        const styleForAnnotationIdentifier = {
+          backgroundColor,
+          color,
+        };
         return LitHtml.html`
-              <span class="annotation-identifier" style="background-color: ${color}">
+              <span class="annotation-identifier" style=${LitHtml.Directives.styleMap(styleForAnnotationIdentifier)}>
                 ${entryName}
               </span>
         `;
@@ -164,15 +188,16 @@ export class SidebarAnnotationsTab extends HTMLElement {
       }
       case 'ENTRIES_LINK': {
         const entryFromName = nameForEntry(annotation.entryFrom);
-        const fromColor = this.#annotationEntryToColorMap.get(annotation.entryFrom);
-
-        const entryToName = annotation.entryTo ? nameForEntry(annotation.entryTo) : '';
-        const toColor = annotation.entryTo ? this.#annotationEntryToColorMap.get(annotation.entryTo) : '';
-
+        const fromBackgroundColor = this.#annotationEntryToColorMap.get(annotation.entryFrom) ?? '';
+        const fromTextColor = findTextColorForContrast(fromBackgroundColor);
+        const styleForFromAnnotationIdentifier = {
+          backgroundColor: fromBackgroundColor,
+          color: fromTextColor,
+        };
         // clang-format off
         return LitHtml.html`
           <div class="entries-link">
-            <span class="annotation-identifier"  style="background-color: ${fromColor}">
+            <span class="annotation-identifier"  style=${LitHtml.Directives.styleMap(styleForFromAnnotationIdentifier)}">
               ${entryFromName}
             </span>
             <${IconButton.Icon.Icon.litTagName} class="inline-icon" .data=${{
@@ -182,9 +207,7 @@ export class SidebarAnnotationsTab extends HTMLElement {
               height: '18px',
             } as IconButton.Icon.IconData}>
             </${IconButton.Icon.Icon.litTagName}>
-            ${(entryToName !== '' ?
-              LitHtml.html`<span class="annotation-identifier" style="background-color: ${toColor}" >${entryToName}</span>`
-            : '')}
+            ${this.#renderEntryToIdentifier(annotation)}
           </div>
       `;
         // clang-format on
@@ -315,4 +338,20 @@ function detailedAriaDescriptionForAnnotation(annotation: Trace.Types.File.Annot
     default:
       Platform.assertNever(annotation, 'Unsupported annotation');
   }
+}
+
+function findTextColorForContrast(bgColorText: string): string {
+  const bgColor = Common.Color.parse(bgColorText)?.asLegacyColor();
+  // Let's default to black text, since the entries' titles are black in the flamechart.
+  const darkColorToken = '--app-color-performance-sidebar-label-text-dark';
+  const darkColorText =
+      Common.Color.parse(ThemeSupport.ThemeSupport.instance().getComputedValue(darkColorToken))?.asLegacyColor();
+  if (!bgColor || !darkColorText) {
+    // This part of code shouldn't be reachable unless background color is invalid or something wrong with the color
+    // parsing. If so let's fall back to the dark color,
+    return `var(${darkColorToken})`;
+  }
+
+  const contrastRatio = Common.ColorUtils.contrastRatio(bgColor.rgba(), darkColorText.rgba());
+  return contrastRatio >= 4.5 ? `var(${darkColorToken})` : 'var(--app-color-performance-sidebar-label-text-light)';
 }

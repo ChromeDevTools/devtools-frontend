@@ -374,8 +374,8 @@
    */
   --app-color-performance-sidebar-entry-label: var(--ref-palette-purple80);
   --app-color-performance-sidebar-time-range: var(--ref-palette-pink60);
-  --app-color-performance-sidebar-time-range-text: rgb(255 255 255);
-  --app-color-performance-sidebar-label-text: rgb(0 0 0);
+  --app-color-performance-sidebar-label-text-dark: var(--ref-palette-neutral10);
+  --app-color-performance-sidebar-label-text-light: var(--ref-palette-neutral100);
   --app-color-performance-sidebar-table-row-hover: #f0f3f9;
 
   /**

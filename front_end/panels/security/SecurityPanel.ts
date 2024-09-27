@@ -16,6 +16,7 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import lockIconStyles from './lockIcon.css.js';
 import mainViewStyles from './mainView.css.js';
 import originViewStyles from './originView.css.js';
+import {SecurityAndPrivacyPanelSidebar} from './SecurityAndPrivacyPanelSidebar.js';
 import {
   Events,
   type PageVisibleSecurityState,
@@ -24,41 +25,8 @@ import {
   SecurityStyleExplanation,
   SummaryMessages,
 } from './SecurityModel.js';
-import sidebarStyles from './sidebar.css.js';
 
 const UIStrings = {
-  /**
-   *@description Title text content in Security Panel of the Security panel
-   */
-  overview: 'Overview',
-  /**
-   *@description Text in Security Panel of the Security panel
-   */
-  mainOrigin: 'Main origin',
-  /**
-   *@description Text in Security Panel of the Security panel
-   */
-  nonsecureOrigins: 'Non-secure origins',
-  /**
-   *@description Text in Security Panel of the Security panel
-   */
-  secureOrigins: 'Secure origins',
-  /**
-   *@description Text in Security Panel of the Security panel
-   */
-  unknownCanceled: 'Unknown / canceled',
-  /**
-   *@description Text in Security Panel of the Security panel
-   */
-  reloadToViewDetails: 'Reload to view details',
-  /**
-   *@description New parent title in Security Panel of the Security panel
-   */
-  mainOriginSecure: 'Main origin (secure)',
-  /**
-   *@description New parent title in Security Panel of the Security panel
-   */
-  mainOriginNonsecure: 'Main origin (non-secure)',
   /**
    *@description Summary div text content in Security Panel of the Security panel
    */
@@ -494,7 +462,7 @@ const LOCK_ICON_NAME = 'lock';
 const WARNING_ICON_NAME = 'warning';
 const INFO_ICON_NAME = 'info';
 
-function getSecurityStateIconForDetailedView(
+export function getSecurityStateIconForDetailedView(
     securityState: Protocol.Security.SecurityState, className: string): IconButton.Icon.Icon {
   let iconName: string;
 
@@ -516,7 +484,7 @@ function getSecurityStateIconForDetailedView(
   return IconButton.Icon.create(iconName, className);
 }
 
-function getSecurityStateIconForOverview(
+export function getSecurityStateIconForOverview(
     securityState: Protocol.Security.SecurityState, className: string): IconButton.Icon.Icon {
   let iconName: string;
   switch (securityState) {
@@ -537,11 +505,32 @@ function getSecurityStateIconForOverview(
   return IconButton.Icon.create(iconName, className);
 }
 
+export function createHighlightedUrl(url: Platform.DevToolsPath.UrlString, securityState: string): Element {
+  const schemeSeparator = '://';
+  const index = url.indexOf(schemeSeparator);
+
+  // If the separator is not found, just display the text without highlighting.
+  if (index === -1) {
+    const text = document.createElement('span');
+    text.textContent = url;
+    return text;
+  }
+
+  const highlightedUrl = document.createElement('span');
+  highlightedUrl.classList.add('highlighted-url');
+  const scheme = url.substr(0, index);
+  const content = url.substr(index + schemeSeparator.length);
+  highlightedUrl.createChild('span', 'url-scheme-' + securityState).textContent = scheme;
+  highlightedUrl.createChild('span', 'url-scheme-separator').textContent = schemeSeparator;
+  highlightedUrl.createChild('span').textContent = content;
+
+  return highlightedUrl;
+}
+
 export class SecurityPanel extends UI.Panel.PanelWithSidebar implements
     SDK.TargetManager.SDKModelObserver<SecurityModel> {
   readonly mainView: SecurityMainView;
-  private readonly sidebarMainViewElement: SecurityPanelSidebarTreeElement;
-  readonly sidebarTree: SecurityPanelSidebarTree;
+  readonly sidebar: SecurityAndPrivacyPanelSidebar;
   private readonly lastResponseReceivedForLoaderId: Map<string, SDK.NetworkRequest.NetworkRequest>;
   private readonly origins: Map<string, OriginState>;
   private readonly filterRequestCounts: Map<string, number>;
@@ -549,28 +538,14 @@ export class SecurityPanel extends UI.Panel.PanelWithSidebar implements
   private eventListeners: Common.EventTarget.EventDescriptor[];
   private securityModel: SecurityModel|null;
 
-  private constructor() {
+  constructor() {
     super('security');
 
     this.mainView = new SecurityMainView(this);
 
-    const getIconForSecurityState = (securityState: Protocol.Security.SecurityState): IconButton.Icon.Icon =>
-        getSecurityStateIconForOverview(securityState, `lock-icon lock-icon-${securityState}`);
-    const getTitleForSecurityState = (_securityState: Protocol.Security.SecurityState): Element => {
-      const title = document.createElement('span');
-      title.classList.add('title');
-      title.textContent = i18nString(UIStrings.overview);
-      return title;
-    };
-    this.sidebarMainViewElement = new SecurityPanelSidebarTreeElement({
-      onSelect: this.setVisibleView.bind(this, this.mainView),
-      getIconForSecurityState,
-      getTitleForSecurityState,
-      className: 'security-main-view-sidebar-tree-item',
-    });
-    this.sidebarMainViewElement.tooltip = i18nString(UIStrings.overview);
-    this.sidebarTree = new SecurityPanelSidebarTree(this.sidebarMainViewElement, this.showOrigin.bind(this));
-    this.panelSidebarElement().appendChild(this.sidebarTree.element);
+    this.sidebar =
+        new SecurityAndPrivacyPanelSidebar(this.showOrigin.bind(this), this.setVisibleView.bind(this, this.mainView));
+    this.sidebar.show(this.panelSidebarElement());
 
     this.lastResponseReceivedForLoaderId = new Map();
 
@@ -618,30 +593,8 @@ export class SecurityPanel extends UI.Panel.PanelWithSidebar implements
     return certificateButton;
   }
 
-  static createHighlightedUrl(url: Platform.DevToolsPath.UrlString, securityState: string): Element {
-    const schemeSeparator = '://';
-    const index = url.indexOf(schemeSeparator);
-
-    // If the separator is not found, just display the text without highlighting.
-    if (index === -1) {
-      const text = document.createElement('span');
-      text.textContent = url;
-      return text;
-    }
-
-    const highlightedUrl = document.createElement('span');
-    highlightedUrl.classList.add('highlighted-url');
-    const scheme = url.substr(0, index);
-    const content = url.substr(index + schemeSeparator.length);
-    highlightedUrl.createChild('span', 'url-scheme-' + securityState).textContent = scheme;
-    highlightedUrl.createChild('span', 'url-scheme-separator').textContent = schemeSeparator;
-    highlightedUrl.createChild('span').textContent = content;
-
-    return highlightedUrl;
-  }
-
   private updateVisibleSecurityState(visibleSecurityState: PageVisibleSecurityState): void {
-    this.sidebarMainViewElement.setSecurityState(visibleSecurityState.securityState);
+    this.sidebar.securityOverviewElement.setSecurityState(visibleSecurityState.securityState);
     this.mainView.updateVisibleSecurityState(visibleSecurityState);
   }
 
@@ -651,7 +604,7 @@ export class SecurityPanel extends UI.Panel.PanelWithSidebar implements
 
   selectAndSwitchToMainView(): void {
     // The sidebar element will trigger displaying the main view. Rather than making a redundant call to display the main view, we rely on this.
-    this.sidebarMainViewElement.select(true);
+    this.sidebar.securityOverviewElement.select(true);
   }
   showOrigin(origin: Platform.DevToolsPath.UrlString): void {
     const originState = this.origins.get(origin);
@@ -673,10 +626,10 @@ export class SecurityPanel extends UI.Panel.PanelWithSidebar implements
   }
 
   override focus(): void {
-    this.sidebarTree.focus();
+    this.sidebar.focus();
   }
 
-  private setVisibleView(view: UI.Widget.VBox): void {
+  setVisibleView(view: UI.Widget.VBox): void {
     if (this.visibleView === view) {
       return;
     }
@@ -722,7 +675,7 @@ export class SecurityPanel extends UI.Panel.PanelWithSidebar implements
         if (securityDetails) {
           originState.securityDetails = securityDetails;
         }
-        this.sidebarTree.updateOrigin(origin, securityState);
+        this.sidebar.updateOrigin(origin, securityState);
         if (originState.originView) {
           originState.originView.setSecurityState(securityState);
         }
@@ -739,7 +692,7 @@ export class SecurityPanel extends UI.Panel.PanelWithSidebar implements
       };
       this.origins.set(origin, newOriginState);
 
-      this.sidebarTree.addOrigin(origin, securityState);
+      this.sidebar.addOrigin(origin, securityState);
 
       // Don't construct the origin view yet (let it happen lazily).
     }
@@ -821,7 +774,7 @@ export class SecurityPanel extends UI.Panel.PanelWithSidebar implements
     const request = this.lastResponseReceivedForLoaderId.get(frame.loaderId);
 
     this.selectAndSwitchToMainView();
-    this.sidebarTree.clearOrigins();
+    this.sidebar.clearOrigins();
     this.origins.clear();
     this.lastResponseReceivedForLoaderId.clear();
     this.filterRequestCounts.clear();
@@ -833,7 +786,7 @@ export class SecurityPanel extends UI.Panel.PanelWithSidebar implements
     // through an interstitial, see https://crbug.com/669309), set the origin
     // based upon the url data from the PrimaryPageChanged event itself.
     const origin = Common.ParsedURL.ParsedURL.extractOrigin(request ? request.url() : frame.url);
-    this.sidebarTree.setMainOrigin(origin);
+    this.sidebar.setMainOrigin(origin);
 
     if (request) {
       this.processRequest(request);
@@ -845,163 +798,11 @@ export class SecurityPanel extends UI.Panel.PanelWithSidebar implements
     // previously loaded page. When showing an interstitial, switch
     // back to the Overview view.
     this.selectAndSwitchToMainView();
-    this.sidebarTree.toggleOriginsList(true /* hidden */);
+    this.sidebar.toggleOriginsList(true /* hidden */);
   }
 
   private onInterstitialHidden(): void {
-    this.sidebarTree.toggleOriginsList(false /* hidden */);
-  }
-}
-
-export class SecurityPanelSidebarTree extends UI.TreeOutline.TreeOutlineInShadow {
-  private readonly showOriginInPanel: (arg0: Origin) => void;
-  private mainOrigin: string|null;
-  private readonly originGroupTitles: Map<OriginGroup, string>;
-  private originGroups: Map<OriginGroup, UI.TreeOutline.TreeElement>;
-  private readonly elementsByOrigin: Map<string, SecurityPanelSidebarTreeElement>;
-  private readonly mainViewReloadMessage: UI.TreeOutline.TreeElement;
-
-  constructor(mainViewElement: SecurityPanelSidebarTreeElement, showOriginInPanel: (arg0: Origin) => void) {
-    super();
-
-    this.appendChild(mainViewElement);
-
-    this.registerCSSFiles([lockIconStyles, sidebarStyles]);
-
-    this.showOriginInPanel = showOriginInPanel;
-    this.mainOrigin = null;
-
-    this.originGroupTitles = new Map([
-      [OriginGroup.MainOrigin, i18nString(UIStrings.mainOrigin)],
-      [OriginGroup.NonSecure, i18nString(UIStrings.nonsecureOrigins)],
-      [OriginGroup.Secure, i18nString(UIStrings.secureOrigins)],
-      [OriginGroup.Unknown, i18nString(UIStrings.unknownCanceled)],
-    ]);
-
-    this.originGroups = new Map();
-    for (const group of Object.values(OriginGroup)) {
-      const element = this.createOriginGroupElement(this.originGroupTitles.get(group) as string);
-      this.originGroups.set(group, element);
-      this.appendChild(element);
-    }
-
-    this.mainViewReloadMessage = new UI.TreeOutline.TreeElement(i18nString(UIStrings.reloadToViewDetails));
-    this.mainViewReloadMessage.selectable = false;
-    this.mainViewReloadMessage.listItemElement.classList.add('security-main-view-reload-message');
-    const treeElement = this.originGroups.get(OriginGroup.MainOrigin);
-    (treeElement as UI.TreeOutline.TreeElement).appendChild(this.mainViewReloadMessage);
-
-    this.clearOriginGroups();
-
-    this.elementsByOrigin = new Map();
-  }
-
-  private originGroupTitle(originGroup: OriginGroup): string {
-    return this.originGroupTitles.get(originGroup) as string;
-  }
-
-  private originGroupElement(originGroup: OriginGroup): UI.TreeOutline.TreeElement {
-    return this.originGroups.get(originGroup) as UI.TreeOutline.TreeElement;
-  }
-
-  private createOriginGroupElement(originGroupTitle: string): UI.TreeOutline.TreeElement {
-    const originGroup = new UI.TreeOutline.TreeElement(originGroupTitle, true);
-    originGroup.selectable = false;
-    originGroup.setCollapsible(false);
-    originGroup.expand();
-    originGroup.listItemElement.classList.add('security-sidebar-origins');
-    UI.ARIAUtils.setLabel(originGroup.childrenListElement, originGroupTitle);
-    return originGroup;
-  }
-
-  toggleOriginsList(hidden: boolean): void {
-    for (const element of this.originGroups.values()) {
-      element.hidden = hidden;
-    }
-  }
-
-  addOrigin(origin: Platform.DevToolsPath.UrlString, securityState: Protocol.Security.SecurityState): void {
-    this.mainViewReloadMessage.hidden = true;
-    const getIconForSecurityState = (securityState: Protocol.Security.SecurityState): IconButton.Icon.Icon =>
-        getSecurityStateIconForDetailedView(securityState, `security-property security-property-${securityState}`);
-    const getTitleForSecurityState = (securityState: Protocol.Security.SecurityState): Element =>
-        SecurityPanel.createHighlightedUrl(origin, securityState);
-    const originElement = new SecurityPanelSidebarTreeElement({
-      onSelect: this.showOriginInPanel.bind(this, origin),
-      getIconForSecurityState,
-      getTitleForSecurityState,
-      className: 'security-sidebar-tree-item',
-    });
-    originElement.tooltip = origin;
-    this.elementsByOrigin.set(origin, originElement);
-    this.updateOrigin(origin, securityState);
-  }
-
-  setMainOrigin(origin: string): void {
-    this.mainOrigin = origin;
-  }
-
-  updateOrigin(origin: string, securityState: Protocol.Security.SecurityState): void {
-    const originElement = this.elementsByOrigin.get(origin) as SecurityPanelSidebarTreeElement;
-    originElement.setSecurityState(securityState);
-
-    let newParent: UI.TreeOutline.TreeElement;
-    if (origin === this.mainOrigin) {
-      newParent = this.originGroups.get(OriginGroup.MainOrigin) as UI.TreeOutline.TreeElement;
-      if (securityState === Protocol.Security.SecurityState.Secure) {
-        newParent.title = i18nString(UIStrings.mainOriginSecure);
-      } else {
-        newParent.title = i18nString(UIStrings.mainOriginNonsecure);
-      }
-      UI.ARIAUtils.setLabel(newParent.childrenListElement, newParent.title);
-    } else {
-      switch (securityState) {
-        case Protocol.Security.SecurityState.Secure:
-          newParent = this.originGroupElement(OriginGroup.Secure);
-          break;
-        case Protocol.Security.SecurityState.Unknown:
-          newParent = this.originGroupElement(OriginGroup.Unknown);
-          break;
-        default:
-          newParent = this.originGroupElement(OriginGroup.NonSecure);
-          break;
-      }
-    }
-
-    const oldParent = originElement.parent;
-    if (oldParent !== newParent) {
-      if (oldParent) {
-        oldParent.removeChild(originElement);
-        if (oldParent.childCount() === 0) {
-          oldParent.hidden = true;
-        }
-      }
-      newParent.appendChild(originElement);
-      newParent.hidden = false;
-    }
-  }
-
-  private clearOriginGroups(): void {
-    for (const [originGroup, originGroupElement] of this.originGroups) {
-      if (originGroup === OriginGroup.MainOrigin) {
-        for (let i = originGroupElement.childCount() - 1; i > 0; i--) {
-          originGroupElement.removeChildAtIndex(i);
-        }
-        originGroupElement.title = this.originGroupTitle(OriginGroup.MainOrigin);
-        originGroupElement.hidden = false;
-        this.mainViewReloadMessage.hidden = false;
-      } else {
-        originGroupElement.removeChildren();
-        originGroupElement.hidden = true;
-      }
-    }
-  }
-
-  clearOrigins(): void {
-    this.clearOriginGroups();
-    this.elementsByOrigin.clear();
-  }
-  wasShown(): void {
+    this.sidebar.toggleOriginsList(false /* hidden */);
   }
 }
 
@@ -1012,48 +813,6 @@ export enum OriginGroup {
   Secure = 'Secure',
   Unknown = 'Unknown',
   /* eslint-enable @typescript-eslint/naming-convention */
-}
-
-export class SecurityPanelSidebarTreeElement extends UI.TreeOutline.TreeElement {
-  private readonly selectCallback: () => void;
-  private securityStateInternal: Protocol.Security.SecurityState|null;
-
-  #getIconForSecurityState: (securityState: Protocol.Security.SecurityState) => IconButton.Icon.Icon;
-  #getTitleForSecurityState: (securityState: Protocol.Security.SecurityState) => Element;
-
-  constructor(options: {
-    onSelect: () => void,
-    getIconForSecurityState: (securityState: Protocol.Security.SecurityState) => IconButton.Icon.Icon,
-    getTitleForSecurityState: (securityState: Protocol.Security.SecurityState) => Element,
-    className: string,
-  }) {
-    super('', false);
-    this.selectCallback = options.onSelect;
-    this.listItemElement.classList.add(options.className);
-
-    this.#getIconForSecurityState = options.getIconForSecurityState;
-    this.#getTitleForSecurityState = options.getTitleForSecurityState;
-    this.securityStateInternal = null;
-    this.setSecurityState(Protocol.Security.SecurityState.Unknown);
-  }
-
-  setSecurityState(newSecurityState: Protocol.Security.SecurityState): void {
-    this.securityStateInternal = newSecurityState;
-    this.setLeadingIcons([this.#getIconForSecurityState(newSecurityState)]);
-    if (this.listItemElement.lastChild) {
-      this.listItemElement.removeChild(this.listItemElement.lastChild);
-    }
-    this.listItemElement.appendChild(this.#getTitleForSecurityState(newSecurityState));
-  }
-
-  securityState(): Protocol.Security.SecurityState|null {
-    return this.securityStateInternal;
-  }
-
-  override onselect(): boolean {
-    this.selectCallback();
-    return true;
-  }
 }
 
 export class SecurityMainView extends UI.Widget.VBox {
@@ -1542,7 +1301,7 @@ export class SecurityOriginView extends UI.Widget.VBox {
         originState.securityState, `security-property security-property-${originState.securityState}`);
     this.originLockIcon.appendChild(icon);
 
-    originDisplay.appendChild(SecurityPanel.createHighlightedUrl(origin, originState.securityState));
+    originDisplay.appendChild(createHighlightedUrl(origin, originState.securityState));
 
     const originNetworkDiv = titleSection.createChild('div', 'view-network-button');
     const originNetworkButton = UI.UIUtils.createTextButton(i18nString(UIStrings.viewRequestsInNetworkPanel), event => {

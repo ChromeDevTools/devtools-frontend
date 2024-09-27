@@ -57,8 +57,11 @@ export function veImpressionForSecurityPanel() {
           veImpression(
               'Tree', undefined,
               [
-                veImpression('TreeItem'),
-                veImpression('TreeItem', undefined, [veImpression('TreeItem'), veImpression('Expand')]),
+                veImpression(
+                    'TreeItem', 'security',
+                    [
+                      veImpression('TreeItem', undefined, [veImpression('TreeItem'), veImpression('Expand')]),
+                    ]),
               ]),
         ]),
     veImpression('Pane', 'security.main-view'),

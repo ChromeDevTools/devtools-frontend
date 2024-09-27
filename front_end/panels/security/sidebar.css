@@ -4,128 +4,23 @@
  * found in the LICENSE file.
  */
 
-:host {
-  overflow-x: auto;
-}
-
-.tree-outline-disclosure {
-  width: 100%;
-}
-
-.tree-outline {
-  padding: 0;
-
-  &:focus-visible {
-    box-shadow: none;
-  }
-}
-
-.tree-outline li {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  padding: 2px 5px;
-  overflow: hidden;
-  margin: 2px 0;
-  white-space: nowrap;
-
-  & .leading-icons {
-    margin-right: var(--sys-size-6);
-    flex: none;
+.tree-outline li.security-group-list-item {
+  & + ol {
+    padding-left: 0;
   }
 
-  & .tree-element-title,
-  .highlighted-url,
-  .title {
-    height: inherit;
-    align-content: center;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+  &::before {
+    display: none;
   }
-}
-
-.tree-outline ol {
-  padding-left: 0;
-}
-
-.tree-outline li::before {
-  content: none;
 }
 
 .security-main-view-reload-message {
   color: var(--sys-color-token-subtle);
 }
 
-.tree-outline .security-main-view-sidebar-tree-item,
-.tree-outline .security-sidebar-origins,
-.tree-outline li.security-sidebar-origins + .children > li {
-  height: var(--sys-size-12);
-  padding: 0 var(--sys-size-8) 0 var(--sys-size-7);
-  margin: 0 var(--sys-size-5) 0 0;
-}
-
-.tree-outline .security-main-view-sidebar-tree-item,
-.tree-outline li.security-sidebar-origins + .children > li:not(.security-main-view-reload-message) {
-  border-radius: 0 100px 100px 0;
-  position: relative;
-
-  &.selected {
-    color: var(--app-color-navigation-drawer-label-selected);
-    background-color: var(--app-color-navigation-drawer-background-selected);
-
-    & .lock-icon,
-    .security-property {
-      color: var(--app-color-navigation-drawer-label-selected);
-    }
-
-    & .url-scheme-secure,
-    .url-scheme-neutral,
-    .url-scheme-insecure,
-    .url-scheme-insecure-broken {
-      color: var(--app-color-navigation-drawer-label-selected);
-    }
-  }
-
-  &:active::before {
-    background-color: var(--sys-color-state-ripple-neutral-on-subtle);
-    mask-image: none;
-    content: "";
-    height: 100%;
-    width: 100%;
-    border-radius: inherit;
-    position: absolute;
-    top: 0;
-    left: 0;
-  }
-
-  &:focus-visible {
-    outline: 2px solid var(--sys-color-state-focus-ring);
-  }
-}
-
-@media (forced-colors: active) {
-  .tree-outline .security-main-view-sidebar-tree-item,
-  .tree-outline li.security-sidebar-origins + .children > li:not(.security-main-view-reload-message) {
-    &.selected {
-      color: HighlightText;
-      background-color: Highlight;
-
-      & .url-scheme-secure,
-      .url-scheme-neutral,
-      .url-scheme-insecure,
-      .url-scheme-insecure-broken {
-        color: HighlightText;
-      }
-    }
-  }
-}
-
 .security-main-view-reload-message,
-.tree-outline li.security-sidebar-origins {
-  margin: var(--sys-size-6) 0 0 0;
-  line-height: var(--sys-size-8);
-
+.tree-outline li.security-sidebar-origins,
+.tree-outline li.security-group-list-item {
   &:hover:not(:has(span[is="dt-checkbox"])) .selection {
     background: transparent;
   }

@@ -14,7 +14,7 @@ export const SecurityTestRunner = {};
 SecurityTestRunner.dumpSecurityPanelSidebarOrigins = function() {
   for (const key in Security.SecurityPanel.OriginGroup) {
     const originGroup = Security.SecurityPanel.OriginGroup[key];
-    const element = Security.SecurityPanel.SecurityPanel.instance().sidebarTree.originGroups.get(originGroup);
+    const element = Security.SecurityPanel.SecurityPanel.instance().sidebar.originGroups.get(originGroup);
 
     if (element.hidden) {
       continue;

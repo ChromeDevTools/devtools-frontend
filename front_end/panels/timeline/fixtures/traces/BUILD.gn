@@ -59,6 +59,7 @@ copy_to_gen("traces") {
     "network-requests-initiators.json.gz",
     "network-websocket-messages.json.gz",
     "node-fibonacci-website.cpuprofile.gz",
+    "non-composited-animation-shift.json.gz",
     "non-composited-animation.json.gz",
     "one-second-interaction.json.gz",
     "over-20-invalidations-per-event.json.gz",

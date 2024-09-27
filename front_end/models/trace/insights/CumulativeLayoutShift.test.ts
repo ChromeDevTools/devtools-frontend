@@ -44,6 +44,41 @@ describeWithEnvironment('CumulativeLayoutShift', function() {
       ];
       assert.deepStrictEqual(animationFailures, expected);
     });
+    it('gets the correct non composited animations for shift', async function() {
+      const {data, insights} = await processTrace(this, 'non-composited-animation-shift.json.gz');
+      const firstNav = getFirstOrError(data.Meta.navigationsByNavigationId.values());
+      const insight = getInsightOrError('CumulativeLayoutShift', insights, firstNav);
+      const {shifts, animationFailures} = insight;
+
+      const shiftAnimations: InsightRunners.CumulativeLayoutShift.NoncompositedAnimationFailure[] = [];
+      shifts?.forEach(entry => {
+        shiftAnimations.push(...entry.nonCompositedAnimations);
+      });
+      const expectedWithShift: InsightRunners.CumulativeLayoutShift.NoncompositedAnimationFailure[] = [
+        {
+          name: 'simple-animation',
+          failureReasons: [InsightRunners.CumulativeLayoutShift.AnimationFailureReasons.UNSUPPORTED_CSS_PROPERTY],
+          unsupportedProperties: ['height', 'color', 'top'],
+        },
+      ];
+      assert.deepStrictEqual(shiftAnimations, expectedWithShift);
+
+      const expectedAll: InsightRunners.CumulativeLayoutShift.NoncompositedAnimationFailure[] = [
+        {
+          name: 'simple-animation',
+          failureReasons: [InsightRunners.CumulativeLayoutShift.AnimationFailureReasons.UNSUPPORTED_CSS_PROPERTY],
+          unsupportedProperties: ['height', 'color', 'top'],
+        },
+        {
+          name: 'top',
+          failureReasons: [InsightRunners.CumulativeLayoutShift.AnimationFailureReasons.UNSUPPORTED_CSS_PROPERTY],
+          unsupportedProperties: ['top'],
+        },
+      ];
+      // animationFailures should include both root causes failures, and failures without associated shifts.
+      assert.deepStrictEqual(animationFailures, expectedAll);
+    });
+
     it('returns no insights when there are no non-composited animations', async function() {
       const {data, insights} = await processTrace(this, 'lcp-images.json.gz');
       const firstNav = getFirstOrError(data.Meta.navigationsByNavigationId.values());

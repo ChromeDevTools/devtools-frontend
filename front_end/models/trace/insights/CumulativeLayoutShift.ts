@@ -87,6 +87,7 @@ const INVALIDATION_WINDOW = Helpers.Timing.secondsToMicroseconds(Types.Timing.Se
 export interface LayoutShiftRootCausesData {
   iframeIds: string[];
   fontRequests: Types.Events.SyntheticNetworkRequest[];
+  nonCompositedAnimations: NoncompositedAnimationFailure[];
 }
 
 function isInInvalidationWindow(event: Types.Events.Event, targetEvent: Types.Events.Event): boolean {
@@ -118,6 +119,53 @@ export function getNonCompositedFailure(event: Types.Events.SyntheticAnimationPa
     failures.push(failure);
   }
   return failures;
+}
+
+function getNonCompositedFailureRootCauses(
+    animationEvents: Types.Events.SyntheticAnimationPair[],
+    prePaintEvents: Types.Events.PrePaint[],
+    shiftsByPrePaint: Map<Types.Events.PrePaint, Types.Events.LayoutShift[]>,
+    rootCausesByShift: Map<Types.Events.LayoutShift, LayoutShiftRootCausesData>,
+    ): NoncompositedAnimationFailure[] {
+  const allAnimationFailures: NoncompositedAnimationFailure[] = [];
+  for (const animation of animationEvents) {
+    /**
+     * Animation events containing composite information are ASYNC_NESTABLE_INSTANT ('n').
+     * An animation may also contain multiple 'n' events, so we look through those with useful non-composited data.
+     */
+    const failures = getNonCompositedFailure(animation);
+    if (!failures) {
+      continue;
+    }
+    allAnimationFailures.push(...failures);
+
+    const nextPrePaint = getNextPrePaintEvent(prePaintEvents, animation);
+    // If no following prePaint, this is not a root cause.
+    if (!nextPrePaint) {
+      continue;
+    }
+
+    // If the animation event is outside the INVALIDATION_WINDOW, it could not be a root cause.
+    if (!isInInvalidationWindow(animation, nextPrePaint)) {
+      continue;
+    }
+
+    const shifts = shiftsByPrePaint.get(nextPrePaint);
+    // if no layout shift(s), this is not a root cause.
+    if (!shifts) {
+      continue;
+    }
+
+    for (const shift of shifts) {
+      const rootCausesForShift = rootCausesByShift.get(shift);
+      if (!rootCausesForShift) {
+        throw new Error('Unaccounted shift');
+      }
+      rootCausesForShift.nonCompositedAnimations.push(...failures);
+    }
+  }
+
+  return allAnimationFailures;
 }
 
 /**
@@ -191,12 +239,10 @@ function getIframeRootCauses(
       continue;
     }
     for (const shift of shifts) {
-      const rootCausesForShift = Platform.MapUtilities.getWithDefault(rootCausesByShift, shift, () => {
-        return {
-          iframeIds: [],
-          fontRequests: [],
-        };
-      });
+      const rootCausesForShift = rootCausesByShift.get(shift);
+      if (!rootCausesForShift) {
+        throw new Error('Unaccounted shift');
+      }
 
       // Look for the first dom event that occurs within the bounds of the iframe event.
       // This contains the frame id.
@@ -245,12 +291,10 @@ function getFontRootCauses(
     }
     // Include the root cause to the shifts in this prePaint.
     for (const shift of shifts) {
-      const rootCausesForShift = Platform.MapUtilities.getWithDefault(rootCausesByShift, shift, () => {
-        return {
-          iframeIds: [],
-          fontRequests: [],
-        };
-      });
+      const rootCausesForShift = rootCausesByShift.get(shift);
+      if (!rootCausesForShift) {
+        throw new Error('Unaccounted shift');
+      }
       rootCausesForShift.fontRequests.push(req);
     }
   }
@@ -268,19 +312,13 @@ export function generateInsight(parsedTrace: RequiredData<typeof deps>, context:
   const isWithinContext = (event: Types.Events.Event): boolean => Helpers.Timing.eventIsInBounds(event, context.bounds);
 
   const compositeAnimationEvents = parsedTrace.Animations.animations.filter(isWithinContext);
-  const animationFailures = compositeAnimationEvents.map(getNonCompositedFailure).flat();
-
   const iframeEvents = parsedTrace.LayoutShifts.renderFrameImplCreateChildFrameEvents.filter(isWithinContext);
   const networkRequests = parsedTrace.NetworkRequests.byTime.filter(isWithinContext);
-
   const domLoadingEvents = parsedTrace.LayoutShifts.domLoadingEvents.filter(isWithinContext);
 
-  // Sort by cumulative score, since for insights we interpret these for their "bad" scores.
   // TODO(crbug.com/366049346): buildLayoutShiftsClusters is dropping non-nav clusters.
   const clusterKey = context.navigation ? context.navigationId : '';
-  const clusters = parsedTrace.LayoutShifts.clustersByNavigationId.get(clusterKey)
-                       ?.sort((a, b) => b.clusterCumulativeScore - a.clusterCumulativeScore) ??
-      [];
+  const clusters = parsedTrace.LayoutShifts.clustersByNavigationId.get(clusterKey) ?? [];
   const layoutShifts = clusters.flatMap(cluster => cluster.events);
   const prePaintEvents = parsedTrace.LayoutShifts.prePaintEvents.filter(isWithinContext);
 
@@ -289,11 +327,14 @@ export function generateInsight(parsedTrace: RequiredData<typeof deps>, context:
   const shiftsByPrePaint = getShiftsByPrePaintEvents(layoutShifts, prePaintEvents);
 
   for (const shift of layoutShifts) {
-    rootCausesByShift.set(shift, {iframeIds: [], fontRequests: []});
+    rootCausesByShift.set(shift, {iframeIds: [], fontRequests: [], nonCompositedAnimations: []});
   }
 
+  // Populate root causes for rootCausesByShift.
   getIframeRootCauses(iframeEvents, prePaintEvents, shiftsByPrePaint, rootCausesByShift, domLoadingEvents);
   getFontRootCauses(networkRequests, prePaintEvents, shiftsByPrePaint, rootCausesByShift);
+  const animationFailures =
+      getNonCompositedFailureRootCauses(compositeAnimationEvents, prePaintEvents, shiftsByPrePaint, rootCausesByShift);
 
   return {
     animationFailures,

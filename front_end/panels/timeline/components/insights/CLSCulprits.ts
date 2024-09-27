@@ -36,6 +36,10 @@ const UIStrings = {
    * @description Text for a culprit type of Font request.
    */
   fontRequest: 'Font request',
+  /**
+   * @description Text for a culprit type of Animation.
+   */
+  animation: 'Animation',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/CLSCulprits.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -51,8 +55,9 @@ export class CLSCulprits extends BaseInsight {
     const insight =
         Trace.Insights.Common.getInsight('CumulativeLayoutShift', this.data.insights, this.data.insightSetKey);
 
-    // Clusters are sorted by bad scores, so we can grab the first.
-    const worstCluster = insight?.clusters[0];
+    const clustersByScore =
+        insight?.clusters.toSorted((a, b) => b.clusterCumulativeScore - a.clusterCumulativeScore) ?? [];
+    const worstCluster = clustersByScore[0];
     if (!worstCluster) {
       return [];
     }
@@ -84,7 +89,8 @@ export class CLSCulprits extends BaseInsight {
     }
     const MAX_TOP_CULPRITS = 3;
     const causes: Array<string> = [];
-    for (const cluster of clusters) {
+    const clustersByScore = clusters.toSorted((a, b) => b.clusterCumulativeScore - a.clusterCumulativeScore);
+    for (const cluster of clustersByScore) {
       if (causes.length === MAX_TOP_CULPRITS) {
         break;
       }
@@ -100,12 +106,16 @@ export class CLSCulprits extends BaseInsight {
         }
         const fontReq = culprits.fontRequests;
         const iframes = culprits.iframeIds;
+        const animations = culprits.nonCompositedAnimations;
 
         for (let i = 0; i < fontReq.length && causes.length < MAX_TOP_CULPRITS; i++) {
           causes.push(i18nString(UIStrings.fontRequest));
         }
         for (let i = 0; i < iframes.length && causes.length < MAX_TOP_CULPRITS; i++) {
           causes.push(i18nString(UIStrings.injectedIframe));
+        }
+        for (let i = 0; i < animations.length && causes.length < MAX_TOP_CULPRITS; i++) {
+          causes.push(i18nString(UIStrings.animation));
         }
       }
     }

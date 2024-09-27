@@ -86,7 +86,7 @@ describeWithEnvironment('TimelineTreeView', function() {
       const topLevelChildren = Array.from(tree.children().values(), childNode => {
         return childNode.event?.name || 'NO_EVENT_FOR_NODE';
       });
-      assert.deepEqual(topLevelChildren, ['first measure', 'third measure']);
+      assert.deepEqual(topLevelChildren, ['second measure', 'third measure']);
       // Now make the scripting category hidden and tell the treeview to re-render.
       Timeline.TimelineUIUtils.TimelineUIUtils.categories().scripting.hidden = true;
       eventTreeView.refreshTree();

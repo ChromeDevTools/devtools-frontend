@@ -530,16 +530,21 @@ type ParsedTrace = Trace.Handlers.Types.ParsedTrace;
 
 export function getBaseTraceParseModelData(overrides: Partial<ParsedTrace> = {}): ParsedTrace {
   return {
-    Animations: [],
+    Animations: {animations: []},
     LayoutShifts: {
       clusters: [],
+      clustersByNavigationId: new Map(),
       sessionMaxScore: 0,
       clsWindowID: 0,
       prePaintEvents: [],
       layoutInvalidationEvents: [],
+      scheduleStyleInvalidationEvents: [],
       styleRecalcInvalidationEvents: [],
-      backendNodeIds: [],
+      renderFrameImplCreateChildFrameEvents: [],
+      domLoadingEvents: [],
+      beginRemoteFontLoadEvents: [],
       scoreRecords: [],
+      backendNodeIds: [],
     },
     Meta: {
       traceBounds: {
@@ -560,6 +565,8 @@ export function getBaseTraceParseModelData(overrides: Partial<ParsedTrace> = {})
       topLevelRendererIds: new Set(),
       frameByProcessId: new Map(),
       mainFrameNavigations: [],
+      traceIsGeneric: false,
+      processNames: new Map(),
     },
     Renderer: {
       processes: new Map(),
@@ -569,26 +576,89 @@ export function getBaseTraceParseModelData(overrides: Partial<ParsedTrace> = {})
     },
     Screenshots: [],
     Samples: {
-      profiles: new Map(),
-      processes: new Map(),
+      entryToNode: new Map(),
+      profilesInProcess: new Map(),
     },
-    PageLoadMetrics: {metricScoresByFrameId: new Map(), lcpEventNodeIdToDOMNodeMap: new Map()},
-    UserInteractions: {allEvents: [], interactionEvents: []},
+    PageLoadMetrics: {metricScoresByFrameId: new Map(), allMarkerEvents: []},
+    UserInteractions: {
+      allEvents: [],
+      interactionEvents: [],
+      beginCommitCompositorFrameEvents: [],
+      parseMetaViewportEvents: [],
+      interactionEventsWithNoNesting: [],
+      longestInteractionEvent: null,
+      interactionsOverThreshold: new Set(),
+    },
     NetworkRequests: {
+      byId: new Map(),
+      eventToInitiator: new Map(),
       byOrigin: new Map(),
       byTime: [],
+      webSocket: [],
     },
     GPU: {
       mainGPUThreadTasks: [],
-      errorsByUseCase: new Map(),
     },
     UserTimings: {
-      timings: [],
+      consoleTimings: [],
+      performanceMarks: [],
+      performanceMeasures: [],
+      timestampEvents: [],
     },
     LargestImagePaint: new Map(),
     LargestTextPaint: new Map(),
+    AuctionWorklets: {
+      worklets: new Map(),
+    },
+    ExtensionTraceData: {
+      entryToNode: new Map(),
+      extensionMarkers: [],
+      extensionTrackData: [],
+    },
+    Frames: {
+      frames: [],
+      framesById: {},
+    },
+    ImagePainting: {
+      paintImageByDrawLazyPixelRef: new Map(),
+      paintImageForEvent: new Map(),
+    },
+    Initiators: {
+      eventToInitiator: new Map(),
+      initiatorToEvents: new Map(),
+    },
+    Invalidations: {
+      invalidationCountForEvent: new Map(),
+      invalidationsForEvent: new Map(),
+    },
+    LayerTree: {
+      paints: [],
+      paintsToSnapshots: new Map(),
+      snapshots: [],
+    },
+    Memory: {
+      updateCountersByProcess: new Map(),
+    },
+    PageFrames: {
+      frames: new Map(),
+    },
+    SelectorStats: {
+      dataForUpdateLayoutEvent: new Map(),
+    },
+    ServerTimings: {
+      serverTimings: [],
+    },
+    Warnings: {
+      perEvent: new Map(),
+      perWarning: new Map(),
+    },
+    Workers: {
+      workerIdByThread: new Map(),
+      workerSessionIdEvents: [],
+      workerURLById: new Map(),
+    },
     ...overrides,
-  } as Partial<ParsedTrace>as ParsedTrace;
+  };
 }
 
 /**

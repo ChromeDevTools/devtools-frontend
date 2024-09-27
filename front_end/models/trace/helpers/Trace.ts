@@ -80,7 +80,7 @@ export function addEventToProcessThread<T extends Types.Events.Event>(
   eventsInProcessThread.set(event.pid, eventsInThread);
 }
 
-type TimeSpan = {
+export type TimeSpan = {
   ts: Types.Timing.MicroSeconds,
   dur?: Types.Timing.MicroSeconds,
 };

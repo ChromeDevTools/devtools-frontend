@@ -98,6 +98,50 @@ const navTimingNames = [
 // flame chart).
 const ignoredNames = [...resourceTimingNames, ...navTimingNames];
 
+/**
+ * Similar to the default {@see Helpers.Trace.eventTimeComparator}
+ * but with a twist:
+ * In case of equal start and end times, always put the second event
+ * first.
+ *
+ * Explanation:
+ * User timing entries come as trace events dispatched when
+ * performance.measure/mark is called. The trace events buffered in
+ * devtools frontend are sorted by the start time. If their start time
+ * is the same, then the event for the first call will appear first.
+ *
+ * When entries are meant to be stacked, the corresponding
+ * performance.measure calls usually are done in bottom-up direction:
+ * calls for children first and for parent later (because the call
+ * is usually done when the measured task is over). This means that
+ * when two user timing events have the start and end time, usually the
+ * second event is the parent of the first. Hence the switch.
+ *
+ */
+function userTimingComparator(
+    a: Helpers.Trace.TimeSpan, b: Helpers.Trace.TimeSpan, originalArray: Helpers.Trace.TimeSpan[]): number {
+  const aBeginTime = a.ts;
+  const bBeginTime = b.ts;
+  if (aBeginTime < bBeginTime) {
+    return -1;
+  }
+  if (aBeginTime > bBeginTime) {
+    return 1;
+  }
+  const aDuration = a.dur ?? 0;
+  const bDuration = b.dur ?? 0;
+  const aEndTime = aBeginTime + aDuration;
+  const bEndTime = bBeginTime + bDuration;
+  if (aEndTime > bEndTime) {
+    return -1;
+  }
+  if (aEndTime < bEndTime) {
+    return 1;
+  }
+  // Prefer the event located in a further position in the original array.
+  return originalArray.indexOf(b) - originalArray.indexOf(a);
+}
+
 export function handleEvent(event: Types.Events.Event): void {
   if (handlerState !== HandlerState.INITIALIZED) {
     throw new Error('UserTimings handler is not initialized');
@@ -129,6 +173,7 @@ export async function finalize(): Promise<void> {
 
   const asyncEvents = [...performanceMeasureEvents, ...consoleTimings];
   syntheticEvents = Helpers.Trace.createMatchedSortedSyntheticEvents(asyncEvents);
+  syntheticEvents = syntheticEvents.sort((a, b) => userTimingComparator(a, b, [...syntheticEvents]));
   handlerState = HandlerState.FINALIZED;
 }
 

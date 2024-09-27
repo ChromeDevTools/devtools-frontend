@@ -2,8 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import { // eslint-disable-line rulesdir/es_modules_import
+  createTraceExtensionDataFromTestInput,
+  type ExtensionTestData,
+} from '../../../models/trace/handlers/ExtensionTraceDataHandler.test.js';
 import * as Trace from '../../../models/trace/trace.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
+import {getBaseTraceParseModelData} from '../../../testing/TraceHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as PerfUI from '../../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as ThemeSupport from '../../../ui/legacy/theme_support/theme_support.js';
@@ -84,6 +89,51 @@ describeWithEnvironment('ExtensionTrackAppender', function() {
         assert.strictEqual(flameChartData.entryTotalTimes[i], expectedTotalTimeForEvent);
       }
     });
+
+    it('Assigns a lower level (closer to the top) to an event buffered later when start and end times are equal',
+       async function() {
+         // Three extension entries with same start and end time.
+         // Test they are appended in inverse order.
+         const extensionData = [
+           {
+             detail: {
+               devtools: {dataType: 'track-entry', track: 'track'},
+             },
+             name: 'First measurement',
+             ts: 100,
+             dur: 100,
+           },
+           {
+             detail: {devtools: {track: 'track'}},
+             name: 'Second measurement',
+             ts: 100,
+             dur: 100,
+           },
+           {
+             detail: {devtools: {track: 'track'}},
+             name: 'Third measurement',
+             ts: 100,
+             dur: 100,
+           },
+         ] as ExtensionTestData[];
+         const traceExtensionData = await createTraceExtensionDataFromTestInput(extensionData);
+         const testParsedTrace = getBaseTraceParseModelData({ExtensionTraceData: traceExtensionData});
+         Timeline.ExtensionDataGatherer.ExtensionDataGatherer.removeInstance();
+         entryData = [];
+         flameChartData = PerfUI.FlameChart.FlameChartTimelineData.createEmpty();
+         entryTypeByLevel = [];
+         extensionTrackAppenders = initTrackAppender(flameChartData, testParsedTrace, entryData, entryTypeByLevel);
+         let level = 0;
+         extensionTrackAppenders.forEach(appender => {
+           level = appender.appendTrackAtLevel(level);
+         });
+         const indexForFirst = entryData.findIndex(e => e.name === 'First measurement');
+         const indexForSecond = entryData.findIndex(e => e.name === 'Second measurement');
+         const indexForThird = entryData.findIndex(e => e.name === 'Third measurement');
+         assert.strictEqual(flameChartData.entryLevels[indexForThird], 0);
+         assert.strictEqual(flameChartData.entryLevels[indexForSecond], 1);
+         assert.strictEqual(flameChartData.entryLevels[indexForFirst], 2);
+       });
   });
 
   describe('colorForEvent and titleForEvent', function() {

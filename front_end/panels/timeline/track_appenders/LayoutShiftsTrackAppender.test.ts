@@ -74,16 +74,6 @@ describeWithEnvironment('LayoutShiftsTrackAppender', function() {
     }
   });
 
-  it('sets all layout shifts to be 5ms in duration', async function() {
-    const {flameChartData, parsedTrace, entryData} = await renderTrackAppender(this, 'cls-single-frame.json.gz');
-    const events = parsedTrace.LayoutShifts.clusters.flatMap(c => c.events);
-    for (const event of events) {
-      const markerIndex = entryData.indexOf(event);
-      assert.exists(markerIndex);
-      assert.strictEqual(flameChartData.entryTotalTimes[markerIndex], 5);
-    }
-  });
-
   it('returns the correct title for a layout shift', async function() {
     const {layoutShiftsTrackAppender, parsedTrace} = await renderTrackAppender(this, 'cls-single-frame.json.gz');
     const shifts = parsedTrace.LayoutShifts.clusters.flatMap(c => c.events);
@@ -97,7 +87,7 @@ describeWithEnvironment('LayoutShiftsTrackAppender', function() {
     const info = layoutShiftsTrackAppender.highlightedEntryInfo(shifts[0]);
     assert.deepEqual(info, {
       title: 'Layout shift',
-      formattedTime: '',
+      formattedTime: '0.0422',
     });
   });
 });

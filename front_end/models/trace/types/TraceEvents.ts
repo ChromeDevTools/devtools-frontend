@@ -910,7 +910,7 @@ export interface SyntheticLayoutShiftCluster {
   ts: MicroSeconds;
   // The duration of the cluster. This should include up until the end of the last
   // layout shift in this cluster.
-  dur?: MicroSeconds;
+  dur: MicroSeconds;
   cat: '';
   ph: Phase.COMPLETE;
   pid: ProcessID;

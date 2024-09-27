@@ -8,13 +8,6 @@ import type * as PerfUI from '../../../ui/legacy/components/perf_ui/perf_ui.js';
 
 import * as Components from './components/components.js';
 
-// Bit of a hack: LayoutShifts are instant events, so have no duration. But
-// OPP doesn't do well at making tiny events easy to spot and click. So we
-// set it to a small duration so that the user is able to see and click
-// them more easily. Long term we will explore a better UI solution to
-// allow us to do this properly and not hack around it.
-export const LAYOUT_SHIFT_SYNTHETIC_DURATION = Trace.Types.Timing.MicroSeconds(5_000);
-
 /**
  * Below the network track there is a resize bar the user can click and drag.
  */
@@ -1710,14 +1703,6 @@ export function timingsForOverlayEntry(entry: OverlayEntry):
       startTime: entry.startTime,
       endTime: entry.endTime,
       duration: entry.duration,
-    };
-  }
-  if (Trace.Types.Events.isSyntheticLayoutShift(entry)) {
-    const endTime = Trace.Types.Timing.MicroSeconds(entry.ts + LAYOUT_SHIFT_SYNTHETIC_DURATION);
-    return {
-      endTime,
-      duration: LAYOUT_SHIFT_SYNTHETIC_DURATION,
-      startTime: entry.ts,
     };
   }
   return Trace.Helpers.Timing.eventTimingsMicroSeconds(entry);

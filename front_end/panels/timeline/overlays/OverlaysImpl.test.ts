@@ -35,15 +35,18 @@ const FAKE_OVERLAY_ENTRY_QUERIES: Overlays.Overlays.OverlayEntryQueries = {
 function createCharts(parsedTrace?: Trace.Handlers.Types.ParsedTrace): Overlays.Overlays.TimelineCharts {
   const mainProvider = new Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider();
   const networkProvider = new Timeline.TimelineFlameChartNetworkDataProvider.TimelineFlameChartNetworkDataProvider();
+  if (parsedTrace) {
+    mainProvider.setModel(parsedTrace);
+    networkProvider.setModel(parsedTrace);
+  }
 
   const delegate = new MockFlameChartDelegate();
   const mainChart = new PerfUI.FlameChart.FlameChart(mainProvider, delegate);
   const networkChart = new PerfUI.FlameChart.FlameChart(networkProvider, delegate);
+  // Add to DOM for offsetWidth, etc working
+  document.body.append(mainChart.element, networkChart.element);
 
   if (parsedTrace) {
-    mainProvider.setModel(parsedTrace);
-    networkProvider.setModel(parsedTrace);
-
     // Force the charts to render. Normally the TimelineFlameChartView would do
     // this, but we aren't creating one for these tests.
     mainChart.update();
@@ -61,6 +64,11 @@ function createCharts(parsedTrace?: Trace.Handlers.Types.ParsedTrace): Overlays.
 describeWithEnvironment('Overlays', () => {
   beforeEach(() => {
     setupIgnoreListManagerEnvironment();
+  });
+
+  afterEach(() => {
+    // Remove any FlameChart elements from the DOM
+    document.body.querySelectorAll('widget').forEach(e => e.remove());
   });
 
   it('can calculate the x position of an event based on the dimensions and its timestamp', async () => {
@@ -735,7 +743,7 @@ describeWithEnvironment('Overlays', () => {
       overlays.update();
       const overlayDOM = container.querySelector<HTMLElement>('.overlay-type-ENTRY_SELECTED');
       assert.isOk(overlayDOM);
-      assert.strictEqual(window.parseInt(overlayDOM.style.width), 250);
+      assert.strictEqual(window.parseInt(overlayDOM.style.width), 2);
     });
 
     it('renders the duration and label for a time range overlay', async function() {

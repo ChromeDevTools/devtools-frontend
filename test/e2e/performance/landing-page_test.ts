@@ -92,7 +92,7 @@ describe('The Performance panel landing page', () => {
 
       for (const interaction of interactions) {
         const interactionText = await interaction.evaluate(el => el.innerText) || '';
-        assert.match(interactionText, /pointer\n[\d.]+ (s|ms)/);
+        assert.match(interactionText, /pointer( INP)?\n[\d.]+ (s|ms)/);
       }
     } finally {
       await targetSession.detach();

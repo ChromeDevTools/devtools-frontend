@@ -34,7 +34,7 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
   #lcpValue?: LCPValue;
   #clsValue?: CLSValue;
   #inpValue?: INPValue;
-  #interactions: InteractionValue[] = [];
+  #interactions: Interaction[] = [];
   #mutex = new Common.Mutex.Mutex();
 
   private constructor() {
@@ -63,7 +63,7 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
     return this.#inpValue;
   }
 
-  get interactions(): InteractionValue[] {
+  get interactions(): Interaction[] {
     return this.#interactions;
   }
 
@@ -161,20 +161,21 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
         const inpEvent: INPValue = {
           value: webVitalsEvent.value,
           phases: webVitalsEvent.phases,
+          uniqueInteractionId: webVitalsEvent.uniqueInteractionId,
         };
         this.#inpValue = inpEvent;
         break;
       }
       case 'Interaction': {
-        const interactionEvent: InteractionValue = webVitalsEvent;
+        const interaction = new Interaction(webVitalsEvent);
         if (webVitalsEvent.nodeIndex !== undefined) {
           const node = await this.#resolveDomNode(webVitalsEvent.nodeIndex, executionContextId);
           if (node) {
-            interactionEvent.node = node;
+            interaction.node = node;
           }
         }
 
-        this.#interactions.push(interactionEvent);
+        this.#interactions.push(interaction);
         break;
       }
       case 'reset': {
@@ -397,19 +398,29 @@ export interface LCPValue extends MetricValue {
 
 export interface INPValue extends MetricValue {
   phases: Spec.INPPhases;
+  uniqueInteractionId: Spec.UniqueInteractionId;
 }
 
 export type CLSValue = MetricValue;
 
-export type InteractionValue = Pick<Spec.InteractionEvent, 'interactionType'|'duration'>&{
-  node?: SDK.DOMModel.DOMNode,
-};
+export class Interaction {
+  interactionType: Spec.InteractionEvent['interactionType'];
+  duration: Spec.InteractionEvent['duration'];
+  uniqueInteractionId: Spec.UniqueInteractionId;
+  node?: SDK.DOMModel.DOMNode;
+
+  constructor(interactionEvent: Spec.InteractionEvent) {
+    this.interactionType = interactionEvent.interactionType;
+    this.duration = interactionEvent.duration;
+    this.uniqueInteractionId = interactionEvent.uniqueInteractionId;
+  }
+}
 
 export interface StatusEvent {
   lcp?: LCPValue;
   cls?: CLSValue;
   inp?: INPValue;
-  interactions: InteractionValue[];
+  interactions: Interaction[];
 }
 
 type EventTypes = {

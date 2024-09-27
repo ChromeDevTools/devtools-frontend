@@ -145,12 +145,9 @@ function initialize(): void {
         processingDuration: metric.attribution.processingDuration,
         presentationDelay: metric.attribution.presentationDelay,
       },
+      uniqueInteractionId: Spec.getUniqueInteractionId(metric.entries),
       interactionType: metric.attribution.interactionType,
     };
-    const element = metric.attribution.interactionTargetElement;
-    if (element) {
-      event.nodeIndex = establishNodeIndex(element);
-    }
     sendEventToDevTools(event);
   }, {reportAllChanges: true});
 
@@ -158,7 +155,7 @@ function initialize(): void {
     const event: Spec.InteractionEvent = {
       name: 'Interaction',
       duration: interaction.value,
-      interactionId: interaction.attribution.interactionId,
+      uniqueInteractionId: Spec.getUniqueInteractionId(interaction.entries),
       interactionType: interaction.attribution.interactionType,
     };
     const node = interaction.attribution.interactionTargetElement;

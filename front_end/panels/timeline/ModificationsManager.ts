@@ -191,7 +191,7 @@ export class ModificationsManager extends EventTarget {
   removeAnnotation(removedAnnotation: Trace.Types.File.Annotation): void {
     const overlayToRemove = this.#overlayForAnnotation.get(removedAnnotation);
     if (!overlayToRemove) {
-      console.warn('Overlay for deleted Annotation does not exist');
+      console.warn('Overlay for deleted Annotation does not exist', removedAnnotation);
       return;
     }
     this.#overlayForAnnotation.delete(removedAnnotation);
@@ -201,11 +201,10 @@ export class ModificationsManager extends EventTarget {
   removeAnnotationOverlay(removedOverlay: Overlays.Overlays.TimelineOverlay): void {
     const annotationForRemovedOverlay = this.getAnnotationByOverlay(removedOverlay);
     if (!annotationForRemovedOverlay) {
-      console.warn('Annotation for deleted Overlay does not exist');
+      console.warn('Annotation for deleted Overlay does not exist', removedOverlay);
       return;
     }
-    this.#overlayForAnnotation.delete(annotationForRemovedOverlay);
-    this.dispatchEvent(new AnnotationModifiedEvent(removedOverlay, 'Remove'));
+    this.removeAnnotation(annotationForRemovedOverlay);
   }
 
   updateAnnotation(updatedAnnotation: Trace.Types.File.Annotation): void {

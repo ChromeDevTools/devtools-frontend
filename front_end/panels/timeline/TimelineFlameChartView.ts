@@ -469,6 +469,13 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     }
   }
 
+  #clearLinkSelectionAnnotation(): void {
+    if (this.#linkSelectionAnnotation === null) {
+      return;
+    }
+    ModificationsManager.activeManager()?.removeAnnotation(this.#linkSelectionAnnotation);
+    this.#linkSelectionAnnotation = null;
+  }
   #keydownHandler(event: KeyboardEvent): void {
     const keyCombo = 'fixme';
 
@@ -477,7 +484,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     // is typed into the label. In that case, delete the connection.
     if (this.#linkSelectionAnnotation &&
         this.#linkSelectionAnnotation.state === Trace.Types.File.EntriesLinkState.CREATION_NOT_STARTED) {
-      ModificationsManager.activeManager()?.removeAnnotation(this.#linkSelectionAnnotation);
+      this.#clearLinkSelectionAnnotation();
     }
 
     /**
@@ -485,8 +492,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
      * cancel and clear out the pending annotation.
      */
     if (event.key === 'Escape' && this.#linkSelectionAnnotation) {
-      ModificationsManager.activeManager()?.removeAnnotation(this.#linkSelectionAnnotation);
-      this.#linkSelectionAnnotation = null;
+      this.#clearLinkSelectionAnnotation();
       event.stopPropagation();
     }
 
@@ -843,7 +849,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
 
     if (this.#linkSelectionAnnotation &&
         this.#linkSelectionAnnotation.state === Trace.Types.File.EntriesLinkState.CREATION_NOT_STARTED) {
-      ModificationsManager.activeManager()?.removeAnnotation(this.#linkSelectionAnnotation);
+      this.#clearLinkSelectionAnnotation();
     }
   }
 

@@ -57,6 +57,14 @@ export class EntryLabelOverlay extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-entry-label-overlay`;
   readonly #shadow = this.attachShadow({mode: 'open'});
   readonly #boundRender = this.#render.bind(this);
+
+  // Once a label is bound for deletion, we remove it from the DOM via events
+  // that are dispatched. But in the meantime the blur event of the input box
+  // can fire, and that triggers a second removal. So we set this flag after
+  // the first removal to avoid a duplicate event firing which is a no-op but
+  // causes errors when we try to delete an already deleted annotation.
+  #isPendingRemoval: boolean = false;
+
   // The label is set to editable when it is double clicked. If the user clicks away from the label box
   // element, the lable is set to not editable until it double clicked.s
   #isLabelEditable: boolean = true;
@@ -121,8 +129,8 @@ export class EntryLabelOverlay extends HTMLElement {
   }
 
   #handleLabelInputKeyUp(): void {
-    // If the label changed on key up, dispatch label changed event
-    const labelBoxTextContent = this.#inputField?.textContent ?? '';
+    // If the label changed on key up, dispatch label changed event.
+    const labelBoxTextContent = this.#inputField?.textContent?.trim() ?? '';
     if (labelBoxTextContent !== this.#label) {
       this.#label = labelBoxTextContent;
       this.dispatchEvent(new EntryLabelChangeEvent(this.#label));
@@ -319,8 +327,12 @@ export class EntryLabelOverlay extends HTMLElement {
     if (editable) {
       this.#focusInputBox();
     }
+    // On MacOS when clearing the input box it is left with a new line, so we
+    // trim the string to remove any accidental trailing whitespace.
+    const newLabelText = this.#inputField?.textContent?.trim() ?? '';
     // If the label is empty when it is being navigated away from, dispatch an event to remove this entry overlay
-    if (!editable && this.#inputField?.innerText.length === 0) {
+    if (!editable && newLabelText.length === 0 && !this.#isPendingRemoval) {
+      this.#isPendingRemoval = true;
       this.dispatchEvent(new EmptyEntryLabelRemoveEvent());
     }
   }

@@ -2752,6 +2752,7 @@ export const knownContextValues = new Set([
   'source-parse',
   'source-relatedCode',
   'source-stacktrace',
+  'source-symbol',
   'source-url',
   'source.xhr-breakpoints',
   'sources',

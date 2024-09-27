@@ -667,10 +667,7 @@ export const generatedProperties = [
    "scroll-snap-type",
    "scroll-start-block",
    "scroll-start-inline",
-   "scroll-start-target-block",
-   "scroll-start-target-inline",
-   "scroll-start-target-x",
-   "scroll-start-target-y",
+   "scroll-start-target",
    "scroll-start-x",
    "scroll-start-y",
    "scroll-timeline-axis",
@@ -3590,31 +3587,11 @@ export const generatedProperties = [
   "name": "scroll-start-inline"
  },
  {
-  "longhands": [
-   "scroll-start-target-block",
-   "scroll-start-target-inline"
+  "keywords": [
+   "none",
+   "auto"
   ],
   "name": "scroll-start-target"
- },
- {
-  "name": "scroll-start-target-block"
- },
- {
-  "name": "scroll-start-target-inline"
- },
- {
-  "keywords": [
-   "none",
-   "auto"
-  ],
-  "name": "scroll-start-target-x"
- },
- {
-  "keywords": [
-   "none",
-   "auto"
-  ],
-  "name": "scroll-start-target-y"
  },
  {
   "name": "scroll-start-x"
@@ -6006,13 +5983,7 @@ export const generatedPropertyValues = {
    "proximity"
   ]
  },
- "scroll-start-target-x": {
-  "values": [
-   "none",
-   "auto"
-  ]
- },
- "scroll-start-target-y": {
+ "scroll-start-target": {
   "values": [
    "none",
    "auto"

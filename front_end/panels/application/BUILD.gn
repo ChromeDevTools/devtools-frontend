@@ -86,6 +86,7 @@ devtools_module("application") {
     "../../panels/mobile_throttling:bundle",
     "../../panels/network:bundle",
     "../../panels/network/forward:bundle",
+    "../../ui/components/buttons:bundle",
     "../../ui/components/data_grid:bundle",
     "../../ui/components/expandable_list:bundle",
     "../../ui/components/legacy_wrapper:bundle",

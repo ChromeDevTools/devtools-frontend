@@ -281,7 +281,7 @@ export class LighthouseController extends Common.ObjectWrapper.ObjectWrapper<Eve
   }
 
   private unauditablePageMessage(): string|null {
-    if (!this.manager) {
+    if (!this.manager || this.getFlags().mode !== 'navigation') {
       return null;
     }
 

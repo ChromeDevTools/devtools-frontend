@@ -300,7 +300,9 @@ export class TimelineDetailsView extends UI.Widget.VBox {
       this.setContent(this.#networkRequestDetails);
     } else if (TimelineSelection.isSelection(selectionObject)) {
       const event = selectionObject;
-      if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_LAYOUT_SHIFT_DETAILS)) {
+      if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_LAYOUT_SHIFT_DETAILS) &&
+          (Trace.Types.Events.isSyntheticLayoutShift(event) ||
+           Trace.Types.Events.isSyntheticLayoutShiftCluster(event))) {
         if (Trace.Types.Events.isSyntheticLayoutShift(event)) {
           const isFreshRecording = Boolean(this.#parsedTrace && Tracker.instance().recordingIsFresh(this.#parsedTrace));
           this.#layoutShiftDetails.setData(event, this.#traceInsightsSets, this.#parsedTrace, isFreshRecording);

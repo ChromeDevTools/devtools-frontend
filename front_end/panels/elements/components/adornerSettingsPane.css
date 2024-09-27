@@ -7,19 +7,27 @@
 .adorner-settings-pane {
   display: flex;
   height: auto;
-  padding: 6px 12px;
+  padding: var(--sys-size-4) var(--sys-size-6);
   color: var(--sys-color-on-surface);
   font-size: 12px;
   align-items: center;
-}
 
-.settings-title {
-  font-weight: 500;
-  margin-right: 6px;
+  & > .settings-title {
+    font-weight: var(--ref-typeface-weight-medium);
+    margin-right: var(--sys-size-4);
+    min-width: fit-content;
+  }
+
+  & > .setting-list {
+    display: flex;
+    flex-wrap: wrap;
+  }
 }
 
 .setting {
   margin-left: 1em;
+  display: flex;
+  min-width: fit-content;
 }
 
 .adorner-status {

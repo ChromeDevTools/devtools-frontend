@@ -33,7 +33,7 @@ itScreenshot('loads a trace file and renders it in the timeline', async () => {
 
 The first time this test runs, it will create a new stored image in `test/interactions/goldens`. On any future runs, it will compare the generated screenshot against that golden, and fail if there is a difference.
 
-We store and assert golden screenshots from Linux. Mac and Windows are deliberately excluded as web content rarely changes has platform-specific bugs. Developers can update screenshots locally or use screenshots generated from the CQ bots.
+We store and assert golden screenshots from Linux. Mac and Windows are deliberately excluded as web content rarely changes has platform-specific bugs. Developers can update screenshots locally or use screenshots generated from the CQ bots (see below).
 
 ### Updating screenshots locally
 

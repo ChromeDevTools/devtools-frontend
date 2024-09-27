@@ -355,8 +355,7 @@ export class SearchableView extends VBox {
   }
 
   private toggleReplace(): void {
-    const replaceEnabled = !this.replaceToggleButton.isToggled();
-    this.replaceToggleButton.setToggled(replaceEnabled);
+    const replaceEnabled = this.replaceToggleButton.isToggled();
     const label =
         replaceEnabled ? i18nString(UIStrings.disableFindAndReplace) : i18nString(UIStrings.enableFindAndReplace);
     ARIAUtils.setLabel(this.replaceToggleButton.element, label);

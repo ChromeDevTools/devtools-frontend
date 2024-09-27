@@ -436,13 +436,6 @@ describe('CSSMatchedStyles', () => {
         inherits: false,
       },
     ];
-    const node = sinon.createStubInstance(SDK.DOMModel.DOMNode);
-    node.id = 1 as Protocol.DOM.NodeId;
-    node.nodeType.returns(Node.ELEMENT_NODE);
-    const parent = sinon.createStubInstance(SDK.DOMModel.DOMNode);
-    parent.id = 2 as Protocol.DOM.NodeId;
-    parent.nodeType.returns(Node.ELEMENT_NODE);
-    node.parentNode = parent;
 
     function checkResolution(
         matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles,
@@ -467,6 +460,18 @@ describe('CSSMatchedStyles', () => {
         assert.strictEqual(resolvedValue?.value, expectedValue, propertyName);
       }
     }
+
+    let node: sinon.SinonStubbedInstance<SDK.DOMModel.DOMNode>;
+
+    beforeEach(() => {
+      node = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+      node.id = 1 as Protocol.DOM.NodeId;
+      node.nodeType.returns(Node.ELEMENT_NODE);
+      const parent = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+      parent.id = 2 as Protocol.DOM.NodeId;
+      parent.nodeType.returns(Node.ELEMENT_NODE);
+      node.parentNode = parent;
+    });
 
     it('correctly resolves the keyword `unset`', async () => {
       const properties = [

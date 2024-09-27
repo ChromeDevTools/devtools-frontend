@@ -135,12 +135,18 @@ export class TimeRangeOverlay extends HTMLElement {
     const paddingForScrollbar = 9;
 
     const overlayRect = this.getBoundingClientRect();
+    const labelFocused = this.#shadow.activeElement === this.#labelBox;
+
     const labelRect = this.#rangeContainer.getBoundingClientRect();
     const visibleOverlayWidth = this.#visibleOverlayWidth(overlayRect) - paddingForScrollbar;
     const overlayTooNarrow = visibleOverlayWidth <= labelRect.width - paddingForScrollbar;
-    this.#rangeContainer.classList.toggle('labelHidden', overlayTooNarrow);
+    // We do not hide the label if:
+    // 1. it is focused (user is typing into it)
+    // 2. it is empty - this means it's a new label and we need to let the user type into it!
+    const hideLabel = overlayTooNarrow && !labelFocused && this.#label.length > 0;
+    this.#rangeContainer.classList.toggle('labelHidden', hideLabel);
 
-    if (overlayTooNarrow) {
+    if (hideLabel) {
       // Label is invisible, no need to do all the layout.
       return;
     }

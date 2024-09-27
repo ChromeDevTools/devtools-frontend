@@ -50,7 +50,11 @@ export class StreamingContentData extends Common.ObjectWrapper.ObjectWrapper<Eve
     return new StreamingContentData(content.mimeType, content.charset, content);
   }
 
+  /** @returns true, if this `ContentData` was constructed from text content or the mime type indicates text that can be decoded */
   get isTextContent(): boolean {
+    if (this.#contentData) {
+      return this.#contentData.isTextContent;
+    }
     return Platform.MimeType.isTextType(this.mimeType);
   }
 

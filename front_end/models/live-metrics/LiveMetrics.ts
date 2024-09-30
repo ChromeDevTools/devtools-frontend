@@ -35,6 +35,7 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
   #clsValue?: CLSValue;
   #inpValue?: INPValue;
   #interactions: Interaction[] = [];
+  #layoutShifts: LayoutShift[] = [];
   #mutex = new Common.Mutex.Mutex();
 
   private constructor() {
@@ -65,6 +66,10 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
 
   get interactions(): Interaction[] {
     return this.#interactions;
+  }
+
+  get layoutShifts(): LayoutShift[] {
+    return this.#layoutShifts;
   }
 
   /**
@@ -107,6 +112,16 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
     return nodes?.get(backendNodeId) || undefined;
   }
 
+  #sendStatusUpdate(): void {
+    this.dispatchEventToListeners(Events.STATUS, {
+      lcp: this.#lcpValue,
+      cls: this.#clsValue,
+      inp: this.#inpValue,
+      interactions: this.#interactions,
+      layoutShifts: this.#layoutShifts,
+    });
+  }
+
   /**
    * If there is a document update then any node handles we have already resolved will be invalid.
    * This function should re-resolve any relevant DOM nodes after a document update.
@@ -114,22 +129,29 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
   async #onDocumentUpdate(event: Common.EventTarget.EventTargetEvent<SDK.DOMModel.DOMModel>): Promise<void> {
     const domModel = event.data;
 
-    if (this.lcpValue?.node) {
-      this.lcpValue.node = await this.#refreshNode(domModel, this.lcpValue.node);
-    }
+    const allLayoutAffectedNodes = this.#layoutShifts.flatMap(shift => shift.affectedNodes);
+    const toRefresh: Array<{node?: SDK.DOMModel.DOMNode}> =
+        [this.#lcpValue || {}, ...this.#interactions, ...allLayoutAffectedNodes];
 
-    for (const interaction of this.interactions) {
-      if (interaction.node) {
-        interaction.node = await this.#refreshNode(domModel, interaction.node);
+    const allPromises = toRefresh.map(item => {
+      const node = item.node;
+      if (node === undefined) {
+        return;
       }
-    }
 
-    this.dispatchEventToListeners(Events.STATUS, {
-      lcp: this.#lcpValue,
-      cls: this.#clsValue,
-      inp: this.#inpValue,
-      interactions: this.#interactions,
+      return this.#refreshNode(domModel, node).then(refreshedNode => {
+        // In theory, it is possible for `node` to be undefined even though it was defined previously.
+        // We should keep the affected nodes consistent from the user perspective, so we will just keep the stale node instead of removing it.
+        // This is unlikely to happen in practice.
+        if (refreshedNode) {
+          item.node = refreshedNode;
+        }
+      });
     });
+
+    await Promise.all(allPromises);
+
+    this.#sendStatusUpdate();
   }
 
   async #handleWebVitalsEvent(
@@ -153,6 +175,7 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
       case 'CLS': {
         const event: CLSValue = {
           value: webVitalsEvent.value,
+          clusterShiftIds: webVitalsEvent.clusterShiftIds,
         };
         this.#clsValue = event;
         break;
@@ -178,20 +201,34 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
         this.#interactions.push(interaction);
         break;
       }
+      case 'LayoutShift': {
+        const nodePromises = webVitalsEvent.affectedNodeIndices.map(nodeIndex => {
+          return this.#resolveDomNode(nodeIndex, executionContextId);
+        });
+
+        const affectedNodes = (await Promise.all(nodePromises))
+                                  .filter((node): node is SDK.DOMModel.DOMNode => Boolean(node))
+                                  .map(node => ({node}));
+
+        const layoutShift: LayoutShift = {
+          score: webVitalsEvent.score,
+          uniqueLayoutShiftId: webVitalsEvent.uniqueLayoutShiftId,
+          affectedNodes,
+        };
+        this.#layoutShifts.push(layoutShift);
+        break;
+      }
       case 'reset': {
         this.#lcpValue = undefined;
         this.#clsValue = undefined;
         this.#inpValue = undefined;
         this.#interactions = [];
+        this.#layoutShifts = [];
         break;
       }
     }
-    this.dispatchEventToListeners(Events.STATUS, {
-      lcp: this.#lcpValue,
-      cls: this.#clsValue,
-      inp: this.#inpValue,
-      interactions: this.#interactions,
-    });
+
+    this.#sendStatusUpdate();
   }
 
   #getFrameForExecutionContextId(executionContextId: Protocol.Runtime.ExecutionContextId):
@@ -278,12 +315,7 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
 
   clearInteractions(): void {
     this.#interactions = [];
-    this.dispatchEventToListeners(Events.STATUS, {
-      lcp: this.#lcpValue,
-      cls: this.#clsValue,
-      inp: this.#inpValue,
-      interactions: this.#interactions,
-    });
+    this.#sendStatusUpdate();
   }
 
   async targetAdded(target: SDK.Target.Target): Promise<void> {
@@ -401,7 +433,15 @@ export interface INPValue extends MetricValue {
   uniqueInteractionId: Spec.UniqueInteractionId;
 }
 
-export type CLSValue = MetricValue;
+export interface CLSValue extends MetricValue {
+  clusterShiftIds: Spec.UniqueLayoutShiftId[];
+}
+
+export interface LayoutShift {
+  score: number;
+  uniqueLayoutShiftId: Spec.UniqueLayoutShiftId;
+  affectedNodes: Array<{node: SDK.DOMModel.DOMNode}>;
+}
 
 export class Interaction {
   interactionType: Spec.InteractionEvent['interactionType'];
@@ -421,6 +461,7 @@ export interface StatusEvent {
   cls?: CLSValue;
   inp?: INPValue;
   interactions: Interaction[];
+  layoutShifts: LayoutShift[];
 }
 
 type EventTypes = {

@@ -5,10 +5,12 @@
 import * as WebVitals from '../../../third_party/web-vitals/web-vitals.js';
 
 import * as OnEachInteraction from './OnEachInteraction.js';
+import * as OnEachLayoutShift from './OnEachLayoutShift.js';
 import * as Spec from './spec/spec.js';
 
 const {onLCP, onCLS, onINP} = WebVitals.Attribution;
 const {onEachInteraction} = OnEachInteraction;
+const {onEachLayoutShift} = OnEachLayoutShift;
 
 declare const window: Window&{
   getNodeForIndex: (index: number) => Node | undefined,
@@ -132,6 +134,7 @@ function initialize(): void {
     const event: Spec.CLSChangeEvent = {
       name: 'CLS',
       value: metric.value,
+      clusterShiftIds: metric.entries.map(Spec.getUniqueLayoutShiftId),
     };
     sendEventToDevTools(event);
   }, {reportAllChanges: true});
@@ -162,6 +165,17 @@ function initialize(): void {
     if (node) {
       event.nodeIndex = establishNodeIndex(node);
     }
+    sendEventToDevTools(event);
+  });
+
+  onEachLayoutShift(layoutShift => {
+    const event: Spec.LayoutShiftEvent = {
+      name: 'LayoutShift',
+      score: layoutShift.value,
+      uniqueLayoutShiftId: Spec.getUniqueLayoutShiftId(layoutShift.entry),
+      affectedNodeIndices: layoutShift.attribution.affectedNodes.map(establishNodeIndex),
+    };
+
     sendEventToDevTools(event);
   });
 }

@@ -10,6 +10,7 @@ export const INTERNAL_KILL_SWITCH = '__chromium_devtools_kill_live_metrics';
 export type MetricChangeEvent = Pick<MetricType, 'name'|'value'>;
 
 export type UniqueInteractionId = `interaction-${number}-${number}`;
+export type UniqueLayoutShiftId = `layout-shift-${number}-${number}`;
 
 /**
  * An interaction can have multiple associated `PerformanceEventTiming`s.
@@ -24,6 +25,10 @@ export function getUniqueInteractionId(entries: PerformanceEventTiming[]): Uniqu
     return prev.duration > curr.duration ? prev : curr;
   });
   return `interaction-${longestEntry.interactionId}-${longestEntry.startTime}`;
+}
+
+export function getUniqueLayoutShiftId(entry: LayoutShift): UniqueLayoutShiftId {
+  return `layout-shift-${entry.value}-${entry.startTime}`;
 }
 
 export interface LCPPhases {
@@ -47,6 +52,7 @@ export interface LCPChangeEvent extends MetricChangeEvent {
 
 export interface CLSChangeEvent extends MetricChangeEvent {
   name: 'CLS';
+  clusterShiftIds: UniqueLayoutShiftId[];
 }
 
 export interface INPChangeEvent extends MetricChangeEvent {
@@ -64,8 +70,15 @@ export interface InteractionEvent {
   nodeIndex?: number;
 }
 
+export interface LayoutShiftEvent {
+  name: 'LayoutShift';
+  score: number;
+  uniqueLayoutShiftId: UniqueLayoutShiftId;
+  affectedNodeIndices: number[];
+}
+
 export interface ResetEvent {
   name: 'reset';
 }
 
-export type WebVitalsEvent = LCPChangeEvent|CLSChangeEvent|INPChangeEvent|InteractionEvent|ResetEvent;
+export type WebVitalsEvent = LCPChangeEvent|CLSChangeEvent|INPChangeEvent|InteractionEvent|LayoutShiftEvent|ResetEvent;

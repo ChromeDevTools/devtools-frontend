@@ -15,15 +15,12 @@
     Adjusts the max height of the code area.
     This can be changed from outside by targeting `devtools-code-block` element.
   */
-  --max-code-height: none;
-}
-
-code {
-  color: var(--sys-color-on-surface);
-  font-size: 11px;
-  user-select: text;
-  cursor: text;
-  background: var(--sys-color-surface1);
+  --code-block-max-code-height: none;
+  /**
+    Adjusts the background color of the code block element.
+    This can be changed from outside by targeting `devtools-code-block` element.
+  */
+  --code-block-background-color: var(--sys-color-surface2);
 }
 
 .codeblock {
@@ -32,24 +29,9 @@ code {
   color: var(--sys-color-on-surface);
 }
 
-.codeblock .toolbar {
-  border-top-left-radius: var(--sys-shape-corner-extra-small);
-  border-top-right-radius: var(--sys-shape-corner-extra-small);
-  box-sizing: border-box;
-  display: flex;
-  height: var(--sys-size-12);
-  flex-direction: row;
-  padding: 0 11px;
-  font-size: 11px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: var(--sys-size-8);
-  background-color: var(--sys-color-surface5);
-}
-
 .codeblock .editor-wrapper {
   color: var(--sys-color-on-surface);
-  background: var(--sys-color-surface1);
+  background: var(--code-block-background-color); /* stylelint-disable-line plugin/use_theme_colors */
   padding: 10px 5px 0;
   border-bottom-left-radius: var(--sys-shape-corner-extra-small);
   border-bottom-right-radius: var(--sys-shape-corner-extra-small);
@@ -64,7 +46,7 @@ code {
 }
 
 .codeblock .editor-wrapper .code {
-  max-height: var(--max-code-height);
+  max-height: var(--code-block-max-code-height);
   overflow: auto;
   padding-bottom: 10px;
 }
@@ -123,7 +105,7 @@ code {
 .notice {
   margin-top: var(--sys-size-2);
   padding: var(--sys-size-4) var(--sys-size-5);
-  background-color: var(--sys-color-surface1);
+  background-color: var(--code-block-background-color); /* stylelint-disable-line plugin/use_theme_colors */
   border-radius: var(--sys-shape-corner-extra-small);
 
   .link {

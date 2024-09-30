@@ -279,6 +279,18 @@
   }
 }
 
+.js-code-output {
+  devtools-code-block {
+    --code-block-max-code-height: 50px;
+  }
+}
+
+.context-details {
+  devtools-code-block {
+    --code-block-max-code-height: 80px;
+  }
+}
+
 .step {
   width: fit-content;
   background-color: var(--sys-color-surface3);
@@ -360,6 +372,10 @@
 
     p {
       margin-bottom: var(--sys-size-5);
+    }
+
+    devtools-code-block {
+      --code-block-background-color: var(--sys-color-surface1);
     }
   }
 }
@@ -485,18 +501,6 @@ button.link {
   /* devtools-code-block adds `margin-top: 8px` however we want the margin between `.action-result` and `.js-code-output` to be 2px
   that's why we use -6px here. */
   margin-bottom: -6px;
-}
-
-.js-code-output {
-  devtools-code-block {
-    --max-code-height: 50px;
-  }
-}
-
-.context-details {
-  devtools-code-block {
-    --max-code-height: 80px;
-  }
 }
 
 .error-step {

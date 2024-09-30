@@ -44,7 +44,8 @@ describeWithEnvironment('CumulativeLayoutShift', function() {
       ];
       assert.deepStrictEqual(animationFailures, expected);
     });
-    it('gets the correct non composited animations for shift', async function() {
+    // Flaky test.
+    it.skip('[crbug.com/370382177]: gets the correct non composited animations for shift', async function() {
       const {data, insights} = await processTrace(this, 'non-composited-animation-shift.json.gz');
       const firstNav = getFirstOrError(data.Meta.navigationsByNavigationId.values());
       const insight = getInsightOrError('CumulativeLayoutShift', insights, firstNav);

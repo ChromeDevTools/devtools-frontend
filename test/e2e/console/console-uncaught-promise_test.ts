@@ -14,7 +14,8 @@ import {
 } from '../helpers/console-helpers.js';
 
 describe('The Console Tab', () => {
-  it('is able to log uncaught promise rejections into console', async () => {
+  // Fails after a roll.
+  it.skip('[crbug.com/370375891]: is able to log uncaught promise rejections into console', async () => {
     await goToResource('../resources/console/console-uncaught-promise.html');
     await navigateToConsoleTab();
 

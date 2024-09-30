@@ -462,19 +462,29 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
      * (buttons === 2 indicates a right click)
      */
     if (event.buttons === 2 && this.#linkSelectionAnnotation) {
-      ModificationsManager.activeManager()?.removeAnnotation(this.#linkSelectionAnnotation);
-      this.#linkSelectionAnnotation = null;
+      this.#clearLinkSelectionAnnotation(true);
       event.stopPropagation();
     }
   }
 
-  #clearLinkSelectionAnnotation(): void {
+  #clearLinkSelectionAnnotation(deleteCurrentLink: boolean): void {
     if (this.#linkSelectionAnnotation === null) {
       return;
     }
-    ModificationsManager.activeManager()?.removeAnnotation(this.#linkSelectionAnnotation);
+    if (deleteCurrentLink) {
+      ModificationsManager.activeManager()?.removeAnnotation(this.#linkSelectionAnnotation);
+    }
+    this.mainFlameChart.setLinkSelectionAnnotationIsInProgress(false);
+    this.networkFlameChart.setLinkSelectionAnnotationIsInProgress(false);
     this.#linkSelectionAnnotation = null;
   }
+
+  #setLinkSelectionAnnotation(linkSelectionAnnotation: Trace.Types.File.EntriesLinkAnnotation): void {
+    this.mainFlameChart.setLinkSelectionAnnotationIsInProgress(true);
+    this.networkFlameChart.setLinkSelectionAnnotationIsInProgress(true);
+    this.#linkSelectionAnnotation = linkSelectionAnnotation;
+  }
+
   #keydownHandler(event: KeyboardEvent): void {
     const keyCombo = 'fixme';
 
@@ -483,7 +493,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     // is typed into the label. In that case, delete the connection.
     if (this.#linkSelectionAnnotation &&
         this.#linkSelectionAnnotation.state === Trace.Types.File.EntriesLinkState.CREATION_NOT_STARTED) {
-      this.#clearLinkSelectionAnnotation();
+      this.#clearLinkSelectionAnnotation(true);
     }
 
     /**
@@ -491,7 +501,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
      * cancel and clear out the pending annotation.
      */
     if (event.key === 'Escape' && this.#linkSelectionAnnotation) {
-      this.#clearLinkSelectionAnnotation();
+      this.#clearLinkSelectionAnnotation(true);
       event.stopPropagation();
     }
 
@@ -716,7 +726,8 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
   // If an entry is hovered over and a creation of link annotation is in progress, update that annotation with a hovered entry.
   updateLinkSelectionAnnotationWithToEntry(
       dataProvider: TimelineFlameChartDataProvider|TimelineFlameChartNetworkDataProvider, entryIndex: number): void {
-    if (!this.#linkSelectionAnnotation) {
+    if (!this.#linkSelectionAnnotation ||
+        this.#linkSelectionAnnotation.state === Trace.Types.File.EntriesLinkState.CREATION_NOT_STARTED) {
       return;
     }
     const toSelectionObject = this.#selectionIfTraceEvent(entryIndex, dataProvider);
@@ -848,7 +859,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
 
     if (this.#linkSelectionAnnotation &&
         this.#linkSelectionAnnotation.state === Trace.Types.File.EntriesLinkState.CREATION_NOT_STARTED) {
-      this.#clearLinkSelectionAnnotation();
+      this.#clearLinkSelectionAnnotation(true);
     }
   }
 
@@ -918,13 +929,15 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     const fromSelectionObject = (entryFromIndex) ? this.#selectionIfTraceEvent(entryFromIndex, dataProvider) : null;
 
     if (fromSelectionObject) {
-      this.#linkSelectionAnnotation = {
+      this.#setLinkSelectionAnnotation({
         type: 'ENTRIES_LINK',
         entryFrom: fromSelectionObject,
         state: (linkCreateButton) ? Trace.Types.File.EntriesLinkState.CREATION_NOT_STARTED :
                                     Trace.Types.File.EntriesLinkState.PENDING_TO_EVENT,
-      };
-      ModificationsManager.activeManager()?.createAnnotation(this.#linkSelectionAnnotation);
+      });
+      if (this.#linkSelectionAnnotation) {
+        ModificationsManager.activeManager()?.createAnnotation(this.#linkSelectionAnnotation);
+      }
     }
   }
 
@@ -1028,7 +1041,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     // Regardless of if the link in progress was deleted or the clicked entry is the final selection,
     // set the link selection in progress to null so a new one is created if the an event to create
     // of update the current link is dispatched.
-    this.#linkSelectionAnnotation = null;
+    this.#clearLinkSelectionAnnotation(false);
   }
 
   resizeToPreferredHeights(): void {

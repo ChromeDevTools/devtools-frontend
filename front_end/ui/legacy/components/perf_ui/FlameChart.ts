@@ -312,6 +312,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
   #searchResultEntryIndex: number;
   #searchResultHighlightElements: HTMLElement[] = [];
   #inTrackConfigEditMode: boolean = false;
+  #linkSelectionAnnotationIsInProgress: boolean = false;
 
   // Stored because we cache this value to save extra lookups and layoffs.
   #canvasBoundingClientRect: DOMRect|null = null;
@@ -948,6 +949,10 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     }
   }
 
+  setLinkSelectionAnnotationIsInProgress(inProgress: boolean): void {
+    this.#linkSelectionAnnotationIsInProgress = inProgress;
+  }
+
   #selectGroup(groupIndex: number): void {
     if (groupIndex < 0 || this.selectedGroupIndex === groupIndex) {
       return;
@@ -962,7 +967,12 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     }
 
     this.keyboardFocusedGroup = groupIndex;
-    this.scrollGroupIntoView(groupIndex);
+
+    // Do not scroll the track if the user is currently selecting an entry for a connection annotation.
+    // Scrolling the view when the entry is being selected results in creating a link with different entry from the one that was clicked on.
+    if (!this.#linkSelectionAnnotationIsInProgress) {
+      this.scrollGroupIntoView(groupIndex);
+    }
     const groupName = groups[groupIndex].name;
     if (!groups[groupIndex].selectable) {
       this.deselectAllGroups();

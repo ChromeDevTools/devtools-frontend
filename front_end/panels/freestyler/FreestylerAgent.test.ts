@@ -171,6 +171,20 @@ c`;
           },
       );
     });
+    it('parses an action where the last line of the code block ends with STOP keyword', async () => {
+      const payload = `const styles = window.getComputedStyle($0);
+        const data = {
+          styles
+        };`;
+      assert.deepStrictEqual(
+          FreestylerAgent.parseResponse(`ACTION\n${payload}STOP`),
+          {
+            action: payload,
+            title: undefined,
+            thought: undefined,
+          },
+      );
+    });
     it('parses a thought and title', async () => {
       const payload = 'some response';
       const title = 'this is the title';
@@ -276,6 +290,52 @@ c`;
             thought: thoughtPayload,
             action: actionPayload,
             title,
+          },
+      );
+    });
+    it('parses an action when STOP appearing in its last line and has ANSWER after that', async () => {
+      const answerPayload = 'answer';
+      const suggestions = ['suggestion'];
+      const payload = `const styles = window.getComputedStyle($0);
+        const data = {
+          styles
+        };`;
+      assert.deepStrictEqual(
+          FreestylerAgent.parseResponse(
+              `ACTION\n${payload}STOP\nANSWER:${answerPayload}\nSUGGESTIONS: ${JSON.stringify(suggestions)}`),
+          {
+            action: payload,
+            thought: undefined,
+            title: undefined,
+          },
+      );
+    });
+    it('parses an action when STOP appearing in its last line and has OBSERVATION after that', async () => {
+      const payload = `const styles = window.getComputedStyle($0);
+        const data = {
+          styles
+        };`;
+      assert.deepStrictEqual(
+          FreestylerAgent.parseResponse(`ACTION\n${payload}STOP\nOBSERVATION:{styles: {}}`),
+          {
+            action: payload,
+            thought: undefined,
+            title: undefined,
+          },
+      );
+    });
+    it('parses an action when STOP appearing in its last line and has THOUGHT after that', async () => {
+      const payload = `const styles = window.getComputedStyle($0);
+        const data = {
+          styles
+        };`;
+      const thoughtPayload = 'thought';
+      assert.deepStrictEqual(
+          FreestylerAgent.parseResponse(`ACTION\n${payload}STOP\nTHOUGHT:${thoughtPayload}`),
+          {
+            action: payload,
+            thought: thoughtPayload,
+            title: undefined,
           },
       );
     });

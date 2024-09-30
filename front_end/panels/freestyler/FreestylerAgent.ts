@@ -270,8 +270,14 @@ export class FreestylerAgent {
           }
           i++;
         }
-        // TODO: perhaps trying to parse with a Markdown parser would
-        // yield more reliable results.
+
+        // Sometimes the LLM puts the STOP response to the last line of the code block.
+        // Here, we check whether the last line ends with STOP keyword and if so, remove it
+        // from the last line.
+        const lastActionLine = actionLines[actionLines.length - 1];
+        if (lastActionLine && lastActionLine.endsWith('STOP')) {
+          actionLines[actionLines.length - 1] = lastActionLine.substring(0, lastActionLine.length - 'STOP'.length);
+        }
         action = actionLines.join('\n').replaceAll('```', '').replaceAll('``', '').trim();
       } else if (trimmed.startsWith('ANSWER:') && !answer) {
         const answerLines = [

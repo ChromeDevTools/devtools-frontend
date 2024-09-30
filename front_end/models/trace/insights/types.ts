@@ -62,8 +62,8 @@ export type InsightResult<R extends Record<string, unknown>> = R&{
  * navigation (or the end of the trace).
  */
 export type InsightSets = {
-  /** If for a navigation, this is the navigationId. Else it is NO_NAVIGATION. */
-  id: string,
+  /** If for a navigation, this is the navigationId. Else it is Trace.Types.Events.NO_NAVIGATION. */
+  id: Types.Events.NavigationId,
   /** The URL. Shown in the accordion list. */
   label: string,
   frameId: string,
@@ -83,11 +83,9 @@ export type InsightResults = {
  * Contains insights for the entire trace. Insights are mostly grouped by `navigationId`, with one exception:
  *
  * If the analyzed trace started after the navigation, and has meaningful work with that span, there is no
- * navigation to map it to. In this case NO_NAVIGATION is used for the key.
- * TODO(crbug.com/366049346): Consider using a symbol. Wait until no-navigation insights are shown in the panel.
+ * navigation to map it to. In this case `Types.Events.NO_NAVIGATION` is used for the key.
  */
-export type TraceInsightSets = Map<string, InsightSets>;
-export const NO_NAVIGATION = 'NO_NAVIGATION';
+export type TraceInsightSets = Map<Types.Events.NavigationId, InsightSets>;
 
 /**
  * Represents the narrow set of dependencies defined by an insight's `deps()` function. `Meta` is always included regardless of `deps()`.

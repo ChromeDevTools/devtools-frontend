@@ -48,8 +48,6 @@ export class SidebarInsightsTab extends HTMLElement {
       return;
     }
 
-    // TODO(crbug.com/366049346): move "shouldShow" logic to insight result (rather than the component),
-    // and if none are visible, exclude it here.
     this.#insights = data;
     this.#insightSetKey = null;
     if (!this.#insights || !this.#parsedTrace) {

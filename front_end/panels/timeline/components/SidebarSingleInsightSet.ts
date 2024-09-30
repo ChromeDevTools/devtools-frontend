@@ -96,9 +96,7 @@ export class SidebarSingleInsightSet extends HTMLElement {
       return {value: 0, worstShiftEvent: null};
     }
 
-    // TODO(crbug.com/366049346): buildLayoutShiftsClusters is dropping non-nav clusters,
-    //                            so `insight.clusters` is always empty for non-navs.
-    // TODO(cjamcl): the CLS insight be doing this for us.
+    // TODO(cjamcl): the CLS insight should be doing this for us.
     let maxScore = 0;
     let worstCluster;
     for (const cluster of insight.clusters) {

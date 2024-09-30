@@ -82,7 +82,7 @@ describe('LayoutShiftsHandler', function() {
 
     assert.strictEqual(layoutShifts.clusters[0].clusterWindow.max, navigations[0].ts);
     // The first cluster happens before any navigation
-    assert.isUndefined(layoutShifts.clusters[0].navigationId);
+    assert.strictEqual(layoutShifts.clusters[0].navigationId, Trace.Types.Events.NO_NAVIGATION);
 
     // We should see an initial cluster here from the first layout shifts,
     // followed by 1 for each of the navigations themselves.

@@ -302,13 +302,6 @@ function getFontRootCauses(
 }
 
 export function generateInsight(parsedTrace: RequiredData<typeof deps>, context: InsightSetContext): CLSInsightResult {
-  // TODO(crbug.com/366049346): won't work without nav right now. See comment on clusterKey below.
-  if (!context.navigation) {
-    return {
-      clusters: [],
-    };
-  }
-
   const isWithinContext = (event: Types.Events.Event): boolean => Helpers.Timing.eventIsInBounds(event, context.bounds);
 
   const compositeAnimationEvents = parsedTrace.Animations.animations.filter(isWithinContext);
@@ -316,8 +309,7 @@ export function generateInsight(parsedTrace: RequiredData<typeof deps>, context:
   const networkRequests = parsedTrace.NetworkRequests.byTime.filter(isWithinContext);
   const domLoadingEvents = parsedTrace.LayoutShifts.domLoadingEvents.filter(isWithinContext);
 
-  // TODO(crbug.com/366049346): buildLayoutShiftsClusters is dropping non-nav clusters.
-  const clusterKey = context.navigation ? context.navigationId : '';
+  const clusterKey = context.navigation ? context.navigationId : Types.Events.NO_NAVIGATION;
   const clusters = parsedTrace.LayoutShifts.clustersByNavigationId.get(clusterKey) ?? [];
   const layoutShifts = clusters.flatMap(cluster => cluster.events);
   const prePaintEvents = parsedTrace.LayoutShifts.prePaintEvents.filter(isWithinContext);

@@ -348,7 +348,7 @@ export class TraceProcessor extends EventTarget {
       label = context.navigation.args.data?.documentLoaderURL ?? parsedTrace.Meta.mainFrameURL;
       navigation = context.navigation;
     } else {
-      id = Insights.Types.NO_NAVIGATION;
+      id = Types.Events.NO_NAVIGATION;
       label = parsedTrace.Meta.mainFrameURL;
     }
 

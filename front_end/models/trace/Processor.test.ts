@@ -251,7 +251,7 @@ describeWithEnvironment('TraceProcessor', function() {
       }
 
       assert.strictEqual(processor.insights.size, 1);
-      assert.deepStrictEqual([...processor.insights.keys()], [Trace.Insights.Types.NO_NAVIGATION]);
+      assert.deepStrictEqual([...processor.insights.keys()], [Trace.Types.Events.NO_NAVIGATION]);
     });
 
     it('captures errors thrown by insights', async function() {
@@ -292,7 +292,7 @@ describeWithEnvironment('TraceProcessor', function() {
       }
 
       assert.deepStrictEqual([...processor.insights.keys()], [
-        Trace.Insights.Types.NO_NAVIGATION,
+        Trace.Types.Events.NO_NAVIGATION,
         '0BCFC23BC7D7BEDC9F93E912DCCEC1DA',
       ]);
 
@@ -311,7 +311,7 @@ describeWithEnvironment('TraceProcessor', function() {
       }
 
       assert.deepStrictEqual([...processor.insights.keys()], [
-        Trace.Insights.Types.NO_NAVIGATION,
+        Trace.Types.Events.NO_NAVIGATION,
         '0BCFC23BC7D7BEDC9F93E912DCCEC1DA',
       ]);
 
@@ -337,7 +337,7 @@ describeWithEnvironment('TraceProcessor', function() {
       }
 
       assert.deepStrictEqual([...processor.insights.keys()], [
-        Trace.Insights.Types.NO_NAVIGATION,
+        Trace.Types.Events.NO_NAVIGATION,
         '83ACBFD389F1F66EF79CEDB4076EB44A',
         '70BCD304FD2C098BA2513488AB0FF3F2',
         '71CF0F2B9FE50F2CB31B261D129D06E8',

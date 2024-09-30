@@ -186,5 +186,21 @@ describeWithEnvironment('CumulativeLayoutShift', function() {
         }
       }
     });
+
+    it('returns clusters correctly for non-navigations', async function() {
+      const {insights} = await processTrace(this, 'cls-no-nav.json.gz');
+      const insight = getInsightOrError('CumulativeLayoutShift', insights);
+      const {shifts, clusters} = insight;
+
+      assert.exists(clusters);
+      assert.exists(shifts);
+      assert.strictEqual(clusters.length, 3);
+      for (const cluster of clusters) {
+        // Check that the cluster events exist in shifts map.
+        for (const shiftEvent of cluster.events) {
+          assert.exists(shifts.get(shiftEvent));
+        }
+      }
+    });
   });
 });

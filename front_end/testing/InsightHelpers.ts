@@ -40,7 +40,7 @@ export function getInsightOrError<InsightName extends keyof Trace.Insights.Types
     }
     key = navigation.args.data.navigationId;
   } else {
-    key = Trace.Insights.Types.NO_NAVIGATION;
+    key = Trace.Types.Events.NO_NAVIGATION;
   }
 
   const insightSets = insights.get(key);

@@ -182,7 +182,7 @@ export class LayoutShiftDetails extends HTMLElement {
     }
 
     const ts = Trace.Types.Timing.MicroSeconds(layoutShift.ts - parsedTrace.Meta.traceBounds.min);
-    const insightsId = layoutShift.args.data?.navigationId ?? Trace.Insights.Types.NO_NAVIGATION;
+    const insightsId = layoutShift.args.data?.navigationId ?? Trace.Types.Events.NO_NAVIGATION;
     const clsInsight = traceInsightsSets.get(insightsId)?.data.CumulativeLayoutShift;
     if (clsInsight instanceof Error) {
       return null;

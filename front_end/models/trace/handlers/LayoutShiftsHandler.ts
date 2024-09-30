@@ -38,7 +38,7 @@ import {type HandlerName, HandlerState} from './types.js';
 
 interface LayoutShifts {
   clusters: readonly Types.Events.SyntheticLayoutShiftCluster[];
-  clustersByNavigationId: Map<string, Types.Events.SyntheticLayoutShiftCluster[]>;
+  clustersByNavigationId: Map<Types.Events.NavigationId, Types.Events.SyntheticLayoutShiftCluster[]>;
   sessionMaxScore: number;
   // The session window which contains the SessionMaxScore
   clsWindowID: number;
@@ -95,7 +95,7 @@ let sessionMaxScore = 0;
 let clsWindowID = -1;
 
 const clusters: Types.Events.SyntheticLayoutShiftCluster[] = [];
-const clustersByNavigationId = new Map<string, Types.Events.SyntheticLayoutShiftCluster[]>();
+const clustersByNavigationId = new Map<Types.Events.NavigationId, Types.Events.SyntheticLayoutShiftCluster[]>();
 
 // Represents a point in time in which a  LS score change
 // was recorded.
@@ -310,8 +310,13 @@ async function buildLayoutShiftsClusters(): Promise<void> {
       // If this cluster happened after a navigation, set the navigationId to
       // the current navigation. This lets us easily group clusters by
       // navigation.
-      const navigationId =
-          currentShiftNavigation === null ? undefined : navigations[currentShiftNavigation].args.data?.navigationId;
+      const navigationId = currentShiftNavigation === null ?
+          Types.Events.NO_NAVIGATION :
+          navigations[currentShiftNavigation].args.data?.navigationId;
+      // TODO: `navigationId` is `string | undefined`, but the undefined portion
+      // comes from `data.navigationId`. I don't think that is possible for this
+      // event type. Can we make this typing stronger? In the meantime, we allow
+      // `navigationId` to include undefined values.
 
       clusters.push({
         name: 'SyntheticLayoutShiftCluster',

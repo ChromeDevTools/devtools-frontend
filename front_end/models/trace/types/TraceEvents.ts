@@ -886,6 +886,15 @@ export interface SyntheticLayoutShift extends LayoutShift, SyntheticBased<Phase.
   parsedData: LayoutShiftParsedData;
 }
 
+export const NO_NAVIGATION = 'NO_NAVIGATION';
+
+/**
+ * This maybe be a navigation id string from Chromium, or `NO_NAVIGATION`, which represents the
+ * portion of the trace for which we don't have any navigation event for (as it happeneded prior
+ * to the trace start).
+ */
+export type NavigationId = string|typeof NO_NAVIGATION;
+
 /**
  * This is a synthetic Layout shift cluster. Not based on a raw event as there's no concept
  * of this as a trace event.
@@ -904,7 +913,7 @@ export interface SyntheticLayoutShiftCluster {
     bad?: TraceWindowMicroSeconds,
   };
   // The last navigation that happened before this cluster.
-  navigationId?: string;
+  navigationId?: NavigationId;
   worstShiftEvent?: Event;
   // This is the start of the cluster: the start of the first layout shift of the cluster.
   ts: MicroSeconds;

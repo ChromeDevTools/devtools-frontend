@@ -17,6 +17,7 @@ copy_to_gen("traces") {
     "cls-cluster-navigation.json.gz",
     "cls-last-cluster-max-duration.json.gz",
     "cls-multiple-frames.json.gz",
+    "cls-no-nav.json.gz",
     "cls-single-frame.json.gz",
     "enhanced-traces.json.gz",
     "extension-tracks-and-marks.json.gz",

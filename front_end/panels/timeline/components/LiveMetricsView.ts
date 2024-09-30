@@ -815,8 +815,8 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
     const cruxManager = CrUXManager.CrUXManager.instance();
     cruxManager.removeEventListener(CrUXManager.Events.FieldDataChanged, this.#onFieldDataChanged, this);
 
-    const emulationModel = EmulationModel.DeviceModeModel.DeviceModeModel.instance();
-    emulationModel.removeEventListener(EmulationModel.DeviceModeModel.Events.Updated, this.#onEmulationChanged, this);
+    this.#deviceModeModel()?.removeEventListener(
+        EmulationModel.DeviceModeModel.Events.UPDATED, this.#onEmulationChanged, this);
   }
 
   #renderLcpCard(): LitHtml.LitTemplate {

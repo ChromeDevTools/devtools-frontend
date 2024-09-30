@@ -344,9 +344,6 @@
   "core/sdk/NetworkRequest.ts | domainMismatch": {
     "message": "अनुरोध गरिएको URL को डोमेन कुकीको डोमेनसँग ठ्याक्कै नमिलेकाले र अनुरोध गरिएको URL को डोमेन कुकीको डोमेनको विशेषताको मानको सबडोमेन नभएकाले यो कुकी ब्लक गरिएको थियो।"
   },
-  "core/sdk/NetworkRequest.ts | exemptionReasonCorsOptIn": {
-    "message": "यो कुकीलाई CORS मा सहभागी भएका आधारमा अनुमति दिइएको छ। थप जान्नुहोस्: goo.gle/cors"
-  },
   "core/sdk/NetworkRequest.ts | exemptionReasonEnterprisePolicy": {
     "message": "यो कुकीलाई Chrome Enterprise नीतिका आधारमा अनुमति दिइएको छ। थप जान्नुहोस्: goo.gle/ce-3pc"
   },
@@ -357,16 +354,19 @@
     "message": "यो कुकीलाई Storage Access API का आधारमा अनुमति दिइएको छ। थप जान्नुहोस्: goo.gle/saa"
   },
   "core/sdk/NetworkRequest.ts | exemptionReasonTPCDDeprecationTrial": {
-    "message": "यो कुकीलाई तेस्रो पक्षीय कुकी क्रमिक रूपमा चल्तीबाट हटाउने प्रक्रियाको ट्रायलका आधारमा अनुमति दिइएको छ। थप जान्नुहोस्: goo.gle/ps-dt"
+    "message": "यो कुकीलाई तेस्रो पक्षीय कुकी चल्तीबाट हटाउने प्रक्रियाको ट्रायलका आधारमा अनुमति दिइएको छ। थप जान्नुहोस्: goo.gle/ps-dt"
   },
   "core/sdk/NetworkRequest.ts | exemptionReasonTPCDHeuristics": {
-    "message": "यो कुकीलाई तेस्रो पक्षीय कुकी क्रमिक रूपमा चल्तीबाट हटाउने अनुभवका आधारमा अनुमति दिइएको छ। थप जान्नुहोस्: goo.gle/hbe"
+    "message": "यो कुकीलाई तेस्रो पक्षीय कुकी चल्तीबाट हटाउने अनुभवका आधारमा अनुमति दिइएको छ। थप जान्नुहोस्: goo.gle/hbe"
   },
   "core/sdk/NetworkRequest.ts | exemptionReasonTPCDMetadata": {
     "message": "यो कुकीलाई तेस्रो पक्षीय कुकी चल्तीबाट हटाउने प्रक्रियाको ट्रायलको ग्रेस अवधिका आधारमा अनुमति दिइएको छ। थप जान्नुहोस्: goo.gle/dt-grace"
   },
   "core/sdk/NetworkRequest.ts | exemptionReasonTopLevelStorageAccessAPI": {
     "message": "यो कुकीलाई माथिल्लो स्तरको Storage Access API का आधारमा अनुमति दिइएको छ। थप जान्नुहोस्: goo.gle/saa-top"
+  },
+  "core/sdk/NetworkRequest.ts | exemptionReasonTopLevelTPCDDeprecationTrial": {
+    "message": "यो कुकीलाई शीर्ष स्तरको तेस्रो पक्षीय कुकी चल्तीबाट हटाउने प्रक्रियाको ट्रायलका आधारमा अनुमति दिइएको छ। थप जान्नुहोस्: goo.gle/ps-dt"
   },
   "core/sdk/NetworkRequest.ts | exemptionReasonUserSetting": {
     "message": "यो कुकीलाई प्रयोगकर्ताको प्राथमिकताका आधारमा अनुमति दिइएको छ।"
@@ -411,7 +411,7 @@
     "message": "यो कनेक्सन स्किमलाई कुकी भण्डारण गर्ने अनुमति दिइएको छैन।"
   },
   "core/sdk/NetworkRequest.ts | thirdPartyPhaseout": {
-    "message": "तेस्रो पक्षीय कुकी क्रमिक रूपमा हटाउन लागिएको हुनाले यो कुकी ब्लक गरिएको थियो। \"समस्याहरू\" ट्याबमा गई थप जान्नुहोस्।"
+    "message": "Chrome फ्ल्याग वा ब्राउजरसम्बन्धी कन्फिगुरेसनका कारण यो कुकी ब्लक गरिएका हो। समस्यासम्बन्धी प्यानलमा गई थप जान्नुहोस्।"
   },
   "core/sdk/NetworkRequest.ts | thisSetcookieDidntSpecifyASamesite": {
     "message": "यो Set-Cookie हेडरमा \"SameSite\" विशेषता खुलाइएको थिएन र यसमा स्वतः \"SameSite=Lax\"\" प्रयोग गरिएको थियो। यसका साथै, यो कुनै अर्को साइटको रिस्पन्सबाट आएको र उक्त रिस्पन्स उच्च स्तरको नेभिगेसनको रिस्पन्स नभएकाले यसलाई ब्लक गरिएको थियो। URL को स्किम हालको साइटको स्किमभन्दा भिन्न रहेकाले यो रिस्पन्स कुनै अर्को साइटको रिस्पन्स मानिएको हो।"
@@ -435,7 +435,7 @@
     "message": "यो कुकी अत्यन्तै ठुलो भएकाले Set-Cookie हेडरमार्फत उक्त कुकी सेट गर्न गरिएको यो प्रयास ब्लक गरिएको थियो। नाम र मानमा गरी कुल ४०९६ भन्दा बढी वर्ण प्रयोग गर्न पाइँदैन।"
   },
   "core/sdk/NetworkRequest.ts | thisSetcookieWasBlockedDueThirdPartyPhaseout": {
-    "message": "तेस्रो पक्षीय कुकी क्रमिक रूपमा हटाउन लागिएको हुनाले यो कुकी सेट गर्न रोक लगाइएको थियो। \"समस्याहरू\" ट्याबमा गई थप जान्नुहोस्।"
+    "message": "Chrome फ्ल्याग वा ब्राउजरसम्बन्धी कन्फिगुरेसनका कारण यो कुकी सेट गर्न ब्लक गरिएका हो। समस्यासम्बन्धी प्यानलमा गई थप जान्नुहोस्।"
   },
   "core/sdk/NetworkRequest.ts | thisSetcookieWasBlockedDueToUser": {
     "message": "प्रयोगकर्ताका प्राथमिकताका कारण Set-Cookie हेडरमार्फत कुकी सेट गर्न गरिएको यो प्रयास ब्लक गरिएको थियो।"
@@ -511,6 +511,21 @@
   },
   "core/sdk/ServiceWorkerManager.ts | stopping": {
     "message": "रोकिँदै छ"
+  },
+  "core/sdk/SourceMapScopeChainEntry.ts | block": {
+    "message": "ब्लक गर्नुहोस्"
+  },
+  "core/sdk/SourceMapScopeChainEntry.ts | closure": {
+    "message": "क्लोजर"
+  },
+  "core/sdk/SourceMapScopeChainEntry.ts | global": {
+    "message": "ग्लोबल"
+  },
+  "core/sdk/SourceMapScopeChainEntry.ts | local": {
+    "message": "लोकल"
+  },
+  "core/sdk/SourceMapScopeChainEntry.ts | returnValue": {
+    "message": "रिटर्न मान"
   },
   "core/sdk/sdk-meta.ts | achromatopsia": {
     "message": "एक्रोमाटोप्सिया (कुनै पनि रङ छुट्याउन नसक्ने)"
@@ -650,9 +665,6 @@
   "core/sdk/sdk-meta.ts | extendGridLines": {
     "message": "ग्रिड लाइन विस्तार गर्नुहोस्"
   },
-  "core/sdk/sdk-meta.ts | hideCoreWebVitalsOverlay": {
-    "message": "वेबसाइटको कार्यसम्पादनका बारेमा जानकारी दिने ओभरले लुकाउनुहोस्"
-  },
   "core/sdk/sdk-meta.ts | hideFramesPerSecondFpsMeter": {
     "message": "फ्रेम प्रति सेकेन्ड (FPS) मिटर नदेखिने पारियोस्"
   },
@@ -703,9 +715,6 @@
   },
   "core/sdk/sdk-meta.ts | showAreaNames": {
     "message": "क्षेत्रको नाम देखाउनुहोस्"
-  },
-  "core/sdk/sdk-meta.ts | showCoreWebVitalsOverlay": {
-    "message": "वेबसाइटको कार्यसम्पादनका बारेमा जानकारी दिने ओभरले देखाउनुहोस्"
   },
   "core/sdk/sdk-meta.ts | showFramesPerSecondFpsMeter": {
     "message": "फ्रेम प्रति सेकेन्ड (FPS) मिटर देखाउनुहोस्"
@@ -763,9 +772,6 @@
   },
   "entrypoints/inspector_main/OutermostTargetSelector.ts | targetS": {
     "message": "पेज: {PH1}"
-  },
-  "entrypoints/inspector_main/RenderingOptions.ts | coreWebVitals": {
-    "message": "वेबसाइटको कार्यसम्पादनसम्बन्धी जानकारी"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | disableAvifImageFormat": {
     "message": "AVIF फोटोको फर्म्याट असक्षम पार्नुहोस्"
@@ -853,9 +859,6 @@
   },
   "entrypoints/inspector_main/RenderingOptions.ts | scrollingPerformanceIssues": {
     "message": "कार्यसम्पादनसम्बन्धी समस्याहरू स्क्रोल गरिँदै छ"
-  },
-  "entrypoints/inspector_main/RenderingOptions.ts | showsAnOverlayWithCoreWebVitals": {
-    "message": "वेबसाइटको कार्यसम्पादनका बारेमा जानकारी दिने ओभरले देखाउँछ।"
   },
   "entrypoints/inspector_main/RenderingOptions.ts | showsLayerBordersOrangeoliveAnd": {
     "message": "लेयरको किनारा (सुन्तला, ओलिभ) र टाइल (सायन) देखाउँछ।"
@@ -971,9 +974,6 @@
   "entrypoints/main/main-meta.ts | browserLanguage": {
     "message": "ब्राउजरको UI मा देखाइने भाषा"
   },
-  "entrypoints/main/main-meta.ts | browserPreference": {
-    "message": "ब्राउजरसम्बन्धी प्राथमिकता"
-  },
   "entrypoints/main/main-meta.ts | cancelSearch": {
     "message": "खोज्ने कार्य रद्द गर्नुहोस्"
   },
@@ -1028,6 +1028,12 @@
   "entrypoints/main/main-meta.ts | lightLower": {
     "message": "उज्यालो"
   },
+  "entrypoints/main/main-meta.ts | matchChromeColorScheme": {
+    "message": "Chrome को रङको योजनासँग मिल्दोजिल्दो बनाउनुहोस्"
+  },
+  "entrypoints/main/main-meta.ts | matchChromeColorSchemeDocumentation": {
+    "message": "DevTools का रङ Chrome को कस्टमाइज गरिएको थिमसँग मिल्दोजुल्दो बनाउनुहोस् (यसलाई अन गरिएका बेला)"
+  },
   "entrypoints/main/main-meta.ts | nextPanel": {
     "message": "अर्को प्यानल"
   },
@@ -1060,9 +1066,6 @@
   },
   "entrypoints/main/main-meta.ts | searchOnEnterCommand": {
     "message": "\"टाइप गर्दागर्दै खोज्नुहोस्\" अफ गर्नुहोस् (खोजी गर्न \"इन्टर\" थिच्नुहोस्)"
-  },
-  "entrypoints/main/main-meta.ts | switchToBrowserPreferredColor": {
-    "message": "ब्राउजरले प्राथमिकतामा राखेको कलर थिम प्रयोग गर्न थाल्नुहोस्"
   },
   "entrypoints/main/main-meta.ts | switchToDarkTheme": {
     "message": "अँध्यारो थिम प्रयोग गर्नुहोस्"
@@ -1184,12 +1187,6 @@
   "generated/Deprecation.ts | DataUrlInSvgUse": {
     "message": "डेटासम्बन्धी सहायता: SVGUseElement मा भएका URL चल्तीबाट हटाइँदै छन् र तिनलाई चाँडै नै सदाका लागि हटाइने छन्।"
   },
-  "generated/Deprecation.ts | DelegatedInkExpectedImprovement": {
-    "message": "फिंगरप्रिन्टसम्बन्धी सम्भावित समस्याहरूका कारण DelegatedInkTrailPresenter.expectedImprovement चल्तीबाट हटाइएको छ।"
-  },
-  "generated/Deprecation.ts | DocumentDomainSettingWithoutOriginAgentClusterHeader": {
-    "message": "document.domain सेट गरेर उही ओरिजिनसम्बन्धी नीतिमा लगाइएको प्रतिबन्ध हटाउने सुविधा चल्तीबाट हटाइएको छ र यो सुविधा स्वतः अफ गरिने छ। तपाईं यो सुविधा प्रयोग गर्न जारी राख्न चाहनुहुन्छ भने कृपया डकुमेन्ट र फ्रेमहरूको HTTP प्रतिक्रियासँगै Origin-Agent-Cluster: ?0 हेडर पठाएर ओरिजिन-किड एजेन्ट क्लस्टरहरूबाट अप्ट-आउट गर्नुहोस्। यस सम्बन्धमा थप जानकारी प्राप्त गर्न https://developer.chrome.com/blog/immutable-document-domain/ मा जानुहोस्।"
-  },
   "generated/Deprecation.ts | GeolocationInsecureOrigin": {
     "message": "getCurrentPosition() र watchPosition() ले अब उप्रान्त असुरक्षित ओरिजिनहरूमा काम गर्ने छैनन्। तपाईं यो सुविधा प्रयोग गर्न चाहनुहुन्छ भने तपाईंले आफ्नो एपको ओरिजिन परिवर्तन गरी HTTPS जस्ता सुरक्षित ओरिजिन प्रयोग गर्नु पर्ने हुन्छ। तपाईं यस सम्बन्धमा थप जानकारी प्राप्त गर्न चाहनुहुन्छ भने https://goo.gle/chrome-insecure-origins हेर्नुहोस्।"
   },
@@ -1306,6 +1303,9 @@
   },
   "generated/Deprecation.ts | UnloadHandler": {
     "message": "अनलोड इभेन्ट लिस्नरहरू चल्तीबाट हटाइएका छन् र भविष्यमा यिनलाई सदाका लागि हटाइने छ।"
+  },
+  "generated/Deprecation.ts | V8GPUAdapter_RequestAdapterInfo_Method": {
+    "message": "GPUAdapter requestAdapterInfo() विधि चल्तीबाट हटाइएका हुनाले यसको साटो GPUAdapter info विशेषता प्रयोग गर्नुहोस्।"
   },
   "generated/Deprecation.ts | V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "message": "Extensions should opt into cross-origin isolation to continue using SharedArrayBuffer. See https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/."
@@ -1440,7 +1440,7 @@
     "message": "Trusted Types - नीतिको उल्लङ्घन"
   },
   "models/issues_manager/CookieDeprecationMetadataIssue.ts | thirdPartyPhaseoutExplained": {
-    "message": "तेस्रो पक्षीय कुकीहरू प्रयोग गर्न छाड्नका लागि तयारी गर्नुहोस्"
+    "message": "Chrome ले तेस्रो पक्षीय कुकीहरू व्यवस्थापन गर्ने तरिकामा गरिएका परिवर्तनहरू"
   },
   "models/issues_manager/CookieIssue.ts | aSecure": {
     "message": "सुरक्षित"
@@ -1449,10 +1449,10 @@
     "message": "असुरक्षित"
   },
   "models/issues_manager/CookieIssue.ts | consoleTpcdErrorMessage": {
-    "message": "प्राइभेसी स्यान्डबक्सअन्तर्गत Chrome मा तेस्रो पक्षीय कुकी ब्लक गरिएको छ।"
+    "message": "Chrome फ्ल्याग वा ब्राउजरसम्बन्धी कन्फिगुरेसनका कारण Chrome मा तेस्रो पक्षीय कुकी ब्लक गरिएको छ।"
   },
   "models/issues_manager/CookieIssue.ts | consoleTpcdWarningMessage": {
-    "message": "प्राइभेसी स्यान्डबक्सअन्तर्गत Chrome का आगामी संस्करणहरूमा तेस्रो पक्षीय कुकी ब्लक गरिने छ।"
+    "message": "Chrome ले नयाँ सुविधा उपलब्ध गराउँदै छ। प्रयोगकर्ताहरू उक्त सुविधाका सहायताले तेस्रो पक्षीय कुकीविना नै ब्राउज गर्न सक्ने छन्।"
   },
   "models/issues_manager/CookieIssue.ts | fileCrosSiteRedirectBug": {
     "message": "त्रुटिका बारेमा रिपोर्ट पेस गर्नुहोस्"
@@ -1467,7 +1467,7 @@
     "message": "SameSite कुकीहरूबारे जानकारी"
   },
   "models/issues_manager/CookieIssue.ts | thirdPartyPhaseoutExplained": {
-    "message": "तेस्रो पक्षीय कुकीहरू प्रयोग गर्न छाड्नका लागि तयारी गर्नुहोस्"
+    "message": "Chrome ले तेस्रो पक्षीय कुकीहरू व्यवस्थापन गर्ने तरिकामा गरिएका परिवर्तनहरू"
   },
   "models/issues_manager/CorsIssue.ts | CORS": {
     "message": "क्रस ओरिजिन रिसोर्स सेयरिङ (CORS)"
@@ -2633,14 +2633,8 @@
   "panels/application/DOMStorageItemsView.ts | domStorageItemsCleared": {
     "message": "DOM भण्डारणमा भएका वस्तुहरू हटाइए"
   },
-  "panels/application/DOMStorageItemsView.ts | domStorageNumberEntries": {
-    "message": "तालिकामा भएका प्रविष्टिहरूको सङ्ख्या: {PH1}"
-  },
   "panels/application/DOMStorageItemsView.ts | key": {
     "message": "की"
-  },
-  "panels/application/DOMStorageItemsView.ts | selectAValueToPreview": {
-    "message": "प्रिभ्यू हेर्न कुनै मान चयन गर्नुहोस्"
   },
   "panels/application/DOMStorageItemsView.ts | value": {
     "message": "मान"
@@ -3166,6 +3160,9 @@
   },
   "panels/application/components/BackForwardCacheStrings.ts | containsPlugins": {
     "message": "प्लगइन भएका पेजहरूका हकमा हाल ब्याक/फर्वार्ड क्यास प्रयोग गर्न मिल्दैन।"
+  },
+  "panels/application/components/BackForwardCacheStrings.ts | contentDiscarded": {
+    "message": "अपरिभाषित"
   },
   "panels/application/components/BackForwardCacheStrings.ts | contentFileChooser": {
     "message": "FileChooser API प्रयोग गर्ने पेजहरूका हकमा ब्याक/फर्वार्ड क्यास प्रयोग गर्न मिल्दैन।"
@@ -3998,6 +3995,9 @@
   "panels/application/preloading/PreloadingView.ts | filterFilterByRuleSet": {
     "message": "तोकिएको नियमअनुसार फिल्टर गर्नुहोस्"
   },
+  "panels/application/preloading/PreloadingView.ts | noRuleSets": {
+    "message": "नियमसम्बन्धी कुनै सेट छैन"
+  },
   "panels/application/preloading/PreloadingView.ts | statusFailure": {
     "message": "सफल भएन"
   },
@@ -4186,9 +4186,6 @@
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedNon2XX": {
     "message": "नन-2xx HTTP रेस्पोन्स स्ट्याटस कोडका कारणले प्रिफेच गर्न सकिएन।"
-  },
-  "panels/application/preloading/components/PreloadingString.ts | PrefetchFailedPerPageLimitExceeded": {
-    "message": "सुरुको पेजमा अत्यन्तै धेरै प्रिफेचहरू चलिरहेकाले प्रिफेच गर्न सकिएन।"
   },
   "panels/application/preloading/components/PreloadingString.ts | PrefetchIneligibleRetryAfter": {
     "message": "ओरिजिनको यसअघिको प्रिफेचका क्रममा अझै पनि नहटाइएको Retry-After हेडर भएको HTTP 503 प्रतिक्रिया प्राप्त भएको छ।"
@@ -5027,11 +5024,20 @@
   "panels/console/ConsoleViewMessage.ts | explainThisError": {
     "message": "यो त्रुटिका बारेमा विश्लेषणात्मक जानकारी प्राप्त गर्नुहोस्"
   },
+  "panels/console/ConsoleViewMessage.ts | explainThisErrorWithAI": {
+    "message": "यो त्रुटिका बारेमा विश्लेषणात्मक जानकारी प्राप्त गर्नुहोस्। AI को प्रविधियुक्त।"
+  },
   "panels/console/ConsoleViewMessage.ts | explainThisMessage": {
     "message": "यो म्यासेजका बारेमा विश्लेषणात्मक जानकारी प्राप्त गर्नुहोस्"
   },
+  "panels/console/ConsoleViewMessage.ts | explainThisMessageWithAI": {
+    "message": "यो म्यासेजका बारेमा विश्लेषणात्मक जानकारी प्राप्त गर्नुहोस्। AI को प्रविधियुक्त"
+  },
   "panels/console/ConsoleViewMessage.ts | explainThisWarning": {
     "message": "यो चेतावनीका बारेमा विश्लेषणात्मक जानकारी प्राप्त गर्नुहोस्"
+  },
+  "panels/console/ConsoleViewMessage.ts | explainThisWarningWithAI": {
+    "message": "यो चेतावनीका बारेमा विश्लेषणात्मक जानकारी प्राप्त गर्नुहोस्। AI को प्रविधियुक्त।"
   },
   "panels/console/ConsoleViewMessage.ts | functionWasResolvedFromBound": {
     "message": "बाउन्ड फङ्सनमार्फत फङ्सन समाधान गरियो।"
@@ -5720,6 +5726,9 @@
   "panels/elements/ElementsTreeElement.ts | editText": {
     "message": "पाठ सम्पादन गर्नुहोस्"
   },
+  "panels/elements/ElementsTreeElement.ts | elementHasScrollableOverflow": {
+    "message": "यो एलिमेन्टमा स्क्रोल गर्न मिल्ने ओभरफ्लो छ"
+  },
   "panels/elements/ElementsTreeElement.ts | enableFlexMode": {
     "message": "फ्लेक्स मोड अन गर्नुहोस्"
   },
@@ -6344,23 +6353,14 @@
   "panels/event_listeners/EventListenersView.ts | toggleWhetherEventListenerIs": {
     "message": "इभेन्ट लिसनर निष्क्रिय पार्न वा ब्लक गर्न टगल गर्नुहोस्"
   },
-  "panels/explain/components/ConsoleInsight.ts | back": {
-    "message": "पछाडि"
-  },
-  "panels/explain/components/ConsoleInsight.ts | cancel": {
-    "message": "रद्द गर्नुहोस्"
+  "panels/explain/components/ConsoleInsight.ts | badResponse": {
+    "message": "नराम्रो जवाफ"
   },
   "panels/explain/components/ConsoleInsight.ts | closeInsight": {
     "message": "विश्लेषणात्मक जानकारी भएको पेन बन्द गर्नुहोस्"
   },
   "panels/explain/components/ConsoleInsight.ts | consoleMessage": {
     "message": "कन्सोल म्यासेज"
-  },
-  "panels/explain/components/ConsoleInsight.ts | continue": {
-    "message": "जारी राख्नुहोस्"
-  },
-  "panels/explain/components/ConsoleInsight.ts | disableFeature": {
-    "message": "यो सुविधा अफ गर्नुहोस्"
   },
   "panels/explain/components/ConsoleInsight.ts | error": {
     "message": "विकासकर्ताका टुलहरूमा कुनै त्रुटि देखिएको छ"
@@ -6370,6 +6370,9 @@
   },
   "panels/explain/components/ConsoleInsight.ts | generating": {
     "message": "विश्लेषणात्मक जानकारी प्राप्त गरिँदै छ…"
+  },
+  "panels/explain/components/ConsoleInsight.ts | goodResponse": {
+    "message": "राम्रो जवाफ"
   },
   "panels/explain/components/ConsoleInsight.ts | inputData": {
     "message": "यो म्यासेज बुझ्न प्रयोग गरिने डेटा"
@@ -6382,12 +6385,6 @@
   },
   "panels/explain/components/ConsoleInsight.ts | networkRequest": {
     "message": "नेटवर्कसम्बन्धी अनुरोध"
-  },
-  "panels/explain/components/ConsoleInsight.ts | next": {
-    "message": "अर्को"
-  },
-  "panels/explain/components/ConsoleInsight.ts | notAvailable": {
-    "message": "यो सुविधा उपलब्ध छैन"
   },
   "panels/explain/components/ConsoleInsight.ts | notLoggedIn": {
     "message": "तपाईंले आफ्नो Google खाता प्रयोग गरेर Chrome मा साइन इन गरेका बेला मात्र यो सुविधा उपलब्ध हुन्छ।"
@@ -6413,20 +6410,17 @@
   "panels/explain/components/ConsoleInsight.ts | search": {
     "message": "यसको साटो खोज्ने सुविधा प्रयोग गर्नुहोस्"
   },
+  "panels/explain/components/ConsoleInsight.ts | settingsLink": {
+    "message": "सेटिङमा भएको कन्सोलसम्बन्धी विश्लेषणात्मक डेटा"
+  },
   "panels/explain/components/ConsoleInsight.ts | signInToUse": {
     "message": "यो सुविधा प्रयोग गर्न साइन इन गर्नुहोस्"
   },
   "panels/explain/components/ConsoleInsight.ts | stackTrace": {
     "message": "स्ट्याकट्रेस"
   },
-  "panels/explain/components/ConsoleInsight.ts | syncIsOff": {
-    "message": "तपाईंले Chrome सिंक अन गरेपछि मात्र तपाईं यो सुविधा प्रयोग गर्न सक्नुहुन्छ।"
-  },
-  "panels/explain/components/ConsoleInsight.ts | thumbsDown": {
-    "message": "थम्ज डाउन गर्नुहोस्"
-  },
-  "panels/explain/components/ConsoleInsight.ts | thumbsUp": {
-    "message": "थम्ज अप गर्नुहोस्"
+  "panels/explain/components/ConsoleInsight.ts | turnOnInSettings": {
+    "message": "कन्सोलसम्बन्धी चेतावनी तथा त्रुटिहरू बुझ्ने तथा सम्बोधन गर्ने प्रयोजनका लागि AI सहायता प्राप्त गर्न {PH1} अन गर्नुहोस्।"
   },
   "panels/explain/components/ConsoleInsight.ts | updateSettings": {
     "message": "सेटिङ मिलाउनुहोस्"
@@ -8001,7 +7995,7 @@
     "message": "signed-exchange"
   },
   "panels/network/NetworkDataGridNode.ts | thirdPartyPhaseout": {
-    "message": "तेस्रो पक्षीय कुकी क्रमिक रूपमा हटाउन लागिएको हुनाले यो अनुरोधका कुकी ब्लक गरिएका छन्। \"समस्याहरू\" ट्याबमा गई थप जान्नुहोस्।"
+    "message": "Chrome फ्ल्याग वा ब्राउजरसम्बन्धी कन्फिगुरेसनका कारण यो अनुरोधका कुकी ब्लक गरिएका छन्। समस्यासम्बन्धी प्यानलमा गई थप जान्नुहोस्।"
   },
   "panels/network/NetworkDataGridNode.ts | timeSubtitleTooltipText": {
     "message": "विलम्बता (प्रतिक्रिया प्राप्त भएको समय - सुरु गरिएको समय)"
@@ -8084,9 +8078,6 @@
   "panels/network/NetworkItemView.ts | websocketMessages": {
     "message": "WebSocket म्यासेजहरू"
   },
-  "panels/network/NetworkLogView.ts | allStrings": {
-    "message": "सबै"
-  },
   "panels/network/NetworkLogView.ts | areYouSureYouWantToClearBrowser": {
     "message": "तपाईं साँच्चिकै ब्राउजरमा भएका क्यास हटाउन चाहनुहुन्छ?"
   },
@@ -8126,8 +8117,11 @@
   "panels/network/NetworkLogView.ts | copyAllAsFetch": {
     "message": "सबै कमान्डहरू fetch का रूपमा कपी गर्नुहोस्"
   },
-  "panels/network/NetworkLogView.ts | copyAllAsHar": {
-    "message": "सबैलाई HAR का रूपमा कपी गर्नुहोस्"
+  "panels/network/NetworkLogView.ts | copyAllAsHarSanitized": {
+    "message": "सबै डेटालाई HAR (स्यानिटाइज गरिएको) का रूपमा कपी गर्नुहोस्"
+  },
+  "panels/network/NetworkLogView.ts | copyAllAsHarWithSensitiveData": {
+    "message": "सबै डेटा (संवेदनशील डेटासहित) लाई HAR का रूपमा कपी गर्नुहोस्"
   },
   "panels/network/NetworkLogView.ts | copyAllAsNodejsFetch": {
     "message": "सबै कमान्डहरू fetch (Node.js) का रूपमा कपी गर्नुहोस्"
@@ -8147,8 +8141,11 @@
   "panels/network/NetworkLogView.ts | copyAllListedAsFetch": {
     "message": "सूचीबद्ध गरिएका सबै कमान्डलाई fetch का रूपमा कपी गर्नुहोस्"
   },
-  "panels/network/NetworkLogView.ts | copyAllListedAsHar": {
-    "message": "सूचीबद्ध गरिएका सबै कमान्डलाई HAR का रूपमा कपी गर्नुहोस्"
+  "panels/network/NetworkLogView.ts | copyAllListedAsHarSanitized": {
+    "message": "सूचीबद्ध गरिएका सबै डेटालाई HAR (स्यानिटाइज गरिएको) का रूपमा कपी गर्नुहोस्"
+  },
+  "panels/network/NetworkLogView.ts | copyAllListedAsHarWithSensitiveData": {
+    "message": "HAR का रूपमा सूचीबद्ध गरिएका सबै डेटा (संवेदनशील डेटासहित) कपी गर्नुहोस्"
   },
   "panels/network/NetworkLogView.ts | copyAllListedAsNodejsFetch": {
     "message": "सूचीबद्ध गरिएका सबै कमान्डलाई fetch (Node.js) का रूपमा कपी गर्नुहोस्"
@@ -8243,9 +8240,6 @@
   "panels/network/NetworkLogView.ts | onlyShowThirdPartyRequests": {
     "message": "पेजको ओरिजिनभन्दा फरक ओरिजिन भएका अनुरोधहरू मात्र देखाउँछ"
   },
-  "panels/network/NetworkLogView.ts | overTwoTypesSelected": {
-    "message": "{PH1}, {PH2}..."
-  },
   "panels/network/NetworkLogView.ts | overrideHeaders": {
     "message": "ओभरराइड हेडरहरू"
   },
@@ -8261,14 +8255,8 @@
   "panels/network/NetworkLogView.ts | replayXhr": {
     "message": "XHR रिप्ले गर्नुहोस्"
   },
-  "panels/network/NetworkLogView.ts | requestTypes": {
-    "message": "अनुरोधका प्रकारहरू"
-  },
   "panels/network/NetworkLogView.ts | requestTypesToInclude": {
     "message": "समावेश गरिनु पर्ने अनुरोधका प्रकारहरू"
-  },
-  "panels/network/NetworkLogView.ts | requestTypesTooltip": {
-    "message": "प्रकारअनुसार अनुमति फिल्टर गर्नुहोस्"
   },
   "panels/network/NetworkLogView.ts | sBResourcesLoadedByThePage": {
     "message": "पेजले {PH1} बाइट रिसोर्स लोड गर्‍यो"
@@ -8300,20 +8288,11 @@
   "panels/network/NetworkLogView.ts | sTransferred": {
     "message": "{PH1} सारियो"
   },
-  "panels/network/NetworkLogView.ts | saveAllAsHarWithContent": {
-    "message": "सबै वस्तुलाई सामग्रीसहित HAR का रूपमा सेभ गर्नुहोस्"
-  },
-  "panels/network/NetworkLogView.ts | showOnly": {
-    "message": "{PH1} मात्र देखाउनुहोस्"
-  },
   "panels/network/NetworkLogView.ts | showOnlyHideRequests": {
     "message": "अनुरोधहरू देखाउनुहोस् मात्र/लुकाउनुहोस्"
   },
   "panels/network/NetworkLogView.ts | thirdParty": {
     "message": "तेस्रो पक्षले गरेका अनुरोधहरू"
-  },
-  "panels/network/NetworkLogView.ts | twoTypesSelected": {
-    "message": "{PH1}, {PH2}"
   },
   "panels/network/NetworkLogView.ts | unblockS": {
     "message": "{PH1} अनब्लक गर्नुहोस्"
@@ -8441,8 +8420,11 @@
   "panels/network/NetworkPanel.ts | doNotClearLogOnPageReload": {
     "message": "पेज रिलोड हुँदा / नेभिगेसन गर्दा लग नमेटाइयोस्"
   },
-  "panels/network/NetworkPanel.ts | exportHar": {
-    "message": "HAR एक्स्पोर्ट गर्नुहोस्..."
+  "panels/network/NetworkPanel.ts | exportHarSanitized": {
+    "message": "HAR (स्यानिटाइज गरिएको) एक्स्पोर्ट गर्नुहोस्..."
+  },
+  "panels/network/NetworkPanel.ts | exportHarWithSensitiveData": {
+    "message": "HAR (संवेदनशील डेटासहित) एक्स्पोर्ट गर्नुहोस्..."
   },
   "panels/network/NetworkPanel.ts | fetchingFrames": {
     "message": "फ्रेमहरू प्राप्त गरिँदै छ..."
@@ -9047,6 +9029,12 @@
   "panels/network/network-meta.ts | addNetworkRequestBlockingPattern": {
     "message": "नेटवर्कसम्बन्धी अनुरोध ब्लक गर्ने प्याटर्न हाल्नुहोस्"
   },
+  "panels/network/network-meta.ts | allowToGenerateHarWithSensitiveData": {
+    "message": "HAR (संवेदनशील डेटासहित) सिर्जना गर्ने अनुमति दिनुहोस्"
+  },
+  "panels/network/network-meta.ts | allowToGenerateHarWithSensitiveDataDocumentation": {
+    "message": "सिर्जना गरिएका HAR लगहरू स्वतः स्यानिटाइज गरिन्छन् र यी लगमा Cookie, Set-Cookie वा Authorization HTTP हेडरहरू समावेश गरिएका हुँदैनन्। यो सेटिङ अन गरिएका खण्डमा संवेदनशील डेटासहित HAR एक्स्पोर्ट/कपी गर्ने विकल्पहरू उपलब्ध गराइन्छन्।"
+  },
   "panels/network/network-meta.ts | clear": {
     "message": "नेटवर्क लग खाली गर्नुहोस्"
   },
@@ -9061,6 +9049,9 @@
   },
   "panels/network/network-meta.ts | diskCache": {
     "message": "डिस्कमा भएको क्यास"
+  },
+  "panels/network/network-meta.ts | dontAllowToGenerateHarWithSensitiveData": {
+    "message": "HAR (संवेदनशील डेटासहित) सिर्जना गर्ने अनुमति नदिनुहोस्"
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "नेटवर्क लग वस्तुका फ्रेमका आधारमा समूह नबनाइयोस्"
@@ -9176,6 +9167,27 @@
   "panels/performance_monitor/performance_monitor-meta.ts | systemMonitor": {
     "message": "सिस्टम मनिटर"
   },
+  "panels/profiler/HeapDetachedElementsDataGrid.ts | detachedElementsList": {
+    "message": "डिट्याच गरिका एलिमेन्टहरूको सूची"
+  },
+  "panels/profiler/HeapDetachedElementsDataGrid.ts | detachedNodes": {
+    "message": "डिट्याच गरिएका नोडहरू"
+  },
+  "panels/profiler/HeapDetachedElementsDataGrid.ts | nodeSize": {
+    "message": "नोडको सङ्ख्या"
+  },
+  "panels/profiler/HeapDetachedElementsView.ts | detachedElementProfile": {
+    "message": "डिट्याच गरिएका एलिमेन्टहरू {PH1}"
+  },
+  "panels/profiler/HeapDetachedElementsView.ts | detachedElementsDescription": {
+    "message": "डिट्याच गरिएका एलिमेन्टले JS रिफ्रेन्सले भण्डारण गरेर राखेका अब्जेक्टहरू देखाउँछ।"
+  },
+  "panels/profiler/HeapDetachedElementsView.ts | detachedElementsTitle": {
+    "message": "डिट्याच गरिएका एलिमेन्टहरू"
+  },
+  "panels/profiler/HeapDetachedElementsView.ts | startDetachedElements": {
+    "message": "डिट्याच गरिएका एलिमेन्टहरू प्राप्त गर्नुहोस्"
+  },
   "panels/profiler/HeapProfileView.ts | allocationSampling": {
     "message": "एलोकेसन साम्पलिङ"
   },
@@ -9185,9 +9197,6 @@
   "panels/profiler/HeapProfileView.ts | heapProfilerIsRecording": {
     "message": "हिप प्रोफाइलरले रेकर्ड गर्दै छ"
   },
-  "panels/profiler/HeapProfileView.ts | itProvidesGoodApproximation": {
-    "message": "यसले एलोकेसनका बारेमा राम्ररी अनुमान गरिएको जानकारी (JavaScript को इग्जिक्युसन स्ट्याकअनुसार) देखाउँछ।"
-  },
   "panels/profiler/HeapProfileView.ts | name": {
     "message": "नाम"
   },
@@ -9195,7 +9204,7 @@
     "message": "प्रोफाइल {PH1}"
   },
   "panels/profiler/HeapProfileView.ts | recordMemoryAllocations": {
-    "message": "नमुना तयार पार्ने विधि प्रयोग गरी मेमोरीको एलोकेसनसम्बन्धी रेकर्ड राख्नुहोस्।"
+    "message": "न्यूनतम ओभरहेडका सहायताले लामो समयसम्म चल्ने अपरेसनहरूको नमुना बनाएर कति मेमोरी बाँडफाँड गरिएको छ भन्ने कुराको अनुमानित डेटा प्राप्त गर्नुहोस् र JavaScript को इग्जिक्युसन स्ट्याकमार्फत विस्तृत डेटा प्राप्त गर्नुहोस्"
   },
   "panels/profiler/HeapProfileView.ts | recording": {
     "message": "रेकर्ड राखिँदै छ…"
@@ -9227,14 +9236,11 @@
   "panels/profiler/HeapProfileView.ts | stopping": {
     "message": "रोकिँदै छ…"
   },
-  "panels/profiler/HeapProfileView.ts | thisProfileTypeHasMinimal": {
-    "message": "यस प्रकारको प्रोफाइलमा कार्यसम्पादनसम्बन्धी न्यूनतम ओभरहेड हुन्छ र यसलाई लामो समयसम्म चल्ने कारबाहीहरूका लागि प्रयोग गर्न सकिन्छ।"
-  },
   "panels/profiler/HeapProfileView.ts | totalSize": {
     "message": "कुल आकार"
   },
   "panels/profiler/HeapProfileView.ts | totalSizeBytes": {
-    "message": "कुल आकार (बाइट)"
+    "message": "कुल साइज (बाइट)"
   },
   "panels/profiler/HeapProfileView.ts | url": {
     "message": "URL"
@@ -9384,7 +9390,7 @@
     "message": "\"{PH1}\" विधि प्रयोग गरी कल गर्न अनुरोध गरिएको बेला कुनै त्रुटि भयो"
   },
   "panels/profiler/HeapSnapshotView.ts | AllocationTimelinesShowInstrumented": {
-    "message": "एलोकेसन टाइमलाइनहरूले समयअनुसार इन्स्ट्रुमेन्टेड JavaScript मेमोरी एलोकेसनहरू देखाउँछन्। प्रोफाइल रेकर्ड भएपछि तपाईं यसअन्तर्गत एलोकेट गरिएका र रेकर्डिङको अन्त्यसम्म अझै सुरक्षित रहेका अब्जेक्ट हेर्न समयको अन्तराल चयन गर्न सक्नुहुन्छ। मेमोरीबाट लिक हुने डेटा अलग गर्न यस प्रकारको प्रोफाइल प्रयोग गर्नुहोस्।"
+    "message": "समयसँगै मेमोरीको बाँडफाँड गर्ने कार्य रेकर्ड गर्नुहोस् र अझै सक्रिय रहेका बाँडफाँडको अन्तराल चयन गरी मेमोरी लिकहरू आइसोलेट गर्नुहोस्"
   },
   "panels/profiler/HeapSnapshotView.ts | allObjects": {
     "message": "सबै अब्जेक्टहरू"
@@ -9393,7 +9399,7 @@
     "message": "एलोकेसन"
   },
   "panels/profiler/HeapSnapshotView.ts | allocationInstrumentationOn": {
-    "message": "टाइमलाइनमा इन्स्ट्रुमेन्टेसनको एलोकेसन"
+    "message": "टाइमलाइनमा गरिएका बाँडफाँड"
   },
   "panels/profiler/HeapSnapshotView.ts | allocationStack": {
     "message": "एलोकेसन स्ट्याक"
@@ -9417,7 +9423,7 @@
     "message": "दोहोरिएका स्ट्रिङहरू"
   },
   "panels/profiler/HeapSnapshotView.ts | exposeInternals": {
-    "message": "इन्टर्नलहरूका बारेमा जान्नुहोस् (यसअन्तर्गत लागू गर्ने कार्यसम्बन्धी विशेष विवरण समावेश छ)"
+    "message": "कार्यान्वयन गर्ने विवरणहरू समावेश गरिएको आन्तरिक डेटा"
   },
   "panels/profiler/HeapSnapshotView.ts | filter": {
     "message": "फिल्टर गर्नुहोस्"
@@ -9435,7 +9441,7 @@
     "message": "हिप स्न्यापसट"
   },
   "panels/profiler/HeapSnapshotView.ts | heapSnapshotProfilesShowMemory": {
-    "message": "हिप स्न्यापसटका प्रोफाइलहरूले तपाईंका पेजहरूमा भएका JavaScript अब्जेक्ट र सम्बन्धित DOM नोडहरूबिच मेमोरी के कति वितरण भएको छ भन्ने कुरा देखाउँछ।"
+    "message": "JavaScript अब्जेक्ट र सम्बन्धित DOM नोडहरूका बिचमा के कति मेमोरी वितरण भएको छ भन्ने कुरा हेर्नुहोस्"
   },
   "panels/profiler/HeapSnapshotView.ts | heapSnapshots": {
     "message": "हिप स्न्यापसटहरू"
@@ -9456,7 +9462,7 @@
     "message": "{PH1} र {PH2} का बिचमा एलोकेट गरिएका अब्जेक्ट"
   },
   "panels/profiler/HeapSnapshotView.ts | objectsRetainedByConsole": {
-    "message": "विकासकर्ताका टुलहरूको कन्सोलमार्फत सेभ गरिएका अब्जेक्टहरू"
+    "message": "DevTools कन्सोलले भण्डारण गरेर राखेका अब्जेक्टहरू"
   },
   "panels/profiler/HeapSnapshotView.ts | objectsRetainedByDetachedDomNodes": {
     "message": "डिट्याच गरिएका DOM नोडमार्फत सेभ गरिएका अब्जेक्टहरू"
@@ -9468,7 +9474,7 @@
     "message": "दृष्टिकोण"
   },
   "panels/profiler/HeapSnapshotView.ts | recordAllocationStacksExtra": {
-    "message": "एलोकेसनका स्ट्याक ट्रेसहरू रेकर्ड गर्नुहोस् (कार्यसम्पादनसम्बन्धी अतिरिक्त ओभरहेड)"
+    "message": "एलोकेसन स्ट्याक ट्रेसहरू (अझ धेरै ओभरहेड)"
   },
   "panels/profiler/HeapSnapshotView.ts | recording": {
     "message": "रेकर्ड राखिँदै छ…"
@@ -9581,17 +9587,11 @@
   "panels/profiler/ModuleUIStrings.ts | buildingDominatedNodes": {
     "message": "डोमिनेटेड नोडहरू बनाइँदै छन्…"
   },
-  "panels/profiler/ModuleUIStrings.ts | buildingDominatorTree": {
-    "message": "डोमिनेटर ट्री बनाइँदै छ…"
-  },
   "panels/profiler/ModuleUIStrings.ts | buildingEdgeIndexes": {
     "message": "एज इन्डेक्सहरू सिर्जना गरिँदै छन्…"
   },
   "panels/profiler/ModuleUIStrings.ts | buildingLocations": {
     "message": "स्थानहरू सिर्जना गरिँदै छ…"
-  },
-  "panels/profiler/ModuleUIStrings.ts | buildingPostorderIndex": {
-    "message": "पोस्टअर्डर इन्डेक्स सिर्जना गरिँदै छ…"
   },
   "panels/profiler/ModuleUIStrings.ts | buildingRetainers": {
     "message": "रिटेनरहरू सिर्जना गरिँदै छ…"
@@ -10433,15 +10433,6 @@
   "panels/security/SecurityPanel.ts | logName": {
     "message": "लगको नाम"
   },
-  "panels/security/SecurityPanel.ts | mainOrigin": {
-    "message": "मुख्य श्रोत"
-  },
-  "panels/security/SecurityPanel.ts | mainOriginNonsecure": {
-    "message": "मुख्य स्रोत (असुरक्षित)"
-  },
-  "panels/security/SecurityPanel.ts | mainOriginSecure": {
-    "message": "मुख्य श्रोत (सुरक्षित)"
-  },
   "panels/security/SecurityPanel.ts | missing": {
     "message": "प्रमाणपत्र छैन"
   },
@@ -10460,9 +10451,6 @@
   "panels/security/SecurityPanel.ts | nonsecureForm": {
     "message": "असुरक्षित फारम"
   },
-  "panels/security/SecurityPanel.ts | nonsecureOrigins": {
-    "message": "असुरक्षित मूलहरू"
-  },
   "panels/security/SecurityPanel.ts | notSecure": {
     "message": "सुरक्षित छैन"
   },
@@ -10478,9 +10466,6 @@
   "panels/security/SecurityPanel.ts | origin": {
     "message": "स्रोत"
   },
-  "panels/security/SecurityPanel.ts | overview": {
-    "message": "संक्षिप्त जानकारी"
-  },
   "panels/security/SecurityPanel.ts | possibleSpoofingUrl": {
     "message": "स्पुफिङ URL हुन सक्छ"
   },
@@ -10495,9 +10480,6 @@
   },
   "panels/security/SecurityPanel.ts | reloadThePageToRecordRequestsFor": {
     "message": "HTTP रिसोर्सहरूसम्बन्धी अनुरोधहरू रेकर्ड गर्न यो पेज रिलोड गर्नुहोस्।"
-  },
-  "panels/security/SecurityPanel.ts | reloadToViewDetails": {
-    "message": "विवरणहरू हेर्न रिलोड गर्नुहोस्"
   },
   "panels/security/SecurityPanel.ts | resources": {
     "message": "स्रोतहरू"
@@ -10519,9 +10501,6 @@
   },
   "panels/security/SecurityPanel.ts | secureConnectionSettings": {
     "message": "सुरक्षित कनेक्सनसम्बन्धी सेटिङ"
-  },
-  "panels/security/SecurityPanel.ts | secureOrigins": {
-    "message": "सुरक्षित ओरिजिन"
   },
   "panels/security/SecurityPanel.ts | securityOverview": {
     "message": "सुरक्षासम्बन्धी संक्षिप्त जानकारी"
@@ -10621,9 +10600,6 @@
   },
   "panels/security/SecurityPanel.ts | toCheckThisPagesStatusVisit": {
     "message": "यो पेजको स्थिति हेर्न g.co/safebrowsingstatus मा जानुहोस्।"
-  },
-  "panels/security/SecurityPanel.ts | unknownCanceled": {
-    "message": "अज्ञात / रद्द गरिएको"
   },
   "panels/security/SecurityPanel.ts | unknownField": {
     "message": "अज्ञात"
@@ -10881,25 +10857,19 @@
     "message": "प्रयोगकर्ताले कुनै गतिविधि गरिरहनुभएको छैन, स्क्रिन अनलक गरियो"
   },
   "panels/settings/AISettingsTab.ts | adminSettings": {
-    "message": "व्यवस्थापन गरिएका प्रयोगकर्तालाई उपलब्ध गराइने सुविधाहरू एड्मिनले तय गरेका सेटिङअनुसार फरक हुन सक्छन्"
+    "message": "तपाईंको Google खाताको व्यवस्थापन र/वा क्षेत्रका आधारमा Google ले डेटा सङ्कलन नगर्न सक्छ। प्रयोगकर्ताको सङ्गठनले तय गरेका सेटिङका आधारमा व्यवस्थापन गरिएका प्रयोगकर्ताका लागि उपलब्ध हुने सुविधाहरू फरक हुन सक्छन्।"
   },
   "panels/settings/AISettingsTab.ts | boostYourProductivity": {
     "message": "Chrome AI प्रयोग गरी अझ धेरै कार्य पूरा गर्नुहोस्"
   },
-  "panels/settings/AISettingsTab.ts | chromeAi": {
-    "message": "Chrome AI"
-  },
-  "panels/settings/AISettingsTab.ts | collapse": {
-    "message": "कोल्याप्स गर्नुहोस्"
-  },
   "panels/settings/AISettingsTab.ts | consoleInsightsSendsData": {
     "message": "कन्सोल म्यासेज, सम्बद्ध स्ट्याक ट्रेस, सम्बन्धित सोर्स कोड र सम्बद्ध नेटवर्क हेडरहरू स्पष्टीकरण जेनेरेट गर्ने प्रयोजनका लागि Google मा पठाइन्छन्। समीक्षकहरू यो सुविधाको गुणस्तर सुधार गर्ने प्रयोजनका लागि यो डेटा हेर्न सक्छन्।"
   },
-  "panels/settings/AISettingsTab.ts | expand": {
-    "message": "एक्स्पान्ड गर्नुहोस्"
+  "panels/settings/AISettingsTab.ts | enableConsoleInsights": {
+    "message": "कन्सोलसम्बन्धी विश्लेषणात्मक जानकारी देखाउने सुविधा अन गर्नुहोस्"
   },
   "panels/settings/AISettingsTab.ts | experimentalFeatures": {
-    "message": "यी सुविधाहरू परीक्षणको चरणमा भएकाले पछि परिवर्तन हुन सक्छन्"
+    "message": "यी सुविधाहरू परीक्षणका क्रममा छन्। यी सुविधाहरूले जेनेरेटिभ AI प्रयोग गर्छन् र यिनले गलत वा अपमानजनक जानकारी प्रदान गर्न सक्छन्। सो जानकारीले Google को धारणा प्रस्तुत गर्दैन।"
   },
   "panels/settings/AISettingsTab.ts | explainConsole": {
     "message": "कन्सोलसम्बन्धी चेतावनी तथा त्रुटिहरूका बारेमा स्पष्टीकरण प्राप्त गर्नुहोस्"
@@ -10908,7 +10878,7 @@
     "message": "शैली मिलाउने कार्यसम्बन्धी स्पष्टीकरण र अतिरिक्त जानकारी प्राप्त गर्नुहोस्"
   },
   "panels/settings/AISettingsTab.ts | freestylerSendsData": {
-    "message": "जाँच गरिएको पेजमा भएका सबै DOM वा CSS सामग्री स्पष्टीकरण जेनेरेट गर्ने प्रयोजनका लागि Google मा पठाइन सक्छन्। समीक्षकहरू यो सुविधाको गुणस्तर सुधार गर्ने प्रयोजनका लागि यो डेटा हेर्न सक्छन्।"
+    "message": "इन्स्पेक्ट गरिएको पेजले वेब API मार्फत एक्सेस गर्न सक्ने सबै डेटा व्याख्या सिर्जना गर्ने प्रयोजनका लागि Google मा पठाइन सक्छ। समीक्षकहरू यो सुविधाको गुणस्तर सुधार गर्ने प्रयोजनका लागि यो डेटा हेर्न सक्छन्।"
   },
   "panels/settings/AISettingsTab.ts | generatedSnippets": {
     "message": "जेनेरेट गरिएका कोड स्निपेट सावधानीपूर्वक प्रयोग गर्नुहोस्"
@@ -10926,7 +10896,7 @@
     "message": "एउटा वा सोभन्दा बढी सेटिङ परिवर्तन गरिएका छन्। ती सेटिङ लागू गर्न रिलोड गर्नु पर्ने हुन्छ।"
   },
   "panels/settings/AISettingsTab.ts | privacyNotice": {
-    "message": "गोपनीयतासम्बन्धी सूचना"
+    "message": "Google को गोपनीयता नीति"
   },
   "panels/settings/AISettingsTab.ts | receiveStylingSuggestions": {
     "message": "शैलीसम्बन्धी समस्याहरू समाधान गर्ने सुझाव तथा कोडका नमुनाहरू प्राप्त गर्नुहोस्"
@@ -10935,10 +10905,16 @@
     "message": "यी समस्याहरू समाधान गर्ने सुझाव तथा कोडका नमुनाहरू प्राप्त गर्नुहोस्"
   },
   "panels/settings/AISettingsTab.ts | retainData": {
-    "message": "प्रयोगसम्बन्धी डेटा Google ले उक्त डेटा प्रदान गर्ने प्रयोगकर्ता पहिचान गर्न नसक्ने गरी भण्डारण गरिने छ र उक्त डेटा मेटाइदिन भनी गरिएको अनुरोध पूरा गर्न सकिँदैन। उक्त डेटा १८ महिनासम्म राखिने छ"
+    "message": "प्रयोगसम्बन्धी डेटा १८ महिनासम्म भण्डारण गरेर राखिने छ र उक्त डेटा कसले उपलब्ध गराएको हो भन्ने कुरा Google ले थाहा नपाउने गरी भण्डारण गरिन्छ।"
   },
   "panels/settings/AISettingsTab.ts | sendsDataToGoogle": {
-    "message": "तपाईंले यी सुविधाहरू प्रयोग गर्नुभयो भने यी सुविधासँग सम्बन्धित डेटा Google मा पठाइन्छ। निश्चित सुविधासम्बन्धी थप जानकारी तल दिइएको छ।"
+    "message": "तपाईंले यी सुविधाहरू प्रयोग गर्नुभयो भने यी सुविधासँग सम्बन्धित डेटा Google मा पठाइन्छ। Google ले आफ्ना उत्पादन तथा सेवाहरूको गुणस्तरमा सुधार ल्याउने प्रयोजनका लागि समीक्षकहरूका सहायताले यो डेटा र प्रतिक्रिया सङ्कलन गर्छ। संवेदनशील वा व्यक्तिगत जानकारी सेयर नगर्नुहोस्।"
+  },
+  "panels/settings/AISettingsTab.ts | showLess": {
+    "message": "कम देखाउनुहोस्"
+  },
+  "panels/settings/AISettingsTab.ts | showMore": {
+    "message": "थप देखाउनुहोस्"
   },
   "panels/settings/AISettingsTab.ts | termsOfService": {
     "message": "Google का सेवाका सर्तहरू"
@@ -11237,9 +11213,6 @@
   "panels/settings/emulation/emulation-meta.ts | showDevices": {
     "message": "डिभाइसहरू देखाउनुहोस्"
   },
-  "panels/settings/settings-meta.ts | chromeAI": {
-    "message": "Chrome AI"
-  },
   "panels/settings/settings-meta.ts | documentation": {
     "message": "डकुमेन्ट"
   },
@@ -11257,9 +11230,6 @@
   },
   "panels/settings/settings-meta.ts | shortcuts": {
     "message": "सर्टकटहरू"
-  },
-  "panels/settings/settings-meta.ts | showChromeAI": {
-    "message": "Chrome AI देखाउनुहोस्"
   },
   "panels/settings/settings-meta.ts | showExperiments": {
     "message": "परीक्षणहरू देखाउनुहोस्"
@@ -11364,7 +11334,7 @@
     "message": "थप देखाउनुहोस्"
   },
   "panels/sources/CategorizedBreakpointL10n.ts | animationFrameFired": {
-    "message": "एनिमेसन फ्रेम सक्रिय गरियो"
+    "message": "एनिमेसन फ्रेम सक्रिय गरिएको छ"
   },
   "panels/sources/CategorizedBreakpointL10n.ts | beforeBidderWorkletBiddingStart": {
     "message": "Bidder Bidding Phase Start"
@@ -12308,345 +12278,6 @@
   "panels/timeline/CountersGraph.ts | ss": {
     "message": "[{PH1} – {PH2}]"
   },
-  "panels/timeline/EventUICategory.ts | animation": {
-    "message": "एनिमेसन"
-  },
-  "panels/timeline/EventUICategory.ts | animationFrameFired": {
-    "message": "एनिमेसन फ्रेम सक्रिय गरियो"
-  },
-  "panels/timeline/EventUICategory.ts | async": {
-    "message": "एसिंक्रोनस"
-  },
-  "panels/timeline/EventUICategory.ts | asyncTask": {
-    "message": "एसिंक्रोनस टास्क"
-  },
-  "panels/timeline/EventUICategory.ts | cacheModule": {
-    "message": "क्यास मोड्युल कोड"
-  },
-  "panels/timeline/EventUICategory.ts | cacheScript": {
-    "message": "क्यास स्क्रिप्ट कोड"
-  },
-  "panels/timeline/EventUICategory.ts | cachedWasmModule": {
-    "message": "क्यास गरिएको Wasm मोड्युल"
-  },
-  "panels/timeline/EventUICategory.ts | cancelAnimationFrame": {
-    "message": "एनिमेसन फ्रेम रद्द गर्नुहोस्"
-  },
-  "panels/timeline/EventUICategory.ts | cancelIdleCallback": {
-    "message": "केही समयदेखि प्रयोगमा नरहेको नम्बरमा गरिएको कलब्याक रद्द गर्नुहोस्"
-  },
-  "panels/timeline/EventUICategory.ts | commit": {
-    "message": "कमिट गर्नुहोस्"
-  },
-  "panels/timeline/EventUICategory.ts | compileCode": {
-    "message": "कोड कम्पाइल गर्नुहोस्"
-  },
-  "panels/timeline/EventUICategory.ts | compileModule": {
-    "message": "कम्पाइल मोड्युल"
-  },
-  "panels/timeline/EventUICategory.ts | compileScript": {
-    "message": "स्क्रिप्ट कम्पाइल गर्नुहोस्"
-  },
-  "panels/timeline/EventUICategory.ts | compiledWasmModule": {
-    "message": "कम्पाइल गरिएको Wasm मोड्युल"
-  },
-  "panels/timeline/EventUICategory.ts | compositeLayers": {
-    "message": "कम्पोजिट लेयरहरू"
-  },
-  "panels/timeline/EventUICategory.ts | computeIntersections": {
-    "message": "प्रतिच्छेदहरू निकाल्नुहोस्"
-  },
-  "panels/timeline/EventUICategory.ts | consoleTime": {
-    "message": "कन्सोल टाइम"
-  },
-  "panels/timeline/EventUICategory.ts | cppGc": {
-    "message": "CPP GC"
-  },
-  "panels/timeline/EventUICategory.ts | createWebsocket": {
-    "message": "WebSocket सिर्जना गर्नुहोस्"
-  },
-  "panels/timeline/EventUICategory.ts | decrypt": {
-    "message": "डिक्रिप्ट गर्नुहोस्"
-  },
-  "panels/timeline/EventUICategory.ts | decryptReply": {
-    "message": "जवाफ डिक्रिप्ट गर्नुहोस्"
-  },
-  "panels/timeline/EventUICategory.ts | deserializeCodeCache": {
-    "message": "कोड क्यास रिड गर्नुहोस्"
-  },
-  "panels/timeline/EventUICategory.ts | destroyWebsocket": {
-    "message": "WebSocket नष्ट गर्नुहोस्"
-  },
-  "panels/timeline/EventUICategory.ts | digest": {
-    "message": "क्रियाकलापको सारांश"
-  },
-  "panels/timeline/EventUICategory.ts | digestReply": {
-    "message": "क्रियाकलापको सारांशको जवाफ"
-  },
-  "panels/timeline/EventUICategory.ts | domGc": {
-    "message": "DOM GC"
-  },
-  "panels/timeline/EventUICategory.ts | domcontentloadedEvent": {
-    "message": "DOMContentLoaded इभेन्ट"
-  },
-  "panels/timeline/EventUICategory.ts | drawFrame": {
-    "message": "फ्रेम बनाउनुहोस्"
-  },
-  "panels/timeline/EventUICategory.ts | drawing": {
-    "message": "रेखाचित्र"
-  },
-  "panels/timeline/EventUICategory.ts | embedderCallback": {
-    "message": "इम्बेडर कलब्याक"
-  },
-  "panels/timeline/EventUICategory.ts | encrypt": {
-    "message": "इन्क्रिप्ट गर्नुहोस्"
-  },
-  "panels/timeline/EventUICategory.ts | encryptReply": {
-    "message": "जवाफ इन्क्रिप्ट गर्नुहोस्"
-  },
-  "panels/timeline/EventUICategory.ts | evaluateModule": {
-    "message": "मोड्युल मूल्याङ्कन गर्नुहोस्"
-  },
-  "panels/timeline/EventUICategory.ts | evaluateScript": {
-    "message": "स्क्रिप्ट मूल्याङ्कन गर्नुहोस्"
-  },
-  "panels/timeline/EventUICategory.ts | event": {
-    "message": "इभेन्ट"
-  },
-  "panels/timeline/EventUICategory.ts | eventTiming": {
-    "message": "कार्यक्रमको समय"
-  },
-  "panels/timeline/EventUICategory.ts | experience": {
-    "message": "एक्स्पिरिएन्स"
-  },
-  "panels/timeline/EventUICategory.ts | finishLoading": {
-    "message": "लोड गर्ने कार्य पूरा गर्नुहोस्"
-  },
-  "panels/timeline/EventUICategory.ts | fireIdleCallback": {
-    "message": "केही समयदेखि प्रयोगमा नरहेको नम्बरमा कलब्याक गर्नुहोस्"
-  },
-  "panels/timeline/EventUICategory.ts | firstContentfulPaint": {
-    "message": "फर्स्ट कन्टेन्टफुल पेन्ट"
-  },
-  "panels/timeline/EventUICategory.ts | firstPaint": {
-    "message": "फर्स्ट पेन्ट"
-  },
-  "panels/timeline/EventUICategory.ts | frameStart": {
-    "message": "फ्रेम स्टार्ट"
-  },
-  "panels/timeline/EventUICategory.ts | frameStartMainThread": {
-    "message": "फ्रेम स्टार्ट (मुख्य थ्रेड)"
-  },
-  "panels/timeline/EventUICategory.ts | frameStartedLoading": {
-    "message": "फ्रेम लोड हुन थाल्यो"
-  },
-  "panels/timeline/EventUICategory.ts | functionCall": {
-    "message": "फङ्सन कल"
-  },
-  "panels/timeline/EventUICategory.ts | gcEvent": {
-    "message": "GC इभेन्ट"
-  },
-  "panels/timeline/EventUICategory.ts | gpu": {
-    "message": "GPU"
-  },
-  "panels/timeline/EventUICategory.ts | hitTest": {
-    "message": "हिट टेस्ट"
-  },
-  "panels/timeline/EventUICategory.ts | idle": {
-    "message": "निष्क्रिय छ"
-  },
-  "panels/timeline/EventUICategory.ts | imageDecode": {
-    "message": "इमेज डिकोड"
-  },
-  "panels/timeline/EventUICategory.ts | installTimer": {
-    "message": "टाइमर इन्स्टल गर्नुहोस्"
-  },
-  "panels/timeline/EventUICategory.ts | invalidateLayout": {
-    "message": "लेआउट अवैध छ भनी पुष्टि गर्नुहोस्"
-  },
-  "panels/timeline/EventUICategory.ts | jsFrame": {
-    "message": "JS फ्रेम"
-  },
-  "panels/timeline/EventUICategory.ts | largestContentfulPaint": {
-    "message": "सबैभन्दा ठुलो कन्टेन्टफुल पेन्ट"
-  },
-  "panels/timeline/EventUICategory.ts | layerize": {
-    "message": "बनाइनु पर्ने तहहरू गणना गर्नुहोस्"
-  },
-  "panels/timeline/EventUICategory.ts | layout": {
-    "message": "लेआउट"
-  },
-  "panels/timeline/EventUICategory.ts | layoutShift": {
-    "message": "लेआउट सिफ्ट"
-  },
-  "panels/timeline/EventUICategory.ts | loading": {
-    "message": "लोड गर्न लागेको समय"
-  },
-  "panels/timeline/EventUICategory.ts | majorGc": {
-    "message": "मुख्य GC"
-  },
-  "panels/timeline/EventUICategory.ts | messaging": {
-    "message": "म्यासेज पठाउने सुविधा"
-  },
-  "panels/timeline/EventUICategory.ts | minorGc": {
-    "message": "माइनर GC"
-  },
-  "panels/timeline/EventUICategory.ts | onMessage": {
-    "message": "म्यासेजमा"
-  },
-  "panels/timeline/EventUICategory.ts | onloadEvent": {
-    "message": "इभेन्ट अनलोड गर्नुहोस्"
-  },
-  "panels/timeline/EventUICategory.ts | optimizeCode": {
-    "message": "कोड अप्टिमाइज गर्नुहोस्"
-  },
-  "panels/timeline/EventUICategory.ts | other": {
-    "message": "अन्य"
-  },
-  "panels/timeline/EventUICategory.ts | paint": {
-    "message": "पेन्ट"
-  },
-  "panels/timeline/EventUICategory.ts | paintImage": {
-    "message": "इमेज पेन्ट गर्नुहोस्"
-  },
-  "panels/timeline/EventUICategory.ts | paintSetup": {
-    "message": "पेन्ट सेटअप"
-  },
-  "panels/timeline/EventUICategory.ts | painting": {
-    "message": "पेन्टिङ"
-  },
-  "panels/timeline/EventUICategory.ts | parseAndCompile": {
-    "message": "पार्स तथा कम्पाइल गर्नुहोस्"
-  },
-  "panels/timeline/EventUICategory.ts | parseHtml": {
-    "message": "HTML पार्स गर्नुहोस्"
-  },
-  "panels/timeline/EventUICategory.ts | parseStylesheet": {
-    "message": "स्टायलसिट पार्स गर्नुहोस्"
-  },
-  "panels/timeline/EventUICategory.ts | prePaint": {
-    "message": "प्रि-पेन्ट"
-  },
-  "panels/timeline/EventUICategory.ts | profilingOverhead": {
-    "message": "प्रोफाइलिङ ओभरहेड"
-  },
-  "panels/timeline/EventUICategory.ts | rasterizePaint": {
-    "message": "पेन्ट रेस्टराइज गर्नुहोस्"
-  },
-  "panels/timeline/EventUICategory.ts | rasterizing": {
-    "message": "रेस्टराइज गरिँदै छ"
-  },
-  "panels/timeline/EventUICategory.ts | recalculateStyle": {
-    "message": "शैलीको फेरि हिसाब गर्नुहोस्"
-  },
-  "panels/timeline/EventUICategory.ts | receiveData": {
-    "message": "डेटा प्राप्त गर्नुहोस्"
-  },
-  "panels/timeline/EventUICategory.ts | receiveResponse": {
-    "message": "जवाफ प्राप्त गर्नुहोस्"
-  },
-  "panels/timeline/EventUICategory.ts | receiveWebsocketHandshake": {
-    "message": "WebSocket ह्यान्डसेक प्राप्त गर्नुहोस्"
-  },
-  "panels/timeline/EventUICategory.ts | removeTimer": {
-    "message": "टाइमर हटाउनुहोस्"
-  },
-  "panels/timeline/EventUICategory.ts | rendering": {
-    "message": "रेन्डर गरिँदै छ"
-  },
-  "panels/timeline/EventUICategory.ts | requestAnimationFrame": {
-    "message": "एनिमेसन फ्रेम अनुरोध गर्नुहोस्"
-  },
-  "panels/timeline/EventUICategory.ts | requestIdleCallback": {
-    "message": "केही समयदेखि प्रयोगमा नरहेको नम्बरमा कलब्याक गर्ने अनुरोध गर्नुहोस्"
-  },
-  "panels/timeline/EventUICategory.ts | requestMainThreadFrame": {
-    "message": "मुख्य थ्रेड फ्रेम अनुरोध गर्नुहोस्"
-  },
-  "panels/timeline/EventUICategory.ts | runMicrotasks": {
-    "message": "माइक्रोटास्कहरू चलाउनुहोस्"
-  },
-  "panels/timeline/EventUICategory.ts | schedulePostMessage": {
-    "message": "postMessage को समयतालिका बनाउनुहोस्"
-  },
-  "panels/timeline/EventUICategory.ts | scheduleStyleRecalculation": {
-    "message": "स्टायल रिक्यालकुलेट गर्ने समयतालिका निर्धारण गर्नुहोस्"
-  },
-  "panels/timeline/EventUICategory.ts | scripting": {
-    "message": "स्क्रिप्टिङ"
-  },
-  "panels/timeline/EventUICategory.ts | scroll": {
-    "message": "स्क्रोल गर्नुहोस्"
-  },
-  "panels/timeline/EventUICategory.ts | sendRequest": {
-    "message": "अनुरोध पठाउनुहोस्"
-  },
-  "panels/timeline/EventUICategory.ts | sendWebsocketHandshake": {
-    "message": "WebSocket ह्यान्डसेक पठाउनुहोस्"
-  },
-  "panels/timeline/EventUICategory.ts | sign": {
-    "message": "हस्ताक्षर गर्नुहोस्"
-  },
-  "panels/timeline/EventUICategory.ts | signReply": {
-    "message": "जवाफ साइन गर्नुहोस्"
-  },
-  "panels/timeline/EventUICategory.ts | streamingCompileTask": {
-    "message": "स्ट्रिमिङ कम्पाइल टास्क"
-  },
-  "panels/timeline/EventUICategory.ts | streamingWasmResponse": {
-    "message": "स्ट्रिमिङ Wasm रिस्पन्स"
-  },
-  "panels/timeline/EventUICategory.ts | system": {
-    "message": "प्रणाली"
-  },
-  "panels/timeline/EventUICategory.ts | task": {
-    "message": "कार्य"
-  },
-  "panels/timeline/EventUICategory.ts | timerFired": {
-    "message": "टाइमर सक्रिय गरियो"
-  },
-  "panels/timeline/EventUICategory.ts | timestamp": {
-    "message": "टाइमस्ट्याम्प"
-  },
-  "panels/timeline/EventUICategory.ts | updateLayer": {
-    "message": "लेयर अपडेट गर्नुहोस्"
-  },
-  "panels/timeline/EventUICategory.ts | updateLayerTree": {
-    "message": "लेयर ट्री अपडेट गर्नुहोस्"
-  },
-  "panels/timeline/EventUICategory.ts | userTiming": {
-    "message": "युजर टाइमिङ"
-  },
-  "panels/timeline/EventUICategory.ts | verify": {
-    "message": "पुष्टि गर्नुहोस्"
-  },
-  "panels/timeline/EventUICategory.ts | verifyReply": {
-    "message": "जवाफ पुष्टि गर्नुहोस्"
-  },
-  "panels/timeline/EventUICategory.ts | waitingForNetwork": {
-    "message": "नेटवर्कको प्रतीक्षा गरिँदै छ"
-  },
-  "panels/timeline/EventUICategory.ts | wasmModuleCacheHit": {
-    "message": "Wasm मोड्युल क्यास हिट"
-  },
-  "panels/timeline/EventUICategory.ts | wasmModuleCacheInvalid": {
-    "message": "Wasm मोड्युल क्यास अवैध छ"
-  },
-  "panels/timeline/EventUICategory.ts | willSendRequest": {
-    "message": "अनुरोध पठाइने छ"
-  },
-  "panels/timeline/EventUICategory.ts | wsMessageReceived": {
-    "message": "WebSocket का माध्यमबाट म्यासेज प्राप्त गर्नुहोस्"
-  },
-  "panels/timeline/EventUICategory.ts | wsMessageSent": {
-    "message": "WebSocket का माध्यमबाट म्यासेज पठाउनुहोस्"
-  },
-  "panels/timeline/EventUICategory.ts | xhrLoad": {
-    "message": "XHR लोड गर्नुहोस्"
-  },
-  "panels/timeline/EventUICategory.ts | xhrReadyStateChange": {
-    "message": "XHR Ready State Change"
-  },
   "panels/timeline/EventsTimelineTreeView.ts | Dms": {
     "message": "{PH1} मिलिसेकेन्ड"
   },
@@ -12683,23 +12314,11 @@
   "panels/timeline/NetworkTrackAppender.ts | network": {
     "message": "नेटवर्क"
   },
-  "panels/timeline/NetworkTrackAppender.ts | wsConnectionClosed": {
-    "message": "WebSocket बन्द गरिएको छ"
-  },
-  "panels/timeline/NetworkTrackAppender.ts | wsConnectionOpened": {
-    "message": "WebSocket खोलिएको छ"
-  },
-  "panels/timeline/NetworkTrackAppender.ts | wsConnectionOpenedWithUrl": {
-    "message": "WebSocket खोलिएको छ: {PH1}"
-  },
   "panels/timeline/ServerTimingsTrackAppender.ts | serverSideTrack": {
     "message": "सर्भरका टाइमिङ — {PH1}"
   },
   "panels/timeline/ServerTimingsTrackAppender.ts | serverTimingTrack": {
     "message": "यो ट्र्याकमा सर्भर टाइमिङ नेटवर्क रिस्पन्स हेडरहरूबाट प्राप्त गरिएका टाइमिङ समावेश गरिएका छन्। प्रत्येक टाइमिङको सुरु हुने समय अनुमान गरिएको हो र सो समय सटीक नहुन सक्छ।"
-  },
-  "panels/timeline/ThreadAppender.ts | anonymous": {
-    "message": "(बेनामी)"
   },
   "panels/timeline/ThreadAppender.ts | bidderWorklet": {
     "message": "बिडर वर्कलेट"
@@ -12709,9 +12328,6 @@
   },
   "panels/timeline/ThreadAppender.ts | dedicatedWorker": {
     "message": "तोकिएको Worker"
-  },
-  "panels/timeline/ThreadAppender.ts | eventDispatchS": {
-    "message": "इभेन्ट: {PH1}"
   },
   "panels/timeline/ThreadAppender.ts | frameS": {
     "message": "फ्रेम — {PH1}"
@@ -12729,7 +12345,7 @@
     "message": "रास्टर"
   },
   "panels/timeline/ThreadAppender.ts | rasterizerThreadS": {
-    "message": "रेस्टराइजर थ्रेड {PH1}"
+    "message": "रास्टराइजर थ्रेड {PH1}"
   },
   "panels/timeline/ThreadAppender.ts | sellerWorklet": {
     "message": "सेलर वर्कलेट"
@@ -12774,7 +12390,7 @@
     "message": "कल ट्री"
   },
   "panels/timeline/TimelineDetailsView.ts | eventLog": {
-    "message": "इभेन्ट लग"
+    "message": "गतिविधिको लग"
   },
   "panels/timeline/TimelineDetailsView.ts | layers": {
     "message": "लेयरहरू"
@@ -12803,6 +12419,9 @@
   "panels/timeline/TimelineEventOverview.ts | sSDash": {
     "message": "{PH1} – {PH2}"
   },
+  "panels/timeline/TimelineFlameChartDataProvider.ts | addScriptToIgnoreList": {
+    "message": "यो स्क्रिप्ट बेवास्ता गरिने वस्तुहरूको सूचीमा हाल्नुहोस्"
+  },
   "panels/timeline/TimelineFlameChartDataProvider.ts | droppedFrame": {
     "message": "ड्रप गरिएको फ्रेम"
   },
@@ -12812,11 +12431,29 @@
   "panels/timeline/TimelineFlameChartDataProvider.ts | frames": {
     "message": "फ्रेमहरू"
   },
+  "panels/timeline/TimelineFlameChartDataProvider.ts | hideChildren": {
+    "message": "चिल्ड्रेन लुकाउनुहोस्"
+  },
+  "panels/timeline/TimelineFlameChartDataProvider.ts | hideFunction": {
+    "message": "फङ्सन लुकाउनुहोस्"
+  },
+  "panels/timeline/TimelineFlameChartDataProvider.ts | hideRepeatingChildren": {
+    "message": "दोहोरिएका चिल्ड्रेन लुकाइऊन्"
+  },
   "panels/timeline/TimelineFlameChartDataProvider.ts | idleFrame": {
     "message": "प्रयोगमा नरहेको फ्रेम"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | partiallyPresentedFrame": {
     "message": "आंशिक रूपमा देखाइएको फ्रेम"
+  },
+  "panels/timeline/TimelineFlameChartDataProvider.ts | removeScriptFromIgnoreList": {
+    "message": "बेवास्ता गर्नु पर्ने कोडहरूको सूचीबाट स्क्रिप्ट हटाउनुहोस्"
+  },
+  "panels/timeline/TimelineFlameChartDataProvider.ts | resetChildren": {
+    "message": "चिल्ड्रेन रिसेट गर्नुहोस्"
+  },
+  "panels/timeline/TimelineFlameChartDataProvider.ts | resetTrace": {
+    "message": "ट्रेस रिसेट गर्नुहोस्"
   },
   "panels/timeline/TimelineFlameChartView.ts | sAtS": {
     "message": "{PH2} मा {PH1}"
@@ -12824,11 +12461,8 @@
   "panels/timeline/TimelineHistoryManager.ts | currentSessionSS": {
     "message": "हालको सत्र: {PH1}। {PH2}"
   },
-  "panels/timeline/TimelineHistoryManager.ts | landingPageTitleLocalAndFieldMetrics": {
-    "message": "लोकल तथा फिल्ड मेट्रिकहरू"
-  },
-  "panels/timeline/TimelineHistoryManager.ts | landingPageTitleLocalMetrics": {
-    "message": "लोकल मेट्रिकहरू"
+  "panels/timeline/TimelineHistoryManager.ts | landingPageTitle": {
+    "message": "लाइभ मेट्रिकहरू"
   },
   "panels/timeline/TimelineHistoryManager.ts | moments": {
     "message": "क्षणहरू"
@@ -12968,6 +12602,9 @@
   "panels/timeline/TimelinePanel.ts | performanceExtension": {
     "message": "एक्स्टेन्सनले हालेको डेटा"
   },
+  "panels/timeline/TimelinePanel.ts | processed": {
+    "message": "प्रोसेस गरिएको छ"
+  },
   "panels/timeline/TimelinePanel.ts | processingProfile": {
     "message": "प्रोफाइल बनाइँदै छ…"
   },
@@ -12982,6 +12619,12 @@
   },
   "panels/timeline/TimelinePanel.ts | saveProfile": {
     "message": "प्रोफाइल सेभ गर्नुहोस्…"
+  },
+  "panels/timeline/TimelinePanel.ts | saveTraceWithAnnotationsMenuOption": {
+    "message": "ट्रेस सेभ गर्नुहोस्"
+  },
+  "panels/timeline/TimelinePanel.ts | saveTraceWithoutAnnotationsMenuOption": {
+    "message": "एनोटेसनविनै ट्रेस सेभ गर्नुहोस्"
   },
   "panels/timeline/TimelinePanel.ts | screenshots": {
     "message": "स्क्रिनसटहरू"
@@ -13032,7 +12675,7 @@
     "message": "ठ्याक्कै मिल्ने नियमको सङ्ख्या"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | rejectPercentage": {
-    "message": "अमिल्दो स्लो पाथहरूको %"
+    "message": "नमिल्ने स्लो-पाथहरूको %"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | rejectPercentageExplanation": {
     "message": "ब्लुम फिल्टरले तुरुन्तै हटाउन नसकेका अमिल्दा नोडहरू (मिलाउने प्रयासको सङ्ख्या - मिल्दा नोडको सङ्ख्या)। यो प्रतिशत जति कम भयो त्यति नै राम्रो हो।"
@@ -13074,16 +12717,19 @@
     "message": "गतिविधिअनुसार समूहबद्ध गर्नुहोस्"
   },
   "panels/timeline/TimelineTreeView.ts | groupByCategory": {
-    "message": "कोटीअनुसार समूह बनाउनुहोस्"
+    "message": "कोटीअनुसार समूहबद्ध गर्नुहोस्"
   },
   "panels/timeline/TimelineTreeView.ts | groupByDomain": {
     "message": "डोमेनअनुसार समूह बनाउनुहोस्"
   },
   "panels/timeline/TimelineTreeView.ts | groupByFrame": {
-    "message": "फ्रेमअनुसार समूहबद्ध गर्नुहोस्"
+    "message": "फ्रेमअनुसार समूह बनाउनुहोस्"
   },
   "panels/timeline/TimelineTreeView.ts | groupBySubdomain": {
-    "message": "उप-डोमेनअनुसार समूहबद्ध गर्नुहोस्"
+    "message": "सबडोमेनअनुसार समूहबद्ध गर्नुहोस्"
+  },
+  "panels/timeline/TimelineTreeView.ts | groupByThirdParties": {
+    "message": "तेस्रो पक्षअनुसार समूहबद्ध गर्नुहोस्"
   },
   "panels/timeline/TimelineTreeView.ts | groupByUrl": {
     "message": "URL अनुसार समूह बनाउनुहोस्"
@@ -13101,13 +12747,13 @@
     "message": "सबैभन्दा ठुलो स्ट्याक लुकाउनुहोस्"
   },
   "panels/timeline/TimelineTreeView.ts | matchCase": {
-    "message": "केस (ठुलो वा सानो अक्षर) मिलेको हुनु पर्छ"
+    "message": "म्याच केस"
   },
   "panels/timeline/TimelineTreeView.ts | matchWholeWord": {
     "message": "पूरै शब्द मिलेको हुनु पर्छ"
   },
   "panels/timeline/TimelineTreeView.ts | noGrouping": {
-    "message": "समूह नबनाइयोस्"
+    "message": "समूह नबनाउनुहोस्"
   },
   "panels/timeline/TimelineTreeView.ts | page": {
     "message": "पेज"
@@ -13122,7 +12768,7 @@
     "message": "तपाईं जुन वस्तुबारे थप विवरण प्राप्त गर्न चाहनुहुन्छ उक्त वस्तु चयन गर्नुहोस्।"
   },
   "panels/timeline/TimelineTreeView.ts | selfTime": {
-    "message": "एउटा क्रियाकलाप गर्न लागेको समय"
+    "message": "एउटा गतिविधि गर्न लागेको समय"
   },
   "panels/timeline/TimelineTreeView.ts | showHeaviestStack": {
     "message": "सबैभन्दा बढी समय लाग्ने स्ट्याक देखाउनुहोस्"
@@ -13152,7 +12798,7 @@
     "message": "तोकिएको समय"
   },
   "panels/timeline/TimelineUIUtils.ts | animationFrameRequested": {
-    "message": "एनिमेसन फ्रेम अनुरोध गरियो"
+    "message": "एनिमेसन फ्रेम अनुरोध गरिएको छ"
   },
   "panels/timeline/TimelineUIUtils.ts | callbackFunction": {
     "message": "कलब्याक फङ्सन"
@@ -13176,19 +12822,22 @@
     "message": "कम्पाइल गर्नुहोस्"
   },
   "panels/timeline/TimelineUIUtils.ts | consumedCacheSize": {
-    "message": "खपत गरिएको क्यासको आकार"
+    "message": "खपत गरिएको क्यासको साइज"
   },
   "panels/timeline/TimelineUIUtils.ts | cumulativeLayoutShifts": {
     "message": "कुल लेआउट सिफ्ट"
   },
   "panels/timeline/TimelineUIUtils.ts | cumulativeScore": {
-    "message": "कुल अङ्क"
+    "message": "कुल स्कोर"
   },
   "panels/timeline/TimelineUIUtils.ts | currentClusterId": {
     "message": "हालको क्लस्टर ID"
   },
   "panels/timeline/TimelineUIUtils.ts | currentClusterScore": {
     "message": "हालको क्लस्टर स्कोर"
+  },
+  "panels/timeline/TimelineUIUtils.ts | description": {
+    "message": "विवरण"
   },
   "panels/timeline/TimelineUIUtils.ts | details": {
     "message": "विवरण"
@@ -13218,7 +12867,7 @@
     "message": "क्यासबाट स्क्रिप्ट लोड गर्न सकिएन"
   },
   "panels/timeline/TimelineUIUtils.ts | firstInvalidated": {
-    "message": "अवैध भनी पहिलो पटक पुष्टि गरिएको मिति तथा समय"
+    "message": "अवैध भनी पहिलो पटक पुष्टि गरिएको समय"
   },
   "panels/timeline/TimelineUIUtils.ts | firstLayoutInvalidation": {
     "message": "अवैध पुष्टि गरिएको पहिलो लेआउट"
@@ -13320,7 +12969,7 @@
     "message": "प्रोसेस गर्न लाग्ने अवधि"
   },
   "panels/timeline/TimelineUIUtils.ts | producedCacheSize": {
-    "message": "उत्पादन गरिएको क्यासको आकार"
+    "message": "उत्पादन गरिएको क्यासको साइज"
   },
   "panels/timeline/TimelineUIUtils.ts | range": {
     "message": "दायरा"
@@ -13389,16 +13038,13 @@
     "message": "सेलेक्टरको तथ्याङ्क"
   },
   "panels/timeline/TimelineUIUtils.ts | selfTime": {
-    "message": "एउटा क्रियाकलाप गर्न लागेको समय"
+    "message": "एउटा गतिविधि गर्न लागेको समय"
   },
   "panels/timeline/TimelineUIUtils.ts | size": {
     "message": "आकार"
   },
   "panels/timeline/TimelineUIUtils.ts | stackTrace": {
     "message": "स्ट्याक ट्रेस"
-  },
-  "panels/timeline/TimelineUIUtils.ts | state": {
-    "message": "स्थिति"
   },
   "panels/timeline/TimelineUIUtils.ts | streamed": {
     "message": "स्ट्रिम गरिएको"
@@ -13416,7 +13062,7 @@
     "message": "टाइमर ID"
   },
   "panels/timeline/TimelineUIUtils.ts | timerInstalled": {
-    "message": "टाइमर इन्स्टल गरियो"
+    "message": "टाइमर इन्स्टल गरिएको छ"
   },
   "panels/timeline/TimelineUIUtils.ts | timestamp": {
     "message": "टाइमस्ट्याम्प"
@@ -13487,6 +13133,12 @@
   "panels/timeline/UIDevtoolsUtils.ts | system": {
     "message": "प्रणाली"
   },
+  "panels/timeline/components/BreadcrumbsUI.ts | activateBreadcrumb": {
+    "message": "breadcrumb एक्टिभेट गर्नुहोस्"
+  },
+  "panels/timeline/components/BreadcrumbsUI.ts | removeChildBreadcrumbs": {
+    "message": "चाइल्ड breadcrumb हटाउनुहोस्"
+  },
   "panels/timeline/components/CPUThrottlingSelector.ts | cpu": {
     "message": "CPU: {PH1}"
   },
@@ -13528,6 +13180,366 @@
   },
   "panels/timeline/components/DetailsView.ts | websocketProtocol": {
     "message": "WebSocket प्रोटोकल"
+  },
+  "panels/timeline/components/EntryName.ts | anonymous": {
+    "message": "(अज्ञात)"
+  },
+  "panels/timeline/components/EntryName.ts | eventDispatchS": {
+    "message": "इभेन्ट: {PH1}"
+  },
+  "panels/timeline/components/EntryName.ts | frame": {
+    "message": "फ्रेम"
+  },
+  "panels/timeline/components/EntryName.ts | wsConnectionClosed": {
+    "message": "WebSocket बन्द गरिएको छ"
+  },
+  "panels/timeline/components/EntryName.ts | wsConnectionOpened": {
+    "message": "WebSocket खोलिएको छ"
+  },
+  "panels/timeline/components/EntryName.ts | wsConnectionOpenedWithUrl": {
+    "message": "WebSocket खोलिएको छ: {PH1}"
+  },
+  "panels/timeline/components/EntryStyles.ts | animation": {
+    "message": "एनिमेसन"
+  },
+  "panels/timeline/components/EntryStyles.ts | animationFrameFired": {
+    "message": "एनिमेसन फ्रेम सक्रिय गरिएको छ"
+  },
+  "panels/timeline/components/EntryStyles.ts | async": {
+    "message": "एसिंक्रोनस"
+  },
+  "panels/timeline/components/EntryStyles.ts | asyncTask": {
+    "message": "एसिंक्रोनस टास्क"
+  },
+  "panels/timeline/components/EntryStyles.ts | cacheModule": {
+    "message": "क्यास मोड्युल कोड"
+  },
+  "panels/timeline/components/EntryStyles.ts | cacheScript": {
+    "message": "क्यास स्क्रिप्ट कोड"
+  },
+  "panels/timeline/components/EntryStyles.ts | cachedWasmModule": {
+    "message": "क्यास गरिएको Wasm मोड्युल"
+  },
+  "panels/timeline/components/EntryStyles.ts | cancelAnimationFrame": {
+    "message": "एनिमेसन फ्रेम रद्द गर्नुहोस्"
+  },
+  "panels/timeline/components/EntryStyles.ts | cancelIdleCallback": {
+    "message": "केही समयदेखि प्रयोगमा नरहेको नम्बरमा गरिएको कलब्याक रद्द गर्नुहोस्"
+  },
+  "panels/timeline/components/EntryStyles.ts | commit": {
+    "message": "कमिट गर्नुहोस्"
+  },
+  "panels/timeline/components/EntryStyles.ts | compileCode": {
+    "message": "कोड कम्पाइल गर्नुहोस्"
+  },
+  "panels/timeline/components/EntryStyles.ts | compileModule": {
+    "message": "मोड्युल कम्पाइल गर्नुहोस्"
+  },
+  "panels/timeline/components/EntryStyles.ts | compileScript": {
+    "message": "स्क्रिप्ट कम्पाइल गर्नुहोस्"
+  },
+  "panels/timeline/components/EntryStyles.ts | compiledWasmModule": {
+    "message": "कम्पाइल गरिएको Wasm मोड्युल"
+  },
+  "panels/timeline/components/EntryStyles.ts | compositeLayers": {
+    "message": "कम्पोजिट लेयरहरू"
+  },
+  "panels/timeline/components/EntryStyles.ts | computeIntersections": {
+    "message": "प्रतिच्छेद निकाल्नुहोस्"
+  },
+  "panels/timeline/components/EntryStyles.ts | consoleTime": {
+    "message": "कन्सोल टाइम"
+  },
+  "panels/timeline/components/EntryStyles.ts | cppGc": {
+    "message": "CPP GC"
+  },
+  "panels/timeline/components/EntryStyles.ts | createWebsocket": {
+    "message": "WebSocket सिर्जना गर्नुहोस्"
+  },
+  "panels/timeline/components/EntryStyles.ts | decrypt": {
+    "message": "डिक्रिप्ट गर्नुहोस्"
+  },
+  "panels/timeline/components/EntryStyles.ts | decryptReply": {
+    "message": "जवाफ डिक्रिप्ट गर्नुहोस्"
+  },
+  "panels/timeline/components/EntryStyles.ts | deserializeCodeCache": {
+    "message": "कोड क्यास रिड गर्नुहोस्"
+  },
+  "panels/timeline/components/EntryStyles.ts | destroyWebsocket": {
+    "message": "WebSocket नष्ट गर्नुहोस्"
+  },
+  "panels/timeline/components/EntryStyles.ts | digest": {
+    "message": "क्रियाकलापको सारांश"
+  },
+  "panels/timeline/components/EntryStyles.ts | digestReply": {
+    "message": "गतिविधिको सारांशको जवाफ"
+  },
+  "panels/timeline/components/EntryStyles.ts | domGc": {
+    "message": "DOM GC"
+  },
+  "panels/timeline/components/EntryStyles.ts | domcontentloadedEvent": {
+    "message": "DOMContentLoaded सम्बन्धी गतिविधि"
+  },
+  "panels/timeline/components/EntryStyles.ts | drawFrame": {
+    "message": "फ्रेम बनाउनुहोस्"
+  },
+  "panels/timeline/components/EntryStyles.ts | drawing": {
+    "message": "रेखाचित्र"
+  },
+  "panels/timeline/components/EntryStyles.ts | embedderCallback": {
+    "message": "इम्बेडर कलब्याक"
+  },
+  "panels/timeline/components/EntryStyles.ts | encrypt": {
+    "message": "इन्क्रिप्ट गर्नुहोस्"
+  },
+  "panels/timeline/components/EntryStyles.ts | encryptReply": {
+    "message": "जवाफ इन्क्रिप्ट गर्नुहोस्"
+  },
+  "panels/timeline/components/EntryStyles.ts | evaluateModule": {
+    "message": "मोड्युल मूल्याङ्कन गर्नुहोस्"
+  },
+  "panels/timeline/components/EntryStyles.ts | evaluateScript": {
+    "message": "स्क्रिप्टको मूल्याङ्कन गर्नुहोस्"
+  },
+  "panels/timeline/components/EntryStyles.ts | event": {
+    "message": "इभेन्ट"
+  },
+  "panels/timeline/components/EntryStyles.ts | eventTiming": {
+    "message": "गतिविधिको समय"
+  },
+  "panels/timeline/components/EntryStyles.ts | experience": {
+    "message": "एक्स्पिरिएन्स"
+  },
+  "panels/timeline/components/EntryStyles.ts | finishLoading": {
+    "message": "लोड गर्ने प्रक्रिया पूरा गर्नुहोस्"
+  },
+  "panels/timeline/components/EntryStyles.ts | fireIdleCallback": {
+    "message": "केही समयदेखि प्रयोगमा नरहेको नम्बरमा कलब्याक गर्नुहोस्"
+  },
+  "panels/timeline/components/EntryStyles.ts | firstContentfulPaint": {
+    "message": "फर्स्ट कन्टेन्टफुल पेन्ट"
+  },
+  "panels/timeline/components/EntryStyles.ts | firstPaint": {
+    "message": "फर्स्ट पेन्ट"
+  },
+  "panels/timeline/components/EntryStyles.ts | frameStart": {
+    "message": "फ्रेम स्टार्ट"
+  },
+  "panels/timeline/components/EntryStyles.ts | frameStartMainThread": {
+    "message": "फ्रेम स्टार्ट (मुख्य थ्रेड)"
+  },
+  "panels/timeline/components/EntryStyles.ts | frameStartedLoading": {
+    "message": "फ्रेम लोड हुन थालेको छ"
+  },
+  "panels/timeline/components/EntryStyles.ts | functionCall": {
+    "message": "फङ्सन कल"
+  },
+  "panels/timeline/components/EntryStyles.ts | gcEvent": {
+    "message": "GC सम्बन्धी गतिविधि"
+  },
+  "panels/timeline/components/EntryStyles.ts | gpu": {
+    "message": "GPU"
+  },
+  "panels/timeline/components/EntryStyles.ts | hitTest": {
+    "message": "हिट टेस्ट"
+  },
+  "panels/timeline/components/EntryStyles.ts | idle": {
+    "message": "निष्क्रिय छ"
+  },
+  "panels/timeline/components/EntryStyles.ts | imageDecode": {
+    "message": "इमेज डिकोड"
+  },
+  "panels/timeline/components/EntryStyles.ts | installTimer": {
+    "message": "टाइमर इन्स्टल गर्नुहोस्"
+  },
+  "panels/timeline/components/EntryStyles.ts | invalidateLayout": {
+    "message": "लेआउट अवैध छ भनी पुष्टि गर्नुहोस्"
+  },
+  "panels/timeline/components/EntryStyles.ts | jsFrame": {
+    "message": "JS फ्रेम"
+  },
+  "panels/timeline/components/EntryStyles.ts | largestContentfulPaint": {
+    "message": "सबैभन्दा ठुलो कन्टेन्टफुल पेन्ट"
+  },
+  "panels/timeline/components/EntryStyles.ts | layerize": {
+    "message": "बनाइनु पर्ने तहहरू गणना गर्नुहोस्"
+  },
+  "panels/timeline/components/EntryStyles.ts | layout": {
+    "message": "लेआउट"
+  },
+  "panels/timeline/components/EntryStyles.ts | layoutShift": {
+    "message": "लेआउट सिफ्ट"
+  },
+  "panels/timeline/components/EntryStyles.ts | layoutShiftCluster": {
+    "message": "लेआउट सिफ्ट क्लस्टर"
+  },
+  "panels/timeline/components/EntryStyles.ts | loading": {
+    "message": "लोड गर्न लागेको समय"
+  },
+  "panels/timeline/components/EntryStyles.ts | majorGc": {
+    "message": "मुख्य GC"
+  },
+  "panels/timeline/components/EntryStyles.ts | messaging": {
+    "message": "म्यासेज पठाउने सुविधा"
+  },
+  "panels/timeline/components/EntryStyles.ts | minorGc": {
+    "message": "माइनर GC"
+  },
+  "panels/timeline/components/EntryStyles.ts | onMessage": {
+    "message": "म्यासेजमा"
+  },
+  "panels/timeline/components/EntryStyles.ts | onloadEvent": {
+    "message": "इभेन्ट अनलोड गर्नुहोस्"
+  },
+  "panels/timeline/components/EntryStyles.ts | optimizeCode": {
+    "message": "कोड अप्टिमाइज गर्नुहोस्"
+  },
+  "panels/timeline/components/EntryStyles.ts | other": {
+    "message": "अन्य"
+  },
+  "panels/timeline/components/EntryStyles.ts | paint": {
+    "message": "पेन्ट"
+  },
+  "panels/timeline/components/EntryStyles.ts | paintImage": {
+    "message": "पेन्ट इमेज"
+  },
+  "panels/timeline/components/EntryStyles.ts | paintSetup": {
+    "message": "पेन्ट सेटअप"
+  },
+  "panels/timeline/components/EntryStyles.ts | painting": {
+    "message": "पेन्टिङ"
+  },
+  "panels/timeline/components/EntryStyles.ts | parseAndCompile": {
+    "message": "पार्स तथा कम्पाइल गर्नुहोस्"
+  },
+  "panels/timeline/components/EntryStyles.ts | parseHtml": {
+    "message": "HTML पार्स गर्नुहोस्"
+  },
+  "panels/timeline/components/EntryStyles.ts | parseStylesheet": {
+    "message": "स्टायलसिट पार्स गर्नुहोस्"
+  },
+  "panels/timeline/components/EntryStyles.ts | prePaint": {
+    "message": "प्रि-पेन्ट"
+  },
+  "panels/timeline/components/EntryStyles.ts | profilingOverhead": {
+    "message": "प्रोफाइलिङ ओभरहेड"
+  },
+  "panels/timeline/components/EntryStyles.ts | rasterizePaint": {
+    "message": "पेन्ट रास्टराइज गर्नुहोस्"
+  },
+  "panels/timeline/components/EntryStyles.ts | rasterizing": {
+    "message": "रेस्टराइज गरिँदै छ"
+  },
+  "panels/timeline/components/EntryStyles.ts | recalculateStyle": {
+    "message": "स्टायल रिक्यालकुलेट गर्नुहोस्"
+  },
+  "panels/timeline/components/EntryStyles.ts | receiveData": {
+    "message": "डेटा प्राप्त गर्नुहोस्"
+  },
+  "panels/timeline/components/EntryStyles.ts | receiveResponse": {
+    "message": "जवाफ प्राप्त गर्नुहोस्"
+  },
+  "panels/timeline/components/EntryStyles.ts | receiveWebsocketHandshake": {
+    "message": "WebSocket ह्यान्डसेक प्राप्त गर्नुहोस्"
+  },
+  "panels/timeline/components/EntryStyles.ts | removeTimer": {
+    "message": "टाइमर हटाउनुहोस्"
+  },
+  "panels/timeline/components/EntryStyles.ts | rendering": {
+    "message": "रेन्डर गरिँदै छ"
+  },
+  "panels/timeline/components/EntryStyles.ts | requestAnimationFrame": {
+    "message": "एनिमेसन फ्रेम अनुरोध गर्नुहोस्"
+  },
+  "panels/timeline/components/EntryStyles.ts | requestIdleCallback": {
+    "message": "केही समयदेखि प्रयोगमा नरहेको नम्बरमा कलब्याक गर्न अनुरोध गर्नुहोस्"
+  },
+  "panels/timeline/components/EntryStyles.ts | requestMainThreadFrame": {
+    "message": "मुख्य थ्रेड फ्रेम अनुरोध गर्नुहोस्"
+  },
+  "panels/timeline/components/EntryStyles.ts | runMicrotasks": {
+    "message": "माइक्रोटास्कहरू रन गर्नुहोस्"
+  },
+  "panels/timeline/components/EntryStyles.ts | schedulePostMessage": {
+    "message": "postMessage को समयतालिका बनाउनुहोस्"
+  },
+  "panels/timeline/components/EntryStyles.ts | scheduleStyleRecalculation": {
+    "message": "स्टायल रिक्यालकुलेट गर्ने समयतालिका निर्धारण गर्नुहोस्"
+  },
+  "panels/timeline/components/EntryStyles.ts | scripting": {
+    "message": "स्क्रिप्टिङ"
+  },
+  "panels/timeline/components/EntryStyles.ts | scroll": {
+    "message": "स्क्रोल गर्नुहोस्"
+  },
+  "panels/timeline/components/EntryStyles.ts | sendRequest": {
+    "message": "अनुरोध पठाउनुहोस्"
+  },
+  "panels/timeline/components/EntryStyles.ts | sendWebsocketHandshake": {
+    "message": "WebSocket ह्यान्डसेक पठाउनुहोस्"
+  },
+  "panels/timeline/components/EntryStyles.ts | sign": {
+    "message": "हस्ताक्षर गर्नुहोस्"
+  },
+  "panels/timeline/components/EntryStyles.ts | signReply": {
+    "message": "जवाफ साइन गर्नुहोस्"
+  },
+  "panels/timeline/components/EntryStyles.ts | streamingCompileTask": {
+    "message": "स्ट्रिमिङ कम्पाइल टास्क"
+  },
+  "panels/timeline/components/EntryStyles.ts | streamingWasmResponse": {
+    "message": "स्ट्रिमिङ Wasm रिस्पन्स"
+  },
+  "panels/timeline/components/EntryStyles.ts | system": {
+    "message": "प्रणाली"
+  },
+  "panels/timeline/components/EntryStyles.ts | task": {
+    "message": "कार्य"
+  },
+  "panels/timeline/components/EntryStyles.ts | timerFired": {
+    "message": "टाइमर सुरु गरिएको छ"
+  },
+  "panels/timeline/components/EntryStyles.ts | timestamp": {
+    "message": "टाइमस्ट्याम्प"
+  },
+  "panels/timeline/components/EntryStyles.ts | updateLayer": {
+    "message": "लेयर अपडेट गर्नुहोस्"
+  },
+  "panels/timeline/components/EntryStyles.ts | updateLayerTree": {
+    "message": "लेयर ट्री अपडेट गर्नुहोस्"
+  },
+  "panels/timeline/components/EntryStyles.ts | userTiming": {
+    "message": "युजर टाइमिङ"
+  },
+  "panels/timeline/components/EntryStyles.ts | verify": {
+    "message": "पुष्टि गर्नुहोस्"
+  },
+  "panels/timeline/components/EntryStyles.ts | verifyReply": {
+    "message": "जवाफ पुष्टि गर्नुहोस्"
+  },
+  "panels/timeline/components/EntryStyles.ts | waitingForNetwork": {
+    "message": "नेटवर्कको प्रतीक्षा गरिँदै छ"
+  },
+  "panels/timeline/components/EntryStyles.ts | wasmModuleCacheHit": {
+    "message": "Wasm मोड्युल क्यास हिट"
+  },
+  "panels/timeline/components/EntryStyles.ts | wasmModuleCacheInvalid": {
+    "message": "Wasm मोड्युल क्यास अवैध छ"
+  },
+  "panels/timeline/components/EntryStyles.ts | willSendRequest": {
+    "message": "अनुरोध पठाइने छ"
+  },
+  "panels/timeline/components/EntryStyles.ts | wsMessageReceived": {
+    "message": "WebSocket का माध्यमबाट म्यासेज प्राप्त गर्नुहोस्"
+  },
+  "panels/timeline/components/EntryStyles.ts | wsMessageSent": {
+    "message": "WebSocket का माध्यमबाट म्यासेज पठाउनुहोस्"
+  },
+  "panels/timeline/components/EntryStyles.ts | xhrLoad": {
+    "message": ":XHR लोड"
+  },
+  "panels/timeline/components/EntryStyles.ts | xhrReadyStateChange": {
+    "message": "XHR readyState परिवर्तन"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | add": {
     "message": "हाल्नुहोस्"
@@ -13607,14 +13619,47 @@
   "panels/timeline/components/InteractionBreakdown.ts | processingDuration": {
     "message": "प्रोसेस गर्न लाग्ने अवधि"
   },
+  "panels/timeline/components/LayoutShiftDetails.ts | culprit": {
+    "message": "कलप्रिट"
+  },
+  "panels/timeline/components/LayoutShiftDetails.ts | elementsShifted": {
+    "message": "सिफ्ट गरिएका एलिमेन्टहरू"
+  },
+  "panels/timeline/components/LayoutShiftDetails.ts | fontRequest": {
+    "message": "फन्टसम्बन्धी अनुरोध"
+  },
+  "panels/timeline/components/LayoutShiftDetails.ts | injectedIframe": {
+    "message": "इन्जेक्ट गरिएको iframe"
+  },
+  "panels/timeline/components/LayoutShiftDetails.ts | insight": {
+    "message": "विश्लेषणात्मक डेटा"
+  },
+  "panels/timeline/components/LayoutShiftDetails.ts | layoutShift": {
+    "message": "लेआउट सिफ्ट"
+  },
+  "panels/timeline/components/LayoutShiftDetails.ts | layoutShiftCulprits": {
+    "message": "लेआउट सिफ्ट कलप्रिट"
+  },
+  "panels/timeline/components/LayoutShiftDetails.ts | shiftScore": {
+    "message": "सिफ्ट स्कोर"
+  },
+  "panels/timeline/components/LayoutShiftDetails.ts | startTime": {
+    "message": "सुरु हुने समय"
+  },
   "panels/timeline/components/LiveMetricsView.ts | allDevices": {
     "message": "सबै डिभाइसहरू"
   },
   "panels/timeline/components/LiveMetricsView.ts | auto": {
     "message": "स्वतः ({PH1})"
   },
+  "panels/timeline/components/LiveMetricsView.ts | clearInteractionsLog": {
+    "message": "अन्तर्क्रियासम्बन्धी लगहरू हटाउनुहोस्"
+  },
   "panels/timeline/components/LiveMetricsView.ts | collectionPeriod": {
     "message": "सङ्कलन अवधि:"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | considerRealUser": {
+    "message": "वास्तविक प्रयोगकर्ताको इन्भारोमेन्टको विचार गर्नुहोस्"
   },
   "panels/timeline/components/LiveMetricsView.ts | dateRange": {
     "message": "{PH1} - {PH2}"
@@ -13625,11 +13670,20 @@
   "panels/timeline/components/LiveMetricsView.ts | device": {
     "message": "डिभाइस: {PH1}"
   },
+  "panels/timeline/components/LiveMetricsView.ts | disableNetworkCache": {
+    "message": "नेटवर्क क्यास डिसएबल गर्नुहोस्"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | environmentSettings": {
+    "message": "इनभारमेन्ट सेटिङ"
+  },
   "panels/timeline/components/LiveMetricsView.ts | fieldData": {
     "message": "फिल्डको डेटा"
   },
   "panels/timeline/components/LiveMetricsView.ts | fieldDataLink": {
     "message": "फिल्डको डेटा"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | interactionExcluded": {
+    "message": "अन्तर्क्रियामा हुने ढिलाइको ९८ औँ पर्सेन्टाइल प्रयोग गरी INP को हिसाब निकालिने भएकाले अन्तर्कियामा हुने केही ढिलाइ INP को मानभन्दा बढी हुन सक्छ।"
   },
   "panels/timeline/components/LiveMetricsView.ts | interactions": {
     "message": "अन्तर्क्रियाहरू"
@@ -13653,13 +13707,16 @@
     "message": "मोबाइल"
   },
   "panels/timeline/components/LiveMetricsView.ts | mostUsersDesktop": {
-    "message": "अधिकांश प्रयोगकर्ताहरू डेस्कटप प्रयोग गर्छन्। वास्तविक प्रयोगकर्ताहरूसँग मिल्दो अनुभव पाउन डेस्कटप विन्डोको साइजको अनुकरण गरी हेर्नुहोस्।"
+    "message": "{PH1} प्रयोगकर्ता डेस्कटप प्रयोग गर्छन्।"
   },
   "panels/timeline/components/LiveMetricsView.ts | mostUsersMobile": {
-    "message": "अधिकांश प्रयोगकर्ताहरू मोबाइल प्रयोग गर्छन्। वास्तविक प्रयोगकर्ताहरूसँग मिल्दो अनुभव पाउन कुनै मोबाइल डिभाइसको अनुकरण गरी हेर्नुहोस्।"
+    "message": "{PH1} प्रयोगकर्ताहरू मोबाइल प्रयोग गर्छन्।"
   },
   "panels/timeline/components/LiveMetricsView.ts | needsDataOption": {
     "message": "{PH1} - कुनै पनि डेटा छैन"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | networkCacheExplanation": {
+    "message": "तपाईंले नेटवर्क क्यास डिसएबल गर्नुभयो भने नेटवर्कले पहिलो पटक यो पेज हेर्ने व्यक्तिका हकमा जस्तै काम गर्ने छ।"
   },
   "panels/timeline/components/LiveMetricsView.ts | nextSteps": {
     "message": "अब गर्न सकिने कारबाहीहरू"
@@ -13670,8 +13727,8 @@
   "panels/timeline/components/LiveMetricsView.ts | originOptionWithKey": {
     "message": "ओरिजिन: {PH1}"
   },
-  "panels/timeline/components/LiveMetricsView.ts | recordingSettings": {
-    "message": "रेकर्डिङसम्बन्धी सेटिङ"
+  "panels/timeline/components/LiveMetricsView.ts | percentage": {
+    "message": "{PH1}%"
   },
   "panels/timeline/components/LiveMetricsView.ts | seeHowYourLocalMetricsCompare": {
     "message": "तपाईंका लोकल मेट्रिकहरू र प्रयोगकर्ताको वास्तविक डेटाका बिचमा तुलना गर्न {PH1} हेर्नुहोस्।"
@@ -13681,6 +13738,9 @@
   },
   "panels/timeline/components/LiveMetricsView.ts | showFieldDataForPage": {
     "message": "{PH1} को फिल्ड डेटा देखाउनुहोस्"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | simulateDifferentDevices": {
+    "message": "फरक डिभाइसहरू सिमुलेट गर्नुहोस्"
   },
   "panels/timeline/components/LiveMetricsView.ts | tablet": {
     "message": "ट्याब्लेट"
@@ -13692,10 +13752,10 @@
     "message": "{PH1} तपाईंको नेटवर्क कनेक्सन र डिभाइस प्रयोग गरी हालको पेजबाट क्याप्चर गरिन्छन्।"
   },
   "panels/timeline/components/LiveMetricsView.ts | tryDisablingThrottling": {
-    "message": "वास्तविक प्रयोगकर्ताहरूका लागि नेटवर्कको विलम्बता अनुमान लगाउन सकियोस् भन्नाका लागि नेटवर्क थ्रोटलिङ अफ गरी हेर्नुहोस्।"
+    "message": "वास्तविक प्रयोगकर्ताहरूको ७५ औँ पर्सेन्टाइलले थ्रोटलिङ नगरिएको कनेक्सनको जस्तै विलम्बता महसुस गरेका छन्।"
   },
   "panels/timeline/components/LiveMetricsView.ts | tryUsingThrottling": {
-    "message": "वास्तविक प्रयोगकर्ताहरूका लागि नेटवर्कको विलम्बता अनुमान लगाउन सकियोस् भन्नाका लागि {PH1} नेटवर्क थ्रोटलिङ प्रयोग गरी हेर्नुहोस्।"
+    "message": "वास्तविक प्रयोगकर्ताहरूको ७५ औँ पर्सेन्टाइलले {PH1} को थ्रोटलिङ जस्तै विलम्बता महसुस गरेका छन्।"
   },
   "panels/timeline/components/LiveMetricsView.ts | urlOption": {
     "message": "URL"
@@ -13703,68 +13763,131 @@
   "panels/timeline/components/LiveMetricsView.ts | urlOptionWithKey": {
     "message": "URL: {PH1}"
   },
+  "panels/timeline/components/LiveMetricsView.ts | useDeviceToolbar": {
+    "message": "{PH1} डिभाइस टुलबार प्रयोग गर्नुहोस्।"
+  },
+  "panels/timeline/components/MetricCard.ts | betweenRange": {
+    "message": "({PH1}-{PH2})"
+  },
+  "panels/timeline/components/MetricCard.ts | considerTesting": {
+    "message": "परीक्षण गर्दा स्थानीय अवस्थाहरूको ख्याल गर्नुहोस्"
+  },
+  "panels/timeline/components/MetricCard.ts | field75thPercentile": {
+    "message": "फिल्डको ७५ औँ पर्सेन्टाइल"
+  },
+  "panels/timeline/components/MetricCard.ts | good": {
+    "message": "राम्रो"
+  },
+  "panels/timeline/components/MetricCard.ts | gtRange": {
+    "message": "(>{PH1})"
+  },
+  "panels/timeline/components/MetricCard.ts | interactToMeasure": {
+    "message": "INP मापन गर्न यो पेजसँग अन्तर्क्रिया गर्नुहोस्।"
+  },
+  "panels/timeline/components/MetricCard.ts | leqRange": {
+    "message": "(≤{PH1})"
+  },
+  "panels/timeline/components/MetricCard.ts | localValue": {
+    "message": "लोकल"
+  },
+  "panels/timeline/components/MetricCard.ts | needsImprovement": {
+    "message": "सुधार गर्नु पर्ने हुन्छ"
+  },
+  "panels/timeline/components/MetricCard.ts | percentage": {
+    "message": "{PH1}%"
+  },
+  "panels/timeline/components/MetricCard.ts | poor": {
+    "message": "खराब"
+  },
+  "panels/timeline/components/MetricCard.ts | recDynamicContentCLS": {
+    "message": "गतिशील सामग्रीले लेआउटमा हुने परिवर्तनहरू प्रभावित गर्न सक्छ।"
+  },
+  "panels/timeline/components/MetricCard.ts | recDynamicContentLCP": {
+    "message": "सामग्री गतिशील भएका अवस्थामा एउटा पेज लोड गरेपछि अर्को पेज लोड गर्ने समयका बिचमा LCP एलिमेन्ट फरक हुन सक्छ।"
+  },
+  "panels/timeline/components/MetricCard.ts | recJourneyCLS": {
+    "message": "प्रयोगकर्ताले पेजमा कसरी अन्तर्क्रिया गर्छन् भन्ने कुराले लेआउट परिवर्तन हुने कुरामा प्रभाव पार्न सक्छ। तपाईं पेज स्क्रोल गर्ने जस्ता सामान्य अन्तर्क्रियाहरूको परीक्षण गर्दै हुनुहुन्छ भन्ने कुरा सुनिश्चित गर्नुहोस्।"
+  },
+  "panels/timeline/components/MetricCard.ts | recJourneyINP": {
+    "message": "प्रयोगकर्ताले पेजमा कसरी अन्तर्क्रिया गर्छन् भन्ने कुराले अन्तर्क्रिया गर्दा आउने ढिलाइमा प्रभाव पर्छ। तपाईं सामान्य अन्तर्क्रियाहरूको परीक्षण गर्दै हुनुहुन्छ भन्ने कुरा सुनिश्चित गर्नुहोस्।"
+  },
+  "panels/timeline/components/MetricCard.ts | recThrottlingINP": {
+    "message": "CPU को सुस्त गतिले गर्दा वास्तविक प्रयोगकर्ताहरूले अन्तर्क्रिया गर्दा धेरै समय लाग्न सक्छ। तपाईंले CPU थ्रोटलिङ बढाउनुभयो भने सुस्त गतिको डिभाइस सिमुलेट गरिने छ।"
+  },
+  "panels/timeline/components/MetricCard.ts | recThrottlingLCP": {
+    "message": "सुस्त गतिको नेटवर्कले गर्दा वास्तविक प्रयोगकर्ताहरूले पेज लोड गर्दा धेरै समय लाग्न सक्छ। तपाईंले नेटवर्क थ्रोटलिङ बढाउनुभयो भने नेटवर्क सुस्त गतिको हुँदा आउने अवस्था सिमुलेट हुने छ।"
+  },
+  "panels/timeline/components/MetricCard.ts | recViewportCLS": {
+    "message": "स्क्रिनको साइजले लेआउटमा हुने परिवर्तनहरू प्रभावित गर्न सक्छ। तपाईं भ्युपोर्टका सामान्य साइजहरूको परीक्षण गर्दै हुनुहुन्छ भन्ने कुरा सुनिश्चित गर्नुहोस्।"
+  },
+  "panels/timeline/components/MetricCard.ts | recViewportLCP": {
+    "message": "स्क्रिनको साइजले LCP एलिमेन्टमा प्रभाव पार्न सक्छ। तपाईं भ्युपोर्टका सामान्य साइजहरूको परीक्षण गर्दै हुनुहुन्छ भन्ने कुरा सुनिश्चित गर्नुहोस्।"
+  },
+  "panels/timeline/components/MetricCard.ts | viewCardDetails": {
+    "message": "कार्डसम्बन्धी विवरणहरू हेर्नुहोस्"
+  },
   "panels/timeline/components/MetricCompareStrings.ts | goodBetterCompare": {
-    "message": "तपाईंको लोकल {PH1} {PH2} राम्रो छ र यो तपाईंका प्रयोगकर्ताले पाएको अनुभवभन्दा निकै राम्रो छ।"
+    "message": "तपाईंको लोकल {PH1} को मान {PH2} राम्रो छ र तर यो तपाईंको प्रयोगकर्ताको अनुभवभन्दा निकै नै राम्रो छ।"
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodGoodDetailedCompare": {
-    "message": "तपाईंको लोकल {PH1} {PH2} राम्रो र यसलाई {PH4} वास्तविक प्रयोगकर्ता {PH1} ले पाएका अनुभव जत्तिकै रेटिङ दिइएको छ। यसका साथै, फिल्ड डेटाको ७५ औँ पर्सेन्टाइल {PH1} {PH3} राम्रो छ।"
+    "message": "तपाईंको लोकल {PH1} को मान {PH2} राम्रो छ र यसलाई {PH4} वास्तविक प्रयोगकर्ता {PH1} ले पाएका अनुभव जत्तिकै रेटिङ दिइएको छ। यसका साथै, फिल्ड डेटाको ७५ औँ पर्सेन्टाइल {PH1} को मान {PH3} राम्रो छ।"
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodNeedsImprovementDetailedCompare": {
-    "message": "तपाईंको लोकल {PH1} {PH2} राम्रो र यसलाई {PH4} वास्तविक प्रयोगकर्ता {PH1} ले पाएका अनुभव जत्तिकै रेटिङ दिइएको छ। तर फिल्ड डेटाको ७५ औँ पर्सेन्टाइल {PH1} {PH3} मा सुधार गर्न जरुरी छ।"
+    "message": "तपाईंको लोकल {PH1} को मान {PH2} राम्रो छ र यसलाई {PH4} वास्तविक प्रयोगकर्ता {PH1} ले पाएका अनुभव जत्तिकै रेटिङ दिइएको छ। तर फिल्ड डेटाको ७५ औँ पर्सेन्टाइल {PH1} को मान {PH3} मा सुधार गर्न जरुरी छ।"
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodPoorDetailedCompare": {
-    "message": "तपाईंको लोकल {PH1} {PH2} राम्रो र यसलाई {PH4} वास्तविक प्रयोगकर्ता {PH1} ले पाएका अनुभव जत्तिकै रेटिङ दिइएको छ। तर फिल्ड डेटाको ७५ औँ पर्सेन्टाइल {PH1} {PH3} खराब छ।"
+    "message": "तपाईंको लोकल {PH1} को मान {PH2} राम्रो छ र यसलाई {PH4} वास्तविक प्रयोगकर्ता {PH1} ले पाएका अनुभव जत्तिकै रेटिङ दिइएको छ। तर फिल्ड डेटाको ७५ औँ पर्सेन्टाइल {PH1} को मान {PH3} खराब छ।"
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodSimilarCompare": {
-    "message": "तपाईंको लोकल {PH1} {PH2} राम्रो छ र यो तपाईंका प्रयोगकर्ताले पाएको अनुभव जस्तै छ।"
+    "message": "तपाईंको लोकल {PH1} को मान {PH2} राम्रो छ र यो तपाईंका प्रयोगकर्ताले पाएको अनुभव जस्तै छ।"
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodSummarized": {
-    "message": "तपाईंको लोकल {PH1} {PH2} राम्रो छ।"
+    "message": "तपाईंको लोकल {PH1} को मान {PH2} राम्रो छ।"
   },
   "panels/timeline/components/MetricCompareStrings.ts | goodWorseCompare": {
-    "message": "तपाईंको लोकल {PH1} {PH2} राम्रो छ र यो तपाईंका प्रयोगकर्ताले पाएको अनुभवभन्दा निकै खराब छ।"
+    "message": "तपाईंको लोकल {PH1} को मान {PH2} राम्रो छ र तर यो तपाईंको प्रयोगकर्ताको अनुभवभन्दा निकै नै खराब छ।"
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementBetterCompare": {
-    "message": "तपाईंको लोकल {PH1} {PH2} मा सुधार गर्न जरुरी छ र यो तपाईंका प्रयोगकर्ताले पाएको अनुभवभन्दा निकै राम्रो छ।"
+    "message": "तपाईंको लोकल {PH1} को मान {PH2} मा सुधार गर्न जरुरी छ र तर यो तपाईंको प्रयोगकर्ताको अनुभवभन्दा निकै नै राम्रो छ।"
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementGoodDetailedCompare": {
-    "message": "तपाईंको लोकल {PH1} {PH2} मा सुधार गर्न जरुरी छ र यसलाई {PH4} वास्तविक प्रयोगकर्ता {PH1} ले पाएका अनुभव जत्तिकै रेटिङ दिइएको छ। तर फिल्ड डेटाको ७५ औँ पर्सेन्टाइल {PH1} {PH3} राम्रो छ।"
+    "message": "तपाईंको लोकल {PH1} को मान {PH2} मा सुधार गर्न जरुरी छ र यसलाई वास्तविक प्रयोगकर्ता {PH1} ले पाएका {PH4} अनुभव जत्तिकै रेटिङ दिइएको छ। तर फिल्ड डेटाको ७५ औँ पर्सेन्टाइल {PH1} को मान {PH3} राम्रो छ।"
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementNeedsImprovementDetailedCompare": {
-    "message": "तपाईंको लोकल {PH1} {PH2} मा सुधार गर्न जरुरी छ र यसलाई {PH4} वास्तविक प्रयोगकर्ता {PH1} ले पाएका अनुभव जत्तिकै रेटिङ दिइएको छ। यसका साथै, फिल्ड डेटाको ७५ औँ पर्सेन्टाइल {PH1} {PH3} मा सुधार गर्न जरुरी छ।"
+    "message": "तपाईंको लोकल {PH1} को मान {PH2} मा सुधार गर्न जरुरी छ र यसलाई वास्तविक प्रयोगकर्ता {PH1} ले पाएका {PH4} अनुभव जत्तिकै रेटिङ दिइएको छ। यसका साथै, फिल्ड डेटाको ७५ औँ पर्सेन्टाइल {PH1} को मान {PH3} मा सुधार गर्न जरुरी छ।"
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementPoorDetailedCompare": {
-    "message": "तपाईंको लोकल {PH1} {PH2} मा सुधार गर्न जरुरी छ र यसलाई {PH4} वास्तविक प्रयोगकर्ता {PH1} ले पाएका अनुभव जत्तिकै रेटिङ दिइएको छ। तर फिल्ड डेटाको ७५ औँ पर्सेन्टाइल {PH1} {PH3} खराब छ।"
+    "message": "तपाईंको लोकल {PH1} को मान {PH2} मा सुधार गर्न जरुरी छ र यसलाई वास्तविक प्रयोगकर्ता {PH1} ले पाएका {PH4} अनुभव जत्तिकै रेटिङ दिइएको छ। तर फिल्ड डेटाको ७५ औँ पर्सेन्टाइल {PH1} को मान {PH3} खराब छ।"
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementSimilarCompare": {
-    "message": "तपाईंको लोकल {PH1} {PH2} मा सुधार गर्न जरुरी छ र यो तपाईंका प्रयोगकर्ताले पाएको अनुभव जस्तै छ।"
+    "message": "तपाईंको लोकल {PH1} को मान {PH2} मा सुधार गर्न जरुरी छ र यो तपाईंका प्रयोगकर्ताले पाएको अनुभव जस्तै छ।"
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementSummarized": {
-    "message": "तपाईंको लोकल {PH1} {PH2} मा सुधार गर्न जरुरी छ।"
+    "message": "तपाईंको लोकल {PH1} को मान {PH2} मा सुधार गर्न जरुरी छ।"
   },
   "panels/timeline/components/MetricCompareStrings.ts | needsImprovementWorseCompare": {
-    "message": "तपाईंको लोकल {PH1} {PH2} मा सुधार गर्न जरुरी छ र यो तपाईंका प्रयोगकर्ताले पाएको अनुभवभन्दा निकै खराब छ।"
+    "message": "तपाईंको लोकल {PH1} को मान {PH2} मा सुधार गर्न जरुरी छ र तर यो तपाईंको प्रयोगकर्ताको अनुभवभन्दा निकै नै खराब छ।"
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorBetterCompare": {
-    "message": "तपाईंको लोकल {PH1} {PH2} खराब छ र यो तपाईंका प्रयोगकर्ताले पाएको अनुभवभन्दा निकै राम्रो छ।"
+    "message": "तपाईंको लोकल {PH1} को मान {PH2} खराब छ र तर यो तपाईंको प्रयोगकर्ताको अनुभवभन्दा निकै नै राम्रो छ।"
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorGoodDetailedCompare": {
-    "message": "तपाईंको लोकल {PH1} {PH2} खराब र यसलाई {PH4} वास्तविक प्रयोगकर्ता {PH1} ले पाएका अनुभव जत्तिकै रेटिङ दिइएको छ। तर फिल्ड डेटाको ७५ औँ पर्सेन्टाइल {PH1} {PH3} राम्रो छ।"
+    "message": "तपाईंको लोकल {PH1} को मान {PH2} खराब छ र यसलाई {PH4} वास्तविक प्रयोगकर्ता {PH1} ले पाएका अनुभव जत्तिकै रेटिङ दिइएको छ। तर फिल्ड डेटाको ७५ औँ पर्सेन्टाइल {PH1} को मान {PH3} राम्रो छ।"
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorNeedsImprovementDetailedCompare": {
-    "message": "तपाईंको लोकल {PH1} {PH2} खराब र यसलाई {PH4} वास्तविक प्रयोगकर्ता {PH1} ले पाएका अनुभव जत्तिकै रेटिङ दिइएको छ। तर फिल्ड डेटाको ७५ औँ पर्सेन्टाइल {PH1} {PH3} मा सुधार गर्न जरुरी छ।"
+    "message": "तपाईंको लोकल {PH1} को मान {PH2} खराब छ र यसलाई {PH4} वास्तविक प्रयोगकर्ता {PH1} ले पाएका अनुभव जत्तिकै रेटिङ दिइएको छ। तर फिल्ड डेटाको ७५ औँ पर्सेन्टाइल {PH1} को मान {PH3} मा सुधार गर्न जरुरी छ।"
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorPoorDetailedCompare": {
-    "message": "तपाईंको लोकल {PH1} {PH2} खराब र यसलाई {PH4} वास्तविक प्रयोगकर्ता {PH1} ले पाएका अनुभव जत्तिकै रेटिङ दिइएको छ। यसका साथै, फिल्ड डेटाको ७५ औँ पर्सेन्टाइल {PH1} {PH3} खराब छ।"
+    "message": "तपाईंको लोकल {PH1} को मान {PH2} खराब छ र यसलाई {PH4} वास्तविक प्रयोगकर्ता {PH1} ले पाएका अनुभव जत्तिकै रेटिङ दिइएको छ। यसका साथै, फिल्ड डेटाको ७५ औँ पर्सेन्टाइल {PH1} को मान {PH3} खराब छ।"
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorSimilarCompare": {
-    "message": "तपाईंको लोकल {PH1} {PH2} खराब छ र यो तपाईंका प्रयोगकर्ताले पाएको अनुभव जस्तै छ।"
+    "message": "तपाईंको लोकल {PH1} को मान {PH2} खराब छ र यो तपाईंका प्रयोगकर्ताले पाएको अनुभव जस्तै छ।"
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorSummarized": {
-    "message": "तपाईंको लोकल {PH1} {PH2} खराब छ।"
+    "message": "तपाईंको लोकल {PH1} को मान {PH2} खराब छ।"
   },
   "panels/timeline/components/MetricCompareStrings.ts | poorWorseCompare": {
-    "message": "तपाईंको लोकल {PH1} {PH2} खराब छ र यो तपाईंका प्रयोगकर्ताले पाएको अनुभवभन्दा निकै खराब छ।"
+    "message": "तपाईंको लोकल {PH1} को मान {PH2} खराब छ र तर यो तपाईंको प्रयोगकर्ताको अनुभवभन्दा निकै नै खराब छ।"
   },
   "panels/timeline/components/NetworkRequestDetails.ts | FromCache": {
     "message": " (क्यासबाट)"
@@ -13800,7 +13923,7 @@
     "message": "सुरु गर्ने इभेन्ट"
   },
   "panels/timeline/components/NetworkRequestDetails.ts | mimeType": {
-    "message": "Mime को प्रकार"
+    "message": "MIME को प्रकार"
   },
   "panels/timeline/components/NetworkRequestDetails.ts | networkRequest": {
     "message": "नेटवर्कसम्बन्धी अनुरोध"
@@ -13865,6 +13988,66 @@
   "panels/timeline/components/NetworkThrottlingSelector.ts | presets": {
     "message": "प्रिसेटहरू"
   },
+  "panels/timeline/components/SidebarAnnotationsTab.ts | diagram": {
+    "message": "रेखाचित्र"
+  },
+  "panels/timeline/components/SidebarAnnotationsTab.ts | diagramDescription": {
+    "message": "रेखाचित्र सिर्जना गर्नका निम्ति कुनै इन्ट्रीमा डबल क्लिक गर्नुहोस्।"
+  },
+  "panels/timeline/components/SidebarAnnotationsTab.ts | entryLabel": {
+    "message": "इन्ट्री लेबल"
+  },
+  "panels/timeline/components/SidebarAnnotationsTab.ts | entryLabelDescription": {
+    "message": "इन्ट्री लेबल सिर्जना गर्नका निम्ति कुनै इन्ट्रीमा डबल क्लिक गर्नुहोस्। पूरा गर्न Esc वा इन्टर थिच्नुहोस्।"
+  },
+  "panels/timeline/components/SidebarAnnotationsTab.ts | timeRange": {
+    "message": "समयको दायरा"
+  },
+  "panels/timeline/components/SidebarAnnotationsTab.ts | timeRangeDescription": {
+    "message": "समयको दायरा सिर्जना गर्न र लेबल हाल्न क्यान्भासमा सिफ्ट तथा ड्रयाग गर्नुहोस्। पूरा गर्न Esc वा इन्टर थिच्नुहोस्।"
+  },
+  "panels/timeline/components/insights/DocumentLatency.ts | failedRedirects": {
+    "message": "रिडिरेक्ट गरिएको थियो"
+  },
+  "panels/timeline/components/insights/DocumentLatency.ts | failedServerResponseTime": {
+    "message": "सर्भरले सुस्त गतिमा जवाफ दियो"
+  },
+  "panels/timeline/components/insights/DocumentLatency.ts | failedTextCompression": {
+    "message": "कुनै कम्प्रेसन लागू गरिएको छैन"
+  },
+  "panels/timeline/components/insights/DocumentLatency.ts | passingRedirects": {
+    "message": "रिडिरेक्ट गर्दैन"
+  },
+  "panels/timeline/components/insights/DocumentLatency.ts | passingServerResponseTime": {
+    "message": "सर्भरले तुरुन्तै जवाफ दिन्छ"
+  },
+  "panels/timeline/components/insights/DocumentLatency.ts | passingTextCompression": {
+    "message": "टेक्स्ट कम्प्रेसन लागू गर्छ"
+  },
+  "panels/timeline/components/insights/InteractionToNextPaint.ts | description": {
+    "message": "नेक्स्ट पेन्ट मेट्रिकसँगको अन्तर्क्रिया सुधार गरेर युजर रेस्पोन्सिभनेस सुधार गर्नुहोस्। [INP अप्टिमाइज गर्ने](https://web.dev/articles/optimize-inp) तरिका सिक्नुहोस्।"
+  },
+  "panels/timeline/components/insights/InteractionToNextPaint.ts | duration": {
+    "message": "अवधि"
+  },
+  "panels/timeline/components/insights/InteractionToNextPaint.ts | inputDelay": {
+    "message": "इनपुट गर्दा हुने विलम्बता"
+  },
+  "panels/timeline/components/insights/InteractionToNextPaint.ts | longestInteraction": {
+    "message": "सबैभन्दा लामो समयको अन्तर्क्रिया"
+  },
+  "panels/timeline/components/insights/InteractionToNextPaint.ts | phase": {
+    "message": "चरण"
+  },
+  "panels/timeline/components/insights/InteractionToNextPaint.ts | presentationDelay": {
+    "message": "प्रस्तुतिमा विलम्ब"
+  },
+  "panels/timeline/components/insights/InteractionToNextPaint.ts | processingDuration": {
+    "message": "प्रोसेस गर्न लाग्ने अवधि"
+  },
+  "panels/timeline/components/insights/InteractionToNextPaint.ts | title": {
+    "message": "चरणअनुसार INP"
+  },
   "panels/timeline/components/insights/LCPDiscovery.ts | fetchPriorityApplied": {
     "message": "fetchpriority=high लागू गरियो"
   },
@@ -13888,6 +14071,30 @@
   },
   "panels/timeline/components/insights/LCPPhases.ts | timeToFirstByte": {
     "message": "पहिलो बाइट प्राप्त गरिने समय"
+  },
+  "panels/timeline/components/insights/RenderBlocking.ts | description": {
+    "message": "अनुरोधहरूले पेजको सुरुवाती रेन्डर ब्लक गरिरहेका छन् र यसले गर्दा LCP मा ढिलाइ हुन सक्छ। [केही समयका लागि स्थगित वा इनलाइनिङ गरेर](https://web.dev/learn/performance/understanding-the-critical-path#render-blocking_resources/) नेटवर्कसम्बन्धी यी अनुरोधहरूलाई महत्त्वपूर्ण पथबाट सार्न सकिन्छ।"
+  },
+  "panels/timeline/components/insights/SidebarInsight.ts | estimatedSavings": {
+    "message": "अनुमानित बचत: {PH1}"
+  },
+  "panels/timeline/components/insights/ThirdParties.ts | columnBlockingTime": {
+    "message": "ब्लक गर्ने समय"
+  },
+  "panels/timeline/components/insights/ThirdParties.ts | columnThirdParty": {
+    "message": "तेस्रो पक्ष"
+  },
+  "panels/timeline/components/insights/ThirdParties.ts | columnTransferSize": {
+    "message": "ट्रान्स्फर गरिने डेटाको साइज"
+  },
+  "panels/timeline/components/insights/ThirdParties.ts | description": {
+    "message": "तेसो पक्षीय कोडले लोड पर्फर्मेन्समा उल्लेख्य रूपमा प्रभाव पार्न सक्छ। दोहोरिएका तेस्रो पक्षीय प्रदायकहरूको सङ्ख्या सीमित गर्नुहोस् र तपाईंको पेज प्राथमिक रूपमा लोड गर्ने कार्य सकिएपछि तेस्रो पक्षीय कोड लोड गरी हेर्नुहोस्। [तेस्रो पक्षीय प्रभाव कम गर्ने तरिका जान्नुहोस्](https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/loading-third-party-javascript/)।"
+  },
+  "panels/timeline/components/insights/ThirdParties.ts | title": {
+    "message": "तेस्रो पक्षीय प्रयोग कम गर्नुहोस्"
+  },
+  "panels/timeline/components/insights/Viewport.ts | description": {
+    "message": "भ्युपोर्ट मेटा एलिमेन्टले मोबाइल स्क्रिनको साइजअनुसार तपाईंको एप अप्टिमाइज गर्नुका साथै [प्रयोगकर्ताको इन्पुटमा ३०० मिलिसेकेन्ड ढिलाइ हुनबाट रोकथाम गर्छ](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/)।"
   },
   "panels/timeline/timeline-meta.ts | hideChromeFrameInLayersView": {
     "message": "लेयर भ्यूमा chrome फ्रेम लुकाउनुहोस्"
@@ -14726,6 +14933,12 @@
   "ui/legacy/components/data_grid/DataGrid.ts | sortByString": {
     "message": "यसअनुसार क्रमबद्ध गर्नुहोस्"
   },
+  "ui/legacy/components/data_grid/DataGridWithPreview.ts | numberEntries": {
+    "message": "तालिकामा भएका प्रविष्टिहरूको सङ्ख्या: {PH1}"
+  },
+  "ui/legacy/components/data_grid/DataGridWithPreview.ts | selectAValueToPreview": {
+    "message": "प्रिभ्यू हेर्न कुनै मान चयन गर्नुहोस्"
+  },
   "ui/legacy/components/data_grid/ShowMoreDataGridNode.ts | showAllD": {
     "message": "सबै {PH1} वटा वस्तु देखाउनुहोस्"
   },
@@ -15160,9 +15373,6 @@
   },
   "ui/legacy/components/utils/JSPresentationUtils.ts | showLess": {
     "message": "कम देखाउनुहोस्"
-  },
-  "ui/legacy/components/utils/JSPresentationUtils.ts | showSMoreFrames": {
-    "message": "{n,plural, =1{थप # फ्रेम देखाउनुहोस्}other{थप # वटा फ्रेम देखाउनुहोस्}}"
   },
   "ui/legacy/components/utils/JSPresentationUtils.ts | unknownSource": {
     "message": "अज्ञात"

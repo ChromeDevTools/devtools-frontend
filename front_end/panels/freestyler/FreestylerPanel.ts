@@ -10,7 +10,7 @@ import * as NetworkForward from '../../panels/network/forward/forward.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as LitHtml from '../../ui/lit-html/lit-html.js';
 
-import {ErrorType, ResponseType} from './AiAgent.js';
+import {ErrorType, type ResponseData, ResponseType} from './AiAgent.js';
 import {ChangeManager} from './ChangeManager.js';
 import {
   AgentType,
@@ -287,6 +287,8 @@ export class FreestylerPanel extends UI.Panel.Panel {
   #clearMessages(): void {
     this.#viewProps.messages = [];
     this.#viewProps.isLoading = false;
+    this.#freestylerAgent = this.#createFreestylerAgent();
+    this.#drJonesNetworkAgent = this.#createDrJonesNetworkAgent();
     this.#cancel();
     this.doUpdate();
   }
@@ -300,7 +302,6 @@ export class FreestylerPanel extends UI.Panel.Panel {
   }
 
   async #startConversation(text: string): Promise<void> {
-    // TODO(samiyac): Refactor startConversation
     this.#viewProps.messages.push({
       entity: ChatMessageEntity.USER,
       text,
@@ -315,21 +316,23 @@ export class FreestylerPanel extends UI.Panel.Panel {
     this.doUpdate();
 
     this.#runAbortController = new AbortController();
-
     const signal = this.#runAbortController.signal;
-    if (this.#viewProps.agentType === AgentType.FREESTYLER) {
-      await this.#conversationStepsForFreestylerAgent(text, signal, systemMessage);
-    } else if (this.#viewProps.agentType === AgentType.DRJONES_NETWORK_REQUEST) {
-      await this.#conversationStepsForDrJonesNetworkAgent(text, signal, systemMessage);
-    }
-  }
 
-  async #conversationStepsForFreestylerAgent(text: string, signal: AbortSignal, systemMessage: ModelChatMessage):
-      Promise<void> {
+    let runner: AsyncGenerator<ResponseData, void, void>|undefined;
+    if (this.#viewProps.agentType === AgentType.FREESTYLER) {
+      runner = this.#freestylerAgent.run(text, {signal, selectedElement: this.#viewProps.selectedElement});
+    } else if (this.#viewProps.agentType === AgentType.DRJONES_NETWORK_REQUEST) {
+      runner =
+          this.#drJonesNetworkAgent.run(text, {signal, selectedNetworkRequest: this.#viewProps.selectedNetworkRequest});
+    }
+
+    if (!runner) {
+      return;
+    }
+
     let step: Step = {isLoading: true};
 
-    for await (
-        const data of this.#freestylerAgent.run(text, {signal, selectedElement: this.#viewProps.selectedElement})) {
+    for await (const data of runner) {
       step.sideEffect = undefined;
       switch (data.type) {
         case ResponseType.QUERYING: {
@@ -350,6 +353,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
         case ResponseType.THOUGHT: {
           step.isLoading = false;
           step.thought = data.thought;
+          step.contextDetails = data.contextDetails;
           if (systemMessage.steps.at(-1) !== step) {
             systemMessage.steps.push(step);
           }
@@ -402,51 +406,6 @@ export class FreestylerPanel extends UI.Panel.Panel {
               lastStep.canceled = true;
             }
           }
-        }
-      }
-
-      this.doUpdate();
-      this.#viewOutput.freestylerChatUi?.scrollToLastMessage();
-    }
-  }
-
-  async #conversationStepsForDrJonesNetworkAgent(text: string, signal: AbortSignal, systemMessage: ModelChatMessage):
-      Promise<void> {
-    // TODO(samiyac): Only display the thinking step with context details when it is the first message
-    const step: Step = {isLoading: true};
-
-    for await (const data of this.#drJonesNetworkAgent.run(
-        text, {signal, selectedNetworkRequest: this.#viewProps.selectedNetworkRequest})) {
-      switch (data.type) {
-        case ResponseType.TITLE: {
-          step.title = data.title;
-          if (systemMessage.steps.at(-1) !== step) {
-            systemMessage.steps.push(step);
-          }
-          break;
-        }
-        case ResponseType.THOUGHT: {
-          step.isLoading = false;
-          step.thought = data.thought;
-          step.contextDetails = data.contextDetails;
-          if (systemMessage.steps.at(-1) !== step) {
-            systemMessage.steps.push(step);
-          }
-          break;
-        }
-
-        case ResponseType.ANSWER: {
-          systemMessage.answer = data.text;
-          systemMessage.rpcId = data.rpcId;
-          step.isLoading = false;
-          this.#viewProps.isLoading = false;
-          break;
-        }
-
-        case ResponseType.ERROR: {
-          step.isLoading = false;
-          systemMessage.error = ErrorType.UNKNOWN;
-          this.#viewProps.isLoading = false;
         }
       }
 

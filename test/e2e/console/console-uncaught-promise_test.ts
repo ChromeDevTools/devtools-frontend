@@ -14,8 +14,7 @@ import {
 } from '../helpers/console-helpers.js';
 
 describe('The Console Tab', () => {
-  // Fails after a roll.
-  it.skip('[crbug.com/370375891]: is able to log uncaught promise rejections into console', async () => {
+  it('is able to log uncaught promise rejections into console', async () => {
     await goToResource('../resources/console/console-uncaught-promise.html');
     await navigateToConsoleTab();
 
@@ -23,9 +22,6 @@ describe('The Console Tab', () => {
         'await promiseTest1();',
         `
         promiseTest1 @ console-uncaught-promise.html:3
-        (anonymous) @ VM26:1
-        Promise.then
-        promiseTest1 @ console-uncaught-promise.html:6
         (anonymous) @ VM26:1
       `,
         2,
@@ -35,15 +31,6 @@ describe('The Console Tab', () => {
         'await promiseTest2();',
         `
         promiseTest2 @ console-uncaught-promise.html:23
-        (anonymous) @ VM44:1
-        Promise.then
-        (anonymous) @ console-uncaught-promise.html:19
-        Promise.catch
-        (anonymous) @ console-uncaught-promise.html:18
-        Promise.catch
-        (anonymous) @ console-uncaught-promise.html:17
-        Promise.catch
-        promiseTest2 @ console-uncaught-promise.html:16
         (anonymous) @ VM44:1
       `,
         2,

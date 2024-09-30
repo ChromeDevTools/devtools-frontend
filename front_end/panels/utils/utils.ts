@@ -3,12 +3,173 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
+import * as i18n from '../../core/i18n/i18n.js';
+import type * as SDK from '../../core/sdk/sdk.js';
 import * as Formatter from '../../models/formatter/formatter.js';
 import type * as Diff from '../../third_party/diff/diff.js';
 import * as DiffView from '../../ui/components/diff_view/diff_view.js';
 
+const UIStrings = {
+  /**
+   *@description Tooltip to explain the resource's overridden status
+   */
+  requestContentHeadersOverridden: 'Both request content and headers are overridden',
+  /**
+   *@description Tooltip to explain the resource's overridden status
+   */
+  requestContentOverridden: 'Request content is overridden',
+  /**
+   *@description Tooltip to explain the resource's overridden status
+   */
+  requestHeadersOverridden: 'Request headers are overridden',
+  /**
+   *@description Tooltip to explain why the request has warning icon
+   */
+  thirdPartyPhaseout:
+      'Cookies for this request are blocked either because of Chrome flags or browser configuration. Learn more in the Issues panel.',
+};
+
+const str_ = i18n.i18n.registerUIStrings('panels/utils/utils.ts', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+
 // These utilities are packaged in a class to allow unittests to stub or spy the implementation.
 export class PanelUtils {
+  static isFailedNetworkRequest(request: SDK.NetworkRequest.NetworkRequest|null): boolean {
+    if (!request) {
+      return false;
+    }
+    if (request.failed && !request.statusCode) {
+      return true;
+    }
+    if (request.statusCode >= 400) {
+      return true;
+    }
+    const signedExchangeInfo = request.signedExchangeInfo();
+    if (signedExchangeInfo !== null && Boolean(signedExchangeInfo.errors)) {
+      return true;
+    }
+    if (request.webBundleInfo()?.errorMessage || request.webBundleInnerRequestInfo()?.errorMessage) {
+      return true;
+    }
+    if (request.corsErrorStatus()) {
+      return true;
+    }
+    return false;
+  }
+
+  private static createIconElement(iconData: {iconName: string, color: string}, title: string): HTMLElement {
+    const iconElement = document.createElement('div');
+    iconElement.title = title;
+    const url = new URL(`../../Images/${iconData.iconName}.svg`, import.meta.url).toString();
+    iconElement.style.setProperty('mask', `url('${url}')  no-repeat center /99%`);
+    iconElement.style.setProperty('background-color', iconData.color);
+    return iconElement;
+  }
+
+  static getIconForNetworkRequest(request: SDK.NetworkRequest.NetworkRequest): HTMLElement {
+    let type = request.resourceType();
+    let iconElement: HTMLElement;
+
+    if (PanelUtils.isFailedNetworkRequest(request)) {
+      const iconData = {
+        iconName: 'cross-circle-filled',
+        color: 'var(--icon-error)',
+      };
+      iconElement = PanelUtils.createIconElement(iconData, type.title());
+      iconElement.classList.add('icon');
+
+      return iconElement;
+    }
+
+    if (request.hasThirdPartyCookiePhaseoutIssue()) {
+      const iconData = {
+        iconName: 'warning-filled',
+        color: 'var(--icon-warning)',
+      };
+      iconElement = this.createIconElement(iconData, i18nString(UIStrings.thirdPartyPhaseout));
+      iconElement.classList.add('icon');
+
+      return iconElement;
+    }
+
+    const isHeaderOverriden = request.hasOverriddenHeaders();
+    const isContentOverriden = request.hasOverriddenContent;
+    if (isHeaderOverriden || isContentOverriden) {
+      const iconData = {
+        iconName: 'document',
+        color: 'var(--icon-default)',
+      };
+
+      let title: Common.UIString.LocalizedString;
+      if (isHeaderOverriden && isContentOverriden) {
+        title = i18nString(UIStrings.requestContentHeadersOverridden);
+      } else if (isContentOverriden) {
+        title = i18nString(UIStrings.requestContentOverridden);
+      } else {
+        title = i18nString(UIStrings.requestHeadersOverridden);
+      }
+
+      const iconChildElement = this.createIconElement(iconData, title);
+      iconChildElement.classList.add('icon');
+
+      iconElement = document.createElement('div');
+      iconElement.classList.add('network-override-marker');
+      iconElement.appendChild(iconChildElement);
+
+      return iconElement;
+    }
+
+    // Pick icon based on MIME type in the following cases:
+    // - If the MIME type is 'image': some images have request type of 'fetch' or etc.
+    // - If the request type is 'fetch': everything fetched by service worker has request type 'fetch'.
+    // - If the request type is 'other' and MIME type is 'script', e.g. for wasm files
+    const typeFromMime = Common.ResourceType.ResourceType.fromMimeType(request.mimeType);
+
+    if (typeFromMime !== type && typeFromMime !== Common.ResourceType.resourceTypes.Other) {
+      if (type === Common.ResourceType.resourceTypes.Fetch) {
+        type = typeFromMime;
+      } else if (typeFromMime === Common.ResourceType.resourceTypes.Image) {
+        type = typeFromMime;
+      } else if (
+          type === Common.ResourceType.resourceTypes.Other &&
+          typeFromMime === Common.ResourceType.resourceTypes.Script) {
+        type = typeFromMime;
+      }
+    }
+
+    if (type === Common.ResourceType.resourceTypes.Image) {
+      const previewImage = document.createElement('img');
+      previewImage.classList.add('image-network-icon-preview');
+      previewImage.alt = request.resourceType().title();
+      void request.populateImageSource((previewImage as HTMLImageElement));
+
+      iconElement = document.createElement('div');
+      iconElement.classList.add('image', 'icon');
+      iconElement.appendChild(previewImage);
+
+      return iconElement;
+    }
+
+    // Exclude Manifest here because it has mimeType:application/json but it has its own icon
+    if (type !== Common.ResourceType.resourceTypes.Manifest &&
+        Common.ResourceType.ResourceType.simplifyContentType(request.mimeType) === 'application/json') {
+      const iconData = {
+        iconName: 'file-json',
+        color: 'var(--icon-file-script)',
+      };
+      iconElement = this.createIconElement(iconData, request.resourceType().title());
+      iconElement.classList.add('icon');
+
+      return iconElement;
+    }
+
+    // Others
+    const iconData = PanelUtils.iconDataForResourceType(type);
+    iconElement = this.createIconElement(iconData, request.resourceType().title());
+    iconElement.classList.add('icon');
+    return iconElement;
+  }
+
   static iconDataForResourceType(resourceType: Common.ResourceType.ResourceType): {iconName: string, color: string} {
     if (resourceType.isDocument()) {
       return {iconName: 'file-document', color: 'var(--icon-file-document)'};

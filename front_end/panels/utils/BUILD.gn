@@ -11,6 +11,7 @@ devtools_entrypoint("bundle") {
 
   deps = [
     "../../core/common:bundle",
+    "../../core/sdk:bundle",
     "../../models/formatter:bundle",
     "../../ui/components/diff_view:bundle",
   ]
@@ -27,6 +28,12 @@ ts_library("unittests") {
 
   deps = [
     ":bundle",
+    "../../core/common:bundle",
+    "../../core/platform:bundle",
+    "../../core/sdk:bundle",
+    "../../generated:protocol",
+    "../../models/text_utils:bundle",
+    "../../testing",
     "../../third_party/diff:bundle",
   ]
 }

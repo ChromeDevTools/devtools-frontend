@@ -128,7 +128,15 @@ export class FreestylerPanel extends UI.Panel.Panel {
     this.#aidaClient = aidaClient;
     this.#contentContainer = this.contentElement.createChild('div', 'freestyler-chat-ui-container');
 
-    this.#selectedElement = UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
+    const selectedElementFilter = (maybeNode: SDK.DOMModel.DOMNode|null): SDK.DOMModel.DOMNode|null => {
+      if (maybeNode) {
+        return maybeNode.nodeType() === Node.ELEMENT_NODE ? maybeNode : null;
+      }
+
+      return null;
+    };
+
+    this.#selectedElement = selectedElementFilter(UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode));
     this.#selectedNetworkRequest = UI.Context.Context.instance().flavor(SDK.NetworkRequest.NetworkRequest);
     this.#viewProps = {
       state: this.#freestylerEnabledSetting?.get() ? FreestylerChatUiState.CHAT_VIEW :
@@ -164,7 +172,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
         return;
       }
 
-      this.#viewProps.selectedElement = Boolean(ev.data) && ev.data.nodeType() === Node.ELEMENT_NODE ? ev.data : null;
+      this.#viewProps.selectedElement = selectedElementFilter(ev.data);
       this.doUpdate();
     });
     UI.Context.Context.instance().addFlavorChangeListener(SDK.NetworkRequest.NetworkRequest, ev => {

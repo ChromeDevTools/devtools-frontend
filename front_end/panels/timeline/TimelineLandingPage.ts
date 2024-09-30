@@ -3,10 +3,8 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../core/i18n/i18n.js';
-import type * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as LegacyWrapper from '../../ui/components/legacy_wrapper/legacy_wrapper.js';
-import * as PanelFeedback from '../../ui/components/panel_feedback/panel_feedback.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Components from './components/components.js';
@@ -56,11 +54,13 @@ export class TimelineLandingPage extends UI.Widget.VBox {
 
     this.toggleRecordAction = toggleRecordAction;
 
+    const isNode = options?.isNode === true;
     this.contentElement.classList.add('timeline-landing-page', 'fill');
-    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_OBSERVATIONS)) {
+
+    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_OBSERVATIONS) && !isNode) {
       this.renderLandingPage();
     } else {
-      this.renderLegacyLandingPage(options);
+      this.renderLegacyLandingPage();
     }
   }
 
@@ -70,7 +70,7 @@ export class TimelineLandingPage extends UI.Widget.VBox {
     liveMetricsWidget.show(this.contentElement);
   }
 
-  private renderLegacyLandingPage(options?: Options): void {
+  private renderLegacyLandingPage(): void {
     function encloseWithTag(tagName: string, contents: string): HTMLElement {
       const e = document.createElement(tagName);
       e.textContent = contents;
@@ -104,20 +104,5 @@ export class TimelineLandingPage extends UI.Widget.VBox {
 
     centered.createChild('p').appendChild(i18n.i18n.getFormatLocalizedString(
         str_, UIStrings.afterRecordingSelectAnAreaOf, {PH1: navigateNode, PH2: learnMoreNode}));
-
-    if (options?.isNode) {
-      const previewSection = new PanelFeedback.PanelFeedback.PanelFeedback();
-      previewSection.data = {
-        feedbackUrl: 'https://crbug.com/1354548' as Platform.DevToolsPath.UrlString,
-        quickStartUrl: 'https://goo.gle/js-profiler-deprecation' as Platform.DevToolsPath.UrlString,
-        quickStartLinkText: i18nString(UIStrings.learnmore),
-      };
-      centered.appendChild(previewSection);
-      const feedbackButton = new PanelFeedback.FeedbackButton.FeedbackButton();
-      feedbackButton.data = {
-        feedbackUrl: 'https://crbug.com/1354548' as Platform.DevToolsPath.UrlString,
-      };
-      centered.appendChild(feedbackButton);
-    }
   }
 }

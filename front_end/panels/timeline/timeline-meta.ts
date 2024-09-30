@@ -313,6 +313,16 @@ Common.Settings.registerSettingExtension({
   defaultValue: false,
 });
 
+// IMPORTANT: if you are updating this, you should also update the setting in
+// js_timeline-meta.
+Common.Settings.registerSettingExtension({
+  category: Common.Settings.SettingCategory.PERFORMANCE,
+  storageType: Common.Settings.SettingStorageType.Synced,
+  settingName: 'annotations-hidden',
+  settingType: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: true,
+});
+
 Common.Linkifier.registerLinkifier({
   contextTypes() {
     return maybeRetrieveContextTypes(Timeline => [Timeline.CLSLinkifier.CLSRect]);

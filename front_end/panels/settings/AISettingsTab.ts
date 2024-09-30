@@ -113,10 +113,6 @@ const UIStrings = {
    */
   privacyNotice: 'Google Privacy Policy',
   /**
-   *@description Message to display if a setting change requires a reload of DevTools
-   */
-  oneOrMoreSettingsHaveChanged: 'One or more settings have changed which requires a reload to take effect.',
-  /**
    *@description Header for the AI innovations settings page
    */
   aiInnovations: 'AI innovations',
@@ -208,8 +204,6 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
     if (!oldSettingValue && !this.#isFreestylerSettingExpanded) {
       this.#isFreestylerSettingExpanded = true;
     }
-    UI.InspectorView.InspectorView.instance().displayReloadRequiredWarning(
-        i18nString(UIStrings.oneOrMoreSettingsHaveChanged));
     void this.render();
   }
 

@@ -78,11 +78,7 @@ const UIStrings = {
    *@example {Google Terms of Service} PH1
    *@example {Privacy Notice} PH2
    */
-  termsOfServicePrivacyNotice: 'Use of this feature is subject to the {PH1} and {PH2}',
-  /**
-   *@description Label for a link to a URL, which asks to use generated code responsibly
-   */
-  generatedSnippets: 'Use generated code snippets with caution',
+  termsOfServicePrivacyNotice: 'Use of these features is subject to the {PH1} and {PH2}',
   /**
    *@description Text describing the 'AI assistance' feature
    */
@@ -207,7 +203,8 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
     void this.render();
   }
 
-  #renderSharedDisclaimerItem(icon: string, text: Common.UIString.LocalizedString): LitHtml.TemplateResult {
+  #renderSharedDisclaimerItem(icon: string, text: Common.UIString.LocalizedString|LitHtml.TemplateResult):
+      LitHtml.TemplateResult {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     return LitHtml.html`
@@ -226,11 +223,25 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
   }
 
   #renderSharedDisclaimer(): LitHtml.TemplateResult {
+    const tosLink = UI.XLink.XLink.create(
+        'https://policies.google.com/terms', i18nString(UIStrings.termsOfService), undefined, undefined,
+        'terms-of-service');
+    const privacyNoticeLink = UI.XLink.XLink.create(
+        'https://policies.google.com/privacy', i18nString(UIStrings.privacyNotice), undefined, undefined,
+        'privacy-notice');
+
     const bulletPoints = [
       {icon: 'psychiatry', text: i18nString(UIStrings.experimentalFeatures)},
       {icon: 'google', text: i18nString(UIStrings.sendsDataToGoogle)},
       {icon: 'calendar-today', text: i18nString(UIStrings.retainData)},
       {icon: 'corporate-fare', text: i18nString(UIStrings.adminSettings)},
+      {
+        icon: 'policy',
+        text: LitHtml.html`${i18n.i18n.getFormatLocalizedString(str_, UIStrings.termsOfServicePrivacyNotice, {
+          PH1: tosLink,
+          PH2: privacyNoticeLink,
+        })}`,
+      },
     ];
     return LitHtml.html`
       <div class="shared-disclaimer">
@@ -243,8 +254,7 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
     `;
   }
 
-  #renderSettingItem(icon: string, text: Common.UIString.LocalizedString|LitHtml.TemplateResult):
-      LitHtml.TemplateResult {
+  #renderSettingItem(icon: string, text: Common.UIString.LocalizedString): LitHtml.TemplateResult {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     return LitHtml.html`
@@ -267,12 +277,6 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
       open: this.#isConsoleInsightsSettingExpanded,
     };
     const tabindex = this.#isConsoleInsightsSettingExpanded ? '0' : '-1';
-    const tosLink = UI.XLink.XLink.create(
-        'https://policies.google.com/terms', i18nString(UIStrings.termsOfService), undefined, undefined,
-        'terms-of-service', tabindex);
-    const privacyNoticeLink = UI.XLink.XLink.create(
-        'https://policies.google.com/privacy', i18nString(UIStrings.privacyNotice), undefined, undefined,
-        'privacy-notice', tabindex);
 
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
@@ -316,22 +320,6 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
             ${this.#renderSettingItem('code', i18nString(UIStrings.receiveSuggestions))}
             <h3 class="expansion-grid-whole-row">${i18nString(UIStrings.thingsToConsider)}</h3>
             ${this.#renderSettingItem('google', i18nString(UIStrings.consoleInsightsSendsData))}
-            ${this.#renderSettingItem('policy', LitHtml.html`
-              ${i18n.i18n.getFormatLocalizedString(str_, UIStrings.termsOfServicePrivacyNotice, {
-                PH1: tosLink,
-                PH2: privacyNoticeLink,
-              })}
-            `)}
-            ${this.#renderSettingItem('warning', LitHtml.html`
-              <x-link
-                href="https://support.google.com/legal/answer/13505487"
-                class="link"
-                tabindex=${tabindex}
-                jslog=${VisualLogging.link('code-snippets-explainer.console-insights').track({
-                  click: true,
-                })}
-              >${i18nString(UIStrings.generatedSnippets)}</x-link>
-            `)}
             <div class="expansion-grid-whole-row">
               <x-link
                 href="https://goo.gle/devtools-console-messages-ai"
@@ -354,14 +342,6 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
       'whole-row': true,
       open: this.#isFreestylerSettingExpanded,
     };
-    const tabindex = this.#isFreestylerSettingExpanded ? '0' : '-1';
-
-    const tosLink = UI.XLink.XLink.create(
-        'https://policies.google.com/terms', i18nString(UIStrings.termsOfService), undefined, undefined,
-        'terms-of-service', tabindex);
-    const privacyNoticeLink = UI.XLink.XLink.create(
-        'https://policies.google.com/privacy', i18nString(UIStrings.privacyNotice), undefined, undefined,
-        'privacy-notice', tabindex);
 
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
@@ -405,12 +385,6 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
             ${this.#renderSettingItem('pen-spark', i18nString(UIStrings.receiveStylingSuggestions))}
             <h3 class="expansion-grid-whole-row">${i18nString(UIStrings.thingsToConsider)}</h3>
             ${this.#renderSettingItem('google', i18nString(UIStrings.freestylerSendsData))}
-            ${this.#renderSettingItem('policy', LitHtml.html`
-              ${i18n.i18n.getFormatLocalizedString(str_, UIStrings.termsOfServicePrivacyNotice, {
-                PH1: tosLink,
-                PH2: privacyNoticeLink,
-              })}
-            `)}
           </div>
         </div>
       </div>

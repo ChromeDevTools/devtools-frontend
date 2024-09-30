@@ -45,7 +45,7 @@ describeWithEnvironment('TimelineSelection', function() {
     assert.strictEqual(selection.object, firstLCPEvent);
     assert.strictEqual(selection.startTime, Trace.Helpers.Timing.eventTimingsMilliSeconds(firstLCPEvent).startTime);
     assert.strictEqual(selection.endTime, Trace.Helpers.Timing.eventTimingsMilliSeconds(firstLCPEvent).endTime);
-    assert.isTrue(Timeline.TimelineSelection.TimelineSelection.isSelection(selection.object));
+    assert.isTrue(Timeline.TimelineSelection.TimelineSelection.isTraceEventSelection(selection.object));
   });
 
   it('can be created with a range', async function() {

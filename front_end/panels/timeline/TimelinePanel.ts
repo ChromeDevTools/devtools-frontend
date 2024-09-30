@@ -565,7 +565,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
     this.#sideBar.contentElement.addEventListener(TimelineComponents.Sidebar.EventReferenceClick.eventName, event => {
       const {metricEvent} = event;
-      this.flameChart.setSelectionAndReveal(TimelineSelection.fromTraceEvent(metricEvent));
+      this.select(TimelineSelection.fromTraceEvent(metricEvent));
     });
 
     this.#sideBar.element.addEventListener(TimelineComponents.Sidebar.RemoveAnnotation.eventName, event => {
@@ -2164,7 +2164,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
         TimelineSelection.isSyntheticNetworkRequestDetailsEventSelection(selection.object)) {
       return null;
     }
-    if (TimelineSelection.isSelection(selection.object)) {
+    if (TimelineSelection.isTraceEventSelection(selection.object)) {
       const parsedTrace = this.#traceEngineModel.parsedTrace(this.#viewMode.traceIndex);
       if (!parsedTrace) {
         return null;

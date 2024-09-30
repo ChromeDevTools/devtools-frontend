@@ -618,7 +618,13 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     const timeLeft = this.chartViewport.windowLeftTime();
     const timeRight = this.chartViewport.windowRightTime();
     const entryStartTime = timelineData.entryStartTimes[entryIndex];
-    const entryTotalTime = timelineData.entryTotalTimes[entryIndex];
+    let entryTotalTime = timelineData.entryTotalTimes[entryIndex];
+    // Marker entries have NaN durations; for the sake of the reveal logic
+    // let's pretend they have a 1ms duration so we can calculate a reasonable
+    // time window to reveal
+    if (Number.isNaN(entryTotalTime)) {
+      entryTotalTime = 1;
+    }
     const entryEndTime = entryStartTime + entryTotalTime;
     let minEntryTimeWindow = Math.min(entryTotalTime, timeRight - timeLeft);
 

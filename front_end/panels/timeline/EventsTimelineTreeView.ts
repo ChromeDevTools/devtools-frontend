@@ -59,7 +59,7 @@ export class EventsTimelineTreeView extends TimelineTreeView {
 
   override updateContents(selection: TimelineSelection): void {
     super.updateContents(selection);
-    if (TimelineSelection.isSelection(selection.object)) {
+    if (TimelineSelection.isTraceEventSelection(selection.object)) {
       this.selectEvent(selection.object, true);
     }
   }

@@ -400,10 +400,9 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
 
   setActiveInsight(insight: TimelineComponents.Sidebar.ActiveInsight|null): void {
     this.#activeInsight = insight;
-    const traceBounds = TraceBounds.TraceBounds.BoundsManager.instance().state()?.micro.entireTraceBounds;
     this.bulkRemoveOverlays(this.#currentInsightOverlays);
 
-    if (!this.#activeInsight || !traceBounds) {
+    if (!this.#activeInsight) {
       return;
     }
 
@@ -838,7 +837,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
 
     // Create the entry selected overlay if the selection represents a frame or trace event (either network, or anything else)
     if (selection &&
-        (TimelineSelection.isSelection(selection.object) ||
+        (TimelineSelection.isTraceEventSelection(selection.object) ||
          TimelineSelection.isSyntheticNetworkRequestDetailsEventSelection(selection.object) ||
          TimelineSelection.isLegacyTimelineFrame(selection.object))) {
       this.addOverlay({
@@ -898,7 +897,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
       event: Common.EventTarget.EventTargetEvent<{entryIndex: number, withLinkCreationButton: boolean}>): void {
     const selection = dataProvider.createSelection(event.data.entryIndex);
     if (selection &&
-        (TimelineSelection.isSelection(selection.object) ||
+        (TimelineSelection.isTraceEventSelection(selection.object) ||
          TimelineSelection.isSyntheticNetworkRequestDetailsEventSelection(selection.object) ||
          TimelineSelection.isLegacyTimelineFrame(selection.object))) {
       this.setSelectionAndReveal(selection);
@@ -937,7 +936,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
       return null;
     }
 
-    if (TimelineSelection.isSelection(selection.object) ||
+    if (TimelineSelection.isTraceEventSelection(selection.object) ||
         TimelineSelection.isSyntheticNetworkRequestDetailsEventSelection(selection.object)) {
       return selection.object;
     }

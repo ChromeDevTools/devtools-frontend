@@ -298,7 +298,7 @@ export class TimelineDetailsView extends UI.Widget.VBox {
       const maybeTarget = targetForEvent(this.#parsedTrace, networkRequest);
       await this.#networkRequestDetails.setData(this.#parsedTrace, networkRequest, maybeTarget);
       this.setContent(this.#networkRequestDetails);
-    } else if (TimelineSelection.isSelection(selectionObject)) {
+    } else if (TimelineSelection.isTraceEventSelection(selectionObject)) {
       const event = selectionObject;
       if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_LAYOUT_SHIFT_DETAILS) &&
           (Trace.Types.Events.isSyntheticLayoutShift(event) ||

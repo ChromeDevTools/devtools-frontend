@@ -177,6 +177,8 @@ export class TimingsTrackAppender implements TrackAppender {
     for (const markersAtTime of markersByTimestamp.values()) {
       for (const marker of markersAtTime) {
         const index = this.#compatibilityBuilder.appendEventAtLevel(marker, currentLevel, this);
+        // Marker events do not have a duration: rendering code in
+        // FlameChart.ts relies on us setting this to NaN
         this.#compatibilityBuilder.getFlameChartTimelineData().entryTotalTimes[index] = Number.NaN;
       }
     }

@@ -52,7 +52,7 @@ export class TimelineSelection {
     return Trace.Types.Events.isNetworkTrackEntry(object);
   }
 
-  static isSelection(object: PermittedObjectTypes): object is Trace.Types.Events.Event {
+  static isTraceEventSelection(object: PermittedObjectTypes): object is Trace.Types.Events.Event {
     // Trace events are just raw objects, so now we have to confirm it is a trace event by ruling everything else out.
     if (TimelineSelection.isLegacyTimelineFrame(object) || TimelineSelection.isRangeSelection(object)) {
       return false;

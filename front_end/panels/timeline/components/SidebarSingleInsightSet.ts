@@ -7,7 +7,6 @@ import * as Trace from '../../../models/trace/trace.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
-import {type BaseInsight} from './insights/Helpers.js';
 import * as Insights from './insights/insights.js';
 import {type ActiveInsight, EventReferenceClick} from './Sidebar.js';
 import styles from './sidebarSingleInsightSet.css.js';
@@ -49,32 +48,17 @@ export class SidebarSingleInsightSet extends HTMLElement {
     return label === this.#data.activeCategory;
   }
 
-  #onClickMetric(event: Trace.Types.Events.Event, insightComponentName: string): void {
-    const el = this.shadowRoot?.querySelector(insightComponentName) as BaseInsight;
-    if (el && this.#data.insightSetKey) {
-      this.dispatchEvent(new Insights.SidebarInsight.InsightActivated(
-          el.internalName,
-          this.#data.insightSetKey,
-          el.getInitialOverlays(),
-          ));
-    }
-
-    this.dispatchEvent(new EventReferenceClick(event));
+  #onClickMetric(traceEvent: Trace.Types.Events.Event): void {
+    this.dispatchEvent(new EventReferenceClick(traceEvent));
   }
 
   #renderMetricValue(
       label: 'LCP'|'CLS'|'INP', value: string,
       classification: Trace.Handlers.ModelHandlers.PageLoadMetrics.ScoreClassification,
-      event: Trace.Types.Events.Event|null): LitHtml.LitTemplate {
-    const insightComponentName = {
-      LCP: Insights.LCPPhases.LCPPhases.litTagName.value as string,
-      CLS: Insights.CLSCulprits.CLSCulprits.litTagName.value as string,
-      INP: Insights.InteractionToNextPaint.InteractionToNextPaint.litTagName.value as string,
-    }[label];
-
+      eventToSelectOnClick: Trace.Types.Events.Event|null): LitHtml.LitTemplate {
     // clang-format off
     return this.#metricIsVisible(label) ? LitHtml.html`
-      <div class="metric" @click=${event ? this.#onClickMetric.bind(this, event, insightComponentName) : null}>
+      <div class="metric" @click=${eventToSelectOnClick ? this.#onClickMetric.bind(this, eventToSelectOnClick) : null}>
         <div class="metric-value metric-value-${classification}">${value}</div>
         <div class="metric-label">${label}</div>
       </div>

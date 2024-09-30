@@ -466,24 +466,18 @@ export class FreestylerChatUi extends HTMLElement {
         <${MarkdownView.CodeBlock.CodeBlock.litTagName}
           .code=${step.code.trim()}
           .codeLang=${'js'}
-          .displayToolbar=${false}
           .displayNotice=${!Boolean(step.output)}
-          .heading=${{
-            text: codeHeadingText,
-            showCopyButton: true,
-          }}
+          .header=${codeHeadingText}
+          .showCopyButton=${true}
         ></${MarkdownView.CodeBlock.CodeBlock.litTagName}>
     </div>` : LitHtml.nothing;
     const output = step.output ? LitHtml.html`<div class="js-code-output">
       <${MarkdownView.CodeBlock.CodeBlock.litTagName}
         .code=${step.output}
         .codeLang=${'js'}
-        .displayToolbar=${false}
         .displayNotice=${true}
-        .heading=${{
-          text: lockedString(UIStringsNotTranslate.dataReturned),
-          showCopyButton: false,
-        }}
+        .header=${lockedString(UIStringsNotTranslate.dataReturned)}
+        .showCopyButton=${false}
       ></${MarkdownView.CodeBlock.CodeBlock.litTagName}>
     </div>` : LitHtml.nothing;
     const contextDetails = step.contextDetails && step.contextDetails?.length > 0 ?
@@ -494,12 +488,9 @@ export class FreestylerChatUi extends HTMLElement {
         <${MarkdownView.CodeBlock.CodeBlock.litTagName}
           .code=${contextDetail.text}
           .codeLang=${'js'}
-          .displayToolbar=${false}
           .displayNotice=${false}
-          .heading=${{
-            text: contextDetail.title,
-            showCopyButton: true,
-          }}
+          .header=${contextDetail.title}
+          .showCopyButton=${true}
         ></${MarkdownView.CodeBlock.CodeBlock.litTagName}>
       </div>`;
         },

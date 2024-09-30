@@ -13,30 +13,35 @@ import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import * as MarkdownView from './markdown_view.js';
 
 describeWithEnvironment('CodeBlock', () => {
-  it('copies the code to clipboard', () => {
+  it('copies the code to clipboard', async () => {
     const component = new MarkdownView.CodeBlock.CodeBlock();
     component.code = 'test';
+    component.showCopyButton = true;
     renderElementIntoDOM(component);
-    const button = component.shadowRoot!.querySelector('.copy-button');
-    assert.exists(button);
     const clock = sinon.useFakeTimers();
     try {
-      assert.strictEqual(button.querySelector('span')?.innerText, 'Copy code');
       const copyText = sinon
                            .stub(
                                Host.InspectorFrontendHost.InspectorFrontendHostInstance,
                                'copyText',
                                )
                            .returns();
+      let button = component.shadowRoot!.querySelector('devtools-button');
+      assert.exists(button);
       dispatchClickEvent(button, {
         bubbles: true,
         composed: true,
       });
       assert.isTrue(copyText.calledWith('test'));
+
       clock.tick(100);
-      assert.strictEqual(button.querySelector('span')!.innerText, 'Copied to clipboard');
+      button = component.shadowRoot!.querySelector('devtools-button');
+      assert.exists(button);
+      assert.strictEqual(button.textContent, 'Copied to clipboard');
       clock.tick(1100);
-      assert.strictEqual(button.querySelector('span')!.innerText, 'Copy code');
+      button = component.shadowRoot!.querySelector('devtools-button');
+      assert.exists(button);
+      assert.strictEqual(button.textContent, '');
     } finally {
       clock.restore();
       resetTestDOM();
@@ -64,31 +69,6 @@ describeWithEnvironment('CodeBlock', () => {
       const notice = component.shadowRoot!.querySelector('.notice') as HTMLElement;
       assert.exists(notice);
       assert.strictEqual(notice!.innerText, 'Use code snippets with caution');
-    } finally {
-      resetTestDOM();
-    }
-  });
-
-  it('renders toolbar by default', () => {
-    try {
-      const component = new MarkdownView.CodeBlock.CodeBlock();
-      component.code = 'test';
-      renderElementIntoDOM(component);
-      const toolbar = component.shadowRoot!.querySelector('.toolbar') as HTMLElement;
-      assert.exists(toolbar);
-    } finally {
-      resetTestDOM();
-    }
-  });
-
-  it('renders no toolbar when configured', () => {
-    try {
-      const component = new MarkdownView.CodeBlock.CodeBlock();
-      component.code = 'test';
-      component.displayToolbar = false;
-      renderElementIntoDOM(component);
-      const toolbar = component.shadowRoot!.querySelector('.toolbar') as HTMLElement;
-      assert(toolbar === null, '.toolbar was found');
     } finally {
       resetTestDOM();
     }

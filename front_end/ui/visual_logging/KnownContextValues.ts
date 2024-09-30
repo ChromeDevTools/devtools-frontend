@@ -1746,6 +1746,7 @@ export const knownContextValues = new Set([
   'layout',
   'layout-count',
   'learn-more',
+  'learn-more.ai-assistance',
   'learn-more.console-insights',
   'learn-more.coop-coep',
   'learn-more.csp-report-only',

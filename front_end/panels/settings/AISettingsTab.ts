@@ -342,6 +342,7 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
       'whole-row': true,
       open: this.#isFreestylerSettingExpanded,
     };
+    const tabindex = this.#isFreestylerSettingExpanded ? '0' : '-1';
 
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
@@ -385,6 +386,16 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
             ${this.#renderSettingItem('pen-spark', i18nString(UIStrings.receiveStylingSuggestions))}
             <h3 class="expansion-grid-whole-row">${i18nString(UIStrings.thingsToConsider)}</h3>
             ${this.#renderSettingItem('google', i18nString(UIStrings.freestylerSendsData))}
+            <div class="expansion-grid-whole-row">
+              <x-link
+                href="https://goo.gle/devtools-ai-assistance"
+                class="link"
+                tabindex=${tabindex}
+                jslog=${VisualLogging.link('learn-more.ai-assistance').track({
+                  click: true,
+                })}
+              >${i18nString(UIStrings.learnMore)}</x-link>
+            </div>
           </div>
         </div>
       </div>

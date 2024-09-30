@@ -12,6 +12,7 @@ import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as Settings from '../../../ui/components/settings/settings.js';
 import * as ThemeSupport from '../../../ui/legacy/theme_support/theme_support.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import {nameForEntry} from './EntryName.js';
 import {RemoveAnnotation, RevealAnnotation} from './Sidebar.js';
@@ -245,6 +246,18 @@ export class SidebarAnnotationsTab extends HTMLElement {
     `;
   }
 
+  #jslogForAnnotation(annotation: Trace.Types.File.Annotation): string {
+    switch (annotation.type) {
+      case 'ENTRY_LABEL':
+        return 'entry-label';
+      case 'TIME_RANGE':
+        return 'time-range';
+      case 'ENTRIES_LINK':
+        return 'entries-link';
+      default:
+        Platform.assertNever(annotation, 'unknown annotation type');
+    }
+  }
   #render(): void {
     // clang-format off
     LitHtml.render(
@@ -256,7 +269,12 @@ export class SidebarAnnotationsTab extends HTMLElement {
               ${this.#annotations.map(annotation => {
                 const label = detailedAriaDescriptionForAnnotation(annotation);
                 return LitHtml.html`
-                  <div class="annotation-container" @click=${() => this.#revealAnnotation(annotation)} aria-label=${label} tabindex="0">
+                  <div class="annotation-container"
+                    @click=${() => this.#revealAnnotation(annotation)}
+                    aria-label=${label}
+                    tabindex="0"
+                    jslog=${VisualLogging.item(`timeline.annotation-sidebar.annotation-${this.#jslogForAnnotation(annotation)}`).track({click: true})}
+                  >
                     <div class="annotation">
                       ${this.#renderAnnotationIdentifier(annotation)}
                       <span class="label">
@@ -268,7 +286,7 @@ export class SidebarAnnotationsTab extends HTMLElement {
                       // the delete button is clicked
                       event.stopPropagation();
                       this.dispatchEvent(new RemoveAnnotation(annotation));
-                    }}>
+                    }} jslog=${VisualLogging.action('timeline.annotation-sidebar.delete').track({click: true})}>
                       <${IconButton.Icon.Icon.litTagName}
                         class="bin-icon"
                         .data=${{

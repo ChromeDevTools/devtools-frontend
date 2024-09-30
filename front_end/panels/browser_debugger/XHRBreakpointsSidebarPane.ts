@@ -5,6 +5,7 @@
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
+import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
@@ -94,6 +95,7 @@ export class XHRBreakpointsSidebarPane extends UI.Widget.VBox implements UI.Cont
 
     this.#addButton = new UI.Toolbar.ToolbarButton(
         i18nString(UIStrings.addXhrfetchBreakpoint), 'plus', undefined, 'sources.add-xhr-fetch-breakpoint');
+    this.#addButton.setSize(Buttons.Button.Size.SMALL);
     this.#addButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, () => {
       void this.addButtonClicked();
     });

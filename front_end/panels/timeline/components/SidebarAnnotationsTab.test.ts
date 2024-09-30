@@ -87,6 +87,27 @@ describeWithEnvironment('SidebarAnnotationsTab', () => {
     assert.strictEqual(annotationEntryLabelElements[2].innerText, 'Labelled Time Range');
   });
 
+  it('gives the delete button accessible labels', async function() {
+    const component = new SidebarAnnotationsTab();
+    const defaultTraceEvents = await TraceLoader.rawEvents(null, 'basic.json.gz');
+    renderElementIntoDOM(component);
+
+    const entryLabelAnnotation: Trace.Types.File.Annotation = {
+      type: 'ENTRY_LABEL',
+      entry: defaultTraceEvents[0],
+      label: 'Entry Label 1',
+    };
+    component.annotations = [entryLabelAnnotation];
+    assert.isNotNull(component.shadowRoot);
+    await coordinator.done();
+
+    const deleteButton = component.shadowRoot.querySelector<HTMLElement>('.delete-button');
+    assert.isNotNull(deleteButton);
+    assert.strictEqual(
+        deleteButton.getAttribute('aria-label'),
+        'Delete annotation: A "thread_name" event annotated with the text "Entry Label 1"');
+  });
+
   it('uses the URL for displaying network event labels and truncates it', async function() {
     const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
     const event = parsedTrace.NetworkRequests.byTime.find(event => {

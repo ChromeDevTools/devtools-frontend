@@ -99,21 +99,6 @@
 }
 
 .tutorial-title,
-.tutorial-description,
-.tutorial-shortcut {
+.tutorial-description {
   margin: 5px 0;
-}
-
-.tutorial-shortcut {
-  padding: 0.1em 0.6em;
-  border: 1px solid var(--sys-color-neutral-outline);
-  font-size: 11px;
-  background-color: var(--sys-color-neutral-container);
-  color: var(--sys-color-on-surface);
-  border-radius: 3px;
-  display: inline-block;
-  margin: 0 0.1em;
-  text-shadow: 0 1px 0 var(--sys-color-cdt-base-container);
-  line-height: 1.5;
-  white-space: nowrap;
 }

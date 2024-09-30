@@ -50,9 +50,10 @@ const UIStrings = {
   timeRangeDescription:
       'Shift and drag on the canvas to create a time range and add a label. Press Esc or Enter to complete.',
   /**
-   * @description Text used to describe the delete button to screen readers
+   * @description Text used to describe the delete button to screen readers.
+   * @example {"A paint event annotated with the text hello world"} PH1
    **/
-  deleteButton: 'Delete this annotation',
+  deleteButton: 'Delete annotation: {PH1}',
   /**
    * @description label used to describe an annotation on an entry
    *@example {Paint} PH1
@@ -229,17 +230,11 @@ export class SidebarAnnotationsTab extends HTMLElement {
           <div class="tutorial-image"> <img src=${entryLabelImageUrl}></img></div>
           <div class="tutorial-title">${i18nString(UIStrings.entryLabel)}</div>
           <div class="tutorial-description">${i18nString(UIStrings.entryLabelDescription)}</div>
-          <div class="tutorial-shortcut">Double Click</div>
         </div>
         <div class="tutorial-card">
           <div class="tutorial-image"> <img src=${diagramImageUrl}></img></div>
           <div class="tutorial-title">${i18nString(UIStrings.diagram)}</div>
           <div class="tutorial-description">${i18nString(UIStrings.diagramDescription)}</div>
-          <div class="tutorial-shortcut">
-            <div class="keybinds-shortcut">
-              <span class="keybinds-key">Double Click</span>
-            </div>
-          </div>
         </div>
         <div class="tutorial-card">
           <div class="tutorial-image"> <img src=${timeRangeImageUrl}></img></div>
@@ -268,7 +263,7 @@ export class SidebarAnnotationsTab extends HTMLElement {
                         ${(annotation.type === 'ENTRY_LABEL' || annotation.type === 'TIME_RANGE') ? annotation.label : ''}
                       </span>
                     </div>
-                    <button class="delete-button" aria-label=${i18nString(UIStrings.deleteButton)} @click=${(event: Event) => {
+                    <button class="delete-button" aria-label=${i18nString(UIStrings.deleteButton, {PH1: label})} @click=${(event: Event) => {
                       // Stop propagation to not zoom into the annotation when
                       // the delete button is clicked
                       event.stopPropagation();

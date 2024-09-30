@@ -23,12 +23,14 @@ const ADDITIONAL_TEXT_MIME_TYPES = new Set([
   'application/javascript',
   'application/json',
   'application/json+protobuf',
+  'application/vnd.apple.mpegurl',
   'application/vnd.dart',
   'application/xml',
   'application/x-aspx',
   'application/x-javascript',
   'application/x-jsp',
   'application/x-httpd-php',
+  'audio/mpegurl',
 ]);
 
 /**

@@ -1023,7 +1023,6 @@ export enum DevtoolsExperiments {
   'timeline-rpp-sidebar' = 95,
   'timeline-observations' = 96,
   'timeline-server-timings' = 98,
-  'timeline-layout-shift-details' = 99,
   'extension-storage-viewer' = 100,
   /* eslint-enable @typescript-eslint/naming-convention */
 

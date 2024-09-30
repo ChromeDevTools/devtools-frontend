@@ -297,7 +297,6 @@ export const enum ExperimentName {
   TIMELINE_OBSERVATIONS = 'timeline-observations',
   TIMELINE_ENHANCED_TRACES = 'timeline-enhanced-traces',
   TIMELINE_SERVER_TIMINGS = 'timeline-server-timings',
-  TIMELINE_LAYOUT_SHIFT_DETAILS = 'timeline-layout-shift-details',
   EXTENSION_STORAGE_VIEWER = 'extension-storage-viewer',
 }
 

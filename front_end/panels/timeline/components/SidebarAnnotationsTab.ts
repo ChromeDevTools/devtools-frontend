@@ -30,7 +30,7 @@ const UIStrings = {
    * @description Text for how to create an entry label.
    */
   entryLabelDescription:
-      'Double click on an entry to create an entry label or select `Label Entry` from the entry context menu. Press Esc or Enter to complete.',
+      'Double click on an entry to create an entry label or select "Label Entry" from the entry context menu. Press "Esc" or "Enter" to complete.',
   /**
    * @description  Title for diagram.
    */

@@ -99,7 +99,7 @@ export class LayoutShiftsTrackAppender implements TrackAppender {
   #appendLayoutShiftsAtLevel(currentLevel: number): number {
     const allLayoutShifts = this.#parsedTrace.LayoutShifts.clusters.flatMap(cluster => cluster.events);
 
-    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_LAYOUT_SHIFT_DETAILS)) {
+    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_INSIGHTS)) {
       const allClusters = this.#parsedTrace.LayoutShifts.clusters;
       this.#compatibilityBuilder.appendEventsAtLevel(allClusters, currentLevel, this);
     }
@@ -155,7 +155,7 @@ export class LayoutShiftsTrackAppender implements TrackAppender {
   }
 
   getDrawOverride(event: Trace.Types.Events.Event): DrawOverride|undefined {
-    if (!Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_LAYOUT_SHIFT_DETAILS)) {
+    if (!Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_INSIGHTS)) {
       // If the new CLS experience isn't on.. Continue to present that Shifts are 5ms long. (but now via drawOverrides)
       // TODO: Remove this when the experiment ships
       if (Trace.Types.Events.isLayoutShift(event)) {

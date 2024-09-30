@@ -401,12 +401,6 @@ export class MainImpl {
     );
 
     Root.Runtime.experiments.register(
-        Root.Runtime.ExperimentName.TIMELINE_LAYOUT_SHIFT_DETAILS,
-        'Performance panel: enable new summary details view for layout shift events',
-        true,
-    );
-
-    Root.Runtime.experiments.register(
         Root.Runtime.ExperimentName.EXTENSION_STORAGE_VIEWER,
         'Extension storage in Application panel',
     );

@@ -26,30 +26,32 @@ const UIStrings = {
   /**
    * @description Title for entry label.
    */
-  entryLabel: 'Entry label',
+  annotationGetStarted: 'Annotate a trace for yourself and others',
+  /**
+   * @description Title for entry label.
+   */
+  entryLabelTutorialTitle: 'Label an item',
   /**
    * @description Text for how to create an entry label.
    */
-  entryLabelDescription:
-      'Double click on an entry to create an entry label or select "Label Entry" from the entry context menu. Press "Esc" or "Enter" to complete.',
+  entryLabelTutorialDescription: 'Double-click on an item and type to create an item label.',
   /**
    * @description  Title for diagram.
    */
-  diagram: 'Diagram',
+  entryLinkTutorialTitle: 'Connect two items',
   /**
    * @description Text for how to create a diagram between entries.
    */
-  diagramDescription:
-      'Double click on an entry to create a diagram or select `Link Entries` from the entry context menu. Click empty space to delete the current connection.',
+  entryLinkTutorialDescription:
+      'Double-click on an item, click on the adjacent rightward arrow, then select the destination item.',
   /**
    * @description  Title for time range.
    */
-  timeRange: 'Time range',
+  timeRangeTutorialTitle: 'Define a time range',
   /**
    * @description Text for how to create a time range selection and add note.
    */
-  timeRangeDescription:
-      'Shift and drag on the canvas to create a time range and add a label. Press Esc or Enter to complete.',
+  timeRangeTutorialDescription: 'Shift-drag in the flamechart then type to create a time range annotation.',
   /**
    * @description Text used to describe the delete button to screen readers.
    * @example {"A paint event annotated with the text hello world"} PH1
@@ -226,21 +228,26 @@ export class SidebarAnnotationsTab extends HTMLElement {
   #renderTutorialCard(): LitHtml.TemplateResult {
     return LitHtml.html`
       <div class="annotation-tutorial-container">
-        Try the new annotation feature:
+      ${i18nString(UIStrings.annotationGetStarted)}
         <div class="tutorial-card">
           <div class="tutorial-image"> <img src=${entryLabelImageUrl}></img></div>
-          <div class="tutorial-title">${i18nString(UIStrings.entryLabel)}</div>
-          <div class="tutorial-description">${i18nString(UIStrings.entryLabelDescription)}</div>
+          <div class="tutorial-title">${i18nString(UIStrings.entryLabelTutorialTitle)}</div>
+          <div class="tutorial-description">${i18nString(UIStrings.entryLabelTutorialDescription)}</div>
         </div>
         <div class="tutorial-card">
           <div class="tutorial-image"> <img src=${diagramImageUrl}></img></div>
-          <div class="tutorial-title">${i18nString(UIStrings.diagram)}</div>
-          <div class="tutorial-description">${i18nString(UIStrings.diagramDescription)}</div>
+          <div class="tutorial-title">${i18nString(UIStrings.entryLabelTutorialTitle)}</div>
+          <div class="tutorial-description">${i18nString(UIStrings.entryLabelTutorialDescription)}</div>
+        </div>
+        <div class="tutorial-card">
+          <div class="tutorial-image"> <img src=${diagramImageUrl}></img></div>
+          <div class="tutorial-title">${i18nString(UIStrings.entryLinkTutorialTitle)}</div>
+          <div class="tutorial-description">${i18nString(UIStrings.entryLinkTutorialDescription)}</div>
         </div>
         <div class="tutorial-card">
           <div class="tutorial-image"> <img src=${timeRangeImageUrl}></img></div>
-          <div class="tutorial-title">${i18nString(UIStrings.timeRange)}</div>
-          <div class="tutorial-description">${i18nString(UIStrings.timeRangeDescription)}</div>
+          <div class="tutorial-title">${i18nString(UIStrings.timeRangeTutorialTitle)}</div>
+          <div class="tutorial-description">${i18nString(UIStrings.timeRangeTutorialDescription)}</div>
         </div>
       </div>
     `;

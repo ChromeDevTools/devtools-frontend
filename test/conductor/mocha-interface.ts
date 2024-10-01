@@ -23,19 +23,19 @@ function devtoolsTestInterface(suite: Mocha.Suite) {
             ('default' in commonInterface ? commonInterface.default : commonInterface)(suites, context, mocha);
         // @ts-expect-error Custom interface.
         context['before'] = function before(fn: Mocha.AsyncFunc) {
-          return common.before(makeInstrumentedTestFunction(fn));
+          return common.before(makeInstrumentedTestFunction(fn, 'before'));
         };
         // @ts-expect-error Custom interface.
         context['after'] = function after(fn: Mocha.AsyncFunc) {
-          return common.after(makeInstrumentedTestFunction(fn));
+          return common.after(makeInstrumentedTestFunction(fn, 'after'));
         };
         // @ts-expect-error Custom interface.
         context['beforeEach'] = function beforeEach(fn: Mocha.AsyncFunc) {
-          return common.beforeEach(makeInstrumentedTestFunction(fn));
+          return common.beforeEach(makeInstrumentedTestFunction(fn, 'beforeEach'));
         };
         // @ts-expect-error Custom interface.
         context['afterEach'] = function afterEach(fn: Mocha.AsyncFunc) {
-          return common.afterEach(makeInstrumentedTestFunction(fn));
+          return common.afterEach(makeInstrumentedTestFunction(fn, 'afterEach'));
         };
         if (mocha.options.delay) {
           context['run'] = common.runWithSuite(suite);
@@ -84,7 +84,8 @@ function devtoolsTestInterface(suite: Mocha.Suite) {
         }
         function createTest(title: string, fn?: Mocha.AsyncFunc) {
           const suite = suites[0];
-          const test = new Mocha.Test(title, suite.isPending() || !fn ? undefined : makeInstrumentedTestFunction(fn));
+          const test =
+              new Mocha.Test(title, suite.isPending() || !fn ? undefined : makeInstrumentedTestFunction(fn, 'test'));
           test.file = file;
           suite.addTest(test);
           return test;

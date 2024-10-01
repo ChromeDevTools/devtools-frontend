@@ -68,39 +68,43 @@ export const mochaHooks = {
     copyGoldens();
   },
   // In both modes, run before each test.
-  beforeEach: makeInstrumentedTestFunction(async function(this: Mocha.Context) {
-    const paused = TestConfig.debug && !didPauseAtBeginning;
-    // Sets the timeout higher for this hook only and if not waiting for user input..
-    this.timeout(paused ? 0 : 20000);
-    await setupPages();
+  beforeEach: makeInstrumentedTestFunction(
+      async function(this: Mocha.Context) {
+        const paused = TestConfig.debug && !didPauseAtBeginning;
+        // Sets the timeout higher for this hook only and if not waiting for user input..
+        this.timeout(paused ? 0 : 20000);
+        await setupPages();
 
-    // Pause when running interactively in debug mode. This is mututally
-    // exclusive with parallel mode.
-    // We need to pause after `resetPagesBetweenTests`, otherwise the DevTools
-    // and target tab are not available to us to set breakpoints in.
-    // We still only want to pause once, so we remember that we did pause.
-    if (TestConfig.debug && !didPauseAtBeginning) {
-      didPauseAtBeginning = true;
+        // Pause when running interactively in debug mode. This is mututally
+        // exclusive with parallel mode.
+        // We need to pause after `resetPagesBetweenTests`, otherwise the DevTools
+        // and target tab are not available to us to set breakpoints in.
+        // We still only want to pause once, so we remember that we did pause.
+        if (TestConfig.debug && !didPauseAtBeginning) {
+          didPauseAtBeginning = true;
 
-      console.log('Running in debug mode.');
-      console.log(' - Press enter to run the test.');
-      console.log(' - Press ctrl + c to quit.');
+          console.log('Running in debug mode.');
+          console.log(' - Press enter to run the test.');
+          console.log(' - Press ctrl + c to quit.');
 
-      await new Promise<void>(resolve => {
-        const {stdin} = process;
+          await new Promise<void>(resolve => {
+            const {stdin} = process;
 
-        stdin.on('data', () => {
-          stdin.pause();
-          resolve();
-        });
-      });
-    }
-  }),
-  afterEach: makeInstrumentedTestFunction(async function(this: Mocha.Context) {
-    this.timeout(20000);
-    await resetPages();
-    await unregisterAllServiceWorkers();
-  }),
+            stdin.on('data', () => {
+              stdin.pause();
+              resolve();
+            });
+          });
+        }
+      },
+      'beforeEach in global hooks'),
+  afterEach: makeInstrumentedTestFunction(
+      async function(this: Mocha.Context) {
+        this.timeout(20000);
+        await resetPages();
+        await unregisterAllServiceWorkers();
+      },
+      'afterEach in global hooks'),
 };
 
 function copyGoldens() {

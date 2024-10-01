@@ -79,7 +79,7 @@ async function createScreenshotError(error: Error): Promise<Error> {
   return error;
 }
 
-export function makeInstrumentedTestFunction(fn: Mocha.AsyncFunc) {
+export function makeInstrumentedTestFunction(fn: Mocha.AsyncFunc, label: string) {
   return async function testFunction(this: Mocha.Context) {
     const abortController = new AbortController();
     let resolver;
@@ -107,7 +107,7 @@ export function makeInstrumentedTestFunction(fn: Mocha.AsyncFunc) {
           stacks.push(`${stepDescription}${stack.join('\n')}\n`);
         }
       }
-      const err = new Error('Test timed out');
+      const err = new Error(`A test function (${label}) for "${this.test?.title}" timed out`);
       if (stacks.length > 0) {
         const msg = `Pending async operations during timeout:\n${stacks.join('\n\n')}`;
         err.cause = new Error(msg);

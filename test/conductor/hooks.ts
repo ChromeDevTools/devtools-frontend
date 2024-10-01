@@ -95,6 +95,7 @@ function launchChrome() {
     'SimpleURLLoaderUseReadAndDiscardBodyOption',
     'ThrottleUnimportantFrameTimers',
     'VerifyDidCommitParams',
+    'NetworkServiceSandbox',  // crbug.com/370653886
   ];
   const launchArgs = [
     '--remote-allow-origins=*',

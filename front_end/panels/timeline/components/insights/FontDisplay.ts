@@ -37,19 +37,25 @@ export class FontDisplay extends BaseInsight {
   override userVisibleTitle: string = i18nString(UIStrings.title);
   override description: string = i18nString(UIStrings.description);
 
+  #overlayForRequest = new Map<Trace.Types.Events.SyntheticNetworkRequest, Overlays.Overlays.TimelineOverlay>();
+
   override createOverlays(): Overlays.Overlays.TimelineOverlay[] {
+    this.#overlayForRequest.clear();
+
     const insight = Trace.Insights.Common.getInsight('FontDisplay', this.data.insights, this.data.insightSetKey);
     if (!insight) {
       return [];
     }
 
-    return insight.fonts.map(font => {
-      return {
+    for (const font of insight.fonts) {
+      this.#overlayForRequest.set(font.request, {
         type: 'ENTRY_OUTLINE',
         entry: font.request,
         outlineReason: font.wastedTime ? 'ERROR' : 'INFO',
-      };
-    });
+      });
+    }
+
+    return [...this.#overlayForRequest.values()];
   }
 
   #render(data: Trace.Insights.Types.InsightResults['FontDisplay']): LitHtml.TemplateResult {
@@ -74,8 +80,8 @@ export class FontDisplay extends BaseInsight {
                           Platform.StringUtilities.trimMiddle(font.request.args.data.url.split('/').at(-1) ?? '', 20),
                           font.display,
                           i18n.TimeUtilities.millisToString(font.wastedTime),
-                          // TODO(crbug.com/369102516): hover?
                         ],
+                        overlays: [this.#overlayForRequest.get(font.request)],
                       })),
                     } as TableData}>
                   </${Table.litTagName}>`}

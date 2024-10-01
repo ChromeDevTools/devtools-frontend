@@ -63,6 +63,7 @@ export class LCPPhases extends BaseInsight {
   override internalName: string = 'lcp-by-phase';
   override userVisibleTitle: string = i18nString(UIStrings.title);
   override description: string = i18nString(UIStrings.description);
+  #overlay: Overlays.Overlays.TimespanBreakdown|null = null;
 
   #getPhaseData(insights: Trace.Insights.Types.TraceInsightSets|null, navigationId: string|null): PhaseData[] {
     if (!insights || !navigationId) {
@@ -121,6 +122,8 @@ export class LCPPhases extends BaseInsight {
   }
 
   override createOverlays(): Overlays.Overlays.TimelineOverlay[] {
+    this.#overlay = null;
+
     if (!this.data.insights || !this.data.insightSetKey) {
       return [];
     }
@@ -198,14 +201,25 @@ export class LCPPhases extends BaseInsight {
           {bounds: renderDelay, label: i18nString(UIStrings.elementRenderDelay), showDuration: true},
       );
     }
-    return [{
+
+    this.#overlay = {
       type: 'TIMESPAN_BREAKDOWN',
       sections,
-    }];
+    };
+    return [this.#overlay];
   }
 
   #renderLCPPhases(phaseData: PhaseData[]): LitHtml.LitTemplate {
-    const rows = phaseData.map(({phase, percent}) => ({values: [phase, percent]}));
+    const rows = phaseData.map(({phase, percent}) => {
+      const section = this.#overlay?.sections.find(section => phase === section.label);
+      return {
+        values: [phase, percent],
+        overlays: section && [{
+                    type: 'TIMESPAN_BREAKDOWN',
+                    sections: [section],
+                  }],
+      };
+    });
 
     // clang-format off
     return LitHtml.html`

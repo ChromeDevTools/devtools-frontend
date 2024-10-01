@@ -8,7 +8,13 @@ import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import {type AidaRequestOptions, ErrorType, type ResponseData, ResponseType} from './AiAgent.js';
+import {
+  AiAgent,
+  type AidaRequestOptions,
+  ErrorType,
+  type ResponseData,
+  ResponseType,
+} from './AiAgent.js';
 import {ChangeManager} from './ChangeManager.js';
 import {ExtensionScope, FREESTYLER_WORLD_NAME} from './ExtensionScope.js';
 import {ExecutionError, FreestylerEvaluateAction, SideEffectError} from './FreestylerEvaluateAction.js';
@@ -147,11 +153,6 @@ async function executeJsCode(code: string, {throwOnSideEffect}: {throwOnSideEffe
   }
 }
 
-type HistoryChunk = {
-  text: string,
-  entity: Host.AidaClient.Entity,
-};
-
 const MAX_STEPS = 10;
 const MAX_OBSERVATION_BYTE_LENGTH = 25_000;
 
@@ -172,31 +173,23 @@ type AgentOptions = {
  * One agent instance handles one conversation. Create a new agent
  * instance for a new conversation.
  */
-export class FreestylerAgent {
-  static buildRequest(opts: AidaRequestOptions): Host.AidaClient.AidaRequest {
+export class FreestylerAgent extends AiAgent {
+  preamble = preamble;
+  clientFeature = Host.AidaClient.ClientFeature.CHROME_FREESTYLER;
+  get userTier(): string|undefined {
     const config = Common.Settings.Settings.instance().getHostConfig();
-    const temperature = config.devToolsFreestylerDogfood?.temperature;
-    const request: Host.AidaClient.AidaRequest = {
-      input: opts.input,
-      preamble: opts.preamble,
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      chat_history: opts.chatHistory,
-      client: Host.AidaClient.CLIENT_NAME,
-      options: {
-        ...(temperature !== undefined && temperature >= 0) && {temperature},
-        model_id: config.devToolsFreestylerDogfood?.modelId ?? undefined,
-      },
-      metadata: {
-        disable_user_content_logging: !(opts.serverSideLoggingEnabled ?? false),
-        string_session_id: opts.sessionId,
-        user_tier: Host.AidaClient.convertToUserTierEnum(config.devToolsFreestylerDogfood?.userTier),
-      },
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      functionality_type: Host.AidaClient.FunctionalityType.CHAT,
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      client_feature: Host.AidaClient.ClientFeature.CHROME_FREESTYLER,
+
+    return config.devToolsFreestylerDogfood?.userTier;
+  }
+  get options(): AidaRequestOptions {
+    const config = Common.Settings.Settings.instance().getHostConfig();
+    const temperature = AiAgent.validTemperature(config.devToolsFreestylerDogfood?.temperature);
+    const modelId = config.devToolsFreestylerDogfood?.modelId;
+
+    return {
+      temperature,
+      model_id: modelId,
     };
-    return request;
   }
 
   static parseResponse(response: string): {
@@ -296,6 +289,7 @@ export class FreestylerAgent {
         i = j;
       } else if (trimmed.startsWith('SUGGESTIONS:')) {
         try {
+          // TODO: Do basic validation this is an array with strings
           suggestions = JSON.parse(trimmed.substring('SUGGESTIONS:'.length).trim());
         } catch (err) {
           suggestions = [];
@@ -336,25 +330,22 @@ export class FreestylerAgent {
     };
   }
 
-  #aidaClient: Host.AidaClient.AidaClient;
-  #chatHistory: Map<number, HistoryChunk[]> = new Map();
-  #serverSideLoggingEnabled: boolean;
-
   #execJs: typeof executeJsCode;
-
   #confirmSideEffect: typeof Promise.withResolvers;
-  readonly #sessionId = crypto.randomUUID();
   #changes: ChangeManager;
   #createExtensionScope: CreateExtensionScopeFunction;
 
   constructor(opts: AgentOptions) {
-    this.#aidaClient = opts.aidaClient;
+    super({
+      aidaClient: opts.aidaClient,
+      serverSideLoggingEnabled: opts.serverSideLoggingEnabled,
+    });
+
     this.#changes = opts.changeManager || new ChangeManager();
     this.#execJs = opts.execJs ?? executeJsCode;
     this.#createExtensionScope = opts.createExtensionScope ?? ((changes: ChangeManager) => {
                                    return new ExtensionScope(changes);
                                  });
-    this.#serverSideLoggingEnabled = opts.serverSideLoggingEnabled ?? false;
     this.#confirmSideEffect = opts.confirmSideEffectForTest ?? (() => Promise.withResolvers());
     SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.PrimaryPageChanged,
@@ -363,37 +354,6 @@ export class FreestylerAgent {
 
   onPrimaryPageChanged(): void {
     void this.#changes.clear();
-  }
-
-  get #getHistoryEntry(): Array<HistoryChunk> {
-    return [...this.#chatHistory.values()].flat();
-  }
-
-  get chatHistoryForTesting(): Array<HistoryChunk> {
-    return this.#getHistoryEntry;
-  }
-
-  async #aidaFetch(
-      request: Host.AidaClient.AidaRequest,
-      options?: {signal?: AbortSignal},
-      ): Promise<{
-    response: string,
-    rpcId: number|undefined,
-    rawResponse: Host.AidaClient.AidaResponse|undefined,
-  }> {
-    let rawResponse: Host.AidaClient.AidaResponse|undefined = undefined;
-    let response = '';
-    let rpcId;
-    for await (rawResponse of this.#aidaClient.fetch(request, options)) {
-      response = rawResponse.explanation;
-      rpcId = rawResponse.metadata.rpcGlobalId ?? rpcId;
-      if (rawResponse.metadata.attributionMetadata?.some(
-              meta => meta.attributionAction === Host.AidaClient.RecitationAction.BLOCK)) {
-        throw new Error('Attribution action does not allow providing the response');
-      }
-    }
-
-    return {response, rpcId, rawResponse};
   }
 
   async #generateObservation(
@@ -552,18 +512,14 @@ export class FreestylerAgent {
         type: ResponseType.QUERYING,
       };
 
-      const request = FreestylerAgent.buildRequest({
+      const request = this.buildRequest({
         input: query,
-        preamble,
-        chatHistory: this.#chatHistory.size ? this.#getHistoryEntry : undefined,
-        serverSideLoggingEnabled: this.#serverSideLoggingEnabled,
-        sessionId: this.#sessionId,
       });
       let response: string;
       let rpcId: number|undefined;
       let rawResponse: Host.AidaClient.AidaResponse|undefined;
       try {
-        const fetchResult = await this.#aidaFetch(
+        const fetchResult = await this.aidaFetch(
             request,
             {signal: options.signal},
         );
@@ -574,7 +530,7 @@ export class FreestylerAgent {
         debugLog('Error calling the AIDA API', err);
 
         if (err instanceof Host.AidaClient.AidaAbortError) {
-          this.#chatHistory.delete(currentRunId);
+          this.chatHistory.delete(currentRunId);
           yield {
             type: ResponseType.ERROR,
             error: ErrorType.ABORT,
@@ -603,7 +559,7 @@ export class FreestylerAgent {
       });
 
       const addToHistory = (text: string): void => {
-        this.#chatHistory.set(currentRunId, [
+        this.chatHistory.set(currentRunId, [
           ...currentRunEntries,
           {
             text: query,
@@ -615,7 +571,7 @@ export class FreestylerAgent {
           },
         ]);
       };
-      const currentRunEntries = this.#chatHistory.get(currentRunId) ?? [];
+      const currentRunEntries = this.chatHistory.get(currentRunId) ?? [];
       const parsedResponse = FreestylerAgent.parseResponse(response);
 
       if ('answer' in parsedResponse) {

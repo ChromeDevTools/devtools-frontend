@@ -30,95 +30,40 @@ describeWithEnvironment('DrJonesNetworkAgent', () => {
 
     it('builds a request with a model id', async () => {
       mockHostConfig('test model');
+      const agent = new DrJonesNetworkAgent({
+        aidaClient: {} as Host.AidaClient.AidaClient,
+      });
       assert.strictEqual(
-          DrJonesNetworkAgent.buildRequest({input: 'test input'}).options?.model_id,
+          agent.buildRequest({input: 'test input'}).options?.model_id,
           'test model',
       );
     });
 
-    it('builds a request with logging', async () => {
-      mockHostConfig('test model');
-      assert.strictEqual(
-          DrJonesNetworkAgent.buildRequest({input: 'test input', serverSideLoggingEnabled: true})
-              .metadata?.disable_user_content_logging,
-          false,
-      );
-    });
-
-    it('builds a request without logging', async () => {
-      mockHostConfig('test model');
-      assert.strictEqual(
-          DrJonesNetworkAgent.buildRequest({input: 'test input', serverSideLoggingEnabled: false})
-              .metadata?.disable_user_content_logging,
-          true,
-      );
-    });
-
-    it('builds a request with input', async () => {
-      mockHostConfig();
-      const request = DrJonesNetworkAgent.buildRequest({input: 'test input'});
-      assert.strictEqual(request.input, 'test input');
-      assert.strictEqual(request.preamble, undefined);
-      assert.strictEqual(request.chat_history, undefined);
-    });
-
-    it('builds a request with a sessionId', async () => {
-      mockHostConfig();
-      const request = DrJonesNetworkAgent.buildRequest({input: 'test input', sessionId: 'sessionId'});
-      assert.strictEqual(request.metadata?.string_session_id, 'sessionId');
-    });
-
-    it('builds a request with preamble', async () => {
-      mockHostConfig();
-      const request = DrJonesNetworkAgent.buildRequest({input: 'test input', preamble: 'preamble'});
-      assert.strictEqual(request.input, 'test input');
-      assert.strictEqual(request.preamble, 'preamble');
-      assert.strictEqual(request.chat_history, undefined);
-    });
-
-    it('builds a request with chat history', async () => {
-      mockHostConfig();
-      const request = DrJonesNetworkAgent.buildRequest({
-        input: 'test input',
-        chatHistory: [
-          {
-            text: 'test',
-            entity: Host.AidaClient.Entity.USER,
-          },
-        ],
-      });
-      assert.strictEqual(request.input, 'test input');
-      assert.strictEqual(request.preamble, undefined);
-      assert.deepStrictEqual(request.chat_history, [
-        {
-          text: 'test',
-          entity: 1,
-        },
-      ]);
-    });
-
     it('structure matches the snapshot', () => {
       mockHostConfig('test model');
+      sinon.stub(crypto, 'randomUUID').returns('sessionId' as `${string}-${string}-${string}-${string}-${string}`);
+      const agent = new DrJonesNetworkAgent({
+        aidaClient: {} as Host.AidaClient.AidaClient,
+        serverSideLoggingEnabled: true,
+      });
+      agent.preamble = 'preamble';
+      agent.chatHistory.set(0, [
+        {
+          text: 'first',
+          entity: Host.AidaClient.Entity.UNKNOWN,
+        },
+        {
+          text: 'second',
+          entity: Host.AidaClient.Entity.SYSTEM,
+        },
+        {
+          text: 'third',
+          entity: Host.AidaClient.Entity.USER,
+        },
+      ]);
       assert.deepStrictEqual(
-          DrJonesNetworkAgent.buildRequest({
+          agent.buildRequest({
             input: 'test input',
-            preamble: 'preamble',
-            chatHistory: [
-              {
-                text: 'first',
-                entity: Host.AidaClient.Entity.UNKNOWN,
-              },
-              {
-                text: 'second',
-                entity: Host.AidaClient.Entity.SYSTEM,
-              },
-              {
-                text: 'third',
-                entity: Host.AidaClient.Entity.USER,
-              },
-            ],
-            serverSideLoggingEnabled: true,
-            sessionId: 'sessionId',
           }),
           {
             input: 'test input',
@@ -145,6 +90,7 @@ describeWithEnvironment('DrJonesNetworkAgent', () => {
             },
             options: {
               model_id: 'test model',
+              temperature: undefined,
             },
             client_feature: 2,
             functionality_type: 1,
@@ -297,7 +243,6 @@ Sending end: 900
           type: ResponseType.ANSWER,
           text: 'This is the answer',
           rpcId: 123,
-          suggestions: [],
         },
       ]);
       assert.deepStrictEqual(agent.chatHistoryForTesting, [

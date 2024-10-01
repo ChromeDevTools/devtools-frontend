@@ -9,10 +9,10 @@ import type * as SDK from '../../core/sdk/sdk.js';
 import * as Logs from '../../models/logs/logs.js';
 
 import {
+  AiAgent,
   type AidaRequestOptions,
   type ContextDetail,
   ErrorType,
-  type HistoryChunk,
   type ResponseData,
   ResponseType,
 } from './AiAgent.js';
@@ -96,75 +96,24 @@ const UIStringsNotTranslate = {
 
 const lockedString = i18n.i18n.lockedString;
 
-type AgentOptions = {
-  aidaClient: Host.AidaClient.AidaClient,
-  serverSideLoggingEnabled?: boolean,
-};
-
 /**
  * One agent instance handles one conversation. Create a new agent
  * instance for a new conversation.
  */
-export class DrJonesNetworkAgent {
-  static buildRequest(opts: AidaRequestOptions): Host.AidaClient.AidaRequest {
+export class DrJonesNetworkAgent extends AiAgent {
+  preamble = preamble;
+  clientFeature = Host.AidaClient.ClientFeature.CHROME_FREESTYLER;
+  // TODO(b/369822364): use a feature param instead.
+  userTier = 'BETA';
+  get options(): AidaRequestOptions {
     const config = Common.Settings.Settings.instance().getHostConfig();
-    const temperature = config.devToolsExplainThisResourceDogfood?.temperature;
-    const request: Host.AidaClient.AidaRequest = {
-      input: opts.input,
-      preamble: opts.preamble,
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      chat_history: opts.chatHistory,
-      client: Host.AidaClient.CLIENT_NAME,
-      options: {
-        ...(temperature !== undefined && temperature >= 0) && {temperature},
-        model_id: config.devToolsExplainThisResourceDogfood?.modelId ?? undefined,
-      },
-      metadata: {
-        disable_user_content_logging: !(opts.serverSideLoggingEnabled ?? false),
-        string_session_id: opts.sessionId,
-        // TODO(b/369822364): use a feature param instead.
-        user_tier: Host.AidaClient.convertToUserTierEnum('BETA'),
-      },
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      functionality_type: Host.AidaClient.FunctionalityType.CHAT,
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      client_feature: Host.AidaClient.ClientFeature.CHROME_FREESTYLER,
+    const temperature = AiAgent.validTemperature(config.devToolsExplainThisResourceDogfood?.temperature);
+    const modelId = config.devToolsExplainThisResourceDogfood?.modelId;
+
+    return {
+      temperature,
+      model_id: modelId,
     };
-    return request;
-  }
-
-  #aidaClient: Host.AidaClient.AidaClient;
-  #chatHistory: Map<number, HistoryChunk[]> = new Map();
-  #serverSideLoggingEnabled: boolean;
-
-  readonly #sessionId = crypto.randomUUID();
-
-  constructor(opts: AgentOptions) {
-    this.#aidaClient = opts.aidaClient;
-    this.#serverSideLoggingEnabled = opts.serverSideLoggingEnabled ?? false;
-  }
-
-  get #getHistoryEntry(): Array<HistoryChunk> {
-    return [...this.#chatHistory.values()].flat();
-  }
-
-  get chatHistoryForTesting(): Array<HistoryChunk> {
-    return this.#getHistoryEntry;
-  }
-
-  async #aidaFetch(request: Host.AidaClient.AidaRequest, options: {signal?: AbortSignal}):
-      Promise<{response: string, rpcId: number|undefined}> {
-    let response = '';
-    let rpcId;
-    for await (const lastResult of this.#aidaClient.fetch(request, options)) {
-      response = lastResult.explanation;
-      rpcId = lastResult.metadata.rpcGlobalId ?? rpcId;
-      if (lastResult.metadata.attributionMetadata?.some(
-              meta => meta.attributionAction === Host.AidaClient.RecitationAction.BLOCK)) {
-        throw new Error('Attribution action does not allow providing the response');
-      }
-    }
-    return {response, rpcId};
   }
 
   #runId = 0;
@@ -179,12 +128,8 @@ export class DrJonesNetworkAgent {
             ''}${query}`;
     const currentRunId = ++this.#runId;
 
-    const request = DrJonesNetworkAgent.buildRequest({
+    const request = this.buildRequest({
       input: query,
-      preamble,
-      chatHistory: this.#chatHistory.size ? this.#getHistoryEntry : undefined,
-      serverSideLoggingEnabled: this.#serverSideLoggingEnabled,
-      sessionId: this.#sessionId,
     });
     let response: string;
     let rpcId: number|undefined;
@@ -200,13 +145,13 @@ export class DrJonesNetworkAgent {
         contextDetails: createContextDetailsForDrJonesNetworkAgent(options.selectedNetworkRequest),
         rpcId,
       };
-      const fetchResult = await this.#aidaFetch(request, {signal: options.signal});
+      const fetchResult = await this.aidaFetch(request, {signal: options.signal});
       response = fetchResult.response;
       rpcId = fetchResult.rpcId;
     } catch (err) {
       debugLog('Error calling the AIDA API', err);
       if (err instanceof Host.AidaClient.AidaAbortError) {
-        this.#chatHistory.delete(currentRunId);
+        this.chatHistory.delete(currentRunId);
         yield {
           type: ResponseType.ERROR,
           error: ErrorType.ABORT,
@@ -223,10 +168,6 @@ export class DrJonesNetworkAgent {
       return;
     }
 
-    if (options.signal?.aborted) {
-      return;
-    }
-
     debugLog('Request', request, 'Response', response);
 
     structuredLog.push({
@@ -235,7 +176,7 @@ export class DrJonesNetworkAgent {
     });
 
     const addToHistory = (text: string): void => {
-      this.#chatHistory.set(currentRunId, [
+      this.chatHistory.set(currentRunId, [
         ...currentRunEntries,
         {
           text: query,
@@ -247,13 +188,11 @@ export class DrJonesNetworkAgent {
         },
       ]);
     };
-    const currentRunEntries = this.#chatHistory.get(currentRunId) ?? [];
+    const currentRunEntries = this.chatHistory.get(currentRunId) ?? [];
     addToHistory(response);
     yield {
       type: ResponseType.ANSWER,
       text: response,
-      // TODO: Remove this need.
-      suggestions: [],
       rpcId,
     };
     if (isDebugMode()) {

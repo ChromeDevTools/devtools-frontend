@@ -317,7 +317,6 @@ export class FreestylerPanel extends UI.Panel.Panel {
     this.#viewProps.isLoading = true;
     const systemMessage: ModelChatMessage = {
       entity: ChatMessageEntity.MODEL,
-      suggestions: [],
       steps: [],
     };
     this.#viewProps.messages.push(systemMessage);
@@ -389,7 +388,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
           break;
         }
         case ResponseType.ANSWER: {
-          systemMessage.suggestions = data.suggestions || [];
+          systemMessage.suggestions = data.suggestions;
           systemMessage.answer = data.text;
           systemMessage.rpcId = data.rpcId;
           // When there is an answer without any thinking steps, we don't want to show the thinking step.

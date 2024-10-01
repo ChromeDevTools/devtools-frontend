@@ -218,8 +218,8 @@ export interface UserChatMessage {
 }
 export interface ModelChatMessage {
   entity: ChatMessageEntity.MODEL;
-  suggestions: string[];
   steps: Step[];
+  suggestions?: string[];
   answer?: string;
   error?: ErrorType;
   rpcId?: number;
@@ -639,7 +639,8 @@ export class FreestylerChatUi extends HTMLElement {
       // clang-format on
     }
 
-    const shouldShowSuggestions = (isLast && !this.#props.isLoading && message.suggestions?.length > 0);
+    const shouldShowSuggestions =
+        (isLast && !this.#props.isLoading && message.suggestions && message.suggestions?.length > 0);
     // clang-format off
     return LitHtml.html`
       <section class="chat-message answer" jslog=${VisualLogging.section('answer')}>
@@ -674,7 +675,7 @@ export class FreestylerChatUi extends HTMLElement {
           }
           ${shouldShowSuggestions ?
             LitHtml.html`<div class="suggestions">
-              ${message.suggestions.map(suggestion => LitHtml.html`<${Buttons.Button.Button.litTagName}
+              ${message.suggestions?.map(suggestion => LitHtml.html`<${Buttons.Button.Button.litTagName}
                   .data=${{
                       variant: Buttons.Button.Variant.OUTLINED,
                       jslogContext: 'fix-this-issue',

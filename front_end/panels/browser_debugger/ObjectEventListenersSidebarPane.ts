@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as SDK from '../../core/sdk/sdk.js';
+import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as EventListeners from '../event_listeners/event_listeners.js';
@@ -26,7 +27,9 @@ export class ObjectEventListenersSidebarPane extends UI.ThrottledWidget.Throttle
   }
 
   toolbarItems(): UI.Toolbar.ToolbarItem[] {
-    return [UI.Toolbar.Toolbar.createActionButtonForId('browser-debugger.refresh-global-event-listeners')];
+    const refreshButton = UI.Toolbar.Toolbar.createActionButtonForId('browser-debugger.refresh-global-event-listeners');
+    refreshButton.setSize(Buttons.Button.Size.SMALL);
+    return [refreshButton];
   }
 
   protected override async doUpdate(): Promise<void> {

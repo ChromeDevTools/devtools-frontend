@@ -1,10 +1,12 @@
 // Copyright 2024 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+
 import * as Trace from '../../../models/trace/trace.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {
   makeInstantEvent,
+  microsecondsTraceWindow,
   MockFlameChartDelegate,
   setupIgnoreListManagerEnvironment,
 } from '../../../testing/TraceHelpers.js';
@@ -938,6 +940,108 @@ describeWithEnvironment('Overlays', () => {
       const traceWindow = Overlays.Overlays.traceWindowContainingOverlays([overlay1, overlay2]);
       assert.strictEqual(traceWindow.min, 0);
       assert.strictEqual(traceWindow.max, 105);
+    });
+  });
+
+  describe('jslogcontext for overlays', () => {
+    const FAKE_EVENT = {
+      ts: 0,
+      dur: 10,
+    } as Trace.Types.Events.Event;
+
+    it('does not define a log for an entry_selected overlay', () => {
+      const overlay: Overlays.Overlays.EntrySelected = {
+        type: 'ENTRY_SELECTED',
+        entry: FAKE_EVENT,
+      };
+      const context = Overlays.Overlays.jsLogContext(overlay);
+      assert.isNull(context);
+    });
+
+    it('defines a log for an entry outline based on its type', () => {
+      const overlayInfo: Overlays.Overlays.EntryOutline = {
+        type: 'ENTRY_OUTLINE',
+        outlineReason: 'INFO',
+        entry: FAKE_EVENT,
+      };
+      const overlayError: Overlays.Overlays.EntryOutline = {
+        type: 'ENTRY_OUTLINE',
+        outlineReason: 'ERROR',
+        entry: FAKE_EVENT,
+      };
+      const infoContext = Overlays.Overlays.jsLogContext(overlayInfo);
+      assert.strictEqual(infoContext, 'timeline.overlays.entry-outline-info');
+      const errorContext = Overlays.Overlays.jsLogContext(overlayError);
+      assert.strictEqual(errorContext, 'timeline.overlays.entry-outline-error');
+    });
+
+    it('defines a log for entry labels', () => {
+      const overlay: Overlays.Overlays.EntryLabel = {
+        type: 'ENTRY_LABEL',
+        entry: FAKE_EVENT,
+        label: 'hello world',
+      };
+      const context = Overlays.Overlays.jsLogContext(overlay);
+      assert.strictEqual(context, 'timeline.overlays.entry-label');
+    });
+
+    it('defines a log for time ranges', () => {
+      const overlay: Overlays.Overlays.TimeRangeLabel = {
+        showDuration: true,
+        type: 'TIME_RANGE',
+        bounds: microsecondsTraceWindow(1_000, 10_000),
+        label: 'hello world',
+      };
+      const context = Overlays.Overlays.jsLogContext(overlay);
+      assert.strictEqual(context, 'timeline.overlays.time-range');
+    });
+
+    it('defines a log for timespan breakdowns', () => {
+      const overlay: Overlays.Overlays.TimespanBreakdown = {
+        type: 'TIMESPAN_BREAKDOWN',
+        sections: [],
+      };
+      const context = Overlays.Overlays.jsLogContext(overlay);
+      assert.strictEqual(context, 'timeline.overlays.timespan-breakdown');
+    });
+
+    it('defines a log for cursor timestamp marker', () => {
+      const overlay: Overlays.Overlays.CursorTimestampMarker = {
+        type: 'CURSOR_TIMESTAMP_MARKER',
+        timestamp: 1_000 as Trace.Types.Timing.MicroSeconds,
+      };
+      const context = Overlays.Overlays.jsLogContext(overlay);
+      assert.strictEqual(context, 'timeline.overlays.cursor-timestamp-marker');
+    });
+
+    it('defines a log for candy striped time ranges', () => {
+      const overlay: Overlays.Overlays.CandyStripedTimeRange = {
+        type: 'CANDY_STRIPED_TIME_RANGE',
+        bounds: microsecondsTraceWindow(1_000, 10_000),
+        entry: FAKE_EVENT,
+      };
+      const context = Overlays.Overlays.jsLogContext(overlay);
+      assert.strictEqual(context, 'timeline.overlays.candy-striped-time-range');
+    });
+
+    it('defines a log for entries links but only if they are connected', () => {
+      const overlayConnected: Overlays.Overlays.EntriesLink = {
+        type: 'ENTRIES_LINK',
+        entryFrom: FAKE_EVENT,
+        entryTo: FAKE_EVENT,
+        state: Trace.Types.File.EntriesLinkState.CONNECTED,
+      };
+      const overlayPending: Overlays.Overlays.EntriesLink = {
+        type: 'ENTRIES_LINK',
+        entryFrom: FAKE_EVENT,
+        entryTo: undefined,
+        state: Trace.Types.File.EntriesLinkState.PENDING_TO_EVENT,
+      };
+      const connectedContext = Overlays.Overlays.jsLogContext(overlayConnected);
+      assert.strictEqual(connectedContext, 'timeline.overlays.entries-link');
+
+      const pendingContext = Overlays.Overlays.jsLogContext(overlayPending);
+      assert.isNull(pendingContext);
     });
   });
 });

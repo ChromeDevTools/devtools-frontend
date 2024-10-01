@@ -5,6 +5,7 @@ import * as Common from '../../../core/common/common.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as Trace from '../../../models/trace/trace.js';
 import type * as PerfUI from '../../../ui/legacy/components/perf_ui/perf_ui.js';
+import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import * as Components from './components/components.js';
 
@@ -1315,6 +1316,12 @@ export class Overlays extends EventTarget {
   #createElementForNewOverlay(overlay: TimelineOverlay): HTMLElement {
     const div = document.createElement('div');
     div.classList.add('overlay-item', `overlay-type-${overlay.type}`);
+
+    const jslogContext = jsLogContext(overlay);
+    if (jslogContext) {
+      div.setAttribute('jslog', `${VisualLogging.item(jslogContext)}`);
+    }
+
     switch (overlay.type) {
       case 'ENTRY_LABEL': {
         const shouldDrawLabelBelowEntry = Trace.Types.Events.isLegacyTimelineFrame(overlay.entry);
@@ -1716,4 +1723,46 @@ export function timingsForOverlayEntry(entry: OverlayEntry):
     };
   }
   return Trace.Helpers.Timing.eventTimingsMicroSeconds(entry);
+}
+
+/**
+ * Defines if the overlay container `div` should have a jslog context attached.
+ * Note that despite some of the overlays being used currently exclusively
+ * for annotations, we log here with `overlays` to be generic as overlays can
+ * be used for insights, annotations or in the future, who knows...
+ */
+export function jsLogContext(overlay: TimelineOverlay): string|null {
+  switch (overlay.type) {
+    case 'ENTRY_SELECTED': {
+      // No jslog for this; it would be very noisy and not very useful.
+      return null;
+    }
+    case 'ENTRY_OUTLINE': {
+      return `timeline.overlays.entry-outline-${Platform.StringUtilities.toKebabCase(overlay.outlineReason)}`;
+    }
+    case 'ENTRY_LABEL': {
+      return 'timeline.overlays.entry-label';
+    }
+    case 'ENTRIES_LINK': {
+      // do not log impressions for incomplete entry links
+      if (overlay.state !== Trace.Types.File.EntriesLinkState.CONNECTED) {
+        return null;
+      }
+      return 'timeline.overlays.entries-link';
+    }
+    case 'TIME_RANGE': {
+      return 'timeline.overlays.time-range';
+    }
+    case 'TIMESPAN_BREAKDOWN': {
+      return 'timeline.overlays.timespan-breakdown';
+    }
+    case 'CURSOR_TIMESTAMP_MARKER': {
+      return 'timeline.overlays.cursor-timestamp-marker';
+    }
+    case 'CANDY_STRIPED_TIME_RANGE': {
+      return 'timeline.overlays.candy-striped-time-range';
+    }
+    default:
+      Platform.assertNever(overlay, 'Unknown overlay type');
+  }
 }

@@ -105,7 +105,9 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
   #overlaysContainer: HTMLElement = document.createElement('div');
   #overlays: Overlays.Overlays.Overlays;
 
+  // Tracks the in-progress time range annotation when the user shift clicks + drags, or when the user uses the keyboard
   #timeRangeSelectionAnnotation: Trace.Types.File.TimeRangeAnnotation|null = null;
+
   // Keep track of the link annotation that hasn't been fully selected yet.
   // We only store it here when only 'entryFrom' has been selected and
   // 'EntryTo' selection still needs to be updated.
@@ -125,6 +127,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
 
   #onMainEntryInvoked: (event: Common.EventTarget.EventTargetEvent<number>) => void;
   #onNetworkEntryInvoked: (event: Common.EventTarget.EventTargetEvent<number>) => void;
+  #currentSelection: TimelineSelection|null = null;
 
   constructor(delegate: TimelineModeViewDelegate) {
     super();
@@ -485,6 +488,116 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     this.#linkSelectionAnnotation = linkSelectionAnnotation;
   }
 
+  /**
+   * Handles key presses that could impact the creation of a time range overlay with the keyboard.
+   * @returns `true` if the event should not be propogated + have its default behaviour stopped.
+   */
+  #handleTimeRangeKeyboardCreation(event: KeyboardEvent): boolean {
+    const visibleWindow = TraceBounds.TraceBounds.BoundsManager.instance().state()?.micro.timelineTraceWindow;
+    if (!visibleWindow) {
+      return false;
+    }
+
+    switch (event.key) {
+        // shift-t (e.g. T) is used to enter the time range creation mode (or exit it)
+      case 'T': {
+        if (this.#timeRangeSelectionAnnotation) {
+          // Shift-T starts a time range, we also take a second Shift-T to mean "cancel"
+          ModificationsManager.activeManager()?.removeAnnotation(this.#timeRangeSelectionAnnotation);
+          this.#timeRangeSelectionAnnotation = null;
+          return true;
+        }
+
+        // Create a new time range annotation. Start at the beginning of the
+        // visible window, or at the beginning of the current selection, if
+        // there is one.
+        let startTime = visibleWindow.min;
+
+        if (this.#currentSelection) {
+          startTime = Trace.Helpers.Timing.millisecondsToMicroseconds(this.#currentSelection.startTime);
+        }
+        // Shift-t is the combination used to start creating a time range overlay with the keyboard.
+        this.#timeRangeSelectionAnnotation = {
+          bounds: Trace.Helpers.Timing.traceWindowFromMicroSeconds(
+              startTime, Trace.Types.Timing.MicroSeconds(startTime + 5_000)),
+          type: 'TIME_RANGE',
+          label: '',
+        };
+        ModificationsManager.activeManager()?.createAnnotation(this.#timeRangeSelectionAnnotation);
+        return true;
+      }
+        // ArrowLeft + ArrowRight adjusts the right hand bound (the max) of the time range
+      case 'ArrowRight': {
+        if (!this.#timeRangeSelectionAnnotation) {
+          return false;
+        }
+        // Grow the RHS of the range, but limit it to the visible window.
+        this.#timeRangeSelectionAnnotation.bounds.max = Trace.Types.Timing.MicroSeconds(
+            Math.min(this.#timeRangeSelectionAnnotation.bounds.max + 5_000, visibleWindow.max),
+        );
+        this.#timeRangeSelectionAnnotation.bounds.range = Trace.Types.Timing.MicroSeconds(
+            this.#timeRangeSelectionAnnotation.bounds.max - this.#timeRangeSelectionAnnotation.bounds.min,
+        );
+        ModificationsManager.activeManager()?.updateAnnotation(this.#timeRangeSelectionAnnotation);
+        return true;
+      }
+      case 'ArrowLeft': {
+        if (!this.#timeRangeSelectionAnnotation) {
+          return false;
+        }
+        this.#timeRangeSelectionAnnotation.bounds.max = Trace.Types.Timing.MicroSeconds(
+            // Shrink the RHS of the range, but make sure it cannot go below the min value.
+            Math.max(
+                this.#timeRangeSelectionAnnotation.bounds.max - 5_000,
+                this.#timeRangeSelectionAnnotation.bounds.min + 1),
+        );
+        this.#timeRangeSelectionAnnotation.bounds.range = Trace.Types.Timing.MicroSeconds(
+            this.#timeRangeSelectionAnnotation.bounds.max - this.#timeRangeSelectionAnnotation.bounds.min,
+        );
+        ModificationsManager.activeManager()?.updateAnnotation(this.#timeRangeSelectionAnnotation);
+        return true;
+      }
+        // ArrowDown + ArrowUp adjusts the left hand bound (the min) of the time range
+      case 'ArrowUp': {
+        if (!this.#timeRangeSelectionAnnotation) {
+          return false;
+        }
+        this.#timeRangeSelectionAnnotation.bounds.min = Trace.Types.Timing.MicroSeconds(
+            // Increase the LHS of the range, but make sure it cannot go above the max value.
+            Math.min(
+                this.#timeRangeSelectionAnnotation.bounds.min + 5_000,
+                this.#timeRangeSelectionAnnotation.bounds.max - 1),
+        );
+        this.#timeRangeSelectionAnnotation.bounds.range = Trace.Types.Timing.MicroSeconds(
+            this.#timeRangeSelectionAnnotation.bounds.max - this.#timeRangeSelectionAnnotation.bounds.min,
+        );
+        ModificationsManager.activeManager()?.updateAnnotation(this.#timeRangeSelectionAnnotation);
+        return true;
+      }
+      case 'ArrowDown': {
+        if (!this.#timeRangeSelectionAnnotation) {
+          return false;
+        }
+        this.#timeRangeSelectionAnnotation.bounds.min = Trace.Types.Timing.MicroSeconds(
+            // Decrease the LHS, but make sure it cannot go beyond the minimum visible window.
+            Math.max(this.#timeRangeSelectionAnnotation.bounds.min - 5_000, visibleWindow.min),
+        );
+        this.#timeRangeSelectionAnnotation.bounds.range = Trace.Types.Timing.MicroSeconds(
+            this.#timeRangeSelectionAnnotation.bounds.max - this.#timeRangeSelectionAnnotation.bounds.min,
+        );
+        ModificationsManager.activeManager()?.updateAnnotation(this.#timeRangeSelectionAnnotation);
+        return true;
+      }
+      default: {
+        // If we get any other key, we take that as a sign the user is done. Most likely the keys come from them typing into the label :)
+        // If they do not type into the label, then the time range is not created.
+        this.#timeRangeSelectionAnnotation = null;
+
+        return false;
+      }
+    }
+  }
+
   #keydownHandler(event: KeyboardEvent): void {
     const keyCombo = 'fixme';
 
@@ -503,6 +616,13 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     if (event.key === 'Escape' && this.#linkSelectionAnnotation) {
       this.#clearLinkSelectionAnnotation(true);
       event.stopPropagation();
+    }
+
+    const eventHandledByKeyboardTimeRange = this.#handleTimeRangeKeyboardCreation(event);
+    if (eventHandledByKeyboardTimeRange) {
+      event.preventDefault();
+      event.stopPropagation();
+      return;
     }
 
     if (event.key === keyCombo[this.#gameKeyMatches]) {
@@ -819,6 +939,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
   }
 
   setSelectionAndReveal(selection: TimelineSelection|null): void {
+    this.#currentSelection = selection;
     const mainIndex = this.mainDataProvider.entryIndexForSelection(selection);
     const networkIndex = this.networkDataProvider.entryIndexForSelection(selection);
     this.mainFlameChart.setSelectedEntry(mainIndex);
@@ -829,7 +950,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     // If:
     // 1. There is no selection, or the selection is not a range selection
     // AND 2. we have an active time range selection overlay
-    // AND 3. The label of the selection is not empty
+    // AND 3. The label of the selection is empty
     // then we need to remove it.
     if ((selection === null || !TimelineSelection.isRangeSelection(selection.object)) &&
         this.#timeRangeSelectionAnnotation && !this.#timeRangeSelectionAnnotation.label) {

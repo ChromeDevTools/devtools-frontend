@@ -700,3 +700,10 @@ export function setupIgnoreListManagerEnvironment(): {
 
   return {ignoreListManager};
 }
+
+export function microsecondsTraceWindow(min: number, max: number): Trace.Types.Timing.TraceWindowMicroSeconds {
+  return Trace.Helpers.Timing.traceWindowFromMicroSeconds(
+      min as Trace.Types.Timing.MicroSeconds,
+      max as Trace.Types.Timing.MicroSeconds,
+  );
+}

@@ -1633,6 +1633,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   #ariaDebouncer = Common.Debouncer.debounce(() => {
     if (this.#pendingAriaMessage) {
       UI.ARIAUtils.alert(this.#pendingAriaMessage);
+      this.#pendingAriaMessage = null;
     }
   }, 1_000);
 

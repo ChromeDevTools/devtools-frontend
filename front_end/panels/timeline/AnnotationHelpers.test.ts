@@ -3,7 +3,9 @@
 // found in the LICENSE file.
 
 import * as Trace from '../../models/trace/trace.js';
+import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {microsecondsTraceWindow} from '../../testing/TraceHelpers.js';
 
 import type * as Overlays from './overlays/overlays.js';
 import * as Timeline from './timeline.js';
@@ -145,16 +147,19 @@ describe('AnnotationHelpers', () => {
     });
 
     it('returns text for a time range having its bounds updated', async () => {
+      TraceBounds.TraceBounds.BoundsManager.instance({forceNew: true})
+          .resetWithNewBounds(
+              microsecondsTraceWindow(0, 10_000),
+          );
       const timeRange: Overlays.Overlays.TimeRangeLabel = {
         type: 'TIME_RANGE',
-        bounds: Trace.Helpers.Timing.traceWindowFromMicroSeconds(
-            Trace.Types.Timing.MicroSeconds(0), Trace.Types.Timing.MicroSeconds(10)),
+        bounds: microsecondsTraceWindow(0, 5_000),
         label: 'hello',
         showDuration: true,
       };
       const event = new Timeline.ModificationsManager.AnnotationModifiedEvent(timeRange, 'UpdateTimeRange');
       const text = ariaAnnouncementForModifiedEvent(event);
-      assert.strictEqual(text, 'Time range bounds updated');
+      assert.strictEqual(text, 'Time range updated, starting at 0 ms and ending at 5 ms');
     });
 
     it('returns text when an entries link has its entries connected', async () => {

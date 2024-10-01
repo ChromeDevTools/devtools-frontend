@@ -5,6 +5,7 @@
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Trace from '../../models/trace/trace.js';
+import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
 
 import * as TimelineComponents from './components/components.js';
 import {type AnnotationModifiedEvent} from './ModificationsManager.js';
@@ -22,8 +23,10 @@ const UIStrings = {
   srLabelTextUpdated: 'Label updated to {PH1}',
   /**
    *@description text used to announce to a screen reader that the bounds of a time range annotation have been upodated
+   *@example {13ms} PH1
+   *@example {20ms} PH2
    */
-  srTimeRangeBoundsUpdated: 'Time range bounds updated',
+  srTimeRangeBoundsUpdated: 'Time range updated, starting at {PH1} and ending at {PH2}',
   /**
    *@description label for a time range overlay
    */
@@ -194,7 +197,25 @@ export function ariaAnnouncementForModifiedEvent(event: AnnotationModifiedEvent)
       break;
     }
     case 'UpdateTimeRange': {
-      return i18nString(UIStrings.srTimeRangeBoundsUpdated);
+      if (overlay.type !== 'TIME_RANGE') {
+        return '';
+      }
+      const traceBounds = TraceBounds.TraceBounds.BoundsManager.instance().state()?.micro.entireTraceBounds;
+      if (!traceBounds) {
+        return '';
+      }
+
+      const {min, max} = overlay.bounds;
+      const minText = i18n.TimeUtilities.formatMicroSecondsAsMillisFixed(
+          Trace.Types.Timing.MicroSeconds(min - traceBounds.min),
+      );
+      const maxText =
+          i18n.TimeUtilities.formatMicroSecondsAsMillisFixed(Trace.Types.Timing.MicroSeconds(max - traceBounds.min));
+
+      return i18nString(UIStrings.srTimeRangeBoundsUpdated, {
+        PH1: minText,
+        PH2: maxText,
+      });
     }
     case 'UpdateLinkToEntry': {
       if (isEntriesLink(overlay) && overlay.entryFrom && overlay.entryTo) {

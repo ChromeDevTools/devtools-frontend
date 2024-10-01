@@ -3,18 +3,15 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../../../core/i18n/i18n.js';
-import type * as Platform from '../../../../core/platform/platform.js';
+import * as Platform from '../../../../core/platform/platform.js';
 import * as Trace from '../../../../models/trace/trace.js';
-import * as LegacyComponents from '../../../../ui/legacy/components/utils/utils.js';
-import * as UI from '../../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
-import {BaseInsight, shouldRenderForCategory} from './Helpers.js';
+import {BaseInsight, shortenUrl, shouldRenderForCategory} from './Helpers.js';
 import * as SidebarInsight from './SidebarInsight.js';
+import {Table, type TableData} from './Table.js';
 import {Category} from './types.js';
-
-const MAX_URL_LENGTH = 80;
 
 const UIStrings = {
   /**
@@ -28,9 +25,13 @@ const UIStrings = {
       '[Deferring or inlining](https://web.dev/learn/performance/understanding-the-critical-path#render-blocking_resources/) ' +
       'can move these network requests out of the critical path.',
   /**
-   * @description Label to describe the blocking requests that took the longest to load.
+   * @description Label to describe a render-blocking network request.
    */
-  longestBlockingRequests: 'Longest render-blocking requests',
+  renderBlockingRequest: 'Render-blocking request',
+  /**
+   *@description Label used for a time duration.
+   */
+  duration: 'Duration',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/RenderBlocking.ts', UIStrings);
@@ -43,46 +44,28 @@ export class RenderBlockingRequests extends BaseInsight {
   override userVisibleTitle: string = i18nString(UIStrings.title);
   override description: string = i18nString(UIStrings.description);
 
-  override connectedCallback(): void {
-    super.connectedCallback();
-    // Button style for linkified url.
-    UI.UIUtils.injectTextButtonStyles(this.shadow);
-  }
-
   override createOverlays(): Overlays.Overlays.TimelineOverlay[] {
     const insight = Trace.Insights.Common.getInsight('RenderBlocking', this.data.insights, this.data.insightSetKey);
     if (!insight) {
       return [];
     }
 
-    const entryOutlineOverlays: Array<Overlays.Overlays.EntryOutline> = insight.renderBlockingRequests.map(req => {
-      return {
-        type: 'ENTRY_OUTLINE',
-        entry: req,
-        outlineReason: 'ERROR',
-      };
-    });
-    return entryOutlineOverlays;
+    return insight.renderBlockingRequests.map(request => this.#createOverlayForRequest(request));
   }
 
-  // TODO(crbug.com/368170718): handle long urls better than this.
-  #linkifyUrl(url: string): HTMLElement {
-    const options = {
-      tabStop: true,
-      showColumnNumber: false,
-      inlineFrameIndex: 0,
-      maxLength: MAX_URL_LENGTH,
+  #createOverlayForRequest(request: Trace.Types.Events.SyntheticNetworkRequest): Overlays.Overlays.EntryOutline {
+    return {
+      type: 'ENTRY_OUTLINE',
+      entry: request,
+      outlineReason: 'ERROR',
     };
-
-    const linkifiedURL =
-        LegacyComponents.Linkifier.Linkifier.linkifyURL(url as Platform.DevToolsPath.UrlString, options);
-    return linkifiedURL;
   }
 
   #renderRenderBlocking(insightResult: Trace.Insights.Types.InsightResults['RenderBlocking']): LitHtml.TemplateResult {
     const estimatedSavings = insightResult.metricSavings?.FCP;
     const MAX_REQUESTS = 3;
     const topRequests = insightResult.renderBlockingRequests.slice(0, MAX_REQUESTS);
+
     // clang-format off
     return LitHtml.html`
         <div class="insights">
@@ -96,16 +79,20 @@ export class RenderBlockingRequests extends BaseInsight {
           @insighttoggleclick=${this.onSidebarClick}
         >
           <div slot="insight-content" class="insight-section">
-            <p>
-              <h3>${i18nString(UIStrings.longestBlockingRequests)}</h3>
-              <ul class="url-list">
-                ${topRequests.map(req => {
-                  return LitHtml.html `
-                    <li>${this.#linkifyUrl(req.args.data.url)}</li>
-                  `;
-                })}
-              </ul>
-            <p>
+            ${LitHtml.html`<${Table.litTagName}
+              .data=${{
+                insight: this,
+                headers: [i18nString(UIStrings.renderBlockingRequest), i18nString(UIStrings.duration)],
+                rows: topRequests.map(request => ({
+                  values: [
+                    shortenUrl(request.args.data.url),
+                    i18n.TimeUtilities.millisToString(Platform.Timing.microSecondsToMilliSeconds(request.dur)),
+                    ],
+                  // TODO(crbug.com/369102516): clicking should select the network trace event
+                  overlays: [this.#createOverlayForRequest(request)],
+                })),
+              } as TableData}>
+            </${Table.litTagName}>`}
           </div>
         </${SidebarInsight.SidebarInsight}>
       </div>`;

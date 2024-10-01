@@ -153,17 +153,6 @@ ul.insight-icon-results {
   }
 }
 
-ul.url-list {
-  list-style-position: inside;
-  padding: 0;
-
-  li {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-}
-
 .devtools-link {
   cursor: pointer;
   text-decoration: underline;

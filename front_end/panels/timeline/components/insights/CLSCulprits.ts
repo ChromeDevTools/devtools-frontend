@@ -134,6 +134,8 @@ export class CLSCulprits extends BaseInsight {
       LitHtml.TemplateResult {
     const ts = Trace.Types.Timing.MicroSeconds(worstCluster.ts - (this.data.parsedTrace?.Meta.traceBounds.min ?? 0));
     const clusterTs = i18n.TimeUtilities.formatMicroSecondsTime(ts);
+
+    // TODO(crbug.com/369102516): use Table for hover/click ux.
     // clang-format off
     return LitHtml.html`
         <div class="insights">

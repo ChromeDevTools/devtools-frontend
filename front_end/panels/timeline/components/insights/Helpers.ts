@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Platform from '../../../../core/platform/platform.js';
 import type * as Trace from '../../../../models/trace/trace.js';
 import * as Marked from '../../../../third_party/marked/marked.js';
 import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js';
@@ -164,6 +165,27 @@ export abstract class BaseInsight extends HTMLElement {
       insightSetKey: this.data.insightSetKey,
     });
   }
+}
+
+// TODO(crbug.com/368170718): consider better treatments for shortening URLs.
+export function shortenUrl(url: string): string {
+  const maxLength = 20;
+
+  // TODO(crbug.com/368170718): This is something that should only be done if the origin is the same
+  // as the insight set's origin.
+  const elideOrigin = false;
+  if (elideOrigin) {
+    try {
+      url = new URL(url).pathname;
+    } catch {
+    }
+  }
+
+  if (url.length <= maxLength) {
+    return url;
+  }
+
+  return Platform.StringUtilities.trimMiddle(url.split('/').at(-1) ?? '', maxLength);
 }
 
 /**

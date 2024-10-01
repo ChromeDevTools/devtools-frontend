@@ -14,10 +14,12 @@ import * as Freestyler from './freestyler.js';
 const {FreestylerAgent} = Freestyler;
 
 describeWithEnvironment('FreestylerAgent', () => {
-  function mockHostConfig(modelId?: string) {
+  function mockHostConfig(modelId?: string, temperature?: number, userTier?: string) {
     getGetHostConfigStub({
       devToolsFreestylerDogfood: {
         modelId,
+        temperature,
+        userTier,
       },
     });
   }
@@ -448,6 +450,10 @@ c`;
 
   describe('buildRequest', () => {
     beforeEach(() => {
+      sinon.stub(crypto, 'randomUUID').returns('sessionId' as `${string}-${string}-${string}-${string}-${string}`);
+    });
+
+    afterEach(() => {
       sinon.restore();
     });
 
@@ -462,9 +468,30 @@ c`;
       );
     });
 
+    it('builds a request with a temperature', async () => {
+      mockHostConfig('test model', 1);
+      const agent = new FreestylerAgent({
+        aidaClient: {} as Host.AidaClient.AidaClient,
+      });
+      assert.strictEqual(
+          agent.buildRequest({input: 'test input'}).options?.temperature,
+          1,
+      );
+    });
+
+    it('builds a request with a user tier', async () => {
+      mockHostConfig('test model', 1, 'PUBLIC');
+      const agent = new FreestylerAgent({
+        aidaClient: {} as Host.AidaClient.AidaClient,
+      });
+      assert.strictEqual(
+          agent.buildRequest({input: 'test input'}).metadata?.user_tier,
+          3,
+      );
+    });
+
     it('structure matches the snapshot', () => {
       mockHostConfig('test model');
-      sinon.stub(crypto, 'randomUUID').returns('sessionId' as `${string}-${string}-${string}-${string}-${string}`);
 
       const agent = new FreestylerAgent({
         aidaClient: {} as Host.AidaClient.AidaClient,

@@ -5,7 +5,6 @@
 import * as Host from '../../core/host/host.js';
 import {
   describeWithEnvironment,
-  getGetHostConfigStub,
 } from '../../testing/EnvironmentHelpers.js';
 
 import * as Freestyler from './freestyler.js';
@@ -14,25 +13,48 @@ const {AiAgent} = Freestyler;
 
 class AiAgentMock extends AiAgent {
   override preamble = 'preamble';
-  override sessionId = 'session-id';
+
+  clientFeature: Host.AidaClient.ClientFeature = 0;
+  userTier: undefined;
+
+  options: Freestyler.AidaRequestOptions = {
+    temperature: 1,
+    model_id: 'test model',
+  };
 }
 
-describeWithEnvironment('FreestylerAgent', () => {
-  function mockHostConfig(modelId?: string) {
-    getGetHostConfigStub({
-      devToolsFreestylerDogfood: {
-        modelId,
-      },
-    });
-  }
-
+describeWithEnvironment('AiAgent', () => {
   describe('buildRequest', () => {
     beforeEach(() => {
+      sinon.stub(crypto, 'randomUUID').returns('sessionId' as `${string}-${string}-${string}-${string}-${string}`);
+    });
+
+    afterEach(() => {
       sinon.restore();
     });
 
+    it('builds a request with a temperature', async () => {
+      const agent = new AiAgentMock({
+        aidaClient: {} as Host.AidaClient.AidaClient,
+      });
+      assert.strictEqual(
+          agent.buildRequest({input: 'test input'}).options?.temperature,
+          1,
+      );
+    });
+
+    it('builds a request with a temperature -1', async () => {
+      const agent = new AiAgentMock({
+        aidaClient: {} as Host.AidaClient.AidaClient,
+      });
+      agent.options.temperature = -1;
+      assert.strictEqual(
+          agent.buildRequest({input: 'test input'}).options?.temperature,
+          undefined,
+      );
+    });
+
     it('builds a request with a model id', async () => {
-      mockHostConfig('test model');
       const agent = new AiAgentMock({
         aidaClient: {} as Host.AidaClient.AidaClient,
       });
@@ -43,7 +65,6 @@ describeWithEnvironment('FreestylerAgent', () => {
     });
 
     it('builds a request with logging', async () => {
-      mockHostConfig('test model');
       const agent = new AiAgentMock({
         aidaClient: {} as Host.AidaClient.AidaClient,
         serverSideLoggingEnabled: true,
@@ -55,7 +76,6 @@ describeWithEnvironment('FreestylerAgent', () => {
     });
 
     it('builds a request without logging', async () => {
-      mockHostConfig('test model');
       const agent = new AiAgentMock({
         aidaClient: {} as Host.AidaClient.AidaClient,
         serverSideLoggingEnabled: false,
@@ -71,7 +91,6 @@ describeWithEnvironment('FreestylerAgent', () => {
     });
 
     it('builds a request with input', async () => {
-      mockHostConfig();
       const agent = new AiAgentMock({
         aidaClient: {} as Host.AidaClient.AidaClient,
         serverSideLoggingEnabled: false,
@@ -82,16 +101,14 @@ describeWithEnvironment('FreestylerAgent', () => {
     });
 
     it('builds a request with a sessionId', async () => {
-      mockHostConfig();
       const agent = new AiAgentMock({
         aidaClient: {} as Host.AidaClient.AidaClient,
       });
       const request = agent.buildRequest({input: 'test input'});
-      assert.exists(request.metadata?.string_session_id);
+      assert.strictEqual(request.metadata?.string_session_id, 'session_id');
     });
 
     it('builds a request with preamble', async () => {
-      mockHostConfig();
       const agent = new AiAgentMock({
         aidaClient: {} as Host.AidaClient.AidaClient,
       });
@@ -102,7 +119,6 @@ describeWithEnvironment('FreestylerAgent', () => {
     });
 
     it('builds a request with chat history', async () => {
-      mockHostConfig();
       const agent = new AiAgentMock({
         aidaClient: {} as Host.AidaClient.AidaClient,
       });

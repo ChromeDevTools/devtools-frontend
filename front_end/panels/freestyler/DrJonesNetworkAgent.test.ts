@@ -15,10 +15,11 @@ import {
 import {DrJonesNetworkAgent, ResponseType} from './freestyler.js';
 
 describeWithEnvironment('DrJonesNetworkAgent', () => {
-  function mockHostConfig(modelId?: string) {
+  function mockHostConfig(modelId?: string, temperature?: number) {
     getGetHostConfigStub({
       devToolsExplainThisResourceDogfood: {
         modelId,
+        temperature,
       },
     });
   }
@@ -36,6 +37,17 @@ describeWithEnvironment('DrJonesNetworkAgent', () => {
       assert.strictEqual(
           agent.buildRequest({input: 'test input'}).options?.model_id,
           'test model',
+      );
+    });
+
+    it('builds a request with a temperature', async () => {
+      mockHostConfig('test model', 1);
+      const agent = new DrJonesNetworkAgent({
+        aidaClient: {} as Host.AidaClient.AidaClient,
+      });
+      assert.strictEqual(
+          agent.buildRequest({input: 'test input'}).options?.temperature,
+          1,
       );
     });
 

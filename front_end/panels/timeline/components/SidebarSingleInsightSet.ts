@@ -8,7 +8,7 @@ import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
 import * as Insights from './insights/insights.js';
-import {type ActiveInsight, EventReferenceClick} from './Sidebar.js';
+import {type ActiveInsight} from './Sidebar.js';
 import styles from './sidebarSingleInsightSet.css.js';
 
 export interface SidebarSingleInsightSetData {
@@ -49,7 +49,7 @@ export class SidebarSingleInsightSet extends HTMLElement {
   }
 
   #onClickMetric(traceEvent: Trace.Types.Events.Event): void {
-    this.dispatchEvent(new EventReferenceClick(traceEvent));
+    this.dispatchEvent(new Insights.Helpers.EventReferenceClick(traceEvent));
   }
 
   #renderMetricValue(
@@ -139,6 +139,7 @@ export class SidebarSingleInsightSet extends HTMLElement {
 
   #renderInsights(
       insights: Trace.Insights.Types.TraceInsightSets|null,
+      parsedTrace: Trace.Handlers.Types.ParsedTrace|null,
       insightSetKey: string,
       ): LitHtml.TemplateResult {
     // TODO(crbug.com/368135130): sort this in a smart way!
@@ -159,6 +160,7 @@ export class SidebarSingleInsightSet extends HTMLElement {
       return LitHtml.html`<div data-single-insight-wrapper>
         <${component.litTagName}
           .insights=${insights}
+          .parsedTrace=${parsedTrace}
           .insightSetKey=${insightSetKey}
           .activeInsight=${this.#data.activeInsight}
           .activeCategory=${this.#data.activeCategory}>
@@ -183,7 +185,7 @@ export class SidebarSingleInsightSet extends HTMLElement {
     LitHtml.render(LitHtml.html`
       <div class="navigation">
         ${this.#renderMetrics(insightSetKey)}
-        ${this.#renderInsights(insights, insightSetKey)}
+        ${this.#renderInsights(insights, parsedTrace, insightSetKey)}
         </div>
       `, this.#shadow, {host: this});
     // clang-format on

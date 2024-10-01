@@ -563,7 +563,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       }
     });
 
-    this.#sideBar.contentElement.addEventListener(TimelineComponents.Sidebar.EventReferenceClick.eventName, event => {
+    this.#sideBar.contentElement.addEventListener(TimelineInsights.Helpers.EventReferenceClick.eventName, event => {
       const {metricEvent} = event;
       this.select(TimelineSelection.fromTraceEvent(metricEvent));
     });

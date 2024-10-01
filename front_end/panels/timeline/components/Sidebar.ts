@@ -34,17 +34,8 @@ export class RevealAnnotation extends Event {
   }
 }
 
-export class EventReferenceClick extends Event {
-  static readonly eventName = 'sidebarmetricclick';
-
-  constructor(public metricEvent: Trace.Types.Events.Event) {
-    super(EventReferenceClick.eventName, {bubbles: true, composed: true});
-  }
-}
-
 declare global {
   interface GlobalEventHandlersEventMap {
-    [EventReferenceClick.eventName]: EventReferenceClick;
     [RevealAnnotation.eventName]: RevealAnnotation;
   }
 }

@@ -34,6 +34,7 @@ export function insightIsActive(options: {
 
 export interface BaseInsightData {
   insights: Trace.Insights.Types.TraceInsightSets|null;
+  parsedTrace: Trace.Handlers.Types.ParsedTrace|null;
   /** The key into `insights` that contains this particular insight. */
   insightSetKey: string|null;
   activeInsight: ActiveInsight|null;
@@ -52,6 +53,7 @@ export abstract class BaseInsight extends HTMLElement {
 
   protected data: BaseInsightData = {
     insights: null,
+    parsedTrace: null,
     insightSetKey: null,
     activeInsight: null,
     activeCategory: Category.ALL,
@@ -77,6 +79,11 @@ export abstract class BaseInsight extends HTMLElement {
 
   set insights(insights: Trace.Insights.Types.TraceInsightSets|null) {
     this.data.insights = insights;
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+  }
+
+  set parsedTrace(parsedTrace: Trace.Handlers.Types.ParsedTrace|null) {
+    this.data.parsedTrace = parsedTrace;
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
 
@@ -169,4 +176,18 @@ export function md(markdown: string): LitHtml.TemplateResult {
   return LitHtml.html`<${MarkdownView.MarkdownView.MarkdownView.litTagName}
     .data=${{tokens} as MarkdownView.MarkdownView.MarkdownViewData}>
   </${MarkdownView.MarkdownView.MarkdownView.litTagName}>`;
+}
+
+export class EventReferenceClick extends Event {
+  static readonly eventName = 'eventreferenceclick';
+
+  constructor(public metricEvent: Trace.Types.Events.Event) {
+    super(EventReferenceClick.eventName, {bubbles: true, composed: true});
+  }
+}
+
+declare global {
+  interface GlobalEventHandlersEventMap {
+    [EventReferenceClick.eventName]: EventReferenceClick;
+  }
 }

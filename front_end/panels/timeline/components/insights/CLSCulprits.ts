@@ -7,7 +7,7 @@ import * as Trace from '../../../../models/trace/trace.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
-import {BaseInsight, shouldRenderForCategory} from './Helpers.js';
+import {BaseInsight, EventReferenceClick, shouldRenderForCategory} from './Helpers.js';
 import * as SidebarInsight from './SidebarInsight.js';
 import {Category} from './types.js';
 
@@ -23,7 +23,12 @@ const UIStrings = {
   /**
    *@description Text indicating the worst layout shift cluster.
    */
-  worstCluster: 'Worst layout shift cluster',
+  worstLayoutShiftCluster: 'Worst layout shift cluster',
+  /**
+   * @description Text indicating the worst layout shift cluster and its start time.
+   * @example {32 ms} PH1
+   */
+  worstCluster: 'Worst cluster: Layout shift cluster @ {PH1}',
   /**
    *@description Text indicating the biggest reasons for the layout shifts.
    */
@@ -65,7 +70,7 @@ export class CLSCulprits extends BaseInsight {
     const range = Trace.Types.Timing.MicroSeconds(worstCluster.dur ?? 0);
     const max = Trace.Types.Timing.MicroSeconds(worstCluster.ts + range);
 
-    const label = LitHtml.html`<div>${i18nString(UIStrings.worstCluster)}</div>`;
+    const label = LitHtml.html`<div>${i18nString(UIStrings.worstLayoutShiftCluster)}</div>`;
     return [{
       type: 'TIMESPAN_BREAKDOWN',
       sections: [
@@ -89,8 +94,7 @@ export class CLSCulprits extends BaseInsight {
     }
     const MAX_TOP_CULPRITS = 3;
     const causes: Array<string> = [];
-    const clustersByScore = clusters.toSorted((a, b) => b.clusterCumulativeScore - a.clusterCumulativeScore);
-    for (const cluster of clustersByScore) {
+    for (const cluster of clusters) {
       if (causes.length === MAX_TOP_CULPRITS) {
         break;
       }
@@ -122,7 +126,14 @@ export class CLSCulprits extends BaseInsight {
     return causes.slice(0, MAX_TOP_CULPRITS);
   }
 
-  #render(culprits: Array<string>): LitHtml.TemplateResult {
+  #clickEvent(event: Trace.Types.Events.Event): void {
+    this.dispatchEvent(new EventReferenceClick(event));
+  }
+
+  #render(culprits: Array<string>, worstCluster: Trace.Types.Events.SyntheticLayoutShiftCluster):
+      LitHtml.TemplateResult {
+    const ts = Trace.Types.Timing.MicroSeconds(worstCluster.ts - (this.data.parsedTrace?.Meta.traceBounds.min ?? 0));
+    const clusterTs = i18n.TimeUtilities.formatMicroSecondsTime(ts);
     // clang-format off
     return LitHtml.html`
         <div class="insights">
@@ -134,6 +145,7 @@ export class CLSCulprits extends BaseInsight {
             } as SidebarInsight.InsightDetails}
             @insighttoggleclick=${this.onSidebarClick}>
                 <div slot="insight-content" class="insight-section">
+                  <div class="devtools-link" @click=${() => this.#clickEvent(worstCluster)}>${i18nString(UIStrings.worstCluster, {PH1: clusterTs})}</div>
                   <p>
                     <h3>${i18nString(UIStrings.topCulprits)}</h3>
                     ${culprits.map(culprit => {
@@ -153,15 +165,16 @@ export class CLSCulprits extends BaseInsight {
         Trace.Insights.Common.getInsight('CumulativeLayoutShift', this.data.insights, this.data.insightSetKey);
     const culpritsByShift = insight?.shifts;
     const clusters = insight?.clusters ?? [];
+    const clustersByScore = clusters.toSorted((a, b) => b.clusterCumulativeScore - a.clusterCumulativeScore);
 
-    const causes = this.getTopCulprits(clusters, culpritsByShift);
+    const causes = this.getTopCulprits(clustersByScore, culpritsByShift);
     const hasCulprits = causes.length > 0;
 
     const matchesCategory = shouldRenderForCategory({
       activeCategory: this.data.activeCategory,
       insightCategory: this.insightCategory,
     });
-    const output = hasCulprits && matchesCategory ? this.#render(causes) : LitHtml.nothing;
+    const output = hasCulprits && matchesCategory ? this.#render(causes, clustersByScore[0]) : LitHtml.nothing;
     LitHtml.render(output, this.shadow, {host: this});
   }
 }

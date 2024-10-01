@@ -498,20 +498,23 @@ c`;
         serverSideLoggingEnabled: true,
       });
       agent.preamble = 'preamble';
-      agent.chatHistory.set(0, [
-        {
-          text: 'first',
-          entity: Host.AidaClient.Entity.UNKNOWN,
-        },
-        {
-          text: 'second',
-          entity: Host.AidaClient.Entity.SYSTEM,
-        },
-        {
-          text: 'third',
-          entity: Host.AidaClient.Entity.USER,
-        },
-      ]);
+      agent.chatHistoryForTesting = new Map([[
+        0,
+        [
+          {
+            text: 'first',
+            entity: Host.AidaClient.Entity.UNKNOWN,
+          },
+          {
+            text: 'second',
+            entity: Host.AidaClient.Entity.SYSTEM,
+          },
+          {
+            text: 'third',
+            entity: Host.AidaClient.Entity.USER,
+          },
+        ],
+      ]]);
       assert.deepStrictEqual(
           agent.buildRequest({
             input: 'test input',

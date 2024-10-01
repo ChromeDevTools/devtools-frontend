@@ -122,12 +122,15 @@ describeWithEnvironment('AiAgent', () => {
       const agent = new AiAgentMock({
         aidaClient: {} as Host.AidaClient.AidaClient,
       });
-      agent.chatHistory.set(0, [
-        {
-          text: 'test',
-          entity: Host.AidaClient.Entity.USER,
-        },
-      ]);
+      agent.chatHistoryForTesting = new Map([[
+        0,
+        [
+          {
+            text: 'test',
+            entity: Host.AidaClient.Entity.USER,
+          },
+        ],
+      ]]);
 
       const request = agent.buildRequest({
         input: 'test input',

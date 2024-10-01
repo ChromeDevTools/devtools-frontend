@@ -59,20 +59,23 @@ describeWithEnvironment('DrJonesNetworkAgent', () => {
         serverSideLoggingEnabled: true,
       });
       agent.preamble = 'preamble';
-      agent.chatHistory.set(0, [
-        {
-          text: 'first',
-          entity: Host.AidaClient.Entity.UNKNOWN,
-        },
-        {
-          text: 'second',
-          entity: Host.AidaClient.Entity.SYSTEM,
-        },
-        {
-          text: 'third',
-          entity: Host.AidaClient.Entity.USER,
-        },
-      ]);
+      agent.chatHistoryForTesting = new Map([[
+        0,
+        [
+          {
+            text: 'first',
+            entity: Host.AidaClient.Entity.UNKNOWN,
+          },
+          {
+            text: 'second',
+            entity: Host.AidaClient.Entity.SYSTEM,
+          },
+          {
+            text: 'third',
+            entity: Host.AidaClient.Entity.USER,
+          },
+        ],
+      ]]);
       assert.deepStrictEqual(
           agent.buildRequest({
             input: 'test input',
@@ -207,12 +210,10 @@ describeWithEnvironment('DrJonesNetworkAgent', () => {
       assert.deepStrictEqual(responses, [
         {
           type: ResponseType.TITLE,
-          rpcId: undefined,
           title: 'Inspecting network data',
         },
         {
           type: ResponseType.THOUGHT,
-          rpcId: undefined,
           thought: 'Data used to generate this response',
           contextDetails: [
             {

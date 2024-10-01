@@ -102,7 +102,11 @@ export abstract class AiAgent {
   abstract clientFeature: Host.AidaClient.ClientFeature;
   abstract userTier: string|undefined;
 
-  chatHistory: Map<number, HistoryChunk[]> = new Map();
+  /**
+   * Mapping between the unique request id and
+   * the history chuck it created
+   */
+  #chatHistory: Map<number, HistoryChunk[]> = new Map();
 
   constructor(opts: AgentOptions) {
     this.#aidaClient = opts.aidaClient;
@@ -110,11 +114,43 @@ export abstract class AiAgent {
   }
 
   get historyEntry(): Array<HistoryChunk> {
-    return [...this.chatHistory.values()].flat();
+    return [...this.#chatHistory.values()].flat();
   }
 
   get chatHistoryForTesting(): Array<HistoryChunk> {
     return this.historyEntry;
+  }
+
+  set chatHistoryForTesting(history: Map<number, HistoryChunk[]>) {
+    this.#chatHistory = history;
+  }
+
+  removeHistoryRun(id: number): void {
+    this.#chatHistory.delete(id);
+  }
+
+  addToHistory({
+    id,
+    query,
+    output,
+  }: {
+    id: number,
+    query: string,
+    output: string,
+  }): void {
+    const currentRunEntries = this.#chatHistory.get(id) ?? [];
+
+    this.#chatHistory.set(id, [
+      ...currentRunEntries,
+      {
+        text: query,
+        entity: Host.AidaClient.Entity.USER,
+      },
+      {
+        text: output,
+        entity: Host.AidaClient.Entity.SYSTEM,
+      },
+    ]);
   }
 
   async aidaFetch(
@@ -145,7 +181,7 @@ export abstract class AiAgent {
       input: opts.input,
       preamble: this.preamble,
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      chat_history: this.chatHistory.size ? this.historyEntry : undefined,
+      chat_history: this.#chatHistory.size ? this.historyEntry : undefined,
       client: Host.AidaClient.CLIENT_NAME,
       options: this.options,
       metadata: {

@@ -120,6 +120,16 @@ export class DrJonesNetworkAgent extends AiAgent {
   async * run(query: string, options: {
     signal?: AbortSignal, selectedNetworkRequest: SDK.NetworkRequest.NetworkRequest|null,
   }): AsyncGenerator<ResponseData, void, void> {
+    yield {
+      type: ResponseType.TITLE,
+      title: lockedString(UIStringsNotTranslate.inspectingNetworkData),
+    };
+    yield {
+      type: ResponseType.THOUGHT,
+      thought: lockedString(UIStringsNotTranslate.dataUsedToGenerateThisResponse),
+      contextDetails: createContextDetailsForDrJonesNetworkAgent(options.selectedNetworkRequest),
+    };
+
     const structuredLog = [];
     query = `${
         options.selectedNetworkRequest ?
@@ -134,24 +144,13 @@ export class DrJonesNetworkAgent extends AiAgent {
     let response: string;
     let rpcId: number|undefined;
     try {
-      yield {
-        type: ResponseType.TITLE,
-        title: lockedString(UIStringsNotTranslate.inspectingNetworkData),
-        rpcId,
-      };
-      yield {
-        type: ResponseType.THOUGHT,
-        thought: lockedString(UIStringsNotTranslate.dataUsedToGenerateThisResponse),
-        contextDetails: createContextDetailsForDrJonesNetworkAgent(options.selectedNetworkRequest),
-        rpcId,
-      };
       const fetchResult = await this.aidaFetch(request, {signal: options.signal});
       response = fetchResult.response;
       rpcId = fetchResult.rpcId;
     } catch (err) {
       debugLog('Error calling the AIDA API', err);
       if (err instanceof Host.AidaClient.AidaAbortError) {
-        this.chatHistory.delete(currentRunId);
+        this.removeHistoryRun(currentRunId);
         yield {
           type: ResponseType.ERROR,
           error: ErrorType.ABORT,
@@ -175,21 +174,12 @@ export class DrJonesNetworkAgent extends AiAgent {
       response,
     });
 
-    const addToHistory = (text: string): void => {
-      this.chatHistory.set(currentRunId, [
-        ...currentRunEntries,
-        {
-          text: query,
-          entity: Host.AidaClient.Entity.USER,
-        },
-        {
-          text,
-          entity: Host.AidaClient.Entity.SYSTEM,
-        },
-      ]);
-    };
-    const currentRunEntries = this.chatHistory.get(currentRunId) ?? [];
-    addToHistory(response);
+    this.addToHistory({
+      id: currentRunId,
+      query,
+      output: response,
+    });
+
     yield {
       type: ResponseType.ANSWER,
       text: response,

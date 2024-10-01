@@ -530,7 +530,7 @@ export class FreestylerAgent extends AiAgent {
         debugLog('Error calling the AIDA API', err);
 
         if (err instanceof Host.AidaClient.AidaAbortError) {
-          this.chatHistory.delete(currentRunId);
+          this.removeHistoryRun(currentRunId);
           yield {
             type: ResponseType.ERROR,
             error: ErrorType.ABORT,
@@ -558,20 +558,6 @@ export class FreestylerAgent extends AiAgent {
         response,
       });
 
-      const addToHistory = (text: string): void => {
-        this.chatHistory.set(currentRunId, [
-          ...currentRunEntries,
-          {
-            text: query,
-            entity: Host.AidaClient.Entity.USER,
-          },
-          {
-            text,
-            entity: Host.AidaClient.Entity.SYSTEM,
-          },
-        ]);
-      };
-      const currentRunEntries = this.chatHistory.get(currentRunId) ?? [];
       const parsedResponse = FreestylerAgent.parseResponse(response);
 
       if ('answer' in parsedResponse) {
@@ -580,7 +566,11 @@ export class FreestylerAgent extends AiAgent {
           suggestions,
         } = parsedResponse;
         if (answer) {
-          addToHistory(`ANSWER: ${answer}`);
+          this.addToHistory({
+            id: currentRunId,
+            query,
+            output: `ANSWER: ${answer}`,
+          });
           yield {
             type: ResponseType.ANSWER,
             text: answer,
@@ -613,20 +603,28 @@ export class FreestylerAgent extends AiAgent {
       }
 
       if (thought) {
-        addToHistory(`THOUGHT: ${thought}
+        this.addToHistory({
+          id: currentRunId,
+          query,
+          output: `THOUGHT: ${thought}
 TITLE: ${title}
 ACTION
 ${action}
-STOP`);
+STOP`,
+        });
         yield {
           type: ResponseType.THOUGHT,
           thought,
           rpcId,
         };
       } else {
-        addToHistory(`ACTION
+        this.addToHistory({
+          id: currentRunId,
+          query,
+          output: `ACTION
 ${action}
-STOP`);
+STOP`,
+        });
       }
 
       if (action) {

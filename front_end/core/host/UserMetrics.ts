@@ -376,22 +376,6 @@ export class UserMetrics {
     InspectorFrontendHostInstance.recordEnumeratedHistogram(
         EnumeratedHistogram.ResourceTypeFilterItemSelected, resourceType, ResourceType.MAX_VALUE);
   }
-
-  networkPanelMoreFiltersNumberOfSelectedChanged(itemCount: number): void {
-    const boundItemCount = Math.max(Math.min(itemCount, NetworkPanelMoreFilters.MAX_VALUE), 0);
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-        EnumeratedHistogram.NetworkPanelMoreFiltersNumberOfSelectedChanged, boundItemCount,
-        NetworkPanelMoreFilters.MAX_VALUE);
-  }
-
-  networkPanelMoreFiltersItemSelected(filterName: string): void {
-    const filter = NetworkPanelMoreFilters[filterName as keyof typeof NetworkPanelMoreFilters];
-    if (filter === undefined) {
-      return;
-    }
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-        EnumeratedHistogram.NetworkPanelMoreFiltersItemSelected, filter, NetworkPanelMoreFilters.MAX_VALUE);
-  }
 }
 
 /**
@@ -1205,17 +1189,6 @@ export enum ResourceType {
   Other = 11,
   /* eslint-enable @typescript-eslint/naming-convention */
   MAX_VALUE = 12,
-}
-
-export enum NetworkPanelMoreFilters {
-  /* eslint-disable @typescript-eslint/naming-convention */
-  'Hide data URLs' = 0,
-  'Hide extension URLs' = 1,
-  'Blocked response cookies' = 2,
-  'Blocked requests' = 3,
-  '3rd-party requests' = 4,
-  /* eslint-enable @typescript-eslint/naming-convention */
-  MAX_VALUE = 5,
 }
 
 export enum Language {

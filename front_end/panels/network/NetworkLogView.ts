@@ -2688,16 +2688,6 @@ export class MoreFiltersDropDownUI extends
     this.updateTooltip();
   }
 
-  emitUMA(): void {
-    if (this.hasChanged) {
-      const selectedFilters = this.selectedFilters();
-      Host.userMetrics.networkPanelMoreFiltersNumberOfSelectedChanged(selectedFilters.length);
-      for (const selectedFilter of selectedFilters) {
-        Host.userMetrics.networkPanelMoreFiltersItemSelected(selectedFilter);
-      }
-    }
-  }
-
   #onSettingChanged(): void {
     this.hasChanged = true;
     this.dispatchEventToListeners(UI.FilterBar.FilterUIEvents.FILTER_CHANGED);
@@ -2718,7 +2708,6 @@ export class MoreFiltersDropDownUI extends
       x: this.dropDownButton.element.getBoundingClientRect().left,
       y: this.dropDownButton.element.getBoundingClientRect().top +
           (this.dropDownButton.element as HTMLElement).offsetHeight,
-      onSoftMenuClosed: this.emitUMA.bind(this),
     });
 
     this.contextMenu.defaultSection().appendCheckboxItem(

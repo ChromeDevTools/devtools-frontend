@@ -450,8 +450,6 @@ const EnumeratedHistogram = {
   LegacyResourceTypeFilterItemSelected: 'DevTools.LegacyResourceTypeFilterItemSelected',
   ResourceTypeFilterNumberOfSelectedChanged: 'DevTools.ResourceTypeFilterNumberOfSelectedChanged',
   ResourceTypeFilterItemSelected: 'DevTools.ResourceTypeFilterItemSelected',
-  NetworkPanelMoreFiltersNumberOfSelectedChanged: 'DevTools.NetworkPanelMoreFiltersNumberOfSelectedChanged',
-  NetworkPanelMoreFiltersItemSelected: 'DevTools.NetworkPanelMoreFiltersItemSelected',
 };
 
 /**

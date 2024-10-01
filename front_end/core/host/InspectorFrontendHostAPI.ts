@@ -484,7 +484,5 @@ export const enum EnumeratedHistogram {
   LegacyResourceTypeFilterItemSelected = 'DevTools.LegacyResourceTypeFilterItemSelected',
   ResourceTypeFilterNumberOfSelectedChanged = 'DevTools.ResourceTypeFilterNumberOfSelectedChanged',
   ResourceTypeFilterItemSelected = 'DevTools.ResourceTypeFilterItemSelected',
-  NetworkPanelMoreFiltersNumberOfSelectedChanged = 'DevTools.NetworkPanelMoreFiltersNumberOfSelectedChanged',
-  NetworkPanelMoreFiltersItemSelected = 'DevTools.NetworkPanelMoreFiltersItemSelected',
   /* eslint-disable @typescript-eslint/naming-convention -- Shadows a legacy enum */
 }

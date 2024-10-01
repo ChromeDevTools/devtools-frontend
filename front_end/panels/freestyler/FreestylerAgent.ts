@@ -11,7 +11,9 @@ import * as UI from '../../ui/legacy/legacy.js';
 import {
   AiAgent,
   type AidaRequestOptions,
+  debugLog,
   ErrorType,
+  isDebugMode,
   type ResponseData,
   ResponseType,
 } from './AiAgent.js';
@@ -499,7 +501,6 @@ export class FreestylerAgent extends AiAgent {
   async * run(query: string, options: {
     signal?: AbortSignal, selectedElement: SDK.DOMModel.DOMNode|null,
   }): AsyncGenerator<ResponseData, void, void> {
-    const structuredLog = [];
     const elementEnchantmentQuery = options.selectedElement ?
         `# Inspected element\n\n${
             await FreestylerAgent.describeElement(options.selectedElement)}\n\n# User request\n\n` :
@@ -512,20 +513,15 @@ export class FreestylerAgent extends AiAgent {
         type: ResponseType.QUERYING,
       };
 
-      const request = this.buildRequest({
-        input: query,
-      });
       let response: string;
       let rpcId: number|undefined;
-      let rawResponse: Host.AidaClient.AidaResponse|undefined;
       try {
         const fetchResult = await this.aidaFetch(
-            request,
+            query,
             {signal: options.signal},
         );
         response = fetchResult.response;
         rpcId = fetchResult.rpcId;
-        rawResponse = fetchResult.rawResponse;
       } catch (err) {
         debugLog('Error calling the AIDA API', err);
 
@@ -546,17 +542,6 @@ export class FreestylerAgent extends AiAgent {
         };
         break;
       }
-
-      debugLog({
-        iteration: i,
-        request,
-        response: rawResponse,
-      });
-
-      structuredLog.push({
-        request: structuredClone(request),
-        response,
-      });
 
       const parsedResponse = FreestylerAgent.parseResponse(response);
 
@@ -676,32 +661,7 @@ STOP`,
       }
     }
     if (isDebugMode()) {
-      localStorage.setItem('freestylerStructuredLog', JSON.stringify(structuredLog));
       window.dispatchEvent(new CustomEvent('freestylerdone'));
     }
   }
 }
-
-function isDebugMode(): boolean {
-  return Boolean(localStorage.getItem('debugFreestylerEnabled'));
-}
-
-function debugLog(...log: unknown[]): void {
-  if (!isDebugMode()) {
-    return;
-  }
-
-  // eslint-disable-next-line no-console
-  console.log(...log);
-}
-
-function setDebugFreestylerEnabled(enabled: boolean): void {
-  if (enabled) {
-    localStorage.setItem('debugFreestylerEnabled', 'true');
-  } else {
-    localStorage.removeItem('debugFreestylerEnabled');
-  }
-}
-
-// @ts-ignore
-globalThis.setDebugFreestylerEnabled = setDebugFreestylerEnabled;

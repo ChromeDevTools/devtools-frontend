@@ -12,7 +12,9 @@ import {
   AiAgent,
   type AidaRequestOptions,
   type ContextDetail,
+  debugLog,
   ErrorType,
+  isDebugMode,
   type ResponseData,
   ResponseType,
 } from './AiAgent.js';
@@ -130,7 +132,6 @@ export class DrJonesNetworkAgent extends AiAgent {
       contextDetails: createContextDetailsForDrJonesNetworkAgent(options.selectedNetworkRequest),
     };
 
-    const structuredLog = [];
     query = `${
         options.selectedNetworkRequest ?
             `# Selected network request \n${
@@ -138,13 +139,10 @@ export class DrJonesNetworkAgent extends AiAgent {
             ''}${query}`;
     const currentRunId = ++this.#runId;
 
-    const request = this.buildRequest({
-      input: query,
-    });
     let response: string;
     let rpcId: number|undefined;
     try {
-      const fetchResult = await this.aidaFetch(request, {signal: options.signal});
+      const fetchResult = await this.aidaFetch(query, {signal: options.signal});
       response = fetchResult.response;
       rpcId = fetchResult.rpcId;
     } catch (err) {
@@ -167,13 +165,6 @@ export class DrJonesNetworkAgent extends AiAgent {
       return;
     }
 
-    debugLog('Request', request, 'Response', response);
-
-    structuredLog.push({
-      request: structuredClone(request),
-      response,
-    });
-
     this.addToHistory({
       id: currentRunId,
       query,
@@ -186,30 +177,8 @@ export class DrJonesNetworkAgent extends AiAgent {
       rpcId,
     };
     if (isDebugMode()) {
-      localStorage.setItem('freestylerStructuredLog', JSON.stringify(structuredLog));
       window.dispatchEvent(new CustomEvent('freestylerdone'));
     }
-  }
-}
-
-function isDebugMode(): boolean {
-  return Boolean(localStorage.getItem('debugFreestylerEnabled'));
-}
-
-function debugLog(...log: unknown[]): void {
-  if (!isDebugMode()) {
-    return;
-  }
-
-  // eslint-disable-next-line no-console
-  console.log(...log);
-}
-
-function setDebugFreestylerEnabled(enabled: boolean): void {
-  if (enabled) {
-    localStorage.setItem('debugFreestylerEnabled', 'true');
-  } else {
-    localStorage.removeItem('debugFreestylerEnabled');
   }
 }
 
@@ -342,6 +311,3 @@ function createContextDetailsForDrJonesNetworkAgent(request: SDK.NetworkRequest.
   }
   return [];
 }
-
-// @ts-ignore
-globalThis.setDebugFreestylerEnabled = setDebugFreestylerEnabled;

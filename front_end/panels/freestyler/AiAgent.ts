@@ -153,14 +153,22 @@ export abstract class AiAgent {
     ]);
   }
 
+  #structuredLog: Array<{
+    request: Host.AidaClient.AidaRequest,
+    response: string,
+    rawResponse?: Host.AidaClient.AidaResponse,
+  }> = [];
   async aidaFetch(
-      request: Host.AidaClient.AidaRequest,
+      input: string,
       options?: {signal?: AbortSignal},
       ): Promise<{
     response: string,
     rpcId: number|undefined,
-    rawResponse: Host.AidaClient.AidaResponse|undefined,
   }> {
+    const request = this.buildRequest({
+      input,
+    });
+
     let rawResponse: Host.AidaClient.AidaResponse|undefined = undefined;
     let response = '';
     let rpcId;
@@ -173,7 +181,14 @@ export abstract class AiAgent {
       }
     }
 
-    return {response, rpcId, rawResponse};
+    this.#structuredLog.push({
+      request: structuredClone(request),
+      response,
+      rawResponse,
+    });
+    localStorage.setItem('freestylerStructuredLog', JSON.stringify(this.#structuredLog));
+
+    return {response, rpcId};
   }
 
   buildRequest(opts: AidaBuildRequestOptions): Host.AidaClient.AidaRequest {
@@ -201,3 +216,26 @@ export abstract class AiAgent {
     return typeof temperature === 'number' && temperature >= 0 ? temperature : undefined;
   }
 }
+
+export function isDebugMode(): boolean {
+  return Boolean(localStorage.getItem('debugFreestylerEnabled'));
+}
+
+export function debugLog(...log: unknown[]): void {
+  if (!isDebugMode()) {
+    return;
+  }
+
+  // eslint-disable-next-line no-console
+  console.log(...log);
+}
+
+function setDebugFreestylerEnabled(enabled: boolean): void {
+  if (enabled) {
+    localStorage.setItem('debugFreestylerEnabled', 'true');
+  } else {
+    localStorage.removeItem('debugFreestylerEnabled');
+  }
+}
+// @ts-ignore
+globalThis.setDebugFreestylerEnabled = setDebugFreestylerEnabled;

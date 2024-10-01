@@ -200,7 +200,6 @@ const DEFAULT_METADATA = {
  * Component for user agent client hints form, it is used in device settings panel
  * and network conditions panel. It is customizable through showMobileCheckbox and showSubmitButton.
  */
-// eslint-disable-next-line rulesdir/custom_element_definitions_location
 export class UserAgentClientHintsForm extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-user-agent-client-hints-form`;
   readonly #shadow = this.attachShadow({mode: 'open'});

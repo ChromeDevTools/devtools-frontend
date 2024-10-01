@@ -20,9 +20,6 @@ module.exports = {
     'rulesdir/l10n_no_locked_or_placeholder_only_phrase': 'error',
     'rulesdir/l10n_no_uistrings_export': 'error',
     'rulesdir/l10n_no_unused_message': 'error',
-    'rulesdir/custom_element_definitions_location': ['error', {
-      rootFrontendDirectory: __dirname,
-    }],
   },
   overrides: [
     {
@@ -75,7 +72,6 @@ module.exports = {
       files: ['*.test.ts', '**/testing/*.ts'],
       rules: {
         'rulesdir/check_component_naming': 'off',
-        'rulesdir/custom_element_definitions_location': 'off',
         '@typescript-eslint/explicit-function-return-type': 'off',
       },
     },

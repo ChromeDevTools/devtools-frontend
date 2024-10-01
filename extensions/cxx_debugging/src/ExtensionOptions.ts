@@ -4,7 +4,6 @@
 
 /* eslint-disable rulesdir/ban_literal_devtools_component_tag_names */
 /* eslint-disable rulesdir/check_component_naming */
-/* eslint-disable rulesdir/custom_element_definitions_location */
 /* eslint-disable rulesdir/inject_checkbox_styles */
 /* eslint-disable rulesdir/lit_html_data_as_type */
 /* eslint-disable rulesdir/lit_html_host_this */

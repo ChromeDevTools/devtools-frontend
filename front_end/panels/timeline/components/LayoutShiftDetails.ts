@@ -12,6 +12,7 @@ import * as LegacyComponents from '../../../ui/legacy/components/utils/utils.js'
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
+import * as EntryName from './EntryName.js';
 import {NodeLink} from './insights/insights.js';
 import layoutShiftDetailsStyles from './layoutShiftDetails.css.js';
 
@@ -19,19 +20,15 @@ const MAX_URL_LENGTH = 20;
 
 const UIStrings = {
   /**
-   * @description Text for a Layout Shift event indictating that it is an insight.
+   * @description Text indicating an insight.
    */
   insight: 'Insight',
   /**
-   * @description Title for a Layout shift event insight.
+   * @description Title indicating the Layout shift culprits insight.
    */
   layoutShiftCulprits: 'Layout shift culprits',
   /**
-   * @description Text indicating a Layout shift.
-   */
-  layoutShift: 'Layout shift',
-  /**
-   * @description Text for a table header referring to the start time of a Layout Shift event.
+   * @description Text referring to the start time of a given event.
    */
   startTime: 'Start time',
   /**
@@ -54,6 +51,10 @@ const UIStrings = {
    * @description Text for a culprit type of Font request.
    */
   fontRequest: 'Font request',
+  /**
+   * @description Text referring to the duration of a given event.
+   */
+  duration: 'Duration',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/LayoutShiftDetails.ts', UIStrings);
@@ -63,7 +64,7 @@ export class LayoutShiftDetails extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-performance-layout-shift-details`;
   readonly #shadow = this.attachShadow({mode: 'open'});
 
-  #layoutShift?: Trace.Types.Events.SyntheticLayoutShift|null;
+  #event: Trace.Types.Events.SyntheticLayoutShift|Trace.Types.Events.SyntheticLayoutShiftCluster|null = null;
   #traceInsightsSets: Trace.Insights.Types.TraceInsightSets|null = null;
   #parsedTrace: Trace.Handlers.Types.ParsedTrace|null = null;
   #isFreshRecording: Boolean = false;
@@ -76,13 +77,13 @@ export class LayoutShiftDetails extends HTMLElement {
   }
 
   setData(
-      layoutShift: Trace.Types.Events.SyntheticLayoutShift,
+      event: Trace.Types.Events.SyntheticLayoutShift|Trace.Types.Events.SyntheticLayoutShiftCluster,
       traceInsightsSets: Trace.Insights.Types.TraceInsightSets|null, parsedTrace: Trace.Handlers.Types.ParsedTrace|null,
       isFreshRecording: Boolean): void {
-    if (this.#layoutShift === layoutShift) {
+    if (this.#event === event) {
       return;
     }
-    this.#layoutShift = layoutShift;
+    this.#event = event;
     this.#traceInsightsSets = traceInsightsSets;
     this.#parsedTrace = parsedTrace;
     this.#isFreshRecording = isFreshRecording;
@@ -90,7 +91,7 @@ export class LayoutShiftDetails extends HTMLElement {
   }
 
   #renderInsightChip(): LitHtml.TemplateResult|null {
-    if (!this.#layoutShift) {
+    if (!this.#event) {
       return null;
     }
 
@@ -103,11 +104,13 @@ export class LayoutShiftDetails extends HTMLElement {
     // clang-format on
   }
 
-  #renderTitle(): LitHtml.TemplateResult {
+  #renderTitle(event: Trace.Types.Events.SyntheticLayoutShift|
+               Trace.Types.Events.SyntheticLayoutShiftCluster): LitHtml.TemplateResult {
+    const title = EntryName.nameForEntry(event);
     return LitHtml.html`
       <div class="layout-shift-details-title">
         <div class="layout-shift-event-title"></div>
-        ${i18nString(UIStrings.layoutShift)}
+        ${title}
       </div>
     `;
   }
@@ -171,7 +174,7 @@ export class LayoutShiftDetails extends HTMLElement {
     `;
   }
 
-  #renderDetailsTable(
+  #renderShiftDetails(
       layoutShift: Trace.Types.Events.SyntheticLayoutShift,
       traceInsightsSets: Trace.Insights.Types.TraceInsightSets,
       parsedTrace: Trace.Handlers.Types.ParsedTrace,
@@ -228,16 +231,43 @@ export class LayoutShiftDetails extends HTMLElement {
     // clang-format on
   }
 
+  #renderClusterDetails(
+      cluster: Trace.Types.Events.SyntheticLayoutShiftCluster,
+      parsedTrace: Trace.Handlers.Types.ParsedTrace): LitHtml.TemplateResult|null {
+    const ts = Trace.Types.Timing.MicroSeconds(cluster.ts - parsedTrace.Meta.traceBounds.min);
+    const dur = cluster.dur ?? Trace.Types.Timing.MicroSeconds(0);
+
+    // clang-format off
+    return LitHtml.html`
+        <div class="cluster-details">
+            <div class="details-row"><div class="title">${i18nString(UIStrings.startTime)}</div><div class="value">${i18n.TimeUtilities.preciseMillisToString(Helpers.Timing.microSecondsToMilliseconds(ts))}</div></div>
+            <div class="details-row"><div class="title">${i18nString(UIStrings.duration)}</div><div class="value">${i18n.TimeUtilities.preciseMillisToString(Helpers.Timing.microSecondsToMilliseconds(dur))}</div></div>
+        </div>
+    `;
+    // clang-format on
+  }
+
+  #renderDetails(
+      event: Trace.Types.Events.SyntheticLayoutShift|Trace.Types.Events.SyntheticLayoutShiftCluster,
+      traceInsightsSets: Trace.Insights.Types.TraceInsightSets,
+      parsedTrace: Trace.Handlers.Types.ParsedTrace,
+      ): LitHtml.TemplateResult|null {
+    if (Trace.Types.Events.isSyntheticLayoutShift(event)) {
+      return this.#renderShiftDetails(event, traceInsightsSets, parsedTrace);
+    }
+    return this.#renderClusterDetails(event, parsedTrace);
+  }
+
   #render(): void {
-    if (!this.#layoutShift || !this.#traceInsightsSets || !this.#parsedTrace) {
+    if (!this.#event || !this.#traceInsightsSets || !this.#parsedTrace) {
       return;
     }
     // clang-format off
     const output = LitHtml.html`
       <div class="layout-shift-summary-details">
         <div class="event-details">
-          ${this.#renderTitle()}
-          ${this.#renderDetailsTable(this.#layoutShift, this.#traceInsightsSets, this.#parsedTrace)}
+          ${this.#renderTitle(this.#event)}
+          ${this.#renderDetails(this.#event, this.#traceInsightsSets, this.#parsedTrace)}
         </div>
         <div class="insight-categories">
           ${this.#renderInsightChip()}

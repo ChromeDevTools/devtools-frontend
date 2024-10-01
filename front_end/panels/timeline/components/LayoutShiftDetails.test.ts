@@ -9,7 +9,7 @@ import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as TimelineComponents from './components.js';
 
 describeWithMockConnection('LayoutShiftDetails', () => {
-  it('correctly renders main details', async function() {
+  it('correctly renders main shift details', async function() {
     const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'shift-attribution.json.gz');
     const shiftEvent = parsedTrace.LayoutShifts.clusters[0].worstShiftEvent as Trace.Types.Events.SyntheticLayoutShift;
     assert.isNotNull(shiftEvent);
@@ -36,5 +36,25 @@ describeWithMockConnection('LayoutShiftDetails', () => {
 
     // This header should not be included. Since this is not a freshly recorded trace.
     assert.notInclude(content, 'Elements shifted');
+  });
+  it('correctly renders cluster details', async function() {
+    const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'shift-attribution.json.gz');
+    const cluster = parsedTrace.LayoutShifts.clusters[0];
+    assert.isNotNull(cluster);
+
+    const details = new TimelineComponents.LayoutShiftDetails.LayoutShiftDetails();
+    details.setData(cluster, insights, parsedTrace, false);
+
+    assert.isNotNull(details.shadowRoot);
+    const decorativeChip = details.shadowRoot.querySelector('.insight-chip');
+    assert.isNotNull(decorativeChip);
+
+    assert.include(decorativeChip?.textContent, 'Layout shift culprits');
+    const eventTitle = details.shadowRoot.querySelector('.layout-shift-details-title');
+    assert.include(eventTitle?.textContent, 'Layout shift cluster');
+
+    const clusterDetails = details.shadowRoot.querySelector('.cluster-details');
+    assert.include(clusterDetails?.textContent, 'Duration');
+    assert.include(clusterDetails?.textContent, 'Start time');
   });
 });

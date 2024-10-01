@@ -82,6 +82,19 @@ function launchChrome() {
     'QueueNavigationsWhileWaitingForCommit',  // crbug.com/361519377
     'RenderDocument',                         // crbug.com/361519377
     'IgnoreDuplicateNavs',                    // crbug.com/361519377
+    'BoostRenderProcessForLoading',
+    'CloneDevToolsConnectionOnlyIfRequested',
+    'MacAllowBackgroundingRenderProcesses',
+    'MacWebContentsOcclusion',
+    'MojoBindingsInlineSLS',
+    'MojoChannelAssociatedCrashesOnSendError',
+    'MojoChannelAssociatedSendUsesRunOrPostTask',
+    'MojoInlineMessagePayloads',
+    'MojoPredictiveAllocation',
+    'RunTasksByBatches',
+    'SimpleURLLoaderUseReadAndDiscardBodyOption',
+    'ThrottleUnimportantFrameTimers',
+    'VerifyDidCommitParams',
   ];
   const launchArgs = [
     '--remote-allow-origins=*',

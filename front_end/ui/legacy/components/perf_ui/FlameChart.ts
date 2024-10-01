@@ -2687,7 +2687,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
   }
 
   #drawCustomSymbols(context: CanvasRenderingContext2D, timelineData: FlameChartTimelineData): void {
-    const {entryStartTimes, entryLevels} = timelineData;
+    const {entryStartTimes, entryTotalTimes, entryLevels} = timelineData;
     this.customDrawnPositions.clear();
     context.save();
 
@@ -2695,12 +2695,17 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     const posArray = [];
     for (const [entryIndex, drawOverride] of this.#indexToDrawOverride.entries()) {
       const entryStartTime = entryStartTimes[entryIndex];
+      const entryTotalTime = entryTotalTimes[entryIndex];
       const level = entryLevels[entryIndex];
-      const x = this.timeToPositionClipped(entryStartTime);
+
+      const unclippedXStart = this.chartViewport.timeToPosition(entryStartTime);
+      const unclippedXEnd = this.chartViewport.timeToPosition(entryStartTime + entryTotalTime);
+
+      const x = unclippedXStart;
       const y = this.levelToOffset(level);
       const height = this.levelHeight(level);
-      const width = this.#eventBarWidth(timelineData, entryIndex);
-      const pos = drawOverride(context, x, y, width, height, time => this.timeToPositionClipped(time));
+      const width = unclippedXEnd - unclippedXStart;
+      const pos = drawOverride(context, x, y, width, height, time => this.chartViewport.timeToPosition(time));
       posArray.push({entryIndex, pos});
     }
     // Place in z order so coordinatesToEntryIndex finds the highest z-index match first.

@@ -125,9 +125,9 @@ const UIStringsNotTranslate = {
    */
   fixThisIssue: 'Fix this issue',
   /**
-   *@description The generic name of the AI assistance (do not translate)
+   *@description The generic name of the AI agent (do not translate)
    */
-  aiAssistance: 'AI assistance',
+  ai: 'AI',
   /**
    *@description The fallback text when we can't find the user full name
    */
@@ -649,7 +649,7 @@ export class FreestylerChatUi extends HTMLElement {
             name="smart-assistant"
           ></${IconButton.Icon.Icon.litTagName}>
           <div class="message-name">
-            <h2>${lockedString(UIStringsNotTranslate.aiAssistance)}</h2>
+            <h2>${lockedString(UIStringsNotTranslate.ai)}</h2>
           </div>
         </div>
         ${LitHtml.Directives.repeat(

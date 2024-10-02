@@ -1,15 +1,20 @@
-# Visual logging
+# Visual Logging in DevTools
 
-The goal of this project is to improve the logging of user interactions in
-DevTools. The current UMA logging is unreliable and inconsistent. This can lead to
+[goo.gle/devtools-visual-logging](https://goo.gle/devtools-visual-logging)
+
+Visual Element based logging aims to provide more reliable and consistent
+logging than the previous UMA based logging approach, which could lead to
 incorrect conclusions about how users are interacting with the product.
 
-We want to be able to understand how users are interacting with DevTools so that
-we can improve the product. This includes understanding what users are seeing,
+This new approach enables us to understand how users are interacting with
+Chrome DevTools so that we can improve the product accordingly and optimize
+the critical user journeys. This includes understanding what users are seeing,
 what they are interacting with, and how they are using different features.
 
-To turn on the logging, you need to pass `--enable-features=DevToolsVeLogging`
-as command line flag to Chrome.
+[TOC]
+
+This feature is enabled by default as of Chromium M-124, and can be disabled
+via the `--disable-features=DevToolsVeLogging` command line flag if needed.
 
 ## General approach
 
@@ -23,14 +28,15 @@ There are no hard rules here, we log what we think is helpful to understand user
 behavior. Here are several rules of thumb:
 
 1. Most of the interactive elements should be logged.
-1. Elements that only appear under certain conditions should be logged.
-1. Container elements that help distinguish common UI elements should be logged.
+2. Elements that only appear under certain conditions should be logged.
+3. Container elements that help distinguish common UI elements should be logged.
 
 We describe loggable elements as a combination of visual element type and
 context value. Visual element type is a value of `VisualElements` enum defined
-in `front_end/ui/visual_logging/LoggingConfig.ts`. Context could be an arbitrary
-string, its 32 bit hash is logged. No taxonomy is perfect and we are not
-trying to create one here, we are trying to make it practical though.
+in [`front_end/ui/visual_logging/LoggingConfig.ts`](./LoggingConfig.ts). Context
+could be an arbitrary string, its 32 bit hash is logged. No taxonomy is perfect
+and we are not trying to create one here, we are trying to make it practical
+though.
 
 1. Visual element types try to describe function, not appearance. For instance,
 we have `Toggle` and `Action` as visual elements types, not `Checkbox` and
@@ -50,24 +56,24 @@ without any extra qualifiers.
 
 In most cases, it is enough to put the `jslog` attribute on a corresponding HTML
 element. There’s a number of fluent builder functions exported
-`front_end/ui/visual_logging/visual_logging.ts` to build the attribute value.
-These are all bound versions of `LoggingConfig.makeConfigStringBuilder` and are
-used in the legacy UI as:
+[`front_end/ui/visual_logging/visual_logging.ts`](./visual_logging.ts) to build
+the attribute value. These are all bound versions of
+`LoggingConfig.makeConfigStringBuilder` and are used in the legacy UI as:
 
-```
+```js
 this.element.setAttribute('jslog', `${VisualLogging.panel(context)}`);
 ```
 
 or
 
-```
+```js
 button.element.setAttribute('jslog', `${VisualLogging.dropDown('rendering-emulations')
     .track({click: true})}`);
 ```
 
 In LitHTML, the usage is:
 
-```
+```js
 Lit.html`<td jslog=${VisualLogging.tableCell(/* context */ col.id)
         .track({click: true})}>
 ```
@@ -115,7 +121,7 @@ First argument is a provider name that is later used as an argument in the
 `jslog` builder `context()` method. Second is a function that takes an Element or Event
 and returns a number. For a disclosure triangle, this is as follows:
 
-```
+```js
 function disclosureTriangleLoggingContextProvider(
     e: VisualLogging.Loggable|Event): Promise<number|undefined> {
   if (e instanceof Element) {
@@ -144,7 +150,7 @@ to identify the parent. However, sometimes, markup doesn’t reflect the logical
 structure, for example, when a legacy tree outline has children in an `<ol>` element, which is a
 sibling of `<li>` that specifies the parent. In this case, you can do the following:
 
-```
+```js
 function loggingParentProvider(e: Element): Element|undefined {
   const treeElement = TreeElement.getTreeElementBylistItemNode(e);
   return treeElement?.parent?.listItemElement;
@@ -169,7 +175,7 @@ as UMA histogram logging.
 First, identify the TypeScript type that corresponds/ to the element that
 needs to be logged. For example, `ContextMenuDescriptor` is used to log native
 menu items. This type needs to be added to the `Loggable` type definition in
-`front_end/ui/visual_logging/Loggable.ts`.
+[`front_end/ui/visual_logging/Loggable.ts`](./Loggable.ts).
 
 
 Then call `registerLoggable` with the corresponding JavaScript
@@ -177,7 +183,7 @@ object, config string in the same format as the `jslog` attribute would have,
 and an optional parent JavaScript object. For a native menu item, this is:
 
 
-```
+```js
 VisualLogging.registerLoggable(descriptor, `${VisualLogging.action()
     .track({click: true}).context(descriptor.jslogContext)}`,
     parent || descriptors);
@@ -190,12 +196,17 @@ Similarly to log click, call `VisualLogging.logClick`.
 ## Debugging
 
 You may find it useful to see which UI elements are annotated and how the tree
-structure look like. To do that, call `setVeDebuggingEnabled(true)` in DevTools
-on DevTools. This will add red outline to each visual element and will show the
-details of logging config for an element and all its ancestors on hover.
+structure look like. To do that, run
 
-**Note:** This will only work if you invoked Chrome with the command line flag
-`--enable-features=DevToolsVeLogging`. Otherwise you won't see any red lines.
+```js
+setVeDebuggingEnabled(true);
+```
+
+in DevTools on DevTools. This will add red outline to each visual element and
+will show the details of logging config for an element and all its ancestors on
+hover.
+
+![Visual Element debugging in DevTools on DevTools](visual_logging_debugging.png)
 
 You can also run `setVeDebugLoggingEnabled(true)` in DevTools on DevTools. This
 will cause each VE log to be also logged to the DevTools on DevTools console.

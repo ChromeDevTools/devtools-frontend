@@ -150,6 +150,17 @@ export class ModificationsManager extends EventTarget {
     this.dispatchEvent(new AnnotationModifiedEvent(newOverlay, 'Add'));
   }
 
+  linkAnnotationBetweenEntriesExists(entryFrom: Trace.Types.Events.Event, entryTo: Trace.Types.Events.Event): boolean {
+    for (const annotation of this.#overlayForAnnotation.keys()) {
+      if (annotation.type === 'ENTRIES_LINK' &&
+          ((annotation.entryFrom === entryFrom && annotation.entryTo === entryTo) ||
+           (annotation.entryFrom === entryTo && annotation.entryTo === entryFrom))) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   #findLabelOverlayForEntry(entry: Trace.Types.Events.Event): Overlays.Overlays.TimelineOverlay|null {
     for (const [annotation, overlay] of this.#overlayForAnnotation.entries()) {
       if (annotation.type === 'ENTRY_LABEL' && annotation.entry === entry) {

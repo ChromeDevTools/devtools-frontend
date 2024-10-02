@@ -474,7 +474,8 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     if (this.#linkSelectionAnnotation === null) {
       return;
     }
-    if (deleteCurrentLink) {
+    // If the link in progress in cleared, make sure it's creation is complete. If not, delete it.
+    if (deleteCurrentLink || this.#linkSelectionAnnotation.state !== Trace.Types.File.EntriesLinkState.CONNECTED) {
       ModificationsManager.activeManager()?.removeAnnotation(this.#linkSelectionAnnotation);
     }
     this.mainFlameChart.setLinkSelectionAnnotationIsInProgress(false);
@@ -856,6 +857,17 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     const toSelectionObject = this.#selectionIfTraceEvent(entryIndex, dataProvider);
 
     if (toSelectionObject) {
+      // Prevent the user from creating a link that connects an entry to itself.
+      if (toSelectionObject === this.#linkSelectionAnnotation.entryFrom) {
+        return;
+      }
+      // Prevent the user from creating a link that connects an entry it's already connected to.
+      const linkBetweenEntriesExists = ModificationsManager.activeManager()?.linkAnnotationBetweenEntriesExists(
+          this.#linkSelectionAnnotation.entryFrom, toSelectionObject);
+      if (linkBetweenEntriesExists) {
+        return;
+      }
+
       this.#linkSelectionAnnotation.state = Trace.Types.File.EntriesLinkState.CONNECTED;
       this.#linkSelectionAnnotation.entryTo = toSelectionObject;
     } else {

@@ -147,4 +147,38 @@ describeWithEnvironment('ModificationsManager', () => {
          }],
        });
      });
+
+  it('correctly identifies if a connection between entries already exists', async function() {
+    const parsedTrace = (await TraceLoader.traceEngine(null, 'web-dev-with-commit.json.gz')).parsedTrace;
+    // Get any entry to create links with.
+    const entry1 = parsedTrace.Renderer.allTraceEntries[0];
+    const entry2 = parsedTrace.Renderer.allTraceEntries[1];
+    const entry3 = parsedTrace.Renderer.allTraceEntries[2];
+
+    const modificationsManager = Timeline.ModificationsManager.ModificationsManager.activeManager();
+    assert.isOk(modificationsManager);
+
+    // Create a connection between entry 1 and entry 2
+    modificationsManager.createAnnotation({
+      type: 'ENTRIES_LINK',
+      state: Trace.Types.File.EntriesLinkState.CONNECTED,
+      entryFrom: entry1,
+      entryTo: entry2,
+    });
+
+    // Chech if a connection between entries 1 and 3 exists
+    const existsBetween1And3 = modificationsManager.linkAnnotationBetweenEntriesExists(entry1, entry3);
+    // Make sure the link does not exists
+    assert.isFalse(existsBetween1And3);
+
+    // Chech if a connection between entries 1 and 2 exists
+    const existsBetween1And2 = modificationsManager.linkAnnotationBetweenEntriesExists(entry1, entry2);
+    // Make sure the link exists
+    assert.isTrue(existsBetween1And2);
+
+    // Chech if a connection between entries 2 and 1 exists. It should since the order of entries does not matter.
+    const existsBetween2And1 = modificationsManager.linkAnnotationBetweenEntriesExists(entry1, entry2);
+    // Make sure the link exists
+    assert.isTrue(existsBetween2And1);
+  });
 });

@@ -98,8 +98,7 @@ export class LayoutShiftDetails extends HTMLElement {
     // clang-format off
     return LitHtml.html`
       <div class="insight-chip">
-        <div class="insight-keyword">${i18nString(UIStrings.insight)} </div>${i18nString(UIStrings.layoutShiftCulprits)}
-      </div>
+        <div class="insight-keyword">${i18nString(UIStrings.insight)} </div>${i18nString(UIStrings.layoutShiftCulprits)}</div>
     `;
     // clang-format on
   }
@@ -145,7 +144,7 @@ export class LayoutShiftDetails extends HTMLElement {
     const el = LegacyComponents.Linkifier.Linkifier.linkifyRevealable(domLoadingFrame, domLoadingFrame.displayName());
     // clang-format off
     return LitHtml.html`
-    <div class="culprit"><div class="culprit-type">${i18nString(UIStrings.injectedIframe)}:</div><div class="culprit-value">${el}</div></div>`;
+    <span class="culprit"><span class="culprit-type">${i18nString(UIStrings.injectedIframe)}: </span><span class="culprit-value">${el}</span></span>`;
     // clang-format on
   }
 
@@ -162,7 +161,7 @@ export class LayoutShiftDetails extends HTMLElement {
 
     // clang-format off
     return LitHtml.html`
-    <div class="culprit"><div class="culprit-type">${i18nString(UIStrings.fontRequest)}:</div><div class="culprit-value">${linkifiedURL}</div></div>`;
+    <span class="culprit"><span class="culprit-type">${i18nString(UIStrings.fontRequest)}: </span><span class="culprit-value">${linkifiedURL}</span></span>`;
     // clang-format on
   }
 
@@ -218,12 +217,11 @@ export class LayoutShiftDetails extends HTMLElement {
                 <div class="elements-shifted">
                   ${this.#renderShiftedElements(elementsShifted)}
                 </div>
-              </td>` : LitHtml.nothing
-            }
+              </td>` : LitHtml.nothing}
             ${this.#isFreshRecording ? LitHtml.html`
               <td class="culprits">
                 ${this.#renderRootCauseValues(rootCauses)}
-              </td>`: LitHtml.nothing}
+              </td>` : LitHtml.nothing}
           </tr>
         </tbody>
       </table>

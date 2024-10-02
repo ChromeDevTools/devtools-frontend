@@ -935,9 +935,9 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
   revealEvent(event: Trace.Types.Events.Event): void {
     const mainIndex = this.mainDataProvider.indexForEvent(event);
     const networkIndex = this.networkDataProvider.indexForEvent(event);
-    if (mainIndex) {
+    if (mainIndex !== null) {
       this.mainFlameChart.revealEntry(mainIndex);
-    } else if (networkIndex) {
+    } else if (networkIndex !== null) {
       this.networkFlameChart.revealEntry(networkIndex);
     }
   }
@@ -946,9 +946,9 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
   revealEventVertically(event: Trace.Types.Events.Event): void {
     const mainIndex = this.mainDataProvider.indexForEvent(event);
     const networkIndex = this.networkDataProvider.indexForEvent(event);
-    if (mainIndex) {
+    if (mainIndex !== null) {
       this.mainFlameChart.revealEntryVertically(mainIndex);
-    } else if (networkIndex) {
+    } else if (networkIndex !== null) {
       this.networkFlameChart.revealEntryVertically(networkIndex);
     }
   }

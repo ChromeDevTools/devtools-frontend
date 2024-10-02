@@ -564,8 +564,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     });
 
     this.#sideBar.contentElement.addEventListener(TimelineInsights.Helpers.EventReferenceClick.eventName, event => {
-      const {metricEvent} = event;
-      this.select(TimelineSelection.fromTraceEvent(metricEvent));
+      this.select(TimelineSelection.fromTraceEvent(event.event));
     });
 
     this.#sideBar.element.addEventListener(TimelineComponents.Sidebar.RemoveAnnotation.eventName, event => {

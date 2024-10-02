@@ -8,7 +8,7 @@ import * as Trace from '../../../../models/trace/trace.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
-import {BaseInsight, shortenUrl, shouldRenderForCategory} from './Helpers.js';
+import {BaseInsight, eventRef, shortenUrl, shouldRenderForCategory} from './Helpers.js';
 import * as SidebarInsight from './SidebarInsight.js';
 import {Table, type TableData} from './Table.js';
 import {Category} from './types.js';
@@ -85,10 +85,9 @@ export class RenderBlockingRequests extends BaseInsight {
                 headers: [i18nString(UIStrings.renderBlockingRequest), i18nString(UIStrings.duration)],
                 rows: topRequests.map(request => ({
                   values: [
-                    shortenUrl(request.args.data.url),
+                    eventRef(this, request, shortenUrl(request.args.data.url)),
                     i18n.TimeUtilities.millisToString(Platform.Timing.microSecondsToMilliSeconds(request.dur)),
-                    ],
-                  // TODO(crbug.com/369102516): clicking should select the network trace event
+                  ],
                   overlays: [this.#createOverlayForRequest(request)],
                 })),
               } as TableData}>

@@ -38,7 +38,7 @@ export interface TableData {
 }
 
 export type TableDataRow = {
-  values: string[],
+  values: Array<string|LitHtml.LitTemplate>,
   overlays?: Overlays.Overlays.TimelineOverlay[],
 };
 

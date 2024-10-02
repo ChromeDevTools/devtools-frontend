@@ -272,7 +272,8 @@ describe('Multi-Workers', function() {
           });
         });
 
-    describe(`hits breakpoints added to workers ${withOrWithout}`, () => {
+    // Flaky tests in beforeEach.
+    describe.skip(`[crbug.com/1425122] hits breakpoints added to workers ${withOrWithout}`, () => {
       beforeEach(async () => {
         await enableExperiment('instrumentation-breakpoints');
         const {frontend} = getBrowserAndPages();

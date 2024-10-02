@@ -103,10 +103,10 @@ const lockedString = i18n.i18n.lockedString;
  * instance for a new conversation.
  */
 export class DrJonesNetworkAgent extends AiAgent {
-  preamble = preamble;
-  clientFeature = Host.AidaClient.ClientFeature.CHROME_FREESTYLER;
+  readonly preamble = preamble;
+  readonly clientFeature = Host.AidaClient.ClientFeature.CHROME_FREESTYLER;
   // TODO(b/369822364): use a feature param instead.
-  userTier = 'BETA';
+  readonly userTier = 'BETA';
   get options(): AidaRequestOptions {
     const config = Common.Settings.Settings.instance().getHostConfig();
     const temperature = AiAgent.validTemperature(config.devToolsExplainThisResourceDogfood?.temperature);

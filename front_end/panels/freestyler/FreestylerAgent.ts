@@ -9,6 +9,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {
+  type ActionResponse,
   AiAgent,
   type AidaRequestOptions,
   debugLog,
@@ -16,6 +17,7 @@ import {
   isDebugMode,
   type ResponseData,
   ResponseType,
+  type SideEffectResponse,
 } from './AiAgent.js';
 import {ChangeManager} from './ChangeManager.js';
 import {ExtensionScope, FREESTYLER_WORLD_NAME} from './ExtensionScope.js';
@@ -176,8 +178,8 @@ type AgentOptions = {
  * instance for a new conversation.
  */
 export class FreestylerAgent extends AiAgent {
-  preamble = preamble;
-  clientFeature = Host.AidaClient.ClientFeature.CHROME_FREESTYLER;
+  readonly preamble = preamble;
+  readonly clientFeature = Host.AidaClient.ClientFeature.CHROME_FREESTYLER;
   get userTier(): string|undefined {
     const config = Common.Settings.Settings.instance().getHostConfig();
 
@@ -497,6 +499,44 @@ export class FreestylerAgent extends AiAgent {
     return output;
   }
 
+  async * handleAction(action: string, rpcId?: number): AsyncGenerator<SideEffectResponse, ActionResponse, void> {
+    debugLog(`Action to execute: ${action}`);
+    const scope = this.#createExtensionScope(this.#changes);
+    await scope.install();
+    try {
+      let result = await this.#generateObservation(action, {throwOnSideEffect: true});
+      debugLog(`Action result: ${JSON.stringify(result)}`);
+      if (result.sideEffect) {
+        const sideEffectConfirmationPromiseWithResolvers = this.#confirmSideEffect<boolean>();
+        if (isDebugMode()) {
+          window.dispatchEvent(new CustomEvent(
+              'freestylersideeffect', {detail: {confirm: sideEffectConfirmationPromiseWithResolvers.resolve}}));
+        }
+
+        yield {
+          type: ResponseType.SIDE_EFFECT,
+          code: action,
+          confirm: sideEffectConfirmationPromiseWithResolvers.resolve,
+          rpcId,
+        };
+
+        result = await this.#generateObservation(action, {
+          throwOnSideEffect: false,
+          confirmExecJs: sideEffectConfirmationPromiseWithResolvers.promise,
+        });
+      }
+      return {
+        type: ResponseType.ACTION,
+        code: action,
+        output: result.observation,
+        canceled: result.canceled,
+        rpcId,
+      };
+    } finally {
+      await scope.uninstall();
+    }
+  }
+
   #runId = 0;
   async * run(query: string, options: {
     signal?: AbortSignal, selectedElement: SDK.DOMModel.DOMNode|null,
@@ -613,43 +653,9 @@ STOP`,
       }
 
       if (action) {
-        debugLog(`Action to execute: ${action}`);
-        const scope = this.#createExtensionScope(this.#changes);
-        await scope.install();
-        try {
-          let result = await this.#generateObservation(action, {throwOnSideEffect: true});
-          debugLog(`Action result: ${JSON.stringify(result)}`);
-          if (result.sideEffect) {
-            const sideEffectConfirmationPromiseWithResolvers = this.#confirmSideEffect<boolean>();
-            if (isDebugMode()) {
-              window.dispatchEvent(new CustomEvent(
-                  'freestylersideeffect', {detail: {confirm: sideEffectConfirmationPromiseWithResolvers.resolve}}));
-            }
-
-            yield {
-              type: ResponseType.SIDE_EFFECT,
-              code: action,
-              confirm: sideEffectConfirmationPromiseWithResolvers.resolve,
-              rpcId,
-            };
-
-            result = await this.#generateObservation(action, {
-              throwOnSideEffect: false,
-              confirmExecJs: sideEffectConfirmationPromiseWithResolvers.promise,
-            });
-          }
-          yield {
-            type: ResponseType.ACTION,
-            code: action,
-            output: result.observation,
-            canceled: result.canceled,
-            rpcId,
-          };
-
-          query = `OBSERVATION: ${result.observation}`;
-        } finally {
-          await scope.uninstall();
-        }
+        const result = yield* this.handleAction(action, rpcId);
+        yield result;
+        query = `OBSERVATION: ${result.output}`;
       }
 
       if (i === MAX_STEPS - 1) {

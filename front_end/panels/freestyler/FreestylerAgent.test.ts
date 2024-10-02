@@ -497,7 +497,7 @@ c`;
         aidaClient: {} as Host.AidaClient.AidaClient,
         serverSideLoggingEnabled: true,
       });
-      agent.preamble = 'preamble';
+      sinon.stub(agent, 'preamble').value('preamble');
       agent.chatHistoryForTesting = new Map([[
         0,
         [

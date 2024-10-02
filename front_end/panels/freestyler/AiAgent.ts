@@ -97,10 +97,10 @@ export abstract class AiAgent {
   readonly #sessionId: string = crypto.randomUUID();
   #aidaClient: Host.AidaClient.AidaClient;
   #serverSideLoggingEnabled: boolean;
-  abstract preamble: string;
-  abstract options: AidaRequestOptions;
-  abstract clientFeature: Host.AidaClient.ClientFeature;
-  abstract userTier: string|undefined;
+  abstract readonly preamble: string;
+  abstract readonly options: AidaRequestOptions;
+  abstract readonly clientFeature: Host.AidaClient.ClientFeature;
+  abstract readonly userTier: string|undefined;
 
   /**
    * Mapping between the unique request id and

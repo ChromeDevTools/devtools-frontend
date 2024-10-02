@@ -236,11 +236,6 @@ export class SidebarAnnotationsTab extends HTMLElement {
         </div>
         <div class="tutorial-card">
           <div class="tutorial-image"> <img src=${diagramImageUrl}></img></div>
-          <div class="tutorial-title">${i18nString(UIStrings.entryLabelTutorialTitle)}</div>
-          <div class="tutorial-description">${i18nString(UIStrings.entryLabelTutorialDescription)}</div>
-        </div>
-        <div class="tutorial-card">
-          <div class="tutorial-image"> <img src=${diagramImageUrl}></img></div>
           <div class="tutorial-title">${i18nString(UIStrings.entryLinkTutorialTitle)}</div>
           <div class="tutorial-description">${i18nString(UIStrings.entryLinkTutorialDescription)}</div>
         </div>

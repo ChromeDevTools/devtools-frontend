@@ -97,7 +97,7 @@ export interface LoadErrorDescription {
   message?: string;
 }
 
-export let load = function(
+export const load = function(
     url: string, headers: {
       [x: string]: string,
     }|null,
@@ -118,19 +118,6 @@ export let load = function(
     callback(success, headers, stream.data(), errorDescription);
   }
 };
-
-export function setLoadForTest(
-    newLoad: (
-        arg0: string, arg1: {
-          [x: string]: string,
-        }|null,
-        arg2: (
-            arg0: boolean, arg1: {
-              [x: string]: string,
-            },
-            arg2: string, arg3: LoadErrorDescription) => void) => void): void {
-  load = newLoad;
-}
 
 function getNetErrorCategory(netError: number): string {
   if (netError > -100) {

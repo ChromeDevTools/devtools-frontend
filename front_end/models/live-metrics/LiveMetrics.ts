@@ -332,6 +332,15 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
     }
     await this.disable();
     this.#target = undefined;
+
+    // If the user navigates to a page that was pre-rendered then the primary page target
+    // will be swapped and the old target will be removed. We should ensure live metrics
+    // remain enabled on the new primary page target.
+    const primaryPageTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+    if (primaryPageTarget) {
+      this.#target = primaryPageTarget;
+      await this.enable();
+    }
   }
 
   async enable(): Promise<void> {
@@ -412,6 +421,7 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
         identifier: this.#scriptIdentifier,
       });
     }
+    this.#scriptIdentifier = undefined;
 
     this.#enabled = false;
   }

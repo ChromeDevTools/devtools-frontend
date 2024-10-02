@@ -130,7 +130,7 @@ const UIStrings = {
   /**
    * @description Text for a link to Chrome DevTools Settings.
    */
-  settingsLink: 'Console insights in Settings',
+  settingsLink: '`Console insights` in Settings',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/explain/components/ConsoleInsight.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

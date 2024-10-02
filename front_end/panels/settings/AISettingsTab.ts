@@ -115,7 +115,7 @@ const UIStrings = {
   /**
    *@description Label for a toggle to enable the Console Insights feature
    */
-  enableConsoleInsights: 'Enable Console Insights',
+  enableConsoleInsights: 'Enable `Console insights`',
   /**
    *@description Label for a toggle to enable the AI assistance feature
    */

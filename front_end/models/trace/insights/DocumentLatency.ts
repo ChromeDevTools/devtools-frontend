@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
 
 import {type InsightResult, type InsightSetContext, type RequiredData} from './types.js';
@@ -28,13 +29,14 @@ export function deps(): ['Meta', 'NetworkRequests'] {
   return ['Meta', 'NetworkRequests'];
 }
 
-function getServerTiming(request: Types.Events.SyntheticNetworkRequest): Types.Timing.MilliSeconds|null {
+function getServerResponseTime(request: Types.Events.SyntheticNetworkRequest): Types.Timing.MilliSeconds|null {
   const timing = request.args.data.timing;
   if (!timing) {
     return null;
   }
 
-  return Types.Timing.MilliSeconds(Math.round(timing.receiveHeadersStart - timing.sendEnd));
+  const ms = Helpers.Timing.microSecondsToMilliseconds(request.args.data.syntheticData.waiting);
+  return Math.round(ms) as Types.Timing.MilliSeconds;
 }
 
 function getCompressionSavings(request: Types.Events.SyntheticNetworkRequest): number {
@@ -113,7 +115,7 @@ export function generateInsight(
     throw new Error('missing document request');
   }
 
-  const serverResponseTime = getServerTiming(documentRequest);
+  const serverResponseTime = getServerResponseTime(documentRequest);
   if (serverResponseTime === null) {
     throw new Error('missing document request timing');
   }

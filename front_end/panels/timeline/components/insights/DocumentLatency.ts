@@ -41,6 +41,18 @@ const UIStrings = {
    * @description Text to tell the user that text compression (like gzip) was not applied.
    */
   failedTextCompression: 'No compression applied',
+  /**
+   * @description Text for a label describing a network request event as having redirects.
+   */
+  redirectsLabel: 'Redirects',
+  /**
+   * @description Text for a label describing a network request event as taking too long to start delivery by the server.
+   */
+  serverResponseTimeLabel: 'Server response time',
+  /**
+   * @description Text for a label describing a network request event as taking longer to download because it wasn't compressed.
+   */
+  uncompressedDownload: 'Uncompressed download',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/DocumentLatency.ts', UIStrings);
@@ -71,11 +83,55 @@ export class DocumentLatency extends BaseInsight {
       return [];
     }
 
-    // TODO(crbug.com/352244434) add breakdown for server response time, queing, redirects, etc...
-    return [{
+    const overlays: Overlays.Overlays.TimelineOverlay[] = [];
+    const event = insight.data.documentRequest;
+    const redirectDurationMicro = Trace.Helpers.Timing.millisecondsToMicroseconds(insight.data.redirectDuration);
+
+    const sections = [];
+    if (insight.data.redirectDuration) {
+      const bounds = Trace.Helpers.Timing.traceWindowFromMicroSeconds(
+          event.ts,
+          (event.ts + redirectDurationMicro) as Trace.Types.Timing.MicroSeconds,
+      );
+      sections.push({bounds, label: i18nString(UIStrings.redirectsLabel), showDuration: true});
+      overlays.push({type: 'CANDY_STRIPED_TIME_RANGE', bounds, entry: event});
+    }
+    if (insight.data.serverResponseTooSlow) {
+      const serverResponseTimeMicro = Trace.Helpers.Timing.millisecondsToMicroseconds(insight.data.serverResponseTime);
+      // NOTE: NetworkRequestHandlers never makes a synthetic network request event if `timing` is missing.
+      const sendEnd = event.args.data.timing?.sendEnd ?? Trace.Types.Timing.MilliSeconds(0);
+      const sendEndMicro = Trace.Helpers.Timing.millisecondsToMicroseconds(sendEnd);
+      const bounds = Trace.Helpers.Timing.traceWindowFromMicroSeconds(
+          sendEndMicro,
+          (sendEndMicro + serverResponseTimeMicro) as Trace.Types.Timing.MicroSeconds,
+      );
+      sections.push({bounds, label: i18nString(UIStrings.serverResponseTimeLabel), showDuration: true});
+    }
+    if (insight.data.uncompressedResponseBytes) {
+      const bounds = Trace.Helpers.Timing.traceWindowFromMicroSeconds(
+          event.args.data.syntheticData.downloadStart,
+          (event.args.data.syntheticData.downloadStart + event.args.data.syntheticData.download) as
+              Trace.Types.Timing.MicroSeconds,
+      );
+      sections.push({bounds, label: i18nString(UIStrings.uncompressedDownload), showDuration: true});
+      overlays.push({type: 'CANDY_STRIPED_TIME_RANGE', bounds, entry: event});
+    }
+
+    if (sections.length) {
+      overlays.push({
+        type: 'TIMESPAN_BREAKDOWN',
+        sections,
+      });
+    }
+    overlays.push({
       type: 'ENTRY_SELECTED',
       entry: insight.data.documentRequest,
-    }];
+    });
+
+    // TODO(crbug.com/368152887): we actually want the labels to be part of the CANDY_STRIPED_TIME_RANGE overlay.
+    // TIMESPAN_BREAKDOWN puts it somewhere else. We need an overlay for EVENT_TIME_RANGE, with a `display` property
+    // (to control candy-stripeness) and an optional `label` property.
+    return overlays;
   }
 
   #renderInsight(insight: Trace.Insights.Types.InsightResults['DocumentLatency']): LitHtml.LitTemplate {

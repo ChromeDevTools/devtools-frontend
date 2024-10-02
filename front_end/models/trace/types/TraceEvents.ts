@@ -333,6 +333,7 @@ interface SyntheticArgsData {
   ssl: MicroSeconds;
   stalled: MicroSeconds;
   totalTime: MicroSeconds;
+  /** Server response time (receiveHeadersEnd - sendEnd) */
   waiting: MicroSeconds;
 }
 

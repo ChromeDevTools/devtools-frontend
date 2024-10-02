@@ -27819,6 +27819,21 @@
                     ]
                 },
                 {
+                    "name": "setBlackboxExecutionContexts",
+                    "description": "Replace previous blackbox execution contexts with passed ones. Forces backend to skip\nstepping/pausing in scripts in these execution contexts. VM will try to leave blackboxed script by\nperforming 'step in' several times, finally resorting to 'step out' if unsuccessful.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "uniqueIds",
+                            "description": "Array of execution context unique ids for the debugger to ignore.",
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    ]
+                },
+                {
                     "name": "setBlackboxPatterns",
                     "description": "Replace previous blackbox patterns with passed ones. Forces backend to skip stepping/pausing in\nscripts with url matching one of the patterns. VM will try to leave blackboxed script by\nperforming 'step in' several times, finally resorting to 'step out' if unsuccessful.",
                     "experimental": true,
@@ -27830,6 +27845,12 @@
                             "items": {
                                 "type": "string"
                             }
+                        },
+                        {
+                            "name": "skipAnonymous",
+                            "description": "If true, also ignore scripts with no source url.",
+                            "optional": true,
+                            "type": "boolean"
                         }
                     ]
                 },

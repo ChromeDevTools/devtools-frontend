@@ -18218,11 +18218,22 @@ export namespace Debugger {
     maxDepth: integer;
   }
 
+  export interface SetBlackboxExecutionContextsRequest {
+    /**
+     * Array of execution context unique ids for the debugger to ignore.
+     */
+    uniqueIds: string[];
+  }
+
   export interface SetBlackboxPatternsRequest {
     /**
      * Array of regexps that will be used to check script url for blackbox state.
      */
     patterns: string[];
+    /**
+     * If true, also ignore scripts with no source url.
+     */
+    skipAnonymous?: boolean;
   }
 
   export interface SetBlackboxedRangesRequest {

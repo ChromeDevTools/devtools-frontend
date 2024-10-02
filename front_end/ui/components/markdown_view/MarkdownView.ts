@@ -130,13 +130,13 @@ export class MarkdownLitRenderer {
   templateForToken(token: Marked.Marked.MarkedToken): LitHtml.TemplateResult|null {
     switch (token.type) {
       case 'paragraph':
-        return html`<p>${this.renderChildTokens(token)}`;
+        return html`<p>${this.renderChildTokens(token)}</p>`;
       case 'list':
         return html`<ul>${token.items.map(token => {
           return this.renderToken(token);
         })}</ul>`;
       case 'list_item':
-        return html`<li>${this.renderChildTokens(token)}`;
+        return html`<li>${this.renderChildTokens(token)}</li>`;
       case 'text':
         return this.renderText(token);
       case 'codespan':

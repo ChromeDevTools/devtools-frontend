@@ -64,7 +64,7 @@ describeWithEnvironment('MarkdownView', () => {
 
     it('wraps paragraph tokens in <p> tags', () => {
       const renderResult = renderer.renderToken(getFakeToken({type: 'paragraph', tokens: []}));
-      assert.deepStrictEqual(renderResult.strings.raw, ['<p>', '']);
+      assert.deepStrictEqual(renderResult.strings.raw, ['<p>', '</p>']);
     });
 
     it('wraps an unordered list token in <ul> tags', () => {
@@ -74,7 +74,7 @@ describeWithEnvironment('MarkdownView', () => {
 
     it('wraps list items in <li> tags', () => {
       const renderResult = renderer.renderToken(getFakeToken({type: 'list_item', tokens: []}));
-      assert.deepStrictEqual(renderResult.strings.raw, ['<li>', '']);
+      assert.deepStrictEqual(renderResult.strings.raw, ['<li>', '</li>']);
     });
 
     it('wraps a codespan token in <code> tags', () => {

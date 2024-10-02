@@ -466,7 +466,7 @@ export class EditorState {
 class RecorderSelectorPickerButton extends LitElement {
   static override styles = [stepEditorStyles];
 
-  @property() declare disabled: boolean;
+  @property({type: Boolean}) declare disabled: boolean;
 
   #picker = new Controllers.SelectorPicker.SelectorPicker(this);
 
@@ -516,8 +516,8 @@ export class StepEditor extends LitElement {
   @state() private declare state: DeepImmutable<EditorState>;
   @state() private declare error: string|undefined;
 
-  @property() declare isTypeEditable: boolean;
-  @property() declare disabled: boolean;
+  @property({type: Boolean}) declare isTypeEditable: boolean;
+  @property({type: Boolean}) declare disabled: boolean;
 
   #renderedAttributes: Set<Attribute> = new Set();
 

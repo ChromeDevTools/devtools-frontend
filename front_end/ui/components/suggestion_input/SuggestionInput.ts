@@ -39,6 +39,7 @@ const jsonPropertyOptions = {
   hasChanged(value: unknown, oldValue: unknown): boolean {
     return JSON.stringify(value) !== JSON.stringify(oldValue);
   },
+  attribute: false,
 };
 
 @customElement('devtools-editable-content')
@@ -249,7 +250,7 @@ export class SuggestionInput extends LitElement {
    * State passed to devtools-suggestion-box.
    */
   @property(jsonPropertyOptions) declare options: Readonly<string[]>;
-  @property() declare autocomplete?: boolean;
+  @property({type: Boolean}) declare autocomplete?: boolean;
   @property() declare suggestionFilter?: SuggestionFilter;
   @state() declare expression: string;
 
@@ -259,7 +260,7 @@ export class SuggestionInput extends LitElement {
   @property() declare placeholder: string;
   @property() declare value: string;
   @property({type: Boolean}) declare disabled: boolean;
-  @property() declare strikethrough: boolean;
+  @property({type: Boolean}) declare strikethrough: boolean;
   @property() declare mimeType: string;
   @property() declare jslogContext?: string;
 

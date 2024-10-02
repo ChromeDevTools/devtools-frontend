@@ -21,7 +21,7 @@ export class ControlButton extends LitElement {
 
   @property() declare label: string;
   @property() declare shape: string;
-  @property() declare disabled: boolean;
+  @property({type: Boolean}) declare disabled: boolean;
 
   constructor() {
     super();

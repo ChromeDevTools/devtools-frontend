@@ -170,7 +170,7 @@ export class LinearMemoryNavigator extends HTMLElement {
         jslog=${VisualLogging.textField('linear-memory-inspector.address').track({
       change: true,
     })}
-        title=${this.#valid ? i18nString(UIStrings.enterAddress) : this.#error} @change=${
+        title=${this.#valid ? i18nString(UIStrings.enterAddress) : this.#error || ''} @change=${
         this.#onAddressChange.bind(this, Mode.SUBMITTED)} @input=${this.#onAddressChange.bind(this, Mode.EDIT)}/>`;
   }
 

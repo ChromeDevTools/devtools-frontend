@@ -39,7 +39,7 @@ export interface RegisteredPropertyDetails {
 
 function getLinkSection(details: RegisteredPropertyDetails): LitHtml.TemplateResult {
   return html`<div class="registered-property-links">
-            <span role="button" @click=${details?.goToDefinition} class="clickable underlined unbreakable-text"}>
+            <span role="button" @click=${details?.goToDefinition} class="clickable underlined unbreakable-text">
               ${i18nString(UIStrings.registeredPropertyLinkTitle)}
             </span>
           </div>`;

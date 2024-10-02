@@ -27,6 +27,7 @@ devtools_module("panel_feedback") {
     "../../../core/root:bundle",
     "../../../ui/components/helpers:bundle",
     "../../../ui/components/render_coordinator:bundle",
+    "../../../ui/legacy:bundle",
     "../../../ui/lit-html:bundle",
     "../buttons:bundle",
     "../input:bundle",

@@ -623,7 +623,7 @@ export class MetricCard extends HTMLElement {
         ${fieldEnabled ? html`<hr class="divider">` : nothing}
         ${this.#renderCompareString()}
         ${this.#renderEnvironmentRecommendations()}
-        <slot name="extra-info"><slot>
+        <slot name="extra-info"></slot>
       </div>
     `;
     LitHtml.render(output, this.#shadow, {host: this});

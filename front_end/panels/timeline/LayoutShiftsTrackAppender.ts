@@ -164,9 +164,8 @@ export class LayoutShiftsTrackAppender implements TrackAppender {
               Trace.Types.Timing.MicroSeconds(event.ts + LAYOUT_SHIFT_SYNTHETIC_DURATION));
           const barEnd = timeToPosition(fakeDurMs);
           const barWidth = barEnd - x;
-          context.rect(x, y, barWidth - 0.5, levelHeight - 1);
           context.fillStyle = this.colorForEvent(event);
-          context.fill();
+          context.fillRect(x, y, barWidth - 0.5, levelHeight - 1);
           return {
             x,
             width: barWidth,
@@ -194,6 +193,7 @@ export class LayoutShiftsTrackAppender implements TrackAppender {
 
         const boxSize = levelHeight;
         const halfSize = boxSize / 2;
+        context.save();
         context.beginPath();
         context.moveTo(x, y + buffer);
         context.lineTo(x + halfSize - buffer, y + halfSize);
@@ -203,6 +203,7 @@ export class LayoutShiftsTrackAppender implements TrackAppender {
         context.fillStyle = this.colorForEvent(event);
 
         context.fill();
+        context.restore();
         return {
           x: x - halfSize,
           width: boxSize,
@@ -214,8 +215,7 @@ export class LayoutShiftsTrackAppender implements TrackAppender {
         const barHeight = levelHeight * 0.2;
         const barY = y + (levelHeight - barHeight) / 2 + 0.5;
         context.fillStyle = this.colorForEvent(event);
-        context.rect(x, barY, width - 0.5, barHeight - 1);
-        context.fill();
+        context.fillRect(x, barY, width - 0.5, barHeight - 1);
         return {x, width, z: -1};
       };
     }

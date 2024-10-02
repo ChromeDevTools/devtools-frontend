@@ -488,6 +488,20 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     this.#linkSelectionAnnotation = linkSelectionAnnotation;
   }
 
+  #createNewTimeRangeFromKeyboard(startTime: Trace.Types.Timing.MicroSeconds, endTime: Trace.Types.Timing.MicroSeconds):
+      void {
+    if (this.#timeRangeSelectionAnnotation) {
+      return;
+    }
+
+    this.#timeRangeSelectionAnnotation = {
+      bounds: Trace.Helpers.Timing.traceWindowFromMicroSeconds(startTime, endTime),
+      type: 'TIME_RANGE',
+      label: '',
+    };
+    ModificationsManager.activeManager()?.createAnnotation(this.#timeRangeSelectionAnnotation);
+  }
+
   /**
    * Handles key presses that could impact the creation of a time range overlay with the keyboard.
    * @returns `true` if the event should not be propogated + have its default behaviour stopped.
@@ -498,42 +512,31 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
       return false;
     }
 
+    // The amount we increment the time range by when using the arrow keys is
+    // 2% of the visible window.
+    const timeRangeIncrementValue = visibleWindow.range * 0.02;
+
     switch (event.key) {
-        // shift-t (e.g. T) is used to enter the time range creation mode (or exit it)
-      case 'T': {
-        if (this.#timeRangeSelectionAnnotation) {
-          // Shift-T starts a time range, we also take a second Shift-T to mean "cancel"
-          ModificationsManager.activeManager()?.removeAnnotation(this.#timeRangeSelectionAnnotation);
-          this.#timeRangeSelectionAnnotation = null;
-          return true;
-        }
-
-        // Create a new time range annotation. Start at the beginning of the
-        // visible window, or at the beginning of the current selection, if
-        // there is one.
-        let startTime = visibleWindow.min;
-
-        if (this.#currentSelection) {
-          startTime = Trace.Helpers.Timing.millisecondsToMicroseconds(this.#currentSelection.startTime);
-        }
-        // Shift-t is the combination used to start creating a time range overlay with the keyboard.
-        this.#timeRangeSelectionAnnotation = {
-          bounds: Trace.Helpers.Timing.traceWindowFromMicroSeconds(
-              startTime, Trace.Types.Timing.MicroSeconds(startTime + 5_000)),
-          type: 'TIME_RANGE',
-          label: '',
-        };
-        ModificationsManager.activeManager()?.createAnnotation(this.#timeRangeSelectionAnnotation);
-        return true;
-      }
-        // ArrowLeft + ArrowRight adjusts the right hand bound (the max) of the time range
+      // ArrowLeft + ArrowRight adjusts the right hand bound (the max) of the time range
+      // Shift + ArrowRight also starts a range if there isn't one already
       case 'ArrowRight': {
         if (!this.#timeRangeSelectionAnnotation) {
+          if (event.shiftKey) {
+            let startTime = visibleWindow.min;
+            // Prefer the start time of the selected event, if there is one.
+            if (this.#currentSelection) {
+              startTime = Trace.Helpers.Timing.millisecondsToMicroseconds(this.#currentSelection.startTime);
+            }
+            this.#createNewTimeRangeFromKeyboard(
+                startTime, Trace.Types.Timing.MicroSeconds(startTime + timeRangeIncrementValue));
+            return true;
+          }
           return false;
         }
+
         // Grow the RHS of the range, but limit it to the visible window.
         this.#timeRangeSelectionAnnotation.bounds.max = Trace.Types.Timing.MicroSeconds(
-            Math.min(this.#timeRangeSelectionAnnotation.bounds.max + 5_000, visibleWindow.max),
+            Math.min(this.#timeRangeSelectionAnnotation.bounds.max + timeRangeIncrementValue, visibleWindow.max),
         );
         this.#timeRangeSelectionAnnotation.bounds.range = Trace.Types.Timing.MicroSeconds(
             this.#timeRangeSelectionAnnotation.bounds.max - this.#timeRangeSelectionAnnotation.bounds.min,
@@ -548,7 +551,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
         this.#timeRangeSelectionAnnotation.bounds.max = Trace.Types.Timing.MicroSeconds(
             // Shrink the RHS of the range, but make sure it cannot go below the min value.
             Math.max(
-                this.#timeRangeSelectionAnnotation.bounds.max - 5_000,
+                this.#timeRangeSelectionAnnotation.bounds.max - timeRangeIncrementValue,
                 this.#timeRangeSelectionAnnotation.bounds.min + 1),
         );
         this.#timeRangeSelectionAnnotation.bounds.range = Trace.Types.Timing.MicroSeconds(
@@ -565,7 +568,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
         this.#timeRangeSelectionAnnotation.bounds.min = Trace.Types.Timing.MicroSeconds(
             // Increase the LHS of the range, but make sure it cannot go above the max value.
             Math.min(
-                this.#timeRangeSelectionAnnotation.bounds.min + 5_000,
+                this.#timeRangeSelectionAnnotation.bounds.min + timeRangeIncrementValue,
                 this.#timeRangeSelectionAnnotation.bounds.max - 1),
         );
         this.#timeRangeSelectionAnnotation.bounds.range = Trace.Types.Timing.MicroSeconds(
@@ -580,7 +583,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
         }
         this.#timeRangeSelectionAnnotation.bounds.min = Trace.Types.Timing.MicroSeconds(
             // Decrease the LHS, but make sure it cannot go beyond the minimum visible window.
-            Math.max(this.#timeRangeSelectionAnnotation.bounds.min - 5_000, visibleWindow.min),
+            Math.max(this.#timeRangeSelectionAnnotation.bounds.min - timeRangeIncrementValue, visibleWindow.min),
         );
         this.#timeRangeSelectionAnnotation.bounds.range = Trace.Types.Timing.MicroSeconds(
             this.#timeRangeSelectionAnnotation.bounds.max - this.#timeRangeSelectionAnnotation.bounds.min,

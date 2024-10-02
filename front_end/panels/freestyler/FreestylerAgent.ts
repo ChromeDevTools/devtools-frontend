@@ -537,15 +537,18 @@ export class FreestylerAgent extends AiAgent {
     }
   }
 
+  async enhanceQuery(query: string, selectedElement: SDK.DOMModel.DOMNode|null): Promise<string> {
+    const elementEnchantmentQuery = selectedElement ?
+        `# Inspected element\n\n${await FreestylerAgent.describeElement(selectedElement)}\n\n# User request\n\n` :
+        '';
+    return `${elementEnchantmentQuery}QUERY: ${query}`;
+  }
+
   #runId = 0;
   async * run(query: string, options: {
     signal?: AbortSignal, selectedElement: SDK.DOMModel.DOMNode|null,
   }): AsyncGenerator<ResponseData, void, void> {
-    const elementEnchantmentQuery = options.selectedElement ?
-        `# Inspected element\n\n${
-            await FreestylerAgent.describeElement(options.selectedElement)}\n\n# User request\n\n` :
-        '';
-    query = `${elementEnchantmentQuery}QUERY: ${query}`;
+    query = await this.enhanceQuery(query, options.selectedElement);
     const currentRunId = ++this.#runId;
 
     for (let i = 0; i < MAX_STEPS; i++) {

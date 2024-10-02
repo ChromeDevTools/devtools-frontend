@@ -17,6 +17,8 @@ import {
   isDebugMode,
   type ResponseData,
   ResponseType,
+  type ThoughtResponse,
+  type TitleResponse,
 } from './AiAgent.js';
 
 /* clang-format off */
@@ -118,10 +120,9 @@ export class DrJonesNetworkAgent extends AiAgent {
     };
   }
 
-  #runId = 0;
-  async * run(query: string, options: {
-    signal?: AbortSignal, selectedNetworkRequest: SDK.NetworkRequest.NetworkRequest|null,
-  }): AsyncGenerator<ResponseData, void, void> {
+  *
+      handleContextDetails(selectedNetworkRequest: SDK.NetworkRequest.NetworkRequest|null):
+          Generator<ThoughtResponse|TitleResponse, void, void> {
     yield {
       type: ResponseType.TITLE,
       title: lockedString(UIStringsNotTranslate.inspectingNetworkData),
@@ -129,14 +130,24 @@ export class DrJonesNetworkAgent extends AiAgent {
     yield {
       type: ResponseType.THOUGHT,
       thought: lockedString(UIStringsNotTranslate.dataUsedToGenerateThisResponse),
-      contextDetails: createContextDetailsForDrJonesNetworkAgent(options.selectedNetworkRequest),
+      contextDetails: createContextDetailsForDrJonesNetworkAgent(selectedNetworkRequest),
     };
+  }
 
-    query = `${
-        options.selectedNetworkRequest ?
-            `# Selected network request \n${
-                formatNetworkRequest(options.selectedNetworkRequest)}\n\n# User request\n\n` :
-            ''}${query}`;
+  async enhanceQuery(query: string, selectedNetworkRequest: SDK.NetworkRequest.NetworkRequest|null): Promise<string> {
+    const networkEnchantmentQuery = selectedNetworkRequest ?
+        `# Selected network request \n${formatNetworkRequest(selectedNetworkRequest)}\n\n# User request\n\n` :
+        '';
+    return `${networkEnchantmentQuery}${query}`;
+  }
+
+  #runId = 0;
+  async * run(query: string, options: {
+    signal?: AbortSignal, selectedNetworkRequest: SDK.NetworkRequest.NetworkRequest|null,
+  }): AsyncGenerator<ResponseData, void, void> {
+    yield* this.handleContextDetails(options.selectedNetworkRequest);
+
+    query = await this.enhanceQuery(query, options.selectedNetworkRequest);
     const currentRunId = ++this.#runId;
 
     let response: string;

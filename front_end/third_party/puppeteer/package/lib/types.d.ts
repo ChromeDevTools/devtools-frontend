@@ -3223,6 +3223,7 @@ export declare type Handler<T = unknown> = (event: T) => void;
  * @public
  */
 export declare abstract class HTTPRequest {
+    #private;
     /* Excluded from this release type: id */
     /* Excluded from this release type: _interceptionId */
     /* Excluded from this release type: _failureText */

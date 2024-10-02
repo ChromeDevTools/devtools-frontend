@@ -6,6 +6,7 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.NetworkEventManager = void 0;
+const HTTPRequest_js_1 = require("./HTTPRequest.js");
 /**
  * Helper class to track network events by request ID
  *
@@ -128,6 +129,29 @@ class NetworkEventManager {
     }
     forgetQueuedEventGroup(networkRequestId) {
         this.#queuedEventGroupMap.delete(networkRequestId);
+    }
+    printState() {
+        function replacer(_key, value) {
+            if (value instanceof Map) {
+                return {
+                    dataType: 'Map',
+                    value: Array.from(value.entries()), // or with spread: value: [...value]
+                };
+            }
+            else if (value instanceof HTTPRequest_js_1.CdpHTTPRequest) {
+                return {
+                    dataType: 'CdpHTTPRequest',
+                    value: `${value.id}: ${value.url()}`,
+                };
+            }
+            {
+                return value;
+            }
+        }
+        console.log('httpRequestsMap', JSON.stringify(this.#httpRequestsMap, replacer, 2));
+        console.log('requestWillBeSentMap', JSON.stringify(this.#requestWillBeSentMap, replacer, 2));
+        console.log('requestWillBeSentMap', JSON.stringify(this.#responseReceivedExtraInfoMap, replacer, 2));
+        console.log('requestWillBeSentMap', JSON.stringify(this.#requestPausedMap, replacer, 2));
     }
 }
 exports.NetworkEventManager = NetworkEventManager;

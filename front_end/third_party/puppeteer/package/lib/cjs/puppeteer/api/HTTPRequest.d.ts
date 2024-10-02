@@ -85,6 +85,7 @@ export declare const DEFAULT_INTERCEPT_RESOLUTION_PRIORITY = 0;
  * @public
  */
 export declare abstract class HTTPRequest {
+    #private;
     /**
      * @internal
      */

@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import type { Protocol } from 'devtools-protocol';
-import type { CdpHTTPRequest } from './HTTPRequest.js';
+import { CdpHTTPRequest } from './HTTPRequest.js';
 /**
  * @internal
  */
@@ -53,5 +53,6 @@ export declare class NetworkEventManager {
     getQueuedEventGroup(networkRequestId: NetworkRequestId): QueuedEventGroup | undefined;
     queueEventGroup(networkRequestId: NetworkRequestId, event: QueuedEventGroup): void;
     forgetQueuedEventGroup(networkRequestId: NetworkRequestId): void;
+    printState(): void;
 }
 //# sourceMappingURL=NetworkEventManager.d.ts.map

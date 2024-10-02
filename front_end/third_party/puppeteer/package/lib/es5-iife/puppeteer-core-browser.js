@@ -2853,7 +2853,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   /**
    * @internal
    */
-  const packageVersion = '23.4.1';
+  const packageVersion = '23.5.0';
 
   /**
    * @license
@@ -9399,11 +9399,13 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    *
    * @public
    */
+  var _HTTPRequest_brand = /*#__PURE__*/new WeakSet();
   class HTTPRequest {
     /**
      * @internal
      */
     constructor() {
+      _classPrivateMethodInitSpec(this, _HTTPRequest_brand);
       /**
        * @internal
        */
@@ -9558,8 +9560,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
      * Exception is immediately thrown if the request interception is not enabled.
      */
     async continue(overrides = {}, priority) {
-      // Request interception is not supported for data: urls.
-      if (this.url().startsWith('data:')) {
+      if (!_assertClassBrand(_HTTPRequest_brand, this, _canBeIntercepted).call(this)) {
         return;
       }
       assert(this.interception.enabled, 'Request Interception is not enabled!');
@@ -9616,8 +9617,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
      * Exception is immediately thrown if the request interception is not enabled.
      */
     async respond(response, priority) {
-      // Mocking responses for dataURL requests is not currently supported.
-      if (this.url().startsWith('data:')) {
+      if (!_assertClassBrand(_HTTPRequest_brand, this, _canBeIntercepted).call(this)) {
         return;
       }
       assert(this.interception.enabled, 'Request Interception is not enabled!');
@@ -9655,8 +9655,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
      * throw an exception immediately.
      */
     async abort(errorCode = 'failed', priority) {
-      // Request interception is not supported for data: urls.
-      if (this.url().startsWith('data:')) {
+      if (!_assertClassBrand(_HTTPRequest_brand, this, _canBeIntercepted).call(this)) {
         return;
       }
       const errorReason = errorReasons[errorCode];
@@ -9690,6 +9689,9 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   /**
    * @public
    */
+  function _canBeIntercepted() {
+    return !this.url().startsWith('data:') && !this._fromMemoryCache;
+  }
   exports.InterceptResolutionAction = void 0;
   (function (InterceptResolutionAction) {
     InterceptResolutionAction["Abort"] = "abort";
@@ -15921,9 +15923,10 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    * Waits for the next context to be set on the isolated world.
    */
   async function _waitForExecutionContext() {
+    const error = new Error('Execution context was destroyed');
     const result = await firstValueFrom(fromEmitterEvent(_classPrivateFieldGet(_emitter2, this), 'context').pipe(raceWith(fromEmitterEvent(_classPrivateFieldGet(_emitter2, this), 'disposed').pipe(map(() => {
       // The message has to match the CDP message expected by the WaitTask class.
-      throw new Error('Execution context was destroyed');
+      throw error;
     })), timeout(this.timeoutSettings.timeout()))));
     return result;
   }
@@ -17098,6 +17101,28 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     forgetQueuedEventGroup(networkRequestId) {
       _classPrivateFieldGet(_queuedEventGroupMap, this).delete(networkRequestId);
     }
+    printState() {
+      function replacer(_key, value) {
+        if (value instanceof Map) {
+          return {
+            dataType: 'Map',
+            value: Array.from(value.entries()) // or with spread: value: [...value]
+          };
+        } else if (value instanceof CdpHTTPRequest) {
+          return {
+            dataType: 'CdpHTTPRequest',
+            value: `${value.id}: ${value.url()}`
+          };
+        }
+        {
+          return value;
+        }
+      }
+      console.log('httpRequestsMap', JSON.stringify(_classPrivateFieldGet(_httpRequestsMap, this), replacer, 2));
+      console.log('requestWillBeSentMap', JSON.stringify(_classPrivateFieldGet(_requestWillBeSentMap, this), replacer, 2));
+      console.log('requestWillBeSentMap', JSON.stringify(_classPrivateFieldGet(_responseReceivedExtraInfoMap, this), replacer, 2));
+      console.log('requestWillBeSentMap', JSON.stringify(_classPrivateFieldGet(_requestPausedMap, this), replacer, 2));
+    }
   }
 
   /**
@@ -17389,7 +17414,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     this.emit(exports.NetworkManagerEvent.Request, request);
     void request.finalizeInterceptions();
   }
-  function _onRequest2(client, event, fetchRequestId) {
+  function _onRequest2(client, event, fetchRequestId, fromMemoryCache = false) {
     let redirectChain = [];
     if (event.redirectResponse) {
       // We want to emit a response and requestfinished for the
@@ -17420,14 +17445,27 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     }
     const frame = event.frameId ? _classPrivateFieldGet(_frameManager, this).frame(event.frameId) : null;
     const request = new CdpHTTPRequest(client, frame, fetchRequestId, _classPrivateFieldGet(_userRequestInterceptionEnabled, this), event, redirectChain);
+    request._fromMemoryCache = fromMemoryCache;
     _classPrivateFieldGet(_networkEventManager, this).storeRequest(event.requestId, request);
     this.emit(exports.NetworkManagerEvent.Request, request);
     void request.finalizeInterceptions();
   }
-  function _onRequestServedFromCache(_client, event) {
-    const request = _classPrivateFieldGet(_networkEventManager, this).getRequest(event.requestId);
+  function _onRequestServedFromCache(client, event) {
+    const requestWillBeSentEvent = _classPrivateFieldGet(_networkEventManager, this).getRequestWillBeSent(event.requestId);
+    let request = _classPrivateFieldGet(_networkEventManager, this).getRequest(event.requestId);
+    // Requests served from memory cannot be intercepted.
     if (request) {
       request._fromMemoryCache = true;
+    }
+    // If request ended up being served from cache, we need to convert
+    // requestWillBeSentEvent to a HTTP request.
+    if (!request && requestWillBeSentEvent) {
+      _assertClassBrand(_NetworkManager_brand, this, _onRequest2).call(this, client, requestWillBeSentEvent, undefined, true);
+      request = _classPrivateFieldGet(_networkEventManager, this).getRequest(event.requestId);
+    }
+    if (!request) {
+      debugError(new Error(`Request ${event.requestId} was served from cache but we could not find the corresponding request object`));
+      return;
     }
     this.emit(exports.NetworkManagerEvent.RequestServedFromCache, request);
   }
@@ -23906,9 +23944,9 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    * @internal
    */
   const PUPPETEER_REVISIONS = Object.freeze({
-    chrome: '129.0.6668.70',
-    'chrome-headless-shell': '129.0.6668.70',
-    firefox: 'stable_130.0.1'
+    chrome: '129.0.6668.89',
+    'chrome-headless-shell': '129.0.6668.89',
+    firefox: 'stable_131.0'
   });
 
   /**

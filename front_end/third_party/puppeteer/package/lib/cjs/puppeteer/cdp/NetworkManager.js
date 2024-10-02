@@ -303,7 +303,7 @@ class NetworkManager extends EventEmitter_js_1.EventEmitter {
         this.emit(NetworkManagerEvents_js_1.NetworkManagerEvent.Request, request);
         void request.finalizeInterceptions();
     }
-    #onRequest(client, event, fetchRequestId) {
+    #onRequest(client, event, fetchRequestId, fromMemoryCache = false) {
         let redirectChain = [];
         if (event.redirectResponse) {
             // We want to emit a response and requestfinished for the
@@ -338,14 +338,27 @@ class NetworkManager extends EventEmitter_js_1.EventEmitter {
             ? this.#frameManager.frame(event.frameId)
             : null;
         const request = new HTTPRequest_js_1.CdpHTTPRequest(client, frame, fetchRequestId, this.#userRequestInterceptionEnabled, event, redirectChain);
+        request._fromMemoryCache = fromMemoryCache;
         this.#networkEventManager.storeRequest(event.requestId, request);
         this.emit(NetworkManagerEvents_js_1.NetworkManagerEvent.Request, request);
         void request.finalizeInterceptions();
     }
-    #onRequestServedFromCache(_client, event) {
-        const request = this.#networkEventManager.getRequest(event.requestId);
+    #onRequestServedFromCache(client, event) {
+        const requestWillBeSentEvent = this.#networkEventManager.getRequestWillBeSent(event.requestId);
+        let request = this.#networkEventManager.getRequest(event.requestId);
+        // Requests served from memory cannot be intercepted.
         if (request) {
             request._fromMemoryCache = true;
+        }
+        // If request ended up being served from cache, we need to convert
+        // requestWillBeSentEvent to a HTTP request.
+        if (!request && requestWillBeSentEvent) {
+            this.#onRequest(client, requestWillBeSentEvent, undefined, true);
+            request = this.#networkEventManager.getRequest(event.requestId);
+        }
+        if (!request) {
+            (0, util_js_1.debugError)(new Error(`Request ${event.requestId} was served from cache but we could not find the corresponding request object`));
+            return;
         }
         this.emit(NetworkManagerEvents_js_1.NetworkManagerEvent.RequestServedFromCache, request);
     }

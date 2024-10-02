@@ -72,6 +72,7 @@ let BidiHTTPResponse = (() => {
         }
         #initialize() {
             if (this.#data.fromCache) {
+                this.#request._fromMemoryCache = true;
                 this.#request
                     .frame()
                     ?.page()

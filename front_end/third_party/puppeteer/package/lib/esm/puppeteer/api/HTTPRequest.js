@@ -159,6 +159,9 @@ export class HTTPRequest {
                 return await this._continue(this.interception.requestOverrides);
         }
     }
+    #canBeIntercepted() {
+        return !this.url().startsWith('data:') && !this._fromMemoryCache;
+    }
     /**
      * Continues request with optional request overrides.
      *
@@ -188,8 +191,7 @@ export class HTTPRequest {
      * Exception is immediately thrown if the request interception is not enabled.
      */
     async continue(overrides = {}, priority) {
-        // Request interception is not supported for data: urls.
-        if (this.url().startsWith('data:')) {
+        if (!this.#canBeIntercepted()) {
             return;
         }
         assert(this.interception.enabled, 'Request Interception is not enabled!');
@@ -249,8 +251,7 @@ export class HTTPRequest {
      * Exception is immediately thrown if the request interception is not enabled.
      */
     async respond(response, priority) {
-        // Mocking responses for dataURL requests is not currently supported.
-        if (this.url().startsWith('data:')) {
+        if (!this.#canBeIntercepted()) {
             return;
         }
         assert(this.interception.enabled, 'Request Interception is not enabled!');
@@ -290,8 +291,7 @@ export class HTTPRequest {
      * throw an exception immediately.
      */
     async abort(errorCode = 'failed', priority) {
-        // Request interception is not supported for data: urls.
-        if (this.url().startsWith('data:')) {
+        if (!this.#canBeIntercepted()) {
             return;
         }
         const errorReason = errorReasons[errorCode];

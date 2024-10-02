@@ -51,7 +51,7 @@ const UIStrings = {
    * @description Message shown to the user if the enterprise policy does
    * not allow this feature.
    */
-  policyRestricted: 'Your organization turned off this feature. Contact your administrators for more information',
+  policyRestricted: 'This setting is managed by your administrator',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/freestyler/freestyler-meta.ts', UIStrings);

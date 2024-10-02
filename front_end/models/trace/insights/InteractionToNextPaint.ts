@@ -17,7 +17,7 @@ export type INPInsightResult = InsightResult<{
 }>;
 
 export function generateInsight(parsedTrace: RequiredData<typeof deps>, context: InsightSetContext): INPInsightResult {
-  const interactionEvents = parsedTrace.UserInteractions.interactionEvents.filter(event => {
+  const interactionEvents = parsedTrace.UserInteractions.interactionEventsWithNoNesting.filter(event => {
     return Helpers.Timing.eventIsInBounds(event, context.bounds);
   });
 

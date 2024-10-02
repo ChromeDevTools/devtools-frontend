@@ -107,7 +107,6 @@ export class InteractionToNextPaint extends BaseInsight {
       },
       {
         type: 'ENTRY_LABEL',
-        // TODO(b/366040373) why aren't annotations rendering for synthetic events?
         entry: event,
         label: i18nString(UIStrings.longestInteraction),
       },

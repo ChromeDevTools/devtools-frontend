@@ -292,28 +292,11 @@ const UIStrings = {
   dnsAlpnH3JobWonRace:
       '`Chrome` used a `HTTP/3` connection due to the `DNS record` indicating `HTTP/3` support, which won a race against establishing a connection using a different `HTTP` version.',
   /**
-   *@description Tooltip to explain the resource's overridden status
-   */
-  requestContentHeadersOverridden: 'Both request content and headers are overridden',
-  /**
-   *@description Tooltip to explain the resource's overridden status
-   */
-  requestContentOverridden: 'Request content is overridden',
-  /**
-   *@description Tooltip to explain the resource's overridden status
-   */
-  requestHeadersOverridden: 'Request headers are overridden',
-  /**
    *@description Tooltip to explain the resource's initial priority
    *@example {High} PH1
    *@example {Low} PH2
    */
   initialPriorityToolTip: '{PH1}, Initial priority: {PH2}',
-  /**
-   *@description Tooltip to explain why the request has warning icon
-   */
-  thirdPartyPhaseout:
-      'Cookies for this request are blocked either because of Chrome flags or browser configuration. Learn more in the Issues panel.',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/network/NetworkDataGridNode.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -1078,24 +1061,7 @@ export class NetworkRequestNode extends NetworkNode {
   }
 
   override isFailed(): boolean {
-    if (this.requestInternal.failed && !this.requestInternal.statusCode) {
-      return true;
-    }
-    if (this.requestInternal.statusCode >= 400) {
-      return true;
-    }
-    const signedExchangeInfo = this.requestInternal.signedExchangeInfo();
-    if (signedExchangeInfo !== null && Boolean(signedExchangeInfo.errors)) {
-      return true;
-    }
-    if (this.requestInternal.webBundleInfo()?.errorMessage ||
-        this.requestInternal.webBundleInnerRequestInfo()?.errorMessage) {
-      return true;
-    }
-    if (this.requestInternal.corsErrorStatus()) {
-      return true;
-    }
-    return false;
+    return PanelUtils.isFailedNetworkRequest(this.requestInternal);
   }
 
   private renderPrimaryCell(cell: HTMLElement, columnId: string, text?: string): void {
@@ -1116,7 +1082,7 @@ export class NetworkRequestNode extends NetworkNode {
       cell.addEventListener('focus', () => this.parentView().resetFocus());
 
       // render icons
-      const iconElement = this.getIcon(this.requestInternal);
+      const iconElement = PanelUtils.getIconForNetworkRequest(this.requestInternal);
       cell.appendChild(iconElement);
     }
 
@@ -1127,7 +1093,7 @@ export class NetworkRequestNode extends NetworkNode {
           iconName: 'bundle',
           color: 'var(--icon-info)',
         };
-        const secondIconElement = this.createIconElement(iconData, i18nString(UIStrings.webBundleInnerRequest));
+        const secondIconElement = PanelUtils.createIconElement(iconData, i18nString(UIStrings.webBundleInnerRequest));
         secondIconElement.classList.add('icon');
 
         const networkManager = SDK.NetworkManager.NetworkManager.forRequest(this.requestInternal);
@@ -1151,121 +1117,6 @@ export class NetworkRequestNode extends NetworkNode {
     } else if (text) {
       UI.UIUtils.createTextChild(cell, text);
     }
-  }
-
-  private createIconElement(iconData: {iconName: string, color: string}, title: string): HTMLElement {
-    const iconElement = document.createElement('div');
-    iconElement.title = title;
-    iconElement.style.setProperty(
-        'mask',
-        `url('${
-            new URL(`../../Images/${iconData.iconName}.svg`, import.meta.url).toString()}')  no-repeat center /99%`);
-    iconElement.style.setProperty('background-color', iconData.color);
-    return iconElement;
-  }
-
-  private getIcon(request: SDK.NetworkRequest.NetworkRequest): HTMLElement {
-    let type = request.resourceType();
-    let iconElement: HTMLElement;
-
-    if (this.isFailed()) {
-      const iconData = {
-        iconName: 'cross-circle-filled',
-        color: 'var(--icon-error)',
-      };
-      iconElement = this.createIconElement(iconData, type.title());
-      iconElement.classList.add('icon');
-
-      return iconElement;
-    }
-
-    if (request.hasThirdPartyCookiePhaseoutIssue()) {
-      const iconData = {
-        iconName: 'warning-filled',
-        color: 'var(--icon-warning)',
-      };
-      iconElement = this.createIconElement(iconData, i18nString(UIStrings.thirdPartyPhaseout));
-      iconElement.classList.add('icon');
-
-      return iconElement;
-    }
-
-    const isHeaderOverriden = request.hasOverriddenHeaders();
-    const isContentOverriden = request.hasOverriddenContent;
-    if (isHeaderOverriden || isContentOverriden) {
-      const iconData = {
-        iconName: 'document',
-        color: 'var(--icon-default)',
-      };
-
-      let title: Common.UIString.LocalizedString;
-      if (isHeaderOverriden && isContentOverriden) {
-        title = i18nString(UIStrings.requestContentHeadersOverridden);
-      } else if (isContentOverriden) {
-        title = i18nString(UIStrings.requestContentOverridden);
-      } else {
-        title = i18nString(UIStrings.requestHeadersOverridden);
-      }
-
-      const iconChildElement = this.createIconElement(iconData, title);
-      iconChildElement.classList.add('icon');
-
-      iconElement = document.createElement('div');
-      iconElement.classList.add('network-override-marker');
-      iconElement.appendChild(iconChildElement);
-
-      return iconElement;
-    }
-
-    // Pick icon based on MIME type in the following cases:
-    // - If the MIME type is 'image': some images have request type of 'fetch' or etc.
-    // - If the request type is 'fetch': everything fetched by service worker has request type 'fetch'.
-    // - If the request type is 'other' and MIME type is 'script', e.g. for wasm files
-    const typeFromMime = Common.ResourceType.ResourceType.fromMimeType(request.mimeType);
-
-    if (typeFromMime !== type && typeFromMime !== Common.ResourceType.resourceTypes.Other) {
-      if (type === Common.ResourceType.resourceTypes.Fetch) {
-        type = typeFromMime;
-      } else if (typeFromMime === Common.ResourceType.resourceTypes.Image) {
-        type = typeFromMime;
-      } else if (
-          type === Common.ResourceType.resourceTypes.Other &&
-          typeFromMime === Common.ResourceType.resourceTypes.Script) {
-        type = typeFromMime;
-      }
-    }
-
-    if (type === Common.ResourceType.resourceTypes.Image) {
-      const previewImage = document.createElement('img');
-      previewImage.classList.add('image-network-icon-preview');
-      previewImage.alt = request.resourceType().title();
-      void request.populateImageSource((previewImage as HTMLImageElement));
-
-      iconElement = document.createElement('div');
-      iconElement.classList.add('image', 'icon');
-      iconElement.appendChild(previewImage);
-
-      return iconElement;
-    }
-
-    // Exclude Manifest here because it has mimeType:application/json but it has its own icon
-    if (type !== Common.ResourceType.resourceTypes.Manifest &&
-        Common.ResourceType.ResourceType.simplifyContentType(request.mimeType) === 'application/json') {
-      const iconData = {
-        iconName: 'file-json',
-        color: 'var(--icon-file-script)',
-      };
-      iconElement = this.createIconElement(iconData, request.resourceType().title());
-      iconElement.classList.add('icon');
-
-      return iconElement;
-    }
-
-    // Others
-    const iconData = PanelUtils.iconDataForResourceType(type);
-    iconElement = this.createIconElement(iconData, request.resourceType().title());
-    iconElement.classList.add('icon');
-    return iconElement;
   }
 
   private renderStatusCell(cell: HTMLElement): void {

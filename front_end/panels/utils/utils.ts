@@ -57,7 +57,7 @@ export class PanelUtils {
     return false;
   }
 
-  private static createIconElement(iconData: {iconName: string, color: string}, title: string): HTMLElement {
+  static createIconElement(iconData: {iconName: string, color: string}, title: string): HTMLElement {
     const iconElement = document.createElement('div');
     iconElement.title = title;
     const url = new URL(`../../Images/${iconData.iconName}.svg`, import.meta.url).toString();

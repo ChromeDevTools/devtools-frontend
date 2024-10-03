@@ -779,9 +779,12 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
   }
 
   setInsights(insights: Trace.Insights.Types.TraceInsightSets|null): void {
-    if (this.#traceInsightsSets !== insights) {
-      this.#traceInsightsSets = insights;
+    if (this.#traceInsightsSets === insights) {
+      return;
     }
+    this.#traceInsightsSets = insights;
+    // The DetailsView is provided with the InsightSets, so make sure we update it.
+    this.#updateDetailViews();
   }
 
   #reset(): void {

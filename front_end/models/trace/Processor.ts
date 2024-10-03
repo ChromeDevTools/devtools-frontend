@@ -342,19 +342,28 @@ export class TraceProcessor extends EventTarget {
       Object.assign(data, {[name]: insightResult});
     }
 
-    let id, label, navigation;
+    let id, urlString, navigation;
     if (context.navigation) {
       id = context.navigationId;
-      label = context.navigation.args.data?.documentLoaderURL ?? parsedTrace.Meta.mainFrameURL;
+      urlString = context.navigation.args.data?.documentLoaderURL ?? parsedTrace.Meta.mainFrameURL;
       navigation = context.navigation;
     } else {
       id = Types.Events.NO_NAVIGATION;
-      label = parsedTrace.Meta.mainFrameURL;
+      urlString = parsedTrace.Meta.mainFrameURL;
+    }
+
+    let url;
+    try {
+      url = new URL(urlString);
+    } catch {
+      // We're pretty sure this only happens for our test fixture: missing-url.json.gz. Shouldn't
+      // happen for real traces.
+      return;
     }
 
     const insightSets = {
       id,
-      label,
+      url,
       navigation,
       frameId: context.frameId,
       bounds: context.bounds,

@@ -15,6 +15,7 @@ import * as Insights from './insights/insights.js';
 import {type ActiveInsight} from './Sidebar.js';
 import styles from './sidebarInsightsTab.css.js';
 import {SidebarSingleInsightSet, type SidebarSingleInsightSetData} from './SidebarSingleInsightSet.js';
+import {createUrlLabels} from './Utils.js';
 
 const FEEDBACK_URL = 'https://crbug.com/371170842' as Platform.DevToolsPath.UrlString;
 
@@ -133,6 +134,7 @@ export class SidebarInsightsTab extends HTMLElement {
     }
 
     const hasMultipleInsightSets = this.#insights.size > 1;
+    const labels = createUrlLabels([...this.#insights.values()].map(({url}) => url));
 
     // clang-format off
     const html = LitHtml.html`
@@ -150,7 +152,7 @@ export class SidebarInsightsTab extends HTMLElement {
       </select>
 
       <div class="insight-sets-wrapper">
-        ${[...this.#insights.values()].map(({id, label}) => {
+        ${[...this.#insights.values()].map(({id, url}, index) => {
           const data = {
             parsedTrace: this.#parsedTrace,
             insights: this.#insights,
@@ -173,7 +175,8 @@ export class SidebarInsightsTab extends HTMLElement {
                 @click=${() => this.#insightSetClicked(id)}
                 @mouseenter=${() => this.#insightSetHovered(id)}
                 @mouseleave=${() => this.#insightSetUnhovered()}
-                >${label}</summary>
+                title=${url.href}
+                >${labels[index]}</summary>
               ${contents}
             </details>`;
           }

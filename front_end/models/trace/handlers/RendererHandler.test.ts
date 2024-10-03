@@ -814,7 +814,7 @@ describeWithEnvironment('RendererHandler', function() {
     const pid = Trace.Types.Events.ProcessID(28274);
     const tid = Trace.Types.Events.ThreadID(775);
     beforeEach(async function() {
-      defaultTraceEvents = await TraceLoader.rawEvents(this, 'basic.json.gz');
+      defaultTraceEvents = await TraceLoader.rawEvents(this, 'missing-url.json.gz');
     });
 
     afterEach(() => {

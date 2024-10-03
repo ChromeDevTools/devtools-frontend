@@ -64,8 +64,8 @@ export type InsightResult<R extends Record<string, unknown>> = R&{
 export type InsightSets = {
   /** If for a navigation, this is the navigationId. Else it is Trace.Types.Events.NO_NAVIGATION. */
   id: Types.Events.NavigationId,
-  /** The URL. Shown in the accordion list. */
-  label: string,
+  /** The URL to show in the accordion list. */
+  url: URL,
   frameId: string,
   bounds: Types.Timing.TraceWindowMicroSeconds,
   data: InsightResults,

@@ -117,6 +117,7 @@ ts_library("unittests") {
     "SidebarAnnotationsTab.test.ts",
     "SidebarInsightsTab.test.ts",
     "SidebarSingleInsightSet.test.ts",
+    "Utils.test.ts",
   ]
 
   deps = [

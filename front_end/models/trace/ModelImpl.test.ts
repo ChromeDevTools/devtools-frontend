@@ -87,7 +87,7 @@ describeWithEnvironment('TraceModel', function() {
       // Process the previous trace again to test the trace sequencing
       await TraceLoader.rawEvents(this, 'web-dev.json.gz'),
       await TraceLoader.rawEvents(this, 'multiple-navigations.json.gz'),
-      await TraceLoader.rawEvents(this, 'basic.json.gz'),
+      await TraceLoader.rawEvents(this, 'missing-url.json.gz'),
     ];
     for (const traceFile of traceFiles) {
       await model.parse(traceFile);

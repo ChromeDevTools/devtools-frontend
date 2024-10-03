@@ -28,7 +28,7 @@ describeWithEnvironment('TraceModel helpers', function() {
     });
 
     it('returns null when no origin is found', async function() {
-      const {parsedTrace} = await TraceLoader.traceEngine(this, 'basic.json.gz');
+      const {parsedTrace} = await TraceLoader.traceEngine(this, 'missing-url.json.gz');
       const origin = Trace.Helpers.Trace.extractOriginFromTrace(parsedTrace.Meta.mainFrameURL);
       assert.isNull(origin);
     });

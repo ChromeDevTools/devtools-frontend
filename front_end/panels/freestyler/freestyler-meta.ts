@@ -89,9 +89,14 @@ function isFeatureAvailable(config?: Root.Runtime.HostConfig): boolean {
   return (config?.aidaAvailability?.enabled && config?.devToolsFreestylerDogfood?.enabled) === true;
 }
 
-function isDrJonesFeatureAvailable(config?: Root.Runtime.HostConfig): boolean {
+function isDrJonesNetworkFeatureAvailable(config?: Root.Runtime.HostConfig): boolean {
   return (config?.aidaAvailability?.enabled && config?.devToolsFreestylerDogfood?.enabled &&
           config?.devToolsExplainThisResourceDogfood?.enabled) === true;
+}
+
+function isDrJonesPerformanceFeatureAvailable(config?: Root.Runtime.HostConfig): boolean {
+  return (config?.aidaAvailability?.enabled && config?.devToolsFreestylerDogfood?.enabled &&
+          config?.devToolsAiAssistancePerformanceAgentDogfood?.enabled) === true;
 }
 
 UI.ViewManager.registerViewExtension({
@@ -161,5 +166,20 @@ UI.ActionRegistration.registerActionExtension({
     const Freestyler = await loadFreestylerModule();
     return new Freestyler.ActionDelegate();
   },
-  condition: config => isDrJonesFeatureAvailable(config) && !isPolicyRestricted(config),
+  condition: config => isDrJonesNetworkFeatureAvailable(config) && !isPolicyRestricted(config),
+});
+
+UI.ActionRegistration.registerActionExtension({
+  actionId: 'drjones.performance-panel-context',
+  contextTypes(): [] {
+    return [];
+  },
+  setting,
+  category: UI.ActionRegistration.ActionCategory.GLOBAL,
+  title: i18nLazyString(UIStrings.askAiAssistance),
+  async loadActionDelegate() {
+    const Freestyler = await loadFreestylerModule();
+    return new Freestyler.ActionDelegate();
+  },
+  condition: config => isDrJonesPerformanceFeatureAvailable(config) && !isPolicyRestricted(config),
 });

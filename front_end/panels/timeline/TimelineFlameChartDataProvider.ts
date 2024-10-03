@@ -215,6 +215,12 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
 
     const contextMenu = new UI.ContextMenu.ContextMenu(event, {useSoftMenu: true});
 
+    if (UI.ActionRegistry.ActionRegistry.instance().hasAction('drjones.performance-panel-context')) {
+      contextMenu.headerSection().appendAction(
+          'drjones.performance-panel-context',
+      );
+    }
+
     const hideEntryOption = contextMenu.defaultSection().appendItem(i18nString(UIStrings.hideFunction), () => {
       this.modifyTree(PerfUI.FlameChart.FilterAction.MERGE_FUNCTION, entryIndex);
     }, {

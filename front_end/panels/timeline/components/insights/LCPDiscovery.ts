@@ -10,8 +10,7 @@ import * as IconButton from '../../../../ui/components/icon_button/icon_button.j
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
-import {BaseInsight, shouldRenderForCategory} from './Helpers.js';
-import discoveryStyles from './lcpDiscovery.css.js';
+import {BaseInsight, eventRef, shortenUrl, shouldRenderForCategory} from './Helpers.js';
 import * as SidebarInsight from './SidebarInsight.js';
 import {Category} from './types.js';
 
@@ -99,11 +98,6 @@ export class LCPDiscovery extends BaseInsight {
   override userVisibleTitle: string = i18nString(UIStrings.title);
   override description: string = '';
 
-  override connectedCallback(): void {
-    super.connectedCallback();
-    this.shadow.adoptedStyleSheets.push(discoveryStyles);
-  }
-
   #adviceIcon(didFail: boolean): LitHtml.TemplateResult {
     const icon = didFail ? 'clear' : 'check-circle';
 
@@ -159,6 +153,32 @@ export class LCPDiscovery extends BaseInsight {
     ];
   }
 
+  #handleBadImage(event: Event): void {
+    const img = event.target as HTMLImageElement;
+    img.style.display = 'none';
+  }
+
+  #renderImage(imageData: LCPImageDiscoveryData): LitHtml.TemplateResult {
+    const name = Common.ParsedURL.ParsedURL.extractName(imageData.request.args.data.url ?? '');
+    const reqElement = eventRef(this, imageData.request, shortenUrl(name));
+    // clang-format off
+    return LitHtml.html`
+      <div class="lcp-element">
+        ${imageData.request.args.data.mimeType.includes('image') ?
+          LitHtml.html`
+        <img
+          class="element-img"
+          src=${imageData.request.args.data.url}
+          @error=${this.#handleBadImage}
+           />`: LitHtml.nothing}
+        <span class="element-img-details">
+          ${reqElement}
+          <span class="element-img-details-size">${Platform.NumberUtilities.bytesToString(imageData.request.args.data.decodedBodyLength ?? 0)}</span>
+        </span>
+      </div>`;
+    // clang-format on
+  }
+
   #renderDiscovery(imageData: LCPImageDiscoveryData): LitHtml.TemplateResult {
     // clang-format off
     return LitHtml.html`
@@ -173,9 +193,8 @@ export class LCPDiscovery extends BaseInsight {
           @insighttoggleclick=${this.onSidebarClick}
         >
           <div slot="insight-content" class="insight-section">
-            <div>
-              ${imageData.discoveryDelay ? LitHtml.html`<div class="discovery-delay">${this.#renderDiscoveryDelay(imageData.discoveryDelay)}</div>` : LitHtml.nothing}
-              <ul class="insight-results insight-icon-results">
+            <div class="insight-results">
+              <ul class="insight-icon-results">
                 <li class="insight-entry">
                   ${this.#adviceIcon(imageData.shouldIncreasePriorityHint)}
                   <span>${i18nString(UIStrings.fetchPriorityApplied)}</span>
@@ -190,15 +209,7 @@ export class LCPDiscovery extends BaseInsight {
                 </li>
               </ul>
             </div>
-
-            <div>
-              <img class="element-img" data-src=${imageData.request.args.data.url} src=${imageData.request.args.data.url}>
-              <div class="element-img-details">
-                ${Common.ParsedURL.ParsedURL.extractName(imageData.request.args.data.url ?? '')}
-                <div class="element-img-details-size">${Platform.NumberUtilities.bytesToString(imageData.request.args.data.decodedBodyLength ?? 0)}</div>
-              </div>
-            </div>
-          </div>
+            ${this.#renderImage(imageData)}
         </${SidebarInsight.SidebarInsight}>
       </div>`;
     // clang-format on

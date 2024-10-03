@@ -9,7 +9,6 @@ import("../../../../../scripts/build/typescript/typescript.gni")
 
 generate_css("css_files") {
   sources = [
-    "lcpDiscovery.css",
     "sidebarInsight.css",
     "table.css",
   ]

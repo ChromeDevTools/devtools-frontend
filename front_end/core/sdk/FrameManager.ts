@@ -53,6 +53,10 @@ export class FrameManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes>
     return frameManagerInstance;
   }
 
+  static removeInstance(): void {
+    frameManagerInstance = null;
+  }
+
   modelAdded(resourceTreeModel: ResourceTreeModel): void {
     const addListener = resourceTreeModel.addEventListener(ResourceTreeModelEvents.FrameAdded, this.frameAdded, this);
     const detachListener =

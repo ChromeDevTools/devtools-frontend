@@ -231,15 +231,14 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
     this.#sendStatusUpdate();
   }
 
-  #getFrameForExecutionContextId(executionContextId: Protocol.Runtime.ExecutionContextId):
-      SDK.ResourceTreeModel.ResourceTreeFrame|null {
+  async #getFrameForExecutionContextId(executionContextId: Protocol.Runtime.ExecutionContextId):
+      Promise<SDK.ResourceTreeModel.ResourceTreeFrame|null> {
     if (!this.#target) {
       return null;
     }
 
     const runtimeModel = this.#target.model(SDK.RuntimeModel.RuntimeModel);
-    const resourceTreeModel = this.#target.model(SDK.ResourceTreeModel.ResourceTreeModel);
-    if (!runtimeModel || !resourceTreeModel) {
+    if (!runtimeModel) {
       return null;
     }
 
@@ -253,12 +252,8 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
       return null;
     }
 
-    const frame = resourceTreeModel.frameForId(frameId);
-    if (!frame) {
-      return null;
-    }
-
-    return frame;
+    const frameManager = SDK.FrameManager.FrameManager.instance();
+    return frameManager.getOrWaitForFrame(frameId);
   }
 
   async #onBindingCalled(event: {data: Protocol.Runtime.BindingCalledEvent}): Promise<void> {
@@ -267,25 +262,25 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
       return;
     }
 
-    const frame = this.#getFrameForExecutionContextId(data.executionContextId);
-    if (!frame?.isMainFrame()) {
-      return;
-    }
-
-    const webVitalsEvent = JSON.parse(data.payload) as Spec.WebVitalsEvent;
-
-    // Previously injected scripts will persist if DevTools is closed and reopened.
-    // Ensure we only handle events from the same execution context as the most recent "reset" event.
-    // "reset" events are only emitted once when the script is injected.
-    if (webVitalsEvent.name === 'reset') {
-      this.#lastResetContextId = data.executionContextId;
-    } else if (this.#lastResetContextId !== data.executionContextId) {
-      return;
-    }
-
     // Async tasks can be performed while handling an event (e.g. resolving DOM node)
     // Use a mutex here to ensure the events are handled in the order they are received.
     await this.#mutex.run(async () => {
+      const frame = await this.#getFrameForExecutionContextId(data.executionContextId);
+      if (!frame?.isPrimaryFrame()) {
+        return;
+      }
+
+      const webVitalsEvent = JSON.parse(data.payload) as Spec.WebVitalsEvent;
+
+      // Previously injected scripts shouldn't persist, this is just a defensive measure.
+      // Ensure we only handle events from the same execution context as the most recent "reset" event.
+      // "reset" events are only emitted once when the script is injected or a bfcache restoration.
+      if (webVitalsEvent.name === 'reset') {
+        this.#lastResetContextId = data.executionContextId;
+      } else if (this.#lastResetContextId !== data.executionContextId) {
+        return;
+      }
+
       await this.#handleWebVitalsEvent(webVitalsEvent, data.executionContextId);
     });
   }

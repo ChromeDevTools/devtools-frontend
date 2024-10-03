@@ -134,14 +134,11 @@ export abstract class BaseInsight extends HTMLElement {
    * This enables the hover/click table interactions.
    */
   toggleTemporaryOverlays(
-      overlays: Overlays.Overlays.TimelineOverlay[]|null, options?: Overlays.Overlays.TimelineOverlaySetOptions): void {
+      overlays: Overlays.Overlays.TimelineOverlay[]|null, options: Overlays.Overlays.TimelineOverlaySetOptions): void {
     if (!this.isActive()) {
       return;
     }
 
-    if (!options) {
-      options = {updateTraceWindow: true};
-    }
     this.dispatchEvent(new SidebarInsight.InsightProvideOverlays(overlays ?? this.getInitialOverlays(), options));
   }
 

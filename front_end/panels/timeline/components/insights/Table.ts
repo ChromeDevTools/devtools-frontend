@@ -137,7 +137,7 @@ export class Table extends HTMLElement {
         this.#insight.toggleTemporaryOverlays(overlays, {updateTraceWindow: !opts.isHover});
       }
     } else {
-      this.#insight.toggleTemporaryOverlays(null);
+      this.#insight.toggleTemporaryOverlays(null, {updateTraceWindow: false});
     }
 
     this.#state.selectedRowEl?.classList.remove('selected');

@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as i18n from '../../../../core/i18n/i18n.js';
-import * as Trace from '../../../../models/trace/trace.js';
+import type * as Trace from '../../../../models/trace/trace.js';
 import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 
@@ -154,14 +154,13 @@ export class TimespanBreakdownOverlay extends HTMLElement {
   }
 
   renderSection(section: EntryBreakdown): LitHtml.TemplateResult {
-    const sectionRange = Trace.Helpers.Timing.microSecondsToMilliseconds(section.bounds.range);
     // clang-format off
     return LitHtml.html`
       <div class="timespan-breakdown-overlay-section">
         <div class="timespan-breakdown-overlay-label">
         ${section.showDuration ?
           LitHtml.html`
-            <span class="duration-text">${i18n.TimeUtilities.preciseMillisToString(sectionRange, 2)}</span>
+            <span class="duration-text">${i18n.TimeUtilities.formatMicroSecondsAsMillisFixed(section.bounds.range)}</span>
           ` : LitHtml.nothing}
           ${section.label}
         </div>

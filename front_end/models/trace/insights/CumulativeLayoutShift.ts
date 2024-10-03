@@ -58,6 +58,10 @@ export interface NoncompositedAnimationFailure {
    * Unsupported properties.
    */
   unsupportedProperties?: Types.Events.Animation['args']['data']['unsupportedProperties'];
+  /**
+   * Animation event.
+   */
+  animation?: Types.Events.SyntheticAnimationPair;
 }
 
 /**
@@ -158,10 +162,11 @@ function isInInvalidationWindow(event: Types.Events.Event, targetEvent: Types.Ev
   return eventEnd < targetEvent.ts && eventEnd >= targetEvent.ts - INVALIDATION_WINDOW;
 }
 
-export function getNonCompositedFailure(event: Types.Events.SyntheticAnimationPair): NoncompositedAnimationFailure[] {
+export function getNonCompositedFailure(animationEvent: Types.Events.SyntheticAnimationPair):
+    NoncompositedAnimationFailure[] {
   const failures: NoncompositedAnimationFailure[] = [];
-  const beginEvent = event.args.data.beginEvent;
-  const instantEvents = event.args.data.instantEvents || [];
+  const beginEvent = animationEvent.args.data.beginEvent;
+  const instantEvents = animationEvent.args.data.instantEvents || [];
   /**
    * Animation events containing composite information are ASYNC_NESTABLE_INSTANT ('n').
    * An animation may also contain multiple 'n' events, so we look through those with useful non-composited data.
@@ -178,6 +183,7 @@ export function getNonCompositedFailure(event: Types.Events.SyntheticAnimationPa
       name: beginEvent.args.data.displayName,
       failureReasons,
       unsupportedProperties,
+      animation: animationEvent,
     };
     failures.push(failure);
   }

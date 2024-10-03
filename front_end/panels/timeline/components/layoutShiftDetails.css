@@ -46,8 +46,8 @@
   th,
   td {
     padding-right: var(--sys-size-4);
-    min-width: var(--sys-size-18);
-    max-width: var(--sys-size-30);
+    min-width: var(--sys-size-20);
+    max-width: var(--sys-size-24);
   }
 }
 

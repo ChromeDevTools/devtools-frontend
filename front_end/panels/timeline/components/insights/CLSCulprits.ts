@@ -25,10 +25,14 @@ const UIStrings = {
    */
   worstLayoutShiftCluster: 'Worst layout shift cluster',
   /**
-   * @description Text indicating the worst layout shift cluster and its start time.
+   * @description Text indicating the worst layout shift cluster.
+   */
+  worstCluster: 'Worst cluster',
+  /**
+   * @description Text indicating a layout shift cluster and its start time.
    * @example {32 ms} PH1
    */
-  worstCluster: 'Worst cluster: Layout shift cluster @ {PH1}',
+  layoutShiftCluster: 'Layout shift cluster @ {PH1}',
   /**
    *@description Text indicating the biggest reasons for the layout shifts.
    */
@@ -82,10 +86,10 @@ export class CLSCulprits extends BaseInsight {
   }
 
   /**
-   * getTopCulprits gets the top 3 shift root causes based on clusters.
+   * getTopCulprits gets the top 3 shift root causes based on worst cluster.
    */
   getTopCulprits(
-      clusters: Trace.Types.Events.SyntheticLayoutShiftCluster[],
+      cluster: Trace.Types.Events.SyntheticLayoutShiftCluster,
       culpritsByShift:
           Map<Trace.Types.Events.LayoutShift,
               Trace.Insights.InsightRunners.CumulativeLayoutShift.LayoutShiftRootCausesData>|undefined): string[] {
@@ -94,33 +98,31 @@ export class CLSCulprits extends BaseInsight {
     }
     const MAX_TOP_CULPRITS = 3;
     const causes: Array<string> = [];
-    for (const cluster of clusters) {
+    if (causes.length === MAX_TOP_CULPRITS) {
+      return causes;
+    }
+    const shifts = cluster.events;
+    for (const shift of shifts) {
       if (causes.length === MAX_TOP_CULPRITS) {
         break;
       }
-      const shifts = cluster.events;
-      for (const shift of shifts) {
-        if (causes.length === MAX_TOP_CULPRITS) {
-          break;
-        }
 
-        const culprits = culpritsByShift.get(shift);
-        if (!culprits) {
-          continue;
-        }
-        const fontReq = culprits.fontRequests;
-        const iframes = culprits.iframeIds;
-        const animations = culprits.nonCompositedAnimations;
+      const culprits = culpritsByShift.get(shift);
+      if (!culprits) {
+        continue;
+      }
+      const fontReq = culprits.fontRequests;
+      const iframes = culprits.iframeIds;
+      const animations = culprits.nonCompositedAnimations;
 
-        for (let i = 0; i < fontReq.length && causes.length < MAX_TOP_CULPRITS; i++) {
-          causes.push(i18nString(UIStrings.fontRequest));
-        }
-        for (let i = 0; i < iframes.length && causes.length < MAX_TOP_CULPRITS; i++) {
-          causes.push(i18nString(UIStrings.injectedIframe));
-        }
-        for (let i = 0; i < animations.length && causes.length < MAX_TOP_CULPRITS; i++) {
-          causes.push(i18nString(UIStrings.animation));
-        }
+      for (let i = 0; i < fontReq.length && causes.length < MAX_TOP_CULPRITS; i++) {
+        causes.push(i18nString(UIStrings.fontRequest));
+      }
+      for (let i = 0; i < iframes.length && causes.length < MAX_TOP_CULPRITS; i++) {
+        causes.push(i18nString(UIStrings.injectedIframe));
+      }
+      for (let i = 0; i < animations.length && causes.length < MAX_TOP_CULPRITS; i++) {
+        causes.push(i18nString(UIStrings.animation));
       }
     }
     return causes.slice(0, MAX_TOP_CULPRITS);
@@ -147,15 +149,13 @@ export class CLSCulprits extends BaseInsight {
             } as SidebarInsight.InsightDetails}
             @insighttoggleclick=${this.onSidebarClick}>
                 <div slot="insight-content" class="insight-section">
-                  <div class="devtools-link" @click=${() => this.#clickEvent(worstCluster)}>${i18nString(UIStrings.worstCluster, {PH1: clusterTs})}</div>
-                  <p>
-                    <h3>${i18nString(UIStrings.topCulprits)}</h3>
-                    ${culprits.map(culprit => {
-                      return LitHtml.html `
-                        <li>${culprit}</li>
-                      `;
-                    })}
-                  <p>
+                  <span class="worst-cluster">${i18nString(UIStrings.worstCluster)}: <span class="devtools-link" @click=${() => this.#clickEvent(worstCluster)}>${i18nString(UIStrings.layoutShiftCluster, {PH1: clusterTs})}</span></span>
+                    <p>${i18nString(UIStrings.topCulprits)}:</p>
+                        ${culprits.map(culprit => {
+                          return LitHtml.html `
+                            <li>${culprit}</li>
+                          `;
+                        })}
                 </div>
             </${SidebarInsight.SidebarInsight}>
         </div>`;
@@ -167,9 +167,12 @@ export class CLSCulprits extends BaseInsight {
         Trace.Insights.Common.getInsight('CumulativeLayoutShift', this.data.insights, this.data.insightSetKey);
     const culpritsByShift = insight?.shifts;
     const clusters = insight?.clusters ?? [];
+    if (!clusters.length) {
+      return;
+    }
     const clustersByScore = clusters.toSorted((a, b) => b.clusterCumulativeScore - a.clusterCumulativeScore);
 
-    const causes = this.getTopCulprits(clustersByScore, culpritsByShift);
+    const causes = this.getTopCulprits(clustersByScore[0], culpritsByShift);
     const hasCulprits = causes.length > 0;
 
     const matchesCategory = shouldRenderForCategory({

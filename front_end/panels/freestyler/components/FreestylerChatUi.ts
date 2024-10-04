@@ -52,6 +52,10 @@ const UIStrings = {
    *@example {AI assistance in Settings} PH1
    */
   turnOnForStylesAndRequests: 'Turn on {PH1} to get help with styles and network requests',
+  /**
+   *@description The footer disclaimer that links to more information about the AI feature.
+   */
+  learnAbout: 'Learn about AI in DevTools',
 };
 
 /*
@@ -149,10 +153,6 @@ const UIStringsNotTranslate = {
    *@description Heading text for the code block that shows the returned data.
    */
   dataReturned: 'Data returned',
-  /**
-   *@description The footer disclaimer that links to more information about the AI feature.
-   */
-  learnAbout: 'Learn about AI in DevTools',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/freestyler/components/FreestylerChatUi.ts', UIStrings);
@@ -934,9 +934,9 @@ export class FreestylerChatUi extends HTMLElement {
           ${this.#renderChatInput()}
         </form>
         <footer class="disclaimer">
-          <p class="disclaimer-text">${lockedString(
-            this.#getDisclaimerText(),
-          )} <x-link
+          <p class="disclaimer-text">
+            ${this.#getDisclaimerText()}
+            <x-link
               class="link"
               jslog=${VisualLogging.link('open-ai-settings').track({
                 click: true,
@@ -947,7 +947,7 @@ export class FreestylerChatUi extends HTMLElement {
                   'chrome-ai',
                 );
               }}
-            >${lockedString(UIStringsNotTranslate.learnAbout)}</x-link>
+            >${i18nString(UIStrings.learnAbout)}</x-link>
           </p>
         </footer>
       </div>

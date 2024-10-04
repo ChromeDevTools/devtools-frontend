@@ -49,6 +49,19 @@ declare global {
   }
 }
 
+export interface ParseOptions {
+  /**
+   * If the trace was just recorded on the current page, rather than an imported file.
+   * @default false
+   */
+  isFreshRecording?: boolean;
+  /**
+   * If the trace is a CPU Profile rather than a Chrome tracing trace.
+   * @default false
+   */
+  isCPUProfile?: boolean;
+}
+
 export class TraceProcessor extends EventTarget {
   // We force the Meta handler to be enabled, so the TraceHandlers type here is
   // the model handlers the user passes in and the Meta handler.
@@ -151,14 +164,14 @@ export class TraceProcessor extends EventTarget {
     this.#status = Status.IDLE;
   }
 
-  async parse(traceEvents: readonly Types.Events.Event[], freshRecording = false): Promise<void> {
+  async parse(traceEvents: readonly Types.Events.Event[], options: ParseOptions): Promise<void> {
     if (this.#status !== Status.IDLE) {
       throw new Error(`Trace processor can't start parsing when not idle. Current state: ${this.#status}`);
     }
     try {
       this.#status = Status.PARSING;
-      await this.#computeParsedTrace(traceEvents, freshRecording);
-      if (this.#data) {
+      await this.#computeParsedTrace(traceEvents, Boolean(options.isFreshRecording));
+      if (this.#data && !options.isCPUProfile) {  // We do not calculate insights for CPU Profiles.
         this.#computeInsights(this.#data, traceEvents);
       }
       this.#status = Status.FINISHED_PARSING;

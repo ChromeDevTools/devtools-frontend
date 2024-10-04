@@ -50,7 +50,7 @@ describeWithEnvironment('DocumentLatency', function() {
         Types.Timing.MilliSeconds(mainRequestEvent.args.data.timing.receiveHeadersEnd + 1000);
     traceEvents[mainRequestEventIndex] = mainRequestEvent;
 
-    await processor.parse(traceEvents);
+    await processor.parse(traceEvents, {isCPUProfile: false, isFreshRecording: true});
     const data = processor.parsedTrace;
     if (!data) {
       throw new Error('missing parsedTrace');
@@ -84,7 +84,7 @@ describeWithEnvironment('DocumentLatency', function() {
     mainRequestEvent.args.data.headers = mainRequestEvent.args.data.headers?.filter(h => h.name !== 'content-encoding');
     traceEvents[mainRequestEventIndex] = mainRequestEvent;
 
-    await processor.parse(traceEvents);
+    await processor.parse(traceEvents, {isCPUProfile: false, isFreshRecording: true});
     const data = processor.parsedTrace;
     if (!data) {
       throw new Error('missing parsedTrace');

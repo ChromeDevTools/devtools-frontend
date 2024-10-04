@@ -13,13 +13,13 @@ describeWithEnvironment('TraceProcessor', function() {
 
     // Check parsing after instantiation.
     assert.isNull(processor.parsedTrace);
-    await processor.parse(file);
+    await processor.parse(file, {isFreshRecording: true, isCPUProfile: false});
     assert.isNotNull(processor.parsedTrace);
 
     // Check parsing without a reset.
     let thrown;
     try {
-      await processor.parse(file);
+      await processor.parse(file, {isFreshRecording: true, isCPUProfile: false});
     } catch (e) {
       thrown = e as Error;
     }
@@ -30,7 +30,7 @@ describeWithEnvironment('TraceProcessor', function() {
     processor.reset();
     assert.isNull(processor.parsedTrace);
     assert.isNull(processor.insights);
-    await processor.parse(file);
+    await processor.parse(file, {isFreshRecording: true, isCPUProfile: false});
     assert.isNotNull(processor.parsedTrace);
     assert.isNotNull(processor.insights);
     // Cleanup.
@@ -39,8 +39,9 @@ describeWithEnvironment('TraceProcessor', function() {
     // Check simultaneous parsing without waiting.
     let promise;
     try {
-      promise = processor.parse(file);
-      await processor.parse(file);
+      promise = processor.parse(file, {isFreshRecording: true, isCPUProfile: false});
+      await processor.parse(file, {isFreshRecording: true, isCPUProfile: false});
+
     } catch (e) {
       thrown = e as Error;
     } finally {
@@ -53,7 +54,7 @@ describeWithEnvironment('TraceProcessor', function() {
     // Check if data is null immediately after resetting.
     assert.isNull(processor.parsedTrace);
     assert.isNull(processor.insights);
-    await processor.parse(file);
+    await processor.parse(file, {isFreshRecording: true, isCPUProfile: false});
     assert.isNotNull(processor.parsedTrace);
     assert.isNotNull(processor.insights);
     processor.reset();
@@ -62,7 +63,7 @@ describeWithEnvironment('TraceProcessor', function() {
 
     // Check resetting while parsing.
     try {
-      promise = processor.parse(file);
+      promise = processor.parse(file, {isFreshRecording: true, isCPUProfile: false});
       processor.reset();
     } catch (e) {
       thrown = e as Error;
@@ -76,7 +77,7 @@ describeWithEnvironment('TraceProcessor', function() {
     // Check parsing after resetting while parsing.
     assert.isNull(processor.parsedTrace);
     assert.isNull(processor.insights);
-    await processor.parse(file);
+    await processor.parse(file, {isFreshRecording: true, isCPUProfile: false});
     assert.isNotNull(processor.parsedTrace);
     assert.isNotNull(processor.insights);
   });
@@ -86,7 +87,7 @@ describeWithEnvironment('TraceProcessor', function() {
       Animations: Trace.Handlers.ModelHandlers.Animations,
     });
     const events = await TraceLoader.rawEvents(this, 'animation.json.gz');
-    await processor.parse(events);
+    await processor.parse(events, {isFreshRecording: true, isCPUProfile: false});
     assert.isNotNull(processor.parsedTrace);
     assert.deepEqual(Object.keys(processor.parsedTrace || {}), ['Meta', 'Animations']);
   });
@@ -129,7 +130,7 @@ describeWithEnvironment('TraceProcessor', function() {
     const rawEvents = await TraceLoader.rawEvents(this, 'web-dev-outermost-frames.json.gz');
     // This trace has 106,110 events. At default of 50k chunks we should see 2 updates.
     // Additional progress updates are emitted for handers, etc.
-    await processor.parse(rawEvents).then(() => {
+    await processor.parse(rawEvents, {isFreshRecording: true, isCPUProfile: false}).then(() => {
       assert.isAtLeast(updateEventCount, 2);
     });
   });
@@ -245,7 +246,7 @@ describeWithEnvironment('TraceProcessor', function() {
       const processor = Trace.Processor.TraceProcessor.createWithAllHandlers();
       const file = await TraceLoader.rawEvents(this, 'basic.json.gz');
 
-      await processor.parse(file);
+      await processor.parse(file, {isFreshRecording: true, isCPUProfile: false});
       if (!processor.insights) {
         throw new Error('No insights');
       }
@@ -269,7 +270,7 @@ describeWithEnvironment('TraceProcessor', function() {
       const processor = Trace.Processor.TraceProcessor.createWithAllHandlers();
       const file = await TraceLoader.rawEvents(this, 'load-simple.json.gz');
 
-      await processor.parse(file);
+      await processor.parse(file, {isFreshRecording: true, isCPUProfile: false});
       if (!processor.insights) {
         throw new Error('No insights');
       }
@@ -286,7 +287,7 @@ describeWithEnvironment('TraceProcessor', function() {
       });
       const file = await TraceLoader.rawEvents(this, 'load-simple.json.gz');
 
-      await processor.parse(file);
+      await processor.parse(file, {isFreshRecording: true, isCPUProfile: false});
       if (!processor.insights) {
         throw new Error('No insights');
       }
@@ -305,7 +306,7 @@ describeWithEnvironment('TraceProcessor', function() {
       const processor = Trace.Processor.TraceProcessor.createWithAllHandlers();
       const file = await TraceLoader.rawEvents(this, 'load-simple.json.gz');
 
-      await processor.parse(file);
+      await processor.parse(file, {isFreshRecording: true, isCPUProfile: false});
       if (!processor.insights) {
         throw new Error('No insights');
       }
@@ -331,7 +332,7 @@ describeWithEnvironment('TraceProcessor', function() {
       const processor = Trace.Processor.TraceProcessor.createWithAllHandlers();
       const file = await TraceLoader.rawEvents(this, 'multiple-navigations.json.gz');
 
-      await processor.parse(file);
+      await processor.parse(file, {isFreshRecording: true, isCPUProfile: false});
       if (!processor.insights) {
         throw new Error('No insights');
       }

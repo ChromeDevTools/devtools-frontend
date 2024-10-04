@@ -1798,10 +1798,8 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.#setActiveInsight(null);
 
     const traceInsightsSets = this.#traceEngineModel.traceInsights(traceIndex);
-    if (traceInsightsSets) {
-      this.flameChart.setInsights(traceInsightsSets);
-      this.#sideBar.setInsights(traceInsightsSets);
-    }
+    this.#sideBar.setInsights(traceInsightsSets);
+    this.flameChart.setInsights(traceInsightsSets);
 
     this.#showSidebarIfRequired();
   }

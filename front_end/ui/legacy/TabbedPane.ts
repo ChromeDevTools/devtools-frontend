@@ -420,6 +420,16 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
     }
   }
 
+  tabIsDisabled(id: string): boolean {
+    return !this.tabIsEnabled(id);
+  }
+
+  tabIsEnabled(id: string): boolean {
+    const tab = this.tabsById.get(id);
+    const disabled = tab?.tabElement.classList.contains('disabled') ?? false;
+    return !disabled;
+  }
+
   toggleTabClass(id: string, className: string, force?: boolean): void {
     const tab = this.tabsById.get(id);
     if (tab && tab.toggleClass(className, force)) {

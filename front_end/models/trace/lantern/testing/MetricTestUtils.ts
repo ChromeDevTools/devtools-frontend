@@ -13,7 +13,7 @@ function toLanternTrace(traceEvents: readonly Trace.Types.Events.Event[]): Lante
 
 async function runTrace(trace: Lantern.Types.Trace) {
   const processor = Trace.Processor.TraceProcessor.createWithAllHandlers();
-  await processor.parse(trace.traceEvents as Trace.Types.Events.Event[]);
+  await processor.parse(trace.traceEvents as Trace.Types.Events.Event[], {isCPUProfile: false, isFreshRecording: true});
   if (!processor.parsedTrace) {
     throw new Error('No data');
   }

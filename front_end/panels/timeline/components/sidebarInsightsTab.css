@@ -59,8 +59,7 @@
 
 .feedback-wrapper {
   position: relative;
-  padding-left: var(--sys-size-6);
-  padding-bottom: var(--sys-size-6);
+  padding: var(--sys-size-6);
 
   .tooltip {
     visibility: hidden;

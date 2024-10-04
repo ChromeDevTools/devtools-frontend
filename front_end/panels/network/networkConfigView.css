@@ -85,6 +85,10 @@
 .network-config-ua .chrome-select {
   width: calc(100% - 20px);
   max-width: 250px;
+
+  &:disabled {
+    opacity: unset;
+  }
 }
 
 .network-config-ua span[is="dt-radio"] {
@@ -92,15 +96,18 @@
 }
 
 .network-config-ua-custom {
-  opacity: 50%;
   padding-bottom: 8px;
+  opacity: 38%;
+  pointer-events: none;
+
+  &.checked {
+    opacity: revert;
+    pointer-events: revert;
+  }
 }
 
-.network-config-ua-custom.checked {
-  opacity: 100%;
-}
-
-.client-hints-form {
+devtools-user-agent-client-hints-form {
+  display: block;
   margin-top: 14px;
   width: min(100%, 400px);
 }

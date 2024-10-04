@@ -764,7 +764,7 @@ export class UserAgentClientHintsForm extends HTMLElement {
           class="tree-title"
           role="button"
           @click=${this.#handleTreeClick}
-          tabindex="0"
+          tabindex=${this.#isFormDisabled ? '-1' : '0'}
           @keydown=${this.#handleTreeExpand}
           aria-expanded=${this.#isFormOpened}
           aria-controls="form-container"
@@ -792,7 +792,7 @@ export class UserAgentClientHintsForm extends HTMLElement {
             class='info-icon',
           ></${IconButton.Icon.Icon.litTagName}>
           <x-link
-           tabindex="0"
+           tabindex=${this.#isFormDisabled ? '-1' : '0'}
            href="https://web.dev/user-agent-client-hints/"
            target="_blank"
            class="link"

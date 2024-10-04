@@ -246,7 +246,6 @@ export class NetworkConfigView extends UI.Widget.VBox {
     customUserAgentSelectBox.appendChild(customSelectAndInput.input);
     customUserAgentSelectBox.appendChild(customSelectAndInput.error);
 
-    const clientHintsContainer = customUserAgentSelectBox.createChild('div', 'client-hints-form');
     const clientHints = new EmulationComponents.UserAgentClientHintsForm.UserAgentClientHintsForm();
     const userAgentMetaDataSetting = userAgentMetadataSetting.get();
     const initialUserAgentMetaData = getUserAgentMetadata(customSelectAndInput.select.value);
@@ -255,7 +254,7 @@ export class NetworkConfigView extends UI.Widget.VBox {
       showSubmitButton: true,
       metaData: userAgentMetaDataSetting || initialUserAgentMetaData || undefined,
     };
-    clientHintsContainer.appendChild(clientHints);
+    customUserAgentSelectBox.appendChild(clientHints);
 
     customSelectAndInput.select.addEventListener('user-agent-change', (event: Event) => {
       const userStringValue = (event as CustomEvent).detail.value;

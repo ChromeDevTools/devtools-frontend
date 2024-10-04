@@ -10,13 +10,15 @@
   border-left-width: 1px;
   border-right-width: 1px;
   border-top-width: 4px;
-  border-bottom: none;
+  /* stylelint mistakenly thinks this is invalid, but without this the bottom width is on by default */
+  border-bottom-width: 0; /* stylelint-disable-line declaration-block-no-redundant-longhand-properties */
   align-content: flex-start;
   text-align: center;
   overflow: hidden;
   text-overflow: ellipsis;
   background-image: linear-gradient(180deg, var(--sys-color-on-primary), transparent);
-  height: 90px;
+  height: 90%;
+  box-sizing: border-box;
 }
 
 :host {
@@ -27,6 +29,8 @@
   align-items: flex-end;
   width: 100%;
   box-sizing: border-box;
+  height: 100%;
+  max-height: 100px;
 
   /* Ensure that the first & last sections always have the left/right border */
   /* (disable stylelint because we need the !important to override border
@@ -40,12 +44,21 @@
   }
 }
 
+:host(.is-below) {
+  align-items: flex-start;
+
+  .timespan-breakdown-overlay-section {
+    border-top-width: 0;
+    border-bottom-width: 4px;
+  }
+}
+
 /* Depending on if the number of sections is odd or even, we alternate the
  * heights of the even/odd sections. We do this to ensure that the first item
  * is never a "high" item, because that looks a bit clunky. */
 :host(.odd-number-of-sections) {
   .timespan-breakdown-overlay-section:nth-child(even) {
-    height: 100px;
+    height: 100%;
   }
 
   .timespan-breakdown-overlay-section:nth-child(odd) {
@@ -56,7 +69,7 @@
 
 :host(.even-number-of-sections) {
   .timespan-breakdown-overlay-section:nth-child(odd) {
-    height: 100px;
+    height: 100%;
   }
 
   .timespan-breakdown-overlay-section:nth-child(even) {

@@ -255,6 +255,7 @@ export interface TimespanBreakdown {
   type: 'TIMESPAN_BREAKDOWN';
   sections: Array<Components.TimespanBreakdownOverlay.EntryBreakdown>;
   entry?: Trace.Types.Events.Event;
+  renderLocation?: 'BOTTOM_OF_TIMELINE'|'BELOW_EVENT'|'ABOVE_EVENT';
 }
 
 export interface CursorTimestampMarker {
@@ -882,30 +883,38 @@ export class Overlays extends EventTarget {
     }
 
     // Handle vertical positioning based on the entry's vertical position.
-    if (overlay.entry) {
+    if (overlay.entry && (overlay.renderLocation === 'BELOW_EVENT' || overlay.renderLocation === 'ABOVE_EVENT')) {
+      // Max height for the overlay box when attached to an entry.
+      const MAX_BOX_HEIGHT = 50;
+      element.style.maxHeight = `${MAX_BOX_HEIGHT}px`;
+
       const y = this.yPixelForEventOnChart(overlay.entry);
       if (y === null) {
         return;
       }
+      const eventHeight = this.pixelHeightForEventOnChart(overlay.entry);
+      if (eventHeight === null) {
+        return;
+      }
 
-      // Max height for the overlay box.
-      const MAX_BOX_HEIGHT = 50;
-      // Some padding so the box hovers just on top.
-      const PADDING = 7;
+      if (overlay.renderLocation === 'BELOW_EVENT') {
+        const top = y + eventHeight;
+        element.style.top = `${top}px`;
+      } else {
+        // Some padding so the box hovers just on top.
+        const PADDING = 7;
 
-      // Where the timespan breakdown should sit. Slightly on top of the entry.
-      const bottom = y - PADDING;
+        // Where the timespan breakdown should sit. Slightly on top of the entry.
+        const bottom = y - PADDING;
 
-      // Available space between the bottom of the overlay and top of the chart.
-      const minSpace = Math.max(bottom, 0);
-      // Contrain height to available space.
-      const height = Math.min(MAX_BOX_HEIGHT, minSpace);
+        // Available space between the bottom of the overlay and top of the chart.
+        const minSpace = Math.max(bottom, 0);
+        // Contrain height to available space.
+        const height = Math.min(MAX_BOX_HEIGHT, minSpace);
 
-      elementSections[0].style.maxHeight = `${MAX_BOX_HEIGHT}px`;
-      elementSections[0].style.height = `${height}px`;
-
-      const top = bottom - height;
-      element.style.top = `${top}px`;
+        const top = bottom - height;
+        element.style.top = `${top}px`;
+      }
     }
   }
 
@@ -1399,6 +1408,7 @@ export class Overlays extends EventTarget {
         const component = new Components.TimespanBreakdownOverlay.TimespanBreakdownOverlay();
         component.sections = overlay.sections;
         component.canvasRect = this.#charts.mainChart.canvasBoundingClientRect();
+        component.isBelowEntry = overlay.renderLocation === 'BELOW_EVENT';
         div.appendChild(component);
         return div;
       }

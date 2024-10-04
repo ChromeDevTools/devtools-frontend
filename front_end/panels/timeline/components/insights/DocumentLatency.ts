@@ -121,6 +121,10 @@ export class DocumentLatency extends BaseInsight {
       overlays.push({
         type: 'TIMESPAN_BREAKDOWN',
         sections,
+        entry: insight.data.documentRequest,
+        // Always render below because the document request is guaranteed to be
+        // the first request in the network track.
+        renderLocation: 'BELOW_EVENT',
       });
     }
     overlays.push({
@@ -128,9 +132,6 @@ export class DocumentLatency extends BaseInsight {
       entry: insight.data.documentRequest,
     });
 
-    // TODO(crbug.com/368152887): we actually want the labels to be part of the CANDY_STRIPED_TIME_RANGE overlay.
-    // TIMESPAN_BREAKDOWN puts it somewhere else. We need an overlay for EVENT_TIME_RANGE, with a `display` property
-    // (to control candy-stripeness) and an optional `label` property.
     return overlays;
   }
 

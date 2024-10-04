@@ -104,6 +104,8 @@ export class InteractionToNextPaint extends BaseInsight {
       {
         type: 'TIMESPAN_BREAKDOWN',
         sections,
+        renderLocation: 'BELOW_EVENT',
+        entry: event,
       },
       {
         type: 'ENTRY_LABEL',

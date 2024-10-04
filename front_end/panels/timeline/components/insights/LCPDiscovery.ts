@@ -154,6 +154,7 @@ export class LCPDiscovery extends BaseInsight {
           showDuration: false,
         }],
         entry: imageResults.request,
+        renderLocation: 'ABOVE_EVENT',
       },
     ];
   }

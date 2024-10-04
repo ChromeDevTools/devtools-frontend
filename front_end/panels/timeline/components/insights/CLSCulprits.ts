@@ -82,6 +82,7 @@ export class CLSCulprits extends BaseInsight {
       ],
       // This allows for the overlay to sit over the layout shift.
       entry: worstCluster.events[0],
+      renderLocation: 'ABOVE_EVENT',
     }];
   }
 

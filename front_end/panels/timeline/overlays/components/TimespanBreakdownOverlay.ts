@@ -28,6 +28,10 @@ export class TimespanBreakdownOverlay extends HTMLElement {
     this.#shadow.adoptedStyleSheets = [styles];
   }
 
+  set isBelowEntry(isBelow: boolean) {
+    this.classList.toggle('is-below', isBelow);
+  }
+
   set canvasRect(rect: DOMRect|null) {
     if (this.#canvasRect && rect && this.#canvasRect.width === rect.width && this.#canvasRect.height === rect.height) {
       return;

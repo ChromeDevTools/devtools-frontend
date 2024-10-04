@@ -139,8 +139,8 @@ export class FreestylerPanel extends UI.Panel.Panel {
     this.#selectedElement = selectedElementFilter(UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode));
     this.#selectedNetworkRequest = UI.Context.Context.instance().flavor(SDK.NetworkRequest.NetworkRequest);
     this.#viewProps = {
-      state: this.#freestylerEnabledSetting?.get() ? FreestylerChatUiState.CHAT_VIEW :
-                                                     FreestylerChatUiState.CONSENT_VIEW,
+      state: this.#freestylerEnabledSetting?.getIfNotDisabled() ? FreestylerChatUiState.CHAT_VIEW :
+                                                                  FreestylerChatUiState.CONSENT_VIEW,
       aidaAvailability,
       messages: [],
       inspectElementToggled: this.#toggleSearchElementAction.toggled(),

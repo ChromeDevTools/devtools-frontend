@@ -904,6 +904,11 @@ export class SourcesPanel extends UI.Panel.Panel implements
       SDK.NetworkRequest.NetworkRequest|UISourceCodeFrame): void {
     if (target instanceof Workspace.UISourceCode.UISourceCode) {
       this.appendUISourceCodeItems(event, contextMenu, target);
+      if (UI.ActionRegistry.ActionRegistry.instance().hasAction('drjones.sources-panel-context')) {
+        contextMenu.headerSection().appendAction(
+            'drjones.sources-panel-context',
+        );
+      }
       return;
     }
     if (target instanceof UISourceCodeFrame) {

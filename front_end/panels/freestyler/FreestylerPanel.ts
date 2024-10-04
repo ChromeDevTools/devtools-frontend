@@ -293,6 +293,10 @@ export class FreestylerPanel extends UI.Panel.Panel {
         // TODO(samiyac): Add actions and UMA
         break;
       }
+      case 'drjones.sources-panel-context': {
+        // TODO(samiyac): Add actions and UMA
+        break;
+      }
     }
   }
 
@@ -436,7 +440,8 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
     switch (actionId) {
       case 'freestyler.element-panel-context':
       case 'drjones.network-panel-context':
-      case 'drjones.performance-panel-context': {
+      case 'drjones.performance-panel-context':
+      case 'drjones.sources-panel-context': {
         void (async () => {
           const view = UI.ViewManager.ViewManager.instance().view(
               FreestylerPanel.panelName,

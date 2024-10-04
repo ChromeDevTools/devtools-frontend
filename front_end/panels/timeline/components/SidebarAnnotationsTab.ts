@@ -97,31 +97,83 @@ export class SidebarAnnotationsTab extends HTMLElement {
   }
 
   set annotations(annotations: Trace.Types.File.Annotation[]) {
-    this.#annotations = annotations.sort((firstAnnotation, secondAnnotation) => {
-      function getAnnotationTimestamp(annotation: Trace.Types.File.Annotation): Trace.Types.Timing.MicroSeconds {
-        if (Trace.Types.File.isEntryLabelAnnotation(annotation)) {
-          return annotation.entry.ts;
-        }
-        if (Trace.Types.File.isEntriesLinkAnnotation(annotation)) {
-          return annotation.entryFrom.ts;
-        }
-        if (Trace.Types.File.isTimeRangeAnnotation(annotation)) {
-          return annotation.bounds.min;
-        }
-        // This part of code shouldn't be reached. If it is here then the annotation has an invalid type, so return the
-        // max timestamp to push it to the end.
-        console.error('Invalid annotation type.');
-        // Since we need to compare the values, so use `MAX_SAFE_INTEGER` instead of `MAX_VALUE`.
-        return Trace.Types.Timing.MicroSeconds(Number.MAX_SAFE_INTEGER);
-      }
-
-      return getAnnotationTimestamp(firstAnnotation) - getAnnotationTimestamp(secondAnnotation);
-    });
+    this.#annotations = this.#processAnnotationsList(annotations);
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
 
   set annotationEntryToColorMap(annotationEntryToColorMap: Map<Trace.Types.Events.Event, string>) {
     this.#annotationEntryToColorMap = annotationEntryToColorMap;
+  }
+
+  #processAnnotationsList(annotations: Trace.Types.File.Annotation[]): Trace.Types.File.Annotation[] {
+    // When an entry is double-clicked, we create two annotations (a label and an entries connection) for the user to choose from.
+    // The one not selected is deleted when the user makes their selection.
+    // To avoid excessive activity in the sidebar (adding and removing annotations), only show one 'not started' annotation associated with an entry.
+    //
+    // If we encounter an annotation for an entry that hasn't started creation, add that entry to the 'entriesWithNotStartedAnnotation'
+    // set. This allows us to filter out any subsequent not started annotations for the same entry.
+    const entriesWithNotStartedAnnotation = new Set();
+
+    const processedAnnotations = annotations.filter(annotation => {
+      if (this.#isAnnotationCreationStarted(annotation)) {
+        return true;
+      }
+
+      if (annotation.type === 'ENTRIES_LINK' || annotation.type === 'ENTRY_LABEL') {
+        const annotationEntry = annotation.type === 'ENTRIES_LINK' ? annotation.entryFrom : annotation.entry;
+
+        if (entriesWithNotStartedAnnotation.has(annotationEntry)) {
+          return false;
+        }
+
+        entriesWithNotStartedAnnotation.add(annotationEntry);
+      }
+
+      return true;
+    });
+
+    // Sort annotations by timestamp.
+    processedAnnotations.sort(
+        (firstAnnotation, secondAnnotation) =>
+            this.#getAnnotationTimestamp(firstAnnotation) - this.#getAnnotationTimestamp(secondAnnotation),
+    );
+
+    return processedAnnotations;
+  }
+
+  #getAnnotationTimestamp(annotation: Trace.Types.File.Annotation): Trace.Types.Timing.MicroSeconds {
+    switch (annotation.type) {
+      case 'ENTRY_LABEL': {
+        return annotation.entry.ts;
+      }
+      case 'ENTRIES_LINK': {
+        return annotation.entryFrom.ts;
+      }
+      case 'TIME_RANGE': {
+        return annotation.bounds.min;
+      }
+      default: {
+        Platform.assertNever(annotation, `Invalid annotation type ${annotation}`);
+      }
+    }
+  }
+
+  #isAnnotationCreationStarted(annotation: Trace.Types.File.Annotation): boolean {
+    // Consider the annotation not started if:
+    // ENTRY_LABEL - label is empty
+    // ENTRIES_LINK - the connection annotation does not have the 'to' entry
+    // TIME_RANGE - range is over zero
+    switch (annotation.type) {
+      case 'ENTRY_LABEL': {
+        return annotation.label.length > 0;
+      }
+      case 'ENTRIES_LINK': {
+        return Boolean(annotation.entryTo);
+      }
+      case 'TIME_RANGE': {
+        return annotation.bounds.range > 0;
+      }
+    }
   }
 
   connectedCallback(): void {

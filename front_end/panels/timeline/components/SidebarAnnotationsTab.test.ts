@@ -220,4 +220,70 @@ describeWithEnvironment('SidebarAnnotationsTab', () => {
     assert.strictEqual(annotationLabelElements[1].innerText, 'New Entry Label 2');
     assert.strictEqual(annotationLabelElements[2].innerText, 'Labelled Time Range');
   });
+
+  it('does not display multiple not started annotations for one entry', async function() {
+    const component = new SidebarAnnotationsTab();
+    const defaultTraceEvents = await TraceLoader.rawEvents(null, 'basic.json.gz');
+    renderElementIntoDOM(component);
+
+    // Create Empty Entry Label Annotation (considered not started)
+    const entryLabelAnnotation: Trace.Types.File.Annotation = {
+      type: 'ENTRY_LABEL',
+      entry: defaultTraceEvents[0],
+      label: '',
+    };
+
+    // Create Entries link that only has 'to' entry (considered not started)
+    const entriesLink: Trace.Types.File.Annotation = {
+      type: 'ENTRIES_LINK',
+      entryFrom: defaultTraceEvents[0],
+      state: Trace.Types.File.EntriesLinkState.CREATION_NOT_STARTED,
+    };
+
+    component.annotations = [entryLabelAnnotation, entriesLink];
+    assert.isNotNull(component.shadowRoot);
+
+    await coordinator.done();
+
+    const annotationsWrapperElement = component.shadowRoot.querySelector<HTMLElement>('.annotations');
+    assert.isNotNull(annotationsWrapperElement);
+
+    // Ensure there is only one annotation displayed
+    const annotationIdentifierElements = component.shadowRoot.querySelectorAll<HTMLElement>('.annotation-identifier');
+    assert.strictEqual(annotationIdentifierElements.length, 1);
+  });
+
+  it('displays multiple not started annotations if they are not different entries', async function() {
+    const component = new SidebarAnnotationsTab();
+    const defaultTraceEvents = await TraceLoader.rawEvents(null, 'basic.json.gz');
+    renderElementIntoDOM(component);
+
+    // Create Empty Entry Label Annotation (considered not started)
+    const entryLabelAnnotation: Trace.Types.File.Annotation = {
+      type: 'ENTRY_LABEL',
+      entry: defaultTraceEvents[0],
+      label: '',
+    };
+
+    // Create Entries link that only has 'to' entry (considered not started).
+    // Not started link is on a different entry than the other not started annotation
+    const entriesLink: Trace.Types.File.Annotation = {
+      type: 'ENTRIES_LINK',
+      entryFrom: defaultTraceEvents[1],
+      state: Trace.Types.File.EntriesLinkState.CREATION_NOT_STARTED,
+    };
+
+    component.annotations = [entryLabelAnnotation, entriesLink];
+    assert.isNotNull(component.shadowRoot);
+
+    await coordinator.done();
+
+    const annotationsWrapperElement = component.shadowRoot.querySelector<HTMLElement>('.annotations');
+    assert.isNotNull(annotationsWrapperElement);
+
+    // Ensure both annotations are displayed
+    const annotationIdentifierElements = component.shadowRoot.querySelectorAll<HTMLElement>('.annotation-identifier');
+    assert.strictEqual(annotationIdentifierElements.length, 2);
+  });
+
 });

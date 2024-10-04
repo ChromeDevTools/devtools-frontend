@@ -30,7 +30,7 @@
 .input-form {
   display: flex;
   flex-direction: column;
-  padding: var(--sys-size-8) var(--sys-size-4) 0 var(--sys-size-4);
+  padding: var(--sys-size-8) var(--sys-size-5) 0 var(--sys-size-5);
   max-width: var(--sys-size-36);
   width: 100%;
   margin: 0 auto;
@@ -106,12 +106,12 @@
   overflow: auto;
   flex-grow: 1;
   scrollbar-gutter: stable;
+  scrollbar-width: thin;
 }
 
 .messages-container {
   margin: 0 auto;
   max-width: var(--sys-size-36);
-  padding: 0 var(--sys-size-4);
 }
 
 .chat-message {
@@ -193,15 +193,28 @@
     top: 0;
     visibility: var(--visibility-if-can-scroll, hidden);
     animation-range: var(--sys-size-6) var(--sys-size-11); /* stylelint-disable-line property-no-unknown */
-    background: radial-gradient(farthest-side at 0 50%, var(--app-color-scroll-area-shadow-start), transparent);
+    background:
+      radial-gradient(
+        farthest-side at 0 50%,
+        var(--app-color-scroll-area-shadow-start),
+        transparent
+      );
   }
 
   .suggestions::after {
     bottom: 0;
     visibility: var(--visibility-if-can-scroll, hidden);
     animation-direction: reverse;
-    animation-range: calc(100% - var(--sys-size-11)) calc(100% - var(--sys-size-6)); /* stylelint-disable-line property-no-unknown */
-    background: radial-gradient(farthest-side at 100% 50%, var(--app-color-scroll-area-shadow-start), transparent);
+    /* stylelint-disable-next-line property-no-unknown */
+    animation-range:
+      calc(100% - var(--sys-size-11))
+      calc(100% - var(--sys-size-6));
+    background:
+      radial-gradient(
+        farthest-side at 100% 50%,
+        var(--app-color-scroll-area-shadow-start),
+        transparent
+      );
   }
 
   .aborted {
@@ -277,6 +290,12 @@
       font: var(--sys-typescale-body4-bold);
     }
   }
+}
+
+.step-code {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sys-size-2);
 }
 
 .js-code-output {
@@ -369,10 +388,7 @@
     padding: 0 var(--sys-size-5) var(--sys-size-4) var(--sys-size-12);
     display: flex;
     flex-direction: column;
-
-    p {
-      margin-bottom: var(--sys-size-5);
-    }
+    gap: var(--sys-size-6);
 
     devtools-code-block {
       --code-block-background-color: var(--sys-color-surface1);
@@ -497,12 +513,6 @@ button.link {
   }
 }
 
-.action-result {
-  /* devtools-code-block adds `margin-top: 8px` however we want the margin between `.action-result` and `.js-code-output` to be 2px
-  that's why we use -6px here. */
-  margin-bottom: -6px;
-}
-
 .error-step {
   color: var(--sys-color-error);
 }
@@ -520,8 +530,13 @@ button.link {
 }
 
 @keyframes reveal {
-  0% { opacity: 0%; }
-  100% { opacity: 100%; }
+  0% {
+    opacity: 0%;
+  }
+
+  100% {
+    opacity: 100%;
+  }
 }
 
 @keyframes detect-scroll {

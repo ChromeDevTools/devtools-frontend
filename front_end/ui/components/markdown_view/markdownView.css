@@ -54,6 +54,10 @@
   padding: 1px 3px;
 }
 
+devtools-code-block {
+  margin-bottom: var(--sys-size-5);
+}
+
 .devtools-link {
   color: var(--sys-color-primary);
   outline-offset: 2px;

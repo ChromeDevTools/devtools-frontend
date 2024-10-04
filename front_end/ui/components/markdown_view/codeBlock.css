@@ -11,6 +11,7 @@
 }
 
 :host {
+  display: block;
   /**
     Adjusts the max height of the code area.
     This can be changed from outside by targeting `devtools-code-block` element.
@@ -24,7 +25,6 @@
 }
 
 .codeblock {
-  margin-bottom: var(--sys-size-5);
   box-sizing: border-box;
   color: var(--sys-color-on-surface);
 }

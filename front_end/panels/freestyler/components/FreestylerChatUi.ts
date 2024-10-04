@@ -440,14 +440,16 @@ export class FreestylerChatUi extends HTMLElement {
     return LitHtml.html`<span class="title">${paused}${actionTitle}</span>`;
   }
 
-  #renderStepDetails(step: Step, options: {isLast: boolean}): LitHtml.LitTemplate {
-    const sideEffects =
-        options.isLast && step.sideEffect ? this.#renderSideEffectConfirmationUi(step) : LitHtml.nothing;
-    const thought = step.thought ? LitHtml.html`<p>${this.#renderTextAsMarkdown(step.thought)}</p>` : LitHtml.nothing;
+  #renderStepCode(step: Step): LitHtml.LitTemplate {
+    if (!step.code && !step.output) {
+      return LitHtml.nothing;
+    }
+
     // If there is no "output" yet, it means we didn't execute the code yet (e.g. maybe it is still waiting for confirmation from the user)
     // thus we show "Code to execute" text rather than "Code executed" text on the heading of the code block.
     const codeHeadingText = (step.output && !step.canceled) ? lockedString(UIStringsNotTranslate.codeExecuted) :
                                                               lockedString(UIStringsNotTranslate.codeToExecute);
+
     // If there is output, we don't show notice on this code block and instead show
     // it in the data returned code block.
     // clang-format off
@@ -459,7 +461,8 @@ export class FreestylerChatUi extends HTMLElement {
           .header=${codeHeadingText}
           .showCopyButton=${true}
         ></${MarkdownView.CodeBlock.CodeBlock.litTagName}>
-    </div>` : LitHtml.nothing;
+    </div>` :
+                             LitHtml.nothing;
     const output = step.output ? LitHtml.html`<div class="js-code-output">
       <${MarkdownView.CodeBlock.CodeBlock.litTagName}
         .code=${step.output}
@@ -468,7 +471,19 @@ export class FreestylerChatUi extends HTMLElement {
         .header=${lockedString(UIStringsNotTranslate.dataReturned)}
         .showCopyButton=${false}
       ></${MarkdownView.CodeBlock.CodeBlock.litTagName}>
-    </div>` : LitHtml.nothing;
+    </div>` :
+                                 LitHtml.nothing;
+
+    return LitHtml.html`<div class="step-code">${code}${output}</div>`;
+    // clang-format on
+  }
+
+  #renderStepDetails(step: Step, options: {isLast: boolean}): LitHtml.LitTemplate {
+    const sideEffects =
+        options.isLast && step.sideEffect ? this.#renderSideEffectConfirmationUi(step) : LitHtml.nothing;
+    const thought = step.thought ? LitHtml.html`<p>${this.#renderTextAsMarkdown(step.thought)}</p>` : LitHtml.nothing;
+
+    // clang-format off
     const contextDetails = step.contextDetails && step.contextDetails?.length > 0 ?
     LitHtml.html`${LitHtml.Directives.repeat(
       step.contextDetails,
@@ -487,9 +502,8 @@ export class FreestylerChatUi extends HTMLElement {
 
     return LitHtml.html`<div class="step-details">
       ${thought}
-      ${code}
+      ${this.#renderStepCode(step)}
       ${sideEffects}
-      ${output}
       ${contextDetails}
     </div>`;
     // clang-format on

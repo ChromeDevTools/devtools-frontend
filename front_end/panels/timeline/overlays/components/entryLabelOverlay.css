@@ -36,17 +36,3 @@
   box-sizing: border-box;
   border: 2px solid var(--sys-color-on-surface);
 }
-
-.label-box {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-}
-
-.user-created-icon {
-  margin: var(--sys-size-3);
-  color: var(--color-background-inverted);
-  /* USER_CREATED_ICON_WIDTH */
-  width: 16px;
-  height: 16px;
-}

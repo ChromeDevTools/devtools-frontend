@@ -61,12 +61,3 @@
   outline: none;
   box-shadow: 0 0 0 1px var(--ref-palette-pink55);
 }
-
-.user-created-icon {
-  position: absolute;
-  left: 4px;
-  bottom: 5px;
-  color: inherit;
-  width: 16px;
-  height: 17px;
-}

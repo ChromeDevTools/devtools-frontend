@@ -441,10 +441,7 @@ describeWithEnvironment('Overlays', () => {
       const elementsWrapper = component.shadowRoot.querySelector<HTMLElement>('.label-parts-wrapper');
       assert.isOk(elementsWrapper);
 
-      const labelBox = elementsWrapper.querySelector<HTMLElement>('.label-box');
-      assert.isOk(labelBox);
-
-      const inputField = labelBox.querySelector<HTMLElement>('.input-field');
+      const inputField = elementsWrapper.querySelector<HTMLElement>('.input-field');
       assert.isOk(inputField);
 
       assert.strictEqual(inputField?.innerText, 'entry label');
@@ -475,9 +472,7 @@ describeWithEnvironment('Overlays', () => {
       const elementsWrapper = component.shadowRoot.querySelector<HTMLElement>('.label-parts-wrapper');
       assert.isOk(elementsWrapper);
 
-      const label = elementsWrapper.querySelector<HTMLElement>('.label-box');
-      assert.isOk(label);
-      const inputField = label.querySelector<HTMLElement>('.input-field');
+      const inputField = elementsWrapper.querySelector<HTMLElement>('.input-field');
       assert.isOk(inputField);
 
       // Double click on the label box to make it editable and focus on it
@@ -620,9 +615,6 @@ describeWithEnvironment('Overlays', () => {
       component.connectedCallback();
       const elementsWrapper = component.shadowRoot.querySelector<HTMLElement>('.label-parts-wrapper');
       assert.isOk(elementsWrapper);
-
-      const label = elementsWrapper.querySelector<HTMLElement>('.label-box');
-      assert.isOk(label);
 
       const inputField = elementsWrapper.querySelector<HTMLElement>('.input-field');
       assert.isOk(inputField);
@@ -867,9 +859,7 @@ describeWithEnvironment('Overlays', () => {
       assert.isOk(component?.shadowRoot);
 
       const elementsWrapper = component.shadowRoot.querySelector<HTMLElement>('.label-parts-wrapper');
-      const labelBox = elementsWrapper?.querySelector<HTMLElement>('.label-box') as HTMLSpanElement;
-
-      const inputField = labelBox.querySelector<HTMLElement>('.input-field');
+      const inputField = elementsWrapper?.querySelector<HTMLElement>('.input-field') as HTMLSpanElement;
       assert.isOk(inputField);
       // The label input box should be editable after it is created and before anything else happened
       assert.isTrue(inputField.isContentEditable);
@@ -897,22 +887,21 @@ describeWithEnvironment('Overlays', () => {
 
       const elementsWrapper = component.shadowRoot.querySelector<HTMLElement>('.label-parts-wrapper');
       assert.isOk(elementsWrapper);
-      const labelBox = elementsWrapper.querySelector<HTMLElement>('.label-box') as HTMLSpanElement;
+      const labelBox = elementsWrapper.querySelector<HTMLElement>('.input-field') as HTMLSpanElement;
 
-      const inputField = labelBox.querySelector<HTMLElement>('.input-field');
-      assert.isOk(inputField);
+      assert.isOk(labelBox);
 
       // The label input box should be editable after it is created and before anything else happened
-      assert.isTrue(inputField.isContentEditable);
+      assert.isTrue(labelBox.isContentEditable);
 
       // Make the content to editable by changing the element blur like when clicking outside of it.
       // When that happens, the content should be set to not editable.
-      inputField.dispatchEvent(new FocusEvent('blur', {bubbles: true}));
-      assert.isFalse(inputField.isContentEditable);
+      labelBox.dispatchEvent(new FocusEvent('blur', {bubbles: true}));
+      assert.isFalse(labelBox.isContentEditable);
 
       // Double click on the label to make it editable again
-      inputField.dispatchEvent(new FocusEvent('dblclick', {bubbles: true}));
-      assert.isTrue(inputField.isContentEditable);
+      labelBox.dispatchEvent(new FocusEvent('dblclick', {bubbles: true}));
+      assert.isTrue(labelBox.isContentEditable);
     });
   });
 

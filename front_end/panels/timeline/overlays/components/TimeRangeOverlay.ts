@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 import * as i18n from '../../../../core/i18n/i18n.js';
 import type * as Trace from '../../../../models/trace/trace.js';
-import * as IconButton from '../../../../ui/components/icon_button/icon_button.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 
 import styles from './timeRangeOverlay.css.js';
@@ -255,8 +254,6 @@ export class TimeRangeOverlay extends HTMLElement {
     LitHtml.render(
         LitHtml.html`
           <span class="range-container" role="region" aria-label=${i18nString(UIStrings.timeRange)}>
-            <${IconButton.Icon.Icon.litTagName} class="user-created-icon" name='profile'}>
-            </${IconButton.Icon.Icon.litTagName}>
             <span
              class="label-text"
              role="textbox"

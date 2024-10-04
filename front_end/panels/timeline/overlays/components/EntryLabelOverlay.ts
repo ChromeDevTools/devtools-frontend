@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js';
-import * as IconButton from '../../../../ui/components/icon_button/icon_button.js';
 import * as ThemeSupport from '../../../../ui/legacy/theme_support/theme_support.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 
@@ -51,8 +50,6 @@ export class EntryLabelOverlay extends HTMLElement {
       EntryLabelOverlay.LABEL_HEIGHT + EntryLabelOverlay.LABEL_PADDING * 2 + EntryLabelOverlay.LABEL_CONNECTOR_HEIGHT;
   // Set the max label length to avoid labels that could signicantly increase the file size.
   static readonly MAX_LABEL_LENGTH = 100;
-  // Width of the icon next to the label input field. This is same as the width in CSS.
-  static readonly USER_CREATED_ICON_WIDTH = 16;
 
   static readonly litTagName = LitHtml.literal`devtools-entry-label-overlay`;
   readonly #shadow = this.attachShadow({mode: 'open'});
@@ -73,7 +70,6 @@ export class EntryLabelOverlay extends HTMLElement {
   #labelPartsWrapper: HTMLElement|null = null;
   #entryHighlightWrapper: HTMLElement|null = null;
   #inputField: HTMLElement|null = null;
-  #labelBox: HTMLElement|null = null;
   #connectorLineContainer: SVGAElement|null = null;
   #label: string;
   #shouldDrawBelowEntry: boolean;
@@ -102,7 +98,6 @@ export class EntryLabelOverlay extends HTMLElement {
     this.#render();
     this.#shouldDrawBelowEntry = shouldDrawBelowEntry;
     this.#labelPartsWrapper = this.#shadow.querySelector<HTMLElement>('.label-parts-wrapper');
-    this.#labelBox = this.#labelPartsWrapper?.querySelector<HTMLElement>('.label-box') ?? null;
     this.#inputField = this.#labelPartsWrapper?.querySelector<HTMLElement>('.input-field') ?? null;
     this.#connectorLineContainer = this.#labelPartsWrapper?.querySelector<SVGAElement>('.connectorContainer') ?? null;
     this.#entryHighlightWrapper =
@@ -266,8 +261,8 @@ export class EntryLabelOverlay extends HTMLElement {
   }
 
   #drawLabel(initialLabel?: string): void {
-    if (!this.#inputField || !this.#labelBox) {
-      console.error('`labelBox` or `labelBox` element is missing.');
+    if (!this.#inputField) {
+      console.error('`labelBox`element is missing.');
       return;
     }
 
@@ -280,12 +275,11 @@ export class EntryLabelOverlay extends HTMLElement {
     // PART 1: draw the label box
     if (this.#shouldDrawBelowEntry) {
       // Label is drawn below and slightly to the right.
-      xTranslation = EntryLabelOverlay.LABEL_AND_CONNECTOR_SHIFT_LENGTH - EntryLabelOverlay.USER_CREATED_ICON_WIDTH / 2;
+      xTranslation = EntryLabelOverlay.LABEL_AND_CONNECTOR_SHIFT_LENGTH;
     } else {
       // If the label is drawn above, the connector goes up and to the left, so
       // we pull the label back slightly to align it nicely.
-      xTranslation =
-          EntryLabelOverlay.LABEL_AND_CONNECTOR_SHIFT_LENGTH * -1 - EntryLabelOverlay.USER_CREATED_ICON_WIDTH / 2;
+      xTranslation = EntryLabelOverlay.LABEL_AND_CONNECTOR_SHIFT_LENGTH * -1;
     }
 
     if (this.#shouldDrawBelowEntry && this.#entryLabelVisibleHeight) {
@@ -307,7 +301,7 @@ export class EntryLabelOverlay extends HTMLElement {
     }
 
     if (transformString.length) {
-      this.#labelBox.style.transform = transformString;
+      this.#inputField.style.transform = transformString;
     }
   }
 
@@ -341,20 +335,16 @@ export class EntryLabelOverlay extends HTMLElement {
     LitHtml.render(
         LitHtml.html`
         <span class="label-parts-wrapper" role="region" aria-label=${i18nString(UIStrings.entryLabel)}>
-          <div class="label-box">
-            <${IconButton.Icon.Icon.litTagName} class='user-created-icon' name='profile'>
-            </${IconButton.Icon.Icon.litTagName}>
-            <span
-              class="input-field"
-              role="textbox"
-              @dblclick=${() => this.setLabelEditabilityAndRemoveEmptyLabel(true)}
-              @blur=${() => this.setLabelEditabilityAndRemoveEmptyLabel(false)}
-              @keydown=${this.#handleLabelInputKeyDown}
-              @paste=${this.#handleLabelInputPaste}
-              @keyup=${this.#handleLabelInputKeyUp}
-              contenteditable=${this.#isLabelEditable ? 'plaintext-only' : false}>
-            </span>
-          </div>
+          <span
+            class="input-field"
+            role="textbox"
+            @dblclick=${() => this.setLabelEditabilityAndRemoveEmptyLabel(true)}
+            @blur=${() => this.setLabelEditabilityAndRemoveEmptyLabel(false)}
+            @keydown=${this.#handleLabelInputKeyDown}
+            @paste=${this.#handleLabelInputPaste}
+            @keyup=${this.#handleLabelInputKeyUp}
+            contenteditable=${this.#isLabelEditable ? 'plaintext-only' : false}>
+          </span>
           <svg class="connectorContainer">
             <line/>
             <circle/>

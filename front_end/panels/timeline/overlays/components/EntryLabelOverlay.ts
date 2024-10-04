@@ -154,10 +154,9 @@ export class EntryLabelOverlay extends HTMLElement {
     // Therefore, if the new key is `Enter` key, treat it
     // as the end of the label input and blur the input field.
     if (event.key === 'Enter' || event.key === 'Escape') {
-      // In DevTools, the `Escape` button will by default toggle the console
-      // drawer, which we don't want here, so we need to call
-      // `stopPropagation()`.
-      event.stopPropagation();
+      // Note that we do not stop the event propagating here; this is on
+      // purpose because we need it to bubble up into TimelineFlameChartView's
+      // handler. That updates the state and deals with the keydown.
       this.#inputField.dispatchEvent(new FocusEvent('blur', {bubbles: true}));
       return false;
     }

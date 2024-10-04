@@ -19,6 +19,7 @@ import type * as TimelineComponents from './components/components.js';
 import {CountersGraph} from './CountersGraph.js';
 import {SHOULD_SHOW_EASTER_EGG} from './EasterEgg.js';
 import {ModificationsManager} from './ModificationsManager.js';
+import * as OverlayComponents from './overlays/components/components.js';
 import * as Overlays from './overlays/overlays.js';
 import {targetForEvent} from './TargetForEvent.js';
 import {TimelineDetailsView} from './TimelineDetailsView.js';
@@ -241,6 +242,22 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
       } else if (action === 'Update') {
         ModificationsManager.activeManager()?.updateAnnotationOverlay(overlay);
       }
+    });
+
+    this.element.addEventListener(OverlayComponents.EntriesLinkOverlay.EntryLinkStartCreating.eventName, () => {
+      /**
+       * When the user creates an entries link, they click on the arrow icon to
+       * begin creating it. At this point the arrow icon gets deleted. This
+       * causes the focus of the page by default to jump to the entire Timeline
+       * Panel. This is a bit aggressive; and problematic as it means we cannot
+       * use <ESC> to cancel the creation of the entry. So instead we focus the
+       * TimelineFlameChartView instead. This means that the user's <ESC> gets
+       * dealt with in its keydown.
+       * If the user goes ahead and creates the entry, they will end up
+       * focused on whichever target entry they pick, so this only matters for
+       * the case where the user hits <ESC> to cancel.
+       */
+      this.focus();
     });
 
     this.networkPane = new UI.Widget.VBox();
@@ -607,10 +624,14 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
 
     // `CREATION_NOT_STARTED` is only true in the state when both empty label and button to create connection are
     // created at the same time. If any key is typed in that state, it means that the label is in focus and the key
-    // is typed into the label. In that case, delete the connection.
+    // is typed into the label. This tells us that the user chose to create the
+    // label, not the connection. In that case, delete the connection.
     if (this.#linkSelectionAnnotation &&
         this.#linkSelectionAnnotation.state === Trace.Types.File.EntriesLinkState.CREATION_NOT_STARTED) {
       this.#clearLinkSelectionAnnotation(true);
+      // We have dealt with the keypress as the user is typing into the label, so do not let it propogate up.
+      // This also ensures that if the user uses "Escape" they don't toggle the DevTools drawer.
+      event.stopPropagation();
     }
 
     /**

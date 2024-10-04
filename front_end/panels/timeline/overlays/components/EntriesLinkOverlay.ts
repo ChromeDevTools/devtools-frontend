@@ -23,7 +23,7 @@ export class EntryLinkStartCreating extends Event {
   static readonly eventName = 'entrylinkstartcreating';
 
   constructor() {
-    super(EntryLinkStartCreating.eventName);
+    super(EntryLinkStartCreating.eventName, {bubbles: true, composed: true});
   }
 }
 

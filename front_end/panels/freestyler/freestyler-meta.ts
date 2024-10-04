@@ -4,7 +4,7 @@
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import type * as Root from '../../core/root/root.js';
+import * as Root from '../../core/root/root.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import type * as Freestyler from './freestyler.js';
@@ -144,6 +144,21 @@ Common.Settings.registerSettingExtension({
 
     return {disabled: false};
   },
+});
+
+UI.ActionRegistration.registerActionExtension({
+  actionId: 'freestyler.elements-floating-button',
+  contextTypes(): [] {
+    return [];
+  },
+  experiment: Root.Runtime.ExperimentName.FLOATING_ENTRY_POINTS_FOR_AI_ASSISTANCE,
+  category: UI.ActionRegistration.ActionCategory.GLOBAL,
+  title: i18nLazyString(UIStrings.askAiAssistance),
+  async loadActionDelegate() {
+    const Freestyler = await loadFreestylerModule();
+    return new Freestyler.ActionDelegate();
+  },
+  condition: config => isFeatureAvailable(config) && !isPolicyRestricted(config),
 });
 
 UI.ActionRegistration.registerActionExtension({

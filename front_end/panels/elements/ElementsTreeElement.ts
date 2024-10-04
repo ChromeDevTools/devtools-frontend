@@ -43,6 +43,7 @@ import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
 import * as Adorners from '../../ui/components/adorners/adorners.js';
 import * as CodeHighlighter from '../../ui/components/code_highlighter/code_highlighter.js';
+import * as FloatingButton from '../../ui/components/floating_button/floating_button.js';
 import * as Highlighting from '../../ui/components/highlighting/highlighting.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
@@ -255,6 +256,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
   expandAllButtonElement: UI.TreeOutline.TreeElement|null;
   selectionElement?: HTMLDivElement;
   private hintElement?: HTMLElement;
+  private aiButtonContainer?: HTMLElement;
   private contentElement: HTMLElement;
   #elementIssues: Map<string, IssuesManager.GenericIssue.GenericIssue> = new Map();
   #nodeElementToIssue: Map<Element, IssuesManager.GenericIssue.GenericIssue> = new Map();
@@ -517,6 +519,30 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     }
   }
 
+  private createAiButton(): void {
+    const isElementNode = this.node().nodeType() === Node.ELEMENT_NODE;
+    if (!isElementNode ||
+        !UI.ActionRegistry.ActionRegistry.instance().hasAction('freestyler.elements-floating-button')) {
+      return;
+    }
+
+    const action = UI.ActionRegistry.ActionRegistry.instance().getAction('freestyler.elements-floating-button');
+    if (this.contentElement && !this.aiButtonContainer) {
+      this.aiButtonContainer = this.contentElement.createChild('span', 'ai-button-container');
+      const floatingButton = new FloatingButton.FloatingButton.FloatingButton({
+        iconName: 'smart-assistant',
+      });
+      floatingButton.addEventListener('click', ev => {
+        ev.stopPropagation();
+        void action.execute();
+      }, {capture: true});
+      floatingButton.addEventListener('mousedown', ev => {
+        ev.stopPropagation();
+      }, {capture: true});
+      this.aiButtonContainer.appendChild(floatingButton);
+    }
+  }
+
   override onbind(): void {
     if (this.treeOutline && !this.isClosingTag()) {
       this.treeOutline.treeElementByNode.set(this.nodeInternal, this);
@@ -588,6 +614,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     }
     this.createSelection();
     this.createHint();
+    this.createAiButton();
     this.treeOutline.suppressRevealAndSelect = false;
     return true;
   }
@@ -1405,9 +1432,11 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     }
     delete this.selectionElement;
     delete this.hintElement;
+    delete this.aiButtonContainer;
     if (this.selected) {
       this.createSelection();
       this.createHint();
+      this.createAiButton();
     }
 
     // If there is an issue with this node, make sure to update it.

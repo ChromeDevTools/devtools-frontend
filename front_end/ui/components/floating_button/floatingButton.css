@@ -1,0 +1,59 @@
+/*
+ * Copyright 2024 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+:host {
+  width: fit-content;
+  height: fit-content;
+}
+
+.floating-button {
+  padding: 0;
+  margin: 0;
+  background: 0;
+  border: 0;
+  position: relative;
+  width: var(--sys-size-8);
+  height: var(--sys-size-8);
+  background-color: var(--sys-color-surface);
+  box-shadow: var(--sys-elevation-level2);
+  border-radius: var(--sys-shape-corner-extra-small);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  & .icon {
+    width: var(--sys-size-7);
+    height: var(--sys-size-7);
+  }
+
+  &:not(:disabled):hover::after,
+  &:not(:disabled):hover::before {
+    content: "";
+    height: 100%;
+    width: 100%;
+    border-radius: inherit;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  &:not(:disabled):hover::after {
+    background-color: var(--sys-color-state-hover-on-subtle);
+  }
+
+  &:not(:disabled):active::before {
+    background-color: var(--sys-color-state-ripple-neutral-on-subtle);
+  }
+
+  &:focus-visible {
+    outline: 1px solid var(--sys-color-primary);
+    border-color: var(--sys-color-primary);
+  }
+
+  &:disabled .icon {
+    color: var(--sys-color-state-disabled);
+  }
+}

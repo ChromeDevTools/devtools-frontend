@@ -560,7 +560,8 @@ export enum Action {
   InsightsReminderTeaserSettingsLinkClicked = 166,
   InsightsReminderTeaserAbortedInSettings = 167,
   GeneratingInsightWithoutDisclaimer = 168,
-  MAX_VALUE = 169,
+  FreestylerOpenedFromElementsPanelFloatingButton = 169,
+  MAX_VALUE = 170,
   /* eslint-enable @typescript-eslint/naming-convention */
 }
 
@@ -1008,10 +1009,11 @@ export enum DevtoolsExperiments {
   'timeline-observations' = 96,
   'timeline-server-timings' = 98,
   'extension-storage-viewer' = 100,
+  'floating-entry-points-for-ai-assistance' = 101,
   /* eslint-enable @typescript-eslint/naming-convention */
 
   // Increment this when new experiments are added.
-  MAX_VALUE = 101,
+  MAX_VALUE = 102,
 }
 
 export const enum ColorPickerOpenedFrom {

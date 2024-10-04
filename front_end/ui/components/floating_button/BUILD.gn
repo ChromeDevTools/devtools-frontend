@@ -1,0 +1,35 @@
+# Copyright 2020 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../../scripts/build/ninja/devtools_module.gni")
+import("../../../../scripts/build/ninja/generate_css.gni")
+import("../../../../scripts/build/typescript/typescript.gni")
+import("../visibility.gni")
+
+generate_css("css_files") {
+  sources = [ "floatingButton.css" ]
+}
+
+devtools_module("floating_button") {
+  sources = [ "FloatingButton.ts" ]
+
+  deps = [
+    "../../lit-html:bundle",
+    "../../visual_logging:bundle",
+    "../helpers:bundle",
+    "../icon_button:bundle",
+  ]
+}
+
+devtools_entrypoint("bundle") {
+  entrypoint = "floating_button.ts"
+
+  deps = [
+    ":css_files",
+    ":floating_button",
+  ]
+
+  visibility = default_components_visibility
+}

@@ -88,6 +88,7 @@ devtools_module("elements") {
     "../../panels/utils:bundle",
     "../../ui/components/adorners:bundle",
     "../../ui/components/code_highlighter:bundle",
+    "../../ui/components/floating_button:bundle",
     "../../ui/components/highlighting:bundle",
     "../../ui/components/text_editor:bundle",
     "../../ui/components/tree_outline:bundle",

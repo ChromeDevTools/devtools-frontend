@@ -83,6 +83,19 @@
   margin-left: -12px;
 }
 
+.elements-disclosure li .ai-button-container {
+  display: none;
+  margin-left: 1ch;
+  overflow: visible;
+  max-height: var(--sys-size-6);
+  vertical-align: top;
+  margin-top: -1px;
+}
+
+.elements-disclosure .elements-tree-outline:not(.hide-selection-when-blurred) li.selected .ai-button-container {
+  display: inline-flex;
+}
+
 .elements-disclosure li .selected-hint::before {
   font-style: italic;
   content: " == $0";

@@ -94,6 +94,15 @@ export class SidebarInsightsTab extends HTMLElement {
       return;
     }
     this.#activeInsight = active;
+
+    // Only update the insightSetKey if there is an active insight. Otherwise, closing an insight
+    // would also collapse the insight set. Usually the proper insight set is already set because
+    // the user has it open already in order for this setter to be called, but insights can also
+    // be activated by clicking on a insight chip in the Summary panel, which may require opening
+    // a different insight set.
+    if (this.#activeInsight) {
+      this.#insightSetKey = this.#activeInsight.insightSetKey;
+    }
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
 
@@ -104,12 +113,12 @@ export class SidebarInsightsTab extends HTMLElement {
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
 
-  #insightSetClicked(id: string): void {
+  #insightSetToggled(id: string): void {
+    this.#insightSetKey = this.#insightSetKey === id ? null : id;
     // Update the active insight set.
-    if (id !== this.#activeInsight?.insightSetKey) {
+    if (this.#insightSetKey !== this.#activeInsight?.insightSetKey) {
       this.dispatchEvent(new Insights.SidebarInsight.InsightDeactivated());
     }
-    this.#insightSetKey = id;
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
 
@@ -172,7 +181,7 @@ export class SidebarInsightsTab extends HTMLElement {
               ?open=${id === this.#insightSetKey}
             >
               <summary
-                @click=${() => this.#insightSetClicked(id)}
+                @click=${() => this.#insightSetToggled(id)}
                 @mouseenter=${() => this.#insightSetHovered(id)}
                 @mouseleave=${() => this.#insightSetUnhovered()}
                 title=${url.href}

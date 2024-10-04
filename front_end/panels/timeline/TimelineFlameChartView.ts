@@ -30,7 +30,7 @@ import {
 } from './TimelineFlameChartDataProvider.js';
 import {TimelineFlameChartNetworkDataProvider} from './TimelineFlameChartNetworkDataProvider.js';
 import timelineFlameChartViewStyles from './timelineFlameChartView.css.js';
-import {type TimelineModeViewDelegate} from './TimelinePanel.js';
+import {type EventToRelatedInsightsMap, type TimelineModeViewDelegate} from './TimelinePanel.js';
 import {TimelineSelection} from './TimelineSelection.js';
 import {AggregatedTimelineTreeView} from './TimelineTreeView.js';
 import {type TimelineMarkerStyle} from './TimelineUIUtils.js';
@@ -97,7 +97,8 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
   private selectedSearchResult?: PerfUI.FlameChart.DataProviderSearchResult;
   private searchRegex?: RegExp;
   #parsedTrace: Trace.Handlers.Types.ParsedTrace|null;
-  #traceInsightsSets: Trace.Insights.Types.TraceInsightSets|null = null;
+  #traceInsightSets: Trace.Insights.Types.TraceInsightSets|null = null;
+  #eventToRelatedInsightsMap: EventToRelatedInsightsMap|null = null;
   #selectedGroupName: string|null = null;
   #onTraceBoundsChangeBound = this.#onTraceBoundsChange.bind(this);
   #gameKeyMatches = 0;
@@ -806,11 +807,15 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     this.#updateFlameCharts();
   }
 
-  setInsights(insights: Trace.Insights.Types.TraceInsightSets|null): void {
-    if (this.#traceInsightsSets === insights) {
+  setInsights(
+      insights: Trace.Insights.Types.TraceInsightSets|null,
+      eventToRelatedInsightsMap: EventToRelatedInsightsMap): void {
+    if (this.#traceInsightSets === insights) {
       return;
     }
-    this.#traceInsightsSets = insights;
+
+    this.#traceInsightSets = insights;
+    this.#eventToRelatedInsightsMap = eventToRelatedInsightsMap;
     // The DetailsView is provided with the InsightSets, so make sure we update it.
     this.#updateDetailViews();
   }
@@ -848,7 +853,12 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
 
   #updateDetailViews(): void {
     this.countersView.setModel(this.#parsedTrace, this.#selectedEvents);
-    void this.detailsView.setModel(this.#parsedTrace, this.#selectedEvents, this.#traceInsightsSets);
+    void this.detailsView.setModel({
+      parsedTrace: this.#parsedTrace,
+      selectedEvents: this.#selectedEvents,
+      traceInsightsSets: this.#traceInsightSets,
+      eventToRelatedInsightsMap: this.#eventToRelatedInsightsMap,
+    });
   }
 
   #updateFlameCharts(): void {

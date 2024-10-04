@@ -132,6 +132,23 @@ export class ThirdParties extends BaseInsight {
     // clang-format on
   }
 
+  override getRelatedEvents(): Trace.Types.Events.Event[] {
+    const insight = Trace.Insights.Common.getInsight('ThirdPartyWeb', this.data.insights, this.data.insightSetKey);
+    const entries = insight && [...insight.summaryByEntity.entries()].filter(kv => kv[0] !== insight.firstPartyEntity);
+    const shouldShow = entries?.length;
+
+    const events = [];
+    if (insight && shouldShow) {
+      for (const [entity, requests] of insight.requestsByEntity.entries()) {
+        if (entity !== insight.firstPartyEntity) {
+          events.push(...requests);
+        }
+      }
+    }
+
+    return events;
+  }
+
   override render(): void {
     const insight = Trace.Insights.Common.getInsight('ThirdPartyWeb', this.data.insights, this.data.insightSetKey);
     const entries = insight && [...insight.summaryByEntity.entries()].filter(kv => kv[0] !== insight.firstPartyEntity);

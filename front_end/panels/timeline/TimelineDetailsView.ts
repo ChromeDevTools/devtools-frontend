@@ -19,7 +19,7 @@ import {Tracker} from './FreshRecording.js';
 import {targetForEvent} from './TargetForEvent.js';
 import {TimelineLayersView} from './TimelineLayersView.js';
 import {TimelinePaintProfilerView} from './TimelinePaintProfilerView.js';
-import {type TimelineModeViewDelegate} from './TimelinePanel.js';
+import {type EventToRelatedInsightsMap, type TimelineModeViewDelegate} from './TimelinePanel.js';
 import {TimelineSelection} from './TimelineSelection.js';
 import {TimelineSelectorStatsView} from './TimelineSelectorStatsView.js';
 import {BottomUpTimelineTreeView, CallTreeTimelineTreeView, type TimelineTreeView} from './TimelineTreeView.js';
@@ -78,6 +78,10 @@ export class TimelineDetailsView extends UI.Widget.VBox {
   private lazySelectorStatsView: TimelineSelectorStatsView|null;
   #parsedTrace: Trace.Handlers.Types.ParsedTrace|null = null;
   #traceInsightsSets: Trace.Insights.Types.TraceInsightSets|null = null;
+  // TODO(crbug.com/370599988): utilize in every details summary renderer to create insight chips.
+  //                            This deserves an interaction test :)
+  /* eslint-disable-next-line no-unused-private-class-members */
+  #eventToRelatedInsightsMap: EventToRelatedInsightsMap|null = null;
   #filmStrip: Trace.Extras.FilmStrip.Data|null = null;
   #networkRequestDetails: TimelineComponents.NetworkRequestDetails.NetworkRequestDetails;
   #layoutShiftDetails: TimelineComponents.LayoutShiftDetails.LayoutShiftDetails;
@@ -163,24 +167,28 @@ export class TimelineDetailsView extends UI.Widget.VBox {
     }
   }
 
-  async setModel(
-      parsedTrace: Trace.Handlers.Types.ParsedTrace|null, selectedEvents: Trace.Types.Events.Event[]|null,
-      traceInsightsSets: Trace.Insights.Types.TraceInsightSets|null): Promise<void> {
-    if (this.#parsedTrace !== parsedTrace) {
+  async setModel(data: {
+    parsedTrace: Trace.Handlers.Types.ParsedTrace|null,
+    selectedEvents: Trace.Types.Events.Event[]|null,
+    traceInsightsSets: Trace.Insights.Types.TraceInsightSets|null,
+    eventToRelatedInsightsMap: EventToRelatedInsightsMap|null,
+  }): Promise<void> {
+    if (this.#parsedTrace !== data.parsedTrace) {
       // Clear the selector stats view, so the next time the user views it we
       // reconstruct it with the new trace data.
       this.lazySelectorStatsView = null;
 
-      this.#parsedTrace = parsedTrace;
+      this.#parsedTrace = data.parsedTrace;
     }
-    if (parsedTrace) {
-      this.#filmStrip = Trace.Extras.FilmStrip.fromParsedTrace(parsedTrace);
+    if (data.parsedTrace) {
+      this.#filmStrip = Trace.Extras.FilmStrip.fromParsedTrace(data.parsedTrace);
     }
-    this.#selectedEvents = selectedEvents;
-    this.#traceInsightsSets = traceInsightsSets;
+    this.#selectedEvents = data.selectedEvents;
+    this.#traceInsightsSets = data.traceInsightsSets;
+    this.#eventToRelatedInsightsMap = data.eventToRelatedInsightsMap;
     this.tabbedPane.closeTabs([Tab.PaintProfiler, Tab.LayerViewer], false);
     for (const view of this.rangeDetailViews.values()) {
-      view.setModelWithEvents(selectedEvents, parsedTrace);
+      view.setModelWithEvents(data.selectedEvents, data.parsedTrace);
     }
     this.lazyPaintProfilerView = null;
     this.lazyLayersView = null;

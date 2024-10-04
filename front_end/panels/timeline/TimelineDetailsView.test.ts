@@ -45,7 +45,8 @@ describeWithEnvironment('TimelineDetailsView', function() {
     }
     const selection = Timeline.TimelineSelection.TimelineSelection.fromTraceEvent(cssRequest);
 
-    await detailsView.setModel(parsedTrace, null, insights);
+    await detailsView.setModel(
+        {parsedTrace, selectedEvents: null, traceInsightsSets: insights, eventToRelatedInsightsMap: null});
     await detailsView.setSelection(selection);
 
     const detailsContentElement = detailsView.getDetailsContentElementForTest();

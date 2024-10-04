@@ -42,6 +42,7 @@ export interface BaseInsightData {
   activeCategory: Category;
 }
 
+// TODO(crbug.com/371615739): BaseInsight, SidebarInsight should be combined.
 // This is an abstract base class so the component naming rules do not apply.
 // eslint-disable-next-line rulesdir/check_component_naming
 export abstract class BaseInsight extends HTMLElement {
@@ -79,6 +80,13 @@ export abstract class BaseInsight extends HTMLElement {
     this.setAttribute('jslog', `${VisualLogging.section(`timeline.insights.${this.internalName}`)}`);
     // Used for unit test purposes when querying the DOM.
     this.dataset.insightName = this.internalName;
+
+    // TODO(crbug.com/371615739): this should be moved to model/trace/insights
+    const events = this.getRelatedEvents();
+    if (events.length) {
+      this.dispatchEvent(new SidebarInsight.InsightProvideRelatedEvents(
+          this.userVisibleTitle, events, this.#dispatchInsightActivatedEvent.bind(this)));
+    }
   }
 
   set insights(insights: Trace.Insights.Types.TraceInsightSets|null) {
@@ -111,6 +119,11 @@ export abstract class BaseInsight extends HTMLElement {
       this.dispatchEvent(new SidebarInsight.InsightDeactivated());
       return;
     }
+
+    this.#dispatchInsightActivatedEvent();
+  }
+
+  #dispatchInsightActivatedEvent(): void {
     if (!this.data.insightSetKey) {
       // Shouldn't happen, but needed to satisfy TS.
       return;
@@ -152,6 +165,11 @@ export abstract class BaseInsight extends HTMLElement {
 
     this.#initialOverlays = this.createOverlays();
     return this.#initialOverlays;
+  }
+
+  // Should be overrided by subclasses.
+  protected getRelatedEvents(): Trace.Types.Events.Event[] {
+    return [];
   }
 
   protected abstract createOverlays(): Overlays.Overlays.TimelineOverlay[];

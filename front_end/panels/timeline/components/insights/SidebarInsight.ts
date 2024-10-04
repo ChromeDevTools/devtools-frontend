@@ -78,12 +78,22 @@ export class InsightProvideOverlays extends Event {
   }
 }
 
+export class InsightProvideRelatedEvents extends Event {
+  static readonly eventName = 'insightproviderelatedevents';
+
+  constructor(
+      public label: string, public events: Array<Trace.Types.Events.Event>, public activateInsight: () => void) {
+    super(InsightProvideRelatedEvents.eventName, {bubbles: true, composed: true});
+  }
+}
+
 declare global {
   interface GlobalEventHandlersEventMap {
     [InsightActivated.eventName]: InsightActivated;
     [InsightDeactivated.eventName]: InsightDeactivated;
     [InsightSetHovered.eventName]: InsightSetHovered;
     [InsightProvideOverlays.eventName]: InsightProvideOverlays;
+    [InsightProvideRelatedEvents.eventName]: InsightProvideRelatedEvents;
   }
 }
 

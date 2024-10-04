@@ -937,7 +937,6 @@ export class FreestylerChatUi extends HTMLElement {
           <p class="disclaimer-text">${lockedString(
             this.#getDisclaimerText(),
           )} <x-link
-              href="#"
               class="link"
               jslog=${VisualLogging.link('open-ai-settings').track({
                 click: true,

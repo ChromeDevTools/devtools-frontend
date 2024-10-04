@@ -65,6 +65,7 @@ devtools_svg_sources = [
   "brush.svg",
   "bug.svg",
   "bundle.svg",
+  "button-magic.svg",
   "calendar-today.svg",
   "check-circle.svg",
   "check-double.svg",

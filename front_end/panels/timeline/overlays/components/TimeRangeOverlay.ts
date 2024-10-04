@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 import * as i18n from '../../../../core/i18n/i18n.js';
 import type * as Trace from '../../../../models/trace/trace.js';
-import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js';
 import * as IconButton from '../../../../ui/components/icon_button/icon_button.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 
@@ -37,7 +36,6 @@ export class TimeRangeRemoveEvent extends Event {
 export class TimeRangeOverlay extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-time-range-overlay`;
   readonly #shadow = this.attachShadow({mode: 'open'});
-  readonly #boundRender = this.#render.bind(this);
   #duration: Trace.Types.Timing.MicroSeconds|null = null;
   #canvasRect: DOMRect|null = null;
   #label: string;
@@ -81,7 +79,7 @@ export class TimeRangeOverlay extends HTMLElement {
       return;
     }
     this.#canvasRect = rect;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+    this.#render();
   }
 
   set duration(duration: Trace.Types.Timing.MicroSeconds|null) {
@@ -89,7 +87,7 @@ export class TimeRangeOverlay extends HTMLElement {
       return;
     }
     this.#duration = duration;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+    this.#render();
   }
 
   /**

@@ -4,7 +4,6 @@
 // found in the LICENSE file.
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Trace from '../../../../models/trace/trace.js';
-import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js';
 import * as IconButton from '../../../../ui/components/icon_button/icon_button.js';
 import * as ThemeSupport from '../../../../ui/legacy/theme_support/theme_support.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
@@ -31,7 +30,6 @@ export class EntryLinkStartCreating extends Event {
 export class EntriesLinkOverlay extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-entries-link-overlay`;
   readonly #shadow = this.attachShadow({mode: 'open'});
-  readonly #boundRender = this.#render.bind(this);
   #coordinateFrom: {x: number, y: number};
   #fromEntryDimentions: {width: number, height: number};
   #coordinateTo: {x: number, y: number};
@@ -84,7 +82,7 @@ export class EntriesLinkOverlay extends HTMLElement {
       return;
     }
     this.#canvasRect = rect;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+    this.#render();
   }
 
   entryFromWrapper(): HTMLElement|null {
@@ -160,6 +158,8 @@ export class EntriesLinkOverlay extends HTMLElement {
     }
 
     if (this.#linkState === Trace.Types.File.EntriesLinkState.CREATION_NOT_STARTED) {
+      this.#entryFromConnector.setAttribute('visibility', 'hidden');
+      this.#entryToConnector.setAttribute('visibility', 'hidden');
       return;
     }
 
@@ -234,7 +234,6 @@ export class EntriesLinkOverlay extends HTMLElement {
     }
 
     this.#render();
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
 
   /*

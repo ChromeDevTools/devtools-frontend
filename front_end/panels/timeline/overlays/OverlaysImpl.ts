@@ -4,13 +4,10 @@
 import * as Common from '../../../core/common/common.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as Trace from '../../../models/trace/trace.js';
-import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import type * as PerfUI from '../../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import * as Components from './components/components.js';
-
-const coordinator = RenderCoordinator.RenderCoordinator.RenderCoordinator.instance();
 
 /**
  * Below the network track there is a resize bar the user can click and drag.
@@ -641,12 +638,6 @@ export class Overlays extends EventTarget {
       // overlay's data changed, this is where we can pass that data into the
       // overlay's component so it has the latest data.
       this.#updateOverlayBeforePositioning(overlay, element);
-      // Give the component a chance to render with the new data (which might
-      // impact its size or positioning) before we position it.
-      // This shouldn't impact the responsiveness of the overlays as you
-      // scroll/pan; when the user is scrolling / panning we don't expect the
-      // data to change.
-      await coordinator.done();
 
       // Now we position the overlay on the timeline.
       this.#positionOverlay(overlay, element);
@@ -1428,7 +1419,6 @@ export class Overlays extends EventTarget {
   #updateOverlayBeforePositioning(overlay: TimelineOverlay, element: HTMLElement): void {
     switch (overlay.type) {
       case 'ENTRY_SELECTED':
-        // Nothing to do here.
         break;
       case 'TIME_RANGE': {
         const component = element.querySelector('devtools-time-range-overlay');
@@ -1456,7 +1446,6 @@ export class Overlays extends EventTarget {
         break;
       }
       case 'CURSOR_TIMESTAMP_MARKER':
-        // No contents within this that need updating.
         break;
       case 'CANDY_STRIPED_TIME_RANGE':
         break;

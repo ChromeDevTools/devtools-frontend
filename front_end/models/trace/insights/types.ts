@@ -43,17 +43,19 @@ export enum InsightWarning {
   NO_LAYOUT = 'NO_LAYOUT',
 }
 
+export interface MetricSavings {
+  /* eslint-disable @typescript-eslint/naming-convention */
+  FCP?: Types.Timing.MilliSeconds;
+  LCP?: Types.Timing.MilliSeconds;
+  TBT?: Types.Timing.MilliSeconds;
+  CLS?: number;
+  INP?: Types.Timing.MilliSeconds;
+  /* eslint-enable @typescript-eslint/naming-convention */
+}
+
 export type InsightResult<R extends Record<string, unknown>> = R&{
   warnings?: InsightWarning[],
-  metricSavings?: {
-    /* eslint-disable @typescript-eslint/naming-convention */
-    FCP?: number,
-    LCP?: number,
-    TBT?: number,
-    CLS?: number,
-    INP?: number,
-    /* eslint-enable @typescript-eslint/naming-convention */
-  },
+  metricSavings?: MetricSavings,
 };
 
 /**

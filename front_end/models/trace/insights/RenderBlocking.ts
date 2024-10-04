@@ -52,7 +52,8 @@ function getNodesAndTimingByRequestId(nodeTimings: Lantern.Simulation.Result['no
   return requestIdToNode;
 }
 
-function estimateSavingsWithGraphs(deferredIds: Set<string>, lanternContext: LanternContext): number {
+function estimateSavingsWithGraphs(
+    deferredIds: Set<string>, lanternContext: LanternContext): Types.Timing.MilliSeconds {
   const simulator = lanternContext.simulator;
   const fcpGraph = lanternContext.metrics.firstContentfulPaint.optimisticGraph;
   const {nodeTimings} = lanternContext.simulator.simulate(fcpGraph);
@@ -80,7 +81,7 @@ function estimateSavingsWithGraphs(deferredIds: Set<string>, lanternContext: Lan
   minimalFCPGraph.request.transferSize = safeTransferSize + totalChildNetworkBytes;
   const estimateAfterInline = simulator.simulate(minimalFCPGraph).timeInMs;
   minimalFCPGraph.request.transferSize = originalTransferSize;
-  return Math.round(Math.max(estimateBeforeInline - estimateAfterInline, 0));
+  return Math.round(Math.max(estimateBeforeInline - estimateAfterInline, 0)) as Types.Timing.MilliSeconds;
 }
 
 function hasImageLCP(parsedTrace: RequiredData<typeof deps>, context: InsightSetContextWithNavigation): boolean {
@@ -113,7 +114,7 @@ function computeSavings(
   const nodesAndTimingsByRequestId =
       getNodesAndTimingByRequestId(context.lantern.metrics.firstContentfulPaint.optimisticEstimate.nodeTimings);
 
-  const metricSavings = {FCP: 0, LCP: 0};
+  const metricSavings = {FCP: 0 as Types.Timing.MilliSeconds, LCP: 0 as Types.Timing.MilliSeconds};
   const requestIdToWastedMs = new Map<string, number>();
   const deferredNodeIds = new Set<string>();
   for (const request of renderBlockingRequests) {

@@ -48,6 +48,7 @@ export function generateInsight(
       return {
         mobileOptimized: false,
         viewportEvent,
+        metricSavings: {INP: 300 as Types.Timing.MilliSeconds},
       };
     }
   }

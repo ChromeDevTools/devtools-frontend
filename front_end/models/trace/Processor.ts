@@ -412,7 +412,7 @@ export class TraceProcessor extends EventTarget {
       const frameId = navigation.args.frame;
       const navigationId = navigation.args.data?.navigationId as string;
 
-      // The lantern sub-context is optional on NavigationInsightContext, so not setting it is OK.
+      // The lantern sub-context is optional on InsightSetContext, so not setting it is OK.
       // This is also a hedge against an error inside Lantern resulting in breaking the entire performance panel.
       // Additionally, many trace fixtures are too old to be processed by Lantern.
       let lantern;

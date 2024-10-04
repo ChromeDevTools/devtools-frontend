@@ -63,7 +63,7 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
     await coordinator.done();
 
     const userVisibleTitles = getUserVisibleInsights(component).flatMap(component => {
-      return getCleanTextContentFromElements(component.shadowRoot!, 'header');
+      return getCleanTextContentFromElements(component.shadowRoot!, '.insight-title');
     });
     assert.deepEqual(userVisibleTitles, [
       'LCP by phase',

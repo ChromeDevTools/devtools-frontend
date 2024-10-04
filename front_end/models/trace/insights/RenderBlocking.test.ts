@@ -115,7 +115,7 @@ describeWithEnvironment('RenderBlockingRequests', function() {
     assert.deepStrictEqual(insight.metricSavings, {
       FCP: 2250,
       LCP: 0,
-    });
+    } as Trace.Insights.Types.MetricSavings);
 
     assert.exists(insight.requestIdToWastedMs);
     const urlToWastedMs = [...insight.requestIdToWastedMs].map(([requestId, wastedMs]) => {
@@ -137,7 +137,7 @@ describeWithEnvironment('RenderBlockingRequests', function() {
     assert.deepStrictEqual(insight.metricSavings, {
       FCP: 13,
       LCP: 13,
-    });
+    } as Trace.Insights.Types.MetricSavings);
     assert.exists(insight.requestIdToWastedMs);
     const urlToWastedMs = [...insight.requestIdToWastedMs].map(([requestId, wastedMs]) => {
       const url = insight.renderBlockingRequests.find(r => r.args.data.requestId === requestId)?.args.data.url;

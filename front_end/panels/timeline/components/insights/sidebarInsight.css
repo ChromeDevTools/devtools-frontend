@@ -133,6 +133,7 @@ dd.dl-title {
 
 .insight-savings {
   font-weight: var(--ref-typeface-weight-bold);
+  color: var(--sys-color-green);
 }
 
 ul.insight-icon-results {

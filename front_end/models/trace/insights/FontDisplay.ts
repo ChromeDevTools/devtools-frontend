@@ -55,7 +55,10 @@ export function generateInsight(parsedTrace: RequiredData<typeof deps>, context:
 
   fonts.sort((a, b) => b.wastedTime - a.wastedTime);
 
+  const savings = Math.max(...fonts.map(f => f.wastedTime)) as Types.Timing.MilliSeconds;
+
   return {
     fonts,
+    metricSavings: {FCP: savings},
   };
 }

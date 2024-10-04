@@ -57,7 +57,7 @@ export class FontDisplay extends BaseInsight {
     return [...this.#overlayForRequest.values()];
   }
 
-  #render(data: Trace.Insights.Types.InsightResults['FontDisplay']): LitHtml.TemplateResult {
+  #render(insight: Trace.Insights.Types.InsightResults['FontDisplay']): LitHtml.TemplateResult {
     // clang-format off
     return LitHtml.html`
         <div class="insights">
@@ -66,6 +66,7 @@ export class FontDisplay extends BaseInsight {
               description: this.description,
               expanded: this.isActive(),
               internalName: this.internalName,
+              estimatedSavingsTime: insight.metricSavings?.FCP,
             } as SidebarInsight.InsightDetails}
             @insighttoggleclick=${this.onSidebarClick}>
                 <div slot="insight-content" class="insight-section">
@@ -73,7 +74,7 @@ export class FontDisplay extends BaseInsight {
                     .data=${{
                       insight: this,
                       headers: [i18nString(UIStrings.fontColumn), 'font-display', i18nString(UIStrings.wastedTimeColumn)],
-                      rows: data.fonts.map(font => ({
+                      rows: insight.fonts.map(font => ({
                         values: [
                           // TODO(crbug.com/369422196): the font name would be nicer here.
                           shortenUrl(font.request.args.data.url),

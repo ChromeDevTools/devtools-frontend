@@ -147,7 +147,8 @@ export class DocumentLatency extends BaseInsight {
             description: this.description,
             expanded: this.isActive(),
             internalName: this.internalName,
-            estimatedSavings: insight.metricSavings?.FCP,
+            estimatedSavingsTime: insight.metricSavings?.FCP,
+            estimatedSavingsBytes: insight.data.uncompressedResponseBytes,
         } as SidebarInsight.InsightDetails}
         @insighttoggleclick=${this.onSidebarClick}
       >

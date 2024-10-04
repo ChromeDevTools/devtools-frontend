@@ -37,8 +37,8 @@ export class Viewport extends BaseInsight {
     return [];
   }
 
-  #render(data: Trace.Insights.Types.InsightResults['Viewport']): LitHtml.TemplateResult {
-    const backendNodeId = data.viewportEvent?.args.data.node_id;
+  #render(insight: Trace.Insights.Types.InsightResults['Viewport']): LitHtml.TemplateResult {
+    const backendNodeId = insight.viewportEvent?.args.data.node_id;
 
     // clang-format off
     return LitHtml.html`
@@ -48,13 +48,14 @@ export class Viewport extends BaseInsight {
               description: this.description,
               expanded: this.isActive(),
               internalName: this.internalName,
+              estimatedSavingsTime: insight.metricSavings?.INP,
             } as SidebarInsight.InsightDetails}
             @insighttoggleclick=${this.onSidebarClick}>
                 <div slot="insight-content" class="insight-section">
                   ${backendNodeId !== undefined ? LitHtml.html`<${NodeLink.litTagName}
                     .data=${{
                       backendNodeId,
-                      options: {tooltip: data.viewportEvent?.args.data.content},
+                      options: {tooltip: insight.viewportEvent?.args.data.content},
                     } as NodeLinkData}>
                   </${NodeLink.litTagName}>` : LitHtml.nothing}
                 </div>

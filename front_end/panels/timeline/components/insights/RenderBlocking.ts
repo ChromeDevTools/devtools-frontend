@@ -74,7 +74,7 @@ export class RenderBlockingRequests extends BaseInsight {
             description: this.description,
             internalName: this.internalName,
             expanded: this.isActive(),
-            estimatedSavings,
+            estimatedSavingsTime: estimatedSavings,
           } as SidebarInsight.InsightDetails}
           @insighttoggleclick=${this.onSidebarClick}
         >

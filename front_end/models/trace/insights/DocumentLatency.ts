@@ -131,8 +131,8 @@ export function generateInsight(
   overallSavingsMs += redirectDuration;
 
   const metricSavings = {
-    FCP: overallSavingsMs,
-    LCP: overallSavingsMs,
+    FCP: overallSavingsMs as Types.Timing.MilliSeconds,
+    LCP: overallSavingsMs as Types.Timing.MilliSeconds,
   };
 
   return {

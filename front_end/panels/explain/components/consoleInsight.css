@@ -305,15 +305,6 @@ h2:focus-visible {
   height: 20px;
 }
 
-devtools-icon[name="spark"] {
-  color: var(--sys-color-primary-bright);
-}
-
-devtools-icon[name="dog-paw"] {
-  width: 16px;
-  height: 16px;
-}
-
 .badge {
   background: linear-gradient(135deg, var(--sys-color-gradient-primary), var(--sys-color-gradient-tertiary));
   border-radius: var(--sys-size-3);

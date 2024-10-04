@@ -281,21 +281,21 @@ describeWithEnvironment('Overlays', () => {
       });
       const currManager = Timeline.ModificationsManager.ModificationsManager.activeManager();
       // The Annotations Overlays are added through the ModificationsManager listener
-      currManager?.addEventListener(Timeline.ModificationsManager.AnnotationModifiedEvent.eventName, event => {
+      currManager?.addEventListener(Timeline.ModificationsManager.AnnotationModifiedEvent.eventName, async event => {
         const {overlay, action} = (event as Timeline.ModificationsManager.AnnotationModifiedEvent);
         if (action === 'Add') {
           overlays.add(overlay);
         }
-        overlays.update();
+        await overlays.update();
       });
 
       // When an annotation overlay is remomved, this event is dispatched to the Modifications Manager.
-      overlays.addEventListener(Overlays.Overlays.AnnotationOverlayActionEvent.eventName, event => {
+      overlays.addEventListener(Overlays.Overlays.AnnotationOverlayActionEvent.eventName, async event => {
         const {overlay, action} = (event as Overlays.Overlays.AnnotationOverlayActionEvent);
         if (action === 'Remove') {
           overlays.remove(overlay);
         }
-        overlays.update();
+        await overlays.update();
       });
 
       overlays.updateChartDimensions('main', {
@@ -327,7 +327,7 @@ describeWithEnvironment('Overlays', () => {
         type: 'ENTRY_SELECTED',
         entry: event,
       });
-      overlays.update();
+      await overlays.update();
 
       // Ensure that the overlay was created.
       const overlayDOM = container.querySelector<HTMLElement>('.overlay-type-ENTRY_SELECTED');
@@ -344,7 +344,7 @@ describeWithEnvironment('Overlays', () => {
         entry: event,
         outlineReason: 'ERROR',
       });
-      overlays.update();
+      await overlays.update();
 
       const outlineVisible =
           container.querySelector<HTMLElement>('.overlay-type-ENTRY_OUTLINE')?.style.display === 'block';
@@ -355,7 +355,7 @@ describeWithEnvironment('Overlays', () => {
         type: 'ENTRY_SELECTED',
         entry: event,
       });
-      overlays.update();
+      await overlays.update();
       const outlineNowHidden =
           container.querySelector<HTMLElement>('.overlay-type-ENTRY_OUTLINE')?.style.display === 'none';
       assert.isTrue(outlineNowHidden, 'The ENTRY_OUTLINE should be hidden');
@@ -373,12 +373,12 @@ describeWithEnvironment('Overlays', () => {
         type: 'ENTRY_SELECTED',
         entry: event1,
       });
-      overlays.update();
+      await overlays.update();
       overlays.add({
         type: 'ENTRY_SELECTED',
         entry: event2,
       });
-      overlays.update();
+      await overlays.update();
 
       // There should only be one of these
       const entrySelectedOverlays = container.querySelectorAll<HTMLElement>('.overlay-type-ENTRY_SELECTED');
@@ -397,7 +397,7 @@ describeWithEnvironment('Overlays', () => {
         entry: event,
         label: 'entry label',
       });
-      overlays.update();
+      await overlays.update();
 
       // Ensure that the overlay was created.
       const overlayDOM = container.querySelector<HTMLElement>('.overlay-type-ENTRY_LABEL');
@@ -415,7 +415,7 @@ describeWithEnvironment('Overlays', () => {
         type: 'CURSOR_TIMESTAMP_MARKER',
         timestamp: parsedTrace.Meta.traceBounds.max,
       });
-      overlays.update();
+      await overlays.update();
       assert.lengthOf(container.children, 1);
     });
 
@@ -431,7 +431,7 @@ describeWithEnvironment('Overlays', () => {
         entry: event,
         label: 'entry label',
       });
-      overlays.update();
+      await overlays.update();
 
       const overlayDOM = container.querySelector<HTMLElement>('.overlay-type-ENTRY_LABEL');
       assert.isOk(overlayDOM);
@@ -463,7 +463,7 @@ describeWithEnvironment('Overlays', () => {
         entry: event,
         label: 'label',
       });
-      overlays.update();
+      await overlays.update();
 
       // Ensure that the overlay was created.
       const overlayDOM = container.querySelector<HTMLElement>('.overlay-type-ENTRY_LABEL');
@@ -508,7 +508,7 @@ describeWithEnvironment('Overlays', () => {
         // Make this overlay the entire span of the trace
         bounds: parsedTrace.Meta.traceBounds,
       });
-      overlays.update();
+      await overlays.update();
 
       // Ensure that the overlay was created.
       const overlayDOM = container.querySelector<HTMLElement>('.overlay-type-TIME_RANGE');
@@ -549,7 +549,7 @@ describeWithEnvironment('Overlays', () => {
            // Make this overlay the entire span of the trace
            bounds: parsedTrace.Meta.traceBounds,
          });
-         overlays.update();
+         await overlays.update();
 
          // Ensure that the overlay was created.
          const overlayDOM = container.querySelector<HTMLElement>('.overlay-type-TIME_RANGE');
@@ -592,7 +592,7 @@ describeWithEnvironment('Overlays', () => {
         label: 'label2',
         bounds: parsedTrace.Meta.traceBounds,
       });
-      overlays.update();
+      await overlays.update();
 
       assert.strictEqual(overlays.overlaysOfType('TIME_RANGE').length, 2);
     });
@@ -609,7 +609,7 @@ describeWithEnvironment('Overlays', () => {
         entry: event as Trace.Types.Events.Event,
         label: '',
       });
-      overlays.update();
+      await overlays.update();
 
       // Ensure that the overlay was created.
       const overlayDOM = container.querySelector<HTMLElement>('.overlay-type-ENTRY_LABEL');
@@ -653,7 +653,7 @@ describeWithEnvironment('Overlays', () => {
         entry: event as Trace.Types.Events.Event,
         label: '',
       });
-      overlays.update();
+      await overlays.update();
 
       // Ensure that the overlay was created.
       const overlayDOM = container.querySelector<HTMLElement>('.overlay-type-ENTRY_LABEL');
@@ -681,7 +681,7 @@ describeWithEnvironment('Overlays', () => {
         // Make this overlay the entire span of the trace
         bounds: parsedTrace.Meta.traceBounds,
       });
-      overlays.update();
+      await overlays.update();
       const overlayDOM = container.querySelector<HTMLElement>('.overlay-type-TIME_RANGE');
       assert.isOk(overlayDOM);
     });
@@ -696,7 +696,7 @@ describeWithEnvironment('Overlays', () => {
         // Make this overlay the entire span of the trace
         bounds: parsedTrace.Meta.traceBounds,
       });
-      overlays.update();
+      await overlays.update();
       const overlayDOM = container.querySelector<HTMLElement>('.overlay-type-TIME_RANGE');
       assert.isOk(overlayDOM);
     });
@@ -711,7 +711,7 @@ describeWithEnvironment('Overlays', () => {
         // Make this overlay the entire span of the trace
         bounds: parsedTrace.Meta.traceBounds,
       });
-      overlays.update();
+      await overlays.update();
       const overlayDOM = container.querySelector<HTMLElement>('.overlay-type-TIME_RANGE');
       assert.isOk(overlayDOM);
       const firstWidth = window.parseInt(overlayDOM.style.width);
@@ -722,7 +722,7 @@ describeWithEnvironment('Overlays', () => {
           rangeOverlay.bounds.max,
       );
       overlays.updateExisting(rangeOverlay, {bounds: newBounds});
-      overlays.update();
+      await overlays.update();
       const secondWidth = window.parseInt(overlayDOM.style.width);
       // The new time range is smaller so the DOM element should have less width
       assert.isTrue(secondWidth < firstWidth);
@@ -742,7 +742,7 @@ describeWithEnvironment('Overlays', () => {
       const boundsRange = Trace.Types.Timing.MicroSeconds(20_000);
       const boundsMax = Trace.Types.Timing.MicroSeconds(layoutShiftEvent.ts + boundsRange);
       overlays.updateVisibleWindow({min: layoutShiftEvent.ts, max: boundsMax, range: boundsRange});
-      overlays.update();
+      await overlays.update();
       const overlayDOM = container.querySelector<HTMLElement>('.overlay-type-ENTRY_SELECTED');
       assert.isOk(overlayDOM);
       assert.strictEqual(window.parseInt(overlayDOM.style.width), 2);
@@ -758,7 +758,7 @@ describeWithEnvironment('Overlays', () => {
         // Make this overlay the entire span of the trace
         bounds: parsedTrace.Meta.traceBounds,
       });
-      overlays.update();
+      await overlays.update();
       await coordinator.done();
       const overlayDOM = container.querySelector<HTMLElement>('.overlay-type-TIME_RANGE');
       const component = overlayDOM?.querySelector('devtools-time-range-overlay');
@@ -781,11 +781,11 @@ describeWithEnvironment('Overlays', () => {
         type: 'ENTRY_SELECTED',
         entry: event,
       });
-      overlays.update();
+      await overlays.update();
       assert.lengthOf(container.children, 1);
 
       overlays.remove(selectedOverlay);
-      overlays.update();
+      await overlays.update();
       assert.lengthOf(container.children, 0);
     });
 
@@ -800,7 +800,7 @@ describeWithEnvironment('Overlays', () => {
         type: 'ENTRY_SELECTED',
         entry: timelineFrame,
       });
-      overlays.update();
+      await overlays.update();
 
       // Ensure that the overlay was created.
       const overlayDOM = container.querySelector<HTMLElement>('.overlay-type-ENTRY_SELECTED');
@@ -838,7 +838,7 @@ describeWithEnvironment('Overlays', () => {
         type: 'ENTRY_SELECTED',
         entry: event,
       });
-      overlays.update();
+      await overlays.update();
 
       assert.lengthOf(container.children, 1);
       const removedCount = overlays.removeOverlaysOfType('ENTRY_SELECTED');
@@ -860,7 +860,7 @@ describeWithEnvironment('Overlays', () => {
         entry: event as Trace.Types.Events.Event,
       });
 
-      overlays.update();
+      await overlays.update();
       const overlayDOM = container.querySelector<HTMLElement>('.overlay-type-ENTRY_LABEL');
       assert.isOk(overlayDOM);
       const component = overlayDOM?.querySelector('devtools-entry-label-overlay');
@@ -889,7 +889,7 @@ describeWithEnvironment('Overlays', () => {
         entry: event as Trace.Types.Events.Event,
       });
 
-      overlays.update();
+      await overlays.update();
       const overlayDOM = container.querySelector<HTMLElement>('.overlay-type-ENTRY_LABEL');
       assert.isOk(overlayDOM);
       const component = overlayDOM?.querySelector('devtools-entry-label-overlay');

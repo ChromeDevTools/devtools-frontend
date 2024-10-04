@@ -171,7 +171,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     this.mainFlameChart.addEventListener(PerfUI.FlameChart.Events.LATEST_DRAW_DIMENSIONS, dimensions => {
       this.#overlays.updateChartDimensions('main', dimensions.data.chart);
       this.#overlays.updateVisibleWindow(dimensions.data.traceWindow);
-      this.#overlays.update();
+      void this.#overlays.update();
     });
 
     this.networkFlameChartGroupExpansionSetting =
@@ -188,7 +188,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     this.networkFlameChart.addEventListener(PerfUI.FlameChart.Events.LATEST_DRAW_DIMENSIONS, dimensions => {
       this.#overlays.updateChartDimensions('network', dimensions.data.chart);
       this.#overlays.updateVisibleWindow(dimensions.data.traceWindow);
-      this.#overlays.update();
+      void this.#overlays.update();
 
       // If the height of the network chart has changed, we need to tell the
       // main flame chart because its tooltips are positioned based in part on
@@ -197,11 +197,11 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     });
 
     this.mainFlameChart.addEventListener(PerfUI.FlameChart.Events.MOUSE_MOVE, event => {
-      this.#processFlameChartMouseMoveEvent(event.data);
+      void this.#processFlameChartMouseMoveEvent(event.data);
     });
 
     this.networkFlameChart.addEventListener(PerfUI.FlameChart.Events.MOUSE_MOVE, event => {
-      this.#processFlameChartMouseMoveEvent(event.data);
+      void this.#processFlameChartMouseMoveEvent(event.data);
     });
 
     this.#overlays = new Overlays.Overlays.Overlays({
@@ -436,7 +436,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     }
   }
 
-  #processFlameChartMouseMoveEvent(data: PerfUI.FlameChart.EventTypes['MouseMove']): void {
+  async #processFlameChartMouseMoveEvent(data: PerfUI.FlameChart.EventTypes['MouseMove']): Promise<void> {
     const {mouseEvent, timeInMicroSeconds} = data;
     // If the user is no longer holding shift, remove any existing marker.
     if (!mouseEvent.shiftKey) {
@@ -444,7 +444,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
       if (removedCount > 0) {
         // Don't trigger lots of updates on a mouse move if we didn't actually
         // remove any overlays.
-        this.#overlays.update();
+        await this.#overlays.update();
       }
     }
 
@@ -1009,12 +1009,12 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     for (const overlay of overlays) {
       this.#overlays.add(overlay);
     }
-    this.#overlays.update();
+    void this.#overlays.update();
   }
 
   addOverlay<T extends Overlays.Overlays.TimelineOverlay>(newOverlay: T): T {
     const overlay = this.#overlays.add(newOverlay);
-    this.#overlays.update();
+    void this.#overlays.update();
     return overlay;
   }
 
@@ -1026,16 +1026,16 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     for (const overlay of overlays) {
       this.#overlays.remove(overlay);
     }
-    this.#overlays.update();
+    void this.#overlays.update();
   }
   removeOverlay(removedOverlay: Overlays.Overlays.TimelineOverlay): void {
     this.#overlays.remove(removedOverlay);
-    this.#overlays.update();
+    void this.#overlays.update();
   }
 
   updateExistingOverlay<T extends Overlays.Overlays.TimelineOverlay>(existingOverlay: T, newData: Partial<T>): void {
     this.#overlays.updateExisting(existingOverlay, newData);
-    this.#overlays.update();
+    void this.#overlays.update();
   }
 
   enterLabelEditMode(overlay: Overlays.Overlays.EntryLabel): void {

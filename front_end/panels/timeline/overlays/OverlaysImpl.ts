@@ -4,10 +4,13 @@
 import * as Common from '../../../core/common/common.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as Trace from '../../../models/trace/trace.js';
+import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import type * as PerfUI from '../../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import * as Components from './components/components.js';
+
+const coordinator = RenderCoordinator.RenderCoordinator.RenderCoordinator.instance();
 
 /**
  * Below the network track there is a resize bar the user can click and drag.
@@ -623,7 +626,7 @@ export class Overlays extends EventTarget {
    * existing overlays will have their positions changed to ensure they are
    * rendered in the right place.
    */
-  update(): void {
+  async update(): Promise<void> {
     const timeRangeOverlays: TimeRangeLabel[] = [];
     for (const [overlay, existingElement] of this.#overlaysToElements) {
       const element = existingElement || this.#createElementForNewOverlay(overlay);
@@ -633,11 +636,23 @@ export class Overlays extends EventTarget {
         this.#overlaysContainer.appendChild(element);
       }
 
+      // A chance to update the overlay before we re-position it. If an
+      // overlay's data changed, this is where we can pass that data into the
+      // overlay's component so it has the latest data.
+      this.#updateOverlayBeforePositioning(overlay, element);
+      // Give the component a chance to render with the new data (which might
+      // impact its size or positioning) before we position it.
+      // This shouldn't impact the responsiveness of the overlays as you
+      // scroll/pan; when the user is scrolling / panning we don't expect the
+      // data to change.
+      await coordinator.done();
+
       // Now we position the overlay on the timeline.
       this.#positionOverlay(overlay, element);
 
-      // And now we give every overlay a chance to react to its new position, if it needs to
-      this.#updateOverlayElementAfterPositioning(overlay, element);
+      // And now we give every overlay a chance to react to its new position,
+      // if it needs to
+      this.#updateOverlayAfterPositioning(overlay, element);
 
       if (overlay.type === 'TIME_RANGE') {
         timeRangeOverlays.push(overlay);
@@ -828,13 +843,13 @@ export class Overlays extends EventTarget {
   }
 
   #positionTimespanBreakdownOverlay(overlay: TimespanBreakdown, element: HTMLElement): void {
-    const component = element.querySelector<HTMLElement>('devtools-timespan-breakdown-overlay');
-    const shadow = component?.shadowRoot;
-    const elementSections = shadow?.querySelectorAll<HTMLElement>('.timespan-breakdown-overlay-section');
-
     if (overlay.sections.length === 0) {
       return;
     }
+
+    const component = element.querySelector('devtools-timespan-breakdown-overlay');
+    const elementSections = component?.renderedSections() ?? [];
+
     // Handle horizontal positioning.
     const leftEdgePixel = this.#xPixelForMicroSeconds('main', overlay.sections[0].bounds.min);
     const rightEdgePixel =
@@ -847,7 +862,7 @@ export class Overlays extends EventTarget {
     element.style.left = `${leftEdgePixel}px`;
     element.style.width = `${rangeWidth}px`;
 
-    if (!(elementSections?.length)) {
+    if (elementSections.length === 0) {
       return;
     }
 
@@ -1394,10 +1409,13 @@ export class Overlays extends EventTarget {
   }
 
   /**
-   * Some of the HTML elements for overlays might need updating between each render
-   * (for example, if a time range has changed, we update its duration text)
+   * Some overlays store data in their components that needs to be updated
+   * before we position an overlay. Else, we might position an overlay based on
+   * stale data. This method is used to update an overlay BEFORE it is then
+   * positioned onto the canvas. It is the right place to ensure an overlay has
+   * the latest data it needs.
    */
-  #updateOverlayElementAfterPositioning(overlay: TimelineOverlay, element: HTMLElement): void {
+  #updateOverlayBeforePositioning(overlay: TimelineOverlay, element: HTMLElement): void {
     switch (overlay.type) {
       case 'ENTRY_SELECTED':
         // Nothing to do here.
@@ -1407,7 +1425,6 @@ export class Overlays extends EventTarget {
         if (component) {
           component.duration = overlay.showDuration ? overlay.bounds.range : null;
           component.canvasRect = this.#charts.mainChart.canvasBoundingClientRect();
-          component.updateLabelPositioning();
         }
         break;
       }
@@ -1425,12 +1442,45 @@ export class Overlays extends EventTarget {
         if (component) {
           component.sections = overlay.sections;
           component.canvasRect = this.#charts.mainChart.canvasBoundingClientRect();
-          component.checkSectionLabelPositioning();
         }
         break;
       }
       case 'CURSOR_TIMESTAMP_MARKER':
         // No contents within this that need updating.
+        break;
+      case 'CANDY_STRIPED_TIME_RANGE':
+        break;
+      default:
+        Platform.TypeScriptUtilities.assertNever(overlay, `Unexpected overlay ${overlay}`);
+    }
+  }
+  /**
+   * Some overlays have custom logic within them to manage visibility of
+   * labels/etc that can be impacted if the positioning or size of the overlay
+   * has changed. This method can be used to run code after an overlay has
+   * been updated + repositioned on the timeline.
+   */
+  #updateOverlayAfterPositioning(overlay: TimelineOverlay, element: HTMLElement): void {
+    switch (overlay.type) {
+      case 'ENTRY_SELECTED':
+        break;
+      case 'TIME_RANGE': {
+        const component = element.querySelector('devtools-time-range-overlay');
+        component?.updateLabelPositioning();
+        break;
+      }
+      case 'ENTRY_LABEL':
+        break;
+      case 'ENTRY_OUTLINE':
+        break;
+      case 'ENTRIES_LINK':
+        break;
+      case 'TIMESPAN_BREAKDOWN': {
+        const component = element.querySelector('devtools-timespan-breakdown-overlay');
+        component?.checkSectionLabelPositioning();
+        break;
+      }
+      case 'CURSOR_TIMESTAMP_MARKER':
         break;
       case 'CANDY_STRIPED_TIME_RANGE':
         break;

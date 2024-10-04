@@ -19,11 +19,6 @@ export type EntryBreakdown = {
 
 export class TimespanBreakdownOverlay extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-timespan-breakdown-overlay`;
-  /**
-   * Size to stagger sections of a TimespanBreakdownOverlay.
-   */
-  static readonly TIMESPAN_BREAKDOWN_OVERLAY_STAGGER_PX = 5;
-
   readonly #shadow = this.attachShadow({mode: 'open'});
   readonly #boundRender = this.#render.bind(this);
   #canvasRect: DOMRect|null = null;
@@ -31,7 +26,6 @@ export class TimespanBreakdownOverlay extends HTMLElement {
 
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [styles];
-    this.#render();
   }
 
   set canvasRect(rect: DOMRect|null) {
@@ -153,7 +147,11 @@ export class TimespanBreakdownOverlay extends HTMLElement {
     }
   }
 
-  renderSection(section: EntryBreakdown): LitHtml.TemplateResult {
+  renderedSections(): HTMLElement[] {
+    return Array.from(this.#shadow.querySelectorAll('.timespan-breakdown-overlay-section'));
+  }
+
+  #renderSection(section: EntryBreakdown): LitHtml.TemplateResult {
     // clang-format off
     return LitHtml.html`
       <div class="timespan-breakdown-overlay-section">
@@ -169,7 +167,11 @@ export class TimespanBreakdownOverlay extends HTMLElement {
   }
 
   #render(): void {
-    LitHtml.render(LitHtml.html`${this.#sections?.map(this.renderSection)}`, this.#shadow, {host: this});
+    if (this.#sections) {
+      this.classList.toggle('odd-number-of-sections', this.#sections.length % 2 === 1);
+      this.classList.toggle('even-number-of-sections', this.#sections.length % 2 === 0);
+    }
+    LitHtml.render(LitHtml.html`${this.#sections?.map(this.#renderSection)}`, this.#shadow, {host: this});
     this.checkSectionLabelPositioning();
   }
 }

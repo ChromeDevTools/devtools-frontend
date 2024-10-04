@@ -101,7 +101,7 @@ UI.ViewManager.registerViewExtension({
   iconName: 'button-magic',
   settings: ['console-insights-enabled'],
   condition: config => {
-    return (config?.devToolsConsoleInsights?.enabled || config?.devToolsFreestylerDogfood?.enabled) ?? false;
+    return (config?.devToolsConsoleInsights?.enabled || config?.devToolsFreestyler?.enabled) ?? false;
   },
 });
 

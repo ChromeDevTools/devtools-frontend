@@ -86,21 +86,21 @@ async function loadFreestylerModule(): Promise<typeof Freestyler> {
 }
 
 function isFeatureAvailable(config?: Root.Runtime.HostConfig): boolean {
-  return (config?.aidaAvailability?.enabled && config?.devToolsFreestylerDogfood?.enabled) === true;
+  return (config?.aidaAvailability?.enabled && config?.devToolsFreestyler?.enabled) === true;
 }
 
 function isDrJonesNetworkFeatureAvailable(config?: Root.Runtime.HostConfig): boolean {
-  return (config?.aidaAvailability?.enabled && config?.devToolsFreestylerDogfood?.enabled &&
+  return (config?.aidaAvailability?.enabled && config?.devToolsFreestyler?.enabled &&
           config?.devToolsExplainThisResourceDogfood?.enabled) === true;
 }
 
 function isDrJonesPerformanceFeatureAvailable(config?: Root.Runtime.HostConfig): boolean {
-  return (config?.aidaAvailability?.enabled && config?.devToolsFreestylerDogfood?.enabled &&
+  return (config?.aidaAvailability?.enabled && config?.devToolsFreestyler?.enabled &&
           config?.devToolsAiAssistancePerformanceAgentDogfood?.enabled) === true;
 }
 
 function isDrJonesFileFeatureAvailable(config?: Root.Runtime.HostConfig): boolean {
-  return (config?.aidaAvailability?.enabled && config?.devToolsFreestylerDogfood?.enabled &&
+  return (config?.aidaAvailability?.enabled && config?.devToolsFreestyler?.enabled &&
           config?.devToolsAiAssistanceFileAgentDogfood?.enabled) === true;
 }
 

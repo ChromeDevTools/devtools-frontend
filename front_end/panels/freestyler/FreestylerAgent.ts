@@ -183,12 +183,12 @@ export class FreestylerAgent extends AiAgent {
   get userTier(): string|undefined {
     const config = Common.Settings.Settings.instance().getHostConfig();
 
-    return config.devToolsFreestylerDogfood?.userTier;
+    return config.devToolsFreestyler?.userTier;
   }
   get options(): AidaRequestOptions {
     const config = Common.Settings.Settings.instance().getHostConfig();
-    const temperature = AiAgent.validTemperature(config.devToolsFreestylerDogfood?.temperature);
-    const modelId = config.devToolsFreestylerDogfood?.modelId;
+    const temperature = AiAgent.validTemperature(config.devToolsFreestyler?.temperature);
+    const modelId = config.devToolsFreestyler?.modelId;
 
     return {
       temperature,

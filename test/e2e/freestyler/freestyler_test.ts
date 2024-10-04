@@ -28,13 +28,13 @@ describe.skip('[crbug.com/365038585] Freestyler', function() {
 
   async function setupMocks(
       aidaAvailability: Partial<Root.Runtime.AidaAvailability>,
-      devToolsFreestylerDogfood: Partial<Root.Runtime.HostConfigFreestylerDogfood>, messages: string[]) {
+      devToolsFreestyler: Partial<Root.Runtime.HostConfigFreestyler>, messages: string[]) {
     const {frontend} = getBrowserAndPages();
     await frontend.bringToFront();
     // TODO: come up with less invasive way to mock host configs.
     const {identifier} = await frontend.evaluateOnNewDocument(
-        `globalThis.hostConfigForTesting = {...globalThis.hostConfigForTesting, devToolsFreestylerDogfood: ${
-            JSON.stringify(devToolsFreestylerDogfood)}, aidaAvailability: ${JSON.stringify(aidaAvailability)}
+        `globalThis.hostConfigForTesting = {...globalThis.hostConfigForTesting, devToolsFreestyler: ${
+            JSON.stringify(devToolsFreestyler)}, aidaAvailability: ${JSON.stringify(aidaAvailability)}
   };
 
   globalThis.getSyncInformationForTesting = () => {

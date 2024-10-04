@@ -417,7 +417,7 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
         temperature: -1,
         enabled: false,
       },
-      devToolsFreestylerDogfood: {
+      devToolsFreestyler: {
         modelId: '',
         temperature: -1,
         enabled: false,

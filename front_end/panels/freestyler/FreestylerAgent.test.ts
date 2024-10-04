@@ -16,7 +16,7 @@ const {FreestylerAgent} = Freestyler;
 describeWithEnvironment('FreestylerAgent', () => {
   function mockHostConfig(modelId?: string, temperature?: number, userTier?: string) {
     getGetHostConfigStub({
-      devToolsFreestylerDogfood: {
+      devToolsFreestyler: {
         modelId,
         temperature,
         userTier,

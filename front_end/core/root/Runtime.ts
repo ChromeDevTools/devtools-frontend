@@ -314,7 +314,7 @@ export interface HostConfigConsoleInsights {
   enabled: boolean;
 }
 
-export interface HostConfigFreestylerDogfood {
+export interface HostConfigFreestyler {
   modelId: string;
   temperature: number;
   enabled: boolean;
@@ -361,7 +361,7 @@ export interface HostConfigPrivacyUI {
 export type HostConfig = Platform.TypeScriptUtilities.RecursivePartial<{
   aidaAvailability: AidaAvailability,
   devToolsConsoleInsights: HostConfigConsoleInsights,
-  devToolsFreestylerDogfood: HostConfigFreestylerDogfood,
+  devToolsFreestyler: HostConfigFreestyler,
   devToolsExplainThisResourceDogfood: HostConfigExplainThisResourceDogfood,
   devToolsAiAssistancePerformanceAgentDogfood: HostConfigAiAssistancePerformanceAgentDogfood,
   devToolsAiAssistanceFileAgentDogfood: HostConfigAiAssistanceFileAgentDogfood,

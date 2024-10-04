@@ -122,14 +122,6 @@ const UIStringsNotTranslate = {
    */
   negativeSideEffectConfirmation: 'Cancel',
   /**
-   *@description Link text for redirecting to feedback form
-   */
-  feedbackLink: 'Send feedback',
-  /**
-   *@description Button text for "Fix this issue" button
-   */
-  fixThisIssue: 'Fix this issue',
-  /**
    *@description The generic name of the AI agent (do not translate)
    */
   ai: 'AI',
@@ -161,14 +153,6 @@ const UIStringsNotTranslate = {
    *@description The footer disclaimer that links to more information about the AI feature.
    */
   learnAbout: 'Learn about AI in DevTools',
-  /**
-   * @description Text for a link to Chrome DevTools Settings.
-   */
-  settingsLink: 'AI assistance in Settings',
-  /**
-   * @description Placeholder text for an inactive text field. When active, it's used for the user's input to the GenAI assistance.
-   */
-  followTheSteps: 'Follow the steps above to ask a question',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/freestyler/components/FreestylerChatUi.ts', UIStrings);

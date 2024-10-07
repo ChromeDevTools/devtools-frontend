@@ -40,6 +40,7 @@ devtools_entrypoint("bundle") {
     "../../panels/elements/*",
     "../../panels/emulation/*",
     "../../panels/explain/*",
+    "../../panels/freestyler/*",
     "../../panels/lighthouse/*",
     "../../panels/network/*",
     "../../panels/profiler/*",

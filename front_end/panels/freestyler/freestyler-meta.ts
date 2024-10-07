@@ -206,7 +206,7 @@ UI.ActionRegistration.registerActionExtension({
 
 UI.ActionRegistration.registerActionExtension({
   actionId: 'drjones.sources-panel-context',
-  contextTypes(): [] {
+  contextTypes() {
     return [];
   },
   setting,

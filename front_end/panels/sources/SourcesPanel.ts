@@ -744,6 +744,7 @@ export class SourcesPanel extends UI.Panel.Panel implements
 
   private editorSelected(event: Common.EventTarget.EventTargetEvent<Workspace.UISourceCode.UISourceCode>): void {
     const uiSourceCode = event.data;
+    UI.Context.Context.instance().setFlavor(Workspace.UISourceCode.UISourceCode, uiSourceCode);
     if (this.editorView.mainWidget() &&
         Common.Settings.Settings.instance().moduleSetting('auto-reveal-in-navigator').get()) {
       void this.revealInNavigator(uiSourceCode, true);
@@ -905,6 +906,7 @@ export class SourcesPanel extends UI.Panel.Panel implements
     if (target instanceof Workspace.UISourceCode.UISourceCode) {
       this.appendUISourceCodeItems(event, contextMenu, target);
       if (UI.ActionRegistry.ActionRegistry.instance().hasAction('drjones.sources-panel-context')) {
+        UI.Context.Context.instance().setFlavor(Workspace.UISourceCode.UISourceCode, target);
         contextMenu.headerSection().appendAction(
             'drjones.sources-panel-context',
         );

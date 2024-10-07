@@ -6,6 +6,7 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as Workspace from '../../models/workspace/workspace.js';
 import * as NetworkForward from '../../panels/network/forward/forward.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as LitHtml from '../../ui/lit-html/lit-html.js';
@@ -103,6 +104,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
 
   #toggleSearchElementAction: UI.ActionRegistration.Action;
   #selectedElement: SDK.DOMModel.DOMNode|null;
+  #selectedFile: Workspace.UISourceCode.UISourceCode|null;
   #selectedNetworkRequest: SDK.NetworkRequest.NetworkRequest|null;
   #contentContainer: HTMLElement;
   #aidaClient: Host.AidaClient.AidaClient;
@@ -138,6 +140,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
 
     this.#selectedElement = selectedElementFilter(UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode));
     this.#selectedNetworkRequest = UI.Context.Context.instance().flavor(SDK.NetworkRequest.NetworkRequest);
+    this.#selectedFile = UI.Context.Context.instance().flavor(Workspace.UISourceCode.UISourceCode);
     this.#viewProps = {
       state: this.#freestylerEnabledSetting?.getIfNotDisabled() ? FreestylerChatUiState.CHAT_VIEW :
                                                                   FreestylerChatUiState.CONSENT_VIEW,
@@ -146,6 +149,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
       inspectElementToggled: this.#toggleSearchElementAction.toggled(),
       selectedElement: this.#selectedElement,
       selectedNetworkRequest: this.#selectedNetworkRequest,
+      selectedFile: this.#selectedFile,
       isLoading: false,
       onTextSubmit: this.#startConversation.bind(this),
       onInspectElementClick: this.#handleSelectElementClick.bind(this),
@@ -181,6 +185,14 @@ export class FreestylerPanel extends UI.Panel.Panel {
       }
 
       this.#viewProps.selectedNetworkRequest = Boolean(ev.data) ? ev.data : null;
+      this.doUpdate();
+    });
+    UI.Context.Context.instance().addFlavorChangeListener(Workspace.UISourceCode.UISourceCode, ev => {
+      if (this.#viewProps.selectedFile === ev.data) {
+        return;
+      }
+
+      this.#viewProps.selectedFile = Boolean(ev.data) ? ev.data : null;
       this.doUpdate();
     });
     this.doUpdate();
@@ -301,7 +313,10 @@ export class FreestylerPanel extends UI.Panel.Panel {
         break;
       }
       case 'drjones.sources-panel-context': {
-        // TODO(samiyac): Add actions and UMA
+        // TODO(samiyac): Add UMA
+        this.#viewOutput.freestylerChatUi?.focusTextInput();
+        this.#viewProps.agentType = AgentType.DRJONES_FILE;
+        this.doUpdate();
         break;
       }
     }

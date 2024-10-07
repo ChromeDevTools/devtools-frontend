@@ -7,6 +7,7 @@ import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as Platform from '../../../core/platform/platform.js';
 import type * as SDK from '../../../core/sdk/sdk.js';
+import type * as Workspace from '../../../models/workspace/workspace.js';
 import * as Marked from '../../../third_party/marked/marked.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
@@ -73,6 +74,11 @@ const UIStringsNotTranslate = {
   inputDisclaimerForDrJonesNetworkAgent:
       'Chat messages and the selected network request are sent to Google and may be seen by human reviewers to improve this feature. This is an experimental AI feature and won’t always get it right.',
   /**
+   *@description Disclaimer text right after the chat input.
+   */
+  inputDisclaimerForDrJonesFileAgent:
+      'Chat messages and the selected file are sent to Google and may be seen by human reviewers to improve this feature. This is an experimental AI feature and won\'t always get it right.',
+  /**
    *@description Placeholder text for the chat UI input.
    */
   inputPlaceholderForFreestylerAgent: 'Ask a question about the selected element',
@@ -80,6 +86,10 @@ const UIStringsNotTranslate = {
    *@description Placeholder text for the chat UI input.
    */
   inputPlaceholderForDrJonesNetworkAgent: 'Ask a question about the selected network request',
+  /**
+   *@description Placeholder text for the chat UI input.
+   */
+  inputPlaceholderForDrJonesFileAgent: 'Ask a question about the selected file',
   /**
    *@description Title for the send icon button.
    */
@@ -170,6 +180,8 @@ function getInputPlaceholderString(
       switch (agentType) {
         case AgentType.FREESTYLER:
           return lockedString(UIStringsNotTranslate.inputPlaceholderForFreestylerAgent);
+        case AgentType.DRJONES_FILE:
+          return lockedString(UIStringsNotTranslate.inputPlaceholderForDrJonesFileAgent);
         case AgentType.DRJONES_NETWORK_REQUEST:
           return lockedString(UIStringsNotTranslate.inputPlaceholderForDrJonesNetworkAgent);
       }
@@ -223,6 +235,7 @@ export const enum State {
 
 export const enum AgentType {
   FREESTYLER = 'freestyler',
+  DRJONES_FILE = 'drjones-file',
   DRJONES_NETWORK_REQUEST = 'drjones-network-request',
 }
 
@@ -237,6 +250,7 @@ export interface Props {
   aidaAvailability: Host.AidaClient.AidaAccessPreconditions;
   messages: ChatMessage[];
   selectedElement: SDK.DOMModel.DOMNode|null;
+  selectedFile: Workspace.UISourceCode.UISourceCode|null;
   selectedNetworkRequest: SDK.NetworkRequest.NetworkRequest|null;
   isLoading: boolean;
   canShowFeedbackForm: boolean;
@@ -696,9 +710,31 @@ export class FreestylerChatUi extends HTMLElement {
     switch (this.#props.agentType) {
       case AgentType.FREESTYLER:
         return this.#renderSelectAnElement();
+      case AgentType.DRJONES_FILE:
+        return this.#renderSelectedFileName();
       case AgentType.DRJONES_NETWORK_REQUEST:
         return this.#renderSelectedNetworkRequest();
     }
+  }
+
+  #renderSelectedFileName(): LitHtml.TemplateResult {
+    const resourceClass = LitHtml.Directives.classMap({
+      'not-selected': !this.#props.selectedFile,
+      'resource-link': true,
+    });
+
+    if (!this.#props.selectedFile) {
+      return LitHtml.html`${LitHtml.nothing}`;
+    }
+
+    // TODO(b/371947238): Add icon and make the div clickable
+    // clang-format off
+    return LitHtml.html`<div class="select-element">
+    <div class=${resourceClass}
+    @click=${this.#props.onSelectedNetworkRequestClick}>
+      ${this.#props.selectedFile?.displayName()}
+    </div></div>`;
+    // clang-format on
   }
 
   #renderSelectedNetworkRequest = (): LitHtml.TemplateResult => {
@@ -814,6 +850,10 @@ export class FreestylerChatUi extends HTMLElement {
           'Why does this element overlap another?',
           'How do I center this element?',
         ];
+      case AgentType.DRJONES_FILE:
+        return [
+          'What are the key functions in this file and what are they doing?',
+        ];
       case AgentType.DRJONES_NETWORK_REQUEST:
         return [
           'Why is this network request taking longer to complete?',
@@ -873,6 +913,8 @@ export class FreestylerChatUi extends HTMLElement {
     switch (this.#props.agentType) {
       case AgentType.FREESTYLER:
         return lockedString(UIStringsNotTranslate.inputDisclaimerForFreestylerAgent);
+      case AgentType.DRJONES_FILE:
+        return lockedString(UIStringsNotTranslate.inputDisclaimerForDrJonesFileAgent);
       case AgentType.DRJONES_NETWORK_REQUEST:
         return lockedString(UIStringsNotTranslate.inputDisclaimerForDrJonesNetworkAgent);
     }

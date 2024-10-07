@@ -1,0 +1,1 @@
+{"version":3,"file":"rule-fix.d.ts","sourceRoot":"","sources":["../../../../src/lib/analyze/types/rule/rule-fix.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,aAAa,EAAE,MAAM,sBAAsB,CAAC;AAErD,MAAM,WAAW,OAAO;IACvB,OAAO,EAAE,MAAM,CAAC;IAChB,OAAO,EAAE,aAAa,EAAE,CAAC;CACzB"}

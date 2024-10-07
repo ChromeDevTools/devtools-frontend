@@ -1,0 +1,1 @@
+{"version":3,"file":"remove-undefined-from-type.d.ts","sourceRoot":"","sources":["../../../../src/lib/rules/util/type/remove-undefined-from-type.ts"],"names":[],"mappings":"AAAA,OAAO,EAAgC,UAAU,EAAE,MAAM,gBAAgB,CAAC;AAE1E,wBAAgB,uBAAuB,CAAC,IAAI,EAAE,UAAU,GAAG,UAAU,CAepE"}

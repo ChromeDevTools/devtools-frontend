@@ -1,0 +1,1 @@
+{"version":3,"file":"ts-module.d.ts","sourceRoot":"","sources":["../../src/lib/analyze/ts-module.ts"],"names":[],"mappings":"AACA,OAAO,KAAK,YAAY,MAAM,YAAY,CAAC;AAE3C,eAAO,MAAM,QAAQ,EAAE;IAAE,EAAE,EAAE,OAAO,YAAY,CAAA;CAAyB,CAAC;AAE1E,wBAAgB,mBAAmB,CAAC,SAAS,EAAE,OAAO,YAAY,GAAG,IAAI,CAIxE"}

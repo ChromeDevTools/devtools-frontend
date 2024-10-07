@@ -83,6 +83,7 @@
     "karma-sourcemap-loader": "0.3.8",
     "karma-spec-reporter": "0.0.32",
     "license-checker": "25.0.1",
+    "lit-analyzer": "2.0.3",
     "mocha": "9.2.2",
     "postcss": "8.4.38",
     "puppeteer-core": "23.0.2",
@@ -98,7 +99,6 @@
     "svgo": "2.8.0",
     "terser": "5.19.1",
     "typescript": "5.5.4",
-    "web-component-analyzer": "2.0.0",
     "webidl2": "24.2.2",
     "ws": "8.18.0",
     "yargs": "17.3.1"

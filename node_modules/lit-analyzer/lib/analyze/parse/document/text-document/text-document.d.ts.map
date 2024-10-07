@@ -1,0 +1,1 @@
+{"version":3,"file":"text-document.d.ts","sourceRoot":"","sources":["../../../../../src/lib/analyze/parse/document/text-document/text-document.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,eAAe,EAAE,MAAM,yCAAyC,CAAC;AAE1E,qBAAa,YAAY;IACL,eAAe,EAAE,eAAe;gBAAhC,eAAe,EAAE,eAAe;CACnD"}

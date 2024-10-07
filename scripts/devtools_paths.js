@@ -123,6 +123,10 @@ function mochaExecutablePath() {
   return path.join(nodeModulesPath(), 'mocha', 'bin', 'mocha');
 }
 
+function litAnalyzerExecutablePath() {
+  return path.join(nodeModulesPath(), 'lit-analyzer', 'cli.js');
+}
+
 function downloadedChromeBinaryPath() {
   const paths = {
     linux: path.join('chrome-linux', 'chrome'),
@@ -139,5 +143,6 @@ module.exports = {
   nodeModulesPath,
   mochaExecutablePath,
   stylelintExecutablePath,
-  downloadedChromeBinaryPath
+  downloadedChromeBinaryPath,
+  litAnalyzerExecutablePath
 };

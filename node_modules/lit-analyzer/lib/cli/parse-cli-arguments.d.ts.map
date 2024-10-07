@@ -1,0 +1,1 @@
+{"version":3,"file":"parse-cli-arguments.d.ts","sourceRoot":"","sources":["../../src/lib/cli/parse-cli-arguments.ts"],"names":[],"mappings":"AAGA,MAAM,MAAM,YAAY,GAAG;IAAE,CAAC,EAAE,MAAM,EAAE,CAAA;CAAE,GAAG,MAAM,CAAC,MAAM,EAAE,MAAM,GAAG,MAAM,GAAG,OAAO,CAAC,CAAC;AAEvF;;;GAGG;AACH,wBAAgB,iBAAiB,CAAC,IAAI,EAAE,MAAM,EAAE,GAAG,YAAY,CAwC9D"}

@@ -1,0 +1,53 @@
+{
+  "name": "vscode-html-languageservice",
+  "version": "3.1.0",
+  "description": "Language service for HTML",
+  "main": "./lib/umd/htmlLanguageService.js",
+  "typings": "./lib/umd/htmlLanguageService",
+  "module": "./lib/esm/htmlLanguageService.js",
+  "author": "Microsoft Corporation",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Microsoft/vscode-html-languageservice"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Microsoft/vscode-html-languageservice"
+  },
+  "devDependencies": {
+    "@types/mocha": "^7.0.2",
+    "@types/node": "^10.12.21",
+    "@typescript-eslint/eslint-plugin": "^2.30.0",
+    "@typescript-eslint/parser": "^2.30.0",
+    "eslint": "^6.8.0",
+    "js-beautify": "^1.11.0",
+    "mocha": "^7.1.2",
+    "rimraf": "^3.0.2",
+    "typescript": "^3.8.3",
+    "vscode-web-custom-data": "^0.1.4"
+  },
+  "dependencies": {
+    "vscode-languageserver-textdocument": "^1.0.1",
+    "vscode-languageserver-types": "3.16.0-next.2",
+    "vscode-nls": "^4.1.2",
+    "vscode-uri": "^2.1.2"
+  },
+  "scripts": {
+    "prepublishOnly": "npm run clean && npm run compile-esm && npm run test && npm run remove-sourcemap-refs",
+    "postpublish": "node ./build/post-publish.js",
+    "compile": "tsc -p ./src && npm run copy-jsbeautify",
+    "compile-esm": "tsc -p ./src/tsconfig.esm.json",
+    "watch": "tsc -w -p ./src && npm run copy-jsbeautify",
+    "clean": "rimraf lib",
+    "remove-sourcemap-refs": "node ./build/remove-sourcemap-refs.js",
+    "test": "npm run compile && mocha && npm run lint",
+    "lint": "eslint src/**/*.ts",
+    "install-types-next": "yarn add vscode-languageserver-types@next -f -S && yarn add vscode-languageserver-textdocument@next -f -S",
+    "copy-jsbeautify": "node ./build/copy-jsbeautify.js",
+    "update-jsbeautify": "yarn add js-beautify && node ./build/update-jsbeautify.js",
+    "update-jsbeautify-next": "yarn add js-beautify@next && node ./build/update-jsbeautify.js",
+    "update-data": "node ./build/generateData.js",
+    "preversion": "npm test",
+    "postversion": "git push && git push --tags"
+  }
+}

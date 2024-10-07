@@ -1,0 +1,1 @@
+{"version":3,"file":"lit-rename-location.d.ts","sourceRoot":"","sources":["../../../src/lib/analyze/types/lit-rename-location.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,eAAe,EAAE,MAAM,YAAY,CAAC;AAE7C,MAAM,WAAW,iBAAiB;IACjC,QAAQ,EAAE,MAAM,CAAC;IACjB,UAAU,CAAC,EAAE,MAAM,CAAC;IACpB,UAAU,CAAC,EAAE,MAAM,CAAC;IACpB,KAAK,EAAE,eAAe,CAAC;CACvB"}

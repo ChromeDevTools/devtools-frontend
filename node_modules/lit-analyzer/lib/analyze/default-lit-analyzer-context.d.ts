@@ -1,0 +1,48 @@
+import * as tsMod from "typescript";
+import { Program, SourceFile } from "typescript";
+import * as tsServer from "typescript/lib/tsserverlibrary.js";
+import { LitAnalyzerConfig } from "./lit-analyzer-config.js";
+import { LitAnalyzerContext, LitAnalyzerContextBaseOptions, LitPluginContextHandler } from "./lit-analyzer-context.js";
+import { DefaultLitAnalyzerLogger } from "./lit-analyzer-logger.js";
+import { RuleCollection } from "./rule-collection.js";
+import { DefaultAnalyzerDefinitionStore } from "./store/definition-store/default-analyzer-definition-store.js";
+import { DefaultAnalyzerDependencyStore } from "./store/dependency-store/default-analyzer-dependency-store.js";
+import { DefaultAnalyzerDocumentStore } from "./store/document-store/default-analyzer-document-store.js";
+import { DefaultAnalyzerHtmlStore } from "./store/html-store/default-analyzer-html-store.js";
+export declare class DefaultLitAnalyzerContext implements LitAnalyzerContext {
+    private handler;
+    protected componentSourceFileIterator: import("./util/changed-source-file-iterator.js").ChangedSourceFileIterator;
+    protected hasAnalyzedSubclassExtensions: boolean;
+    protected _config: LitAnalyzerConfig;
+    get ts(): typeof tsMod;
+    get program(): Program;
+    get project(): tsServer.server.Project | undefined;
+    get config(): LitAnalyzerConfig;
+    private _currentStartTime;
+    private _currentTimeout;
+    get currentRunningTime(): number;
+    private _currentCancellationToken;
+    private _hasRequestedCancellation;
+    private _throwOnRequestedCancellation;
+    get isCancellationRequested(): boolean;
+    private _currentFile;
+    get currentFile(): SourceFile;
+    readonly htmlStore: DefaultAnalyzerHtmlStore;
+    readonly dependencyStore: DefaultAnalyzerDependencyStore;
+    readonly documentStore: DefaultAnalyzerDocumentStore;
+    readonly definitionStore: DefaultAnalyzerDefinitionStore;
+    readonly logger: DefaultLitAnalyzerLogger;
+    private _rules;
+    get rules(): RuleCollection;
+    setContextBase({ file, timeout, throwOnCancellation }: LitAnalyzerContextBaseOptions): void;
+    updateConfig(config: LitAnalyzerConfig): void;
+    updateDependencies(file: SourceFile): void;
+    updateComponents(file: SourceFile): void;
+    private get checker();
+    constructor(handler: LitPluginContextHandler);
+    private findInvalidatedComponents;
+    private findComponentsInFile;
+    private analyzeSubclassExtensions;
+    private findDependenciesInFile;
+}
+//# sourceMappingURL=default-lit-analyzer-context.d.ts.map

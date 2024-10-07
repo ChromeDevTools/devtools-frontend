@@ -11,6 +11,12 @@ const {extname, join} = require('path');
 const globby = require('globby');
 const yargs = require('yargs/yargs');
 const {hideBin} = require('yargs/helpers');
+const childProcess = require('child_process');
+const {
+  devtoolsRootPath,
+  litAnalyzerExecutablePath,
+  nodePath,
+} = require('../devtools_paths.js');
 
 const flags = yargs(hideBin(process.argv))
                   .option('fix', {
@@ -84,6 +90,15 @@ async function runStylelint(files) {
   return !errored;
 }
 
+function runLitAnalyzer(files) {
+  const rules = {'no-missing-import': 'error', 'no-unknown-tag-name': 'error', 'no-complex-attribute-binding': 'off'};
+  const args =
+      [litAnalyzerExecutablePath(), ...Object.entries(rules).flatMap(([k, v]) => [`--rules.${k}`, v]), ...files];
+  const result =
+      childProcess.spawnSync(nodePath(), args, {encoding: 'utf-8', cwd: devtoolsRootPath(), stdio: 'inherit'});
+  return !result.error;
+}
+
 async function run() {
   const scripts = [];
   const styles = [];
@@ -98,6 +113,7 @@ async function run() {
   let succeed = true;
   if (scripts.length !== 0) {
     succeed &&= await runESLint(scripts);
+    succeed &&= runLitAnalyzer(scripts);
   }
   if (styles.length !== 0) {
     succeed &&= await runStylelint(styles);

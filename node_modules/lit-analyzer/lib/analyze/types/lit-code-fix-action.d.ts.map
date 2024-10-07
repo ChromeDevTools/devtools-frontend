@@ -1,0 +1,1 @@
+{"version":3,"file":"lit-code-fix-action.d.ts","sourceRoot":"","sources":["../../../src/lib/analyze/types/lit-code-fix-action.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,eAAe,EAAE,MAAM,YAAY,CAAC;AAE7C,MAAM,WAAW,gBAAgB;IAChC,KAAK,EAAE,eAAe,CAAC;IACvB,OAAO,EAAE,MAAM,CAAC;CAChB"}

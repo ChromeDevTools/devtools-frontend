@@ -1,0 +1,1 @@
+{"version":3,"file":"lit-completion-details.d.ts","sourceRoot":"","sources":["../../../src/lib/analyze/types/lit-completion-details.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,aAAa,EAAE,MAAM,sBAAsB,CAAC;AAErD,MAAM,WAAW,oBAAoB;IACpC,IAAI,EAAE,MAAM,CAAC;IACb,IAAI,EAAE,aAAa,CAAC;IACpB,WAAW,EAAE,MAAM,CAAC;IACpB,aAAa,CAAC,EAAE,MAAM,CAAC;CACvB"}

@@ -1,0 +1,27 @@
+trigger:
+- '*'
+pr:
+- '*'
+
+strategy:
+  matrix:
+    linux:
+      imageName: 'ubuntu-latest'
+    mac:
+      imageName: 'macos-latest'
+    windows:
+      imageName: 'windows-latest'
+
+pool:
+  vmImage: $(imageName)
+
+steps:
+
+- task: NodeTool@0
+  inputs:
+    versionSpec: '10.x'
+  displayName: 'Install Node.js'
+
+- bash: |
+    yarn && yarn test
+  displayName: Run Tests

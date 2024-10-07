@@ -1,0 +1,1 @@
+{"version":3,"file":"css-document.d.ts","sourceRoot":"","sources":["../../../../../../src/lib/analyze/parse/document/text-document/css-document/css-document.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,qBAAqB,EAAE,MAAM,gDAAgD,CAAC;AACvF,OAAO,EAAE,YAAY,EAAE,MAAM,qBAAqB,CAAC;AAEnD,qBAAa,WAAY,SAAQ,YAAY;gBAChC,eAAe,EAAE,qBAAqB;CAGlD"}

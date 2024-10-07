@@ -1,0 +1,1 @@
+{"version":3,"file":"lit-quick-info.d.ts","sourceRoot":"","sources":["../../../src/lib/analyze/types/lit-quick-info.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,eAAe,EAAE,MAAM,YAAY,CAAC;AAE7C,MAAM,WAAW,YAAY;IAC5B,KAAK,EAAE,eAAe,CAAC;IACvB,WAAW,EAAE,MAAM,CAAC;IACpB,aAAa,CAAC,EAAE,MAAM,CAAC;CACvB"}

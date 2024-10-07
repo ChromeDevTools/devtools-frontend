@@ -30,7 +30,7 @@ const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/Fo
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class FontDisplay extends BaseInsight {
-  static readonly litTagName = LitHtml.literal`devtools-performance-font-display`;
+  static override readonly litTagName = LitHtml.literal`devtools-performance-font-display`;
   override insightCategory = Category.INP;
   override internalName: string = 'font-display';
   override userVisibleTitle: string = i18nString(UIStrings.title);

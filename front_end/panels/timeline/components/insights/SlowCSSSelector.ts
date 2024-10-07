@@ -50,7 +50,7 @@ const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/Sl
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class SlowCSSSelector extends BaseInsight {
-  static readonly litTagName = LitHtml.literal`devtools-performance-slow-css-selector`;
+  static override readonly litTagName = LitHtml.literal`devtools-performance-slow-css-selector`;
   override insightCategory: Category = Category.ALL;
   override internalName: string = 'slow-css-selector';
   override userVisibleTitle: string = i18nString(UIStrings.title);

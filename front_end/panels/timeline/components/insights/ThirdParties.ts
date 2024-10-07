@@ -40,7 +40,7 @@ const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/Th
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class ThirdParties extends BaseInsight {
-  static readonly litTagName = LitHtml.literal`devtools-performance-third-parties`;
+  static override readonly litTagName = LitHtml.literal`devtools-performance-third-parties`;
   override insightCategory: Category = Category.ALL;
   override internalName: string = 'third-parties';
   override userVisibleTitle: string = i18nString(UIStrings.title);

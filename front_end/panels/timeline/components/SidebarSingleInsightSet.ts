@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../../core/i18n/i18n.js';
+import * as Root from '../../../core/root/root.js';
 import * as Trace from '../../../models/trace/trace.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
@@ -14,10 +15,37 @@ import styles from './sidebarSingleInsightSet.css.js';
 export interface SidebarSingleInsightSetData {
   parsedTrace: Trace.Handlers.Types.ParsedTrace|null;
   insights: Trace.Insights.Types.TraceInsightSets|null;
-  insightSetKey: string|null;
+  insightSetKey: Trace.Types.Events.NavigationId|null;
   activeCategory: Insights.Types.Category;
   activeInsight: ActiveInsight|null;
 }
+
+/**
+ * These are WIP Insights that are only shown if the user has turned on the
+ * "enable experimental performance insights" experiment. This is used to enable
+ * us to ship incrementally without turning insights on by default for all
+ * users. */
+const EXPERIMENTAL_INSIGHTS: ReadonlySet<typeof Insights.Helpers.BaseInsight> = new Set([
+  Insights.FontDisplay.FontDisplay,
+]);
+
+/**
+ * Every insight (INCLUDING experimental ones)
+ * The order of this array is the order the insights will be shown in the sidebar.
+ * TODO(crbug.com/368135130): sort this in a smart way!
+ */
+const ALL_INSIGHTS: typeof Insights.Helpers.BaseInsight[] = [
+  Insights.InteractionToNextPaint.InteractionToNextPaint,
+  Insights.LCPPhases.LCPPhases,
+  Insights.LCPDiscovery.LCPDiscovery,
+  Insights.CLSCulprits.CLSCulprits,
+  Insights.RenderBlocking.RenderBlockingRequests,
+  Insights.DocumentLatency.DocumentLatency,
+  Insights.FontDisplay.FontDisplay,
+  Insights.Viewport.Viewport,
+  Insights.ThirdParties.ThirdParties,
+  Insights.SlowCSSSelector.SlowCSSSelector,
+] as const;
 
 export class SidebarSingleInsightSet extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-performance-sidebar-single-navigation`;
@@ -137,24 +165,24 @@ export class SidebarSingleInsightSet extends HTMLElement {
     `;
   }
 
+  #insightsForRendering(): typeof Insights.Helpers.BaseInsight[] {
+    const includeExperimental = Root.Runtime.experiments.isEnabled(
+        Root.Runtime.ExperimentName.TIMELINE_EXPERIMENTAL_INSIGHTS,
+    );
+
+    if (includeExperimental) {
+      return ALL_INSIGHTS;
+    }
+
+    return ALL_INSIGHTS.filter(insight => !EXPERIMENTAL_INSIGHTS.has(insight));
+  }
+
   #renderInsights(
       insights: Trace.Insights.Types.TraceInsightSets|null,
       parsedTrace: Trace.Handlers.Types.ParsedTrace|null,
       insightSetKey: string,
       ): LitHtml.TemplateResult {
-    // TODO(crbug.com/368135130): sort this in a smart way!
-    const insightComponents = [
-      Insights.InteractionToNextPaint.InteractionToNextPaint,
-      Insights.LCPPhases.LCPPhases,
-      Insights.LCPDiscovery.LCPDiscovery,
-      Insights.CLSCulprits.CLSCulprits,
-      Insights.RenderBlocking.RenderBlockingRequests,
-      Insights.DocumentLatency.DocumentLatency,
-      Insights.FontDisplay.FontDisplay,
-      Insights.Viewport.Viewport,
-      Insights.ThirdParties.ThirdParties,
-      Insights.SlowCSSSelector.SlowCSSSelector,
-    ];
+    const insightComponents = this.#insightsForRendering();
     // clang-format off
     return LitHtml.html`${insightComponents.map(component => {
       return LitHtml.html`<div data-single-insight-wrapper>

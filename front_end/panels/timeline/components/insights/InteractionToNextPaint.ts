@@ -51,7 +51,7 @@ const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/In
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class InteractionToNextPaint extends BaseInsight {
-  static readonly litTagName = LitHtml.literal`devtools-performance-inp`;
+  static override readonly litTagName = LitHtml.literal`devtools-performance-inp`;
   override insightCategory: Category = Category.INP;
   override internalName: string = 'inp';
   override userVisibleTitle: string = i18nString(UIStrings.title);

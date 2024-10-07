@@ -38,7 +38,7 @@ const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/Re
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class RenderBlockingRequests extends BaseInsight {
-  static readonly litTagName = LitHtml.literal`devtools-performance-render-blocking-requests`;
+  static override readonly litTagName = LitHtml.literal`devtools-performance-render-blocking-requests`;
   override insightCategory: Category = Category.LCP;
   override internalName: string = 'render-blocking-requests';
   override userVisibleTitle: string = i18nString(UIStrings.title);

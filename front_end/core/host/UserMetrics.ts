@@ -1010,10 +1010,11 @@ export enum DevtoolsExperiments {
   'timeline-server-timings' = 98,
   'extension-storage-viewer' = 100,
   'floating-entry-points-for-ai-assistance' = 101,
+  'timeline-experimental-insights' = 102,
   /* eslint-enable @typescript-eslint/naming-convention */
 
   // Increment this when new experiments are added.
-  MAX_VALUE = 102,
+  MAX_VALUE = 103,
 }
 
 export const enum ColorPickerOpenedFrom {

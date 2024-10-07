@@ -59,7 +59,7 @@ const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/Do
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class DocumentLatency extends BaseInsight {
-  static readonly litTagName = LitHtml.literal`devtools-performance-document-latency`;
+  static override readonly litTagName = LitHtml.literal`devtools-performance-document-latency`;
   override insightCategory: Category = Category.ALL;
   override internalName: string = 'document-latency';
   override userVisibleTitle: string = i18nString(UIStrings.title);

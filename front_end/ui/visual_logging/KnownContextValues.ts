@@ -2968,6 +2968,7 @@ export const knownContextValues = new Set([
   'timeline-debug-mode',
   'timeline-disable-js-sampling',
   'timeline-enhanced-traces',
+  'timeline-experimental-insights',
   'timeline-flamechart-main-view-group-expansion',
   'timeline-flamechart-network-view-group-expansion',
   'timeline-invalidation-tracking',

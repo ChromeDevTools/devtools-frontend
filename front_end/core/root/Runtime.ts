@@ -299,6 +299,7 @@ export const enum ExperimentName {
   TIMELINE_SERVER_TIMINGS = 'timeline-server-timings',
   EXTENSION_STORAGE_VIEWER = 'extension-storage-viewer',
   FLOATING_ENTRY_POINTS_FOR_AI_ASSISTANCE = 'floating-entry-points-for-ai-assistance',
+  TIMELINE_EXPERIMENTAL_INSIGHTS = 'timeline-experimental-insights',
 }
 
 export interface AidaAvailability {

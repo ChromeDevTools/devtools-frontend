@@ -26,7 +26,7 @@ const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/Vi
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class Viewport extends BaseInsight {
-  static readonly litTagName = LitHtml.literal`devtools-performance-viewport`;
+  static override readonly litTagName = LitHtml.literal`devtools-performance-viewport`;
   override insightCategory: Category = Category.INP;
   override internalName: string = 'viewport';
   override userVisibleTitle: string = i18nString(UIStrings.title);

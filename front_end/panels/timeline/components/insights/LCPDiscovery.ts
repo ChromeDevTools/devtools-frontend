@@ -92,7 +92,7 @@ function getImageData(
 }
 
 export class LCPDiscovery extends BaseInsight {
-  static readonly litTagName = LitHtml.literal`devtools-performance-lcp-discovery`;
+  static override readonly litTagName = LitHtml.literal`devtools-performance-lcp-discovery`;
   override insightCategory: Category = Category.LCP;
   override internalName: string = 'lcp-discovery';
   override userVisibleTitle: string = i18nString(UIStrings.title);

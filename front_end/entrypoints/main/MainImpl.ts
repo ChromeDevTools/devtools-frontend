@@ -408,6 +408,11 @@ export class MainImpl {
         Root.Runtime.ExperimentName.FLOATING_ENTRY_POINTS_FOR_AI_ASSISTANCE,
         'Floating entry points for the AI assistance panel');
 
+    Root.Runtime.experiments.register(
+        Root.Runtime.ExperimentName.TIMELINE_EXPERIMENTAL_INSIGHTS,
+        'Performance panel: enable experimental performance insights',
+    );
+
     Root.Runtime.experiments.enableExperimentsByDefault([
       'css-type-component-length-deprecate',
       Root.Runtime.ExperimentName.AUTOFILL_VIEW,

@@ -58,7 +58,7 @@ interface PhaseData {
 }
 
 export class LCPPhases extends BaseInsight {
-  static readonly litTagName = LitHtml.literal`devtools-performance-lcp-by-phases`;
+  static override readonly litTagName = LitHtml.literal`devtools-performance-lcp-by-phases`;
   override insightCategory: Category = Category.LCP;
   override internalName: string = 'lcp-by-phase';
   override userVisibleTitle: string = i18nString(UIStrings.title);

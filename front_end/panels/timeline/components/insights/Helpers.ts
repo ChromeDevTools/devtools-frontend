@@ -49,6 +49,9 @@ export abstract class BaseInsight extends HTMLElement {
   abstract insightCategory: Category;
   abstract userVisibleTitle: string;
   abstract description: string;
+  // So we can use the TypeScript BaseInsight class without getting warnings
+  // about litTagName. Every child should overrwrite this.
+  static readonly litTagName = LitHtml.literal``;
 
   protected readonly shadow = this.attachShadow({mode: 'open'});
 

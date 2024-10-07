@@ -425,13 +425,7 @@
 .link {
   color: var(--text-link);
   text-decoration: underline;
-}
-
-button.link {
-  border: none;
-  background: none;
   cursor: pointer;
-  font: inherit;
 }
 
 .select-an-element-text {

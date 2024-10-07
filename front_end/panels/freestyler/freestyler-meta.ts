@@ -32,7 +32,7 @@ const UIStrings = {
    *@description Text of a tooltip to redirect to the AI assistance panel with
    * the current element as context
    */
-  askAiAssistance: 'Ask AI assistance',
+  askAi: 'Ask AI',
   /**
    * @description Message shown to the user if the DevTools locale is not
    * supported.
@@ -153,7 +153,7 @@ UI.ActionRegistration.registerActionExtension({
   },
   experiment: Root.Runtime.ExperimentName.FLOATING_ENTRY_POINTS_FOR_AI_ASSISTANCE,
   category: UI.ActionRegistration.ActionCategory.GLOBAL,
-  title: i18nLazyString(UIStrings.askAiAssistance),
+  title: i18nLazyString(UIStrings.askAi),
   async loadActionDelegate() {
     const Freestyler = await loadFreestylerModule();
     return new Freestyler.ActionDelegate();
@@ -167,7 +167,7 @@ UI.ActionRegistration.registerActionExtension({
     return [];
   },
   category: UI.ActionRegistration.ActionCategory.GLOBAL,
-  title: i18nLazyString(UIStrings.askAiAssistance),
+  title: i18nLazyString(UIStrings.askAi),
   async loadActionDelegate() {
     const Freestyler = await loadFreestylerModule();
     return new Freestyler.ActionDelegate();
@@ -181,7 +181,7 @@ UI.ActionRegistration.registerActionExtension({
     return [];
   },
   category: UI.ActionRegistration.ActionCategory.GLOBAL,
-  title: i18nLazyString(UIStrings.askAiAssistance),
+  title: i18nLazyString(UIStrings.askAi),
   async loadActionDelegate() {
     const Freestyler = await loadFreestylerModule();
     return new Freestyler.ActionDelegate();
@@ -196,7 +196,7 @@ UI.ActionRegistration.registerActionExtension({
   },
   setting,
   category: UI.ActionRegistration.ActionCategory.GLOBAL,
-  title: i18nLazyString(UIStrings.askAiAssistance),
+  title: i18nLazyString(UIStrings.askAi),
   async loadActionDelegate() {
     const Freestyler = await loadFreestylerModule();
     return new Freestyler.ActionDelegate();
@@ -211,7 +211,7 @@ UI.ActionRegistration.registerActionExtension({
   },
   setting,
   category: UI.ActionRegistration.ActionCategory.GLOBAL,
-  title: i18nLazyString(UIStrings.askAiAssistance),
+  title: i18nLazyString(UIStrings.askAi),
   async loadActionDelegate() {
     const Freestyler = await loadFreestylerModule();
     return new Freestyler.ActionDelegate();

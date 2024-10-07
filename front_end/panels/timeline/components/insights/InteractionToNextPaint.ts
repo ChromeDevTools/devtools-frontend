@@ -24,10 +24,6 @@ const UIStrings = {
    */
   title: 'INP by phase',
   /**
-   *@description Label used to denote the longest user interaction.
-   */
-  longestInteraction: 'Longest interaction',
-  /**
    *@description Label used for the phase/component/stage/section of a larger duration.
    */
   phase: 'Phase',
@@ -106,11 +102,6 @@ export class InteractionToNextPaint extends BaseInsight {
         sections,
         renderLocation: 'BELOW_EVENT',
         entry: event,
-      },
-      {
-        type: 'ENTRY_LABEL',
-        entry: event,
-        label: i18nString(UIStrings.longestInteraction),
       },
     ];
   }

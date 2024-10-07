@@ -53,8 +53,18 @@ describeWithMockConnection('LayoutShiftDetails', () => {
     const eventTitle = details.shadowRoot.querySelector('.layout-shift-details-title');
     assert.include(eventTitle?.textContent, 'Layout shift cluster');
 
-    const clusterDetails = details.shadowRoot.querySelector('.cluster-details');
-    assert.include(clusterDetails?.textContent, 'Duration');
-    assert.include(clusterDetails?.textContent, 'Start time');
+    const table = details.shadowRoot.querySelector('.layout-shift-details-table');
+    const tableHeaders = ['Start time', 'Shift score'];
+    const content = table?.textContent;
+    for (const header of tableHeaders) {
+      assert.include(content, header);
+    }
+
+    // Shift row should be "layout shift @".
+    const shiftRow = details.shadowRoot.querySelector('.shift-row');
+    assert.include(shiftRow?.textContent, 'Layout shift @ ');
+
+    const lastRow = details.shadowRoot.querySelector('.total-row');
+    assert.include(lastRow?.textContent, 'Total');
   });
 });

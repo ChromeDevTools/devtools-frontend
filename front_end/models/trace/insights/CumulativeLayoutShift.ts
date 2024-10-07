@@ -14,7 +14,7 @@ import {
 
 export type CLSInsightResult = InsightResult<{
   animationFailures?: readonly NoncompositedAnimationFailure[],
-  shifts?: Map<Types.Events.LayoutShift, LayoutShiftRootCausesData>,
+  shifts?: Map<Types.Events.SyntheticLayoutShift, LayoutShiftRootCausesData>,
         clusters: Types.Events.SyntheticLayoutShiftCluster[],
 }>;
 
@@ -384,7 +384,7 @@ export function generateInsight(parsedTrace: RequiredData<typeof deps>, context:
   const prePaintEvents = parsedTrace.LayoutShifts.prePaintEvents.filter(isWithinContext);
 
   // Get root causes.
-  const rootCausesByShift = new Map<Types.Events.LayoutShift, LayoutShiftRootCausesData>();
+  const rootCausesByShift = new Map<Types.Events.SyntheticLayoutShift, LayoutShiftRootCausesData>();
   const shiftsByPrePaint = getShiftsByPrePaintEvents(layoutShifts, prePaintEvents);
 
   for (const shift of layoutShifts) {

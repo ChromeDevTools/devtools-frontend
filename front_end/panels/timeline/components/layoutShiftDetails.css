@@ -104,3 +104,11 @@
   display: flex;
   flex-direction: column;
 }
+
+.shift-row:not(:last-child) {
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
+}
+
+.total-row {
+  font: var(--sys-typescale-body4-medium);
+}

@@ -416,6 +416,13 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
       return;
     }
 
+    if (isHovered && !this.aiButtonContainer) {
+      this.createAiButton();
+    } else if (!isHovered && this.aiButtonContainer) {
+      this.aiButtonContainer.remove();
+      delete this.aiButtonContainer;
+    }
+
     this.hoveredInternal = isHovered;
 
     if (this.listItemElement) {
@@ -534,6 +541,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
       });
       floatingButton.addEventListener('click', ev => {
         ev.stopPropagation();
+        this.select(true, false);
         void action.execute();
       }, {capture: true});
       floatingButton.addEventListener('mousedown', ev => {
@@ -614,7 +622,6 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     }
     this.createSelection();
     this.createHint();
-    this.createAiButton();
     this.treeOutline.suppressRevealAndSelect = false;
     return true;
   }
@@ -1436,7 +1443,6 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     if (this.selected) {
       this.createSelection();
       this.createHint();
-      this.createAiButton();
     }
 
     // If there is an issue with this node, make sure to update it.

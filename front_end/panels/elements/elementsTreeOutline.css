@@ -90,9 +90,13 @@
   max-height: var(--sys-size-6);
   vertical-align: top;
   margin-top: -1px;
+  position: absolute;
+  right: var(--sys-size-3);
+  bottom: 5px;
+  z-index: 999;
 }
 
-.elements-disclosure .elements-tree-outline:not(.hide-selection-when-blurred) li.selected .ai-button-container {
+.elements-disclosure .elements-tree-outline:not(.hide-selection-when-blurred) li.hovered .ai-button-container {
   display: inline-flex;
 }
 

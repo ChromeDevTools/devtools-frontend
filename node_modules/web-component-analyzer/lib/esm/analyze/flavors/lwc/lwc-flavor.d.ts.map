@@ -1,0 +1,1 @@
+{"version":3,"file":"lwc-flavor.d.ts","sourceRoot":"","sources":["../../../../../src/analyze/flavors/lwc/lwc-flavor.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,cAAc,EAAE,MAAM,oBAAoB,CAAC;AACpD,OAAO,EAAE,eAAe,EAAE,MAAM,oBAAoB,CAAC;AACrD,OAAO,EAAE,mBAAmB,EAAE,MAAM,wBAAwB,CAAC;AAG7D;;GAEG;AACH,qBAAa,SAAU,YAAW,cAAc;IAC/C,mBAAmB,6BAAuB;IAC1C,gBAAgB;;MAEd;IAEF,aAAa,0EAAiB;CAC9B"}

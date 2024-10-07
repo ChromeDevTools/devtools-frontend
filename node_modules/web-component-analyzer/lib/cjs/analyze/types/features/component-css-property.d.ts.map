@@ -1,0 +1,1 @@
+{"version":3,"file":"component-css-property.d.ts","sourceRoot":"","sources":["../../../../../src/analyze/types/features/component-css-property.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,oBAAoB,EAAE,MAAM,qBAAqB,CAAC;AAE3D,MAAM,WAAW,oBAAqB,SAAQ,oBAAoB;IACjE,IAAI,EAAE,MAAM,CAAC;IACb,QAAQ,CAAC,EAAE,MAAM,CAAC;IAClB,OAAO,CAAC,EAAE,OAAO,CAAC;CAClB"}

@@ -1,0 +1,1 @@
+{"version":3,"file":"jsx-flavor.d.ts","sourceRoot":"","sources":["../../../../../src/analyze/flavors/jsx/jsx-flavor.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,cAAc,EAAE,MAAM,oBAAoB,CAAC;AACpD,OAAO,EAAE,mBAAmB,EAAE,MAAM,wBAAwB,CAAC;AAG7D;;GAEG;AACH,qBAAa,SAAU,YAAW,cAAc;IAC/C,mBAAmB,6BAAuB;IAE1C,sBAAsB,kHAA0B;CAChD"}

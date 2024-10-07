@@ -1,0 +1,1 @@
+{"version":3,"file":"analyze-html-element.d.ts","sourceRoot":"","sources":["../../../src/analyze/analyze-html-element.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,QAAQ,MAAM,YAAY,CAAC;AACvC,OAAO,EAAQ,OAAO,EAAE,MAAM,YAAY,CAAC;AAM3C,OAAO,EAAE,oBAAoB,EAAE,MAAM,+BAA+B,CAAC;AAGrE;;;;GAIG;AACH,wBAAgB,kBAAkB,CAAC,OAAO,EAAE,OAAO,EAAE,EAAE,GAAE,OAAO,QAAmB,GAAG,oBAAoB,GAAG,SAAS,CAyBrH"}

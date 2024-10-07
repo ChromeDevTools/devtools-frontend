@@ -1,0 +1,1 @@
+{"version":3,"file":"component-slot.d.ts","sourceRoot":"","sources":["../../../../../src/analyze/types/features/component-slot.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,oBAAoB,EAAE,MAAM,qBAAqB,CAAC;AAE3D,MAAM,WAAW,aAAc,SAAQ,oBAAoB;IAC1D,IAAI,CAAC,EAAE,MAAM,CAAC;IACd,iBAAiB,CAAC,EAAE,MAAM,EAAE,CAAC;CAC7B"}

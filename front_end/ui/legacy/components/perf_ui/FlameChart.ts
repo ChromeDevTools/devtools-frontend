@@ -34,6 +34,7 @@ import * as Platform from '../../../../core/platform/platform.js';
 import * as Root from '../../../../core/root/root.js';
 import type * as TimelineModel from '../../../../models/timeline_model/timeline_model.js';
 import * as Trace from '../../../../models/trace/trace.js';
+import * as VisualLogging from '../../../../ui/visual_logging/visual_logging.js';
 import * as Buttons from '../../../components/buttons/buttons.js';
 import * as UI from '../../legacy.js';
 import * as ThemeSupport from '../../theme_support/theme_support.js';
@@ -162,13 +163,15 @@ export const enum HoverType {
   ERROR = 'ERROR',
 }
 
-export class FlameChartDelegate {
-  windowChanged(_startTime: number, _endTime: number, _animate: boolean): void {
-  }
-  updateRangeSelection(_startTime: number, _endTime: number): void {
-  }
-  updateSelectedGroup(_flameChart: FlameChart, _group: Group|null): void {
-  }
+export interface FlameChartDelegate {
+  windowChanged(_startTime: number, _endTime: number, _animate: boolean): void;
+  updateRangeSelection(_startTime: number, _endTime: number): void;
+  updateSelectedGroup(_flameChart: FlameChart, _group: Group|null): void;
+  /**
+   * Returns the element that the FlameChart has been rendered into. Used to
+   * provide element references for attaching to Visual Element logs.
+   */
+  containingElement?: () => HTMLElement;
 }
 
 interface GroupExpansionState {
@@ -881,8 +884,15 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
      */
     if (this.highlightedEntryIndex !== -1) {
       this.#selectGroup(groupIndex);
+
       this.dispatchEventToListeners(
           Events.ENTRY_LABEL_ANNOTATION_ADDED, {entryIndex: this.highlightedEntryIndex, withLinkCreationButton: true});
+
+      // Log the double click on the TimelineFlameChartView for VE logs.
+      const flameChartView = this.flameChartDelegate.containingElement?.();
+      if (flameChartView) {
+        VisualLogging.logClick(flameChartView, mouseEvent, {doubleClick: true});
+      }
     }
   }
 
@@ -1300,6 +1310,8 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       const labelEntryAnnotationOption = annotationSection.appendItem(i18nString(UIStrings.labelEntry), () => {
         this.dispatchEventToListeners(
             Events.ENTRY_LABEL_ANNOTATION_ADDED, {entryIndex: this.selectedEntryIndex, withLinkCreationButton: false});
+      }, {
+        jslogContext: 'timeline.annotations.create-entry-label',
       });
 
       labelEntryAnnotationOption.setShortcut('Double Click');
@@ -1307,6 +1319,8 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       const linkEntriesAnnotationOption = annotationSection.appendItem(i18nString(UIStrings.linkEntries), () => {
         this.dispatchEventToListeners(
             Events.ENTRIES_LINK_ANNOTATION_CREATED, {entryFromIndex: this.selectedEntryIndex});
+      }, {
+        jslogContext: 'timeline.annotations.create-entries-link',
       });
       linkEntriesAnnotationOption.setShortcut('Double Click');
     }

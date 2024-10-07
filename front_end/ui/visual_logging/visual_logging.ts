@@ -12,7 +12,9 @@ export type Loggable = LoggableModule.Loggable;
 export {setVeDebugLoggingEnabled, DebugLoggingFormat} from './Debugging.js';
 export {startLogging, stopLogging, addDocument} from './LoggingDriver.js';
 export {logImpressions} from './LoggingEvents.js';
-export const logClick = (l: Loggable, e: Event): void => LoggingEvents.logClick(LoggingDriver.clickLogThrottler)(l, e);
+export const logClick = (loggable: Loggable, event: Event, options: {doubleClick?: boolean} = {}): void =>
+    LoggingEvents.logClick(LoggingDriver.clickLogThrottler)(loggable, event, options);
+
 export const logResize = (l: Loggable, s: DOMRect): void => LoggingEvents.logResize(l, s);
 export const logKeyDown = async(l: Loggable|null, e: Event, context?: string): Promise<void> =>
     LoggingEvents.logKeyDown(LoggingDriver.keyboardLogThrottler)(l, e, context);

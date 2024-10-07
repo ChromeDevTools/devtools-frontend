@@ -98,36 +98,36 @@ export async function logChange(loggable: Loggable): Promise<void> {
 
 let pendingKeyDownContext: string|null = null;
 
-export const logKeyDown =
-    (throttler: Common.Throttler.Throttler) => async (loggable: Loggable|null, event: Event|null, context?: string) => {
-      if (!(event instanceof KeyboardEvent)) {
-        return;
-      }
-      const loggingState = loggable ? getLoggingState(loggable) : null;
-      const codes = (typeof loggingState?.config.track?.keydown === 'string') ? loggingState.config.track.keydown : '';
-      if (codes.length && !codes.split('|').includes(event.code) && !codes.split('|').includes(event.key)) {
-        return;
-      }
-      const keyDownEvent: Host.InspectorFrontendHostAPI.KeyDownEvent = {veid: loggingState?.veid};
-      if (!context && codes?.length) {
-        context = contextFromKeyCodes(event);
-      }
+export const logKeyDown = (throttler: Common.Throttler.Throttler) =>
+    async (loggable: Loggable|null, event: Event|null, context?: string) => {
+  if (!(event instanceof KeyboardEvent)) {
+    return;
+  }
+  const loggingState = loggable ? getLoggingState(loggable) : null;
+  const codes = (typeof loggingState?.config.track?.keydown === 'string') ? loggingState.config.track.keydown : '';
+  if (codes.length && !codes.split('|').includes(event.code) && !codes.split('|').includes(event.key)) {
+    return;
+  }
+  const keyDownEvent: Host.InspectorFrontendHostAPI.KeyDownEvent = {veid: loggingState?.veid};
+  if (!context && codes?.length) {
+    context = contextFromKeyCodes(event);
+  }
 
-      if (pendingKeyDownContext && context && pendingKeyDownContext !== context) {
-        void throttler.process?.();
-      }
+  if (pendingKeyDownContext && context && pendingKeyDownContext !== context) {
+    void throttler.process?.();
+  }
 
-      pendingKeyDownContext = context || null;
-      void throttler.schedule(async () => {
-        if (context) {
-          keyDownEvent.context = await contextAsNumber(context);
-        }
+  pendingKeyDownContext = context || null;
+  void throttler.schedule(async () => {
+    if (context) {
+      keyDownEvent.context = await contextAsNumber(context);
+    }
 
-        Host.InspectorFrontendHost.InspectorFrontendHostInstance.recordKeyDown(keyDownEvent);
-        processEventForDebugging('KeyDown', loggingState, {context});
-        pendingKeyDownContext = null;
-      });
-    };
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.recordKeyDown(keyDownEvent);
+    processEventForDebugging('KeyDown', loggingState, {context});
+    pendingKeyDownContext = null;
+  });
+};
 
 function contextFromKeyCodes(event: Event): string|undefined {
   if (!(event instanceof KeyboardEvent)) {

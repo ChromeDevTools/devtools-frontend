@@ -260,6 +260,8 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
       this.focus();
     });
 
+    this.element.setAttribute('jslog', `${VisualLogging.section('timeline.flame-chart-view')}`);
+
     this.networkPane = new UI.Widget.VBox();
     this.networkPane.setMinimumSize(23, 23);
     this.networkFlameChart.show(this.networkPane.element);
@@ -339,6 +341,10 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     this.refreshMainFlameChart();
 
     TraceBounds.TraceBounds.onChange(this.#onTraceBoundsChangeBound);
+  }
+
+  containingElement(): HTMLElement {
+    return this.element;
   }
 
   setOverlays(overlays: Overlays.Overlays.TimelineOverlay[], options: Overlays.Overlays.TimelineOverlaySetOptions):
@@ -641,6 +647,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     if (event.key === 'Escape' && this.#linkSelectionAnnotation) {
       this.#clearLinkSelectionAnnotation(true);
       event.stopPropagation();
+      event.preventDefault();
     }
 
     const eventHandledByKeyboardTimeRange = this.#handleTimeRangeKeyboardCreation(event);

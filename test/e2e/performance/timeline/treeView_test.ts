@@ -16,7 +16,6 @@ import {
   waitFor,
   waitForElementWithTextContent,
 } from '../../../shared/helper.js';
-
 import {
   navigateToBottomUpTab,
   navigateToPerformanceTab,

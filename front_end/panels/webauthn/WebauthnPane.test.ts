@@ -208,7 +208,7 @@ describeWithMockConnection('WebAuthn pane', () => {
       assert.strictEqual(credentialNode.data, credential);
 
       // Update the credential.
-      const updatedCredential = {
+      const updatedCredential1 = {
         credentialId: 'credential',
         isResidentCredential: false,
         rpId: 'talos1.org',
@@ -218,12 +218,31 @@ describeWithMockConnection('WebAuthn pane', () => {
       };
       model.dispatchEventToListeners(SDK.WebAuthnModel.Events.CREDENTIAL_ASSERTED, {
         authenticatorId,
-        credential: updatedCredential,
+        credential: updatedCredential1,
       });
 
       // Verify the credential was updated.
       assert.strictEqual(dataGrid.rootNode().children.length, 1);
-      assert.strictEqual(credentialNode.data, updatedCredential);
+      assert.strictEqual(credentialNode.data, updatedCredential1);
+
+      // The credential can also be updated through the CREDENTIAL_UPDATED
+      // event.
+      const updatedCredential2 = {
+        credentialId: 'credential',
+        isResidentCredential: false,
+        rpId: 'talos1.org',
+        userHandle: 'danielle',
+        signCount: 2,
+        privateKey: '',
+      };
+      model.dispatchEventToListeners(SDK.WebAuthnModel.Events.CREDENTIAL_UPDATED, {
+        authenticatorId,
+        credential: updatedCredential2,
+      });
+
+      // Verify the credential was updated.
+      assert.strictEqual(dataGrid.rootNode().children.length, 1);
+      assert.strictEqual(credentialNode.data, updatedCredential2);
 
       // Updating a different credential should not affect the existing one.
       const anotherCredential = {
@@ -241,7 +260,59 @@ describeWithMockConnection('WebAuthn pane', () => {
 
       // Verify the credential was unchanged.
       assert.strictEqual(dataGrid.rootNode().children.length, 1);
-      assert.strictEqual(credentialNode.data, updatedCredential);
+      assert.strictEqual(credentialNode.data, updatedCredential2);
+    });
+
+    it('removes credentials that were deleted', async () => {
+      const authenticatorId = 'authenticator-1' as Protocol.WebAuthn.AuthenticatorId;
+
+      // Add an authenticator.
+      const addAuthenticator = sinon.stub(model, 'addAuthenticator').resolves(authenticatorId);
+      panel.addAuthenticatorButton?.click();
+      await new Promise(resolve => setTimeout(resolve, 0));
+      assert.strictEqual(addAuthenticator.called, inScope);
+      if (!inScope) {
+        return;
+      }
+
+      // Add a credential.
+      const credential = {
+        credentialId: 'credential',
+        isResidentCredential: false,
+        rpId: 'talos1.org',
+        userHandle: 'morgan',
+        signCount: 1,
+        privateKey: '',
+      };
+      model.dispatchEventToListeners(SDK.WebAuthnModel.Events.CREDENTIAL_ADDED, {
+        authenticatorId,
+        credential,
+      });
+
+      // Verify the credential appeared.
+      const dataGrid = panel.dataGrids.get(authenticatorId);
+      if (!dataGrid) {
+        assert.fail('Expected dataGrid to be truthy');
+        return;
+      }
+      assert.strictEqual(dataGrid.rootNode().children.length, 1);
+      const credentialNode = dataGrid.rootNode().children[0];
+      assert.isOk(credentialNode);
+      assert.strictEqual(credentialNode.data, credential);
+
+      // Delete a credential with a different ID. This should be ignored.
+      model.dispatchEventToListeners(SDK.WebAuthnModel.Events.CREDENTIAL_DELETED, {
+        authenticatorId,
+        credentialId: 'another credential',
+      });
+      assert.strictEqual(dataGrid.rootNode().children.length, 1);
+
+      // Delete the credential. It should be removed from the list.
+      model.dispatchEventToListeners(SDK.WebAuthnModel.Events.CREDENTIAL_DELETED, {
+        authenticatorId,
+        credentialId: credential.credentialId,
+      });
+      assert.strictEqual(dataGrid.rootNode().children.length, 0);
     });
   };
 

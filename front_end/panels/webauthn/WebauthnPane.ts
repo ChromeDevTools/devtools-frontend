@@ -409,9 +409,12 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
     dataGrid.rootNode().appendChild(node);
   }
 
-  #updateCredential(authenticatorId: Protocol.WebAuthn.AuthenticatorId, {
-    data: event,
-  }: Common.EventTarget.EventTargetEvent<Protocol.WebAuthn.CredentialAssertedEvent>): void {
+  #updateCredential(
+      authenticatorId: Protocol.WebAuthn.AuthenticatorId,
+      {
+        data: event,
+      }: Common.EventTarget
+          .EventTargetEvent<Protocol.WebAuthn.CredentialAssertedEvent&Protocol.WebAuthn.CredentialUpdatedEvent>): void {
     const dataGrid = this.dataGrids.get(authenticatorId);
     if (!dataGrid) {
       return;
@@ -421,6 +424,20 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
       return;
     }
     node.data = event.credential;
+  }
+
+  #deleteCredential(authenticatorId: Protocol.WebAuthn.AuthenticatorId, {
+    data: event,
+  }: Common.EventTarget.EventTargetEvent<Protocol.WebAuthn.CredentialDeletedEvent>): void {
+    const dataGrid = this.dataGrids.get(authenticatorId);
+    if (!dataGrid) {
+      return;
+    }
+    const node = dataGrid.rootNode().children.find(node => node.data?.credentialId === event.credentialId);
+    if (!node) {
+      return;
+    }
+    node.remove();
   }
 
   async #setVirtualAuthEnvEnabled(enable: boolean): Promise<void> {
@@ -700,6 +717,10 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
           SDK.WebAuthnModel.Events.CREDENTIAL_ADDED, this.#addCredential.bind(this, authenticatorId));
       this.#model.addEventListener(
           SDK.WebAuthnModel.Events.CREDENTIAL_ASSERTED, this.#updateCredential.bind(this, authenticatorId));
+      this.#model.addEventListener(
+          SDK.WebAuthnModel.Events.CREDENTIAL_UPDATED, this.#updateCredential.bind(this, authenticatorId));
+      this.#model.addEventListener(
+          SDK.WebAuthnModel.Events.CREDENTIAL_DELETED, this.#deleteCredential.bind(this, authenticatorId));
     }
 
     return section;

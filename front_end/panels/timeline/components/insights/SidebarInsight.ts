@@ -27,6 +27,11 @@ const UIStrings = {
    * @example {112 kB} PH2
    */
   estimatedSavingsTimingAndBytes: 'Est savings: {PH1} && {PH2}',
+  /**
+   * @description Used for screen-readers as a label on the button to expand an insight to view details
+   * @example {LCP by phase} PH1
+   */
+  viewDetails: 'View details for {PH1}',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/SidebarInsight.ts', UIStrings);
@@ -181,7 +186,12 @@ export class SidebarInsight extends HTMLElement {
     // clang-format off
     const output = LitHtml.html`
       <div class=${containerClasses}>
-        <header @click=${this.#dispatchInsightToggle} jslog=${VisualLogging.action(`timeline.toggle-insight.${this.#insightInternalName}`).track({click: true})}>
+        <header @click=${this.#dispatchInsightToggle}
+          jslog=${VisualLogging.action(`timeline.toggle-insight.${this.#insightInternalName}`).track({click: true})}
+          role="button"
+          aria-expanded=${this.#expanded}
+          aria-label=${i18nString(UIStrings.viewDetails, {PH1: this.#insightTitle})}
+        >
           ${this.#renderHoverIcon(this.#expanded)}
           <h3 class="insight-title">${this.#insightTitle}</h3>
           ${estimatedSavingsString ?

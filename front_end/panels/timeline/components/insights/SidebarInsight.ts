@@ -16,17 +16,13 @@ import sidebarInsightStyles from './sidebarInsight.css.js';
 
 const UIStrings = {
   /**
-   * @description Text to tell the user the estimated savings for this insight.
+   * @description Text to tell the user the estimated time or size savings for this insight.
    * @example {401 ms} PH1
-   */
-  estimatedSavingsJustTime: 'Est savings: {PH1}',
-  /**
-   * @description Text to tell the user the estimated savings for this insight.
    * @example {112 kB} PH1
    */
-  estimatedSavingsJustBytes: 'Est savings: {PH1}',
+  estimatedSavings: 'Est savings: {PH1}',
   /**
-   * @description Text to tell the user the estimated savings for this insight.
+   * @description Text to tell the user the estimated time and size savings for this insight.
    * @example {401 ms} PH1
    * @example {112 kB} PH2
    */
@@ -162,12 +158,12 @@ export class SidebarInsight extends HTMLElement {
       });
     }
     if (timeString) {
-      return i18nString(UIStrings.estimatedSavingsJustTime, {
+      return i18nString(UIStrings.estimatedSavings, {
         PH1: timeString,
       });
     }
     if (bytesString) {
-      return i18nString(UIStrings.estimatedSavingsJustBytes, {
+      return i18nString(UIStrings.estimatedSavings, {
         PH1: bytesString,
       });
     }

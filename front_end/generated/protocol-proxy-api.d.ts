@@ -3861,6 +3861,18 @@ declare namespace ProtocolProxyApi {
     credentialAdded(params: Protocol.WebAuthn.CredentialAddedEvent): void;
 
     /**
+     * Triggered when a credential is deleted, e.g. through
+     * PublicKeyCredential.signalUnknownCredential().
+     */
+    credentialDeleted(params: Protocol.WebAuthn.CredentialDeletedEvent): void;
+
+    /**
+     * Triggered when a credential is updated, e.g. through
+     * PublicKeyCredential.signalCurrentUserDetails().
+     */
+    credentialUpdated(params: Protocol.WebAuthn.CredentialUpdatedEvent): void;
+
+    /**
      * Triggered when a credential is used in a webauthn assertion.
      */
     credentialAsserted(params: Protocol.WebAuthn.CredentialAssertedEvent): void;

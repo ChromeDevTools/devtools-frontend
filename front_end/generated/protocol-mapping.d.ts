@@ -642,6 +642,16 @@ export namespace ProtocolMapping {
      */
     'WebAuthn.credentialAdded': [Protocol.WebAuthn.CredentialAddedEvent];
     /**
+     * Triggered when a credential is deleted, e.g. through
+     * PublicKeyCredential.signalUnknownCredential().
+     */
+    'WebAuthn.credentialDeleted': [Protocol.WebAuthn.CredentialDeletedEvent];
+    /**
+     * Triggered when a credential is updated, e.g. through
+     * PublicKeyCredential.signalCurrentUserDetails().
+     */
+    'WebAuthn.credentialUpdated': [Protocol.WebAuthn.CredentialUpdatedEvent];
+    /**
      * Triggered when a credential is used in a webauthn assertion.
      */
     'WebAuthn.credentialAsserted': [Protocol.WebAuthn.CredentialAssertedEvent];

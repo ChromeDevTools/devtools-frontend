@@ -594,6 +594,7 @@ export const knownContextValues = new Set([
   'canvas-context-created',
   'caption-side',
   'capture-node-creation-stacks',
+  'caret-animation',
   'caret-color',
   'category',
   'change',

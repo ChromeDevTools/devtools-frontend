@@ -225,7 +225,7 @@ export const NativeFunctions = [
   {
     name: "create",
     signatures: [["?options"]],
-    receivers: ["CredentialsContainer","AIRewriterFactory","AISummarizerFactory","AIWriterFactory"]
+    receivers: ["CredentialsContainer","AIRewriterFactory","AISummarizerFactory","AIWriterFactory","AILanguageDetectorFactory"]
   },
   {
     name: "defineProperty",
@@ -1339,11 +1339,6 @@ export const NativeFunctions = [
   },
   {
     name: "add",
-    signatures: [["node","?before"]],
-    receivers: ["AccessibleNodeList"]
-  },
-  {
-    name: "add",
     signatures: [["key"]],
     receivers: ["CustomStateSet","ViewTransitionTypeSet"]
   },
@@ -1412,7 +1407,7 @@ export const NativeFunctions = [
   {
     name: "item",
     signatures: [["index"]],
-    receivers: ["CSSRuleList","CSSStyleDeclaration","DOMRectList","DOMStringList","DOMTokenList","FileList","HTMLCollectionBase","HTMLCollectionOf","HTMLSelectElement","MediaList","MimeTypeArray","NamedNodeMap","NodeList","NodeListOf","Plugin","PluginArray","SpeechRecognitionResult","SpeechRecognitionResultList","StyleSheetList","TouchList","AccessibleNodeList","HTMLCollection","SpeechGrammarList","SQLResultSetRowList"]
+    receivers: ["CSSRuleList","CSSStyleDeclaration","DOMRectList","DOMStringList","DOMTokenList","FileList","HTMLCollectionBase","HTMLCollectionOf","HTMLSelectElement","MediaList","MimeTypeArray","NamedNodeMap","NodeList","NodeListOf","Plugin","PluginArray","SpeechRecognitionResult","SpeechRecognitionResultList","StyleSheetList","TouchList","HTMLCollection","SpeechGrammarList","SQLResultSetRowList"]
   },
   {
     name: "item",
@@ -1925,7 +1920,7 @@ export const NativeFunctions = [
   {
     name: "remove",
     signatures: [["index"]],
-    receivers: ["DataTransferItemList","HTMLOptionsCollection","AccessibleNodeList"]
+    receivers: ["DataTransferItemList","HTMLOptionsCollection"]
   },
   {
     name: "remove",
@@ -3334,13 +3329,7 @@ export const NativeFunctions = [
   },
   {
     name: "appendChild",
-    signatures: [["node"]],
-    receivers: ["Node"]
-  },
-  {
-    name: "appendChild",
-    signatures: [["child"]],
-    receivers: ["AccessibleNode"]
+    signatures: [["node"]]
   },
   {
     name: "cloneNode",
@@ -6015,15 +6004,6 @@ export const NativeFunctions = [
     signatures: [["?options"]]
   },
   {
-    name: "AccessibleNodeList",
-    signatures: [["?nodes"]]
-  },
-  {
-    name: "",
-    signatures: [["index","node"]],
-    receivers: ["AccessibleNodeList"]
-  },
-  {
     name: "",
     signatures: [["index"]],
     receivers: ["DataTransferItemList","CSSKeyframesRule","CSSNumericArray","Window","HTMLFormControlsCollection","RadioNodeList","HTMLAllCollection","AudioTrackList","TextTrackCueList","TextTrackList","VideoTrackList","SourceBufferList","TrackDefaultList","ImageTrackList","XRInputSourceArray"]
@@ -6803,10 +6783,6 @@ export const NativeFunctions = [
     signatures: [["?options"]]
   },
   {
-    name: "getComputedAccessibleNode",
-    signatures: [["element"]]
-  },
-  {
     name: "webkitRequestAnimationFrame",
     signatures: [["callback"]]
   },
@@ -6893,6 +6869,10 @@ export const NativeFunctions = [
   {
     name: "getActualBoundingBox",
     signatures: [["start","end"]]
+  },
+  {
+    name: "getTextClusters",
+    signatures: [["?options"],["start","end","?options"]]
   },
   {
     name: "CloseWatcher",
@@ -7269,6 +7249,26 @@ export const NativeFunctions = [
   {
     name: "writeStreaming",
     signatures: [["input","?options"]]
+  },
+  {
+    name: "canDetect",
+    signatures: [["languageTag"]],
+    receivers: ["AILanguageDetectorCapabilities"]
+  },
+  {
+    name: "detect",
+    signatures: [["input","?options"]],
+    receivers: ["AILanguageDetector"]
+  },
+  {
+    name: "detect",
+    signatures: [["input"]],
+    receivers: ["LanguageDetector"]
+  },
+  {
+    name: "detect",
+    signatures: [["image"]],
+    receivers: ["BarcodeDetector","FaceDetector","TextDetector"]
   },
   {
     name: "registerAnimator",
@@ -8112,16 +8112,6 @@ export const NativeFunctions = [
   {
     name: "TimestampTrigger",
     signatures: [["timestamp"]]
-  },
-  {
-    name: "detect",
-    signatures: [["input"]],
-    receivers: ["LanguageDetector"]
-  },
-  {
-    name: "detect",
-    signatures: [["image"]],
-    receivers: ["BarcodeDetector","FaceDetector","TextDetector"]
   },
   {
     name: "canTranslate",

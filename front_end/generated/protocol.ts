@@ -16854,6 +16854,17 @@ export namespace WebAuthn {
      * defaultBackupState value.
      */
     backupState?: boolean;
+    /**
+     * The credential's user.name property. Equivalent to empty if not set.
+     * https://w3c.github.io/webauthn/#dom-publickeycredentialentity-name
+     */
+    userName?: string;
+    /**
+     * The credential's user.displayName property. Equivalent to empty if
+     * not set.
+     * https://w3c.github.io/webauthn/#dom-publickeycredentialuserentity-displayname
+     */
+    userDisplayName?: string;
   }
 
   export interface EnableRequest {
@@ -16950,6 +16961,24 @@ export namespace WebAuthn {
    * Triggered when a credential is added to an authenticator.
    */
   export interface CredentialAddedEvent {
+    authenticatorId: AuthenticatorId;
+    credential: Credential;
+  }
+
+  /**
+   * Triggered when a credential is deleted, e.g. through
+   * PublicKeyCredential.signalUnknownCredential().
+   */
+  export interface CredentialDeletedEvent {
+    authenticatorId: AuthenticatorId;
+    credentialId: binary;
+  }
+
+  /**
+   * Triggered when a credential is updated, e.g. through
+   * PublicKeyCredential.signalCurrentUserDetails().
+   */
+  export interface CredentialUpdatedEvent {
     authenticatorId: AuthenticatorId;
     credential: Credential;
   }
@@ -17317,6 +17346,7 @@ export namespace Preload {
     WindowClosed = 'WindowClosed',
     SlowNetwork = 'SlowNetwork',
     OtherPrerenderedPageActivated = 'OtherPrerenderedPageActivated',
+    V8OptimizerDisabled = 'V8OptimizerDisabled',
   }
 
   /**

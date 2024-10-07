@@ -11,11 +11,15 @@ import {Capability, type Target} from './Target.js';
 export const enum Events {
   CREDENTIAL_ADDED = 'CredentialAdded',
   CREDENTIAL_ASSERTED = 'CredentialAsserted',
+  CREDENTIAL_DELETED = 'CredentialDeleted',
+  CREDENTIAL_UPDATED = 'CredentialUpdated',
 }
 
 export type EventTypes = {
   [Events.CREDENTIAL_ADDED]: Protocol.WebAuthn.CredentialAddedEvent,
   [Events.CREDENTIAL_ASSERTED]: Protocol.WebAuthn.CredentialAssertedEvent,
+  [Events.CREDENTIAL_DELETED]: Protocol.WebAuthn.CredentialDeletedEvent,
+  [Events.CREDENTIAL_UPDATED]: Protocol.WebAuthn.CredentialUpdatedEvent,
 };
 
 export class WebAuthnModel extends SDKModel<EventTypes> {
@@ -64,6 +68,14 @@ export class WebAuthnModel extends SDKModel<EventTypes> {
   credentialAsserted(params: Protocol.WebAuthn.CredentialAssertedEvent): void {
     this.dispatchEventToListeners(Events.CREDENTIAL_ASSERTED, params);
   }
+
+  credentialDeleted(params: Protocol.WebAuthn.CredentialDeletedEvent): void {
+    this.dispatchEventToListeners(Events.CREDENTIAL_DELETED, params);
+  }
+
+  credentialUpdated(params: Protocol.WebAuthn.CredentialUpdatedEvent): void {
+    this.dispatchEventToListeners(Events.CREDENTIAL_UPDATED, params);
+  }
 }
 
 class WebAuthnDispatcher implements ProtocolProxyApi.WebAuthnDispatcher {
@@ -78,6 +90,14 @@ class WebAuthnDispatcher implements ProtocolProxyApi.WebAuthnDispatcher {
 
   credentialAsserted(params: Protocol.WebAuthn.CredentialAssertedEvent): void {
     this.#model.credentialAsserted(params);
+  }
+
+  credentialDeleted(params: Protocol.WebAuthn.CredentialDeletedEvent): void {
+    this.#model.credentialDeleted(params);
+  }
+
+  credentialUpdated(params: Protocol.WebAuthn.CredentialUpdatedEvent): void {
+    this.#model.credentialUpdated(params);
   }
 }
 

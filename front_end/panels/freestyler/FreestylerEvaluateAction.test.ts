@@ -10,8 +10,15 @@ import * as Freestyler from './FreestylerEvaluateAction.js';
 
 describe('FreestylerEvaluateAction', () => {
   describe('error handling', () => {
-    function executeWithResult(mockResult: SDK.RuntimeModel.EvaluationResult): Promise<string> {
+    function executeWithResult(
+        mockResult: SDK.RuntimeModel.EvaluationResult, pausedOnBreakpoint = false): Promise<string> {
       const executionContextStub = sinon.createStubInstance(SDK.RuntimeModel.ExecutionContext);
+      executionContextStub.debuggerModel = sinon.createStubInstance(SDK.DebuggerModel.DebuggerModel);
+      if (pausedOnBreakpoint) {
+        executionContextStub.debuggerModel.selectedCallFrame = () => {
+          return sinon.createStubInstance(SDK.DebuggerModel.CallFrame);
+        };
+      }
       executionContextStub.evaluate.resolves(mockResult);
       executionContextStub.runtimeModel = sinon.createStubInstance(SDK.RuntimeModel.RuntimeModel);
       return Freestyler.FreestylerEvaluateAction.execute('', executionContextStub, {throwOnSideEffect: false});
@@ -44,9 +51,20 @@ describe('FreestylerEvaluateAction', () => {
     it('should throw an ExecutionError when the page returned with an error message', async () => {
       try {
         await executeWithResult({error: 'errorMessage'});
+        assert.fail('not reachable');
       } catch (err) {
         assert.instanceOf(err, Freestyler.ExecutionError);
         assert.strictEqual(err.message, 'errorMessage');
+      }
+    });
+
+    it('should throw an ExecutionError when the debugger is paused', async () => {
+      try {
+        await executeWithResult({error: 'errorMessage'}, true);
+        assert.fail('not reachable');
+      } catch (err) {
+        assert.instanceOf(err, Freestyler.ExecutionError);
+        assert.strictEqual(err.message, 'Cannot evaluate JavaScript because the execution is paused on a breakpoint.');
       }
     });
 
@@ -57,6 +75,7 @@ describe('FreestylerEvaluateAction', () => {
              object: mockRemoteObject(),
              exceptionDetails: mockExceptionDetails({description: 'Error description'}),
            });
+           assert.fail('not reachable');
          } catch (err) {
            assert.instanceOf(err, Freestyler.ExecutionError);
            assert.strictEqual(err.message, 'Error description');
@@ -70,6 +89,7 @@ describe('FreestylerEvaluateAction', () => {
              object: mockRemoteObject(),
              exceptionDetails: mockExceptionDetails({description: 'EvalError: Possible side-effect in debug-evaluate'}),
            });
+           assert.fail('not reachable');
          } catch (err) {
            assert.instanceOf(err, Freestyler.SideEffectError);
            assert.strictEqual(err.message, 'EvalError: Possible side-effect in debug-evaluate');

@@ -119,8 +119,6 @@ SUGGESTIONS: ["What is a stacking context?", "How can I change the stacking orde
 `;
 /* clang-format on */
 
-export const FIX_THIS_ISSUE_PROMPT = 'Fix this issue using JavaScript code execution';
-
 async function executeJsCode(code: string, {throwOnSideEffect}: {throwOnSideEffect: boolean}): Promise<string> {
   const selectedNode = UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
   const target = selectedNode?.domModel().target() ?? UI.Context.Context.instance().flavor(SDK.Target.Target);

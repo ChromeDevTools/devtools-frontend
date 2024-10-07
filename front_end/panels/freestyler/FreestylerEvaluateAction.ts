@@ -72,6 +72,9 @@ export interface Options {
 export class FreestylerEvaluateAction {
   static async execute(code: string, executionContext: SDK.RuntimeModel.ExecutionContext, {throwOnSideEffect}: Options):
       Promise<string> {
+    if (executionContext.debuggerModel.selectedCallFrame()) {
+      throw new ExecutionError('Cannot evaluate JavaScript because the execution is paused on a breakpoint.');
+    }
     const response = await executionContext.evaluate(
         {
           expression: code,

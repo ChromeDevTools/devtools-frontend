@@ -6,7 +6,6 @@ import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import * as Trace from '../../../../models/trace/trace.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
-import type * as Components from '../../overlays/components/components.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
 import {BaseInsight, shouldRenderForCategory} from './Helpers.js';
@@ -59,28 +58,7 @@ export class SlowCSSSelector extends BaseInsight {
   #slowCSSSelector: Trace.Insights.InsightRunners.SlowCSSSelector.SlowCSSSelectorInsightResult|null = null;
 
   override createOverlays(): Overlays.Overlays.TimelineOverlay[] {
-    if (!this.data.insights || !this.data.insightSetKey) {
-      return [];
-    }
-    const {insightSetKey: navigationId, insights} = this.data;
-
-    const insightsByNavigation = insights.get(navigationId);
-    if (!insightsByNavigation) {
-      return [];
-    }
-
-    const scsInsight: Error|Trace.Insights.InsightRunners.SlowCSSSelector.SlowCSSSelectorInsightResult =
-        insightsByNavigation.data.SlowCSSSelector;
-    if (scsInsight instanceof Error) {
-      return [];
-    }
-
-    const sections: Array<Components.TimespanBreakdownOverlay.EntryBreakdown> = [];
-
-    return [{
-      type: 'TIMESPAN_BREAKDOWN',
-      sections,
-    }];
+    return [];
   }
 
   renderSlowCSSSelector(): LitHtml.LitTemplate {

@@ -582,8 +582,6 @@ devtools-console-insight {
   vertical-align: 0;
 }
 
-/* It does not look like the linter works with CSS nesting correctly. */
-/* stylelint-disable no-descending-specificity */
 .console-message-wrapper:not(.has-insight) {
   &:hover,
   &:focus,
@@ -598,7 +596,6 @@ devtools-console-insight {
     }
   }
 }
-/* stylelint-enable no-descending-specificity */
 
 @media (forced-colors: active) {
   .console-message-expand-icon,

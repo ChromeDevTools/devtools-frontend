@@ -886,8 +886,6 @@ export abstract class HeapSnapshot {
     this.retainingEdges = new Uint32Array(this.#edgeCount);
     this.firstRetainerIndex = new Uint32Array(this.nodeCount + 1);
     this.nodeDistances = new Int32Array(this.nodeCount);
-    this.firstDominatedNodeIndex = new Uint32Array(this.nodeCount + 1);
-    this.dominatedNodes = new Uint32Array(this.nodeCount - 1);
 
     this.#progress.updateStatus('Building edge indexes…');
     this.buildEdgeIndexes();
@@ -904,6 +902,8 @@ export abstract class HeapSnapshot {
     this.#progress.updateStatus('Calculating retained sizes…');
     this.buildDominatorTreeAndCalculateRetainedSizes();
     this.#progress.updateStatus('Building dominated nodes…');
+    this.firstDominatedNodeIndex = new Uint32Array(this.nodeCount + 1);
+    this.dominatedNodes = new Uint32Array(this.nodeCount - 1);
     this.buildDominatedNodes();
     this.#progress.updateStatus('Calculating object names…');
     this.calculateObjectNames();

@@ -173,7 +173,7 @@ const enum State {
   INSIGHT = 'insight',
   LOADING = 'loading',
   ERROR = 'error',
-  SETTING_DISABLED = 'setting-disabled',
+  SETTING_IS_NOT_TRUE = 'setting-is-not-true',
   CONSENT_REMINDER = 'consent-reminder',
   NOT_LOGGED_IN = 'not-logged-in',
   SYNC_IS_PAUSED = 'sync-is-paused',
@@ -198,7 +198,7 @@ type StateData = {
   sources: Source[],
   isPageReloadRecommended: boolean,
 }|{
-  type: State.SETTING_DISABLED,
+  type: State.SETTING_IS_NOT_TRUE,
 }|{
   type: State.NOT_LOGGED_IN,
 }|{
@@ -240,7 +240,7 @@ export class ConsoleInsight extends HTMLElement {
       case Host.AidaClient.AidaAccessPreconditions.AVAILABLE: {
         if (this.#consoleInsightsEnabledSetting?.disabled()) {
           this.#state = {
-            type: State.SETTING_DISABLED,
+            type: State.SETTING_IS_NOT_TRUE,
           };
           break;
         }
@@ -325,7 +325,7 @@ export class ConsoleInsight extends HTMLElement {
     if (this.#consoleInsightsEnabledSetting?.getIfNotDisabled() === true) {
       this.#getOnboardingCompletedSetting().set(true);
     }
-    if (this.#state.type === State.SETTING_DISABLED &&
+    if (this.#state.type === State.SETTING_IS_NOT_TRUE &&
         this.#consoleInsightsEnabledSetting?.getIfNotDisabled() === true) {
       this.#transitionTo({
         type: State.LOADING,
@@ -360,7 +360,7 @@ export class ConsoleInsight extends HTMLElement {
     }
     if (this.#consoleInsightsEnabledSetting?.getIfNotDisabled() !== true) {
       this.#transitionTo({
-        type: State.SETTING_DISABLED,
+        type: State.SETTING_IS_NOT_TRUE,
       });
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightsOptInTeaserShown);
       return;
@@ -645,7 +645,7 @@ export class ConsoleInsight extends HTMLElement {
             </div>
           </main>
         `;
-      case State.SETTING_DISABLED: {
+      case State.SETTING_IS_NOT_TRUE: {
         const settingsLink = document.createElement('button');
         settingsLink.textContent = i18nString(UIStrings.settingsLink);
         settingsLink.classList.add('link');
@@ -706,7 +706,7 @@ export class ConsoleInsight extends HTMLElement {
     // clang-format off
     switch (this.#state.type) {
       case State.LOADING:
-      case State.SETTING_DISABLED:
+      case State.SETTING_IS_NOT_TRUE:
         return LitHtml.nothing;
       case State.ERROR:
       case State.OFFLINE:
@@ -838,7 +838,7 @@ export class ConsoleInsight extends HTMLElement {
         return i18nString(UIStrings.error);
       case State.CONSENT_REMINDER:
         return 'Understand console messages with AI';
-      case State.SETTING_DISABLED:
+      case State.SETTING_IS_NOT_TRUE:
         return '';  // not reached
     }
   }
@@ -853,7 +853,7 @@ export class ConsoleInsight extends HTMLElement {
   }
 
   #renderHeader(): LitHtml.LitTemplate {
-    if (this.#state.type === State.SETTING_DISABLED) {
+    if (this.#state.type === State.SETTING_IS_NOT_TRUE) {
       return LitHtml.nothing;
     }
     const hasIcon = this.#state.type === State.CONSENT_REMINDER;

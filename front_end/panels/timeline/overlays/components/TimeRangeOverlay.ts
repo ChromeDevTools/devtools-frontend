@@ -121,7 +121,7 @@ export class TimeRangeOverlay extends HTMLElement {
       return;
     }
 
-    if (!this.#canvasRect) {
+    if (!this.#canvasRect || !this.#labelBox) {
       return;
     }
 
@@ -130,16 +130,22 @@ export class TimeRangeOverlay extends HTMLElement {
     // values and label positioning from the left hand side in order to be
     // consistent on both edges of the UI.
     const paddingForScrollbar = 9;
-
     const overlayRect = this.getBoundingClientRect();
     const labelFocused = this.#shadow.activeElement === this.#labelBox;
 
     const labelRect = this.#rangeContainer.getBoundingClientRect();
     const visibleOverlayWidth = this.#visibleOverlayWidth(overlayRect) - paddingForScrollbar;
-    const overlayTooNarrow = visibleOverlayWidth <= labelRect.width - paddingForScrollbar;
+
+    const durationBox = this.#rangeContainer.querySelector<HTMLElement>('.duration') ?? null;
+    const durationBoxLength = durationBox?.getBoundingClientRect().width;
+    if (!durationBoxLength) {
+      return;
+    }
+    const overlayTooNarrow = visibleOverlayWidth <= durationBoxLength;
     // We do not hide the label if:
     // 1. it is focused (user is typing into it)
     // 2. it is empty - this means it's a new label and we need to let the user type into it!
+    // 3. it is too narrow - narrower than the duration length
     const hideLabel = overlayTooNarrow && !labelFocused && this.#label.length > 0;
     this.#rangeContainer.classList.toggle('labelHidden', hideLabel);
 
@@ -174,18 +180,13 @@ export class TimeRangeOverlay extends HTMLElement {
       // side.
       this.#rangeContainer.style.marginLeft = `${Math.abs(this.#canvasRect.x - overlayRect.x) + paddingForScrollbar}px`;
     } else if (labelOffRightOfScreen) {
-      // To calculate how far left to push the label, we take the right hand
-      // bound (the canvas width and subtract the label's width).
-      // Finally, we subtract the X position of the overlay (if the overlay is
-      // 200px within the view, we don't need to push the label that 200px too
-      // otherwise it will be off-screen)
-      const leftMargin = rightBound - labelRect.width - overlayRect.x;
-
-      this.#rangeContainer.style.marginLeft = `${leftMargin}px`;
-
+      // If the label is off the right of the screen, we adjust by adding the
+      // right margin equal to the difference between the right edge of the
+      // overlay and the right edge of the canvas.
+      this.#rangeContainer.style.marginRight = `${overlayRect.right - this.#canvasRect.right + paddingForScrollbar}px`;
     } else {
       // Keep the label central.
-      this.#rangeContainer.style.marginLeft = `${labelLeftMarginToCenter}px`;
+      this.#rangeContainer.style.margin = '0px';
     }
 
     // If the text is empty, set the label editibility to true.

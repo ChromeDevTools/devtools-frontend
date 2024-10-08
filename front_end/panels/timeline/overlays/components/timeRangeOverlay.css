@@ -21,11 +21,11 @@
 }
 
 .range-container {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
   text-align: center;
   box-sizing: border-box;
-  width: max-content;
-  max-width: 250px;
-  padding: 0 3px;
   pointer-events: all;
   user-select: none;
   color: var(--sys-color-pink);
@@ -38,18 +38,30 @@
   }
 
   &.offScreenLeft {
+    align-items: flex-start;
     text-align: left;
   }
 
   &.offScreenRight {
+    align-items: flex-end;
     text-align: right;
   }
 }
 
 .label-text {
+  /*
+  * The width priority is min-width > max-width > width
+  * When the range itself is smaller that 70px, expand 100% to fill the whole width.
+  * When the range is wider, only expand the textfield to over 70px
+  * if it's needed to fit the label text.
+  */
+  width: 100%;
+  max-width: 70px;
+  min-width: fit-content;
   text-overflow: ellipsis;
-  max-height: 40px;
   overflow: hidden;
+  overflow-wrap: break-word;
+  word-break: break-word;
   margin-bottom: 3px;
   display: -webkit-box;
   white-space: break-spaces;

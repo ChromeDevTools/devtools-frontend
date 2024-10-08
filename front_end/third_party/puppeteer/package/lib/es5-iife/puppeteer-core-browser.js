@@ -2853,7 +2853,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   /**
    * @internal
    */
-  const packageVersion = '23.5.0';
+  const packageVersion = '23.5.1';
 
   /**
    * @license
@@ -4594,7 +4594,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
           timeout,
           signal
         } = options;
-        const polling = options.polling ?? (visible || hidden ? "raf" /* PollingOptions.RAF */ : "mutation" /* PollingOptions.MUTATION */);
+        const polling = visible || hidden ? "raf" /* PollingOptions.RAF */ : options.polling;
         try {
           const env_4 = {
             stack: [],
@@ -16396,6 +16396,22 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       }
       exposeFunction() {
         throw new UnsupportedOperation();
+      }
+      async frameElement() {
+        const isFirefox = this.page().target()._targetManager() instanceof FirefoxTargetManager;
+        if (isFirefox) {
+          return await super.frameElement();
+        }
+        const parent = this.parentFrame();
+        if (!parent) {
+          return null;
+        }
+        const {
+          backendNodeId
+        } = await parent.client.send('DOM.getFrameOwner', {
+          frameId: this._id
+        });
+        return await parent.mainRealm().adoptBackendNode(backendNodeId);
       }
     }, (() => {
       const _metadata = typeof Symbol === "function" && Symbol.metadata ? Object.create(_classSuper[Symbol.metadata] ?? null) : void 0;

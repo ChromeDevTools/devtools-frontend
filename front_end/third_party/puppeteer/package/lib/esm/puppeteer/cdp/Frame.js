@@ -44,6 +44,7 @@ import { Deferred } from '../util/Deferred.js';
 import { disposeSymbol } from '../util/disposable.js';
 import { isErrorLike } from '../util/ErrorLike.js';
 import { Accessibility } from './Accessibility.js';
+import { FirefoxTargetManager } from './FirefoxTargetManager.js';
 import { FrameManagerEvent } from './FrameManagerEvents.js';
 import { IsolatedWorld } from './IsolatedWorld.js';
 import { MAIN_WORLD, PUPPETEER_WORLD } from './IsolatedWorlds.js';
@@ -328,6 +329,22 @@ let CdpFrame = (() => {
         }
         exposeFunction() {
             throw new UnsupportedOperation();
+        }
+        async frameElement() {
+            const isFirefox = this.page().target()._targetManager() instanceof FirefoxTargetManager;
+            if (isFirefox) {
+                return await super.frameElement();
+            }
+            const parent = this.parentFrame();
+            if (!parent) {
+                return null;
+            }
+            const { backendNodeId } = await parent.client.send('DOM.getFrameOwner', {
+                frameId: this._id,
+            });
+            return (await parent
+                .mainRealm()
+                .adoptBackendNode(backendNodeId));
         }
     };
 })();

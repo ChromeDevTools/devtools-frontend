@@ -389,6 +389,7 @@ export class TimelineHistoryManager {
     const titleWithSequenceNumber = i18nString(UIStrings.sD, {PH1: domain, PH2: sequenceNumber});
     this.nextNumberByDomain.set(domain, sequenceNumber + 1);
     const timeElement = document.createElement('span');
+    timeElement.classList.add('time');
 
     const preview = document.createElement('div');
     preview.classList.add('preview-item');

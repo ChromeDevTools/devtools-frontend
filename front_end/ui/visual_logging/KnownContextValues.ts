@@ -3063,6 +3063,7 @@ export const knownContextValues = new Set([
   'timeline.sidebar-insights-category-select',
   'timeline.sidebar-open',
   'timeline.stop-recording',
+  'timeline.thread.auction-worklet',
   'timeline.thread.cpu-profile',
   'timeline.thread.frame',
   'timeline.thread.main',

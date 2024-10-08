@@ -243,7 +243,7 @@ export class LayoutShiftDetails extends HTMLElement {
 
     // clang-format off
     return LitHtml.html`
-      <tr class="shift-row">
+      <tr class="shift-row" data-ts=${shift.ts}>
         <td>${this.#renderStartTime(shift, parsedTrace)}</td>
         <td>${(score.toFixed(4))}</td>
         ${this.#isFreshRecording ? LitHtml.html`
@@ -386,7 +386,11 @@ export class LayoutShiftDetails extends HTMLElement {
     // clang-format off
     const output = LitHtml.html`
       <div class="layout-shift-summary-details">
-        <div class="event-details">
+        <div
+          class="event-details"
+          @mouseover=${this.#togglePopover}
+          @mouseleave=${this.#togglePopover}
+        >
           ${this.#renderTitle(this.#event)}
           ${Trace.Types.Events.isSyntheticLayoutShift(this.#event)
             ? this.#renderShiftDetails(this.#event, this.#traceInsightsSets, this.#parsedTrace)
@@ -400,6 +404,27 @@ export class LayoutShiftDetails extends HTMLElement {
     `;
     // clang-format on
     LitHtml.render(output, this.#shadow, {host: this});
+  }
+
+  #togglePopover(e: MouseEvent): void {
+    const show = e.type === 'mouseover';
+    if (e.type === 'mouseleave') {
+      this.dispatchEvent(new CustomEvent('toggle-popover', {detail: {show}, bubbles: true, composed: true}));
+    }
+
+    if (!(e.target instanceof HTMLElement) || !this.#event) {
+      return;
+    }
+    const rowEl = e.target.closest('tbody tr');
+    if (!rowEl || !rowEl.parentElement) {
+      return;
+    }
+
+    // Grab the associated trace event of this row.
+    const event = Trace.Types.Events.isSyntheticLayoutShift(this.#event) ?
+        this.#event :
+        this.#event.events.find(e => e.ts === parseInt(rowEl.getAttribute('data-ts') ?? '', 10));
+    this.dispatchEvent(new CustomEvent('toggle-popover', {detail: {event, show}, bubbles: true, composed: true}));
   }
 }
 

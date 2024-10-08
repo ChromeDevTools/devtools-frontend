@@ -776,6 +776,8 @@ export interface MainFrameViewport extends Instant {
     data: ArgsData&{
       // eslint-disable-next-line @typescript-eslint/naming-convention
       viewport_rect: number[],
+      /** Device Pixel Ratio. Added in m128 */
+      dpr: number,
     },
   };
 }
@@ -867,7 +869,8 @@ interface LayoutShiftSessionWindowData {
   id: number;
 }
 export interface LayoutShiftParsedData {
-  screenshotSource?: string;
+  /** screenshot taken before and after this shift. Before *should* always exist, but after might not at the end of a trace. */
+  screenshots: {before: SyntheticScreenshot|null, after: SyntheticScreenshot|null};
   timeFromNavigation?: MicroSeconds;
   // The sum of the weighted scores of the shifts that
   // belong to a session window up until this shift

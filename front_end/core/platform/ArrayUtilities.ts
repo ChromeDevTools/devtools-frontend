@@ -202,6 +202,7 @@ const enum NearestSearchStart {
  * arr[i] > 5 you would be returned 2 because array[2] = 6.
  *
  * Please note: this presupposes that the array is already ordered.
+ * This function uses a variation of Binary Search.
  */
 function nearestIndex<T>(
     arr: readonly T[], predicate: (arrayItem: T) => boolean, searchStart: NearestSearchStart): number|null {

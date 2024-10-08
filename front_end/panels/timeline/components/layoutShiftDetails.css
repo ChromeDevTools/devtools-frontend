@@ -42,6 +42,7 @@
   text-align: left;
   border-block: var(--sys-size-1) solid var(--sys-color-divider);
   border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
 
   th,
   td {

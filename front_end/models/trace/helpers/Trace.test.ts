@@ -13,7 +13,7 @@ import {
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as Trace from '../trace.js';
 
-describeWithEnvironment('TraceModel helpers', function() {
+describeWithEnvironment('Trace helpers', function() {
   describe('extractOriginFromTrace', () => {
     it('extracts the origin of a parsed trace correctly', async function() {
       const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
@@ -726,6 +726,37 @@ describeWithEnvironment('TraceModel helpers', function() {
       assert.isOk(runTask);
 
       assert.isTrue(Trace.Helpers.Trace.isTopLevelEvent(runTask));
+    });
+  });
+
+  describe('findNextEventAfterTimestamp', () => {
+    it('gets the first screenshot after a trace', async function() {
+      const {parsedTrace} = await TraceLoader.traceEngine(this, 'cls-multiple-frames.json.gz');
+      const screenshots = parsedTrace.Screenshots.all;
+      const {clusters} = parsedTrace.LayoutShifts;
+      const shifts = clusters.flatMap(cluster => cluster.events);
+      assert.isAtLeast(shifts.length, 10);
+
+      shifts.forEach((shift, i) => {
+        const prevScreenshot = Trace.Helpers.Trace.findPreviousEventBeforeTimestamp(screenshots, shift.ts);
+        const nextScreenshot = Trace.Helpers.Trace.findNextEventAfterTimestamp(screenshots, shift.ts);
+
+        // There may be a screenshot after the last shift. but very possible there isn't.
+        if (i === shifts.length - 1) {
+          return;
+        }
+        assert.isNotNull(nextScreenshot);
+        assert.isNotNull(prevScreenshot);
+        // Make sure the screenshot came after the shift.
+        assert.isAbove(nextScreenshot!.ts, shift.ts);
+        // Make sure the previous screenshot came before the shift
+        assert.isBelow(prevScreenshot.ts, shift.ts);
+
+        // Bonus, we expect the result of calling prevEvent* to be the same as `items[nextIndex - 1]`
+        const nextIndex = screenshots.indexOf(nextScreenshot);
+        const alsoPrevious = screenshots[nextIndex - 1];
+        assert.strictEqual(prevScreenshot, alsoPrevious);
+      });
     });
   });
 });

@@ -25,6 +25,7 @@ let browserThreadId: Types.Events.ThreadID = Types.Events.ThreadID(-1);
 let gpuProcessId: Types.Events.ProcessID = Types.Events.ProcessID(-1);
 let gpuThreadId: Types.Events.ThreadID = Types.Events.ThreadID(-1);
 let viewportRect: DOMRect|null = null;
+let devicePixelRatio: number|null = null;
 
 const processNames: Map<Types.Events.ProcessID, Types.Events.ProcessName> = new Map();
 
@@ -195,6 +196,7 @@ export function handleEvent(event: Types.Events.Event): void {
     const viewportWidth = rectAsArray[2];
     const viewportHeight = rectAsArray[5];
     viewportRect = new DOMRect(viewportX, viewportY, viewportWidth, viewportHeight);
+    devicePixelRatio = event.args.data.dpr;
   }
 
   // The TracingStartedInBrowser event includes the data on which frames are
@@ -440,6 +442,7 @@ export type MetaHandlerData = {
   mainFrameNavigations: Types.Events.NavigationStart[],
   gpuThreadId?: Types.Events.ThreadID,
   viewportRect?: DOMRect,
+  devicePixelRatio?: number,
 };
 
 // Each frame has a single render process at a given time but it can have
@@ -473,6 +476,7 @@ export function data(): MetaHandlerData {
     gpuProcessId,
     gpuThreadId: gpuThreadId === Types.Events.ThreadID(-1) ? undefined : gpuThreadId,
     viewportRect: viewportRect || undefined,
+    devicePixelRatio: devicePixelRatio ?? undefined,
     mainFrameId,
     mainFrameURL,
     navigationsByFrameId,

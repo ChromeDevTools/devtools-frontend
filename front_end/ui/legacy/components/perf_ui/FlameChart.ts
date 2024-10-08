@@ -847,7 +847,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       mouseX = coordinate?.x ? coordinate.x - canvasViewportOffsetX : mouseX;
       mouseY = coordinate?.y ? coordinate.y - canvasViewportOffsetY : mouseY;
     }
-
+    // The parent dimensions are the maximum the popover can use.
     const parentWidth = this.popoverElement.parentElement ? this.popoverElement.parentElement.clientWidth : 0;
     const parentHeight = this.popoverElement.parentElement ? this.popoverElement.parentElement.clientHeight : 0;
     const infoWidth = this.popoverElement.clientWidth;

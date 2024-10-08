@@ -438,6 +438,7 @@ export class TimelineHistoryManager {
     if (!lastFrame) {
       return container;
     }
+    // TODO(paulirish): Adopt Util.ImageCache
     void UI.UIUtils.loadImage(lastFrame.screenshotEvent.args.dataUri).then(img => {
       if (img) {
         container.appendChild(img);

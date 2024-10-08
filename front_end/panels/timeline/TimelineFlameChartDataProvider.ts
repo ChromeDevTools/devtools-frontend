@@ -39,7 +39,6 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 
 import {CompatibilityTracksAppender, type DrawOverride, type TrackAppenderName} from './CompatibilityTracksAppender.js';
-import * as Components from './components/components.js';
 import {ExtensionDataGatherer} from './ExtensionDataGatherer.js';
 import {initiatorsDataToDraw} from './Initiators.js';
 import {ModificationsManager} from './ModificationsManager.js';
@@ -136,7 +135,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   private entryData: TimelineFlameChartEntry[] = [];
 
   private entryTypeByLevel!: EntryType[];
-  private screenshotImageCache!: Map<Trace.Types.Events.SyntheticScreenshot, HTMLImageElement|null>;
   private entryIndexToTitle!: string[];
   private lastInitiatorEntry!: number;
   private lastInitiatorsData: PerfUI.FlameChart.FlameChartInitiatorData[] = [];
@@ -180,6 +178,8 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
             ThemeSupport.ThemeSupport.instance().getComputedValue('--sys-color-cdt-base-container');
       }
     });
+    Utils.ImageCache.emitter.addEventListener(
+        'screenshot-loaded', () => this.dispatchEventToListeners(Events.DATA_CHANGED));
   }
 
   hasTrackConfigurationMode(): boolean {
@@ -457,7 +457,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     this.entryData = [];
     this.entryTypeByLevel = [];
     this.entryIndexToTitle = [];
-    this.screenshotImageCache = new Map();
     this.#eventIndexByEvent = new Map();
     if (resetCompatibilityTracksAppender) {
       this.compatibilityTracksAppender = null;
@@ -706,7 +705,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     let title;
     let warningElements: Element[] = [];
     let nameSpanTimelineInfoTime = 'timeline-info-time';
-
     const additionalContent: HTMLElement[] = [];
 
     const entryType = this.#entryTypeForIndex(entryIndex);
@@ -721,11 +719,10 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       title = highlightedEntryInfo.title;
       time = highlightedEntryInfo.formattedTime;
       warningElements = highlightedEntryInfo.warningElements || warningElements;
-      if (Trace.Types.Events.isSyntheticInteraction(event)) {
-        const breakdown = new Components.InteractionBreakdown.InteractionBreakdown();
-        breakdown.entry = event;
-        additionalContent.push(breakdown);
+      if (highlightedEntryInfo.additionalElement) {
+        additionalContent.push(highlightedEntryInfo.additionalElement);
       }
+
     } else if (entryType === EntryType.FRAME) {
       const frame = (this.entryData[entryIndex] as Trace.Handlers.ModelHandlers.Frames.TimelineFrame);
       time =
@@ -908,16 +905,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       entryIndex: number, context: CanvasRenderingContext2D, barX: number, barY: number, barWidth: number,
       barHeight: number): Promise<void> {
     const screenshot = (this.entryData[entryIndex] as Trace.Types.Events.SyntheticScreenshot);
-    if (!this.screenshotImageCache.has(screenshot)) {
-      this.screenshotImageCache.set(screenshot, null);
-      const data = screenshot.args.dataUri;
-      const image = await UI.UIUtils.loadImage(data);
-      this.screenshotImageCache.set(screenshot, image);
-      this.dispatchEventToListeners(Events.DATA_CHANGED);
-      return;
-    }
-
-    const image = this.screenshotImageCache.get(screenshot);
+    const image = Utils.ImageCache.getOrQueue(screenshot);
     if (!image) {
       return;
     }

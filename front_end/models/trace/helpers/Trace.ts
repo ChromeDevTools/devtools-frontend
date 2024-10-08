@@ -510,6 +510,18 @@ export function findUpdateLayoutTreeEvents(
   return foundEvents;
 }
 
+export function findNextEventAfterTimestamp<T extends Types.Events.Event>(
+    candidates: T[], ts: Types.Timing.MicroSeconds): T|null {
+  const index = Platform.ArrayUtilities.nearestIndexFromBeginning(candidates, candidate => ts < candidate.ts);
+  return index === null ? null : candidates[index];
+}
+
+export function findPreviousEventBeforeTimestamp<T extends Types.Events.Event>(
+    candidates: T[], ts: Types.Timing.MicroSeconds): T|null {
+  const index = Platform.ArrayUtilities.nearestIndexFromEnd(candidates, candidate => candidate.ts < ts);
+  return index === null ? null : candidates[index];
+}
+
 export interface ForEachEventConfig {
   onStartEvent: (event: Types.Events.Event) => void;
   onEndEvent: (event: Types.Events.Event) => void;

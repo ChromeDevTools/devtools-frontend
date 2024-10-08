@@ -81,13 +81,13 @@ describeWithEnvironment('LayoutShiftsTrackAppender', function() {
     assert.strictEqual(title, 'Layout shift');
   });
 
-  it('shows "Layout shift" text on hover', async function() {
-    const {layoutShiftsTrackAppender, parsedTrace} = await renderTrackAppender(this, 'cls-single-frame.json.gz');
+  it('shows "Layout shift" tooltip on hover', async function() {
+    const {layoutShiftsTrackAppender, parsedTrace} = await renderTrackAppender(this, 'cls-no-nav.json.gz');
     const shifts = parsedTrace.LayoutShifts.clusters.flatMap(c => c.events);
-    const info = layoutShiftsTrackAppender.highlightedEntryInfo(shifts[0]);
-    assert.deepEqual(info, {
-      title: 'Layout shift',
-      formattedTime: '0.0422',
-    });
+    await layoutShiftsTrackAppender.preloadScreenshots(shifts);
+    const info = layoutShiftsTrackAppender.highlightedEntryInfo(shifts[3]);
+    assert.strictEqual(info.title, 'Layout shift');
+    assert.strictEqual(info.formattedTime, '0.0197');
+    assert.strictEqual(info.additionalElement?.nodeName, 'DIV');
   });
 });

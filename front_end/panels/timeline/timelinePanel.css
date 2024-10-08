@@ -360,7 +360,6 @@
 }
 
 .timeline-filmstrip-preview > img {
-  margin-top: 5px;
   max-width: 500px;
   max-height: 300px;
   cursor: pointer;

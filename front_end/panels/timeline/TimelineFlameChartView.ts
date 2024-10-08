@@ -1396,6 +1396,16 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     this.searchRegex = searchConfig.toSearchRegex().regex;
     this.updateSearchResults(shouldJump, jumpBackwards);
   }
+
+  togglePopover({event, show}: {event: Trace.Types.Events.Event, show: boolean}): void {
+    const entryIndex = this.mainDataProvider.indexForEvent(event);
+    if (show && entryIndex) {
+      this.mainFlameChart.setSelectedEntry(entryIndex);
+      this.mainFlameChart.showPopoverForSearchResult(entryIndex);
+    } else {
+      this.mainFlameChart.hideHighlight();
+    }
+  }
 }
 
 export class Selection {

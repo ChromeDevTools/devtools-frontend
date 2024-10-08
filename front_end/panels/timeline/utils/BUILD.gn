@@ -8,6 +8,7 @@ import("../../../../scripts/build/ninja/devtools_module.gni")
 devtools_module("utils") {
   sources = [
     "IgnoreList.ts",
+    "ImageCache.ts",
     "NetworkRequest.ts",
     "SourceMapsResolver.ts",
   ]
@@ -42,6 +43,7 @@ ts_library("unittests") {
 
   sources = [
     "IgnoreList.test.ts",
+    "ImageCache.test.ts",
     "SourceMapsResolver.test.ts",
   ]
 

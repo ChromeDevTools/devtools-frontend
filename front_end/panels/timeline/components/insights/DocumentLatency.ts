@@ -53,6 +53,16 @@ const UIStrings = {
    * @description Text for a label describing a network request event as taking longer to download because it wasn't compressed.
    */
   uncompressedDownload: 'Uncompressed download',
+  /**
+   *@description Text for a screen-reader label to tell the user that the icon represents a successful check
+   *@example {Server response time} PH1
+   */
+  successAriaLabel: 'Success: {PH1}',
+  /**
+   *@description Text for a screen-reader label to tell the user that the icon represents an unsuccessful check
+   *@example {Server response time} PH1
+   */
+  failedAriaLabel: 'Failure: {PH1}',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/DocumentLatency.ts', UIStrings);
@@ -68,8 +78,11 @@ export class DocumentLatency extends BaseInsight {
   #check(didPass: boolean, good: string, bad: string): LitHtml.TemplateResult {
     const icon = didPass ? 'check-circle' : 'clear';
 
+    const ariaLabel = didPass ? i18nString(UIStrings.successAriaLabel, {PH1: good}) :
+                                i18nString(UIStrings.failedAriaLabel, {PH1: bad});
     return LitHtml.html`
       <${IconButton.Icon.Icon.litTagName}
+        aria-label=${ariaLabel}
         name=${icon}
         class=${didPass ? 'metric-value-good' : 'metric-value-bad'}
       ></${IconButton.Icon.Icon.litTagName}>

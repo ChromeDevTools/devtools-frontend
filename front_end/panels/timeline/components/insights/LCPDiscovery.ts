@@ -36,6 +36,16 @@ const UIStrings = {
    * @description Text to tell the user that the LCP request does not have the lazy load property applied.
    */
   lazyLoadNotApplied: 'lazy load not applied',
+  /**
+   *@description Text for a screen-reader label to tell the user that the icon represents a successful check
+   *@example {Server response time} PH1
+   */
+  successAriaLabel: 'Success: {PH1}',
+  /**
+   *@description Text for a screen-reader label to tell the user that the icon represents an unsuccessful check
+   *@example {Server response time} PH1
+   */
+  failedAriaLabel: 'Failure: {PH1}',
 
 };
 
@@ -98,13 +108,16 @@ export class LCPDiscovery extends BaseInsight {
   override userVisibleTitle: string = i18nString(UIStrings.title);
   override description: string = '';
 
-  #adviceIcon(didFail: boolean): LitHtml.TemplateResult {
+  #adviceIcon(didFail: boolean, label: string): LitHtml.TemplateResult {
     const icon = didFail ? 'clear' : 'check-circle';
 
+    const ariaLabel = didFail ? i18nString(UIStrings.successAriaLabel, {PH1: label}) :
+                                i18nString(UIStrings.failedAriaLabel, {PH1: label});
     return LitHtml.html`
       <${IconButton.Icon.Icon.litTagName}
-      name=${icon}
-      class=${didFail ? 'metric-value-bad' : 'metric-value-good'}
+        aria-label=${ariaLabel}
+        name=${icon}
+        class=${didFail ? 'metric-value-bad' : 'metric-value-good'}
       ></${IconButton.Icon.Icon.litTagName}>
     `;
   }
@@ -196,15 +209,15 @@ export class LCPDiscovery extends BaseInsight {
             <div class="insight-results">
               <ul class="insight-icon-results">
                 <li class="insight-entry">
-                  ${this.#adviceIcon(imageData.shouldIncreasePriorityHint)}
+                  ${this.#adviceIcon(imageData.shouldIncreasePriorityHint, i18nString(UIStrings.fetchPriorityApplied))}
                   <span>${i18nString(UIStrings.fetchPriorityApplied)}</span>
                 </li>
                 <li class="insight-entry">
-                  ${this.#adviceIcon(imageData.shouldPreloadImage)}
+                  ${this.#adviceIcon(imageData.shouldPreloadImage, i18nString(UIStrings.requestDiscoverable))}
                   <span>${i18nString(UIStrings.requestDiscoverable)}</span>
                 </li>
                 <li class="insight-entry">
-                  ${this.#adviceIcon(imageData.shouldRemoveLazyLoading)}
+                  ${this.#adviceIcon(imageData.shouldRemoveLazyLoading, i18nString(UIStrings.lazyLoadNotApplied))}
                   <span>${i18nString(UIStrings.lazyLoadNotApplied)}</span>
                 </li>
               </ul>

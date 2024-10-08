@@ -181,7 +181,12 @@ export class SidebarInsightsTab extends HTMLElement {
       </div>
     `;
     // clang-format on
-    LitHtml.render(LitHtml.html`${html}`, this.#shadow, {host: this});
+
+    // Insight components contain state, so to prevent insights from previous trace loads breaking things we use the parsedTrace
+    // as a render key.
+    // Note: newer Lit has `keyed`, but we don't have that, so we do it manually. https://lit.dev/docs/templates/directives/#keyed
+    const result = LitHtml.Directives.repeat([html], () => this.#parsedTrace, template => template);
+    LitHtml.render(result, this.#shadow, {host: this});
   }
 }
 

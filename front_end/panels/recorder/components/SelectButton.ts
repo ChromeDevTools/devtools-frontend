@@ -7,7 +7,7 @@ import {type LocalizedString} from '../../../core/platform/UIString.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as Dialogs from '../../../ui/components/dialogs/dialogs.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
-import * as Menus from '../../../ui/components/menus/menus.js';
+import type * as Menus from '../../../ui/components/menus/menus.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as Models from '../models/models.js';
@@ -95,7 +95,6 @@ export class SelectMenuSelectedEvent extends Event {
 }
 
 export class SelectButton extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-select-button`;
   readonly #shadow = this.attachShadow({mode: 'open'});
   readonly #props: SelectButtonProps = {
     disabled: false,
@@ -179,11 +178,11 @@ export class SelectButton extends HTMLElement {
       ): LitHtml.TemplateResult {
     // clang-format off
     return LitHtml.html`
-      <${Menus.Menu.MenuItem.litTagName} .value=${item.value} .selected=${
+      <devtools-menu-item .value=${item.value} .selected=${
       item.value === selectedItem.value
     } jslog=${VisualLogging.item(Platform.StringUtilities.toKebabCase(item.value)).track({click: true})}>
         ${item.label()}
-      </${Menus.Menu.MenuItem.litTagName}>
+      </devtools-menu-item>
     `;
     // clang-format on
   }
@@ -194,9 +193,9 @@ export class SelectButton extends HTMLElement {
       ): LitHtml.TemplateResult {
     // clang-format off
     return LitHtml.html`
-      <${Menus.Menu.MenuGroup.litTagName} .name=${group.name}>
+      <devtools-menu-group .name=${group.name}>
         ${group.items.map(item => this.#renderSelectItem(item, selectedItem))}
-      </${Menus.Menu.MenuGroup.litTagName}>
+      </devtools-menu-group>
     `;
     // clang-format on
   }
@@ -228,7 +227,7 @@ export class SelectButton extends HTMLElement {
       <div class="select-button" title=${
         this.#getTitle(menuLabel) || LitHtml.nothing
       }>
-      <${Menus.SelectMenu.SelectMenu.litTagName}
+      <devtools-select-menu
           class=${LitHtml.Directives.classMap(classes)}
           @selectmenuselected=${this.#handleSelectMenuSelect}
           ?disabled=${this.#props.disabled}
@@ -251,17 +250,17 @@ export class SelectButton extends HTMLElement {
                   this.#renderSelectItem(item, selectedItem),
                 )
           }
-        </${Menus.SelectMenu.SelectMenu.litTagName}>
+        </devtools-select-menu>
         ${
           selectedItem
             ? LitHtml.html`
-        <${Buttons.Button.Button.litTagName}
+        <devtools-button
             .disabled=${this.#props.disabled}
             .variant=${buttonVariant}
             .iconName=${selectedItem.buttonIconName}
             @click=${this.#handleClick}>
             ${this.#props.buttonLabel}
-        </${Buttons.Button.Button.litTagName}>`
+        </devtools-button>`
             : ''
         }
       </div>`,

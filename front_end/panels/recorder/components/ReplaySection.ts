@@ -13,7 +13,6 @@ import {PlayRecordingSpeed} from '../models/RecordingPlayer.js';
 import * as Actions from '../recorder-actions/recorder-actions.js';
 
 import {
-  SelectButton,
   type SelectButtonClickEvent,
   type SelectButtonItem,
   type SelectMenuSelectedEvent,
@@ -130,7 +129,6 @@ export interface ReplaySectionData {
 const REPLAY_EXTENSION_PREFIX = 'extension';
 
 export class ReplaySection extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-replay-section`;
   readonly #shadow = this.attachShadow({mode: 'open'});
   readonly #boundRender = this.#render.bind(this);
   readonly #props: ReplaySectionProps = {disabled: false};
@@ -225,7 +223,7 @@ export class ReplaySection extends HTMLElement {
     // clang-format off
     LitHtml.render(
       LitHtml.html`
-    <${SelectButton.litTagName}
+    <devtools-select-button
       @selectmenuselected=${this.#handleSelectMenuSelected}
       @selectbuttonclick=${this.#handleSelectButtonClick}
       .variant=${SelectButtonVariant.PRIMARY}
@@ -236,7 +234,7 @@ export class ReplaySection extends HTMLElement {
       .buttonLabel=${i18nString(UIStrings.Replay)}
       .groups=${groups}
       jslog=${VisualLogging.action(Actions.RecorderActions.REPLAY_RECORDING).track({click: true})}>
-    </${SelectButton.litTagName}>`,
+    </devtools-select-button>`,
       this.#shadow,
       { host: this },
     );

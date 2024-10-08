@@ -60,19 +60,20 @@ function litRender(template: LitHtml.TemplateResult): void {
 }
 
 litRender(LitHtml.html`
-    <${RecorderComponents.SelectButton.SelectButton.litTagName} .items=${items} .value=${items[0].value}></${
-    RecorderComponents.SelectButton.SelectButton.litTagName}>`);
+    <devtools-select-button .items=${items} .value=${items[0].value}></devtools-select-button>`);
 litRender(LitHtml.html`
-    <${RecorderComponents.SelectButton.SelectButton.litTagName} .disabled=${true} .items=${items} .value=${
-    items[0].value}></${RecorderComponents.SelectButton.SelectButton.litTagName}>`);
+    <devtools-select-button .disabled=${true} .items=${items} .value=${items[0].value}>
+    </devtools-select-button>`);
 litRender(LitHtml.html`
-    <${RecorderComponents.SelectButton.SelectButton.litTagName}
-    .variant=${RecorderComponents.SelectButton.Variant.OUTLINED}
-    .items=${replayItems}
-    .value=${replayItems[0].value}></${RecorderComponents.SelectButton.SelectButton.litTagName}>`);
+    <devtools-select-button
+      .variant=${RecorderComponents.SelectButton.Variant.OUTLINED}
+      .items=${replayItems}
+      .value=${replayItems[0].value}>
+    </devtools-select-button>`);
 litRender(LitHtml.html`
-    <${RecorderComponents.SelectButton.SelectButton.litTagName}
-    .disabled=${true}
-    .variant=${RecorderComponents.SelectButton.Variant.OUTLINED}
-    .items=${replayItems}
-    .value=${replayItems[2].value}></${RecorderComponents.SelectButton.SelectButton.litTagName}>`);
+    <devtools-select-button
+      .disabled=${true}
+      .variant=${RecorderComponents.SelectButton.Variant.OUTLINED}
+      .items=${replayItems}
+      .value=${replayItems[2].value}>
+    </devtools-select-button>`);

@@ -5,10 +5,10 @@
 /* eslint-disable rulesdir/inject_checkbox_styles */
 
 import '../../../ui/legacy/legacy.js';
+import '../../../ui/components/icon_button/icon_button.js';
 
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
-import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as Input from '../../../ui/components/input/input.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
@@ -140,7 +140,6 @@ export interface CreateRecordingViewData {
 }
 
 export class CreateRecordingView extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-create-recording-view`;
   readonly #shadow = this.attachShadow({mode: 'open'});
   #defaultRecordingName: string = '';
   #error?: Error;
@@ -267,7 +266,7 @@ export class CreateRecordingView extends HTMLElement {
         <div class="wrapper">
           <div class="header-wrapper">
             <h1>${i18nString(UIStrings.createRecording)}</h1>
-            <${Buttons.Button.Button.litTagName}
+            <devtools-button
               title=${i18nString(UIStrings.cancelRecording)}
               jslog=${VisualLogging.close().track({click: true})}
               .data=${
@@ -278,7 +277,7 @@ export class CreateRecordingView extends HTMLElement {
                 } as Buttons.Button.ButtonData
               }
               @click=${this.#dispatchRecordingCancelled}
-            ></${Buttons.Button.Button.litTagName}>
+            ></devtools-button>
           </div>
           <label class="row-label" for="user-flow-name">${i18nString(
             UIStrings.recordingName,
@@ -297,8 +296,8 @@ export class CreateRecordingView extends HTMLElement {
               class="link" href="https://g.co/devtools/recorder#selector"
               title=${i18nString(UIStrings.learnMore)}
               jslog=${VisualLogging.link('recorder-selector-help').track({click: true})}>
-              <${IconButton.Icon.Icon.litTagName} name="help">
-              </${IconButton.Icon.Icon.litTagName}>
+              <devtools-icon name="help">
+              </devtools-icon>
             </x-link>
           </label>
           <input
@@ -315,8 +314,8 @@ export class CreateRecordingView extends HTMLElement {
               class="link" href="https://g.co/devtools/recorder#selector"
               title=${i18nString(UIStrings.learnMore)}
               jslog=${VisualLogging.link('recorder-selector-help').track({click: true})}>
-              <${IconButton.Icon.Icon.litTagName} name="help">
-              </${IconButton.Icon.Icon.litTagName}>
+              <devtools-icon name="help">
+              </devtools-icon>
             </x-link>
           </label>
           <div class="checkbox-container">

@@ -21,7 +21,6 @@ export interface TimelineSectionData {
 }
 
 export class TimelineSection extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-timeline-section`;
 
   #isEndOfGroup = false;
   #isStartOfGroup = false;

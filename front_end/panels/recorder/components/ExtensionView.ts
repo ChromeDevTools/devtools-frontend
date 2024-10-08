@@ -3,11 +3,11 @@
 // found in the LICENSE file.
 
 import '../../../ui/legacy/legacy.js';
+import '../../../ui/components/icon_button/icon_button.js';
 
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as PublicExtensions from '../../../models/extensions/extensions.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
-import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as Extensions from '../extensions/extensions.js';
@@ -47,7 +47,6 @@ export class ClosedEvent extends Event {
 }
 
 export class ExtensionView extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-recorder-extension-view`;
   readonly #shadow = this.attachShadow({mode: 'open'});
   #descriptor?: PublicExtensions.RecorderPluginManager.ViewDescriptor;
 
@@ -92,14 +91,14 @@ export class ExtensionView extends HTMLElement {
         <div class="extension-view">
           <header>
             <div class="title">
-              <${IconButton.Icon.Icon.litTagName}
+              <devtools-icon
                 class="icon"
                 title=${i18nString(UIStrings.extension)}
                 name="extension">
-              </${IconButton.Icon.Icon.litTagName}>
+              </devtools-icon>
               ${this.#descriptor.title}
             </div>
-            <${Buttons.Button.Button.litTagName}
+            <devtools-button
               title=${i18nString(UIStrings.closeView)}
               jslog=${VisualLogging.close().track({click: true})}
               .data=${
@@ -110,7 +109,7 @@ export class ExtensionView extends HTMLElement {
                 } as Buttons.Button.ButtonData
               }
               @click=${this.#closeView}
-            ></${Buttons.Button.Button.litTagName}>
+            ></devtools-button>
           </header>
           <main>
             ${iframe}

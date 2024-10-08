@@ -198,6 +198,7 @@ devtools_svg_sources = [
   "pause-circle.svg",
   "pause.svg",
   "pen-spark.svg",
+  "performance-panel-delete-annotation.svg",
   "performance-panel-diagram.svg",
   "performance-panel-entry-label.svg",
   "performance-panel-time-range.svg",

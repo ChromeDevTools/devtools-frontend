@@ -21,6 +21,8 @@ import sidebarAnnotationsTabStyles from './sidebarAnnotationsTab.css.js';
 const diagramImageUrl = new URL('../../../Images/performance-panel-diagram.svg', import.meta.url).toString();
 const entryLabelImageUrl = new URL('../../../Images/performance-panel-entry-label.svg', import.meta.url).toString();
 const timeRangeImageUrl = new URL('../../../Images/performance-panel-time-range.svg', import.meta.url).toString();
+const deleteAnnotationImageUrl =
+    new URL('../../../Images/performance-panel-delete-annotation.svg', import.meta.url).toString();
 
 const UIStrings = {
   /**
@@ -52,6 +54,15 @@ const UIStrings = {
    * @description Text for how to create a time range selection and add note.
    */
   timeRangeTutorialDescription: 'Shift-drag in the flamechart then type to create a time range annotation.',
+  /**
+   * @description  Title for deleting annotations.
+   */
+  deleteAnnotationTutorialTitle: 'Delete an annotation',
+  /**
+   * @description Text for how to access an annotation delete function.
+   */
+  deleteAnnotationTutorialDescription:
+      'Hover over the list in the sidebar with Annotations tab selected to access the delete function.',
   /**
    * @description Text used to describe the delete button to screen readers.
    * @example {"A paint event annotated with the text hello world"} PH1
@@ -295,6 +306,11 @@ export class SidebarAnnotationsTab extends HTMLElement {
           <div class="tutorial-image"> <img src=${timeRangeImageUrl}></img></div>
           <div class="tutorial-title">${i18nString(UIStrings.timeRangeTutorialTitle)}</div>
           <div class="tutorial-description">${i18nString(UIStrings.timeRangeTutorialDescription)}</div>
+        </div>
+        <div class="tutorial-card">
+          <div class="tutorial-image"> <img src=${deleteAnnotationImageUrl}></img></div>
+          <div class="tutorial-title">${i18nString(UIStrings.deleteAnnotationTutorialTitle)}</div>
+          <div class="tutorial-description">${i18nString(UIStrings.deleteAnnotationTutorialDescription)}</div>
         </div>
       </div>
     `;

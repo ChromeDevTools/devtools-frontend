@@ -355,6 +355,10 @@
   word-break: break-all;
 }
 
+#console-messages .devtools-link:focus-visible {
+  background-color: transparent;
+}
+
 #console-messages .resource-links {
   margin-top: -1px;
   margin-bottom: -2px;

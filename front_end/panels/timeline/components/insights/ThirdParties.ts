@@ -26,8 +26,7 @@ const UIStrings = {
    * This is displayed after a user expands the section to see more. No character length limits.
    */
   description: 'Third party code can significantly impact load performance. ' +
-      'Assess and reduce the ' +
-      '[amount of third party code](https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/loading-third-party-javascript/) on the page, and try to load what you can after the page has finished loading the main content.',
+      '[Reduce and defer loading of third party code](https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/loading-third-party-javascript/) to prioritize your page\'s content.',
   /** Label for a table column that displays the name of a third-party provider. */
   columnThirdParty: 'Third party',
   /** Label for a column in a data table; entries will be the download size of a web resource in kilobytes. */

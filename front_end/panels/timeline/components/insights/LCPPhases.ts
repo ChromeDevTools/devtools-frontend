@@ -22,7 +22,7 @@ const UIStrings = {
    * This is displayed after a user expands the section to see more. No character length limits.
    */
   description:
-      'Learn about the [strategies for improving each phase of LCP](https://web.dev/articles/optimize-lcp#lcp-breakdown). Pages with great LCP have minimal durations for "Resource load delay" and "Element render delay".',
+      'Each [phase has specific improvement strategies](https://web.dev/articles/optimize-lcp#lcp-breakdown). Ideally, most of the LCP time should be spent on loading the resources, not within delays.',
   /**
    *@description Time to first byte title for the Largest Contentful Paint's phases timespan breakdown.
    */

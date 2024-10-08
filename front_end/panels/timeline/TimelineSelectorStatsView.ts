@@ -30,7 +30,7 @@ const UIStrings = {
    *@description Tooltip description '% of slow-path non-matches'
    */
   rejectPercentageExplanation:
-      'The percentage of non-matching nodes (Match Attempts - Match Count) that couldn\'t be quickly ruled out by the bloom filter. Lower is better.',
+      'The percentage of non-matching nodes (Match Attempts - Match Count) that couldn\'t be quickly ruled out by the bloom filter due to high selector complexity. Lower is better.',
   /**
    *@description Column name for count of elements that the engine attempted to match against a style rule
    */

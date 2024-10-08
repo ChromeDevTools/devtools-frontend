@@ -17,12 +17,13 @@ const UIStrings = {
   /**
    *@description Title of an insight that provides details about slow CSS selectors.
    */
-  title: 'Slow CSS selectors',
+  title: 'CSS Selector costs',
+
   /**
    * @description Text to describe how to improve the performance of CSS selectors.
    */
   description:
-      'Learn how to [assess the performance of CSS selectors](https://developer.chrome.com/docs/devtools/performance/selector-stats).',
+      'If Recalculate Style costs remain high, selector optimization can reduce them. [Optimize the selectors](https://developer.chrome.com/docs/devtools/performance/selector-stats) with both high elapsed time and high slow-path %. Simpler selectors, fewer selectors, a smaller DOM, and a shallower DOM will all reduce matching costs.',
 
   /**
    *@description Column name for count of elements that the engine attempted to match against a style rule

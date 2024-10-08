@@ -19,7 +19,7 @@ const UIStrings = {
    * @description Text to tell the user about the font-display CSS feature to help improve a the UX of a page.
    */
   description:
-      'Consider using a [font-display](https://developer.chrome.com/blog/font-display) of `swap` or `optional` to ensure text is consistently visible.',
+      'Consider using a [font-display](https://developer.chrome.com/blog/font-display) of `swap` or `optional` to ensure text is consistently visible. `swap` can be further optimized to mitigate layout shifts with [font metric overrides](https://developer.chrome.com/blog/font-fallbacks).',
   /** Column for a font loaded by the page to render text. */
   fontColumn: 'Font',
   /** Column for the amount of time wasted. */

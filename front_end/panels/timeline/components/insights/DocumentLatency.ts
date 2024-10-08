@@ -18,6 +18,11 @@ const UIStrings = {
    */
   title: 'Document request latency',
   /**
+   *@description Description of an insight that provides a breakdown for how long it took to download the main document.
+   */
+  description:
+      'Your first network request is the most important.  Reduce its latency by avoiding redirects, ensuring a fast server response, and enabling text compression.',
+  /**
    * @description Text to tell the user that the document request does not have redirects.
    */
   passingRedirects: 'Avoids redirects',
@@ -73,7 +78,7 @@ export class DocumentLatency extends BaseInsight {
   override insightCategory: Category = Category.ALL;
   override internalName: string = 'document-latency';
   override userVisibleTitle: string = i18nString(UIStrings.title);
-  override description: string = '';
+  override description: string = i18nString(UIStrings.description);
 
   #check(didPass: boolean, good: string, bad: string): LitHtml.TemplateResult {
     const icon = didPass ? 'check-circle' : 'clear';

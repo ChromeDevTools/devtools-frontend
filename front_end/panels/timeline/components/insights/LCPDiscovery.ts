@@ -20,6 +20,11 @@ const UIStrings = {
    */
   title: 'LCP request discovery',
   /**
+   *@description Description of an insight that provides details about the LCP metric, and the network requests necessary to load it.
+   */
+  description:
+      'Optimize LCP by making the LCP image [discoverable](https://web.dev/articles/optimize-lcp#1_eliminate_resource_load_delay) from the HTML immediately, and [avoiding lazy-loading](https://web.dev/articles/lcp-lazy-loading)',
+  /**
    * @description Text to tell the user how long after the earliest discovery time their LCP element loaded.
    * @example {401ms} PH1
    */
@@ -106,7 +111,7 @@ export class LCPDiscovery extends BaseInsight {
   override insightCategory: Category = Category.LCP;
   override internalName: string = 'lcp-discovery';
   override userVisibleTitle: string = i18nString(UIStrings.title);
-  override description: string = '';
+  override description: string = i18nString(UIStrings.description);
 
   #adviceIcon(didFail: boolean, label: string): LitHtml.TemplateResult {
     const icon = didFail ? 'clear' : 'check-circle';

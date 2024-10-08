@@ -14,12 +14,12 @@ import {Category} from './types.js';
 
 const UIStrings = {
   /** Title of an insight that provides details about if the page's viewport is optimized for mobile viewing. */
-  title: 'Mobile-optimized viewport',
+  title: 'Viewport not optimized for mobile',
   /**
-   * @description Text to tell the user how a viewport meta element can improve performance.
+   * @description Text to tell the user how a viewport meta element can improve performance. \xa0 is a non-breaking space
    */
-  description: 'A viewport meta element not only optimizes your app for mobile screen sizes, ' +
-      'but also [prevents a 300 millisecond delay to user input](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/).',
+  description:
+      'The page\'s viewport is not mobile-optimized, resulting in all touch interactions [delayed by 200\xA0ms](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/).',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/Viewport.ts', UIStrings);

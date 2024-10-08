@@ -79,6 +79,8 @@ function launchChrome() {
     'BrowserThreadPoolAdjustment',            // crbug.com/364165032
     'DeferRendererTasksAfterInput',           // crbug.com/361078921
     'PMProcessPriorityPolicy',                // crbug.com/361252079
+    'BoostRenderProcessForLoading',
+    'CloneDevToolsConnectionOnlyIfRequested',
     'MacAllowBackgroundingRenderProcesses',
     'MacWebContentsOcclusion',
     'MojoBindingsInlineSLS',

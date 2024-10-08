@@ -33,7 +33,6 @@
   padding: var(--sys-size-8) var(--sys-size-5) 0 var(--sys-size-5);
   max-width: var(--sys-size-36);
   width: 100%;
-  margin: 0 auto;
 }
 
 .chat-input-container {
@@ -105,8 +104,9 @@
 .messages-scroll-container {
   overflow: auto;
   flex-grow: 1;
-  scrollbar-gutter: stable;
+  scrollbar-gutter: stable both-edges;
   scrollbar-width: thin;
+  width: 100%;
 }
 
 .messages-container {
@@ -432,13 +432,20 @@
   margin-left: 2px;
 }
 
+main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  overflow-y: auto;
+}
+
 .empty-state-container {
   display: grid;
   align-items: center;
   justify-content: center;
   font: var(--sys-typescale-headline4);
   gap: var(--sys-size-11);
-  height: 100%;
   padding: var(--sys-size-3);
 
   .header {
@@ -465,7 +472,7 @@
         );
     }
 
-    h2 {
+    h1 {
       font: var(--sys-typescale-headline4);
     }
   }

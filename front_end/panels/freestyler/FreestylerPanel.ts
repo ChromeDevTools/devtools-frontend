@@ -42,7 +42,7 @@ const UIStringsNotTranslate = {
   /**
    *@description AI assistance UI text for clearing messages.
    */
-  clearMessages: 'Clear messages',
+  clearChat: 'Clear chat',
   /**
    *@description AI assistance UI tooltip text for the help button.
    */
@@ -67,7 +67,7 @@ function createToolbar(target: HTMLElement, {onClearClick}: {onClearClick: () =>
   const rightToolbar = new UI.Toolbar.Toolbar('freestyler-right-toolbar', toolbarContainer);
 
   const clearButton = new UI.Toolbar.ToolbarButton(
-      lockedString(UIStringsNotTranslate.clearMessages), 'clear', undefined, 'freestyler.clear');
+      lockedString(UIStringsNotTranslate.clearChat), 'clear', undefined, 'freestyler.clear');
   clearButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, onClearClick);
   leftToolbar.appendToolbarItem(clearButton);
 

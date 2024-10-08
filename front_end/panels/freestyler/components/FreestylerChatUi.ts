@@ -700,6 +700,7 @@ export class FreestylerChatUi extends HTMLElement {
               ${message.suggestions?.map(suggestion => LitHtml.html`<${Buttons.Button.Button.litTagName}
                   .data=${{
                       variant: Buttons.Button.Variant.OUTLINED,
+                      title: suggestion,
                       jslogContext: 'fix-this-issue',
                   } as Buttons.Button.ButtonData}
                   @click=${() => this.#handleSuggestionClick(suggestion)}
@@ -799,7 +800,7 @@ export class FreestylerChatUi extends HTMLElement {
   #renderMessages = (): LitHtml.TemplateResult => {
     // clang-format off
     return LitHtml.html`
-      <main class="messages-scroll-container" @scroll=${this.#handleScroll}>
+      <div class="messages-scroll-container" @scroll=${this.#handleScroll}>
         <div class="messages-container">
           ${this.#props.messages.map((message, _, array) =>
             this.#renderChatMessage(message, {
@@ -807,7 +808,7 @@ export class FreestylerChatUi extends HTMLElement {
             }),
           )}
         </div>
-      </main>
+      </div>
     `;
     // clang-format on
   };
@@ -816,14 +817,14 @@ export class FreestylerChatUi extends HTMLElement {
     const suggestions = this.#getSuggestions();
 
     // clang-format off
-    return LitHtml.html`<main class="empty-state-container messages-scroll-container">
+    return LitHtml.html`<div class="empty-state-container messages-scroll-container">
       <div class="header">
         <div class="icon">
           <${IconButton.Icon.Icon.litTagName}
             name="smart-assistant"
           ></${IconButton.Icon.Icon.litTagName}>
         </div>
-        <h2>${lockedString(UIStringsNotTranslate.emptyStateText)}</h2>
+        <h1>${lockedString(UIStringsNotTranslate.emptyStateText)}</h1>
       </div>
       <div class="suggestions">
         ${suggestions.map(suggestion => {
@@ -962,23 +963,25 @@ export class FreestylerChatUi extends HTMLElement {
     // clang-format off
     LitHtml.render(LitHtml.html`
       <div class="chat-ui">
-        ${
-          this.#props.state === State.CONSENT_VIEW ? this.#renderOptIn()
-            : (this.#props.messages.length > 0
-              ? this.#renderMessages()
-              : this.#renderEmptyState()
-            )
-        }
-        <form class="input-form" @submit=${this.#handleSubmit}>
-          ${this.#props.state !== State.CONSENT_VIEW ? LitHtml.html`
-            <div class="input-header">
-              <div class="header-link-container">
-                ${this.#renderSelection()}
+        <main>
+          ${
+            this.#props.state === State.CONSENT_VIEW ? this.#renderOptIn()
+              : (this.#props.messages.length > 0
+                ? this.#renderMessages()
+                : this.#renderEmptyState()
+              )
+          }
+          <form class="input-form" @submit=${this.#handleSubmit}>
+            ${this.#props.state !== State.CONSENT_VIEW ? LitHtml.html`
+              <div class="input-header">
+                <div class="header-link-container">
+                  ${this.#renderSelection()}
+                </div>
               </div>
-            </div>
-          ` : LitHtml.nothing}
-          ${this.#renderChatInput()}
-        </form>
+            ` : LitHtml.nothing}
+            ${this.#renderChatInput()}
+          </form>
+        </main>
         <footer class="disclaimer">
           <p class="disclaimer-text">
             ${this.#getDisclaimerText()}

@@ -28,6 +28,10 @@ const UIStrings = {
    *@description text show in feedback tooltip
    */
   feedbackTooltip: 'Insights is an experimental feature. Your feedback will help us improve it.',
+  /**
+   *@description used as a label for screen readers to provide context to the dropdown used to select a category of insights
+   */
+  selectLabel: 'Choose a category of Insights',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/SidebarInsightsTab.ts', UIStrings);
@@ -148,6 +152,7 @@ export class SidebarInsightsTab extends HTMLElement {
     // clang-format off
     const html = LitHtml.html`
       <select class="chrome-select insights-category-select"
+        aria-label=${i18nString(UIStrings.selectLabel)}
         @change=${this.#onCategoryDropdownChange}
         jslog=${VisualLogging.dropDown('timeline.sidebar-insights-category-select').track({click: true})}
       >

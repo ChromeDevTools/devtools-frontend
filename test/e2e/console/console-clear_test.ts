@@ -59,7 +59,7 @@ describe('The Console Tab', function() {
 
     // Check that the sidebar is also cleared.
     await click('[aria-label="Show console sidebar"]');
-    const sideBar = await waitFor('div[slot="insertion-point-sidebar"]');
+    const sideBar = await waitFor('div[slot="sidebar"]');
     const entries = await $$('li', sideBar);
     const entriesText = await Promise.all(entries.map(e => e.evaluate(e => e.textContent)));
     assert.deepStrictEqual(entriesText, [

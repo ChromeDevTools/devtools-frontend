@@ -116,7 +116,7 @@ export class CSSAngle extends HTMLElement {
     if (miniIconBottom && miniIconLeft) {
       // We offset mini icon's X and Y positions with the containing styles
       // pane's positions because DevTools' root SplitWidget's
-      // insertion-point-sidebar slot, where most of the DevTools content lives,
+      // sidebar slot, where most of the DevTools content lives,
       // has an offset of positions, which makes all of its children's DOMRect
       // positions to have this offset.
       const offsetTop = this.containingPane.getBoundingClientRect().top;

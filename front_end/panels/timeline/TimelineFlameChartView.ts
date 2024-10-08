@@ -757,9 +757,12 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
           Trace.Types.Timing.MilliSeconds(endTime),
       );
 
-      // If the current time range annotation has a label, the range selection
-      // for it is finished and we need to create a new time range annotations.
-      if (this.#timeRangeSelectionAnnotation && !this.#timeRangeSelectionAnnotation?.label) {
+      // If the current time range annotation exists, the range selection
+      // for it is in progress and we need to update its bounds.
+      //
+      // When the range selection is finished, the current range is set to null.
+      // If the current selection is null, create a new time range annotations.
+      if (this.#timeRangeSelectionAnnotation) {
         this.#timeRangeSelectionAnnotation.bounds = bounds;
         ModificationsManager.activeManager()?.updateAnnotation(this.#timeRangeSelectionAnnotation);
       } else {
@@ -768,6 +771,8 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
           label: '',
           bounds,
         };
+        // Before creating a new range, make sure to delete the empty ranges.
+        ModificationsManager.activeManager()?.deleteEmptyRangeAnnotations();
         ModificationsManager.activeManager()?.createAnnotation(this.#timeRangeSelectionAnnotation);
       }
     }

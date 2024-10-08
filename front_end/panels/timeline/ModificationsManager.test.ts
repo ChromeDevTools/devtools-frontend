@@ -181,4 +181,55 @@ describeWithEnvironment('ModificationsManager', () => {
     // Make sure the link exists
     assert.isTrue(existsBetween2And1);
   });
+
+  it('deletes time ranges with an empty label from the annotations list', async function() {
+    await TraceLoader.traceEngine(null, 'web-dev-with-commit.json.gz');
+    const modificationsManager = Timeline.ModificationsManager.ModificationsManager.activeManager();
+    assert.isOk(modificationsManager);
+
+    modificationsManager.createAnnotation({
+      type: 'TIME_RANGE',
+      bounds: {
+        min: Trace.Types.Timing.MicroSeconds(0),
+        max: Trace.Types.Timing.MicroSeconds(10),
+        range: Trace.Types.Timing.MicroSeconds(10),
+      },
+      label: 'label',
+    });
+
+    // Create time range with empty label that shoud be removed
+    modificationsManager.createAnnotation({
+      type: 'TIME_RANGE',
+      bounds: {
+        min: Trace.Types.Timing.MicroSeconds(3),
+        max: Trace.Types.Timing.MicroSeconds(10),
+        range: Trace.Types.Timing.MicroSeconds(7),
+      },
+      label: '',
+    });
+
+    // Create time range with empty label that shoud be removed
+    modificationsManager.createAnnotation({
+      type: 'TIME_RANGE',
+      bounds: {
+        min: Trace.Types.Timing.MicroSeconds(5),
+        max: Trace.Types.Timing.MicroSeconds(10),
+        range: Trace.Types.Timing.MicroSeconds(5),
+      },
+      label: '',
+    });
+
+    modificationsManager.deleteEmptyRangeAnnotations();
+    const modifications = modificationsManager.toJSON().annotations;
+
+    // Make sure that the annotations with an empty label were deleted
+    assert.deepEqual(modifications.labelledTimeRanges, [{
+                       bounds: {
+                         min: Trace.Types.Timing.MicroSeconds(0),
+                         max: Trace.Types.Timing.MicroSeconds(10),
+                         range: Trace.Types.Timing.MicroSeconds(10),
+                       },
+                       label: 'label',
+                     }]);
+  });
 });

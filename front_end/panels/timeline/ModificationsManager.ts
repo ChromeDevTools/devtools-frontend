@@ -126,6 +126,14 @@ export class ModificationsManager extends EventTarget {
     return this.#timelineBreadcrumbs;
   }
 
+  deleteEmptyRangeAnnotations(): void {
+    for (const annotation of this.#overlayForAnnotation.keys()) {
+      if (annotation.type === 'TIME_RANGE' && annotation.label.length === 0) {
+        this.removeAnnotation(annotation);
+      }
+    }
+  }
+
   createAnnotation(newAnnotation: Trace.Types.File.Annotation, loadedFromFile: boolean = false): void {
     // If a label already exists on an entry and a user is trying to create a new one, start editing an existing label instead.
     if (newAnnotation.type === 'ENTRY_LABEL') {

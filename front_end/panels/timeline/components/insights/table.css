@@ -31,8 +31,15 @@ table.interactive tbody tr.selected {
   background-color: var(--app-color-performance-sidebar-table-row-hover);
 }
 
-table th[scope="row"] {
+table thead th {
+  font: var(--sys-typescale-body4-medium);
+}
+
+table tbody th {
   font-weight: normal;
+}
+
+table th[scope="row"] {
   padding: 3px 0;
   word-break: break-word;
 }

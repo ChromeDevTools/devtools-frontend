@@ -148,7 +148,7 @@ dd.dl-title {
 }
 
 .insight-savings {
-  font-weight: var(--ref-typeface-weight-bold);
+  font: var(--sys-typescale-body4-medium);
   color: var(--sys-color-green);
 }
 

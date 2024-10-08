@@ -66,6 +66,7 @@ export class Table extends HTMLElement {
 
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets.push(tableStyles);
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
 
   #onHoverRow(e: MouseEvent): void {

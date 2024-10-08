@@ -53,8 +53,8 @@
   }
 
   &:focus-visible {
-    outline: 1px solid var(--sys-color-primary);
-    border-color: var(--sys-color-primary);
+    outline: 2px solid var(--sys-color-state-focus-ring);
+    outline-offset: 2px;
   }
 
   &:disabled .icon {

@@ -12,6 +12,17 @@ import * as Insights from './insights/insights.js';
 import {type ActiveInsight} from './Sidebar.js';
 import styles from './sidebarSingleInsightSet.css.js';
 
+const UIStrings = {
+  /**
+   *@description title used for a metric value to tell the user about its score classification
+   *@example {INP} PH1
+   *@example {poor} PH2
+   */
+  metricScore: '{PH1}: {PH2} score',
+};
+const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/SidebarSingleInsightSet.ts', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+
 export interface SidebarSingleInsightSetData {
   parsedTrace: Trace.Handlers.Types.ParsedTrace|null;
   insights: Trace.Insights.Types.TraceInsightSets|null;
@@ -84,9 +95,19 @@ export class SidebarSingleInsightSet extends HTMLElement {
       label: 'LCP'|'CLS'|'INP', value: string,
       classification: Trace.Handlers.ModelHandlers.PageLoadMetrics.ScoreClassification,
       eventToSelectOnClick: Trace.Types.Events.Event|null): LitHtml.LitTemplate {
+    // NOTE: it is deliberate to use the same value for the title and
+    // aria-label; the aria-label is used to give more context to
+    // screen-readers, and the title is to aid users who may not know what
+    // the red/orange/green classification is, or those who are unable to
+    // easily distinguish the visual colour differences.
     // clang-format off
+    const classificationTitle = i18nString(UIStrings.metricScore, {PH1: label, PH2: classification});
     return this.#metricIsVisible(label) ? LitHtml.html`
-      <button class="metric" @click=${eventToSelectOnClick ? this.#onClickMetric.bind(this, eventToSelectOnClick) : null}>
+      <button class="metric"
+        @click=${eventToSelectOnClick ? this.#onClickMetric.bind(this, eventToSelectOnClick) : null}
+        title=${classificationTitle}
+        aria-label=${classificationTitle}
+      >
         <div class="metric-value metric-value-${classification}">${value}</div>
         <div class="metric-label">${label}</div>
       </button>

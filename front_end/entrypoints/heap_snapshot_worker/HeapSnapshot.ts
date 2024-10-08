@@ -1545,7 +1545,7 @@ export abstract class HeapSnapshot {
   }
 
   private computeIsEssentialEdge(
-      nodeIndex: number, edgeIndex: number, userObjectsMapAndFlag: {map: Uint32Array, flag: number}|null): boolean {
+      nodeIndex: number, edgeIndex: number, userObjectsMapAndFlag: {map: Uint8Array, flag: number}|null): boolean {
     const edgeType = this.containmentEdges.getValue(edgeIndex + this.edgeTypeOffset);
 
     // Values in WeakMaps are retained by the key and table together. Removing
@@ -2412,7 +2412,7 @@ export abstract class HeapSnapshot {
     throw new Error('Not implemented');
   }
 
-  userObjectsMapAndFlag(): {map: Uint32Array, flag: number}|null {
+  userObjectsMapAndFlag(): {map: Uint8Array, flag: number}|null {
     throw new Error('Not implemented');
   }
 
@@ -3030,18 +3030,18 @@ export class HeapSnapshotNodesProvider extends HeapSnapshotItemProvider {
 
 export class JSHeapSnapshot extends HeapSnapshot {
   readonly nodeFlags: {
-    // bit flags
+    // bit flags in 8-bit value
     canBeQueried: number,
     detachedDOMTreeNode: number,
     pageObject:
         number,  // The idea is to track separately the objects owned by the page and the objects owned by debugger.
   };
-  private flags!: Uint32Array;
+  private flags!: Uint8Array;
   #statistics?: HeapSnapshotModel.HeapSnapshotModel.Statistics;
   constructor(profile: Profile, progress: HeapSnapshotProgress) {
     super(profile, progress);
     this.nodeFlags = {
-      // bit flags
+      // bit flags in 8-bit value
       canBeQueried: 1,
       detachedDOMTreeNode: 2,
       pageObject:
@@ -3075,7 +3075,7 @@ export class JSHeapSnapshot extends HeapSnapshot {
   }
 
   override calculateFlags(): void {
-    this.flags = new Uint32Array(this.nodeCount);
+    this.flags = new Uint8Array(this.nodeCount);
     this.markDetachedDOMTreeNodes();
     this.markQueriableHeapObjects();
     this.markPageOwnedNodes();
@@ -3241,7 +3241,7 @@ export class JSHeapSnapshot extends HeapSnapshot {
     return node.isUserRoot() || node.isDocumentDOMTreesRoot();
   }
 
-  override userObjectsMapAndFlag(): {map: Uint32Array, flag: number}|null {
+  override userObjectsMapAndFlag(): {map: Uint8Array, flag: number}|null {
     return {map: this.flags, flag: this.nodeFlags.pageObject};
   }
 
@@ -3285,7 +3285,7 @@ export class JSHeapSnapshot extends HeapSnapshot {
     const nodeFieldCount = this.nodeFieldCount;
     const firstEdgeIndexes = this.firstEdgeIndexes;
 
-    const flags = (this.flags as Uint32Array);
+    const flags = this.flags;
     const list: number[] = [];
 
     for (let iter = this.rootNode().edges(); iter.hasNext(); iter.next()) {
@@ -3330,7 +3330,7 @@ export class JSHeapSnapshot extends HeapSnapshot {
     const nodeFieldCount = this.nodeFieldCount;
     const nodesCount = this.nodeCount;
 
-    const flags = (this.flags as Uint32Array);
+    const flags = this.flags;
     const pageObjectFlag = this.nodeFlags.pageObject;
 
     const nodesToVisit = new Uint32Array(nodesCount);

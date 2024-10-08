@@ -59,6 +59,9 @@ const MAX_HEADERS_SIZE = 1000;
 * Strings that don't need to be translated at this time.
 */
 const UIStringsNotTranslate = {
+  /**
+   *@description Title for thinking step of DrJones Network agent.
+   */
   inspectingNetworkData: 'Inspecting network data',
   /**
    *@description Thought text for thinking step of DrJones Network agent.
@@ -276,8 +279,6 @@ function formatRequestInitiatorChain(request: SDK.NetworkRequest.NetworkRequest)
 }
 
 export function formatNetworkRequest(request: SDK.NetworkRequest.NetworkRequest): string {
-  const formatHeaders = (title: string, headers: SDK.NetworkRequest.NameValue[]): string => formatLines(
-      title, headers.filter(allowHeader).map(header => header.name + ': ' + header.value + '\n'), MAX_HEADERS_SIZE);
   // TODO: anything else that might be relavant?
   // TODO: handle missing headers
   return `Request: ${request.url()}

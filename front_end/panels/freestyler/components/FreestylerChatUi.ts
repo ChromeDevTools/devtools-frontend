@@ -351,10 +351,15 @@ export class FreestylerChatUi extends HTMLElement {
         return Boolean(step.sideEffect);
       });
     });
+
     const isInputDisabledCheckForFreestylerAgent = !Boolean(this.#props.selectedElement) || showsSideEffects;
     const isInputDisabledCheckForDrJonesNetworkAgent = !Boolean(this.#props.selectedNetworkRequest);
+    const isInputDisabledCheckForDrJonesFileAgent =
+        !Boolean(this.#props.selectedFile) || !this.#props.selectedFile?.contentType().isTextType();
+
     return (this.#props.agentType === AgentType.FREESTYLER && isInputDisabledCheckForFreestylerAgent) ||
         (this.#props.agentType === AgentType.DRJONES_NETWORK_REQUEST && isInputDisabledCheckForDrJonesNetworkAgent) ||
+        (this.#props.agentType === AgentType.DRJONES_FILE && isInputDisabledCheckForDrJonesFileAgent) ||
         !isAidaAvailable || isConsentView;
   };
 
@@ -730,8 +735,7 @@ export class FreestylerChatUi extends HTMLElement {
     // TODO(b/371947238): Add icon and make the div clickable
     // clang-format off
     return LitHtml.html`<div class="select-element">
-    <div class=${resourceClass}
-    @click=${this.#props.onSelectedNetworkRequestClick}>
+    <div class=${resourceClass}>
       ${this.#props.selectedFile?.displayName()}
     </div></div>`;
     // clang-format on

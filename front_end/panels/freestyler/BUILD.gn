@@ -20,6 +20,7 @@ devtools_module("freestyler") {
   sources = [
     "AiAgent.ts",
     "ChangeManager.ts",
+    "DrJonesFileAgent.ts",
     "DrJonesNetworkAgent.ts",
     "ExtensionScope.ts",
     "FreestylerAgent.ts",
@@ -74,6 +75,7 @@ ts_library("unittests") {
 
   sources = [
     "ChangeManager.test.ts",
+    "DrJonesFileAgent.test.ts",
     "DrJonesNetworkAgent.test.ts",
     "FreestylerAgent.test.ts",
     "FreestylerEvaluateAction.test.ts",

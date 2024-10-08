@@ -4,7 +4,6 @@
 
 import * as Host from '../../../core/host/host.js';
 import type * as SDK from '../../../core/sdk/sdk.js';
-import type * as Workspace from '../../../models/workspace/workspace.js';
 import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import * as Marked from '../../../third_party/marked/marked.js';
@@ -53,7 +52,7 @@ css
       aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
       messages,
       selectedElement: {} as unknown as SDK.DOMModel.DOMNode,
-      selectedFile: {} as unknown as Workspace.UISourceCode.UISourceCode,
+      selectedFile: null,
       selectedNetworkRequest: {} as unknown as SDK.NetworkRequest.NetworkRequest,
       isLoading: false,
       canShowFeedbackForm: false,

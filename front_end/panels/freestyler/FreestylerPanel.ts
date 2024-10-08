@@ -23,6 +23,9 @@ import {
   type Step,
 } from './components/FreestylerChatUi.js';
 import {
+  DrJonesFileAgent,
+} from './DrJonesFileAgent.js';
+import {
   DrJonesNetworkAgent,
 } from './DrJonesNetworkAgent.js';
 import {FreestylerAgent} from './FreestylerAgent.js';
@@ -109,6 +112,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
   #contentContainer: HTMLElement;
   #aidaClient: Host.AidaClient.AidaClient;
   #freestylerAgent: FreestylerAgent;
+  #drJonesFileAgent: DrJonesFileAgent;
   #drJonesNetworkAgent: DrJonesNetworkAgent;
   #viewProps: FreestylerChatUiProps;
   #viewOutput: ViewOutput = {};
@@ -169,6 +173,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
     });
 
     this.#freestylerAgent = this.#createFreestylerAgent();
+    this.#drJonesFileAgent = this.#createDrJonesFileAgent();
     this.#drJonesNetworkAgent = this.#createDrJonesNetworkAgent();
 
     UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, ev => {
@@ -210,6 +215,13 @@ export class FreestylerPanel extends UI.Panel.Panel {
     return new FreestylerAgent({
       aidaClient: this.#aidaClient,
       changeManager: this.#changeManager,
+      serverSideLoggingEnabled: this.#serverSideLoggingEnabled,
+    });
+  }
+
+  #createDrJonesFileAgent(): DrJonesFileAgent {
+    return new DrJonesFileAgent({
+      aidaClient: this.#aidaClient,
       serverSideLoggingEnabled: this.#serverSideLoggingEnabled,
     });
   }
@@ -326,6 +338,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
     this.#viewProps.messages = [];
     this.#viewProps.isLoading = false;
     this.#freestylerAgent = this.#createFreestylerAgent();
+    this.#drJonesFileAgent = this.#createDrJonesFileAgent();
     this.#drJonesNetworkAgent = this.#createDrJonesNetworkAgent();
     this.#cancel();
     this.doUpdate();
@@ -358,6 +371,8 @@ export class FreestylerPanel extends UI.Panel.Panel {
     let runner: AsyncGenerator<ResponseData, void, void>|undefined;
     if (this.#viewProps.agentType === AgentType.FREESTYLER) {
       runner = this.#freestylerAgent.run(text, {signal, selectedElement: this.#viewProps.selectedElement});
+    } else if (this.#viewProps.agentType === AgentType.DRJONES_FILE) {
+      runner = this.#drJonesFileAgent.run(text, {signal, selectedFile: this.#viewProps.selectedFile});
     } else if (this.#viewProps.agentType === AgentType.DRJONES_NETWORK_REQUEST) {
       runner =
           this.#drJonesNetworkAgent.run(text, {signal, selectedNetworkRequest: this.#viewProps.selectedNetworkRequest});

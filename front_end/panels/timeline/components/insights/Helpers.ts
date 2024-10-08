@@ -260,12 +260,12 @@ class EventRef extends HTMLElement {
 
     // clang-format off
     LitHtml.render(LitHtml.html`
-      <span class=devtools-link @click=${(e: Event) => {
+      <button type="button" class="devtools-link" @click=${(e: Event) => {
         e.stopPropagation();
         if (this.#baseInsight && this.#event) {
           this.#baseInsight.dispatchEvent(new EventReferenceClick(this.#event));
         }
-      }}>${this.#text}</span>
+      }}>${this.#text}</button>
     `, this.#shadow, {host: this});
     // clang-format on
   }

@@ -172,6 +172,11 @@ ul.insight-icon-results {
   cursor: pointer;
   text-decoration: underline;
   color: var(--sys-color-primary);
+  /* for a11y reasons this is a button, so we have to remove some default
+   * styling */
+  background: none;
+  border: none;
+  padding: 0;
 }
 
 .devtools-link.invalid-link {

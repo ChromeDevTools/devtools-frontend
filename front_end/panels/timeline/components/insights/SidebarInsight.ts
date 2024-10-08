@@ -144,7 +144,7 @@ export class SidebarInsight extends HTMLElement {
       active: insightIsActive,
     });
     return LitHtml.html`
-      <div class=${containerClasses} aria-hidden="true">
+      <div class=${containerClasses} inert>
         <${Buttons.Button.Button.litTagName} .data=${{
           variant: Buttons.Button.Variant.ICON,
           iconName: 'chevron-down',
@@ -155,6 +155,18 @@ export class SidebarInsight extends HTMLElement {
 
     `;
     // clang-format on
+  }
+
+  /**
+   * Ensure that if the user presses enter or space on a header, we treat it
+   * like a click and toggle the insight.
+   */
+  #handleHeaderKeyDown(event: KeyboardEvent): void {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      event.stopPropagation();
+      this.#dispatchInsightToggle();
+    }
   }
 
   #getEstimatedSavingsString(): string|null {
@@ -197,7 +209,9 @@ export class SidebarInsight extends HTMLElement {
     const output = LitHtml.html`
       <div class=${containerClasses}>
         <header @click=${this.#dispatchInsightToggle}
+          @keydown=${this.#handleHeaderKeyDown}
           jslog=${VisualLogging.action(`timeline.toggle-insight.${this.#insightInternalName}`).track({click: true})}
+          tabIndex="0"
           role="button"
           aria-expanded=${this.#expanded}
           aria-label=${i18nString(UIStrings.viewDetails, {PH1: this.#insightTitle})}

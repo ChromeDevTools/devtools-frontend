@@ -86,10 +86,10 @@ export class SidebarSingleInsightSet extends HTMLElement {
       eventToSelectOnClick: Trace.Types.Events.Event|null): LitHtml.LitTemplate {
     // clang-format off
     return this.#metricIsVisible(label) ? LitHtml.html`
-      <div class="metric" @click=${eventToSelectOnClick ? this.#onClickMetric.bind(this, eventToSelectOnClick) : null}>
+      <button class="metric" @click=${eventToSelectOnClick ? this.#onClickMetric.bind(this, eventToSelectOnClick) : null}>
         <div class="metric-value metric-value-${classification}">${value}</div>
         <div class="metric-label">${label}</div>
-      </div>
+      </button>
     ` : LitHtml.nothing;
     // clang-format on
   }

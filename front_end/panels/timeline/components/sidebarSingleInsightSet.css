@@ -18,6 +18,13 @@
   flex: 1;
   user-select: text;
   cursor: pointer;
+  /* metric container is a button for a11y reasons, so remove default styles
+   * */
+  background: none;
+  border: none;
+  padding: 0;
+  display: block;
+  text-align: left;
 }
 
 .metric-value {

@@ -18,6 +18,7 @@ describeWithEnvironment('AISettingsTab', () => {
     switches: Switch.Switch.Switch[],
     details: Element[],
     dropdownButtons: HTMLElement[],
+    toggleContainers: HTMLElement[],
   }> {
     Common.Settings.moduleSetting('console-insights-enabled').set(false);
     Common.Settings.moduleSetting('freestyler-enabled').set(true);
@@ -33,7 +34,10 @@ describeWithEnvironment('AISettingsTab', () => {
     assert.strictEqual(details.length, 2);
     const dropdownButtons = Array.from(view.shadowRoot.querySelectorAll('.dropdown devtools-button')) as HTMLElement[];
     assert.strictEqual(dropdownButtons.length, 2);
-    return {switches, details, dropdownButtons};
+    const toggleContainers =
+        Array.from(view.shadowRoot.querySelectorAll('.toggle-container')) as Switch.Switch.Switch[];
+    assert.strictEqual(toggleContainers.length, 2);
+    return {switches, details, dropdownButtons, toggleContainers};
   }
 
   it('renders', async () => {
@@ -105,10 +109,10 @@ describeWithEnvironment('AISettingsTab', () => {
         return {disabled: true, reason: 'reason 2'};
       },
     });
-    const {switches} = await renderAISettings();
+    const {switches, toggleContainers} = await renderAISettings();
     assert.isTrue(switches[0].disabled);
-    assert.strictEqual(switches[0].title, 'reason 1');
+    assert.strictEqual(toggleContainers[0].title, 'reason 1');
     assert.isTrue(switches[1].disabled);
-    assert.strictEqual(switches[1].title, 'reason 2');
+    assert.strictEqual(toggleContainers[1].title, 'reason 2');
   });
 });

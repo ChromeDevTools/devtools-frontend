@@ -302,12 +302,14 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
         </div>
       </div>
       <div class="divider"></div>
-      <div class="toggle-container centered" @click=${this.#toggleConsoleInsightsSetting.bind(this)}>
+      <div class="toggle-container centered"
+        title=${this.#consoleInsightsSetting?.disabledReason()}
+        @click=${this.#toggleConsoleInsightsSetting.bind(this)}
+      >
         <${Switch.Switch.Switch.litTagName}
           .checked=${this.#consoleInsightsSetting?.get() && !this.#consoleInsightsSetting?.disabled()}
           .jslogContext=${this.#consoleInsightsSetting?.name}
           .disabled=${this.#consoleInsightsSetting?.disabled()}
-          title=${this.#consoleInsightsSetting?.disabledReason()}
           @switchchange=${this.#toggleConsoleInsightsSetting.bind(this)}
           aria-label=${this.#consoleInsightsSetting?.disabledReason() || i18nString(UIStrings.enableConsoleInsights)}
         ></${Switch.Switch.Switch.litTagName}>
@@ -368,12 +370,14 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
         </div>
       </div>
       <div class="divider"></div>
-      <div class="toggle-container centered" @click=${this.#toggleFreestylerSetting.bind(this)}>
+      <div class="toggle-container centered"
+        title=${this.#freestylerSetting?.disabledReason()}
+        @click=${this.#toggleFreestylerSetting.bind(this)}
+      >
         <${Switch.Switch.Switch.litTagName}
           .checked=${this.#freestylerSetting?.get() && !this.#freestylerSetting?.disabled()}
           .jslogContext=${this.#freestylerSetting?.name}
           .disabled=${this.#freestylerSetting?.disabled()}
-          title=${this.#freestylerSetting?.disabledReason()}
           @switchchange=${this.#toggleFreestylerSetting.bind(this)}
           aria-label=${this.#freestylerSetting?.disabledReason() || i18nString(UIStrings.enableAiAssistance)}
         ></${Switch.Switch.Switch.litTagName}>

@@ -5,7 +5,6 @@
 import type * as UI from '../../legacy/legacy.js';
 import * as VisualLogging from '../../visual_logging/visual_logging.js';
 
-// eslint-disable-next-line rulesdir/check_component_naming
 export abstract class WrappableComponent<T extends UI.Widget.Widget = UI.Widget.Widget> extends HTMLElement {
   wrapper: T|null = null;
   async render(): Promise<void> {

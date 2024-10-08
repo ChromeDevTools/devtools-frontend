@@ -610,7 +610,7 @@ export class FieldSettingsDialog extends HTMLElement {
                 class="devtools-text-input"
                 .disabled=${!this.#urlOverrideEnabled}
                 .value=${this.#urlOverride}
-                placeholder=${LitHtml.Directives.ifDefined(this.#urlOverrideEnabled ? i18nString(UIStrings.url) : undefined)}
+                placeholder=${this.#urlOverrideEnabled ? i18nString(UIStrings.url) : ''}
               />
               ${
                 this.#urlOverrideWarning

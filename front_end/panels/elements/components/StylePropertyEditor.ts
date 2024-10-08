@@ -66,7 +66,6 @@ export class PropertyDeselectedEvent extends Event {
   }
 }
 
-// eslint-disable-next-line rulesdir/check_component_naming
 export class StylePropertyEditor extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
   #authoredProperties: Map<string, string> = new Map();

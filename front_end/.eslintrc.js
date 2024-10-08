@@ -39,11 +39,9 @@ module.exports = {
         'rulesdir/no_bound_component_methods': 'error',
         'rulesdir/lit_html_data_as_type': 'error',
         'rulesdir/lit_no_style_interpolation': 'error',
-        'rulesdir/ban_literal_devtools_component_tag_names': 'error',
         'rulesdir/ban_self_closing_custom_element_tagnames': 'error',
         'rulesdir/ban_style_tags_in_lit_html': 'error',
         'rulesdir/ban_a_tags_in_lit_html': 'error',
-        'rulesdir/check_component_naming': 'error',
         'rulesdir/check_css_import': 'error',
         'rulesdir/enforce-optional-properties-last': 'error',
         'rulesdir/check_enumerated_histograms': 'error',
@@ -71,7 +69,6 @@ module.exports = {
     {
       files: ['*.test.ts', '**/testing/*.ts'],
       rules: {
-        'rulesdir/check_component_naming': 'off',
         '@typescript-eslint/explicit-function-return-type': 'off',
       },
     },
@@ -85,8 +82,6 @@ module.exports = {
     {
       files: ['panels/recorder/**/*.ts', 'panels/protocol_monitor/**/*.ts', 'ui/components/suggestion_input/*.ts'],
       rules: {
-        'rulesdir/check_component_naming': 'off',
-        'rulesdir/ban_literal_devtools_component_tag_names': 'off',
         // TODO(crbug/1402569): Reenable once https://github.com/microsoft/TypeScript/issues/48885 is closed.
         'rulesdir/use_private_class_members': 'off',
       }

@@ -15,7 +15,6 @@ export interface EditableSpanData {
 }
 
 export class EditableSpan extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-editable-span`;
   readonly #shadow = this.attachShadow({mode: 'open'});
   readonly #boundRender = this.#render.bind(this);
   #value: string = '';

@@ -33,9 +33,7 @@
   }
 
   &:focus-within {
-    outline: var(--sys-size-1) solid var(--sys-color-primary); /* stylelint-disable-line plugin/use_theme_colors */
-    /* TODO(crbug.com/371989111) fix use_theme_colors so it does not
-     * incorrectly fail on this. */
+    outline: var(--sys-size-1) solid var(--sys-color-primary);
   }
 }
 

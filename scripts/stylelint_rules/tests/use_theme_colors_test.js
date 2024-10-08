@@ -307,6 +307,22 @@ describe('use_theme_colors', () => {
     assert.lengthOf(warnings, 0);
   });
 
+  it('does not error when there is a var for the outline width', async () => {
+    const warnings = await lint(
+        'p { outline: var(--button-border-size) solid var(--color-primary); }',
+    );
+
+    assert.lengthOf(warnings, 0);
+  });
+
+  it('does not error when the outline is set to none', async () => {
+    const warnings = await lint(
+        'p { outline: none; }',
+    );
+
+    assert.lengthOf(warnings, 0);
+  });
+
   it('does not error when using --sys-elevation for box-shadow', async () => {
     const warnings = await lint(
         'p { box-shadow: var(--sys-elevation-level1); }',

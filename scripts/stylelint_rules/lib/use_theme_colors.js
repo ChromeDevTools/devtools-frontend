@@ -221,8 +221,9 @@ module.exports = stylelint.createPlugin(RULE_NAME, function(primary, secondary, 
         /**
          * If we're checking a border-{top/bottom/left/right}, we need to regex
          * out just the color part of the declaration to check.
+         * We also apply the same check for outline.
          */
-        if (borderCombinedDeclarations.has(declaration.prop)) {
+        if (borderCombinedDeclarations.has(declaration.prop) || declaration.prop === 'outline') {
           // This is a pretty basic regex but it should split border-bottom:
           // var(--foo) solid var(--bar) into the three parts we need.
           // If this rule picks up false positives, we can improve this regex.

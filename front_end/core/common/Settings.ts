@@ -655,7 +655,7 @@ export class VersionController {
   static readonly SYNCED_VERSION_SETTING_NAME = 'syncedInspectorVersion';
   static readonly LOCAL_VERSION_SETTING_NAME = 'localInspectorVersion';
 
-  static readonly CURRENT_VERSION = 39;
+  static readonly CURRENT_VERSION = 38;
 
   readonly #globalVersionSetting: Setting<number>;
   readonly #syncedVersionSetting: Setting<number>;
@@ -1319,12 +1319,6 @@ export class VersionController {
     if (consoleInsightsEnabled && consoleInsightsEnabled.get() === false) {
       onboardingFinished.set(false);
     }
-  }
-
-  updateVersionFrom38To39(): void {
-    const closeableTabSetting = Settings.instance().createSetting('closeable-tabs', {});
-    const currentValue = closeableTabSetting.get();
-    closeableTabSetting.set({...currentValue, freestyler: true});
   }
 
   /*

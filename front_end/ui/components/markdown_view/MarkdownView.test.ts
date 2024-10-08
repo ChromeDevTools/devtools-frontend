@@ -195,6 +195,52 @@ describeWithEnvironment('MarkdownView', () => {
       const result = renderer.renderToken({type: 'html', raw: '<!DOCTYPE html>'} as Marked.Marked.Token);
       assert(result.values.join('').includes('<!DOCTYPE html>'));
     });
+    it('detects language but default to provided', () => {
+      let result =
+          renderer.detectCodeLanguage({text: 'const int foo = "bar"', lang: 'cpp'} as Marked.Marked.Tokens.Code);
+      assert.strictEqual(result, 'cpp');
+      result = renderer.detectCodeLanguage({text: '', lang: 'cpp'} as Marked.Marked.Tokens.Code);
+      assert.strictEqual(result, 'cpp');
+    });
+    it('detects JavaScript language', () => {
+      let result = renderer.detectCodeLanguage({text: 'const t = 2', lang: ''} as Marked.Marked.Tokens.Code);
+      assert.strictEqual(result, 'js');
+      result = renderer.detectCodeLanguage({text: 'let t = 2', lang: ''} as Marked.Marked.Tokens.Code);
+      assert.strictEqual(result, 'js');
+      result = renderer.detectCodeLanguage({text: 'var t = 2', lang: ''} as Marked.Marked.Tokens.Code);
+      assert.strictEqual(result, 'js');
+      result = renderer.detectCodeLanguage({text: 'function t(){}', lang: ''} as Marked.Marked.Tokens.Code);
+      assert.strictEqual(result, 'js');
+      result = renderer.detectCodeLanguage({text: 'async function t(){}', lang: ''} as Marked.Marked.Tokens.Code);
+      assert.strictEqual(result, 'js');
+      result = renderer.detectCodeLanguage(
+          {text: 'import puppeteer from "puppeteer-core"', lang: ''} as Marked.Marked.Tokens.Code);
+      assert.strictEqual(result, 'js');
+    });
+    it('doesn`t detect JavaScript language', () => {
+      let result = renderer.detectCodeLanguage({text: 'constant F', lang: ''} as Marked.Marked.Tokens.Code);
+      assert.strictEqual(result, '');
+      result = renderer.detectCodeLanguage({text: 'variable', lang: ''} as Marked.Marked.Tokens.Code);
+      assert.strictEqual(result, '');
+      result = renderer.detectCodeLanguage(
+          {text: 'functions are better then classes', lang: ''} as Marked.Marked.Tokens.Code);
+      assert.strictEqual(result, '');
+      result = renderer.detectCodeLanguage(
+          {text: 'asynchronous code it hard to understand', lang: ''} as Marked.Marked.Tokens.Code);
+      assert.strictEqual(result, '');
+    });
+    it('detects CSS language', () => {
+      let result = renderer.detectCodeLanguage({text: '.myClass {}', lang: ''} as Marked.Marked.Tokens.Code);
+      assert.strictEqual(result, 'css');
+      result = renderer.detectCodeLanguage({text: '.myClass{}', lang: ''} as Marked.Marked.Tokens.Code);
+      assert.strictEqual(result, 'css');
+      result = renderer.detectCodeLanguage({text: 'my-component {}', lang: ''} as Marked.Marked.Tokens.Code);
+      assert.strictEqual(result, 'css');
+      result = renderer.detectCodeLanguage({text: 'my-component::after {}', lang: ''} as Marked.Marked.Tokens.Code);
+      assert.strictEqual(result, 'css');
+      result = renderer.detectCodeLanguage({text: '.foo::[name="bar"] {}', lang: ''} as Marked.Marked.Tokens.Code);
+      assert.strictEqual(result, 'css');
+    });
   });
 
   const paragraphText =

@@ -124,7 +124,7 @@ export class MarkdownLitRenderer {
       .code=${this.unescape(token.text)}
       .codeLang=${token.lang}>
     </${CodeBlock.litTagName}>`;
-    // clang-format one
+    // clang-format on
   }
 
   templateForToken(token: Marked.Marked.MarkedToken): LitHtml.TemplateResult|null {
@@ -195,6 +195,30 @@ export class MarkdownInsightRenderer extends MarkdownLitRenderer {
     }
   }
 
+  detectCodeLanguage(token: Marked.Marked.Tokens.Code): string {
+    if (token.lang) {
+      return token.lang;
+    }
+
+    if (/^(\.|#)?[\w:\[\]="'-\.]* ?{/m.test(token.text) || /^@import/.test(token.text)) {
+      return 'css';
+    }
+    if (/^(var|const|let|function|async|import)\s/.test(token.text)) {
+      return 'js';
+    }
+
+    return '';
+  }
+
+  override renderCodeBlock(token: Marked.Marked.Tokens.Code): LitHtml.TemplateResult {
+    // clang-format off
+    return html`<${CodeBlock.litTagName}
+      .code=${this.unescape(token.text)}
+      .codeLang=${this.detectCodeLanguage(token)}>
+    </${CodeBlock.litTagName}>`;
+    // clang-format on
+  }
+
   override templateForToken(token: Marked.Marked.Token): LitHtml.TemplateResult|null {
     switch (token.type) {
       case 'heading':
@@ -207,7 +231,7 @@ export class MarkdownInsightRenderer extends MarkdownLitRenderer {
         }
         return LitHtml.html`${
             UI.XLink.XLink.create(sanitizedUrl, token.text, undefined, undefined, 'link-in-explanation')}`;
-        }
+      }
       case 'code':
         return LitHtml.html`<${CodeBlock.litTagName}
           .code=${this.unescape(token.text)}

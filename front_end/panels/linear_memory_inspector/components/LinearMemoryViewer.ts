@@ -44,7 +44,6 @@ const BYTE_GROUP_MARGIN = 8;
 const BYTE_GROUP_SIZE = 4;
 
 export class LinearMemoryViewer extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-linear-memory-inspector-viewer`;
 
   readonly #shadow = this.attachShadow({mode: 'open'});
 

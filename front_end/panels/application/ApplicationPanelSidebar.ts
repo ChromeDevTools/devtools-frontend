@@ -112,6 +112,22 @@ const UIStrings = {
    */
   extensionStorage: 'Extension storage',
   /**
+   *@description Text for extension session storage in Application panel
+   */
+  extensionSessionStorage: 'Session',
+  /**
+   *@description Text for extension local storage in Application panel
+   */
+  extensionLocalStorage: 'Local',
+  /**
+   *@description Text for extension sync storage in Application panel
+   */
+  extensionSyncStorage: 'Sync',
+  /**
+   *@description Text for extension managed storage in Application panel
+   */
+  extensionManagedStorage: 'Managed',
+  /**
    *@description Text for web cookies
    */
   cookies: 'Cookies',
@@ -229,6 +245,21 @@ function assertNotMainTarget(targetId: Protocol.Target.TargetID|'main'): asserts
   }
 }
 
+function nameForExtensionStorageArea(storageArea: Protocol.Extensions.StorageArea): string {
+  switch (storageArea) {
+    case Protocol.Extensions.StorageArea.Session:
+      return i18nString(UIStrings.extensionSessionStorage);
+    case Protocol.Extensions.StorageArea.Local:
+      return i18nString(UIStrings.extensionLocalStorage);
+    case Protocol.Extensions.StorageArea.Sync:
+      return i18nString(UIStrings.extensionSyncStorage);
+    case Protocol.Extensions.StorageArea.Managed:
+      return i18nString(UIStrings.extensionManagedStorage);
+    default:
+      throw new Error(`Unrecognized storage type: ${storageArea}`);
+  }
+}
+
 export namespace SharedStorageTreeElementDispatcher {
   export const enum Events {
     SHARED_STORAGE_TREE_ELEMENT_ADDED = 'SharedStorageTreeElementAdded',
@@ -270,6 +301,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
   preloadingSummaryTreeElement: PreloadingSummaryTreeElement|undefined;
   private readonly resourcesSection: ResourcesSection;
   private domStorageTreeElements: Map<DOMStorage, DOMStorageTreeElement>;
+  private extensionIdToStorageTreeParentElement: Map<string, ExtensionStorageTreeParentElement>;
   private extensionStorageTreeElements: Map<ExtensionStorage, ExtensionStorageTreeElement>;
   private sharedStorageTreeElements: Map<string, SharedStorageTreeElement>;
   private domains: {
@@ -413,6 +445,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
     this.resourcesSection = new ResourcesSection(panel, resourcesTreeElement);
 
     this.domStorageTreeElements = new Map();
+    this.extensionIdToStorageTreeParentElement = new Map();
     this.extensionStorageTreeElements = new Map();
     this.sharedStorageTreeElements = new Map();
     this.domains = {};
@@ -770,18 +803,49 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
     this.addExtensionStorage(extensionStorage);
   }
 
+  private useTreeViewForExtensionStorage(): boolean {
+    // For extension service workers, there is only one associated extension,
+    // so we show each storage area as a direct child. In a page context (where
+    // multiple extensions may be injected) use a tree view where storage areas
+    // are children of the extension they are associated with.
+    return Root.Runtime.getPathName() !== '/bundled/worker_app.html';
+  }
+
+  private getExtensionStorageAreaParent(extensionStorage: ExtensionStorage): ApplicationPanelTreeElement|undefined {
+    if (!this.useTreeViewForExtensionStorage()) {
+      return this.extensionStorageListTreeElement;
+    }
+
+    const existingParent = this.extensionIdToStorageTreeParentElement.get(extensionStorage.extensionId);
+    if (existingParent) {
+      return existingParent;
+    }
+
+    const parent =
+        new ExtensionStorageTreeParentElement(this.panel, extensionStorage.extensionId, extensionStorage.name);
+    this.extensionIdToStorageTreeParentElement.set(extensionStorage.extensionId, parent);
+    this.extensionStorageListTreeElement?.appendChild(parent);
+    return parent;
+  }
+
   private addExtensionStorage(extensionStorage: ExtensionStorage): void {
     console.assert(Boolean(this.extensionStorageListTreeElement));
     console.assert(!this.extensionStorageTreeElements.get(extensionStorage));
 
     const extensionStorageTreeElement = new ExtensionStorageTreeElement(this.panel, extensionStorage);
     this.extensionStorageTreeElements.set(extensionStorage, extensionStorageTreeElement);
-    this.extensionStorageListTreeElement?.appendChild(extensionStorageTreeElement, comparator);
+    this.getExtensionStorageAreaParent(extensionStorage)?.appendChild(extensionStorageTreeElement, comparator);
 
     function comparator(a: UI.TreeOutline.TreeElement, b: UI.TreeOutline.TreeElement): number {
-      const aTitle = a.titleAsText().toLocaleLowerCase();
-      const bTitle = b.titleAsText().toLocaleUpperCase();
-      return aTitle.localeCompare(bTitle);
+      const getStorageArea = (e: UI.TreeOutline.TreeElement): Protocol.Extensions.StorageArea =>
+          (e as ExtensionStorageTreeElement).storageArea;
+      const order = [
+        Protocol.Extensions.StorageArea.Session,
+        Protocol.Extensions.StorageArea.Local,
+        Protocol.Extensions.StorageArea.Sync,
+        Protocol.Extensions.StorageArea.Managed,
+      ];
+      return order.indexOf(getStorageArea(a)) - order.indexOf(getStorageArea(b));
     }
   }
 
@@ -799,8 +863,13 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
     const parentListTreeElement = treeElement.parent;
     if (parentListTreeElement) {
       parentListTreeElement.removeChild(treeElement);
-      if (wasSelected) {
-        parentListTreeElement.select();
+      if (this.useTreeViewForExtensionStorage() && parentListTreeElement.childCount() === 0) {
+        this.extensionStorageListTreeElement?.removeChild(parentListTreeElement);
+        this.extensionIdToStorageTreeParentElement.delete(extensionStorage.extensionId);
+      } else {
+        if (wasSelected) {
+          parentListTreeElement.select();
+        }
       }
     }
     this.extensionStorageTreeElements.delete(extensionStorage);
@@ -1663,21 +1732,24 @@ export class ExtensionStorageTreeElement extends ApplicationPanelTreeElement {
   private readonly extensionStorage: ExtensionStorage;
   constructor(storagePanel: ResourcesPanel, extensionStorage: ExtensionStorage) {
     super(
-        storagePanel, extensionStorage.name + ` (${extensionStorage.storageArea})`, false,
-        'extension-storage-for-domain');
+        storagePanel, nameForExtensionStorageArea(extensionStorage.storageArea), false, 'extension-storage-for-domain');
     this.extensionStorage = extensionStorage;
     const icon = IconButton.Icon.create('table');
     this.setLeadingIcons([icon]);
   }
 
+  get storageArea(): Protocol.Extensions.StorageArea {
+    return this.extensionStorage.storageArea;
+  }
+
   override get itemURL(): Platform.DevToolsPath.UrlString {
-    return 'storage://' + this.extensionStorage.extensionId + '/' + this.extensionStorage.storageArea as
+    return 'extension-storage://' + this.extensionStorage.extensionId + '/' + this.extensionStorage.storageArea as
         Platform.DevToolsPath.UrlString;
   }
 
   override onselect(selectedByUser?: boolean): boolean {
     super.onselect(selectedByUser);
-    Host.userMetrics.panelShown('dom-storage');
+    Host.userMetrics.panelShown('extension-storage');
 
     // TODO(crbug.com/40963428): Call this.resourcesPanel to show extension
     // storage view
@@ -1695,6 +1767,20 @@ export class ExtensionStorageTreeElement extends ApplicationPanelTreeElement {
     contextMenu.defaultSection().appendItem(
         i18nString(UIStrings.clear), () => this.extensionStorage.clear(), {jslogContext: 'clear'});
     void contextMenu.show();
+  }
+}
+
+export class ExtensionStorageTreeParentElement extends ApplicationPanelTreeElement {
+  private readonly extensionId: string;
+  constructor(storagePanel: ResourcesPanel, extensionId: string, extensionName: string) {
+    super(storagePanel, extensionName, true, 'extension-storage-for-domain');
+    this.extensionId = extensionId;
+    const icon = IconButton.Icon.create('table');
+    this.setLeadingIcons([icon]);
+  }
+
+  override get itemURL(): Platform.DevToolsPath.UrlString {
+    return 'extension-storage://' + this.extensionId as Platform.DevToolsPath.UrlString;
   }
 }
 

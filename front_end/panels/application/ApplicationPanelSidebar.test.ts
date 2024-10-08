@@ -4,6 +4,7 @@
 
 import type * as Common from '../../core/common/common.js';
 import type * as Platform from '../../core/platform/platform.js';
+import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import {createTarget, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
@@ -58,6 +59,8 @@ describeWithMockConnection('ApplicationPanelSidebar', () => {
   const TEST_ORIGIN_A = 'http://www.example.com/';
   const TEST_ORIGIN_B = 'http://www.example.org/';
   const TEST_ORIGIN_C = 'http://www.example.net/';
+
+  const TEST_EXTENSION_NAME = 'Test Extension';
 
   const ID = 'AA' as Protocol.Page.FrameId;
 
@@ -190,6 +193,51 @@ describeWithMockConnection('ApplicationPanelSidebar', () => {
     }
 
     assert.deepEqual(sidebar.sharedStorageListTreeElement.view.getEventsForTesting(), EVENTS);
+  });
+
+  it('shows extension storage based on added models', async () => {
+    Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.EXTENSION_STORAGE_VIEWER);
+
+    for (const useTreeView of [false, true]) {
+      Application.ResourcesPanel.ResourcesPanel.instance({forceNew: true});
+      const sidebar = await Application.ResourcesPanel.ResourcesPanel.showAndGetSidebar();
+
+      // Cast to any allows overriding private method.
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      sinon.stub(sidebar, 'useTreeViewForExtensionStorage' as any).returns(useTreeView);
+
+      const extensionStorageModel = target.model(Application.ExtensionStorageModel.ExtensionStorageModel);
+      assert.exists(extensionStorageModel);
+
+      const makeFakeExtensionStorage = (storageArea: Protocol.Extensions.StorageArea) =>
+          new Application.ExtensionStorageModel.ExtensionStorage(
+              extensionStorageModel, '', TEST_EXTENSION_NAME, storageArea);
+
+      const fakeModelLocal = makeFakeExtensionStorage(Protocol.Extensions.StorageArea.Local);
+      const fakeModelSession = makeFakeExtensionStorage(Protocol.Extensions.StorageArea.Session);
+
+      extensionStorageModel.dispatchEventToListeners(
+          Application.ExtensionStorageModel.Events.EXTENSION_STORAGE_ADDED, fakeModelLocal);
+      extensionStorageModel.dispatchEventToListeners(
+          Application.ExtensionStorageModel.Events.EXTENSION_STORAGE_ADDED, fakeModelSession);
+
+      if (useTreeView) {
+        assert.strictEqual(sidebar.extensionStorageListTreeElement!.childCount(), 1);
+        assert.strictEqual(sidebar.extensionStorageListTreeElement!.children()[0].title, TEST_EXTENSION_NAME);
+        assert.deepStrictEqual(
+            sidebar.extensionStorageListTreeElement!.children()[0].children().map(e => e.title), ['Session', 'Local']);
+      } else {
+        assert.strictEqual(sidebar.extensionStorageListTreeElement!.childCount(), 2);
+        assert.deepStrictEqual(
+            sidebar.extensionStorageListTreeElement!.children().map(e => e.title), ['Session', 'Local']);
+      }
+
+      extensionStorageModel.dispatchEventToListeners(
+          Application.ExtensionStorageModel.Events.EXTENSION_STORAGE_REMOVED, fakeModelLocal);
+      extensionStorageModel.dispatchEventToListeners(
+          Application.ExtensionStorageModel.Events.EXTENSION_STORAGE_REMOVED, fakeModelSession);
+      assert.strictEqual(sidebar.extensionStorageListTreeElement!.childCount(), 0);
+    }
   });
 
   async function getExpectedCall(expectedCall: string): Promise<sinon.SinonSpy> {

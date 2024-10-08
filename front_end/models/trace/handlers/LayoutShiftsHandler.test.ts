@@ -235,11 +235,11 @@ describe('LayoutShiftsHandler', function() {
 
     for (const cluster of clusters) {
       // Get the max shift score from the list of layout shifts.
-      const maxShiftScore = Math.max(...cluster.events.map(s => s.args.data?.score ?? 0));
+      const maxShiftScore = Math.max(...cluster.events.map(s => s.args.data?.weighted_score_delta ?? 0));
       const gotShift = cluster.worstShiftEvent as Trace.Types.Events.SyntheticLayoutShift;
       assert.isNotNull(gotShift);
       // Make sure the worstShiftEvent's data matches the maxShiftScore.
-      assert.strictEqual(gotShift.args.data?.score ?? 0, maxShiftScore);
+      assert.strictEqual(gotShift.args.data?.weighted_score_delta ?? 0, maxShiftScore);
     }
   });
 

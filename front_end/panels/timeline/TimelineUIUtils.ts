@@ -1620,7 +1620,8 @@ export class TimelineUIUtils {
         if (!layoutShiftEventData) {
           break;
         }
-        contentHelper.appendTextRow(i18nString(UIStrings.score), layoutShiftEventData['score'].toPrecision(4));
+        contentHelper.appendTextRow(
+            i18nString(UIStrings.score), layoutShiftEventData.weighted_score_delta.toPrecision(4));
         contentHelper.appendTextRow(
             i18nString(UIStrings.cumulativeScore), layoutShiftEventData['cumulative_score'].toPrecision(4));
         contentHelper.appendTextRow(

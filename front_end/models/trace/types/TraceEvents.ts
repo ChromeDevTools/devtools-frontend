@@ -845,12 +845,13 @@ type LayoutShiftData = ArgsData&{
   is_main_frame: boolean,
   overall_max_distance: number,
   region_rects: TraceRect[],
+  /** @deprecated This value will incorrectly overreport for shifts within an iframe. */
   score: number,
+  /** This is the preferred "score", used for CLS. If `is_main_frame` is true, `score` and `weighted_score_delta` will be equal. But if the shift is from an iframe, `weighted_score_delta` will be appropriately reduced to account for the viewport size of that iframe. https://wicg.github.io/layout-instability/#subframe-weighting-factor and b/275509162 */
   weighted_score_delta: number,
   navigationId?: string,
   /* eslint-enable @typescript-eslint/naming-convention */
 };
-// These keys come from the trace data, so we have to use underscores.
 export interface LayoutShift extends Instant {
   name: 'LayoutShift';
   normalized?: boolean;

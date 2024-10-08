@@ -74,6 +74,7 @@ export interface LinearMemoryInspectorData {
   valueTypeModes?: Map<ValueType, ValueTypeMode>;
   endianness?: Endianness;
   highlightInfo?: HighlightInfo;
+  hideValueInspector?: boolean;
 }
 
 export type Settings = {
@@ -154,6 +155,8 @@ export class LinearMemoryInspector extends HTMLElement {
   #valueTypes = new Set(this.#valueTypeModes.keys());
   #endianness = Endianness.LITTLE;
 
+  #hideValueInspector = false;
+
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [linearMemoryInspectorStyles];
   }
@@ -183,6 +186,7 @@ export class LinearMemoryInspector extends HTMLElement {
     this.#valueTypes = data.valueTypes || this.#valueTypes;
     this.#endianness = data.endianness || this.#endianness;
     this.#highlightInfo = data.highlightInfo;
+    this.#hideValueInspector = data.hideValueInspector ?? this.#hideValueInspector;
     this.#setAddress(data.address);
     this.#render();
   }
@@ -231,21 +235,22 @@ export class LinearMemoryInspector extends HTMLElement {
           @resize=${this.#resize}>
         </${LinearMemoryViewer.litTagName}>
       </div>
-      <div class="value-interpreter">
-        <${LinearMemoryValueInterpreter.litTagName}
-          .data=${{
-            value: this.#memory.slice(this.#address - this.#memoryOffset, this.#address + VALUE_INTEPRETER_MAX_NUM_BYTES).buffer,
-            valueTypes: this.#valueTypes,
-            valueTypeModes: this.#valueTypeModes,
-            endianness: this.#endianness,
-            memoryLength: this.#outerMemoryLength } as LinearMemoryValueInterpreterData}
-          @valuetypetoggled=${this.#onValueTypeToggled}
-          @valuetypemodechanged=${this.#onValueTypeModeChanged}
-          @endiannesschanged=${this.#onEndiannessChanged}
-          @jumptopointeraddress=${this.#onJumpToAddress}
-          >
-        </${LinearMemoryValueInterpreter.litTagName}/>
-      </div>
+      ${this.#hideValueInspector ? LitHtml.nothing : html`
+        <div class="value-interpreter">
+          <${LinearMemoryValueInterpreter.litTagName}
+            .data=${{
+              value: this.#memory.slice(this.#address - this.#memoryOffset, this.#address + VALUE_INTEPRETER_MAX_NUM_BYTES).buffer,
+              valueTypes: this.#valueTypes,
+              valueTypeModes: this.#valueTypeModes,
+              endianness: this.#endianness,
+              memoryLength: this.#outerMemoryLength } as LinearMemoryValueInterpreterData}
+            @valuetypetoggled=${this.#onValueTypeToggled}
+            @valuetypemodechanged=${this.#onValueTypeModeChanged}
+            @endiannesschanged=${this.#onEndiannessChanged}
+            @jumptopointeraddress=${this.#onJumpToAddress}
+            >
+          </${LinearMemoryValueInterpreter.litTagName}/>
+        </div>`}
       `, this.#shadow, {
       host: this,
     });

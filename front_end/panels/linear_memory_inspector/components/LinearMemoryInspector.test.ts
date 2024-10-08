@@ -406,4 +406,15 @@ describeWithLocale('LinearMemoryInspector', () => {
     const parsedAddress = LinearMemoryInspectorComponents.LinearMemoryInspectorUtils.parseAddress(address);
     assert.strictEqual(parsedAddress, undefined);
   });
+
+  it('can hide the value inspector', async () => {
+    const {component, data} = await setUpComponent();
+    component.data = {
+      ...data,
+      hideValueInspector: true,
+    };
+
+    assert.isNotNull(component.shadowRoot);
+    assert.isNull(component.shadowRoot.querySelector(INTERPRETER_SELECTOR));
+  });
 });

@@ -181,6 +181,11 @@ export abstract class AiAgent {
       }
     }
 
+    debugLog({
+      request,
+      response: rawResponse,
+    });
+
     this.#structuredLog.push({
       request: structuredClone(request),
       response,

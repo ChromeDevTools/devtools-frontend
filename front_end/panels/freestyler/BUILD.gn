@@ -35,6 +35,7 @@ devtools_module("freestyler") {
     "../../core/common:bundle",
     "../../core/host:bundle",
     "../../core/i18n:bundle",
+    "../../core/root:bundle",
     "../../models/logs:bundle",
     "../../models/workspace:bundle",
     "../../panels/network/forward:bundle",

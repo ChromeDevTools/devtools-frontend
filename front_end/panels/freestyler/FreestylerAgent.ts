@@ -5,6 +5,7 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as Platform from '../../core/platform/platform.js';
+import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -183,6 +184,12 @@ export class FreestylerAgent extends AiAgent {
 
     return config.devToolsFreestyler?.userTier;
   }
+  get executionMode(): Root.Runtime.HostConfigFreestylerExecutionMode {
+    const config = Common.Settings.Settings.instance().getHostConfig();
+
+    return config.devToolsFreestyler?.executionMode ?? Root.Runtime.HostConfigFreestylerExecutionMode.ALL_SCRIPTS;
+  }
+
   get options(): AidaRequestOptions {
     const config = Common.Settings.Settings.instance().getHostConfig();
     const temperature = AiAgent.validTemperature(config.devToolsFreestyler?.temperature);
@@ -502,9 +509,28 @@ export class FreestylerAgent extends AiAgent {
     const scope = this.#createExtensionScope(this.#changes);
     await scope.install();
     try {
+      if (this.executionMode === Root.Runtime.HostConfigFreestylerExecutionMode.NO_SCRIPTS) {
+        return {
+          type: ResponseType.ACTION,
+          code: action,
+          output: 'Error: JavaScript execution is currently disabled.',
+          canceled: true,
+          rpcId,
+        };
+      }
       let result = await this.#generateObservation(action, {throwOnSideEffect: true});
       debugLog(`Action result: ${JSON.stringify(result)}`);
       if (result.sideEffect) {
+        if (this.executionMode === Root.Runtime.HostConfigFreestylerExecutionMode.SIDE_EFFECT_FREE_SCRIPTS_ONLY) {
+          return {
+            type: ResponseType.ACTION,
+            code: action,
+            output: 'Error: JavaScript execution that modifies the page is currently disabled.',
+            canceled: true,
+            rpcId,
+          };
+        }
+
         const sideEffectConfirmationPromiseWithResolvers = this.#confirmSideEffect<boolean>();
         if (isDebugMode()) {
           window.dispatchEvent(new CustomEvent(

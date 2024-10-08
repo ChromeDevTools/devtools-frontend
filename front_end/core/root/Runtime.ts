@@ -316,11 +316,18 @@ export interface HostConfigConsoleInsights {
   enabled: boolean;
 }
 
+export enum HostConfigFreestylerExecutionMode {
+  ALL_SCRIPTS = 'ALL_SCRIPTS',
+  SIDE_EFFECT_FREE_SCRIPTS_ONLY = 'SIDE_EFFECT_FREE_SCRIPTS_ONLY',
+  NO_SCRIPTS = 'NO_SCRIPTS',
+}
+
 export interface HostConfigFreestyler {
   modelId: string;
   temperature: number;
   enabled: boolean;
   userTier: string;
+  executionMode?: HostConfigFreestylerExecutionMode;
 }
 
 export interface HostConfigExplainThisResourceDogfood {

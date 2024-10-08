@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Host from '../../core/host/host.js';
+import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import {
   describeWithEnvironment,
@@ -14,12 +15,15 @@ import * as Freestyler from './freestyler.js';
 const {FreestylerAgent} = Freestyler;
 
 describeWithEnvironment('FreestylerAgent', () => {
-  function mockHostConfig(modelId?: string, temperature?: number, userTier?: string) {
+  function mockHostConfig(
+      modelId?: string, temperature?: number, userTier?: string,
+      executionMode?: Root.Runtime.HostConfigFreestylerExecutionMode) {
     getGetHostConfigStub({
       devToolsFreestyler: {
         modelId,
         temperature,
         userTier,
+        executionMode,
       },
     });
   }
@@ -553,22 +557,21 @@ c`;
     });
   });
 
+  function mockAidaClient(
+      fetch: (_: unknown, options?: {signal: AbortSignal}) => AsyncGenerator<Host.AidaClient.AidaResponse, void, void>,
+      ): Host.AidaClient.AidaClient {
+    return {
+      fetch,
+      registerClientEvent: () => Promise.resolve({}),
+    };
+  }
+
   describe('run', () => {
     let element: sinon.SinonStubbedInstance<SDK.DOMModel.DOMNode>;
     beforeEach(() => {
       mockHostConfig();
       element = sinon.createStubInstance(SDK.DOMModel.DOMNode);
     });
-
-    function mockAidaClient(
-        fetch: (_: unknown, options?: {signal: AbortSignal}) =>
-            AsyncGenerator<Host.AidaClient.AidaResponse, void, void>,
-        ): Host.AidaClient.AidaClient {
-      return {
-        fetch,
-        registerClientEvent: () => Promise.resolve({}),
-      };
-    }
 
     describe('side effect handling', () => {
       it('calls confirmSideEffect when the code execution contains a side effect', async () => {
@@ -1064,6 +1067,79 @@ ANSWER: this is the answer`,
       await Array.fromAsync(agent.run('test', {selectedElement: element, signal: controller.signal}));
 
       assert.deepStrictEqual(agent.chatHistoryForTesting, []);
+    });
+  });
+
+  describe('HostConfigFreestylerExecutionMode', () => {
+    let element: sinon.SinonStubbedInstance<SDK.DOMModel.DOMNode>;
+    beforeEach(() => {
+      element = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+    });
+
+    function getMockClient() {
+      let count = 0;
+      async function* generateActionAndAnswer() {
+        if (count === 0) {
+          yield {
+            explanation: `ACTION
+            $0.style.backgroundColor = 'red'
+            STOP`,
+            metadata: {},
+            completed: true,
+          };
+        } else {
+          yield {
+            explanation: 'ANSWER: This is the answer',
+            metadata: {},
+            completed: true,
+          };
+        }
+
+        count++;
+      }
+      return mockAidaClient(generateActionAndAnswer);
+    }
+
+    describe('NO_SCRIPTS', () => {
+      beforeEach(() => {
+        mockHostConfig(undefined, undefined, undefined, Root.Runtime.HostConfigFreestylerExecutionMode.NO_SCRIPTS);
+      });
+
+      it('returns an error if scripts are disabled', async () => {
+        const execJs = sinon.mock();
+        const agent = new FreestylerAgent({
+          aidaClient: getMockClient(),
+          createExtensionScope,
+          execJs,
+        });
+        const responses = await Array.fromAsync(agent.run('test', {selectedElement: element}));
+        const actionStep = responses.find(response => response.type === Freestyler.ResponseType.ACTION)!;
+        assert.strictEqual(actionStep.output, 'Error: JavaScript execution is currently disabled.');
+        assert.strictEqual(execJs.getCalls().length, 0);
+      });
+    });
+
+    describe('SIDE_EFFECT_FREE_SCRIPTS_ONLY', () => {
+      beforeEach(() => {
+        mockHostConfig(
+            undefined, undefined, undefined,
+            Root.Runtime.HostConfigFreestylerExecutionMode.SIDE_EFFECT_FREE_SCRIPTS_ONLY);
+      });
+
+      it('returns an error if a script causes a side effect', async () => {
+        const execJs =
+            sinon.mock().throws(new Freestyler.SideEffectError('EvalError: Possible side-effect in debug-evaluate'));
+        const agent = new FreestylerAgent({
+          aidaClient: getMockClient(),
+          createExtensionScope,
+          execJs,
+        });
+        const responses = await Array.fromAsync(agent.run('test', {selectedElement: element}));
+        const actionStep = responses.find(response => response.type === Freestyler.ResponseType.ACTION)!;
+        assert.strictEqual(
+            actionStep.output, 'Error: JavaScript execution that modifies the page is currently disabled.');
+        assert.strictEqual(execJs.getCalls().length, 1);
+      });
     });
   });
 });

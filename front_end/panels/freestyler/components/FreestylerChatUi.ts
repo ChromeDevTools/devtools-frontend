@@ -938,7 +938,7 @@ export class FreestylerChatUi extends HTMLElement {
 
     // clang-format off
     return LitHtml.html`
-      <div class="empty-state-container">
+      <div class="empty-state-container messages-scroll-container">
         <div class="opt-in">
           <div class="opt-in-icon-container">
             <${IconButton.Icon.Icon.litTagName} .data=${{

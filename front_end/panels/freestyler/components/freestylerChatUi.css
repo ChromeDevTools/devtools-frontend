@@ -428,6 +428,12 @@
   cursor: pointer;
 }
 
+button.link {
+  border: none;
+  background: none;
+  font: inherit;
+}
+
 .select-an-element-text {
   margin-left: 2px;
 }

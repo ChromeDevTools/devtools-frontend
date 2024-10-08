@@ -2,8 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../../../ui/components/icon_button/icon_button.js';
+
 import * as i18n from '../../../core/i18n/i18n.js';
-import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
@@ -22,7 +23,6 @@ export interface ElementsTreeExpandButtonData {
   clickHandler: (event?: Event) => void;
 }
 export class ElementsTreeExpandButton extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-elements-tree-expand-button`;
   readonly #shadow = this.attachShadow({mode: 'open'});
 
   #clickHandler: ((event?: Event) => void) = () => {};
@@ -49,7 +49,7 @@ export class ElementsTreeExpandButton extends HTMLElement {
         tabindex="-1"
         aria-label=${i18nString(UIStrings.expand)}
         jslog=${VisualLogging.action('expand').track({click: true})}
-        @click=${this.#clickHandler}><${IconButton.Icon.Icon.litTagName} name="dots-horizontal"></${IconButton.Icon.Icon.litTagName}></button>`,
+        @click=${this.#clickHandler}><devtools-icon name="dots-horizontal"></devtools-icon></button>`,
       this.#shadow, {host: this});
     // clang-format on
   }

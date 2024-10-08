@@ -17,7 +17,6 @@ export class NavigateToSourceEvent extends Event {
 }
 
 export class ComputedStyleProperty extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-computed-style-property`;
   readonly #shadow = this.attachShadow({mode: 'open'});
   #inherited = false;
   #traceable = false;

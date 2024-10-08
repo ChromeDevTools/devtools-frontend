@@ -37,7 +37,6 @@ interface CSSProperty {
 }
 
 export class CSSPropertyDocsView extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-css-property-docs-view`;
   readonly #shadow = this.attachShadow({mode: 'open'});
   readonly #cssProperty: CSSProperty;
 

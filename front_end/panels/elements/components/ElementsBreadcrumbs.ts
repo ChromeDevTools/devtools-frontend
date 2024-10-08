@@ -5,8 +5,8 @@
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as SDK from '../../../core/sdk/sdk.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
-import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
-import * as NodeText from '../../../ui/components/node_text/node_text.js';
+import type * as IconButton from '../../../ui/components/icon_button/icon_button.js';
+import type * as NodeText from '../../../ui/components/node_text/node_text.js';
 import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
@@ -50,7 +50,6 @@ export interface ElementsBreadcrumbsData {
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 export class ElementsBreadcrumbs extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-elements-breadcrumbs`;
   readonly #shadow = this.attachShadow({mode: 'open'});
   readonly #resizeObserver = new ResizeObserver(() => this.#checkForOverflowOnResize());
   readonly #renderBound = this.#render.bind(this);
@@ -279,13 +278,13 @@ export class ElementsBreadcrumbs extends HTMLElement {
         ?disabled=${disabled}
         aria-label=${tooltipString}
         title=${tooltipString}>
-        <${IconButton.Icon.Icon.litTagName} .data=${{
+        <devtools-icon .data=${{
           iconName: 'triangle-' + direction,
           color: 'var(--sys-color-on-surface)',
           width: '12px',
           height: '10px',
         } as IconButton.Icon.IconData}>
-        </${IconButton.Icon.Icon.litTagName}>
+        </devtools-icon>
       </button>
       `;
     // clang-format on
@@ -322,11 +321,11 @@ export class ElementsBreadcrumbs extends HTMLElement {
                     @mouseleave=${this.#onCrumbMouseLeave(crumb.node)}
                     @focus=${this.#onCrumbFocus(crumb.node)}
                     @blur=${this.#onCrumbBlur(crumb.node)}
-                  ><${NodeText.NodeText.NodeText.litTagName} data-node-title=${crumb.title.main} .data=${{
+                  ><devtools-node-text data-node-title=${crumb.title.main} .data=${{
                     nodeTitle: crumb.title.main,
                     nodeId: crumb.title.extras.id,
                     nodeClasses: crumb.title.extras.classes,
-                  } as NodeText.NodeText.NodeTextData}></${NodeText.NodeText.NodeText.litTagName}></a>
+                  } as NodeText.NodeText.NodeTextData}></devtools-node-text></a>
                 </li>`;
             })}
           </ul>

@@ -27,7 +27,6 @@ interface Hint {
 }
 
 export class CSSHintDetailsView extends HTMLElement {
-    static readonly litTagName = LitHtml.literal`devtools-css-hint-details-view`;
     readonly #shadow = this.attachShadow({mode: 'open'});
     readonly #authoringHint: Hint;
 

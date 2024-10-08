@@ -46,7 +46,6 @@ function getLinkSection(details: RegisteredPropertyDetails): LitHtml.TemplateRes
 }
 
 export class CSSVariableParserError extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-css-variable-parser-error`;
   readonly #shadow = this.attachShadow({mode: 'open'});
 
   constructor(details: RegisteredPropertyDetails) {
@@ -70,7 +69,6 @@ export class CSSVariableParserError extends HTMLElement {
 }
 
 export class CSSVariableValueView extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-css-variable-value-view`;
   readonly #shadow = this.attachShadow({mode: 'open'});
   readonly variableName: string;
   readonly value: string|undefined;

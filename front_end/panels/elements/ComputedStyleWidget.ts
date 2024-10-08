@@ -123,7 +123,7 @@ const createPropertyElement =
      onContextMenu: ((event: Event) => void)): LitHtml.TemplateResult => {
       const {name, value} = renderPropertyContents(node, propertyName, propertyValue);
       // clang-format off
-      return LitHtml.html`<${ElementsComponents.ComputedStyleProperty.ComputedStyleProperty.litTagName}
+      return LitHtml.html`<devtools-computed-style-property
         .traceable=${traceable}
         .inherited=${inherited}
         @oncontextmenu=${onContextMenu}
@@ -134,7 +134,7 @@ const createPropertyElement =
         }}>
           ${name}
           ${value}
-      </${ElementsComponents.ComputedStyleProperty.ComputedStyleProperty.litTagName}>`;
+      </devtools-computed-style-property>`;
       // clang-format on
     };
 

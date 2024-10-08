@@ -52,7 +52,6 @@ export interface AccessibilityTreeNodeData {
 }
 
 export class AccessibilityTreeNode extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-accessibility-tree-node`;
   readonly #shadow = this.attachShadow({mode: 'open'});
 
   #ignored = true;

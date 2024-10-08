@@ -4,7 +4,7 @@
 
 import * as SDK from '../../../core/sdk/sdk.js';
 import {assertNodeTextContent, renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
-import * as NodeText from '../../../ui/components/node_text/node_text.js';
+import type * as NodeText from '../../../ui/components/node_text/node_text.js';
 
 import * as ElementsComponents from './components.js';
 
@@ -29,8 +29,7 @@ const containerTemplate: ElementsComponents.Helper.DOMNode = {
 };
 
 const assertContainerContent = (container: HTMLElement, expectedContent: string) => {
-  const nodeText =
-      container.shadowRoot!.querySelector<NodeText.NodeText.NodeText>(`${NodeText.NodeText.NodeText.litTagName.value}`);
+  const nodeText = container.shadowRoot!.querySelector<NodeText.NodeText.NodeText>('devtools-node-text');
   if (!nodeText || !nodeText.shadowRoot) {
     assert.fail('node text element and its shadowRoot should exist');
     return;

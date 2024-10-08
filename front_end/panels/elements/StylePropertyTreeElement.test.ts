@@ -295,8 +295,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
     const {valueElement} = stylePropertyTreeElement;
     assert.exists(valueElement);
 
-    const swatch = valueElement.querySelector<InlineEditor.ColorSwatch.ColorSwatch>(
-        `${InlineEditor.ColorSwatch.ColorSwatch.litTagName.value}`);
+    const swatch = valueElement.querySelector<InlineEditor.ColorSwatch.ColorSwatch>('devtools-color-swatch');
 
     assert.exists(swatch);
 

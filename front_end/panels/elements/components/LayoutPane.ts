@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../../../ui/components/node_text/node_text.js';
+
 import * as Common from '../../../core/common/common.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
@@ -9,7 +11,7 @@ import * as SDK from '../../../core/sdk/sdk.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as Input from '../../../ui/components/input/input.js';
 import * as LegacyWrapper from '../../../ui/components/legacy_wrapper/legacy_wrapper.js';
-import * as NodeText from '../../../ui/components/node_text/node_text.js';
+import type * as NodeText from '../../../ui/components/node_text/node_text.js';
 import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 // eslint-disable-next-line rulesdir/es_modules_import
 import inspectorCommonStyles from '../../../ui/legacy/inspectorCommon.css.js';
@@ -167,7 +169,6 @@ const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 let layoutPaneWrapperInstance: LegacyWrapper.LegacyWrapper.LegacyWrapper<UI.Widget.Widget, LayoutPane>;
 
 export class LayoutPane extends LegacyWrapper.LegacyWrapper.WrappableComponent {
-  static readonly litTagName = LitHtml.literal`devtools-layout-pane`;
   readonly #shadow = this.attachShadow({mode: 'open'});
   #settings: Readonly<Setting[]> = [];
   readonly #uaShadowDOMSetting: Common.Settings.Setting<boolean>;
@@ -462,24 +463,24 @@ export class LayoutPane extends LegacyWrapper.LegacyWrapper.WrappableComponent {
       <label data-element="true" class="checkbox-label">
         <input data-input="true" type="checkbox" .checked=${element.enabled} @change=${onElementToggle} jslog=${VisualLogging.toggle().track({click:true})} />
         <span class="node-text-container" data-label="true" @mouseenter=${onMouseEnter} @mouseleave=${onMouseLeave}>
-          <${NodeText.NodeText.NodeText.litTagName} .data=${{
+          <devtools-node-text .data=${{
             nodeId: element.domId,
             nodeTitle: element.name,
             nodeClasses: element.domClasses,
-          } as NodeText.NodeText.NodeTextData}></${NodeText.NodeText.NodeText.litTagName}>
+          } as NodeText.NodeText.NodeTextData}></devtools-node-text>
         </span>
       </label>
       <label @keyup=${onColorLabelKeyUp} @keydown=${onColorLabelKeyDown} class="color-picker-label" style="background: ${element.color};" jslog=${VisualLogging.showStyleEditor('color').track({click: true})}>
         <input @change=${onColorChange} @input=${onColorChange} title=${i18nString(UIStrings.chooseElementOverlayColor)} tabindex="0" class="color-picker" type="color" value=${element.color} />
       </label>
-      <${Buttons.Button.Button.litTagName} class="show-element"
+      <devtools-button class="show-element"
                                            .title=${i18nString(UIStrings.showElementInTheElementsPanel)}
                                            aria-label=${i18nString(UIStrings.showElementInTheElementsPanel)}
                                            .iconName=${'select-element'}
                                            .jslogContext=${'elements.select-element'}
                                            .size=${Buttons.Button.Size.SMALL}
                                            .variant=${Buttons.Button.Variant.ICON}
-                                           @click=${onElementClick}></${Buttons.Button.Button.litTagName}>
+                                           @click=${onElementClick}></devtools-button>
     </div>`;
     // clang-format on
   }

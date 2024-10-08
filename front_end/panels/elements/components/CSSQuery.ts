@@ -20,7 +20,6 @@ export interface CSSQueryData {
 }
 
 export class CSSQuery extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-css-query`;
 
   readonly #shadow = this.attachShadow({mode: 'open'});
   #queryPrefix: string = '';

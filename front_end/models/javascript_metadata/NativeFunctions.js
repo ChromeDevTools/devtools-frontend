@@ -7862,6 +7862,18 @@ export const NativeFunctions = [
     signatures: [["a","b","?options"]]
   },
   {
+    name: "logicalAnd",
+    signatures: [["a","b","?options"]]
+  },
+  {
+    name: "logicalOr",
+    signatures: [["a","b","?options"]]
+  },
+  {
+    name: "logicalXor",
+    signatures: [["a","b","?options"]]
+  },
+  {
     name: "neg",
     signatures: [["x","?options"]]
   },

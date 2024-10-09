@@ -9,16 +9,22 @@ import {getLocalizedString, registerUIStrings} from './i18nImpl.js';
 const UIStrings = {
   /**
    *@description μs is the short form of micro-seconds and the placeholder is a number
+   * The shortest form or abbreviation of micro-seconds should be used, as there is
+   * limited room in this UI.
    *@example {2} PH1
    */
   fmms: '{PH1} μs',
   /**
    *@description ms is the short form of milli-seconds and the placeholder is a decimal number
+   * The shortest form or abbreviation of milli-seconds should be used, as there is
+   * limited room in this UI.
    *@example {2.14} PH1
    */
   fms: '{PH1} ms',
   /**
    *@description s is short for seconds and the placeholder is a decimal number
+   * The shortest form or abbreviation of seconds should be used, as there is
+   * limited room in this UI.
    *@example {2.14} PH1
    */
   fs: '{PH1} s',
@@ -39,7 +45,7 @@ const UIStrings = {
   fdays: '{PH1} days',
 
   /**
-   *@description describes a number of milliseconds
+   *@description describes a number of milliseconds (the unit should not abbreviated)
    *@example {2.14} PH1
    */
   fmsExpanded: '{PH1} milliseconds',

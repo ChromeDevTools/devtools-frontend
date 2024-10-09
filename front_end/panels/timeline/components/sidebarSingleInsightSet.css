@@ -50,3 +50,12 @@
 .metric-label {
   font: var(--sys-typescale-body4-medium);
 }
+
+.number-with-unit {
+  white-space: nowrap;
+
+  .unit {
+    font-size: 14px;
+    padding: 0 1px;
+  }
+}

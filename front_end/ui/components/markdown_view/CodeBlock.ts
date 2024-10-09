@@ -133,42 +133,23 @@ export class CodeBlock extends HTMLElement {
   }
 
   #renderCopyButton(): LitHtml.LitTemplate {
-    const copyButtonClasses = LitHtml.Directives.classMap({
-      copied: this.#copied,
-      'copy-button': true,
-    });
-
     // clang-format off
-    return LitHtml.html`<div>${
-      this.#copied
-        ? LitHtml.html`<${Buttons.Button.Button.litTagName}
-            class=${copyButtonClasses}
-            .data=${
-              {
-                variant: Buttons.Button.Variant.TEXT,
-                size: Buttons.Button.Size.SMALL,
-                jslogContext: 'copy',
-                iconName: 'copy',
-                title: i18nString(UIStrings.copy),
-              } as Buttons.Button.ButtonData
-            }
-            >${i18nString(
-              UIStrings.copied,
-            )}</${Buttons.Button.Button.litTagName}>`
-        : LitHtml.html`<${Buttons.Button.Button.litTagName}
-                class=${copyButtonClasses}
-                .data=${
-                  {
-                    variant: Buttons.Button.Variant.ICON,
-                    size: Buttons.Button.Size.SMALL,
-                    jslogContext: 'copy',
-                    iconName: 'copy',
-                  } as Buttons.Button.ButtonData
-                }
-                @click=${this.#onCopy}
-              ></${Buttons.Button.Button.litTagName}>`
-    }
-          </div>`;
+    return LitHtml.html`
+      <div class="copy-button-container">
+        <${Buttons.Button.Button.litTagName}
+          .data=${
+            {
+              variant: Buttons.Button.Variant.ICON,
+              size: Buttons.Button.Size.SMALL,
+              jslogContext: 'copy',
+              iconName: 'copy',
+              title: i18nString(UIStrings.copy),
+            } as Buttons.Button.ButtonData
+          }
+          @click=${this.#onCopy}
+        ></${Buttons.Button.Button.litTagName}>
+        ${this.#copied ? LitHtml.html`<span>${i18nString(UIStrings.copied)}</span>` : LitHtml.nothing}
+      </div>`;
     // clang-format on
   }
 

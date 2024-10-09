@@ -26,7 +26,7 @@ describeWithEnvironment('CodeBlock', () => {
                                'copyText',
                                )
                            .returns();
-      let button = component.shadowRoot!.querySelector('devtools-button');
+      const button = component.shadowRoot!.querySelector('devtools-button');
       assert.exists(button);
       dispatchClickEvent(button, {
         bubbles: true,
@@ -35,13 +35,13 @@ describeWithEnvironment('CodeBlock', () => {
       assert.isTrue(copyText.calledWith('test'));
 
       clock.tick(100);
-      button = component.shadowRoot!.querySelector('devtools-button');
-      assert.exists(button);
-      assert.strictEqual(button.textContent, 'Copied to clipboard');
+      let buttonContainer = component.shadowRoot!.querySelector('.copy-button-container');
+      assert.exists(buttonContainer);
+      assert.strictEqual(buttonContainer.textContent?.trim(), 'Copied to clipboard');
       clock.tick(1100);
-      button = component.shadowRoot!.querySelector('devtools-button');
-      assert.exists(button);
-      assert.strictEqual(button.textContent, '');
+      buttonContainer = component.shadowRoot!.querySelector('.copy-button-container');
+      assert.exists(buttonContainer);
+      assert.strictEqual(buttonContainer.textContent?.trim(), '');
     } finally {
       clock.restore();
       resetTestDOM();

@@ -69,36 +69,14 @@
   flex: 1;
 }
 
-.codeblock .copy {
-  padding: var(--sys-size-3) 0;
-  align-items: center;
+.codeblock .copy-button-container {
   display: flex;
-}
-
-.codeblock .copy-button {
-  margin: 0;
-  padding: 0;
-  background: transparent;
-  border: none;
-  font-size: 11px;
-  line-height: 16px;
-  display: flex;
-  flex-direction: row;
+  justify-content: center;
   align-items: center;
-  gap: var(--sys-size-3);
+  font-size: var(--sys-typescale-body5-size);
 
-  devtools-icon {
-    width: var(--sys-size-8);
-    height: var(--sys-size-8);
-    color: var(--icon-default);
-  }
-}
-
-.codeblock .copy-button.copied {
-  color: var(--sys-color-primary);
-
-  devtools-icon {
-    color: var(--sys-color-primary);
+  span {
+    padding-right: var(--sys-size-4);
   }
 }
 

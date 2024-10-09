@@ -44,6 +44,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export const defaultOptionsForTabs = {
   security: true,
+  freestyler: true,
 };
 
 export class PreRegisteredView implements View {

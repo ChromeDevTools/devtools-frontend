@@ -62,13 +62,20 @@
   }
 }
 
-.devtools-link {
+/** TODO: This is duplicated in sidebarInsights.css. Should make a component. */
+.timeline-link {
   cursor: pointer;
   text-decoration: underline;
   color: var(--sys-color-primary);
+  /* for a11y reasons this is a button, so we have to remove some default
+   * styling */
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
 }
 
-.devtools-link.invalid-link {
+.timeline-link.invalid-link {
   color: var(--sys-color-state-disabled);
 }
 

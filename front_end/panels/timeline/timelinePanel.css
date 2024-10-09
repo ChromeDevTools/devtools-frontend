@@ -531,7 +531,7 @@
 
   .timeline-tree-view .data-grid tr.selected span.percent-column,
   .timeline-tree-view .data-grid tr.selected div.background-percent-bar span,
-  .timeline-tree-view .data-grid tr.selected .name-container .activity-link .devtools-link {
+  .timeline-tree-view .data-grid tr.selected .name-container .activity-link .devtools-link .timeline-link {
     color: HighlightText;
   }
 

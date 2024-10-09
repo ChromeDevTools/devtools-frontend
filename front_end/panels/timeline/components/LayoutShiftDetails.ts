@@ -202,7 +202,7 @@ export class LayoutShiftDetails extends HTMLElement {
     return LitHtml.html`
         <span class="culprit">
         <span class="culprit-type">${i18nString(UIStrings.nonCompositedAnimation)}: </span>
-        <span class="culprit-value devtools-link" @click=${() => this.#clickEvent(event)}>${i18nString(UIStrings.animation)}</span>
+        <button type="button" class="culprit-value timeline-link" @click=${() => this.#clickEvent(event)}>${i18nString(UIStrings.animation)}</button>
       </span>`;
     // clang-format on
   }
@@ -225,7 +225,7 @@ export class LayoutShiftDetails extends HTMLElement {
     const shiftTs = i18n.TimeUtilities.formatMicroSecondsTime(ts);
     // clang-format off
     return LitHtml.html`
-         <span class="devtools-link" @click=${() => this.#clickEvent(shift)}>${i18nString(UIStrings.layoutShift, {PH1: shiftTs})}</span>`;
+         <button type="button" class="timeline-link" @click=${() => this.#clickEvent(shift)}>${i18nString(UIStrings.layoutShift, {PH1: shiftTs})}</button>`;
     // clang-format on
   }
 
@@ -273,7 +273,7 @@ export class LayoutShiftDetails extends HTMLElement {
     // clang-format off
     return LitHtml.html`
       <span class="parent-cluster">${i18nString(UIStrings.parentCluster)}:
-         <span class="devtools-link" @click=${() => this.#clickEvent(cluster)}>${i18nString(UIStrings.cluster, {PH1: clusterTs})}</span>
+         <button type="button" class="timeline-link" @click=${() => this.#clickEvent(cluster)}>${i18nString(UIStrings.cluster, {PH1: clusterTs})}</button>
       </span>`;
     // clang-format on
   }

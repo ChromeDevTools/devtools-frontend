@@ -148,7 +148,7 @@ export class CLSCulprits extends BaseInsight {
             } as SidebarInsight.InsightDetails}
             @insighttoggleclick=${this.onSidebarClick}>
                 <div slot="insight-content" class="insight-section">
-                  <span class="worst-cluster">${i18nString(UIStrings.worstCluster)}: <span class="devtools-link" @click=${() => this.#clickEvent(worstCluster)}>${i18nString(UIStrings.layoutShiftCluster, {PH1: clusterTs})}</span></span>
+                  <span class="worst-cluster">${i18nString(UIStrings.worstCluster)}: <button type="button" class="timeline-link" @click=${() => this.#clickEvent(worstCluster)}>${i18nString(UIStrings.layoutShiftCluster, {PH1: clusterTs})}</button></span>
                     <p>${i18nString(UIStrings.topCulprits)}:</p>
                         ${culprits.map(culprit => {
                           return LitHtml.html `

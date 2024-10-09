@@ -47,7 +47,7 @@ class EventRef extends HTMLElement {
 
     // clang-format off
     LitHtml.render(LitHtml.html`
-      <button type="button" class="devtools-link" @click=${(e: Event) => {
+      <button type="button" class="timeline-link" @click=${(e: Event) => {
         e.stopPropagation();
         if (this.#event) {
           this.dispatchEvent(new EventReferenceClick(this.#event));

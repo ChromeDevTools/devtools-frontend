@@ -1960,7 +1960,7 @@ export class TimelineUIUtils {
     const isEntryHidden = ModificationsManager.activeManager()?.getEntriesFilter().entryIsInvisible(entry);
 
     if (!isEntryOutsideBreadcrumb) {
-      link.classList.add('devtools-link');
+      link.classList.add('timeline-link');
       UI.ARIAUtils.markAsLink(link);
       link.tabIndex = 0;
       link.addEventListener('click', () => {

@@ -4,6 +4,7 @@
 
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
+import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
@@ -19,10 +20,28 @@ import {
   type ResponseData,
   ResponseType,
   type SideEffectResponse,
+  type ThoughtResponse,
+  type TitleResponse,
 } from './AiAgent.js';
 import {ChangeManager} from './ChangeManager.js';
 import {ExtensionScope, FREESTYLER_WORLD_NAME} from './ExtensionScope.js';
 import {ExecutionError, FreestylerEvaluateAction, SideEffectError} from './FreestylerEvaluateAction.js';
+
+/*
+* Strings that don't need to be translated at this time.
+*/
+const UIStringsNotTranslate = {
+  /**
+   *@description Title for context details for Freestyler.
+   */
+  analyzingThePrompt: 'Analyzing the prompt',
+  /**
+   *@description Heading text for context details of Freestyler agent.
+   */
+  dataUsed: 'Data used',
+};
+
+const lockedString = i18n.i18n.lockedString;
 
 /* clang-format off */
 const preamble = `You are the most advanced CSS debugging assistant integrated into Chrome DevTools.
@@ -561,6 +580,26 @@ export class FreestylerAgent extends AiAgent {
     }
   }
 
+  async *
+      handleContextDetails(selectedElement: SDK.DOMModel.DOMNode|null):
+          AsyncGenerator<ThoughtResponse|TitleResponse, void, void> {
+    if (!selectedElement) {
+      return;
+    }
+
+    yield {
+      type: ResponseType.TITLE,
+      title: lockedString(UIStringsNotTranslate.analyzingThePrompt),
+    };
+    yield {
+      type: ResponseType.THOUGHT,
+      contextDetails: [{
+        title: lockedString(UIStringsNotTranslate.dataUsed),
+        text: await FreestylerAgent.describeElement(selectedElement),
+      }],
+    };
+  }
+
   async enhanceQuery(query: string, selectedElement: SDK.DOMModel.DOMNode|null): Promise<string> {
     const elementEnchantmentQuery = selectedElement ?
         `# Inspected element\n\n${await FreestylerAgent.describeElement(selectedElement)}\n\n# User request\n\n` :
@@ -572,6 +611,8 @@ export class FreestylerAgent extends AiAgent {
   async * run(query: string, options: {
     signal?: AbortSignal, selectedElement: SDK.DOMModel.DOMNode|null,
   }): AsyncGenerator<ResponseData, void, void> {
+    yield* this.handleContextDetails(options.selectedElement);
+
     query = await this.enhanceQuery(query, options.selectedElement);
     const currentRunId = ++this.#runId;
 

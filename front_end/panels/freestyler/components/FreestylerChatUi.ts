@@ -201,7 +201,7 @@ export interface Step {
   output?: string;
   canceled?: boolean;
   sideEffect?: ConfirmSideEffectDialog;
-  contextDetails?: ContextDetail[];
+  contextDetails?: [ContextDetail, ...ContextDetail[]];
 }
 
 interface ConfirmSideEffectDialog {
@@ -503,14 +503,14 @@ export class FreestylerChatUi extends HTMLElement {
     const thought = step.thought ? LitHtml.html`<p>${this.#renderTextAsMarkdown(step.thought)}</p>` : LitHtml.nothing;
 
     // clang-format off
-    const contextDetails = step.contextDetails && step.contextDetails?.length > 0 ?
+    const contextDetails = step.contextDetails ?
     LitHtml.html`${LitHtml.Directives.repeat(
       step.contextDetails,
         contextDetail => {
           return LitHtml.html`<div class="context-details">
         <${MarkdownView.CodeBlock.CodeBlock.litTagName}
           .code=${contextDetail.text}
-          .codeLang=${'js'}
+          .codeLang=${contextDetail.codeLang}
           .displayNotice=${false}
           .header=${contextDetail.title}
           .showCopyButton=${true}
@@ -549,7 +549,7 @@ export class FreestylerChatUi extends HTMLElement {
   #renderStep(step: Step, options: {isLast: boolean}): LitHtml.LitTemplate {
     const stepClasses = LitHtml.Directives.classMap({
       step: true,
-      empty: !step.thought && !step.code,
+      empty: !step.thought && !step.code && !step.contextDetails,
       paused: Boolean(step.sideEffect),
       canceled: Boolean(step.canceled),
     });

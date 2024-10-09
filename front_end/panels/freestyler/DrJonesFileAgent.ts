@@ -94,6 +94,10 @@ export class DrJonesFileAgent extends AiAgent {
   *
       handleContextDetails(selectedFile: Workspace.UISourceCode.UISourceCode|null):
           Generator<ThoughtResponse|TitleResponse, void, void> {
+    if (!selectedFile) {
+      return;
+    }
+
     yield {
       type: ResponseType.TITLE,
       title: lockedString(UIStringsNotTranslate.analyzingFile),
@@ -163,11 +167,8 @@ export class DrJonesFileAgent extends AiAgent {
   }
 }
 
-function createContextDetailsForDrJonesFileAgent(selectedFile: Workspace.UISourceCode.UISourceCode|
-                                                 null): ContextDetail[] {
-  if (!selectedFile) {
-    return [];
-  }
+function createContextDetailsForDrJonesFileAgent(selectedFile: Workspace.UISourceCode.UISourceCode):
+    [ContextDetail, ...ContextDetail[]] {
   return [
     {
       title: 'Selected file',

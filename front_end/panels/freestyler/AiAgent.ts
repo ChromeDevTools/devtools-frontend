@@ -41,8 +41,8 @@ export interface TitleResponse {
 
 export interface ThoughtResponse {
   type: ResponseType.THOUGHT;
-  thought: string;
-  contextDetails?: ContextDetail[];
+  thought?: string;
+  contextDetails?: [ContextDetail, ...ContextDetail[]];
   rpcId?: number;
 }
 
@@ -71,6 +71,7 @@ export type ResponseData =
 export interface ContextDetail {
   title: string;
   text: string;
+  codeLang?: string;
 }
 
 export interface AidaBuildRequestOptions {

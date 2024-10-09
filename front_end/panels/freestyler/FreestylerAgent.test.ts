@@ -754,6 +754,19 @@ c`;
       const responses = await Array.fromAsync(agent.run('test', {selectedElement: element}));
       assert.deepStrictEqual(responses, [
         {
+          type: Freestyler.ResponseType.TITLE,
+          title: 'Analyzing the prompt',
+        },
+        {
+          type: Freestyler.ResponseType.THOUGHT,
+          contextDetails: [
+            {
+              text: '* Its selector is `undefined`',
+              title: 'Data used',
+            },
+          ],
+        },
+        {
           type: Freestyler.ResponseType.QUERYING,
         },
         {
@@ -796,6 +809,19 @@ c`;
       const responses = await Array.fromAsync(agent.run('test', {selectedElement: element}));
       assert.deepStrictEqual(responses, [
         {
+          type: Freestyler.ResponseType.TITLE,
+          title: 'Analyzing the prompt',
+        },
+        {
+          type: Freestyler.ResponseType.THOUGHT,
+          contextDetails: [
+            {
+              text: '* Its selector is `undefined`',
+              title: 'Data used',
+            },
+          ],
+        },
+        {
           type: Freestyler.ResponseType.QUERYING,
         },
         {
@@ -831,6 +857,19 @@ c`;
       const responses = await Array.fromAsync(agent.run('test', {selectedElement: element}));
       assert.deepStrictEqual(responses, [
         {
+          type: Freestyler.ResponseType.TITLE,
+          title: 'Analyzing the prompt',
+        },
+        {
+          type: Freestyler.ResponseType.THOUGHT,
+          contextDetails: [
+            {
+              text: '* Its selector is `undefined`',
+              title: 'Data used',
+            },
+          ],
+        },
+        {
           type: Freestyler.ResponseType.QUERYING,
         },
         {
@@ -865,6 +904,19 @@ c`;
       const responses = await Array.fromAsync(agent.run('test', {selectedElement: element}));
       assert.deepStrictEqual(responses, [
         {
+          type: Freestyler.ResponseType.TITLE,
+          title: 'Analyzing the prompt',
+        },
+        {
+          type: Freestyler.ResponseType.THOUGHT,
+          contextDetails: [
+            {
+              text: '* Its selector is `undefined`',
+              title: 'Data used',
+            },
+          ],
+        },
+        {
           type: Freestyler.ResponseType.QUERYING,
         },
         {
@@ -892,6 +944,19 @@ c`;
       });
       const responses = await Array.fromAsync(agent.run('test', {selectedElement: element}));
       assert.deepStrictEqual(responses, [
+        {
+          type: Freestyler.ResponseType.TITLE,
+          title: 'Analyzing the prompt',
+        },
+        {
+          type: Freestyler.ResponseType.THOUGHT,
+          contextDetails: [
+            {
+              text: '* Its selector is `undefined`',
+              title: 'Data used',
+            },
+          ],
+        },
         {
           type: Freestyler.ResponseType.QUERYING,
         },
@@ -940,6 +1005,19 @@ ANSWER: this is the answer`,
       });
       const responses = await Array.fromAsync(agent.run('test', {selectedElement: element}));
       assert.deepStrictEqual(responses, [
+        {
+          type: Freestyler.ResponseType.TITLE,
+          title: 'Analyzing the prompt',
+        },
+        {
+          type: Freestyler.ResponseType.THOUGHT,
+          contextDetails: [
+            {
+              text: '* Its selector is `undefined`',
+              title: 'Data used',
+            },
+          ],
+        },
         {
           type: Freestyler.ResponseType.QUERYING,
         },

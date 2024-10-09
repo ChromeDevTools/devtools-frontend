@@ -126,6 +126,10 @@ export class DrJonesNetworkAgent extends AiAgent {
   *
       handleContextDetails(selectedNetworkRequest: SDK.NetworkRequest.NetworkRequest|null):
           Generator<ThoughtResponse|TitleResponse, void, void> {
+    if (!selectedNetworkRequest) {
+      return;
+    }
+
     yield {
       type: ResponseType.TITLE,
       title: lockedString(UIStringsNotTranslate.inspectingNetworkData),
@@ -294,32 +298,30 @@ Request Timing:\n${formatNetworkRequestTiming(request)}
 Request Initiator Chain:\n${formatRequestInitiatorChain(request)}`;
 }
 
-function createContextDetailsForDrJonesNetworkAgent(request: SDK.NetworkRequest.NetworkRequest|null): ContextDetail[] {
-  if (request) {
-    const requestContextDetail: ContextDetail = {
-      title: lockedString(UIStringsNotTranslate.request),
-      text: lockedString(UIStringsNotTranslate.requestUrl) + ': ' + request.url() + '\n\n' +
-          formatHeaders(lockedString(UIStringsNotTranslate.requestHeaders), request.requestHeaders()),
-    };
-    const responseContextDetail: ContextDetail = {
-      title: lockedString(UIStringsNotTranslate.response),
-      text: lockedString(UIStringsNotTranslate.responseStatus) + ': ' + request.statusCode + ' ' + request.statusText +
-          '\n\n' + formatHeaders(lockedString(UIStringsNotTranslate.responseHeaders), request.responseHeaders),
-    };
-    const timingContextDetail: ContextDetail = {
-      title: lockedString(UIStringsNotTranslate.timing),
-      text: formatNetworkRequestTiming(request),
-    };
-    const initiatorChainContextDetail: ContextDetail = {
-      title: lockedString(UIStringsNotTranslate.requestInitiatorChain),
-      text: formatRequestInitiatorChain(request),
-    };
-    return [
-      requestContextDetail,
-      responseContextDetail,
-      timingContextDetail,
-      initiatorChainContextDetail,
-    ];
-  }
-  return [];
+function createContextDetailsForDrJonesNetworkAgent(request: SDK.NetworkRequest.NetworkRequest):
+    [ContextDetail, ...ContextDetail[]] {
+  const requestContextDetail: ContextDetail = {
+    title: lockedString(UIStringsNotTranslate.request),
+    text: lockedString(UIStringsNotTranslate.requestUrl) + ': ' + request.url() + '\n\n' +
+        formatHeaders(lockedString(UIStringsNotTranslate.requestHeaders), request.requestHeaders()),
+  };
+  const responseContextDetail: ContextDetail = {
+    title: lockedString(UIStringsNotTranslate.response),
+    text: lockedString(UIStringsNotTranslate.responseStatus) + ': ' + request.statusCode + ' ' + request.statusText +
+        '\n\n' + formatHeaders(lockedString(UIStringsNotTranslate.responseHeaders), request.responseHeaders),
+  };
+  const timingContextDetail: ContextDetail = {
+    title: lockedString(UIStringsNotTranslate.timing),
+    text: formatNetworkRequestTiming(request),
+  };
+  const initiatorChainContextDetail: ContextDetail = {
+    title: lockedString(UIStringsNotTranslate.requestInitiatorChain),
+    text: formatRequestInitiatorChain(request),
+  };
+  return [
+    requestContextDetail,
+    responseContextDetail,
+    timingContextDetail,
+    initiatorChainContextDetail,
+  ];
 }

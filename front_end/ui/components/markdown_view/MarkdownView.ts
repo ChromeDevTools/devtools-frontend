@@ -176,7 +176,7 @@ export class MarkdownLitRenderer {
  */
 export class MarkdownInsightRenderer extends MarkdownLitRenderer {
   override renderToken(token: Marked.Marked.Token): LitHtml.TemplateResult {
-    const template = this.templateForToken(token);
+    const template = this.templateForToken(token as Marked.Marked.MarkedToken);
     if (template === null) {
       return LitHtml.html`${token.raw}`;
     }
@@ -210,16 +210,7 @@ export class MarkdownInsightRenderer extends MarkdownLitRenderer {
     return '';
   }
 
-  override renderCodeBlock(token: Marked.Marked.Tokens.Code): LitHtml.TemplateResult {
-    // clang-format off
-    return html`<${CodeBlock.litTagName}
-      .code=${this.unescape(token.text)}
-      .codeLang=${this.detectCodeLanguage(token)}>
-    </${CodeBlock.litTagName}>`;
-    // clang-format on
-  }
-
-  override templateForToken(token: Marked.Marked.Token): LitHtml.TemplateResult|null {
+  override templateForToken(token: Marked.Marked.MarkedToken): LitHtml.TemplateResult|null {
     switch (token.type) {
       case 'heading':
         return html`<strong>${this.renderText(token)}</strong>`;
@@ -235,7 +226,7 @@ export class MarkdownInsightRenderer extends MarkdownLitRenderer {
       case 'code':
         return LitHtml.html`<${CodeBlock.litTagName}
           .code=${this.unescape(token.text)}
-          .codeLang=${token.lang}
+          .codeLang=${this.detectCodeLanguage(token)}
           .displayNotice=${true}>
         </${CodeBlock.litTagName}>`;
     }

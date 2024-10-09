@@ -269,7 +269,7 @@ export interface Props {
 // }
 // ```
 class MarkdownRendererWithCodeBlock extends MarkdownView.MarkdownView.MarkdownInsightRenderer {
-  override templateForToken(token: Marked.Marked.Token): LitHtml.TemplateResult|null {
+  override templateForToken(token: Marked.Marked.MarkedToken): LitHtml.TemplateResult|null {
     if (token.type === 'code') {
       const lines = (token.text as string).split('\n');
       if (lines[0]?.trim() === 'css') {

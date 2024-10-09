@@ -71,10 +71,20 @@ export class PanelUtils {
     let iconElement: HTMLElement;
 
     if (PanelUtils.isFailedNetworkRequest(request)) {
-      const iconData = {
-        iconName: 'cross-circle-filled',
-        color: 'var(--icon-error)',
-      };
+      let iconData = undefined;
+      // Failed prefetch network requests are displayed as warnings instead of errors.
+      if (request.resourceType() === Common.ResourceType.resourceTypes.Prefetch) {
+        iconData = {
+          iconName: 'warning-filled',
+          color: 'var(--icon-warning)',
+        };
+      } else {
+        iconData = {
+          iconName: 'cross-circle-filled',
+          color: 'var(--icon-error)',
+        };
+      }
+
       iconElement = PanelUtils.createIconElement(iconData, type.title());
       iconElement.classList.add('icon');
 

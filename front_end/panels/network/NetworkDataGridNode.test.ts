@@ -497,4 +497,33 @@ describeWithEnvironment('NetworkLogView', () => {
     const expected = 'Matched to ServiceWorker router#1, 2\xa0B transferred over network, resource size: 4\xa0B';
     assert.strictEqual(tooltip, expected);
   });
+
+  it('styles a prefetch network request error as a warning', async () => {
+    const request = SDK.NetworkRequest.NetworkRequest.create(
+        'requestId' as Protocol.Network.RequestId, 'https://www.example.com' as Platform.DevToolsPath.UrlString,
+        '' as Platform.DevToolsPath.UrlString, null, null, null);
+    request.failed = true;
+    request.statusCode = 404;
+    request.setResourceType(Common.ResourceType.resourceTypes.Prefetch);
+
+    const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(
+        {} as Network.NetworkDataGridNode.NetworkLogViewInterface, request);
+    const el = document.createElement('div');
+    networkRequestNode.createCells(el);
+    const cell = el.appendChild(document.createElement('div'));
+    networkRequestNode.renderCell(cell, 'name');
+
+    // The row should have the warning-row class name.
+    assert.isTrue(el.classList.contains('network-warning-row'));
+    assert.isFalse(el.classList.contains('network-error-row'));
+
+    // The icon should be the warning icon.
+    const iconElement = el.querySelector('.icon') as HTMLElement;
+    const iconStyle = iconElement.style;
+    const indexOfIconImage = iconStyle.maskImage.indexOf('Images/') + 7;
+    const iconImage = iconStyle.maskImage.substring(indexOfIconImage);
+    assert.strictEqual('warning-filled.svg")', iconImage);
+    const backgroundColorOfIcon = iconStyle.backgroundColor.toString();
+    assert.strictEqual(backgroundColorOfIcon, 'var(--icon-warning)');
+  });
 });

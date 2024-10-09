@@ -8,6 +8,7 @@
   box-shadow: var(--drop-shadow);
   /* We always want a white background, even in dark mode */
   background: var(--ref-palette-neutral100);
+  color-scheme: light;
   flex-grow: 1;
   margin: 20px;
 }

@@ -593,10 +593,6 @@ export class ToolbarButton extends ToolbarItem<ToolbarButton.EventTypes> {
     this.element.focus();
   }
 
-  pressed(pressed: boolean): void {
-    this.button.pressed = pressed;
-  }
-
   checked(checked: boolean): void {
     this.button.checked = checked;
   }
@@ -954,7 +950,6 @@ export class ToolbarToggle extends ToolbarButton {
     this.setToggleType(Buttons.Button.ToggleType.PRIMARY);
     this.toggled(false);
 
-    this.setPressed(false);
     if (jslogContext) {
       this.element.setAttribute('jslog', `${VisualLogging.toggle().track({click: true}).context(jslogContext)}`);
     }
@@ -963,17 +958,12 @@ export class ToolbarToggle extends ToolbarButton {
     }
   }
 
-  setPressed(pressed: boolean): void {
-    this.pressed(pressed);
-  }
-
   setToggleOnClick(toggleOnClick: boolean): void {
     this.toggleOnClick(toggleOnClick);
   }
 
   setToggled(toggled: boolean): void {
     this.toggled(toggled);
-    this.setPressed(toggled);
   }
 
   setChecked(checked: boolean): void {

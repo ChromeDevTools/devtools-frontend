@@ -49,7 +49,6 @@ interface ButtonState {
   toggled?: boolean;
   toggleOnClick?: boolean;
   checked?: boolean;
-  pressed?: boolean;
   active: boolean;
   spinner?: boolean;
   type: ButtonType;
@@ -237,11 +236,6 @@ export class Button extends HTMLElement {
     this.#render();
   }
 
-  set pressed(pressed: boolean) {
-    this.#props.pressed = pressed;
-    this.#render();
-  }
-
   set active(active: boolean) {
     this.#props.active = active;
     this.#render();
@@ -365,14 +359,18 @@ export class Button extends HTMLElement {
     // clang-format off
     LitHtml.render(
       LitHtml.html`
-        <button title=${LitHtml.Directives.ifDefined(this.#props.title)} .disabled=${this.#props.disabled} class=${LitHtml.Directives.classMap(classes)} aria-pressed=${LitHtml.Directives.ifDefined(this.#props.pressed)} jslog=${LitHtml.Directives.ifDefined(jslog)}>
-          ${hasIcon
+        <button title=${LitHtml.Directives.ifDefined(this.#props.title)}
+          .disabled=${this.#props.disabled}
+          class=${LitHtml.Directives.classMap(classes)}
+          aria-pressed=${LitHtml.Directives.ifDefined(this.#props.toggled)}
+          jslog=${LitHtml.Directives.ifDefined(jslog)}
+        >${hasIcon
             ? LitHtml.html`
                 <${IconButton.Icon.Icon.litTagName} name=${this.#props.toggled ? this.#props.toggledIconName : this.#props.iconName || this.#props.iconUrl}>
                 </${IconButton.Icon.Icon.litTagName}>`
             : ''}
-          ${this.#props.longClickable ? LitHtml.html`<${IconButton.Icon.Icon.litTagName} name=${'triangle-bottom-right'} class="long-click">
-          </${IconButton.Icon.Icon.litTagName}>`
+          ${this.#props.longClickable ? LitHtml.html`<${IconButton.Icon.Icon.litTagName} name=${'triangle-bottom-right'} class="long-click"
+            ></${IconButton.Icon.Icon.litTagName}>`
       : ''}
           ${this.#props.spinner ? LitHtml.html`<span class=${LitHtml.Directives.classMap(spinnerClasses)}></span>` : ''}
           <slot @slotchange=${this.#render} ${LitHtml.Directives.ref(this.#slotRef)}></slot>

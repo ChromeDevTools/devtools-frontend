@@ -455,4 +455,56 @@ describe('TreeHelpers', () => {
          assert.isFalse(Trace.Helpers.TreeHelpers.canBuildTreesFromEvents(data));
        });
   });
+  describe('buildTreesFromEventsForAI', () => {
+    it('returns the trace entry tree starting from the root task, highlighting the selected event', () => {
+      const evaluateScript = makeCompleteEvent(Trace.Types.Events.Name.EVALUATE_SCRIPT, 0, 500);
+      const v8Run = makeCompleteEvent('v8.run', 10, 490);
+      const parseFunction = makeCompleteEvent('V8.ParseFunction', 12, 1);
+
+      const traceEvents: Trace.Types.Events.Event[] = [evaluateScript, v8Run, parseFunction];
+
+      const profileCalls = [makeProfileCall('a', 100, 200), makeProfileCall('b', 300, 200)];
+      const allEntries = Trace.Helpers.Trace.mergeEventsInOrder(traceEvents, profileCalls);
+      const {tree, entryToNode} = Trace.Helpers.TreeHelpers.treify(allEntries, {filter: {has: () => true}});
+      const rootNode = entryToNode.get(evaluateScript);
+      const selectedNode = entryToNode.get(parseFunction);
+
+      assert.strictEqual(tree.roots.size, 1);
+      assert.exists(rootNode);
+      assert.exists(selectedNode);
+
+      const traceEntryTreeForAI = Trace.Helpers.TreeHelpers.TraceEntryNodeForAI.fromSelectedEntryNode(selectedNode);
+      const actualSelectedNode =
+          Trace.Helpers.TreeHelpers.TraceEntryNodeForAI.getSelectedNodeForTraceEntryTreeForAI(traceEntryTreeForAI);
+
+      assert.exists(traceEntryTreeForAI);
+      assert.exists(actualSelectedNode);
+
+      // delete for smaller deepStrictEqual comparison
+      actualSelectedNode.children = traceEntryTreeForAI.children = [];
+
+      const expectedTraceEntryTree = new Trace.Helpers.TreeHelpers.TraceEntryNodeForAI(
+          'EvaluateScript',
+          Trace.Types.Timing.MilliSeconds(0),
+          Trace.Types.Timing.MilliSeconds(0.5),
+          undefined,
+          Trace.Types.Timing.MilliSeconds(0.01),
+      );
+      expectedTraceEntryTree.id = 0 as Trace.Helpers.TreeHelpers.TraceEntryNodeId;
+      expectedTraceEntryTree.children = [];
+      assert.deepStrictEqual(traceEntryTreeForAI, expectedTraceEntryTree);
+
+      const expectedselectedNodeForAI = new Trace.Helpers.TreeHelpers.TraceEntryNodeForAI(
+          'V8.ParseFunction',
+          Trace.Types.Timing.MilliSeconds(0.012),
+          Trace.Types.Timing.MilliSeconds(0.001),
+          undefined,
+          Trace.Types.Timing.MilliSeconds(0.001),
+      );
+      expectedselectedNodeForAI.id = 2 as Trace.Helpers.TreeHelpers.TraceEntryNodeId;
+      expectedselectedNodeForAI.children = [];
+      expectedselectedNodeForAI.selected = true;
+      assert.deepStrictEqual(actualSelectedNode, expectedselectedNodeForAI);
+    });
+  });
 });

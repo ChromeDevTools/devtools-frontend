@@ -700,4 +700,72 @@ describeWithEnvironment('EntriesFilter', function() {
     assert.strictEqual(stack.expandableEntries().length, 1);
     assert.isTrue(stack.expandableEntries().includes(taskEntry));
   });
+
+  it('returns the trace entry tree starting from the root task, highlighting the selected event', async function() {
+    const {parsedTrace} = await TraceLoader.traceEngine(this, 'two-functions-recursion.json.gz');
+    const mainThread = getMainThread(parsedTrace.Renderer);
+    /** This stack looks roughly like so (with some events omitted):
+     * ===========RunTask===========
+     * ...
+     * ======== onclick ============
+     * =========== foo =============
+     *               ==== foo2 =====
+     *               ===== foo =====
+     *               ==== foo2 =====
+     *               ===== foo =====
+     *               ==== foo2 =====
+     *               ===== foo =====
+     *
+     * In this test we want to test if for a selected entry, the tree for AI processing
+     * is generated correctly such that the root RunTask is the root node and the
+     * node for the selected event has property selected set as true.
+     **/
+
+    const firstFooCallEntry = findFirstEntry(mainThread.entries, entry => {
+      return Trace.Types.Events.isProfileCall(entry) && entry.callFrame.functionName === 'foo' && entry.dur === 233;
+    });
+
+    const stack = new Timeline.EntriesFilter.EntriesFilter(parsedTrace.Renderer.entryToNode);
+    if (!stack) {
+      throw new Error('EntriesFilter does not exist');
+    }
+
+    const traceEntryTree = stack.getTraceEntryTreeForAI(firstFooCallEntry);
+
+    assert.exists(traceEntryTree);
+
+    const selectedNode =
+        Trace.Helpers.TreeHelpers.TraceEntryNodeForAI.getSelectedNodeForTraceEntryTreeForAI(traceEntryTree);
+    assert.exists(selectedNode);
+
+    // delete for smaller deepStrictEqual comparison
+    selectedNode.children = traceEntryTree.children = [];
+
+    const expectedTraceEntryTree = new Trace.Helpers.TreeHelpers.TraceEntryNodeForAI(
+        'RunTask',
+        Trace.Types.Timing.MilliSeconds(336772948.813),
+        Trace.Types.Timing.MilliSeconds(4.614),
+        undefined,
+        Trace.Types.Timing.MilliSeconds(0.162),
+    );
+    expectedTraceEntryTree.id = 368 as Trace.Helpers.TreeHelpers.TraceEntryNodeId;
+    expectedTraceEntryTree.children = [];
+    assert.deepStrictEqual(traceEntryTree, expectedTraceEntryTree);
+
+    const expectedselectedNode = new Trace.Helpers.TreeHelpers.TraceEntryNodeForAI(
+        'ProfileCall',
+        Trace.Types.Timing.MilliSeconds(336772953.044),
+        Trace.Types.Timing.MilliSeconds(0.233),
+        undefined,
+        Trace.Types.Timing.MilliSeconds(0.162),
+    );
+    expectedselectedNode.id = 408 as Trace.Helpers.TreeHelpers.TraceEntryNodeId;
+    expectedselectedNode.column = 12;
+    expectedselectedNode.function = 'foo';
+    expectedselectedNode.line = 8;
+    expectedselectedNode.selected = true;
+    expectedselectedNode.domain = 'file://';
+    expectedselectedNode.children = [];
+    assert.deepStrictEqual(selectedNode, expectedselectedNode);
+  });
 });

@@ -216,6 +216,8 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     const contextMenu = new UI.ContextMenu.ContextMenu(event, {useSoftMenu: true});
 
     if (UI.ActionRegistry.ActionRegistry.instance().hasAction('drjones.performance-panel-context')) {
+      const traceEntryNodeForAI = this.getTraceEntryTreeForAIFromEntryIndex(entryIndex);
+      UI.Context.Context.instance().setFlavor(Trace.Helpers.TreeHelpers.TraceEntryNodeForAI, traceEntryNodeForAI);
       contextMenu.headerSection().appendAction(
           'drjones.performance-panel-context',
       );
@@ -295,6 +297,15 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     this.timelineData(true);
     this.buildFlowForInitiator(entryIndex);
     this.dispatchEventToListeners(Events.DATA_CHANGED);
+  }
+
+  getTraceEntryTreeForAIFromEntryIndex(entryIndex: number): Trace.Helpers.TreeHelpers.TraceEntryNodeForAI|null {
+    const entry = this.entryData[entryIndex] as Trace.Types.Events.Event;
+    const manager = ModificationsManager.activeManager();
+    if (!manager) {
+      return null;
+    }
+    return manager.getEntriesFilter().getTraceEntryTreeForAI(entry);
   }
 
   findPossibleContextMenuActions(entryIndex: number): PerfUI.FlameChart.PossibleFilterActions|void {
@@ -1104,6 +1115,10 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     }
     if (timelineSelection) {
       this.lastSelection = new Selection(timelineSelection, entryIndex);
+    }
+    if (UI.ActionRegistry.ActionRegistry.instance().hasAction('drjones.performance-panel-context')) {
+      const traceEntryNodeForAI = this.getTraceEntryTreeForAIFromEntryIndex(entryIndex);
+      UI.Context.Context.instance().setFlavor(Trace.Helpers.TreeHelpers.TraceEntryNodeForAI, traceEntryNodeForAI);
     }
     return timelineSelection;
   }

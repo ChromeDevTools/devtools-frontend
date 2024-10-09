@@ -765,13 +765,12 @@ export class Overlays extends EventTarget {
         // chart, so we figure out the best visible entry pairs to draw
         // between.
         const entriesToConnect = this.#calculateFromAndToForEntriesLink(overlay);
-        if (entriesToConnect === null) {
-          // Unexpected situation: hide the overlay and move on
-          this.#setOverlayElementVisibility(element, false);
-          break;
-        }
-        this.#positionEntriesLinkOverlay(overlay, element, entriesToConnect);
+        const isVisible = entriesToConnect !== null && !annotationsAreHidden;
+        this.#setOverlayElementVisibility(element, isVisible);
 
+        if (isVisible) {
+          this.#positionEntriesLinkOverlay(overlay, element, entriesToConnect);
+        }
         break;
       }
       case 'TIMESPAN_BREAKDOWN': {

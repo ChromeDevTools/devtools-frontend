@@ -22,6 +22,11 @@
   &.closed {
     background-color: var(--sys-color-surface3);
     border: none;
+
+    &:focus-within {
+      /* Ensure that if the user tabs to a closed insight, we outline it so they know it's focused. */
+      outline: var(--sys-size-1) solid var(--sys-color-primary);
+    }
   }
 
   header {
@@ -30,10 +35,6 @@
     h3 {
       font: var(--sys-typescale-body4-medium);
     }
-  }
-
-  &:focus-within {
-    outline: var(--sys-size-1) solid var(--sys-color-primary);
   }
 }
 
@@ -51,7 +52,9 @@
   opacity: 0%;
   transition: opacity 0.2s ease;
 
-  .insight:hover & {
+  /* Ensure that the icon appears when the user hovers, or focuses the header */
+  .insight:hover &,
+  header:focus-within & {
     opacity: 100%;
   }
 

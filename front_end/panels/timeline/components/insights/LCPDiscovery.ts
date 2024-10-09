@@ -42,15 +42,15 @@ const UIStrings = {
    */
   lazyLoadNotApplied: 'lazy load not applied',
   /**
-   *@description Text for a screen-reader label to tell the user that the icon represents a successful check
+   *@description Text for a screen-reader label to tell the user that the icon represents a successful insight check
    *@example {Server response time} PH1
    */
-  successAriaLabel: 'Success: {PH1}',
+  successAriaLabel: 'Insight check passed: {PH1}',
   /**
-   *@description Text for a screen-reader label to tell the user that the icon represents an unsuccessful check
+   *@description Text for a screen-reader label to tell the user that the icon represents an unsuccessful insight check
    *@example {Server response time} PH1
    */
-  failedAriaLabel: 'Failure: {PH1}',
+  failedAriaLabel: 'Insight check failed: {PH1}',
 
 };
 
@@ -116,8 +116,8 @@ export class LCPDiscovery extends BaseInsight {
   #adviceIcon(didFail: boolean, label: string): LitHtml.TemplateResult {
     const icon = didFail ? 'clear' : 'check-circle';
 
-    const ariaLabel = didFail ? i18nString(UIStrings.successAriaLabel, {PH1: label}) :
-                                i18nString(UIStrings.failedAriaLabel, {PH1: label});
+    const ariaLabel = didFail ? i18nString(UIStrings.failedAriaLabel, {PH1: label}) :
+                                i18nString(UIStrings.successAriaLabel, {PH1: label});
     return LitHtml.html`
       <${IconButton.Icon.Icon.litTagName}
         aria-label=${ariaLabel}

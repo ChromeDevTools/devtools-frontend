@@ -163,6 +163,10 @@ select.toolbar-item:disabled + .toolbar-dropdown-arrow {
     background-color: var(--sys-color-state-disabled-container);
     color: var(--sys-color-state-disabled);
   }
+
+  &:first-child {
+    margin-left: var(--sys-size-2);
+  }
 }
 
 .toolbar-has-dropdown-shrinkable {

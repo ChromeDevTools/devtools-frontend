@@ -59,6 +59,7 @@ devtools_entrypoint("bundle") {
     ":*",
     "../:*",
     "../../../ui/components/docs/linear_memory_inspector/*",
+    "../../network:*",
   ]
 
   visibility += devtools_panels_visibility

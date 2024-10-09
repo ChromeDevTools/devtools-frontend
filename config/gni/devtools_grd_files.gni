@@ -1500,6 +1500,7 @@ grd_files_debug_sources = [
   "front_end/panels/network/NetworkSearchScope.js",
   "front_end/panels/network/NetworkTimeCalculator.js",
   "front_end/panels/network/NetworkWaterfallColumn.js",
+  "front_end/panels/network/RequestBinaryResponseView.js",
   "front_end/panels/network/RequestCookiesView.js",
   "front_end/panels/network/RequestHTMLView.js",
   "front_end/panels/network/RequestInitiatorView.js",

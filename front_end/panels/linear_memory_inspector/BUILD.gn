@@ -33,6 +33,7 @@ devtools_entrypoint("bundle") {
   visibility = [
     ":*",
     "../../entrypoints/*",
+    "../network/*",
   ]
 
   visibility += devtools_panels_visibility

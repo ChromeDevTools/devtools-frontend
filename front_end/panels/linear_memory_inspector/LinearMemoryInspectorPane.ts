@@ -95,13 +95,16 @@ export type EventTypes = {
   [Events.VIEW_CLOSED]: string,
 };
 
-class LinearMemoryInspectorView extends UI.Widget.VBox {
+export class LinearMemoryInspectorView extends UI.Widget.VBox {
   #memoryWrapper: LazyUint8Array;
   #address: number;
   #tabId: string;
   #inspector: LinearMemoryInspectorComponents.LinearMemoryInspector.LinearMemoryInspector;
   firstTimeOpen: boolean;
-  constructor(memoryWrapper: LazyUint8Array, address: number|undefined = 0, tabId: string) {
+  readonly #hideValueInspector: boolean;
+
+  constructor(
+      memoryWrapper: LazyUint8Array, address: number|undefined = 0, tabId: string, hideValueInspector?: boolean) {
     super(false);
 
     if (address < 0 || address >= memoryWrapper.length()) {
@@ -111,6 +114,7 @@ class LinearMemoryInspectorView extends UI.Widget.VBox {
     this.#memoryWrapper = memoryWrapper;
     this.#address = address;
     this.#tabId = tabId;
+    this.#hideValueInspector = Boolean(hideValueInspector);
     this.#inspector = new LinearMemoryInspectorComponents.LinearMemoryInspector.LinearMemoryInspector();
     this.#inspector.addEventListener(
         LinearMemoryInspectorComponents.LinearMemoryInspector.MemoryRequestEvent.eventName,
@@ -178,6 +182,7 @@ class LinearMemoryInspectorView extends UI.Widget.VBox {
         valueTypeModes,
         endianness,
         highlightInfo: this.#getHighlightInfo(),
+        hideValueInspector: this.#hideValueInspector,
       };
     });
   }
@@ -195,6 +200,7 @@ class LinearMemoryInspectorView extends UI.Widget.VBox {
         memoryOffset: start,
         outerMemoryLength: this.#memoryWrapper.length(),
         highlightInfo: this.#getHighlightInfo(),
+        hideValueInspector: this.#hideValueInspector,
       };
     });
   }

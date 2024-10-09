@@ -1140,6 +1140,10 @@ declare class InputStream {
     the stream position) to change that.
     */
     acceptToken(token: number, endOffset?: number): void;
+    /**
+    Accept a token ending at a specific given position.
+    */
+    acceptTokenTo(token: number, endPos: number): void;
     private getChunk;
     private readNext;
     /**
@@ -4883,6 +4887,7 @@ declare class Tag {
     this one itself and sorted in order of decreasing specificity.
     */
     readonly set: Tag[];
+    toString(): string;
     /**
     Define a new tag. If `parent` is given, the tag is treated as a
     sub-tag of that parent, and
@@ -4890,6 +4895,7 @@ declare class Tag {
     this tag will try to fall back to the parent tag (or grandparent
     tag, etc).
     */
+    static define(name?: string, parent?: Tag): Tag;
     static define(parent?: Tag): Tag;
     /**
     Define a tag _modifier_, which is a function that, given a tag,
@@ -4903,7 +4909,7 @@ declare class Tag {
     example `m1(m2(m3(t1)))` is a subtype of `m1(m2(t1))`,
     `m1(m3(t1)`, and so on.
     */
-    static defineModifier(): (tag: Tag) => Tag;
+    static defineModifier(name?: string): (tag: Tag) => Tag;
 }
 /**
 A highlighter defines a mapping from highlighting tags and
@@ -4928,7 +4934,9 @@ interface Highlighter {
 }
 /**
 Highlight the given [tree](#common.Tree) with the given
-[highlighter](#highlight.Highlighter).
+[highlighter](#highlight.Highlighter). Often, the higher-level
+[`highlightCode`](#highlight.highlightCode) function is easier to
+use.
 */
 declare function highlightTree(tree: Tree, highlighter: Highlighter | readonly Highlighter[],
 /**
@@ -5223,7 +5231,7 @@ declare const tags: {
     */
     heading6: Tag;
     /**
-    A prose separator (such as a horizontal rule).
+    A prose [content](#highlight.tags.content) separator (such as a horizontal rule).
     */
     contentSeparator: Tag;
     /**

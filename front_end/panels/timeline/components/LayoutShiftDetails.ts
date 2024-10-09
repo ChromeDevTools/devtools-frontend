@@ -296,17 +296,17 @@ export class LayoutShiftDetails extends HTMLElement {
     }
     const insightsId = layoutShift.args.data?.navigationId ?? Trace.Types.Events.NO_NAVIGATION;
     const clsInsight = traceInsightsSets.get(insightsId)?.data.CumulativeLayoutShift;
-    if (clsInsight instanceof Error) {
+    if (!clsInsight || clsInsight instanceof Error) {
       return null;
     }
 
-    const rootCauses = clsInsight?.shifts?.get(layoutShift);
+    const rootCauses = clsInsight.shifts.get(layoutShift);
     const elementsShifted = layoutShift.args.data?.impacted_nodes ?? [];
     const hasCulprits = rootCauses &&
         (rootCauses.fontRequests.length || rootCauses.iframeIds.length || rootCauses.nonCompositedAnimations.length);
     const hasShiftedElements = elementsShifted?.length;
 
-    const parentCluster = clsInsight?.clusters.find(cluster => {
+    const parentCluster = clsInsight.clusters.find(cluster => {
       return cluster.events.find(event => event === layoutShift);
     });
 
@@ -341,12 +341,12 @@ export class LayoutShiftDetails extends HTMLElement {
     }
     const insightsId = cluster.navigationId ?? Trace.Types.Events.NO_NAVIGATION;
     const clsInsight = traceInsightsSets.get(insightsId)?.data.CumulativeLayoutShift;
-    if (clsInsight instanceof Error) {
+    if (!clsInsight || clsInsight instanceof Error) {
       return null;
     }
 
     // This finds the culprits of the cluster and returns an array of the culprits.
-    const clusterCulprits = Array.from(clsInsight?.shifts?.entries() ?? [])
+    const clusterCulprits = Array.from(clsInsight.shifts.entries())
                                 .filter(([key]) => cluster.events.includes(key))
                                 .map(([, value]) => value)
                                 .flatMap(x => Object.values(x))
@@ -369,7 +369,7 @@ export class LayoutShiftDetails extends HTMLElement {
             </thead>
             <tbody>
               ${cluster.events.map(shift => {
-                const rootCauses = clsInsight?.shifts?.get(shift);
+                const rootCauses = clsInsight.shifts.get(shift);
                 const elementsShifted = shift.args.data?.impacted_nodes ?? [];
                 return this.#renderShiftRow(shift, parsedTrace, elementsShifted, rootCauses);
               })}

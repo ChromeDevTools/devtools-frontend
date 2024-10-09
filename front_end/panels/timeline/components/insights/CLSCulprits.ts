@@ -94,10 +94,7 @@ export class CLSCulprits extends BaseInsight {
       cluster: Trace.Types.Events.SyntheticLayoutShiftCluster,
       culpritsByShift:
           Map<Trace.Types.Events.LayoutShift,
-              Trace.Insights.InsightRunners.CumulativeLayoutShift.LayoutShiftRootCausesData>|undefined): string[] {
-    if (!culpritsByShift) {
-      return [];
-    }
+              Trace.Insights.InsightRunners.CumulativeLayoutShift.LayoutShiftRootCausesData>): string[] {
     const MAX_TOP_CULPRITS = 3;
     const causes: Array<string> = [];
     if (causes.length === MAX_TOP_CULPRITS) {
@@ -164,24 +161,33 @@ export class CLSCulprits extends BaseInsight {
     // clang-format on
   }
 
+  override getRelatedEvents(): Trace.Types.Events.Event[] {
+    const insight =
+        Trace.Insights.Common.getInsight('CumulativeLayoutShift', this.data.insights, this.data.insightSetKey);
+    return insight?.relatedEvents ?? [];
+  }
+
   override render(): void {
     const insight =
         Trace.Insights.Common.getInsight('CumulativeLayoutShift', this.data.insights, this.data.insightSetKey);
-    const culpritsByShift = insight?.shifts;
-    const clusters = insight?.clusters ?? [];
-    if (!clusters.length) {
+    if (!insight) {
       return;
     }
-    const clustersByScore = clusters.toSorted((a, b) => b.clusterCumulativeScore - a.clusterCumulativeScore);
 
-    const causes = this.getTopCulprits(clustersByScore[0], culpritsByShift);
+    const culpritsByShift = insight.shifts;
+    const clusters = insight.clusters ?? [];
+    if (!clusters.length || !insight.worstCluster) {
+      return;
+    }
+
+    const causes = this.getTopCulprits(insight.worstCluster, culpritsByShift);
     const hasCulprits = causes.length > 0;
 
     const matchesCategory = shouldRenderForCategory({
       activeCategory: this.data.activeCategory,
       insightCategory: this.insightCategory,
     });
-    const output = hasCulprits && matchesCategory ? this.#render(causes, clustersByScore[0]) : LitHtml.nothing;
+    const output = hasCulprits && matchesCategory ? this.#render(causes, insight.worstCluster) : LitHtml.nothing;
     LitHtml.render(output, this.shadow, {host: this});
   }
 }

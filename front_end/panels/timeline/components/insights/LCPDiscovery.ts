@@ -231,6 +231,17 @@ export class LCPDiscovery extends BaseInsight {
     // clang-format on
   }
 
+  override getRelatedEvents(): Trace.Types.Events.Event[] {
+    const insight =
+        Trace.Insights.Common.getInsight('LargestContentfulPaint', this.data.insights, this.data.insightSetKey);
+    if (!insight?.lcpEvent || !insight?.lcpRequest) {
+      return [];
+    }
+
+    // TODO: add entire request initiator chain?
+    return [insight.lcpEvent, insight.lcpRequest];
+  }
+
   override render(): void {
     const imageResults = getImageData(this.data.insights, this.data.insightSetKey);
     const matchesCategory = shouldRenderForCategory({

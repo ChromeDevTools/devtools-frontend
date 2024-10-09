@@ -71,7 +71,7 @@ describeWithEnvironment('CumulativeLayoutShift', function() {
       });
 
       const shiftAnimations: InsightRunners.CumulativeLayoutShift.NoncompositedAnimationFailure[] = [];
-      shifts?.forEach(entry => {
+      shifts.forEach(entry => {
         shiftAnimations.push(...entry.nonCompositedAnimations);
       });
       const expectedWithShift: InsightRunners.CumulativeLayoutShift.NoncompositedAnimationFailure[] = [

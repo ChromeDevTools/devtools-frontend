@@ -124,6 +124,11 @@ export class SlowCSSSelector extends BaseInsight {
         this.#slowCSSSelector.topMatchAttempts.length !== 0;
   }
 
+  override getRelatedEvents(): Trace.Types.Events.Event[] {
+    const insight = Trace.Insights.Common.getInsight('SlowCSSSelector', this.data.insights, this.data.insightSetKey);
+    return insight?.relatedEvents ?? [];
+  }
+
   override render(): void {
     const matchesCategory = shouldRenderForCategory({
       activeCategory: this.data.activeCategory,

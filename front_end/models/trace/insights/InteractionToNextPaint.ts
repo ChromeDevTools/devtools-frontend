@@ -44,6 +44,7 @@ export function generateInsight(parsedTrace: RequiredData<typeof deps>, context:
   const highPercentileIndex = Math.min(9, Math.floor(normalizedInteractionEvents.length / 50));
 
   return {
+    relatedEvents: [normalizedInteractionEvents[0]],
     longestInteractionEvent: normalizedInteractionEvents[0],
     highPercentileInteractionEvent: normalizedInteractionEvents[highPercentileIndex],
   };

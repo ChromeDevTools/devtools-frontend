@@ -212,6 +212,7 @@ export function generateInsight(
   });
 
   return {
+    relatedEvents: renderBlockingRequests,
     renderBlockingRequests,
     ...savings,
   };

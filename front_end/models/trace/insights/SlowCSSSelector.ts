@@ -82,6 +82,8 @@ export function generateInsight(
   });
 
   return {
+    // TODO: should we identify UpdateLayout events as linked to this insight?
+    relatedEvents: [],
     totalElapsedMs: Types.Timing.MilliSeconds(totalElapsedUs / 1000.0),
     totalMatchAttempts,
     totalMatchCount,

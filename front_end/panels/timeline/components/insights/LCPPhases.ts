@@ -250,6 +250,21 @@ export class LCPPhases extends BaseInsight {
     return phaseData ? phaseData.length > 0 : false;
   }
 
+  override getRelatedEvents(): Trace.Types.Events.Event[] {
+    const insight =
+        Trace.Insights.Common.getInsight('LargestContentfulPaint', this.data.insights, this.data.insightSetKey);
+    if (!insight?.lcpEvent) {
+      return [];
+    }
+
+    const relatedEvents: Trace.Types.Events.Event[] = [insight.lcpEvent];
+    if (insight.lcpRequest) {
+      relatedEvents.push(insight.lcpRequest);
+    }
+
+    return relatedEvents;
+  }
+
   override render(): void {
     const phaseData = this.#getPhaseData(this.data.insights, this.data.insightSetKey);
     const matchesCategory = shouldRenderForCategory({

@@ -13,9 +13,10 @@ import {
 } from './types.js';
 
 export type CLSInsightResult = InsightResult<{
-  animationFailures?: readonly NoncompositedAnimationFailure[],
-  shifts?: Map<Types.Events.SyntheticLayoutShift, LayoutShiftRootCausesData>,
-        clusters: Types.Events.SyntheticLayoutShiftCluster[],
+  animationFailures: readonly NoncompositedAnimationFailure[],
+  shifts: Map<Types.Events.SyntheticLayoutShift, LayoutShiftRootCausesData>,
+  clusters: Types.Events.SyntheticLayoutShiftCluster[],
+  worstCluster: Types.Events.SyntheticLayoutShiftCluster | undefined,
 }>;
 
 export function deps(): ['Meta', 'Animations', 'LayoutShifts', 'NetworkRequests'] {
@@ -380,6 +381,8 @@ export function generateInsight(parsedTrace: RequiredData<typeof deps>, context:
 
   const clusterKey = context.navigation ? context.navigationId : Types.Events.NO_NAVIGATION;
   const clusters = parsedTrace.LayoutShifts.clustersByNavigationId.get(clusterKey) ?? [];
+  const clustersByScore = clusters.toSorted((a, b) => b.clusterCumulativeScore - a.clusterCumulativeScore);
+  const worstCluster = clustersByScore.at(0);
   const layoutShifts = clusters.flatMap(cluster => cluster.events);
   const prePaintEvents = parsedTrace.LayoutShifts.prePaintEvents.filter(isWithinContext);
 
@@ -397,9 +400,16 @@ export function generateInsight(parsedTrace: RequiredData<typeof deps>, context:
   const animationFailures =
       getNonCompositedFailureRootCauses(compositeAnimationEvents, prePaintEvents, shiftsByPrePaint, rootCausesByShift);
 
+  const relatedEvents: Types.Events.Event[] = [...layoutShifts];
+  if (worstCluster) {
+    relatedEvents.push(worstCluster);
+  }
+
   return {
+    relatedEvents,
     animationFailures,
     shifts: rootCausesByShift,
     clusters,
+    worstCluster,
   };
 }

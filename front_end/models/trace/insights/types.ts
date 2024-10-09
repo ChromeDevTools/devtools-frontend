@@ -54,6 +54,7 @@ export interface MetricSavings {
 }
 
 export type InsightResult<R extends Record<string, unknown>> = R&{
+  relatedEvents?: Types.Events.Event[],
   warnings?: InsightWarning[],
   metricSavings?: MetricSavings,
 };

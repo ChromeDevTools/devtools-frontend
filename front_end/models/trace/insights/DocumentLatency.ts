@@ -136,6 +136,7 @@ export function generateInsight(
   };
 
   return {
+    relatedEvents: [documentRequest],
     data: {
       serverResponseTime,
       serverResponseTooSlow,

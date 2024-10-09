@@ -92,6 +92,11 @@ export class FontDisplay extends BaseInsight {
     // clang-format on
   }
 
+  override getRelatedEvents(): Trace.Types.Events.Event[] {
+    const insight = Trace.Insights.Common.getInsight('FontDisplay', this.data.insights, this.data.insightSetKey);
+    return insight?.relatedEvents ?? [];
+  }
+
   override render(): void {
     const insight = Trace.Insights.Common.getInsight('FontDisplay', this.data.insights, this.data.insightSetKey);
     const shouldShow = insight && insight.fonts.find(font => font.wastedTime);

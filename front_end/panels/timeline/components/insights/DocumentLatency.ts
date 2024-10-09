@@ -192,6 +192,11 @@ export class DocumentLatency extends BaseInsight {
     // clang-format on
   }
 
+  override getRelatedEvents(): Trace.Types.Events.Event[] {
+    const insight = Trace.Insights.Common.getInsight('DocumentLatency', this.data.insights, this.data.insightSetKey);
+    return insight?.relatedEvents ?? [];
+  }
+
   override render(): void {
     const insight = Trace.Insights.Common.getInsight('DocumentLatency', this.data.insights, this.data.insightSetKey);
     const matchesCategory = shouldRenderForCategory({

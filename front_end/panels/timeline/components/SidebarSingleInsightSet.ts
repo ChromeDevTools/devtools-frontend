@@ -173,16 +173,16 @@ export class SidebarSingleInsightSet extends HTMLElement {
                   lcp.event ?? null) :
               LitHtml.nothing}
     ${
-        this.#renderMetricValue(
-            'CLS', cls.value.toFixed(2),
-            Trace.Handlers.ModelHandlers.LayoutShifts.scoreClassificationForLayoutShift(cls.value),
-            cls.worstShiftEvent)}
-    ${
         inp ? this.#renderMetricValue(
                   'INP', i18n.TimeUtilities.formatMicroSecondsAsMillisFixed(inp.value),
                   Trace.Handlers.ModelHandlers.UserInteractions.scoreClassificationForInteractionToNextPaint(inp.value),
                   inp.event) :
               LitHtml.nothing}
+    ${
+        this.#renderMetricValue(
+            'CLS', cls.value.toFixed(2),
+            Trace.Handlers.ModelHandlers.LayoutShifts.scoreClassificationForLayoutShift(cls.value),
+            cls.worstShiftEvent)}
     </div>
     `;
   }

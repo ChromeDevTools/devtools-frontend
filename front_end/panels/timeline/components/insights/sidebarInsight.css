@@ -36,6 +36,12 @@
       font: var(--sys-typescale-body4-medium);
     }
   }
+
+  &:not(.closed) {
+    header {
+      padding-bottom: var(--sys-size-2);
+    }
+  }
 }
 
 .insight-hover-icon {
@@ -78,7 +84,7 @@
 }
 
 .insight-section {
-  padding: var(--sys-size-5) 0;
+  padding-top: var(--sys-size-5);
 }
 
 .insight-description:not(:empty) {

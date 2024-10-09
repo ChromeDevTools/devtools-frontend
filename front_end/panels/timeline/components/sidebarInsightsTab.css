@@ -14,7 +14,6 @@
   display: flex;
   flex-flow: column nowrap;
   flex-grow: 1; /* so it fills the available vertical height in the sidebar */
-  margin-top: var(--sys-size-6);
 
   details {
     flex-grow: 0;

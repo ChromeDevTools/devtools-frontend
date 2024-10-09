@@ -4,12 +4,12 @@
 
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 
-import * as Utils from './Utils.js';
+import * as Helpers from './Helpers.js';
 
-describeWithEnvironment('Utils', () => {
+describeWithEnvironment('Helpers', () => {
   it('createUrlLabels', function() {
     function fn(urls: string[], expected: string[]) {
-      assert.deepEqual(Utils.createUrlLabels(urls.map(url => new URL(url))), expected);
+      assert.deepEqual(Helpers.createUrlLabels(urls.map(url => new URL(url))), expected);
     }
 
     fn([], []);

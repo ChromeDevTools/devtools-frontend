@@ -187,8 +187,9 @@ export class LayoutShiftDetails extends HTMLElement {
     // clang-format on
   }
 
+  // TODO(crbug.com/368170718): use eventRef instead
   #clickEvent(event: Trace.Types.Events.Event): void {
-    this.dispatchEvent(new Insights.Helpers.EventReferenceClick(event));
+    this.dispatchEvent(new Insights.EventRef.EventReferenceClick(event));
   }
 
   #renderAnimation(failure: Trace.Insights.InsightRunners.CumulativeLayoutShift.NoncompositedAnimationFailure):

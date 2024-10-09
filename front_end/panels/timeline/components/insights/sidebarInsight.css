@@ -136,6 +136,7 @@ dd.dl-title {
   font: var(--sys-typescale-body4-regular);
   display: flex;
   flex-direction: column;
+  word-break: break-all;
 
   .element-img-details-size {
     color: var(--color-text-secondary);

@@ -182,27 +182,12 @@ export abstract class BaseInsight extends HTMLElement {
       insightSetKey: this.data.insightSetKey,
     });
   }
-}
 
-// TODO(crbug.com/368170718): consider better treatments for shortening URLs.
-export function shortenUrl(url: string): string {
-  const maxLength = 20;
-
-  // TODO(crbug.com/368170718): This is something that should only be done if the origin is the same
-  // as the insight set's origin.
-  const elideOrigin = false;
-  if (elideOrigin) {
-    try {
-      url = new URL(url).pathname;
-    } catch {
-    }
+  getInsightSetUrl(): URL {
+    const url = this.data.insights?.get(this.data.insightSetKey ?? '')?.url;
+    Platform.TypeScriptUtilities.assertNotNullOrUndefined(url, 'Expected url for insight set');
+    return new URL(url);
   }
-
-  if (url.length <= maxLength) {
-    return url;
-  }
-
-  return Platform.StringUtilities.trimMiddle(url.split('/').at(-1) ?? '', maxLength);
 }
 
 /**
@@ -216,78 +201,3 @@ export function md(markdown: string): LitHtml.TemplateResult {
     .data=${{tokens} as MarkdownView.MarkdownView.MarkdownViewData}>
   </${MarkdownView.MarkdownView.MarkdownView.litTagName}>`;
 }
-
-export class EventReferenceClick extends Event {
-  static readonly eventName = 'eventreferenceclick';
-
-  constructor(public event: Trace.Types.Events.Event) {
-    super(EventReferenceClick.eventName, {bubbles: true, composed: true});
-  }
-}
-
-class EventRef extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-performance-event-ref`;
-  readonly #shadow = this.attachShadow({mode: 'open'});
-  readonly #boundRender = this.#render.bind(this);
-
-  #baseInsight: BaseInsight|null = null;
-  #text: string|null = null;
-  #event: Trace.Types.Events.Event|null = null;
-
-  connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [sidebarInsightStyles];
-  }
-
-  set text(text: string) {
-    this.#text = text;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
-  }
-
-  set baseInsight(baseInsight: BaseInsight) {
-    this.#baseInsight = baseInsight;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
-  }
-
-  set event(event: Trace.Types.Events.Event) {
-    this.#event = event;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
-  }
-
-  #render(): void {
-    if (!this.#baseInsight || !this.#text || !this.#event) {
-      return;
-    }
-
-    // clang-format off
-    LitHtml.render(LitHtml.html`
-      <button type="button" class="devtools-link" @click=${(e: Event) => {
-        e.stopPropagation();
-        if (this.#baseInsight && this.#event) {
-          this.#baseInsight.dispatchEvent(new EventReferenceClick(this.#event));
-        }
-      }}>${this.#text}</button>
-    `, this.#shadow, {host: this});
-    // clang-format on
-  }
-}
-
-export function eventRef(
-    baseInsight: BaseInsight, event: Trace.Types.Events.Event, text: string): LitHtml.TemplateResult {
-  return LitHtml.html`<${EventRef.litTagName}
-    .baseInsight=${baseInsight}
-    .event=${event}
-    .text=${text}
-  ></${EventRef.litTagName}>`;
-}
-
-declare global {
-  interface GlobalEventHandlersEventMap {
-    [EventReferenceClick.eventName]: EventReferenceClick;
-  }
-
-  interface HTMLElementTagNameMap {
-    'devtools-performance-event-ref': EventRef;
-  }
-}
-
-customElements.define('devtools-performance-event-ref', EventRef);

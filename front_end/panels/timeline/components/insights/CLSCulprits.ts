@@ -7,7 +7,8 @@ import * as Trace from '../../../../models/trace/trace.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
-import {BaseInsight, EventReferenceClick, shouldRenderForCategory} from './Helpers.js';
+import {EventReferenceClick} from './EventRef.js';
+import {BaseInsight, shouldRenderForCategory} from './Helpers.js';
 import * as SidebarInsight from './SidebarInsight.js';
 import {Category} from './types.js';
 

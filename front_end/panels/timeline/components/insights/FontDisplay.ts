@@ -7,7 +7,8 @@ import * as Trace from '../../../../models/trace/trace.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
-import {BaseInsight, shortenUrl, shouldRenderForCategory} from './Helpers.js';
+import {eventRef} from './EventRef.js';
+import {BaseInsight, shouldRenderForCategory} from './Helpers.js';
 import * as SidebarInsight from './SidebarInsight.js';
 import {Table, type TableData} from './Table.js';
 import {Category} from './types.js';
@@ -77,7 +78,7 @@ export class FontDisplay extends BaseInsight {
                       rows: insight.fonts.map(font => ({
                         values: [
                           // TODO(crbug.com/369422196): the font name would be nicer here.
-                          shortenUrl(font.request.args.data.url),
+                          eventRef(font.request),
                           font.display,
                           i18n.TimeUtilities.millisToString(font.wastedTime),
                         ],

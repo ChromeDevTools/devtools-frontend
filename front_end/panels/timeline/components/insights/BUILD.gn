@@ -18,6 +18,7 @@ devtools_module("insights") {
   sources = [
     "CLSCulprits.ts",
     "DocumentLatency.ts",
+    "EventRef.ts",
     "FontDisplay.ts",
     "Helpers.ts",
     "InteractionToNextPaint.ts",
@@ -45,6 +46,7 @@ devtools_module("insights") {
     "../../../../ui/components/markdown_view:bundle",
     "../../../../ui/lit-html:bundle",
     "../../overlays:bundle",
+    "../../utils:bundle",
   ]
 }
 

@@ -9,12 +9,12 @@ import * as Trace from '../../../models/trace/trace.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as Utils from '../utils/utils.js';
 
 import * as Insights from './insights/insights.js';
 import {type ActiveInsight} from './Sidebar.js';
 import styles from './sidebarInsightsTab.css.js';
 import {SidebarSingleInsightSet, type SidebarSingleInsightSetData} from './SidebarSingleInsightSet.js';
-import {createUrlLabels} from './Utils.js';
 
 const FEEDBACK_URL = 'https://crbug.com/371170842' as Platform.DevToolsPath.UrlString;
 
@@ -127,7 +127,6 @@ export class SidebarInsightsTab extends HTMLElement {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(FEEDBACK_URL);
   }
 
-  // TODO(crbug.com/368170718): use a shorter label for each insight set/url when possible.
   #render(): void {
     if (!this.#parsedTrace || !this.#insights) {
       LitHtml.render(LitHtml.nothing, this.#shadow, {host: this});
@@ -135,7 +134,7 @@ export class SidebarInsightsTab extends HTMLElement {
     }
 
     const hasMultipleInsightSets = this.#insights.size > 1;
-    const labels = createUrlLabels([...this.#insights.values()].map(({url}) => url));
+    const labels = Utils.Helpers.createUrlLabels([...this.#insights.values()].map(({url}) => url));
 
     // clang-format off
     const html = LitHtml.html`

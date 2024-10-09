@@ -34,4 +34,5 @@ table.interactive tbody tr.selected {
 table th[scope="row"] {
   font-weight: normal;
   padding: 3px 0;
+  word-break: break-word;
 }

@@ -88,7 +88,7 @@ export class SidebarSingleInsightSet extends HTMLElement {
   }
 
   #onClickMetric(traceEvent: Trace.Types.Events.Event): void {
-    this.dispatchEvent(new Insights.Helpers.EventReferenceClick(traceEvent));
+    this.dispatchEvent(new Insights.EventRef.EventReferenceClick(traceEvent));
   }
 
   #renderMetricValue(

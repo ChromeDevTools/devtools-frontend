@@ -9,7 +9,6 @@ import * as Trace from '../../../models/trace/trace.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
-import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import * as Insights from './insights/insights.js';
 import {type ActiveInsight} from './Sidebar.js';
@@ -28,10 +27,6 @@ const UIStrings = {
    *@description text show in feedback tooltip
    */
   feedbackTooltip: 'Insights is an experimental feature. Your feedback will help us improve it.',
-  /**
-   *@description used as a label for screen readers to provide context to the dropdown used to select a category of insights
-   */
-  selectLabel: 'Choose a category of Insights',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/SidebarInsightsTab.ts', UIStrings);
@@ -110,13 +105,6 @@ export class SidebarInsightsTab extends HTMLElement {
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
 
-  #onCategoryDropdownChange(event: Event): void {
-    const target = event.target as HTMLOptionElement;
-    const value = target.value as Insights.Types.Category;
-    this.#selectedCategory = value;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
-  }
-
   #insightSetToggled(id: string): void {
     this.#insightSetKey = this.#insightSetKey === id ? null : id;
     // Update the active insight set.
@@ -151,20 +139,6 @@ export class SidebarInsightsTab extends HTMLElement {
 
     // clang-format off
     const html = LitHtml.html`
-      <select class="chrome-select insights-category-select"
-        aria-label=${i18nString(UIStrings.selectLabel)}
-        @change=${this.#onCategoryDropdownChange}
-        jslog=${VisualLogging.dropDown('timeline.sidebar-insights-category-select').track({click: true})}
-      >
-        ${Object.values(Insights.Types.Category).map(insightsCategory => {
-          return LitHtml.html`
-            <option value=${insightsCategory}>
-              ${insightsCategory}
-            </option>
-          `;
-        })}
-      </select>
-
       <div class="insight-sets-wrapper">
         ${[...this.#insights.values()].map(({id, url}, index) => {
           const data = {

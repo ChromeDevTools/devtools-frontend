@@ -51,12 +51,6 @@
   }
 }
 
-.insights-category-select {
-  width: max-content;
-  margin-top: var(--sys-size-6);
-  margin-left: var(--sys-size-6);
-}
-
 .feedback-wrapper {
   position: relative;
   padding: var(--sys-size-6);

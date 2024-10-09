@@ -1,0 +1,45 @@
+# Copyright 2024 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../../scripts/build/ninja/devtools_module.gni")
+import("../../../../scripts/build/ninja/generate_css.gni")
+import("../../../../scripts/build/typescript/typescript.gni")
+import("../visibility.gni")
+
+generate_css("css_files") {
+  sources = [ "card.css" ]
+}
+
+devtools_module("card") {
+  sources = [ "Card.ts" ]
+
+  deps = [
+    "../../../core/common:bundle",
+    "../../../ui/lit-html:bundle",
+  ]
+}
+
+devtools_entrypoint("bundle") {
+  entrypoint = "cards.ts"
+
+  deps = [
+    ":card",
+    ":css_files",
+  ]
+
+  visibility = default_components_visibility
+}
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [ "Card.test.ts" ]
+
+  deps = [
+    ":bundle",
+    "../../../core/common:bundle",
+    "../../../testing",
+  ]
+}

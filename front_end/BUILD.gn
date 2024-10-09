@@ -208,6 +208,7 @@ group("unittests") {
     "third_party/i18n:unittests",
     "ui/components/adorners:unittests",
     "ui/components/buttons:unittests",
+    "ui/components/cards:unittests",
     "ui/components/chrome_link:unittests",
     "ui/components/code_highlighter:unittests",
     "ui/components/data_grid:unittests",

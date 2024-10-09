@@ -1,0 +1,32 @@
+/*
+ * Copyright 2024 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+.card {
+  margin: var(--sys-size-9);
+  width: auto;
+}
+
+.heading {
+  color: var(--sys-color-on-surface);
+  font: var(--sys-typescale-body2-medium);
+  margin-bottom: var(--sys-size-5);
+}
+
+.content-container {
+  border-radius: var(--sys-shape-corner-small);
+  box-shadow: var(--sys-elevation-level3);
+  display: flex;
+  flex-direction: column;
+  background: var(--app-color-card-background);
+}
+
+::slotted(*) {
+  padding: var(--sys-size-5);
+}
+
+::slotted(*:not(:first-child)) {
+  border-top: 1px solid var(--sys-color-divider);
+}

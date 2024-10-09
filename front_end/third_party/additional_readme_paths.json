@@ -5,6 +5,7 @@
   "chromium",
   "csp_evaluator",
   "diff",
+  "json5",
   "i18n",
   "intl-messageformat",
   "lighthouse",

@@ -1,0 +1,8 @@
+{
+  "name": "json5",
+  "description": "Package list used when building/upgrading json5",
+  "private": true,
+  "dependencies": {
+    "esbuild": "0.24.0"
+  }
+}

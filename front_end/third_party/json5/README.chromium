@@ -1,0 +1,17 @@
+Name: json5
+Short Name: json5
+URL: https://github.com/json5/json5
+Version: 2.2.3
+Revision: de344f0
+License: MIT
+License File: LICENSE
+Shipped: yes
+Security Critical: yes
+CPEPrefix: cpe:2.3:a:json5:json5:2.2.3:*:*:*:*:*:*:*
+
+Description:
+A JS implementation of JSON5 parsing and serialization.
+
+Local Modifications:
+1. Only copied LICENSE.md and required files from lib/ to package/lib/
+2. Ran rebuild.sh to convert to esm module format

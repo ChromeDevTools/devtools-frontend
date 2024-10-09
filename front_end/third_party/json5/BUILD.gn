@@ -1,0 +1,31 @@
+# Copyright 2024 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../../../scripts/build/ninja/devtools_pre_built.gni")
+import("../visibility.gni")
+
+devtools_pre_built("json5") {
+  sources_are_release = false
+
+  sources = [
+    "json5-tsconfig.json",
+    "lib/index.d.ts",
+    "lib/index.js",
+    "package/lib/index.d.ts",
+    "package/lib/index.js",
+    "package/lib/parse.d.ts",
+    "package/lib/stringify.d.ts",
+  ]
+}
+
+devtools_entrypoint("bundle") {
+  entrypoint = "json5.ts"
+
+  deps = [ ":json5" ]
+
+  visibility = [ "../../panels/application/*" ]
+
+  visibility += devtools_third_party_visibility
+}

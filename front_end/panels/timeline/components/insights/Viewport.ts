@@ -19,7 +19,7 @@ const UIStrings = {
    * @description Text to tell the user how a viewport meta element can improve performance. \xa0 is a non-breaking space
    */
   description:
-      'The page\'s viewport is not mobile-optimized, resulting in all touch interactions [delayed by 200\xA0ms](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/).',
+      'The page\'s viewport is not mobile-optimized, so tap interactions may be [delayed by up to 300\xA0ms](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/).',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/Viewport.ts', UIStrings);

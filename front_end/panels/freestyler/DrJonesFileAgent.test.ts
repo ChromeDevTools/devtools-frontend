@@ -119,7 +119,7 @@ describeWithEnvironment('DrJonesFileAgent', () => {
               model_id: 'test model',
               temperature: undefined,
             },
-            client_feature: 2,
+            client_feature: 9,
             functionality_type: 1,
           },
       );

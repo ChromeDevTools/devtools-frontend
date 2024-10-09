@@ -109,7 +109,7 @@ const lockedString = i18n.i18n.lockedString;
  */
 export class DrJonesNetworkAgent extends AiAgent {
   readonly preamble = preamble;
-  readonly clientFeature = Host.AidaClient.ClientFeature.CHROME_FREESTYLER;
+  readonly clientFeature = Host.AidaClient.ClientFeature.CHROME_DRJONES_NETWORK_AGENT;
   // TODO(b/369822364): use a feature param instead.
   readonly userTier = 'BETA';
   get options(): AidaRequestOptions {

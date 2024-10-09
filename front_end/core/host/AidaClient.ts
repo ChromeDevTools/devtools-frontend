@@ -40,6 +40,12 @@ export enum ClientFeature {
   CHROME_CONSOLE_INSIGHTS = 1,
   // Chrome freestyler.
   CHROME_FREESTYLER = 2,
+  // Chrome DrJones Network Agent.
+  CHROME_DRJONES_NETWORK_AGENT = 7,
+  // Chrome DrJones Performance Agent.
+  CHROME_DRJONES_PERFORMANCE_AGENT = 8,
+  // Chrome DrJones File Agent.
+  CHROME_DRJONES_FILE_AGENT = 9,
 }
 
 export enum UserTier {

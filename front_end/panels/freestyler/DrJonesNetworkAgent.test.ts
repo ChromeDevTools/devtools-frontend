@@ -107,7 +107,7 @@ describeWithEnvironment('DrJonesNetworkAgent', () => {
               model_id: 'test model',
               temperature: undefined,
             },
-            client_feature: 2,
+            client_feature: 7,
             functionality_type: 1,
           },
       );

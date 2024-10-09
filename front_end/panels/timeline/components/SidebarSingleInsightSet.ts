@@ -16,9 +16,10 @@ const UIStrings = {
   /**
    *@description title used for a metric value to tell the user about its score classification
    *@example {INP} PH1
-   *@example {poor} PH2
+   *@example {1.2s} PH2
+   *@example {poor} PH3
    */
-  metricScore: '{PH1}: {PH2} score',
+  metricScore: '{PH1}: {PH2} {PH3} score',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/SidebarSingleInsightSet.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -101,12 +102,12 @@ export class SidebarSingleInsightSet extends HTMLElement {
     // the red/orange/green classification is, or those who are unable to
     // easily distinguish the visual colour differences.
     // clang-format off
-    const classificationTitle = i18nString(UIStrings.metricScore, {PH1: label, PH2: classification});
+    const title = i18nString(UIStrings.metricScore, {PH1: label, PH2: value, PH3: classification});
     return this.#metricIsVisible(label) ? LitHtml.html`
       <button class="metric"
         @click=${eventToSelectOnClick ? this.#onClickMetric.bind(this, eventToSelectOnClick) : null}
-        title=${classificationTitle}
-        aria-label=${classificationTitle}
+        title=${title}
+        aria-label=${title}
       >
         <div class="metric-value metric-value-${classification}">${value}</div>
         <div class="metric-label">${label}</div>

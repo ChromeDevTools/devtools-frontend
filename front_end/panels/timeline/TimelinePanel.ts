@@ -180,10 +180,6 @@ const UIStrings = {
   /**
    *@description Text in Timeline Panel of the Performance panel
    */
-  HardwareConcurrencyIsEnabled: '- Hardware concurrency override is enabled',
-  /**
-   *@description Text in Timeline Panel of the Performance panel
-   */
   SignificantOverheadDueToPaint: '- Significant overhead due to paint instrumentation',
   /**
    *@description Text in Timeline Panel of the Performance panel
@@ -1041,8 +1037,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
         this);
     SDK.CPUThrottlingManager.CPUThrottlingManager.instance().addEventListener(
         SDK.CPUThrottlingManager.Events.RATE_CHANGED, this.updateShowSettingsToolbarButton, this);
-    SDK.CPUThrottlingManager.CPUThrottlingManager.instance().addEventListener(
-        SDK.CPUThrottlingManager.Events.HARDWARE_CONCURRENCY_CHANGED, this.updateShowSettingsToolbarButton, this);
     this.disableCaptureJSProfileSetting.addChangeListener(this.updateShowSettingsToolbarButton, this);
     this.captureLayersAndPicturesSetting.addChangeListener(this.updateShowSettingsToolbarButton, this);
     this.captureSelectorStatsSetting.addChangeListener(this.updateShowSettingsToolbarButton, this);
@@ -1077,25 +1071,10 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.networkThrottlingSelect = this.createNetworkConditionsSelect();
     networkThrottlingToolbar.appendToolbarItem(this.networkThrottlingSelect);
 
-    const hardwareConcurrencyPane = new UI.Widget.VBox();
-    hardwareConcurrencyPane.element.classList.add('flex-auto');
-    hardwareConcurrencyPane.show(this.settingsPane.element);
-
-    const thirdPartyToolbar = new UI.Toolbar.Toolbar('', this.settingsPane.element);
-    thirdPartyToolbar.element.classList.add('flex-auto');
+    const thirdPartyToolbar = new UI.Toolbar.Toolbar('', throttlingPane.element);
     thirdPartyToolbar.makeVertical();
     thirdPartyToolbar.appendToolbarItem(
         this.createSettingCheckbox(this.#thirdPartyTracksSetting, i18nString(UIStrings.showDataAddedByExtensions)));
-
-    const {toggle, input, reset, warning} =
-        MobileThrottling.ThrottlingManager.throttlingManager().createHardwareConcurrencySelector();
-    const concurrencyThrottlingToolbar = new UI.Toolbar.Toolbar('', hardwareConcurrencyPane.element);
-    concurrencyThrottlingToolbar.registerCSSFiles([timelinePanelStyles]);
-    input.element.classList.add('timeline-concurrency-input');
-    concurrencyThrottlingToolbar.appendToolbarItem(toggle);
-    concurrencyThrottlingToolbar.appendToolbarItem(input);
-    concurrencyThrottlingToolbar.appendToolbarItem(reset);
-    concurrencyThrottlingToolbar.appendToolbarItem(warning);
 
     this.showSettingsPaneSetting.addChangeListener(this.updateSettingsPaneVisibility.bind(this));
     this.updateSettingsPaneVisibility();
@@ -1318,9 +1297,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     const messages: string[] = [];
     if (SDK.CPUThrottlingManager.CPUThrottlingManager.instance().cpuThrottlingRate() !== 1) {
       messages.push(i18nString(UIStrings.CpuThrottlingIsEnabled));
-    }
-    if (MobileThrottling.ThrottlingManager.throttlingManager().hardwareConcurrencyOverrideEnabled) {
-      messages.push(i18nString(UIStrings.HardwareConcurrencyIsEnabled));
     }
     if (SDK.NetworkManager.MultitargetNetworkManager.instance().isThrottling()) {
       messages.push(i18nString(UIStrings.NetworkThrottlingIsEnabled));

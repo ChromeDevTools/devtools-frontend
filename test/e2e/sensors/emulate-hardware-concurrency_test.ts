@@ -6,9 +6,8 @@ import {assert} from 'chai';
 import type * as puppeteer from 'puppeteer-core';
 
 import {getBrowserAndPages} from '../../conductor/puppeteer-state.js';
-import {hasClass, waitFor, waitForAria, waitForFunction} from '../../shared/helper.js';
-
-import {navigateToPerformanceTab, openCaptureSettings} from '../helpers/performance-helpers.js';
+import {step, waitFor, waitForAria, waitForFunction} from '../../shared/helper.js';
+import {openPanelViaMoreTools} from '../helpers/settings-helpers.js';
 
 async function waitForChangedConcurrency(lastConcurrency: number|undefined) {
   const {target} = getBrowserAndPages();
@@ -21,15 +20,18 @@ async function waitForChangedConcurrency(lastConcurrency: number|undefined) {
   });
 }
 
-describe('The Performance panel', () => {
-  it('can emulate navigator.hardwareConcurrency', async () => {
-    await navigateToPerformanceTab('empty');
-    await openCaptureSettings('.timeline-settings-pane');
+describe('hardwareConcurrency emulation on Sensors panel', () => {
+  beforeEach(async () => {
+    await step('opening sensors panel', async () => {
+      await openPanelViaMoreTools('Sensors');
+    });
+  });
 
+  it('can emulate navigator.hardwareConcurrency', async () => {
     let concurrency = await waitForChangedConcurrency(undefined);
 
     // Wait for the checkbox to load
-    const toggle = await waitForAria('Hardware concurrency') as puppeteer.ElementHandle<HTMLInputElement>;
+    const toggle = await waitFor('input[title="Hardware concurrency"]') as puppeteer.ElementHandle<HTMLInputElement>;
     await waitForFunction(() => toggle.evaluate((e: HTMLInputElement) => {
       if (e.disabled) {
         return false;
@@ -38,22 +40,8 @@ describe('The Performance panel', () => {
       return true;
     }));
 
-    // Check for the warning icon on the tab header
-    const tabHeader = await waitForAria('Performance');
-    const tabIcon = await waitFor('devtools-icon', tabHeader);
-    {
-      const tooltipText = await tabIcon.evaluate(e => e.getAttribute('title'));
-      assert.deepEqual(tooltipText, 'Hardware concurrency override is enabled');
-    }
-
-    // Check that the warning is shown on the settings gear:
-    const gear =
-        await waitFor('[title="- Hardware concurrency override is enabled"]') as puppeteer.ElementHandle<HTMLElement>;
-    assert.isTrue(await hasClass(gear, 'checked'), 'Performance settings toggle icon should be shown with a dot');
-
     // Check that the concurrency input shows the correct value:
-    const input =
-        await waitFor('input[aria-label="Override the value reported by navigator.hardwareConcurrency on the page"]');
+    const input = await waitFor('input[aria-label="Override the value reported by navigator.hardwareConcurrency"]');
     const initialValue = Number(await input.evaluate(input => {
       return (input as HTMLInputElement).value;
     }));

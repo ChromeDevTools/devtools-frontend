@@ -588,14 +588,6 @@
   height: 100%;
 }
 
-.timeline-concurrency-input {
-  width: 50px;
-}
-
-.timeline-concurrency-hidden {
-  visibility: hidden;
-}
-
 devtools-feedback-button {
   float: right;
 }

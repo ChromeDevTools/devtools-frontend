@@ -25,6 +25,7 @@ devtools_module("sensors") {
     "../../core/host:bundle",
     "../../core/i18n:bundle",
     "../../core/sdk:bundle",
+    "../../panels/mobile_throttling:bundle",
     "../../ui/legacy:bundle",
   ]
 }

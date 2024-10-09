@@ -6,6 +6,7 @@ import("../../../scripts/build/typescript/typescript.gni")
 
 node_ts_library("sensors") {
   sources = [
+    "emulate-hardware-concurrency_test.ts",
     "idle_test.ts",
     "location_test.ts",
     "orientation_test.ts",

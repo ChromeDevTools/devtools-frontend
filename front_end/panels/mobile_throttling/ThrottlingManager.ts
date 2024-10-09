@@ -81,11 +81,7 @@ const UIStrings = {
   /**
    *@description Tooltip text for an input box that overrides navigator.hardwareConcurrency on the page
    */
-  hardwareConcurrencySettingTooltip: 'Override the value reported by navigator.hardwareConcurrency on the page',
-  /**
-   *@description Icon title in Throttling Manager of the Performance panel
-   */
-  hardwareConcurrencyIsEnabled: 'Hardware concurrency override is enabled',
+  hardwareConcurrencySettingLabel: 'Override the value reported by navigator.hardwareConcurrency',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/mobile_throttling/ThrottlingManager.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -281,9 +277,6 @@ export class ThrottlingManager {
     if (this.cpuThrottlingManager.cpuThrottlingRate() !== SDK.CPUThrottlingManager.CPUThrottlingRates.NO_THROTTLING) {
       warnings.push(i18nString(UIStrings.cpuThrottlingIsEnabled));
     }
-    if (this.hardwareConcurrencyOverrideEnabled) {
-      warnings.push(i18nString(UIStrings.hardwareConcurrencyIsEnabled));
-    }
     UI.InspectorView.InspectorView.instance().setPanelWarnings('timeline', warnings);
   }
 
@@ -323,22 +316,24 @@ export class ThrottlingManager {
     return control;
   }
 
+  /** Hardware Concurrency doesn't store state in a setting. */
   createHardwareConcurrencySelector(): {
-    input: UI.Toolbar.ToolbarItem,
+    numericInput: UI.Toolbar.ToolbarItem,
     reset: UI.Toolbar.ToolbarButton,
     warning: UI.Toolbar.ToolbarItem,
-    toggle: UI.Toolbar.ToolbarItem,
+    checkbox: UI.UIUtils.CheckboxLabel,
   } {
-    const input =
+    const numericInput =
         new UI.Toolbar.ToolbarItem(UI.UIUtils.createInput('devtools-text-input', 'number', 'hardware-concurrency'));
-    input.setTitle(i18nString(UIStrings.hardwareConcurrencySettingTooltip));
-    const inputElement = input.element as HTMLInputElement;
+    numericInput.setTitle(i18nString(UIStrings.hardwareConcurrencySettingLabel));
+    const inputElement = numericInput.element as HTMLInputElement;
     inputElement.min = '1';
-    input.setEnabled(false);
+    numericInput.setEnabled(false);
 
-    const toggle = new UI.Toolbar.ToolbarCheckbox(
-        i18nString(UIStrings.hardwareConcurrency), i18nString(UIStrings.hardwareConcurrencySettingTooltip), undefined,
+    const checkbox = UI.UIUtils.CheckboxLabel.create(
+        i18nString(UIStrings.hardwareConcurrency), false, i18nString(UIStrings.hardwareConcurrencySettingLabel),
         'hardware-concurrency');
+
     const reset = new UI.Toolbar.ToolbarButton('Reset concurrency', 'undo', undefined, 'hardware-concurrency-reset');
     reset.setTitle(i18nString(UIStrings.resetConcurrency));
     const icon = new IconButton.Icon.Icon();
@@ -346,9 +341,9 @@ export class ThrottlingManager {
     const warning = new UI.Toolbar.ToolbarItem(icon);
     warning.setTitle(i18nString(UIStrings.excessConcurrency));
 
-    toggle.inputElement.disabled = true;  // Prevent modification while still wiring things up asynchronously below
-    reset.element.classList.add('timeline-concurrency-hidden');
-    warning.element.classList.add('timeline-concurrency-hidden');
+    checkbox.checkboxElement.disabled = true;  // Prevent modification while still wiring things up asynchronously below
+    reset.element.classList.add('concurrency-hidden');
+    warning.element.classList.add('concurrency-hidden');
 
     void this.cpuThrottlingManager.getHardwareConcurrency().then(defaultValue => {
       if (defaultValue === undefined) {
@@ -360,25 +355,24 @@ export class ThrottlingManager {
           this.cpuThrottlingManager.setHardwareConcurrency(value);
         }
         if (value > defaultValue) {
-          warning.element.classList.remove('timeline-concurrency-hidden');
+          warning.element.classList.remove('concurrency-hidden');
         } else {
-          warning.element.classList.add('timeline-concurrency-hidden');
+          warning.element.classList.add('concurrency-hidden');
         }
         if (value === defaultValue) {
-          reset.element.classList.add('timeline-concurrency-hidden');
+          reset.element.classList.add('concurrency-hidden');
         } else {
-          reset.element.classList.remove('timeline-concurrency-hidden');
+          reset.element.classList.remove('concurrency-hidden');
         }
       };
 
       inputElement.value = `${defaultValue}`;
       inputElement.oninput = () => setHardwareConcurrency(Number(inputElement.value));
-      toggle.inputElement.disabled = false;
-      toggle.inputElement.addEventListener('change', () => {
-        this.#hardwareConcurrencyOverrideEnabled = toggle.checked();
-        this.updatePanelIcon();
+      checkbox.checkboxElement.disabled = false;
+      checkbox.checkboxElement.addEventListener('change', () => {
+        this.#hardwareConcurrencyOverrideEnabled = checkbox.checkboxElement.checked;
 
-        input.setEnabled(this.hardwareConcurrencyOverrideEnabled);
+        numericInput.setEnabled(this.hardwareConcurrencyOverrideEnabled);
         setHardwareConcurrency(this.hardwareConcurrencyOverrideEnabled ? Number(inputElement.value) : defaultValue);
       });
 
@@ -388,7 +382,7 @@ export class ThrottlingManager {
       });
     });
 
-    return {input, reset, warning, toggle};
+    return {numericInput, reset, warning, checkbox};
   }
 
   setHardwareConcurrency(concurrency: number): void {

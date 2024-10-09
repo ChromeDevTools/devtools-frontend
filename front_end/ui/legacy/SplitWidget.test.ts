@@ -42,7 +42,7 @@ describeWithEnvironment('SplitWidget', () => {
                                          markAsRoot: true}}
                              ${widgetRef(SplitWidget, e => {widget = e;})}>
         <div slot="main">Main content</div>
-        <div slot="sidebar">Sidebar content<div>
+        <div slot="sidebar">Sidebar content</div>
         </div>
       </devtools-split-widget>`,
         container, {host: this});

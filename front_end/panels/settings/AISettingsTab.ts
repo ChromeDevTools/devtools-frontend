@@ -303,7 +303,7 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
       </div>
       <div class="divider"></div>
       <div class="toggle-container centered"
-        title=${this.#consoleInsightsSetting?.disabledReason()}
+        title=${LitHtml.Directives.ifDefined(this.#consoleInsightsSetting?.disabledReason())}
         @click=${this.#toggleConsoleInsightsSetting.bind(this)}
       >
         <${Switch.Switch.Switch.litTagName}
@@ -371,7 +371,7 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
       </div>
       <div class="divider"></div>
       <div class="toggle-container centered"
-        title=${this.#aiAssistanceSetting?.disabledReason()}
+        title=${LitHtml.Directives.ifDefined(this.#aiAssistanceSetting?.disabledReason())}
         @click=${this.#toggleAiAssistanceSetting.bind(this)}
       >
         <${Switch.Switch.Switch.litTagName}

@@ -226,6 +226,7 @@ export class LCPDiscovery extends BaseInsight {
               </ul>
             </div>
             ${this.#renderImage(imageData)}
+          </div>
         </${SidebarInsight.SidebarInsight}>
       </div>`;
     // clang-format on

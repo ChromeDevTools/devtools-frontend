@@ -4,6 +4,7 @@
 
 import '../../../ui/legacy/legacy.js';
 import '../../../ui/components/panel_introduction_steps/panel_introduction_steps.js';
+import '../../../ui/components/panel_feedback/panel_feedback.js';
 
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as Platform from '../../../core/platform/platform.js';
@@ -109,12 +110,12 @@ export class StartView extends HTMLElement {
       }>
           </devtools-panel-feedback>
           <div class="align-right">
-            <devtools-feeback-button .data=${
+            <devtools-feedback-button .data=${
         {
           feedbackUrl: FEEDBACK_URL,
         } as PanelFeedback.FeedbackButton.FeedbackButtonData
       }>
-            </devtools-feeback-button>
+            </devtools-feedback-button>
           </div>
         </div>
       `,

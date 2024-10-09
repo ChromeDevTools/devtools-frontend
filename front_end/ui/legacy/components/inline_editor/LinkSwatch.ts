@@ -73,7 +73,7 @@ class BaseLinkSwatch extends HTMLElement {
     const {startNode} = render(
         html`<button .disabled=${!isDefined} class=${classes}
                      title=${ifDefined(data.showTitle ? title : undefined)}
-                     data-title=${ifDefined(!data.showTitle ? title : null)}
+                     data-title=${ifDefined(!data.showTitle ? title : undefined)}
                      @click=${onActivate} role="link" tabindex="-1">${text}</button>`,
         this.shadow, {host: this});
     if (startNode?.nextSibling instanceof HTMLButtonElement) {

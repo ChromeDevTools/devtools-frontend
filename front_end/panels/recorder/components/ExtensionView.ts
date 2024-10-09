@@ -113,7 +113,7 @@ export class ExtensionView extends HTMLElement {
           </header>
           <main>
             ${iframe}
-          <main>
+          </main>
       </div>
     `,
       this.#shadow,

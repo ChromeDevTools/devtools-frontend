@@ -172,7 +172,7 @@ export class Table extends HTMLElement {
           return LitHtml.html`<tr>${rowsEls}</tr>`;
         })}
         </tbody>
-      </div>`,
+      </table>`,
         this.#shadow, {host: this});
   }
 }

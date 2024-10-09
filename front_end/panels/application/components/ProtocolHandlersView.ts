@@ -141,7 +141,7 @@ export class ProtocolHandlersView extends HTMLElement {
         </select>
         <input .value=${this.#queryInputState} class="devtools-text-input" type="text" @change=${
         this.#handleQueryInputChange} aria-label=${i18nString(UIStrings.textboxLabel)}
-        placeholder=${i18nString(UIStrings.textboxPlaceholder)}/>
+        placeholder=${i18nString(UIStrings.textboxPlaceholder)} />
         <${Buttons.Button.Button.litTagName} .variant=${Buttons.Button.Variant.PRIMARY} @click=${
         this.#handleTestProtocolClick}>
             ${i18nString(UIStrings.testProtocol)}

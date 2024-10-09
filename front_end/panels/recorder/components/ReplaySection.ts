@@ -230,7 +230,7 @@ export class ReplaySection extends HTMLElement {
       .showItemDivider=${false}
       .disabled=${this.#props.disabled}
       .action=${Actions.RecorderActions.REPLAY_RECORDING}
-      .value=${this.#settings?.replayExtension || this.#settings?.speed}
+      .value=${this.#settings?.replayExtension || this.#settings?.speed || ''}
       .buttonLabel=${i18nString(UIStrings.Replay)}
       .groups=${groups}
       jslog=${VisualLogging.action(Actions.RecorderActions.REPLAY_RECORDING).track({click: true})}>

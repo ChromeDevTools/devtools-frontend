@@ -756,7 +756,7 @@ export class RecordingView extends HTMLElement {
           >
             ${networkConditionPresets.map(condition => {
               return LitHtml.html`<devtools-menu-item
-                .value=${condition.i18nTitleKey}
+                .value=${condition.i18nTitleKey || ''}
                 .selected=${selectedOption === condition.i18nTitleKey}
                 jslog=${VisualLogging.item(Platform.StringUtilities.toKebabCase(condition.i18nTitleKey || ''))}
               >
@@ -884,7 +884,7 @@ export class RecordingView extends HTMLElement {
                 .showSelectedItem=${true}
                 .showConnector=${false}
                 .position=${Dialogs.Dialog.DialogVerticalPosition.BOTTOM}
-                .buttonTitle=${converterFormatName}
+                .buttonTitle=${converterFormatName || ''}
                 .jslogContext=${'code-format'}
               >
                 ${this.#builtInConverters.map(converter => {
@@ -923,6 +923,7 @@ export class RecordingView extends HTMLElement {
               ></devtools-button>
             </div>
             <div class="text-editor" jslog=${VisualLogging.textField().track({change: true})}>
+              <!-- @ts-ignore -->
               <devtools-text-editor .state=${
           this.#editorState
         }></devtools-text-editor>

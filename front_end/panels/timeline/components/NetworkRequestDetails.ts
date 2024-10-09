@@ -146,7 +146,7 @@ export class NetworkRequestDetails extends HTMLElement {
     };
     return LitHtml.html`
       <div class="network-request-details-title">
-        <div style=${LitHtml.Directives.styleMap(style)}"></div>
+        <div style=${LitHtml.Directives.styleMap(style)}></div>
         ${i18nString(UIStrings.networkRequest)}
       </div>
     `;

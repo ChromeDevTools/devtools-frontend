@@ -264,7 +264,7 @@ export class SidebarAnnotationsTab extends HTMLElement {
         // clang-format off
         return LitHtml.html`
           <div class="entries-link">
-            <span class="annotation-identifier"  style=${LitHtml.Directives.styleMap(styleForFromAnnotationIdentifier)}">
+            <span class="annotation-identifier" style=${LitHtml.Directives.styleMap(styleForFromAnnotationIdentifier)}>
               ${entryFromName}
             </span>
             <${IconButton.Icon.Icon.litTagName} class="inline-icon" .data=${{
@@ -373,9 +373,9 @@ export class SidebarAnnotationsTab extends HTMLElement {
                 setting: this.#annotationsHiddenSetting,
                 textOverride: 'Hide annotations',
               } as Settings.SettingCheckbox.SettingCheckboxData}>
-              </${Settings.SettingCheckbox.SettingCheckbox.litTagName}>
-        </span>`
-      }`,
+              </${Settings.SettingCheckbox.SettingCheckbox.litTagName}>`
+      }
+      </span>`,
     this.#shadow, {host: this});
     // clang-format on
   }

@@ -458,7 +458,7 @@ export class FieldSettingsDialog extends HTMLElement {
                 aria-label=${
                   i18nString(UIStrings.developmentOriginValue, {PH1: value as string})}
                 style=${inputStyle}
-                title=${ifDefined(value)}
+                title=${ifDefined(value as string)}
                 @keyup=${this.#onEditGridDevelopmentOriginChange}
                 @change=${this.#onEditGridDevelopmentOriginChange} />
             `,
@@ -475,7 +475,7 @@ export class FieldSettingsDialog extends HTMLElement {
                 aria-label=${
                   i18nString(UIStrings.productionOriginValue, {PH1: value as string})}
                 style=${inputStyle}
-                title=${ifDefined(value)}
+                title=${ifDefined(value as string)}
                 @keyup=${this.#onEditGridProductionOriginChange}
                 @change=${this.#onEditGridProductionOriginChange} />
             `,

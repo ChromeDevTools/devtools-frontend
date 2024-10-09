@@ -211,6 +211,7 @@ export class ProvideFeedback extends HTMLElement {
           lockedString(UIStringsNotTranslate.submit)
         }</${Buttons.Button.Button.litTagName}>
       </div>
+    </form>
     `;
     // clang-format on
   }

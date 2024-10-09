@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../../../ui/components/menus/menus.js';
+
 import * as Platform from '../../../core/platform/platform.js';
 import {type LocalizedString} from '../../../core/platform/UIString.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
@@ -224,9 +226,7 @@ export class SelectButton extends HTMLElement {
     // clang-format off
     LitHtml.render(
       LitHtml.html`
-      <div class="select-button" title=${
-        this.#getTitle(menuLabel) || LitHtml.nothing
-      }>
+      <div class="select-button" title=${LitHtml.Directives.ifDefined(this.#getTitle(menuLabel))}>
       <devtools-select-menu
           class=${LitHtml.Directives.classMap(classes)}
           @selectmenuselected=${this.#handleSelectMenuSelect}
@@ -235,7 +235,7 @@ export class SelectButton extends HTMLElement {
           .sideButton=${false}
           .showSelectedItem=${true}
           .disabled=${this.#props.disabled}
-          .buttonTitle=${LitHtml.html`${menuLabel}`}
+          .buttonTitle=${() => LitHtml.html`${menuLabel}`}
           .position=${Dialogs.Dialog.DialogVerticalPosition.BOTTOM}
           .horizontalAlignment=${
             Dialogs.Dialog.DialogHorizontalAlignment.RIGHT

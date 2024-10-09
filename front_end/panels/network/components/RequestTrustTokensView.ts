@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import '../../../ui/components/report_view/report_view.js';
+import '../../../ui/components/icon_button/icon_button.js';
 
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as SDK from '../../../core/sdk/sdk.js';

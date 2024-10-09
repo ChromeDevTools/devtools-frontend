@@ -127,9 +127,12 @@ dd.dl-title {
 }
 
 .element-img {
-  max-width: 20%;
-  max-height: 20%;
-  padding-inline: var(--sys-size-3);
+  width: var(--sys-size-13);
+  height: var(--sys-size-13);
+  object-fit: cover;
+  border: var(--sys-size-1) solid var(--sys-color-divider);
+  background: var(--sys-color-divider) -0.054px -12px / 100.239% 148.936% no-repeat;
+  margin-right: var(--sys-size-5);
 }
 
 .element-img-details {

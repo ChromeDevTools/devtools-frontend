@@ -486,6 +486,42 @@ export class LengthMatcher extends matcherBase(LengthMatch) {
   }
 }
 
+export class FlexGridMatch implements Match {
+  constructor(readonly text: string, readonly node: CodeMirror.SyntaxNode, readonly isFlex: boolean) {
+  }
+}
+
+// clang-format off
+export class FlexGridMatcher extends matcherBase(FlexGridMatch) {
+  // clang-format on
+  static readonly FLEX = ['flex', 'inline-flex', 'block flex', 'inline flex'];
+  static readonly GRID = ['grid', 'inline-grid', 'block grid', 'inline grid'];
+  override accepts(propertyName: string): boolean {
+    return propertyName === 'display';
+  }
+
+  override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): Match|null {
+    if (node.name !== 'Declaration') {
+      return null;
+    }
+    const valueNodes = ASTUtils.siblings(ASTUtils.declValue(node));
+    if (valueNodes.length < 1) {
+      return null;
+    }
+    const values = valueNodes.filter(node => node.name !== 'Important')
+                       .map(node => matching.getComputedText(node).trim())
+                       .filter(value => value);
+    const text = values.join(' ');
+    if (FlexGridMatcher.FLEX.includes(text)) {
+      return new FlexGridMatch(matching.ast.text(node), node, true);
+    }
+    if (FlexGridMatcher.GRID.includes(text)) {
+      return new FlexGridMatch(matching.ast.text(node), node, false);
+    }
+    return null;
+  }
+}
+
 export class GridTemplateMatch implements Match {
   constructor(readonly text: string, readonly node: CodeMirror.SyntaxNode, readonly lines: CodeMirror.SyntaxNode[][]) {
   }

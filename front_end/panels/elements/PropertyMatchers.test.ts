@@ -534,4 +534,29 @@ describe('Matchers for SDK.CSSPropertyParser.BottomUpTreeMatching', () => {
         new Elements.PropertyMatchers.CSSWideKeywordMatcher(propertyStub, matchedStylesStub));
     assert.notExists(match, text);
   });
+
+  it('match flex and grid values', () => {
+    const good = [
+      'flex',
+      'grid',
+      'inline-flex',
+      'inline-grid',
+      'block flex',
+      'block grid',
+      'inline   flex',
+      'inline grid',
+      'inline grid !important',
+      'grid /* comment */',
+    ];
+    const bad = ['flex block', 'grid inline', 'block', 'inline'];
+    for (const value of good) {
+      const {match, text} = matchSingleValue('display', value, new Elements.PropertyMatchers.FlexGridMatcher());
+      assert.exists(match, text);
+      assert.strictEqual(match.text.includes('flex'), match.isFlex);
+    }
+    for (const value of bad) {
+      const {match, text} = matchSingleValue('display', value, new Elements.PropertyMatchers.FlexGridMatcher());
+      assert.notExists(match, text);
+    }
+  });
 });

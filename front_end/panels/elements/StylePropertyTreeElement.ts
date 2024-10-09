@@ -40,6 +40,8 @@ import {
   ColorMixMatcher,
   type CSSWideKeywordMatch,
   CSSWideKeywordMatcher,
+  type FlexGridMatch,
+  FlexGridMatcher,
   type FontMatch,
   FontMatcher,
   type GridTemplateMatch,
@@ -151,6 +153,37 @@ interface StylePropertyTreeElementParams {
   inherited: boolean;
   overloaded: boolean;
   newProperty: boolean;
+}
+
+export class FlexGridRenderer implements MatchRenderer<FlexGridMatch> {
+  #treeElement: StylePropertyTreeElement;
+  constructor(treeElement: StylePropertyTreeElement) {
+    this.#treeElement = treeElement;
+  }
+
+  matcher(): SDK.CSSPropertyParser.Matcher<FlexGridMatch> {
+    return new FlexGridMatcher();
+  }
+
+  render(match: FlexGridMatch, context: RenderingContext): Node[] {
+    const key =
+        `${this.#treeElement.section().getSectionIdx()}_${this.#treeElement.section().nextEditorTriggerButtonIdx}`;
+    const button = StyleEditorWidget.createTriggerButton(
+        this.#treeElement.parentPane(), this.#treeElement.section(), match.isFlex ? FlexboxEditor : GridEditor,
+        match.isFlex ? i18nString(UIStrings.flexboxEditorButton) : i18nString(UIStrings.gridEditorButton), key);
+    button.setAttribute(
+        'jslog', `${VisualLogging.showStyleEditor().track({click: true}).context(match.isFlex ? 'flex' : 'grid')}`);
+    this.#treeElement.section().nextEditorTriggerButtonIdx++;
+    button.addEventListener('click', () => {
+      Host.userMetrics.swatchActivated(
+          match.isFlex ? Host.UserMetrics.SwatchType.FLEX : Host.UserMetrics.SwatchType.GRID);
+    });
+    const helper = this.#treeElement.parentPane().swatchPopoverHelper();
+    if (helper.isShowing(StyleEditorWidget.instance()) && StyleEditorWidget.instance().getTriggerKey() === key) {
+      helper.setAnchorElement(button);
+    }
+    return [...Renderer.render(ASTUtils.siblings(ASTUtils.declValue(match.node)), context).nodes, button];
+  }
 }
 
 export class CSSWideKeywordRenderer implements MatchRenderer<CSSWideKeywordMatch> {
@@ -1653,6 +1686,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
           new LinearGradientRenderer(),
           new AnchorFunctionRenderer(this),
           new PositionAnchorRenderer(this),
+          new FlexGridRenderer(this),
           new FontRenderer(this),
         ] :
         [];
@@ -1698,30 +1732,6 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       semicolon.onmouseup = this.mouseUp.bind(this);
       if (this.property.disabled) {
         UI.UIUtils.createTextChild(this.listItemElement.createChild('span', 'styles-clipboard-only'), ' */');
-      }
-    }
-
-    if (this.valueElement && this.#parentSection.editable && this.property.name === 'display') {
-      const propertyValue = this.property.trimmedValueWithoutImportant();
-      const isFlex = propertyValue === 'flex' || propertyValue === 'inline-flex';
-      const isGrid = propertyValue === 'grid' || propertyValue === 'inline-grid';
-      if (isFlex || isGrid) {
-        const key = `${this.#parentSection.getSectionIdx()}_${this.#parentSection.nextEditorTriggerButtonIdx}`;
-        const button = StyleEditorWidget.createTriggerButton(
-            this.parentPaneInternal, this.#parentSection, isFlex ? FlexboxEditor : GridEditor,
-            isFlex ? i18nString(UIStrings.flexboxEditorButton) : i18nString(UIStrings.gridEditorButton), key);
-        button.setAttribute(
-            'jslog', `${VisualLogging.showStyleEditor().track({click: true}).context(isFlex ? 'flex' : 'grid')}`);
-        this.#parentSection.nextEditorTriggerButtonIdx++;
-        button.addEventListener('click', () => {
-          Host.userMetrics.swatchActivated(
-              isFlex ? Host.UserMetrics.SwatchType.FLEX : Host.UserMetrics.SwatchType.GRID);
-        });
-        this.listItemElement.appendChild(button);
-        const helper = this.parentPaneInternal.swatchPopoverHelper();
-        if (helper.isShowing(StyleEditorWidget.instance()) && StyleEditorWidget.instance().getTriggerKey() === key) {
-          helper.setAnchorElement(button);
-        }
       }
     }
 

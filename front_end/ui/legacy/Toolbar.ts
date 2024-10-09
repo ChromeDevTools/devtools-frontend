@@ -997,7 +997,9 @@ export class ToolbarToggle extends ToolbarButton {
 export class ToolbarMenuButton extends ToolbarCombobox {
   private readonly contextMenuHandler: (arg0: ContextMenu) => void;
   private readonly useSoftMenu: boolean;
-  private triggerTimeout?: number;
+  private triggerTimeoutId?: number;
+  #triggerDelay: number = 200;
+
   constructor(
       contextMenuHandler: (arg0: ContextMenu) => void, isIconDropdown?: boolean, useSoftMenu?: boolean,
       jslogContext?: string, iconName?: string) {
@@ -1010,19 +1012,26 @@ export class ToolbarMenuButton extends ToolbarCombobox {
     ARIAUtils.markAsMenuButton(this.element);
   }
 
+  setTriggerDelay(x: number): void {
+    this.#triggerDelay = x;
+  }
+
   override mouseDown(event: MouseEvent): void {
+    if (!this.enabled) {
+      return;
+    }
     if (event.buttons !== 1) {
       super.mouseDown(event);
       return;
     }
 
-    if (!this.triggerTimeout) {
-      this.triggerTimeout = window.setTimeout(this.trigger.bind(this, event), 200);
+    if (!this.triggerTimeoutId) {
+      this.triggerTimeoutId = window.setTimeout(this.trigger.bind(this, event), this.#triggerDelay);
     }
   }
 
   private trigger(event: Event): void {
-    delete this.triggerTimeout;
+    delete this.triggerTimeoutId;
 
     const contextMenu = new ContextMenu(event, {
       useSoftMenu: this.useSoftMenu,
@@ -1038,8 +1047,8 @@ export class ToolbarMenuButton extends ToolbarCombobox {
   }
 
   override clicked(event: Event): void {
-    if (this.triggerTimeout) {
-      clearTimeout(this.triggerTimeout);
+    if (this.triggerTimeoutId) {
+      clearTimeout(this.triggerTimeoutId);
     }
     this.trigger(event);
   }

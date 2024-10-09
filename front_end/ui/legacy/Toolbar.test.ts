@@ -8,6 +8,7 @@ const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 import {
   dispatchClickEvent,
+  doubleRaf,
   renderElementIntoDOM,
 } from '../../testing/DOMHelpers.js';
 import {describeWithLocale} from '../../testing/EnvironmentHelpers.js';
@@ -88,5 +89,43 @@ describeWithLocale('Toolbar', () => {
     assert.isTrue(toolbar.hasItem(item));
     toolbar.removeToolbarItem(item);
     assert.isFalse(toolbar.hasItem(item));
+  });
+
+  describe('ToolbarMenuButton', () => {
+    function createToolbarWithButton(
+        contextMenuHandler: sinon.SinonStubStatic,
+        ): UI.Toolbar.ToolbarMenuButton {
+      const div = document.createElement('div');
+      const toolbar = new UI.Toolbar.Toolbar('test-toolbar', div);
+      renderElementIntoDOM(div);
+      const menuButton = new UI.Toolbar.ToolbarMenuButton(contextMenuHandler);
+      menuButton.setTriggerDelay(0);  // default is 200ms but don't want to slow tests down
+      toolbar.appendToolbarItem(menuButton);
+      return menuButton;
+    }
+
+    async function dispatchMouseDownEvent(element: HTMLElement): Promise<void> {
+      const mouseDownEvent = new MouseEvent('mousedown', {
+        buttons: 1,
+      });
+      element.dispatchEvent(mouseDownEvent);
+      await doubleRaf();  // give the timer time to resolve + initiate the context menu
+    }
+
+    it('creates the context menu if it is enabled', async () => {
+      const contextHandler = sinon.stub();
+      const menuButton = createToolbarWithButton(contextHandler);
+      menuButton.setEnabled(true);
+      await dispatchMouseDownEvent(menuButton.element);
+      assert.isTrue(contextHandler.called);
+    });
+
+    it('does not create a context menu if it is not enabled', async () => {
+      const contextHandler = sinon.stub();
+      const menuButton = createToolbarWithButton(contextHandler);
+      menuButton.setEnabled(false);
+      await dispatchMouseDownEvent(menuButton.element);
+      assert.isFalse(contextHandler.called);
+    });
   });
 });

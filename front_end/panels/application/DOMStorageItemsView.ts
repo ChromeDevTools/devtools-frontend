@@ -92,8 +92,10 @@ export class DOMStorageItemsView extends StorageItemsView {
     this.grid = new DataGrid.DataGridWithPreview.DataGridWithPreview(
         'dom-storage', this.element, columns, {
           refreshItems: this.refreshItems.bind(this),
-          removeItem: key => this.domStorage?.removeItem(key),
-          setItem: (key, value) => this.domStorage?.setItem(key, value),
+          edit: {
+            removeItem: key => this.domStorage?.removeItem(key),
+            setItem: (key, value) => this.domStorage?.setItem(key, value),
+          },
           createPreview: this.createPreview.bind(this),
           setCanDeleteSelected: this.setCanDeleteSelected.bind(this),
         },

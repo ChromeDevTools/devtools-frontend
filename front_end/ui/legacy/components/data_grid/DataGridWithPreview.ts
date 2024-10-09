@@ -50,10 +50,13 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 interface Callbacks {
   // Called to refresh items, e.g when the sorting order is changed.
   refreshItems: () => void;
-  // Called when a key is deleted in the UI.
-  removeItem: (key: string) => void;
-  // Called when an item is created or updated in the UI.
-  setItem: (key: string, value: string) => void;
+  // Edit callbacks. If undefined, the data grid is not editable.
+  edit?: {
+    // Called when a key is deleted in the UI.
+    removeItem: (key: string) => void,
+    // Called when an item is created or updated in the UI.
+    setItem: (key: string, value: string) => void,
+  };
   // Called when the selection state changes.
   setCanDeleteSelected: (canSelect: boolean) => void;
   // Called to create the preview widget when a new item is selected.
@@ -86,9 +89,12 @@ export class DataGridWithPreview {
     this.#dataGrid = new DataGridImpl({
       displayName: this.#messages.title,
       columns,
-      editCallback: this.#editingCallback.bind(this),
-      deleteCallback: this.#deleteCallback.bind(this),
       refreshCallback: this.#callbacks.refreshItems,
+      ...(this.#callbacks.edit ? {
+        editCallback: this.#editingCallback.bind(this),
+        deleteCallback: this.#deleteCallback.bind(this),
+      } :
+                                 {}),
     });
     this.#dataGrid.addEventListener(Events.SELECTED_NODE, event => {
       void this.#previewEntry(event.data);
@@ -188,6 +194,7 @@ export class DataGridWithPreview {
         continue;
       }
       selectedKey = node.data.key;
+      void this.#previewEntry(node);
       break;
     }
     rootNode.removeChildren();
@@ -226,12 +233,12 @@ export class DataGridWithPreview {
       void {
     if (columnIdentifier === 'key') {
       if (typeof oldText === 'string') {
-        this.#callbacks.removeItem(oldText);
+        this.#callbacks.edit?.removeItem(oldText);
       }
-      this.#callbacks.setItem(newText, editingNode.data.value || '');
+      this.#callbacks.edit?.setItem(newText, editingNode.data.value || '');
       this.#removeDupes(editingNode);
     } else {
-      this.#callbacks.setItem(editingNode.data.key || '', newText);
+      this.#callbacks.edit?.setItem(editingNode.data.key || '', newText);
     }
   }
 
@@ -251,7 +258,7 @@ export class DataGridWithPreview {
       return;
     }
 
-    this.#callbacks.removeItem(node.data.key);
+    this.#callbacks.edit?.removeItem(node.data.key);
 
     ARIAUtils.alert(this.#messages.itemDeleted);
   }
@@ -282,5 +289,9 @@ export class DataGridWithPreview {
     } else {
       this.showPreview(null, value);
     }
+  }
+
+  detach(): void {
+    this.#splitWidget.detach();
   }
 }

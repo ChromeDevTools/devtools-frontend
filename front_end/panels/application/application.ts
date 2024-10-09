@@ -10,6 +10,7 @@ import * as BounceTrackingMitigationsTreeElement from './BounceTrackingMitigatio
 import * as CookieItemsView from './CookieItemsView.js';
 import * as DOMStorageItemsView from './DOMStorageItemsView.js';
 import * as DOMStorageModel from './DOMStorageModel.js';
+import * as ExtensionStorageItemsView from './ExtensionStorageItemsView.js';
 import * as ExtensionStorageModel from './ExtensionStorageModel.js';
 import * as IndexedDBModel from './IndexedDBModel.js';
 import * as IndexedDBViews from './IndexedDBViews.js';
@@ -44,6 +45,7 @@ export {
   CookieItemsView,
   DOMStorageItemsView,
   DOMStorageModel,
+  ExtensionStorageItemsView,
   ExtensionStorageModel,
   IndexedDBModel,
   IndexedDBViews,

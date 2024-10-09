@@ -128,6 +128,10 @@ describeWithMockConnection('ExtensionStorageModel', () => {
   });
 
   it('adds/removes ExtensionStorage on Runtime events', async () => {
+    sinon.stub(extensionStorageModel.agent, 'invoke_getStorageItems').resolves({
+      data: {},
+      getError: () => undefined,
+    });
     extensionStorageModel.enable();
 
     assert.isEmpty(extensionStorageModel.storages());
@@ -166,6 +170,10 @@ describeWithMockConnection('ExtensionStorageModel', () => {
   });
 
   it('does not add ExtensionStorage if origin already added', async () => {
+    sinon.stub(extensionStorageModel.agent, 'invoke_getStorageItems').resolves({
+      data: {},
+      getError: () => undefined,
+    });
     extensionStorageModel.enable();
 
     assert.isEmpty(extensionStorageModel.storages());
@@ -189,6 +197,10 @@ describeWithMockConnection('ExtensionStorageModel', () => {
   });
 
   it('removes ExtensionStorage when last ExecutionContext is removed', async () => {
+    sinon.stub(extensionStorageModel.agent, 'invoke_getStorageItems').resolves({
+      data: {},
+      getError: () => undefined,
+    });
     extensionStorageModel.enable();
 
     assert.isEmpty(extensionStorageModel.storages());

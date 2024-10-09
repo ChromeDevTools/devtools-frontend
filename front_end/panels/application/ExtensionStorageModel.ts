@@ -34,9 +34,15 @@ export class ExtensionStorage extends Common.ObjectWrapper.ObjectWrapper<{}> {
     return this.#storageAreaInternal;
   }
 
-  async getItems(): Promise<{[key: string]: unknown}> {
-    const response = await this.#model.agent.invoke_getStorageItems(
-        {id: this.#extensionIdInternal, storageArea: this.#storageAreaInternal});
+  async getItems(keys?: string[]): Promise<{[key: string]: unknown}> {
+    const params: Protocol.Extensions.GetStorageItemsRequest = {
+      id: this.#extensionIdInternal,
+      storageArea: this.#storageAreaInternal,
+    };
+    if (keys) {
+      params.keys = keys;
+    }
+    const response = await this.#model.agent.invoke_getStorageItems(params);
     if (response.getError()) {
       throw new Error(response.getError());
     }
@@ -98,21 +104,41 @@ export class ExtensionStorageModel extends SDK.SDKModel.SDKModel<EventTypes> {
     this.#enabled = true;
   }
 
+  #getStoragesForExtension(id: string): Map<Protocol.Extensions.StorageArea, ExtensionStorage> {
+    const existingStorages = this.#storagesInternal.get(id);
+
+    if (existingStorages) {
+      return existingStorages;
+    }
+
+    const newStorages = new Map();
+    this.#storagesInternal.set(id, newStorages);
+    return newStorages;
+  }
+
   #addExtension(id: string, name: string): void {
     for (const storageArea
              of [Protocol.Extensions.StorageArea.Session, Protocol.Extensions.StorageArea.Local,
                  Protocol.Extensions.StorageArea.Sync, Protocol.Extensions.StorageArea.Managed]) {
-      const storages = this.#storagesInternal.get(id);
+      const storages = this.#getStoragesForExtension(id);
       const storage = new ExtensionStorage(this, id, name, storageArea);
 
-      if (!storages) {
-        this.#storagesInternal.set(id, new Map([[storageArea, storage]]));
-      } else {
-        console.assert(!storages.get(storageArea));
-        storages.set(storageArea, storage);
-      }
+      console.assert(!storages.get(storageArea));
 
-      this.dispatchEventToListeners(Events.EXTENSION_STORAGE_ADDED, storage);
+      storage.getItems([])
+          .then(() => {
+            // The extension may have been removed in the meantime.
+            if (this.#storagesInternal.get(id) !== storages) {
+              return;
+            }
+            storages.set(storageArea, storage);
+            this.dispatchEventToListeners(Events.EXTENSION_STORAGE_ADDED, storage);
+          })
+          .catch(
+              () => {
+                  // Storage area is inaccessible (extension may have restricted access
+                  // or not enabled the API).
+              });
     }
   }
 

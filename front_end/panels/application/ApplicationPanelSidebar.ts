@@ -1749,11 +1749,8 @@ export class ExtensionStorageTreeElement extends ApplicationPanelTreeElement {
 
   override onselect(selectedByUser?: boolean): boolean {
     super.onselect(selectedByUser);
+    this.resourcesPanel.showExtensionStorage(this.extensionStorage);
     Host.userMetrics.panelShown('extension-storage');
-
-    // TODO(crbug.com/40963428): Call this.resourcesPanel to show extension
-    // storage view
-
     return false;
   }
 

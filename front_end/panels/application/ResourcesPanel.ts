@@ -13,6 +13,8 @@ import {ApplicationPanelSidebar, StorageCategoryView} from './ApplicationPanelSi
 import {CookieItemsView} from './CookieItemsView.js';
 import {DOMStorageItemsView} from './DOMStorageItemsView.js';
 import {type DOMStorage} from './DOMStorageModel.js';
+import {ExtensionStorageItemsView} from './ExtensionStorageItemsView.js';
+import {type ExtensionStorage} from './ExtensionStorageModel.js';
 import type * as PreloadingHelper from './preloading/helper/helper.js';
 import resourcesPanelStyles from './resourcesPanel.css.js';
 import {StorageItemsView} from './StorageItemsView.js';
@@ -27,6 +29,7 @@ export class ResourcesPanel extends UI.Panel.PanelWithSidebar {
   storageViews: HTMLElement;
   private readonly storageViewToolbar: UI.Toolbar.Toolbar;
   private domStorageView: DOMStorageItemsView|null;
+  private extensionStorageView: ExtensionStorageItemsView|null;
   private cookieView: CookieItemsView|null;
   private readonly emptyWidget: UI.EmptyWidget.EmptyWidget|null;
   private readonly sidebar: ApplicationPanelSidebar;
@@ -50,6 +53,7 @@ export class ResourcesPanel extends UI.Panel.PanelWithSidebar {
     this.splitWidget().setMainWidget(mainContainer);
 
     this.domStorageView = null;
+    this.extensionStorageView = null;
 
     this.cookieView = null;
 
@@ -160,6 +164,19 @@ export class ResourcesPanel extends UI.Panel.PanelWithSidebar {
       this.domStorageView.setStorage(domStorage);
     }
     this.showView(this.domStorageView);
+  }
+
+  showExtensionStorage(extensionStorage: ExtensionStorage): void {
+    if (!extensionStorage) {
+      return;
+    }
+
+    if (!this.extensionStorageView) {
+      this.extensionStorageView = new ExtensionStorageItemsView(extensionStorage);
+    } else {
+      this.extensionStorageView.setStorage(extensionStorage);
+    }
+    this.showView(this.extensionStorageView);
   }
 
   showCookies(cookieFrameTarget: SDK.Target.Target, cookieDomain: string): void {

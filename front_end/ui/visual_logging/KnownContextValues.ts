@@ -1258,6 +1258,7 @@ export const knownContextValues = new Set([
   'expression',
   'extend-grid-lines',
   'extension-storage',
+  'extension-storage-data',
   'extension-storage-for-domain',
   'extension-storage-viewer',
   'extension-view',

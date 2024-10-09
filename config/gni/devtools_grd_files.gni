@@ -1133,6 +1133,7 @@ grd_files_debug_sources = [
   "front_end/panels/application/CookieItemsView.js",
   "front_end/panels/application/DOMStorageItemsView.js",
   "front_end/panels/application/DOMStorageModel.js",
+  "front_end/panels/application/ExtensionStorageItemsView.js",
   "front_end/panels/application/ExtensionStorageModel.js",
   "front_end/panels/application/IndexedDBModel.js",
   "front_end/panels/application/IndexedDBViews.js",

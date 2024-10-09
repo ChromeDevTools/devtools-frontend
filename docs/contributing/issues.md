@@ -171,6 +171,21 @@ the triage status, Chromium DevTools might show up with a high percentage of
 untriaged issues due to this fact.
 ***
 
+### T-Shirt Sizes
+
+We use the T-Shirt sizes approach to estimate effort for the `Chromium>Platform>DevTools`
+component tree, based on the following guidelines:
+
+| Size | Description                              | Examples                                                                                                                                                      |
+| :--- | :--------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| XXS  | Trivial CSS or logic change              | [Styles bar loses focus in Chrome OS DevTools](http://crbug.com/338348417), [Add 20x CPU throttling preset](https://crbug.com/324978881) |
+| XS   | One CL change                            | [Remove 'Consistent source map variable experiment'](http://crbug.com/40944633), [Autofill tab breaks with phone numbers starting with '+'](https://b.corp.google.com/issues/335409093) |
+| S    | series of CLs or a large CL              | [Local overrides for New Tab Page misses one "/" in folder name](http://crbug.com/328210785), [Memory tool should highlight common problems and opportunities](http://crbug.com/337094903), [Improve the developer experience of using compression dictionaries](http://crbug.com/333756098) |
+| M    | quarter-long single-person project       | [Exceptions in promise constructor should be treated as promise rejection](http://crbug.com/40283985) |
+| L    | multi-quarter or -person project         | [Replace regex-matching in the StylesSidebarPane](http://crbug.com/40945390) |
+| XL   | multi-quarter and -person project        | [MPArch migration](http://crbug.com/40238399), [GM3 adoption](http://crbug.com/40273199) |
+| XXL  | multi-year project with a dedicated team | [Performance Insights](http://crbug.com/40810111) |
+
 ## SLOs
 
 In order to deliver a better product experience for developers using Chromium

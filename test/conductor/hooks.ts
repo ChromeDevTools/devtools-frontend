@@ -83,7 +83,6 @@ function launchChrome() {
     'CloneDevToolsConnectionOnlyIfRequested',
     'MacAllowBackgroundingRenderProcesses',
     'MacWebContentsOcclusion',
-    'MojoBindingsInlineSLS',
     'MojoChannelAssociatedCrashesOnSendError',
     'MojoChannelAssociatedSendUsesRunOrPostTask',
     'MojoInlineMessagePayloads',

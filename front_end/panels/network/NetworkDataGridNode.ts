@@ -383,7 +383,11 @@ export class NetworkNode extends DataGrid.SortableDataGrid.SortableDataGridNode<
   renderCell(_cell: Element, _columnId: string): void {
   }
 
-  isFailed(): boolean {
+  isError(): boolean {
+    return false;
+  }
+
+  isWarning(): boolean {
     return false;
   }
 
@@ -391,10 +395,14 @@ export class NetworkNode extends DataGrid.SortableDataGrid.SortableDataGridNode<
     const bgColors = _backgroundColors;
     const hasFocus = document.hasFocus();
     const isSelected = this.dataGrid && this.dataGrid.element === document.activeElement;
-    const isFailed = this.isFailed();
+    const isWarning = this.isWarning();
+    const isError = this.isError();
 
-    if (this.selected && hasFocus && isSelected && isFailed) {
+    if (this.selected && hasFocus && isSelected && isError) {
       return bgColors.FocusSelectedHasError;
+    }
+    if (this.selected && hasFocus && isSelected && isWarning) {
+      return bgColors.FocusSelectedHasWarning;
     }
     if (this.selected && hasFocus && isSelected) {
       return bgColors.FocusSelected;
@@ -536,6 +544,7 @@ export const _backgroundColors: {
   Selected: '--color-grid-selected',
   FocusSelected: '--color-grid-focus-selected',
   FocusSelectedHasError: '--network-grid-focus-selected-color-has-error',
+  FocusSelectedHasWarning: '--network-grid-focus-selected-color-has-warning',
   FromFrame: '--network-grid-from-frame-color',
 };
 
@@ -883,11 +892,24 @@ export class NetworkRequestNode extends NetworkNode {
     return this.parentView().rowHeight();
   }
 
+  private isPrefetch(): boolean {
+    return this.requestInternal.resourceType() === Common.ResourceType.resourceTypes.Prefetch;
+  }
+
+  override isWarning(): boolean {
+    return this.isFailed() && this.isPrefetch();
+  }
+
+  override isError(): boolean {
+    return this.isFailed() && !this.isPrefetch();
+  }
+
   override createCells(element: Element): void {
     this.nameCell = null;
     this.initiatorCell = null;
 
-    element.classList.toggle('network-error-row', this.isFailed());
+    element.classList.toggle('network-warning-row', this.isWarning());
+    element.classList.toggle('network-error-row', this.isError());
     element.classList.toggle('network-navigation-row', this.isNavigationRequestInternal);
     super.createCells(element);
     this.updateBackgroundColor();
@@ -1060,7 +1082,7 @@ export class NetworkRequestNode extends NetworkNode {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(this.requestInternal.url());
   }
 
-  override isFailed(): boolean {
+  private isFailed(): boolean {
     return PanelUtils.isFailedNetworkRequest(this.requestInternal);
   }
 

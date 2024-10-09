@@ -48,7 +48,7 @@ export class ExpandableList extends HTMLElement {
         <div>
           ${this.#rows.length > 1 ?
             LitHtml.html`
-              <button title='${this.#title}' aria-label='${this.#title}' aria-expanded=${this.#expanded ? 'true' : 'false'} @click=${() => this.#onArrowClick()} class="arrow-icon-button">
+              <button title='${LitHtml.Directives.ifDefined(this.#title)}' aria-label='${LitHtml.Directives.ifDefined(this.#title)}' aria-expanded=${this.#expanded ? 'true' : 'false'} @click=${() => this.#onArrowClick()} class="arrow-icon-button">
                 <span class="arrow-icon ${this.#expanded ? 'expanded' : ''}"
                 jslog=${VisualLogging.expand().track({click: true})}></span>
               </button>

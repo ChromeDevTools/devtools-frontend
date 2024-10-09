@@ -942,7 +942,7 @@ export class BreakpointsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
               tabindex=-1
               jslog=${VisualLogging.toggle('breakpoint').track({change: true})}>
       </label>
-      <span class='code-snippet' @click=${codeSnippetClickHandler} title=${codeSnippetTooltip} jslog=${VisualLogging.action('sources.jump-to-breakpoint').track({click: true})}>${codeSnippet}</span>
+      <span class='code-snippet' @click=${codeSnippetClickHandler} title=${LitHtml.Directives.ifDefined(codeSnippetTooltip)} jslog=${VisualLogging.action('sources.jump-to-breakpoint').track({click: true})}>${codeSnippet}</span>
       <span class='breakpoint-item-location-or-actions'>
         ${editable ? this.#renderEditBreakpointButton(breakpointItem) : LitHtml.nothing}
         ${this.#renderRemoveBreakpointButton([breakpointItem], i18nString(UIStrings.removeBreakpoint), Host.UserMetrics.Action.BreakpointRemovedFromRemoveButton)}

@@ -120,7 +120,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/FieldSettingsDialog.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-const {html, nothing} = LitHtml;
+const {html, nothing, Directives: {ifDefined}} = LitHtml;
 
 export class ShowDialog extends Event {
   static readonly eventName = 'showdialog';
@@ -458,7 +458,7 @@ export class FieldSettingsDialog extends HTMLElement {
                 aria-label=${
                   i18nString(UIStrings.developmentOriginValue, {PH1: value as string})}
                 style=${inputStyle}
-                title=${value || ''}
+                title=${ifDefined(value)}
                 @keyup=${this.#onEditGridDevelopmentOriginChange}
                 @change=${this.#onEditGridDevelopmentOriginChange} />
             `,
@@ -475,7 +475,7 @@ export class FieldSettingsDialog extends HTMLElement {
                 aria-label=${
                   i18nString(UIStrings.productionOriginValue, {PH1: value as string})}
                 style=${inputStyle}
-                title=${value || ''}
+                title=${ifDefined(value)}
                 @keyup=${this.#onEditGridProductionOriginChange}
                 @change=${this.#onEditGridProductionOriginChange} />
             `,
@@ -610,7 +610,7 @@ export class FieldSettingsDialog extends HTMLElement {
                 class="devtools-text-input"
                 .disabled=${!this.#urlOverrideEnabled}
                 .value=${this.#urlOverride}
-                placeholder=${this.#urlOverrideEnabled ? i18nString(UIStrings.url) : ''}
+                placeholder=${ifDefined(this.#urlOverrideEnabled ? i18nString(UIStrings.url) : undefined)}
               />
               ${
                 this.#urlOverrideWarning

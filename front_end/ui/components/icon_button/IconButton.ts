@@ -85,8 +85,9 @@ export class IconButton extends HTMLElement {
       .data=${{iconName: counter.iconName, color: counter.iconColor, width: counter.iconWidth || '1.5ex', height: counter.iconHeight || '1.5ex'} as IconData}>
       </${Icon.litTagName}>
       ${this.#compact ? LitHtml.html`<!-- Force line-height for this element --><span>&#8203;</span>` : LitHtml.nothing}
-      <span class="icon-button-title">${counter.text}</span>
-      </button>`)}
+      <span class="icon-button-title">${counter.text}</span>`,
+      )}
+      </button>
       ${(!this.#compact && this.#trailingText) ? LitHtml.html`<span class="icon-button-title">${this.#trailingText}</span>` : LitHtml.nothing}
     `, this.#shadow, { host: this});
     // clang-format on

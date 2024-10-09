@@ -54,7 +54,8 @@ export class MarkdownImage extends HTMLElement {
     }
     const {src, width = '100%', height = '100%'} = this.#imageData;
     return LitHtml.html`
-      <img class="markdown-image" src=${src} alt=${this.#imageTitle} width=${width} height=${height}/>
+      <img class="markdown-image" src=${src} alt=${LitHtml.Directives.ifDefined(this.#imageTitle)} width=${
+        width} height=${height} />
     `;
   }
 

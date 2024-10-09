@@ -387,7 +387,7 @@ export class DataGrid extends HTMLElement {
    * Guidance on values of attribute taken from
    * https://www.w3.org/TR/wai-aria-practices/examples/grid/dataGrids.html.
    */
-  #ariaSortForHeader(col: Column): string|undefined {
+  #ariaSortForHeader(col: Column): 'none'|'ascending'|'descending'|undefined {
     if (col.sortable && (!this.#sortState || this.#sortState.columnId !== col.id)) {
       // Column is sortable but is not currently sorted
       return 'none';
@@ -803,6 +803,7 @@ export class DataGrid extends HTMLElement {
           aria-colcount=${this.#columns.length}
           @keydown=${this.#onTableKeyDown}
         >
+          <!-- @ts-ignore -->
           <colgroup>
             ${this.#columns.map((col, colIndex) => {
               const width = calculateColumnWidthPercentageFromWeighting(this.#columns, col.id);
@@ -909,7 +910,7 @@ export class DataGrid extends HTMLElement {
                     }}
                   >${cellOutput}</td>`;
                 })}
-              `;
+              </tr>`;
             })}
             ${this.#renderEmptyFillerRow(renderableRows.length)}
             <tr class="filler-row-bottom padding-row" style=${LitHtml.Directives.styleMap({

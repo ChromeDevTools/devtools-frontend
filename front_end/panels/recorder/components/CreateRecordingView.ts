@@ -6,6 +6,7 @@
 
 import '../../../ui/legacy/legacy.js';
 import '../../../ui/components/icon_button/icon_button.js';
+import './ControlButton.js';
 
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
@@ -301,7 +302,7 @@ export class CreateRecordingView extends HTMLElement {
             </x-link>
           </label>
           <input
-            value=${this.#recorderSettings?.selectorAttribute}
+            value=${LitHtml.Directives.ifDefined(this.#recorderSettings?.selectorAttribute)}
             placeholder="data-testid"
             @keydown=${this.#onKeyDown}
             jslog=${VisualLogging.textField('selector-attribute').track({change: true})}
@@ -328,9 +329,7 @@ export class CreateRecordingView extends HTMLElement {
                       @keydown=${this.#onKeyDown}
                       .value=${selectorType}
                       jslog=${VisualLogging.toggle().track({click: true}).context(`selector-${selectorType}`)}
-                      checked=${LitHtml.Directives.ifDefined(
-                        checked ? checked : undefined,
-                      )}
+                      ?checked=${checked}
                       type="checkbox"
                     />
                     ${selectorTypeToLabel.get(selectorType) || selectorType}

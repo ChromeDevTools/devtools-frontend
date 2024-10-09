@@ -39,7 +39,7 @@ const UIStrings = {
 const str_ =
     i18n.i18n.registerUIStrings('panels/linear_memory_inspector/components/LinearMemoryNavigator.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-const {render, html} = LitHtml;
+const {render, html, Directives: {ifDefined}} = LitHtml;
 
 export const enum Navigation {
   BACKWARD = 'Backward',
@@ -170,7 +170,7 @@ export class LinearMemoryNavigator extends HTMLElement {
         jslog=${VisualLogging.textField('linear-memory-inspector.address').track({
       change: true,
     })}
-        title=${this.#valid ? i18nString(UIStrings.enterAddress) : this.#error || ''} @change=${
+        title=${ifDefined(this.#valid ? i18nString(UIStrings.enterAddress) : this.#error)} @change=${
         this.#onAddressChange.bind(this, Mode.SUBMITTED)} @input=${this.#onAddressChange.bind(this, Mode.EDIT)}/>`;
   }
 

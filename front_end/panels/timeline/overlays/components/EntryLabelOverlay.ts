@@ -349,7 +349,7 @@ export class EntryLabelOverlay extends HTMLElement {
             <line/>
             <circle/>
           </svg>
-          <div class="entry-highlight-wrapper"/>
+          <div class="entry-highlight-wrapper"></div>
         </span>`,
         this.#shadow, {host: this});
     // clang-format on

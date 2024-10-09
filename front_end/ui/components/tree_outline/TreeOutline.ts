@@ -452,8 +452,7 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
       'is-top-level': depth === 0,
       compact: this.#compact,
     });
-    const ariaExpandedAttribute =
-        LitHtml.Directives.ifDefined(isExpandableNode(node) ? String(nodeIsExpanded) : undefined);
+    const ariaExpandedAttribute = !isExpandableNode(node) ? undefined : nodeIsExpanded ? 'true' : 'false';
 
     let renderedNodeKey: LitHtml.TemplateResult;
     if (node.renderer) {
@@ -468,7 +467,7 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
       <li role="treeitem"
         tabindex=${tabIndex}
         aria-setsize=${setSize}
-        aria-expanded=${ariaExpandedAttribute}
+        aria-expanded=${LitHtml.Directives.ifDefined(ariaExpandedAttribute)}
         aria-level=${depth + 1}
         aria-posinset=${positionInSet + 1}
         class=${listItemClasses}

@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../../../../ui/legacy/legacy.js';
+
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import type * as Protocol from '../../../../generated/protocol.js';
@@ -768,7 +770,6 @@ export class UserAgentClientHintsForm extends HTMLElement {
           @keydown=${this.#handleTreeExpand}
           aria-expanded=${this.#isFormOpened}
           aria-controls="form-container"
-          @disabled=${this.#isFormDisabled}
           aria-disabled=${this.#isFormDisabled}
           aria-label=${i18nString(UIStrings.title)}
           jslog=${VisualLogging.toggleSubpane().track({click: true})}

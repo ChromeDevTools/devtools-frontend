@@ -150,7 +150,7 @@ export class IssueLinkIcon extends HTMLElement {
               jslog=${VisualLogging.link('issue').track({click: true})}
               @click=${this.handleClick}>
         <${IconButton.Icon.Icon.litTagName} name=${this.#getIconName()}></${IconButton.Icon.Icon.litTagName}>
-      </span>`,
+      </button>`,
       this.#shadow, {host: this});
       // clang-format on
     });

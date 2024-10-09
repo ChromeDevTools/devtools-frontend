@@ -86,7 +86,7 @@ export class TwoStatesCounter extends HTMLElement {
 
     // clang-format off
     return count > 0 ? LitHtml.html`
-       <span class=${LitHtml.Directives.classMap(classInfo)} style=${LitHtml.Directives.styleMap(styles)} title=${title}>
+       <span class=${LitHtml.Directives.classMap(classInfo)} style=${LitHtml.Directives.styleMap(styles)} title=${LitHtml.Directives.ifDefined(title)}>
           ${count}
        </span>
       ` : LitHtml.nothing;

@@ -19,7 +19,7 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/inline_editor/LinkSwatch.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-const {render, html, Directives} = LitHtml;
+const {render, html, Directives: {ifDefined, classMap}} = LitHtml;
 
 interface BaseLinkSwatchRenderData {
   text: string;
@@ -59,7 +59,7 @@ class BaseLinkSwatch extends HTMLElement {
 
   private render(data: BaseLinkSwatchRenderData): void {
     const {isDefined, text, title} = data;
-    const classes = Directives.classMap({
+    const classes = classMap({
       'link-style': true,
       'text-button': true,
       'link-swatch-link': true,
@@ -71,9 +71,10 @@ class BaseLinkSwatch extends HTMLElement {
     // We added var popover, so don't need the title attribute when no need for showing title and
     // only provide the data-title for the popover to get the data.
     const {startNode} = render(
-        html`<button .disabled=${!isDefined} class=${classes} title=${data.showTitle ? title : ''} data-title=${
-            LitHtml.Directives.ifDefined(
-                !data.showTitle ? title : null)} @click=${onActivate} role="link" tabindex="-1">${text}</button>`,
+        html`<button .disabled=${!isDefined} class=${classes}
+                     title=${ifDefined(data.showTitle ? title : undefined)}
+                     data-title=${ifDefined(!data.showTitle ? title : null)}
+                     @click=${onActivate} role="link" tabindex="-1">${text}</button>`,
         this.shadow, {host: this});
     if (startNode?.nextSibling instanceof HTMLButtonElement) {
       this.#linkElement = startNode?.nextSibling;

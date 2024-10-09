@@ -32,14 +32,19 @@ const CustomChrome = function(this: unknown, _baseBrowserDecorator: unknown, _ar
   require('karma-chrome-launcher')['launcher:Chrome'][1].apply(this, arguments);
 };
 
+const executablePath = TestConfig.chromeBinary;
+
 CustomChrome.prototype = {
   name: 'ChromeLauncher',
 
   DEFAULT_CMD: {
-    [process.platform]: TestConfig.chromeBinary,
+    [process.platform]: executablePath,
   },
   ENV_CMD: 'CHROME_BIN',
 };
+
+TestConfig.configureChrome(executablePath);
+
 CustomChrome.$inject = ['baseBrowserDecorator', 'args', 'config'];
 
 const BaseProgressReporter =

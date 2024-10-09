@@ -12,7 +12,6 @@ import {commandLineArgs} from './conductor/commandline.js';
 import {
   BUILD_WITH_CHROMIUM,
   CHECKOUT_ROOT,
-  defaultChromePath,
   GEN_DIR,
   isContainedInDirectory,
   PathPair,
@@ -139,18 +138,6 @@ class MochaTests extends Tests {
 
 class KarmaTests extends Tests {
   override run(tests: PathPair[]) {
-    if (os.type() === 'Windows_NT') {
-      const result = runProcess(
-          'python3',
-          [
-            path.join(SOURCE_ROOT, 'scripts', 'deps', 'set_lpac_acls.py'),
-            path.dirname(options['chrome-binary'] ?? defaultChromePath()),
-          ],
-          {encoding: 'utf-8', stdio: 'inherit'});
-      if (result.error || (result.status ?? 1) !== 0) {
-        return false;
-      }
-    }
     return super.run(tests, [
       path.join(SOURCE_ROOT, 'node_modules', 'karma', 'bin', 'karma'),
       'start',

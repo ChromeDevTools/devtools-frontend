@@ -107,13 +107,16 @@ function launchChrome() {
     '--disable-blink-features=WebAssemblyJSPromiseIntegration',  // TODO(crbug.com/325123665) Remove once heap snapshots work again with JSPI
     `--disable-features=${disabledFeatures.join(',')}`,
   ];
+  const executablePath = TestConfig.chromeBinary;
   const opts: puppeteer.LaunchOptions&puppeteer.BrowserLaunchArgumentOptions&puppeteer.BrowserConnectOptions = {
     headless,
-    executablePath: TestConfig.chromeBinary,
+    executablePath,
     dumpio: !headless || Boolean(process.env['LUCI_CONTEXT']),
     slowMo: envSlowMo,
     protocolTimeout,
   };
+
+  TestConfig.configureChrome(executablePath);
 
   // Always set the default viewport because setting only the window size for
   // headful mode would result in much smaller actual viewport.

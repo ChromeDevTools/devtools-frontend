@@ -137,7 +137,7 @@ export class SourceMapsResolver extends EventTarget {
 
     for (const debuggerModel of this.#debuggerModelsToListen) {
       debuggerModel.sourceMapManager().addEventListener(
-          SDK.SourceMapManager.Events.SourceMapAttached, () => this.#onAttachedSourceMap(), this);
+          SDK.SourceMapManager.Events.SourceMapAttached, this.#onAttachedSourceMap, this);
     }
 
     // Although we have added listeners for SourceMapAttached events, we also
@@ -154,7 +154,7 @@ export class SourceMapsResolver extends EventTarget {
   uninstall(): void {
     for (const debuggerModel of this.#debuggerModelsToListen) {
       debuggerModel.sourceMapManager().removeEventListener(
-          SDK.SourceMapManager.Events.SourceMapAttached, () => this.#onAttachedSourceMap(), this);
+          SDK.SourceMapManager.Events.SourceMapAttached, this.#onAttachedSourceMap, this);
     }
     this.#debuggerModelsToListen.clear();
   }

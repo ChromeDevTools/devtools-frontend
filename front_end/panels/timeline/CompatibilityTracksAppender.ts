@@ -233,14 +233,14 @@ export class CompatibilityTracksAppender {
     this.#allTrackAppenders.push(this.#serverTimingsTrackAppender);
     this.#addThreadAppenders();
     this.#addExtensionAppenders();
-    ThemeSupport.ThemeSupport.instance().addEventListener(ThemeSupport.ThemeChangeEvent.eventName, () => {
-      for (const group of this.#flameChartData.groups) {
-        // We only need to update the color here, because FlameChart will call `scheduleUpdate()` when theme is changed.
-        group.style.color = ThemeSupport.ThemeSupport.instance().getComputedValue('--sys-color-on-surface');
-        group.style.backgroundColor =
-            ThemeSupport.ThemeSupport.instance().getComputedValue('--sys-color-cdt-base-container');
-      }
-    });
+
+    this.onThemeChange = this.onThemeChange.bind(this);
+    ThemeSupport.ThemeSupport.instance().addEventListener(ThemeSupport.ThemeChangeEvent.eventName, this.onThemeChange);
+  }
+
+  reset(): void {
+    ThemeSupport.ThemeSupport.instance().removeEventListener(
+        ThemeSupport.ThemeChangeEvent.eventName, this.onThemeChange);
   }
 
   setFlameChartDataAndEntryData(
@@ -254,6 +254,15 @@ export class CompatibilityTracksAppender {
 
   getFlameChartTimelineData(): PerfUI.FlameChart.FlameChartTimelineData {
     return this.#flameChartData;
+  }
+
+  private onThemeChange(): void {
+    for (const group of this.#flameChartData.groups) {
+      // We only need to update the color here, because FlameChart will call `scheduleUpdate()` when theme is changed.
+      group.style.color = ThemeSupport.ThemeSupport.instance().getComputedValue('--sys-color-on-surface');
+      group.style.backgroundColor =
+          ThemeSupport.ThemeSupport.instance().getComputedValue('--sys-color-cdt-base-container');
+    }
   }
 
   #addExtensionAppenders(): void {

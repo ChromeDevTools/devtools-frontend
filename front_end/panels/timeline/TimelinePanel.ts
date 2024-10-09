@@ -451,12 +451,8 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.brickBreakerToolbarButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.fixMe), adorner);
     this.brickBreakerToolbarButton.addEventListener(
         UI.Toolbar.ToolbarButton.Events.CLICK, () => this.#onBrickBreakerEasterEggClick());
-    const config = Trace.Types.Configuration.defaults();
-    config.showAllEvents = Root.Runtime.experiments.isEnabled('timeline-show-all-events');
-    config.includeRuntimeCallStats = Root.Runtime.experiments.isEnabled('timeline-v8-runtime-call-stats');
-    config.debugMode = Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_DEBUG_MODE);
 
-    this.#traceEngineModel = Trace.TraceModel.Model.createWithAllHandlers(config);
+    this.#traceEngineModel = this.#instantiateNewModel();
     this.#listenForProcessingProgress();
 
     this.element.addEventListener('contextmenu', this.contextMenu.bind(this), false);
@@ -658,6 +654,15 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     }
 
     return timelinePanelInstance;
+  }
+
+  #instantiateNewModel(): Trace.TraceModel.Model {
+    const config = Trace.Types.Configuration.defaults();
+    config.showAllEvents = Root.Runtime.experiments.isEnabled('timeline-show-all-events');
+    config.includeRuntimeCallStats = Root.Runtime.experiments.isEnabled('timeline-v8-runtime-call-stats');
+    config.debugMode = Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_DEBUG_MODE);
+
+    return Trace.TraceModel.Model.createWithAllHandlers(config);
   }
 
   static extensionDataVisibilitySetting(): Common.Settings.Setting<boolean> {
@@ -1596,6 +1601,11 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
   private onClearButton(): void {
     this.#historyManager.clear();
+    this.#traceEngineModel = this.#instantiateNewModel();
+    ModificationsManager.reset();
+    this.#uninstallSourceMapsResolver();
+    this.flameChart.getMainDataProvider().reset(true);
+    this.flameChart.reset();
     this.#changeView({mode: 'LANDING_PAGE'});
   }
 

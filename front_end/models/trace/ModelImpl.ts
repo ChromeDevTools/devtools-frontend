@@ -160,27 +160,15 @@ export class Model extends EventTarget {
    * If no index is given, the last stored parsed data is returned.
    */
   parsedTrace(index: number = this.#traces.length - 1): Handlers.Types.ParsedTrace|null {
-    if (!this.#traces[index]) {
-      return null;
-    }
-
-    return this.#traces[index].parsedTrace;
+    return this.#traces.at(index)?.parsedTrace ?? null;
   }
 
   traceInsights(index: number = this.#traces.length - 1): Insights.Types.TraceInsightSets|null {
-    if (!this.#traces[index]) {
-      return null;
-    }
-
-    return this.#traces[index].traceInsights;
+    return this.#traces.at(index)?.traceInsights ?? null;
   }
 
   metadata(index: number = this.#traces.length - 1): Types.File.MetaData|null {
-    if (!this.#traces[index]) {
-      return null;
-    }
-
-    return this.#traces[index].metadata;
+    return this.#traces.at(index)?.metadata ?? null;
   }
 
   overrideModifications(index: number, newModifications: Types.File.Modifications): void {
@@ -190,20 +178,12 @@ export class Model extends EventTarget {
   }
 
   rawTraceEvents(index: number = this.#traces.length - 1): readonly Types.Events.Event[]|null {
-    if (!this.#traces[index]) {
-      return null;
-    }
-
-    return this.#traces[index].traceEvents;
+    return this.#traces.at(index)?.traceEvents ?? null;
   }
 
   syntheticTraceEventsManager(index: number = this.#traces.length - 1): Helpers.SyntheticEvents.SyntheticEventsManager
       |null {
-    if (!this.#syntheticEventsManagerByTrace[index]) {
-      return null;
-    }
-
-    return this.#syntheticEventsManagerByTrace[index];
+    return this.#syntheticEventsManagerByTrace.at(index) ?? null;
   }
 
   size(): number {

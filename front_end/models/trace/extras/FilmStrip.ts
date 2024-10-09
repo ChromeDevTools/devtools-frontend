@@ -30,7 +30,7 @@ export type HandlerDataWithScreenshots = Handlers.Types.EnabledHandlerDataWithMe
 // Cache film strips based on:
 // 1. The trace parsed data object
 // 2. The start time.
-const filmStripCache = new Map<HandlerDataWithScreenshots, Map<Types.Timing.MicroSeconds, Data>>();
+const filmStripCache = new WeakMap<HandlerDataWithScreenshots, Map<Types.Timing.MicroSeconds, Data>>();
 
 export function fromParsedTrace(
     parsedTrace: HandlerDataWithScreenshots, customZeroTime?: Types.Timing.MicroSeconds): Data {

@@ -726,7 +726,8 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
   }
 
   extensionDataVisibilityChanged(): void {
-    this.#reset();
+    this.reset();
+    this.setupWindowTimes();
     this.mainDataProvider.reset(true);
     this.mainDataProvider.timelineData(true);
     this.refreshMainFlameChart();
@@ -806,7 +807,8 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     this.#selectedEvents = null;
     this.mainDataProvider.setModel(newParsedTrace, isCpuProfile);
     this.networkDataProvider.setModel(newParsedTrace);
-    this.#reset();
+    this.reset();
+    this.setupWindowTimes();
     this.updateSearchResults(false, false);
     this.refreshMainFlameChart();
     this.#updateFlameCharts();
@@ -825,7 +827,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     this.#updateDetailViews();
   }
 
-  #reset(): void {
+  reset(): void {
     if (this.networkDataProvider.isEmpty()) {
       this.mainFlameChart.enableRuler(true);
       this.networkSplitWidget.hideSidebar();
@@ -838,7 +840,10 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     this.mainFlameChart.reset();
     this.networkFlameChart.reset();
     this.updateSearchResults(false, false);
+  }
 
+  // TODO(paulirish): It's possible this is being called more than necessary. Attempt to clean up the lifecycle.
+  setupWindowTimes(): void {
     const traceBoundsState = TraceBounds.TraceBounds.BoundsManager.instance().state();
     if (!traceBoundsState) {
       throw new Error('TimelineFlameChartView could not set the window bounds.');

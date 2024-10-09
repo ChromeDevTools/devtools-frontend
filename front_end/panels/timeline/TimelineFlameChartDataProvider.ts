@@ -469,7 +469,9 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     this.entryTypeByLevel = [];
     this.entryIndexToTitle = [];
     this.#eventIndexByEvent = new Map();
+
     if (resetCompatibilityTracksAppender) {
+      this.compatibilityTracksAppender?.reset();
       this.compatibilityTracksAppender = null;
       this.timelineDataInternal = null;
     } else if (!resetCompatibilityTracksAppender && this.timelineDataInternal) {
@@ -478,6 +480,8 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       this.compatibilityTracksAppender?.threadAppenders().forEach(
           threadAppender => threadAppender.setHeaderAppended(false));
     }
+
+    ExtensionDataGatherer.removeInstance();
   }
 
   maxStackDepth(): number {

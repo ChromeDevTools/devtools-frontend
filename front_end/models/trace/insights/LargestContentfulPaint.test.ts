@@ -56,7 +56,7 @@ describeWithEnvironment('LargestContentfulPaint', function() {
     const {shouldIncreasePriorityHint, shouldPreloadImage, shouldRemoveLazyLoading} = insight;
 
     assert.strictEqual(shouldRemoveLazyLoading, false);
-    assert.strictEqual(shouldPreloadImage, true);
+    assert.strictEqual(shouldPreloadImage, false);
     assert.strictEqual(shouldIncreasePriorityHint, true);
   });
 

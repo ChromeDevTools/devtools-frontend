@@ -125,10 +125,15 @@ export function generateInsight(parsedTrace: RequiredData<typeof deps>, context:
     };
   }
 
-  const imageLoadingAttr = lcpEvent.args.data?.loadingAttr;
-  const imagePreloaded = lcpRequest?.args.data.isLinkPreload || lcpRequest?.args.data.initiator?.type === 'preload';
-  const imageFetchPriorityHint = lcpRequest?.args.data.fetchPriorityHint;
+  const initiatorUrl = lcpRequest.args.data.initiator?.url;
+  // TODO(b/372319476): Explore using trace event HTMLDocumentParser::FetchQueuedPreloads to determine if the request
+  // is discovered by the preload scanner.
+  const initiatedByMainDoc =
+      lcpRequest?.args.data.initiator?.type === 'parser' && docRequest.args.data.url === initiatorUrl;
+  const imgPreloadedOrFoundInHTML = lcpRequest?.args.data.isLinkPreload || initiatedByMainDoc;
 
+  const imageLoadingAttr = lcpEvent.args.data?.loadingAttr;
+  const imageFetchPriorityHint = lcpRequest?.args.data.fetchPriorityHint;
   // This is the earliest discovery time an LCP request could have - it's TTFB.
   const earliestDiscoveryTime = docRequest && docRequest.args.data.timing ?
       Helpers.Timing.secondsToMicroseconds(docRequest.args.data.timing.requestTime) +
@@ -142,7 +147,7 @@ export function generateInsight(parsedTrace: RequiredData<typeof deps>, context:
     phases: breakdownPhases(context.navigation, docRequest, lcpMs, lcpRequest),
     shouldRemoveLazyLoading: imageLoadingAttr === 'lazy',
     shouldIncreasePriorityHint: imageFetchPriorityHint !== 'high',
-    shouldPreloadImage: !imagePreloaded,
+    shouldPreloadImage: !imgPreloadedOrFoundInHTML,
     lcpRequest,
     earliestDiscoveryTimeTs: earliestDiscoveryTime ? Types.Timing.MicroSeconds(earliestDiscoveryTime) : undefined,
   };

@@ -52,13 +52,13 @@ describeWithEnvironment('FreestylerPanel', () => {
       panel.show(document.body);
       sinon.assert.calledWith(mockView, sinon.match({state: Freestyler.State.CONSENT_VIEW}));
 
-      Common.Settings.moduleSetting('freestyler-enabled').set(true);
+      Common.Settings.moduleSetting('ai-assistance-enabled').set(true);
       sinon.assert.calledWith(mockView, sinon.match({state: Freestyler.State.CHAT_VIEW}));
       panel.detach();
     });
 
     it('should render chat view when the consent is given before', async () => {
-      Common.Settings.moduleSetting('freestyler-enabled').set(true);
+      Common.Settings.moduleSetting('ai-assistance-enabled').set(true);
 
       new Freestyler.FreestylerPanel(mockView, {
         aidaClient: getTestAidaClient(),
@@ -70,8 +70,8 @@ describeWithEnvironment('FreestylerPanel', () => {
     });
 
     it('should render the consent view when the setting is disabled', async () => {
-      Common.Settings.moduleSetting('freestyler-enabled').set(true);
-      Common.Settings.moduleSetting('freestyler-enabled').setDisabled(true);
+      Common.Settings.moduleSetting('ai-assistance-enabled').set(true);
+      Common.Settings.moduleSetting('ai-assistance-enabled').setDisabled(true);
 
       new Freestyler.FreestylerPanel(mockView, {
         aidaClient: getTestAidaClient(),
@@ -80,7 +80,7 @@ describeWithEnvironment('FreestylerPanel', () => {
       });
 
       sinon.assert.calledWith(mockView, sinon.match({state: Freestyler.State.CONSENT_VIEW}));
-      Common.Settings.moduleSetting('freestyler-enabled').setDisabled(false);
+      Common.Settings.moduleSetting('ai-assistance-enabled').setDisabled(false);
     });
   });
 

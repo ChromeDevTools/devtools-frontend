@@ -21,7 +21,7 @@ describeWithEnvironment('AISettingsTab', () => {
     toggleContainers: HTMLElement[],
   }> {
     Common.Settings.moduleSetting('console-insights-enabled').set(false);
-    Common.Settings.moduleSetting('freestyler-enabled').set(true);
+    Common.Settings.moduleSetting('ai-assistance-enabled').set(true);
 
     const view = new Settings.AISettingsTab.AISettingsTab();
     renderElementIntoDOM(view);
@@ -42,7 +42,7 @@ describeWithEnvironment('AISettingsTab', () => {
 
   it('renders', async () => {
     Common.Settings.moduleSetting('console-insights-enabled').set(true);
-    Common.Settings.moduleSetting('freestyler-enabled').set(true);
+    Common.Settings.moduleSetting('ai-assistance-enabled').set(true);
 
     const view = new Settings.AISettingsTab.AISettingsTab();
     renderElementIntoDOM(view);
@@ -84,11 +84,11 @@ describeWithEnvironment('AISettingsTab', () => {
   it('can turn feature off without collapsing it', async () => {
     const {switches, details, dropdownButtons} = await renderAISettings();
     dropdownButtons[1].click();
-    assert.isTrue(Common.Settings.moduleSetting('freestyler-enabled').get());
+    assert.isTrue(Common.Settings.moduleSetting('ai-assistance-enabled').get());
     assert.isTrue(isExpanded(details[1]));
 
     (switches[1].parentElement as HTMLElement).click();
-    assert.isFalse(Common.Settings.moduleSetting('freestyler-enabled').get());
+    assert.isFalse(Common.Settings.moduleSetting('ai-assistance-enabled').get());
     assert.isTrue(isExpanded(details[1]));
   });
 
@@ -101,8 +101,8 @@ describeWithEnvironment('AISettingsTab', () => {
         return {disabled: true, reason: 'reason 1'};
       },
     });
-    Common.Settings.moduleSetting('freestyler-enabled').setRegistration({
-      settingName: 'freestyler-enabled',
+    Common.Settings.moduleSetting('ai-assistance-enabled').setRegistration({
+      settingName: 'ai-assistance-enabled',
       settingType: Common.Settings.SettingType.BOOLEAN,
       defaultValue: true,
       disabledCondition: () => {

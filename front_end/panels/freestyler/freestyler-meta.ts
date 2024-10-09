@@ -58,7 +58,7 @@ const str_ = i18n.i18n.registerUIStrings('panels/freestyler/freestyler-meta.ts',
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
-const setting = 'freestyler-enabled';
+const setting = 'ai-assistance-enabled';
 
 function isLocaleRestricted(): boolean {
   const devtoolsLocale = i18n.DevToolsLocale.DevToolsLocale.instance();

@@ -131,9 +131,9 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
   static readonly litTagName = LitHtml.literal`devtools-settings-ai-settings-tab`;
   readonly #shadow = this.attachShadow({mode: 'open'});
   #consoleInsightsSetting?: Common.Settings.Setting<boolean>;
-  #freestylerSetting?: Common.Settings.Setting<boolean>;
+  #aiAssistanceSetting?: Common.Settings.Setting<boolean>;
   #isConsoleInsightsSettingExpanded = false;
-  #isFreestylerSettingExpanded = false;
+  #isAiAssistanceSettingExpanded = false;
 
   constructor() {
     super();
@@ -143,9 +143,9 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
       this.#consoleInsightsSetting = undefined;
     }
     try {
-      this.#freestylerSetting = Common.Settings.Settings.instance().moduleSetting('freestyler-enabled');
+      this.#aiAssistanceSetting = Common.Settings.Settings.instance().moduleSetting('ai-assistance-enabled');
     } catch {
-      this.#freestylerSetting = undefined;
+      this.#aiAssistanceSetting = undefined;
     }
   }
 
@@ -181,24 +181,24 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
     void this.render();
   }
 
-  #expandFreestylerSetting(): void {
-    this.#isFreestylerSettingExpanded = !this.#isFreestylerSettingExpanded;
+  #expandAiAssistanceSetting(): void {
+    this.#isAiAssistanceSettingExpanded = !this.#isAiAssistanceSettingExpanded;
     void this.render();
   }
 
-  #toggleFreestylerSetting(ev: Event): void {
+  #toggleAiAssistanceSetting(ev: Event): void {
     // If the switch is being clicked, there is both a click- and a
     // change-event. Aborting on click avoids running this method twice.
     if (ev.target instanceof Switch.Switch.Switch && ev.type !== Switch.Switch.SwitchChangeEvent.eventName) {
       return;
     }
-    if (!this.#freestylerSetting) {
+    if (!this.#aiAssistanceSetting) {
       return;
     }
-    const oldSettingValue = this.#freestylerSetting.get();
-    this.#freestylerSetting.set(!oldSettingValue);
-    if (!oldSettingValue && !this.#isFreestylerSettingExpanded) {
-      this.#isFreestylerSettingExpanded = true;
+    const oldSettingValue = this.#aiAssistanceSetting.get();
+    this.#aiAssistanceSetting.set(!oldSettingValue);
+    if (!oldSettingValue && !this.#isAiAssistanceSettingExpanded) {
+      this.#isAiAssistanceSettingExpanded = true;
     }
     void this.render();
   }
@@ -339,17 +339,17 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
     // clang-format on
   }
 
-  #renderFreestylerSetting(): LitHtml.TemplateResult {
+  #renderAiAssistanceSetting(): LitHtml.TemplateResult {
     const detailsClasses = {
       'whole-row': true,
-      open: this.#isFreestylerSettingExpanded,
+      open: this.#isAiAssistanceSettingExpanded,
     };
-    const tabindex = this.#isFreestylerSettingExpanded ? '0' : '-1';
+    const tabindex = this.#isAiAssistanceSettingExpanded ? '0' : '-1';
 
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     return LitHtml.html`
-      <div class="accordion-header" @click=${this.#expandFreestylerSetting}>
+      <div class="accordion-header" @click=${this.#expandAiAssistanceSetting}>
         <div class="icon-container centered">
           <${IconButton.Icon.Icon.litTagName} name="smart-assistant"></${IconButton.Icon.Icon.litTagName}>
         </div>
@@ -360,9 +360,9 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
         <div class="dropdown centered">
           <${Buttons.Button.Button.litTagName}
             .data=${{
-              title: this.#isFreestylerSettingExpanded ? i18nString(UIStrings.showLess) : i18nString(UIStrings.showMore),
+              title: this.#isAiAssistanceSettingExpanded ? i18nString(UIStrings.showLess) : i18nString(UIStrings.showMore),
               size: Buttons.Button.Size.SMALL,
-              iconUrl: this.#isFreestylerSettingExpanded ? chevronUpIconUrl : chevronDownIconUrl,
+              iconUrl: this.#isAiAssistanceSettingExpanded ? chevronUpIconUrl : chevronDownIconUrl,
               variant: Buttons.Button.Variant.ICON,
               jslogContext: 'freestyler.accordion',
             } as Buttons.Button.ButtonData}
@@ -371,15 +371,15 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
       </div>
       <div class="divider"></div>
       <div class="toggle-container centered"
-        title=${this.#freestylerSetting?.disabledReason()}
-        @click=${this.#toggleFreestylerSetting.bind(this)}
+        title=${this.#aiAssistanceSetting?.disabledReason()}
+        @click=${this.#toggleAiAssistanceSetting.bind(this)}
       >
         <${Switch.Switch.Switch.litTagName}
-          .checked=${this.#freestylerSetting?.get() && !this.#freestylerSetting?.disabled()}
-          .jslogContext=${this.#freestylerSetting?.name}
-          .disabled=${this.#freestylerSetting?.disabled()}
-          @switchchange=${this.#toggleFreestylerSetting.bind(this)}
-          aria-label=${this.#freestylerSetting?.disabledReason() || i18nString(UIStrings.enableAiAssistance)}
+          .checked=${this.#aiAssistanceSetting?.get() && !this.#aiAssistanceSetting?.disabled()}
+          .jslogContext=${this.#aiAssistanceSetting?.name}
+          .disabled=${this.#aiAssistanceSetting?.disabled()}
+          @switchchange=${this.#toggleAiAssistanceSetting.bind(this)}
+          aria-label=${this.#aiAssistanceSetting?.disabledReason() || i18nString(UIStrings.enableAiAssistance)}
         ></${Switch.Switch.Switch.litTagName}>
       </div>
       <div class=${LitHtml.Directives.classMap(detailsClasses)}>
@@ -416,10 +416,10 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
       </header>
       <div class="settings-container-wrapper" jslog=${VisualLogging.pane('chrome-ai')}>
         ${this.#renderSharedDisclaimer()}
-        ${this.#consoleInsightsSetting || this.#freestylerSetting ? LitHtml.html`
+        ${this.#consoleInsightsSetting || this.#aiAssistanceSetting ? LitHtml.html`
           <div class="settings-container">
             ${this.#consoleInsightsSetting ? this.#renderConsoleInsightsSetting() : LitHtml.nothing}
-            ${this.#freestylerSetting ? this.#renderFreestylerSetting() : LitHtml.nothing}
+            ${this.#aiAssistanceSetting ? this.#renderAiAssistanceSetting() : LitHtml.nothing}
           </div>
         ` : LitHtml.nothing}
       </div>

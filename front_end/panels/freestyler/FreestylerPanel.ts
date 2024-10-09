@@ -126,7 +126,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
     syncInfo: Host.InspectorFrontendHostAPI.SyncInformation,
   }) {
     super(FreestylerPanel.panelName);
-    this.#freestylerEnabledSetting = this.#getFreestylerEnabledSetting();
+    this.#freestylerEnabledSetting = this.#getAiAssistanceEnabledSetting();
 
     createToolbar(this.contentElement, {onClearClick: this.#clearMessages.bind(this)});
     this.#toggleSearchElementAction =
@@ -203,9 +203,9 @@ export class FreestylerPanel extends UI.Panel.Panel {
     this.doUpdate();
   }
 
-  #getFreestylerEnabledSetting(): Common.Settings.Setting<boolean>|undefined {
+  #getAiAssistanceEnabledSetting(): Common.Settings.Setting<boolean>|undefined {
     try {
-      return Common.Settings.moduleSetting('freestyler-enabled') as Common.Settings.Setting<boolean>;
+      return Common.Settings.moduleSetting('ai-assistance-enabled') as Common.Settings.Setting<boolean>;
     } catch {
       return;
     }

@@ -176,6 +176,7 @@ const API = {
 const viewState = {
   dataIds: [],
   dataId: null,
+  compareWithDataId: null,
   selectedExampleIndex: 0
 };
 
@@ -196,7 +197,7 @@ function createPointRadios({onChange, id, points, titleText, noBorder}) {
     padding-bottom: 4px;
   `);
   title.textContent = titleText;
-  container.appendChild(title);
+  container.append(title);
   for (const point of points) {
     const radioContainer = document.createElement('div');
     radioContainer.setAttribute('style', 'display: inline-flex; gap: 8px;');
@@ -213,9 +214,9 @@ function createPointRadios({onChange, id, points, titleText, noBorder}) {
     const label = document.createElement('label');
     label.setAttribute('for', `${point}-${id}`);
     label.textContent = point;
-    radioContainer.appendChild(radio);
-    radioContainer.appendChild(label);
-    container.appendChild(radioContainer);
+    radioContainer.append(radio);
+    radioContainer.append(label);
+    container.append(radioContainer);
   }
   return container;
 }
@@ -240,7 +241,7 @@ function createChatBubble({text, evaluationId, onEvaluationChange}) {
 
   const pointsContainer = document.createElement('div');
   pointsContainer.setAttribute('style', 'margin-top: 12px;');
-  pointsContainer.appendChild(createPointRadios({
+  pointsContainer.append(createPointRadios({
     points,
     titleText: 'Evaluation',
     id: evaluationId,
@@ -248,14 +249,14 @@ function createChatBubble({text, evaluationId, onEvaluationChange}) {
       onEvaluationChange(point);
     }
   }));
-  el.appendChild(pointsContainer);
+  el.append(pointsContainer);
   return el;
 }
 
-function renderExample(container, {onEvaluationChange}) {
+function renderExample(container, sourceMap, {onEvaluationChange}) {
   const exampleIds = Object.keys(viewState.examplesMap);
   const exampleId = exampleIds[viewState.selectedExampleIndex];
-  const requestResponses = viewState.examplesMap[exampleId];
+  const requestResponses = sourceMap[exampleId];
   container.innerHTML = '';
 
   let i = 0;
@@ -266,7 +267,7 @@ function renderExample(container, {onEvaluationChange}) {
       exampleId,
       requestResponseIndex: i,
     });
-    container.appendChild(createChatBubble({
+    container.append(createChatBubble({
       text,
       evaluationId,
       onEvaluationChange: point => {
@@ -285,7 +286,7 @@ function renderExample(container, {onEvaluationChange}) {
     border-radius: 12px;
   `);
   const finalEvaluationId = JSON.stringify({datasetTitle: viewState.dataId, exampleId});
-  finalResponseRatingContainer.appendChild(createPointRadios({
+  finalResponseRatingContainer.append(createPointRadios({
     points: ['Correct', 'Wrong'],
     titleText: 'The final answer is:',
     noBorder: true,
@@ -296,7 +297,7 @@ function renderExample(container, {onEvaluationChange}) {
       onEvaluationChange();
     }
   }));
-  container.appendChild(finalResponseRatingContainer);
+  container.append(finalResponseRatingContainer);
 }
 
 function renderExampleSelector(container, {onChange}) {
@@ -310,15 +311,38 @@ function renderExampleSelector(container, {onChange}) {
     option.selected = exampleId === exampleIds[viewState.selectedExampleIndex];
     option.textContent = exampleId;
     option.name = exampleId;
-    select.appendChild(option);
+    select.append(option);
   }
 
   select.selectedIndex = viewState.selectedExampleIndex;
   select.addEventListener('change', ev => {
     onChange(ev.target.selectedIndex);
   });
-  container.appendChild(label);
-  container.appendChild(select);
+  container.append(label);
+  container.append(select);
+}
+
+function createDataSetSelector(label, selectedId, onChange) {
+  const dataSelectorContainer = document.createElement('div');
+  const dataSelect = document.createElement('select');
+  viewState.dataIds.forEach(dataId => {
+    const option = document.createElement('option');
+    option.name = dataId;
+    option.textContent = dataId;
+    dataSelect.append(option);
+  });
+  dataSelect.selectedIndex = viewState.dataIds.findIndex(dataId => selectedId === dataId);
+  dataSelect.addEventListener('change', ev => {
+    onChange(ev);
+    document.startViewTransition(() => {
+      renderMainPage();
+    });
+  });
+  const dataSelectSpan = document.createElement('span');
+  dataSelectSpan.textContent = label;
+  dataSelectorContainer.append(dataSelectSpan);
+  dataSelectorContainer.append(dataSelect);
+  return dataSelectorContainer;
 }
 
 async function renderMainPage() {
@@ -327,6 +351,10 @@ async function renderMainPage() {
   container.setAttribute('style', 'padding-bottom: 24px;');
   const {examplesMap, metadata} = await API.getExamplesMap({title: viewState.dataId});
   viewState.examplesMap = examplesMap;
+  if (viewState.compareWithDataId) {
+    const {examplesMap} = await API.getExamplesMap({title: viewState.compareWithDataId});
+    viewState.compareWithExamplesMap = examplesMap;
+  }
   viewState.metadata = metadata;
   viewState.selectedExampleIndex = 0;
 
@@ -340,26 +368,13 @@ async function renderMainPage() {
   const heading = document.createElement('h1');
   heading.textContent = 'Freestyler Eval Tool';
 
-  const dataSelectorContainer = document.createElement('div');
-  const dataSelect = document.createElement('select');
-  viewState.dataIds.forEach(dataId => {
-    const option = document.createElement('option');
-    option.name = dataId;
-    option.textContent = dataId;
-    dataSelect.appendChild(option);
-  });
-  dataSelect.selectedIndex = viewState.dataIds.findIndex(dataId => viewState.dataId === dataId);
-  dataSelect.addEventListener('change', ev => {
+  const dataSelectorContainer = createDataSetSelector('Dataset: ', viewState.dataId, ev => {
     viewState.dataId = viewState.dataIds[ev.target.selectedIndex];
     viewState.selectedExampleIndex = 0;
-    document.startViewTransition(() => {
-      renderMainPage();
-    });
   });
-  const dataSelectSpan = document.createElement('span');
-  dataSelectSpan.textContent = 'Dataset: ';
-  dataSelectorContainer.appendChild(dataSelectSpan);
-  dataSelectorContainer.appendChild(dataSelect);
+  const compareWithDataSelectorContainer = createDataSetSelector('Compare with: ', viewState.compareWithDataId, ev => {
+    viewState.compareWithDataId = viewState.dataIds[ev.target.selectedIndex];
+  });
   const exampleSelectorContainer = document.createElement('div');
 
   const exportContainer = document.createElement('div');
@@ -371,7 +386,7 @@ async function renderMainPage() {
     const datasetId = viewState.dataId;
     exportContainer.innerHTML = '';
     const dialogContainer = document.createElement('div');
-    exportContainer.appendChild(dialogContainer);
+    exportContainer.append(dialogContainer);
 
     const evaluationIds = (Object.keys(evaluationState)).map(key => JSON.parse(key));
     const evaluationIdsForDataset = evaluationIds.filter(evaluationIdObj => evaluationIdObj.datasetTitle === datasetId);
@@ -416,10 +431,10 @@ async function renderMainPage() {
       await navigator.clipboard.writeText(csvText);
     });
 
-    resultsContainer.appendChild(resultsSummary);
-    resultsContainer.appendChild(resultsText);
-    exportContainer.appendChild(resultsContainer);
-    exportContainer.appendChild(exportButton);
+    resultsContainer.append(resultsSummary);
+    resultsContainer.append(resultsText);
+    exportContainer.append(resultsContainer);
+    exportContainer.append(exportButton);
   }
 
   const exampleDescriptionContainer = document.createElement('div');
@@ -430,26 +445,42 @@ async function renderMainPage() {
     exampleDescriptionContainer.innerHTML = '';
     const exampleHeading = document.createElement('h2');
     exampleHeading.textContent = exampleId;
-    exampleDescriptionContainer.appendChild(exampleHeading);
+    exampleDescriptionContainer.append(exampleHeading);
     const explanationContainer = document.createElement('div');
     const explanation = metadata.find(data => data.exampleId === exampleId)?.explanation;
     explanationContainer.innerHTML = explanation ? `Evaluation tip: <strong>${explanation}</strong>` : '';
-    exampleDescriptionContainer.appendChild(explanationContainer);
+    exampleDescriptionContainer.append(explanationContainer);
   }
 
-  header.appendChild(heading);
-  header.appendChild(dataSelectorContainer);
-  header.appendChild(exampleSelectorContainer);
-  header.appendChild(exportContainer);
-  header.appendChild(exampleDescriptionContainer);
-  container.appendChild(header);
+  header.append(heading);
+  header.append(dataSelectorContainer);
+  header.append(compareWithDataSelectorContainer);
+  header.append(exampleSelectorContainer);
+  header.append(exportContainer);
+  header.append(exampleDescriptionContainer);
+  container.append(header);
+
+  const gridContainer = document.createElement('div');
+  gridContainer.style = `
+    display: flex;
+    flex-direction: row;
+  `;
+  container.append(gridContainer);
 
   const exampleContainer = document.createElement('div');
-  container.appendChild(exampleContainer);
+  gridContainer.append(exampleContainer);
+
+  const compareWithExampleContainer = document.createElement('div');
+  gridContainer.append(compareWithExampleContainer);
 
   viewState.handleExampleChange = () => {
     document.startViewTransition(() => {
-      renderExample(exampleContainer, {onEvaluationChange: () => renderResultsTable()});
+      renderExample(exampleContainer, viewState.examplesMap, {onEvaluationChange: () => renderResultsTable()});
+      if (viewState.compareWithDataId) {
+        renderExample(
+            compareWithExampleContainer, viewState.compareWithExamplesMap,
+            {onEvaluationChange: () => renderResultsTable()});
+      }
       renderExampleDescription();
       renderExampleSelector(exampleSelectorContainer, {
         onChange: selectedExampleIndex => {
@@ -461,7 +492,12 @@ async function renderMainPage() {
   };
 
   renderResultsTable();
-  renderExample(exampleContainer, {onEvaluationChange: () => renderResultsTable()});
+  renderExample(exampleContainer, viewState.examplesMap, {onEvaluationChange: () => renderResultsTable()});
+  if (viewState.compareWithDataId) {
+    renderExample(
+        compareWithExampleContainer, viewState.compareWithExamplesMap,
+        {onEvaluationChange: () => renderResultsTable()});
+  }
   renderExampleDescription();
   renderExampleSelector(exampleSelectorContainer, {
     onChange: selectedExampleIndex => {

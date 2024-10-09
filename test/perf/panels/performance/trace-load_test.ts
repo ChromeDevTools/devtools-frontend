@@ -35,8 +35,7 @@ async function timeFixture(fixture: string): Promise<number> {
 describe('Performance panel trace load performance', () => {
   const allTestValues: {name: string, values: number[]}[] = [];
 
-  // Flaky
-  describe.skip('[crbug.com/370879877]: Total trace load time', () => {
+  describe('Total trace load time', () => {
     beforeEach(async () => {
       // Reload devtools to get a fresh version of the panel on each
       // run and prevent a skew due to caching, etc.

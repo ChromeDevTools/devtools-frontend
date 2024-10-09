@@ -369,6 +369,17 @@ c`;
           },
       );
     });
+
+    it('parses multi line thoughts', () => {
+      const thoughtText = 'first line\nsecond line';
+      assert.deepStrictEqual(
+          FreestylerAgent.parseResponse(`THOUGHT: ${thoughtText}`),
+          {
+            thought: thoughtText,
+            title: undefined,
+          },
+      );
+    });
   });
 
   describe('describeElement', () => {

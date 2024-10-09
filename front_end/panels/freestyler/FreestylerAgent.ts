@@ -268,9 +268,18 @@ export class FreestylerAgent extends AiAgent {
     while (i < lines.length) {
       const trimmed = lines[i].trim();
       if (trimmed.startsWith('THOUGHT:') && !thought) {
-        // TODO: multiline thoughts.
-        thought = trimmed.substring('THOUGHT:'.length).trim();
+        // Start with the initial `THOUGHT: text` line and move forward by one line.
+        const thoughtLines = [trimmed.substring('THOUGHT:'.length).trim()];
         i++;
+        // Move until we see a new instruction, otherwise we're still inside the `THOUGHT` block.
+        while (i < lines.length && !isInstructionStart(lines[i])) {
+          const trimmedLine = lines[i].trim();
+          if (trimmedLine) {
+            thoughtLines.push(trimmedLine);
+          }
+          i++;
+        }
+        thought = thoughtLines.join('\n');
       } else if (trimmed.startsWith('TITLE:')) {
         title = trimmed.substring('TITLE:'.length).trim();
         i++;

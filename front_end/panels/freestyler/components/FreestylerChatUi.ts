@@ -7,6 +7,7 @@ import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as Platform from '../../../core/platform/platform.js';
 import type * as SDK from '../../../core/sdk/sdk.js';
+import * as Trace from '../../../models/trace/trace.js';
 import type * as Workspace from '../../../models/workspace/workspace.js';
 import * as Marked from '../../../third_party/marked/marked.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
@@ -81,6 +82,11 @@ const UIStringsNotTranslate = {
   inputDisclaimerForDrJonesFileAgent:
       'Chat messages and the selected file are sent to Google and may be seen by human reviewers to improve this feature. This is an experimental AI feature and won\'t always get it right.',
   /**
+   *@description Disclaimer text right after the chat input.
+   */
+  inputDisclaimerForDrJonesPerformanceAgent:
+      'Chat messages and the selected call stack are sent to Google and may be seen by human reviewers to improve this feature. This is an experimental AI feature and won\'t always get it right.',
+  /**
    *@description Placeholder text for the chat UI input.
    */
   inputPlaceholderForFreestylerAgent: 'Ask a question about the selected element',
@@ -92,6 +98,10 @@ const UIStringsNotTranslate = {
    *@description Placeholder text for the chat UI input.
    */
   inputPlaceholderForDrJonesFileAgent: 'Ask a question about the selected file',
+  /**
+   *@description Placeholder text for the chat UI input.
+   */
+  inputPlaceholderForDrJonesPerformanceAgent: 'Ask a question about the selected stack trace',
   /**
    *@description Title for the send icon button.
    */
@@ -186,6 +196,8 @@ function getInputPlaceholderString(
           return lockedString(UIStringsNotTranslate.inputPlaceholderForDrJonesFileAgent);
         case AgentType.DRJONES_NETWORK_REQUEST:
           return lockedString(UIStringsNotTranslate.inputPlaceholderForDrJonesNetworkAgent);
+        case AgentType.DRJONES_PERFORMANCE:
+          return lockedString(UIStringsNotTranslate.inputPlaceholderForDrJonesPerformanceAgent);
       }
     case Host.AidaClient.AidaAccessPreconditions.NO_ACCOUNT_EMAIL:
     case Host.AidaClient.AidaAccessPreconditions.SYNC_IS_PAUSED:
@@ -239,6 +251,7 @@ export const enum AgentType {
   FREESTYLER = 'freestyler',
   DRJONES_FILE = 'drjones-file',
   DRJONES_NETWORK_REQUEST = 'drjones-network-request',
+  DRJONES_PERFORMANCE = 'drjones-performance',
 }
 
 export interface Props {
@@ -254,6 +267,7 @@ export interface Props {
   selectedElement: SDK.DOMModel.DOMNode|null;
   selectedFile: Workspace.UISourceCode.UISourceCode|null;
   selectedNetworkRequest: SDK.NetworkRequest.NetworkRequest|null;
+  selectedStackTrace: Trace.Helpers.TreeHelpers.TraceEntryNodeForAI|null;
   isLoading: boolean;
   canShowFeedbackForm: boolean;
   userInfo: Pick<Host.InspectorFrontendHostAPI.SyncInformation, 'accountImage'|'accountFullName'>;
@@ -721,6 +735,8 @@ export class FreestylerChatUi extends HTMLElement {
         return this.#renderSelectedFileName();
       case AgentType.DRJONES_NETWORK_REQUEST:
         return this.#renderSelectedNetworkRequest();
+      case AgentType.DRJONES_PERFORMANCE:
+        return this.#renderSelectedTask();
     }
   }
 
@@ -798,6 +814,37 @@ export class FreestylerChatUi extends HTMLElement {
     // clang-format on
   };
 
+  #renderSelectedTask = (): LitHtml.TemplateResult => {
+    const resourceClass = LitHtml.Directives.classMap({
+      'not-selected': !this.#props.selectedStackTrace,
+      'resource-link': true,
+    });
+
+    if (!this.#props.selectedStackTrace) {
+      return html`${LitHtml.nothing}`;
+    }
+
+    const selectedNode = Trace.Helpers.TreeHelpers.TraceEntryNodeForAI.getSelectedNodeForTraceEntryTreeForAI(
+        this.#props.selectedStackTrace);
+
+    if (!selectedNode) {
+      return html`${LitHtml.nothing}`;
+    }
+
+    let displayName = selectedNode.type;
+    if (selectedNode.type === 'ProfileCall' && selectedNode.function) {
+      displayName = selectedNode.function;
+    }
+
+    // TODO(b/371118936): Add icon and make the div clickable
+    // clang-format off
+    return html`<div class="select-element">
+    <div class=${resourceClass}>
+      ${displayName}
+    </div></div>`;
+    // clang-format on
+  };
+
   #renderMessages = (): LitHtml.TemplateResult => {
     // clang-format off
     return html`
@@ -864,6 +911,10 @@ export class FreestylerChatUi extends HTMLElement {
         return [
           'Why is this network request taking longer to complete?',
         ];
+      case AgentType.DRJONES_PERFORMANCE:
+        return [
+          'Is this item on the critical rendering path?',
+        ];
     }
   };
 
@@ -923,6 +974,8 @@ export class FreestylerChatUi extends HTMLElement {
         return lockedString(UIStringsNotTranslate.inputDisclaimerForDrJonesFileAgent);
       case AgentType.DRJONES_NETWORK_REQUEST:
         return lockedString(UIStringsNotTranslate.inputDisclaimerForDrJonesNetworkAgent);
+      case AgentType.DRJONES_PERFORMANCE:
+        return lockedString(UIStringsNotTranslate.inputDisclaimerForDrJonesPerformanceAgent);
     }
   };
 

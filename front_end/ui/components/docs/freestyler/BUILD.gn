@@ -14,6 +14,7 @@ ts_library("ts") {
 
   deps = [
     "../../../../core/host:bundle",
+    "../../../../models/trace:bundle",
     "../../../../panels/freestyler:bundle",
     "../../../../testing",
     "../../../../third_party/marked:bundle",

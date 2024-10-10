@@ -4,6 +4,7 @@
 
 import * as Host from '../../../../core/host/host.js';
 import type * as SDK from '../../../../core/sdk/sdk.js';
+import type * as Trace from '../../../../models/trace/trace.js';
 import type * as Workspace from '../../../../models/workspace/workspace.js';
 import * as Freestyler from '../../../../panels/freestyler/freestyler.js';
 import * as FrontendHelpers from '../../../../testing/EnvironmentHelpers.js';
@@ -53,6 +54,7 @@ const component = new Freestyler.FreestylerChatUi({
   selectedElement: {} as unknown as SDK.DOMModel.DOMNode,
   selectedFile: {} as unknown as Workspace.UISourceCode.UISourceCode,
   selectedNetworkRequest: {} as unknown as SDK.NetworkRequest.NetworkRequest,
+  selectedStackTrace: {} as unknown as Trace.Helpers.TreeHelpers.TraceEntryNodeForAI,
   agentType: Freestyler.AgentType.FREESTYLER,
   isLoading: false,
   canShowFeedbackForm: false,

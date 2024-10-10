@@ -6,6 +6,7 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as Trace from '../../models/trace/trace.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as NetworkForward from '../../panels/network/forward/forward.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -28,6 +29,7 @@ import {
 import {
   DrJonesNetworkAgent,
 } from './DrJonesNetworkAgent.js';
+import {DrJonesPerformanceAgent} from './DrJonesPerformanceAgent.js';
 import {FreestylerAgent} from './FreestylerAgent.js';
 import freestylerPanelStyles from './freestylerPanel.css.js';
 
@@ -111,11 +113,13 @@ export class FreestylerPanel extends UI.Panel.Panel {
   #selectedElement: SDK.DOMModel.DOMNode|null;
   #selectedFile: Workspace.UISourceCode.UISourceCode|null;
   #selectedNetworkRequest: SDK.NetworkRequest.NetworkRequest|null;
+  #selectedStackTrace: Trace.Helpers.TreeHelpers.TraceEntryNodeForAI|null;
   #contentContainer: HTMLElement;
   #aidaClient: Host.AidaClient.AidaClient;
   #freestylerAgent: FreestylerAgent;
   #drJonesFileAgent: DrJonesFileAgent;
   #drJonesNetworkAgent: DrJonesNetworkAgent;
+  #drJonesPerformanceAgent: DrJonesPerformanceAgent;
   #viewProps: FreestylerChatUiProps;
   #viewOutput: ViewOutput = {};
   #serverSideLoggingEnabled = isFreestylerServerSideLoggingEnabled();
@@ -146,6 +150,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
 
     this.#selectedElement = selectedElementFilter(UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode));
     this.#selectedNetworkRequest = UI.Context.Context.instance().flavor(SDK.NetworkRequest.NetworkRequest);
+    this.#selectedStackTrace = UI.Context.Context.instance().flavor(Trace.Helpers.TreeHelpers.TraceEntryNodeForAI);
     this.#selectedFile = UI.Context.Context.instance().flavor(Workspace.UISourceCode.UISourceCode);
     this.#viewProps = {
       state: this.#freestylerEnabledSetting?.getIfNotDisabled() ? FreestylerChatUiState.CHAT_VIEW :
@@ -155,6 +160,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
       inspectElementToggled: this.#toggleSearchElementAction.toggled(),
       selectedElement: this.#selectedElement,
       selectedNetworkRequest: this.#selectedNetworkRequest,
+      selectedStackTrace: this.#selectedStackTrace,
       selectedFile: this.#selectedFile,
       isLoading: false,
       onTextSubmit: this.#startConversation.bind(this),
@@ -177,6 +183,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
     this.#freestylerAgent = this.#createFreestylerAgent();
     this.#drJonesFileAgent = this.#createDrJonesFileAgent();
     this.#drJonesNetworkAgent = this.#createDrJonesNetworkAgent();
+    this.#drJonesPerformanceAgent = this.#createDrJonesPerformanceAgent();
 
     UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, ev => {
       if (this.#viewProps.selectedElement === ev.data) {
@@ -192,6 +199,14 @@ export class FreestylerPanel extends UI.Panel.Panel {
       }
 
       this.#viewProps.selectedNetworkRequest = Boolean(ev.data) ? ev.data : null;
+      this.doUpdate();
+    });
+    UI.Context.Context.instance().addFlavorChangeListener(Trace.Helpers.TreeHelpers.TraceEntryNodeForAI, ev => {
+      if (this.#viewProps.selectedStackTrace === ev.data) {
+        return;
+      }
+
+      this.#viewProps.selectedStackTrace = Boolean(ev.data) ? ev.data : null;
       this.doUpdate();
     });
     UI.Context.Context.instance().addFlavorChangeListener(Workspace.UISourceCode.UISourceCode, ev => {
@@ -230,6 +245,13 @@ export class FreestylerPanel extends UI.Panel.Panel {
 
   #createDrJonesNetworkAgent(): DrJonesNetworkAgent {
     return new DrJonesNetworkAgent({
+      aidaClient: this.#aidaClient,
+      serverSideLoggingEnabled: this.#serverSideLoggingEnabled,
+    });
+  }
+
+  #createDrJonesPerformanceAgent(): DrJonesPerformanceAgent {
+    return new DrJonesPerformanceAgent({
       aidaClient: this.#aidaClient,
       serverSideLoggingEnabled: this.#serverSideLoggingEnabled,
     });
@@ -323,7 +345,10 @@ export class FreestylerPanel extends UI.Panel.Panel {
         break;
       }
       case 'drjones.performance-panel-context': {
-        // TODO(samiyac): Add actions and UMA
+        // TODO(samiyac): Add UMA
+        this.#viewOutput.freestylerChatUi?.focusTextInput();
+        this.#viewProps.agentType = AgentType.DRJONES_PERFORMANCE;
+        this.doUpdate();
         break;
       }
       case 'drjones.sources-panel-context': {
@@ -378,6 +403,9 @@ export class FreestylerPanel extends UI.Panel.Panel {
     } else if (this.#viewProps.agentType === AgentType.DRJONES_NETWORK_REQUEST) {
       runner =
           this.#drJonesNetworkAgent.run(text, {signal, selectedNetworkRequest: this.#viewProps.selectedNetworkRequest});
+    } else if (this.#viewProps.agentType === AgentType.DRJONES_PERFORMANCE) {
+      runner =
+          this.#drJonesPerformanceAgent.run(text, {signal, selectedStackTrace: this.#viewProps.selectedStackTrace});
     }
 
     if (!runner) {

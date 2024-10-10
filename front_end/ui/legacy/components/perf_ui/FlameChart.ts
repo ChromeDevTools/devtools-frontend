@@ -4013,7 +4013,7 @@ export interface FlameChartDataProvider {
   hasTrackConfigurationMode(): boolean;
 
   // The following functions are optional and are used in Performance panel.
-  eventByIndex?(entryIndex: number): Trace.Types.Events.Event|Trace.Handlers.ModelHandlers.Frames.TimelineFrame|null;
+  eventByIndex?(entryIndex: number): Trace.Types.Events.Event|null;
 
   indexForEvent?(event: Trace.Types.Events.Event|Trace.Types.Events.LegacyTimelineFrame): number|null;
 

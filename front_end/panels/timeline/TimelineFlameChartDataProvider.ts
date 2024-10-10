@@ -1279,7 +1279,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     return true;
   }
 
-  eventByIndex(entryIndex: number): Trace.Types.Events.Event|Trace.Handlers.ModelHandlers.Frames.TimelineFrame|null {
+  eventByIndex(entryIndex: number): Trace.Types.Events.Event|null {
     if (entryIndex < 0) {
       return null;
     }
@@ -1288,7 +1288,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       return this.entryData[entryIndex] as Trace.Types.Events.Event;
     }
     if (entryType === EntryType.FRAME) {
-      return this.entryData[entryIndex] as Trace.Handlers.ModelHandlers.Frames.TimelineFrame;
+      return this.entryData[entryIndex] as Trace.Types.Events.LegacyTimelineFrame;
     }
     return null;
   }

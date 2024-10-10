@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../../../ui/components/spinners/spinners.js';
+
 import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
@@ -9,10 +11,9 @@ import type * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as Marked from '../../../third_party/marked/marked.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
-import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
+import type * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as Input from '../../../ui/components/input/input.js';
 import * as MarkdownView from '../../../ui/components/markdown_view/markdown_view.js';
-import * as Spinners from '../../../ui/components/spinners/spinners.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
@@ -531,7 +532,7 @@ export class ConsoleInsight extends HTMLElement {
 
   #renderSearchButton(): LitHtml.TemplateResult {
     // clang-format off
-    return html`<${Buttons.Button.Button.litTagName}
+    return html`<devtools-button
       @click=${this.#onSearch}
       class="search-button"
       .data=${
@@ -542,7 +543,7 @@ export class ConsoleInsight extends HTMLElement {
       }
     >
       ${i18nString(UIStrings.search)}
-    </${Buttons.Button.Button.litTagName}>`;
+    </devtools-button>`;
     // clang-format on
   }
 
@@ -574,9 +575,9 @@ export class ConsoleInsight extends HTMLElement {
         return html`
         <main jslog=${jslog}>
           ${
-            this.#state.validMarkdown ? html`<${MarkdownView.MarkdownView.MarkdownView.litTagName}
+            this.#state.validMarkdown ? html`<devtools-markdown-view
               .data=${{tokens: this.#state.tokens, renderer: this.#renderer} as MarkdownView.MarkdownView.MarkdownViewData}>
-            </${MarkdownView.MarkdownView.MarkdownView.litTagName}>`: this.#state.explanation
+            </devtools-markdown-view>`: this.#state.explanation
           }
           <details style="--list-height: ${(this.#state.sources.length + (this.#state.isPageReloadRecommended ? 1 : 0)) * 20}px;" jslog=${VisualLogging.expand('sources').track({click: true})}>
             <summary>${i18nString(UIStrings.inputData)}</summary>
@@ -598,21 +599,21 @@ export class ConsoleInsight extends HTMLElement {
             <h3>Things to consider</h3>
             <div class="reminder-items">
               <div>
-                <${IconButton.Icon.Icon.litTagName} .data=${{
+                <devtools-icon .data=${{
                   iconName: 'google',
                   width: 'var(--sys-size-8)',
                   height: 'var(--sys-size-8)',
                 } as IconButton.Icon.IconData}>
-                </${IconButton.Icon.Icon.litTagName}>
+                </devtools-icon>
               </div>
               <div>The console message, associated stack trace, related source code, and the associated network headers are sent to Google to generate explanations. This data may be seen by human reviewers to improve this feature. Avoid sharing sensitive or personal information.</div>
               <div>
-                <${IconButton.Icon.Icon.litTagName} .data=${{
+                <devtools-icon .data=${{
                   iconName: 'policy',
                   width: 'var(--sys-size-8)',
                   height: 'var(--sys-size-8)',
                 } as IconButton.Icon.IconData}>
-                </${IconButton.Icon.Icon.litTagName}>
+                </devtools-icon>
               </div>
               <div>Use of this feature is subject to the
                 <x-link
@@ -628,12 +629,12 @@ export class ConsoleInsight extends HTMLElement {
                 >Google Privacy Policy</x-link>
               </div>
               <div>
-                <${IconButton.Icon.Icon.litTagName} .data=${{
+                <devtools-icon .data=${{
                   iconName: 'warning',
                   width: 'var(--sys-size-8)',
                   height: 'var(--sys-size-8)',
                 } as IconButton.Icon.IconData}>
-                </${IconButton.Icon.Icon.litTagName}>
+                </devtools-icon>
               </div>
               <div>
                 <x-link
@@ -658,12 +659,12 @@ export class ConsoleInsight extends HTMLElement {
 
         return html`<main class="opt-in-teaser" jslog=${jslog}>
           <div class="badge">
-            <${IconButton.Icon.Icon.litTagName} .data=${{
+            <devtools-icon .data=${{
               iconName: 'lightbulb-spark',
               width: 'var(--sys-size-8)',
               height: 'var(--sys-size-8)',
             } as IconButton.Icon.IconData}>
-            </${IconButton.Icon.Icon.litTagName}>
+            </devtools-icon>
           </div>
           <div>
             ${i18n.i18n.getFormatLocalizedString(str_, UIStrings.turnOnInSettings, {PH1: settingsLink})}
@@ -720,7 +721,7 @@ export class ConsoleInsight extends HTMLElement {
         return html`<footer jslog=${VisualLogging.section('footer')}>
         <div class="filler"></div>
         <div>
-          <${Buttons.Button.Button.litTagName}
+          <devtools-button
             @click=${this.#onGoToChromeSettings}
             .data=${
               {
@@ -730,14 +731,14 @@ export class ConsoleInsight extends HTMLElement {
             }
           >
             ${UIStrings.updateSettings}
-          </${Buttons.Button.Button.litTagName}>
+          </devtools-button>
         </div>
       </footer>`;
       case State.CONSENT_REMINDER:
         return html`<footer jslog=${VisualLogging.section('footer')}>
           <div class="filler"></div>
           <div class="buttons">
-            <${Buttons.Button.Button.litTagName}
+            <devtools-button
               @click=${() => {
                 Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightsReminderTeaserSettingsLinkClicked);
                 void UI.ViewManager.ViewManager.instance().showView('chrome-ai');
@@ -751,8 +752,8 @@ export class ConsoleInsight extends HTMLElement {
               }
             >
               Settings
-            </${Buttons.Button.Button.litTagName}>
-            <${Buttons.Button.Button.litTagName}
+            </devtools-button>
+            <devtools-button
               class='continue-button'
               @click=${this.#onConsentReminderConfirmed}
               .data=${
@@ -764,7 +765,7 @@ export class ConsoleInsight extends HTMLElement {
               }
               >
               Continue
-            </${Buttons.Button.Button.litTagName}>
+            </devtools-button>
           </div>
         </footer>`;
       case State.INSIGHT:
@@ -775,7 +776,7 @@ export class ConsoleInsight extends HTMLElement {
         <div class="filler"></div>
         <div class="rating">
           ${showThumbsUpDownButtons ? html`
-            <${Buttons.Button.Button.litTagName}
+            <devtools-button
               data-rating=${'true'}
               .data=${
                 {
@@ -788,8 +789,8 @@ export class ConsoleInsight extends HTMLElement {
                 } as Buttons.Button.ButtonData
               }
               @click=${this.#onRating}
-            ></${Buttons.Button.Button.litTagName}>
-            <${Buttons.Button.Button.litTagName}
+            ></devtools-button>
+            <devtools-button
               data-rating=${'false'}
               .data=${
                 {
@@ -802,9 +803,9 @@ export class ConsoleInsight extends HTMLElement {
                 } as Buttons.Button.ButtonData
               }
               @click=${this.#onRating}
-            ></${Buttons.Button.Button.litTagName}>
+            ></devtools-button>
           ` : LitHtml.nothing}
-          <${Buttons.Button.Button.litTagName}
+          <devtools-button
             .data=${
               {
                 variant: Buttons.Button.Variant.ICON,
@@ -815,7 +816,7 @@ export class ConsoleInsight extends HTMLElement {
               } as Buttons.Button.ButtonData
             }
             @click=${this.#onReport}
-          ></${Buttons.Button.Button.litTagName}>
+          ></devtools-button>
         </div>
 
       </footer>`;
@@ -846,7 +847,7 @@ export class ConsoleInsight extends HTMLElement {
   #renderSpinner(): LitHtml.LitTemplate {
     // clang-format off
     if (this.#state.type === State.INSIGHT && !this.#state.completed) {
-      return html`<${Spinners.Spinner.Spinner.litTagName}></${Spinners.Spinner.Spinner.litTagName}>`;
+      return html`<devtools-spinner></devtools-spinner>`;
     }
     return LitHtml.nothing;
     // clang-format on
@@ -862,12 +863,12 @@ export class ConsoleInsight extends HTMLElement {
       <header>
         ${hasIcon ? html`
           <div class="header-icon-container">
-            <${IconButton.Icon.Icon.litTagName} .data=${{
+            <devtools-icon .data=${{
               iconName: 'lightbulb-spark',
               width: '18px',
               height: '18px',
             } as IconButton.Icon.IconData}>
-            </${IconButton.Icon.Icon.litTagName}>
+            </devtools-icon>
           </div>`
         : LitHtml.nothing}
         <div class="filler">
@@ -877,7 +878,7 @@ export class ConsoleInsight extends HTMLElement {
           ${this.#renderSpinner()}
         </div>
         <div class="close-button">
-          <${Buttons.Button.Button.litTagName}
+          <devtools-button
             .data=${
               {
                 variant: Buttons.Button.Variant.ICON,
@@ -888,7 +889,7 @@ export class ConsoleInsight extends HTMLElement {
             }
             jslog=${VisualLogging.close().track({click: true})}
             @click=${this.#onClose}
-          ></${Buttons.Button.Button.litTagName}>
+          ></devtools-button>
         </div>
       </header>
     `;
@@ -929,12 +930,12 @@ class ConsoleInsightSourcesList extends HTMLElement {
       <ul>
         ${Directives.repeat(this.#sources, item => item.value, item => {
           return html`<li><x-link class="link" title="${localizeType(item.type)} ${i18nString(UIStrings.opensInNewTab)}" href="data:text/plain,${encodeURIComponent(item.value)}" jslog=${VisualLogging.link('source-' + item.type).track({click: true})}>
-            <${IconButton.Icon.Icon.litTagName} name="open-externally"></${IconButton.Icon.Icon.litTagName}>
+            <devtools-icon name="open-externally"></devtools-icon>
             ${localizeType(item.type)}
           </x-link></li>`;
         })}
         ${this.#isPageReloadRecommended ? html`<li class="source-disclaimer">
-          <${IconButton.Icon.Icon.litTagName} name="warning"></${IconButton.Icon.Icon.litTagName}>
+          <devtools-icon name="warning"></devtools-icon>
           ${i18nString(UIStrings.reloadRecommendation)}</li>` : LitHtml.nothing}
       </ul>
     `, this.#shadow, {

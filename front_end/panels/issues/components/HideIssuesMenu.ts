@@ -8,7 +8,6 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
-import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import hideIssuesMenuStyles from './hideIssuesMenu.css.js';
 
@@ -61,11 +60,11 @@ export class HideIssuesMenu extends HTMLElement {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     LitHtml.render(html`
-    <${Buttons.Button.Button.litTagName}
+    <devtools-button
       .data=${{variant: Buttons.Button.Variant.ICON,iconName: 'dots-vertical', title: i18nString(UIStrings.tooltipTitle)} as Buttons.Button.ButtonData}
-      .jslogContext=${VisualLogging.dropDown('hide-issues').track({click: true})}
+      .jslogContext=${'hide-issues'}
       class="hide-issues-menu-btn"
-      @click=${this.onMenuOpen.bind(this)}></${Buttons.Button.Button.litTagName}>
+      @click=${this.onMenuOpen.bind(this)}></devtools-button>
     `, this.#shadow, {host: this});
   }
 }

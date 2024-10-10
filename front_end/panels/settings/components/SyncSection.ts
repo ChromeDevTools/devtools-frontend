@@ -2,13 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../../../ui/components/chrome_link/chrome_link.js';
+import '../../../ui/components/settings/settings.js';
+
 import * as Common from '../../../core/common/common.js';
 import type * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as Platform from '../../../core/platform/platform.js';
-import * as ChromeLink from '../../../ui/components/chrome_link/chrome_link.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
-import * as Settings from '../../../ui/components/settings/settings.js';
+import type * as Settings from '../../../ui/components/settings/settings.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
 import syncSectionStyles from './syncSection.css.js';
@@ -79,9 +81,9 @@ export class SyncSection extends HTMLElement {
       <fieldset>
         <legend>${Common.Settings.getLocalizedSettingsCategory(Common.Settings.SettingCategory.SYNC)}</legend>
         ${renderAccountInfoOrWarning(this.#syncInfo)}
-        <${Settings.SettingCheckbox.SettingCheckbox.litTagName} .data=${
+        <setting-checkbox .data=${
             {setting: this.#syncSetting} as Settings.SettingCheckbox.SettingCheckboxData}>
-        </${Settings.SettingCheckbox.SettingCheckbox.litTagName}>
+        </setting-checkbox>
       </fieldset>
     `, this.#shadow, {host: this});
     // clang-format on
@@ -99,7 +101,7 @@ function renderAccountInfoOrWarning(syncInfo: Host.InspectorFrontendHostAPI.Sync
     return html`
       <span class="warning">
         ${i18nString(UIStrings.syncDisabled)}
-        <${ChromeLink.ChromeLink.ChromeLink.litTagName} .href=${link}>${i18nString(UIStrings.settings)}</${ChromeLink.ChromeLink.ChromeLink.litTagName}>
+        <devtools-chrome-link .href=${link}>${i18nString(UIStrings.settings)}</devtools-chrome-link>
       </span>`;
     // clang-format on
   }
@@ -110,7 +112,7 @@ function renderAccountInfoOrWarning(syncInfo: Host.InspectorFrontendHostAPI.Sync
     return html`
       <span class="warning">
         ${i18nString(UIStrings.preferencesSyncDisabled)}
-        <${ChromeLink.ChromeLink.ChromeLink.litTagName} .href=${link}>${i18nString(UIStrings.settings)}</${ChromeLink.ChromeLink.ChromeLink.litTagName}>
+        <devtools-chrome-link .href=${link}>${i18nString(UIStrings.settings)}</devtools-chrome-link>
       </span>`;
     // clang-format on
   }

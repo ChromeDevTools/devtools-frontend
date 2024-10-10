@@ -2,14 +2,17 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../../ui/components/adorners/adorners.js';
+import '../../ui/components/data_grid/data_grid.js';
+
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as AutofillManager from '../../models/autofill_manager/autofill_manager.js';
-import * as Adorners from '../../ui/components/adorners/adorners.js';
-import * as DataGrid from '../../ui/components/data_grid/data_grid.js';
+import type * as Adorners from '../../ui/components/adorners/adorners.js';
+import type * as DataGrid from '../../ui/components/data_grid/data_grid.js';
 import * as ComponentHelpers from '../../ui/components/helpers/helpers.js';
 import * as Input from '../../ui/components/input/input.js';
 import * as LegacyWrapper from '../../ui/components/legacy_wrapper/legacy_wrapper.js';
@@ -361,13 +364,13 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
     // clang-format off
     return html`
       <div class="grid-wrapper" role="region" aria-label=${i18nString(UIStrings.formInspector)}>
-        <${DataGrid.DataGridController.DataGridController.litTagName}
+        <devtools-data-grid-controller
           @rowmouseenter=${this.#onGridRowMouseEnter}
           @rowmouseleave=${this.#onGridRowMouseLeave}
           class="filled-fields-grid"
           .data=${gridData as DataGrid.DataGridController.DataGridControllerData}
         >
-        </${DataGrid.DataGridController.DataGridController.litTagName}>
+        </devtools-data-grid-controller>
       </div>
     `;
     // clang-format on
@@ -447,7 +450,7 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
     return html`
       ${autofillType}
       ${adornerContent.textContent ? html`
-          <${Adorners.Adorner.Adorner.litTagName} title=${adornerTitle} .data=${{name: fillingStrategy, content: adornerContent} as Adorners.Adorner.AdornerData}>
+          <devtools-adorner title=${adornerTitle} .data=${{name: fillingStrategy, content: adornerContent} as Adorners.Adorner.AdornerData}></devtools-adorner>
         `: LitHtml.nothing}
     `;
     // clang-format on

@@ -68,22 +68,22 @@ export class Toolbar extends LitElement {
     // clang-format off
     return html`
         <div class="toolbar">
-          <${Buttons.Button.Button.litTagName}
+          <devtools-button
           title=${i18nString(UIStrings.copyCommand)}
           .size=${Buttons.Button.Size.SMALL}
           .iconUrl=${copyIconUrl}
           .variant=${Buttons.Button.Variant.TOOLBAR}
           @click=${this.#handleCopy}
           jslog=${VisualLogging.action('protocol-monitor.copy-command').track({click: true})}
-        ></${Buttons.Button.Button.litTagName}>
-        <${Buttons.Button.Button.litTagName}
+        ></devtools-button>
+        <devtools-button
           .size=${Buttons.Button.Size.REGULAR}
           title=${Host.Platform.isMac() ? i18nString(UIStrings.sendCommandCmdEnter) : i18nString(UIStrings.sendCommandCtrlEnter)}
           .iconUrl=${sendIconUrl}
           .variant=${Buttons.Button.Variant.PRIMARY_TOOLBAR}
           @click=${this.#handleSend}
           jslog=${VisualLogging.action('protocol-monitor.send-command').track({click: true})}
-        ></${Buttons.Button.Button.litTagName}>
+        ></devtools-button>
       </div>
     `;
     // clang-format on

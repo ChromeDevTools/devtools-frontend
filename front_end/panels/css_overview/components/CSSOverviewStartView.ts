@@ -2,11 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../../../ui/components/panel_introduction_steps/panel_introduction_steps.js';
+import '../../../ui/components/panel_feedback/panel_feedback.js';
+
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as Platform from '../../../core/platform/platform.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
-import * as PanelFeedback from '../../../ui/components/panel_feedback/panel_feedback.js';
-import * as PanelIntroductionSteps from '../../../ui/components/panel_introduction_steps/panel_introduction_steps.js';
+import type * as PanelFeedback from '../../../ui/components/panel_feedback/panel_feedback.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
 import cssOverviewStartViewStyles from './cssOverviewStartView.css.js';
@@ -79,31 +81,31 @@ export class CSSOverviewStartView extends HTMLElement {
     // clang-format off
     render(html`
       <div class="css-overview-start-view">
-        <${PanelIntroductionSteps.PanelIntroductionSteps.PanelIntroductionSteps.litTagName}>
+        <devtools-panel-introduction-steps>
           <span slot="title">${i18nString(UIStrings.identifyCSSImprovements)}</span>
           <span slot="step-1">${i18nString(UIStrings.capturePageCSSOverview)}</span>
           <span slot="step-2">${i18nString(UIStrings.identifyCSSImprovementsWithExampleIssues)}</span>
           <span slot="step-3">${i18nString(UIStrings.locateAffectedElements)}</span>
-        </${PanelIntroductionSteps.PanelIntroductionSteps.PanelIntroductionSteps.litTagName}>
+        </devtools-panel-introduction-steps>
         <div class="start-capture-wrapper">
-          <${Buttons.Button.Button.litTagName}
+          <devtools-button
             class="start-capture"
             .variant=${Buttons.Button.Variant.PRIMARY}
             .jslogContext=${'css-overview.capture-overview'}
             @click=${this.#onStartCaptureClick}>
             ${i18nString(UIStrings.captureOverview)}
-          </${Buttons.Button.Button.litTagName}>
+          </devtools-button>
         </div>
-        <${PanelFeedback.PanelFeedback.PanelFeedback.litTagName} .data=${{
+        <devtools-panel-feedback .data=${{
             feedbackUrl: FEEDBACK_LINK,
             quickStartUrl: DOC_LINK,
             quickStartLinkText: i18nString(UIStrings.quickStartWithCSSOverview),
           } as PanelFeedback.PanelFeedback.PanelFeedbackData}>
-        </${PanelFeedback.PanelFeedback.PanelFeedback.litTagName}>
-        <${PanelFeedback.FeedbackButton.FeedbackButton.litTagName} .data=${{
+        </devtools-panel-feedback>
+        <devtools-feedback-button .data=${{
           feedbackUrl: FEEDBACK_LINK,
           } as PanelFeedback.FeedbackButton.FeedbackButtonData}>
-        </${PanelFeedback.FeedbackButton.FeedbackButton.litTagName}>
+        </devtools-feedback-button>
       </div>
     `, this.#shadow, {
       host: this,

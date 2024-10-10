@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../../../ui/components/icon_button/icon_button.js';
+
 import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
@@ -12,7 +14,6 @@ import * as Bindings from '../../../models/bindings/bindings.js';
 import * as Breakpoints from '../../../models/breakpoints/breakpoints.js';
 import * as TextUtils from '../../../models/text_utils/text_utils.js';
 import * as Workspace from '../../../models/workspace/workspace.js';
-import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as Input from '../../../ui/components/input/input.js';
 import * as LegacyWrapper from '../../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
@@ -712,7 +713,7 @@ export class BreakpointsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
     // clang-format off
     return html`
     <button data-edit-breakpoint @click=${clickHandler} title=${title} jslog=${VisualLogging.action('edit-breakpoint').track({click: true})}>
-      <${IconButton.Icon.Icon.litTagName} name="edit"></${IconButton.Icon.Icon.litTagName}>
+      <devtools-icon name="edit"></devtools-icon>
     </button>
       `;
     // clang-format on
@@ -728,7 +729,7 @@ export class BreakpointsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
     // clang-format off
     return html`
     <button data-remove-breakpoint @click=${clickHandler} title=${tooltipText} aria-label=${tooltipText} jslog=${VisualLogging.action('remove-breakpoint').track({click: true})}>
-      <${IconButton.Icon.Icon.litTagName} name="bin"></${IconButton.Icon.Icon.litTagName}>
+      <devtools-icon name="bin"></devtools-icon>
     </button>
       `;
     // clang-format on
@@ -845,7 +846,7 @@ export class BreakpointsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
   }
 
   #renderFileIcon(): LitHtml.TemplateResult {
-    return html`<${IconButton.Icon.Icon.litTagName} name="file-script"></${IconButton.Icon.Icon.litTagName}>`;
+    return html`<devtools-icon name="file-script"></devtools-icon>`;
   }
 
   #onBreakpointEntryContextMenu(event: Event, breakpointItem: BreakpointItem, editable: boolean): void {

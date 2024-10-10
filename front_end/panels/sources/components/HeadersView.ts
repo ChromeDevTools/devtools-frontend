@@ -371,12 +371,12 @@ export class HeadersViewComponent extends HTMLElement {
           )}
         `,
       )}
-      <${Buttons.Button.Button.litTagName}
+      <devtools-button
           .variant=${Buttons.Button.Variant.OUTLINED}
           .jslogContext=${'headers-view.add-override-rule'}
           class="add-block">
         ${i18nString(UIStrings.addOverrideRule)}
-      </${Buttons.Button.Button.litTagName}>
+      </devtools-button>
       <div class="learn-more-row">
         <x-link
             href="https://goo.gle/devtools-override"
@@ -409,7 +409,7 @@ export class HeadersViewComponent extends HTMLElement {
         <div>${i18n.i18n.lockedString('Apply to')}</div>
         <div class="separator">:</div>
         ${this.#renderEditable(pattern, 'apply-to')}
-        <${Buttons.Button.Button.litTagName}
+        <devtools-button
         title=${i18nString(UIStrings.removeBlock)}
         .size=${Buttons.Button.Size.SMALL}
         .iconUrl=${trashIconUrl}
@@ -418,7 +418,7 @@ export class HeadersViewComponent extends HTMLElement {
         .variant=${Buttons.Button.Variant.ICON}
         .jslogContext=${'headers-view.remove-apply-to-section'}
         class="remove-block inline-button"
-      ></${Buttons.Button.Button.litTagName}>
+      ></devtools-button>
       </div>
     `;
     // clang-format on
@@ -433,15 +433,15 @@ export class HeadersViewComponent extends HTMLElement {
         ${this.#renderEditable(header.name, 'header-name red', true)}
         <div class="separator">:</div>
         ${this.#renderEditable(header.value, 'header-value')}
-        <${Buttons.Button.Button.litTagName}
+        <devtools-button
           title=${i18nString(UIStrings.addHeader)}
           .size=${Buttons.Button.Size.SMALL}
           .iconUrl=${plusIconUrl}
           .variant=${Buttons.Button.Variant.ICON}
           .jslogContext=${'headers-view.add-header'}
           class="add-header inline-button"
-        ></${Buttons.Button.Button.litTagName}>
-        <${Buttons.Button.Button.litTagName}
+        ></devtools-button>
+        <devtools-button
           title=${i18nString(UIStrings.removeHeader)}
           .size=${Buttons.Button.Size.SMALL}
           .iconUrl=${trashIconUrl}
@@ -449,7 +449,7 @@ export class HeadersViewComponent extends HTMLElement {
           ?hidden=${!this.#isDeletable(blockIndex, headerIndex)}
           .jslogContext=${'headers-view.remove-header'}
           class="remove-header inline-button"
-        ></${Buttons.Button.Button.litTagName}>
+        ></devtools-button>
       </div>
     `;
     // clang-format on

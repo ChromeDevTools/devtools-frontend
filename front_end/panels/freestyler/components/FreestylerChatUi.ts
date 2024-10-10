@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../../../ui/components/spinners/spinners.js';
+
 import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
@@ -11,9 +13,8 @@ import * as Trace from '../../../models/trace/trace.js';
 import type * as Workspace from '../../../models/workspace/workspace.js';
 import * as Marked from '../../../third_party/marked/marked.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
-import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
+import type * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as MarkdownView from '../../../ui/components/markdown_view/markdown_view.js';
-import * as Spinners from '../../../ui/components/spinners/spinners.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
@@ -23,7 +24,7 @@ import {type ContextDetail, ErrorType} from '../AiAgent.js';
 import freestylerChatUiStyles from './freestylerChatUi.css.js';
 import {ProvideFeedback, type ProvideFeedbackProps} from './ProvideFeedback.js';
 
-const {html, Directives} = LitHtml;
+const {html, Directives: {ifDefined}} = LitHtml;
 
 const UIStrings = {
   /**
@@ -472,9 +473,9 @@ export class FreestylerChatUi extends HTMLElement {
     }
 
     // clang-format off
-    return html`<${MarkdownView.MarkdownView.MarkdownView.litTagName}
+    return html`<devtools-markdown-view
       .data=${{tokens, renderer: this.#markdownRenderer} as MarkdownView.MarkdownView.MarkdownViewData}>
-    </${MarkdownView.MarkdownView.MarkdownView.litTagName}>`;
+    </devtools-markdown-view>`;
     // clang-format on
   }
 
@@ -500,23 +501,23 @@ export class FreestylerChatUi extends HTMLElement {
     // it in the data returned code block.
     // clang-format off
     const code = step.code ? html`<div class="action-result">
-        <${MarkdownView.CodeBlock.CodeBlock.litTagName}
+        <devtools-code-block
           .code=${step.code.trim()}
           .codeLang=${'js'}
           .displayNotice=${!Boolean(step.output)}
           .header=${codeHeadingText}
           .showCopyButton=${true}
-        ></${MarkdownView.CodeBlock.CodeBlock.litTagName}>
+        ></devtools-code-block>
     </div>` :
                              LitHtml.nothing;
     const output = step.output ? html`<div class="js-code-output">
-      <${MarkdownView.CodeBlock.CodeBlock.litTagName}
+      <devtools-code-block
         .code=${step.output}
         .codeLang=${'js'}
         .displayNotice=${true}
         .header=${lockedString(UIStringsNotTranslate.dataReturned)}
         .showCopyButton=${false}
-      ></${MarkdownView.CodeBlock.CodeBlock.litTagName}>
+      ></devtools-code-block>
     </div>` :
                                  LitHtml.nothing;
 
@@ -535,13 +536,13 @@ export class FreestylerChatUi extends HTMLElement {
       step.contextDetails,
         contextDetail => {
           return html`<div class="context-details">
-        <${MarkdownView.CodeBlock.CodeBlock.litTagName}
+        <devtools-code-block
           .code=${contextDetail.text}
-          .codeLang=${contextDetail.codeLang}
+          .codeLang=${contextDetail.codeLang || ''}
           .displayNotice=${false}
           .header=${contextDetail.title}
           .showCopyButton=${true}
-        ></${MarkdownView.CodeBlock.CodeBlock.litTagName}>
+        ></devtools-code-block>
       </div>`;
         },
       )}` : LitHtml.nothing;
@@ -557,13 +558,12 @@ export class FreestylerChatUi extends HTMLElement {
 
   #renderStepBadge(step: Step, options: {isLast: boolean}): LitHtml.LitTemplate {
     if (this.#props.isLoading && options.isLast && !step.sideEffect) {
-      return html`<${Spinners.Spinner.Spinner.litTagName} role="button" aria-label=${
-          lockedString(UIStringsNotTranslate.inProgress)}></${Spinners.Spinner.Spinner.litTagName}>`;
+      return html`<devtools-spinner></devtools-spinner>`;
     }
 
     let iconName: string = 'checkmark';
     let ariaLabel: string|undefined = lockedString(UIStringsNotTranslate.completed);
-    let role: string|undefined = 'button';
+    let role: 'button'|undefined = 'button';
     if (options.isLast && step.sideEffect) {
       role = undefined;
       ariaLabel = undefined;
@@ -573,12 +573,12 @@ export class FreestylerChatUi extends HTMLElement {
       iconName = 'cross';
     }
 
-    return html`<${IconButton.Icon.Icon.litTagName}
+    return html`<devtools-icon
         class="indicator"
-        role=${Directives.ifDefined(role)}
-        aria-label=${Directives.ifDefined(ariaLabel)}
+        role=${ifDefined(role)}
+        aria-label=${ifDefined(ariaLabel)}
         .name=${iconName}
-      ></${IconButton.Icon.Icon.litTagName}>`;
+      ></devtools-icon>`;
   }
 
   #renderStep(step: Step, options: {isLast: boolean}): LitHtml.LitTemplate {
@@ -597,10 +597,10 @@ export class FreestylerChatUi extends HTMLElement {
           <div class="summary">
             ${this.#renderStepBadge(step, options)}
             ${this.#renderTitle(step)}
-            <${IconButton.Icon.Icon.litTagName}
+            <devtools-icon
               class="arrow"
               .name=${'chevron-down'}
-            ></${IconButton.Icon.Icon.litTagName}>
+            ></devtools-icon>
           </div>
         </summary>
         ${this.#renderStepDetails(step, {
@@ -623,7 +623,7 @@ export class FreestylerChatUi extends HTMLElement {
     >
       <p>${lockedString(UIStringsNotTranslate.sideEffectConfirmationDescription)}</p>
       <div class="side-effect-buttons-container">
-        <${Buttons.Button.Button.litTagName}
+        <devtools-button
           .data=${
             {
               variant: Buttons.Button.Variant.OUTLINED,
@@ -633,8 +633,8 @@ export class FreestylerChatUi extends HTMLElement {
           @click=${() => sideEffectAction(false)}
         >${lockedString(
           UIStringsNotTranslate.negativeSideEffectConfirmation,
-        )}</${Buttons.Button.Button.litTagName}>
-        <${Buttons.Button.Button.litTagName}
+        )}</devtools-button>
+        <devtools-button
           .data=${
             {
               variant: Buttons.Button.Variant.PRIMARY,
@@ -645,7 +645,7 @@ export class FreestylerChatUi extends HTMLElement {
           @click=${() => sideEffectAction(true)}
         >${
             lockedString(UIStringsNotTranslate.positiveSideEffectConfirmation)
-        }</${Buttons.Button.Button.litTagName}>
+        }</devtools-button>
       </div>
     </div>`;
     // clang-format on
@@ -677,9 +677,9 @@ export class FreestylerChatUi extends HTMLElement {
       const name = this.#props.userInfo.accountFullName || lockedString(UIStringsNotTranslate.you);
       const image = this.#props.userInfo.accountImage ?
           html`<img src="data:image/png;base64, ${this.#props.userInfo.accountImage}" alt="Account avatar" />` :
-          html`<${IconButton.Icon.Icon.litTagName}
+          html`<devtools-icon
             .name=${'profile'}
-          ></${IconButton.Icon.Icon.litTagName}>`;
+          ></devtools-icon>`;
       // clang-format off
       return html`<section
         class="chat-message query"
@@ -702,9 +702,9 @@ export class FreestylerChatUi extends HTMLElement {
     return html`
       <section class="chat-message answer" jslog=${VisualLogging.section('answer')}>
         <div class="message-info">
-          <${IconButton.Icon.Icon.litTagName}
+          <devtools-icon
             name="smart-assistant"
-          ></${IconButton.Icon.Icon.litTagName}>
+          ></devtools-icon>
           <div class="message-name">
             <h2>${lockedString(UIStringsNotTranslate.ai)}</h2>
           </div>
@@ -732,14 +732,14 @@ export class FreestylerChatUi extends HTMLElement {
           }
           ${shouldShowSuggestions ?
             html`<div class="suggestions">
-              ${message.suggestions?.map(suggestion => html`<${Buttons.Button.Button.litTagName}
+              ${message.suggestions?.map(suggestion => html`<devtools-button
                   .data=${{
                       variant: Buttons.Button.Variant.OUTLINED,
                       title: suggestion,
                       jslogContext: 'suggestion',
                   } as Buttons.Button.ButtonData}
                   @click=${() => this.#handleSuggestionClick(suggestion)}
-                >${suggestion}</${Buttons.Button.Button.litTagName}>`)}
+                >${suggestion}</devtools-button>`)}
             </div>` : LitHtml.nothing}
         </div>
       </section>
@@ -808,7 +808,7 @@ export class FreestylerChatUi extends HTMLElement {
     // clang-format off
     return html`
       <div class="select-element">
-        <${Buttons.Button.Button.litTagName}
+        <devtools-button
           .data=${{
               variant: Buttons.Button.Variant.ICON_TOGGLE,
               size: Buttons.Button.Size.REGULAR,
@@ -820,7 +820,7 @@ export class FreestylerChatUi extends HTMLElement {
               jslogContext: 'select-element',
           } as Buttons.Button.ButtonData}
           @click=${this.#props.onInspectElementClick}
-        ></${Buttons.Button.Button.litTagName}>
+        ></devtools-button>
         <div class=${resourceClass}>${
           this.#props.selectedElement
             ? LitHtml.Directives.until(
@@ -895,15 +895,15 @@ export class FreestylerChatUi extends HTMLElement {
     return html`<div class="empty-state-container messages-scroll-container">
       <div class="header">
         <div class="icon">
-          <${IconButton.Icon.Icon.litTagName}
+          <devtools-icon
             name="smart-assistant"
-          ></${IconButton.Icon.Icon.litTagName}>
+          ></devtools-icon>
         </div>
         <h1>${lockedString(UIStringsNotTranslate.emptyStateText)}</h1>
       </div>
       <div class="suggestions">
         ${suggestions.map(suggestion => {
-          return html`<${Buttons.Button.Button.litTagName}
+          return html`<devtools-button
             class="suggestion"
             @click=${() => this.#handleSuggestionClick(suggestion)}
             .data=${
@@ -915,7 +915,7 @@ export class FreestylerChatUi extends HTMLElement {
                 disabled: this.#isTextInputDisabled(),
               } as Buttons.Button.ButtonData
             }
-          >${suggestion}</${Buttons.Button.Button.litTagName}>`;
+          >${suggestion}</devtools-button>`;
         })}
       </div>
     </div>`;
@@ -956,7 +956,7 @@ export class FreestylerChatUi extends HTMLElement {
           placeholder=${getInputPlaceholderString(this.#props.aidaAvailability, this.#props.agentType, this.#props.state)}
           jslog=${VisualLogging.textField('query').track({ keydown: 'Enter' })}></textarea>
           ${this.#props.isLoading
-            ? html`<${Buttons.Button.Button.litTagName}
+            ? html`<devtools-button
               class="chat-input-button"
               aria-label=${lockedString(UIStringsNotTranslate.cancelButtonTitle)}
               @click=${this.#handleCancel}
@@ -970,8 +970,8 @@ export class FreestylerChatUi extends HTMLElement {
                   jslogContext: 'stop',
                 } as Buttons.Button.ButtonData
               }
-            ></${Buttons.Button.Button.litTagName}>`
-            : html`<${Buttons.Button.Button.litTagName}
+            ></devtools-button>`
+            : html`<devtools-button
               class="chat-input-button"
               aria-label=${lockedString(UIStringsNotTranslate.sendButtonTitle)}
               .data=${
@@ -985,7 +985,7 @@ export class FreestylerChatUi extends HTMLElement {
                   jslogContext: 'send',
                 } as Buttons.Button.ButtonData
               }
-            ></${Buttons.Button.Button.litTagName}>`}
+            ></devtools-button>`}
       </div>`;
     // clang-format on
   };
@@ -1022,12 +1022,12 @@ export class FreestylerChatUi extends HTMLElement {
       <div class="empty-state-container messages-scroll-container">
         <div class="opt-in">
           <div class="opt-in-icon-container">
-            <${IconButton.Icon.Icon.litTagName} .data=${{
+            <devtools-icon .data=${{
               iconName: 'smart-assistant',
               width: 'var(--sys-size-8)',
               height: 'var(--sys-size-8)',
             } as IconButton.Icon.IconData}>
-            </${IconButton.Icon.Icon.litTagName}>
+            </devtools-icon>
           </div>
           <div>
             ${config.devToolsExplainThisResourceDogfood?.enabled ?

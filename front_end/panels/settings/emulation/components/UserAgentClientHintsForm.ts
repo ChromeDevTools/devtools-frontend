@@ -8,7 +8,7 @@ import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import type * as Protocol from '../../../../generated/protocol.js';
 import * as Buttons from '../../../../ui/components/buttons/buttons.js';
-import * as IconButton from '../../../../ui/components/icon_button/icon_button.js';
+import type * as IconButton from '../../../../ui/components/icon_button/icon_button.js';
 import * as Input from '../../../../ui/components/input/input.js';
 import type * as UI from '../../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
@@ -602,7 +602,7 @@ export class UserAgentClientHintsForm extends HTMLElement {
         change: true,
       })}
           />
-          <${IconButton.Icon.Icon.litTagName}
+          <devtools-icon
             .data=${
           {color: 'var(--icon-default)', iconName: 'bin', width: '16px', height: '16px'} as IconButton.Icon.IconData}
             title=${i18nString(UIStrings.brandUserAgentDelete)}
@@ -613,7 +613,7 @@ export class UserAgentClientHintsForm extends HTMLElement {
             @keypress=${handleKeyPress}
             aria-label=${i18nString(UIStrings.brandUserAgentDelete)}
           >
-          </${IconButton.Icon.Icon.litTagName}>
+          </devtools-icon>
         </div>
       `;
     });
@@ -629,11 +629,11 @@ export class UserAgentClientHintsForm extends HTMLElement {
         @click=${this.#handleAddUseragentBrandClick}
         @keypress=${this.#handleAddUseragentBrandKeyPress}
       >
-        <${IconButton.Icon.Icon.litTagName}
+        <devtools-icon
           aria-hidden="true"
           .data=${{color: 'var(--icon-default)', iconName: 'plus', width: '16px'} as IconButton.Icon.IconData}
         >
-        </${IconButton.Icon.Icon.litTagName}>
+        </devtools-icon>
         ${i18nString(UIStrings.addBrand)}
       </div>
     `;
@@ -701,7 +701,7 @@ export class UserAgentClientHintsForm extends HTMLElement {
         change: true,
       })}
           />
-          <${IconButton.Icon.Icon.litTagName}
+          <devtools-icon
             .data=${
           {color: 'var(--icon-default)', iconName: 'bin', width: '16px', height: '16px'} as IconButton.Icon.IconData}
             title=${i18nString(UIStrings.brandFullVersionListDelete)}
@@ -712,7 +712,7 @@ export class UserAgentClientHintsForm extends HTMLElement {
             @keypress=${handleKeyPress}
             aria-label=${i18nString(UIStrings.brandFullVersionListDelete)}
           >
-          </${IconButton.Icon.Icon.litTagName}>
+          </devtools-icon>
         </div>
       `;
     });
@@ -728,11 +728,11 @@ export class UserAgentClientHintsForm extends HTMLElement {
         @click=${this.#handleAddFullVersionListBrandClick}
         @keypress=${this.#handleAddFullVersionListBrandKeyPress}
       >
-        <${IconButton.Icon.Icon.litTagName}
+        <devtools-icon
           aria-hidden="true"
           .data=${{color: 'var(--icon-default)', iconName: 'plus', width: '16px'} as IconButton.Icon.IconData}
         >
-        </${IconButton.Icon.Icon.litTagName}>
+        </devtools-icon>
         ${i18nString(UIStrings.addBrand)}
       </div>
     `;
@@ -752,12 +752,12 @@ export class UserAgentClientHintsForm extends HTMLElement {
     const deviceModelSection = this.#renderDeviceModelSection();
     // clang-format off
     const submitButton = this.#showSubmitButton ? html`
-      <${Buttons.Button.Button.litTagName}
+      <devtools-button
         .variant=${Buttons.Button.Variant.OUTLINED}
         .type=${'submit'}
       >
         ${i18nString(UIStrings.update)}
-      </${Buttons.Button.Button.litTagName}>
+      </devtools-button>
     ` : LitHtml.nothing;
     // clang-format on
 
@@ -776,16 +776,16 @@ export class UserAgentClientHintsForm extends HTMLElement {
           aria-label=${i18nString(UIStrings.title)}
           jslog=${VisualLogging.toggleSubpane().track({click: true})}
         >
-          <${IconButton.Icon.Icon.litTagName}
+          <devtools-icon
             class=${this.#isFormOpened ? 'rotate-icon' : ''}
             .data=${{
               color: 'var(--icon-default)',
               iconName: 'triangle-right',
               width: '14px',
             } as IconButton.Icon.IconData}
-          ></${IconButton.Icon.Icon.litTagName}>
+          ></devtools-icon>
           ${i18nString(UIStrings.title)}
-          <${IconButton.Icon.Icon.litTagName}
+          <devtools-icon
             .data=${{
               color: 'var(--icon-default)',
               iconName: 'info',
@@ -793,7 +793,7 @@ export class UserAgentClientHintsForm extends HTMLElement {
             } as IconButton.Icon.IconData}
             title=${i18nString(UIStrings.userAgentClientHintsInfo)}
             class='info-icon'
-          ></${IconButton.Icon.Icon.litTagName}>
+          ></devtools-icon>
           <x-link
            tabindex=${this.#isFormDisabled ? '-1' : '0'}
            href="https://web.dev/user-agent-client-hints/"

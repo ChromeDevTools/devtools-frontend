@@ -2,14 +2,16 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import './Toolbar.js';
+import '../../../ui/components/icon_button/icon_button.js';
+import '../../../ui/components/menus/menus.js';
 
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as Dialogs from '../../../ui/components/dialogs/dialogs.js';
-import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
-import * as Menus from '../../../ui/components/menus/menus.js';
+import type * as IconButton from '../../../ui/components/icon_button/icon_button.js';
+import type * as Menus from '../../../ui/components/menus/menus.js';
 import * as SuggestionInput from '../../../ui/components/suggestion_input/suggestion_input.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
@@ -626,7 +628,7 @@ export class JSONEditor extends LitElement {
     this.populateParametersForCommandWithDefaultValues();
   };
 
-  #computeTargetLabel(target: SDK.Target.Target): string|void {
+  #computeTargetLabel(target: SDK.Target.Target): string|undefined {
     if (!target) {
       return undefined;
     }
@@ -819,7 +821,7 @@ export class JSONEditor extends LitElement {
     return html`
     <div class="row attribute padded">
       <div>target<span class="separator">:</span></div>
-      <${Menus.SelectMenu.SelectMenu.litTagName}
+      <devtools-select-menu
             class="target-select-menu"
             @selectmenuselected=${this.#onTargetSelected}
             .showDivider=${true}
@@ -833,14 +835,14 @@ export class JSONEditor extends LitElement {
           >
           ${repeat(this.targets, target => {
           return html`
-                <${Menus.Menu.MenuItem.litTagName}
+                <devtools-menu-item
                   .value=${target.id()}>
                     ${this.#computeTargetLabel(target)}
-                </${Menus.Menu.MenuItem.litTagName}>
+                </devtools-menu-item>
               `;
         },
     )}
-          </${Menus.SelectMenu.SelectMenu.litTagName}>
+          </devtools-select-menu>
     </div>
   `;
     // clang-format on
@@ -884,7 +886,7 @@ export class JSONEditor extends LitElement {
   }
 
   #renderWarningIcon(): LitHtml.TemplateResult|undefined {
-    return html`<${IconButton.Icon.Icon.litTagName}
+    return html`<devtools-icon
     .data=${{
       iconName: 'warning-filled',
       color: 'var(--icon-warning)',
@@ -895,7 +897,7 @@ export class JSONEditor extends LitElement {
       'warning-icon': true,
     })}
   >
-  </${IconButton.Icon.Icon.litTagName}>`;
+  </devtools-icon>`;
   }
 
   /**

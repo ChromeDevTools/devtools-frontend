@@ -6,7 +6,7 @@ import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
-import * as IconButton from '../../ui/components/icon_button/icon_button.js';
+import type * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as Input from '../../ui/components/input/input.js';
 import * as LegacyWrapper from '../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import * as Switch from '../../ui/components/switch/switch.js';
@@ -236,13 +236,13 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
     // clang-format off
     return html`
       <div>
-        <${IconButton.Icon.Icon.litTagName} .data=${{
+        <devtools-icon .data=${{
           iconName: icon,
           color: 'var(--icon-default)',
           width: 'var(--sys-size-8)',
           height: 'var(--sys-size-8)',
         } as IconButton.Icon.IconData}>
-        </${IconButton.Icon.Icon.litTagName}>
+        </devtools-icon>
       </div>
       <div>${text}</div>
     `;
@@ -286,12 +286,12 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
     // clang-format off
     return html`
       <div>
-        <${IconButton.Icon.Icon.litTagName} .data=${{
+        <devtools-icon .data=${{
           iconName: icon,
           width: 'var(--sys-size-9)',
           height: 'var(--sys-size-9)',
         } as IconButton.Icon.IconData}>
-        </${IconButton.Icon.Icon.litTagName}>
+        </devtools-icon>
       </div>
       <div class="padded">${text}</div>
     `;
@@ -310,14 +310,14 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
     return html`
       <div class="accordion-header" @click=${this.#expandConsoleInsightsSetting}>
         <div class="icon-container centered">
-          <${IconButton.Icon.Icon.litTagName} name="lightbulb-spark"></${IconButton.Icon.Icon.litTagName}>
+          <devtools-icon name="lightbulb-spark"></devtools-icon>
         </div>
         <div class="setting-card">
           <h2>${i18n.i18n.lockedString('Console Insights')}</h2>
           <div class="setting-description">${i18nString(UIStrings.helpUnderstandConsole)}</div>
         </div>
         <div class="dropdown centered">
-          <${Buttons.Button.Button.litTagName}
+          <devtools-button
             .data=${{
               title: this.#isConsoleInsightsSettingExpanded ? i18nString(UIStrings.showLess) : i18nString(UIStrings.showMore),
               size: Buttons.Button.Size.SMALL,
@@ -325,7 +325,7 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
               variant: Buttons.Button.Variant.ICON,
               jslogContext: 'console-insights.accordion',
             } as Buttons.Button.ButtonData}
-          ></${Buttons.Button.Button.litTagName}>
+          ></devtools-button>
         </div>
       </div>
       <div class="divider"></div>
@@ -333,13 +333,13 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
         title=${ifDefined(this.#consoleInsightsSetting?.disabledReason())}
         @click=${this.#toggleConsoleInsightsSetting.bind(this)}
       >
-        <${Switch.Switch.Switch.litTagName}
+        <devtools-switch
           .checked=${Boolean(this.#consoleInsightsSetting?.get() && !this.#consoleInsightsSetting?.disabled())}
           .jslogContext=${this.#consoleInsightsSetting?.name || ''}
           .disabled=${Boolean(this.#consoleInsightsSetting?.disabled())}
           @switchchange=${this.#toggleConsoleInsightsSetting.bind(this)}
           aria-label=${this.#consoleInsightsSetting?.disabledReason() || i18nString(UIStrings.enableConsoleInsights)}
-        ></${Switch.Switch.Switch.litTagName}>
+        ></devtools-switch>
       </div>
       <div class=${classMap(detailsClasses)}>
         <div class="overflow-hidden">
@@ -378,14 +378,14 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
     return html`
       <div class="accordion-header" @click=${this.#expandAiAssistanceSetting}>
         <div class="icon-container centered">
-          <${IconButton.Icon.Icon.litTagName} name="smart-assistant"></${IconButton.Icon.Icon.litTagName}>
+          <devtools-icon name="smart-assistant"></devtools-icon>
         </div>
         <div class="setting-card">
           <h2>${i18n.i18n.lockedString('AI assistance')}</h2>
           <div class="setting-description">${this.#getAiAssistanceSettingDescription()}</div>
         </div>
         <div class="dropdown centered">
-          <${Buttons.Button.Button.litTagName}
+          <devtools-button
             .data=${{
               title: this.#isAiAssistanceSettingExpanded ? i18nString(UIStrings.showLess) : i18nString(UIStrings.showMore),
               size: Buttons.Button.Size.SMALL,
@@ -393,7 +393,7 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
               variant: Buttons.Button.Variant.ICON,
               jslogContext: 'freestyler.accordion',
             } as Buttons.Button.ButtonData}
-          ></${Buttons.Button.Button.litTagName}>
+          ></devtools-button>
         </div>
       </div>
       <div class="divider"></div>
@@ -407,7 +407,7 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
           .disabled=${Boolean(this.#aiAssistanceSetting?.disabled())}
           @switchchange=${this.#toggleAiAssistanceSetting.bind(this)}
           aria-label=${this.#aiAssistanceSetting?.disabledReason() || i18nString(UIStrings.enableAiAssistance)}
-        ></${Switch.Switch.Switch.litTagName}>
+        ></devtools-switch>
       </div>
       <div class=${classMap(detailsClasses)}>
         <div class="overflow-hidden">

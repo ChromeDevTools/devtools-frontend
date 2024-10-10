@@ -23,7 +23,7 @@ import {type ContextDetail, ErrorType} from '../AiAgent.js';
 import freestylerChatUiStyles from './freestylerChatUi.css.js';
 import {ProvideFeedback, type ProvideFeedbackProps} from './ProvideFeedback.js';
 
-const {html} = LitHtml;
+const {html, Directives} = LitHtml;
 
 const UIStrings = {
   /**
@@ -562,11 +562,11 @@ export class FreestylerChatUi extends HTMLElement {
     }
 
     let iconName: string = 'checkmark';
-    let ariaLabel: string = lockedString(UIStringsNotTranslate.completed);
-    let role: string = 'button';
+    let ariaLabel: string|undefined = lockedString(UIStringsNotTranslate.completed);
+    let role: string|undefined = 'button';
     if (options.isLast && step.sideEffect) {
-      role = 'presentational';
-      ariaLabel = '';
+      role = undefined;
+      ariaLabel = undefined;
       iconName = 'pause-circle';
     } else if (step.canceled) {
       ariaLabel = lockedString(UIStringsNotTranslate.canceled);
@@ -575,8 +575,8 @@ export class FreestylerChatUi extends HTMLElement {
 
     return html`<${IconButton.Icon.Icon.litTagName}
         class="indicator"
-        role=${role}
-        aria-label=${ariaLabel}
+        role=${Directives.ifDefined(role)}
+        aria-label=${Directives.ifDefined(ariaLabel)}
         .name=${iconName}
       ></${IconButton.Icon.Icon.litTagName}>`;
   }

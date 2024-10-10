@@ -96,7 +96,7 @@ function runLitAnalyzer(files) {
       [litAnalyzerExecutablePath(), ...Object.entries(rules).flatMap(([k, v]) => [`--rules.${k}`, v]), ...files];
   const result =
       childProcess.spawnSync(nodePath(), args, {encoding: 'utf-8', cwd: devtoolsRootPath(), stdio: 'inherit'});
-  return !result.error;
+  return result.status === 0;
 }
 
 async function run() {

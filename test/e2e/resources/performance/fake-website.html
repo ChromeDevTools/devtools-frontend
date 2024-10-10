@@ -14,7 +14,7 @@
     <button id="long-interaction">Long interaction</button>
     <script>
       let clicks = 0;
-      const button = document.querySelector('button');
+      const button = document.getElementById('long-interaction');
       button.onclick = () => {
         const start = Date.now();
         let now = Date.now();
@@ -26,6 +26,17 @@
         click.textContent = `Click #${clicks}`;
         document.body.append(click);
       }
+    </script>
+    <div id="shifted">Content gets pushed down</div>
+    <script>
+      const shifted = document.getElementById('shifted');
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          const div = document.createElement('div');
+          div.textContent = 'Push content down...';
+          document.body.insertBefore(div, shifted);
+        });
+      });
     </script>
   </body>
 </html>

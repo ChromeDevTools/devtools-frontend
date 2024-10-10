@@ -122,6 +122,15 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
     });
   }
 
+  setStatusForTesting(status: StatusEvent): void {
+    this.#lcpValue = status.lcp;
+    this.#clsValue = status.cls;
+    this.#inpValue = status.inp;
+    this.#interactions = status.interactions;
+    this.#layoutShifts = status.layoutShifts;
+    this.#sendStatusUpdate();
+  }
+
   /**
    * If there is a document update then any node handles we have already resolved will be invalid.
    * This function should re-resolve any relevant DOM nodes after a document update.
@@ -190,7 +199,11 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
         break;
       }
       case 'Interaction': {
-        const interaction = new Interaction(webVitalsEvent);
+        const interaction: Interaction = {
+          duration: webVitalsEvent.duration,
+          interactionType: webVitalsEvent.interactionType,
+          uniqueInteractionId: webVitalsEvent.uniqueInteractionId,
+        };
         if (webVitalsEvent.nodeIndex !== undefined) {
           const node = await this.#resolveDomNode(webVitalsEvent.nodeIndex, executionContextId);
           if (node) {
@@ -310,6 +323,11 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
 
   clearInteractions(): void {
     this.#interactions = [];
+    this.#sendStatusUpdate();
+  }
+
+  clearLayoutShifts(): void {
+    this.#layoutShifts = [];
     this.#sendStatusUpdate();
   }
 
@@ -448,17 +466,11 @@ export interface LayoutShift {
   affectedNodes: Array<{node: SDK.DOMModel.DOMNode}>;
 }
 
-export class Interaction {
+export interface Interaction {
   interactionType: Spec.InteractionEvent['interactionType'];
   duration: Spec.InteractionEvent['duration'];
   uniqueInteractionId: Spec.UniqueInteractionId;
   node?: SDK.DOMModel.DOMNode;
-
-  constructor(interactionEvent: Spec.InteractionEvent) {
-    this.interactionType = interactionEvent.interactionType;
-    this.duration = interactionEvent.duration;
-    this.uniqueInteractionId = interactionEvent.uniqueInteractionId;
-  }
 }
 
 export interface StatusEvent {

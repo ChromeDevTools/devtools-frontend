@@ -17,6 +17,20 @@ import * as Components from './components.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
+function renderLiveMetrics(): Components.LiveMetricsView.LiveMetricsView {
+  const root = document.createElement('div');
+  renderElementIntoDOM(root);
+
+  const widget = new UI.Widget.Widget();
+  widget.markAsRoot();
+  widget.show(root);
+
+  const view = new Components.LiveMetricsView.LiveMetricsView();
+  widget.contentElement.append(view);
+
+  return view;
+}
+
 function getFieldMetricValue(view: Element, metric: string): HTMLElement|null {
   const card = view.shadowRoot!.querySelector(`#${metric} devtools-metric-card`);
   return card!.shadowRoot!.querySelector('#field-value .metric-value');
@@ -27,12 +41,26 @@ function getEnvironmentRecs(view: Element): HTMLElement[] {
 }
 
 function getInteractions(view: Element): HTMLElement[] {
-  const interactionsListEl = view.shadowRoot!.querySelector('.interactions-list');
+  const interactionsListEl = view.shadowRoot!.querySelector('.log[slot="interactions-log-content"]');
   return Array.from(interactionsListEl?.querySelectorAll('.interaction') || []) as HTMLElement[];
 }
 
-function getClearInteractionsButton(view: Element): HTMLElementTagNameMap['devtools-button']|null {
-  return view.shadowRoot!.querySelector('.interactions-clear') as HTMLElementTagNameMap['devtools-button'] | null;
+function getLayoutShifts(view: Element): HTMLElement[] {
+  const interactionsListEl = view.shadowRoot!.querySelector('.log[slot="layout-shifts-log-content"]');
+  return Array.from(interactionsListEl?.querySelectorAll('.layout-shift') || []) as HTMLElement[];
+}
+
+function selectVisibleLog(view: Element, logId: string): void {
+  view.shadowRoot!.querySelector('devtools-live-metrics-logs')!.shadowRoot!.querySelector('.tabbed-pane')!.shadowRoot!
+      .getElementById(`tab-${logId}`)
+      ?.dispatchEvent(
+          new MouseEvent('mousedown', {bubbles: true}),
+      );
+}
+
+function getClearLogButton(view: Element): HTMLElementTagNameMap['devtools-button'] {
+  return view.shadowRoot!.querySelector('devtools-live-metrics-logs')!.shadowRoot!.querySelector('.tabbed-pane')!
+      .shadowRoot!.querySelector('.toolbar')!.shadowRoot!.querySelector('devtools-button')!;
 }
 
 function selectDeviceOption(view: Element, deviceOption: string): void {
@@ -118,12 +146,9 @@ function createMockFieldData() {
 
 describeWithMockConnection('LiveMetricsView', () => {
   const mockHandleAction = sinon.stub();
-  let mockReveal = sinon.stub();
 
   beforeEach(async () => {
     mockHandleAction.reset();
-
-    mockReveal = sinon.stub(Common.Revealer.RevealerRegistry.instance(), 'reveal');
 
     UI.ActionRegistration.registerActionExtension({
       actionId: 'timeline.toggle-recording',
@@ -160,9 +185,8 @@ describeWithMockConnection('LiveMetricsView', () => {
   });
 
   it('should show interactions', async () => {
-    const view = new Components.LiveMetricsView.LiveMetricsView();
-    renderElementIntoDOM(view);
-    LiveMetrics.LiveMetrics.instance().dispatchEventToListeners(LiveMetrics.Events.STATUS, {
+    const view = renderLiveMetrics();
+    LiveMetrics.LiveMetrics.instance().setStatusForTesting({
       inp: {
         value: 500,
         phases: {
@@ -205,9 +229,8 @@ describeWithMockConnection('LiveMetricsView', () => {
   });
 
   it('should show help icon for interaction that is longer than INP', async () => {
-    const view = new Components.LiveMetricsView.LiveMetricsView();
-    renderElementIntoDOM(view);
-    LiveMetrics.LiveMetrics.instance().dispatchEventToListeners(LiveMetrics.Events.STATUS, {
+    const view = renderLiveMetrics();
+    LiveMetrics.LiveMetrics.instance().setStatusForTesting({
       inp: {
         value: 50,
         phases: {
@@ -250,9 +273,8 @@ describeWithMockConnection('LiveMetricsView', () => {
   });
 
   it('should reveal INP interaction when link clicked', async () => {
-    const view = new Components.LiveMetricsView.LiveMetricsView();
-    renderElementIntoDOM(view);
-    LiveMetrics.LiveMetrics.instance().dispatchEventToListeners(LiveMetrics.Events.STATUS, {
+    const view = renderLiveMetrics();
+    LiveMetrics.LiveMetrics.instance().setStatusForTesting({
       inp: {
         value: 500,
         phases: {
@@ -270,24 +292,26 @@ describeWithMockConnection('LiveMetricsView', () => {
     });
     await coordinator.done();
 
+    selectVisibleLog(view, 'layout-shifts');
+
+    await coordinator.done();
+
+    const inpInteractionEl = getInteractions(view).find(el => el.id === 'interaction-1-1')!;
+    assert.isFalse(inpInteractionEl.checkVisibility());
+    assert.isFalse(inpInteractionEl.hasFocus());
+
     const inpInteractionLink = getInpInteractionLink(view);
     inpInteractionLink!.click();
 
     await coordinator.done();
 
-    assert(mockReveal.calledWithExactly(
-        {
-          duration: 500,
-          interactionType: 'pointer',
-          uniqueInteractionId: 'interaction-1-1',
-        },
-        false));
+    assert.isTrue(inpInteractionEl.checkVisibility());
+    assert.isTrue(inpInteractionEl.hasFocus());
   });
 
   it('should hide INP link if no matching interaction', async () => {
-    const view = new Components.LiveMetricsView.LiveMetricsView();
-    renderElementIntoDOM(view);
-    LiveMetrics.LiveMetrics.instance().dispatchEventToListeners(LiveMetrics.Events.STATUS, {
+    const view = renderLiveMetrics();
+    LiveMetrics.LiveMetrics.instance().setStatusForTesting({
       inp: {
         value: 500,
         phases: {
@@ -309,14 +333,13 @@ describeWithMockConnection('LiveMetricsView', () => {
   });
 
   it('clear interactions log button should work', async () => {
-    const view = new Components.LiveMetricsView.LiveMetricsView();
-    renderElementIntoDOM(view);
+    const view = renderLiveMetrics();
     await coordinator.done();
 
-    assert.isNull(getClearInteractionsButton(view));
     assert.lengthOf(getInteractions(view), 0);
+    assert.lengthOf(getLayoutShifts(view), 0);
 
-    LiveMetrics.LiveMetrics.instance().dispatchEventToListeners(LiveMetrics.Events.STATUS, {
+    LiveMetrics.LiveMetrics.instance().setStatusForTesting({
       inp: {
         value: 50,
         phases: {
@@ -330,24 +353,69 @@ describeWithMockConnection('LiveMetricsView', () => {
         {duration: 50, interactionType: 'keyboard', uniqueInteractionId: 'interaction-1-1'},
         {duration: 500, interactionType: 'pointer', uniqueInteractionId: 'interaction-1-2'},
       ],
-      layoutShifts: [],
+      layoutShifts: [
+        {score: 0.1, affectedNodes: [], uniqueLayoutShiftId: 'layout-shift-1-1'},
+      ],
     });
     await coordinator.done();
 
     assert.lengthOf(getInteractions(view), 2);
+    assert.lengthOf(getLayoutShifts(view), 1);
 
-    const interactionsButton = getClearInteractionsButton(view);
-    interactionsButton!.click();
+    const clearLogButton = getClearLogButton(view);
+    clearLogButton!.click();
 
     await coordinator.done();
 
-    assert.isNull(getClearInteractionsButton(view));
     assert.lengthOf(getInteractions(view), 0);
+    assert.lengthOf(getLayoutShifts(view), 1);
+  });
+
+  it('clear layout shifts log button should work', async () => {
+    const view = renderLiveMetrics();
+    await coordinator.done();
+
+    assert.lengthOf(getInteractions(view), 0);
+    assert.lengthOf(getLayoutShifts(view), 0);
+
+    LiveMetrics.LiveMetrics.instance().setStatusForTesting({
+      inp: {
+        value: 50,
+        phases: {
+          inputDelay: 10,
+          processingDuration: 30,
+          presentationDelay: 10,
+        },
+        uniqueInteractionId: 'interaction-1-2',
+      },
+      interactions: [
+        {duration: 50, interactionType: 'keyboard', uniqueInteractionId: 'interaction-1-1'},
+        {duration: 500, interactionType: 'pointer', uniqueInteractionId: 'interaction-1-2'},
+      ],
+      layoutShifts: [
+        {score: 0.1, affectedNodes: [], uniqueLayoutShiftId: 'layout-shift-1-1'},
+      ],
+    });
+    await coordinator.done();
+
+    assert.lengthOf(getInteractions(view), 2);
+    assert.lengthOf(getLayoutShifts(view), 1);
+
+    selectVisibleLog(view, 'layout-shifts');
+
+    await coordinator.done();
+
+    const clearLogButton = getClearLogButton(view);
+    clearLogButton!.click();
+
+    await coordinator.done();
+
+    assert.lengthOf(getInteractions(view), 2);
+    assert.lengthOf(getLayoutShifts(view), 0);
   });
 
   it('record action button should work', async () => {
-    const view = new Components.LiveMetricsView.LiveMetricsView();
-    renderElementIntoDOM(view);
+    const view = renderLiveMetrics();
     await coordinator.done();
 
     const recordButton =
@@ -360,8 +428,7 @@ describeWithMockConnection('LiveMetricsView', () => {
   });
 
   it('record page load button should work', async () => {
-    const view = new Components.LiveMetricsView.LiveMetricsView();
-    renderElementIntoDOM(view);
+    const view = renderLiveMetrics();
     await coordinator.done();
 
     const recordButton =
@@ -401,8 +468,7 @@ describeWithMockConnection('LiveMetricsView', () => {
 
       mockFieldData['url-ALL'] = createMockFieldData();
 
-      const view = new Components.LiveMetricsView.LiveMetricsView();
-      renderElementIntoDOM(view);
+      const view = renderLiveMetrics();
 
       await coordinator.done();
 
@@ -421,8 +487,7 @@ describeWithMockConnection('LiveMetricsView', () => {
     });
 
     it('should show when crux is enabled', async () => {
-      const view = new Components.LiveMetricsView.LiveMetricsView();
-      renderElementIntoDOM(view);
+      const view = renderLiveMetrics();
 
       await coordinator.done();
 
@@ -457,8 +522,7 @@ describeWithMockConnection('LiveMetricsView', () => {
     });
 
     it('should show empty values when crux is enabled but there is no field data', async () => {
-      const view = new Components.LiveMetricsView.LiveMetricsView();
-      renderElementIntoDOM(view);
+      const view = renderLiveMetrics();
 
       await coordinator.done();
 
@@ -487,8 +551,7 @@ describeWithMockConnection('LiveMetricsView', () => {
     it('should make initial request on render when crux is enabled', async () => {
       mockFieldData['url-ALL'] = createMockFieldData();
 
-      const view = new Components.LiveMetricsView.LiveMetricsView();
-      renderElementIntoDOM(view);
+      const view = renderLiveMetrics();
 
       await coordinator.done();
 
@@ -499,8 +562,7 @@ describeWithMockConnection('LiveMetricsView', () => {
     it('should be removed once crux is disabled', async () => {
       mockFieldData['url-ALL'] = createMockFieldData();
 
-      const view = new Components.LiveMetricsView.LiveMetricsView();
-      renderElementIntoDOM(view);
+      const view = renderLiveMetrics();
 
       await coordinator.done();
 
@@ -521,8 +583,7 @@ describeWithMockConnection('LiveMetricsView', () => {
       mockFieldData['origin-ALL'] = createMockFieldData();
       mockFieldData['origin-ALL'].record.metrics.largest_contentful_paint!.percentiles!.p75 = 2000;
 
-      const view = new Components.LiveMetricsView.LiveMetricsView();
-      renderElementIntoDOM(view);
+      const view = renderLiveMetrics();
 
       await coordinator.done();
 
@@ -543,8 +604,7 @@ describeWithMockConnection('LiveMetricsView', () => {
       mockFieldData['url-PHONE'] = createMockFieldData();
       mockFieldData['url-PHONE'].record.metrics.largest_contentful_paint!.percentiles!.p75 = 2000;
 
-      const view = new Components.LiveMetricsView.LiveMetricsView();
-      renderElementIntoDOM(view);
+      const view = renderLiveMetrics();
 
       await coordinator.done();
 
@@ -567,8 +627,7 @@ describeWithMockConnection('LiveMetricsView', () => {
       mockFieldData['url-PHONE'] = createMockFieldData();
       mockFieldData['url-PHONE'].record.metrics.largest_contentful_paint!.percentiles!.p75 = 2000;
 
-      const view = new Components.LiveMetricsView.LiveMetricsView();
-      renderElementIntoDOM(view);
+      const view = renderLiveMetrics();
 
       await coordinator.done();
 
@@ -596,8 +655,7 @@ describeWithMockConnection('LiveMetricsView', () => {
       mockFieldData['url-ALL'] = createMockFieldData();
       mockFieldData['url-ALL'].record.metrics.largest_contentful_paint!.percentiles!.p75 = 2000;
 
-      const view = new Components.LiveMetricsView.LiveMetricsView();
-      renderElementIntoDOM(view);
+      const view = renderLiveMetrics();
 
       await coordinator.done();
 
@@ -628,8 +686,7 @@ describeWithMockConnection('LiveMetricsView', () => {
         // So we should expect the recommended preset to be "Slow 4G".
         mockFieldData['url-ALL'].record.metrics.round_trip_time!.percentiles!.p75 = 165;
 
-        const view = new Components.LiveMetricsView.LiveMetricsView();
-        renderElementIntoDOM(view);
+        const view = renderLiveMetrics();
 
         await coordinator.done();
 
@@ -643,8 +700,7 @@ describeWithMockConnection('LiveMetricsView', () => {
         mockFieldData['url-ALL'] = createMockFieldData();
         mockFieldData['url-ALL'].record.metrics.round_trip_time = undefined;
 
-        const view = new Components.LiveMetricsView.LiveMetricsView();
-        renderElementIntoDOM(view);
+        const view = renderLiveMetrics();
 
         await coordinator.done();
 
@@ -660,8 +716,7 @@ describeWithMockConnection('LiveMetricsView', () => {
         // but that preset should be ignored.
         mockFieldData['url-ALL'].record.metrics.round_trip_time!.percentiles!.p75 = 1;
 
-        const view = new Components.LiveMetricsView.LiveMetricsView();
-        renderElementIntoDOM(view);
+        const view = renderLiveMetrics();
 
         await coordinator.done();
 
@@ -678,8 +733,7 @@ describeWithMockConnection('LiveMetricsView', () => {
         // still too far away in general.
         mockFieldData['url-ALL'].record.metrics.round_trip_time!.percentiles!.p75 = 10_000;
 
-        const view = new Components.LiveMetricsView.LiveMetricsView();
-        renderElementIntoDOM(view);
+        const view = renderLiveMetrics();
 
         await coordinator.done();
 
@@ -693,8 +747,7 @@ describeWithMockConnection('LiveMetricsView', () => {
       it('should recommend desktop if it is the majority', async () => {
         mockFieldData['url-ALL'] = createMockFieldData();
 
-        const view = new Components.LiveMetricsView.LiveMetricsView();
-        renderElementIntoDOM(view);
+        const view = renderLiveMetrics();
 
         await coordinator.done();
 
@@ -713,8 +766,7 @@ describeWithMockConnection('LiveMetricsView', () => {
           tablet: 0.1,
         };
 
-        const view = new Components.LiveMetricsView.LiveMetricsView();
-        renderElementIntoDOM(view);
+        const view = renderLiveMetrics();
 
         await coordinator.done();
 
@@ -733,8 +785,7 @@ describeWithMockConnection('LiveMetricsView', () => {
           tablet: 0.02,
         };
 
-        const view = new Components.LiveMetricsView.LiveMetricsView();
-        renderElementIntoDOM(view);
+        const view = renderLiveMetrics();
 
         await coordinator.done();
 

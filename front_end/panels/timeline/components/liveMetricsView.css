@@ -130,13 +130,20 @@
   min-width: 0;
 }
 
-.interactions-section {
+.logs-section {
   margin-top: 24px;
   display: flex;
   flex-direction: column;
-  flex: 1;
-  overflow: hidden;
-  min-height: min-content;
+  flex: 1 0 300px;
+  overflow: auto;
+  max-height: max-content;
+
+  --app-color-toolbar-background: transparent;
+}
+
+.logs-section-header {
+  display: flex;
+  align-items: center;
 }
 
 .interactions-clear {
@@ -144,18 +151,13 @@
   vertical-align: sub;
 }
 
-.interactions-list {
+.log {
   padding: 0;
   margin: 0;
   overflow: auto;
-  flex: 1 1 300px;
-  max-height: max-content;
 }
 
-.interaction {
-  display: flex;
-  align-items: center;
-  padding: 7px 0;
+.log-item {
   border: none;
   border-bottom: 1px solid var(--sys-color-divider);
 
@@ -164,8 +166,10 @@
   }
 }
 
-.interaction:first-child {
-  border-top: 1px solid var(--sys-color-divider);
+.interaction {
+  display: flex;
+  align-items: center;
+  padding: 7px 0;
 }
 
 .interaction-type {
@@ -199,6 +203,32 @@
   width: max-content;
   flex-shrink: 0;
   font-weight: var(--ref-typeface-weight-medium);
+}
+
+.layout-shift {
+  display: flex;
+  align-items: flex-start;
+}
+
+.layout-shift-score {
+  margin-right: 16px;
+  padding: 7px 0;
+  width: 150px;
+  box-sizing: border-box;
+}
+
+.layout-shift-nodes {
+  flex: 1;
+  min-width: 0;
+}
+
+.layout-shift-node {
+  border-bottom: 1px solid var(--sys-color-divider);
+  padding: 7px 0;
+
+  &:last-child {
+    border: none;
+  }
 }
 
 .record-action {

@@ -24,6 +24,7 @@ const READY_LOCAL_METRIC_SELECTOR = '#local-value .metric-value:not(.waiting)';
 const READY_FIELD_METRIC_SELECTOR = '#field-value .metric-value:not(.waiting)';
 const WAITING_LOCAL_METRIC_SELECTOR = '#local-value .metric-value.waiting';
 const INTERACTION_SELECTOR = '.interaction';
+const LAYOUT_SHIFT_SELECTOR = '.layout-shift';
 const HISTOGRAM_SELECTOR = '.bucket-summaries.histogram';
 const SETUP_FIELD_BUTTON_SELECTOR = 'devtools-button[data-field-data-setup]';
 const ENABLE_FIELD_BUTTON_SELECTOR = 'devtools-button[data-field-data-enable]';
@@ -81,6 +82,9 @@ describe('The Performance panel landing page', () => {
       const interactions = await $$<HTMLElement>(INTERACTION_SELECTOR);
       assert.lengthOf(interactions, 2);
 
+      const layoutShifts = await $$<HTMLElement>(LAYOUT_SHIFT_SELECTOR);
+      assert.lengthOf(layoutShifts, 1);
+
       const lcpValue = await lcpValueElem.evaluate(el => el.textContent) || '';
       assert.match(lcpValue, /[0-9\.]+ (s|ms)/);
 
@@ -93,6 +97,11 @@ describe('The Performance panel landing page', () => {
       for (const interaction of interactions) {
         const interactionText = await interaction.evaluate(el => el.innerText) || '';
         assert.match(interactionText, /pointer( INP)?\n[\d.]+ (s|ms)/);
+      }
+
+      for (const layoutShift of layoutShifts) {
+        const layoutShiftText = await layoutShift.evaluate(el => el.innerText) || '';
+        assert.match(layoutShiftText, /Layout shift score: [\d.]+/);
       }
     } finally {
       await targetSession.detach();
@@ -129,6 +138,9 @@ describe('The Performance panel landing page', () => {
       const interactions = await $$<HTMLElement>(INTERACTION_SELECTOR);
       assert.lengthOf(interactions, 0);
 
+      const layoutShifts = await $$<HTMLElement>(LAYOUT_SHIFT_SELECTOR);
+      assert.lengthOf(layoutShifts, 1);
+
       const lcpValue = await lcpValueElem.evaluate(el => el.textContent) || '';
       assert.match(lcpValue, /[0-9\.]+ (s|ms)/);
 
@@ -164,6 +176,9 @@ describe('The Performance panel landing page', () => {
       const interactions1 = await $$<HTMLElement>(INTERACTION_SELECTOR);
       assert.lengthOf(interactions1, 2);
 
+      const layoutShifts1 = await $$<HTMLElement>(LAYOUT_SHIFT_SELECTOR);
+      assert.lengthOf(layoutShifts1, 1);
+
       await target.bringToFront();
 
       const waitForLCP2 = await installLCPListener(targetSession);
@@ -178,6 +193,9 @@ describe('The Performance panel landing page', () => {
       await waitForMany(READY_LOCAL_METRIC_SELECTOR, 3);
       const interactions2 = await $$<HTMLElement>(INTERACTION_SELECTOR);
       assert.lengthOf(interactions2, 1);
+
+      const layoutShifts2 = await $$<HTMLElement>(LAYOUT_SHIFT_SELECTOR);
+      assert.lengthOf(layoutShifts2, 0);
 
       await target.bringToFront();
 
@@ -196,6 +214,9 @@ describe('The Performance panel landing page', () => {
 
       const interactions3 = await $$<HTMLElement>(INTERACTION_SELECTOR);
       assert.lengthOf(interactions3, 0);
+
+      const layoutShifts3 = await $$<HTMLElement>(LAYOUT_SHIFT_SELECTOR);
+      assert.lengthOf(layoutShifts3, 0);
     } finally {
       await targetSession.detach();
     }

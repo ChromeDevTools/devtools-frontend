@@ -229,4 +229,19 @@ describeWithMockConnection('ExtensionStorageModel', () => {
     runtime.executionContextDestroyed(mockExecutionContext2.id);
     assert.strictEqual(0, extensionStorageModel.storages().length);
   });
+
+  it('matches service worker target on same origin', () => {
+    assert.isTrue(extensionStorage.matchesTarget(
+        createTarget({type: SDK.Target.Type.ServiceWorker, url: `chrome-extension://${initId}/sw.js`})));
+  });
+
+  it('matches tab target on same origin', () => {
+    assert.isTrue(extensionStorage.matchesTarget(
+        createTarget({type: SDK.Target.Type.TAB, url: `chrome-extension://${initId}/sw.js`})));
+  });
+
+  it('does not match service worker target on different origin', () => {
+    assert.isFalse(extensionStorage.matchesTarget(
+        createTarget({type: SDK.Target.Type.ServiceWorker, url: 'chrome-extension://other-id/sw.js'})));
+  });
 });

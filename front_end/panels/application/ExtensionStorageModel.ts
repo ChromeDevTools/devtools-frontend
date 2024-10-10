@@ -83,6 +83,15 @@ export class ExtensionStorage extends Common.ObjectWrapper.ObjectWrapper<{}> {
       throw new Error(response.getError());
     }
   }
+
+  matchesTarget(target: SDK.Target.Target|undefined): boolean {
+    if (!target) {
+      return false;
+    }
+    const targetURL = target.targetInfo()?.url;
+    const parsedURL = targetURL ? Common.ParsedURL.ParsedURL.fromString(targetURL) : null;
+    return parsedURL?.scheme === 'chrome-extension' && parsedURL?.host === this.extensionId;
+  }
 }
 
 export class ExtensionStorageModel extends SDK.SDKModel.SDKModel<EventTypes> {

@@ -808,16 +808,19 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
     this.addExtensionStorage(extensionStorage);
   }
 
-  private useTreeViewForExtensionStorage(): boolean {
-    // For extension service workers, there is only one associated extension,
-    // so we show each storage area as a direct child. In a page context (where
-    // multiple extensions may be injected) use a tree view where storage areas
-    // are children of the extension they are associated with.
-    return Root.Runtime.getPathName() !== '/bundled/worker_app.html';
+  private useTreeViewForExtensionStorage(extensionStorage: ExtensionStorage): boolean {
+    // If the origin the storage is associated with matches the top-level
+    // target (e.g, an extension service worker or top-level
+    // chrome-extension:// page), there is likely only one extension in the
+    // context we are inspecting and we can show the storage as a direct child.
+    // In other contexts (where multiple extensions may be injected) use a tree
+    // view where storage areas are children of the extension they are
+    // associated with.
+    return !extensionStorage.matchesTarget(this.target);
   }
 
   private getExtensionStorageAreaParent(extensionStorage: ExtensionStorage): ApplicationPanelTreeElement|undefined {
-    if (!this.useTreeViewForExtensionStorage()) {
+    if (!this.useTreeViewForExtensionStorage(extensionStorage)) {
       return this.extensionStorageListTreeElement;
     }
 
@@ -883,7 +886,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
     const parentListTreeElement = treeElement.parent;
     if (parentListTreeElement) {
       parentListTreeElement.removeChild(treeElement);
-      if (this.useTreeViewForExtensionStorage() && parentListTreeElement.childCount() === 0) {
+      if (this.useTreeViewForExtensionStorage(extensionStorage) && parentListTreeElement.childCount() === 0) {
         this.extensionStorageListTreeElement?.removeChild(parentListTreeElement);
         this.extensionIdToStorageTreeParentElement.delete(extensionStorage.extensionId);
       } else {

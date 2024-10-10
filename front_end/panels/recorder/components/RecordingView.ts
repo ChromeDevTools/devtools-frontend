@@ -924,15 +924,23 @@ export class RecordingView extends HTMLElement {
                 jslog=${VisualLogging.close().track({click: true})}
               ></devtools-button>
             </div>
-            <div class="text-editor" jslog=${VisualLogging.textField().track({change: true})}>
-              <!-- @ts-ignore -->
-              <devtools-text-editor .state=${
-          this.#editorState
-        }></devtools-text-editor>
-            </div>
+            ${this.#renderTextEditor()}
           </div>
         </devtools-split-view>
       `;
+    // clang-format on
+  }
+
+  #renderTextEditor(): LitHtml.TemplateResult {
+    if (!this.#editorState) {
+      throw new Error('Unexpected: trying to render the text editor without editorState');
+    }
+    // clang-format off
+    return html`
+      <div class="text-editor" jslog=${VisualLogging.textField().track({change: true})}>
+        <devtools-text-editor .state=${this.#editorState}></devtools-text-editor>
+      </div>
+    `;
     // clang-format on
   }
 

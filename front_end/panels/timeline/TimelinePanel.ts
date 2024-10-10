@@ -328,9 +328,6 @@ type ViewMode = {
   mode: 'STATUS_PANE_OVERLAY',
 };
 
-export type EventToRelatedInsightsMap =
-    Map<Trace.Types.Events.Event, Array<{insightLabel: string, activateInsight: () => void}>>;
-
 export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineModeViewDelegate {
   private readonly dropTarget: UI.DropTarget.DropTarget;
   private readonly recordingOptionUIControls: UI.Toolbar.ToolbarItem[];
@@ -433,7 +430,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
    */
   #pendingAriaMessage: string|null = null;
 
-  #eventToRelatedInsights: EventToRelatedInsightsMap = new Map();
+  #eventToRelatedInsights: TimelineComponents.RelatedInsightChips.EventToRelatedInsightsMap = new Map();
 
   constructor() {
     super('timeline');
@@ -569,7 +566,10 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
     this.#sideBar.element.addEventListener(
         TimelineInsights.SidebarInsight.InsightProvideRelatedEvents.eventName, event => {
-          const relatedInsight = {insightLabel: event.label, activateInsight: event.activateInsight};
+          const relatedInsight = {
+            insightLabel: event.label,
+            activateInsight: event.activateInsight,
+          };
           for (const traceEvent of event.events) {
             const relatedInsights = this.#eventToRelatedInsights.get(traceEvent) ?? [];
             relatedInsights.push(relatedInsight);

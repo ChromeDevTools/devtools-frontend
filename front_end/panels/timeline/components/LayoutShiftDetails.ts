@@ -20,14 +20,6 @@ const MAX_URL_LENGTH = 20;
 
 const UIStrings = {
   /**
-   * @description Text indicating an insight.
-   */
-  insight: 'Insight',
-  /**
-   * @description Title indicating the Layout shift culprits insight.
-   */
-  layoutShiftCulprits: 'Layout shift culprits',
-  /**
    * @description Text referring to the start time of a given event.
    */
   startTime: 'Start time',
@@ -110,19 +102,6 @@ export class LayoutShiftDetails extends HTMLElement {
     this.#parsedTrace = parsedTrace;
     this.#isFreshRecording = isFreshRecording;
     this.#render();
-  }
-
-  #renderInsightChip(): LitHtml.TemplateResult|null {
-    if (!this.#event) {
-      return null;
-    }
-
-    // clang-format off
-    return LitHtml.html`
-      <div class="insight-chip">
-        <div class="insight-keyword">${i18nString(UIStrings.insight)} </div>${i18nString(UIStrings.layoutShiftCulprits)}</div>
-    `;
-    // clang-format on
   }
 
   #renderTitle(event: Trace.Types.Events.SyntheticLayoutShift|
@@ -384,6 +363,7 @@ export class LayoutShiftDetails extends HTMLElement {
     if (!this.#event || !this.#parsedTrace) {
       return;
     }
+
     // clang-format off
     const output = LitHtml.html`
       <div class="layout-shift-summary-details">
@@ -397,9 +377,6 @@ export class LayoutShiftDetails extends HTMLElement {
             ? this.#renderShiftDetails(this.#event, this.#traceInsightsSets, this.#parsedTrace)
             : this.#renderClusterDetails(this.#event, this.#traceInsightsSets, this.#parsedTrace)
           }
-        </div>
-        <div class="insight-categories">
-          ${this.#renderInsightChip()}
         </div>
       </div>
     `;

@@ -19,7 +19,7 @@ import {Tracker} from './FreshRecording.js';
 import {targetForEvent} from './TargetForEvent.js';
 import {TimelineLayersView} from './TimelineLayersView.js';
 import {TimelinePaintProfilerView} from './TimelinePaintProfilerView.js';
-import {type EventToRelatedInsightsMap, type TimelineModeViewDelegate} from './TimelinePanel.js';
+import {type TimelineModeViewDelegate} from './TimelinePanel.js';
 import {TimelineSelection} from './TimelineSelection.js';
 import {TimelineSelectorStatsView} from './TimelineSelectorStatsView.js';
 import {BottomUpTimelineTreeView, CallTreeTimelineTreeView, type TimelineTreeView} from './TimelineTreeView.js';
@@ -78,14 +78,13 @@ export class TimelineDetailsView extends UI.Widget.VBox {
   private lazySelectorStatsView: TimelineSelectorStatsView|null;
   #parsedTrace: Trace.Handlers.Types.ParsedTrace|null = null;
   #traceInsightsSets: Trace.Insights.Types.TraceInsightSets|null = null;
-  // TODO(crbug.com/370599988): utilize in every details summary renderer to create insight chips.
-  //                            This deserves an interaction test :)
   /* eslint-disable-next-line no-unused-private-class-members */
-  #eventToRelatedInsightsMap: EventToRelatedInsightsMap|null = null;
+  #eventToRelatedInsightsMap: TimelineComponents.RelatedInsightChips.EventToRelatedInsightsMap|null = null;
   #filmStrip: Trace.Extras.FilmStrip.Data|null = null;
   #networkRequestDetails: TimelineComponents.NetworkRequestDetails.NetworkRequestDetails;
   #layoutShiftDetails: TimelineComponents.LayoutShiftDetails.LayoutShiftDetails;
   #onTraceBoundsChangeBound = this.#onTraceBoundsChange.bind(this);
+  #relatedInsightChips = new TimelineComponents.RelatedInsightChips.RelatedInsightChips();
 
   constructor(delegate: TimelineModeViewDelegate) {
     super();
@@ -171,7 +170,7 @@ export class TimelineDetailsView extends UI.Widget.VBox {
     parsedTrace: Trace.Handlers.Types.ParsedTrace|null,
     selectedEvents: Trace.Types.Events.Event[]|null,
     traceInsightsSets: Trace.Insights.Types.TraceInsightSets|null,
-    eventToRelatedInsightsMap: EventToRelatedInsightsMap|null,
+    eventToRelatedInsightsMap: TimelineComponents.RelatedInsightChips.EventToRelatedInsightsMap|null,
   }): Promise<void> {
     if (this.#parsedTrace !== data.parsedTrace) {
       // Clear the selector stats view, so the next time the user views it we
@@ -186,6 +185,9 @@ export class TimelineDetailsView extends UI.Widget.VBox {
     this.#selectedEvents = data.selectedEvents;
     this.#traceInsightsSets = data.traceInsightsSets;
     this.#eventToRelatedInsightsMap = data.eventToRelatedInsightsMap;
+    if (data.eventToRelatedInsightsMap) {
+      this.#relatedInsightChips.eventToRelatedInsightsMap = data.eventToRelatedInsightsMap;
+    }
     this.tabbedPane.closeTabs([Tab.PaintProfiler, Tab.LayerViewer], false);
     for (const view of this.rangeDetailViews.values()) {
       view.setModelWithEvents(data.selectedEvents, data.parsedTrace);
@@ -204,6 +206,9 @@ export class TimelineDetailsView extends UI.Widget.VBox {
     }
     this.defaultDetailsContentElement.removeChildren();
     this.defaultDetailsContentElement.appendChild(node);
+    if (this.#relatedInsightChips) {
+      this.defaultDetailsContentElement.appendChild(this.#relatedInsightChips);
+    }
   }
 
   private updateContents(): void {
@@ -292,6 +297,7 @@ export class TimelineDetailsView extends UI.Widget.VBox {
     }
     this.detailsLinkifier.reset();
     this.selection = selection;
+    this.#relatedInsightChips.activeEvent = null;
     if (!this.selection) {
       // Update instantly using forceImmediateUpdate, since we are only
       // making a single call and don't need to debounce.
@@ -303,16 +309,24 @@ export class TimelineDetailsView extends UI.Widget.VBox {
       const networkRequest = selectionObject;
       const maybeTarget = targetForEvent(this.#parsedTrace, networkRequest);
       await this.#networkRequestDetails.setData(this.#parsedTrace, networkRequest, maybeTarget);
+      this.#relatedInsightChips.activeEvent = networkRequest;
+      if (this.#eventToRelatedInsightsMap) {
+        this.#relatedInsightChips.eventToRelatedInsightsMap = this.#eventToRelatedInsightsMap;
+      }
+
       this.setContent(this.#networkRequestDetails);
     } else if (TimelineSelection.isTraceEventSelection(selectionObject)) {
       const event = selectionObject;
+      this.#relatedInsightChips.activeEvent = event;
+      if (this.#eventToRelatedInsightsMap) {
+        this.#relatedInsightChips.eventToRelatedInsightsMap = this.#eventToRelatedInsightsMap;
+      }
       if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_INSIGHTS) &&
           (Trace.Types.Events.isSyntheticLayoutShift(event) ||
            Trace.Types.Events.isSyntheticLayoutShiftCluster(event))) {
         const isFreshRecording = Boolean(this.#parsedTrace && Tracker.instance().recordingIsFresh(this.#parsedTrace));
         this.#layoutShiftDetails.setData(event, this.#traceInsightsSets, this.#parsedTrace, isFreshRecording);
         this.setContent(this.#layoutShiftDetails);
-
       } else {
         const traceEventDetails =
             await TimelineUIUtils.buildTraceEventDetails(this.#parsedTrace, event, this.detailsLinkifier, true);

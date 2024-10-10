@@ -4,21 +4,6 @@
  * found in the LICENSE file.
  */
 
-.insight-chip {
-  font: var(--sys-typescale-body4-regular);
-  border: var(--sys-size-1) solid var(--sys-color-primary);
-  border-radius: var(--sys-shape-corner-extra-small);
-  display: flex;
-  margin-top: var(--sys-size-4);
-  padding: var(--sys-size-2) var(--sys-size-4) var(--sys-size-2) var(--sys-size-4);
-  width: max-content;
-  white-space: pre;
-
-  .insight-keyword {
-    color: var(--sys-color-primary);
-  }
-}
-
 .layout-shift-details-title,
 .cluster-details-title {
   padding-bottom: var(--sys-size-5);

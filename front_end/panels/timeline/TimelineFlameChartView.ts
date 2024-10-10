@@ -30,7 +30,7 @@ import {
 } from './TimelineFlameChartDataProvider.js';
 import {TimelineFlameChartNetworkDataProvider} from './TimelineFlameChartNetworkDataProvider.js';
 import timelineFlameChartViewStyles from './timelineFlameChartView.css.js';
-import {type EventToRelatedInsightsMap, type TimelineModeViewDelegate} from './TimelinePanel.js';
+import {type TimelineModeViewDelegate} from './TimelinePanel.js';
 import {TimelineSelection} from './TimelineSelection.js';
 import {AggregatedTimelineTreeView} from './TimelineTreeView.js';
 import {type TimelineMarkerStyle} from './TimelineUIUtils.js';
@@ -98,7 +98,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
   private searchRegex?: RegExp;
   #parsedTrace: Trace.Handlers.Types.ParsedTrace|null;
   #traceInsightSets: Trace.Insights.Types.TraceInsightSets|null = null;
-  #eventToRelatedInsightsMap: EventToRelatedInsightsMap|null = null;
+  #eventToRelatedInsightsMap: TimelineComponents.RelatedInsightChips.EventToRelatedInsightsMap|null = null;
   #selectedGroupName: string|null = null;
   #onTraceBoundsChangeBound = this.#onTraceBoundsChange.bind(this);
   #gameKeyMatches = 0;
@@ -814,7 +814,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
 
   setInsights(
       insights: Trace.Insights.Types.TraceInsightSets|null,
-      eventToRelatedInsightsMap: EventToRelatedInsightsMap): void {
+      eventToRelatedInsightsMap: TimelineComponents.RelatedInsightChips.EventToRelatedInsightsMap): void {
     if (this.#traceInsightSets === insights) {
       return;
     }

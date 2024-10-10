@@ -50,7 +50,8 @@ describeWithEnvironment('TimelineDetailsView', function() {
     await detailsView.setSelection(selection);
 
     const detailsContentElement = detailsView.getDetailsContentElementForTest();
-    assert.strictEqual(detailsContentElement.childNodes.length, 1);
+    // NetworkRequestDetails and RelatedInsightsChips nodes.
+    assert.strictEqual(detailsContentElement.childNodes.length, 2);
     const detailsElementShadowRoot = (detailsContentElement.childNodes[0] as HTMLElement).shadowRoot;
     if (!detailsElementShadowRoot) {
       throw new Error('Could not find expected element to test.');

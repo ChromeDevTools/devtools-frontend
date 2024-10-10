@@ -181,6 +181,7 @@ export class CLSCulprits extends BaseInsight {
     }
 
     const causes = this.getTopCulprits(insight.worstCluster, culpritsByShift);
+
     const hasCulprits = causes.length > 0;
 
     const matchesCategory = shouldRenderForCategory({

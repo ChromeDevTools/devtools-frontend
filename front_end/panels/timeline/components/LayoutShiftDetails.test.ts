@@ -18,10 +18,6 @@ describeWithMockConnection('LayoutShiftDetails', () => {
     details.setData(shiftEvent, insights, parsedTrace, false);
 
     assert.isNotNull(details.shadowRoot);
-    const decorativeChip = details.shadowRoot.querySelector('.insight-chip');
-    assert.isNotNull(decorativeChip);
-
-    assert.include(decorativeChip?.textContent, 'Layout shift culprits');
     const eventTitle = details.shadowRoot.querySelector('.layout-shift-details-title');
     assert.include(eventTitle?.textContent, 'Layout shift');
 
@@ -46,10 +42,6 @@ describeWithMockConnection('LayoutShiftDetails', () => {
     details.setData(cluster, insights, parsedTrace, false);
 
     assert.isNotNull(details.shadowRoot);
-    const decorativeChip = details.shadowRoot.querySelector('.insight-chip');
-    assert.isNotNull(decorativeChip);
-
-    assert.include(decorativeChip?.textContent, 'Layout shift culprits');
     const eventTitle = details.shadowRoot.querySelector('.layout-shift-details-title');
     assert.include(eventTitle?.textContent, 'Layout shift cluster');
 

@@ -289,7 +289,10 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes
   }
 
   rootTarget(): Target|null {
-    return this.#targetsInternal.size ? this.#targetsInternal.values().next().value : null;
+    if (this.#targetsInternal.size === 0) {
+      return null;
+    }
+    return this.#targetsInternal.values().next().value ?? null;
   }
 
   primaryPageTarget(): Target|null {

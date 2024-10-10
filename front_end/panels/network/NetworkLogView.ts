@@ -1491,7 +1491,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
     // While creating nodes it may add more entries into staleRequests because redirect request nodes update the parent
     // node so we loop until we have no more stale requests.
     while (this.staleRequests.size) {
-      const request = this.staleRequests.values().next().value;
+      const request = this.staleRequests.values().next().value as SDK.NetworkRequest.NetworkRequest;
       this.staleRequests.delete(request);
       let node = networkRequestToNode.get(request);
       if (!node) {

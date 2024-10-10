@@ -195,7 +195,7 @@ export class ProfileLauncherView extends Common.ObjectWrapper.eventMixin<EventTy
   restoreSelectedProfileType(): void {
     let typeId = this.selectedProfileTypeSetting.get();
     if (!this.typeIdToOptionElementAndProfileType.has(typeId)) {
-      typeId = this.typeIdToOptionElementAndProfileType.keys().next().value;
+      typeId = this.typeIdToOptionElementAndProfileType.keys().next().value as string;
       this.selectedProfileTypeSetting.set(typeId);
     }
 

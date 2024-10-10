@@ -1051,7 +1051,7 @@ export class Overlays extends EventTarget {
       }
 
       // The event is off the bottom of the network chart. In this case return the bottom of the network chart.
-      if (y > this.#dimensions.charts.network.heightPixels ?? 0) {
+      if (y > this.#dimensions.charts.network.heightPixels) {
         return this.#dimensions.charts.network.heightPixels;
       }
     }
@@ -1588,7 +1588,7 @@ export class Overlays extends EventTarget {
         return false;
       }
 
-      if (y > this.#dimensions.charts.network.heightPixels ?? 0) {
+      if (y > this.#dimensions.charts.network.heightPixels) {
         // The event is off the bottom of the network chart.
         return false;
       }

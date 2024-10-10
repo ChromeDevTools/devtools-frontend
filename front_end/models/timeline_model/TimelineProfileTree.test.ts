@@ -35,9 +35,9 @@ describeWithEnvironment('TimelineProfileTree', () => {
       assert.strictEqual(children.size, 3);
 
       const nodesIterator = children.values();
-      assert.strictEqual(nodesIterator.next().value.event, eventA);
-      assert.strictEqual(nodesIterator.next().value.event, eventB);
-      assert.strictEqual(nodesIterator.next().value.event, eventC);
+      assert.strictEqual(nodesIterator.next().value!.event, eventA);
+      assert.strictEqual(nodesIterator.next().value!.event, eventB);
+      assert.strictEqual(nodesIterator.next().value!.event, eventC);
     });
 
     it('builds a top-down tree from an event tree with multiple levels 1', () => {
@@ -65,14 +65,14 @@ describeWithEnvironment('TimelineProfileTree', () => {
       const rootChildIterator = rootChildren.values();
       const nodeA = rootChildIterator.next().value as TimelineModel.TimelineProfileTree.TopDownNode;
       assert.strictEqual(nodeA.event, eventA);
-      assert.strictEqual(rootChildIterator.next().value.event, eventB);
+      assert.strictEqual(rootChildIterator.next().value!.event, eventB);
 
       const nodeAChildren = nodeA.children();
       assert.strictEqual(nodeAChildren.size, 2);
 
       const nodeAChildIterator = nodeAChildren.values();
-      assert.strictEqual(nodeAChildIterator.next().value.event, eventC);
-      assert.strictEqual(nodeAChildIterator.next().value.event, eventD);
+      assert.strictEqual(nodeAChildIterator.next().value!.event, eventC);
+      assert.strictEqual(nodeAChildIterator.next().value!.event, eventD);
     });
 
     it('builds a top-down tree from an event tree with multiple levels 2', () => {
@@ -98,7 +98,7 @@ describeWithEnvironment('TimelineProfileTree', () => {
       assert.strictEqual(rootChildren.size, 2);
 
       const rootChildIterator = rootChildren.values();
-      assert.strictEqual(rootChildIterator.next().value.event, eventA);
+      assert.strictEqual(rootChildIterator.next().value!.event, eventA);
       const nodeB = rootChildIterator.next().value as TimelineModel.TimelineProfileTree.TopDownNode;
       assert.strictEqual(nodeB.event, eventB);
 
@@ -106,8 +106,8 @@ describeWithEnvironment('TimelineProfileTree', () => {
       assert.strictEqual(nodeBChildren.size, 2);
 
       const nodeBChildIterator = nodeBChildren.values();
-      assert.strictEqual(nodeBChildIterator.next().value.event, eventC);
-      assert.strictEqual(nodeBChildIterator.next().value.event, eventD);
+      assert.strictEqual(nodeBChildIterator.next().value!.event, eventC);
+      assert.strictEqual(nodeBChildIterator.next().value!.event, eventD);
     });
 
     it('calculates the self time for each node in an event tree correctly', () => {
@@ -137,7 +137,7 @@ describeWithEnvironment('TimelineProfileTree', () => {
 
       const rootChildIterator = rootChildren.values();
       assert.strictEqual(
-          rootChildIterator.next().value.selfTime, Trace.Helpers.Timing.microSecondsToMilliseconds(eventA.dur));
+          rootChildIterator.next().value!.selfTime, Trace.Helpers.Timing.microSecondsToMilliseconds(eventA.dur));
 
       const nodeB = rootChildIterator.next().value as TimelineModel.TimelineProfileTree.TopDownNode;
       const nodeBSelfTime = Trace.Types.Timing.MicroSeconds(eventB.dur - eventC.dur - eventD.dur);
@@ -148,9 +148,9 @@ describeWithEnvironment('TimelineProfileTree', () => {
 
       const nodeBChildIterator = nodeBChildren.values();
       assert.strictEqual(
-          nodeBChildIterator.next().value.selfTime, Trace.Helpers.Timing.microSecondsToMilliseconds(eventC.dur));
+          nodeBChildIterator.next().value!.selfTime, Trace.Helpers.Timing.microSecondsToMilliseconds(eventC.dur));
 
-      const nodeD = nodeBChildIterator.next().value;
+      const nodeD = nodeBChildIterator.next().value!;
       const nodeDSelfTime = Trace.Types.Timing.MicroSeconds(eventD.dur - eventE.dur);
       assert.strictEqual(nodeD.selfTime, Trace.Helpers.Timing.microSecondsToMilliseconds(nodeDSelfTime));
 
@@ -158,7 +158,7 @@ describeWithEnvironment('TimelineProfileTree', () => {
       assert.strictEqual(nodeDChildren.size, 1);
 
       const nodeDChildIterator = nodeDChildren.values();
-      const nodeE = nodeDChildIterator.next().value;
+      const nodeE = nodeDChildIterator.next().value!;
       assert.strictEqual(nodeE.selfTime, Trace.Helpers.Timing.microSecondsToMilliseconds(eventE.dur));
     });
   });
@@ -183,9 +183,9 @@ describeWithEnvironment('TimelineProfileTree', () => {
       assert.strictEqual(children.size, 3);
 
       const nodesIterator = children.values();
-      assert.strictEqual(nodesIterator.next().value.event, eventA);
-      assert.strictEqual(nodesIterator.next().value.event, eventB);
-      assert.strictEqual(nodesIterator.next().value.event, eventC);
+      assert.strictEqual(nodesIterator.next().value!.event, eventA);
+      assert.strictEqual(nodesIterator.next().value!.event, eventB);
+      assert.strictEqual(nodesIterator.next().value!.event, eventC);
     });
 
     it('builds a bottom up tree from an event tree with multiple levels 1', () => {
@@ -227,12 +227,12 @@ describeWithEnvironment('TimelineProfileTree', () => {
       const nodeCChildren = nodeC.children();
       assert.strictEqual(nodeCChildren.size, 1);
       const nodeCChildIterator = nodeCChildren.values();
-      assert.strictEqual(nodeCChildIterator.next().value.event, eventA);
+      assert.strictEqual(nodeCChildIterator.next().value!.event, eventA);
 
       const nodeDChildren = nodeC.children();
       assert.strictEqual(nodeDChildren.size, 1);
       const nodeDChildIterator = nodeDChildren.values();
-      assert.strictEqual(nodeDChildIterator.next().value.event, eventA);
+      assert.strictEqual(nodeDChildIterator.next().value!.event, eventA);
 
       const nodeAChildren = nodeA.children();
       assert.strictEqual(nodeAChildren.size, 0);
@@ -281,12 +281,12 @@ describeWithEnvironment('TimelineProfileTree', () => {
       const nodeCChildren = nodeC.children();
       assert.strictEqual(nodeCChildren.size, 1);
       const nodeCChildIterator = nodeCChildren.values();
-      assert.strictEqual(nodeCChildIterator.next().value.event, eventB);
+      assert.strictEqual(nodeCChildIterator.next().value!.event, eventB);
 
       const nodeDChildren = nodeC.children();
       assert.strictEqual(nodeDChildren.size, 1);
       const nodeDChildIterator = nodeDChildren.values();
-      assert.strictEqual(nodeDChildIterator.next().value.event, eventB);
+      assert.strictEqual(nodeDChildIterator.next().value!.event, eventB);
 
       const nodeAChildren = nodeA.children();
       assert.strictEqual(nodeAChildren.size, 0);
@@ -323,7 +323,7 @@ describeWithEnvironment('TimelineProfileTree', () => {
 
       const rootChildIterator = rootChildren.values();
       assert.strictEqual(
-          rootChildIterator.next().value.selfTime, Trace.Helpers.Timing.microSecondsToMilliseconds(eventA.dur));
+          rootChildIterator.next().value!.selfTime, Trace.Helpers.Timing.microSecondsToMilliseconds(eventA.dur));
 
       const nodeC = rootChildIterator.next().value as TimelineModel.TimelineProfileTree.TopDownNode;
       assert.strictEqual(nodeC.selfTime, Trace.Helpers.Timing.microSecondsToMilliseconds(eventC.dur));

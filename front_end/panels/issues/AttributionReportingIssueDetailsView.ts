@@ -2,9 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Protocol from '../../generated/protocol.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import type * as Protocol from '../../generated/protocol.js';
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 
 import {AffectedItem, AffectedResourcesView} from './AffectedResourcesView.js';
@@ -43,10 +43,11 @@ export class AttributionReportingIssueDetailsView extends AffectedResourcesView 
   override update(): void {
     this.clear();
     const issues = this.issue.getAttributionReportingIssues();
-    if (issues.size > 0) {
-      this.#appendDetails(issues.values().next().value.code(), issues);
-    } else {
+    const issue = issues.values().next();
+    if (issue.done) {
       this.updateAffectedResourceCount(0);
+    } else {
+      this.#appendDetails(issue.value.code(), issues);
     }
   }
 

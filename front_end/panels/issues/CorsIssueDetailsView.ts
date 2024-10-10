@@ -10,7 +10,6 @@ import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as NetworkForward from '../../panels/network/forward/forward.js';
 
 import {AffectedItem, AffectedResourcesView} from './AffectedResourcesView.js';
-
 import {type AggregatedIssue} from './IssueAggregator.js';
 import {type IssueView} from './IssueView.js';
 
@@ -489,10 +488,11 @@ export class CorsIssueDetailsView extends AffectedResourcesView {
   update(): void {
     this.clear();
     const issues = this.issue.getCorsIssues();
-    if (issues.size > 0) {
-      this.#appendDetails(issues.values().next().value.code(), issues);
-    } else {
+    const issue = issues.values().next();
+    if (issue.done) {
       this.updateAffectedResourceCount(0);
+    } else {
+      this.#appendDetails(issue.value.code(), issues);
     }
   }
 }

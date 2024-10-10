@@ -2,13 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Protocol from '../../generated/protocol.js';
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
+import type * as Protocol from '../../generated/protocol.js';
 
 import {DeferredDOMNode, type DOMNode} from './DOMModel.js';
-
-import {Capability, type Target} from './Target.js';
 import {SDKModel} from './SDKModel.js';
+import {Capability, type Target} from './Target.js';
 
 export const enum CoreAxPropertyName {
   NAME = 'name',
@@ -61,7 +60,7 @@ export class AccessibilityNode {
     this.#descriptionInternal = payload.description || null;
     this.#valueInternal = payload.value || null;
     this.#propertiesInternal = payload.properties || null;
-    this.#childIds = [...new Set(payload.childIds)] || null;
+    this.#childIds = [...new Set(payload.childIds)];
     this.#parentId = payload.parentId || null;
     if (payload.frameId && !payload.parentId) {
       this.#frameId = payload.frameId;

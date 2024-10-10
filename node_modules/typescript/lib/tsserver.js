@@ -15,9 +15,11 @@ and limitations under the License.
 
 
 "use strict";
+var __create = Object.create;
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropNames = Object.getOwnPropertyNames;
+var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
 var __copyProps = (to, from, except, desc) => {
   if (from && typeof from === "object" || typeof from === "function") {
@@ -28,10 +30,28 @@ var __copyProps = (to, from, except, desc) => {
   return to;
 };
 var __reExport = (target, mod, secondTarget) => (__copyProps(target, mod, "default"), secondTarget && __copyProps(secondTarget, mod, "default"));
+var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
+  // If the importer is in node compatibility mode or this is not an ESM
+  // file that has been converted to a CommonJS file using a Babel-
+  // compatible transform (i.e. "__esModule" has not been set), then set
+  // "default" to the CommonJS "module.exports" for node compatibility.
+  isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
+  mod
+));
+
+// src/tsserver/server.ts
+var import_os2 = __toESM(require("os"));
 
 // src/typescript/typescript.ts
 var typescript_exports = {};
 __reExport(typescript_exports, require("./typescript.js"));
+
+// src/tsserver/nodeServer.ts
+var import_child_process = __toESM(require("child_process"));
+var import_fs = __toESM(require("fs"));
+var import_net = __toESM(require("net"));
+var import_os = __toESM(require("os"));
+var import_readline = __toESM(require("readline"));
 
 // src/tsserver/common.ts
 function getLogLevel(level) {
@@ -107,8 +127,6 @@ function parseServerMode() {
 }
 function initializeNodeSystem() {
   const sys4 = typescript_exports.Debug.checkDefined(typescript_exports.sys);
-  const childProcess = require("child_process");
-  const fs = require("fs");
   class Logger {
     constructor(logFilename, traceToConsole, level) {
       this.logFilename = logFilename;
@@ -120,8 +138,8 @@ function initializeNodeSystem() {
       this.fd = -1;
       if (this.logFilename) {
         try {
-          this.fd = fs.openSync(this.logFilename, "w");
-        } catch (_) {
+          this.fd = import_fs.default.openSync(this.logFilename, "w");
+        } catch {
         }
       }
     }
@@ -130,7 +148,7 @@ function initializeNodeSystem() {
     }
     close() {
       if (this.fd >= 0) {
-        fs.close(this.fd, typescript_exports.noop);
+        import_fs.default.close(this.fd, typescript_exports.noop);
       }
     }
     getLogFileName() {
@@ -159,18 +177,6 @@ function initializeNodeSystem() {
       return this.loggingEnabled() && this.level >= level;
     }
     msg(s, type = typescript_exports.server.Msg.Err) {
-      var _a, _b, _c;
-      switch (type) {
-        case typescript_exports.server.Msg.Info:
-          (_a = typescript_exports.perfLogger) == null ? void 0 : _a.logInfoEvent(s);
-          break;
-        case typescript_exports.server.Msg.Perf:
-          (_b = typescript_exports.perfLogger) == null ? void 0 : _b.logPerfEvent(s);
-          break;
-        default:
-          (_c = typescript_exports.perfLogger) == null ? void 0 : _c.logErrEvent(s);
-          break;
-      }
       if (!this.canWrite()) return;
       s = `[${typescript_exports.server.nowString()}] ${s}
 `;
@@ -189,7 +195,7 @@ function initializeNodeSystem() {
     write(s, _type) {
       if (this.fd >= 0) {
         const buf = Buffer.from(s);
-        fs.writeSync(
+        import_fs.default.writeSync(
           this.fd,
           buf,
           0,
@@ -240,7 +246,7 @@ function initializeNodeSystem() {
           if (logger.hasLevel(typescript_exports.server.LogLevel.verbose)) {
             logger.info(`Starting ${process.execPath} with args:${typescript_exports.server.stringifyIndented(args)}`);
           }
-          childProcess.execFileSync(process.execPath, args, { stdio: "ignore", env: { ELECTRON_RUN_AS_NODE: "1" } });
+          import_child_process.default.execFileSync(process.execPath, args, { stdio: "ignore", env: { ELECTRON_RUN_AS_NODE: "1" } });
           status = true;
           if (logger.hasLevel(typescript_exports.server.LogLevel.verbose)) {
             logger.info(`WatchGuard for path ${path} returned: OK`);
@@ -279,9 +285,9 @@ function initializeNodeSystem() {
   }
   let cancellationToken;
   try {
-    const factory = require("./cancellationToken");
+    const factory = require("./cancellationToken.js");
     cancellationToken = factory(sys4.args);
-  } catch (e) {
+  } catch {
     cancellationToken = typescript_exports.server.nullCancellationToken;
   }
   const localeStr = typescript_exports.server.findArgument("--locale");
@@ -361,11 +367,7 @@ function parseEventPort(eventPortStr) {
   return eventPort !== void 0 && !isNaN(eventPort) ? eventPort : void 0;
 }
 function startNodeSession(options, logger, cancellationToken) {
-  const childProcess = require("child_process");
-  const os = require("os");
-  const net = require("net");
-  const readline = require("readline");
-  const rl = readline.createInterface({
+  const rl = import_readline.default.createInterface({
     input: process.stdin,
     output: process.stdout,
     terminal: false
@@ -418,7 +420,7 @@ function startNodeSession(options, logger, cancellationToken) {
         }
       }
       const typingsInstaller = (0, typescript_exports.combinePaths)((0, typescript_exports.getDirectoryPath)(typescript_exports.sys.getExecutingFilePath()), "typingsInstaller.js");
-      this.installer = childProcess.fork(typingsInstaller, args, { execArgv });
+      this.installer = import_child_process.default.fork(typingsInstaller, args, { execArgv });
       this.installer.on("message", (m) => this.handleMessage(m));
       this.host.setImmediate(() => this.event({ pid: this.installer.pid }, "typingsInstallerPid"));
       process.on("exit", () => {
@@ -454,7 +456,7 @@ function startNodeSession(options, logger, cancellationToken) {
       });
       this.eventPort = eventPort;
       if (this.canUseEvents && this.eventPort) {
-        const s = net.connect({ port: this.eventPort }, () => {
+        const s = import_net.default.connect({ port: this.eventPort }, () => {
           this.eventSocket = s;
           if (this.socketEventQueue) {
             for (const event2 of this.socketEventQueue) {
@@ -549,7 +551,7 @@ function startNodeSession(options, logger, cancellationToken) {
   function getGlobalTypingsCacheLocation() {
     switch (process.platform) {
       case "win32": {
-        const basePath = process.env.LOCALAPPDATA || process.env.APPDATA || os.homedir && os.homedir() || process.env.USERPROFILE || process.env.HOMEDRIVE && process.env.HOMEPATH && (0, typescript_exports.normalizeSlashes)(process.env.HOMEDRIVE + process.env.HOMEPATH) || os.tmpdir();
+        const basePath = process.env.LOCALAPPDATA || process.env.APPDATA || import_os.default.homedir && import_os.default.homedir() || process.env.USERPROFILE || process.env.HOMEDRIVE && process.env.HOMEPATH && (0, typescript_exports.normalizeSlashes)(process.env.HOMEDRIVE + process.env.HOMEPATH) || import_os.default.tmpdir();
         return (0, typescript_exports.combinePaths)((0, typescript_exports.combinePaths)((0, typescript_exports.normalizeSlashes)(basePath), "Microsoft/TypeScript"), typescript_exports.versionMajorMinor);
       }
       case "openbsd":
@@ -570,7 +572,7 @@ function startNodeSession(options, logger, cancellationToken) {
       return process.env.XDG_CACHE_HOME;
     }
     const usersDir = platformIsDarwin ? "Users" : "home";
-    const homePath = os.homedir && os.homedir() || process.env.HOME || (process.env.LOGNAME || process.env.USER) && `/${usersDir}/${process.env.LOGNAME || process.env.USER}` || os.tmpdir();
+    const homePath = import_os.default.homedir && import_os.default.homedir() || process.env.HOME || (process.env.LOGNAME || process.env.USER) && `/${usersDir}/${process.env.LOGNAME || process.env.USER}` || import_os.default.tmpdir();
     const cacheFolder = platformIsDarwin ? "Library/Caches" : ".cache";
     return (0, typescript_exports.combinePaths)((0, typescript_exports.normalizeSlashes)(homePath), cacheFolder);
   }
@@ -617,5 +619,5 @@ function start({ args, logger, cancellationToken, serverMode, unknownServerMode,
   );
 }
 typescript_exports.setStackTraceLimit();
-start(initializeNodeSystem(), require("os").platform());
+start(initializeNodeSystem(), import_os2.default.platform());
 //# sourceMappingURL=tsserver.js.map

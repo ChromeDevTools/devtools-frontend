@@ -585,7 +585,7 @@ export class DebuggerPlugin extends Plugin {
         !Bindings.IgnoreListManager.IgnoreListManager.instance().isUserIgnoreListedURL(this.uiSourceCode.url())) {
       if (this.scriptFileForDebuggerModel.size) {
         const scriptFile: Bindings.ResourceScriptMapping.ResourceScriptFile =
-            this.scriptFileForDebuggerModel.values().next().value;
+            this.scriptFileForDebuggerModel.values().next().value as Bindings.ResourceScriptMapping.ResourceScriptFile;
         const addSourceMapURLLabel = i18nString(UIStrings.addSourceMap);
         contextMenu.debugSection().appendItem(
             addSourceMapURLLabel, addSourceMapURL.bind(null, scriptFile), {jslogContext: 'add-source-map'});

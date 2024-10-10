@@ -521,7 +521,7 @@ class Binding implements TextUtils.ContentProvider.ContentProvider {
 
   private firstResource(): SDK.Resource.Resource {
     console.assert(this.resources.size > 0);
-    return this.resources.values().next().value;
+    return this.resources.values().next().value as SDK.Resource.Resource;
   }
 
   contentURL(): Platform.DevToolsPath.UrlString {

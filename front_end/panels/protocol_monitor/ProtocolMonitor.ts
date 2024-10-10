@@ -716,7 +716,7 @@ export class CommandAutocompleteSuggestionProvider {
     }
     this.#commandHistory.add(value);
     if (this.#commandHistory.size > this.#maxHistorySize) {
-      const earliestEntry = this.#commandHistory.values().next().value;
+      const earliestEntry = this.#commandHistory.values().next().value as string;
       this.#commandHistory.delete(earliestEntry);
     }
   }

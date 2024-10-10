@@ -340,11 +340,11 @@ describe('UISourceCode', () => {
 
     sutObject.sut.addLineMessage(Workspace.UISourceCode.Message.Level.ERROR, 'Example Message', 5);
     const messagesSet = sutObject.sut.messages();
-    const addedMessage = messagesSet.values().next().value;
+    const addedMessage = messagesSet.values().next().value!;
 
     assert.strictEqual(messagesSet.size, 1);
-    assert.strictEqual(addedMessage.levelInternal, 'Error');
-    assert.strictEqual(addedMessage.textInternal, 'Example Message');
+    assert.strictEqual(addedMessage.level(), 'Error');
+    assert.strictEqual(addedMessage.text(), 'Example Message');
     assert.strictEqual(addedMessage.range.startLine, 5);
     assert.strictEqual(addedMessage.range.endLine, 5);
   });

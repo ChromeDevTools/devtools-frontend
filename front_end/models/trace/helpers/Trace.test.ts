@@ -123,7 +123,7 @@ describeWithEnvironment('Trace helpers', function() {
     it('returns the correct navigation for a page load event', async function() {
       const {parsedTrace} = await TraceLoader.traceEngine(this, 'multiple-navigations.json.gz');
       const {Meta, PageLoadMetrics} = parsedTrace;
-      const firstNavigationId = Meta.navigationsByNavigationId.keys().next().value;
+      const firstNavigationId = Meta.navigationsByNavigationId.keys().next().value!;
 
       const fcp = PageLoadMetrics.metricScoresByFrameId.get(Meta.mainFrameId)
                       ?.get(firstNavigationId)

@@ -147,7 +147,7 @@ export class AnimationModel extends SDK.SDKModel.SDKModel<EventTypes> {
 
   private createGroupFromPendingAnimations(): AnimationGroup {
     console.assert(this.#pendingAnimations.size > 0);
-    const firstAnimationId = this.#pendingAnimations.values().next().value;
+    const firstAnimationId = this.#pendingAnimations.values().next().value as string;
     this.#pendingAnimations.delete(firstAnimationId);
 
     const firstAnimation = this.#animationsById.get(firstAnimationId);

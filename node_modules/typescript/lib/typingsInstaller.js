@@ -50,6 +50,7 @@ __export(nodeTypingsInstaller_exports, {
   NodeTypingsInstaller: () => NodeTypingsInstaller
 });
 module.exports = __toCommonJS(nodeTypingsInstaller_exports);
+var import_child_process = require("child_process");
 var fs = __toESM(require("fs"));
 var path = __toESM(require("path"));
 
@@ -68,7 +69,7 @@ var FileLog = class {
       if (typeof this.logFile !== "string") return;
       try {
         fs.appendFileSync(this.logFile, `[${typescript_exports.server.nowString()}] ${text}${typescript_exports.sys.newLine}`);
-      } catch (e) {
+      } catch {
         this.logFile = void 0;
       }
     };
@@ -127,7 +128,6 @@ var NodeTypingsInstaller = class extends typescript_exports.server.typingsInstal
       this.log.writeLine(`NPM location: ${this.npmPath} (explicit '${typescript_exports.server.Arguments.NpmLocation}' ${npmLocation2 === void 0 ? "not " : ""} provided)`);
       this.log.writeLine(`validateDefaultNpmLocation: ${validateDefaultNpmLocation2}`);
     }
-    ({ execSync: this.nodeExecSync } = require("child_process"));
     this.ensurePackageDirectoryExists(globalTypingsCacheLocation2);
     try {
       if (this.log.isEnabled()) {
@@ -182,7 +182,7 @@ var NodeTypingsInstaller = class extends typescript_exports.server.typingsInstal
       this.log.writeLine(`Exec: ${command}`);
     }
     try {
-      const stdout = this.nodeExecSync(command, { ...options, encoding: "utf-8" });
+      const stdout = (0, import_child_process.execFileSync)(command, { ...options, encoding: "utf-8" });
       if (this.log.isEnabled()) {
         this.log.writeLine(`    Succeeded. stdout:${indent(typescript_exports.sys.newLine, stdout)}`);
       }

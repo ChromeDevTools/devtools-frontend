@@ -224,7 +224,7 @@ describeWithEnvironment('SamplesHandler', function() {
     it('generates a CPU profile from a trace file', async () => {
       const data = await handleEventsFromTraceFile(this, 'recursive-blocking-js.json.gz');
       assert.strictEqual(data.profilesInProcess.size, 1);
-      const profileById = data.profilesInProcess.values().next().value;
+      const profileById = data.profilesInProcess.values().next().value!;
       assert.strictEqual(profileById.size, 1);
       const cpuProfileData = profileById.values().next().value as Trace.Handlers.ModelHandlers.Samples.ProfileData;
       const cpuProfile = cpuProfileData.rawProfile;
@@ -241,7 +241,7 @@ describeWithEnvironment('SamplesHandler', function() {
     it('generates a parsed CPU profile from a trace file', async () => {
       const data = await handleEventsFromTraceFile(this, 'recursive-blocking-js.json.gz');
       assert.strictEqual(data.profilesInProcess.size, 1);
-      const profileById = data.profilesInProcess.values().next().value;
+      const profileById = data.profilesInProcess.values().next().value!;
       assert.strictEqual(profileById.size, 1);
       const cpuProfileData = profileById.values().next().value as Trace.Handlers.ModelHandlers.Samples.ProfileData;
       const parsedProfile = cpuProfileData.parsedProfile;

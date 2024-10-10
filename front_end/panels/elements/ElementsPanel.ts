@@ -461,10 +461,11 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
   }
 
   override focus(): void {
-    if (this.treeOutlines.size) {
-      this.treeOutlines.values().next().value.focus();
-    } else {
+    const firstTreeOutline = this.treeOutlines.values().next();
+    if (firstTreeOutline.done) {
       this.domTreeContainer.focus();
+    } else {
+      firstTreeOutline.value.focus();
     }
   }
 

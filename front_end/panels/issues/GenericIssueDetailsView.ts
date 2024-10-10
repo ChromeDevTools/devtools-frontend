@@ -4,8 +4,8 @@
 
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
-import type * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as Protocol from '../../generated/protocol.js';
+import type * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 
 import {AffectedResourcesView} from './AffectedResourcesView.js';
 
@@ -35,8 +35,8 @@ export class GenericIssueDetailsView extends AffectedResourcesView {
   #appendDetails(genericIssues: ReadonlySet<IssuesManager.GenericIssue.GenericIssue>): void {
     const header = document.createElement('tr');
 
-    const sampleIssueDetails = genericIssues.values().next().value.details();
-    if (sampleIssueDetails.frameId) {
+    const sampleIssueDetails = genericIssues.values().next().value?.details();
+    if (sampleIssueDetails?.frameId) {
       this.appendColumnTitle(header, i18nString(UIStrings.frameId));
     }
 

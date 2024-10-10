@@ -4,12 +4,21 @@
 
 import * as Common from '../../core/common/common.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
-import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {describeWithEnvironment, getGetHostConfigStub} from '../../testing/EnvironmentHelpers.js';
 import * as Switch from '../../ui/components/switch/switch.js';
 
 import * as Settings from './settings.js';
 
 describeWithEnvironment('AISettingsTab', () => {
+  function mockHostConfigWithExplainThisResourceEnabled() {
+    getGetHostConfigStub({
+      devToolsExplainThisResourceDogfood: {
+        enabled: true,
+        modelId: 'test',
+      },
+    });
+  }
+
   function isExpanded(details: Element): boolean {
     return details.classList.contains('open');
   }
@@ -55,6 +64,23 @@ describeWithEnvironment('AISettingsTab', () => {
     const settingCards = view.shadowRoot.querySelectorAll('.setting-card h2');
     const settingNames = Array.from(settingCards).map(element => element.textContent);
     assert.deepEqual(settingNames, ['Console Insights', 'AI assistance']);
+
+    const settingCardDesc = view.shadowRoot.querySelectorAll('.setting-description');
+    assert.strictEqual(settingCardDesc[1].textContent, 'Get help with understanding CSS styles');
+  });
+
+  it('renders with explain this resource enabled', async () => {
+    mockHostConfigWithExplainThisResourceEnabled();
+    Common.Settings.moduleSetting('console-insights-enabled').set(true);
+    Common.Settings.moduleSetting('ai-assistance-enabled').set(true);
+
+    const view = new Settings.AISettingsTab.AISettingsTab();
+    renderElementIntoDOM(view);
+    await view.render();
+    assert.isNotNull(view.shadowRoot);
+
+    const settingCardDesc = view.shadowRoot.querySelectorAll('.setting-description');
+    assert.strictEqual(settingCardDesc[1].textContent, 'Get help with understanding CSS styles and network requests');
   });
 
   it('can turn feature on, which automatically expands it', async () => {

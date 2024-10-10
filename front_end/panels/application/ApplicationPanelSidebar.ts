@@ -1790,7 +1790,7 @@ export class ExtensionStorageTreeElement extends ApplicationPanelTreeElement {
 export class ExtensionStorageTreeParentElement extends ApplicationPanelTreeElement {
   private readonly extensionId: string;
   constructor(storagePanel: ResourcesPanel, extensionId: string, extensionName: string) {
-    super(storagePanel, extensionName, true, 'extension-storage-for-domain');
+    super(storagePanel, extensionName || extensionId, true, 'extension-storage-for-domain');
     this.extensionId = extensionId;
     const icon = IconButton.Icon.create('table');
     this.setLeadingIcons([icon]);

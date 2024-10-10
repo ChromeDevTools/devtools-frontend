@@ -384,6 +384,22 @@ describeWithMockConnection('ApplicationPanelSidebar', () => {
   it('adds indexed db after scope change',
      testUiUpdateOnScopeChange(
          Application.IndexedDBModel.IndexedDBModel, 'databases', 'indexedDBListTreeElement.appendChild'));
+
+  it('uses extension name when available for tree element title', () => {
+    const panel = Application.ResourcesPanel.ResourcesPanel.instance({forceNew: true});
+    const extensionName = 'Test Extension';
+    assert.strictEqual(
+        new Application.ApplicationPanelSidebar.ExtensionStorageTreeParentElement(panel, 'id', extensionName).title,
+        extensionName);
+  });
+
+  it('uses extension id as fallback for tree element title', () => {
+    const panel = Application.ResourcesPanel.ResourcesPanel.instance({forceNew: true});
+    const extensionId = 'id';
+    assert.strictEqual(
+        new Application.ApplicationPanelSidebar.ExtensionStorageTreeParentElement(panel, extensionId, '').title,
+        extensionId);
+  });
 });
 
 describeWithMockConnection('IDBDatabaseTreeElement', () => {

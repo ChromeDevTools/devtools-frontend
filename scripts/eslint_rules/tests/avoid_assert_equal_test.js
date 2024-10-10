@@ -23,6 +23,15 @@ ruleTester.run('avoid_assert_equal', rule, {
       code: `import {assert} from 'chai';
 
       it('normal test', async () => {
+        assert.deepEqual({}, {})
+      });
+      `,
+      filename: 'test/e2e/folder/file.ts',
+    },
+    {
+      code: `import {assert} from 'chai';
+
+      it('normal test', async () => {
         assert.deepEqual([], [])
       });
       `,
@@ -38,8 +47,58 @@ ruleTester.run('avoid_assert_equal', rule, {
         assert.equal(2, 2)
       });
       `,
+      output: `import {assert} from 'chai';
+
+      it('normal test', async () => {
+        assert.strictEqual(2, 2)
+      });
+      `,
       filename: 'test/e2e/folder/file.ts',
-      errors: [{message: 'assert.equal is non-strict. Use assert.strictEqual or assert.deepEqual to compare objects'}],
+      errors: [
+        {
+          message: 'assert.equal is non-strict. Use assert.strictEqual or assert.deepEqual to compare objects',
+        },
+      ],
     },
-  ]
+    {
+      code: `import {assert} from 'chai';
+
+      it('normal test', async () => {
+        assert.equal({}, {})
+      });
+      `,
+      output: `import {assert} from 'chai';
+
+      it('normal test', async () => {
+        assert.deepEqual({}, {})
+      });
+      `,
+      filename: 'test/e2e/folder/file.ts',
+      errors: [
+        {
+          message: 'assert.equal is non-strict. Use assert.strictEqual or assert.deepEqual to compare objects',
+        },
+      ],
+    },
+    {
+      code: `import {assert} from 'chai';
+
+      it('normal test', async () => {
+        assert.equal([], [])
+      });
+      `,
+      output: `import {assert} from 'chai';
+
+      it('normal test', async () => {
+        assert.deepEqual([], [])
+      });
+      `,
+      filename: 'test/e2e/folder/file.ts',
+      errors: [
+        {
+          message: 'assert.equal is non-strict. Use assert.strictEqual or assert.deepEqual to compare objects',
+        },
+      ],
+    },
+  ],
 });

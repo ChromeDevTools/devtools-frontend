@@ -1,26 +1,26 @@
 /**
  * The `dns.promises` API provides an alternative set of asynchronous DNS methods
  * that return `Promise` objects rather than using callbacks. The API is accessible
- * via `require('dns').promises` or `require('dns/promises')`.
+ * via `require('node:dns').promises` or `require('node:dns/promises')`.
  * @since v10.6.0
  */
-declare module 'dns/promises' {
+declare module "dns/promises" {
     import {
-        LookupAddress,
-        LookupOneOptions,
-        LookupAllOptions,
-        LookupOptions,
         AnyRecord,
         CaaRecord,
+        LookupAddress,
+        LookupAllOptions,
+        LookupOneOptions,
+        LookupOptions,
         MxRecord,
         NaptrRecord,
-        SoaRecord,
-        SrvRecord,
-        ResolveWithTtlOptions,
         RecordWithTtl,
         ResolveOptions,
         ResolverOptions,
-    } from 'node:dns';
+        ResolveWithTtlOptions,
+        SoaRecord,
+        SrvRecord,
+    } from "node:dns";
     /**
      * Returns an array of IP address strings, formatted according to [RFC 5952](https://tools.ietf.org/html/rfc5952#section-6),
      * that are currently configured for DNS resolution. A string will include a port
@@ -52,7 +52,7 @@ declare module 'dns/promises' {
      *
      * `dnsPromises.lookup()` does not necessarily have anything to do with the DNS
      * protocol. The implementation uses an operating system facility that can
-     * associate names with addresses, and vice versa. This implementation can have
+     * associate names with addresses and vice versa. This implementation can have
      * subtle but important consequences on the behavior of any Node.js program. Please
      * take some time to consult the `Implementation considerations section` before
      * using `dnsPromises.lookup()`.
@@ -60,7 +60,7 @@ declare module 'dns/promises' {
      * Example usage:
      *
      * ```js
-     * const dns = require('dns');
+     * const dns = require('node:dns');
      * const dnsPromises = dns.promises;
      * const options = {
      *   family: 6,
@@ -96,7 +96,7 @@ declare module 'dns/promises' {
      * On error, the `Promise` is rejected with an `Error` object, where `err.code`is the error code.
      *
      * ```js
-     * const dnsPromises = require('dns').promises;
+     * const dnsPromises = require('node:dns').promises;
      * dnsPromises.lookupService('127.0.0.1', 22).then((result) => {
      *   console.log(result.hostname, result.service);
      *   // Prints: localhost ssh
@@ -106,7 +106,7 @@ declare module 'dns/promises' {
      */
     function lookupService(
         address: string,
-        port: number
+        port: number,
     ): Promise<{
         hostname: string;
         service: string;
@@ -125,19 +125,22 @@ declare module 'dns/promises' {
      * @param [rrtype='A'] Resource record type.
      */
     function resolve(hostname: string): Promise<string[]>;
-    function resolve(hostname: string, rrtype: 'A'): Promise<string[]>;
-    function resolve(hostname: string, rrtype: 'AAAA'): Promise<string[]>;
-    function resolve(hostname: string, rrtype: 'ANY'): Promise<AnyRecord[]>;
-    function resolve(hostname: string, rrtype: 'CAA'): Promise<CaaRecord[]>;
-    function resolve(hostname: string, rrtype: 'CNAME'): Promise<string[]>;
-    function resolve(hostname: string, rrtype: 'MX'): Promise<MxRecord[]>;
-    function resolve(hostname: string, rrtype: 'NAPTR'): Promise<NaptrRecord[]>;
-    function resolve(hostname: string, rrtype: 'NS'): Promise<string[]>;
-    function resolve(hostname: string, rrtype: 'PTR'): Promise<string[]>;
-    function resolve(hostname: string, rrtype: 'SOA'): Promise<SoaRecord>;
-    function resolve(hostname: string, rrtype: 'SRV'): Promise<SrvRecord[]>;
-    function resolve(hostname: string, rrtype: 'TXT'): Promise<string[][]>;
-    function resolve(hostname: string, rrtype: string): Promise<string[] | MxRecord[] | NaptrRecord[] | SoaRecord | SrvRecord[] | string[][] | AnyRecord[]>;
+    function resolve(hostname: string, rrtype: "A"): Promise<string[]>;
+    function resolve(hostname: string, rrtype: "AAAA"): Promise<string[]>;
+    function resolve(hostname: string, rrtype: "ANY"): Promise<AnyRecord[]>;
+    function resolve(hostname: string, rrtype: "CAA"): Promise<CaaRecord[]>;
+    function resolve(hostname: string, rrtype: "CNAME"): Promise<string[]>;
+    function resolve(hostname: string, rrtype: "MX"): Promise<MxRecord[]>;
+    function resolve(hostname: string, rrtype: "NAPTR"): Promise<NaptrRecord[]>;
+    function resolve(hostname: string, rrtype: "NS"): Promise<string[]>;
+    function resolve(hostname: string, rrtype: "PTR"): Promise<string[]>;
+    function resolve(hostname: string, rrtype: "SOA"): Promise<SoaRecord>;
+    function resolve(hostname: string, rrtype: "SRV"): Promise<SrvRecord[]>;
+    function resolve(hostname: string, rrtype: "TXT"): Promise<string[][]>;
+    function resolve(
+        hostname: string,
+        rrtype: string,
+    ): Promise<string[] | MxRecord[] | NaptrRecord[] | SoaRecord | SrvRecord[] | string[][] | AnyRecord[]>;
     /**
      * Uses the DNS protocol to resolve IPv4 addresses (`A` records) for the`hostname`. On success, the `Promise` is resolved with an array of IPv4
      * addresses (e.g. `['74.125.79.104', '74.125.79.105', '74.125.79.106']`).
@@ -206,7 +209,7 @@ declare module 'dns/promises' {
      */
     function resolveMx(hostname: string): Promise<MxRecord[]>;
     /**
-     * Uses the DNS protocol to resolve regular expression based records (`NAPTR`records) for the `hostname`. On success, the `Promise` is resolved with an array
+     * Uses the DNS protocol to resolve regular expression-based records (`NAPTR`records) for the `hostname`. On success, the `Promise` is resolved with an array
      * of objects with the following properties:
      *
      * * `flags`
@@ -305,6 +308,14 @@ declare module 'dns/promises' {
      */
     function reverse(ip: string): Promise<string[]>;
     /**
+     * Get the default value for `verbatim` in {@link lookup} and `dnsPromises.lookup()`. The value could be:
+     *
+     * * `ipv4first`: for `verbatim` defaulting to `false`.
+     * * `verbatim`: for `verbatim` defaulting to `true`.
+     * @since v20.1.0
+     */
+    function getDefaultResultOrder(): "ipv4first" | "verbatim";
+    /**
      * Sets the IP address and port of servers to be used when performing DNS
      * resolution. The `servers` argument is an array of [RFC 5952](https://tools.ietf.org/html/rfc5952#section-6) formatted
      * addresses. If the port is the IANA default DNS port (53) it can be omitted.
@@ -330,20 +341,63 @@ declare module 'dns/promises' {
      * @since v10.6.0
      * @param servers array of `RFC 5952` formatted addresses
      */
-    function setServers(servers: ReadonlyArray<string>): void;
+    function setServers(servers: readonly string[]): void;
     /**
      * Set the default value of `verbatim` in `dns.lookup()` and `dnsPromises.lookup()`. The value could be:
      *
      * * `ipv4first`: sets default `verbatim` `false`.
      * * `verbatim`: sets default `verbatim` `true`.
      *
-     * The default is `ipv4first` and `dnsPromises.setDefaultResultOrder()` have
+     * The default is `verbatim` and `dnsPromises.setDefaultResultOrder()` have
      * higher priority than `--dns-result-order`. When using `worker threads`,`dnsPromises.setDefaultResultOrder()` from the main thread won't affect the
      * default dns orders in workers.
      * @since v16.4.0, v14.18.0
      * @param order must be `'ipv4first'` or `'verbatim'`.
      */
-    function setDefaultResultOrder(order: 'ipv4first' | 'verbatim'): void;
+    function setDefaultResultOrder(order: "ipv4first" | "verbatim"): void;
+    /**
+     * An independent resolver for DNS requests.
+     *
+     * Creating a new resolver uses the default server settings. Setting
+     * the servers used for a resolver using `resolver.setServers()` does not affect
+     * other resolvers:
+     *
+     * ```js
+     * const { Resolver } = require('node:dns').promises;
+     * const resolver = new Resolver();
+     * resolver.setServers(['4.4.4.4']);
+     *
+     * // This request will use the server at 4.4.4.4, independent of global settings.
+     * resolver.resolve4('example.org').then((addresses) => {
+     *   // ...
+     * });
+     *
+     * // Alternatively, the same code can be written using async-await style.
+     * (async function() {
+     *   const addresses = await resolver.resolve4('example.org');
+     * })();
+     * ```
+     *
+     * The following methods from the `dnsPromises` API are available:
+     *
+     * * `resolver.getServers()`
+     * * `resolver.resolve()`
+     * * `resolver.resolve4()`
+     * * `resolver.resolve6()`
+     * * `resolver.resolveAny()`
+     * * `resolver.resolveCaa()`
+     * * `resolver.resolveCname()`
+     * * `resolver.resolveMx()`
+     * * `resolver.resolveNaptr()`
+     * * `resolver.resolveNs()`
+     * * `resolver.resolvePtr()`
+     * * `resolver.resolveSoa()`
+     * * `resolver.resolveSrv()`
+     * * `resolver.resolveTxt()`
+     * * `resolver.reverse()`
+     * * `resolver.setServers()`
+     * @since v10.6.0
+     */
     class Resolver {
         constructor(options?: ResolverOptions);
         cancel(): void;
@@ -352,6 +406,7 @@ declare module 'dns/promises' {
         resolve4: typeof resolve4;
         resolve6: typeof resolve6;
         resolveAny: typeof resolveAny;
+        resolveCaa: typeof resolveCaa;
         resolveCname: typeof resolveCname;
         resolveMx: typeof resolveMx;
         resolveNaptr: typeof resolveNaptr;
@@ -365,6 +420,6 @@ declare module 'dns/promises' {
         setServers: typeof setServers;
     }
 }
-declare module 'node:dns/promises' {
-    export * from 'dns/promises';
+declare module "node:dns/promises" {
+    export * from "dns/promises";
 }

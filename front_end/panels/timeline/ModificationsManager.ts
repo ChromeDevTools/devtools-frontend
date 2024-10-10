@@ -158,6 +158,29 @@ export class ModificationsManager extends EventTarget {
     this.dispatchEvent(new AnnotationModifiedEvent(newOverlay, 'Add'));
   }
 
+  annotationsForEntry(entry: Trace.Types.Events.Event): Trace.Types.File.Annotation[] {
+    const annotationsForEntry = [];
+
+    for (const [annotation] of this.#overlayForAnnotation.entries()) {
+      if (annotation.type === 'ENTRY_LABEL' && annotation.entry === entry) {
+        annotationsForEntry.push(annotation);
+      } else if (
+          annotation.type === 'ENTRIES_LINK' && (annotation.entryFrom === entry || annotation.entryTo === entry)) {
+        annotationsForEntry.push(annotation);
+      }
+    }
+
+    return annotationsForEntry;
+  }
+
+  // Deletes all annotations associated with an entry
+  deleteEntryAnnotations(entry: Trace.Types.Events.Event): void {
+    const annotationsForEntry = this.annotationsForEntry(entry);
+    annotationsForEntry.forEach(annotation => {
+      this.removeAnnotation(annotation);
+    });
+  }
+
   linkAnnotationBetweenEntriesExists(entryFrom: Trace.Types.Events.Event, entryTo: Trace.Types.Events.Event): boolean {
     for (const annotation of this.#overlayForAnnotation.keys()) {
       if (annotation.type === 'ENTRIES_LINK' &&

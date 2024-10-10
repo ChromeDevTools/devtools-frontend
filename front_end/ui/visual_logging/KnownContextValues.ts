@@ -3006,6 +3006,7 @@ export const knownContextValues = new Set([
   'timeline.annotations.',
   'timeline.annotations.create-entries-link',
   'timeline.annotations.create-entry-label',
+  'timeline.annotations.delete-entry-annotations',
   'timeline.annotations.entry-annotation-create',
   'timeline.breadcrumb-select',
   'timeline.clear',

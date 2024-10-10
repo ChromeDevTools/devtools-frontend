@@ -290,6 +290,23 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     return contextMenu;
   }
 
+  entryHasAnnotations(entryIndex: number): boolean {
+    const event = this.eventByIndex(entryIndex);
+    if (!event) {
+      return false;
+    }
+    const annotations = ModificationsManager.activeManager()?.annotationsForEntry(event);
+    return annotations ? annotations.length > 0 : false;
+  }
+
+  deleteAnnotationsForEntry(entryIndex: number): void {
+    const event = this.eventByIndex(entryIndex);
+    if (!event) {
+      return;
+    }
+    ModificationsManager.activeManager()?.deleteEntryAnnotations(event);
+  }
+
   modifyTree(action: PerfUI.FlameChart.FilterAction, entryIndex: number): void {
     const entry = this.entryData[entryIndex] as Trace.Types.Events.Event;
 

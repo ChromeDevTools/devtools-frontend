@@ -12,6 +12,7 @@ import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 
 import * as TimelineComponents from './components/components.js';
 import {initiatorsDataToDrawForNetwork} from './Initiators.js';
+import {ModificationsManager} from './ModificationsManager.js';
 import {NetworkTrackAppender, type NetworkTrackEvent} from './NetworkTrackAppender.js';
 import timelineFlamechartPopoverStyles from './timelineFlamechartPopover.css.js';
 import {FlameChartStyle, Selection} from './TimelineFlameChartView.js';
@@ -156,6 +157,23 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
 
   eventByIndex(entryIndex: number): Trace.Types.Events.SyntheticNetworkRequest|Trace.Types.Events.WebSocketEvent|null {
     return this.#events.at(entryIndex) ?? null;
+  }
+
+  entryHasAnnotations(entryIndex: number): boolean {
+    const event = this.eventByIndex(entryIndex);
+    if (!event) {
+      return false;
+    }
+    const entryAnnotations = ModificationsManager.activeManager()?.annotationsForEntry(event);
+    return entryAnnotations !== undefined && entryAnnotations.length > 0;
+  }
+
+  deleteAnnotationsForEntry(entryIndex: number): void {
+    const event = this.eventByIndex(entryIndex);
+    if (!event) {
+      return;
+    }
+    ModificationsManager.activeManager()?.deleteEntryAnnotations(event);
   }
 
   entryIndexForSelection(selection: TimelineSelection|null): number {

@@ -188,6 +188,63 @@ describeWithEnvironment('TimelineFlameChartNetworkDataProvider', function() {
     assert.lengthOf(results, 1);
     assert.deepEqual(results[0], {index: 8, startTimeMilli: 122411056.533, provider: 'network'});
   });
+
+  it('delete annotations associated with an event', async function() {
+    const dataProvider = new Timeline.TimelineFlameChartNetworkDataProvider.TimelineFlameChartNetworkDataProvider();
+    const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    dataProvider.setModel(parsedTrace);
+    const entryIndex = 0;
+    const eventToFindAssociatedEntriesFor = dataProvider.eventByIndex(entryIndex);
+    const event = dataProvider.eventByIndex(1);
+    assert.exists(eventToFindAssociatedEntriesFor);
+    assert.exists(event);
+
+    // This link annotation should be deleted
+    Timeline.ModificationsManager.ModificationsManager.activeManager()?.createAnnotation({
+      type: 'ENTRIES_LINK',
+      entryFrom: eventToFindAssociatedEntriesFor,
+      entryTo: event,
+      state: Trace.Types.File.EntriesLinkState.CONNECTED,
+    });
+
+    Timeline.ModificationsManager.ModificationsManager.activeManager()?.createAnnotation({
+      type: 'ENTRY_LABEL',
+      entry: event,
+      label: 'label',
+    });
+
+    dataProvider.deleteAnnotationsForEntry(entryIndex);
+    // Make sure one of the annotations was deleted
+    assert.deepEqual(Timeline.ModificationsManager.ModificationsManager.activeManager()?.getAnnotations().length, 1);
+  });
+
+  it('correctly identifies if an event has annotations', async function() {
+    const dataProvider = new Timeline.TimelineFlameChartNetworkDataProvider.TimelineFlameChartNetworkDataProvider();
+    const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    dataProvider.setModel(parsedTrace);
+    const eventIndex = 0;
+    const event = dataProvider.eventByIndex(eventIndex);
+    const event2 = dataProvider.eventByIndex(1);
+    assert.exists(event);
+    assert.exists(event2);
+
+    // Create a link between events
+    Timeline.ModificationsManager.ModificationsManager.activeManager()?.createAnnotation({
+      type: 'ENTRIES_LINK',
+      entryFrom: event,
+      entryTo: event2,
+      state: Trace.Types.File.EntriesLinkState.CONNECTED,
+    });
+
+    // Made sure the event has annotations
+    assert.isTrue(dataProvider.entryHasAnnotations(eventIndex));
+
+    // Delete annotations for the event
+    dataProvider.deleteAnnotationsForEntry(eventIndex);
+
+    // Made sure the event does not have annotations
+    assert.isFalse(dataProvider.entryHasAnnotations(eventIndex));
+  });
 });
 
 function assertTimestampEqual(actual: number, expected: number): void {

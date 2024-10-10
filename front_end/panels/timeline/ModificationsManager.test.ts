@@ -232,4 +232,113 @@ describeWithEnvironment('ModificationsManager', () => {
                        label: 'label',
                      }]);
   });
+
+  it('correctly gets all annotations associated with an entry', async function() {
+    const parsedTrace = (await TraceLoader.traceEngine(null, 'web-dev-with-commit.json.gz')).parsedTrace;
+    const modificationsManager = Timeline.ModificationsManager.ModificationsManager.activeManager();
+    assert.isOk(modificationsManager);
+
+    // Get any entry to create annotations with.
+    const entryToFindAnnotationsFor = parsedTrace.Renderer.allTraceEntries[0];
+    const entry2 = parsedTrace.Renderer.allTraceEntries[1];
+    const entry3 = parsedTrace.Renderer.allTraceEntries[2];
+
+    // Create a connection between entry we are looking for annotations for and another entry.
+    // This link should be a part of associated with the entry annotations.
+    modificationsManager.createAnnotation({
+      type: 'ENTRIES_LINK',
+      state: Trace.Types.File.EntriesLinkState.CONNECTED,
+      entryFrom: entry2,
+      entryTo: entryToFindAnnotationsFor,
+    });
+
+    // Create a link between random entries
+    modificationsManager.createAnnotation({
+      type: 'ENTRIES_LINK',
+      state: Trace.Types.File.EntriesLinkState.CONNECTED,
+      entryFrom: entry3,
+      entryTo: entry2,
+    });
+
+    // Label for the entry we are looking for annotations for.
+    // This label should be a part of associated with the entry annotations.
+    modificationsManager.createAnnotation({
+      type: 'ENTRY_LABEL',
+      entry: entryToFindAnnotationsFor,
+      label: 'entry label',
+    });
+
+    const annotationsForEntry = modificationsManager.annotationsForEntry(entryToFindAnnotationsFor);
+
+    // Make sure the method returns annotations that `entryToFindAnnotationsFor` is a part of
+    assert.deepEqual(
+        annotationsForEntry,
+        [
+          {
+            type: 'ENTRIES_LINK',
+            state: Trace.Types.File.EntriesLinkState.CONNECTED,
+            entryFrom: entry2,
+            entryTo: entryToFindAnnotationsFor,
+          },
+          {
+            type: 'ENTRY_LABEL',
+            entry: entryToFindAnnotationsFor,
+            label: 'entry label',
+          },
+        ],
+    );
+  });
+
+  it('deletes all annotations associated with an entry', async function() {
+    const parsedTrace = (await TraceLoader.traceEngine(null, 'web-dev-with-commit.json.gz')).parsedTrace;
+    const modificationsManager = Timeline.ModificationsManager.ModificationsManager.activeManager();
+    assert.isOk(modificationsManager);
+
+    // Get any entry to create annotations with.
+    const entryToFindAnnotationsFor = parsedTrace.Renderer.allTraceEntries[0];
+    const entry2 = parsedTrace.Renderer.allTraceEntries[1];
+    const entry3 = parsedTrace.Renderer.allTraceEntries[2];
+
+    // Create a connection between entry we are looking for annotations for and another entry.
+    // This link should be deleted.
+    modificationsManager.createAnnotation({
+      type: 'ENTRIES_LINK',
+      state: Trace.Types.File.EntriesLinkState.CONNECTED,
+      entryFrom: entry2,
+      entryTo: entryToFindAnnotationsFor,
+    });
+
+    // Create a link between random entries.
+    // This annotation should not be deleted/
+    modificationsManager.createAnnotation({
+      type: 'ENTRIES_LINK',
+      state: Trace.Types.File.EntriesLinkState.CONNECTED,
+      entryFrom: entry3,
+      entryTo: entry2,
+    });
+
+    // Label for the entry we are looking for annotations for.
+    // This link should be deleted.
+    modificationsManager.createAnnotation({
+      type: 'ENTRY_LABEL',
+      entry: entryToFindAnnotationsFor,
+      label: 'entry label',
+    });
+
+    modificationsManager.deleteEntryAnnotations(entryToFindAnnotationsFor);
+    const annotationsForEntry = modificationsManager.getAnnotations();
+
+    // Make sure the method deleted all annotations that `entryToFindAnnotationsFor` is a part of
+    assert.deepEqual(
+        annotationsForEntry,
+        [
+          {
+            type: 'ENTRIES_LINK',
+            state: Trace.Types.File.EntriesLinkState.CONNECTED,
+            entryFrom: entry3,
+            entryTo: entry2,
+          },
+        ],
+    );
+  });
 });

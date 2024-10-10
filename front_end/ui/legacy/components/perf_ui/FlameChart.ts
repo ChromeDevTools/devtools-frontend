@@ -86,6 +86,10 @@ const UIStrings = {
    */
   linkEntries: 'Link entries',
   /**
+   *@description Text for an action that removes all annotations associated with an entry
+   */
+  deleteAnnotations: 'Delete annotations',
+  /**
    *@description Shown in the context menu when right clicking on a track header to enable the user to enter the track configuration mode.
    */
   enterTrackConfigurationMode: 'Configure tracks…',
@@ -1323,6 +1327,13 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
         jslogContext: 'timeline.annotations.create-entries-link',
       });
       linkEntriesAnnotationOption.setShortcut('Double Click');
+
+      annotationSection.appendItem(i18nString(UIStrings.deleteAnnotations), () => {
+        this.dataProvider.deleteAnnotationsForEntry?.(this.selectedEntryIndex);
+      }, {
+        disabled: !this.dataProvider.entryHasAnnotations?.(this.selectedEntryIndex),
+        jslogContext: 'timeline.annotations.delete-entry-annotations',
+      });
     }
 
     void this.contextMenu.show();
@@ -4030,6 +4041,10 @@ export interface FlameChartDataProvider {
   modifyTree?(action: FilterAction, entryIndex: number): void;
 
   getTraceEntryTreeForAIFromEntryIndex?(entryIndex: number): Trace.Helpers.TreeHelpers.TraceEntryNodeForAI|null;
+
+  entryHasAnnotations?(entryIndex: number): boolean;
+
+  deleteAnnotationsForEntry?(entryIndex: number): void;
 
   findPossibleContextMenuActions?(node: number): PossibleFilterActions|void;
 

@@ -58,6 +58,10 @@ const UIStringsNotTranslate = {
    *@description AI assistant UI tooltip sending feedback.
    */
   sendFeedback: 'Send feedback',
+  /**
+   *@description Announcement text for screen readers when the messages are cleared.
+   */
+  messagesCleared: 'Messages cleared',
 };
 
 const lockedString = i18n.i18n.lockedString;
@@ -381,6 +385,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
     this.#drJonesNetworkAgent = this.#createDrJonesNetworkAgent();
     this.#cancel();
     this.doUpdate();
+    UI.ARIAUtils.alert(lockedString(UIStringsNotTranslate.messagesCleared));
   }
 
   #runAbortController = new AbortController();

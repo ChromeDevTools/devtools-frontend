@@ -28,8 +28,8 @@ describe('ReportView', () => {
       // clang-format off
       LitHtml.render(
           html`
-        <${ReportView.ReportView.ReportKey.litTagName}>This is the key</${ReportView.ReportView.ReportKey.litTagName}>
-        <${ReportView.ReportView.ReportValue.litTagName}>This is the value</${ReportView.ReportView.ReportValue.litTagName}>
+        <devtools-report-key>This is the key</devtools-report-key>
+        <devtools-report-value>This is the value</devtools-report-value>
       `,
           report, {host: this});
       // clang-format on

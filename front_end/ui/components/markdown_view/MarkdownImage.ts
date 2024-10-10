@@ -2,10 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as IconButton from '../../components/icon_button/icon_button.js';
-import * as LitHtml from '../../lit-html/lit-html.js';
-import markdownImageStyles from './markdownImage.css.js';
+import '../../components/icon_button/icon_button.js';
 
+import type * as IconButton from '../../components/icon_button/icon_button.js';
+import * as LitHtml from '../../lit-html/lit-html.js';
+
+import markdownImageStyles from './markdownImage.css.js';
 import {getMarkdownImage, type ImageData} from './MarkdownImagesMap.js';
 
 const {html, Directives: {ifDefined}} = LitHtml;
@@ -45,8 +47,7 @@ export class MarkdownImage extends HTMLElement {
     }
     const {src, color, width = '100%', height = '100%'} = this.#imageData;
     return html`
-      <${IconButton.Icon.Icon.litTagName} .data=${
-        {iconPath: src, color, width, height} as IconButton.Icon.IconData}></${IconButton.Icon.Icon.litTagName}>
+      <devtools-icon .data=${{iconPath: src, color, width, height} as IconButton.Icon.IconData}></devtools-icon>
     `;
   }
 

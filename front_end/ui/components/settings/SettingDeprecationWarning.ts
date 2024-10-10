@@ -2,9 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../icon_button/icon_button.js';
+
 import * as Common from '../../../core/common/common.js';
 import * as LitHtml from '../../lit-html/lit-html.js';
-import * as IconButton from '../icon_button/icon_button.js';
+import type * as IconButton from '../icon_button/icon_button.js';
 
 import settingDeprecationWarning from './settingDeprecationWarning.css.js';
 
@@ -35,9 +37,8 @@ export class SettingDeprecationWarning extends HTMLElement {
     }
 
     LitHtml.render(
-        html`<${IconButton.Icon.Icon.litTagName} class=${LitHtml.Directives.classMap(classes)} .data=${
-            iconData as
-            IconButton.Icon.IconData} title=${warning} @click=${onclick}></${IconButton.Icon.Icon.litTagName}>`,
+        html`<devtools-icon class=${LitHtml.Directives.classMap(classes)} .data=${
+            iconData as IconButton.Icon.IconData} title=${warning} @click=${onclick}></devtools-icon>`,
         this.#shadow, {host: this});
   }
 }

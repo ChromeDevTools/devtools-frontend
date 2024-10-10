@@ -2,9 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../icon_button/icon_button.js';
+
 import * as LitHtml from '../../lit-html/lit-html.js';
 import * as VisualLogging from '../../visual_logging/visual_logging.js';
-import * as IconButton from '../icon_button/icon_button.js';
 
 import buttonStyles from './button.css.legacy.js';
 
@@ -368,11 +369,11 @@ export class Button extends HTMLElement {
           jslog=${ifDefined(jslog)}
         >${hasIcon
             ? html`
-                <${IconButton.Icon.Icon.litTagName} name=${ifDefined(this.#props.toggled ? this.#props.toggledIconName : this.#props.iconName || this.#props.iconUrl)}>
-                </${IconButton.Icon.Icon.litTagName}>`
+                <devtools-icon name=${ifDefined(this.#props.toggled ? this.#props.toggledIconName : this.#props.iconName || this.#props.iconUrl)}>
+                </devtools-icon>`
             : ''}
-          ${this.#props.longClickable ? html`<${IconButton.Icon.Icon.litTagName} name=${'triangle-bottom-right'} class="long-click"
-            ></${IconButton.Icon.Icon.litTagName}>`
+          ${this.#props.longClickable ? html`<devtools-icon name=${'triangle-bottom-right'} class="long-click"
+            ></devtools-icon>`
       : ''}
           ${this.#props.spinner ? html`<span class=${classMap(spinnerClasses)}></span>` : ''}
           <slot @slotchange=${this.#render} ${ref(this.#slotRef)}></slot>

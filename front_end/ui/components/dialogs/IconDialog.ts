@@ -4,7 +4,7 @@
 
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
-import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
+import type * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
@@ -106,7 +106,7 @@ export class IconDialog extends HTMLElement {
       maybeCloseButton = html`
         <div id='close-button-container'>
           <div id='close-button-right-aligner'>
-            <${IconButton.Icon.Icon.litTagName}
+            <devtools-icon
               @click=${this.#closeDialog}
               .data=${{
                 iconName: 'cross',
@@ -116,7 +116,7 @@ export class IconDialog extends HTMLElement {
               } as IconButton.Icon.IconWithName}
               jslog=${VisualLogging.close().track({click: true})}
               title=${i18nString(UIStrings.close)}
-            ></${IconButton.Icon.Icon.litTagName}>
+            ></devtools-icon>
           </div>
         </div>
       `;
@@ -125,13 +125,13 @@ export class IconDialog extends HTMLElement {
 
     // clang-format off
     LitHtml.render(html`
-      <${IconButton.Icon.Icon.litTagName}
+      <devtools-icon
         @click=${this.#showDialog}
         on-render=${ComponentHelpers.Directives.nodeRenderedCallback(node => {
           this.#icon = node as IconButton.Icon.Icon;
         })}
         .data=${this.#data.iconData as IconButton.Icon.IconWithName}
-      ></${IconButton.Icon.Icon.litTagName}>
+      ></devtools-icon>
       <${DialogElement.litTagName}
         @clickoutsidedialog=${this.#closeDialog}
         .showConnector=${true}

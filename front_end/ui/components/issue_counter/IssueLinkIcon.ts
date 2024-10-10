@@ -2,12 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../../../ui/components/icon_button/icon_button.js';
+
 import * as Common from '../../../core/common/common.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as Platform from '../../../core/platform/platform.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import * as IssuesManager from '../../../models/issues_manager/issues_manager.js';
-import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
@@ -151,7 +152,7 @@ export class IssueLinkIcon extends HTMLElement {
               title=${this.#getTooltip()}
               jslog=${VisualLogging.link('issue').track({click: true})}
               @click=${this.handleClick}>
-        <${IconButton.Icon.Icon.litTagName} name=${this.#getIconName()}></${IconButton.Icon.Icon.litTagName}>
+        <devtools-icon name=${this.#getIconName()}></devtools-icon>
       </button>`,
       this.#shadow, {host: this});
       // clang-format on

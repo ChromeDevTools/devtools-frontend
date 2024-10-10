@@ -73,9 +73,8 @@ export class CSSShadowSwatch extends HTMLElement {
     ];
 
     LitHtml.render(
-        html`<${IconButton.Icon.Icon.litTagName} name="shadow" class="shadow-swatch-icon"></${
-            IconButton.Icon.Icon.litTagName}><slot></slot>`,
-        this.#shadow, {host: this});
+        html`<devtools-icon name="shadow" class="shadow-swatch-icon"></devtools-icon><slot></slot>`, this.#shadow,
+        {host: this});
 
     this.#icon = this.#shadow.querySelector(IconButton.Icon.Icon.litTagName.value as string) as IconButton.Icon.Icon;
   }

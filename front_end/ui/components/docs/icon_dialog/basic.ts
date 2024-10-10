@@ -17,7 +17,7 @@ await FrontendHelpers.initializeGlobalVars();
 const iconDialog = html`
 Hello...
 
-<${Dialogs.IconDialog.IconDialog.litTagName}
+<devtools-icon-dialog
   .data=${{
     iconData: {
       iconName: 'info',
@@ -38,7 +38,7 @@ Hello...
       This is a dialog describing some additional information.
     </div>
   </div>
-</${Dialogs.IconDialog.IconDialog.litTagName}>
+</devtools-icon-dialog>
 `;
 // clang-format on
 

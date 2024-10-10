@@ -138,7 +138,7 @@ export class CodeBlock extends HTMLElement {
     // clang-format off
     return html`
       <div class="copy-button-container">
-        <${Buttons.Button.Button.litTagName}
+        <devtools-button
           .data=${
             {
               variant: Buttons.Button.Variant.ICON,
@@ -149,7 +149,7 @@ export class CodeBlock extends HTMLElement {
             } as Buttons.Button.ButtonData
           }
           @click=${this.#onCopy}
-        ></${Buttons.Button.Button.litTagName}>
+        ></devtools-button>
         ${this.#copied ? html`<span>${i18nString(UIStrings.copied)}</span>` : LitHtml.nothing}
       </div>`;
     // clang-format on
@@ -162,9 +162,7 @@ export class CodeBlock extends HTMLElement {
     // clang-format off
     return html`
       <div class="code">
-        <${TextEditor.TextEditor.TextEditor.litTagName} .state=${
-          this.#editorState
-        }></${TextEditor.TextEditor.TextEditor.litTagName}>
+        <devtools-text-editor .state=${this.#editorState}></devtools-text-editor>
       </div>
     `;
     // clang-format on

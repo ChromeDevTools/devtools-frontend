@@ -2,17 +2,19 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../../report_view/report_view.js';
+
 import * as LitHtml from '../../../lit-html/lit-html.js';
 import * as ComponentHelpers from '../../helpers/helpers.js';
-import * as ReportView from '../../report_view/report_view.js';
+import type * as ReportView from '../../report_view/report_view.js';
 
 const {html} = LitHtml;
 
 await ComponentHelpers.ComponentServerSetup.setup();
 
 const exampleRenderHelper = (key: string, value: string) => html`
-          <${ReportView.ReportView.ReportKey.litTagName}>${key}</${ReportView.ReportView.ReportKey.litTagName}>
-          <${ReportView.ReportView.ReportValue.litTagName}>${value}</${ReportView.ReportView.ReportValue.litTagName}>
+          <devtools-report-key>${key}</devtools-report-key>
+          <devtools-report-value>${value}</devtools-report-value>
         `;
 
 const container = document.querySelector<HTMLElement>('#container');
@@ -28,27 +30,19 @@ LitHtml.render(
           }
         </style>
 
-        <${ReportView.ReportView.Report.litTagName} .data=${{
+        <devtools-report .data=${{
       reportTitle: 'Optional Title',
     } as ReportView.ReportView.ReportData}>
-          <${ReportView.ReportView.ReportSectionHeader.litTagName}>Section 1</${
-        ReportView.ReportView.ReportSectionHeader.litTagName}>
-          <${ReportView.ReportView.ReportKey.litTagName}>Basic plain text field</${
-        ReportView.ReportView.ReportKey.litTagName}>
-          <${ReportView.ReportView.ReportValue.litTagName}>And this is the value</${
-        ReportView.ReportView.ReportValue.litTagName}>
-          <${ReportView.ReportView.ReportKey.litTagName}>A field with a code value</${
-        ReportView.ReportView.ReportKey.litTagName}>
-          <${ReportView.ReportView.ReportValue.litTagName} class="source-code">SomeCodeValue</${
-        ReportView.ReportView.ReportValue.litTagName}>
-          <${ReportView.ReportView.ReportSectionDivider.litTagName}></${
-        ReportView.ReportView.ReportSectionDivider.litTagName}>
-          <${ReportView.ReportView.ReportSectionHeader.litTagName}>Section 2</${
-        ReportView.ReportView.ReportSectionHeader.litTagName}>
+          <devtools-report-section-header>Section 1</devtools-report-section-header>
+          <devtools-report-key>Basic plain text field</devtools-report-key>
+          <devtools-report-value>And this is the value</devtools-report-value>
+          <devtools-report-key>A field with a code value</devtools-report-key>
+          <devtools-report-value class="source-code">SomeCodeValue</devtools-report-value>
+          <devtools-report-divider></devtools-report-divider>
+          <devtools-report-section-header>Section 2</devtools-report-section-header>
           ${exampleRenderHelper('Using a small helper', 'to render report rows')}
           ${exampleRenderHelper('This wide column defines the column width', 'for all rows')}
-          <${ReportView.ReportView.ReportSectionDivider.litTagName}></${
-        ReportView.ReportView.ReportSectionDivider.litTagName}>
-        </${ReportView.ReportView.Report.litTagName}>
+          <devtools-report-divider></devtools-report-divider>
+        </devtools-report>
       `,
     container);

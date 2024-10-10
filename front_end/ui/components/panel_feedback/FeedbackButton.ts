@@ -51,12 +51,12 @@ export class FeedbackButton extends HTMLElement {
 
     // clang-format off
     LitHtml.render(html`
-      <${Buttons.Button.Button.litTagName}
+      <devtools-button
           @click=${this.#onFeedbackClick}
           .iconUrl=${feedbackIconUrl}
           .variant=${Buttons.Button.Variant.OUTLINED}
           .jslogContext=${'feedback'}
-      >${i18nString(UIStrings.feedback)}</${Buttons.Button.Button.litTagName}>
+      >${i18nString(UIStrings.feedback)}</devtools-button>
       `, this.#shadow, {host: this});
     // clang-format on
   }

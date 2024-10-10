@@ -63,11 +63,10 @@ export class SettingCheckbox extends HTMLElement {
       const jslog = VisualLogging.link()
                         .track({click: true, keydown: 'Enter|Space'})
                         .context(this.#setting.name + '-documentation');
-      return html`<${Buttons.Button.Button.litTagName} .iconName=${'help'} .size=${
-          Buttons.Button.Size.SMALL} .variant=${Buttons.Button.Variant.ICON} .title=${learnMore.tooltip()} jslog=${
-          jslog} @click=${
+      return html`<devtools-button .iconName=${'help'} .size=${Buttons.Button.Size.SMALL} .variant=${
+          Buttons.Button.Variant.ICON} .title=${learnMore.tooltip()} jslog=${jslog} @click=${
           () => Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(
-              learnMore.url)} class="learn-more"></${Buttons.Button.Button.litTagName}>`;
+              learnMore.url)} class="learn-more"></devtools-button>`;
     }
 
     return undefined;
@@ -81,9 +80,9 @@ export class SettingCheckbox extends HTMLElement {
     const icon = this.icon();
     const reason = this.#setting.disabledReason() ?
         html`
-      <${Buttons.Button.Button.litTagName} class="disabled-reason" .iconName=${'info'} .variant=${
-            Buttons.Button.Variant.ICON} .size=${Buttons.Button.Size.SMALL} title=${
-            ifDefined(this.#setting.disabledReason())} @click=${onclick}></${Buttons.Button.Button.litTagName}>
+      <devtools-button class="disabled-reason" .iconName=${'info'} .variant=${Buttons.Button.Variant.ICON} .size=${
+            Buttons.Button.Size.SMALL} title=${ifDefined(this.#setting.disabledReason())} @click=${
+            onclick}></devtools-button>
     ` :
         LitHtml.nothing;
     LitHtml.render(

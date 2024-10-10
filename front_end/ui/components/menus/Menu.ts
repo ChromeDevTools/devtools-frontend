@@ -388,7 +388,7 @@ export class Menu extends HTMLElement {
     }
     // clang-format off
     LitHtml.render(html`
-      <${Dialogs.Dialog.Dialog.litTagName}
+      <devtools-dialog
         @clickoutsidedialog=${this.#closeDialog}
         @forceddialogclose=${this.#closeDialog}
         .position=${this.position}
@@ -405,7 +405,7 @@ export class Menu extends HTMLElement {
           <slot @click=${this.#handleItemClick}>
           </slot>
         </span>
-      </${Dialogs.Dialog.Dialog.litTagName}>
+      </devtools-dialog>
     `, this.#shadow, { host: this });
     // clang-format on
   }

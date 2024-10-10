@@ -527,6 +527,12 @@ export function getGetHostConfigStub(config: Root.Runtime.HostConfig): sinon.Sin
       enabled: false,
       ...config.devToolsAiAssistanceFileAgentDogfood,
     } as Root.Runtime.HostConfigAiAssistanceFileAgentDogfood,
+    devToolsAiAssistancePerformanceAgentDogfood: {
+      modelId: '',
+      temperature: -1,
+      enabled: false,
+      ...config.devToolsAiAssistancePerformanceAgentDogfood,
+    } as Root.Runtime.HostConfigAiAssistancePerformanceAgentDogfood,
     devToolsVeLogging: {
       enabled: true,
       testing: false,

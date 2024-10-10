@@ -1385,6 +1385,7 @@ grd_files_debug_sources = [
   "front_end/panels/freestyler/ChangeManager.js",
   "front_end/panels/freestyler/DrJonesFileAgent.js",
   "front_end/panels/freestyler/DrJonesNetworkAgent.js",
+  "front_end/panels/freestyler/DrJonesPerformanceAgent.js",
   "front_end/panels/freestyler/ExtensionScope.js",
   "front_end/panels/freestyler/FreestylerAgent.js",
   "front_end/panels/freestyler/FreestylerEvaluateAction.js",

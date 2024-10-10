@@ -11,7 +11,6 @@ import styles from './serviceWorkerRouterView.css.js';
 const {html, render} = LitHtml;
 
 export class ServiceWorkerRouterView extends LegacyWrapper.LegacyWrapper.WrappableComponent {
-  static readonly litTagName = LitHtml.literal`devtools-service-worker-router-view`;
   readonly #shadow = this.attachShadow({mode: 'open'});
   #rules: SDK.ServiceWorkerManager.ServiceWorkerRouterRule[] = [];
 

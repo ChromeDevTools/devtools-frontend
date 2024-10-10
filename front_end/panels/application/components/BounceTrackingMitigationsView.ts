@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../../../ui/components/report_view/report_view.js';
+
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
@@ -9,7 +11,7 @@ import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as ChromeLink from '../../../ui/components/chrome_link/chrome_link.js';
 import * as DataGrid from '../../../ui/components/data_grid/data_grid.js';
 import * as LegacyWrapper from '../../../ui/components/legacy_wrapper/legacy_wrapper.js';
-import * as ReportView from '../../../ui/components/report_view/report_view.js';
+import type * as ReportView from '../../../ui/components/report_view/report_view.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
@@ -75,7 +77,6 @@ export interface BounceTrackingMitigationsViewData {
 }
 
 export class BounceTrackingMitigationsView extends LegacyWrapper.LegacyWrapper.WrappableComponent {
-  static readonly litTagName = LitHtml.literal`devtools-bounce-tracking-mitigations-view`;
   readonly #shadow = this.attachShadow({mode: 'open'});
   #trackingSites: string[] = [];
   #screenStatus = ScreenStatusType.RESULT;
@@ -90,12 +91,12 @@ export class BounceTrackingMitigationsView extends LegacyWrapper.LegacyWrapper.W
   async #render(): Promise<void> {
     // clang-format off
     LitHtml.render(html`
-      <${ReportView.ReportView.Report.litTagName} .data=${
+      <devtools-report .data=${
           {reportTitle: i18nString(UIStrings.bounceTrackingMitigationsTitle)} as ReportView.ReportView.ReportData
       }
       jslog=${VisualLogging.pane('bounce-tracking-mitigations')}>
         ${await this.#renderMainFrameInformation()}
-      </${ReportView.ReportView.Report.litTagName}>
+      </devtools-report>
     `, this.#shadow, {host: this});
     // clang-format on
   }
@@ -112,29 +113,29 @@ export class BounceTrackingMitigationsView extends LegacyWrapper.LegacyWrapper.W
 
       // clang-format off
       return html`
-        <${ReportView.ReportView.ReportSection.litTagName}>
+        <devtools-report-section>
           ${i18n.i18n.getFormatLocalizedString(
               str_, UIStrings.featureDisabled,
               {PH1: mitigationsFlagLink})}
-        </${ReportView.ReportView.ReportSection.litTagName}>
+        </devtools-report-section>
       `;
       // clang-format on
     }
 
     // clang-format off
     return html`
-      <${ReportView.ReportView.ReportSection.litTagName}>
+      <devtools-report-section>
         ${this.#renderForceRunButton()}
-      </${ReportView.ReportView.ReportSection.litTagName}>
+      </devtools-report-section>
         ${this.#renderDeletedSitesOrNoSitesMessage()}
-      <${ReportView.ReportView.ReportSectionDivider.litTagName}>
-      </${ReportView.ReportView.ReportSectionDivider.litTagName}>
-      <${ReportView.ReportView.ReportSection.litTagName}>
+      <devtools-report-divider>
+      </devtools-report-divider>
+      <devtools-report-section>
         <x-link href="https://privacycg.github.io/nav-tracking-mitigations/#bounce-tracking-mitigations" class="link"
         jslog=${VisualLogging.link('learn-more').track({click: true})}>
           ${i18nString(UIStrings.learnMore)}
         </x-link>
-      </${ReportView.ReportView.ReportSection.litTagName}>
+      </devtools-report-section>
     `;
     // clang-format on
   }
@@ -144,7 +145,7 @@ export class BounceTrackingMitigationsView extends LegacyWrapper.LegacyWrapper.W
 
     // clang-format off
     return html`
-      <${Buttons.Button.Button.litTagName}
+      <devtools-button
         aria-label=${i18nString(UIStrings.forceRun)}
         .disabled=${isMitigationRunning}
         .spinner=${isMitigationRunning}
@@ -155,7 +156,7 @@ export class BounceTrackingMitigationsView extends LegacyWrapper.LegacyWrapper.W
           ${i18nString(UIStrings.runningMitigations)}`:`
           ${i18nString(UIStrings.forceRun)}
         `}
-      </${Buttons.Button.Button.litTagName}>
+      </devtools-button>
     `;
     // clang-format on
   }
@@ -168,12 +169,12 @@ export class BounceTrackingMitigationsView extends LegacyWrapper.LegacyWrapper.W
     if (this.#trackingSites.length === 0) {
       // clang-format off
       return html`
-        <${ReportView.ReportView.ReportSection.litTagName}>
+        <devtools-report-section>
         ${(this.#screenStatus === ScreenStatusType.RUNNING) ? html`
           ${i18nString(UIStrings.checkingPotentialTrackers)}`:`
           ${i18nString(UIStrings.noPotentialBounceTrackersIdentified)}
         `}
-        </${ReportView.ReportView.ReportSection.litTagName}>
+        </devtools-report-section>
       `;
       // clang-format on
     }
@@ -198,11 +199,11 @@ export class BounceTrackingMitigationsView extends LegacyWrapper.LegacyWrapper.W
 
     // clang-format off
     return html`
-      <${ReportView.ReportView.ReportSection.litTagName}>
-        <${DataGrid.DataGridController.DataGridController.litTagName} .data=${
+      <devtools-report-section>
+        <devtools-data-grid-controller .data=${
             gridData as DataGrid.DataGridController.DataGridControllerData}>
-        </${DataGrid.DataGridController.DataGridController.litTagName}>
-      </${ReportView.ReportView.ReportSection.litTagName}>
+        </devtools-data-grid-controller>
+      </devtools-report-section>
     `;
     // clang-format on
   }

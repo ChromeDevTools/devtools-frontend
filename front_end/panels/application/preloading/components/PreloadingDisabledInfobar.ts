@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../../../../ui/components/report_view/report_view.js';
+
 import * as i18n from '../../../../core/i18n/i18n.js';
 import type * as Platform from '../../../../core/platform/platform.js';
 import type * as Protocol from '../../../../generated/protocol.js';
@@ -10,7 +12,6 @@ import * as Dialogs from '../../../../ui/components/dialogs/dialogs.js';
 import * as IconButton from '../../../../ui/components/icon_button/icon_button.js';
 import * as LegacyWrapper from '../../../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import * as Coordinator from '../../../../ui/components/render_coordinator/render_coordinator.js';
-import * as ReportView from '../../../../ui/components/report_view/report_view.js';
 import * as UI from '../../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../../ui/visual_logging/visual_logging.js';
@@ -98,7 +99,6 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 export class PreloadingDisabledInfobar extends LegacyWrapper.LegacyWrapper.WrappableComponent<UI.Widget.VBox> {
-  static readonly litTagName = LitHtml.literal`devtools-resources-preloading-disabled-infobar`;
 
   readonly #shadow = this.attachShadow({mode: 'open'});
   #data: Protocol.Preload.PreloadEnabledStateUpdatedEvent = {
@@ -148,7 +148,7 @@ export class PreloadingDisabledInfobar extends LegacyWrapper.LegacyWrapper.Wrapp
           ${header}
         </span>
 
-        <${Dialogs.IconDialog.IconDialog.litTagName}
+        <devtools-icon-dialog
           .data=${{
             iconData: {
               iconName: 'info',
@@ -165,7 +165,7 @@ export class PreloadingDisabledInfobar extends LegacyWrapper.LegacyWrapper.Wrapp
           jslog=${VisualLogging.dialog('preloading-disabled').track({resize: true, keydown: 'Escape'})}
         >
           ${this.#dialogContents()}
-        </${Dialogs.IconDialog.IconDialog.litTagName}>
+        </devtools-icon-dialog>
       </div>
     `;
     // clang-format on
@@ -188,16 +188,16 @@ export class PreloadingDisabledInfobar extends LegacyWrapper.LegacyWrapper.Wrapp
       <div id='contents'>
         <div id='title'>${i18nString(UIStrings.titleReasonsPreventingPreloading)}</div>
 
-        <${ReportView.ReportView.Report.litTagName}>
+        <devtools-report>
           ${this.#maybeDisalebByPreference()}
           ${this.#maybeDisalebByDataSaver()}
           ${this.#maybeDisalebByBatterySaver()}
           ${this.#maybeDisalebByHoldbackPrefetchSpeculationRules()}
           ${this.#maybeDisalebByHoldbackPrerenderSpeculationRules()}
 
-          <${ReportView.ReportView.ReportSectionDivider.litTagName}>
-          </${ReportView.ReportView.ReportSectionDivider.litTagName}>
-        </${ReportView.ReportView.Report.litTagName}>
+          <devtools-report-divider>
+          </devtools-report-divider>
+        </devtools-report>
 
         <div id='footer'>
           ${learnMoreLink}

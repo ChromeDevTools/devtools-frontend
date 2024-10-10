@@ -2,11 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../../../ui/components/icon_button/icon_button.js';
+
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
-import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as Input from '../../../ui/components/input/input.js';
 // inspectorCommonStyles is imported for the chrome-select class that is used for the dropdown
 // eslint-disable-next-line rulesdir/es_modules_import
@@ -86,7 +87,6 @@ export interface ProtocolHandlersData {
 }
 
 export class ProtocolHandlersView extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-protocol-handlers-view`;
   readonly #shadow = this.attachShadow({mode: 'open'});
   #protocolHandlers: ProtocolHandler[] = [];
   #manifestLink: Platform.DevToolsPath.UrlString = Platform.DevToolsPath.EmptyUrlString;
@@ -115,9 +115,9 @@ export class ProtocolHandlersView extends HTMLElement {
     // clang-format off
     return html`
     <div class="protocol-handlers-row status">
-            <${IconButton.Icon.Icon.litTagName} class="inline-icon"
+            <devtools-icon class="inline-icon"
                                                 name=${this.#protocolHandlers.length > 0 ? 'check-circle' : 'info'}>
-            </${IconButton.Icon.Icon.litTagName}>
+            </devtools-icon>
             ${i18n.i18n.getFormatLocalizedString(str_, statusString, {
       PH1: manifestInTextLink,
     })}
@@ -144,10 +144,9 @@ export class ProtocolHandlersView extends HTMLElement {
         <input .value=${this.#queryInputState} class="devtools-text-input" type="text" @change=${
         this.#handleQueryInputChange} aria-label=${i18nString(UIStrings.textboxLabel)}
         placeholder=${i18nString(UIStrings.textboxPlaceholder)} />
-        <${Buttons.Button.Button.litTagName} .variant=${Buttons.Button.Variant.PRIMARY} @click=${
-        this.#handleTestProtocolClick}>
+        <devtools-button .variant=${Buttons.Button.Variant.PRIMARY} @click=${this.#handleTestProtocolClick}>
             ${i18nString(UIStrings.testProtocol)}
-        </${Buttons.Button.Button.litTagName}>
+        </devtools-button>
         </div>
       `;
   }

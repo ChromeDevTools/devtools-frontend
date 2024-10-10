@@ -2,10 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../../../../ui/components/data_grid/data_grid.js';
+
 import * as i18n from '../../../../core/i18n/i18n.js';
 import {assertNotNullOrUndefined} from '../../../../core/platform/platform.js';
 import type * as SDK from '../../../../core/sdk/sdk.js';
-import * as DataGrid from '../../../../ui/components/data_grid/data_grid.js';
+import type * as DataGrid from '../../../../ui/components/data_grid/data_grid.js';
 import * as LegacyWrapper from '../../../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import type * as UI from '../../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
@@ -37,7 +39,6 @@ export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const {render, html} = LitHtml;
 
 export class PreloadingMismatchedHeadersGrid extends LegacyWrapper.LegacyWrapper.WrappableComponent<UI.Widget.VBox> {
-  static readonly litTagName = LitHtml.literal`devtools-resources-preloading-mismatched-headers-grid`;
 
   readonly #shadow = this.attachShadow({mode: 'open'});
   #data: SDK.PreloadingModel.PrerenderAttempt|null = null;
@@ -94,9 +95,9 @@ export class PreloadingMismatchedHeadersGrid extends LegacyWrapper.LegacyWrapper
     // clang-format off
       render(html`
         <div class="preloading-container">
-          <${DataGrid.DataGridController.DataGridController.litTagName} .data=${
+          <devtools-data-grid-controller .data=${
               reportsGridData as DataGrid.DataGridController.DataGridControllerData}>
-          </${DataGrid.DataGridController.DataGridController.litTagName}>
+          </devtools-data-grid-controller>
         </div>
       `, this.#shadow, {host: this});
     // clang-format on

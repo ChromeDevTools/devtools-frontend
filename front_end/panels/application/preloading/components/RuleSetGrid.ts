@@ -2,14 +2,17 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../../../../ui/components/data_grid/data_grid.js';
+import '../../../../ui/components/icon_button/icon_button.js';
+
 import * as Common from '../../../../core/common/common.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import type * as Platform from '../../../../core/platform/platform.js';
 import {assertNotNullOrUndefined} from '../../../../core/platform/platform.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import * as Protocol from '../../../../generated/protocol.js';
-import * as DataGrid from '../../../../ui/components/data_grid/data_grid.js';
-import * as IconButton from '../../../../ui/components/icon_button/icon_button.js';
+import type * as DataGrid from '../../../../ui/components/data_grid/data_grid.js';
+import type * as IconButton from '../../../../ui/components/icon_button/icon_button.js';
 import * as LegacyWrapper from '../../../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import type * as UI from '../../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
@@ -63,7 +66,6 @@ export interface RuleSetGridRow {
 
 // Grid component to show SpeculationRules rule sets.
 export class RuleSetGrid extends LegacyWrapper.LegacyWrapper.WrappableComponent<UI.Widget.VBox> {
-  static readonly litTagName = LitHtml.literal`devtools-resources-ruleset-grid`;
 
   readonly #shadow = this.attachShadow({mode: 'open'});
   #data: RuleSetGridData|null = null;
@@ -111,9 +113,9 @@ export class RuleSetGrid extends LegacyWrapper.LegacyWrapper.WrappableComponent<
     LitHtml.render(html`
       <div class="ruleset-container"
       jslog=${VisualLogging.pane('preloading-rules')}>
-        <${DataGrid.DataGridController.DataGridController.litTagName} .data=${
+        <devtools-data-grid-controller .data=${
             reportsGridData as DataGrid.DataGridController.DataGridControllerData}>
-        </${DataGrid.DataGridController.DataGridController.litTagName}>
+        </devtools-data-grid-controller>
       </div>
     `, this.#shadow, {host: this});
     // clang-format on
@@ -183,7 +185,7 @@ function ruleSetRenderer(
         })}
         jslog=${VisualLogging.action('reveal-in-elements').track({click: true})}
       >
-        <${IconButton.Icon.Icon.litTagName}
+        <devtools-icon
           .data=${{
             iconName: 'code-circle',
             color: 'var(--icon-link)',
@@ -194,7 +196,7 @@ function ruleSetRenderer(
             'vertical-align': 'sub',
           })}
         >
-        </${IconButton.Icon.Icon.litTagName}>
+        </devtools-icon>
         ${location}
       </button>
     `;
@@ -237,7 +239,7 @@ function ruleSetRenderer(
           'padding-inline-end': '0',
         })}
       >
-        <${IconButton.Icon.Icon.litTagName}
+        <devtools-icon
          .data=${{
             iconName: 'arrow-up-down-circle',
             color: 'var(--icon-link)',
@@ -248,7 +250,7 @@ function ruleSetRenderer(
             'vertical-align': 'sub',
           })}
         >
-        </${IconButton.Icon.Icon.litTagName}>
+        </devtools-icon>
         ${location}
       </button>
     `;

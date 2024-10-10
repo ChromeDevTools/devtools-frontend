@@ -2,9 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../../../ui/components/data_grid/data_grid.js';
+
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as Protocol from '../../../generated/protocol.js';
-import * as DataGrid from '../../../ui/components/data_grid/data_grid.js';
+import type * as DataGrid from '../../../ui/components/data_grid/data_grid.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
@@ -27,7 +29,6 @@ export interface EndpointsGridData {
 }
 
 export class EndpointsGrid extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-resources-endpoints-grid`;
 
   readonly #shadow = this.attachShadow({mode: 'open'});
   #endpoints: Map<string, Protocol.Network.ReportingApiEndpoint[]> = new Map();
@@ -76,9 +77,9 @@ export class EndpointsGrid extends HTMLElement {
       <div class="reporting-container" jslog=${VisualLogging.section('endpoints')}>
         <div class="reporting-header">${i18n.i18n.lockedString('Endpoints')}</div>
         ${this.#endpoints.size > 0 ? html`
-          <${DataGrid.DataGridController.DataGridController.litTagName} .data=${
+          <devtools-data-grid-controller .data=${
               endpointsGridData as DataGrid.DataGridController.DataGridControllerData}>
-          </${DataGrid.DataGridController.DataGridController.litTagName}>
+          </devtools-data-grid-controller>
         ` : html`
           <div class="reporting-placeholder">
             <div>${i18nString(UIStrings.noEndpointsToDisplay)}</div>

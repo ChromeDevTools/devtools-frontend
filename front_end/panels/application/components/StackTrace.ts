@@ -2,11 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../../../ui/components/expandable_list/expandable_list.js';
+
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import * as Bindings from '../../../models/bindings/bindings.js';
-import * as ExpandableList from '../../../ui/components/expandable_list/expandable_list.js';
+import type * as ExpandableList from '../../../ui/components/expandable_list/expandable_list.js';
 import * as Components from '../../../ui/legacy/components/utils/utils.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
@@ -55,7 +57,6 @@ interface StackTraceRowData {
 }
 
 export class StackTraceRow extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-stack-trace-row`;
   readonly #shadow = this.attachShadow({mode: 'open'});
 
   #stackTraceRowItem: Components.JSPresentationUtils.StackTraceRegularRow|null = null;
@@ -98,7 +99,6 @@ interface StackTraceLinkButtonData {
 }
 
 export class StackTraceLinkButton extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-stack-trace-link-button`;
   readonly #shadow = this.attachShadow({mode: 'open'});
 
   #onShowAllClick: () => void = () => {};
@@ -135,7 +135,6 @@ export class StackTraceLinkButton extends HTMLElement {
 }
 
 export class StackTrace extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-resources-stack-trace`;
 
   readonly #shadow = this.attachShadow({mode: 'open'});
   readonly #linkifier = new Components.Linkifier.Linkifier();
@@ -185,9 +184,9 @@ export class StackTrace extends HTMLElement {
       if (this.#showHidden || !ignoreListHide) {
         if ('functionName' in item) {
           expandableRows.push(html`
-          <${StackTraceRow.litTagName} data-stack-trace-row .data=${{
+          <devtools-stack-trace-row data-stack-trace-row .data=${{
             stackTraceRowItem: item,
-          } as StackTraceRowData}></${StackTraceRow.litTagName}>`);
+          } as StackTraceRowData}></devtools-stack-trace-row>`);
         }
         if ('asyncDescription' in item) {
           expandableRows.push(html`
@@ -203,7 +202,7 @@ export class StackTrace extends HTMLElement {
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
       expandableRows.push(html`
-      <${StackTraceLinkButton.litTagName} data-stack-trace-row .data=${{onShowAllClick: this.#onToggleShowAllClick.bind(this), hiddenCallFramesCount, expandedView: this.#showHidden} as StackTraceLinkButtonData}></${StackTraceLinkButton.litTagName}>
+      <devtools-stack-trace-link-button data-stack-trace-row .data=${{onShowAllClick: this.#onToggleShowAllClick.bind(this), hiddenCallFramesCount, expandedView: this.#showHidden} as StackTraceLinkButtonData}></devtools-stack-trace-link-button>
       `);
       // clang-format on
     }
@@ -226,11 +225,11 @@ export class StackTrace extends HTMLElement {
     const expandableRows = this.createRowTemplates();
     LitHtml.render(
       html`
-        <${ExpandableList.ExpandableList.ExpandableList.litTagName} .data=${{
+        <devtools-expandable-list .data=${{
           rows: expandableRows, title: i18nString(UIStrings.creationStackTrace),
         } as ExpandableList.ExpandableList.ExpandableListData}>
         jslog=${VisualLogging.tree()}>
-        </${ExpandableList.ExpandableList.ExpandableList.litTagName}>
+        </devtools-expandable-list>
       `,
       this.#shadow, {host: this});
     // clang-format on

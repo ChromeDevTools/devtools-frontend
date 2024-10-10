@@ -2,10 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../../../ui/components/icon_button/icon_button.js';
+
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
-import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
 import sharedStorageMetadataViewStyles from './sharedStorageMetadataView.css.js';
@@ -56,7 +57,6 @@ interface SharedStorageMetadataGetter {
 }
 
 export class SharedStorageMetadataView extends StorageMetadataView {
-  static override readonly litTagName = LitHtml.literal`devtools-shared-storage-metadata-view`;
   #sharedStorageMetadataGetter: SharedStorageMetadataGetter;
   #creationTime: Protocol.Network.TimeSinceEpoch|null = null;
   #length: number = 0;
@@ -100,7 +100,7 @@ export class SharedStorageMetadataView extends StorageMetadataView {
       ${this.value(String(this.#length))}
       ${this.key(i18nString(UIStrings.numBytesUsed))}
       ${this.value(String(this.#bytesUsed))}
-      ${this.key(html`${i18nString(UIStrings.entropyBudget)}<${IconButton.Icon.Icon.litTagName} name="info" title=${i18nString(UIStrings.budgetExplanation)}></${IconButton.Icon.Icon.litTagName}>`)}
+      ${this.key(html`${i18nString(UIStrings.entropyBudget)}<devtools-icon name="info" title=${i18nString(UIStrings.budgetExplanation)}></devtools-icon>`)}
       ${this.value(html`${this.#remainingBudget}${this.#renderResetBudgetButton()}`)}`;
     // clang-format on
   }
@@ -116,12 +116,12 @@ export class SharedStorageMetadataView extends StorageMetadataView {
   #renderResetBudgetButton(): LitHtml.TemplateResult {
     // clang-format off
     return html`
-      <${Buttons.Button.Button.litTagName} .iconName=${'undo'}
-                                           .jslogContext=${'reset-entropy-budget'}
-                                           .size=${Buttons.Button.Size.SMALL}
-                                           .title=${i18nString(UIStrings.resetBudget)}
-                                           .variant=${Buttons.Button.Variant.ICON}
-                                           @click=${this.#resetBudget.bind(this)}></${Buttons.Button.Button.litTagName}>
+      <devtools-button .iconName=${'undo'}
+                       .jslogContext=${'reset-entropy-budget'}
+                       .size=${Buttons.Button.Size.SMALL}
+                       .title=${i18nString(UIStrings.resetBudget)}
+                       .variant=${Buttons.Button.Variant.ICON}
+                       @click=${this.#resetBudget.bind(this)}></devtools-button>
     `;
     // clang-format on
   }

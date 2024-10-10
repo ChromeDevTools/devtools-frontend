@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../../../ui/components/report_view/report_view.js';
+
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
@@ -9,7 +11,7 @@ import type * as Protocol from '../../../generated/protocol.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as LegacyWrapper from '../../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
-import * as ReportView from '../../../ui/components/report_view/report_view.js';
+import type * as ReportView from '../../../ui/components/report_view/report_view.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
@@ -110,7 +112,6 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 export class StorageMetadataView extends LegacyWrapper.LegacyWrapper.WrappableComponent {
-  static readonly litTagName = LitHtml.literal`devtools-storage-metadata-view`;
   readonly #shadow = this.attachShadow({mode: 'open'});
   #storageBucketsModel?: SDK.StorageBucketsModel.StorageBucketsModel;
   #storageKey: SDK.StorageKeyManager.StorageKey|null = null;
@@ -142,9 +143,9 @@ export class StorageMetadataView extends LegacyWrapper.LegacyWrapper.WrappableCo
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
       LitHtml.render(html`
-        <${ReportView.ReportView.Report.litTagName} .data=${{reportTitle: this.getTitle() ?? i18nString(UIStrings.loading)} as ReportView.ReportView.ReportData}>
+        <devtools-report .data=${{reportTitle: this.getTitle() ?? i18nString(UIStrings.loading)} as ReportView.ReportView.ReportData}>
           ${await this.renderReportContent()}
-        </${ReportView.ReportView.Report.litTagName}>`, this.#shadow, {host: this});
+        </devtools-report>`, this.#shadow, {host: this});
       // clang-format on
     });
   }
@@ -159,13 +160,11 @@ export class StorageMetadataView extends LegacyWrapper.LegacyWrapper.WrappableCo
   }
 
   key(content: string|LitHtml.TemplateResult): LitHtml.TemplateResult {
-    return html`<${ReportView.ReportView.ReportKey.litTagName}>${content}</${
-        ReportView.ReportView.ReportKey.litTagName}>`;
+    return html`<devtools-report-key>${content}</devtools-report-key>`;
   }
 
   value(content: string|LitHtml.TemplateResult): LitHtml.TemplateResult {
-    return html`<${ReportView.ReportView.ReportValue.litTagName}>${content}</${
-        ReportView.ReportView.ReportValue.litTagName}>`;
+    return html`<devtools-report-value>${content}</devtools-report-value>`;
   }
 
   async renderReportContent(): Promise<LitHtml.LitTemplate> {
@@ -240,14 +239,14 @@ export class StorageMetadataView extends LegacyWrapper.LegacyWrapper.WrappableCo
   #renderBucketControls(): LitHtml.TemplateResult {
     // clang-format off
     return html`
-      <${ReportView.ReportView.ReportSection.litTagName}>
-        <${Buttons.Button.Button.litTagName}
+      <devtools-report-section>
+        <devtools-button
           aria-label=${i18nString(UIStrings.deleteBucket)}
           .variant=${Buttons.Button.Variant.PRIMARY}
           @click=${this.#deleteBucket}>
           ${i18nString(UIStrings.deleteBucket)}
-        </${Buttons.Button.Button.litTagName}>
-      </${ReportView.ReportView.ReportSection.litTagName}>`;
+        </devtools-button>
+      </devtools-report-section>`;
     // clang-format on
   }
 

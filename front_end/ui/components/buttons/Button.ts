@@ -368,7 +368,7 @@ export class Button extends HTMLElement {
           jslog=${ifDefined(jslog)}
         >${hasIcon
             ? html`
-                <${IconButton.Icon.Icon.litTagName} name=${this.#props.toggled ? this.#props.toggledIconName : this.#props.iconName || this.#props.iconUrl}>
+                <${IconButton.Icon.Icon.litTagName} name=${ifDefined(this.#props.toggled ? this.#props.toggledIconName : this.#props.iconName || this.#props.iconUrl)}>
                 </${IconButton.Icon.Icon.litTagName}>`
             : ''}
           ${this.#props.longClickable ? html`<${IconButton.Icon.Icon.litTagName} name=${'triangle-bottom-right'} class="long-click"

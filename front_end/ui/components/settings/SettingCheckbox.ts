@@ -12,7 +12,7 @@ import * as Input from '../input/input.js';
 import settingCheckboxStyles from './settingCheckbox.css.js';
 import {SettingDeprecationWarning} from './SettingDeprecationWarning.js';
 
-const {html} = LitHtml;
+const {html, Directives: {ifDefined}} = LitHtml;
 
 export interface SettingCheckboxData {
   setting: Common.Settings.Setting<boolean>;
@@ -83,7 +83,7 @@ export class SettingCheckbox extends HTMLElement {
         html`
       <${Buttons.Button.Button.litTagName} class="disabled-reason" .iconName=${'info'} .variant=${
             Buttons.Button.Variant.ICON} .size=${Buttons.Button.Size.SMALL} title=${
-            this.#setting.disabledReason()} @click=${onclick}></${Buttons.Button.Button.litTagName}>
+            ifDefined(this.#setting.disabledReason())} @click=${onclick}></${Buttons.Button.Button.litTagName}>
     ` :
         LitHtml.nothing;
     LitHtml.render(

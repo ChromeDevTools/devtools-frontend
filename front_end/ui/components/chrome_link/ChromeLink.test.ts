@@ -24,7 +24,7 @@ describeWithMockConnection('ChromeLink', () => {
     // clang-format off
     LitHtml.render(
       html`
-        <${ChromeLink.ChromeLink.ChromeLink.litTagName} .href=${'chrome://settings'}>
+        <${ChromeLink.ChromeLink.ChromeLink.litTagName} .href=${'chrome://settings' as Platform.DevToolsPath.UrlString}>
           link text
         </${ChromeLink.ChromeLink.ChromeLink.litTagName}>
       `,

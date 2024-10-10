@@ -1027,6 +1027,7 @@ export class FreestylerChatUi extends HTMLElement {
               width: 'var(--sys-size-8)',
               height: 'var(--sys-size-8)',
             } as IconButton.Icon.IconData}>
+            </${IconButton.Icon.Icon.litTagName}>
           </div>
           <div>
             ${config.devToolsExplainThisResourceDogfood?.enabled ?

@@ -628,7 +628,7 @@ export class JSONEditor extends LitElement {
 
   #computeTargetLabel(target: SDK.Target.Target): string|void {
     if (!target) {
-      return;
+      return undefined;
     }
     return `${target.name()} (${target.inspectedURL()})`;
   }
@@ -828,7 +828,7 @@ export class JSONEditor extends LitElement {
             .showSelectedItem=${true}
             .showConnector=${false}
             .position=${Dialogs.Dialog.DialogVerticalPosition.BOTTOM}
-            .buttonTitle=${targetLabel}
+            .buttonTitle=${targetLabel || ''}
             jslog=${VisualLogging.dropDown('targets').track({click: true})}
           >
           ${repeat(this.targets, target => {

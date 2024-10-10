@@ -334,9 +334,9 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
         @click=${this.#toggleConsoleInsightsSetting.bind(this)}
       >
         <${Switch.Switch.Switch.litTagName}
-          .checked=${this.#consoleInsightsSetting?.get() && !this.#consoleInsightsSetting?.disabled()}
-          .jslogContext=${this.#consoleInsightsSetting?.name}
-          .disabled=${this.#consoleInsightsSetting?.disabled()}
+          .checked=${Boolean(this.#consoleInsightsSetting?.get() && !this.#consoleInsightsSetting?.disabled())}
+          .jslogContext=${this.#consoleInsightsSetting?.name || ''}
+          .disabled=${Boolean(this.#consoleInsightsSetting?.disabled())}
           @switchchange=${this.#toggleConsoleInsightsSetting.bind(this)}
           aria-label=${this.#consoleInsightsSetting?.disabledReason() || i18nString(UIStrings.enableConsoleInsights)}
         ></${Switch.Switch.Switch.litTagName}>
@@ -402,9 +402,9 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
         @click=${this.#toggleAiAssistanceSetting.bind(this)}
       >
         <${Switch.Switch.Switch.litTagName}
-          .checked=${this.#aiAssistanceSetting?.get() && !this.#aiAssistanceSetting?.disabled()}
+          .checked=${Boolean(this.#aiAssistanceSetting?.get() && !this.#aiAssistanceSetting?.disabled())}
           .jslogContext=${this.#aiAssistanceSetting?.name}
-          .disabled=${this.#aiAssistanceSetting?.disabled()}
+          .disabled=${Boolean(this.#aiAssistanceSetting?.disabled())}
           @switchchange=${this.#toggleAiAssistanceSetting.bind(this)}
           aria-label=${this.#aiAssistanceSetting?.disabledReason() || i18nString(UIStrings.enableAiAssistance)}
         ></${Switch.Switch.Switch.litTagName}>

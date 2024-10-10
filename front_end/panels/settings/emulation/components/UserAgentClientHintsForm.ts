@@ -792,7 +792,7 @@ export class UserAgentClientHintsForm extends HTMLElement {
               width: '16px',
             } as IconButton.Icon.IconData}
             title=${i18nString(UIStrings.userAgentClientHintsInfo)}
-            class='info-icon',
+            class='info-icon'
           ></${IconButton.Icon.Icon.litTagName}>
           <x-link
            tabindex=${this.#isFormDisabled ? '-1' : '0'}

@@ -155,6 +155,21 @@ export class CodeBlock extends HTMLElement {
     // clang-format on
   }
 
+  #renderTextEditor(): LitHtml.TemplateResult {
+    if (!this.#editorState) {
+      throw new Error('Unexpected: trying to render the text editor without editorState');
+    }
+    // clang-format off
+    return html`
+      <div class="code">
+        <${TextEditor.TextEditor.TextEditor.litTagName} .state=${
+          this.#editorState
+        }></${TextEditor.TextEditor.TextEditor.litTagName}>
+      </div>
+    `;
+    // clang-format on
+  }
+
   #render(): void {
     const header = (this.#header ?? this.#codeLang) || i18nString(UIStrings.code);
 
@@ -166,11 +181,7 @@ export class CodeBlock extends HTMLElement {
           <h4 class="heading-text">${header}</h4>
           ${this.#showCopyButton ? this.#renderCopyButton() : LitHtml.nothing}
         </div>
-        <div class="code">
-          <${TextEditor.TextEditor.TextEditor.litTagName} .state=${
-            this.#editorState
-          }></${TextEditor.TextEditor.TextEditor.litTagName}>
-        </div>
+        ${this.#renderTextEditor()}
       </div>
       ${this.#displayNotice ? this.#renderNotice() : LitHtml.nothing}
     </div>`,

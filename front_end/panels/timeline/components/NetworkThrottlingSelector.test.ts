@@ -4,7 +4,7 @@
 
 import * as Common from '../../../core/common/common.js';
 import * as SDK from '../../../core/sdk/sdk.js';
-import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
+import {getCleanTextContentFromElements, renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import type * as Menus from '../../../ui/components/menus/menus.js';
 import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
@@ -82,6 +82,40 @@ describeWithEnvironment('NetworkThrottlingSelector', () => {
     assert.strictEqual(networkManager.networkConditions().i18nTitleKey, 'Fast 4G');
   });
 
+  it('correctly updates when a custom preset is selected', async () => {
+    const view = new Components.NetworkThrottlingSelector.NetworkThrottlingSelector();
+    renderElementIntoDOM(view);
+    await coordinator.done();
+    customNetworkSetting.set([
+      {
+        title: 'Custom item one',
+        download: 0,
+        upload: 0,
+        latency: 0,
+      },
+      {
+        title: 'Custom item two',
+        download: 0,
+        upload: 0,
+        latency: 0,
+
+      },
+    ]);
+    await coordinator.done();
+
+    assert.isOk(view.shadowRoot);
+    const items = view.shadowRoot.querySelectorAll('devtools-menu-item');
+    const itemsText = getCleanTextContentFromElements(view.shadowRoot, 'devtools-menu-item');
+    assert.deepEqual(
+        itemsText,
+        ['No throttling', 'Fast 4G', 'Slow 4G', '3G', 'Offline', 'Custom item one', 'Custom item two', 'Add…']);
+
+    items[6].click();
+    await coordinator.done();
+    assert.deepEqual(Array.from(items).filter(i => i.selected), [items[6]]);
+    assert.strictEqual(networkManager.networkConditions().title, 'Custom item two');
+  });
+
   it('reacts to changes when it is unmounted and then remounted', async () => {
     const view = new Components.NetworkThrottlingSelector.NetworkThrottlingSelector();
     // Change the conditions before the component is put into the DOM.
@@ -122,7 +156,6 @@ describeWithEnvironment('NetworkThrottlingSelector', () => {
 
     customNetworkSetting.set([{
       title: 'Custom item',
-      i18nTitleKey: 'Custom item',
       download: 0,
       upload: 0,
       latency: 0,

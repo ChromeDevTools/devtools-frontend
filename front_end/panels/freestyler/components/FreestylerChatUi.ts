@@ -736,7 +736,7 @@ export class FreestylerChatUi extends HTMLElement {
                   .data=${{
                       variant: Buttons.Button.Variant.OUTLINED,
                       title: suggestion,
-                      jslogContext: 'fix-this-issue',
+                      jslogContext: 'suggestion',
                   } as Buttons.Button.ButtonData}
                   @click=${() => this.#handleSuggestionClick(suggestion)}
                 >${suggestion}</${Buttons.Button.Button.litTagName}>`)}

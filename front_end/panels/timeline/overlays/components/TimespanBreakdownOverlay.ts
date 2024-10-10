@@ -163,7 +163,9 @@ export class TimespanBreakdownOverlay extends HTMLElement {
           html`
             <span class="duration-text">${i18n.TimeUtilities.formatMicroSecondsAsMillisFixed(section.bounds.range)}</span>
           ` : LitHtml.nothing}
-          ${section.label}
+          <span class="section-label-text">
+            ${section.label}
+          </span>
         </div>
       </div>`;
     // clang-format on

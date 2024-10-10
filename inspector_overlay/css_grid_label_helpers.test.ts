@@ -383,6 +383,7 @@ describe('drawGridLineNumbers label placement with vertical writing mode', () =>
         {className: 'left-mid', count: 4},
       ],
     },
+
     {
       description: 'vertical-rl positive row labels should be displayed at the top of the grid',
       config: {
@@ -420,6 +421,96 @@ describe('drawGridLineNumbers label placement with vertical writing mode', () =>
       description: 'vertical-rl negative column labels should be displayed left of the grid',
       config: {
         writingMode: 'vertical-rl',
+        negativeColumnLineNumberPositions: [{x: 140, y: 300}, {x: 180, y: 300}, {x: 220, y: 300}, {x: 260, y: 300}],
+      },
+      bounds,
+      expectedLabels: [
+        {className: 'right-mid', count: 4},
+      ],
+    },
+
+    {
+      description: 'sideways-lr positive row labels should be displayed at the bottom of the grid',
+      config: {
+        writingMode: 'sideways-lr',
+        positiveRowLineNumberPositions: [{x: 100, y: 140}, {x: 100, y: 180}, {x: 100, y: 220}, {x: 100, y: 260}],
+      },
+      bounds,
+      expectedLabels: [
+        {className: 'top-mid', count: 4},
+      ],
+    },
+    {
+      description: 'sideways-lr positive column labels should be displayed left of the grid',
+      config: {
+        writingMode: 'sideways-lr',
+        positiveColumnLineNumberPositions: [{x: 140, y: 100}, {x: 180, y: 100}, {x: 220, y: 100}, {x: 260, y: 100}],
+      },
+      bounds,
+      expectedLabels: [
+        {className: 'right-mid', count: 4},
+      ],
+    },
+    {
+      description: 'sideways-lr negative row labels should be displayed at the top of the grid',
+      config: {
+        writingMode: 'sideways-lr',
+        negativeRowLineNumberPositions: [{x: 300, y: 140}, {x: 300, y: 180}, {x: 300, y: 220}, {x: 300, y: 260}],
+      },
+      bounds,
+      expectedLabels: [
+        {className: 'bottom-mid', count: 4},
+      ],
+    },
+    {
+      description: 'sideways-lr negative column labels should be displayed right of the grid',
+      config: {
+        writingMode: 'sideways-lr',
+        negativeColumnLineNumberPositions: [{x: 140, y: 300}, {x: 180, y: 300}, {x: 220, y: 300}, {x: 260, y: 300}],
+      },
+      bounds,
+      expectedLabels: [
+        {className: 'left-mid', count: 4},
+      ],
+    },
+
+    {
+      description: 'sideways-rl positive row labels should be displayed at the top of the grid',
+      config: {
+        writingMode: 'sideways-rl',
+        positiveRowLineNumberPositions: [{x: 100, y: 140}, {x: 100, y: 180}, {x: 100, y: 220}, {x: 100, y: 260}],
+      },
+      bounds,
+      expectedLabels: [
+        {className: 'bottom-mid', count: 4},
+      ],
+    },
+    {
+      description: 'sideways-rl positive column labels should be displayed right of the grid',
+      config: {
+        writingMode: 'sideways-rl',
+        positiveColumnLineNumberPositions: [{x: 140, y: 100}, {x: 180, y: 100}, {x: 220, y: 100}, {x: 260, y: 100}],
+      },
+      bounds,
+      expectedLabels: [
+        {className: 'left-mid', count: 4},
+      ],
+    },
+    {
+      description: 'sideways-rl negative row labels should be displayed at the bottom of the grid',
+      config: {
+        writingMode: 'sideways-rl',
+        negativeRowLineNumberPositions: [{x: 300, y: 140}, {x: 300, y: 180}, {x: 300, y: 220}, {x: 300, y: 260}],
+      },
+      bounds,
+      expectedLabels: [
+        {className: 'top-mid', count: 4},
+      ],
+    },
+    {
+      description: 'sideways-rl negative column labels should be displayed left of the grid',
+      config: {
+        writingMode: 'sideways-rl',
         negativeColumnLineNumberPositions: [{x: 140, y: 300}, {x: 180, y: 300}, {x: 220, y: 300}, {x: 260, y: 300}],
       },
       bounds,
@@ -651,6 +742,18 @@ describe('drawGridAreaNames  label placement with vertical writing mode', () => 
     {
       description: 'positions area labels correctly in vertical-rl writing-mode',
       writingMode: 'vertical-rl',
+      areaBounds,
+      expectedLabels: [{textContent: 'foo', top: '50px', left: '20px'}],
+    },
+    {
+      description: 'positions area labels correctly in sideways-lr writing-mode',
+      writingMode: 'sideways-lr',
+      areaBounds,
+      expectedLabels: [{textContent: 'foo', top: '30px', left: '100px'}],
+    },
+    {
+      description: 'positions area labels correctly in sideways-rl writing-mode',
+      writingMode: 'sideways-rl',
       areaBounds,
       expectedLabels: [{textContent: 'foo', top: '50px', left: '20px'}],
     },

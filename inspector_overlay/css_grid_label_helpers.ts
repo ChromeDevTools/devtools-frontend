@@ -497,8 +497,12 @@ export function drawGridAreaNames(
     const {width, height} = getLabelSize(element, writingMode);
 
     // The list of all points comes from the path created by the backend. This path is a rectangle with its starting point being
-    // the top left corner, which is where we want to place the label (except for vertical-rl writing-mode).
-    const point = writingMode === 'vertical-rl' ? bounds.allPoints[3] : bounds.allPoints[0];
+    // the top left corner, which is where we want to place the label.
+    // Exception: the bottom-left corner for vertical-rl or sideways-rl writing-modes
+    //            the top-right corner for sideways-lr writing-mode
+    const point = (writingMode === 'vertical-rl' || writingMode === 'sideways-rl') ? bounds.allPoints[3] :
+        writingMode === 'sideways-lr'                                              ? bounds.allPoints[1] :
+                                                                                     bounds.allPoints[0];
     const corner = applyMatrixToPoint(point, writingModeMatrix);
 
     const flipX = bounds.allPoints[1].x < bounds.allPoints[0].x;
@@ -554,7 +558,7 @@ function getLabelSideEdgePoints(
  * In vertical writing modes, the axes are swapped.
  */
 function getAxes(writingMode: string): {main: 'x'|'y', cross: 'x'|'y'} {
-  return writingMode.startsWith('vertical') ? {main: 'y', cross: 'x'} : {main: 'x', cross: 'y'};
+  return isHorizontalWritingMode(writingMode) ? {main: 'x', cross: 'y'} : {main: 'y', cross: 'x'};
 }
 
 /**
@@ -564,8 +568,8 @@ function getAxes(writingMode: string): {main: 'x'|'y', cross: 'x'|'y'} {
  * In vertical writing modes, those sizes are swapped.
  */
 function getCanvasSizes(writingMode: string, canvasSize: CanvasSize): {mainSize: number, crossSize: number} {
-  return writingMode.startsWith('vertical') ? {mainSize: canvasSize.canvasHeight, crossSize: canvasSize.canvasWidth} :
-                                              {mainSize: canvasSize.canvasWidth, crossSize: canvasSize.canvasHeight};
+  return isHorizontalWritingMode(writingMode) ? {mainSize: canvasSize.canvasWidth, crossSize: canvasSize.canvasHeight} :
+                                                {mainSize: canvasSize.canvasHeight, crossSize: canvasSize.canvasWidth};
 }
 
 /**
@@ -647,8 +651,9 @@ function placePositiveColumnLabel(
   const isAtSharedEndCorner = pos[main] === end[main] && data.rows && data.rows.negative.hasFirst;
   const isTooCloseToViewportStart = pos[main] < gridPageMargin;
   const isTooCloseToViewportEnd = mainSize - pos[main] < gridPageMargin;
-  const flipIn = writingMode === 'vertical-rl' ? crossSize - pos[cross] - labelSize.crossSize < gridPageMargin :
-                                                 pos[cross] - labelSize.crossSize < gridPageMargin;
+  const flipIn = isFlippedBlocksWritingMode(writingMode) ?
+      crossSize - pos[cross] - labelSize.crossSize < gridPageMargin :
+      pos[cross] - labelSize.crossSize < gridPageMargin;
 
   if (flipIn && (isAtSharedStartCorner || isAtSharedEndCorner)) {
     element.classList.add('inner-shared-corner');
@@ -681,8 +686,9 @@ function placeNegativeColumnLabel(
   const isAtSharedEndCorner = pos[main] === end[main] && data.rows && data.rows.negative.hasLast;
   const isTooCloseToViewportStart = pos[main] < gridPageMargin;
   const isTooCloseToViewportEnd = mainSize - pos[main] < gridPageMargin;
-  const flipIn = writingMode === 'vertical-rl' ? pos[cross] - labelSize.crossSize < gridPageMargin :
-                                                 crossSize - pos[cross] - labelSize.crossSize < gridPageMargin;
+  const flipIn = isFlippedBlocksWritingMode(writingMode) ?
+      pos[cross] - labelSize.crossSize < gridPageMargin :
+      crossSize - pos[cross] - labelSize.crossSize < gridPageMargin;
 
   if (flipIn && (isAtSharedStartCorner || isAtSharedEndCorner)) {
     element.classList.add('inner-shared-corner');
@@ -723,8 +729,9 @@ function placeLineLabel(
 function getLabelSize(element: HTMLElement, writingMode: string): LabelSize {
   const width = getAdjustedLabelWidth(element);
   const height = element.getBoundingClientRect().height;
-  const mainSize = writingMode.startsWith('vertical') ? height : width;
-  const crossSize = writingMode.startsWith('vertical') ? width : height;
+  const isHorizontal = isHorizontalWritingMode(writingMode);
+  const mainSize = isHorizontal ? width : height;
+  const crossSize = isHorizontal ? height : width;
 
   return {width, height, mainSize, crossSize};
 }
@@ -835,7 +842,7 @@ function adaptArrowTypeForWritingMode(arrowType: GridArrowType, writingMode: str
     }
   }
 
-  if (writingMode === 'vertical-rl') {
+  if (writingMode === 'vertical-rl' || writingMode === 'sideways-rl') {
     switch (arrowType) {
       case GridArrowType.LEFT_TOP:
         return GridArrowType.TOP_RIGHT;
@@ -861,6 +868,35 @@ function adaptArrowTypeForWritingMode(arrowType: GridArrowType, writingMode: str
         return GridArrowType.LEFT_MID;
       case GridArrowType.BOTTOM_RIGHT:
         return GridArrowType.LEFT_BOTTOM;
+    }
+  }
+
+  if (writingMode === 'sideways-lr') {
+    switch (arrowType) {
+      case GridArrowType.LEFT_TOP:
+        return GridArrowType.BOTTOM_LEFT;
+      case GridArrowType.LEFT_MID:
+        return GridArrowType.BOTTOM_MID;
+      case GridArrowType.LEFT_BOTTOM:
+        return GridArrowType.BOTTOM_RIGHT;
+      case GridArrowType.TOP_LEFT:
+        return GridArrowType.LEFT_BOTTOM;
+      case GridArrowType.TOP_MID:
+        return GridArrowType.LEFT_MID;
+      case GridArrowType.TOP_RIGHT:
+        return GridArrowType.LEFT_TOP;
+      case GridArrowType.RIGHT_TOP:
+        return GridArrowType.TOP_LEFT;
+      case GridArrowType.RIGHT_MID:
+        return GridArrowType.TOP_MID;
+      case GridArrowType.RIGHT_BOTTOM:
+        return GridArrowType.TOP_RIGHT;
+      case GridArrowType.BOTTOM_LEFT:
+        return GridArrowType.RIGHT_BOTTOM;
+      case GridArrowType.BOTTOM_MID:
+        return GridArrowType.RIGHT_MID;
+      case GridArrowType.BOTTOM_RIGHT:
+        return GridArrowType.RIGHT_TOP;
     }
   }
 
@@ -969,4 +1005,19 @@ export function generateLegibleTextColor(backgroundColor: string) {
   }
 
   return luminance(rgb) > 0.2 ? defaultLabelTextColor : 'white';
+}
+
+/**
+ * Returns true if the specified string starts with 'horizontal'.
+ */
+export function isHorizontalWritingMode(writingMode: string): boolean {
+  return writingMode.startsWith('horizontal');
+}
+
+/**
+ * Returns true if the block axis of the specified writing-mode increases in the
+ * opposite direction to normal.
+ */
+function isFlippedBlocksWritingMode(writingMode: string): boolean {
+  return writingMode === 'vertical-rl' || writingMode === 'sideways-rl';
 }

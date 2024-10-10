@@ -1387,6 +1387,7 @@ export const knownContextValues = new Set([
   'freestyler.feedback',
   'freestyler.help',
   'freestyler.new-chat',
+  'freestyler.send-feedback',
   'freestyler.settings',
   'freestyler.style-tab-context',
   'full-accessibility',

@@ -35,8 +35,7 @@ import freestylerPanelStyles from './freestylerPanel.css.js';
 
 const {html} = LitHtml;
 
-// Bug for the send feed back link
-// const AI_ASSISTANCE_SEND_FEEDBACK = 'https://crbug.com/364805393' as Platform.DevToolsPath.UrlString;
+const AI_ASSISTANCE_SEND_FEEDBACK = 'https://crbug.com/364805393' as Platform.DevToolsPath.UrlString;
 const AI_ASSISTANCE_HELP = 'https://goo.gle/devtools-ai-assistance' as Platform.DevToolsPath.UrlString;
 
 /*
@@ -55,6 +54,10 @@ const UIStringsNotTranslate = {
    *@description AI assistant UI tooltip text for the settings button (gear icon).
    */
   settings: 'Settings',
+  /**
+   *@description AI assistant UI tooltip sending feedback.
+   */
+  sendFeedback: 'Send feedback',
 };
 
 const lockedString = i18n.i18n.lockedString;
@@ -74,6 +77,15 @@ function createToolbar(target: HTMLElement, {onClearClick}: {onClearClick: () =>
       lockedString(UIStringsNotTranslate.clearChat), 'clear', undefined, 'freestyler.clear');
   clearButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, onClearClick);
   leftToolbar.appendToolbarItem(clearButton);
+
+  const link = UI.XLink.XLink.create(
+      AI_ASSISTANCE_SEND_FEEDBACK, lockedString(UIStringsNotTranslate.sendFeedback), undefined, undefined,
+      'freestyler.send-feedback');
+  link.style.setProperty('display', null);
+  link.style.setProperty('text-decoration', 'none');
+  link.style.setProperty('padding', '0 var(--sys-size-3)');
+  const linkItem = new UI.Toolbar.ToolbarItem(link);
+  rightToolbar.appendToolbarItem(linkItem);
 
   rightToolbar.appendSeparator();
   const helpButton =

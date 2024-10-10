@@ -191,6 +191,18 @@ const UIStrings = {
    */
   inpInteractionLink: 'INP interaction',
   /**
+   * @description Text label for a button that reveals the cluster of layout shift events that affected the page content the most. A cluster is a group of layout shift events that occur in quick succession.
+   */
+  worstCluster: 'Worst cluster',
+  /**
+   * @description [ICU Syntax] Text content of a button that reveals the cluster of layout shift events that affected the page content the most. A layout shift is an event that shifts content in the layout of the page causing a jarring experience for the user. This text will indicate how many shifts were in the cluster.
+   * @example {3} shiftCount
+   */
+  numShifts: `{shiftCount, plural,
+    =1 {{shiftCount} shift}
+    other {{shiftCount} shifts}
+  }`,
+  /**
    * @description Label for a a range of dates that represents the period of time a set of field data is collected from.
    */
   collectionPeriod: 'Collection period:',
@@ -272,6 +284,10 @@ const UIStrings = {
    * @description Tooltip text for a button that reveals the user interaction associated with the Interaction to Next Paint (INP) performance metric.
    */
   showInpInteraction: 'Go to the INP interaction.',
+  /**
+   * @description Tooltip text for a button that reveals the cluster of layout shift events that affected the page content the most. A layout shift is an event that shifts content in the layout of the page causing a jarring experience for the user. A cluster is a group of layout shift events that occur in quick succession.
+   */
+  showClsCluster: 'Go to worst layout shift cluster.',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/LiveMetricsView.ts', UIStrings);
@@ -461,6 +477,10 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
   #renderClsCard(): LitHtml.LitTemplate {
     const fieldData = this.#getFieldMetricData('cumulative_layout_shift');
 
+    const clusterIds = new Set(this.#clsValue?.clusterShiftIds || []);
+    const clusterIsVisible =
+        clusterIds.size > 0 && this.#layoutShifts.some(layoutShift => clusterIds.has(layoutShift.uniqueLayoutShiftId));
+
     // clang-format off
     return html`
       <devtools-metric-card .data=${{
@@ -470,6 +490,17 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
         histogram: fieldData?.histogram,
         tooltipContainer: this.#tooltipContainerEl,
       } as MetricCardData}>
+        ${clusterIsVisible ? html`
+          <div class="related-info" slot="extra-info">
+            <span class="related-info-label">${i18nString(UIStrings.worstCluster)}</span>
+            <button
+              class="link-to-log"
+              title=${i18nString(UIStrings.showClsCluster)}
+              @click=${() => this.#revealLayoutShiftCluster(clusterIds)}
+              jslog=${VisualLogging.action('timeline.landing.show-cls-cluster').track({click: true})}
+            >${i18nString(UIStrings.numShifts, {shiftCount: clusterIds.size})}</button>
+          </div>
+        ` : nothing}
       </devtools-metric-card>
     `;
     // clang-format on
@@ -499,7 +530,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
           <div class="related-info" slot="extra-info">
             <span class="related-info-label">${i18nString(UIStrings.inpInteractionLink)}</span>
             <button
-              class="link-to-interaction"
+              class="link-to-log"
               title=${i18nString(UIStrings.showInpInteraction)}
               @click=${() => this.#revealInteraction(interaction)}
               jslog=${VisualLogging.action('timeline.landing.show-inp-interaction').track({click: true})}
@@ -964,6 +995,39 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
       </ol>
     `;
     // clang-format on
+  }
+
+  async #revealLayoutShiftCluster(clusterIds: Set<LiveMetrics.LayoutShift['uniqueLayoutShiftId']>): Promise<void> {
+    if (!this.#logsEl) {
+      return;
+    }
+
+    const layoutShiftEls: HTMLElement[] = [];
+    for (const shiftId of clusterIds) {
+      const layoutShiftEl = this.#shadow.getElementById(shiftId);
+      if (layoutShiftEl) {
+        layoutShiftEls.push(layoutShiftEl);
+      }
+    }
+
+    if (!layoutShiftEls.length) {
+      return;
+    }
+
+    const success = this.#logsEl.selectTab('layout-shifts');
+    if (!success) {
+      return;
+    }
+
+    await coordinator.write(() => {
+      layoutShiftEls[0].scrollIntoView({
+        block: 'start',
+      });
+      layoutShiftEls[0].focus();
+      for (const layoutShiftEl of layoutShiftEls) {
+        UI.UIUtils.runCSSAnimationOnce(layoutShiftEl, 'highlight');
+      }
+    });
   }
 
   #renderLayoutShiftsLog(): LitHtml.LitTemplate {

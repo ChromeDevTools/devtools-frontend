@@ -3055,6 +3055,7 @@ export const knownContextValues = new Set([
   'timeline.landing.local-cls',
   'timeline.landing.local-inp',
   'timeline.landing.local-lcp',
+  'timeline.landing.show-cls-cluster',
   'timeline.landing.show-inp-interaction',
   'timeline.layout-shifts',
   'timeline.load-from-file',

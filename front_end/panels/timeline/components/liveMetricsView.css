@@ -162,7 +162,7 @@
   border-bottom: 1px solid var(--sys-color-divider);
 
   &.highlight {
-    animation: interaction-highlight-fadeout 2s;
+    animation: highlight-fadeout 2s;
   }
 }
 
@@ -299,7 +299,7 @@ x-link { /* stylelint-disable-line selector-type-no-unknown */
   padding-left: 20px;
 }
 
-.link-to-interaction {
+.link-to-log {
   padding: unset;
   background: unset;
   border: unset;
@@ -309,7 +309,7 @@ x-link { /* stylelint-disable-line selector-type-no-unknown */
   cursor: pointer;
 }
 
-@keyframes interaction-highlight-fadeout {
+@keyframes highlight-fadeout {
   from {
     background-color: var(--sys-color-yellow-container);
   }

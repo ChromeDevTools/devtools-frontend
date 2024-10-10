@@ -99,6 +99,10 @@ function getInpInteractionLink(view: Element): HTMLElement|null {
   return view.shadowRoot!.querySelector<HTMLElement>('#inp .related-info button');
 }
 
+function getClsClusterLink(view: Element): HTMLElement|null {
+  return view.shadowRoot!.querySelector<HTMLElement>('#cls .related-info button');
+}
+
 function createMockFieldData() {
   return {
     record: {
@@ -270,6 +274,76 @@ describeWithMockConnection('LiveMetricsView', () => {
     const durationEl2 = interactionsEls[1].querySelector<HTMLElement>('.interaction-duration .metric-value');
     assert.strictEqual(durationEl2!.textContent, '500 ms');
     assert.strictEqual(durationEl2!.className, 'metric-value needs-improvement dim');
+  });
+
+  it('should reveal CLS cluster when link clicked', async () => {
+    const view = renderLiveMetrics();
+    LiveMetrics.LiveMetrics.instance().setStatusForTesting({
+      cls: {
+        value: 0.11,
+        clusterShiftIds: ['layout-shift-1-2', 'layout-shift-1-3'],
+      },
+      interactions: [],
+      layoutShifts: [
+        {score: 0.05, affectedNodes: [], uniqueLayoutShiftId: 'layout-shift-1-1'},
+        {score: 0.1, affectedNodes: [], uniqueLayoutShiftId: 'layout-shift-1-2'},
+        {score: 0.01, affectedNodes: [], uniqueLayoutShiftId: 'layout-shift-1-3'},
+      ],
+    });
+    await coordinator.done();
+
+    selectVisibleLog(view, 'interactions');
+
+    await coordinator.done();
+
+    const firstClusterShift = getLayoutShifts(view).find(el => el.id === 'layout-shift-1-2')!;
+    assert.isFalse(firstClusterShift.checkVisibility());
+    assert.isFalse(firstClusterShift.hasFocus());
+
+    getClsClusterLink(view)!.click();
+
+    await coordinator.done();
+
+    assert.isTrue(firstClusterShift.checkVisibility());
+    assert.isTrue(firstClusterShift.hasFocus());
+  });
+
+  it('should hide CLS cluster link if there is no defined cluster', async () => {
+    const view = renderLiveMetrics();
+    LiveMetrics.LiveMetrics.instance().setStatusForTesting({
+      cls: {
+        value: 0.11,
+        clusterShiftIds: [],
+      },
+      interactions: [],
+      layoutShifts: [
+        {score: 0.05, affectedNodes: [], uniqueLayoutShiftId: 'layout-shift-1-1'},
+        {score: 0.1, affectedNodes: [], uniqueLayoutShiftId: 'layout-shift-1-2'},
+        {score: 0.01, affectedNodes: [], uniqueLayoutShiftId: 'layout-shift-1-3'},
+      ],
+    });
+    await coordinator.done();
+
+    assert.isNull(getClsClusterLink(view));
+  });
+
+  it('should hide CLS cluster link if there are no matching shifts', async () => {
+    const view = renderLiveMetrics();
+    LiveMetrics.LiveMetrics.instance().setStatusForTesting({
+      cls: {
+        value: 0.11,
+        clusterShiftIds: ['layout-shift-2-0'],
+      },
+      interactions: [],
+      layoutShifts: [
+        {score: 0.05, affectedNodes: [], uniqueLayoutShiftId: 'layout-shift-1-1'},
+        {score: 0.1, affectedNodes: [], uniqueLayoutShiftId: 'layout-shift-1-2'},
+        {score: 0.01, affectedNodes: [], uniqueLayoutShiftId: 'layout-shift-1-3'},
+      ],
+    });
+    await coordinator.done();
+
+    assert.isNull(getClsClusterLink(view));
   });
 
   it('should reveal INP interaction when link clicked', async () => {

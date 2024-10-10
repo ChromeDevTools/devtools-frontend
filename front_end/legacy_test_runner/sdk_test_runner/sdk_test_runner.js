@@ -40,6 +40,7 @@ SDKTestRunner.PageMock = class {
       'Debugger.enable': this.debuggerEnable,
       'Debugger.getScriptSource': this.debuggerGetScriptSource,
       'Debugger.setBlackboxPatterns': (id, params) => this.sendResponse(id, {}),
+      'Debugger.setBlackboxExecutionContexts': (id, params) => {},
       'Runtime.enable': this.runtimeEnable,
       'Page.enable': this.pageEnable,
       'Page.getResourceTree': this.pageGetResourceTree
@@ -173,9 +174,10 @@ SDKTestRunner.PageMock = class {
   }
 
   createExecutionContext(frame, isContentScript) {
+    const id = nextId();
     return {
-      id: nextId(),
-
+      id,
+      uniqueId: `unique-id-${id}`,
       auxData: {isDefault: !isContentScript, frameId: frame.id},
 
       origin: isContentScript ? defaultContentScriptDomain : frame.securityOrigin,

@@ -342,6 +342,13 @@ Common.Settings.registerSettingExtension({
 
 Common.Settings.registerSettingExtension({
   storageType: Common.Settings.SettingStorageType.SYNCED,
+  settingName: 'skip-anonymous-scripts',
+  settingType: Common.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+});
+
+Common.Settings.registerSettingExtension({
+  storageType: Common.Settings.SettingStorageType.SYNCED,
   settingName: 'enable-ignore-listing',
   settingType: Common.Settings.SettingType.BOOLEAN,
   defaultValue: true,

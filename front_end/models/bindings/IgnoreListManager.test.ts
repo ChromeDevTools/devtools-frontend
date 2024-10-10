@@ -20,6 +20,7 @@ const UIStrings = {
   addDirectoryToIgnoreList: 'Add directory to ignore list',
   addAllContentScriptsToIgnoreList: 'Add all extension scripts to ignore list',
   addAllThirdPartyScriptsToIgnoreList: 'Add all third-party scripts to ignore list',
+  addAllAnonymousScriptsToIgnoreList: 'Add all anonymous scripts to ignore list',
 };
 
 const sourceMapThirdPartyFolderUrl = 'http://a.b.c/lib' as Platform.DevToolsPath.UrlString;
@@ -56,6 +57,7 @@ describeWithMockConnection('IgnoreListManager', () => {
   let sourceMapFile1UiSourceCode: Workspace.UISourceCode.UISourceCode;
   let sourceMapFile2UiSourceCode: Workspace.UISourceCode.UISourceCode;
   let contentScriptUiSourceCode: Workspace.UISourceCode.UISourceCode;
+  let anonymousScriptUiSourceCode: Workspace.UISourceCode.UISourceCode;
 
   // This test simulates the behavior of the IgnoreListManager with the
   // following document, which contains two inline <script>s, one with
@@ -82,6 +84,7 @@ describeWithMockConnection('IgnoreListManager', () => {
   const webpackSubfolderUrl = 'webpack:///src/subfolder' as Platform.DevToolsPath.UrlString;
   const contentScriptFolderUrl = 'chrome-extension://abc' as Platform.DevToolsPath.UrlString;
   const contentScriptUrl = 'chrome-extension://abc/content.js' as Platform.DevToolsPath.UrlString;
+  const emptyUrl = '' as Platform.DevToolsPath.UrlString;
   const SCRIPTS = [
     {
       scriptId: '1' as Protocol.Runtime.ScriptId,
@@ -113,6 +116,15 @@ describeWithMockConnection('IgnoreListManager', () => {
       executionContextAuxData: {isDefault: false},
       hasSourceURLComment: true,
     },
+    {
+      scriptId: '4' as Protocol.Runtime.ScriptId,
+      startLine: 11,
+      startColumn: 8,
+      endLine: 11,
+      endColumn: 27,
+      sourceURL: emptyUrl,
+      hasSourceURLComment: false,
+    },
   ];
   const ALL_URLS = [...sourceMap.sources, ...SCRIPTS.map(({sourceURL}) => sourceURL)];
 
@@ -137,18 +149,18 @@ describeWithMockConnection('IgnoreListManager', () => {
     const embedderName = url;
     const executionContextId = 1;
     debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel) as SDK.DebuggerModel.DebuggerModel;
-    SCRIPTS.forEach(({
-                      scriptId,
-                      startLine,
-                      startColumn,
-                      endLine,
-                      endColumn,
-                      executionContextAuxData,
-                      sourceURL,
-                      hasSourceURLComment,
-                      sourceMapURL,
-                    }) => {
-      debuggerModel.parsedScriptSource(
+    const scripts = SCRIPTS.map(({
+                                  scriptId,
+                                  startLine,
+                                  startColumn,
+                                  endLine,
+                                  endColumn,
+                                  executionContextAuxData,
+                                  sourceURL,
+                                  hasSourceURLComment,
+                                  sourceMapURL,
+                                }) => {
+      return debuggerModel.parsedScriptSource(
           scriptId, sourceURL, startLine, startColumn, endLine, endColumn, executionContextId, hash,
           executionContextAuxData, false, sourceMapURL, hasSourceURLComment, false, length, false, null, null, null,
           null, embedderName);
@@ -160,6 +172,7 @@ describeWithMockConnection('IgnoreListManager', () => {
     sourceMapFile1UiSourceCode = notNull(workspace.uiSourceCodeForURL(sourceMapFile1Url));
     sourceMapFile2UiSourceCode = notNull(workspace.uiSourceCodeForURL(sourceMapFile2Url));
     nodeModulesUiSourceCode = notNull(workspace.uiSourceCodeForURL(sourceMapNodeModulesUrl));
+    anonymousScriptUiSourceCode = notNull(debuggerWorkspaceBinding.uiSourceCodeForScript(scripts[3]));
   });
 
   // Wrapper around getIgnoreListURLContextMenuItems to make its result more convenient for testing
@@ -208,6 +221,10 @@ describeWithMockConnection('IgnoreListManager', () => {
 
   it('default is ignore content scripts from extensions', () => {
     assert.isTrue(ignoreListManager.isUserOrSourceMapIgnoreListedUISourceCode(contentScriptUiSourceCode));
+  });
+
+  it('default is not ignore anonymous script', () => {
+    assert.isFalse(ignoreListManager.isUserOrSourceMapIgnoreListedUISourceCode(anonymousScriptUiSourceCode));
   });
 
   it('script context menu enables and disables ignore listing', () => {
@@ -556,6 +573,26 @@ describeWithMockConnection('IgnoreListManager', () => {
 
     // Verify that no context menu items are provided
     assert.sameMembers(items, []);
+  });
+
+  it('script context menu enables and disables ignore listing for anonymous scripts', () => {
+    let {items, callbacks} = getContextMenu(anonymousScriptUiSourceCode);
+
+    assert.sameMembers(items, [UIStrings.addAllAnonymousScriptsToIgnoreList]);
+
+    notNull(callbacks.get(UIStrings.addAllAnonymousScriptsToIgnoreList))();
+
+    assert.isFalse(ignoreListManager.isUserOrSourceMapIgnoreListedUISourceCode(uiSourceCode));
+    assert.isTrue(ignoreListManager.isUserOrSourceMapIgnoreListedUISourceCode(anonymousScriptUiSourceCode));
+
+    ({items, callbacks} = getContextMenu(anonymousScriptUiSourceCode));
+
+    assert.sameMembers(items, [UIStrings.removeFromIgnoreList]);
+
+    notNull(callbacks.get(UIStrings.removeFromIgnoreList))();
+
+    assert.isFalse(ignoreListManager.isUserOrSourceMapIgnoreListedUISourceCode(uiSourceCode));
+    assert.isFalse(ignoreListManager.isUserOrSourceMapIgnoreListedUISourceCode(anonymousScriptUiSourceCode));
   });
 
   describe('isUserOrSourceMapIgnoreListedUISourceCode', () => {

@@ -459,6 +459,7 @@ describeWithMockConnection('NetworkNavigatorView', () => {
         }
       });
       setMockConnectionResponseHandler('Debugger.setBlackboxPatterns', () => ({}));
+      setMockConnectionResponseHandler('Debugger.setBlackboxExecutionContexts', () => ({}));
     });
 
     const updatePatternSetting = async (settingValue: Common.Settings.RegExpSettingItem[]) => {

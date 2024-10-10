@@ -101,7 +101,9 @@ function devToolsThirdPartyPath() {
 
 function nodePath() {
   const paths = {
-    darwin: path.join('mac', process.arch === 'arm64' ? 'node-darwin-arm64' : 'node-darwin-x64', 'bin', 'node'),
+    darwin: path.join(
+        process.arch === 'arm64' ? 'mac_arm64' : 'mac',
+        process.arch === 'arm64' ? 'node-darwin-arm64' : 'node-darwin-x64', 'bin', 'node'),
     linux: path.join('linux', 'node-linux-x64', 'bin', 'node'),
     win32: path.join('win', 'node.exe'),
   };

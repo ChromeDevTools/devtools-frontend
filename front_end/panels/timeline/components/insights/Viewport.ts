@@ -53,14 +53,12 @@ export class Viewport extends BaseInsight {
               estimatedSavingsTime: insight.metricSavings?.INP,
             } as SidebarInsight.InsightDetails}
             @insighttoggleclick=${this.onSidebarClick}>
-                <div slot="insight-content" class="insight-section">
-                  ${backendNodeId !== undefined ? html`<devtools-performance-node-link
-                    .data=${{
-                      backendNodeId,
-                      options: {tooltip: insight.viewportEvent?.args.data.content},
-                    } as NodeLinkData}>
-                  </devtools-performance-node-link>` : LitHtml.nothing}
-                </div>
+              ${backendNodeId !== undefined ? html`<devtools-performance-node-link
+                .data=${{
+                  backendNodeId,
+                  options: {tooltip: insight.viewportEvent?.args.data.content},
+                } as NodeLinkData}>
+              </devtools-performance-node-link>` : LitHtml.nothing}
             </devtools-performance-sidebar-insight>
         </div>`;
     // clang-format on

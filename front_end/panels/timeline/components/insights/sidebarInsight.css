@@ -91,9 +91,8 @@
   padding-bottom: var(--sys-size-5);
 }
 
-.insight-description:not(:empty),
-.insight-section:not(:last-child) {
-  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
+.insight-section:not(:empty) {
+  border-top: var(--sys-size-1) solid var(--sys-color-divider);
 }
 
 .insight-title {

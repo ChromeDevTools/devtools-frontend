@@ -2,14 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../../../../ui/components/icon_button/icon_button.js';
+
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Trace from '../../../../models/trace/trace.js';
-import * as IconButton from '../../../../ui/components/icon_button/icon_button.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
 import {BaseInsight, shouldRenderForCategory} from './Helpers.js';
-import * as SidebarInsight from './SidebarInsight.js';
+import type * as SidebarInsight from './SidebarInsight.js';
 import {Category} from './types.js';
 
 const {html} = LitHtml;
@@ -88,11 +89,11 @@ export class DocumentLatency extends BaseInsight {
     const ariaLabel = didPass ? i18nString(UIStrings.successAriaLabel, {PH1: good}) :
                                 i18nString(UIStrings.failedAriaLabel, {PH1: bad});
     return html`
-      <${IconButton.Icon.Icon.litTagName}
+      <devtools-icon
         aria-label=${ariaLabel}
         name=${icon}
         class=${didPass ? 'metric-value-good' : 'metric-value-bad'}
-      ></${IconButton.Icon.Icon.litTagName}>
+      ></devtools-icon>
       <span>${didPass ? good : bad}</span>
     `;
   }
@@ -163,7 +164,7 @@ export class DocumentLatency extends BaseInsight {
     // clang-format off
     return html`
     <div class="insights">
-      <${SidebarInsight.SidebarInsight.litTagName} .data=${{
+      <devtools-performance-sidebar-insight .data=${{
             title: this.userVisibleTitle,
             description: this.description,
             expanded: this.isActive(),
@@ -189,7 +190,7 @@ export class DocumentLatency extends BaseInsight {
             </li>
           </ul>
         </div>
-      </${SidebarInsight.SidebarInsight}>
+      </devtools-performance-sidebar-insight>
     </div>`;
     // clang-format on
   }

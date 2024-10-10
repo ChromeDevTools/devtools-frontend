@@ -2,6 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../../../ui/components/icon_button/icon_button.js';
+import './CPUThrottlingSelector.js';
+import './FieldSettingsDialog.js';
+import './NetworkThrottlingSelector.js';
+import '../../../ui/components/menus/menus.js';
+
 import * as Common from '../../../core/common/common.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as SDK from '../../../core/sdk/sdk.js';
@@ -10,21 +16,17 @@ import * as EmulationModel from '../../../models/emulation/emulation.js';
 import * as LiveMetrics from '../../../models/live-metrics/live-metrics.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
-import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as LegacyWrapper from '../../../ui/components/legacy_wrapper/legacy_wrapper.js';
-import * as Menus from '../../../ui/components/menus/menus.js';
-import * as Settings from '../../../ui/components/settings/settings.js';
+import type * as Menus from '../../../ui/components/menus/menus.js';
+import type * as Settings from '../../../ui/components/settings/settings.js';
 import * as Components from '../../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as MobileThrottling from '../../mobile_throttling/mobile_throttling.js';
 
-import {CPUThrottlingSelector} from './CPUThrottlingSelector.js';
-import {FieldSettingsDialog} from './FieldSettingsDialog.js';
 import liveMetricsViewStyles from './liveMetricsView.css.js';
-import {MetricCard, type MetricCardData} from './MetricCard.js';
+import {type MetricCardData} from './MetricCard.js';
 import metricValueStyles from './metricValueStyles.css.js';
-import {NetworkThrottlingSelector} from './NetworkThrottlingSelector.js';
 import {INP_THRESHOLDS, renderMetricValue} from './Utils.js';
 
 const {html, nothing, Directives} = LitHtml;
@@ -261,7 +263,6 @@ const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/LiveMetrics
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableComponent {
-  static readonly litTagName = LitHtml.literal`devtools-live-metrics-view`;
   readonly #shadow = this.attachShadow({mode: 'open'});
 
   #lcpValue?: LiveMetrics.LCPValue;
@@ -415,7 +416,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
 
     // clang-format off
     return html`
-      <${MetricCard.litTagName} .data=${{
+      <devtools-metric-card .data=${{
         metric: 'LCP',
         localValue: this.#lcpValue?.value,
         fieldValue: fieldData?.percentiles?.p75,
@@ -435,7 +436,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
             </div>
           `
           : nothing}
-      </${MetricCard.litTagName}>
+      </devtools-metric-card>
     `;
     // clang-format on
   }
@@ -445,14 +446,14 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
 
     // clang-format off
     return html`
-      <${MetricCard.litTagName} .data=${{
+      <devtools-metric-card .data=${{
         metric: 'CLS',
         localValue: this.#clsValue?.value,
         fieldValue: fieldData?.percentiles?.p75,
         histogram: fieldData?.histogram,
         tooltipContainer: this.#tooltipContainerEl,
       } as MetricCardData}>
-      </${MetricCard.litTagName}>
+      </devtools-metric-card>
     `;
     // clang-format on
   }
@@ -477,7 +478,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
 
     // clang-format off
     return html`
-      <${MetricCard.litTagName} .data=${{
+      <devtools-metric-card .data=${{
         metric: 'INP',
         localValue: this.#inpValue?.value,
         fieldValue: fieldData?.percentiles?.p75,
@@ -495,7 +496,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
             ${interactionLink}
           </div>
         ` : nothing}
-      </${MetricCard.litTagName}>
+      </devtools-metric-card>
     `;
     // clang-format on
   }
@@ -508,7 +509,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
     // clang-format off
     return html`
       <div class="record-action">
-        <${Buttons.Button.Button.litTagName} @click=${onClick} .data=${{
+        <devtools-button @click=${onClick} .data=${{
             variant: Buttons.Button.Variant.TEXT,
             size: Buttons.Button.Size.REGULAR,
             iconName: action.icon(),
@@ -516,7 +517,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
             jslogContext: action.id(),
         } as Buttons.Button.ButtonData}>
           ${action.title()}
-        </${Buttons.Button.Button.litTagName}>
+        </devtools-button>
         <span class="shortcut-label">${UI.ShortcutRegistry.ShortcutRegistry.instance().shortcutTitleForAction(action.id())}</span>
       </div>
     `;
@@ -611,24 +612,24 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
         </details>
       ` : nothing}
       <div class="environment-option">
-        <${CPUThrottlingSelector.litTagName}></${CPUThrottlingSelector.litTagName}>
+        <devtools-cpu-throttling-selector></devtools-cpu-throttling-selector>
       </div>
       <div class="environment-option">
-        <${NetworkThrottlingSelector.litTagName}></${NetworkThrottlingSelector.litTagName}>
+        <devtools-network-throttling-selector></devtools-network-throttling-selector>
       </div>
       <div class="environment-option">
-        <${Settings.SettingCheckbox.SettingCheckbox.litTagName}
+        <setting-checkbox
           class="network-cache-setting"
           .data=${{
             setting: Common.Settings.Settings.instance().moduleSetting('cache-disabled'),
             textOverride: i18nString(UIStrings.disableNetworkCache),
           } as Settings.SettingCheckbox.SettingCheckboxData}
-        ></${Settings.SettingCheckbox.SettingCheckbox.litTagName}>
-        <${IconButton.Icon.Icon.litTagName}
+        ></setting-checkbox>
+        <devtools-icon
           class="setting-hint"
           name="help"
           title=${i18nString(UIStrings.networkCacheExplanation)}
-        ></${IconButton.Icon.Icon.litTagName}>
+        ></devtools-icon>
         </div>
     `;
     // clang-format on
@@ -669,7 +670,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
     const shouldDisable = !this.#cruxPageResult?.['url-ALL'] && !this.#cruxPageResult?.['origin-ALL'];
 
     return html`
-      <${Menus.SelectMenu.SelectMenu.litTagName}
+      <devtools-select-menu
         id="page-scope-select"
         class="field-data-option"
         @selectmenuselected=${this.#onPageScopeMenuItemSelected}
@@ -682,19 +683,19 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
         .disabled=${shouldDisable}
         title=${accessibleTitle}
       >
-        <${Menus.Menu.MenuItem.litTagName}
+        <devtools-menu-item
           .value=${'url'}
           .selected=${this.#fieldPageScope === 'url'}
         >
           ${urlLabel}
-        </${Menus.Menu.MenuItem.litTagName}>
-        <${Menus.Menu.MenuItem.litTagName}
+        </devtools-menu-item>
+        <devtools-menu-item
           .value=${'origin'}
           .selected=${this.#fieldPageScope === 'origin'}
         >
           ${originLabel}
-        </${Menus.Menu.MenuItem.litTagName}>
-      </${Menus.SelectMenu.SelectMenu.litTagName}>
+        </devtools-menu-item>
+      </devtools-select-menu>
     `;
   }
 
@@ -767,7 +768,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
 
     // clang-format off
     return html`
-      <${Menus.SelectMenu.SelectMenu.litTagName}
+      <devtools-select-menu
         id="device-scope-select"
         class="field-data-option"
         @selectmenuselected=${this.#onDeviceOptionMenuItemSelected}
@@ -782,15 +783,15 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
       >
         ${DEVICE_OPTION_LIST.map(deviceOption => {
           return html`
-            <${Menus.Menu.MenuItem.litTagName}
+            <devtools-menu-item
               .value=${deviceOption}
               .selected=${this.#fieldDeviceOption === deviceOption}
             >
               ${this.#getLabelForDeviceOption(deviceOption)}
-            </${Menus.Menu.MenuItem.litTagName}>
+            </devtools-menu-item>
           `;
         })}
-      </${Menus.SelectMenu.SelectMenu.litTagName}>
+      </devtools-select-menu>
     `;
     // clang-format on
   }
@@ -883,7 +884,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
       <section class="interactions-section" aria-labelledby="interactions-section-title">
         <h2 id="interactions-section-title" class="section-title">
           ${i18nString(UIStrings.interactions)}
-          <${Buttons.Button.Button.litTagName}
+          <devtools-button
             class="interactions-clear"
             title=${i18nString(UIStrings.clearInteractionsLog)}
             @click=${this.#clearInteractionsLog}
@@ -891,7 +892,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
               variant: Buttons.Button.Variant.ICON,
               size: Buttons.Button.Size.REGULAR,
               iconName: 'clear',
-            } as Buttons.Button.ButtonData}></${Buttons.Button.Button.litTagName}>
+            } as Buttons.Button.ButtonData}></devtools-button>
         </h2>
         <ol class="interactions-list"
           on-render=${ComponentHelpers.Directives.nodeRenderedCallback(node => {
@@ -920,11 +921,11 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
                 </span>
                 <span class="interaction-node">${
                   interaction.node && until(Common.Linkifier.Linkifier.linkify(interaction.node))}</span>
-                ${isP98Excluded ? html`<${IconButton.Icon.Icon.litTagName}
+                ${isP98Excluded ? html`<devtools-icon
                   class="interaction-info"
                   name="info"
                   title=${i18nString(UIStrings.interactionExcluded)}
-                ></${IconButton.Icon.Icon.litTagName}>` : nothing}
+                ></devtools-icon>` : nothing}
                 <span class="interaction-duration">${metricValue}</span>
               </li>
             `;
@@ -973,7 +974,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
               ${this.#renderPageScopeSetting()}
               ${this.#renderDeviceScopeSetting()}
               <div class="field-setup-buttons">
-                <${FieldSettingsDialog.litTagName}></${FieldSettingsDialog.litTagName}>
+                <devtools-field-settings-dialog></devtools-field-settings-dialog>
               </div>
             </div>
             <div id="recording-settings" class="settings-card">

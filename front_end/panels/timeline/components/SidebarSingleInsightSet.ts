@@ -63,7 +63,6 @@ const ALL_INSIGHTS: typeof Insights.Helpers.BaseInsight[] = [
 ] as const;
 
 export class SidebarSingleInsightSet extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-performance-sidebar-single-navigation`;
   readonly #shadow = this.attachShadow({mode: 'open'});
   #renderBound = this.#render.bind(this);
 

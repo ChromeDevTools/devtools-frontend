@@ -9,8 +9,8 @@ import type * as Overlays from '../../overlays/overlays.js';
 
 import {eventRef} from './EventRef.js';
 import {BaseInsight, shouldRenderForCategory} from './Helpers.js';
-import * as SidebarInsight from './SidebarInsight.js';
-import {Table, type TableData} from './Table.js';
+import type * as SidebarInsight from './SidebarInsight.js';
+import {type TableData} from './Table.js';
 import {Category} from './types.js';
 
 const {html} = LitHtml;
@@ -64,7 +64,7 @@ export class FontDisplay extends BaseInsight {
     // clang-format off
     return html`
         <div class="insights">
-            <${SidebarInsight.SidebarInsight.litTagName} .data=${{
+            <devtools-performance-sidebar-insight .data=${{
               title: this.userVisibleTitle,
               description: this.description,
               expanded: this.isActive(),
@@ -73,7 +73,7 @@ export class FontDisplay extends BaseInsight {
             } as SidebarInsight.InsightDetails}
             @insighttoggleclick=${this.onSidebarClick}>
                 <div slot="insight-content" class="insight-section">
-                  ${html`<${Table.litTagName}
+                  ${html`<devtools-performance-table
                     .data=${{
                       insight: this,
                       headers: [i18nString(UIStrings.fontColumn), 'font-display', i18nString(UIStrings.wastedTimeColumn)],
@@ -87,9 +87,9 @@ export class FontDisplay extends BaseInsight {
                         overlays: [this.#overlayForRequest.get(font.request)],
                       })),
                     } as TableData}>
-                  </${Table.litTagName}>`}
+                  </devtools-performance-table>`}
                 </div>
-            </${SidebarInsight.SidebarInsight}>
+            </devtools-performance-sidebar-insight>
         </div>`;
     // clang-format on
   }

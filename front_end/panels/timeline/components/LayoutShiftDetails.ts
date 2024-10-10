@@ -77,7 +77,6 @@ const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/LayoutShift
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class LayoutShiftDetails extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-performance-layout-shift-details`;
   readonly #shadow = this.attachShadow({mode: 'open'});
 
   #event: Trace.Types.Events.SyntheticLayoutShift|Trace.Types.Events.SyntheticLayoutShiftCluster|null = null;
@@ -123,11 +122,11 @@ export class LayoutShiftDetails extends HTMLElement {
       ${elementsShifted?.map(el => {
         if (el.node_id !== undefined) {
           return html`
-            <${Insights.NodeLink.NodeLink.litTagName}
+            <devtools-performance-node-link
               .data=${{
                 backendNodeId: el.node_id,
               } as Insights.NodeLink.NodeLinkData}>
-            </${Insights.NodeLink.NodeLink.litTagName}>`;
+            </devtools-performance-node-link>`;
         }
           return LitHtml.nothing;
       })}`;

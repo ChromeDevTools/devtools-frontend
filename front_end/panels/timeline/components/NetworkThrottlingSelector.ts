@@ -2,12 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../../../ui/components/menus/menus.js';
+
 import * as Common from '../../../core/common/common.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
-import * as Menus from '../../../ui/components/menus/menus.js';
+import type * as Menus from '../../../ui/components/menus/menus.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as MobileThrottling from '../../mobile_throttling/mobile_throttling.js';
@@ -56,7 +58,6 @@ interface ConditionsGroup {
 }
 
 export class NetworkThrottlingSelector extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-network-throttling-selector`;
   readonly #shadow = this.attachShadow({mode: 'open'});
 
   #customNetworkConditionsSetting: Common.Settings.Setting<SDK.NetworkManager.Conditions[]>;
@@ -142,7 +143,7 @@ export class NetworkThrottlingSelector extends HTMLElement {
 
     // clang-format off
     const output = html`
-      <${Menus.SelectMenu.SelectMenu.litTagName}
+      <devtools-select-menu
         @selectmenuselected=${this.#onMenuItemSelected}
         .showDivider=${true}
         .showArrow=${true}
@@ -155,33 +156,33 @@ export class NetworkThrottlingSelector extends HTMLElement {
       >
         ${this.#groups.map(group => {
           return html`
-            <${Menus.Menu.MenuGroup.litTagName} .name=${group.name}>
+            <devtools-menu-group .name=${group.name}>
               ${group.items.map(conditions => {
                 const title = this.#getConditionsTitle(conditions);
                 const jslogContext = group.jslogContext || Platform.StringUtilities.toKebabCase(conditions.i18nTitleKey || title);
                 return html`
-                  <${Menus.Menu.MenuItem.litTagName}
-                    .value=${conditions.i18nTitleKey}
+                  <devtools-menu-item
+                    .value=${conditions.i18nTitleKey || ''}
                     .selected=${this.#currentConditions.i18nTitleKey === conditions.i18nTitleKey}
                     jslog=${VisualLogging.item(jslogContext).track({click: true})}
                   >
                     ${title}
-                  </${Menus.Menu.MenuItem.litTagName}>
+                  </devtools-menu-item>
                 `;
               })}
               ${group.showCustomAddOption ? html`
-                <${Menus.Menu.MenuItem.litTagName}
+                <devtools-menu-item
                   .value=${1 /* This won't be displayed unless it has some value. */}
                   jslog=${VisualLogging.action('add').track({click: true})}
                   @click=${this.#onAddClick}
                 >
                   ${i18nString(UIStrings.add)}
-                </${Menus.Menu.MenuItem.litTagName}>
+                </devtools-menu-item>
               ` : nothing}
-            </${Menus.Menu.MenuGroup.litTagName}>
+            </devtools-menu-group>
           `;
         })}
-      </${Menus.SelectMenu.SelectMenu.litTagName}>
+      </devtools-select-menu>
     `;
     // clang-format on
     LitHtml.render(output, this.#shadow, {host: this});

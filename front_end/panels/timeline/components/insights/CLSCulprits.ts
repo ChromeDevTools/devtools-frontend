@@ -9,7 +9,7 @@ import type * as Overlays from '../../overlays/overlays.js';
 
 import {EventReferenceClick} from './EventRef.js';
 import {BaseInsight, shouldRenderForCategory} from './Helpers.js';
-import * as SidebarInsight from './SidebarInsight.js';
+import type * as SidebarInsight from './SidebarInsight.js';
 import {Category} from './types.js';
 
 const {html} = LitHtml;
@@ -142,7 +142,7 @@ export class CLSCulprits extends BaseInsight {
     // clang-format off
     return html`
         <div class="insights">
-            <${SidebarInsight.SidebarInsight.litTagName} .data=${{
+            <devtools-performance-sidebar-insight .data=${{
               title: this.userVisibleTitle,
               description: this.description,
               internalName: this.internalName,
@@ -158,7 +158,7 @@ export class CLSCulprits extends BaseInsight {
                           `;
                         })}
                 </div>
-            </${SidebarInsight.SidebarInsight}>
+            </devtools-performance-sidebar-insight>
         </div>`;
     // clang-format on
   }

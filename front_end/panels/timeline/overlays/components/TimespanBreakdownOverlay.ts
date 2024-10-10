@@ -19,7 +19,6 @@ export type EntryBreakdown = {
 };
 
 export class TimespanBreakdownOverlay extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-timespan-breakdown-overlay`;
   readonly #shadow = this.attachShadow({mode: 'open'});
   #canvasRect: DOMRect|null = null;
   #sections: Array<EntryBreakdown>|null = null;

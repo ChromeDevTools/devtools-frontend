@@ -147,12 +147,12 @@ export class SidebarInsight extends HTMLElement {
     });
     return html`
       <div class=${containerClasses} inert>
-        <${Buttons.Button.Button.litTagName} .data=${{
+        <devtools-button .data=${{
           variant: Buttons.Button.Variant.ICON,
           iconName: 'chevron-down',
           size: Buttons.Button.Size.SMALL,
         } as Buttons.Button.ButtonData}
-      ></${Buttons.Button.Button.litTagName}>
+      ></devtools-button>
       </div>
 
     `;

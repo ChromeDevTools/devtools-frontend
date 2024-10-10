@@ -8,8 +8,8 @@ import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
 import {BaseInsight, shouldRenderForCategory} from './Helpers.js';
-import {NodeLink, type NodeLinkData} from './NodeLink.js';
-import * as SidebarInsight from './SidebarInsight.js';
+import {type NodeLinkData} from './NodeLink.js';
+import type * as SidebarInsight from './SidebarInsight.js';
 import {Category} from './types.js';
 
 const {html} = LitHtml;
@@ -45,7 +45,7 @@ export class Viewport extends BaseInsight {
     // clang-format off
     return html`
         <div class="insights">
-            <${SidebarInsight.SidebarInsight.litTagName} .data=${{
+            <devtools-performance-sidebar-insight .data=${{
               title: this.userVisibleTitle,
               description: this.description,
               expanded: this.isActive(),
@@ -54,14 +54,14 @@ export class Viewport extends BaseInsight {
             } as SidebarInsight.InsightDetails}
             @insighttoggleclick=${this.onSidebarClick}>
                 <div slot="insight-content" class="insight-section">
-                  ${backendNodeId !== undefined ? html`<${NodeLink.litTagName}
+                  ${backendNodeId !== undefined ? html`<devtools-performance-node-link
                     .data=${{
                       backendNodeId,
                       options: {tooltip: insight.viewportEvent?.args.data.content},
                     } as NodeLinkData}>
-                  </${NodeLink.litTagName}>` : LitHtml.nothing}
+                  </devtools-performance-node-link>` : LitHtml.nothing}
                 </div>
-            </${SidebarInsight.SidebarInsight}>
+            </devtools-performance-sidebar-insight>
         </div>`;
     // clang-format on
   }

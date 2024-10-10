@@ -28,7 +28,6 @@ const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/Interaction
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class InteractionBreakdown extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-interaction-breakdown`;
   readonly #shadow = this.attachShadow({mode: 'open'});
   readonly #boundRender = this.#render.bind(this);
   #entry: Trace.Types.Events.SyntheticInteractionPair|null = null;

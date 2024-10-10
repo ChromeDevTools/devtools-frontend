@@ -2,11 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../../../ui/components/request_link_icon/request_link_icon.js';
+
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
 import type * as SDK from '../../../core/sdk/sdk.js';
 import * as Trace from '../../../models/trace/trace.js';
-import * as RequestLinkIcon from '../../../ui/components/request_link_icon/request_link_icon.js';
+import type * as RequestLinkIcon from '../../../ui/components/request_link_icon/request_link_icon.js';
 import * as PerfUI from '../../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as LegacyComponents from '../../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../../ui/legacy/legacy.js';
@@ -110,7 +112,6 @@ const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/NetworkRequ
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class NetworkRequestDetails extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-performance-network-request-details`;
   readonly #shadow = this.attachShadow({mode: 'open'});
 
   #networkRequest: Trace.Types.Events.SyntheticNetworkRequest|null = null;
@@ -197,9 +198,9 @@ export class NetworkRequestDetails extends HTMLElement {
       // clang-format off
       const urlElement = html`
         ${linkifiedURL}
-        <${RequestLinkIcon.RequestLinkIcon.RequestLinkIcon.litTagName}
+        <devtools-request-link-icon
           .data=${{request: networkRequest} as RequestLinkIcon.RequestLinkIcon.RequestLinkIconData} >
-        </${RequestLinkIcon.RequestLinkIcon.RequestLinkIcon.litTagName}>
+        </devtools-request-link-icon>
       `;
       // clang-format on
       return this.#renderRow(i18n.i18n.lockedString('URL'), urlElement);

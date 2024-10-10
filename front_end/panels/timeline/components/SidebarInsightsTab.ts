@@ -14,7 +14,7 @@ import * as Utils from '../utils/utils.js';
 import * as Insights from './insights/insights.js';
 import {type ActiveInsight} from './Sidebar.js';
 import styles from './sidebarInsightsTab.css.js';
-import {SidebarSingleInsightSet, type SidebarSingleInsightSetData} from './SidebarSingleInsightSet.js';
+import {type SidebarSingleInsightSetData} from './SidebarSingleInsightSet.js';
 
 const {html} = LitHtml;
 
@@ -35,7 +35,6 @@ const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/SidebarInsi
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class SidebarInsightsTab extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-performance-sidebar-insights`;
   readonly #boundRender = this.#render.bind(this);
   readonly #shadow = this.attachShadow({mode: 'open'});
 
@@ -157,9 +156,9 @@ export class SidebarInsightsTab extends HTMLElement {
           };
 
           const contents = html`
-            <${SidebarSingleInsightSet.litTagName}
+            <devtools-performance-sidebar-single-navigation
               .data=${data as SidebarSingleInsightSetData}>
-            </${SidebarSingleInsightSet.litTagName}>
+            </devtools-performance-sidebar-single-navigation>
           `;
 
           if (hasMultipleInsightSets) {
@@ -181,9 +180,9 @@ export class SidebarInsightsTab extends HTMLElement {
       </div>
 
       <div class="feedback-wrapper">
-        <${Buttons.Button.Button.litTagName} .variant=${Buttons.Button.Variant.OUTLINED} .iconName=${'experiment'} @click=${this.#onFeedbackClick}>
+        <devtools-button .variant=${Buttons.Button.Variant.OUTLINED} .iconName=${'experiment'} @click=${this.#onFeedbackClick}>
           ${i18nString(UIStrings.feedbackButton)}
-        </${Buttons.Button.Button.litTagName}>
+        </devtools-button>
 
         <p class="tooltip">${i18nString(UIStrings.feedbackTooltip)}</p>
       </div>

@@ -2,10 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../../../ui/components/icon_button/icon_button.js';
+
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as Trace from '../../../models/trace/trace.js';
-import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as PerfUI from '../../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
@@ -44,7 +45,6 @@ const UIStrings = {
 };
 
 export class NetworkRequestTooltip extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-performance-network-request-tooltip`;
   readonly #shadow = this.attachShadow({mode: 'open'});
 
   #networkRequest?: Trace.Types.Events.SyntheticNetworkRequest|null;
@@ -76,7 +76,7 @@ export class NetworkRequestTooltip extends HTMLElement {
       <div class="priority">
         ${UIStrings.priority}:
         ${PerfUI.NetworkPriorities.uiLabelForNetworkPriority(this.#networkRequest.args.data.initialPriority)}
-        <${IconButton.Icon.Icon.litTagName} name=${'arrow-forward'}></${IconButton.Icon.Icon.litTagName}>
+        <devtools-icon name=${'arrow-forward'}></devtools-icon>
         ${PerfUI.NetworkPriorities.uiLabelForNetworkPriority(this.#networkRequest.args.data.priority)}
       </div>
     `;

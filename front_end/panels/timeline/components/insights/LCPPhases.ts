@@ -8,8 +8,8 @@ import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
 import {BaseInsight, shouldRenderForCategory} from './Helpers.js';
-import * as SidebarInsight from './SidebarInsight.js';
-import {Table, type TableData} from './Table.js';
+import type * as SidebarInsight from './SidebarInsight.js';
+import {type TableData} from './Table.js';
 import {Category} from './types.js';
 
 const {html} = LitHtml;
@@ -226,7 +226,7 @@ export class LCPPhases extends BaseInsight {
     // clang-format off
     return html`
     <div class="insights">
-      <${SidebarInsight.SidebarInsight.litTagName} .data=${{
+      <devtools-performance-sidebar-insight .data=${{
             title: this.userVisibleTitle,
             description: this.description,
             internalName: this.internalName,
@@ -235,15 +235,15 @@ export class LCPPhases extends BaseInsight {
         @insighttoggleclick=${this.onSidebarClick}
       >
         <div slot="insight-content" class="insight-section">
-          ${html`<${Table.litTagName}
+          ${html`<devtools-performance-table
             .data=${{
               insight: this,
               headers: [i18nString(UIStrings.phase), i18nString(UIStrings.percentLCP)],
               rows,
             } as TableData}>
-          </${Table.litTagName}>`}
+          </devtools-performance-table>`}
         </div>
-      </${SidebarInsight}>
+      </devtools-performance-sidebar-insight>
     </div>`;
     // clang-format on
   }

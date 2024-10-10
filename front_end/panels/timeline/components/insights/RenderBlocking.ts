@@ -10,8 +10,8 @@ import type * as Overlays from '../../overlays/overlays.js';
 
 import {eventRef} from './EventRef.js';
 import {BaseInsight, shouldRenderForCategory} from './Helpers.js';
-import * as SidebarInsight from './SidebarInsight.js';
-import {Table, type TableData} from './Table.js';
+import type * as SidebarInsight from './SidebarInsight.js';
+import {type TableData} from './Table.js';
 import {Category} from './types.js';
 
 const {html} = LitHtml;
@@ -72,31 +72,30 @@ export class RenderBlockingRequests extends BaseInsight {
     // clang-format off
     return html`
         <div class="insights">
-          <${SidebarInsight.SidebarInsight.litTagName} .data=${{
+          <devtools-performance-sidebar-insight .data=${{
             title: this.userVisibleTitle,
             description: this.description,
             internalName: this.internalName,
             expanded: this.isActive(),
             estimatedSavingsTime: estimatedSavings,
           } as SidebarInsight.InsightDetails}
-          @insighttoggleclick=${this.onSidebarClick}
-        >
-          <div slot="insight-content" class="insight-section">
-            ${html`<${Table.litTagName}
-              .data=${{
-                insight: this,
-                headers: [i18nString(UIStrings.renderBlockingRequest), i18nString(UIStrings.duration)],
-                rows: topRequests.map(request => ({
-                  values: [
-                    eventRef(request),
-                    i18n.TimeUtilities.millisToString(Platform.Timing.microSecondsToMilliSeconds(request.dur)),
-                  ],
-                  overlays: [this.#createOverlayForRequest(request)],
-                })),
-              } as TableData}>
-            </${Table.litTagName}>`}
-          </div>
-        </${SidebarInsight.SidebarInsight}>
+          @insighttoggleclick=${this.onSidebarClick} >
+            <div slot="insight-content" class="insight-section">
+              ${html`<devtools-performance-table
+                .data=${{
+                  insight: this,
+                  headers: [i18nString(UIStrings.renderBlockingRequest), i18nString(UIStrings.duration)],
+                  rows: topRequests.map(request => ({
+                    values: [
+                      eventRef(request),
+                      i18n.TimeUtilities.millisToString(Platform.Timing.microSecondsToMilliSeconds(request.dur)),
+                    ],
+                    overlays: [this.#createOverlayForRequest(request)],
+                  })),
+                } as TableData}>
+              </devtools-performance-table>`}
+            </div>
+          </devtools-performance-sidebar-insight>
       </div>`;
     // clang-format on
   }

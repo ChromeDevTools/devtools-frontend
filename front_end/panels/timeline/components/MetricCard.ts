@@ -136,7 +136,6 @@ export interface MetricCardData {
 }
 
 export class MetricCard extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-metric-card`;
   readonly #shadow = this.attachShadow({mode: 'open'});
 
   constructor() {

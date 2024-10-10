@@ -35,7 +35,6 @@ export class TimeRangeRemoveEvent extends Event {
 }
 
 export class TimeRangeOverlay extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-time-range-overlay`;
   readonly #shadow = this.attachShadow({mode: 'open'});
   #duration: Trace.Types.Timing.MicroSeconds|null = null;
   #canvasRect: DOMRect|null = null;

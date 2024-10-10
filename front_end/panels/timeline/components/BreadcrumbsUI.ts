@@ -5,7 +5,7 @@
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Trace from '../../../models/trace/trace.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
-import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
+import type * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
@@ -51,7 +51,6 @@ export class BreadcrumbActivatedEvent extends Event {
 }
 
 export class BreadcrumbsUI extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-breadcrumbs-ui`;
   readonly #shadow = this.attachShadow({mode: 'open'});
   readonly #boundRender = this.#render.bind(this);
   #initialBreadcrumb: Trace.Types.File.Breadcrumb|null = null;
@@ -124,7 +123,7 @@ export class BreadcrumbsUI extends HTMLElement {
           </div>
           ${breadcrumb.child !== null ?
             html`
-            <${IconButton.Icon.Icon.litTagName} .data=${{
+            <devtools-icon .data=${{
               iconName: 'chevron-right',
               color: 'var(--icon-default)',
               width: '16px',

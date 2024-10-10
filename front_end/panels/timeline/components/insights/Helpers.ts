@@ -2,11 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../../../../ui/components/markdown_view/markdown_view.js';
+
 import * as Platform from '../../../../core/platform/platform.js';
 import type * as Trace from '../../../../models/trace/trace.js';
 import * as Marked from '../../../../third_party/marked/marked.js';
 import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js';
-import * as MarkdownView from '../../../../ui/components/markdown_view/markdown_view.js';
+import type * as MarkdownView from '../../../../ui/components/markdown_view/markdown_view.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../../ui/visual_logging/visual_logging.js';
 import type * as Overlays from '../../overlays/overlays.js';
@@ -199,7 +201,7 @@ export abstract class BaseInsight extends HTMLElement {
  */
 export function md(markdown: string): LitHtml.TemplateResult {
   const tokens = Marked.Marked.lexer(markdown);
-  return html`<${MarkdownView.MarkdownView.MarkdownView.litTagName}
+  return html`<devtools-markdown-view
     .data=${{tokens} as MarkdownView.MarkdownView.MarkdownViewData}>
-  </${MarkdownView.MarkdownView.MarkdownView.litTagName}>`;
+  </devtools-markdown-view>`;
 }

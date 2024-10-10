@@ -8,8 +8,8 @@ import * as Platform from '../../../core/platform/platform.js';
 import * as Trace from '../../../models/trace/trace.js';
 import * as TraceBounds from '../../../services/trace_bounds/trace_bounds.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
-import * as IconButton from '../../../ui/components/icon_button/icon_button.js';
-import * as Settings from '../../../ui/components/settings/settings.js';
+import type * as IconButton from '../../../ui/components/icon_button/icon_button.js';
+import type * as Settings from '../../../ui/components/settings/settings.js';
 import * as ThemeSupport from '../../../ui/legacy/theme_support/theme_support.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
@@ -94,7 +94,6 @@ const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/SidebarAnno
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class SidebarAnnotationsTab extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-performance-sidebar-annotations`;
   readonly #shadow = this.attachShadow({mode: 'open'});
   readonly #boundRender = this.#render.bind(this);
   #annotations: Trace.Types.File.Annotation[] = [];
@@ -269,13 +268,13 @@ export class SidebarAnnotationsTab extends HTMLElement {
             <span class="annotation-identifier" style=${LitHtml.Directives.styleMap(styleForFromAnnotationIdentifier)}>
               ${entryFromName}
             </span>
-            <${IconButton.Icon.Icon.litTagName} class="inline-icon" .data=${{
+            <devtools-icon class="inline-icon" .data=${{
               iconName: 'arrow-forward',
               color: 'var(--icon-default)',
               width: '18px',
               height: '18px',
             } as IconButton.Icon.IconData}>
-            </${IconButton.Icon.Icon.litTagName}>
+            </devtools-icon>
             ${this.#renderEntryToIdentifier(annotation)}
           </div>
       `;
@@ -359,7 +358,7 @@ export class SidebarAnnotationsTab extends HTMLElement {
                       event.stopPropagation();
                       this.dispatchEvent(new RemoveAnnotation(annotation));
                     }} jslog=${VisualLogging.action('timeline.annotation-sidebar.delete').track({click: true})}>
-                      <${IconButton.Icon.Icon.litTagName}
+                      <devtools-icon
                         class="bin-icon"
                         .data=${{
                           iconName: 'bin',
@@ -367,15 +366,15 @@ export class SidebarAnnotationsTab extends HTMLElement {
                           width: '20px',
                           height: '20px',
                         } as IconButton.Icon.IconData}
-                      >
+                      ></devtools-icon>
                     </button>
                   </div>`;
               })}
-              <${Settings.SettingCheckbox.SettingCheckbox.litTagName} class="visibility-setting" .data=${{
+              <setting-checkbox class="visibility-setting" .data=${{
                 setting: this.#annotationsHiddenSetting,
                 textOverride: 'Hide annotations',
               } as Settings.SettingCheckbox.SettingCheckboxData}>
-              </${Settings.SettingCheckbox.SettingCheckbox.litTagName}>`
+              </setting-checkbox>`
       }
       </span>`,
     this.#shadow, {host: this});

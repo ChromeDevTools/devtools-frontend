@@ -2,10 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../../../ui/components/menus/menus.js';
+
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
-import * as Menus from '../../../ui/components/menus/menus.js';
+import type * as Menus from '../../../ui/components/menus/menus.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as MobileThrottling from '../../mobile_throttling/mobile_throttling.js';
@@ -40,7 +42,6 @@ const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/CPUThrottli
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class CPUThrottlingSelector extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-cpu-throttling-selector`;
   readonly #shadow = this.attachShadow({mode: 'open'});
 
   #currentRate: number;
@@ -79,7 +80,7 @@ export class CPUThrottlingSelector extends HTMLElement {
 
     // clang-format off
     const output = html`
-      <${Menus.SelectMenu.SelectMenu.litTagName}
+      <devtools-select-menu
             @selectmenuselected=${this.#onMenuItemSelected}
             .showDivider=${true}
             .showArrow=${true}
@@ -94,16 +95,16 @@ export class CPUThrottlingSelector extends HTMLElement {
             const title = rate === 1 ? i18nString(UIStrings.noThrottling) : i18nString(UIStrings.dSlowdown, {PH1: rate});
             const jslogContext = rate === 1 ? 'cpu-no-throttling' : `cpu-throttled-${rate}`;
             return html`
-              <${Menus.Menu.MenuItem.litTagName}
+              <devtools-menu-item
                 .value=${rate}
                 .selected=${this.#currentRate === rate}
                 jslog=${VisualLogging.item(jslogContext).track({click: true})}
               >
                 ${title}
-              </${Menus.Menu.MenuItem.litTagName}>
+              </devtools-menu-item>
             `;
           })}
-      </${Menus.SelectMenu.SelectMenu.litTagName}>
+      </devtools-select-menu>
     `;
     // clang-format on
     LitHtml.render(output, this.#shadow, {host: this});

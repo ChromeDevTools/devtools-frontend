@@ -2,13 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../../ui/components/linkifier/linkifier.js';
+
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as DataGrid from '../../ui/components/data_grid/data_grid.js';
-import * as Linkifier from '../../ui/components/linkifier/linkifier.js';
+import type * as Linkifier from '../../ui/components/linkifier/linkifier.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as LitHtml from '../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -425,12 +427,12 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
               ${locations.map((location, itemIndex) => {
                 if (itemIndex !== locations.length - 1) {
                   // eslint-disable-next-line rulesdir/ban_a_tags_in_lit_html
-                  return html`<${Linkifier.Linkifier.Linkifier.litTagName} .data=${
-                      location as Linkifier.Linkifier.LinkifierData}></${Linkifier.Linkifier.Linkifier.litTagName}>
+                  return html`<devtools-linkifier .data=${
+                      location as Linkifier.Linkifier.LinkifierData}></devtools-linkifier>
                     <a>, </a>`;
                 }
-                return html`<${Linkifier.Linkifier.Linkifier.litTagName} .data=${
-                    location as Linkifier.Linkifier.LinkifierData}></${Linkifier.Linkifier.Linkifier.litTagName}>`;
+                return html`<devtools-linkifier .data=${
+                    location as Linkifier.Linkifier.LinkifierData}></devtools-linkifier>`;
               })}
               `;
             },

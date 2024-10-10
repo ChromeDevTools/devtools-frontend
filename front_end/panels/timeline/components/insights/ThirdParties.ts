@@ -9,8 +9,8 @@ import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
 import {BaseInsight, shouldRenderForCategory} from './Helpers.js';
-import * as SidebarInsight from './SidebarInsight.js';
-import {Table, type TableData} from './Table.js';
+import type * as SidebarInsight from './SidebarInsight.js';
+import {type TableData} from './Table.js';
 import {Category} from './types.js';
 
 const {html} = LitHtml;
@@ -88,7 +88,7 @@ export class ThirdParties extends BaseInsight {
     // clang-format off
     return html`
         <div class="insights">
-            <${SidebarInsight.SidebarInsight.litTagName} .data=${{
+            <devtools-performance-sidebar-insight .data=${{
               title: this.userVisibleTitle,
               description: this.description,
               internalName: this.internalName,
@@ -97,7 +97,7 @@ export class ThirdParties extends BaseInsight {
             @insighttoggleclick=${this.onSidebarClick}>
                 <div slot="insight-content">
                   <div class="insight-section">
-                    ${html`<${Table.litTagName}
+                    ${html`<devtools-performance-table
                       .data=${{
                         insight: this,
                         headers: [i18nString(UIStrings.columnThirdParty), i18nString(UIStrings.columnTransferSize)],
@@ -109,11 +109,11 @@ export class ThirdParties extends BaseInsight {
                           overlays: this.#overlaysForEntity.get(entity),
                         })),
                       } as TableData}>
-                    </${Table.litTagName}>`}
+                    </devtools-performance-table>`}
                   </div>
 
                   <div class="insight-section">
-                    ${html`<${Table.litTagName}
+                    ${html`<devtools-performance-table
                       .data=${{
                         insight: this,
                         headers: [i18nString(UIStrings.columnThirdParty), i18nString(UIStrings.columnBlockingTime)],
@@ -125,10 +125,10 @@ export class ThirdParties extends BaseInsight {
                           overlays: this.#overlaysForEntity.get(entity),
                         })),
                       } as TableData}>
-                    </${Table.litTagName}>`}
+                    </devtools-performance-table>`}
                   </div>
                 </div>
-            </${SidebarInsight.SidebarInsight}>
+            </devtools-performance-sidebar-insight>
         </div>`;
     // clang-format on
   }

@@ -84,13 +84,16 @@ export class Accessibility {
         }
         const defaultRoot = AXNode.createTree(this.#realm, nodes);
         let needle = defaultRoot;
+        if (!defaultRoot) {
+            return null;
+        }
         if (backendNodeId) {
             needle = defaultRoot.find(node => {
                 return node.payload.backendDOMNodeId === backendNodeId;
             });
-            if (!needle) {
-                return null;
-            }
+        }
+        if (!needle) {
+            return null;
         }
         if (!interestingOnly) {
             return this.serializeTree(needle)[0] ?? null;
@@ -408,7 +411,7 @@ class AXNode {
                 }
             }
         }
-        return nodeById.values().next().value;
+        return nodeById.values().next().value ?? null;
     }
 }
 //# sourceMappingURL=Accessibility.js.map

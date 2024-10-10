@@ -56,7 +56,6 @@ const NON_ELEMENT_NODE_ROLES = new Set(['StaticText', 'InlineTextBox']);
  * @internal
  */
 let CdpElementHandle = (() => {
-    var _a, _b;
     let _classSuper = ElementHandle_js_1.ElementHandle;
     let _instanceExtraInitializers = [];
     let _contentFrame_decorators;
@@ -67,8 +66,8 @@ let CdpElementHandle = (() => {
         static {
             const _metadata = typeof Symbol === "function" && Symbol.metadata ? Object.create(_classSuper[Symbol.metadata] ?? null) : void 0;
             _contentFrame_decorators = [(0, decorators_js_1.throwIfDisposed)()];
-            _scrollIntoView_decorators = [(0, decorators_js_1.throwIfDisposed)(), (_a = ElementHandle_js_1.ElementHandle).bindIsolatedHandle.bind(_a)];
-            _uploadFile_decorators = [(0, decorators_js_1.throwIfDisposed)(), (_b = ElementHandle_js_1.ElementHandle).bindIsolatedHandle.bind(_b)];
+            _scrollIntoView_decorators = [(0, decorators_js_1.throwIfDisposed)(), ElementHandle_js_1.bindIsolatedHandle];
+            _uploadFile_decorators = [(0, decorators_js_1.throwIfDisposed)(), ElementHandle_js_1.bindIsolatedHandle];
             _autofill_decorators = [(0, decorators_js_1.throwIfDisposed)()];
             __esDecorate(this, null, _contentFrame_decorators, { kind: "method", name: "contentFrame", static: false, private: false, access: { has: obj => "contentFrame" in obj, get: obj => obj.contentFrame }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _scrollIntoView_decorators, { kind: "method", name: "scrollIntoView", static: false, private: false, access: { has: obj => "scrollIntoView" in obj, get: obj => obj.scrollIntoView }, metadata: _metadata }, null, _instanceExtraInitializers);

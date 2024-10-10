@@ -12,7 +12,7 @@ const CustomQuerySelector_js_1 = require("./CustomQuerySelector.js");
 const TextQuerySelector_js_1 = require("./TextQuerySelector.js");
 const util_js_1 = require("./util.js");
 const XPathQuerySelector_js_1 = require("./XPathQuerySelector.js");
-const IDENT_TOKEN_START = /[-\w\P{ASCII}*]/;
+const IDENT_TOKEN_START = /[-\w\P{ASCII}*]/u;
 const isQueryableNode = (node) => {
     return 'querySelectorAll' in node;
 };

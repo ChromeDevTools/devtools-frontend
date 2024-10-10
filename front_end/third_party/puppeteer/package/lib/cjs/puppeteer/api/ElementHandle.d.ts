@@ -78,6 +78,15 @@ export interface ElementScreenshotOptions extends ScreenshotOptions {
     scrollIntoView?: boolean;
 }
 /**
+ * A given method will have it's `this` replaced with an isolated version of
+ * `this` when decorated with this decorator.
+ *
+ * All changes of isolated `this` are reflected on the actual `this`.
+ *
+ * @internal
+ */
+export declare function bindIsolatedHandle<This extends ElementHandle<Node>>(target: (this: This, ...args: any[]) => Promise<any>, _: unknown): typeof target;
+/**
  * ElementHandle represents an in-page DOM element.
  *
  * @remarks
@@ -122,15 +131,6 @@ export declare abstract class ElementHandle<ElementType extends Node = Element> 
      * trying to adopt it multiple times
      */
     isolatedHandle?: typeof this;
-    /**
-     * A given method will have it's `this` replaced with an isolated version of
-     * `this` when decorated with this decorator.
-     *
-     * All changes of isolated `this` are reflected on the actual `this`.
-     *
-     * @internal
-     */
-    static bindIsolatedHandle<This extends ElementHandle<Node>>(target: (this: This, ...args: any[]) => Promise<any>, _: unknown): typeof target;
     /**
      * @internal
      */

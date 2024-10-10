@@ -82,7 +82,7 @@ var __disposeResources = (this && this.__disposeResources) || (function (Suppres
     var e = new Error(message);
     return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
 });
-import { ElementHandle } from '../api/ElementHandle.js';
+import { bindIsolatedHandle, ElementHandle, } from '../api/ElementHandle.js';
 import { environment } from '../environment.js';
 import { AsyncIterableUtil } from '../util/AsyncIterableUtil.js';
 import { throwIfDisposed } from '../util/decorators.js';
@@ -91,7 +91,6 @@ import { BidiJSHandle } from './JSHandle.js';
  * @internal
  */
 let BidiElementHandle = (() => {
-    var _a;
     let _classSuper = ElementHandle;
     let _instanceExtraInitializers = [];
     let _autofill_decorators;
@@ -100,7 +99,7 @@ let BidiElementHandle = (() => {
         static {
             const _metadata = typeof Symbol === "function" && Symbol.metadata ? Object.create(_classSuper[Symbol.metadata] ?? null) : void 0;
             _autofill_decorators = [throwIfDisposed()];
-            _contentFrame_decorators = [throwIfDisposed(), (_a = ElementHandle).bindIsolatedHandle.bind(_a)];
+            _contentFrame_decorators = [throwIfDisposed(), bindIsolatedHandle];
             __esDecorate(this, null, _autofill_decorators, { kind: "method", name: "autofill", static: false, private: false, access: { has: obj => "autofill" in obj, get: obj => obj.autofill }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _contentFrame_decorators, { kind: "method", name: "contentFrame", static: false, private: false, access: { has: obj => "contentFrame" in obj, get: obj => obj.contentFrame }, metadata: _metadata }, null, _instanceExtraInitializers);
             if (_metadata) Object.defineProperty(this, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });

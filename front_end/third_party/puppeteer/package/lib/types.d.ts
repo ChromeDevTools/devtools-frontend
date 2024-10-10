@@ -144,6 +144,8 @@ export declare type AwaitedLocator<T> = T extends Locator<infer S> ? S : never;
 
 /* Excluded from this release type: BindingPayload */
 
+/* Excluded from this release type: bindIsolatedHandle */
+
 /**
  * @public
  */
@@ -1785,7 +1787,6 @@ export declare abstract class ElementHandle<ElementType extends Node = Element> 
     #private;
     /* Excluded from this release type: [_isElementHandle] */
     /* Excluded from this release type: isolatedHandle */
-    /* Excluded from this release type: bindIsolatedHandle */
     /* Excluded from this release type: handle */
     /* Excluded from this release type: __constructor */
     /* Excluded from this release type: id */

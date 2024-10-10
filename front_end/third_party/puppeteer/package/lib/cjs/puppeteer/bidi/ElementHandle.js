@@ -94,7 +94,6 @@ const JSHandle_js_1 = require("./JSHandle.js");
  * @internal
  */
 let BidiElementHandle = (() => {
-    var _a;
     let _classSuper = ElementHandle_js_1.ElementHandle;
     let _instanceExtraInitializers = [];
     let _autofill_decorators;
@@ -103,7 +102,7 @@ let BidiElementHandle = (() => {
         static {
             const _metadata = typeof Symbol === "function" && Symbol.metadata ? Object.create(_classSuper[Symbol.metadata] ?? null) : void 0;
             _autofill_decorators = [(0, decorators_js_1.throwIfDisposed)()];
-            _contentFrame_decorators = [(0, decorators_js_1.throwIfDisposed)(), (_a = ElementHandle_js_1.ElementHandle).bindIsolatedHandle.bind(_a)];
+            _contentFrame_decorators = [(0, decorators_js_1.throwIfDisposed)(), ElementHandle_js_1.bindIsolatedHandle];
             __esDecorate(this, null, _autofill_decorators, { kind: "method", name: "autofill", static: false, private: false, access: { has: obj => "autofill" in obj, get: obj => obj.autofill }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _contentFrame_decorators, { kind: "method", name: "contentFrame", static: false, private: false, access: { has: obj => "contentFrame" in obj, get: obj => obj.contentFrame }, metadata: _metadata }, null, _instanceExtraInitializers);
             if (_metadata) Object.defineProperty(this, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });

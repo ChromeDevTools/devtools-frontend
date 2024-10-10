@@ -38,4 +38,26 @@ describeWithEnvironment('RequestResponseView', () => {
 
     component.detach();
   });
+
+  it('shows the RequestBinaryResponseView for binary content', async () => {
+    const request = SDK.NetworkRequest.NetworkRequest.create(
+        'requestId' as Protocol.Network.RequestId,
+        'http://devtools-frontend.test/image.png' as Platform.DevToolsPath.UrlString,
+        '' as Platform.DevToolsPath.UrlString, null, null, null);
+    request.setContentDataProvider(
+        () => Promise.resolve(new TextUtils.ContentData.ContentData(
+            'AGFzbQEAAAABBQFgAAF/AwIBAAcHAQNiYXIAAAoGAQQAQQILACQEbmFtZQAQD3Nob3ctd2FzbS0yLndhdAEGAQADYmFyAgMBAAA=',
+            true, 'application/octet-stream')));
+    request.mimeType = 'application/octet-stream';
+    request.finished = true;
+
+    const component = new Network.RequestResponseView.RequestResponseView(request);
+    component.markAsRoot();
+    component.show(document.body);
+    const widget = await component.showPreview();
+
+    assert.instanceOf(widget, Network.RequestBinaryResponseView.RequestBinaryResponseView);
+
+    component.detach();
+  });
 });

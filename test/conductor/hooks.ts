@@ -85,8 +85,6 @@ function launchChrome() {
     'MacWebContentsOcclusion',
     'MojoChannelAssociatedCrashesOnSendError',
     'MojoChannelAssociatedSendUsesRunOrPostTask',
-    'MojoInlineMessagePayloads',
-    'MojoPredictiveAllocation',
     'RunTasksByBatches',
     'SimpleURLLoaderUseReadAndDiscardBodyOption',
     'ThrottleUnimportantFrameTimers',

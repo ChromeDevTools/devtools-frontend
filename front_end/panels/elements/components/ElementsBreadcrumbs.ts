@@ -18,6 +18,8 @@ import elementsBreadcrumbsStyles from './elementsBreadcrumbs.css.js';
 import {crumbsToRender, type UserScrollPosition} from './ElementsBreadcrumbsUtils.js';
 import {type DOMNode} from './Helper.js';
 
+const {html} = LitHtml;
+
 const UIStrings = {
   /**
    * @description Accessible name for DOM tree breadcrumb navigation.
@@ -274,7 +276,7 @@ export class ElementsBreadcrumbs extends HTMLElement {
 
     const tooltipString = direction === 'left' ? i18nString(UIStrings.scrollLeft) : i18nString(UIStrings.scrollRight);
     // clang-format off
-    return LitHtml.html`
+    return html`
       <button
         class=${buttonStyles}
         @click=${this.#onOverflowClick(direction)}
@@ -298,7 +300,7 @@ export class ElementsBreadcrumbs extends HTMLElement {
 
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-    LitHtml.render(LitHtml.html`
+    LitHtml.render(html`
       <nav class="crumbs" aria-label=${i18nString(UIStrings.breadcrumbs)} jslog=${VisualLogging.elementsBreadcrumbs()}>
         ${this.#renderOverflowButton('left', this.#userScrollPosition === 'start')}
 
@@ -310,7 +312,7 @@ export class ElementsBreadcrumbs extends HTMLElement {
                 selected: crumb.selected,
               };
               // eslint-disable-next-line rulesdir/ban_a_tags_in_lit_html
-              return LitHtml.html`
+              return html`
                 <li class=${LitHtml.Directives.classMap(crumbClasses)}
                   data-node-id=${crumb.node.id}
                   data-crumb="true"

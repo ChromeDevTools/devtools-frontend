@@ -18,6 +18,8 @@ import {nameForEntry} from './EntryName.js';
 import {RemoveAnnotation, RevealAnnotation} from './Sidebar.js';
 import sidebarAnnotationsTabStyles from './sidebarAnnotationsTab.css.js';
 
+const {html} = LitHtml;
+
 const diagramImageUrl = new URL('../../../Images/performance-panel-diagram.svg', import.meta.url).toString();
 const entryLabelImageUrl = new URL('../../../Images/performance-panel-entry-label.svg', import.meta.url).toString();
 const timeRangeImageUrl = new URL('../../../Images/performance-panel-time-range.svg', import.meta.url).toString();
@@ -202,7 +204,7 @@ export class SidebarAnnotationsTab extends HTMLElement {
         color: toTextColor,
       };
       // clang-format off
-      return LitHtml.html`
+      return html`
         <span class="annotation-identifier" style=${LitHtml.Directives.styleMap(styleForToAnnotationIdentifier)}>
           ${entryToName}
         </span>`;
@@ -232,7 +234,7 @@ export class SidebarAnnotationsTab extends HTMLElement {
           backgroundColor,
           color,
         };
-        return LitHtml.html`
+        return html`
               <span class="annotation-identifier" style=${LitHtml.Directives.styleMap(styleForAnnotationIdentifier)}>
                 ${entryName}
               </span>
@@ -247,7 +249,7 @@ export class SidebarAnnotationsTab extends HTMLElement {
         const timeRangeEndInMs =
             Math.round(Trace.Helpers.Timing.microSecondsToMilliseconds(annotation.bounds.max) - minTraceBoundsMilli);
 
-        return LitHtml.html`
+        return html`
               <span class="annotation-identifier time-range">
                 ${timeRangeStartInMs} - ${timeRangeEndInMs} ms
               </span>
@@ -262,7 +264,7 @@ export class SidebarAnnotationsTab extends HTMLElement {
           color: fromTextColor,
         };
         // clang-format off
-        return LitHtml.html`
+        return html`
           <div class="entries-link">
             <span class="annotation-identifier" style=${LitHtml.Directives.styleMap(styleForFromAnnotationIdentifier)}>
               ${entryFromName}
@@ -289,7 +291,7 @@ export class SidebarAnnotationsTab extends HTMLElement {
   }
 
   #renderTutorialCard(): LitHtml.TemplateResult {
-    return LitHtml.html`
+    return html`
       <div class="annotation-tutorial-container">
       ${i18nString(UIStrings.annotationGetStarted)}
         <div class="tutorial-card">
@@ -331,14 +333,14 @@ export class SidebarAnnotationsTab extends HTMLElement {
   #render(): void {
     // clang-format off
     LitHtml.render(
-      LitHtml.html`
+      html`
         <span class="annotations">
           ${this.#annotations.length === 0 ?
             this.#renderTutorialCard() :
-            LitHtml.html`
+            html`
               ${this.#annotations.map(annotation => {
                 const label = detailedAriaDescriptionForAnnotation(annotation);
-                return LitHtml.html`
+                return html`
                   <div class="annotation-container"
                     @click=${() => this.#revealAnnotation(annotation)}
                     aria-label=${label}

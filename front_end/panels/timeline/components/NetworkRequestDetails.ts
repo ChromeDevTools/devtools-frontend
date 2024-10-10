@@ -16,6 +16,8 @@ import * as TimelineUtils from '../utils/utils.js';
 import NetworkRequestDetailsStyles from './networkRequestDetails.css.js';
 import {colorForNetworkRequest} from './Utils.js';
 
+const {html} = LitHtml;
+
 const MAX_URL_LENGTH = 80;
 
 const UIStrings = {
@@ -144,7 +146,7 @@ export class NetworkRequestDetails extends HTMLElement {
     const style = {
       backgroundColor: `${colorForNetworkRequest(this.#networkRequest)}`,
     };
-    return LitHtml.html`
+    return html`
       <div class="network-request-details-title">
         <div style=${LitHtml.Directives.styleMap(style)}></div>
         ${i18nString(UIStrings.networkRequest)}
@@ -156,7 +158,7 @@ export class NetworkRequestDetails extends HTMLElement {
     if (!value) {
       return null;
     }
-    return LitHtml.html`
+    return html`
       <div class="network-request-details-row"><div class="title">${title}</div><div class="value">${value}</div></div>
     `;
   }
@@ -193,7 +195,7 @@ export class NetworkRequestDetails extends HTMLElement {
       });
 
       // clang-format off
-      const urlElement = LitHtml.html`
+      const urlElement = html`
         ${linkifiedURL}
         <${RequestLinkIcon.RequestLinkIcon.RequestLinkIcon.litTagName}
           .data=${{request: networkRequest} as RequestLinkIcon.RequestLinkIcon.RequestLinkIconData} >
@@ -225,7 +227,7 @@ export class NetworkRequestDetails extends HTMLElement {
       return null;
     }
     const durationValue = i18n.TimeUtilities.formatMicroSecondsTime(fullDuration);
-    const durationElement = LitHtml.html`
+    const durationElement = html`
       <div>
         ${durationValue}
         ${this.#renderTimings()}
@@ -323,7 +325,7 @@ export class NetworkRequestDetails extends HTMLElement {
     // |
     // |----
     // |
-    return LitHtml.html`<span class="whisker-left"> <span class="horizontal"></span> </span>`;
+    return html`<span class="whisker-left"> <span class="horizontal"></span> </span>`;
   }
 
   #renderRightWhisker(): LitHtml.TemplateResult {
@@ -332,7 +334,7 @@ export class NetworkRequestDetails extends HTMLElement {
     //      |
     //  ----|
     //      |
-    return LitHtml.html`<span class="whisker-right"> <span class="horizontal"></span> </span>`;
+    return html`<span class="whisker-right"> <span class="horizontal"></span> </span>`;
   }
 
   #renderTimings(): LitHtml.TemplateResult|null {
@@ -355,7 +357,7 @@ export class NetworkRequestDetails extends HTMLElement {
       backgroundColor: color,
     };
 
-    return LitHtml.html`
+    return html`
       <div class="timings-row">
         ${this.#renderLeftWhisker()}
         ${i18nString(UIStrings.queuingAndConnecting)}
@@ -385,7 +387,7 @@ export class NetworkRequestDetails extends HTMLElement {
     }
     const networkData = this.#networkRequest.args.data;
     // clang-format off
-    const output = LitHtml.html`
+    const output = html`
       ${this.#renderTitle()}
       <div class="network-request-details-body">
         <div class="network-request-details-col">

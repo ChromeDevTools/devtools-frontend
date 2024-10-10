@@ -17,6 +17,8 @@ import type * as Actions from '../recorder-actions/recorder-actions.js';
 
 import selectButtonStyles from './selectButton.css.js';
 
+const {html, Directives: {ifDefined, classMap}} = LitHtml;
+
 export const enum Variant {
   PRIMARY = 'primary',
   OUTLINED = 'outlined',
@@ -179,7 +181,7 @@ export class SelectButton extends HTMLElement {
       selectedItem: SelectButtonItem,
       ): LitHtml.TemplateResult {
     // clang-format off
-    return LitHtml.html`
+    return html`
       <devtools-menu-item .value=${item.value} .selected=${
       item.value === selectedItem.value
     } jslog=${VisualLogging.item(Platform.StringUtilities.toKebabCase(item.value)).track({click: true})}>
@@ -194,7 +196,7 @@ export class SelectButton extends HTMLElement {
       selectedItem: SelectButtonItem,
       ): LitHtml.TemplateResult {
     // clang-format off
-    return LitHtml.html`
+    return html`
       <devtools-menu-group .name=${group.name}>
         ${group.items.map(item => this.#renderSelectItem(item, selectedItem))}
       </devtools-menu-group>
@@ -225,17 +227,17 @@ export class SelectButton extends HTMLElement {
 
     // clang-format off
     LitHtml.render(
-      LitHtml.html`
-      <div class="select-button" title=${LitHtml.Directives.ifDefined(this.#getTitle(menuLabel))}>
+      html`
+      <div class="select-button" title=${ifDefined(this.#getTitle(menuLabel))}>
       <devtools-select-menu
-          class=${LitHtml.Directives.classMap(classes)}
+          class=${classMap(classes)}
           @selectmenuselected=${this.#handleSelectMenuSelect}
           ?disabled=${this.#props.disabled}
           .showArrow=${true}
           .sideButton=${false}
           .showSelectedItem=${true}
           .disabled=${this.#props.disabled}
-          .buttonTitle=${() => LitHtml.html`${menuLabel}`}
+          .buttonTitle=${() => html`${menuLabel}`}
           .position=${Dialogs.Dialog.DialogVerticalPosition.BOTTOM}
           .horizontalAlignment=${
             Dialogs.Dialog.DialogHorizontalAlignment.RIGHT
@@ -253,7 +255,7 @@ export class SelectButton extends HTMLElement {
         </devtools-select-menu>
         ${
           selectedItem
-            ? LitHtml.html`
+            ? html`
         <devtools-button
             .disabled=${this.#props.disabled}
             .variant=${buttonVariant}

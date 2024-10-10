@@ -17,6 +17,8 @@ import * as EmulationUtils from '../utils/utils.js';
 
 import userAgentClientHintsFormStyles from './userAgentClientHintsForm.css.js';
 
+const {html} = LitHtml;
+
 const UIStrings = {
   /**
    * @description Title for user agent client hints form
@@ -448,7 +450,7 @@ export class UserAgentClientHintsForm extends HTMLElement {
       const value = (event.target as HTMLInputElement).value;
       this.#handleInputChange(stateKey, value);
     };
-    return LitHtml.html`
+    return html`
       <label class="full-row label input-field-label-container">
         ${label}
         <input
@@ -474,7 +476,7 @@ export class UserAgentClientHintsForm extends HTMLElement {
       const value = (event.target as HTMLInputElement).value;
       this.#handleInputChange('platformVersion', value);
     };
-    return LitHtml.html`
+    return html`
       <span class="full-row label">${i18nString(UIStrings.platformLabel)}</span>
       <div class="full-row brand-row" aria-label=${i18nString(UIStrings.platformProperties)} role="group">
         <input
@@ -513,7 +515,7 @@ export class UserAgentClientHintsForm extends HTMLElement {
       const value = (event.target as HTMLInputElement).checked;
       this.#handleInputChange('mobile', value);
     };
-    const mobileCheckboxInput = this.#showMobileCheckbox ? LitHtml.html`
+    const mobileCheckboxInput = this.#showMobileCheckbox ? html`
       <label class="mobile-checkbox-container">
         <input type="checkbox" @input=${handleMobileChange} .checked=${mobile}
           jslog=${VisualLogging.toggle('mobile').track({
@@ -523,8 +525,8 @@ export class UserAgentClientHintsForm extends HTMLElement {
         ${i18nString(UIStrings.mobileCheckboxLabel)}
       </label>
     ` :
-                                                           LitHtml.html``;
-    return LitHtml.html`
+                                                           html``;
+    return html`
       <span class="full-row label">${i18nString(UIStrings.deviceModel)}</span>
       <div class="full-row brand-row" aria-label=${i18nString(UIStrings.deviceProperties)} role="group">
         <input
@@ -571,7 +573,7 @@ export class UserAgentClientHintsForm extends HTMLElement {
         const value = (event.target as HTMLInputElement).value;
         this.#handleUseragentInputChange(value, index, 'brandVersion');
       };
-      return LitHtml.html`
+      return html`
         <div class="full-row brand-row" aria-label=${i18nString(UIStrings.brandProperties)} role="group">
           <input
             class="input-field ua-brand-name-input"
@@ -615,7 +617,7 @@ export class UserAgentClientHintsForm extends HTMLElement {
         </div>
       `;
     });
-    return LitHtml.html`
+    return html`
       <span class="full-row label">${i18nString(UIStrings.useragent)}</span>
       ${brandElements}
       <div
@@ -666,7 +668,7 @@ export class UserAgentClientHintsForm extends HTMLElement {
         const value = (event.target as HTMLInputElement).value;
         this.#handleFullVersionListInputChange(value, index, 'brandVersion');
       };
-      return LitHtml.html`
+      return html`
         <div
           class="full-row brand-row"
           aria-label=${i18nString(UIStrings.brandProperties)}
@@ -714,7 +716,7 @@ export class UserAgentClientHintsForm extends HTMLElement {
         </div>
       `;
     });
-    return LitHtml.html`
+    return html`
       <span class="full-row label">${i18nString(UIStrings.fullVersionList)}</span>
       ${elements}
       <div
@@ -749,7 +751,7 @@ export class UserAgentClientHintsForm extends HTMLElement {
         'architecture');
     const deviceModelSection = this.#renderDeviceModelSection();
     // clang-format off
-    const submitButton = this.#showSubmitButton ? LitHtml.html`
+    const submitButton = this.#showSubmitButton ? html`
       <${Buttons.Button.Button.litTagName}
         .variant=${Buttons.Button.Variant.OUTLINED}
         .type=${'submit'}
@@ -760,7 +762,7 @@ export class UserAgentClientHintsForm extends HTMLElement {
     // clang-format on
 
     // clang-format off
-    const output = LitHtml.html`
+    const output = html`
       <section class="root">
         <div
           class="tree-title"

@@ -18,6 +18,8 @@ import * as Actions from '../recorder-actions/recorder-actions.js';
 
 import createRecordingViewStyles from './createRecordingView.css.js';
 
+const {html, Directives: {ifDefined}} = LitHtml;
+
 const UIStrings = {
   /**
    * @description The label for the input where the user enters a name for the new recording.
@@ -263,7 +265,7 @@ export class CreateRecordingView extends HTMLElement {
     ]);
     // clang-format off
     LitHtml.render(
-      LitHtml.html`
+      html`
         <div class="wrapper">
           <div class="header-wrapper">
             <h1>${i18nString(UIStrings.createRecording)}</h1>
@@ -302,7 +304,7 @@ export class CreateRecordingView extends HTMLElement {
             </x-link>
           </label>
           <input
-            value=${LitHtml.Directives.ifDefined(this.#recorderSettings?.selectorAttribute)}
+            value=${ifDefined(this.#recorderSettings?.selectorAttribute)}
             placeholder="data-testid"
             @keydown=${this.#onKeyDown}
             jslog=${VisualLogging.textField('selector-attribute').track({change: true})}
@@ -323,7 +325,7 @@ export class CreateRecordingView extends HTMLElement {
             ${Object.values(Models.Schema.SelectorType).map(selectorType => {
               const checked =
                 this.#recorderSettings?.getSelectorByType(selectorType);
-              return LitHtml.html`
+              return html`
                   <label class="checkbox-label selector-type">
                     <input
                       @keydown=${this.#onKeyDown}
@@ -340,7 +342,7 @@ export class CreateRecordingView extends HTMLElement {
 
           ${
             this.#error &&
-            LitHtml.html`
+            html`
           <div class="error" role="alert">
             ${this.#error.message}
           </div>

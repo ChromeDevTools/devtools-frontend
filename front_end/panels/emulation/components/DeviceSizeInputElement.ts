@@ -8,6 +8,8 @@ import * as UILegacy from '../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
+const {html} = LitHtml;
+
 class SizeChangedEvent extends Event {
   static readonly eventName = 'sizechanged';
   constructor(public size: number) {
@@ -62,7 +64,7 @@ export class SizeInputElement extends HTMLElement {
         // to use proper constructed stylesheets, when the code runs
         // in the correct frame context.
         // eslint-disable-next-line rulesdir/ban_style_tags_in_lit_html
-        LitHtml.html`
+        html`
       <style>
         input {
           /*

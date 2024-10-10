@@ -139,6 +139,7 @@ module.exports = {
     // DevTools specific rules
     'rulesdir/es_modules_import': 'error',
     'rulesdir/check_license_header': 'error',
+    'rulesdir/html_tagged_template': 'error',
     /**
      * Ensures that JS Doc comments are properly aligned - all the starting
      * `*` are in the right place.

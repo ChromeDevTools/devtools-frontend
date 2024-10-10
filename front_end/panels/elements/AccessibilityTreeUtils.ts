@@ -11,6 +11,8 @@ import * as LitHtml from '../../ui/lit-html/lit-html.js';
 
 import type * as ElementsComponents from './components/components.js';
 
+const {html} = LitHtml;
+
 export type AXTreeNodeData = SDK.AccessibilityModel.AccessibilityNode;
 export type AXTreeNode = TreeOutline.TreeOutlineUtils.TreeNode<AXTreeNodeData>;
 
@@ -121,7 +123,7 @@ export function accessibilityNodeRenderer(node: AXTreeNode): LitHtml.TemplateRes
   const properties = sdkNode.properties() || [];
   const ignored = sdkNode.ignored();
   const id = getNodeId(sdkNode);
-  return LitHtml.html`<devtools-accessibility-tree-node .data=${
+  return html`<devtools-accessibility-tree-node .data=${
       {name, role, ignored, properties, id} as Data}></devtools-accessibility-tree-node>`;
 }
 

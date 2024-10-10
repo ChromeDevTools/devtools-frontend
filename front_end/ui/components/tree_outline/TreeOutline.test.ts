@@ -16,6 +16,8 @@ import * as Coordinator from '../render_coordinator/render_coordinator.js';
 
 import * as TreeOutline from './tree_outline.js';
 
+const {html} = LitHtml;
+
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 async function renderTreeOutline<TreeNodeDataType>({
@@ -35,7 +37,7 @@ async function renderTreeOutline<TreeNodeDataType>({
   const data: TreeOutline.TreeOutline.TreeOutlineData<TreeNodeDataType> = {
     tree,
     defaultRenderer: defaultRenderer ||
-        ((node: TreeOutline.TreeOutlineUtils.TreeNode<TreeNodeDataType>) => LitHtml.html`${node.treeNodeData}`),
+        ((node: TreeOutline.TreeOutlineUtils.TreeNode<TreeNodeDataType>) => html`${node.treeNodeData}`),
     filter,
   };
   component.data = data;
@@ -375,7 +377,7 @@ describe('TreeOutline', () => {
       value: string;
     }
     const customRenderer = (node: TreeOutline.TreeOutlineUtils.TreeNode<CustomTreeKeyType>) => {
-      return LitHtml.html`<h2 class="item">${node.treeNodeData.property.toUpperCase()}:</h2>${node.treeNodeData.value}`;
+      return html`<h2 class="item">${node.treeNodeData.property.toUpperCase()}:</h2>${node.treeNodeData.value}`;
     };
     const tinyTree: TreeOutline.TreeOutlineUtils.TreeNode<CustomTreeKeyType>[] = [{
       treeNodeData: {property: 'name', value: 'jack'},
@@ -625,7 +627,7 @@ describe('TreeOutline', () => {
     const tinyTree: TreeOutline.TreeOutlineUtils.TreeNode<string>[] = [{
       treeNodeData: 'Offices',
       id: 'Offices',
-      renderer: node => LitHtml.html`<h2 class="top-node">${node.treeNodeData.toUpperCase()}</h2>`,
+      renderer: node => html`<h2 class="top-node">${node.treeNodeData.toUpperCase()}</h2>`,
       children: async () =>
           [{
             treeNodeData: 'EMEA',
@@ -659,7 +661,7 @@ describe('TreeOutline', () => {
       treeNodeData: 'Offices',
       id: 'Offices',
       renderer: (node, {isExpanded}) => {
-        return LitHtml.html`<h2 class="top-node">${node.treeNodeData.toUpperCase()}. Expanded: ${isExpanded}</h2>`;
+        return html`<h2 class="top-node">${node.treeNodeData.toUpperCase()}. Expanded: ${isExpanded}</h2>`;
       },
       children: async () =>
           [{
@@ -1323,7 +1325,7 @@ describe('TreeOutline', () => {
 
       component.data = {
         tree: [newNodeAustralia],
-        defaultRenderer: (node => LitHtml.html`${node.treeNodeData}`),
+        defaultRenderer: (node => html`${node.treeNodeData}`),
       };
       await waitForRenderedTreeNodeCount(shadowRoot, 4);
       await coordinator.done();
@@ -1443,7 +1445,7 @@ describe('TreeOutlineFiltering', () => {
       tree: [nodeAustralia],
       filter: node => node === 'SA' || node === 'NSW' ? TreeOutline.TreeOutline.FilterOption.FLATTEN :
                                                         TreeOutline.TreeOutline.FilterOption.SHOW,
-      defaultRenderer: (node => LitHtml.html`${node.treeNodeData}`),
+      defaultRenderer: (node => html`${node.treeNodeData}`),
     };
     await waitForRenderedTreeNodeCount(shadowRoot, 9);
     const visibleTreeAfterFilter = visibleNodesToTree(shadowRoot);

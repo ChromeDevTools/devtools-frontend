@@ -12,6 +12,8 @@ import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import provideFeedbackStyles from './provideFeedback.css.js';
 
+const {html} = LitHtml;
+
 /*
 * Strings that don't need to be translated at this time.
 */
@@ -119,7 +121,7 @@ export class ProvideFeedback extends HTMLElement {
 
   #renderButtons(): LitHtml.TemplateResult {
     // clang-format off
-    return LitHtml.html`
+    return html`
       <${Buttons.Button.Button.litTagName}
         .data=${{
           variant: Buttons.Button.Variant.ICON,
@@ -165,7 +167,7 @@ export class ProvideFeedback extends HTMLElement {
 
   #renderFeedbackForm(): LitHtml.LitTemplate {
     // clang-format off
-    return LitHtml.html`
+    return html`
       <form class="feedback-form" @submit=${this.#handleSubmit}>
         <div class="feedback-header">
           <h4 class="feedback-title">${lockedString(
@@ -219,7 +221,7 @@ export class ProvideFeedback extends HTMLElement {
   #render(): void {
     // clang-format off
     LitHtml.render(
-      LitHtml.html`
+      html`
         <div class="feedback">
           <div class="rate-buttons">
             ${this.#renderButtons()}

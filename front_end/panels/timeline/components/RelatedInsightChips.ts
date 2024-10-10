@@ -9,6 +9,8 @@ import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
 import styles from './relatedInsightChips.css.js';
 
+const {html} = LitHtml;
+
 const UIStrings = {
   /**
    *@description prefix shown next to related insight chips
@@ -64,13 +66,13 @@ export class RelatedInsightChips extends HTMLElement {
     const {activeEvent, eventToRelatedInsightsMap} = this.#data;
     const relatedInsights = activeEvent ? eventToRelatedInsightsMap.get(activeEvent) ?? [] : [];
     if (!activeEvent || eventToRelatedInsightsMap.size === 0 || relatedInsights.length === 0) {
-      LitHtml.render(LitHtml.html``, this.#shadow, {host: this});
+      LitHtml.render(html``, this.#shadow, {host: this});
       return;
     }
 
     const insightChips = relatedInsights.map(insight => {
       // clang-format off
-      return LitHtml.html`
+      return html`
       <li class="insight-chip">
         <button type="button" @click=${this.#insightClick(insight)}>
           <span class="keyword">${i18nString(UIStrings.insightKeyword)}</span>
@@ -82,7 +84,7 @@ export class RelatedInsightChips extends HTMLElement {
     });
 
     // clang-format off
-    LitHtml.render(LitHtml.html`<ul>${insightChips}</ul>`, this.#shadow, {host: this});
+    LitHtml.render(html`<ul>${insightChips}</ul>`, this.#shadow, {host: this});
     // clang-format on
   }
 }

@@ -10,6 +10,8 @@ import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
 import sharedStorageAccessGridStyles from './sharedStorageAccessGrid.css.js';
 
+const {html} = LitHtml;
+
 const UIStrings = {
   /**
    *@description Text in Shared Storage Events View of the Application panel
@@ -72,7 +74,7 @@ export class SharedStorageAccessGrid extends HTMLElement {
 
   #render(): void {
     // clang-format off
-    LitHtml.render(LitHtml.html`
+    LitHtml.render(html`
       <div>
         <span class="heading">${i18nString(UIStrings.sharedStorage)}</span>
         <${IconButton.Icon.Icon.litTagName} class="info-icon" title=${
@@ -90,7 +92,7 @@ export class SharedStorageAccessGrid extends HTMLElement {
 
   #renderGridOrNoDataMessage(): LitHtml.TemplateResult {
     if (this.#datastores.length === 0) {
-      return LitHtml.html`<div
+      return html`<div
         class="no-events-message">${i18nString(UIStrings.noEvents)}</div>`;
     }
 
@@ -144,7 +146,7 @@ export class SharedStorageAccessGrid extends HTMLElement {
       },
     };
 
-    return LitHtml.html`
+    return html`
       <${DataGrid.DataGridController.DataGridController.litTagName} .data=${
         gridData as DataGrid.DataGridController.DataGridControllerData}></${
         DataGrid.DataGridController.DataGridController.litTagName}>
@@ -169,7 +171,7 @@ export class SharedStorageAccessGrid extends HTMLElement {
 
   #renderDateForDataGridCell(value: DataGrid.DataGridUtils.CellValue): LitHtml.TemplateResult {
     const date = new Date(1e3 * (value as number));
-    return LitHtml.html`${date.toLocaleString()}`;
+    return html`${date.toLocaleString()}`;
   }
 }
 

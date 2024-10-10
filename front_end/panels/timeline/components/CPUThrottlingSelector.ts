@@ -93,7 +93,7 @@ export class CPUThrottlingSelector extends HTMLElement {
           ${MobileThrottling.ThrottlingPresets.ThrottlingPresets.cpuThrottlingPresets.map(rate => {
             const title = rate === 1 ? i18nString(UIStrings.noThrottling) : i18nString(UIStrings.dSlowdown, {PH1: rate});
             const jslogContext = rate === 1 ? 'cpu-no-throttling' : `cpu-throttled-${rate}`;
-            return LitHtml.html`
+            return html`
               <${Menus.Menu.MenuItem.litTagName}
                 .value=${rate}
                 .selected=${this.#currentRate === rate}

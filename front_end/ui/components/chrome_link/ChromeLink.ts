@@ -12,6 +12,8 @@ import * as ComponentHelpers from '../helpers/helpers.js';
 
 import chromeLinkStyles from './chromeLink.css.js';
 
+const {html} = LitHtml;
+
 declare global {
   interface HTMLElementTagNameMap {
     'devtools-chrome-link': ChromeLink;
@@ -63,7 +65,7 @@ export class ChromeLink extends HTMLElement {
     LitHtml.render(
       /* x-link doesn't work with custom click/keydown handlers */
       /* eslint-disable rulesdir/ban_a_tags_in_lit_html */
-      LitHtml.html`
+      html`
         <a href=${this.#href} class="link" target="_blank"
           jslog=${VisualLogging.link().track({click: true}).context(jslogContext)}
           @click=${this.#handleClick}><slot></slot></a>

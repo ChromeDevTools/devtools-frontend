@@ -22,6 +22,8 @@ import * as PreloadingMismatchedHeadersGrid from './PreloadingMismatchedHeadersG
 import {prefetchFailureReason, prerenderFailureReason} from './PreloadingString.js';
 import usedPreloadingStyles from './usedPreloadingView.css.js';
 
+const {html} = LitHtml;
+
 const UIStrings = {
   /**
    *@description Header for preloading status.
@@ -165,7 +167,7 @@ export class UsedPreloadingView extends LegacyWrapper.LegacyWrapper.WrappableCom
   #renderInternal(): LitHtml.LitTemplate {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-    return LitHtml.html`
+    return html`
       <${ReportView.ReportView.Report.litTagName}>
         ${this.#speculativeLoadingStatusForThisPageSections()}
 
@@ -219,27 +221,27 @@ export class UsedPreloadingView extends LegacyWrapper.LegacyWrapper.WrappableCom
     switch (kind) {
       case UsedKind.DOWNGRADED_PRERENDER_TO_PREFETCH_AND_USED:
         badge = this.#badgeSuccess();
-        basicMessage = LitHtml.html`${i18nString(UIStrings.downgradedPrefetchUsed)}`;
+        basicMessage = html`${i18nString(UIStrings.downgradedPrefetchUsed)}`;
         break;
       case UsedKind.PREFETCH_USED:
         badge = this.#badgeSuccess();
-        basicMessage = LitHtml.html`${i18nString(UIStrings.prefetchUsed)}`;
+        basicMessage = html`${i18nString(UIStrings.prefetchUsed)}`;
         break;
       case UsedKind.PRERENDER_USED:
         badge = this.#badgeSuccess();
-        basicMessage = LitHtml.html`${i18nString(UIStrings.prerenderUsed)}`;
+        basicMessage = html`${i18nString(UIStrings.prerenderUsed)}`;
         break;
       case UsedKind.PREFETCH_FAILED:
         badge = this.#badgeFailure();
-        basicMessage = LitHtml.html`${i18nString(UIStrings.prefetchFailed)}`;
+        basicMessage = html`${i18nString(UIStrings.prefetchFailed)}`;
         break;
       case UsedKind.PRERENDER_FAILED:
         badge = this.#badgeFailure();
-        basicMessage = LitHtml.html`${i18nString(UIStrings.prerenderFailed)}`;
+        basicMessage = html`${i18nString(UIStrings.prerenderFailed)}`;
         break;
       case UsedKind.NO_PRELOADS:
         badge = this.#badgeNeutral(i18nString(UIStrings.badgeNoSpeculativeLoads));
-        basicMessage = LitHtml.html`${i18nString(UIStrings.noPreloads)}`;
+        basicMessage = html`${i18nString(UIStrings.noPreloads)}`;
         break;
     }
 
@@ -256,7 +258,7 @@ export class UsedPreloadingView extends LegacyWrapper.LegacyWrapper.WrappableCom
     if (maybeFailureReasonMessage !== undefined) {
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
-      maybeFailureReason = LitHtml.html`
+      maybeFailureReason = html`
       <${ReportView.ReportView.ReportSectionHeader.litTagName}>${i18nString(UIStrings.detailsFailureReason)}</${
         ReportView.ReportView.ReportSectionHeader.litTagName}>
       <${ReportView.ReportView.ReportSection.litTagName}>
@@ -268,7 +270,7 @@ export class UsedPreloadingView extends LegacyWrapper.LegacyWrapper.WrappableCom
 
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-    return LitHtml.html`
+    return html`
       <${ReportView.ReportView.ReportSectionHeader.litTagName}>${i18nString(UIStrings.speculativeLoadingStatusForThisPage)}</${
         ReportView.ReportView.ReportSectionHeader.litTagName}>
       <${ReportView.ReportView.ReportSection.litTagName}>
@@ -309,7 +311,7 @@ export class UsedPreloadingView extends LegacyWrapper.LegacyWrapper.WrappableCom
 
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-    return LitHtml.html`
+    return html`
       <${ReportView.ReportView.ReportSectionHeader.litTagName}>${i18nString(UIStrings.currentURL)}</${
         ReportView.ReportView.ReportSectionHeader.litTagName}>
       <${ReportView.ReportView.ReportSection.litTagName}>
@@ -345,7 +347,7 @@ export class UsedPreloadingView extends LegacyWrapper.LegacyWrapper.WrappableCom
 
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-    return LitHtml.html`
+    return html`
       <${ReportView.ReportView.ReportSectionHeader.litTagName}>${i18nString(UIStrings.mismatchedHeadersDetail)}</${
         ReportView.ReportView.ReportSectionHeader.litTagName}>
       <${ReportView.ReportView.ReportSection.litTagName}>
@@ -393,7 +395,7 @@ export class UsedPreloadingView extends LegacyWrapper.LegacyWrapper.WrappableCom
 
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-    return LitHtml.html`
+    return html`
       <${ReportView.ReportView.ReportSectionHeader.litTagName}>${i18nString(UIStrings.speculationsInitiatedByThisPage)}</${
         ReportView.ReportView.ReportSectionHeader.litTagName}>
       <${ReportView.ReportView.ReportSection.litTagName}>
@@ -446,7 +448,7 @@ export class UsedPreloadingView extends LegacyWrapper.LegacyWrapper.WrappableCom
   #badge(klass: string, iconName: string, message: string): LitHtml.LitTemplate {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-    return LitHtml.html`
+    return html`
       <span class=${klass}>
         <${IconButton.Icon.Icon.litTagName} name=${iconName}></${IconButton.Icon.Icon.litTagName}>
         <span>

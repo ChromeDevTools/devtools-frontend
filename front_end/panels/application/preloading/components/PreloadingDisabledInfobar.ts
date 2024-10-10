@@ -17,6 +17,8 @@ import * as VisualLogging from '../../../../ui/visual_logging/visual_logging.js'
 
 import preloadingDisabledInfobarStyles from './preloadingDisabledInfobar.css.js';
 
+const {html} = LitHtml;
+
 const UIStrings = {
   /**
    *@description Infobar text for disabled case
@@ -140,7 +142,7 @@ export class PreloadingDisabledInfobar extends LegacyWrapper.LegacyWrapper.Wrapp
 
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-    return LitHtml.html`
+    return html`
       <div id='container'>
         <span id='header'>
           ${header}
@@ -182,7 +184,7 @@ export class PreloadingDisabledInfobar extends LegacyWrapper.LegacyWrapper.Wrapp
         .data = {iconName: 'open-externally', color: 'var(--icon-default-hover)', width: '16px', height: '16px'};
     iconLink.append(iconLinkIcon);
 
-    return LitHtml.html`
+    return html`
       <div id='contents'>
         <div id='title'>${i18nString(UIStrings.titleReasonsPreventingPreloading)}</div>
 
@@ -210,7 +212,7 @@ export class PreloadingDisabledInfobar extends LegacyWrapper.LegacyWrapper.Wrapp
       return LitHtml.nothing;
     }
 
-    return LitHtml.html`
+    return html`
       <div class='key'>
         ${header}
       </div>

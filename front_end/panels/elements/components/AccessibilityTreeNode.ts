@@ -11,6 +11,8 @@ import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
 import accessibilityTreeNodeStyles from './accessibilityTreeNode.css.js';
 
+const {html} = LitHtml;
+
 const UIStrings = {
   /**
    *@description Ignored node element text content in Accessibility Tree View of the Elements panel
@@ -74,20 +76,20 @@ export class AccessibilityTreeNode extends HTMLElement {
   }
 
   async #render(): Promise<void> {
-    const role = LitHtml.html`<span class='role-value'>${truncateTextIfNeeded(this.#role)}</span>`;
-    const name = LitHtml.html`"<span class='attribute-value'>${this.#name}</span>"`;
+    const role = html`<span class='role-value'>${truncateTextIfNeeded(this.#role)}</span>`;
+    const name = html`"<span class='attribute-value'>${this.#name}</span>"`;
     const properties = this.#properties.map(
         ({name, value}) => isPrintable(value.type) ?
-            LitHtml.html` <span class='attribute-name'>${name}</span>:&nbsp;<span class='attribute-value'>${
+            html` <span class='attribute-name'>${name}</span>:&nbsp;<span class='attribute-value'>${
                 value.value}</span>` :
             LitHtml.nothing);
-    const content = this.#ignored ? LitHtml.html`<span>${i18nString(UIStrings.ignored)}</span>` :
-                                    LitHtml.html`${role}&nbsp;${name}${properties}`;
+    const content =
+        this.#ignored ? html`<span>${i18nString(UIStrings.ignored)}</span>` : html`${role}&nbsp;${name}${properties}`;
     await Coordinator.RenderCoordinator.RenderCoordinator.instance().write(
         `Accessibility node ${this.#id} render`, () => {
           // clang-format off
       LitHtml.render(
-        LitHtml.html`<div class='container'>${content}</div>`,
+        html`<div class='container'>${content}</div>`,
         this.#shadow,
         {host: this});
           // clang-format on

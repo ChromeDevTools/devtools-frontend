@@ -8,6 +8,8 @@ import markdownImageStyles from './markdownImage.css.js';
 
 import {getMarkdownImage, type ImageData} from './MarkdownImagesMap.js';
 
+const {html, Directives: {ifDefined}} = LitHtml;
+
 export interface MarkdownImageData {
   key: string;
   title: string;
@@ -39,10 +41,10 @@ export class MarkdownImage extends HTMLElement {
 
   #getIconComponent(): LitHtml.TemplateResult {
     if (!this.#imageData) {
-      return LitHtml.html``;
+      return html``;
     }
     const {src, color, width = '100%', height = '100%'} = this.#imageData;
-    return LitHtml.html`
+    return html`
       <${IconButton.Icon.Icon.litTagName} .data=${
         {iconPath: src, color, width, height} as IconButton.Icon.IconData}></${IconButton.Icon.Icon.litTagName}>
     `;
@@ -50,12 +52,11 @@ export class MarkdownImage extends HTMLElement {
 
   #getImageComponent(): LitHtml.TemplateResult {
     if (!this.#imageData) {
-      return LitHtml.html``;
+      return html``;
     }
     const {src, width = '100%', height = '100%'} = this.#imageData;
-    return LitHtml.html`
-      <img class="markdown-image" src=${src} alt=${LitHtml.Directives.ifDefined(this.#imageTitle)} width=${
-        width} height=${height} />
+    return html`
+      <img class="markdown-image" src=${src} alt=${ifDefined(this.#imageTitle)} width=${width} height=${height} />
     `;
   }
 

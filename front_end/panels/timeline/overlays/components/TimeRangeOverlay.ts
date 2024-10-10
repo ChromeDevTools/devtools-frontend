@@ -7,6 +7,8 @@ import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 
 import styles from './timeRangeOverlay.css.js';
 
+const {html} = LitHtml;
+
 const UIStrings = {
   /**
    *@description Accessible label used to explain to a user that they are viewing an entry label.
@@ -253,7 +255,7 @@ export class TimeRangeOverlay extends HTMLElement {
     const durationText = this.#duration ? i18n.TimeUtilities.formatMicroSecondsTime(this.#duration) : '';
     // clang-format off
     LitHtml.render(
-        LitHtml.html`
+        html`
           <span class="range-container" role="region" aria-label=${i18nString(UIStrings.timeRange)}>
             <span
              class="label-text"

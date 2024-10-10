@@ -19,6 +19,8 @@ import {
   type SortState,
 } from './DataGridUtils.js';
 
+const {html} = LitHtml;
+
 const UIStrings = {
   /**
    *@description Text announced when the column is sorted in ascending order
@@ -266,7 +268,7 @@ export class DataGridController extends HTMLElement {
   #render(): void {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-    LitHtml.render(LitHtml.html`
+    LitHtml.render(html`
       <${DataGrid.litTagName} .data=${{
           columns: this.#columns,
           rows: this.#rows,

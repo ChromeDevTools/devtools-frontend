@@ -16,6 +16,8 @@ import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import requestLinkIconStyles from './requestLinkIcon.css.js';
 
+const {html} = LitHtml;
+
 const UIStrings = {
   /**
    * @description Title for a link to show a request in the network panel
@@ -169,17 +171,17 @@ export class RequestLinkIcon extends HTMLElement {
     }
 
     if (this.#urlToDisplay) {
-      return LitHtml.html`<span title=${url}>${this.#urlToDisplay}</span>`;
+      return html`<span title=${url}>${this.#urlToDisplay}</span>`;
     }
 
     const filename = extractShortPath(url);
-    return LitHtml.html`<span aria-label=${i18nString(UIStrings.shortenedURL)} title=${url}>${filename}</span>`;
+    return html`<span aria-label=${i18nString(UIStrings.shortenedURL)} title=${url}>${filename}</span>`;
   }
 
   async #render(): Promise<void> {
     return coordinator.write(() => {
       // clang-format off
-      LitHtml.render(LitHtml.html`
+      LitHtml.render(html`
       <button class=${LitHtml.Directives.classMap({link: Boolean(this.#request)})}
               title=${this.#getTooltip()}
               jslog=${VisualLogging.link('request').track({click: true})}

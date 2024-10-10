@@ -11,6 +11,8 @@ import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import sharedStorageMetadataViewStyles from './sharedStorageMetadataView.css.js';
 import {StorageMetadataView} from './StorageMetadataView.js';
 
+const {html} = LitHtml;
+
 const UIStrings = {
   /**
    *@description Text in SharedStorage Metadata View of the Application panel
@@ -90,7 +92,7 @@ export class SharedStorageMetadataView extends StorageMetadataView {
 
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-    return LitHtml.html`
+    return html`
       ${await super.renderReportContent()}
       ${this.key(i18nString(UIStrings.creation))}
       ${this.value(this.#renderDateForCreationTime())}
@@ -98,22 +100,22 @@ export class SharedStorageMetadataView extends StorageMetadataView {
       ${this.value(String(this.#length))}
       ${this.key(i18nString(UIStrings.numBytesUsed))}
       ${this.value(String(this.#bytesUsed))}
-      ${this.key(LitHtml.html`${i18nString(UIStrings.entropyBudget)}<${IconButton.Icon.Icon.litTagName} name="info" title=${i18nString(UIStrings.budgetExplanation)}></${IconButton.Icon.Icon.litTagName}>`)}
-      ${this.value(LitHtml.html`${this.#remainingBudget}${this.#renderResetBudgetButton()}`)}`;
+      ${this.key(html`${i18nString(UIStrings.entropyBudget)}<${IconButton.Icon.Icon.litTagName} name="info" title=${i18nString(UIStrings.budgetExplanation)}></${IconButton.Icon.Icon.litTagName}>`)}
+      ${this.value(html`${this.#remainingBudget}${this.#renderResetBudgetButton()}`)}`;
     // clang-format on
   }
 
   #renderDateForCreationTime(): LitHtml.TemplateResult {
     if (!this.#creationTime) {
-      return LitHtml.html`${i18nString(UIStrings.notYetCreated)}`;
+      return html`${i18nString(UIStrings.notYetCreated)}`;
     }
     const date = new Date(1e3 * (this.#creationTime as number));
-    return LitHtml.html`${date.toLocaleString()}`;
+    return html`${date.toLocaleString()}`;
   }
 
   #renderResetBudgetButton(): LitHtml.TemplateResult {
     // clang-format off
-    return LitHtml.html`
+    return html`
       <${Buttons.Button.Button.litTagName} .iconName=${'undo'}
                                            .jslogContext=${'reset-entropy-budget'}
                                            .size=${Buttons.Button.Size.SMALL}

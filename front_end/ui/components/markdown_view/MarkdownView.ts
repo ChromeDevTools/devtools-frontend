@@ -178,7 +178,7 @@ export class MarkdownInsightRenderer extends MarkdownLitRenderer {
   override renderToken(token: Marked.Marked.Token): LitHtml.TemplateResult {
     const template = this.templateForToken(token as Marked.Marked.MarkedToken);
     if (template === null) {
-      return LitHtml.html`${token.raw}`;
+      return html`${token.raw}`;
     }
     return template;
   }
@@ -220,11 +220,10 @@ export class MarkdownInsightRenderer extends MarkdownLitRenderer {
         if (!sanitizedUrl) {
           return null;
         }
-        return LitHtml.html`${
-            UI.XLink.XLink.create(sanitizedUrl, token.text, undefined, undefined, 'link-in-explanation')}`;
+        return html`${UI.XLink.XLink.create(sanitizedUrl, token.text, undefined, undefined, 'link-in-explanation')}`;
       }
       case 'code':
-        return LitHtml.html`<${CodeBlock.litTagName}
+        return html`<${CodeBlock.litTagName}
           .code=${this.unescape(token.text)}
           .codeLang=${this.detectCodeLanguage(token)}
           .displayNotice=${true}>

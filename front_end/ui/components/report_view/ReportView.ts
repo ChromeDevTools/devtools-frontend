@@ -11,6 +11,8 @@ import reportSectionDividerStyles from './reportSectionDivider.css.js';
 import reportSectionHeaderStyles from './reportSectionHeader.css.js';
 import reportValueStyles from './reportValue.css.js';
 
+const {html} = LitHtml;
+
 /**
  * The `Report` component can be used to display static information. A report
  * usually consists of multiple sections where each section has rows of name/value
@@ -52,9 +54,9 @@ export class Report extends HTMLElement {
   #render(): void {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-    LitHtml.render(LitHtml.html`
+    LitHtml.render(html`
       <div class="content">
-        ${this.#reportTitle ? LitHtml.html`<div class="report-title">${this.#reportTitle}</div>` : LitHtml.nothing}
+        ${this.#reportTitle ? html`<div class="report-title">${this.#reportTitle}</div>` : LitHtml.nothing}
         <slot></slot>
       </div>
     `, this.#shadow, {host: this});
@@ -76,7 +78,7 @@ export class ReportSection extends HTMLElement {
   #render(): void {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-    LitHtml.render(LitHtml.html`
+    LitHtml.render(html`
       <div class="section">
         <slot></slot>
       </div>
@@ -97,7 +99,7 @@ export class ReportSectionHeader extends HTMLElement {
   #render(): void {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-    LitHtml.render(LitHtml.html`
+    LitHtml.render(html`
       <div class="section-header">
         <slot></slot>
       </div>
@@ -118,7 +120,7 @@ export class ReportSectionDivider extends HTMLElement {
   #render(): void {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-    LitHtml.render(LitHtml.html`
+    LitHtml.render(html`
       <div class="section-divider">
       </div>
     `, this.#shadow, {host: this});
@@ -138,7 +140,7 @@ export class ReportKey extends HTMLElement {
   #render(): void {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-    LitHtml.render(LitHtml.html`
+    LitHtml.render(html`
       <div class="key"><slot></slot></div>
     `, this.#shadow, {host: this});
     // clang-format on
@@ -157,7 +159,7 @@ export class ReportValue extends HTMLElement {
   #render(): void {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-    LitHtml.render(LitHtml.html`
+    LitHtml.render(html`
       <div class="value"><slot></slot></div>
     `, this.#shadow, {host: this});
     // clang-format on

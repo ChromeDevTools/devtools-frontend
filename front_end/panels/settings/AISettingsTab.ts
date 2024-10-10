@@ -15,6 +15,8 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import aiSettingsTabStyles from './aiSettingsTab.css.js';
 
+const {html, Directives: {ifDefined, classMap}} = LitHtml;
+
 const UIStrings = {
   /**
    *@description Header text for for a list of things to consider in the context of generative AI features
@@ -207,7 +209,7 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
       LitHtml.TemplateResult {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-    return LitHtml.html`
+    return html`
       <div>
         <${IconButton.Icon.Icon.litTagName} .data=${{
           iconName: icon,
@@ -237,13 +239,13 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
       {icon: 'corporate-fare', text: i18nString(UIStrings.adminSettings)},
       {
         icon: 'policy',
-        text: LitHtml.html`${i18n.i18n.getFormatLocalizedString(str_, UIStrings.termsOfServicePrivacyNotice, {
+        text: html`${i18n.i18n.getFormatLocalizedString(str_, UIStrings.termsOfServicePrivacyNotice, {
           PH1: tosLink,
           PH2: privacyNoticeLink,
         })}`,
       },
     ];
-    return LitHtml.html`
+    return html`
       <div class="shared-disclaimer">
         <h2>${i18nString(UIStrings.boostYourProductivity)}</h2>
         <h3 class="disclaimer-list-header">${i18nString(UIStrings.thingsToConsider)}</h3>
@@ -257,7 +259,7 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
   #renderSettingItem(icon: string, text: Common.UIString.LocalizedString): LitHtml.TemplateResult {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-    return LitHtml.html`
+    return html`
       <div>
         <${IconButton.Icon.Icon.litTagName} .data=${{
           iconName: icon,
@@ -280,7 +282,7 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
 
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-    return LitHtml.html`
+    return html`
       <div class="accordion-header" @click=${this.#expandConsoleInsightsSetting}>
         <div class="icon-container centered">
           <${IconButton.Icon.Icon.litTagName} name="lightbulb-spark"></${IconButton.Icon.Icon.litTagName}>
@@ -303,7 +305,7 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
       </div>
       <div class="divider"></div>
       <div class="toggle-container centered"
-        title=${LitHtml.Directives.ifDefined(this.#consoleInsightsSetting?.disabledReason())}
+        title=${ifDefined(this.#consoleInsightsSetting?.disabledReason())}
         @click=${this.#toggleConsoleInsightsSetting.bind(this)}
       >
         <${Switch.Switch.Switch.litTagName}
@@ -314,7 +316,7 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
           aria-label=${this.#consoleInsightsSetting?.disabledReason() || i18nString(UIStrings.enableConsoleInsights)}
         ></${Switch.Switch.Switch.litTagName}>
       </div>
-      <div class=${LitHtml.Directives.classMap(detailsClasses)}>
+      <div class=${classMap(detailsClasses)}>
         <div class="overflow-hidden">
           <div class="expansion-grid">
             <h3 class="expansion-grid-whole-row">${i18nString(UIStrings.whenOn)}</h3>
@@ -348,7 +350,7 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
 
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-    return LitHtml.html`
+    return html`
       <div class="accordion-header" @click=${this.#expandAiAssistanceSetting}>
         <div class="icon-container centered">
           <${IconButton.Icon.Icon.litTagName} name="smart-assistant"></${IconButton.Icon.Icon.litTagName}>
@@ -371,7 +373,7 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
       </div>
       <div class="divider"></div>
       <div class="toggle-container centered"
-        title=${LitHtml.Directives.ifDefined(this.#aiAssistanceSetting?.disabledReason())}
+        title=${ifDefined(this.#aiAssistanceSetting?.disabledReason())}
         @click=${this.#toggleAiAssistanceSetting.bind(this)}
       >
         <${Switch.Switch.Switch.litTagName}
@@ -382,7 +384,7 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
           aria-label=${this.#aiAssistanceSetting?.disabledReason() || i18nString(UIStrings.enableAiAssistance)}
         ></${Switch.Switch.Switch.litTagName}>
       </div>
-      <div class=${LitHtml.Directives.classMap(detailsClasses)}>
+      <div class=${classMap(detailsClasses)}>
         <div class="overflow-hidden">
           <div class="expansion-grid">
             <h3 class="expansion-grid-whole-row">${i18nString(UIStrings.whenOn)}</h3>
@@ -410,13 +412,13 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
   override async render(): Promise<void> {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-    LitHtml.render(LitHtml.html`
+    LitHtml.render(html`
       <header>
         <h1>${i18nString(UIStrings.aiInnovations)}</h1>
       </header>
       <div class="settings-container-wrapper" jslog=${VisualLogging.pane('chrome-ai')}>
         ${this.#renderSharedDisclaimer()}
-        ${this.#consoleInsightsSetting || this.#aiAssistanceSetting ? LitHtml.html`
+        ${this.#consoleInsightsSetting || this.#aiAssistanceSetting ? html`
           <div class="settings-container">
             ${this.#consoleInsightsSetting ? this.#renderConsoleInsightsSetting() : LitHtml.nothing}
             ${this.#aiAssistanceSetting ? this.#renderAiAssistanceSetting() : LitHtml.nothing}

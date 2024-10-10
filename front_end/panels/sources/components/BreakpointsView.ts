@@ -23,6 +23,8 @@ import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import breakpointsViewStyles from './breakpointsView.css.js';
 import {findNextNodeForKeyboardNavigation, getDifferentiatingPathMap, type TitleInfo} from './BreakpointsViewUtils.js';
 
+const {html, Directives: {ifDefined, repeat, classMap, live}} = LitHtml;
+
 const UIStrings = {
   /**
    *@description Label for a checkbox to toggle pausing on uncaught exceptions in the breakpoint sidebar of the Sources panel. When the checkbox is checked, DevTools will pause if an uncaught exception is thrown at runtime.
@@ -577,7 +579,7 @@ export class BreakpointsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
           (this.#independentPauseToggles || this.#pauseOnUncaughtExceptions) && this.#pauseOnCaughtExceptions;
       const pauseOnCaughtExceptionIsDisabled = !this.#independentPauseToggles && !this.#pauseOnUncaughtExceptions;
       // clang-format off
-      const out = LitHtml.html`
+      const out = html`
         <div class='pause-on-uncaught-exceptions'
             tabindex='0'
             @click=${clickHandler}
@@ -603,10 +605,10 @@ export class BreakpointsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
             </label>
         </div>
         <div role=tree>
-          ${LitHtml.Directives.repeat(
+          ${repeat(
             this.#breakpointGroups,
             group => group.url,
-            (group, groupIndex) => LitHtml.html`${this.#renderBreakpointGroup(group, groupIndex)}`)}
+            (group, groupIndex) => html`${this.#renderBreakpointGroup(group, groupIndex)}`)}
         </div>`;
       // clang-format on
       LitHtml.render(out, this.#shadow, {host: this});
@@ -708,7 +710,7 @@ export class BreakpointsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
         i18nString(UIStrings.editLogpoint) :
         i18nString(UIStrings.editCondition);
     // clang-format off
-    return LitHtml.html`
+    return html`
     <button data-edit-breakpoint @click=${clickHandler} title=${title} jslog=${VisualLogging.action('edit-breakpoint').track({click: true})}>
       <${IconButton.Icon.Icon.litTagName} name="edit"></${IconButton.Icon.Icon.litTagName}>
     </button>
@@ -724,7 +726,7 @@ export class BreakpointsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
       event.consume();
     };
     // clang-format off
-    return LitHtml.html`
+    return html`
     <button data-remove-breakpoint @click=${clickHandler} title=${tooltipText} aria-label=${tooltipText} jslog=${VisualLogging.action('remove-breakpoint').track({click: true})}>
       <${IconButton.Icon.Icon.litTagName} name="bin"></${IconButton.Icon.Icon.litTagName}>
     </button>
@@ -789,18 +791,15 @@ export class BreakpointsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.BreakpointGroupExpandedStateChanged);
       event.consume();
     };
-    const classMap = {
-      active: this.#breakpointsActive,
-    };
     // clang-format off
-    return LitHtml.html`
-      <details class=${LitHtml.Directives.classMap(classMap)}
+    return html`
+      <details class=${classMap({active: this.#breakpointsActive})}
                ?data-first-group=${groupIndex === 0}
                ?data-last-group=${groupIndex === this.#breakpointGroups.length - 1}
                role=group
                aria-label='${group.name}'
                aria-description='${group.url}'
-               ?open=${LitHtml.Directives.live(group.expanded)}
+               ?open=${live(group.expanded)}
                @toggle=${toggleHandler}>
           <summary @contextmenu=${contextmenuHandler}
                    tabindex='-1'
@@ -811,7 +810,7 @@ export class BreakpointsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
               ${this.#renderRemoveBreakpointButton(group.breakpointItems, i18nString(UIStrings.removeAllBreakpointsInFile), Host.UserMetrics.Action.BreakpointsInFileRemovedFromRemoveButton)}
             </span>
           </summary>
-        ${LitHtml.Directives.repeat(
+        ${repeat(
           group.breakpointItems,
           item => item.id,
           (item, breakpointItemIndex) => this.#renderBreakpointEntry(item, group.editable, groupIndex, breakpointItemIndex))}
@@ -833,7 +832,7 @@ export class BreakpointsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
     };
 
     const checked = group.breakpointItems.some(item => item.status === BreakpointStatus.ENABLED);
-    return LitHtml.html`
+    return html`
       <input class='group-checkbox small' type='checkbox'
             aria-label=''
             .checked=${checked}
@@ -846,7 +845,7 @@ export class BreakpointsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
   }
 
   #renderFileIcon(): LitHtml.TemplateResult {
-    return LitHtml.html`<${IconButton.Icon.Icon.litTagName} name="file-script"></${IconButton.Icon.Icon.litTagName}>`;
+    return html`<${IconButton.Icon.Icon.litTagName} name="file-script"></${IconButton.Icon.Icon.litTagName}>`;
   }
 
   #onBreakpointEntryContextMenu(event: Event, breakpointItem: BreakpointItem, editable: boolean): void {
@@ -909,20 +908,19 @@ export class BreakpointsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
       this.#onBreakpointEntryContextMenu(event, breakpointItem, editable);
       event.consume();
     };
-    const classMap = {
-      'breakpoint-item': true,
-      hit: breakpointItem.isHit,
-      'conditional-breakpoint': breakpointItem.type === SDK.DebuggerModel.BreakpointType.CONDITIONAL_BREAKPOINT,
-      logpoint: breakpointItem.type === SDK.DebuggerModel.BreakpointType.LOGPOINT,
-    };
     const breakpointItemDescription = this.#getBreakpointItemDescription(breakpointItem);
     const codeSnippet = Platform.StringUtilities.trimEndWithMaxLength(breakpointItem.codeSnippet, MAX_SNIPPET_LENGTH);
     const codeSnippetTooltip = this.#getCodeSnippetTooltip(breakpointItem.type, breakpointItem.hoverText);
     const itemsInGroup = this.#breakpointGroups[groupIndex].breakpointItems;
 
     // clang-format off
-    return LitHtml.html`
-    <div class=${LitHtml.Directives.classMap(classMap)}
+    return html`
+    <div class=${classMap({
+            'breakpoint-item': true,
+            hit: breakpointItem.isHit,
+            'conditional-breakpoint': breakpointItem.type === SDK.DebuggerModel.BreakpointType.CONDITIONAL_BREAKPOINT,
+            logpoint: breakpointItem.type === SDK.DebuggerModel.BreakpointType.LOGPOINT,
+          })}
          ?data-first-breakpoint=${breakpointItemIndex === 0}
          ?data-last-breakpoint=${breakpointItemIndex === itemsInGroup.length - 1}
          aria-label=${breakpointItemDescription}
@@ -942,7 +940,7 @@ export class BreakpointsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
               tabindex=-1
               jslog=${VisualLogging.toggle('breakpoint').track({change: true})}>
       </label>
-      <span class='code-snippet' @click=${codeSnippetClickHandler} title=${LitHtml.Directives.ifDefined(codeSnippetTooltip)} jslog=${VisualLogging.action('sources.jump-to-breakpoint').track({click: true})}>${codeSnippet}</span>
+      <span class='code-snippet' @click=${codeSnippetClickHandler} title=${ifDefined(codeSnippetTooltip)} jslog=${VisualLogging.action('sources.jump-to-breakpoint').track({click: true})}>${codeSnippet}</span>
       <span class='breakpoint-item-location-or-actions'>
         ${editable ? this.#renderEditBreakpointButton(breakpointItem) : LitHtml.nothing}
         ${this.#renderRemoveBreakpointButton([breakpointItem], i18nString(UIStrings.removeBreakpoint), Host.UserMetrics.Action.BreakpointRemovedFromRemoveButton)}

@@ -19,6 +19,8 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 import styles from './entriesLinkOverlay.css.js';
 
+const {html} = LitHtml;
+
 export class EntryLinkStartCreating extends Event {
   static readonly eventName = 'entrylinkstartcreating';
 
@@ -305,7 +307,7 @@ export class EntriesLinkOverlay extends HTMLElement {
     const arrowColor = ThemeSupport.ThemeSupport.instance().getComputedValue('--color-text-primary');
     // clang-format off
     LitHtml.render(
-        LitHtml.html`
+        html`
           <svg class="connectorContainer" width="100%" height="100%" role="region" aria-label=${i18nString(UIStrings.diagram)}>
             <defs>
               <linearGradient

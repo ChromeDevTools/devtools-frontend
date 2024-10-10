@@ -10,6 +10,8 @@ import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import elementsTreeExpandButtonStyles from './elementsTreeExpandButton.css.js';
 
+const {html} = LitHtml;
+
 const UIStrings = {
   /**
    *@description Aria label for a button expanding collapsed subtree
@@ -44,7 +46,7 @@ export class ElementsTreeExpandButton extends HTMLElement {
     // clang-format off
     // This button's innerText will be tested by e2e test and blink layout tests.
     // It can't have any other characters like '\n' or space, otherwise it will break tests.
-    LitHtml.render(LitHtml.html`<button
+    LitHtml.render(html`<button
         class="expand-button"
         tabindex="-1"
         aria-label=${i18nString(UIStrings.expand)}

@@ -12,6 +12,8 @@ import * as Coordinator from '../render_coordinator/render_coordinator.js';
 
 import * as Menus from './menus.js';
 
+const {html} = LitHtml;
+
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 async function createMenu(): Promise<Menus.SelectMenu.SelectMenu> {
@@ -80,7 +82,7 @@ describeWithLocale('SelectMenu', () => {
       return;
     }
     firsItem.selected = true;
-    menu.buttonTitle = () => LitHtml.html`Override Title`;
+    menu.buttonTitle = () => html`Override Title`;
     Helpers.renderElementIntoDOM(menu);
     await coordinator.done();
     assert.isNotNull(menu.shadowRoot);

@@ -832,7 +832,7 @@ export class JSONEditor extends LitElement {
             jslog=${VisualLogging.dropDown('targets').track({click: true})}
           >
           ${repeat(this.targets, target => {
-          return LitHtml.html`
+          return html`
                 <${Menus.Menu.MenuItem.litTagName}
                   .value=${target.id()}>
                     ${this.#computeTargetLabel(target)}
@@ -884,7 +884,7 @@ export class JSONEditor extends LitElement {
   }
 
   #renderWarningIcon(): LitHtml.TemplateResult|undefined {
-    return LitHtml.html`<${IconButton.Icon.Icon.litTagName}
+    return html`<${IconButton.Icon.Icon.litTagName}
     .data=${{
       iconName: 'warning-filled',
       color: 'var(--icon-warning)',

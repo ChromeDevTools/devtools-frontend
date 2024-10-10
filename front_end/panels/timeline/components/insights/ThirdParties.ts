@@ -13,6 +13,8 @@ import * as SidebarInsight from './SidebarInsight.js';
 import {Table, type TableData} from './Table.js';
 import {Category} from './types.js';
 
+const {html} = LitHtml;
+
 type ThirdPartiesEntries = Array<[
   Trace.Insights.InsightRunners.ThirdPartyWeb.Entity,
   Trace.Insights.InsightRunners.ThirdPartyWeb.Summary,
@@ -84,7 +86,7 @@ export class ThirdParties extends BaseInsight {
     const topMainThreadTimeEntries = entries.sort((a, b) => b[1].mainThreadTime - a[1].mainThreadTime).slice(0, 6);
 
     // clang-format off
-    return LitHtml.html`
+    return html`
         <div class="insights">
             <${SidebarInsight.SidebarInsight.litTagName} .data=${{
               title: this.userVisibleTitle,
@@ -95,7 +97,7 @@ export class ThirdParties extends BaseInsight {
             @insighttoggleclick=${this.onSidebarClick}>
                 <div slot="insight-content">
                   <div class="insight-section">
-                    ${LitHtml.html`<${Table.litTagName}
+                    ${html`<${Table.litTagName}
                       .data=${{
                         insight: this,
                         headers: [i18nString(UIStrings.columnThirdParty), i18nString(UIStrings.columnTransferSize)],
@@ -111,7 +113,7 @@ export class ThirdParties extends BaseInsight {
                   </div>
 
                   <div class="insight-section">
-                    ${LitHtml.html`<${Table.litTagName}
+                    ${html`<${Table.litTagName}
                       .data=${{
                         insight: this,
                         headers: [i18nString(UIStrings.columnThirdParty), i18nString(UIStrings.columnBlockingTime)],

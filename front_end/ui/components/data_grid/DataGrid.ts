@@ -37,6 +37,8 @@ import {
 } from './DataGridUtils.js';
 
 import * as i18n from '../../../core/i18n/i18n.js';
+
+const {html, Directives: {ifDefined, classMap, styleMap, repeat}} = LitHtml;
 const UIStrings = {
   /**
    *@description A context menu item in the Data Grid of a data grid
@@ -409,15 +411,14 @@ export class DataGrid extends HTMLElement {
       const emptyCellClasses = LitHtml.Directives.classMap({
         firstVisibleColumn: colIndex === 0,
       });
-      return LitHtml.html`<td aria-hidden="true" class=${emptyCellClasses} data-filler-row-column-index=${
-          colIndex}></td>`;
+      return html`<td aria-hidden="true" class=${emptyCellClasses} data-filler-row-column-index=${colIndex}></td>`;
     });
     const emptyRowClasses = LitHtml.Directives.classMap({
       'filler-row': true,
       'padding-row': true,
       'empty-table': numberOfVisibleRows === 0,
     });
-    return LitHtml.html`<tr aria-hidden="true" class=${emptyRowClasses}>${emptyCells}</tr>`;
+    return html`<tr aria-hidden="true" class=${emptyRowClasses}>${emptyCells}</tr>`;
   }
 
   #cleanUpAfterResizeColumnComplete(): void {
@@ -569,7 +570,7 @@ export class DataGrid extends HTMLElement {
       return LitHtml.nothing;
     }
 
-    return LitHtml.html`<span class="cell-resize-handle"
+    return html`<span class="cell-resize-handle"
      @pointerdown=${this.#onResizePointerDown}
      @pointerup=${this.#onResizePointerUp}
      data-column-index=${columnIndex}
@@ -786,7 +787,7 @@ export class DataGrid extends HTMLElement {
     await coordinator.write(() => {
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
-      LitHtml.render(LitHtml.html`
+      LitHtml.render(html`
       ${this.#columns.map((col, columnIndex) => {
         /**
          * We render the resizers outside of the table. One is rendered for each
@@ -796,9 +797,9 @@ export class DataGrid extends HTMLElement {
          */
         return this.#renderResizeForCell(col, [columnIndex, 0]);
       })}
-      <div class=${LitHtml.Directives.classMap(containerClassMap)} @scroll=${this.#onScroll} @focusout=${this.#onFocusOut}>
+      <div class=${classMap(containerClassMap)} @scroll=${this.#onScroll} @focusout=${this.#onFocusOut}>
         <table
-          aria-label=${LitHtml.Directives.ifDefined(this.#label)}
+          aria-label=${ifDefined(this.#label)}
           aria-rowcount=${this.#rows.length}
           aria-colcount=${this.#columns.length}
           @keydown=${this.#onTableKeyDown}
@@ -811,13 +812,13 @@ export class DataGrid extends HTMLElement {
               if (!col.visible) {
                 return LitHtml.nothing;
               }
-              return LitHtml.html`<col style=${style} data-col-column-index=${colIndex}>`;
+              return html`<col style=${style} data-col-column-index=${colIndex}>`;
             })}
           </colgroup>
           <thead>
             <tr @contextmenu=${this.#onHeaderContextMenu}>
               ${this.#columns.map((col, columnIndex) => {
-                const thClasses = LitHtml.Directives.classMap({
+                const thClasses = classMap({
                   hidden: !col.visible,
                   firstVisibleColumn: columnIndex === indexOfFirstVisibleColumn,
                   sortable: anyColumnsSortable,
@@ -825,9 +826,9 @@ export class DataGrid extends HTMLElement {
                 const tabbableCell = this.#tabbableCell();
                 const cellIsFocusableCell = anyColumnsSortable && columnIndex === tabbableCell[0] && tabbableCell[1] === 0;
 
-                return LitHtml.html`<th class=${thClasses}
+                return html`<th class=${thClasses}
                   jslog=${VisualLogging.tableHeader().track({click: anyColumnsSortable, resize: true}).context(col.id)}
-                  style=${LitHtml.Directives.ifDefined(col.styles ? LitHtml.Directives.styleMap(col.styles) : undefined)}
+                  style=${ifDefined(col.styles ? styleMap(col.styles) : undefined)}
                   data-grid-header-cell=${col.id}
                   @focus=${() => {
                     this.#focusCellIfRequired([columnIndex, 0]);
@@ -843,20 +844,20 @@ export class DataGrid extends HTMLElement {
                     this.#onColumnHeaderClick(col, columnIndex);
                   }}
                   title=${col.title}
-                  aria-sort=${LitHtml.Directives.ifDefined(this.#ariaSortForHeader(col))}
+                  aria-sort=${ifDefined(this.#ariaSortForHeader(col))}
                   aria-colindex=${columnIndex + 1}
                   data-row-index='0'
                   data-col-index=${columnIndex}
-                  tabindex=${LitHtml.Directives.ifDefined(anyColumnsSortable ? (cellIsFocusableCell ? '0' : '-1') : undefined)}
+                  tabindex=${ifDefined(anyColumnsSortable ? (cellIsFocusableCell ? '0' : '-1') : undefined)}
                 >${col.titleElement || col.title}</th>`;
               })}
             </tr>
           </thead>
           <tbody>
-            <tr class="filler-row-top padding-row" style=${LitHtml.Directives.styleMap({
+            <tr class="filler-row-top padding-row" style=${styleMap({
               height: `${topVisibleRow * ROW_HEIGHT_PIXELS}px`,
             })} aria-hidden="true"></tr>
-            ${LitHtml.Directives.repeat(renderableRows, row => this.#rowIndexMap.get(row), row => {
+            ${repeat(renderableRows, row => this.#rowIndexMap.get(row), row => {
               const rowIndex = this.#rowIndexMap.get(row);
               if (rowIndex === undefined) {
                 throw new Error('Trying to render a row that has no index in the rowIndexMap');
@@ -873,11 +874,11 @@ export class DataGrid extends HTMLElement {
                 selected: rowIsSelected,
                 hidden: row.hidden === true,
               });
-              return LitHtml.html`
+              return html`
                 <tr
                   aria-rowindex=${rowIndex + 1}
                   class=${rowClasses}
-                  style=${LitHtml.Directives.ifDefined(row.styles ? LitHtml.Directives.styleMap(row.styles) : undefined)}
+                  style=${ifDefined(row.styles ? styleMap(row.styles) : undefined)}
                   jslog=${VisualLogging.tableRow().track({keydown: 'ArrowUp|ArrowDown|ArrowLeft|ArrowRight|Enter|Space'})}
                   @contextmenu=${this.#onBodyRowContextMenu}
                   @mouseenter=${() => {
@@ -888,16 +889,16 @@ export class DataGrid extends HTMLElement {
                   }}
                 >${this.#columns.map((col, columnIndex) => {
                   const cell = getRowEntryForColumnId(row, col.id);
-                  const cellClasses = LitHtml.Directives.classMap({
+                  const cellClasses = classMap({
                     hidden: !col.visible,
                     firstVisibleColumn: columnIndex === indexOfFirstVisibleColumn,
                   });
                   const cellIsFocusableCell = columnIndex === tabbableCell[0] && tableRowIndex === tabbableCell[1];
                   const cellOutput = col.visible ? renderCellValue(cell) : null;
-                  return LitHtml.html`<td
+                  return html`<td
                     class=${cellClasses}
                     jslog=${VisualLogging.tableCell().track({click: true})}).context(col.id)}
-                    style=${LitHtml.Directives.ifDefined(col.styles ? LitHtml.Directives.styleMap(col.styles) : undefined)}
+                    style=${ifDefined(col.styles ? styleMap(col.styles) : undefined)}
                     tabindex=${cellIsFocusableCell ? '0' : '-1'}
                     aria-colindex=${columnIndex + 1}
                     title=${cell.title || getCellTitleFromCellContent(String(cell.value))}
@@ -913,7 +914,7 @@ export class DataGrid extends HTMLElement {
               </tr>`;
             })}
             ${this.#renderEmptyFillerRow(renderableRows.length)}
-            <tr class="filler-row-bottom padding-row" style=${LitHtml.Directives.styleMap({
+            <tr class="filler-row-bottom padding-row" style=${styleMap({
               height: `${Math.max(0, nonHiddenRows.length - bottomVisibleRow) * ROW_HEIGHT_PIXELS}px`,
             })} aria-hidden="true"></tr>
           </tbody>

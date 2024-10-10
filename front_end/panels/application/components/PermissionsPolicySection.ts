@@ -17,6 +17,8 @@ import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import permissionsPolicySectionStyles from './permissionsPolicySection.css.js';
 
+const {html} = LitHtml;
+
 const UIStrings = {
   /**
    *@description Label for a button. When clicked more details (for the content this button refers to) will be shown.
@@ -73,7 +75,7 @@ export function renderIconLink(
     jsLogContext: string): LitHtml.TemplateResult {
   // Disabled until https://crbug.com/1079231 is fixed.
   // clang-format off
-  return LitHtml.html`
+  return html`
   <${Buttons.Button.Button.litTagName}
     .iconName=${iconName}
     title=${title}
@@ -109,7 +111,7 @@ export class PermissionsPolicySection extends HTMLElement {
     if (!allowed.length) {
       return LitHtml.nothing;
     }
-    return LitHtml.html`
+    return html`
       <${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.allowedFeatures)}</${
         ReportView.ReportView.ReportKey.litTagName}>
       <${ReportView.ReportView.ReportValue.litTagName}>
@@ -125,7 +127,7 @@ export class PermissionsPolicySection extends HTMLElement {
       return LitHtml.nothing;
     }
     if (!this.#permissionsPolicySectionData.showDetails) {
-      return LitHtml.html`
+      return html`
         <${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.disabledFeatures)}</${
           ReportView.ReportView.ReportKey.litTagName}>
         <${ReportView.ReportView.ReportValue.litTagName}>
@@ -178,7 +180,7 @@ export class PermissionsPolicySection extends HTMLElement {
 
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
-      return LitHtml.html`
+      return html`
         <div class="permissions-row">
           <div>
             <${IconButton.Icon.Icon.litTagName} class="allowed-icon"
@@ -212,7 +214,7 @@ export class PermissionsPolicySection extends HTMLElement {
       // clang-format on
     }));
 
-    return LitHtml.html`
+    return html`
       <${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.disabledFeatures)}</${
         ReportView.ReportView.ReportKey.litTagName}>
       <${ReportView.ReportView.ReportValue.litTagName} class="policies-list">
@@ -235,7 +237,7 @@ export class PermissionsPolicySection extends HTMLElement {
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
       LitHtml.render(
-        LitHtml.html`
+        html`
           <${ReportView.ReportView.ReportSectionHeader.litTagName}>${i18n.i18n.lockedString('Permissions Policy')}</${
             ReportView.ReportView.ReportSectionHeader.litTagName}>
           ${this.#renderAllowed()}

@@ -8,6 +8,8 @@ import * as IconButton from '../icon_button/icon_button.js';
 
 import buttonStyles from './button.css.legacy.js';
 
+const {html, Directives: {ifDefined, ref, classMap}} = LitHtml;
+
 declare global {
   interface HTMLElementTagNameMap {
     'devtools-button': Button;
@@ -358,22 +360,22 @@ export class Button extends HTMLElement {
         this.#props.jslogContext && VisualLogging.action().track({click: true}).context(this.#props.jslogContext);
     // clang-format off
     LitHtml.render(
-      LitHtml.html`
-        <button title=${LitHtml.Directives.ifDefined(this.#props.title)}
+      html`
+        <button title=${ifDefined(this.#props.title)}
           .disabled=${this.#props.disabled}
-          class=${LitHtml.Directives.classMap(classes)}
-          aria-pressed=${LitHtml.Directives.ifDefined(this.#props.toggled)}
-          jslog=${LitHtml.Directives.ifDefined(jslog)}
+          class=${classMap(classes)}
+          aria-pressed=${ifDefined(this.#props.toggled)}
+          jslog=${ifDefined(jslog)}
         >${hasIcon
-            ? LitHtml.html`
+            ? html`
                 <${IconButton.Icon.Icon.litTagName} name=${this.#props.toggled ? this.#props.toggledIconName : this.#props.iconName || this.#props.iconUrl}>
                 </${IconButton.Icon.Icon.litTagName}>`
             : ''}
-          ${this.#props.longClickable ? LitHtml.html`<${IconButton.Icon.Icon.litTagName} name=${'triangle-bottom-right'} class="long-click"
+          ${this.#props.longClickable ? html`<${IconButton.Icon.Icon.litTagName} name=${'triangle-bottom-right'} class="long-click"
             ></${IconButton.Icon.Icon.litTagName}>`
       : ''}
-          ${this.#props.spinner ? LitHtml.html`<span class=${LitHtml.Directives.classMap(spinnerClasses)}></span>` : ''}
-          <slot @slotchange=${this.#render} ${LitHtml.Directives.ref(this.#slotRef)}></slot>
+          ${this.#props.spinner ? html`<span class=${classMap(spinnerClasses)}></span>` : ''}
+          <slot @slotchange=${this.#render} ${ref(this.#slotRef)}></slot>
         </button>
       `, this.#shadow, {host: this});
     // clang-format on

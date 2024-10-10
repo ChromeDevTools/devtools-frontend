@@ -31,6 +31,8 @@ import {
 import {FreestylerAgent} from './FreestylerAgent.js';
 import freestylerPanelStyles from './freestylerPanel.css.js';
 
+const {html} = LitHtml;
+
 // Bug for the send feed back link
 // const AI_ASSISTANCE_SEND_FEEDBACK = 'https://crbug.com/364805393' as Platform.DevToolsPath.UrlString;
 const AI_ASSISTANCE_HELP = 'https://goo.gle/devtools-ai-assistance' as Platform.DevToolsPath.UrlString;
@@ -89,7 +91,7 @@ function createToolbar(target: HTMLElement, {onClearClick}: {onClearClick: () =>
 
 function defaultView(input: FreestylerChatUiProps, output: ViewOutput, target: HTMLElement): void {
   // clang-format off
-  LitHtml.render(LitHtml.html`
+  LitHtml.render(html`
     <${FreestylerChatUi.litTagName} .props=${input} ${LitHtml.Directives.ref((el: Element|undefined) => {
       if (!el || !(el instanceof FreestylerChatUi)) {
         return;

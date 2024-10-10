@@ -13,6 +13,8 @@ import * as SidebarInsight from './SidebarInsight.js';
 import {Table, type TableData} from './Table.js';
 import {Category} from './types.js';
 
+const {html} = LitHtml;
+
 const UIStrings = {
   /**
    * @description Text to tell the user about the longest user interaction.
@@ -111,7 +113,7 @@ export class InteractionToNextPaint extends BaseInsight {
         i18n.TimeUtilities.millisToString(Platform.Timing.microSecondsToMilliSeconds(us));
 
     // clang-format off
-    return LitHtml.html`
+    return html`
         <div class="insights">
             <${SidebarInsight.SidebarInsight.litTagName} .data=${{
             title: this.userVisibleTitle,
@@ -121,7 +123,7 @@ export class InteractionToNextPaint extends BaseInsight {
             } as SidebarInsight.InsightDetails}
             @insighttoggleclick=${this.onSidebarClick}>
                 <div slot="insight-content" class="insight-section">
-                  ${LitHtml.html`<${Table.litTagName}
+                  ${html`<${Table.litTagName}
                     .data=${{
                       insight: this,
                       headers: [i18nString(UIStrings.phase), i18nString(UIStrings.duration)],

@@ -14,6 +14,8 @@ import * as Actions from '../recorder-actions/recorder-actions.js';
 
 import recordingListViewStyles from './recordingListView.css.js';
 
+const {html} = LitHtml;
+
 const UIStrings = {
   /**
    *@description The title of the page that contains a list of saved recordings that the user has..
@@ -145,7 +147,7 @@ export class RecordingListView extends HTMLElement {
   #render = (): void => {
     // clang-format off
     LitHtml.render(
-      LitHtml.html`
+      html`
         <div class="wrapper">
           <div class="header">
             <h1>${i18nString(UIStrings.savedRecordings)}</h1>
@@ -163,7 +165,7 @@ export class RecordingListView extends HTMLElement {
           </div>
           <div class="table">
             ${this.#props.recordings.map(recording => {
-              return LitHtml.html`
+              return html`
                   <div
                     role="button"
                     tabindex="0"
@@ -188,7 +190,7 @@ export class RecordingListView extends HTMLElement {
                     <div class="actions">
                       ${
                         this.#props.replayAllowed
-                          ? LitHtml.html`
+                          ? html`
                               <devtools-button
                                 title=${i18nString(UIStrings.playRecording)}
                                 .data=${

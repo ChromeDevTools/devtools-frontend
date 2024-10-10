@@ -7,6 +7,8 @@ import * as Coordinator from '../render_coordinator/render_coordinator.js';
 
 import * as ComponentHelpers from './helpers.js';
 
+const {html} = LitHtml;
+
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 const TestElement = class extends HTMLElement {
@@ -43,13 +45,14 @@ describe('ComponentHelpers', () => {
         const targetDiv = document.createElement('div');
         const callback = sinon.spy();
         function fakeComponentRender(this: HTMLDivElement) {
-          // clang-format off
-          const html = LitHtml.html`
-          <span on-render=${ComponentHelpers.Directives.nodeRenderedCallback(callback)}>
-           hello world
-          </span>`;
-          // clang-format on
-          LitHtml.render(html, targetDiv, {host: this});
+          LitHtml.render(
+              // clang-format off
+              html`
+              <span on-render=${ComponentHelpers.Directives.nodeRenderedCallback(callback)}>
+               hello world
+              </span>`,
+              // clang-format on
+              targetDiv, {host: this});
         }
         fakeComponentRender.call(targetDiv);
         assert.isNotEmpty(targetDiv.innerHTML);
@@ -60,13 +63,14 @@ describe('ComponentHelpers', () => {
         const targetDiv = document.createElement('div');
         const callback = sinon.spy();
         function fakeComponentRender(this: HTMLDivElement, output: string) {
-          // clang-format off
-          const html = LitHtml.html`
-          <span on-render=${ComponentHelpers.Directives.nodeRenderedCallback(callback)}>
-           ${output}
-          </span>`;
-          // clang-format on
-          LitHtml.render(html, targetDiv, {host: this});
+          LitHtml.render(
+              // clang-format off
+              html`
+              <span on-render=${ComponentHelpers.Directives.nodeRenderedCallback(callback)}>
+               ${output}
+              </span>`,
+              // clang-format on
+              targetDiv, {host: this});
         }
         fakeComponentRender.call(targetDiv, 'render one');
         assert.strictEqual(callback.callCount, 1);

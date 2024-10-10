@@ -12,6 +12,8 @@ import * as ChromeLink from '../../../ui/components/chrome_link/chrome_link.js';
 
 import syncSectionStyles from './syncSection.css.js';
 
+const {html} = LitHtml;
+
 const UIStrings = {
   /**
    * @description Text shown to the user in the Settings UI. 'This setting' refers
@@ -72,7 +74,7 @@ export class SyncSection extends HTMLElement {
     this.#syncSetting?.setDisabled(checkboxDisabled);
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-    LitHtml.render(LitHtml.html`
+    LitHtml.render(html`
       <fieldset>
         <legend>${Common.Settings.getLocalizedSettingsCategory(Common.Settings.SettingCategory.SYNC)}</legend>
         ${renderAccountInfoOrWarning(this.#syncInfo)}
@@ -93,7 +95,7 @@ function renderAccountInfoOrWarning(syncInfo: Host.InspectorFrontendHostAPI.Sync
     const link = 'chrome://settings/syncSetup';
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-    return LitHtml.html`
+    return html`
       <span class="warning">
         ${i18nString(UIStrings.syncDisabled)}
         <${ChromeLink.ChromeLink.ChromeLink.litTagName} .href=${link}>${i18nString(UIStrings.settings)}</${ChromeLink.ChromeLink.ChromeLink.litTagName}>
@@ -104,14 +106,14 @@ function renderAccountInfoOrWarning(syncInfo: Host.InspectorFrontendHostAPI.Sync
     const link = 'chrome://settings/syncSetup/advanced';
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-    return LitHtml.html`
+    return html`
       <span class="warning">
         ${i18nString(UIStrings.preferencesSyncDisabled)}
         <${ChromeLink.ChromeLink.ChromeLink.litTagName} .href=${link}>${i18nString(UIStrings.settings)}</${ChromeLink.ChromeLink.ChromeLink.litTagName}>
       </span>`;
     // clang-format on
   }
-  return LitHtml.html`
+  return html`
     <div class="account-info">
       <img src="data:image/png;base64, ${syncInfo.accountImage}" alt="Account avatar" />
       <div class="account-email">

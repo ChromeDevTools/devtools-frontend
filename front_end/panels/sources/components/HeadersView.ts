@@ -15,6 +15,8 @@ import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import HeadersViewStyles from './HeadersView.css.js';
 
+const {html} = LitHtml;
+
 const UIStrings = {
   /**
    *@description The title of a button that adds a field to input a header in the editor form.
@@ -345,7 +347,7 @@ export class HeadersViewComponent extends HTMLElement {
     if (this.#parsingError) {
       const fileName = this.#uiSourceCode?.name() || '.headers';
       // clang-format off
-      LitHtml.render(LitHtml.html`
+      LitHtml.render(html`
         <div class="center-wrapper">
           <div class="centered">
             <div class="error-header">${i18nString(UIStrings.errorWhenParsing, {PH1: fileName})}</div>
@@ -358,12 +360,12 @@ export class HeadersViewComponent extends HTMLElement {
     }
 
     // clang-format off
-    LitHtml.render(LitHtml.html`
+    LitHtml.render(html`
       ${this.#headerOverrides.map((headerOverride, blockIndex) =>
-        LitHtml.html`
+        html`
           ${this.#renderApplyToRow(headerOverride.applyTo, blockIndex)}
           ${headerOverride.headers.map((header, headerIndex) =>
-            LitHtml.html`
+            html`
               ${this.#renderHeaderRow(header, blockIndex, headerIndex)}
             `,
           )}
@@ -401,7 +403,7 @@ export class HeadersViewComponent extends HTMLElement {
 
   #renderApplyToRow(pattern: string, blockIndex: number): LitHtml.TemplateResult {
     // clang-format off
-    return LitHtml.html`
+    return html`
       <div class="row" data-block-index=${blockIndex}
            jslog=${VisualLogging.treeItem(pattern === '*' ? pattern : undefined)}>
         <div>${i18n.i18n.lockedString('Apply to')}</div>
@@ -425,7 +427,7 @@ export class HeadersViewComponent extends HTMLElement {
   #renderHeaderRow(header: Protocol.Fetch.HeaderEntry, blockIndex: number, headerIndex: number):
       LitHtml.TemplateResult {
     // clang-format off
-    return LitHtml.html`
+    return html`
       <div class="row padded" data-block-index=${blockIndex} data-header-index=${headerIndex}
            jslog=${VisualLogging.treeItem(header.name).parent('headers-editor-row-parent')}>
         ${this.#renderEditable(header.name, 'header-name red', true)}
@@ -460,7 +462,7 @@ export class HeadersViewComponent extends HTMLElement {
     // value from the previous render.
     // clang-format off
     const jslog = isKey ? VisualLogging.key() : VisualLogging.value();
-    return LitHtml.html`<span jslog=${jslog.track({change: true, keydown: 'Enter|Escape|Tab', click: true})}
+    return html`<span jslog=${jslog.track({change: true, keydown: 'Enter|Escape|Tab', click: true})}
                               contenteditable="true"
                               class="editable ${className}"
                               tabindex="0"

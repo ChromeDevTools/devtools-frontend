@@ -17,6 +17,8 @@ import {
 } from './Dialog.js';
 import shortcutDialogStyles from './shortcutDialog.css.js';
 
+const {html} = LitHtml;
+
 const UIStrings = {
 
   /**
@@ -109,7 +111,7 @@ export class ShortcutDialog extends HTMLElement {
 
     // clang-format off
     LitHtml.render(
-      LitHtml.html`
+      html`
       <${Buttons.Button.Button.litTagName}
         @click=${this.#showDialog}
         on-render=${ComponentHelpers.Directives.nodeRenderedCallback(node => {
@@ -152,16 +154,16 @@ export class ShortcutDialog extends HTMLElement {
         </div>
         <ul class="keybinds-list">
           ${this.#shortcuts.map(shortcut =>
-            LitHtml.html`
+            html`
               <li class="keybinds-list-item">
                 <div class="keybinds-action-name keybinds-list-text">${shortcut.title}</div>
                 ${shortcut.bindings.map((binding, index) =>
-                  LitHtml.html`
+                  html`
                     <div class="keybinds-shortcut keybinds-list-text">
                       <span class="keybinds-key">${binding}</span>
                     </div>
                     ${shortcut.bindings.at(index + 1) ?
-                      LitHtml.html`<span class="keybinds-shortcut-separator"> - </span>`
+                      html`<span class="keybinds-shortcut-separator"> - </span>`
                       : LitHtml.nothing
                     }
                 `)}

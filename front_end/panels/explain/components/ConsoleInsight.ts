@@ -688,7 +688,7 @@ export class ConsoleInsight extends HTMLElement {
 
   #renderDisclaimer(): LitHtml.LitTemplate {
     // clang-format off
-    return LitHtml.html`<span>
+    return html`<span>
       AI tools may generate inaccurate info that doesn't represent Google's views. Data sent to Google may be seen by human reviewers to improve this feature.
       <button class="link" role="link" @click=${() => UI.ViewManager.ViewManager.instance().showView('chrome-ai')}
         jslog=${VisualLogging.action('open-ai-settings').track({click: true})}
@@ -933,7 +933,7 @@ class ConsoleInsightSourcesList extends HTMLElement {
             ${localizeType(item.type)}
           </x-link></li>`;
         })}
-        ${this.#isPageReloadRecommended ? LitHtml.html`<li class="source-disclaimer">
+        ${this.#isPageReloadRecommended ? html`<li class="source-disclaimer">
           <${IconButton.Icon.Icon.litTagName} name="warning"></${IconButton.Icon.Icon.litTagName}>
           ${i18nString(UIStrings.reloadRecommendation)}</li>` : LitHtml.nothing}
       </ul>

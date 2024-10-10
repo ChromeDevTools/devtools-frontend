@@ -15,6 +15,8 @@ import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import {getIssueKindIconData} from './IssueCounter.js';
 import IssueLinkIconStyles from './issueLinkIcon.css.js';
 
+const {html} = LitHtml;
+
 const UIStrings = {
   /**
    * @description Title for a link to show an issue in the issues tab
@@ -144,7 +146,7 @@ export class IssueLinkIcon extends HTMLElement {
   #render(): Promise<void> {
     return coordinator.write(() => {
       // clang-format off
-      LitHtml.render(LitHtml.html`
+      LitHtml.render(html`
       <button class=${LitHtml.Directives.classMap({link: Boolean(this.#issue)})}
               title=${this.#getTooltip()}
               jslog=${VisualLogging.link('issue').track({click: true})}

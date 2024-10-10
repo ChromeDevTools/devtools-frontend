@@ -23,6 +23,8 @@ import preloadingDetailsReportViewStyles from './preloadingDetailsReportView.css
 import * as PreloadingString from './PreloadingString.js';
 import {prefetchFailureReason, prerenderFailureReason, ruleSetLocationShort} from './PreloadingString.js';
 
+const {html} = LitHtml;
+
 const UIStrings = {
   /**
    *@description Text in PreloadingDetailsReportView of the Application panel
@@ -146,7 +148,7 @@ export class PreloadingDetailsReportView extends LegacyWrapper.LegacyWrapper.Wra
       if (this.#data === null) {
         // Disabled until https://crbug.com/1079231 is fixed.
         // clang-format off
-        LitHtml.render(LitHtml.html`
+        LitHtml.render(html`
           <div class="preloading-noselected">
             <div>
               <p>${i18nString(UIStrings.selectAnElementForMoreDetails)}</p>
@@ -162,7 +164,7 @@ export class PreloadingDetailsReportView extends LegacyWrapper.LegacyWrapper.Wra
 
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
-      LitHtml.render(LitHtml.html`
+      LitHtml.render(html`
         <${ReportView.ReportView.Report.litTagName} .data=${{reportTitle: 'Speculative Loading Attempt'} as ReportView.ReportView.ReportData}
         jslog=${VisualLogging.section('preloading-details')}>
           <${ReportView.ReportView.ReportSectionHeader.litTagName}>${i18nString(UIStrings.detailsDetailedInformation)}</${
@@ -195,7 +197,7 @@ export class PreloadingDetailsReportView extends LegacyWrapper.LegacyWrapper.Wra
     if (attempt.action === Protocol.Preload.SpeculationAction.Prefetch && attempt.requestId !== undefined) {
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
-      value = LitHtml.html`
+      value = html`
           <${RequestLinkIcon.RequestLinkIcon.RequestLinkIcon.litTagName}
             .data=${
               {
@@ -214,7 +216,7 @@ export class PreloadingDetailsReportView extends LegacyWrapper.LegacyWrapper.Wra
     } else {
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
-      value = LitHtml.html`
+      value = html`
           <div class="text-ellipsis" title=${attempt.key.url}>${attempt.key.url}</div>
       `;
       // clang-format on
@@ -222,7 +224,7 @@ export class PreloadingDetailsReportView extends LegacyWrapper.LegacyWrapper.Wra
 
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-    return LitHtml.html`
+    return html`
         <${ReportView.ReportView.ReportKey.litTagName}>${i18n.i18n.lockedString('URL')}</${
           ReportView.ReportView.ReportKey.litTagName}>
         <${ReportView.ReportView.ReportValue.litTagName}>
@@ -261,7 +263,7 @@ export class PreloadingDetailsReportView extends LegacyWrapper.LegacyWrapper.Wra
       };
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
-      maybeInspectButton = LitHtml.html`
+      maybeInspectButton = html`
           <${Buttons.Button.Button.litTagName}
             @click=${inspect}
             .title=${i18nString(UIStrings.buttonClickToInspect)}
@@ -278,7 +280,7 @@ export class PreloadingDetailsReportView extends LegacyWrapper.LegacyWrapper.Wra
 
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-    return LitHtml.html`
+    return html`
         <${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.detailsAction)}</${
           ReportView.ReportView.ReportKey.litTagName}>
         <${ReportView.ReportView.ReportValue.litTagName}>
@@ -304,7 +306,7 @@ export class PreloadingDetailsReportView extends LegacyWrapper.LegacyWrapper.Wra
       return LitHtml.nothing;
     }
 
-    return LitHtml.html`
+    return html`
         <${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.detailsFailureReason)}</${
         ReportView.ReportView.ReportKey.litTagName}>
         <${ReportView.ReportView.ReportValue.litTagName}>
@@ -326,7 +328,7 @@ export class PreloadingDetailsReportView extends LegacyWrapper.LegacyWrapper.Wra
       return LitHtml.nothing;
     }
 
-    return LitHtml.html`
+    return html`
         <${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.detailsFailureReason)}</${
         ReportView.ReportView.ReportKey.litTagName}>
         <${ReportView.ReportView.ReportValue.litTagName}>
@@ -343,7 +345,7 @@ export class PreloadingDetailsReportView extends LegacyWrapper.LegacyWrapper.Wra
 
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-    return LitHtml.html`
+    return html`
       <${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.detailsRuleSet)}</${
         ReportView.ReportView.ReportKey.litTagName}>
       <${ReportView.ReportView.ReportValue.litTagName}>

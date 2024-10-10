@@ -6,9 +6,11 @@ import * as LitHtml from '../../../lit-html/lit-html.js';
 import * as ComponentHelpers from '../../helpers/helpers.js';
 import * as ReportView from '../../report_view/report_view.js';
 
+const {html} = LitHtml;
+
 await ComponentHelpers.ComponentServerSetup.setup();
 
-const exampleRenderHelper = (key: string, value: string) => LitHtml.html`
+const exampleRenderHelper = (key: string, value: string) => html`
           <${ReportView.ReportView.ReportKey.litTagName}>${key}</${ReportView.ReportView.ReportKey.litTagName}>
           <${ReportView.ReportView.ReportValue.litTagName}>${value}</${ReportView.ReportView.ReportValue.litTagName}>
         `;
@@ -19,7 +21,7 @@ if (!container) {
 }
 
 LitHtml.render(
-    LitHtml.html`
+    html`
         <style>
           .source-code {
             font-family: monospace;

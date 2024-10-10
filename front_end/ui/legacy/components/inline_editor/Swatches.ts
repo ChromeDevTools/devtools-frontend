@@ -11,6 +11,8 @@ import bezierSwatchStyles from './bezierSwatch.css.js';
 import {type CSSShadowModel} from './CSSShadowEditor.js';
 import cssShadowSwatchStyles from './cssShadowSwatch.css.js';
 
+const {html} = LitHtml;
+
 export class BezierSwatch extends HTMLSpanElement {
   private readonly iconElementInternal: IconButton.Icon.Icon;
   private textElement: HTMLElement;
@@ -71,7 +73,7 @@ export class CSSShadowSwatch extends HTMLElement {
     ];
 
     LitHtml.render(
-        LitHtml.html`<${IconButton.Icon.Icon.litTagName} name="shadow" class="shadow-swatch-icon"></${
+        html`<${IconButton.Icon.Icon.litTagName} name="shadow" class="shadow-swatch-icon"></${
             IconButton.Icon.Icon.litTagName}><slot></slot>`,
         this.#shadow, {host: this});
 

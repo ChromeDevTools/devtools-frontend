@@ -12,6 +12,8 @@ import {BaseInsight, shouldRenderForCategory} from './Helpers.js';
 import * as SidebarInsight from './SidebarInsight.js';
 import {Category} from './types.js';
 
+const {html} = LitHtml;
+
 const UIStrings = {
   /** Title of an insight that provides details about why elements shift/move on the page. The causes for these shifts are referred to as culprits ("reasons"). */
   title: 'Layout shift culprits',
@@ -75,7 +77,7 @@ export class CLSCulprits extends BaseInsight {
     const range = Trace.Types.Timing.MicroSeconds(worstCluster.dur ?? 0);
     const max = Trace.Types.Timing.MicroSeconds(worstCluster.ts + range);
 
-    const label = LitHtml.html`<div>${i18nString(UIStrings.worstLayoutShiftCluster)}</div>`;
+    const label = html`<div>${i18nString(UIStrings.worstLayoutShiftCluster)}</div>`;
     return [{
       type: 'TIMESPAN_BREAKDOWN',
       sections: [
@@ -138,7 +140,7 @@ export class CLSCulprits extends BaseInsight {
 
     // TODO(crbug.com/369102516): use Table for hover/click ux.
     // clang-format off
-    return LitHtml.html`
+    return html`
         <div class="insights">
             <${SidebarInsight.SidebarInsight.litTagName} .data=${{
               title: this.userVisibleTitle,
@@ -151,7 +153,7 @@ export class CLSCulprits extends BaseInsight {
                   <span class="worst-cluster">${i18nString(UIStrings.worstCluster)}: <button type="button" class="timeline-link" @click=${() => this.#clickEvent(worstCluster)}>${i18nString(UIStrings.layoutShiftCluster, {PH1: clusterTs})}</button></span>
                     <p>${i18nString(UIStrings.topCulprits)}:</p>
                         ${culprits.map(culprit => {
-                          return LitHtml.html `
+                          return html `
                             <li>${culprit}</li>
                           `;
                         })}

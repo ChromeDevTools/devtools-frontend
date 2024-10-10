@@ -13,6 +13,8 @@ import {type ActiveInsight} from './Sidebar.js';
 import styles from './sidebarSingleInsightSet.css.js';
 import {NumberWithUnit, type NumberWithUnitString} from './Utils.js';
 
+const {html} = LitHtml;
+
 const UIStrings = {
   /**
    *@description title used for a metric value to tell the user about its score classification
@@ -108,7 +110,7 @@ export class SidebarSingleInsightSet extends HTMLElement {
     // clang-format off
     const title = i18nString(UIStrings.metricScore, {PH1: label, PH2: valueText, PH3: classification});
 
-    return this.#metricIsVisible(label) ? LitHtml.html`
+    return this.#metricIsVisible(label) ? html`
       <button class="metric"
         @click=${eventToSelectOnClick ? this.#onClickMetric.bind(this, eventToSelectOnClick) : null}
         title=${title}
@@ -169,7 +171,7 @@ export class SidebarSingleInsightSet extends HTMLElement {
     const cls = this.#getCLS(insightSetKey);
     const inp = this.#getINP(insightSetKey);
 
-    return LitHtml.html`
+    return html`
     <div class="metrics-row">
     ${
         lcp ? this.#renderMetricValue(
@@ -211,8 +213,8 @@ export class SidebarSingleInsightSet extends HTMLElement {
       ): LitHtml.TemplateResult {
     const insightComponents = this.#insightsForRendering();
     // clang-format off
-    return LitHtml.html`${insightComponents.map(component => {
-      return LitHtml.html`<div data-single-insight-wrapper>
+    return html`${insightComponents.map(component => {
+      return html`<div data-single-insight-wrapper>
         <${component.litTagName}
           .insights=${insights}
           .parsedTrace=${parsedTrace}
@@ -232,12 +234,12 @@ export class SidebarSingleInsightSet extends HTMLElement {
       insightSetKey,
     } = this.#data;
     if (!parsedTrace || !insights || !insightSetKey) {
-      LitHtml.render(LitHtml.html``, this.#shadow, {host: this});
+      LitHtml.render(html``, this.#shadow, {host: this});
       return;
     }
 
     // clang-format off
-    LitHtml.render(LitHtml.html`
+    LitHtml.render(html`
       <div class="navigation">
         ${this.#renderMetrics(insightSetKey)}
         ${this.#renderInsights(insights, parsedTrace, insightSetKey)}

@@ -12,6 +12,8 @@ import * as SidebarInsight from './SidebarInsight.js';
 import {Table, type TableData} from './Table.js';
 import {Category} from './types.js';
 
+const {html} = LitHtml;
+
 const UIStrings = {
   /**
    *@description Title of an insight that provides details about the LCP metric, broken down by phases / parts.
@@ -222,7 +224,7 @@ export class LCPPhases extends BaseInsight {
     });
 
     // clang-format off
-    return LitHtml.html`
+    return html`
     <div class="insights">
       <${SidebarInsight.SidebarInsight.litTagName} .data=${{
             title: this.userVisibleTitle,
@@ -233,7 +235,7 @@ export class LCPPhases extends BaseInsight {
         @insighttoggleclick=${this.onSidebarClick}
       >
         <div slot="insight-content" class="insight-section">
-          ${LitHtml.html`<${Table.litTagName}
+          ${html`<${Table.litTagName}
             .data=${{
               insight: this,
               headers: [i18nString(UIStrings.phase), i18nString(UIStrings.percentLCP)],

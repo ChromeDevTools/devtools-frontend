@@ -10,6 +10,8 @@ import * as IconButton from '../icon_button/icon_button.js';
 
 import surveyLinkStyles from './surveyLink.css.js';
 
+const {html} = LitHtml;
+
 const UIStrings = {
   /**
    *@description Text shown when the link to open a survey is clicked but the survey has not yet appeared
@@ -122,7 +124,7 @@ export class SurveyLink extends HTMLElement {
 
     // clang-format off
     // eslint-disable-next-line rulesdir/ban_style_tags_in_lit_html
-    const output = LitHtml.html`
+    const output = html`
       <button class="link ${linkState}" tabindex=${ariaDisabled ? '-1' : '0'} .disabled=${ariaDisabled} aria-disabled=${ariaDisabled} @click=${this.#sendSurvey}>
         <${IconButton.Icon.Icon.litTagName} class="link-icon" .data=${{iconName: 'review', color: 'var(--sys-color-primary)', width: 'var(--issue-link-icon-size, 16px)', height: 'var(--issue-link-icon-size, 16px)'} as IconButton.Icon.IconData}></${IconButton.Icon.Icon.litTagName}><!--
       -->${linkText}

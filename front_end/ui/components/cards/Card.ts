@@ -7,6 +7,8 @@ import * as LitHtml from '../../lit-html/lit-html.js';
 
 import cardStyles from './card.css.js';
 
+const {html} = LitHtml;
+
 declare global {
   interface HTMLElementTagNameMap {
     'devtools-card': Card;
@@ -40,7 +42,7 @@ export class Card extends HTMLElement {
 
   #render(): void {
     // clang-format off
-    LitHtml.render(LitHtml.html`
+    LitHtml.render(html`
     <div class="card">
       <div role="heading" class="heading">${this.#heading}</div>
       <slot name="content" class='content-container'></slot>

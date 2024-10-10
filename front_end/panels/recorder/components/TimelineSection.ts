@@ -6,6 +6,8 @@ import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
 import timelineSectionStyles from './timelineSection.css.js';
 
+const {html} = LitHtml;
+
 declare global {
   interface HTMLElementTagNameMap {
     'devtools-timeline-section': TimelineSection;
@@ -61,7 +63,7 @@ export class TimelineSection extends HTMLElement {
 
     // clang-format off
     LitHtml.render(
-      LitHtml.html`
+      html`
       <div class=${LitHtml.Directives.classMap(classes)}>
         <div class="overlay"></div>
         <div class="icon"><slot name="icon"></slot></div>

@@ -13,6 +13,8 @@ import * as IconButton from '../icon_button/icon_button.js';
 
 import panelFeedbackStyles from './panelFeedback.css.js';
 
+const {html} = LitHtml;
+
 const UIStrings = {
   /**
    *@description Introduction sentence to convey the feature is being actively worked on and we are looking for feedback.
@@ -69,7 +71,7 @@ export class PanelFeedback extends HTMLElement {
     }
 
     // clang-format off
-    LitHtml.render(LitHtml.html`
+    LitHtml.render(html`
       <div class="preview">
         <h2 class="flex">
           <${IconButton.Icon.Icon.litTagName} .data=${{

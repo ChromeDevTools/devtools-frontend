@@ -10,6 +10,8 @@ import * as CodeHighlighter from '../code_highlighter/code_highlighter.js';
 
 import diffViewStyles from './diffView.css.js';
 
+const {html} = LitHtml;
+
 const UIStrings = {
   /**
    *@description Text prepended to a removed line in a diff in the Changes tool, viewable only by screen reader.
@@ -190,7 +192,7 @@ class DiffRenderer {
   }
 
   #render(rows: readonly Row[]): LitHtml.TemplateResult {
-    return LitHtml.html`
+    return html`
       <div class="diff-listing" aria-label=${i18nString(UIStrings.changesDiffViewer)}>
         ${rows.map(row => this.#renderRow(row))}
       </div>`;
@@ -204,13 +206,13 @@ class DiffRenderer {
     if (row.type === RowType.ADDITION) {
       marker = '+';
       markerClass += ' diff-line-addition';
-      screenReaderText = LitHtml.html`<span class="diff-hidden-text">${i18nString(UIStrings.additions)}</span>`;
+      screenReaderText = html`<span class="diff-hidden-text">${i18nString(UIStrings.additions)}</span>`;
     } else if (row.type === RowType.DELETION) {
       marker = '-';
       markerClass += ' diff-line-deletion';
-      screenReaderText = LitHtml.html`<span class="diff-hidden-text">${i18nString(UIStrings.deletions)}</span>`;
+      screenReaderText = html`<span class="diff-hidden-text">${i18nString(UIStrings.deletions)}</span>`;
     }
-    return LitHtml.html`
+    return html`
       <div class="diff-line-number" aria-hidden="true">${baseNumber}</div>
       <div class="diff-line-number" aria-hidden="true">${curNumber}</div>
       <div class=${markerClass} aria-hidden="true">${marker}</div>
@@ -221,7 +223,7 @@ class DiffRenderer {
 
   #renderRowContent(row: Row): LitHtml.TemplateResult[] {
     if (row.type === RowType.SPACER) {
-      return row.tokens.map(tok => LitHtml.html`${tok.text}`);
+      return row.tokens.map(tok => html`${tok.text}`);
     }
     const [doc, startPos] = row.type === RowType.DELETION ?
         [this.originalHighlighter, this.originalMap.get(row.originalLineNumber) as number] :
@@ -231,11 +233,10 @@ class DiffRenderer {
     for (const token of row.tokens) {
       const tokenContent: (LitHtml.TemplateResult|string)[] = [];
       doc.highlightRange(pos, pos + token.text.length, (text, style) => {
-        tokenContent.push(style ? LitHtml.html`<span class=${style}>${text}</span>` : text);
+        tokenContent.push(style ? html`<span class=${style}>${text}</span>` : text);
       });
       content.push(
-          token.className ? LitHtml.html`<span class=${token.className}>${tokenContent}</span>` :
-                            LitHtml.html`${tokenContent}`);
+          token.className ? html`<span class=${token.className}>${tokenContent}</span>` : html`${tokenContent}`);
       pos += token.text.length;
     }
     return content;

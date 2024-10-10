@@ -22,6 +22,8 @@ import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import {NotRestoredReasonDescription} from './BackForwardCacheStrings.js';
 import backForwardCacheViewStyles from './backForwardCacheView.css.js';
 
+const {html} = LitHtml;
+
 const UIStrings = {
   /**
    * @description Title text in back/forward cache view of the Application panel
@@ -182,7 +184,7 @@ export class BackForwardCacheView extends LegacyWrapper.LegacyWrapper.WrappableC
     await coordinator.write('BackForwardCacheView render', () => {
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
-      LitHtml.render(LitHtml.html`
+      LitHtml.render(html`
         <${ReportView.ReportView.Report.litTagName} .data=${
             {reportTitle: i18nString(UIStrings.backForwardCacheTitle)} as ReportView.ReportView.ReportData
         } jslog=${VisualLogging.pane('back-forward-cache')}>
@@ -259,7 +261,7 @@ export class BackForwardCacheView extends LegacyWrapper.LegacyWrapper.WrappableC
     const frame = this.#getMainFrame();
     if (!frame) {
       // clang-format off
-      return LitHtml.html`
+      return html`
         <${ReportView.ReportView.ReportKey.litTagName}>
           ${i18nString(UIStrings.mainFrame)}
         </${ReportView.ReportView.ReportKey.litTagName}>
@@ -273,7 +275,7 @@ export class BackForwardCacheView extends LegacyWrapper.LegacyWrapper.WrappableC
     // Prevent running BFCache test on the DevTools window itself via DevTools on DevTools
     const isTestingForbidden = Common.ParsedURL.schemeIs(frame.url, 'devtools:');
     // clang-format off
-    return LitHtml.html`
+    return html`
       ${this.#renderBackForwardCacheStatus(frame.backForwardCacheDetails.restoredFromCache)}
       <div class="report-line">
         <div class="report-key">
@@ -292,7 +294,7 @@ export class BackForwardCacheView extends LegacyWrapper.LegacyWrapper.WrappableC
           .variant=${Buttons.Button.Variant.PRIMARY}
           @click=${this.#navigateAwayAndBack}
           jslog=${VisualLogging.action('back-forward-cache.run-test').track({click: true})}>
-          ${isTestRunning ? LitHtml.html`
+          ${isTestRunning ? html`
             ${i18nString(UIStrings.runningTest)}`:`
             ${i18nString(UIStrings.runTest)}
           `}
@@ -320,9 +322,9 @@ export class BackForwardCacheView extends LegacyWrapper.LegacyWrapper.WrappableC
 
     function treeNodeRenderer(node: TreeOutline.TreeOutlineUtils.TreeNode<FrameTreeNodeData>): LitHtml.TemplateResult {
       // clang-format off
-      return LitHtml.html`
+      return html`
         <div class="text-ellipsis">
-          ${node.treeNodeData.iconName ? LitHtml.html`
+          ${node.treeNodeData.iconName ? html`
             <${IconButton.Icon.Icon.litTagName} class="inline-icon" style="margin-bottom: -3px;" .data=${{
               iconName: node.treeNodeData.iconName,
               color: 'var(--icon-default)',
@@ -357,7 +359,7 @@ export class BackForwardCacheView extends LegacyWrapper.LegacyWrapper.WrappableC
     };
 
     // clang-format off
-    return LitHtml.html`
+    return html`
       <div class="report-line"
       jslog=${VisualLogging.section('frames')}>
         <div class="report-key">
@@ -432,7 +434,7 @@ export class BackForwardCacheView extends LegacyWrapper.LegacyWrapper.WrappableC
     switch (status) {
       case true:
         // clang-format off
-        return LitHtml.html`
+        return html`
           <${ReportView.ReportView.ReportSection.litTagName}>
             <div class="status">
               <${IconButton.Icon.Icon.litTagName} class="inline-icon" .data=${{
@@ -449,7 +451,7 @@ export class BackForwardCacheView extends LegacyWrapper.LegacyWrapper.WrappableC
         // clang-format on
       case false:
         // clang-format off
-        return LitHtml.html`
+        return html`
           <${ReportView.ReportView.ReportSection.litTagName}>
             <div class="status">
               <${IconButton.Icon.Icon.litTagName} class="inline-icon" .data=${{
@@ -466,7 +468,7 @@ export class BackForwardCacheView extends LegacyWrapper.LegacyWrapper.WrappableC
         // clang-format on
     }
     // clang-format off
-    return LitHtml.html`
+    return html`
     <${ReportView.ReportView.ReportSection.litTagName}>
       ${i18nString(UIStrings.unknown)}
     </${ReportView.ReportView.ReportSection.litTagName}>
@@ -517,7 +519,7 @@ export class BackForwardCacheView extends LegacyWrapper.LegacyWrapper.WrappableC
     }
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-    return LitHtml.html`
+    return html`
       ${this.#renderExplanations(i18nString(UIStrings.pageSupportNeeded), i18nString(UIStrings.pageSupportNeededExplanation), pageSupportNeeded, reasonToFramesMap)}
       ${this.#renderExplanations(i18nString(UIStrings.supportPending), i18nString(UIStrings.supportPendingExplanation), supportPending, reasonToFramesMap)}
       ${this.#renderExplanations(i18nString(UIStrings.circumstantial), i18nString(UIStrings.circumstantialExplanation), circumstantial, reasonToFramesMap)}
@@ -531,8 +533,8 @@ export class BackForwardCacheView extends LegacyWrapper.LegacyWrapper.WrappableC
       reasonToFramesMap: Map<Protocol.Page.BackForwardCacheNotRestoredReason, string[]>): LitHtml.TemplateResult {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-    return LitHtml.html`
-      ${explanations.length > 0 ? LitHtml.html`
+    return html`
+      ${explanations.length > 0 ? html`
         <${ReportView.ReportView.ReportSectionHeader.litTagName}>
           ${category}
           <div class="help-outline-icon">
@@ -557,7 +559,7 @@ export class BackForwardCacheView extends LegacyWrapper.LegacyWrapper.WrappableC
         explanation.context) {
       const link = 'chrome://extensions/?id=' + explanation.context;
       // clang-format off
-    return LitHtml.html`${i18nString(UIStrings.blockingExtensionId)}
+    return html`${i18nString(UIStrings.blockingExtensionId)}
       <${ChromeLink.ChromeLink.ChromeLink.litTagName} .href=${link}>${explanation.context}</${ChromeLink.ChromeLink.ChromeLink.litTagName}>`;
       // clang-format on
     }
@@ -568,10 +570,10 @@ export class BackForwardCacheView extends LegacyWrapper.LegacyWrapper.WrappableC
     if (frames === undefined || frames.length === 0) {
       return LitHtml.nothing;
     }
-    const rows = [LitHtml.html`<div>${i18nString(UIStrings.framesPerIssue, {n: frames.length})}</div>`];
-    rows.push(...frames.map(url => LitHtml.html`<div class="text-ellipsis" title=${url}
+    const rows = [html`<div>${i18nString(UIStrings.framesPerIssue, {n: frames.length})}</div>`];
+    rows.push(...frames.map(url => html`<div class="text-ellipsis" title=${url}
     jslog=${VisualLogging.treeItem()}>${url}</div>`));
-    return LitHtml.html`
+    return html`
       <div class="details-list"
       jslog=${VisualLogging.tree('frames-per-issue')}>
         <${ExpandableList.ExpandableList.ExpandableList.litTagName} .data=${{
@@ -586,7 +588,7 @@ export class BackForwardCacheView extends LegacyWrapper.LegacyWrapper.WrappableC
   #maybeRenderDeepLinkToUnload(explanation: Protocol.Page.BackForwardCacheNotRestoredExplanation): LitHtml.LitTemplate {
     if (explanation.reason === Protocol.Page.BackForwardCacheNotRestoredReason.UnloadHandlerExistsInMainFrame ||
         explanation.reason === Protocol.Page.BackForwardCacheNotRestoredReason.UnloadHandlerExistsInSubFrame) {
-      return LitHtml.html`
+      return html`
         <x-link href="https://web.dev/bfcache/#never-use-the-unload-event" class="link"
         jslog=${VisualLogging.action('learn-more.never-use-unload').track({
         click: true,
@@ -604,16 +606,16 @@ export class BackForwardCacheView extends LegacyWrapper.LegacyWrapper.WrappableC
     }
     const maxLengthForDisplayedURLs = 50;
     const linkifier = new Components.Linkifier.Linkifier(maxLengthForDisplayedURLs);
-    const rows = [LitHtml.html`<div>${i18nString(UIStrings.filesPerIssue, {n: details.length})}</div>`];
+    const rows = [html`<div>${i18nString(UIStrings.filesPerIssue, {n: details.length})}</div>`];
     rows.push(...details.map(
-        detail => LitHtml.html`${
+        detail => html`${
             linkifier.linkifyScriptLocation(
                 null, null, detail.url as Platform.DevToolsPath.UrlString, detail.lineNumber, {
                   columnNumber: detail.columnNumber,
                   showColumnNumber: true,
                   inlineFrameIndex: 0,
                 })}`));
-    return LitHtml.html`
+    return html`
       <div class="details-list">
         <${ExpandableList.ExpandableList.ExpandableList.litTagName} .data=${
         {rows} as
@@ -625,10 +627,10 @@ export class BackForwardCacheView extends LegacyWrapper.LegacyWrapper.WrappableC
   #renderReason(explanation: Protocol.Page.BackForwardCacheNotRestoredExplanation, frames: string[]|undefined):
       LitHtml.TemplateResult {
     // clang-format off
-    return LitHtml.html`
+    return html`
       <${ReportView.ReportView.ReportSection.litTagName}>
         ${(explanation.reason in NotRestoredReasonDescription) ?
-          LitHtml.html`
+          html`
             <div class="circled-exclamation-icon">
               <${IconButton.Icon.Icon.litTagName} class="inline-icon" .data=${{
                 iconName: 'warning',

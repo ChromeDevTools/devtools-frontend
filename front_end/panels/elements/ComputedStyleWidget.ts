@@ -51,6 +51,8 @@ import {categorizePropertyName, type Category, DefaultCategoryOrder} from './Pro
 import {type MatchRenderer, Renderer, type RenderingContext, StringRenderer, URLRenderer} from './PropertyRenderer.js';
 import {StylePropertiesSection} from './StylePropertiesSection.js';
 
+const {html} = LitHtml;
+
 const UIStrings = {
   /**
    * @description Text for a checkbox setting that controls whether the user-supplied filter text
@@ -123,7 +125,7 @@ const createPropertyElement =
      onContextMenu: ((event: Event) => void)): LitHtml.TemplateResult => {
       const {name, value} = renderPropertyContents(node, propertyName, propertyValue);
       // clang-format off
-      return LitHtml.html`<devtools-computed-style-property
+      return html`<devtools-computed-style-property
         .traceable=${traceable}
         .inherited=${inherited}
         @oncontextmenu=${onContextMenu}
@@ -480,9 +482,9 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
             createTraceElement(domNode, data.property, isPropertyOverloaded, matchedStyles, this.linkifier);
         traceElement.addEventListener(
             'contextmenu', this.handleContextMenuEvent.bind(this, matchedStyles, data.property));
-        return LitHtml.html`${traceElement}`;
+        return html`${traceElement}`;
       }
-      return LitHtml.html`<span style="cursor: text; color: var(--sys-color-token-subtle);">${data.name}</span>`;
+      return html`<span style="cursor: text; color: var(--sys-color-token-subtle);">${data.name}</span>`;
     };
   }
 

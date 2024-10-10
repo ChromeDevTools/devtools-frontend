@@ -13,6 +13,8 @@ import * as SidebarInsight from './SidebarInsight.js';
 import {Table, type TableData} from './Table.js';
 import {Category} from './types.js';
 
+const {html} = LitHtml;
+
 const UIStrings = {
   /** Title of an insight that provides details about the fonts used on the page, and the value of their `font-display` properties. */
   title: 'Font display',
@@ -60,7 +62,7 @@ export class FontDisplay extends BaseInsight {
 
   #render(insight: Trace.Insights.Types.InsightResults['FontDisplay']): LitHtml.TemplateResult {
     // clang-format off
-    return LitHtml.html`
+    return html`
         <div class="insights">
             <${SidebarInsight.SidebarInsight.litTagName} .data=${{
               title: this.userVisibleTitle,
@@ -71,7 +73,7 @@ export class FontDisplay extends BaseInsight {
             } as SidebarInsight.InsightDetails}
             @insighttoggleclick=${this.onSidebarClick}>
                 <div slot="insight-content" class="insight-section">
-                  ${LitHtml.html`<${Table.litTagName}
+                  ${html`<${Table.litTagName}
                     .data=${{
                       insight: this,
                       headers: [i18nString(UIStrings.fontColumn), 'font-display', i18nString(UIStrings.wastedTimeColumn)],

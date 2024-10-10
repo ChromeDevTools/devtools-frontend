@@ -10,6 +10,8 @@ import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 
 import colorSwatchStyles from './colorSwatch.css.js';
 
+const {html} = LitHtml;
+
 const UIStrings = {
   /**
    *@description Icon element title in Color Swatch of the inline editor in the Styles tab
@@ -106,7 +108,7 @@ export class ColorSwatch extends HTMLElement {
     // Note also that whitespace between nodes is removed on purpose to avoid pushing these elements apart. Do not
     // re-format the HTML code.
     LitHtml.render(
-      LitHtml.html`<span class=${colorSwatchClasses} title=${this.tooltip}><span class="color-swatch-inner"
+      html`<span class=${colorSwatchClasses} title=${this.tooltip}><span class="color-swatch-inner"
         style="background-color: ${this.getText()};"
         jslog=${VisualLogging.showStyleEditor('color').track({click: true})}
         @click=${this.onClick}

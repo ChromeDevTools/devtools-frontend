@@ -7,13 +7,15 @@ import * as PanelIntroductionSteps from '../../../components/panel_introduction_
 import * as LitHtml from '../../../lit-html/lit-html.js';
 import * as ComponentHelpers from '../../helpers/helpers.js';
 
+const {html} = LitHtml;
+
 await ComponentHelpers.ComponentServerSetup.setup();
 await FrontendHelpers.initializeGlobalVars();
 
 const container = document.getElementById('container');
 if (container) {
   LitHtml.render(
-      LitHtml.html`
+      html`
 <${PanelIntroductionSteps.PanelIntroductionSteps.PanelIntroductionSteps.litTagName}>
 <span slot="title">Get actionable insights on your website's performance</span>
 <span slot="step-1">Record or import a trace into the Performance Insights panel</span>

@@ -12,6 +12,8 @@ import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import hideIssuesMenuStyles from './hideIssuesMenu.css.js';
 
+const {html} = LitHtml;
+
 const UIStrings = {
   /**
    *@description Title for the tooltip of the (3 dots) Hide Issues menu icon.
@@ -58,7 +60,7 @@ export class HideIssuesMenu extends HTMLElement {
   #render(): void {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-    LitHtml.render(LitHtml.html`
+    LitHtml.render(html`
     <${Buttons.Button.Button.litTagName}
       .data=${{variant: Buttons.Button.Variant.ICON,iconName: 'dots-vertical', title: i18nString(UIStrings.tooltipTitle)} as Buttons.Button.ButtonData}
       .jslogContext=${VisualLogging.dropDown('hide-issues').track({click: true})}

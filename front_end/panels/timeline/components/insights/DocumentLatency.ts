@@ -12,6 +12,8 @@ import {BaseInsight, shouldRenderForCategory} from './Helpers.js';
 import * as SidebarInsight from './SidebarInsight.js';
 import {Category} from './types.js';
 
+const {html} = LitHtml;
+
 const UIStrings = {
   /**
    *@description Title of an insight that provides a breakdown for how long it took to download the main document.
@@ -85,7 +87,7 @@ export class DocumentLatency extends BaseInsight {
 
     const ariaLabel = didPass ? i18nString(UIStrings.successAriaLabel, {PH1: good}) :
                                 i18nString(UIStrings.failedAriaLabel, {PH1: bad});
-    return LitHtml.html`
+    return html`
       <${IconButton.Icon.Icon.litTagName}
         aria-label=${ariaLabel}
         name=${icon}
@@ -159,7 +161,7 @@ export class DocumentLatency extends BaseInsight {
     }
 
     // clang-format off
-    return LitHtml.html`
+    return html`
     <div class="insights">
       <${SidebarInsight.SidebarInsight.litTagName} .data=${{
             title: this.userVisibleTitle,

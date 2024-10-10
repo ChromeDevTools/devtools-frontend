@@ -15,6 +15,8 @@ import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import requestTrustTokensViewStyles from './RequestTrustTokensView.css.js';
 
+const {html} = LitHtml;
+
 const UIStrings = {
   /**
    *@description Section heading in the Trust Token tab
@@ -124,7 +126,7 @@ export class RequestTrustTokensView extends LegacyWrapper.LegacyWrapper.Wrappabl
 
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-    LitHtml.render(LitHtml.html`<devtools-report>
+    LitHtml.render(html`<devtools-report>
         ${this.#renderParameterSection()}
         ${this.#renderResultSection()}
       </devtools-report>
@@ -138,7 +140,7 @@ export class RequestTrustTokensView extends LegacyWrapper.LegacyWrapper.Wrappabl
       return LitHtml.nothing;
     }
 
-    return LitHtml.html`
+    return html`
       <devtools-report-section-header jslog=${VisualLogging.pane('trust-tokens').track({
       resize: true,
     })}>${i18nString(UIStrings.parameters)}</devtools-report-section-header>
@@ -162,11 +164,11 @@ export class RequestTrustTokensView extends LegacyWrapper.LegacyWrapper.Wrappabl
       return LitHtml.nothing;
     }
 
-    return LitHtml.html`
+    return html`
       <devtools-report-key>${i18nString(UIStrings.issuers)}</devtools-report-key>
       <devtools-report-value>
         <ul class="issuers-list">
-          ${params.issuers.map(issuer => LitHtml.html`<li>${issuer}</li>`)}
+          ${params.issuers.map(issuer => html`<li>${issuer}</li>`)}
         </ul>
       </devtools-report-value>
     `;
@@ -181,7 +183,7 @@ export class RequestTrustTokensView extends LegacyWrapper.LegacyWrapper.Wrappabl
       return LitHtml.nothing;
     }
 
-    return LitHtml.html`
+    return html`
       ${renderSimpleRowIfValuePresent(i18nString(UIStrings.topLevelOrigin), trustTokenResult.topLevelOrigin)}
       ${renderSimpleRowIfValuePresent(i18nString(UIStrings.issuer), trustTokenResult.issuerOrigin)}`;
   }
@@ -191,7 +193,7 @@ export class RequestTrustTokensView extends LegacyWrapper.LegacyWrapper.Wrappabl
     if (!trustTokenResult) {
       return LitHtml.nothing;
     }
-    return LitHtml.html`
+    return html`
       <devtools-report-section-header>${i18nString(UIStrings.result)}</devtools-report-section-header>
       <devtools-report-key>${i18nString(UIStrings.status)}</devtools-report-key>
       <devtools-report-value>
@@ -275,14 +277,14 @@ function renderSimpleRowIfValuePresent<T>(key: string, value: T|undefined): LitH
     return LitHtml.nothing;
   }
 
-  return LitHtml.html`
+  return html`
     <devtools-report-key>${key}</devtools-report-key>
     <devtools-report-value>${value}</devtools-report-value>
   `;
 }
 
 function renderRowWithCodeValue(key: string, value: string): LitHtml.TemplateResult {
-  return LitHtml.html`
+  return html`
     <devtools-report-key>${key}</devtools-report-key>
     <devtools-report-value class="code">${value}</devtools-report-value>
   `;

@@ -7,6 +7,8 @@ import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 
 import styles from './timespanBreakdownOverlay.css.js';
 
+const {html} = LitHtml;
+
 /**
  * An EntryBreakdown, or section, that makes up a TimespanBreakdown.
  */
@@ -155,11 +157,11 @@ export class TimespanBreakdownOverlay extends HTMLElement {
 
   #renderSection(section: EntryBreakdown): LitHtml.TemplateResult {
     // clang-format off
-    return LitHtml.html`
+    return html`
       <div class="timespan-breakdown-overlay-section">
         <div class="timespan-breakdown-overlay-label">
         ${section.showDuration ?
-          LitHtml.html`
+          html`
             <span class="duration-text">${i18n.TimeUtilities.formatMicroSecondsAsMillisFixed(section.bounds.range)}</span>
           ` : LitHtml.nothing}
           ${section.label}
@@ -173,7 +175,7 @@ export class TimespanBreakdownOverlay extends HTMLElement {
       this.classList.toggle('odd-number-of-sections', this.#sections.length % 2 === 1);
       this.classList.toggle('even-number-of-sections', this.#sections.length % 2 === 0);
     }
-    LitHtml.render(LitHtml.html`${this.#sections?.map(this.#renderSection)}`, this.#shadow, {host: this});
+    LitHtml.render(html`${this.#sections?.map(this.#renderSection)}`, this.#shadow, {host: this});
     this.checkSectionLabelPositioning();
   }
 }

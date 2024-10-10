@@ -16,6 +16,8 @@ import {type ActiveInsight} from './Sidebar.js';
 import styles from './sidebarInsightsTab.css.js';
 import {SidebarSingleInsightSet, type SidebarSingleInsightSetData} from './SidebarSingleInsightSet.js';
 
+const {html} = LitHtml;
+
 const FEEDBACK_URL = 'https://crbug.com/371170842' as Platform.DevToolsPath.UrlString;
 
 const UIStrings = {
@@ -136,8 +138,9 @@ export class SidebarInsightsTab extends HTMLElement {
     const hasMultipleInsightSets = this.#insights.size > 1;
     const labels = Utils.Helpers.createUrlLabels([...this.#insights.values()].map(({url}) => url));
 
-    // clang-format off
-    const html = LitHtml.html`
+    const contents =
+        // clang-format off
+     html`
       <div class="insight-sets-wrapper">
         ${[...this.#insights.values()].map(({id, url}, index) => {
           const data = {
@@ -148,14 +151,14 @@ export class SidebarInsightsTab extends HTMLElement {
             activeInsight: this.#activeInsight,
           };
 
-          const contents = LitHtml.html`
+          const contents = html`
             <${SidebarSingleInsightSet.litTagName}
               .data=${data as SidebarSingleInsightSetData}>
             </${SidebarSingleInsightSet.litTagName}>
           `;
 
           if (hasMultipleInsightSets) {
-            return LitHtml.html`<details
+            return html`<details
               ?open=${id === this.#insightSetKey}
             >
               <summary
@@ -185,7 +188,7 @@ export class SidebarInsightsTab extends HTMLElement {
     // Insight components contain state, so to prevent insights from previous trace loads breaking things we use the parsedTrace
     // as a render key.
     // Note: newer Lit has `keyed`, but we don't have that, so we do it manually. https://lit.dev/docs/templates/directives/#keyed
-    const result = LitHtml.Directives.repeat([html], () => this.#parsedTrace, template => template);
+    const result = LitHtml.Directives.repeat([contents], () => this.#parsedTrace, template => template);
     LitHtml.render(result, this.#shadow, {host: this});
   }
 }

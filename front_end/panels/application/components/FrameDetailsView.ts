@@ -30,6 +30,8 @@ import {
 } from './PermissionsPolicySection.js';
 import {StackTrace, type StackTraceData} from './StackTrace.js';
 
+const {html} = LitHtml;
+
 const UIStrings = {
   /**
    *@description Section header in the Frame Details view
@@ -308,7 +310,7 @@ export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappabl
 
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
-      LitHtml.render(LitHtml.html`
+      LitHtml.render(html`
         <${ReportView.ReportView.Report.litTagName} .data=${{reportTitle: this.#frame.displayName()} as ReportView.ReportView.ReportData}
         jslog=${VisualLogging.pane('frames')}>
           ${this.#renderDocumentSection()}
@@ -317,7 +319,7 @@ export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappabl
           ${this.#renderOriginTrial()}
           ${LitHtml.Directives.until(this.#permissionsPolicies?.then(policies => {
             this.#permissionsPolicySectionData.policies = policies || [];
-            return LitHtml.html`
+            return html`
               <${PermissionsPolicySection.litTagName}
                 .data=${this.#permissionsPolicySectionData as PermissionsPolicySectionData}
               >
@@ -343,7 +345,7 @@ export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappabl
     });
 
     // clang-format off
-    return LitHtml.html`
+    return html`
     <${ReportView.ReportView.ReportSectionHeader.litTagName}>${i18n.i18n.lockedString('Origin trials')}</${ReportView.ReportView.ReportSectionHeader.litTagName}>
     <div class="span-cols">
         ${i18nString(UIStrings.originTrialsExplanation)}
@@ -361,7 +363,7 @@ export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappabl
       return LitHtml.nothing;
     }
 
-    return LitHtml.html`
+    return html`
       <${ReportView.ReportView.ReportSectionHeader.litTagName}>${i18nString(UIStrings.document)}</${
         ReportView.ReportView.ReportSectionHeader.litTagName}>
       <${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.url)}</${
@@ -428,7 +430,7 @@ export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappabl
     if (!this.#frame || !this.#frame.unreachableUrl()) {
       return LitHtml.nothing;
     }
-    return LitHtml.html`
+    return html`
       <${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.unreachableUrl)}</${
         ReportView.ReportView.ReportKey.litTagName}>
       <${ReportView.ReportView.ReportValue.litTagName}>
@@ -469,7 +471,7 @@ export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappabl
 
   #maybeRenderOrigin(): LitHtml.LitTemplate {
     if (this.#frame && this.#frame.securityOrigin && this.#frame.securityOrigin !== '://') {
-      return LitHtml.html`
+      return html`
         <${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.origin)}</${
           ReportView.ReportView.ReportKey.litTagName}>
         <${ReportView.ReportView.ReportValue.litTagName}>
@@ -486,7 +488,7 @@ export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappabl
       if (linkTargetDOMNode) {
         // Disabled until https://crbug.com/1079231 is fixed.
         // clang-format off
-        return LitHtml.html`
+        return html`
           <${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.ownerElement)}</${ReportView.ReportView.ReportKey.litTagName}>
           <${ReportView.ReportView.ReportValue.litTagName} class="without-min-width">
             <div class="inline-items">
@@ -512,7 +514,7 @@ export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappabl
     if (creationStackTraceData && creationStackTraceData.creationStackTrace) {
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
-      return LitHtml.html`
+      return html`
         <${ReportView.ReportView.ReportKey.litTagName} title=${i18nString(UIStrings.creationStackTraceExplanation)}>${
           i18nString(UIStrings.creationStackTrace)}</${ReportView.ReportView.ReportKey.litTagName}>
         <${ReportView.ReportView.ReportValue.litTagName}
@@ -560,9 +562,9 @@ export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappabl
       return LitHtml.nothing;
     }
     const typeStrings = this.#getAdFrameTypeStrings(adFrameType);
-    const rows = [LitHtml.html`<div title=${typeStrings.description}>${typeStrings.value}</div>`];
+    const rows = [html`<div title=${typeStrings.description}>${typeStrings.value}</div>`];
     for (const explanation of this.#frame.adFrameStatus()?.explanations || []) {
-      rows.push(LitHtml.html`<div>${this.#getAdFrameExplanationString(explanation)}</div>`);
+      rows.push(html`<div>${this.#getAdFrameExplanationString(explanation)}</div>`);
     }
 
     const adScriptLinkElement = this.#target ? this.#linkifier.linkifyScriptLocation(
@@ -572,7 +574,7 @@ export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappabl
 
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-    return LitHtml.html`
+    return html`
       <${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.adStatus)}</${
         ReportView.ReportView.ReportKey.litTagName}>
       <${ReportView.ReportView.ReportValue.litTagName}
@@ -580,7 +582,7 @@ export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappabl
         <${ExpandableList.ExpandableList.ExpandableList.litTagName} .data=${
           {rows, title: i18nString(UIStrings.adStatus)} as ExpandableList.ExpandableList.ExpandableListData}></${
         ExpandableList.ExpandableList.ExpandableList.litTagName}></${ReportView.ReportView.ReportValue.litTagName}>
-      ${this.#target ? LitHtml.html`
+      ${this.#target ? html`
         <${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.creatorAdScript)}</${
           ReportView.ReportView.ReportKey.litTagName}>
         <${ReportView.ReportView.ReportValue.litTagName} class="ad-script-link">${adScriptLinkElement?.setAttribute('jslog', `${VisualLogging.link('ad-script').track({click: true})}`)}</${
@@ -594,7 +596,7 @@ export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappabl
     if (!this.#frame) {
       return LitHtml.nothing;
     }
-    return LitHtml.html`
+    return html`
       <${ReportView.ReportView.ReportSectionHeader.litTagName}>${i18nString(UIStrings.securityIsolation)}</${
         ReportView.ReportView.ReportSectionHeader.litTagName}>
       <${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.secureContext)}</${
@@ -617,7 +619,7 @@ export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappabl
   #maybeRenderSecureContextExplanation(): LitHtml.LitTemplate {
     const explanation = this.#getSecureContextExplanation();
     if (explanation) {
-      return LitHtml.html`<span class="inline-comment">${explanation}</span>`;
+      return html`<span class="inline-comment">${explanation}</span>`;
     }
     return LitHtml.nothing;
   }
@@ -641,7 +643,7 @@ export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappabl
       const model = this.#frame.resourceTreeModel().target().model(SDK.NetworkManager.NetworkManager);
       const info = model && await model.getSecurityIsolationStatus(this.#frame.id);
       if (info) {
-        return LitHtml.html`
+        return html`
           ${
             this.#maybeRenderCrossOriginStatus(
                 info.coep, i18n.i18n.lockedString('Cross-Origin Embedder Policy (COEP)'),
@@ -668,13 +670,13 @@ export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappabl
     const isEnabled = info.value !== noneValue;
     const isReportOnly = (!isEnabled && info.reportOnlyValue !== noneValue);
     const endpoint = isEnabled ? info.reportingEndpoint : info.reportOnlyReportingEndpoint;
-    return LitHtml.html`
+    return html`
       <${ReportView.ReportView.ReportKey.litTagName}>${policyName}</${ReportView.ReportView.ReportKey.litTagName}>
       <${ReportView.ReportView.ReportValue.litTagName}>
         ${isEnabled ? info.value : info.reportOnlyValue}
-        ${isReportOnly ? LitHtml.html`<span class="inline-comment">report-only</span>` : LitHtml.nothing}
+        ${isReportOnly ? html`<span class="inline-comment">report-only</span>` : LitHtml.nothing}
         ${
-        endpoint ? LitHtml.html`<span class="inline-name">${i18nString(UIStrings.reportingTo)}</span>${endpoint}` :
+        endpoint ? html`<span class="inline-name">${i18nString(UIStrings.reportingTo)}</span>${endpoint}` :
                    LitHtml.nothing}
       </${ReportView.ReportView.ReportValue.litTagName}>
     `;
@@ -684,8 +686,8 @@ export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappabl
     const parsedDirectives = new CspEvaluator.CspParser.CspParser(directives).csp.directives;
     const result = [];
     for (const directive in parsedDirectives) {
-      result.push(LitHtml.html`<div><span class="bold">${directive}</span>${
-                              ': ' + parsedDirectives[directive]?.join(', ')}</div>`);
+      result.push(
+          html`<div><span class="bold">${directive}</span>${': ' + parsedDirectives[directive]?.join(', ')}</div>`);
     }
     return result;
   }
@@ -693,10 +695,10 @@ export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappabl
   #renderSingleCSP(cspInfo: Protocol.Network.ContentSecurityPolicyStatus): LitHtml.LitTemplate {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-    return LitHtml.html`
+    return html`
       <${ReportView.ReportView.ReportKey.litTagName}>${
         cspInfo.isEnforced ? i18n.i18n.lockedString('Content-Security-Policy') :
-          LitHtml.html`${
+          html`${
             i18n.i18n.lockedString('Content-Security-Policy-Report-Only')
           }<${Buttons.Button.Button.litTagName}
           .iconName=${'help'}
@@ -719,12 +721,12 @@ export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappabl
   #renderCSPSection(cspInfos: Protocol.Network.ContentSecurityPolicyStatus[]|undefined): LitHtml.LitTemplate {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-    return LitHtml.html`
+    return html`
       <${ReportView.ReportView.ReportSectionDivider.litTagName}></${ReportView.ReportView.ReportSectionDivider.litTagName}>
       <${ReportView.ReportView.ReportSectionHeader.litTagName}>
         ${i18nString(UIStrings.contentSecurityPolicy)}
       </${ReportView.ReportView.ReportSectionHeader.litTagName}>
-      ${(cspInfos && cspInfos.length) ? cspInfos.map(cspInfo => this.#renderSingleCSP(cspInfo)) : LitHtml.html`
+      ${(cspInfos && cspInfos.length) ? cspInfos.map(cspInfo => this.#renderSingleCSP(cspInfo)) : html`
         <${ReportView.ReportView.ReportKey.litTagName}>${
           i18n.i18n.lockedString('Content-Security-Policy')}</${
         ReportView.ReportView.ReportKey.litTagName}>
@@ -741,7 +743,7 @@ export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappabl
       return LitHtml.nothing;
     }
 
-    return LitHtml.html`
+    return html`
       <${ReportView.ReportView.ReportSectionHeader.litTagName}>${i18nString(UIStrings.apiAvailability)}</${
         ReportView.ReportView.ReportSectionHeader.litTagName}>
       <div class="span-cols">
@@ -776,14 +778,13 @@ export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappabl
               return LitHtml.nothing;
             case Protocol.Page.CrossOriginIsolatedContextType.NotIsolated:
               if (sabAvailable) {
-                return LitHtml.html`<span class="inline-comment">${
+                return html`<span class="inline-comment">${
                     i18nString(UIStrings.willRequireCrossoriginIsolated)}</span>`;
               }
-              return LitHtml.html`<span class="inline-comment">${
-                  i18nString(UIStrings.requiresCrossoriginIsolated)}</span>`;
+              return html`<span class="inline-comment">${i18nString(UIStrings.requiresCrossoriginIsolated)}</span>`;
             case Protocol.Page.CrossOriginIsolatedContextType.NotIsolatedFeatureDisabled:
               if (!sabTransferAvailable) {
-                return LitHtml.html`<span class="inline-comment">${
+                return html`<span class="inline-comment">${
                     i18nString(
                         UIStrings
                             .transferRequiresCrossoriginIsolatedPermission)} <code>cross-origin-isolated</code></span>`;
@@ -794,7 +795,7 @@ export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappabl
         }
 
         // SharedArrayBuffer is an API name, so we don't translate it.
-        return LitHtml.html`
+        return html`
           <${ReportView.ReportView.ReportKey.litTagName}>SharedArrayBuffers</${
             ReportView.ReportView.ReportKey.litTagName}>
           <${ReportView.ReportView.ReportValue.litTagName} title=${tooltipText}>
@@ -813,7 +814,7 @@ export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappabl
           measureMemoryAvailable ? i18nString(UIStrings.available) : i18nString(UIStrings.unavailable);
       const tooltipText = measureMemoryAvailable ? i18nString(UIStrings.thePerformanceAPI) :
                                                    i18nString(UIStrings.thePerformancemeasureuseragentspecificmemory);
-      return LitHtml.html`
+      return html`
         <${ReportView.ReportView.ReportKey.litTagName}>${i18nString(UIStrings.measureMemory)}</${
           ReportView.ReportView.ReportKey.litTagName}>
         <${ReportView.ReportView.ReportValue.litTagName}>
@@ -832,7 +833,7 @@ export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappabl
       return LitHtml.nothing;
     }
 
-    return LitHtml.html`
+    return html`
       <${ReportView.ReportView.ReportSectionHeader.litTagName}
         title=${i18nString(UIStrings.thisAdditionalDebugging)}
       >${i18nString(UIStrings.additionalInformation)}</${ReportView.ReportView.ReportSectionHeader.litTagName}>

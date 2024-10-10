@@ -26,6 +26,8 @@ import {
   type TimelineSectionData,
 } from './TimelineSection.js';
 
+const {html} = LitHtml;
+
 const UIStrings = {
   /**
    *@description Title for the step type that configures the viewport
@@ -316,7 +318,7 @@ function getStepTypeTitle(input: {
   section?: Models.Section.Section,
 }): string|LitHtml.TemplateResult {
   if (input.section) {
-    return input.section.title ? input.section.title : LitHtml.html`<span class="fallback">(No Title)</span>`;
+    return input.section.title ? input.section.title : html`<span class="fallback">(No Title)</span>`;
   }
   if (!input.step) {
     throw new Error('Missing both step and section');
@@ -392,7 +394,7 @@ function getSectionPreview(section?: Models.Section.Section): string {
 
 function renderStepActions(input: ViewInput): LitHtml.TemplateResult|null {
   // clang-format off
-  return LitHtml.html`
+  return html`
     <devtools-button
       class="step-actions"
       title=${i18nString(UIStrings.openStepActions)}
@@ -440,7 +442,7 @@ function viewFunction(input: ViewInput, _output: ViewOutput, target: HTMLElement
 
   // clang-format off
   LitHtml.render(
-    LitHtml.html`
+    html`
     <devtools-timeline-section .data=${
       {
         isFirstSection: input.isFirstSection,
@@ -475,7 +477,7 @@ function viewFunction(input: ViewInput, _output: ViewOutput, target: HTMLElement
         >
           ${
             isExpandable
-              ? LitHtml.html`<devtools-icon
+              ? html`<devtools-icon
                   class="chevron"
                   jslog=${VisualLogging.expand().track({click: true})}
                   name="triangle-down">
@@ -493,7 +495,7 @@ function viewFunction(input: ViewInput, _output: ViewOutput, target: HTMLElement
       <div class="details">
         ${
           input.step &&
-          LitHtml.html`<devtools-recorder-step-editor
+          html`<devtools-recorder-step-editor
           class=${input.isSelected ? 'is-selected' : ''}
           .step=${input.step}
           .disabled=${input.isPlaying}
@@ -502,7 +504,7 @@ function viewFunction(input: ViewInput, _output: ViewOutput, target: HTMLElement
         }
         ${
           input.section?.causingStep &&
-          LitHtml.html`<devtools-recorder-step-editor
+          html`<devtools-recorder-step-editor
           .step=${input.section.causingStep}
           .isTypeEditable=${false}
           .disabled=${input.isPlaying}
@@ -512,7 +514,7 @@ function viewFunction(input: ViewInput, _output: ViewOutput, target: HTMLElement
       </div>
       ${
         input.error &&
-        LitHtml.html`
+        html`
         <div class="error" role="alert">
           ${input.error.message}
         </div>

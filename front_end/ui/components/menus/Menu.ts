@@ -13,6 +13,8 @@ import menuStyles from './menu.css.js';
 import menuGroupStyles from './menuGroup.css.js';
 import menuItemStyles from './menuItem.css.js';
 
+const {html} = LitHtml;
+
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 export interface MenuData {
@@ -385,7 +387,7 @@ export class Menu extends HTMLElement {
       throw new Error('Menu render was not scheduled');
     }
     // clang-format off
-    LitHtml.render(LitHtml.html`
+    LitHtml.render(html`
       <${Dialogs.Dialog.Dialog.litTagName}
         @clickoutsidedialog=${this.#closeDialog}
         @forceddialogclose=${this.#closeDialog}
@@ -475,7 +477,7 @@ export class MenuItem extends HTMLElement {
     }
     // clang-format off
 
-    LitHtml.render(LitHtml.html`
+    LitHtml.render(html`
       <span class=${LitHtml.Directives.classMap({
         'menu-item': true,
         'is-selected-item': this.selected,
@@ -519,7 +521,7 @@ export class MenuGroup extends HTMLElement {
       throw new Error('MenuGroup render was not scheduled');
     }
     // clang-format off
-    LitHtml.render(LitHtml.html`
+    LitHtml.render(html`
       <span class="menu-group">
         <span class="menu-group-label">${this.name}</span>
         <slot></slot>

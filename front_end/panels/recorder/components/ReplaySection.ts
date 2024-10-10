@@ -19,6 +19,8 @@ import {
   Variant as SelectButtonVariant,
 } from './SelectButton.js';
 
+const {html} = LitHtml;
+
 const UIStrings = {
   /**
    * @description Replay button label
@@ -222,7 +224,7 @@ export class ReplaySection extends HTMLElement {
 
     // clang-format off
     LitHtml.render(
-      LitHtml.html`
+      html`
     <devtools-select-button
       @selectmenuselected=${this.#handleSelectMenuSelected}
       @selectbuttonclick=${this.#handleSelectButtonClick}

@@ -17,6 +17,8 @@ import * as Actions from '../recorder-actions/recorder-actions.js';
 
 import startViewStyles from './startView.css.js';
 
+const {html} = LitHtml;
+
 const UIStrings = {
   /**
    * @description The header of the start page in the Recorder panel.
@@ -85,7 +87,7 @@ export class StartView extends HTMLElement {
   #render = (): void => {
     // clang-format off
     LitHtml.render(
-      LitHtml.html`
+      html`
         <div class="wrapper">
           <devtools-panel-introduction-steps>
             <span slot="title">${i18nString(UIStrings.header)}</span>

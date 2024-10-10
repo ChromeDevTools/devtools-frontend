@@ -9,6 +9,8 @@ import * as ComponentHelpers from '../../components/helpers/helpers.js';
 import * as LitHtml from '../../lit-html/lit-html.js';
 import * as Buttons from '../buttons/buttons.js';
 
+const {html} = LitHtml;
+
 const UIStrings = {
   /**
    * @description The title of the button that leads to the feedback form.
@@ -48,7 +50,7 @@ export class FeedbackButton extends HTMLElement {
     }
 
     // clang-format off
-    LitHtml.render(LitHtml.html`
+    LitHtml.render(html`
       <${Buttons.Button.Button.litTagName}
           @click=${this.#onFeedbackClick}
           .iconUrl=${feedbackIconUrl}

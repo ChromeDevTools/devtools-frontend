@@ -7,6 +7,8 @@ import * as LitHtml from '../../lit-html/lit-html.js';
 
 import textPromptStyles from './textPrompt.css.js';
 
+const {html} = LitHtml;
+
 export interface TextPromptData {
   ariaLabel: string;
   prefix: string;
@@ -124,7 +126,7 @@ export class TextPrompt extends HTMLElement {
   }
 
   #render(): void {
-    const output = LitHtml.html`
+    const output = html`
       <span class="prefix">${this.#prefixText} </span>
       <span class="text-prompt-input"><input class="input" aria-label=${
         this.#ariaLabelText} spellcheck="false" @input=${this.onInput} @keydown=${

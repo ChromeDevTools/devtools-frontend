@@ -16,6 +16,8 @@ import * as SidebarInsight from './SidebarInsight.js';
 import {type TableState} from './Table.js';
 import {type ActiveInsight, Category} from './types.js';
 
+const {html} = LitHtml;
+
 export function shouldRenderForCategory(options: {
   activeCategory: Category,
   insightCategory: Category,
@@ -197,7 +199,7 @@ export abstract class BaseInsight extends HTMLElement {
  */
 export function md(markdown: string): LitHtml.TemplateResult {
   const tokens = Marked.Marked.lexer(markdown);
-  return LitHtml.html`<${MarkdownView.MarkdownView.MarkdownView.litTagName}
+  return html`<${MarkdownView.MarkdownView.MarkdownView.litTagName}
     .data=${{tokens} as MarkdownView.MarkdownView.MarkdownViewData}>
   </${MarkdownView.MarkdownView.MarkdownView.litTagName}>`;
 }

@@ -19,6 +19,8 @@ import {
 } from './UIUtils.js';
 import {XElement} from './XElement.js';
 
+const {html} = LitHtml;
+
 export class XLink extends XElement {
   hrefInternal: Platform.DevToolsPath.UrlString|null;
   private clickable: boolean;
@@ -158,4 +160,4 @@ export class ContextMenuProvider implements Provider<Node> {
 
 customElements.define('x-link', XLink);
 
-export const sample = LitHtml.html`<p>Hello, <x-link>world!</x-link></p>`;
+export const sample = html`<p>Hello, <x-link>world!</x-link></p>`;

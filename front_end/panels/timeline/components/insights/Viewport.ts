@@ -12,6 +12,8 @@ import {NodeLink, type NodeLinkData} from './NodeLink.js';
 import * as SidebarInsight from './SidebarInsight.js';
 import {Category} from './types.js';
 
+const {html} = LitHtml;
+
 const UIStrings = {
   /** Title of an insight that provides details about if the page's viewport is optimized for mobile viewing. */
   title: 'Viewport not optimized for mobile',
@@ -41,7 +43,7 @@ export class Viewport extends BaseInsight {
     const backendNodeId = insight.viewportEvent?.args.data.node_id;
 
     // clang-format off
-    return LitHtml.html`
+    return html`
         <div class="insights">
             <${SidebarInsight.SidebarInsight.litTagName} .data=${{
               title: this.userVisibleTitle,
@@ -52,7 +54,7 @@ export class Viewport extends BaseInsight {
             } as SidebarInsight.InsightDetails}
             @insighttoggleclick=${this.onSidebarClick}>
                 <div slot="insight-content" class="insight-section">
-                  ${backendNodeId !== undefined ? LitHtml.html`<${NodeLink.litTagName}
+                  ${backendNodeId !== undefined ? html`<${NodeLink.litTagName}
                     .data=${{
                       backendNodeId,
                       options: {tooltip: insight.viewportEvent?.args.data.content},

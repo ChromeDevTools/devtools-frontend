@@ -9,6 +9,8 @@ import * as LitHtml from '../../lit-html/lit-html.js';
 
 import * as MarkdownView from './markdown_view.js';
 
+const {html} = LitHtml;
+
 type TestToken = {
   type: string,
   tokens?: Marked.Marked.Token[],
@@ -296,7 +298,7 @@ console.log('test')
           renderString('`console.log()`', 'code', new class extends MarkdownView.MarkdownView.MarkdownLitRenderer {
             override templateForToken(token: Marked.Marked.Token): LitHtml.TemplateResult|null {
               if (token.type === 'codespan') {
-                return LitHtml.html`<code>overriden</code>`;
+                return html`<code>overriden</code>`;
               }
               return super.templateForToken(token as Marked.Marked.MarkedToken);
             }

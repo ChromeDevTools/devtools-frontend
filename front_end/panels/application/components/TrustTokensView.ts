@@ -14,6 +14,8 @@ import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
 import trustTokensViewStyles from './trustTokensView.css.js';
 
+const {html} = LitHtml;
+
 const UIStrings = {
   /**
    *@description Text for the issuer of an item
@@ -80,7 +82,7 @@ export class TrustTokensView extends LegacyWrapper.LegacyWrapper.WrappableCompon
 
     await coordinator.write('Render TrustTokensView', () => {
       // clang-format off
-      LitHtml.render(LitHtml.html`
+      LitHtml.render(html`
         <div>
           <span class="heading">${i18nString(UIStrings.trustTokens)}</span>
           <${IconButton.Icon.Icon.litTagName} name="info" title=${i18nString(UIStrings.allStoredTrustTokensAvailableIn)}></${IconButton.Icon.Icon.litTagName}>
@@ -96,7 +98,7 @@ export class TrustTokensView extends LegacyWrapper.LegacyWrapper.WrappableCompon
 
   #renderGridOrNoDataMessage(tokens: Protocol.Storage.TrustTokens[]): LitHtml.TemplateResult {
     if (tokens.length === 0) {
-      return LitHtml.html`<div class="no-tt-message">${i18nString(UIStrings.noTrustTokensStored)}</div>`;
+      return html`<div class="no-tt-message">${i18nString(UIStrings.noTrustTokensStored)}</div>`;
     }
 
     const gridData: DataGrid.DataGridController.DataGridControllerData = {
@@ -133,7 +135,7 @@ export class TrustTokensView extends LegacyWrapper.LegacyWrapper.WrappableCompon
       },
     };
 
-    return LitHtml.html`
+    return html`
       <${DataGrid.DataGridController.DataGridController.litTagName} .data=${
         gridData as DataGrid.DataGridController.DataGridControllerData}></${
         DataGrid.DataGridController.DataGridController.litTagName}>
@@ -157,7 +159,7 @@ export class TrustTokensView extends LegacyWrapper.LegacyWrapper.WrappableCompon
 
   #deleteButtonRendererForDataGridCell(issuer: DataGrid.DataGridUtils.CellValue): LitHtml.TemplateResult {
     // clang-format off
-    return LitHtml.html`
+    return html`
       <${Buttons.Button.Button.litTagName} .iconName=${'bin'}
                                            .jslogContext=${'delete-all'}
                                            .size=${Buttons.Button.Size.SMALL}

@@ -14,6 +14,8 @@ import type * as Overlays from '../../overlays/overlays.js';
 import {md} from './Helpers.js';
 import sidebarInsightStyles from './sidebarInsight.css.js';
 
+const {html} = LitHtml;
+
 const UIStrings = {
   /**
    * @description Text to tell the user the estimated time or size savings for this insight.
@@ -143,7 +145,7 @@ export class SidebarInsight extends HTMLElement {
       'insight-hover-icon': true,
       active: insightIsActive,
     });
-    return LitHtml.html`
+    return html`
       <div class=${containerClasses} inert>
         <${Buttons.Button.Button.litTagName} .data=${{
           variant: Buttons.Button.Variant.ICON,
@@ -206,7 +208,7 @@ export class SidebarInsight extends HTMLElement {
     const estimatedSavingsString = this.#getEstimatedSavingsString();
 
     // clang-format off
-    const output = LitHtml.html`
+    const output = html`
       <div class=${containerClasses}>
         <header @click=${this.#dispatchInsightToggle}
           @keydown=${this.#handleHeaderKeyDown}
@@ -219,14 +221,14 @@ export class SidebarInsight extends HTMLElement {
           ${this.#renderHoverIcon(this.#expanded)}
           <h3 class="insight-title">${this.#insightTitle}</h3>
           ${estimatedSavingsString ?
-            LitHtml.html`
+            html`
             <slot name="insight-savings" class="insight-savings">
               ${estimatedSavingsString}
             </slot>
           </div>`
           : LitHtml.nothing}
         </header>
-        ${this.#expanded ? LitHtml.html`
+        ${this.#expanded ? html`
           <div class="insight-body">
             <div class="insight-description">${this.#insightDescription ? md(this.#insightDescription) : LitHtml.nothing}</div>
             <div class="insight-content">

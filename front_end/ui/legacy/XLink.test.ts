@@ -7,6 +7,8 @@ import * as LitHtml from '../lit-html/lit-html.js';
 
 import * as UI from './legacy.js';
 
+const {html} = LitHtml;
+
 describe('XLink', () => {
   describe('title', () => {
     it('equals href by default', () => {
@@ -49,7 +51,7 @@ describe('XLink', () => {
       const container = document.createElement('div');
       // clang-format off
       LitHtml.render(
-        LitHtml.html`
+        html`
           <x-link
             href="https://example.com/"
             tabindex="-1"

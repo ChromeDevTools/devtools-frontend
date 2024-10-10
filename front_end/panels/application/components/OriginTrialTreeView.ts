@@ -13,6 +13,8 @@ import badgeStyles from './badge.css.js';
 import originTrialTokenRowsStyles from './originTrialTokenRows.css.js';
 import originTrialTreeViewStyles from './originTrialTreeView.css.js';
 
+const {html, Directives: {ifDefined}} = LitHtml;
+
 const UIStrings = {
   /**
    *@description Label for the 'origin' field in a parsed Origin Trial Token.
@@ -96,7 +98,7 @@ export class Badge extends HTMLElement {
     this.#adorner.classList.add(`badge-${data.style}`);
 
     LitHtml.render(
-        LitHtml.html`
+        html`
       ${this.#adorner}
     `,
         this.#shadow, {host: this});
@@ -123,14 +125,14 @@ function constructOriginTrialTree(originTrial: Protocol.Page.OriginTrial): TreeN
         constructTokenDetailsNodes(originTrial.tokensWithStatus[0]),
     renderer: (node: TreeNode<OriginTrialTreeNodeData>) => {
       const trial = node.treeNodeData as Protocol.Page.OriginTrial;
-      const tokenCountBadge = LitHtml.html`
+      const tokenCountBadge = html`
         <${Badge.litTagName} .data=${{
         badgeContent: i18nString(UIStrings.tokens, {PH1: trial.tokensWithStatus.length}),
         style: 'secondary',
       } as BadgeData}></${Badge.litTagName}>
       `;
 
-      return LitHtml.html`
+      return html`
         ${trial.trialName}
         <${Badge.litTagName} .data=${{
         badgeContent: trial.status,
@@ -149,14 +151,14 @@ function constructTokenNode(token: Protocol.Page.OriginTrialTokenWithStatus): Tr
     children: async () => constructTokenDetailsNodes(token),
     renderer: (node: TreeNode<OriginTrialTreeNodeData>, state: {isExpanded: boolean}) => {
       const tokenStatus = node.treeNodeData as string;
-      const statusBadge = LitHtml.html`
+      const statusBadge = html`
         <${Badge.litTagName} .data=${{
         badgeContent: tokenStatus,
         style: tokenStatus === Protocol.Page.OriginTrialTokenStatus.Success ? 'success' : 'error',
       } as BadgeData}></${Badge.litTagName}>
       `;
       // Only display token status for convenience when the node is not expanded.
-      return LitHtml.html`${i18nString(UIStrings.token)} ${state.isExpanded ? LitHtml.nothing : statusBadge}`;
+      return html`${i18nString(UIStrings.token)} ${state.isExpanded ? LitHtml.nothing : statusBadge}`;
     },
   };
 }
@@ -167,7 +169,7 @@ interface TokenField {
 }
 
 function renderTokenDetails(node: TreeNode<OriginTrialTreeNodeData>): LitHtml.TemplateResult {
-  return LitHtml.html`
+  return html`
     <${OriginTrialTokenRows.litTagName} .data=${{node} as OriginTrialTokenRowsData}>
     </${OriginTrialTokenRows.litTagName}>
     `;
@@ -194,7 +196,7 @@ function constructRawTokenTextNode(tokenText: string): TreeNode<OriginTrialTreeN
       id: 'TokenRawTextNode#' + tokenText,
       renderer: (data: TreeNode<OriginTrialTreeNodeData>) => {
         const tokenText = data.treeNodeData as string;
-        return LitHtml.html`
+        return html`
         <div style="overflow-wrap: break-word;">
           ${tokenText}
         </div>
@@ -205,7 +207,7 @@ function constructRawTokenTextNode(tokenText: string): TreeNode<OriginTrialTreeN
 }
 
 function defaultRenderer(node: TreeNode<OriginTrialTreeNodeData>): LitHtml.TemplateResult {
-  return LitHtml.html`${String(node.treeNodeData)}`;
+  return html`${String(node.treeNodeData)}`;
 }
 
 export interface OriginTrialTokenRowsData {
@@ -232,8 +234,8 @@ export class OriginTrialTokenRows extends HTMLElement {
     this.#render();
   }
 
-  #renderTokenField = (fieldValue: string, hasError?: boolean): LitHtml.TemplateResult => LitHtml.html`
-        <div class=${LitHtml.Directives.ifDefined(hasError ? 'error-text' : undefined)}>
+  #renderTokenField = (fieldValue: string, hasError?: boolean): LitHtml.TemplateResult => html`
+        <div class=${ifDefined(hasError ? 'error-text' : undefined)}>
           ${fieldValue}
         </div>`;
 
@@ -287,7 +289,7 @@ export class OriginTrialTokenRows extends HTMLElement {
     const tokenDetails: TokenField[] = [
       {
         name: i18nString(UIStrings.status),
-        value: LitHtml.html`
+        value: html`
           <${Badge.litTagName} .data=${{
           badgeContent: this.#tokenWithStatus.status,
           style: this.#tokenWithStatus.status === Protocol.Page.OriginTrialTokenStatus.Success ? 'success' : 'error',
@@ -297,14 +299,14 @@ export class OriginTrialTokenRows extends HTMLElement {
     ];
 
     const tokenDetailRows = tokenDetails.map((field: TokenField) => {
-      return LitHtml.html`
+      return html`
           <div class="key">${field.name}</div>
           <div class="value">${field.value}</div>
           `;
     });
 
     LitHtml.render(
-        LitHtml.html`
+        html`
       <div class="content">
         ${tokenDetailRows}
       </div>
@@ -334,7 +336,7 @@ export class OriginTrialTreeView extends HTMLElement {
   #render(trials: Protocol.Page.OriginTrial[]): void {
     if (!trials.length) {
       LitHtml.render(
-          LitHtml.html`
+          html`
     <span class="status-badge">
       <${IconButton.Icon.Icon.litTagName}
           .data=${{
@@ -352,7 +354,7 @@ export class OriginTrialTreeView extends HTMLElement {
     }
 
     LitHtml.render(
-        LitHtml.html`
+        html`
       <${TreeOutline.TreeOutline.TreeOutline.litTagName} .data=${{
           tree: trials.map(constructOriginTrialTree),
           defaultRenderer,

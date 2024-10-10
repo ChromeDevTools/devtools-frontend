@@ -9,6 +9,8 @@ import * as Coordinator from '../render_coordinator/render_coordinator.js';
 import linkifierImplStyles from './linkifierImpl.css.js';
 import * as LinkifierUtils from './LinkifierUtils.js';
 
+const {html} = LitHtml;
+
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 export interface LinkifierData {
@@ -71,7 +73,7 @@ export class Linkifier extends HTMLElement {
     await coordinator.write(() => {
       // clang-format off
       // eslint-disable-next-line rulesdir/ban_a_tags_in_lit_html
-      LitHtml.render(LitHtml.html`<a class="link" href=${this.#url} @click=${this.#onLinkActivation}><slot>${linkText}</slot></a>`, this.#shadow, { host: this});
+      LitHtml.render(html`<a class="link" href=${this.#url} @click=${this.#onLinkActivation}><slot>${linkText}</slot></a>`, this.#shadow, { host: this});
       // clang-format on
     });
   }

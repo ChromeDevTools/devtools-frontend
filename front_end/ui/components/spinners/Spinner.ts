@@ -6,6 +6,8 @@ import * as LitHtml from '../../lit-html/lit-html.js';
 
 import spinnerStyles from './spinner.css.js';
 
+const {html} = LitHtml;
+
 export class Spinner extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-spinner`;
   readonly #shadow = this.attachShadow({mode: 'open'});
@@ -21,7 +23,7 @@ export class Spinner extends HTMLElement {
     // https://github.com/material-components/material-components-web/tree/master/packages/mdc-circular-progress.
     // Changing the value of the radius will cause errors in animation.
     // clang-format off
-    LitHtml.render(LitHtml.html`
+    LitHtml.render(html`
       <div class="indeterminate-spinner">
         <div class="left-circle-graphic-container">
           <svg class="left-circle-graphic" viewBox="0 0 100 100">

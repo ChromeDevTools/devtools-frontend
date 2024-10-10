@@ -20,6 +20,8 @@ import * as PreloadingHelper from '../helper/helper.js';
 import * as PreloadingString from './PreloadingString.js';
 import ruleSetGridStyles from './ruleSetGrid.css.js';
 
+const {html} = LitHtml;
+
 const UIStrings = {
   /**
    *@description Column header: Short URL of rule set.
@@ -106,7 +108,7 @@ export class RuleSetGrid extends LegacyWrapper.LegacyWrapper.WrappableComponent<
 
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-    LitHtml.render(LitHtml.html`
+    LitHtml.render(html`
       <div class="ruleset-container"
       jslog=${VisualLogging.pane('preloading-rules')}>
         <${DataGrid.DataGridController.DataGridController.litTagName} .data=${
@@ -166,7 +168,7 @@ function ruleSetRenderer(
 
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-    return LitHtml.html`
+    return html`
       <button class="link" role="link"
         @click=${revealSpeculationRulesInElements}
         title=${i18nString(UIStrings.buttonClickToRevealInElementsPanel)}
@@ -221,7 +223,7 @@ function ruleSetRenderer(
 
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-    return LitHtml.html`
+    return html`
       <button class="link" role="link"
         @click=${revealSpeculationRulesInNetwork}
         title=${i18nString(UIStrings.buttonClickToRevealInNetworkPanel)}
@@ -263,7 +265,7 @@ function ruleSetRenderer(
     return ruleSetRendererOutOfDocument(ruleSet, location);
   }
 
-  return LitHtml.html`${location}`;
+  return html`${location}`;
 }
 
 function statusRenderer(preloadsStatusSummary: string, ruleSet: Protocol.Preload.RuleSet): LitHtml.TemplateResult {
@@ -274,7 +276,7 @@ function statusRenderer(preloadsStatusSummary: string, ruleSet: Protocol.Preload
 
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-    return LitHtml.html`
+    return html`
       <button class="link" role="link"
         @click=${revealAttemptViewWithFilter}
         title=${i18nString(UIStrings.buttonRevealPreloadsAssociatedWithRuleSet)}
@@ -296,7 +298,7 @@ function statusRenderer(preloadsStatusSummary: string, ruleSet: Protocol.Preload
 
   function errors(): LitHtml.TemplateResult {
     const nErrors = i18nString(UIStrings.errors, {errorCount: 1});
-    return LitHtml.html`
+    return html`
       <span
         style=${LitHtml.Directives.styleMap({
       color: 'var(--sys-color-error)',
@@ -313,6 +315,6 @@ function statusRenderer(preloadsStatusSummary: string, ruleSet: Protocol.Preload
     case Protocol.Preload.RuleSetErrorType.SourceIsNotJsonObject:
       return errors();
     case Protocol.Preload.RuleSetErrorType.InvalidRulesSkipped:
-      return LitHtml.html`${errors()} ${counts(preloadsStatusSummary, ruleSet)}`;
+      return html`${errors()} ${counts(preloadsStatusSummary, ruleSet)}`;
   }
 }

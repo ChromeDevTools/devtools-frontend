@@ -17,6 +17,8 @@ import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import protocolHandlersViewStyles from './protocolHandlersView.css.js';
 
+const {html} = LitHtml;
+
 const PROTOCOL_DOCUMENT_URL = 'https://web.dev/url-protocol-handler/';
 const UIStrings = {
   /**
@@ -111,7 +113,7 @@ export class ProtocolHandlersView extends HTMLElement {
         UI.XLink.XLink.create(this.#manifestLink, i18nString(UIStrings.manifest), undefined, undefined, 'manifest');
     const statusString = this.#protocolHandlers.length > 0 ? UIStrings.protocolDetected : UIStrings.protocolNotDetected;
     // clang-format off
-    return LitHtml.html`
+    return html`
     <div class="protocol-handlers-row status">
             <${IconButton.Icon.Icon.litTagName} class="inline-icon"
                                                 name=${this.#protocolHandlers.length > 0 ? 'check-circle' : 'info'}>
@@ -130,10 +132,10 @@ export class ProtocolHandlersView extends HTMLElement {
     }
     const protocolOptions =
         this.#protocolHandlers.filter(p => p.protocol)
-            .map(p => LitHtml.html`<option value=${p.protocol} jslog=${VisualLogging.item(p.protocol).track({
-              click: true,
-            })}>${p.protocol}://</option>`);
-    return LitHtml.html`
+            .map(p => html`<option value=${p.protocol} jslog=${VisualLogging.item(p.protocol).track({
+                   click: true,
+                 })}>${p.protocol}://</option>`);
+    return html`
        <div class="protocol-handlers-row">
         <select class="chrome-select protocol-select" @change=${this.#handleProtocolSelect} aria-label=${
         i18nString(UIStrings.dropdownLabel)}>
@@ -177,7 +179,7 @@ export class ProtocolHandlersView extends HTMLElement {
     const protocolDocLink = UI.XLink.XLink.create(
         PROTOCOL_DOCUMENT_URL, i18nString(UIStrings.protocolHandlerRegistrations), undefined, undefined, 'learn-more');
     // clang-format off
-    LitHtml.render(LitHtml.html`
+    LitHtml.render(html`
       ${this.#renderStatusMessage()}
       <div class="protocol-handlers-row">
           ${i18n.i18n.getFormatLocalizedString(str_, UIStrings.needHelpReadOur, {PH1: protocolDocLink})}

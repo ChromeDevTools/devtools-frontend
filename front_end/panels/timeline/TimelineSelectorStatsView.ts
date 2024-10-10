@@ -13,6 +13,8 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as LitHtml from '../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
+const {html} = LitHtml;
+
 const UIStrings = {
   /**
    *@description Label for selector stats data table
@@ -148,7 +150,7 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
         {
           id: SelectorTimingsKey.RejectPercentage as Lowercase<string>,
           title: i18nString(UIStrings.rejectPercentage),
-          titleElement: LitHtml.html`<span title=${i18nString(UIStrings.rejectPercentageExplanation)}>${
+          titleElement: html`<span title=${i18nString(UIStrings.rejectPercentageExplanation)}>${
               i18nString(UIStrings.rejectPercentage)}</span>`,
           sortable: true,
           widthWeighting: 1,
@@ -388,7 +390,7 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
             columnId: SelectorTimingsKey.Elapsed,
             value: elapsedTimeInMs,
             renderer(): LitHtml.TemplateResult {
-              return LitHtml.html`${elapsedTimeInMs.toFixed(3)}`;
+              return html`${elapsedTimeInMs.toFixed(3)}`;
             },
           },
           {columnId: SelectorTimingsKey.MatchAttempts, value: x[SelectorTimingsKey.MatchAttempts]},
@@ -397,7 +399,7 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
             columnId: SelectorTimingsKey.RejectPercentage,
             value: rejectPercentage,
             renderer(): LitHtml.TemplateResult {
-              return LitHtml.html`${rejectPercentage.toFixed(1)}`;
+              return html`${rejectPercentage.toFixed(1)}`;
             },
           },
           {
@@ -410,24 +412,24 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
             value: x[SelectorTimingsKey.StyleSheetId],
             renderer(): LitHtml.TemplateResult {
               if (locations === null) {
-                return LitHtml.html`<span></span>`;
+                return html`<span></span>`;
               }
               if (locations === undefined) {
-                return LitHtml.html`<span title=${i18nString(UIStrings.unableToLinkViaStyleSheetId, {
+                return html`<span title=${i18nString(UIStrings.unableToLinkViaStyleSheetId, {
                   PH1: x[SelectorTimingsKey.StyleSheetId],
                 })} aria-label=${i18nString(UIStrings.unableToLinkViaStyleSheetId, {
                   PH1: x[SelectorTimingsKey.StyleSheetId],
                 })}>${i18nString(UIStrings.unableToLink)}</span>`;
               }
-              return LitHtml.html`
+              return html`
               ${locations.map((location, itemIndex) => {
                 if (itemIndex !== locations.length - 1) {
                   // eslint-disable-next-line rulesdir/ban_a_tags_in_lit_html
-                  return LitHtml.html`<${Linkifier.Linkifier.Linkifier.litTagName} .data=${
+                  return html`<${Linkifier.Linkifier.Linkifier.litTagName} .data=${
                       location as Linkifier.Linkifier.LinkifierData}></${Linkifier.Linkifier.Linkifier.litTagName}>
                     <a>, </a>`;
                 }
-                return LitHtml.html`<${Linkifier.Linkifier.Linkifier.litTagName} .data=${
+                return html`<${Linkifier.Linkifier.Linkifier.litTagName} .data=${
                     location as Linkifier.Linkifier.LinkifierData}></${Linkifier.Linkifier.Linkifier.litTagName}>`;
               })}
               `;

@@ -9,6 +9,8 @@ import type * as Overlays from '../../overlays/overlays.js';
 import {type BaseInsight} from './Helpers.js';
 import tableStyles from './table.css.js';
 
+const {html} = LitHtml;
+
 /**
  * @fileoverview An interactive table component.
  *
@@ -153,14 +155,14 @@ export class Table extends HTMLElement {
     }
 
     LitHtml.render(
-        LitHtml.html`<table
+        html`<table
           class=${LitHtml.Directives.classMap({
           interactive: this.#interactive,
         })}
           @mouseleave=${this.#interactive ? this.#onMouseLeave : null}>
         <thead>
           <tr>
-          ${this.#headers.map(h => LitHtml.html`<th scope="col">${h}</th>`)}
+          ${this.#headers.map(h => html`<th scope="col">${h}</th>`)}
           </tr>
         </thead>
         <tbody
@@ -168,9 +170,9 @@ export class Table extends HTMLElement {
           @click=${this.#interactive ? this.#onClickRow : null}
         >
           ${this.#rows.map(row => {
-          const rowsEls = row.values.map(
-              (value, i) => i === 0 ? LitHtml.html`<th scope="row">${value}</th>` : LitHtml.html`<td>${value}</td>`);
-          return LitHtml.html`<tr>${rowsEls}</tr>`;
+          const rowsEls =
+              row.values.map((value, i) => i === 0 ? html`<th scope="row">${value}</th>` : html`<td>${value}</td>`);
+          return html`<tr>${rowsEls}</tr>`;
         })}
         </tbody>
       </table>`,

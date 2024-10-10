@@ -23,6 +23,8 @@ import type * as PreloadingHelper from './helper/helper.js';
 import preloadingViewStyles from './preloadingView.css.js';
 import preloadingViewDropDownStyles from './preloadingViewDropDown.css.js';
 
+const {html} = LitHtml;
+
 const UIStrings = {
   /**
    *@description DropDown title for filtering preloading attempts by rule set
@@ -223,7 +225,7 @@ export class PreloadingRuleSetView extends UI.Widget.VBox {
     };
 
     LitHtml.render(
-        LitHtml.html`
+        html`
         <${SplitView.SplitView.SplitView.litTagName} .horizontal=${
             true} style="--min-sidebar-size: max(100vh-200px, 0px)">
           <div slot="main" class="overflow-auto" style="height: 100%">
@@ -374,7 +376,7 @@ export class PreloadingAttemptView extends UI.Widget.VBox {
 
     this.preloadingGrid.addEventListener('cellfocused', this.onPreloadingGridCellFocused.bind(this));
     LitHtml.render(
-        LitHtml.html`
+        html`
         <${SplitView.SplitView.SplitView.litTagName} .horizontal=${true} style="--min-sidebar-size: 0px">
           <div slot="main" class="overflow-auto" style="height: 100%">
             ${this.preloadingGrid}

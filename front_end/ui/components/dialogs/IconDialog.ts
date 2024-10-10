@@ -15,6 +15,8 @@ import {
 } from './Dialog.js';
 import iconDialogStyles from './iconDialog.css.js';
 
+const {html} = LitHtml;
+
 const UIStrings = {
   /**
    * @description Title of close button for the shortcuts dialog.
@@ -101,7 +103,7 @@ export class IconDialog extends HTMLElement {
     if (this.#data.closeButton) {
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
-      maybeCloseButton = LitHtml.html`
+      maybeCloseButton = html`
         <div id='close-button-container'>
           <div id='close-button-right-aligner'>
             <${IconButton.Icon.Icon.litTagName}
@@ -122,7 +124,7 @@ export class IconDialog extends HTMLElement {
     }
 
     // clang-format off
-    LitHtml.render(LitHtml.html`
+    LitHtml.render(html`
       <${IconButton.Icon.Icon.litTagName}
         @click=${this.#showDialog}
         on-render=${ComponentHelpers.Directives.nodeRenderedCallback(node => {

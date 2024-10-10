@@ -7,6 +7,8 @@ import * as LitHtml from '../../../lit-html/lit-html.js';
 import * as ComponentHelpers from '../../helpers/helpers.js';
 import * as TreeOutline from '../../tree_outline/tree_outline.js';
 
+const {html} = LitHtml;
+
 await ComponentHelpers.ComponentServerSetup.setup();
 await FrontendHelpers.initializeGlobalVars();
 
@@ -23,8 +25,8 @@ const data: TreeOutline.TreeOutline.TreeOutlineData<TreeNodeData> = {
       fontStyle: 'italic',
       color: 'var(--sys-color-token-property-special)',
     });
-    return LitHtml.html`<code>${cssProperty}</code>:${
-        state.isExpanded ? LitHtml.nothing : LitHtml.html`<code style=${valueStyles}>${cssValue}</code>`}`;
+    return html`<code>${cssProperty}</code>:${
+        state.isExpanded ? LitHtml.nothing : html`<code style=${valueStyles}>${cssValue}</code>`}`;
   },
   tree: [
     {

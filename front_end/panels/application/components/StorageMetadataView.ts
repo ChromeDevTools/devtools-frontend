@@ -13,6 +13,8 @@ import * as ReportView from '../../../ui/components/report_view/report_view.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
+const {html} = LitHtml;
+
 const UIStrings = {
   /**
    *@description The origin of a URL (https://web.dev/same-site-same-origin/#origin).
@@ -139,7 +141,7 @@ export class StorageMetadataView extends LegacyWrapper.LegacyWrapper.WrappableCo
     return coordinator.write('StorageMetadataView render', async () => {
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
-      LitHtml.render(LitHtml.html`
+      LitHtml.render(html`
         <${ReportView.ReportView.Report.litTagName} .data=${{reportTitle: this.getTitle() ?? i18nString(UIStrings.loading)} as ReportView.ReportView.ReportData}>
           ${await this.renderReportContent()}
         </${ReportView.ReportView.Report.litTagName}>`, this.#shadow, {host: this});
@@ -157,12 +159,12 @@ export class StorageMetadataView extends LegacyWrapper.LegacyWrapper.WrappableCo
   }
 
   key(content: string|LitHtml.TemplateResult): LitHtml.TemplateResult {
-    return LitHtml.html`<${ReportView.ReportView.ReportKey.litTagName}>${content}</${
+    return html`<${ReportView.ReportView.ReportKey.litTagName}>${content}</${
         ReportView.ReportView.ReportKey.litTagName}>`;
   }
 
   value(content: string|LitHtml.TemplateResult): LitHtml.TemplateResult {
-    return LitHtml.html`<${ReportView.ReportView.ReportValue.litTagName}>${content}</${
+    return html`<${ReportView.ReportView.ReportValue.litTagName}>${content}</${
         ReportView.ReportView.ReportValue.litTagName}>`;
   }
 
@@ -184,13 +186,13 @@ export class StorageMetadataView extends LegacyWrapper.LegacyWrapper.WrappableCo
                                                          null;
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-    return LitHtml.html`
+    return html`
         ${this.key(i18nString(UIStrings.origin))}
-        ${this.value(LitHtml.html`<div class="text-ellipsis" title=${origin}>${origin}</div>`)}
+        ${this.value(html`<div class="text-ellipsis" title=${origin}>${origin}</div>`)}
         ${(topLevelSite || topLevelSiteIsOpaque) ? this.key(i18nString(UIStrings.topLevelSite)) : LitHtml.nothing}
         ${topLevelSite ? this.value(topLevelSite) : LitHtml.nothing}
         ${topLevelSiteIsOpaque ? this.value(i18nString(UIStrings.opaque)) : LitHtml.nothing}
-        ${thirdPartyReason ? LitHtml.html`${this.key(i18nString(UIStrings.isThirdParty))}${this.value(thirdPartyReason)}` : LitHtml.nothing}
+        ${thirdPartyReason ? html`${this.key(i18nString(UIStrings.isThirdParty))}${this.value(thirdPartyReason)}` : LitHtml.nothing}
         ${hasNonce || topLevelSiteIsOpaque ?
         this.key(i18nString(UIStrings.isOpaque)) : LitHtml.nothing}
         ${hasNonce ? this.value(i18nString(UIStrings.yes)) : LitHtml.nothing}
@@ -208,7 +210,7 @@ export class StorageMetadataView extends LegacyWrapper.LegacyWrapper.WrappableCo
     const {bucket: {name}, persistent, durability, quota} = this.#storageBucket;
 
     // clang-format off
-    return LitHtml.html`
+    return html`
       ${this.key(i18nString(UIStrings.bucketName))}
       ${this.value(name || 'default')}
       ${this.key(i18nString(UIStrings.persistent))}
@@ -237,7 +239,7 @@ export class StorageMetadataView extends LegacyWrapper.LegacyWrapper.WrappableCo
 
   #renderBucketControls(): LitHtml.TemplateResult {
     // clang-format off
-    return LitHtml.html`
+    return html`
       <${ReportView.ReportView.ReportSection.litTagName}>
         <${Buttons.Button.Button.litTagName}
           aria-label=${i18nString(UIStrings.deleteBucket)}

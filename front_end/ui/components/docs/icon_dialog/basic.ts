@@ -7,12 +7,14 @@ import * as FrontendHelpers from '../../../../testing/EnvironmentHelpers.js';  /
 import * as Dialogs from '../../../../ui/components/dialogs/dialogs.js';
 import * as LitHtml from '../../../lit-html/lit-html.js';
 
+const {html} = LitHtml;
+
 await ComponentHelpers.ComponentServerSetup.setup();
 await FrontendHelpers.initializeGlobalVars();
 
 // Disabled until https://crbug.com/1079231 is fixed.
 // clang-format off
-const iconDialog = LitHtml.html`
+const iconDialog = html`
 Hello...
 
 <${Dialogs.IconDialog.IconDialog.litTagName}

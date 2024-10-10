@@ -166,7 +166,7 @@ export class MismatchedPreloadingGrid extends LegacyWrapper.LegacyWrapper.Wrappa
           additionalProps: {'color'?: string, 'text-decoration'?: string}, s: string): LitHtml.TemplateResult {
         // Don't insert spaces to prevent spaces for inline blocks.
         // clang-format off
-        return LitHtml.html`<span style=${LitHtml.Directives.styleMap(additionalProps)}>${s}</span>`;
+        return html`<span style=${LitHtml.Directives.styleMap(additionalProps)}>${s}</span>`;
         // clang-format on
       }
 
@@ -187,7 +187,7 @@ export class MismatchedPreloadingGrid extends LegacyWrapper.LegacyWrapper.Wrappa
         }
       }, LitHtml.nothing as unknown as LitHtml.TemplateResult);
 
-      return LitHtml.html`<div>${contents}</div>`;
+      return html`<div>${contents}</div>`;
     }
 
     assertNotNullOrUndefined(this.#data);

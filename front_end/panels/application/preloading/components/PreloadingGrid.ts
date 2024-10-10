@@ -123,12 +123,12 @@ export class PreloadingGrid extends LegacyWrapper.LegacyWrapper.WrappableCompone
   #buildReportRows(): DataGrid.DataGridUtils.Row[] {
     function statusRenderer(statusString: string, status: SDK.PreloadingModel.PreloadingStatus): LitHtml.LitTemplate {
       if (status !== SDK.PreloadingModel.PreloadingStatus.FAILURE) {
-        return LitHtml.html`<div>${statusString}</div>`;
+        return html`<div>${statusString}</div>`;
       }
 
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
-      return LitHtml.html`
+      return html`
         <div
           style=${LitHtml.Directives.styleMap({
             color: 'var(--sys-color-error)',

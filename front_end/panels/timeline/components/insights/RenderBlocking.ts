@@ -14,6 +14,8 @@ import * as SidebarInsight from './SidebarInsight.js';
 import {Table, type TableData} from './Table.js';
 import {Category} from './types.js';
 
+const {html} = LitHtml;
+
 const UIStrings = {
   /**
    * @description Title of an insight that provides the user with the list of network requests that blocked and therefore slowed down the page rendering and becoming visible to the user.
@@ -68,7 +70,7 @@ export class RenderBlockingRequests extends BaseInsight {
     const topRequests = insightResult.renderBlockingRequests.slice(0, MAX_REQUESTS);
 
     // clang-format off
-    return LitHtml.html`
+    return html`
         <div class="insights">
           <${SidebarInsight.SidebarInsight.litTagName} .data=${{
             title: this.userVisibleTitle,
@@ -80,7 +82,7 @@ export class RenderBlockingRequests extends BaseInsight {
           @insighttoggleclick=${this.onSidebarClick}
         >
           <div slot="insight-content" class="insight-section">
-            ${LitHtml.html`<${Table.litTagName}
+            ${html`<${Table.litTagName}
               .data=${{
                 insight: this,
                 headers: [i18nString(UIStrings.renderBlockingRequest), i18nString(UIStrings.duration)],

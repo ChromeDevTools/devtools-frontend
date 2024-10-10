@@ -12,6 +12,8 @@ import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import networkRequestTooltipStyles from './networkRequestTooltip.css.js';
 import {colorForNetworkRequest} from './Utils.js';
 
+const {html} = LitHtml;
+
 const MAX_URL_LENGTH = 30;
 
 const UIStrings = {
@@ -65,12 +67,12 @@ export class NetworkRequestTooltip extends HTMLElement {
       return null;
     }
     if (this.#networkRequest.args.data.priority === this.#networkRequest.args.data.initialPriority) {
-      return LitHtml.html`
+      return html`
         <div class="priority">${UIStrings.priority}: ${
           PerfUI.NetworkPriorities.uiLabelForNetworkPriority(this.#networkRequest.args.data.priority)}</div>
       `;
     }
-    return LitHtml.html`
+    return html`
       <div class="priority">
         ${UIStrings.priority}:
         ${PerfUI.NetworkPriorities.uiLabelForNetworkPriority(this.#networkRequest.args.data.initialPriority)}
@@ -86,7 +88,7 @@ export class NetworkRequestTooltip extends HTMLElement {
     // |
     // |----
     // |
-    return LitHtml.html`<span class="whisker-left"> <span class="horizontal"></span> </span>`;
+    return html`<span class="whisker-left"> <span class="horizontal"></span> </span>`;
   }
 
   #renderRightWhisker(): LitHtml.TemplateResult {
@@ -95,7 +97,7 @@ export class NetworkRequestTooltip extends HTMLElement {
     //      |
     //  ----|
     //      |
-    return LitHtml.html`<span class="whisker-right"> <span class="horizontal"></span> </span>`;
+    return html`<span class="whisker-right"> <span class="horizontal"></span> </span>`;
   }
 
   #renderTimings(): LitHtml.TemplateResult|null {
@@ -118,7 +120,7 @@ export class NetworkRequestTooltip extends HTMLElement {
       backgroundColor: color,
     };
 
-    return LitHtml.html`
+    return html`
       <ul>
         <li>
           ${this.#renderLeftWhisker()}
@@ -150,7 +152,7 @@ export class NetworkRequestTooltip extends HTMLElement {
     }
     const networkData = this.#networkRequest.args.data;
     // clang-format off
-    const output = LitHtml.html`
+    const output = html`
       <div class="performance-card">
         <span class="url">${Platform.StringUtilities.trimMiddle(networkData.url, MAX_URL_LENGTH)}</span>
         <span class="time bold">${i18n.TimeUtilities.formatMicroSecondsTime(this.#networkRequest.dur)}</span>
@@ -158,7 +160,7 @@ export class NetworkRequestTooltip extends HTMLElement {
         <div class="divider"></div>
         ${this.#renderPriority()}
         ${Trace.Helpers.Network.isSyntheticNetworkRequestEventRenderBlocking(this.#networkRequest) ?
-          LitHtml.html`<div class="render-blocking"> ${UIStrings.renderBlocking} </div>` :  LitHtml.nothing
+          html`<div class="render-blocking"> ${UIStrings.renderBlocking} </div>` :  LitHtml.nothing
         }
         <div class="divider"></div>
 

@@ -10,6 +10,8 @@ import type * as Protocol from '../../../../generated/protocol.js';
 import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 
+const {html} = LitHtml;
+
 export interface NodeLinkData {
   backendNodeId: Protocol.DOM.BackendNodeId;
   options?: Common.Linkifier.Options;
@@ -66,7 +68,7 @@ export class NodeLink extends HTMLElement {
   async #render(): Promise<void> {
     const relatedNodeEl = await this.#linkify();
     LitHtml.render(
-        LitHtml.html`<div class='node-link'>
+        html`<div class='node-link'>
         ${relatedNodeEl}
       </div>`,
         this.#shadow, {host: this});

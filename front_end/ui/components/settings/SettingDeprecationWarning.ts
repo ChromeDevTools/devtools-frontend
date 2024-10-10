@@ -8,6 +8,8 @@ import * as IconButton from '../icon_button/icon_button.js';
 
 import settingDeprecationWarning from './settingDeprecationWarning.css.js';
 
+const {html} = LitHtml;
+
 export class SettingDeprecationWarning extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-setting-deprecation-warning`;
   readonly #shadow = this.attachShadow({mode: 'open'});
@@ -33,7 +35,7 @@ export class SettingDeprecationWarning extends HTMLElement {
     }
 
     LitHtml.render(
-        LitHtml.html`<${IconButton.Icon.Icon.litTagName} class=${LitHtml.Directives.classMap(classes)} .data=${
+        html`<${IconButton.Icon.Icon.litTagName} class=${LitHtml.Directives.classMap(classes)} .data=${
             iconData as
             IconButton.Icon.IconData} title=${warning} @click=${onclick}></${IconButton.Icon.Icon.litTagName}>`,
         this.#shadow, {host: this});

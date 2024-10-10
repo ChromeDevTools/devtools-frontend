@@ -13,6 +13,8 @@ import * as SidebarInsight from './SidebarInsight.js';
 import {Table, type TableData} from './Table.js';
 import {Category} from './types.js';
 
+const {html} = LitHtml;
+
 const UIStrings = {
   /**
    *@description Title of an insight that provides details about slow CSS selectors.
@@ -67,7 +69,7 @@ export class SlowCSSSelector extends BaseInsight {
         i18n.TimeUtilities.millisToString(Platform.Timing.microSecondsToMilliSeconds(us));
 
     // clang-format off
-    return this.#slowCSSSelector ? LitHtml.html`
+    return this.#slowCSSSelector ? html`
       <div class="insights">
         <${SidebarInsight.SidebarInsight.litTagName} .data=${{
               title: this.userVisibleTitle,
@@ -78,7 +80,7 @@ export class SlowCSSSelector extends BaseInsight {
           @insighttoggleclick=${this.onSidebarClick}
         >
           <div slot="insight-content" class="insight-section">
-            ${LitHtml.html`<${Table.litTagName}
+            ${html`<${Table.litTagName}
               .data=${{
                 insight: this,
                 headers: [i18nString(UIStrings.total), ''],
@@ -89,7 +91,7 @@ export class SlowCSSSelector extends BaseInsight {
                 ],
               } as TableData}>
             </${Table.litTagName}>`}
-            ${LitHtml.html`<${Table.litTagName}
+            ${html`<${Table.litTagName}
               .data=${{
                 insight: this,
                 headers: [i18nString(UIStrings.topSelectors), i18nString(UIStrings.elapsed)],
@@ -100,7 +102,7 @@ export class SlowCSSSelector extends BaseInsight {
                 }),
               } as TableData}>
             </${Table.litTagName}>`}
-            ${LitHtml.html`<${Table.litTagName}
+            ${html`<${Table.litTagName}
               .data=${{
                 insight: this,
                 headers: [i18nString(UIStrings.topSelectors), i18nString(UIStrings.matchAttempts)],

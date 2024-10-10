@@ -10,6 +10,8 @@ import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
 import interestGroupAccessGridStyles from './interestGroupAccessGrid.css.js';
 
+const {html} = LitHtml;
+
 const UIStrings = {
   /**
    *@description Hover text for an info icon in the Interest Group Event panel
@@ -67,7 +69,7 @@ export class InterestGroupAccessGrid extends HTMLElement {
 
   #render(): void {
     // clang-format off
-    LitHtml.render(LitHtml.html`
+    LitHtml.render(html`
       <div>
         <span class="heading">Interest Groups</span>
         <${IconButton.Icon.Icon.litTagName} class="info-icon" title=${
@@ -84,7 +86,7 @@ export class InterestGroupAccessGrid extends HTMLElement {
 
   #renderGridOrNoDataMessage(): LitHtml.TemplateResult {
     if (this.#datastores.length === 0) {
-      return LitHtml.html`<div class="no-events-message">${i18nString(UIStrings.noEvents)}</div>`;
+      return html`<div class="no-events-message">${i18nString(UIStrings.noEvents)}</div>`;
     }
 
     const gridData: DataGrid.DataGridController.DataGridControllerData = {
@@ -129,7 +131,7 @@ export class InterestGroupAccessGrid extends HTMLElement {
       },
     };
 
-    return LitHtml.html`
+    return html`
       <${DataGrid.DataGridController.DataGridController.litTagName} .data=${
         gridData as DataGrid.DataGridController.DataGridControllerData}></${
         DataGrid.DataGridController.DataGridController.litTagName}>
@@ -153,7 +155,7 @@ export class InterestGroupAccessGrid extends HTMLElement {
 
   #renderDateForDataGridCell(value: DataGrid.DataGridUtils.CellValue): LitHtml.TemplateResult {
     const date = new Date(1e3 * (value as number));
-    return LitHtml.html`${date.toLocaleString()}`;
+    return html`${date.toLocaleString()}`;
   }
 }
 

@@ -21,6 +21,8 @@ import {
   type TreeNodeWithChildren,
 } from './TreeOutlineUtils.js';
 
+const {html, Directives: {ifDefined}} = LitHtml;
+
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 export interface TreeOutlineData<TreeNodeDataType> {
@@ -37,7 +39,7 @@ export interface TreeOutlineData<TreeNodeDataType> {
 }
 
 export function defaultRenderer(node: TreeNode<string>): LitHtml.TemplateResult {
-  return LitHtml.html`${node.treeNodeData}`;
+  return html`${node.treeNodeData}`;
 }
 
 export class ItemSelectedEvent<TreeNodeDataType> extends Event {
@@ -111,7 +113,7 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
               node.treeNodeData, null,
               2)}. Consider providing a different defaultRenderer that can handle nodes of this type.`);
     }
-    return LitHtml.html`${String(node.treeNodeData)}`;
+    return html`${String(node.treeNodeData)}`;
   };
   #nodeFilter?: ((node: TreeNodeDataType) => FilterOption);
   #compact = false;
@@ -439,7 +441,7 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
       });
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
-      childrenToRender = LitHtml.html`<ul role="group">${LitHtml.Directives.until(childNodes)}</ul>`;
+      childrenToRender = html`<ul role="group">${LitHtml.Directives.until(childNodes)}</ul>`;
       // clang-format on
     }
 
@@ -463,11 +465,11 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
 
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-    return LitHtml.html`
+    return html`
       <li role="treeitem"
         tabindex=${tabIndex}
         aria-setsize=${setSize}
-        aria-expanded=${LitHtml.Directives.ifDefined(ariaExpandedAttribute)}
+        aria-expanded=${ifDefined(ariaExpandedAttribute)}
         aria-level=${depth + 1}
         aria-posinset=${positionInSet + 1}
         class=${listItemClasses}
@@ -522,7 +524,7 @@ export class TreeOutline<TreeNodeDataType> extends HTMLElement {
     await coordinator.write('TreeOutline render', () => {
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
-      LitHtml.render(LitHtml.html`
+      LitHtml.render(html`
       <div class="wrapping-container">
         <ul role="tree" @keydown=${this.#onTreeKeyDown}>
           ${this.#treeData.map((topLevelNode, index) => {

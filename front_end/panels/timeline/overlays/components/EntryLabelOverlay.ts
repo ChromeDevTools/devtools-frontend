@@ -8,6 +8,8 @@ import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 
 import styles from './entryLabelOverlay.css.js';
 
+const {html} = LitHtml;
+
 const UIStrings = {
   /**
    * @description Accessible label used to explain to a user that they are viewing an entry label.
@@ -333,7 +335,7 @@ export class EntryLabelOverlay extends HTMLElement {
   #render(): void {
     // clang-format off
     LitHtml.render(
-        LitHtml.html`
+        html`
         <span class="label-parts-wrapper" role="region" aria-label=${i18nString(UIStrings.entryLabel)}>
           <span
             class="input-field"

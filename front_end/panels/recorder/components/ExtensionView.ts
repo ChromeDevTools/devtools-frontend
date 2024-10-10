@@ -14,6 +14,8 @@ import * as Extensions from '../extensions/extensions.js';
 
 import extensionViewStyles from './extensionView.css.js';
 
+const {html} = LitHtml;
+
 const UIStrings = {
   /**
    * @description The button label that closes the panel that shows the extension content inside the Recorder panel.
@@ -87,7 +89,7 @@ export class ExtensionView extends HTMLElement {
     const iframe = Extensions.ExtensionManager.ExtensionManager.instance().getView(this.#descriptor.id).frame();
     // clang-format off
     LitHtml.render(
-      LitHtml.html`
+      html`
         <div class="extension-view">
           <header>
             <div class="title">

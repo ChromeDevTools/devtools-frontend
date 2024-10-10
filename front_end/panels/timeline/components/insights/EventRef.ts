@@ -10,6 +10,8 @@ import * as Utils from '../../utils/utils.js';
 
 import sidebarInsightStyles from './sidebarInsight.css.js';
 
+const {html} = LitHtml;
+
 export class EventReferenceClick extends Event {
   static readonly eventName = 'eventreferenceclick';
 
@@ -46,7 +48,7 @@ class EventRef extends HTMLElement {
     }
 
     // clang-format off
-    LitHtml.render(LitHtml.html`
+    LitHtml.render(html`
       <button type="button" class="timeline-link" @click=${(e: Event) => {
         e.stopPropagation();
         if (this.#event) {
@@ -70,7 +72,7 @@ export function eventRef(event: EventRefSupportedEvents): LitHtml.TemplateResult
         event, `unsupported event in eventRef: ${(event as Trace.Types.Events.Event).name}`);
   }
 
-  return LitHtml.html`<${EventRef.litTagName}
+  return html`<${EventRef.litTagName}
     .event=${event}
     .text=${text}
     title=${title}

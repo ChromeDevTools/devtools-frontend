@@ -14,6 +14,8 @@ import * as VisualLogging from '../../visual_logging/visual_logging.js';
 
 import styles from './codeBlock.css.js';
 
+const {html} = LitHtml;
+
 const UIStrings = {
   /**
    * @description The header text if not present and language is not set.
@@ -121,7 +123,7 @@ export class CodeBlock extends HTMLElement {
 
   #renderNotice(): LitHtml.TemplateResult {
     // clang-format off
-    return LitHtml.html`<p class="notice">
+    return html`<p class="notice">
       <x-link class="link" href="https://support.google.com/legal/answer/13505487" jslog=${
         VisualLogging.link('code-disclaimer').track({
           click: true,
@@ -134,7 +136,7 @@ export class CodeBlock extends HTMLElement {
 
   #renderCopyButton(): LitHtml.LitTemplate {
     // clang-format off
-    return LitHtml.html`
+    return html`
       <div class="copy-button-container">
         <${Buttons.Button.Button.litTagName}
           .data=${
@@ -148,7 +150,7 @@ export class CodeBlock extends HTMLElement {
           }
           @click=${this.#onCopy}
         ></${Buttons.Button.Button.litTagName}>
-        ${this.#copied ? LitHtml.html`<span>${i18nString(UIStrings.copied)}</span>` : LitHtml.nothing}
+        ${this.#copied ? html`<span>${i18nString(UIStrings.copied)}</span>` : LitHtml.nothing}
       </div>`;
     // clang-format on
   }
@@ -158,7 +160,7 @@ export class CodeBlock extends HTMLElement {
 
     // clang-format off
     LitHtml.render(
-      LitHtml.html`<div class='codeblock' jslog=${VisualLogging.section('code')}>
+      html`<div class='codeblock' jslog=${VisualLogging.section('code')}>
       <div class="editor-wrapper">
         <div class="heading">
           <h4 class="heading-text">${header}</h4>

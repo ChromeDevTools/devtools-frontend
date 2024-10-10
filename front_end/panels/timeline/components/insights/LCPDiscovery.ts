@@ -14,6 +14,8 @@ import {BaseInsight, shouldRenderForCategory} from './Helpers.js';
 import * as SidebarInsight from './SidebarInsight.js';
 import {Category} from './types.js';
 
+const {html} = LitHtml;
+
 const UIStrings = {
   /**
    *@description Title of an insight that provides details about the LCP metric, and the network requests necessary to load it.
@@ -118,7 +120,7 @@ export class LCPDiscovery extends BaseInsight {
 
     const ariaLabel = didFail ? i18nString(UIStrings.failedAriaLabel, {PH1: label}) :
                                 i18nString(UIStrings.successAriaLabel, {PH1: label});
-    return LitHtml.html`
+    return html`
       <${IconButton.Icon.Icon.litTagName}
         aria-label=${ariaLabel}
         name=${icon}
@@ -145,7 +147,7 @@ export class LCPDiscovery extends BaseInsight {
         imageResults.request.ts,
     );
 
-    const label = LitHtml.html`<div class="discovery-delay"> ${this.#renderDiscoveryDelay(delay.range)}</div>`;
+    const label = html`<div class="discovery-delay"> ${this.#renderDiscoveryDelay(delay.range)}</div>`;
 
     return [
       {
@@ -178,10 +180,10 @@ export class LCPDiscovery extends BaseInsight {
 
   #renderImage(imageData: LCPImageDiscoveryData): LitHtml.TemplateResult {
     // clang-format off
-    return LitHtml.html`
+    return html`
       <div class="lcp-element">
         ${imageData.request.args.data.mimeType.includes('image') ?
-          LitHtml.html`
+          html`
         <img
           class="element-img"
           src=${imageData.request.args.data.url}
@@ -197,7 +199,7 @@ export class LCPDiscovery extends BaseInsight {
 
   #renderDiscovery(imageData: LCPImageDiscoveryData): LitHtml.TemplateResult {
     // clang-format off
-    return LitHtml.html`
+    return html`
         <div class="insights">
           <${SidebarInsight.SidebarInsight.litTagName} .data=${{
             title: this.userVisibleTitle,

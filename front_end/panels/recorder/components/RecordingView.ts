@@ -40,6 +40,8 @@ import {
   type StepViewData,
 } from './StepView.js';
 
+const {html} = LitHtml;
+
 const UIStrings = {
   /**
    * @description Depicts that the recording was done on a mobile device (e.g., a smartphone or tablet).
@@ -472,7 +474,7 @@ export class RecordingView extends HTMLElement {
       ): LitHtml.TemplateResult {
     const stepIndex = this.#steps.indexOf(step);
     // clang-format off
-    return LitHtml.html`
+    return html`
       <devtools-step-view
       @click=${this.#onStepClick}
       @mouseover=${this.#onStepHover}
@@ -654,21 +656,21 @@ export class RecordingView extends HTMLElement {
 
   #renderSettings(): LitHtml.TemplateResult {
     if (!this.#settings) {
-      return LitHtml.html``;
+      return html``;
     }
     const environmentFragments = [];
     if (this.#settings.viewportSettings) {
       // clang-format off
       environmentFragments.push(
-        LitHtml.html`<div>${
+        html`<div>${
           this.#settings.viewportSettings.isMobile
             ? i18nString(UIStrings.mobile)
             : i18nString(UIStrings.desktop)
         }</div>`,
       );
-      environmentFragments.push(LitHtml.html`<div class="separator"></div>`);
+      environmentFragments.push(html`<div class="separator"></div>`);
       environmentFragments.push(
-        LitHtml.html`<div>${this.#settings.viewportSettings.width}×${
+        html`<div>${this.#settings.viewportSettings.width}×${
           this.#settings.viewportSettings.height
         } px</div>`,
       );
@@ -680,14 +682,14 @@ export class RecordingView extends HTMLElement {
         if (this.#settings.networkConditionsSettings.title) {
           // clang-format off
           replaySettingsFragments.push(
-            LitHtml.html`<div>${
+            html`<div>${
               this.#settings.networkConditionsSettings.title
             }</div>`,
           );
           // clang-format on
         } else {
           // clang-format off
-          replaySettingsFragments.push(LitHtml.html`<div>
+          replaySettingsFragments.push(html`<div>
             ${i18nString(UIStrings.download, {
               value: Platform.NumberUtilities.bytesToString(
                 this.#settings.networkConditionsSettings.download,
@@ -707,7 +709,7 @@ export class RecordingView extends HTMLElement {
       } else {
         // clang-format off
         replaySettingsFragments.push(
-          LitHtml.html`<div>${
+          html`<div>${
             SDK.NetworkManager.NoThrottlingConditions.title instanceof Function
               ? SDK.NetworkManager.NoThrottlingConditions.title()
               : SDK.NetworkManager.NoThrottlingConditions.title
@@ -716,9 +718,9 @@ export class RecordingView extends HTMLElement {
         // clang-format on
       }
       // clang-format off
-      replaySettingsFragments.push(LitHtml.html`<div class="separator"></div>`);
+      replaySettingsFragments.push(html`<div class="separator"></div>`);
       replaySettingsFragments.push(
-        LitHtml.html`<div>${i18nString(UIStrings.timeout, {
+        html`<div>${i18nString(UIStrings.timeout, {
           value: this.#settings.timeout || Models.RecordingPlayer.defaultTimeout,
         })}</div>`,
       );
@@ -739,7 +741,7 @@ export class RecordingView extends HTMLElement {
             : selectedOptionTitle.title;
       }
 
-      replaySettingsFragments.push(LitHtml.html`<div class="editable-setting">
+      replaySettingsFragments.push(html`<div class="editable-setting">
         <label class="wrapping-label" @click=${this.#onSelectMenuLabelClick}>
           ${i18nString(UIStrings.network)}
           <devtools-select-menu
@@ -755,7 +757,7 @@ export class RecordingView extends HTMLElement {
             .buttonTitle=${menuButtonTitle}
           >
             ${networkConditionPresets.map(condition => {
-              return LitHtml.html`<devtools-menu-item
+              return html`<devtools-menu-item
                 .value=${condition.i18nTitleKey || ''}
                 .selected=${selectedOption === condition.i18nTitleKey}
                 jslog=${VisualLogging.item(Platform.StringUtilities.toKebabCase(condition.i18nTitleKey || ''))}
@@ -770,7 +772,7 @@ export class RecordingView extends HTMLElement {
           </devtools-select-menu>
         </label>
       </div>`);
-      replaySettingsFragments.push(LitHtml.html`<div class="editable-setting">
+      replaySettingsFragments.push(html`<div class="editable-setting">
         <label class="wrapping-label" title=${i18nString(
           UIStrings.timeoutExplanation,
         )}>
@@ -800,7 +802,7 @@ export class RecordingView extends HTMLElement {
       settings: true,
     };
     // clang-format off
-    return LitHtml.html`
+    return html`
       <div class="settings-row">
         <div class="settings-container">
           <div
@@ -814,7 +816,7 @@ export class RecordingView extends HTMLElement {
             <span>${i18nString(UIStrings.replaySettings)}</span>
             ${
               isEditable
-                ? LitHtml.html`<devtools-icon
+                ? html`<devtools-icon
                     class="chevron"
                     name="triangle-down">
                   </devtools-icon>`
@@ -825,7 +827,7 @@ export class RecordingView extends HTMLElement {
             ${
               replaySettingsFragments.length
                 ? replaySettingsFragments
-                : LitHtml.html`<div>${i18nString(UIStrings.default)}</div>`
+                : html`<div>${i18nString(UIStrings.default)}</div>`
             }
           </div>
         </div>
@@ -835,7 +837,7 @@ export class RecordingView extends HTMLElement {
             ${
               environmentFragments.length
                 ? environmentFragments
-                : LitHtml.html`<div>${i18nString(UIStrings.default)}</div>`
+                : html`<div>${i18nString(UIStrings.default)}</div>`
             }
           </div>
         </div>
@@ -858,7 +860,7 @@ export class RecordingView extends HTMLElement {
   #renderTimelineArea(): LitHtml.LitTemplate {
     if (this.#extensionDescriptor) {
       // clang-format off
-      return LitHtml.html`
+      return html`
         <devtools-recorder-extension-view .descriptor=${this.#extensionDescriptor}>
         </devtools-recorder-extension-view>
       `;
@@ -869,7 +871,7 @@ export class RecordingView extends HTMLElement {
     // clang-format off
     return !this.#showCodeView
       ? this.#renderSections()
-      : LitHtml.html`
+      : html`
         <devtools-split-view>
           <div slot="main">
             ${this.#renderSections()}
@@ -888,7 +890,7 @@ export class RecordingView extends HTMLElement {
                 .jslogContext=${'code-format'}
               >
                 ${this.#builtInConverters.map(converter => {
-                  return LitHtml.html`<devtools-menu-item
+                  return html`<devtools-menu-item
                     .value=${converter.getId()}
                     .selected=${this.#converterId === converter.getId()}
                     jslog=${VisualLogging.action().track({click: true}).context(`converter-${Platform.StringUtilities.toKebabCase(converter.getId())}`)}
@@ -897,7 +899,7 @@ export class RecordingView extends HTMLElement {
                   </devtools-menu-item>`;
                 })}
                 ${this.#extensionConverters.map(converter => {
-                  return LitHtml.html`<devtools-menu-item
+                  return html`<devtools-menu-item
                     .value=${converter.getId()}
                     .selected=${this.#converterId === converter.getId()}
                     jslog=${VisualLogging.action().track({click: true}).context('converter-extension')}
@@ -942,7 +944,7 @@ export class RecordingView extends HTMLElement {
     }
 
     // clang-format off
-    return LitHtml.html`
+    return html`
       <img class="screenshot" src=${section.screenshot} alt=${i18nString(
       UIStrings.screenshotForSection,
     )} />
@@ -952,7 +954,7 @@ export class RecordingView extends HTMLElement {
 
   #renderReplayOrAbortButton(): LitHtml.TemplateResult {
     if (this.#replayState.isPlaying) {
-      return LitHtml.html`
+      return html`
         <devtools-button .jslogContext=${'abort-replay'} @click=${
           this.#handleAbortReplay} .iconName=${'pause'} .variant=${Buttons.Button.Variant.OUTLINED}>
           ${i18nString(UIStrings.cancelReplay)}
@@ -960,7 +962,7 @@ export class RecordingView extends HTMLElement {
     }
 
     // clang-format off
-    return LitHtml.html`<devtools-replay-section
+    return html`<devtools-replay-section
         .data=${
           {
             settings: this.#recorderSettings,
@@ -1078,11 +1080,11 @@ export class RecordingView extends HTMLElement {
 
   #renderSections(): LitHtml.LitTemplate {
     // clang-format off
-    return LitHtml.html`
+    return html`
       <div class="sections">
       ${
         !this.#showCodeView
-          ? LitHtml.html`<div class="section-toolbar">
+          ? html`<div class="section-toolbar">
         <devtools-button
           @click=${this.showCodeToggle}
           class="show-code"
@@ -1103,7 +1105,7 @@ export class RecordingView extends HTMLElement {
           : ''
       }
       ${this.#sections.map(
-        (section, i) => LitHtml.html`
+        (section, i) => html`
             <div class="section">
               <div class="screenshot-wrapper">
                 ${this.#renderScreenshot(section)}
@@ -1145,7 +1147,7 @@ export class RecordingView extends HTMLElement {
                       i === this.#sections.length - 1,
                     ),
                   )}
-                  ${!this.#recordingTogglingInProgress && this.#isRecording && i === this.#sections.length - 1 ? LitHtml.html`<devtools-button
+                  ${!this.#recordingTogglingInProgress && this.#isRecording && i === this.#sections.length - 1 ? html`<devtools-button
                     class="step add-assertion-button"
                     .data=${
                       {
@@ -1158,7 +1160,7 @@ export class RecordingView extends HTMLElement {
                   >${i18nString(UIStrings.addAssertion)}</devtools-button>` : undefined}
                   ${
                     this.#isRecording && i === this.#sections.length - 1
-                      ? LitHtml.html`<div class="step recording">${i18nString(
+                      ? html`<div class="step recording">${i18nString(
                           UIStrings.recording,
                         )}</div>`
                       : null
@@ -1180,7 +1182,7 @@ export class RecordingView extends HTMLElement {
     const {title} = this.#userFlow;
     const isTitleEditable = !this.#replayState.isPlaying && !this.#isRecording;
     // clang-format off
-    return LitHtml.html`
+    return html`
       <div class="header">
         <div class="header-title-wrapper">
           <div class="header-title">
@@ -1211,7 +1213,7 @@ export class RecordingView extends HTMLElement {
           </div>
           ${
             this.#isTitleInvalid
-              ? LitHtml.html`<div class="title-input-error-text">
+              ? html`<div class="title-input-error-text">
             ${
               i18nString(UIStrings.requiredTitleError)
             }
@@ -1221,7 +1223,7 @@ export class RecordingView extends HTMLElement {
         </div>
         ${
           !this.#isRecording && this.#replayAllowed
-            ? LitHtml.html`<div class="actions">
+            ? html`<div class="actions">
                 <devtools-button
                   @click=${this.#handleMeasurePerformanceClickEvent}
                   .data=${
@@ -1252,7 +1254,7 @@ export class RecordingView extends HTMLElement {
     const translation = this.#recordingTogglingInProgress ? i18nString(UIStrings.recordingIsBeingStopped) :
                                                             i18nString(UIStrings.endRecording);
     // clang-format off
-    return LitHtml.html`
+    return html`
       <div class="footer">
         <div class="controls">
           <devtools-control-button
@@ -1284,7 +1286,7 @@ export class RecordingView extends HTMLElement {
 
     // clang-format off
     LitHtml.render(
-      LitHtml.html`
+      html`
       <div @click=${this.#onWrapperClick} class=${LitHtml.Directives.classMap(
         classNames,
       )}>
@@ -1292,13 +1294,13 @@ export class RecordingView extends HTMLElement {
           ${this.#renderHeader()}
           ${
             this.#extensionDescriptor
-              ? LitHtml.html`
+              ? html`
             <devtools-recorder-extension-view .descriptor=${
                   this.#extensionDescriptor
                 }>
             </devtools-recorder-extension-view>
           `
-              : LitHtml.html`
+              : html`
             ${this.#renderSettings()}
             ${this.#renderTimelineArea()}
           `

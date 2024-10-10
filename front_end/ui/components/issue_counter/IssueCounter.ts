@@ -12,6 +12,8 @@ import type * as IconButton from '../icon_button/icon_button.js';
 
 import issueCounterStyles from './issueCounter.css.js';
 
+const {html} = LitHtml;
+
 const UIStrings = {
   /**
    *@description Label for link to Issues tab, specifying how many issues there are.
@@ -192,7 +194,7 @@ export class IssueCounter extends HTMLElement {
       compact: this.#compact,
     };
     LitHtml.render(
-        LitHtml.html`
+        html`
         <icon-button .data=${data as IconButton.IconButton.IconButtonData} .accessibleName=${
             this.#accessibleName}></icon-button>
         `,

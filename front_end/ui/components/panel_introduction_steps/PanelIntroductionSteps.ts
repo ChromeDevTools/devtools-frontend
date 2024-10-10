@@ -6,6 +6,8 @@ import * as ComponentHelpers from '../../components/helpers/helpers.js';
 import * as LitHtml from '../../lit-html/lit-html.js';
 import panelIntroductionStepsStyles from './panelIntroductionSteps.css.js';
 
+const {html} = LitHtml;
+
 export class PanelIntroductionSteps extends HTMLElement {
   static readonly litTagName = LitHtml.literal`devtools-panel-introduction-steps`;
   readonly #shadow = this.attachShadow({mode: 'open'});
@@ -22,7 +24,7 @@ export class PanelIntroductionSteps extends HTMLElement {
     }
 
     // clang-format off
-    LitHtml.render(LitHtml.html`
+    LitHtml.render(html`
       <h1><slot name="title">slot: title</slot></h1>
 
       <ol class="intro-steps">

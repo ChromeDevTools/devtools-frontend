@@ -50,6 +50,8 @@ import {
 } from './IndexedDBModel.js';
 import indexedDBViewsStyles from './indexedDBViews.css.js';
 
+const {html} = LitHtml;
+
 const UIStrings = {
   /**
    *@description Text in Indexed DBViews of the Application panel
@@ -170,7 +172,7 @@ export class IDBDatabaseView extends ApplicationComponents.StorageMetadataView.S
     if (!this.database) {
       return LitHtml.nothing;
     }
-    return LitHtml.html`
+    return html`
       ${await super.renderReportContent()}
       ${this.key(i18nString(UIStrings.version))}
       ${this.value(this.database.version.toString())}

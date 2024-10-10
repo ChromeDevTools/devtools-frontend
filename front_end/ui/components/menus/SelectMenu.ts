@@ -18,6 +18,8 @@ import {
 import selectMenuStyles from './selectMenu.css.js';
 import selectMenuButtonStyles from './selectMenuButton.css.js';
 
+const {html} = LitHtml;
+
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 export interface SelectMenuData {
@@ -242,7 +244,7 @@ export class SelectMenu extends HTMLElement {
     const buttonLabel = this.#getButtonText();
     if (!this.sideButton) {
       // clang-format off
-      return LitHtml.html`
+      return html`
           <${SelectMenuButton.litTagName}
             @selectmenubuttontrigger=${this.#showMenu}
             .open=${this.#open} .showArrow=${this.showArrow}
@@ -256,7 +258,7 @@ export class SelectMenu extends HTMLElement {
     }
 
     // clang-format off
-    return LitHtml.html`
+    return html`
       <button id="side-button" @click=${this.#sideButtonClicked} ?disabled=${this.disabled}>
         ${buttonLabel}
       </button>
@@ -293,7 +295,7 @@ export class SelectMenu extends HTMLElement {
       throw new Error('SelectMenu render was not scheduled');
     }
     LitHtml.render(
-        LitHtml.html`
+        html`
       <${Menu.litTagName}
         @menucloserequest=${this.#onMenuClose}
         @menuitemselected=${this.#onItemSelected}
@@ -435,10 +437,10 @@ export class SelectMenuButton extends HTMLElement {
     if (!ComponentHelpers.ScheduledRender.isScheduledRender(this)) {
       throw new Error('SelectMenuItem render was not scheduled');
     }
-    const arrow = this.#props.showArrow ? LitHtml.html`<span id="arrow"></span>` : LitHtml.nothing;
+    const arrow = this.#props.showArrow ? html`<span id="arrow"></span>` : LitHtml.nothing;
     const classMap = {'single-arrow': this.#props.singleArrow};
     // clang-format off
-      const buttonTitle = LitHtml.html`
+      const buttonTitle = html`
       <span id="button-label-wrapper">
         <span id="label" ?witharrow=${this.showArrow} class=${LitHtml.Directives.classMap(classMap)}><slot></slot></span>
         ${arrow}
@@ -446,7 +448,7 @@ export class SelectMenuButton extends HTMLElement {
       `;
 
     // clang-format off
-    LitHtml.render(LitHtml.html`
+    LitHtml.render(html`
       <button aria-haspopup="true" aria-expanded="false" class="show" @keydown=${this.#handleButtonKeyDown} @click=${this.#handleClick} ?disabled=${this.disabled} jslog=${VisualLogging.dropDown(this.jslogContext)}>${buttonTitle}</button>
     `, this.#shadow, { host: this });
     // clang-format on

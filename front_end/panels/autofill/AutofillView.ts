@@ -18,6 +18,8 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import autofillViewStyles from './autofillView.css.js';
 
+const {html} = LitHtml;
+
 const UIStrings = {
   /**
    * @description Explanation for how to populate the autofill panel with data. Shown when there is
@@ -163,7 +165,7 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
     if (!this.#address && !this.#filledFields.length) {
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
-      LitHtml.render(LitHtml.html`
+      LitHtml.render(html`
         <main>
           <div class="top-left-corner">
             <label class="checkbox-label" title=${i18nString(UIStrings.showTestAddressesInAutofillMenu)}>
@@ -198,7 +200,7 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
 
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-    LitHtml.render(LitHtml.html`
+    LitHtml.render(html`
       <main>
         <div class="content-container" jslog=${VisualLogging.pane('autofill')}>
           <div class="right-to-left" role="region" aria-label=${i18nString(UIStrings.addressPreview)}>
@@ -255,11 +257,11 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
     const createSpan = (startIndex: number, endIndex: number): LitHtml.TemplateResult => {
       const textContentLines = this.#address.substring(startIndex, endIndex).split('\n');
       const templateLines =
-          textContentLines.map((line, i) => i === textContentLines.length - 1 ? line : LitHtml.html`${line}<br>`);
+          textContentLines.map((line, i) => i === textContentLines.length - 1 ? line : html`${line}<br>`);
       const hasMatches = this.#matches.some(match => match.startIndex <= startIndex && match.endIndex > startIndex);
 
       if (!hasMatches) {
-        return LitHtml.html`<span>${templateLines}</span>`;
+        return html`<span>${templateLines}</span>`;
       }
 
       const spanClasses = LitHtml.Directives.classMap({
@@ -269,7 +271,7 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
       });
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
-      return LitHtml.html`
+      return html`
         <span
           class=${spanClasses}
           @mouseenter=${() => this.#onSpanMouseEnter(startIndex)}
@@ -294,7 +296,7 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
       spans.push(createSpan(sortedMatchIndices[i], sortedMatchIndices[i + 1]));
     }
 
-    return LitHtml.html`
+    return html`
       <div class="address">
         ${spans}
       </div>
@@ -357,7 +359,7 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
 
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-    return LitHtml.html`
+    return html`
       <div class="grid-wrapper" role="region" aria-label=${i18nString(UIStrings.formInspector)}>
         <${DataGrid.DataGridController.DataGridController.litTagName}
           @rowmouseenter=${this.#onGridRowMouseEnter}
@@ -442,9 +444,9 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
 
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-    return LitHtml.html`
+    return html`
       ${autofillType}
-      ${adornerContent.textContent ? LitHtml.html`
+      ${adornerContent.textContent ? html`
           <${Adorners.Adorner.Adorner.litTagName} title=${adornerTitle} .data=${{name: fillingStrategy, content: adornerContent} as Adorners.Adorner.AdornerData}>
         `: LitHtml.nothing}
     `;

@@ -17,6 +17,8 @@ import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 
 import ruleSetDetailsViewStyles from './RuleSetDetailsView.css.js';
 
+const {html} = LitHtml;
+
 type RuleSet = Protocol.Preload.RuleSet;
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
@@ -54,7 +56,7 @@ export class RuleSetDetailsView extends LegacyWrapper.LegacyWrapper.WrappableCom
 
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
-      LitHtml.render(LitHtml.html`
+      LitHtml.render(html`
         <div class="content">
           <div class="ruleset-header" id="ruleset-url">${this.#data?.url || SDK.TargetManager.TargetManager.instance().inspectedURL()}</div>
           ${this.#maybeError()}
@@ -77,7 +79,7 @@ export class RuleSetDetailsView extends LegacyWrapper.LegacyWrapper.WrappableCom
 
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-    return LitHtml.html`
+    return html`
       <div class="ruleset-header">
         <${IconButton.Icon.Icon.litTagName}
           .data=${{
@@ -107,7 +109,7 @@ export class RuleSetDetailsView extends LegacyWrapper.LegacyWrapper.WrappableCom
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     // TODO(https://crbug.com/1425354): Add Raw button.
-    return LitHtml.html`
+    return html`
       <${TextEditor.TextEditor.TextEditor.litTagName} .style.flexGrow = '1' .state=${
         this.#editorState
       }></${TextEditor.TextEditor.TextEditor.litTagName}>

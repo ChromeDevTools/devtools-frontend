@@ -7,6 +7,8 @@ import * as LitHtml from '../../lit-html/lit-html.js';
 import {Icon, type IconData} from './Icon.js';
 import iconButtonStyles from './iconButton.css.js';
 
+const {html} = LitHtml;
+
 export interface IconWithTextData {
   iconName: string;
   iconColor?: string;
@@ -76,19 +78,19 @@ export class IconButton extends HTMLElement {
                                .filter((_, index) => this.#compact ? index === 0 : true);
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-    LitHtml.render(LitHtml.html`
+    LitHtml.render(html`
       <button class=${buttonClasses} @click=${this.#onClickHandler} aria-label=${LitHtml.Directives.ifDefined(this.#accessibleName)}>
-      ${(!this.#compact && this.#leadingText) ? LitHtml.html`<span class="icon-button-title">${this.#leadingText}</span>` : LitHtml.nothing}
+      ${(!this.#compact && this.#leadingText) ? html`<span class="icon-button-title">${this.#leadingText}</span>` : LitHtml.nothing}
       ${filteredGroups.map(counter =>
-      LitHtml.html`
+      html`
       <${Icon.litTagName} class="status-icon"
       .data=${{iconName: counter.iconName, color: counter.iconColor, width: counter.iconWidth || '1.5ex', height: counter.iconHeight || '1.5ex'} as IconData}>
       </${Icon.litTagName}>
-      ${this.#compact ? LitHtml.html`<!-- Force line-height for this element --><span>&#8203;</span>` : LitHtml.nothing}
+      ${this.#compact ? html`<!-- Force line-height for this element --><span>&#8203;</span>` : LitHtml.nothing}
       <span class="icon-button-title">${counter.text}</span>`,
       )}
       </button>
-      ${(!this.#compact && this.#trailingText) ? LitHtml.html`<span class="icon-button-title">${this.#trailingText}</span>` : LitHtml.nothing}
+      ${(!this.#compact && this.#trailingText) ? html`<span class="icon-button-title">${this.#trailingText}</span>` : LitHtml.nothing}
     `, this.#shadow, { host: this});
     // clang-format on
   }

@@ -15,6 +15,8 @@ import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import bounceTrackingMitigationsViewStyles from './bounceTrackingMitigationsView.css.js';
 
+const {html} = LitHtml;
+
 const UIStrings = {
   /**
    * @description Title text in bounce tracking mitigations view of the Application panel.
@@ -87,7 +89,7 @@ export class BounceTrackingMitigationsView extends LegacyWrapper.LegacyWrapper.W
 
   async #render(): Promise<void> {
     // clang-format off
-    LitHtml.render(LitHtml.html`
+    LitHtml.render(html`
       <${ReportView.ReportView.Report.litTagName} .data=${
           {reportTitle: i18nString(UIStrings.bounceTrackingMitigationsTitle)} as ReportView.ReportView.ReportData
       }
@@ -109,7 +111,7 @@ export class BounceTrackingMitigationsView extends LegacyWrapper.LegacyWrapper.W
       mitigationsFlagLink.textContent = i18nString(UIStrings.featureFlag);
 
       // clang-format off
-      return LitHtml.html`
+      return html`
         <${ReportView.ReportView.ReportSection.litTagName}>
           ${i18n.i18n.getFormatLocalizedString(
               str_, UIStrings.featureDisabled,
@@ -120,7 +122,7 @@ export class BounceTrackingMitigationsView extends LegacyWrapper.LegacyWrapper.W
     }
 
     // clang-format off
-    return LitHtml.html`
+    return html`
       <${ReportView.ReportView.ReportSection.litTagName}>
         ${this.#renderForceRunButton()}
       </${ReportView.ReportView.ReportSection.litTagName}>
@@ -141,7 +143,7 @@ export class BounceTrackingMitigationsView extends LegacyWrapper.LegacyWrapper.W
     const isMitigationRunning = (this.#screenStatus === ScreenStatusType.RUNNING);
 
     // clang-format off
-    return LitHtml.html`
+    return html`
       <${Buttons.Button.Button.litTagName}
         aria-label=${i18nString(UIStrings.forceRun)}
         .disabled=${isMitigationRunning}
@@ -149,7 +151,7 @@ export class BounceTrackingMitigationsView extends LegacyWrapper.LegacyWrapper.W
         .variant=${Buttons.Button.Variant.PRIMARY}
         @click=${this.#runMitigations}
         jslog=${VisualLogging.action('force-run').track({click: true})}>
-        ${isMitigationRunning ? LitHtml.html`
+        ${isMitigationRunning ? html`
           ${i18nString(UIStrings.runningMitigations)}`:`
           ${i18nString(UIStrings.forceRun)}
         `}
@@ -160,14 +162,14 @@ export class BounceTrackingMitigationsView extends LegacyWrapper.LegacyWrapper.W
 
   #renderDeletedSitesOrNoSitesMessage(): LitHtml.TemplateResult {
     if (!this.#seenButtonClick) {
-      return LitHtml.html``;
+      return html``;
     }
 
     if (this.#trackingSites.length === 0) {
       // clang-format off
-      return LitHtml.html`
+      return html`
         <${ReportView.ReportView.ReportSection.litTagName}>
-        ${(this.#screenStatus === ScreenStatusType.RUNNING) ? LitHtml.html`
+        ${(this.#screenStatus === ScreenStatusType.RUNNING) ? html`
           ${i18nString(UIStrings.checkingPotentialTrackers)}`:`
           ${i18nString(UIStrings.noPotentialBounceTrackersIdentified)}
         `}
@@ -195,7 +197,7 @@ export class BounceTrackingMitigationsView extends LegacyWrapper.LegacyWrapper.W
     };
 
     // clang-format off
-    return LitHtml.html`
+    return html`
       <${ReportView.ReportView.ReportSection.litTagName}>
         <${DataGrid.DataGridController.DataGridController.litTagName} .data=${
             gridData as DataGrid.DataGridController.DataGridControllerData}>

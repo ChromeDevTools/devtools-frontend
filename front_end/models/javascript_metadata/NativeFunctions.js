@@ -225,7 +225,7 @@ export const NativeFunctions = [
   {
     name: "create",
     signatures: [["?options"]],
-    receivers: ["CredentialsContainer","AIRewriterFactory","AISummarizerFactory","AIWriterFactory","AILanguageDetectorFactory"]
+    receivers: ["CredentialsContainer","AIRewriterFactory","AISummarizerFactory","AIWriterFactory","AILanguageDetectorFactory","AITranslatorFactory"]
   },
   {
     name: "defineProperty",
@@ -1871,6 +1871,11 @@ export const NativeFunctions = [
   },
   {
     name: "translate",
+    signatures: [["input","?options"]],
+    receivers: ["AITranslator"]
+  },
+  {
+    name: "translate",
     signatures: [["input"]],
     receivers: ["LanguageTranslator"]
   },
@@ -2359,6 +2364,10 @@ export const NativeFunctions = [
     signatures: [["?types"]]
   },
   {
+    name: "startViewTransition",
+    signatures: [["?callbackOptions"],["update"],["opts"]]
+  },
+  {
     name: "writeln",
     signatures: [["...text"],["text"]]
   },
@@ -2405,6 +2414,10 @@ export const NativeFunctions = [
     signatures: [["namespace","localName"],["namespaceURI","localName"]]
   },
   {
+    name: "getHTML",
+    signatures: [["?options"]]
+  },
+  {
     name: "hasAttribute",
     signatures: [["qualifiedName"],["name"]]
   },
@@ -2422,7 +2435,7 @@ export const NativeFunctions = [
   },
   {
     name: "insertAdjacentHTML",
-    signatures: [["position","text"]]
+    signatures: [["position","string"],["position","text"]]
   },
   {
     name: "insertAdjacentText",
@@ -2618,6 +2631,11 @@ export const NativeFunctions = [
     name: "resolve",
     signatures: [["possibleDescendant"],["possibleChild"]],
     receivers: ["FileSystemDirectoryHandle"]
+  },
+  {
+    name: "resolve",
+    signatures: [["specifier"]],
+    receivers: ["ImportMeta"]
   },
   {
     name: "resolve",
@@ -3168,6 +3186,10 @@ export const NativeFunctions = [
     signatures: [["?sessionType"]]
   },
   {
+    name: "getStatusForPolicy",
+    signatures: [["?policy"]]
+  },
+  {
     name: "setServerCertificate",
     signatures: [["serverCertificate"]]
   },
@@ -3626,7 +3648,7 @@ export const NativeFunctions = [
   },
   {
     name: "createContextualFragment",
-    signatures: [["fragment"]]
+    signatures: [["string"],["fragment"]]
   },
   {
     name: "insertNode",
@@ -4104,6 +4126,10 @@ export const NativeFunctions = [
   {
     name: "encodeInto",
     signatures: [["source","destination"]]
+  },
+  {
+    name: "initTextEvent",
+    signatures: [["type","?bubbles","?cancelable","?view","?data"]]
   },
   {
     name: "addCue",
@@ -5504,7 +5530,7 @@ export const NativeFunctions = [
   },
   {
     name: "next",
-    signatures: [["...args"]],
+    signatures: [["...undefined"]],
     receivers: ["Generator","Iterator","AsyncIterator","AsyncGenerator"]
   },
   {
@@ -6483,10 +6509,6 @@ export const NativeFunctions = [
     signatures: [["?options"]]
   },
   {
-    name: "getHTML",
-    signatures: [["?options"]]
-  },
-  {
     name: "scrollIntoViewIfNeeded",
     signatures: [["?centerIfNeeded"]]
   },
@@ -6695,10 +6717,6 @@ export const NativeFunctions = [
   {
     name: "SecurityPolicyViolationEvent",
     signatures: [["type","?eventInitDict"]]
-  },
-  {
-    name: "initTextEvent",
-    signatures: [["type","?bubbles","?cancelable","?view","?data"]]
   },
   {
     name: "ToggleEvent",
@@ -7199,10 +7217,6 @@ export const NativeFunctions = [
     signatures: [["type","?eventInitDict"]]
   },
   {
-    name: "startViewTransition",
-    signatures: [["?update"],["opts"]]
-  },
-  {
     name: "SharedWorker",
     signatures: [["scriptURL","?options"]]
   },
@@ -7550,10 +7564,6 @@ export const NativeFunctions = [
   {
     name: "MediaKeyMessageEvent",
     signatures: [["type","eventInitDict"]]
-  },
-  {
-    name: "getStatusForPolicy",
-    signatures: [["policy"]]
   },
   {
     name: "EventSource",

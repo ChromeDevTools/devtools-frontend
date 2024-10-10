@@ -1780,7 +1780,7 @@
                         "ThirdPartyCookiesBlocked",
                         "NotSignedInWithIdp",
                         "MissingTransientUserActivation",
-                        "ReplacedByButtonMode",
+                        "ReplacedByActiveMode",
                         "InvalidFieldsSpecified",
                         "RelyingPartyOriginIsOpaque",
                         "TypeNotMatching"

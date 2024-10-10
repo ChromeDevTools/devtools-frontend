@@ -1209,7 +1209,7 @@ export namespace Audits {
     ThirdPartyCookiesBlocked = 'ThirdPartyCookiesBlocked',
     NotSignedInWithIdp = 'NotSignedInWithIdp',
     MissingTransientUserActivation = 'MissingTransientUserActivation',
-    ReplacedByButtonMode = 'ReplacedByButtonMode',
+    ReplacedByActiveMode = 'ReplacedByActiveMode',
     InvalidFieldsSpecified = 'InvalidFieldsSpecified',
     RelyingPartyOriginIsOpaque = 'RelyingPartyOriginIsOpaque',
     TypeNotMatching = 'TypeNotMatching',

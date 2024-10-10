@@ -836,11 +836,18 @@ export class FreestylerChatUi extends HTMLElement {
       displayName = selectedNode.function;
     }
 
-    // TODO(b/371118936): Add icon and make the div clickable
+    const iconData = {
+      iconName: 'performance',
+      color: 'var(--sys-color-on-surface-subtle)',
+    };
+    const icon = PanelUtils.createIconElement(iconData, 'Performance');
+    icon.classList.add('icon');
+
+    // TODO(b/371118936): Make the div clickable
     // clang-format off
     return html`<div class="select-element">
     <div class=${resourceClass}>
-      ${displayName}
+      ${icon}${displayName}
     </div></div>`;
     // clang-format on
   };

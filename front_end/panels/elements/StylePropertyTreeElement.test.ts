@@ -647,6 +647,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       positionTryRules: [],
       propertyRules: [],
       cssPropertyRegistrations: [],
+      activePositionFallbackIndex: -1,
       fontPaletteValuesRule: undefined,
     });
   }
@@ -1476,7 +1477,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
   });
 
   describe('LengthRenderer', () => {
-    it('renders the length too', () => {
+    it('renders the length tool', () => {
       const stylePropertyTreeElement = getTreeElement('width', '100px');
       stylePropertyTreeElement.updateTitle();
       const swatch = stylePropertyTreeElement.valueElement?.querySelector('devtools-css-length');
@@ -1526,6 +1527,39 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       const colorSwatch = stylePropertyTreeElement.valueElement?.querySelector('devtools-color-swatch');
       assert.isOk(colorSwatch);
       assert.strictEqual(colorSwatch.getColor()?.asString(), 'red');
+    });
+  });
+
+  describe('PositionTryRenderer', () => {
+    it('renders the position-try fallback values with correct styles', () => {
+      mockMatchedStyles.activePositionFallbackIndex.returns(1);
+      mockMatchedStyles.positionTryRules.returns([]);
+      const stylePropertyTreeElement = getTreeElement('position-try-fallbacks', '--top, --left, --bottom');
+      stylePropertyTreeElement.updateTitle();
+      const values =
+          stylePropertyTreeElement.valueElement?.querySelectorAll(':scope > span') as NodeListOf<HTMLElement>|
+          undefined;
+      assert.exists(values);
+      assert.strictEqual(values?.length, 3);
+      assert.strictEqual(values[0].style.textDecoration, 'line-through');
+      assert.strictEqual(values[1].style.textDecoration, '');
+      assert.strictEqual(values[2].style.textDecoration, 'line-through');
+    });
+
+    it('renders the position-try correctly with keyword', () => {
+      mockMatchedStyles.activePositionFallbackIndex.returns(1);
+      mockMatchedStyles.positionTryRules.returns([]);
+      const stylePropertyTreeElement =
+          getTreeElement('position-try', '/* comment */ most-height --top, --left, --bottom');
+      stylePropertyTreeElement.updateTitle();
+      const values =
+          stylePropertyTreeElement.valueElement?.querySelectorAll(':scope > span') as NodeListOf<HTMLElement>|
+          undefined;
+      assert.exists(values);
+      assert.strictEqual(values?.length, 3);
+      assert.strictEqual(values[0].style.textDecoration, 'line-through');
+      assert.strictEqual(values[1].style.textDecoration, '');
+      assert.strictEqual(values[2].style.textDecoration, 'line-through');
     });
   });
 

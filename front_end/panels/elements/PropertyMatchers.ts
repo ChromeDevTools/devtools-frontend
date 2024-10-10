@@ -256,7 +256,7 @@ const enum AnimationLonghandPart {
 
 export class LinkableNameMatch implements Match {
   constructor(
-      readonly text: string, readonly node: CodeMirror.SyntaxNode, readonly properyName: LinkableNameProperties) {
+      readonly text: string, readonly node: CodeMirror.SyntaxNode, readonly propertyName: LinkableNameProperties) {
   }
 }
 
@@ -723,5 +723,46 @@ export class CSSWideKeywordMatcher extends matcherBase(CSSWideKeywordMatch) {
     }
 
     return new CSSWideKeywordMatch(text, node, this.property, this.matchedStyles);
+  }
+}
+
+export class PositionTryMatch implements Match {
+  constructor(
+      readonly text: string, readonly node: CodeMirror.SyntaxNode, readonly preamble: CodeMirror.SyntaxNode[],
+      readonly fallbacks: CodeMirror.SyntaxNode[][]) {
+  }
+}
+
+// clang-format off
+export class PositionTryMatcher extends matcherBase(PositionTryMatch) {
+  // clang-format on
+  override accepts(propertyName: string): boolean {
+    return propertyName === LinkableNameProperties.POSITION_TRY ||
+        propertyName === LinkableNameProperties.POSITION_TRY_FALLBACKS;
+  }
+
+  override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): Match|null {
+    if (node.name !== 'Declaration') {
+      return null;
+    }
+
+    let preamble: CodeMirror.SyntaxNode[] = [];
+    const valueNodes = ASTUtils.siblings(ASTUtils.declValue(node));
+    const fallbacks = ASTUtils.split(valueNodes);
+    if (matching.ast.propertyName === LinkableNameProperties.POSITION_TRY) {
+      for (const [i, n] of fallbacks[0].entries()) {
+        const computedText = matching.getComputedText(n);
+        if (SDK.CSSMetadata.CSSMetadata.isCSSWideKeyword(computedText)) {
+          return null;
+        }
+        if (SDK.CSSMetadata.CSSMetadata.isPositionTryOrderKeyword(computedText)) {
+          preamble = fallbacks[0].splice(0, i + 1);
+          break;
+        }
+      }
+    }
+
+    const valueText = matching.ast.textRange(valueNodes[0], valueNodes[valueNodes.length - 1]);
+    return new PositionTryMatch(valueText, node, preamble, fallbacks);
   }
 }

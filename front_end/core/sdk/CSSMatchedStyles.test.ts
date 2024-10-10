@@ -47,6 +47,7 @@ function createMatchedStyles(
     propertyRules: [],
     cssPropertyRegistrations: [],
     fontPaletteValuesRule: undefined,
+    activePositionFallbackIndex: -1,
     ...payload,
   });
 }

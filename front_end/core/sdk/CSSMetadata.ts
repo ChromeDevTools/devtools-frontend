@@ -135,6 +135,10 @@ export class CSSMetadata {
     return CSSWideKeywords.includes(a as CSSWideKeyword);
   }
 
+  static isPositionTryOrderKeyword(a: string): a is PositionTryOrderKeyword {
+    return PositionTryOrderKeywords.includes(a as PositionTryOrderKeyword);
+  }
+
   private static sortPrefixesAndCSSWideKeywordsToEnd(a: string, b: string): 1|- 1|0 {
     const aIsCSSWideKeyword = CSSMetadata.isCSSWideKeyword(a);
     const bIsCSSWideKeyword = CSSMetadata.isCSSWideKeyword(b);
@@ -374,6 +378,23 @@ export const CSSWideKeywords: CSSWideKeyword[] = [
   CSSWideKeyword.REVERT,
   CSSWideKeyword.REVERT_LAYER,
   CSSWideKeyword.UNSET,
+];
+
+// https://www.w3.org/TR/css-anchor-position-1/#typedef-try-size
+export const enum PositionTryOrderKeyword {
+  NORMAL = 'normal',
+  MOST_HEIGHT = 'most-height',
+  MOST_WIDTH = 'most-width',
+  MOST_BLOCK_SIZE = 'most-block-size',
+  MOST_INLINE_SIZE = 'most-inline-size',
+}
+
+export const PositionTryOrderKeywords: PositionTryOrderKeyword[] = [
+  PositionTryOrderKeyword.NORMAL,
+  PositionTryOrderKeyword.MOST_HEIGHT,
+  PositionTryOrderKeyword.MOST_WIDTH,
+  PositionTryOrderKeyword.MOST_BLOCK_SIZE,
+  PositionTryOrderKeyword.MOST_INLINE_SIZE,
 ];
 
 export const VariableNameRegex = /(\s*--.*?)/gs;

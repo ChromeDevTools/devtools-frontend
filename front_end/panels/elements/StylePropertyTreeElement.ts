@@ -57,6 +57,8 @@ import {
   LinkableNameProperties,
   type PositionAnchorMatch,
   PositionAnchorMatcher,
+  type PositionTryMatch,
+  PositionTryMatcher,
   type ShadowMatch,
   ShadowMatcher,
   ShadowType,
@@ -713,7 +715,7 @@ export class LinkableNameRenderer implements MatchRenderer<LinkableNameMatch> {
 
   #getLinkData(match: LinkableNameMatch):
       {jslogContext: string, metric: null|Host.UserMetrics.SwatchType, ruleBlock: string, isDefined: boolean} {
-    switch (match.properyName) {
+    switch (match.propertyName) {
       case LinkableNameProperties.ANIMATION:
       case LinkableNameProperties.ANIMATION_NAME:
         return {
@@ -1260,6 +1262,39 @@ export class PositionAnchorRenderer implements MatchRenderer<PositionAnchorMatch
   }
 }
 
+export class PositionTryRenderer implements MatchRenderer<PositionTryMatch> {
+  #treeElement: StylePropertyTreeElement;
+
+  constructor(treeElement: StylePropertyTreeElement) {
+    this.#treeElement = treeElement;
+  }
+
+  render(match: PositionTryMatch, context: RenderingContext): Node[] {
+    const content = [];
+    if (match.preamble.length > 0) {
+      const {nodes} = Renderer.render(match.preamble, context);
+      content.push(...nodes);
+    }
+    for (const [i, fallback] of match.fallbacks.entries()) {
+      const fallbackContent = document.createElement('span');
+      if (i > 0) {
+        fallbackContent.appendChild(document.createTextNode(', '));
+      }
+      if (i !== this.#treeElement.matchedStyles().activePositionFallbackIndex()) {
+        fallbackContent.style.textDecoration = 'line-through';
+      }
+      Renderer.renderInto(fallback, context, fallbackContent);
+
+      content.push(fallbackContent);
+    }
+    return content;
+  }
+
+  matcher(): PositionTryMatcher {
+    return new PositionTryMatcher();
+  }
+}
+
 export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
   private readonly style: SDK.CSSStyleDeclaration.CSSStyleDeclaration;
   private matchedStylesInternal: SDK.CSSMatchedStyles.CSSMatchedStyles;
@@ -1687,6 +1722,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
           new AnchorFunctionRenderer(this),
           new PositionAnchorRenderer(this),
           new FlexGridRenderer(this),
+          new PositionTryRenderer(this),
           new FontRenderer(this),
         ] :
         [];

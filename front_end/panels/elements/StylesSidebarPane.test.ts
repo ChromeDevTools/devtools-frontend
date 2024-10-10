@@ -73,6 +73,7 @@ describe('StylesSidebarPane', () => {
           propertyRules: [],
           cssPropertyRegistrations: [],
           fontPaletteValuesRule: undefined,
+          activePositionFallbackIndex: -1,
         });
 
         const sectionBlocks =
@@ -99,6 +100,7 @@ describe('StylesSidebarPane', () => {
         animationsPayload: [],
         parentLayoutNodeId: undefined,
         positionTryRules: [],
+        activePositionFallbackIndex: -1,
         propertyRules: [],
         cssPropertyRegistrations: [],
         fontPaletteValuesRule: {

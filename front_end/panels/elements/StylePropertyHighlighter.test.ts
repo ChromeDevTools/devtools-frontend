@@ -33,6 +33,7 @@ describeWithMockConnection('StylePropertyHighlighter', () => {
       propertyRules: [],
       cssPropertyRegistrations: [],
       fontPaletteValuesRule: undefined,
+      activePositionFallbackIndex: -1,
     });
     return {
       stylesSidebarPane,

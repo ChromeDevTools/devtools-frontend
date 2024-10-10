@@ -76,6 +76,7 @@ function setUpStyles(
     propertyRules: [],
     cssPropertyRegistrations: [],
     fontPaletteValuesRule: undefined,
+    activePositionFallbackIndex: -1,
     ...payload,
   });
 }

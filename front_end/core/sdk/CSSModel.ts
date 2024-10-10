@@ -362,6 +362,7 @@ export class CSSModel extends SDKModel<EventTypes> {
       propertyRules: response.cssPropertyRules ?? [],
       cssPropertyRegistrations: response.cssPropertyRegistrations ?? [],
       fontPaletteValuesRule: response.cssFontPaletteValuesRule,
+      activePositionFallbackIndex: response.activePositionFallbackIndex ?? -1,
     });
   }
 

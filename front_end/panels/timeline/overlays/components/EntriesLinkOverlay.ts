@@ -1,4 +1,3 @@
-
 // Copyright 2024 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
@@ -8,6 +7,7 @@ import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Trace from '../../../../models/trace/trace.js';
 import * as ThemeSupport from '../../../../ui/legacy/theme_support/theme_support.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
+import * as VisualLogging from '../../../../ui/visual_logging/visual_logging.js';
 
 const UIStrings = {
   /**
@@ -360,6 +360,7 @@ export class EntriesLinkOverlay extends HTMLElement {
           <div class="create-link-box ${this.#linkState ? 'visible' : 'hidden'}">
             <devtools-icon
               class='create-link-icon'
+              jslog=${VisualLogging.action('timeline.annotations.create-entry-link').track({click: true})}
               @click=${this.#startCreatingConnection}
               name='arrow-right-circle'>
             </devtools-icon>

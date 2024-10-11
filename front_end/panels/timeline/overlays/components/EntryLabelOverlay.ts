@@ -5,6 +5,7 @@ import * as i18n from '../../../../core/i18n/i18n.js';
 import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js';
 import * as ThemeSupport from '../../../../ui/legacy/theme_support/theme_support.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
+import * as VisualLogging from '../../../../ui/visual_logging/visual_logging.js';
 
 import styles from './entryLabelOverlay.css.js';
 
@@ -344,8 +345,9 @@ export class EntryLabelOverlay extends HTMLElement {
             @keydown=${this.#handleLabelInputKeyDown}
             @paste=${this.#handleLabelInputPaste}
             @keyup=${this.#handleLabelInputKeyUp}
-            contenteditable=${this.#isLabelEditable ? 'plaintext-only' : false}>
-          </span>
+            contenteditable=${this.#isLabelEditable ? 'plaintext-only' : false}
+            jslog=${VisualLogging.textField('timeline.annotations.entry-label-input').track({keydown: true, click: true})}
+          ></span>
           <svg class="connectorContainer">
             <line/>
             <circle/>

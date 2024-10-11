@@ -428,6 +428,7 @@ export class FreestylerAgent extends AiAgent {
           {throwOnSideEffect},
       );
       const byteCount = Platform.StringUtilities.countWtf8Bytes(result);
+      Host.userMetrics.freestylerEvalResponseSize(byteCount);
       if (byteCount > MAX_OBSERVATION_BYTE_LENGTH) {
         throw new Error('Output exceeded the maximum allowed length.');
       }
@@ -624,7 +625,7 @@ export class FreestylerAgent extends AiAgent {
 
     query = await this.enhanceQuery(query, options.selectedElement);
     const currentRunId = ++this.#runId;
-
+    Host.userMetrics.freestylerQueryLength(query.length);
     for (let i = 0; i < MAX_STEPS; i++) {
       yield {
         type: ResponseType.QUERYING,

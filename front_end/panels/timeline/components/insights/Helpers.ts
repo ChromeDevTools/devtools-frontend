@@ -67,7 +67,8 @@ export abstract class BaseInsight extends HTMLElement {
     activeCategory: Category.ALL,
   };
 
-  readonly #boundRender = this.render.bind(this);
+  // eslint-disable-next-line rulesdir/no_bound_component_methods
+  readonly #boundRender = this.#baseRender.bind(this);
   readonly sharedTableState: TableState = {
     selectedRowEl: null,
     selectionIsSticky: false,
@@ -181,6 +182,13 @@ export abstract class BaseInsight extends HTMLElement {
   }
 
   protected abstract createOverlays(): Overlays.Overlays.TimelineOverlay[];
+
+  #baseRender(): void {
+    this.render();
+    if (this.isActive()) {
+      requestAnimationFrame(() => requestAnimationFrame(() => this.scrollIntoViewIfNeeded()));
+    }
+  }
 
   abstract render(): void;
 

@@ -144,6 +144,10 @@ export class SidebarWidget extends UI.Widget.VBox {
 
   setActiveInsight(activeInsight: ActiveInsight|null): void {
     this.#insightsView.setActiveInsight(activeInsight);
+
+    if (activeInsight) {
+      this.#tabbedPane.selectTab(SidebarTabs.INSIGHTS);
+    }
   }
 }
 

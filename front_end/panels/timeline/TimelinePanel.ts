@@ -541,10 +541,12 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       this.#setActiveInsight(null);
     });
 
+    // TODO(crbug.com/372946179): when clicking on an insight chip, this event never fires if the insight tab
+    // is not on the DOM. That only happens when the sidebar tabbed pane component is set to Annotations.
+    // In that case, clicking on the insight chip will do nothing.
     this.#sideBar.element.addEventListener(TimelineInsights.SidebarInsight.InsightActivated.eventName, event => {
       const {name, insightSetKey, overlays} = event;
       this.#setActiveInsight({name, insightSetKey, overlays});
-      // TODO(crbug.com/370599988): need to scroll insight into view
     });
 
     this.#sideBar.element.addEventListener(TimelineInsights.SidebarInsight.InsightProvideOverlays.eventName, event => {
@@ -638,6 +640,9 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   }
 
   #setActiveInsight(insight: TimelineComponents.Sidebar.ActiveInsight|null): void {
+    if (insight && this.#panelSidebarEnabled()) {
+      this.#splitWidget.showBoth();
+    }
     this.#sideBar.setActiveInsight(insight);
     this.flameChart.setActiveInsight(insight);
   }

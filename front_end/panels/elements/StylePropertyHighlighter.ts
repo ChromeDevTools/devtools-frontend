@@ -5,9 +5,9 @@
 import type * as SDK from '../../core/sdk/sdk.js';
 import {PanelUtils} from '../utils/utils.js';
 
-import {type StylePropertiesSection} from './StylePropertiesSection.js';
+import type {StylePropertiesSection} from './StylePropertiesSection.js';
 import {StylePropertyTreeElement} from './StylePropertyTreeElement.js';
-import {type StylesSidebarPane} from './StylesSidebarPane.js';
+import type {StylesSidebarPane} from './StylesSidebarPane.js';
 
 export class StylePropertyHighlighter {
   private readonly styleSidebarPane: StylesSidebarPane;

@@ -40,7 +40,7 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import {PanelUtils} from '../utils/utils.js';
 
 import * as PanelComponents from './components/components.js';
-import {type KeybindsSettingsTab} from './KeybindsSettingsTab.js';
+import type {KeybindsSettingsTab} from './KeybindsSettingsTab.js';
 import settingsScreenStyles from './settingsScreen.css.js';
 
 const UIStrings = {

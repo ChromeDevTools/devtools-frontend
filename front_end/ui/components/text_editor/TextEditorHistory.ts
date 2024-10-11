@@ -4,8 +4,8 @@
 
 import * as CodeMirror from '../../../third_party/codemirror.next/codemirror.next.js';
 
-import {type AutocompleteHistory} from './AutocompleteHistory.js';
-import {type TextEditor} from './TextEditor.js';
+import type {AutocompleteHistory} from './AutocompleteHistory.js';
+import type {TextEditor} from './TextEditor.js';
 
 export const enum Direction {
   FORWARD = 1,

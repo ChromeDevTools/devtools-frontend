@@ -2,12 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {
-  type Args,
-  type Event,
-  type Phase,
-  type SyntheticBased,
-} from './TraceEvents.js';
+import type {Args, Event, Phase, SyntheticBased} from './TraceEvents.js';
 
 export type ExtensionEntryType = 'track-entry'|'marker';
 

@@ -37,31 +37,27 @@ import {
 } from '../front_end/core/common/ColorUtils.js';
 
 import {
+  type Bounds,
   constrainNumber,
   createChild,
   createElement,
   createTextChild,
   ellipsify,
   Overlay,
-  type Bounds,
   type PathCommands,
   type ResetData,
 } from './common.js';
-
 import {drawPath, emptyBounds, formatColor, formatRgba, type PathBounds} from './highlight_common.js';
-
+import {type ContainerQueryHighlight, drawContainerQueryHighlight} from './highlight_container_query.js';
 import {
   drawLayoutFlexContainerHighlight,
   drawLayoutFlexItemHighlight,
   type FlexContainerHighlight,
   type FlexItemHighlight,
 } from './highlight_flex_common.js';
-
 import {drawLayoutGridHighlight, type GridHighlight} from './highlight_grid_common.js';
-import {type ScrollSnapHighlight} from './highlight_scroll_snap.js';
-
-import {drawContainerQueryHighlight, type ContainerQueryHighlight} from './highlight_container_query.js';
-import {type IsolatedElementHighlight} from './highlight_isolated_element.js';
+import type {IsolatedElementHighlight} from './highlight_isolated_element.js';
+import type {ScrollSnapHighlight} from './highlight_scroll_snap.js';
 import {PersistentOverlay} from './tool_persistent.js';
 
 type ColorRgba = [number, number, number, number];

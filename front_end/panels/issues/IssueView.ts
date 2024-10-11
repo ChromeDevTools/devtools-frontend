@@ -30,10 +30,10 @@ import {AffectedSourcesView} from './AffectedSourcesView.js';
 import {AffectedTrackingSitesView} from './AffectedTrackingSitesView.js';
 import {AttributionReportingIssueDetailsView} from './AttributionReportingIssueDetailsView.js';
 import * as Components from './components/components.js';
-import {type HiddenIssuesMenuData} from './components/HideIssuesMenu.js';
+import type {HiddenIssuesMenuData} from './components/HideIssuesMenu.js';
 import {CorsIssueDetailsView} from './CorsIssueDetailsView.js';
 import {GenericIssueDetailsView} from './GenericIssueDetailsView.js';
-import {type AggregatedIssue} from './IssueAggregator.js';
+import type {AggregatedIssue} from './IssueAggregator.js';
 
 const UIStrings = {
   /**

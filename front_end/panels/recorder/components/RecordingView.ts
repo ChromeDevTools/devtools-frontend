@@ -29,10 +29,7 @@ import {PlayRecordingSpeed} from '../models/RecordingPlayer.js';
 import * as Actions from '../recorder-actions/recorder-actions.js';
 
 import recordingViewStyles from './recordingView.css.js';
-import {
-  type ReplaySectionData,
-  type StartReplayEvent,
-} from './ReplaySection.js';
+import type {ReplaySectionData, StartReplayEvent} from './ReplaySection.js';
 import {
   type CopyStepEvent,
   State,
@@ -309,7 +306,6 @@ function converterIdToStepMetric(
 }
 
 export class RecordingView extends HTMLElement {
-
   readonly #shadow = this.attachShadow({mode: 'open'});
   #replayState: ReplayState = {isPlaying: false, isPausedOnBreakpoint: false};
   #userFlow: Models.Schema.UserFlow|null = null;

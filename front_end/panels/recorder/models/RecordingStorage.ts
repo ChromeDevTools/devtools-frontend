@@ -4,7 +4,7 @@
 
 import * as Common from '../../../core/common/common.js';
 
-import {type UserFlow} from './Schema.js';
+import type {UserFlow} from './Schema.js';
 
 let instance: RecordingStorage|null = null;
 

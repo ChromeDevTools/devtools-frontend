@@ -5,7 +5,7 @@
 import * as PuppeteerReplay from '../../../third_party/puppeteer-replay/puppeteer-replay.js';
 import * as Models from '../models/models.js';
 
-import {type Converter} from './Converter.js';
+import type {Converter} from './Converter.js';
 
 export class LighthouseConverter implements Converter {
   #indent: string;

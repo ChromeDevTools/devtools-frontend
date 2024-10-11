@@ -8,7 +8,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {type Action, getRegisteredActionExtensions, KeybindSet} from './ActionRegistration.js';
-import {type ActionRegistry} from './ActionRegistry.js';
+import type {ActionRegistry} from './ActionRegistry.js';
 import {Context} from './Context.js';
 import {Dialog} from './Dialog.js';
 import {KeyboardShortcut, Modifiers, Type} from './KeyboardShortcut.js';

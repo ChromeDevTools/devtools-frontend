@@ -4,7 +4,7 @@
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Trace from '../../../../models/trace/trace.js';
 
-import {type Calculator} from './TimelineGrid.js';
+import type {Calculator} from './TimelineGrid.js';
 
 export class TimelineOverviewCalculator implements Calculator {
   #minimumBoundary: Trace.Types.Timing.MilliSeconds = Trace.Types.Timing.MilliSeconds(0);

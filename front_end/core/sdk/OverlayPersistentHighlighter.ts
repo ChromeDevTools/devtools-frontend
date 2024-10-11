@@ -6,7 +6,7 @@ import * as Protocol from '../../generated/protocol.js';
 import * as Common from '../common/common.js';
 import * as Platform from '../platform/platform.js';
 
-import {type DOMModel} from './DOMModel.js';
+import type {DOMModel} from './DOMModel.js';
 import {OverlayColorGenerator} from './OverlayColorGenerator.js';
 
 export const enum HighlightType {

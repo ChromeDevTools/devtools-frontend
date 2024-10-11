@@ -2,12 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as TextUtils from '../../models/text_utils/text_utils.js';
 import type * as Protocol from '../../generated/protocol.js';
+import * as TextUtils from '../../models/text_utils/text_utils.js';
 
-import {type CSSModel} from './CSSModel.js';
+import type {CSSModel} from './CSSModel.js';
 import {CSSQuery} from './CSSQuery.js';
-import {type DOMNode} from './DOMModel.js';
+import type {DOMNode} from './DOMModel.js';
 
 export class CSSContainerQuery extends CSSQuery {
   name?: string;

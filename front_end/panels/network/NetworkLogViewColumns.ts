@@ -13,13 +13,11 @@ import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {type NetworkNode, NetworkRequestNode} from './NetworkDataGridNode.js';
-import {type NetworkLogView} from './NetworkLogView.js';
+import type {NetworkLogView} from './NetworkLogView.js';
 import {NetworkManageCustomHeadersView} from './NetworkManageCustomHeadersView.js';
-import {
-  type NetworkTimeCalculator,
-  type NetworkTransferDurationCalculator,
-  type NetworkTransferTimeCalculator,
-} from './NetworkTimeCalculator.js';
+import type {
+  NetworkTimeCalculator, NetworkTransferDurationCalculator, NetworkTransferTimeCalculator} from
+  './NetworkTimeCalculator.js';
 import {NetworkWaterfallColumn} from './NetworkWaterfallColumn.js';
 import {RequestInitiatorView} from './RequestInitiatorView.js';
 

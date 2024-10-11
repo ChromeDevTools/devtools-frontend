@@ -38,7 +38,7 @@ import * as ARIAUtils from './ARIAUtils.js';
 import filterStyles from './filter.css.legacy.js';
 import {KeyboardShortcut, Modifiers} from './KeyboardShortcut.js';
 import {bindCheckbox} from './SettingsUI.js';
-import {type Suggestions} from './SuggestBox.js';
+import type {Suggestions} from './SuggestBox.js';
 import {Toolbar, type ToolbarButton, ToolbarFilter, ToolbarInput, ToolbarSettingToggle} from './Toolbar.js';
 import {Tooltip} from './Tooltip.js';
 import {CheckboxLabel, createTextChild} from './UIUtils.js';

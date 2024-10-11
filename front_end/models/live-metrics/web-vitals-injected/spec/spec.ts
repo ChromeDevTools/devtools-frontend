@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {type INPAttribution, type MetricType} from '../../../../third_party/web-vitals/web-vitals.js';
+import type {INPAttribution, MetricType} from '../../../../third_party/web-vitals/web-vitals.js';
 
 export const EVENT_BINDING_NAME = '__chromium_devtools_metrics_reporter';
 export const INTERNAL_KILL_SWITCH = '__chromium_devtools_kill_live_metrics';

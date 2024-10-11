@@ -5,9 +5,9 @@
 import type * as Helpers from '../helpers/helpers.js';
 import type * as Types from '../types/types.js';
 
-import {type AuctionWorkletsData} from './AuctionWorkletsHandler.js';
+import type {AuctionWorkletsData} from './AuctionWorkletsHandler.js';
 import type * as Renderer from './RendererHandler.js';
-import {type ParsedTrace} from './types.js';
+import type {ParsedTrace} from './types.js';
 
 export interface ThreadData {
   pid: Types.Events.ProcessID;

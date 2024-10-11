@@ -2,8 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type {ElementHandle} from 'puppeteer-core';
+
 import {selectOption, waitFor, waitForMany} from '../../shared/helper.js';
-import {type ElementHandle} from 'puppeteer-core';
 
 export async function setCustomOrientation() {
   const dropDown = await waitFor('.orientation-fields select');

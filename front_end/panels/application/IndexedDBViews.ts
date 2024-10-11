@@ -40,15 +40,8 @@ import * as LitHtml from '../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import * as ApplicationComponents from './components/components.js';
-import {
-  type Database,
-  type DatabaseId,
-  type Entry,
-  type Index,
-  type IndexedDBModel,
-  type ObjectStore,
-  type ObjectStoreMetadata,
-} from './IndexedDBModel.js';
+import type {
+  Database, DatabaseId, Entry, Index, IndexedDBModel, ObjectStore, ObjectStoreMetadata} from './IndexedDBModel.js';
 import indexedDBViewsStyles from './indexedDBViews.css.js';
 
 const {html} = LitHtml;

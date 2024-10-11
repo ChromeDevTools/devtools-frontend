@@ -29,13 +29,8 @@
 
 import type * as Platform from '../platform/platform.js';
 
-import {
-  type EventDescriptor,
-  type EventListener,
-  type EventPayloadToRestParameters,
-  type EventTarget,
-  type EventTargetEvent,
-} from './EventTarget.js';
+import type {
+  EventDescriptor, EventListener, EventPayloadToRestParameters, EventTarget, EventTargetEvent} from './EventTarget.js';
 
 export interface ListenerCallbackTuple<Events, T extends keyof Events> {
   thisObject?: Object;

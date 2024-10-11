@@ -16,7 +16,7 @@ import {
   type Origin,
   OriginGroup,
 } from './SecurityPanel.js';
-import {type SecurityPanelSidebarTreeElement} from './SecurityPanelSidebarTreeElement.js';
+import type {SecurityPanelSidebarTreeElement} from './SecurityPanelSidebarTreeElement.js';
 import sidebarStyles from './sidebar.css.js';
 
 const UIStrings = {

@@ -15,7 +15,7 @@ import type * as Overlays from '../../overlays/overlays.js';
 
 import sidebarInsightStyles from './sidebarInsight.css.js';
 import * as SidebarInsight from './SidebarInsight.js';
-import {type TableState} from './Table.js';
+import type {TableState} from './Table.js';
 import {type ActiveInsight, Category} from './types.js';
 
 const {html} = LitHtml;

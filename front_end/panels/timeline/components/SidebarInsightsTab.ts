@@ -12,9 +12,9 @@ import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as Utils from '../utils/utils.js';
 
 import * as Insights from './insights/insights.js';
-import {type ActiveInsight} from './Sidebar.js';
+import type {ActiveInsight} from './Sidebar.js';
 import styles from './sidebarInsightsTab.css.js';
-import {type SidebarSingleInsightSetData} from './SidebarSingleInsightSet.js';
+import type {SidebarSingleInsightSetData} from './SidebarSingleInsightSet.js';
 
 const {html} = LitHtml;
 

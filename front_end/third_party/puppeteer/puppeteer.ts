@@ -4,7 +4,7 @@
 
 import { CdpBrowser } from './package/lib/esm/puppeteer/cdp/Browser.js';
 import { Connection } from './package/lib/esm/puppeteer/cdp/Connection.js';
-import { type ConnectionTransport } from './package/lib/esm/puppeteer/common/ConnectionTransport.js';
+import type { ConnectionTransport } from './package/lib/esm/puppeteer/common/ConnectionTransport.js';
 import { CdpFrame } from './package/lib/esm/puppeteer/cdp/Frame.js';
 import { CdpElementHandle } from './package/lib/esm/puppeteer/cdp/ElementHandle.js';
 import { CdpPage } from './package/lib/esm/puppeteer/cdp/Page.js';

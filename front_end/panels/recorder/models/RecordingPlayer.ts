@@ -10,7 +10,7 @@ import * as PuppeteerService from '../../../services/puppeteer/puppeteer.js';
 import * as PuppeteerReplay from '../../../third_party/puppeteer-replay/puppeteer-replay.js';
 import type * as puppeteer from '../../../third_party/puppeteer/puppeteer.js';
 
-import {type Step, type UserFlow} from './Schema.js';
+import type {Step, UserFlow} from './Schema.js';
 
 export const enum PlayRecordingSpeed {
   NORMAL = 'normal',

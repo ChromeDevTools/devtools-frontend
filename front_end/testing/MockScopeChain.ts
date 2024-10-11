@@ -10,7 +10,7 @@ import {
   dispatchEvent,
   setMockConnectionResponseHandler,
 } from './MockConnection.js';
-import {type LoadResult} from './SourceMapHelpers.js';
+import type {LoadResult} from './SourceMapHelpers.js';
 
 interface ScriptDescription {
   url: string;

@@ -5,7 +5,7 @@
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 
 import {CategorizedBreakpoint, Category} from './CategorizedBreakpoint.js';
-import {type EventListenerPausedDetailsAuxData} from './DebuggerModel.js';
+import type {EventListenerPausedDetailsAuxData} from './DebuggerModel.js';
 import {SDKModel} from './SDKModel.js';
 import {Capability, type Target} from './Target.js';
 import {type SDKModelObserver, TargetManager} from './TargetManager.js';
@@ -54,7 +54,6 @@ export class EventBreakpointsModel extends SDKModel<void> {
 // This implementation (as opposed to similar class in DOMDebuggerModel) is for
 // instrumentation breakpoints in targets that run JS but do not have a DOM.
 class EventListenerBreakpoint extends CategorizedBreakpoint {
-
   override setEnabled(enabled: boolean): void {
     if (this.enabled() === enabled) {
       return;

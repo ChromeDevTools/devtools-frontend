@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {type Selector, type DeepSelector} from './Selector.js';
+import type {DeepSelector, Selector} from './Selector.js';
 
 export interface AccessibilityBindings {
   getAccessibleName(node: Node): string;

@@ -17,8 +17,8 @@ import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import {type AggregatedIssue} from './IssueAggregator.js';
-import {type IssueView} from './IssueView.js';
+import type {AggregatedIssue} from './IssueAggregator.js';
+import type {IssueView} from './IssueView.js';
 
 const UIStrings = {
   /**

@@ -5,8 +5,8 @@
 import type * as Protocol from '../../generated/protocol.js';
 
 import {DOMModel, type DOMNode} from './DOMModel.js';
-import {type SnapshotWithRect} from './PaintProfiler.js';
-import {type Target} from './Target.js';
+import type {SnapshotWithRect} from './PaintProfiler.js';
+import type {Target} from './Target.js';
 
 export interface Layer {
   id(): string;

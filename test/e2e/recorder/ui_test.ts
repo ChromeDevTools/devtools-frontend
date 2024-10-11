@@ -3,9 +3,9 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {type ElementHandle, type Page} from 'puppeteer-core';
+import type {ElementHandle, Page} from 'puppeteer-core';
 
-import {type StepType} from '../../../front_end/panels/recorder/models/Schema.js';
+import type {StepType} from '../../../front_end/panels/recorder/models/Schema.js';
 import {
   $$,
   click,

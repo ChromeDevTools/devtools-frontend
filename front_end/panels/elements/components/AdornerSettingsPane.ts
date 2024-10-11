@@ -8,7 +8,7 @@ import * as Input from '../../../ui/components/input/input.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
-import {type AdornerSettingsMap} from './AdornerManager.js';
+import type {AdornerSettingsMap} from './AdornerManager.js';
 import adornerSettingsPaneStyles from './adornerSettingsPane.css.js';
 
 const UIStrings = {

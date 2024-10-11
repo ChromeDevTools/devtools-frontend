@@ -32,7 +32,7 @@
 
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import {type SearchableView} from './SearchableView.js';
+import type {SearchableView} from './SearchableView.js';
 import {SplitWidget} from './SplitWidget.js';
 import {VBox} from './Widget.js';
 

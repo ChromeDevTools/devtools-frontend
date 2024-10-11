@@ -11,7 +11,7 @@ import type * as NodeText from '../../../ui/components/node_text/node_text.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
-import {type DOMNode} from './Helper.js';
+import type {DOMNode} from './Helper.js';
 import queryContainerStyles from './queryContainer.css.js';
 
 const {render, html} = LitHtml;
@@ -31,7 +31,6 @@ export interface QueryContainerData {
 }
 
 export class QueryContainer extends HTMLElement {
-
   readonly #shadow = this.attachShadow({mode: 'open'});
   #queryName?: string;
   #container?: DOMNode;

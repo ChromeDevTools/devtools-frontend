@@ -12,7 +12,7 @@ import {
   trustedTypesSinkViolationCode,
 } from './ContentSecurityPolicyIssue.js';
 import {type Issue, type IssueKind, toZeroBasedLocation} from './Issue.js';
-import {type IssueAddedEvent, type IssuesManager} from './IssuesManager.js';
+import type {IssueAddedEvent, IssuesManager} from './IssuesManager.js';
 import {Events} from './IssuesManagerEvents.js';
 import {getIssueTitleFromMarkdownDescription} from './MarkdownIssueDescription.js';
 import {PropertyRuleIssue} from './PropertyRuleIssue.js';

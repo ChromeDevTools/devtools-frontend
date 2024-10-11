@@ -32,7 +32,7 @@ import * as Platform from '../platform/platform.js';
 import * as Root from '../root/root.js';
 
 import {Console} from './Console.js';
-import {type EventDescriptor, type EventTargetEvent, type GenericEvents} from './EventTarget.js';
+import type {EventDescriptor, EventTargetEvent, GenericEvents} from './EventTarget.js';
 import {ObjectWrapper} from './Object.js';
 import {
   getLocalizedSettingsCategory,

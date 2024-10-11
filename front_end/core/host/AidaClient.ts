@@ -5,7 +5,7 @@
 import * as Common from '../common/common.js';
 
 import {InspectorFrontendHostInstance} from './InspectorFrontendHost.js';
-import {type AidaClientResult, type SyncInformation} from './InspectorFrontendHostAPI.js';
+import type {AidaClientResult, SyncInformation} from './InspectorFrontendHostAPI.js';
 import {bindOutputStream} from './ResourceLoader.js';
 
 export enum Entity {

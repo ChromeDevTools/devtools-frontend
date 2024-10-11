@@ -6,7 +6,7 @@ import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js'
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
-import {type BaseInsight} from './Helpers.js';
+import type {BaseInsight} from './Helpers.js';
 import tableStyles from './table.css.js';
 
 const {html} = LitHtml;

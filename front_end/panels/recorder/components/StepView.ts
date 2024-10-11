@@ -20,11 +20,9 @@ import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import type * as Converters from '../converters/converters.js';
 import * as Models from '../models/models.js';
 
-import {type StepEditedEvent} from './StepEditor.js';
+import type {StepEditedEvent} from './StepEditor.js';
 import stepViewStyles from './stepView.css.js';
-import {
-  type TimelineSectionData,
-} from './TimelineSection.js';
+import type {TimelineSectionData} from './TimelineSection.js';
 
 const {html} = LitHtml;
 
@@ -528,7 +526,6 @@ function viewFunction(input: ViewInput, _output: ViewOutput, target: HTMLElement
 }
 
 export class StepView extends HTMLElement {
-
   readonly #shadow = this.attachShadow({mode: 'open'});
 
   #observer: IntersectionObserver = new IntersectionObserver(result => {

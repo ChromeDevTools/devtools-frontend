@@ -61,7 +61,7 @@ import themeColorsStyles from './themeColors.css.legacy.js';
 import tokens from './tokens.css.legacy.js';
 import {Toolbar, type ToolbarButton} from './Toolbar.js';
 import {Tooltip} from './Tooltip.js';
-import {type TreeOutline} from './Treeoutline.js';
+import type {TreeOutline} from './Treeoutline.js';
 import {Widget} from './Widget.js';
 
 const UIStrings = {

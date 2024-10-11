@@ -8,7 +8,7 @@ import * as Trace from '../../models/trace/trace.js';
 import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
 
 import * as TimelineComponents from './components/components.js';
-import {type AnnotationModifiedEvent} from './ModificationsManager.js';
+import type {AnnotationModifiedEvent} from './ModificationsManager.js';
 import type * as Overlays from './overlays/overlays.js';
 
 const UIStrings = {

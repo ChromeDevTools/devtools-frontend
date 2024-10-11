@@ -4,8 +4,8 @@
 
 import {Logger} from './Logger.js';
 import {SelectorComputer} from './SelectorComputer.js';
-import {type AccessibilityBindings} from './selectors/ARIASelector.js';
-import {getMouseEventOffsets, getClickableTargetFromEvent, haultImmediateEvent} from './util.js';
+import type {AccessibilityBindings} from './selectors/ARIASelector.js';
+import {getClickableTargetFromEvent, getMouseEventOffsets, haultImmediateEvent} from './util.js';
 
 declare global {
   interface Window {

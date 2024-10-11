@@ -11,8 +11,8 @@ import * as Protocol from '../../generated/protocol.js';
 import * as EmulationModel from '../../models/emulation/emulation.js';
 import * as Emulation from '../emulation/emulation.js';
 
-import {type LighthouseRun, type ProtocolService} from './LighthouseProtocolService.js';
-import {type RunnerResult} from './LighthouseReporterTypes.js';
+import type {LighthouseRun, ProtocolService} from './LighthouseProtocolService.js';
+import type {RunnerResult} from './LighthouseReporterTypes.js';
 
 const UIStrings = {
   /**

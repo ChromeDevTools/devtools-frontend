@@ -4,9 +4,9 @@
 
 /* eslint-disable rulesdir/es_modules_import */
 
-import {type ElementHandle, type Page} from 'puppeteer-core';
+import type {ElementHandle, Page} from 'puppeteer-core';
 
-import {type UserFlow} from '../../../front_end/panels/recorder/models/Schema.js';
+import type {UserFlow} from '../../../front_end/panels/recorder/models/Schema.js';
 import type * as Recorder from '../../../front_end/panels/recorder/recorder.js';
 import {openPanelViaMoreTools} from '../../../test/e2e/helpers/settings-helpers.js';
 import {

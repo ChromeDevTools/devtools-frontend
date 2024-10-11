@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {type ElementHandle, type Page} from 'puppeteer-core';
+import type {ElementHandle, Page} from 'puppeteer-core';
 
 import {
   getBrowserAndPages,

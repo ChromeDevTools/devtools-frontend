@@ -3,17 +3,17 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {type Chrome} from '../../../extension-api/ExtensionAPI.js';
+
+import type {Chrome} from '../../../extension-api/ExtensionAPI.js';
+import {getResourcesPath} from '../../shared/helper.js';
 import {loadExtension} from '../helpers/extension-helpers.js';
 import {
-  waitForHighlightedLine,
   getToolbarText,
-  waitForSourceFiles,
-  SourceFileEvents,
   openFileInSourcesPanel,
+  SourceFileEvents,
+  waitForHighlightedLine,
+  waitForSourceFiles,
 } from '../helpers/sources-helpers.js';
-
-import {getResourcesPath} from '../../shared/helper.js';
 
 describe('The Extension API', () => {
   it('can open wasm resources with offset', async () => {

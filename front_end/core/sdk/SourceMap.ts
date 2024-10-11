@@ -37,7 +37,7 @@ import * as Common from '../common/common.js';
 import * as Platform from '../platform/platform.js';
 import * as Root from '../root/root.js';
 
-import {type CallFrame, type ScopeChainEntry} from './DebuggerModel.js';
+import type {CallFrame, ScopeChainEntry} from './DebuggerModel.js';
 import {SourceMapScopesInfo} from './SourceMapScopesInfo.js';
 
 /**

@@ -35,22 +35,22 @@ import * as Root from '../../core/root/root.js';
 import * as IconButton from '../components/icon_button/icon_button.js';
 import * as VisualLogging from '../visual_logging/visual_logging.js';
 
-import {type ActionDelegate as ActionDelegateInterface} from './ActionRegistration.js';
+import type {ActionDelegate as ActionDelegateInterface} from './ActionRegistration.js';
 import * as ARIAUtils from './ARIAUtils.js';
-import {type Context} from './Context.js';
-import {type ContextMenu} from './ContextMenu.js';
+import type {Context} from './Context.js';
+import type {ContextMenu} from './ContextMenu.js';
 import {Dialog} from './Dialog.js';
 import {DockController, DockState} from './DockController.js';
 import {GlassPane} from './GlassPane.js';
 import {Infobar, Type as InfobarType} from './Infobar.js';
 import inspectorViewTabbedPaneStyles from './inspectorViewTabbedPane.css.legacy.js';
 import {KeyboardShortcut} from './KeyboardShortcut.js';
-import {type Panel} from './Panel.js';
+import type {Panel} from './Panel.js';
 import {ShowMode, SplitWidget} from './SplitWidget.js';
 import {type EventData, Events as TabbedPaneEvents, type TabbedPane, type TabbedPaneTabDelegate} from './TabbedPane.js';
 import {ToolbarButton} from './Toolbar.js';
 import {Tooltip} from './Tooltip.js';
-import {type TabbedViewLocation, type View, type ViewLocation, type ViewLocationResolver} from './View.js';
+import type {TabbedViewLocation, View, ViewLocation, ViewLocationResolver} from './View.js';
 import {ViewManager} from './ViewManager.js';
 import {VBox, type Widget, WidgetFocusRestorer} from './Widget.js';
 

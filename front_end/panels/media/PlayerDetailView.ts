@@ -3,13 +3,13 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../core/i18n/i18n.js';
-import * as UI from '../../ui/legacy/legacy.js';
 import type * as Protocol from '../../generated/protocol.js';
+import * as UI from '../../ui/legacy/legacy.js';
 
 import {PlayerEventsView} from './EventDisplayTable.js';
 import {PlayerEventsTimeline} from './EventTimelineView.js';
-import {type TriggerHandler} from './MainView.js';
-import {type PlayerEvent} from './MediaModel.js';
+import type {TriggerHandler} from './MainView.js';
+import type {PlayerEvent} from './MediaModel.js';
 import {PlayerMessagesView} from './PlayerMessagesView.js';
 import {PlayerPropertiesView} from './PlayerPropertiesView.js';
 

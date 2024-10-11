@@ -3,12 +3,9 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {type Target} from 'puppeteer-core';
+import type {Target} from 'puppeteer-core';
 
-import {
-  type AssertedEventType,
-  type StepType,
-} from '../../../front_end/panels/recorder/models/Schema.js';
+import type {AssertedEventType, StepType} from '../../../front_end/panels/recorder/models/Schema.js';
 import {
   click,
   getBrowserAndPages,

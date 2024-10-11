@@ -19,7 +19,7 @@ import {
   TimelineEventOverviewResponsiveness,
 } from './TimelineEventOverview.js';
 import timelineHistoryManagerStyles from './timelineHistoryManager.css.js';
-import {type TimelineMiniMap} from './TimelineMiniMap.js';
+import type {TimelineMiniMap} from './TimelineMiniMap.js';
 
 /**
  * The dropdown works by returning an index which is the trace index; but we

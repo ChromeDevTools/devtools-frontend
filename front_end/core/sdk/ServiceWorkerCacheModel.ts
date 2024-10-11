@@ -2,18 +2,16 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
+import type * as Protocol from '../../generated/protocol.js';
 import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
 import type * as Platform from '../platform/platform.js';
-import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
-import type * as Protocol from '../../generated/protocol.js';
 
-import {type NameValue} from './NetworkRequest.js';
-
-import {Capability, type Target} from './Target.js';
+import type {NameValue} from './NetworkRequest.js';
 import {SDKModel} from './SDKModel.js';
-
-import {Events as StorageBucketsModelEvents, StorageBucketsModel, type BucketEvent} from './StorageBucketsModel.js';
+import {type BucketEvent, Events as StorageBucketsModelEvents, StorageBucketsModel} from './StorageBucketsModel.js';
+import {Capability, type Target} from './Target.js';
 
 const UIStrings = {
   /**

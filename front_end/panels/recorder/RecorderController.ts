@@ -22,7 +22,7 @@ import * as LitHtml from '../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import * as Components from './components/components.js';
-import {type AddBreakpointEvent, type RemoveBreakpointEvent} from './components/StepView.js';
+import type {AddBreakpointEvent, RemoveBreakpointEvent} from './components/StepView.js';
 import type * as Controllers from './controllers/controllers.js';
 import * as Converters from './converters/converters.js';
 import * as Extensions from './extensions/extensions.js';

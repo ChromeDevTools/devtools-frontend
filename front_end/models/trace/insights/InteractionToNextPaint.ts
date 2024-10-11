@@ -3,9 +3,9 @@
 // found in the LICENSE file.
 
 import * as Helpers from '../helpers/helpers.js';
-import {type SyntheticInteractionPair} from '../types/TraceEvents.js';
+import type {SyntheticInteractionPair} from '../types/TraceEvents.js';
 
-import {type InsightResult, type InsightSetContext, type RequiredData} from './types.js';
+import type {InsightResult, InsightSetContext, RequiredData} from './types.js';
 
 export function deps(): ['UserInteractions'] {
   return ['UserInteractions'];

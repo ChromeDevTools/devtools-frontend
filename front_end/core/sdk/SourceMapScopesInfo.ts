@@ -4,8 +4,8 @@
 
 import * as Protocol from '../../generated/protocol.js';
 
-import {type CallFrame, type ScopeChainEntry} from './DebuggerModel.js';
-import {type SourceMap, type SourceMapV3Object} from './SourceMap.js';
+import type {CallFrame, ScopeChainEntry} from './DebuggerModel.js';
+import type {SourceMap, SourceMapV3Object} from './SourceMap.js';
 import {SourceMapScopeChainEntry} from './SourceMapScopeChainEntry.js';
 import {
   decodeGeneratedRanges,

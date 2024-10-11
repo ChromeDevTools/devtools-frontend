@@ -6,7 +6,7 @@ import * as Platform from '../../../../core/platform/platform.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 
-import {type AnimationTimingModel} from './AnimationTimingModel.js';
+import type {AnimationTimingModel} from './AnimationTimingModel.js';
 import {BezierUI} from './BezierUI.js';
 import {CSSLinearEasingModel, type Point} from './CSSLinearEasingModel.js';
 

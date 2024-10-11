@@ -2,11 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {type Node} from './BaseNode.js';
-import {CPUNode} from './CPUNode.js';
-import {NetworkNode} from './NetworkNode.js';
 import * as Core from '../core/core.js';
 import type * as Lantern from '../types/types.js';
+
+import type {Node} from './BaseNode.js';
+import {CPUNode} from './CPUNode.js';
+import {NetworkNode} from './NetworkNode.js';
 
 // COMPAT: m71+ We added RunTask to `disabled-by-default-lighthouse`
 const SCHEDULABLE_TASK_TITLE_LH = 'RunTask';

@@ -8,8 +8,8 @@ import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import {type MainView, type TriggerDispatcher} from './MainView.js';
-import {type PlayerEvent} from './MediaModel.js';
+import type {MainView, TriggerDispatcher} from './MainView.js';
+import type {PlayerEvent} from './MediaModel.js';
 import playerListViewStyles from './playerListView.css.js';
 import {PlayerPropertyKeys} from './PlayerPropertiesView.js';
 

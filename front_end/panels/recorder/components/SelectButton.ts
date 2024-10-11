@@ -5,7 +5,7 @@
 import '../../../ui/components/menus/menus.js';
 
 import * as Platform from '../../../core/platform/platform.js';
-import {type LocalizedString} from '../../../core/platform/UIString.js';
+import type {LocalizedString} from '../../../core/platform/UIString.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as Dialogs from '../../../ui/components/dialogs/dialogs.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';

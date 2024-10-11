@@ -16,7 +16,7 @@ import {
 } from './LighthouseController.js';
 import lighthousePanelStyles from './lighthousePanel.css.js';
 import {ProtocolService} from './LighthouseProtocolService.js';
-import {type ReportJSON, type RunnerResultArtifacts} from './LighthouseReporterTypes.js';
+import type {ReportJSON, RunnerResultArtifacts} from './LighthouseReporterTypes.js';
 import {LighthouseReportRenderer} from './LighthouseReportRenderer.js';
 import {Item, ReportSelector} from './LighthouseReportSelector.js';
 import {StartView} from './LighthouseStartView.js';

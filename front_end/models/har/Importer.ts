@@ -8,7 +8,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 
-import {type HAREntry, type HARLog, type HARPage, type HARTimings} from './HARFormat.js';
+import type {HAREntry, HARLog, HARPage, HARTimings} from './HARFormat.js';
 
 export class Importer {
   static requestsFromHARLog(log: HARLog): SDK.NetworkRequest.NetworkRequest[] {

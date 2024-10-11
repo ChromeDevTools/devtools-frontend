@@ -4,7 +4,7 @@
 
 import * as ProtocolClient from '../core/protocol_client/protocol_client.js';
 import type * as SDK from '../core/sdk/sdk.js';
-import {type ProtocolMapping} from '../generated/protocol-mapping.js';
+import type {ProtocolMapping} from '../generated/protocol-mapping.js';
 import type * as ProtocolProxyApi from '../generated/protocol-proxy-api.js';
 
 import {resetTestDOM} from './DOMHelpers.js';

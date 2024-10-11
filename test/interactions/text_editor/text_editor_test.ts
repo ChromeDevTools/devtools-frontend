@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {type ElementHandle} from 'puppeteer-core';
+import type {ElementHandle} from 'puppeteer-core';
 
 import type * as TextEditor from '../../../front_end/ui/components/text_editor/text_editor.js';
 import {click, pressKey, typeText, waitFor} from '../../shared/helper.js';

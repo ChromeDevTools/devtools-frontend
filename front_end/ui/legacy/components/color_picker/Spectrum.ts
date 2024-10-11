@@ -42,7 +42,7 @@ import * as UI from '../../legacy.js';
 
 import {colorFormatSpec, type SpectrumColorFormat} from './ColorFormatSpec.js';
 import {ContrastDetails, Events as ContrastDetailsEvents} from './ContrastDetails.js';
-import {type ContrastInfo} from './ContrastInfo.js';
+import type {ContrastInfo} from './ContrastInfo.js';
 import {ContrastOverlay} from './ContrastOverlay.js';
 import {FormatPickerContextMenu} from './FormatPickerContextMenu.js';
 import spectrumStyles from './spectrum.css.js';

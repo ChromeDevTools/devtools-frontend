@@ -11,7 +11,7 @@ import * as Bindings from '../../models/bindings/bindings.js';
 import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 import * as Trace from '../../models/trace/trace.js';
 
-import {type Client} from './TimelineController.js';
+import type {Client} from './TimelineController.js';
 
 const UIStrings = {
   /**

@@ -6,7 +6,7 @@ import * as Protocol from '../../generated/protocol.js';
 import * as Platform from '../platform/platform.js';
 
 import {CSSMetadata, cssMetadata, CSSWideKeyword} from './CSSMetadata.js';
-import {type CSSModel} from './CSSModel.js';
+import type {CSSModel} from './CSSModel.js';
 import {CSSProperty} from './CSSProperty.js';
 import * as PropertyParser from './CSSPropertyParser.js';
 import {
@@ -17,7 +17,7 @@ import {
   CSSStyleRule,
 } from './CSSRule.js';
 import {CSSStyleDeclaration, Type} from './CSSStyleDeclaration.js';
-import {type DOMNode} from './DOMModel.js';
+import type {DOMNode} from './DOMModel.js';
 
 function containsStyle(styles: CSSStyleDeclaration[]|Set<CSSStyleDeclaration>, query: CSSStyleDeclaration): boolean {
   if (!query.styleSheetId || !query.range) {

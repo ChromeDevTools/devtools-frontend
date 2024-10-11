@@ -40,12 +40,12 @@ import {
   Location,
   LOGPOINT_SOURCE_URL,
 } from './DebuggerModel.js';
-import {type FrameAssociated} from './FrameAssociated.js';
-import {type PageResourceLoadInitiator} from './PageResourceLoader.js';
+import type {FrameAssociated} from './FrameAssociated.js';
+import type {PageResourceLoadInitiator} from './PageResourceLoader.js';
 import {ResourceTreeModel} from './ResourceTreeModel.js';
-import {type ExecutionContext} from './RuntimeModel.js';
-import {type SourceMap} from './SourceMap.js';
-import {type Target} from './Target.js';
+import type {ExecutionContext} from './RuntimeModel.js';
+import type {SourceMap} from './SourceMap.js';
+import type {Target} from './Target.js';
 
 const UIStrings = {
   /**

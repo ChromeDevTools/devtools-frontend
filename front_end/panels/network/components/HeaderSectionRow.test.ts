@@ -17,7 +17,7 @@ import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 
 import * as NetworkComponents from './components.js';
-import {type EditableSpan} from './EditableSpan.js';
+import type {EditableSpan} from './EditableSpan.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 

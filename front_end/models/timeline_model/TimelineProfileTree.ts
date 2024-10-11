@@ -6,7 +6,7 @@ import type * as Protocol from '../../generated/protocol.js';
 import * as Trace from '../../models/trace/trace.js';
 
 import {TimelineJSProfileProcessor} from './TimelineJSProfile.js';
-import {type TimelineModelFilter} from './TimelineModelFilter.js';
+import type {TimelineModelFilter} from './TimelineModelFilter.js';
 
 export class Node {
   totalTime: number;

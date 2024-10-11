@@ -5,7 +5,7 @@
 import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
 
-import {type InsightResult, type InsightSetContext, type RequiredData} from './types.js';
+import type {InsightResult, InsightSetContext, RequiredData} from './types.js';
 
 // Due to the way that DevTools throttling works we cannot see if server response took less than ~570ms.
 // We set our failure threshold to 600ms to avoid those false positives but we want devs to shoot for 100ms.

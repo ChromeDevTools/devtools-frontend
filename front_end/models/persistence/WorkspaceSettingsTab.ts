@@ -8,11 +8,11 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {EditFileSystemView} from './EditFileSystemView.js';
-import {type FileSystem} from './FileSystemWorkspaceBinding.js';
+import type {FileSystem} from './FileSystemWorkspaceBinding.js';
 import {IsolatedFileSystem} from './IsolatedFileSystem.js';
 import {Events, IsolatedFileSystemManager} from './IsolatedFileSystemManager.js';
 import {NetworkPersistenceManager} from './NetworkPersistenceManager.js';
-import {type PlatformFileSystem} from './PlatformFileSystem.js';
+import type {PlatformFileSystem} from './PlatformFileSystem.js';
 import workspaceSettingsTabStyles from './workspaceSettingsTab.css.js';
 
 const UIStrings = {

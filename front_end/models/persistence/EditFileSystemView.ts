@@ -35,7 +35,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 
 import editFileSystemViewStyles from './editFileSystemView.css.js';
 import {Events, IsolatedFileSystemManager} from './IsolatedFileSystemManager.js';
-import {type PlatformFileSystem} from './PlatformFileSystem.js';
+import type {PlatformFileSystem} from './PlatformFileSystem.js';
 
 const UIStrings = {
   /**

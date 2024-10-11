@@ -8,11 +8,11 @@ import * as SDK from '../../core/sdk/sdk.js';
 import type * as Workspace from '../workspace/workspace.js';
 
 import {
-  LiveLocationWithPool,
   type LiveLocation as LiveLocationInterface,
   type LiveLocationPool,
+  LiveLocationWithPool,
 } from './LiveLocation.js';
-import {type ResourceMapping} from './ResourceMapping.js';
+import type {ResourceMapping} from './ResourceMapping.js';
 import {SASSSourceMapping} from './SASSSourceMapping.js';
 import {StylesSourceMapping} from './StylesSourceMapping.js';
 

@@ -12,7 +12,7 @@ import * as Feedback from '../../ui/components/panel_feedback/panel_feedback.js'
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import {type AccessibilitySidebarView} from './AccessibilitySidebarView.js';
+import type {AccessibilitySidebarView} from './AccessibilitySidebarView.js';
 import {AccessibilitySubPane} from './AccessibilitySubPane.js';
 import axBreadcrumbsStyles from './axBreadcrumbs.css.js';
 

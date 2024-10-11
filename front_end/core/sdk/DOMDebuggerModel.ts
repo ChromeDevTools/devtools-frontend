@@ -8,7 +8,7 @@ import * as Common from '../common/common.js';
 import * as Platform from '../platform/platform.js';
 
 import {CategorizedBreakpoint, Category} from './CategorizedBreakpoint.js';
-import {type EventListenerPausedDetailsAuxData, type Location} from './DebuggerModel.js';
+import type {EventListenerPausedDetailsAuxData, Location} from './DebuggerModel.js';
 import {DOMModel, type DOMNode, Events as DOMModelEvents} from './DOMModel.js';
 import {RemoteObject} from './RemoteObject.js';
 import {RuntimeModel} from './RuntimeModel.js';

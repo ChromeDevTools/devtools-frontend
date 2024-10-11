@@ -6,11 +6,7 @@ import type * as Common from '../../core/common/common.js';
 import type * as Platform from '../../core/platform/platform.js';
 
 import {ContentData, type ContentDataOrError} from './ContentData.js';
-import {
-  type ContentProvider,
-  type DeferredContent,
-  type SearchMatch,
-} from './ContentProvider.js';
+import type {ContentProvider, DeferredContent, SearchMatch} from './ContentProvider.js';
 import {performSearchInContentData} from './TextUtils.js';
 
 export class StaticContentProvider implements ContentProvider {

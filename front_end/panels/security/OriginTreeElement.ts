@@ -5,7 +5,7 @@
 import type * as Platform from '../../core/platform/platform.js';
 import * as Protocol from '../../generated/protocol.js';
 
-import {type SecurityPanel} from './SecurityPanel.js';
+import type {SecurityPanel} from './SecurityPanel.js';
 import {SecurityPanelSidebarTreeElement} from './SecurityPanelSidebarTreeElement.js';
 
 export class OriginTreeElement extends SecurityPanelSidebarTreeElement {

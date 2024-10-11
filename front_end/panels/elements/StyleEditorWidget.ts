@@ -6,9 +6,9 @@ import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import type * as ElementsComponents from './components/components.js';
-import {type StylePropertiesSection} from './StylePropertiesSection.js';
+import type {StylePropertiesSection} from './StylePropertiesSection.js';
 import {StylePropertyTreeElement} from './StylePropertyTreeElement.js';
-import {type StylesSidebarPane} from './StylesSidebarPane.js';
+import type {StylesSidebarPane} from './StylesSidebarPane.js';
 
 type PropertySelectedEvent = ElementsComponents.StylePropertyEditor.PropertySelectedEvent;
 type PropertyDeselectedEvent = ElementsComponents.StylePropertyEditor.PropertyDeselectedEvent;

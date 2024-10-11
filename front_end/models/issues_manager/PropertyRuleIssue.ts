@@ -6,7 +6,7 @@ import type * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 
 import {Issue, IssueCategory, IssueKind} from './Issue.js';
-import {type MarkdownIssueDescription} from './MarkdownIssueDescription.js';
+import type {MarkdownIssueDescription} from './MarkdownIssueDescription.js';
 
 export class PropertyRuleIssue extends Issue {
   readonly #issueDetails: Protocol.Audits.PropertyRuleIssueDetails;

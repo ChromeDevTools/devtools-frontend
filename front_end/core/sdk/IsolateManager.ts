@@ -4,10 +4,9 @@
 
 import * as Common from '../common/common.js';
 
-import {type HeapProfilerModel} from './HeapProfilerModel.js';
+import type {HeapProfilerModel} from './HeapProfilerModel.js';
 import {RuntimeModel} from './RuntimeModel.js';
-
-import {TargetManager, type SDKModelObserver} from './TargetManager.js';
+import {type SDKModelObserver, TargetManager} from './TargetManager.js';
 
 let isolateManagerInstance: IsolateManager;
 

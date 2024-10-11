@@ -10,7 +10,7 @@ import * as EmulationModel from '../../models/emulation/emulation.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import {DeviceModeView} from './DeviceModeView.js';
-import {type InspectedPagePlaceholder} from './InspectedPagePlaceholder.js';
+import type {InspectedPagePlaceholder} from './InspectedPagePlaceholder.js';
 
 let deviceModeWrapperInstance: DeviceModeWrapper;
 

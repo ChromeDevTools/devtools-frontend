@@ -38,7 +38,7 @@ import * as SourceFrame from '../../ui/legacy/components/source_frame/source_fra
 import type * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import {type ExtensionStorage} from './ExtensionStorageModel.js';
+import type {ExtensionStorage} from './ExtensionStorageModel.js';
 import {StorageItemsView} from './StorageItemsView.js';
 
 const UIStrings = {

@@ -4,11 +4,11 @@
 
 import * as Platform from '../../../core/platform/platform.js';
 import type * as Protocol from '../../../generated/protocol.js';
-import {type ParsedTrace} from '../handlers/types.js';
+import type {ParsedTrace} from '../handlers/types.js';
 import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
 
-import {type RootCauseProtocolInterface} from './RootCauses.js';
+import type {RootCauseProtocolInterface} from './RootCauses.js';
 
 export type CSSDimensions = {
   width?: string,

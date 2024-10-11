@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {expect} from 'chai';
-import {type ElementHandle} from 'puppeteer-core';
+import type {ElementHandle} from 'puppeteer-core';
 
 import {
   waitFor,
@@ -12,7 +12,6 @@ import {
   waitForElementWithTextContent,
   waitForFunction,
 } from '../../shared/helper.js';
-
 import {openPanelViaMoreTools} from '../helpers/settings-helpers.js';
 
 async function checkboxIsChecked(element: ElementHandle<HTMLInputElement>): Promise<boolean> {

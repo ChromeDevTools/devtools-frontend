@@ -19,25 +19,17 @@ import {
   type PageNavigationEvent,
 } from './LinearMemoryNavigator.js';
 
-import {
-  type EndiannessChangedEvent,
-  type LinearMemoryValueInterpreterData,
-  type ValueTypeToggledEvent,
-} from './LinearMemoryValueInterpreter.js';
+import type {
+  EndiannessChangedEvent, LinearMemoryValueInterpreterData, ValueTypeToggledEvent} from
+  './LinearMemoryValueInterpreter.js';
 
-import {
-  type DeleteMemoryHighlightEvent,
-  type JumpToHighlightedMemoryEvent,
-  type LinearMemoryHighlightChipListData,
-} from './LinearMemoryHighlightChipList.js';
+import type {
+  DeleteMemoryHighlightEvent, JumpToHighlightedMemoryEvent, LinearMemoryHighlightChipListData} from
+  './LinearMemoryHighlightChipList.js';
 import {formatAddress, parseAddress} from './LinearMemoryInspectorUtils.js';
-import {
-  type ByteSelectedEvent,
-  type LinearMemoryViewerData,
-  type ResizeEvent,
-} from './LinearMemoryViewer.js';
-import {type HighlightInfo} from './LinearMemoryViewerUtils.js';
-import {type JumpToPointerAddressEvent, type ValueTypeModeChangedEvent} from './ValueInterpreterDisplay.js';
+import type {ByteSelectedEvent, LinearMemoryViewerData, ResizeEvent} from './LinearMemoryViewer.js';
+import type {HighlightInfo} from './LinearMemoryViewerUtils.js';
+import type {JumpToPointerAddressEvent, ValueTypeModeChangedEvent} from './ValueInterpreterDisplay.js';
 import {
   Endianness,
   VALUE_INTEPRETER_MAX_NUM_BYTES,

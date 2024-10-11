@@ -30,7 +30,7 @@ import {
   type PermissionsPolicySectionData,
   renderIconLink,
 } from './PermissionsPolicySection.js';
-import {type StackTraceData} from './StackTrace.js';
+import type {StackTraceData} from './StackTrace.js';
 
 const {html} = LitHtml;
 

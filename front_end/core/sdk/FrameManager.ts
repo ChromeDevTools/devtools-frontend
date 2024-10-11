@@ -2,15 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../common/common.js';
 import type * as Protocol from '../../generated/protocol.js';
+import * as Common from '../common/common.js';
 
-import {type Resource} from './Resource.js';
-
-import {Events as ResourceTreeModelEvents, ResourceTreeModel, type ResourceTreeFrame} from './ResourceTreeModel.js';
-import {type Target} from './Target.js';
-
-import {TargetManager, type SDKModelObserver} from './TargetManager.js';
+import type {Resource} from './Resource.js';
+import {Events as ResourceTreeModelEvents, type ResourceTreeFrame, ResourceTreeModel} from './ResourceTreeModel.js';
+import type {Target} from './Target.js';
+import {type SDKModelObserver, TargetManager} from './TargetManager.js';
 
 let frameManagerInstance: FrameManager|null = null;
 

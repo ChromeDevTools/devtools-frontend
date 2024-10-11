@@ -4,8 +4,8 @@
 
 import {assert} from 'chai';
 
-import {type DevToolsRecorder} from '../../../../../front_end/panels/recorder/injected/injected.js';
-import {type Schema} from '../../../../../front_end/panels/recorder/models/models.js';
+import type {DevToolsRecorder} from '../../../../../front_end/panels/recorder/injected/injected.js';
+import type {Schema} from '../../../../../front_end/panels/recorder/models/models.js';
 import {
   loadComponentDocExample,
 } from '../../../../../test/interactions/helpers/shared.js';

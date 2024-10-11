@@ -8,7 +8,7 @@ import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
 import {BaseInsight, shouldRenderForCategory} from './Helpers.js';
-import {type NodeLinkData} from './NodeLink.js';
+import type {NodeLinkData} from './NodeLink.js';
 import type * as SidebarInsight from './SidebarInsight.js';
 import {Category} from './types.js';
 

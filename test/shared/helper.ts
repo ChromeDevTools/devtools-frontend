@@ -6,7 +6,7 @@ import {assert, AssertionError} from 'chai';
 import type * as puppeteer from 'puppeteer-core';
 
 import {AsyncScope} from '../conductor/async-scope.js';
-import {type DevToolsFrontendReloadOptions} from '../conductor/frontend_tab.js';
+import type {DevToolsFrontendReloadOptions} from '../conductor/frontend_tab.js';
 import {getDevToolsFrontendHostname, reloadDevTools} from '../conductor/hooks.js';
 import {platform} from '../conductor/mocha-interface-helpers.js';
 import {getBrowserAndPages, getTestServerPort} from '../conductor/puppeteer-state.js';

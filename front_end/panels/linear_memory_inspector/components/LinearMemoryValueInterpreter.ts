@@ -10,12 +10,9 @@ import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import linearMemoryValueInterpreterStyles from './linearMemoryValueInterpreter.css.js';
-import {type ValueDisplayData} from './ValueInterpreterDisplay.js';
+import type {ValueDisplayData} from './ValueInterpreterDisplay.js';
 import {Endianness, type ValueType, type ValueTypeMode} from './ValueInterpreterDisplayUtils.js';
-import {
-  type TypeToggleEvent,
-  type ValueInterpreterSettingsData,
-} from './ValueInterpreterSettings.js';
+import type {TypeToggleEvent, ValueInterpreterSettingsData} from './ValueInterpreterSettings.js';
 
 const UIStrings = {
   /**
@@ -63,7 +60,6 @@ export interface LinearMemoryValueInterpreterData {
 }
 
 export class LinearMemoryValueInterpreter extends HTMLElement {
-
   readonly #shadow = this.attachShadow({mode: 'open'});
   #endianness = Endianness.LITTLE;
   #buffer = new ArrayBuffer(0);

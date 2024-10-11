@@ -6,11 +6,7 @@ import type * as Protocol from '../../generated/protocol.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
 
 import * as EnhancedTraces from './EnhancedTracesParser.js';
-import {
-  type RehydratingExecutionContext,
-  type RehydratingScript,
-  type RehydratingTarget,
-} from './RehydratingObject.js';
+import type {RehydratingExecutionContext, RehydratingScript, RehydratingTarget} from './RehydratingObject.js';
 
 describe('EnhancedTracesParser', () => {
   let enhancedTracesParser: EnhancedTraces.EnhancedTracesParser;

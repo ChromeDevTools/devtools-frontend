@@ -24,7 +24,7 @@ import {
   type PopulateNodesEventNodeTypes,
 } from './CSSOverviewController.js';
 import {CSSOverviewSidebarPanel, type ItemSelectedEvent, SidebarEvents} from './CSSOverviewSidebarPanel.js';
-import {type UnusedDeclaration} from './CSSOverviewUnusedDeclarations.js';
+import type {UnusedDeclaration} from './CSSOverviewUnusedDeclarations.js';
 
 const UIStrings = {
   /**

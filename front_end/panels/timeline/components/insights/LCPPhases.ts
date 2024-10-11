@@ -9,7 +9,7 @@ import type * as Overlays from '../../overlays/overlays.js';
 
 import {BaseInsight, shouldRenderForCategory} from './Helpers.js';
 import type * as SidebarInsight from './SidebarInsight.js';
-import {type TableData} from './Table.js';
+import type {TableData} from './Table.js';
 import {Category} from './types.js';
 
 const {html} = LitHtml;

@@ -16,7 +16,7 @@ import {
   registerEditorAction,
   type SourcesView,
 } from './SourcesView.js';
-import {type UISourceCodeFrame} from './UISourceCodeFrame.js';
+import type {UISourceCodeFrame} from './UISourceCodeFrame.js';
 
 const UIStrings = {
   /**

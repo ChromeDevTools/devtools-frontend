@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {type ElementHandle} from 'puppeteer-core';
+import type {ElementHandle} from 'puppeteer-core';
 
 import {$, $$, click, waitFor, waitForFunction} from '../../shared/helper.js';
 import {loadComponentDocExample} from '../helpers/shared.js';

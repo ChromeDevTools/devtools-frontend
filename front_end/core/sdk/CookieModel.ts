@@ -9,7 +9,7 @@ import * as Root from '../root/root.js';
 
 import {type Attribute, Cookie} from './Cookie.js';
 import {Events as NetworkManagerEvents, NetworkManager} from './NetworkManager.js';
-import {type Resource} from './Resource.js';
+import type {Resource} from './Resource.js';
 import {Events as ResourceTreeModelEvents, ResourceTreeModel} from './ResourceTreeModel.js';
 import {SDKModel} from './SDKModel.js';
 import {Capability, type Target} from './Target.js';

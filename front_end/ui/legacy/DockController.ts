@@ -34,9 +34,9 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import {type ActionDelegate} from './ActionRegistration.js';
+import type {ActionDelegate} from './ActionRegistration.js';
 import {alert} from './ARIAUtils.js';
-import {type Context} from './Context.js';
+import type {Context} from './Context.js';
 import {type Provider, ToolbarButton, type ToolbarItem} from './Toolbar.js';
 
 const UIStrings = {

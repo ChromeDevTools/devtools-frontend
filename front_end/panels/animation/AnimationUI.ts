@@ -11,7 +11,7 @@ import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_e
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import {type AnimationImpl, type KeyframeStyle} from './AnimationModel.js';
+import type {AnimationImpl, KeyframeStyle} from './AnimationModel.js';
 import {type AnimationTimeline, StepTimingFunction} from './AnimationTimeline.js';
 
 const UIStrings = {

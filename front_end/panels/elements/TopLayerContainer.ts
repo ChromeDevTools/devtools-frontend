@@ -8,9 +8,8 @@ import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as ElementsComponents from './components/components.js';
+import type {ElementsTreeElement} from './ElementsTreeElement.js';
 import * as ElementsTreeOutline from './ElementsTreeOutline.js';
-
-import {type ElementsTreeElement} from './ElementsTreeElement.js';
 
 const UIStrings = {
   /**

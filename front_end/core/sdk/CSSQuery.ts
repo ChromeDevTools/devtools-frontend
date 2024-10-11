@@ -2,11 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as TextUtils from '../../models/text_utils/text_utils.js';
 import type * as Protocol from '../../generated/protocol.js';
+import type * as TextUtils from '../../models/text_utils/text_utils.js';
 
 import {CSSLocation, type CSSModel, type Edit} from './CSSModel.js';
-import {type CSSStyleSheetHeader} from './CSSStyleSheetHeader.js';
+import type {CSSStyleSheetHeader} from './CSSStyleSheetHeader.js';
 
 type CSSQueryPayload =
     Protocol.CSS.CSSMedia|Protocol.CSS.CSSContainerQuery|Protocol.CSS.CSSSupports|Protocol.CSS.CSSScope;

@@ -11,7 +11,7 @@ import * as ARIAUtils from './ARIAUtils.js';
 import infobarStyles from './infobar.css.legacy.js';
 import {Keys} from './KeyboardShortcut.js';
 import {createShadowRootWithCoreStyles, createTextButton} from './UIUtils.js';
-import {type Widget} from './Widget.js';
+import type {Widget} from './Widget.js';
 
 const UIStrings = {
   /**

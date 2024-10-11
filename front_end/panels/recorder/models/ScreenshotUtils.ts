@@ -4,7 +4,7 @@
 
 import * as SDK from '../../../core/sdk/sdk.js';
 
-import {type Screenshot} from './ScreenshotStorage.js';
+import type {Screenshot} from './ScreenshotStorage.js';
 
 const SCREENSHOT_WIDTH = 160;       // px
 const SCREENSHOT_MAX_HEIGHT = 240;  // px

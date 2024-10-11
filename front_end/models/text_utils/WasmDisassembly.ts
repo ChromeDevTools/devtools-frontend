@@ -5,7 +5,7 @@
 import * as Platform from '../../core/platform/platform.js';
 
 import {ContentData} from './ContentData.js';
-import { type DeferredContent } from './ContentProvider.js';
+import type {DeferredContent} from './ContentProvider.js';
 
 interface FunctionBodyOffset {
   start: number;

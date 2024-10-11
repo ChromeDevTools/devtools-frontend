@@ -7,7 +7,7 @@ import type * as SDK from '../core/sdk/sdk.js';
 import * as IssuesManager from '../models/issues_manager/issues_manager.js';
 
 import {MockIssuesModel} from './MockIssuesModel.js';
-import {type StubIssue} from './StubIssue.js';
+import type {StubIssue} from './StubIssue.js';
 
 export class MockIssuesManager extends Common.ObjectWrapper.ObjectWrapper<IssuesManager.IssuesManager.EventTypes> {
   private mockIssues: IssuesManager.Issue.Issue[];

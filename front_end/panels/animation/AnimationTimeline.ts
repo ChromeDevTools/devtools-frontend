@@ -11,7 +11,7 @@ import * as Protocol from '../../generated/protocol.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import {type AnimationDOMNode} from './AnimationDOMNode.js';
+import type {AnimationDOMNode} from './AnimationDOMNode.js';
 import {AnimationGroupPreviewUI} from './AnimationGroupPreviewUI.js';
 import {
   type AnimationEffect,

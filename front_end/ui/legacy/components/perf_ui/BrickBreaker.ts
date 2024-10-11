@@ -6,7 +6,7 @@ import * as i18n from '../../../../core/i18n/i18n.js';
 import * as WindowBounds from '../../../../services/window_bounds/window_bounds.js';
 import * as ThemeSupport from '../../theme_support/theme_support.js';
 
-import {type FlameChart} from './FlameChart.js';
+import type {FlameChart} from './FlameChart.js';
 
 const UIStrings = {
   /**

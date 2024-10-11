@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {type Schema} from '../../../third_party/puppeteer-replay/puppeteer-replay.js';
+import type {Schema} from '../../../third_party/puppeteer-replay/puppeteer-replay.js';
 
 export function assert<Condition>(condition: Condition): asserts condition {
   if (!condition) {

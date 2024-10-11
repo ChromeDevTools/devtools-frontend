@@ -3,10 +3,9 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
-import {type ElementHandle} from 'puppeteer-core';
+import type {ElementHandle} from 'puppeteer-core';
 
 import {waitFor, waitForAria} from '../../shared/helper.js';
-
 import {reloadDevTools} from '../helpers/cross-tool-helper.js';
 import {navigateToNetworkTab} from '../helpers/network-helpers.js';
 

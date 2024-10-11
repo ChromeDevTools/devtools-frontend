@@ -66,21 +66,19 @@ module.exports = {
       ];
     }
 
-    function inlineTypeImportKeyword(fixer, typeImportNode) {
-      // We need to remove the " type" text after "import".
-      const importStart = typeImportNode.range[0];
+    function extractTypeImportKeyword(fixer, valueImportNode) {
+      const importStart = valueImportNode.range[0];
       const typeImportStart = importStart + 6;    // 6 here = length of "import"
-      const typeImportEnd = typeImportStart + 5;  // 5 here = length of "type" + 1 to remove the space after it.
-
-      const addTypeToSpecifiersFixers = typeImportNode.specifiers.map(spec => {
-        const newText = getTextForImportSpecifier(spec);
-
-        return fixer.replaceText(spec, `type ${newText}`);
+      // We need to remove the " type" text after "import".
+      const addTypeToSpecifiersFixers = valueImportNode.specifiers.map(spec => {
+        const typeImportStart = spec.range[0];
+        const typeImportEnd = typeImportStart + 5;  // 5 here = length of "type" + 1 to remove the space after it.
+        return fixer.removeRange([typeImportStart, typeImportEnd]);
       });
 
       return [
         ...addTypeToSpecifiersFixers,
-        fixer.removeRange([typeImportStart, typeImportEnd]),
+        fixer.insertTextAfterRange([importStart, typeImportStart], ' type'),
       ];
     }
 
@@ -138,19 +136,20 @@ module.exports = {
             });
             continue;
           }
-
-          // At this point we have just a type import and no matching file
-          // import, but we still want to convert the import so that each
-          // imported reference uses the type modifier:
-          // BEFORE: import type {A, B} from '...';
-          // AFTER: import {type A, type B} from '...';
-          context.report({
-            node: typeImportNode,
-            messageId: 'convertTypeImport',
-            fix(fixer) {
-              return inlineTypeImportKeyword(fixer, typeImportNode);
-            }
-          });
+        }
+        for (const valueImportNode of valueImports.values()) {
+          const typeOnly = valueImportNode.specifiers.every(s => s.importKind === 'type');
+          if (typeOnly) {
+            // BEFORE: import {type A, type B} from '...';
+            // AFTER: import type {A, B} from '...';
+            context.report({
+              node: valueImportNode,
+              messageId: 'convertTypeImport',
+              fix(fixer) {
+                return extractTypeImportKeyword(fixer, valueImportNode);
+              }
+            });
+          }
         }
       },
     };

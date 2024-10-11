@@ -4,9 +4,9 @@
 
 import {assert} from 'chai';
 
-import {type StepChanged} from '../../../front_end/panels/recorder/components/StepView.js';
-import {type UserFlow} from '../../../front_end/panels/recorder/models/Schema.js';
-import {type RecorderActions} from '../../../front_end/panels/recorder/recorder-actions/recorder-actions.js';
+import type {StepChanged} from '../../../front_end/panels/recorder/components/StepView.js';
+import type {UserFlow} from '../../../front_end/panels/recorder/models/Schema.js';
+import type {RecorderActions} from '../../../front_end/panels/recorder/recorder-actions/recorder-actions.js';
 import {
   assertNotNullOrUndefined,
   getBrowserAndPages,
@@ -15,7 +15,6 @@ import {
   waitForAria,
   waitForFunction,
 } from '../../../test/shared/helper.js';
-
 import {assertMatchesJSONSnapshot} from '../../../test/shared/snapshots.js';
 
 import {

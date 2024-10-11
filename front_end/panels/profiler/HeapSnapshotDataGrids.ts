@@ -45,9 +45,9 @@ import {
   HeapSnapshotObjectNode,
   HeapSnapshotRetainingObjectNode,
 } from './HeapSnapshotGridNodes.js';
-import {type HeapSnapshotProxy} from './HeapSnapshotProxy.js';
-import {type HeapProfileHeader} from './HeapSnapshotView.js';
-import {type DataDisplayDelegate} from './ProfileHeader.js';
+import type {HeapSnapshotProxy} from './HeapSnapshotProxy.js';
+import type {HeapProfileHeader} from './HeapSnapshotView.js';
+import type {DataDisplayDelegate} from './ProfileHeader.js';
 
 const UIStrings = {
   /**

@@ -11,8 +11,7 @@ import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import searchResultsPaneStyles from './searchResultsPane.css.js';
-
-import {type SearchResult} from './SearchScope.js';
+import type {SearchResult} from './SearchScope.js';
 
 const UIStrings = {
   /**

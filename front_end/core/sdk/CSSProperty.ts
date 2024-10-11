@@ -9,9 +9,9 @@ import * as HostModule from '../host/host.js';
 import * as Platform from '../platform/platform.js';
 
 import {cssMetadata, GridAreaRowRegex} from './CSSMetadata.js';
-import {type Edit} from './CSSModel.js';
+import type {Edit} from './CSSModel.js';
 import {stripComments} from './CSSPropertyParser.js';
-import {type CSSStyleDeclaration} from './CSSStyleDeclaration.js';
+import type {CSSStyleDeclaration} from './CSSStyleDeclaration.js';
 
 export class CSSProperty {
   ownerStyle: CSSStyleDeclaration;

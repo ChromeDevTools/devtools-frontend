@@ -9,7 +9,7 @@ import * as UI from '../../legacy/legacy.js';
 
 import {DataGrid, type DataGridContextMenusConfiguration, type DataGridData} from './DataGrid.js';
 import dataGridControllerStyles from './dataGridController.css.js';
-import {type ColumnHeaderClickEvent, type ContextMenuColumnSortClickEvent} from './DataGridEvents.js';
+import type {ColumnHeaderClickEvent, ContextMenuColumnSortClickEvent} from './DataGridEvents.js';
 import {
   type Column,
   getRowEntryForColumnId,

@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {type DevToolsFrontendReloadOptions} from '../../conductor/frontend_tab.js';
+import type {DevToolsFrontendReloadOptions} from '../../conductor/frontend_tab.js';
 import {getBrowserAndPages} from '../../conductor/puppeteer-state.js';
 import {click, reloadDevTools as baseReloadDevTools, waitFor} from '../../shared/helper.js';
 

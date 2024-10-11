@@ -7,7 +7,7 @@ import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import {toHexString} from './LinearMemoryInspectorUtils.js';
 import linearMemoryViewerStyles from './linearMemoryViewer.css.js';
-import {type HighlightInfo} from './LinearMemoryViewerUtils.js';
+import type {HighlightInfo} from './LinearMemoryViewerUtils.js';
 
 const {render, html} = LitHtml;
 
@@ -44,7 +44,6 @@ const BYTE_GROUP_MARGIN = 8;
 const BYTE_GROUP_SIZE = 4;
 
 export class LinearMemoryViewer extends HTMLElement {
-
   readonly #shadow = this.attachShadow({mode: 'open'});
 
   readonly #resizeObserver = new ResizeObserver(() => this.#resize());

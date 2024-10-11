@@ -10,7 +10,7 @@ import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import linearMemoryHighlightChipListStyles from './linearMemoryHighlightChipList.css.js';
-import {type HighlightInfo} from './LinearMemoryViewerUtils.js';
+import type {HighlightInfo} from './LinearMemoryViewerUtils.js';
 
 const UIStrings = {
   /**
@@ -56,7 +56,6 @@ export class JumpToHighlightedMemoryEvent extends Event {
 }
 
 export class LinearMemoryHighlightChipList extends HTMLElement {
-
   readonly #shadow = this.attachShadow({mode: 'open'});
   #highlightedAreas: HighlightInfo[] = [];
   #focusedMemoryHighlight?: HighlightInfo;

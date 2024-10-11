@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {assert, expect} from 'chai';
-import {type ElementHandle} from 'puppeteer-core';
+import type {ElementHandle} from 'puppeteer-core';
 
 import {
   $textContent,
@@ -18,7 +18,6 @@ import {
   waitForMany,
   waitForNone,
 } from '../../shared/helper.js';
-
 import {
   reloadDevTools,
 } from '../helpers/cross-tool-helper.js';

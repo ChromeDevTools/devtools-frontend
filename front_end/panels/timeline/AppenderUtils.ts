@@ -7,7 +7,7 @@ import * as Trace from '../../models/trace/trace.js';
 import type * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 
-import {type VisualLoggingTrackName} from './CompatibilityTracksAppender.js';
+import type {VisualLoggingTrackName} from './CompatibilityTracksAppender.js';
 
 const UIStrings = {
   /**

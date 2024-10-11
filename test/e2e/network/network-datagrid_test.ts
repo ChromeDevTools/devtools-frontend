@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 
 import {unregisterAllServiceWorkers} from '../../conductor/hooks.js';
-import {type BrowserAndPages} from '../../conductor/puppeteer-state.js';
+import type {BrowserAndPages} from '../../conductor/puppeteer-state.js';
 import {
   click,
   getBrowserAndPages,
@@ -16,7 +16,6 @@ import {
   waitForElementWithTextContent,
   waitForFunction,
 } from '../../shared/helper.js';
-
 import {
   clearTextFilter,
   getAllRequestNames,

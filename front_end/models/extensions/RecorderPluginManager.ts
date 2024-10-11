@@ -4,7 +4,7 @@
 
 import * as Common from '../../core/common/common.js';
 
-import {type RecorderExtensionEndpoint} from './RecorderExtensionEndpoint.js';
+import type {RecorderExtensionEndpoint} from './RecorderExtensionEndpoint.js';
 
 let instance: RecorderPluginManager|null = null;
 

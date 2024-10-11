@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 import * as UI from '../../ui/legacy/legacy.js';
 
-import {type SecurityPanel} from './SecurityPanel.js';
+import type {SecurityPanel} from './SecurityPanel.js';
 
 export class SecurityPanelSidebarTreeElement extends UI.TreeOutline.TreeElement {
   protected readonly securityPanel: SecurityPanel|undefined;

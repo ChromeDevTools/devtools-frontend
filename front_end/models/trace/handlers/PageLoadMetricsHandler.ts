@@ -18,7 +18,7 @@ import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
 
 import {data as metaHandlerData} from './MetaHandler.js';
-import {type HandlerName} from './types.js';
+import type {HandlerName} from './types.js';
 
 /**
  * This represents the metric scores for all navigations, for all frames in a trace.

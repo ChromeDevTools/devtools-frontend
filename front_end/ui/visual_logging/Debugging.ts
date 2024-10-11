@@ -4,7 +4,7 @@
 
 import {assertNotNullOrUndefined} from '../../core/platform/platform.js';
 
-import {type Loggable} from './Loggable.js';
+import type {Loggable} from './Loggable.js';
 import {type LoggingConfig, VisualElements} from './LoggingConfig.js';
 import {getLoggingState, type LoggingState} from './LoggingState.js';
 

@@ -14,7 +14,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import {IndexedDBTreeElement} from './ApplicationPanelSidebar.js';
 import {ExpandableApplicationPanelTreeElement} from './ApplicationPanelTreeElement.js';
 import {StorageMetadataView} from './components/components.js';
-import {type ResourcesPanel} from './ResourcesPanel.js';
+import type {ResourcesPanel} from './ResourcesPanel.js';
 import {ServiceWorkerCacheTreeElement} from './ServiceWorkerCacheTreeElement.js';
 
 const UIStrings = {

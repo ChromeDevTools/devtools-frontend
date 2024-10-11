@@ -16,7 +16,7 @@ import type * as IconButton from '../../../ui/components/icon_button/icon_button
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
-import {type EditableSpan, type EditableSpanData} from './EditableSpan.js';
+import type {EditableSpan, EditableSpanData} from './EditableSpan.js';
 import headerSectionRowStyles from './HeaderSectionRow.css.js';
 
 const {render, html} = LitHtml;

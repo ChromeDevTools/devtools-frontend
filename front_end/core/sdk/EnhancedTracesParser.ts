@@ -5,12 +5,8 @@
 import type * as Protocol from '../../generated/protocol.js';
 import {UserVisibleError} from '../platform/platform.js';
 
-import {
-  type EnhancedTracesData,
-  type RehydratingExecutionContext,
-  type RehydratingScript,
-  type RehydratingTarget,
-} from './RehydratingObject.js';
+import type {
+  EnhancedTracesData, RehydratingExecutionContext, RehydratingScript, RehydratingTarget} from './RehydratingObject.js';
 
 interface RehydratingTraceBase {
   cat: string;

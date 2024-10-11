@@ -48,9 +48,18 @@ export type LCPInsightResult = InsightResult<{
   earliestDiscoveryTimeTs?: Types.Timing.MicroSeconds,
 }>;
 
+function anyValuesNaN(...values: number[]): boolean {
+  return values.some(v => Number.isNaN(v));
+}
+/**
+ * Calculates the 4 phases of an LCP and the timings of each.
+ * Will return `null` if any required values were missing. We don't ever expect
+ * them to be missing on newer traces, but old trace files may lack some of the
+ * data we rely on, so we want to handle that case.
+ */
 function breakdownPhases(
     nav: Types.Events.NavigationStart, docRequest: Types.Events.SyntheticNetworkRequest,
-    lcpMs: Types.Timing.MilliSeconds, lcpRequest: Types.Events.SyntheticNetworkRequest|null): LCPPhases {
+    lcpMs: Types.Timing.MilliSeconds, lcpRequest: Types.Events.SyntheticNetworkRequest|null): LCPPhases|null {
   const docReqTiming = docRequest.args.data.timing;
   if (!docReqTiming) {
     throw new Error('no timing for document request');
@@ -63,6 +72,9 @@ function breakdownPhases(
   let renderDelay = Types.Timing.MilliSeconds(lcpMs - ttfb);
 
   if (!lcpRequest) {
+    if (anyValuesNaN(ttfb, renderDelay)) {
+      return null;
+    }
     return {ttfb, renderDelay};
   }
 
@@ -75,6 +87,9 @@ function breakdownPhases(
   const loadDelay = Types.Timing.MilliSeconds(requestStart - ttfb);
   const loadTime = Types.Timing.MilliSeconds(requestEnd - requestStart);
   renderDelay = Types.Timing.MilliSeconds(lcpMs - requestEnd);
+  if (anyValuesNaN(ttfb, loadDelay, loadTime, renderDelay)) {
+    return null;
+  }
 
   return {
     ttfb,
@@ -121,7 +136,7 @@ export function generateInsight(parsedTrace: RequiredData<typeof deps>, context:
       lcpMs,
       lcpTs,
       lcpEvent,
-      phases: breakdownPhases(context.navigation, docRequest, lcpMs, lcpRequest),
+      phases: breakdownPhases(context.navigation, docRequest, lcpMs, lcpRequest) ?? undefined,
     };
   }
 
@@ -144,7 +159,7 @@ export function generateInsight(parsedTrace: RequiredData<typeof deps>, context:
     lcpMs,
     lcpTs,
     lcpEvent,
-    phases: breakdownPhases(context.navigation, docRequest, lcpMs, lcpRequest),
+    phases: breakdownPhases(context.navigation, docRequest, lcpMs, lcpRequest) ?? undefined,
     shouldRemoveLazyLoading: imageLoadingAttr === 'lazy',
     shouldIncreasePriorityHint: imageFetchPriorityHint !== 'high',
     shouldPreloadImage: !imgPreloadedOrFoundInHTML,

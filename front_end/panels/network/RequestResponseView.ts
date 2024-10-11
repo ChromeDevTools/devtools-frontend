@@ -37,6 +37,8 @@ import * as SourceFrame from '../../ui/legacy/components/source_frame/source_fra
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
+import {RequestBinaryResponseView} from './RequestBinaryResponseView.js';
+
 const UIStrings = {
   /**
    *@description Text in Request Response View of the Network panel
@@ -68,9 +70,7 @@ export class RequestResponseView extends UI.Widget.VBox {
     }
 
     const contentData = await request.requestStreamingContent();
-    // Note: Even though WASM is binary data, the source view will disassemble it and show a text representation.
-    if (TextUtils.StreamingContentData.isError(contentData) ||
-        !(contentData.isTextContent || contentData.mimeType === 'application/wasm')) {
+    if (TextUtils.StreamingContentData.isError(contentData)) {
       requestToSourceView.delete(request);
       return null;
     }
@@ -84,14 +84,21 @@ export class RequestResponseView extends UI.Widget.VBox {
       mimeType = request.resourceType().canonicalMimeType() || request.mimeType;
     }
 
-    const isMinified = contentData.mimeType === 'application/wasm' ?
-        false :
-        TextUtils.TextUtils.isMinified(contentData.content().text);
+    const isWasm = contentData.mimeType === 'application/wasm';
+    const isMinified =
+        isWasm || !contentData.isTextContent ? false : TextUtils.TextUtils.isMinified(contentData.content().text);
     const mediaType = Common.ResourceType.ResourceType.mediaTypeForMetrics(
         mimeType, request.resourceType().isFromSourceMap(), isMinified, false, false);
 
     Host.userMetrics.networkPanelResponsePreviewOpened(mediaType);
-    sourceView = SourceFrame.ResourceSourceFrame.ResourceSourceFrame.createSearchableView(request, mimeType);
+
+    if (contentData.isTextContent || isWasm) {
+      // Note: Even though WASM is binary data, the source view will disassemble it and show a text representation.
+      sourceView = SourceFrame.ResourceSourceFrame.ResourceSourceFrame.createSearchableView(request, mimeType);
+    } else {
+      sourceView = new RequestBinaryResponseView(contentData);
+    }
+
     requestToSourceView.set(request, sourceView);
     return sourceView;
   }

@@ -54,10 +54,7 @@ export class SidebarInsightsTab extends HTMLElement {
     this.#shadow.adoptedStyleSheets = [styles];
   }
 
-  disconnectedCallback(): void {
-    this.#parsedTrace = null;
-    this.#insightSetKey = null;
-  }
+  // TODO(paulirish): add back a disconnectedCallback() to avoid memory leaks that doesn't cause b/372943062
 
   set parsedTrace(data: Trace.Handlers.Types.ParsedTrace|null) {
     if (data === this.#parsedTrace) {

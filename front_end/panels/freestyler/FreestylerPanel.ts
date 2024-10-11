@@ -43,7 +43,7 @@ const AI_ASSISTANCE_HELP = 'https://goo.gle/devtools-ai-assistance' as Platform.
 */
 const UIStringsNotTranslate = {
   /**
-   *@description AI assistance UI text for clearing messages.
+   *@description AI assistance UI text for clearing the chat.
    */
   clearChat: 'Clear chat',
   /**
@@ -59,9 +59,9 @@ const UIStringsNotTranslate = {
    */
   sendFeedback: 'Send feedback',
   /**
-   *@description Announcement text for screen readers when the messages are cleared.
+   *@description Announcement text for screen readers when the chat is cleared.
    */
-  messagesCleared: 'Messages cleared',
+  chatCleared: 'Chat cleared',
   /**
    *@description Announcement text for screen readers when the conversation starts.
    */
@@ -400,7 +400,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
     this.#drJonesNetworkAgent = this.#createDrJonesNetworkAgent();
     this.#cancel();
     this.doUpdate();
-    UI.ARIAUtils.alert(lockedString(UIStringsNotTranslate.messagesCleared));
+    UI.ARIAUtils.alert(lockedString(UIStringsNotTranslate.chatCleared));
   }
 
   #runAbortController = new AbortController();

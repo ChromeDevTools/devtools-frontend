@@ -280,11 +280,14 @@ export class MetricCard extends HTMLElement {
   #getFormatFn(): (value: number) => string {
     switch (this.#data.metric) {
       case 'LCP':
-        return v => i18n.TimeUtilities.millisToString(v);
+        return v => {
+          const micro = (v * 1000) as Platform.Timing.MicroSeconds;
+          return i18n.TimeUtilities.formatMicroSecondsAsSeconds(micro);
+        };
       case 'CLS':
         return v => v === 0 ? '0' : v.toFixed(2);
       case 'INP':
-        return v => i18n.TimeUtilities.millisToString(v);
+        return v => i18n.TimeUtilities.preciseMillisToString(v);
     }
   }
 

@@ -186,7 +186,7 @@ export class SidebarSingleInsightSet extends HTMLElement {
               LitHtml.nothing}
     ${
         this.#renderMetricValue(
-            'CLS', cls.value.toFixed(2),
+            'CLS', cls.value ? cls.value.toFixed(2) : '0',
             Trace.Handlers.ModelHandlers.LayoutShifts.scoreClassificationForLayoutShift(cls.value),
             cls.worstShiftEvent)}
     </div>

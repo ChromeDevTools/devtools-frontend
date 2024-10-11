@@ -967,7 +967,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
             'timeline.landing.interaction-event-timing',
             interaction.duration,
             INP_THRESHOLDS,
-            v => i18n.TimeUtilities.millisToString(v),
+            v => i18n.TimeUtilities.preciseMillisToString(v),
             {dim: true},
           );
 

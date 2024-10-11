@@ -73,6 +73,7 @@ export abstract class BaseInsight extends HTMLElement {
     selectionIsSticky: false,
   };
   #initialOverlays: Overlays.Overlays.TimelineOverlay[]|null = null;
+  #hasRegisteredRelatedEvents = false;
 
   protected scheduleRender(): void {
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
@@ -85,10 +86,14 @@ export abstract class BaseInsight extends HTMLElement {
     this.dataset.insightName = this.internalName;
 
     // TODO(crbug.com/371615739): this should be moved to model/trace/insights
-    const events = this.getRelatedEvents();
-    if (events.length) {
-      this.dispatchEvent(new SidebarInsight.InsightProvideRelatedEvents(
-          this.userVisibleTitle, events, this.#dispatchInsightActivatedEvent.bind(this)));
+    if (!this.#hasRegisteredRelatedEvents) {
+      this.#hasRegisteredRelatedEvents = true;
+
+      const events = this.getRelatedEvents();
+      if (events.length) {
+        this.dispatchEvent(new SidebarInsight.InsightProvideRelatedEvents(
+            this.userVisibleTitle, events, this.#dispatchInsightActivatedEvent.bind(this)));
+      }
     }
   }
 

@@ -53,14 +53,23 @@ function assert(condition: unknown, message: string): void {
 }
 
 export class WidgetElement<WidgetT extends Widget> extends HTMLElement {
+  widgetClass?: new(...args: any[]) => WidgetT;
+  widgetParams: unknown[] = [];
+
   createWidget(): WidgetT {
-    throw new Error('Unimplemented');
+    if (!this.widgetClass) {
+      throw new Error('No widgetClass defined');
+    }
+
+    return new this.widgetClass(...this.widgetParams, this);
   }
 
   connectedCallback(): void {
     Widget.getOrCreateWidget(this).show(this.parentElement as HTMLElement);
   }
 }
+
+customElements.define('devtools-widget', WidgetElement);
 
 type Constructor<T, Args extends unknown[]> = {
   new (...args: Args): T,
@@ -664,8 +673,8 @@ const storedScrollPositions = new WeakMap<Element, {
 }>();
 
 export class VBox extends Widget {
-  constructor(isWebComponent?: boolean, delegatesFocus?: boolean) {
-    super(isWebComponent, delegatesFocus);
+  constructor(isWebComponent?: boolean, delegatesFocus?: boolean, element?: HTMLElement) {
+    super(isWebComponent, delegatesFocus, element);
     this.contentElement.classList.add('vbox');
   }
 

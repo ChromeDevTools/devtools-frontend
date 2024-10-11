@@ -302,7 +302,8 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
   private readonly resourcesSection: ResourcesSection;
   private domStorageTreeElements: Map<DOMStorage, DOMStorageTreeElement>;
   private extensionIdToStorageTreeParentElement: Map<string, ExtensionStorageTreeParentElement>;
-  private extensionStorageTreeElements: Map<ExtensionStorage, ExtensionStorageTreeElement>;
+  private extensionStorageModels: ExtensionStorageModel[];
+  private extensionStorageTreeElements: Map<string, ExtensionStorageTreeElement>;
   private sharedStorageTreeElements: Map<string, SharedStorageTreeElement>;
   private domains: {
     [x: string]: boolean,
@@ -447,6 +448,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
     this.domStorageTreeElements = new Map();
     this.extensionIdToStorageTreeParentElement = new Map();
     this.extensionStorageTreeElements = new Map();
+    this.extensionStorageModels = [];
     this.sharedStorageTreeElements = new Map();
     this.domains = {};
 
@@ -617,6 +619,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
   }
 
   private extensionStorageModelAdded(model: ExtensionStorageModel): void {
+    this.extensionStorageModels.push(model);
     model.enable();
     model.storages().forEach(this.addExtensionStorage.bind(this));
     model.addEventListener(ExtensionStorageModelEvents.EXTENSION_STORAGE_ADDED, this.extensionStorageAdded, this);
@@ -624,6 +627,8 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
   }
 
   private extensionStorageModelRemoved(model: ExtensionStorageModel): void {
+    console.assert(this.extensionStorageModels.includes(model));
+    this.extensionStorageModels.splice(this.extensionStorageModels.indexOf(model), 1);
     model.storages().forEach(this.removeExtensionStorage.bind(this));
     model.removeEventListener(ExtensionStorageModelEvents.EXTENSION_STORAGE_ADDED, this.extensionStorageAdded, this);
     model.removeEventListener(
@@ -829,11 +834,19 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
   }
 
   private addExtensionStorage(extensionStorage: ExtensionStorage): void {
+    if (this.extensionStorageModels.find(
+            m => m !== extensionStorage.model &&
+                m.storageForIdAndArea(extensionStorage.extensionId, extensionStorage.storageArea))) {
+      // There's at least one model that already has this storage area, so no need
+      // to do anything.
+      return;
+    }
+
     console.assert(Boolean(this.extensionStorageListTreeElement));
-    console.assert(!this.extensionStorageTreeElements.get(extensionStorage));
+    console.assert(!this.extensionStorageTreeElements.get(extensionStorage.key));
 
     const extensionStorageTreeElement = new ExtensionStorageTreeElement(this.panel, extensionStorage);
-    this.extensionStorageTreeElements.set(extensionStorage, extensionStorageTreeElement);
+    this.extensionStorageTreeElements.set(extensionStorage.key, extensionStorageTreeElement);
     this.getExtensionStorageAreaParent(extensionStorage)?.appendChild(extensionStorageTreeElement, comparator);
 
     function comparator(a: UI.TreeOutline.TreeElement, b: UI.TreeOutline.TreeElement): number {
@@ -855,7 +868,14 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
   }
 
   private removeExtensionStorage(extensionStorage: ExtensionStorage): void {
-    const treeElement = this.extensionStorageTreeElements.get(extensionStorage);
+    if (this.extensionStorageModels.find(
+            (m => m.storageForIdAndArea(extensionStorage.extensionId, extensionStorage.storageArea)))) {
+      // There's at least one model that still has this storage area, so no need
+      // to do anything.
+      return;
+    }
+
+    const treeElement = this.extensionStorageTreeElements.get(extensionStorage.key);
     if (!treeElement) {
       return;
     }
@@ -872,7 +892,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
         }
       }
     }
-    this.extensionStorageTreeElements.delete(extensionStorage);
+    this.extensionStorageTreeElements.delete(extensionStorage.key);
   }
 
   private async sharedStorageAdded(event: Common.EventTarget.EventTargetEvent<SharedStorageForOrigin>): Promise<void> {

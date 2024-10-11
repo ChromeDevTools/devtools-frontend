@@ -240,6 +240,48 @@ describeWithMockConnection('ApplicationPanelSidebar', () => {
     }
   });
 
+  it('does not add extension storage if already added by another model', async () => {
+    Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.EXTENSION_STORAGE_VIEWER);
+
+    Application.ResourcesPanel.ResourcesPanel.instance({forceNew: true});
+    const sidebar = await Application.ResourcesPanel.ResourcesPanel.showAndGetSidebar();
+
+    // Fakes adding an ExtensionStorage to the ExtensionStorageModel for
+    // `target`. Returns a function that can be used to trigger a removal.
+    const addFakeExtensionStorage = (target: SDK.Target.Target): () => void => {
+      const model = target.model(Application.ExtensionStorageModel.ExtensionStorageModel);
+      assert.exists(model);
+
+      const extensionStorage = new Application.ExtensionStorageModel.ExtensionStorage(
+          model, '', TEST_EXTENSION_NAME, Protocol.Extensions.StorageArea.Local);
+
+      const stub = sinon.stub(model, 'storageForIdAndArea').returns(extensionStorage);
+      model.dispatchEventToListeners(
+          Application.ExtensionStorageModel.Events.EXTENSION_STORAGE_ADDED, extensionStorage);
+
+      return () => {
+        stub.restore();
+        model.dispatchEventToListeners(
+            Application.ExtensionStorageModel.Events.EXTENSION_STORAGE_REMOVED, extensionStorage);
+      };
+    };
+
+    // Add a fake extension storage to the main target. The UI should be updated.
+    addFakeExtensionStorage(target);
+    assert.strictEqual(sidebar.extensionStorageListTreeElement!.children()[0].childCount(), 1);
+
+    // Add a fake extension storage using a non-main target (e.g, an iframe).
+    // Make sure we don't add a second entry to the UI.
+    const removeFrameStorage =
+        addFakeExtensionStorage(createTarget({type: SDK.Target.Type.FRAME, parentTarget: target}));
+    assert.strictEqual(sidebar.extensionStorageListTreeElement!.children()[0].childCount(), 1);
+
+    // Removing the frame also shouldn't do anything, since the main frame
+    // still exists.
+    removeFrameStorage();
+    assert.strictEqual(sidebar.extensionStorageListTreeElement!.children()[0].childCount(), 1);
+  });
+
   async function getExpectedCall(expectedCall: string): Promise<sinon.SinonSpy> {
     Application.ResourcesPanel.ResourcesPanel.instance({forceNew: true});
     const sidebar = await Application.ResourcesPanel.ResourcesPanel.showAndGetSidebar();

@@ -299,7 +299,7 @@ describeWithEnvironment('TimingTrackAppender', function() {
       styleElement.textContent = `
         :root {
           --ref-palette-primary70: rgb(4 4 4);
-          --ref-palette-error50: rgb(10 10 10);
+          --ref-palette-error60: rgb(10 10 10);
         }
       `;
       document.documentElement.appendChild(styleElement);

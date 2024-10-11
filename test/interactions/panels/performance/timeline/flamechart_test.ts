@@ -38,4 +38,10 @@ describe('FlameChart', function() {
     const flameChart = await getFlameChartContainerWhenReady('#initiators');
     await assertElementScreenshotUnchanged(flameChart, 'performance/multiple_initiators.png', 0.75);
   });
+
+  itScreenshot('renders the extension events color palette corectly', async () => {
+    await loadComponentDocExample('performance_panel/flamechart.html');
+    const flameChart = await getFlameChartContainerWhenReady('#extension');
+    await assertElementScreenshotUnchanged(flameChart, 'performance/extension_palette.png', 0.75);
+  });
 });

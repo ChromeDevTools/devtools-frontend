@@ -11,7 +11,7 @@ import {
 
 export type ExtensionEntryType = 'track-entry'|'marker';
 
-const extensionPalette = [
+export const extensionPalette = [
   'primary',
   'primary-light',
   'primary-dark',
@@ -22,6 +22,7 @@ const extensionPalette = [
   'tertiary-light',
   'tertiary-dark',
   'error',
+  'warning',
 ] as const;
 
 export type ExtensionColorFromPalette = typeof extensionPalette[number];

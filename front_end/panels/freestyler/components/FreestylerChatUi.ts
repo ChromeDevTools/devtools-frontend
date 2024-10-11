@@ -263,6 +263,7 @@ export interface Props {
   onFeedbackSubmit: (rpcId: number, rate: Host.AidaClient.Rating, feedback?: string) => void;
   onCancelClick: () => void;
   onSelectedNetworkRequestClick: () => void | Promise<void>;
+  onSelectedFileRequestClick: () => void | Promise<void>;
   inspectElementToggled: boolean;
   state: State;
   aidaAvailability: Host.AidaClient.AidaAccessPreconditions;
@@ -760,10 +761,11 @@ export class FreestylerChatUi extends HTMLElement {
       return html`${LitHtml.nothing}`;
     }
 
-    // TODO(b/371947238): Add icon and make the div clickable
+    // TODO(b/371947238): Add icon
     // clang-format off
     return html`<div class="select-element">
-    <div class=${resourceClass}>
+    <div role=button class=${resourceClass}
+    @click=${this.#props.onSelectedFileRequestClick}>
       ${this.#props.selectedFile?.displayName()}
     </div></div>`;
     // clang-format on
@@ -782,7 +784,7 @@ export class FreestylerChatUi extends HTMLElement {
     const icon = PanelUtils.getIconForNetworkRequest(this.#props.selectedNetworkRequest);
     // clang-format off
     return html`<div class="select-element">
-    <div class=${resourceClass}
+    <div role=button class=${resourceClass}
     @click=${this.#props.onSelectedNetworkRequestClick}>
       ${icon}${this.#props.selectedNetworkRequest?.name()}
     </div></div>`;
@@ -827,7 +829,7 @@ export class FreestylerChatUi extends HTMLElement {
   #renderSelectedTask = (): LitHtml.TemplateResult => {
     const resourceClass = LitHtml.Directives.classMap({
       'not-selected': !this.#props.selectedStackTrace,
-      'resource-link': true,
+      'resource-task': true,
     });
 
     if (!this.#props.selectedStackTrace) {

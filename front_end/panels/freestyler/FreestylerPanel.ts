@@ -192,6 +192,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
       onFeedbackSubmit: this.#handleFeedbackSubmit.bind(this),
       onCancelClick: this.#cancel.bind(this),
       onSelectedNetworkRequestClick: this.#handleSelectedNetworkRequestClick.bind(this),
+      onSelectedFileRequestClick: this.#handleSelectedFileClick.bind(this),
       canShowFeedbackForm: this.#serverSideLoggingEnabled,
       userInfo: {
         accountImage: syncInfo.accountImage,
@@ -342,6 +343,12 @@ export class FreestylerPanel extends UI.Panel.Panel {
       const requestLocation = NetworkForward.UIRequestLocation.UIRequestLocation.tab(
           this.#viewProps.selectedNetworkRequest, NetworkForward.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT);
       return Common.Revealer.reveal(requestLocation);
+    }
+  }
+
+  #handleSelectedFileClick(): void|Promise<void> {
+    if (this.#viewProps.selectedFile) {
+      return Common.Revealer.reveal(this.#viewProps.selectedFile.uiLocation(0, 0));
     }
   }
 

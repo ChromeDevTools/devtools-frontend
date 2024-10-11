@@ -13,7 +13,6 @@ import {
   createHighlightedUrl,
   getSecurityStateIconForDetailedView,
   getSecurityStateIconForOverview,
-  type Origin,
   OriginGroup,
 } from './SecurityPanel.js';
 import type {SecurityPanelSidebarTreeElement} from './SecurityPanelSidebarTreeElement.js';
@@ -58,10 +57,10 @@ const UIStrings = {
   mainOriginNonsecure: 'Main origin (non-secure)',
 };
 
-const str_ = i18n.i18n.registerUIStrings('panels/security/SecurityAndPrivacyPanelSidebar.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/security/SecurityPanelSidebar.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export class SecurityAndPrivacyPanelSidebar extends UI.Widget.VBox {
+export class SecurityPanelSidebar extends UI.Widget.VBox {
   readonly sidebarTree: UI.TreeOutline.TreeOutlineInShadow;
   readonly #originGroupTitles: Map<OriginGroup, string>;
   #originGroups: Map<OriginGroup, UI.TreeOutline.TreeElement>;
@@ -69,13 +68,11 @@ export class SecurityAndPrivacyPanelSidebar extends UI.Widget.VBox {
   readonly #elementsByOrigin: Map<string, OriginTreeElement>;
   readonly #mainViewReloadMessage: UI.TreeOutline.TreeElement;
   #mainOrigin: string|null;
-  readonly #revealOrigin: (arg0: Origin) => void;
 
-  constructor(revealOrigin: (arg0: Origin) => void, revealMainView: () => void) {
-    super();
+  constructor(element?: HTMLElement) {
+    super(undefined, undefined, element);
 
     this.#mainOrigin = null;
-    this.#revealOrigin = revealOrigin;
 
     this.sidebarTree = new UI.TreeOutline.TreeOutlineInShadow(UI.TreeOutline.TreeVariant.NAVIGATION_TREE);
     this.sidebarTree.element.classList.add('security-sidebar');
@@ -85,7 +82,7 @@ export class SecurityAndPrivacyPanelSidebar extends UI.Widget.VBox {
     const securityTreeElement = this.#addSidebarSection(securitySectionTitle, 'security');
 
     this.securityOverviewElement =
-        new OriginTreeElement('security-main-view-sidebar-tree-item', revealMainView, this.#renderTreeElement);
+        new OriginTreeElement('security-main-view-sidebar-tree-item', this.#renderTreeElement);
     this.securityOverviewElement.tooltip = i18nString(UIStrings.overview);
     securityTreeElement.appendChild(this.securityOverviewElement);
 
@@ -151,8 +148,7 @@ export class SecurityAndPrivacyPanelSidebar extends UI.Widget.VBox {
 
   addOrigin(origin: Platform.DevToolsPath.UrlString, securityState: Protocol.Security.SecurityState): void {
     this.#mainViewReloadMessage.hidden = true;
-    const originElement = new OriginTreeElement(
-        'security-sidebar-tree-item', this.#revealOrigin.bind(this, origin), this.#renderTreeElement, origin);
+    const originElement = new OriginTreeElement('security-sidebar-tree-item', this.#renderTreeElement, origin);
     originElement.tooltip = origin;
     this.#elementsByOrigin.set(origin, originElement);
     this.updateOrigin(origin, securityState);

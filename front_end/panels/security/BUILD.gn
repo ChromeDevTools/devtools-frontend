@@ -20,9 +20,9 @@ generate_css("css_files") {
 devtools_module("security") {
   sources = [
     "OriginTreeElement.ts",
-    "SecurityAndPrivacyPanelSidebar.ts",
     "SecurityModel.ts",
     "SecurityPanel.ts",
+    "SecurityPanelSidebar.ts",
     "SecurityPanelSidebarTreeElement.ts",
   ]
 

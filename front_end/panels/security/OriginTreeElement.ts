@@ -8,18 +8,26 @@ import * as Protocol from '../../generated/protocol.js';
 import type {SecurityPanel} from './SecurityPanel.js';
 import {SecurityPanelSidebarTreeElement} from './SecurityPanelSidebarTreeElement.js';
 
+export class ShowOriginEvent extends Event {
+  static readonly eventName = 'showorigin';
+  origin: Platform.DevToolsPath.UrlString|null;
+
+  constructor(origin: Platform.DevToolsPath.UrlString|null) {
+    super(ShowOriginEvent.eventName, {bubbles: true, composed: true});
+    this.origin = origin;
+  }
+}
+
 export class OriginTreeElement extends SecurityPanelSidebarTreeElement {
   #securityStateInternal: Protocol.Security.SecurityState|null;
-  readonly #onSelect: () => void;
   readonly #renderTreeElement: (element: SecurityPanelSidebarTreeElement) => void;
   readonly #originInternal: Platform.DevToolsPath.UrlString|null = null;
 
   constructor(
-      className: string, onSelect: () => void, renderTreeElement: (element: SecurityPanelSidebarTreeElement) => void,
+      className: string, renderTreeElement: (element: SecurityPanelSidebarTreeElement) => void,
       origin: Platform.DevToolsPath.UrlString|null = null, securityPanel: SecurityPanel|undefined = undefined) {
     super(securityPanel);
 
-    this.#onSelect = onSelect;
     this.#renderTreeElement = renderTreeElement;
     this.#originInternal = origin;
 
@@ -42,7 +50,13 @@ export class OriginTreeElement extends SecurityPanelSidebarTreeElement {
   }
 
   override onselect(): boolean {
-    this.#onSelect();
+    this.listItemElement.dispatchEvent(new ShowOriginEvent(this.#originInternal));
     return true;
+  }
+}
+
+declare global {
+  interface HTMLElementEventMap {
+    'showorigin': ShowOriginEvent;
   }
 }

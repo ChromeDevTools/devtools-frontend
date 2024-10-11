@@ -11,12 +11,13 @@ import * as Protocol from '../../generated/protocol.js';
 import * as NetworkForward from '../../panels/network/forward/forward.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as LitHtml from '../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import lockIconStyles from './lockIcon.css.js';
 import mainViewStyles from './mainView.css.js';
+import {ShowOriginEvent} from './OriginTreeElement.js';
 import originViewStyles from './originView.css.js';
-import {SecurityAndPrivacyPanelSidebar} from './SecurityAndPrivacyPanelSidebar.js';
 import {
   Events,
   type PageVisibleSecurityState,
@@ -25,6 +26,7 @@ import {
   SecurityStyleExplanation,
   SummaryMessages,
 } from './SecurityModel.js';
+import {SecurityPanelSidebar} from './SecurityPanelSidebar.js';
 
 const UIStrings = {
   /**
@@ -527,25 +529,67 @@ export function createHighlightedUrl(url: Platform.DevToolsPath.UrlString, secur
   return highlightedUrl;
 }
 
-export class SecurityPanel extends UI.Panel.PanelWithSidebar implements
-    SDK.TargetManager.SDKModelObserver<SecurityModel> {
-  readonly mainView: SecurityMainView;
-  readonly sidebar: SecurityAndPrivacyPanelSidebar;
+const {render, html} = LitHtml;
+export type ViewInput = {
+  panel: SecurityPanel,
+};
+export type ViewOutput = {
+  splitWidget: UI.SplitWidget.SplitWidget,
+  mainView: SecurityMainView,
+  visibleView: UI.Widget.VBox|null,
+  sidebar: SecurityPanelSidebar,
+};
+
+export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
+
+export class SecurityPanel extends UI.Panel.Panel implements SDK.TargetManager.SDKModelObserver<SecurityModel> {
+  readonly mainView!: SecurityMainView;
+  readonly sidebar!: SecurityPanelSidebar;
   private readonly lastResponseReceivedForLoaderId: Map<string, SDK.NetworkRequest.NetworkRequest>;
   private readonly origins: Map<string, OriginState>;
   private readonly filterRequestCounts: Map<string, number>;
-  private visibleView: UI.Widget.VBox|null;
+  visibleView: UI.Widget.VBox|null;
   private eventListeners: Common.EventTarget.EventDescriptor[];
   private securityModel: SecurityModel|null;
+  readonly splitWidget!: UI.SplitWidget.SplitWidget;
 
-  constructor() {
+  constructor(private view: View = (input, output, target) => {
+    // clang-format off
+    render(
+      html`
+    <devtools-split-widget
+    .options=${{vertical: true, settingName: 'security'}}
+    ${UI.Widget.widgetRef(UI.SplitWidget.SplitWidget, e => {output.splitWidget = e;})}>
+          <devtools-widget
+          slot="main"
+          .widgetClass=${SecurityMainView}
+          .widgetParams=${[input.panel] as SecurityMainViewProps}
+          ${UI.Widget.widgetRef(SecurityMainView, e => {output.mainView = e;})}>
+        </devtools-widget>
+        <devtools-widget
+          slot="sidebar"
+          .widgetClass=${SecurityPanelSidebar}
+          ${UI.Widget.widgetRef(SecurityPanelSidebar, e => {output.sidebar = e;})}>
+        </devtools-widget>
+    </devtools-split-widget>`,
+      target, {host: this});
+    // clang-format on
+  }) {
     super('security');
 
-    this.mainView = new SecurityMainView(this);
+    this.doUpdate();
 
-    this.sidebar =
-        new SecurityAndPrivacyPanelSidebar(this.showOrigin.bind(this), this.setVisibleView.bind(this, this.mainView));
-    this.sidebar.show(this.panelSidebarElement());
+    this.sidebar.setMinimumSize(100, 25);
+    this.sidebar.element.classList.add('panel-sidebar');
+    this.sidebar.element.setAttribute('jslog', `${VisualLogging.pane('sidebar').track({resize: true})}`);
+
+    this.element.addEventListener(ShowOriginEvent.eventName, (event: ShowOriginEvent) => {
+      if (event.origin) {
+        this.showOrigin(event.origin);
+      } else {
+        this.setVisibleView(this.mainView);
+      }
+    });
 
     this.lastResponseReceivedForLoaderId = new Map();
 
@@ -591,6 +635,10 @@ export class SecurityPanel extends UI.Panel.PanelWithSidebar implements
     }, {className: 'origin-button', jslogContext: 'security.view-certificate'});
     UI.ARIAUtils.markAsButton(certificateButton);
     return certificateButton;
+  }
+
+  private doUpdate(): void {
+    this.view({panel: this}, this, this.contentElement);
   }
 
   private updateVisibleSecurityState(visibleSecurityState: PageVisibleSecurityState): void {
@@ -641,7 +689,7 @@ export class SecurityPanel extends UI.Panel.PanelWithSidebar implements
     this.visibleView = view;
 
     if (view) {
-      this.splitWidget().setMainWidget(view);
+      this.splitWidget.setMainWidget(view);
     }
   }
 
@@ -815,6 +863,7 @@ export enum OriginGroup {
   /* eslint-enable @typescript-eslint/naming-convention */
 }
 
+type SecurityMainViewProps = [SecurityPanel];
 export class SecurityMainView extends UI.Widget.VBox {
   private readonly panel: SecurityPanel;
   private readonly summarySection: HTMLElement;
@@ -824,8 +873,8 @@ export class SecurityMainView extends UI.Widget.VBox {
   private summaryText: HTMLElement;
   private explanations: (Protocol.Security.SecurityStateExplanation|SecurityStyleExplanation)[]|null;
   private securityState: Protocol.Security.SecurityState|null;
-  constructor(panel: SecurityPanel) {
-    super(true);
+  constructor(panel: SecurityPanel, element?: HTMLElement) {
+    super(undefined, undefined, element);
     this.element.setAttribute('jslog', `${VisualLogging.pane('security.main-view')}`);
 
     this.setMinimumSize(200, 100);

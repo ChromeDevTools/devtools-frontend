@@ -194,29 +194,19 @@ const str_ = i18n.i18n.registerUIStrings('panels/freestyler/components/Freestyle
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const lockedString = i18n.i18n.lockedString;
 
-function getInputPlaceholderString(
-    aidaAvailability: Host.AidaClient.AidaAccessPreconditions, agentType: AgentType,
-    state: State): Platform.UIString.LocalizedString {
+function getInputPlaceholderString(agentType: AgentType, state: State): Platform.UIString.LocalizedString {
   if (state === State.CONSENT_VIEW) {
     return i18nString(UIStrings.followTheSteps);
   }
-  switch (aidaAvailability) {
-    case Host.AidaClient.AidaAccessPreconditions.AVAILABLE:
-      switch (agentType) {
-        case AgentType.FREESTYLER:
-          return lockedString(UIStringsNotTranslate.inputPlaceholderForFreestylerAgent);
-        case AgentType.DRJONES_FILE:
-          return lockedString(UIStringsNotTranslate.inputPlaceholderForDrJonesFileAgent);
-        case AgentType.DRJONES_NETWORK_REQUEST:
-          return lockedString(UIStringsNotTranslate.inputPlaceholderForDrJonesNetworkAgent);
-        case AgentType.DRJONES_PERFORMANCE:
-          return lockedString(UIStringsNotTranslate.inputPlaceholderForDrJonesPerformanceAgent);
-      }
-    case Host.AidaClient.AidaAccessPreconditions.NO_ACCOUNT_EMAIL:
-    case Host.AidaClient.AidaAccessPreconditions.SYNC_IS_PAUSED:
-      return i18nString(UIStrings.notLoggedIn);
-    case Host.AidaClient.AidaAccessPreconditions.NO_INTERNET:
-      return i18nString(UIStrings.offline);
+  switch (agentType) {
+    case AgentType.FREESTYLER:
+      return lockedString(UIStringsNotTranslate.inputPlaceholderForFreestylerAgent);
+    case AgentType.DRJONES_FILE:
+      return lockedString(UIStringsNotTranslate.inputPlaceholderForDrJonesFileAgent);
+    case AgentType.DRJONES_NETWORK_REQUEST:
+      return lockedString(UIStringsNotTranslate.inputPlaceholderForDrJonesNetworkAgent);
+    case AgentType.DRJONES_PERFORMANCE:
+      return lockedString(UIStringsNotTranslate.inputPlaceholderForDrJonesPerformanceAgent);
   }
 }
 
@@ -953,7 +943,7 @@ export class FreestylerChatUi extends HTMLElement {
           .disabled=${this.#isTextInputDisabled()}
           wrap="hard"
           @keydown=${this.#handleTextAreaKeyDown}
-          placeholder=${getInputPlaceholderString(this.#props.aidaAvailability, this.#props.agentType, this.#props.state)}
+          placeholder=${getInputPlaceholderString(this.#props.agentType, this.#props.state)}
           jslog=${VisualLogging.textField('query').track({ keydown: 'Enter' })}></textarea>
           ${this.#props.isLoading
             ? html`<devtools-button
@@ -1006,7 +996,7 @@ export class FreestylerChatUi extends HTMLElement {
     }
   };
 
-  #renderOptIn(): LitHtml.TemplateResult {
+  #getConsentViewContents(): LitHtml.TemplateResult {
     const settingsLink = document.createElement('button');
     settingsLink.textContent = i18nString(UIStrings.settingsLink);
     settingsLink.classList.add('link');
@@ -1016,12 +1006,33 @@ export class FreestylerChatUi extends HTMLElement {
     });
     settingsLink.setAttribute('jslog', `${VisualLogging.action('open-ai-settings').track({click: true})}`);
     const config = Common.Settings.Settings.instance().getHostConfig();
+    return html`${
+        config.devToolsExplainThisResourceDogfood?.enabled ?
+            i18n.i18n.getFormatLocalizedString(str_, UIStrings.turnOnForStylesAndRequests, {PH1: settingsLink}) :
+            i18n.i18n.getFormatLocalizedString(str_, UIStrings.turnOnForStyles, {PH1: settingsLink})}`;
+  }
 
+  #getUnavailableAidaAvailabilityContents(
+      aidaAvailability:
+          Exclude<Host.AidaClient.AidaAccessPreconditions, Host.AidaClient.AidaAccessPreconditions.AVAILABLE>):
+      LitHtml.TemplateResult {
+    switch (aidaAvailability) {
+      case Host.AidaClient.AidaAccessPreconditions.NO_ACCOUNT_EMAIL:
+      case Host.AidaClient.AidaAccessPreconditions.SYNC_IS_PAUSED: {
+        return html`${i18nString(UIStrings.notLoggedIn)}`;
+      }
+      case Host.AidaClient.AidaAccessPreconditions.NO_INTERNET: {
+        return html`${i18nString(UIStrings.offline)}`;
+      }
+    }
+  }
+
+  #renderDisabledState(contents: LitHtml.TemplateResult): LitHtml.TemplateResult {
     // clang-format off
     return html`
       <div class="empty-state-container messages-scroll-container">
-        <div class="opt-in">
-          <div class="opt-in-icon-container">
+        <div class="disabled-view">
+          <div class="disabled-view-icon-container">
             <devtools-icon .data=${{
               iconName: 'smart-assistant',
               width: 'var(--sys-size-8)',
@@ -1030,10 +1041,7 @@ export class FreestylerChatUi extends HTMLElement {
             </devtools-icon>
           </div>
           <div>
-            ${config.devToolsExplainThisResourceDogfood?.enabled ?
-              i18n.i18n.getFormatLocalizedString(str_, UIStrings.turnOnForStylesAndRequests, {PH1: settingsLink}) :
-              i18n.i18n.getFormatLocalizedString(str_, UIStrings.turnOnForStyles, {PH1: settingsLink})
-            }
+            ${contents}
           </div>
         </div>
       </div>
@@ -1041,18 +1049,28 @@ export class FreestylerChatUi extends HTMLElement {
     // clang-format on
   }
 
+  #renderMainContents(): LitHtml.TemplateResult {
+    if (this.#props.state === State.CONSENT_VIEW) {
+      return this.#renderDisabledState(this.#getConsentViewContents());
+    }
+
+    if (this.#props.aidaAvailability !== Host.AidaClient.AidaAccessPreconditions.AVAILABLE) {
+      return this.#renderDisabledState(this.#getUnavailableAidaAvailabilityContents(this.#props.aidaAvailability));
+    }
+
+    if (this.#props.messages.length > 0) {
+      return this.#renderMessages();
+    }
+
+    return this.#renderEmptyState();
+  }
+
   #render(): void {
     // clang-format off
     LitHtml.render(html`
       <div class="chat-ui">
         <main>
-          ${
-            this.#props.state === State.CONSENT_VIEW ? this.#renderOptIn()
-              : (this.#props.messages.length > 0
-                ? this.#renderMessages()
-                : this.#renderEmptyState()
-              )
-          }
+          ${this.#renderMainContents()}
           <form class="input-form" @submit=${this.#handleSubmit}>
             ${this.#props.state !== State.CONSENT_VIEW ? html`
               <div class="input-header">

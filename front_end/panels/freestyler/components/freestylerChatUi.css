@@ -493,7 +493,7 @@ main {
   }
 }
 
-.opt-in {
+.disabled-view {
   border-radius: var(--sys-shape-corner-small);
   padding: var(--sys-size-6) var(--sys-size-8);
   box-shadow: var(--drop-shadow);
@@ -501,8 +501,9 @@ main {
   margin: var(--sys-size-8);
   max-width: var(--sys-size-34);
   display: flex;
+  text-wrap: pretty;
 
-  .opt-in-icon-container {
+  .disabled-view-icon-container {
     border-radius: var(--sys-shape-corner-extra-small);
     width: var(--sys-size-9);
     height: var(--sys-size-9);

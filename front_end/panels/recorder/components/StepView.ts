@@ -9,6 +9,8 @@
 /* eslint-disable rulesdir/lit_html_host_this */
 
 import '../../../ui/components/icon_button/icon_button.js';
+import './StepEditor.js';
+import './TimelineSection.js';
 
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';

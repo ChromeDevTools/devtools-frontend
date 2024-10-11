@@ -22,12 +22,15 @@ import {
 import type {
   EndiannessChangedEvent, LinearMemoryValueInterpreterData, ValueTypeToggledEvent} from
   './LinearMemoryValueInterpreter.js';
+import './LinearMemoryValueInterpreter.js';
 
 import type {
   DeleteMemoryHighlightEvent, JumpToHighlightedMemoryEvent, LinearMemoryHighlightChipListData} from
   './LinearMemoryHighlightChipList.js';
+import './LinearMemoryHighlightChipList.js';
 import {formatAddress, parseAddress} from './LinearMemoryInspectorUtils.js';
 import type {ByteSelectedEvent, LinearMemoryViewerData, ResizeEvent} from './LinearMemoryViewer.js';
+import './LinearMemoryViewer.js';
 import type {HighlightInfo} from './LinearMemoryViewerUtils.js';
 import type {JumpToPointerAddressEvent, ValueTypeModeChangedEvent} from './ValueInterpreterDisplay.js';
 import {

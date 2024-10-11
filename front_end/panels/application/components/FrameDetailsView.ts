@@ -4,6 +4,7 @@
 
 import '../../../ui/components/expandable_list/expandable_list.js';
 import '../../../ui/components/report_view/report_view.js';
+import './StackTrace.js';
 
 import * as Common from '../../../core/common/common.js';
 import * as i18n from '../../../core/i18n/i18n.js';

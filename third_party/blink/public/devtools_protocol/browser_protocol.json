@@ -26311,7 +26311,8 @@
                         "WindowClosed",
                         "SlowNetwork",
                         "OtherPrerenderedPageActivated",
-                        "V8OptimizerDisabled"
+                        "V8OptimizerDisabled",
+                        "PrerenderFailedDuringPrefetch"
                     ]
                 },
                 {

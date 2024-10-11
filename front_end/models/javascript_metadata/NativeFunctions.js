@@ -8644,10 +8644,6 @@ export const NativeFunctions = [
     signatures: [["init"]]
   },
   {
-    name: "VideoFrame",
-    signatures: [["source","?init"],["data","init"]]
-  },
-  {
     name: "changeVersion",
     signatures: [["oldVersion","newVersion","?callback","?errorCallback","?successCallback"]]
   },

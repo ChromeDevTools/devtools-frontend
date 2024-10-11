@@ -17347,6 +17347,7 @@ export namespace Preload {
     SlowNetwork = 'SlowNetwork',
     OtherPrerenderedPageActivated = 'OtherPrerenderedPageActivated',
     V8OptimizerDisabled = 'V8OptimizerDisabled',
+    PrerenderFailedDuringPrefetch = 'PrerenderFailedDuringPrefetch',
   }
 
   /**

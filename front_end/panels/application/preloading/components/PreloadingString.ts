@@ -683,6 +683,7 @@ export function prerenderFailureReason(attempt: SDK.PreloadingModel.PrerenderAtt
     case Protocol.Preload.PrerenderFinalStatus.SlowNetwork:
     case Protocol.Preload.PrerenderFinalStatus.OtherPrerenderedPageActivated:
     case Protocol.Preload.PrerenderFinalStatus.V8OptimizerDisabled:
+    case Protocol.Preload.PrerenderFinalStatus.PrerenderFailedDuringPrefetch:
       // TODO(crbug.com/350870118): Add message for this.
       return '';
     default:

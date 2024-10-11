@@ -42,6 +42,7 @@ import {deepElementFromEvent} from './UIUtils.js';
 export class Item {
   private readonly typeInternal: string;
   protected readonly label: string|undefined;
+  protected readonly previewFeature: boolean;
   protected disabled: boolean|undefined;
   private readonly checked: boolean|undefined;
   protected contextMenu: ContextMenu|null;
@@ -52,10 +53,12 @@ export class Item {
   protected jslogContext: string|undefined;
 
   constructor(
-      contextMenu: ContextMenu|null, type: 'checkbox'|'item'|'separator'|'subMenu', label?: string, disabled?: boolean,
-      checked?: boolean, tooltip?: Platform.UIString.LocalizedString, jslogContext?: string) {
+      contextMenu: ContextMenu|null, type: 'checkbox'|'item'|'separator'|'subMenu', label?: string,
+      isPreviewFeature?: boolean, disabled?: boolean, checked?: boolean, tooltip?: Platform.UIString.LocalizedString,
+      jslogContext?: string) {
     this.typeInternal = type;
     this.label = label;
+    this.previewFeature = Boolean(isPreviewFeature);
     this.disabled = disabled;
     this.checked = checked;
     this.contextMenu = contextMenu;
@@ -78,6 +81,10 @@ export class Item {
     return this.typeInternal;
   }
 
+  isPreviewFeature(): boolean {
+    return this.previewFeature;
+  }
+
   isEnabled(): boolean {
     return !this.disabled;
   }
@@ -93,6 +100,7 @@ export class Item {
           type: 'item',
           id: this.idInternal,
           label: this.label,
+          isExperimentalFeature: this.previewFeature,
           enabled: !this.disabled,
           checked: undefined,
           subItems: undefined,
@@ -151,13 +159,15 @@ export class Section {
   }
 
   appendItem(label: string, handler: () => void, options?: {
+    isPreviewFeature?: boolean,
     disabled?: boolean,
     additionalElement?: Element,
     tooltip?: Platform.UIString.LocalizedString,
     jslogContext?: string,
   }): Item {
     const item = new Item(
-        this.contextMenu, 'item', label, options?.disabled, undefined, options?.tooltip, options?.jslogContext);
+        this.contextMenu, 'item', label, options?.isPreviewFeature, options?.disabled, undefined, options?.tooltip,
+        options?.jslogContext);
     if (options?.additionalElement) {
       item.customElement = options?.additionalElement;
     }
@@ -169,7 +179,8 @@ export class Section {
   }
 
   appendCustomItem(element: Element, jslogContext?: string): Item {
-    const item = new Item(this.contextMenu, 'item', undefined, undefined, undefined, undefined, jslogContext);
+    const item =
+        new Item(this.contextMenu, 'item', undefined, undefined, undefined, undefined, undefined, jslogContext);
     item.customElement = element;
     this.items.push(item);
     return item;
@@ -214,7 +225,7 @@ export class Section {
     jslogContext?: string,
   }): Item {
     const item = new Item(
-        this.contextMenu, 'checkbox', label, options?.disabled, options?.checked, options?.tooltip,
+        this.contextMenu, 'checkbox', label, undefined, options?.disabled, options?.checked, options?.tooltip,
         options?.jslogContext);
     this.items.push(item);
     if (this.contextMenu) {
@@ -232,7 +243,7 @@ export class SubMenu extends Item {
   private readonly sectionList: Section[];
 
   constructor(contextMenu: ContextMenu|null, label?: string, disabled?: boolean, jslogContext?: string) {
-    super(contextMenu, 'subMenu', label, disabled, undefined, undefined, jslogContext);
+    super(contextMenu, 'subMenu', label, undefined, disabled, undefined, undefined, jslogContext);
     this.sections = new Map();
     this.sectionList = [];
   }
@@ -306,6 +317,7 @@ export class SubMenu extends Item {
     const result: Host.InspectorFrontendHostAPI.ContextMenuDescriptor|SoftContextMenuDescriptor = {
       type: 'subMenu',
       label: this.label,
+      isExperimentalFeature: this.previewFeature,
       enabled: !this.disabled,
       subItems: [],
       id: undefined,

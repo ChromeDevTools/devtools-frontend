@@ -710,8 +710,9 @@ class TabbedLocation extends Location implements TabbedViewLocation {
         continue;
       }
 
+      const isPreviewFeature = view.isPreviewFeature();
       contextMenu.defaultSection().appendItem(
-          title, this.showView.bind(this, view, undefined, true), {jslogContext: view.viewId()});
+          title, this.showView.bind(this, view, undefined, true), {isPreviewFeature, jslogContext: view.viewId()});
     }
   }
 

@@ -91,6 +91,10 @@ const UIStrings = {
    */
   helpUnderstandStylingAndNetworkRequest: 'Get help with understanding CSS styles and network requests',
   /**
+   *@description Text describing the 'AI assistance' feature
+   */
+  helpUnderstandStylingNetworkAndFile: 'Get help with understanding CSS styles, network requests, and files',
+  /**
    *@description Text which is a hyperlink to more documentation
    */
   learnMore: 'Learn more',
@@ -102,6 +106,10 @@ const UIStrings = {
    *@description Description of the AI assistance feature
    */
   explainStylingAndNetworkRequest: 'Understand CSS styles, and network activity with AI-powered insights',
+  /**
+   *@description Description of the AI assistance feature
+   */
+  explainStylingNetworkAndFile: 'Understand CSS styles, network activity, and file origins with AI-powered insights',
   /**
    *@description Description of the AI assistance feature
    */
@@ -167,6 +175,9 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
   #getAiAssistanceSettingDescription(): Platform.UIString.LocalizedString {
     const config = Common.Settings.Settings.instance().getHostConfig();
     if (config.devToolsExplainThisResourceDogfood?.enabled) {
+      if (config.devToolsAiAssistanceFileAgentDogfood?.enabled) {
+        return i18nString(UIStrings.helpUnderstandStylingNetworkAndFile);
+      }
       return i18nString(UIStrings.helpUnderstandStylingAndNetworkRequest);
     }
     return i18nString(UIStrings.helpUnderstandStyling);
@@ -175,6 +186,9 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
   #getAiAssistanceSettingInfo(): Platform.UIString.LocalizedString {
     const config = Common.Settings.Settings.instance().getHostConfig();
     if (config.devToolsExplainThisResourceDogfood?.enabled) {
+      if (config.devToolsAiAssistanceFileAgentDogfood?.enabled) {
+        return i18nString(UIStrings.explainStylingNetworkAndFile);
+      }
       return i18nString(UIStrings.explainStylingAndNetworkRequest);
     }
     return i18nString(UIStrings.explainStyling);

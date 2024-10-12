@@ -106,6 +106,9 @@ describeWithEnvironment('RenderBlockingRequests', function() {
     ]);
   });
 
+  // TODO(crbug.com/372674229): when swapping to 'provided' instead of 'simulated', all these test traces give
+  // uninteresting results. must get new traces.
+
   it('estimates savings with Lantern (image LCP)', async () => {
     const {data, insights} = await processTrace(this, 'lantern/render-blocking/trace.json.gz');
     assert.strictEqual(insights.size, 1);
@@ -113,7 +116,7 @@ describeWithEnvironment('RenderBlockingRequests', function() {
         getInsightOrError('RenderBlocking', insights, data.Meta.navigationsByNavigationId.values().next().value);
 
     assert.deepStrictEqual(insight.metricSavings, {
-      FCP: 2250,
+      FCP: 0,
       LCP: 0,
     } as Trace.Insights.Types.MetricSavings);
 
@@ -122,10 +125,7 @@ describeWithEnvironment('RenderBlockingRequests', function() {
       const url = insight.renderBlockingRequests.find(r => r.args.data.requestId === requestId)?.args.data.url;
       return [url, wastedMs];
     });
-    assert.deepStrictEqual(urlToWastedMs, [
-      ['http://localhost:50049/style.css', 2254],
-      ['http://localhost:50049/script.js', 304],
-    ]);
+    assert.deepStrictEqual(urlToWastedMs, []);
   });
 
   it('estimates savings with Lantern (text LCP)', async () => {
@@ -135,20 +135,14 @@ describeWithEnvironment('RenderBlockingRequests', function() {
         getInsightOrError('RenderBlocking', insights, data.Meta.navigationsByNavigationId.values().next().value);
 
     assert.deepStrictEqual(insight.metricSavings, {
-      FCP: 13,
-      LCP: 13,
+      FCP: 0,
+      LCP: 0,
     } as Trace.Insights.Types.MetricSavings);
     assert.exists(insight.requestIdToWastedMs);
     const urlToWastedMs = [...insight.requestIdToWastedMs].map(([requestId, wastedMs]) => {
       const url = insight.renderBlockingRequests.find(r => r.args.data.requestId === requestId)?.args.data.url;
       return [url, wastedMs];
     });
-    assert.deepStrictEqual(urlToWastedMs, [
-      ['http://[::]:8000/typescript-angular/node_modules/todomvc-common/base.css', 153],
-      ['http://[::]:8000/typescript-angular/node_modules/todomvc-app-css/index.css', 303],
-      ['http://[::]:8000/typescript-angular/node_modules/todomvc-common/base.js', 303],
-      ['http://[::]:8000/typescript-angular/node_modules/angular/angular.js', 303],
-      ['http://[::]:8000/typescript-angular/js/Application.js', 303],
-    ]);
+    assert.deepStrictEqual(urlToWastedMs, []);
   });
 });

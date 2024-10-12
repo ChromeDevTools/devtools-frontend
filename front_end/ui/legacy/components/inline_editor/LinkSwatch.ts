@@ -161,13 +161,13 @@ export class LinkSwatch extends HTMLElement {
     const {text, isDefined, onLinkActivate, jslogContext} = data;
     const title = isDefined ? text : i18nString(UIStrings.sIsNotDefined, {PH1: text});
     render(
-        html`<span title=${data.text} jslog=${VisualLogging.link().track({click: true}).context(jslogContext)}><${
-            BaseLinkSwatch.litTagName} .data=${{
+        html`<span title=${data.text} jslog=${
+            VisualLogging.link().track({click: true}).context(jslogContext)}><devtools-base-link-swatch .data=${{
           text,
           isDefined,
           title,
           onLinkActivate,
-        } as BaseLinkSwatchRenderData}></${BaseLinkSwatch.litTagName}></span>`,
+        } as BaseLinkSwatchRenderData}></devtools-base-link-swatch></span>`,
         this.shadow, {host: this});
   }
 }

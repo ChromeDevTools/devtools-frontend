@@ -2,9 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import './Icon.js';
+
 import * as LitHtml from '../../lit-html/lit-html.js';
 
-import {Icon, type IconData} from './Icon.js';
+import type {IconData} from './Icon.js';
 import iconButtonStyles from './iconButton.css.js';
 
 const {html} = LitHtml;
@@ -83,9 +85,9 @@ export class IconButton extends HTMLElement {
       ${(!this.#compact && this.#leadingText) ? html`<span class="icon-button-title">${this.#leadingText}</span>` : LitHtml.nothing}
       ${filteredGroups.map(counter =>
       html`
-      <${Icon.litTagName} class="status-icon"
+      <devtools-icon class="status-icon"
       .data=${{iconName: counter.iconName, color: counter.iconColor, width: counter.iconWidth || '1.5ex', height: counter.iconHeight || '1.5ex'} as IconData}>
-      </${Icon.litTagName}>
+      </devtools-icon>
       ${this.#compact ? html`<!-- Force line-height for this element --><span>&#8203;</span>` : LitHtml.nothing}
       <span class="icon-button-title">${counter.text}</span>`,
       )}

@@ -581,8 +581,8 @@ export class ConsoleInsight extends HTMLElement {
           }
           <details style="--list-height: ${(this.#state.sources.length + (this.#state.isPageReloadRecommended ? 1 : 0)) * 20}px;" jslog=${VisualLogging.expand('sources').track({click: true})}>
             <summary>${i18nString(UIStrings.inputData)}</summary>
-            <${ConsoleInsightSourcesList.litTagName} .sources=${this.#state.sources} .isPageReloadRecommended=${this.#state.isPageReloadRecommended}>
-            </${ConsoleInsightSourcesList.litTagName}>
+            <devtools-console-insight-sources-list .sources=${this.#state.sources} .isPageReloadRecommended=${this.#state.isPageReloadRecommended}>
+            </devtools-console-insight-sources-list>
           </details>
           <div class="buttons">
             ${this.#renderSearchButton()}

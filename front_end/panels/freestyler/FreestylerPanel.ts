@@ -118,13 +118,13 @@ function createToolbar(target: HTMLElement, {onClearClick}: {onClearClick: () =>
 function defaultView(input: FreestylerChatUiProps, output: ViewOutput, target: HTMLElement): void {
   // clang-format off
   LitHtml.render(html`
-    <${FreestylerChatUi.litTagName} .props=${input} ${LitHtml.Directives.ref((el: Element|undefined) => {
+    <devtools-freestyler-chat-ui .props=${input} ${LitHtml.Directives.ref((el: Element|undefined) => {
       if (!el || !(el instanceof FreestylerChatUi)) {
         return;
       }
 
       output.freestylerChatUi = el;
-    })}></${FreestylerChatUi.litTagName}>
+    })}></devtools-freestyler-chat-ui>
   `, target, {host: input}); // eslint-disable-line rulesdir/lit_html_host_this
   // clang-format on
 }

@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import './SettingDeprecationWarning.js';
+
 import type * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as LitHtml from '../../lit-html/lit-html.js';
@@ -10,7 +12,6 @@ import * as Buttons from '../buttons/buttons.js';
 import * as Input from '../input/input.js';
 
 import settingCheckboxStyles from './settingCheckbox.css.js';
-import {SettingDeprecationWarning} from './SettingDeprecationWarning.js';
 
 const {html, Directives: {ifDefined}} = LitHtml;
 
@@ -54,8 +55,8 @@ export class SettingCheckbox extends HTMLElement {
     }
 
     if (this.#setting.deprecation) {
-      return html`<${SettingDeprecationWarning.litTagName} .data=${
-          this.#setting.deprecation as Common.Settings.Deprecation}></${SettingDeprecationWarning.litTagName}>`;
+      return html`<devtools-setting-deprecation-warning .data=${
+          this.#setting.deprecation as Common.Settings.Deprecation}></devtools-setting-deprecation-warning>`;
     }
 
     const learnMore = this.#setting.learnMore();

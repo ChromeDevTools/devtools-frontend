@@ -2,13 +2,16 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import './CodeBlock.js';
+import './MarkdownImage.js';
+import './MarkdownLink.js';
+
 import type * as Marked from '../../../third_party/marked/marked.js';
 import * as UI from '../../legacy/legacy.js';
 import * as LitHtml from '../../lit-html/lit-html.js';
 
-import {CodeBlock} from './CodeBlock.js';
-import {MarkdownImage, type MarkdownImageData} from './MarkdownImage.js';
-import {MarkdownLink, type MarkdownLinkData} from './MarkdownLink.js';
+import type {MarkdownImageData} from './MarkdownImage.js';
+import type {MarkdownLinkData} from './MarkdownLink.js';
 import markdownViewStyles from './markdownView.css.js';
 
 const html = LitHtml.html;
@@ -120,10 +123,10 @@ export class MarkdownLitRenderer {
 
   renderCodeBlock(token: Marked.Marked.Tokens.Code): LitHtml.TemplateResult {
     // clang-format off
-    return html`<${CodeBlock.litTagName}
+    return html`<devtools-code-block
       .code=${this.unescape(token.text)}
-      .codeLang=${token.lang}>
-    </${CodeBlock.litTagName}>`;
+      .codeLang=${token.lang || ''}>
+    </devtools-code-block>`;
     // clang-format on
   }
 
@@ -146,11 +149,11 @@ export class MarkdownLitRenderer {
       case 'space':
         return html``;
       case 'link':
-        return html`<${MarkdownLink.litTagName} .data=${{key: token.href, title: token.text} as MarkdownLinkData}></${
-            MarkdownLink.litTagName}>`;
+        return html`<devtools-markdown-link .data=${
+            {key: token.href, title: token.text} as MarkdownLinkData}></devtools-markdown-link>`;
       case 'image':
-        return html`<${MarkdownImage.litTagName} .data=${{key: token.href, title: token.text} as MarkdownImageData}></${
-            MarkdownImage.litTagName}>`;
+        return html`<devtools-markdown-image .data=${
+            {key: token.href, title: token.text} as MarkdownImageData}></devtools-markdown-image>`;
       case 'heading':
         return this.renderHeading(token);
       case 'strong':
@@ -223,11 +226,11 @@ export class MarkdownInsightRenderer extends MarkdownLitRenderer {
         return html`${UI.XLink.XLink.create(sanitizedUrl, token.text, undefined, undefined, 'link-in-explanation')}`;
       }
       case 'code':
-        return html`<${CodeBlock.litTagName}
+        return html`<devtools-code-block
           .code=${this.unescape(token.text)}
           .codeLang=${this.detectCodeLanguage(token)}
           .displayNotice=${true}>
-        </${CodeBlock.litTagName}>`;
+        </devtools-code-block>`;
     }
     return super.templateForToken(token as Marked.Marked.MarkedToken);
   }

@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import '../../../ui/components/spinners/spinners.js';
+import './ProvideFeedback.js';
 
 import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
@@ -22,7 +23,7 @@ import {PanelUtils} from '../../utils/utils.js';
 import {type ContextDetail, ErrorType} from '../AiAgent.js';
 
 import freestylerChatUiStyles from './freestylerChatUi.css.js';
-import {ProvideFeedback, type ProvideFeedbackProps} from './ProvideFeedback.js';
+import type {ProvideFeedbackProps} from './ProvideFeedback.js';
 
 const {html, Directives: {ifDefined}} = LitHtml;
 
@@ -434,14 +435,14 @@ export class FreestylerChatUi extends HTMLElement {
 
   #renderRateButtons(rpcId: number): LitHtml.TemplateResult {
     // clang-format off
-    return html`<${ProvideFeedback.litTagName}
+    return html`<devtools-provide-feedback
       .props=${{
         onFeedbackSubmit: (rating, feedback) => {
           this.#props.onFeedbackSubmit(rpcId, rating, feedback);
         },
         canShowFeedbackForm: this.#props.canShowFeedbackForm,
       } as ProvideFeedbackProps}
-      ></${ProvideFeedback.litTagName}>`;
+      ></devtools-provide-feedback>`;
     // clang-format on
   }
 

@@ -415,9 +415,9 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
         title=${ifDefined(this.#aiAssistanceSetting?.disabledReason())}
         @click=${this.#toggleAiAssistanceSetting.bind(this)}
       >
-        <${Switch.Switch.Switch.litTagName}
+        <devtools-switch
           .checked=${Boolean(this.#aiAssistanceSetting?.get() && !this.#aiAssistanceSetting?.disabled())}
-          .jslogContext=${this.#aiAssistanceSetting?.name}
+          .jslogContext=${this.#aiAssistanceSetting?.name || ''}
           .disabled=${Boolean(this.#aiAssistanceSetting?.disabled())}
           @switchchange=${this.#toggleAiAssistanceSetting.bind(this)}
           aria-label=${this.#aiAssistanceSetting?.disabledReason() || i18nString(UIStrings.enableAiAssistance)}

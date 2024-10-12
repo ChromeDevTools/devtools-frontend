@@ -202,11 +202,16 @@ export class DocumentLatency extends BaseInsight {
 
   override render(): void {
     const insight = Trace.Insights.Common.getInsight('DocumentLatency', this.data.insights, this.data.insightSetKey);
+    if (insight?.data === undefined) {
+      return;
+    }
     const matchesCategory = shouldRenderForCategory({
       activeCategory: this.data.activeCategory,
       insightCategory: this.insightCategory,
     });
-    const output = matchesCategory && insight?.data ? this.#renderInsight(insight) : LitHtml.nothing;
+    const hasFailure = insight?.data?.redirectDuration > 0 || insight?.data?.serverResponseTooSlow ||
+        insight.data.uncompressedResponseBytes > 0;
+    const output = (matchesCategory && hasFailure) ? this.#renderInsight(insight) : LitHtml.nothing;
     LitHtml.render(output, this.shadow, {host: this});
   }
 }

@@ -97,7 +97,6 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
     assert.deepEqual(userVisibleTitles, [
       'LCP by phase',
       'Layout shift culprits',
-      'Document request latency',
       'Third parties',
     ]);
   });
@@ -126,7 +125,6 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
     assert.deepEqual(userVisibleTitles, [
       'LCP by phase',
       'Layout shift culprits',
-      'Document request latency',
       'Font display',
       'Third parties',
     ]);

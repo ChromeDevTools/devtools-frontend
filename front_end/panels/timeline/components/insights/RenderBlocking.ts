@@ -30,9 +30,9 @@ const UIStrings = {
       '[Deferring or inlining](https://web.dev/learn/performance/understanding-the-critical-path#render-blocking_resources/) ' +
       'can move these network requests out of the critical path.',
   /**
-   * @description Label to describe a render-blocking network request.
+   * @description Label to describe a network request (that happens to be render-blocking).
    */
-  renderBlockingRequest: 'Render-blocking request',
+  renderBlockingRequest: 'Request',
   /**
    *@description Label used for a time duration.
    */

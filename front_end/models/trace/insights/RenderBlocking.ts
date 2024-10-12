@@ -174,7 +174,7 @@ export function generateInsight(
       continue;
     }
 
-    if (req.args.data.renderBlocking !== 'blocking' && req.args.data.renderBlocking !== 'in_body_parser_blocking') {
+    if (!Helpers.Network.isSyntheticNetworkRequestEventRenderBlocking(req)) {
       continue;
     }
 

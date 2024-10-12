@@ -932,7 +932,8 @@ export interface SyntheticLayoutShiftCluster {
 }
 
 export type FetchPriorityHint = 'low'|'high'|'auto';
-export type RenderBlocking = 'blocking'|'non_blocking'|'in_body_parser_blocking'|'potentially_blocking';
+export type RenderBlocking =
+    'blocking'|'non_blocking'|'in_body_parser_blocking'|'potentially_blocking'|'dynamically_injected_non_blocking';
 
 export interface Initiator {
   type: Protocol.Network.InitiatorType;

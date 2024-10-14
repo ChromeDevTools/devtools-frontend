@@ -243,7 +243,8 @@ describe('FlameChart', function() {
        assert.notEqual(initiatorLinkRole, 'link');
      });
   it('shows a tooltip describing an extension track when its header is hovered', async () => {
-    await loadComponentDocExample('performance_panel/basic.html?trace=extension-tracks-and-marks');
+    await loadComponentDocExample(
+        'performance_panel/basic.html?trace=extension-tracks-and-marks&disable-auto-performance-sidebar-reveal');
     await waitFor('.timeline-flamechart');
     const {frontend} = getBrowserAndPages();
     const margin = 3;

@@ -15,6 +15,7 @@ node_ts_library("timeline") {
     "network_track_test.ts",
     "overview_test.ts",
     "rasterizer_tracks_test.ts",
+    "revealing-insights_test.ts",
     "thread_tracks_test.ts",
     "timeline_history_manager_test.ts",
     "timeline_selection_test.ts",

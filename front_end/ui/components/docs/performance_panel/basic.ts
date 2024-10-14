@@ -101,7 +101,10 @@ const cpuprofileName = params.get('cpuprofile');
 const traceUrl = params.get('loadTimelineFromURL');
 const nodeMode = params.get('isNode');
 const isNodeMode = nodeMode === 'true' ? true : false;
-Root.Runtime.experiments.setEnabled('timeline-invalidation-tracking', params.has('invalidations'));
+
+// These are both enabled by default in Chrome M131 and will be removed in M132.
+Root.Runtime.experiments.setEnabled(Root.Runtime.ExperimentName.TIMELINE_INSIGHTS, true);
+Root.Runtime.experiments.setEnabled(Root.Runtime.ExperimentName.TIMELINE_ANNOTATIONS, true);
 
 const timeline = Timeline.TimelinePanel.TimelinePanel.instance({forceNew: true, isNode: isNodeMode});
 const container = document.getElementById('container');

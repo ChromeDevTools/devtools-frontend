@@ -65,7 +65,7 @@ export class SidebarWidget extends UI.Widget.VBox {
    * SplitWidget tracks its state in its own setting.
    */
   #userHasOpenedSidebarOnce =
-      Common.Settings.Settings.instance().createSetting<boolean>('timeline-user-has-opened-siderbar-once', false);
+      Common.Settings.Settings.instance().createSetting<boolean>('timeline-user-has-opened-sidebar-once', false);
 
   userHasOpenedSidebarOnce(): boolean {
     return this.#userHasOpenedSidebarOnce.get();

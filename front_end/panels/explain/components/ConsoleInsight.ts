@@ -228,6 +228,8 @@ export class ConsoleInsight extends HTMLElement {
   #selectedRating?: boolean;
 
   #consoleInsightsEnabledSetting: Common.Settings.Setting<boolean>|undefined;
+  #aidaAvailability: Host.AidaClient.AidaAccessPreconditions;
+  #boundOnAidaAvailabilityChange: () => Promise<void>;
 
   constructor(
       promptBuilder: PublicPromptBuilder, aidaClient: PublicAidaClient,
@@ -235,44 +237,11 @@ export class ConsoleInsight extends HTMLElement {
     super();
     this.#promptBuilder = promptBuilder;
     this.#aidaClient = aidaClient;
+    this.#aidaAvailability = aidaAvailability;
     this.#consoleInsightsEnabledSetting = this.#getConsoleInsightsEnabledSetting();
 
-    switch (aidaAvailability) {
-      case Host.AidaClient.AidaAccessPreconditions.AVAILABLE: {
-        if (this.#consoleInsightsEnabledSetting?.disabled()) {
-          this.#state = {
-            type: State.SETTING_IS_NOT_TRUE,
-          };
-          break;
-        }
-        // Allows skipping the consent reminder if the user enabled the feature via settings in the current session
-        const skipReminder =
-            Common.Settings.Settings.instance()
-                .createSetting('console-insights-skip-reminder', false, Common.Settings.SettingStorageType.SESSION)
-                .get();
-        this.#state = {
-          type: State.LOADING,
-          consentOnboardingCompleted: this.#getOnboardingCompletedSetting().get() || skipReminder,
-        };
-        break;
-      }
-      case Host.AidaClient.AidaAccessPreconditions.NO_ACCOUNT_EMAIL:
-        this.#state = {
-          type: State.NOT_LOGGED_IN,
-        };
-        break;
-      case Host.AidaClient.AidaAccessPreconditions.SYNC_IS_PAUSED:
-        this.#state = {
-          type: State.SYNC_IS_PAUSED,
-        };
-        break;
-      case Host.AidaClient.AidaAccessPreconditions.NO_INTERNET:
-        this.#state = {
-          type: State.OFFLINE,
-        };
-        break;
-    }
-
+    this.#state = this.#getStateFromAidaAvailability();
+    this.#boundOnAidaAvailabilityChange = this.#onAidaAvailabilityChange.bind(this);
     this.#render();
     // Stop keyboard event propagation to avoid Console acting on the events
     // inside the insight component.
@@ -289,6 +258,34 @@ export class ConsoleInsight extends HTMLElement {
       e.stopPropagation();
     });
     this.focus();
+  }
+
+  #getStateFromAidaAvailability(): StateData {
+    switch (this.#aidaAvailability) {
+      case Host.AidaClient.AidaAccessPreconditions.AVAILABLE: {
+        // Allows skipping the consent reminder if the user enabled the feature via settings in the current session
+        const skipReminder =
+            Common.Settings.Settings.instance()
+                .createSetting('console-insights-skip-reminder', false, Common.Settings.SettingStorageType.SESSION)
+                .get();
+        return {
+          type: State.LOADING,
+          consentOnboardingCompleted: this.#getOnboardingCompletedSetting().get() || skipReminder,
+        };
+      }
+      case Host.AidaClient.AidaAccessPreconditions.NO_ACCOUNT_EMAIL:
+        return {
+          type: State.NOT_LOGGED_IN,
+        };
+      case Host.AidaClient.AidaAccessPreconditions.SYNC_IS_PAUSED:
+        return {
+          type: State.SYNC_IS_PAUSED,
+        };
+      case Host.AidaClient.AidaAccessPreconditions.NO_INTERNET:
+        return {
+          type: State.OFFLINE,
+        };
+    }
   }
 
   // off -> entrypoints are shown, and point to the AI setting panel where the setting can be turned on
@@ -311,15 +308,36 @@ export class ConsoleInsight extends HTMLElement {
     this.#shadow.adoptedStyleSheets = [styles, Input.checkboxStyles];
     this.classList.add('opening');
     this.#consoleInsightsEnabledSetting?.addChangeListener(this.#onConsoleInsightsSettingChanged, this);
+    const blockedByAge = Common.Settings.Settings.instance().getHostConfig().aidaAvailability?.blockedByAge === true;
     if (this.#state.type === State.LOADING && this.#consoleInsightsEnabledSetting?.getIfNotDisabled() === true &&
-        this.#state.consentOnboardingCompleted) {
+        !blockedByAge && this.#state.consentOnboardingCompleted) {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.GeneratingInsightWithoutDisclaimer);
+    }
+    Host.AidaClient.HostConfigTracker.instance().addEventListener(
+        Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED, this.#boundOnAidaAvailabilityChange);
+    // If AIDA availability has changed while the component was disconnected, we need to update.
+    void this.#onAidaAvailabilityChange();
+    // The setting might have been turned on/off while the component was disconnected.
+    // Update the state, unless the current state is already terminal (`INSIGHT` or `ERROR`).
+    if (this.#state.type !== State.INSIGHT && this.#state.type !== State.ERROR) {
+      this.#state = this.#getStateFromAidaAvailability();
     }
     void this.#generateInsightIfNeeded();
   }
 
   disconnectedCallback(): void {
     this.#consoleInsightsEnabledSetting?.removeChangeListener(this.#onConsoleInsightsSettingChanged, this);
+    Host.AidaClient.HostConfigTracker.instance().removeEventListener(
+        Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED, this.#boundOnAidaAvailabilityChange);
+  }
+
+  async #onAidaAvailabilityChange(): Promise<void> {
+    const currentAidaAvailability = await Host.AidaClient.AidaClient.checkAccessPreconditions();
+    if (currentAidaAvailability !== this.#aidaAvailability) {
+      this.#aidaAvailability = currentAidaAvailability;
+      this.#state = this.#getStateFromAidaAvailability();
+      void this.#generateInsightIfNeeded();
+    }
   }
 
   #onConsoleInsightsSettingChanged(): void {
@@ -359,7 +377,8 @@ export class ConsoleInsight extends HTMLElement {
     if (this.#state.type !== State.LOADING) {
       return;
     }
-    if (this.#consoleInsightsEnabledSetting?.getIfNotDisabled() !== true) {
+    const blockedByAge = Common.Settings.Settings.instance().getHostConfig().aidaAvailability?.blockedByAge === true;
+    if (this.#consoleInsightsEnabledSetting?.getIfNotDisabled() !== true || blockedByAge) {
       this.#transitionTo({
         type: State.SETTING_IS_NOT_TRUE,
       });

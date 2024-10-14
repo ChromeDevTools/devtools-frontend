@@ -4,7 +4,7 @@
 
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
-import {describeWithEnvironment, registerNoopActions} from '../../testing/EnvironmentHelpers.js';
+import {describeWithEnvironment, getGetHostConfigStub, registerNoopActions} from '../../testing/EnvironmentHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Freestyler from './freestyler.js';
@@ -21,6 +21,10 @@ function getTestAidaClient() {
 
 function getTestSyncInfo(): Host.InspectorFrontendHostAPI.SyncInformation {
   return {isSyncActive: true};
+}
+
+async function drainMicroTasks() {
+  await new Promise(resolve => setTimeout(resolve, 0));
 }
 
 describeWithEnvironment('FreestylerPanel', () => {
@@ -54,6 +58,7 @@ describeWithEnvironment('FreestylerPanel', () => {
 
       Common.Settings.moduleSetting('ai-assistance-enabled').set(true);
       sinon.assert.calledWith(mockView, sinon.match({state: Freestyler.State.CHAT_VIEW}));
+      await drainMicroTasks();
       panel.detach();
     });
 
@@ -81,6 +86,58 @@ describeWithEnvironment('FreestylerPanel', () => {
 
       sinon.assert.calledWith(mockView, sinon.match({state: Freestyler.State.CONSENT_VIEW}));
       Common.Settings.moduleSetting('ai-assistance-enabled').setDisabled(false);
+    });
+
+    it('should render the consent view when blocked by age', async () => {
+      Common.Settings.moduleSetting('ai-assistance-enabled').set(true);
+      const stub = getGetHostConfigStub({
+        aidaAvailability: {
+          blockedByAge: true,
+        },
+        devToolsFreestyler: {
+          enabled: true,
+        },
+      });
+
+      new Freestyler.FreestylerPanel(mockView, {
+        aidaClient: getTestAidaClient(),
+        aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
+        syncInfo: getTestSyncInfo(),
+      });
+
+      sinon.assert.calledWith(mockView, sinon.match({state: Freestyler.State.CONSENT_VIEW}));
+      stub.restore();
+    });
+
+    it('updates when the user logs in', async () => {
+      Common.Settings.moduleSetting('ai-assistance-enabled').set(true);
+
+      const panel = new Freestyler.FreestylerPanel(mockView, {
+        aidaClient: getTestAidaClient(),
+        aidaAvailability: Host.AidaClient.AidaAccessPreconditions.NO_ACCOUNT_EMAIL,
+        syncInfo: getTestSyncInfo(),
+      });
+      panel.markAsRoot();
+      panel.show(document.body);
+      await drainMicroTasks();
+      sinon.assert.calledWith(mockView, sinon.match({
+        state: Freestyler.State.CHAT_VIEW,
+        aidaAvailability: Host.AidaClient.AidaAccessPreconditions.NO_ACCOUNT_EMAIL,
+      }));
+      mockView.reset();
+
+      const stub = sinon.stub(Host.AidaClient.AidaClient, 'checkAccessPreconditions')
+                       .returns(Promise.resolve(Host.AidaClient.AidaAccessPreconditions.AVAILABLE));
+      Host.AidaClient.HostConfigTracker.instance().dispatchEventToListeners(
+          Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED);
+      await drainMicroTasks();
+      sinon.assert.calledWith(mockView, sinon.match({
+        state: Freestyler.State.CHAT_VIEW,
+        aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
+      }));
+
+      stub.restore();
+      panel.detach();
     });
   });
 

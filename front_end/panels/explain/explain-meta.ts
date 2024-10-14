@@ -32,10 +32,6 @@ const UIStrings = {
    */
   wrongLocale: 'To use this feature, update your Language preference in DevTools Settings to English',
   /**
-   * @description Message shown to the user if the age check is not successful.
-   */
-  ageRestricted: 'This feature is only available to users who are 18 years of age or older',
-  /**
    * @description Message shown to the user if the user's region is not
    * supported.
    */
@@ -88,10 +84,6 @@ function isLocaleRestricted(): boolean {
   return !devtoolsLocale.locale.startsWith('en-');
 }
 
-function isAgeRestricted(config?: Root.Runtime.HostConfig): boolean {
-  return config?.aidaAvailability?.blockedByAge === true;
-}
-
 function isGeoRestricted(config?: Root.Runtime.HostConfig): boolean {
   return config?.aidaAvailability?.blockedByGeo === true;
 }
@@ -115,9 +107,6 @@ Common.Settings.registerSettingExtension({
   disabledCondition: config => {
     if (isLocaleRestricted()) {
       return {disabled: true, reason: i18nString(UIStrings.wrongLocale)};
-    }
-    if (isAgeRestricted(config)) {
-      return {disabled: true, reason: i18nString(UIStrings.ageRestricted)};
     }
     if (isGeoRestricted(config)) {
       return {disabled: true, reason: i18nString(UIStrings.geoRestricted)};

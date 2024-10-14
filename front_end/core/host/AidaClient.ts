@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../common/common.js';
+import type * as Root from '../root/root.js';
 
 import {InspectorFrontendHostInstance} from './InspectorFrontendHost.js';
 import type {AidaClientResult, SyncInformation} from './InspectorFrontendHostAPI.js';
@@ -336,3 +337,60 @@ export function convertToUserTierEnum(userTier: string|undefined): UserTier {
   }
   return UserTier.BETA;
 }
+
+let hostConfigTrackerInstance: HostConfigTracker|undefined;
+
+export class HostConfigTracker extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
+  #pollTimer?: number;
+  #aidaAvailability?: AidaAccessPreconditions;
+
+  private constructor() {
+    super();
+  }
+
+  static instance(): HostConfigTracker {
+    if (!hostConfigTrackerInstance) {
+      hostConfigTrackerInstance = new HostConfigTracker();
+    }
+    return hostConfigTrackerInstance;
+  }
+
+  override addEventListener(eventType: Events, listener: Common.EventTarget.EventListener<EventTypes, Events>):
+      Common.EventTarget.EventDescriptor<EventTypes> {
+    const isFirst = !this.hasEventListeners(eventType);
+    const eventDescriptor = super.addEventListener(eventType, listener);
+    if (isFirst) {
+      window.clearTimeout(this.#pollTimer);
+      void this.pollAidaAvailability();
+    }
+    return eventDescriptor;
+  }
+
+  override removeEventListener(eventType: Events, listener: Common.EventTarget.EventListener<EventTypes, Events>):
+      void {
+    super.removeEventListener(eventType, listener);
+    if (!this.hasEventListeners(eventType)) {
+      window.clearTimeout(this.#pollTimer);
+    }
+  }
+
+  private async pollAidaAvailability(): Promise<void> {
+    const currentAidaAvailability = await AidaClient.checkAccessPreconditions();
+    if (currentAidaAvailability !== this.#aidaAvailability) {
+      this.#aidaAvailability = currentAidaAvailability;
+      const config = await new Promise<Root.Runtime.HostConfig>(
+          resolve => InspectorFrontendHostInstance.getHostConfig(config => resolve(config)));
+      Common.Settings.Settings.instance().setHostConfig(config);
+      this.dispatchEventToListeners(Events.AIDA_AVAILABILITY_CHANGED);
+    }
+    this.#pollTimer = window.setTimeout(() => this.pollAidaAvailability(), 2000);
+  }
+}
+
+export const enum Events {
+  AIDA_AVAILABILITY_CHANGED = 'aidaAvailabilityChanged',
+}
+
+export type EventTypes = {
+  [Events.AIDA_AVAILABILITY_CHANGED]: void,
+};

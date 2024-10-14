@@ -58,7 +58,7 @@ export class Settings {
   #eventSupport: ObjectWrapper<GenericEvents>;
   #registry: Map<string, Setting<unknown>>;
   readonly moduleSettings: Map<string, Setting<unknown>>;
-  readonly #config: Root.Runtime.HostConfig;
+  #config: Root.Runtime.HostConfig;
 
   private constructor(
       readonly syncedStorage: SettingsStorage, readonly globalStorage: SettingsStorage,
@@ -126,6 +126,10 @@ export class Settings {
 
   getHostConfig(): Root.Runtime.HostConfig {
     return this.#config;
+  }
+
+  setHostConfig(config: Root.Runtime.HostConfig): void {
+    this.#config = config;
   }
 
   private registerModuleSetting(setting: Setting<unknown>): void {

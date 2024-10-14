@@ -149,6 +149,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
   #serverSideLoggingEnabled = isFreestylerServerSideLoggingEnabled();
   #freestylerEnabledSetting: Common.Settings.Setting<boolean>|undefined;
   #changeManager = new ChangeManager();
+  #boundOnAidaAvailabilityChange: () => Promise<void>;
 
   constructor(private view: View = defaultView, {aidaClient, aidaAvailability, syncInfo}: {
     aidaClient: Host.AidaClient.AidaClient,
@@ -176,9 +177,10 @@ export class FreestylerPanel extends UI.Panel.Panel {
     this.#selectedNetworkRequest = UI.Context.Context.instance().flavor(SDK.NetworkRequest.NetworkRequest);
     this.#selectedStackTrace = UI.Context.Context.instance().flavor(Trace.Helpers.TreeHelpers.TraceEntryNodeForAI);
     this.#selectedFile = UI.Context.Context.instance().flavor(Workspace.UISourceCode.UISourceCode);
+    const blockedByAge = Common.Settings.Settings.instance().getHostConfig().aidaAvailability?.blockedByAge === true;
     this.#viewProps = {
-      state: this.#freestylerEnabledSetting?.getIfNotDisabled() ? FreestylerChatUiState.CHAT_VIEW :
-                                                                  FreestylerChatUiState.CONSENT_VIEW,
+      state: (this.#freestylerEnabledSetting?.getIfNotDisabled() && !blockedByAge) ? FreestylerChatUiState.CHAT_VIEW :
+                                                                                     FreestylerChatUiState.CONSENT_VIEW,
       aidaAvailability,
       messages: [],
       inspectElementToggled: this.#toggleSearchElementAction.toggled(),
@@ -242,6 +244,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
       this.#viewProps.selectedFile = Boolean(ev.data) ? ev.data : null;
       this.doUpdate();
     });
+    this.#boundOnAidaAvailabilityChange = this.#onAidaAvailabilityChange.bind(this);
     this.doUpdate();
   }
 
@@ -287,11 +290,11 @@ export class FreestylerPanel extends UI.Panel.Panel {
   }|undefined = {forceNew: null}): Promise<FreestylerPanel> {
     const {forceNew} = opts;
     if (!freestylerPanelInstance || forceNew) {
-      const aidaAvailability = await Host.AidaClient.AidaClient.checkAccessPreconditions();
       const aidaClient = new Host.AidaClient.AidaClient();
-      const syncInfo = await new Promise<Host.InspectorFrontendHostAPI.SyncInformation>(
-          resolve => Host.InspectorFrontendHost.InspectorFrontendHostInstance.getSyncInformation(
-              syncInfo => resolve(syncInfo)));
+      const syncInfoPromise = new Promise<Host.InspectorFrontendHostAPI.SyncInformation>(
+          resolve => Host.InspectorFrontendHost.InspectorFrontendHostInstance.getSyncInformation(resolve));
+      const [aidaAvailability, syncInfo] =
+          await Promise.all([Host.AidaClient.AidaClient.checkAccessPreconditions(), syncInfoPromise]);
       freestylerPanelInstance = new FreestylerPanel(defaultView, {aidaClient, aidaAvailability, syncInfo});
     }
 
@@ -303,10 +306,38 @@ export class FreestylerPanel extends UI.Panel.Panel {
     this.#viewOutput.freestylerChatUi?.restoreScrollPosition();
     this.#viewOutput.freestylerChatUi?.focusTextInput();
     this.#freestylerEnabledSetting?.addChangeListener(this.#handleFreestylerEnabledSettingChanged, this);
+    Host.AidaClient.HostConfigTracker.instance().addEventListener(
+        Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED, this.#boundOnAidaAvailabilityChange);
+    void this.#onAidaAvailabilityChange();
+    // If the setting was switched on/off while the FreestylerPanel was not shown:
+    void this.#handleFreestylerEnabledSettingChanged();
   }
 
   override willHide(): void {
     this.#freestylerEnabledSetting?.removeChangeListener(this.#handleFreestylerEnabledSettingChanged, this);
+    Host.AidaClient.HostConfigTracker.instance().removeEventListener(
+        Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED, this.#boundOnAidaAvailabilityChange);
+  }
+
+  async #onAidaAvailabilityChange(): Promise<void> {
+    const currentAidaAvailability = await Host.AidaClient.AidaClient.checkAccessPreconditions();
+    if (currentAidaAvailability !== this.#viewProps.aidaAvailability) {
+      this.#viewProps.aidaAvailability = currentAidaAvailability;
+      const syncInfo = await new Promise<Host.InspectorFrontendHostAPI.SyncInformation>(
+          resolve => Host.InspectorFrontendHost.InspectorFrontendHostInstance.getSyncInformation(resolve));
+      this.#viewProps.userInfo = {
+        accountImage: syncInfo.accountImage,
+        accountFullName: syncInfo.accountFullName,
+      };
+
+      const config = Common.Settings.Settings.instance().getHostConfig();
+      const blockedByAge = config.aidaAvailability?.blockedByAge === true;
+      this.#viewProps.state = (this.#freestylerEnabledSetting?.getIfNotDisabled() && !blockedByAge) ?
+          FreestylerChatUiState.CHAT_VIEW :
+          FreestylerChatUiState.CONSENT_VIEW;
+
+      this.doUpdate();
+    }
   }
 
   #handleFreestylerEnabledSettingChanged(): void {

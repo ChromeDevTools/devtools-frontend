@@ -410,7 +410,7 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
         blockedByAge: false,
         blockedByEnterprisePolicy: false,
         blockedByGeo: false,
-        disallowLogging: false,
+        disallowLogging: true,
       },
       devToolsConsoleInsights: {
         modelId: '',

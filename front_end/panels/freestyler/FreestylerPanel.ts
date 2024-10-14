@@ -177,10 +177,8 @@ export class FreestylerPanel extends UI.Panel.Panel {
     this.#selectedNetworkRequest = UI.Context.Context.instance().flavor(SDK.NetworkRequest.NetworkRequest);
     this.#selectedStackTrace = UI.Context.Context.instance().flavor(Trace.Helpers.TreeHelpers.TraceEntryNodeForAI);
     this.#selectedFile = UI.Context.Context.instance().flavor(Workspace.UISourceCode.UISourceCode);
-    const blockedByAge = Common.Settings.Settings.instance().getHostConfig().aidaAvailability?.blockedByAge === true;
     this.#viewProps = {
-      state: (this.#freestylerEnabledSetting?.getIfNotDisabled() && !blockedByAge) ? FreestylerChatUiState.CHAT_VIEW :
-                                                                                     FreestylerChatUiState.CONSENT_VIEW,
+      state: this.#getChatUiState(),
       aidaAvailability,
       messages: [],
       inspectElementToggled: this.#toggleSearchElementAction.toggled(),
@@ -246,6 +244,13 @@ export class FreestylerPanel extends UI.Panel.Panel {
     });
     this.#boundOnAidaAvailabilityChange = this.#onAidaAvailabilityChange.bind(this);
     this.doUpdate();
+  }
+
+  #getChatUiState(): FreestylerChatUiState {
+    const config = Common.Settings.Settings.instance().getHostConfig();
+    const blockedByAge = config.aidaAvailability?.blockedByAge === true;
+    return (this.#freestylerEnabledSetting?.getIfNotDisabled() && !blockedByAge) ? FreestylerChatUiState.CHAT_VIEW :
+                                                                                   FreestylerChatUiState.CONSENT_VIEW;
   }
 
   #getAiAssistanceEnabledSetting(): Common.Settings.Setting<boolean>|undefined {
@@ -329,20 +334,13 @@ export class FreestylerPanel extends UI.Panel.Panel {
         accountImage: syncInfo.accountImage,
         accountFullName: syncInfo.accountFullName,
       };
-
-      const config = Common.Settings.Settings.instance().getHostConfig();
-      const blockedByAge = config.aidaAvailability?.blockedByAge === true;
-      this.#viewProps.state = (this.#freestylerEnabledSetting?.getIfNotDisabled() && !blockedByAge) ?
-          FreestylerChatUiState.CHAT_VIEW :
-          FreestylerChatUiState.CONSENT_VIEW;
-
+      this.#viewProps.state = this.#getChatUiState();
       this.doUpdate();
     }
   }
 
   #handleFreestylerEnabledSettingChanged(): void {
-    this.#viewProps.state =
-        this.#freestylerEnabledSetting?.get() ? FreestylerChatUiState.CHAT_VIEW : FreestylerChatUiState.CONSENT_VIEW;
+    this.#viewProps.state = this.#getChatUiState();
     this.doUpdate();
   }
 

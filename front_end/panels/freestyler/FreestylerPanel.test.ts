@@ -77,15 +77,24 @@ describeWithEnvironment('FreestylerPanel', () => {
     it('should render the consent view when the setting is disabled', async () => {
       Common.Settings.moduleSetting('ai-assistance-enabled').set(true);
       Common.Settings.moduleSetting('ai-assistance-enabled').setDisabled(true);
+      const chatUiStates: Freestyler.State[] = [];
+      const viewStub = sinon.stub().callsFake(props => {
+        chatUiStates.push(props.state);
+      });
 
-      new Freestyler.FreestylerPanel(mockView, {
+      const panel = new Freestyler.FreestylerPanel(viewStub, {
         aidaClient: getTestAidaClient(),
         aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
         syncInfo: getTestSyncInfo(),
       });
+      panel.markAsRoot();
+      panel.show(document.body);
+      await drainMicroTasks();
 
-      sinon.assert.calledWith(mockView, sinon.match({state: Freestyler.State.CONSENT_VIEW}));
+      sinon.assert.calledWith(viewStub, sinon.match({state: Freestyler.State.CONSENT_VIEW}));
+      assert.isFalse(chatUiStates.includes(Freestyler.State.CHAT_VIEW));
       Common.Settings.moduleSetting('ai-assistance-enabled').setDisabled(false);
+      panel.detach();
     });
 
     it('should render the consent view when blocked by age', async () => {

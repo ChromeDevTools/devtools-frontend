@@ -3,10 +3,14 @@
 // found in the LICENSE file.
 
 import './Table.js';
+import '../../../../ui/components/linkifier/linkifier.js';
 
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
+import * as SDK from '../../../../core/sdk/sdk.js';
+import type * as Protocol from '../../../../generated/protocol.js';
 import * as Trace from '../../../../models/trace/trace.js';
+import type * as Linkifier from '../../../../ui/components/linkifier/linkifier.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
@@ -61,12 +65,76 @@ export class SlowCSSSelector extends BaseInsight {
   override userVisibleTitle: string = i18nString(UIStrings.title);
   override description: string = i18nString(UIStrings.description);
   #slowCSSSelector: Trace.Insights.InsightRunners.SlowCSSSelector.SlowCSSSelectorInsightResult|null = null;
+  #selectorLocations: Map<string, Protocol.CSS.SourceRange[]> = new Map();
 
   override createOverlays(): Overlays.Overlays.TimelineOverlay[] {
     return [];
   }
 
+  private async toSourceFileLocation(cssModel: SDK.CSSModel.CSSModel, selector: Trace.Types.Events.SelectorTiming):
+      Promise<Linkifier.Linkifier.LinkifierData[]|undefined> {
+    if (!cssModel) {
+      return undefined;
+    }
+    const styleSheetHeader = cssModel.styleSheetHeaderForId(selector.style_sheet_id as Protocol.CSS.StyleSheetId);
+    if (!styleSheetHeader || !styleSheetHeader.resourceURL()) {
+      return undefined;
+    }
+
+    // get the locations from cache if available
+    const key: string = JSON.stringify({selectorText: selector.selector, styleSheetId: selector.style_sheet_id});
+    let ranges = this.#selectorLocations.get(key);
+    if (!ranges) {
+      const result = await cssModel.agent.invoke_getLocationForSelector(
+          {selectorText: selector.selector, styleSheetId: selector.style_sheet_id as Protocol.CSS.StyleSheetId});
+      if (result.getError() || !result.ranges) {
+        return undefined;
+      }
+      ranges = result.ranges;
+      this.#selectorLocations.set(key, ranges);
+    }
+
+    const locations = ranges.map((range, itemIndex) => {
+      return {
+        url: styleSheetHeader.resourceURL() as Platform.DevToolsPath.UrlString,
+        lineNumber: range.startLine,
+        columnNumber: range.startColumn,
+        linkText: `[${itemIndex + 1}]`,
+        title: `${styleSheetHeader.id} line ${range.startLine + 1}:${range.startColumn + 1}`,
+      } as Linkifier.Linkifier.LinkifierData;
+    });
+    return locations;
+  }
+
+  private async getSelectorLinks(
+      cssModel: SDK.CSSModel.CSSModel|null|undefined,
+      selector: Trace.Types.Events.SelectorTiming): Promise<LitHtml.LitTemplate> {
+    if (!cssModel) {
+      return LitHtml.nothing;
+    }
+
+    if (!selector.style_sheet_id) {
+      return LitHtml.nothing;
+    }
+
+    const locations = await this.toSourceFileLocation(cssModel, selector);
+    if (!locations) {
+      return LitHtml.nothing;
+    }
+
+    const links = html`
+    ${locations.map((location, itemIndex) => {
+      const divider = itemIndex !== locations.length - 1 ? ', ' : '';
+      return html`<devtools-linkifier .data=${location as Linkifier.Linkifier.LinkifierData}></devtools-linkifier>${
+          divider}`;
+    })}`;
+
+    return links;
+  }
+
   renderSlowCSSSelector(): LitHtml.LitTemplate {
+    const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+    const cssModel = target?.model(SDK.CSSModel.CSSModel);
     const time = (us: Trace.Types.Timing.MicroSeconds): string =>
         i18n.TimeUtilities.millisToString(Platform.Timing.microSecondsToMilliSeconds(us));
 
@@ -98,7 +166,9 @@ export class SlowCSSSelector extends BaseInsight {
                 headers: [i18nString(UIStrings.topSelectors), i18nString(UIStrings.elapsed)],
                 rows: this.#slowCSSSelector.topElapsedMs.map(selector => {
                   return {
-                    values: [selector.selector, time(Trace.Types.Timing.MicroSeconds(selector['elapsed (us)']))],
+                    values: [
+                    html`${selector.selector} ${LitHtml.Directives.until(this.getSelectorLinks(cssModel, selector))}`,
+                    time(Trace.Types.Timing.MicroSeconds(selector['elapsed (us)']))],
                   };
                 }),
               } as TableData}>
@@ -109,7 +179,9 @@ export class SlowCSSSelector extends BaseInsight {
                 headers: [i18nString(UIStrings.topSelectors), i18nString(UIStrings.matchAttempts)],
                 rows: this.#slowCSSSelector.topMatchAttempts.map(selector => {
                   return {
-                    values: [selector.selector, selector['match_attempts']],
+                    values: [
+                    html`${selector.selector} ${LitHtml.Directives.until(this.getSelectorLinks(cssModel, selector))}` as unknown as string,
+                    selector['match_attempts']],
                   };
                 }),
               } as TableData}>

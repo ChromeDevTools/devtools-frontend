@@ -60,7 +60,7 @@ export class ExtensionStorage extends Common.ObjectWrapper.ObjectWrapper<{}> {
     return response.data;
   }
 
-  async setItem(key: string, value: string): Promise<void> {
+  async setItem(key: string, value: unknown): Promise<void> {
     const response = await this.#model.agent.invoke_setStorageItems(
         {id: this.#extensionIdInternal, storageArea: this.#storageAreaInternal, values: {[key]: value}});
     if (response.getError()) {

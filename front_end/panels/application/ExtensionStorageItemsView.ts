@@ -33,6 +33,8 @@ import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
+import * as JSON5 from '../../third_party/json5/json5.js';
+import type * as DataGridImpl from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import type * as UI from '../../ui/legacy/legacy.js';
@@ -73,10 +75,12 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export namespace ExtensionStorageItemsDispatcher {
   export const enum Events {
+    ITEM_EDITED = 'ItemEdited',
     ITEMS_REFRESHED = 'ItemsRefreshed',
   }
 
   export type EventTypes = {
+    [Events.ITEM_EDITED]: void,
     [Events.ITEMS_REFRESHED]: void,
   };
 }
@@ -107,6 +111,18 @@ export class ExtensionStorageItemsView extends StorageItemsView {
     return this.#extensionStorage.storageArea !== Protocol.Extensions.StorageArea.Managed;
   }
 
+  /**
+   * When parsing a value provided by the user, attempt to treat it as JSON,
+   * falling back to a string otherwise.
+   */
+  parseValue(input: string): unknown {
+    try {
+      return JSON5.parse(input);
+    } catch {
+      return input;
+    }
+  }
+
   #createGrid(): DataGrid.DataGridWithPreview.DataGridWithPreview {
     const columns = ([
       {id: 'key', title: i18nString(UIStrings.key), sortable: true, editable: true, longText: true, weight: 50},
@@ -122,8 +138,10 @@ export class ExtensionStorageItemsView extends StorageItemsView {
               this.refreshItems();
             },
             setItem: async (key, value) => {
-              await this.#extensionStorage.setItem(key, value);
+              await this.#extensionStorage.setItem(key, this.parseValue(value));
               this.refreshItems();
+              this.extensionStorageItemsDispatcher.dispatchEventToListeners(
+                  ExtensionStorageItemsDispatcher.Events.ITEM_EDITED);
             },
           } :
                                    undefined,
@@ -215,5 +233,9 @@ export class ExtensionStorageItemsView extends StorageItemsView {
                                                                                                  key: string,
                                                                                                  value: string,
                                                                                                }));
+  }
+
+  get dataGridForTesting(): DataGridImpl.DataGrid.DataGridImpl<unknown> {
+    return this.#grid.dataGridForTesting;
   }
 }

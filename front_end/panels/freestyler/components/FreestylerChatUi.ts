@@ -918,8 +918,8 @@ export class FreestylerChatUi extends HTMLElement {
     switch (this.#props.agentType) {
       case AgentType.FREESTYLER:
         return [
+          'What can you help me with?',
           'Why isn’t this element visible?',
-          'Why does this element overlap another?',
           'How do I center this element?',
         ];
       case AgentType.DRJONES_FILE:

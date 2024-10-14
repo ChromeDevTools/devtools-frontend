@@ -398,7 +398,8 @@ describe('Recorder', function() {
     assertRecordingMatchesSnapshot(recording);
   });
 
-  it('should record OOPIF interactions', async () => {
+  // Flaky test.
+  it.skipOnPlatforms(['mac'], '[crbug.com/373417054] should record OOPIF interactions', async () => {
     const {target} = getBrowserAndPages();
     await startRecording('recorder/oopif.html', {untrustedEvents: true});
 

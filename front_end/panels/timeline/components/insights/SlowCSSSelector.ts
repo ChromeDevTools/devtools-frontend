@@ -148,44 +148,50 @@ export class SlowCSSSelector extends BaseInsight {
               expanded: this.isActive(),
           } as SidebarInsight.InsightDetails}
           @insighttoggleclick=${this.onSidebarClick} >
-          <div slot="insight-content" class="insight-section">
-            ${html`<devtools-performance-table
-              .data=${{
-                insight: this,
-                headers: [i18nString(UIStrings.total), ''],
-                rows: [
-                  {values: [i18nString(UIStrings.elapsed), i18n.TimeUtilities.millisToString(this.#slowCSSSelector.totalElapsedMs)]},
-                  {values: [i18nString(UIStrings.matchAttempts), this.#slowCSSSelector.totalMatchAttempts]},
-                  {values: [i18nString(UIStrings.matchCount), this.#slowCSSSelector.totalMatchCount]},
-                ],
-              } as TableData}>
-            </devtools-performance-table>`}
-            ${html`<devtools-performance-table
-              .data=${{
-                insight: this,
-                headers: [i18nString(UIStrings.topSelectors), i18nString(UIStrings.elapsed)],
-                rows: this.#slowCSSSelector.topElapsedMs.map(selector => {
-                  return {
-                    values: [
-                    html`${selector.selector} ${LitHtml.Directives.until(this.getSelectorLinks(cssModel, selector))}`,
-                    time(Trace.Types.Timing.MicroSeconds(selector['elapsed (us)']))],
-                  };
-                }),
-              } as TableData}>
-            </devtools-performance-table>`}
-            ${html`<devtools-performance-table
-              .data=${{
-                insight: this,
-                headers: [i18nString(UIStrings.topSelectors), i18nString(UIStrings.matchAttempts)],
-                rows: this.#slowCSSSelector.topMatchAttempts.map(selector => {
-                  return {
-                    values: [
-                    html`${selector.selector} ${LitHtml.Directives.until(this.getSelectorLinks(cssModel, selector))}` as unknown as string,
-                    selector['match_attempts']],
-                  };
-                }),
-              } as TableData}>
-            </devtools-performance-table>`}
+          <div slot="insight-content">
+            <div class="insight-section">
+              ${html`<devtools-performance-table
+                .data=${{
+                  insight: this,
+                  headers: [i18nString(UIStrings.total), ''],
+                  rows: [
+                    {values: [i18nString(UIStrings.elapsed), i18n.TimeUtilities.millisToString(this.#slowCSSSelector.totalElapsedMs)]},
+                    {values: [i18nString(UIStrings.matchAttempts), this.#slowCSSSelector.totalMatchAttempts]},
+                    {values: [i18nString(UIStrings.matchCount), this.#slowCSSSelector.totalMatchCount]},
+                  ],
+                } as TableData}>
+              </devtools-performance-table>`}
+            </div>
+            <div class="insight-section">
+              ${html`<devtools-performance-table
+                .data=${{
+                  insight: this,
+                  headers: [i18nString(UIStrings.topSelectors), i18nString(UIStrings.elapsed)],
+                  rows: this.#slowCSSSelector.topElapsedMs.map(selector => {
+                    return {
+                      values: [
+                      html`${selector.selector} ${LitHtml.Directives.until(this.getSelectorLinks(cssModel, selector))}`,
+                      time(Trace.Types.Timing.MicroSeconds(selector['elapsed (us)']))],
+                    };
+                  }),
+                } as TableData}>
+              </devtools-performance-table>`}
+            </div>
+            <div class="insight-section">
+              ${html`<devtools-performance-table
+                .data=${{
+                  insight: this,
+                  headers: [i18nString(UIStrings.topSelectors), i18nString(UIStrings.matchAttempts)],
+                  rows: this.#slowCSSSelector.topMatchAttempts.map(selector => {
+                    return {
+                      values: [
+                      html`${selector.selector} ${LitHtml.Directives.until(this.getSelectorLinks(cssModel, selector))}` as unknown as string,
+                      selector['match_attempts']],
+                    };
+                  }),
+                } as TableData}>
+              </devtools-performance-table>`}
+            </div>
           </div>
         </devtools-performance-sidebar-insight>
       </div>` : LitHtml.nothing;

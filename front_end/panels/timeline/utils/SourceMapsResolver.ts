@@ -13,6 +13,7 @@ import * as Workspace from '../../../models/workspace/workspace.js';
 type ResolvedCodeLocationData = {
   name: string|null,
   devtoolsLocation: Workspace.UISourceCode.UILocation|null,
+  script: SDK.Script.Script|null,
 };
 export class SourceMappingsUpdated extends Event {
   static readonly eventName = 'sourcemappingsupdated';
@@ -178,6 +179,7 @@ export class SourceMapsResolver extends EventTarget {
           node.setFunctionName(resolvedFunctionName);
 
           const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
+          const script = debuggerModel?.scriptForId(node.scriptId) || null;
           const location = debuggerModel &&
               new SDK.DebuggerModel.Location(
                   debuggerModel, node.callFrame.scriptId, node.callFrame.lineNumber, node.callFrame.columnNumber);
@@ -187,7 +189,7 @@ export class SourceMapsResolver extends EventTarget {
           updatedMappings ||= Boolean(uiLocation);
 
           SourceMapsResolver.storeResolvedNodeDataForEntry(
-              pid, tid, node.callFrame, {name: resolvedFunctionName, devtoolsLocation: uiLocation});
+              pid, tid, node.callFrame, {name: resolvedFunctionName, devtoolsLocation: uiLocation, script});
         }
       }
     }

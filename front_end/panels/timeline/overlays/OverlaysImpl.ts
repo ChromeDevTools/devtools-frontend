@@ -944,13 +944,20 @@ export class Overlays extends EventTarget {
         return;
       }
 
+      const fromEntryParams = this.#positionEntryBorderOutlineType(entriesToConnect.entryFrom, entryFromWrapper);
+
+      if (!fromEntryParams) {
+        // Something went wrong, we should always have parameters for the 'from' entry
+        return;
+      }
+
       const {
         entryHeight: fromEntryHeight,
         entryWidth: fromEntryWidth,
         cutOffHeight: fromCutOffHeight = 0,
         x: fromEntryX,
         y: fromEntryY,
-      } = this.#positionEntryBorderOutlineType(entriesToConnect.entryFrom, entryFromWrapper) || {};
+      } = fromEntryParams;
 
       const entryFromVisibility = this.entryIsVisibleOnChart(entryFrom) && !fromEntryInCollapsedTrack;
       const entryToVisibility = entryTo ? this.entryIsVisibleOnChart(entryTo) && !toEntryInCollapsedTrack : false;
@@ -972,36 +979,38 @@ export class Overlays extends EventTarget {
         toEntryVisibility: entryToVisibility,
       };
 
-      if (fromEntryHeight && fromEntryWidth && fromEntryX && fromEntryY) {
-        component.fromEntryCoordinateAndDimentions =
-            {x: fromEntryX, y: yPixelForFromArrow, length: fromEntryWidth, height: fromEntryHeight - fromCutOffHeight};
-      }
+      component.fromEntryCoordinateAndDimentions =
+          {x: fromEntryX, y: yPixelForFromArrow, length: fromEntryWidth, height: fromEntryHeight - fromCutOffHeight};
 
-      const entryToWrapper = component.entryToWrapper();
       // If entryTo exists, pass the coordinates and dimentions of the entry that the arrow snaps to.
       // If it does not, the event tracking mouse coordinates updates 'to coordinates' so the arrow follows the mouse instead.
+      const entryToWrapper = component.entryToWrapper();
+
       if (entryTo && entryToWrapper) {
+        const toEntryParams = this.#positionEntryBorderOutlineType(entryTo, entryToWrapper);
+
+        if (!toEntryParams) {
+          // Something went wrong, we should have those parameters if 'to' entry exists
+          return;
+        }
         const {
           entryHeight: toEntryHeight,
           entryWidth: toEntryWidth,
           cutOffHeight: toCutOffHeight = 0,
           x: toEntryX,
           y: toEntryY,
-        } = this.#positionEntryBorderOutlineType(entryTo, entryToWrapper) || {};
+        } = toEntryParams;
 
-        if (toEntryHeight && toEntryX) {
-          // If the 'to' entry is visible, set the entry Y as an arrow coordinate to point ot. If not, get the canvas edge coordate to point the arrow to.
-          const yPixelForToArrow =
-              ((this.entryIsVisibleOnChart(entryTo)) ? toEntryY : this.#yCoordinateForNotVisibleEntry(entryTo)) ?? 0;
+        // If the 'to' entry is visible, set the entry Y as an arrow coordinate to point to. If not, get the canvas edge coordate to point the arrow to.
+        const yPixelForToArrow =
+            this.entryIsVisibleOnChart(entryTo) ? toEntryY : this.#yCoordinateForNotVisibleEntry(entryTo) ?? 0;
 
-          component.toEntryCoordinateAndDimentions = {
-            x: toEntryX,
-            y: yPixelForToArrow,
-            length: toEntryWidth,
-            height: toEntryHeight - toCutOffHeight,
-          };
-        }
-
+        component.toEntryCoordinateAndDimentions = {
+          x: toEntryX,
+          y: yPixelForToArrow,
+          length: toEntryWidth,
+          height: toEntryHeight - toCutOffHeight,
+        };
       } else if (this.#lastMouseOffsetX && this.#lastMouseOffsetY) {
         // The second coordinate for in progress link gets updated on mousemove
         this.#entriesLinkInProgress = overlay;
@@ -1098,7 +1107,7 @@ export class Overlays extends EventTarget {
     const {entryHeight, entryWidth, cutOffHeight = 0, x, y} =
         this.#positionEntryBorderOutlineType(overlay.entry, entryWrapper) || {};
 
-    if (!entryHeight || !entryWidth || !x || !y) {
+    if (!entryHeight || !entryWidth || x === null || !y) {
       return null;
     }
 
@@ -1196,8 +1205,10 @@ export class Overlays extends EventTarget {
     const chartName = chartForEntry(entry);
     let x = this.xPixelForEventStartOnChart(entry);
     let y = this.yPixelForEventOnChart(entry);
+    const chartWidth = (chartName === 'main') ? this.#dimensions.charts.main?.widthPixels :
+                                                this.#dimensions.charts.network?.widthPixels;
 
-    if (x === null || y === null) {
+    if (x === null || y === null || !chartWidth) {
       return null;
     }
 
@@ -1229,6 +1240,21 @@ export class Overlays extends EventTarget {
       // If this is one of those events we should change the overlay coordinates to match.
       x = customPos.x;
       widthPixels = customPos.width;
+    }
+
+    // Calculate the visible overlay width by substracting the entry width that is outside of the flamechart width
+    const cutOffRight = (x + widthPixels > chartWidth) ? (x + widthPixels) - chartWidth : null;
+    const cutOffLeft = (x < 0) ? Math.abs(x) : null;
+    element.classList.toggle('cut-off-right', cutOffRight !== null);
+
+    if (cutOffRight) {
+      widthPixels = widthPixels - cutOffRight;
+    }
+
+    if (cutOffLeft) {
+      // If the entry is cut off from the left, move its beginning to the left most part of the flamechart
+      x = 0;
+      widthPixels = widthPixels - cutOffLeft;
     }
 
     // The entry selected overlay is always at least 2px wide.

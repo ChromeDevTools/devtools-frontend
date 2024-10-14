@@ -25,18 +25,7 @@ front_end/ui/components/button/Button.ts // component definition
 
 ## Defining and naming a component
 
-A component should be given a `static readonly litTagName` property, which defines its name:
-
-```ts
-// ElementBreadcrumbs.ts
-export class ElementBreadcrumbs extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-elements-breadcrumbs`;
-}
-```
-
-> Remember that all custom elements **must** contain a hyphen. Prefer `devtools-` as the prefix by default.
-
-We then use the `ComponentHelpers` module (`front_end/ui/components/helpers`) to define the component and register it with the browser:
+All custom elements **must** contain a hyphen. Use `devtools-` as the prefix.  Use `customElements.define` to define the component and register it with the browser:
 
 ```ts
 customElements.define('devtools-elements-breadcrumbs', ElementsBreadcrumbs);
@@ -54,7 +43,7 @@ declare global {
 
 By doing this, TypeScript understands that `document.querySelector('devtools-elements-breadcrumbs')` returns an `ElementsBreadcrumbs` instance.
 
-We have a custom ESLint rule that ensures that the tag name is used consistently in all the locations where it is required.
+We use lit-analyzer in a lint state to verify that component definitions are imported where the component is used.
 
 ## Creating a shadow root
 
@@ -62,7 +51,6 @@ Each component gets its own Shadow Root to ensure that styles and events that oc
 
 ```ts
 export class ElementsBreadcrumbs extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-elements-breadcrumbs`;
   readonly #shadow = this.attachShadow({mode: 'open'});
 }
 ```
@@ -78,7 +66,7 @@ Each component defines a `#render` method which is responsible for invoking LitH
 The `#render` method calls `LitHtml.render`, building up a template with `LitHtml.html`:
 
 ```ts
-LitHtml.render(LitHtml.html`<p>hello world!</p>`, this.#shadow, {host: this});
+LitHtml.render(html`<p>hello world!</p>`, this.#shadow, {host: this});
 ```
 
 The third argument (`{host: this}`) tells LitHtml to automatically bind event listeners to the component. This can save you some painful debugging where event listeners do not have the right `this` reference; so we enforce the use of `{host: this}` via a custom ESLint rule.
@@ -99,7 +87,6 @@ We can use the `ScheduledRender` helper (`front_end/ui/components/helpers/schedu
 
 ```ts
 export class ElementsBreadcrumbs extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-chrome-link`;
   readonly #shadow = this.attachShadow({mode: 'open'});
   readonly #boundRender = this.#render.bind(this);
 }
@@ -117,12 +104,11 @@ To summarise, most components start off life looking like:
 
 ```ts
 export class ElementsBreadcrumbs extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-chrome-link`;
   readonly #shadow = this.attachShadow({mode: 'open'});
   readonly #boundRender = this.#render.bind(this);
 
   #render(): void {
-    LitHtml.render(LitHtml.html``, this.#shadow, {host:this});
+    LitHtml.render(html``, this.#shadow, {host:this});
   }
 }
 ```
@@ -135,7 +121,6 @@ To ensure we trigger a render once the component is added to the DOM, we can def
 
 ```ts
 export class ElementsBreadcrumbs extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-chrome-link`;
   readonly #shadow = this.attachShadow({mode: 'open'});
   readonly #boundRender = this.#render.bind(this);
 
@@ -144,7 +129,7 @@ export class ElementsBreadcrumbs extends HTMLElement {
   }
 
   #render(): void {
-    LitHtml.render(LitHtml.html``, this.#shadow, {host:this});
+    LitHtml.render(html``, this.#shadow, {host:this});
   }
 }
 ```
@@ -191,12 +176,12 @@ this.appendChild(breadcrumbs);
 
 ### From another component
 
-If you are rendering a component from within another component, render it within the call to `LitHtml.html` and use the static `litTagName` property:
+If you are rendering a component from within another component, import the module defining it and render within the call to `LitHtml.html`:
 
 ```ts
 // Within some component
-LitHtml.render(LitHtml.html`
-  <${ElementsBreadcrumbs.litTagName}></${ElementsBreadcrumbs>
+LitHtml.render(html`
+  <devtools-elements-breadcrumbs></devtools-elements-breadcrumbs>
 `, this.#shadow, {host: this});
 ```
 
@@ -204,12 +189,12 @@ To pass data, we use [LitHtml's dot syntax](https://lit.dev/docs/templates/expre
 
 ```ts
 // Within some component
-LitHtml.render(LitHtml.html`
-  <${ElementsBreadcrumbs.litTagName} .data=${{
+LitHtml.render(html`
+  <devtools-elements-breadcrumbs .data=${{
     selectedNode: node,
     crumbs: [...],
   }}>
-  </${ElementsBreadcrumbs>
+  </devtools-elements-breadcrumbs>
 `, this.#shadow, {host: this});
 ```
 
@@ -217,12 +202,12 @@ To enforce some type safety, we also use TypeScript's `as` keyword to force the 
 
 ```ts
 // Within some component
-LitHtml.render(LitHtml.html`
-  <${ElementsBreadcrumbs.litTagName} .data=${{
+LitHtml.render(html`
+  <devtools-elements-breadcrumbs .data=${{
     selectedNode: node,
     crumbs: [...],
   } as ElementsBreadcrumbsData}>
-  </${ElementsBreadcrumbs>
+  </devtools-elements-breadcrumbs>
 `, this.#shadow, {host: this});
 ```
 
@@ -271,9 +256,9 @@ Rendering this component within another Lit component would now be done like so:
 
 ```ts
 // Within some component
-LitHtml.render(LitHtml.html`
-  <${ElementsBreadcrumbs.litTagName} .crumbs=${[...]} .selectedNode=${node}>
-  </${ElementsBreadcrumbs>
+LitHtml.render(html`
+  <devtools-elements-breadcrumbs .crumbs=${[...]} .selectedNode=${node}>
+  </devtools-elements-breadcrumbs>
 `, this.#shadow, {host: this});
 ```
 

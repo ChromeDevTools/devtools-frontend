@@ -38,10 +38,7 @@ const {html} = LitHtml;
 const AI_ASSISTANCE_SEND_FEEDBACK = 'https://crbug.com/364805393' as Platform.DevToolsPath.UrlString;
 const AI_ASSISTANCE_HELP = 'https://goo.gle/devtools-ai-assistance' as Platform.DevToolsPath.UrlString;
 
-/*
-* Strings that don't need to be translated at this time.
-*/
-const UIStringsNotTranslate = {
+const UIStrings = {
   /**
    *@description AI assistance UI text for clearing the chat.
    */
@@ -62,6 +59,13 @@ const UIStringsNotTranslate = {
    *@description Announcement text for screen readers when the chat is cleared.
    */
   chatCleared: 'Chat cleared',
+};
+
+/*
+* Strings that don't need to be translated at this time.
+*/
+const UIStringsNotTranslate = {
+
   /**
    *@description Announcement text for screen readers when the conversation starts.
    */
@@ -72,6 +76,8 @@ const UIStringsNotTranslate = {
   answerReady: 'Answer ready',
 };
 
+const str_ = i18n.i18n.registerUIStrings('panels/freestyler/FreestylerPanel.ts', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const lockedString = i18n.i18n.lockedString;
 
 type ViewOutput = {
@@ -85,13 +91,13 @@ function createToolbar(target: HTMLElement, {onClearClick}: {onClearClick: () =>
   const leftToolbar = new UI.Toolbar.Toolbar('', toolbarContainer);
   const rightToolbar = new UI.Toolbar.Toolbar('freestyler-right-toolbar', toolbarContainer);
 
-  const clearButton = new UI.Toolbar.ToolbarButton(
-      lockedString(UIStringsNotTranslate.clearChat), 'clear', undefined, 'freestyler.clear');
+  const clearButton =
+      new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clearChat), 'clear', undefined, 'freestyler.clear');
   clearButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, onClearClick);
   leftToolbar.appendToolbarItem(clearButton);
 
   const link = UI.XLink.XLink.create(
-      AI_ASSISTANCE_SEND_FEEDBACK, lockedString(UIStringsNotTranslate.sendFeedback), undefined, undefined,
+      AI_ASSISTANCE_SEND_FEEDBACK, i18nString(UIStrings.sendFeedback), undefined, undefined,
       'freestyler.send-feedback');
   link.style.setProperty('display', null);
   link.style.setProperty('text-decoration', 'none');
@@ -100,15 +106,14 @@ function createToolbar(target: HTMLElement, {onClearClick}: {onClearClick: () =>
   rightToolbar.appendToolbarItem(linkItem);
 
   rightToolbar.appendSeparator();
-  const helpButton =
-      new UI.Toolbar.ToolbarButton(lockedString(UIStringsNotTranslate.help), 'help', undefined, 'freestyler.help');
+  const helpButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.help), 'help', undefined, 'freestyler.help');
   helpButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, () => {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(AI_ASSISTANCE_HELP);
   });
   rightToolbar.appendToolbarItem(helpButton);
 
-  const settingsButton = new UI.Toolbar.ToolbarButton(
-      lockedString(UIStringsNotTranslate.settings), 'gear', undefined, 'freestyler.settings');
+  const settingsButton =
+      new UI.Toolbar.ToolbarButton(i18nString(UIStrings.settings), 'gear', undefined, 'freestyler.settings');
   settingsButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, () => {
     void UI.ViewManager.ViewManager.instance().showView('chrome-ai');
   });
@@ -429,7 +434,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
     this.#drJonesNetworkAgent = this.#createDrJonesNetworkAgent();
     this.#cancel();
     this.doUpdate();
-    UI.ARIAUtils.alert(lockedString(UIStringsNotTranslate.chatCleared));
+    UI.ARIAUtils.alert(i18nString(UIStrings.chatCleared));
   }
 
   #runAbortController = new AbortController();

@@ -23,7 +23,6 @@ declare global {
 // Use this component to render links to 'chrome://...'-URLs
 // (for which regular <x-link>s do not work).
 export class ChromeLink extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-chrome-link`;
   readonly #shadow = this.attachShadow({mode: 'open'});
   readonly #boundRender = this.#render.bind(this);
   #href: string = '';

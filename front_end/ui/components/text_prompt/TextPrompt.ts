@@ -26,7 +26,6 @@ export class PromptInputEvent extends Event {
 }
 
 export class TextPrompt extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-text-prompt`;
   readonly #shadow = this.attachShadow({mode: 'open'});
   #ariaLabelText = '';
   #prefixText = '';

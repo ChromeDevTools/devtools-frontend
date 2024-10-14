@@ -20,7 +20,6 @@ export interface EventTypes {
 }
 
 export class ColorMixSwatch extends Common.ObjectWrapper.eventMixin<EventTypes, typeof HTMLElement>(HTMLElement) {
-  static readonly litTagName = LitHtml.literal`devtools-color-mix-swatch`;
   private readonly shadow = this.attachShadow({mode: 'open'});
   private colorMixText: string = '';     // color-mix(in srgb, hotpink, white)
   private firstColorText: string = '';   // hotpink

@@ -104,7 +104,6 @@ const KEYS_TREATED_AS_CLICKS = new Set([' ', 'Enter']);
 const ROW_HEIGHT_PIXELS = 20;
 
 export class DataGrid extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-data-grid`;
 
   readonly #shadow = this.attachShadow({mode: 'open'});
   #columns: readonly Column[] = [];

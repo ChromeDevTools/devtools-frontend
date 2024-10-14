@@ -56,7 +56,6 @@ export class OverviewStartRequestedEvent extends Event {
 }
 
 export class CSSOverviewStartView extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-css-overview-start-view`;
   readonly #shadow = this.attachShadow({mode: 'open'});
 
   connectedCallback(): void {

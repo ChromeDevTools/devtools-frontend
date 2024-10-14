@@ -535,7 +535,6 @@ export class BreakpointsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
     void this.#controller.update();
   }
 
-  static readonly litTagName = LitHtml.literal`devtools-breakpoint-view`;
   readonly #shadow = this.attachShadow({mode: 'open'});
 
   #pauseOnUncaughtExceptions: boolean = false;

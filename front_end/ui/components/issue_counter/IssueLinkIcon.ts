@@ -53,7 +53,6 @@ export const extractShortPath = (path: string): string => {
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 export class IssueLinkIcon extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-issue-link-icon`;
   readonly #shadow = this.attachShadow({mode: 'open'});
   // The value `null` indicates that the issue is not available,
   // `undefined` that it is still being resolved.

@@ -113,7 +113,6 @@ const splitViewStyles = new CSSStyleSheet();
 splitViewStyles.replaceSync(styles);
 
 export class SplitView extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-split-view`;
   readonly #shadow = this.attachShadow({mode: 'open'});
   #mousePos = [0, 0];
   #mainAxisIdx = 0;

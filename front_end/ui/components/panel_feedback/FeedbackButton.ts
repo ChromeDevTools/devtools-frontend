@@ -27,7 +27,6 @@ export interface FeedbackButtonData {
   feedbackUrl: Platform.DevToolsPath.UrlString;
 }
 export class FeedbackButton extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-feedback-button`;
   readonly #shadow = this.attachShadow({mode: 'open'});
   readonly #boundRender = this.#render.bind(this);
 

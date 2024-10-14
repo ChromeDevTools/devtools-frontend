@@ -57,7 +57,6 @@ type CSSLengthData = {
 };
 
 export class CSSLength extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-css-length`;
 
   private readonly shadow = this.attachShadow({mode: 'open'});
   private readonly onDraggingValue = this.dragValue.bind(this);

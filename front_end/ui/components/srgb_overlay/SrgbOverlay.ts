@@ -33,7 +33,6 @@ function isColorInSrgbGamut(hsv: Common.ColorUtils.Color3D): boolean {
 }
 
 export class SrgbOverlay extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-spectrum-srgb-overlay`;
   readonly #shadow = this.attachShadow({mode: 'open'});
 
   constructor() {

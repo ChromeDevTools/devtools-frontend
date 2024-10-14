@@ -45,7 +45,6 @@ export type TableDataRow = {
 };
 
 export class Table extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-performance-table`;
 
   readonly #shadow = this.attachShadow({mode: 'open'});
   readonly #boundRender = this.#render.bind(this);

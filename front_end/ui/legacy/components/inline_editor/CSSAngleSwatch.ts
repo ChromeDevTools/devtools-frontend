@@ -17,7 +17,6 @@ export interface CSSAngleSwatchData {
 }
 
 export class CSSAngleSwatch extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-css-angle-swatch`;
 
   private readonly shadow = this.attachShadow({mode: 'open'});
   private angle: Angle = {

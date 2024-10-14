@@ -103,7 +103,6 @@ export type ButtonData = CommonButtonData&(|{
 
 export class Button extends HTMLElement {
   static formAssociated = true;
-  static readonly litTagName = LitHtml.literal`devtools-button`;
   readonly #shadow = this.attachShadow({mode: 'open', delegatesFocus: true});
   readonly #boundOnClick = this.#onClick.bind(this);
   readonly #props: ButtonState = {

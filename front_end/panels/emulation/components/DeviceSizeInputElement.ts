@@ -29,8 +29,6 @@ export class SizeInputElement extends HTMLElement {
   #title: Platform.UIString.LocalizedString;
   #jslogContext: string;
 
-  static readonly litTagName = LitHtml.literal`device-mode-emulation-size-input`;
-
   constructor(title: Platform.UIString.LocalizedString, {jslogContext}: {jslogContext: string}) {
     super();
     this.#title = title;

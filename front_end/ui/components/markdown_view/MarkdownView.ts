@@ -23,7 +23,6 @@ export interface MarkdownViewData {
 }
 
 export class MarkdownView extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-markdown-view`;
   readonly #shadow = this.attachShadow({mode: 'open'});
 
   #tokenData: readonly Marked.Marked.Token[] = [];

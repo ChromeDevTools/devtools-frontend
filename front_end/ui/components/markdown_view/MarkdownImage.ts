@@ -23,7 +23,6 @@ export interface MarkdownImageData {
  * This makes sure that all icons/images are accounted for in markdown.
  */
 export class MarkdownImage extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-markdown-image`;
 
   readonly #shadow = this.attachShadow({mode: 'open'});
   #imageData?: ImageData;

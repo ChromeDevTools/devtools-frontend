@@ -92,7 +92,6 @@ export const enum FilterOption {
 }
 
 export class TreeOutline<TreeNodeDataType> extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-tree-outline`;
   readonly #shadow = this.attachShadow({mode: 'open'});
   #treeData: readonly TreeNode<TreeNodeDataType>[] = [];
   #nodeExpandedMap: Map<string, boolean> = new Map();

@@ -30,7 +30,6 @@ interface BaseLinkSwatchRenderData {
 }
 
 class BaseLinkSwatch extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-base-link-swatch`;
   protected readonly shadow = this.attachShadow({mode: 'open'});
   protected onLinkActivate: (linkText: string, event: MouseEvent|KeyboardEvent) => void = () => undefined;
   #linkElement: HTMLSpanElement|undefined;
@@ -91,7 +90,6 @@ interface CSSVarSwatchRenderData {
 }
 
 export class CSSVarSwatch extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-css-var-swatch`;
   protected readonly shadow = this.attachShadow({mode: 'open'});
   #link: BaseLinkSwatch|undefined;
 
@@ -150,7 +148,6 @@ export interface LinkSwatchRenderData {
 }
 
 export class LinkSwatch extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-link-swatch`;
   protected readonly shadow = this.attachShadow({mode: 'open'});
 
   set data(data: LinkSwatchRenderData) {

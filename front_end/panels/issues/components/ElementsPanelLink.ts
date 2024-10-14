@@ -15,7 +15,6 @@ export interface ElementsPanelLinkData {
   onElementRevealIconMouseLeave: (event?: Event) => void;
 }
 export class ElementsPanelLink extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-elements-panel-link`;
   readonly #shadow = this.attachShadow({mode: 'open'});
 
   #onElementRevealIconClick: ((event?: Event) => void) = () => {};

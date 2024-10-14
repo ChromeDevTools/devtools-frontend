@@ -66,7 +66,6 @@ export interface MenuData {
 const selectedItemCheckmark = new URL('../../../Images/checkmark.svg', import.meta.url).toString();
 
 export class Menu extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-menu`;
   readonly #shadow = this.attachShadow({mode: 'open'});
   readonly #renderBound = this.#render.bind(this);
   #dialog: Dialogs.Dialog.Dialog|null = null;
@@ -430,7 +429,6 @@ interface MenuItemData {
 }
 
 export class MenuItem extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-menu-item`;
   readonly #shadow = this.attachShadow({mode: 'open'});
   readonly #renderBound = this.#render.bind(this);
   connectedCallback(): void {
@@ -496,7 +494,6 @@ interface MenuGroupData {
 }
 
 export class MenuGroup extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-menu-group`;
   readonly #shadow = this.attachShadow({mode: 'open'});
   readonly #renderBound = this.#render.bind(this);
   connectedCallback(): void {

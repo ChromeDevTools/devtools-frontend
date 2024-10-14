@@ -160,7 +160,6 @@ const chevronDownIconUrl = new URL('../../Images/chevron-down.svg', import.meta.
 const chevronUpIconUrl = new URL('../../Images/chevron-up.svg', import.meta.url).toString();
 
 export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponent {
-  static readonly litTagName = LitHtml.literal`devtools-settings-ai-settings-tab`;
   readonly #shadow = this.attachShadow({mode: 'open'});
   #consoleInsightsSetting?: Common.Settings.Setting<boolean>;
   #aiAssistanceSetting?: Common.Settings.Setting<boolean>;

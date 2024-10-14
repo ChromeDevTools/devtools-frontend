@@ -29,7 +29,6 @@ export interface HiddenIssuesMenuData {
 }
 
 export class HideIssuesMenu extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-hide-issues-menu`;
   readonly #shadow: ShadowRoot = this.attachShadow({mode: 'open'});
   #menuItemLabel: Common.UIString.LocalizedString = Common.UIString.LocalizedEmptyString;
   #menuItemAction: () => void = () => {};

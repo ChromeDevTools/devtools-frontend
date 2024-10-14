@@ -128,7 +128,6 @@ export interface HeadersViewComponentData {
 }
 
 export class HeadersViewComponent extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-sources-headers-view`;
   readonly #shadow = this.attachShadow({mode: 'open'});
   readonly #boundRender = this.#render.bind(this);
   #headerOverrides: Persistence.NetworkPersistenceManager.HeaderOverride[] = [];

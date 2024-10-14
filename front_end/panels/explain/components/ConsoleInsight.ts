@@ -214,7 +214,6 @@ export class ConsoleInsight extends HTMLElement {
     return new ConsoleInsight(promptBuilder, aidaClient, aidaAvailability);
   }
 
-  static readonly litTagName = LitHtml.literal`devtools-console-insight`;
   readonly #shadow = this.attachShadow({mode: 'open'});
 
   #promptBuilder: PublicPromptBuilder;
@@ -933,7 +932,6 @@ export class ConsoleInsight extends HTMLElement {
 }
 
 class ConsoleInsightSourcesList extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-console-insight-sources-list`;
   readonly #shadow = this.attachShadow({mode: 'open'});
   #sources: Source[] = [];
   #isPageReloadRecommended = false;

@@ -304,7 +304,6 @@ class MarkdownRendererWithCodeBlock extends MarkdownView.MarkdownView.MarkdownIn
 }
 
 export class FreestylerChatUi extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-freestyler-chat-ui`;
   readonly #shadow = this.attachShadow({mode: 'open'});
   readonly #markdownRenderer = new MarkdownRendererWithCodeBlock();
   #scrollTop?: number;

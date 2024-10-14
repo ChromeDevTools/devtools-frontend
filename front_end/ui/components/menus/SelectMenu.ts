@@ -87,7 +87,6 @@ type TitleCallback = () => LitHtml.TemplateResult;
 const deployMenuArrow = new URL('../../../Images/triangle-down.svg', import.meta.url).toString();
 
 export class SelectMenu extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-select-menu`;
   readonly #shadow = this.attachShadow({mode: 'open'});
   readonly #renderBound = this.#render.bind(this);
   #button: SelectMenuButton|null = null;
@@ -325,7 +324,6 @@ export interface SelectMenuButtonData {
   jslogContext: string;
 }
 export class SelectMenuButton extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-select-menu-button`;
   readonly #shadow = this.attachShadow({mode: 'open'});
   readonly #renderBound = this.#render.bind(this);
   #showButton: HTMLButtonElement|null = null;

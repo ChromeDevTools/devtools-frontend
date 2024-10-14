@@ -16,7 +16,6 @@ interface FloatingButtonData {
 }
 
 export class FloatingButton extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-floating-button`;
   readonly #shadow = this.attachShadow({mode: 'open'});
   #data: FloatingButtonData;
 

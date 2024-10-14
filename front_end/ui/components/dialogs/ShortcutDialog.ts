@@ -11,7 +11,7 @@ import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import {
   type ClickOutsideDialogEvent,
-  Dialog as DialogElement,
+  type Dialog as DialogElement,
   DialogHorizontalAlignment,
   DialogVerticalPosition,
 } from './Dialog.js';
@@ -62,7 +62,6 @@ export interface ShortcutDialogData {
 }
 
 export class ShortcutDialog extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-shortcut-dialog`;
   readonly #shadow = this.attachShadow({mode: 'open'});
   readonly #renderBound = this.#render.bind(this);
 
@@ -123,7 +122,7 @@ export class ShortcutDialog extends HTMLElement {
           title: i18nString(UIStrings.showShortcutTitle),
         } as Buttons.Button.ButtonData}
       ></devtools-button>
-      <${DialogElement.litTagName}
+      <devtools-dialog
         @clickoutsidedialog=${this.#closeDialog}
         .showConnector=${true}
         .origin=${() => {
@@ -170,7 +169,7 @@ export class ShortcutDialog extends HTMLElement {
               </li>`,
           )}
         </ul>
-      </${DialogElement.litTagName}>
+      </devtools-dialog>
       `,
       this.#shadow, {host: this});
     // clang-format on

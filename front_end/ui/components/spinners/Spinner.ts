@@ -9,7 +9,6 @@ import spinnerStyles from './spinner.css.js';
 const {html} = LitHtml;
 
 export class Spinner extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-spinner`;
   readonly #shadow = this.attachShadow({mode: 'open'});
 
   connectedCallback(): void {

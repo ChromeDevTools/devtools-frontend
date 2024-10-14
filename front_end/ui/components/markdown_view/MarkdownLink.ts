@@ -23,7 +23,6 @@ export interface MarkdownLinkData {
  * This makes sure that all links are accounted for and no bad links are introduced to devtools via markdown.
  */
 export class MarkdownLink extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-markdown-link`;
 
   readonly #shadow = this.attachShadow({mode: 'open'});
   #linkText: string = '';

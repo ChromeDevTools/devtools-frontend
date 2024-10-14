@@ -67,7 +67,6 @@ export interface ProvideFeedbackProps {
 }
 
 export class ProvideFeedback extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-provide-feedback`;
   readonly #shadow = this.attachShadow({mode: 'open'});
   #props: ProvideFeedbackProps;
   #isShowingFeedbackForm = false;

@@ -17,7 +17,6 @@ export interface AdornerData {
 }
 
 export class Adorner extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-adorner`;
   name = '';
 
   readonly #shadow = this.attachShadow({mode: 'open'});

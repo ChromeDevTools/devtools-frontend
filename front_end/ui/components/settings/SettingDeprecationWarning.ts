@@ -13,7 +13,6 @@ import settingDeprecationWarning from './settingDeprecationWarning.css.js';
 const {html} = LitHtml;
 
 export class SettingDeprecationWarning extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-setting-deprecation-warning`;
   readonly #shadow = this.attachShadow({mode: 'open'});
 
   connectedCallback(): void {

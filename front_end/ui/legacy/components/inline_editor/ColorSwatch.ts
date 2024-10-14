@@ -41,7 +41,6 @@ export class ClickEvent extends Event {
 }
 
 export class ColorSwatch extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-color-swatch`;
   private readonly shadow = this.attachShadow({mode: 'open'});
   private tooltip: string = i18nString(UIStrings.shiftclickToChangeColorFormat);
   private color: Common.Color.Color|null = null;

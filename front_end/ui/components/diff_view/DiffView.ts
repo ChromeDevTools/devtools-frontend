@@ -267,7 +267,6 @@ export type DiffViewData = {
 };
 
 export class DiffView extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-diff-view`;
 
   readonly #shadow = this.attachShadow({mode: 'open'});
   loaded: Promise<void>;

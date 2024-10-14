@@ -102,7 +102,6 @@ const str_ = i18n.i18n.registerUIStrings('panels/autofill/AutofillView.ts', UISt
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent {
-  static readonly litTagName = LitHtml.literal`devtools-autofill-view`;
   readonly #shadow = this.attachShadow({mode: 'open'});
   readonly #renderBound = this.#render.bind(this);
   #autoOpenViewSetting: Common.Settings.Setting<boolean>;

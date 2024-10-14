@@ -85,7 +85,6 @@ export function getIssueCountsEnumeration(
 }
 
 export class IssueCounter extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-issue-counter`;
   readonly #shadow = this.attachShadow({mode: 'open'});
   #clickHandler: undefined|(() => void) = undefined;
   #tooltipCallback: undefined|(() => void) = undefined;

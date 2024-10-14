@@ -20,7 +20,6 @@ export interface TwoStatesCounterData {
 }
 
 export class TwoStatesCounter extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-two-states-counter`;
   readonly #boundRender = this.#render.bind(this);
   readonly #shadow = this.attachShadow({mode: 'open'});
   #numActive: number = 0;

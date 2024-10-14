@@ -9,7 +9,6 @@ import panelIntroductionStepsStyles from './panelIntroductionSteps.css.js';
 const {html} = LitHtml;
 
 export class PanelIntroductionSteps extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-panel-introduction-steps`;
   readonly #shadow = this.attachShadow({mode: 'open'});
   readonly #boundRender = this.#render.bind(this);
 

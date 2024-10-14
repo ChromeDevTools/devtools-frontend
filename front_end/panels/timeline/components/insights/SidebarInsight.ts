@@ -100,7 +100,6 @@ declare global {
 }
 
 export class SidebarInsight extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-performance-sidebar-insight`;
   readonly #shadow = this.attachShadow({mode: 'open'});
   readonly #boundRender = this.#render.bind(this);
 

@@ -48,7 +48,6 @@ export interface SyncSectionData {
 }
 
 export class SyncSection extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-sync-section`;
   readonly #shadow = this.attachShadow({mode: 'open'});
 
   #syncInfo: Host.InspectorFrontendHostAPI.SyncInformation = {isSyncActive: false};

@@ -43,7 +43,6 @@ export interface Heading {
 }
 
 export class CodeBlock extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-code-block`;
 
   readonly #shadow = this.attachShadow({mode: 'open'});
 

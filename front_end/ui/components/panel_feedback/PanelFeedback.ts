@@ -46,7 +46,6 @@ export interface PanelFeedbackData {
   quickStartLinkText: string;
 }
 export class PanelFeedback extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-panel-feedback`;
   readonly #shadow = this.attachShadow({mode: 'open'});
   readonly #boundRender = this.#render.bind(this);
 

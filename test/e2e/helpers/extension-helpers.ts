@@ -13,7 +13,6 @@ import type {Chrome} from '../../../extension-api/ExtensionAPI.js';
 import type {CdpPage} from '../../../node_modules/puppeteer-core/lib/esm/puppeteer/cdp/Page.js';
 import {getBrowserAndPages, getDevToolsFrontendHostname, getResourcesPath, waitFor} from '../../shared/helper.js';
 
-
 // TODO: Remove once Chromium updates its version of Node.js to 12+.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const globalThis: any = global;

@@ -6,7 +6,6 @@ import * as Common from '../../../core/common/common.js';
 import * as WindowBoundsService from '../../../services/window_bounds/window_bounds.js';
 import * as CodeMirror from '../../../third_party/codemirror.next/codemirror.next.js';
 import * as ThemeSupport from '../../legacy/theme_support/theme_support.js';
-import * as LitHtml from '../../lit-html/lit-html.js';
 import * as CodeHighlighter from '../code_highlighter/code_highlighter.js';
 
 import {baseConfiguration, dummyDarkTheme, dynamicSetting, DynamicSetting, themeSelection} from './config.js';
@@ -19,7 +18,6 @@ declare global {
 }
 
 export class TextEditor extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-text-editor`;
 
   readonly #shadow = this.attachShadow({mode: 'open'});
   #activeEditor: CodeMirror.EditorView|undefined = undefined;

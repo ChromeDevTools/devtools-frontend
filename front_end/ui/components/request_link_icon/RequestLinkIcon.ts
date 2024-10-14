@@ -61,7 +61,6 @@ export const extractShortPath = (path: Platform.DevToolsPath.UrlString): string 
 };
 
 export class RequestLinkIcon extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-request-link-icon`;
   readonly #shadow = this.attachShadow({mode: 'open'});
   #linkToPreflight?: boolean;
   // The value `null` indicates that the request is not available,

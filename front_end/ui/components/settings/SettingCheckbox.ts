@@ -24,7 +24,6 @@ export interface SettingCheckboxData {
  * A simple checkbox that is backed by a boolean setting.
  */
 export class SettingCheckbox extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`setting-checkbox`;
   readonly #shadow = this.attachShadow({mode: 'open'});
 
   #setting?: Common.Settings.Setting<boolean>;

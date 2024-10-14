@@ -29,7 +29,6 @@ export interface IconButtonData {
 }
 
 export class IconButton extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`icon-button`;
   readonly #shadow = this.attachShadow({mode: 'open'});
   #clickHandler: undefined|(() => void) = undefined;
   #groups: IconWithTextData[] = [];

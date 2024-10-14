@@ -42,7 +42,6 @@ const str_ = i18n.i18n.registerUIStrings('ui/components/panel_feedback/PreviewTo
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class PreviewToggle extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-preview-toggle`;
   readonly #shadow = this.attachShadow({mode: 'open'});
 
   #name = '';

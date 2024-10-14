@@ -32,7 +32,6 @@ export class LinkifierClick extends Event {
 }
 
 export class Linkifier extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-linkifier`;
 
   readonly #shadow = this.attachShadow({mode: 'open'});
   #url: Platform.DevToolsPath.UrlString = Platform.DevToolsPath.EmptyUrlString;

@@ -15,7 +15,6 @@ export interface ExpandableListData {
 }
 
 export class ExpandableList extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-expandable-list`;
 
   readonly #shadow = this.attachShadow({mode: 'open'});
   #expanded = false;

@@ -18,7 +18,6 @@ export interface NodeLinkData {
 }
 
 export class NodeLink extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-performance-node-link`;
 
   readonly #shadow = this.attachShadow({mode: 'open'});
   readonly #boundRender = this.#render.bind(this);

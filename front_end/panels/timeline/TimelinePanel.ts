@@ -303,6 +303,10 @@ const UIStrings = {
    * @example {Paint} PH1
    */
   eventSelected: 'Event {PH1} selected',
+  /**
+   *@description Text of a hyperlink to documentation.
+   */
+  learnMore: 'Learn more',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelinePanel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -1083,8 +1087,14 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
     const thirdPartyToolbar = new UI.Toolbar.Toolbar('', throttlingPane.element);
     thirdPartyToolbar.makeVertical();
-    thirdPartyToolbar.appendToolbarItem(
-        this.createSettingCheckbox(this.#thirdPartyTracksSetting, i18nString(UIStrings.showDataAddedByExtensions)));
+    const thirdPartyCheckbox =
+        this.createSettingCheckbox(this.#thirdPartyTracksSetting, i18nString(UIStrings.showDataAddedByExtensions));
+
+    const localLink = UI.XLink.XLink.create(
+        'https://developer.chrome.com/docs/devtools/performance/extension', i18nString(UIStrings.learnMore));
+    localLink.style.paddingLeft = '5px';
+    thirdPartyCheckbox.element.shadowRoot?.appendChild(localLink);
+    thirdPartyToolbar.appendToolbarItem(thirdPartyCheckbox);
 
     this.showSettingsPaneSetting.addChangeListener(this.updateSettingsPaneVisibility.bind(this));
     this.updateSettingsPaneVisibility();

@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
+import {microsecondsTraceWindow} from '../../../testing/TraceHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as Trace from '../trace.js';
 
@@ -349,6 +350,34 @@ describeWithEnvironment('Timing helpers', () => {
       assert.isTrue(timestampIsInBounds(bounds, MicroSeconds(10)));
       assert.isFalse(timestampIsInBounds(bounds, MicroSeconds(0)));
       assert.isFalse(timestampIsInBounds(bounds, MicroSeconds(11)));
+    });
+  });
+
+  describe('WindowFitsInsideBounds', () => {
+    const {windowFitsInsideBounds} = Trace.Helpers.Timing;
+    const {MicroSeconds} = Trace.Types.Timing;
+
+    const bounds: Trace.Types.Timing.TraceWindowMicroSeconds = {
+      min: MicroSeconds(5),
+      max: MicroSeconds(15),
+      range: MicroSeconds(10),
+    };
+
+    it('is true if the window fits within the bounds', () => {
+      assert.isTrue(windowFitsInsideBounds({window: microsecondsTraceWindow(5, 8), bounds}));
+      assert.isTrue(windowFitsInsideBounds({window: microsecondsTraceWindow(5, 14), bounds}));
+      assert.isTrue(windowFitsInsideBounds({window: microsecondsTraceWindow(5, 15), bounds}));
+    });
+
+    it('is false if the window does not fully fit within the bounds', () => {
+      // Outside the left hand edge
+      assert.isFalse(windowFitsInsideBounds({window: microsecondsTraceWindow(0, 8), bounds}));
+      // Outside the right hand edge
+      assert.isFalse(windowFitsInsideBounds({window: microsecondsTraceWindow(10, 20), bounds}));
+      // Outside entirely before
+      assert.isFalse(windowFitsInsideBounds({window: microsecondsTraceWindow(0, 5), bounds}));
+      // Outside entirely after
+      assert.isFalse(windowFitsInsideBounds({window: microsecondsTraceWindow(20, 25), bounds}));
     });
   });
 });

@@ -37,7 +37,7 @@ const UIStrings = {
    * @description Message shown to the user if the DevTools locale is not
    * supported.
    */
-  wrongLocale: 'To use this feature, set your Language preference to English in DevTools Settings',
+  wrongLocale: 'To use this feature, set your language preference to English in DevTools settings',
   /**
    * @description Message shown to the user if the user's region is not
    * supported.

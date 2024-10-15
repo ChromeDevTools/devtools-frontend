@@ -81,6 +81,7 @@ devtools_module("sources") {
     "../../panels/snippets:bundle",
     "../../panels/utils:bundle",
     "../../third_party/diff:bundle",
+    "../../ui/components/floating_button:bundle",
     "../../ui/components/icon_button:bundle",
     "../../ui/components/text_editor:bundle",
     "../../ui/legacy:bundle",

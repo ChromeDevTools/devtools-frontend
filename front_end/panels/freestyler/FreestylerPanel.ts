@@ -403,22 +403,29 @@ export class FreestylerPanel extends UI.Panel.Panel {
         break;
       }
       case 'drjones.network-panel-context': {
-        // TODO(samiyac): Add UMA
         this.#viewOutput.freestylerChatUi?.focusTextInput();
+        Host.userMetrics.actionTaken(Host.UserMetrics.Action.DrJonesOpenedFromNetworkPanel);
         this.#viewProps.agentType = AgentType.DRJONES_NETWORK_REQUEST;
         this.doUpdate();
         break;
       }
       case 'drjones.performance-panel-context': {
-        // TODO(samiyac): Add UMA
         this.#viewOutput.freestylerChatUi?.focusTextInput();
+        Host.userMetrics.actionTaken(Host.UserMetrics.Action.DrJonesOpenedFromPerformancePanel);
         this.#viewProps.agentType = AgentType.DRJONES_PERFORMANCE;
         this.doUpdate();
         break;
       }
-      case 'drjones.sources-panel-context': {
-        // TODO(samiyac): Add UMA
+      case 'drjones.sources-floating-button': {
         this.#viewOutput.freestylerChatUi?.focusTextInput();
+        Host.userMetrics.actionTaken(Host.UserMetrics.Action.DrJonesOpenedFromSourcesPanelFloatingButton);
+        this.#viewProps.agentType = AgentType.DRJONES_FILE;
+        this.doUpdate();
+        break;
+      }
+      case 'drjones.sources-panel-context': {
+        this.#viewOutput.freestylerChatUi?.focusTextInput();
+        Host.userMetrics.actionTaken(Host.UserMetrics.Action.DrJonesOpenedFromSourcesPanel);
         this.#viewProps.agentType = AgentType.DRJONES_FILE;
         this.doUpdate();
         break;
@@ -576,6 +583,7 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
       case 'freestyler.element-panel-context':
       case 'drjones.network-panel-context':
       case 'drjones.performance-panel-context':
+      case 'drjones.sources-floating-button':
       case 'drjones.sources-panel-context': {
         void (async () => {
           const view = UI.ViewManager.ViewManager.instance().view(

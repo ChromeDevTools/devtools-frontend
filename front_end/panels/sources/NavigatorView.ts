@@ -37,6 +37,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
+import * as FloatingButton from '../../ui/components/floating_button/floating_button.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -1375,6 +1376,7 @@ export class NavigatorSourceTreeElement extends UI.TreeOutline.TreeElement {
   readonly node: NavigatorUISourceCodeTreeNode;
   private readonly navigatorView: NavigatorView;
   uiSourceCodeInternal: Workspace.UISourceCode.UISourceCode;
+  private aiButtonContainer?: HTMLElement;
 
   constructor(
       navigatorView: NavigatorView, uiSourceCode: Workspace.UISourceCode.UISourceCode, title: string,
@@ -1425,6 +1427,28 @@ export class NavigatorSourceTreeElement extends UI.TreeOutline.TreeElement {
     UI.ARIAUtils.setLabel(this.listItemElement, `${this.uiSourceCodeInternal.name()}, ${this.nodeType}`);
   }
 
+  private createAiButton(): void {
+    if (!UI.ActionRegistry.ActionRegistry.instance().hasAction('drjones.sources-floating-button')) {
+      return;
+    }
+    const action = UI.ActionRegistry.ActionRegistry.instance().getAction('drjones.sources-floating-button');
+    if (!this.aiButtonContainer) {
+      this.aiButtonContainer = this.listItemElement.createChild('span', 'ai-button-container');
+      const floatingButton = new FloatingButton.FloatingButton.FloatingButton({
+        iconName: 'smart-assistant',
+      });
+      floatingButton.addEventListener('click', ev => {
+        ev.stopPropagation();
+        this.navigatorView.sourceSelected(this.uiSourceCode, false);
+        void action.execute();
+      }, {capture: true});
+      floatingButton.addEventListener('mousedown', ev => {
+        ev.stopPropagation();
+      }, {capture: true});
+      this.aiButtonContainer.appendChild(floatingButton);
+    }
+  }
+
   get uiSourceCode(): Workspace.UISourceCode.UISourceCode {
     return this.uiSourceCodeInternal;
   }
@@ -1434,6 +1458,7 @@ export class NavigatorSourceTreeElement extends UI.TreeOutline.TreeElement {
     this.listItemElement.addEventListener('click', this.onclick.bind(this), false);
     this.listItemElement.addEventListener('contextmenu', this.handleContextMenuEvent.bind(this), false);
     this.listItemElement.addEventListener('dragstart', this.ondragstart.bind(this), false);
+    this.createAiButton();
   }
 
   private shouldRenameOnMouseDown(): boolean {

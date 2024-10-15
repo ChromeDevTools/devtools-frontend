@@ -570,7 +570,11 @@ export enum Action {
   InsightsReminderTeaserAbortedInSettings = 167,
   GeneratingInsightWithoutDisclaimer = 168,
   FreestylerOpenedFromElementsPanelFloatingButton = 169,
-  MAX_VALUE = 170,
+  DrJonesOpenedFromNetworkPanel = 170,
+  DrJonesOpenedFromSourcesPanel = 171,
+  DrJonesOpenedFromSourcesPanelFloatingButton = 172,
+  DrJonesOpenedFromPerformancePanel = 173,
+  MAX_VALUE = 174,
   /* eslint-enable @typescript-eslint/naming-convention */
 }
 

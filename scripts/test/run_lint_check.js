@@ -12,6 +12,9 @@ const globby = require('globby');
 const yargs = require('yargs/yargs');
 const {hideBin} = require('yargs/helpers');
 const childProcess = require('child_process');
+const {promisify} = require('util');
+const spawnAsync = promisify(childProcess.spawnSync);
+
 const {
   devtoolsRootPath,
   litAnalyzerExecutablePath,
@@ -30,12 +33,7 @@ const flags = yargs(hideBin(process.argv))
                         yargs.positional('files', {
                           describe: 'File(s), glob(s), or directories',
                           type: 'array',
-                          default: [
-                            'front_end',
-                            'inspector_overlay',
-                            'scripts',
-                            'test',
-                          ],
+                          default: ['front_end', 'inspector_overlay', 'scripts', 'test'],
                         });
                       })
                   .parse();
@@ -56,7 +54,9 @@ async function runESLint(files) {
   // This was originally reported in https://github.com/eslint/eslint/issues/9977
   // The suggested workaround is to use the CLIEngine to pre-emptively filter out these
   // problematic paths.
-  files = await Promise.all(files.map(async file => (await cli.isPathIgnored(file)) ? null : file));
+  files = await Promise.all(
+      files.map(async file => ((await cli.isPathIgnored(file)) ? null : file)),
+  );
   files = files.filter(file => file !== null);
 
   const results = await cli.lintFiles(files);
@@ -90,19 +90,63 @@ async function runStylelint(files) {
   return !errored;
 }
 
-function runLitAnalyzer(files) {
-  const rules = {'no-missing-import': 'error', 'no-unknown-tag-name': 'error', 'no-complex-attribute-binding': 'off'};
-  const args =
-      [litAnalyzerExecutablePath(), ...Object.entries(rules).flatMap(([k, v]) => [`--rules.${k}`, v]), ...files];
-  const result =
-      childProcess.spawnSync(nodePath(), args, {encoding: 'utf-8', cwd: devtoolsRootPath(), stdio: 'inherit'});
-  return result.status === 0;
+/**
+ * @param {string[]} files
+ */
+async function runLitAnalyzer(files) {
+  const rules = {
+    'no-missing-import': 'error',
+    'no-unknown-tag-name': 'error',
+    'no-complex-attribute-binding': 'off',
+  };
+  const getLitAnalyzerResult = async subsetFiles => {
+    const args = [
+      litAnalyzerExecutablePath(),
+      ...Object.entries(rules).flatMap(([k, v]) => [`--rules.${k}`, v]),
+      ...subsetFiles,
+    ];
+    const result = await spawnAsync(nodePath(), args, {
+      encoding: 'utf-8',
+      cwd: devtoolsRootPath(),
+      stdio: 'inherit',
+    });
+    return result.status === 0;
+  };
+
+  const getSplitFiles = filesToSplit => {
+    if (process.platform !== 'win32') {
+      return [filesToSplit];
+    }
+
+    const splitFiles = [[]];
+    let index = 0;
+    for (const file of filesToSplit) {
+      // Windows max input is 8191 so we should be conservative
+      if (splitFiles[index].join(' ').length + file.length < 6144) {
+        splitFiles[index].push(file);
+      } else {
+        index++;
+        splitFiles[index] = [file];
+      }
+    }
+    return splitFiles;
+  };
+
+  const result = await Promise.all(
+      getSplitFiles(files).map(filesBatch => {
+        return getLitAnalyzerResult(filesBatch);
+      }),
+  );
+
+  return result.every(r => r);
 }
 
 async function run() {
   const scripts = [];
   const styles = [];
-  for (const path of globby.sync(flags.files, {expandDirectories: {extensions: ['css', 'js', 'ts']}})) {
+  for (const path of globby.sync(flags.files, {
+         expandDirectories: {extensions: ['css', 'js', 'ts']},
+       })) {
     if (extname(path) === '.css') {
       styles.push(path);
     } else {
@@ -113,7 +157,7 @@ async function run() {
   let succeed = true;
   if (scripts.length !== 0) {
     succeed &&= await runESLint(scripts);
-    succeed &&= runLitAnalyzer(scripts);
+    succeed &&= await runLitAnalyzer(scripts);
   }
   if (styles.length !== 0) {
     succeed &&= await runStylelint(styles);

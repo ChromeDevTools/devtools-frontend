@@ -42,6 +42,7 @@ import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as Snippets from '../snippets/snippets.js';
+import {PanelUtils} from '../utils/utils.js';
 
 import navigatorTreeStyles from './navigatorTree.css.js';
 import navigatorViewStyles from './navigatorView.css.js';
@@ -1397,29 +1398,7 @@ export class NavigatorSourceTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   updateIcon(): void {
-    const binding = Persistence.Persistence.PersistenceImpl.instance().binding(this.uiSourceCodeInternal);
-    const networkPersistenceManager = Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance();
-    let iconType = 'document';
-    let iconStyles: string[] = [];
-    if (binding) {
-      if (Snippets.ScriptSnippetFileSystem.isSnippetsUISourceCode(binding.fileSystem)) {
-        iconType = 'snippet';
-      }
-      const badgeIsPurple = networkPersistenceManager.project() === binding.fileSystem.project();
-      iconStyles = badgeIsPurple ? ['dot', 'purple'] : ['dot', 'green'];
-    } else if (networkPersistenceManager.isActiveHeaderOverrides(this.uiSourceCode)) {
-      iconStyles = ['dot', 'purple'];
-    } else {
-      if (Snippets.ScriptSnippetFileSystem.isSnippetsUISourceCode(this.uiSourceCodeInternal)) {
-        iconType = 'snippet';
-      }
-    }
-
-    const icon = IconButton.Icon.create(iconType, iconStyles.join(' '));
-    if (binding) {
-      UI.Tooltip.Tooltip.install(
-          icon, Persistence.PersistenceUtils.PersistenceUtils.tooltipForUISourceCode(this.uiSourceCodeInternal));
-    }
+    const icon = PanelUtils.getIconForSourceFile(this.uiSourceCodeInternal);
     this.setLeadingIcons([icon]);
   }
 

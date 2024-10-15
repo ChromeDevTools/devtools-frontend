@@ -801,7 +801,7 @@ export class TreeElement {
     }
   }
 
-  setLeadingIcons(icons: IconButton.Icon.Icon[]): void {
+  setLeadingIcons(icons: IconButton.Icon.Icon[]|IconButton.FileSourceIcon.FileSourceIcon[]): void {
     if (!this.leadingIconsElement && !icons.length) {
       return;
     }

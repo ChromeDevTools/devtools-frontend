@@ -92,6 +92,7 @@ devtools_module("sources") {
     "../../ui/legacy/components/source_frame:bundle",
     "../../ui/legacy/components/utils:bundle",
     "../../ui/visual_logging:bundle",
+    "../utils:bundle",
     "./components:bundle",
   ]
 }

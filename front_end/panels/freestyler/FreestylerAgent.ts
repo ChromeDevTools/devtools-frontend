@@ -529,7 +529,7 @@ export class FreestylerAgent extends AiAgent {
       }
     }
 
-    return output;
+    return output.trim();
   }
 
   async * handleAction(action: string, rpcId?: number): AsyncGenerator<SideEffectResponse, ActionResponse, void> {

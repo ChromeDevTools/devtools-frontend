@@ -242,8 +242,7 @@ TCP end time: ${timing?.connectEnd}
 SSL start time: ${timing?.sslStart}
 SSL end time: ${timing?.sslEnd}
 Sending start: ${timing?.sendStart}
-Sending end: ${timing?.sendEnd}
-`;
+Sending end: ${timing?.sendEnd}`;
 }
 
 function formatRequestInitiated(
@@ -272,7 +271,7 @@ function formatRequestInitiatorChain(request: SDK.NetworkRequest.NetworkRequest)
     }
   }
 
-  return initiatorChain;
+  return initiatorChain.trim();
 }
 
 export function formatNetworkRequest(request: SDK.NetworkRequest.NetworkRequest): string {

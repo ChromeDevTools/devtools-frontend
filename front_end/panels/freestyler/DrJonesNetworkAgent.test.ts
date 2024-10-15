@@ -235,16 +235,14 @@ TCP end time: 0
 SSL start time: 0
 SSL end time: 0
 Sending start: 800
-Sending end: 900
-`,
+Sending end: 900`,
             },
             {
               title: 'Request Initiator Chain',
               text: `- URL: https://www.initiator.com
 \t- URL: https://www.example.com
 \t\t- URL: https://www.example.com/1
-\t\t- URL: https://www.example.com/2
-`,
+\t\t- URL: https://www.example.com/2`,
             },
           ],
         },
@@ -283,13 +281,11 @@ SSL end time: 0
 Sending start: 800
 Sending end: 900
 
-
 Request Initiator Chain:
 - URL: https://www.initiator.com
 \t- URL: https://www.example.com
 \t\t- URL: https://www.example.com/1
 \t\t- URL: https://www.example.com/2
-
 
 # User request
 

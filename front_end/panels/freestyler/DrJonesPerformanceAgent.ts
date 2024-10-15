@@ -170,7 +170,7 @@ function createContextDetailsForDrJonesPerformanceAgent(
   return [
     {
       title: 'Selected stack trace',
-      text: JSON.stringify(selectedStackTrace),
+      text: JSON.stringify(selectedStackTrace).trim(),
     },
   ];
 }

@@ -175,6 +175,11 @@ describeWithEnvironment('FreestylerPanel', () => {
     it('should allow logging if configured', () => {
       // @ts-expect-error global test variable
       setFreestylerServerSideLoggingEnabled(true);
+      const stub = getGetHostConfigStub({
+        aidaAvailability: {
+          disallowLogging: false,
+        },
+      });
 
       const aidaClient = getTestAidaClient();
       new Freestyler.FreestylerPanel(mockView, {
@@ -189,6 +194,7 @@ describeWithEnvironment('FreestylerPanel', () => {
       sinon.assert.match(aidaClient.registerClientEvent.firstCall.firstArg, sinon.match({
         disable_user_content_logging: false,
       }));
+      stub.restore();
     });
 
     it('should send POSITIVE rating to aida client when the user clicks on positive rating', () => {

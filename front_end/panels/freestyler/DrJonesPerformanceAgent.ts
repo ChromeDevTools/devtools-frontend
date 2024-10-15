@@ -80,9 +80,11 @@ const lockedString = i18n.i18n.lockedString;
  */
 export class DrJonesPerformanceAgent extends AiAgent {
   readonly preamble = preamble;
-  readonly clientFeature = Host.AidaClient.ClientFeature.CHROME_FREESTYLER;
-  // TODO(b/369822364): use a feature param instead.
-  readonly userTier = 'BETA';
+  readonly clientFeature = Host.AidaClient.ClientFeature.CHROME_DRJONES_PERFORMANCE_AGENT;
+  get userTier(): string|undefined {
+    const config = Common.Settings.Settings.instance().getHostConfig();
+    return config.devToolsAiAssistancePerformanceAgentDogfood?.userTier;
+  }
   get options(): AidaRequestOptions {
     const config = Common.Settings.Settings.instance().getHostConfig();
     const temperature = AiAgent.validTemperature(config.devToolsAiAssistancePerformanceAgentDogfood?.temperature);

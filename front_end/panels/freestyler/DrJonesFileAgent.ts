@@ -73,8 +73,10 @@ const MAX_FILE_SIZE = 50000;
 export class DrJonesFileAgent extends AiAgent {
   readonly preamble = preamble;
   readonly clientFeature = Host.AidaClient.ClientFeature.CHROME_DRJONES_FILE_AGENT;
-  // TODO(b/369822364): use a feature param instead.
-  readonly userTier = 'BETA';
+  get userTier(): string|undefined {
+    const config = Common.Settings.Settings.instance().getHostConfig();
+    return config.devToolsAiAssistanceFileAgentDogfood?.userTier;
+  }
   get options(): AidaRequestOptions {
     const config = Common.Settings.Settings.instance().getHostConfig();
     const temperature = AiAgent.validTemperature(config.devToolsAiAssistanceFileAgentDogfood?.temperature);

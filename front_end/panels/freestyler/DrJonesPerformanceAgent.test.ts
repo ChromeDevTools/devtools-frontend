@@ -113,7 +113,7 @@ describeWithEnvironment('DrJonesPerformanceAgent', () => {
               model_id: 'test model',
               temperature: undefined,
             },
-            client_feature: 2,
+            client_feature: 8,
             functionality_type: 1,
           },
       );

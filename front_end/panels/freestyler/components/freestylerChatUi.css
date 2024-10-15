@@ -243,7 +243,8 @@
     white-space: nowrap;
     max-width: var(--sys-size-32);
 
-    .icon {
+    .icon,
+    devtools-file-source-icon {
       display: inline-flex;
       vertical-align: top;
       margin-right: var(--sys-size-3);

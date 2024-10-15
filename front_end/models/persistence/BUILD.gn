@@ -62,6 +62,7 @@ devtools_entrypoint("bundle") {
     "../../panels/recorder/*",
     "../../panels/snippets/*",
     "../../panels/sources/*",
+    "../../panels/utils/*",
     "../../testing/*",
     "../bindings:unittests",
     "../workspace:unittests",

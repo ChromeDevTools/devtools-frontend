@@ -9,7 +9,10 @@ import("../../../../scripts/build/typescript/typescript.gni")
 import("../visibility.gni")
 
 generate_css("css_files") {
-  sources = [ "iconButton.css" ]
+  sources = [
+    "fileSourceIcon.css",
+    "iconButton.css",
+  ]
 }
 
 generate_css("legacy_css_files") {
@@ -20,6 +23,7 @@ generate_css("legacy_css_files") {
 
 devtools_module("icon_button") {
   sources = [
+    "FileSourceIcon.ts",
     "Icon.ts",
     "IconButton.ts",
   ]
@@ -42,6 +46,7 @@ devtools_entrypoint("bundle") {
   visibility = [
     "../../../entrypoints/inspector_main/*",
     "../../../entrypoints/main/*",
+    "../../../panels/utils/*",
     "../../legacy/*",
     "../../legacy/components/color_picker/*",
     "../../legacy/components/object_ui/*",
@@ -54,6 +59,7 @@ ts_library("unittests") {
   testonly = true
 
   sources = [
+    "FileSourceIcon.test.ts",
     "Icon.test.ts",
     "IconButton.test.ts",
   ]

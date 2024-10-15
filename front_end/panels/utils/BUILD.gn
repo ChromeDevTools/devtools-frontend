@@ -13,7 +13,12 @@ devtools_entrypoint("bundle") {
     "../../core/common:bundle",
     "../../core/sdk:bundle",
     "../../models/formatter:bundle",
+    "../../models/persistence:bundle",
+    "../../models/workspace:bundle",
     "../../ui/components/diff_view:bundle",
+    "../../ui/components/icon_button:bundle",
+    "../../ui/legacy:bundle",
+    "../snippets:bundle",
   ]
 
   visibility = [ "../*" ]

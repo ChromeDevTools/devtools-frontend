@@ -761,12 +761,13 @@ export class FreestylerChatUi extends HTMLElement {
       return html`${LitHtml.nothing}`;
     }
 
-    // TODO(b/371947238): Add icon
+    const icon = PanelUtils.getIconForSourceFile(this.#props.selectedFile);
+
     // clang-format off
     return html`<div class="select-element">
     <div role=button class=${resourceClass}
     @click=${this.#props.onSelectedFileRequestClick}>
-      ${this.#props.selectedFile?.displayName()}
+      ${icon}${this.#props.selectedFile?.displayName()}
     </div></div>`;
     // clang-format on
   }

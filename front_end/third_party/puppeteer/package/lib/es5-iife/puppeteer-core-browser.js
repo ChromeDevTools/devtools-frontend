@@ -2853,7 +2853,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   /**
    * @internal
    */
-  const packageVersion = '23.5.2';
+  const packageVersion = '23.5.3';
 
   /**
    * @license
@@ -4256,7 +4256,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   var __addDisposableResource$b = undefined && undefined.__addDisposableResource || function (env, value, async) {
     if (value !== null && value !== void 0) {
       if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
-      var dispose;
+      var dispose, inner;
       if (async) {
         if (!Symbol.asyncDispose) throw new TypeError("Symbol.asyncDispose is not defined.");
         dispose = value[Symbol.asyncDispose];
@@ -4264,8 +4264,16 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       if (dispose === void 0) {
         if (!Symbol.dispose) throw new TypeError("Symbol.dispose is not defined.");
         dispose = value[Symbol.dispose];
+        if (async) inner = dispose;
       }
       if (typeof dispose !== "function") throw new TypeError("Object not disposable.");
+      if (inner) dispose = function () {
+        try {
+          inner.call(this);
+        } catch (e) {
+          return Promise.reject(e);
+        }
+      };
       env.stack.push({
         value: value,
         dispose: dispose,
@@ -4428,7 +4436,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   var __addDisposableResource$a = undefined && undefined.__addDisposableResource || function (env, value, async) {
     if (value !== null && value !== void 0) {
       if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
-      var dispose;
+      var dispose, inner;
       if (async) {
         if (!Symbol.asyncDispose) throw new TypeError("Symbol.asyncDispose is not defined.");
         dispose = value[Symbol.asyncDispose];
@@ -4436,8 +4444,16 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       if (dispose === void 0) {
         if (!Symbol.dispose) throw new TypeError("Symbol.dispose is not defined.");
         dispose = value[Symbol.dispose];
+        if (async) inner = dispose;
       }
       if (typeof dispose !== "function") throw new TypeError("Object not disposable.");
+      if (inner) dispose = function () {
+        try {
+          inner.call(this);
+        } catch (e) {
+          return Promise.reject(e);
+        }
+      };
       env.stack.push({
         value: value,
         dispose: dispose,
@@ -5375,7 +5391,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   var __addDisposableResource$9 = undefined && undefined.__addDisposableResource || function (env, value, async) {
     if (value !== null && value !== void 0) {
       if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
-      var dispose;
+      var dispose, inner;
       if (async) {
         if (!Symbol.asyncDispose) throw new TypeError("Symbol.asyncDispose is not defined.");
         dispose = value[Symbol.asyncDispose];
@@ -5383,8 +5399,16 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       if (dispose === void 0) {
         if (!Symbol.dispose) throw new TypeError("Symbol.dispose is not defined.");
         dispose = value[Symbol.dispose];
+        if (async) inner = dispose;
       }
       if (typeof dispose !== "function") throw new TypeError("Object not disposable.");
+      if (inner) dispose = function () {
+        try {
+          inner.call(this);
+        } catch (e) {
+          return Promise.reject(e);
+        }
+      };
       env.stack.push({
         value: value,
         dispose: dispose,
@@ -5586,7 +5610,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   var __addDisposableResource$8 = undefined && undefined.__addDisposableResource || function (env, value, async) {
     if (value !== null && value !== void 0) {
       if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
-      var dispose;
+      var dispose, inner;
       if (async) {
         if (!Symbol.asyncDispose) throw new TypeError("Symbol.asyncDispose is not defined.");
         dispose = value[Symbol.asyncDispose];
@@ -5594,8 +5618,16 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       if (dispose === void 0) {
         if (!Symbol.dispose) throw new TypeError("Symbol.dispose is not defined.");
         dispose = value[Symbol.dispose];
+        if (async) inner = dispose;
       }
       if (typeof dispose !== "function") throw new TypeError("Object not disposable.");
+      if (inner) dispose = function () {
+        try {
+          inner.call(this);
+        } catch (e) {
+          return Promise.reject(e);
+        }
+      };
       env.stack.push({
         value: value,
         dispose: dispose,
@@ -5852,7 +5884,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   var __addDisposableResource$7 = undefined && undefined.__addDisposableResource || function (env, value, async) {
     if (value !== null && value !== void 0) {
       if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
-      var dispose;
+      var dispose, inner;
       if (async) {
         if (!Symbol.asyncDispose) throw new TypeError("Symbol.asyncDispose is not defined.");
         dispose = value[Symbol.asyncDispose];
@@ -5860,8 +5892,16 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       if (dispose === void 0) {
         if (!Symbol.dispose) throw new TypeError("Symbol.dispose is not defined.");
         dispose = value[Symbol.dispose];
+        if (async) inner = dispose;
       }
       if (typeof dispose !== "function") throw new TypeError("Object not disposable.");
+      if (inner) dispose = function () {
+        try {
+          inner.call(this);
+        } catch (e) {
+          return Promise.reject(e);
+        }
+      };
       env.stack.push({
         value: value,
         dispose: dispose,
@@ -7501,7 +7541,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   var __addDisposableResource$6 = undefined && undefined.__addDisposableResource || function (env, value, async) {
     if (value !== null && value !== void 0) {
       if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
-      var dispose;
+      var dispose, inner;
       if (async) {
         if (!Symbol.asyncDispose) throw new TypeError("Symbol.asyncDispose is not defined.");
         dispose = value[Symbol.asyncDispose];
@@ -7509,8 +7549,16 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       if (dispose === void 0) {
         if (!Symbol.dispose) throw new TypeError("Symbol.dispose is not defined.");
         dispose = value[Symbol.dispose];
+        if (async) inner = dispose;
       }
       if (typeof dispose !== "function") throw new TypeError("Object not disposable.");
+      if (inner) dispose = function () {
+        try {
+          inner.call(this);
+        } catch (e) {
+          return Promise.reject(e);
+        }
+      };
       env.stack.push({
         value: value,
         dispose: dispose,
@@ -8274,7 +8322,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   var __addDisposableResource$5 = undefined && undefined.__addDisposableResource || function (env, value, async) {
     if (value !== null && value !== void 0) {
       if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
-      var dispose;
+      var dispose, inner;
       if (async) {
         if (!Symbol.asyncDispose) throw new TypeError("Symbol.asyncDispose is not defined.");
         dispose = value[Symbol.asyncDispose];
@@ -8282,8 +8330,16 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       if (dispose === void 0) {
         if (!Symbol.dispose) throw new TypeError("Symbol.dispose is not defined.");
         dispose = value[Symbol.dispose];
+        if (async) inner = dispose;
       }
       if (typeof dispose !== "function") throw new TypeError("Object not disposable.");
+      if (inner) dispose = function () {
+        try {
+          inner.call(this);
+        } catch (e) {
+          return Promise.reject(e);
+        }
+      };
       env.stack.push({
         value: value,
         dispose: dispose,
@@ -10129,7 +10185,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   var __addDisposableResource$4 = undefined && undefined.__addDisposableResource || function (env, value, async) {
     if (value !== null && value !== void 0) {
       if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
-      var dispose;
+      var dispose, inner;
       if (async) {
         if (!Symbol.asyncDispose) throw new TypeError("Symbol.asyncDispose is not defined.");
         dispose = value[Symbol.asyncDispose];
@@ -10137,8 +10193,16 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       if (dispose === void 0) {
         if (!Symbol.dispose) throw new TypeError("Symbol.dispose is not defined.");
         dispose = value[Symbol.dispose];
+        if (async) inner = dispose;
       }
       if (typeof dispose !== "function") throw new TypeError("Object not disposable.");
+      if (inner) dispose = function () {
+        try {
+          inner.call(this);
+        } catch (e) {
+          return Promise.reject(e);
+        }
+      };
       env.stack.push({
         value: value,
         dispose: dispose,
@@ -12393,7 +12457,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   var __addDisposableResource$3 = undefined && undefined.__addDisposableResource || function (env, value, async) {
     if (value !== null && value !== void 0) {
       if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
-      var dispose;
+      var dispose, inner;
       if (async) {
         if (!Symbol.asyncDispose) throw new TypeError("Symbol.asyncDispose is not defined.");
         dispose = value[Symbol.asyncDispose];
@@ -12401,8 +12465,16 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       if (dispose === void 0) {
         if (!Symbol.dispose) throw new TypeError("Symbol.dispose is not defined.");
         dispose = value[Symbol.dispose];
+        if (async) inner = dispose;
       }
       if (typeof dispose !== "function") throw new TypeError("Object not disposable.");
+      if (inner) dispose = function () {
+        try {
+          inner.call(this);
+        } catch (e) {
+          return Promise.reject(e);
+        }
+      };
       env.stack.push({
         value: value,
         dispose: dispose,
@@ -12549,7 +12621,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   var __addDisposableResource$2 = undefined && undefined.__addDisposableResource || function (env, value, async) {
     if (value !== null && value !== void 0) {
       if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
-      var dispose;
+      var dispose, inner;
       if (async) {
         if (!Symbol.asyncDispose) throw new TypeError("Symbol.asyncDispose is not defined.");
         dispose = value[Symbol.asyncDispose];
@@ -12557,8 +12629,16 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       if (dispose === void 0) {
         if (!Symbol.dispose) throw new TypeError("Symbol.dispose is not defined.");
         dispose = value[Symbol.dispose];
+        if (async) inner = dispose;
       }
       if (typeof dispose !== "function") throw new TypeError("Object not disposable.");
+      if (inner) dispose = function () {
+        try {
+          inner.call(this);
+        } catch (e) {
+          return Promise.reject(e);
+        }
+      };
       env.stack.push({
         value: value,
         dispose: dispose,
@@ -15279,7 +15359,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   var __addDisposableResource$1 = undefined && undefined.__addDisposableResource || function (env, value, async) {
     if (value !== null && value !== void 0) {
       if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
-      var dispose;
+      var dispose, inner;
       if (async) {
         if (!Symbol.asyncDispose) throw new TypeError("Symbol.asyncDispose is not defined.");
         dispose = value[Symbol.asyncDispose];
@@ -15287,8 +15367,16 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       if (dispose === void 0) {
         if (!Symbol.dispose) throw new TypeError("Symbol.dispose is not defined.");
         dispose = value[Symbol.dispose];
+        if (async) inner = dispose;
       }
       if (typeof dispose !== "function") throw new TypeError("Object not disposable.");
+      if (inner) dispose = function () {
+        try {
+          inner.call(this);
+        } catch (e) {
+          return Promise.reject(e);
+        }
+      };
       env.stack.push({
         value: value,
         dispose: dispose,
@@ -20125,7 +20213,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   var __addDisposableResource = undefined && undefined.__addDisposableResource || function (env, value, async) {
     if (value !== null && value !== void 0) {
       if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
-      var dispose;
+      var dispose, inner;
       if (async) {
         if (!Symbol.asyncDispose) throw new TypeError("Symbol.asyncDispose is not defined.");
         dispose = value[Symbol.asyncDispose];
@@ -20133,8 +20221,16 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       if (dispose === void 0) {
         if (!Symbol.dispose) throw new TypeError("Symbol.dispose is not defined.");
         dispose = value[Symbol.dispose];
+        if (async) inner = dispose;
       }
       if (typeof dispose !== "function") throw new TypeError("Object not disposable.");
+      if (inner) dispose = function () {
+        try {
+          inner.call(this);
+        } catch (e) {
+          return Promise.reject(e);
+        }
+      };
       env.stack.push({
         value: value,
         dispose: dispose,
@@ -23960,9 +24056,9 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    * @internal
    */
   const PUPPETEER_REVISIONS = Object.freeze({
-    chrome: '129.0.6668.91',
-    'chrome-headless-shell': '129.0.6668.91',
-    firefox: 'stable_131.0'
+    chrome: '129.0.6668.100',
+    'chrome-headless-shell': '129.0.6668.100',
+    firefox: 'stable_131.0.2'
   });
 
   /**

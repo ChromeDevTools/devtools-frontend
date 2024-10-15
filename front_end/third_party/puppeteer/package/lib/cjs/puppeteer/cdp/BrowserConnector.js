@@ -5,7 +5,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports._connectToCdpBrowser = void 0;
+exports._connectToCdpBrowser = _connectToCdpBrowser;
 const util_js_1 = require("../common/util.js");
 const Browser_js_1 = require("./Browser.js");
 const Connection_js_1 = require("./Connection.js");
@@ -28,5 +28,4 @@ async function _connectToCdpBrowser(connectionTransport, url, options) {
     }, targetFilter, isPageTarget);
     return browser;
 }
-exports._connectToCdpBrowser = _connectToCdpBrowser;
 //# sourceMappingURL=BrowserConnector.js.map

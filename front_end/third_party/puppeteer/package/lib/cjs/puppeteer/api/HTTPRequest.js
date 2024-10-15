@@ -1,6 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.handleError = exports.STATUS_TEXTS = exports.headersArray = exports.InterceptResolutionAction = exports.HTTPRequest = exports.DEFAULT_INTERCEPT_RESOLUTION_PRIORITY = void 0;
+exports.STATUS_TEXTS = exports.InterceptResolutionAction = exports.HTTPRequest = exports.DEFAULT_INTERCEPT_RESOLUTION_PRIORITY = void 0;
+exports.headersArray = headersArray;
+exports.handleError = handleError;
 const util_js_1 = require("../common/util.js");
 const assert_js_1 = require("../util/assert.js");
 const encoding_js_1 = require("../util/encoding.js");
@@ -357,7 +359,6 @@ function headersArray(headers) {
     }
     return result;
 }
-exports.headersArray = headersArray;
 /**
  * @internal
  *
@@ -463,5 +464,4 @@ function handleError(error) {
     // errors.
     (0, util_js_1.debugError)(error);
 }
-exports.handleError = handleError;
 //# sourceMappingURL=HTTPRequest.js.map

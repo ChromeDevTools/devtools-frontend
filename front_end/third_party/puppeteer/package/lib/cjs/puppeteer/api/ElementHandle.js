@@ -41,7 +41,7 @@ var __esDecorate = (this && this.__esDecorate) || function (ctor, descriptorIn, 
 var __addDisposableResource = (this && this.__addDisposableResource) || function (env, value, async) {
     if (value !== null && value !== void 0) {
         if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
-        var dispose;
+        var dispose, inner;
         if (async) {
             if (!Symbol.asyncDispose) throw new TypeError("Symbol.asyncDispose is not defined.");
             dispose = value[Symbol.asyncDispose];
@@ -49,8 +49,10 @@ var __addDisposableResource = (this && this.__addDisposableResource) || function
         if (dispose === void 0) {
             if (!Symbol.dispose) throw new TypeError("Symbol.dispose is not defined.");
             dispose = value[Symbol.dispose];
+            if (async) inner = dispose;
         }
         if (typeof dispose !== "function") throw new TypeError("Object not disposable.");
+        if (inner) dispose = function() { try { inner.call(this); } catch (e) { return Promise.reject(e); } };
         env.stack.push({ value: value, dispose: dispose, async: async });
     }
     else if (async) {
@@ -88,7 +90,8 @@ var __setFunctionName = (this && this.__setFunctionName) || function (f, name, p
     return Object.defineProperty(f, "name", { configurable: true, value: prefix ? "".concat(prefix, " ", name) : name });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ElementHandle = exports.bindIsolatedHandle = void 0;
+exports.ElementHandle = void 0;
+exports.bindIsolatedHandle = bindIsolatedHandle;
 const GetQueryHandler_js_1 = require("../common/GetQueryHandler.js");
 const LazyArg_js_1 = require("../common/LazyArg.js");
 const util_js_1 = require("../common/util.js");
@@ -149,7 +152,6 @@ function bindIsolatedHandle(target, _) {
         return result;
     };
 }
-exports.bindIsolatedHandle = bindIsolatedHandle;
 /**
  * ElementHandle represents an in-page DOM element.
  *

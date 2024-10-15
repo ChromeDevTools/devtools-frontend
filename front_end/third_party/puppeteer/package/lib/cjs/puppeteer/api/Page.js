@@ -41,7 +41,7 @@ var __esDecorate = (this && this.__esDecorate) || function (ctor, descriptorIn, 
 var __addDisposableResource = (this && this.__addDisposableResource) || function (env, value, async) {
     if (value !== null && value !== void 0) {
         if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
-        var dispose;
+        var dispose, inner;
         if (async) {
             if (!Symbol.asyncDispose) throw new TypeError("Symbol.asyncDispose is not defined.");
             dispose = value[Symbol.asyncDispose];
@@ -49,8 +49,10 @@ var __addDisposableResource = (this && this.__addDisposableResource) || function
         if (dispose === void 0) {
             if (!Symbol.dispose) throw new TypeError("Symbol.dispose is not defined.");
             dispose = value[Symbol.dispose];
+            if (async) inner = dispose;
         }
         if (typeof dispose !== "function") throw new TypeError("Object not disposable.");
+        if (inner) dispose = function() { try { inner.call(this); } catch (e) { return Promise.reject(e); } };
         env.stack.push({ value: value, dispose: dispose, async: async });
     }
     else if (async) {
@@ -84,7 +86,8 @@ var __disposeResources = (this && this.__disposeResources) || (function (Suppres
     return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
 });
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.supportedMetrics = exports.Page = exports.setDefaultScreenshotOptions = void 0;
+exports.supportedMetrics = exports.Page = void 0;
+exports.setDefaultScreenshotOptions = setDefaultScreenshotOptions;
 const rxjs_js_1 = require("../../third_party/rxjs/rxjs.js");
 const Errors_js_1 = require("../common/Errors.js");
 const EventEmitter_js_1 = require("../common/EventEmitter.js");
@@ -107,7 +110,6 @@ function setDefaultScreenshotOptions(options) {
     options.encoding ??= 'binary';
     options.captureBeyondViewport ??= true;
 }
-exports.setDefaultScreenshotOptions = setDefaultScreenshotOptions;
 /**
  * Page provides methods to interact with a single tab or
  * {@link https://developer.chrome.com/extensions/background_pages | extension background page}

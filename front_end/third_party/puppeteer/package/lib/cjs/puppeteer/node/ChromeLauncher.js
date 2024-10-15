@@ -8,7 +8,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.removeMatchingFlags = exports.getFeatures = exports.ChromeLauncher = void 0;
+exports.ChromeLauncher = void 0;
+exports.getFeatures = getFeatures;
+exports.removeMatchingFlags = removeMatchingFlags;
 const promises_1 = require("fs/promises");
 const os_1 = __importDefault(require("os"));
 const path_1 = __importDefault(require("path"));
@@ -247,7 +249,6 @@ function getFeatures(flag, options = []) {
         return s;
     });
 }
-exports.getFeatures = getFeatures;
 /**
  * Removes all elements in-place from the given string array
  * that match the given command-line flag.
@@ -267,5 +268,4 @@ function removeMatchingFlags(array, flag) {
     }
     return array;
 }
-exports.removeMatchingFlags = removeMatchingFlags;
 //# sourceMappingURL=ChromeLauncher.js.map

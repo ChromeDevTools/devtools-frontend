@@ -5,7 +5,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.releaseObject = exports.CdpJSHandle = void 0;
+exports.CdpJSHandle = void 0;
+exports.releaseObject = releaseObject;
 const JSHandle_js_1 = require("../api/JSHandle.js");
 const util_js_1 = require("../common/util.js");
 const utils_js_1 = require("./utils.js");
@@ -102,5 +103,4 @@ async function releaseObject(client, remoteObject) {
         (0, util_js_1.debugError)(error);
     });
 }
-exports.releaseObject = releaseObject;
 //# sourceMappingURL=JSHandle.js.map

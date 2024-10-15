@@ -5,7 +5,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.pageBindingInitString = exports.CDP_BINDING_PREFIX = exports.addPageBinding = exports.valueFromRemoteObject = exports.createClientError = exports.createEvaluationError = void 0;
+exports.CDP_BINDING_PREFIX = void 0;
+exports.createEvaluationError = createEvaluationError;
+exports.createClientError = createClientError;
+exports.valueFromRemoteObject = valueFromRemoteObject;
+exports.addPageBinding = addPageBinding;
+exports.pageBindingInitString = pageBindingInitString;
 const util_js_1 = require("../common/util.js");
 const assert_js_1 = require("../util/assert.js");
 /**
@@ -53,7 +58,6 @@ function createEvaluationError(details) {
     error.stack = [...messageLines, ...stackLines].join('\n');
     return error;
 }
-exports.createEvaluationError = createEvaluationError;
 const getErrorDetails = (details) => {
     let name = '';
     let message;
@@ -106,7 +110,6 @@ function createClientError(details) {
     error.stack = [...messageLines, ...stackLines].join('\n');
     return error;
 }
-exports.createClientError = createClientError;
 /**
  * @internal
  */
@@ -132,7 +135,6 @@ function valueFromRemoteObject(remoteObject) {
     }
     return remoteObject.value;
 }
-exports.valueFromRemoteObject = valueFromRemoteObject;
 /**
  * @internal
  */
@@ -181,7 +183,6 @@ function addPageBinding(type, name, prefix) {
         },
     });
 }
-exports.addPageBinding = addPageBinding;
 /**
  * @internal
  */
@@ -192,5 +193,4 @@ exports.CDP_BINDING_PREFIX = 'puppeteer_';
 function pageBindingInitString(type, name) {
     return (0, util_js_1.evaluationString)(addPageBinding, type, name, exports.CDP_BINDING_PREFIX);
 }
-exports.pageBindingInitString = pageBindingInitString;
 //# sourceMappingURL=utils.js.map

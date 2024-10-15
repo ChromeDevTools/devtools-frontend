@@ -5,7 +5,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createIncrementalIdGenerator = exports.Callback = exports.CallbackRegistry = void 0;
+exports.Callback = exports.CallbackRegistry = void 0;
+exports.createIncrementalIdGenerator = createIncrementalIdGenerator;
 const Deferred_js_1 = require("../util/Deferred.js");
 const ErrorLike_js_1 = require("../util/ErrorLike.js");
 const Errors_js_1 = require("./Errors.js");
@@ -134,5 +135,4 @@ function createIncrementalIdGenerator() {
         return ++id;
     };
 }
-exports.createIncrementalIdGenerator = createIncrementalIdGenerator;
 //# sourceMappingURL=CallbackRegistry.js.map

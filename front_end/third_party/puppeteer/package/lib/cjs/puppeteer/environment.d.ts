@@ -3,8 +3,6 @@
  * Copyright 2020 Google Inc.
  * SPDX-License-Identifier: Apache-2.0
  */
-/// <reference types="node" />
-/// <reference types="node" />
 import type FS from 'fs';
 import type Path from 'path';
 import type { ScreenRecorder } from './node/ScreenRecorder.js';

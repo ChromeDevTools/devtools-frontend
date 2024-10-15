@@ -18,7 +18,7 @@ export declare function inertIfDisposed<This extends Disposed>(target: (this: Th
  * @internal
  */
 export declare function invokeAtMostOnceForArguments(target: (this: unknown, ...args: any[]) => any, _: unknown): typeof target;
-export declare function guarded<T extends object>(getKey?: (this: T) => object): (target: (this: T, ...args: any[]) => Promise<any>, _: ClassMethodDecoratorContext<T>) => (this: T, ...args: any[]) => Promise<any>;
+export declare function guarded<T extends object>(getKey?: (this: T) => object): (target: (this: T, ...args: any[]) => Promise<any>, _: ClassMethodDecoratorContext<T>) => typeof target;
 /**
  * Event emitter fields marked with `bubble` will have their events bubble up
  * the field owner.

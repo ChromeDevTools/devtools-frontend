@@ -5,7 +5,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.mergeUint8Arrays = exports.typedArrayToBase64 = exports.stringToBase64 = exports.stringToTypedArray = void 0;
+exports.stringToTypedArray = stringToTypedArray;
+exports.stringToBase64 = stringToBase64;
+exports.typedArrayToBase64 = typedArrayToBase64;
+exports.mergeUint8Arrays = mergeUint8Arrays;
 /**
  * @internal
  */
@@ -19,14 +22,12 @@ function stringToTypedArray(string, base64Encoded = false) {
     }
     return new TextEncoder().encode(string);
 }
-exports.stringToTypedArray = stringToTypedArray;
 /**
  * @internal
  */
 function stringToBase64(str) {
     return typedArrayToBase64(new TextEncoder().encode(str));
 }
-exports.stringToBase64 = stringToBase64;
 /**
  * @internal
  */
@@ -42,7 +43,6 @@ function typedArrayToBase64(typedArray) {
     const binaryString = chunks.join('');
     return btoa(binaryString);
 }
-exports.typedArrayToBase64 = typedArrayToBase64;
 /**
  * @internal
  */
@@ -60,5 +60,4 @@ function mergeUint8Arrays(items) {
     }
     return result;
 }
-exports.mergeUint8Arrays = mergeUint8Arrays;
 //# sourceMappingURL=encoding.js.map

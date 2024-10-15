@@ -3,7 +3,6 @@
  * Copyright 2017 Google Inc.
  * SPDX-License-Identifier: Apache-2.0
  */
-/// <reference types="node" />
 import type { OperatorFunction } from '../../third_party/rxjs/rxjs.js';
 import { Observable } from '../../third_party/rxjs/rxjs.js';
 import type { CDPSession } from '../api/CDPSession.js';
@@ -36,11 +35,11 @@ export declare class PuppeteerURL {
 /**
  * @internal
  */
-export declare const withSourcePuppeteerURLIfNone: <T extends {}>(functionName: string, object: T) => T;
+export declare const withSourcePuppeteerURLIfNone: <T extends NonNullable<unknown>>(functionName: string, object: T) => T;
 /**
  * @internal
  */
-export declare const getSourcePuppeteerURLIfAvailable: <T extends {}>(object: T) => PuppeteerURL | undefined;
+export declare const getSourcePuppeteerURLIfAvailable: <T extends NonNullable<unknown>>(object: T) => PuppeteerURL | undefined;
 /**
  * @internal
  */

@@ -28,7 +28,10 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getCapturedLogs = exports.setLogCapture = exports.debug = exports.importDebug = void 0;
+exports.debug = void 0;
+exports.importDebug = importDebug;
+exports.setLogCapture = setLogCapture;
+exports.getCapturedLogs = getCapturedLogs;
 const environment_js_1 = require("../environment.js");
 /**
  * @internal
@@ -43,7 +46,6 @@ async function importDebug() {
     }
     return debugModule;
 }
-exports.importDebug = importDebug;
 /**
  * A debug function that can be used in any environment.
  *
@@ -129,12 +131,10 @@ function setLogCapture(value) {
     capturedLogs = [];
     captureLogs = value;
 }
-exports.setLogCapture = setLogCapture;
 /**
  * @internal
  */
 function getCapturedLogs() {
     return capturedLogs;
 }
-exports.getCapturedLogs = getCapturedLogs;
 //# sourceMappingURL=Debug.js.map

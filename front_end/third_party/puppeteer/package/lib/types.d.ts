@@ -1,5 +1,3 @@
-/// <reference types="node" />
-
 import type { ChildProcess } from 'child_process';
 import type { ParseSelector } from 'typed-query-selector/parser.js';
 import { PassThrough } from 'stream';
@@ -2349,7 +2347,7 @@ export declare const
 /**
  * @public
  */
-executablePath: (channel?: ChromeReleaseChannel | undefined) => string;
+executablePath: (channel?: ChromeReleaseChannel) => string;
 
 /* Excluded from this release type: ExecutionContext */
 

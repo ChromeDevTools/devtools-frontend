@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.interpolateFunction = exports.stringifyFunction = exports.createFunction = void 0;
+exports.interpolateFunction = exports.createFunction = void 0;
+exports.stringifyFunction = stringifyFunction;
 /**
  * @license
  * Copyright 2023 Google Inc.
@@ -54,7 +55,6 @@ function stringifyFunction(fn) {
     }
     return value;
 }
-exports.stringifyFunction = stringifyFunction;
 /**
  * Replaces `PLACEHOLDER`s with the given replacements.
  *

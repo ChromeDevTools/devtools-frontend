@@ -21,7 +21,7 @@ defaultArgs: (options?: import("./index.js").BrowserLaunchArgumentOptions) => st
 /**
  * @public
  */
-executablePath: (channel?: import("./index.js").ChromeReleaseChannel | undefined) => string, 
+executablePath: (channel?: import("./index.js").ChromeReleaseChannel) => string, 
 /**
  * @public
  */

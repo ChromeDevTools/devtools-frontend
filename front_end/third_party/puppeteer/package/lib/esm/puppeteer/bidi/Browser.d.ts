@@ -3,7 +3,6 @@
  * Copyright 2022 Google Inc.
  * SPDX-License-Identifier: Apache-2.0
  */
-/// <reference types="node" />
 import type { ChildProcess } from 'child_process';
 import * as Bidi from 'chromium-bidi/lib/cjs/protocol/protocol.js';
 import { Browser, type BrowserCloseCallback, type BrowserContextOptions, type DebugInfo } from '../api/Browser.js';

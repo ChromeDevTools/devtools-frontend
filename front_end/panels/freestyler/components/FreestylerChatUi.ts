@@ -238,7 +238,7 @@ export interface UserChatMessage {
 export interface ModelChatMessage {
   entity: ChatMessageEntity.MODEL;
   steps: Step[];
-  suggestions?: string[];
+  suggestions?: [string, ...string[]];
   answer?: string;
   error?: ErrorType;
   rpcId?: number;
@@ -687,8 +687,7 @@ export class FreestylerChatUi extends HTMLElement {
       // clang-format on
     }
 
-    const shouldShowSuggestions =
-        (isLast && !this.#props.isLoading && message.suggestions && message.suggestions?.length > 0);
+    const shouldShowSuggestions = (isLast && !this.#props.isLoading && message.suggestions);
     // clang-format off
     return html`
       <section class="chat-message answer" jslog=${VisualLogging.section('answer')}>
@@ -882,7 +881,7 @@ export class FreestylerChatUi extends HTMLElement {
   };
 
   #renderEmptyState = (): LitHtml.TemplateResult => {
-    const suggestions = this.#getSuggestions();
+    const suggestions = this.#getEmptyStateSuggestions();
 
     // clang-format off
     return html`<div class="empty-state-container messages-scroll-container">
@@ -915,7 +914,7 @@ export class FreestylerChatUi extends HTMLElement {
     // clang-format on
   };
 
-  #getSuggestions = (): string[] => {
+  #getEmptyStateSuggestions = (): string[] => {
     switch (this.#props.agentType) {
       case AgentType.FREESTYLER:
         return [

@@ -32,6 +32,9 @@ describeWithEnvironment('FreestylerPanel', () => {
 
   beforeEach(() => {
     registerNoopActions(['elements.toggle-element-search']);
+  });
+
+  afterEach(() => {
     mockView.reset();
   });
 

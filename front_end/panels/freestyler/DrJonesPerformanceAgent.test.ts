@@ -156,7 +156,7 @@ describeWithEnvironment('DrJonesPerformanceAgent', () => {
 
       // Select node3
       node3.selected = true;
-      const responses = await Array.fromAsync(agent.run('test', {selectedStackTrace: rootNodeEntry}));
+      const responses = await Array.fromAsync(agent.run('test', {selected: rootNodeEntry}));
 
       assert.deepStrictEqual(responses, [
         {
@@ -170,8 +170,12 @@ describeWithEnvironment('DrJonesPerformanceAgent', () => {
           ],
         },
         {
+          type: ResponseType.QUERYING,
+        },
+        {
           type: ResponseType.ANSWER,
           text: 'This is the answer',
+          suggestions: undefined,
           rpcId: 123,
         },
       ]);

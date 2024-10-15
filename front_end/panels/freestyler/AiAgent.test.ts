@@ -11,7 +11,7 @@ import * as Freestyler from './freestyler.js';
 
 const {AiAgent} = Freestyler;
 
-class AiAgentMock extends AiAgent {
+class AiAgentMock extends AiAgent<unknown> {
   override preamble = 'preamble';
 
   clientFeature: Host.AidaClient.ClientFeature = 0;

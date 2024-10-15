@@ -70,7 +70,6 @@ css
         messages: [
           {
             entity: Freestyler.ChatMessageEntity.MODEL,
-            suggestions: [],
             steps: [
               {
                 isLoading: false,

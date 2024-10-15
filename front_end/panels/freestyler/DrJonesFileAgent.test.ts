@@ -157,7 +157,7 @@ describeWithEnvironment('DrJonesFileAgent', () => {
       });
 
       const uiSourceCode = project.uiSourceCodeForURL(url);
-      const responses = await Array.fromAsync(agent.run('test', {selectedFile: uiSourceCode}));
+      const responses = await Array.fromAsync(agent.run('test', {selected: uiSourceCode}));
 
       assert.deepStrictEqual(responses, [
         {
@@ -174,8 +174,12 @@ File Content:
           ],
         },
         {
+          type: ResponseType.QUERYING,
+        },
+        {
           type: ResponseType.ANSWER,
           text: 'This is the answer',
+          suggestions: undefined,
           rpcId: 123,
         },
       ]);

@@ -12,10 +12,7 @@ import {
   type AidaRequestOptions,
   type ContextDetail,
   type ContextResponse,
-  debugLog,
-  ErrorType,
-  isDebugMode,
-  type ResponseData,
+  type ParsedResponse,
   ResponseType,
 } from './AiAgent.js';
 
@@ -70,7 +67,7 @@ const MAX_FILE_SIZE = 50000;
  * One agent instance handles one conversation. Create a new agent
  * instance for a new conversation.
  */
-export class DrJonesFileAgent extends AiAgent {
+export class DrJonesFileAgent extends AiAgent<Workspace.UISourceCode.UISourceCode> {
   readonly preamble = preamble;
   readonly clientFeature = Host.AidaClient.ClientFeature.CHROME_DRJONES_FILE_AGENT;
   get userTier(): string|undefined {
@@ -88,9 +85,9 @@ export class DrJonesFileAgent extends AiAgent {
     };
   }
 
-  *
+  async *
       handleContextDetails(selectedFile: Workspace.UISourceCode.UISourceCode|null):
-          Generator<ContextResponse, void, void> {
+          AsyncGenerator<ContextResponse, void, void> {
     if (!selectedFile) {
       return;
     }
@@ -102,61 +99,16 @@ export class DrJonesFileAgent extends AiAgent {
     };
   }
 
-  async enhanceQuery(query: string, selectedFile: Workspace.UISourceCode.UISourceCode|null): Promise<string> {
+  override async enhanceQuery(query: string, selectedFile: Workspace.UISourceCode.UISourceCode|null): Promise<string> {
     const fileEnchantmentQuery =
         selectedFile ? `# Selected file\n${formatFile(selectedFile)}\n\n# User request\n\n` : '';
     return `${fileEnchantmentQuery}${query}`;
   }
 
-  #runId = 0;
-  async * run(query: string, options: {
-    signal?: AbortSignal, selectedFile: Workspace.UISourceCode.UISourceCode|null,
-  }): AsyncGenerator<ResponseData, void, void> {
-    yield* this.handleContextDetails(options.selectedFile);
-
-    query = await this.enhanceQuery(query, options.selectedFile);
-    const currentRunId = ++this.#runId;
-
-    let response: string;
-    let rpcId: number|undefined;
-    try {
-      const fetchResult = await this.aidaFetch(query, {signal: options.signal});
-      response = fetchResult.response;
-      rpcId = fetchResult.rpcId;
-    } catch (err) {
-      debugLog('Error calling the AIDA API', err);
-      if (err instanceof Host.AidaClient.AidaAbortError) {
-        this.removeHistoryRun(currentRunId);
-        yield {
-          type: ResponseType.ERROR,
-          error: ErrorType.ABORT,
-          rpcId,
-        };
-        return;
-      }
-
-      yield {
-        type: ResponseType.ERROR,
-        error: ErrorType.UNKNOWN,
-        rpcId,
-      };
-      return;
-    }
-
-    this.addToHistory({
-      id: currentRunId,
-      query,
-      output: response,
-    });
-
-    yield {
-      type: ResponseType.ANSWER,
-      text: response,
-      rpcId,
+  override parseResponse(response: string): ParsedResponse {
+    return {
+      answer: response,
     };
-    if (isDebugMode()) {
-      window.dispatchEvent(new CustomEvent('freestylerdone'));
-    }
   }
 }
 

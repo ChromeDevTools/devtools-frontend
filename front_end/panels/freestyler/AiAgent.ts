@@ -25,7 +25,7 @@ export interface AnswerResponse {
   type: ResponseType.ANSWER;
   text: string;
   rpcId?: number;
-  suggestions?: string[];
+  suggestions?: [string, ...string[]];
 }
 
 export interface ErrorResponse {
@@ -99,7 +99,26 @@ type AgentOptions = {
   serverSideLoggingEnabled?: boolean,
 };
 
-export abstract class AiAgent {
+interface ParsedResponseAnswer {
+  answer: string;
+  suggestions?: [string, ...string[]];
+}
+
+interface ParsedResponseStep {
+  thought?: string;
+  title?: string;
+  action?: string;
+}
+
+export type ParsedResponse = ParsedResponseAnswer|ParsedResponseStep;
+
+const MAX_STEP = 10;
+
+export abstract class AiAgent<T> {
+  static validTemperature(temperature: number|undefined): number|undefined {
+    return typeof temperature === 'number' && temperature >= 0 ? temperature : undefined;
+  }
+
   readonly #sessionId: string = crypto.randomUUID();
   #aidaClient: Host.AidaClient.AidaClient;
   #serverSideLoggingEnabled: boolean;
@@ -107,6 +126,7 @@ export abstract class AiAgent {
   abstract readonly options: AidaRequestOptions;
   abstract readonly clientFeature: Host.AidaClient.ClientFeature;
   abstract readonly userTier: string|undefined;
+  abstract handleContextDetails(select: T|null): AsyncGenerator<ContextResponse, void, void>;
 
   /**
    * Mapping between the unique request id and
@@ -135,7 +155,49 @@ export abstract class AiAgent {
     this.#chatHistory.delete(id);
   }
 
-  addToHistory({
+  addToHistory(options: {
+    id: number,
+    query: string,
+    response: ParsedResponse,
+  }): void {
+    const response = options.response;
+    if ('answer' in response) {
+      this.#storeHistoryEntries({
+        id: options.id,
+        query: options.query,
+        output: response.answer,
+      });
+      return;
+    }
+
+    const {
+      title,
+      thought,
+      action,
+    } = response;
+
+    if (thought) {
+      this.#storeHistoryEntries({
+        id: options.id,
+        query: options.query,
+        output: `THOUGHT: ${thought}
+TITLE: ${title}
+ACTION
+${action}
+STOP`,
+      });
+    } else {
+      this.#storeHistoryEntries({
+        id: options.id,
+        query: options.query,
+        output: `ACTION
+${action}
+STOP`,
+      });
+    }
+  }
+
+  #storeHistoryEntries({
     id,
     query,
     output,
@@ -169,7 +231,7 @@ export abstract class AiAgent {
       options?: {signal?: AbortSignal},
       ): Promise<{
     response: string,
-    rpcId: number|undefined,
+    rpcId?: number,
   }> {
     const request = this.buildRequest({
       input,
@@ -177,7 +239,7 @@ export abstract class AiAgent {
 
     let rawResponse: Host.AidaClient.AidaResponse|undefined = undefined;
     let response = '';
-    let rpcId;
+    let rpcId: number|undefined;
     for await (rawResponse of this.#aidaClient.fetch(request, options)) {
       response = rawResponse.explanation;
       rpcId = rawResponse.metadata.rpcGlobalId ?? rpcId;
@@ -223,8 +285,135 @@ export abstract class AiAgent {
     return request;
   }
 
-  static validTemperature(temperature: number|undefined): number|undefined {
-    return typeof temperature === 'number' && temperature >= 0 ? temperature : undefined;
+  handleAction(_action: string, _rpcId?: number): AsyncGenerator<SideEffectResponse, ActionResponse, void> {
+    throw new Error('Unexpected action found');
+  }
+
+  async enhanceQuery(query: string, selected: T|null): Promise<string>;
+  async enhanceQuery(query: string): Promise<string> {
+    return query;
+  }
+
+  parseResponse(response: string): ParsedResponse {
+    return {
+      answer: response,
+    };
+  }
+
+  #runId = 0;
+  async * run(query: string, options: {
+    signal?: AbortSignal, selected: T|null,
+  }): AsyncGenerator<ResponseData, void, void> {
+    yield* this.handleContextDetails(options.selected);
+
+    query = await this.enhanceQuery(query, options.selected);
+    const currentRunId = ++this.#runId;
+
+    for (let i = 0; i < MAX_STEP; i++) {
+      yield {
+        type: ResponseType.QUERYING,
+      };
+
+      let response: string;
+      let rpcId: number|undefined;
+      try {
+        const fetchResult = await this.aidaFetch(
+            query,
+            {signal: options.signal},
+        );
+        response = fetchResult.response;
+        rpcId = fetchResult.rpcId;
+      } catch (err) {
+        debugLog('Error calling the AIDA API', err);
+
+        if (err instanceof Host.AidaClient.AidaAbortError) {
+          this.removeHistoryRun(currentRunId);
+          yield {
+            type: ResponseType.ERROR,
+            error: ErrorType.ABORT,
+            rpcId,
+          };
+          break;
+        }
+
+        yield {
+          type: ResponseType.ERROR,
+          error: ErrorType.UNKNOWN,
+          rpcId,
+        };
+        break;
+      }
+
+      const parsedResponse = this.parseResponse(response);
+
+      this.addToHistory({
+        id: currentRunId,
+        query,
+        response: parsedResponse,
+      });
+      if ('answer' in parsedResponse) {
+        const {
+          answer,
+          suggestions,
+        } = parsedResponse;
+        if (answer) {
+          yield {
+            type: ResponseType.ANSWER,
+            text: answer,
+            rpcId,
+            suggestions,
+          };
+        } else {
+          this.removeHistoryRun(currentRunId);
+          yield {
+            type: ResponseType.ERROR,
+            error: ErrorType.UNKNOWN,
+            rpcId,
+          };
+        }
+
+        break;
+      }
+
+      const {
+        title,
+        thought,
+        action,
+      } = parsedResponse;
+
+      if (title) {
+        yield {
+          type: ResponseType.TITLE,
+          title,
+          rpcId,
+        };
+      }
+
+      if (thought) {
+        yield {
+          type: ResponseType.THOUGHT,
+          thought,
+          rpcId,
+        };
+      }
+
+      if (action) {
+        const result = yield* this.handleAction(action, rpcId);
+        yield result;
+        query = `OBSERVATION: ${result.output}`;
+      }
+
+      if (i === MAX_STEP - 1) {
+        yield {
+          type: ResponseType.ERROR,
+          error: ErrorType.MAX_STEPS,
+        };
+        break;
+      }
+    }
+    if (isDebugMode()) {
+      window.dispatchEvent(new CustomEvent('freestylerdone'));
+    }
   }
 }
 

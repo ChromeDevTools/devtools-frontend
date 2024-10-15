@@ -206,7 +206,7 @@ describeWithEnvironment('DrJonesNetworkAgent', () => {
         aidaClient: mockAidaClient(generateAnswer),
       });
 
-      const responses = await Array.fromAsync(agent.run('test', {selectedNetworkRequest}));
+      const responses = await Array.fromAsync(agent.run('test', {selected: selectedNetworkRequest}));
       assert.deepStrictEqual(responses, [
         {
           type: ResponseType.CONTEXT,
@@ -247,8 +247,12 @@ Sending end: 900`,
           ],
         },
         {
+          type: ResponseType.QUERYING,
+        },
+        {
           type: ResponseType.ANSWER,
           text: 'This is the answer',
+          suggestions: undefined,
           rpcId: 123,
         },
       ]);

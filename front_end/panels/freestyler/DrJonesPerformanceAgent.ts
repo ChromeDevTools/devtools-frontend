@@ -12,10 +12,7 @@ import {
   type AidaRequestOptions,
   type ContextDetail,
   type ContextResponse,
-  debugLog,
-  ErrorType,
-  isDebugMode,
-  type ResponseData,
+  type ParsedResponse,
   ResponseType,
 } from './AiAgent.js';
 
@@ -78,7 +75,7 @@ const lockedString = i18n.i18n.lockedString;
  * One agent instance handles one conversation. Create a new agent
  * instance for a new conversation.
  */
-export class DrJonesPerformanceAgent extends AiAgent {
+export class DrJonesPerformanceAgent extends AiAgent<Trace.Helpers.TreeHelpers.TraceEntryNodeForAI> {
   readonly preamble = preamble;
   readonly clientFeature = Host.AidaClient.ClientFeature.CHROME_DRJONES_PERFORMANCE_AGENT;
   get userTier(): string|undefined {
@@ -96,9 +93,9 @@ export class DrJonesPerformanceAgent extends AiAgent {
     };
   }
 
-  *
+  async *
       handleContextDetails(selectedStackTrace: Trace.Helpers.TreeHelpers.TraceEntryNodeForAI|null):
-          Generator<ContextResponse, void, void> {
+          AsyncGenerator<ContextResponse, void, void> {
     yield {
       type: ResponseType.CONTEXT,
       title: lockedString(UIStringsNotTranslate.analyzingStackTrace),
@@ -106,62 +103,17 @@ export class DrJonesPerformanceAgent extends AiAgent {
     };
   }
 
-  async enhanceQuery(query: string, selectedStackTrace: Trace.Helpers.TreeHelpers.TraceEntryNodeForAI|null):
+  override async enhanceQuery(query: string, selectedStackTrace: Trace.Helpers.TreeHelpers.TraceEntryNodeForAI|null):
       Promise<string> {
     const networkEnchantmentQuery =
         selectedStackTrace ? `# Selected stack trace\n${JSON.stringify(selectedStackTrace)}\n\n# User request\n\n` : '';
     return `${networkEnchantmentQuery}${query}`;
   }
 
-  #runId = 0;
-  async * run(query: string, options: {
-    signal?: AbortSignal, selectedStackTrace: Trace.Helpers.TreeHelpers.TraceEntryNodeForAI|null,
-  }): AsyncGenerator<ResponseData, void, void> {
-    yield* this.handleContextDetails(options.selectedStackTrace);
-
-    query = await this.enhanceQuery(query, options.selectedStackTrace);
-    const currentRunId = ++this.#runId;
-
-    let response: string;
-    let rpcId: number|undefined;
-    try {
-      const fetchResult = await this.aidaFetch(query, {signal: options.signal});
-      response = fetchResult.response;
-      rpcId = fetchResult.rpcId;
-    } catch (err) {
-      debugLog('Error calling the AIDA API', err);
-      if (err instanceof Host.AidaClient.AidaAbortError) {
-        this.removeHistoryRun(currentRunId);
-        yield {
-          type: ResponseType.ERROR,
-          error: ErrorType.ABORT,
-          rpcId,
-        };
-        return;
-      }
-
-      yield {
-        type: ResponseType.ERROR,
-        error: ErrorType.UNKNOWN,
-        rpcId,
-      };
-      return;
-    }
-
-    this.addToHistory({
-      id: currentRunId,
-      query,
-      output: response,
-    });
-
-    yield {
-      type: ResponseType.ANSWER,
-      text: response,
-      rpcId,
+  override parseResponse(response: string): ParsedResponse {
+    return {
+      answer: response,
     };
-    if (isDebugMode()) {
-      window.dispatchEvent(new CustomEvent('freestylerdone'));
-    }
   }
 }
 

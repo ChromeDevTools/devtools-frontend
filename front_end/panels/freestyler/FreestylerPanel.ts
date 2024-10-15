@@ -470,15 +470,13 @@ export class FreestylerPanel extends UI.Panel.Panel {
 
     let runner: AsyncGenerator<ResponseData, void, void>|undefined;
     if (this.#viewProps.agentType === AgentType.FREESTYLER) {
-      runner = this.#freestylerAgent.run(text, {signal, selectedElement: this.#viewProps.selectedElement});
+      runner = this.#freestylerAgent.run(text, {signal, selected: this.#viewProps.selectedElement});
     } else if (this.#viewProps.agentType === AgentType.DRJONES_FILE) {
-      runner = this.#drJonesFileAgent.run(text, {signal, selectedFile: this.#viewProps.selectedFile});
+      runner = this.#drJonesFileAgent.run(text, {signal, selected: this.#viewProps.selectedFile});
     } else if (this.#viewProps.agentType === AgentType.DRJONES_NETWORK_REQUEST) {
-      runner =
-          this.#drJonesNetworkAgent.run(text, {signal, selectedNetworkRequest: this.#viewProps.selectedNetworkRequest});
+      runner = this.#drJonesNetworkAgent.run(text, {signal, selected: this.#viewProps.selectedNetworkRequest});
     } else if (this.#viewProps.agentType === AgentType.DRJONES_PERFORMANCE) {
-      runner =
-          this.#drJonesPerformanceAgent.run(text, {signal, selectedStackTrace: this.#viewProps.selectedStackTrace});
+      runner = this.#drJonesPerformanceAgent.run(text, {signal, selected: this.#viewProps.selectedStackTrace});
     }
 
     if (!runner) {
@@ -558,7 +556,6 @@ export class FreestylerPanel extends UI.Panel.Panel {
 
         case ResponseType.ERROR: {
           systemMessage.error = data.error;
-          systemMessage.suggestions = [];
           systemMessage.rpcId = undefined;
           this.#viewProps.isLoading = false;
           const lastStep = systemMessage.steps.at(-1);

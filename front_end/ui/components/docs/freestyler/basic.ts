@@ -22,7 +22,6 @@ const messages: Freestyler.ChatMessage[] = [
   },
   {
     entity: Freestyler.ChatMessageEntity.MODEL,
-    suggestions: [],
     steps: [
       {
         isLoading: false,

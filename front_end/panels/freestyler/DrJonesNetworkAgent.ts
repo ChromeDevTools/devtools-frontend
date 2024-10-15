@@ -13,10 +13,7 @@ import {
   type AidaRequestOptions,
   type ContextDetail,
   type ContextResponse,
-  debugLog,
-  ErrorType,
-  isDebugMode,
-  type ResponseData,
+  type ParsedResponse,
   ResponseType,
 } from './AiAgent.js';
 
@@ -102,7 +99,7 @@ const lockedString = i18n.i18n.lockedString;
  * One agent instance handles one conversation. Create a new agent
  * instance for a new conversation.
  */
-export class DrJonesNetworkAgent extends AiAgent {
+export class DrJonesNetworkAgent extends AiAgent<SDK.NetworkRequest.NetworkRequest> {
   readonly preamble = preamble;
   readonly clientFeature = Host.AidaClient.ClientFeature.CHROME_DRJONES_NETWORK_AGENT;
   get userTier(): string|undefined {
@@ -120,9 +117,9 @@ export class DrJonesNetworkAgent extends AiAgent {
     };
   }
 
-  *
+  async *
       handleContextDetails(selectedNetworkRequest: SDK.NetworkRequest.NetworkRequest|null):
-          Generator<ContextResponse, void, void> {
+          AsyncGenerator<ContextResponse, void, void> {
     if (!selectedNetworkRequest) {
       return;
     }
@@ -134,62 +131,18 @@ export class DrJonesNetworkAgent extends AiAgent {
     };
   }
 
-  async enhanceQuery(query: string, selectedNetworkRequest: SDK.NetworkRequest.NetworkRequest|null): Promise<string> {
+  override async enhanceQuery(query: string, selectedNetworkRequest: SDK.NetworkRequest.NetworkRequest|null):
+      Promise<string> {
     const networkEnchantmentQuery = selectedNetworkRequest ?
         `# Selected network request \n${formatNetworkRequest(selectedNetworkRequest)}\n\n# User request\n\n` :
         '';
     return `${networkEnchantmentQuery}${query}`;
   }
 
-  #runId = 0;
-  async * run(query: string, options: {
-    signal?: AbortSignal, selectedNetworkRequest: SDK.NetworkRequest.NetworkRequest|null,
-  }): AsyncGenerator<ResponseData, void, void> {
-    yield* this.handleContextDetails(options.selectedNetworkRequest);
-
-    query = await this.enhanceQuery(query, options.selectedNetworkRequest);
-    const currentRunId = ++this.#runId;
-
-    let response: string;
-    let rpcId: number|undefined;
-    try {
-      const fetchResult = await this.aidaFetch(query, {signal: options.signal});
-      response = fetchResult.response;
-      rpcId = fetchResult.rpcId;
-    } catch (err) {
-      debugLog('Error calling the AIDA API', err);
-      if (err instanceof Host.AidaClient.AidaAbortError) {
-        this.removeHistoryRun(currentRunId);
-        yield {
-          type: ResponseType.ERROR,
-          error: ErrorType.ABORT,
-          rpcId,
-        };
-        return;
-      }
-
-      yield {
-        type: ResponseType.ERROR,
-        error: ErrorType.UNKNOWN,
-        rpcId,
-      };
-      return;
-    }
-
-    this.addToHistory({
-      id: currentRunId,
-      query,
-      output: response,
-    });
-
-    yield {
-      type: ResponseType.ANSWER,
-      text: response,
-      rpcId,
+  override parseResponse(response: string): ParsedResponse {
+    return {
+      answer: response,
     };
-    if (isDebugMode()) {
-      window.dispatchEvent(new CustomEvent('freestylerdone'));
-    }
   }
 }
 

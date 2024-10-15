@@ -12,13 +12,12 @@ import {
   AiAgent,
   type AidaRequestOptions,
   type ContextDetail,
+  type ContextResponse,
   debugLog,
   ErrorType,
   isDebugMode,
   type ResponseData,
   ResponseType,
-  type ThoughtResponse,
-  type TitleResponse,
 } from './AiAgent.js';
 
 /* clang-format off */
@@ -63,10 +62,6 @@ const UIStringsNotTranslate = {
    *@description Title for thinking step of DrJones Network agent.
    */
   inspectingNetworkData: 'Inspecting network data',
-  /**
-   *@description Thought text for thinking step of DrJones Network agent.
-   */
-  dataUsedToGenerateThisResponse: 'Data used to generate this response',
   /**
    *@description Heading text for the block that shows the network request details.
    */
@@ -125,19 +120,15 @@ export class DrJonesNetworkAgent extends AiAgent {
 
   *
       handleContextDetails(selectedNetworkRequest: SDK.NetworkRequest.NetworkRequest|null):
-          Generator<ThoughtResponse|TitleResponse, void, void> {
+          Generator<ContextResponse, void, void> {
     if (!selectedNetworkRequest) {
       return;
     }
 
     yield {
-      type: ResponseType.TITLE,
+      type: ResponseType.CONTEXT,
       title: lockedString(UIStringsNotTranslate.inspectingNetworkData),
-    };
-    yield {
-      type: ResponseType.THOUGHT,
-      thought: lockedString(UIStringsNotTranslate.dataUsedToGenerateThisResponse),
-      contextDetails: createContextDetailsForDrJonesNetworkAgent(selectedNetworkRequest),
+      details: createContextDetailsForDrJonesNetworkAgent(selectedNetworkRequest),
     };
   }
 

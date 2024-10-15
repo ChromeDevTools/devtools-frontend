@@ -161,13 +161,9 @@ describeWithEnvironment('DrJonesFileAgent', () => {
 
       assert.deepStrictEqual(responses, [
         {
-          type: ResponseType.TITLE,
+          type: ResponseType.CONTEXT,
           title: 'Analyzing file',
-        },
-        {
-          type: ResponseType.THOUGHT,
-          thought: 'Data used to generate this response',
-          contextDetails: [
+          details: [
             {
               title: 'Selected file',
               text: `File Name: script.js

@@ -160,13 +160,9 @@ describeWithEnvironment('DrJonesPerformanceAgent', () => {
 
       assert.deepStrictEqual(responses, [
         {
-          type: ResponseType.TITLE,
+          type: ResponseType.CONTEXT,
           title: 'Analyzing stack trace',
-        },
-        {
-          type: ResponseType.THOUGHT,
-          thought: 'Data used to generate this response',
-          contextDetails: [
+          details: [
             {
               title: 'Selected stack trace',
               text: JSON.stringify(rootNodeEntry),

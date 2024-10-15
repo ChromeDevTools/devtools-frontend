@@ -5,6 +5,7 @@
 import * as Host from '../../core/host/host.js';
 
 export enum ResponseType {
+  CONTEXT = 'context',
   TITLE = 'title',
   THOUGHT = 'thought',
   ACTION = 'action',
@@ -33,6 +34,17 @@ export interface ErrorResponse {
   rpcId?: number;
 }
 
+export interface ContextDetail {
+  title: string;
+  text: string;
+  codeLang?: string;
+}
+export interface ContextResponse {
+  type: ResponseType.CONTEXT;
+  title: string;
+  details: [ContextDetail, ...ContextDetail[]];
+}
+
 export interface TitleResponse {
   type: ResponseType.TITLE;
   title: string;
@@ -41,8 +53,7 @@ export interface TitleResponse {
 
 export interface ThoughtResponse {
   type: ResponseType.THOUGHT;
-  thought?: string;
-  contextDetails?: [ContextDetail, ...ContextDetail[]];
+  thought: string;
   rpcId?: number;
 }
 
@@ -65,14 +76,8 @@ export interface QueryResponse {
   type: ResponseType.QUERYING;
 }
 
-export type ResponseData =
-    AnswerResponse|ErrorResponse|ActionResponse|SideEffectResponse|ThoughtResponse|TitleResponse|QueryResponse;
-
-export interface ContextDetail {
-  title: string;
-  text: string;
-  codeLang?: string;
-}
+export type ResponseData = AnswerResponse|ErrorResponse|ActionResponse|SideEffectResponse|ThoughtResponse|TitleResponse|
+    QueryResponse|ContextResponse;
 
 export interface AidaBuildRequestOptions {
   input: string;

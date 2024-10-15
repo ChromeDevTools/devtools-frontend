@@ -498,6 +498,15 @@ export class FreestylerPanel extends UI.Panel.Panel {
 
           break;
         }
+        case ResponseType.CONTEXT: {
+          step.title = data.title;
+          step.contextDetails = data.details;
+          step.isLoading = false;
+          if (systemMessage.steps.at(-1) !== step) {
+            systemMessage.steps.push(step);
+          }
+          break;
+        }
         case ResponseType.TITLE: {
           step.title = data.title;
           if (systemMessage.steps.at(-1) !== step) {
@@ -508,7 +517,6 @@ export class FreestylerPanel extends UI.Panel.Panel {
         case ResponseType.THOUGHT: {
           step.isLoading = false;
           step.thought = data.thought;
-          step.contextDetails = data.contextDetails;
           if (systemMessage.steps.at(-1) !== step) {
             systemMessage.steps.push(step);
           }

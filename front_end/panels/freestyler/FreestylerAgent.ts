@@ -14,14 +14,13 @@ import {
   type ActionResponse,
   AiAgent,
   type AidaRequestOptions,
+  type ContextResponse,
   debugLog,
   ErrorType,
   isDebugMode,
   type ResponseData,
   ResponseType,
   type SideEffectResponse,
-  type ThoughtResponse,
-  type TitleResponse,
 } from './AiAgent.js';
 import {ChangeManager} from './ChangeManager.js';
 import {ExtensionScope, FREESTYLER_WORLD_NAME} from './ExtensionScope.js';
@@ -591,19 +590,14 @@ export class FreestylerAgent extends AiAgent {
   }
 
   async *
-      handleContextDetails(selectedElement: SDK.DOMModel.DOMNode|null):
-          AsyncGenerator<ThoughtResponse|TitleResponse, void, void> {
+      handleContextDetails(selectedElement: SDK.DOMModel.DOMNode|null): AsyncGenerator<ContextResponse, void, void> {
     if (!selectedElement) {
       return;
     }
-
     yield {
-      type: ResponseType.TITLE,
+      type: ResponseType.CONTEXT,
       title: lockedString(UIStringsNotTranslate.analyzingThePrompt),
-    };
-    yield {
-      type: ResponseType.THOUGHT,
-      contextDetails: [{
+      details: [{
         title: lockedString(UIStringsNotTranslate.dataUsed),
         text: await FreestylerAgent.describeElement(selectedElement),
       }],

@@ -11,13 +11,12 @@ import {
   AiAgent,
   type AidaRequestOptions,
   type ContextDetail,
+  type ContextResponse,
   debugLog,
   ErrorType,
   isDebugMode,
   type ResponseData,
   ResponseType,
-  type ThoughtResponse,
-  type TitleResponse,
 } from './AiAgent.js';
 
 const preamble =
@@ -61,10 +60,6 @@ const UIStringsNotTranslate = {
    *@description Title for thinking step of DrJones File agent.
    */
   analyzingFile: 'Analyzing file',
-  /**
-   *@description Thought text for thinking step of DrJones File agent.
-   */
-  dataUsedToGenerateThisResponse: 'Data used to generate this response',
 };
 
 const lockedString = i18n.i18n.lockedString;
@@ -93,19 +88,15 @@ export class DrJonesFileAgent extends AiAgent {
 
   *
       handleContextDetails(selectedFile: Workspace.UISourceCode.UISourceCode|null):
-          Generator<ThoughtResponse|TitleResponse, void, void> {
+          Generator<ContextResponse, void, void> {
     if (!selectedFile) {
       return;
     }
 
     yield {
-      type: ResponseType.TITLE,
+      type: ResponseType.CONTEXT,
       title: lockedString(UIStringsNotTranslate.analyzingFile),
-    };
-    yield {
-      type: ResponseType.THOUGHT,
-      thought: lockedString(UIStringsNotTranslate.dataUsedToGenerateThisResponse),
-      contextDetails: createContextDetailsForDrJonesFileAgent(selectedFile),
+      details: createContextDetailsForDrJonesFileAgent(selectedFile),
     };
   }
 

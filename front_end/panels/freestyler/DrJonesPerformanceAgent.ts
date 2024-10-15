@@ -11,13 +11,12 @@ import {
   AiAgent,
   type AidaRequestOptions,
   type ContextDetail,
+  type ContextResponse,
   debugLog,
   ErrorType,
   isDebugMode,
   type ResponseData,
   ResponseType,
-  type ThoughtResponse,
-  type TitleResponse,
 } from './AiAgent.js';
 
 const preamble = `You are a performance expert deeply integrated with Chrome DevTools.
@@ -70,10 +69,6 @@ Perhaps there's room for optimization there. You could investigate whether the c
 */
 const UIStringsNotTranslate = {
   analyzingStackTrace: 'Analyzing stack trace',
-  /**
-   *@description Thought text for thinking step of DrJones Performance agent.
-   */
-  dataUsedToGenerateThisResponse: 'Data used to generate this response',
 };
 
 const lockedString = i18n.i18n.lockedString;
@@ -100,15 +95,11 @@ export class DrJonesPerformanceAgent extends AiAgent {
 
   *
       handleContextDetails(selectedStackTrace: Trace.Helpers.TreeHelpers.TraceEntryNodeForAI|null):
-          Generator<ThoughtResponse|TitleResponse, void, void> {
+          Generator<ContextResponse, void, void> {
     yield {
-      type: ResponseType.TITLE,
+      type: ResponseType.CONTEXT,
       title: lockedString(UIStringsNotTranslate.analyzingStackTrace),
-    };
-    yield {
-      type: ResponseType.THOUGHT,
-      thought: lockedString(UIStringsNotTranslate.dataUsedToGenerateThisResponse),
-      contextDetails: createContextDetailsForDrJonesPerformanceAgent(selectedStackTrace),
+      details: createContextDetailsForDrJonesPerformanceAgent(selectedStackTrace),
     };
   }
 

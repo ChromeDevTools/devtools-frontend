@@ -209,13 +209,9 @@ describeWithEnvironment('DrJonesNetworkAgent', () => {
       const responses = await Array.fromAsync(agent.run('test', {selectedNetworkRequest}));
       assert.deepStrictEqual(responses, [
         {
-          type: ResponseType.TITLE,
+          type: ResponseType.CONTEXT,
           title: 'Inspecting network data',
-        },
-        {
-          type: ResponseType.THOUGHT,
-          thought: 'Data used to generate this response',
-          contextDetails: [
+          details: [
             {
               title: 'Request',
               text: 'Request URL: https://www.example.com\n\nRequest Headers\nfoo1: bar1',

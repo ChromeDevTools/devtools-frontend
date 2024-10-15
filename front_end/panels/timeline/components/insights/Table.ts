@@ -18,7 +18,7 @@ const {html} = LitHtml;
  *           desaturates the relevant time range (in both the minimap and the flamegraph), and
  *           replaces the current insight's overlays with the overlays attached to that row.
  *           The currently selected trace bounds does not change.
- *           TODO(crbug.com/369102516): make the "desaturates the flamegraph" part true
+ *           TODO(crbug.com/373648873): make the "desaturates the flamegraph" part true
  *
  *           Removing the mouse from the table without clicking on any row restores the original
  *           overlays.

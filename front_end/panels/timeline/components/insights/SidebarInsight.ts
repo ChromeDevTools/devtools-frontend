@@ -28,7 +28,7 @@ const UIStrings = {
    * @example {401 ms} PH1
    * @example {112 kB} PH2
    */
-  estimatedSavingsTimingAndBytes: 'Est savings: {PH1} && {PH2}',
+  estimatedSavingsTimingAndBytes: 'Est savings: {PH1} & {PH2}',
   /**
    * @description Used for screen-readers as a label on the button to expand an insight to view details
    * @example {LCP by phase} PH1

@@ -152,14 +152,23 @@ function initialize(): void {
       interactionType: metric.attribution.interactionType,
     };
     sendEventToDevTools(event);
-  }, {reportAllChanges: true});
+  }, {reportAllChanges: true, durationThreshold: 0});
 
   onEachInteraction(interaction => {
-    const event: Spec.InteractionEvent = {
-      name: 'Interaction',
+    // Multiple `InteractionEntry` events can be emitted for the same `uniqueInteractionId`
+    // However, it is easier to combine these entries in the DevTools client rather than in
+    // this injected code.
+    const event: Spec.InteractionEntryEvent = {
+      name: 'InteractionEntry',
       duration: interaction.value,
+      phases: {
+        inputDelay: interaction.attribution.inputDelay,
+        processingDuration: interaction.attribution.processingDuration,
+        presentationDelay: interaction.attribution.presentationDelay,
+      },
       uniqueInteractionId: Spec.getUniqueInteractionId(interaction.entries),
       interactionType: interaction.attribution.interactionType,
+      eventName: interaction.entries[0].name,
     };
     const node = interaction.attribution.interactionTargetElement;
     if (node) {

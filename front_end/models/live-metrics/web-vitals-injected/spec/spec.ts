@@ -62,11 +62,18 @@ export interface INPChangeEvent extends MetricChangeEvent {
   uniqueInteractionId: UniqueInteractionId;
 }
 
-export interface InteractionEvent {
-  name: 'Interaction';
+/**
+ * This event is not 1:1 with the interactions that the user sees in the interactions log.
+ * It is 1:1 with a `PerformanceEventTiming` entry that will be combined by `uniqueInteractionId`
+ * in the DevTools client.
+ */
+export interface InteractionEntryEvent {
+  name: 'InteractionEntry';
   interactionType: INPAttribution['interactionType'];
+  eventName: string;
   uniqueInteractionId: UniqueInteractionId;
   duration: number;
+  phases: INPPhases;
   nodeIndex?: number;
 }
 
@@ -81,4 +88,5 @@ export interface ResetEvent {
   name: 'reset';
 }
 
-export type WebVitalsEvent = LCPChangeEvent|CLSChangeEvent|INPChangeEvent|InteractionEvent|LayoutShiftEvent|ResetEvent;
+export type WebVitalsEvent =
+    LCPChangeEvent|CLSChangeEvent|INPChangeEvent|InteractionEntryEvent|LayoutShiftEvent|ResetEvent;

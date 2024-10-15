@@ -148,6 +148,10 @@ function createMockFieldData() {
   };
 }
 
+function createInteractionsMap(interactions: LiveMetrics.Interaction[]): LiveMetrics.InteractionMap {
+  return new Map(interactions.map(interaction => [interaction.uniqueInteractionId, interaction]));
+}
+
 describeWithMockConnection('LiveMetricsView', () => {
   const mockHandleAction = sinon.stub();
 
@@ -200,16 +204,35 @@ describeWithMockConnection('LiveMetricsView', () => {
         },
         uniqueInteractionId: 'interaction-1-1',
       },
-      interactions: [
-        {duration: 500, interactionType: 'pointer', uniqueInteractionId: 'interaction-1-1'},
-        {duration: 30, interactionType: 'keyboard', uniqueInteractionId: 'interaction-1-2'},
-      ],
+      interactions: createInteractionsMap([
+        {
+          duration: 500,
+          interactionType: 'pointer',
+          uniqueInteractionId: 'interaction-1-1',
+          eventNames: ['pointerup'],
+          phases: {inputDelay: 100, processingDuration: 300, presentationDelay: 100},
+        },
+        {
+          duration: 30,
+          interactionType: 'keyboard',
+          uniqueInteractionId: 'interaction-1-2',
+          eventNames: ['keyup'],
+          phases: {inputDelay: 10, processingDuration: 10, presentationDelay: 10},
+        },
+      ]),
       layoutShifts: [],
     });
     await coordinator.done();
 
     const interactionsEls = getInteractions(view);
     assert.lengthOf(interactionsEls, 2);
+
+    // Click each interaction so we can test the expandable details.
+    for (const interactionEl of interactionsEls) {
+      interactionEl.querySelector('summary')!.click();
+    }
+
+    await coordinator.done();
 
     const typeEl1 = interactionsEls[0].querySelector('.interaction-type') as HTMLDivElement;
     assert.match(typeEl1.textContent!, /pointer/);
@@ -221,6 +244,15 @@ describeWithMockConnection('LiveMetricsView', () => {
     assert.strictEqual(durationEl1.textContent, '500 ms');
     assert.strictEqual(durationEl1.className, 'metric-value needs-improvement dim');
 
+    const phases1 =
+        Array.from(interactionsEls[0].querySelectorAll<HTMLElement>('.phase-table-row:not(.phase-table-header-row)'))
+            .map(el => el.innerText);
+    assert.deepStrictEqual(phases1, [
+      'Input delay\n100',
+      'Processing duration\n300',
+      'Presentation delay\n100',
+    ]);
+
     const typeEl2 = interactionsEls[1].querySelector('.interaction-type') as HTMLDivElement;
     assert.match(typeEl2.textContent!, /keyboard/);
 
@@ -230,6 +262,15 @@ describeWithMockConnection('LiveMetricsView', () => {
     const durationEl2 = interactionsEls[1].querySelector('.interaction-duration .metric-value') as HTMLDivElement;
     assert.strictEqual(durationEl2.textContent, '30 ms');
     assert.strictEqual(durationEl2.className, 'metric-value good dim');
+
+    const phases2 =
+        Array.from(interactionsEls[1].querySelectorAll<HTMLElement>('.phase-table-row:not(.phase-table-header-row)'))
+            .map(el => el.innerText);
+    assert.deepStrictEqual(phases2, [
+      'Input delay\n10',
+      'Processing duration\n10',
+      'Presentation delay\n10',
+    ]);
   });
 
   it('should show help icon for interaction that is longer than INP', async () => {
@@ -244,10 +285,22 @@ describeWithMockConnection('LiveMetricsView', () => {
         },
         uniqueInteractionId: 'interaction-1-2',
       },
-      interactions: [
-        {duration: 50, interactionType: 'keyboard', uniqueInteractionId: 'interaction-1-1'},
-        {duration: 500, interactionType: 'pointer', uniqueInteractionId: 'interaction-1-2'},
-      ],
+      interactions: createInteractionsMap([
+        {
+          duration: 50,
+          interactionType: 'keyboard',
+          uniqueInteractionId: 'interaction-1-1',
+          eventNames: ['keyup'],
+          phases: {inputDelay: 10, processingDuration: 30, presentationDelay: 10},
+        },
+        {
+          duration: 500,
+          interactionType: 'pointer',
+          uniqueInteractionId: 'interaction-1-2',
+          eventNames: ['pointerup'],
+          phases: {inputDelay: 100, processingDuration: 300, presentationDelay: 100},
+        },
+      ]),
       layoutShifts: [],
     });
     await coordinator.done();
@@ -283,7 +336,7 @@ describeWithMockConnection('LiveMetricsView', () => {
         value: 0.11,
         clusterShiftIds: ['layout-shift-1-2', 'layout-shift-1-3'],
       },
-      interactions: [],
+      interactions: new Map(),
       layoutShifts: [
         {score: 0.05, affectedNodes: [], uniqueLayoutShiftId: 'layout-shift-1-1'},
         {score: 0.1, affectedNodes: [], uniqueLayoutShiftId: 'layout-shift-1-2'},
@@ -315,7 +368,7 @@ describeWithMockConnection('LiveMetricsView', () => {
         value: 0.11,
         clusterShiftIds: [],
       },
-      interactions: [],
+      interactions: new Map(),
       layoutShifts: [
         {score: 0.05, affectedNodes: [], uniqueLayoutShiftId: 'layout-shift-1-1'},
         {score: 0.1, affectedNodes: [], uniqueLayoutShiftId: 'layout-shift-1-2'},
@@ -334,7 +387,7 @@ describeWithMockConnection('LiveMetricsView', () => {
         value: 0.11,
         clusterShiftIds: ['layout-shift-2-0'],
       },
-      interactions: [],
+      interactions: new Map(),
       layoutShifts: [
         {score: 0.05, affectedNodes: [], uniqueLayoutShiftId: 'layout-shift-1-1'},
         {score: 0.1, affectedNodes: [], uniqueLayoutShiftId: 'layout-shift-1-2'},
@@ -358,10 +411,22 @@ describeWithMockConnection('LiveMetricsView', () => {
         },
         uniqueInteractionId: 'interaction-1-1',
       },
-      interactions: [
-        {duration: 500, interactionType: 'pointer', uniqueInteractionId: 'interaction-1-1'},
-        {duration: 30, interactionType: 'keyboard', uniqueInteractionId: 'interaction-1-2'},
-      ],
+      interactions: createInteractionsMap([
+        {
+          duration: 500,
+          interactionType: 'pointer',
+          uniqueInteractionId: 'interaction-1-1',
+          eventNames: ['pointerup'],
+          phases: {inputDelay: 100, processingDuration: 300, presentationDelay: 100},
+        },
+        {
+          duration: 30,
+          interactionType: 'keyboard',
+          uniqueInteractionId: 'interaction-1-2',
+          eventNames: ['keyup'],
+          phases: {inputDelay: 10, processingDuration: 10, presentationDelay: 10},
+        },
+      ]),
       layoutShifts: [],
     });
     await coordinator.done();
@@ -395,9 +460,15 @@ describeWithMockConnection('LiveMetricsView', () => {
         },
         uniqueInteractionId: 'interaction-1-1',
       },
-      interactions: [
-        {duration: 30, interactionType: 'keyboard', uniqueInteractionId: 'interaction-1-2'},
-      ],
+      interactions: createInteractionsMap([
+        {
+          duration: 30,
+          interactionType: 'keyboard',
+          uniqueInteractionId: 'interaction-1-2',
+          eventNames: ['keyup'],
+          phases: {inputDelay: 10, processingDuration: 10, presentationDelay: 10},
+        },
+      ]),
       layoutShifts: [],
     });
     await coordinator.done();
@@ -423,10 +494,22 @@ describeWithMockConnection('LiveMetricsView', () => {
         },
         uniqueInteractionId: 'interaction-1-2',
       },
-      interactions: [
-        {duration: 50, interactionType: 'keyboard', uniqueInteractionId: 'interaction-1-1'},
-        {duration: 500, interactionType: 'pointer', uniqueInteractionId: 'interaction-1-2'},
-      ],
+      interactions: createInteractionsMap([
+        {
+          duration: 50,
+          interactionType: 'keyboard',
+          uniqueInteractionId: 'interaction-1-1',
+          eventNames: ['keyup'],
+          phases: {inputDelay: 10, processingDuration: 30, presentationDelay: 10},
+        },
+        {
+          duration: 500,
+          interactionType: 'pointer',
+          uniqueInteractionId: 'interaction-1-2',
+          eventNames: ['pointerup'],
+          phases: {inputDelay: 100, processingDuration: 300, presentationDelay: 100},
+        },
+      ]),
       layoutShifts: [
         {score: 0.1, affectedNodes: [], uniqueLayoutShiftId: 'layout-shift-1-1'},
       ],
@@ -462,10 +545,22 @@ describeWithMockConnection('LiveMetricsView', () => {
         },
         uniqueInteractionId: 'interaction-1-2',
       },
-      interactions: [
-        {duration: 50, interactionType: 'keyboard', uniqueInteractionId: 'interaction-1-1'},
-        {duration: 500, interactionType: 'pointer', uniqueInteractionId: 'interaction-1-2'},
-      ],
+      interactions: createInteractionsMap([
+        {
+          duration: 50,
+          interactionType: 'keyboard',
+          uniqueInteractionId: 'interaction-1-1',
+          eventNames: ['keyup'],
+          phases: {inputDelay: 10, processingDuration: 30, presentationDelay: 10},
+        },
+        {
+          duration: 500,
+          interactionType: 'pointer',
+          uniqueInteractionId: 'interaction-1-2',
+          eventNames: ['pointerup'],
+          phases: {inputDelay: 100, processingDuration: 300, presentationDelay: 100},
+        },
+      ]),
       layoutShifts: [
         {score: 0.1, affectedNodes: [], uniqueLayoutShiftId: 'layout-shift-1-1'},
       ],

@@ -31,7 +31,7 @@ export class AddDebugInfoURLDialog extends UI.Widget.HBox {
   private constructor(
       label: Platform.UIString.LocalizedString, jslogContext: string,
       callback: (arg0: Platform.DevToolsPath.UrlString) => void) {
-    super(/* isWebComponent */ true);
+    super(/* useShadowDom */ true);
 
     this.contentElement.createChild('label').textContent = label;
 

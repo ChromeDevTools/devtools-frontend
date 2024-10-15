@@ -33,8 +33,8 @@ export class SimpleView extends VBox implements View {
   readonly #title: Platform.UIString.LocalizedString;
   readonly #viewId: Lowercase<string>;
 
-  constructor(title: Platform.UIString.LocalizedString, isWebComponent?: boolean, viewId?: Lowercase<string>) {
-    super(isWebComponent);
+  constructor(title: Platform.UIString.LocalizedString, useShadowDom?: boolean, viewId?: Lowercase<string>) {
+    super(useShadowDom);
     this.#title = title;
     if (viewId) {
       if (!Platform.StringUtilities.isExtendedKebabCase(viewId)) {

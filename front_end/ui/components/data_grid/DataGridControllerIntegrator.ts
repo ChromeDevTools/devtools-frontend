@@ -18,8 +18,7 @@ export class DataGridControllerIntegrator extends UI.Widget.VBox {
 
   constructor(data: DataGridControllerData) {
     /**
-     * first true = isWebComponent and tells the widget system it's rendering a
-     * component
+     * first true = useShadowDom and tells the widget system it's using a shadow dom
      * second true = delegatesFocus, which tells the widget system to
      * let the component deal with its own focusing.
      */

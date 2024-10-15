@@ -28,7 +28,7 @@ legacyWrapper<T extends Constructor<UI.Widget.Widget>, Component extends Wrappab
     #component: Component;
 
     constructor(..._args: any[]) {
-      super(/* isWebComponent=*/ true);
+      super(/* useShadowDom=*/ true);
       this.#component = component;
       this.#component.wrapper = this as InstanceType<T>;
       void this.#component.render();

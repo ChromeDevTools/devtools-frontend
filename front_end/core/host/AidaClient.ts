@@ -375,6 +375,7 @@ export class HostConfigTracker extends Common.ObjectWrapper.ObjectWrapper<EventT
   }
 
   private async pollAidaAvailability(): Promise<void> {
+    this.#pollTimer = window.setTimeout(() => this.pollAidaAvailability(), 2000);
     const currentAidaAvailability = await AidaClient.checkAccessPreconditions();
     if (currentAidaAvailability !== this.#aidaAvailability) {
       this.#aidaAvailability = currentAidaAvailability;
@@ -383,7 +384,6 @@ export class HostConfigTracker extends Common.ObjectWrapper.ObjectWrapper<EventT
       Common.Settings.Settings.instance().setHostConfig(config);
       this.dispatchEventToListeners(Events.AIDA_AVAILABILITY_CHANGED);
     }
-    this.#pollTimer = window.setTimeout(() => this.pollAidaAvailability(), 2000);
   }
 }
 

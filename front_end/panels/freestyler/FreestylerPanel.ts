@@ -85,6 +85,14 @@ type ViewOutput = {
 };
 type View = (input: FreestylerChatUiProps, output: ViewOutput, target: HTMLElement) => void;
 
+function selectedElementFilter(maybeNode: SDK.DOMModel.DOMNode|null): SDK.DOMModel.DOMNode|null {
+  if (maybeNode) {
+    return maybeNode.nodeType() === Node.ELEMENT_NODE ? maybeNode : null;
+  }
+
+  return null;
+}
+
 // TODO(ergunsh): Use the WidgetElement instead of separately creating the toolbar.
 function createToolbar(target: HTMLElement, {onClearClick}: {onClearClick: () => void}): void {
   const toolbarContainer = target.createChild('div', 'freestyler-toolbar-container');
@@ -139,10 +147,6 @@ export class FreestylerPanel extends UI.Panel.Panel {
   static panelName = 'freestyler';
 
   #toggleSearchElementAction: UI.ActionRegistration.Action;
-  #selectedElement: SDK.DOMModel.DOMNode|null;
-  #selectedFile: Workspace.UISourceCode.UISourceCode|null;
-  #selectedNetworkRequest: SDK.NetworkRequest.NetworkRequest|null;
-  #selectedStackTrace: Trace.Helpers.TreeHelpers.TraceEntryNodeForAI|null;
   #contentContainer: HTMLElement;
   #aidaClient: Host.AidaClient.AidaClient;
   #freestylerAgent: FreestylerAgent;
@@ -154,7 +158,6 @@ export class FreestylerPanel extends UI.Panel.Panel {
   #serverSideLoggingEnabled = isFreestylerServerSideLoggingEnabled();
   #freestylerEnabledSetting: Common.Settings.Setting<boolean>|undefined;
   #changeManager = new ChangeManager();
-  #boundOnAidaAvailabilityChange: () => Promise<void>;
 
   constructor(private view: View = defaultView, {aidaClient, aidaAvailability, syncInfo}: {
     aidaClient: Host.AidaClient.AidaClient,
@@ -170,27 +173,11 @@ export class FreestylerPanel extends UI.Panel.Panel {
     this.#aidaClient = aidaClient;
     this.#contentContainer = this.contentElement.createChild('div', 'freestyler-chat-ui-container');
 
-    const selectedElementFilter = (maybeNode: SDK.DOMModel.DOMNode|null): SDK.DOMModel.DOMNode|null => {
-      if (maybeNode) {
-        return maybeNode.nodeType() === Node.ELEMENT_NODE ? maybeNode : null;
-      }
-
-      return null;
-    };
-
-    this.#selectedElement = selectedElementFilter(UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode));
-    this.#selectedNetworkRequest = UI.Context.Context.instance().flavor(SDK.NetworkRequest.NetworkRequest);
-    this.#selectedStackTrace = UI.Context.Context.instance().flavor(Trace.Helpers.TreeHelpers.TraceEntryNodeForAI);
-    this.#selectedFile = UI.Context.Context.instance().flavor(Workspace.UISourceCode.UISourceCode);
     this.#viewProps = {
       state: this.#getChatUiState(),
       aidaAvailability,
       messages: [],
       inspectElementToggled: this.#toggleSearchElementAction.toggled(),
-      selectedElement: this.#selectedElement,
-      selectedNetworkRequest: this.#selectedNetworkRequest,
-      selectedStackTrace: this.#selectedStackTrace,
-      selectedFile: this.#selectedFile,
       isLoading: false,
       onTextSubmit: this.#startConversation.bind(this),
       onInspectElementClick: this.#handleSelectElementClick.bind(this),
@@ -204,51 +191,16 @@ export class FreestylerPanel extends UI.Panel.Panel {
         accountFullName: syncInfo.accountFullName,
       },
       agentType: AgentType.FREESTYLER,
+      selectedElement: null,
+      selectedFile: null,
+      selectedNetworkRequest: null,
+      selectedStackTrace: null,
     };
-    this.#toggleSearchElementAction.addEventListener(UI.ActionRegistration.Events.TOGGLED, ev => {
-      this.#viewProps.inspectElementToggled = ev.data;
-      this.doUpdate();
-    });
 
     this.#freestylerAgent = this.#createFreestylerAgent();
     this.#drJonesFileAgent = this.#createDrJonesFileAgent();
     this.#drJonesNetworkAgent = this.#createDrJonesNetworkAgent();
     this.#drJonesPerformanceAgent = this.#createDrJonesPerformanceAgent();
-
-    UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, ev => {
-      if (this.#viewProps.selectedElement === ev.data) {
-        return;
-      }
-
-      this.#viewProps.selectedElement = selectedElementFilter(ev.data);
-      this.doUpdate();
-    });
-    UI.Context.Context.instance().addFlavorChangeListener(SDK.NetworkRequest.NetworkRequest, ev => {
-      if (this.#viewProps.selectedNetworkRequest === ev.data) {
-        return;
-      }
-
-      this.#viewProps.selectedNetworkRequest = Boolean(ev.data) ? ev.data : null;
-      this.doUpdate();
-    });
-    UI.Context.Context.instance().addFlavorChangeListener(Trace.Helpers.TreeHelpers.TraceEntryNodeForAI, ev => {
-      if (this.#viewProps.selectedStackTrace === ev.data) {
-        return;
-      }
-
-      this.#viewProps.selectedStackTrace = Boolean(ev.data) ? ev.data : null;
-      this.doUpdate();
-    });
-    UI.Context.Context.instance().addFlavorChangeListener(Workspace.UISourceCode.UISourceCode, ev => {
-      if (this.#viewProps.selectedFile === ev.data) {
-        return;
-      }
-
-      this.#viewProps.selectedFile = Boolean(ev.data) ? ev.data : null;
-      this.doUpdate();
-    });
-    this.#boundOnAidaAvailabilityChange = this.#onAidaAvailabilityChange.bind(this);
-    this.doUpdate();
   }
 
   #getChatUiState(): FreestylerChatUiState {
@@ -315,21 +267,49 @@ export class FreestylerPanel extends UI.Panel.Panel {
     this.registerCSSFiles([freestylerPanelStyles]);
     this.#viewOutput.freestylerChatUi?.restoreScrollPosition();
     this.#viewOutput.freestylerChatUi?.focusTextInput();
+    void this.#handleAidaAvailabilityChange();
+    void this
+        .#handleFreestylerEnabledSettingChanged();  // If the setting was switched on/off while the FreestylerPanel was not shown.
+    this.#viewProps = {
+      ...this.#viewProps,
+      inspectElementToggled: this.#toggleSearchElementAction.toggled(),
+      selectedElement: selectedElementFilter(UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode)),
+      selectedNetworkRequest: UI.Context.Context.instance().flavor(SDK.NetworkRequest.NetworkRequest),
+      selectedStackTrace: UI.Context.Context.instance().flavor(Trace.Helpers.TreeHelpers.TraceEntryNodeForAI),
+      selectedFile: UI.Context.Context.instance().flavor(Workspace.UISourceCode.UISourceCode),
+    };
+    this.doUpdate();
+
     this.#freestylerEnabledSetting?.addChangeListener(this.#handleFreestylerEnabledSettingChanged, this);
     Host.AidaClient.HostConfigTracker.instance().addEventListener(
-        Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED, this.#boundOnAidaAvailabilityChange);
-    void this.#onAidaAvailabilityChange();
-    // If the setting was switched on/off while the FreestylerPanel was not shown:
-    void this.#handleFreestylerEnabledSettingChanged();
+        Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED, this.#handleAidaAvailabilityChange);
+    this.#toggleSearchElementAction.addEventListener(
+        UI.ActionRegistration.Events.TOGGLED, this.#handleSearchElementActionToggled);
+    UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, this.#handleDOMNodeFlavorChange);
+    UI.Context.Context.instance().addFlavorChangeListener(
+        SDK.NetworkRequest.NetworkRequest, this.#handleNetworkRequestFlavorChange);
+    UI.Context.Context.instance().addFlavorChangeListener(
+        Trace.Helpers.TreeHelpers.TraceEntryNodeForAI, this.#handleTraceEntryNodeFlavorChange);
+    UI.Context.Context.instance().addFlavorChangeListener(
+        Workspace.UISourceCode.UISourceCode, this.#handleUISourceCodeFlavorChange);
   }
 
   override willHide(): void {
     this.#freestylerEnabledSetting?.removeChangeListener(this.#handleFreestylerEnabledSettingChanged, this);
     Host.AidaClient.HostConfigTracker.instance().removeEventListener(
-        Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED, this.#boundOnAidaAvailabilityChange);
+        Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED, this.#handleAidaAvailabilityChange);
+    this.#toggleSearchElementAction.removeEventListener(
+        UI.ActionRegistration.Events.TOGGLED, this.#handleSearchElementActionToggled);
+    UI.Context.Context.instance().removeFlavorChangeListener(SDK.DOMModel.DOMNode, this.#handleDOMNodeFlavorChange);
+    UI.Context.Context.instance().removeFlavorChangeListener(
+        SDK.NetworkRequest.NetworkRequest, this.#handleNetworkRequestFlavorChange);
+    UI.Context.Context.instance().removeFlavorChangeListener(
+        Trace.Helpers.TreeHelpers.TraceEntryNodeForAI, this.#handleTraceEntryNodeFlavorChange);
+    UI.Context.Context.instance().removeFlavorChangeListener(
+        Workspace.UISourceCode.UISourceCode, this.#handleUISourceCodeFlavorChange);
   }
 
-  async #onAidaAvailabilityChange(): Promise<void> {
+  #handleAidaAvailabilityChange = async(): Promise<void> => {
     const currentAidaAvailability = await Host.AidaClient.AidaClient.checkAccessPreconditions();
     if (currentAidaAvailability !== this.#viewProps.aidaAvailability) {
       this.#viewProps.aidaAvailability = currentAidaAvailability;
@@ -342,12 +322,65 @@ export class FreestylerPanel extends UI.Panel.Panel {
       this.#viewProps.state = this.#getChatUiState();
       this.doUpdate();
     }
-  }
+  };
 
-  #handleFreestylerEnabledSettingChanged(): void {
-    this.#viewProps.state = this.#getChatUiState();
+  #handleSearchElementActionToggled = (ev: Common.EventTarget.EventTargetEvent<boolean>): void => {
+    if (this.#viewProps.inspectElementToggled === ev.data) {
+      return;
+    }
+
+    this.#viewProps.inspectElementToggled = ev.data;
     this.doUpdate();
-  }
+  };
+
+  #handleDOMNodeFlavorChange = (ev: Common.EventTarget.EventTargetEvent<SDK.DOMModel.DOMNode>): void => {
+    if (this.#viewProps.selectedElement === ev.data) {
+      return;
+    }
+
+    this.#viewProps.selectedElement = selectedElementFilter(ev.data);
+    this.doUpdate();
+  };
+
+  #handleNetworkRequestFlavorChange =
+      (ev: Common.EventTarget.EventTargetEvent<SDK.NetworkRequest.NetworkRequest>): void => {
+        if (this.#viewProps.selectedNetworkRequest === ev.data) {
+          return;
+        }
+
+        this.#viewProps.selectedNetworkRequest = Boolean(ev.data) ? ev.data : null;
+        this.doUpdate();
+      };
+
+  #handleTraceEntryNodeFlavorChange =
+      (ev: Common.EventTarget.EventTargetEvent<Trace.Helpers.TreeHelpers.TraceEntryNodeForAI>): void => {
+        if (this.#viewProps.selectedStackTrace === ev.data) {
+          return;
+        }
+
+        this.#viewProps.selectedStackTrace = Boolean(ev.data) ? ev.data : null;
+        this.doUpdate();
+      };
+
+  #handleUISourceCodeFlavorChange =
+      (ev: Common.EventTarget.EventTargetEvent<Workspace.UISourceCode.UISourceCode>): void => {
+        if (this.#viewProps.selectedFile === ev.data) {
+          return;
+        }
+
+        this.#viewProps.selectedFile = Boolean(ev.data) ? ev.data : null;
+        this.doUpdate();
+      };
+
+  #handleFreestylerEnabledSettingChanged = (): void => {
+    const nextChatUiState = this.#getChatUiState();
+    if (this.#viewProps.state === nextChatUiState) {
+      return;
+    }
+
+    this.#viewProps.state = nextChatUiState;
+    this.doUpdate();
+  };
 
   doUpdate(): void {
     this.view(this.#viewProps, this.#viewOutput, this.#contentContainer);

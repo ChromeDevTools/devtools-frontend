@@ -529,7 +529,7 @@ main {
   padding: var(--sys-size-6) var(--sys-size-8);
   box-shadow: var(--drop-shadow);
   font: var(--sys-typescale-body4-regular);
-  margin: var(--sys-size-8);
+  margin: var(--sys-size-4) 0;
   max-width: var(--sys-size-34);
   display: flex;
   text-wrap: pretty;

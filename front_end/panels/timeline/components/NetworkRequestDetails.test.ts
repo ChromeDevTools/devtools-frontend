@@ -52,6 +52,10 @@ describeWithMockConnection('NetworkRequestDetails', () => {
             title: 'Initiated by',
             value: 'chromedevtools.github.io/performance-stories/lcp-web-font/index.html',
           },
+          {
+            title: 'Blocking',
+            value: 'Render blocking',
+          },
           {title: 'From cache', value: 'Yes'},
           {title: 'Duration', value: durationInnerText},
         ],

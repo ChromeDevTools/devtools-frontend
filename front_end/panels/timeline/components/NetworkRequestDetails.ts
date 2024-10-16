@@ -7,6 +7,7 @@ import '../../../ui/components/request_link_icon/request_link_icon.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
 import type * as SDK from '../../../core/sdk/sdk.js';
+import * as Helpers from '../../../models/trace/helpers/helpers.js';
 import * as Trace from '../../../models/trace/trace.js';
 import type * as RequestLinkIcon from '../../../ui/components/request_link_icon/request_link_icon.js';
 import * as PerfUI from '../../../ui/legacy/components/perf_ui/perf_ui.js';
@@ -107,6 +108,18 @@ const UIStrings = {
    *@description Text that refers to the waiting on main thread time of a network request
    */
   waitingOnMainThread: 'Waiting on main thread',
+  /**
+   *@description Text that refers to if the network request is blocking
+   */
+  blocking: 'Blocking',
+  /**
+   *@description Text that refers to if the network request is in-body parser render blocking
+   */
+  inBodyParserBlocking: 'In-body parser blocking',
+  /**
+   *@description Text that refers to if the network request is render blocking
+   */
+  renderBlocking: 'Render blocking',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/NetworkRequestDetails.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -295,6 +308,26 @@ export class NetworkRequestDetails extends HTMLElement {
     return null;
   }
 
+  #renderBlockingRow(): LitHtml.TemplateResult|null {
+    if (!this.#networkRequest || !Helpers.Network.isSyntheticNetworkRequestEventRenderBlocking(this.#networkRequest)) {
+      return null;
+    }
+
+    let renderBlockingText;
+    switch (this.#networkRequest.args.data.renderBlocking) {
+      case 'blocking':
+        renderBlockingText = UIStrings.renderBlocking;
+        break;
+      case 'in_body_parser_blocking':
+        renderBlockingText = UIStrings.inBodyParserBlocking;
+        break;
+      default:
+        // Shouldn't fall to this block, if so, this network request is not render blocking, so return null.
+        return null;
+    }
+    return this.#renderRow(i18nString(UIStrings.blocking), renderBlockingText);
+  }
+
   async #renderPreviewElement(): Promise<LitHtml.TemplateResult|null> {
     if (!this.#networkRequest) {
       return null;
@@ -400,6 +433,7 @@ export class NetworkRequestDetails extends HTMLElement {
           ${this.#renderEncodedDataLength()}
           ${this.#renderRow(i18nString(UIStrings.decodedBody), Platform.NumberUtilities.bytesToString(this.#networkRequest.args.data.decodedBodyLength))}
           ${this.#renderInitiatedBy()}
+          ${this.#renderBlockingRow()}
           ${await this.#renderPreviewElement()}
         </div>
         <div class="network-request-details-col">

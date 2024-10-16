@@ -32,6 +32,8 @@
     text-overflow: ellipsis;
     white-space: nowrap;
     font: var(--sys-typescale-body4-medium);
+    display: flex;
+    align-items: center;
 
     &:focus {
       background-color: var(--sys-color-tonal-container);
@@ -47,6 +49,24 @@
     details:first-child & {
       border-top: 1px solid var(--sys-color-divider);
     }
+    }
+  }
+
+.zoom-button {
+  margin-left: auto;
+}
+
+.zoom-icon {
+  visibility: hidden;
+
+  &.active devtools-button {
+    visibility: visible;
+  }
+}
+
+.dropdown-icon {
+  &.active devtools-button {
+    transform: rotate(90deg);
   }
 }
 

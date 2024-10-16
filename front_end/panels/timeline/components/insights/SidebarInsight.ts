@@ -70,6 +70,13 @@ export class InsightSetHovered extends Event {
   }
 }
 
+export class InsightSetZoom extends Event {
+  static readonly eventName = 'insightsetzoom';
+  constructor(public bounds: Trace.Types.Timing.TraceWindowMicroSeconds) {
+    super(InsightSetZoom.eventName, {bubbles: true, composed: true});
+  }
+}
+
 export class InsightProvideOverlays extends Event {
   static readonly eventName = 'insightprovideoverlays';
 
@@ -94,6 +101,7 @@ declare global {
     [InsightActivated.eventName]: InsightActivated;
     [InsightDeactivated.eventName]: InsightDeactivated;
     [InsightSetHovered.eventName]: InsightSetHovered;
+    [InsightSetZoom.eventName]: InsightSetZoom;
     [InsightProvideOverlays.eventName]: InsightProvideOverlays;
     [InsightProvideRelatedEvents.eventName]: InsightProvideRelatedEvents;
   }

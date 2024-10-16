@@ -132,6 +132,52 @@ export class SidebarInsightsTab extends HTMLElement {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(FEEDBACK_URL);
   }
 
+  #onZoomClick(event: Event, id: string): void {
+    event.stopPropagation();
+    const data = this.#insights?.get(id);
+    if (!data) {
+      return;
+    }
+    this.dispatchEvent(new Insights.SidebarInsight.InsightSetZoom(data.bounds));
+  }
+
+  #renderZoomButton(insightSetToggled: boolean): LitHtml.TemplateResult {
+    const classes = LitHtml.Directives.classMap({
+      'zoom-icon': true,
+      active: insightSetToggled,
+    });
+
+    // clang-format off
+    return html`
+    <div class=${classes}>
+        <devtools-button .data=${{
+          variant: Buttons.Button.Variant.ICON,
+          iconName: 'center-focus-weak',
+          size: Buttons.Button.Size.SMALL,
+        } as Buttons.Button.ButtonData}
+      ></devtools-button></div>`;
+    // clang-format on
+  }
+
+  #renderDropdownIcon(insightSetToggled: boolean): LitHtml.TemplateResult {
+    const containerClasses = LitHtml.Directives.classMap({
+      'dropdown-icon': true,
+      active: insightSetToggled,
+    });
+
+    // clang-format off
+    return html`
+      <div class=${containerClasses}>
+        <devtools-button .data=${{
+          variant: Buttons.Button.Variant.ICON,
+          iconName: 'chevron-right',
+          size: Buttons.Button.Size.SMALL,
+        } as Buttons.Button.ButtonData}
+      ></devtools-button></div>
+    `;
+    // clang-format on
+  }
+
   #render(): void {
     if (!this.#parsedTrace || !this.#insights) {
       LitHtml.render(LitHtml.nothing, this.#shadow, {host: this});
@@ -168,8 +214,11 @@ export class SidebarInsightsTab extends HTMLElement {
                 @click=${() => this.#insightSetToggled(id)}
                 @mouseenter=${() => this.#insightSetHovered(id)}
                 @mouseleave=${() => this.#insightSetUnhovered()}
-                title=${url.href}
-                >${labels[index]}</summary>
+                title=${url.href}>
+                ${this.#renderDropdownIcon(id === this.#insightSetKey)}
+                <span>${labels[index]}</span>
+                <span class='zoom-button' @click=${(event: Event) => this.#onZoomClick(event, id)}>${this.#renderZoomButton(id === this.#insightSetKey)}</span>
+              </summary>
               ${contents}
             </details>`;
           }

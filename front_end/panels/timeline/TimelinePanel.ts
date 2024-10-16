@@ -605,6 +605,11 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       }
     });
 
+    this.#sideBar.element.addEventListener(TimelineInsights.SidebarInsight.InsightSetZoom.eventName, event => {
+      TraceBounds.TraceBounds.BoundsManager.instance().setTimelineVisibleWindow(
+          event.bounds, {ignoreMiniMapBounds: true, shouldAnimate: true});
+    });
+
     this.onModeChanged();
     this.populateToolbar();
     // The viewMode is set by default to the landing page, so we don't call

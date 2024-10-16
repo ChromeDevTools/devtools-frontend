@@ -305,7 +305,7 @@ async function compare(golden: string, generated: string, maximumDiffThreshold: 
   if (isOnBot) {
     debugInfo = `${base64TestGeneratedImageLog}\n${base64DiffImageLog}\n`;
   } else {
-    debugInfo = `Run the tests again with FORCE_UPDATE_ALL_GOLDENS to update all tests that fail.
+    debugInfo = `Run the tests again with --on-diff=update to update all tests that fail.
   Only do this if you expected this screenshot to have changed!
 
   Diff image generated at:

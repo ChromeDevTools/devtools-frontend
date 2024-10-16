@@ -46,7 +46,7 @@ describe('Performance panel', function() {
 
   // Flaky on linux
   itScreenshot.skipOnPlatforms(
-      ['linux'], '[crbug.com/327586819 renders the timeline correctly when scrolling', async () => {
+      ['linux'], '[crbug.com/327586819]: renders the timeline correctly when scrolling', async () => {
         await loadComponentDocExample('performance_panel/basic.html?trace=one-second-interaction');
         await waitFor('.timeline-flamechart');
         const panel = await waitFor('body');
@@ -89,7 +89,8 @@ describe('Performance panel', function() {
     await assertElementScreenshotUnchanged(panel, 'performance/timeline-long-task-candystripe.png', 2);
   });
 
-  itScreenshot.skip('renders screenshots in the frames track', async () => {
+  // Flaking.
+  itScreenshot.skip('[crbug.com/41483851]: renders screenshots in the frames track', async () => {
     if (this.timeout() !== 0) {
       this.timeout(20_000);
     }
@@ -105,21 +106,24 @@ describe('Performance panel', function() {
     await assertElementScreenshotUnchanged(panel, 'performance/timeline-web-dev-screenshot-frames.png', 1);
   });
 
-  itScreenshot.skip('supports the network track being expanded and then clicked', async function() {
-    await loadComponentDocExample('performance_panel/basic.html?trace=web-dev');
-    await waitFor('.timeline-flamechart');
-    const panel = await waitFor('body');
+  // Flaking.
+  itScreenshot.skip(
+      '[crbug.com/373792008]: supports the network track being expanded and then clicked', async function() {
+        await loadComponentDocExample('performance_panel/basic.html?trace=web-dev');
+        await waitFor('.timeline-flamechart');
+        const panel = await waitFor('body');
 
-    const {frontend} = getBrowserAndPages();
-    // Click to expand the network track.
-    await frontend.mouse.click(27, 131);
-    await timeout(100);  // cannot await for DOM as this is a purely canvas change.
-    await assertElementScreenshotUnchanged(panel, 'performance/timeline-expand-network-panel.png', 1);
-    // Click to select a network event.
-    await frontend.mouse.click(104, 144);
-    await timeout(100);  // cannot await for DOM as this is a purely canvas change.
-    await assertElementScreenshotUnchanged(panel, 'performance/timeline-expand-network-panel-and-select-event.png', 1);
-  });
+        const {frontend} = getBrowserAndPages();
+        // Click to expand the network track.
+        await frontend.mouse.click(27, 131);
+        await timeout(100);  // cannot await for DOM as this is a purely canvas change.
+        await assertElementScreenshotUnchanged(panel, 'performance/timeline-expand-network-panel.png', 1);
+        // Click to select a network event.
+        await frontend.mouse.click(104, 144);
+        await timeout(100);  // cannot await for DOM as this is a purely canvas change.
+        await assertElementScreenshotUnchanged(
+            panel, 'performance/timeline-expand-network-panel-and-select-event.png', 1);
+      });
 
   it('renders the window range bounds correctly when loading multiple profiles', async () => {
     await loadComponentDocExample('performance_panel/basic.html?cpuprofile=basic');

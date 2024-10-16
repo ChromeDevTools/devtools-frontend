@@ -84,8 +84,6 @@ function launchChrome() {
     'MojoChannelAssociatedCrashesOnSendError',
     'MojoChannelAssociatedSendUsesRunOrPostTask',
     'SimpleURLLoaderUseReadAndDiscardBodyOption',
-    'ThrottleUnimportantFrameTimers',
-    'VerifyDidCommitParams',
   ];
   const launchArgs = [
     '--remote-allow-origins=*',

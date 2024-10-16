@@ -1391,9 +1391,9 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     delete this.searchResults;
     delete this.selectedSearchResult;
     delete this.searchRegex;
-    this.mainFlameChart.showPopoverForSearchResult(-1);
+    this.mainFlameChart.showPopoverForSearchResult(null);
     this.mainFlameChart.removeSearchResultHighlights();
-    this.networkFlameChart.showPopoverForSearchResult(-1);
+    this.networkFlameChart.showPopoverForSearchResult(null);
     this.networkFlameChart.removeSearchResultHighlights();
   }
 

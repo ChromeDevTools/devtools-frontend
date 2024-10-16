@@ -184,7 +184,7 @@ interface GroupHiddenState {
 
 interface PopoverState {
   // Index of the last entry the popover was shown over.
-  entryIndex: number;
+  entryIndex: number|null;
   // Index of the last group the popover was shown over.
   groupIndex: number;
   hiddenEntriesPopover: boolean;
@@ -313,7 +313,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
 
   #font: string;
   #groupTreeRoot?: GroupTreeNode|null;
-  #searchResultEntryIndex: number;
+  #searchResultEntryIndex: number|null = null;
   #searchResultHighlightElements: HTMLElement[] = [];
   #inTrackConfigEditMode: boolean = false;
   #linkSelectionAnnotationIsInProgress: boolean = false;
@@ -400,7 +400,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.highlightedMarkerIndex = -1;
     this.highlightedEntryIndex = -1;
     this.selectedEntryIndex = -1;
-    this.#searchResultEntryIndex = -1;
+    this.#searchResultEntryIndex = null;
     this.rawTimelineDataLength = 0;
     this.markerPositions = new Map();
     this.customDrawnPositions = new Map();
@@ -515,7 +515,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
   }
 
   hideHighlight(): void {
-    if (this.#searchResultEntryIndex === -1) {
+    if (this.#searchResultEntryIndex === null) {
       this.popoverElement.removeChildren();
       this.lastPopoverState = {
         entryIndex: -1,
@@ -660,7 +660,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
    *   3. Inside a track -> update the highlight of hovered event
    */
   private onMouseMove(mouseEvent: MouseEvent): void {
-    this.#searchResultEntryIndex = -1;
+    this.#searchResultEntryIndex = null;
     this.lastMouseOffsetX = mouseEvent.offsetX;
     this.lastMouseOffsetY = mouseEvent.offsetY;
     if (!this.enabled()) {
@@ -781,14 +781,15 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.hideHighlight();
   }
 
-  showPopoverForSearchResult(selectedSearchResult: number): void {
+  showPopoverForSearchResult(selectedSearchResult: number|null): void {
     this.#searchResultEntryIndex = selectedSearchResult;
     this.#updatePopoverForEntry(selectedSearchResult);
   }
 
-  #updatePopoverForEntry(entryIndex: number): void {
+  #updatePopoverForEntry(entryIndex: number|null): void {
     // Just update position if cursor is hovering the same entry.
-    const isMouseOverRevealChildrenArrow = this.isMouseOverRevealChildrenArrow(this.lastMouseOffsetX, entryIndex);
+    const isMouseOverRevealChildrenArrow =
+        entryIndex !== null && this.isMouseOverRevealChildrenArrow(this.lastMouseOffsetX, entryIndex);
     if (entryIndex === this.lastPopoverState.entryIndex &&
         isMouseOverRevealChildrenArrow === this.lastPopoverState.hiddenEntriesPopover) {
       return this.updatePopoverOffset();
@@ -803,7 +804,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     const entryInfo = (isMouseOverRevealChildrenArrow && group) ?
         this.dataProvider.prepareHighlightedHiddenEntriesArrowInfo &&
             this.dataProvider.prepareHighlightedHiddenEntriesArrowInfo(entryIndex) :
-        this.dataProvider.prepareHighlightedEntryInfo(entryIndex);
+        entryIndex !== null && this.dataProvider.prepareHighlightedEntryInfo(entryIndex);
     if (entryInfo) {
       this.popoverElement.appendChild(entryInfo);
       this.updatePopoverOffset();

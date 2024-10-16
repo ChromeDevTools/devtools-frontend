@@ -7,14 +7,21 @@ import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as Logs from '../../models/logs/logs.js';
+import type * as Network from '../../panels/network/network.js';
 import {
-  describeWithEnvironment,
   getGetHostConfigStub,
 } from '../../testing/EnvironmentHelpers.js';
+import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {createNetworkPanelForMockConnection} from '../../testing/NetworkHelpers.js';
+import * as Coordinator from '../../ui/components/render_coordinator/render_coordinator.js';
 
 import {DrJonesNetworkAgent, ResponseType} from './freestyler.js';
 
-describeWithEnvironment('DrJonesNetworkAgent', () => {
+const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
+
+describeWithMockConnection('DrJonesNetworkAgent', () => {
+  let networkPanel: Network.NetworkPanel.NetworkPanel;
+
   function mockHostConfig(modelId?: string, temperature?: number) {
     getGetHostConfigStub({
       devToolsExplainThisResourceDogfood: {
@@ -23,6 +30,15 @@ describeWithEnvironment('DrJonesNetworkAgent', () => {
       },
     });
   }
+
+  beforeEach(async () => {
+    networkPanel = await createNetworkPanelForMockConnection();
+  });
+
+  afterEach(async () => {
+    await coordinator.done();
+    networkPanel.detach();
+  });
 
   describe('buildRequest', () => {
     beforeEach(() => {
@@ -222,20 +238,8 @@ describeWithEnvironment('DrJonesNetworkAgent', () => {
             },
             {
               title: 'Timing',
-              text: `Request start time: 500
-Request end time: -1
-Receiving response headers start time: 1000
-Receiving response headers end time: 0
-Proxy negotiation start time: 0
-Proxy negotiation end time: 0
-DNS lookup start time: 0
-DNS lookup end time: 0
-TCP start time: 0
-TCP end time: 0
-SSL start time: 0
-SSL end time: 0
-Sending start: 800
-Sending end: 900`,
+              text:
+                  'Queued at (timestamp): 0 μs\nStarted at (timestamp): 8.3 min\nQueueing (duration): 8.3 min\nConnection start (stalled) (duration): 800.00 ms\nRequest sent (duration): 100.00 ms\nDuration (duration): 8.3 min',
             },
             {
               title: 'Request Initiator Chain',
@@ -270,20 +274,12 @@ foo3: bar3
 
 Response status: 200 \n
 Request Timing:
-Request start time: 500
-Request end time: -1
-Receiving response headers start time: 1000
-Receiving response headers end time: 0
-Proxy negotiation start time: 0
-Proxy negotiation end time: 0
-DNS lookup start time: 0
-DNS lookup end time: 0
-TCP start time: 0
-TCP end time: 0
-SSL start time: 0
-SSL end time: 0
-Sending start: 800
-Sending end: 900
+Queued at (timestamp): 0 μs
+Started at (timestamp): 8.3 min
+Queueing (duration): 8.3 min
+Connection start (stalled) (duration): 800.00 ms
+Request sent (duration): 100.00 ms
+Duration (duration): 8.3 min
 
 Request Initiator Chain:
 - URL: https://www.initiator.com

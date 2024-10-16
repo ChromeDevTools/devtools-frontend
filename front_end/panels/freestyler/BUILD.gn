@@ -40,7 +40,7 @@ devtools_module("freestyler") {
     "../../models/logs:bundle",
     "../../models/trace:bundle",
     "../../models/workspace:bundle",
-    "../../panels/network/forward:bundle",
+    "../../panels/network:bundle",
     "../../panels/utils:bundle",
     "../../third_party/marked:bundle",
     "../../ui/components/markdown_view:bundle",

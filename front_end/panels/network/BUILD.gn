@@ -112,6 +112,7 @@ devtools_entrypoint("bundle") {
   visibility = [
     ":*",
     "../../entrypoints/*",
+    "../../panels/freestyler/*",
     "../../ui/components/request_link_icon/*",
     "../application/*",
   ]

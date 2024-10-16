@@ -6,8 +6,9 @@ import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Logs from '../../models/logs/logs.js';
 import * as Trace from '../../models/trace/trace.js';
-import {createTarget, registerNoopActions} from '../../testing/EnvironmentHelpers.js';
+import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {createNetworkPanelForMockConnection} from '../../testing/NetworkHelpers.js';
 import * as Coordinator from '../../ui/components/render_coordinator/render_coordinator.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -20,28 +21,8 @@ describeWithMockConnection('NetworkPanel', () => {
   let networkPanel: Network.NetworkPanel.NetworkPanel;
 
   beforeEach(async () => {
-    registerNoopActions(['network.toggle-recording', 'network.clear']);
-
     target = createTarget();
-    const dummyStorage = new Common.Settings.SettingsStorage({});
-    for (const settingName
-             of ['network-color-code-resource-types', 'network.group-by-frame', 'network-record-film-strip-setting']) {
-      Common.Settings.registerSettingExtension({
-        settingName,
-        settingType: Common.Settings.SettingType.BOOLEAN,
-        defaultValue: false,
-      });
-    }
-    Common.Settings.Settings.instance({
-      forceNew: true,
-      syncedStorage: dummyStorage,
-      globalStorage: dummyStorage,
-      localStorage: dummyStorage,
-    });
-    networkPanel = Network.NetworkPanel.NetworkPanel.instance({forceNew: true, displayScreenshotDelay: 0});
-    networkPanel.markAsRoot();
-    networkPanel.show(document.body);
-    await coordinator.done();
+    networkPanel = await createNetworkPanelForMockConnection();
   });
 
   afterEach(async () => {

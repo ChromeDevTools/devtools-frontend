@@ -28,6 +28,7 @@ ts_library("testing") {
     "MockScopeChain.ts",
     "MutationHelpers.test.ts",
     "MutationHelpers.ts",
+    "NetworkHelpers.ts",
     "OverridesHelpers.ts",
     "PersistenceHelpers.ts",
     "PropertyParser.ts",

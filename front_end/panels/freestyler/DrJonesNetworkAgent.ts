@@ -7,6 +7,7 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 import * as Logs from '../../models/logs/logs.js';
+import * as Network from '../../panels/network/network.js';
 
 import {
   AiAgent,
@@ -180,22 +181,54 @@ export function formatHeaders(title: string, headers: SDK.NetworkRequest.NameVal
 }
 
 export function formatNetworkRequestTiming(request: SDK.NetworkRequest.NetworkRequest): string {
-  const timing = request.timing;
+  const calculator = Network.NetworkPanel.NetworkPanel.instance().networkLogView.timeCalculator();
+  const results =
+      Network.RequestTimingView.RequestTimingView.calculateRequestTimeRanges(request, calculator.minimumBoundary());
 
-  return `Request start time: ${request.startTime}
-Request end time: ${request.endTime}
-Receiving response headers start time: ${timing?.receiveHeadersStart}
-Receiving response headers end time: ${timing?.receiveHeadersEnd}
-Proxy negotiation start time: ${timing?.proxyStart}
-Proxy negotiation end time: ${timing?.proxyEnd}
-DNS lookup start time: ${timing?.dnsStart}
-DNS lookup end time: ${timing?.dnsEnd}
-TCP start time: ${timing?.connectStart}
-TCP end time: ${timing?.connectEnd}
-SSL start time: ${timing?.sslStart}
-SSL end time: ${timing?.sslEnd}
-Sending start: ${timing?.sendStart}
-Sending end: ${timing?.sendEnd}`;
+  function getDuration(name: string): string|undefined {
+    const result = results.find(r => r.name === name);
+    if (!result) {
+      return;
+    }
+    return i18n.TimeUtilities.secondsToString(result.end - result.start, true);
+  }
+
+  const labels = [
+    {
+      label: 'Queued at (timestamp)',
+      value: calculator.formatValue(request.issueTime(), 2),
+    },
+    {
+      label: 'Started at (timestamp)',
+      value: calculator.formatValue(request.startTime, 2),
+    },
+    {
+      label: 'Queueing (duration)',
+      value: getDuration('queueing'),
+    },
+    {
+      label: 'Connection start (stalled) (duration)',
+      value: getDuration('blocking'),
+    },
+    {
+      label: 'Request sent (duration)',
+      value: getDuration('sending'),
+    },
+    {
+      label: 'Waiting for server response (duration)',
+      value: getDuration('waiting'),
+    },
+    {
+      label: 'Content download (duration)',
+      value: getDuration('receiving'),
+    },
+    {
+      label: 'Duration (duration)',
+      value: getDuration('total'),
+    },
+  ];
+
+  return labels.filter(label => Boolean(label.value)).map(label => `${label.label}: ${label.value}`).join('\n');
 }
 
 function formatRequestInitiated(

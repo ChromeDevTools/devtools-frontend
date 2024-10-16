@@ -471,7 +471,7 @@ export class NetworkPanel extends UI.Panel.Panel implements
         new UI.Toolbar.ToolbarButton(i18nString(UIStrings.exportHarSanitized), 'download', undefined, 'export-har');
     exportHarButton.addEventListener(
         UI.Toolbar.ToolbarButton.Events.CLICK,
-        this.networkLogView.exportAll.bind(this.networkItemView, {sanitize: true}), this);
+        this.networkLogView.exportAll.bind(this.networkLogView, {sanitize: true}), this);
     this.panelToolbar.appendToolbarItem(exportHarButton);
 
     // Support for exporting HAR (with sensitive data), which is added via a long-click
@@ -491,12 +491,12 @@ export class NetworkPanel extends UI.Panel.Panel implements
           const contextMenu = new UI.ContextMenu.ContextMenu(event);
           contextMenu.defaultSection().appendItem(
               i18nString(UIStrings.exportHarSanitized),
-              this.networkLogView.exportAll.bind(this.networkItemView, {sanitize: true}),
+              this.networkLogView.exportAll.bind(this.networkLogView, {sanitize: true}),
               {jslogContext: 'export-har'},
           );
           contextMenu.defaultSection().appendItem(
               i18nString(UIStrings.exportHarWithSensitiveData),
-              this.networkLogView.exportAll.bind(this.networkItemView, {sanitize: false}),
+              this.networkLogView.exportAll.bind(this.networkLogView, {sanitize: false}),
               {jslogContext: 'export-har-with-sensitive-data'},
           );
           void contextMenu.show();

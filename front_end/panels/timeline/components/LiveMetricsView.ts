@@ -300,7 +300,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
   #lcpValue?: LiveMetrics.LCPValue;
   #clsValue?: LiveMetrics.CLSValue;
   #inpValue?: LiveMetrics.INPValue;
-  #interactions: LiveMetrics.InteractionMap = new Map();
+  #interactions: LiveMetrics.Interaction[] = [];
   #layoutShifts: LiveMetrics.LayoutShift[] = [];
 
   #cruxPageResult?: CrUXManager.PageResult;
@@ -332,8 +332,8 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
     const hasNewLS = this.#layoutShifts.length < event.data.layoutShifts.length;
     this.#layoutShifts = [...event.data.layoutShifts];
 
-    const hasNewInteraction = this.#interactions.size < event.data.interactions.size;
-    this.#interactions = new Map(event.data.interactions);
+    const hasNewInteraction = this.#interactions.length < event.data.interactions.length;
+    this.#interactions = [...event.data.interactions];
 
     const renderPromise = ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
 
@@ -510,7 +510,8 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
   #renderInpCard(): LitHtml.LitTemplate {
     const fieldData = this.#getFieldMetricData('interaction_to_next_paint');
     const phases = this.#inpValue?.phases;
-    const interaction = this.#inpValue && this.#interactions.get(this.#inpValue.uniqueInteractionId);
+    const interaction =
+        this.#interactions.find(interaction => interaction.uniqueInteractionId === this.#inpValue?.uniqueInteractionId);
 
     // clang-format off
     return html`
@@ -949,7 +950,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
   }
 
   #renderInteractionsLog(): LitHtml.LitTemplate {
-    if (!this.#interactions.size) {
+    if (!this.#interactions.length) {
       return LitHtml.nothing;
     }
 
@@ -961,7 +962,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
           this.#interactionsListEl = node as HTMLElement;
         })}
       >
-        ${this.#interactions.values().map(interaction => {
+        ${this.#interactions.map(interaction => {
           const metricValue = renderMetricValue(
             'timeline.landing.interaction-event-timing',
             interaction.duration,
@@ -975,42 +976,20 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
 
           return html`
             <li id=${interaction.uniqueInteractionId} class="log-item interaction" tabindex="-1">
-              <details>
-                <summary>
-                  <span class="interaction-type">
-                    ${interaction.interactionType}
-                    ${isInp ?
-                      html`<span class="interaction-inp-chip" title=${i18nString(UIStrings.inpInteraction)}>INP</span>`
-                    : nothing}
-                  </span>
-                  <span class="interaction-node">${
-                    interaction.node && until(Common.Linkifier.Linkifier.linkify(interaction.node))}</span>
-                  ${isP98Excluded ? html`<devtools-icon
-                    class="interaction-info"
-                    name="info"
-                    title=${i18nString(UIStrings.interactionExcluded)}
-                  ></devtools-icon>` : nothing}
-                  <span class="interaction-duration">${metricValue}</span>
-                </summary>
-                <div class="phase-table" role="table">
-                  <div class="phase-table-row phase-table-header-row" role="row">
-                    <div role="columnheader">Phase</div>
-                    <div role="columnheader">Local time (ms)</div>
-                  </div>
-                  <div class="phase-table-row" role="row">
-                    <div role="cell">${i18nString(UIStrings.inputDelay)}</div>
-                    <div role="cell">${Math.round(interaction.phases.inputDelay)}</div>
-                  </div>
-                  <div class="phase-table-row" role="row">
-                    <div role="cell">${i18nString(UIStrings.processingDuration)}</div>
-                    <div role="cell">${Math.round(interaction.phases.processingDuration)}</div>
-                  </div>
-                  <div class="phase-table-row" role="row">
-                    <div role="cell">${i18nString(UIStrings.presentationDelay)}</div>
-                    <div role="cell">${Math.round(interaction.phases.presentationDelay)}</div>
-                  </div>
-                </div>
-              </details>
+              <span class="interaction-type">
+                ${interaction.interactionType}
+                ${isInp ?
+                  html`<span class="interaction-inp-chip" title=${i18nString(UIStrings.inpInteraction)}>INP</span>`
+                : nothing}
+              </span>
+              <span class="interaction-node">${
+                interaction.node && until(Common.Linkifier.Linkifier.linkify(interaction.node))}</span>
+              ${isP98Excluded ? html`<devtools-icon
+                class="interaction-info"
+                name="info"
+                title=${i18nString(UIStrings.interactionExcluded)}
+              ></devtools-icon>` : nothing}
+              <span class="interaction-duration">${metricValue}</span>
             </li>
           `;
         })}

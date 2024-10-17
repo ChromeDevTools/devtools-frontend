@@ -176,7 +176,7 @@ const getIntersectingLoAFs = (start, end) => {
     }
     return intersectingLoAFs;
 };
-export const attributeINP = (metric) => {
+const attributeINP = (metric) => {
     const firstEntry = metric.entries[0];
     const group = entryToEntriesGroupMap.get(firstEntry);
     const processingStart = firstEntry.processingStart;

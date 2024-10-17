@@ -2102,6 +2102,7 @@ export const knownContextValues = new Set([
   'offset-rotate',
   'offset-x',
   'offset-y',
+  'on',
   'on-shown-without-set-expression',
   'only-3rd-party-requests',
   'only-blocked-requests',

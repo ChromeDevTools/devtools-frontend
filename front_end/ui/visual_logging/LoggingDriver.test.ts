@@ -506,6 +506,54 @@ describe('LoggingDriver', () => {
     assert.isFalse(recordChange.calledOnce);
   });
 
+  it('logs state with change of a checkbox', async () => {
+    const recordChange = sinon.stub(
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance,
+        'recordChange',
+    );
+
+    const element = document.createElement('input');
+    element.setAttribute('jslog', 'TreeItem; track: change');
+    element.type = 'checkbox';
+    element.checked = true;
+    renderElementIntoDOM(element);
+    await VisualLoggingTesting.LoggingDriver.startLogging();
+    let logging = expectCall(recordChange);
+    element.dispatchEvent(new Event('change'));
+    let [event] = await logging;
+    assert.strictEqual(event.context, 1530936795);
+
+    element.checked = false;
+    logging = expectCall(recordChange);
+    element.dispatchEvent(new Event('change'));
+    [event] = await logging;
+    assert.strictEqual(event.context, 1936227034);
+  });
+
+  it('logs state with change of a radio', async () => {
+    const recordChange = sinon.stub(
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance,
+        'recordChange',
+    );
+
+    const element = document.createElement('input');
+    element.setAttribute('jslog', 'TreeItem; track: change');
+    element.type = 'radio';
+    element.checked = true;
+    renderElementIntoDOM(element);
+    await VisualLoggingTesting.LoggingDriver.startLogging();
+    let logging = expectCall(recordChange);
+    element.dispatchEvent(new Event('change'));
+    let [event] = await logging;
+    assert.strictEqual(event.context, 1530936795);
+
+    element.checked = false;
+    logging = expectCall(recordChange);
+    element.dispatchEvent(new Event('change'));
+    [event] = await logging;
+    assert.strictEqual(event.context, 1936227034);
+  });
+
   it('logs hover', async () => {
     addLoggableElements();
     await VisualLoggingTesting.LoggingDriver.startLogging({hoverLogThrottler: throttler});

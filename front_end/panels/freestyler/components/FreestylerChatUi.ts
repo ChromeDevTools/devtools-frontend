@@ -203,6 +203,15 @@ const UIStringsNotTranslate = {
   cssHelpExplainer:
       'Navigate to the Elements panel, right-click a DOM element, and select "Ask AI assistant". I’ll be happy to explain its styles or behavior.',
   /**
+   * @description AI assistance for files.
+   */
+  fileHelp: 'File insights:',
+  /**
+   * @description Explanation on how to use AI assistance for files in the Sources panel.
+   */
+  fileHelpExplainer:
+      'Open the Sources panel, right-click a file, and select "Ask AI". I can provide insights into its purpose or origin.',
+  /**
    * @description AI assistance for network requests.
    */
   networkHelp: 'Network request insights:',
@@ -211,6 +220,15 @@ const UIStringsNotTranslate = {
    */
   networkHelpExplainer:
       'In the Network panel, right-click any request and select "Ask AI assistant". I’ll help break down what’s happening with each request.',
+  /**
+   * @description AI assistance for performance traces.
+   */
+  performanceHelp: 'Performance analysis:',
+  /**
+   * @description Explanation on how to use AI assistance for performance traces.
+   */
+  performanceHelpExplainer:
+      'In the Performance panel, run a trace. Then, right-click any function in the timeline and select "Ask AI". I’ll help you analyze its performance impact and suggest improvements.',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/freestyler/components/FreestylerChatUi.ts', UIStrings);
@@ -1096,8 +1114,14 @@ export class FreestylerChatUi extends HTMLElement {
               ${config.devToolsFreestyler?.enabled ? html`
                 <p><strong>${lockedString(UIStringsNotTranslate.cssHelp)}</strong> ${lockedString(UIStringsNotTranslate.cssHelpExplainer)}</p>
               ` : LitHtml.nothing}
+              ${config.devToolsAiAssistanceFileAgentDogfood?.enabled ? html`
+                <p><strong>${lockedString(UIStringsNotTranslate.fileHelp)}</strong> ${lockedString(UIStringsNotTranslate.fileHelpExplainer)}</p>
+              ` : LitHtml.nothing}
               ${config.devToolsExplainThisResourceDogfood?.enabled ? html`
-                <p><strong>${lockedString(UIStringsNotTranslate.networkHelp)}</strong> ${lockedString(UIStringsNotTranslate.networkHelpExplainer)}<p>
+                <p><strong>${lockedString(UIStringsNotTranslate.networkHelp)}</strong> ${lockedString(UIStringsNotTranslate.networkHelpExplainer)}</p>
+              ` : LitHtml.nothing}
+              ${config.devToolsAiAssistancePerformanceAgentDogfood?.enabled ? html`
+                <p><strong>${lockedString(UIStringsNotTranslate.performanceHelp)}</strong> ${lockedString(UIStringsNotTranslate.performanceHelpExplainer)}</p>
               ` : LitHtml.nothing}
             </div>
           </section>

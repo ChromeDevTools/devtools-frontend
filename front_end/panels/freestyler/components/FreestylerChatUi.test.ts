@@ -129,6 +129,12 @@ css
         devToolsExplainThisResourceDogfood: {
           enabled: true,
         },
+        devToolsAiAssistanceFileAgentDogfood: {
+          enabled: true,
+        },
+        devToolsAiAssistancePerformanceAgentDogfood: {
+          enabled: true,
+        },
       });
       const props = getProp({
         agentType: undefined,
@@ -137,9 +143,11 @@ css
       renderElementIntoDOM(chat);
       const instructions = chat.shadowRoot?.querySelectorAll('.instructions strong');
       assert.isDefined(instructions);
-      assert.strictEqual(instructions?.length, 2);
+      assert.strictEqual(instructions?.length, 4);
       assert.strictEqual(instructions[0].textContent, 'CSS help:');
-      assert.strictEqual(instructions[1].textContent, 'Network request insights:');
+      assert.strictEqual(instructions[1].textContent, 'File insights:');
+      assert.strictEqual(instructions[2].textContent, 'Network request insights:');
+      assert.strictEqual(instructions[3].textContent, 'Performance analysis:');
 
       stub.restore();
     });

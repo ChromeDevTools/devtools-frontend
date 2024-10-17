@@ -435,6 +435,13 @@ export class FreestylerPanel extends UI.Panel.Panel {
         this.doUpdate();
         break;
       }
+      case 'drjones.network-floating-button': {
+        this.#viewOutput.freestylerChatUi?.focusTextInput();
+        Host.userMetrics.actionTaken(Host.UserMetrics.Action.DrJonesOpenedFromNetworkPanelFloatingButton);
+        this.#viewProps.agentType = AgentType.DRJONES_NETWORK_REQUEST;
+        this.doUpdate();
+        break;
+      }
       case 'drjones.network-panel-context': {
         this.#viewOutput.freestylerChatUi?.focusTextInput();
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.DrJonesOpenedFromNetworkPanel);
@@ -619,6 +626,7 @@ export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
     switch (actionId) {
       case 'freestyler.elements-floating-button':
       case 'freestyler.element-panel-context':
+      case 'drjones.network-floating-button':
       case 'drjones.network-panel-context':
       case 'drjones.performance-panel-context':
       case 'drjones.sources-floating-button':

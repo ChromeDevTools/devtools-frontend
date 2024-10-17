@@ -259,6 +259,15 @@
   vertical-align: sub;
 }
 
+.data-grid-data-grid-node .ai-button-container {
+  display: none;
+  float: right;
+}
+
+.data-grid-data-grid-node:hover .ai-button-container {
+  display: inline-flex;
+}
+
 .image-network-icon-preview {
   bottom: 0;
   left: 0;

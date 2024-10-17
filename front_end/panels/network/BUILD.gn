@@ -84,6 +84,7 @@ devtools_module("network") {
     "../../panels/utils:bundle",
     "../../third_party/chromium/client-variations:bundle",
     "../../ui/components/expandable_list:bundle",
+    "../../ui/components/floating_button:bundle",
     "../../ui/components/icon_button:bundle",
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/cookie_table:bundle",

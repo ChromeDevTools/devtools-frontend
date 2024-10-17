@@ -574,7 +574,8 @@ export enum Action {
   DrJonesOpenedFromSourcesPanel = 171,
   DrJonesOpenedFromSourcesPanelFloatingButton = 172,
   DrJonesOpenedFromPerformancePanel = 173,
-  MAX_VALUE = 174,
+  DrJonesOpenedFromNetworkPanelFloatingButton = 174,
+  MAX_VALUE = 175,
   /* eslint-enable @typescript-eslint/naming-convention */
 }
 

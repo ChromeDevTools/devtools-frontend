@@ -1085,6 +1085,7 @@ export const knownContextValues = new Set([
   'dragstart',
   'drawer',
   'drawer-view-closeableTabs',
+  'drjones.network-floating-button',
   'drjones.network-panel-context',
   'drjones.performance-panel-context',
   'drjones.sources-floating-button',

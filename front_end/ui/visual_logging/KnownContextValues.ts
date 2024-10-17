@@ -3233,6 +3233,7 @@ export const knownContextValues = new Set([
   'view-timeline-axis',
   'view-timeline-inset',
   'view-timeline-name',
+  'view-transition-capture-mode',
   'view-transition-class',
   'view-transition-group',
   'view-transition-name',

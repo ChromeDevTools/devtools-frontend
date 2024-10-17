@@ -2709,8 +2709,6 @@ domain DOM
       placeholder
       file-selector-button
       details-content
-      select-fallback-button
-      select-fallback-button-text
       picker
 
   # Shadow root type.
@@ -9520,6 +9518,7 @@ domain Page
       EmbedderExtensionMessagingForOpenPort
       EmbedderExtensionSentMessageToCachedFrame
       RequestedByWebViewClient
+      PostMessageByWebViewClient
 
   # Types of not restored reasons for back-forward cache.
   experimental type BackForwardCacheNotRestoredReasonType extends string

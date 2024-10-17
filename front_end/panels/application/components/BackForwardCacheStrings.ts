@@ -697,6 +697,7 @@ export const NotRestoredReasonDescription = {
   ParserAborted: {name: i18n.i18n.lockedLazyString('ParserAborted')},
   BroadcastChannelOnMessage: {name: i18n.i18n.lockedLazyString('BroadcastChannelOnMessage')},
   RequestedByWebViewClient: {name: i18n.i18n.lockedLazyString('RequestedByWebViewClient')},
+  PostMessageByWebViewClient: {name: i18n.i18n.lockedLazyString('PostMessageByWebViewClient')},
   WebViewSettingsChanged: {name: i18n.i18n.lockedLazyString('WebViewSettingsChanged')},
   WebViewJavaScriptObjectChanged: {name: i18n.i18n.lockedLazyString('WebViewJavaScriptObjectChanged')},
   WebViewMessageListenerInjected: {name: i18n.i18n.lockedLazyString('WebViewMessageListenerInjected')},

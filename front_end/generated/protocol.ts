@@ -3803,8 +3803,6 @@ export namespace DOM {
     Placeholder = 'placeholder',
     FileSelectorButton = 'file-selector-button',
     DetailsContent = 'details-content',
-    SelectFallbackButton = 'select-fallback-button',
-    SelectFallbackButtonText = 'select-fallback-button-text',
     Picker = 'picker',
   }
 
@@ -12490,6 +12488,7 @@ export namespace Page {
     EmbedderExtensionMessagingForOpenPort = 'EmbedderExtensionMessagingForOpenPort',
     EmbedderExtensionSentMessageToCachedFrame = 'EmbedderExtensionSentMessageToCachedFrame',
     RequestedByWebViewClient = 'RequestedByWebViewClient',
+    PostMessageByWebViewClient = 'PostMessageByWebViewClient',
   }
 
   /**

@@ -13,7 +13,7 @@ export interface LoggingState {
   processedForDebugging?: boolean;
   size: DOMRect;
   selectOpen?: boolean;
-  lastInputEventType?: string;
+  pendingChangeContext?: string;
 }
 
 const state = new WeakMap<Loggable, LoggingState>();

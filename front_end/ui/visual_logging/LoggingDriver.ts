@@ -215,15 +215,15 @@ async function process(): Promise<void> {
           if (!(event instanceof InputEvent)) {
             return;
           }
-          if (loggingState.lastInputEventType && loggingState.lastInputEventType !== event.inputType) {
+          if (loggingState.pendingChangeContext && loggingState.pendingChangeContext !== event.inputType) {
             void logPendingChange(element);
           }
-          loggingState.lastInputEventType = event.inputType;
+          loggingState.pendingChangeContext = event.inputType;
           pendingChange.add(element);
         }, {capture: true});
         element.addEventListener('change', () => logPendingChange(element), {capture: true});
         element.addEventListener('focusout', () => {
-          if (loggingState.lastInputEventType) {
+          if (loggingState.pendingChangeContext) {
             void logPendingChange(element);
           }
         }, {capture: true});
@@ -301,8 +301,11 @@ function logPendingChange(element: Element): void {
   if (!loggingState) {
     return;
   }
+  if (['checkbox', 'radio'].includes((element as HTMLInputElement).type)) {
+    loggingState.pendingChangeContext = (element as HTMLInputElement).checked ? 'on' : 'off';
+  }
   void logChange(element);
-  delete loggingState.lastInputEventType;
+  delete loggingState.pendingChangeContext;
   pendingChange.delete(element);
 }
 

@@ -88,7 +88,7 @@ export async function logChange(loggable: Loggable): Promise<void> {
   const loggingState = getLoggingState(loggable);
   assertNotNullOrUndefined(loggingState);
   const changeEvent: Host.InspectorFrontendHostAPI.ChangeEvent = {veid: loggingState.veid};
-  const context = loggingState.lastInputEventType;
+  const context = loggingState.pendingChangeContext;
   if (context) {
     changeEvent.context = await contextAsNumber(context);
   }

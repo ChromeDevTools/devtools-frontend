@@ -8,6 +8,7 @@ import type * as Root from '../../../front_end/core/root/root.js';
 import {expectError} from '../../conductor/events.js';
 import {click, getBrowserAndPages, goToResource} from '../../shared/helper.js';
 import {CONSOLE_TAB_SELECTOR} from '../helpers/console-helpers.js';
+import {openSoftContextMenuAndClickOnItem} from '../helpers/context-menu-helpers.js';
 import {closeSettings} from '../helpers/settings-helpers.js';
 
 describe('Freestyler', function() {
@@ -95,10 +96,7 @@ describe('Freestyler', function() {
   }
 
   async function openFreestyler(): Promise<void> {
-    const {frontend} = getBrowserAndPages();
-    await frontend.locator('aria/Customize and control DevTools').click();
-    await frontend.locator('aria/More tools').click();
-    await frontend.locator('aria/AI assistance').click();
+    await openSoftContextMenuAndClickOnItem('pierce/.elements-disclosure li.selected', 'Ask AI');
   }
 
   async function enableDebugModeForFreestyler(): Promise<void> {

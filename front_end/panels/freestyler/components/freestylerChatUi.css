@@ -297,6 +297,35 @@
   }
 }
 
+.no-agent-message {
+  user-select: text;
+  cursor: initial;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sys-size-5);
+  width: 100%;
+  padding: var(--sys-size-7) var(--sys-size-5);
+  height: 100%;
+
+  .header {
+    display: flex;
+    align-items: center;
+    height: var(--sys-size-11);
+    gap: var(--sys-size-4);
+
+    h2 {
+      font: var(--sys-typescale-body4-bold);
+    }
+  }
+
+  .instructions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sys-size-6);
+    line-height: 18px;
+  }
+}
+
 .indicator {
   color: var(--sys-color-green-bright);
 }

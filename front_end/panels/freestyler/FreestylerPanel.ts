@@ -190,7 +190,6 @@ export class FreestylerPanel extends UI.Panel.Panel {
         accountImage: syncInfo.accountImage,
         accountFullName: syncInfo.accountFullName,
       },
-      agentType: AgentType.FREESTYLER,
       selectedElement: null,
       selectedFile: null,
       selectedNetworkRequest: null,

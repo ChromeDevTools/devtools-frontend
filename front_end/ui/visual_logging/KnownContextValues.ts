@@ -2076,6 +2076,7 @@ export const knownContextValues = new Set([
   'nfc',
   'nl',
   'no',
+  'no-agent-entrypoint',
   'no-override',
   'no-throttling',
   'node',

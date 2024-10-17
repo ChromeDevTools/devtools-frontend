@@ -6,7 +6,7 @@ import * as Host from '../../../core/host/host.js';
 import type * as SDK from '../../../core/sdk/sdk.js';
 import type * as Trace from '../../../models/trace/trace.js';
 import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
-import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
+import {describeWithEnvironment, getGetHostConfigStub} from '../../../testing/EnvironmentHelpers.js';
 import * as Marked from '../../../third_party/marked/marked.js';
 import * as MarkdownView from '../../../ui/components/markdown_view/markdown_view.js';
 import * as Freestyler from '../freestyler.js';
@@ -119,6 +119,29 @@ css
       const chatInput = chat.shadowRoot?.querySelector('.chat-input') as HTMLTextAreaElement;
       assert.isTrue(chatInput.disabled);
       assert.strictEqual(chatInput.placeholder, 'Ask a question about the selected element');
+    });
+
+    it('shows usage instructions', async () => {
+      const stub = getGetHostConfigStub({
+        devToolsFreestyler: {
+          enabled: true,
+        },
+        devToolsExplainThisResourceDogfood: {
+          enabled: true,
+        },
+      });
+      const props = getProp({
+        agentType: undefined,
+      });
+      const chat = new Freestyler.FreestylerChatUi(props);
+      renderElementIntoDOM(chat);
+      const instructions = chat.shadowRoot?.querySelectorAll('.instructions strong');
+      assert.isDefined(instructions);
+      assert.strictEqual(instructions?.length, 2);
+      assert.strictEqual(instructions[0].textContent, 'CSS help:');
+      assert.strictEqual(instructions[1].textContent, 'Network request insights:');
+
+      stub.restore();
     });
   });
 });

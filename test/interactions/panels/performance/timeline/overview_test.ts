@@ -8,8 +8,7 @@ import {assertElementScreenshotUnchanged} from '../../../../shared/screenshots.j
 import {loadComponentDocExample} from '../../../helpers/shared.js';
 
 describe('Performance panel overview/minimap', function() {
-  // Flaking.
-  itScreenshot.skip('[crbug.com/336787201]: renders the overview', async () => {
+  itScreenshot('renders the overview', async () => {
     await loadComponentDocExample('performance_panel/overview.html?trace=web-dev');
     const pane = await waitFor('.container #timeline-overview-pane');
     await assertElementScreenshotUnchanged(pane, 'performance/timeline-overview.png', 3);
@@ -21,8 +20,7 @@ describe('Performance panel overview/minimap', function() {
     await assertElementScreenshotUnchanged(pane, 'performance/timeline-overview-long-task-red-bar.png', 3);
   });
 
-  // Flaking.
-  itScreenshot.skip('[crbug.com/336788321]: shows network requests in the overview', async () => {
+  itScreenshot('[shows network requests in the overview', async () => {
     await loadComponentDocExample('performance_panel/overview.html?trace=many-requests');
     const pane = await waitFor('.container #timeline-overview-pane');
     await assertElementScreenshotUnchanged(pane, 'performance/timeline-overview-busy-network.png', 3);

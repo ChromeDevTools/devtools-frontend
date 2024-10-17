@@ -9,6 +9,11 @@ import {assertElementScreenshotUnchanged} from '../../../../shared/screenshots.j
 import {loadComponentDocExample} from '../../../helpers/shared.js';
 
 describe('Performance panel', function() {
+  if (this.timeout() !== 0) {
+    // The Perf Panel is quite heavy to render, especially on CQ bots, so give it a bit more time per test.
+    this.timeout(20_000);
+  }
+
   itScreenshot('loads a trace file and renders it in the timeline', async () => {
     await loadComponentDocExample('performance_panel/basic.html?trace=basic');
     await waitFor('.timeline-flamechart');
@@ -89,11 +94,7 @@ describe('Performance panel', function() {
     await assertElementScreenshotUnchanged(panel, 'performance/timeline-long-task-candystripe.png', 2);
   });
 
-  // Flaking.
-  itScreenshot.skip('[crbug.com/41483851]: renders screenshots in the frames track', async () => {
-    if (this.timeout() !== 0) {
-      this.timeout(20_000);
-    }
+  itScreenshot('renders screenshots in the frames track', async () => {
     await loadComponentDocExample(
         'performance_panel/basic.html?trace=web-dev-with-commit&flamechart-force-expand=frames');
     const panel = await waitFor('body');

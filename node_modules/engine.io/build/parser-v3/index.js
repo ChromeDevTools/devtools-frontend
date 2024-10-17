@@ -1,7 +1,15 @@
 "use strict";
 // imported from https://github.com/socketio/engine.io-parser/tree/2.2.x
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.decodePayloadAsBinary = exports.encodePayloadAsBinary = exports.decodePayload = exports.encodePayload = exports.decodeBase64Packet = exports.decodePacket = exports.encodeBase64Packet = exports.encodePacket = exports.packets = exports.protocol = void 0;
+exports.packets = exports.protocol = void 0;
+exports.encodePacket = encodePacket;
+exports.encodeBase64Packet = encodeBase64Packet;
+exports.decodePacket = decodePacket;
+exports.decodeBase64Packet = decodeBase64Packet;
+exports.encodePayload = encodePayload;
+exports.decodePayload = decodePayload;
+exports.encodePayloadAsBinary = encodePayloadAsBinary;
+exports.decodePayloadAsBinary = decodePayloadAsBinary;
 /**
  * Module dependencies.
  */
@@ -76,7 +84,6 @@ function encodePacket(packet, supportsBinary, utf8encode, callback) {
     }
     return callback('' + encoded);
 }
-exports.encodePacket = encodePacket;
 ;
 /**
  * Encode Buffer data
@@ -102,7 +109,6 @@ function encodeBase64Packet(packet, callback) {
     message += data.toString('base64');
     return callback(message);
 }
-exports.encodeBase64Packet = encodeBase64Packet;
 ;
 /**
  * Decodes a packet. Data also available as an ArrayBuffer if requested.
@@ -150,7 +156,6 @@ function decodePacket(data, binaryType, utf8decode) {
     type = data[0];
     return { type: packetslist[type], data: data.slice(1) };
 }
-exports.decodePacket = decodePacket;
 ;
 function tryDecode(data) {
     try {
@@ -180,7 +185,6 @@ function decodeBase64Packet(msg, binaryType) {
     }
     return { type: type, data: data };
 }
-exports.decodeBase64Packet = decodeBase64Packet;
 ;
 /**
  * Encodes multiple messages (payload).
@@ -217,7 +221,6 @@ function encodePayload(packets, supportsBinary, callback) {
         return callback(results.join(''));
     });
 }
-exports.encodePayload = encodePayload;
 ;
 function setLengthHeader(message) {
     return message.length + ':' + message;
@@ -292,7 +295,6 @@ function decodePayload(data, binaryType, callback) {
         return callback(err, 0, 1);
     }
 }
-exports.decodePayload = decodePayload;
 ;
 /**
  *
@@ -353,7 +355,6 @@ function encodePayloadAsBinary(packets, callback) {
         return callback(Buffer.concat(results));
     });
 }
-exports.encodePayloadAsBinary = encodePayloadAsBinary;
 ;
 function encodeOneBinaryPacket(p, doneCallback) {
     function onBinaryPacketEncode(packet) {
@@ -420,5 +421,4 @@ function decodePayloadAsBinary(data, binaryType, callback) {
         callback(decodePacket(buffer, binaryType, true), i, total);
     }
 }
-exports.decodePayloadAsBinary = decodePayloadAsBinary;
 ;

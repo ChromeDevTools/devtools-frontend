@@ -1,6 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.protocol = exports.Transport = exports.Socket = exports.uServer = exports.parser = exports.attach = exports.listen = exports.transports = exports.Server = void 0;
+exports.protocol = exports.Transport = exports.Socket = exports.uServer = exports.parser = exports.transports = exports.Server = void 0;
+exports.listen = listen;
+exports.attach = attach;
 const http_1 = require("http");
 const server_1 = require("./server");
 Object.defineProperty(exports, "Server", { enumerable: true, get: function () { return server_1.Server; } });
@@ -22,7 +24,6 @@ exports.protocol = parser.protocol;
  * @param {Function} callback
  * @param {Object} options
  * @return {Server} websocket.io server
- * @api public
  */
 function listen(port, options, fn) {
     if ("function" === typeof options) {
@@ -39,18 +40,15 @@ function listen(port, options, fn) {
     server.listen(port, fn);
     return engine;
 }
-exports.listen = listen;
 /**
  * Captures upgrade requests for a http.Server.
  *
  * @param {http.Server} server
  * @param {Object} options
  * @return {Server} engine server
- * @api public
  */
 function attach(server, options) {
     const engine = new server_1.Server(options);
     engine.attach(server, options);
     return engine;
 }
-exports.attach = attach;

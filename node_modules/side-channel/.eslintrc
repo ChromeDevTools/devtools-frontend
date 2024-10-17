@@ -5,7 +5,7 @@
 
 	"rules": {
 		"max-lines-per-function": 0,
-		"max-params": 0,
+		"multiline-comment-style": 1,
 		"new-cap": [2, { "capIsNewExceptions": ["GetIntrinsic"] }],
 	},
 }

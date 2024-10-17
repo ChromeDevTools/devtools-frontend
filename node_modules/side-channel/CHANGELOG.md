@@ -5,6 +5,36 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v1.0.6](https://github.com/ljharb/side-channel/compare/v1.0.5...v1.0.6) - 2024-02-29
+
+### Commits
+
+- add types [`9beef66`](https://github.com/ljharb/side-channel/commit/9beef6643e6d717ea57bedabf86448123a7dd9e9)
+- [meta] simplify `exports` [`4334cf9`](https://github.com/ljharb/side-channel/commit/4334cf9df654151504c383b62a2f9ebdc8d9d5ac)
+- [Deps] update `call-bind` [`d6043c4`](https://github.com/ljharb/side-channel/commit/d6043c4d8f4d7be9037dd0f0419c7a2e0e39ec6a)
+- [Dev Deps] update `tape` [`6aca376`](https://github.com/ljharb/side-channel/commit/6aca3761868dc8cd5ff7fd9799bf6b95e09a6eb0)
+
+## [v1.0.5](https://github.com/ljharb/side-channel/compare/v1.0.4...v1.0.5) - 2024-02-06
+
+### Commits
+
+- [actions] reuse common workflows [`3d2e1ff`](https://github.com/ljharb/side-channel/commit/3d2e1ffd16dd6eaaf3e40ff57951f840d2d63c04)
+- [meta] use `npmignore` to autogenerate an npmignore file [`04296ea`](https://github.com/ljharb/side-channel/commit/04296ea17d1544b0a5d20fd5bfb31aa4f6513eb9)
+- [meta] add `.editorconfig`; add `eclint` [`130f0a6`](https://github.com/ljharb/side-channel/commit/130f0a6adbc04d385c7456a601d38344dce3d6a9)
+- [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `aud`, `auto-changelog`, `safe-publish-latest`, `tape` [`d480c2f`](https://github.com/ljharb/side-channel/commit/d480c2fbe757489ae9b4275491ffbcc3ac4725e9)
+- [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `aud`, `auto-changelog`, `tape` [`ecbe70e`](https://github.com/ljharb/side-channel/commit/ecbe70e53a418234081a77971fec1fdfae20c841)
+- [actions] update rebase action [`75240b9`](https://github.com/ljharb/side-channel/commit/75240b9963b816e8846400d2287cb68f88c7fba7)
+- [Dev Deps] update `@ljharb/eslint-config`, `aud`, `npmignore`, `tape` [`ae8d281`](https://github.com/ljharb/side-channel/commit/ae8d281572430099109870fd9430d2ca3f320b8d)
+- [Dev Deps] update `@ljharb/eslint-config`, `aud`, `tape` [`7125b88`](https://github.com/ljharb/side-channel/commit/7125b885fd0eacad4fee9b073b72d14065ece278)
+- [Deps] update `call-bind`, `get-intrinsic`, `object-inspect` [`82577c9`](https://github.com/ljharb/side-channel/commit/82577c9796304519139a570f82a317211b5f3b86)
+- [Deps] update `call-bind`, `get-intrinsic`, `object-inspect` [`550aadf`](https://github.com/ljharb/side-channel/commit/550aadf20475a6081fd70304cc54f77259a5c8a8)
+- [Tests] increase coverage [`5130877`](https://github.com/ljharb/side-channel/commit/5130877a7b27c862e64e6d1c12a178b28808859d)
+- [Deps] update `get-intrinsic`, `object-inspect` [`ba0194c`](https://github.com/ljharb/side-channel/commit/ba0194c505b1a8a0427be14cadd5b8a46d4d01b8)
+- [meta] add missing `engines.node` [`985fd24`](https://github.com/ljharb/side-channel/commit/985fd249663cb06617a693a94fe08cad12f5cb70)
+- [Refactor] use `es-errors`, so things that only need those do not need `get-intrinsic` [`40227a8`](https://github.com/ljharb/side-channel/commit/40227a87b01709ad2c0eebf87eb4223a800099b9)
+- [Deps] update `get-intrinsic` [`a989b40`](https://github.com/ljharb/side-channel/commit/a989b4024958737ae7be9fbffdeff2078f33a0fd)
+- [Deps] update `object-inspect` [`aec42d2`](https://github.com/ljharb/side-channel/commit/aec42d2ec541a31aaa02475692c87d489237d9a3)
+
 ## [v1.0.4](https://github.com/ljharb/side-channel/compare/v1.0.3...v1.0.4) - 2020-12-29
 
 ### Commits

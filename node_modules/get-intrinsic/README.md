@@ -1,5 +1,7 @@
 # get-intrinsic <sup>[![Version Badge][npm-version-svg]][package-url]</sup>
 
+[![github actions][actions-image]][actions-url]
+[![coverage][codecov-image]][codecov-url]
 [![dependency status][deps-svg]][deps-url]
 [![dev dependency status][dev-deps-svg]][dev-deps-url]
 [![License][license-image]][license-url]
@@ -53,7 +55,7 @@ Simply clone the repo, `npm install`, and run `npm test`
 Please email [@ljharb](https://github.com/ljharb) or see https://tidelift.com/security if you have a potential security vulnerability to report.
 
 [package-url]: https://npmjs.org/package/get-intrinsic
-[npm-version-svg]: http://versionbadg.es/ljharb/get-intrinsic.svg
+[npm-version-svg]: https://versionbadg.es/ljharb/get-intrinsic.svg
 [deps-svg]: https://david-dm.org/ljharb/get-intrinsic.svg
 [deps-url]: https://david-dm.org/ljharb/get-intrinsic
 [dev-deps-svg]: https://david-dm.org/ljharb/get-intrinsic/dev-status.svg
@@ -63,3 +65,7 @@ Please email [@ljharb](https://github.com/ljharb) or see https://tidelift.com/se
 [license-url]: LICENSE
 [downloads-image]: https://img.shields.io/npm/dm/get-intrinsic.svg
 [downloads-url]: https://npm-stat.com/charts.html?package=get-intrinsic
+[codecov-image]: https://codecov.io/gh/ljharb/get-intrinsic/branch/main/graphs/badge.svg
+[codecov-url]: https://app.codecov.io/gh/ljharb/get-intrinsic/
+[actions-image]: https://img.shields.io/endpoint?url=https://github-actions-badge-u3jn4tfpocch.runkit.sh/ljharb/get-intrinsic
+[actions-url]: https://github.com/ljharb/get-intrinsic/actions

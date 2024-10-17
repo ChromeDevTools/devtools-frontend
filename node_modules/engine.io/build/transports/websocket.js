@@ -8,11 +8,31 @@ class WebSocket extends transport_1.Transport {
     /**
      * WebSocket transport
      *
-     * @param {http.IncomingMessage}
-     * @api public
+     * @param {EngineRequest} req
      */
     constructor(req) {
         super(req);
+        this._doSend = (data) => {
+            this.socket.send(data, this._onSent);
+        };
+        this._doSendLast = (data) => {
+            this.socket.send(data, this._onSentLast);
+        };
+        this._onSent = (err) => {
+            if (err) {
+                this.onError("write error", err.stack);
+            }
+        };
+        this._onSentLast = (err) => {
+            if (err) {
+                this.onError("write error", err.stack);
+            }
+            else {
+                this.emit("drain");
+                this.writable = true;
+                this.emit("ready");
+            }
+        };
         this.socket = req.websocket;
         this.socket.on("message", (data, isBinary) => {
             const message = isBinary ? data : data.toString();
@@ -26,73 +46,30 @@ class WebSocket extends transport_1.Transport {
     }
     /**
      * Transport name
-     *
-     * @api public
      */
     get name() {
         return "websocket";
     }
     /**
      * Advertise upgrade support.
-     *
-     * @api public
      */
     get handlesUpgrades() {
         return true;
     }
-    /**
-     * Advertise framing support.
-     *
-     * @api public
-     */
-    get supportsFraming() {
-        return true;
-    }
-    /**
-     * Writes a packet payload.
-     *
-     * @param {Array} packets
-     * @api private
-     */
     send(packets) {
         this.writable = false;
         for (let i = 0; i < packets.length; i++) {
             const packet = packets[i];
             const isLast = i + 1 === packets.length;
-            // always creates a new object since ws modifies it
-            const opts = {};
-            if (packet.options) {
-                opts.compress = packet.options.compress;
-            }
-            const onSent = (err) => {
-                if (err) {
-                    return this.onError("write error", err.stack);
-                }
-                else if (isLast) {
-                    this.writable = true;
-                    this.emit("drain");
-                }
-            };
-            const send = (data) => {
-                if (this.perMessageDeflate) {
-                    const len = "string" === typeof data ? Buffer.byteLength(data) : data.length;
-                    if (len < this.perMessageDeflate.threshold) {
-                        opts.compress = false;
-                    }
-                }
-                debug('writing "%s"', data);
-                this.socket.send(data, opts, onSent);
-            };
-            if (packet.options && typeof packet.options.wsPreEncoded === "string") {
-                send(packet.options.wsPreEncoded);
-            }
-            else if (this._canSendPreEncodedFrame(packet)) {
+            if (this._canSendPreEncodedFrame(packet)) {
                 // the WebSocket frame was computed with WebSocket.Sender.frame()
                 // see https://github.com/websockets/ws/issues/617#issuecomment-283002469
-                this.socket._sender.sendFrame(packet.options.wsPreEncodedFrame, onSent);
+                this.socket._sender.sendFrame(
+                // @ts-ignore
+                packet.options.wsPreEncodedFrame, isLast ? this._onSentLast : this._onSent);
             }
             else {
-                this.parser.encodePacket(packet, this.supportsBinary, send);
+                this.parser.encodePacket(packet, this.supportsBinary, isLast ? this._doSendLast : this._doSend);
             }
         }
     }
@@ -105,13 +82,9 @@ class WebSocket extends transport_1.Transport {
         var _a, _b, _c;
         return (!this.perMessageDeflate &&
             typeof ((_b = (_a = this.socket) === null || _a === void 0 ? void 0 : _a._sender) === null || _b === void 0 ? void 0 : _b.sendFrame) === "function" &&
+            // @ts-ignore
             ((_c = packet.options) === null || _c === void 0 ? void 0 : _c.wsPreEncodedFrame) !== undefined);
     }
-    /**
-     * Closes the transport.
-     *
-     * @api private
-     */
     doClose(fn) {
         debug("closing");
         this.socket.close();

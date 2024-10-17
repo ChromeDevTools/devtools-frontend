@@ -40,7 +40,6 @@ test('callBound', function (t) {
 		'allowMissing arg still throws for unknown intrinsic'
 	);
 
-	/* globals WeakRef: false */
 	t.test('real but absent intrinsic', { skip: typeof WeakRef !== 'undefined' }, function (st) {
 		st['throws'](
 			function () { callBound('WeakRef'); },

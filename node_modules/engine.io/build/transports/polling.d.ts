@@ -1,9 +1,9 @@
-/// <reference types="node" />
-import { Transport } from "../transport";
-import { IncomingMessage, ServerResponse } from "http";
+import { EngineRequest, Transport } from "../transport";
+import type { Packet, RawData } from "engine.io-parser";
 export declare class Polling extends Transport {
     maxHttpBufferSize: number;
     httpCompression: any;
+    private req;
     private res;
     private dataReq;
     private dataRes;
@@ -11,90 +11,77 @@ export declare class Polling extends Transport {
     private readonly closeTimeout;
     /**
      * HTTP polling constructor.
-     *
-     * @api public.
      */
     constructor(req: any);
     /**
      * Transport name
-     *
-     * @api public
      */
     get name(): string;
-    get supportsFraming(): boolean;
     /**
      * Overrides onRequest.
      *
-     * @param {http.IncomingMessage}
-     * @api private
+     * @param {EngineRequest} req
+     * @package
      */
-    onRequest(req: IncomingMessage & {
-        res: ServerResponse;
-    }): void;
+    onRequest(req: EngineRequest): void;
     /**
      * The client sends a request awaiting for us to send data.
      *
-     * @api private
+     * @private
      */
-    onPollRequest(req: any, res: any): void;
+    private onPollRequest;
     /**
      * The client sends a request with data.
      *
-     * @api private
+     * @private
      */
-    onDataRequest(req: IncomingMessage, res: ServerResponse): void;
+    private onDataRequest;
     /**
      * Processes the incoming data payload.
      *
-     * @param {String} encoded payload
-     * @api private
+     * @param data - encoded payload
+     * @protected
      */
-    onData(data: any): void;
+    onData(data: RawData): void;
     /**
      * Overrides onClose.
      *
-     * @api private
+     * @private
      */
     onClose(): void;
-    /**
-     * Writes a packet payload.
-     *
-     * @param {Object} packet
-     * @api private
-     */
-    send(packets: any): void;
+    send(packets: Packet[]): void;
     /**
      * Writes data as response to poll request.
      *
      * @param {String} data
      * @param {Object} options
-     * @api private
+     * @private
      */
-    write(data: any, options: any): void;
+    private write;
     /**
      * Performs the write.
      *
-     * @api private
+     * @protected
      */
-    doWrite(data: any, options: any, callback: any): void;
+    protected doWrite(data: any, options: any, callback: any): void;
     /**
      * Compresses data.
      *
-     * @api private
+     * @private
      */
-    compress(data: any, encoding: any, callback: any): void;
+    private compress;
     /**
      * Closes the transport.
      *
-     * @api private
+     * @private
      */
-    doClose(fn: any): void;
+    doClose(fn: () => void): void;
     /**
      * Returns headers for a response.
      *
-     * @param {http.IncomingMessage} request
-     * @param {Object} extra headers
-     * @api private
+     * @param {http.IncomingMessage} req
+     * @param {Object} headers - extra headers
+     * @private
      */
-    headers(req: any, headers: any): any;
+    private headers;
 }

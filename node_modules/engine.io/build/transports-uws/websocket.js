@@ -9,7 +9,6 @@ class WebSocket extends transport_1.Transport {
      * WebSocket transport
      *
      * @param req
-     * @api public
      */
     constructor(req) {
         super(req);
@@ -18,33 +17,21 @@ class WebSocket extends transport_1.Transport {
     }
     /**
      * Transport name
-     *
-     * @api public
      */
     get name() {
         return "websocket";
     }
     /**
      * Advertise upgrade support.
-     *
-     * @api public
      */
     get handlesUpgrades() {
-        return true;
-    }
-    /**
-     * Advertise framing support.
-     *
-     * @api public
-     */
-    get supportsFraming() {
         return true;
     }
     /**
      * Writes a packet payload.
      *
      * @param {Array} packets
-     * @api private
+     * @private
      */
     send(packets) {
         this.writable = false;
@@ -58,8 +45,9 @@ class WebSocket extends transport_1.Transport {
                 debug('writing "%s"', data);
                 this.socket.send(data, isBinary, compress);
                 if (isLast) {
-                    this.writable = true;
                     this.emit("drain");
+                    this.writable = true;
+                    this.emit("ready");
                 }
             };
             if (packet.options && typeof packet.options.wsPreEncoded === "string") {
@@ -73,7 +61,7 @@ class WebSocket extends transport_1.Transport {
     /**
      * Closes the transport.
      *
-     * @api private
+     * @private
      */
     doClose(fn) {
         debug("closing");

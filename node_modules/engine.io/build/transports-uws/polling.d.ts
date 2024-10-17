@@ -2,6 +2,7 @@ import { Transport } from "../transport";
 export declare class Polling extends Transport {
     maxHttpBufferSize: number;
     httpCompression: any;
+    private req;
     private res;
     private dataReq;
     private dataRes;
@@ -9,61 +10,56 @@ export declare class Polling extends Transport {
     private readonly closeTimeout;
     /**
      * HTTP polling constructor.
-     *
-     * @api public.
      */
     constructor(req: any);
     /**
      * Transport name
-     *
-     * @api public
      */
     get name(): string;
-    get supportsFraming(): boolean;
     /**
      * Overrides onRequest.
      *
      * @param req
      *
-     * @api private
+     * @private
      */
     onRequest(req: any): void;
     /**
      * The client sends a request awaiting for us to send data.
      *
-     * @api private
+     * @private
      */
     onPollRequest(req: any, res: any): void;
     /**
      * The client sends a request with data.
      *
-     * @api private
+     * @private
      */
     onDataRequest(req: any, res: any): void;
     /**
      * Cleanup request.
      *
-     * @api private
+     * @private
      */
     private onDataRequestCleanup;
     /**
      * Processes the incoming data payload.
      *
      * @param {String} encoded payload
-     * @api private
+     * @private
      */
     onData(data: any): void;
     /**
      * Overrides onClose.
      *
-     * @api private
+     * @private
      */
     onClose(): void;
     /**
      * Writes a packet payload.
      *
      * @param {Object} packet
-     * @api private
+     * @private
      */
     send(packets: any): void;
     /**
@@ -71,25 +67,25 @@ export declare class Polling extends Transport {
      *
      * @param {String} data
      * @param {Object} options
-     * @api private
+     * @private
      */
     write(data: any, options: any): void;
     /**
      * Performs the write.
      *
-     * @api private
+     * @private
      */
     doWrite(data: any, options: any, callback: any): void;
     /**
      * Compresses data.
      *
-     * @api private
+     * @private
      */
     compress(data: any, encoding: any, callback: any): void;
     /**
      * Closes the transport.
      *
-     * @api private
+     * @private
      */
     doClose(fn: any): void;
     /**
@@ -97,7 +93,7 @@ export declare class Polling extends Transport {
      *
      * @param req - request
      * @param {Object} extra headers
-     * @api private
+     * @private
      */
     headers(req: any, headers: any): any;
 }

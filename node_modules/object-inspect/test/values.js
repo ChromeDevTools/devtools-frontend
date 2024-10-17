@@ -2,7 +2,9 @@
 
 var inspect = require('../');
 var test = require('tape');
+var mockProperty = require('mock-property');
 var hasSymbols = require('has-symbols/shams')();
+var hasToStringTag = require('has-tostringtag/shams')();
 
 test('values', function (t) {
     t.plan(1);
@@ -22,10 +24,9 @@ test('arrays with properties', function (t) {
 
 test('has', function (t) {
     t.plan(1);
-    var has = Object.prototype.hasOwnProperty;
-    delete Object.prototype.hasOwnProperty;
+    t.teardown(mockProperty(Object.prototype, 'hasOwnProperty', { 'delete': true }));
+
     t.equal(inspect({ a: 1, b: 2 }), '{ a: 1, b: 2 }');
-    Object.prototype.hasOwnProperty = has; // eslint-disable-line no-extend-native
 });
 
 test('indexOf seen', function (t) {
@@ -76,7 +77,7 @@ test('symbols', { skip: !hasSymbols }, function (t) {
         t.equal(inspect(Object(sym)), 'Object(Symbol(foo))', 'Object(Symbol("foo")) should be "Object(Symbol(foo))"');
     }
 
-    t.test('toStringTag', { skip: !hasSymbols || typeof Symbol.toStringTag === 'undefined' }, function (st) {
+    t.test('toStringTag', { skip: !hasToStringTag }, function (st) {
         st.plan(1);
 
         var faker = {};

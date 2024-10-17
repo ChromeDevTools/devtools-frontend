@@ -2,9 +2,9 @@
 
 [![NPM Version][npm-version-image]][npm-url]
 [![NPM Downloads][npm-downloads-image]][npm-url]
-[![Node.js Version][node-version-image]][node-version-url]
-[![Build Status][github-actions-ci-image]][github-actions-ci-url]
-[![Test Coverage][coveralls-image]][coveralls-url]
+[![Node.js Version][node-image]][node-url]
+[![Build Status][ci-image]][ci-url]
+[![Coverage Status][coveralls-image]][coveralls-url]
 
 Basic HTTP cookie parser and serializer for HTTP servers.
 
@@ -107,14 +107,39 @@ The given number will be converted to an integer by rounding down. By default, n
 `maxAge` are set, then `maxAge` takes precedence, but it is possible not all clients by obey this,
 so if both are set, they should point to the same date and time.
 
+##### partitioned
+
+Specifies the `boolean` value for the [`Partitioned` `Set-Cookie`](rfc-cutler-httpbis-partitioned-cookies)
+attribute. When truthy, the `Partitioned` attribute is set, otherwise it is not. By default, the
+`Partitioned` attribute is not set.
+
+**note** This is an attribute that has not yet been fully standardized, and may change in the future.
+This also means many clients may ignore this attribute until they understand it.
+
+More information about can be found in [the proposal](https://github.com/privacycg/CHIPS).
+
 ##### path
 
 Specifies the value for the [`Path` `Set-Cookie` attribute][rfc-6265-5.2.4]. By default, the path
 is considered the ["default path"][rfc-6265-5.1.4].
 
+##### priority
+
+Specifies the `string` to be the value for the [`Priority` `Set-Cookie` attribute][rfc-west-cookie-priority-00-4.1].
+
+  - `'low'` will set the `Priority` attribute to `Low`.
+  - `'medium'` will set the `Priority` attribute to `Medium`, the default priority when not set.
+  - `'high'` will set the `Priority` attribute to `High`.
+
+More information about the different priority levels can be found in
+[the specification][rfc-west-cookie-priority-00-4.1].
+
+**note** This is an attribute that has not yet been fully standardized, and may change in the future.
+This also means many clients may ignore this attribute until they understand it.
+
 ##### sameSite
 
-Specifies the `boolean` or `string` to be the value for the [`SameSite` `Set-Cookie` attribute][rfc-6265bis-03-4.1.2.7].
+Specifies the `boolean` or `string` to be the value for the [`SameSite` `Set-Cookie` attribute][rfc-6265bis-09-5.4.7].
 
   - `true` will set the `SameSite` attribute to `Strict` for strict same site enforcement.
   - `false` will not set the `SameSite` attribute.
@@ -123,7 +148,7 @@ Specifies the `boolean` or `string` to be the value for the [`SameSite` `Set-Coo
   - `'strict'` will set the `SameSite` attribute to `Strict` for strict same site enforcement.
 
 More information about the different enforcement levels can be found in
-[the specification][rfc-6265bis-03-4.1.2.7].
+[the specification][rfc-6265bis-09-5.4.7].
 
 **note** This is an attribute that has not yet been fully standardized, and may change in the future.
 This also means many clients may ignore this attribute until they understand it.
@@ -198,48 +223,52 @@ $ npm test
 ```
 $ npm run bench
 
-> cookie@0.4.1 bench
+> cookie@0.5.0 bench
 > node benchmark/index.js
 
-  node@16.13.1
-  v8@9.4.146.24-node.14
-  uv@1.42.0
-  zlib@1.2.11
+  node@18.18.2
+  acorn@8.10.0
+  ada@2.6.0
+  ares@1.19.1
   brotli@1.0.9
-  ares@1.18.1
-  modules@93
-  nghttp2@1.45.1
-  napi@8
-  llhttp@6.0.4
-  openssl@1.1.1l+quic
-  cldr@39.0
-  icu@69.1
-  tz@2021a
-  unicode@13.0
-  ngtcp2@0.1.0-DEV
-  nghttp3@0.1.0-DEV
+  cldr@43.1
+  icu@73.2
+  llhttp@6.0.11
+  modules@108
+  napi@9
+  nghttp2@1.57.0
+  nghttp3@0.7.0
+  ngtcp2@0.8.1
+  openssl@3.0.10+quic
+  simdutf@3.2.14
+  tz@2023c
+  undici@5.26.3
+  unicode@15.0
+  uv@1.44.2
+  uvwasi@0.0.18
+  v8@10.2.154.26-node.26
+  zlib@1.2.13.1-motley
 
 > node benchmark/parse-top.js
 
   cookie.parse - top sites
 
-  15 tests completed.
+  14 tests completed.
 
-  parse accounts.google.com x   504,358 ops/sec ±6.55% (171 runs sampled)
-  parse apple.com           x 1,369,991 ops/sec ±0.84% (189 runs sampled)
-  parse cloudflare.com      x   360,669 ops/sec ±3.75% (182 runs sampled)
-  parse docs.google.com     x   521,496 ops/sec ±4.90% (180 runs sampled)
-  parse drive.google.com    x   553,514 ops/sec ±0.59% (189 runs sampled)
-  parse en.wikipedia.org    x   286,052 ops/sec ±0.62% (188 runs sampled)
-  parse linkedin.com        x   178,817 ops/sec ±0.61% (192 runs sampled)
-  parse maps.google.com     x   284,585 ops/sec ±0.68% (188 runs sampled)
-  parse microsoft.com       x   161,230 ops/sec ±0.56% (192 runs sampled)
-  parse play.google.com     x   352,144 ops/sec ±1.01% (181 runs sampled)
-  parse plus.google.com     x   275,204 ops/sec ±7.78% (156 runs sampled)
-  parse support.google.com  x   339,493 ops/sec ±1.02% (191 runs sampled)
-  parse www.google.com      x   286,110 ops/sec ±0.90% (191 runs sampled)
-  parse youtu.be            x   548,557 ops/sec ±0.60% (184 runs sampled)
-  parse youtube.com         x   545,293 ops/sec ±0.65% (191 runs sampled)
+  parse accounts.google.com x 2,588,913 ops/sec ±0.74% (186 runs sampled)
+  parse apple.com           x 2,370,002 ops/sec ±0.69% (186 runs sampled)
+  parse cloudflare.com      x 2,213,102 ops/sec ±0.88% (188 runs sampled)
+  parse docs.google.com     x 2,194,157 ops/sec ±1.03% (184 runs sampled)
+  parse drive.google.com    x 2,265,084 ops/sec ±0.79% (187 runs sampled)
+  parse en.wikipedia.org    x   457,099 ops/sec ±0.81% (186 runs sampled)
+  parse linkedin.com        x   504,407 ops/sec ±0.89% (186 runs sampled)
+  parse maps.google.com     x 1,230,959 ops/sec ±0.98% (186 runs sampled)
+  parse microsoft.com       x   926,294 ops/sec ±0.88% (184 runs sampled)
+  parse play.google.com     x 2,311,338 ops/sec ±0.83% (185 runs sampled)
+  parse support.google.com  x 1,508,850 ops/sec ±0.86% (186 runs sampled)
+  parse www.google.com      x 1,022,582 ops/sec ±1.32% (182 runs sampled)
+  parse youtu.be            x   332,136 ops/sec ±1.02% (185 runs sampled)
+  parse youtube.com         x   323,833 ops/sec ±0.77% (183 runs sampled)
 
 > node benchmark/parse.js
 
@@ -247,20 +276,22 @@ $ npm run bench
 
   6 tests completed.
 
-  simple      x 1,266,646 ops/sec ±0.65% (191 runs sampled)
-  decode      x   838,413 ops/sec ±0.60% (191 runs sampled)
-  unquote     x   877,820 ops/sec ±0.72% (189 runs sampled)
-  duplicates  x   516,680 ops/sec ±0.61% (191 runs sampled)
-  10 cookies  x   156,874 ops/sec ±0.52% (189 runs sampled)
-  100 cookies x    14,663 ops/sec ±0.53% (191 runs sampled)
+  simple      x 3,214,032 ops/sec ±1.61% (183 runs sampled)
+  decode      x   587,237 ops/sec ±1.16% (187 runs sampled)
+  unquote     x 2,954,618 ops/sec ±1.35% (183 runs sampled)
+  duplicates  x   857,008 ops/sec ±0.89% (187 runs sampled)
+  10 cookies  x   292,133 ops/sec ±0.89% (187 runs sampled)
+  100 cookies x    22,610 ops/sec ±0.68% (187 runs sampled)
 ```
 
 ## References
 
 - [RFC 6265: HTTP State Management Mechanism][rfc-6265]
-- [Same-site Cookies][rfc-6265bis-03-4.1.2.7]
+- [Same-site Cookies][rfc-6265bis-09-5.4.7]
 
-[rfc-6265bis-03-4.1.2.7]: https://tools.ietf.org/html/draft-ietf-httpbis-rfc6265bis-03#section-4.1.2.7
+[rfc-cutler-httpbis-partitioned-cookies]: https://tools.ietf.org/html/draft-cutler-httpbis-partitioned-cookies/
+[rfc-west-cookie-priority-00-4.1]: https://tools.ietf.org/html/draft-west-cookie-priority-00#section-4.1
+[rfc-6265bis-09-5.4.7]: https://tools.ietf.org/html/draft-ietf-httpbis-rfc6265bis-09#section-5.4.7
 [rfc-6265]: https://tools.ietf.org/html/rfc6265
 [rfc-6265-5.1.4]: https://tools.ietf.org/html/rfc6265#section-5.1.4
 [rfc-6265-5.2.1]: https://tools.ietf.org/html/rfc6265#section-5.2.1
@@ -275,12 +306,12 @@ $ npm run bench
 
 [MIT](LICENSE)
 
+[ci-image]: https://badgen.net/github/checks/jshttp/cookie/master?label=ci
+[ci-url]: https://github.com/jshttp/cookie/actions/workflows/ci.yml
 [coveralls-image]: https://badgen.net/coveralls/c/github/jshttp/cookie/master
 [coveralls-url]: https://coveralls.io/r/jshttp/cookie?branch=master
-[github-actions-ci-image]: https://img.shields.io/github/workflow/status/jshttp/cookie/ci/master?label=ci
-[github-actions-ci-url]: https://github.com/jshttp/cookie/actions/workflows/ci.yml
-[node-version-image]: https://badgen.net/npm/node/cookie
-[node-version-url]: https://nodejs.org/en/download
+[node-image]: https://badgen.net/npm/node/cookie
+[node-url]: https://nodejs.org/en/download
 [npm-downloads-image]: https://badgen.net/npm/dm/cookie
 [npm-url]: https://npmjs.org/package/cookie
 [npm-version-image]: https://badgen.net/npm/v/cookie

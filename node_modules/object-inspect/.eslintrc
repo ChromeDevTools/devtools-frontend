@@ -12,25 +12,14 @@
         "max-statements-per-line": [2, { "max": 2 }],
         "no-magic-numbers": 0,
         "no-param-reassign": 1,
-        "operator-linebreak": [2, "before"],
         "strict": 0, // TODO
-    },
-    "globals": {
-        "BigInt": false,
-        "WeakSet": false,
-        "WeakMap": false,
     },
     "overrides": [
         {
             "files": ["test/**", "test-*", "example/**"],
+            "extends": "@ljharb/eslint-config/tests",
             "rules": {
-              "array-bracket-newline": 0,
               "id-length": 0,
-              "max-params": 0,
-              "max-statements": 0,
-              "max-statements-per-line": 0,
-              "object-curly-newline": 0,
-              "sort-keys": 0,
             },
         },
         {

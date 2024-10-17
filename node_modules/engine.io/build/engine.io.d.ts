@@ -14,7 +14,6 @@ export declare const protocol = 4;
  * @param {Function} callback
  * @param {Object} options
  * @return {Server} websocket.io server
- * @api public
  */
 declare function listen(port: any, options: AttachOptions & ServerOptions, fn: any): Server;
 /**
@@ -23,6 +22,5 @@ declare function listen(port: any, options: AttachOptions & ServerOptions, fn: a
  * @param {http.Server} server
  * @param {Object} options
  * @return {Server} engine server
- * @api public
  */
 declare function attach(server: any, options: AttachOptions & ServerOptions): Server;

@@ -2,10 +2,10 @@
 
 var inspect = require('../');
 var test = require('tape');
-var hasSymbols = require('has-symbols/shams')();
+var hasToStringTag = require('has-tostringtag/shams')();
 var forEach = require('for-each');
 
-test('fakes', { skip: !hasSymbols || typeof Symbol.toStringTag === 'undefined' }, function (t) {
+test('fakes', { skip: !hasToStringTag }, function (t) {
     forEach([
         'Array',
         'Boolean',

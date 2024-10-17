@@ -1,4 +1,3 @@
-/// <reference types="node" />
 import { Packet } from "socket.io-parser";
 import type { IncomingMessage } from "http";
 import type { Server } from "./index";

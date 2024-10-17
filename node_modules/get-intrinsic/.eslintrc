@@ -8,26 +8,22 @@
 		"es2017": true,
 		"es2020": true,
 		"es2021": true,
-	},
-
-	"globals": {
-		"AggregateError": false,
+		"es2022": true,
 	},
 
 	"rules": {
 		"array-bracket-newline": 0,
-		"array-element-newline": 0,
 		"complexity": 0,
 		"eqeqeq": [2, "allow-null"],
 		"func-name-matching": 0,
 		"id-length": 0,
-		"max-lines-per-function": [2, 80],
+		"max-lines": 0,
+		"max-lines-per-function": [2, 90],
 		"max-params": [2, 4],
 		"max-statements": 0,
 		"max-statements-per-line": [2, { "max": 2 }],
 		"multiline-comment-style": 0,
 		"no-magic-numbers": 0,
-		"operator-linebreak": [2, "before"],
 		"sort-keys": 0,
 	},
 
@@ -35,7 +31,6 @@
 		{
 			"files": "test/**",
 			"rules": {
-				"max-lines-per-function": 0,
 				"new-cap": 0,
 			},
 		},

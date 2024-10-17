@@ -2,6 +2,11 @@
 
 var callBind = require('../');
 var bind = require('function-bind');
+var gOPD = require('gopd');
+var hasStrictMode = require('has-strict-mode')();
+var forEach = require('for-each');
+var inspect = require('object-inspect');
+var v = require('es-value-fixtures');
 
 var test = require('tape');
 
@@ -10,15 +15,24 @@ var test = require('tape');
  * in io.js v3, it is configurable except on bound functions, hence the .bind()
  */
 var functionsHaveConfigurableLengths = !!(
-	Object.getOwnPropertyDescriptor
+	gOPD
+	&& Object.getOwnPropertyDescriptor
 	&& Object.getOwnPropertyDescriptor(bind.call(function () {}), 'length').configurable
 );
 
 test('callBind', function (t) {
+	forEach(v.nonFunctions, function (nonFunction) {
+		t['throws'](
+			function () { callBind(nonFunction); },
+			TypeError,
+			inspect(nonFunction) + ' is not a function'
+		);
+	});
+
 	var sentinel = { sentinel: true };
 	var func = function (a, b) {
 		// eslint-disable-next-line no-invalid-this
-		return [this, a, b];
+		return [!hasStrictMode && this === global ? undefined : this, a, b];
 	};
 	t.equal(func.length, 2, 'original function length is 2');
 	t.deepEqual(func(), [undefined, undefined, undefined], 'unbound func with too few args');
@@ -28,8 +42,8 @@ test('callBind', function (t) {
 	var bound = callBind(func);
 	t.equal(bound.length, func.length + 1, 'function length is preserved', { skip: !functionsHaveConfigurableLengths });
 	t.deepEqual(bound(), [undefined, undefined, undefined], 'bound func with too few args');
-	t.deepEqual(bound(1, 2), [1, 2, undefined], 'bound func with right args');
-	t.deepEqual(bound(1, 2, 3), [1, 2, 3], 'bound func with too many args');
+	t.deepEqual(bound(1, 2), [hasStrictMode ? 1 : Object(1), 2, undefined], 'bound func with right args');
+	t.deepEqual(bound(1, 2, 3), [hasStrictMode ? 1 : Object(1), 2, 3], 'bound func with too many args');
 
 	var boundR = callBind(func, sentinel);
 	t.equal(boundR.length, func.length, 'function length is preserved', { skip: !functionsHaveConfigurableLengths });

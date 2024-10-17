@@ -1,34 +1,15 @@
+'use strict';
+
 var inspect = require('../');
 var test = require('tape');
-
-function withoutProperty(object, property, fn) {
-    var original;
-    if (Object.getOwnPropertyDescriptor) {
-        original = Object.getOwnPropertyDescriptor(object, property);
-    } else {
-        original = object[property];
-    }
-    delete object[property];
-    try {
-        fn();
-    } finally {
-        if (Object.getOwnPropertyDescriptor) {
-            Object.defineProperty(object, property, original);
-        } else {
-            object[property] = original;
-        }
-    }
-}
+var mockProperty = require('mock-property');
 
 test('when Object#hasOwnProperty is deleted', function (t) {
     t.plan(1);
     var arr = [1, , 3]; // eslint-disable-line no-sparse-arrays
 
-    // eslint-disable-next-line no-extend-native
-    Array.prototype[1] = 2; // this is needed to account for "in" vs "hasOwnProperty"
+    t.teardown(mockProperty(Array.prototype, 1, { value: 2 })); // this is needed to account for "in" vs "hasOwnProperty"
+    t.teardown(mockProperty(Object.prototype, 'hasOwnProperty', { 'delete': true }));
 
-    withoutProperty(Object.prototype, 'hasOwnProperty', function () {
-        t.equal(inspect(arr), '[ 1, , 3 ]');
-    });
-    delete Array.prototype[1];
+    t.equal(inspect(arr), '[ 1, , 3 ]');
 });

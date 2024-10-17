@@ -100,3 +100,40 @@ test('maxStringLength', function (t) {
 
     t.end();
 });
+
+test('inspect options', { skip: !utilInspect.custom }, function (t) {
+    var obj = {};
+    obj[utilInspect.custom] = function () {
+        return JSON.stringify(arguments);
+    };
+    t.equal(
+        inspect(obj),
+        utilInspect(obj, { depth: 5 }),
+        'custom symbols will use node\'s inspect'
+    );
+    t.equal(
+        inspect(obj, { depth: 2 }),
+        utilInspect(obj, { depth: 2 }),
+        'a reduced depth will be passed to node\'s inspect'
+    );
+    t.equal(
+        inspect({ d1: obj }, { depth: 3 }),
+        '{ d1: ' + utilInspect(obj, { depth: 2 }) + ' }',
+        'deep objects will receive a reduced depth'
+    );
+    t.equal(
+        inspect({ d1: obj }, { depth: 1 }),
+        '{ d1: [Object] }',
+        'unlike nodejs inspect, customInspect will not be used once the depth is exceeded.'
+    );
+    t.end();
+});
+
+test('inspect URL', { skip: typeof URL === 'undefined' }, function (t) {
+    t.match(
+        inspect(new URL('https://nodejs.org')),
+        /nodejs\.org/, // Different environments stringify it differently
+        'url can be inspected'
+    );
+    t.end();
+});

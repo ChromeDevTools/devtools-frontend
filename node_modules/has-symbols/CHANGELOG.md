@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v1.0.3](https://github.com/inspect-js/has-symbols/compare/v1.0.2...v1.0.3) - 2022-03-01
+
+### Commits
+
+- [actions] use `node/install` instead of `node/run`; use `codecov` action [`518b28f`](https://github.com/inspect-js/has-symbols/commit/518b28f6c5a516cbccae30794e40aa9f738b1693)
+- [meta] add `bugs` and `homepage` fields; reorder package.json [`c480b13`](https://github.com/inspect-js/has-symbols/commit/c480b13fd6802b557e1cef9749872cb5fdeef744)
+- [actions] reuse common workflows [`01d0ee0`](https://github.com/inspect-js/has-symbols/commit/01d0ee0a8d97c0947f5edb73eb722027a77b2b07)
+- [actions] update codecov uploader [`6424ebe`](https://github.com/inspect-js/has-symbols/commit/6424ebe86b2c9c7c3d2e9bd4413a4e4f168cb275)
+- [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `aud`, `auto-changelog`, `tape` [`dfa7e7f`](https://github.com/inspect-js/has-symbols/commit/dfa7e7ff38b594645d8c8222aab895157fa7e282)
+- [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `safe-publish-latest`, `tape` [`0c8d436`](https://github.com/inspect-js/has-symbols/commit/0c8d43685c45189cea9018191d4fd7eca91c9d02)
+- [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `aud`, `tape` [`9026554`](https://github.com/inspect-js/has-symbols/commit/902655442a1bf88e72b42345494ef0c60f5d36ab)
+- [readme] add actions and codecov badges [`eaa9682`](https://github.com/inspect-js/has-symbols/commit/eaa9682f990f481d3acf7a1c7600bec36f7b3adc)
+- [Dev Deps] update `eslint`, `tape` [`bc7a3ba`](https://github.com/inspect-js/has-symbols/commit/bc7a3ba46f27b7743f8a2579732d59d1b9ac791e)
+- [Dev Deps] update `eslint`, `auto-changelog` [`0ace00a`](https://github.com/inspect-js/has-symbols/commit/0ace00af08a88cdd1e6ce0d60357d941c60c2d9f)
+- [meta] use `prepublishOnly` script for npm 7+ [`093f72b`](https://github.com/inspect-js/has-symbols/commit/093f72bc2b0ed00c781f444922a5034257bf561d)
+- [Tests] test on all 16 minors [`9b80d3d`](https://github.com/inspect-js/has-symbols/commit/9b80d3d9102529f04c20ec5b1fcc6e38426c6b03)
+
 ## [v1.0.2](https://github.com/inspect-js/has-symbols/compare/v1.0.1...v1.0.2) - 2021-02-27
 
 ### Fixed

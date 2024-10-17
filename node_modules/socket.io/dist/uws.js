@@ -3,7 +3,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.serveFile = exports.restoreAdapter = exports.patchAdapter = void 0;
+exports.patchAdapter = patchAdapter;
+exports.restoreAdapter = restoreAdapter;
+exports.serveFile = serveFile;
 const socket_io_adapter_1 = require("socket.io-adapter");
 const fs_1 = require("fs");
 const debug_1 = __importDefault(require("debug"));
@@ -14,7 +16,7 @@ function patchAdapter(app /* : TemplatedApp */) {
     socket_io_adapter_1.Adapter.prototype.addAll = function (id, rooms) {
         const isNew = !this.sids.has(id);
         addAll.call(this, id, rooms);
-        const socket = this.nsp.sockets.get(id);
+        const socket = this.nsp.sockets.get(id) || this.nsp._preConnectSockets.get(id);
         if (!socket) {
             return;
         }
@@ -33,7 +35,7 @@ function patchAdapter(app /* : TemplatedApp */) {
     };
     socket_io_adapter_1.Adapter.prototype.del = function (id, room) {
         del.call(this, id, room);
-        const socket = this.nsp.sockets.get(id);
+        const socket = this.nsp.sockets.get(id) || this.nsp._preConnectSockets.get(id);
         if (socket && socket.conn.transport.name === "websocket") {
             // @ts-ignore
             const sessionId = socket.conn.id;
@@ -76,7 +78,6 @@ function patchAdapter(app /* : TemplatedApp */) {
         });
     };
 }
-exports.patchAdapter = patchAdapter;
 function subscribe(namespaceName, socket, isNew, rooms) {
     // @ts-ignore
     const sessionId = socket.conn.id;
@@ -97,7 +98,6 @@ function restoreAdapter() {
     socket_io_adapter_1.Adapter.prototype.del = del;
     socket_io_adapter_1.Adapter.prototype.broadcast = broadcast;
 }
-exports.restoreAdapter = restoreAdapter;
 const toArrayBuffer = (buffer) => {
     const { buffer: arrayBuffer, byteOffset, byteLength } = buffer;
     return arrayBuffer.slice(byteOffset, byteOffset + byteLength);
@@ -113,18 +113,20 @@ function serveFile(res /* : HttpResponse */, filepath) {
     };
     const onDataChunk = (chunk) => {
         const arrayBufferChunk = toArrayBuffer(chunk);
-        const lastOffset = res.getWriteOffset();
-        const [ok, done] = res.tryEnd(arrayBufferChunk, size);
-        if (!done && !ok) {
-            readStream.pause();
-            res.onWritable((offset) => {
-                const [ok, done] = res.tryEnd(arrayBufferChunk.slice(offset - lastOffset), size);
-                if (!done && ok) {
-                    readStream.resume();
-                }
-                return ok;
-            });
-        }
+        res.cork(() => {
+            const lastOffset = res.getWriteOffset();
+            const [ok, done] = res.tryEnd(arrayBufferChunk, size);
+            if (!done && !ok) {
+                readStream.pause();
+                res.onWritable((offset) => {
+                    const [ok, done] = res.tryEnd(arrayBufferChunk.slice(offset - lastOffset), size);
+                    if (!done && ok) {
+                        readStream.resume();
+                    }
+                    return ok;
+                });
+            }
+        });
     };
     res.onAborted(destroyReadStream);
     readStream
@@ -132,4 +134,3 @@ function serveFile(res /* : HttpResponse */, filepath) {
         .on("error", onError)
         .on("end", destroyReadStream);
 }
-exports.serveFile = serveFile;

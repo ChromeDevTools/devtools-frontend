@@ -1,4 +1,58 @@
-## **6.11.0
+## **6.13.0**
+- [New] `parse`: add `strictDepth` option (#511)
+- [Tests] use `npm audit` instead of `aud`
+
+## **6.12.3**
+- [Fix] `parse`: properly account for `strictNullHandling` when `allowEmptyArrays`
+- [meta] fix changelog indentation
+
+## **6.12.2**
+- [Fix] `parse`: parse encoded square brackets (#506)
+- [readme] add CII best practices badge
+
+## **6.12.1**
+- [Fix] `parse`: Disable `decodeDotInKeys` by default to restore previous behavior (#501)
+- [Performance] `utils`: Optimize performance under large data volumes, reduce memory usage, and speed up processing (#502)
+- [Refactor] `utils`: use `+=`
+- [Tests] increase coverage
+
+## **6.12.0**
+
+- [New] `parse`/`stringify`: add `decodeDotInKeys`/`encodeDotKeys` options (#488)
+- [New] `parse`: add `duplicates` option
+- [New] `parse`/`stringify`: add `allowEmptyArrays` option to allow [] in object values (#487)
+- [Refactor] `parse`/`stringify`: move allowDots config logic to its own variable
+- [Refactor] `stringify`: move option-handling code into `normalizeStringifyOptions`
+- [readme] update readme, add logos (#484)
+- [readme] `stringify`: clarify default `arrayFormat` behavior
+- [readme] fix line wrapping
+- [readme] remove dead badges
+- [Deps] update `side-channel`
+- [meta] make the dist build 50% smaller
+- [meta] add `sideEffects` flag
+- [meta] run build in prepack, not prepublish
+- [Tests] `parse`: remove useless tests; add coverage
+- [Tests] `stringify`: increase coverage
+- [Tests] use `mock-property`
+- [Tests] `stringify`: improve coverage
+- [Dev Deps] update `@ljharb/eslint-config `, `aud`, `has-override-mistake`, `has-property-descriptors`, `mock-property`, `npmignore`, `object-inspect`, `tape`
+- [Dev Deps] pin `glob`, since v10.3.8+ requires a broken `jackspeak`
+- [Dev Deps] pin `jackspeak` since 2.1.2+ depends on npm aliases, which kill the install process in npm < 6
+
+## **6.11.2**
+- [Fix] `parse`: Fix parsing when the global Object prototype is frozen (#473)
+- [Tests] add passing test cases with empty keys (#473)
+
+## **6.11.1**
+- [Fix] `stringify`: encode comma values more consistently (#463)
+- [readme] add usage of `filter` option for injecting custom serialization, i.e. of custom types (#447)
+- [meta] remove extraneous code backticks (#457)
+- [meta] fix changelog markdown
+- [actions] update checkout action
+- [actions] restrict action permissions
+- [Dev Deps] update `@ljharb/eslint-config`, `aud`, `object-inspect`, `tape`
+
+## **6.11.0**
 - [New] [Fix] `stringify`: revert 0e903c0; add `commaRoundTrip` option (#442)
 - [readme] fix version badge
 
@@ -238,7 +292,7 @@
 
 ## **6.5.3**
 - [Fix] `parse`: ignore `__proto__` keys (#428)
-- [Fix]` `utils.merge`: avoid a crash with a null target and a truthy non-array source
+- [Fix] `utils.merge`: avoid a crash with a null target and a truthy non-array source
 - [Fix] correctly parse nested arrays
 - [Fix] `stringify`: fix a crash with `strictNullHandling` and a custom `filter`/`serializeDate` (#279)
 - [Fix] `utils`: `merge`: fix crash when `source` is a truthy primitive & no options are provided
@@ -291,7 +345,7 @@
 - [Fix] fix for an impossible situation: when the formatter is called with a non-string value
 - [Fix] use `safer-buffer` instead of `Buffer` constructor
 - [Fix] `utils.merge`: avoid a crash with a null target and an array source
-- [Fix]` `utils.merge`: avoid a crash with a null target and a truthy non-array source
+- [Fix] `utils.merge`: avoid a crash with a null target and a truthy non-array source
 - [Fix] `stringify`: fix a crash with `strictNullHandling` and a custom `filter`/`serializeDate` (#279)
 - [Fix] `utils`: `merge`: fix crash when `source` is a truthy primitive & no options are provided
 - [Fix] when `parseArrays` is false, properly handle keys ending in `[]`
@@ -320,7 +374,7 @@
 - [Fix] `parse`: ignore `__proto__` keys (#428)
 - [Fix] fix for an impossible situation: when the formatter is called with a non-string value
 - [Fix] `utils.merge`: avoid a crash with a null target and an array source
-- [Fix]` `utils.merge`: avoid a crash with a null target and a truthy non-array source
+- [Fix] `utils.merge`: avoid a crash with a null target and a truthy non-array source
 - [Fix] `stringify`: fix a crash with `strictNullHandling` and a custom `filter`/`serializeDate` (#279)
 - [Fix] `utils`: `merge`: fix crash when `source` is a truthy primitive & no options are provided
 - [Fix] when `parseArrays` is false, properly handle keys ending in `[]`
@@ -407,7 +461,7 @@
 - [New] add "encoder" and "decoder" options, for custom param encoding/decoding (#160)
 - [Fix] fix compacting of nested sparse arrays (#150)
 
-## **6.1.2
+## **6.1.2**
 - [Fix] follow `allowPrototypes` option during merge (#201, #200)
 - [Fix] chmod a-x
 - [Fix] support keys starting with brackets (#202, #200)

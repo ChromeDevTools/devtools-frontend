@@ -5,6 +5,57 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v1.0.7](https://github.com/ljharb/call-bind/compare/v1.0.6...v1.0.7) - 2024-02-12
+
+### Commits
+
+- [Refactor] use `es-define-property` [`09b76a0`](https://github.com/ljharb/call-bind/commit/09b76a01634440461d44a80c9924ec4b500f3b03)
+- [Deps] update `get-intrinsic`, `set-function-length` [`ad5136d`](https://github.com/ljharb/call-bind/commit/ad5136ddda2a45c590959829ad3dce0c9f4e3590)
+
+## [v1.0.6](https://github.com/ljharb/call-bind/compare/v1.0.5...v1.0.6) - 2024-02-05
+
+### Commits
+
+- [Dev Deps] update `aud`, `npmignore`, `tape` [`d564d5c`](https://github.com/ljharb/call-bind/commit/d564d5ce3e06a19df4d499c77f8d1a9da44e77aa)
+- [Deps] update `get-intrinsic`, `set-function-length` [`cfc2bdc`](https://github.com/ljharb/call-bind/commit/cfc2bdca7b633df0e0e689e6b637f668f1c6792e)
+- [Refactor] use `es-errors`, so things that only need those do not need `get-intrinsic` [`64cd289`](https://github.com/ljharb/call-bind/commit/64cd289ae5862c250a4ca80aa8d461047c166af5)
+- [meta] add missing `engines.node` [`32a4038`](https://github.com/ljharb/call-bind/commit/32a4038857b62179f7f9b7b3df2c5260036be582)
+
+## [v1.0.5](https://github.com/ljharb/call-bind/compare/v1.0.4...v1.0.5) - 2023-10-19
+
+### Commits
+
+- [Fix] throw an error on non-functions as early as possible [`f262408`](https://github.com/ljharb/call-bind/commit/f262408f822c840fbc268080f3ad7c429611066d)
+- [Deps] update `set-function-length` [`3fff271`](https://github.com/ljharb/call-bind/commit/3fff27145a1e3a76a5b74f1d7c3c43d0fa3b9871)
+
+## [v1.0.4](https://github.com/ljharb/call-bind/compare/v1.0.3...v1.0.4) - 2023-10-19
+
+## [v1.0.3](https://github.com/ljharb/call-bind/compare/v1.0.2...v1.0.3) - 2023-10-19
+
+### Commits
+
+- [actions] reuse common workflows [`a994df6`](https://github.com/ljharb/call-bind/commit/a994df69f401f4bf735a4ccd77029b85d1549453)
+- [meta] use `npmignore` to autogenerate an npmignore file [`eef3ef2`](https://github.com/ljharb/call-bind/commit/eef3ef21e1f002790837fedb8af2679c761fbdf5)
+- [readme] flesh out content [`1845ccf`](https://github.com/ljharb/call-bind/commit/1845ccfd9976a607884cfc7157c93192cc16cf22)
+- [actions] use `node/install` instead of `node/run`; use `codecov` action [`5b47d53`](https://github.com/ljharb/call-bind/commit/5b47d53d2fd74af5ea0a44f1d51e503cd42f7a90)
+- [Refactor] use `set-function-length` [`a0e165c`](https://github.com/ljharb/call-bind/commit/a0e165c5dc61db781cbc919b586b1c2b8da0b150)
+- [Dev Deps] update `@ljharb/eslint-config`, `aud`, `tape` [`9c50103`](https://github.com/ljharb/call-bind/commit/9c50103f44137279a817317cf6cc421a658f85b4)
+- [meta] simplify "exports" [`019c6d0`](https://github.com/ljharb/call-bind/commit/019c6d06b0e1246ceed8e579f57e44441cbbf6d9)
+- [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `aud`, `auto-changelog`, `safe-publish-latest`, `tape` [`23bd718`](https://github.com/ljharb/call-bind/commit/23bd718a288d3b03042062b4ef5153b3cea83f11)
+- [actions] update codecov uploader [`62552d7`](https://github.com/ljharb/call-bind/commit/62552d79cc79e05825e99aaba134ae5b37f33da5)
+- [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `aud`, `auto-changelog`, `tape` [`ec81665`](https://github.com/ljharb/call-bind/commit/ec81665b300f87eabff597afdc8b8092adfa7afd)
+- [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `safe-publish-latest`, `tape` [`35d67fc`](https://github.com/ljharb/call-bind/commit/35d67fcea883e686650f736f61da5ddca2592de8)
+- [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `aud`, `tape` [`0266d8d`](https://github.com/ljharb/call-bind/commit/0266d8d2a45086a922db366d0c2932fa463662ff)
+- [Dev Deps] update `@ljharb/eslint-config`, `aud`, `tape` [`43a5b28`](https://github.com/ljharb/call-bind/commit/43a5b28a444e710e1bbf92adb8afb5cf7523a223)
+- [Deps] update `define-data-property`, `function-bind`, `get-intrinsic` [`780eb36`](https://github.com/ljharb/call-bind/commit/780eb36552514f8cc99c70821ce698697c2726a5)
+- [Dev Deps] update `aud`, `tape` [`90d50ad`](https://github.com/ljharb/call-bind/commit/90d50ad03b061e0268b3380b0065fcaec183dc05)
+- [meta] use `prepublishOnly` script for npm 7+ [`44c5433`](https://github.com/ljharb/call-bind/commit/44c5433b7980e02b4870007046407cf6fc543329)
+- [Deps] update `get-intrinsic` [`86bfbfc`](https://github.com/ljharb/call-bind/commit/86bfbfcf34afdc6eabc93ce3d408548d0e27d958)
+- [Deps] update `get-intrinsic` [`5c53354`](https://github.com/ljharb/call-bind/commit/5c5335489be0294c18cd7a8bb6e08226ee019ff5)
+- [actions] update checkout action [`4c393a8`](https://github.com/ljharb/call-bind/commit/4c393a8173b3c8e5b30d5b3297b3b94d48bf87f3)
+- [Deps] update `get-intrinsic` [`4e70bde`](https://github.com/ljharb/call-bind/commit/4e70bdec0626acb11616d66250fc14565e716e91)
+- [Deps] update `get-intrinsic` [`55ae803`](https://github.com/ljharb/call-bind/commit/55ae803a920bd93c369cd798c20de31f91e9fc60)
+
 ## [v1.0.2](https://github.com/ljharb/call-bind/compare/v1.0.1...v1.0.2) - 2021-01-11
 
 ### Commits

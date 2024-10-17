@@ -8,20 +8,12 @@ const rSlashes = /(\\)?\\n/g;
 class JSONP extends polling_1.Polling {
     /**
      * JSON-P polling transport.
-     *
-     * @api public
      */
     constructor(req) {
         super(req);
         this.head = "___eio[" + (req._query.j || "").replace(/[^0-9]/g, "") + "](";
         this.foot = ");";
     }
-    /**
-     * Handles incoming data.
-     * Due to a bug in \n handling by browsers, we expect a escaped string.
-     *
-     * @api private
-     */
     onData(data) {
         // we leverage the qs module so that we get built-in DoS protection
         // and the fast alternative to decodeURIComponent
@@ -35,11 +27,6 @@ class JSONP extends polling_1.Polling {
             super.onData(data.replace(rDoubleSlashes, "\\n"));
         }
     }
-    /**
-     * Performs the write.
-     *
-     * @api private
-     */
     doWrite(data, options, callback) {
         // we must output valid javascript, not valid json
         // see: http://timelessrepo.com/json-isnt-a-javascript-subset

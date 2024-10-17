@@ -6,38 +6,27 @@ export declare class WebSocket extends Transport {
      * WebSocket transport
      *
      * @param req
-     * @api public
      */
     constructor(req: any);
     /**
      * Transport name
-     *
-     * @api public
      */
     get name(): string;
     /**
      * Advertise upgrade support.
-     *
-     * @api public
      */
     get handlesUpgrades(): boolean;
-    /**
-     * Advertise framing support.
-     *
-     * @api public
-     */
-    get supportsFraming(): boolean;
     /**
      * Writes a packet payload.
      *
      * @param {Array} packets
-     * @api private
+     * @private
      */
     send(packets: any): void;
     /**
      * Closes the transport.
      *
-     * @api private
+     * @private
      */
     doClose(fn: any): void;
 }

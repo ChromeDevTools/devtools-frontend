@@ -3,16 +3,17 @@
 var GetIntrinsic = require('../');
 
 var test = require('tape');
-var forEach = require('foreach');
+var forEach = require('for-each');
 var debug = require('object-inspect');
 var generatorFns = require('make-generator-function')();
 var asyncFns = require('make-async-function').list();
 var asyncGenFns = require('make-async-generator-function')();
+var mockProperty = require('mock-property');
 
 var callBound = require('call-bind/callBound');
 var v = require('es-value-fixtures');
-var $gOPD = require('es-abstract/helpers/getOwnPropertyDescriptor');
-var defineProperty = require('es-abstract/test/helpers/defineProperty');
+var $gOPD = require('gopd');
+var DefinePropertyOrThrow = require('es-abstract/2021/DefinePropertyOrThrow');
 
 var $isProto = callBound('%Object.prototype.isPrototypeOf%');
 
@@ -64,6 +65,18 @@ test('throws', function (t) {
 		function () { GetIntrinsic('%Proxy.prototype.undefined%'); },
 		TypeError,
 		"Throws when middle part doesn't exist (%Proxy.prototype.undefined%)"
+	);
+
+	t['throws'](
+		function () { GetIntrinsic('%Array.prototype%garbage%'); },
+		SyntaxError,
+		'Throws with extra percent signs'
+	);
+
+	t['throws'](
+		function () { GetIntrinsic('%Array.prototype%push%'); },
+		SyntaxError,
+		'Throws with extra percent signs, even on an existing intrinsic'
 	);
 
 	forEach(v.nonStrings, function (nonString) {
@@ -123,15 +136,15 @@ test('dotted paths', function (t) {
 			'%ObjProto_toString%',
 			'ObjProto_toString'
 		], function (name) {
-			defineProperty(Object.prototype, 'toString', {
-				value: function toString() {
+			DefinePropertyOrThrow(Object.prototype, 'toString', {
+				'[[Value]]': function toString() {
 					return original.apply(this, arguments);
 				}
 			});
 			st.equal(GetIntrinsic(name), original, name + ' yields original Object.prototype.toString');
 		});
 
-		defineProperty(Object.prototype, 'toString', { value: original });
+		DefinePropertyOrThrow(Object.prototype, 'toString', { '[[Value]]': original });
 		st.end();
 	});
 
@@ -144,15 +157,16 @@ test('dotted paths', function (t) {
 			'%ObjectPrototype.propertyIsEnumerable%',
 			'ObjectPrototype.propertyIsEnumerable'
 		], function (name) {
-			// eslint-disable-next-line no-extend-native
-			Object.prototype.propertyIsEnumerable = function propertyIsEnumerable() {
-				return original.apply(this, arguments);
-			};
+			var restore = mockProperty(Object.prototype, 'propertyIsEnumerable', {
+				value: function propertyIsEnumerable() {
+					return original.apply(this, arguments);
+				}
+			});
 			st.equal(GetIntrinsic(name), original, name + ' yields cached Object.prototype.propertyIsEnumerable');
+
+			restore();
 		});
 
-		// eslint-disable-next-line no-extend-native
-		Object.prototype.propertyIsEnumerable = original;
 		st.end();
 	});
 

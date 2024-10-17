@@ -1,4 +1,3 @@
-/// <reference types="node" />
 /**
  * Current protocol version.
  */

@@ -645,7 +645,12 @@ export class FreestylerChatUi extends HTMLElement {
     if (!step.sideEffect) {
       return LitHtml.nothing;
     }
-    const sideEffectAction = step.sideEffect.onAnswer;
+
+    const sideEffectAction = (answer: boolean): void => {
+      step.sideEffect?.onAnswer(answer);
+      step.sideEffect = undefined;
+      this.#render();
+    };
 
     // clang-format off
     return html`<div

@@ -524,18 +524,19 @@ export class FreestylerAgent extends AiAgent<SDK.DOMModel.DOMNode> {
   override async *
       handleAction(action: string, rpcId?: number): AsyncGenerator<SideEffectResponse, ActionResponse, void> {
     debugLog(`Action to execute: ${action}`);
+    if (this.executionMode === Root.Runtime.HostConfigFreestylerExecutionMode.NO_SCRIPTS) {
+      return {
+        type: ResponseType.ACTION,
+        code: action,
+        output: 'Error: JavaScript execution is currently disabled.',
+        canceled: true,
+        rpcId,
+      };
+    }
+
     const scope = this.#createExtensionScope(this.#changes);
     await scope.install();
     try {
-      if (this.executionMode === Root.Runtime.HostConfigFreestylerExecutionMode.NO_SCRIPTS) {
-        return {
-          type: ResponseType.ACTION,
-          code: action,
-          output: 'Error: JavaScript execution is currently disabled.',
-          canceled: true,
-          rpcId,
-        };
-      }
       let result = await this.#generateObservation(action, {throwOnSideEffect: true});
       debugLog(`Action result: ${JSON.stringify(result)}`);
       if (result.sideEffect) {

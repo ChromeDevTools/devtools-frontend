@@ -1363,7 +1363,7 @@ export class ConsoleView extends UI.Widget.VBox implements
 
   private registerShortcuts(): void {
     this.shortcuts.set(
-        UI.KeyboardShortcut.KeyboardShortcut.makeKey('u', UI.KeyboardShortcut.Modifiers.Ctrl),
+        UI.KeyboardShortcut.KeyboardShortcut.makeKey('u', UI.KeyboardShortcut.Modifiers.Ctrl.value),
         this.clearPromptBackwards.bind(this));
   }
 

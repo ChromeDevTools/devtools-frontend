@@ -92,10 +92,10 @@ const createShortcuts = (descriptors: number[][]): Shortcut[] => {
       shortcutBase.keyCode = keyCode;
       const modifiersMap = UI.KeyboardShortcut.Modifiers;
 
-      shortcutBase.ctrl = Boolean(modifiers & modifiersMap.Ctrl);
-      shortcutBase.meta = Boolean(modifiers & modifiersMap.Meta);
-      shortcutBase.shift = Boolean(modifiers & modifiersMap.Shift);
-      shortcutBase.shift = Boolean(modifiers & modifiersMap.Alt);
+      shortcutBase.ctrl = Boolean(modifiers & modifiersMap.Ctrl.value);
+      shortcutBase.meta = Boolean(modifiers & modifiersMap.Meta.value);
+      shortcutBase.shift = Boolean(modifiers & modifiersMap.Shift.value);
+      shortcutBase.shift = Boolean(modifiers & modifiersMap.Alt.value);
 
       if (shortcutBase.keyCode !== -1) {
         shortcuts.push(shortcutBase);

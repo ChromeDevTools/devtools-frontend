@@ -797,7 +797,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     const isShadowRoot = this.nodeInternal.isShadowRoot();
 
     const createShortcut = UI.KeyboardShortcut.KeyboardShortcut.shortcutToString.bind(null);
-    const modifier = UI.KeyboardShortcut.Modifiers.CtrlOrMeta;
+    const modifier = UI.KeyboardShortcut.Modifiers.CtrlOrMeta.value;
     const treeOutline = this.treeOutline;
     if (!treeOutline) {
       return;

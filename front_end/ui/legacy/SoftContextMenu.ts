@@ -640,6 +640,7 @@ export interface SoftContextMenuDescriptor {
   type: 'checkbox'|'item'|'separator'|'subMenu';
   id?: number;
   label?: string;
+  accelerator?: {keyCode: number, modifiers: number};
   isExperimentalFeature?: boolean;
   enabled?: boolean;
   checked?: boolean;

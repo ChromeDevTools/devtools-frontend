@@ -35,6 +35,7 @@ import * as Root from '../../core/root/root.js';
 import * as VisualLogging from '../visual_logging/visual_logging.js';
 
 import {ActionRegistry} from './ActionRegistry.js';
+import type {Key, Modifier} from './KeyboardShortcut.js';
 import {ShortcutRegistry} from './ShortcutRegistry.js';
 import {SoftContextMenu, type SoftContextMenuDescriptor} from './SoftContextMenu.js';
 import {deepElementFromEvent} from './UIUtils.js';
@@ -42,6 +43,7 @@ import {deepElementFromEvent} from './UIUtils.js';
 export class Item {
   private readonly typeInternal: string;
   protected readonly label: string|undefined;
+  protected accelerator?: Host.InspectorFrontendHostAPI.AcceleratorDescriptor;
   protected readonly previewFeature: boolean;
   protected disabled: boolean|undefined;
   private readonly checked: boolean|undefined;
@@ -54,11 +56,13 @@ export class Item {
 
   constructor(
       contextMenu: ContextMenu|null, type: 'checkbox'|'item'|'separator'|'subMenu', label?: string,
-      isPreviewFeature?: boolean, disabled?: boolean, checked?: boolean, tooltip?: Platform.UIString.LocalizedString,
+      isPreviewFeature?: boolean, disabled?: boolean, checked?: boolean,
+      accelerator?: Host.InspectorFrontendHostAPI.AcceleratorDescriptor, tooltip?: Platform.UIString.LocalizedString,
       jslogContext?: string) {
     this.typeInternal = type;
     this.label = label;
     this.previewFeature = Boolean(isPreviewFeature);
+    this.accelerator = accelerator;
     this.disabled = disabled;
     this.checked = checked;
     this.contextMenu = contextMenu;
@@ -113,6 +117,9 @@ export class Item {
         if (this.shortcut) {
           result.shortcut = this.shortcut;
         }
+        if (this.accelerator) {
+          result.accelerator = this.accelerator;
+        }
         return result;
       }
       case 'separator': {
@@ -145,6 +152,11 @@ export class Item {
     throw new Error('Invalid item type:' + this.typeInternal);
   }
 
+  setAccelerator(key: Key, modifiers: Modifier[]): void {
+    const modifierSum = modifiers.reduce((result, modifier) => result + modifier.value, 0);
+    this.accelerator = {keyCode: key.code, modifiers: modifierSum};
+  }
+
   setShortcut(shortcut: string): void {
     this.shortcut = shortcut;
   }
@@ -159,6 +171,7 @@ export class Section {
   }
 
   appendItem(label: string, handler: () => void, options?: {
+    accelerator?: Host.InspectorFrontendHostAPI.AcceleratorDescriptor,
     isPreviewFeature?: boolean,
     disabled?: boolean,
     additionalElement?: Element,
@@ -166,8 +179,8 @@ export class Section {
     jslogContext?: string,
   }): Item {
     const item = new Item(
-        this.contextMenu, 'item', label, options?.isPreviewFeature, options?.disabled, undefined, options?.tooltip,
-        options?.jslogContext);
+        this.contextMenu, 'item', label, options?.isPreviewFeature, options?.disabled, undefined, options?.accelerator,
+        options?.tooltip, options?.jslogContext);
     if (options?.additionalElement) {
       item.customElement = options?.additionalElement;
     }
@@ -179,8 +192,8 @@ export class Section {
   }
 
   appendCustomItem(element: Element, jslogContext?: string): Item {
-    const item =
-        new Item(this.contextMenu, 'item', undefined, undefined, undefined, undefined, undefined, jslogContext);
+    const item = new Item(
+        this.contextMenu, 'item', undefined, undefined, undefined, undefined, undefined, undefined, jslogContext);
     item.customElement = element;
     this.items.push(item);
     return item;
@@ -225,8 +238,8 @@ export class Section {
     jslogContext?: string,
   }): Item {
     const item = new Item(
-        this.contextMenu, 'checkbox', label, undefined, options?.disabled, options?.checked, options?.tooltip,
-        options?.jslogContext);
+        this.contextMenu, 'checkbox', label, undefined, options?.disabled, options?.checked, undefined,
+        options?.tooltip, options?.jslogContext);
     this.items.push(item);
     if (this.contextMenu) {
       this.contextMenu.setHandler(item.id(), handler);
@@ -243,7 +256,7 @@ export class SubMenu extends Item {
   private readonly sectionList: Section[];
 
   constructor(contextMenu: ContextMenu|null, label?: string, disabled?: boolean, jslogContext?: string) {
-    super(contextMenu, 'subMenu', label, undefined, disabled, undefined, undefined, jslogContext);
+    super(contextMenu, 'subMenu', label, undefined, disabled, undefined, undefined, undefined, jslogContext);
     this.sections = new Map();
     this.sectionList = [];
   }
@@ -317,6 +330,7 @@ export class SubMenu extends Item {
     const result: Host.InspectorFrontendHostAPI.ContextMenuDescriptor|SoftContextMenuDescriptor = {
       type: 'subMenu',
       label: this.label,
+      accelerator: this.accelerator,
       isExperimentalFeature: this.previewFeature,
       enabled: !this.disabled,
       subItems: [],

@@ -379,10 +379,16 @@ export interface InspectorFrontendHostAPI {
   recordKeyDown(event: KeyDownEvent): void;
 }
 
+export interface AcceleratorDescriptor {
+  keyCode: number;
+  modifiers: number;
+}
+
 export interface ContextMenuDescriptor {
   type: 'checkbox'|'item'|'separator'|'subMenu';
   id?: number;
   label?: string;
+  accelerator?: AcceleratorDescriptor;
   isExperimentalFeature?: boolean;
   enabled?: boolean;
   checked?: boolean;

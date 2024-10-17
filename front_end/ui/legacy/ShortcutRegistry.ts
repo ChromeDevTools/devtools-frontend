@@ -227,29 +227,32 @@ export class ShortcutRegistry {
       const modifiers = Modifiers;
       // Undo/Redo will also cause input, so textual undo should take precedence over DevTools undo when editing.
       if (Host.Platform.isMac()) {
-        if (KeyboardShortcut.makeKey('z', modifiers.Meta) === key) {
+        if (KeyboardShortcut.makeKey('z', modifiers.Meta.value) === key) {
           return true;
         }
-        if (KeyboardShortcut.makeKey('z', modifiers.Meta | modifiers.Shift) === key) {
+        if (KeyboardShortcut.makeKey('z', modifiers.Meta.value | modifiers.Shift.value) === key) {
           return true;
         }
       } else {
-        if (KeyboardShortcut.makeKey('z', modifiers.Ctrl) === key) {
+        if (KeyboardShortcut.makeKey('z', modifiers.Ctrl.value) === key) {
           return true;
         }
-        if (KeyboardShortcut.makeKey('y', modifiers.Ctrl) === key) {
+        if (KeyboardShortcut.makeKey('y', modifiers.Ctrl.value) === key) {
           return true;
         }
-        if (!Host.Platform.isWin() && KeyboardShortcut.makeKey('z', modifiers.Ctrl | modifiers.Shift) === key) {
+        if (!Host.Platform.isWin() &&
+            KeyboardShortcut.makeKey('z', modifiers.Ctrl.value | modifiers.Shift.value) === key) {
           return true;
         }
       }
 
-      if ((keyModifiers & (modifiers.Ctrl | modifiers.Alt)) === (modifiers.Ctrl | modifiers.Alt)) {
+      if ((keyModifiers & (modifiers.Ctrl.value | modifiers.Alt.value)) ===
+          (modifiers.Ctrl.value | modifiers.Alt.value)) {
         return Host.Platform.isWin();
       }
 
-      return !hasModifier(modifiers.Ctrl) && !hasModifier(modifiers.Alt) && !hasModifier(modifiers.Meta);
+      return !hasModifier(modifiers.Ctrl.value) && !hasModifier(modifiers.Alt.value) &&
+          !hasModifier(modifiers.Meta.value);
     }
 
     function hasModifier(mod: number): boolean {

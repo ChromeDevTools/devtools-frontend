@@ -282,7 +282,7 @@ export class NamedBitSetFilterUI extends Common.ObjectWrapper.ObjectWrapper<Filt
     ARIAUtils.markAsListBox(this.filtersElement);
     ARIAUtils.markAsMultiSelectable(this.filtersElement);
     Tooltip.install(this.filtersElement, i18nString(UIStrings.sclickToSelectMultipleTypes, {
-                      PH1: KeyboardShortcut.shortcutToString('', Modifiers.CtrlOrMeta),
+                      PH1: KeyboardShortcut.shortcutToString('', Modifiers.CtrlOrMeta.value),
                     }));
 
     this.typeFilterElementTypeNames = new WeakMap();

@@ -193,7 +193,7 @@ export class ScreencastView extends UI.Widget.VBox implements SDK.OverlayModel.H
     this.context = this.canvasElement.getContext('2d') as CanvasRenderingContext2D;
     this.checkerboardPattern = this.createCheckerboardPattern(this.context);
 
-    this.shortcuts[UI.KeyboardShortcut.KeyboardShortcut.makeKey('l', UI.KeyboardShortcut.Modifiers.Ctrl)] =
+    this.shortcuts[UI.KeyboardShortcut.KeyboardShortcut.makeKey('l', UI.KeyboardShortcut.Modifiers.Ctrl.value)] =
         this.focusNavigationBar.bind(this);
 
     SDK.TargetManager.TargetManager.instance().addEventListener(

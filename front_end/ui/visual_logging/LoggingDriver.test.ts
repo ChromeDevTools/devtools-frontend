@@ -678,8 +678,7 @@ describe('LoggingDriver', () => {
     assert.deepStrictEqual(recordResize.firstCall.firstArg, {veid: getVeId(element), width: 300, height: 300});
   });
 
-  // Flaky, to be rewritten
-  it.skip('[crbug.com/347520196] throttles resize per element', async () => {
+  it('throttles resize per element', async () => {
     addLoggableElements();
     const element1 = document.getElementById('element') as HTMLElement;
     const element2 = element1.cloneNode() as HTMLElement;
@@ -694,16 +693,16 @@ describe('LoggingDriver', () => {
     await expectCall(throttle, {callCount: 2});
     element2.style.height = '200px';
     await expectCall(throttle, {callCount: 2});
-    element1.style.height = '100px';
+    element1.style.height = '10px';
     await expectCall(throttle, {callCount: 2});
-    element2.style.height = '100px';
+    element2.style.height = '10px';
     const [work] = await expectCall(throttle, {callCount: 2});
 
     assert.isFalse(recordResize.called);
     await work();
     assert.isTrue(recordResize.calledTwice);
-    assert.strictEqual(recordResize.firstCall.firstArg.height, 100);
-    assert.strictEqual(recordResize.lastCall.firstArg.height, 100);
+    assert.strictEqual(recordResize.firstCall.firstArg.height, 10);
+    assert.strictEqual(recordResize.lastCall.firstArg.height, 10);
     assert.notStrictEqual(recordResize.firstCall.firstArg.veid, recordResize.lastCall.firstArg.veid);
   });
 

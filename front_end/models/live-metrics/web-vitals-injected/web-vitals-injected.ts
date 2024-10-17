@@ -148,7 +148,8 @@ function initialize(): void {
         processingDuration: metric.attribution.processingDuration,
         presentationDelay: metric.attribution.presentationDelay,
       },
-      uniqueInteractionId: Spec.getUniqueInteractionId(metric.entries),
+      startTime: metric.entries[0].startTime,
+      entryGroupId: metric.entries[0].interactionId as Spec.InteractionEntryGroupId,
       interactionType: metric.attribution.interactionType,
     };
     sendEventToDevTools(event);
@@ -166,7 +167,9 @@ function initialize(): void {
         processingDuration: interaction.attribution.processingDuration,
         presentationDelay: interaction.attribution.presentationDelay,
       },
-      uniqueInteractionId: Spec.getUniqueInteractionId(interaction.entries),
+      startTime: interaction.entries[0].startTime,
+      entryGroupId: interaction.entries[0].interactionId as Spec.InteractionEntryGroupId,
+      nextPaintTime: interaction.attribution.nextPaintTime,
       interactionType: interaction.attribution.interactionType,
       eventName: interaction.entries[0].name,
     };

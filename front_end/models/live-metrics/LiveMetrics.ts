@@ -27,7 +27,7 @@ class InjectedScript {
   }
 }
 
-export type InteractionMap = Map<Spec.UniqueInteractionId, Interaction>;
+export type InteractionMap = Map<InteractionId, Interaction>;
 
 export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements SDK.TargetManager.Observer {
   #enabled = false;
@@ -38,6 +38,7 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
   #clsValue?: CLSValue;
   #inpValue?: INPValue;
   #interactions: InteractionMap = new Map();
+  #interactionsByGroupId = new Map<Spec.InteractionEntryGroupId, Interaction[]>();
   #layoutShifts: LayoutShift[] = [];
   #mutex = new Common.Mutex.Mutex();
 
@@ -196,21 +197,35 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
         const inpEvent: INPValue = {
           value: webVitalsEvent.value,
           phases: webVitalsEvent.phases,
-          uniqueInteractionId: webVitalsEvent.uniqueInteractionId,
+          interactionId: `interaction-${webVitalsEvent.entryGroupId}-${webVitalsEvent.startTime}`,
         };
         this.#inpValue = inpEvent;
         break;
       }
       case 'InteractionEntry': {
-        const interaction: Interaction = Platform.MapUtilities.getWithDefault(
-            this.#interactions, webVitalsEvent.uniqueInteractionId,
-            () => ({
-              interactionType: webVitalsEvent.interactionType,
-              duration: webVitalsEvent.duration,
-              eventNames: [],
-              phases: webVitalsEvent.phases,
-              uniqueInteractionId: webVitalsEvent.uniqueInteractionId,
-            }));
+        const groupInteractions =
+            Platform.MapUtilities.getWithDefault(this.#interactionsByGroupId, webVitalsEvent.entryGroupId, () => []);
+
+        // `nextPaintTime` uses the event duration which is rounded to the nearest 8ms. The best we can do
+        // is check if the `nextPaintTime`s are within 8ms.
+        // https://developer.mozilla.org/en-US/docs/Web/API/PerformanceEntry/duration#event
+        let interaction = groupInteractions.find(
+            interaction => Math.abs(interaction.nextPaintTime - webVitalsEvent.nextPaintTime) < 8);
+
+        if (!interaction) {
+          interaction = {
+            interactionId: `interaction-${webVitalsEvent.entryGroupId}-${webVitalsEvent.startTime}`,
+            interactionType: webVitalsEvent.interactionType,
+            duration: webVitalsEvent.duration,
+            eventNames: [],
+            phases: webVitalsEvent.phases,
+            startTime: webVitalsEvent.startTime,
+            nextPaintTime: webVitalsEvent.nextPaintTime,
+          };
+
+          groupInteractions.push(interaction);
+          this.#interactions.set(interaction.interactionId, interaction);
+        }
 
         // We can get multiple instances of the first input interaction since web-vitals.js installs
         // an extra listener for events of type `first-input`. This is a simple way to de-dupe those
@@ -457,6 +472,8 @@ export const enum Events {
   STATUS = 'status',
 }
 
+export type InteractionId = `interaction-${number}-${number}`;
+
 export type MetricValue = Pick<Spec.MetricChangeEvent, 'value'>;
 
 export interface LCPValue extends MetricValue {
@@ -466,7 +483,7 @@ export interface LCPValue extends MetricValue {
 
 export interface INPValue extends MetricValue {
   phases: Spec.INPPhases;
-  uniqueInteractionId: Spec.UniqueInteractionId;
+  interactionId: InteractionId;
 }
 
 export interface CLSValue extends MetricValue {
@@ -480,11 +497,13 @@ export interface LayoutShift {
 }
 
 export interface Interaction {
+  interactionId: InteractionId;
   interactionType: Spec.InteractionEntryEvent['interactionType'];
   eventNames: string[];
-  duration: Spec.InteractionEntryEvent['duration'];
+  duration: number;
+  startTime: number;
+  nextPaintTime: number;
   phases: Spec.INPPhases;
-  uniqueInteractionId: Spec.UniqueInteractionId;
   node?: SDK.DOMModel.DOMNode;
 }
 

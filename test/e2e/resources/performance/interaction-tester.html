@@ -20,26 +20,33 @@
         }
       }
 
+      let firstClick = true;
+
       const button = document.getElementById('long-click');
       button.onpointerdown = () => {
-        wait(30);
+        wait(100);
       }
       button.onpointerup = () => {
         wait(100);
       }
       button.onclick = () => {
-        wait(300)
+        if (firstClick) {
+          wait(300);
+          firstClick = false;
+        } else {
+          wait(100);
+        }
       }
 
       const input = document.getElementById('long-type');
       input.onkeydown = () => {
-        wait(30);
+        wait(100);
       }
       input.onkeyup = () => {
         wait(100);
       }
       input.onkeypress = () => {
-        wait(100)
+        wait(100);
       }
     </script>
   </body>

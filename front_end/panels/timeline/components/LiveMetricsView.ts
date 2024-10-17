@@ -510,7 +510,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
   #renderInpCard(): LitHtml.LitTemplate {
     const fieldData = this.#getFieldMetricData('interaction_to_next_paint');
     const phases = this.#inpValue?.phases;
-    const interaction = this.#inpValue && this.#interactions.get(this.#inpValue.uniqueInteractionId);
+    const interaction = this.#inpValue && this.#interactions.get(this.#inpValue.interactionId);
 
     // clang-format off
     return html`
@@ -929,7 +929,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
   }
 
   async #revealInteraction(interaction: LiveMetrics.Interaction): Promise<void> {
-    const interactionEl = this.#shadow.getElementById(interaction.uniqueInteractionId);
+    const interactionEl = this.#shadow.getElementById(interaction.interactionId);
     if (!interactionEl || !this.#logsEl) {
       return;
     }
@@ -971,10 +971,10 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
           );
 
           const isP98Excluded = this.#inpValue && this.#inpValue.value < interaction.duration;
-          const isInp = this.#inpValue?.uniqueInteractionId === interaction.uniqueInteractionId;
+          const isInp = this.#inpValue?.interactionId === interaction.interactionId;
 
           return html`
-            <li id=${interaction.uniqueInteractionId} class="log-item interaction" tabindex="-1">
+            <li id=${interaction.interactionId} class="log-item interaction" tabindex="-1">
               <details>
                 <summary>
                   <span class="interaction-type">

@@ -384,43 +384,27 @@ describe('The Performance panel landing page', () => {
       await goToResource('performance/interaction-tester.html');
 
       // Delay ensures pointerdown and pointerup are in separate frames
-      await target.click('#long-click', {delay: 50});
+      await target.click('#long-click', {delay: 200});
 
-      await target.evaluate(() => new Promise(r => requestAnimationFrame(r)));
-      await target.evaluate(() => new Promise(r => requestAnimationFrame(r)));
-
-      await frontend.bringToFront();
-
-      {
-        const interactions = await waitForMany(INTERACTION_SELECTOR, 2);
-        const interactionTypes = await Promise.all(
-            interactions.map(el => el.$eval('.interaction-type', el => (el as HTMLElement).innerText)));
-        assert.deepStrictEqual(interactionTypes, [
-          'pointer',
-          'pointer INP',
-        ]);
-      }
-
-      await target.bringToFront();
+      // No delay ensures pointerdown and pointerup are in the same frame
+      await target.click('#long-click');
 
       // Delay ensures keydown and keyup are in separate frames
-      await target.type('#long-type', 'Hello', {delay: 50});
+      await target.type('#long-type', 'hi', {delay: 200});
+
+      await target.evaluate(() => new Promise(r => requestAnimationFrame(r)));
+      await target.evaluate(() => new Promise(r => requestAnimationFrame(r)));
 
       await frontend.bringToFront();
 
       {
-        const interactions = await waitForMany(INTERACTION_SELECTOR, 12);
+        const interactions = await waitForMany(INTERACTION_SELECTOR, 7);
         const interactionTypes = await Promise.all(
             interactions.map(el => el.$eval('.interaction-type', el => (el as HTMLElement).innerText)));
         assert.deepStrictEqual(interactionTypes, [
           'pointer',
           'pointer INP',
-          'keyboard',
-          'keyboard',
-          'keyboard',
-          'keyboard',
-          'keyboard',
-          'keyboard',
+          'pointer',
           'keyboard',
           'keyboard',
           'keyboard',

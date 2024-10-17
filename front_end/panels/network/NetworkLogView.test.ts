@@ -544,6 +544,35 @@ describeWithMockConnection('NetworkLogView', () => {
     assert.strictEqual(rootNode.children.length, 0);
   });
 
+  it('correctly shows/hides "Copy all as HAR (with sensitive data)" menu item', async () => {
+    const networkShowOptionsToGenerateHarWithSensitiveDataSetting = Common.Settings.Settings.instance().createSetting(
+        'network.show-options-to-generate-har-with-sensitive-data', false);
+    createNetworkRequest('url1', {target});
+    networkLogView = createNetworkLogView(new UI.FilterBar.FilterBar('network-panel', true));
+    networkLogView.markAsRoot();
+    networkLogView.show(document.body);
+    networkLogView.columns().dataGrid().rootNode().children[0].select();
+    const {element} = networkLogView.columns().dataGrid();
+
+    {
+      // Setting is disabled (default), menu item must be hidden.
+      networkShowOptionsToGenerateHarWithSensitiveDataSetting.set(false);
+      const contextMenu = getContextMenuForElement(element);
+      const clipboardSection = contextMenu.clipboardSection();
+      const copyMenu = findMenuItemWithLabel(clipboardSection, 'Copy') as UI.ContextMenu.SubMenu;
+      assert.isUndefined(findMenuItemWithLabel(copyMenu.footerSection(), 'Copy all as HAR (with sensitive data)'));
+    }
+
+    {
+      // Setting is enabled, menu item must be shown.
+      networkShowOptionsToGenerateHarWithSensitiveDataSetting.set(true);
+      const contextMenu = getContextMenuForElement(element);
+      const clipboardSection = contextMenu.clipboardSection();
+      const copyMenu = findMenuItemWithLabel(clipboardSection, 'Copy') as UI.ContextMenu.SubMenu;
+      assert.isDefined(findMenuItemWithLabel(copyMenu.footerSection(), 'Copy all as HAR (with sensitive data)'));
+    }
+  });
+
   it('correctly shows and hides waterfall column', async () => {
     const columnSettings = Common.Settings.Settings.instance().createSetting('network-log-columns', {});
     columnSettings.set({

@@ -24,6 +24,10 @@ describe('LoggingEvents', () => {
     throttler = new Common.Throttler.Throttler(1000000);
   });
 
+  afterEach(async () => {
+    await throttler.schedule(async () => {}, Common.Throttler.Scheduling.AS_SOON_AS_POSSIBLE);
+  });
+
   async function assertThrottled(stub: sinon.SinonStub) {
     await new Promise(resolve => setTimeout(resolve, 0));
     assert.isFalse(stub.called);

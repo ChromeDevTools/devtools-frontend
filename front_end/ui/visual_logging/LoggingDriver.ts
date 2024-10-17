@@ -83,7 +83,7 @@ export async function addDocument(document: Document): Promise<void> {
 }
 
 export async function stopLogging(): Promise<void> {
-  await keyboardLogThrottler.process?.();
+  await keyboardLogThrottler.schedule(async () => {}, Common.Throttler.Scheduling.AS_SOON_AS_POSSIBLE);
   logging = false;
   unregisterAllLoggables();
   for (const document of documents) {

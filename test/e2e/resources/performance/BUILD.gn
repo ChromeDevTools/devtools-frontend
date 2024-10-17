@@ -11,6 +11,7 @@ copy_to_gen("performance") {
     "fake-website.html",
     "frame-metrics/frame.html",
     "frame-metrics/index.html",
+    "interaction-tester.html",
     "selectorStats/page-with-style-perf-test.html",
     "selectorStats/page-with-style.css",
     "selectorStats/page-with-style.html",

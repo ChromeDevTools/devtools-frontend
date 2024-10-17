@@ -1,8 +1,3 @@
-/**
- * @license
- * Copyright 2017 Google Inc.
- * SPDX-License-Identifier: Apache-2.0
- */
 import { firstValueFrom, from, merge, raceWith, } from '../../third_party/rxjs/rxjs.js';
 import { EventEmitter } from '../common/EventEmitter.js';
 import { debugError, fromEmitterEvent, filterAsync, timeout, fromAbortSignal, } from '../common/util.js';

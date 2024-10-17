@@ -2853,7 +2853,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   /**
    * @internal
    */
-  const packageVersion = '23.5.3';
+  const packageVersion = '23.6.0';
 
   /**
    * @license
@@ -3555,11 +3555,6 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     });
   }
 
-  /**
-   * @license
-   * Copyright 2017 Google Inc.
-   * SPDX-License-Identifier: Apache-2.0
-   */
   /**
    * @internal
    */
@@ -24056,9 +24051,9 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    * @internal
    */
   const PUPPETEER_REVISIONS = Object.freeze({
-    chrome: '129.0.6668.100',
-    'chrome-headless-shell': '129.0.6668.100',
-    firefox: 'stable_131.0.2'
+    chrome: '130.0.6723.58',
+    'chrome-headless-shell': '130.0.6723.58',
+    firefox: 'stable_131.0.3'
   });
 
   /**

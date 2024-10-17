@@ -1,9 +1,4 @@
 "use strict";
-/**
- * @license
- * Copyright 2017 Google Inc.
- * SPDX-License-Identifier: Apache-2.0
- */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Browser = exports.WEB_PERMISSION_TO_PROTOCOL_PERMISSION = void 0;
 const rxjs_js_1 = require("../../third_party/rxjs/rxjs.js");

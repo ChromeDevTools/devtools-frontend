@@ -587,7 +587,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
 
     const filterItems =
         Object.entries(Common.ResourceType.resourceCategories).map(([key, category]) => ({
-                                                                     name: category.title(),
+                                                                     name: category.name,
                                                                      label: () => category.shortTitle(),
                                                                      title: category.title(),
                                                                      jslogContext:

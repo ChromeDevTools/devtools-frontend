@@ -37,7 +37,7 @@ function getFieldMetricValue(view: Element, metric: string): HTMLElement|null {
 }
 
 function getEnvironmentRecs(view: Element): HTMLElement[] {
-  return Array.from(view.shadowRoot!.querySelectorAll<HTMLElement>('.environment-recs li'));
+  return Array.from(view.shadowRoot!.querySelectorAll<HTMLElement>('.environment-rec'));
 }
 
 function getInteractions(view: Element): HTMLElement[] {
@@ -726,10 +726,11 @@ describeWithMockConnection('LiveMetricsView', () => {
       await coordinator.done();
 
       const envRecs = getEnvironmentRecs(view);
-      assert.lengthOf(envRecs, 0);
+      assert.strictEqual(envRecs[0].textContent, 'Not enough data');
+      assert.strictEqual(envRecs[1].textContent, 'Not enough data');
 
       const fieldMessage = getFieldMessage(view);
-      assert.isNull(fieldMessage);
+      assert.match(fieldMessage!.textContent!, /Not enough data/);
 
       const dataDescriptions = getDataDescriptions(view);
       assert.match(dataDescriptions.innerText, /local metrics/);
@@ -883,7 +884,7 @@ describeWithMockConnection('LiveMetricsView', () => {
 
         const envRecs = getEnvironmentRecs(view);
         assert.lengthOf(envRecs, 2);
-        assert.match(envRecs[0].textContent!, /60%.*desktop/);
+        assert.strictEqual(envRecs[0].textContent, '30% mobile, 60% desktop');
         assert.match(envRecs[1].textContent!, /Slow 4G/);
       });
 
@@ -896,8 +897,8 @@ describeWithMockConnection('LiveMetricsView', () => {
         await coordinator.done();
 
         const envRecs = getEnvironmentRecs(view);
-        assert.lengthOf(envRecs, 1);
-        assert.match(envRecs[0].textContent!, /60%.*desktop/);
+        assert.strictEqual(envRecs[0].textContent, '30% mobile, 60% desktop');
+        assert.strictEqual(envRecs[1].textContent, 'Not enough data');
       });
 
       it('should suggest no throttling for very low latency', async () => {
@@ -912,9 +913,8 @@ describeWithMockConnection('LiveMetricsView', () => {
         await coordinator.done();
 
         const envRecs = getEnvironmentRecs(view);
-        assert.lengthOf(envRecs, 2);
-        assert.match(envRecs[0].textContent!, /60%.*desktop/);
-        assert.match(envRecs[1].textContent!, /no throttling/);
+        assert.strictEqual(envRecs[0].textContent, '30% mobile, 60% desktop');
+        assert.match(envRecs[1].textContent!, /too fast to simulate with throttling/);
       });
 
       it('should ignore presets that are generally too far off', async () => {
@@ -929,8 +929,8 @@ describeWithMockConnection('LiveMetricsView', () => {
         await coordinator.done();
 
         const envRecs = getEnvironmentRecs(view);
-        assert.lengthOf(envRecs, 1);
-        assert.match(envRecs[0].textContent!, /60%.*desktop/);
+        assert.strictEqual(envRecs[0].textContent, '30% mobile, 60% desktop');
+        assert.strictEqual(envRecs[1].textContent, 'Not enough data');
       });
     });
 
@@ -943,8 +943,7 @@ describeWithMockConnection('LiveMetricsView', () => {
         await coordinator.done();
 
         const envRecs = getEnvironmentRecs(view);
-        assert.lengthOf(envRecs, 2);
-        assert.match(envRecs[0].textContent!, /60%.*desktop/);
+        assert.strictEqual(envRecs[0].textContent, '30% mobile, 60% desktop');
         assert.match(envRecs[1].textContent!, /Slow 4G/);
       });
 
@@ -962,8 +961,7 @@ describeWithMockConnection('LiveMetricsView', () => {
         await coordinator.done();
 
         const envRecs = getEnvironmentRecs(view);
-        assert.lengthOf(envRecs, 2);
-        assert.match(envRecs[0].textContent!, /80%.*mobile/);
+        assert.strictEqual(envRecs[0].textContent, '80% mobile, 10% desktop');
         assert.match(envRecs[1].textContent!, /Slow 4G/);
       });
 
@@ -981,8 +979,8 @@ describeWithMockConnection('LiveMetricsView', () => {
         await coordinator.done();
 
         const envRecs = getEnvironmentRecs(view);
-        assert.lengthOf(envRecs, 1);
-        assert.match(envRecs[0].textContent!, /Slow 4G/);
+        assert.strictEqual(envRecs[0].textContent, '49% mobile, 49% desktop');
+        assert.match(envRecs[1].textContent!, /Slow 4G/);
       });
     });
   });

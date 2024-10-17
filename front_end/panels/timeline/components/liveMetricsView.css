@@ -301,18 +301,18 @@ x-link { /* stylelint-disable-line selector-type-no-unknown */
   width: 18px;
 }
 
-.environment-recs {
-  margin: 12px 0;
-}
-
-.environment-recs > summary {
+.environment-recs-title {
+  margin-top: 12px;
   font-weight: var(--ref-typeface-weight-medium);
-  margin-bottom: 4px;
 }
 
 .environment-recs-list {
   margin: 0;
   padding-left: 20px;
+}
+
+.environment-rec {
+  font-weight: var(--ref-typeface-weight-medium);
 }
 
 .link-to-log {

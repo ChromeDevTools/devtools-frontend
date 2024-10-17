@@ -2,11 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
+import {CookieReportTreeElement} from './CookieReportTreeElement.js';
 import lockIconStyles from './lockIcon.css.js';
 import {OriginTreeElement} from './OriginTreeElement.js';
 import {
@@ -23,6 +25,14 @@ const UIStrings = {
    *@description Section title for the the Security Panel's sidebar
    */
   security: 'Security',
+  /**
+   *@description Section title for the the Security Panel's sidebar
+   */
+  privacy: 'Privacy',
+  /**
+   *@description Sidebar element text in the Security panel
+   */
+  cookieReport: 'Third-party cookies',
   /**
    *@description Text in Security Panel of the Security panel
    */
@@ -78,13 +88,18 @@ export class SecurityPanelSidebar extends UI.Widget.VBox {
     this.sidebarTree.element.classList.add('security-sidebar');
     this.contentElement.appendChild(this.sidebarTree.element);
 
+    if (Common.Settings.Settings.instance().getHostConfig().devToolsPrivacyUI?.enabled) {
+      const privacyTreeSection = this.#addSidebarSection(i18nString(UIStrings.privacy), 'privacy');
+      privacyTreeSection.appendChild(new CookieReportTreeElement(i18nString(UIStrings.cookieReport)));
+    }
+
     const securitySectionTitle = i18nString(UIStrings.security);
-    const securityTreeElement = this.#addSidebarSection(securitySectionTitle, 'security');
+    const securityTreeSection = this.#addSidebarSection(securitySectionTitle, 'security');
 
     this.securityOverviewElement =
         new OriginTreeElement('security-main-view-sidebar-tree-item', this.#renderTreeElement);
     this.securityOverviewElement.tooltip = i18nString(UIStrings.overview);
-    securityTreeElement.appendChild(this.securityOverviewElement);
+    securityTreeSection.appendChild(this.securityOverviewElement);
 
     this.#originGroupTitles = new Map([
       [OriginGroup.MainOrigin, i18nString(UIStrings.mainOrigin)],
@@ -97,7 +112,7 @@ export class SecurityPanelSidebar extends UI.Widget.VBox {
     for (const group of Object.values(OriginGroup)) {
       const element = this.#createOriginGroupElement(this.#originGroupTitles.get(group) as string);
       this.#originGroups.set(group, element);
-      securityTreeElement.appendChild(element);
+      securityTreeSection.appendChild(element);
     }
 
     this.#mainViewReloadMessage = new UI.TreeOutline.TreeElement(i18nString(UIStrings.reloadToViewDetails));

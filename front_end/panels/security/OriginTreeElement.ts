@@ -5,7 +5,6 @@
 import type * as Platform from '../../core/platform/platform.js';
 import * as Protocol from '../../generated/protocol.js';
 
-import type {SecurityPanel} from './SecurityPanel.js';
 import {SecurityPanelSidebarTreeElement} from './SecurityPanelSidebarTreeElement.js';
 
 export class ShowOriginEvent extends Event {
@@ -25,8 +24,8 @@ export class OriginTreeElement extends SecurityPanelSidebarTreeElement {
 
   constructor(
       className: string, renderTreeElement: (element: SecurityPanelSidebarTreeElement) => void,
-      origin: Platform.DevToolsPath.UrlString|null = null, securityPanel: SecurityPanel|undefined = undefined) {
-    super(securityPanel);
+      origin: Platform.DevToolsPath.UrlString|null = null) {
+    super();
 
     this.#renderTreeElement = renderTreeElement;
     this.#originInternal = origin;

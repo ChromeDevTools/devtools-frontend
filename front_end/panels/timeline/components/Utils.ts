@@ -4,6 +4,7 @@
 
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
+import * as Protocol from '../../../generated/protocol.js';
 import type * as Trace from '../../../models/trace/trace.js';
 import * as ThemeSupport from '../../../ui/legacy/theme_support/theme_support.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
@@ -39,44 +40,42 @@ export enum NetworkCategory {
   OTHER = 'Other',
 }
 
-function syntheticNetworkRequestCategory(request: Trace.Types.Events.SyntheticNetworkRequest): NetworkCategory {
-  switch (request.args.data.mimeType) {
-    case 'text/html':
+export function networkResourceCategory(request: Trace.Types.Events.SyntheticNetworkRequest): NetworkCategory {
+  const {mimeType} = request.args.data;
+  switch (request.args.data.resourceType) {
+    case Protocol.Network.ResourceType.Document:
       return NetworkCategory.DOC;
-    case 'application/javascript':
-    case 'application/x-javascript':
-    case 'text/javascript':
-      return NetworkCategory.JS;
-    case 'text/css':
+    case Protocol.Network.ResourceType.Stylesheet:
       return NetworkCategory.CSS;
-    case 'image/gif':
-    case 'image/jpeg':
-    case 'image/png':
-    case 'image/svg+xml':
-    case 'image/webp':
-    case 'image/x-icon':
+    case Protocol.Network.ResourceType.Image:
       return NetworkCategory.IMG;
-    case 'audio/aac':
-    case 'audio/midi':
-    case 'audio/x-midi':
-    case 'audio/mpeg':
-    case 'audio/ogg':
-    case 'audio/wav':
-    case 'audio/webm':
+    case Protocol.Network.ResourceType.Media:
       return NetworkCategory.MEDIA;
-    case 'font/opentype':
-    case 'font/woff2':
-    case 'font/ttf':
-    case 'application/font-woff':
+    case Protocol.Network.ResourceType.Font:
       return NetworkCategory.FONT;
-    case 'application/wasm':
-      return NetworkCategory.WASM;
+    case Protocol.Network.ResourceType.Script:
+    case Protocol.Network.ResourceType.WebSocket:
+      return NetworkCategory.JS;
     default:
-      return NetworkCategory.OTHER;
+      // FWIW, all the other (current) resourceTypes are:
+      //     TextTrack, XHR, Fetch, Prefetch, EventSource, Manifest, SignedExchange, Ping, CSPViolationReport, Preflight, Other
+
+      // Traces before Feb 2024 don't have `resourceType`.
+      // We'll keep mimeType logic for a couple years to avoid grey network requests for last year's traces.
+      return mimeType.startsWith('text/')                                ? NetworkCategory.DOC :
+          mimeType.endsWith('/css')                                      ? NetworkCategory.CSS :
+          mimeType.endsWith('javascript')                                ? NetworkCategory.JS :
+          mimeType.startsWith('image/')                                  ? NetworkCategory.IMG :
+          mimeType.startsWith('audio/') || mimeType.startsWith('video/') ? NetworkCategory.MEDIA :
+          mimeType.startsWith('font/') || mimeType.includes('font-')     ? NetworkCategory.FONT :
+          mimeType === 'application/wasm'                                ? NetworkCategory.WASM :
+                                                                           // Ultimate fallback:
+                                                                           NetworkCategory.OTHER;
   }
 }
 
 export function colorForNetworkCategory(category: NetworkCategory): string {
+  // TODO: These should align with `baseResourceTypeColors` from `NetworkWaterfallColumn`.
   let cssVarName = '--app-color-system';
   switch (category) {
     case NetworkCategory.DOC:
@@ -109,7 +108,7 @@ export function colorForNetworkCategory(category: NetworkCategory): string {
 }
 
 export function colorForNetworkRequest(request: Trace.Types.Events.SyntheticNetworkRequest): string {
-  const category = syntheticNetworkRequestCategory(request);
+  const category = networkResourceCategory(request);
   return colorForNetworkCategory(category);
 }
 

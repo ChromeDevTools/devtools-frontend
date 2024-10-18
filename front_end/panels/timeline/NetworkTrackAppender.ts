@@ -99,16 +99,9 @@ export class NetworkTrackAppender implements TrackAppender {
       useFirstLineForOverview: false,
       useDecoratorsForOverview: true,
     });
-    const legends: PerfUI.FlameChart.Legend[] = [];
-    for (const category of Object.values(Components.Utils.NetworkCategory)) {
-      legends.push({
-        color: Components.Utils.colorForNetworkCategory(category),
-        category,
-      });
-    }
     this.#group = buildTrackHeader(
         VisualLoggingTrackName.NETWORK, 0, i18nString(UIStrings.network), style, /* selectable= */ true, expanded,
-        /* showStackContextMenu= */ false, legends);
+        /* showStackContextMenu= */ false);
     this.#flameChartData.groups.push(this.#group);
   }
 

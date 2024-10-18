@@ -18,13 +18,16 @@
   border: 1px solid var(--sys-color-divider);
   display: inline-block;
   margin-right: 4px;
-  content: " ";
 }
 
-.network-request-details-body {
+.network-request-details-cols {
   display: flex;
-  padding-bottom: 5px;
+}
+
+:host {
   border-bottom: 1px solid var(--sys-color-divider);
+  display: block;
+  padding-bottom: 5px;
 }
 
 .network-request-details-col {
@@ -32,7 +35,6 @@
 }
 
 .network-request-details-row {
-  display: flex;
   padding: 0 10px;
   min-height: 20px;
 }
@@ -59,6 +61,7 @@
   text-decoration: underline;
   outline-offset: 2px;
   padding: 0;
+  text-align: left;
 
   .elements-disclosure & {
     color: var(--text-link);
@@ -107,49 +110,6 @@
   font: inherit;
 }
 
-.timings-row {
-  align-self: start;
-  display: flex;
-  align-items: center;
-  width: 100%;
-}
-
-.indicator {
-  display: inline-block;
-  width: 10px;
-  height: 4px;
-  margin-right: 5px;
-  border: 1px solid var(--sys-color-on-surface-subtle);
-}
-
-.whisker-left {
-  align-self: center;
-  display: inline-flex;
-  width: 10px;
-  height: 6px;
-  margin-right: 5px;
-  border-left: 1px solid var(--sys-color-on-surface-subtle);
-}
-
-.whisker-right {
-  align-self: center;
-  display: inline-flex;
-  width: 10px;
-  height: 6px;
-  margin-right: 5px;
-  border-right: 1px solid var(--sys-color-on-surface-subtle);
-}
-
-.horizontal {
-  background-color: var(--sys-color-on-surface-subtle);
-  height: 1px;
-  width: 10px;
-  align-self: center;
-}
-
-.time {
-  display: inline-block;
-  padding-left: 10px;
-  /* Push the time to right. */
-  margin-left: auto;
+.timing-rows {
+  width: fit-content;
 }

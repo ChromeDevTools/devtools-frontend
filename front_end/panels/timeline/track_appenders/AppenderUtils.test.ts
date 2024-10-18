@@ -37,10 +37,6 @@ describeWithEnvironment('AppenderUtils', () => {
   });
 
   describe('buildTrackHeader', () => {
-    const legends: PerfUI.FlameChart.Legend[] = [{
-      color: 'yellow',
-      category: 'test',
-    }];
     const trackHeader = {
       startLevel: 0,
       name: 'Header Name',
@@ -48,7 +44,6 @@ describeWithEnvironment('AppenderUtils', () => {
       selectable: true,
       expanded: true,
       showStackContextMenu: true,
-      legends,
       jslogContext: 'animations',
     } as PerfUI.FlameChart.Group;
 
@@ -56,7 +51,7 @@ describeWithEnvironment('AppenderUtils', () => {
       const builtHeader = Timeline.AppenderUtils.buildTrackHeader(
           Timeline.CompatibilityTracksAppender.VisualLoggingTrackName.ANIMATIONS,
           /* startLevel= */ 0, 'Header Name', Timeline.AppenderUtils.buildGroupStyle(), /* selectable= */ true,
-          /* expanded= */ true, /* showStackContextMenu= */ true, legends);
+          /* expanded= */ true, /* showStackContextMenu= */ true);
       assert.deepEqual(builtHeader, trackHeader);
     });
   });

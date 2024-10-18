@@ -505,6 +505,7 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
     }
   }
 
+  // Used when `network-color-code-resource-types` is true
   private getSimplifiedBarRange(request: SDK.NetworkRequest.NetworkRequest, borderOffset: number): {
     start: number,
     mid: number,
@@ -519,6 +520,7 @@ export class NetworkWaterfallColumn extends UI.Widget.VBox {
     };
   }
 
+  // Used when `network-color-code-resource-types` is true
   private buildSimplifiedBarLayers(context: CanvasRenderingContext2D, node: NetworkNode, y: number): void {
     const request = node.request();
     if (!request) {

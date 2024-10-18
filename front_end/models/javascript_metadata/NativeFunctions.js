@@ -7261,7 +7261,7 @@ export const NativeFunctions = [
     signatures: [["length"]]
   },
   {
-    name: "supportsInputLanguage",
+    name: "languageAvailable",
     signatures: [["languageTag"]]
   },
   {

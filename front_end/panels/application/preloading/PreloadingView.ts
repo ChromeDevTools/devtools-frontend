@@ -226,6 +226,7 @@ export class PreloadingRuleSetView extends UI.Widget.VBox {
       this.updateRuleSetDetails();
     };
 
+    // clang-format off
     LitHtml.render(
         html`
         <devtools-split-view .horizontal=${true} style="--min-sidebar-size: max(100vh-200px, 0px)">
@@ -245,13 +246,12 @@ export class PreloadingRuleSetView extends UI.Widget.VBox {
           .toggleType=${Buttons.Button.ToggleType.PRIMARY}
           .title=${i18nString(UIStrings.prettyPrint)}
           .variant=${Buttons.Button.Variant.ICON_TOGGLE}
-          .size=${Buttons.Button.Size.SMALL}
+          .size=${Buttons.Button.Size.REGULAR}
           @click=${onPrettyPrintToggle}
-          jslog=${VisualLogging.action().track({click: true}).context('preloading-status-panel-pretty-print')}>
-        </devtools-button>
-        </div>
-        `,
+          jslog=${VisualLogging.action().track({click: true}).context('preloading-status-panel-pretty-print')}></devtools-button>
+        </div>`,
         this.contentElement, {host: this});
+    // clang-format on
     this.hsplit = this.contentElement.querySelector('devtools-split-view') as SplitView.SplitView.SplitView;
   }
 

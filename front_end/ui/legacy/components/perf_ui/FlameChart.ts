@@ -853,21 +853,47 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     const parentHeight = this.popoverElement.parentElement ? this.popoverElement.parentElement.clientHeight : 0;
     const infoWidth = this.popoverElement.clientWidth;
     const infoHeight = this.popoverElement.clientHeight;
-    const /** @const */ offsetX = 10;
-    const /** @const */ offsetY = 6;
+
+    // How much offset to use (when placing popover relative to mouseX/mouseY)
+    const offsetX = 10;
+    // Incorporate any network flamechart height into dynamic positioning
+    const offsetY = 6 + this.#tooltipPopoverYAdjustment;
     let x;
     let y;
-    for (let quadrant = 0; quadrant < 4; ++quadrant) {
-      const dx = quadrant & 2 ? -offsetX - infoWidth : offsetX;
-      const dy = quadrant & 1 ? -offsetY - infoHeight : offsetY;
-      x = Platform.NumberUtilities.clamp(mouseX + dx, 0, parentWidth - infoWidth);
-      y = Platform.NumberUtilities.clamp(mouseY + dy, 0, parentHeight - infoHeight);
-      if (x >= mouseX || mouseX >= x + infoWidth || y >= mouseY || mouseY >= y + infoHeight) {
-        break;
+
+    /**
+     * Fancy positioning algorithm. It optimizes for consistent positioning, not obstructing any of the popover, and not positioning atop the mouse cursor.
+     *
+     * Take the mouse cursor position (mouseX/mouseY) and split up the area into four quadrants
+     *     0: bottom-right. 1: top-right. 2: bottom-left. 3: top-left.
+     *
+     * We attempt this in two passes, first is for keeping the whole popover visible, the second is slightly relaxed.
+     *   If we hit the second pass, its because the tooltip size is close to the size of the available (parent*) space.
+     * In each pass, we loop through the quadrants
+     *   If the tooltip can fit (after some adjustments) within a quadrant, we `break` and that x,y is used.
+     */
+    for (let pass = 0; pass < 2; ++pass) {
+      for (let quadrant = 0; quadrant < 4; ++quadrant) {
+        // The bitwise AND operator is used to generate the 4 unique combinations of two booleans. (true+false, true+true, etc)
+        const dx = quadrant & 2 ? -offsetX - infoWidth : offsetX;
+        const dy = quadrant & 1 ? -offsetY - infoHeight : offsetY;
+        // mouseX+dx is ideal, but clamp against the available space (It will be adapted to fit)
+        x = Platform.NumberUtilities.clamp(mouseX + dx, 0, parentWidth - infoWidth);
+        y = Platform.NumberUtilities.clamp(mouseY + dy, 0, parentHeight - infoHeight);
+
+        const popoverFits = pass === 0 ?
+            // Will the whole popover be visible?
+            (x >= mouseX || mouseX >= x + infoWidth) && (y >= mouseY || mouseY >= y + infoHeight) :
+            // Will the popover fit well in 1 dimension? (Though we typically see it fit in both, here. Shrug.)
+            x >= mouseX || mouseX >= x + infoWidth || y >= mouseY || mouseY >= y + infoHeight;
+
+        if (popoverFits) {
+          break;
+        }
       }
     }
     this.popoverElement.style.left = x + 'px';
-    this.popoverElement.style.top = (y || 0) + this.#tooltipPopoverYAdjustment + 'px';
+    this.popoverElement.style.top = y + 'px';
   }
 
   /**

@@ -18,13 +18,13 @@ const {html} = LitHtml;
 
 const UIStrings = {
   /**
-   * @description Text to tell the user the estimated time or size savings for this insight.
+   * @description Text to tell the user the estimated time or size savings for this insight. "&" means "and" - space is limited to prefer abbreviated terms if possible. Text will still fit if not short, it just won't look very good, so using no abbreviations is fine if necessary.
    * @example {401 ms} PH1
    * @example {112 kB} PH1
    */
   estimatedSavings: 'Est savings: {PH1}',
   /**
-   * @description Text to tell the user the estimated time and size savings for this insight.
+   * @description Text to tell the user the estimated time and size savings for this insight. "&" means "and", "Est" means "Estimated" - space is limited to prefer abbreviated terms if possible. Text will still fit if not short, it just won't look very good, so using no abbreviations is fine if necessary.
    * @example {401 ms} PH1
    * @example {112 kB} PH2
    */

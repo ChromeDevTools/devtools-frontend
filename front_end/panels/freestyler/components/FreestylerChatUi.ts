@@ -975,15 +975,21 @@ export class FreestylerChatUi extends HTMLElement {
         ];
       case AgentType.DRJONES_FILE:
         return [
-          'What are the key functions in this file and what are they doing?',
+          'What does this script do?',
+          'Is the script optimized for performance?',
+          'Does the script handle user input safely?',
         ];
       case AgentType.DRJONES_NETWORK_REQUEST:
         return [
-          'Why is this network request taking longer to complete?',
+          'Why is this network request taking so long?',
+          'Are there any security headers present?',
+          'Why is the request failing?',
         ];
       case AgentType.DRJONES_PERFORMANCE:
         return [
-          'Is this item on the critical rendering path?',
+          'Identify performance issues in this call stack',
+          'Where is most of the time being spent in this call stack?',
+          'How can I reduce the time of this call stack?',
         ];
     }
   };

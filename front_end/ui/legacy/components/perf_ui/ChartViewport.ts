@@ -393,10 +393,11 @@ export class ChartViewport extends UI.Widget.VBox {
   }
 
   private handleZoomPanKeys(e: Event): void {
-    if (!UI.KeyboardShortcut.KeyboardShortcut.hasNoModifiers(e)) {
+    const keyboardEvent = (e as KeyboardEvent);
+    // Do not zoom if the key combination has any modifiers other than shift key
+    if (UI.KeyboardShortcut.KeyboardShortcut.hasAtLeastOneModifier(e) && !keyboardEvent.shiftKey) {
       return;
     }
-    const keyboardEvent = (e as KeyboardEvent);
     const zoomFactor = keyboardEvent.shiftKey ? 0.8 : 0.3;
     const panOffset = keyboardEvent.shiftKey ? 320 : 160;
     switch (keyboardEvent.code) {

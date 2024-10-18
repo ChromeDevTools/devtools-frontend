@@ -373,6 +373,10 @@ const UIStrings = {
    */
   prerenderFinalStatusAllPrerenderingCanceled:
       'All prerendered pages were unloaded by the browser for some reason (For example, WebViewCompat.addWebMessageListener() was called during prerendering.)',
+  /**
+   * Description text for PrenderFinalStatus::kWindowClosed.
+   */
+  prerenderFinalStatusWindowClosed: 'The prerendered page was unloaded because it called window.close().',
 
   /**
    *@description Text in grid and details: Preloading attempt is not yet triggered.
@@ -680,6 +684,7 @@ export function prerenderFailureReason(attempt: SDK.PreloadingModel.PrerenderAtt
     case Protocol.Preload.PrerenderFinalStatus.AllPrerenderingCanceled:
       return i18nString(UIStrings.prerenderFinalStatusAllPrerenderingCanceled);
     case Protocol.Preload.PrerenderFinalStatus.WindowClosed:
+      return i18nString(UIStrings.prerenderFinalStatusWindowClosed);
     case Protocol.Preload.PrerenderFinalStatus.SlowNetwork:
     case Protocol.Preload.PrerenderFinalStatus.OtherPrerenderedPageActivated:
     case Protocol.Preload.PrerenderFinalStatus.V8OptimizerDisabled:

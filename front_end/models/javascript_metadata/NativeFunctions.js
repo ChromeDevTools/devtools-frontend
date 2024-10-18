@@ -7436,6 +7436,10 @@ export const NativeFunctions = [
     signatures: [["?options"]]
   },
   {
+    name: "fillTextCluster",
+    signatures: [["textCluster","?x","?y"]]
+  },
+  {
     name: "placeElement",
     signatures: [["element","x","y"]]
   },

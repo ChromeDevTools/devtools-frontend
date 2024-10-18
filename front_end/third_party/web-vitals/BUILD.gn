@@ -6,7 +6,12 @@ import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_pre_built.gni")
 import("../visibility.gni")
 
-EXCLUDED_SOURCES = []
+EXCLUDED_SOURCES = [
+  "package/dist/web-vitals.attribution.iife.js",
+  "package/dist/web-vitals.attribution.js",
+  "package/dist/web-vitals.iife.js",
+  "package/dist/web-vitals.js",
+]
 
 SOURCES = [
   "package/dist/modules/attribution/deprecated.d.ts",

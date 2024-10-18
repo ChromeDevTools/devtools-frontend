@@ -39,7 +39,7 @@ let pendingLoAFs = [];
 // that are known to not match INP are removed.
 let pendingEntriesGroups = [];
 // The `processingEnd` time of most recently-processed event, chronologically.
-let latestProcessingEnd;
+let latestProcessingEnd = 0;
 // A WeakMap to look up the event-timing-entries group of a given entry.
 // Note that this only maps from "important" entries: either the first input or
 // those with an `interactionId`.
@@ -139,7 +139,7 @@ const cleanupEntries = () => {
     });
     // Keep all pending LoAF entries that either:
     // 1) intersect with entries in the newly cleaned up `pendingEntriesGroups`
-    // 2) occur after the most recently-processed event entry.
+    // 2) occur after the most recently-processed event entry (for up to MAX_PREVIOUS_FRAMES)
     const loafsToKeep = new Set();
     for (let i = 0; i < pendingEntriesGroups.length; i++) {
         const group = pendingEntriesGroups[i];
@@ -147,16 +147,14 @@ const cleanupEntries = () => {
             loafsToKeep.add(loaf);
         });
     }
-    for (let i = 0; i < MAX_PREVIOUS_FRAMES; i++) {
-        // Look at pending LoAF in reverse order so the most recent are first.
-        const loaf = pendingLoAFs[pendingLoAFs.length - 1 - i];
-        // If we reach LoAFs that overlap with event processing,
-        // we can assume all previous ones have already been handled.
-        if (!loaf || loaf.startTime < latestProcessingEnd)
-            break;
-        loafsToKeep.add(loaf);
-    }
-    pendingLoAFs = Array.from(loafsToKeep);
+    const prevFrameIndexCutoff = pendingLoAFs.length - 1 - MAX_PREVIOUS_FRAMES;
+    // Filter `pendingLoAFs` to preserve LoAF order.
+    pendingLoAFs = pendingLoAFs.filter((loaf, index) => {
+        if (loaf.startTime > latestProcessingEnd && index > prevFrameIndexCutoff) {
+            return true;
+        }
+        return loafsToKeep.has(loaf);
+    });
     // Reset the idle callback handle so it can be queued again.
     idleHandle = -1;
 };

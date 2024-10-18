@@ -1,5 +1,6 @@
 import { INPMetric, INPMetricWithAttribution, ReportOpts } from '../types.js';
 export declare const interactionTargetMap: Map<number, Node>;
+export declare const attributeINP: (metric: INPMetric) => INPMetricWithAttribution;
 /**
  * Calculates the [INP](https://web.dev/articles/inp) value for the current
  * page and calls the `callback` function once the value is ready, along with
@@ -28,4 +29,3 @@ export declare const interactionTargetMap: Map<number, Node>;
  * during the same page load._
  */
 export declare const onINP: (onReport: (metric: INPMetricWithAttribution) => void, opts?: ReportOpts) => void;
-export declare const attributeINP: (metric: INPMetric) => INPMetricWithAttribution;

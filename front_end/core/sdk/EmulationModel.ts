@@ -19,6 +19,7 @@ export class EmulationModel extends SDKModel<void> {
   #cssModel: CSSModel|null;
   readonly #overlayModelInternal: OverlayModel|null;
   readonly #mediaConfiguration: Map<string, string>;
+  #cpuPressureEnabled: boolean;
   #touchEnabled: boolean;
   #touchMobile: boolean;
   #touchEmulationAllowed: boolean;
@@ -68,6 +69,24 @@ export class EmulationModel extends SDKModel<void> {
         isScreenUnlocked: boolean,
       });
       await this.setIdleOverride(emulationParams);
+    });
+
+    const cpuPressureDetectionSetting = Common.Settings.Settings.instance().moduleSetting('emulation.cpu-pressure');
+    cpuPressureDetectionSetting.addChangeListener(async () => {
+      const settingValue = cpuPressureDetectionSetting.get();
+
+      if (settingValue === 'none') {
+        await this.setPressureSourceOverrideEnabled(false);
+        this.#cpuPressureEnabled = false;
+        return;
+      }
+
+      if (!this.#cpuPressureEnabled) {
+        this.#cpuPressureEnabled = true;
+        await this.setPressureSourceOverrideEnabled(true);
+      }
+
+      await this.setPressureStateOverride(settingValue);
     });
 
     const mediaTypeSetting = Common.Settings.Settings.instance().moduleSetting<string>('emulated-css-media');
@@ -179,6 +198,7 @@ export class EmulationModel extends SDKModel<void> {
       updateDisabledImageFormats();
     }
 
+    this.#cpuPressureEnabled = false;
     this.#touchEmulationAllowed = true;
     this.#touchEnabled = false;
     this.#touchMobile = false;
@@ -211,6 +231,18 @@ export class EmulationModel extends SDKModel<void> {
 
   overlayModel(): OverlayModel|null {
     return this.#overlayModelInternal;
+  }
+
+  async setPressureSourceOverrideEnabled(enabled: boolean): Promise<void> {
+    await this.#emulationAgent.invoke_setPressureSourceOverrideEnabled(
+        {source: Protocol.Emulation.PressureSource.Cpu, enabled});
+  }
+
+  async setPressureStateOverride(pressureState: string): Promise<void> {
+    await this.#emulationAgent.invoke_setPressureStateOverride({
+      source: Protocol.Emulation.PressureSource.Cpu,
+      state: pressureState as Protocol.Emulation.PressureState,
+    });
   }
 
   async emulateLocation(location: Location|null): Promise<void> {

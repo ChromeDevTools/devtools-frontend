@@ -221,6 +221,8 @@ export async function initializeGlobalVars({reset = true} = {}) {
     createSettingValue(
         Common.Settings.SettingCategory.EMULATION, 'emulation.idle-detection', '', Common.Settings.SettingType.ENUM),
     createSettingValue(
+        Common.Settings.SettingCategory.EMULATION, 'emulation.cpu-pressure', '', Common.Settings.SettingType.ENUM),
+    createSettingValue(
         Common.Settings.SettingCategory.GRID, 'show-grid-line-labels', 'none', Common.Settings.SettingType.ENUM),
     createSettingValue(Common.Settings.SettingCategory.GRID, 'extend-grid-lines', true),
     createSettingValue(Common.Settings.SettingCategory.GRID, 'show-grid-areas', true),

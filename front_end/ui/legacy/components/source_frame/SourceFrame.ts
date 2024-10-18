@@ -113,6 +113,12 @@ const UIStrings = {
    *@example {allow pasting} PH1
    */
   typeAllowPasting: 'Type \'\'{PH1}\'\'',
+  /**
+   * @description Error message shown when the user tries to open a file that contains non-readable data. "Editor" refers to
+   * a text editor.
+   */
+  binaryContentError:
+      'Editor can\'t show binary data. Use the "Response" tab in the "Network" panel to inspect this resource.',
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/source_frame/SourceFrame.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -550,7 +556,8 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
     progressIndicator.setWorked(1);
     const contentData = await contentDataPromise;
 
-    let error, content;
+    let error: string|undefined;
+    let content: CodeMirror.Text|string|null;
     let isMinified = false;
     if (TextUtils.ContentData.ContentData.isError(contentData)) {
       error = contentData.error;
@@ -558,16 +565,20 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
     } else if (contentData instanceof TextUtils.WasmDisassembly.WasmDisassembly) {
       content = CodeMirror.Text.of(contentData.lines);
       this.wasmDisassemblyInternal = contentData;
-    } else {
+    } else if (contentData.isTextContent) {
       content = contentData.text;
       isMinified = TextUtils.TextUtils.isMinified(contentData.text);
+      this.wasmDisassemblyInternal = null;
+    } else {
+      error = i18nString(UIStrings.binaryContentError);
+      content = null;
       this.wasmDisassemblyInternal = null;
     }
 
     progressIndicator.setWorked(100);
     progressIndicator.done();
 
-    if (this.rawContent === content) {
+    if (this.rawContent === content && error === undefined) {
       return;
     }
     this.rawContent = content;

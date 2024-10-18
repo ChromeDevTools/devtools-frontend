@@ -116,6 +116,29 @@ describe('HAR', () => {
           assert.strictEqual(entry._initiator?.requestId, requestId);
         });
 
+        it('exports remote address', async () => {
+          const request = SDK.NetworkRequest.NetworkRequest.create(
+              requestId, url, Platform.DevToolsPath.EmptyUrlString, null, null,
+              {requestId, type: Protocol.Network.InitiatorType.Script});
+          request.setRemoteAddress('127.0.0.1', 6789);
+
+          const entry = await build(request, {sanitize: false});
+
+          assert.strictEqual(entry.serverIPAddress, '127.0.0.1');
+          assert.strictEqual(entry.connection, '6789');
+        });
+
+        it('exports Chrome-specific connection ID', async () => {
+          const request = SDK.NetworkRequest.NetworkRequest.create(
+              requestId, url, Platform.DevToolsPath.EmptyUrlString, null, null,
+              {requestId, type: Protocol.Network.InitiatorType.Script});
+          request.connectionId = 'foobar';
+
+          const entry = await build(request, {sanitize: false});
+
+          assert.strictEqual(entry._connectionId, 'foobar');
+        });
+
         it('exports Service Worker info', async () => {
           const request = SDK.NetworkRequest.NetworkRequest.create(
               requestId, url, Platform.DevToolsPath.EmptyUrlString, null, null,

@@ -70,7 +70,7 @@ export class Importer {
     } else {
       request.setRequestFormData(false, null);
     }
-    request.connectionId = entry.connection || '';
+    request.connectionId = entry.customAsString('connectionId') || '';
     request.requestMethod = entry.request.method;
     request.setRequestHeaders(entry.request.headers);
 
@@ -121,7 +121,7 @@ export class Importer {
     Importer.setupTiming(request, issueTime, entry.time, entry.timings);
 
     // Meta data.
-    request.setRemoteAddress(entry.serverIPAddress || '', 80);  // Har does not support port numbers.
+    request.setRemoteAddress(entry.serverIPAddress || '', Number(entry.connection) || 80);
     request.setResourceType(Importer.getResourceType(request, entry, pageLoad));
 
     const priority = entry.customAsString('priority');

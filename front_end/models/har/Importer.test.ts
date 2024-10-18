@@ -25,6 +25,7 @@ const exampleLog = new HAR.HARFormat.HARLog({
   }],
   entries: [
     {
+      _connectionId: '1',
       _initiator: {
         type: 'script',
         requestId: '12',
@@ -59,7 +60,7 @@ const exampleLog = new HAR.HARFormat.HARLog({
       _priority: 'High',
       _resourceType: 'xhr',
       cache: {},
-      connection: '1',
+      connection: '6789',
       request: {
         method: 'POST',
         url: 'https://example.com/api/testEndpoint?param1=test',
@@ -118,6 +119,7 @@ const exampleLog = new HAR.HARFormat.HARLog({
     },
     {
       pageref: 'page_0',
+      _connectionId: '1',
       _initiator: {
         type: 'script',
         stack: {
@@ -133,7 +135,7 @@ const exampleLog = new HAR.HARFormat.HARLog({
         },
       },
       cache: {},
-      connection: '1',
+      connection: '6789',
       request: {
         method: 'POST',
         url: 'https://example.com/api/testEndpoint?param2=test2',
@@ -285,5 +287,17 @@ describe('HAR Importer', () => {
       workerRespondWithSettled: 300,
       workerStart: 30,
     });
+  });
+
+  it('Parses the remote address correctly', () => {
+    for (const request of requests) {
+      assert.strictEqual(request.remoteAddress(), '127.0.0.1:6789');
+    }
+  });
+
+  it('Parses the Chrome-specific connection ID', () => {
+    for (const request of requests) {
+      assert.strictEqual(request.connectionId, '1');
+    }
   });
 });

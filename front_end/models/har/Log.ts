@@ -114,10 +114,10 @@ export class Entry {
     const harEntry = new Entry(request);
     let ipAddress = harEntry.request.remoteAddress();
     const portPositionInString = ipAddress.lastIndexOf(':');
+    const connection = portPositionInString !== -1 ? ipAddress.substring(portPositionInString + 1) : undefined;
     if (portPositionInString !== -1) {
       ipAddress = ipAddress.substr(0, portPositionInString);
     }
-
     const timings = harEntry.buildTimings();
     let time = 0;
     // "ssl" is included in the connect field, so do not double count it.
@@ -146,13 +146,14 @@ export class Entry {
     }
 
     const entry: EntryDTO = {
+      _connectionId: undefined,
       _fromCache: undefined,
       _initiator: exportedInitiator,
       _priority: harEntry.request.priority(),
       _resourceType: harEntry.request.resourceType().name(),
       _webSocketMessages: undefined,
       cache: {},
-      connection: undefined,
+      connection,
       pageref: undefined,
       request: await harEntry.buildRequest(),
       response: harEntry.buildResponse(),
@@ -183,9 +184,9 @@ export class Entry {
     }
 
     if (harEntry.request.connectionId !== '0') {
-      entry.connection = harEntry.request.connectionId;
+      entry._connectionId = harEntry.request.connectionId;
     } else {
-      delete entry.connection;
+      delete entry._connectionId;
     }
 
     const page = SDK.PageLoad.PageLoad.forRequest(harEntry.request);
@@ -507,6 +508,7 @@ export interface Response {
 }
 
 export interface EntryDTO {
+  _connectionId?: string;
   _fromCache?: string;
   _initiator: Protocol.Network.Initiator|null;
   _priority: Protocol.Network.ResourcePriority|null;

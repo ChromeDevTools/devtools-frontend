@@ -824,6 +824,7 @@ const extraPropertyValues = new Map<string, Set<string>>([
       'self-end',
       'flex-start',
       'flex-end',
+      'anchor-center',
     ]),
   ],
   [
@@ -842,6 +843,7 @@ const extraPropertyValues = new Map<string, Set<string>>([
       'left',
       'right',
       'legacy',
+      'anchor-center',
     ]),
   ],
   [
@@ -857,6 +859,7 @@ const extraPropertyValues = new Map<string, Set<string>>([
       'self-end',
       'flex-start',
       'flex-end',
+      'anchor-center',
     ]),
   ],
   [
@@ -872,6 +875,7 @@ const extraPropertyValues = new Map<string, Set<string>>([
       'self-end',
       'flex-start',
       'flex-end',
+      'anchor-center',
     ]),
   ],
   [
@@ -889,6 +893,7 @@ const extraPropertyValues = new Map<string, Set<string>>([
       'flex-end',
       'left',
       'right',
+      'anchor-center',
     ]),
   ],
   [
@@ -904,6 +909,7 @@ const extraPropertyValues = new Map<string, Set<string>>([
       'self-end',
       'flex-start',
       'flex-end',
+      'anchor-center',
     ]),
   ],
   ['perspective-origin', new Set(['left', 'center', 'right', 'top', 'bottom'])],

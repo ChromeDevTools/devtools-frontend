@@ -1880,6 +1880,7 @@ export class StorageCategoryView extends UI.Widget.VBox {
     }
     if (link && this.linkElement) {
       this.linkElement.setAttribute('href', link);
+      this.linkElement.setAttribute('title', link);
       this.linkElement.classList.remove('hidden');
     }
   }

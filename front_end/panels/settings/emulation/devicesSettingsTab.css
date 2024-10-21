@@ -4,16 +4,17 @@
  * found in the LICENSE file.
  */
 
-.devices-settings-tab .settings-container-wrapper {
-  padding-top: 5px;
+.device-card-content {
+  padding-left: 0;
+  padding-right: 0;
 }
 
-.devices-settings-tab .settings-tab.settings-content {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  height: 100%;
-  margin: 0;
+.list {
+  border: none;
+}
+
+#custom-device-add-button {
+  padding: var(--sys-size-5) var(--sys-size-6);
 }
 
 .devices-settings-tab .devices-button-row {
@@ -31,8 +32,8 @@
 }
 
 .devices-list-item {
-  padding: 3px 5px;
-  height: 30px;
+  padding: var(--sys-size-3) var(--sys-size-7);
+  height: var(--sys-size-13);
   display: flex;
   align-items: center;
   flex: auto 1 1;

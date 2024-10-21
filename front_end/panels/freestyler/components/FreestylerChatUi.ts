@@ -1182,18 +1182,16 @@ export class FreestylerChatUi extends HTMLElement {
         <footer class="disclaimer">
           <p class="disclaimer-text">
             ${this.#getDisclaimerText()}
-            <x-link
+            <button
               class="link"
+              role="link"
               jslog=${VisualLogging.link('open-ai-settings').track({
                 click: true,
               })}
-              @click=${(event: Event) => {
-                event.preventDefault();
-                void UI.ViewManager.ViewManager.instance().showView(
-                  'chrome-ai',
-                );
+              @click=${() => {
+                void UI.ViewManager.ViewManager.instance().showView('chrome-ai');
               }}
-            >${i18nString(UIStrings.learnAbout)}</x-link>
+            >${i18nString(UIStrings.learnAbout)}</button>
           </p>
         </footer>
       </div>

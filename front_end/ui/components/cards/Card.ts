@@ -44,7 +44,7 @@ export class Card extends HTMLElement {
     // clang-format off
     LitHtml.render(html`
     <div class="card">
-      <div role="heading" class="heading">${this.#heading}</div>
+      <div role="heading" aria-level="2" class="heading">${this.#heading}</div>
       <slot name="content" class='content-container'></slot>
     </div>
     `, this.#shadow, {

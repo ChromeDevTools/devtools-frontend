@@ -86,8 +86,8 @@ export const setIgnoreListPattern = async (pattern: string) => {
 
 export const toggleIgnoreListing = async (enable: boolean) => {
   await openSettingsTab('Ignore list');
-  const enabledPattern = '.ignore-list-options:not(.ignore-listing-disabled)';
-  const disabledPattern = '.ignore-list-options.ignore-listing-disabled';
+  const enabledPattern = '.ignore-list-settings:not(.ignore-listing-disabled)';
+  const disabledPattern = '.ignore-list-settings.ignore-listing-disabled';
   await waitFor(enable ? disabledPattern : enabledPattern);
   await click('[title="Enable ignore listing"]');
   await waitFor(enable ? enabledPattern : disabledPattern);

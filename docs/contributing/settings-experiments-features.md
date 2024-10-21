@@ -97,7 +97,7 @@ Chromium.
 
 ### Define a new `base::Feature`
 
-Add a new `base::Feature` to [`browser_features.cc`](https://crsrc.org/c/chrome/browser/browser_features.cc). This feature will automatically be available as a Chrome command line parameter:
+Add a new `base::Feature` to DevTools' [`features.cc`](https://crsrc.org/c/chrome/browser/devtools/features.cc). This feature will automatically be available as a Chrome command line parameter:
 
 ```cxx
 // in browser_features.cc

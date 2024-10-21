@@ -17,6 +17,7 @@ describeWithEnvironment('ProvideFeedback', () => {
 
     assert(component.shadowRoot!.querySelector('.feedback-form'));
   });
+
   it('should not show the feedback form when canShowFeedbackForm is false', async () => {
     const component = new Freestyler.ProvideFeedback({onFeedbackSubmit: sinon.stub(), canShowFeedbackForm: false});
     renderElementIntoDOM(component);
@@ -25,5 +26,20 @@ describeWithEnvironment('ProvideFeedback', () => {
     button.click();
 
     assert.notExists(component.shadowRoot!.querySelector('.feedback-form'));
+  });
+
+  it('should disable the submit button when the input is empty', async () => {
+    const component = new Freestyler.ProvideFeedback({onFeedbackSubmit: sinon.stub(), canShowFeedbackForm: true});
+    renderElementIntoDOM(component);
+    const button = component.shadowRoot!.querySelector('.rate-buttons devtools-button')! as HTMLElement;
+    button.click();
+
+    assert(component.shadowRoot!.querySelector('.feedback-form'));
+    const submitButton = component.shadowRoot!.querySelector('[aria-label="Submit"]') as HTMLButtonElement;
+    assert.isTrue(submitButton?.disabled);
+    const inputField = component.shadowRoot!.querySelector('.feedback-form input')! as HTMLInputElement;
+    inputField.value = 'test';
+    inputField.dispatchEvent(new Event('input'));
+    assert.isFalse(submitButton?.disabled);
   });
 });

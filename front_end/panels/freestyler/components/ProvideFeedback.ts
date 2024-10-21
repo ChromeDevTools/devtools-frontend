@@ -71,6 +71,7 @@ export class ProvideFeedback extends HTMLElement {
   #props: ProvideFeedbackProps;
   #isShowingFeedbackForm = false;
   #currentRating?: Host.AidaClient.Rating;
+  #isSubmitButtonDisabled = true;
 
   constructor(props: ProvideFeedbackProps) {
     super();
@@ -164,6 +165,15 @@ export class ProvideFeedback extends HTMLElement {
     // clang-format on
   }
 
+  #handleInputChange = (event: KeyboardEvent): void => {
+    const value = (event.target as HTMLInputElement).value;
+    const disableSubmit = !value;
+    if (disableSubmit !== this.#isSubmitButtonDisabled) {
+      this.#isSubmitButtonDisabled = disableSubmit;
+      this.#render();
+    }
+  };
+
   #renderFeedbackForm(): LitHtml.LitTemplate {
     // clang-format off
     return html`
@@ -189,6 +199,7 @@ export class ProvideFeedback extends HTMLElement {
         <input
           type="text"
           class="devtools-text-input feedback-input"
+          @input=${this.#handleInputChange}
           placeholder=${lockedString(
            UIStringsNotTranslate.provideFeedbackPlaceholder,
           )}
@@ -202,6 +213,7 @@ export class ProvideFeedback extends HTMLElement {
         .data=${
           {
               type: 'submit',
+              disabled: this.#isSubmitButtonDisabled,
               variant: Buttons.Button.Variant.OUTLINED,
               size: Buttons.Button.Size.SMALL,
               title: lockedString(UIStringsNotTranslate.submit),

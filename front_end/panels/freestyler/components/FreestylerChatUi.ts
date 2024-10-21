@@ -312,7 +312,7 @@ export interface Props {
   selectedElement: SDK.DOMModel.DOMNode|null;
   selectedFile: Workspace.UISourceCode.UISourceCode|null;
   selectedNetworkRequest: SDK.NetworkRequest.NetworkRequest|null;
-  selectedStackTrace: Trace.Helpers.TreeHelpers.TraceEntryNodeForAI|null;
+  selectedStackTrace: Trace.Helpers.TreeHelpers.AINode|null;
   isLoading: boolean;
   canShowFeedbackForm: boolean;
   userInfo: Pick<Host.InspectorFrontendHostAPI.SyncInformation, 'accountImage'|'accountFullName'>;
@@ -884,8 +884,7 @@ export class FreestylerChatUi extends HTMLElement {
       return html`${LitHtml.nothing}`;
     }
 
-    const selectedNode = Trace.Helpers.TreeHelpers.TraceEntryNodeForAI.getSelectedNodeForTraceEntryTreeForAI(
-        this.#props.selectedStackTrace);
+    const selectedNode = Trace.Helpers.TreeHelpers.AINode.getSelectedNodeWithinTree(this.#props.selectedStackTrace);
 
     if (!selectedNode) {
       return html`${LitHtml.nothing}`;

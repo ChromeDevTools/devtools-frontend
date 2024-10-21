@@ -473,9 +473,8 @@ describe('TreeHelpers', () => {
       assert.exists(rootNode);
       assert.exists(selectedNode);
 
-      const traceEntryTreeForAI = Trace.Helpers.TreeHelpers.TraceEntryNodeForAI.fromSelectedEntryNode(selectedNode);
-      const actualSelectedNode =
-          Trace.Helpers.TreeHelpers.TraceEntryNodeForAI.getSelectedNodeForTraceEntryTreeForAI(traceEntryTreeForAI);
+      const traceEntryTreeForAI = Trace.Helpers.TreeHelpers.AINode.fromEntryNode(selectedNode);
+      const actualSelectedNode = Trace.Helpers.TreeHelpers.AINode.getSelectedNodeWithinTree(traceEntryTreeForAI);
 
       assert.exists(traceEntryTreeForAI);
       assert.exists(actualSelectedNode);
@@ -483,7 +482,7 @@ describe('TreeHelpers', () => {
       // delete for smaller deepStrictEqual comparison
       actualSelectedNode.children = traceEntryTreeForAI.children = [];
 
-      const expectedTraceEntryTree = new Trace.Helpers.TreeHelpers.TraceEntryNodeForAI(
+      const expectedTraceEntryTree = new Trace.Helpers.TreeHelpers.AINode(
           'EvaluateScript',
           Trace.Types.Timing.MilliSeconds(0),
           Trace.Types.Timing.MilliSeconds(0.5),
@@ -494,7 +493,7 @@ describe('TreeHelpers', () => {
       expectedTraceEntryTree.children = [];
       assert.deepStrictEqual(traceEntryTreeForAI, expectedTraceEntryTree);
 
-      const expectedselectedNodeForAI = new Trace.Helpers.TreeHelpers.TraceEntryNodeForAI(
+      const expectedselectedNodeForAI = new Trace.Helpers.TreeHelpers.AINode(
           'V8.ParseFunction',
           Trace.Types.Timing.MilliSeconds(0.012),
           Trace.Types.Timing.MilliSeconds(0.001),

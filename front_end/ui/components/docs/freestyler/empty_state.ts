@@ -29,7 +29,7 @@ const component = new Freestyler.FreestylerChatUi({
   selectedElement: {} as unknown as SDK.DOMModel.DOMNode,
   selectedFile: {} as unknown as Workspace.UISourceCode.UISourceCode,
   selectedNetworkRequest: {} as unknown as SDK.NetworkRequest.NetworkRequest,
-  selectedStackTrace: {} as unknown as Trace.Helpers.TreeHelpers.TraceEntryNodeForAI,
+  selectedStackTrace: {} as unknown as Trace.Helpers.TreeHelpers.AINode,
   agentType: Freestyler.AgentType.FREESTYLER,
   isLoading: false,
   canShowFeedbackForm: false,

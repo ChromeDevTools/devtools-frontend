@@ -56,7 +56,7 @@ css
       selectedElement: {} as unknown as SDK.DOMModel.DOMNode,
       selectedFile: null,
       selectedNetworkRequest: {} as unknown as SDK.NetworkRequest.NetworkRequest,
-      selectedStackTrace: {} as unknown as Trace.Helpers.TreeHelpers.TraceEntryNodeForAI,
+      selectedStackTrace: {} as unknown as Trace.Helpers.TreeHelpers.AINode,
       isLoading: false,
       canShowFeedbackForm: false,
       userInfo: {},

@@ -216,8 +216,8 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     const contextMenu = new UI.ContextMenu.ContextMenu(event, {useSoftMenu: true});
 
     if (UI.ActionRegistry.ActionRegistry.instance().hasAction('drjones.performance-panel-context')) {
-      const traceEntryNodeForAI = this.getTraceEntryTreeForAIFromEntryIndex(entryIndex);
-      UI.Context.Context.instance().setFlavor(Trace.Helpers.TreeHelpers.TraceEntryNodeForAI, traceEntryNodeForAI);
+      const aiNode = this.getAIEventNodeTreeFromEntryIndex(entryIndex);
+      UI.Context.Context.instance().setFlavor(Trace.Helpers.TreeHelpers.AINode, aiNode);
       contextMenu.headerSection().appendAction(
           'drjones.performance-panel-context',
       );
@@ -316,13 +316,13 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     this.dispatchEventToListeners(Events.DATA_CHANGED);
   }
 
-  getTraceEntryTreeForAIFromEntryIndex(entryIndex: number): Trace.Helpers.TreeHelpers.TraceEntryNodeForAI|null {
+  getAIEventNodeTreeFromEntryIndex(entryIndex: number): Trace.Helpers.TreeHelpers.AINode|null {
     const entry = this.entryData[entryIndex] as Trace.Types.Events.Event;
     const manager = ModificationsManager.activeManager();
     if (!manager) {
       return null;
     }
-    return manager.getEntriesFilter().getTraceEntryTreeForAI(entry);
+    return manager.getEntriesFilter().getAIEventNodeTree(entry);
   }
 
   findPossibleContextMenuActions(entryIndex: number): PerfUI.FlameChart.PossibleFilterActions|void {
@@ -1138,8 +1138,8 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       this.lastSelection = new Selection(timelineSelection, entryIndex);
     }
     if (UI.ActionRegistry.ActionRegistry.instance().hasAction('drjones.performance-panel-context')) {
-      const traceEntryNodeForAI = this.getTraceEntryTreeForAIFromEntryIndex(entryIndex);
-      UI.Context.Context.instance().setFlavor(Trace.Helpers.TreeHelpers.TraceEntryNodeForAI, traceEntryNodeForAI);
+      const aiNode = this.getAIEventNodeTreeFromEntryIndex(entryIndex);
+      UI.Context.Context.instance().setFlavor(Trace.Helpers.TreeHelpers.AINode, aiNode);
     }
     return timelineSelection;
   }

@@ -75,7 +75,7 @@ const lockedString = i18n.i18n.lockedString;
  * One agent instance handles one conversation. Create a new agent
  * instance for a new conversation.
  */
-export class DrJonesPerformanceAgent extends AiAgent<Trace.Helpers.TreeHelpers.TraceEntryNodeForAI> {
+export class DrJonesPerformanceAgent extends AiAgent<Trace.Helpers.TreeHelpers.AINode> {
   readonly preamble = preamble;
   readonly clientFeature = Host.AidaClient.ClientFeature.CHROME_DRJONES_PERFORMANCE_AGENT;
   get userTier(): string|undefined {
@@ -94,7 +94,7 @@ export class DrJonesPerformanceAgent extends AiAgent<Trace.Helpers.TreeHelpers.T
   }
 
   async *
-      handleContextDetails(selectedStackTrace: Trace.Helpers.TreeHelpers.TraceEntryNodeForAI|null):
+      handleContextDetails(selectedStackTrace: Trace.Helpers.TreeHelpers.AINode|null):
           AsyncGenerator<ContextResponse, void, void> {
     yield {
       type: ResponseType.CONTEXT,
@@ -103,7 +103,7 @@ export class DrJonesPerformanceAgent extends AiAgent<Trace.Helpers.TreeHelpers.T
     };
   }
 
-  override async enhanceQuery(query: string, selectedStackTrace: Trace.Helpers.TreeHelpers.TraceEntryNodeForAI|null):
+  override async enhanceQuery(query: string, selectedStackTrace: Trace.Helpers.TreeHelpers.AINode|null):
       Promise<string> {
     const networkEnchantmentQuery =
         selectedStackTrace ? `# Selected stack trace\n${JSON.stringify(selectedStackTrace)}\n\n# User request\n\n` : '';
@@ -117,8 +117,8 @@ export class DrJonesPerformanceAgent extends AiAgent<Trace.Helpers.TreeHelpers.T
   }
 }
 
-function createContextDetailsForDrJonesPerformanceAgent(
-    selectedStackTrace: Trace.Helpers.TreeHelpers.TraceEntryNodeForAI|null): [ContextDetail, ...ContextDetail[]] {
+function createContextDetailsForDrJonesPerformanceAgent(selectedStackTrace: Trace.Helpers.TreeHelpers.AINode|
+                                                        null): [ContextDetail, ...ContextDetail[]] {
   return [
     {
       title: 'Selected stack trace',

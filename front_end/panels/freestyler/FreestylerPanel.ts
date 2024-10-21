@@ -274,7 +274,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
       inspectElementToggled: this.#toggleSearchElementAction.toggled(),
       selectedElement: selectedElementFilter(UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode)),
       selectedNetworkRequest: UI.Context.Context.instance().flavor(SDK.NetworkRequest.NetworkRequest),
-      selectedStackTrace: UI.Context.Context.instance().flavor(Trace.Helpers.TreeHelpers.TraceEntryNodeForAI),
+      selectedStackTrace: UI.Context.Context.instance().flavor(Trace.Helpers.TreeHelpers.AINode),
       selectedFile: UI.Context.Context.instance().flavor(Workspace.UISourceCode.UISourceCode),
     };
     this.doUpdate();
@@ -288,7 +288,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
     UI.Context.Context.instance().addFlavorChangeListener(
         SDK.NetworkRequest.NetworkRequest, this.#handleNetworkRequestFlavorChange);
     UI.Context.Context.instance().addFlavorChangeListener(
-        Trace.Helpers.TreeHelpers.TraceEntryNodeForAI, this.#handleTraceEntryNodeFlavorChange);
+        Trace.Helpers.TreeHelpers.AINode, this.#handleTraceEntryNodeFlavorChange);
     UI.Context.Context.instance().addFlavorChangeListener(
         Workspace.UISourceCode.UISourceCode, this.#handleUISourceCodeFlavorChange);
   }
@@ -303,7 +303,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
     UI.Context.Context.instance().removeFlavorChangeListener(
         SDK.NetworkRequest.NetworkRequest, this.#handleNetworkRequestFlavorChange);
     UI.Context.Context.instance().removeFlavorChangeListener(
-        Trace.Helpers.TreeHelpers.TraceEntryNodeForAI, this.#handleTraceEntryNodeFlavorChange);
+        Trace.Helpers.TreeHelpers.AINode, this.#handleTraceEntryNodeFlavorChange);
     UI.Context.Context.instance().removeFlavorChangeListener(
         Workspace.UISourceCode.UISourceCode, this.#handleUISourceCodeFlavorChange);
   }
@@ -352,7 +352,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
       };
 
   #handleTraceEntryNodeFlavorChange =
-      (ev: Common.EventTarget.EventTargetEvent<Trace.Helpers.TreeHelpers.TraceEntryNodeForAI>): void => {
+      (ev: Common.EventTarget.EventTargetEvent<Trace.Helpers.TreeHelpers.AINode>): void => {
         if (this.#viewProps.selectedStackTrace === ev.data) {
           return;
         }

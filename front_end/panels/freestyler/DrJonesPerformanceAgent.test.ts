@@ -120,13 +120,12 @@ describeWithEnvironment('DrJonesPerformanceAgent', () => {
     });
   });
   describe('run', () => {
-    const rootNodeEntry =
-        new Trace.Helpers.TreeHelpers.TraceEntryNodeForAI('RunTask', Trace.Types.Timing.MilliSeconds(0));
-    const node1 = new Trace.Helpers.TreeHelpers.TraceEntryNodeForAI('ProfileCall', Trace.Types.Timing.MilliSeconds(1));
-    const node2 = new Trace.Helpers.TreeHelpers.TraceEntryNodeForAI('ProfileCall', Trace.Types.Timing.MilliSeconds(2));
-    const node3 = new Trace.Helpers.TreeHelpers.TraceEntryNodeForAI('ProfileCall', Trace.Types.Timing.MilliSeconds(10));
-    const node4 = new Trace.Helpers.TreeHelpers.TraceEntryNodeForAI('ProfileCall', Trace.Types.Timing.MilliSeconds(11));
-    const node5 = new Trace.Helpers.TreeHelpers.TraceEntryNodeForAI('ProfileCall', Trace.Types.Timing.MilliSeconds(15));
+    const rootNodeEntry = new Trace.Helpers.TreeHelpers.AINode('RunTask', Trace.Types.Timing.MilliSeconds(0));
+    const node1 = new Trace.Helpers.TreeHelpers.AINode('ProfileCall', Trace.Types.Timing.MilliSeconds(1));
+    const node2 = new Trace.Helpers.TreeHelpers.AINode('ProfileCall', Trace.Types.Timing.MilliSeconds(2));
+    const node3 = new Trace.Helpers.TreeHelpers.AINode('ProfileCall', Trace.Types.Timing.MilliSeconds(10));
+    const node4 = new Trace.Helpers.TreeHelpers.AINode('ProfileCall', Trace.Types.Timing.MilliSeconds(11));
+    const node5 = new Trace.Helpers.TreeHelpers.AINode('ProfileCall', Trace.Types.Timing.MilliSeconds(15));
 
     beforeEach(() => {
       rootNodeEntry.children = [node1, node3];

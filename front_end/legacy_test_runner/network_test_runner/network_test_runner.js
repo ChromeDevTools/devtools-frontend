@@ -195,6 +195,7 @@ NetworkTestRunner.HARPropertyFormatters = {
   timings: 'formatAsTypeName',
   version: 'formatAsTypeName',
   wait: 'formatAsTypeName',
+  _connectionId: 'formatAsTypeName',
   _transferSize: 'formatAsTypeName',
   _error: 'skip',
   _initiator: 'formatAsTypeName',

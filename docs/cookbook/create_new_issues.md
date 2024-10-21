@@ -32,24 +32,30 @@ To do so, follow the next steps:
     straightforward solution. With the addition of more context and external
     documentation, it will support the developer across the whole debugging
     story, making the message more actionable than in the console.
-*   Pipe your message into DevTools. First you need to decide where to report
-    the issue. Issues can be reported on the browser side (choose this if the
+*   Pipe your message into DevTools. First you need to decide which additional
+    information you want to send with your issue. Depending on the answer
+    you'll have two options:
+    1) Use the [generic issue](https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/public/devtools_protocol/browser_protocol.pdl;l=807-829;drc=3e4a3b72cdd0cab0224292a7322ff3cf0248d307). This is the easier option.
+    All that is required is to add a new value to `GenericIssueErrorType`.
+    Generic issue allows sending along some pre-defined additional information:
+    Frame ids, network requests and DOM node ids among others.
+    2) If a generic issue is not enough, you can introduce a domain/problem
+    specific issue type. See [here](https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/public/devtools_protocol/browser_protocol.pdl;l=666;drc=bc268cf81e62349e0f283107d70a5f742476ef4e)
+    how other issues are defined. You need to add an issue code and an issue
+    details definition. The issue details should hold all the information
+    that is required for reporting the issue in the front-end.
+*   Next, you need to figure out where to report the issue.
+    Issues can be reported on the browser side (choose this if the
     issue is raised in content/browser and/or has information that should not be
     shared with the renderer). Otherwise you can report it in the renderer.
     *   For Browser-side reporting, use
-        [`devtools_instrumentation::ReportBrowserInitiatedIssue`](https://source.chromium.org/chromium/chromium/src/+/17746910d8707d35a0a072f1bdee9d440946d6f3:content/browser/devtools/devtools_instrumentation.cc;l=962)
+        [`devtools_instrumentation::ReportBrowserInitiatedIssue`](https://source.chromium.org/chromium/chromium/src/+/main:content/browser/devtools/devtools_instrumentation.cc;l=1981;drc=10c26d0d230900f91d239f2fe0b731b054127e89)
         to report the issue.
     *   For renderer-side reporting, use an `AddInspectorIssue` method, those
         are available at every execution context, plus some more classes.
-        ([example](https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/renderer/bindings/core/v8/isolated_world_csp.cc;l=106;drc=63d89d5a9eea0fbacc933a5a8e34f5b3c2908c51)).
-*   In both cases, you need to define the structure of the issue in
-    *browser\_protocol.pdl* \[example cl pending, since we want to show a CL
-    that doesn't also add the deprecated mojo definitions\].
-    *   See
-        [here](https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/public/devtools_protocol/browser_protocol.pdl;l=666;drc=bc268cf81e62349e0f283107d70a5f742476ef4e)
-        how other issues are defined. You need to add an issue code and an issue
-        details definition. The issue details should hold all the information
-        that is required for reporting the issue in the front-end.
+        ([example](https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/renderer/bindings/core/v8/isolated_world_csp.cc;l=107;drc=d2b5c17eff35da6ebff8ba20c99688b87e1bc752)).
+*   Depending on where the issue is reported, creating the protocol structures
+    works differently.
     *   An example of how to create the data-structure can be found
     *   [here](https://source.chromium.org/chromium/chromium/src/+/3564e4bcc7d53aa60350794fc1348792cc33c80d:content/browser/devtools/devtools_instrumentation.cc;drc=d6edf4bb211798b0aa0b656dfb06614cfea043e3;l=181)
         for the browser side
@@ -81,8 +87,5 @@ To do so, follow the next steps:
 To create the UX strings the best approach is to draft an initial proposal and
 then share it with the broader team for polishing
 ([existing issue descriptions](https://source.chromium.org/chromium/chromium/src/+/main:third_party/devtools-frontend/src/front_end/issues/descriptions/)
-for reference). To do so, make a copy of
-[this template](https://docs.google.com/document/d/1OCHRh0A9ERX19DvyI-AuvMLMRuOkljJmj6fn_Vb3Zck)
-and fill the information for each type of message you want to show. Iterate to
-define the most appropriate message and once you get the approvals, implement
-them.
+for reference). You can wordsmith the issue description in a separate docs or
+directly in the CL with Gerrit.

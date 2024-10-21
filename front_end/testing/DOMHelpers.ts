@@ -163,6 +163,17 @@ export function dispatchKeyDownEvent<T extends Element>(element: T, options: Key
   }
 }
 
+/**
+ * Dispatches a keyup event. Errors if the event was not dispatched successfully.
+ */
+export function dispatchKeyUpEvent<T extends Element>(element: T, options: KeyboardEventInit = {}) {
+  const clickEvent = new KeyboardEvent('keyup', options);
+  const success = element.dispatchEvent(clickEvent);
+  if (!success) {
+    assert.fail('Failed to trigger keydown event successfully.');
+  }
+}
+
 export function dispatchInputEvent<T extends Element>(element: T, options: InputEventInit = {}) {
   const inputEvent = new InputEvent('input', options);
   element.dispatchEvent(inputEvent);

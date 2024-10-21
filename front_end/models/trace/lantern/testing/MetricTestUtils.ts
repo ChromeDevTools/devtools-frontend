@@ -32,6 +32,10 @@ async function getComputationDataFromFixture({trace, settings, url}: {
   const parsedTrace = await runTrace(trace);
   const requests = Trace.LanternComputationData.createNetworkRequests(trace, parsedTrace);
   const networkAnalysis = Lantern.Core.NetworkAnalyzer.analyze(requests);
+  if (!networkAnalysis) {
+    throw new Error('no networkAnalysis');
+  }
+
   const frameId = parsedTrace.Meta.mainFrameId;
   const navigationId = parsedTrace.Meta.mainFrameNavigations[0].args.data?.navigationId;
   if (!navigationId) {

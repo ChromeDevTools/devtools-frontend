@@ -412,7 +412,7 @@ class NetworkAnalyzer {
       function collectEstimates(estimator: (e: RequestInfo) => number[] | number | undefined, multiplier = 1): void {
         for (const request of originRequests) {
           const timing = request.timing;
-          if (!timing) {
+          if (!timing || !request.transferSize) {
             continue;
           }
 
@@ -489,9 +489,9 @@ class NetworkAnalyzer {
   /**
    * Computes the average throughput for the given requests in bits/second.
    * Excludes data URI, failed or otherwise incomplete, and cached requests.
-   * Returns Infinity if there were no analyzable network requests.
+   * Returns null if there were no analyzable network requests.
    */
-  static estimateThroughput(records: Lantern.NetworkRequest[]): number {
+  static estimateThroughput(records: Lantern.NetworkRequest[]): number|null {
     let totalBytes = 0;
 
     // We will measure throughput by summing the total bytes downloaded by the total time spent
@@ -518,7 +518,7 @@ class NetworkAnalyzer {
                                .sort((a, b) => a.time - b.time);
 
     if (!timeBoundaries.length) {
-      return Infinity;
+      return null;
     }
 
     let inflight = 0;
@@ -576,8 +576,12 @@ class NetworkAnalyzer {
     };
   }
 
-  static analyze(records: Lantern.NetworkRequest[]): Lantern.Simulation.Settings['networkAnalysis'] {
+  static analyze(records: Lantern.NetworkRequest[]): Lantern.Simulation.Settings['networkAnalysis']|null {
     const throughput = NetworkAnalyzer.estimateThroughput(records);
+    if (throughput === null) {
+      return null;
+    }
+
     return {
       throughput,
       ...NetworkAnalyzer.computeRTTAndServerResponseTime(records),

@@ -143,7 +143,7 @@ class Simulator<T = Lantern.AnyNetworkObject> {
       throw new Core.LanternError(`Invalid rtt ${this._rtt}`);
     }
     if (!Number.isFinite(this.throughput)) {
-      throw new Core.LanternError(`Invalid rtt ${this.throughput}`);
+      throw new Core.LanternError(`Invalid throughput ${this.throughput}`);
     }
   }
 

@@ -307,6 +307,10 @@ const UIStrings = {
    *@description Text of a hyperlink to documentation.
    */
   learnMore: 'Learn more',
+  /**
+   * @description Tooltip text for a button that takes the user back to the default view which shows performance metrics that are live.
+   */
+  backToLiveMetrics: 'Go back to the live metrics page',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelinePanel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -383,6 +387,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   private brickBreakerToolbarButtonAdded = false;
   private loadButton!: UI.Toolbar.ToolbarButton;
   private saveButton!: UI.Toolbar.ToolbarButton|UI.Toolbar.ToolbarMenuButton;
+  private homeButton?: UI.Toolbar.ToolbarButton;
   private statusPane!: StatusPane|null;
   private landingPage!: UI.Widget.Widget;
   private loader?: TimelineLoader;
@@ -1012,6 +1017,18 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
     // History
     this.panelToolbar.appendSeparator();
+
+    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_OBSERVATIONS)) {
+      this.homeButton = new UI.Toolbar.ToolbarButton(
+          i18nString(UIStrings.backToLiveMetrics), 'home', undefined, 'timeline.back-to-live-metrics');
+      this.homeButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, () => {
+        this.#changeView({mode: 'LANDING_PAGE'});
+        this.#historyManager.navigateToLandingPage();
+      });
+      this.panelToolbar.appendToolbarItem(this.homeButton);
+      this.panelToolbar.appendSeparator();
+    }
+
     this.panelToolbar.appendToolbarItem(this.#historyManager.button());
     this.panelToolbar.registerCSSFiles([historyToolbarButtonStyles]);
     this.panelToolbar.appendSeparator();
@@ -1595,6 +1612,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.dropTarget.setEnabled(this.state === State.IDLE);
     this.loadButton.setEnabled(this.state === State.IDLE);
     this.saveButton.setEnabled(this.state === State.IDLE && this.#hasActiveTrace());
+    this.homeButton?.setEnabled(this.state === State.IDLE && this.#hasActiveTrace());
     if (this.#viewMode.mode === 'VIEWING_TRACE') {
       this.#addSidebarIconToToolbar();
     }

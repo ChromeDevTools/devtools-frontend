@@ -322,6 +322,10 @@ export class TimelineHistoryManager {
     return this.recordings[newIndex];
   }
 
+  navigateToLandingPage(): void {
+    this.#setActiveTrace({type: 'LANDING_PAGE'});
+  }
+
   #setActiveTrace(item: RecordingData): void {
     if (item.type === 'TRACE_INDEX') {
       const data = TimelineHistoryManager.dataForTraceIndex(item.parsedTraceIndex);

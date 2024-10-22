@@ -644,6 +644,7 @@ export interface SoftContextMenuDescriptor {
   isExperimentalFeature?: boolean;
   enabled?: boolean;
   checked?: boolean;
+  isDevToolsPerformanceMenuItem?: boolean;
   subItems?: SoftContextMenuDescriptor[];
   element?: Element;
   shortcut?: string;

@@ -47,6 +47,7 @@ export class Item {
   protected readonly previewFeature: boolean;
   protected disabled: boolean|undefined;
   private readonly checked: boolean|undefined;
+  protected isDevToolsPerformanceMenuItem: boolean;
   protected contextMenu: ContextMenu|null;
   protected idInternal: number|undefined;
   customElement?: Element;
@@ -65,6 +66,7 @@ export class Item {
     this.accelerator = accelerator;
     this.disabled = disabled;
     this.checked = checked;
+    this.isDevToolsPerformanceMenuItem = false;
     this.contextMenu = contextMenu;
     this.idInternal = undefined;
     this.#tooltip = tooltip;
@@ -119,6 +121,9 @@ export class Item {
         }
         if (this.accelerator) {
           result.accelerator = this.accelerator;
+          if (this.isDevToolsPerformanceMenuItem) {
+            result.isDevToolsPerformanceMenuItem = true;
+          }
         }
         return result;
       }
@@ -155,6 +160,13 @@ export class Item {
   setAccelerator(key: Key, modifiers: Modifier[]): void {
     const modifierSum = modifiers.reduce((result, modifier) => result + modifier.value, 0);
     this.accelerator = {keyCode: key.code, modifiers: modifierSum};
+  }
+
+  // This influences whether accelerators will be shown for native menus on Mac.
+  // Use this ONLY for performance menus and ONLY where accelerators are critical
+  // for a smooth user journey and heavily context dependent.
+  setIsDevToolsPerformanceMenuItem(isDevToolsPerformanceMenuItem: boolean): void {
+    this.isDevToolsPerformanceMenuItem = isDevToolsPerformanceMenuItem;
   }
 
   setShortcut(shortcut: string): void {
@@ -331,6 +343,7 @@ export class SubMenu extends Item {
       type: 'subMenu',
       label: this.label,
       accelerator: this.accelerator,
+      isDevToolsPerformanceMenuItem: this.accelerator ? this.isDevToolsPerformanceMenuItem : undefined,
       isExperimentalFeature: this.previewFeature,
       enabled: !this.disabled,
       subItems: [],

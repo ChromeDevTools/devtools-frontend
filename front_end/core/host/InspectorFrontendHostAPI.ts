@@ -392,6 +392,7 @@ export interface ContextMenuDescriptor {
   isExperimentalFeature?: boolean;
   enabled?: boolean;
   checked?: boolean;
+  isDevToolsPerformanceMenuItem?: boolean;
   subItems?: ContextMenuDescriptor[];
   shortcut?: string;
   jslogContext?: string;

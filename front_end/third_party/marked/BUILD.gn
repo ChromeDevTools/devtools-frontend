@@ -14,6 +14,7 @@ devtools_pre_built("marked") {
     "marked-tsconfig.json",
     "package/lib/marked.esm.d.ts",
     "package/lib/marked.esm.js",
+    "package/lib/marked.esm.js.map",
   ]
 }
 

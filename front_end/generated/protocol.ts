@@ -3771,6 +3771,7 @@ export namespace DOM {
   export const enum PseudoType {
     FirstLine = 'first-line',
     FirstLetter = 'first-letter',
+    Check = 'check',
     Before = 'before',
     After = 'after',
     Marker = 'marker',
@@ -11591,6 +11592,7 @@ export namespace Page {
     EncryptedMedia = 'encrypted-media',
     ExecutionWhileOutOfViewport = 'execution-while-out-of-viewport',
     ExecutionWhileNotRendered = 'execution-while-not-rendered',
+    FencedFrameUnpartitionedData = 'fenced-frame-unpartitioned-data',
     FocusWithoutUserActivation = 'focus-without-user-activation',
     Fullscreen = 'fullscreen',
     Frobulate = 'frobulate',

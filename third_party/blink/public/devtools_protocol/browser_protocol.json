@@ -5655,6 +5655,7 @@
                     "enum": [
                         "first-line",
                         "first-letter",
+                        "check",
                         "before",
                         "after",
                         "marker",
@@ -17198,6 +17199,7 @@
                         "encrypted-media",
                         "execution-while-out-of-viewport",
                         "execution-while-not-rendered",
+                        "fenced-frame-unpartitioned-data",
                         "focus-without-user-activation",
                         "fullscreen",
                         "frobulate",

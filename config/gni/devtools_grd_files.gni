@@ -848,6 +848,7 @@ grd_files_debug_sources = [
   "front_end/core/sdk/PerformanceMetricsModel.js",
   "front_end/core/sdk/PreloadingModel.js",
   "front_end/core/sdk/ProfileTreeModel.js",
+  "front_end/core/sdk/RehydratingConnection.js",
   "front_end/core/sdk/RehydratingObject.js",
   "front_end/core/sdk/RemoteObject.js",
   "front_end/core/sdk/Resource.js",

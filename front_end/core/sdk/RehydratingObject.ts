@@ -45,6 +45,30 @@ export interface RehydratingTarget {
   isolate?: string;
 }
 
-export interface EnhancedTracesData {
-  data: Map<RehydratingTarget, [RehydratingExecutionContext[], RehydratingScript[]]>;
+export type HydratingDataPerTarget = Map<RehydratingTarget, [RehydratingExecutionContext[], RehydratingScript[]]>;
+
+export interface ProtocolMessage {
+  id: number;
+  method: string;
+  sessionId?: number;
+  params?: object;
+}
+
+export interface ProtocolEvent {
+  method: string;
+  params: object;
+}
+
+export interface ProtocolResponse {
+  id: number;
+}
+
+export type ServerMessage = (ProtocolEvent|ProtocolMessage|ProtocolResponse)&{
+  [others: string]: unknown,
+};
+
+export interface Session {
+  target: RehydratingTarget;
+  executionContexts: RehydratingExecutionContext[];
+  scripts: RehydratingScript[];
 }

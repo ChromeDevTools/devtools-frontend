@@ -133,7 +133,7 @@ describe('EnhancedTracesParser', () => {
   });
 
   it('captures targets from target rundown events', async function() {
-    const data = enhancedTracesParser.data().data;
+    const data = enhancedTracesParser.data();
     const targets: RehydratingTarget[] = [];
     for (const target of data.keys()) {
       targets.push(target);
@@ -147,7 +147,7 @@ describe('EnhancedTracesParser', () => {
   });
 
   it('captures execution context info', async function() {
-    const data = enhancedTracesParser.data().data;
+    const data = enhancedTracesParser.data();
     let executionContexts: RehydratingExecutionContext[] = [];
     for (const target of data.keys()) {
       const contextsAndScripts = data.get(target);
@@ -170,7 +170,7 @@ describe('EnhancedTracesParser', () => {
   });
 
   it('captures script info and source text', async function() {
-    const data = enhancedTracesParser.data().data;
+    const data = enhancedTracesParser.data();
     let scripts: RehydratingScript[] = [];
     for (const target of data.keys()) {
       const contextsAndScripts = data.get(target);
@@ -193,7 +193,7 @@ describe('EnhancedTracesParser', () => {
   });
 
   it('grouped contexts and scripts under the right target', async function() {
-    const data = enhancedTracesParser.data().data;
+    const data = enhancedTracesParser.data();
     for (const target of data.keys()) {
       const contextsAndScripts = data.get(target);
       if (contextsAndScripts) {

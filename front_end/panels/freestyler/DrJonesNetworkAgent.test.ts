@@ -226,7 +226,7 @@ describeWithMockConnection('DrJonesNetworkAgent', () => {
       assert.deepStrictEqual(responses, [
         {
           type: ResponseType.CONTEXT,
-          title: 'Inspecting network data',
+          title: 'Analyzing network data',
           details: [
             {
               title: 'Request',
@@ -242,7 +242,7 @@ describeWithMockConnection('DrJonesNetworkAgent', () => {
                   'Queued at (timestamp): 0 μs\nStarted at (timestamp): 8.3 min\nQueueing (duration): 8.3 min\nConnection start (stalled) (duration): 800.00 ms\nRequest sent (duration): 100.00 ms\nDuration (duration): 8.3 min',
             },
             {
-              title: 'Request Initiator Chain',
+              title: 'Request initiator chain',
               text: `- URL: https://www.initiator.com
 \t- URL: https://www.example.com
 \t\t- URL: https://www.example.com/1
@@ -273,7 +273,7 @@ foo2: bar2
 foo3: bar3
 
 Response status: 200 \n
-Request Timing:
+Request timing:
 Queued at (timestamp): 0 μs
 Started at (timestamp): 8.3 min
 Queueing (duration): 8.3 min
@@ -281,7 +281,7 @@ Connection start (stalled) (duration): 800.00 ms
 Request sent (duration): 100.00 ms
 Duration (duration): 8.3 min
 
-Request Initiator Chain:
+Request initiator chain:
 - URL: https://www.initiator.com
 \t- URL: https://www.example.com
 \t\t- URL: https://www.example.com/1

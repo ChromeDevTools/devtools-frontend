@@ -59,7 +59,7 @@ const UIStringsNotTranslate = {
   /**
    *@description Title for thinking step of DrJones Network agent.
    */
-  inspectingNetworkData: 'Inspecting network data',
+  analyzingNetworkData: 'Analyzing network data',
   /**
    *@description Heading text for the block that shows the network request details.
    */
@@ -91,7 +91,7 @@ const UIStringsNotTranslate = {
   /**
    *@description Title text for request initiator chain.
    */
-  requestInitiatorChain: 'Request Initiator Chain',
+  requestInitiatorChain: 'Request initiator chain',
 };
 
 const lockedString = i18n.i18n.lockedString;
@@ -127,7 +127,7 @@ export class DrJonesNetworkAgent extends AiAgent<SDK.NetworkRequest.NetworkReque
 
     yield {
       type: ResponseType.CONTEXT,
-      title: lockedString(UIStringsNotTranslate.inspectingNetworkData),
+      title: lockedString(UIStringsNotTranslate.analyzingNetworkData),
       details: createContextDetailsForDrJonesNetworkAgent(selectedNetworkRequest),
     };
   }
@@ -271,9 +271,9 @@ ${formatHeaders('Response headers:', request.responseHeaders)}
 
 Response status: ${request.statusCode} ${request.statusText}
 
-Request Timing:\n${formatNetworkRequestTiming(request)}
+Request timing:\n${formatNetworkRequestTiming(request)}
 
-Request Initiator Chain:\n${formatRequestInitiatorChain(request)}`;
+Request initiator chain:\n${formatRequestInitiatorChain(request)}`;
 }
 
 function createContextDetailsForDrJonesNetworkAgent(request: SDK.NetworkRequest.NetworkRequest):

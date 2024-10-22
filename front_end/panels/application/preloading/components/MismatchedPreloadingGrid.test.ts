@@ -54,8 +54,8 @@ function assertDiff(
   }
 }
 
-const FG_GREEN = 'color: var(--sys-color-green); text-decoration: line-through';
-const FG_RED = 'color: var(--sys-color-error);';
+const FG_GREEN = 'color:var(--sys-color-green);text-decoration:line-through';
+const FG_RED = 'color:var(--sys-color-error);';
 
 describeWithEnvironment('MismatchedPreloadingGrid', () => {
   // Disabled due to flakiness

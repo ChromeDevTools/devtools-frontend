@@ -296,7 +296,7 @@ describeWithEnvironment('PreloadingGrid', () => {
     assert.isNotNull(grid.shadowRoot);
     const cell = getCellByIndexes(grid.shadowRoot, {row: 1, column: 3});
     const div = cell.querySelector('div');
-    assert.strictEqual(div!.getAttribute('style'), 'color: var(--sys-color-error);');
+    assert.strictEqual(div!.getAttribute('style'), 'color:var(--sys-color-error);');
     const icon = div!.children[0];
     assert.include(icon.shadowRoot!.innerHTML, 'cross-circle-filled');
   });

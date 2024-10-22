@@ -4,26 +4,9 @@
  * found in the LICENSE file.
  */
 
-header {
-  padding: 0 0 6px;
-  border-bottom: 1px solid var(--sys-color-divider);
-  flex: none;
-  margin-bottom: 16px;
-}
-
-h1 {
-  font-size: 18px;
-  font-weight: normal;
-  padding-bottom: 3px;
-  margin: 0;
-}
-
-[role="list"] {
-  overflow: auto;
-
-  > * {
-    min-width: 300px;
-  }
+.shortcut-list {
+  padding-left: 0;
+  padding-right: 0;
 }
 
 .keybinds-key {
@@ -42,24 +25,19 @@ h1 {
 }
 
 .keybinds-list-item {
-  min-height: 30px;
+  margin: 0 var(--sys-size-7);
+  padding: var(--sys-size-4) 0;
   display: grid;
-  grid-template-rows: repeat(auto-fit, minmax(30px, auto));
+  grid-template-rows: 1fr ;
   grid-template-columns: 1fr 30px 2fr 30px 30px;
-  flex: auto 1 1;
+}
+
+.keybinds-list-item:not(.keybinds-category-header) {
+  border-top: 1px solid var(--sys-color-divider);
 }
 
 .keybinds-list-item:focus-visible {
   background-color: var(--sys-color-tonal-container);
-}
-
-.keybinds-list-item:not(.keybinds-category-header) {
-  padding: 4px 0 4px 20px;
-  border-radius: 7px;
-}
-
-.keybinds-list-item:not(.keybinds-category-header):last-child {
-  margin-bottom: 5px;
 }
 
 .keybinds-list-item.keybinds-editing {
@@ -67,7 +45,6 @@ h1 {
 }
 
 .keybinds-list-text.keybinds-action-name {
-  padding-top: 7px;
   grid-row: 1 / 3;
 }
 
@@ -75,19 +52,6 @@ h1 {
 .keybinds-info {
   grid-row: auto;
   grid-column: 3 / span 1;
-}
-
-.keybinds-shortcut.devtools-link {
-  align-items: center;
-  margin-left: 3px;
-}
-
-.keybinds-shortcut .devtools-link {
-  padding: 4px 0;
-}
-
-.keybinds-info .devtools-link {
-  padding-top: 6px;
 }
 
 .keybinds-error {
@@ -100,21 +64,7 @@ h1 {
 
 .keybinds-modified {
   grid-column: 2 / span 1;
-  margin-top: 2px;
-}
-
-.keybinds-list-item button {
-  border: none;
-  padding: 0;
-  background: transparent;
-}
-
-.keybinds-list-item button:hover devtools-icon {
-  color: var(--icon-default-hover);
-}
-
-.keybinds-list-item button:focus-visible {
-  background-color: var(--sys-color-tonal-container);
+  margin-top: var(--sys-size-3);
 }
 
 .keybinds-list-item button[disabled] {
@@ -128,7 +78,7 @@ h1 {
 .keybinds-edit-button {
   display: none;
   grid-row: 1 / span 1;
-  grid-column: 4 / span 1;
+  grid-column: 5 / span 1;
 }
 
 .keybinds-list-item:not(.keybinds-editing):hover .keybinds-edit-button,
@@ -137,7 +87,9 @@ h1 {
 }
 
 .keybinds-list-text {
-  padding: 3px 0;
+  min-height: var(--sys-size-12);
+  display: flex;
+  align-items: center;
   user-select: none;
   color: var(--sys-color-on-surface);
   text-align: start;
@@ -146,33 +98,26 @@ h1 {
 }
 
 .keybinds-category-header {
-  font-weight: bold;
-  line-height: 30px;
+  display: flex;
+  align-items: center;
+  font: var(--sys-typescale-body4-bold);
+  height: var(--sys-size-13);
+  padding: var(--sys-size-4) var(--sys-size-7);
   white-space: nowrap;
 }
 
-.keybinds-category-header:not(:nth-child(2)) {
-  border-top: 1px solid var(--sys-color-divider);
+.keybinds-header-wrapper + .keybinds-list-item-wrapper > .keybinds-list-item {
+  border: none;
 }
 
-.keybinds-list-item:not(.keybinds-category-header):hover,
-.keybinds-list-item:not(.keybinds-editing):focus-within {
+.keybinds-list-item-wrapper:has(:not(.keybinds-category-header):hover),
+.keybinds-list-item-wrapper:has(.keybinds-list-item:not(.keybinds-editing)):focus-within {
   background: var(--sys-color-state-hover-on-subtle);
-}
-
-.keybinds-set-select {
-  text-align: right;
-  margin-bottom: 16px;
 }
 
 .keybinds-set-select label p {
   display: inline;
   color: var(--sys-color-on-surface);
-}
-
-.keybinds-set-select select {
-  margin-left: 6px;
-  margin-top: 6px;
 }
 
 button.text-button {
@@ -182,6 +127,20 @@ button.text-button {
 
 .keybinds-list-text input {
   margin: 0 2px;
+}
+
+.keybinds-set-select {
+  margin: 0;
+  padding: var(--sys-size-5) var(--sys-size-7);
+
+  & .settings-select {
+    display: flex;
+    justify-content: space-between;
+
+    & label {
+      padding: 0;
+    }
+  }
 }
 
 .keybinds-list-text:has(.keybinds-delete-button) {
@@ -196,6 +155,7 @@ button.text-button {
 }
 
 .keybinds-footer {
+  padding: var(--sys-size-5) var(--sys-size-7);
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;

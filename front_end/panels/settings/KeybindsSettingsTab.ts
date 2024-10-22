@@ -7,11 +7,13 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
+import * as Cards from '../../ui/components/cards/cards.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import keybindsSettingsTabStyles from './keybindsSettingsTab.css.js';
+import settingsScreenStyles from './settingsScreen.css.js';
 
 const UIStrings = {
   /**
@@ -108,26 +110,31 @@ export class KeybindsSettingsTab extends UI.Widget.VBox implements UI.ListContro
 
     this.element.setAttribute('jslog', `${VisualLogging.pane('keybinds')}`);
 
-    const header = this.contentElement.createChild('header');
-    header.createChild('h1').textContent = i18nString(UIStrings.shortcuts);
+    const settingsContent =
+        this.contentElement.createChild('div', 'settings-card-container-wrapper').createChild('div');
+    settingsContent.classList.add('settings-card-container');
+
     const keybindsSetSetting = Common.Settings.Settings.instance().moduleSetting('active-keybind-set');
     const userShortcutsSetting = Common.Settings.Settings.instance().moduleSetting('user-shortcuts');
     keybindsSetSetting.addChangeListener(this.update, this);
     const keybindsSetSelect =
         UI.SettingsUI.createControlForSetting(keybindsSetSetting, i18nString(UIStrings.matchShortcutsFromPreset));
+
+    const card = new Cards.Card.Card();
+    settingsContent.appendChild(card);
+
     if (keybindsSetSelect) {
       keybindsSetSelect.classList.add('keybinds-set-select');
-      this.contentElement.appendChild(keybindsSetSelect);
     }
 
     this.items = new UI.ListModel.ListModel();
     this.list = new UI.ListControl.ListControl(this.items, this, UI.ListControl.ListMode.NonViewport);
+    this.list.element.classList.add('shortcut-list');
     this.items.replaceAll(this.createListItems());
     UI.ARIAUtils.markAsList(this.list.element);
 
-    this.contentElement.appendChild(this.list.element);
     UI.ARIAUtils.setLabel(this.list.element, i18nString(UIStrings.keyboardShortcutsList));
-    const footer = this.contentElement.createChild('div');
+    const footer = document.createElement('div');
     footer.classList.add('keybinds-footer');
     const docsLink = UI.XLink.XLink.create(
         'https://developer.chrome.com/docs/devtools/shortcuts/', i18nString(UIStrings.FullListOfDevtoolsKeyboard),
@@ -143,29 +150,39 @@ export class KeybindsSettingsTab extends UI.Widget.VBox implements UI.ListContro
     this.editingItem = null;
     this.editingRow = null;
 
+    card.data = {
+      heading: i18nString(UIStrings.shortcuts),
+      content: keybindsSetSelect ? [keybindsSetSelect, this.list.element, footer] : [this.list.element, footer],
+    };
+
     this.update();
   }
 
   createElementForItem(item: KeybindsItem): Element {
-    let itemElement = document.createElement('div');
+    const itemWrapper = document.createElement('div');
+    itemWrapper.classList.add('keybinds-list-item-wrapper');
 
+    let itemContent;
     if (typeof item === 'string') {
-      UI.ARIAUtils.setLevel(itemElement, 1);
-      itemElement.classList.add('keybinds-category-header');
-      itemElement.textContent = UI.ActionRegistration.getLocalizedActionCategory(item);
+      itemWrapper.classList.add('keybinds-header-wrapper');
+      UI.ARIAUtils.setLevel(itemWrapper, 1);
+      itemContent = itemWrapper.createChild('div');
+      itemContent.classList.add('keybinds-category-header');
+      itemContent.textContent = UI.ActionRegistration.getLocalizedActionCategory(item);
     } else {
       const listItem = new ShortcutListItem(item, this, item === this.editingItem);
-      itemElement = listItem.element;
-      UI.ARIAUtils.setLevel(itemElement, 2);
+      itemContent = listItem.element;
+      UI.ARIAUtils.setLevel(itemContent, 2);
       if (item === this.editingItem) {
         this.editingRow = listItem;
       }
+      itemContent.classList.add('keybinds-list-item');
+      itemWrapper.appendChild(itemContent);
     }
 
-    itemElement.classList.add('keybinds-list-item');
-    UI.ARIAUtils.markAsListitem(itemElement);
-    itemElement.tabIndex = item === this.list.selectedItem() && item !== this.editingItem ? 0 : -1;
-    return itemElement;
+    UI.ARIAUtils.markAsListitem(itemContent);
+    itemContent.tabIndex = item === this.list.selectedItem() && item !== this.editingItem ? 0 : -1;
+    return itemWrapper;
   }
 
   commitChanges(
@@ -303,7 +320,7 @@ export class KeybindsSettingsTab extends UI.Widget.VBox implements UI.ListContro
   }
   override wasShown(): void {
     super.wasShown();
-    this.registerCSSFiles([keybindsSettingsTabStyles]);
+    this.registerCSSFiles([keybindsSettingsTabStyles, settingsScreenStyles]);
   }
 }
 

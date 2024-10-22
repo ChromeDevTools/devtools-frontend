@@ -554,14 +554,16 @@ main {
 }
 
 .disabled-view {
-  border-radius: var(--sys-shape-corner-small);
-  padding: var(--sys-size-6) var(--sys-size-8);
-  box-shadow: var(--drop-shadow);
-  font: var(--sys-typescale-body4-regular);
-  margin: var(--sys-size-4) 0;
-  max-width: var(--sys-size-34);
   display: flex;
+  max-width: var(--sys-size-34);
+  border-radius: var(--sys-shape-corner-small);
+  box-shadow: var(--sys-elevation-level3);
+  background-color: var(--app-color-card-background);
+  font: var(--sys-typescale-body4-regular);
   text-wrap: pretty;
+  padding: var(--sys-size-6) var(--sys-size-8);
+  margin: var(--sys-size-4) 0;
+  line-height: var(--sys-size-9);
 
   .disabled-view-icon-container {
     border-radius: var(--sys-shape-corner-extra-small);

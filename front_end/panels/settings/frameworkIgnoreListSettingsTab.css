@@ -15,7 +15,7 @@
 }
 
 .add-button {
-  margin: 10px 2px;
+  padding: var(--sys-size-5) var(--sys-size-6);
   align-self: flex-start;
   flex: none;
 }
@@ -24,9 +24,14 @@
   flex: 0 1 auto;
 }
 
+.custom-exclusion-group {
+  padding-left: 0;
+  padding-right: 0;
+}
+
 .ignore-list-item {
-  padding: 3px 5px;
-  height: 30px;
+  padding: var(--sys-size-3) var(--sys-size-5);
+  height: var(--sys-size-13);
   display: flex;
   align-items: center;
   position: relative;

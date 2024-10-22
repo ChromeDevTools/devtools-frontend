@@ -160,6 +160,7 @@ export class FrameworkIgnoreListSettingsTab extends UI.Widget.VBox implements
     settingsContent.appendChild(generalExclusionGroupCard);
 
     const customExclusionGroup = this.createSettingGroup();
+    customExclusionGroup.classList.add('custom-exclusion-group');
     const customExclusionGroupCard = new Cards.Card.Card();
     customExclusionGroupCard.classList.add('ignore-list-options');
     customExclusionGroupCard.data = {

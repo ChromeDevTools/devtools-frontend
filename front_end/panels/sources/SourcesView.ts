@@ -367,9 +367,9 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typ
     let sourceView;
     const contentType = uiSourceCode.contentType();
 
-    if (contentType === Common.ResourceType.resourceTypes.Image) {
+    if (contentType === Common.ResourceType.resourceTypes.Image || uiSourceCode.mimeType().startsWith('image/')) {
       sourceView = new SourceFrame.ImageView.ImageView(uiSourceCode.mimeType(), uiSourceCode);
-    } else if (contentType === Common.ResourceType.resourceTypes.Font) {
+    } else if (contentType === Common.ResourceType.resourceTypes.Font || uiSourceCode.mimeType().includes('font')) {
       sourceView = new SourceFrame.FontView.FontView(uiSourceCode.mimeType(), uiSourceCode);
     } else if (uiSourceCode.name() === HEADER_OVERRIDES_FILENAME) {
       sourceView = new Components.HeadersView.HeadersView(uiSourceCode);

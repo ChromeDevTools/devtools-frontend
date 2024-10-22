@@ -93,6 +93,7 @@ describeWithEnvironment('SourcesView', () => {
         {} as Persistence.FileSystemWorkspaceBinding.FileSystem,
         'file:///path/to/overrides/www.example.com/.headers' as Platform.DevToolsPath.UrlString,
         Common.ResourceType.resourceTypes.Document);
+    sinon.stub(uiSourceCode, 'mimeType').returns('text/plain');
     sourcesView.viewForFile(uiSourceCode);
     assert.isTrue(sourcesView.getSourceView(uiSourceCode) instanceof SourcesComponents.HeadersView.HeadersView);
   });

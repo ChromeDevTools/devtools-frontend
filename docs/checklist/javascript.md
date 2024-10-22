@@ -76,9 +76,6 @@ as expression position for the exception. For syntax errors, we should report th
 Note that `Error.stack` is only collected for `Error` objects, at the time the `Error` object is constructed. This may be different
 than the stack trace passed to DevTools via [`JSMessageObject`](https://source.chromium.org/chromium/chromium/src/+/main:v8/src/objects/js-objects.h;l=1264-1345;drc=82dff63dbf9db05e9274e11d9128af7b9f51ceaa).
 
-Independently from V8, DevTools offers a way to show async stack traces by stitching together stack traces collected at the
-location where the callback is passed, and the actual location of the exception inside the callback.
-
 ### Affected
 
 NLFs that can cause an exception to be thrown, or can call into another function that throws.
@@ -95,12 +92,34 @@ Repeat with the "Disable async stack traces" checkbox in the Preferences checked
 Test cases for stack traces is mandatory, if there is any way the NLF can interact with throwing exceptions. For examples look
 for `mjsunit` tests with `stack-trace` in their names.
 
-For async stack traces, please look at Blink LayoutTests such as [this one](https://chromium.googlesource.com/chromium/src/+/3daa588ce613845e298cbd667fa6f5787f95d574/third\_party/WebKit/LayoutTests/inspector/sources/debugger-async/async-await/async-callstack-async-await.html).
-
 ### Reading material
 
 [Design doc for debugging support for tail-calls](https://docs.google.com/a/google.com/document/d/1Bk4QahtaT-XzrMlHTkm0SVol3LoKXTrC9E7INxJBHrE/edit?usp=drive\_web)
 
+## Async stack traces
+
+DevTools offers a way to show async stack traces by stitching together stack traces collected at the
+location where the callback is passed, and the actual location of the exception inside the callback.
+
+The canonical example of this is throwing inside a `setTimeout` callback. The async stack trace will
+consist of the stack trace of the error plus a stack trace captured at the `setTimeout` call-site.
+
+The instrumentation is based on four [`ayncTask*` methods](https://source.chromium.org/chromium/chromium/src/+/main:v8/include/v8-inspector.h;l=370-375;drc=aafd25ffbc72935b52fee731f957e5827c73a096). Namely `asyncTaskScheduled`, `asyncTaskStarted`, `asyncTaskFinished` and `asyncTaskCancelled`.
+V8 has a [higher-level interface](https://source.chromium.org/chromium/chromium/src/+/main:v8/src/debug/debug-interface.h;l=351-352;drc=e6fc2038d73ef96ff47deda3146d94d25530e13b) that translates Promise events (such as `await`, `.then`, etc) to these for `asyncTask*` methods.
+
+### Affected
+
+NLFs touching promises or callback scheduling.
+
+### How to test
+
+Throw or pause inside a new language feature and check either the call stack sidebar panel in "Sources"
+or use a `console.trace` and check the async stack trace in the console.
+
+### Test cases
+
+Test cases for async stack traces are mandatory, if there is any way the NLF interacts with callback scheduling or
+Promises. For examples look in V8 `inspector` tests with `async-stack` in their name (e.g. [here](https://source.chromium.org/chromium/chromium/src/+/main:v8/test/inspector/debugger/async-stack-await.js)).
 
 ## Catch prediction
 
@@ -319,11 +338,30 @@ Take a heap Snapshot in DevTools' Profiler panel and inspect the result. Objects
 
 Take a look at `test/cctest/test-heap-profiler.cc`.
 
+## Restart frame
+
+DevTools allows restarting of some stack frames, not just the top-level one. The feature is implemented by throwing a termination exception and unwinding the stack
+until after the function we want to restart, and then re-invoking the function. This only works for certain functions, e.g. async functions can't be restarted
+as that would require rolling back the underlying generator.
+
+### Affected
+
+NLFs that change function execution or require a function to carry state (e.g. async functions
+need a generator that can't be reset).
+
+### How to test
+
+While paused, right click a stack frame with the NLF in the call stack view and select "Restart frame". If the NLF prevents the frame from being restarted, then
+the "Restart frame" menu item must be disabled, otherwise the frame must be properly restarted.
+
+### Test cases
+
+Take a look in `test/inspector/debugger/restart-frame/*`.
 
 ## LiveEdit
 
 LiveEdit is a feature that allows for script content to be replaced during its execution. While it has many limitations, the most often use case
-of editing the function we are paused in and restarting said function usually works.
+of editing the function we are paused in and restarting said function afterwards.
 
 ### Affected
 
@@ -331,8 +369,7 @@ NLFs that affect code execution
 
 ### How to test
 
-Open DevTools and break inside the part of script affected by the NLF. In the Source panel's Call Stack view, right-click the top-most frame and select
-Restart Frame.
+Open DevTools and break inside the part of script affected by the NLF. Change the code inside the function with the NLF and save the script.
 
 ### Test cases
 

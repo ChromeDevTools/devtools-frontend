@@ -29,7 +29,6 @@
  */
 
 import * as Common from '../../core/common/common.js';
-import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
 import * as Bindings from '../../models/bindings/bindings.js';
@@ -214,11 +213,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       return;
     }
 
-    // Differentiate between Mac and other platforms to use SoftContextMenu or native menus
-    // while we are gradually landing CLs to enable accelerators for native menus on Mac.
-    // We will use native menus disregarding of the platform once all CLs are in.
-    const useSoftMenu = Host.Platform.isMac();
-    const contextMenu = new UI.ContextMenu.ContextMenu(event, {useSoftMenu});
+    const contextMenu = new UI.ContextMenu.ContextMenu(event);
 
     if (UI.ActionRegistry.ActionRegistry.instance().hasAction('drjones.performance-panel-context')) {
       const aiNode = this.getAIEventNodeTreeFromEntryIndex(entryIndex);
@@ -234,8 +229,8 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       disabled: !possibleActions?.[PerfUI.FlameChart.FilterAction.MERGE_FUNCTION],
       jslogContext: 'hide-function',
     });
-    hideEntryOption.setShortcut('H');
     hideEntryOption.setAccelerator(UI.KeyboardShortcut.Keys.H, [UI.KeyboardShortcut.Modifiers.None]);
+    hideEntryOption.setIsDevToolsPerformanceMenuItem(true);
 
     const hideChildrenOption = contextMenu.defaultSection().appendItem(i18nString(UIStrings.hideChildren), () => {
       this.modifyTree(PerfUI.FlameChart.FilterAction.COLLAPSE_FUNCTION, entryIndex);
@@ -243,8 +238,8 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       disabled: !possibleActions?.[PerfUI.FlameChart.FilterAction.COLLAPSE_FUNCTION],
       jslogContext: 'hide-children',
     });
-    hideChildrenOption.setShortcut('C');
     hideChildrenOption.setAccelerator(UI.KeyboardShortcut.Keys.C, [UI.KeyboardShortcut.Modifiers.None]);
+    hideChildrenOption.setIsDevToolsPerformanceMenuItem(true);
 
     const hideRepeatingChildrenOption =
         contextMenu.defaultSection().appendItem(i18nString(UIStrings.hideRepeatingChildren), () => {
@@ -253,8 +248,8 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
           disabled: !possibleActions?.[PerfUI.FlameChart.FilterAction.COLLAPSE_REPEATING_DESCENDANTS],
           jslogContext: 'hide-repeating-children',
         });
-    hideRepeatingChildrenOption.setShortcut('R');
     hideRepeatingChildrenOption.setAccelerator(UI.KeyboardShortcut.Keys.R, [UI.KeyboardShortcut.Modifiers.None]);
+    hideRepeatingChildrenOption.setIsDevToolsPerformanceMenuItem(true);
 
     const resetChildrenOption = contextMenu.defaultSection().appendItem(i18nString(UIStrings.resetChildren), () => {
       this.modifyTree(PerfUI.FlameChart.FilterAction.RESET_CHILDREN, entryIndex);
@@ -262,8 +257,8 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       disabled: !possibleActions?.[PerfUI.FlameChart.FilterAction.RESET_CHILDREN],
       jslogContext: 'reset-children',
     });
-    resetChildrenOption.setShortcut('U');
     resetChildrenOption.setAccelerator(UI.KeyboardShortcut.Keys.U, [UI.KeyboardShortcut.Modifiers.None]);
+    resetChildrenOption.setIsDevToolsPerformanceMenuItem(true);
 
     contextMenu.defaultSection().appendItem(i18nString(UIStrings.resetTrace), () => {
       this.modifyTree(PerfUI.FlameChart.FilterAction.UNDO_ALL_ACTIONS, entryIndex);

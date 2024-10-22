@@ -690,6 +690,7 @@ export function runCSSAnimationOnce(element: Element, className: string): void {
   function animationEndCallback(): void {
     element.classList.remove(className);
     element.removeEventListener('webkitAnimationEnd', animationEndCallback, false);
+    element.removeEventListener('animationcancel', animationEndCallback, false);
   }
 
   if (element.classList.contains(className)) {
@@ -697,6 +698,7 @@ export function runCSSAnimationOnce(element: Element, className: string): void {
   }
 
   element.addEventListener('webkitAnimationEnd', animationEndCallback, false);
+  element.addEventListener('animationcancel', animationEndCallback, false);
   element.classList.add(className);
 }
 

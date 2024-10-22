@@ -9,6 +9,7 @@
 }
 
 .ignore-list-option devtools-button {
+  cursor: pointer;
   position: relative;
   top: var(--sys-size-2);
   margin-left: var(--sys-size-2);

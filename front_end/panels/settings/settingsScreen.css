@@ -213,15 +213,15 @@ label {
 .settings-experiment {
   display: grid;
   grid-template-columns: auto min-content auto 1fr;
+
+  & .devtools-link {
+    display: flex !important; /* stylelint-disable-line declaration-no-important */
+    align-items: center;
+  }
 }
 
-.settings-experiment .devtools-link {
-  display: flex !important; /* stylelint-disable-line declaration-no-important */
-  align-items: center;
-}
-
-.settings-experiment .devtools-link:has(.link-icon) {
-  outline-offset: 0;
+devtools-button.link-icon {
+  cursor: pointer;
 }
 
 .experiment-label {

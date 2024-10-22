@@ -196,6 +196,7 @@ devtools_issue_description_files = [
   "sharedDictionaryWriteErrorShuttingDown.md",
   "sharedDictionaryWriteErrorTooLongIdField.md",
   "sharedDictionaryWriteErrorUnsupportedType.md",
+  "placeholderDescriptionForInvisibleIssues.md",
 ]
 
 devtools_pre_built("descriptions") {

@@ -77,8 +77,7 @@ export class EndpointsGrid extends HTMLElement {
       <div class="reporting-container" jslog=${VisualLogging.section('endpoints')}>
         <div class="reporting-header">${i18n.i18n.lockedString('Endpoints')}</div>
         ${this.#endpoints.size > 0 ? html`
-          <devtools-data-grid-controller .data=${
-              endpointsGridData as DataGrid.DataGridController.DataGridControllerData}>
+          <devtools-data-grid-controller .data=${endpointsGridData}>
           </devtools-data-grid-controller>
         ` : html`
           <div class="reporting-placeholder">

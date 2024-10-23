@@ -8,7 +8,6 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import type * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import * as Bindings from '../../../models/bindings/bindings.js';
-import type * as ExpandableList from '../../../ui/components/expandable_list/expandable_list.js';
 import * as Components from '../../../ui/legacy/components/utils/utils.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
@@ -135,7 +134,6 @@ export class StackTraceLinkButton extends HTMLElement {
 }
 
 export class StackTrace extends HTMLElement {
-
   readonly #shadow = this.attachShadow({mode: 'open'});
   readonly #linkifier = new Components.Linkifier.Linkifier();
   #stackTraceRows: (Components.JSPresentationUtils.StackTraceRegularRow|
@@ -185,8 +183,9 @@ export class StackTrace extends HTMLElement {
         if ('functionName' in item) {
           expandableRows.push(html`
           <devtools-stack-trace-row data-stack-trace-row .data=${{
-            stackTraceRowItem: item,
-          } as StackTraceRowData}></devtools-stack-trace-row>`);
+            stackTraceRowItem:
+              item,
+          }}></devtools-stack-trace-row>`);
         }
         if ('asyncDescription' in item) {
           expandableRows.push(html`
@@ -202,7 +201,7 @@ export class StackTrace extends HTMLElement {
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
       expandableRows.push(html`
-      <devtools-stack-trace-link-button data-stack-trace-row .data=${{onShowAllClick: this.#onToggleShowAllClick.bind(this), hiddenCallFramesCount, expandedView: this.#showHidden} as StackTraceLinkButtonData}></devtools-stack-trace-link-button>
+      <devtools-stack-trace-link-button data-stack-trace-row .data=${{onShowAllClick: this.#onToggleShowAllClick.bind(this), hiddenCallFramesCount, expandedView: this.#showHidden}}></devtools-stack-trace-link-button>
       `);
       // clang-format on
     }
@@ -225,10 +224,8 @@ export class StackTrace extends HTMLElement {
     const expandableRows = this.createRowTemplates();
     LitHtml.render(
       html`
-        <devtools-expandable-list .data=${{
-          rows: expandableRows, title: i18nString(UIStrings.creationStackTrace),
-        } as ExpandableList.ExpandableList.ExpandableListData}>
-        jslog=${VisualLogging.tree()}>
+        <devtools-expandable-list .data=${{rows: expandableRows, title: i18nString(UIStrings.creationStackTrace)}}
+                                  jslog=${VisualLogging.tree()}>
         </devtools-expandable-list>
       `,
       this.#shadow, {host: this});

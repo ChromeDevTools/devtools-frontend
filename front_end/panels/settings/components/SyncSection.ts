@@ -10,7 +10,6 @@ import type * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as Platform from '../../../core/platform/platform.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
-import type * as Settings from '../../../ui/components/settings/settings.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
 import syncSectionStyles from './syncSection.css.js';
@@ -81,7 +80,7 @@ export class SyncSection extends HTMLElement {
         <legend>${Common.Settings.getLocalizedSettingsCategory(Common.Settings.SettingCategory.SYNC)}</legend>
         ${renderAccountInfoOrWarning(this.#syncInfo)}
         <setting-checkbox .data=${
-            {setting: this.#syncSetting} as Settings.SettingCheckbox.SettingCheckboxData}>
+            {setting: this.#syncSetting}}>
         </setting-checkbox>
       </fieldset>
     `, this.#shadow, {host: this});

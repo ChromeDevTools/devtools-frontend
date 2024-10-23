@@ -9,7 +9,6 @@ import * as Platform from '../../../core/platform/platform.js';
 import * as ComponentHelpers from '../../components/helpers/helpers.js';
 import * as LitHtml from '../../lit-html/lit-html.js';
 import * as VisualLogging from '../../visual_logging/visual_logging.js';
-import type * as IconButton from '../icon_button/icon_button.js';
 
 import panelFeedbackStyles from './panelFeedback.css.js';
 
@@ -78,7 +77,7 @@ export class PanelFeedback extends HTMLElement {
             width: '20px',
             height: '20px',
             color: 'var(--icon-primary)',
-          } as IconButton.Icon.IconData}></devtools-icon> ${i18nString(UIStrings.previewFeature)}
+          }}></devtools-icon> ${i18nString(UIStrings.previewFeature)}
         </h2>
         <p>${i18nString(UIStrings.previewText)} <x-link href=${this.#props.feedbackUrl} jslog=${VisualLogging.link('feedback').track({click: true})}>${i18nString(UIStrings.previewTextFeedbackLink)}</x-link></p>
         <div class="video">

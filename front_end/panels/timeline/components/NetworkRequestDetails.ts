@@ -9,7 +9,6 @@ import * as Platform from '../../../core/platform/platform.js';
 import type * as SDK from '../../../core/sdk/sdk.js';
 import * as Helpers from '../../../models/trace/helpers/helpers.js';
 import * as Trace from '../../../models/trace/trace.js';
-import type * as RequestLinkIcon from '../../../ui/components/request_link_icon/request_link_icon.js';
 import * as LegacyComponents from '../../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
@@ -188,8 +187,7 @@ export class NetworkRequestDetails extends HTMLElement {
       // clang-format off
       const urlElement = html`
         ${linkifiedURL}
-        <devtools-request-link-icon
-          .data=${{request: networkRequest} as RequestLinkIcon.RequestLinkIcon.RequestLinkIconData} >
+        <devtools-request-link-icon .data=${{request: networkRequest}}>
         </devtools-request-link-icon>
       `;
       // clang-format on

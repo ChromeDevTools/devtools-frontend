@@ -12,9 +12,8 @@ import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import linearMemoryValueInterpreterStyles from './linearMemoryValueInterpreter.css.js';
-import type {ValueDisplayData} from './ValueInterpreterDisplay.js';
 import {Endianness, type ValueType, type ValueTypeMode} from './ValueInterpreterDisplayUtils.js';
-import type {TypeToggleEvent, ValueInterpreterSettingsData} from './ValueInterpreterSettings.js';
+import type {TypeToggleEvent} from './ValueInterpreterSettings.js';
 
 const UIStrings = {
   /**
@@ -101,7 +100,7 @@ export class LinearMemoryValueInterpreter extends HTMLElement {
           ${this.#showSettings ?
             html`
               <devtools-linear-memory-inspector-interpreter-settings
-                .data=${{ valueTypes: this.#valueTypes } as ValueInterpreterSettingsData}
+                .data=${{ valueTypes: this.#valueTypes }}
                 @typetoggle=${this.#onTypeToggle}>
               </devtools-linear-memory-inspector-interpreter-settings>` :
             html`
@@ -112,7 +111,7 @@ export class LinearMemoryValueInterpreter extends HTMLElement {
                   endianness: this.#endianness,
                   valueTypeModes: this.#valueTypeModeConfig,
                   memoryLength: this.#memoryLength,
-                } as ValueDisplayData}>
+                }}>
               </devtools-linear-memory-inspector-interpreter-display>`}
         </div>
       </div>

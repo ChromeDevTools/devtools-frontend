@@ -1,16 +1,15 @@
 // Copyright 2023 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-import './Toolbar.js';
 import '../../../ui/components/icon_button/icon_button.js';
 import '../../../ui/components/menus/menus.js';
+import './Toolbar.js';
 
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as Dialogs from '../../../ui/components/dialogs/dialogs.js';
-import type * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import type * as Menus from '../../../ui/components/menus/menus.js';
 import * as SuggestionInput from '../../../ui/components/suggestion_input/suggestion_input.js';
 import * as UI from '../../../ui/legacy/legacy.js';
@@ -892,10 +891,11 @@ export class JSONEditor extends LitElement {
       color: 'var(--icon-warning)',
       width: '14px',
       height: '14px',
-    } as IconButton.Icon.IconData}
+      }
+      }
     class=${classMap({
-      'warning-icon': true,
-    })}
+        'warning-icon': true,
+      })}
   >
   </devtools-icon>`;
   }

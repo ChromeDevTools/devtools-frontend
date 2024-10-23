@@ -2,15 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import '../../../ui/legacy/legacy.js';
-import '../../../ui/components/panel_introduction_steps/panel_introduction_steps.js';
 import '../../../ui/components/panel_feedback/panel_feedback.js';
+import '../../../ui/components/panel_introduction_steps/panel_introduction_steps.js';
+import '../../../ui/legacy/legacy.js';
 
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as Platform from '../../../core/platform/platform.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
-import type * as PanelFeedback from '../../../ui/components/panel_feedback/panel_feedback.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as Actions from '../recorder-actions/recorder-actions.js';
@@ -108,14 +107,14 @@ export class StartView extends HTMLElement {
           feedbackUrl: FEEDBACK_URL,
           quickStartUrl: DOC_URL,
           quickStartLinkText: i18nString(UIStrings.quickStart),
-        } as PanelFeedback.PanelFeedback.PanelFeedbackData
+        }
       }>
           </devtools-panel-feedback>
           <div class="align-right">
             <devtools-feedback-button .data=${
         {
           feedbackUrl: FEEDBACK_URL,
-        } as PanelFeedback.FeedbackButton.FeedbackButtonData
+        }
       }>
             </devtools-feedback-button>
           </div>

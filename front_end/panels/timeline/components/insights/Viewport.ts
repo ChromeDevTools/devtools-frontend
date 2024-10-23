@@ -10,8 +10,6 @@ import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
 import {BaseInsight, shouldRenderForCategory} from './Helpers.js';
-import type {NodeLinkData} from './NodeLink.js';
-import type * as SidebarInsight from './SidebarInsight.js';
 import {Category} from './types.js';
 
 const {html} = LitHtml;
@@ -53,17 +51,17 @@ export class Viewport extends BaseInsight {
               expanded: this.isActive(),
               internalName: this.internalName,
               estimatedSavingsTime: insight.metricSavings?.INP,
-            } as SidebarInsight.InsightDetails}
+            }}
             @insighttoggleclick=${this.onSidebarClick}>
               ${backendNodeId !== undefined ? html`<devtools-performance-node-link
                 .data=${{
                   backendNodeId,
                   options: {tooltip: insight.viewportEvent?.args.data.content},
-                } as NodeLinkData}>
+                }}>
               </devtools-performance-node-link>` : LitHtml.nothing}
             </devtools-performance-sidebar-insight>
         </div>`;
-    // clang-format on
+              // clang-format on
   }
 
   override render(): void {

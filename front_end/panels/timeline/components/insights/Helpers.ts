@@ -8,7 +8,6 @@ import * as Platform from '../../../../core/platform/platform.js';
 import type * as Trace from '../../../../models/trace/trace.js';
 import * as Marked from '../../../../third_party/marked/marked.js';
 import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js';
-import type * as MarkdownView from '../../../../ui/components/markdown_view/markdown_view.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../../ui/visual_logging/visual_logging.js';
 import type * as Overlays from '../../overlays/overlays.js';
@@ -214,7 +213,6 @@ export abstract class BaseInsight extends HTMLElement {
  */
 export function md(markdown: string): LitHtml.TemplateResult {
   const tokens = Marked.Marked.lexer(markdown);
-  return html`<devtools-markdown-view
-    .data=${{tokens} as MarkdownView.MarkdownView.MarkdownViewData}>
-  </devtools-markdown-view>`;
+  const data = {tokens};
+  return html`<devtools-markdown-view .data=${data}></devtools-markdown-view>`;
 }

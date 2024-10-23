@@ -136,8 +136,7 @@ export class TrustTokensView extends LegacyWrapper.LegacyWrapper.WrappableCompon
     };
 
     return html`
-      <devtools-data-grid-controller .data=${
-        gridData as DataGrid.DataGridController.DataGridControllerData}></devtools-data-grid-controller>
+      <devtools-data-grid-controller .data=${gridData}></devtools-data-grid-controller>
     `;
   }
 

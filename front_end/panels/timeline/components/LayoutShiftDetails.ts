@@ -122,10 +122,7 @@ export class LayoutShiftDetails extends HTMLElement {
       ${elementsShifted?.map(el => {
         if (el.node_id !== undefined) {
           return html`
-            <devtools-performance-node-link
-              .data=${{
-                backendNodeId: el.node_id,
-              } as Insights.NodeLink.NodeLinkData}>
+            <devtools-performance-node-link .data=${{backendNodeId: el.node_id}}>
             </devtools-performance-node-link>`;
         }
           return LitHtml.nothing;

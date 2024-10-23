@@ -161,14 +161,14 @@ export class PreloadingDisabledInfobar extends LegacyWrapper.LegacyWrapper.Wrapp
             horizontalAlignment: Dialogs.Dialog.DialogHorizontalAlignment.AUTO,
             closeOnESC: true,
             closeOnScroll: false,
-          } as Dialogs.IconDialog.IconDialogData}
+          }}
           jslog=${VisualLogging.dialog('preloading-disabled').track({resize: true, keydown: 'Escape'})}
         >
           ${this.#dialogContents()}
         </devtools-icon-dialog>
       </div>
     `;
-    // clang-format on
+            // clang-format on
   }
 
   #dialogContents(): LitHtml.LitTemplate {

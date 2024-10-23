@@ -7,16 +7,11 @@ import '../../../ui/legacy/legacy.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
 import type * as SDK from '../../../core/sdk/sdk.js';
-import type * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as NetworkForward from '../forward/forward.js';
 
-import {
-  EditingAllowedStatus,
-  type HeaderDescriptor,
-  type HeaderSectionRowData,
-} from './HeaderSectionRow.js';
+import {EditingAllowedStatus, type HeaderDescriptor} from './HeaderSectionRow.js';
 import requestHeaderSectionStyles from './RequestHeaderSection.css.js';
 
 const {render, html} = LitHtml;
@@ -88,7 +83,7 @@ export class RequestHeaderSection extends HTMLElement {
       ${this.#maybeRenderProvisionalHeadersWarning()}
       ${this.#headers.map(header => html`
         <devtools-header-section-row
-          .data=${{header} as HeaderSectionRowData}
+          .data=${{header}}
           jslog=${VisualLogging.item('request-header')}
         ></devtools-header-section-row>
       `)}
@@ -120,14 +115,14 @@ export class RequestHeaderSection extends HTMLElement {
                 color: 'var(--icon-warning)',
                 width: '16px',
                 height: '16px',
-              } as IconButton.Icon.IconData}>
+              }}>
             </devtools-icon>
             ${cautionText} <x-link href="https://developer.chrome.com/docs/devtools/network/reference/#provisional-headers" class="link">${i18nString(UIStrings.learnMore)}</x-link>
           </div>
         </div>
       </div>
     `;
-    // clang-format on
+                // clang-format on
   }
 }
 

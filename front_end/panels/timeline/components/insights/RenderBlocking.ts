@@ -12,8 +12,6 @@ import type * as Overlays from '../../overlays/overlays.js';
 
 import {eventRef} from './EventRef.js';
 import {BaseInsight, shouldRenderForCategory} from './Helpers.js';
-import type * as SidebarInsight from './SidebarInsight.js';
-import type {TableData} from './Table.js';
 import {Category} from './types.js';
 
 const {html} = LitHtml;
@@ -80,7 +78,7 @@ export class RenderBlockingRequests extends BaseInsight {
             internalName: this.internalName,
             expanded: this.isActive(),
             estimatedSavingsTime: estimatedSavings,
-          } as SidebarInsight.InsightDetails}
+          }}
           @insighttoggleclick=${this.onSidebarClick} >
             <div slot="insight-content" class="insight-section">
               ${html`<devtools-performance-table
@@ -94,12 +92,12 @@ export class RenderBlockingRequests extends BaseInsight {
                     ],
                     overlays: [this.#createOverlayForRequest(request)],
                   })),
-                } as TableData}>
+                }}>
               </devtools-performance-table>`}
             </div>
           </devtools-performance-sidebar-insight>
       </div>`;
-    // clang-format on
+            // clang-format on
   }
 
   override getRelatedEvents(): Trace.Types.Events.Event[] {

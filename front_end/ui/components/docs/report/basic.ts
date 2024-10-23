@@ -6,7 +6,6 @@ import '../../report_view/report_view.js';
 
 import * as LitHtml from '../../../lit-html/lit-html.js';
 import * as ComponentHelpers from '../../helpers/helpers.js';
-import type * as ReportView from '../../report_view/report_view.js';
 
 const {html} = LitHtml;
 
@@ -31,8 +30,9 @@ LitHtml.render(
         </style>
 
         <devtools-report .data=${{
-      reportTitle: 'Optional Title',
-    } as ReportView.ReportView.ReportData}>
+reportTitle:
+  'Optional Title',
+    }}>
           <devtools-report-section-header>Section 1</devtools-report-section-header>
           <devtools-report-key>Basic plain text field</devtools-report-key>
           <devtools-report-value>And this is the value</devtools-report-value>

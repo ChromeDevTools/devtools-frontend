@@ -5,7 +5,6 @@
 import '../../../ui/components/icon_button/icon_button.js';
 
 import * as i18n from '../../../core/i18n/i18n.js';
-import type * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
@@ -113,7 +112,7 @@ export class LinearMemoryHighlightChipList extends HTMLElement {
               iconName: 'cross',
               color: 'var(--icon-default-hover)',
               width: '16px',
-              } as IconButton.Icon.IconData}>
+              }}>
             </devtools-icon>
           </button>
         </div>

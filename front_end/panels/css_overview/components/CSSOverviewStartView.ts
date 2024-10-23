@@ -2,13 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import '../../../ui/components/panel_introduction_steps/panel_introduction_steps.js';
 import '../../../ui/components/panel_feedback/panel_feedback.js';
+import '../../../ui/components/panel_introduction_steps/panel_introduction_steps.js';
 
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as Platform from '../../../core/platform/platform.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
-import type * as PanelFeedback from '../../../ui/components/panel_feedback/panel_feedback.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
 import cssOverviewStartViewStyles from './cssOverviewStartView.css.js';
@@ -99,11 +98,11 @@ export class CSSOverviewStartView extends HTMLElement {
             feedbackUrl: FEEDBACK_LINK,
             quickStartUrl: DOC_LINK,
             quickStartLinkText: i18nString(UIStrings.quickStartWithCSSOverview),
-          } as PanelFeedback.PanelFeedback.PanelFeedbackData}>
+          }}>
         </devtools-panel-feedback>
         <devtools-feedback-button .data=${{
           feedbackUrl: FEEDBACK_LINK,
-          } as PanelFeedback.FeedbackButton.FeedbackButtonData}>
+          }}>
         </devtools-feedback-button>
       </div>
     `, this.#shadow, {

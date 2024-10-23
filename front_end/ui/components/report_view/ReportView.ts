@@ -21,7 +21,7 @@ const {html} = LitHtml;
  *
  * Example:
  * ```
- *   <devtools-report .data=${{reportTitle: 'Optional Title'} as Components.ReportView.ReportData}>
+ *   <devtools-report .data=${{reportTitle: 'Optional Title'}}>
  *     <devtools-report-section-header>Some Header</devtools-report-section-header>
  *     <devtools-report-key>Key (rendered in the left column)</devtools-report-key>
  *     <devtools-report-value>Value (rendered in the right column)</devtools-report-value>

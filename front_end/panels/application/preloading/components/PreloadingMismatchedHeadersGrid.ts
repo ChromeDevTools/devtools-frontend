@@ -95,9 +95,7 @@ export class PreloadingMismatchedHeadersGrid extends LegacyWrapper.LegacyWrapper
     // clang-format off
       render(html`
         <div class="preloading-container">
-          <devtools-data-grid-controller .data=${
-              reportsGridData as DataGrid.DataGridController.DataGridControllerData}>
-          </devtools-data-grid-controller>
+          <devtools-data-grid-controller .data=${reportsGridData}></devtools-data-grid-controller>
         </div>
       `, this.#shadow, {host: this});
     // clang-format on

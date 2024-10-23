@@ -427,8 +427,7 @@ export class TimelineSelectorStatsView extends UI.Widget.VBox {
               return html`
               ${locations.map((location, itemIndex) => {
                 const divider = itemIndex !== locations.length - 1 ? ', ' : '';
-                return html`<devtools-linkifier .data=${
-                    location as Linkifier.Linkifier.LinkifierData}></devtools-linkifier>${divider}`;
+                return html`<devtools-linkifier .data=${location}></devtools-linkifier>${divider}`;
               })}
               `;
             },

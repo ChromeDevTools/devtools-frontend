@@ -9,7 +9,7 @@ import type * as TextUtils from '../../../models/text_utils/text_utils.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as UI from '../../legacy/legacy.js';
 
-import type {DataGridContextMenusConfiguration, DataGridData} from './DataGrid.js';
+import type {DataGridContextMenusConfiguration} from './DataGrid.js';
 import dataGridControllerStyles from './dataGridController.css.js';
 import type {ColumnHeaderClickEvent, ContextMenuColumnSortClickEvent} from './DataGridEvents.js';
 import {
@@ -280,7 +280,7 @@ export class DataGridController extends HTMLElement {
           showScrollbar: this.#showScrollbar,
           striped: this.#striped,
           autoScrollToBottom: this.#autoScrollToBottom,
-        } as DataGridData}
+        }}
         @columnheaderclick=${this.#onColumnHeaderClick}
         @contextmenucolumnsortclick=${this.#onContextMenuColumnSortClick}
         @contextmenuheaderresetclick=${this.#onContextMenuHeaderResetClick}

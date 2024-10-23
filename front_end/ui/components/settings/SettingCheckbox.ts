@@ -65,7 +65,7 @@ export class SettingCheckbox extends HTMLElement {
 
     if (this.#setting.deprecation) {
       return html`<devtools-setting-deprecation-warning .data=${
-          this.#setting.deprecation as Common.Settings.Deprecation}></devtools-setting-deprecation-warning>`;
+          this.#setting.deprecation}></devtools-setting-deprecation-warning>`;
     }
 
     const learnMore = this.#setting.learnMore();
@@ -84,7 +84,7 @@ export class SettingCheckbox extends HTMLElement {
       return html`<devtools-button
                     class=learn-more
                     @click=${handleClick}
-                    .data=${data as Buttons.Button.ButtonData}></devtools-button>`;
+                    .data=${data}></devtools-button>`;
     }
 
     return undefined;
@@ -96,7 +96,7 @@ export class SettingCheckbox extends HTMLElement {
     }
 
     const icon = this.icon();
-    const title = this.#setting.learnMore() && this.#setting.learnMore()?.tooltip();
+    const title = `${this.#setting.learnMore() ? this.#setting.learnMore()?.tooltip() : ''}`;
     const reason = this.#setting.disabledReason() ?
         html`
       <devtools-button class="disabled-reason" .iconName=${'info'} .variant=${Buttons.Button.Variant.ICON} .size=${
@@ -107,7 +107,7 @@ export class SettingCheckbox extends HTMLElement {
     LitHtml.render(
         html`
       <p>
-        <label title=${title ?? LitHtml.nothing}>
+        <label title=${title}>
           <input
             type="checkbox"
             .checked=${this.#setting.disabledReason() ? false : this.#setting.get()}

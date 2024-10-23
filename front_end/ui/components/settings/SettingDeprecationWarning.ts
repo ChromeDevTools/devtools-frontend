@@ -6,7 +6,6 @@ import '../icon_button/icon_button.js';
 
 import * as Common from '../../../core/common/common.js';
 import * as LitHtml from '../../lit-html/lit-html.js';
-import type * as IconButton from '../icon_button/icon_button.js';
 
 import settingDeprecationWarning from './settingDeprecationWarning.css.js';
 
@@ -36,8 +35,8 @@ export class SettingDeprecationWarning extends HTMLElement {
     }
 
     LitHtml.render(
-        html`<devtools-icon class=${LitHtml.Directives.classMap(classes)} .data=${
-            iconData as IconButton.Icon.IconData} title=${warning} @click=${onclick}></devtools-icon>`,
+        html`<devtools-icon class=${LitHtml.Directives.classMap(classes)} .data=${iconData} title=${warning} @click=${
+            onclick}></devtools-icon>`,
         this.#shadow, {host: this});
   }
 }

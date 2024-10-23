@@ -5,7 +5,6 @@
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import * as DataGrid from '../../../ui/components/data_grid/data_grid.js';
-import type * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
 import sharedStorageAccessGridStyles from './sharedStorageAccessGrid.css.js';
@@ -76,12 +75,9 @@ export class SharedStorageAccessGrid extends HTMLElement {
     LitHtml.render(html`
       <div>
         <span class="heading">${i18nString(UIStrings.sharedStorage)}</span>
-        <devtools-icon class="info-icon" title=${
-            i18nString(UIStrings.allSharedStorageEvents)}
-          .data=${
-            {iconName: 'info',
-              color: 'var(--icon-default)', width: '16px'} as
-            IconButton.Icon.IconWithName}>
+        <devtools-icon class="info-icon"
+                       title=${i18nString(UIStrings.allSharedStorageEvents)}
+                       .data=${{iconName: 'info', color: 'var(--icon-default)', width: '16px'}}>
         </devtools-icon>
         ${this.#renderGridOrNoDataMessage()}
       </div>
@@ -146,8 +142,7 @@ export class SharedStorageAccessGrid extends HTMLElement {
     };
 
     return html`
-      <devtools-data-grid-controller .data=${
-        gridData as DataGrid.DataGridController.DataGridControllerData}></devtools-data-grid-controller>
+      <devtools-data-grid-controller .data=${gridData}></devtools-data-grid-controller>
     `;
   }
 

@@ -43,12 +43,12 @@ override render(): void {
 
 Within your `renderMyInsight` method (please choose a better name!), you should use the `SidebarInsight` component and use its `slot`s to place your content in. You also have access to the `this.isActive()` method to determine if this insight is expanded or not.
 
-```
+```ts
 <${SidebarInsight.SidebarInsight.litTagName} .data=${{
   title: this.userVisibleTitle,
   description: this.description,
   expanded: this.isActive(),
-} as SidebarInsight.InsightDetails}
+}}
 @insighttoggleclick=${this.onSidebarClick}
 >
   <div slot="insight-content" class="insight-section">

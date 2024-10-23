@@ -11,7 +11,6 @@ import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as AutofillManager from '../../models/autofill_manager/autofill_manager.js';
-import type * as Adorners from '../../ui/components/adorners/adorners.js';
 import type * as DataGrid from '../../ui/components/data_grid/data_grid.js';
 import * as ComponentHelpers from '../../ui/components/helpers/helpers.js';
 import * as Input from '../../ui/components/input/input.js';
@@ -367,8 +366,7 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
           @rowmouseenter=${this.#onGridRowMouseEnter}
           @rowmouseleave=${this.#onGridRowMouseLeave}
           class="filled-fields-grid"
-          .data=${gridData as DataGrid.DataGridController.DataGridControllerData}
-        >
+          .data=${gridData}>
         </devtools-data-grid-controller>
       </div>
     `;
@@ -449,7 +447,7 @@ export class AutofillView extends LegacyWrapper.LegacyWrapper.WrappableComponent
     return html`
       ${autofillType}
       ${adornerContent.textContent ? html`
-          <devtools-adorner title=${adornerTitle} .data=${{name: fillingStrategy, content: adornerContent} as Adorners.Adorner.AdornerData}></devtools-adorner>
+          <devtools-adorner title=${adornerTitle} .data=${{name: fillingStrategy, content: adornerContent}}></devtools-adorner>
         `: LitHtml.nothing}
     `;
     // clang-format on

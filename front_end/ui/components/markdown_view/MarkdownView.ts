@@ -10,8 +10,6 @@ import type * as Marked from '../../../third_party/marked/marked.js';
 import * as UI from '../../legacy/legacy.js';
 import * as LitHtml from '../../lit-html/lit-html.js';
 
-import type {MarkdownImageData} from './MarkdownImage.js';
-import type {MarkdownLinkData} from './MarkdownLink.js';
 import markdownViewStyles from './markdownView.css.js';
 
 const html = LitHtml.html;
@@ -148,11 +146,17 @@ export class MarkdownLitRenderer {
       case 'space':
         return html``;
       case 'link':
-        return html`<devtools-markdown-link .data=${
-            {key: token.href, title: token.text} as MarkdownLinkData}></devtools-markdown-link>`;
+        return html`<devtools-markdown-link .data=${{
+        key:
+          token.href, title: token.text,
+        }
+        }></devtools-markdown-link>`;
       case 'image':
-        return html`<devtools-markdown-image .data=${
-            {key: token.href, title: token.text} as MarkdownImageData}></devtools-markdown-image>`;
+        return html`<devtools-markdown-image .data=${{
+        key:
+          token.href, title: token.text,
+        }
+        }></devtools-markdown-image>`;
       case 'heading':
         return this.renderHeading(token);
       case 'strong':

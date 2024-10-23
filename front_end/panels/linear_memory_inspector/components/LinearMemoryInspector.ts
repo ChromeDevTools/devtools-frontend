@@ -15,22 +15,17 @@ import {
   Navigation,
   type AddressInputChangedEvent,
   type HistoryNavigationEvent,
-  type LinearMemoryNavigatorData,
   type PageNavigationEvent,
 } from './LinearMemoryNavigator.js';
 
-import type {
-  EndiannessChangedEvent, LinearMemoryValueInterpreterData, ValueTypeToggledEvent} from
-  './LinearMemoryValueInterpreter.js';
 import './LinearMemoryValueInterpreter.js';
+import type {EndiannessChangedEvent, ValueTypeToggledEvent} from './LinearMemoryValueInterpreter.js';
 
-import type {
-  DeleteMemoryHighlightEvent, JumpToHighlightedMemoryEvent, LinearMemoryHighlightChipListData} from
-  './LinearMemoryHighlightChipList.js';
 import './LinearMemoryHighlightChipList.js';
+import type {DeleteMemoryHighlightEvent, JumpToHighlightedMemoryEvent} from './LinearMemoryHighlightChipList.js';
 import {formatAddress, parseAddress} from './LinearMemoryInspectorUtils.js';
-import type {ByteSelectedEvent, LinearMemoryViewerData, ResizeEvent} from './LinearMemoryViewer.js';
 import './LinearMemoryViewer.js';
+import type {ByteSelectedEvent, ResizeEvent} from './LinearMemoryViewer.js';
 import type {HighlightInfo} from './LinearMemoryViewerUtils.js';
 import type {JumpToPointerAddressEvent, ValueTypeModeChangedEvent} from './ValueInterpreterDisplay.js';
 import {
@@ -204,13 +199,13 @@ export class LinearMemoryInspector extends HTMLElement {
     render(html`
       <div class="view">
         <devtools-linear-memory-inspector-navigator
-          .data=${{address: navigatorAddressToShow, valid: navigatorAddressIsValid, mode: this.#currentNavigatorMode, error: errorMsg, canGoBackInHistory, canGoForwardInHistory} as LinearMemoryNavigatorData}
+          .data=${{address: navigatorAddressToShow, valid: navigatorAddressIsValid, mode: this.#currentNavigatorMode, error: errorMsg, canGoBackInHistory, canGoForwardInHistory}}
           @refreshrequested=${this.#onRefreshRequest}
           @addressinputchanged=${this.#onAddressChange}
           @pagenavigation=${this.#navigatePage}
           @historynavigation=${this.#navigateHistory}></devtools-linear-memory-inspector-navigator>
           <devtools-linear-memory-highlight-chip-list
-          .data=${{highlightInfos: highlightedMemoryAreas, focusedMemoryHighlight } as LinearMemoryHighlightChipListData}
+          .data=${{highlightInfos: highlightedMemoryAreas, focusedMemoryHighlight }}
           @jumptohighlightedmemory=${this.#onJumpToAddress}>
           </devtools-linear-memory-highlight-chip-list>
         <devtools-linear-memory-inspector-viewer
@@ -220,7 +215,7 @@ export class LinearMemoryInspector extends HTMLElement {
             address: this.#address, memoryOffset: start,
             focus: this.#currentNavigatorMode === Mode.SUBMITTED,
             highlightInfo: this.#highlightInfo,
-            focusedMemoryHighlight } as LinearMemoryViewerData}
+            focusedMemoryHighlight }}
           @byteselected=${this.#onByteSelected}
           @resize=${this.#resize}>
         </devtools-linear-memory-inspector-viewer>
@@ -233,7 +228,7 @@ export class LinearMemoryInspector extends HTMLElement {
             valueTypes: this.#valueTypes,
             valueTypeModes: this.#valueTypeModes,
             endianness: this.#endianness,
-            memoryLength: this.#outerMemoryLength } as LinearMemoryValueInterpreterData}
+            memoryLength: this.#outerMemoryLength }}
           @valuetypetoggled=${this.#onValueTypeToggled}
           @valuetypemodechanged=${this.#onValueTypeModeChanged}
           @endiannesschanged=${this.#onEndiannessChanged}

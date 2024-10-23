@@ -199,7 +199,7 @@ export class RequestTrustTokensView extends LegacyWrapper.LegacyWrapper.Wrappabl
       <devtools-report-value>
         <span>
           <devtools-icon class="status-icon"
-            .data=${getIconForStatusCode(trustTokenResult.status) as IconButton.Icon.IconData}>
+            .data=${getIconForStatusCode(trustTokenResult.status)}>
           </devtools-icon>
           <strong>${getSimplifiedStatusTextForStatusCode(trustTokenResult.status)}</strong>
           ${getDetailedTextForStatusCode(trustTokenResult.status)}

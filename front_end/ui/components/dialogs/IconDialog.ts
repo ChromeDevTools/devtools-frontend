@@ -111,14 +111,14 @@ export class IconDialog extends HTMLElement {
                 color: 'var(--icon-default-hover)',
                 width: '16px',
                 height: '16px',
-              } as IconButton.Icon.IconWithName}
+              }}
               jslog=${VisualLogging.close().track({click: true})}
               title=${i18nString(UIStrings.close)}
             ></devtools-icon>
           </div>
         </div>
       `;
-      // clang-format on
+                // clang-format on
     }
 
     // clang-format off
@@ -128,7 +128,7 @@ export class IconDialog extends HTMLElement {
         on-render=${ComponentHelpers.Directives.nodeRenderedCallback(node => {
           this.#icon = node as IconButton.Icon.Icon;
         })}
-        .data=${this.#data.iconData as IconButton.Icon.IconWithName}
+        .data=${this.#data.iconData}
       ></devtools-icon>
       <devtools-dialog
         @clickoutsidedialog=${this.#closeDialog}

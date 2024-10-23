@@ -11,8 +11,6 @@ import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
 import {BaseInsight, shouldRenderForCategory} from './Helpers.js';
-import type * as SidebarInsight from './SidebarInsight.js';
-import type {TableData} from './Table.js';
 import {Category} from './types.js';
 
 const {html} = LitHtml;
@@ -122,7 +120,7 @@ export class InteractionToNextPaint extends BaseInsight {
             description: this.description,
             internalName: this.internalName,
             expanded: this.isActive(),
-            } as SidebarInsight.InsightDetails}
+            }}
             @insighttoggleclick=${this.onSidebarClick}>
                 <div slot="insight-content" class="insight-section">
                   ${html`<devtools-performance-table
@@ -143,12 +141,12 @@ export class InteractionToNextPaint extends BaseInsight {
                           overlays: this.#createOverlaysForPhase(event, 2),
                         },
                       ],
-                    } as TableData}>
+                    }}>
                   </devtools-performance-table>`}
                 </div>
             </devtools-performance-sidebar-insight>
         </div>`;
-    // clang-format on
+            // clang-format on
   }
 
   override getRelatedEvents(): Trace.Types.Events.Event[] {

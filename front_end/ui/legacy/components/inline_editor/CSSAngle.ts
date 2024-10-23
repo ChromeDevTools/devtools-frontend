@@ -2,14 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import './CSSAngleSwatch.js';
 import './CSSAngleEditor.js';
+import './CSSAngleSwatch.js';
 
 import * as LitHtml from '../../../lit-html/lit-html.js';
 
 import cssAngleStyles from './cssAngle.css.js';
-import type {CSSAngleEditorData} from './CSSAngleEditor.js';
-import type {CSSAngleSwatchData} from './CSSAngleSwatch.js';
 import {
   type Angle,
   AngleUnit,
@@ -235,7 +233,7 @@ export class CSSAngle extends HTMLElement {
             @dblclick=${this.consume}
             .data=${{
               angle: this.angle,
-            } as CSSAngleSwatchData}>
+            }}>
           </devtools-css-angle-swatch><slot></slot></div>
         ${this.popoverOpen ? this.renderPopover() : null}
       </div>
@@ -263,10 +261,10 @@ export class CSSAngle extends HTMLElement {
           this.updateAngle(angle);
         },
         background: contextualBackground,
-      } as CSSAngleEditorData}
+      }}
     ></devtools-css-angle-editor>
     `;
-    // clang-format on
+        // clang-format on
   }
 }
 

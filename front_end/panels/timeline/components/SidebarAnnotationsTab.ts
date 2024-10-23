@@ -8,8 +8,6 @@ import * as Platform from '../../../core/platform/platform.js';
 import * as Trace from '../../../models/trace/trace.js';
 import * as TraceBounds from '../../../services/trace_bounds/trace_bounds.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
-import type * as IconButton from '../../../ui/components/icon_button/icon_button.js';
-import type * as Settings from '../../../ui/components/settings/settings.js';
 import * as ThemeSupport from '../../../ui/legacy/theme_support/theme_support.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
@@ -273,12 +271,12 @@ export class SidebarAnnotationsTab extends HTMLElement {
               color: 'var(--icon-default)',
               width: '18px',
               height: '18px',
-            } as IconButton.Icon.IconData}>
+            }}>
             </devtools-icon>
             ${this.#renderEntryToIdentifier(annotation)}
           </div>
       `;
-        // clang-format on
+              // clang-format on
       }
       default:
         Platform.assertNever(annotation, 'Unsupported annotation type');
@@ -365,7 +363,7 @@ export class SidebarAnnotationsTab extends HTMLElement {
                           color: 'var(--icon-default)',
                           width: '20px',
                           height: '20px',
-                        } as IconButton.Icon.IconData}
+                        }}
                       ></devtools-icon>
                     </button>
                   </div>`;
@@ -373,7 +371,7 @@ export class SidebarAnnotationsTab extends HTMLElement {
               <setting-checkbox class="visibility-setting" .data=${{
                 setting: this.#annotationsHiddenSetting,
                 textOverride: 'Hide annotations',
-              } as Settings.SettingCheckbox.SettingCheckboxData}>
+              }}>
               </setting-checkbox>`
       }
       </span>`,

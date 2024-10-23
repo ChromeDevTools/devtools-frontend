@@ -9,7 +9,6 @@ import type * as Overlays from '../../overlays/overlays.js';
 
 import {EventReferenceClick} from './EventRef.js';
 import {BaseInsight, shouldRenderForCategory} from './Helpers.js';
-import type * as SidebarInsight from './SidebarInsight.js';
 import {Category} from './types.js';
 
 const {html} = LitHtml;
@@ -147,7 +146,7 @@ export class CLSCulprits extends BaseInsight {
               description: this.description,
               internalName: this.internalName,
               expanded: this.isActive(),
-            } as SidebarInsight.InsightDetails}
+            }}
             @insighttoggleclick=${this.onSidebarClick}>
                 <div slot="insight-content" class="insight-section">
                   <span class="worst-cluster">${i18nString(UIStrings.worstCluster)}: <button type="button" class="timeline-link" @click=${() => this.#clickEvent(worstCluster)}>${i18nString(UIStrings.layoutShiftCluster, {PH1: clusterTs})}</button></span>
@@ -160,7 +159,7 @@ export class CLSCulprits extends BaseInsight {
                 </div>
             </devtools-performance-sidebar-insight>
         </div>`;
-    // clang-format on
+              // clang-format on
   }
 
   override getRelatedEvents(): Trace.Types.Events.Event[] {

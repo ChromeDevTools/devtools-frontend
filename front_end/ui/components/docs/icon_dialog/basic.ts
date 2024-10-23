@@ -30,7 +30,7 @@ Hello...
     horizontalAlignment: Dialogs.Dialog.DialogHorizontalAlignment.AUTO,
     closeOnESC: true,
     closeOnScroll: false,
-  } as Dialogs.IconDialog.IconDialogData}
+  }}
 >
   <div>
     <h2>Hello world!</h2>
@@ -40,7 +40,7 @@ Hello...
   </div>
 </devtools-icon-dialog>
 `;
-// clang-format on
+    // clang-format on
 
-const container = document.getElementById('container') as HTMLElement;
-LitHtml.render(iconDialog, container);
+    const container = document.getElementById('container') as HTMLElement;
+    LitHtml.render(iconDialog, container);

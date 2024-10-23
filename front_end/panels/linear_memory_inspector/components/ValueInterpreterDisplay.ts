@@ -5,7 +5,6 @@
 import '../../../ui/components/icon_button/icon_button.js';
 
 import * as i18n from '../../../core/i18n/i18n.js';
-import type * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 // eslint-disable-next-line rulesdir/es_modules_import
 import inspectorCommonStyles from '../../../ui/legacy/inspectorCommon.css.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
@@ -166,7 +165,7 @@ export class ValueInterpreterDisplay extends HTMLElement {
                 jslog=${VisualLogging.action('linear-memory-inspector.jump-to-address').track({click: true})}
                 @click=${this.#onJumpToAddressClicked.bind(this, Number(address))}>
                 <devtools-icon .data=${
-                  {iconName: 'open-externally', color: iconColor, width: '16px'} as IconButton.Icon.IconWithName}>
+                  {iconName: 'open-externally', color: iconColor, width: '16px'}}>
                 </devtools-icon>
               </button>`}
         </div>

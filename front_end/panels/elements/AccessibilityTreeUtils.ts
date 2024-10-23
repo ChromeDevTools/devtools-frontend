@@ -9,8 +9,6 @@ import type * as Protocol from '../../generated/protocol.js';
 import type * as TreeOutline from '../../ui/components/tree_outline/tree_outline.js';
 import * as LitHtml from '../../ui/lit-html/lit-html.js';
 
-import type * as ElementsComponents from './components/components.js';
-
 const {html} = LitHtml;
 
 export type AXTreeNodeData = SDK.AccessibilityModel.AccessibilityNode;
@@ -114,8 +112,6 @@ export async function sdkNodeToAXTreeNodes(sdkNode: SDK.AccessibilityModel.Acces
   }];
 }
 
-type Data = ElementsComponents.AccessibilityTreeNode.AccessibilityTreeNodeData;
-
 export function accessibilityNodeRenderer(node: AXTreeNode): LitHtml.TemplateResult {
   const sdkNode = node.treeNodeData;
   const name = sdkNode.name()?.value || '';
@@ -123,8 +119,10 @@ export function accessibilityNodeRenderer(node: AXTreeNode): LitHtml.TemplateRes
   const properties = sdkNode.properties() || [];
   const ignored = sdkNode.ignored();
   const id = getNodeId(sdkNode);
-  return html`<devtools-accessibility-tree-node .data=${
-      {name, role, ignored, properties, id} as Data}></devtools-accessibility-tree-node>`;
+  return html`<devtools-accessibility-tree-node .data=${{
+    name, role, ignored, properties, id,
+  }
+  }></devtools-accessibility-tree-node>`;
 }
 
 export function getNodeId(node: SDK.AccessibilityModel.AccessibilityNode): string {

@@ -12,11 +12,10 @@ import type * as Protocol from '../../../generated/protocol.js';
 import * as ClientVariations from '../../../third_party/chromium/client-variations/client-variations.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
-import type * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
-import type {EditableSpan, EditableSpanData} from './EditableSpan.js';
+import type {EditableSpan} from './EditableSpan.js';
 import headerSectionRowStyles from './HeaderSectionRow.css.js';
 
 const {render, html} = LitHtml;
@@ -192,7 +191,7 @@ export class HeaderSectionRow extends HTMLElement {
               width: '16px',
               height: '16px',
               color: 'var(--icon-error)',
-            } as IconButton.Icon.IconData}>
+            }}>
             </devtools-icon>` : LitHtml.nothing
           }
           ${isHeaderNameEditable && !this.#header.isDeleted ?
@@ -201,7 +200,7 @@ export class HeaderSectionRow extends HTMLElement {
               @keydown=${this.#onKeyDown}
               @input=${this.#onHeaderNameEdit}
               @paste=${this.#onHeaderNamePaste}
-              .data=${{value: this.#header.name} as EditableSpanData}
+              .data=${{value: this.#header.name}}
             ></devtools-editable-span>` :
             this.#header.name}:
         </div>
@@ -217,7 +216,7 @@ export class HeaderSectionRow extends HTMLElement {
             width: '16px',
             height: '16px',
             color: 'var(--icon-default)',
-          } as IconButton.Icon.IconData}>
+          }}>
           </devtools-icon>` : LitHtml.nothing
         }
       </div>
@@ -266,7 +265,7 @@ export class HeaderSectionRow extends HTMLElement {
         @input=${this.#onHeaderValueEdit}
         @paste=${this.#onHeaderValueEdit}
         @keydown=${this.#onKeyDown}
-        .data=${{value: this.#header.value || ''} as EditableSpanData}
+        .data=${{value: this.#header.value || ''}}
       ></devtools-editable-span>
       ${this.#maybeRenderHeaderValueSuffix(this.#header)}
       <devtools-button
@@ -315,10 +314,10 @@ export class HeaderSectionRow extends HTMLElement {
             color: 'var(--icon-warning)',
             width: '16px',
             height: '16px',
-          } as IconButton.Icon.IconData}>
+          }}>
         </devtools-icon>
       `;
-      // clang-format on
+            // clang-format on
     }
     return LitHtml.nothing;
   }
@@ -359,12 +358,12 @@ export class HeaderSectionRow extends HTMLElement {
             color: 'var(--icon-warning)',
             width: '16px',
             height: '16px',
-          } as IconButton.Icon.IconData}>
+          }}>
           </devtools-icon
           >${i18nString(UIStrings.learnMoreInTheIssuesTab)}
         </div>
       `;
-      // clang-format on
+            // clang-format on
     }
     if (blockedDetails?.link) {
       // Disabled until https://crbug.com/1079231 is fixed.
@@ -376,12 +375,12 @@ export class HeaderSectionRow extends HTMLElement {
             color: 'var(--icon-link)',
             width: '20px',
             height: '20px',
-          } as IconButton.Icon.IconData}>
+          }}>
           </devtools-icon
           >${i18nString(UIStrings.learnMore)}
         </x-link>
       `;
-      // clang-format on
+            // clang-format on
     }
     return LitHtml.nothing;
   }

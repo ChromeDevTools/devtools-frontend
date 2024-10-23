@@ -11,7 +11,6 @@ import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as ChromeLink from '../../../ui/components/chrome_link/chrome_link.js';
 import * as DataGrid from '../../../ui/components/data_grid/data_grid.js';
 import * as LegacyWrapper from '../../../ui/components/legacy_wrapper/legacy_wrapper.js';
-import type * as ReportView from '../../../ui/components/report_view/report_view.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
@@ -91,10 +90,8 @@ export class BounceTrackingMitigationsView extends LegacyWrapper.LegacyWrapper.W
   async #render(): Promise<void> {
     // clang-format off
     LitHtml.render(html`
-      <devtools-report .data=${
-          {reportTitle: i18nString(UIStrings.bounceTrackingMitigationsTitle)} as ReportView.ReportView.ReportData
-      }
-      jslog=${VisualLogging.pane('bounce-tracking-mitigations')}>
+      <devtools-report .data=${{reportTitle: i18nString(UIStrings.bounceTrackingMitigationsTitle)}}
+                       jslog=${VisualLogging.pane('bounce-tracking-mitigations')}>
         ${await this.#renderMainFrameInformation()}
       </devtools-report>
     `, this.#shadow, {host: this});
@@ -200,8 +197,7 @@ export class BounceTrackingMitigationsView extends LegacyWrapper.LegacyWrapper.W
     // clang-format off
     return html`
       <devtools-report-section>
-        <devtools-data-grid-controller .data=${
-            gridData as DataGrid.DataGridController.DataGridControllerData}>
+        <devtools-data-grid-controller .data=${gridData}>
         </devtools-data-grid-controller>
       </devtools-report-section>
     `;

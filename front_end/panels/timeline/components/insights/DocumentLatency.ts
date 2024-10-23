@@ -10,7 +10,6 @@ import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
 import {BaseInsight, shouldRenderForCategory} from './Helpers.js';
-import type * as SidebarInsight from './SidebarInsight.js';
 import {Category} from './types.js';
 
 const {html} = LitHtml;
@@ -171,7 +170,7 @@ export class DocumentLatency extends BaseInsight {
             internalName: this.internalName,
             estimatedSavingsTime: insight.metricSavings?.FCP,
             estimatedSavingsBytes: insight.data.uncompressedResponseBytes,
-        } as SidebarInsight.InsightDetails}
+        }}
         @insighttoggleclick=${this.onSidebarClick}
       >
         <div slot="insight-content" class="insight-section">
@@ -192,7 +191,7 @@ export class DocumentLatency extends BaseInsight {
         </div>
       </devtools-performance-sidebar-insight>
     </div>`;
-    // clang-format on
+            // clang-format on
   }
 
   override getRelatedEvents(): Trace.Types.Events.Event[] {

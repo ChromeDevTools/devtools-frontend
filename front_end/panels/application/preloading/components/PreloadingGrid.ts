@@ -12,7 +12,6 @@ import {assertNotNullOrUndefined} from '../../../../core/platform/platform.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../../generated/protocol.js';
 import type * as DataGrid from '../../../../ui/components/data_grid/data_grid.js';
-import type * as IconButton from '../../../../ui/components/icon_button/icon_button.js';
 import * as LegacyWrapper from '../../../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import type * as UI from '../../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
@@ -114,9 +113,7 @@ export class PreloadingGrid extends LegacyWrapper.LegacyWrapper.WrappableCompone
     // clang-format off
     render(html`
       <div class="preloading-container">
-        <devtools-data-grid-controller .data=${
-            reportsGridData as DataGrid.DataGridController.DataGridControllerData}>
-        </devtools-data-grid-controller>
+        <devtools-data-grid-controller .data=${reportsGridData}></devtools-data-grid-controller>
       </div>
     `, this.#shadow, {host: this});
     // clang-format on
@@ -142,7 +139,7 @@ export class PreloadingGrid extends LegacyWrapper.LegacyWrapper.WrappableCompone
               color: 'var(--sys-color-error)',
               width: '16px',
               height: '16px',
-            } as IconButton.Icon.IconData}
+            }}
             style=${LitHtml.Directives.styleMap({
               'vertical-align': 'sub',
             })}
@@ -151,7 +148,7 @@ export class PreloadingGrid extends LegacyWrapper.LegacyWrapper.WrappableCompone
           ${statusString}
         </div>
       `;
-      // clang-format on
+              // clang-format on
     }
 
     assertNotNullOrUndefined(this.#data);

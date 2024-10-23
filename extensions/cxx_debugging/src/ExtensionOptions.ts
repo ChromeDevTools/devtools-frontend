@@ -6,15 +6,16 @@
 /* eslint-disable rulesdir/inject_checkbox_styles */
 /* eslint-disable rulesdir/lit_html_host_this */
 
+import './CreditsItem.js';
+import './ModuleConfigurationList.js';
+
 import {html, render} from 'lit-html';
 import {until} from 'lit-html/directives/until.js';  // eslint-disable-line rulesdir/es_modules_import
 
 import {type CreditsItemData} from './CreditsItem.js';
-import './CreditsItem.js';
-import {type ModuleConfigurationsChangedEvent} from './ModuleConfigurationList.js';
-import './ModuleConfigurationList.js';
-import {DEFAULT_MODULE_CONFIGURATIONS} from './ModuleConfiguration.js';
 import {type Storage} from './DevToolsPluginHost.js';
+import {DEFAULT_MODULE_CONFIGURATIONS} from './ModuleConfiguration.js';
+import {type ModuleConfigurationsChangedEvent} from './ModuleConfigurationList.js';
 
 const CREDITS_ITEMS: CreditsItemData[] = [
   {
@@ -697,8 +698,7 @@ export class ExtensionOptions extends HTMLElement {
 
     <h2>Credits</h2>
     <div>${CREDITS_ITEMS.map(data => {
-      return html`<devtools-cxx-debugging-credits-item .data=${
-          data as CreditsItemData}></devtools-cxx-debugging-credits-item>`;
+      return html`<devtools-cxx-debugging-credits-item .data=${data}></devtools-cxx-debugging-credits-item>`;
     })}</div>`;
     render(output, this.shadow, {
       eventContext: this,

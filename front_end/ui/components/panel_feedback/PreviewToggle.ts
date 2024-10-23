@@ -7,7 +7,6 @@ import '../../../ui/legacy/legacy.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Root from '../../../core/root/root.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
-import type * as IconButton from '../icon_button/icon_button.js';
 import * as Input from '../input/input.js';
 
 import previewToggleStyles from './previewToggle.css.js';
@@ -79,7 +78,7 @@ export class PreviewToggle extends HTMLElement {
             width: '16px',
             height: '16px',
             color: 'var(--icon-default)',
-          } as IconButton.Icon.IconData}>
+          }}>
           </devtools-icon>${this.#name}
         </label>
         <div class="spacer"></div>

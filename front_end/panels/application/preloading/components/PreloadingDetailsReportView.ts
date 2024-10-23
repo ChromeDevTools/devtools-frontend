@@ -15,8 +15,6 @@ import * as Logs from '../../../../models/logs/logs.js';
 import * as Buttons from '../../../../ui/components/buttons/buttons.js';
 import * as LegacyWrapper from '../../../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import * as Coordinator from '../../../../ui/components/render_coordinator/render_coordinator.js';
-import type * as ReportView from '../../../../ui/components/report_view/report_view.js';
-import type * as RequestLinkIcon from '../../../../ui/components/request_link_icon/request_link_icon.js';
 import * as UI from '../../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../../ui/visual_logging/visual_logging.js';
@@ -132,7 +130,6 @@ interface PreloadingDetailsReportViewDataInternal {
 }
 
 export class PreloadingDetailsReportView extends LegacyWrapper.LegacyWrapper.WrappableComponent<UI.Widget.VBox> {
-
   readonly #shadow = this.attachShadow({mode: 'open'});
   #data: PreloadingDetailsReportViewData = null;
 
@@ -167,7 +164,7 @@ export class PreloadingDetailsReportView extends LegacyWrapper.LegacyWrapper.Wra
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
       LitHtml.render(html`
-        <devtools-report .data=${{reportTitle: 'Speculative Loading Attempt'} as ReportView.ReportView.ReportData}
+        <devtools-report .data=${{reportTitle: 'Speculative Loading Attempt'}}
         jslog=${VisualLogging.section('preloading-details')}>
           <devtools-report-section-header>${i18nString(UIStrings.detailsDetailedInformation)}</devtools-report-section-header>
 
@@ -208,7 +205,7 @@ export class PreloadingDetailsReportView extends LegacyWrapper.LegacyWrapper.Wra
                 requestResolver: this.#data.requestResolver || new Logs.RequestResolver.RequestResolver(),
                 displayURL: true,
                 urlToDisplay: attempt.key.url,
-              } as RequestLinkIcon.RequestLinkIcon.RequestLinkIconData
+              }
             }
           >
           </devtools-request-link-icon>

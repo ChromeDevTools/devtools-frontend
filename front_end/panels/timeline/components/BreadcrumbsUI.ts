@@ -5,7 +5,6 @@
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Trace from '../../../models/trace/trace.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
-import type * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
@@ -128,10 +127,10 @@ export class BreadcrumbsUI extends HTMLElement {
               color: 'var(--icon-default)',
               width: '16px',
               height: '16px',
-            } as IconButton.Icon.IconData}>`
+            }}>`
             : ''}
       `;
-    // clang-format on
+              // clang-format on
   }
 
   #render(): void {

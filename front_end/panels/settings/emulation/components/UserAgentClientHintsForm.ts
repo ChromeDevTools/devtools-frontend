@@ -8,7 +8,6 @@ import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import type * as Protocol from '../../../../generated/protocol.js';
 import * as Buttons from '../../../../ui/components/buttons/buttons.js';
-import type * as IconButton from '../../../../ui/components/icon_button/icon_button.js';
 import * as Input from '../../../../ui/components/input/input.js';
 import type * as UI from '../../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
@@ -602,8 +601,11 @@ export class UserAgentClientHintsForm extends HTMLElement {
       })}
           />
           <devtools-icon
-            .data=${
-          {color: 'var(--icon-default)', iconName: 'bin', width: '16px', height: '16px'} as IconButton.Icon.IconData}
+            .data=${{
+      color:
+        'var(--icon-default)', iconName: 'bin', width: '16px', height: '16px',
+      }
+      }
             title=${i18nString(UIStrings.brandUserAgentDelete)}
             class="delete-icon"
             tabindex="0"
@@ -630,7 +632,11 @@ export class UserAgentClientHintsForm extends HTMLElement {
       >
         <devtools-icon
           aria-hidden="true"
-          .data=${{color: 'var(--icon-default)', iconName: 'plus', width: '16px'} as IconButton.Icon.IconData}
+          .data=${{
+    color:
+      'var(--icon-default)', iconName: 'plus', width: '16px',
+    }
+    }
         >
         </devtools-icon>
         ${i18nString(UIStrings.addBrand)}
@@ -701,8 +707,11 @@ export class UserAgentClientHintsForm extends HTMLElement {
       })}
           />
           <devtools-icon
-            .data=${
-          {color: 'var(--icon-default)', iconName: 'bin', width: '16px', height: '16px'} as IconButton.Icon.IconData}
+            .data=${{
+      color:
+        'var(--icon-default)', iconName: 'bin', width: '16px', height: '16px',
+      }
+      }
             title=${i18nString(UIStrings.brandFullVersionListDelete)}
             class="delete-icon"
             tabindex="0"
@@ -729,7 +738,11 @@ export class UserAgentClientHintsForm extends HTMLElement {
       >
         <devtools-icon
           aria-hidden="true"
-          .data=${{color: 'var(--icon-default)', iconName: 'plus', width: '16px'} as IconButton.Icon.IconData}
+          .data=${{
+    color:
+      'var(--icon-default)', iconName: 'plus', width: '16px',
+    }
+    }
         >
         </devtools-icon>
         ${i18nString(UIStrings.addBrand)}
@@ -781,7 +794,7 @@ export class UserAgentClientHintsForm extends HTMLElement {
               color: 'var(--icon-default)',
               iconName: 'triangle-right',
               width: '14px',
-            } as IconButton.Icon.IconData}
+            }}
           ></devtools-icon>
           ${i18nString(UIStrings.title)}
           <devtools-icon
@@ -789,7 +802,7 @@ export class UserAgentClientHintsForm extends HTMLElement {
               color: 'var(--icon-default)',
               iconName: 'info',
               width: '16px',
-            } as IconButton.Icon.IconData}
+            }}
             title=${i18nString(UIStrings.userAgentClientHintsInfo)}
             class='info-icon'
           ></devtools-icon>
@@ -821,8 +834,8 @@ export class UserAgentClientHintsForm extends HTMLElement {
         <div aria-live="polite" aria-label=${this.#useragentModifiedAriaMessage}></div>
       </section>
     `;
-    // clang-format on
-    LitHtml.render(output, this.#shadow, {host: this});
+              // clang-format on
+              LitHtml.render(output, this.#shadow, {host: this});
   }
 
   validate = (): UI.ListWidget.ValidatorResult => {

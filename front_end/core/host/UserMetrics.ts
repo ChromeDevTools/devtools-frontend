@@ -1020,10 +1020,11 @@ export enum DevtoolsExperiments {
   'extension-storage-viewer' = 100,
   'floating-entry-points-for-ai-assistance' = 101,
   'timeline-experimental-insights' = 102,
+  'timeline-dim-unrelated-events' = 103,
   /* eslint-enable @typescript-eslint/naming-convention */
 
   // Increment this when new experiments are added.
-  MAX_VALUE = 103,
+  MAX_VALUE = 104,
 }
 
 export const enum CSSPropertyDocumentation {

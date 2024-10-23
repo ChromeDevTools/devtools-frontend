@@ -247,7 +247,7 @@ export interface PositionOverride {
 
 export type DrawOverride =
     (context: CanvasRenderingContext2D, x: number, y: number, width: number, height: number,
-     timeToPosition: (time: number) => number) => PositionOverride;
+     timeToPosition: (time: number) => number, transformColor: (color: string) => string) => PositionOverride;
 
 export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.VBox>(UI.Widget.VBox)
     implements Calculator, ChartViewportDelegate {
@@ -306,6 +306,8 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
   private rawTimelineData?: FlameChartTimelineData|null;
   private forceDecorationCache?: boolean[]|null;
   private entryColorsCache?: string[]|null;
+  private entryIndicesToNotDim?: number[]|null;
+  private colorDimmingCache = new Map<string, string>();
   private totalTime?: number;
   private lastPopoverState: PopoverState;
 
@@ -315,6 +317,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
   #groupTreeRoot?: GroupTreeNode|null;
   #searchResultEntryIndex: number|null = null;
   #searchResultHighlightElements: HTMLElement[] = [];
+  #searchResultEntries: number[]|null = null;
   #inTrackConfigEditMode: boolean = false;
   #linkSelectionAnnotationIsInProgress: boolean = false;
 
@@ -486,6 +489,51 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.chartViewport.disableRangeSelection();
   }
 
+  #shouldDimEvent(entryIndex: number): boolean {
+    // If a search is active, that enables a mode where we dim all events that do not match the search results.
+    // Otherwise the events to not dim are defined by the last call to `enableDimming`.
+    const entriesToNotDim = this.#searchResultEntries ?? this.entryIndicesToNotDim;
+    if (!entriesToNotDim) {
+      return false;
+    }
+
+    return !entriesToNotDim.includes(entryIndex);
+  }
+
+  enableDimming(entryIndicesToNotDim: number[]): void {
+    this.entryIndicesToNotDim = entryIndicesToNotDim;
+    this.draw();
+  }
+
+  disableDimming(): void {
+    this.entryIndicesToNotDim = null;
+    this.draw();
+  }
+
+  #transformColor(entryIndex: number, color: string): string {
+    if (this.#shouldDimEvent(entryIndex)) {
+      let dimmed = this.colorDimmingCache.get(color);
+      if (dimmed) {
+        return dimmed;
+      }
+
+      const parsedColor = Common.Color.parse(color);
+      dimmed = parsedColor ? parsedColor.asLegacyColor().grayscale().asString() : 'lightgrey';
+      this.colorDimmingCache.set(color, dimmed);
+      return dimmed;
+    }
+
+    return color;
+  }
+
+  getColorForEntry(entryIndex: number): string {
+    if (!this.entryColorsCache) {
+      return '';
+    }
+
+    return this.#transformColor(entryIndex, this.entryColorsCache[entryIndex]);
+  }
+
   highlightEntry(entryIndex: number): void {
     if (this.highlightedEntryIndex === entryIndex) {
       return;
@@ -499,11 +547,23 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
   }
 
   highlightAllEntries(entries: number[]): void {
-    for (const entry of entries) {
+    // To avoid too many highlights when the search regex matches too many entries,
+    // for example, when user only types in "e" as the search query,
+    // We only highlight the search results when the number of matches is less than or equal to 200.
+    // TODO: current behavior is a bit jank, esp. with dimming treatment always being applied.
+    //       Can we lift this restriction - maybe by adding a stroke in canvas, which should be faster?
+    const MAX_HIGHLIGHTED_SEARCH_ELEMENTS: number = 200;
+    for (const entry of entries.slice(0, MAX_HIGHLIGHTED_SEARCH_ELEMENTS)) {
       const searchElement = this.viewportElement.createChild('div', 'flame-chart-search-element');
       this.#searchResultHighlightElements.push(searchElement);
       searchElement.id = entry.toString();
       this.updateElementPosition(searchElement, entry);
+    }
+
+    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_DIM_UNRELATED_EVENTS)) {
+      this.#searchResultEntries = entries;
+      // Must redraw for the dimming treatment (#searchResultEntries overrides entryIndicesToNotDim).
+      this.draw();
     }
   }
 
@@ -512,6 +572,9 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       element.remove();
     }
     this.#searchResultHighlightElements = [];
+    this.#searchResultEntries = null;
+    // Must redraw for the dimming treatment (to turn it off / revert back to entryIndicesToNotDim).
+    this.draw();
   }
 
   hideHighlight(): void {
@@ -2488,7 +2551,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
         lastDrawOffset = barX;
 
         if (this.entryColorsCache) {
-          const color = this.entryColorsCache[entryIndex];
+          const color = this.getColorForEntry(entryIndex);
           let bucket = colorBuckets.get(color);
           if (!bucket) {
             bucket = {indexes: []};
@@ -2720,7 +2783,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       lastMarkerX = x + width + 1;
       lastMarkerLevel = level;
       this.markerPositions.set(entryIndex, {x, width});
-      context.fillStyle = this.dataProvider.entryColor(entryIndex);
+      context.fillStyle = this.getColorForEntry(entryIndex);
       context.fillRect(x, y, width, h - 1);
       context.fillStyle = 'white';
       context.fillText(title, x + padding, y + h - this.textBaseline);
@@ -2749,7 +2812,9 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       const y = this.levelToOffset(level);
       const height = this.levelHeight(level);
       const width = unclippedXEnd - unclippedXStart;
-      const pos = drawOverride(context, x, y, width, height, time => this.chartViewport.timeToPosition(time));
+      const pos = drawOverride(
+          context, x, y, width, height, time => this.chartViewport.timeToPosition(time),
+          color => this.#transformColor(entryIndex, color));
       posArray.push({entryIndex, pos});
     }
     // Place in z order so coordinatesToEntryIndex finds the highest z-index match first.
@@ -2970,7 +3035,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
           break;
         }
         lastDrawOffset = barX;
-        const color = this.entryColorsCache ? this.entryColorsCache[entryIndex] : '';
+        const color = this.getColorForEntry(entryIndex);
         const endBarX = this.timeToPositionClipped(entryEndTime);
         if (group.style.useDecoratorsForOverview && this.dataProvider.forceDecoration(entryIndex)) {
           const unclippedBarX = this.chartViewport.timeToPosition(entryStartTime);
@@ -3221,6 +3286,8 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       this.rawTimelineData = null;
       this.forceDecorationCache = null;
       this.entryColorsCache = null;
+      this.entryIndicesToNotDim = null;
+      this.colorDimmingCache.clear();
       this.rawTimelineDataLength = 0;
       this.#groupTreeRoot = null;
       this.selectedGroupIndex = -1;
@@ -3828,6 +3895,8 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.rawTimelineData = null;
     this.rawTimelineDataLength = 0;
     this.#groupTreeRoot = null;
+    this.entryIndicesToNotDim = null;
+    this.colorDimmingCache.clear();
     this.highlightedMarkerIndex = -1;
     this.highlightedEntryIndex = -1;
     this.selectedEntryIndex = -1;
@@ -4054,7 +4123,7 @@ export interface FlameChartDataProvider {
 
   search?
       (visibleWindow: Trace.Types.Timing.TraceWindowMicroSeconds,
-       filter: TimelineModel.TimelineModelFilter.TimelineModelFilter): DataProviderSearchResult[];
+       filter?: TimelineModel.TimelineModelFilter.TimelineModelFilter): DataProviderSearchResult[];
 
   // The following three functions are used for the flame chart entry customization.
   modifyTree?(action: FilterAction, entryIndex: number): void;

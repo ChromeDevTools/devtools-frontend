@@ -51,7 +51,9 @@ export interface InsightDetails {
 export class InsightActivated extends Event {
   static readonly eventName = 'insightactivated';
 
-  constructor(public name: string, public insightSetKey: string, public overlays: Overlays.Overlays.TimelineOverlay[]) {
+  constructor(
+      public name: string, public insightSetKey: string, public overlays: Overlays.Overlays.TimelineOverlay[],
+      public relatedEvents: Trace.Types.Events.Event[]) {
     super(InsightActivated.eventName, {bubbles: true, composed: true});
   }
 }

@@ -15,10 +15,9 @@ const {html} = LitHtml;
  * @fileoverview An interactive table component.
  *
  * On hover:
- *           desaturates the relevant time range (in both the minimap and the flamegraph), and
+ *           desaturates the relevant events (in both the minimap and the flamegraph), and
  *           replaces the current insight's overlays with the overlays attached to that row.
  *           The currently selected trace bounds does not change.
- *           TODO(crbug.com/373648873): make the "desaturates the flamegraph" part true
  *
  *           Removing the mouse from the table without clicking on any row restores the original
  *           overlays.

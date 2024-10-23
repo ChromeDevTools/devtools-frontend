@@ -175,12 +175,12 @@ export class LayoutShiftsTrackAppender implements TrackAppender {
       // If the new CLS experience isn't on.. Continue to present that Shifts are 5ms long. (but now via drawOverrides)
       // TODO: Remove this when the experiment ships
       if (Trace.Types.Events.isLayoutShift(event)) {
-        return (context, x, y, _width, levelHeight, timeToPosition) => {
+        return (context, x, y, _width, levelHeight, timeToPosition, transformColor) => {
           const fakeDurMs = Trace.Helpers.Timing.microSecondsToMilliseconds(
               Trace.Types.Timing.MicroSeconds(event.ts + LAYOUT_SHIFT_SYNTHETIC_DURATION));
           const barEnd = timeToPosition(fakeDurMs);
           const barWidth = barEnd - x;
-          context.fillStyle = this.colorForEvent(event);
+          context.fillStyle = transformColor(this.colorForEvent(event));
           context.fillRect(x, y, barWidth - 0.5, levelHeight - 1);
           return {
             x,
@@ -202,7 +202,7 @@ export class LayoutShiftsTrackAppender implements TrackAppender {
       // A LS score of ~0 will create a diamond of minimum size (exactly 0 should not happen in practice)
       const bufferScale = 1 - Math.min(score / 0.10, 1);
 
-      return (context, x, y, _width, levelHeight) => {
+      return (context, x, y, _width, levelHeight, _, transformColor) => {
         // levelHeight is 17px, so this math translates to a minimum diamond size of 5.6px tall.
         const maxBuffer = levelHeight / 3;
         const buffer = bufferScale * maxBuffer;
@@ -216,7 +216,7 @@ export class LayoutShiftsTrackAppender implements TrackAppender {
         context.lineTo(x, y + levelHeight - buffer);
         context.lineTo(x - halfSize + buffer, y + halfSize);
         context.closePath();
-        context.fillStyle = this.colorForEvent(event);
+        context.fillStyle = transformColor(this.colorForEvent(event));
 
         context.fill();
         context.restore();
@@ -227,10 +227,10 @@ export class LayoutShiftsTrackAppender implements TrackAppender {
       };
     }
     if (Trace.Types.Events.isSyntheticLayoutShiftCluster(event)) {
-      return (context, x, y, width, levelHeight) => {
+      return (context, x, y, width, levelHeight, _, transformColor) => {
         const barHeight = levelHeight * 0.2;
         const barY = y + (levelHeight - barHeight) / 2 + 0.5;
-        context.fillStyle = this.colorForEvent(event);
+        context.fillStyle = transformColor(this.colorForEvent(event));
         context.fillRect(x, barY, width - 0.5, barHeight - 1);
         return {x, width, z: -1};
       };

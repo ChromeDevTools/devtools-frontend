@@ -16,6 +16,7 @@ export interface ActiveInsight {
   name: string;
   insightSetKey: string;
   overlays: Overlays.Overlays.TimelineOverlay[];
+  relatedEvents: Trace.Types.Events.Event[];
 }
 
 export class RemoveAnnotation extends Event {

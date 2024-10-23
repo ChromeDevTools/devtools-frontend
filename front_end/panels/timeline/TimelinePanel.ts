@@ -535,7 +535,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
     this.searchableViewInternal = new UI.SearchableView.SearchableView(this.flameChart, null);
     this.searchableViewInternal.setMinimumSize(0, 100);
-    this.searchableViewInternal.setMinimalSearchQuerySize(0);
     this.searchableViewInternal.element.classList.add('searchable-view');
     this.searchableViewInternal.show(this.timelinePane.element);
     this.flameChart.show(this.searchableViewInternal.element);
@@ -555,8 +554,8 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     // is not on the DOM. That only happens when the sidebar tabbed pane component is set to Annotations.
     // In that case, clicking on the insight chip will do nothing.
     this.#sideBar.element.addEventListener(TimelineInsights.SidebarInsight.InsightActivated.eventName, event => {
-      const {name, insightSetKey, overlays} = event;
-      this.#setActiveInsight({name, insightSetKey, overlays});
+      const {name, insightSetKey, overlays, relatedEvents} = event;
+      this.#setActiveInsight({name, insightSetKey, overlays, relatedEvents});
     });
 
     this.#sideBar.element.addEventListener(TimelineInsights.SidebarInsight.InsightProvideOverlays.eventName, event => {

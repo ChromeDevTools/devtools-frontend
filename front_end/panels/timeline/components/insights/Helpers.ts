@@ -145,6 +145,8 @@ export abstract class BaseInsight extends HTMLElement {
         this.internalName,
         this.data.insightSetKey,
         this.getInitialOverlays(),
+        // TODO: this could be cached.
+        this.getRelatedEvents(),
         ));
   }
 

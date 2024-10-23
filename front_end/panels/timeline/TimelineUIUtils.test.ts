@@ -1128,6 +1128,53 @@ describeWithMockConnection('TimelineUIUtils', function() {
         },
       ]);
     });
+
+    it('renders details for SchedulePostTaskCallback events', async function() {
+      const {parsedTrace} = await TraceLoader.traceEngine(this, 'scheduler-post-task.json.gz');
+
+      const scheduleEvent = parsedTrace.Renderer.allTraceEntries.find(Trace.Types.Events.isSchedulePostTaskCallback);
+      assert(scheduleEvent, 'Could not find SchedulePostTaskCallback event');
+      const scheduleDetails = await Timeline.TimelineUIUtils.TimelineUIUtils.buildTraceEventDetails(
+          parsedTrace,
+          scheduleEvent,
+          new Components.Linkifier.Linkifier(),
+          false,
+      );
+      const rowData = getRowDataForDetailsElement(scheduleDetails);
+      assert.deepEqual(rowData, [
+        {title: 'Delay', value: '200\xA0ms'},
+        {title: 'Priority', value: 'user-visible'},
+        {
+          title: undefined,
+          value: '(anonymous) @ localhost:8787/scheduler/app.js:49:18',
+        },
+        {title: 'Initiator for', value: 'Fire postTask'},
+      ]);
+    });
+
+    it('renders details for RunPostTaskCallback events', async function() {
+      const {parsedTrace} = await TraceLoader.traceEngine(this, 'scheduler-post-task.json.gz');
+
+      const runEvent = parsedTrace.Renderer.allTraceEntries.find(Trace.Types.Events.isRunPostTaskCallback);
+      assert(runEvent, 'Could not find RunPostTaskCallback event');
+      const runDetails = await Timeline.TimelineUIUtils.TimelineUIUtils.buildTraceEventDetails(
+          parsedTrace,
+          runEvent,
+          new Components.Linkifier.Linkifier(),
+          false,
+      );
+      const rowData = getRowDataForDetailsElement(runDetails);
+      assert.deepEqual(rowData, [
+        {title: 'Delay', value: '200\xA0ms'},
+        {title: 'Priority', value: 'user-visible'},
+        {
+          title: undefined,
+          value: '(anonymous) @ localhost:8787/scheduler/app.js:49:18',
+        },
+        {title: 'Initiated by', value: 'Schedule postTask'},
+        {title: 'Pending for', value: '200.1\xA0ms'},
+      ]);
+    });
   });
 
   it('can generate details for a frame', async function() {

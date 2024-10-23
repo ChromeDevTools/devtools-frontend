@@ -497,6 +497,24 @@ const UIStrings = {
    *@description Text in UIDevtools Utils of the Performance panel
    */
   drawing: 'Drawing',
+  /**
+   * @description Label for an event in the Performance panel indicating that a
+   * callback function has been scheduled to run at a later time using the
+   * postTask API.
+   */
+  schedulePostTaskCallback: 'Schedule postTask',
+  /**
+   * @description Label for an event in the Performance panel indicating that a
+   * callback function that was scheduled to run using the postTask API was
+   * fired (invoked).
+   */
+  runPostTaskCallback: 'Fire postTask',
+  /**
+   * @description Label for an event in the Performance panel indicating that a
+   * callback function that was scheduled to run at a later time using the
+   * postTask API was cancelled, so will no longer run.
+   */
+  abortPostTaskCallback: 'Cancel postTask',
 };
 
 export enum EventCategory {
@@ -1033,6 +1051,15 @@ export function maybeInitSylesMap(): EventStylesMap {
 
     [Trace.Types.Events.Name.SCHEDULE_POST_MESSAGE]:
         new TimelineRecordStyle(i18nString(UIStrings.schedulePostMessage), defaultCategoryStyles.messaging),
+
+    [Trace.Types.Events.Name.SCHEDULE_POST_TASK_CALLBACK]:
+        new TimelineRecordStyle(i18nString(UIStrings.schedulePostTaskCallback), defaultCategoryStyles.scripting),
+
+    [Trace.Types.Events.Name.RUN_POST_TASK_CALLBACK]:
+        new TimelineRecordStyle(i18nString(UIStrings.runPostTaskCallback), defaultCategoryStyles.scripting),
+
+    [Trace.Types.Events.Name.ABORT_POST_TASK_CALLBACK]:
+        new TimelineRecordStyle(i18nString(UIStrings.abortPostTaskCallback), defaultCategoryStyles.scripting),
   };
   return eventStylesMap;
 }

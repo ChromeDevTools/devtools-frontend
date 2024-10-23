@@ -213,4 +213,44 @@ describe('InitiatorsHandler', () => {
     assert.strictEqual(data.eventToInitiator.get(handlePostMessageEvent), schedulePostMessageEvent);
     assert.deepEqual(data.initiatorToEvents.get(schedulePostMessageEvent), [handlePostMessageEvent]);
   });
+
+  it('pairs the postTask-scheduled tasks with their scheduling initiators', async function() {
+    const traceEvents = await TraceLoader.rawEvents(this, 'scheduler-post-task.json.gz');
+    for (const event of traceEvents) {
+      Trace.Handlers.ModelHandlers.Initiators.handleEvent(event);
+    }
+    await Trace.Handlers.ModelHandlers.Initiators.finalize();
+    const data = Trace.Handlers.ModelHandlers.Initiators.data();
+
+    const scheduleEvents = traceEvents.filter(Trace.Types.Events.isSchedulePostTaskCallback);
+    assert.isNotEmpty(scheduleEvents, 'Could not find SchedulePostTaskCallback events');
+    const runEvents = traceEvents.filter(Trace.Types.Events.isRunPostTaskCallback);
+    assert.isNotEmpty(runEvents, 'Could not find RunPostTaskCallback events');
+    const cancelEvents = traceEvents.filter(Trace.Types.Events.isAbortPostTaskCallback);
+    assert.isNotEmpty(cancelEvents, 'Could not find AbortPostTaskCallback events');
+
+    assert.containsAllKeys(data.initiatorToEvents, scheduleEvents, 'Not all schedule events in initiators');
+
+    // All end events have a SchedulePostTaskCallback initiator.
+    for (const endEvent of [...runEvents, ...cancelEvents]) {
+      const initiator = data.eventToInitiator.get(endEvent);
+      assert.exists(initiator);
+      assert(Trace.Types.Events.isSchedulePostTaskCallback(initiator));
+      assert.strictEqual(endEvent.args.data.taskId, initiator.args.data.taskId);
+
+      assert(data.initiatorToEvents.get(initiator)?.includes(endEvent));
+    }
+
+    // There is one task that cancels itself while running, so it has both run and cancel events.
+    const doubleEvents = scheduleEvents.some(scheduleEvent => {
+      const endEvents = data.initiatorToEvents.get(scheduleEvent);
+      if (!endEvents || endEvents.length < 2) {
+        return false;
+      }
+
+      return endEvents.some(Trace.Types.Events.isRunPostTaskCallback) &&
+          endEvents.some(Trace.Types.Events.isAbortPostTaskCallback);
+    });
+    assert(doubleEvents, 'initiator with both run and cancel initiated events not found');
+  });
 });

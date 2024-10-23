@@ -209,3 +209,7 @@ Contains a recording with network request's initiator information.
 ### over-20-invalidations-per-event
 
 Contains a trace where one Layout event has 26 invalidations associated with it.
+
+### scheduler-post-task
+
+Generated from the [scheduler story](https://github.com/ChromeDevTools/performance-stories/tree/main/scheduler). Contains a series of `scheduler.postTask()` calls of different priority and delay, some nested and some ending up cancelled.

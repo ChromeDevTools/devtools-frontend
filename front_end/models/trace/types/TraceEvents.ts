@@ -2552,6 +2552,51 @@ export function isSyntheticServerTiming(event: Event): event is SyntheticServerT
   return event.cat === 'devtools.server-timing';
 }
 
+export interface SchedulePostTaskCallback extends Instant {
+  name: Name.SCHEDULE_POST_TASK_CALLBACK;
+  args: Args&{
+    data: {
+      taskId: number,
+      priority: 'user-blocking'|'user-visible'|'background',
+      delay: MilliSeconds,
+      frame?: string,
+      stackTrace?: CallFrame,
+    },
+  };
+}
+export function isSchedulePostTaskCallback(event: Event): event is SchedulePostTaskCallback {
+  return event.name === Name.SCHEDULE_POST_TASK_CALLBACK;
+}
+
+export interface RunPostTaskCallback extends Complete {
+  name: Name.RUN_POST_TASK_CALLBACK;
+  args: Args&{
+    data: {
+      taskId: number,
+      priority: 'user-blocking'|'user-visible'|'background',
+      delay: MilliSeconds,
+      frame?: string,
+    },
+  };
+}
+export function isRunPostTaskCallback(event: Event): event is RunPostTaskCallback {
+  return event.name === Name.RUN_POST_TASK_CALLBACK;
+}
+
+export interface AbortPostTaskCallback extends Complete {
+  name: Name.ABORT_POST_TASK_CALLBACK;
+  args: Args&{
+    data: {
+      taskId: number,
+      frame?: string,
+      stackTrace?: CallFrame,
+    },
+  };
+}
+export function isAbortPostTaskCallback(event: Event): event is RunPostTaskCallback {
+  return event.name === Name.ABORT_POST_TASK_CALLBACK;
+}
+
 /**
  * Generally, before JS is executed, a trace event is dispatched that
  * parents the JS calls. These we call "invocation" events. This
@@ -2645,6 +2690,9 @@ export const enum Name {
   CRYPTO_DO_VERIFY = 'DoVerify',
   CRYPTO_DO_VERIFY_REPLY = 'DoVerifyReply',
   V8_EXECUTE = 'V8.Execute',
+  SCHEDULE_POST_TASK_CALLBACK = 'SchedulePostTaskCallback',
+  RUN_POST_TASK_CALLBACK = 'RunPostTaskCallback',
+  ABORT_POST_TASK_CALLBACK = 'AbortPostTaskCallback',
 
   /* Gc */
   GC = 'GCEvent',

@@ -549,6 +549,14 @@ const UIStrings = {
    * @description Label for a description text of a metric.
    */
   description: 'Description',
+  /**
+   * @description Label for a numeric value that was how long to wait before a function was run.
+   */
+  delay: 'Delay',
+  /**
+   * @description Label for a string that describes the priority at which a task was scheduled, like 'background' for low-priority tasks, and 'user-blocking' for high priority.
+   */
+  priority: 'Priority',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineUIUtils.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -1259,6 +1267,14 @@ export class TimelineUIUtils {
               i18nString(UIStrings.timeout), i18n.TimeUtilities.millisToString(unsafeEventData['timeout']));
           contentHelper.appendTextRow(i18nString(UIStrings.repeats), !unsafeEventData['singleShot']);
         }
+        break;
+      }
+
+      case Trace.Types.Events.Name.SCHEDULE_POST_TASK_CALLBACK:
+      case Trace.Types.Events.Name.RUN_POST_TASK_CALLBACK: {
+        contentHelper.appendTextRow(
+            i18nString(UIStrings.delay), i18n.TimeUtilities.millisToString(unsafeEventData['delay']));
+        contentHelper.appendTextRow(i18nString(UIStrings.priority), unsafeEventData['priority']);
         break;
       }
 

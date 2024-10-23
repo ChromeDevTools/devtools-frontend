@@ -39,6 +39,7 @@ const requestAnimationFrameEventsById: Map<number, Types.Events.RequestAnimation
 const timerInstallEventsById: Map<number, Types.Events.TimerInstall> = new Map();
 const requestIdleCallbackEventsById: Map<number, Types.Events.RequestIdleCallback> = new Map();
 const webSocketCreateEventsById: Map<number, Types.Events.WebSocketCreate> = new Map();
+const schedulePostTaskCallbackEventsById: Map<number, Types.Events.SchedulePostTaskCallback> = new Map();
 
 export function reset(): void {
   lastScheduleStyleRecalcByFrame.clear();
@@ -50,6 +51,7 @@ export function reset(): void {
   requestAnimationFrameEventsById.clear();
   requestIdleCallbackEventsById.clear();
   webSocketCreateEventsById.clear();
+  schedulePostTaskCallbackEventsById.clear();
   schedulePostMessageEventByTraceId.clear();
   postMessageHandlerEvents.length = 0;
 
@@ -167,6 +169,13 @@ export function handleEvent(event: Types.Events.Event): void {
         event,
         initiator: matchingCreateEvent,
       });
+    }
+  } else if (Types.Events.isSchedulePostTaskCallback(event)) {
+    schedulePostTaskCallbackEventsById.set(event.args.data.taskId, event);
+  } else if (Types.Events.isRunPostTaskCallback(event) || Types.Events.isAbortPostTaskCallback(event)) {
+    const matchingSchedule = schedulePostTaskCallbackEventsById.get(event.args.data.taskId);
+    if (matchingSchedule) {
+      storeInitiator({event, initiator: matchingSchedule});
     }
   }
   // Store schedulePostMessage Events by their traceIds.

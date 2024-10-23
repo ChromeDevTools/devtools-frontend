@@ -13,12 +13,14 @@ const yargs = require('yargs/yargs');
 const {hideBin} = require('yargs/helpers');
 const childProcess = require('child_process');
 const {promisify} = require('util');
+const {readFileSync} = require('fs');
 const spawnAsync = promisify(childProcess.spawnSync);
 
 const {
   devtoolsRootPath,
   litAnalyzerExecutablePath,
   nodePath,
+  tsconfigJsonPath,
 } = require('../devtools_paths.js');
 
 const flags = yargs(hideBin(process.argv))
@@ -91,14 +93,25 @@ async function runStylelint(files) {
 }
 
 /**
- * @param {string[]} files
+ * Runs the `lit-analyzer` on the `files`.
+ *
+ * The configuration for the `lit-analyzer` is parsed from the options for
+ * the "ts-lit-plugin" from the toplevel `tsconfig.json` file.
+ *
+ * @param {string[]} files the input files to analyze.
  */
 async function runLitAnalyzer(files) {
-  const rules = {
-    'no-missing-import': 'error',
-    'no-unknown-tag-name': 'error',
-    'no-complex-attribute-binding': 'off',
+  const readLitAnalyzerConfigFromCompilerOptions = () => {
+    const {compilerOptions} = JSON.parse(readFileSync(tsconfigJsonPath(), 'utf-8'));
+    const {plugins} = compilerOptions;
+    const tsLitPluginOptions = plugins.find(plugin => plugin.name === 'ts-lit-plugin');
+    if (tsLitPluginOptions === null) {
+      throw new Error(`Failed to find ts-lit-plugin options in ${tsconfigJsonPath()}`);
+    }
+    return tsLitPluginOptions;
   };
+
+  const {rules} = readLitAnalyzerConfigFromCompilerOptions();
   const getLitAnalyzerResult = async subsetFiles => {
     const args = [
       litAnalyzerExecutablePath(),

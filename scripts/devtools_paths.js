@@ -129,6 +129,15 @@ function litAnalyzerExecutablePath() {
   return path.join(nodeModulesPath(), 'lit-analyzer', 'cli.js');
 }
 
+/**
+ * Computes the path to the toplevel `tsconfig.json`.
+ *
+ * @returns the path to the toplevel `tsconfig.json`.
+ */
+function tsconfigJsonPath() {
+  return path.join(devtoolsRootPath(), 'tsconfig.json');
+}
+
 function downloadedChromeBinaryPath() {
   const paths = {
     linux: path.join('chrome-linux', 'chrome'),
@@ -146,5 +155,6 @@ module.exports = {
   mochaExecutablePath,
   stylelintExecutablePath,
   downloadedChromeBinaryPath,
-  litAnalyzerExecutablePath
+  litAnalyzerExecutablePath,
+  tsconfigJsonPath,
 };

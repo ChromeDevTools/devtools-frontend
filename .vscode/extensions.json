@@ -1,7 +1,7 @@
 {
   "recommendations": [
-      "dbaeumer.vscode-eslint",
-      "bierner.lit-html",
-      "npclaudiu.vscode-gn"
+    "dbaeumer.vscode-eslint",
+    "runem.lit-plugin",
+    "npclaudiu.vscode-gn"
   ]
 }

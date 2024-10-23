@@ -23,6 +23,7 @@ devtools_module("helpers") {
     "../../../core/platform:bundle",
     "../../../core/root:bundle",
     "../../../models/cpu_profile:bundle",
+    "../../../third_party/third-party-web:bundle",
     "../types:bundle",
   ]
 }

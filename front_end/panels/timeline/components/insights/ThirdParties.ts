@@ -16,8 +16,8 @@ import {Category} from './types.js';
 const {html} = LitHtml;
 
 type ThirdPartiesEntries = Array<[
-  Trace.Insights.InsightRunners.ThirdPartyWeb.Entity,
-  Trace.Insights.InsightRunners.ThirdPartyWeb.Summary,
+  Trace.Extras.ThirdParties.Entity,
+  Trace.Extras.ThirdParties.Summary,
 ]>;
 
 const UIStrings = {
@@ -47,8 +47,7 @@ export class ThirdParties extends BaseInsight {
   override userVisibleTitle: string = i18nString(UIStrings.title);
   override description: string = i18nString(UIStrings.description);
 
-  #overlaysForEntity =
-      new Map<Trace.Insights.InsightRunners.ThirdPartyWeb.Entity, Overlays.Overlays.TimelineOverlay[]>();
+  #overlaysForEntity = new Map<Trace.Extras.ThirdParties.Entity, Overlays.Overlays.TimelineOverlay[]>();
 
   override createOverlays(): Overlays.Overlays.TimelineOverlay[] {
     this.#overlaysForEntity.clear();
@@ -130,7 +129,7 @@ export class ThirdParties extends BaseInsight {
                 </div>
             </devtools-performance-sidebar-insight>
         </div>`;
-              // clang-format on
+    // clang-format on
   }
 
   override getRelatedEvents(): Trace.Types.Events.Event[] {

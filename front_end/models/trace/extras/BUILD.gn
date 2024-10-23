@@ -13,6 +13,7 @@ devtools_module("extras") {
     "FilmStrip.ts",
     "MainThreadActivity.ts",
     "Metadata.ts",
+    "ThirdParties.ts",
     "URLForEntry.ts",
   ]
 
@@ -44,6 +45,7 @@ ts_library("unittests") {
     "FilmStrip.test.ts",
     "MainThreadActivity.test.ts",
     "Metadata.test.ts",
+    "ThirdParties.test.ts",
     "URLForEntry.test.ts",
   ]
 

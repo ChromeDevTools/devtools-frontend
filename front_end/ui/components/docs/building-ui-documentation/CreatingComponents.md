@@ -198,21 +198,6 @@ LitHtml.render(html`
 `, this.#shadow, {host: this});
 ```
 
-To enforce some type safety, we also use TypeScript's `as` keyword to force the compiler to type-check the `data` object against the interface:
-
-```ts
-// Within some component
-LitHtml.render(html`
-  <devtools-elements-breadcrumbs .data=${{
-    selectedNode: node,
-    crumbs: [...],
-  } as ElementsBreadcrumbsData}>
-  </devtools-elements-breadcrumbs>
-`, this.#shadow, {host: this});
-```
-
-This type-checking requirement is enforced by an ESLint rule.
-
 ## Performance concerns with data passing
 
 The approach of `set data(data)` was chosen because:

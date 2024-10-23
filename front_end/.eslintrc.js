@@ -37,7 +37,6 @@ module.exports = {
         'rulesdir/enforce_custom_event_names': 'error',
         'rulesdir/set_data_type_reference': 'error',
         'rulesdir/no_bound_component_methods': 'error',
-        'rulesdir/lit_html_data_as_type': 'error',
         'rulesdir/lit_no_style_interpolation': 'error',
         'rulesdir/ban_self_closing_custom_element_tagnames': 'error',
         'rulesdir/ban_style_tags_in_lit_html': 'error',

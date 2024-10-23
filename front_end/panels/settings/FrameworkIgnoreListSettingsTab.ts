@@ -23,7 +23,7 @@ const UIStrings = {
    *@description Checkbox label in Framework Ignore List Settings Tab of the Settings
    */
   ignoreListingDescription:
-      'If enabled, DevTools’ debugger will skip over ignore-listed scripts and won’t stop on exceptions thrown by them',
+      'When enabled, the debugger will skip over ignore-listed scripts and will ignore exceptions that only affect them and the Performance panel will collapse matching flamechart items.',
   /**
    *@description Text in Framework Ignore List Settings Tab of the Settings
    */

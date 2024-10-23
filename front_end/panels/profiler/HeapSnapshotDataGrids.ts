@@ -886,10 +886,10 @@ export class HeapSnapshotConstructorsDataGrid extends HeapSnapshotViewportDataGr
     }
     this.removeTopLevelNodes();
     this.resetSortingCache();
-    for (const constructor in aggregates) {
+    for (const classKey in aggregates) {
       this.appendNode(
           (this.rootNode() as HeapSnapshotGridNode),
-          new HeapSnapshotConstructorNode(this, constructor, aggregates[constructor], nodeFilter));
+          new HeapSnapshotConstructorNode(this, classKey, aggregates[classKey], nodeFilter));
     }
     this.sortingChanged();
     this.lastFilter = nodeFilter;
@@ -1005,11 +1005,11 @@ export class HeapSnapshotDiffDataGrid extends HeapSnapshotViewportDataGrid {
     // then pass it to the second snapshot to calclulate the diff.
     const interfaceDefinitions = await this.snapshot.interfaceDefinitions();
     const aggregatesForDiff = await this.baseSnapshot.aggregatesForDiff(interfaceDefinitions);
-    const diffByClassName = await this.snapshot.calculateSnapshotDiff(this.baseSnapshot.uid, aggregatesForDiff);
+    const diffByClassKey = await this.snapshot.calculateSnapshotDiff(this.baseSnapshot.uid, aggregatesForDiff);
 
-    for (const className in diffByClassName) {
-      const diff = diffByClassName[className];
-      this.appendNode(this.rootNode(), new HeapSnapshotDiffNode(this, className, diff));
+    for (const classKey in diffByClassKey) {
+      const diff = diffByClassKey[classKey];
+      this.appendNode(this.rootNode(), new HeapSnapshotDiffNode(this, classKey, diff));
     }
     this.sortingChanged();
   }

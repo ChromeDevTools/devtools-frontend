@@ -15,6 +15,7 @@ copy_to_gen("memory") {
     "diff.html",
     "dom-details.html",
     "dom-objects.html",
+    "duplicated-names.html",
     "event-listeners.html",
     "filtering.html",
     "ignoring-retainers.html",

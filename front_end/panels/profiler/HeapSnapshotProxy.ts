@@ -326,8 +326,8 @@ export class HeapSnapshotProxy extends HeapSnapshotProxyObject {
     return this.callFactoryMethod('createRetainingEdgesProvider', HeapSnapshotProviderProxy, nodeIndex);
   }
 
-  createAddedNodesProvider(baseSnapshotId: string, className: string): HeapSnapshotProviderProxy {
-    return this.callFactoryMethod('createAddedNodesProvider', HeapSnapshotProviderProxy, baseSnapshotId, className);
+  createAddedNodesProvider(baseSnapshotId: string, classKey: string): HeapSnapshotProviderProxy {
+    return this.callFactoryMethod('createAddedNodesProvider', HeapSnapshotProviderProxy, baseSnapshotId, classKey);
   }
 
   createDeletedNodesProvider(nodeIndexes: number[]): HeapSnapshotProviderProxy {
@@ -338,9 +338,9 @@ export class HeapSnapshotProxy extends HeapSnapshotProxyObject {
     return this.callFactoryMethod('createNodesProvider', HeapSnapshotProviderProxy, filter);
   }
 
-  createNodesProviderForClass(className: string, nodeFilter: HeapSnapshotModel.HeapSnapshotModel.NodeFilter):
+  createNodesProviderForClass(classKey: string, nodeFilter: HeapSnapshotModel.HeapSnapshotModel.NodeFilter):
       HeapSnapshotProviderProxy {
-    return this.callFactoryMethod('createNodesProviderForClass', HeapSnapshotProviderProxy, className, nodeFilter);
+    return this.callFactoryMethod('createNodesProviderForClass', HeapSnapshotProviderProxy, classKey, nodeFilter);
   }
 
   allocationTracesTops(): Promise<HeapSnapshotModel.HeapSnapshotModel.SerializedAllocationNode[]> {

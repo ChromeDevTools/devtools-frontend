@@ -18,9 +18,9 @@ import {
   waitForElementsWithTextContent,
   waitForElementWithTextContent,
   waitForFunction,
+  waitForMany,
   waitForNoElementsWithTextContent,
 } from '../../shared/helper.js';
-
 import {
   changeAllocationSampleViewViaDropdown,
   changeViewViaDropdown,
@@ -30,10 +30,13 @@ import {
   findSearchResult,
   focusTableRow,
   getAddedCountFromComparisonRow,
+  getAddedCountFromComparisonRowWithName,
   getCategoryRow,
   getCountFromCategoryRow,
+  getCountFromCategoryRowWithName,
   getDataGridRows,
   getDistanceFromCategoryRow,
+  getRemovedCountFromComparisonRow,
   getSizesFromCategoryRow,
   getSizesFromSelectedRow,
   navigateToMemoryTab,
@@ -540,8 +543,8 @@ describe('The Memory Panel', function() {
     await takeHeapSnapshot();
     await waitForNonEmptyHeapSnapshotData();
     await setClassFilter('<div>');
-    assert.strictEqual(3, await getCountFromCategoryRow('<div>'));
-    assert.strictEqual(3, await getCountFromCategoryRow('Detached <div>'));
+    assert.strictEqual(3, await getCountFromCategoryRowWithName('<div>'));
+    assert.strictEqual(3, await getCountFromCategoryRowWithName('Detached <div>'));
     await setSearchFilter('Detached <div data-x="p" data-y="q">');
     await waitForSearchResultNumber(1);
   });
@@ -553,7 +556,7 @@ describe('The Memory Panel', function() {
     await waitForNonEmptyHeapSnapshotData();
     await setClassFilter('{a, b, c, d, ');
     // Objects should be grouped by interface if there are at least two matching instances.
-    assert.strictEqual(2, await getCountFromCategoryRow('{a, b, c, d, p, q, r}'));
+    assert.strictEqual(2, await getCountFromCategoryRowWithName('{a, b, c, d, p, q, r}'));
     assert.isTrue(!(await getCategoryRow('{a, b, c, d, e}', /* wait:*/ false)));
     const {frontend, target} = await getBrowserAndPages();
     await target.bringToFront();
@@ -565,8 +568,32 @@ describe('The Memory Panel', function() {
     await setClassFilter('{a, b, c, d, ');
     // When comparing, the old snapshot is categorized according to the new one's interfaces,
     // so the comparison should report only one new object of the following type, not two.
-    assert.strictEqual(1, await getAddedCountFromComparisonRow('{a, b, c, d, e}'));
+    assert.strictEqual(1, await getAddedCountFromComparisonRowWithName('{a, b, c, d, e}'));
     // Only one of these objects remains, so it's no longer a category.
     assert.isTrue(!(await getCategoryRow('{a, b, c, d, p, q, r}', /* wait:*/ false)));
+  });
+
+  it('Groups objects by constructor location', async () => {
+    await goToResource('memory/duplicated-names.html');
+    await navigateToMemoryTab();
+    await takeHeapSnapshot();
+    await waitForNonEmptyHeapSnapshotData();
+    await setClassFilter('DuplicatedClassName');
+    let rows = await waitForMany('tr.data-grid-data-grid-node', 2);
+    assert.strictEqual(30, await getCountFromCategoryRow(rows[0]));
+    assert.strictEqual(3, await getCountFromCategoryRow(rows[1]));
+    const {frontend, target} = await getBrowserAndPages();
+    await target.bringToFront();
+    await target.click('button#update');
+    await frontend.bringToFront();
+    await takeHeapSnapshot('Snapshot 2');
+    await waitForNonEmptyHeapSnapshotData();
+    await changeViewViaDropdown('Comparison');
+    await setClassFilter('DuplicatedClassName');
+    rows = await waitForMany('tr.data-grid-data-grid-node', 2);
+    assert.strictEqual(5, await getAddedCountFromComparisonRow(rows[0]));
+    assert.strictEqual(1, await getRemovedCountFromComparisonRow(rows[0]));
+    assert.strictEqual(1, await getAddedCountFromComparisonRow(rows[1]));
+    assert.strictEqual(10, await getRemovedCountFromComparisonRow(rows[1]));
   });
 });

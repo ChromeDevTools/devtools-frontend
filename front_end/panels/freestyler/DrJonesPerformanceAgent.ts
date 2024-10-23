@@ -10,7 +10,6 @@ import type * as Trace from '../../models/trace/trace.js';
 import {
   AiAgent,
   type AidaRequestOptions,
-  type ContextDetail,
   type ContextResponse,
   type ParsedResponse,
   ResponseType,
@@ -19,16 +18,13 @@ import {
 const preamble = `You are a performance expert deeply integrated with Chrome DevTools.
 You specialize in analyzing web application behavior captured by Chrome DevTools Performance Panel.
 You will be provided with a string containing the JSON.stringify representation of a tree of events captured in a Chrome DevTools performance recording.
-This tree originates from the root task of a specific event that was selected by a user in the Performance panel's flame graph.
+This tree originates from the root task of a specific event that was selected by a user in the Performance panel's flame chart.
 Each node in this tree represents an event and contains the following information:
-* id: A unique identifier for the event.
-* url:  The URL of the JavaScript file where the event originated (if applicable).
-* line: The line number in the JavaScript file where the event originated (if applicable).
-* column: The column number in the JavaScript file where the event originated (if applicable).
-* function: The name of the function associated with this event.
-* start: The start time of the event in milliseconds.
-* totalTime: The total duration of the event, including the time spent in its children, in milliseconds.
-* selfTime:  The duration of the event itself, excluding the time spent in its children, in milliseconds.
+
+* name:  The name of the event or JavaScript function
+* url:  The URL of the JavaScript file where the event originated. If present, this event is a JavaScript function. If not, it's a native browser task.
+* dur: The total duration of the event, including the time spent in its children, in milliseconds.
+* self:  The duration of the event itself, excluding the time spent in its children, in milliseconds.
 * selected: A boolean value indicating whether this is the event the user selected in the Performance panel.
 * children: An array of child events, each represented as another node with the same structure.
 
@@ -66,7 +62,7 @@ Perhaps there's room for optimization there. You could investigate whether the c
 * Strings that don't need to be translated at this time.
 */
 const UIStringsNotTranslate = {
-  analyzingStackTrace: 'Analyzing stack trace',
+  analyzingStackTrace: 'Analyzing stack',
 };
 
 const lockedString = i18n.i18n.lockedString;
@@ -99,15 +95,21 @@ export class DrJonesPerformanceAgent extends AiAgent<Trace.Helpers.TreeHelpers.A
     yield {
       type: ResponseType.CONTEXT,
       title: lockedString(UIStringsNotTranslate.analyzingStackTrace),
-      details: createContextDetailsForDrJonesPerformanceAgent(selectedStackTrace),
+      details: [
+        {
+          title: 'Selected stack',
+          text: JSON.stringify(selectedStackTrace),
+        },
+      ],
     };
   }
 
   override async enhanceQuery(query: string, selectedStackTrace: Trace.Helpers.TreeHelpers.AINode|null):
       Promise<string> {
-    const networkEnchantmentQuery =
-        selectedStackTrace ? `# Selected stack trace\n${JSON.stringify(selectedStackTrace)}\n\n# User request\n\n` : '';
-    return `${networkEnchantmentQuery}${query}`;
+    selectedStackTrace?.sanitize();
+    const stackStr = JSON.stringify(selectedStackTrace).trim();
+    const perfEnhancementQuery = selectedStackTrace ? `# Selected stack trace\n${stackStr}\n\n# User request\n\n` : '';
+    return `${perfEnhancementQuery}${query}`;
   }
 
   override parseResponse(response: string): ParsedResponse {
@@ -115,16 +117,6 @@ export class DrJonesPerformanceAgent extends AiAgent<Trace.Helpers.TreeHelpers.A
       answer: response,
     };
   }
-}
-
-function createContextDetailsForDrJonesPerformanceAgent(selectedStackTrace: Trace.Helpers.TreeHelpers.AINode|
-                                                        null): [ContextDetail, ...ContextDetail[]] {
-  return [
-    {
-      title: 'Selected stack trace',
-      text: JSON.stringify(selectedStackTrace).trim(),
-    },
-  ];
 }
 
 function setDebugFreestylerEnabled(enabled: boolean): void {

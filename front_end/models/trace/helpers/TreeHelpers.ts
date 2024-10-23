@@ -37,64 +37,102 @@ export interface TraceEntryNode {
   children: TraceEntryNode[];
 }
 
-/** Node in a graph simplified for AI Assistance processing. The graph mirrors the TraceEntryNode one. */
+export interface AINodeSerialized {
+  name: string;
+  dur?: number;
+  self?: number;
+  children?: AINodeSerialized[];
+  url?: string;
+  selected?: boolean;
+}
+
+/**
+ * Node in a graph simplified for AI Assistance processing. The graph mirrors the TraceEntryNode one.
+ * Huge tip of the hat to Victor Porof for prototyping this with some great work: https://crrev.com/c/5711249
+ */
 export class AINode {
+  // event: Types.Events.Event; // Set in the constructor.
+  name: string;
+  duration?: Types.Timing.MilliSeconds;
+  selfDuration?: Types.Timing.MilliSeconds;
   id?: TraceEntryNodeId;
-  domain?: string;
-  line?: number;
-  column?: number;
-  function?: string;
   children?: AINode[];
+  url?: string;
   selected?: boolean;
 
-  constructor(
-      public type: string, public start: Types.Timing.MilliSeconds, public end?: Types.Timing.MilliSeconds,
-      public totalTime?: Types.Timing.MilliSeconds, public selfTime?: Types.Timing.MilliSeconds) {
+  constructor(public event: Types.Events.Event) {
+    this.name = event.name;
+    this.duration = event.dur === undefined ? undefined : microSecondsToMilliseconds(event.dur);
+
+    if (Types.Events.isProfileCall(event)) {
+      this.name = event.callFrame.functionName || '(anonymous)';
+      this.url = event.callFrame.url;
+    }
+  }
+
+  // Manually handle how nodes in this tree are serialized. We'll drop serveral properties that we don't need in the JSON string.
+  // FYI: toJSON() is invoked implicitly via JSON.stringify()
+  toJSON(): AINodeSerialized {
+    return {
+      selected: this.selected,
+      name: this.name,
+      url: this.url,
+      // Round milliseconds because we don't need the precision
+      dur: this.duration === undefined ? undefined : Math.round(this.duration * 10) / 10,
+      self: this.selfDuration === undefined ? undefined : Math.round(this.selfDuration * 10) / 10,
+      children: this.children?.length ? this.children : undefined,
+    };
   }
 
   static #fromTraceEvent(event: Types.Events.Event): AINode {
-    const start = microSecondsToMilliseconds(event.ts);
-    const duration = event.dur === undefined ? undefined : microSecondsToMilliseconds(event.dur);
-    const aiNode = new AINode(event.name, start, duration);
-    if (Types.Events.isProfileCall(event)) {
-      aiNode.function = event.callFrame.functionName || '(anonymous)';
-      try {
-        const url = new URL(event.callFrame.url);
-        aiNode.domain = url.origin;
-        aiNode.line = event.callFrame.lineNumber;
-        aiNode.column = event.callFrame.columnNumber;
-      } catch (e) {
-      }
-    }
-    return aiNode;
+    return new AINode(event);
   }
 
   /**
-   * Builds a AINode tree from a TraceEntryNode tree and marks the selected node.
+   * Builds a TraceEntryNodeForAI tree from a node and marks the selected node. Primary entrypoint from EntriesFilter
    */
-  static #fromEntryNodeAndTree(node: TraceEntryNode, selectedNode: TraceEntryNode): AINode {
-    const aiNode = AINode.#fromTraceEvent(node.entry);
-    aiNode.id = node.id;
-    if (node === selectedNode) {
-      aiNode.selected = true;
-    }
-    aiNode.selfTime = node.selfTime === undefined ? undefined : microSecondsToMilliseconds(node.selfTime);
-    for (const child of node.children) {
-      aiNode.children ??= [];
-      aiNode.children.push(AINode.#fromEntryNodeAndTree(child, selectedNode));
-    }
-    return aiNode;
-  }
-
-  static fromEntryNode(selectedNode: TraceEntryNode): AINode {
-    function getRoot(node: TraceEntryNode): TraceEntryNode {
-      if (node.parent) {
-        return getRoot(node.parent);
+  static fromEntryNode(selectedNode: TraceEntryNode, entryIsVisibleInTimeline: (event: Types.Events.Event) => boolean):
+      AINode {
+    /**
+     * Builds a AINode tree from a TraceEntryNode tree and marks the selected node.
+     */
+    function fromEntryNodeAndTree(node: TraceEntryNode): AINode {
+      const aiNode = AINode.#fromTraceEvent(node.entry);
+      aiNode.id = node.id;
+      if (node === selectedNode) {
+        aiNode.selected = true;
       }
-      return node;
+      aiNode.selfDuration = node.selfTime === undefined ? undefined : microSecondsToMilliseconds(node.selfTime);
+      for (const child of node.children) {
+        aiNode.children ??= [];
+        aiNode.children.push(fromEntryNodeAndTree(child));
+      }
+      return aiNode;
     }
 
-    return AINode.#fromEntryNodeAndTree(getRoot(selectedNode), selectedNode);
+    function findTopMostVisibleAncestor(node: TraceEntryNode): TraceEntryNode {
+      const parentNodes = [node];
+      let parent = node.parent;
+      while (parent) {
+        parentNodes.unshift(parent);
+        parent = parent.parent;
+      }
+      return parentNodes.find(node => entryIsVisibleInTimeline(node.entry)) ?? node;
+    }
+
+    const topMostVisibleRoot = findTopMostVisibleAncestor(selectedNode);
+    const aiNode = fromEntryNodeAndTree(topMostVisibleRoot);
+
+    // If our root wasn't visible, this could return an array of multiple RunTasks.
+    // But with a visible root, we safely get back the exact same root, now with its descendent tree updated.
+    // Filter to ensure our tree here only has "visible" entries
+    const [filteredAiNodeRoot] = AINode.#filterRecursive([aiNode], node => {
+      if (node.event.name === 'V8.CompileCode' || node.event.name === 'UpdateCounters') {
+        return false;
+      }
+      return entryIsVisibleInTimeline(node.event);
+    });
+    return filteredAiNodeRoot;
   }
 
   static getSelectedNodeWithinTree(node: AINode): AINode|null {
@@ -111,6 +149,59 @@ export class AINode {
       }
     }
     return null;
+  }
+
+  static #filterRecursive(list: AINode[], predicate: (node: AINode) => boolean): AINode[] {
+    let done;
+    do {
+      done = true;
+      const filtered: AINode[] = [];
+      for (const node of list) {
+        if (predicate(node)) {
+          // Keep it
+          filtered.push(node);
+        } else if (node.children) {
+          filtered.push(...node.children);
+          done = false;
+        }
+      }
+      list = filtered;
+    } while (!done);
+
+    for (const node of list) {
+      if (node.children) {
+        node.children = AINode.#filterRecursive(node.children, predicate);
+      }
+    }
+    return list;
+  }
+
+  static #removeInexpensiveNodesRecursively(
+      list: AINode[],
+      options?: {minDuration?: number, minSelf?: number, minJsDuration?: number, minJsSelf?: number}): AINode[] {
+    const minDuration = options?.minDuration ?? 0;
+    const minSelf = options?.minSelf ?? 0;
+    const minJsDuration = options?.minJsDuration ?? 0;
+    const minJsSelf = options?.minJsSelf ?? 0;
+
+    const isJS = (node: AINode): boolean => Boolean(node.url);
+    const longEnough = (node: AINode): boolean =>
+        node.duration === undefined || node.duration >= (isJS(node) ? minJsDuration : minDuration);
+    const selfLongEnough = (node: AINode): boolean =>
+        node.selfDuration === undefined || node.selfDuration >= (isJS(node) ? minJsSelf : minSelf);
+
+    return AINode.#filterRecursive(list, node => longEnough(node) && selfLongEnough(node));
+  }
+
+  // Invoked from DrJonesPerformanceAgent
+  sanitize(): void {
+    if (this.children) {
+      this.children = AINode.#removeInexpensiveNodesRecursively(this.children, {
+        minDuration: Types.Timing.MilliSeconds(1),
+        minJsDuration: Types.Timing.MilliSeconds(1),
+        minJsSelf: Types.Timing.MilliSeconds(0.1),
+      });
+    }
   }
 }
 

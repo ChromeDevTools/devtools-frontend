@@ -1141,10 +1141,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     if (timelineSelection) {
       this.lastSelection = new Selection(timelineSelection, entryIndex);
     }
-    if (UI.ActionRegistry.ActionRegistry.instance().hasAction('drjones.performance-panel-context')) {
-      const aiNode = this.getAIEventNodeTreeFromEntryIndex(entryIndex);
-      UI.Context.Context.instance().setFlavor(Trace.Helpers.TreeHelpers.AINode, aiNode);
-    }
     return timelineSelection;
   }
 

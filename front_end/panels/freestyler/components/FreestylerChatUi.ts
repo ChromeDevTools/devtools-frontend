@@ -103,7 +103,7 @@ const UIStringsNotTranslate = {
   /**
    *@description Placeholder text for the chat UI input.
    */
-  inputPlaceholderForDrJonesPerformanceAgent: 'Ask a question about the selected stack trace',
+  inputPlaceholderForDrJonesPerformanceAgent: 'Ask a question about the selected stack',
   /**
    *@description Title for the send icon button.
    */
@@ -890,10 +890,7 @@ export class FreestylerChatUi extends HTMLElement {
       return html`${LitHtml.nothing}`;
     }
 
-    let displayName = selectedNode.type;
-    if (selectedNode.type === 'ProfileCall' && selectedNode.function) {
-      displayName = selectedNode.function;
-    }
+    const displayName = selectedNode.name;
 
     const iconData = {
       iconName: 'performance',

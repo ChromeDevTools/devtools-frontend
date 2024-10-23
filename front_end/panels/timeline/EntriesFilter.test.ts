@@ -725,46 +725,30 @@ describeWithEnvironment('EntriesFilter', function() {
       return Trace.Types.Events.isProfileCall(entry) && entry.callFrame.functionName === 'foo' && entry.dur === 233;
     });
 
-    const stack = new Timeline.EntriesFilter.EntriesFilter(parsedTrace.Renderer.entryToNode);
-    if (!stack) {
+    const entriesFilter = new Timeline.EntriesFilter.EntriesFilter(parsedTrace.Renderer.entryToNode);
+    if (!entriesFilter) {
       throw new Error('EntriesFilter does not exist');
     }
+    const aiNodeTree = entriesFilter.getAIEventNodeTree(firstFooCallEntry);
+    assert.exists(aiNodeTree);
 
-    const traceEntryTree = stack.getAIEventNodeTree(firstFooCallEntry);
+    const fooAiNode = Trace.Helpers.TreeHelpers.AINode.getSelectedNodeWithinTree(aiNodeTree);
+    assert.exists(fooAiNode);
 
-    assert.exists(traceEntryTree);
-
-    const selectedNode = Trace.Helpers.TreeHelpers.AINode.getSelectedNodeWithinTree(traceEntryTree);
-    assert.exists(selectedNode);
+    // Use the toJSON simplification for comparison.
+    const simpleFooNode = JSON.parse(JSON.stringify(fooAiNode));
+    assert.strictEqual(simpleFooNode.children.length, 1);
 
     // delete for smaller deepStrictEqual comparison
-    selectedNode.children = traceEntryTree.children = [];
+    simpleFooNode.children = [];
 
-    const expectedTraceEntryTree = new Trace.Helpers.TreeHelpers.AINode(
-        'RunTask',
-        Trace.Types.Timing.MilliSeconds(336772948.813),
-        Trace.Types.Timing.MilliSeconds(4.614),
-        undefined,
-        Trace.Types.Timing.MilliSeconds(0.162),
-    );
-    expectedTraceEntryTree.id = 368 as Trace.Helpers.TreeHelpers.TraceEntryNodeId;
-    expectedTraceEntryTree.children = [];
-    assert.deepStrictEqual(traceEntryTree, expectedTraceEntryTree);
-
-    const expectedselectedNode = new Trace.Helpers.TreeHelpers.AINode(
-        'ProfileCall',
-        Trace.Types.Timing.MilliSeconds(336772953.044),
-        Trace.Types.Timing.MilliSeconds(0.233),
-        undefined,
-        Trace.Types.Timing.MilliSeconds(0.162),
-    );
-    expectedselectedNode.id = 408 as Trace.Helpers.TreeHelpers.TraceEntryNodeId;
-    expectedselectedNode.column = 12;
-    expectedselectedNode.function = 'foo';
-    expectedselectedNode.line = 8;
-    expectedselectedNode.selected = true;
-    expectedselectedNode.domain = 'file://';
-    expectedselectedNode.children = [];
-    assert.deepStrictEqual(selectedNode, expectedselectedNode);
+    assert.deepStrictEqual(simpleFooNode, {
+      dur: 0.2,
+      name: 'foo',
+      selected: true,
+      self: 0.2,
+      url: 'file:///usr/local/google/home/alinavarkki/stack/recursion.html',
+      children: [],
+    });
   });
 });

@@ -49,9 +49,10 @@ export function entryIsVisibleInTimeline(
     return true;
   }
 
-  // Gate the visibility of post message events behind the experiement flag
-  if (Trace.Types.Events.isSchedulePostMessage(entry) || Trace.Types.Events.isHandlePostMessage(entry)) {
-    return Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_SHOW_POST_MESSAGE_EVENTS);
+  if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_SHOW_POST_MESSAGE_EVENTS)) {
+    if (Trace.Types.Events.isSchedulePostMessage(entry) || Trace.Types.Events.isHandlePostMessage(entry)) {
+      return true;
+    }
   }
 
   if (Trace.Types.Extensions.isSyntheticExtensionEntry(entry) || Trace.Types.Events.isSyntheticServerTiming(entry)) {

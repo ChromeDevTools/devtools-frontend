@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as Platform from '../../core/platform/platform.js';
+import * as Root from '../../core/root/root.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 
@@ -86,7 +87,8 @@ export class EntriesFilter {
       return null;
     }
 
-    return Trace.Helpers.TreeHelpers.AINode.fromEntryNode(node);
+    return Trace.Helpers.TreeHelpers.AINode.fromEntryNode(
+        node, Root.Runtime.experiments.isEnabled('timeline-show-all-events') ? () => true : entryIsVisibleInTimeline);
   }
 
   /**

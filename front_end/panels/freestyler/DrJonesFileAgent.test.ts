@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
-import * as Host from '../../core/host/host.js';
+import type * as Host from '../../core/host/host.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Workspace from '../../models/workspace/workspace.js';
@@ -71,23 +71,21 @@ describeWithEnvironment('DrJonesFileAgent', () => {
         serverSideLoggingEnabled: true,
       });
       sinon.stub(agent, 'preamble').value('preamble');
-      agent.chatHistoryForTesting = new Map([[
-        0,
+      agent.chatNewHistoryForTesting = new Map([
         [
-          {
-            text: 'first',
-            entity: Host.AidaClient.Entity.UNKNOWN,
-          },
-          {
-            text: 'second',
-            entity: Host.AidaClient.Entity.SYSTEM,
-          },
-          {
-            text: 'third',
-            entity: Host.AidaClient.Entity.USER,
-          },
+          0,
+          [
+            {
+              type: ResponseType.QUERYING,
+              query: 'question',
+            },
+            {
+              type: ResponseType.ANSWER,
+              text: 'answer',
+            },
+          ],
         ],
-      ]]);
+      ]);
       assert.deepStrictEqual(
           agent.buildRequest({
             input: 'test input',
@@ -98,16 +96,12 @@ describeWithEnvironment('DrJonesFileAgent', () => {
             preamble: 'preamble',
             chat_history: [
               {
-                entity: 0,
-                text: 'first',
+                entity: 1,
+                text: 'question',
               },
               {
                 entity: 2,
-                text: 'second',
-              },
-              {
-                entity: 1,
-                text: 'third',
+                text: 'answer',
               },
             ],
             metadata: {
@@ -175,6 +169,8 @@ File Content:
         },
         {
           type: ResponseType.QUERYING,
+          query:
+              '# Selected file\nFile Name: script.js\nURL: http://example.com/script.js\nFile Content:\n\n\n# User request\n\ntest',
         },
         {
           type: ResponseType.ANSWER,

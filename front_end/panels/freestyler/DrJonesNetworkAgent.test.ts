@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Host from '../../core/host/host.js';
+import type * as Host from '../../core/host/host.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
@@ -75,20 +75,16 @@ describeWithMockConnection('DrJonesNetworkAgent', () => {
         serverSideLoggingEnabled: true,
       });
       sinon.stub(agent, 'preamble').value('preamble');
-      agent.chatHistoryForTesting = new Map([[
+      agent.chatNewHistoryForTesting = new Map([[
         0,
         [
           {
-            text: 'first',
-            entity: Host.AidaClient.Entity.UNKNOWN,
+            type: ResponseType.QUERYING,
+            query: 'questions',
           },
           {
-            text: 'second',
-            entity: Host.AidaClient.Entity.SYSTEM,
-          },
-          {
-            text: 'third',
-            entity: Host.AidaClient.Entity.USER,
+            type: ResponseType.ANSWER,
+            text: 'answer',
           },
         ],
       ]]);
@@ -102,16 +98,12 @@ describeWithMockConnection('DrJonesNetworkAgent', () => {
             preamble: 'preamble',
             chat_history: [
               {
-                entity: 0,
-                text: 'first',
+                entity: 1,
+                text: 'questions',
               },
               {
                 entity: 2,
-                text: 'second',
-              },
-              {
-                entity: 1,
-                text: 'third',
+                text: 'answer',
               },
             ],
             metadata: {
@@ -252,6 +244,8 @@ describeWithMockConnection('DrJonesNetworkAgent', () => {
         },
         {
           type: ResponseType.QUERYING,
+          query:
+              '# Selected network request \nRequest: https://www.example.com\n\nRequest headers:\nfoo1: bar1\n\nResponse headers:\nfoo2: bar2\nfoo3: bar3\n\nResponse status: 200 \n\nRequest timing:\nQueued at (timestamp): 0 μs\nStarted at (timestamp): 8.3 min\nQueueing (duration): 8.3 min\nConnection start (stalled) (duration): 800.00 ms\nRequest sent (duration): 100.00 ms\nDuration (duration): 8.3 min\n\nRequest initiator chain:\n- URL: https://www.initiator.com\n\t- URL: https://www.example.com\n\t\t- URL: https://www.example.com/1\n\t\t- URL: https://www.example.com/2\n\n# User request\n\ntest',
         },
         {
           type: ResponseType.ANSWER,

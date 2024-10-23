@@ -4,7 +4,7 @@
 
 import * as Host from '../../core/host/host.js';
 
-export enum ResponseType {
+export const enum ResponseType {
   CONTEXT = 'context',
   TITLE = 'title',
   THOUGHT = 'thought',
@@ -13,6 +13,7 @@ export enum ResponseType {
   ANSWER = 'answer',
   ERROR = 'error',
   QUERYING = 'querying',
+  USER_QUERY = 'user-query',
 }
 
 export const enum ErrorType {
@@ -74,10 +75,17 @@ export interface ActionResponse {
 
 export interface QueryResponse {
   type: ResponseType.QUERYING;
+  query: string;
+}
+
+export interface UserQuery {
+  type: ResponseType.USER_QUERY;
+  query: string;
 }
 
 export type ResponseData = AnswerResponse|ErrorResponse|ActionResponse|SideEffectResponse|ThoughtResponse|TitleResponse|
     QueryResponse|ContextResponse;
+export type ResponseDataWithHistory = ResponseData|UserQuery;
 
 export interface AidaBuildRequestOptions {
   input: string;
@@ -94,10 +102,10 @@ export interface AidaRequestOptions {
   model_id?: string;
 }
 
-type AgentOptions = {
-  aidaClient: Host.AidaClient.AidaClient,
-  serverSideLoggingEnabled?: boolean,
-};
+interface AgentOptions {
+  aidaClient: Host.AidaClient.AidaClient;
+  serverSideLoggingEnabled?: boolean;
+}
 
 interface ParsedResponseAnswer {
   answer: string;
@@ -132,93 +140,19 @@ export abstract class AiAgent<T> {
    * Mapping between the unique request id and
    * the history chuck it created
    */
-  #chatHistory: Map<number, HistoryChunk[]> = new Map();
+  #history = new Map<number, ResponseDataWithHistory[]>();
 
   constructor(opts: AgentOptions) {
     this.#aidaClient = opts.aidaClient;
     this.#serverSideLoggingEnabled = opts.serverSideLoggingEnabled ?? false;
   }
 
-  get historyEntry(): Array<HistoryChunk> {
-    return [...this.#chatHistory.values()].flat();
-  }
-
   get chatHistoryForTesting(): Array<HistoryChunk> {
-    return this.historyEntry;
+    return this.#historyEntry;
   }
 
-  set chatHistoryForTesting(history: Map<number, HistoryChunk[]>) {
-    this.#chatHistory = history;
-  }
-
-  removeHistoryRun(id: number): void {
-    this.#chatHistory.delete(id);
-  }
-
-  addToHistory(options: {
-    id: number,
-    query: string,
-    response: ParsedResponse,
-  }): void {
-    const response = options.response;
-    if ('answer' in response) {
-      this.#storeHistoryEntries({
-        id: options.id,
-        query: options.query,
-        output: response.answer,
-      });
-      return;
-    }
-
-    const {
-      title,
-      thought,
-      action,
-    } = response;
-
-    if (thought) {
-      this.#storeHistoryEntries({
-        id: options.id,
-        query: options.query,
-        output: `THOUGHT: ${thought}
-TITLE: ${title}
-ACTION
-${action}
-STOP`,
-      });
-    } else {
-      this.#storeHistoryEntries({
-        id: options.id,
-        query: options.query,
-        output: `ACTION
-${action}
-STOP`,
-      });
-    }
-  }
-
-  #storeHistoryEntries({
-    id,
-    query,
-    output,
-  }: {
-    id: number,
-    query: string,
-    output: string,
-  }): void {
-    const currentRunEntries = this.#chatHistory.get(id) ?? [];
-
-    this.#chatHistory.set(id, [
-      ...currentRunEntries,
-      {
-        text: query,
-        entity: Host.AidaClient.Entity.USER,
-      },
-      {
-        text: output,
-        entity: Host.AidaClient.Entity.SYSTEM,
-      },
-    ]);
+  set chatNewHistoryForTesting(history: Map<number, ResponseDataWithHistory[]>) {
+    this.#history = history;
   }
 
   #structuredLog: Array<{
@@ -269,7 +203,7 @@ STOP`,
       input: opts.input,
       preamble: this.preamble,
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      chat_history: this.#chatHistory.size ? this.historyEntry : undefined,
+      chat_history: this.#history.size ? this.#historyEntry : undefined,
       client: Host.AidaClient.CLIENT_NAME,
       options: this.options,
       metadata: {
@@ -285,7 +219,8 @@ STOP`,
     return request;
   }
 
-  handleAction(_action: string, _rpcId?: number): AsyncGenerator<SideEffectResponse, ActionResponse, void> {
+  handleAction(action: string, rpcId?: number): AsyncGenerator<SideEffectResponse, ActionResponse, void>;
+  handleAction(): never {
     throw new Error('Unexpected action found');
   }
 
@@ -300,20 +235,129 @@ STOP`,
     };
   }
 
+  formatHistoryChunkAnswer(text: string): string {
+    return text;
+  }
+
+  formatHistoryChunkObservation(observation: {
+    title?: string,
+    thought?: string,
+    action?: string,
+  }): string {
+    let text = '';
+    if (observation.thought) {
+      text = `THOUGHT: ${observation.thought}`;
+    }
+    if (observation.title) {
+      text += `\nTITLE: ${observation.title}`;
+    }
+    if (observation.action) {
+      text += `\nACTION
+${observation.action}
+STOP`;
+    }
+
+    return text;
+  }
+
+  get #historyEntry(): HistoryChunk[] {
+    const historyAll = new Map<number, HistoryChunk[]>();
+    for (const [id, entry] of this.#history.entries()) {
+      const history: HistoryChunk[] = [];
+      historyAll.set(id, history);
+      let response: {
+        title?: string,
+        thought?: string,
+        action?: string,
+      } = {};
+      for (const data of entry) {
+        switch (data.type) {
+          case ResponseType.CONTEXT:
+          case ResponseType.SIDE_EFFECT:
+          case ResponseType.USER_QUERY:
+            continue;
+          case ResponseType.QUERYING: {
+            const observation = this.formatHistoryChunkObservation(response);
+            if (observation) {
+              history.push({
+                entity: Host.AidaClient.Entity.SYSTEM,
+                text: observation,
+              });
+              response = {};
+            }
+
+            history.push({
+              entity: Host.AidaClient.Entity.USER,
+              text: data.query,
+            });
+            break;
+          }
+          case ResponseType.ANSWER:
+            history.push({
+              entity: Host.AidaClient.Entity.SYSTEM,
+              text: this.formatHistoryChunkAnswer(data.text),
+            });
+            break;
+          case ResponseType.TITLE:
+            response.title = data.title;
+            break;
+          case ResponseType.THOUGHT:
+            response.thought = data.thought;
+            break;
+          case ResponseType.ACTION:
+            response.action = data.code;
+            break;
+          case ResponseType.ERROR:
+            historyAll.delete(id);
+            break;
+        }
+      }
+      const observation = this.formatHistoryChunkObservation(response);
+      if (observation) {
+        history.push({
+          entity: Host.AidaClient.Entity.USER,
+          text: observation,
+        });
+      }
+    }
+
+    return [...historyAll.values()].flat();
+  }
+
+  #addHistory(id: number, data: ResponseDataWithHistory): void {
+    const currentRunEntries = this.#history.get(id);
+    if (currentRunEntries) {
+      currentRunEntries.push(data);
+      return;
+    }
+    this.#history.set(id, [data]);
+  }
+
   #runId = 0;
   async * run(query: string, options: {
     signal?: AbortSignal, selected: T|null,
   }): AsyncGenerator<ResponseData, void, void> {
-    yield* this.handleContextDetails(options.selected);
+    const id = this.#runId++;
+
+    for await (const response of this.handleContextDetails(options.selected)) {
+      this.#addHistory(id, response);
+      yield response;
+    }
+
+    this.#addHistory(id, {
+      type: ResponseType.USER_QUERY,
+      query,
+    });
 
     query = await this.enhanceQuery(query, options.selected);
-    const currentRunId = ++this.#runId;
 
     for (let i = 0; i < MAX_STEP; i++) {
-      yield {
+      const queryResponse = {
         type: ResponseType.QUERYING,
-      };
-
+        query,
+      } as const;
+      this.#addHistory(id, queryResponse);
+      yield queryResponse;
       let response: string;
       let rpcId: number|undefined;
       try {
@@ -327,49 +371,51 @@ STOP`,
         debugLog('Error calling the AIDA API', err);
 
         if (err instanceof Host.AidaClient.AidaAbortError) {
-          this.removeHistoryRun(currentRunId);
-          yield {
+          const response = {
             type: ResponseType.ERROR,
             error: ErrorType.ABORT,
             rpcId,
-          };
+          } as const;
+          this.#addHistory(id, response);
+          yield response;
           break;
         }
 
-        yield {
+        const response = {
           type: ResponseType.ERROR,
           error: ErrorType.UNKNOWN,
           rpcId,
-        };
+        } as const;
+        this.#addHistory(id, response);
+        yield response;
+
         break;
       }
 
       const parsedResponse = this.parseResponse(response);
 
-      this.addToHistory({
-        id: currentRunId,
-        query,
-        response: parsedResponse,
-      });
       if ('answer' in parsedResponse) {
         const {
           answer,
           suggestions,
         } = parsedResponse;
         if (answer) {
-          yield {
+          const response = {
             type: ResponseType.ANSWER,
             text: answer,
             rpcId,
             suggestions,
-          };
+          } as const;
+          this.#addHistory(id, response);
+          yield response;
         } else {
-          this.removeHistoryRun(currentRunId);
-          yield {
+          const response = {
             type: ResponseType.ERROR,
             error: ErrorType.UNKNOWN,
             rpcId,
-          };
+          } as const;
+          this.#addHistory(id, response);
+          yield response;
         }
 
         break;
@@ -382,32 +428,39 @@ STOP`,
       } = parsedResponse;
 
       if (title) {
-        yield {
+        const response = {
           type: ResponseType.TITLE,
           title,
           rpcId,
-        };
+        } as const;
+        this.#addHistory(id, response);
+        yield response;
       }
 
       if (thought) {
-        yield {
+        const response = {
           type: ResponseType.THOUGHT,
           thought,
           rpcId,
-        };
+        } as const;
+        this.#addHistory(id, response);
+        yield response;
       }
 
       if (action) {
         const result = yield* this.handleAction(action, rpcId);
+        this.#addHistory(id, result);
         yield result;
         query = `OBSERVATION: ${result.output}`;
       }
 
       if (i === MAX_STEP - 1) {
-        yield {
+        const response = {
           type: ResponseType.ERROR,
           error: ErrorType.MAX_STEPS,
-        };
+        } as const;
+        this.#addHistory(id, response);
+        yield response;
         break;
       }
     }

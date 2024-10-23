@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Host from '../../core/host/host.js';
+import type * as Host from '../../core/host/host.js';
 import * as Trace from '../../models/trace/trace.js';
 import {describeWithEnvironment, getGetHostConfigStub} from '../../testing/EnvironmentHelpers.js';
 import {makeCompleteEvent, makeProfileCall} from '../../testing/TraceHelpers.js';
@@ -63,20 +63,16 @@ describeWithEnvironment('DrJonesPerformanceAgent', () => {
         serverSideLoggingEnabled: true,
       });
       sinon.stub(agent, 'preamble').value('preamble');
-      agent.chatHistoryForTesting = new Map([[
+      agent.chatNewHistoryForTesting = new Map([[
         0,
         [
           {
-            text: 'first',
-            entity: Host.AidaClient.Entity.UNKNOWN,
+            type: ResponseType.QUERYING,
+            query: 'question',
           },
           {
-            text: 'second',
-            entity: Host.AidaClient.Entity.SYSTEM,
-          },
-          {
-            text: 'third',
-            entity: Host.AidaClient.Entity.USER,
+            type: ResponseType.ANSWER,
+            text: 'answer',
           },
         ],
       ]]);
@@ -90,16 +86,12 @@ describeWithEnvironment('DrJonesPerformanceAgent', () => {
             preamble: 'preamble',
             chat_history: [
               {
-                entity: 0,
-                text: 'first',
+                entity: 1,
+                text: 'question',
               },
               {
                 entity: 2,
-                text: 'second',
-              },
-              {
-                entity: 1,
-                text: 'third',
+                text: 'answer',
               },
             ],
             metadata: {
@@ -188,6 +180,8 @@ describeWithEnvironment('DrJonesPerformanceAgent', () => {
         },
         {
           type: ResponseType.QUERYING,
+          query:
+              '# Selected stack trace\n{\"name\":\"EvaluateScript\",\"dur\":0.5,\"self\":0}\n\n# User request\n\ntest',
         },
         {
           type: ResponseType.ANSWER,

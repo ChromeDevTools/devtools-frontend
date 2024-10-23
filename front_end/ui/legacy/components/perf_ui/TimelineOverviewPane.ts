@@ -92,9 +92,9 @@ export class TimelineOverviewPane extends Common.ObjectWrapper.eventMixin<EventT
   }
 
   enableCreateBreadcrumbsButton(): void {
-    const breacrumbsElement = this.overviewGrid.enableCreateBreadcrumbsButton();
-    breacrumbsElement.addEventListener('mousemove', this.onMouseMove.bind(this), true);
-    breacrumbsElement.addEventListener('mouseleave', this.hideCursor.bind(this), true);
+    const breadcrumbsElement = this.overviewGrid.enableCreateBreadcrumbsButton();
+    breadcrumbsElement.addEventListener('mousemove', this.onMouseMove.bind(this), true);
+    breadcrumbsElement.addEventListener('mouseleave', this.hideCursor.bind(this), true);
   }
 
   private onMouseMove(event: Event): void {

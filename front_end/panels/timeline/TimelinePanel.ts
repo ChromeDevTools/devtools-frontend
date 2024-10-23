@@ -497,7 +497,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
     this.showMemorySetting = Common.Settings.Settings.instance().createSetting('timeline-show-memory', false);
     this.showMemorySetting.setTitle(i18nString(UIStrings.memory));
-    this.showMemorySetting.addChangeListener(this.onModeChanged, this);
+    this.showMemorySetting.addChangeListener(this.onMemoryModeChanged, this);
 
     this.#thirdPartyTracksSetting = TimelinePanel.extensionDataVisibilitySetting();
     this.#thirdPartyTracksSetting.addChangeListener(this.#extensionDataVisibilityChanged, this);
@@ -616,7 +616,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
           event.bounds, {ignoreMiniMapBounds: true, shouldAnimate: true});
     });
 
-    this.onModeChanged();
+    this.onMemoryModeChanged();
     this.populateToolbar();
     // The viewMode is set by default to the landing page, so we don't call
     // `#changeView` here and can instead directly call showLandingPage();
@@ -1312,7 +1312,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     });
   }
 
-  private onModeChanged(): void {
+  private onMemoryModeChanged(): void {
     this.flameChart.updateCountersGraphToggle(this.showMemorySetting.get());
     this.updateMiniMap();
     this.doResize();

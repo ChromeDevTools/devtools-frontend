@@ -71,6 +71,10 @@ const UIStrings = {
    * @description Text referring to the total cumulative score of a layout shift cluster.
    */
   total: 'Total',
+  /**
+   * @description Text for a culprit type of Unsized image.
+   */
+  unsizedImage: 'Unsized image',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/LayoutShiftDetails.ts', UIStrings);
@@ -184,12 +188,26 @@ export class LayoutShiftDetails extends HTMLElement {
     // clang-format on
   }
 
+  #renderUnsizedImage(node: Protocol.DOM.BackendNodeId): LitHtml.TemplateResult|null {
+    // clang-format off
+    const el = html`
+      <devtools-performance-node-link
+        .data=${{
+          backendNodeId: node,
+        } as Insights.NodeLink.NodeLinkData}>
+      </devtools-performance-node-link>`;
+    return html`
+    <span class="culprit"><span class="culprit-type">${i18nString(UIStrings.unsizedImage)}: </span><span class="culprit-value">${el}</span></span>`;
+    // clang-format on
+  }
+
   #renderRootCauseValues(rootCauses: Trace.Insights.InsightRunners.CumulativeLayoutShift.LayoutShiftRootCausesData|
                          undefined): LitHtml.TemplateResult|null {
     return html`
       ${rootCauses?.fontRequests.map(fontReq => this.#renderFontRequest(fontReq))}
       ${rootCauses?.iframeIds.map(iframe => this.#renderIframe(iframe))}
       ${rootCauses?.nonCompositedAnimations.map(failure => this.#renderAnimation(failure))}
+      ${rootCauses?.unsizedImages.map(image => this.#renderUnsizedImage(image))}
     `;
   }
 
@@ -217,7 +235,8 @@ export class LayoutShiftDetails extends HTMLElement {
     }
     const hasCulprits = Boolean(
         rootCauses &&
-        (rootCauses.fontRequests.length || rootCauses.iframeIds.length || rootCauses.nonCompositedAnimations.length));
+        (rootCauses.fontRequests.length || rootCauses.iframeIds.length || rootCauses.nonCompositedAnimations.length ||
+         rootCauses.unsizedImages.length));
 
     // clang-format off
     return html`
@@ -280,7 +299,8 @@ export class LayoutShiftDetails extends HTMLElement {
     const rootCauses = clsInsight.shifts.get(layoutShift);
     const elementsShifted = layoutShift.args.data?.impacted_nodes ?? [];
     const hasCulprits = rootCauses &&
-        (rootCauses.fontRequests.length || rootCauses.iframeIds.length || rootCauses.nonCompositedAnimations.length);
+        (rootCauses.fontRequests.length || rootCauses.iframeIds.length || rootCauses.nonCompositedAnimations.length ||
+         rootCauses.unsizedImages.length);
     const hasShiftedElements = elementsShifted?.length;
 
     const parentCluster = clsInsight.clusters.find(cluster => {

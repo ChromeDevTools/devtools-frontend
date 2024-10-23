@@ -189,6 +189,28 @@ describeWithEnvironment('CumulativeLayoutShift', function() {
         assert.isOk(shift3);
         assert.isEmpty(shift3[1].fontRequests);
       });
+
+      it('handles potential unsized images root cause correctly', async function() {
+        const {data, insights} = await processTrace(this, 'unsized-images.json.gz');
+        const firstNav = getFirstOrError(data.Meta.navigationsByNavigationId.values());
+        const insight = getInsightOrError('CumulativeLayoutShift', insights, firstNav);
+        const {shifts} = insight;
+        assert.exists(shifts);
+        assert.strictEqual(shifts.size, 2);
+
+        const unsizedImages = data.LayoutShifts.layoutImageUnsizedEvents;
+        assert.strictEqual(unsizedImages.length, 2);
+
+        const layoutShiftEvents = Array.from(shifts.entries());
+        const shift1 = layoutShiftEvents.at(0);
+        assert.isOk(shift1);
+        // Root cause should match the nodeId of the unsized images events.
+        assert.strictEqual(shift1[1].unsizedImages[0], unsizedImages[0].args.data.nodeId);
+
+        const shift2 = layoutShiftEvents.at(1);
+        assert.isOk(shift2);
+        assert.strictEqual(shift2[1].unsizedImages[0], unsizedImages[1].args.data.nodeId);
+      });
     });
   });
   describe('clusters', function() {

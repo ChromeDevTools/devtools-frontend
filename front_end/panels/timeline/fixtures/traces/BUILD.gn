@@ -94,6 +94,7 @@ copy_to_gen("traces") {
     "timings-track.json.gz",
     "two-functions-recursion.json.gz",
     "two-workers.json.gz",
+    "unsized-images.json.gz",
     "user-timings-complex.json.gz",
     "user-timings-details.json.gz",
     "user-timings.json.gz",

@@ -46,11 +46,13 @@ interface LayoutShifts {
   // We use these to calculate root causes for a given LayoutShift
   // TODO(crbug/41484172): should be readonly
   prePaintEvents: Types.Events.PrePaint[];
+  paintImageEvents: Types.Events.PaintImage[];
   layoutInvalidationEvents: readonly Types.Events.LayoutInvalidationTracking[];
   scheduleStyleInvalidationEvents: readonly Types.Events.ScheduleStyleInvalidationTracking[];
   styleRecalcInvalidationEvents: readonly Types.Events.StyleRecalcInvalidationTracking[];
   renderFrameImplCreateChildFrameEvents: readonly Types.Events.RenderFrameImplCreateChildFrame[];
   domLoadingEvents: readonly Types.Events.DomLoading[];
+  layoutImageUnsizedEvents: readonly Types.Events.LayoutImageUnsized[];
   beginRemoteFontLoadEvents: readonly Types.Events.BeginRemoteFontLoad[];
   scoreRecords: readonly ScoreRecord[];
   // TODO(crbug/41484172): should be readonly
@@ -81,6 +83,7 @@ const scheduleStyleInvalidationEvents: Types.Events.ScheduleStyleInvalidationTra
 const styleRecalcInvalidationEvents: Types.Events.StyleRecalcInvalidationTracking[] = [];
 const renderFrameImplCreateChildFrameEvents: Types.Events.RenderFrameImplCreateChildFrame[] = [];
 const domLoadingEvents: Types.Events.DomLoading[] = [];
+const layoutImageUnsizedEvents: Types.Events.LayoutImageUnsized[] = [];
 const beginRemoteFontLoadEvents: Types.Events.BeginRemoteFontLoad[] = [];
 
 const backendNodeIds = new Set<Protocol.DOM.BackendNodeId>();
@@ -90,6 +93,8 @@ const backendNodeIds = new Set<Protocol.DOM.BackendNodeId>();
 // shift if the next PrePaint after the LayoutInvalidation is the parent
 // node of such shift.
 const prePaintEvents: Types.Events.PrePaint[] = [];
+
+const paintImageEvents: Types.Events.PaintImage[] = [];
 
 let sessionMaxScore = 0;
 
@@ -125,7 +130,9 @@ export function reset(): void {
   scheduleStyleInvalidationEvents.length = 0;
   styleRecalcInvalidationEvents.length = 0;
   prePaintEvents.length = 0;
+  paintImageEvents.length = 0;
   renderFrameImplCreateChildFrameEvents.length = 0;
+  layoutImageUnsizedEvents.length = 0;
   domLoadingEvents.length = 0;
   beginRemoteFontLoadEvents.length = 0;
   backendNodeIds.clear();
@@ -165,8 +172,14 @@ export function handleEvent(event: Types.Events.Event): void {
   if (Types.Events.isDomLoading(event)) {
     domLoadingEvents.push(event);
   }
+  if (Types.Events.isLayoutImageUnsized(event)) {
+    layoutImageUnsizedEvents.push(event);
+  }
   if (Types.Events.isBeginRemoteFontLoad(event)) {
     beginRemoteFontLoadEvents.push(event);
+  }
+  if (Types.Events.isPaintImage(event)) {
+    paintImageEvents.push(event);
   }
 }
 
@@ -251,7 +264,9 @@ export async function finalize(): Promise<void> {
   layoutInvalidationEvents.sort((a, b) => a.ts - b.ts);
   renderFrameImplCreateChildFrameEvents.sort((a, b) => a.ts - b.ts);
   domLoadingEvents.sort((a, b) => a.ts - b.ts);
+  layoutImageUnsizedEvents.sort((a, b) => a.ts - b.ts);
   beginRemoteFontLoadEvents.sort((a, b) => a.ts - b.ts);
+  paintImageEvents.sort((a, b) => a.ts - b.ts);
 
   // Each function transforms the data used by the next, as such the invoke order
   // is important.
@@ -508,11 +523,13 @@ export function data(): LayoutShifts {
     styleRecalcInvalidationEvents: [],
     renderFrameImplCreateChildFrameEvents,
     domLoadingEvents,
+    layoutImageUnsizedEvents,
     beginRemoteFontLoadEvents,
     scoreRecords,
     // TODO(crbug/41484172): change the type so no need to clone
     backendNodeIds: [...backendNodeIds],
     clustersByNavigationId: new Map(clustersByNavigationId),
+    paintImageEvents,
   };
 }
 

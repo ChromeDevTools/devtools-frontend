@@ -542,9 +542,11 @@ export function getBaseTraceParseModelData(overrides: Partial<ParsedTrace> = {})
       styleRecalcInvalidationEvents: [],
       renderFrameImplCreateChildFrameEvents: [],
       domLoadingEvents: [],
+      layoutImageUnsizedEvents: [],
       beginRemoteFontLoadEvents: [],
       scoreRecords: [],
       backendNodeIds: [],
+      paintImageEvents: [],
     },
     Meta: {
       traceBounds: {

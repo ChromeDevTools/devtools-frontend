@@ -51,6 +51,10 @@ const UIStrings = {
    * @description Text for a culprit type of Animation.
    */
   animation: 'Animation',
+  /**
+   * @description Text for a culprit type of Unsized images.
+   */
+  unsizedImages: 'Unsized Images',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/CLSCulprits.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -114,6 +118,7 @@ export class CLSCulprits extends BaseInsight {
       const fontReq = culprits.fontRequests;
       const iframes = culprits.iframeIds;
       const animations = culprits.nonCompositedAnimations;
+      const unsizedImages = culprits.unsizedImages;
 
       for (let i = 0; i < fontReq.length && causes.length < MAX_TOP_CULPRITS; i++) {
         causes.push(i18nString(UIStrings.fontRequest));
@@ -123,6 +128,9 @@ export class CLSCulprits extends BaseInsight {
       }
       for (let i = 0; i < animations.length && causes.length < MAX_TOP_CULPRITS; i++) {
         causes.push(i18nString(UIStrings.animation));
+      }
+      for (let i = 0; i < unsizedImages.length && causes.length < MAX_TOP_CULPRITS; i++) {
+        causes.push(i18nString(UIStrings.unsizedImages));
       }
     }
     return causes.slice(0, MAX_TOP_CULPRITS);

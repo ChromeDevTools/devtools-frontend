@@ -1193,8 +1193,23 @@ export interface RenderFrameImplCreateChildFrame extends Event {
     frame_token: string,
   };
 }
+
 export function isRenderFrameImplCreateChildFrame(event: Event): event is RenderFrameImplCreateChildFrame {
   return event.name === Name.RENDER_FRAME_IMPL_CREATE_CHILD_FRAME;
+}
+
+export interface LayoutImageUnsized extends Event {
+  name: Name.LAYOUT_IMAGE_UNSIZED;
+  args: Args&{
+    data: {
+      nodeId: Protocol.DOM.BackendNodeId,
+      frameId: string,
+    },
+  };
+}
+
+export function isLayoutImageUnsized(event: Event): event is LayoutImageUnsized {
+  return event.name === Name.LAYOUT_IMAGE_UNSIZED;
 }
 
 export interface PrePaint extends Complete {
@@ -2758,6 +2773,7 @@ export const enum Name {
   HANDLE_POST_MESSAGE = 'HandlePostMessage',
 
   RENDER_FRAME_IMPL_CREATE_CHILD_FRAME = 'RenderFrameImpl::createChildFrame',
+  LAYOUT_IMAGE_UNSIZED = 'LayoutImageUnsized',
 
   DOM_LOADING = 'domLoading',
   BEGIN_REMOTE_FONT_LOAD = 'BeginRemoteFontLoad',

@@ -215,6 +215,9 @@
   "core/i18n/time-utilities.ts | fms": {
     "message": "{PH1} มิลลิวินาที"
   },
+  "core/i18n/time-utilities.ts | fmsExpanded": {
+    "message": "{PH1} มิลลิวินาที"
+  },
   "core/i18n/time-utilities.ts | fs": {
     "message": "{PH1} วินาที"
   },
@@ -549,7 +552,7 @@
     "message": "ปิดใช้รูปแบบ AVIF"
   },
   "core/sdk/sdk-meta.ts | disableCache": {
-    "message": "ปิดใช้แคช (ขณะที่เครื่องมือสำหรับนักพัฒนาเว็บเปิดอยู่)"
+    "message": "ปิดใช้แคชขณะที่เครื่องมือสำหรับนักพัฒนาเว็บเปิดอยู่"
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "ปิดใช้ JavaScript"
@@ -968,6 +971,9 @@
   "entrypoints/main/main-meta.ts | auto": {
     "message": "อัตโนมัติ"
   },
+  "entrypoints/main/main-meta.ts | autoTheme": {
+    "message": "อัตโนมัติ"
+  },
   "entrypoints/main/main-meta.ts | bottom": {
     "message": "ด้านล่าง"
   },
@@ -994,6 +1000,9 @@
   },
   "entrypoints/main/main-meta.ts | dockToRight": {
     "message": "ตรึงไว้ทางขวา"
+  },
+  "entrypoints/main/main-meta.ts | dontMatchChromeColorSchemeCommand": {
+    "message": "ไม่ต้องจับคู่รูปแบบสีของ Chrome"
   },
   "entrypoints/main/main-meta.ts | enableCtrlShortcutToSwitchPanels": {
     "message": "เปิดใช้แป้นพิมพ์ลัด Ctrl + 1-9 เพื่อเปลี่ยนแผง"
@@ -1031,6 +1040,9 @@
   "entrypoints/main/main-meta.ts | matchChromeColorScheme": {
     "message": "จับคู่รูปแบบสีของ Chrome"
   },
+  "entrypoints/main/main-meta.ts | matchChromeColorSchemeCommand": {
+    "message": "จับคู่รูปแบบสีของ Chrome"
+  },
   "entrypoints/main/main-meta.ts | matchChromeColorSchemeDocumentation": {
     "message": "จับคู่สีของเครื่องมือสำหรับนักพัฒนาเว็บกับธีม Chrome ที่ปรับแต่ง (เมื่อเปิดใช้)"
   },
@@ -1066,6 +1078,9 @@
   },
   "entrypoints/main/main-meta.ts | searchOnEnterCommand": {
     "message": "ปิดใช้การค้นหาขณะพิมพ์ (กด Enter เพื่อค้นหา)"
+  },
+  "entrypoints/main/main-meta.ts | switchToBrowserPreferredTheme": {
+    "message": "เปลี่ยนเป็นธีมที่ต้องการของเบราว์เซอร์"
   },
   "entrypoints/main/main-meta.ts | switchToDarkTheme": {
     "message": "เปลี่ยนเป็นธีมมืด"
@@ -1348,6 +1363,9 @@
   },
   "models/bindings/DebuggerLanguagePlugins.ts | loadingDebugSymbolsForVia": {
     "message": "[{PH1}] กำลังโหลดสัญลักษณ์สำหรับแก้ไขข้อบกพร่องของ {PH2} (ผ่าน {PH3})..."
+  },
+  "models/bindings/IgnoreListManager.ts | addAllAnonymousScriptsToIgnoreList": {
+    "message": "เพิ่มสคริปต์แบบไม่ระบุชื่อทั้งหมดลงในรายการละเว้น"
   },
   "models/bindings/IgnoreListManager.ts | addAllContentScriptsToIgnoreList": {
     "message": "เพิ่มสคริปต์ส่วนขยายทั้งหมดลงในรายการละเว้น"
@@ -2453,6 +2471,21 @@
   "panels/application/ApplicationPanelSidebar.ts | documentNotAvailable": {
     "message": "ไม่มีเอกสาร"
   },
+  "panels/application/ApplicationPanelSidebar.ts | extensionLocalStorage": {
+    "message": "ในเครื่อง"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | extensionManagedStorage": {
+    "message": "ที่จัดการ"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | extensionSessionStorage": {
+    "message": "เซสชัน"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | extensionStorage": {
+    "message": "พื้นที่เก็บข้อมูลสำหรับส่วนขยาย"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | extensionSyncStorage": {
+    "message": "ซิงค์"
+  },
   "panels/application/ApplicationPanelSidebar.ts | frames": {
     "message": "เฟรม"
   },
@@ -2637,6 +2670,24 @@
     "message": "คีย์"
   },
   "panels/application/DOMStorageItemsView.ts | value": {
+    "message": "ค่า"
+  },
+  "panels/application/ExtensionStorageItemsView.ts | extensionStorage": {
+    "message": "พื้นที่เก็บข้อมูลสำหรับส่วนขยาย"
+  },
+  "panels/application/ExtensionStorageItemsView.ts | extensionStorageItemDeleted": {
+    "message": "ลบรายการพื้นที่เก็บข้อมูลแล้ว"
+  },
+  "panels/application/ExtensionStorageItemsView.ts | extensionStorageItems": {
+    "message": "รายการพื้นที่เก็บข้อมูลสำหรับส่วนขยาย"
+  },
+  "panels/application/ExtensionStorageItemsView.ts | extensionStorageItemsCleared": {
+    "message": "ล้างรายการพื้นที่เก็บข้อมูลส่วนขยายแล้ว"
+  },
+  "panels/application/ExtensionStorageItemsView.ts | key": {
+    "message": "คีย์"
+  },
+  "panels/application/ExtensionStorageItemsView.ts | value": {
     "message": "ค่า"
   },
   "panels/application/IndexedDBViews.ts | clearObjectStore": {
@@ -3997,6 +4048,9 @@
   },
   "panels/application/preloading/PreloadingView.ts | noRuleSets": {
     "message": "ไม่มีชุดกฎ"
+  },
+  "panels/application/preloading/PreloadingView.ts | prettyPrint": {
+    "message": "จัดรูปแบบ"
   },
   "panels/application/preloading/PreloadingView.ts | statusFailure": {
     "message": "ไม่สำเร็จ"
@@ -6411,7 +6465,7 @@
     "message": "ใช้การค้นหาแทน"
   },
   "panels/explain/components/ConsoleInsight.ts | settingsLink": {
-    "message": "ข้อมูลเชิงลึกของคอนโซลในการตั้งค่า"
+    "message": "Console insights ในการตั้งค่า"
   },
   "panels/explain/components/ConsoleInsight.ts | signInToUse": {
     "message": "ลงชื่อเข้าใช้เพื่อใช้ฟีเจอร์นี้"
@@ -6424,9 +6478,6 @@
   },
   "panels/explain/components/ConsoleInsight.ts | updateSettings": {
     "message": "อัปเดตการตั้งค่า"
-  },
-  "panels/explain/explain-meta.ts | ageRestricted": {
-    "message": "ฟีเจอร์นี้พร้อมให้บริการแก่ผู้ใช้ที่มีอายุตั้งแต่ 18 ปีขึ้นไปเท่านั้น"
   },
   "panels/explain/explain-meta.ts | enableConsoleInsights": {
     "message": "ทำความเข้าใจข้อความในคอนโซลด้วย AI"
@@ -6444,10 +6495,70 @@
     "message": "ฟีเจอร์นี้ไม่พร้อมให้บริการในภูมิภาคของคุณ"
   },
   "panels/explain/explain-meta.ts | policyRestricted": {
-    "message": "องค์กรปิดฟีเจอร์นี้ โปรดสอบถามข้อมูลเพิ่มเติมจากผู้ดูแลระบบ"
+    "message": "การตั้งค่านี้จัดการโดยผู้ดูแลระบบ"
   },
   "panels/explain/explain-meta.ts | wrongLocale": {
     "message": "หากต้องการใช้ฟีเจอร์นี้ ให้อัปเดตค่ากำหนดภาษาของคุณในการตั้งค่าเครื่องมือสำหรับนักพัฒนาเว็บเป็นภาษาอังกฤษ"
+  },
+  "panels/freestyler/FreestylerPanel.ts | chatCleared": {
+    "message": "ล้างแชทแล้ว"
+  },
+  "panels/freestyler/FreestylerPanel.ts | clearChat": {
+    "message": "ล้างการแชท"
+  },
+  "panels/freestyler/FreestylerPanel.ts | help": {
+    "message": "ความช่วยเหลือ"
+  },
+  "panels/freestyler/FreestylerPanel.ts | sendFeedback": {
+    "message": "ส่งความคิดเห็น"
+  },
+  "panels/freestyler/FreestylerPanel.ts | settings": {
+    "message": "การตั้งค่า"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | followTheSteps": {
+    "message": "ทำตามขั้นตอนด้านบนเพื่อถามคำถาม"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | inputDisclaimerForEmptyState": {
+    "message": "ฟีเจอร์ AI นี้อยู่ในขั้นทดลองและอาจไม่ได้ทำงานถูกต้องเสมอไป"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | learnAbout": {
+    "message": "ดูข้อมูลเกี่ยวกับ AI ในเครื่องมือสำหรับนักพัฒนาเว็บ"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | notLoggedIn": {
+    "message": "ฟีเจอร์นี้จะใช้งานได้เมื่อคุณลงชื่อเข้าใช้ Chrome ด้วยบัญชี Google เท่านั้น"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | offline": {
+    "message": "โปรดตรวจสอบการเชื่อมต่ออินเทอร์เน็ตแล้วลองอีกครั้ง"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | settingsLink": {
+    "message": "ความช่วยเหลือจาก AI ในการตั้งค่า"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | turnOnForStyles": {
+    "message": "เปิด{PH1}เพื่อรับความช่วยเหลือในการทำความเข้าใจรูปแบบ CSS"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | turnOnForStylesAndRequests": {
+    "message": "เปิด{PH1}เพื่อรับความช่วยเหลือเกี่ยวกับรูปแบบและคำขอเครือข่าย"
+  },
+  "panels/freestyler/freestyler-meta.ts | aiAssistance": {
+    "message": "ความช่วยเหลือจาก AI"
+  },
+  "panels/freestyler/freestyler-meta.ts | askAi": {
+    "message": "ถาม AI"
+  },
+  "panels/freestyler/freestyler-meta.ts | enableAiAssistance": {
+    "message": "เปิดใช้ความช่วยเหลือจาก AI"
+  },
+  "panels/freestyler/freestyler-meta.ts | geoRestricted": {
+    "message": "ฟีเจอร์นี้ไม่พร้อมให้บริการในภูมิภาคของคุณ"
+  },
+  "panels/freestyler/freestyler-meta.ts | policyRestricted": {
+    "message": "การตั้งค่านี้จัดการโดยผู้ดูแลระบบ"
+  },
+  "panels/freestyler/freestyler-meta.ts | showAiAssistance": {
+    "message": "แสดงความช่วยเหลือจาก AI"
+  },
+  "panels/freestyler/freestyler-meta.ts | wrongLocale": {
+    "message": "หากต้องการใช้ฟีเจอร์นี้ ให้ตั้งค่ากำหนดภาษาเป็นภาษาอังกฤษในการตั้งค่าเครื่องมือสำหรับนักพัฒนาเว็บ"
   },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "ทรัพยากรที่ถูกบล็อก"
@@ -7598,11 +7709,8 @@
   "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrency": {
     "message": "การเกิดขึ้นพร้อมกันของฮาร์ดแวร์"
   },
-  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyIsEnabled": {
-    "message": "เปิดใช้การเกิดขึ้นพร้อมกันของฮาร์ดแวร์อยู่"
-  },
-  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencySettingTooltip": {
-    "message": "ลบล้างค่าที่รายงานโดย navigator.hardwareConcurrency ในหน้า"
+  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencySettingLabel": {
+    "message": "ลบล้างค่าที่รายงานโดย navigator.hardwareConcurrency"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | noThrottling": {
     "message": "ไม่มีการควบคุม"
@@ -7949,15 +8057,6 @@
   "panels/network/NetworkDataGridNode.ts | redirect": {
     "message": "เปลี่ยนเส้นทาง"
   },
-  "panels/network/NetworkDataGridNode.ts | requestContentHeadersOverridden": {
-    "message": "ทั้งเนื้อหาและส่วนหัวของคำขอถูกลบล้าง"
-  },
-  "panels/network/NetworkDataGridNode.ts | requestContentOverridden": {
-    "message": "เนื้อหาคําขอถูกลบล้าง"
-  },
-  "panels/network/NetworkDataGridNode.ts | requestHeadersOverridden": {
-    "message": "ส่วนหัวของคำขอถูกลบล้าง"
-  },
   "panels/network/NetworkDataGridNode.ts | sPreflight": {
     "message": "{PH1} + การตรวจสอบล่วงหน้า"
   },
@@ -7993,9 +8092,6 @@
   },
   "panels/network/NetworkDataGridNode.ts | signedexchange": {
     "message": "Signed Exchange"
-  },
-  "panels/network/NetworkDataGridNode.ts | thirdPartyPhaseout": {
-    "message": "คุกกี้สําหรับคําขอนี้ถูกบล็อกเนื่องจาก Chrome Flag หรือการกำหนดค่าเบราว์เซอร์ ดูข้อมูลเพิ่มเติมในแผง \"ปัญหา\""
   },
   "panels/network/NetworkDataGridNode.ts | timeSubtitleTooltipText": {
     "message": "ความล่าช้า (เวลาที่ได้รับการตอบสนอง - เวลาเริ่มต้น)"
@@ -8415,7 +8511,7 @@
     "message": "ปิดใช้แคช"
   },
   "panels/network/NetworkPanel.ts | disableCacheWhileDevtoolsIsOpen": {
-    "message": "ปิดใช้แคช (ขณะที่เครื่องมือสำหรับนักพัฒนาเว็บเปิดอยู่)"
+    "message": "ปิดใช้แคชขณะที่เครื่องมือสำหรับนักพัฒนาเว็บเปิดอยู่"
   },
   "panels/network/NetworkPanel.ts | doNotClearLogOnPageReload": {
     "message": "ไม่ล้างบันทึกเมื่อโหลดหน้าซ้ำ/นำทางหน้าเว็บ"
@@ -9030,7 +9126,7 @@
     "message": "เพิ่มรูปแบบการบล็อกคำขอเครือข่าย"
   },
   "panels/network/network-meta.ts | allowToGenerateHarWithSensitiveData": {
-    "message": "อนุญาตให้สร้าง HAR (พร้อมข้อมูลที่ละเอียดอ่อน)"
+    "message": "อนุญาตให้สร้าง HAR พร้อมข้อมูลที่ละเอียดอ่อน"
   },
   "panels/network/network-meta.ts | allowToGenerateHarWithSensitiveDataDocumentation": {
     "message": "โดยค่าเริ่มต้น บันทึก HAR ที่สร้างขึ้นจะได้รับการตรวจสอบความถูกต้องและไม่รวมส่วนหัว HTTP ของ Cookie, Set-Cookie หรือ Authorization เมื่อเปิดใช้การตั้งค่านี้ คุณจะมีตัวเลือกในการส่งออก/คัดลอก HAR พร้อมข้อมูลที่ละเอียดอ่อน"
@@ -9051,7 +9147,7 @@
     "message": "แคชดิสก์"
   },
   "panels/network/network-meta.ts | dontAllowToGenerateHarWithSensitiveData": {
-    "message": "ไม่อนุญาตให้สร้าง HAR (พร้อมข้อมูลที่ละเอียดอ่อน)"
+    "message": "ไม่อนุญาตให้สร้าง HAR พร้อมข้อมูลที่ละเอียดอ่อน"
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "อย่าจัดกลุ่มรายการในบันทึกเครือข่ายตามเฟรม"
@@ -10637,11 +10733,44 @@
   "panels/security/SecurityPanel.ts | yourPageRequestedNonsecure": {
     "message": "หน้าเว็บขอทรัพยากรที่ไม่ปลอดภัยซึ่งถูกบล็อก"
   },
+  "panels/security/SecurityPanelSidebar.ts | mainOrigin": {
+    "message": "ต้นทางหลัก"
+  },
+  "panels/security/SecurityPanelSidebar.ts | mainOriginNonsecure": {
+    "message": "ต้นทางหลัก (ไม่ปลอดภัย)"
+  },
+  "panels/security/SecurityPanelSidebar.ts | mainOriginSecure": {
+    "message": "ต้นทางหลัก (ปลอดภัย)"
+  },
+  "panels/security/SecurityPanelSidebar.ts | nonsecureOrigins": {
+    "message": "ต้นทางที่ไม่ปลอดภัย"
+  },
+  "panels/security/SecurityPanelSidebar.ts | overview": {
+    "message": "ภาพรวม"
+  },
+  "panels/security/SecurityPanelSidebar.ts | reloadToViewDetails": {
+    "message": "โหลดซ้ำเพื่อดูรายละเอียด"
+  },
+  "panels/security/SecurityPanelSidebar.ts | secureOrigins": {
+    "message": "ต้นทางที่ปลอดภัย"
+  },
+  "panels/security/SecurityPanelSidebar.ts | security": {
+    "message": "ความปลอดภัย"
+  },
+  "panels/security/SecurityPanelSidebar.ts | unknownCanceled": {
+    "message": "ไม่รู้จัก/ยกเลิกแล้ว"
+  },
   "panels/security/security-meta.ts | security": {
     "message": "ความปลอดภัย"
   },
+  "panels/security/security-meta.ts | securityAndPrivacy": {
+    "message": "ความปลอดภัยและความเป็นส่วนตัว"
+  },
   "panels/security/security-meta.ts | showSecurity": {
     "message": "แสดงการรักษาความปลอดภัย"
+  },
+  "panels/security/security-meta.ts | showSecurityAndPrivacy": {
+    "message": "แสดงแผงความปลอดภัยและความเป็นส่วนตัว"
   },
   "panels/sensors/LocationsSettingsTab.ts | addLocation": {
     "message": "เพิ่มตำแหน่ง..."
@@ -10859,14 +10988,23 @@
   "panels/settings/AISettingsTab.ts | adminSettings": {
     "message": "Google อาจไม่เก็บรวบรวมข้อมูล ทั้งนี้ขึ้นอยู่กับภูมิภาคและ/หรือการจัดการบัญชี Google ของคุณ ฟีเจอร์ที่พร้อมให้บริการแก่ผู้ใช้ที่มีการจัดการอาจแตกต่างกันไปตามการตั้งค่าขององค์กร"
   },
+  "panels/settings/AISettingsTab.ts | ageRestricted": {
+    "message": "ฟีเจอร์นี้พร้อมให้บริการแก่ผู้ใช้ที่มีอายุตั้งแต่ 18 ปีขึ้นไปเท่านั้น"
+  },
+  "panels/settings/AISettingsTab.ts | aiInnovations": {
+    "message": "นวัตกรรม AI"
+  },
   "panels/settings/AISettingsTab.ts | boostYourProductivity": {
-    "message": "เพิ่มประสิทธิภาพการทำงานด้วย AI ของ Chrome"
+    "message": "เพิ่มประสิทธิภาพการทำงานด้วย AI"
   },
   "panels/settings/AISettingsTab.ts | consoleInsightsSendsData": {
     "message": "ระบบจะส่งข้อความในคอนโซล สแต็กเทรซที่เกี่ยวข้อง ซอร์สโค้ดที่เกี่ยวข้อง และส่วนหัวของเครือข่ายที่เกี่ยวข้องไปยัง Google เพื่อสร้างคำอธิบาย เจ้าหน้าที่ตรวจสอบอาจเห็นข้อมูลนี้เพื่อนำไปใช้ปรับปรุงฟีเจอร์นี้"
   },
+  "panels/settings/AISettingsTab.ts | enableAiAssistance": {
+    "message": "เปิดใช้ความช่วยเหลือจาก AI"
+  },
   "panels/settings/AISettingsTab.ts | enableConsoleInsights": {
-    "message": "เปิดใช้ Console Insights"
+    "message": "เปิดใช้ Console insights"
   },
   "panels/settings/AISettingsTab.ts | experimentalFeatures": {
     "message": "ฟีเจอร์เหล่านี้อยู่ในขั้นทดลอง รวมถึงใช้ Generative AI และอาจให้ข้อมูลที่ไม่ถูกต้องหรือไม่เหมาะสม ซึ่งไม่ได้แสดงถึงมุมมองของ Google"
@@ -10875,31 +11013,43 @@
     "message": "รับคำอธิบายเกี่ยวกับคำเตือนและข้อผิดพลาดของคอนโซล"
   },
   "panels/settings/AISettingsTab.ts | explainStyling": {
-    "message": "รับคำอธิบายและบริบทเพิ่มเติมเกี่ยวกับลักษณะการทำงานของการจัดรูปแบบ"
+    "message": "ช่วยให้เข้าใจรูปแบบ CSS ด้วยข้อมูลเชิงลึกที่ทำงานด้วยระบบ AI"
+  },
+  "panels/settings/AISettingsTab.ts | explainStylingAndNetworkRequest": {
+    "message": "ทำความเข้าใจรูปแบบ CSS และกิจกรรมเครือข่ายด้วยข้อมูลเชิงลึกที่ทำงานด้วยระบบ AI"
+  },
+  "panels/settings/AISettingsTab.ts | explainStylingNetworkAndFile": {
+    "message": "ทำความเข้าใจรูปแบบ CSS, กิจกรรมเครือข่าย และต้นทางของไฟล์ด้วยข้อมูลเชิงลึกที่ทำงานด้วยระบบ AI"
   },
   "panels/settings/AISettingsTab.ts | freestylerSendsData": {
-    "message": "ระบบอาจส่งข้อมูลใดๆ ซึ่งหน้าเว็บที่ตรวจสอบเข้าถึงได้ผ่าน Web API ไปยัง Google เพื่อสร้างคำอธิบาย เจ้าหน้าที่ตรวจสอบอาจเห็นข้อมูลนี้เพื่อนำไปใช้ปรับปรุงฟีเจอร์นี้"
-  },
-  "panels/settings/AISettingsTab.ts | generatedSnippets": {
-    "message": "โปรดใช้ข้อมูลโค้ดที่สร้างขึ้นด้วยความระมัดระวัง"
+    "message": "ระบบจะส่งข้อมูลใดๆ ซึ่งหน้าเว็บที่ตรวจสอบเข้าถึงได้ผ่าน Web API, คำขอเครือข่าย, ไฟล์ และการติดตามประสิทธิภาพไปยัง Google เพื่อสร้างคำอธิบาย เจ้าหน้าที่ตรวจสอบอาจเห็นข้อมูลนี้เพื่อนำไปใช้ปรับปรุงฟีเจอร์นี้ อย่าใช้กับหน้าที่มีข้อมูลส่วนบุคคลหรือข้อมูลที่ละเอียดอ่อน"
   },
   "panels/settings/AISettingsTab.ts | helpUnderstandConsole": {
     "message": "ช่วยให้คุณเข้าใจและแก้ไขคำเตือนและข้อผิดพลาดของคอนโซล"
   },
   "panels/settings/AISettingsTab.ts | helpUnderstandStyling": {
-    "message": "ช่วยให้คุณเข้าใจและแก้ไขปัญหาเกี่ยวกับการจัดรูปแบบ"
+    "message": "รับความช่วยเหลือในการทำความเข้าใจรูปแบบ CSS"
+  },
+  "panels/settings/AISettingsTab.ts | helpUnderstandStylingAndNetworkRequest": {
+    "message": "รับความช่วยเหลือในการทำความเข้าใจรูปแบบ CSS และคำขอเครือข่าย"
+  },
+  "panels/settings/AISettingsTab.ts | helpUnderstandStylingNetworkAndFile": {
+    "message": "รับความช่วยเหลือในการทำความเข้าใจรูปแบบ CSS, คำขอเครือข่าย และไฟล์"
   },
   "panels/settings/AISettingsTab.ts | learnMore": {
     "message": "ดูข้อมูลเพิ่มเติม"
   },
-  "panels/settings/AISettingsTab.ts | oneOrMoreSettingsHaveChanged": {
-    "message": "มีการเปลี่ยนการตั้งค่าอย่างน้อย 1 รายการซึ่งจะต้องโหลดซ้ำจึงจะมีผล"
+  "panels/settings/AISettingsTab.ts | notLoggedIn": {
+    "message": "ฟีเจอร์นี้จะใช้งานได้ก็ต่อเมื่อคุณลงชื่อเข้าใช้ Chrome ด้วยบัญชี Google เท่านั้น"
+  },
+  "panels/settings/AISettingsTab.ts | offline": {
+    "message": "ฟีเจอร์นี้ใช้ได้เมื่อเชื่อมต่ออินเทอร์เน็ตอยู่เท่านั้น"
   },
   "panels/settings/AISettingsTab.ts | privacyNotice": {
     "message": "นโยบายความเป็นส่วนตัวของ Google"
   },
   "panels/settings/AISettingsTab.ts | receiveStylingSuggestions": {
-    "message": "รับคำแนะนำและตัวอย่างโค้ดเพื่อแก้ไขปัญหาการจัดรูปแบบ"
+    "message": "ปรับปรุงเวิร์กโฟลว์การพัฒนาด้วยคำอธิบายและคำแนะนำตามบริบท"
   },
   "panels/settings/AISettingsTab.ts | receiveSuggestions": {
     "message": "รับคำแนะนำและตัวอย่างโค้ดเพื่อแก้ไขปัญหาเหล่านี้"
@@ -10908,7 +11058,7 @@
     "message": "ระบบจะเก็บรักษาข้อมูลการใช้งานไว้นานสูงสุด 18 เดือนในลักษณะที่ Google ไม่สามารถระบุแหล่งที่มาได้"
   },
   "panels/settings/AISettingsTab.ts | sendsDataToGoogle": {
-    "message": "การใช้ฟีเจอร์เหล่านี้จะส่งข้อมูลที่เกี่ยวกับฟีเจอร์ดังกล่าวไปยัง Google Google เก็บรวบรวมข้อมูลและความคิดเห็นนี้เพื่อปรับปรุงผลิตภัณฑ์และบริการโดยอาศัยความช่วยเหลือจากเจ้าหน้าที่ตรวจสอบ โปรดหลีกเลี่ยงการแชร์ข้อมูลที่มีความละเอียดอ่อนหรือข้อมูลส่วนบุคคล"
+    "message": "ฟีเจอร์เหล่านี้จะส่งข้อมูลที่เกี่ยวข้องไปยัง Google Google เก็บรวบรวมข้อมูลและความคิดเห็นนี้เพื่อปรับปรุงผลิตภัณฑ์และบริการโดยอาศัยความช่วยเหลือจากเจ้าหน้าที่ตรวจสอบ โปรดหลีกเลี่ยงการแชร์ข้อมูลที่มีความละเอียดอ่อนหรือข้อมูลส่วนบุคคล"
   },
   "panels/settings/AISettingsTab.ts | showLess": {
     "message": "แสดงน้อยลง"
@@ -10920,7 +11070,7 @@
     "message": "ข้อกำหนดในการให้บริการของ Google"
   },
   "panels/settings/AISettingsTab.ts | termsOfServicePrivacyNotice": {
-    "message": "การใช้งานฟีเจอร์นี้ต้องเป็นไปตาม{PH1} และ{PH2}"
+    "message": "การใช้งานฟีเจอร์เหล่านี้ต้องเป็นไปตาม{PH1} และ{PH2}"
   },
   "panels/settings/AISettingsTab.ts | thingsToConsider": {
     "message": "สิ่งที่ควรพิจารณา"
@@ -10929,10 +11079,10 @@
     "message": "เมื่อเปิด"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
-    "message": "เพิ่มรูปแบบชื่อไฟล์"
+    "message": "เพิ่มกฎนิพจน์ทั่วไปสำหรับ URL ของสคริปต์"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addPattern": {
-    "message": "เพิ่มรูปแบบ..."
+    "message": "เพิ่มกฎนิพจน์ทั่วไป..."
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScripts": {
     "message": "สคริปต์ของบุคคลที่สามที่รู้จักจากการแมปแหล่งที่มา"
@@ -10941,7 +11091,7 @@
     "message": "กฎการยกเว้นที่กำหนดเอง:"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | debuggerWillSkipThroughThe": {
-    "message": "โปรแกรมแก้ไขข้อบกพร่องจะข้ามสคริปต์และจะไม่หยุดเมื่อพบข้อยกเว้นของสคริปต์"
+    "message": "โปรแกรมแก้ไขข้อบกพร่องจะไม่เรียกใช้สคริปต์เหล่านี้หรือหยุดที่ข้อยกเว้นที่มีผลกับสคริปต์เหล่านี้เท่านั้น และแผงประสิทธิภาพจะยุบรายการแผนภูมิ Flame Chart ที่ตรงกัน"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | enableIgnoreListing": {
     "message": "เปิดใช้รายการละเว้น"
@@ -10955,6 +11105,9 @@
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | generalExclusionRules": {
     "message": "กฎการยกเว้นทั่วไป:"
   },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreListAnonymousScripts": {
+    "message": "สคริปต์แบบไม่ระบุชื่อจาก Eval หรือคอนโซล"
+  },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreListContentScripts": {
     "message": "สคริปต์เนื้อหาที่ส่วนขยายแทรก"
   },
@@ -10965,16 +11118,16 @@
     "message": "ดูข้อมูลเพิ่มเติม"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | pattern": {
-    "message": "เพิ่มรูปแบบ"
+    "message": "เพิ่มกฎนิพจน์ทั่วไปสำหรับ URL ของสคริปต์"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | patternAlreadyExists": {
-    "message": "มีรูปแบบนี้อยู่แล้ว"
+    "message": "มีกฎนี้อยู่แล้ว"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | patternCannotBeEmpty": {
-    "message": "รูปแบบต้องไม่ว่างเปล่า"
+    "message": "ต้องระบุกฎ"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | patternMustBeAValidRegular": {
-    "message": "รูปแบบต้องเป็นนิพจน์ทั่วไปที่ถูกต้อง"
+    "message": "กฎต้องเป็นนิพจน์ทั่วไปที่ถูกต้อง"
   },
   "panels/settings/KeybindsSettingsTab.ts | FullListOfDevtoolsKeyboard": {
     "message": "รายการที่สมบูรณ์ของแป้นพิมพ์ลัดและท่าทางสัมผัสในเครื่องมือสำหรับนักพัฒนาเว็บ"
@@ -11213,6 +11366,9 @@
   "panels/settings/emulation/emulation-meta.ts | showDevices": {
     "message": "แสดงอุปกรณ์"
   },
+  "panels/settings/settings-meta.ts | aiInnovations": {
+    "message": "นวัตกรรม AI"
+  },
   "panels/settings/settings-meta.ts | documentation": {
     "message": "เอกสารประกอบ"
   },
@@ -11230,6 +11386,9 @@
   },
   "panels/settings/settings-meta.ts | shortcuts": {
     "message": "แป้นพิมพ์ลัด"
+  },
+  "panels/settings/settings-meta.ts | showAiInnovations": {
+    "message": "แสดงนวัตกรรม AI"
   },
   "panels/settings/settings-meta.ts | showExperiments": {
     "message": "แสดงการทดสอบ"
@@ -12254,6 +12413,33 @@
   "panels/timeline/AnimationsTrackAppender.ts | animations": {
     "message": "ภาพเคลื่อนไหว"
   },
+  "panels/timeline/AnnotationHelpers.ts | entriesLink": {
+    "message": "รายการที่เชื่อมโยงกัน"
+  },
+  "panels/timeline/AnnotationHelpers.ts | entryLabel": {
+    "message": "ป้ายกำกับรายการ"
+  },
+  "panels/timeline/AnnotationHelpers.ts | srAnnotationAdded": {
+    "message": "เพิ่มคำอธิบายประกอบ{PH1}แล้ว"
+  },
+  "panels/timeline/AnnotationHelpers.ts | srAnnotationRemoved": {
+    "message": "นำคำอธิบายประกอบ{PH1}ออกแล้ว"
+  },
+  "panels/timeline/AnnotationHelpers.ts | srEnterLabelEditMode": {
+    "message": "การแก้ไขข้อความป้ายกำกับคำอธิบายประกอบ"
+  },
+  "panels/timeline/AnnotationHelpers.ts | srEntriesLinked": {
+    "message": "ตอนนี้คำอธิบายประกอบรายการที่เชื่อมต่อกันจะเชื่อมโยงจาก{PH1} ไปยัง{PH2}"
+  },
+  "panels/timeline/AnnotationHelpers.ts | srLabelTextUpdated": {
+    "message": "อัปเดตป้ายกำกับเป็น {PH1} แล้ว"
+  },
+  "panels/timeline/AnnotationHelpers.ts | srTimeRangeBoundsUpdated": {
+    "message": "อัปเดตช่วงเวลาแล้ว โดยเริ่มต้นที่ {PH1} และสิ้นสุดที่ {PH2}"
+  },
+  "panels/timeline/AnnotationHelpers.ts | timeRange": {
+    "message": "ช่วงเวลา"
+  },
   "panels/timeline/AppenderUtils.ts | sSelfS": {
     "message": "{PH1} (กิจกรรมเดียว {PH2})"
   },
@@ -12308,8 +12494,14 @@
   "panels/timeline/IsolateSelector.ts | selectJavascriptVmInstance": {
     "message": "เลือกอินสแตนซ์ VM ของ JavaScript"
   },
+  "panels/timeline/LayoutShiftsTrackAppender.ts | layoutShift": {
+    "message": "การเปลี่ยนแปลงเลย์เอาต์"
+  },
+  "panels/timeline/LayoutShiftsTrackAppender.ts | layoutShiftCluster": {
+    "message": "คลัสเตอร์การเปลี่ยนแปลงเลย์เอาต์"
+  },
   "panels/timeline/LayoutShiftsTrackAppender.ts | layoutShifts": {
-    "message": "การเปลี่ยนเลย์เอาต์"
+    "message": "การเปลี่ยนแปลงเลย์เอาต์"
   },
   "panels/timeline/NetworkTrackAppender.ts | network": {
     "message": "เครือข่าย"
@@ -12506,9 +12698,6 @@
   "panels/timeline/TimelinePanel.ts | CpuThrottlingIsEnabled": {
     "message": "- การควบคุม CPU เปิดใช้อยู่"
   },
-  "panels/timeline/TimelinePanel.ts | HardwareConcurrencyIsEnabled": {
-    "message": "- เปิดใช้การเกิดขึ้นพร้อมกันของฮาร์ดแวร์อยู่"
-  },
   "panels/timeline/TimelinePanel.ts | JavascriptSamplingIsDisabled": {
     "message": "- ปิดใช้การสุ่มตัวอย่าง JavaScript อยู่"
   },
@@ -12566,6 +12755,9 @@
   "panels/timeline/TimelinePanel.ts | enableSelectorStats": {
     "message": "เปิดใช้สถิติตัวเลือก CSS (ช้า)"
   },
+  "panels/timeline/TimelinePanel.ts | eventSelected": {
+    "message": "เลือกเหตุการณ์ {PH1} แล้ว"
+  },
   "panels/timeline/TimelinePanel.ts | exportEnhancedTraces": {
     "message": "การติดตามประสิทธิภาพที่ปรับปรุงแล้ว"
   },
@@ -12578,11 +12770,17 @@
   "panels/timeline/TimelinePanel.ts | fixMe": {
     "message": "แก้ให้ฉัน"
   },
+  "panels/timeline/TimelinePanel.ts | frameSelected": {
+    "message": "เลือกเฟรมแล้ว"
+  },
   "panels/timeline/TimelinePanel.ts | hideSidebar": {
     "message": "ซ่อนแถบด้านข้างเดียวที่มีอยู่"
   },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "กำลังเริ่มต้นเครื่องมือสร้างโปรไฟล์…"
+  },
+  "panels/timeline/TimelinePanel.ts | learnMore": {
+    "message": "ดูข้อมูลเพิ่มเติม"
   },
   "panels/timeline/TimelinePanel.ts | loadProfile": {
     "message": "โหลดโปรไฟล์…"
@@ -12628,6 +12826,9 @@
   },
   "panels/timeline/TimelinePanel.ts | screenshots": {
     "message": "ภาพหน้าจอ"
+  },
+  "panels/timeline/TimelinePanel.ts | selectionCleared": {
+    "message": "ล้างตัวเลือกแล้ว"
   },
   "panels/timeline/TimelinePanel.ts | showDataAddedByExtensions": {
     "message": "แสดงข้อมูลที่เพิ่มโดยส่วนขยายของแผงประสิทธิภาพ"
@@ -12678,7 +12879,7 @@
     "message": "% ของการจับคู่ที่ไม่ตรงกันของเส้นทางที่ช้า"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | rejectPercentageExplanation": {
-    "message": "เปอร์เซ็นต์ของโหนดที่ไม่ตรงกัน (การพยายามจับคู่ - จํานวนการจับคู่) ที่ตัวกรองบลูมไม่สามารถตัดออกได้อย่างรวดเร็ว ยิ่งต่ำยิ่งดี"
+    "message": "เปอร์เซ็นต์ของโหนดที่ไม่ตรงกัน (การพยายามจับคู่ - จํานวนการจับคู่) ที่ตัวกรองบลูมไม่สามารถตัดออกได้อย่างรวดเร็วเนื่องจากตัวเลือกมีความซับซ้อนสูง ยิ่งต่ำยิ่งดี"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | selector": {
     "message": "ตัวเลือก"
@@ -12797,6 +12998,9 @@
   "panels/timeline/TimelineUIUtils.ts | allottedTime": {
     "message": "เวลาที่จัดสรรไว้"
   },
+  "panels/timeline/TimelineUIUtils.ts | animating": {
+    "message": "กำลังเคลื่อนไหว"
+  },
   "panels/timeline/TimelineUIUtils.ts | animationFrameRequested": {
     "message": "ส่งคำขอเฟรมภาพเคลื่อนไหวแล้ว"
   },
@@ -12820,6 +13024,66 @@
   },
   "panels/timeline/TimelineUIUtils.ts | compile": {
     "message": "คอมไพล์"
+  },
+  "panels/timeline/TimelineUIUtils.ts | compositingFailed": {
+    "message": "ผสมไม่สำเร็จ"
+  },
+  "panels/timeline/TimelineUIUtils.ts | compositingFailedAcceleratedAnimationsDisabled": {
+    "message": "ภาพเคลื่อนไหวแบบเร่งปิดใช้อยู่"
+  },
+  "panels/timeline/TimelineUIUtils.ts | compositingFailedAffectsImportantProperty": {
+    "message": "เอฟเฟกต์มีผลกับพร็อพเพอร์ตี้ที่มี !important กำกับอยู่"
+  },
+  "panels/timeline/TimelineUIUtils.ts | compositingFailedAnimationAffectsNonCSSProperties": {
+    "message": "ภาพเคลื่อนไหวมีผลต่อพร็อพเพอร์ตี้ที่ไม่ใช่ CSS"
+  },
+  "panels/timeline/TimelineUIUtils.ts | compositingFailedAnimationHasNoVisibleChange": {
+    "message": "ภาพเคลื่อนไหวไม่มีการเปลี่ยนแปลงที่มองเห็นได้"
+  },
+  "panels/timeline/TimelineUIUtils.ts | compositingFailedEffectHasNonReplaceCompositeMode": {
+    "message": "เอฟเฟกต์มีโหมด \"ผสม\" ซึ่งไม่ใช่โหมด \"แทนที่\""
+  },
+  "panels/timeline/TimelineUIUtils.ts | compositingFailedEffectHasUnsupportedTimingParams": {
+    "message": "เอฟเฟกต์มีพารามิเตอร์การจับเวลาที่ไม่รองรับ"
+  },
+  "panels/timeline/TimelineUIUtils.ts | compositingFailedEffectSuppressedByDevtools": {
+    "message": "เครื่องมือสำหรับนักพัฒนาเว็บระงับการใช้เอฟเฟกต์ "
+  },
+  "panels/timeline/TimelineUIUtils.ts | compositingFailedFilterRelatedPropertyMayMovePixels": {
+    "message": "พร็อพเพอร์ตี้ที่เกี่ยวข้องกับตัวกรองอาจทำให้พิกเซลเคลื่อนที่"
+  },
+  "panels/timeline/TimelineUIUtils.ts | compositingFailedInvalidAnimationOrEffect": {
+    "message": "ภาพเคลื่อนไหวหรือเอฟเฟกต์ไม่ถูกต้อง"
+  },
+  "panels/timeline/TimelineUIUtils.ts | compositingFailedMixedKeyframeValueTypes": {
+    "message": "มีประเภทค่าคีย์เฟรมแบบผสม"
+  },
+  "panels/timeline/TimelineUIUtils.ts | compositingFailedSVGTargetHasIndependentTransformProperty": {
+    "message": "เป้าหมาย SVG มีพร็อพเพอร์ตี้การเปลี่ยนรูปแบบที่เป็นอิสระ"
+  },
+  "panels/timeline/TimelineUIUtils.ts | compositingFailedTargetHasCSSOffset": {
+    "message": "เป้าหมายมีออฟเซ็ต CSS"
+  },
+  "panels/timeline/TimelineUIUtils.ts | compositingFailedTargetHasIncompatibleAnimations": {
+    "message": "เป้าหมายมีภาพเคลื่อนไหวอื่นที่ใช้ร่วมกันไม่ได้"
+  },
+  "panels/timeline/TimelineUIUtils.ts | compositingFailedTargetHasInvalidCompositingState": {
+    "message": "เป้าหมายมีสถานะการผสมที่ไม่ถูกต้อง"
+  },
+  "panels/timeline/TimelineUIUtils.ts | compositingFailedTimelineSourceHasInvalidCompositingState": {
+    "message": "แหล่งที่มาของไทม์ไลน์มีสถานะการผสมที่ไม่ถูกต้อง"
+  },
+  "panels/timeline/TimelineUIUtils.ts | compositingFailedTransformDependsBoxSize": {
+    "message": "พร็อพเพอร์ตี้ที่เกี่ยวข้องกับการเปลี่ยนรูปแบบจะขึ้นอยู่กับขนาดช่อง"
+  },
+  "panels/timeline/TimelineUIUtils.ts | compositingFailedTransformRelatedPropertyCannotBeAcceleratedOnTarget": {
+    "message": "เร่งพร็อพเพอร์ตี้ที่เกี่ยวข้องกับการเปลี่ยนรูปแบบในเป้าหมายไม่ได้"
+  },
+  "panels/timeline/TimelineUIUtils.ts | compositingFailedUnknownReason": {
+    "message": "ไม่ทราบสาเหตุ"
+  },
+  "panels/timeline/TimelineUIUtils.ts | compositingFailedUnsupportedCSSProperty": {
+    "message": "{propertyCount,plural, =1{มีพร็อพเพอร์ตี้ CSS ที่ไม่รองรับ: {properties}}other{มีพร็อพเพอร์ตี้ CSS ที่ไม่รองรับ: {properties}}}"
   },
   "panels/timeline/TimelineUIUtils.ts | consumedCacheSize": {
     "message": "ขนาดแคชที่ใช้"
@@ -13619,6 +13883,12 @@
   "panels/timeline/components/InteractionBreakdown.ts | processingDuration": {
     "message": "ระยะเวลาในการประมวลผล"
   },
+  "panels/timeline/components/LayoutShiftDetails.ts | animation": {
+    "message": "ภาพเคลื่อนไหว"
+  },
+  "panels/timeline/components/LayoutShiftDetails.ts | cluster": {
+    "message": "คลัสเตอร์การเปลี่ยนแปลงเลย์เอาต์ @ {PH1}"
+  },
   "panels/timeline/components/LayoutShiftDetails.ts | culprit": {
     "message": "สาเหตุของปัญหา"
   },
@@ -13631,14 +13901,14 @@
   "panels/timeline/components/LayoutShiftDetails.ts | injectedIframe": {
     "message": "มีการแทรก iframe"
   },
-  "panels/timeline/components/LayoutShiftDetails.ts | insight": {
-    "message": "ข้อมูลเชิงลึก"
-  },
   "panels/timeline/components/LayoutShiftDetails.ts | layoutShift": {
-    "message": "การเปลี่ยนเลย์เอาต์"
+    "message": "การเปลี่ยนแปลงเลย์เอาต์ @ {PH1}"
   },
-  "panels/timeline/components/LayoutShiftDetails.ts | layoutShiftCulprits": {
-    "message": "สาเหตุของการเปลี่ยนแปลงเลย์เอาต์"
+  "panels/timeline/components/LayoutShiftDetails.ts | nonCompositedAnimation": {
+    "message": "ภาพเคลื่อนไหวที่ไม่ได้ผสม"
+  },
+  "panels/timeline/components/LayoutShiftDetails.ts | parentCluster": {
+    "message": "คลัสเตอร์หลัก"
   },
   "panels/timeline/components/LayoutShiftDetails.ts | shiftScore": {
     "message": "คะแนนการเปลี่ยนแปลงเลย์เอาต์"
@@ -13646,20 +13916,20 @@
   "panels/timeline/components/LayoutShiftDetails.ts | startTime": {
     "message": "เวลาเริ่มต้น"
   },
+  "panels/timeline/components/LayoutShiftDetails.ts | total": {
+    "message": "รวม"
+  },
   "panels/timeline/components/LiveMetricsView.ts | allDevices": {
     "message": "อุปกรณ์ทั้งหมด"
   },
   "panels/timeline/components/LiveMetricsView.ts | auto": {
     "message": "อัตโนมัติ ({PH1})"
   },
-  "panels/timeline/components/LiveMetricsView.ts | clearInteractionsLog": {
-    "message": "ล้างบันทึกการโต้ตอบ"
+  "panels/timeline/components/LiveMetricsView.ts | clearCurrentLog": {
+    "message": "ล้างบันทึกปัจจุบัน"
   },
   "panels/timeline/components/LiveMetricsView.ts | collectionPeriod": {
     "message": "ระยะเวลาการเก็บรวบรวม:"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | considerRealUser": {
-    "message": "พิจารณาสภาพแวดล้อมของผู้ใช้จริง"
   },
   "panels/timeline/components/LiveMetricsView.ts | dateRange": {
     "message": "{PH1} - {PH2}"
@@ -13673,8 +13943,14 @@
   "panels/timeline/components/LiveMetricsView.ts | disableNetworkCache": {
     "message": "ปิดใช้แคชเครือข่าย"
   },
+  "panels/timeline/components/LiveMetricsView.ts | elementRenderDelay": {
+    "message": "ความล่าช้าในการแสดงผลองค์ประกอบ"
+  },
   "panels/timeline/components/LiveMetricsView.ts | environmentSettings": {
     "message": "การตั้งค่าสภาพแวดล้อม"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | eventLogs": {
+    "message": "ส่วนบันทึกการโต้ตอบและการเปลี่ยนแปลงเลย์เอาต์"
   },
   "panels/timeline/components/LiveMetricsView.ts | fieldData": {
     "message": "ข้อมูลในฟิลด์"
@@ -13682,11 +13958,23 @@
   "panels/timeline/components/LiveMetricsView.ts | fieldDataLink": {
     "message": "ข้อมูลภาคสนาม"
   },
+  "panels/timeline/components/LiveMetricsView.ts | inpInteraction": {
+    "message": "การโต้ตอบ INP มีค่าความล่าช้าในการโต้ตอบ 98%"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | inpInteractionLink": {
+    "message": "การโต้ตอบ INP"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | inputDelay": {
+    "message": "ความล่าช้าของอินพุต"
+  },
   "panels/timeline/components/LiveMetricsView.ts | interactionExcluded": {
     "message": "INP คำนวณโดยใช้ค่าความล่าช้าในการโต้ตอบ 98% ดังนั้นความล่าช้าในการโต้ตอบบางครั้งอาจมากกว่าค่า INP"
   },
   "panels/timeline/components/LiveMetricsView.ts | interactions": {
     "message": "การโต้ตอบ"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | layoutShifts": {
+    "message": "การเปลี่ยนแปลงเลย์เอาต์"
   },
   "panels/timeline/components/LiveMetricsView.ts | lcpElement": {
     "message": "องค์ประกอบ LCP"
@@ -13706,12 +13994,6 @@
   "panels/timeline/components/LiveMetricsView.ts | mobile": {
     "message": "อุปกรณ์เคลื่อนที่"
   },
-  "panels/timeline/components/LiveMetricsView.ts | mostUsersDesktop": {
-    "message": "ผู้ใช้ {PH1} ใช้งานในเดสก์ท็อป"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | mostUsersMobile": {
-    "message": "ผู้ใช้ {PH1} ใช้อุปกรณ์เคลื่อนที่"
-  },
   "panels/timeline/components/LiveMetricsView.ts | needsDataOption": {
     "message": "{PH1} - ไม่มีข้อมูล"
   },
@@ -13721,23 +14003,41 @@
   "panels/timeline/components/LiveMetricsView.ts | nextSteps": {
     "message": "ขั้นตอนถัดไป"
   },
+  "panels/timeline/components/LiveMetricsView.ts | numShifts": {
+    "message": "{shiftCount,plural, =1{การเปลี่ยนแปลง {shiftCount} ครั้ง}other{การเปลี่ยนแปลง {shiftCount} ครั้ง}}"
+  },
   "panels/timeline/components/LiveMetricsView.ts | originOption": {
     "message": "ต้นทาง"
   },
   "panels/timeline/components/LiveMetricsView.ts | originOptionWithKey": {
     "message": "ต้นทาง: {PH1}"
   },
-  "panels/timeline/components/LiveMetricsView.ts | percentage": {
-    "message": "{PH1}%"
+  "panels/timeline/components/LiveMetricsView.ts | presentationDelay": {
+    "message": "ความล่าช้าของงานนำเสนอ"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | processingDuration": {
+    "message": "ระยะเวลาในการประมวลผล"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | resourceLoadDelay": {
+    "message": "ความล่าช้าของการโหลดทรัพยากร"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | resourceLoadDuration": {
+    "message": "ระยะเวลาในการโหลดทรัพยากร"
   },
   "panels/timeline/components/LiveMetricsView.ts | seeHowYourLocalMetricsCompare": {
     "message": "ดูประสิทธิภาพเมตริกในเครื่องของคุณเปรียบเทียบกับข้อมูลผู้ใช้จริงใน{PH1}"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | showClsCluster": {
+    "message": "ไปที่คลัสเตอร์การเปลี่ยนแปลงเลย์เอาต์ที่แย่ที่สุด"
   },
   "panels/timeline/components/LiveMetricsView.ts | showFieldDataForDevice": {
     "message": "แสดงข้อมูลภาคสนามสำหรับประเภทอุปกรณ์: {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | showFieldDataForPage": {
     "message": "แสดงข้อมูลภาคสนามสำหรับ {PH1}"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | showInpInteraction": {
+    "message": "ไปที่การโต้ตอบ INP"
   },
   "panels/timeline/components/LiveMetricsView.ts | simulateDifferentDevices": {
     "message": "จำลองอุปกรณ์ต่างๆ"
@@ -13750,6 +14050,9 @@
   },
   "panels/timeline/components/LiveMetricsView.ts | theLocalMetricsAre": {
     "message": "ระบบจะบันทึก{PH1}จากหน้าเว็บปัจจุบันโดยใช้การเชื่อมต่อเครือข่ายและอุปกรณ์ของคุณ"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | timeToFirstByte": {
+    "message": "เวลาที่ได้รับข้อมูลไบต์แรก"
   },
   "panels/timeline/components/LiveMetricsView.ts | tryDisablingThrottling": {
     "message": "ผู้ใช้จริง 75% พบปัญหาเรื่องเวลาในการตอบสนองของเครือข่ายซึ่งใกล้เคียงกับการเชื่อมต่อที่ไม่มีการควบคุม"
@@ -13766,11 +14069,17 @@
   "panels/timeline/components/LiveMetricsView.ts | useDeviceToolbar": {
     "message": "ใช้แถบเครื่องมืออุปกรณ์เพื่อ{PH1}"
   },
+  "panels/timeline/components/LiveMetricsView.ts | worstCluster": {
+    "message": "คลัสเตอร์ที่แย่ที่สุด"
+  },
   "panels/timeline/components/MetricCard.ts | betweenRange": {
     "message": "({PH1}-{PH2})"
   },
   "panels/timeline/components/MetricCard.ts | considerTesting": {
     "message": "พิจารณาเงื่อนไขการทดสอบในเครื่อง"
+  },
+  "panels/timeline/components/MetricCard.ts | duration": {
+    "message": "ระยะเวลาในเครื่อง (มิลลิวินาที)"
   },
   "panels/timeline/components/MetricCard.ts | field75thPercentile": {
     "message": "เปอร์เซ็นไทล์ที่ 75 ในฟิลด์"
@@ -13795,6 +14104,9 @@
   },
   "panels/timeline/components/MetricCard.ts | percentage": {
     "message": "{PH1}%"
+  },
+  "panels/timeline/components/MetricCard.ts | phase": {
+    "message": "ระยะ"
   },
   "panels/timeline/components/MetricCard.ts | poor": {
     "message": "แย่"
@@ -13901,23 +14213,14 @@
   "panels/timeline/components/NetworkRequestDetails.ts | FromServiceWorker": {
     "message": " (ตั้งแต่ service worker)"
   },
-  "panels/timeline/components/NetworkRequestDetails.ts | contentDownloading": {
-    "message": "การดาวน์โหลดเนื้อหา"
-  },
   "panels/timeline/components/NetworkRequestDetails.ts | decodedBody": {
     "message": "ถอดรหัสเนื้อความแล้ว"
-  },
-  "panels/timeline/components/NetworkRequestDetails.ts | duration": {
-    "message": "ระยะเวลา"
   },
   "panels/timeline/components/NetworkRequestDetails.ts | encodedData": {
     "message": "ข้อมูลที่เข้ารหัส"
   },
   "panels/timeline/components/NetworkRequestDetails.ts | fromCache": {
     "message": "จากแคช"
-  },
-  "panels/timeline/components/NetworkRequestDetails.ts | initialPriority": {
-    "message": "ลําดับความสําคัญเริ่มต้น"
   },
   "panels/timeline/components/NetworkRequestDetails.ts | initiatedBy": {
     "message": "เริ่มต้นโดย"
@@ -13937,17 +14240,8 @@
   "panels/timeline/components/NetworkRequestDetails.ts | priority": {
     "message": "ลำดับความสำคัญ"
   },
-  "panels/timeline/components/NetworkRequestDetails.ts | queuingAndConnecting": {
-    "message": "กำลังเข้าคิวและเชื่อมต่อ"
-  },
   "panels/timeline/components/NetworkRequestDetails.ts | requestMethod": {
     "message": "เมธอดคำขอ"
-  },
-  "panels/timeline/components/NetworkRequestDetails.ts | requestSentAndWaiting": {
-    "message": "ส่งคำขอแล้วและกำลังรออยู่"
-  },
-  "panels/timeline/components/NetworkRequestDetails.ts | waitingOnMainThread": {
-    "message": "กำลังรอชุดข้อความหลัก"
   },
   "panels/timeline/components/NetworkRequestDetails.ts | yes": {
     "message": "ใช่"
@@ -13988,23 +14282,95 @@
   "panels/timeline/components/NetworkThrottlingSelector.ts | presets": {
     "message": "ค่าที่กำหนดล่วงหน้า"
   },
-  "panels/timeline/components/SidebarAnnotationsTab.ts | diagram": {
-    "message": "แผนภาพ"
+  "panels/timeline/components/RelatedInsightChips.ts | insightKeyword": {
+    "message": "ข้อมูลเชิงลึก"
   },
-  "panels/timeline/components/SidebarAnnotationsTab.ts | diagramDescription": {
-    "message": "ดับเบิลคลิกที่รายการเพื่อสร้างแผนภาพ"
+  "panels/timeline/components/SidebarAnnotationsTab.ts | annotationGetStarted": {
+    "message": "ใส่คำอธิบายประกอบการติดตามสำหรับตัวคุณเองและผู้อื่น"
   },
-  "panels/timeline/components/SidebarAnnotationsTab.ts | entryLabel": {
-    "message": "ป้ายกำกับรายการ"
+  "panels/timeline/components/SidebarAnnotationsTab.ts | deleteAnnotationTutorialDescription": {
+    "message": "วางเมาส์เหนือรายการในแถบด้านข้างโดยเลือกแท็บคำอธิบายประกอบไว้เพื่อเข้าถึงฟังก์ชันการลบ"
   },
-  "panels/timeline/components/SidebarAnnotationsTab.ts | entryLabelDescription": {
-    "message": "ดับเบิลคลิกที่รายการเพื่อสร้างป้ายกำกับรายการ จากนั้นกด Esc หรือ Enter เพื่อให้เสร็จสมบูรณ์"
+  "panels/timeline/components/SidebarAnnotationsTab.ts | deleteAnnotationTutorialTitle": {
+    "message": "ลบคำอธิบายประกอบ"
   },
-  "panels/timeline/components/SidebarAnnotationsTab.ts | timeRange": {
-    "message": "ช่วงเวลา"
+  "panels/timeline/components/SidebarAnnotationsTab.ts | deleteButton": {
+    "message": "ลบคำอธิบายประกอบ: {PH1}"
   },
-  "panels/timeline/components/SidebarAnnotationsTab.ts | timeRangeDescription": {
-    "message": "กด Shift ค้างไว้แล้วลากเมาส์บน Canvas เพื่อสร้างช่วงเวลาและเพิ่มป้ายกำกับ จากนั้นกด Esc หรือ Enter เพื่อให้เสร็จสมบูรณ์"
+  "panels/timeline/components/SidebarAnnotationsTab.ts | entryLabelDescriptionLabel": {
+    "message": "เหตุการณ์ \"{PH1}\" ที่มีข้อความ \"{PH2}\""
+  },
+  "panels/timeline/components/SidebarAnnotationsTab.ts | entryLabelTutorialDescription": {
+    "message": "ดับเบิลคลิกที่รายการแล้วพิมพ์เพื่อสร้างป้ายกำกับรายการ"
+  },
+  "panels/timeline/components/SidebarAnnotationsTab.ts | entryLabelTutorialTitle": {
+    "message": "ติดป้ายกำกับรายการ"
+  },
+  "panels/timeline/components/SidebarAnnotationsTab.ts | entryLinkDescriptionLabel": {
+    "message": "ความเชื่อมโยงระหว่างเหตุการณ์ \"{PH1}\" กับเหตุการณ์ \"{PH2}\""
+  },
+  "panels/timeline/components/SidebarAnnotationsTab.ts | entryLinkTutorialDescription": {
+    "message": "ดับเบิลคลิกรายการ คลิกลูกศรขวาที่อยู่ติดกัน แล้วเลือกรายการปลายทาง"
+  },
+  "panels/timeline/components/SidebarAnnotationsTab.ts | entryLinkTutorialTitle": {
+    "message": "เชื่อมโยง 2 รายการ"
+  },
+  "panels/timeline/components/SidebarAnnotationsTab.ts | timeRangeDescriptionLabel": {
+    "message": "ช่วงเวลาเริ่มต้นที่ {PH1} และสิ้นสุดที่ {PH2}"
+  },
+  "panels/timeline/components/SidebarAnnotationsTab.ts | timeRangeTutorialDescription": {
+    "message": "กด Shift ค้างไว้แล้วลากเมาส์ในแผนภูมิ Flame Chart จากนั้นพิมพ์เพื่อสร้างคำอธิบายประกอบช่วงเวลา"
+  },
+  "panels/timeline/components/SidebarAnnotationsTab.ts | timeRangeTutorialTitle": {
+    "message": "กำหนดช่วงเวลา"
+  },
+  "panels/timeline/components/SidebarInsightsTab.ts | feedbackButton": {
+    "message": "ความคิดเห็น"
+  },
+  "panels/timeline/components/SidebarInsightsTab.ts | feedbackTooltip": {
+    "message": "ฟีเจอร์ Insights อยู่ในขั้นทดลอง ความคิดเห็นของคุณจะช่วยให้เราปรับปรุงฟีเจอร์นี้ได้"
+  },
+  "panels/timeline/components/SidebarSingleInsightSet.ts | metricScore": {
+    "message": "{PH1}: {PH2} {PH3} คะแนน"
+  },
+  "panels/timeline/components/Utils.ts | fms": {
+    "message": "{PH1}[ms]()"
+  },
+  "panels/timeline/components/Utils.ts | fs": {
+    "message": "{PH1}[s]()"
+  },
+  "panels/timeline/components/insights/CLSCulprits.ts | animation": {
+    "message": "ภาพเคลื่อนไหว"
+  },
+  "panels/timeline/components/insights/CLSCulprits.ts | description": {
+    "message": "การเปลี่ยนแปลงเลย์เอาต์เกิดขึ้นเมื่อองค์ประกอบต่างๆ เคลื่อนที่โดยไม่มีการโต้ตอบของผู้ใช้ [ตรวจสอบสาเหตุของการเปลี่ยนแปลงเลย์เอาต์](https://web.dev/articles/optimize-cls) เช่น การเพิ่ม การนำออก หรือการเปลี่ยนแบบอักษรขององค์ประกอบต่างๆ เมื่อโหลดหน้าเว็บ"
+  },
+  "panels/timeline/components/insights/CLSCulprits.ts | fontRequest": {
+    "message": "คำขอแบบอักษร"
+  },
+  "panels/timeline/components/insights/CLSCulprits.ts | injectedIframe": {
+    "message": "มีการแทรก iframe"
+  },
+  "panels/timeline/components/insights/CLSCulprits.ts | layoutShiftCluster": {
+    "message": "คลัสเตอร์การเปลี่ยนแปลงเลย์เอาต์ @ {PH1}"
+  },
+  "panels/timeline/components/insights/CLSCulprits.ts | title": {
+    "message": "สาเหตุของการเปลี่ยนแปลงเลย์เอาต์"
+  },
+  "panels/timeline/components/insights/CLSCulprits.ts | topCulprits": {
+    "message": "สาเหตุหลักๆ ของการเปลี่ยนแปลงเลย์เอาต์"
+  },
+  "panels/timeline/components/insights/CLSCulprits.ts | worstCluster": {
+    "message": "คลัสเตอร์ที่แย่ที่สุด"
+  },
+  "panels/timeline/components/insights/CLSCulprits.ts | worstLayoutShiftCluster": {
+    "message": "คลัสเตอร์การเปลี่ยนแปลงเลย์เอาต์ที่แย่ที่สุด"
+  },
+  "panels/timeline/components/insights/DocumentLatency.ts | description": {
+    "message": "คำขอเครือข่ายครั้งแรกเป็นสิ่งสำคัญที่สุด  ลดเวลาในการตอบสนองโดยหลีกเลี่ยงการเปลี่ยนเส้นทาง ตรวจสอบการตอบกลับของเซิร์ฟเวอร์ที่รวดเร็ว และเปิดใช้การบีบอัดข้อความ"
+  },
+  "panels/timeline/components/insights/DocumentLatency.ts | failedAriaLabel": {
+    "message": "ตรวจสอบข้อมูลเชิงลึกไม่สำเร็จ: {PH1}"
   },
   "panels/timeline/components/insights/DocumentLatency.ts | failedRedirects": {
     "message": "มีการเปลี่ยนเส้นทาง"
@@ -14024,17 +14390,41 @@
   "panels/timeline/components/insights/DocumentLatency.ts | passingTextCompression": {
     "message": "ใช้การบีบอัดข้อความ"
   },
+  "panels/timeline/components/insights/DocumentLatency.ts | redirectsLabel": {
+    "message": "เปลี่ยนเส้นทาง"
+  },
+  "panels/timeline/components/insights/DocumentLatency.ts | serverResponseTimeLabel": {
+    "message": "เวลาในการตอบกลับของเซิร์ฟเวอร์"
+  },
+  "panels/timeline/components/insights/DocumentLatency.ts | successAriaLabel": {
+    "message": "การตรวจสอบข้อมูลเชิงลึกผ่านแล้ว: {PH1}"
+  },
+  "panels/timeline/components/insights/DocumentLatency.ts | title": {
+    "message": "เวลาในการตอบสนองต่อคำขอเอกสาร"
+  },
+  "panels/timeline/components/insights/DocumentLatency.ts | uncompressedDownload": {
+    "message": "การดาวน์โหลดที่ไม่มีการบีบอัด"
+  },
+  "panels/timeline/components/insights/FontDisplay.ts | description": {
+    "message": "ลองใช้[การแสดงแบบอักษร](https://developer.chrome.com/blog/font-display)swapหรือoptionalเพื่อให้ผู้ใช้มองเห็นข้อความได้เสมอ swap สามารถเพิ่มประสิทธิภาพเพิ่มเติมเพื่อลดการเปลี่ยนแปลงเลย์เอาต์ด้วย[การลบล้างเมตริกแบบอักษร](https://developer.chrome.com/blog/font-fallbacks)"
+  },
+  "panels/timeline/components/insights/FontDisplay.ts | fontColumn": {
+    "message": "แบบอักษร"
+  },
+  "panels/timeline/components/insights/FontDisplay.ts | title": {
+    "message": "การแสดงแบบอักษร"
+  },
+  "panels/timeline/components/insights/FontDisplay.ts | wastedTimeColumn": {
+    "message": "เวลาที่เสียไป"
+  },
   "panels/timeline/components/insights/InteractionToNextPaint.ts | description": {
-    "message": "ปรับปรุงการตอบสนองต่อผู้ใช้โดยปรับปรุงเมตริก Interaction to Next Paint ดูวิธี[เพิ่มประสิทธิภาพ INP](https://web.dev/articles/optimize-inp)"
+    "message": "เริ่มตรวจสอบด้วยระยะที่ยาวที่สุด [ลดการหน่วงเวลาให้น้อยที่สุด](https://web.dev/articles/optimize-inp#optimize_interactions) หากต้องการลดระยะเวลาในการประมวลผล ให้[เพิ่มประสิทธิภาพต้นทุนของเทรดหลัก](https://web.dev/articles/optimize-long-tasks) ซึ่งมักจะเป็น JS"
   },
   "panels/timeline/components/insights/InteractionToNextPaint.ts | duration": {
     "message": "ระยะเวลา"
   },
   "panels/timeline/components/insights/InteractionToNextPaint.ts | inputDelay": {
     "message": "ความล่าช้าของอินพุต"
-  },
-  "panels/timeline/components/insights/InteractionToNextPaint.ts | longestInteraction": {
-    "message": "การโต้ตอบที่นานที่สุด"
   },
   "panels/timeline/components/insights/InteractionToNextPaint.ts | phase": {
     "message": "ระยะ"
@@ -14048,6 +14438,12 @@
   "panels/timeline/components/insights/InteractionToNextPaint.ts | title": {
     "message": "INP ตามระยะ"
   },
+  "panels/timeline/components/insights/LCPDiscovery.ts | description": {
+    "message": "เพิ่มประสิทธิภาพ LCP โดยทำให้รูปภาพ LCP [ค้นพบได้](https://web.dev/articles/optimize-lcp#1_eliminate_resource_load_delay)จาก HTML ทันที และ[หลีกเลี่ยงการโหลดแบบ Lazy Loading](https://web.dev/articles/lcp-lazy-loading)"
+  },
+  "panels/timeline/components/insights/LCPDiscovery.ts | failedAriaLabel": {
+    "message": "ตรวจสอบข้อมูลเชิงลึกไม่สำเร็จ: {PH1}"
+  },
   "panels/timeline/components/insights/LCPDiscovery.ts | fetchPriorityApplied": {
     "message": "ใช้ลำดับความสำคัญในการดึงข้อมูล=สูงอยู่"
   },
@@ -14060,8 +14456,23 @@
   "panels/timeline/components/insights/LCPDiscovery.ts | requestDiscoverable": {
     "message": "คำขอสามารถค้นพบได้ในเอกสารเริ่มต้น"
   },
+  "panels/timeline/components/insights/LCPDiscovery.ts | successAriaLabel": {
+    "message": "การตรวจสอบข้อมูลเชิงลึกผ่านแล้ว: {PH1}"
+  },
+  "panels/timeline/components/insights/LCPDiscovery.ts | title": {
+    "message": "การค้นพบคำขอ LCP"
+  },
+  "panels/timeline/components/insights/LCPPhases.ts | description": {
+    "message": "แต่ละ[ระยะมีกลยุทธ์การปรับปรุงเฉพาะ](https://web.dev/articles/optimize-lcp#lcp-breakdown) โดยปกติแล้ว เวลาส่วนใหญ่ของ LCP ควรใช้ไปกับการโหลดทรัพยากร ไม่ใช่การหน่วงเวลา"
+  },
   "panels/timeline/components/insights/LCPPhases.ts | elementRenderDelay": {
     "message": "ความล่าช้าในการแสดงผลองค์ประกอบ"
+  },
+  "panels/timeline/components/insights/LCPPhases.ts | percentLCP": {
+    "message": "% ของ LCP"
+  },
+  "panels/timeline/components/insights/LCPPhases.ts | phase": {
+    "message": "ระยะ"
   },
   "panels/timeline/components/insights/LCPPhases.ts | resourceLoadDelay": {
     "message": "ความล่าช้าของการโหลดทรัพยากร"
@@ -14072,11 +14483,50 @@
   "panels/timeline/components/insights/LCPPhases.ts | timeToFirstByte": {
     "message": "เวลาที่ได้รับข้อมูลไบต์แรก"
   },
+  "panels/timeline/components/insights/LCPPhases.ts | title": {
+    "message": "LCP ตามระยะ"
+  },
   "panels/timeline/components/insights/RenderBlocking.ts | description": {
     "message": "คำขอกำลังบล็อกการแสดงผลเริ่มต้นของหน้าเว็บ ซึ่งอาจทำให้ LCP ล่าช้า [การเลื่อนเวลาหรือแทรกในหน้า](https://web.dev/learn/performance/understanding-the-critical-path#render-blocking_resources/)สามารถย้ายคำขอเครือข่ายเหล่านี้ออกจากเส้นทางที่สำคัญได้"
   },
+  "panels/timeline/components/insights/RenderBlocking.ts | duration": {
+    "message": "ระยะเวลา"
+  },
+  "panels/timeline/components/insights/RenderBlocking.ts | renderBlockingRequest": {
+    "message": "คำขอ"
+  },
+  "panels/timeline/components/insights/RenderBlocking.ts | title": {
+    "message": "แสดงผลคำขอบล็อก"
+  },
   "panels/timeline/components/insights/SidebarInsight.ts | estimatedSavings": {
     "message": "เวลาที่ประหยัดได้โดยประมาณ: {PH1}"
+  },
+  "panels/timeline/components/insights/SidebarInsight.ts | estimatedSavingsTimingAndBytes": {
+    "message": "การประหยัดโดยประมาณ: {PH1} และ {PH2}"
+  },
+  "panels/timeline/components/insights/SidebarInsight.ts | viewDetails": {
+    "message": "ดูรายละเอียดของ {PH1}"
+  },
+  "panels/timeline/components/insights/SlowCSSSelector.ts | description": {
+    "message": "หากต้นทุนในการคำนวณรูปแบบอีกครั้งยังคงสูงอยู่ การเพิ่มประสิทธิภาพตัวเลือกจะลดต้นทุนได้ [เพิ่มประสิทธิภาพตัวเลือก](https://developer.chrome.com/docs/devtools/performance/selector-stats)ด้วยทั้งเวลาที่ผ่านไปนานและ % ของเส้นทางที่ช้าที่สูง ตัวเลือกที่เรียบง่ายขึ้น, ตัวเลือกที่น้อยลง, DOM ที่เล็กลง และ DOM ที่ตื้นขึ้นจะช่วยลดต้นทุนการจับคู่ได้ทั้งหมด"
+  },
+  "panels/timeline/components/insights/SlowCSSSelector.ts | elapsed": {
+    "message": "เวลาที่ผ่านไป"
+  },
+  "panels/timeline/components/insights/SlowCSSSelector.ts | matchAttempts": {
+    "message": "ความพยายามจับคู่ที่ตรงกัน"
+  },
+  "panels/timeline/components/insights/SlowCSSSelector.ts | matchCount": {
+    "message": "จำนวนการจับคู่ที่ตรงกัน"
+  },
+  "panels/timeline/components/insights/SlowCSSSelector.ts | title": {
+    "message": "ต้นทุนของตัวเลือก CSS"
+  },
+  "panels/timeline/components/insights/SlowCSSSelector.ts | topSelectors": {
+    "message": "ตัวเลือกยอดนิยม"
+  },
+  "panels/timeline/components/insights/SlowCSSSelector.ts | total": {
+    "message": "รวม"
   },
   "panels/timeline/components/insights/ThirdParties.ts | columnBlockingTime": {
     "message": "เวลาในการบล็อก"
@@ -14088,13 +14538,28 @@
     "message": "ขนาดการโอน"
   },
   "panels/timeline/components/insights/ThirdParties.ts | description": {
-    "message": "โค้ดของบุคคลที่สามอาจส่งผลกระทบที่สำคัญต่อประสิทธิภาพการโหลด จำกัดจำนวนผู้ให้บริการบุคคลที่สามที่มากเกินไปและพยายามโหลดโค้ดของบุคคลที่สามหลังจากที่หน้าเว็บโหลดเบื้องต้นเสร็จเรียบร้อยแล้ว [ดูวิธีลดผลกระทบของบุคคลที่สาม](https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/loading-third-party-javascript/)"
+    "message": "โค้ดของบุคคลที่สามอาจส่งผลกระทบที่สำคัญต่อประสิทธิภาพการโหลด [ลดและเลื่อนการโหลดโค้ดของบุคคลที่สามออกไป](https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/loading-third-party-javascript/)เพื่อจัดลำดับความสำคัญของเนื้อหาในหน้าเว็บ"
   },
   "panels/timeline/components/insights/ThirdParties.ts | title": {
-    "message": "ลดการใช้ของบุคคลที่สาม"
+    "message": "บุคคลที่สาม"
   },
   "panels/timeline/components/insights/Viewport.ts | description": {
-    "message": "องค์ประกอบเมตาของวิวพอร์ตไม่เพียงเพิ่มประสิทธิภาพแอปสำหรับขนาดหน้าจออุปกรณ์เคลื่อนที่เท่านั้น แต่ยัง[ป้องกันไม่ให้เกิดความล่าช้าต่อข้อมูลจากผู้ใช้เป็นเวลา 300 มิลลิวินาที](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/)ด้วย"
+    "message": "วิวพอร์ตของหน้าเว็บไม่ได้เพิ่มประสิทธิภาพสำหรับอุปกรณ์เคลื่อนที่ การโต้ตอบด้วยการแตะจึงอาจ[มีการหน่วงเวลาสูงสุด 300 มิลลิวินาที](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/)"
+  },
+  "panels/timeline/components/insights/Viewport.ts | title": {
+    "message": "วิวพอร์ตไม่เหมาะกับอุปกรณ์เคลื่อนที่"
+  },
+  "panels/timeline/overlays/components/EntriesLinkOverlay.ts | diagram": {
+    "message": "ความเชื่อมโยงระหว่างรายการ"
+  },
+  "panels/timeline/overlays/components/EntryLabelOverlay.ts | entryLabel": {
+    "message": "ป้ายกำกับรายการ"
+  },
+  "panels/timeline/overlays/components/EntryLabelOverlay.ts | inputTextPrompt": {
+    "message": "ป้อนป้ายกำกับคำอธิบายประกอบ"
+  },
+  "panels/timeline/overlays/components/TimeRangeOverlay.ts | timeRange": {
+    "message": "ช่วงเวลา"
   },
   "panels/timeline/timeline-meta.ts | hideChromeFrameInLayersView": {
     "message": "ซ่อนเฟรม chrome ในมุมมองเลเยอร์"
@@ -14134,6 +14599,18 @@
   },
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "หยุด"
+  },
+  "panels/utils/utils.ts | requestContentHeadersOverridden": {
+    "message": "ทั้งเนื้อหาและส่วนหัวของคำขอถูกลบล้าง"
+  },
+  "panels/utils/utils.ts | requestContentOverridden": {
+    "message": "เนื้อหาคําขอถูกลบล้าง"
+  },
+  "panels/utils/utils.ts | requestHeadersOverridden": {
+    "message": "ส่วนหัวของคำขอถูกลบล้าง"
+  },
+  "panels/utils/utils.ts | thirdPartyPhaseout": {
+    "message": "คุกกี้สําหรับคําขอนี้ถูกบล็อกเนื่องจาก Chrome Flag หรือการกำหนดค่าเบราว์เซอร์ ดูข้อมูลเพิ่มเติมในแผง \"ปัญหา\""
   },
   "panels/web_audio/AudioContextContentBuilder.ts | callbackBufferSize": {
     "message": "ขนาดบัฟเฟอร์ของ Callback"
@@ -14344,6 +14821,9 @@
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "ปัญหาที่ยังไม่เรียบร้อย"
+  },
+  "ui/components/markdown_view/CodeBlock.ts | code": {
+    "message": "โค้ด"
   },
   "ui/components/markdown_view/CodeBlock.ts | copied": {
     "message": "คัดลอกไปยังคลิปบอร์ดแล้ว"
@@ -15116,8 +15596,14 @@
   "ui/legacy/components/perf_ui/FilmStripView.ts | screenshotForSSelectToView": {
     "message": "ภาพหน้าจอสำหรับ {PH1} - เลือกเพื่อดูคำขอก่อนหน้า"
   },
+  "ui/legacy/components/perf_ui/FlameChart.ts | deleteAnnotations": {
+    "message": "ลบคำอธิบายประกอบ"
+  },
   "ui/legacy/components/perf_ui/FlameChart.ts | enterTrackConfigurationMode": {
     "message": "กำหนดค่าการติดตาม…"
+  },
+  "ui/legacy/components/perf_ui/FlameChart.ts | eventSelectedFromGroup": {
+    "message": "เลือกเหตุการณ์ {PH1} แล้วใน{PH2} กด \"Enter\" เพื่อโฟกัสเหตุการณ์นี้"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | exitTrackConfigurationMode": {
     "message": "กำหนดค่าการติดตามให้เสร็จสิ้น"
@@ -15303,7 +15789,7 @@
     "message": "กำลังโหลด…"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | prettyPrint": {
-    "message": "Pretty print"
+    "message": "จัดรูปแบบ"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | source": {
     "message": "แหล่งที่มา"
@@ -15373,6 +15859,9 @@
   },
   "ui/legacy/components/utils/JSPresentationUtils.ts | showLess": {
     "message": "แสดงน้อยลง"
+  },
+  "ui/legacy/components/utils/JSPresentationUtils.ts | showMoreFrames": {
+    "message": "แสดงเฟรมที่อยู่ในรายการละเว้น"
   },
   "ui/legacy/components/utils/JSPresentationUtils.ts | unknownSource": {
     "message": "ไม่รู้จัก"

@@ -215,6 +215,9 @@
   "core/i18n/time-utilities.ts | fms": {
     "message": "{PH1} 毫秒"
   },
+  "core/i18n/time-utilities.ts | fmsExpanded": {
+    "message": "{PH1} 毫秒"
+  },
   "core/i18n/time-utilities.ts | fs": {
     "message": "{PH1} 秒"
   },
@@ -549,7 +552,7 @@
     "message": "停用 AVIF 格式"
   },
   "core/sdk/sdk-meta.ts | disableCache": {
-    "message": "停用缓存（在开发者工具已打开时）"
+    "message": "在开发者工具已打开时停用缓存"
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "停用 JavaScript"
@@ -968,6 +971,9 @@
   "entrypoints/main/main-meta.ts | auto": {
     "message": "自动"
   },
+  "entrypoints/main/main-meta.ts | autoTheme": {
+    "message": "自动"
+  },
   "entrypoints/main/main-meta.ts | bottom": {
     "message": "底部"
   },
@@ -994,6 +1000,9 @@
   },
   "entrypoints/main/main-meta.ts | dockToRight": {
     "message": "停靠至右侧"
+  },
+  "entrypoints/main/main-meta.ts | dontMatchChromeColorSchemeCommand": {
+    "message": "不与 Chrome 配色方案匹配"
   },
   "entrypoints/main/main-meta.ts | enableCtrlShortcutToSwitchPanels": {
     "message": "启用 Ctrl + 1-9 快捷键切换面板"
@@ -1029,7 +1038,10 @@
     "message": "浅色"
   },
   "entrypoints/main/main-meta.ts | matchChromeColorScheme": {
-    "message": "与 Chrome 配色方案一致"
+    "message": "与 Chrome 配色方案匹配"
+  },
+  "entrypoints/main/main-meta.ts | matchChromeColorSchemeCommand": {
+    "message": "与 Chrome 配色方案匹配"
   },
   "entrypoints/main/main-meta.ts | matchChromeColorSchemeDocumentation": {
     "message": "将开发者工具颜色与您自定义的 Chrome 主题（如果已启用）相匹配"
@@ -1066,6 +1078,9 @@
   },
   "entrypoints/main/main-meta.ts | searchOnEnterCommand": {
     "message": "停用即输即搜功能（按 Enter 键即可搜索）"
+  },
+  "entrypoints/main/main-meta.ts | switchToBrowserPreferredTheme": {
+    "message": "切换到浏览器首选主题"
   },
   "entrypoints/main/main-meta.ts | switchToDarkTheme": {
     "message": "切换到深色主题"
@@ -1348,6 +1363,9 @@
   },
   "models/bindings/DebuggerLanguagePlugins.ts | loadingDebugSymbolsForVia": {
     "message": "[{PH1}] 正在通过 {PH3} 加载 {PH2} 的调试符号…"
+  },
+  "models/bindings/IgnoreListManager.ts | addAllAnonymousScriptsToIgnoreList": {
+    "message": "将所有匿名脚本添加到忽略列表"
   },
   "models/bindings/IgnoreListManager.ts | addAllContentScriptsToIgnoreList": {
     "message": "将所有扩展程序脚本添加到忽略列表"
@@ -2453,6 +2471,21 @@
   "panels/application/ApplicationPanelSidebar.ts | documentNotAvailable": {
     "message": "文档不可用"
   },
+  "panels/application/ApplicationPanelSidebar.ts | extensionLocalStorage": {
+    "message": "本地"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | extensionManagedStorage": {
+    "message": "受管理"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | extensionSessionStorage": {
+    "message": "会话"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | extensionStorage": {
+    "message": "扩展程序存储"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | extensionSyncStorage": {
+    "message": "同步"
+  },
   "panels/application/ApplicationPanelSidebar.ts | frames": {
     "message": "帧"
   },
@@ -2637,6 +2670,24 @@
     "message": "键"
   },
   "panels/application/DOMStorageItemsView.ts | value": {
+    "message": "值"
+  },
+  "panels/application/ExtensionStorageItemsView.ts | extensionStorage": {
+    "message": "扩展程序存储"
+  },
+  "panels/application/ExtensionStorageItemsView.ts | extensionStorageItemDeleted": {
+    "message": "此存储项已被删除。"
+  },
+  "panels/application/ExtensionStorageItemsView.ts | extensionStorageItems": {
+    "message": "扩展程序存储项"
+  },
+  "panels/application/ExtensionStorageItemsView.ts | extensionStorageItemsCleared": {
+    "message": "已清空“扩展程序存储项”表格"
+  },
+  "panels/application/ExtensionStorageItemsView.ts | key": {
+    "message": "键"
+  },
+  "panels/application/ExtensionStorageItemsView.ts | value": {
     "message": "值"
   },
   "panels/application/IndexedDBViews.ts | clearObjectStore": {
@@ -3906,7 +3957,7 @@
     "message": "收起"
   },
   "panels/application/components/StackTrace.ts | showSMoreFrames": {
-    "message": "{n,plural, =1{显示另外 # 个框架}other{显示另外 # 个框架}}"
+    "message": "{n,plural, =1{显示另外 # 个帧}other{显示另外 # 个帧}}"
   },
   "panels/application/components/StorageMetadataView.ts | bucketName": {
     "message": "存储桶名称"
@@ -3997,6 +4048,9 @@
   },
   "panels/application/preloading/PreloadingView.ts | noRuleSets": {
     "message": "无规则集"
+  },
+  "panels/application/preloading/PreloadingView.ts | prettyPrint": {
+    "message": "美观输出"
   },
   "panels/application/preloading/PreloadingView.ts | statusFailure": {
     "message": "失败"
@@ -6411,7 +6465,7 @@
     "message": "改用搜索功能"
   },
   "panels/explain/components/ConsoleInsight.ts | settingsLink": {
-    "message": "“设置”中的控制台数据洞见"
+    "message": "“设置”中的Console insights"
   },
   "panels/explain/components/ConsoleInsight.ts | signInToUse": {
     "message": "登录以使用此功能"
@@ -6424,9 +6478,6 @@
   },
   "panels/explain/components/ConsoleInsight.ts | updateSettings": {
     "message": "更新设置"
-  },
-  "panels/explain/explain-meta.ts | ageRestricted": {
-    "message": "此功能仅支持年满 18 周岁的用户使用"
   },
   "panels/explain/explain-meta.ts | enableConsoleInsights": {
     "message": "利用 AI 了解控制台消息"
@@ -6444,10 +6495,70 @@
     "message": "此功能在您所在的地区不可用"
   },
   "panels/explain/explain-meta.ts | policyRestricted": {
-    "message": "贵组织已关闭此功能。如需了解详情，请与您的管理员联系。"
+    "message": "此设置由您的管理员管理"
   },
   "panels/explain/explain-meta.ts | wrongLocale": {
     "message": "如需使用此功能，请将开发者工具设置中的语言偏好设置更新为英语"
+  },
+  "panels/freestyler/FreestylerPanel.ts | chatCleared": {
+    "message": "已清除聊天记录"
+  },
+  "panels/freestyler/FreestylerPanel.ts | clearChat": {
+    "message": "清除聊天记录"
+  },
+  "panels/freestyler/FreestylerPanel.ts | help": {
+    "message": "帮助"
+  },
+  "panels/freestyler/FreestylerPanel.ts | sendFeedback": {
+    "message": "发送反馈"
+  },
+  "panels/freestyler/FreestylerPanel.ts | settings": {
+    "message": "设置"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | followTheSteps": {
+    "message": "请按照上述步骤提问"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | inputDisclaimerForEmptyState": {
+    "message": "这是一项实验性 AI 功能，并非始终准确无误。"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | learnAbout": {
+    "message": "了解开发者工具中的 AI 功能"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | notLoggedIn": {
+    "message": "只有当您使用 Google 账号登录 Chrome 时，此功能才可用"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | offline": {
+    "message": "请检查网络连接，然后重试"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | settingsLink": {
+    "message": "“设置”中的 AI 助理"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | turnOnForStyles": {
+    "message": "开启{PH1}即可获取有关理解 CSS 样式的帮助"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | turnOnForStylesAndRequests": {
+    "message": "开启{PH1}即可获取有关样式和网络请求的帮助"
+  },
+  "panels/freestyler/freestyler-meta.ts | aiAssistance": {
+    "message": "AI 助理"
+  },
+  "panels/freestyler/freestyler-meta.ts | askAi": {
+    "message": "向 AI 提问"
+  },
+  "panels/freestyler/freestyler-meta.ts | enableAiAssistance": {
+    "message": "启用 AI 助理"
+  },
+  "panels/freestyler/freestyler-meta.ts | geoRestricted": {
+    "message": "此功能在您所在的地区不可用"
+  },
+  "panels/freestyler/freestyler-meta.ts | policyRestricted": {
+    "message": "此设置由您的管理员管理"
+  },
+  "panels/freestyler/freestyler-meta.ts | showAiAssistance": {
+    "message": "显示 AI 助理"
+  },
+  "panels/freestyler/freestyler-meta.ts | wrongLocale": {
+    "message": "如需使用此功能，请在开发者工具设置中将语言偏好设置为英语"
   },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "已拦截的资源"
@@ -7598,11 +7709,8 @@
   "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrency": {
     "message": "硬件并发"
   },
-  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyIsEnabled": {
-    "message": "硬件并发替换已启用"
-  },
-  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencySettingTooltip": {
-    "message": "替换页面上 navgator.hardwareConcurrency 报告的值"
+  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencySettingLabel": {
+    "message": "替换 navigator.hardwareConcurrency 报告的值"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | noThrottling": {
     "message": "已停用节流模式"
@@ -7949,15 +8057,6 @@
   "panels/network/NetworkDataGridNode.ts | redirect": {
     "message": "重定向"
   },
-  "panels/network/NetworkDataGridNode.ts | requestContentHeadersOverridden": {
-    "message": "请求内容和标头均已被替换"
-  },
-  "panels/network/NetworkDataGridNode.ts | requestContentOverridden": {
-    "message": "请求内容已被替换"
-  },
-  "panels/network/NetworkDataGridNode.ts | requestHeadersOverridden": {
-    "message": "请求标头已被替换"
-  },
   "panels/network/NetworkDataGridNode.ts | sPreflight": {
     "message": "{PH1} + 预检"
   },
@@ -7993,9 +8092,6 @@
   },
   "panels/network/NetworkDataGridNode.ts | signedexchange": {
     "message": "signed-exchange"
-  },
-  "panels/network/NetworkDataGridNode.ts | thirdPartyPhaseout": {
-    "message": "此请求的 Cookie 因 Chrome flag 或浏览器配置而被屏蔽。如需了解详情，请前往“问题”面板。"
   },
   "panels/network/NetworkDataGridNode.ts | timeSubtitleTooltipText": {
     "message": "延迟时间（收到响应的时间 - 发起请求的时间）"
@@ -8415,7 +8511,7 @@
     "message": "停用缓存"
   },
   "panels/network/NetworkPanel.ts | disableCacheWhileDevtoolsIsOpen": {
-    "message": "停用缓存（在开发者工具已打开时）"
+    "message": "在开发者工具已打开时停用缓存"
   },
   "panels/network/NetworkPanel.ts | doNotClearLogOnPageReload": {
     "message": "网页重新加载/导航时不清除日志"
@@ -9030,7 +9126,7 @@
     "message": "添加网络请求屏蔽模式"
   },
   "panels/network/network-meta.ts | allowToGenerateHarWithSensitiveData": {
-    "message": "允许生成 HAR（包含敏感数据）"
+    "message": "允许生成包含敏感数据的 HAR"
   },
   "panels/network/network-meta.ts | allowToGenerateHarWithSensitiveDataDocumentation": {
     "message": "默认情况下，生成的 HAR 日志会经过清理，不包含 Cookie、Set-Cookie 或 Authorization HTTP 标头。启用此设置后，系统会提供导出/复制 HAR 数据（包含敏感数据）的选项。"
@@ -9051,7 +9147,7 @@
     "message": "磁盘缓存"
   },
   "panels/network/network-meta.ts | dontAllowToGenerateHarWithSensitiveData": {
-    "message": "不允许生成 HAR（包含敏感数据）"
+    "message": "不允许生成包含敏感数据的 HAR"
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "请勿按框架对网络日志内容分组"
@@ -10637,11 +10733,44 @@
   "panels/security/SecurityPanel.ts | yourPageRequestedNonsecure": {
     "message": "您的网页请求了被屏蔽的非安全资源。"
   },
+  "panels/security/SecurityPanelSidebar.ts | mainOrigin": {
+    "message": "主要来源"
+  },
+  "panels/security/SecurityPanelSidebar.ts | mainOriginNonsecure": {
+    "message": "主要来源（非安全来源）"
+  },
+  "panels/security/SecurityPanelSidebar.ts | mainOriginSecure": {
+    "message": "主要来源（安全）"
+  },
+  "panels/security/SecurityPanelSidebar.ts | nonsecureOrigins": {
+    "message": "不安全的来源"
+  },
+  "panels/security/SecurityPanelSidebar.ts | overview": {
+    "message": "概览"
+  },
+  "panels/security/SecurityPanelSidebar.ts | reloadToViewDetails": {
+    "message": "重新加载即可查看详情"
+  },
+  "panels/security/SecurityPanelSidebar.ts | secureOrigins": {
+    "message": "安全的来源"
+  },
+  "panels/security/SecurityPanelSidebar.ts | security": {
+    "message": "安全"
+  },
+  "panels/security/SecurityPanelSidebar.ts | unknownCanceled": {
+    "message": "未知/已取消"
+  },
   "panels/security/security-meta.ts | security": {
     "message": "安全"
   },
+  "panels/security/security-meta.ts | securityAndPrivacy": {
+    "message": "安全和隐私设置"
+  },
   "panels/security/security-meta.ts | showSecurity": {
     "message": "显示“安全”面板"
+  },
+  "panels/security/security-meta.ts | showSecurityAndPrivacy": {
+    "message": "显示“安全和隐私设置”"
   },
   "panels/sensors/LocationsSettingsTab.ts | addLocation": {
     "message": "添加位置…"
@@ -10857,16 +10986,25 @@
     "message": "用户处于空闲状态，屏幕已解锁"
   },
   "panels/settings/AISettingsTab.ts | adminSettings": {
-    "message": "Google 可能会根据您的 Google 账号管理方式和/或所在区域停止收集数据。面向受管理的用户提供的功能可能会因其组织的设置而异。"
+    "message": "Google 可能会根据您的 Google 账号管理方式和/或所在区域停止收集数据。面向受管理用户提供的功能可能会因贵组织的设置而异。"
+  },
+  "panels/settings/AISettingsTab.ts | ageRestricted": {
+    "message": "此功能仅支持年满 18 周岁的用户使用"
+  },
+  "panels/settings/AISettingsTab.ts | aiInnovations": {
+    "message": "AI 创新"
   },
   "panels/settings/AISettingsTab.ts | boostYourProductivity": {
-    "message": "借助 Chrome AI 提高工作效率"
+    "message": "借助 AI 提高工作效率"
   },
   "panels/settings/AISettingsTab.ts | consoleInsightsSendsData": {
     "message": "系统会将控制台消息、关联的堆栈轨迹、相关源代码和关联的网络标头发送给 Google，以生成说明。人工审核员可能会查看这些数据，以改进此功能。"
   },
+  "panels/settings/AISettingsTab.ts | enableAiAssistance": {
+    "message": "启用 AI 助理"
+  },
   "panels/settings/AISettingsTab.ts | enableConsoleInsights": {
-    "message": "启用控制台数据分析"
+    "message": "启用Console insights"
   },
   "panels/settings/AISettingsTab.ts | experimentalFeatures": {
     "message": "这些功能尚处于实验阶段。它们使用生成式 AI，可能会提供不准确或令人反感的信息，这些信息并不代表 Google 的观点。"
@@ -10875,31 +11013,43 @@
     "message": "获取控制台警告和错误的说明"
   },
   "panels/settings/AISettingsTab.ts | explainStyling": {
-    "message": "获取样式行为的说明和其他背景信息"
+    "message": "利用依托 AI 技术的数据洞见，了解 CSS 样式"
+  },
+  "panels/settings/AISettingsTab.ts | explainStylingAndNetworkRequest": {
+    "message": "利用依托 AI 技术的数据分析，了解 CSS 样式和网络活动"
+  },
+  "panels/settings/AISettingsTab.ts | explainStylingNetworkAndFile": {
+    "message": "利用依托 AI 技术的数据分析，了解 CSS 样式、网络活动和文件来源"
   },
   "panels/settings/AISettingsTab.ts | freestylerSendsData": {
-    "message": "系统可能会将所检查网页可通过 Web API 访问的任何数据发送给 Google，以生成说明。人工审核员可能会查看这些数据，以改进此功能。"
-  },
-  "panels/settings/AISettingsTab.ts | generatedSnippets": {
-    "message": "请谨慎使用生成的代码段"
+    "message": "系统会将所检查网页可通过 Web API、网络请求、文件和性能跟踪记录访问的任何数据发送给 Google，以生成说明。人工审核员可能会查看这些数据，以改进此功能。请勿在包含个人信息或敏感信息的网页上使用此功能。"
   },
   "panels/settings/AISettingsTab.ts | helpUnderstandConsole": {
     "message": "帮助您理解和解决控制台警告和错误"
   },
   "panels/settings/AISettingsTab.ts | helpUnderstandStyling": {
-    "message": "帮助您理解和解决样式问题"
+    "message": "获取有关了解 CSS 样式的帮助"
+  },
+  "panels/settings/AISettingsTab.ts | helpUnderstandStylingAndNetworkRequest": {
+    "message": "获取有关了解 CSS 样式和网络请求的帮助"
+  },
+  "panels/settings/AISettingsTab.ts | helpUnderstandStylingNetworkAndFile": {
+    "message": "获取有关了解 CSS 样式、网络请求和文件的帮助"
   },
   "panels/settings/AISettingsTab.ts | learnMore": {
     "message": "了解详情"
   },
-  "panels/settings/AISettingsTab.ts | oneOrMoreSettingsHaveChanged": {
-    "message": "一项或多项设置已更改，需要重新加载才能生效。"
+  "panels/settings/AISettingsTab.ts | notLoggedIn": {
+    "message": "只有当您使用 Google 账号登录 Chrome 时，才能使用此功能。"
+  },
+  "panels/settings/AISettingsTab.ts | offline": {
+    "message": "此功能仅在连接到网络时可用。"
   },
   "panels/settings/AISettingsTab.ts | privacyNotice": {
     "message": "Google 隐私权政策"
   },
   "panels/settings/AISettingsTab.ts | receiveStylingSuggestions": {
-    "message": "接收建议和代码示例，以解决样式问题"
+    "message": "通过上下文说明和建议改进开发工作流程"
   },
   "panels/settings/AISettingsTab.ts | receiveSuggestions": {
     "message": "接收建议和代码示例，以解决这些问题"
@@ -10908,7 +11058,7 @@
     "message": "使用情况数据至多保留 18 个月，并以 Google 无法识别数据提供者身份的方式存储。"
   },
   "panels/settings/AISettingsTab.ts | sendsDataToGoogle": {
-    "message": "当您使用这些功能时，系统会将与它们相关的数据发送给 Google。Google 会收集这些数据和反馈，并在人工审核员的帮助下改进其产品和服务。请避免分享敏感信息或个人信息。"
+    "message": "这些功能会将相关数据发送给 Google。Google 会收集这些数据和反馈，并在人工审核员的帮助下改进其产品和服务。请避免分享敏感信息或个人信息。"
   },
   "panels/settings/AISettingsTab.ts | showLess": {
     "message": "收起"
@@ -10920,7 +11070,7 @@
     "message": "Google 服务条款"
   },
   "panels/settings/AISettingsTab.ts | termsOfServicePrivacyNotice": {
-    "message": "使用此功能时需遵守《{PH1}》和《{PH2}》"
+    "message": "使用这些功能时需遵守《{PH1}》和《{PH2}》"
   },
   "panels/settings/AISettingsTab.ts | thingsToConsider": {
     "message": "注意事项"
@@ -10929,10 +11079,10 @@
     "message": "处于开启状态时"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
-    "message": "添加文件名模式"
+    "message": "为脚本的网址添加正则表达式规则"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addPattern": {
-    "message": "添加格式…"
+    "message": "添加正则表达式规则…"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScripts": {
     "message": "来源映射中的已知第三方脚本"
@@ -10941,10 +11091,10 @@
     "message": "自定义排除规则："
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | debuggerWillSkipThroughThe": {
-    "message": "调试程序将快速浏览脚本，且不会在遇到脚本抛出的异常时停止。"
+    "message": "调试程序不会逐行调试这些脚本，也不会在遇到仅影响这些脚本的异常时中断，并且“性能”面板会收起匹配的火焰图项。"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | enableIgnoreListing": {
-    "message": "启用忽略清单"
+    "message": "启用忽略列表"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | enableIgnoreListingTooltip": {
     "message": "取消选中即可停用所有忽略清单"
@@ -10954,6 +11104,9 @@
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | generalExclusionRules": {
     "message": "一般排除规则："
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreListAnonymousScripts": {
+    "message": "来自 eval 或控制台的匿名脚本"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreListContentScripts": {
     "message": "由扩展程序注入的内容脚本"
@@ -10965,16 +11118,16 @@
     "message": "了解详情"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | pattern": {
-    "message": "添加模式"
+    "message": "为脚本的网址添加正则表达式规则"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | patternAlreadyExists": {
-    "message": "模式已存在"
+    "message": "规则已存在"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | patternCannotBeEmpty": {
-    "message": "模式不能为空"
+    "message": "规则不能为空"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | patternMustBeAValidRegular": {
-    "message": "模式必须是有效的正则表达式"
+    "message": "规则必须是有效的正则表达式"
   },
   "panels/settings/KeybindsSettingsTab.ts | FullListOfDevtoolsKeyboard": {
     "message": "DevTools 键盘快捷键和手势的完整列表"
@@ -11213,6 +11366,9 @@
   "panels/settings/emulation/emulation-meta.ts | showDevices": {
     "message": "显示设备"
   },
+  "panels/settings/settings-meta.ts | aiInnovations": {
+    "message": "AI 创新"
+  },
   "panels/settings/settings-meta.ts | documentation": {
     "message": "文档"
   },
@@ -11231,11 +11387,14 @@
   "panels/settings/settings-meta.ts | shortcuts": {
     "message": "快捷键"
   },
+  "panels/settings/settings-meta.ts | showAiInnovations": {
+    "message": "显示 AI 创新"
+  },
   "panels/settings/settings-meta.ts | showExperiments": {
     "message": "显示实验"
   },
   "panels/settings/settings-meta.ts | showIgnoreList": {
-    "message": "显示“忽略列表”"
+    "message": "显示忽略列表"
   },
   "panels/settings/settings-meta.ts | showPreferences": {
     "message": "显示偏好设置"
@@ -12254,6 +12413,33 @@
   "panels/timeline/AnimationsTrackAppender.ts | animations": {
     "message": "动画"
   },
+  "panels/timeline/AnnotationHelpers.ts | entriesLink": {
+    "message": "已关联的条目"
+  },
+  "panels/timeline/AnnotationHelpers.ts | entryLabel": {
+    "message": "条目标签"
+  },
+  "panels/timeline/AnnotationHelpers.ts | srAnnotationAdded": {
+    "message": "已添加“{PH1}”注释"
+  },
+  "panels/timeline/AnnotationHelpers.ts | srAnnotationRemoved": {
+    "message": "已移除“{PH1}”注释"
+  },
+  "panels/timeline/AnnotationHelpers.ts | srEnterLabelEditMode": {
+    "message": "修改注释标签文本"
+  },
+  "panels/timeline/AnnotationHelpers.ts | srEntriesLinked": {
+    "message": "关联的条目注释现在从“{PH1}”关联到“{PH2}”"
+  },
+  "panels/timeline/AnnotationHelpers.ts | srLabelTextUpdated": {
+    "message": "标签已更新为“{PH1}”"
+  },
+  "panels/timeline/AnnotationHelpers.ts | srTimeRangeBoundsUpdated": {
+    "message": "时间范围已更新，开始于 {PH1}，结束于 {PH2}"
+  },
+  "panels/timeline/AnnotationHelpers.ts | timeRange": {
+    "message": "时间范围"
+  },
   "panels/timeline/AppenderUtils.ts | sSelfS": {
     "message": "{PH1}（自身耗时 {PH2}）"
   },
@@ -12307,6 +12493,12 @@
   },
   "panels/timeline/IsolateSelector.ts | selectJavascriptVmInstance": {
     "message": "选择 JavaScript 虚拟机实例"
+  },
+  "panels/timeline/LayoutShiftsTrackAppender.ts | layoutShift": {
+    "message": "布局偏移"
+  },
+  "panels/timeline/LayoutShiftsTrackAppender.ts | layoutShiftCluster": {
+    "message": "布局偏移集群"
   },
   "panels/timeline/LayoutShiftsTrackAppender.ts | layoutShifts": {
     "message": "布局偏移"
@@ -12506,9 +12698,6 @@
   "panels/timeline/TimelinePanel.ts | CpuThrottlingIsEnabled": {
     "message": "- CPU 节流已启用"
   },
-  "panels/timeline/TimelinePanel.ts | HardwareConcurrencyIsEnabled": {
-    "message": "- 硬件并发替换已启用"
-  },
   "panels/timeline/TimelinePanel.ts | JavascriptSamplingIsDisabled": {
     "message": "- JavaScript 采样已停用"
   },
@@ -12566,6 +12755,9 @@
   "panels/timeline/TimelinePanel.ts | enableSelectorStats": {
     "message": "启用 CSS 选择器统计信息（较慢）"
   },
+  "panels/timeline/TimelinePanel.ts | eventSelected": {
+    "message": "已选择“{PH1}”事件"
+  },
   "panels/timeline/TimelinePanel.ts | exportEnhancedTraces": {
     "message": "增强型性能轨迹"
   },
@@ -12578,11 +12770,17 @@
   "panels/timeline/TimelinePanel.ts | fixMe": {
     "message": "修复"
   },
+  "panels/timeline/TimelinePanel.ts | frameSelected": {
+    "message": "已选择帧"
+  },
   "panels/timeline/TimelinePanel.ts | hideSidebar": {
     "message": "隐藏唯一边栏"
   },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "正在初始化性能剖析器…"
+  },
+  "panels/timeline/TimelinePanel.ts | learnMore": {
+    "message": "了解详情"
   },
   "panels/timeline/TimelinePanel.ts | loadProfile": {
     "message": "加载性能分析报告…"
@@ -12628,6 +12826,9 @@
   },
   "panels/timeline/TimelinePanel.ts | screenshots": {
     "message": "屏幕截图"
+  },
+  "panels/timeline/TimelinePanel.ts | selectionCleared": {
+    "message": "已取消选择"
   },
   "panels/timeline/TimelinePanel.ts | showDataAddedByExtensions": {
     "message": "显示性能面板的扩展程序添加的数据"
@@ -12678,7 +12879,7 @@
     "message": "慢路径不匹配项所占百分比"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | rejectPercentageExplanation": {
-    "message": "无法通过 Bloom 过滤器快速排除的不匹配节点（匹配尝试次数 - 匹配次数）所占的百分比。占比越小越好。"
+    "message": "由于选择器复杂度较高，无法通过 Bloom 过滤器快速排除的不匹配节点（匹配尝试次数 - 匹配次数）所占的百分比。占比越小越好。"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | selector": {
     "message": "选择器"
@@ -12797,6 +12998,9 @@
   "panels/timeline/TimelineUIUtils.ts | allottedTime": {
     "message": "分配的时间"
   },
+  "panels/timeline/TimelineUIUtils.ts | animating": {
+    "message": "动画版"
+  },
   "panels/timeline/TimelineUIUtils.ts | animationFrameRequested": {
     "message": "已请求动画帧"
   },
@@ -12820,6 +13024,66 @@
   },
   "panels/timeline/TimelineUIUtils.ts | compile": {
     "message": "编译"
+  },
+  "panels/timeline/TimelineUIUtils.ts | compositingFailed": {
+    "message": "合成失败"
+  },
+  "panels/timeline/TimelineUIUtils.ts | compositingFailedAcceleratedAnimationsDisabled": {
+    "message": "已停用加速动画"
+  },
+  "panels/timeline/TimelineUIUtils.ts | compositingFailedAffectsImportantProperty": {
+    "message": "效果会影响具有 !important 的属性"
+  },
+  "panels/timeline/TimelineUIUtils.ts | compositingFailedAnimationAffectsNonCSSProperties": {
+    "message": "动画会影响非 CSS 属性"
+  },
+  "panels/timeline/TimelineUIUtils.ts | compositingFailedAnimationHasNoVisibleChange": {
+    "message": "动画没有任何可见变化"
+  },
+  "panels/timeline/TimelineUIUtils.ts | compositingFailedEffectHasNonReplaceCompositeMode": {
+    "message": "效果的合成模式不是“replace”"
+  },
+  "panels/timeline/TimelineUIUtils.ts | compositingFailedEffectHasUnsupportedTimingParams": {
+    "message": "效果含有不受支持的时间参数"
+  },
+  "panels/timeline/TimelineUIUtils.ts | compositingFailedEffectSuppressedByDevtools": {
+    "message": "效果已被开发者工具禁用 "
+  },
+  "panels/timeline/TimelineUIUtils.ts | compositingFailedFilterRelatedPropertyMayMovePixels": {
+    "message": "过滤器相关属性可能会移动像素"
+  },
+  "panels/timeline/TimelineUIUtils.ts | compositingFailedInvalidAnimationOrEffect": {
+    "message": "动画或效果无效"
+  },
+  "panels/timeline/TimelineUIUtils.ts | compositingFailedMixedKeyframeValueTypes": {
+    "message": "混合关键帧值类型"
+  },
+  "panels/timeline/TimelineUIUtils.ts | compositingFailedSVGTargetHasIndependentTransformProperty": {
+    "message": "SVG 目标具有独立的转换属性"
+  },
+  "panels/timeline/TimelineUIUtils.ts | compositingFailedTargetHasCSSOffset": {
+    "message": "目标有 CSS 偏移"
+  },
+  "panels/timeline/TimelineUIUtils.ts | compositingFailedTargetHasIncompatibleAnimations": {
+    "message": "目标具有另一个不兼容的动画"
+  },
+  "panels/timeline/TimelineUIUtils.ts | compositingFailedTargetHasInvalidCompositingState": {
+    "message": "目标的合成状态无效"
+  },
+  "panels/timeline/TimelineUIUtils.ts | compositingFailedTimelineSourceHasInvalidCompositingState": {
+    "message": "时间表来源的合成状态无效"
+  },
+  "panels/timeline/TimelineUIUtils.ts | compositingFailedTransformDependsBoxSize": {
+    "message": "与转换相关的属性取决于元素边界框的大小"
+  },
+  "panels/timeline/TimelineUIUtils.ts | compositingFailedTransformRelatedPropertyCannotBeAcceleratedOnTarget": {
+    "message": "与转换相关的属性无法在目标上加速"
+  },
+  "panels/timeline/TimelineUIUtils.ts | compositingFailedUnknownReason": {
+    "message": "原因不明"
+  },
+  "panels/timeline/TimelineUIUtils.ts | compositingFailedUnsupportedCSSProperty": {
+    "message": "{propertyCount,plural, =1{不受支持的 CSS 属性：{properties}}other{不受支持的 CSS 属性：{properties}}}"
   },
   "panels/timeline/TimelineUIUtils.ts | consumedCacheSize": {
     "message": "已使用的缓存大小"
@@ -13619,6 +13883,12 @@
   "panels/timeline/components/InteractionBreakdown.ts | processingDuration": {
     "message": "处理用时"
   },
+  "panels/timeline/components/LayoutShiftDetails.ts | animation": {
+    "message": "动画"
+  },
+  "panels/timeline/components/LayoutShiftDetails.ts | cluster": {
+    "message": "布局偏移集群开始于 {PH1}"
+  },
   "panels/timeline/components/LayoutShiftDetails.ts | culprit": {
     "message": "原因"
   },
@@ -13631,14 +13901,14 @@
   "panels/timeline/components/LayoutShiftDetails.ts | injectedIframe": {
     "message": "注入的 iframe"
   },
-  "panels/timeline/components/LayoutShiftDetails.ts | insight": {
-    "message": "数据分析"
-  },
   "panels/timeline/components/LayoutShiftDetails.ts | layoutShift": {
-    "message": "布局偏移"
+    "message": "布局偏移开始于 {PH1}"
   },
-  "panels/timeline/components/LayoutShiftDetails.ts | layoutShiftCulprits": {
-    "message": "布局偏移原因"
+  "panels/timeline/components/LayoutShiftDetails.ts | nonCompositedAnimation": {
+    "message": "未合成的动画"
+  },
+  "panels/timeline/components/LayoutShiftDetails.ts | parentCluster": {
+    "message": "父级集群"
   },
   "panels/timeline/components/LayoutShiftDetails.ts | shiftScore": {
     "message": "偏移分数"
@@ -13646,20 +13916,20 @@
   "panels/timeline/components/LayoutShiftDetails.ts | startTime": {
     "message": "开始时间"
   },
+  "panels/timeline/components/LayoutShiftDetails.ts | total": {
+    "message": "总计"
+  },
   "panels/timeline/components/LiveMetricsView.ts | allDevices": {
     "message": "所有设备"
   },
   "panels/timeline/components/LiveMetricsView.ts | auto": {
     "message": "自动（{PH1}）"
   },
-  "panels/timeline/components/LiveMetricsView.ts | clearInteractionsLog": {
-    "message": "清除互动日志"
+  "panels/timeline/components/LiveMetricsView.ts | clearCurrentLog": {
+    "message": "清除当前日志"
   },
   "panels/timeline/components/LiveMetricsView.ts | collectionPeriod": {
     "message": "收集时段："
-  },
-  "panels/timeline/components/LiveMetricsView.ts | considerRealUser": {
-    "message": "考虑实际用户环境"
   },
   "panels/timeline/components/LiveMetricsView.ts | dateRange": {
     "message": "{PH1} - {PH2}"
@@ -13673,8 +13943,14 @@
   "panels/timeline/components/LiveMetricsView.ts | disableNetworkCache": {
     "message": "停用网络缓存"
   },
+  "panels/timeline/components/LiveMetricsView.ts | elementRenderDelay": {
+    "message": "元素渲染延迟"
+  },
   "panels/timeline/components/LiveMetricsView.ts | environmentSettings": {
     "message": "环境设置"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | eventLogs": {
+    "message": "“互动和布局偏移日志”部分"
   },
   "panels/timeline/components/LiveMetricsView.ts | fieldData": {
     "message": "现场数据"
@@ -13682,11 +13958,23 @@
   "panels/timeline/components/LiveMetricsView.ts | fieldDataLink": {
     "message": "现场数据"
   },
+  "panels/timeline/components/LiveMetricsView.ts | inpInteraction": {
+    "message": "INP 互动处于互动延迟的第 98 百分位数。"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | inpInteractionLink": {
+    "message": "INP 互动"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | inputDelay": {
+    "message": "输入延迟"
+  },
   "panels/timeline/components/LiveMetricsView.ts | interactionExcluded": {
     "message": "INP 是根据互动延迟时间的第 98 百分位数计算得出的，因此部分互动延迟时间可能大于 INP 值。"
   },
   "panels/timeline/components/LiveMetricsView.ts | interactions": {
     "message": "互动"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | layoutShifts": {
+    "message": "布局偏移"
   },
   "panels/timeline/components/LiveMetricsView.ts | lcpElement": {
     "message": "LCP 元素"
@@ -13706,12 +13994,6 @@
   "panels/timeline/components/LiveMetricsView.ts | mobile": {
     "message": "移动设备"
   },
-  "panels/timeline/components/LiveMetricsView.ts | mostUsersDesktop": {
-    "message": "{PH1} 的用户通过桌面设备访问。"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | mostUsersMobile": {
-    "message": "{PH1} 的用户通过移动设备访问。"
-  },
   "panels/timeline/components/LiveMetricsView.ts | needsDataOption": {
     "message": "{PH1} - 无数据"
   },
@@ -13721,23 +14003,41 @@
   "panels/timeline/components/LiveMetricsView.ts | nextSteps": {
     "message": "后续步骤"
   },
+  "panels/timeline/components/LiveMetricsView.ts | numShifts": {
+    "message": "{shiftCount,plural, =1{偏移 {shiftCount} 次}other{偏移 {shiftCount} 次}}"
+  },
   "panels/timeline/components/LiveMetricsView.ts | originOption": {
     "message": "源"
   },
   "panels/timeline/components/LiveMetricsView.ts | originOptionWithKey": {
     "message": "源：{PH1}"
   },
-  "panels/timeline/components/LiveMetricsView.ts | percentage": {
-    "message": "{PH1}%"
+  "panels/timeline/components/LiveMetricsView.ts | presentationDelay": {
+    "message": "展示延迟"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | processingDuration": {
+    "message": "处理用时"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | resourceLoadDelay": {
+    "message": "资源加载延迟"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | resourceLoadDuration": {
+    "message": "资源加载时长"
   },
   "panels/timeline/components/LiveMetricsView.ts | seeHowYourLocalMetricsCompare": {
     "message": "在 {PH1}中，查看您的本地指标与实际用户数据的对比情况。"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | showClsCluster": {
+    "message": "前往“最糟糕的布局偏移集群”。"
   },
   "panels/timeline/components/LiveMetricsView.ts | showFieldDataForDevice": {
     "message": "显示“{PH1}”设备类型的现场数据"
   },
   "panels/timeline/components/LiveMetricsView.ts | showFieldDataForPage": {
     "message": "显示 {PH1} 的现场数据"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | showInpInteraction": {
+    "message": "查看 INP 互动指标。"
   },
   "panels/timeline/components/LiveMetricsView.ts | simulateDifferentDevices": {
     "message": "模拟不同设备"
@@ -13750,6 +14050,9 @@
   },
   "panels/timeline/components/LiveMetricsView.ts | theLocalMetricsAre": {
     "message": "系统会使用您的网络连接和设备从当前网页中捕获{PH1}。"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | timeToFirstByte": {
+    "message": "第一字节时间 (Time to First Byte)"
   },
   "panels/timeline/components/LiveMetricsView.ts | tryDisablingThrottling": {
     "message": "实际用户遇到的网络延迟时间的第 75 百分位数与无节流连接类似。"
@@ -13766,11 +14069,17 @@
   "panels/timeline/components/LiveMetricsView.ts | useDeviceToolbar": {
     "message": "使用设备工具栏来{PH1}。"
   },
+  "panels/timeline/components/LiveMetricsView.ts | worstCluster": {
+    "message": "最糟糕的集群"
+  },
   "panels/timeline/components/MetricCard.ts | betweenRange": {
     "message": "（{PH1}-{PH2}）"
   },
   "panels/timeline/components/MetricCard.ts | considerTesting": {
     "message": "考虑本地测试条件"
+  },
+  "panels/timeline/components/MetricCard.ts | duration": {
+    "message": "本地时长（毫秒）"
   },
   "panels/timeline/components/MetricCard.ts | field75thPercentile": {
     "message": "现场数据第 75 百分位数"
@@ -13795,6 +14104,9 @@
   },
   "panels/timeline/components/MetricCard.ts | percentage": {
     "message": "{PH1}%"
+  },
+  "panels/timeline/components/MetricCard.ts | phase": {
+    "message": "阶段"
   },
   "panels/timeline/components/MetricCard.ts | poor": {
     "message": "较差"
@@ -13901,23 +14213,14 @@
   "panels/timeline/components/NetworkRequestDetails.ts | FromServiceWorker": {
     "message": " （来自 service worker）"
   },
-  "panels/timeline/components/NetworkRequestDetails.ts | contentDownloading": {
-    "message": "内容下载"
-  },
   "panels/timeline/components/NetworkRequestDetails.ts | decodedBody": {
     "message": "经过解码的正文"
-  },
-  "panels/timeline/components/NetworkRequestDetails.ts | duration": {
-    "message": "时长"
   },
   "panels/timeline/components/NetworkRequestDetails.ts | encodedData": {
     "message": "已编码的数据"
   },
   "panels/timeline/components/NetworkRequestDetails.ts | fromCache": {
     "message": "来自缓存"
-  },
-  "panels/timeline/components/NetworkRequestDetails.ts | initialPriority": {
-    "message": "初始优先级"
   },
   "panels/timeline/components/NetworkRequestDetails.ts | initiatedBy": {
     "message": "发起者"
@@ -13937,17 +14240,8 @@
   "panels/timeline/components/NetworkRequestDetails.ts | priority": {
     "message": "优先级"
   },
-  "panels/timeline/components/NetworkRequestDetails.ts | queuingAndConnecting": {
-    "message": "排队和连接"
-  },
   "panels/timeline/components/NetworkRequestDetails.ts | requestMethod": {
     "message": "请求方法"
-  },
-  "panels/timeline/components/NetworkRequestDetails.ts | requestSentAndWaiting": {
-    "message": "已发送请求，正在等待处理"
-  },
-  "panels/timeline/components/NetworkRequestDetails.ts | waitingOnMainThread": {
-    "message": "在主线程上等待"
   },
   "panels/timeline/components/NetworkRequestDetails.ts | yes": {
     "message": "是"
@@ -13988,23 +14282,95 @@
   "panels/timeline/components/NetworkThrottlingSelector.ts | presets": {
     "message": "预设"
   },
-  "panels/timeline/components/SidebarAnnotationsTab.ts | diagram": {
-    "message": "图表"
+  "panels/timeline/components/RelatedInsightChips.ts | insightKeyword": {
+    "message": "数据分析"
   },
-  "panels/timeline/components/SidebarAnnotationsTab.ts | diagramDescription": {
-    "message": "双击条目即可创建图表。"
+  "panels/timeline/components/SidebarAnnotationsTab.ts | annotationGetStarted": {
+    "message": "为跟踪记录添加注释，方便自己和他人参考"
   },
-  "panels/timeline/components/SidebarAnnotationsTab.ts | entryLabel": {
-    "message": "条目标签"
+  "panels/timeline/components/SidebarAnnotationsTab.ts | deleteAnnotationTutorialDescription": {
+    "message": "选中“注释”标签页后，将光标悬停在侧边栏中的列表上，即可使用删除功能。"
   },
-  "panels/timeline/components/SidebarAnnotationsTab.ts | entryLabelDescription": {
-    "message": "双击条目即可创建条目标签。按 Esc 键或 Enter 键即可完成。"
+  "panels/timeline/components/SidebarAnnotationsTab.ts | deleteAnnotationTutorialTitle": {
+    "message": "删除注释"
   },
-  "panels/timeline/components/SidebarAnnotationsTab.ts | timeRange": {
-    "message": "时间范围"
+  "panels/timeline/components/SidebarAnnotationsTab.ts | deleteButton": {
+    "message": "删除注释：{PH1}"
   },
-  "panels/timeline/components/SidebarAnnotationsTab.ts | timeRangeDescription": {
-    "message": "按住 Shift 键并在画布上拖动，即可创建时间范围并添加标签。按 Esc 键或 Enter 键即可完成。"
+  "panels/timeline/components/SidebarAnnotationsTab.ts | entryLabelDescriptionLabel": {
+    "message": "一个使用文本“{PH2}”注释的“{PH1}”事件"
+  },
+  "panels/timeline/components/SidebarAnnotationsTab.ts | entryLabelTutorialDescription": {
+    "message": "双击某项内容并输入内容即可创建该项的标签。"
+  },
+  "panels/timeline/components/SidebarAnnotationsTab.ts | entryLabelTutorialTitle": {
+    "message": "为某项内容添加标签"
+  },
+  "panels/timeline/components/SidebarAnnotationsTab.ts | entryLinkDescriptionLabel": {
+    "message": "“{PH1}”事件与“{PH2}”事件之间的关联"
+  },
+  "panels/timeline/components/SidebarAnnotationsTab.ts | entryLinkTutorialDescription": {
+    "message": "请双击某项内容，点击相邻的向右箭头，然后选择目标项。"
+  },
+  "panels/timeline/components/SidebarAnnotationsTab.ts | entryLinkTutorialTitle": {
+    "message": "关联两项内容"
+  },
+  "panels/timeline/components/SidebarAnnotationsTab.ts | timeRangeDescriptionLabel": {
+    "message": "时间范围：开始于 {PH1}，结束于 {PH2}"
+  },
+  "panels/timeline/components/SidebarAnnotationsTab.ts | timeRangeTutorialDescription": {
+    "message": "按住 Shift 键并在火焰图中拖动，然后输入内容以创建时间范围注释。"
+  },
+  "panels/timeline/components/SidebarAnnotationsTab.ts | timeRangeTutorialTitle": {
+    "message": "指定时间范围"
+  },
+  "panels/timeline/components/SidebarInsightsTab.ts | feedbackButton": {
+    "message": "反馈"
+  },
+  "panels/timeline/components/SidebarInsightsTab.ts | feedbackTooltip": {
+    "message": "Insights 是一项实验性功能。您的反馈将有助于我们做出改进。"
+  },
+  "panels/timeline/components/SidebarSingleInsightSet.ts | metricScore": {
+    "message": "{PH1} 得分：{PH2} {PH3}"
+  },
+  "panels/timeline/components/Utils.ts | fms": {
+    "message": "{PH1}[ms]()"
+  },
+  "panels/timeline/components/Utils.ts | fs": {
+    "message": "{PH1}[s]()"
+  },
+  "panels/timeline/components/insights/CLSCulprits.ts | animation": {
+    "message": "动画"
+  },
+  "panels/timeline/components/insights/CLSCulprits.ts | description": {
+    "message": "当元素在没有任何用户互动的情况下移动时，就会发生布局偏移。[调查布局偏移的原因](https://web.dev/articles/optimize-cls)，例如在网页加载时添加、移除元素或元素字体发生了变化。"
+  },
+  "panels/timeline/components/insights/CLSCulprits.ts | fontRequest": {
+    "message": "字体请求"
+  },
+  "panels/timeline/components/insights/CLSCulprits.ts | injectedIframe": {
+    "message": "注入的 iframe"
+  },
+  "panels/timeline/components/insights/CLSCulprits.ts | layoutShiftCluster": {
+    "message": "布局偏移集群开始于 {PH1}"
+  },
+  "panels/timeline/components/insights/CLSCulprits.ts | title": {
+    "message": "布局偏移原因"
+  },
+  "panels/timeline/components/insights/CLSCulprits.ts | topCulprits": {
+    "message": "导致布局偏移的首要原因"
+  },
+  "panels/timeline/components/insights/CLSCulprits.ts | worstCluster": {
+    "message": "最糟糕的集群"
+  },
+  "panels/timeline/components/insights/CLSCulprits.ts | worstLayoutShiftCluster": {
+    "message": "最糟糕的布局偏移集群"
+  },
+  "panels/timeline/components/insights/DocumentLatency.ts | description": {
+    "message": "您的第一个网络请求最为重要。您可通过避免重定向、确保服务器快速响应以及启用文本压缩，缩短其延迟时间。"
+  },
+  "panels/timeline/components/insights/DocumentLatency.ts | failedAriaLabel": {
+    "message": "数据分析检查失败：{PH1}"
   },
   "panels/timeline/components/insights/DocumentLatency.ts | failedRedirects": {
     "message": "有重定向"
@@ -14024,17 +14390,41 @@
   "panels/timeline/components/insights/DocumentLatency.ts | passingTextCompression": {
     "message": "应用文本压缩"
   },
+  "panels/timeline/components/insights/DocumentLatency.ts | redirectsLabel": {
+    "message": "重定向"
+  },
+  "panels/timeline/components/insights/DocumentLatency.ts | serverResponseTimeLabel": {
+    "message": "服务器响应时间"
+  },
+  "panels/timeline/components/insights/DocumentLatency.ts | successAriaLabel": {
+    "message": "数据分析检查通过：{PH1}"
+  },
+  "panels/timeline/components/insights/DocumentLatency.ts | title": {
+    "message": "文档请求延迟"
+  },
+  "panels/timeline/components/insights/DocumentLatency.ts | uncompressedDownload": {
+    "message": "未压缩下载"
+  },
+  "panels/timeline/components/insights/FontDisplay.ts | description": {
+    "message": "建议您将 [font-display](https://developer.chrome.com/blog/font-display) 设为 swap 或 optional，确保文本始终可见。通过[替换字体指标](https://developer.chrome.com/blog/font-fallbacks)可进一步优化 swap，缓解布局偏移。"
+  },
+  "panels/timeline/components/insights/FontDisplay.ts | fontColumn": {
+    "message": "字体"
+  },
+  "panels/timeline/components/insights/FontDisplay.ts | title": {
+    "message": "字体显示"
+  },
+  "panels/timeline/components/insights/FontDisplay.ts | wastedTimeColumn": {
+    "message": "浪费的时间"
+  },
   "panels/timeline/components/insights/InteractionToNextPaint.ts | description": {
-    "message": "通过改善 Interaction to Next Paint 指标，提升用户响应速度。了解如何[优化 INP](https://web.dev/articles/optimize-inp)。"
+    "message": "请从持续时间最长的阶段开始检查。[几处延迟可降低到最小](https://web.dev/articles/optimize-inp#optimize_interactions)。如需缩短处理时长，请[优化主线程（通常是 JS）成本](https://web.dev/articles/optimize-long-tasks)。"
   },
   "panels/timeline/components/insights/InteractionToNextPaint.ts | duration": {
     "message": "时长"
   },
   "panels/timeline/components/insights/InteractionToNextPaint.ts | inputDelay": {
     "message": "输入延迟"
-  },
-  "panels/timeline/components/insights/InteractionToNextPaint.ts | longestInteraction": {
-    "message": "互动时间最长"
   },
   "panels/timeline/components/insights/InteractionToNextPaint.ts | phase": {
     "message": "阶段"
@@ -14048,6 +14438,12 @@
   "panels/timeline/components/insights/InteractionToNextPaint.ts | title": {
     "message": "按阶段划分的 INP"
   },
+  "panels/timeline/components/insights/LCPDiscovery.ts | description": {
+    "message": "使 LCP 图像能够立即从 HTML 中[被发现](https://web.dev/articles/optimize-lcp#1_eliminate_resource_load_delay)，并[避免延迟加载](https://web.dev/articles/lcp-lazy-loading)，以此优化 LCP"
+  },
+  "panels/timeline/components/insights/LCPDiscovery.ts | failedAriaLabel": {
+    "message": "数据分析检查失败：{PH1}"
+  },
   "panels/timeline/components/insights/LCPDiscovery.ts | fetchPriorityApplied": {
     "message": "已应用 fetchpriority 的 high 属性值"
   },
@@ -14060,8 +14456,23 @@
   "panels/timeline/components/insights/LCPDiscovery.ts | requestDiscoverable": {
     "message": "可在初始文档中检测到请求"
   },
+  "panels/timeline/components/insights/LCPDiscovery.ts | successAriaLabel": {
+    "message": "数据分析检查通过：{PH1}"
+  },
+  "panels/timeline/components/insights/LCPDiscovery.ts | title": {
+    "message": "发现 LCP 请求"
+  },
+  "panels/timeline/components/insights/LCPPhases.ts | description": {
+    "message": "每个[阶段都有特定的改进策略](https://web.dev/articles/optimize-lcp#lcp-breakdown)。理想情况下，大部分 LCP 时间应该花在加载资源上，而不是浪费在延迟上。"
+  },
   "panels/timeline/components/insights/LCPPhases.ts | elementRenderDelay": {
     "message": "元素渲染延迟"
+  },
+  "panels/timeline/components/insights/LCPPhases.ts | percentLCP": {
+    "message": "LCP 占比 (%)"
+  },
+  "panels/timeline/components/insights/LCPPhases.ts | phase": {
+    "message": "阶段"
   },
   "panels/timeline/components/insights/LCPPhases.ts | resourceLoadDelay": {
     "message": "资源加载延迟"
@@ -14070,13 +14481,52 @@
     "message": "资源加载时长"
   },
   "panels/timeline/components/insights/LCPPhases.ts | timeToFirstByte": {
-    "message": "第一字节时间"
+    "message": "第一字节时间 (Time to First Byte)"
+  },
+  "panels/timeline/components/insights/LCPPhases.ts | title": {
+    "message": "按阶段划分的 LCP"
   },
   "panels/timeline/components/insights/RenderBlocking.ts | description": {
     "message": "请求正在屏蔽网页的初始渲染，这可能会延迟 LCP。[延迟或内嵌](https://web.dev/learn/performance/understanding-the-critical-path#render-blocking_resources/)可以将这些网络请求移出关键路径。"
   },
+  "panels/timeline/components/insights/RenderBlocking.ts | duration": {
+    "message": "时长"
+  },
+  "panels/timeline/components/insights/RenderBlocking.ts | renderBlockingRequest": {
+    "message": "请求"
+  },
+  "panels/timeline/components/insights/RenderBlocking.ts | title": {
+    "message": "渲染屏蔽请求"
+  },
   "panels/timeline/components/insights/SidebarInsight.ts | estimatedSavings": {
     "message": "预计节省：{PH1}"
+  },
+  "panels/timeline/components/insights/SidebarInsight.ts | estimatedSavingsTimingAndBytes": {
+    "message": "预计节省：{PH1}和 {PH2}"
+  },
+  "panels/timeline/components/insights/SidebarInsight.ts | viewDetails": {
+    "message": "查看“{PH1}”的详细信息"
+  },
+  "panels/timeline/components/insights/SlowCSSSelector.ts | description": {
+    "message": "如果“重新计算样式”的成本仍然很高，优化选择器可以降低此成本。请对用时较长及慢路径所占百分比较高的[选择器进行优化](https://developer.chrome.com/docs/devtools/performance/selector-stats)。选择器越简单、数量越少，DOM 的规模越小、结构越简单，越能降低匹配成本。"
+  },
+  "panels/timeline/components/insights/SlowCSSSelector.ts | elapsed": {
+    "message": "用时"
+  },
+  "panels/timeline/components/insights/SlowCSSSelector.ts | matchAttempts": {
+    "message": "尝试匹配次数"
+  },
+  "panels/timeline/components/insights/SlowCSSSelector.ts | matchCount": {
+    "message": "匹配数"
+  },
+  "panels/timeline/components/insights/SlowCSSSelector.ts | title": {
+    "message": "CSS 选择器成本"
+  },
+  "panels/timeline/components/insights/SlowCSSSelector.ts | topSelectors": {
+    "message": "最耗时/耗力选择器"
+  },
+  "panels/timeline/components/insights/SlowCSSSelector.ts | total": {
+    "message": "总计"
   },
   "panels/timeline/components/insights/ThirdParties.ts | columnBlockingTime": {
     "message": "屏蔽时间"
@@ -14088,13 +14538,28 @@
     "message": "传输文件大小"
   },
   "panels/timeline/components/insights/ThirdParties.ts | description": {
-    "message": "第三方代码可能会显著影响加载性能。请限制冗余第三方提供商的数量，并尝试在页面完成主要加载后再加载第三方代码。[了解如何将第三方的影响降至最低](https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/loading-third-party-javascript/)。"
+    "message": "第三方代码可能会显著影响加载性能。[请减少并推迟加载第三方代码](https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/loading-third-party-javascript/)，以优先渲染您的网页内容。"
   },
   "panels/timeline/components/insights/ThirdParties.ts | title": {
-    "message": "尽量减少使用第三方代码"
+    "message": "第三方"
   },
   "panels/timeline/components/insights/Viewport.ts | description": {
-    "message": "视口元元素不仅会针对移动设备屏幕尺寸优化您的应用，还会[防止系统在响应用户输入前出现 300 毫秒的延迟](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/)。"
+    "message": "此网页的视口未针对移动设备进行优化，因此点按互动可能会[延迟最多 300 毫秒](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/)。"
+  },
+  "panels/timeline/components/insights/Viewport.ts | title": {
+    "message": "视口未针对移动设备进行优化"
+  },
+  "panels/timeline/overlays/components/EntriesLinkOverlay.ts | diagram": {
+    "message": "条目之间的关联"
+  },
+  "panels/timeline/overlays/components/EntryLabelOverlay.ts | entryLabel": {
+    "message": "条目标签"
+  },
+  "panels/timeline/overlays/components/EntryLabelOverlay.ts | inputTextPrompt": {
+    "message": "输入注释标签"
+  },
+  "panels/timeline/overlays/components/TimeRangeOverlay.ts | timeRange": {
+    "message": "时间范围"
   },
   "panels/timeline/timeline-meta.ts | hideChromeFrameInLayersView": {
     "message": "在“图层”视图中隐藏 chrome 框架"
@@ -14134,6 +14599,18 @@
   },
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "停止"
+  },
+  "panels/utils/utils.ts | requestContentHeadersOverridden": {
+    "message": "请求内容和标头均已被替换"
+  },
+  "panels/utils/utils.ts | requestContentOverridden": {
+    "message": "请求内容已被替换"
+  },
+  "panels/utils/utils.ts | requestHeadersOverridden": {
+    "message": "请求标头已被替换"
+  },
+  "panels/utils/utils.ts | thirdPartyPhaseout": {
+    "message": "此请求的 Cookie 因 Chrome flag 或浏览器配置而被屏蔽。如需了解详情，请前往“问题”面板。"
   },
   "panels/web_audio/AudioContextContentBuilder.ts | callbackBufferSize": {
     "message": "回调缓冲区空间"
@@ -14344,6 +14821,9 @@
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "目前无法解决的问题"
+  },
+  "ui/components/markdown_view/CodeBlock.ts | code": {
+    "message": "代码"
   },
   "ui/components/markdown_view/CodeBlock.ts | copied": {
     "message": "已复制到剪贴板"
@@ -15116,8 +15596,14 @@
   "ui/legacy/components/perf_ui/FilmStripView.ts | screenshotForSSelectToView": {
     "message": "{PH1}的屏幕截图 - 选择即可查看先前的请求。"
   },
+  "ui/legacy/components/perf_ui/FlameChart.ts | deleteAnnotations": {
+    "message": "删除注释"
+  },
   "ui/legacy/components/perf_ui/FlameChart.ts | enterTrackConfigurationMode": {
     "message": "配置轨道…"
+  },
+  "ui/legacy/components/perf_ui/FlameChart.ts | eventSelectedFromGroup": {
+    "message": "已选择{PH2}内的“{PH1}”事件。按“Enter”键即可聚焦此事件。"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | exitTrackConfigurationMode": {
     "message": "完成轨道配置"
@@ -15373,6 +15859,9 @@
   },
   "ui/legacy/components/utils/JSPresentationUtils.ts | showLess": {
     "message": "收起"
+  },
+  "ui/legacy/components/utils/JSPresentationUtils.ts | showMoreFrames": {
+    "message": "显示已列入忽略列表的帧"
   },
   "ui/legacy/components/utils/JSPresentationUtils.ts | unknownSource": {
     "message": "未知"

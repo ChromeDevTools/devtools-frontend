@@ -215,6 +215,9 @@
   "core/i18n/time-utilities.ts | fms": {
     "message": "{PH1} ms"
   },
+  "core/i18n/time-utilities.ts | fmsExpanded": {
+    "message": "{PH1} мс"
+  },
   "core/i18n/time-utilities.ts | fs": {
     "message": "{PH1} сек"
   },
@@ -549,7 +552,7 @@
     "message": "Онемогући AVIF формат"
   },
   "core/sdk/sdk-meta.ts | disableCache": {
-    "message": "Онемогући кеш (док су Алатке за програмере отворене)"
+    "message": "Онемогући кеш док су Алатке за програмере отворене"
   },
   "core/sdk/sdk-meta.ts | disableJavascript": {
     "message": "Онемогући JavaScript"
@@ -968,6 +971,9 @@
   "entrypoints/main/main-meta.ts | auto": {
     "message": "аутоматски"
   },
+  "entrypoints/main/main-meta.ts | autoTheme": {
+    "message": "Аутоматски"
+  },
   "entrypoints/main/main-meta.ts | bottom": {
     "message": "На дно"
   },
@@ -994,6 +1000,9 @@
   },
   "entrypoints/main/main-meta.ts | dockToRight": {
     "message": "Фиксирај са десне стране"
+  },
+  "entrypoints/main/main-meta.ts | dontMatchChromeColorSchemeCommand": {
+    "message": "Не усклађуј са Chrome комбинацијом боја"
   },
   "entrypoints/main/main-meta.ts | enableCtrlShortcutToSwitchPanels": {
     "message": "Омогући пречицу Ctrl + 1–9 за промену окна"
@@ -1031,6 +1040,9 @@
   "entrypoints/main/main-meta.ts | matchChromeColorScheme": {
     "message": "Усклади са Chrome комбинацијом боја"
   },
+  "entrypoints/main/main-meta.ts | matchChromeColorSchemeCommand": {
+    "message": "Усклади са Chrome комбинацијом боја"
+  },
   "entrypoints/main/main-meta.ts | matchChromeColorSchemeDocumentation": {
     "message": "Ускладите боје алатки за програмере са прилагођеном Chrome темом (када је то омогућено)"
   },
@@ -1066,6 +1078,9 @@
   },
   "entrypoints/main/main-meta.ts | searchOnEnterCommand": {
     "message": "Онемогућите претрагу док куцате (притисните Enter за претрагу)"
+  },
+  "entrypoints/main/main-meta.ts | switchToBrowserPreferredTheme": {
+    "message": "Пређи на жељену тему прегледача"
   },
   "entrypoints/main/main-meta.ts | switchToDarkTheme": {
     "message": "Пребаци на тамну тему"
@@ -1348,6 +1363,9 @@
   },
   "models/bindings/DebuggerLanguagePlugins.ts | loadingDebugSymbolsForVia": {
     "message": "[{PH1}] Учитавају се симболи отклањања грешака за {PH2} (преко {PH3})..."
+  },
+  "models/bindings/IgnoreListManager.ts | addAllAnonymousScriptsToIgnoreList": {
+    "message": "Додај све анонимне скрипте на листу за игнорисање"
   },
   "models/bindings/IgnoreListManager.ts | addAllContentScriptsToIgnoreList": {
     "message": "Додај све скрипте додатака на листу за игнорисање"
@@ -2453,6 +2471,21 @@
   "panels/application/ApplicationPanelSidebar.ts | documentNotAvailable": {
     "message": "Документ није доступан"
   },
+  "panels/application/ApplicationPanelSidebar.ts | extensionLocalStorage": {
+    "message": "Локално"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | extensionManagedStorage": {
+    "message": "Управљано"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | extensionSessionStorage": {
+    "message": "Сесија"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | extensionStorage": {
+    "message": "Меморијски простор додатка"
+  },
+  "panels/application/ApplicationPanelSidebar.ts | extensionSyncStorage": {
+    "message": "Синхронизација"
+  },
   "panels/application/ApplicationPanelSidebar.ts | frames": {
     "message": "Оквири"
   },
@@ -2637,6 +2670,24 @@
     "message": "Кључ"
   },
   "panels/application/DOMStorageItemsView.ts | value": {
+    "message": "Вредност"
+  },
+  "panels/application/ExtensionStorageItemsView.ts | extensionStorage": {
+    "message": "Меморијски простор додатка"
+  },
+  "panels/application/ExtensionStorageItemsView.ts | extensionStorageItemDeleted": {
+    "message": "Ставка меморијског простора је избрисана."
+  },
+  "panels/application/ExtensionStorageItemsView.ts | extensionStorageItems": {
+    "message": "Ставке меморијског простора додатка"
+  },
+  "panels/application/ExtensionStorageItemsView.ts | extensionStorageItemsCleared": {
+    "message": "Ставке меморијског простора додатка су обрисане"
+  },
+  "panels/application/ExtensionStorageItemsView.ts | key": {
+    "message": "Кључ"
+  },
+  "panels/application/ExtensionStorageItemsView.ts | value": {
     "message": "Вредност"
   },
   "panels/application/IndexedDBViews.ts | clearObjectStore": {
@@ -3997,6 +4048,9 @@
   },
   "panels/application/preloading/PreloadingView.ts | noRuleSets": {
     "message": "нема скупова правила"
+  },
+  "panels/application/preloading/PreloadingView.ts | prettyPrint": {
+    "message": "Лепо форматирај"
   },
   "panels/application/preloading/PreloadingView.ts | statusFailure": {
     "message": "Неуспешно"
@@ -6411,7 +6465,7 @@
     "message": "Ипак користи претрагу"
   },
   "panels/explain/components/ConsoleInsight.ts | settingsLink": {
-    "message": "Увид у конзолу у подешавањима"
+    "message": "Console insights у Подешавањима"
   },
   "panels/explain/components/ConsoleInsight.ts | signInToUse": {
     "message": "Пријавите се да бисте користили ову функцију"
@@ -6424,9 +6478,6 @@
   },
   "panels/explain/components/ConsoleInsight.ts | updateSettings": {
     "message": "Ажурирај подешавања"
-  },
-  "panels/explain/explain-meta.ts | ageRestricted": {
-    "message": "Ова функција је доступна само корисницима који имају 18 или више година"
   },
   "panels/explain/explain-meta.ts | enableConsoleInsights": {
     "message": "Објашњење порука у конзоли помоћу вештачке интелигенције"
@@ -6444,10 +6495,70 @@
     "message": "Ова функција није доступна у вашем региону"
   },
   "panels/explain/explain-meta.ts | policyRestricted": {
-    "message": "Организација је искључила ову функцију. Затражите више информација од администратора."
+    "message": "Овим подешавањем управља администратор"
   },
   "panels/explain/explain-meta.ts | wrongLocale": {
     "message": "Да бисте користили ову функцију, ажурирајте подешавање језика у Подешавањима Алатки за програмере на енглески"
+  },
+  "panels/freestyler/FreestylerPanel.ts | chatCleared": {
+    "message": "Ћаскање је обрисано"
+  },
+  "panels/freestyler/FreestylerPanel.ts | clearChat": {
+    "message": "Обриши ћаскање"
+  },
+  "panels/freestyler/FreestylerPanel.ts | help": {
+    "message": "Помоћ"
+  },
+  "panels/freestyler/FreestylerPanel.ts | sendFeedback": {
+    "message": "Пошаљи повратне информације"
+  },
+  "panels/freestyler/FreestylerPanel.ts | settings": {
+    "message": "Подешавања"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | followTheSteps": {
+    "message": "Пратите кораке изнад да бисте поставили питање"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | inputDisclaimerForEmptyState": {
+    "message": "Ово је експериментална функција вештачке интелигенције и неће увек радити како треба."
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | learnAbout": {
+    "message": "Сазнајте више о вештачкој интелигенцији у Алаткама за програмере"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | notLoggedIn": {
+    "message": "Ова функција је доступна само ако сте пријављени у Chrome помоћу Google налога"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | offline": {
+    "message": "Проверите интернет везу и пробајте поново"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | settingsLink": {
+    "message": "AI помоћ у Подешавањима"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | turnOnForStyles": {
+    "message": "Укључите функцију {PH1} да бисте добили помоћ за разумевање CSS стилова"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | turnOnForStylesAndRequests": {
+    "message": "Укључите {PH1} да бисте добили помоћ у вези са стиловима и мрежним захтевима"
+  },
+  "panels/freestyler/freestyler-meta.ts | aiAssistance": {
+    "message": "AI помоћ"
+  },
+  "panels/freestyler/freestyler-meta.ts | askAi": {
+    "message": "Питајте вештачку интелигенцију"
+  },
+  "panels/freestyler/freestyler-meta.ts | enableAiAssistance": {
+    "message": "Омогући AI помоћ"
+  },
+  "panels/freestyler/freestyler-meta.ts | geoRestricted": {
+    "message": "Ова функција није доступна у вашем региону"
+  },
+  "panels/freestyler/freestyler-meta.ts | policyRestricted": {
+    "message": "Овим подешавањем управља администратор"
+  },
+  "panels/freestyler/freestyler-meta.ts | showAiAssistance": {
+    "message": "Прикажи AI помоћ"
+  },
+  "panels/freestyler/freestyler-meta.ts | wrongLocale": {
+    "message": "Да бисте користили ову функцију, подесите Језик на енглески у Подешавањима Алатки за програмере"
   },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "Блокирани ресурс"
@@ -7598,11 +7709,8 @@
   "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrency": {
     "message": "Истовремени рад хардвера"
   },
-  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencyIsEnabled": {
-    "message": "Замена истовременог рада хардвера је омогућена"
-  },
-  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencySettingTooltip": {
-    "message": "Замените вредност коју пријављује navigator.hardwareConcurrency на страници"
+  "panels/mobile_throttling/ThrottlingManager.ts | hardwareConcurrencySettingLabel": {
+    "message": "Замените вредност коју пријављује navigator.hardwareConcurrency"
   },
   "panels/mobile_throttling/ThrottlingManager.ts | noThrottling": {
     "message": "Нема ограничавања"
@@ -7949,15 +8057,6 @@
   "panels/network/NetworkDataGridNode.ts | redirect": {
     "message": "Преусмери"
   },
-  "panels/network/NetworkDataGridNode.ts | requestContentHeadersOverridden": {
-    "message": "Садржај захтева и заглавља су замењени"
-  },
-  "panels/network/NetworkDataGridNode.ts | requestContentOverridden": {
-    "message": "Садржај захтева је замењен"
-  },
-  "panels/network/NetworkDataGridNode.ts | requestHeadersOverridden": {
-    "message": "Заглавља захтева су замењена"
-  },
   "panels/network/NetworkDataGridNode.ts | sPreflight": {
     "message": "{PH1} + провера"
   },
@@ -7993,9 +8092,6 @@
   },
   "panels/network/NetworkDataGridNode.ts | signedexchange": {
     "message": "потписана размена"
-  },
-  "panels/network/NetworkDataGridNode.ts | thirdPartyPhaseout": {
-    "message": "Колачићи за овај захтев су блокирани због Chrome ознака или конфигурације прегледача. Сазнајте више у окну Проблеми."
   },
   "panels/network/NetworkDataGridNode.ts | timeSubtitleTooltipText": {
     "message": "Кашњење (време примања одговора – време почетка)"
@@ -8415,7 +8511,7 @@
     "message": "Онемогући кеш"
   },
   "panels/network/NetworkPanel.ts | disableCacheWhileDevtoolsIsOpen": {
-    "message": "Онемогући кеш (док су Алатке за програмере отворене)"
+    "message": "Онемогући кеш док су Алатке за програмере отворене"
   },
   "panels/network/NetworkPanel.ts | doNotClearLogOnPageReload": {
     "message": "Не бриши евиденцију о поновном учитавању или навигацији странице"
@@ -9030,7 +9126,7 @@
     "message": "Додај шаблон за блокирање мрежних захтева"
   },
   "panels/network/network-meta.ts | allowToGenerateHarWithSensitiveData": {
-    "message": "Дозволи генерисање HAR (са осетљивим подацима)"
+    "message": "Дозволи генерисање ставкеHAR са осетљивим подацима"
   },
   "panels/network/network-meta.ts | allowToGenerateHarWithSensitiveDataDocumentation": {
     "message": "Генерисана HAR евиденција се подразумевано чисти и не обухвата HTTP заглавље Cookie, Set-Cookie или Authorization. Када је ово подешавање омогућено, пружају се опције за извоз/копирање HAR-а са осетљивим подацима."
@@ -9051,7 +9147,7 @@
     "message": "кеш диска"
   },
   "panels/network/network-meta.ts | dontAllowToGenerateHarWithSensitiveData": {
-    "message": "Не дозвољавај генерисање HAR (са осетљивим подацима)"
+    "message": "Не дозвољавај генерисање ставке HAR са осетљивим подацима"
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "Не групиши ставке из мрежне евиденције према оквиру"
@@ -10637,11 +10733,44 @@
   "panels/security/SecurityPanel.ts | yourPageRequestedNonsecure": {
     "message": "Страница је тражила небезбедне ресурсе који су блокирани."
   },
+  "panels/security/SecurityPanelSidebar.ts | mainOrigin": {
+    "message": "Главни извор"
+  },
+  "panels/security/SecurityPanelSidebar.ts | mainOriginNonsecure": {
+    "message": "Главни разлог (није безбедно)"
+  },
+  "panels/security/SecurityPanelSidebar.ts | mainOriginSecure": {
+    "message": "Главни извор (безбедни)"
+  },
+  "panels/security/SecurityPanelSidebar.ts | nonsecureOrigins": {
+    "message": "Небезбедна порекла"
+  },
+  "panels/security/SecurityPanelSidebar.ts | overview": {
+    "message": "Преглед"
+  },
+  "panels/security/SecurityPanelSidebar.ts | reloadToViewDetails": {
+    "message": "Поново учитајте ради приказа детаља"
+  },
+  "panels/security/SecurityPanelSidebar.ts | secureOrigins": {
+    "message": "Безбедни извори"
+  },
+  "panels/security/SecurityPanelSidebar.ts | security": {
+    "message": "Безбедност"
+  },
+  "panels/security/SecurityPanelSidebar.ts | unknownCanceled": {
+    "message": "Непознато/отказано"
+  },
   "panels/security/security-meta.ts | security": {
     "message": "Безбедност"
   },
+  "panels/security/security-meta.ts | securityAndPrivacy": {
+    "message": "Безбедност и приватност"
+  },
   "panels/security/security-meta.ts | showSecurity": {
     "message": "Прикажи безбедност"
+  },
+  "panels/security/security-meta.ts | showSecurityAndPrivacy": {
+    "message": "Прикажи Безбедност и приватност"
   },
   "panels/sensors/LocationsSettingsTab.ts | addLocation": {
     "message": "Додај локацију..."
@@ -10859,14 +10988,23 @@
   "panels/settings/AISettingsTab.ts | adminSettings": {
     "message": "Google може да одустане од прикупљања података у зависности од управљања Google налогом и/или региона. Функције доступне корисницима којима се управља могу да се разликују у зависности од подешавања организације."
   },
+  "panels/settings/AISettingsTab.ts | ageRestricted": {
+    "message": "Ова функција је доступна само корисницима који имају 18 или више година"
+  },
+  "panels/settings/AISettingsTab.ts | aiInnovations": {
+    "message": "AI иновације"
+  },
   "panels/settings/AISettingsTab.ts | boostYourProductivity": {
-    "message": "Повећајте продуктивност помоћу Chrome AI-ја"
+    "message": "Повећајте продуктивност помоћу вештачке интелигенције"
   },
   "panels/settings/AISettingsTab.ts | consoleInsightsSendsData": {
     "message": "Порука конзоле, повезано стање стека и повезани изворни кôд и повезана заглавља мреже се шаљу Google-у да би се генерисала објашњења. Особе које прегледају могу да виде те податке ради побољшања ове функције."
   },
+  "panels/settings/AISettingsTab.ts | enableAiAssistance": {
+    "message": "Омогући AI помоћ"
+  },
   "panels/settings/AISettingsTab.ts | enableConsoleInsights": {
-    "message": "Омогући Увид у конзолу"
+    "message": "Омогући функцију Console insights"
   },
   "panels/settings/AISettingsTab.ts | experimentalFeatures": {
     "message": "Ове функције су експерименталне. Користе генеративну вештачку интелигенцију и могу да пружају нетачне или увредљиве информације које не представљају ставове Google-а."
@@ -10875,31 +11013,43 @@
     "message": "Добијајте објашњења за упозорења и грешке у конзоли"
   },
   "panels/settings/AISettingsTab.ts | explainStyling": {
-    "message": "Добијајте објашњења и додатни контекст о понашању у вези са стилом"
+    "message": "Разумите CSS стилове помоћу увида који омогућава вештачка интелигенција"
+  },
+  "panels/settings/AISettingsTab.ts | explainStylingAndNetworkRequest": {
+    "message": "Разумите CSS стилове и мрежну активност помоћу увида који омогућава вештачка интелигенција"
+  },
+  "panels/settings/AISettingsTab.ts | explainStylingNetworkAndFile": {
+    "message": "Разумите CSS стилове, мрежне активности и изворе фајлова помоћу увида који омогућава вештачка интелигенција"
   },
   "panels/settings/AISettingsTab.ts | freestylerSendsData": {
-    "message": "Сви подаци којима прегледана страница може да приступи преко Web API-ја могу да се шаљу Google-у да би се генерисала објашњења. Особе које прегледају могу да виде те податке ради побољшања ове функције."
-  },
-  "panels/settings/AISettingsTab.ts | generatedSnippets": {
-    "message": "Пажљиво користите генерисане фрагменте кода"
+    "message": "Сви подаци којима прегледана страница може да приступи преко Web API-ја, захтеви мреже, фајлови и трагови учинка шаљу се Google-у да би се генерисала објашњења. Особе које прегледају могу да виде те податке ради побољшања ове функције. Немојте да је користите на страницама са личним или осетљивим информацијама."
   },
   "panels/settings/AISettingsTab.ts | helpUnderstandConsole": {
     "message": "Помаже вам да разумете и решите упозорења и грешке у конзоли"
   },
   "panels/settings/AISettingsTab.ts | helpUnderstandStyling": {
-    "message": "Помаже вам да разумете и решите проблеме са стилом"
+    "message": "Потражите помоћ за разумевање CSS стилова"
+  },
+  "panels/settings/AISettingsTab.ts | helpUnderstandStylingAndNetworkRequest": {
+    "message": "Потражите помоћ за разумевање CSS стилова и мрежних захтева"
+  },
+  "panels/settings/AISettingsTab.ts | helpUnderstandStylingNetworkAndFile": {
+    "message": "Потражите помоћ за разумевање CSS стилова, мрежних захтева и фајлова"
   },
   "panels/settings/AISettingsTab.ts | learnMore": {
     "message": "Сазнајте више"
   },
-  "panels/settings/AISettingsTab.ts | oneOrMoreSettingsHaveChanged": {
-    "message": "Једно или више подешавања је промењено, па је неопходно поновно учитавање да би ступила на снагу."
+  "panels/settings/AISettingsTab.ts | notLoggedIn": {
+    "message": "Ова функција је доступна само када се пријавите у Chrome помоћу Google налога."
+  },
+  "panels/settings/AISettingsTab.ts | offline": {
+    "message": "Ова функција је доступна само уз активну интернет везу."
   },
   "panels/settings/AISettingsTab.ts | privacyNotice": {
     "message": "Google политика приватности"
   },
   "panels/settings/AISettingsTab.ts | receiveStylingSuggestions": {
-    "message": "Примајте предлоге и примере кода за решавање проблема са стилом"
+    "message": "Побољшајте ток рада за програмирање помоћу контекстуалних објашњења и предлога"
   },
   "panels/settings/AISettingsTab.ts | receiveSuggestions": {
     "message": "Примајте предлоге и примере кода да бисте решили ове проблеме"
@@ -10908,7 +11058,7 @@
     "message": "Подаци о коришћењу се задржавају до 18 месеци и чувају се тако да Google не може да зна ко их је пружио."
   },
   "panels/settings/AISettingsTab.ts | sendsDataToGoogle": {
-    "message": "Коришћење ових функција шаље Google-у податке релевантне за ту функцију. Google прикупља ове податке и повратне информације да би побољшао производе и услуге уз помоћ особа које прегледају. Избегавајте дељење осетљивих или личних података."
+    "message": "Ове функције шаљу релевантне податке Google-у. Google прикупља ове податке и повратне информације да би побољшао производе и услуге уз помоћ особа које прегледају. Избегавајте дељење осетљивих или личних података."
   },
   "panels/settings/AISettingsTab.ts | showLess": {
     "message": "Прикажи мање"
@@ -10920,7 +11070,7 @@
     "message": "Google услови коришћења услуге"
   },
   "panels/settings/AISettingsTab.ts | termsOfServicePrivacyNotice": {
-    "message": "Коришћење ове функције подлеже документима {PH1} и {PH2}"
+    "message": "Коришћење ових функција подлеже документима {PH1} и {PH2}"
   },
   "panels/settings/AISettingsTab.ts | thingsToConsider": {
     "message": "Шта треба имати у виду"
@@ -10929,10 +11079,10 @@
     "message": "Када је укључено"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addFilenamePattern": {
-    "message": "Додајте образац назива фајла"
+    "message": "Додајте правило за регуларни израз за URL скрипте"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | addPattern": {
-    "message": "Додајте образац…"
+    "message": "Додај правило за регуларне изразе…"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | automaticallyIgnoreListKnownThirdPartyScripts": {
     "message": "Познате независне скрипте са изворних мапа"
@@ -10941,10 +11091,10 @@
     "message": "Прилагођена правила за изузимање:"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | debuggerWillSkipThroughThe": {
-    "message": "Програм за отклањање грешака ће прескочити скрипте и неће се зауставити на изузецима које оне приказују."
+    "message": "Програм за отклањање грешака неће проћи кроз ове скрипте нити ће се зауставити на изузецима који утичу само на њих, а окно Учинак ће скупити одговарајуће ставке на континуираном детаљном графикону."
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | enableIgnoreListing": {
-    "message": "Омогући игнорисање уноса"
+    "message": "Омогући прављење листе за игнорисање"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | enableIgnoreListingTooltip": {
     "message": "Опозови избор ради онемогућавања свих уноса за игнорисање"
@@ -10954,6 +11104,9 @@
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | generalExclusionRules": {
     "message": "Општа правила за изузимање:"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreListAnonymousScripts": {
+    "message": "Анонимне скрипте из процене или конзоле"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreListContentScripts": {
     "message": "Скрипте садржаја које су убацили додаци"
@@ -10965,16 +11118,16 @@
     "message": "Сазнајте више"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | pattern": {
-    "message": "Додајте образац"
+    "message": "Додајте правило за регуларни израз за URL скрипте"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | patternAlreadyExists": {
-    "message": "Образац већ постоји"
+    "message": "Правило већ постоји"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | patternCannotBeEmpty": {
-    "message": "Образац не може да буде празан"
+    "message": "Правило не може да буде празно"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | patternMustBeAValidRegular": {
-    "message": "Образац мора да буде важећи регуларни израз"
+    "message": "Правило мора да буде важећи регуларни израз"
   },
   "panels/settings/KeybindsSettingsTab.ts | FullListOfDevtoolsKeyboard": {
     "message": "Комплетна листа тастерских пречица и покрета Алатки за програмере"
@@ -11213,6 +11366,9 @@
   "panels/settings/emulation/emulation-meta.ts | showDevices": {
     "message": "Прикажи уређаје"
   },
+  "panels/settings/settings-meta.ts | aiInnovations": {
+    "message": "AI иновације"
+  },
   "panels/settings/settings-meta.ts | documentation": {
     "message": "Документација"
   },
@@ -11230,6 +11386,9 @@
   },
   "panels/settings/settings-meta.ts | shortcuts": {
     "message": "Пречице"
+  },
+  "panels/settings/settings-meta.ts | showAiInnovations": {
+    "message": "Прикажи AI иновације"
   },
   "panels/settings/settings-meta.ts | showExperiments": {
     "message": "Прикажи експерименте"
@@ -12254,6 +12413,33 @@
   "panels/timeline/AnimationsTrackAppender.ts | animations": {
     "message": "Анимације"
   },
+  "panels/timeline/AnnotationHelpers.ts | entriesLink": {
+    "message": "повезани уноси"
+  },
+  "panels/timeline/AnnotationHelpers.ts | entryLabel": {
+    "message": "ознака уноса"
+  },
+  "panels/timeline/AnnotationHelpers.ts | srAnnotationAdded": {
+    "message": "Напомена {PH1} је додата"
+  },
+  "panels/timeline/AnnotationHelpers.ts | srAnnotationRemoved": {
+    "message": "Напомена {PH1} је уклоњена"
+  },
+  "panels/timeline/AnnotationHelpers.ts | srEnterLabelEditMode": {
+    "message": "Мењање текста за ознаку напомене"
+  },
+  "panels/timeline/AnnotationHelpers.ts | srEntriesLinked": {
+    "message": "Напомена повезаних уноса сада повезује догађаје {PH1} и {PH2}"
+  },
+  "panels/timeline/AnnotationHelpers.ts | srLabelTextUpdated": {
+    "message": "Ознака је ажурирана на {PH1}"
+  },
+  "panels/timeline/AnnotationHelpers.ts | srTimeRangeBoundsUpdated": {
+    "message": "Период је ажуриран, почиње у {PH1} и завршава се у {PH2}"
+  },
+  "panels/timeline/AnnotationHelpers.ts | timeRange": {
+    "message": "период"
+  },
   "panels/timeline/AppenderUtils.ts | sSelfS": {
     "message": "{PH1} (самостално {PH2})"
   },
@@ -12307,6 +12493,12 @@
   },
   "panels/timeline/IsolateSelector.ts | selectJavascriptVmInstance": {
     "message": "Одабери инстанцу JavaScript виртуелне машине"
+  },
+  "panels/timeline/LayoutShiftsTrackAppender.ts | layoutShift": {
+    "message": "Промена распореда"
+  },
+  "panels/timeline/LayoutShiftsTrackAppender.ts | layoutShiftCluster": {
+    "message": "Скуп промена распореда"
   },
   "panels/timeline/LayoutShiftsTrackAppender.ts | layoutShifts": {
     "message": "Промене распореда"
@@ -12506,9 +12698,6 @@
   "panels/timeline/TimelinePanel.ts | CpuThrottlingIsEnabled": {
     "message": "– Ограничавање процесора је омогућено"
   },
-  "panels/timeline/TimelinePanel.ts | HardwareConcurrencyIsEnabled": {
-    "message": "– Замена истовременог рада хардвера је омогућена"
-  },
   "panels/timeline/TimelinePanel.ts | JavascriptSamplingIsDisabled": {
     "message": "– JavaScript узорковање је онемогућено"
   },
@@ -12566,6 +12755,9 @@
   "panels/timeline/TimelinePanel.ts | enableSelectorStats": {
     "message": "Омогући статистике CSS бирача (споро)"
   },
+  "panels/timeline/TimelinePanel.ts | eventSelected": {
+    "message": "Изабран је догађај {PH1}"
+  },
   "panels/timeline/TimelinePanel.ts | exportEnhancedTraces": {
     "message": "Трагови побољшаног учинка"
   },
@@ -12578,11 +12770,17 @@
   "panels/timeline/TimelinePanel.ts | fixMe": {
     "message": "Исправи"
   },
+  "panels/timeline/TimelinePanel.ts | frameSelected": {
+    "message": "Изабран је оквир"
+  },
   "panels/timeline/TimelinePanel.ts | hideSidebar": {
     "message": "Сакриј једину бочну траку"
   },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "Покреће се алатка за профиле…"
+  },
+  "panels/timeline/TimelinePanel.ts | learnMore": {
+    "message": "Сазнајте више"
   },
   "panels/timeline/TimelinePanel.ts | loadProfile": {
     "message": "Учитај профил…"
@@ -12628,6 +12826,9 @@
   },
   "panels/timeline/TimelinePanel.ts | screenshots": {
     "message": "Снимци екрана"
+  },
+  "panels/timeline/TimelinePanel.ts | selectionCleared": {
+    "message": "Избор је обрисан"
   },
   "panels/timeline/TimelinePanel.ts | showDataAddedByExtensions": {
     "message": "Прикажите податке које су додали додаци у окну Учинак"
@@ -12678,7 +12879,7 @@
     "message": "Проценат неподударања спорих путања"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | rejectPercentageExplanation": {
-    "message": "Проценат чворова који се не подударају (покушаји подударања - број подударања), а које Блумов филтер није могао брзо да искључи. Што мање, то боље."
+    "message": "Проценат чворова који се не подударају (покушаји подударања – број подударања) а које Bloom филтер није могао брзо да искључи због велике сложености бирача. Што мање, то боље."
   },
   "panels/timeline/TimelineSelectorStatsView.ts | selector": {
     "message": "Бирач"
@@ -12797,6 +12998,9 @@
   "panels/timeline/TimelineUIUtils.ts | allottedTime": {
     "message": "Додељено време"
   },
+  "panels/timeline/TimelineUIUtils.ts | animating": {
+    "message": "Анимира се"
+  },
   "panels/timeline/TimelineUIUtils.ts | animationFrameRequested": {
     "message": "Затражен је оквир анимације"
   },
@@ -12820,6 +13024,66 @@
   },
   "panels/timeline/TimelineUIUtils.ts | compile": {
     "message": "Компајлирај"
+  },
+  "panels/timeline/TimelineUIUtils.ts | compositingFailed": {
+    "message": "Састављање није успело"
+  },
+  "panels/timeline/TimelineUIUtils.ts | compositingFailedAcceleratedAnimationsDisabled": {
+    "message": "Убрзане анимације су онемогућене"
+  },
+  "panels/timeline/TimelineUIUtils.ts | compositingFailedAffectsImportantProperty": {
+    "message": "Ефекат утиче на својство са ознаком !важно"
+  },
+  "panels/timeline/TimelineUIUtils.ts | compositingFailedAnimationAffectsNonCSSProperties": {
+    "message": "Анимација утиче на својства која нису CSS"
+  },
+  "panels/timeline/TimelineUIUtils.ts | compositingFailedAnimationHasNoVisibleChange": {
+    "message": "Анимација нема видљиву промену"
+  },
+  "panels/timeline/TimelineUIUtils.ts | compositingFailedEffectHasNonReplaceCompositeMode": {
+    "message": "Ефекат има композитни режим који није „replace“"
+  },
+  "panels/timeline/TimelineUIUtils.ts | compositingFailedEffectHasUnsupportedTimingParams": {
+    "message": "Ефекат има неподржане параметре времена"
+  },
+  "panels/timeline/TimelineUIUtils.ts | compositingFailedEffectSuppressedByDevtools": {
+    "message": "Алатке за програмере су ослабиле ефекат "
+  },
+  "panels/timeline/TimelineUIUtils.ts | compositingFailedFilterRelatedPropertyMayMovePixels": {
+    "message": "Својство које се односи на филтере може да помера пикселе"
+  },
+  "panels/timeline/TimelineUIUtils.ts | compositingFailedInvalidAnimationOrEffect": {
+    "message": "Неважећа анимација или ефекат"
+  },
+  "panels/timeline/TimelineUIUtils.ts | compositingFailedMixedKeyframeValueTypes": {
+    "message": "Мешовите врсте вредности кључних кадрова"
+  },
+  "panels/timeline/TimelineUIUtils.ts | compositingFailedSVGTargetHasIndependentTransformProperty": {
+    "message": "SVG циљ има независно својство за трансформацију"
+  },
+  "panels/timeline/TimelineUIUtils.ts | compositingFailedTargetHasCSSOffset": {
+    "message": "Циљ има CSS одступање"
+  },
+  "panels/timeline/TimelineUIUtils.ts | compositingFailedTargetHasIncompatibleAnimations": {
+    "message": "Циљ има другу анимацију која је некомпатибилна"
+  },
+  "panels/timeline/TimelineUIUtils.ts | compositingFailedTargetHasInvalidCompositingState": {
+    "message": "Циљ има неважећи статус састављања"
+  },
+  "panels/timeline/TimelineUIUtils.ts | compositingFailedTimelineSourceHasInvalidCompositingState": {
+    "message": "Извор хронологије има неважећи статус састављања"
+  },
+  "panels/timeline/TimelineUIUtils.ts | compositingFailedTransformDependsBoxSize": {
+    "message": "Својство везано за трансформацију зависи од величине оквира"
+  },
+  "panels/timeline/TimelineUIUtils.ts | compositingFailedTransformRelatedPropertyCannotBeAcceleratedOnTarget": {
+    "message": "Својство везано за трансформацију не може да се убрза на циљу"
+  },
+  "panels/timeline/TimelineUIUtils.ts | compositingFailedUnknownReason": {
+    "message": "Непознат разлог"
+  },
+  "panels/timeline/TimelineUIUtils.ts | compositingFailedUnsupportedCSSProperty": {
+    "message": "{propertyCount,plural, =1{Неподржано CSS својство: {properties}}one{Неподржана CSS својства: {properties}}few{Неподржана CSS својства: {properties}}other{Неподржана CSS својства: {properties}}}"
   },
   "panels/timeline/TimelineUIUtils.ts | consumedCacheSize": {
     "message": "Величина искоришћеног кеша"
@@ -13371,7 +13635,7 @@
     "message": "Промена распореда"
   },
   "panels/timeline/components/EntryStyles.ts | layoutShiftCluster": {
-    "message": "Кластер промена распореда"
+    "message": "Скуп промена распореда"
   },
   "panels/timeline/components/EntryStyles.ts | loading": {
     "message": "Учитава се"
@@ -13619,6 +13883,12 @@
   "panels/timeline/components/InteractionBreakdown.ts | processingDuration": {
     "message": "Трајање обраде"
   },
+  "panels/timeline/components/LayoutShiftDetails.ts | animation": {
+    "message": "Анимација"
+  },
+  "panels/timeline/components/LayoutShiftDetails.ts | cluster": {
+    "message": "Скуп промена распореда: {PH1}"
+  },
   "panels/timeline/components/LayoutShiftDetails.ts | culprit": {
     "message": "Узрок"
   },
@@ -13631,14 +13901,14 @@
   "panels/timeline/components/LayoutShiftDetails.ts | injectedIframe": {
     "message": "Уметнути iframe"
   },
-  "panels/timeline/components/LayoutShiftDetails.ts | insight": {
-    "message": "Увид"
-  },
   "panels/timeline/components/LayoutShiftDetails.ts | layoutShift": {
-    "message": "Промена распореда"
+    "message": "Промена распореда: {PH1}"
   },
-  "panels/timeline/components/LayoutShiftDetails.ts | layoutShiftCulprits": {
-    "message": "Узроци промене распореда"
+  "panels/timeline/components/LayoutShiftDetails.ts | nonCompositedAnimation": {
+    "message": "Анимација која није композитна"
+  },
+  "panels/timeline/components/LayoutShiftDetails.ts | parentCluster": {
+    "message": "Надређени скуп"
   },
   "panels/timeline/components/LayoutShiftDetails.ts | shiftScore": {
     "message": "Резултат помака"
@@ -13646,20 +13916,20 @@
   "panels/timeline/components/LayoutShiftDetails.ts | startTime": {
     "message": "Време почетка"
   },
+  "panels/timeline/components/LayoutShiftDetails.ts | total": {
+    "message": "Укупно"
+  },
   "panels/timeline/components/LiveMetricsView.ts | allDevices": {
     "message": "Сви уређаји"
   },
   "panels/timeline/components/LiveMetricsView.ts | auto": {
     "message": "Аутоматски ({PH1})"
   },
-  "panels/timeline/components/LiveMetricsView.ts | clearInteractionsLog": {
-    "message": "Обриши евиденцију интеракција"
+  "panels/timeline/components/LiveMetricsView.ts | clearCurrentLog": {
+    "message": "Обриши актуелну евиденцију"
   },
   "panels/timeline/components/LiveMetricsView.ts | collectionPeriod": {
     "message": "Период прикупљања:"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | considerRealUser": {
-    "message": "Размотрите окружења стварних корисника"
   },
   "panels/timeline/components/LiveMetricsView.ts | dateRange": {
     "message": "{PH1}–{PH2}"
@@ -13673,8 +13943,14 @@
   "panels/timeline/components/LiveMetricsView.ts | disableNetworkCache": {
     "message": "Онемогући кеш мреже"
   },
+  "panels/timeline/components/LiveMetricsView.ts | elementRenderDelay": {
+    "message": "Кашњење приказивања елемента"
+  },
   "panels/timeline/components/LiveMetricsView.ts | environmentSettings": {
     "message": "Подешавања окружења"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | eventLogs": {
+    "message": "Одељак са евиденцијама о интеракцијама и променама изгледа"
   },
   "panels/timeline/components/LiveMetricsView.ts | fieldData": {
     "message": "Подаци поља"
@@ -13682,11 +13958,23 @@
   "panels/timeline/components/LiveMetricsView.ts | fieldDataLink": {
     "message": "подаци поља"
   },
+  "panels/timeline/components/LiveMetricsView.ts | inpInteraction": {
+    "message": "INP интеракција је на 98. перцентилу кашњења интеракције."
+  },
+  "panels/timeline/components/LiveMetricsView.ts | inpInteractionLink": {
+    "message": "INP интеракција"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | inputDelay": {
+    "message": "Кашњење уноса"
+  },
   "panels/timeline/components/LiveMetricsView.ts | interactionExcluded": {
     "message": "INP се израчунава на основу 98. процентила кашњења интеракције, па су нека кашњења интеракције можда већа од вредности INP-а."
   },
   "panels/timeline/components/LiveMetricsView.ts | interactions": {
     "message": "Интеракције"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | layoutShifts": {
+    "message": "Промене распореда"
   },
   "panels/timeline/components/LiveMetricsView.ts | lcpElement": {
     "message": "Елемент LCP-а"
@@ -13706,12 +13994,6 @@
   "panels/timeline/components/LiveMetricsView.ts | mobile": {
     "message": "Мобилни уређаји"
   },
-  "panels/timeline/components/LiveMetricsView.ts | mostUsersDesktop": {
-    "message": "{PH1} корисника користи рачунар."
-  },
-  "panels/timeline/components/LiveMetricsView.ts | mostUsersMobile": {
-    "message": "{PH1} корисника користи мобилне уређаје."
-  },
   "panels/timeline/components/LiveMetricsView.ts | needsDataOption": {
     "message": "{PH1} – Нема података"
   },
@@ -13721,23 +14003,41 @@
   "panels/timeline/components/LiveMetricsView.ts | nextSteps": {
     "message": "Следећи кораци"
   },
+  "panels/timeline/components/LiveMetricsView.ts | numShifts": {
+    "message": "{shiftCount,plural, =1{{shiftCount} промена}one{{shiftCount} промена}few{{shiftCount} промене}other{{shiftCount} промена}}"
+  },
   "panels/timeline/components/LiveMetricsView.ts | originOption": {
     "message": "Порекло"
   },
   "panels/timeline/components/LiveMetricsView.ts | originOptionWithKey": {
     "message": "Порекло: {PH1}"
   },
-  "panels/timeline/components/LiveMetricsView.ts | percentage": {
-    "message": "{PH1}%"
+  "panels/timeline/components/LiveMetricsView.ts | presentationDelay": {
+    "message": "Кашњење презентације"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | processingDuration": {
+    "message": "Трајање обраде"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | resourceLoadDelay": {
+    "message": "Кашњење учитавања ресурса"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | resourceLoadDuration": {
+    "message": "Трајање учитавања ресурса"
   },
   "panels/timeline/components/LiveMetricsView.ts | seeHowYourLocalMetricsCompare": {
     "message": "Упоредите локалне показатеље са стварним подацима корисника у: {PH1}."
+  },
+  "panels/timeline/components/LiveMetricsView.ts | showClsCluster": {
+    "message": "Иди у скуп са најлошијим променама распореда."
   },
   "panels/timeline/components/LiveMetricsView.ts | showFieldDataForDevice": {
     "message": "Прикажи податке поља за тип уређаја: {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | showFieldDataForPage": {
     "message": "Прикажи податке поља за: {PH1}"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | showInpInteraction": {
+    "message": "Идите на INP интеракцију."
   },
   "panels/timeline/components/LiveMetricsView.ts | simulateDifferentDevices": {
     "message": "симулирали различите уређаје"
@@ -13750,6 +14050,9 @@
   },
   "panels/timeline/components/LiveMetricsView.ts | theLocalMetricsAre": {
     "message": "{PH1} се снимају са актуелне странице помоћу мрежне везе и уређаја."
+  },
+  "panels/timeline/components/LiveMetricsView.ts | timeToFirstByte": {
+    "message": "Time to first byte"
   },
   "panels/timeline/components/LiveMetricsView.ts | tryDisablingThrottling": {
     "message": "75. перцентил стварних корисника доживео је кашњења мреже слична онима код везе без ограничавања."
@@ -13766,11 +14069,17 @@
   "panels/timeline/components/LiveMetricsView.ts | useDeviceToolbar": {
     "message": "Користите траку с алаткама на уређају да бисте {PH1}."
   },
+  "panels/timeline/components/LiveMetricsView.ts | worstCluster": {
+    "message": "Најгори скуп"
+  },
   "panels/timeline/components/MetricCard.ts | betweenRange": {
     "message": "({PH1}–{PH2})"
   },
   "panels/timeline/components/MetricCard.ts | considerTesting": {
     "message": "Размислите о локалним условима за тестирање"
+  },
+  "panels/timeline/components/MetricCard.ts | duration": {
+    "message": "Локално трајање (ms)"
   },
   "panels/timeline/components/MetricCard.ts | field75thPercentile": {
     "message": "75. перцентил поља"
@@ -13795,6 +14104,9 @@
   },
   "panels/timeline/components/MetricCard.ts | percentage": {
     "message": "{PH1}%"
+  },
+  "panels/timeline/components/MetricCard.ts | phase": {
+    "message": "Фаза"
   },
   "panels/timeline/components/MetricCard.ts | poor": {
     "message": "Лоше"
@@ -13901,23 +14213,14 @@
   "panels/timeline/components/NetworkRequestDetails.ts | FromServiceWorker": {
     "message": " (од: service worker)"
   },
-  "panels/timeline/components/NetworkRequestDetails.ts | contentDownloading": {
-    "message": "Садржај се преузима"
-  },
   "panels/timeline/components/NetworkRequestDetails.ts | decodedBody": {
     "message": "Декодирано тело"
-  },
-  "panels/timeline/components/NetworkRequestDetails.ts | duration": {
-    "message": "Трајање"
   },
   "panels/timeline/components/NetworkRequestDetails.ts | encodedData": {
     "message": "Кодирани подаци"
   },
   "panels/timeline/components/NetworkRequestDetails.ts | fromCache": {
     "message": "Из кеша"
-  },
-  "panels/timeline/components/NetworkRequestDetails.ts | initialPriority": {
-    "message": "Почетни приоритет"
   },
   "panels/timeline/components/NetworkRequestDetails.ts | initiatedBy": {
     "message": "Иницијатор"
@@ -13937,17 +14240,8 @@
   "panels/timeline/components/NetworkRequestDetails.ts | priority": {
     "message": "Приоритет"
   },
-  "panels/timeline/components/NetworkRequestDetails.ts | queuingAndConnecting": {
-    "message": "Стављање у редослед и повезивање"
-  },
   "panels/timeline/components/NetworkRequestDetails.ts | requestMethod": {
     "message": "Метод захтева"
-  },
-  "panels/timeline/components/NetworkRequestDetails.ts | requestSentAndWaiting": {
-    "message": "Захтев је послат и чека се"
-  },
-  "panels/timeline/components/NetworkRequestDetails.ts | waitingOnMainThread": {
-    "message": "Чека се главна нит"
   },
   "panels/timeline/components/NetworkRequestDetails.ts | yes": {
     "message": "Да"
@@ -13988,23 +14282,95 @@
   "panels/timeline/components/NetworkThrottlingSelector.ts | presets": {
     "message": "Задата подешавања"
   },
-  "panels/timeline/components/SidebarAnnotationsTab.ts | diagram": {
-    "message": "Дијаграм"
+  "panels/timeline/components/RelatedInsightChips.ts | insightKeyword": {
+    "message": "Увид"
   },
-  "panels/timeline/components/SidebarAnnotationsTab.ts | diagramDescription": {
-    "message": "Двапут кликните на унос да бисте направили дијаграм."
+  "panels/timeline/components/SidebarAnnotationsTab.ts | annotationGetStarted": {
+    "message": "Додајте напомене у траг за себе и друге"
   },
-  "panels/timeline/components/SidebarAnnotationsTab.ts | entryLabel": {
-    "message": "Ознака уноса"
+  "panels/timeline/components/SidebarAnnotationsTab.ts | deleteAnnotationTutorialDescription": {
+    "message": "Пређите курсором преко листе у бочној траци са изабраном картицом Коментари да бисте приступили функцији брисања."
   },
-  "panels/timeline/components/SidebarAnnotationsTab.ts | entryLabelDescription": {
-    "message": "Двапут кликните на унос да бисте направили унос ознаке. Притисните Esc или Enter да бисте довршили."
+  "panels/timeline/components/SidebarAnnotationsTab.ts | deleteAnnotationTutorialTitle": {
+    "message": "Избриши напомену"
   },
-  "panels/timeline/components/SidebarAnnotationsTab.ts | timeRange": {
-    "message": "Временски опсег"
+  "panels/timeline/components/SidebarAnnotationsTab.ts | deleteButton": {
+    "message": "Избришите напомену: {PH1}"
   },
-  "panels/timeline/components/SidebarAnnotationsTab.ts | timeRangeDescription": {
-    "message": "Притисните и превуците на канвасу да бисте направили временски опсег и додали ознаку. Притисните Esc или Enter да бисте довршили."
+  "panels/timeline/components/SidebarAnnotationsTab.ts | entryLabelDescriptionLabel": {
+    "message": "Догађај {PH1} има напомену са текстом {PH2}"
+  },
+  "panels/timeline/components/SidebarAnnotationsTab.ts | entryLabelTutorialDescription": {
+    "message": "Двапут кликните на ставку и унесите текст да бисте направили ознаку за ставку."
+  },
+  "panels/timeline/components/SidebarAnnotationsTab.ts | entryLabelTutorialTitle": {
+    "message": "Означи ставку"
+  },
+  "panels/timeline/components/SidebarAnnotationsTab.ts | entryLinkDescriptionLabel": {
+    "message": "Веза између догађаја {PH1} и догађаја {PH2}"
+  },
+  "panels/timeline/components/SidebarAnnotationsTab.ts | entryLinkTutorialDescription": {
+    "message": "Двапут кликните на ставку, кликните на суседну стрелицу удесно, па изаберите одредишну ставку."
+  },
+  "panels/timeline/components/SidebarAnnotationsTab.ts | entryLinkTutorialTitle": {
+    "message": "Повежите две ставке"
+  },
+  "panels/timeline/components/SidebarAnnotationsTab.ts | timeRangeDescriptionLabel": {
+    "message": "Период који почиње у {PH1} и завршава се у {PH2}"
+  },
+  "panels/timeline/components/SidebarAnnotationsTab.ts | timeRangeTutorialDescription": {
+    "message": "Притисните Shift и превуците на континуираном детаљном графикону, па унесите текст да бисте направили напомену за период."
+  },
+  "panels/timeline/components/SidebarAnnotationsTab.ts | timeRangeTutorialTitle": {
+    "message": "Дефинишите период"
+  },
+  "panels/timeline/components/SidebarInsightsTab.ts | feedbackButton": {
+    "message": "Повратне информације"
+  },
+  "panels/timeline/components/SidebarInsightsTab.ts | feedbackTooltip": {
+    "message": "Увид је експериментална функција. Ваше повратне информације ће нам помоћи да га побољшамо."
+  },
+  "panels/timeline/components/SidebarSingleInsightSet.ts | metricScore": {
+    "message": "{PH1}: {PH3} резултат од {PH2}"
+  },
+  "panels/timeline/components/Utils.ts | fms": {
+    "message": "{PH1}[ms]()"
+  },
+  "panels/timeline/components/Utils.ts | fs": {
+    "message": "{PH1}[s]()"
+  },
+  "panels/timeline/components/insights/CLSCulprits.ts | animation": {
+    "message": "Анимација"
+  },
+  "panels/timeline/components/insights/CLSCulprits.ts | description": {
+    "message": "До промена распореда долази када се елементи померају без икакве интеракције корисника. [Истражите узроке промена распореда](https://web.dev/articles/optimize-cls), као што су додавање и уклањање елемената или промена њихових фонтова док се страница учитава."
+  },
+  "panels/timeline/components/insights/CLSCulprits.ts | fontRequest": {
+    "message": "Захтев за фонт"
+  },
+  "panels/timeline/components/insights/CLSCulprits.ts | injectedIframe": {
+    "message": "Уметнути iframe"
+  },
+  "panels/timeline/components/insights/CLSCulprits.ts | layoutShiftCluster": {
+    "message": "Скуп промена распореда: {PH1}"
+  },
+  "panels/timeline/components/insights/CLSCulprits.ts | title": {
+    "message": "Узроци промене распореда"
+  },
+  "panels/timeline/components/insights/CLSCulprits.ts | topCulprits": {
+    "message": "Најчешћи узроци промене распореда"
+  },
+  "panels/timeline/components/insights/CLSCulprits.ts | worstCluster": {
+    "message": "Најгори скуп"
+  },
+  "panels/timeline/components/insights/CLSCulprits.ts | worstLayoutShiftCluster": {
+    "message": "Скуп са најлошијим променама распореда"
+  },
+  "panels/timeline/components/insights/DocumentLatency.ts | description": {
+    "message": "Први захтев за мрежу је најважнији.  Смањите кашњење избегавањем преусмеравања, обезбеђивањем брзог одговора сервера и омогућавањем компресије текста."
+  },
+  "panels/timeline/components/insights/DocumentLatency.ts | failedAriaLabel": {
+    "message": "Провера увида није успела: {PH1}"
   },
   "panels/timeline/components/insights/DocumentLatency.ts | failedRedirects": {
     "message": "Било је преусмеравања"
@@ -14024,17 +14390,41 @@
   "panels/timeline/components/insights/DocumentLatency.ts | passingTextCompression": {
     "message": "Примењује се компресија текста"
   },
+  "panels/timeline/components/insights/DocumentLatency.ts | redirectsLabel": {
+    "message": "Преусмеравања"
+  },
+  "panels/timeline/components/insights/DocumentLatency.ts | serverResponseTimeLabel": {
+    "message": "Време одзива сервера"
+  },
+  "panels/timeline/components/insights/DocumentLatency.ts | successAriaLabel": {
+    "message": "Прошли сте проверу увида: {PH1}"
+  },
+  "panels/timeline/components/insights/DocumentLatency.ts | title": {
+    "message": "Кашњење захтева за документ"
+  },
+  "panels/timeline/components/insights/DocumentLatency.ts | uncompressedDownload": {
+    "message": "Некомпримовано преузимање"
+  },
+  "panels/timeline/components/insights/FontDisplay.ts | description": {
+    "message": "Размислите о коришћењу [приказа фонта](https://developer.chrome.com/blog/font-display) вредности swap или optional да бисте се уверили да је текст увек видљив. swap може да се додатно оптимизује да би се ублажиле промене изгледа помоћу [замена показатеља фонта](https://developer.chrome.com/blog/font-fallbacks)."
+  },
+  "panels/timeline/components/insights/FontDisplay.ts | fontColumn": {
+    "message": "Фонт"
+  },
+  "panels/timeline/components/insights/FontDisplay.ts | title": {
+    "message": "Приказ фонта"
+  },
+  "panels/timeline/components/insights/FontDisplay.ts | wastedTimeColumn": {
+    "message": "Протраћено време"
+  },
   "panels/timeline/components/insights/InteractionToNextPaint.ts | description": {
-    "message": "Побољшајте брзину одговора за кориснике побољшањем показатеља Interaction to Next Paint. Сазнајте како да [оптимизујете INP](https://web.dev/articles/optimize-inp)."
+    "message": "Почните да истражујете са најдужом фазом. [Кашњења могу да се умање](https://web.dev/articles/optimize-inp#optimize_interactions). Да бисте смањили трајање обраде, [оптимизујте трошкове главне нити](https://web.dev/articles/optimize-long-tasks), често JS."
   },
   "panels/timeline/components/insights/InteractionToNextPaint.ts | duration": {
     "message": "Трајање"
   },
   "panels/timeline/components/insights/InteractionToNextPaint.ts | inputDelay": {
     "message": "Кашњење уноса"
-  },
-  "panels/timeline/components/insights/InteractionToNextPaint.ts | longestInteraction": {
-    "message": "Најдужа интеракција"
   },
   "panels/timeline/components/insights/InteractionToNextPaint.ts | phase": {
     "message": "Фаза"
@@ -14048,6 +14438,12 @@
   "panels/timeline/components/insights/InteractionToNextPaint.ts | title": {
     "message": "INP по фази"
   },
+  "panels/timeline/components/insights/LCPDiscovery.ts | description": {
+    "message": "Оптимизујте LCP тако што ћете [омогућити откривање](https://web.dev/articles/optimize-lcp#1_eliminate_resource_load_delay) LCP слике из HTML-а одмах и [избегавати спора учитавања](https://web.dev/articles/lcp-lazy-loading)"
+  },
+  "panels/timeline/components/insights/LCPDiscovery.ts | failedAriaLabel": {
+    "message": "Провера увида није успела: {PH1}"
+  },
   "panels/timeline/components/insights/LCPDiscovery.ts | fetchPriorityApplied": {
     "message": "Примењено је fetchpriority=high"
   },
@@ -14060,8 +14456,23 @@
   "panels/timeline/components/insights/LCPDiscovery.ts | requestDiscoverable": {
     "message": "Захтев је видљив у почетном документу"
   },
+  "panels/timeline/components/insights/LCPDiscovery.ts | successAriaLabel": {
+    "message": "Прошли сте проверу увида: {PH1}"
+  },
+  "panels/timeline/components/insights/LCPDiscovery.ts | title": {
+    "message": "Откривање LCP захтева"
+  },
+  "panels/timeline/components/insights/LCPPhases.ts | description": {
+    "message": "Свака [фаза има специфичне стратегије побољшања](https://web.dev/articles/optimize-lcp#lcp-breakdown). Идеално би било да се већина времена LCP-а потроши на учитавање ресурса, а не на кашњења."
+  },
   "panels/timeline/components/insights/LCPPhases.ts | elementRenderDelay": {
     "message": "Кашњење приказивања елемента"
+  },
+  "panels/timeline/components/insights/LCPPhases.ts | percentLCP": {
+    "message": "% LCP-а"
+  },
+  "panels/timeline/components/insights/LCPPhases.ts | phase": {
+    "message": "Фаза"
   },
   "panels/timeline/components/insights/LCPPhases.ts | resourceLoadDelay": {
     "message": "Кашњење учитавања ресурса"
@@ -14072,11 +14483,50 @@
   "panels/timeline/components/insights/LCPPhases.ts | timeToFirstByte": {
     "message": "Time to first byte"
   },
+  "panels/timeline/components/insights/LCPPhases.ts | title": {
+    "message": "LCP према фази"
+  },
   "panels/timeline/components/insights/RenderBlocking.ts | description": {
     "message": "Захтеви блокирају први приказ странице, што може да одложи LCP. [Одлагање или уграђивање](https://web.dev/learn/performance/understanding-the-critical-path#render-blocking_resources/) може да премести ове мрежне захтеве са критичне путање."
   },
+  "panels/timeline/components/insights/RenderBlocking.ts | duration": {
+    "message": "Трајање"
+  },
+  "panels/timeline/components/insights/RenderBlocking.ts | renderBlockingRequest": {
+    "message": "Захтев"
+  },
+  "panels/timeline/components/insights/RenderBlocking.ts | title": {
+    "message": "Захтеви за блокирање рендеровања"
+  },
   "panels/timeline/components/insights/SidebarInsight.ts | estimatedSavings": {
     "message": "Процењена уштеда: {PH1}"
+  },
+  "panels/timeline/components/insights/SidebarInsight.ts | estimatedSavingsTimingAndBytes": {
+    "message": "Процењена уштеда: {PH1} и {PH2}"
+  },
+  "panels/timeline/components/insights/SidebarInsight.ts | viewDetails": {
+    "message": "Прикажите детаље за {PH1}"
+  },
+  "panels/timeline/components/insights/SlowCSSSelector.ts | description": {
+    "message": "Ако трошкови поновног израчунавања стила остану високи, оптимизација бирача може да их смањи. [Оптимизујте бираче](https://developer.chrome.com/docs/devtools/performance/selector-stats) са великим протеклим временом и великим % споре путањe. Једноставни бирачи, мање бирача, мањи, као и мање дубок DOM садржај; све то ће смањити трошкове подударања."
+  },
+  "panels/timeline/components/insights/SlowCSSSelector.ts | elapsed": {
+    "message": "Протекло време"
+  },
+  "panels/timeline/components/insights/SlowCSSSelector.ts | matchAttempts": {
+    "message": "Покушаји подударања"
+  },
+  "panels/timeline/components/insights/SlowCSSSelector.ts | matchCount": {
+    "message": "Број подударања"
+  },
+  "panels/timeline/components/insights/SlowCSSSelector.ts | title": {
+    "message": "Трошкови CSS бирача"
+  },
+  "panels/timeline/components/insights/SlowCSSSelector.ts | topSelectors": {
+    "message": "Најважнији бирачи"
+  },
+  "panels/timeline/components/insights/SlowCSSSelector.ts | total": {
+    "message": "Укупно"
   },
   "panels/timeline/components/insights/ThirdParties.ts | columnBlockingTime": {
     "message": "Време блокирања"
@@ -14088,13 +14538,28 @@
     "message": "Величина преноса"
   },
   "panels/timeline/components/insights/ThirdParties.ts | description": {
-    "message": "Кôд независног добављача може значајно да утиче на учинак учитавања. Ограничите број сувишних независних добављача услуге и пробајте да учитате кôд независног добављача када страница примарно заврши са учитавањем. [Сазнајте како да смањите утицај треће стране](https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/loading-third-party-javascript/)."
+    "message": "Кôд независног добављача може значајно да утиче на учинак учитавања. [Смањите и одложите учитавање кода треће стране](https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/loading-third-party-javascript/) да бисте утврдили приоритете садржаја странице."
   },
   "panels/timeline/components/insights/ThirdParties.ts | title": {
-    "message": "Смањите коришћење кода треће стране"
+    "message": "Треће стране"
   },
   "panels/timeline/components/insights/Viewport.ts | description": {
-    "message": "Мета-елеменат области приказа оптимизује апликацију за величине екрана мобилних телефона, али и [спречава кашњење од 300 милисекунди при уносу корисника](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/)."
+    "message": "Област приказа странице није оптимизована за мобилне уређаје, па интеракције додиром могу да буду [одложене за највише 300 ms](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/)."
+  },
+  "panels/timeline/components/insights/Viewport.ts | title": {
+    "message": "Област приказа није оптимизована за мобилне уређаје"
+  },
+  "panels/timeline/overlays/components/EntriesLinkOverlay.ts | diagram": {
+    "message": "Везе између уноса"
+  },
+  "panels/timeline/overlays/components/EntryLabelOverlay.ts | entryLabel": {
+    "message": "Ознака уноса"
+  },
+  "panels/timeline/overlays/components/EntryLabelOverlay.ts | inputTextPrompt": {
+    "message": "Унесите ознаку напомене"
+  },
+  "panels/timeline/overlays/components/TimeRangeOverlay.ts | timeRange": {
+    "message": "Временски опсег"
   },
   "panels/timeline/timeline-meta.ts | hideChromeFrameInLayersView": {
     "message": "Сакриј chrome оквир у приказу слојева"
@@ -14134,6 +14599,18 @@
   },
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "Заустави"
+  },
+  "panels/utils/utils.ts | requestContentHeadersOverridden": {
+    "message": "Садржај захтева и заглавља су замењени"
+  },
+  "panels/utils/utils.ts | requestContentOverridden": {
+    "message": "Садржај захтева је замењен"
+  },
+  "panels/utils/utils.ts | requestHeadersOverridden": {
+    "message": "Заглавља захтева су замењена"
+  },
+  "panels/utils/utils.ts | thirdPartyPhaseout": {
+    "message": "Колачићи за овај захтев су блокирани због Chrome ознака или конфигурације прегледача. Сазнајте више у окну Проблеми."
   },
   "panels/web_audio/AudioContextContentBuilder.ts | callbackBufferSize": {
     "message": "Величина бафера података за повратни позив"
@@ -14344,6 +14821,9 @@
   },
   "ui/components/issue_counter/IssueLinkIcon.ts | issueUnavailable": {
     "message": "Проблем је тренутно недоступан"
+  },
+  "ui/components/markdown_view/CodeBlock.ts | code": {
+    "message": "Кôд"
   },
   "ui/components/markdown_view/CodeBlock.ts | copied": {
     "message": "Копирано је у привремену меморију"
@@ -15116,8 +15596,14 @@
   "ui/legacy/components/perf_ui/FilmStripView.ts | screenshotForSSelectToView": {
     "message": "Снимак екрана за период од {PH1} – изаберите да бисте видели претходне захтеве."
   },
+  "ui/legacy/components/perf_ui/FlameChart.ts | deleteAnnotations": {
+    "message": "Избриши напомене"
+  },
   "ui/legacy/components/perf_ui/FlameChart.ts | enterTrackConfigurationMode": {
     "message": "Конфигуриши верзије…"
+  },
+  "ui/legacy/components/perf_ui/FlameChart.ts | eventSelectedFromGroup": {
+    "message": "Изабрали сте догађај {PH1} у групи {PH2}. Притисните Enter да бисте фокусирали овај догађај."
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | exitTrackConfigurationMode": {
     "message": "Заврши конфигурисање верзија"
@@ -15303,7 +15789,7 @@
     "message": "Учитава се…"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | prettyPrint": {
-    "message": "Лепо одштампај"
+    "message": "Лепо форматирај"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | source": {
     "message": "Извор"
@@ -15373,6 +15859,9 @@
   },
   "ui/legacy/components/utils/JSPresentationUtils.ts | showLess": {
     "message": "Прикажи мање"
+  },
+  "ui/legacy/components/utils/JSPresentationUtils.ts | showMoreFrames": {
+    "message": "Прикажи оквире на листи за игнорисање"
   },
   "ui/legacy/components/utils/JSPresentationUtils.ts | unknownSource": {
     "message": "непознато"

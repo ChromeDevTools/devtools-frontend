@@ -118,10 +118,7 @@ describe('Multi-Workers', function() {
 
           // This typically happens too quickly to cause DevTools to switch to the other thread, so
           // click on the other paused thread.
-          await Promise.all([
-            click(THREADS_SELECTOR),
-            waitFor(THREADS_SELECTOR + '[aria-expanded="true"]'),
-          ]);
+          await waitFor(THREADS_SELECTOR + '[aria-expanded="true"]');
           await click('.thread-item:has( .thread-item-paused-state:not(:empty)):not(.selected)');
         });
 

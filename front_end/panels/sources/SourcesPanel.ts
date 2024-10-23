@@ -206,6 +206,9 @@ export class SourcesPanel extends UI.Panel.Panel implements
   private tabbedLocationHeader?: Element|null;
   private extensionSidebarPanesContainer?: UI.View.ViewLocation;
   sidebarPaneView?: UI.Widget.VBox|UI.SplitWidget.SplitWidget;
+
+  #lastPausedTarget: WeakRef<SDK.Target.Target>|null = null;
+
   constructor() {
     super('sources');
 
@@ -483,6 +486,16 @@ export class SourcesPanel extends UI.Panel.Panel implements
     UI.Context.Context.instance().setFlavor(SDK.DebuggerModel.DebuggerPausedDetails, details);
     this.toggleDebuggerSidebarButton.setEnabled(false);
     this.revealDebuggerSidebar();
+    const pausedTarget = details.debuggerModel.target();
+    if (this.threadsSidebarPane && this.#lastPausedTarget?.deref() !== pausedTarget &&
+        pausedTarget !== SDK.TargetManager.TargetManager.instance().primaryPageTarget()) {
+      // If we pause in something other than the main frame (e.g. worker), we should expand the
+      // "Threads" list to make it more clear which target is paused. We do this only if the target of
+      // the previous pause is different from the new pause to prevent annoying the user by re-opening
+      // the "Threads" list while stepping or hitting the same breakpoint multiple points.
+      void this.sidebarPaneStack?.showView(this.threadsSidebarPane);
+    }
+
     window.focus();
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.bringToFront();
     const withOverlay = UI.Context.Context.instance().flavor(SDK.Target.Target)?.model(SDK.OverlayModel.OverlayModel) &&
@@ -498,6 +511,7 @@ export class SourcesPanel extends UI.Panel.Panel implements
           this.overlayLoggables.stepOverButton, `${VisualLogging.action('debugger.step-over')}`,
           this.overlayLoggables.debuggerPausedMessage);
     }
+    this.#lastPausedTarget = new WeakRef(details.debuggerModel.target());
   }
 
   private maybeLogOverlayAction(): void {

@@ -2741,6 +2741,7 @@ export const knownContextValues = new Set([
   'show-grid-areas',
   'show-grid-areas-true',
   'show-grid-line-labels',
+  'show-grid-line-labels-line-names',
   'show-grid-track-sizes',
   'show-grid-track-sizes-true',
   'show-html-comments',

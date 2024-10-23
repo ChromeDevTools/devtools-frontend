@@ -84,7 +84,10 @@ export const onLCP = (onReport, opts) => {
                 // Wrap in a setTimeout so the callback is run in a separate task
                 // to avoid extending the keyboard/click handler to reduce INP impact
                 // https://github.com/GoogleChrome/web-vitals/issues/383
-                addEventListener(type, () => whenIdle(stopListening), true);
+                addEventListener(type, () => whenIdle(stopListening), {
+                    once: true,
+                    capture: true,
+                });
             });
             onHidden(stopListening);
             // Only report after a bfcache restore if the `PerformanceObserver`

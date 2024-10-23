@@ -83,7 +83,6 @@ function launchChrome() {
     'MacAllowBackgroundingRenderProcesses',
     'MojoChannelAssociatedCrashesOnSendError',
     'MojoChannelAssociatedSendUsesRunOrPostTask',
-    'SimpleURLLoaderUseReadAndDiscardBodyOption',
   ];
   const launchArgs = [
     '--remote-allow-origins=*',

@@ -103,7 +103,9 @@ export class Runtime {
   }
 
   loadLegacyModule(modulePath: string): Promise<void> {
-    return import(`../../${modulePath}`);
+    const importPath =
+        `../../${modulePath}`;  // Extracted as a variable so esbuild doesn't attempt to bundle all the things.
+    return import(importPath);
   }
 }
 

@@ -480,7 +480,7 @@ export class ShortcutListItem {
     } else {
       const keys = shortcut.descriptors.flatMap(descriptor => descriptor.name.split(' + '));
       keys.forEach(key => {
-        shortcutElement.createChild('span', 'keybinds-key').textContent = key;
+        shortcutElement.createChild('div', 'keybinds-key').createChild('span').textContent = key;
       });
       if (index === 0) {
         this.element.appendChild(this.createEditButton());

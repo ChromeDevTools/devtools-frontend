@@ -6,18 +6,19 @@ import * as Common from '../../core/common/common.js';
 import type * as Host from '../../core/host/host.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as Bindings from '../../models/bindings/bindings.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import {
   createTarget,
-  describeWithEnvironment,
   getGetHostConfigStub,
 } from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
+import {loadBasicSourceMapExample} from '../../testing/SourceMapHelpers.js';
 import {createContentProviderUISourceCodes} from '../../testing/UISourceCodeHelpers.js';
 
-import {DrJonesFileAgent, ResponseType} from './freestyler.js';
+import {DrJonesFileAgent, formatSourceMapDetails, ResponseType} from './freestyler.js';
 
-describeWithEnvironment('DrJonesFileAgent', () => {
+describeWithMockConnection('DrJonesFileAgent', () => {
   function mockHostConfig(modelId?: string, temperature?: number) {
     getGetHostConfigStub({
       devToolsAiAssistanceFileAgentDogfood: {
@@ -35,6 +36,18 @@ describeWithEnvironment('DrJonesFileAgent', () => {
       registerClientEvent: () => Promise.resolve({}),
     };
   }
+
+  beforeEach(() => {
+    const workspace = Workspace.Workspace.WorkspaceImpl.instance();
+    const targetManager = SDK.TargetManager.TargetManager.instance();
+    const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
+    const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance({
+      forceNew: true,
+      resourceMapping,
+      targetManager,
+    });
+    Bindings.IgnoreListManager.IgnoreListManager.instance({forceNew: true, debuggerWorkspaceBinding});
+  });
 
   describe('buildRequest', () => {
     beforeEach(() => {
@@ -119,7 +132,8 @@ describeWithEnvironment('DrJonesFileAgent', () => {
       );
     });
   });
-  describeWithMockConnection('run', () => {
+
+  describe('run', () => {
     it('generates an answer', async () => {
       async function* generateAnswer() {
         yield {
@@ -136,8 +150,6 @@ describeWithEnvironment('DrJonesFileAgent', () => {
       });
 
       const url = 'http://example.com/script.js' as Platform.DevToolsPath.UrlString;
-      const target = createTarget({type: SDK.Target.Type.TAB});
-
       const {project} = createContentProviderUISourceCodes({
         items: [
           {
@@ -146,8 +158,7 @@ describeWithEnvironment('DrJonesFileAgent', () => {
             resourceType: Common.ResourceType.resourceTypes.Script,
           },
         ],
-        projectType: Workspace.Workspace.projectTypes.Network,
-        target,
+        target: createTarget(),
       });
 
       const uiSourceCode = project.uiSourceCodeForURL(url);
@@ -161,16 +172,16 @@ describeWithEnvironment('DrJonesFileAgent', () => {
             {
               title: 'Selected file',
               text: `File Name: script.js
-URL: http://example.com/script.js
-File Content:
-`,
+URL: http://example.com/script.js\n
+File Content:\n\`\`\`
+\`\`\``,
             },
           ],
         },
         {
           type: ResponseType.QUERYING,
           query:
-              '# Selected file\nFile Name: script.js\nURL: http://example.com/script.js\nFile Content:\n\n\n# User request\n\ntest',
+              '# Selected file\nFile Name: script.js\nURL: http://example.com/script.js\n\nFile Content:\n\`\`\`\n\`\`\`\n\n# User request\n\ntest',
         },
         {
           type: ResponseType.ANSWER,
@@ -184,14 +195,30 @@ File Content:
         {
           entity: 1,
           text: `# Selected file\nFile Name: script.js
-URL: http://example.com/script.js
-File Content:\n\n\n# User request\n\ntest`,
+URL: http://example.com/script.js\n
+File Content:\n\`\`\`\n\`\`\`\n\n# User request\n\ntest`,
         },
         {
           entity: 2,
           text: 'This is the answer',
         },
       ]);
+    });
+  });
+
+  describe('formatSourceMapDetails', () => {
+    it('returns source map', async () => {
+      const target = createTarget();
+      const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
+      const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
+      assert.exists(debuggerModel);
+
+      const script = (await loadBasicSourceMapExample(target)).script;
+      const uiSourceCode = debuggerWorkspaceBinding.uiSourceCodeForScript(script);
+      assert.exists(uiSourceCode);
+
+      const response = formatSourceMapDetails(uiSourceCode, debuggerWorkspaceBinding);
+      assert.strictEqual(response, 'Source map: file://gen.js.map');
     });
   });
 });

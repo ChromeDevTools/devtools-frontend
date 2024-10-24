@@ -37,6 +37,7 @@ devtools_module("freestyler") {
     "../../core/host:bundle",
     "../../core/i18n:bundle",
     "../../core/root:bundle",
+    "../../models/bindings:bundle",
     "../../models/logs:bundle",
     "../../models/trace:bundle",
     "../../models/workspace:bundle",
@@ -96,6 +97,7 @@ ts_library("unittests") {
     "../../core/platform:bundle",
     "../../core/sdk:bundle",
     "../../generated:protocol",
+    "../../models/bindings:bundle",
     "../../models/trace:bundle",
     "../../testing",
   ]

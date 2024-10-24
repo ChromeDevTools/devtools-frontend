@@ -90,11 +90,16 @@ const UIStrings = {
   /**
    *@description Text describing the 'AI assistance' feature
    */
-  helpUnderstandStylingAndNetworkRequest: 'Get help with understanding CSS styles and network requests',
+  helpUnderstandStylingAndNetworkRequest: 'Get help with understanding CSS styles, and network requests',
   /**
    *@description Text describing the 'AI assistance' feature
    */
   helpUnderstandStylingNetworkAndFile: 'Get help with understanding CSS styles, network requests, and files',
+  /**
+   *@description Text describing the 'AI assistance' feature
+   */
+  helpUnderstandStylingNetworkPerformanceAndFile:
+      'Get help with understanding CSS styles, network requests, performance, and files',
   /**
    *@description Text which is a hyperlink to more documentation
    */
@@ -111,6 +116,11 @@ const UIStrings = {
    *@description Description of the AI assistance feature
    */
   explainStylingNetworkAndFile: 'Understand CSS styles, network activity, and file origins with AI-powered insights',
+  /**
+   *@description Description of the AI assistance feature
+   */
+  explainStylingNetworkPerformanceAndFile:
+      'Understand CSS styles, network activity, performance bottlenecks, and file origins with AI-powered insights',
   /**
    *@description Description of the AI assistance feature
    */
@@ -205,10 +215,13 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
 
   #getAiAssistanceSettingDescription(): Platform.UIString.LocalizedString {
     const config = Common.Settings.Settings.instance().getHostConfig();
+    if (config.devToolsAiAssistancePerformanceAgentDogfood?.enabled) {
+      return i18nString(UIStrings.helpUnderstandStylingNetworkPerformanceAndFile);
+    }
+    if (config.devToolsAiAssistanceFileAgentDogfood?.enabled) {
+      return i18nString(UIStrings.helpUnderstandStylingNetworkAndFile);
+    }
     if (config.devToolsExplainThisResourceDogfood?.enabled) {
-      if (config.devToolsAiAssistanceFileAgentDogfood?.enabled) {
-        return i18nString(UIStrings.helpUnderstandStylingNetworkAndFile);
-      }
       return i18nString(UIStrings.helpUnderstandStylingAndNetworkRequest);
     }
     return i18nString(UIStrings.helpUnderstandStyling);
@@ -216,10 +229,13 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
 
   #getAiAssistanceSettingInfo(): Platform.UIString.LocalizedString {
     const config = Common.Settings.Settings.instance().getHostConfig();
+    if (config.devToolsAiAssistancePerformanceAgentDogfood?.enabled) {
+      return i18nString(UIStrings.explainStylingNetworkPerformanceAndFile);
+    }
+    if (config.devToolsAiAssistanceFileAgentDogfood?.enabled) {
+      return i18nString(UIStrings.explainStylingNetworkAndFile);
+    }
     if (config.devToolsExplainThisResourceDogfood?.enabled) {
-      if (config.devToolsAiAssistanceFileAgentDogfood?.enabled) {
-        return i18nString(UIStrings.explainStylingNetworkAndFile);
-      }
       return i18nString(UIStrings.explainStylingAndNetworkRequest);
     }
     return i18nString(UIStrings.explainStyling);

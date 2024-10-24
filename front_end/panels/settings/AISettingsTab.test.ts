@@ -92,7 +92,7 @@ describeWithEnvironment('AISettingsTab', () => {
     assert.isNotNull(view.shadowRoot);
 
     const settingCardDesc = view.shadowRoot.querySelectorAll('.setting-description');
-    assert.strictEqual(settingCardDesc[1].textContent, 'Get help with understanding CSS styles and network requests');
+    assert.strictEqual(settingCardDesc[1].textContent, 'Get help with understanding CSS styles, and network requests');
   });
 
   it('can turn feature on, which automatically expands it', async () => {

@@ -22,8 +22,16 @@ export const enum IssueCode {
   INVALID_REGISTER_OS_SOURCE_HEADER = 'AttributionReportingIssue::InvalidRegisterOsSourceHeader',
   INVALID_REGISTER_OS_TRIGGER_HEADER = 'AttributionReportingIssue::InvalidRegisterOsTriggerHeader',
   WEB_AND_OS_HEADERS = 'AttributionReportingIssue::WebAndOsHeaders',
+  NO_WEB_OR_OS_SUPPORT = 'AttributionReportingIssue::NoWebOrOsSupport',
   NAVIGATION_REGISTRATION_WITHOUT_TRANSIENT_USER_ACTIVATION =
       'AttributionReportingIssue::NavigationRegistrationWithoutTransientUserActivation',
+  INVALID_INFO_HEADER = 'AttributionReportingIssue::InvalidInfoHeader',
+  NO_REGISTER_SOURCE_HEADER = 'AttributionReportingIssue::NoRegisterSourceHeader',
+  NO_REGISTER_TRIGGER_HEADER = 'AttributionReportingIssue::NoRegisterTriggerHeader',
+  NO_REGISTER_OS_SOURCE_HEADER = 'AttributionReportingIssue::NoRegisterOsSourceHeader',
+  NO_REGISTER_OS_TRIGGER_HEADER = 'AttributionReportingIssue::NoRegisterOsTriggerHeader',
+  NAVIGATION_REGISTRATION_UNIQUE_SCOPE_ALREADY_SET =
+      'AttributionReportingIssue::NavigationRegistrationUniqueScopeAlreadySet',
   UNKNOWN = 'AttributionReportingIssue::Unknown',
 }
 
@@ -55,8 +63,22 @@ function getIssueCode(details: Protocol.Audits.AttributionReportingIssueDetails)
       return IssueCode.INVALID_REGISTER_OS_TRIGGER_HEADER;
     case Protocol.Audits.AttributionReportingIssueType.WebAndOsHeaders:
       return IssueCode.WEB_AND_OS_HEADERS;
+    case Protocol.Audits.AttributionReportingIssueType.NoWebOrOsSupport:
+      return IssueCode.NO_WEB_OR_OS_SUPPORT;
     case Protocol.Audits.AttributionReportingIssueType.NavigationRegistrationWithoutTransientUserActivation:
       return IssueCode.NAVIGATION_REGISTRATION_WITHOUT_TRANSIENT_USER_ACTIVATION;
+    case Protocol.Audits.AttributionReportingIssueType.InvalidInfoHeader:
+      return IssueCode.INVALID_INFO_HEADER;
+    case Protocol.Audits.AttributionReportingIssueType.NoRegisterSourceHeader:
+      return IssueCode.NO_REGISTER_SOURCE_HEADER;
+    case Protocol.Audits.AttributionReportingIssueType.NoRegisterTriggerHeader:
+      return IssueCode.NO_REGISTER_TRIGGER_HEADER;
+    case Protocol.Audits.AttributionReportingIssueType.NoRegisterOsSourceHeader:
+      return IssueCode.NO_REGISTER_OS_SOURCE_HEADER;
+    case Protocol.Audits.AttributionReportingIssueType.NoRegisterOsTriggerHeader:
+      return IssueCode.NO_REGISTER_OS_TRIGGER_HEADER;
+    case Protocol.Audits.AttributionReportingIssueType.NavigationRegistrationUniqueScopeAlreadySet:
+      return IssueCode.NAVIGATION_REGISTRATION_UNIQUE_SCOPE_ALREADY_SET;
     default:
       return IssueCode.UNKNOWN;
   }
@@ -166,6 +188,41 @@ export class AttributionReportingIssue extends Issue<IssueCode> {
           file: 'arNavigationRegistrationWithoutTransientUserActivation.md',
           links: [],
         };
+      case IssueCode.NO_WEB_OR_OS_SUPPORT:
+        return {
+          file: 'arNoWebOrOsSupport.md',
+          links: [],
+        };
+      case IssueCode.INVALID_INFO_HEADER:
+        return {
+          file: 'arInvalidInfoHeader.md',
+          links: [],
+        };
+      case IssueCode.NO_REGISTER_SOURCE_HEADER:
+        return {
+          file: 'arNoRegisterSourceHeader.md',
+          links: [],
+        };
+      case IssueCode.NO_REGISTER_TRIGGER_HEADER:
+        return {
+          file: 'arNoRegisterTriggerHeader.md',
+          links: [],
+        };
+      case IssueCode.NO_REGISTER_OS_SOURCE_HEADER:
+        return {
+          file: 'arNoRegisterOsSourceHeader.md',
+          links: [],
+        };
+      case IssueCode.NO_REGISTER_OS_TRIGGER_HEADER:
+        return {
+          file: 'arNoRegisterOsTriggerHeader.md',
+          links: [],
+        };
+      case IssueCode.NAVIGATION_REGISTRATION_UNIQUE_SCOPE_ALREADY_SET:
+        return {
+          file: 'arNavigationRegistrationUniqueScopeAlreadySet.md',
+          links: [],
+        };
       case IssueCode.UNKNOWN:
         return null;
     }
@@ -176,24 +233,7 @@ export class AttributionReportingIssue extends Issue<IssueCode> {
   }
 
   getKind(): IssueKind {
-    switch (this.code()) {
-      case IssueCode.PERMISSION_POLICY_DISABLED:
-      case IssueCode.UNTRUSTWORTHY_REPORTING_ORIGIN:
-      case IssueCode.INSECURE_CONTEXT:
-      case IssueCode.INVALID_REGISTER_SOURCE_HEADER:
-      case IssueCode.INVALID_REGISTER_TRIGGER_HEADER:
-      case IssueCode.INVALID_REGISTER_OS_SOURCE_HEADER:
-      case IssueCode.INVALID_REGISTER_OS_TRIGGER_HEADER:
-      case IssueCode.SOURCE_AND_TRIGGER_HEADERS:
-      case IssueCode.WEB_AND_OS_HEADERS:
-      case IssueCode.SOURCE_IGNORED:
-      case IssueCode.TRIGGER_IGNORED:
-      case IssueCode.OS_SOURCE_IGNORED:
-      case IssueCode.OS_TRIGGER_IGNORED:
-      case IssueCode.NAVIGATION_REGISTRATION_WITHOUT_TRANSIENT_USER_ACTIVATION:
-      case IssueCode.UNKNOWN:
-        return IssueKind.PAGE_ERROR;
-    }
+    return IssueKind.PAGE_ERROR;
   }
 
   static fromInspectorIssue(issuesModel: SDK.IssuesModel.IssuesModel, inspectorIssue: Protocol.Audits.InspectorIssue):

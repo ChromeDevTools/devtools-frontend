@@ -17,7 +17,8 @@ import {
   waitForNone,
   waitForVisible,
 } from '../../shared/helper.js';
-import {reloadDevTools} from '../helpers/cross-tool-helper.js';
+import {getCurrentConsoleMessages} from '../helpers/console-helpers.js';
+import {reloadDevTools, tabExistsInDrawer} from '../helpers/cross-tool-helper.js';
 
 const READY_LOCAL_METRIC_SELECTOR = '#local-value .metric-value:not(.waiting)';
 const READY_FIELD_METRIC_SELECTOR = '#field-value .metric-value:not(.waiting)';
@@ -411,6 +412,37 @@ describe('The Performance panel landing page', () => {
           'keyboard',
         ]);
       }
+    } finally {
+      await targetSession.detach();
+    }
+  });
+
+  it('logs extra interaction details to console', async () => {
+    const {target, frontend} = await getBrowserAndPages();
+
+    await target.bringToFront();
+
+    const targetSession = await target.createCDPSession();
+    try {
+      await goToResource('performance/interaction-tester.html');
+
+      await target.click('#long-click');
+
+      await target.evaluate(() => new Promise(r => requestAnimationFrame(r)));
+      await target.evaluate(() => new Promise(r => requestAnimationFrame(r)));
+
+      await frontend.bringToFront();
+
+      const interaction = await waitFor(INTERACTION_SELECTOR);
+      const interactionSummary = await interaction.$('summary');
+      await interactionSummary!.click();
+
+      const logToConsole = await interaction.$('.log-extra-details-button');
+      await logToConsole!.click();
+
+      await tabExistsInDrawer('#tab-console-view');
+      const messages = await getCurrentConsoleMessages();
+      assert.deepStrictEqual(messages, ['Array(3)']);
     } finally {
       await targetSession.detach();
     }

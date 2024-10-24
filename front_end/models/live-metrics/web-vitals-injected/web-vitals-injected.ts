@@ -12,6 +12,22 @@ const {onLCP, onCLS, onINP} = WebVitals.Attribution;
 const {onEachInteraction} = OnEachInteraction;
 const {onEachLayoutShift} = OnEachLayoutShift;
 
+declare global {
+  interface PerformanceScriptTiming extends PerformanceEntry {
+    invoker?: string;
+    invokerType?: string;
+    sourceFunctionName?: string;
+    sourceURL?: string;
+    sourceCharPosition?: number;
+  }
+
+  interface PerformanceLongAnimationFrameTiming extends PerformanceEntry {
+    renderStart: DOMHighResTimeStamp;
+    duration: DOMHighResTimeStamp;
+    scripts: PerformanceScriptTiming[];
+  }
+}
+
 declare const window: Window&{
   getNodeForIndex: (index: number) => Node | undefined,
   [Spec.INTERNAL_KILL_SWITCH]: () => void,
@@ -172,6 +188,15 @@ function initialize(): void {
       nextPaintTime: interaction.attribution.nextPaintTime,
       interactionType: interaction.attribution.interactionType,
       eventName: interaction.entries[0].name,
+      scripts: interaction.attribution.longAnimationFrameEntries.flatMap(loaf => loaf.scripts)
+                   .map(s => ({
+                          Duration: s.duration,
+                          'Invoker Type': s.invokerType || null,
+                          Invoker: s.invoker || null,
+                          Function: s.sourceFunctionName || null,
+                          Source: s.sourceURL || null,
+                          'Char position': s.sourceCharPosition || null,
+                        })),
     };
     const node = interaction.attribution.interactionTargetElement;
     if (node) {

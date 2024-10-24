@@ -289,6 +289,18 @@ const UIStrings = {
    * @description Tooltip text for a button that reveals the cluster of layout shift events that affected the page content the most. A layout shift is an event that shifts content in the layout of the page causing a jarring experience for the user. A cluster is a group of layout shift events that occur in quick succession.
    */
   showClsCluster: 'Go to worst layout shift cluster.',
+  /**
+   * @description Column header for table cell values representing the phase/component/stage/section of a larger duration.
+   */
+  phase: 'Phase',
+  /**
+   * @description Column header for table cell values representing a phase duration (in milliseconds) that was measured in the developers local environment.
+   */
+  duration: 'Local duration (ms)',
+  /**
+   * @description Tooltip text for a button that will open the Chrome DevTools console to and log additional details about a user interaction.
+   */
+  logToConsole: 'Log additional interaction data to the console',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/LiveMetricsView.ts', UIStrings);
@@ -952,6 +964,13 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
     });
   }
 
+  async #logExtraInteractionDetails(interaction: LiveMetrics.Interaction): Promise<void> {
+    const success = await LiveMetrics.LiveMetrics.instance().logInteractionScripts(interaction);
+    if (success) {
+      await Common.Console.Console.instance().showPromise();
+    }
+  }
+
   #renderInteractionsLog(): LitHtml.LitTemplate {
     if (!this.#interactions.size) {
       return LitHtml.nothing;
@@ -998,8 +1017,16 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
                 </summary>
                 <div class="phase-table" role="table">
                   <div class="phase-table-row phase-table-header-row" role="row">
-                    <div role="columnheader">Phase</div>
-                    <div role="columnheader">Local time (ms)</div>
+                    <div role="columnheader">${i18nString(UIStrings.phase)}</div>
+                    <div role="columnheader">
+                      ${interaction.scripts.length ? html`
+                        <button
+                          class="log-extra-details-button"
+                          title=${i18nString(UIStrings.logToConsole)}
+                          @click=${() => this.#logExtraInteractionDetails(interaction)}
+                        >${i18nString(UIStrings.duration)}</button>
+                      ` : i18nString(UIStrings.duration)}
+                    </div>
                   </div>
                   <div class="phase-table-row" role="row">
                     <div role="cell">${i18nString(UIStrings.inputDelay)}</div>

@@ -213,6 +213,7 @@ describeWithMockConnection('LiveMetricsView', () => {
           interactionId: 'interaction-1-1',
           eventNames: ['pointerup'],
           phases: {inputDelay: 100, processingDuration: 300, presentationDelay: 100},
+          scripts: [],
         },
         {
           duration: 30,
@@ -222,6 +223,7 @@ describeWithMockConnection('LiveMetricsView', () => {
           interactionId: 'interaction-1-2',
           eventNames: ['keyup'],
           phases: {inputDelay: 10, processingDuration: 10, presentationDelay: 10},
+          scripts: [],
         },
       ]),
       layoutShifts: [],
@@ -277,6 +279,61 @@ describeWithMockConnection('LiveMetricsView', () => {
     ]);
   });
 
+  it('should show button to log script details to console', async () => {
+    const view = renderLiveMetrics();
+    LiveMetrics.LiveMetrics.instance().setStatusForTesting({
+      inp: {
+        value: 500,
+        phases: {
+          inputDelay: 100,
+          processingDuration: 300,
+          presentationDelay: 100,
+        },
+        interactionId: 'interaction-1-1',
+      },
+      interactions: createInteractionsMap([
+        {
+          duration: 500,
+          startTime: 0,
+          nextPaintTime: 500,
+          interactionType: 'pointer',
+          interactionId: 'interaction-1-1',
+          eventNames: ['pointerup'],
+          phases: {inputDelay: 100, processingDuration: 300, presentationDelay: 100},
+          scripts: [{
+            Duration: 500,
+            Invoker: 'invoker',
+            'Invoker Type': 'event-listener',
+            Function: 'hi',
+            Source: 'https://example.com/script.js',
+            'Char position': 10,
+          }],
+        },
+        {
+          duration: 30,
+          startTime: 0,
+          nextPaintTime: 30,
+          interactionType: 'keyboard',
+          interactionId: 'interaction-1-2',
+          eventNames: ['keyup'],
+          phases: {inputDelay: 10, processingDuration: 10, presentationDelay: 10},
+          scripts: [],
+        },
+      ]),
+      layoutShifts: [],
+    });
+    await coordinator.done();
+
+    const interactions = getInteractions(view);
+    assert.lengthOf(interactions, 2);
+
+    assert(
+        interactions[0].querySelector('.log-extra-details-button'), 'First interaction should have log details button');
+    assert(
+        !interactions[1].querySelector('.log-extra-details-button'),
+        'Second interaction should not have log details button');
+  });
+
   it('should show help icon for interaction that is longer than INP', async () => {
     const view = renderLiveMetrics();
     LiveMetrics.LiveMetrics.instance().setStatusForTesting({
@@ -298,6 +355,7 @@ describeWithMockConnection('LiveMetricsView', () => {
           interactionId: 'interaction-1-1',
           eventNames: ['keyup'],
           phases: {inputDelay: 10, processingDuration: 30, presentationDelay: 10},
+          scripts: [],
         },
         {
           duration: 500,
@@ -307,6 +365,7 @@ describeWithMockConnection('LiveMetricsView', () => {
           interactionId: 'interaction-1-2',
           eventNames: ['pointerup'],
           phases: {inputDelay: 100, processingDuration: 300, presentationDelay: 100},
+          scripts: [],
         },
       ]),
       layoutShifts: [],
@@ -428,6 +487,7 @@ describeWithMockConnection('LiveMetricsView', () => {
           interactionId: 'interaction-1-1',
           eventNames: ['pointerup'],
           phases: {inputDelay: 100, processingDuration: 300, presentationDelay: 100},
+          scripts: [],
         },
         {
           duration: 30,
@@ -437,6 +497,7 @@ describeWithMockConnection('LiveMetricsView', () => {
           interactionId: 'interaction-1-2',
           eventNames: ['keyup'],
           phases: {inputDelay: 10, processingDuration: 10, presentationDelay: 10},
+          scripts: [],
         },
       ]),
       layoutShifts: [],
@@ -481,6 +542,7 @@ describeWithMockConnection('LiveMetricsView', () => {
           interactionId: 'interaction-1-2',
           eventNames: ['keyup'],
           phases: {inputDelay: 10, processingDuration: 10, presentationDelay: 10},
+          scripts: [],
         },
       ]),
       layoutShifts: [],
@@ -517,6 +579,7 @@ describeWithMockConnection('LiveMetricsView', () => {
           interactionId: 'interaction-1-1',
           eventNames: ['keyup'],
           phases: {inputDelay: 10, processingDuration: 30, presentationDelay: 10},
+          scripts: [],
         },
         {
           duration: 500,
@@ -526,6 +589,7 @@ describeWithMockConnection('LiveMetricsView', () => {
           interactionId: 'interaction-1-2',
           eventNames: ['pointerup'],
           phases: {inputDelay: 100, processingDuration: 300, presentationDelay: 100},
+          scripts: [],
         },
       ]),
       layoutShifts: [
@@ -572,6 +636,7 @@ describeWithMockConnection('LiveMetricsView', () => {
           interactionId: 'interaction-1-1',
           eventNames: ['keyup'],
           phases: {inputDelay: 10, processingDuration: 30, presentationDelay: 10},
+          scripts: [],
         },
         {
           duration: 500,
@@ -581,6 +646,7 @@ describeWithMockConnection('LiveMetricsView', () => {
           interactionId: 'interaction-1-2',
           eventNames: ['pointerup'],
           phases: {inputDelay: 100, processingDuration: 300, presentationDelay: 100},
+          scripts: [],
         },
       ]),
       layoutShifts: [

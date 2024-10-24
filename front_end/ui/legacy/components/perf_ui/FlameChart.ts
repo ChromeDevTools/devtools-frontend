@@ -45,6 +45,13 @@ import flameChartStyles from './flameChart.css.legacy.js';
 import {DEFAULT_FONT_SIZE, getFontFamilyForCanvas} from './Font.js';
 import {type Calculator, TimelineGrid} from './TimelineGrid.js';
 
+/**
+ * Set as the `details` value on the fake context menu event we dispatch to
+ * trigger a context menu on an event on a keyboard space key press.
+ {@see onContextMenu} for more details and explanation.
+ */
+const KEYBOARD_FAKED_CONTEXT_MENU_DETAIL = -1;
+
 const UIStrings = {
   /**
    *@description Aria alert used to notify the user when an event has been selected because they tabbed into a group.
@@ -1364,19 +1371,32 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       this.#buildEnterEditModeContextMenu(event);
     }
 
-    if (this.highlightedEntryIndex === -1) {
-      // If the user has not selected an individual entry, we do not show any
-      // context menu, so finish here.
+    // The user can create context menus in two ways:
+    // 1. they right click and a contextMenu event is dispatched from the
+    //    browser. This event will be trusted.
+    // 2. they press "space" on the keyboard and we dispatch the event
+    //    ourselves from {@see triggerContextMenuFromKeyPress}.
+    // To enable us to differentiate, we set the detail property
+    // [https://developer.mozilla.org/en-US/docs/Web/API/UIEvent/detail] to a
+    // specific number (-1) for our faked context menu event. We can do this
+    // because the detail property is never natively set to a negative number.
+    // The reason this is important is because the highlightedEntryIndex is
+    // only updated when the mouse moves, so if the user is navigating +
+    // triggering menus via the keyboard, it will not be updated, and we should
+    // use the selectedEntryIndex.
+    const isFakedFromKeyboardPress = event.detail === KEYBOARD_FAKED_CONTEXT_MENU_DETAIL;
+    const entryIndexToUse = isFakedFromKeyboardPress ? this.selectedEntryIndex : this.highlightedEntryIndex;
+
+    if (entryIndexToUse === -1) {
       return;
     }
 
-    // Update the selected index to match the highlighted index, which
-    // represents the entry under the cursor where the user has right clicked
-    // to trigger a context menu.
-    this.dispatchEventToListeners(Events.ENTRY_INVOKED, this.highlightedEntryIndex);
-    this.setSelectedEntry(this.highlightedEntryIndex);
-    // Update the selected group as well.
-    this.#selectGroup(groupIndex);
+    if (!isFakedFromKeyboardPress) {
+      this.dispatchEventToListeners(Events.ENTRY_INVOKED, entryIndexToUse);
+      this.setSelectedEntry(entryIndexToUse);
+      // Update the selected group as well.
+      this.#selectGroup(groupIndex);
+    }
 
     // Build the context menu for right clicking individual entries.
     // The context menu only applies if the user is hovering over an individual
@@ -1457,7 +1477,9 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     const x = this.chartViewport.timeToPosition(startTime) + boundingRect.left;
     const y = this.levelToOffset(level) - this.getScrollOffset() + boundingRect.top;
 
-    const event = new MouseEvent('contextmenu', {clientX: x, clientY: y});
+    // Set the `detail` key so in the context menu handler we can differentiate
+    // between a keyboard invoked context menu and a mouse invoked one.
+    const event = new MouseEvent('contextmenu', {clientX: x, clientY: y, detail: KEYBOARD_FAKED_CONTEXT_MENU_DETAIL});
     this.canvas.dispatchEvent(event);
   }
 
@@ -1467,8 +1489,8 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     }
 
     if (e.key === ' ' && this.selectedEntryIndex > -1) {
-      this.#triggerContextMenuFromKeyPress();
       // If the user has an event selected, and there is a selected entry, then we open the context menu at this event.
+      this.#triggerContextMenuFromKeyPress();
     }
 
     let eventHandled = this.handleSelectionNavigation(e);

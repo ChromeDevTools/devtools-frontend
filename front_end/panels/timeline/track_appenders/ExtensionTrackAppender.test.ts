@@ -147,8 +147,8 @@ describeWithEnvironment('ExtensionTrackAppender', function() {
       styleElement.id = 'fake-perf-panel-colors';
       styleElement.textContent = `
         :root {
-          --ref-palette-primary70: rgb(4 4 4);
-          --ref-palette-tertiary70: rgb(10 10 10);
+          --ref-palette-blue70: rgb(4 4 4);
+          --ref-palette-green70: rgb(10 10 10);
         }
       `;
       document.documentElement.appendChild(styleElement);
@@ -168,12 +168,12 @@ describeWithEnvironment('ExtensionTrackAppender', function() {
       for (const event of allExtensionTrackEntries) {
         assert.strictEqual(extensionTrackAppenders[0].titleForEvent(event), event.name);
         if (event.args.color === 'tertiary') {
-          // "tertiary" color category is mapped to --ref-palette-tertiary70
+          // "tertiary" color category is mapped to --ref-palette-green70
           // which is faked out to 10, 10, 10
           assert.strictEqual(extensionTrackAppenders[0].colorForEvent(event), 'rgb(10 10 10)');
         } else {
           // Unknown colors are mapped to "primary" by default, and
-          // "primary" color category is mapped to --ref-palette-primary70
+          // "primary" color category is mapped to --ref-palette-blue70
           // which is faked out to 4, 4, 4
           assert.strictEqual(extensionTrackAppenders[0].colorForEvent(event), 'rgb(4 4 4)');
         }
@@ -197,7 +197,7 @@ describeWithEnvironment('ExtensionTrackAppender', function() {
         },
         cat: 'devtools.extension',
       } as unknown as Trace.Types.Events.Event;
-      // "primary" color category is mapped to --ref-palette-primary70
+      // "primary" color category is mapped to --ref-palette-blue70
       // which is faked out to 4, 4, 4
       assert.strictEqual(extensionTrackAppenders[0].colorForEvent(mockExtensionEntryNoColor), 'rgb(4 4 4)');
       assert.strictEqual(extensionTrackAppenders[0].colorForEvent(mockExtensionEntryUnknownColor), 'rgb(4 4 4)');

@@ -956,7 +956,7 @@ export class SourcesPanel extends UI.Panel.Panel implements
 
     if (UI.ActionRegistry.ActionRegistry.instance().hasAction('drjones.sources-panel-context')) {
       const editorElement = this.element.querySelector('devtools-text-editor');
-      if (!eventTarget.isSelfOrDescendant(editorElement)) {
+      if (!eventTarget.isSelfOrDescendant(editorElement) && uiSourceCode.contentType().isTextType()) {
         UI.Context.Context.instance().setFlavor(Workspace.UISourceCode.UISourceCode, uiSourceCode);
         contextMenu.headerSection().appendAction(
             'drjones.sources-panel-context',

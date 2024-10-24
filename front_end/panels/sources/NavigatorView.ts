@@ -1410,6 +1410,10 @@ export class NavigatorSourceTreeElement extends UI.TreeOutline.TreeElement {
     if (!UI.ActionRegistry.ActionRegistry.instance().hasAction('drjones.sources-floating-button')) {
       return;
     }
+    if (!this.uiSourceCode.contentType().isTextType() ||
+        Snippets.ScriptSnippetFileSystem.isSnippetsUISourceCode(this.uiSourceCode)) {
+      return;
+    }
     const action = UI.ActionRegistry.ActionRegistry.instance().getAction('drjones.sources-floating-button');
     if (!this.aiButtonContainer) {
       this.aiButtonContainer = this.listItemElement.createChild('span', 'ai-button-container');

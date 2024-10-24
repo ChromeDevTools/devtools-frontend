@@ -80,12 +80,12 @@ export class DrJonesPerformanceAgent extends AiAgent<Trace.Helpers.TreeHelpers.A
   }
   get options(): AidaRequestOptions {
     const config = Common.Settings.Settings.instance().getHostConfig();
-    const temperature = AiAgent.validTemperature(config.devToolsAiAssistancePerformanceAgentDogfood?.temperature);
+    const temperature = config.devToolsAiAssistancePerformanceAgentDogfood?.temperature;
     const modelId = config.devToolsAiAssistancePerformanceAgentDogfood?.modelId;
 
     return {
       temperature,
-      model_id: modelId,
+      modelId,
     };
   }
 

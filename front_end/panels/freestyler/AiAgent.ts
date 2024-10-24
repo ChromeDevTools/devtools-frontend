@@ -98,8 +98,7 @@ export interface HistoryChunk {
 
 export interface AidaRequestOptions {
   temperature?: number;
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  model_id?: string;
+  modelId?: string;
 }
 
 interface AgentOptions {
@@ -205,7 +204,11 @@ export abstract class AiAgent<T> {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       chat_history: this.#history.size ? this.#historyEntry : undefined,
       client: Host.AidaClient.CLIENT_NAME,
-      options: this.options,
+      options: {
+        temperature: AiAgent.validTemperature(this.options.temperature),
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        model_id: this.options.modelId,
+      },
       metadata: {
         disable_user_content_logging: !(this.#serverSideLoggingEnabled ?? false),
         string_session_id: this.#sessionId,

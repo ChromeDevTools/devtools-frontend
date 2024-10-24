@@ -24,7 +24,7 @@ class AiAgentMock extends AiAgent<unknown> {
 
   options: Freestyler.AidaRequestOptions = {
     temperature: 1,
-    model_id: 'test model',
+    modelId: 'test model',
   };
 }
 
@@ -110,7 +110,7 @@ describeWithEnvironment('AiAgent', () => {
         aidaClient: {} as Host.AidaClient.AidaClient,
       });
       const request = agent.buildRequest({input: 'test input'});
-      assert.strictEqual(request.metadata?.string_session_id, 'session_id');
+      assert.strictEqual(request.metadata?.string_session_id, 'sessionId');
     });
 
     it('builds a request with preamble', async () => {

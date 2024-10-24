@@ -76,12 +76,12 @@ export class DrJonesFileAgent extends AiAgent<Workspace.UISourceCode.UISourceCod
   }
   get options(): AidaRequestOptions {
     const config = Common.Settings.Settings.instance().getHostConfig();
-    const temperature = AiAgent.validTemperature(config.devToolsAiAssistanceFileAgentDogfood?.temperature);
+    const temperature = config.devToolsAiAssistanceFileAgentDogfood?.temperature;
     const modelId = config.devToolsAiAssistanceFileAgentDogfood?.modelId;
 
     return {
       temperature,
-      model_id: modelId,
+      modelId,
     };
   }
 

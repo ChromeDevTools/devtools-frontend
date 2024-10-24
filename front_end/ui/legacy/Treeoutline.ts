@@ -349,9 +349,12 @@ export class TreeOutline extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
 
       // Usually, this.element is the tree container that scrolls. But sometimes
       // (i.e. in the Elements panel), its parent is.
-      let scrollParentElement: HTMLElement = this.element;
-      while (getComputedStyle(scrollParentElement).overflow === 'visible' && scrollParentElement.parentElement) {
-        scrollParentElement = scrollParentElement.parentElement;
+      let scrollParentElement: Element = this.element;
+      while (getComputedStyle(scrollParentElement).overflow === 'visible' &&
+             scrollParentElement.parentElementOrShadowHost()) {
+        const parent = scrollParentElement.parentElementOrShadowHost();
+        Platform.assertNotNullOrUndefined(parent);
+        scrollParentElement = parent;
       }
 
       const viewRect = scrollParentElement.getBoundingClientRect();

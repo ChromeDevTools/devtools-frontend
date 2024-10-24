@@ -906,7 +906,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     let mouseY = this.lastMouseOffsetY;
 
     // If the popover is being updated from a search, we calculate the coordinates manually
-    if (this.#searchResultEntryIndex !== -1) {
+    if (this.#searchResultEntryIndex !== null) {
       const coordinate = this.entryIndexToCoordinates(this.selectedEntryIndex);
       const {x: canvasViewportOffsetX, y: canvasViewportOffsetY} = this.canvas.getBoundingClientRect();
       mouseX = coordinate?.x ? coordinate.x - canvasViewportOffsetX : mouseX;
@@ -2236,7 +2236,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.updateElementPosition(this.highlightElement, this.highlightedEntryIndex);
     this.updateElementPosition(this.selectedElement, this.selectedEntryIndex);
 
-    if (this.#searchResultEntryIndex !== -1) {
+    if (this.#searchResultEntryIndex !== null) {
       this.showPopoverForSearchResult(this.#searchResultEntryIndex);
     }
     for (const element of this.#searchResultHighlightElements) {

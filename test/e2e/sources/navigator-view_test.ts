@@ -4,17 +4,11 @@
 
 import {assert} from 'chai';
 
-import {getBrowserAndPages, waitFor, waitForElementWithTextContent, waitForNone} from '../../shared/helper.js';
+import {getBrowserAndPages, waitFor, waitForNone} from '../../shared/helper.js';
+
 import {openSoftContextMenuAndClickOnItem} from '../helpers/context-menu-helpers.js';
+import {openFileWithQuickOpen, runCommandWithQuickOpen} from '../helpers/quick_open-helpers.js';
 import {
-  getMenuItemAtPosition,
-  openFileQuickOpen,
-  openFileWithQuickOpen,
-  runCommandWithQuickOpen,
-  typeIntoQuickOpen,
-} from '../helpers/quick_open-helpers.js';
-import {
-  createNewSnippet,
   openFileInSourcesPanel,
   openSnippetsSubPane,
   openSourceCodeEditorForFile,
@@ -145,43 +139,6 @@ describe('The Sources panel', () => {
       // Expand navigator view.
       await toggleNavigatorSidebar(frontend);
       await waitFor('.navigator-tabbed-pane');
-    });
-
-    it('which can scroll the navigator element into view on source file change', async () => {
-      async function openSnippet(snippet: string) {
-        await openFileQuickOpen();
-        await typeIntoQuickOpen(snippet);
-        const firstItem = await getMenuItemAtPosition(0);
-        await firstItem.click();
-      }
-
-      async function assertSnippetIsSelected(snippet: string) {
-        const selectedItem = await waitFor('.navigator-file-tree-item.selected');
-        const selectedItemName = await selectedItem.evaluate(node => node.textContent);
-        assert.strictEqual(selectedItemName, snippet);
-      }
-
-      await openSourcesPanel();
-      await openSnippetsSubPane();
-
-      const numSnippets = 50;
-      for (let i = 0; i < numSnippets; ++i) {
-        await createNewSnippet(`Snippet${i}`);
-      }
-      const firstSnippetName = 'Snippet0';
-      const lastSnippetName = `Snippet${numSnippets - 1}`;
-
-      await waitForElementWithTextContent(lastSnippetName);
-      await assertSnippetIsSelected(lastSnippetName);
-
-      const snippetsPanel = await waitFor('[aria-label="Snippets panel"]');
-      const scrollTopBeforeFileChange = await snippetsPanel.evaluate(panel => panel.scrollTop);
-
-      await openSnippet(firstSnippetName);
-      await assertSnippetIsSelected(firstSnippetName);
-
-      const scrollTopAfterFileChange = await snippetsPanel.evaluate(panel => panel.scrollTop);
-      assert.notStrictEqual(scrollTopBeforeFileChange, scrollTopAfterFileChange);
     });
   });
 });

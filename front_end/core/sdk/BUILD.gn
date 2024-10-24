@@ -9,6 +9,7 @@ import("../../../scripts/build/typescript/typescript.gni")
 devtools_module("sdk") {
   sources = [
     "AccessibilityModel.ts",
+    "AnimationModel.ts",
     "AutofillModel.ts",
     "CPUProfileDataModel.ts",
     "CPUProfilerModel.ts",
@@ -133,6 +134,7 @@ ts_library("unittests") {
 
   sources = [
     "AccessibilityModel.test.ts",
+    "AnimationModel.test.ts",
     "AutofillModel.test.ts",
     "CPUThrottlingManager.test.ts",
     "CSSContainerQuery.test.ts",

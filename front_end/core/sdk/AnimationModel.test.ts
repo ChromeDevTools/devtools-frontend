@@ -10,7 +10,7 @@ import {
   setMockConnectionResponseHandler,
 } from '../../testing/MockConnection.js';
 
-import * as Animation from './animation.js';
+import * as SDK from './sdk.js';
 
 describeWithMockConnection('AnimationModel', () => {
   afterEach(() => {
@@ -20,7 +20,7 @@ describeWithMockConnection('AnimationModel', () => {
   it('can be instantiated', () => {
     assert.doesNotThrow(() => {
       const target = createTarget();
-      new Animation.AnimationModel.AnimationModel(target);
+      new SDK.AnimationModel.AnimationModel(target);
     });
   });
 
@@ -28,8 +28,8 @@ describeWithMockConnection('AnimationModel', () => {
     it('setPayload should update values returned from the relevant value functions for time based animations',
        async () => {
          const target = createTarget();
-         const model = new Animation.AnimationModel.AnimationModel(target);
-         const animationImpl = await Animation.AnimationModel.AnimationImpl.parsePayload(model, {
+         const model = new SDK.AnimationModel.AnimationModel(target);
+         const animationImpl = await SDK.AnimationModel.AnimationImpl.parsePayload(model, {
            id: '1',
            name: 'animation-name',
            pausedState: false,
@@ -102,8 +102,8 @@ describeWithMockConnection('AnimationModel', () => {
            };
          });
          const target = createTarget();
-         const model = new Animation.AnimationModel.AnimationModel(target);
-         const animationImpl = await Animation.AnimationModel.AnimationImpl.parsePayload(model, {
+         const model = new SDK.AnimationModel.AnimationModel(target);
+         const animationImpl = await SDK.AnimationModel.AnimationImpl.parsePayload(model, {
            id: '1',
            name: 'animation-name',
            pausedState: false,

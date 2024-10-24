@@ -11,15 +11,7 @@ import * as Protocol from '../../generated/protocol.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import type {AnimationDOMNode} from './AnimationDOMNode.js';
 import {AnimationGroupPreviewUI} from './AnimationGroupPreviewUI.js';
-import {
-  type AnimationEffect,
-  type AnimationGroup,
-  type AnimationImpl,
-  AnimationModel,
-  Events,
-} from './AnimationModel.js';
 import {AnimationScreenshotPopover} from './AnimationScreenshotPopover.js';
 import animationTimelineStyles from './animationTimeline.css.js';
 import {AnimationUI} from './AnimationUI.js';
@@ -97,7 +89,8 @@ const MAX_TIMELINE_CONTROLS_WIDTH = 720;
 
 let animationTimelineInstance: AnimationTimeline;
 
-export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManager.SDKModelObserver<AnimationModel> {
+export class AnimationTimeline extends UI.Widget.VBox implements
+    SDK.TargetManager.SDKModelObserver<SDK.AnimationModel.AnimationModel> {
   #gridWrapper: HTMLElement;
   #grid: Element;
   #playbackRate: number;
@@ -109,16 +102,16 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
   #timelineScrubber!: HTMLElement;
   #currentTime!: HTMLElement;
   #clearButton!: UI.Toolbar.ToolbarButton;
-  #selectedGroup!: AnimationGroup|null;
+  #selectedGroup!: SDK.AnimationModel.AnimationGroup|null;
   #renderQueue!: AnimationUI[];
   #defaultDuration: number;
   #durationInternal: number;
   #timelineControlsWidth: number;
   readonly #nodesMap: Map<number, NodeUI>;
   #uiAnimations: AnimationUI[];
-  #groupBuffer: AnimationGroup[];
-  readonly #previewMap: Map<AnimationGroup, AnimationGroupPreviewUI>;
-  readonly #animationsMap: Map<string, AnimationImpl>;
+  #groupBuffer: SDK.AnimationModel.AnimationGroup[];
+  readonly #previewMap: Map<SDK.AnimationModel.AnimationGroup, AnimationGroupPreviewUI>;
+  readonly #animationsMap: Map<string, SDK.AnimationModel.AnimationImpl>;
   #timelineScrubberLine?: HTMLElement;
   #pauseButton?: UI.Toolbar.ToolbarToggle;
   #controlButton?: UI.Toolbar.ToolbarButton;
@@ -133,7 +126,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
   #timelineControlsResizer: HTMLElement;
   #gridHeader!: HTMLElement;
   #scrollListenerId?: number|null;
-  #collectedGroups: AnimationGroup[];
+  #collectedGroups: SDK.AnimationModel.AnimationGroup[];
   #createPreviewForCollectedGroupsThrottler: Common.Throttler.Throttler = new Common.Throttler.Throttler(10);
   #animationGroupUpdatedThrottler: Common.Throttler.Throttler = new Common.Throttler.Throttler(10);
 
@@ -175,7 +168,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
     SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.DOMModel.DOMModel, SDK.DOMModel.Events.NodeRemoved, ev => this.markNodeAsRemoved(ev.data.node), this,
         {scoped: true});
-    SDK.TargetManager.TargetManager.instance().observeModels(AnimationModel, this, {scoped: true});
+    SDK.TargetManager.TargetManager.instance().observeModels(SDK.AnimationModel.AnimationModel, this, {scoped: true});
     UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, this.nodeChanged, this);
 
     this.#setupTimelineControlsResizer();
@@ -214,7 +207,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
         'ew-resize');
   }
 
-  get previewMap(): Map<AnimationGroup, AnimationGroupPreviewUI> {
+  get previewMap(): Map<SDK.AnimationModel.AnimationGroup, AnimationGroupPreviewUI> {
     return this.#previewMap;
   }
 
@@ -222,7 +215,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
     return this.#uiAnimations;
   }
 
-  get groupBuffer(): AnimationGroup[] {
+  get groupBuffer(): SDK.AnimationModel.AnimationGroup[] {
     return this.#groupBuffer;
   }
 
@@ -231,34 +224,37 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
       return;
     }
 
-    for (const animationModel of SDK.TargetManager.TargetManager.instance().models(AnimationModel, {scoped: true})) {
+    for (const animationModel of SDK.TargetManager.TargetManager.instance().models(
+             SDK.AnimationModel.AnimationModel, {scoped: true})) {
       this.addEventListeners(animationModel);
     }
     this.registerCSSFiles([animationTimelineStyles]);
     this.#initialized = true;
   }
 
-  modelAdded(animationModel: AnimationModel): void {
+  modelAdded(animationModel: SDK.AnimationModel.AnimationModel): void {
     if (this.isShowing()) {
       this.addEventListeners(animationModel);
     }
   }
 
-  modelRemoved(animationModel: AnimationModel): void {
+  modelRemoved(animationModel: SDK.AnimationModel.AnimationModel): void {
     this.removeEventListeners(animationModel);
   }
 
-  private addEventListeners(animationModel: AnimationModel): void {
+  private addEventListeners(animationModel: SDK.AnimationModel.AnimationModel): void {
     void animationModel.ensureEnabled();
-    animationModel.addEventListener(Events.AnimationGroupStarted, this.animationGroupStarted, this);
-    animationModel.addEventListener(Events.AnimationGroupUpdated, this.animationGroupUpdated, this);
-    animationModel.addEventListener(Events.ModelReset, this.reset, this);
+    animationModel.addEventListener(SDK.AnimationModel.Events.AnimationGroupStarted, this.animationGroupStarted, this);
+    animationModel.addEventListener(SDK.AnimationModel.Events.AnimationGroupUpdated, this.animationGroupUpdated, this);
+    animationModel.addEventListener(SDK.AnimationModel.Events.ModelReset, this.reset, this);
   }
 
-  private removeEventListeners(animationModel: AnimationModel): void {
-    animationModel.removeEventListener(Events.AnimationGroupStarted, this.animationGroupStarted, this);
-    animationModel.removeEventListener(Events.AnimationGroupUpdated, this.animationGroupUpdated, this);
-    animationModel.removeEventListener(Events.ModelReset, this.reset, this);
+  private removeEventListeners(animationModel: SDK.AnimationModel.AnimationModel): void {
+    animationModel.removeEventListener(
+        SDK.AnimationModel.Events.AnimationGroupStarted, this.animationGroupStarted, this);
+    animationModel.removeEventListener(
+        SDK.AnimationModel.Events.AnimationGroupUpdated, this.animationGroupUpdated, this);
+    animationModel.removeEventListener(SDK.AnimationModel.Events.ModelReset, this.reset, this);
   }
 
   private nodeChanged(): void {
@@ -401,7 +397,8 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
     }
 
     this.#playbackRate = playbackRate;
-    for (const animationModel of SDK.TargetManager.TargetManager.instance().models(AnimationModel, {scoped: true})) {
+    for (const animationModel of SDK.TargetManager.TargetManager.instance().models(
+             SDK.AnimationModel.AnimationModel, {scoped: true})) {
       animationModel.setPlaybackRate(this.#allPaused ? 0 : this.#playbackRate);
     }
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.AnimationsPlaybackRateChanged);
@@ -496,7 +493,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
 
   private clearTimeline(): void {
     if (this.#selectedGroup && this.#scrollListenerId) {
-      void this.#selectedGroup.scrollNode().then((node: AnimationDOMNode|null) => {
+      void this.#selectedGroup.scrollNode().then((node: SDK.AnimationModel.AnimationDOMNode|null) => {
         void node?.removeScrollEventListener(this.#scrollListenerId as number);
         this.#scrollListenerId = undefined;
       });
@@ -530,14 +527,16 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
     this.renderGrid();
   }
 
-  private animationGroupStarted({data}: Common.EventTarget.EventTargetEvent<AnimationGroup>): void {
+  private animationGroupStarted({data}: Common.EventTarget.EventTargetEvent<SDK.AnimationModel.AnimationGroup>): void {
     this.addAnimationGroup(data);
   }
 
   scheduledRedrawAfterAnimationGroupUpdatedForTest(): void {
   }
 
-  private animationGroupUpdated({data: group}: Common.EventTarget.EventTargetEvent<AnimationGroup>): void {
+  private animationGroupUpdated({
+    data: group,
+  }: Common.EventTarget.EventTargetEvent<SDK.AnimationModel.AnimationGroup>): void {
     void this.#animationGroupUpdatedThrottler.schedule(async () => {
       const preview = this.#previewMap.get(group);
       if (preview) {
@@ -586,7 +585,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
     this.#screenshotPopovers = [];
   }
 
-  private createPreview(group: AnimationGroup): void {
+  private createPreview(group: SDK.AnimationModel.AnimationGroup): void {
     const preview = new AnimationGroupPreviewUI(group);
 
     const previewUiContainer = document.createElement('div');
@@ -674,7 +673,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
     this.previewsCreatedForTest();
   }
 
-  private addAnimationGroup(group: AnimationGroup): void {
+  private addAnimationGroup(group: SDK.AnimationModel.AnimationGroup): void {
     const previewGroup = this.#previewMap.get(group);
     if (previewGroup) {
       if (this.#selectedGroup === group) {
@@ -711,7 +710,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
         () => Promise.resolve(this.createPreviewForCollectedGroups()));
   }
 
-  private handleAnimationGroupKeyDown(group: AnimationGroup, event: KeyboardEvent): void {
+  private handleAnimationGroupKeyDown(group: SDK.AnimationModel.AnimationGroup, event: KeyboardEvent): void {
     switch (event.key) {
       case 'Backspace':
       case 'Delete':
@@ -727,7 +726,8 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
     }
   }
 
-  private focusNextGroup(group: AnimationGroup, target: EventTarget|null, focusPrevious?: boolean): void {
+  private focusNextGroup(group: SDK.AnimationModel.AnimationGroup, target: EventTarget|null, focusPrevious?: boolean):
+      void {
     const currentGroupIndex = this.#groupBuffer.indexOf(group);
     const nextIndex = focusPrevious ? currentGroupIndex - 1 : currentGroupIndex + 1;
     if (nextIndex < 0 || nextIndex >= this.#groupBuffer.length) {
@@ -744,7 +744,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
     }
   }
 
-  private removeAnimationGroup(group: AnimationGroup, event: Event): void {
+  private removeAnimationGroup(group: SDK.AnimationModel.AnimationGroup, event: Event): void {
     const currentGroupIndex = this.#groupBuffer.indexOf(group);
 
     Platform.ArrayUtilities.removeElement(this.#groupBuffer, group);
@@ -789,7 +789,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
         this.#selectedGroup?.isScrollDriven() ? `${time.toFixed(0)}px` : i18n.TimeUtilities.millisToString(time);
   }
 
-  private async selectAnimationGroup(group: AnimationGroup): Promise<void> {
+  private async selectAnimationGroup(group: SDK.AnimationModel.AnimationGroup): Promise<void> {
     if (this.#selectedGroup === group) {
       this.togglePause(false);
       this.replay();
@@ -797,7 +797,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
     }
     this.clearTimeline();
     this.#selectedGroup = group;
-    this.#previewMap.forEach((previewUI: AnimationGroupPreviewUI, group: AnimationGroup) => {
+    this.#previewMap.forEach((previewUI: AnimationGroupPreviewUI, group: SDK.AnimationModel.AnimationGroup) => {
       previewUI.element.classList.toggle('selected', this.#selectedGroup === group);
     });
 
@@ -864,7 +864,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements SDK.TargetManag
   animationGroupSelectedForTest(): void {
   }
 
-  private async addAnimation(animation: AnimationImpl): Promise<void> {
+  private async addAnimation(animation: SDK.AnimationModel.AnimationImpl): Promise<void> {
     let nodeUI = this.#nodesMap.get(animation.source().backendNodeId());
     if (!nodeUI) {
       nodeUI = new NodeUI(animation.source());
@@ -1136,7 +1136,7 @@ export class NodeUI {
   #overlayElement?: HTMLElement;
   #node?: SDK.DOMModel.DOMNode|null;
 
-  constructor(_animationEffect: AnimationEffect) {
+  constructor(_animationEffect: SDK.AnimationModel.AnimationEffect) {
     this.element = document.createElement('div');
     this.element.classList.add('animation-node-row');
     this.#description = this.element.createChild('div', 'animation-node-description');

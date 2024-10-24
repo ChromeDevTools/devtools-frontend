@@ -11,7 +11,6 @@ import * as InlineEditor from '../../ui/legacy/components/inline_editor/inline_e
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import type {AnimationImpl, KeyframeStyle} from './AnimationModel.js';
 import {type AnimationTimeline, StepTimingFunction} from './AnimationTimeline.js';
 
 const UIStrings = {
@@ -40,9 +39,9 @@ type CachedElement = {
 };
 
 export class AnimationUI {
-  #animationInternal: AnimationImpl;
+  #animationInternal: SDK.AnimationModel.AnimationImpl;
   #timeline: AnimationTimeline;
-  #keyframes?: KeyframeStyle[];
+  #keyframes?: SDK.AnimationModel.KeyframeStyle[];
   #nameElement: HTMLElement;
   readonly #svg: Element;
   #activeIntervalGroup: Element;
@@ -58,7 +57,7 @@ export class AnimationUI {
   #keyframeMoved?: number|null;
   #downMouseX?: number;
 
-  constructor(animation: AnimationImpl, timeline: AnimationTimeline, parentElement: Element) {
+  constructor(animation: SDK.AnimationModel.AnimationImpl, timeline: AnimationTimeline, parentElement: Element) {
     this.#animationInternal = animation;
     this.#timeline = timeline;
 
@@ -94,7 +93,7 @@ export class AnimationUI {
     this.#color = AnimationUI.colorForAnimation(this.#animationInternal);
   }
 
-  static colorForAnimation(animation: AnimationImpl): string {
+  static colorForAnimation(animation: SDK.AnimationModel.AnimationImpl): string {
     const names = Array.from(Colors.keys());
     const hashCode = Platform.StringUtilities.hashCode(animation.name() || animation.id());
     const cappedHashCode = hashCode % names.length;
@@ -110,7 +109,7 @@ export class AnimationUI {
     element.addEventListener('keydown', elementDrag, false);
   }
 
-  animation(): AnimationImpl {
+  animation(): SDK.AnimationModel.AnimationImpl {
     return this.#animationInternal;
   }
 

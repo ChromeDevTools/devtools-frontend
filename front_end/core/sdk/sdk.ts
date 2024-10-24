@@ -11,6 +11,7 @@ import './NetworkManager.js';
 import './RuntimeModel.js';
 
 import * as AccessibilityModel from './AccessibilityModel.js';
+import * as AnimationModel from './AnimationModel.js';
 import * as AutofillModel from './AutofillModel.js';
 import * as CategorizedBreakpoint from './CategorizedBreakpoint.js';
 import * as ChildTargetManager from './ChildTargetManager.js';
@@ -89,6 +90,7 @@ import * as WebAuthnModel from './WebAuthnModel.js';
 
 export {
   AccessibilityModel,
+  AnimationModel,
   AutofillModel,
   CategorizedBreakpoint,
   ChildTargetManager,

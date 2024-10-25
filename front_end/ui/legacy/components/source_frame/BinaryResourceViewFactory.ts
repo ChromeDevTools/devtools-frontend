@@ -9,16 +9,16 @@ import * as TextUtils from '../../../../models/text_utils/text_utils.js';
 import {ResourceSourceFrame} from './ResourceSourceFrame.js';
 
 export class BinaryResourceViewFactory {
-  private base64content: string;
+  private streamingContent: TextUtils.StreamingContentData.StreamingContentData;
   private readonly contentUrl: Platform.DevToolsPath.UrlString;
   private readonly resourceType: Common.ResourceType.ResourceType;
   private arrayPromise: Promise<Uint8Array>|null;
   private hexPromise: Promise<string>|null;
   private utf8Promise: Promise<string>|null;
   constructor(
-      base64content: string, contentUrl: Platform.DevToolsPath.UrlString,
+      content: TextUtils.StreamingContentData.StreamingContentData, contentUrl: Platform.DevToolsPath.UrlString,
       resourceType: Common.ResourceType.ResourceType) {
-    this.base64content = base64content;
+    this.streamingContent = content;
     this.contentUrl = contentUrl;
     this.resourceType = resourceType;
     this.arrayPromise = null;
@@ -29,7 +29,7 @@ export class BinaryResourceViewFactory {
   private async fetchContentAsArray(): Promise<Uint8Array> {
     if (!this.arrayPromise) {
       this.arrayPromise = new Promise(async resolve => {
-        const fetchResponse = await fetch('data:;base64,' + this.base64content);
+        const fetchResponse = await fetch('data:;base64,' + this.streamingContent.content().base64);
         resolve(new Uint8Array(await fetchResponse.arrayBuffer()));
       });
     }
@@ -49,7 +49,7 @@ export class BinaryResourceViewFactory {
   }
 
   base64(): string {
-    return this.base64content;
+    return this.streamingContent.content().base64;
   }
 
   async utf8(): Promise<string> {
@@ -67,7 +67,7 @@ export class BinaryResourceViewFactory {
   createBase64View(): ResourceSourceFrame {
     return new ResourceSourceFrame(
         TextUtils.StaticContentProvider.StaticContentProvider.fromString(
-            this.contentUrl, this.resourceType, this.base64content),
+            this.contentUrl, this.resourceType, this.streamingContent.content().base64),
         this.resourceType.canonicalMimeType(), {lineNumbers: false, lineWrapping: true});
   }
 

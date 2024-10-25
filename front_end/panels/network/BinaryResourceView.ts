@@ -6,6 +6,7 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
+import type * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -70,12 +71,12 @@ export class BinaryResourceView extends UI.Widget.VBox {
   private lastView: UI.Widget.Widget|null;
 
   constructor(
-      base64content: string, contentUrl: Platform.DevToolsPath.UrlString,
+      content: TextUtils.StreamingContentData.StreamingContentData, contentUrl: Platform.DevToolsPath.UrlString,
       resourceType: Common.ResourceType.ResourceType) {
     super();
 
     this.binaryResourceViewFactory =
-        new SourceFrame.BinaryResourceViewFactory.BinaryResourceViewFactory(base64content, contentUrl, resourceType);
+        new SourceFrame.BinaryResourceViewFactory.BinaryResourceViewFactory(content, contentUrl, resourceType);
 
     this.toolbar = new UI.Toolbar.Toolbar('binary-view-toolbar', this.element);
 

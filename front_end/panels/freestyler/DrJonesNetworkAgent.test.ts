@@ -15,7 +15,7 @@ import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import {createNetworkPanelForMockConnection} from '../../testing/NetworkHelpers.js';
 import * as Coordinator from '../../ui/components/render_coordinator/render_coordinator.js';
 
-import {allowHeader, DrJonesNetworkAgent, ResponseType} from './freestyler.js';
+import {allowHeader, DrJonesNetworkAgent, formatInitiatorUrl, ResponseType} from './freestyler.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
@@ -236,7 +236,7 @@ describeWithMockConnection('DrJonesNetworkAgent', () => {
             },
             {
               title: 'Request initiator chain',
-              text: `- URL: https://www.initiator.com
+              text: `- URL: <redacted cross-origin initiator URL>
 \t- URL: https://www.example.com
 \t\t- URL: https://www.example.com/1
 \t\t- URL: https://www.example.com/2`,
@@ -246,7 +246,7 @@ describeWithMockConnection('DrJonesNetworkAgent', () => {
         {
           type: ResponseType.QUERYING,
           query:
-              '# Selected network request \nRequest: https://www.example.com\n\nRequest headers:\ncontent-type: bar1\n\nResponse headers:\ncontent-type: bar2\nx-forwarded-for: bar3\n\nResponse status: 200 \n\nRequest timing:\nQueued at (timestamp): 0 μs\nStarted at (timestamp): 8.3 min\nQueueing (duration): 8.3 min\nConnection start (stalled) (duration): 800.00 ms\nRequest sent (duration): 100.00 ms\nDuration (duration): 8.3 min\n\nRequest initiator chain:\n- URL: https://www.initiator.com\n\t- URL: https://www.example.com\n\t\t- URL: https://www.example.com/1\n\t\t- URL: https://www.example.com/2\n\n# User request\n\ntest',
+              '# Selected network request \nRequest: https://www.example.com\n\nRequest headers:\ncontent-type: bar1\n\nResponse headers:\ncontent-type: bar2\nx-forwarded-for: bar3\n\nResponse status: 200 \n\nRequest timing:\nQueued at (timestamp): 0 μs\nStarted at (timestamp): 8.3 min\nQueueing (duration): 8.3 min\nConnection start (stalled) (duration): 800.00 ms\nRequest sent (duration): 100.00 ms\nDuration (duration): 8.3 min\n\nRequest initiator chain:\n- URL: <redacted cross-origin initiator URL>\n\t- URL: https://www.example.com\n\t\t- URL: https://www.example.com/1\n\t\t- URL: https://www.example.com/2\n\n# User request\n\ntest',
         },
         {
           type: ResponseType.ANSWER,
@@ -277,7 +277,7 @@ Request sent (duration): 100.00 ms
 Duration (duration): 8.3 min
 
 Request initiator chain:
-- URL: https://www.initiator.com
+- URL: <redacted cross-origin initiator URL>
 \t- URL: https://www.example.com
 \t\t- URL: https://www.example.com/1
 \t\t- URL: https://www.example.com/2
@@ -304,5 +304,52 @@ test`,
       assert.isFalse(allowHeader({name: 'set-cookie', value: 'foo'}));
       assert.isFalse(allowHeader({name: 'authorization', value: 'foo'}));
     });
+  });
+
+  describe('formatInitiatorUrl', () => {
+    const tests = [
+      {
+        allowedResource: 'https://example.test',
+        targetResource: 'https://example.test',
+        shouldBeRedacted: false,
+      },
+      {
+        allowedResource: 'https://example.test',
+        targetResource: 'https://another-example.test',
+        shouldBeRedacted: true,
+      },
+      {
+        allowedResource: 'file://test',
+        targetResource: 'https://another-example.test',
+        shouldBeRedacted: true,
+      },
+      {
+        allowedResource: 'https://another-example.test',
+        targetResource: 'file://test',
+        shouldBeRedacted: true,
+      },
+      {
+        allowedResource: 'https://test.example.test',
+        targetResource: 'https://example.test',
+        shouldBeRedacted: true,
+      },
+      {
+        allowedResource: 'https://test.example.test:9900',
+        targetResource: 'https://test.example.test:9901',
+        shouldBeRedacted: true,
+      },
+    ];
+
+    for (const t of tests) {
+      it(`${t.targetResource} test when allowed resource is ${t.allowedResource}`, () => {
+        const formatted = formatInitiatorUrl(new URL(t.targetResource).origin, new URL(t.allowedResource).origin);
+        if (t.shouldBeRedacted) {
+          assert.strictEqual(
+              formatted, '<redacted cross-origin initiator URL>', `${JSON.stringify(t)} was not redacted`);
+        } else {
+          assert.strictEqual(formatted, t.targetResource, `${JSON.stringify(t)} was redacted`);
+        }
+      });
+    }
   });
 });

@@ -324,28 +324,42 @@ export function formatNetworkRequestTiming(request: SDK.NetworkRequest.NetworkRe
   return labels.filter(label => Boolean(label.value)).map(label => `${label.label}: ${label.value}`).join('\n');
 }
 
+export function formatInitiatorUrl(initiatorUrl: string, allowedOrigin: string): string {
+  const initiatorOrigin = new URL(initiatorUrl).origin;
+  if (initiatorOrigin === allowedOrigin) {
+    return initiatorUrl;
+  }
+  return '<redacted cross-origin initiator URL>';
+}
+
 function formatRequestInitiated(
-    request: SDK.NetworkRequest.NetworkRequest, initiatorChain: string, lineStart: string): string {
+    request: SDK.NetworkRequest.NetworkRequest, initiatorChain: string, lineStart: string,
+    allowedOrigin: string): string {
   const initiated = Logs.NetworkLog.NetworkLog.instance().initiatorGraphForRequest(request).initiated;
   initiated.forEach((v, initiatedRequest) => {
     if (request === v) {
-      initiatorChain = initiatorChain + lineStart + initiatedRequest.url() + '\n';
-      initiatorChain = formatRequestInitiated(initiatedRequest, initiatorChain, '\t' + lineStart);
+      initiatorChain = initiatorChain + lineStart + formatInitiatorUrl(initiatedRequest.url(), allowedOrigin) + '\n';
+      initiatorChain = formatRequestInitiated(initiatedRequest, initiatorChain, '\t' + lineStart, allowedOrigin);
     }
   });
   return initiatorChain;
 }
 
+/**
+ * Note: nothing here should include information from origins other than
+ * the request's origin.
+ */
 function formatRequestInitiatorChain(request: SDK.NetworkRequest.NetworkRequest): string {
+  const allowedOrigin = new URL(request.url()).origin;
   let initiatorChain = '';
   let lineStart = '- URL: ';
   const initiators = Logs.NetworkLog.NetworkLog.instance().initiatorGraphForRequest(request).initiators;
 
   for (const initator of Array.from(initiators).reverse()) {
-    initiatorChain = initiatorChain + lineStart + initator.url() + '\n';
+    initiatorChain = initiatorChain + lineStart + formatInitiatorUrl(initator.url(), allowedOrigin) + '\n';
     lineStart = '\t' + lineStart;
     if (initator === request) {
-      initiatorChain = formatRequestInitiated(initator, initiatorChain, lineStart);
+      initiatorChain = formatRequestInitiated(initator, initiatorChain, lineStart, allowedOrigin);
       break;
     }
   }
@@ -353,9 +367,11 @@ function formatRequestInitiatorChain(request: SDK.NetworkRequest.NetworkRequest)
   return initiatorChain.trim();
 }
 
+/**
+ * Note: nothing here should include information from origins other than
+ * the request's origin.
+ */
 export function formatNetworkRequest(request: SDK.NetworkRequest.NetworkRequest): string {
-  // TODO: anything else that might be relavant?
-  // TODO: handle missing headers
   return `Request: ${request.url()}
 
 ${formatHeaders('Request headers:', request.requestHeaders())}

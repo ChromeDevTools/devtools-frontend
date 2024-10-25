@@ -10,6 +10,7 @@ import {
   dispatchPasteEvent,
 } from '../../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../../testing/EnvironmentHelpers.js';
+import {expectCall} from '../../../../testing/ExpectStubCall.js';
 import * as Buttons from '../../../components/buttons/buttons.js';
 import * as UI from '../../legacy.js';
 
@@ -124,5 +125,22 @@ describeWithEnvironment('SourceFrame', () => {
     const dialogContainer = document.body.querySelector<HTMLDivElement>('[data-devtools-glass-pane]');
     assert.isNull(dialogContainer);
     stub.restore();
+  });
+
+  it('disassembles wasm', async () => {
+    const contentData = new TextUtils.ContentData.ContentData(
+        'AGFzbQEAAAABBQFgAAF/AwIBAAcHAQNiYXIAAAoGAQQAQQILACQEbmFtZQAQD3Nob3ctd2FzbS0yLndhdAEGAQADYmFyAgMBAAA=', true,
+        'application/wasm');
+    const sourceFrame = new SourceFrame.SourceFrame.SourceFrameImpl(async () => contentData);
+
+    sourceFrame.markAsRoot();
+    const setContentStub = sinon.stub(sourceFrame, 'setContent');
+    sourceFrame.show(document.body);
+    const content = await expectCall(setContentStub);
+
+    assert.strictEqual(
+        content.toString(), '(module\n  (func $bar (;0;) (export \"bar\") (result i32)\n    i32.const 2\n  )\n)');
+
+    sourceFrame.detach();
   });
 });

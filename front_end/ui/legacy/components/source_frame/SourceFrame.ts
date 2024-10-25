@@ -33,6 +33,7 @@ import * as Host from '../../../../core/host/host.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import * as Root from '../../../../core/root/root.js';
+import * as SDK from '../../../../core/sdk/sdk.js';
 import * as Formatter from '../../../../models/formatter/formatter.js';
 import * as TextUtils from '../../../../models/text_utils/text_utils.js';
 import * as CodeMirror from '../../../../third_party/codemirror.next/codemirror.next.js';
@@ -569,6 +570,11 @@ export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin<EventTypes,
       content = contentData.text;
       isMinified = TextUtils.TextUtils.isMinified(contentData.text);
       this.wasmDisassemblyInternal = null;
+    } else if (contentData.mimeType === 'application/wasm') {
+      // The network panel produces ContentData with raw WASM inside. We have to manually disassemble that
+      // as V8 might not know about it.
+      this.wasmDisassemblyInternal = await SDK.Script.disassembleWasm(contentData.base64);
+      content = CodeMirror.Text.of(this.wasmDisassemblyInternal.lines);
     } else {
       error = i18nString(UIStrings.binaryContentError);
       content = null;

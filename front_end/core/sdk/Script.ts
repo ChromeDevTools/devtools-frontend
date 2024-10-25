@@ -498,7 +498,7 @@ function frameIdForScript(script: Script): Protocol.Page.FrameId|null {
 
 export const sourceURLRegex = /^[\x20\t]*\/\/[@#] sourceURL=\s*(\S*?)\s*$/;
 
-async function disassembleWasm(content: string): Promise<TextUtils.WasmDisassembly.WasmDisassembly> {
+export async function disassembleWasm(content: string): Promise<TextUtils.WasmDisassembly.WasmDisassembly> {
   const worker = Common.Worker.WorkerWrapper.fromURL(
       new URL('../../entrypoints/wasmparser_worker/wasmparser_worker-entrypoint.js', import.meta.url));
   const promise = new Promise<TextUtils.WasmDisassembly.WasmDisassembly>((resolve, reject) => {

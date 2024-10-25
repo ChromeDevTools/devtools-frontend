@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Components from '../../../panels/timeline/components/components.js';
+import * as Utils from '../../../panels/timeline/utils/utils.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {
   getAllNodes,
@@ -192,7 +192,7 @@ describeWithEnvironment('RendererHandler', function() {
     const isLong = (event: Trace.Types.Events.Event) => Trace.Types.Events.isComplete(event) && event.dur > 1000;
     const isIncluded = (node: Trace.Helpers.TreeHelpers.TraceEntryNode, event: Trace.Types.Events.Event) =>
         (!isRoot(node) || isInstant(event) || isLong(event)) &&
-        Boolean(Components.EntryStyles.getEventStyle(event.name as Trace.Types.Events.Name));
+        Boolean(Utils.EntryStyles.getEventStyle(event.name as Trace.Types.Events.Name));
     assert.strictEqual(prettyPrint(tree, isIncluded), `
 ............
 -RunTask [2.21ms]
@@ -391,7 +391,7 @@ describeWithEnvironment('RendererHandler', function() {
       assert(false, 'Main thread has no tree of events');
     }
     const isIncluded = (_node: Trace.Helpers.TreeHelpers.TraceEntryNode, event: Trace.Types.Events.Event) =>
-        Boolean(Components.EntryStyles.getEventStyle(event.name as Trace.Types.Events.Name));
+        Boolean(Utils.EntryStyles.getEventStyle(event.name as Trace.Types.Events.Name));
     assert.strictEqual(prettyPrint(tree, isIncluded), `
 -RunTask [0.13ms]
 -RunTask [0.005ms]
@@ -934,7 +934,7 @@ describeWithEnvironment('RendererHandler', function() {
       const onlyLongTasksPredicate =
           (_node: Trace.Helpers.TreeHelpers.TraceEntryNode, event: Trace.Types.Events.Event) =>
               Boolean(event.dur && event.dur > 1000) &&
-          Boolean(Components.EntryStyles.getEventStyle(event.name as Trace.Types.Events.Name));
+          Boolean(Utils.EntryStyles.getEventStyle(event.name as Trace.Types.Events.Name));
       assert.strictEqual(prettyPrint(thread.tree, onlyLongTasksPredicate), `
 .............
 -RunTask [17.269ms]

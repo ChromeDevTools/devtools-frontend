@@ -11,8 +11,8 @@ import * as Trace from '../../../models/trace/trace.js';
 import * as LegacyComponents from '../../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
+import * as Utils from '../utils/utils.js';
 
-import * as EntryName from './EntryName.js';
 import * as Insights from './insights/insights.js';
 import layoutShiftDetailsStyles from './layoutShiftDetails.css.js';
 
@@ -111,7 +111,7 @@ export class LayoutShiftDetails extends HTMLElement {
 
   #renderTitle(event: Trace.Types.Events.SyntheticLayoutShift|
                Trace.Types.Events.SyntheticLayoutShiftCluster): LitHtml.TemplateResult {
-    const title = EntryName.nameForEntry(event);
+    const title = Utils.EntryName.nameForEntry(event);
     return html`
       <div class="layout-shift-details-title">
         <div class="layout-shift-event-title"></div>

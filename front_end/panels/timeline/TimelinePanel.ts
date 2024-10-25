@@ -2278,7 +2278,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       return;
     }
     // At this point we know the object is a trace event
-    const name = TimelineComponents.EntryName.nameForEntry(newSelection.object);
+    const name = Utils.EntryName.nameForEntry(newSelection.object);
     UI.ARIAUtils.alert(i18nString(UIStrings.eventSelected, {PH1: name}));
   }
 

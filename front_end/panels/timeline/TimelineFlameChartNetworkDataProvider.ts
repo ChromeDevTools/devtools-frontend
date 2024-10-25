@@ -216,7 +216,7 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
 
   entryTitle(index: number): string|null {
     const event = this.#events[index];
-    return TimelineComponents.EntryName.nameForEntry(event);
+    return TimelineUtils.EntryName.nameForEntry(event);
   }
 
   entryFont(_index: number): string|null {

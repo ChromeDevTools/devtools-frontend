@@ -7,9 +7,9 @@ import * as Platform from '../../core/platform/platform.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
 
-import * as TimelineComponents from './components/components.js';
 import type {AnnotationModifiedEvent} from './ModificationsManager.js';
 import type * as Overlays from './overlays/overlays.js';
+import * as Utils from './utils/utils.js';
 
 const UIStrings = {
   /**
@@ -219,8 +219,8 @@ export function ariaAnnouncementForModifiedEvent(event: AnnotationModifiedEvent)
     }
     case 'UpdateLinkToEntry': {
       if (isEntriesLink(overlay) && overlay.entryFrom && overlay.entryTo) {
-        const from = TimelineComponents.EntryName.nameForEntry(overlay.entryFrom);
-        const to = TimelineComponents.EntryName.nameForEntry(overlay.entryTo);
+        const from = Utils.EntryName.nameForEntry(overlay.entryFrom);
+        const to = Utils.EntryName.nameForEntry(overlay.entryTo);
         return (i18nString(UIStrings.srEntriesLinked, {PH1: from, PH2: to}));
       }
       break;

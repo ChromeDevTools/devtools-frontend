@@ -10,12 +10,12 @@ import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import * as Components from './components/components.js';
 import {Category, IsLong} from './TimelineFilters.js';
 import type {TimelineModeViewDelegate} from './TimelinePanel.js';
 import {TimelineSelection} from './TimelineSelection.js';
 import {TimelineTreeView} from './TimelineTreeView.js';
 import {TimelineUIUtils} from './TimelineUIUtils.js';
+import * as Utils from './utils/utils.js';
 
 const UIStrings = {
   /**
@@ -177,15 +177,15 @@ export class Filters extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
     toolbar.appendToolbarItem(durationFilterUI);
 
     const categoryFiltersUI = new Map<string, UI.Toolbar.ToolbarCheckbox>();
-    const categories = Components.EntryStyles.getCategoryStyles();
+    const categories = Utils.EntryStyles.getCategoryStyles();
     for (const categoryName in categories) {
-      const category = categories[categoryName as Components.EntryStyles.EventCategory];
+      const category = categories[categoryName as Utils.EntryStyles.EventCategory];
       if (!category.visible) {
         continue;
       }
       const checkbox = new UI.Toolbar.ToolbarCheckbox(
           category.title, undefined,
-          categoriesFilterChanged.bind(this, categoryName as Components.EntryStyles.EventCategory), categoryName);
+          categoriesFilterChanged.bind(this, categoryName as Utils.EntryStyles.EventCategory), categoryName);
       checkbox.setChecked(true);
       checkbox.inputElement.style.backgroundColor = category.color;
       categoryFiltersUI.set(category.name, checkbox);
@@ -199,8 +199,8 @@ export class Filters extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
       this.notifyFiltersChanged();
     }
 
-    function categoriesFilterChanged(this: Filters, name: Components.EntryStyles.EventCategory): void {
-      const categories = Components.EntryStyles.getCategoryStyles();
+    function categoriesFilterChanged(this: Filters, name: Utils.EntryStyles.EventCategory): void {
+      const categories = Utils.EntryStyles.getCategoryStyles();
       const checkBox = categoryFiltersUI.get(name);
       categories[name].hidden = !checkBox || !checkBox.checked();
       this.notifyFiltersChanged();

@@ -98,7 +98,7 @@ ts_library("unittests") {
     "../../../generated",
     "../../../models/trace:bundle",
     "../../../panels/timeline:bundle",
-    "../../../panels/timeline/components:bundle",
+    "../../../panels/timeline/utils:bundle",
     "../../../testing",
   ]
 }

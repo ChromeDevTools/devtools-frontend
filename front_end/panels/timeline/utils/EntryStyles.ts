@@ -535,7 +535,7 @@ export enum EventCategory {
 
 let mainEventCategories: EventCategory[];
 
-const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/EntryStyles.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/timeline/utils/EntryStyles.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class TimelineRecordStyle {

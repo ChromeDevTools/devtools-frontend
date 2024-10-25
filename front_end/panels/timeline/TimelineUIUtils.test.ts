@@ -32,8 +32,8 @@ import {TraceLoader} from '../../testing/TraceLoader.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 
-import * as TimelineComponents from './components/components.js';
 import * as Timeline from './timeline.js';
+import * as Utils from './utils/utils.js';
 
 describeWithMockConnection('TimelineUIUtils', function() {
   let target: SDK.Target.Target;
@@ -411,12 +411,12 @@ describeWithMockConnection('TimelineUIUtils', function() {
     });
 
     it('should return the correct rgb value for a corresponding CSS variable', function() {
-      const parsedColor = TimelineComponents.EntryStyles.getCategoryStyles().scripting.getComputedColorValue();
+      const parsedColor = Utils.EntryStyles.getCategoryStyles().scripting.getComputedColorValue();
       assert.strictEqual('rgb(2 2 2)', parsedColor);
     });
 
     it('should return the color as a CSS variable', function() {
-      const cssVariable = TimelineComponents.EntryStyles.getCategoryStyles().scripting.getCSSValue();
+      const cssVariable = Utils.EntryStyles.getCategoryStyles().scripting.getCSSValue();
       assert.strictEqual('var(--app-color-scripting)', cssVariable);
     });
 

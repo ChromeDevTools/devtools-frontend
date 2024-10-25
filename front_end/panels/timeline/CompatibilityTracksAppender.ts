@@ -24,6 +24,7 @@ import {
   type TimelineFlameChartEntry,
 } from './TimelineFlameChartDataProvider.js';
 import {TimingsTrackAppender} from './TimingsTrackAppender.js';
+import * as TimelineUtils from './utils/utils.js';
 
 export type HighlightedEntryInfo = {
   title: string,
@@ -72,7 +73,7 @@ export function entryIsVisibleInTimeline(
 
   // Default styles are globally defined for each event name. Some
   // events are hidden by default.
-  const eventStyle = TimelineComponents.EntryStyles.getEventStyle(entry.name as Trace.Types.Events.Name);
+  const eventStyle = TimelineUtils.EntryStyles.getEventStyle(entry.name as Trace.Types.Events.Name);
   const eventIsTiming = Trace.Types.Events.isConsoleTime(entry) || Trace.Types.Events.isPerformanceMeasure(entry) ||
       Trace.Types.Events.isPerformanceMark(entry);
 
@@ -640,7 +641,7 @@ export class CompatibilityTracksAppender {
     if (track.titleForEvent) {
       return track.titleForEvent(event);
     }
-    return TimelineComponents.EntryName.nameForEntry(event, this.#parsedTrace);
+    return TimelineUtils.EntryName.nameForEntry(event, this.#parsedTrace);
   }
   /**
    * Returns the info shown when an event in the timeline is hovered.

@@ -38,7 +38,7 @@ const UIStrings = {
   wsConnectionClosed: 'WebSocket closed',
 };
 
-const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/EntryName.ts', UIStrings);
+const str_ = i18n.i18n.registerUIStrings('panels/timeline/utils/EntryName.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 /**

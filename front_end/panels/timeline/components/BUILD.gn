@@ -33,8 +33,6 @@ devtools_module("components") {
     "BreadcrumbsUI.ts",
     "CPUThrottlingSelector.ts",
     "DetailsView.ts",
-    "EntryName.ts",
-    "EntryStyles.ts",
     "FieldSettingsDialog.ts",
     "InteractionBreakdown.ts",
     "LayoutShiftDetails.ts",
@@ -107,7 +105,6 @@ ts_library("unittests") {
   sources = [
     "BreadcrumbsUI.test.ts",
     "CPUThrottlingSelector.test.ts",
-    "EntryName.test.ts",
     "FieldSettingsDialog.test.ts",
     "InteractionBreakdown.test.ts",
     "Invalidations.test.ts",

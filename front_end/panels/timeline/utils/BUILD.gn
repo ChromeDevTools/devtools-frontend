@@ -7,6 +7,8 @@ import("../../../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("utils") {
   sources = [
+    "EntryName.ts",
+    "EntryStyles.ts",
     "Helpers.ts",
     "IgnoreList.ts",
     "ImageCache.ts",
@@ -23,6 +25,7 @@ devtools_module("utils") {
     "../../../models/source_map_scopes:bundle",
     "../../../models/trace:bundle",
     "../../../models/workspace:bundle",
+    "../../../ui/legacy:bundle",
   ]
 }
 
@@ -37,6 +40,9 @@ devtools_entrypoint("bundle") {
     "../../network/*",
     "../components:*",
     "../components/insights:*",
+
+    # only for use in tests
+    "../../../models/trace/handlers/*",
   ]
 }
 
@@ -44,6 +50,7 @@ ts_library("unittests") {
   testonly = true
 
   sources = [
+    "EntryName.test.ts",
     "Helpers.test.ts",
     "IgnoreList.test.ts",
     "ImageCache.test.ts",

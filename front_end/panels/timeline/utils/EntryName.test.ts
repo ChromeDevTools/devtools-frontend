@@ -8,14 +8,14 @@ import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {getMainThread} from '../../../testing/TraceHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 
-import * as Components from './components.js';
+import * as Utils from './utils.js';
 
 describeWithEnvironment('EntryName', () => {
   it('uses the URL for the name of a network request', async function() {
     const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
     const request = parsedTrace.NetworkRequests.byTime.at(0);
     assert.isOk(request);
-    const name = Components.EntryName.nameForEntry(request);
+    const name = Utils.EntryName.nameForEntry(request);
     assert.strictEqual(name, 'web.dev/ (web.dev)');
   });
 
@@ -23,7 +23,7 @@ describeWithEnvironment('EntryName', () => {
     const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
     const frame = parsedTrace.Frames.frames.at(0);
     assert.isOk(frame);
-    const name = Components.EntryName.nameForEntry(frame);
+    const name = Utils.EntryName.nameForEntry(frame);
     assert.strictEqual(name, 'Frame');
   });
 
@@ -33,7 +33,7 @@ describeWithEnvironment('EntryName', () => {
       return Trace.Types.Events.isDispatch(event) && event.args.data.type === 'click';
     });
     assert.isOk(clickEvent);
-    const name = Components.EntryName.nameForEntry(clickEvent);
+    const name = Utils.EntryName.nameForEntry(clickEvent);
     assert.strictEqual(name, 'Event: click');
   });
 
@@ -42,7 +42,7 @@ describeWithEnvironment('EntryName', () => {
     const entry = parsedTrace.Renderer.allTraceEntries.find(e => e.name === Trace.Types.Events.Name.RUN_TASK);
     assert.isOk(entry);
 
-    const name = Components.EntryName.nameForEntry(entry, parsedTrace);
+    const name = Utils.EntryName.nameForEntry(entry, parsedTrace);
     assert.strictEqual(name, 'Task');
   });
 
@@ -59,7 +59,7 @@ describeWithEnvironment('EntryName', () => {
       }
     }
     assert.isOk(createEvent);
-    const name = Components.EntryName.nameForEntry(createEvent, parsedTrace);
+    const name = Utils.EntryName.nameForEntry(createEvent, parsedTrace);
     assert.strictEqual(name, 'WebSocket opened: wss://echo.websocket.org/');
   });
 
@@ -68,7 +68,7 @@ describeWithEnvironment('EntryName', () => {
       name: Trace.Types.Events.Name.WEB_SOCKET_DESTROY,
     } as unknown as Trace.Types.Events.WebSocketDestroy;
 
-    const name = Components.EntryName.nameForEntry(fakeDestroyEvent);
+    const name = Utils.EntryName.nameForEntry(fakeDestroyEvent);
     assert.strictEqual(name, 'WebSocket closed');
   });
 
@@ -76,7 +76,7 @@ describeWithEnvironment('EntryName', () => {
     const {parsedTrace} = await TraceLoader.traceEngine(this, 'slow-interaction-button-click.json.gz');
     const firstInteraction = parsedTrace.UserInteractions.interactionEvents.at(0);
     assert.isOk(firstInteraction);
-    const name = Components.EntryName.nameForEntry(firstInteraction);
+    const name = Utils.EntryName.nameForEntry(firstInteraction);
     assert.strictEqual(name, 'Pointer');
   });
 
@@ -84,7 +84,7 @@ describeWithEnvironment('EntryName', () => {
     const {parsedTrace} = await TraceLoader.traceEngine(this, 'slow-interaction-keydown.json.gz');
     const keydownInteraction = parsedTrace.UserInteractions.interactionEvents.find(e => e.type === 'keydown');
     assert.isOk(keydownInteraction);
-    const name = Components.EntryName.nameForEntry(keydownInteraction);
+    const name = Utils.EntryName.nameForEntry(keydownInteraction);
     assert.strictEqual(name, 'Keyboard');
   });
 
@@ -95,7 +95,7 @@ describeWithEnvironment('EntryName', () => {
     const firstInteraction = {...parsedTrace.UserInteractions.interactionEvents[0]};
     firstInteraction.type = 'unknown';
 
-    const name = Components.EntryName.nameForEntry(firstInteraction);
+    const name = Utils.EntryName.nameForEntry(firstInteraction);
     assert.strictEqual(name, 'Other');
   });
 
@@ -108,7 +108,7 @@ describeWithEnvironment('EntryName', () => {
       // reset this to avoid impacting other tests.
       const originalProfileNodeName = profileNode.functionName;
       profileNode.setFunctionName('testing-profile-name');
-      const name = Components.EntryName.nameForEntry(entry, parsedTrace);
+      const name = Utils.EntryName.nameForEntry(entry, parsedTrace);
       assert.strictEqual(name, 'testing-profile-name');
       profileNode.setFunctionName(originalProfileNodeName);
     });
@@ -121,7 +121,7 @@ describeWithEnvironment('EntryName', () => {
       // reset this to avoid impacting other tests.
       const originalProfileNodeName = profileNode.functionName;
       profileNode.setFunctionName('');
-      const name = Components.EntryName.nameForEntry(entry, parsedTrace);
+      const name = Utils.EntryName.nameForEntry(entry, parsedTrace);
       assert.strictEqual(name, 'performConcurrentWorkOnRoot');
       profileNode.setFunctionName(originalProfileNodeName);
     });

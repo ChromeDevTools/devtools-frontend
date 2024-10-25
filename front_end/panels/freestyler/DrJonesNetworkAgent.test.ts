@@ -15,7 +15,7 @@ import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import {createNetworkPanelForMockConnection} from '../../testing/NetworkHelpers.js';
 import * as Coordinator from '../../ui/components/render_coordinator/render_coordinator.js';
 
-import {DrJonesNetworkAgent, ResponseType} from './freestyler.js';
+import {allowHeader, DrJonesNetworkAgent, ResponseType} from './freestyler.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
@@ -146,8 +146,9 @@ describeWithMockConnection('DrJonesNetworkAgent', () => {
           'requestId' as Protocol.Network.RequestId, 'https://www.example.com' as Platform.DevToolsPath.UrlString,
           '' as Platform.DevToolsPath.UrlString, null, null, null);
       selectedNetworkRequest.statusCode = 200;
-      selectedNetworkRequest.setRequestHeaders([{name: 'foo1', value: 'bar1'}]);
-      selectedNetworkRequest.responseHeaders = [{name: 'foo2', value: 'bar2'}, {name: 'foo3', value: 'bar3'}];
+      selectedNetworkRequest.setRequestHeaders([{name: 'content-type', value: 'bar1'}]);
+      selectedNetworkRequest.responseHeaders =
+          [{name: 'content-type', value: 'bar2'}, {name: 'x-forwarded-for', value: 'bar3'}];
       selectedNetworkRequest.timing = timingInfo;
 
       const initiatorNetworkRequest = SDK.NetworkRequest.NetworkRequest.create(
@@ -222,11 +223,11 @@ describeWithMockConnection('DrJonesNetworkAgent', () => {
           details: [
             {
               title: 'Request',
-              text: 'Request URL: https://www.example.com\n\nRequest Headers\nfoo1: bar1',
+              text: 'Request URL: https://www.example.com\n\nRequest Headers\ncontent-type: bar1',
             },
             {
               title: 'Response',
-              text: 'Response Status: 200 \n\nResponse Headers\nfoo2: bar2\nfoo3: bar3',
+              text: 'Response Status: 200 \n\nResponse Headers\ncontent-type: bar2\nx-forwarded-for: bar3',
             },
             {
               title: 'Timing',
@@ -245,7 +246,7 @@ describeWithMockConnection('DrJonesNetworkAgent', () => {
         {
           type: ResponseType.QUERYING,
           query:
-              '# Selected network request \nRequest: https://www.example.com\n\nRequest headers:\nfoo1: bar1\n\nResponse headers:\nfoo2: bar2\nfoo3: bar3\n\nResponse status: 200 \n\nRequest timing:\nQueued at (timestamp): 0 μs\nStarted at (timestamp): 8.3 min\nQueueing (duration): 8.3 min\nConnection start (stalled) (duration): 800.00 ms\nRequest sent (duration): 100.00 ms\nDuration (duration): 8.3 min\n\nRequest initiator chain:\n- URL: https://www.initiator.com\n\t- URL: https://www.example.com\n\t\t- URL: https://www.example.com/1\n\t\t- URL: https://www.example.com/2\n\n# User request\n\ntest',
+              '# Selected network request \nRequest: https://www.example.com\n\nRequest headers:\ncontent-type: bar1\n\nResponse headers:\ncontent-type: bar2\nx-forwarded-for: bar3\n\nResponse status: 200 \n\nRequest timing:\nQueued at (timestamp): 0 μs\nStarted at (timestamp): 8.3 min\nQueueing (duration): 8.3 min\nConnection start (stalled) (duration): 800.00 ms\nRequest sent (duration): 100.00 ms\nDuration (duration): 8.3 min\n\nRequest initiator chain:\n- URL: https://www.initiator.com\n\t- URL: https://www.example.com\n\t\t- URL: https://www.example.com/1\n\t\t- URL: https://www.example.com/2\n\n# User request\n\ntest',
         },
         {
           type: ResponseType.ANSWER,
@@ -260,11 +261,11 @@ describeWithMockConnection('DrJonesNetworkAgent', () => {
           text: `# Selected network request \nRequest: https://www.example.com
 
 Request headers:
-foo1: bar1
+content-type: bar1
 
 Response headers:
-foo2: bar2
-foo3: bar3
+content-type: bar2
+x-forwarded-for: bar3
 
 Response status: 200 \n
 Request timing:
@@ -290,6 +291,18 @@ test`,
           text: 'This is the answer',
         },
       ]);
+    });
+  });
+
+  describe('allowHeader', () => {
+    it('allows a header from the list', () => {
+      assert.isTrue(allowHeader({name: 'content-type', value: 'foo'}));
+    });
+
+    it('disallows headers not on the list', () => {
+      assert.isFalse(allowHeader({name: 'cookie', value: 'foo'}));
+      assert.isFalse(allowHeader({name: 'set-cookie', value: 'foo'}));
+      assert.isFalse(allowHeader({name: 'authorization', value: 'foo'}));
     });
   });
 });

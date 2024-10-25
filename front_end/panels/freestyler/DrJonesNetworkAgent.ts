@@ -159,20 +159,113 @@ function formatLines(title: string, lines: string[], maxLength: number): string 
   return result && title ? title + '\n' + result : result;
 }
 
+// Header names that could be included in the prompt, lowercase.
+const allowedHeaders = new Set([
+  'a-im',
+  'accept-ch',
+  'accept-charset',
+  'accept-datetime',
+  'accept-encoding',
+  'accept-language',
+  'accept-patch',
+  'accept-ranges',
+  'accept',
+  'access-control-allow-credentials',
+  'access-control-allow-headers',
+  'access-control-allow-methods',
+  'access-control-allow-origin',
+  'access-control-expose-headers',
+  'access-control-max-age',
+  'access-control-request-headers',
+  'access-control-request-method',
+  'age',
+  'allow',
+  'alt-svc',
+  'cache-control',
+  'connection',
+  'content-disposition',
+  'content-encoding',
+  'content-language',
+  'content-length',
+  'content-location',
+  'content-md5',
+  'content-range',
+  'content-security-policy',
+  'content-type',
+  'correlation-id',
+  'date',
+  'delta-base',
+  'dnt',
+  'etag',
+  'expect-ct',
+  'expect',
+  'expires',
+  'forwarded',
+  'front-end-https',
+  'host',
+  'http2-settings',
+  'if-match',
+  'if-modified-since',
+  'if-none-match',
+  'if-range',
+  'if-unmodified-source',
+  'im',
+  'last-modified',
+  'link',
+  'location',
+  'max-forwards',
+  'nel',
+  'origin',
+  'permissions-policy',
+  'pragma',
+  'preference-applied',
+  'proxy-connection',
+  'public-key-pins',
+  'range',
+  'referer',
+  'refresh',
+  'report-to',
+  'retry-after',
+  'save-data',
+  'sec-gpc',
+  'server',
+  'status',
+  'strict-transport-security',
+  'te',
+  'timing-allow-origin',
+  'tk',
+  'trailer',
+  'transfer-encoding',
+  'upgrade-insecure-requests',
+  'upgrade',
+  'user-agent',
+  'vary',
+  'via',
+  'warning',
+  'www-authenticate',
+  'x-att-deviceid',
+  'x-content-duration',
+  'x-content-security-policy',
+  'x-content-type-options',
+  'x-correlation-id',
+  'x-forwarded-for',
+  'x-forwarded-host',
+  'x-forwarded-proto',
+  'x-frame-options',
+  'x-http-method-override',
+  'x-powered-by',
+  'x-redirected-by',
+  'x-request-id',
+  'x-requested-with',
+  'x-ua-compatible',
+  'x-uidh',
+  'x-wap-profile',
+  'x-webkit-csp',
+  'x-xss-protection',
+]);
+
 export function allowHeader(header: SDK.NetworkRequest.NameValue): boolean {
-  const normalizedName = header.name.toLowerCase().trim();
-  // Skip custom headers.
-  if (normalizedName.startsWith('x-')) {
-    return false;
-  }
-  // Skip cookies as they might contain auth.
-  if (normalizedName === 'cookie' || normalizedName === 'set-cookie') {
-    return false;
-  }
-  if (normalizedName === 'authorization') {
-    return false;
-  }
-  return true;
+  return allowedHeaders.has(header.name.toLowerCase().trim());
 }
 
 export function formatHeaders(title: string, headers: SDK.NetworkRequest.NameValue[]): string {

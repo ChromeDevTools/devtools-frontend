@@ -35,7 +35,6 @@ node_ts_library("tests") {
     "media",
     "memory",
     "network",
-    "panels",
     "performance",
     "puppeteer",
     "quick_open",

@@ -79,7 +79,7 @@ export class LighthousePanel extends UI.Panel.Panel {
   private constructor(
       controller: LighthouseController,
   ) {
-    super('lighthouse', true /* useShadowDom */);
+    super('lighthouse');
 
     this.controller = controller;
     this.startView = new StartView(this.controller, this);

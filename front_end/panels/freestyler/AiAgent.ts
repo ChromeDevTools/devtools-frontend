@@ -84,8 +84,7 @@ export interface UserQuery {
 }
 
 export type ResponseData = AnswerResponse|ErrorResponse|ActionResponse|SideEffectResponse|ThoughtResponse|TitleResponse|
-    QueryResponse|ContextResponse;
-export type ResponseDataWithHistory = ResponseData|UserQuery;
+    QueryResponse|ContextResponse|UserQuery;
 
 export interface AidaBuildRequestOptions {
   input: string;
@@ -139,7 +138,7 @@ export abstract class AiAgent<T> {
    * Mapping between the unique request id and
    * the history chuck it created
    */
-  #history = new Map<number, ResponseDataWithHistory[]>();
+  #history = new Map<number, ResponseData[]>();
 
   constructor(opts: AgentOptions) {
     this.#aidaClient = opts.aidaClient;
@@ -150,7 +149,7 @@ export abstract class AiAgent<T> {
     return this.#historyEntry;
   }
 
-  set chatNewHistoryForTesting(history: Map<number, ResponseDataWithHistory[]>) {
+  set chatNewHistoryForTesting(history: Map<number, ResponseData[]>) {
     this.#history = history;
   }
 
@@ -327,7 +326,7 @@ STOP`;
     return [...historyAll.values()].flat();
   }
 
-  #addHistory(id: number, data: ResponseDataWithHistory): void {
+  #addHistory(id: number, data: ResponseData): void {
     const currentRunEntries = this.#history.get(id);
     if (currentRunEntries) {
       currentRunEntries.push(data);
@@ -342,15 +341,17 @@ STOP`;
   }): AsyncGenerator<ResponseData, void, void> {
     const id = this.#runId++;
 
+    const response = {
+      type: ResponseType.USER_QUERY,
+      query,
+    } as const;
+    this.#addHistory(id, response);
+    yield response;
+
     for await (const response of this.handleContextDetails(options.selected)) {
       this.#addHistory(id, response);
       yield response;
     }
-
-    this.#addHistory(id, {
-      type: ResponseType.USER_QUERY,
-      query,
-    });
 
     query = await this.enhanceQuery(query, options.selected);
 
@@ -469,6 +470,14 @@ STOP`;
     }
     if (isDebugMode()) {
       window.dispatchEvent(new CustomEvent('freestylerdone'));
+    }
+  }
+
+  async * runFromHistory(): AsyncGenerator<ResponseData, void, void> {
+    for (const historyChunk of this.#history.values()) {
+      for (const entry of historyChunk) {
+        yield entry;
+      }
     }
   }
 }

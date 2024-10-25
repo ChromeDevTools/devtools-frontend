@@ -761,6 +761,10 @@ c`;
       const responses = await Array.fromAsync(agent.run('test', {selected: element}));
       assert.deepStrictEqual(responses, [
         {
+          type: Freestyler.ResponseType.USER_QUERY,
+          query: 'test',
+        },
+        {
           type: Freestyler.ResponseType.CONTEXT,
           title: 'Analyzing the prompt',
           details: [
@@ -814,6 +818,10 @@ c`;
       const responses = await Array.fromAsync(agent.run('test', {selected: element}));
       assert.deepStrictEqual(responses, [
         {
+          type: Freestyler.ResponseType.USER_QUERY,
+          query: 'test',
+        },
+        {
           type: Freestyler.ResponseType.CONTEXT,
           title: 'Analyzing the prompt',
           details: [
@@ -860,6 +868,10 @@ c`;
       const responses = await Array.fromAsync(agent.run('test', {selected: element}));
       assert.deepStrictEqual(responses, [
         {
+          type: Freestyler.ResponseType.USER_QUERY,
+          query: 'test',
+        },
+        {
           type: Freestyler.ResponseType.CONTEXT,
           title: 'Analyzing the prompt',
           details: [
@@ -905,6 +917,10 @@ c`;
       const responses = await Array.fromAsync(agent.run('test', {selected: element}));
       assert.deepStrictEqual(responses, [
         {
+          type: Freestyler.ResponseType.USER_QUERY,
+          query: 'test',
+        },
+        {
           type: Freestyler.ResponseType.CONTEXT,
           title: 'Analyzing the prompt',
           details: [
@@ -943,6 +959,10 @@ c`;
       });
       const responses = await Array.fromAsync(agent.run('test', {selected: element}));
       assert.deepStrictEqual(responses, [
+        {
+          type: Freestyler.ResponseType.USER_QUERY,
+          query: 'test',
+        },
         {
           type: Freestyler.ResponseType.CONTEXT,
           title: 'Analyzing the prompt',
@@ -1002,6 +1022,10 @@ ANSWER: this is the answer`,
       });
       const responses = await Array.fromAsync(agent.run('test', {selected: element}));
       assert.deepStrictEqual(responses, [
+        {
+          type: Freestyler.ResponseType.USER_QUERY,
+          query: 'test',
+        },
         {
           type: Freestyler.ResponseType.CONTEXT,
           title: 'Analyzing the prompt',

@@ -12,7 +12,11 @@ import * as NetworkForward from '../../panels/network/forward/forward.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as LitHtml from '../../ui/lit-html/lit-html.js';
 
-import {ErrorType, type ResponseData, ResponseType} from './AiAgent.js';
+import {
+  ErrorType,
+  type ResponseData,
+  ResponseType,
+} from './AiAgent.js';
 import {ChangeManager} from './ChangeManager.js';
 import {
   AgentType,
@@ -424,49 +428,63 @@ export class FreestylerPanel extends UI.Panel.Panel {
         this.#viewOutput.freestylerChatUi?.focusTextInput();
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.FreestylerOpenedFromElementsPanelFloatingButton);
         this.#viewProps.agentType = AgentType.FREESTYLER;
+        this.#viewProps.messages = [];
         this.doUpdate();
+        void this.#doConversation(this.#freestylerAgent.runFromHistory());
         break;
       }
       case 'freestyler.element-panel-context': {
         this.#viewOutput.freestylerChatUi?.focusTextInput();
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.FreestylerOpenedFromElementsPanel);
         this.#viewProps.agentType = AgentType.FREESTYLER;
+        this.#viewProps.messages = [];
         this.doUpdate();
+        void this.#doConversation(this.#freestylerAgent.runFromHistory());
         break;
       }
       case 'drjones.network-floating-button': {
         this.#viewOutput.freestylerChatUi?.focusTextInput();
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.DrJonesOpenedFromNetworkPanelFloatingButton);
         this.#viewProps.agentType = AgentType.DRJONES_NETWORK_REQUEST;
+        this.#viewProps.messages = [];
         this.doUpdate();
+        void this.#doConversation(this.#drJonesNetworkAgent.runFromHistory());
         break;
       }
       case 'drjones.network-panel-context': {
         this.#viewOutput.freestylerChatUi?.focusTextInput();
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.DrJonesOpenedFromNetworkPanel);
         this.#viewProps.agentType = AgentType.DRJONES_NETWORK_REQUEST;
+        this.#viewProps.messages = [];
         this.doUpdate();
+        void this.#doConversation(this.#drJonesNetworkAgent.runFromHistory());
         break;
       }
       case 'drjones.performance-panel-context': {
         this.#viewOutput.freestylerChatUi?.focusTextInput();
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.DrJonesOpenedFromPerformancePanel);
         this.#viewProps.agentType = AgentType.DRJONES_PERFORMANCE;
+        this.#viewProps.messages = [];
         this.doUpdate();
+        void this.#doConversation(this.#drJonesPerformanceAgent.runFromHistory());
         break;
       }
       case 'drjones.sources-floating-button': {
         this.#viewOutput.freestylerChatUi?.focusTextInput();
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.DrJonesOpenedFromSourcesPanelFloatingButton);
         this.#viewProps.agentType = AgentType.DRJONES_FILE;
+        this.#viewProps.messages = [];
         this.doUpdate();
+        void this.#doConversation(this.#drJonesFileAgent.runFromHistory());
         break;
       }
       case 'drjones.sources-panel-context': {
         this.#viewOutput.freestylerChatUi?.focusTextInput();
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.DrJonesOpenedFromSourcesPanel);
         this.#viewProps.agentType = AgentType.DRJONES_FILE;
+        this.#viewProps.messages = [];
         this.doUpdate();
+        void this.#doConversation(this.#drJonesFileAgent.runFromHistory());
         break;
       }
     }
@@ -475,9 +493,15 @@ export class FreestylerPanel extends UI.Panel.Panel {
   #clearMessages(): void {
     this.#viewProps.messages = [];
     this.#viewProps.isLoading = false;
-    this.#freestylerAgent = this.#createFreestylerAgent();
-    this.#drJonesFileAgent = this.#createDrJonesFileAgent();
-    this.#drJonesNetworkAgent = this.#createDrJonesNetworkAgent();
+    if (this.#viewProps.agentType === AgentType.FREESTYLER) {
+      this.#freestylerAgent = this.#createFreestylerAgent();
+    } else if (this.#viewProps.agentType === AgentType.DRJONES_FILE) {
+      this.#drJonesFileAgent = this.#createDrJonesFileAgent();
+    } else if (this.#viewProps.agentType === AgentType.DRJONES_NETWORK_REQUEST) {
+      this.#drJonesNetworkAgent = this.#createDrJonesNetworkAgent();
+    } else if (this.#viewProps.agentType === AgentType.DRJONES_PERFORMANCE) {
+      this.#drJonesPerformanceAgent = this.#createDrJonesPerformanceAgent();
+    }
     this.#cancel();
     this.doUpdate();
     UI.ARIAUtils.alert(i18nString(UIStrings.chatCleared));
@@ -486,24 +510,11 @@ export class FreestylerPanel extends UI.Panel.Panel {
   #runAbortController = new AbortController();
   #cancel(): void {
     this.#runAbortController.abort();
-    this.#runAbortController = new AbortController();
     this.#viewProps.isLoading = false;
     this.doUpdate();
   }
 
   async #startConversation(text: string): Promise<void> {
-    this.#viewProps.messages.push({
-      entity: ChatMessageEntity.USER,
-      text,
-    });
-    this.#viewProps.isLoading = true;
-    const systemMessage: ModelChatMessage = {
-      entity: ChatMessageEntity.MODEL,
-      steps: [],
-    };
-    this.#viewProps.messages.push(systemMessage);
-    this.doUpdate();
-
     this.#runAbortController = new AbortController();
     const signal = this.#runAbortController.signal;
 
@@ -522,11 +533,29 @@ export class FreestylerPanel extends UI.Panel.Panel {
       return;
     }
 
-    let step: Step = {isLoading: true};
     UI.ARIAUtils.alert(lockedString(UIStringsNotTranslate.answerLoading));
-    for await (const data of runner) {
+    await this.#doConversation(runner);
+    UI.ARIAUtils.alert(lockedString(UIStringsNotTranslate.answerReady));
+  }
+
+  async #doConversation(generator: AsyncGenerator<ResponseData, void, void>): Promise<void> {
+    const systemMessage: ModelChatMessage = {
+      entity: ChatMessageEntity.MODEL,
+      steps: [],
+    };
+    let step: Step = {isLoading: true};
+    for await (const data of generator) {
       step.sideEffect = undefined;
       switch (data.type) {
+        case ResponseType.USER_QUERY: {
+          this.#viewProps.messages.push({
+            entity: ChatMessageEntity.USER,
+            text: data.query,
+          });
+          this.#viewProps.isLoading = true;
+          this.#viewProps.messages.push(systemMessage);
+          break;
+        }
         case ResponseType.QUERYING: {
           step = {isLoading: true};
           if (!systemMessage.steps.length) {
@@ -592,7 +621,6 @@ export class FreestylerPanel extends UI.Panel.Panel {
           this.#viewProps.isLoading = false;
           break;
         }
-
         case ResponseType.ERROR: {
           systemMessage.error = data.error;
           systemMessage.rpcId = undefined;
@@ -613,7 +641,6 @@ export class FreestylerPanel extends UI.Panel.Panel {
       this.doUpdate();
       this.#viewOutput.freestylerChatUi?.scrollToLastMessage();
     }
-    UI.ARIAUtils.alert(lockedString(UIStringsNotTranslate.answerReady));
   }
 }
 

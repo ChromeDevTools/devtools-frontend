@@ -152,4 +152,76 @@ describeWithEnvironment('AiAgent', () => {
       ]);
     });
   });
+
+  describe('runFromHistory', () => {
+    it('should run', async () => {
+      const agent = new AiAgentMock({
+        aidaClient: {} as Host.AidaClient.AidaClient,
+      });
+      agent.chatNewHistoryForTesting = new Map([
+        [
+          0,
+          [
+            {
+              type: ResponseType.USER_QUERY,
+              query: 'first question',
+            },
+            {
+              type: ResponseType.QUERYING,
+              query: 'first enhancements',
+            },
+            {
+              type: ResponseType.ANSWER,
+              text: 'first answer',
+            },
+          ],
+        ],
+        [
+          1,
+          [
+            {
+              type: ResponseType.USER_QUERY,
+              query: 'second question',
+            },
+            {
+              type: ResponseType.QUERYING,
+              query: 'second enhancements',
+            },
+            {
+              type: ResponseType.ANSWER,
+              text: 'second answer',
+            },
+          ],
+        ],
+      ]);
+
+      const responses = await Array.fromAsync(agent.runFromHistory());
+      assert.deepStrictEqual(responses, [
+        {
+          type: ResponseType.USER_QUERY,
+          query: 'first question',
+        },
+        {
+          type: ResponseType.QUERYING,
+          query: 'first enhancements',
+        },
+        {
+          type: ResponseType.ANSWER,
+          text: 'first answer',
+        },
+        {
+          type: ResponseType.USER_QUERY,
+          query: 'second question',
+        },
+        {
+          type: ResponseType.QUERYING,
+          query: 'second enhancements',
+        },
+        {
+          type: ResponseType.ANSWER,
+          text: 'second answer',
+        },
+      ]);
+    });
+  });
 });

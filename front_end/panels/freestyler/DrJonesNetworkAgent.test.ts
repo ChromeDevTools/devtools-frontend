@@ -218,6 +218,10 @@ describeWithMockConnection('DrJonesNetworkAgent', () => {
       const responses = await Array.fromAsync(agent.run('test', {selected: selectedNetworkRequest}));
       assert.deepStrictEqual(responses, [
         {
+          type: ResponseType.USER_QUERY,
+          query: 'test',
+        },
+        {
           type: ResponseType.CONTEXT,
           title: 'Analyzing network data',
           details: [

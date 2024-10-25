@@ -166,6 +166,10 @@ describeWithMockConnection('DrJonesFileAgent', () => {
 
       assert.deepStrictEqual(responses, [
         {
+          type: ResponseType.USER_QUERY,
+          query: 'test',
+        },
+        {
           type: ResponseType.CONTEXT,
           title: 'Analyzing file',
           details: [

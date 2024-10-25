@@ -19,6 +19,8 @@
   for (let i = 0; i < 30; ++i) {
     holder.d.push(makeObject());
   }
+  holder.a.x = holder.d[0];
+  holder.d[0].x = [1, 2, 3];
   document.getElementById('update').addEventListener('click', function () {
     holder.b = new DuplicatedClassName();
     holder.e = new DuplicatedClassName();

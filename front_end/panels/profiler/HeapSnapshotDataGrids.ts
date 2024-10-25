@@ -831,17 +831,18 @@ export class HeapSnapshotConstructorsDataGrid extends HeapSnapshotViewportDataGr
       return null;
     }
 
-    const className = await this.snapshot.nodeClassName(parseInt(id, 10));
-    if (!className) {
+    const classKey = await this.snapshot.nodeClassKey(parseInt(id, 10));
+    if (!classKey) {
       return null;
     }
 
-    const parent = this.topLevelNodes().find(classNode => classNode.name === className);
+    const topLevelNodes = this.topLevelNodes() as HeapSnapshotConstructorNode[];
+    const parent = topLevelNodes.find(classNode => classNode.classKey === classKey);
     if (!parent) {
       return null;
     }
 
-    const nodes = await (parent as HeapSnapshotConstructorNode).populateNodeBySnapshotObjectId(parseInt(id, 10));
+    const nodes = await parent.populateNodeBySnapshotObjectId(parseInt(id, 10));
     return nodes.length ? this.revealTreeNode(nodes) : null;
   }
 

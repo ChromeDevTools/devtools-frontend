@@ -29,6 +29,7 @@ import {
   expandFocusedRow,
   findSearchResult,
   focusTableRow,
+  focusTableRowWithName,
   getAddedCountFromComparisonRow,
   getAddedCountFromComparisonRowWithName,
   getCategoryRow,
@@ -433,12 +434,12 @@ describe('The Memory Panel', function() {
     await setSearchFilter('Retainer');
     await waitForSearchResultNumber(4);
     await findSearchResult('Retainer()');
-    await focusTableRow('Retainer()');
+    await focusTableRowWithName('Retainer()');
     await expandFocusedRow();
-    await focusTableRow('customProperty');
+    await focusTableRowWithName('customProperty');
     const sizesForSet = await getSizesFromSelectedRow();
     await expandFocusedRow();
-    await focusTableRow('(internal array)[]');
+    await focusTableRowWithName('(internal array)[]');
     const sizesForBackingStorage = await getSizesFromSelectedRow();
     return {sizesForSet, sizesForBackingStorage};
   }
@@ -582,7 +583,14 @@ describe('The Memory Panel', function() {
     let rows = await waitForMany('tr.data-grid-data-grid-node', 2);
     assert.strictEqual(30, await getCountFromCategoryRow(rows[0]));
     assert.strictEqual(3, await getCountFromCategoryRow(rows[1]));
+    await focusTableRow(rows[0]);
+    await expandFocusedRow();
     const {frontend, target} = await getBrowserAndPages();
+    await frontend.keyboard.press('ArrowDown');
+    await clickOnContextMenuForRetainer('x', 'Reveal in Summary view');
+    await waitUntilRetainerChainSatisfies(
+        retainerChain => retainerChain.length > 0 && retainerChain[0].propertyName === 'a');
+
     await target.bringToFront();
     await target.click('button#update');
     await frontend.bringToFront();

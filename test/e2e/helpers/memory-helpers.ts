@@ -296,8 +296,12 @@ export async function changeAllocationSampleViewViaDropdown(newPerspective: stri
   await dropdown.select(optionValue);
 }
 
-export async function focusTableRow(text: string) {
+export async function focusTableRowWithName(text: string) {
   const row = await waitFor(`//span[text()="${text}"]/ancestor::tr`, undefined, undefined, 'xpath');
+  await focusTableRow(row);
+}
+
+export async function focusTableRow(row: puppeteer.ElementHandle<Element>) {
   // Click in a numeric cell, to avoid accidentally clicking a link.
   const cell = await waitFor('.numeric-column', row);
   await clickElement(cell);

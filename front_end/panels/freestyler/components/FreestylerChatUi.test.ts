@@ -4,7 +4,7 @@
 
 import * as Host from '../../../core/host/host.js';
 import type * as SDK from '../../../core/sdk/sdk.js';
-import type * as Trace from '../../../models/trace/trace.js';
+import type * as TimelineUtils from '../../../panels/timeline/utils/utils.js';
 import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {describeWithEnvironment, getGetHostConfigStub} from '../../../testing/EnvironmentHelpers.js';
 import * as Marked from '../../../third_party/marked/marked.js';
@@ -56,7 +56,7 @@ css
       selectedElement: {} as unknown as SDK.DOMModel.DOMNode,
       selectedFile: null,
       selectedNetworkRequest: {} as unknown as SDK.NetworkRequest.NetworkRequest,
-      selectedStackTrace: {} as unknown as Trace.Helpers.TreeHelpers.AINode,
+      selectedAiCallTree: {} as unknown as TimelineUtils.AICallTree.AICallTree,
       isLoading: false,
       canShowFeedbackForm: false,
       userInfo: {},

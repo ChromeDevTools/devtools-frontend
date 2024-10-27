@@ -4,9 +4,9 @@
 
 import * as Host from '../../../../core/host/host.js';
 import type * as SDK from '../../../../core/sdk/sdk.js';
-import type * as Trace from '../../../../models/trace/trace.js';
 import type * as Workspace from '../../../../models/workspace/workspace.js';
 import * as Freestyler from '../../../../panels/freestyler/freestyler.js';
+import type * as TimelineUtils from '../../../../panels/timeline/utils/utils.js';
 import * as FrontendHelpers from '../../../../testing/EnvironmentHelpers.js';
 import * as ComponentHelpers from '../../helpers/helpers.js';
 
@@ -54,7 +54,7 @@ const component = new Freestyler.FreestylerChatUi({
   selectedElement: {} as unknown as SDK.DOMModel.DOMNode,
   selectedFile: {} as unknown as Workspace.UISourceCode.UISourceCode,
   selectedNetworkRequest: {} as unknown as SDK.NetworkRequest.NetworkRequest,
-  selectedStackTrace: {} as unknown as Trace.Helpers.TreeHelpers.AINode,
+  selectedAiCallTree: {} as unknown as TimelineUtils.AICallTree.AICallTree,
   agentType: Freestyler.AgentType.FREESTYLER,
   isLoading: false,
   canShowFeedbackForm: false,

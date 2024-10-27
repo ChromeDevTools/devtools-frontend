@@ -3,9 +3,9 @@
 // found in the LICENSE file.
 
 import type * as Host from '../../core/host/host.js';
-import * as Trace from '../../models/trace/trace.js';
 import {describeWithEnvironment, getGetHostConfigStub} from '../../testing/EnvironmentHelpers.js';
-import {makeCompleteEvent, makeProfileCall} from '../../testing/TraceHelpers.js';
+import {TraceLoader} from '../../testing/TraceLoader.js';
+import * as TimelineUtils from '../timeline/utils/utils.js';
 
 import {DrJonesPerformanceAgent, ResponseType} from './freestyler.js';
 
@@ -110,30 +110,15 @@ describeWithEnvironment('DrJonesPerformanceAgent', () => {
     });
   });
   describe('run', function() {
-    const evaluateScript = makeCompleteEvent(Trace.Types.Events.Name.EVALUATE_SCRIPT, 0, 500);
-    const v8Run = makeCompleteEvent('v8.run', 10, 490);
-    const parseFunction = makeCompleteEvent('V8.ParseFunction', 12, 1);
-    const traceEvents: Trace.Types.Events.Event[] = [evaluateScript, v8Run, parseFunction];
-    const profileCalls = [makeProfileCall('a', 100, 200), makeProfileCall('b', 300, 200)];
+    it('generates an answer', async function() {
+      const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-outermost-frames.json.gz');
+      // A basic Layout.
+      const layoutEvt = parsedTrace.Renderer.allTraceEntries.find(event => event.ts === 465457096322);
+      assert.exists(layoutEvt);
+      const aiCallTree =
+          TimelineUtils.AICallTree.AICallTree.from(layoutEvt, parsedTrace.Renderer.allTraceEntries, parsedTrace);
+      assert.exists(aiCallTree);
 
-    // Roughly this looks like:
-    // 0                                          500
-    // |------------- EvaluateScript -------------|
-    //  |-        v8.run                         -|
-    //    |--|   |-    a   -||-          b        |
-    //      ^ V8.ParseFunction
-
-    const allEntries = Trace.Helpers.Trace.mergeEventsInOrder(traceEvents, profileCalls);
-    const {entryToNode} = Trace.Helpers.TreeHelpers.treify(allEntries, {filter: {has: () => true}});
-    const selectedNode = entryToNode.get(v8Run);
-    assert.exists(selectedNode);
-
-    const aiNodeTree = Trace.Helpers.TreeHelpers.AINode.fromEntryNode(selectedNode, () => true);
-    const v8RunNode = Trace.Helpers.TreeHelpers.AINode.getSelectedNodeWithinTree(aiNodeTree);
-    assert.exists(aiNodeTree);
-    assert.exists(v8RunNode);
-
-    it('generates an answer', async () => {
       async function* generateAnswer() {
         yield {
           explanation: 'This is the answer',
@@ -148,9 +133,23 @@ describeWithEnvironment('DrJonesPerformanceAgent', () => {
         aidaClient: mockAidaClient(generateAnswer),
       });
 
-      // Select the v8.run node
-      v8RunNode.selected = true;
-      const responses = await Array.fromAsync(agent.run('test', {selected: aiNodeTree}));
+      const responses = await Array.fromAsync(agent.run('test', {selected: aiCallTree}));
+      const expectedData = '\n\n' +
+          `
+
+
+# Call tree:
+
+Node: 1 – Task
+dur: 3
+Children:
+  * 2 – Layout
+
+Node: 2 – Layout
+Selected: true
+dur: 3
+self: 3
+`.trim();
 
       assert.deepStrictEqual(responses, [
         {
@@ -159,33 +158,14 @@ describeWithEnvironment('DrJonesPerformanceAgent', () => {
         },
         {
           type: ResponseType.CONTEXT,
-          title: 'Analyzing stack',
+          title: 'Analyzing call tree',
           details: [
-            {
-              title: 'Selected stack',
-              text: JSON.stringify({
-                name: 'EvaluateScript',
-                dur: 0.5,
-                self: 0,
-                children: [{
-                  selected: true,
-                  name: 'v8.run',
-                  dur: 0.5,
-                  self: 0.1,
-                  children: [
-                    {name: 'V8.ParseFunction', dur: 0, self: 0},
-                    {name: 'a', url: '', dur: 0.2, self: 0.2},
-                    {name: 'b', url: '', dur: 0.2, self: 0.2},
-                  ],
-                }],
-              }),
-            },
+            {title: 'Selected call tree', text: expectedData},
           ],
         },
         {
           type: ResponseType.QUERYING,
-          query:
-              '# Selected stack trace\n{\"name\":\"EvaluateScript\",\"dur\":0.5,\"self\":0}\n\n# User request\n\ntest',
+          query: `\n${expectedData}\n\n# User request\n\ntest`,
         },
         {
           type: ResponseType.ANSWER,
@@ -198,7 +178,7 @@ describeWithEnvironment('DrJonesPerformanceAgent', () => {
       assert.deepStrictEqual(agent.chatHistoryForTesting, [
         {
           entity: 1,
-          text: `# Selected stack trace\n${JSON.stringify(aiNodeTree)}\n\n# User request\n\ntest`,
+          text: `\n${aiCallTree.serialize()}\n\n# User request\n\ntest`,
         },
         {
           entity: 2,

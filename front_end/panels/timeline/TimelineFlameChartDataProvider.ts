@@ -216,12 +216,22 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     // TODO(crbug.com/368240754): Temporarily use soft menu for the shortcuts to show, till the accelerators backend CLs land.
     const contextMenu = new UI.ContextMenu.ContextMenu(event, {useSoftMenu: true});
 
-    if (UI.ActionRegistry.ActionRegistry.instance().hasAction('drjones.performance-panel-context')) {
-      const aiNode = this.getAIEventNodeTreeFromEntryIndex(entryIndex);
-      UI.Context.Context.instance().setFlavor(Trace.Helpers.TreeHelpers.AINode, aiNode);
-      contextMenu.headerSection().appendAction(
-          'drjones.performance-panel-context',
-      );
+    // This action and its 'execute' is defined in `freestyler-meta`
+    const actionIdDrJ = 'drjones.performance-panel-context';
+    if (UI.ActionRegistry.ActionRegistry.instance().hasAction(actionIdDrJ)) {
+      const action = UI.ActionRegistry.ActionRegistry.instance().getAction(actionIdDrJ);
+      contextMenu.headerSection().appendItem(action.title(), () => {
+        const event = this.eventByIndex(entryIndex);
+        if (!event || !this.parsedTrace) {
+          return;
+        }
+        const allEvents = Array.from(this.entryData.values());
+        const aiCallTree = Utils.AICallTree.AICallTree.from(event, allEvents, this.parsedTrace);
+
+        // The other side of setFlavor is handleTraceEntryNodeFlavorChange() in FreestylerPanel
+        UI.Context.Context.instance().setFlavor(Utils.AICallTree.AICallTree, aiCallTree);
+        return action.execute();
+      }, {jslogContext: actionIdDrJ});
     }
 
     const hideEntryOption = contextMenu.defaultSection().appendItem(i18nString(UIStrings.hideFunction), () => {
@@ -325,15 +335,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     this.timelineData(true);
     this.buildFlowForInitiator(entryIndex);
     this.dispatchEventToListeners(Events.DATA_CHANGED);
-  }
-
-  getAIEventNodeTreeFromEntryIndex(entryIndex: number): Trace.Helpers.TreeHelpers.AINode|null {
-    const entry = this.entryData[entryIndex] as Trace.Types.Events.Event;
-    const manager = ModificationsManager.activeManager();
-    if (!manager) {
-      return null;
-    }
-    return manager.getEntriesFilter().getAIEventNodeTree(entry);
   }
 
   findPossibleContextMenuActions(entryIndex: number): PerfUI.FlameChart.PossibleFilterActions|void {

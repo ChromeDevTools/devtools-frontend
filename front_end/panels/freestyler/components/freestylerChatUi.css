@@ -229,12 +229,9 @@
   align-items: center;
   width: 100%;
 
-  .resource-link {
-    cursor: pointer;
-  }
-
   .resource-link,
   .resource-task {
+    cursor: pointer;
     padding: var(--sys-size-2) var(--sys-size-4);
     font: var(--sys-typescale-body4-size);
     border: var(--sys-size-1) solid var(--sys-color-divider);

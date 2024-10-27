@@ -656,6 +656,7 @@ export class TimelineUIUtils {
     if (Trace.Types.Events.isProfileCall(event)) {
       const frame = event.callFrame;
       if (TimelineUIUtils.isUserFrame(frame)) {
+        // TODO(andoli): This should use the resolved (sourcemapped) URL
         return TimelineUIUtils.colorForId(frame.url);
       }
     }

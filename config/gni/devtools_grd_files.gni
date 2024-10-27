@@ -1865,6 +1865,7 @@ grd_files_debug_sources = [
   "front_end/panels/timeline/timelinePaintProfiler.css.js",
   "front_end/panels/timeline/timelinePanel.css.js",
   "front_end/panels/timeline/timelineStatusDialog.css.js",
+  "front_end/panels/timeline/utils/AICallTree.js",
   "front_end/panels/timeline/utils/EntryName.js",
   "front_end/panels/timeline/utils/EntryStyles.js",
   "front_end/panels/timeline/utils/Helpers.js",

@@ -2572,6 +2572,13 @@ export class TraceRevealer implements Common.Revealer.Revealer<SDK.TraceObject.T
   }
 }
 
+export class EventRevealer implements Common.Revealer.Revealer<SDK.TraceObject.RevealableEvent> {
+  async reveal(rEvent: SDK.TraceObject.RevealableEvent): Promise<void> {
+    await UI.ViewManager.ViewManager.instance().showView('timeline');
+    TimelinePanel.instance().select(TimelineSelection.fromTraceEvent(rEvent.event));
+  }
+}
+
 export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
   handleAction(context: UI.Context.Context, actionId: string): boolean {
     const panel = context.flavor(TimelinePanel);

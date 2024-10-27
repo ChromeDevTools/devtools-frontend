@@ -42,6 +42,7 @@ devtools_module("freestyler") {
     "../../models/trace:bundle",
     "../../models/workspace:bundle",
     "../../panels/network:bundle",
+    "../../panels/timeline/utils:bundle",
     "../../panels/utils:bundle",
     "../../third_party/marked:bundle",
     "../../ui/components/markdown_view:bundle",
@@ -99,6 +100,7 @@ ts_library("unittests") {
     "../../generated:protocol",
     "../../models/bindings:bundle",
     "../../models/trace:bundle",
+    "../../panels/timeline/utils:bundle",
     "../../testing",
   ]
 }

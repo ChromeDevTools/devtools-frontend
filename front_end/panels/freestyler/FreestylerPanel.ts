@@ -6,9 +6,9 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import * as Trace from '../../models/trace/trace.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as NetworkForward from '../../panels/network/forward/forward.js';
+import * as TimelineUtils from '../../panels/timeline/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as LitHtml from '../../ui/lit-html/lit-html.js';
 
@@ -200,7 +200,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
       selectedElement: null,
       selectedFile: null,
       selectedNetworkRequest: null,
-      selectedStackTrace: null,
+      selectedAiCallTree: null,
     };
 
     this.#freestylerAgent = this.#createFreestylerAgent();
@@ -281,7 +281,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
       inspectElementToggled: this.#toggleSearchElementAction.toggled(),
       selectedElement: selectedElementFilter(UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode)),
       selectedNetworkRequest: UI.Context.Context.instance().flavor(SDK.NetworkRequest.NetworkRequest),
-      selectedStackTrace: UI.Context.Context.instance().flavor(Trace.Helpers.TreeHelpers.AINode),
+      selectedAiCallTree: UI.Context.Context.instance().flavor(TimelineUtils.AICallTree.AICallTree),
       selectedFile: UI.Context.Context.instance().flavor(Workspace.UISourceCode.UISourceCode),
     };
     this.doUpdate();
@@ -295,7 +295,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
     UI.Context.Context.instance().addFlavorChangeListener(
         SDK.NetworkRequest.NetworkRequest, this.#handleNetworkRequestFlavorChange);
     UI.Context.Context.instance().addFlavorChangeListener(
-        Trace.Helpers.TreeHelpers.AINode, this.#handleTraceEntryNodeFlavorChange);
+        TimelineUtils.AICallTree.AICallTree, this.#handleTraceEntryNodeFlavorChange);
     UI.Context.Context.instance().addFlavorChangeListener(
         Workspace.UISourceCode.UISourceCode, this.#handleUISourceCodeFlavorChange);
 
@@ -312,7 +312,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
     UI.Context.Context.instance().removeFlavorChangeListener(
         SDK.NetworkRequest.NetworkRequest, this.#handleNetworkRequestFlavorChange);
     UI.Context.Context.instance().removeFlavorChangeListener(
-        Trace.Helpers.TreeHelpers.AINode, this.#handleTraceEntryNodeFlavorChange);
+        TimelineUtils.AICallTree.AICallTree, this.#handleTraceEntryNodeFlavorChange);
     UI.Context.Context.instance().removeFlavorChangeListener(
         Workspace.UISourceCode.UISourceCode, this.#handleUISourceCodeFlavorChange);
   }
@@ -361,12 +361,12 @@ export class FreestylerPanel extends UI.Panel.Panel {
       };
 
   #handleTraceEntryNodeFlavorChange =
-      (ev: Common.EventTarget.EventTargetEvent<Trace.Helpers.TreeHelpers.AINode>): void => {
-        if (this.#viewProps.selectedStackTrace === ev.data) {
+      (ev: Common.EventTarget.EventTargetEvent<TimelineUtils.AICallTree.AICallTree>): void => {
+        if (this.#viewProps.selectedAiCallTree === ev.data) {
           return;
         }
 
-        this.#viewProps.selectedStackTrace = Boolean(ev.data) ? ev.data : null;
+        this.#viewProps.selectedAiCallTree = Boolean(ev.data) ? ev.data : null;
         this.doUpdate();
       };
 
@@ -531,7 +531,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
     } else if (this.#viewProps.agentType === AgentType.DRJONES_NETWORK_REQUEST) {
       runner = this.#drJonesNetworkAgent.run(text, {signal, selected: this.#viewProps.selectedNetworkRequest});
     } else if (this.#viewProps.agentType === AgentType.DRJONES_PERFORMANCE) {
-      runner = this.#drJonesPerformanceAgent.run(text, {signal, selected: this.#viewProps.selectedStackTrace});
+      runner = this.#drJonesPerformanceAgent.run(text, {signal, selected: this.#viewProps.selectedAiCallTree});
     }
 
     if (!runner) {

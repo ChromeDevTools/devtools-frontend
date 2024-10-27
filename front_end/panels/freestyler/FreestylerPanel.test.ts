@@ -5,10 +5,10 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import * as Trace from '../../models/trace/trace.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import {describeWithEnvironment, getGetHostConfigStub, registerNoopActions} from '../../testing/EnvironmentHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as TimelineUtils from '../timeline/utils/utils.js';
 
 import * as Freestyler from './freestyler.js';
 
@@ -431,27 +431,27 @@ describeWithEnvironment('FreestylerPanel', () => {
       });
     });
 
-    describe('Trace.Helpers.TreeHelpers.TraceEntryNodeForAI flavor changes for selected stack trace', () => {
-      it('should set the selected stack trace when the widget is shown', () => {
-        UI.Context.Context.instance().setFlavor(Trace.Helpers.TreeHelpers.AINode, null);
+    describe('TimelineUtils.AICallTree.AICallTree flavor changes for selected call tree', () => {
+      it('should set the selected call tree when the widget is shown', () => {
+        UI.Context.Context.instance().setFlavor(TimelineUtils.AICallTree.AICallTree, null);
         panel = new Freestyler.FreestylerPanel(mockView, {
           aidaClient: getTestAidaClient(),
           aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
           syncInfo: getTestSyncInfo(),
         });
 
-        const traceEntryNode = {};
-        UI.Context.Context.instance().setFlavor(Trace.Helpers.TreeHelpers.AINode, traceEntryNode);
+        const selectedAiCallTree = {};
+        UI.Context.Context.instance().setFlavor(TimelineUtils.AICallTree.AICallTree, selectedAiCallTree);
         panel.markAsRoot();
         panel.show(document.body);
 
         sinon.assert.calledWith(mockView, sinon.match({
-          selectedStackTrace: traceEntryNode,
+          selectedAiCallTree,
         }));
       });
 
-      it('should set selected stack trace when the TraceEntryNodeForAI flavor changes', () => {
-        UI.Context.Context.instance().setFlavor(Trace.Helpers.TreeHelpers.AINode, null);
+      it('should set selected call tree when the AICallTree flavor changes', () => {
+        UI.Context.Context.instance().setFlavor(TimelineUtils.AICallTree.AICallTree, null);
         panel = new Freestyler.FreestylerPanel(mockView, {
           aidaClient: getTestAidaClient(),
           aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
@@ -460,27 +460,27 @@ describeWithEnvironment('FreestylerPanel', () => {
         panel.markAsRoot();
         panel.show(document.body);
         sinon.assert.calledWith(mockView, sinon.match({
-          selectedStackTrace: null,
+          selectedAiCallTree: null,
         }));
 
-        const traceEntryNode = {};
-        UI.Context.Context.instance().setFlavor(Trace.Helpers.TreeHelpers.AINode, traceEntryNode);
+        const selectedAiCallTree = {};
+        UI.Context.Context.instance().setFlavor(TimelineUtils.AICallTree.AICallTree, selectedAiCallTree);
 
         sinon.assert.calledWith(mockView, sinon.match({
-          selectedStackTrace: traceEntryNode,
+          selectedAiCallTree,
         }));
       });
 
-      it('should not handle TraceEntryNodeForAI flavor changes if the widget is not shown', () => {
-        UI.Context.Context.instance().setFlavor(Trace.Helpers.TreeHelpers.AINode, null);
+      it('should not handle AICallTree flavor changes if the widget is not shown', () => {
+        UI.Context.Context.instance().setFlavor(TimelineUtils.AICallTree.AICallTree, null);
         panel = new Freestyler.FreestylerPanel(mockView, {
           aidaClient: getTestAidaClient(),
           aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
           syncInfo: getTestSyncInfo(),
         });
 
-        const traceEntryNode = {};
-        UI.Context.Context.instance().setFlavor(Trace.Helpers.TreeHelpers.AINode, traceEntryNode);
+        const selectedAiCallTree = {};
+        UI.Context.Context.instance().setFlavor(TimelineUtils.AICallTree.AICallTree, selectedAiCallTree);
 
         sinon.assert.notCalled(mockView);
       });

@@ -1376,11 +1376,11 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     const oldSelectedSearchResult = this.selectedSearchResult;
     delete this.selectedSearchResult;
     this.searchResults = [];
-    this.mainFlameChart.removeSearchResultHighlights();
-    this.networkFlameChart.removeSearchResultHighlights();
     if (!this.searchRegex) {
       return;
     }
+    this.mainFlameChart.removeSearchResultHighlights();
+    this.networkFlameChart.removeSearchResultHighlights();
     const regExpFilter = new TimelineRegExp(this.searchRegex);
     const visibleWindow = traceBoundsState.micro.timelineTraceWindow;
 

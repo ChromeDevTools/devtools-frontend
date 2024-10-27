@@ -9,9 +9,9 @@ import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as Platform from '../../../core/platform/platform.js';
-import type * as SDK from '../../../core/sdk/sdk.js';
-import * as Trace from '../../../models/trace/trace.js';
+import * as SDK from '../../../core/sdk/sdk.js';
 import type * as Workspace from '../../../models/workspace/workspace.js';
+import * as TimelineUtils from '../../../panels/timeline/utils/utils.js';
 import * as Marked from '../../../third_party/marked/marked.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import type * as IconButton from '../../../ui/components/icon_button/icon_button.js';
@@ -98,7 +98,7 @@ const UIStringsNotTranslate = {
    *@description Disclaimer text right after the chat input.
    */
   inputDisclaimerForDrJonesPerformanceAgent:
-      'Chat messages and the selected call stack are sent to Google and may be seen by human reviewers to improve this feature. This is an experimental AI feature and won\'t always get it right.',
+      'Chat messages and the selected call tree are sent to Google and may be seen by human reviewers to improve this feature. This is an experimental AI feature and won\'t always get it right.',
   /**
    *@description Placeholder text for the chat UI input.
    */
@@ -114,7 +114,7 @@ const UIStringsNotTranslate = {
   /**
    *@description Placeholder text for the chat UI input.
    */
-  inputPlaceholderForDrJonesPerformanceAgent: 'Ask a question about the selected stack',
+  inputPlaceholderForDrJonesPerformanceAgent: 'Ask a question about the selected item and its call tree',
   /**
    *@description Title for the send icon button.
    */
@@ -323,7 +323,7 @@ export interface Props {
   selectedElement: SDK.DOMModel.DOMNode|null;
   selectedFile: Workspace.UISourceCode.UISourceCode|null;
   selectedNetworkRequest: SDK.NetworkRequest.NetworkRequest|null;
-  selectedStackTrace: Trace.Helpers.TreeHelpers.AINode|null;
+  selectedAiCallTree: TimelineUtils.AICallTree.AICallTree|null;
   isLoading: boolean;
   canShowFeedbackForm: boolean;
   userInfo: Pick<Host.InspectorFrontendHostAPI.SyncInformation, 'accountImage'|'accountFullName'>;
@@ -888,21 +888,24 @@ export class FreestylerChatUi extends HTMLElement {
 
   #renderSelectedTask = (): LitHtml.TemplateResult => {
     const resourceClass = LitHtml.Directives.classMap({
-      'not-selected': !this.#props.selectedStackTrace,
+      'not-selected': !this.#props.selectedAiCallTree,
       'resource-task': true,
     });
 
-    if (!this.#props.selectedStackTrace) {
+    if (!this.#props.selectedAiCallTree) {
       return html`${LitHtml.nothing}`;
     }
 
-    const selectedNode = Trace.Helpers.TreeHelpers.AINode.getSelectedNodeWithinTree(this.#props.selectedStackTrace);
-
-    if (!selectedNode) {
+    const {event} = this.#props.selectedAiCallTree.selectedNode;
+    if (!event) {
       return html`${LitHtml.nothing}`;
     }
 
-    const displayName = selectedNode.name;
+    const displayName = TimelineUtils.EntryName.nameForEntry(event);
+    const handleClick = (): void => {
+      const trace = new SDK.TraceObject.RevealableEvent(event);
+      void Common.Revealer.reveal(trace);
+    };
 
     const iconData = {
       iconName: 'performance',
@@ -911,12 +914,12 @@ export class FreestylerChatUi extends HTMLElement {
     const icon = PanelUtils.createIconElement(iconData, 'Performance');
     icon.classList.add('icon');
 
-    // TODO(b/371118936): Make the div clickable
     // clang-format off
     return html`<div class="select-element">
-    <div class=${resourceClass}>
-      ${icon}${displayName}
-    </div></div>`;
+      <div role=button class=${resourceClass} @click=${handleClick}>
+        ${icon}${displayName}
+      </div>
+    </div>`;
     // clang-format on
   };
 
@@ -995,9 +998,9 @@ export class FreestylerChatUi extends HTMLElement {
         ];
       case AgentType.DRJONES_PERFORMANCE:
         return [
-          'Identify performance issues in this call stack',
-          'Where is most of the time being spent in this call stack?',
-          'How can I reduce the time of this call stack?',
+          'Identify performance issues in this call tree',
+          'Where is most of the time being spent in this call tree?',
+          'How can I reduce the time of this call tree?',
         ];
     }
   };

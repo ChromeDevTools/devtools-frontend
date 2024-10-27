@@ -355,3 +355,14 @@ Common.Revealer.registerRevealer({
     return new Timeline.TimelinePanel.TraceRevealer();
   },
 });
+
+Common.Revealer.registerRevealer({
+  contextTypes() {
+    return [SDK.TraceObject.RevealableEvent];
+  },
+  destination: Common.Revealer.RevealerDestination.TIMELINE_PANEL,
+  async loadRevealer() {
+    const Timeline = await loadTimelineModule();
+    return new Timeline.TimelinePanel.EventRevealer();
+  },
+});

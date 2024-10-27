@@ -14,7 +14,7 @@ import {
 
 describe('Heavy Ad issue', () => {
   beforeEach(async () => {
-    await goToResource('empty.html');
+    await goToResource('elements/quirks-mode.html');
   });
 
   it('should display correct information', async () => {

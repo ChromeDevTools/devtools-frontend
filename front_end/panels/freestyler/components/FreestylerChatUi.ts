@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import '../../../ui/components/spinners/spinners.js';
-import './ProvideFeedback.js';
+import './UserActionRow.js';
 
 import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
@@ -23,7 +23,7 @@ import {PanelUtils} from '../../utils/utils.js';
 import {type ContextDetail, ErrorType} from '../AiAgent.js';
 
 import freestylerChatUiStyles from './freestylerChatUi.css.js';
-import type {ProvideFeedbackProps} from './ProvideFeedback.js';
+import type {UserActionRowProps} from './UserActionRow.js';
 
 const {html, Directives: {ifDefined}} = LitHtml;
 
@@ -484,16 +484,22 @@ export class FreestylerChatUi extends HTMLElement {
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceDynamicSuggestionClicked);
   };
 
-  #renderRateButtons(rpcId: number): LitHtml.TemplateResult {
+  #renderUserActionRow(rpcId?: number, suggestions?: [string, ...string[]]): LitHtml.TemplateResult {
     // clang-format off
-    return html`<devtools-provide-feedback
+    return html`<devtools-user-action-row
       .props=${{
+        showRateButtons: rpcId !== undefined,
         onFeedbackSubmit: (rating, feedback) => {
+          if (!rpcId) {
+            return;
+          }
           this.#props.onFeedbackSubmit(rpcId, rating, feedback);
         },
+        suggestions,
+        handleSuggestionClick: this.#handleSuggestionClick,
         canShowFeedbackForm: this.#props.canShowFeedbackForm,
-      } as ProvideFeedbackProps}
-      ></devtools-provide-feedback>`;
+      } as UserActionRowProps}
+      ></devtools-user-action-row>`;
     // clang-format on
   }
 
@@ -772,22 +778,7 @@ export class FreestylerChatUi extends HTMLElement {
         }
         ${this.#renderError(message)}
         <div class="actions">
-          ${
-            message.rpcId !== undefined
-              ? this.#renderRateButtons(message.rpcId)
-              : LitHtml.nothing
-          }
-          ${shouldShowSuggestions ?
-            html`<div class="suggestions">
-              ${message.suggestions?.map(suggestion => html`<devtools-button
-                  .data=${{
-                      variant: Buttons.Button.Variant.OUTLINED,
-                      title: suggestion,
-                      jslogContext: 'suggestion',
-                  } as Buttons.Button.ButtonData}
-                  @click=${() => this.#handleSuggestionClick(suggestion)}
-                >${suggestion}</devtools-button>`)}
-            </div>` : LitHtml.nothing}
+          ${this.#renderUserActionRow(message.rpcId, shouldShowSuggestions ? message.suggestions : undefined)}
         </div>
       </section>
     `;

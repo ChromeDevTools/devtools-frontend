@@ -11,7 +11,7 @@ import("../visibility.gni")
 generate_css("css_files") {
   sources = [
     "./components/freestylerChatUi.css",
-    "./components/provideFeedback.css",
+    "./components/userActionRow.css",
     "./freestylerPanel.css",
   ]
 }
@@ -28,7 +28,7 @@ devtools_module("freestyler") {
     "FreestylerEvaluateAction.ts",
     "FreestylerPanel.ts",
     "components/FreestylerChatUi.ts",
-    "components/ProvideFeedback.ts",
+    "components/UserActionRow.ts",
   ]
 
   deps = [
@@ -88,7 +88,7 @@ ts_library("unittests") {
     "FreestylerEvaluateAction.test.ts",
     "FreestylerPanel.test.ts",
     "components/FreestylerChatUi.test.ts",
-    "components/ProvideFeedback.test.ts",
+    "components/UserActionRow.test.ts",
   ]
 
   deps = [

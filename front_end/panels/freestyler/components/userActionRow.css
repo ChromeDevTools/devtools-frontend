@@ -1,0 +1,149 @@
+/*
+ * Copyright 2024 The Chromium Authors. All rights reserved.
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+* {
+  box-sizing: border-box;
+}
+
+:host {
+  width: 100%;
+}
+
+.feedback {
+  display: flex;
+  gap: var(--sys-size-8);
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.rate-buttons {
+  display: flex;
+  align-items: center;
+  gap: var(--sys-size-2);
+}
+
+.feedback-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sys-size-5);
+  margin-top: var(--sys-size-4);
+  background-color: var(--sys-color-surface3);
+  padding: var(--sys-size-6);
+  border-radius: var(--sys-shape-corner-medium-small);
+  max-width: var(--sys-size-32);
+
+  .feedback-input {
+    height: var(--sys-size-11);
+    padding: 0 var(--sys-size-5);
+    background-color: var(--sys-color-surface3);
+  }
+
+  .feedback-input::placeholder {
+    color: var(--sys-color-on-surface-subtle);
+    font: var(--sys-typescale-body4-regular);
+  }
+}
+
+.feedback-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.feedback-title {
+  margin: 0;
+  font: var(--sys-typescale-body3-medium);
+}
+
+.feedback-disclaimer {
+  padding: 0 var(--sys-size-4);
+}
+
+.vertical-separator {
+  height: 16px;
+  width: 1px;
+  vertical-align: top;
+  margin: 0 var(--sys-size-2);
+  background: var(--sys-color-divider);
+  display: inline-block;
+}
+
+/*
+  Scroll driven animation below is used for generating shadows
+  when the `.suggestions` area is scrollable.
+*/
+.suggestions {
+  display: flex;
+  overflow-y: hidden;
+  overflow-x: auto;
+  scrollbar-width: none;
+  gap: var(--sys-size-3);
+  scroll-timeline: --scroll-timeline x; /* stylelint-disable-line property-no-unknown */
+  animation: detect-scroll;
+  animation-timeline: --scroll-timeline; /* stylelint-disable-line property-no-unknown */
+  animation-fill-mode: none;
+  position: relative;
+}
+
+.suggestions::before,
+.suggestions::after {
+  content: "";
+  display: block;
+  position: sticky;
+  min-width: var(--sys-size-3);
+  height: var(--sys-size-11);
+  left: 0;
+  right: 0;
+  z-index: 999;
+  animation-name: reveal;
+  animation-timeline: --scroll-timeline; /* stylelint-disable-line property-no-unknown */
+  animation-fill-mode: both;
+}
+
+.suggestions::before {
+  top: 0;
+  visibility: var(--visibility-if-can-scroll, hidden);
+  animation-range: var(--sys-size-6) var(--sys-size-11); /* stylelint-disable-line property-no-unknown */
+  background:
+    radial-gradient(
+      farthest-side at 0 50%,
+      var(--app-color-scroll-area-shadow-start),
+      transparent
+    );
+}
+
+.suggestions::after {
+  bottom: 0;
+  visibility: var(--visibility-if-can-scroll, hidden);
+  animation-direction: reverse;
+  /* stylelint-disable-next-line property-no-unknown */
+  animation-range:
+    calc(100% - var(--sys-size-11))
+    calc(100% - var(--sys-size-6));
+  background:
+    radial-gradient(
+      farthest-side at 100% 50%,
+      var(--app-color-scroll-area-shadow-start),
+      transparent
+    );
+}
+
+@keyframes reveal {
+  0% {
+    opacity: 0%;
+  }
+
+  100% {
+    opacity: 100%;
+  }
+}
+
+@keyframes detect-scroll {
+  from,
+  to {
+    --visibility-if-can-scroll: visible;
+  }
+}

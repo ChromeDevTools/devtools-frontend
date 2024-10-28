@@ -10,7 +10,7 @@ import * as Input from '../../../ui/components/input/input.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
-import provideFeedbackStyles from './provideFeedback.css.js';
+import userActionRowStyles from './userActionRow.css.js';
 
 const {html} = LitHtml;
 
@@ -61,30 +61,33 @@ const lockedString = i18n.i18n.lockedString;
 
 const REPORT_URL = 'https://support.google.com/legal/troubleshooter/1114905?hl=en#ts=1115658%2C13380504' as
     Platform.DevToolsPath.UrlString;
-export interface ProvideFeedbackProps {
+export interface UserActionRowProps {
+  showRateButtons: boolean;
   onFeedbackSubmit: (rate: Host.AidaClient.Rating, feedback?: string) => void;
+  suggestions?: [string, ...string[]];
+  handleSuggestionClick: (suggestion: string) => void;
   canShowFeedbackForm: boolean;
 }
 
-export class ProvideFeedback extends HTMLElement {
+export class UserActionRow extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
-  #props: ProvideFeedbackProps;
+  #props: UserActionRowProps;
   #isShowingFeedbackForm = false;
   #currentRating?: Host.AidaClient.Rating;
   #isSubmitButtonDisabled = true;
 
-  constructor(props: ProvideFeedbackProps) {
+  constructor(props: UserActionRowProps) {
     super();
     this.#props = props;
   }
 
-  set props(props: ProvideFeedbackProps) {
+  set props(props: UserActionRowProps) {
     this.#props = props;
     this.#render();
   }
 
   connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [provideFeedbackStyles, Input.textInputStyles];
+    this.#shadow.adoptedStyleSheets = [userActionRowStyles, Input.textInputStyles];
     this.#render();
   }
 
@@ -235,13 +238,25 @@ export class ProvideFeedback extends HTMLElement {
       html`
         <div class="feedback">
           <div class="rate-buttons">
-            ${this.#renderButtons()}
+            ${this.#props.showRateButtons ? this.#renderButtons() : LitHtml.nothing}
           </div>
-          ${this.#isShowingFeedbackForm
-            ? this.#renderFeedbackForm()
-            : LitHtml.nothing
-          }
-        </div>`,
+          ${this.#props.suggestions ?
+            html`<div class="suggestions">
+              ${this.#props.suggestions?.map(suggestion => html`<devtools-button
+                .data=${{
+                  variant: Buttons.Button.Variant.OUTLINED,
+                  title: suggestion,
+                  jslogContext: 'suggestion',
+                } as Buttons.Button.ButtonData}
+                @click=${() => this.#props.handleSuggestionClick(suggestion)}
+              >${suggestion}</devtools-button>`)}
+            </div>` : LitHtml.nothing}
+        </div>
+        ${this.#isShowingFeedbackForm
+          ? this.#renderFeedbackForm()
+          : LitHtml.nothing
+        }
+      `,
       this.#shadow,
       {host: this},
     );
@@ -251,8 +266,8 @@ export class ProvideFeedback extends HTMLElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'devtools-provide-feedback': ProvideFeedback;
+    'devtools-user-action-row': UserActionRow;
   }
 }
 
-customElements.define('devtools-provide-feedback', ProvideFeedback);
+customElements.define('devtools-user-action-row', UserActionRow);

@@ -8,9 +8,14 @@ import {
 } from '../../../testing/EnvironmentHelpers.js';
 import * as Freestyler from '../freestyler.js';
 
-describeWithEnvironment('ProvideFeedback', () => {
+describeWithEnvironment('UserActionRow', () => {
   it('should show the feedback form when canShowFeedbackForm is true', async () => {
-    const component = new Freestyler.ProvideFeedback({onFeedbackSubmit: sinon.stub(), canShowFeedbackForm: true});
+    const component = new Freestyler.UserActionRow({
+      showRateButtons: true,
+      onFeedbackSubmit: sinon.stub(),
+      canShowFeedbackForm: true,
+      handleSuggestionClick: sinon.stub(),
+    });
     renderElementIntoDOM(component);
     const button = component.shadowRoot!.querySelector('.rate-buttons devtools-button')! as HTMLElement;
     button.click();
@@ -19,7 +24,12 @@ describeWithEnvironment('ProvideFeedback', () => {
   });
 
   it('should not show the feedback form when canShowFeedbackForm is false', async () => {
-    const component = new Freestyler.ProvideFeedback({onFeedbackSubmit: sinon.stub(), canShowFeedbackForm: false});
+    const component = new Freestyler.UserActionRow({
+      showRateButtons: true,
+      onFeedbackSubmit: sinon.stub(),
+      canShowFeedbackForm: false,
+      handleSuggestionClick: sinon.stub(),
+    });
     renderElementIntoDOM(component);
 
     const button = component.shadowRoot!.querySelector('.rate-buttons devtools-button')! as HTMLElement;
@@ -29,7 +39,12 @@ describeWithEnvironment('ProvideFeedback', () => {
   });
 
   it('should disable the submit button when the input is empty', async () => {
-    const component = new Freestyler.ProvideFeedback({onFeedbackSubmit: sinon.stub(), canShowFeedbackForm: true});
+    const component = new Freestyler.UserActionRow({
+      showRateButtons: true,
+      onFeedbackSubmit: sinon.stub(),
+      canShowFeedbackForm: true,
+      handleSuggestionClick: sinon.stub(),
+    });
     renderElementIntoDOM(component);
     const button = component.shadowRoot!.querySelector('.rate-buttons devtools-button')! as HTMLElement;
     button.click();

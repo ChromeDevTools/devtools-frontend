@@ -148,21 +148,36 @@
 
 .dropdown-filterbar {
   justify-content: space-between;
-  padding: 0 3px 0 5px;
-  border: 1px solid transparent;
-  border-radius: 7px;
+  align-items: center;
+  height: var(--sys-size-9);
+  padding: 0 var(--sys-size-3) 0 var(--sys-size-5);
+  border: none;
+  border-radius: var(--sys-shape-corner-extra-small);
   display: flex;
   background-color: transparent;
   color: var(--sys-color-on-surface-subtle);
 
   .toolbar-dropdown-arrow {
-    top: 1px;
+    top: var(--sys-size-2);
   }
-}
 
-button.toolbar-item:focus-visible {
-  background: var(--sys-color-state-hover-on-subtle);
-  border-radius: 2px;
+  &:hover {
+    background-color: var(--sys-color-state-hover-on-subtle);
+  }
+
+  &:active {
+    background-color: var(--sys-color-state-ripple-neutral-on-subtle);
+  }
+
+  &:hover:active {
+    background:
+      linear-gradient(var(--sys-color-state-hover-on-subtle), var(--sys-color-state-hover-on-subtle)),
+      linear-gradient(var(--sys-color-state-ripple-neutral-on-subtle), var(--sys-color-state-ripple-neutral-on-subtle));
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--sys-color-state-focus-ring);
+  }
 }
 
 @media (forced-colors: active) {

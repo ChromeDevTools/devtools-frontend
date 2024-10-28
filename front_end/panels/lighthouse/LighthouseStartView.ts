@@ -63,7 +63,7 @@ export class StartView extends UI.Widget.Widget {
   changeFormMode?: (mode: string) => void;
 
   constructor(controller: LighthouseController, panel: LighthousePanel) {
-    super();
+    super(true /* useShadowDom */);
 
     this.controller = controller;
     this.panel = panel;

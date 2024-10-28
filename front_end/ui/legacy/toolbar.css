@@ -82,20 +82,17 @@ devtools-issue-counter.main-toolbar {
 .toolbar-dropdown-arrow {
   pointer-events: none;
   flex: none;
-  top: 1px;
+  top: 2px;
 }
 
 .toolbar-select-container .toolbar-dropdown-arrow {
-  left: -5px;
+  left: -7px;
 }
 
 .toolbar-button.dark-text .toolbar-dropdown-arrow {
   color: var(--sys-color-on-surface);
 }
 
-select.toolbar-item:disabled + .toolbar-dropdown-arrow {
-  opacity: 50%;
-}
 /* Toolbar item */
 
 .toolbar-button {
@@ -322,29 +319,51 @@ it. */
 .toolbar-select-container {
   display: inline-flex;
   flex-shrink: 0;
-  margin-right: 6px;
+  padding-left: 2px;
 }
 
 select.toolbar-item {
-  min-width: 38px;
+  min-width: var(--sys-size-14);
   appearance: none;
-  border: 1px solid transparent;
-  padding: 0 13px 0 5px;
+  padding: 0 var(--sys-size-9) 0 var(--sys-size-5);
   margin-right: -10px;
   position: relative;
-  height: 22px;
-  margin-top: 2px;
-  margin-bottom: 2px;
+  height: var(--sys-size-9);
+  border-radius: var(--sys-shape-corner-extra-small);
+
+  &:disabled,
+  &:disabled:hover,
+  &:disabled:active,
+  &:disabled:hover:active {
+    background-color: var(--sys-color-state-disabled-container);
+    color: var(--sys-color-state-disabled);
+
+    & + .toolbar-dropdown-arrow {
+      color: var(--sys-color-state-disabled);
+    }
+  }
+
+  &:hover {
+    background-color: var(--sys-color-state-hover-on-subtle);
+  }
+
+  &:active {
+    background-color: var(--sys-color-state-ripple-neutral-on-subtle);
+  }
+
+  &:hover:active {
+    background:
+      linear-gradient(var(--sys-color-state-hover-on-subtle), var(--sys-color-state-hover-on-subtle)),
+      linear-gradient(var(--sys-color-state-ripple-neutral-on-subtle), var(--sys-color-state-ripple-neutral-on-subtle));
+  }
 }
 
 button.toolbar-item:focus-visible,
 select.toolbar-item:focus-visible {
-  background: var(--sys-color-state-hover-on-subtle);
-  border-radius: 2px;
+  outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
 
   &.toolbar-has-dropdown {
     background: none;
-    border-radius: var(--sys-shape-corner-extra-small);
   }
 }
 
@@ -353,9 +372,6 @@ select.toolbar-item:focus-visible > * {
   border-radius: 7px;
 }
 
-select.toolbar-item:not(.toolbar-has-dropdown):disabled {
-  opacity: 50%;
-}
 /* Input */
 
 .toolbar-input {

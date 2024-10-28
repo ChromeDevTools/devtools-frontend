@@ -185,8 +185,6 @@ export class FrameworkIgnoreListSettingsTab extends UI.Widget.VBox implements
         Common.Settings.Settings.instance().moduleSetting('skip-stack-frames-pattern') as Common.Settings.RegExpSetting;
     this.setting.addChangeListener(this.settingUpdated, this);
 
-    this.setDefaultFocusedElement(addPatternButton);
-
     enabledSetting.addChangeListener(enabledChanged);
     enabledChanged();
 

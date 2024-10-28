@@ -416,6 +416,10 @@ select.toolbar-item:focus-visible > * {
   }
 }
 
+.toolbar-filter .toolbar-input-clear-button {
+  margin-right: var(--sys-size-4);
+}
+
 .toolbar-input-empty .toolbar-input-clear-button {
   display: none;
 }

@@ -53,6 +53,10 @@
       height: var(--sys-size-8);
       margin-right: var(--sys-size-3);
     }
+
+    & > devtools-button:last-child {
+      margin-right: var(--sys-size-4);
+    }
   }
 
   .search-toolbar-input {

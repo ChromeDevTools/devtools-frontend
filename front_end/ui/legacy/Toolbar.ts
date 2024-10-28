@@ -923,6 +923,7 @@ export class ToolbarFilter extends ToolbarInput {
 
     const filterIcon = IconButton.Icon.create('filter');
     this.element.prepend(filterIcon);
+    this.element.classList.add('toolbar-filter');
   }
 }
 

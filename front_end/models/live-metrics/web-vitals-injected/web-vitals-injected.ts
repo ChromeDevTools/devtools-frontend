@@ -12,22 +12,6 @@ const {onLCP, onCLS, onINP} = WebVitals.Attribution;
 const {onEachInteraction} = OnEachInteraction;
 const {onEachLayoutShift} = OnEachLayoutShift;
 
-declare global {
-  interface PerformanceScriptTiming extends PerformanceEntry {
-    invoker?: string;
-    invokerType?: string;
-    sourceFunctionName?: string;
-    sourceURL?: string;
-    sourceCharPosition?: number;
-  }
-
-  interface PerformanceLongAnimationFrameTiming extends PerformanceEntry {
-    renderStart: DOMHighResTimeStamp;
-    duration: DOMHighResTimeStamp;
-    scripts: PerformanceScriptTiming[];
-  }
-}
-
 declare const window: Window&{
   getNodeForIndex: (index: number) => Node | undefined,
   [Spec.INTERNAL_KILL_SWITCH]: () => void,
@@ -114,6 +98,29 @@ window.getNodeForIndex = (index: number): Node|undefined => {
   return nodeList[index];
 };
 
+function limitScripts(loafs: Spec.PerformanceLongAnimationFrameTimingJSON[]):
+    Spec.PerformanceLongAnimationFrameTimingJSON[] {
+  return loafs.map(loaf => {
+    const longestScripts: Spec.PerformanceScriptTimingJSON[] = [];
+    for (const script of loaf.scripts) {
+      if (longestScripts.length < Spec.SCRIPTS_PER_LOAF_LIMIT) {
+        longestScripts.push(script);
+        continue;
+      }
+
+      const shorterIndex = longestScripts.findIndex(s => s.duration < script.duration);
+      if (shorterIndex === -1) {
+        continue;
+      }
+
+      longestScripts[shorterIndex] = script;
+    }
+    longestScripts.sort((a, b) => a.startTime - b.startTime);
+    loaf.scripts = longestScripts;
+    return loaf;
+  });
+}
+
 function initialize(): void {
   sendEventToDevTools({name: 'reset'});
 
@@ -188,15 +195,9 @@ function initialize(): void {
       nextPaintTime: interaction.attribution.nextPaintTime,
       interactionType: interaction.attribution.interactionType,
       eventName: interaction.entries[0].name,
-      scripts: interaction.attribution.longAnimationFrameEntries.flatMap(loaf => loaf.scripts)
-                   .map(s => ({
-                          Duration: s.duration,
-                          'Invoker Type': s.invokerType || null,
-                          Invoker: s.invoker || null,
-                          Function: s.sourceFunctionName || null,
-                          Source: s.sourceURL || null,
-                          'Char position': s.sourceCharPosition || null,
-                        })),
+      // To limit the amount of events, just get the last 5 LoAFs
+      longAnimationFrameEntries: limitScripts(
+          interaction.attribution.longAnimationFrameEntries.slice(-Spec.LOAF_LIMIT).map(loaf => loaf.toJSON())),
     };
     const node = interaction.attribution.interactionTargetElement;
     if (node) {

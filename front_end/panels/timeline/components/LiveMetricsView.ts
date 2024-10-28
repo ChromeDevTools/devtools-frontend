@@ -1019,7 +1019,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
                   <div class="phase-table-row phase-table-header-row" role="row">
                     <div role="columnheader">${i18nString(UIStrings.phase)}</div>
                     <div role="columnheader">
-                      ${interaction.scripts.length ? html`
+                      ${interaction.longAnimationFrameTimings.length ? html`
                         <button
                           class="log-extra-details-button"
                           title=${i18nString(UIStrings.logToConsole)}

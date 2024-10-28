@@ -442,7 +442,12 @@ describe('The Performance panel landing page', () => {
 
       await tabExistsInDrawer('#tab-console-view');
       const messages = await getCurrentConsoleMessages();
-      assert.deepStrictEqual(messages, ['Array(3)']);
+      assert.deepStrictEqual(messages, [
+        '[DevTools] Long animation frames for 504ms pointer interaction',
+        'Scripts:',
+        'Array(3)',
+        'Intersecting long animation frame events: [{…}]',
+      ]);
     } finally {
       await targetSession.detach();
     }

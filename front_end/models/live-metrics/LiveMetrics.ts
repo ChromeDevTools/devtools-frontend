@@ -90,9 +90,44 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
       return false;
     }
 
+    const scriptsTable = [];
+    for (const loaf of interaction.longAnimationFrameTimings) {
+      for (const script of loaf.scripts) {
+        const scriptEndTime = script.startTime + script.duration;
+        if (scriptEndTime < interaction.startTime) {
+          continue;
+        }
+
+        const blockingDuration = Math.round(scriptEndTime - Math.max(interaction.startTime, script.startTime));
+
+        // TODO: Use translated strings for the table
+        scriptsTable.push({
+          'Blocking duration': blockingDuration,
+          'Invoker type': script.invokerType || null,
+          Invoker: script.invoker || null,
+          Function: script.sourceFunctionName || null,
+          Source: script.sourceURL || null,
+          'Char position': script.sourceCharPosition || null,
+        });
+      }
+    }
+
     try {
+      const scriptsLimit = Spec.LOAF_LIMIT * Spec.SCRIPTS_PER_LOAF_LIMIT;
+      const scriptLimitText = scriptsTable.length === scriptsLimit ? ` (limited to ${scriptsLimit})` : '';
+      const loafLimitText = interaction.longAnimationFrameTimings.length === Spec.LOAF_LIMIT ?
+          ` (limited to last ${Spec.LOAF_LIMIT})` :
+          '';
       await this.#target.runtimeAgent().invoke_evaluate({
-        expression: `console.table(${JSON.stringify(interaction.scripts)})`,
+        expression: `
+          console.group('[DevTools] Long animation frames for ${interaction.duration}ms ${
+            interaction.interactionType} interaction');
+          console.log('Scripts${scriptLimitText}:');
+          console.table(${JSON.stringify(scriptsTable)});
+          console.log('Intersecting long animation frame events${loafLimitText}:', ${
+            JSON.stringify(interaction.longAnimationFrameTimings)});
+          console.groupEnd();
+        `,
         contextId: executionContextId,
       });
     } catch {
@@ -247,7 +282,7 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
             phases: webVitalsEvent.phases,
             startTime: webVitalsEvent.startTime,
             nextPaintTime: webVitalsEvent.nextPaintTime,
-            scripts: webVitalsEvent.scripts,
+            longAnimationFrameTimings: webVitalsEvent.longAnimationFrameEntries,
           };
 
           groupInteractions.push(interaction);
@@ -531,7 +566,7 @@ export interface Interaction {
   startTime: number;
   nextPaintTime: number;
   phases: Spec.INPPhases;
-  scripts: Spec.LoAFScript[];
+  longAnimationFrameTimings: Spec.PerformanceLongAnimationFrameTimingJSON[];
   node?: SDK.DOMModel.DOMNode;
 }
 

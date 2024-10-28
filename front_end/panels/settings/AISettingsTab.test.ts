@@ -24,7 +24,7 @@ describeWithEnvironment('AISettingsTab', () => {
 
   function mockHostConfigWithExplainThisResourceEnabled() {
     getGetHostConfigStub({
-      devToolsExplainThisResourceDogfood: {
+      devToolsAiAssistanceNetworkAgent: {
         enabled: true,
         modelId: 'test',
       },

@@ -1077,13 +1077,14 @@ export class FreestylerChatUi extends HTMLElement {
 
   #getStringForConsentView(): string {
     const config = Common.Settings.Settings.instance().getHostConfig();
-    if (config.devToolsAiAssistancePerformanceAgentDogfood?.enabled) {
+    if (config.devToolsAiAssistancePerformanceAgent?.enabled ||
+        config.devToolsAiAssistancePerformanceAgentDogfood?.enabled) {
       return UIStrings.turnOnForStylesRequestsPerformanceAndFiles;
     }
-    if (config.devToolsAiAssistanceFileAgentDogfood?.enabled) {
+    if (config.devToolsAiAssistanceFileAgent?.enabled || config.devToolsAiAssistanceFileAgentDogfood?.enabled) {
       return UIStrings.turnOnForStylesRequestsAndFiles;
     }
-    if (config.devToolsExplainThisResourceDogfood?.enabled) {
+    if (config.devToolsAiAssistanceNetworkAgent?.enabled || config.devToolsExplainThisResourceDogfood?.enabled) {
       return UIStrings.turnOnForStylesAndRequests;
     }
     return UIStrings.turnOnForStyles;
@@ -1143,13 +1144,13 @@ export class FreestylerChatUi extends HTMLElement {
               ${config.devToolsFreestyler?.enabled ? html`
                 <p><strong>${lockedString(UIStringsNotTranslate.cssHelp)}</strong> ${lockedString(UIStringsNotTranslate.cssHelpExplainer)}</p>
               ` : LitHtml.nothing}
-              ${config.devToolsAiAssistanceFileAgentDogfood?.enabled ? html`
+              ${(config.devToolsAiAssistanceFileAgent?.enabled || config.devToolsAiAssistanceFileAgentDogfood?.enabled) ? html`
                 <p><strong>${lockedString(UIStringsNotTranslate.fileHelp)}</strong> ${lockedString(UIStringsNotTranslate.fileHelpExplainer)}</p>
               ` : LitHtml.nothing}
-              ${config.devToolsExplainThisResourceDogfood?.enabled ? html`
+              ${(config.devToolsAiAssistanceNetworkAgent?.enabled  || config.devToolsExplainThisResourceDogfood?.enabled) ? html`
                 <p><strong>${lockedString(UIStringsNotTranslate.networkHelp)}</strong> ${lockedString(UIStringsNotTranslate.networkHelpExplainer)}</p>
               ` : LitHtml.nothing}
-              ${config.devToolsAiAssistancePerformanceAgentDogfood?.enabled ? html`
+              ${(config.devToolsAiAssistancePerformanceAgent?.enabled || config.devToolsAiAssistancePerformanceAgentDogfood?.enabled) ? html`
                 <p><strong>${lockedString(UIStringsNotTranslate.performanceHelp)}</strong> ${lockedString(UIStringsNotTranslate.performanceHelpExplainer)}</p>
               ` : LitHtml.nothing}
             </div>

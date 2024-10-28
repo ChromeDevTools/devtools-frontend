@@ -24,7 +24,7 @@ describeWithMockConnection('DrJonesNetworkAgent', () => {
 
   function mockHostConfig(modelId?: string, temperature?: number) {
     getGetHostConfigStub({
-      devToolsExplainThisResourceDogfood: {
+      devToolsAiAssistanceNetworkAgent: {
         modelId,
         temperature,
       },

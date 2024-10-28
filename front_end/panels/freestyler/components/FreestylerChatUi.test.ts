@@ -126,13 +126,13 @@ css
         devToolsFreestyler: {
           enabled: true,
         },
-        devToolsExplainThisResourceDogfood: {
+        devToolsAiAssistanceNetworkAgent: {
           enabled: true,
         },
-        devToolsAiAssistanceFileAgentDogfood: {
+        devToolsAiAssistanceFileAgent: {
           enabled: true,
         },
-        devToolsAiAssistancePerformanceAgentDogfood: {
+        devToolsAiAssistancePerformanceAgent: {
           enabled: true,
         },
       });

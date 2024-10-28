@@ -334,21 +334,21 @@ export interface HostConfigFreestyler {
   executionMode?: HostConfigFreestylerExecutionMode;
 }
 
-export interface HostConfigExplainThisResourceDogfood {
+export interface HostConfigAiAssistanceNetworkAgent {
   modelId: string;
   temperature: number;
   enabled: boolean;
   userTier: string;
 }
 
-export interface HostConfigAiAssistancePerformanceAgentDogfood {
+export interface HostConfigAiAssistancePerformanceAgent {
   modelId: string;
   temperature: number;
   enabled: boolean;
   userTier: string;
 }
 
-export interface HostConfigAiAssistanceFileAgentDogfood {
+export interface HostConfigAiAssistanceFileAgent {
   modelId: string;
   temperature: number;
   enabled: boolean;
@@ -375,9 +375,12 @@ export type HostConfig = Platform.TypeScriptUtilities.RecursivePartial<{
   aidaAvailability: AidaAvailability,
   devToolsConsoleInsights: HostConfigConsoleInsights,
   devToolsFreestyler: HostConfigFreestyler,
-  devToolsExplainThisResourceDogfood: HostConfigExplainThisResourceDogfood,
-  devToolsAiAssistancePerformanceAgentDogfood: HostConfigAiAssistancePerformanceAgentDogfood,
-  devToolsAiAssistanceFileAgentDogfood: HostConfigAiAssistanceFileAgentDogfood,
+  devToolsExplainThisResourceDogfood: HostConfigAiAssistanceNetworkAgent,
+  devToolsAiAssistanceNetworkAgent: HostConfigAiAssistanceNetworkAgent,
+  devToolsAiAssistancePerformanceAgentDogfood: HostConfigAiAssistancePerformanceAgent,
+  devToolsAiAssistanceFileAgent: HostConfigAiAssistanceFileAgent,
+  devToolsAiAssistanceFileAgentDogfood: HostConfigAiAssistanceFileAgent,
+  devToolsAiAssistancePerformanceAgent: HostConfigAiAssistancePerformanceAgent,
   devToolsVeLogging: HostConfigVeLogging,
   devToolsPrivacyUI: HostConfigPrivacyUI,
   /**

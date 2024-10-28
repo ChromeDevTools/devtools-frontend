@@ -293,7 +293,6 @@ export class AnimationModel extends SDKModel<EventTypes> {
   #pendingAnimations: Set<string>;
   playbackRate: number;
   readonly #screenshotCapture?: ScreenshotCapture;
-  #enabled?: boolean;
   #flushPendingAnimations: () => void;
 
   constructor(target: Target) {
@@ -307,7 +306,7 @@ export class AnimationModel extends SDKModel<EventTypes> {
     this.playbackRate = 1;
 
     if (!target.suspended()) {
-      void this.ensureEnabled();
+      void this.agent.invoke_enable();
     }
 
     const resourceTreeModel = (target.model(ResourceTreeModel) as ResourceTreeModel);
@@ -448,23 +447,11 @@ export class AnimationModel extends SDKModel<EventTypes> {
   }
 
   override async suspendModel(): Promise<void> {
-    this.reset();
-    await this.agent.invoke_disable();
+    await this.agent.invoke_disable().then(() => this.reset());
   }
 
   override async resumeModel(): Promise<void> {
-    if (!this.#enabled) {
-      return;
-    }
     await this.agent.invoke_enable();
-  }
-
-  async ensureEnabled(): Promise<void> {
-    if (this.#enabled) {
-      return;
-    }
-    await this.agent.invoke_enable();
-    this.#enabled = true;
   }
 }
 
@@ -1124,7 +1111,7 @@ export class ScreenshotCapture {
   }
 }
 
-SDKModel.register(AnimationModel, {capabilities: Capability.DOM, autostart: false});
+SDKModel.register(AnimationModel, {capabilities: Capability.DOM, autostart: true});
 export interface Request {
   endTime: number;
   screenshots: string[];

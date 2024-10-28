@@ -130,9 +130,6 @@ export class AnimationTimeline extends UI.Widget.VBox implements
   #createPreviewForCollectedGroupsThrottler: Common.Throttler.Throttler = new Common.Throttler.Throttler(10);
   #animationGroupUpdatedThrottler: Common.Throttler.Throttler = new Common.Throttler.Throttler(10);
 
-  // We're only adding event listeners to the animation model when the panel is first shown.
-  #initialized: boolean = false;
-
   private constructor() {
     super(true);
 
@@ -220,16 +217,29 @@ export class AnimationTimeline extends UI.Widget.VBox implements
   }
 
   override wasShown(): void {
-    if (this.#initialized) {
-      return;
-    }
-
     for (const animationModel of SDK.TargetManager.TargetManager.instance().models(
              SDK.AnimationModel.AnimationModel, {scoped: true})) {
+      this.#addExistingAnimationGroups(animationModel);
       this.addEventListeners(animationModel);
     }
     this.registerCSSFiles([animationTimelineStyles]);
-    this.#initialized = true;
+  }
+
+  override willHide(): void {
+    for (const animationModel of SDK.TargetManager.TargetManager.instance().models(
+             SDK.AnimationModel.AnimationModel, {scoped: true})) {
+      this.removeEventListeners(animationModel);
+    }
+  }
+
+  #addExistingAnimationGroups(animationModel: SDK.AnimationModel.AnimationModel): void {
+    for (const animationGroup of animationModel.animationGroups.values()) {
+      if (this.#previewMap.has(animationGroup)) {
+        continue;
+      }
+
+      this.addAnimationGroup(animationGroup);
+    }
   }
 
   modelAdded(animationModel: SDK.AnimationModel.AnimationModel): void {
@@ -243,7 +253,6 @@ export class AnimationTimeline extends UI.Widget.VBox implements
   }
 
   private addEventListeners(animationModel: SDK.AnimationModel.AnimationModel): void {
-    void animationModel.ensureEnabled();
     animationModel.addEventListener(SDK.AnimationModel.Events.AnimationGroupStarted, this.animationGroupStarted, this);
     animationModel.addEventListener(SDK.AnimationModel.Events.AnimationGroupUpdated, this.animationGroupUpdated, this);
     animationModel.addEventListener(SDK.AnimationModel.Events.ModelReset, this.reset, this);

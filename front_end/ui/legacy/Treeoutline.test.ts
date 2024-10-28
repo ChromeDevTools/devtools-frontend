@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as Platform from '../../core/platform/platform.js';
-import {dispatchKeyUpEvent, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import {dispatchKeyDownEvent, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 
 import * as UI from './legacy.js';
 
@@ -18,7 +18,7 @@ describe('TreeOutline', () => {
       tree.appendChild(parent);
       parent.select();
 
-      dispatchKeyUpEvent(tree.contentElement, {bubbles: true, key: 'Enter'});
+      dispatchKeyDownEvent(tree.contentElement, {bubbles: true, key: 'Enter'});
       assert.isTrue(parent.expanded, 'Enter key was supposed to expand the parent node');
     });
 
@@ -32,7 +32,7 @@ describe('TreeOutline', () => {
       parent.select();
       parent.expand();
 
-      dispatchKeyUpEvent(tree.contentElement, {bubbles: true, key: 'Enter'});
+      dispatchKeyDownEvent(tree.contentElement, {bubbles: true, key: 'Enter'});
       assert.isFalse(parent.expanded, 'Enter key was supposed to collapse the parent node');
     });
   });
@@ -106,7 +106,7 @@ describe('TreeOutline', () => {
 
     function sendKey(key: string) {
       const deepActiveElement = Platform.DOMUtilities.deepActiveElement(document);
-      deepActiveElement!.dispatchEvent(new KeyboardEvent('keyup', {bubbles: true, cancelable: true, key}));
+      deepActiveElement!.dispatchEvent(new KeyboardEvent('keydown', {bubbles: true, cancelable: true, key}));
     }
   });
 });

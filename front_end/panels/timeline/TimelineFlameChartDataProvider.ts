@@ -283,6 +283,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     if (Utils.IgnoreList.isIgnoreListedEntry(entry)) {
       contextMenu.defaultSection().appendItem(i18nString(UIStrings.removeScriptFromIgnoreList), () => {
         Bindings.IgnoreListManager.IgnoreListManager.instance().unIgnoreListURL(url);
+        this.timelineData(/* rebuild= */ true);
         this.dispatchEventToListeners(Events.DATA_CHANGED);
       }, {
         jslogContext: 'remove-from-ignore-list',
@@ -290,6 +291,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     } else {
       contextMenu.defaultSection().appendItem(i18nString(UIStrings.addScriptToIgnoreList), () => {
         Bindings.IgnoreListManager.IgnoreListManager.instance().ignoreListURL(url);
+        this.timelineData(/* rebuild= */ true);
         this.dispatchEventToListeners(Events.DATA_CHANGED);
       }, {
         jslogContext: 'add-to-ignore-list',

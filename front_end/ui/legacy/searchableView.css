@@ -109,7 +109,7 @@
       justify-content: center;
     }
 
-    & devtools-button:last-child(devtools-button) {
+    & devtools-button:last-child {
       margin-right: var(--sys-size-4);
     }
   }

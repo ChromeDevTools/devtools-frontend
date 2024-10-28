@@ -481,6 +481,7 @@ export class FreestylerChatUi extends HTMLElement {
   #handleSuggestionClick = (suggestion: string): void => {
     this.#setInputText(suggestion);
     this.focusTextInput();
+    Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceDynamicSuggestionClicked);
   };
 
   #renderRateButtons(rpcId: number): LitHtml.TemplateResult {
@@ -661,6 +662,11 @@ export class FreestylerChatUi extends HTMLElement {
       step.sideEffect?.onAnswer(answer);
       step.sideEffect = undefined;
       this.#render();
+
+      Host.userMetrics.actionTaken(
+          answer ? Host.UserMetrics.Action.AiAssistanceSideEffectConfirmed :
+                   Host.UserMetrics.Action.AiAssistanceSideEffectRejected,
+      );
     };
 
     // clang-format off

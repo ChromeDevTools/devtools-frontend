@@ -183,7 +183,10 @@ export class FreestylerPanel extends UI.Panel.Panel {
       messages: [],
       inspectElementToggled: this.#toggleSearchElementAction.toggled(),
       isLoading: false,
-      onTextSubmit: this.#startConversation.bind(this),
+      onTextSubmit: (text: string) => {
+        void this.#startConversation(text);
+        Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceQuerySubmitted);
+      },
       onInspectElementClick: this.#handleSelectElementClick.bind(this),
       onFeedbackSubmit: this.#handleFeedbackSubmit.bind(this),
       onCancelClick: this.#cancel.bind(this),
@@ -295,6 +298,8 @@ export class FreestylerPanel extends UI.Panel.Panel {
         Trace.Helpers.TreeHelpers.AINode, this.#handleTraceEntryNodeFlavorChange);
     UI.Context.Context.instance().addFlavorChangeListener(
         Workspace.UISourceCode.UISourceCode, this.#handleUISourceCodeFlavorChange);
+
+    Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistancePanelOpened);
   }
 
   override willHide(): void {
@@ -619,6 +624,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
           }
           step.isLoading = false;
           this.#viewProps.isLoading = false;
+          Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceAnswerReceived);
           break;
         }
         case ResponseType.ERROR: {
@@ -634,6 +640,10 @@ export class FreestylerPanel extends UI.Panel.Panel {
             } else if (lastStep.isLoading) {
               systemMessage.steps.pop();
             }
+          }
+
+          if (data.error !== ErrorType.ABORT) {
+            Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceError);
           }
         }
       }

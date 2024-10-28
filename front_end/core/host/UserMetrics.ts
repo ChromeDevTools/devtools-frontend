@@ -570,7 +570,14 @@ export enum Action {
   DrJonesOpenedFromSourcesPanelFloatingButton = 172,
   DrJonesOpenedFromPerformancePanel = 173,
   DrJonesOpenedFromNetworkPanelFloatingButton = 174,
-  MAX_VALUE = 175,
+  AiAssistancePanelOpened = 175,
+  AiAssistanceQuerySubmitted = 176,
+  AiAssistanceAnswerReceived = 177,
+  AiAssistanceDynamicSuggestionClicked = 178,
+  AiAssistanceSideEffectConfirmed = 179,
+  AiAssistanceSideEffectRejected = 180,
+  AiAssistanceError = 181,
+  MAX_VALUE = 182,
   /* eslint-enable @typescript-eslint/naming-convention */
 }
 

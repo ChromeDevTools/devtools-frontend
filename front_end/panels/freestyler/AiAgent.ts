@@ -390,6 +390,7 @@ STOP`;
           error: ErrorType.UNKNOWN,
           rpcId,
         } as const;
+        Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceError);
         this.#addHistory(id, response);
         yield response;
 
@@ -410,6 +411,7 @@ STOP`;
             rpcId,
             suggestions,
           } as const;
+          Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceAnswerReceived);
           this.#addHistory(id, response);
           yield response;
         } else {
@@ -418,6 +420,7 @@ STOP`;
             error: ErrorType.UNKNOWN,
             rpcId,
           } as const;
+          Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceError);
           this.#addHistory(id, response);
           yield response;
         }
@@ -463,6 +466,7 @@ STOP`;
           type: ResponseType.ERROR,
           error: ErrorType.MAX_STEPS,
         } as const;
+        Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceError);
         this.#addHistory(id, response);
         yield response;
         break;

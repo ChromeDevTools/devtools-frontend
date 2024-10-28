@@ -559,7 +559,13 @@ export class FreestylerAgent extends AiAgent<SDK.DOMModel.DOMNode> {
         yield {
           type: ResponseType.SIDE_EFFECT,
           code: action,
-          confirm: sideEffectConfirmationPromiseWithResolvers.resolve,
+          confirm: (result: boolean) => {
+            sideEffectConfirmationPromiseWithResolvers.resolve(result);
+            Host.userMetrics.actionTaken(
+                result ? Host.UserMetrics.Action.AiAssistanceSideEffectConfirmed :
+                         Host.UserMetrics.Action.AiAssistanceSideEffectRejected,
+            );
+          },
           rpcId,
         };
 

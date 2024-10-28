@@ -662,11 +662,6 @@ export class FreestylerChatUi extends HTMLElement {
       step.sideEffect?.onAnswer(answer);
       step.sideEffect = undefined;
       this.#render();
-
-      Host.userMetrics.actionTaken(
-          answer ? Host.UserMetrics.Action.AiAssistanceSideEffectConfirmed :
-                   Host.UserMetrics.Action.AiAssistanceSideEffectRejected,
-      );
     };
 
     // clang-format off

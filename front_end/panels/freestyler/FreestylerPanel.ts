@@ -624,7 +624,6 @@ export class FreestylerPanel extends UI.Panel.Panel {
           }
           step.isLoading = false;
           this.#viewProps.isLoading = false;
-          Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceAnswerReceived);
           break;
         }
         case ResponseType.ERROR: {
@@ -640,10 +639,6 @@ export class FreestylerPanel extends UI.Panel.Panel {
             } else if (lastStep.isLoading) {
               systemMessage.steps.pop();
             }
-          }
-
-          if (data.error !== ErrorType.ABORT) {
-            Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceError);
           }
         }
       }

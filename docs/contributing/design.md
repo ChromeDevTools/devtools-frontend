@@ -39,7 +39,7 @@ be send to
 [devtools-dev+design@chromium.org](mailto:devtools-dev+design@chromium.org).
 
 Google internal design docs have to live in the
-[Design Documents (internal)](https://drive.google.com/corp/drive/folders/15oHN9vX8j08QOkegjWKdSN0XjyaoLanl)
+[Design Documents (internal)](http://go/chrome-devtools:design-internal-drive)
 folder of the shared internal
 [Chrome DevTools](http://go/chrome-devtools/team-resources#chrome-devtools-shared-drive) team drive, and
 should be sent to

@@ -9,16 +9,40 @@
 }
 
 .history-dropdown-button {
-  width: 160px;
-  height: 26px;
+  width: var(--sys-size-23);
+  height: var(--sys-size-9);
+  border-radius: var(--sys-shape-corner-extra-small);
   text-align: left;
   display: flex;
-  border: 1px solid transparent;
-}
+  padding-right: var(--sys-size-5);
 
-.history-dropdown-button[disabled] {
-  opacity: 50%;
-  border: 1px solid transparent;
+  &:hover {
+    background-color: var(--sys-color-state-hover-on-subtle);
+  }
+
+  &:active {
+    background-color: var(--sys-color-state-ripple-neutral-on-subtle);
+  }
+
+  &:hover:active {
+    background:
+      linear-gradient(var(--sys-color-state-hover-on-subtle), var(--sys-color-state-hover-on-subtle)),
+      linear-gradient(var(--sys-color-state-ripple-neutral-on-subtle), var(--sys-color-state-ripple-neutral-on-subtle));
+  }
+
+  &:focus-visible {
+    outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
+  }
+
+  &[disabled] {
+    pointer-events: none;
+    color: var(--sys-color-state-disabled);
+    background-color: var(--sys-color-state-disabled-container);
+
+    .content::after {
+      background-color: var(--sys-color-state-disabled);
+    }
+  }
 }
 
 .history-dropdown-button > .content {
@@ -37,19 +61,9 @@
     content: "";
     position: absolute;
     background-color: var(--icon-default);
-    right: -3px;
+    right: var(--sys-size-3);
+    top: var(--sys-size-3);
   }
-}
-
-.history-dropdown-button:focus-visible::before {
-  content: "";
-  position: absolute;
-  top: 2px;
-  left: 0;
-  right: 0;
-  bottom: 2px;
-  border-radius: 2px;
-  background: var(--divider-line);
 }
 
 @media (forced-colors: active) {

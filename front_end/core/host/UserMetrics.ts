@@ -1028,10 +1028,11 @@ export enum DevtoolsExperiments {
   'floating-entry-points-for-ai-assistance' = 101,
   'timeline-experimental-insights' = 102,
   'timeline-dim-unrelated-events' = 103,
+  'timeline-alternative-navigation' = 104,
   /* eslint-enable @typescript-eslint/naming-convention */
 
   // Increment this when new experiments are added.
-  MAX_VALUE = 104,
+  MAX_VALUE = 105,
 }
 
 export const enum CSSPropertyDocumentation {

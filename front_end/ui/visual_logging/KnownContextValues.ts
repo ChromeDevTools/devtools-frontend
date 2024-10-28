@@ -3020,6 +3020,7 @@ export const knownContextValues = new Set([
   'thumbs-up',
   'time',
   'timeline',
+  'timeline-alternative-navigation',
   'timeline-capture-layers-and-pictures',
   'timeline-capture-selector-stats',
   'timeline-compiled-sources',

@@ -82,6 +82,7 @@ function launchChrome() {
     'BoostRenderProcessForLoading',
     'MacAllowBackgroundingRenderProcesses',
     'MojoChannelAssociatedCrashesOnSendError',
+    'MojoChannelAssociatedSendUsesRunOrPostTask',
   ];
   const launchArgs = [
     '--remote-allow-origins=*',

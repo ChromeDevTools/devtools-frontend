@@ -14646,6 +14646,7 @@ export namespace Storage {
     destinationLimitPriority: SignedInt64AsBase10;
     aggregatableDebugReportingConfig: AttributionReportingAggregatableDebugReportingConfig;
     scopesData?: AttributionScopesData;
+    maxEventLevelReports: integer;
   }
 
   export const enum AttributionReportingSourceRegistrationResult {

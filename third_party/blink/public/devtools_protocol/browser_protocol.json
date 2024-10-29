@@ -22041,6 +22041,10 @@
                             "name": "scopesData",
                             "optional": true,
                             "$ref": "AttributionScopesData"
+                        },
+                        {
+                            "name": "maxEventLevelReports",
+                            "type": "integer"
                         }
                     ]
                 },

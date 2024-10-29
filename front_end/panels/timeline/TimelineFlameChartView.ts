@@ -992,7 +992,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     if (!event || !this.#parsedTrace) {
       return;
     }
-    if (event instanceof Trace.Handlers.ModelHandlers.Frames.TimelineFrame) {
+    if (Trace.Types.Events.isLegacyTimelineFrame(event)) {
       return;
     }
 

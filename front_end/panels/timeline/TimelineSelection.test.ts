@@ -9,10 +9,10 @@ import {TraceLoader} from '../../testing/TraceLoader.js';
 import * as Timeline from './timeline.js';
 
 describeWithEnvironment('TimelineSelection', function() {
-  it('can be created with a frame', function() {
-    const frame = new Trace.Handlers.ModelHandlers.Frames.TimelineFrame(
-        /* seqId */ 1, /* startTime */ Trace.Types.Timing.MicroSeconds(1000),
-        /* start offset */ Trace.Types.Timing.MicroSeconds(0));
+  it('can be created with a frame', async function() {
+    const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const frame = parsedTrace.Frames.frames.at(0);
+    assert.isOk(frame);
     const selection = Timeline.TimelineSelection.TimelineSelection.fromFrame(frame);
     assert.strictEqual(selection.object, frame);
     assert.strictEqual(selection.startTime, Trace.Helpers.Timing.microSecondsToMilliseconds(frame.startTime));

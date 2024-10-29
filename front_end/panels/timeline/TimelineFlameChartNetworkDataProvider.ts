@@ -136,11 +136,7 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
     return contextMenu;
   }
 
-  indexForEvent(event: Trace.Types.Events.Event|Trace.Handlers.ModelHandlers.Frames.TimelineFrame): number|null {
-    // In the NetworkDataProvider we will never be dealing with frames, but we need to satisfy the interface for a DataProvider.
-    if (event instanceof Trace.Handlers.ModelHandlers.Frames.TimelineFrame) {
-      return null;
-    }
+  indexForEvent(event: Trace.Types.Events.Event): number|null {
     if (!Trace.Types.Events.isNetworkTrackEntry(event)) {
       return null;
     }

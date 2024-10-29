@@ -11,7 +11,7 @@ import * as Timeline from '../timeline.js';
 function initTrackAppender(
     flameChartData: PerfUI.FlameChart.FlameChartTimelineData,
     parsedTrace: Trace.Handlers.Types.ParsedTrace,
-    entryData: Timeline.TimelineFlameChartDataProvider.TimelineFlameChartEntry[],
+    entryData: Trace.Types.Events.Event[],
     entryTypeByLevel: Timeline.TimelineFlameChartDataProvider.EntryType[],
     ): Timeline.InteractionsTrackAppender.InteractionsTrackAppender {
   const compatibilityTracksAppender = new Timeline.CompatibilityTracksAppender.CompatibilityTracksAppender(
@@ -24,11 +24,11 @@ describeWithEnvironment('InteractionsTrackAppender', function() {
     entryTypeByLevel: Timeline.TimelineFlameChartDataProvider.EntryType[],
     flameChartData: PerfUI.FlameChart.FlameChartTimelineData,
     interactionsTrackAppender: Timeline.InteractionsTrackAppender.InteractionsTrackAppender,
-    entryData: Timeline.TimelineFlameChartDataProvider.TimelineFlameChartEntry[],
+    entryData: Trace.Types.Events.Event[],
     parsedTrace: Readonly<Trace.Handlers.Types.ParsedTrace>,
   }> {
     const entryTypeByLevel: Timeline.TimelineFlameChartDataProvider.EntryType[] = [];
-    const entryData: Timeline.TimelineFlameChartDataProvider.TimelineFlameChartEntry[] = [];
+    const entryData: Trace.Types.Events.Event[] = [];
     const flameChartData = PerfUI.FlameChart.FlameChartTimelineData.createEmpty();
     const {parsedTrace} = await TraceLoader.traceEngine(context, trace);
     const interactionsTrackAppender = initTrackAppender(flameChartData, parsedTrace, entryData, entryTypeByLevel);

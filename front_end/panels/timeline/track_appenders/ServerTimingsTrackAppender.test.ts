@@ -12,8 +12,7 @@ import * as Timeline from '../timeline.js';
 
 function initTrackAppender(
     flameChartData: PerfUI.FlameChart.FlameChartTimelineData, parsedTrace: Trace.Handlers.Types.ParsedTrace,
-    entryData: Timeline.TimelineFlameChartDataProvider.TimelineFlameChartEntry[],
-    entryTypeByLevel: Timeline.TimelineFlameChartDataProvider.EntryType[]):
+    entryData: Trace.Types.Events.Event[], entryTypeByLevel: Timeline.TimelineFlameChartDataProvider.EntryType[]):
     Timeline.ServerTimingsTrackAppender.ServerTimingsTrackAppender {
   const compatibilityTracksAppender = new Timeline.CompatibilityTracksAppender.CompatibilityTracksAppender(
       flameChartData, parsedTrace, entryData, entryTypeByLevel);
@@ -23,7 +22,7 @@ function initTrackAppender(
 describeWithEnvironment('ServerTimingsTrackAppender', function() {
   let parsedTrace: Trace.Handlers.Types.ParsedTrace;
   let serverTimingsTrackAppender: Timeline.ServerTimingsTrackAppender.ServerTimingsTrackAppender;
-  let entryData: Timeline.TimelineFlameChartDataProvider.TimelineFlameChartEntry[] = [];
+  let entryData: Trace.Types.Events.Event[] = [];
   let flameChartData = PerfUI.FlameChart.FlameChartTimelineData.createEmpty();
   let entryTypeByLevel: Timeline.TimelineFlameChartDataProvider.EntryType[] = [];
 

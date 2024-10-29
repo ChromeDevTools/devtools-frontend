@@ -21,7 +21,6 @@ import {ThreadAppender} from './ThreadAppender.js';
 import {
   EntryType,
   InstantEventVisibleDurationMs,
-  type TimelineFlameChartEntry,
 } from './TimelineFlameChartDataProvider.js';
 import {TimingsTrackAppender} from './TimingsTrackAppender.js';
 import * as TimelineUtils from './utils/utils.js';
@@ -188,7 +187,7 @@ export class CompatibilityTracksAppender {
   #trackEventsForTreeview = new Map<TrackAppender, Trace.Types.Events.Event[]>();
   #flameChartData: PerfUI.FlameChart.FlameChartTimelineData;
   #parsedTrace: Trace.Handlers.Types.ParsedTrace;
-  #entryData: TimelineFlameChartEntry[];
+  #entryData: Trace.Types.Events.Event[];
   #colorGenerator: Common.Color.Generator;
   #allTrackAppenders: TrackAppender[] = [];
   #visibleTrackNames: Set<TrackAppenderName> = new Set([...TrackNames]);
@@ -217,7 +216,7 @@ export class CompatibilityTracksAppender {
    */
   constructor(
       flameChartData: PerfUI.FlameChart.FlameChartTimelineData, parsedTrace: Trace.Handlers.Types.ParsedTrace,
-      entryData: TimelineFlameChartEntry[], legacyEntryTypeByLevel: EntryType[]) {
+      entryData: Trace.Types.Events.Event[], legacyEntryTypeByLevel: EntryType[]) {
     this.#flameChartData = flameChartData;
     this.#parsedTrace = parsedTrace;
     this.#entryData = entryData;
@@ -257,7 +256,7 @@ export class CompatibilityTracksAppender {
   }
 
   setFlameChartDataAndEntryData(
-      flameChartData: PerfUI.FlameChart.FlameChartTimelineData, entryData: TimelineFlameChartEntry[],
+      flameChartData: PerfUI.FlameChart.FlameChartTimelineData, entryData: Trace.Types.Events.Event[],
       legacyEntryTypeByLevel: EntryType[]): void {
     this.#trackForGroup.clear();
     this.#flameChartData = flameChartData;

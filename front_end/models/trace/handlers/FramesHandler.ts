@@ -64,8 +64,8 @@ export async function finalize(): Promise<void> {
 }
 
 export interface FramesData {
-  frames: readonly TimelineFrame[];
-  framesById: Readonly<Record<number, TimelineFrame|undefined>>;
+  frames: readonly Types.Events.LegacyTimelineFrame[];
+  framesById: Readonly<Record<number, Types.Events.LegacyTimelineFrame|undefined>>;
 }
 
 export function data(): FramesData {
@@ -385,7 +385,14 @@ const MAIN_FRAME_MARKERS = new Set<Types.Events.Name>([
   Types.Events.Name.SCROLL_LAYER,
 ]);
 
-export class TimelineFrame implements Types.Events.LegacyTimelineFrame {
+/**
+ * Legacy class that represents TimelineFrames that was ported from the old SDK.
+ * This class is purposefully not exported as it breaks the abstraction that
+ * every event shown on the timeline is a trace event. Instead, we use the Type
+ * LegacyTimelineFrame to represent frames in the codebase. These do implement
+ * the right interface to be treated just like they were a trace event.
+ */
+class TimelineFrame implements Types.Events.LegacyTimelineFrame {
   // These fields exist to satisfy the base Event type which all
   // "trace events" must implement. They aren't used, but doing this means we
   // can pass `TimelineFrame` instances into places that expect
@@ -562,8 +569,8 @@ export class TimelineFrameBeginFrameQueue {
 }
 
 export function framesWithinWindow(
-    frames: readonly TimelineFrame[], startTime: Types.Timing.MicroSeconds,
-    endTime: Types.Timing.MicroSeconds): TimelineFrame[] {
+    frames: readonly Types.Events.LegacyTimelineFrame[], startTime: Types.Timing.MicroSeconds,
+    endTime: Types.Timing.MicroSeconds): Types.Events.LegacyTimelineFrame[] {
   const firstFrame = Platform.ArrayUtilities.lowerBound(frames, startTime || 0, (time, frame) => time - frame.endTime);
   const lastFrame =
       Platform.ArrayUtilities.lowerBound(frames, endTime || Infinity, (time, frame) => time - frame.startTime);

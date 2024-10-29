@@ -16,8 +16,7 @@ import * as Timeline from '../timeline.js';
 
 function initTrackAppender(
     flameChartData: PerfUI.FlameChart.FlameChartTimelineData, parsedTrace: Trace.Handlers.Types.ParsedTrace,
-    entryData: Timeline.TimelineFlameChartDataProvider.TimelineFlameChartEntry[],
-    entryTypeByLevel: Timeline.TimelineFlameChartDataProvider.EntryType[]):
+    entryData: Trace.Types.Events.Event[], entryTypeByLevel: Timeline.TimelineFlameChartDataProvider.EntryType[]):
     Timeline.ExtensionTrackAppender.ExtensionTrackAppender[] {
   Timeline.ExtensionDataGatherer.ExtensionDataGatherer.instance().modelChanged(parsedTrace);
   const compatibilityTracksAppender = new Timeline.CompatibilityTracksAppender.CompatibilityTracksAppender(
@@ -30,7 +29,7 @@ function initTrackAppender(
 describeWithEnvironment('ExtensionTrackAppender', function() {
   let parsedTrace: Trace.Handlers.Types.ParsedTrace;
   let extensionTrackAppenders: Timeline.ExtensionTrackAppender.ExtensionTrackAppender[];
-  let entryData: Timeline.TimelineFlameChartDataProvider.TimelineFlameChartEntry[] = [];
+  let entryData: Trace.Types.Events.Event[] = [];
   let flameChartData = PerfUI.FlameChart.FlameChartTimelineData.createEmpty();
   let entryTypeByLevel: Timeline.TimelineFlameChartDataProvider.EntryType[] = [];
 

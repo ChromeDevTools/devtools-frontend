@@ -12,7 +12,7 @@ import * as Timeline from '../timeline.js';
 describeWithEnvironment('CompatibilityTracksAppender', function() {
   let parsedTrace: Trace.Handlers.Types.ParsedTrace;
   let tracksAppender: Timeline.CompatibilityTracksAppender.CompatibilityTracksAppender;
-  let entryData: Timeline.TimelineFlameChartDataProvider.TimelineFlameChartEntry[] = [];
+  let entryData: Trace.Types.Events.Event[] = [];
   let flameChartData = PerfUI.FlameChart.FlameChartTimelineData.createEmpty();
   let entryTypeByLevel: Timeline.TimelineFlameChartDataProvider.EntryType[] = [];
 

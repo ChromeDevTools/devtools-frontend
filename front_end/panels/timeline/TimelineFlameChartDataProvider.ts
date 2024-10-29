@@ -101,9 +101,6 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineFlameChartDataProvider.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-// Frames are special cased because we don't render them as a normal track, hence the distinction here.
-export type TimelineFlameChartEntry = Trace.Handlers.ModelHandlers.Frames.TimelineFrame|Trace.Types.Events.Event;
-
 export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements
     PerfUI.FlameChart.FlameChartDataProvider {
   private droppedFramePatternCanvas: HTMLCanvasElement;
@@ -132,7 +129,11 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   // all - will not appear in this array and it will change per-render. For
   // example, if a user collapses an icicle in the flamechart, those entries
   // that are now hidden will no longer be in this array.
-  private entryData: TimelineFlameChartEntry[] = [];
+  // This also includes entrys that used to be special cased (e.g.
+  // TimelineFrames) that are now of type Types.Events.Event and so the old
+  // `TimelineFlameChartEntry` type has been removed in faovur of using
+  // Trace.Types.Events.Event directly. See crrev.com/c/5973695 for details.
+  private entryData: Trace.Types.Events.Event[] = [];
 
   private entryTypeByLevel!: EntryType[];
   private entryIndexToTitle!: string[];
@@ -140,8 +141,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   private lastInitiatorsData: PerfUI.FlameChart.FlameChartInitiatorData[] = [];
   private lastSelection?: Selection;
   #font: string;
-  #eventIndexByEvent: WeakMap<Trace.Types.Events.Event|Trace.Handlers.ModelHandlers.Frames.TimelineFrame, number|null> =
-      new WeakMap();
+  #eventIndexByEvent: WeakMap<Trace.Types.Events.Event, number|null> = new WeakMap();
 
   constructor() {
     super();
@@ -283,7 +283,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     });
 
     const entry = this.eventByIndex(entryIndex);
-    if (!entry || entry instanceof Trace.Handlers.ModelHandlers.Frames.TimelineFrame || !this.parsedTrace) {
+    if (!entry || !this.parsedTrace || Trace.Types.Events.isLegacyTimelineFrame(entry)) {
       return contextMenu;
     }
     const url = Utils.SourceMapsResolver.SourceMapsResolver.resolvedURLForEntry(this.parsedTrace, entry);
@@ -481,9 +481,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
 
   textColor(index: number): string {
     const event = this.entryData[index];
-    if (!TimelineFlameChartDataProvider.timelineEntryIsTraceEvent(event)) {
-      return FlameChartStyle.textColor;
-    }
     return Utils.IgnoreList.isIgnoreListedEntry(event) ? '#888' : FlameChartStyle.textColor;
   }
 
@@ -641,10 +638,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     return this.timeSpan;
   }
 
-  static timelineEntryIsTraceEvent(entry: TimelineFlameChartEntry): entry is Trace.Types.Events.Event {
-    return entry instanceof Trace.Handlers.ModelHandlers.Frames.TimelineFrame === false;
-  }
-
   search(
       visibleWindow: Trace.Types.Timing.TraceWindowMicroSeconds,
       filter?: TimelineModel.TimelineModelFilter.TimelineModelFilter): PerfUI.FlameChart.DataProviderSearchResult[] {
@@ -656,8 +649,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
         continue;
       }
 
-      if (!TimelineFlameChartDataProvider.timelineEntryIsTraceEvent(entry)) {
-        // We only search for events, not for frames, hence this early exit.
+      if (Trace.Types.Events.isLegacyTimelineFrame(entry)) {
         continue;
       }
 
@@ -701,7 +693,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
 
     this.entryTypeByLevel[this.currentLevel] = EntryType.FRAME;
     for (const frame of this.parsedTrace.Frames.frames) {
-      this.#appendNewEngineFrame(frame);
+      this.#appendFrame(frame);
     }
     ++this.currentLevel;
 
@@ -768,7 +760,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       }
 
     } else if (entryType === EntryType.FRAME) {
-      const frame = (this.entryData[entryIndex] as Trace.Handlers.ModelHandlers.Frames.TimelineFrame);
+      const frame = (this.entryData[entryIndex] as Trace.Types.Events.LegacyTimelineFrame);
       time =
           i18n.TimeUtilities.preciseMillisToString(Trace.Helpers.Timing.microSecondsToMilliseconds(frame.duration), 1);
 
@@ -841,7 +833,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   }
 
   #entryColorForFrame(entryIndex: number): string {
-    const frame = (this.entryData[entryIndex] as Trace.Handlers.ModelHandlers.Frames.TimelineFrame);
+    const frame = (this.entryData[entryIndex] as Trace.Types.Events.LegacyTimelineFrame);
     if (frame.idle) {
       return 'white';
     }
@@ -909,10 +901,10 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   }
 
   private drawFrame(
-      entryIndex: number, context: CanvasRenderingContext2D, text: string|null, barX: number, barY: number,
-      barWidth: number, barHeight: number): void {
+      entryIndex: number, context: CanvasRenderingContext2D, barX: number, barY: number, barWidth: number,
+      barHeight: number): void {
     const hPadding = 1;
-    const frame = (this.entryData[entryIndex] as Trace.Handlers.ModelHandlers.Frames.TimelineFrame);
+    const frame = this.entryData[entryIndex] as Trace.Types.Events.LegacyTimelineFrame;
     barX += hPadding;
     barWidth -= 2 * hPadding;
     context.fillStyle = this.entryColor(entryIndex);
@@ -974,7 +966,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     const entryType = this.#entryTypeForIndex(entryIndex);
 
     if (entryType === EntryType.FRAME) {
-      this.drawFrame(entryIndex, context, text, barX, barY, barWidth, barHeight);
+      this.drawFrame(entryIndex, context, barX, barY, barWidth, barHeight);
       return true;
     }
 
@@ -1123,7 +1115,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     return group;
   }
 
-  #appendNewEngineFrame(frame: Trace.Handlers.ModelHandlers.Frames.TimelineFrame): void {
+  #appendFrame(frame: Trace.Types.Events.LegacyTimelineFrame): void {
     const index = this.entryData.length;
     this.entryData.push(frame);
     const durationMilliseconds = Trace.Helpers.Timing.microSecondsToMilliseconds(frame.duration);
@@ -1137,18 +1129,20 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   }
 
   createSelection(entryIndex: number): TimelineSelection|null {
-    const entryType = this.#entryTypeForIndex(entryIndex);
-    let timelineSelection: TimelineSelection|null = null;
     const entry = this.entryData[entryIndex];
-    if (entry && TimelineFlameChartDataProvider.timelineEntryIsTraceEvent(entry)) {
+    if (!entry) {
+      return null;
+    }
+
+    let timelineSelection: TimelineSelection|null = null;
+
+    if (Trace.Types.Events.isLegacyTimelineFrame(entry)) {
+      timelineSelection = TimelineSelection.fromFrame(entry);
+    } else {
       timelineSelection = TimelineSelection.fromTraceEvent(entry);
-    } else if (entryType === EntryType.FRAME) {
-      timelineSelection = TimelineSelection.fromFrame(
-          (this.entryData[entryIndex] as Trace.Handlers.ModelHandlers.Frames.TimelineFrame));
     }
-    if (timelineSelection) {
-      this.lastSelection = new Selection(timelineSelection, entryIndex);
-    }
+
+    this.lastSelection = new Selection(timelineSelection, entryIndex);
     return timelineSelection;
   }
 
@@ -1208,7 +1202,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
    * timelineData() has been generated. If it hasn't, this method will return
    * null.
    */
-  indexForEvent(targetEvent: Trace.Types.Events.Event|Trace.Handlers.ModelHandlers.Frames.TimelineFrame): number|null {
+  indexForEvent(targetEvent: Trace.Types.Events.Event): number|null {
     // Gets the index for the given event by walking through the array of entryData.
     // This may seem inefficient - but we have seen that by building up large
     // maps keyed by trace events that this has a significant impact on the

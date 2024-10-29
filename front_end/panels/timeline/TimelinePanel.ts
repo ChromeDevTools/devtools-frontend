@@ -2202,12 +2202,11 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     void this.stopRecording();
   }
 
-  private frameForSelection(selection: TimelineSelection): Trace.Handlers.ModelHandlers.Frames.TimelineFrame|null {
+  private frameForSelection(selection: TimelineSelection): Trace.Types.Events.LegacyTimelineFrame|null {
     if (this.#viewMode.mode !== 'VIEWING_TRACE') {
       return null;
     }
-    if (TimelineSelection.isLegacyTimelineFrame(selection.object) &&
-        selection.object instanceof Trace.Handlers.ModelHandlers.Frames.TimelineFrame) {
+    if (TimelineSelection.isLegacyTimelineFrame(selection.object)) {
       return selection.object;
     }
     if (TimelineSelection.isRangeSelection(selection.object) ||
@@ -2219,7 +2218,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       if (!parsedTrace) {
         return null;
       }
-      // If the user has selected a time range, the frame we want is the last
+      // If the user has selected a random trace event, the frame we want is the last
       // frame in that time window, hence why the window we look for is the
       // endTime to the endTime.
       const endTimeMicro = Trace.Helpers.Timing.millisecondsToMicroseconds(selection.endTime);

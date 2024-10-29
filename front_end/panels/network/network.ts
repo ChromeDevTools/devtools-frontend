@@ -41,7 +41,6 @@ import * as NetworkPanel from './NetworkPanel.js';
 import * as NetworkSearchScope from './NetworkSearchScope.js';
 import * as NetworkTimeCalculator from './NetworkTimeCalculator.js';
 import * as NetworkWaterfallColumn from './NetworkWaterfallColumn.js';
-import * as RequestBinaryResponseView from './RequestBinaryResponseView.js';
 import * as RequestCookiesView from './RequestCookiesView.js';
 import * as RequestHTMLView from './RequestHTMLView.js';
 import * as RequestInitiatorView from './RequestInitiatorView.js';
@@ -68,7 +67,6 @@ export {
   NetworkSearchScope,
   NetworkTimeCalculator,
   NetworkWaterfallColumn,
-  RequestBinaryResponseView,
   RequestCookiesView,
   RequestHTMLView,
   RequestInitiatorView,

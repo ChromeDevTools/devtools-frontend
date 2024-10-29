@@ -37,8 +37,6 @@ import * as SourceFrame from '../../ui/legacy/components/source_frame/source_fra
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import {RequestBinaryResponseView} from './RequestBinaryResponseView.js';
-
 const UIStrings = {
   /**
    *@description Text in Request Response View of the Network panel
@@ -96,7 +94,7 @@ export class RequestResponseView extends UI.Widget.VBox {
       // Note: Even though WASM is binary data, the source view will disassemble it and show a text representation.
       sourceView = SourceFrame.ResourceSourceFrame.ResourceSourceFrame.createSearchableView(request, mimeType);
     } else {
-      sourceView = new RequestBinaryResponseView(contentData);
+      sourceView = new SourceFrame.StreamingContentHexView.StreamingContentHexView(contentData);
     }
 
     requestToSourceView.set(request, sourceView);

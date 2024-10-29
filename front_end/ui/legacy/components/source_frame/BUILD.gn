@@ -31,6 +31,7 @@ devtools_module("source_frame") {
     "PreviewFactory.ts",
     "ResourceSourceFrame.ts",
     "SourceFrame.ts",
+    "StreamingContentHexView.ts",
     "XMLView.ts",
   ]
 
@@ -43,6 +44,7 @@ devtools_module("source_frame") {
     "../../../../models/formatter:bundle",
     "../../../../models/text_utils:bundle",
     "../../../../models/workspace:bundle",
+    "../../../../panels/linear_memory_inspector/components:bundle",
     "../../../../third_party/diff:bundle",
     "../../../../ui/components/text_editor:bundle",
     "../../../../ui/legacy:bundle",
@@ -92,6 +94,7 @@ ts_library("unittests") {
     "BinaryResourceViewFactory.test.ts",
     "ResourceSourceFrame.test.ts",
     "SourceFrame.test.ts",
+    "StreamingContentHexView.test.ts",
   ]
 
   deps = [

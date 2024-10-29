@@ -19,10 +19,10 @@ import { withSourcePuppeteerURLIfNone } from '../common/util.js';
  *
  * ```ts
  * page.on('workercreated', worker =>
- *   console.log('Worker created: ' + worker.url())
+ *   console.log('Worker created: ' + worker.url()),
  * );
  * page.on('workerdestroyed', worker =>
- *   console.log('Worker destroyed: ' + worker.url())
+ *   console.log('Worker destroyed: ' + worker.url()),
  * );
  *
  * console.log('Current workers:');

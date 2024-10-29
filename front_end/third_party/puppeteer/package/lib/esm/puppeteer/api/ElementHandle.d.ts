@@ -243,10 +243,10 @@ export declare abstract class ElementHandle<ElementType extends Node = Element> 
      * ```ts
      * const tweetHandle = await page.$('.tweet');
      * expect(await tweetHandle.$eval('.like', node => node.innerText)).toBe(
-     *   '100'
+     *   '100',
      * );
      * expect(await tweetHandle.$eval('.retweets', node => node.innerText)).toBe(
-     *   '10'
+     *   '10',
      * );
      * ```
      *
@@ -294,7 +294,7 @@ export declare abstract class ElementHandle<ElementType extends Node = Element> 
      * ```ts
      * const feedHandle = await page.$('.feed');
      * expect(
-     *   await feedHandle.$$eval('.tweet', nodes => nodes.map(n => n.innerText))
+     *   await feedHandle.$$eval('.tweet', nodes => nodes.map(n => n.innerText)),
      * ).toEqual(['Hello!', 'Hi!']);
      * ```
      *
@@ -392,7 +392,7 @@ export declare abstract class ElementHandle<ElementType extends Node = Element> 
      *
      * ```ts
      * const element: ElementHandle<Element> = await page.$(
-     *   '.class-name-of-anchor'
+     *   '.class-name-of-anchor',
      * );
      * // DO NOT DISPOSE `element`, this will be always be the same handle.
      * const anchor: ElementHandle<HTMLAnchorElement> =

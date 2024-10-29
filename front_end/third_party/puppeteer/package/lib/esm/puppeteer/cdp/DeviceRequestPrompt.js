@@ -43,7 +43,7 @@ export class DeviceRequestPromptDevice {
  *   page.click('#connect-bluetooth'),
  * ]);
  * await devicePrompt.select(
- *   await devicePrompt.waitForDevice(({name}) => name.includes('My Device'))
+ *   await devicePrompt.waitForDevice(({name}) => name.includes('My Device')),
  * );
  * ```
  *

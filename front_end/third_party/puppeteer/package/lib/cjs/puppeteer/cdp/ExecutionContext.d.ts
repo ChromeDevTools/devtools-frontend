@@ -52,7 +52,7 @@ export declare class ExecutionContext extends EventEmitter<{
      * const result = await executionContext.evaluate(
      *   (a, b) => a + b,
      *   oneHandle,
-     *   twoHandle
+     *   twoHandle,
      * );
      * await oneHandle.dispose();
      * await twoHandle.dispose();
@@ -80,7 +80,7 @@ export declare class ExecutionContext extends EventEmitter<{
      * ```ts
      * const context = await page.mainFrame().executionContext();
      * const handle: JSHandle<typeof globalThis> = await context.evaluateHandle(
-     *   () => Promise.resolve(self)
+     *   () => Promise.resolve(self),
      * );
      * ```
      *
@@ -101,7 +101,7 @@ export declare class ExecutionContext extends EventEmitter<{
      *   });
      * const stringHandle: JSHandle<string> = await context.evaluateHandle(
      *   body => body.innerHTML,
-     *   body
+     *   body,
      * );
      * console.log(await stringHandle.jsonValue()); // prints body's innerHTML
      * // Always dispose your garbage! :)

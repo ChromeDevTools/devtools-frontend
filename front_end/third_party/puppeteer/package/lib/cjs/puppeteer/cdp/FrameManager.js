@@ -90,7 +90,7 @@ class FrameManager extends EventEmitter_js_1.EventEmitter {
         try {
             await swapped.valueOrThrow();
         }
-        catch (err) {
+        catch {
             this.#removeFramesRecursively(mainFrame);
         }
     }

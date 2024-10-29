@@ -24,7 +24,6 @@ __exportStar(require("./BrowserContext.js"), exports);
 __exportStar(require("./CDPSession.js"), exports);
 __exportStar(require("./Dialog.js"), exports);
 __exportStar(require("./ElementHandle.js"), exports);
-__exportStar(require("./Environment.js"), exports);
 __exportStar(require("./Frame.js"), exports);
 __exportStar(require("./HTTPRequest.js"), exports);
 __exportStar(require("./HTTPResponse.js"), exports);

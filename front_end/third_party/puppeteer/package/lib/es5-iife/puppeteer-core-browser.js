@@ -2853,7 +2853,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   /**
    * @internal
    */
-  const packageVersion = '23.6.0';
+  const packageVersion = '23.6.1';
 
   /**
    * @license
@@ -3011,7 +3011,6 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       if (!prefixMatchesDebugLevel) {
         return;
       }
-      // eslint-disable-next-line no-console
       console.log(`${prefix}:`, ...logArgs);
     };
   };
@@ -3296,7 +3295,9 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   /**
    * @internal
    */
-  function evaluationString(fun, ...args) {
+  function evaluationString(
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
+  fun, ...args) {
     if (isString(fun)) {
       assert(args.length === 0, 'Cannot evaluate a string with arguments');
       return fun;
@@ -3621,7 +3622,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
      * ```ts
      * await page.evaluate(() => window.open('https://www.example.com/'));
      * const newWindowTarget = await browser.waitForTarget(
-     *   target => target.url() === 'https://www.example.com/'
+     *   target => target.url() === 'https://www.example.com/',
      * );
      * ```
      */
@@ -3732,6 +3733,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       _classPrivateFieldInitSpec(this, _value, void 0);
       // SAFETY: This is ensured by #taskPromise.
       _classPrivateFieldInitSpec(this, _resolve, void 0);
+      // TODO: Switch to Promise.withResolvers with Node 22
       _classPrivateFieldInitSpec(this, _taskPromise, new Promise(resolve => {
         _classPrivateFieldSet(_resolve, this, resolve);
       }));
@@ -3926,7 +3928,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
      * ```ts
      * await page.evaluate(() => window.open('https://www.example.com/'));
      * const newWindowTarget = await browserContext.waitForTarget(
-     *   target => target.url() === 'https://www.example.com/'
+     *   target => target.url() === 'https://www.example.com/',
      * );
      * ```
      */
@@ -3997,7 +3999,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    * const client = await page.createCDPSession();
    * await client.send('Animation.enable');
    * client.on('Animation.animationCreated', () =>
-   *   console.log('Animation created!')
+   *   console.log('Animation created!'),
    * );
    * const response = await client.send('Animation.getPlaybackRate');
    * console.log('playback rate is ' + response.playbackRate);
@@ -4287,19 +4289,24 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         env.error = env.hasError ? new SuppressedError(e, env.error, "An error was suppressed during disposal.") : e;
         env.hasError = true;
       }
+      var r,
+        s = 0;
       function next() {
-        while (env.stack.length) {
-          var rec = env.stack.pop();
+        while (r = env.stack.pop()) {
           try {
-            var result = rec.dispose && rec.dispose.call(rec.value);
-            if (rec.async) return Promise.resolve(result).then(next, function (e) {
-              fail(e);
-              return next();
-            });
+            if (!r.async && s === 1) return s = 0, env.stack.push(r), Promise.resolve().then(next);
+            if (r.dispose) {
+              var result = r.dispose.call(r.value);
+              if (r.async) return s |= 2, Promise.resolve(result).then(next, function (e) {
+                fail(e);
+                return next();
+              });
+            } else s |= 1;
           } catch (e) {
             fail(e);
           }
         }
+        if (s === 1) return env.hasError ? Promise.reject(env.error) : Promise.resolve();
         if (env.hasError) throw env.error;
       }
       return next();
@@ -4467,19 +4474,24 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         env.error = env.hasError ? new SuppressedError(e, env.error, "An error was suppressed during disposal.") : e;
         env.hasError = true;
       }
+      var r,
+        s = 0;
       function next() {
-        while (env.stack.length) {
-          var rec = env.stack.pop();
+        while (r = env.stack.pop()) {
           try {
-            var result = rec.dispose && rec.dispose.call(rec.value);
-            if (rec.async) return Promise.resolve(result).then(next, function (e) {
-              fail(e);
-              return next();
-            });
+            if (!r.async && s === 1) return s = 0, env.stack.push(r), Promise.resolve().then(next);
+            if (r.dispose) {
+              var result = r.dispose.call(r.value);
+              if (r.async) return s |= 2, Promise.resolve(result).then(next, function (e) {
+                fail(e);
+                return next();
+              });
+            } else s |= 1;
           } catch (e) {
             fail(e);
           }
         }
+        if (s === 1) return env.hasError ? Promise.reject(env.error) : Promise.resolve();
         if (env.hasError) throw env.error;
       }
       return next();
@@ -4711,6 +4723,9 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    */
   const ATTRIBUTE_REGEXP = /\[\s*(?<attribute>\w+)\s*=\s*(?<quote>"|')(?<value>\\.|.*?(?=\k<quote>))\k<quote>\s*\]/g;
   const parseARIASelector = selector => {
+    if (selector.length > 10_000) {
+      throw new Error(`Selector ${selector} is too long`);
+    }
     const queryOptions = {};
     const defaultName = selector.replace(ATTRIBUTE_REGEXP, (_, attribute, __, value) => {
       assert(isKnownAttribute(attribute), `Unknown aria attribute "${attribute}" in selector`);
@@ -5422,19 +5437,24 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         env.error = env.hasError ? new SuppressedError(e, env.error, "An error was suppressed during disposal.") : e;
         env.hasError = true;
       }
+      var r,
+        s = 0;
       function next() {
-        while (env.stack.length) {
-          var rec = env.stack.pop();
+        while (r = env.stack.pop()) {
           try {
-            var result = rec.dispose && rec.dispose.call(rec.value);
-            if (rec.async) return Promise.resolve(result).then(next, function (e) {
-              fail(e);
-              return next();
-            });
+            if (!r.async && s === 1) return s = 0, env.stack.push(r), Promise.resolve().then(next);
+            if (r.dispose) {
+              var result = r.dispose.call(r.value);
+              if (r.async) return s |= 2, Promise.resolve(result).then(next, function (e) {
+                fail(e);
+                return next();
+              });
+            } else s |= 1;
           } catch (e) {
             fail(e);
           }
         }
+        if (s === 1) return env.hasError ? Promise.reject(env.error) : Promise.resolve();
         if (env.hasError) throw env.error;
       }
       return next();
@@ -5641,19 +5661,24 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         env.error = env.hasError ? new SuppressedError(e, env.error, "An error was suppressed during disposal.") : e;
         env.hasError = true;
       }
+      var r,
+        s = 0;
       function next() {
-        while (env.stack.length) {
-          var rec = env.stack.pop();
+        while (r = env.stack.pop()) {
           try {
-            var result = rec.dispose && rec.dispose.call(rec.value);
-            if (rec.async) return Promise.resolve(result).then(next, function (e) {
-              fail(e);
-              return next();
-            });
+            if (!r.async && s === 1) return s = 0, env.stack.push(r), Promise.resolve().then(next);
+            if (r.dispose) {
+              var result = r.dispose.call(r.value);
+              if (r.async) return s |= 2, Promise.resolve(result).then(next, function (e) {
+                fail(e);
+                return next();
+              });
+            } else s |= 1;
           } catch (e) {
             fail(e);
           }
         }
+        if (s === 1) return env.hasError ? Promise.reject(env.error) : Promise.resolve();
         if (env.hasError) throw env.error;
       }
       return next();
@@ -5915,19 +5940,24 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         env.error = env.hasError ? new SuppressedError(e, env.error, "An error was suppressed during disposal.") : e;
         env.hasError = true;
       }
+      var r,
+        s = 0;
       function next() {
-        while (env.stack.length) {
-          var rec = env.stack.pop();
+        while (r = env.stack.pop()) {
           try {
-            var result = rec.dispose && rec.dispose.call(rec.value);
-            if (rec.async) return Promise.resolve(result).then(next, function (e) {
-              fail(e);
-              return next();
-            });
+            if (!r.async && s === 1) return s = 0, env.stack.push(r), Promise.resolve().then(next);
+            if (r.dispose) {
+              var result = r.dispose.call(r.value);
+              if (r.async) return s |= 2, Promise.resolve(result).then(next, function (e) {
+                fail(e);
+                return next();
+              });
+            } else s |= 1;
           } catch (e) {
             fail(e);
           }
         }
+        if (s === 1) return env.hasError ? Promise.reject(env.error) : Promise.resolve();
         if (env.hasError) throw env.error;
       }
       return next();
@@ -6220,10 +6250,10 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
        * ```ts
        * const tweetHandle = await page.$('.tweet');
        * expect(await tweetHandle.$eval('.like', node => node.innerText)).toBe(
-       *   '100'
+       *   '100',
        * );
        * expect(await tweetHandle.$eval('.retweets', node => node.innerText)).toBe(
-       *   '10'
+       *   '10',
        * );
        * ```
        *
@@ -6290,7 +6320,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
        * ```ts
        * const feedHandle = await page.$('.feed');
        * expect(
-       *   await feedHandle.$$eval('.tweet', nodes => nodes.map(n => n.innerText))
+       *   await feedHandle.$$eval('.tweet', nodes => nodes.map(n => n.innerText)),
        * ).toEqual(['Hello!', 'Hi!']);
        * ```
        *
@@ -6424,7 +6454,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
        *
        * ```ts
        * const element: ElementHandle<Element> = await page.$(
-       *   '.class-name-of-anchor'
+       *   '.class-name-of-anchor',
        * );
        * // DO NOT DISPOSE `element`, this will be always be the same handle.
        * const anchor: ElementHandle<HTMLAnchorElement> =
@@ -7572,19 +7602,24 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         env.error = env.hasError ? new SuppressedError(e, env.error, "An error was suppressed during disposal.") : e;
         env.hasError = true;
       }
+      var r,
+        s = 0;
       function next() {
-        while (env.stack.length) {
-          var rec = env.stack.pop();
+        while (r = env.stack.pop()) {
           try {
-            var result = rec.dispose && rec.dispose.call(rec.value);
-            if (rec.async) return Promise.resolve(result).then(next, function (e) {
-              fail(e);
-              return next();
-            });
+            if (!r.async && s === 1) return s = 0, env.stack.push(r), Promise.resolve().then(next);
+            if (r.dispose) {
+              var result = r.dispose.call(r.value);
+              if (r.async) return s |= 2, Promise.resolve(result).then(next, function (e) {
+                fail(e);
+                return next();
+              });
+            } else s |= 1;
           } catch (e) {
             fail(e);
           }
         }
+        if (s === 1) return env.hasError ? Promise.reject(env.error) : Promise.resolve();
         if (env.hasError) throw env.error;
       }
       return next();
@@ -8353,19 +8388,24 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         env.error = env.hasError ? new SuppressedError(e, env.error, "An error was suppressed during disposal.") : e;
         env.hasError = true;
       }
+      var r,
+        s = 0;
       function next() {
-        while (env.stack.length) {
-          var rec = env.stack.pop();
+        while (r = env.stack.pop()) {
           try {
-            var result = rec.dispose && rec.dispose.call(rec.value);
-            if (rec.async) return Promise.resolve(result).then(next, function (e) {
-              fail(e);
-              return next();
-            });
+            if (!r.async && s === 1) return s = 0, env.stack.push(r), Promise.resolve().then(next);
+            if (r.dispose) {
+              var result = r.dispose.call(r.value);
+              if (r.async) return s |= 2, Promise.resolve(result).then(next, function (e) {
+                fail(e);
+                return next();
+              });
+            } else s |= 1;
           } catch (e) {
             fail(e);
           }
         }
+        if (s === 1) return env.hasError ? Promise.reject(env.error) : Promise.resolve();
         if (env.hasError) throw env.error;
       }
       return next();
@@ -8786,7 +8826,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
        * await frame.waitForFunction(
        *   selector => !!document.querySelector(selector),
        *   {}, // empty options object
-       *   selector
+       *   selector,
        * );
        * ```
        *
@@ -10031,7 +10071,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    *     selection.addRange(range);
    *   },
    *   fromJSHandle,
-   *   toJSHandle
+   *   toJSHandle,
    * );
    * ```
    *
@@ -10216,19 +10256,24 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         env.error = env.hasError ? new SuppressedError(e, env.error, "An error was suppressed during disposal.") : e;
         env.hasError = true;
       }
+      var r,
+        s = 0;
       function next() {
-        while (env.stack.length) {
-          var rec = env.stack.pop();
+        while (r = env.stack.pop()) {
           try {
-            var result = rec.dispose && rec.dispose.call(rec.value);
-            if (rec.async) return Promise.resolve(result).then(next, function (e) {
-              fail(e);
-              return next();
-            });
+            if (!r.async && s === 1) return s = 0, env.stack.push(r), Promise.resolve().then(next);
+            if (r.dispose) {
+              var result = r.dispose.call(r.value);
+              if (r.async) return s |= 2, Promise.resolve(result).then(next, function (e) {
+                fail(e);
+                return next();
+              });
+            } else s |= 1;
           } catch (e) {
             fail(e);
           }
         }
+        if (s === 1) return env.hasError ? Promise.reject(env.error) : Promise.resolve();
         if (env.hasError) throw env.error;
       }
       return next();
@@ -10473,7 +10518,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
        * const aHandle = await page.evaluateHandle(() => document.body);
        * const resultHandle = await page.evaluateHandle(
        *   body => body.innerHTML,
-       *   aHandle
+       *   aHandle,
        * );
        * console.log(await resultHandle.jsonValue());
        * await resultHandle.dispose();
@@ -10487,7 +10532,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
        *
        * ```ts
        * const button = await page.evaluateHandle(() =>
-       *   document.querySelector('button')
+       *   document.querySelector('button'),
        * );
        * // can call `click` because `button` is an `ElementHandle`
        * await button.click();
@@ -10539,7 +10584,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
        * // as `value` is not on `Element`
        * const searchValue = await page.$eval(
        *   '#search',
-       *   (el: HTMLInputElement) => el.value
+       *   (el: HTMLInputElement) => el.value,
        * );
        * ```
        *
@@ -10554,7 +10599,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
        * // or if you want to be more explicit, provide it as the generic type.
        * const searchValue = await page.$eval<string>(
        *   '#search',
-       *   (el: HTMLInputElement) => el.value
+       *   (el: HTMLInputElement) => el.value,
        * );
        * ```
        *
@@ -10627,7 +10672,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
        *
        * ```ts
        * const allInputValues = await page.$$eval('input', elements =>
-       *   elements.map(e => e.textContent)
+       *   elements.map(e => e.textContent),
        * );
        * ```
        *
@@ -10745,10 +10790,10 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
        *
        * ```ts
        * const firstRequest = await page.waitForRequest(
-       *   'https://example.com/resource'
+       *   'https://example.com/resource',
        * );
        * const finalRequest = await page.waitForRequest(
-       *   request => request.url() === 'https://example.com'
+       *   request => request.url() === 'https://example.com',
        * );
        * return finalRequest.response()?.ok();
        * ```
@@ -10784,11 +10829,11 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
        *
        * ```ts
        * const firstResponse = await page.waitForResponse(
-       *   'https://example.com/resource'
+       *   'https://example.com/resource',
        * );
        * const finalResponse = await page.waitForResponse(
        *   response =>
-       *     response.url() === 'https://example.com' && response.status() === 200
+       *     response.url() === 'https://example.com' && response.status() === 200,
        * );
        * const finalResponse = await page.waitForResponse(async response => {
        *   return (await response.text()).includes('<html>');
@@ -11508,7 +11553,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
        * await page.waitForFunction(
        *   selector => !!document.querySelector(selector),
        *   {},
-       *   selector
+       *   selector,
        * );
        * ```
        *
@@ -11520,7 +11565,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
        * await page.waitForFunction(
        *   async username => {
        *     const githubResponse = await fetch(
-       *       `https://api.github.com/users/${username}`
+       *       `https://api.github.com/users/${username}`,
        *     );
        *     const githubUser = await githubResponse.json();
        *     // show the avatar
@@ -11531,7 +11576,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
        *     img.remove();
        *   },
        *   {},
-       *   username
+       *   username,
        * );
        * ```
        *
@@ -11960,10 +12005,10 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    *
    * ```ts
    * page.on('workercreated', worker =>
-   *   console.log('Worker created: ' + worker.url())
+   *   console.log('Worker created: ' + worker.url()),
    * );
    * page.on('workerdestroyed', worker =>
-   *   console.log('Worker destroyed: ' + worker.url())
+   *   console.log('Worker destroyed: ' + worker.url()),
    * );
    *
    * console.log('Current workers:');
@@ -12488,19 +12533,24 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         env.error = env.hasError ? new SuppressedError(e, env.error, "An error was suppressed during disposal.") : e;
         env.hasError = true;
       }
+      var r,
+        s = 0;
       function next() {
-        while (env.stack.length) {
-          var rec = env.stack.pop();
+        while (r = env.stack.pop()) {
           try {
-            var result = rec.dispose && rec.dispose.call(rec.value);
-            if (rec.async) return Promise.resolve(result).then(next, function (e) {
-              fail(e);
-              return next();
-            });
+            if (!r.async && s === 1) return s = 0, env.stack.push(r), Promise.resolve().then(next);
+            if (r.dispose) {
+              var result = r.dispose.call(r.value);
+              if (r.async) return s |= 2, Promise.resolve(result).then(next, function (e) {
+                fail(e);
+                return next();
+              });
+            } else s |= 1;
           } catch (e) {
             fail(e);
           }
         }
+        if (s === 1) return env.hasError ? Promise.reject(env.error) : Promise.resolve();
         if (env.hasError) throw env.error;
       }
       return next();
@@ -12652,19 +12702,24 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         env.error = env.hasError ? new SuppressedError(e, env.error, "An error was suppressed during disposal.") : e;
         env.hasError = true;
       }
+      var r,
+        s = 0;
       function next() {
-        while (env.stack.length) {
-          var rec = env.stack.pop();
+        while (r = env.stack.pop()) {
           try {
-            var result = rec.dispose && rec.dispose.call(rec.value);
-            if (rec.async) return Promise.resolve(result).then(next, function (e) {
-              fail(e);
-              return next();
-            });
+            if (!r.async && s === 1) return s = 0, env.stack.push(r), Promise.resolve().then(next);
+            if (r.dispose) {
+              var result = r.dispose.call(r.value);
+              if (r.async) return s |= 2, Promise.resolve(result).then(next, function (e) {
+                fail(e);
+                return next();
+              });
+            } else s |= 1;
           } catch (e) {
             fail(e);
           }
         }
+        if (s === 1) return env.hasError ? Promise.reject(env.error) : Promise.resolve();
         if (env.hasError) throw env.error;
       }
       return next();
@@ -14627,7 +14682,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    *   page.click('#connect-bluetooth'),
    * ]);
    * await devicePrompt.select(
-   *   await devicePrompt.waitForDevice(({name}) => name.includes('My Device'))
+   *   await devicePrompt.waitForDevice(({name}) => name.includes('My Device')),
    * );
    * ```
    *
@@ -15390,19 +15445,24 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         env.error = env.hasError ? new SuppressedError(e, env.error, "An error was suppressed during disposal.") : e;
         env.hasError = true;
       }
+      var r,
+        s = 0;
       function next() {
-        while (env.stack.length) {
-          var rec = env.stack.pop();
+        while (r = env.stack.pop()) {
           try {
-            var result = rec.dispose && rec.dispose.call(rec.value);
-            if (rec.async) return Promise.resolve(result).then(next, function (e) {
-              fail(e);
-              return next();
-            });
+            if (!r.async && s === 1) return s = 0, env.stack.push(r), Promise.resolve().then(next);
+            if (r.dispose) {
+              var result = r.dispose.call(r.value);
+              if (r.async) return s |= 2, Promise.resolve(result).then(next, function (e) {
+                fail(e);
+                return next();
+              });
+            } else s |= 1;
           } catch (e) {
             fail(e);
           }
         }
+        if (s === 1) return env.hasError ? Promise.reject(env.error) : Promise.resolve();
         if (env.hasError) throw env.error;
       }
       return next();
@@ -15411,15 +15471,13 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     var e = new Error(message);
     return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
   });
-  const ariaQuerySelectorBinding = new Binding('__ariaQuerySelector', ARIAQueryHandler.queryOne, '' // custom init
-  );
+  const ariaQuerySelectorBinding = new Binding('__ariaQuerySelector', ARIAQueryHandler.queryOne, '');
   const ariaQuerySelectorAllBinding = new Binding('__ariaQuerySelectorAll', async (element, selector) => {
     const results = ARIAQueryHandler.queryAll(element, selector);
     return await element.realm.evaluateHandle((...elements) => {
       return elements;
     }, ...(await AsyncIterableUtil.collect(results)));
-  }, '' // custom init
-  );
+  }, '');
   /**
    * @internal
    */
@@ -15518,7 +15576,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
      * const result = await executionContext.evaluate(
      *   (a, b) => a + b,
      *   oneHandle,
-     *   twoHandle
+     *   twoHandle,
      * );
      * await oneHandle.dispose();
      * await twoHandle.dispose();
@@ -15548,7 +15606,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
      * ```ts
      * const context = await page.mainFrame().executionContext();
      * const handle: JSHandle<typeof globalThis> = await context.evaluateHandle(
-     *   () => Promise.resolve(self)
+     *   () => Promise.resolve(self),
      * );
      * ```
      *
@@ -15569,7 +15627,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
      *   });
      * const stringHandle: JSHandle<string> = await context.evaluateHandle(
      *   body => body.innerHTML,
-     *   body
+     *   body,
      * );
      * console.log(await stringHandle.jsonValue()); // prints body's innerHTML
      * // Always dispose your garbage! :)
@@ -15748,7 +15806,6 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     }
     function convertArgument(context, arg) {
       if (typeof arg === 'bigint') {
-        // eslint-disable-line valid-typeof
         return {
           unserializableValue: `${arg.toString()}n`
         };
@@ -17061,7 +17118,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       return;
     }
     const firstLine = extraInfo.headersText.split('\r', 1)[0];
-    if (!firstLine) {
+    if (!firstLine || firstLine.length > 1_000) {
       return;
     }
     const match = firstLine.match(/[^ ]* [^ ]* (.*)/);
@@ -17643,7 +17700,9 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     const requestId = request.id;
     const interceptionId = request._interceptionId;
     _classPrivateFieldGet(_networkEventManager, this).forgetRequest(requestId);
-    interceptionId !== undefined && _classPrivateFieldGet(_attemptedAuthentications, this).delete(interceptionId);
+    if (interceptionId !== undefined) {
+      _classPrivateFieldGet(_attemptedAuthentications, this).delete(interceptionId);
+    }
     if (events) {
       _classPrivateFieldGet(_networkEventManager, this).forget(requestId);
     }
@@ -17956,7 +18015,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     });
     try {
       await swapped.valueOrThrow();
-    } catch (err) {
+    } catch {
       _assertClassBrand(_FrameManager_brand, this, _removeFramesRecursively).call(this, mainFrame);
     }
   }
@@ -20244,19 +20303,24 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         env.error = env.hasError ? new SuppressedError(e, env.error, "An error was suppressed during disposal.") : e;
         env.hasError = true;
       }
+      var r,
+        s = 0;
       function next() {
-        while (env.stack.length) {
-          var rec = env.stack.pop();
+        while (r = env.stack.pop()) {
           try {
-            var result = rec.dispose && rec.dispose.call(rec.value);
-            if (rec.async) return Promise.resolve(result).then(next, function (e) {
-              fail(e);
-              return next();
-            });
+            if (!r.async && s === 1) return s = 0, env.stack.push(r), Promise.resolve().then(next);
+            if (r.dispose) {
+              var result = r.dispose.call(r.value);
+              if (r.async) return s |= 2, Promise.resolve(result).then(next, function (e) {
+                fail(e);
+                return next();
+              });
+            } else s |= 1;
           } catch (e) {
             fail(e);
           }
         }
+        if (s === 1) return env.hasError ? Promise.reject(env.error) : Promise.resolve();
         if (env.hasError) throw env.error;
       }
       return next();
@@ -20610,7 +20674,9 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         });
       }
     }
-    async exposeFunction(name, pptrFunction) {
+    async exposeFunction(name,
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
+    pptrFunction) {
       if (_classPrivateFieldGet(_bindings3, this).has(name)) {
         throw new Error(`Failed to add page binding with name ${name}: window['${name}'] already exists!`);
       }
@@ -20910,7 +20976,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
      *   page.click('#connect-bluetooth'),
      * ]);
      * await devicePrompt.select(
-     *   await devicePrompt.waitForDevice(({name}) => name.includes('My Device'))
+     *   await devicePrompt.waitForDevice(({name}) => name.includes('My Device')),
      * );
      * ```
      */
@@ -21698,7 +21764,9 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     }
   }
   function _finishInitializationIfReady2(targetId) {
-    targetId !== undefined && _classPrivateFieldGet(_targetsIdsForInit2, this).delete(targetId);
+    if (targetId !== undefined) {
+      _classPrivateFieldGet(_targetsIdsForInit2, this).delete(targetId);
+    }
     if (_classPrivateFieldGet(_targetsIdsForInit2, this).size === 0) {
       _classPrivateFieldGet(_initializeDeferred2, this).resolve();
     }
@@ -22140,7 +22208,11 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
           id: parsed.id,
           sessionId: parsed.sessionId ?? 'pageTargetSessionId',
           method: parsed.method,
-          error: err
+          error: {
+            code: err?.code,
+            data: err?.data,
+            message: err?.message ?? 'CDP error had no message'
+          }
         });
       });
     }
@@ -22169,19 +22241,19 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    *   const browser = await puppeteer.launch();
    *   const page = await browser.newPage();
    *   await page.emulateNetworkConditions(
-   *     PredefinedNetworkConditions['Slow 3G']
+   *     PredefinedNetworkConditions['Slow 3G'],
    *   );
    *   await page.goto('https://www.google.com');
    *   await page.emulateNetworkConditions(
-   *     PredefinedNetworkConditions['Fast 3G']
+   *     PredefinedNetworkConditions['Fast 3G'],
    *   );
    *   await page.goto('https://www.google.com');
    *   await page.emulateNetworkConditions(
-   *     PredefinedNetworkConditions['Slow 4G']
+   *     PredefinedNetworkConditions['Slow 4G'],
    *   ); // alias to Fast 3G.
    *   await page.goto('https://www.google.com');
    *   await page.emulateNetworkConditions(
-   *     PredefinedNetworkConditions['Fast 4G']
+   *     PredefinedNetworkConditions['Fast 4G'],
    *   );
    *   await page.goto('https://www.google.com');
    *   // other actions...
@@ -24051,8 +24123,8 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    * @internal
    */
   const PUPPETEER_REVISIONS = Object.freeze({
-    chrome: '130.0.6723.58',
-    'chrome-headless-shell': '130.0.6723.58',
+    chrome: '130.0.6723.69',
+    'chrome-headless-shell': '130.0.6723.69',
     firefox: 'stable_131.0.3'
   });
 
@@ -24087,6 +24159,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   exports.Callback = Callback;
   exports.CallbackRegistry = CallbackRegistry;
   exports.CdpBrowser = CdpBrowser;
+  exports.CdpBrowserContext = CdpBrowserContext;
   exports.CdpCDPSession = CdpCDPSession;
   exports.CdpDialog = CdpDialog;
   exports.CdpElementHandle = CdpElementHandle;
@@ -24097,6 +24170,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   exports.CdpKeyboard = CdpKeyboard;
   exports.CdpMouse = CdpMouse;
   exports.CdpPage = CdpPage;
+  exports.CdpPreloadScript = CdpPreloadScript;
   exports.CdpTarget = CdpTarget;
   exports.CdpTouchscreen = CdpTouchscreen;
   exports.CdpWebWorker = CdpWebWorker;
@@ -24142,6 +24216,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   exports.MappedLocator = MappedLocator;
   exports.Mouse = Mouse;
   exports.MouseButton = MouseButton;
+  exports.Mutex = Mutex;
   exports.NETWORK_IDLE_TIME = NETWORK_IDLE_TIME;
   exports.NetworkEventManager = NetworkEventManager;
   exports.NetworkManager = NetworkManager;

@@ -21,6 +21,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./assert.js"), exports);
 __exportStar(require("./Deferred.js"), exports);
+__exportStar(require("./Mutex.js"), exports);
 __exportStar(require("./ErrorLike.js"), exports);
 __exportStar(require("./AsyncIterableUtil.js"), exports);
 __exportStar(require("./disposable.js"), exports);

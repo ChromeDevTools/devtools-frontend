@@ -68,7 +68,7 @@ export interface CommandOptions {
  * const client = await page.createCDPSession();
  * await client.send('Animation.enable');
  * client.on('Animation.animationCreated', () =>
- *   console.log('Animation created!')
+ *   console.log('Animation created!'),
  * );
  * const response = await client.send('Animation.getPlaybackRate');
  * console.log('playback rate is ' + response.playbackRate);

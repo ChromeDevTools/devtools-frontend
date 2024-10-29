@@ -109,7 +109,7 @@ export declare abstract class BrowserContext extends EventEmitter<BrowserContext
      * ```ts
      * await page.evaluate(() => window.open('https://www.example.com/'));
      * const newWindowTarget = await browserContext.waitForTarget(
-     *   target => target.url() === 'https://www.example.com/'
+     *   target => target.url() === 'https://www.example.com/',
      * );
      * ```
      */

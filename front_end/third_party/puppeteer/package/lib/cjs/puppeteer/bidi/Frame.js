@@ -342,6 +342,9 @@ let BidiFrame = (() => {
                         error.message.includes('net::ERR_HTTP_RESPONSE_CODE_FAILURE')) {
                         return;
                     }
+                    if (error.message.includes('navigation canceled')) {
+                        return;
+                    }
                     throw error;
                 }),
             ]).catch((0, util_js_2.rewriteNavigationError)(url, options.timeout ?? this.timeoutSettings.navigationTimeout()));

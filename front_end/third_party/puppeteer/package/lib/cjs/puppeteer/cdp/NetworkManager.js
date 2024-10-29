@@ -440,8 +440,9 @@ class NetworkManager extends EventEmitter_js_1.EventEmitter {
         const requestId = request.id;
         const interceptionId = request._interceptionId;
         this.#networkEventManager.forgetRequest(requestId);
-        interceptionId !== undefined &&
+        if (interceptionId !== undefined) {
             this.#attemptedAuthentications.delete(interceptionId);
+        }
         if (events) {
             this.#networkEventManager.forget(requestId);
         }

@@ -11,6 +11,9 @@ import type { Viewport } from './Viewport.js';
  * @public
  */
 export type ProtocolType = 'cdp' | 'webDriverBiDi';
+/**
+ * @public
+ */
 export type SupportedWebDriverCapability = Exclude<Session.CapabilityRequest, 'unhandledPromptBehavior' | 'acceptInsecureCerts'>;
 /**
  * WebDriver BiDi capabilities that are not set by Puppeteer itself.

@@ -24,13 +24,13 @@ export interface DeferredOptions {
  */
 export class Deferred<T, V extends Error = Error> {
   static create<R, X extends Error = Error>(
-    opts?: DeferredOptions
+    opts?: DeferredOptions,
   ): Deferred<R, X> {
     return new Deferred<R, X>(opts);
   }
 
   static async race<R>(
-    awaitables: Array<Promise<R> | Deferred<R>>
+    awaitables: Array<Promise<R> | Deferred<R>>,
   ): Promise<R> {
     const deferredWithTimeout = new Set<Deferred<R>>();
     try {
@@ -62,6 +62,7 @@ export class Deferred<T, V extends Error = Error> {
   #value: T | V | TimeoutError | undefined;
   // SAFETY: This is ensured by #taskPromise.
   #resolve!: (value: void) => void;
+  // TODO: Switch to Promise.withResolvers with Node 22
   #taskPromise = new Promise<void>(resolve => {
     this.#resolve = resolve;
   });

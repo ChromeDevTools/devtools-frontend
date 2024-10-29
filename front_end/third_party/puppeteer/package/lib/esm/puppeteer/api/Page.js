@@ -65,17 +65,22 @@ var __disposeResources = (this && this.__disposeResources) || (function (Suppres
             env.error = env.hasError ? new SuppressedError(e, env.error, "An error was suppressed during disposal.") : e;
             env.hasError = true;
         }
+        var r, s = 0;
         function next() {
-            while (env.stack.length) {
-                var rec = env.stack.pop();
+            while (r = env.stack.pop()) {
                 try {
-                    var result = rec.dispose && rec.dispose.call(rec.value);
-                    if (rec.async) return Promise.resolve(result).then(next, function(e) { fail(e); return next(); });
+                    if (!r.async && s === 1) return s = 0, env.stack.push(r), Promise.resolve().then(next);
+                    if (r.dispose) {
+                        var result = r.dispose.call(r.value);
+                        if (r.async) return s |= 2, Promise.resolve(result).then(next, function(e) { fail(e); return next(); });
+                    }
+                    else s |= 1;
                 }
                 catch (e) {
                     fail(e);
                 }
             }
+            if (s === 1) return env.hasError ? Promise.reject(env.error) : Promise.resolve();
             if (env.hasError) throw env.error;
         }
         return next();
@@ -331,7 +336,7 @@ let Page = (() => {
          * const aHandle = await page.evaluateHandle(() => document.body);
          * const resultHandle = await page.evaluateHandle(
          *   body => body.innerHTML,
-         *   aHandle
+         *   aHandle,
          * );
          * console.log(await resultHandle.jsonValue());
          * await resultHandle.dispose();
@@ -345,7 +350,7 @@ let Page = (() => {
          *
          * ```ts
          * const button = await page.evaluateHandle(() =>
-         *   document.querySelector('button')
+         *   document.querySelector('button'),
          * );
          * // can call `click` because `button` is an `ElementHandle`
          * await button.click();
@@ -397,7 +402,7 @@ let Page = (() => {
          * // as `value` is not on `Element`
          * const searchValue = await page.$eval(
          *   '#search',
-         *   (el: HTMLInputElement) => el.value
+         *   (el: HTMLInputElement) => el.value,
          * );
          * ```
          *
@@ -412,7 +417,7 @@ let Page = (() => {
          * // or if you want to be more explicit, provide it as the generic type.
          * const searchValue = await page.$eval<string>(
          *   '#search',
-         *   (el: HTMLInputElement) => el.value
+         *   (el: HTMLInputElement) => el.value,
          * );
          * ```
          *
@@ -485,7 +490,7 @@ let Page = (() => {
          *
          * ```ts
          * const allInputValues = await page.$$eval('input', elements =>
-         *   elements.map(e => e.textContent)
+         *   elements.map(e => e.textContent),
          * );
          * ```
          *
@@ -603,10 +608,10 @@ let Page = (() => {
          *
          * ```ts
          * const firstRequest = await page.waitForRequest(
-         *   'https://example.com/resource'
+         *   'https://example.com/resource',
          * );
          * const finalRequest = await page.waitForRequest(
-         *   request => request.url() === 'https://example.com'
+         *   request => request.url() === 'https://example.com',
          * );
          * return finalRequest.response()?.ok();
          * ```
@@ -639,11 +644,11 @@ let Page = (() => {
          *
          * ```ts
          * const firstResponse = await page.waitForResponse(
-         *   'https://example.com/resource'
+         *   'https://example.com/resource',
          * );
          * const finalResponse = await page.waitForResponse(
          *   response =>
-         *     response.url() === 'https://example.com' && response.status() === 200
+         *     response.url() === 'https://example.com' && response.status() === 200,
          * );
          * const finalResponse = await page.waitForResponse(async response => {
          *   return (await response.text()).includes('<html>');
@@ -1391,7 +1396,7 @@ let Page = (() => {
          * await page.waitForFunction(
          *   selector => !!document.querySelector(selector),
          *   {},
-         *   selector
+         *   selector,
          * );
          * ```
          *
@@ -1403,7 +1408,7 @@ let Page = (() => {
          * await page.waitForFunction(
          *   async username => {
          *     const githubResponse = await fetch(
-         *       `https://api.github.com/users/${username}`
+         *       `https://api.github.com/users/${username}`,
          *     );
          *     const githubUser = await githubResponse.json();
          *     // show the avatar
@@ -1414,7 +1419,7 @@ let Page = (() => {
          *     img.remove();
          *   },
          *   {},
-         *   username
+         *   username,
          * );
          * ```
          *

@@ -66,17 +66,22 @@ var __disposeResources = (this && this.__disposeResources) || (function (Suppres
             env.error = env.hasError ? new SuppressedError(e, env.error, "An error was suppressed during disposal.") : e;
             env.hasError = true;
         }
+        var r, s = 0;
         function next() {
-            while (env.stack.length) {
-                var rec = env.stack.pop();
+            while (r = env.stack.pop()) {
                 try {
-                    var result = rec.dispose && rec.dispose.call(rec.value);
-                    if (rec.async) return Promise.resolve(result).then(next, function(e) { fail(e); return next(); });
+                    if (!r.async && s === 1) return s = 0, env.stack.push(r), Promise.resolve().then(next);
+                    if (r.dispose) {
+                        var result = r.dispose.call(r.value);
+                        if (r.async) return s |= 2, Promise.resolve(result).then(next, function(e) { fail(e); return next(); });
+                    }
+                    else s |= 1;
                 }
                 catch (e) {
                     fail(e);
                 }
             }
+            if (s === 1) return env.hasError ? Promise.reject(env.error) : Promise.resolve();
             if (env.hasError) throw env.error;
         }
         return next();
@@ -698,20 +703,24 @@ let BidiPage = (() => {
     };
 })();
 exports.BidiPage = BidiPage;
+// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
 function evaluationExpression(fun, ...args) {
     return `() => {${(0, util_js_1.evaluationString)(fun, ...args)}}`;
 }
 /**
  * Check domains match.
- * According to cookies spec, this check should match subdomains as well, but CDP
- * implementation does not do that, so this method matches only the exact domains, not
- * what is written in the spec:
- * https://datatracker.ietf.org/doc/html/rfc6265#section-5.1.3
  */
 function testUrlMatchCookieHostname(cookie, normalizedUrl) {
     const cookieDomain = cookie.domain.toLowerCase();
     const urlHostname = normalizedUrl.hostname.toLowerCase();
-    return cookieDomain === urlHostname;
+    if (cookieDomain === urlHostname) {
+        return true;
+    }
+    // TODO: does not consider additional restrictions w.r.t to IP
+    // addresses which is fine as it is for representation and does not
+    // mean that cookies actually apply that way in the browser.
+    // https://datatracker.ietf.org/doc/html/rfc6265#section-5.1.3
+    return cookieDomain.startsWith('.') && urlHostname.endsWith(cookieDomain);
 }
 /**
  * Check paths match.

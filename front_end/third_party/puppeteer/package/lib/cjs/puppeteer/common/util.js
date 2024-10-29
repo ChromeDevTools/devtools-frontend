@@ -144,7 +144,9 @@ exports.isDate = isDate;
 /**
  * @internal
  */
-function evaluationString(fun, ...args) {
+function evaluationString(
+// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
+fun, ...args) {
     if ((0, exports.isString)(fun)) {
         (0, assert_js_1.assert)(args.length === 0, 'Cannot evaluate a string with arguments');
         return fun;

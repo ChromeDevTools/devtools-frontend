@@ -87,7 +87,7 @@ export class FrameManager extends EventEmitter {
         try {
             await swapped.valueOrThrow();
         }
-        catch (err) {
+        catch {
             this.#removeFramesRecursively(mainFrame);
         }
     }

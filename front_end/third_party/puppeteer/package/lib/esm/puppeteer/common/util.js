@@ -123,7 +123,9 @@ export const isDate = (obj) => {
 /**
  * @internal
  */
-export function evaluationString(fun, ...args) {
+export function evaluationString(
+// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
+fun, ...args) {
     if (isString(fun)) {
         assert(args.length === 0, 'Cannot evaluate a string with arguments');
         return fun;

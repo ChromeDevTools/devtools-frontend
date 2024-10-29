@@ -277,7 +277,7 @@ export declare abstract class Browser extends EventEmitter<BrowserEvents> {
      * ```ts
      * await page.evaluate(() => window.open('https://www.example.com/'));
      * const newWindowTarget = await browser.waitForTarget(
-     *   target => target.url() === 'https://www.example.com/'
+     *   target => target.url() === 'https://www.example.com/',
      * );
      * ```
      */
@@ -455,7 +455,7 @@ export declare abstract class BrowserContext extends EventEmitter<BrowserContext
      * ```ts
      * await page.evaluate(() => window.open('https://www.example.com/'));
      * const newWindowTarget = await browserContext.waitForTarget(
-     *   target => target.url() === 'https://www.example.com/'
+     *   target => target.url() === 'https://www.example.com/',
      * );
      * ```
      */
@@ -731,7 +731,7 @@ export declare type CDPEvents = {
  * const client = await page.createCDPSession();
  * await client.send('Animation.enable');
  * client.on('Animation.animationCreated', () =>
- *   console.log('Animation created!')
+ *   console.log('Animation created!'),
  * );
  * const response = await client.send('Animation.getPlaybackRate');
  * console.log('playback rate is ' + response.playbackRate);
@@ -969,7 +969,7 @@ export declare const
 /**
  * @public
  */
-connect: (options: ConnectOptions) => Promise<Browser>;
+connect: (options: Puppeteer_2.ConnectOptions) => Promise<Puppeteer_2.Browser>;
 
 /**
  * @public
@@ -1471,7 +1471,7 @@ export declare const
 /**
  * @public
  */
-defaultArgs: (options?: BrowserLaunchArgumentOptions) => string[];
+defaultArgs: (options?: Puppeteer_2.BrowserLaunchArgumentOptions) => string[];
 
 /**
  * @public
@@ -1527,7 +1527,7 @@ export declare interface Device {
  *   page.click('#connect-bluetooth'),
  * ]);
  * await devicePrompt.select(
- *   await devicePrompt.waitForDevice(({name}) => name.includes('My Device'))
+ *   await devicePrompt.waitForDevice(({name}) => name.includes('My Device')),
  * );
  * ```
  *
@@ -1742,10 +1742,10 @@ export declare abstract class ElementHandle<ElementType extends Node = Element> 
      * ```ts
      * const tweetHandle = await page.$('.tweet');
      * expect(await tweetHandle.$eval('.like', node => node.innerText)).toBe(
-     *   '100'
+     *   '100',
      * );
      * expect(await tweetHandle.$eval('.retweets', node => node.innerText)).toBe(
-     *   '10'
+     *   '10',
      * );
      * ```
      *
@@ -1793,7 +1793,7 @@ export declare abstract class ElementHandle<ElementType extends Node = Element> 
      * ```ts
      * const feedHandle = await page.$('.feed');
      * expect(
-     *   await feedHandle.$$eval('.tweet', nodes => nodes.map(n => n.innerText))
+     *   await feedHandle.$$eval('.tweet', nodes => nodes.map(n => n.innerText)),
      * ).toEqual(['Hello!', 'Hi!']);
      * ```
      *
@@ -1891,7 +1891,7 @@ export declare abstract class ElementHandle<ElementType extends Node = Element> 
      *
      * ```ts
      * const element: ElementHandle<Element> = await page.$(
-     *   '.class-name-of-anchor'
+     *   '.class-name-of-anchor',
      * );
      * // DO NOT DISPOSE `element`, this will be always be the same handle.
      * const anchor: ElementHandle<HTMLAnchorElement> =
@@ -2219,7 +2219,7 @@ export declare const
 /**
  * @public
  */
-executablePath: (channel?: ChromeReleaseChannel) => string;
+executablePath: (channel?: Puppeteer_2.ChromeReleaseChannel) => string;
 
 /**
  * Defines experiment options for Puppeteer.
@@ -2690,7 +2690,7 @@ export declare abstract class Frame extends EventEmitter<FrameEvents> {
      * await frame.waitForFunction(
      *   selector => !!document.querySelector(selector),
      *   {}, // empty options object
-     *   selector
+     *   selector,
      * );
      * ```
      *
@@ -3771,7 +3771,7 @@ export declare const
 /**
  * @public
  */
-launch: (options?: PuppeteerLaunchOptions) => Promise<Browser>;
+launch: (options?: Puppeteer_2.PuppeteerLaunchOptions) => Promise<Puppeteer_2.Browser>;
 
 /**
  * Generic launch options that can be passed when launching any browser.
@@ -4096,7 +4096,7 @@ export declare interface Metrics {
  *     selection.addRange(range);
  *   },
  *   fromJSHandle,
- *   toJSHandle
+ *   toJSHandle,
  * );
  * ```
  *
@@ -4171,14 +4171,14 @@ export declare abstract class Mouse {
      *
      * ```ts
      * await page.goto(
-     *   'https://mdn.mozillademos.org/en-US/docs/Web/API/Element/wheel_event$samples/Scaling_an_element_via_the_wheel?revision=1587366'
+     *   'https://mdn.mozillademos.org/en-US/docs/Web/API/Element/wheel_event$samples/Scaling_an_element_via_the_wheel?revision=1587366',
      * );
      *
      * const elem = await page.$('div');
      * const boundingBox = await elem.boundingBox();
      * await page.mouse.move(
      *   boundingBox.x + boundingBox.width / 2,
-     *   boundingBox.y + boundingBox.height / 2
+     *   boundingBox.y + boundingBox.height / 2,
      * );
      *
      * await page.mouse.wheel({deltaY: -100});
@@ -4760,7 +4760,7 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      * const aHandle = await page.evaluateHandle(() => document.body);
      * const resultHandle = await page.evaluateHandle(
      *   body => body.innerHTML,
-     *   aHandle
+     *   aHandle,
      * );
      * console.log(await resultHandle.jsonValue());
      * await resultHandle.dispose();
@@ -4774,7 +4774,7 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      *
      * ```ts
      * const button = await page.evaluateHandle(() =>
-     *   document.querySelector('button')
+     *   document.querySelector('button'),
      * );
      * // can call `click` because `button` is an `ElementHandle`
      * await button.click();
@@ -4847,7 +4847,7 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      * // as `value` is not on `Element`
      * const searchValue = await page.$eval(
      *   '#search',
-     *   (el: HTMLInputElement) => el.value
+     *   (el: HTMLInputElement) => el.value,
      * );
      * ```
      *
@@ -4862,7 +4862,7 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      * // or if you want to be more explicit, provide it as the generic type.
      * const searchValue = await page.$eval<string>(
      *   '#search',
-     *   (el: HTMLInputElement) => el.value
+     *   (el: HTMLInputElement) => el.value,
      * );
      * ```
      *
@@ -4932,7 +4932,7 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      *
      * ```ts
      * const allInputValues = await page.$$eval('input', elements =>
-     *   elements.map(e => e.textContent)
+     *   elements.map(e => e.textContent),
      * );
      * ```
      *
@@ -5024,7 +5024,7 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      *   const page = await browser.newPage();
      *   page.on('console', msg => console.log(msg.text()));
      *   await page.exposeFunction('md5', text =>
-     *     crypto.createHash('md5').update(text).digest('hex')
+     *     crypto.createHash('md5').update(text).digest('hex'),
      *   );
      *   await page.evaluate(async () => {
      *     // use window.md5 to compute hashes
@@ -5224,10 +5224,10 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      *
      * ```ts
      * const firstRequest = await page.waitForRequest(
-     *   'https://example.com/resource'
+     *   'https://example.com/resource',
      * );
      * const finalRequest = await page.waitForRequest(
-     *   request => request.url() === 'https://example.com'
+     *   request => request.url() === 'https://example.com',
      * );
      * return finalRequest.response()?.ok();
      * ```
@@ -5248,11 +5248,11 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      *
      * ```ts
      * const firstResponse = await page.waitForResponse(
-     *   'https://example.com/resource'
+     *   'https://example.com/resource',
      * );
      * const finalResponse = await page.waitForResponse(
      *   response =>
-     *     response.url() === 'https://example.com' && response.status() === 200
+     *     response.url() === 'https://example.com' && response.status() === 200,
      * );
      * const finalResponse = await page.waitForResponse(async response => {
      *   return (await response.text()).includes('<html>');
@@ -5396,11 +5396,11 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      *   {name: 'prefers-color-scheme', value: 'dark'},
      * ]);
      * await page.evaluate(
-     *   () => matchMedia('(prefers-color-scheme: dark)').matches
+     *   () => matchMedia('(prefers-color-scheme: dark)').matches,
      * );
      * // → true
      * await page.evaluate(
-     *   () => matchMedia('(prefers-color-scheme: light)').matches
+     *   () => matchMedia('(prefers-color-scheme: light)').matches,
      * );
      * // → false
      *
@@ -5408,11 +5408,11 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      *   {name: 'prefers-reduced-motion', value: 'reduce'},
      * ]);
      * await page.evaluate(
-     *   () => matchMedia('(prefers-reduced-motion: reduce)').matches
+     *   () => matchMedia('(prefers-reduced-motion: reduce)').matches,
      * );
      * // → true
      * await page.evaluate(
-     *   () => matchMedia('(prefers-reduced-motion: no-preference)').matches
+     *   () => matchMedia('(prefers-reduced-motion: no-preference)').matches,
      * );
      * // → false
      *
@@ -5421,19 +5421,19 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      *   {name: 'prefers-reduced-motion', value: 'reduce'},
      * ]);
      * await page.evaluate(
-     *   () => matchMedia('(prefers-color-scheme: dark)').matches
+     *   () => matchMedia('(prefers-color-scheme: dark)').matches,
      * );
      * // → true
      * await page.evaluate(
-     *   () => matchMedia('(prefers-color-scheme: light)').matches
+     *   () => matchMedia('(prefers-color-scheme: light)').matches,
      * );
      * // → false
      * await page.evaluate(
-     *   () => matchMedia('(prefers-reduced-motion: reduce)').matches
+     *   () => matchMedia('(prefers-reduced-motion: reduce)').matches,
      * );
      * // → true
      * await page.evaluate(
-     *   () => matchMedia('(prefers-reduced-motion: no-preference)').matches
+     *   () => matchMedia('(prefers-reduced-motion: no-preference)').matches,
      * );
      * // → false
      *
@@ -6038,7 +6038,7 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      * await page.waitForFunction(
      *   selector => !!document.querySelector(selector),
      *   {},
-     *   selector
+     *   selector,
      * );
      * ```
      *
@@ -6050,7 +6050,7 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      * await page.waitForFunction(
      *   async username => {
      *     const githubResponse = await fetch(
-     *       `https://api.github.com/users/${username}`
+     *       `https://api.github.com/users/${username}`,
      *     );
      *     const githubUser = await githubResponse.json();
      *     // show the avatar
@@ -6061,7 +6061,7 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      *     img.remove();
      *   },
      *   {},
-     *   username
+     *   username,
      * );
      * ```
      *
@@ -6089,7 +6089,7 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      *   page.click('#connect-bluetooth'),
      * ]);
      * await devicePrompt.select(
-     *   await devicePrompt.waitForDevice(({name}) => name.includes('My Device'))
+     *   await devicePrompt.waitForDevice(({name}) => name.includes('My Device')),
      * );
      * ```
      */
@@ -6484,19 +6484,19 @@ declare namespace PQuerySelector {
  *   const browser = await puppeteer.launch();
  *   const page = await browser.newPage();
  *   await page.emulateNetworkConditions(
- *     PredefinedNetworkConditions['Slow 3G']
+ *     PredefinedNetworkConditions['Slow 3G'],
  *   );
  *   await page.goto('https://www.google.com');
  *   await page.emulateNetworkConditions(
- *     PredefinedNetworkConditions['Fast 3G']
+ *     PredefinedNetworkConditions['Fast 3G'],
  *   );
  *   await page.goto('https://www.google.com');
  *   await page.emulateNetworkConditions(
- *     PredefinedNetworkConditions['Slow 4G']
+ *     PredefinedNetworkConditions['Slow 4G'],
  *   ); // alias to Fast 3G.
  *   await page.goto('https://www.google.com');
  *   await page.emulateNetworkConditions(
- *     PredefinedNetworkConditions['Fast 4G']
+ *     PredefinedNetworkConditions['Fast 4G'],
  *   );
  *   await page.goto('https://www.google.com');
  *   // other actions...
@@ -6617,8 +6617,182 @@ export declare class Puppeteer {
 /**
  * @public
  */
-declare const puppeteer: PuppeteerNode;
+declare const puppeteer: Puppeteer_2.PuppeteerNode;
 export default puppeteer;
+
+declare namespace Puppeteer_2 {
+    export {
+        Protocol,
+        Session,
+        BrowserContextOptions,
+        TargetFilterCallback,
+        Permission,
+        WaitForTargetOptions,
+        BrowserEvent,
+        BrowserEvents,
+        DebugInfo,
+        Browser,
+        BrowserContextEvent,
+        BrowserContextEvents,
+        BrowserContext,
+        CDPEvents,
+        CDPSessionEvent,
+        CDPSessionEvents,
+        CommandOptions,
+        CDPSession,
+        Dialog,
+        Quad,
+        BoxModel,
+        BoundingBox,
+        Offset,
+        ClickOptions,
+        Point,
+        ElementScreenshotOptions,
+        ElementHandle,
+        AutofillData,
+        WaitForOptions,
+        GoToOptions,
+        FrameWaitForFunctionOptions,
+        FrameAddScriptTagOptions,
+        FrameAddStyleTagOptions,
+        FrameEvents,
+        Frame,
+        ContinueRequestOverrides,
+        InterceptResolutionState,
+        ResponseForRequest,
+        ResourceType,
+        DEFAULT_INTERCEPT_RESOLUTION_PRIORITY,
+        HTTPRequest,
+        InterceptResolutionAction,
+        ErrorCode,
+        ActionResult,
+        RemoteAddress,
+        HTTPResponse,
+        KeyDownOptions,
+        KeyboardTypeOptions,
+        KeyPressOptions,
+        Keyboard,
+        MouseOptions,
+        MouseClickOptions,
+        MouseWheelOptions,
+        MouseMoveOptions,
+        MouseButton,
+        Mouse,
+        Touchscreen,
+        JSHandle,
+        Metrics,
+        Credentials,
+        WaitForNetworkIdleOptions,
+        WaitTimeoutOptions,
+        WaitForSelectorOptions,
+        GeolocationOptions,
+        MediaFeature,
+        ScreenshotClip,
+        ScreenshotOptions,
+        ScreencastOptions,
+        QueryOptions,
+        PageEvent,
+        PageEvents,
+        NewDocumentScriptEvaluation,
+        Page,
+        TargetType,
+        Target,
+        WebWorker,
+        VisibilityOption,
+        ActionOptions,
+        LocatorClickOptions,
+        LocatorScrollOptions,
+        LocatorEvent,
+        LocatorEvents,
+        Locator,
+        Predicate,
+        Mapper,
+        AwaitedLocator,
+        SerializedAXNode,
+        SnapshotOptions,
+        Accessibility,
+        Connection,
+        CoverageEntry,
+        JSCoverageEntry,
+        JSCoverageOptions,
+        CSSCoverageOptions,
+        Coverage,
+        JSCoverage,
+        CSSCoverage,
+        DeviceRequestPromptDevice,
+        DeviceRequestPrompt,
+        ExtensionTransport,
+        PuppeteerLifeCycleEvent,
+        ProtocolLifeCycleEvent,
+        NetworkConditions,
+        InternalNetworkConditions,
+        PredefinedNetworkConditions,
+        TracingOptions,
+        Tracing,
+        ExperimentsConfiguration,
+        Configuration,
+        ChromeSettings,
+        ChromeHeadlessShellSettings,
+        FirefoxSettings,
+        ConnectionTransport,
+        ProtocolType,
+        SupportedWebDriverCapability,
+        SupportedWebDriverCapabilities,
+        BrowserConnectOptions,
+        ConnectOptions,
+        ConsoleMessageLocation,
+        ConsoleMessageType,
+        ConsoleMessage,
+        CookieSameSite,
+        CookiePriority,
+        CookieSourceScheme,
+        Cookie,
+        CookieParam,
+        DeleteCookiesRequest,
+        CustomQueryHandler,
+        Device,
+        KnownDevices,
+        PuppeteerError,
+        TimeoutError,
+        ProtocolError,
+        UnsupportedOperation,
+        EventType,
+        Handler,
+        CommonEventEmitter,
+        EventsWithWildcard,
+        EventEmitter,
+        FileChooser,
+        PDFMargin,
+        LowerCasePaperFormat,
+        PaperFormat,
+        PDFOptions,
+        SupportedBrowser,
+        Puppeteer,
+        SecurityDetails,
+        AwaitablePredicate,
+        Moveable,
+        AwaitableIterable,
+        Awaitable,
+        HandleFor,
+        HandleOr,
+        FlattenHandle,
+        InnerParams,
+        ElementFor,
+        EvaluateFunc,
+        EvaluateFuncWith,
+        NodeFor,
+        KeyInput,
+        Viewport,
+        BrowserLaunchArgumentOptions,
+        ChromeReleaseChannel,
+        LaunchOptions,
+        PuppeteerNodeLaunchOptions,
+        BrowserLauncher,
+        PuppeteerLaunchOptions,
+        PuppeteerNode,
+        ScreenRecorder
+    }
+}
 
 /**
  * @license
@@ -7140,6 +7314,9 @@ export declare interface SupportedWebDriverCapabilities {
     alwaysMatch?: SupportedWebDriverCapability;
 }
 
+/**
+ * @public
+ */
 export declare type SupportedWebDriverCapability = any;
 
 /**
@@ -7501,10 +7678,10 @@ export declare interface WaitTimeoutOptions {
  *
  * ```ts
  * page.on('workercreated', worker =>
- *   console.log('Worker created: ' + worker.url())
+ *   console.log('Worker created: ' + worker.url()),
  * );
  * page.on('workerdestroyed', worker =>
- *   console.log('Worker destroyed: ' + worker.url())
+ *   console.log('Worker destroyed: ' + worker.url()),
  * );
  *
  * console.log('Current workers:');

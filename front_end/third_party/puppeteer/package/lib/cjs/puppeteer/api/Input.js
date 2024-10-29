@@ -107,7 +107,7 @@ exports.MouseButton = Object.freeze({
  *     selection.addRange(range);
  *   },
  *   fromJSHandle,
- *   toJSHandle
+ *   toJSHandle,
  * );
  * ```
  *

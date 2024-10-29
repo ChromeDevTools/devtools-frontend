@@ -49,6 +49,7 @@ class Deferred {
     #value;
     // SAFETY: This is ensured by #taskPromise.
     #resolve;
+    // TODO: Switch to Promise.withResolvers with Node 22
     #taskPromise = new Promise(resolve => {
         this.#resolve = resolve;
     });

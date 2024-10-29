@@ -238,8 +238,25 @@ export class AnimationTimeline extends UI.Widget.VBox implements
         continue;
       }
 
-      this.addAnimationGroup(animationGroup);
+      void this.addAnimationGroup(animationGroup);
     }
+  }
+
+  #showPanelInDrawer(): void {
+    const viewManager = UI.ViewManager.ViewManager.instance();
+    viewManager.moveView('animations', 'drawer-view', {
+      shouldSelectTab: true,
+      overrideSaving: true,
+    });
+  }
+
+  async revealAnimationGroup(animationGroup: SDK.AnimationModel.AnimationGroup): Promise<void> {
+    if (!this.#previewMap.has(animationGroup)) {
+      await this.addAnimationGroup(animationGroup);
+    }
+
+    this.#showPanelInDrawer();
+    return this.selectAnimationGroup(animationGroup);
   }
 
   modelAdded(animationModel: SDK.AnimationModel.AnimationModel): void {
@@ -537,7 +554,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements
   }
 
   private animationGroupStarted({data}: Common.EventTarget.EventTargetEvent<SDK.AnimationModel.AnimationGroup>): void {
-    this.addAnimationGroup(data);
+    void this.addAnimationGroup(data);
   }
 
   scheduledRedrawAfterAnimationGroupUpdatedForTest(): void {
@@ -682,7 +699,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements
     this.previewsCreatedForTest();
   }
 
-  private addAnimationGroup(group: SDK.AnimationModel.AnimationGroup): void {
+  private addAnimationGroup(group: SDK.AnimationModel.AnimationGroup): Promise<void> {
     const previewGroup = this.#previewMap.get(group);
     if (previewGroup) {
       if (this.#selectedGroup === group) {
@@ -690,7 +707,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements
       } else {
         previewGroup.replay();
       }
-      return;
+      return Promise.resolve();
     }
 
     this.#groupBuffer.sort((left, right) => left.startTime() - right.startTime());
@@ -715,7 +732,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements
     // Batch creating preview for arrivals happening closely together to ensure
     // stable UI sorting in the preview container.
     this.#collectedGroups.push(group);
-    void this.#createPreviewForCollectedGroupsThrottler.schedule(
+    return this.#createPreviewForCollectedGroupsThrottler.schedule(
         () => Promise.resolve(this.createPreviewForCollectedGroups()));
   }
 
@@ -1220,5 +1237,11 @@ export class StepTimingFunction {
       return new StepTimingFunction(parseInt(match[1], 10), 'end');
     }
     return null;
+  }
+}
+
+export class AnimationGroupRevealer implements Common.Revealer.Revealer<SDK.AnimationModel.AnimationGroup> {
+  async reveal(animationGroup: SDK.AnimationModel.AnimationGroup): Promise<void> {
+    await AnimationTimeline.instance().revealAnimationGroup(animationGroup);
   }
 }

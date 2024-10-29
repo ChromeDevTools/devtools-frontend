@@ -275,3 +275,16 @@ devtools-css-angle,
 devtools-css-length {
   display: inline-block;
 }
+
+devtools-icon.open-in-animations-panel {
+  position: relative;
+  transform: scale(0.7);
+  margin: -5px -2px -3px -4px;
+  user-select: none;
+  color: var(--icon-default);
+  cursor: default;
+
+  &:hover {
+    color: var(--icon-default-hover);
+  }
+}

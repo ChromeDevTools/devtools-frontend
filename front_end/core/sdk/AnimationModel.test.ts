@@ -12,6 +12,32 @@ import {
 
 import * as SDK from './sdk.js';
 
+function createAnimationPayload(payload: Partial<Protocol.Animation.Animation>): Protocol.Animation.Animation {
+  return {
+    id: '1',
+    name: 'animation-name',
+    pausedState: false,
+    playbackRate: 1,
+    startTime: 0,
+    currentTime: 0,
+    type: Protocol.Animation.AnimationType.CSSAnimation,
+    playState: 'running',
+    ...payload,
+    source: {
+      backendNodeId: 1 as Protocol.DOM.BackendNodeId,
+      delay: 0,
+      endDelay: 0,
+      iterationStart: 0,
+      iterations: 1,
+      duration: 100,
+      direction: 'forward',
+      fill: 'forwards',
+      easing: 'linear',
+      ...(payload.source ? payload.source : null),
+    },
+  };
+}
+
 describeWithMockConnection('AnimationModel', () => {
   afterEach(() => {
     clearAllMockConnectionResponseHandlers();
@@ -21,6 +47,59 @@ describeWithMockConnection('AnimationModel', () => {
     assert.doesNotThrow(() => {
       const target = createTarget();
       new SDK.AnimationModel.AnimationModel(target);
+    });
+  });
+
+  describe('getAnimationGroupForAnimation', () => {
+    const NODE_ID = 1 as Protocol.DOM.NodeId;
+    beforeEach(() => {
+      const stubDOMNode = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+      stubDOMNode.id = NODE_ID;
+      sinon.stub(SDK.AnimationModel.AnimationEffect.prototype, 'node').resolves(stubDOMNode);
+    });
+
+    it('should resolve the containing animation group if the animation with given name and node id exists in the group',
+       async () => {
+         const target = createTarget();
+         const model = new SDK.AnimationModel.AnimationModel(target);
+         const animationGroupStartedPromiseWithResolvers = Promise.withResolvers<void>();
+         model.addEventListener(SDK.AnimationModel.Events.AnimationGroupStarted, () => {
+           animationGroupStartedPromiseWithResolvers.resolve();
+         });
+         void model.animationStarted(createAnimationPayload({name: 'animation-name'}));
+         await animationGroupStartedPromiseWithResolvers.promise;
+
+         const receivedAnimationGroup = await model.getAnimationGroupForAnimation('animation-name', NODE_ID);
+         assert.isNotNull(receivedAnimationGroup);
+       });
+
+    it('should resolve null if there is no animations with matching name', async () => {
+      const target = createTarget();
+      const model = new SDK.AnimationModel.AnimationModel(target);
+      const animationGroupStartedPromiseWithResolvers = Promise.withResolvers<void>();
+      model.addEventListener(SDK.AnimationModel.Events.AnimationGroupStarted, () => {
+        animationGroupStartedPromiseWithResolvers.resolve();
+      });
+      void model.animationStarted(createAnimationPayload({name: 'animation-name'}));
+      await animationGroupStartedPromiseWithResolvers.promise;
+
+      const receivedAnimationGroup = await model.getAnimationGroupForAnimation('not-a-matching-name', NODE_ID);
+      assert.isNull(receivedAnimationGroup);
+    });
+
+    it('should resolve null if there is an animation with the same name but for a different node id', async () => {
+      const target = createTarget();
+      const model = new SDK.AnimationModel.AnimationModel(target);
+      const animationGroupStartedPromiseWithResolvers = Promise.withResolvers<void>();
+      model.addEventListener(SDK.AnimationModel.Events.AnimationGroupStarted, () => {
+        animationGroupStartedPromiseWithResolvers.resolve();
+      });
+      void model.animationStarted(createAnimationPayload({name: 'animation-name'}));
+      await animationGroupStartedPromiseWithResolvers.promise;
+
+      const receivedAnimationGroup =
+          await model.getAnimationGroupForAnimation('animation-name', 9999 as Protocol.DOM.NodeId);
+      assert.isNull(receivedAnimationGroup);
     });
   });
 

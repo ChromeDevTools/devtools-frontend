@@ -2167,6 +2167,7 @@ export const knownContextValues = new Set([
   'opacity',
   'open-ai-settings',
   'open-folder',
+  'open-in-animations-panel',
   'open-in-containing-folder',
   'open-in-new-tab',
   'open-link-handler',

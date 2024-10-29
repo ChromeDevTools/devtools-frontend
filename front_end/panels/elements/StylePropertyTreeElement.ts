@@ -757,6 +757,33 @@ export class LinkableNameRenderer implements MatchRenderer<LinkableNameMatch> {
       jslogContext,
     };
 
+    if (match.propertyName === LinkableNameProperties.ANIMATION ||
+        match.propertyName === LinkableNameProperties.ANIMATION_NAME) {
+      const el = document.createElement('span');
+      el.appendChild(swatch);
+
+      const node = this.#treeElement.node();
+      if (node) {
+        const animationModel = node.domModel().target().model(SDK.AnimationModel.AnimationModel);
+        void animationModel?.getAnimationGroupForAnimation(match.text, node.id).then(maybeAnimationGroup => {
+          if (!maybeAnimationGroup) {
+            return;
+          }
+
+          const icon = IconButton.Icon.create('open-externally', 'open-in-animations-panel');
+          icon.setAttribute('jslog', `${VisualLogging.link('open-in-animations-panel').track({click: true})}`);
+          icon.setAttribute('role', 'button');
+          icon.addEventListener('mouseup', ev => {
+            ev.consume(true);
+
+            void Common.Revealer.reveal(maybeAnimationGroup);
+          });
+          el.insertBefore(icon, swatch);
+        });
+      }
+      return [el];
+    }
+
     return [swatch];
   }
 

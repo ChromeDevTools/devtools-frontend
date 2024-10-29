@@ -339,6 +339,21 @@ export class AnimationModel extends SDKModel<EventTypes> {
     return 1;
   }
 
+  async getAnimationGroupForAnimation(name: string, nodeId: Protocol.DOM.NodeId): Promise<AnimationGroup|null> {
+    for (const animationGroup of this.animationGroups.values()) {
+      for (const animation of animationGroup.animations()) {
+        if (animation.name() === name) {
+          const animationNode = await animation.source().node();
+          if (animationNode?.id === nodeId) {
+            return animationGroup;
+          }
+        }
+      }
+    }
+
+    return null;
+  }
+
   animationCanceled(id: string): void {
     this.#pendingAnimations.delete(id);
   }

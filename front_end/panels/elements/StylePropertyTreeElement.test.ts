@@ -279,6 +279,96 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
                stylePropertyTreeElement.valueElement?.querySelectorAll('devtools-link-swatch');
            assert.strictEqual(animationNameSwatches?.length, 2);
          });
+
+      describe('jumping to animations panel', () => {
+        let domModel: SDK.DOMModel.DOMModel;
+        beforeEach(() => {
+          const target = createTarget();
+          const domModelBeforeAssertion = target.model(SDK.DOMModel.DOMModel);
+          assert.exists(domModelBeforeAssertion);
+          domModel = domModelBeforeAssertion;
+        });
+
+        afterEach(() => {
+          sinon.reset();
+        });
+
+        it('should render a jump-to icon when the animation with the given name exists for the node', async () => {
+          const stubAnimationGroup = sinon.createStubInstance(SDK.AnimationModel.AnimationGroup);
+          const getAnimationGroupForAnimationStub =
+              sinon.stub(SDK.AnimationModel.AnimationModel.prototype, 'getAnimationGroupForAnimation')
+                  .resolves(stubAnimationGroup);
+          const domNode = SDK.DOMModel.DOMNode.create(domModel, null, false, {
+            nodeId: 1 as Protocol.DOM.NodeId,
+            backendNodeId: 2 as Protocol.DOM.BackendNodeId,
+            nodeType: Node.ELEMENT_NODE,
+            nodeName: 'div',
+            localName: 'div',
+            nodeValue: '',
+          });
+          const stylePropertyTreeElement = getTreeElement('animation-name', 'first-keyframe, second-keyframe');
+          sinon.stub(stylePropertyTreeElement, 'node').returns(domNode);
+
+          stylePropertyTreeElement.updateTitle();
+          await Promise.all(getAnimationGroupForAnimationStub.returnValues);
+
+          const jumpToIcon =
+              stylePropertyTreeElement.valueElement?.querySelector('devtools-icon.open-in-animations-panel');
+          assert.exists(jumpToIcon);
+        });
+
+        it('should clicking on the jump-to icon reveal the resolved animation group', async () => {
+          const stubAnimationGroup = sinon.createStubInstance(SDK.AnimationModel.AnimationGroup);
+          const revealerSpy = sinon.spy(Common.Revealer.RevealerRegistry.instance(), 'reveal');
+          const getAnimationGroupForAnimationStub =
+              sinon.stub(SDK.AnimationModel.AnimationModel.prototype, 'getAnimationGroupForAnimation')
+                  .resolves(stubAnimationGroup);
+          const domNode = SDK.DOMModel.DOMNode.create(domModel, null, false, {
+            nodeId: 1 as Protocol.DOM.NodeId,
+            backendNodeId: 2 as Protocol.DOM.BackendNodeId,
+            nodeType: Node.ELEMENT_NODE,
+            nodeName: 'div',
+            localName: 'div',
+            nodeValue: '',
+          });
+          const stylePropertyTreeElement = getTreeElement('animation-name', 'first-keyframe, second-keyframe');
+          sinon.stub(stylePropertyTreeElement, 'node').returns(domNode);
+
+          stylePropertyTreeElement.updateTitle();
+          await Promise.all(getAnimationGroupForAnimationStub.returnValues);
+
+          const jumpToIcon =
+              stylePropertyTreeElement.valueElement?.querySelector('devtools-icon.open-in-animations-panel');
+          jumpToIcon?.dispatchEvent(new Event('mouseup'));
+          assert.isTrue(
+              revealerSpy.calledWith(stubAnimationGroup),
+              'Common.Revealer.reveal is not called for the animation group');
+        });
+
+        it('should not render a jump-to icon when the animation with the given name does not exist for the node',
+           async () => {
+             const getAnimationGroupForAnimationStub =
+                 sinon.stub(SDK.AnimationModel.AnimationModel.prototype, 'getAnimationGroupForAnimation')
+                     .resolves(null);
+             const domNode = SDK.DOMModel.DOMNode.create(domModel, null, false, {
+               nodeId: 1 as Protocol.DOM.NodeId,
+               backendNodeId: 2 as Protocol.DOM.BackendNodeId,
+               nodeType: Node.ELEMENT_NODE,
+               nodeName: 'div',
+               localName: 'div',
+               nodeValue: '',
+             });
+             const stylePropertyTreeElement = getTreeElement('animation-name', 'first-keyframe, second-keyframe');
+             sinon.stub(stylePropertyTreeElement, 'node').returns(domNode);
+
+             stylePropertyTreeElement.updateTitle();
+             await Promise.all(getAnimationGroupForAnimationStub.returnValues);
+
+             const jumpToIcon =
+                 stylePropertyTreeElement.valueElement?.querySelector('devtools-icon.open-in-animations-panel');
+             assert.notExists(jumpToIcon);
+           });
+      });
     });
   });
 

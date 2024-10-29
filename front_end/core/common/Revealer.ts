@@ -46,6 +46,10 @@ const UIStrings = {
    * @description The UI destination when revealing loaded resources through the Developer Resources Panel
    */
   developerResourcesPanel: 'Developer Resources panel',
+  /**
+   * @description The UI destination when revealing loaded resources through the Animations panel
+   */
+  animationsPanel: 'Animations panel',
 };
 const str_ = i18n.i18n.registerUIStrings('core/common/Revealer.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
@@ -177,6 +181,7 @@ export const RevealerDestination = {
   APPLICATION_PANEL: i18nLazyString(UIStrings.applicationPanel),
   SOURCES_PANEL: i18nLazyString(UIStrings.sourcesPanel),
   MEMORY_INSPECTOR_PANEL: i18nLazyString(UIStrings.memoryInspectorPanel),
+  ANIMATIONS_PANEL: i18nLazyString(UIStrings.animationsPanel),
 };
 
 export type RevealerDestination = () => Platform.UIString.LocalizedString;

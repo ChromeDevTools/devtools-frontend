@@ -303,6 +303,48 @@ export class TimelineDetailsView extends UI.Widget.VBox {
       }
     }
   }
+
+  async #setSelectionForNetworkEvent(networkRequest: Trace.Types.Events.SyntheticNetworkRequest): Promise<void> {
+    if (!this.#parsedTrace) {
+      return;
+    }
+    const maybeTarget = targetForEvent(this.#parsedTrace, networkRequest);
+    await this.#networkRequestDetails.setData(this.#parsedTrace, networkRequest, maybeTarget);
+    this.#relatedInsightChips.activeEvent = networkRequest;
+    if (this.#eventToRelatedInsightsMap) {
+      this.#relatedInsightChips.eventToRelatedInsightsMap = this.#eventToRelatedInsightsMap;
+    }
+
+    this.setContent(this.#networkRequestDetails);
+  }
+
+  async #setSelectionForTraceEvent(event: Trace.Types.Events.Event): Promise<void> {
+    if (!this.#parsedTrace) {
+      return;
+    }
+
+    this.#relatedInsightChips.activeEvent = event;
+    if (this.#eventToRelatedInsightsMap) {
+      this.#relatedInsightChips.eventToRelatedInsightsMap = this.#eventToRelatedInsightsMap;
+    }
+
+    // Special case: if Insights experiment is enabled (on by default in M131)
+    // and the user selects a layout shift or a layout shift cluster, render
+    // the new layout shift details component.
+    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_INSIGHTS) &&
+        (Trace.Types.Events.isSyntheticLayoutShift(event) || Trace.Types.Events.isSyntheticLayoutShiftCluster(event))) {
+      const isFreshRecording = Boolean(this.#parsedTrace && Tracker.instance().recordingIsFresh(this.#parsedTrace));
+      this.#layoutShiftDetails.setData(event, this.#traceInsightsSets, this.#parsedTrace, isFreshRecording);
+      this.setContent(this.#layoutShiftDetails);
+      return;
+    }
+
+    // Otherwise, build the generic trace event details UI.
+    const traceEventDetails =
+        await TimelineUIUtils.buildTraceEventDetails(this.#parsedTrace, event, this.detailsLinkifier, true);
+    this.appendDetailsTabsForTraceEventAndShowDetails(event, traceEventDetails);
+  }
+
   async setSelection(selection: TimelineSelection|null): Promise<void> {
     if (!this.#parsedTrace) {
       // You can't make a selection if we have no trace data.
@@ -319,32 +361,9 @@ export class TimelineDetailsView extends UI.Widget.VBox {
     }
     const selectionObject = this.selection.object;
     if (TimelineSelection.isSyntheticNetworkRequestDetailsEventSelection(selectionObject)) {
-      const networkRequest = selectionObject;
-      const maybeTarget = targetForEvent(this.#parsedTrace, networkRequest);
-      await this.#networkRequestDetails.setData(this.#parsedTrace, networkRequest, maybeTarget);
-      this.#relatedInsightChips.activeEvent = networkRequest;
-      if (this.#eventToRelatedInsightsMap) {
-        this.#relatedInsightChips.eventToRelatedInsightsMap = this.#eventToRelatedInsightsMap;
-      }
-
-      this.setContent(this.#networkRequestDetails);
+      await this.#setSelectionForNetworkEvent(selectionObject);
     } else if (TimelineSelection.isTraceEventSelection(selectionObject)) {
-      const event = selectionObject;
-      this.#relatedInsightChips.activeEvent = event;
-      if (this.#eventToRelatedInsightsMap) {
-        this.#relatedInsightChips.eventToRelatedInsightsMap = this.#eventToRelatedInsightsMap;
-      }
-      if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_INSIGHTS) &&
-          (Trace.Types.Events.isSyntheticLayoutShift(event) ||
-           Trace.Types.Events.isSyntheticLayoutShiftCluster(event))) {
-        const isFreshRecording = Boolean(this.#parsedTrace && Tracker.instance().recordingIsFresh(this.#parsedTrace));
-        this.#layoutShiftDetails.setData(event, this.#traceInsightsSets, this.#parsedTrace, isFreshRecording);
-        this.setContent(this.#layoutShiftDetails);
-      } else {
-        const traceEventDetails =
-            await TimelineUIUtils.buildTraceEventDetails(this.#parsedTrace, event, this.detailsLinkifier, true);
-        this.appendDetailsTabsForTraceEventAndShowDetails(event, traceEventDetails);
-      }
+      await this.#setSelectionForTraceEvent(selectionObject);
     } else if (TimelineSelection.isLegacyTimelineFrame(selectionObject)) {
       this.#setSelectionForTimelineFrame(selectionObject);
     } else if (TimelineSelection.isRangeSelection(selectionObject)) {

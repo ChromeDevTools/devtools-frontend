@@ -2,7 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Trace from '../../models/trace/trace.js';
+import * as Root from '../../core/root/root.js';
+import * as Trace from '../../models/trace/trace.js';
 import {doubleRaf} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
@@ -21,6 +22,7 @@ class MockViewDelegate implements Timeline.TimelinePanel.TimelineModeViewDelegat
 
 describeWithEnvironment('TimelineDetailsView', function() {
   const mockViewDelegate = new MockViewDelegate();
+
   it('displays the details of a network request event correctly', async function() {
     const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'lcp-web-font.json.gz');
     const detailsView = new Timeline.TimelineDetailsView.TimelineDetailsView(mockViewDelegate);
@@ -62,5 +64,65 @@ describeWithEnvironment('TimelineDetailsView', function() {
     const duration = detailsContentElement.querySelector<HTMLElement>('[data-row-title="Duration"]');
     assert.isOk(duration);
     assert.strictEqual(duration.innerText, 'Duration37.85 ms (at 109.82 ms)');
+  });
+
+  it('renders the layout shift component for a single layout shift', async function() {
+    Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.TIMELINE_INSIGHTS);
+
+    const {parsedTrace} = await TraceLoader.traceEngine(this, 'shift-attribution.json.gz');
+    const detailsView = new Timeline.TimelineDetailsView.TimelineDetailsView(mockViewDelegate);
+    await detailsView.setModel(
+        {parsedTrace, selectedEvents: null, traceInsightsSets: null, eventToRelatedInsightsMap: null});
+
+    const layoutShift = parsedTrace.LayoutShifts.clusters.at(0)?.events.at(0);
+    assert.isOk(layoutShift);
+    const selection = Timeline.TimelineSelection.TimelineSelection.fromTraceEvent(layoutShift);
+    await detailsView.setSelection(selection);
+    const detailsContentElement = detailsView.getDetailsContentElementForTest();
+    // Assert that the right component is rendered. This component has its own
+    // tests for its contents so no need to duplicate those here.
+    const layoutShiftDetails = detailsContentElement.querySelector('devtools-performance-layout-shift-details');
+    assert.isNotNull(layoutShiftDetails);
+  });
+
+  it('renders the layout shift component for a selected cluster', async function() {
+    Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.TIMELINE_INSIGHTS);
+
+    const {parsedTrace} = await TraceLoader.traceEngine(this, 'shift-attribution.json.gz');
+    const detailsView = new Timeline.TimelineDetailsView.TimelineDetailsView(mockViewDelegate);
+    await detailsView.setModel(
+        {parsedTrace, selectedEvents: null, traceInsightsSets: null, eventToRelatedInsightsMap: null});
+
+    const layoutShiftCluster = parsedTrace.LayoutShifts.clusters.at(0);
+    assert.isOk(layoutShiftCluster);
+    const selection = Timeline.TimelineSelection.TimelineSelection.fromTraceEvent(layoutShiftCluster);
+    await detailsView.setSelection(selection);
+    const detailsContentElement = detailsView.getDetailsContentElementForTest();
+    // Assert that the right component is rendered. This component has its own
+    // tests for its contents so no need to duplicate those here.
+    const layoutShiftDetails = detailsContentElement.querySelector('devtools-performance-layout-shift-details');
+    assert.isNotNull(layoutShiftDetails);
+  });
+
+  it('updates the range details when the user has a range selected', async function() {
+    const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const detailsView = new Timeline.TimelineDetailsView.TimelineDetailsView(mockViewDelegate);
+    await detailsView.setModel({
+      parsedTrace,
+      // We have to set selected events for the range selection UI to be drawn
+      // (without the set of events we can't generate the range stats)
+      selectedEvents: parsedTrace.Renderer.allTraceEntries,
+      traceInsightsSets: null,
+      eventToRelatedInsightsMap: null,
+    });
+    const bounds = Trace.Helpers.Timing.traceWindowMilliSeconds(parsedTrace.Meta.traceBounds);
+    const selection = Timeline.TimelineSelection.TimelineSelection.fromRange(
+        bounds.min,
+        bounds.max,
+    );
+    await detailsView.setSelection(selection);
+    const detailsContentElement = detailsView.getDetailsContentElementForTest();
+    const title = detailsContentElement.querySelector<HTMLElement>('.timeline-details-chip-title');
+    assert.strictEqual(title?.innerText, 'Range:  0 ms – 5.39 s');
   });
 });

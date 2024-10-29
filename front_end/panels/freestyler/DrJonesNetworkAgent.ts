@@ -260,7 +260,6 @@ const allowedHeaders = new Set([
   'x-request-id',
   'x-requested-with',
   'x-ua-compatible',
-  'x-uidh',
   'x-wap-profile',
   'x-webkit-csp',
   'x-xss-protection',
@@ -272,7 +271,19 @@ export function allowHeader(header: SDK.NetworkRequest.NameValue): boolean {
 
 export function formatHeaders(title: string, headers: SDK.NetworkRequest.NameValue[]): string {
   return formatLines(
-      title, headers.filter(allowHeader).map(header => header.name + ': ' + header.value + '\n'), MAX_HEADERS_SIZE);
+      title,
+      headers
+          .map(header => {
+            if (allowHeader(header)) {
+              return header;
+            }
+            return {
+              name: header.name,
+              value: '<redacted>',
+            };
+          })
+          .map(header => header.name + ': ' + header.value + '\n'),
+      MAX_HEADERS_SIZE);
 }
 
 export function formatNetworkRequestTiming(request: SDK.NetworkRequest.NetworkRequest): string {

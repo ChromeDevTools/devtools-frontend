@@ -228,7 +228,7 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     this.editing = false;
     this.selectedNode = null;
     this.expandNodesWhenArrowing = false;
-    this.setRootNode((new DataGridNode() as DataGridNode<T>));
+    this.setRootNode(new DataGridNode<T>());
 
     this.setHasSelection(false);
 
@@ -1549,9 +1549,9 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     return 0;
   }
 
-  asWidget(): DataGridWidget<T> {
+  asWidget(element?: HTMLElement): DataGridWidget<T> {
     if (!this.dataGridWidget) {
-      this.dataGridWidget = new DataGridWidget(this);
+      this.dataGridWidget = new DataGridWidget(this, element);
     }
     return this.dataGridWidget;
   }
@@ -2441,9 +2441,9 @@ export class CreationDataGridNode<T> extends DataGridNode<T> {
 }
 
 export class DataGridWidget<T> extends UI.Widget.VBox {
-  private readonly dataGrid: DataGridImpl<T>;
-  constructor(dataGrid: DataGridImpl<T>) {
-    super();
+  readonly dataGrid: DataGridImpl<T>;
+  constructor(dataGrid: DataGridImpl<T>, element?: HTMLElement) {
+    super(undefined, undefined, element);
     this.dataGrid = dataGrid;
     this.element.appendChild(dataGrid.element);
     this.setDefaultFocusedElement(dataGrid.element);
@@ -2466,6 +2466,92 @@ export class DataGridWidget<T> extends UI.Widget.VBox {
     return [this.dataGrid.scrollContainer];
   }
 }
+
+export interface DataGridWidgetOptions<T> {
+  implParams: Parameters;
+  dataGridImpl?: DataGridImpl<T>;
+  markAsRoot?: boolean;
+  nodes: DataGridNode<T>[];
+}
+
+export class DataGridWidgetElement<T> extends UI.Widget.WidgetElement<DataGridWidget<T>> {
+  #options: DataGridWidgetOptions<T>;
+
+  constructor() {
+    super();
+    // default values for options
+    this.#options = {
+      implParams: {
+        displayName: 'dataGrid',
+        columns: [],
+      },
+      nodes: [],
+    };
+  }
+
+  set options(options: DataGridWidgetOptions<T>) {
+    this.#options = options;
+  }
+
+  override createWidget(): DataGridWidget<T> {
+    const {
+      implParams,
+      markAsRoot,
+      nodes,
+    } = this.#options;
+
+    if (!this.#options.dataGridImpl) {
+      this.#options.dataGridImpl = new DataGridImpl<T>(implParams);
+    }
+
+    this.#options.dataGridImpl.rootNode().removeChildren();
+    for (const node of nodes) {
+      this.#options.dataGridImpl.rootNode().appendChild(node);
+    }
+
+    // Translate existing DataGridImpl ("ObjectWrapper") events to DOM CustomEvents so clients can
+    // use lit templates to bind listeners.
+    this.#options.dataGridImpl.addEventListener(Events.SELECTED_NODE, this.#selectedNode.bind(this));
+    this.#options.dataGridImpl.addEventListener(Events.DESELECTED_NODE, this.#deselectedNode.bind(this));
+    this.#options.dataGridImpl.addEventListener(Events.OPENED_NODE, this.#openedNode.bind(this));
+    this.#options.dataGridImpl.addEventListener(Events.SORTING_CHANGED, this.#sortingChanged.bind(this));
+    this.#options.dataGridImpl.addEventListener(Events.PADDING_CHANGED, this.#paddingChanged.bind(this));
+    const widget = this.#options.dataGridImpl.asWidget(this);
+
+    if (markAsRoot) {
+      widget.markAsRoot();
+    }
+    return widget;
+  }
+
+  #selectedNode(event: Common.EventTarget.EventTargetEvent<DataGridNode<T>>): void {
+    const domEvent = new CustomEvent('selectedNode', {detail: event.data});
+    this.dispatchEvent(domEvent);
+  }
+
+  #deselectedNode(): void {
+    const domEvent = new CustomEvent('deselectedNode');
+    this.dispatchEvent(domEvent);
+  }
+
+  #openedNode(event: Common.EventTarget.EventTargetEvent<DataGridNode<T>>): void {
+    const domEvent = new CustomEvent('openedNode', {detail: event.data});
+    this.dispatchEvent(domEvent);
+  }
+
+  #sortingChanged(): void {
+    const domEvent = new CustomEvent('sortingChanged');
+    this.dispatchEvent(domEvent);
+  }
+
+  #paddingChanged(): void {
+    const domEvent = new CustomEvent('paddingChanged');
+    this.dispatchEvent(domEvent);
+  }
+}
+
+customElements.define('devtools-data-grid-widget', DataGridWidgetElement);
+
 export interface Parameters {
   displayName: string;
   columns: ColumnDescriptor[];

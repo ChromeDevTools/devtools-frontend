@@ -238,6 +238,7 @@ group("unittests") {
     "ui/legacy:copy_stylesheets_for_server",
     "ui/legacy:unittests",
     "ui/legacy/components/color_picker:unittests",
+    "ui/legacy/components/data_grid:unittests",
     "ui/legacy/components/inline_editor:unittests",
     "ui/legacy/components/object_ui:unittests",
     "ui/legacy/components/perf_ui:unittests",

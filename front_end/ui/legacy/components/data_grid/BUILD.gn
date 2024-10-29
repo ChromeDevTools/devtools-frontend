@@ -53,3 +53,14 @@ devtools_entrypoint("bundle") {
 
   visibility += devtools_ui_legacy_visibility
 }
+
+ts_library("unittests") {
+  testonly = true
+
+  sources = [ "DataGrid.test.ts" ]
+
+  deps = [
+    ":bundle",
+    "../../../../testing",
+  ]
+}

@@ -382,29 +382,33 @@ input::placeholder {
 .chrome-select {
   appearance: none;
   user-select: none;
-  border: 1px solid var(--sys-color-neutral-outline);
-  border-radius: 4px;
+  width: var(--sys-size-22);
+  height: var(--sys-size-11);
+  border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
+  border-radius: var(--sys-shape-corner-extra-small);
   color: var(--sys-color-on-surface);
   font: inherit;
   margin: 0;
   outline: none;
-  padding-right: 20px;
-  padding-left: 6px;
-  background-image: var(--image-file-arrow-drop-down-light);
+  padding: 0 var(--sys-size-4) 0 var(--sys-size-5);
+  background-image: var(--combobox-dropdown-arrow);
   background-color: var(--sys-color-surface);
   background-position: right center;
   background-repeat: no-repeat;
-  min-height: 24px;
-  min-width: 80px;
+
+  --combobox-dropdown-arrow: var(--image-file-arrow-drop-down-light);
 }
 
 .chrome-select:disabled {
-  opacity: 38%;
+  opacity: 100%;
+  border: var(--sys-size-1) solid transparent;
+  color: var(--sys-color-state-disabled);
+  background-color: var(--sys-color-state-disabled-container);
 }
 
 .theme-with-dark-background .chrome-select,
 :host-context(.theme-with-dark-background) .chrome-select {
-  background-image: var(--image-file-arrow-drop-down-dark);
+  --combobox-dropdown-arrow: var(--image-file-arrow-drop-down-dark);
 }
 
 .chrome-select:enabled {
@@ -416,31 +420,36 @@ input::placeholder {
     background-color: var(--sys-color-state-ripple-neutral-on-subtle);
   }
 
+  &:hover:active {
+    /* stylelint-disable plugin/use_theme_colors */
+    background:
+      var(--combobox-dropdown-arrow),
+      linear-gradient(var(--sys-color-state-hover-on-subtle), var(--sys-color-state-hover-on-subtle)),
+      linear-gradient(var(--sys-color-state-ripple-neutral-on-subtle), var(--sys-color-state-ripple-neutral-on-subtle));
+    /* stylelint-enable plugin/use_theme_colors */
+    background-position: right center;
+    background-repeat: no-repeat;
+  }
+
   &:focus {
-    outline: 2px solid var(--sys-color-state-focus-ring);
-    outline-offset: 2px;
+    outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
+    outline-offset: -1px;
   }
 }
 
 @media (forced-colors: active) and (prefers-color-scheme: light) {
-  .chrome-select {
-    background-image: var(--image-file-arrow-drop-down-light);
-  }
-
-  .theme-with-dark-background .chrome-select,
-  :host-context(.theme-with-dark-background) .chrome-select {
-    background-image: var(--image-file-arrow-drop-down-light);
+  :root,
+  .theme-with-dark-background,
+  :host-context(.theme-with-dark-background) {
+    --combobox-dropdown-arrow: var(--image-file-arrow-drop-down-light);
   }
 }
 
 @media (forced-colors: active) and (prefers-color-scheme: dark) {
-  .chrome-select {
-    background-image: var(--image-file-arrow-drop-down-dark);
-  }
-
-  .theme-with-dark-background .chrome-select,
-  :host-context(.theme-with-dark-background) .chrome-select {
-    background-image: var(--image-file-arrow-drop-down-dark);
+  :root,
+  .theme-with-dark-background,
+  :host-context(.theme-with-dark-background) {
+    --combobox-dropdown-arrow: var(--image-file-arrow-drop-down-dark);
   }
 }
 

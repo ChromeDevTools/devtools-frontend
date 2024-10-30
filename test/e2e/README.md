@@ -144,13 +144,13 @@ it.repeat(20, 'find element', async () => {...});
 To see if certain tests are flaky you can use the E2E stressor bots. Open a CL with your test changes and run the following command specifying your test file:
 
 ```sh
-git cl try -B devtools-frontend/try -b e2e_stressor_linux -b e2e_stressor_win64 -b e2e_stressor_mac -p e2e_env='{"TEST_PATTERNS":"network/network-datagrid_test.ts","ITERATIONS":20}'
+git cl try -B devtools-frontend/try -b e2e_stressor_linux -b e2e_stressor_win64 -b e2e_stressor_mac -p runner_args='test/e2e/sources/navigator-view_test.ts --repeat=80'
 ```
 
 or multiple test files:
 
 ```sh
-git cl try -B devtools-frontend/try -b e2e_stressor_linux -b e2e_stressor_win64 -b e2e_stressor_mac -p e2e_env='{"TEST_PATTERNS":"network/network-datagrid_test.ts,network/network_test.ts","ITERATIONS":20}'
+git cl try -B devtools-frontend/try -b e2e_stressor_linux -b e2e_stressor_win64 -b e2e_stressor_mac -p runner_args='test/e2e/sources/navigator-view_test.ts test/e2e/sources/snippets_test.ts --repeat=80'
 ```
 
 This will run the specified tests on dedicated bots with the specified number of iterations. Note that in order for iterations to work the test should be using `it` from `mocha_extensions.ts`.
@@ -160,12 +160,9 @@ The following command runs the stressor bot on all files of the latest commit wi
 ```sh
 git cl try -B devtools-frontend/try \
   -b e2e_stressor_linux \
-  -p e2e_env="{ \
-    \"TEST_PATTERNS\": \"$(git diff-tree --no-commit-id --name-only HEAD -r | grep test/e2e | cut -c 10- - | tr "\n" ",")_\", \
-    \"STRESS\": true, \
-    \"LATE_PROMISES\": true, \
-    \"ITERATIONS\": 20 \
-  }"
+  -p runner_args="\
+    $(git diff-tree --no-commit-id --name-only HEAD -r | grep test/e2e | grep -v e2e/helpers | cut -c 10- - | tr "\n" " ") \
+    --repeat=20"
 ```
 
 > By default, tests are run using the debug build. To run it with the release build, append `-p builder_config=Release` to the end of the command.

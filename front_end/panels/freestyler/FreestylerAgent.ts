@@ -399,35 +399,7 @@ export class FreestylerAgent extends AiAgent<SDK.DOMModel.DOMNode> {
     canceled: boolean,
   }> {
     const actionExpression = `{
-      const scope = {
-        $0,
-        $1,
-        // restricted
-        getEventListeners: undefined,
-        $_: undefined,
-        $2: undefined,
-        $3: undefined,
-        $4: undefined,
-        $$: undefined,
-        $x: undefined,
-        clear: undefined,
-        copy: undefined,
-        debug: undefined,
-        dir: undefined,
-        dirxml: undefined,
-        inspect: undefined,
-        keys: undefined,
-        monitor: undefined,
-        monitorEvents: undefined,
-        profile: undefined,
-        profileEnd: undefined,
-        queryObjects: undefined,
-        table: undefined,
-        undebug: undefined,
-        unmonitor: undefined,
-        unmonitorEvents: undefined,
-        values: undefined,
-      };
+      const scope = {$0, $1, getEventListeners};
       with (scope) {
         ${action}
         ;((typeof data !== "undefined") ? data : undefined)

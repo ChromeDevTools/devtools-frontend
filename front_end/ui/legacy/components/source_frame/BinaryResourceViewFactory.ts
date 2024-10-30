@@ -7,6 +7,7 @@ import type * as Platform from '../../../../core/platform/platform.js';
 import * as TextUtils from '../../../../models/text_utils/text_utils.js';
 
 import {ResourceSourceFrame} from './ResourceSourceFrame.js';
+import {StreamingContentHexView} from './StreamingContentHexView.js';
 
 export class BinaryResourceViewFactory {
   private streamingContent: TextUtils.StreamingContentData.StreamingContentData;
@@ -71,15 +72,8 @@ export class BinaryResourceViewFactory {
         this.resourceType.canonicalMimeType(), {lineNumbers: false, lineWrapping: true});
   }
 
-  createHexView(): ResourceSourceFrame {
-    const hexViewerContentProvider =
-        new TextUtils.StaticContentProvider.StaticContentProvider(this.contentUrl, this.resourceType, async () => {
-          const contentAsArray = await this.fetchContentAsArray();
-          const content = BinaryResourceViewFactory.uint8ArrayToHexViewer(contentAsArray);
-          return new TextUtils.ContentData.ContentData(content, /* isBase64 */ false, 'text/plain');
-        });
-    return new ResourceSourceFrame(
-        hexViewerContentProvider, this.resourceType.canonicalMimeType(), {lineNumbers: false, lineWrapping: false});
+  createHexView(): StreamingContentHexView {
+    return new StreamingContentHexView(this.streamingContent);
   }
 
   createUtf8View(): ResourceSourceFrame {

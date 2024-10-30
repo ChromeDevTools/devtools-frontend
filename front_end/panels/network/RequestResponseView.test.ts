@@ -42,7 +42,7 @@ describeWithEnvironment('RequestResponseView', () => {
     component.detach();
   });
 
-  it('shows the StreamingContentHexView for binary content', async () => {
+  it('shows the BinaryResourceView for binary content', async () => {
     const request = SDK.NetworkRequest.NetworkRequest.create(
         'requestId' as Protocol.Network.RequestId,
         'http://devtools-frontend.test/image.png' as Platform.DevToolsPath.UrlString,
@@ -60,7 +60,7 @@ describeWithEnvironment('RequestResponseView', () => {
     component.show(document.body);
     const widget = await showPreviewSpy.returnValues[0];
 
-    assert.instanceOf(widget, SourceFrame.StreamingContentHexView.StreamingContentHexView);
+    assert.instanceOf(widget, Network.BinaryResourceView.BinaryResourceView);
 
     await raf();
     component.detach();

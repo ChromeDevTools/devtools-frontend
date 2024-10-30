@@ -1112,16 +1112,19 @@ class DOMInheritanceCascade {
               record.updateRoot(childRecord);
               return null;
             }
-          } else {
-            const cssVariableValue = this.innerComputeCSSVariable(nodeCascade, match.name, sccRecord);
-            // Variable reference is resolved, so return it.
-            const childRecord = sccRecord.get(nodeCascade, match.name);
-            // The SCC record for the referenced variable may not exist if the var was already computed in a previous
-            // iteration. That means it's in a different SCC.
-            childRecord && record.updateRoot(childRecord);
-            if (cssVariableValue?.value) {
-              return cssVariableValue?.value;
-            }
+
+            // We've seen the variable before, so we can look up the text directly.
+            return this.#computedCSSVariables.get(nodeCascade)?.get(match.name)?.value ?? null;
+          }
+
+          const cssVariableValue = this.innerComputeCSSVariable(nodeCascade, match.name, sccRecord);
+          // Variable reference is resolved, so return it.
+          const newChildRecord = sccRecord.get(nodeCascade, match.name);
+          // The SCC record for the referenced variable may not exist if the var was already computed in a previous
+          // iteration. That means it's in a different SCC.
+          newChildRecord && record.updateRoot(newChildRecord);
+          if (cssVariableValue?.value) {
+            return cssVariableValue?.value;
           }
 
           // Variable reference is not resolved, use the fallback.

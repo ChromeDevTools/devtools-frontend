@@ -60,6 +60,9 @@ describe('CSSMatchedStyles', () => {
           ruleMatch(
               'div',
               [
+                {name: '--diamond', value: 'var(--diamond-a) var(--diamond-b)'},
+                {name: '--diamond-a', value: 'var(--foo)'},
+                {name: '--diamond-b', value: 'var(--foo)'},
                 {name: '--foo', value: 'active-foo'},
                 {name: '--baz', value: 'active-baz !important', important: true},
                 {name: '--baz', value: 'passive-baz'},
@@ -106,6 +109,7 @@ describe('CSSMatchedStyles', () => {
       await testCssValueEquals('--theme', 'darkgrey');
       await testCssValueEquals('--shadow', '1px darkgrey');
       await testCssValueEquals('--width', '1px');
+      await testCssValueEquals('--diamond', 'active-foo active-foo');
     });
 
     it('correctly resolves the declaration', async () => {

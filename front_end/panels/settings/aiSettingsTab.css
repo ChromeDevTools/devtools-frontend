@@ -175,3 +175,16 @@ header {
   font-size: var(--sys-typescale-headline3-size);
   font-weight: var(--ref-typeface-weight-regular);
 }
+
+.disabled-explainer {
+  display: flex;
+  gap: var(--sys-size-6);
+  background-color: var(--sys-color-surface-yellow);
+  border-radius: var(--sys-shape-corner-medium-small);
+  margin-top: var(--sys-size-11);
+  padding: var(--sys-size-8) var(--sys-size-11);
+  width: 100%;
+  max-width: var(--sys-size-35);
+  min-width: var(--sys-size-28);
+  color: var(--sys-color-yellow);
+}

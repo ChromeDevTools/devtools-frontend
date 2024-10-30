@@ -6,6 +6,8 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Workspace from '../../models/workspace/workspace.js';
+import {findMenuItemWithLabel, getMenu} from '../../testing/ContextMenuHelpers.js';
+import {dispatchClickEvent} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment, getGetHostConfigStub, registerNoopActions} from '../../testing/EnvironmentHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as TimelineUtils from '../timeline/utils/utils.js';
@@ -599,5 +601,104 @@ describeWithEnvironment('FreestylerPanel', () => {
 
          sinon.assert.notCalled(mockView);
        });
+  });
+
+  describe('history interactions', () => {
+    it('should have empty messages after new chat', async () => {
+      panel = new Freestyler.FreestylerPanel(mockView, {
+        aidaClient: getTestAidaClient(),
+        aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
+        syncInfo: getTestSyncInfo(),
+      });
+      panel.handleAction('freestyler.elements-floating-button');
+      (mockView.lastCall.args.at(0) as Freestyler.Props).onTextSubmit('test');
+      await drainMicroTasks();
+
+      assert.deepEqual(mockView.lastCall.args.at(0).messages, [
+        {
+          entity: 'user',
+          text: 'test',
+        },
+        {
+          answer: 'test',
+          entity: 'model',
+          rpcId: undefined,
+          suggestions: undefined,
+          steps: [],
+        },
+      ]);
+      const toolbar = panel.contentElement.querySelector('.freestyler-left-toolbar');
+      const button = toolbar!.shadowRoot!.querySelector('devtools-button[aria-label=\'New chat\']');
+      assert.instanceOf(button, HTMLElement);
+      dispatchClickEvent(button);
+      assert.deepEqual(mockView.lastCall.args.at(0).messages, []);
+    });
+
+    it('should switch agents and restore history', async () => {
+      panel = new Freestyler.FreestylerPanel(mockView, {
+        aidaClient: getTestAidaClient(),
+        aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
+        syncInfo: getTestSyncInfo(),
+      });
+      panel.handleAction('freestyler.elements-floating-button');
+      (mockView.lastCall.args.at(0) as Freestyler.Props).onTextSubmit('User question to Freestyler?');
+      await drainMicroTasks();
+
+      assert.deepEqual(mockView.lastCall.args.at(0).messages, [
+        {
+          entity: 'user',
+          text: 'User question to Freestyler?',
+        },
+        {
+          answer: 'test',
+          entity: 'model',
+          rpcId: undefined,
+          suggestions: undefined,
+          steps: [],
+        },
+      ]);
+
+      panel.handleAction('drjones.network-floating-button');
+      (mockView.lastCall.args.at(0) as Freestyler.Props).onTextSubmit('User question to DrJones?');
+      await drainMicroTasks();
+      assert.deepEqual(mockView.lastCall.args.at(0).messages, [
+        {
+          entity: 'user',
+          text: 'User question to DrJones?',
+        },
+        {
+          answer: 'test',
+          entity: 'model',
+          rpcId: undefined,
+          suggestions: undefined,
+          steps: [],
+        },
+      ]);
+
+      const toolbar = panel.contentElement.querySelector('.freestyler-left-toolbar');
+      const button = toolbar!.shadowRoot!.querySelector('devtools-button[aria-label=\'History\']');
+      assert.instanceOf(button, HTMLElement);
+      const contextMenu = getMenu(() => {
+        dispatchClickEvent(button);
+      });
+      const freestylerEntry = findMenuItemWithLabel(contextMenu.defaultSection(), 'User question to Freestyler?')!;
+      assert.isDefined(freestylerEntry);
+      contextMenu.invokeHandler(freestylerEntry.id());
+
+      await drainMicroTasks();
+      assert.deepEqual(mockView.lastCall.args.at(0).messages, [
+        {
+          entity: 'user',
+          text: 'User question to Freestyler?',
+        },
+        {
+          answer: 'test',
+          entity: 'model',
+          rpcId: undefined,
+          suggestions: undefined,
+          steps: [],
+        },
+      ]);
+    });
   });
 });

@@ -8,6 +8,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import type * as TimelineUtils from '../../panels/timeline/utils/utils.js';
 
 import {
+  AgentType,
   AiAgent,
   type AidaRequestOptions,
   type ContextResponse,
@@ -124,6 +125,7 @@ const lockedString = i18n.i18n.lockedString;
  * instance for a new conversation.
  */
 export class DrJonesPerformanceAgent extends AiAgent<TimelineUtils.AICallTree.AICallTree> {
+  override type = AgentType.DRJONES_PERFORMANCE;
   readonly preamble = preamble;
   readonly clientFeature = Host.AidaClient.ClientFeature.CHROME_DRJONES_PERFORMANCE_AGENT;
   get userTier(): string|undefined {

@@ -10,6 +10,7 @@ import * as Logs from '../../models/logs/logs.js';
 import * as Network from '../../panels/network/network.js';
 
 import {
+  AgentType,
   AiAgent,
   type AidaRequestOptions,
   type ContextDetail,
@@ -101,6 +102,7 @@ const lockedString = i18n.i18n.lockedString;
  * instance for a new conversation.
  */
 export class DrJonesNetworkAgent extends AiAgent<SDK.NetworkRequest.NetworkRequest> {
+  override type = AgentType.DRJONES_NETWORK_REQUEST;
   readonly preamble = preamble;
   readonly clientFeature = Host.AidaClient.ClientFeature.CHROME_DRJONES_NETWORK_AGENT;
   get userTier(): string|undefined {

@@ -150,6 +150,7 @@ grd_files_release_sources = [
   "front_end/Images/heap-snapshot.svg",
   "front_end/Images/heap-snapshots.svg",
   "front_end/Images/help.svg",
+  "front_end/Images/history.svg",
   "front_end/Images/home.svg",
   "front_end/Images/hover.svg",
   "front_end/Images/iframe-crossed.svg",

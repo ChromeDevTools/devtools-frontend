@@ -118,6 +118,13 @@ interface ParsedResponseStep {
 
 export type ParsedResponse = ParsedResponseAnswer|ParsedResponseStep;
 
+export const enum AgentType {
+  FREESTYLER = 'freestyler',
+  DRJONES_FILE = 'drjones-file',
+  DRJONES_NETWORK_REQUEST = 'drjones-network-request',
+  DRJONES_PERFORMANCE = 'drjones-performance',
+}
+
 const MAX_STEP = 10;
 
 export abstract class AiAgent<T> {
@@ -125,6 +132,7 @@ export abstract class AiAgent<T> {
     return typeof temperature === 'number' && temperature >= 0 ? temperature : undefined;
   }
 
+  abstract type: AgentType;
   readonly #sessionId: string = crypto.randomUUID();
   #aidaClient: Host.AidaClient.AidaClient;
   #serverSideLoggingEnabled: boolean;
@@ -151,6 +159,20 @@ export abstract class AiAgent<T> {
 
   set chatNewHistoryForTesting(history: Map<number, ResponseData[]>) {
     this.#history = history;
+  }
+
+  get isEmpty(): boolean {
+    return this.#history.size <= 0;
+  }
+
+  get title(): string|undefined {
+    return [...this.#history.values()]
+        .flat()
+        .filter(response => {
+          return response.type === ResponseType.USER_QUERY;
+        })
+        .at(-1)
+        ?.query;
   }
 
   #structuredLog: Array<{

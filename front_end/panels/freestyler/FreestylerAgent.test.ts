@@ -755,7 +755,6 @@ c`;
       const agent = new FreestylerAgent({
         aidaClient: mockAidaClient(generateAnswer),
         execJs,
-
       });
 
       const responses = await Array.fromAsync(agent.run('test', {selected: element}));

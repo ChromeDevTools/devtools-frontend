@@ -12,6 +12,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 
 import {
   type ActionResponse,
+  AgentType,
   AiAgent,
   type AidaRequestOptions,
   type ContextResponse,
@@ -193,6 +194,8 @@ type AgentOptions = {
  * instance for a new conversation.
  */
 export class FreestylerAgent extends AiAgent<SDK.DOMModel.DOMNode> {
+  override type = AgentType.FREESTYLER;
+
   readonly preamble = preamble;
   readonly clientFeature = Host.AidaClient.ClientFeature.CHROME_FREESTYLER;
   get userTier(): string|undefined {

@@ -20,7 +20,7 @@ import * as UI from '../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import {PanelUtils} from '../../utils/utils.js';
-import {type ContextDetail, ErrorType} from '../AiAgent.js';
+import {AgentType, type ContextDetail, ErrorType} from '../AiAgent.js';
 
 import freestylerChatUiStyles from './freestylerChatUi.css.js';
 import type {UserActionRowProps} from './UserActionRow.js';
@@ -300,13 +300,6 @@ export type ChatMessage = UserChatMessage|ModelChatMessage;
 export const enum State {
   CONSENT_VIEW = 'consent-view',
   CHAT_VIEW = 'chat-view',
-}
-
-export const enum AgentType {
-  FREESTYLER = 'freestyler',
-  DRJONES_FILE = 'drjones-file',
-  DRJONES_NETWORK_REQUEST = 'drjones-network-request',
-  DRJONES_PERFORMANCE = 'drjones-performance',
 }
 
 export interface Props {

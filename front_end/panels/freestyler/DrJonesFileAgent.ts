@@ -9,6 +9,7 @@ import * as Bindings from '../../models/bindings/bindings.js';
 import type * as Workspace from '../../models/workspace/workspace.js';
 
 import {
+  AgentType,
   AiAgent,
   type AidaRequestOptions,
   type ContextDetail,
@@ -73,6 +74,7 @@ const MAX_FILE_SIZE = 10000;
  * instance for a new conversation.
  */
 export class DrJonesFileAgent extends AiAgent<Workspace.UISourceCode.UISourceCode> {
+  override type = AgentType.DRJONES_FILE;
   readonly preamble = preamble;
   readonly clientFeature = Host.AidaClient.ClientFeature.CHROME_DRJONES_FILE_AGENT;
   get userTier(): string|undefined {

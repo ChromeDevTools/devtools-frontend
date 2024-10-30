@@ -12,6 +12,7 @@ import * as Freestyler from './freestyler.js';
 const {AiAgent, ResponseType} = Freestyler;
 
 class AiAgentMock extends AiAgent<unknown> {
+  type = Freestyler.AgentType.FREESTYLER;
   override preamble = 'preamble';
 
   // eslint-disable-next-line require-yield

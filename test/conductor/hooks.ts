@@ -81,7 +81,6 @@ function launchChrome() {
     'PMProcessPriorityPolicy',                     // crbug.com/361252079
     'MojoChannelAssociatedSendUsesRunOrPostTask',  // crbug.com/376228320
     'BoostRenderProcessForLoading',
-    'MojoChannelAssociatedCrashesOnSendError',
   ];
   const launchArgs = [
     '--remote-allow-origins=*',

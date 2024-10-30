@@ -43,6 +43,7 @@ devtools_svg_sources = [
   "align-self-end.svg",
   "align-self-start.svg",
   "align-self-stretch.svg",
+  "animation.svg",
   "arrow-back.svg",
   "arrow-down.svg",
   "arrow-drop-down-dark.svg",

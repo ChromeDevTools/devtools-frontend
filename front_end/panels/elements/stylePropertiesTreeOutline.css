@@ -281,10 +281,10 @@ devtools-icon.open-in-animations-panel {
   transform: scale(0.7);
   margin: -5px -2px -3px -4px;
   user-select: none;
-  color: var(--icon-default);
+  color: var(--icon-css);
   cursor: default;
 
   &:hover {
-    color: var(--icon-default-hover);
+    color: var(--icon-css-hover);
   }
 }

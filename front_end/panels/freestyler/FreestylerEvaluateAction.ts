@@ -70,23 +70,24 @@ export interface Options {
   throwOnSideEffect: boolean;
 }
 export class FreestylerEvaluateAction {
-  static async execute(code: string, executionContext: SDK.RuntimeModel.ExecutionContext, {throwOnSideEffect}: Options):
-      Promise<string> {
+  static async execute(
+      functionDeclaration: string, args: Array<SDK.RemoteObject.RemoteObject>,
+      executionContext: SDK.RuntimeModel.ExecutionContext, {throwOnSideEffect}: Options): Promise<string> {
     if (executionContext.debuggerModel.selectedCallFrame()) {
       throw new ExecutionError('Cannot evaluate JavaScript because the execution is paused on a breakpoint.');
     }
-    const response = await executionContext.evaluate(
-        {
-          expression: code,
-          replMode: true,
-          includeCommandLineAPI: true,
-          returnByValue: false,
-          silent: false,
-          generatePreview: true,
-          allowUnsafeEvalBlockedByCSP: false,
-          throwOnSideEffect,
-        },
-        /* userGesture */ false, /* awaitPromise */ true);
+    const response = await executionContext.callFunctionOn({
+      functionDeclaration,
+      includeCommandLineAPI: false,
+      returnByValue: false,
+      allowUnsafeEvalBlockedByCSP: false,
+      throwOnSideEffect,
+      userGesture: true,
+      awaitPromise: true,
+      arguments: args.map(remoteObject => {
+        return {objectId: remoteObject.objectId};
+      }),
+    });
 
     try {
       if (!response) {

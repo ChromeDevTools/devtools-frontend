@@ -139,7 +139,8 @@ SUGGESTIONS: ["What is a stacking context?", "How can I change the stacking orde
 `;
 /* clang-format on */
 
-async function executeJsCode(code: string, {throwOnSideEffect}: {throwOnSideEffect: boolean}): Promise<string> {
+async function executeJsCode(
+    functionDeclaration: string, {throwOnSideEffect}: {throwOnSideEffect: boolean}): Promise<string> {
   const selectedNode = UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
   const target = selectedNode?.domModel().target() ?? UI.Context.Context.instance().flavor(SDK.Target.Target);
 
@@ -164,8 +165,25 @@ async function executeJsCode(code: string, {throwOnSideEffect}: {throwOnSideEffe
     throw new Error('Execution context is not found for executing code');
   }
 
+  if (executionContext.debuggerModel.selectedCallFrame()) {
+    throw new ExecutionError('Cannot evaluate JavaScript because the execution is paused on a breakpoint.');
+  }
+
+  const result = await executionContext.evaluate(
+      {
+        expression: '$0',
+        returnByValue: false,
+        includeCommandLineAPI: true,
+      },
+      false, false);
+
+  if ('error' in result) {
+    throw new ExecutionError('Cannot find $0');
+  }
+
   try {
-    return await FreestylerEvaluateAction.execute(code, executionContext, {throwOnSideEffect});
+    return await FreestylerEvaluateAction.execute(
+        functionDeclaration, [result.object], executionContext, {throwOnSideEffect});
   } catch (err) {
     if (err instanceof ExecutionError) {
       return `Error: ${err.message}`;
@@ -407,12 +425,10 @@ export class FreestylerAgent extends AiAgent {
     sideEffect: boolean,
     canceled: boolean,
   }> {
-    const actionExpression = `{
-      const scope = {$0, $1, getEventListeners};
-      with (scope) {
-        ${action}
-        ;((typeof data !== "undefined") ? data : undefined)
-      }
+    const functionDeclaration = `async function ($0) {
+      ${action}
+      ;
+      return ((typeof data !== "undefined") ? data : undefined);
     }`;
     try {
       const runConfirmed = await confirm ?? Promise.resolve(true);
@@ -424,7 +440,7 @@ export class FreestylerAgent extends AiAgent {
         };
       }
       const result = await this.#execJs(
-          actionExpression,
+          functionDeclaration,
           {throwOnSideEffect},
       );
       const byteCount = Platform.StringUtilities.countWtf8Bytes(result);

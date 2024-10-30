@@ -634,6 +634,26 @@ export class ExecutionContext {
     return this.evaluateGlobal((evaluationOptions as EvaluationOptions), false, false);
   }
 
+  async callFunctionOn(options: CallFunctionOptions): Promise<EvaluationResult> {
+    const response = await this.runtimeModel.agent.invoke_callFunctionOn({
+      functionDeclaration: options.functionDeclaration,
+      returnByValue: options.returnByValue,
+      userGesture: options.userGesture,
+      awaitPromise: options.awaitPromise,
+      throwOnSideEffect: options.throwOnSideEffect,
+      arguments: options.arguments,
+      // Old back-ends don't know about uniqueContextId (and also don't generate
+      // one), so fall back to contextId in that case (https://crbug.com/1192621).
+      ...(this.uniqueId ? {uniqueContextId: this.uniqueId} : {contextId: this.id}),
+    });
+
+    const error = response.getError();
+    if (error) {
+      return {error};
+    }
+    return {object: this.runtimeModel.createRemoteObject(response.result), exceptionDetails: response.exceptionDetails};
+  }
+
   private async evaluateGlobal(options: EvaluationOptions, userGesture: boolean, awaitPromise: boolean):
       Promise<EvaluationResult> {
     if (!options.expression) {
@@ -723,6 +743,17 @@ export interface EvaluationOptions {
   replMode?: boolean;
   allowUnsafeEvalBlockedByCSP?: boolean;
   contextId?: number;
+}
+
+export interface CallFunctionOptions {
+  functionDeclaration: string;
+  includeCommandLineAPI?: boolean;
+  returnByValue?: boolean;
+  throwOnSideEffect?: boolean;
+  allowUnsafeEvalBlockedByCSP?: boolean;
+  arguments: Array<Protocol.Runtime.CallArgument>;
+  userGesture: boolean;
+  awaitPromise: boolean;
 }
 
 export type QueryObjectResult = {

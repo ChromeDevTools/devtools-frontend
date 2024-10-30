@@ -159,7 +159,20 @@ export class DrJonesPerformanceAgent extends AiAgent<TimelineUtils.AICallTree.AI
   override async enhanceQuery(query: string, aiCallTree: TimelineUtils.AICallTree.AICallTree|null): Promise<string> {
     const treeStr = aiCallTree?.serialize();
 
-    const perfEnhancementQuery = aiCallTree ? `\n${treeStr}\n\n# User request\n\n` : '';
+    // Collect the queries from previous messages in this session
+    const prevQueries: string[] = [];
+    for await (const data of this.runFromHistory()) {
+      if (data.type === ResponseType.QUERYING) {
+        prevQueries.push(data.query);
+      }
+    }
+    // If this is a followup chat about the same call tree, don't include the call tree serialization again.
+    // We don't need to repeat it and we'd rather have more the context window space.
+    if (prevQueries.length && treeStr && prevQueries.find(q => q.startsWith(treeStr))) {
+      aiCallTree = null;
+    }
+
+    const perfEnhancementQuery = aiCallTree ? `${treeStr}\n\n# User request\n\n` : '';
     return `${perfEnhancementQuery}${query}`;
   }
 

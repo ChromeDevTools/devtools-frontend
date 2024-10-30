@@ -165,7 +165,7 @@ self: 3
         },
         {
           type: ResponseType.QUERYING,
-          query: `\n${expectedData}\n\n# User request\n\ntest`,
+          query: `${expectedData}\n\n# User request\n\ntest`,
         },
         {
           type: ResponseType.ANSWER,
@@ -178,13 +178,64 @@ self: 3
       assert.deepStrictEqual(agent.chatHistoryForTesting, [
         {
           entity: 1,
-          text: `\n${aiCallTree.serialize()}\n\n# User request\n\ntest`,
+          text: `${aiCallTree.serialize()}\n\n# User request\n\ntest`,
         },
         {
           entity: 2,
           text: 'This is the answer',
         },
       ]);
+    });
+  });
+
+  describe('enhanceQuery', () => {
+    it('does not send the serialized calltree again if it is a followup chat about the same calltree', async () => {
+      const agent = new DrJonesPerformanceAgent({
+        aidaClient: {} as Host.AidaClient.AidaClient,
+      });
+
+      const mockAiCallTree = {
+        serialize: () => 'Mock call tree',
+      } as unknown as TimelineUtils.AICallTree.AICallTree;
+
+      const enhancedQuery1 = await agent.enhanceQuery('What is this?', mockAiCallTree);
+      assert.strictEqual(enhancedQuery1, 'Mock call tree\n\n# User request\n\nWhat is this?');
+
+      // Create history state of the above query
+      agent.chatNewHistoryForTesting = new Map([[
+        0,
+        [
+          {
+            type: ResponseType.CONTEXT,
+            title: 'Analyzing call tree',
+            details: [
+              {
+                title: 'Selected call tree',
+                text: mockAiCallTree.serialize(),
+              },
+            ],
+          },
+          {
+            type: ResponseType.QUERYING,
+            query: enhancedQuery1,
+          },
+          {
+            type: ResponseType.ANSWER,
+            text: 'test answer',
+          },
+        ],
+      ]]);
+
+      const query2 = 'But what about this follow-up question?';
+      const enhancedQuery2 = await agent.enhanceQuery(query2, mockAiCallTree);
+      assert.strictEqual(enhancedQuery2, query2);
+      assert.isFalse(enhancedQuery2.includes(mockAiCallTree.serialize()));
+
+      // Just making sure any subsequent chat doesnt include it either.
+      const query3 = 'And this 3rd question?';
+      const enhancedQuery3 = await agent.enhanceQuery(query3, mockAiCallTree);
+      assert.strictEqual(enhancedQuery3, query3);
+      assert.isFalse(enhancedQuery3.includes(mockAiCallTree.serialize()));
     });
   });
 });

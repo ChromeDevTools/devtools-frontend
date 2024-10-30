@@ -343,7 +343,7 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
     // clang-format on
   }
 
-  #getDisabledReason(setting: Common.Settings.Setting<boolean>|undefined): string|undefined {
+  #getDisabledReason(): string|undefined {
     switch (this.#aidaAvailability) {
       case Host.AidaClient.AidaAccessPreconditions.NO_ACCOUNT_EMAIL:
       case Host.AidaClient.AidaAccessPreconditions.SYNC_IS_PAUSED:
@@ -356,16 +356,16 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
     if (config?.aidaAvailability?.blockedByAge === true) {
       return i18nString(UIStrings.ageRestricted);
     }
-    return setting?.disabledReason();
+    // `consoleInsightsSetting` and `aiAssistantSetting` are both disabled for the same reason.
+    return this.#consoleInsightsSetting?.disabledReason();
   }
 
-  #renderConsoleInsightsSetting(): LitHtml.TemplateResult {
+  #renderConsoleInsightsSetting(disabledReason?: string): LitHtml.TemplateResult {
     const detailsClasses = {
       'whole-row': true,
       open: this.#isConsoleInsightsSettingExpanded,
     };
     const tabindex = this.#isConsoleInsightsSettingExpanded ? '0' : '-1';
-    const disabledReason = this.#getDisabledReason(this.#consoleInsightsSetting);
 
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
@@ -428,13 +428,12 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
     // clang-format on
   }
 
-  #renderAiAssistanceSetting(): LitHtml.TemplateResult {
+  #renderAiAssistanceSetting(disabledReason?: string): LitHtml.TemplateResult {
     const detailsClasses = {
       'whole-row': true,
       open: this.#isAiAssistanceSettingExpanded,
     };
     const tabindex = this.#isAiAssistanceSettingExpanded ? '0' : '-1';
-    const disabledReason = this.#getDisabledReason(this.#aiAssistanceSetting);
 
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
@@ -497,7 +496,27 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
     // clang-format on
   }
 
+  #renderDisabledExplainer(disabledReason: string): LitHtml.LitTemplate {
+    // Disabled until https://crbug.com/1079231 is fixed.
+    // clang-format off
+    return html`
+      <div class="disabled-explainer">
+        <devtools-icon .data=${{
+          iconName: 'warning',
+          color: 'var(--sys-color-orange)',
+          width: 'var(--sys-size-8)',
+          height: 'var(--sys-size-8)',
+        } as IconButton.Icon.IconData}>
+        </devtools-icon>
+        ${disabledReason}
+      </div>
+    `;
+    // clang-format on
+  }
+
   override async render(): Promise<void> {
+    const disabledReason = this.#getDisabledReason();
+
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     LitHtml.render(html`
@@ -507,9 +526,10 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
       <div class="settings-container-wrapper" jslog=${VisualLogging.pane('chrome-ai')}>
         ${this.#renderSharedDisclaimer()}
         ${this.#consoleInsightsSetting || this.#aiAssistanceSetting ? html`
+          ${Boolean(disabledReason) ? this.#renderDisabledExplainer(disabledReason as string) : LitHtml.nothing}
           <div class="settings-container">
-            ${this.#consoleInsightsSetting ? this.#renderConsoleInsightsSetting() : LitHtml.nothing}
-            ${this.#aiAssistanceSetting ? this.#renderAiAssistanceSetting() : LitHtml.nothing}
+            ${this.#consoleInsightsSetting ? this.#renderConsoleInsightsSetting(disabledReason) : LitHtml.nothing}
+            ${this.#aiAssistanceSetting ? this.#renderAiAssistanceSetting(disabledReason) : LitHtml.nothing}
           </div>
         ` : LitHtml.nothing}
       </div>

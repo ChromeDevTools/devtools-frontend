@@ -192,7 +192,7 @@ export class CSSStyleDeclaration {
       const metadata = cssMetadata();
       const canonicalName = metadata.canonicalPropertyName(property.name);
       if (property.disabled || !property.parsedOk) {
-        if (property.name.startsWith('--')) {
+        if (!property.disabled && metadata.isCustomProperty(property.name)) {
           // Variable declarations that aren't parsedOk still "overload" other previous active declarations.
           activeProperties.get(canonicalName)?.setActive(false);
           activeProperties.delete(canonicalName);

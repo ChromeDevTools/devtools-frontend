@@ -68,6 +68,10 @@ const UIStrings = {
    *@description AI assistance UI text creating selecting a history entry.
    */
   history: 'History',
+  /**
+   *@description AI assistance UI text clearing the current chat session.
+   */
+  clearChat: 'Clear chat',
 };
 
 /*
@@ -105,7 +109,8 @@ function selectedElementFilter(maybeNode: SDK.DOMModel.DOMNode|null): SDK.DOMMod
 // TODO(ergunsh): Use the WidgetElement instead of separately creating the toolbar.
 function createToolbar(
     target: HTMLElement,
-    {onHistoryClick, onNewAgentClick}: {onHistoryClick: (event: Event) => void, onNewAgentClick: () => void}): void {
+    {onHistoryClick, onNewAgentClick, onDeleteClick}:
+        {onHistoryClick: (event: Event) => void, onNewAgentClick: () => void, onDeleteClick: () => void}): void {
   const toolbarContainer = target.createChild('div', 'freestyler-toolbar-container');
   const leftToolbar = new UI.Toolbar.Toolbar('freestyler-left-toolbar', toolbarContainer);
   const rightToolbar = new UI.Toolbar.Toolbar('freestyler-right-toolbar', toolbarContainer);
@@ -121,6 +126,10 @@ function createToolbar(
     onHistoryClick(event.data);
   });
   leftToolbar.appendToolbarItem(historyButton);
+  const deleteButton =
+      new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clearChat), 'bin', undefined, 'freestyler.delete');
+  deleteButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, onDeleteClick);
+  leftToolbar.appendToolbarItem(deleteButton);
 
   const link = UI.XLink.XLink.create(
       AI_ASSISTANCE_SEND_FEEDBACK, i18nString(UIStrings.sendFeedback), undefined, undefined,
@@ -187,9 +196,11 @@ export class FreestylerPanel extends UI.Panel.Panel {
     super(FreestylerPanel.panelName);
     this.#freestylerEnabledSetting = this.#getAiAssistanceEnabledSetting();
 
-    createToolbar(
-        this.contentElement,
-        {onNewAgentClick: this.#clearMessages.bind(this), onHistoryClick: this.#onHistoryClicked.bind(this)});
+    createToolbar(this.contentElement, {
+      onNewAgentClick: this.#clearMessages.bind(this),
+      onHistoryClick: this.#onHistoryClicked.bind(this),
+      onDeleteClick: this.#onDeleteClicked.bind(this),
+    });
     this.#toggleSearchElementAction =
         UI.ActionRegistry.ActionRegistry.instance().getAction('elements.toggle-element-search');
     this.#aidaClient = aidaClient;
@@ -520,6 +531,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
       }
     }
   }
+
   #onHistoryClicked(event: Event): void {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
 
@@ -541,6 +553,34 @@ export class FreestylerPanel extends UI.Panel.Panel {
     }
 
     void contextMenu.show();
+  }
+
+  #onDeleteClicked(): void {
+    if (!this.#viewProps.agentType) {
+      return;
+    }
+
+    switch (this.#viewProps.agentType) {
+      case AgentType.FREESTYLER:
+        this.#agents.delete(this.#freestylerAgent);
+        this.#freestylerAgent = this.#createFreestylerAgent();
+        break;
+      case AgentType.DRJONES_FILE:
+        this.#agents.delete(this.#drJonesFileAgent);
+        this.#drJonesFileAgent = this.#createDrJonesFileAgent();
+        break;
+      case AgentType.DRJONES_NETWORK_REQUEST:
+        this.#agents.delete(this.#drJonesNetworkAgent);
+        this.#drJonesNetworkAgent = this.#createDrJonesNetworkAgent();
+        break;
+      case AgentType.DRJONES_PERFORMANCE:
+        this.#agents.delete(this.#drJonesPerformanceAgent);
+        this.#drJonesPerformanceAgent = this.#createDrJonesPerformanceAgent();
+        break;
+    }
+    this.#viewProps.messages = [];
+    this.#viewProps.agentType = undefined;
+    this.doUpdate();
   }
 
   async #switchAgent(agent: AiAgent<unknown>): Promise<void> {

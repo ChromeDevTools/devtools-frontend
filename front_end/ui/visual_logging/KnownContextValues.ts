@@ -1398,6 +1398,7 @@ export const knownContextValues = new Set([
   'frames-per-issue',
   'freestyler',
   'freestyler.accordion',
+  'freestyler.delete',
   'freestyler.dogfood-info',
   'freestyler.element-panel-context',
   'freestyler.elements-floating-button',

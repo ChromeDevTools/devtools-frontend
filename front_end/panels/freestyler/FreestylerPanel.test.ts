@@ -701,4 +701,35 @@ describeWithEnvironment('FreestylerPanel', () => {
       ]);
     });
   });
+
+  it('should have empty state after clear chat', async () => {
+    panel = new Freestyler.FreestylerPanel(mockView, {
+      aidaClient: getTestAidaClient(),
+      aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
+      syncInfo: getTestSyncInfo(),
+    });
+    panel.handleAction('freestyler.elements-floating-button');
+    (mockView.lastCall.args.at(0) as Freestyler.Props).onTextSubmit('test');
+    await drainMicroTasks();
+
+    assert.deepEqual(mockView.lastCall.args.at(0).messages, [
+      {
+        entity: 'user',
+        text: 'test',
+      },
+      {
+        answer: 'test',
+        entity: 'model',
+        rpcId: undefined,
+        suggestions: undefined,
+        steps: [],
+      },
+    ]);
+    const toolbar = panel.contentElement.querySelector('.freestyler-left-toolbar');
+    const button = toolbar!.shadowRoot!.querySelector('devtools-button[aria-label=\'Clear chat\']');
+    assert.instanceOf(button, HTMLElement);
+    dispatchClickEvent(button);
+    assert.deepEqual(mockView.lastCall.args.at(0).messages, []);
+    assert.deepEqual(mockView.lastCall.args.at(0).agentType, undefined);
+  });
 });

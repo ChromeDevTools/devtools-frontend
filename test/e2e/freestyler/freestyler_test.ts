@@ -27,24 +27,31 @@ describe('Freestyler', function() {
   });
 
   async function setupMocks(
-      aidaAvailability: Partial<Root.Runtime.AidaAvailability>,
-      devToolsFreestyler: Partial<Root.Runtime.HostConfigFreestyler>, messages: string[]) {
+      hostConfig: Root.Runtime.HostConfig,
+      messages: string[],
+  ) {
     const {frontend} = getBrowserAndPages();
     await frontend.bringToFront();
-    // TODO: come up with less invasive way to mock host configs.
-    const {identifier} = await frontend.evaluateOnNewDocument(
-        `globalThis.hostConfigForTesting = {...globalThis.hostConfigForTesting, devToolsFreestyler: ${
-            JSON.stringify(devToolsFreestyler)}, aidaAvailability: ${JSON.stringify(aidaAvailability)}
-  };
 
-  globalThis.getSyncInformationForTesting = () => {
-    return {
+    const syncInformation = {
       accountEmail: 'some-email',
       isSyncActive: true,
       arePreferencesSynced: false,
     };
-  };
-  `);
+
+    // TODO: come up with less invasive way to mock host configs.
+    const {identifier} = await frontend.evaluateOnNewDocument(`
+      globalThis.hostConfigForTesting = {
+        ...globalThis.hostConfigForTesting ?? {},
+        ...JSON.parse('${JSON.stringify(hostConfig)}'),
+      }
+
+      console.log(globalThis.hostConfigForTesting);
+
+      globalThis.getSyncInformationForTesting = () => {
+        return JSON.parse('${JSON.stringify(syncInformation)}');
+      };
+    `);
 
     preloadScriptId = identifier;
     await frontend.reload({
@@ -149,7 +156,14 @@ describe('Freestyler', function() {
   }
 
   async function runWithMessages(query: string, messages: string[]): Promise<Array<Log>> {
-    await setupMocks({}, {enabled: true}, messages);
+    await setupMocks(
+        {
+          aidaAvailability: {},
+          devToolsFreestyler: {
+            enabled: true,
+          },
+        },
+        messages);
     await goToResource('../resources/recorder/recorder.html');
 
     await inspectNode('div');
@@ -216,7 +230,7 @@ STOP`,
     assert.deepStrictEqual(result.at(-1)!.request.input, 'OBSERVATION: {"aspectRatio":"auto"}');
   });
 
-  it('modifes the inline styles using the extension functions', async () => {
+  it('modifies the inline styles using the extension functions', async () => {
     await runWithMessages('Change the background color for this element to blue', [
       `THOUGHT: I can change the background color of an element by setting the background-color CSS property.
 TITLE: changing the property

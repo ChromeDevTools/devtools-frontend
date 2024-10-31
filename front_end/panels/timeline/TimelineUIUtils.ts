@@ -191,10 +191,7 @@ const UIStrings = {
    *@description Text for a module, the programming concept
    */
   module: 'Module',
-  /**
-   *@description Text for a performance attribution event
-   */
-  attribution: 'Attribution',
+
   /**
    *@description Label for a group of JavaScript files
    */
@@ -561,6 +558,18 @@ const UIStrings = {
    * @description Label for a string that describes the priority at which a task was scheduled, like 'background' for low-priority tasks, and 'user-blocking' for high priority.
    */
   priority: 'Priority',
+  /**
+   *@description Text for a performance attribution event
+   */
+  attribution: 'Attribution',
+  /**
+   *@description Text for a WordPress core attribution
+   */
+  wordpressCore: 'Wordpress Core',
+  /**
+   *@description Text for a WordPress plugin attribution
+   */
+  wordpressPlugin: 'WordPress Plugin',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineUIUtils.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -1731,8 +1740,8 @@ export class TimelineUIUtils {
     });
     if (attribution) {
       const detail = JSON.parse(attribution.args.data.detail);
-      const name = 'core' === detail.slug ? 'Wordpress Core' : 'WordPress Plugin - ' + detail.name;
-      contentHelper.appendTextRow('Attribution', name);
+      const name = 'core' === detail.slug ? i18nString(UIStrings.wordpressCore) : i18nString(UIStrings.wordpressPlugin) + ' - ' + detail.name;
+      contentHelper.appendTextRow(i18nString(UIStrings.attribution), name);
     }
   }
 

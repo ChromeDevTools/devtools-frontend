@@ -13,6 +13,7 @@ export class CSSContainerQuery extends CSSQuery {
   name?: string;
   physicalAxes?: Protocol.DOM.PhysicalAxes;
   logicalAxes?: Protocol.DOM.LogicalAxes;
+  queriesScrollState?: boolean;
 
   static parseContainerQueriesPayload(cssModel: CSSModel, payload: Protocol.CSS.CSSContainerQuery[]):
       CSSContainerQuery[] {
@@ -31,6 +32,7 @@ export class CSSContainerQuery extends CSSQuery {
     this.name = payload.name;
     this.physicalAxes = payload.physicalAxes;
     this.logicalAxes = payload.logicalAxes;
+    this.queriesScrollState = payload.queriesScrollState;
   }
 
   active(): boolean {
@@ -38,8 +40,8 @@ export class CSSContainerQuery extends CSSQuery {
   }
 
   async getContainerForNode(nodeId: Protocol.DOM.NodeId): Promise<CSSContainerQueryContainer|undefined> {
-    const containerNode =
-        await this.cssModel.domModel().getContainerForNode(nodeId, this.name, this.physicalAxes, this.logicalAxes);
+    const containerNode = await this.cssModel.domModel().getContainerForNode(
+        nodeId, this.name, this.physicalAxes, this.logicalAxes, this.queriesScrollState);
     if (!containerNode) {
       return;
     }

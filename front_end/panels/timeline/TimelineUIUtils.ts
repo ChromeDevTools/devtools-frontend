@@ -961,6 +961,7 @@ export class TimelineUIUtils {
         const url = unsafeEventData['url'];
         if (url) {
           const {lineNumber} = Trace.Helpers.Trace.getZeroIndexedLineAndColumnForEvent(event);
+          const attribution = TimelineUIUtils.getAttributionForUrl(url, [...parsedTrace.UserTimings.performanceAttributions]);
           details = this.linkifyLocation({
             scriptId: null,
             url,
@@ -1222,7 +1223,10 @@ export class TimelineUIUtils {
       if (url) {
         const {lineNumber, columnNumber} = Trace.Helpers.Trace.getZeroIndexedLineAndColumnForEvent(event);
         contentHelper.appendLocationRow(i18nString(UIStrings.script), url, lineNumber || 0, columnNumber);
-        TimelineUIUtils.potentiallyAddAttribution(url, contentHelper, parsedTrace);
+        const attribution = TimelineUIUtils.getAttributionForUrl(url, [...parsedTrace.UserTimings.performanceAttributions]);
+        if (attribution) {
+          contentHelper.appendTextRow(i18nString(UIStrings.attribution), attribution);
+        }
       }
       const isEager = Boolean(event.args.data?.eager);
       if (isEager) {
@@ -1329,6 +1333,10 @@ export class TimelineUIUtils {
         if (url) {
           const {lineNumber, columnNumber} = Trace.Helpers.Trace.getZeroIndexedLineAndColumnForEvent(event);
           contentHelper.appendLocationRow(i18nString(UIStrings.script), url, lineNumber || 0, columnNumber);
+          const attribution = TimelineUIUtils.getAttributionForUrl(url, [...parsedTrace.UserTimings.performanceAttributions]);
+          if (attribution) {
+            contentHelper.appendTextRow(i18nString(UIStrings.attribution), attribution);
+          }
         }
         break;
       }
@@ -1723,16 +1731,14 @@ export class TimelineUIUtils {
   }
 
   /**
-   * Potentially Add an attribution row if data is available.
+   * Get attribution data for a given URL.
    *
    * @param url URL to check for attribution data.
-   * @param contentHelper
-   * @param parsedTrace
+   * @param attributions Array of performance attributions. Immutable.
+   *
+   * @returns Attribution name or null if no attribution is found.
    */
-  static potentiallyAddAttribution(url: string, contentHelper: TimelineDetailsContentHelper, parsedTrace: Trace.Handlers.Types.ParsedTrace): void {
-    // Add an attribution row if the url matches one of the attributions
-    const attributions = parsedTrace.UserTimings.performanceAttributions;
-    // Will be in JSON.parse(parsedTrace.UserTimings.performanceAttributions[x].args.data.detail).path
+  static getAttributionForUrl(url: string, attributions: Trace.Types.Events.PerformanceAttribution[]): string|null {
     const attribution = attributions.find(attribution => {
       const detail = JSON.parse(attribution.args.data.detail);
       const parsedUrl = new URL(url);
@@ -1740,9 +1746,9 @@ export class TimelineUIUtils {
     });
     if (attribution) {
       const detail = JSON.parse(attribution.args.data.detail);
-      const name = 'core' === detail.slug ? i18nString(UIStrings.wordpressCore) : i18nString(UIStrings.wordpressPlugin) + ' - ' + detail.name;
-      contentHelper.appendTextRow(i18nString(UIStrings.attribution), name);
+      return 'core' === detail.slug ? i18nString(UIStrings.wordpressCore) : i18nString(UIStrings.wordpressPlugin) + ' - ' + detail.name;
     }
+    return null;
   }
 
   static statsForTimeRange(

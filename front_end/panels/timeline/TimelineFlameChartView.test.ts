@@ -93,11 +93,10 @@ describeWithEnvironment('TimelineFlameChartView', function() {
 
     function assertSelectionName(name: string) {
       const selection = mockViewDelegate.selection;
-      if (!selection || !Timeline.TimelineSelection.TimelineSelection.isTraceEventSelection(selection.object)) {
+      if (!selection || !Timeline.TimelineSelection.selectionIsEvent(selection)) {
         throw new Error('Selection is not present or not a Trace Event');
       }
-      const object = selection.object;
-      assert.strictEqual(object.name, name);
+      assert.strictEqual(selection.event.name, name);
     }
   });
 

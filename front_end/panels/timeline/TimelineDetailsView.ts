@@ -20,7 +20,12 @@ import {targetForEvent} from './TargetForEvent.js';
 import {TimelineLayersView} from './TimelineLayersView.js';
 import {TimelinePaintProfilerView} from './TimelinePaintProfilerView.js';
 import type {TimelineModeViewDelegate} from './TimelinePanel.js';
-import {TimelineSelection} from './TimelineSelection.js';
+import {
+  selectionFromRangeMilliSeconds,
+  selectionIsEvent,
+  selectionIsRange,
+  type TimelineSelection,
+} from './TimelineSelection.js';
 import {TimelineSelectorStatsView} from './TimelineSelectorStatsView.js';
 import {BottomUpTimelineTreeView, CallTreeTimelineTreeView, type TimelineTreeView} from './TimelineTreeView.js';
 import {TimelineDetailsContentHelper, TimelineUIUtils} from './TimelineUIUtils.js';
@@ -219,7 +224,7 @@ export class TimelineDetailsView extends UI.Widget.VBox {
         return;
       }
       const visibleWindow = traceBoundsState.milli.timelineTraceWindow;
-      view.updateContents(this.selection || TimelineSelection.fromRange(visibleWindow.min, visibleWindow.max));
+      view.updateContents(this.selection || selectionFromRangeMilliSeconds(visibleWindow.min, visibleWindow.max));
     }
   }
 
@@ -359,15 +364,18 @@ export class TimelineDetailsView extends UI.Widget.VBox {
       this.scheduleUpdateContentsFromWindow(/* forceImmediateUpdate */ true);
       return;
     }
-    const selectionObject = this.selection.object;
-    if (TimelineSelection.isSyntheticNetworkRequestDetailsEventSelection(selectionObject)) {
-      await this.#setSelectionForNetworkEvent(selectionObject);
-    } else if (TimelineSelection.isTraceEventSelection(selectionObject)) {
-      await this.#setSelectionForTraceEvent(selectionObject);
-    } else if (TimelineSelection.isLegacyTimelineFrame(selectionObject)) {
-      this.#setSelectionForTimelineFrame(selectionObject);
-    } else if (TimelineSelection.isRangeSelection(selectionObject)) {
-      this.updateSelectedRangeStats(this.selection.startTime, this.selection.endTime);
+
+    if (selectionIsEvent(selection)) {
+      if (Trace.Types.Events.isSyntheticNetworkRequest(selection.event)) {
+        await this.#setSelectionForNetworkEvent(selection.event);
+      } else if (Trace.Types.Events.isLegacyTimelineFrame(selection.event)) {
+        this.#setSelectionForTimelineFrame(selection.event);
+      } else {
+        await this.#setSelectionForTraceEvent(selection.event);
+      }
+    } else if (selectionIsRange(selection)) {
+      const timings = Trace.Helpers.Timing.traceWindowMicroSecondsToMilliSeconds(selection.bounds);
+      this.updateSelectedRangeStats(timings.min, timings.max);
     }
 
     this.updateContents();

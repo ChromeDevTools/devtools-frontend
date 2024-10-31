@@ -2,81 +2,69 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Platform from '../../core/platform/platform.js';
 import * as Trace from '../../models/trace/trace.js';
 
-type PermittedObjectTypes = Trace.Types.Events.LegacyTimelineFrame|Trace.Types.Events.Event|SelectionRange;
+// We could add a `type` field here to distinguish them, but it is not needed
+// as we use the existence of "event" or "bounds" to do that.
+export type EventSelection = {
+  event: Trace.Types.Events.Event,
+};
 
-const SelectionRangeSymbol = Symbol('SelectionRange');
-export type SelectionRange = typeof SelectionRangeSymbol;
+export type TimeRangeSelection = {
+  bounds: Trace.Types.Timing.TraceWindowMicroSeconds,
+};
 
-export class TimelineSelection {
-  readonly startTime: Trace.Types.Timing.MilliSeconds;
-  readonly endTime: Trace.Types.Timing.MilliSeconds;
-  readonly object: PermittedObjectTypes;
+export type TimelineSelection = EventSelection|TimeRangeSelection;
 
-  constructor(
-      startTime: Trace.Types.Timing.MilliSeconds, endTime: Trace.Types.Timing.MilliSeconds,
-      object: PermittedObjectTypes) {
-    this.startTime = startTime;
-    this.endTime = endTime;
-    this.object = object;
+export function selectionFromEvent(event: Trace.Types.Events.Event): EventSelection {
+  return {
+    event,
+  };
+}
+
+export function selectionFromRangeMicroSeconds(
+    min: Trace.Types.Timing.MicroSeconds, max: Trace.Types.Timing.MicroSeconds): TimeRangeSelection {
+  return {
+    bounds: Trace.Helpers.Timing.traceWindowFromMicroSeconds(min, max),
+  };
+}
+
+export function selectionFromRangeMilliSeconds(
+    min: Trace.Types.Timing.MilliSeconds, max: Trace.Types.Timing.MilliSeconds): TimeRangeSelection {
+  return {
+    bounds: Trace.Helpers.Timing.traceWindowFromMilliSeconds(min, max),
+  };
+}
+
+export function selectionIsEvent(selection: TimelineSelection|null): selection is EventSelection {
+  return Boolean(selection && 'event' in selection);
+}
+
+export function selectionIsRange(selection: TimelineSelection|null): selection is TimeRangeSelection {
+  return Boolean(selection && 'bounds' in selection);
+}
+
+export function rangeForSelection(selection: TimelineSelection): Trace.Types.Timing.TraceWindowMicroSeconds {
+  if (selectionIsRange(selection)) {
+    return selection.bounds;
   }
 
-  static isLegacyTimelineFrame(object: PermittedObjectTypes): object is Trace.Types.Events.LegacyTimelineFrame {
-    return typeof object !== 'symbol' && Trace.Types.Events.isLegacyTimelineFrame(object);
+  if (selectionIsEvent(selection)) {
+    const timings = Trace.Helpers.Timing.eventTimingsMicroSeconds(selection.event);
+    return Trace.Helpers.Timing.traceWindowFromMicroSeconds(timings.startTime, timings.endTime);
+  }
+  Platform.assertNever(selection, 'Unknown selection type');
+}
+
+export function selectionsEqual(s1: TimelineSelection, s2: TimelineSelection): boolean {
+  if (selectionIsEvent(s1) && selectionIsEvent(s2)) {
+    return s1.event === s2.event;
   }
 
-  static fromFrame(frame: Trace.Types.Events.LegacyTimelineFrame): TimelineSelection {
-    return new TimelineSelection(
-        Trace.Helpers.Timing.microSecondsToMilliseconds(frame.startTime),
-        Trace.Helpers.Timing.microSecondsToMilliseconds(frame.endTime), frame);
+  if (selectionIsRange(s1) && selectionIsRange(s2)) {
+    return Trace.Helpers.Timing.windowsEqual(s1.bounds, s2.bounds);
   }
 
-  static isSyntheticNetworkRequestDetailsEventSelection(object: PermittedObjectTypes):
-      object is Trace.Types.Events.SyntheticNetworkRequest {
-    if (TimelineSelection.isLegacyTimelineFrame(object) || TimelineSelection.isRangeSelection(object)) {
-      return false;
-    }
-    // At this point we know the selection is a raw trace event, so we just
-    // need to check it's the right type of raw event.
-    return Trace.Types.Events.isSyntheticNetworkRequest(object);
-  }
-
-  static isNetworkEventSelection(object: PermittedObjectTypes):
-      object is Trace.Types.Events.SyntheticNetworkRequest|Trace.Types.Events.WebSocketEvent {
-    if (TimelineSelection.isLegacyTimelineFrame(object) || TimelineSelection.isRangeSelection(object)) {
-      return false;
-    }
-    // At this point we know the selection is a raw trace event, so we just
-    // need to check it's the right type of raw event.
-    return Trace.Types.Events.isNetworkTrackEntry(object);
-  }
-
-  static isTraceEventSelection(object: PermittedObjectTypes): object is Trace.Types.Events.Event {
-    // Trace events are just raw objects, so now we have to confirm it is a trace event by ruling everything else out.
-    if (TimelineSelection.isLegacyTimelineFrame(object) || TimelineSelection.isRangeSelection(object)) {
-      return false;
-    }
-
-    // Although Network Requests are trace events, in TimelineSelection we
-    // treat Network requests distinctly
-    if (Trace.Types.Events.isSyntheticNetworkRequest(object)) {
-      return false;
-    }
-    return true;
-  }
-
-  static fromTraceEvent(event: Trace.Types.Events.Event): TimelineSelection {
-    const {startTime, endTime} = Trace.Helpers.Timing.eventTimingsMilliSeconds(event);
-    return new TimelineSelection(startTime, Trace.Types.Timing.MilliSeconds(endTime || (startTime + 1)), event);
-  }
-
-  static isRangeSelection(object: PermittedObjectTypes): object is SelectionRange {
-    return object === SelectionRangeSymbol;
-  }
-
-  static fromRange(startTime: number, endTime: number): TimelineSelection {
-    return new TimelineSelection(
-        Trace.Types.Timing.MilliSeconds(startTime), Trace.Types.Timing.MilliSeconds(endTime), SelectionRangeSymbol);
-  }
+  return false;
 }

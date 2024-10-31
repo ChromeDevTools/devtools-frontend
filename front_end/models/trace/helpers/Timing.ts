@@ -118,6 +118,14 @@ export function traceWindowMillisecondsToMicroSeconds(bounds: Types.Timing.Trace
     range: millisecondsToMicroseconds(bounds.range),
   };
 }
+export function traceWindowMicroSecondsToMilliSeconds(bounds: Types.Timing.TraceWindowMicroSeconds):
+    Types.Timing.TraceWindowMilliSeconds {
+  return {
+    min: microSecondsToMilliseconds(bounds.min),
+    max: microSecondsToMilliseconds(bounds.max),
+    range: microSecondsToMilliseconds(bounds.range),
+  };
+}
 
 export function traceWindowFromMilliSeconds(
     min: Types.Timing.MilliSeconds, max: Types.Timing.MilliSeconds): Types.Timing.TraceWindowMicroSeconds {
@@ -185,4 +193,9 @@ export interface WindowFitsInsideBounds {
  */
 export function windowFitsInsideBounds(data: WindowFitsInsideBounds): boolean {
   return data.window.min >= data.bounds.min && data.window.max <= data.bounds.max;
+}
+
+export function windowsEqual(
+    w1: Types.Timing.TraceWindowMicroSeconds, w2: Types.Timing.TraceWindowMicroSeconds): boolean {
+  return w1.min === w2.min && w1.max === w2.max;
 }

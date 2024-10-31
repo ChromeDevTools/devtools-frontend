@@ -711,3 +711,11 @@ export function microsecondsTraceWindow(min: number, max: number): Trace.Types.T
       max as Trace.Types.Timing.MicroSeconds,
   );
 }
+
+export function microseconds(x: number): Trace.Types.Timing.MicroSeconds {
+  return Trace.Types.Timing.MicroSeconds(x);
+}
+
+export function milliseconds(x: number): Trace.Types.Timing.MilliSeconds {
+  return Trace.Types.Timing.MilliSeconds(x);
+}

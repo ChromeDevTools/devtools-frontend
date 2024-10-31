@@ -45,7 +45,12 @@ import {ModificationsManager} from './ModificationsManager.js';
 import {ThreadAppender} from './ThreadAppender.js';
 import timelineFlamechartPopoverStyles from './timelineFlamechartPopover.css.js';
 import {FlameChartStyle, Selection} from './TimelineFlameChartView.js';
-import {TimelineSelection} from './TimelineSelection.js';
+import {
+  selectionFromEvent,
+  selectionIsRange,
+  selectionsEqual,
+  type TimelineSelection,
+} from './TimelineSelection.js';
 import * as Utils from './utils/utils.js';
 
 const UIStrings = {
@@ -1130,19 +1135,10 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
 
   createSelection(entryIndex: number): TimelineSelection|null {
     const entry = this.entryData[entryIndex];
-    if (!entry) {
-      return null;
+    const timelineSelection: TimelineSelection|null = entry ? selectionFromEvent(entry) : null;
+    if (timelineSelection) {
+      this.lastSelection = new Selection(timelineSelection, entryIndex);
     }
-
-    let timelineSelection: TimelineSelection|null = null;
-
-    if (Trace.Types.Events.isLegacyTimelineFrame(entry)) {
-      timelineSelection = TimelineSelection.fromFrame(entry);
-    } else {
-      timelineSelection = TimelineSelection.fromTraceEvent(entry);
-    }
-
-    this.lastSelection = new Selection(timelineSelection, entryIndex);
     return timelineSelection;
   }
 
@@ -1170,27 +1166,25 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   }
 
   entryIndexForSelection(selection: TimelineSelection|null): number {
-    if (!selection || TimelineSelection.isRangeSelection(selection.object) ||
-        TimelineSelection.isSyntheticNetworkRequestDetailsEventSelection(selection.object)) {
+    if (!selection || selectionIsRange(selection) || Trace.Types.Events.isNetworkTrackEntry(selection.event)) {
       return -1;
     }
 
-    if (this.lastSelection && this.lastSelection.timelineSelection.object === selection.object) {
+    if (this.lastSelection && selectionsEqual(this.lastSelection.timelineSelection, selection)) {
       return this.lastSelection.entryIndex;
     }
 
+    const index = this.entryData.indexOf(selection.event);
     // If the index is -1 and the selection is a TraceEvent, it might be
     // the case that this Entry is hidden by the Context Menu action.
     // Try revealing the entry and getting the index again.
-    if (this.entryData.indexOf(selection.object) === -1 && TimelineSelection.isTraceEventSelection(selection.object)) {
+    if (index > -1) {
       if (this.timelineDataInternal?.selectedGroup) {
-        ModificationsManager.activeManager()?.getEntriesFilter().revealEntry(
-            selection.object as Trace.Types.Events.Event);
+        ModificationsManager.activeManager()?.getEntriesFilter().revealEntry(selection.event);
         this.timelineData(true);
       }
     }
 
-    const index = this.entryData.indexOf(selection.object);
     if (index !== -1) {
       this.lastSelection = new Selection(selection, index);
     }

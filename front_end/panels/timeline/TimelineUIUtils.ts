@@ -59,7 +59,7 @@ import {Tracker} from './FreshRecording.js';
 import {ModificationsManager} from './ModificationsManager.js';
 import {targetForEvent} from './TargetForEvent.js';
 import {TimelinePanel} from './TimelinePanel.js';
-import {TimelineSelection} from './TimelineSelection.js';
+import {selectionFromEvent} from './TimelineSelection.js';
 import * as Utils from './utils/utils.js';
 
 const UIStrings = {
@@ -1977,12 +1977,12 @@ export class TimelineUIUtils {
       UI.ARIAUtils.markAsLink(link);
       link.tabIndex = 0;
       link.addEventListener('click', () => {
-        TimelinePanel.instance().select(TimelineSelection.fromTraceEvent((entry)));
+        TimelinePanel.instance().select(selectionFromEvent(entry));
       });
 
       link.addEventListener('keydown', event => {
         if (event.key === 'Enter') {
-          TimelinePanel.instance().select(TimelineSelection.fromTraceEvent((entry)));
+          TimelinePanel.instance().select(selectionFromEvent(entry));
           event.consume(true);
         }
       });
@@ -2172,11 +2172,10 @@ export class TimelineUIUtils {
     paintProfilerButton.textContent = i18nString(UIStrings.paintProfiler);
     UI.ARIAUtils.markAsLink(container);
     container.tabIndex = 0;
-    container.addEventListener(
-        'click', () => TimelinePanel.instance().select(TimelineSelection.fromTraceEvent(event)), false);
+    container.addEventListener('click', () => TimelinePanel.instance().select(selectionFromEvent(event)), false);
     container.addEventListener('keydown', keyEvent => {
       if (keyEvent.key === 'Enter') {
-        TimelinePanel.instance().select(TimelineSelection.fromTraceEvent(event));
+        TimelinePanel.instance().select(selectionFromEvent(event));
         keyEvent.consume(true);
       }
     });

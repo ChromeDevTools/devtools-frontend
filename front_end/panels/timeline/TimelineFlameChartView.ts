@@ -31,7 +31,14 @@ import {
 import {TimelineFlameChartNetworkDataProvider} from './TimelineFlameChartNetworkDataProvider.js';
 import timelineFlameChartViewStyles from './timelineFlameChartView.css.js';
 import type {TimelineModeViewDelegate} from './TimelinePanel.js';
-import {TimelineSelection} from './TimelineSelection.js';
+import {
+  rangeForSelection,
+  selectionFromEvent,
+  selectionFromRangeMilliSeconds,
+  selectionIsEvent,
+  selectionIsRange,
+  type TimelineSelection,
+} from './TimelineSelection.js';
 import {AggregatedTimelineTreeView} from './TimelineTreeView.js';
 import type {TimelineMarkerStyle} from './TimelineUIUtils.js';
 
@@ -607,7 +614,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
             let startTime = visibleWindow.min;
             // Prefer the start time of the selected event, if there is one.
             if (this.#currentSelection) {
-              startTime = Trace.Helpers.Timing.millisecondsToMicroseconds(this.#currentSelection.startTime);
+              startTime = rangeForSelection(this.#currentSelection).min;
             }
             this.#createNewTimeRangeFromKeyboard(
                 startTime, Trace.Types.Timing.MicroSeconds(startTime + timeRangeIncrementValue));
@@ -808,7 +815,9 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
    * TODO(crbug.com/346312365): update the type definitions in ChartViewport.ts
    */
   updateRangeSelection(startTime: number, endTime: number): void {
-    this.delegate.select(TimelineSelection.fromRange(startTime, endTime));
+    this.delegate.select(selectionFromRangeMilliSeconds(
+        Trace.Types.Timing.MilliSeconds(startTime), Trace.Types.Timing.MilliSeconds(endTime)));
+
     if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_ANNOTATIONS)) {
       const bounds = Trace.Helpers.Timing.traceWindowFromMilliSeconds(
           Trace.Types.Timing.MilliSeconds(startTime),
@@ -1008,8 +1017,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
   }
 
   highlightEvent(event: Trace.Types.Events.Event|null): void {
-    const entryIndex =
-        event ? this.mainDataProvider.entryIndexForSelection(TimelineSelection.fromTraceEvent(event)) : -1;
+    const entryIndex = event ? this.mainDataProvider.entryIndexForSelection(selectionFromEvent(event)) : -1;
     if (entryIndex >= 0) {
       this.mainFlameChart.highlightEntry(entryIndex);
     } else {
@@ -1075,8 +1083,8 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     // AND 2. we have an active time range selection overlay
     // AND 3. The label of the selection is empty
     // then we need to remove it.
-    if ((selection === null || !TimelineSelection.isRangeSelection(selection.object)) &&
-        this.#timeRangeSelectionAnnotation && !this.#timeRangeSelectionAnnotation.label) {
+    if ((selection === null || !selectionIsRange(selection)) && this.#timeRangeSelectionAnnotation &&
+        !this.#timeRangeSelectionAnnotation.label) {
       ModificationsManager.activeManager()?.removeAnnotation(this.#timeRangeSelectionAnnotation);
       this.#timeRangeSelectionAnnotation = null;
     }
@@ -1090,14 +1098,11 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
       void this.detailsView.setSelection(selection);
     }
 
-    // Create the entry selected overlay if the selection represents a frame or trace event (either network, or anything else)
-    if (selection &&
-        (TimelineSelection.isTraceEventSelection(selection.object) ||
-         TimelineSelection.isSyntheticNetworkRequestDetailsEventSelection(selection.object) ||
-         TimelineSelection.isLegacyTimelineFrame(selection.object))) {
+    // Create the entry selected overlay if the selection represents a trace event
+    if (selectionIsEvent(selection)) {
       this.addOverlay({
         type: 'ENTRY_SELECTED',
-        entry: selection.object,
+        entry: selection.event,
       });
     }
 
@@ -1151,14 +1156,11 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
       dataProvider: TimelineFlameChartDataProvider|TimelineFlameChartNetworkDataProvider,
       event: Common.EventTarget.EventTargetEvent<{entryIndex: number, withLinkCreationButton: boolean}>): void {
     const selection = dataProvider.createSelection(event.data.entryIndex);
-    if (selection &&
-        (TimelineSelection.isTraceEventSelection(selection.object) ||
-         TimelineSelection.isSyntheticNetworkRequestDetailsEventSelection(selection.object) ||
-         TimelineSelection.isLegacyTimelineFrame(selection.object))) {
+    if (selectionIsEvent(selection)) {
       this.setSelectionAndReveal(selection);
       ModificationsManager.activeManager()?.createAnnotation({
         type: 'ENTRY_LABEL',
-        entry: selection.object,
+        entry: selection.event,
         label: '',
       });
       if (event.data.withLinkCreationButton) {
@@ -1187,22 +1189,9 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
 
   #selectionIfTraceEvent(
       index: number, dataProvider: TimelineFlameChartDataProvider|TimelineFlameChartNetworkDataProvider):
-      Trace.Types.Events.Event|Trace.Types.Events.SyntheticNetworkRequest|null {
+      Trace.Types.Events.Event|null {
     const selection = dataProvider.createSelection(index);
-    if (!selection) {
-      return null;
-    }
-
-    if (TimelineSelection.isTraceEventSelection(selection.object) ||
-        TimelineSelection.isSyntheticNetworkRequestDetailsEventSelection(selection.object)) {
-      return selection.object;
-    }
-
-    if (TimelineSelection.isLegacyTimelineFrame(selection.object)) {
-      return selection.object as Trace.Types.Events.LegacyTimelineFrame;
-    }
-
-    return null;
+    return selectionIsEvent(selection) ? selection.event : null;
   }
 
   /**

@@ -34,7 +34,7 @@ describeWithEnvironment('TimelineDetailsView', function() {
     if (!cssRequest) {
       throw new Error('Could not find expected network request.');
     }
-    const selection = Timeline.TimelineSelection.TimelineSelection.fromTraceEvent(cssRequest);
+    const selection = Timeline.TimelineSelection.selectionFromEvent(cssRequest);
 
     await detailsView.setModel(
         {parsedTrace, selectedEvents: null, traceInsightsSets: insights, eventToRelatedInsightsMap: null});
@@ -53,7 +53,7 @@ describeWithEnvironment('TimelineDetailsView', function() {
 
     const frame = parsedTrace.Frames.frames.at(0);
     assert.isOk(frame);
-    const selection = Timeline.TimelineSelection.TimelineSelection.fromFrame(frame);
+    const selection = Timeline.TimelineSelection.selectionFromEvent(frame);
     await detailsView.setSelection(selection);
     await doubleRaf();  // to let the image be fetched + rendered.
     const detailsContentElement = detailsView.getDetailsContentElementForTest();
@@ -76,7 +76,7 @@ describeWithEnvironment('TimelineDetailsView', function() {
 
     const layoutShift = parsedTrace.LayoutShifts.clusters.at(0)?.events.at(0);
     assert.isOk(layoutShift);
-    const selection = Timeline.TimelineSelection.TimelineSelection.fromTraceEvent(layoutShift);
+    const selection = Timeline.TimelineSelection.selectionFromEvent(layoutShift);
     await detailsView.setSelection(selection);
     const detailsContentElement = detailsView.getDetailsContentElementForTest();
     // Assert that the right component is rendered. This component has its own
@@ -95,7 +95,7 @@ describeWithEnvironment('TimelineDetailsView', function() {
 
     const layoutShiftCluster = parsedTrace.LayoutShifts.clusters.at(0);
     assert.isOk(layoutShiftCluster);
-    const selection = Timeline.TimelineSelection.TimelineSelection.fromTraceEvent(layoutShiftCluster);
+    const selection = Timeline.TimelineSelection.selectionFromEvent(layoutShiftCluster);
     await detailsView.setSelection(selection);
     const detailsContentElement = detailsView.getDetailsContentElementForTest();
     // Assert that the right component is rendered. This component has its own
@@ -116,7 +116,7 @@ describeWithEnvironment('TimelineDetailsView', function() {
       eventToRelatedInsightsMap: null,
     });
     const bounds = Trace.Helpers.Timing.traceWindowMilliSeconds(parsedTrace.Meta.traceBounds);
-    const selection = Timeline.TimelineSelection.TimelineSelection.fromRange(
+    const selection = Timeline.TimelineSelection.selectionFromRangeMilliSeconds(
         bounds.min,
         bounds.max,
     );

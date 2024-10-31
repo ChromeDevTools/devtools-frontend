@@ -12,7 +12,7 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {Category, IsLong} from './TimelineFilters.js';
 import type {TimelineModeViewDelegate} from './TimelinePanel.js';
-import {TimelineSelection} from './TimelineSelection.js';
+import {selectionIsEvent, type TimelineSelection} from './TimelineSelection.js';
 import {TimelineTreeView} from './TimelineTreeView.js';
 import {TimelineUIUtils} from './TimelineUIUtils.js';
 import * as Utils from './utils/utils.js';
@@ -59,8 +59,8 @@ export class EventsTimelineTreeView extends TimelineTreeView {
 
   override updateContents(selection: TimelineSelection): void {
     super.updateContents(selection);
-    if (TimelineSelection.isTraceEventSelection(selection.object)) {
-      this.selectEvent(selection.object, true);
+    if (selectionIsEvent(selection)) {
+      this.selectEvent(selection.event, true);
     }
   }
 

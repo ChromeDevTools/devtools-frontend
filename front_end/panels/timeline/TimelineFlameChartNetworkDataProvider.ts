@@ -16,7 +16,12 @@ import {ModificationsManager} from './ModificationsManager.js';
 import {NetworkTrackAppender, type NetworkTrackEvent} from './NetworkTrackAppender.js';
 import timelineFlamechartPopoverStyles from './timelineFlamechartPopover.css.js';
 import {FlameChartStyle, Selection} from './TimelineFlameChartView.js';
-import {TimelineSelection} from './TimelineSelection.js';
+import {
+  selectionFromEvent,
+  selectionIsRange,
+  selectionsEqual,
+  type TimelineSelection,
+} from './TimelineSelection.js';
 import * as TimelineUtils from './utils/utils.js';
 
 export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.FlameChartDataProvider {
@@ -120,7 +125,7 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
       return null;
     }
     const event = this.#events[index];
-    this.#lastSelection = new Selection(TimelineSelection.fromTraceEvent(event), index);
+    this.#lastSelection = new Selection(selectionFromEvent(event), index);
     return this.#lastSelection.timelineSelection;
   }
 
@@ -173,21 +178,21 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
   }
 
   entryIndexForSelection(selection: TimelineSelection|null): number {
-    if (!selection) {
+    if (!selection || selectionIsRange(selection)) {
       return -1;
     }
 
-    if (this.#lastSelection && this.#lastSelection.timelineSelection.object === selection.object) {
+    if (this.#lastSelection && selectionsEqual(this.#lastSelection.timelineSelection, selection)) {
       return this.#lastSelection.entryIndex;
     }
 
-    if (!TimelineSelection.isNetworkEventSelection(selection.object)) {
+    if (!Trace.Types.Events.isNetworkTrackEntry(selection.event)) {
       return -1;
     }
 
-    const index = this.#events.indexOf(selection.object);
+    const index = this.#events.indexOf(selection.event);
     if (index !== -1) {
-      this.#lastSelection = new Selection(TimelineSelection.fromTraceEvent(selection.object), index);
+      this.#lastSelection = new Selection(selectionFromEvent(selection.event), index);
     }
     return index;
   }

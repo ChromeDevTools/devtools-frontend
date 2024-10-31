@@ -54,7 +54,7 @@ def script_main(args):
         options.output
     ])
     (size, offset) = re.search(
-        b'Section {[^}]*Type: CODE[^}]*Size: (\d*)[^}]*Offset: (\d*)[^}]*}',
+        rb'Section {[^}]*Type: CODE[^}]*Size: (\d*)[^}]*Offset: (\d*)[^}]*}',
         wasm_obj_headers).groups()
 
     # readobj reports as offset the location of the first byte of the header.

@@ -63,16 +63,12 @@ export class RequestResponseView extends UI.Widget.VBox {
     this.contentViewPromise = null;
   }
 
-  static async sourceViewForRequest(request: SDK.NetworkRequest.NetworkRequest): Promise<UI.Widget.Widget|null> {
+  static #sourceViewForRequest(
+      request: SDK.NetworkRequest.NetworkRequest,
+      contentData: TextUtils.StreamingContentData.StreamingContentData): UI.Widget.Widget|null {
     let sourceView = requestToSourceView.get(request);
     if (sourceView !== undefined) {
       return sourceView;
-    }
-
-    const contentData = await request.requestStreamingContent();
-    if (TextUtils.StreamingContentData.isError(contentData)) {
-      requestToSourceView.delete(request);
-      return null;
     }
 
     let mimeType;
@@ -126,7 +122,7 @@ export class RequestResponseView extends UI.Widget.VBox {
       return new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.failedToLoadResponseData) + ': ' + contentData.error);
     }
 
-    const sourceView = await RequestResponseView.sourceViewForRequest(this.request);
+    const sourceView = RequestResponseView.#sourceViewForRequest(this.request, contentData);
     if (!sourceView || this.request.statusCode === 204) {
       return new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.thisRequestHasNoResponseData));
     }

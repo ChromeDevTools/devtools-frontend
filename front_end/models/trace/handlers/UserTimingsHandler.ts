@@ -15,6 +15,7 @@ import {HandlerState} from './types.js';
 let syntheticEvents: Types.Events.SyntheticEventPair<Types.Events.PairableAsync>[] = [];
 const performanceMeasureEvents: Types.Events.PerformanceMeasure[] = [];
 const performanceMarkEvents: Types.Events.PerformanceMark[] = [];
+const performanceAttributionEvents: Types.Events.PerformanceAttribution[] = [];
 
 const consoleTimings: (Types.Events.ConsoleTimeBegin|Types.Events.ConsoleTimeEnd)[] = [];
 
@@ -42,6 +43,12 @@ export interface UserTimingsData {
    * https://developer.mozilla.org/en-US/docs/Web/API/console/timeStamp
    */
   timestampEvents: readonly Types.Events.TimeStamp[];
+
+  /**
+   * Attribution events triggered with the performance.mark() API
+   * https://developer.mozilla.org/en-US/docs/Web/API/Performance/attribution
+   */
+  performanceAttributionEvents: readonly Types.Events.PerformanceAttribution[];
 }
 let handlerState = HandlerState.UNINITIALIZED;
 
@@ -49,6 +56,7 @@ export function reset(): void {
   syntheticEvents.length = 0;
   performanceMeasureEvents.length = 0;
   performanceMarkEvents.length = 0;
+  performanceAttributionEvents.length = 0;
   consoleTimings.length = 0;
   timestampEvents.length = 0;
   handlerState = HandlerState.INITIALIZED;
@@ -157,6 +165,10 @@ export function handleEvent(event: Types.Events.Event): void {
   }
   if (Types.Events.isPerformanceMark(event)) {
     performanceMarkEvents.push(event);
+
+    if (Types.Events.isPerformanceAttribution(event)) {
+      performanceAttributionEvents.push(event);
+    }
   }
   if (Types.Events.isConsoleTime(event)) {
     consoleTimings.push(event);
@@ -189,5 +201,6 @@ export function data(): UserTimingsData {
     // TODO(crbug/41484172): UserTimingsHandler.test.ts fails if this is not copied.
     performanceMarks: [...performanceMarkEvents],
     timestampEvents: [...timestampEvents],
+    performanceAttributionEvents: [...performanceAttributionEvents],
   };
 }

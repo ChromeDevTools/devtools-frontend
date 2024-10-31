@@ -1284,6 +1284,16 @@ export interface PerformanceMark extends UserTiming {
   ph: Phase.INSTANT|Phase.MARK|Phase.ASYNC_NESTABLE_INSTANT;
 }
 
+export interface PerformanceAttribution extends UserTiming {
+  args: Args&{
+    data: ArgsData & {
+      src: string,
+      slug: string,
+      name: string,
+    },
+  };
+}
+
 export interface ConsoleTimeBegin extends PairableAsyncBegin {
   cat: 'blink.console';
 }
@@ -2130,6 +2140,10 @@ export function isPerformanceMeasure(event: Event): event is PerformanceMeasure 
 
 export function isPerformanceMark(event: Event): event is PerformanceMark {
   return isUserTiming(event) && (event.ph === Phase.MARK || event.ph === Phase.INSTANT);
+}
+
+export function isPerformanceAttribution(event: Event): event is PerformanceAttribution {
+  return event.name.startsWith('attribution::');
 }
 
 export function isConsoleTime(event: Event): event is ConsoleTime {

@@ -961,7 +961,6 @@ export class TimelineUIUtils {
         const url = unsafeEventData['url'];
         if (url) {
           const {lineNumber} = Trace.Helpers.Trace.getZeroIndexedLineAndColumnForEvent(event);
-          const attribution = TimelineUIUtils.getAttributionForUrl(url, [...parsedTrace.UserTimings.performanceAttributions]);
           details = this.linkifyLocation({
             scriptId: null,
             url,

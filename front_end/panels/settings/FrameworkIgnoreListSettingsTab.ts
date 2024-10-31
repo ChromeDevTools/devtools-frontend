@@ -108,7 +108,7 @@ export class FrameworkIgnoreListSettingsTab extends UI.Widget.VBox implements
     ignoreListingDescription.textContent = i18nString(UIStrings.ignoreListingDescription);
     const enabledSetting =
         Common.Settings.Settings.instance().moduleSetting('enable-ignore-listing') as Common.Settings.Setting<boolean>;
-    const enableIgnoreListing = this.contentElement.createChild('div');
+    const enableIgnoreListing = this.contentElement.createChild('div', 'enable-ignore-listing');
     enableIgnoreListing.appendChild(
         UI.SettingsUI.createSettingCheckbox(i18nString(UIStrings.enableIgnoreListing), enabledSetting, true));
     UI.Tooltip.Tooltip.install(enableIgnoreListing, i18nString(UIStrings.enableIgnoreListingTooltip));
@@ -121,6 +121,7 @@ export class FrameworkIgnoreListSettingsTab extends UI.Widget.VBox implements
     settingsContent.appendChild(enableIgnoreListingCard);
 
     const generalExclusionGroup = this.createSettingGroup();
+    generalExclusionGroup.classList.add('general-exclusion-group');
     const ignoreListContentScripts = generalExclusionGroup.createChild('div', 'ignore-list-option');
     ignoreListContentScripts.appendChild(UI.SettingsUI.createSettingCheckbox(
         i18nString(UIStrings.ignoreListContentScripts),

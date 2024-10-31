@@ -23,7 +23,7 @@
 }
 
 .keybinds-list-item {
-  margin: 0 var(--sys-size-7);
+  margin: 0 var(--sys-size-6);
   padding: var(--sys-size-4) 0;
   display: grid;
   grid-template-rows: 1fr ;

@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import '../../../ui/components/icon_button/icon_button.js';
+
 import * as LitHtml from '../../lit-html/lit-html.js';
 
 import cardStyles from './card.css.js';
@@ -31,18 +33,20 @@ export class Card extends HTMLElement {
     this.#heading = data.heading;
     this.#headingIconName = data.headingIconName;
 
-    this.#headingSuffix?.remove();
-    if (data.headingSuffix) {
-      this.#headingSuffix = data.headingSuffix;
-      data.headingSuffix.slot = 'heading-suffix';
-      this.append(data.headingSuffix);
-    }
     this.#content.forEach(content => content.remove());
     data.content.forEach(content => {
       content.slot = 'content';
       this.append(content);
     });
     this.#content = data.content;
+
+    this.#headingSuffix?.remove();
+    if (data.headingSuffix) {
+      this.#headingSuffix = data.headingSuffix;
+      data.headingSuffix.slot = 'heading-suffix';
+      this.append(data.headingSuffix);
+    }
+
     this.#render();
   }
 

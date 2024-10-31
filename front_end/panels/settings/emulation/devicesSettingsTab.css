@@ -32,7 +32,7 @@
 }
 
 .devices-list-item {
-  padding: var(--sys-size-3) var(--sys-size-7);
+  padding: var(--sys-size-3) var(--sys-size-6);
   height: var(--sys-size-13);
   display: flex;
   align-items: center;

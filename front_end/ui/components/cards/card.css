@@ -11,7 +11,7 @@
 .card {
   min-width: var(--sys-size-31);
   max-width: var(--sys-size-37);
-  margin: var(--sys-size-3);
+  margin: var(--sys-size-3) var(--sys-size-5) var(--sys-size-5) var(--sys-size-5);
 }
 
 .heading-wrapper {
@@ -42,7 +42,7 @@ slot[name="heading-suffix"]::slotted(*) {
 }
 
 slot[name="content"]::slotted(*) {
-  padding: var(--sys-size-5);
+  padding: var(--sys-size-5) var(--sys-size-6);
 }
 
 slot[name="content"]::slotted(*:not(:first-child)) {

@@ -6,6 +6,9 @@
 
 .ignore-list-option {
   flex: none;
+  display: flex;
+  align-items: center;
+  height: var(--sys-size-13);
 }
 
 .ignore-list-option devtools-button {
@@ -25,13 +28,16 @@
   flex: 0 1 auto;
 }
 
+.enable-ignore-listing, .ignore-list-item, .general-exclusion-group {
+  padding-left: var(--sys-size-4);
+}
+
 .custom-exclusion-group {
   padding-left: 0;
   padding-right: 0;
 }
 
 .ignore-list-item {
-  padding: var(--sys-size-3) var(--sys-size-5);
   height: var(--sys-size-13);
   display: flex;
   align-items: center;

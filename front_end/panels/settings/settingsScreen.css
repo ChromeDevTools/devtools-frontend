@@ -165,7 +165,7 @@ label {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--sys-size-11);
+  gap: var(--sys-size-9);
 }
 
 .settings-tab.settings-content {

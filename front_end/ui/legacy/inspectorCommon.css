@@ -390,13 +390,11 @@ input::placeholder {
   font: inherit;
   margin: 0;
   outline: none;
-  padding: 0 var(--sys-size-4) 0 var(--sys-size-5);
+  padding: 0 var(--sys-size-9) 0 var(--sys-size-5);
   background-image: var(--combobox-dropdown-arrow);
   background-color: var(--sys-color-surface);
   background-position: right center;
   background-repeat: no-repeat;
-
-  --combobox-dropdown-arrow: var(--image-file-arrow-drop-down-light);
 }
 
 .chrome-select:disabled {
@@ -404,11 +402,6 @@ input::placeholder {
   border: var(--sys-size-1) solid transparent;
   color: var(--sys-color-state-disabled);
   background-color: var(--sys-color-state-disabled-container);
-}
-
-.theme-with-dark-background .chrome-select,
-:host-context(.theme-with-dark-background) .chrome-select {
-  --combobox-dropdown-arrow: var(--image-file-arrow-drop-down-dark);
 }
 
 .chrome-select:enabled {

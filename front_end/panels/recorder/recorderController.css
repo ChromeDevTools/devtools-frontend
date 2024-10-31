@@ -55,30 +55,50 @@ devtools-create-recording-view {
 }
 
 select {
-  border-radius: 2px;
-  border: 1px solid transparent;
-  height: 24px;
+  appearance: none;
+  user-select: none;
+  border: none;
+  border-radius: var(--sys-shape-corner-extra-small);
+  height: var(--sys-size-9);
   max-width: 180px;
   min-width: 140px;
-  padding: 0 5px;
+  padding: 0 var(--sys-size-6) 0 var(--sys-size-5);
   position: relative;
   color: var(--sys-color-on-surface);
   background-color: var(--sys-color-cdt-base-container);
   text-overflow: ellipsis;
-}
+  background-image: var(--combobox-dropdown-arrow);
+  background-position: right center;
+  background-repeat: no-repeat;
 
-select:disabled {
-  color: var(--sys-color-state-disabled);
-}
+  &:hover {
+    background-color: var(--sys-color-state-hover-on-subtle);
+  }
 
-select:not([disabled]):hover,
-select:not([disabled]):focus-visible,
-select:not([disabled]):active {
-  background-color: var(--sys-color-state-hover-on-subtle);
-}
+  &:active {
+    background-color: var(--sys-color-state-ripple-neutral-on-subtle);
+  }
 
-select:not([disabled]):focus-visible {
-  box-shadow: 0 0 0 2px var(--sys-color-state-focus-ring);
+  &:hover:active {
+    /* stylelint-disable plugin/use_theme_colors */
+    background:
+      var(--combobox-dropdown-arrow),
+      linear-gradient(var(--sys-color-state-hover-on-subtle), var(--sys-color-state-hover-on-subtle)),
+      linear-gradient(var(--sys-color-state-ripple-neutral-on-subtle), var(--sys-color-state-ripple-neutral-on-subtle));
+    /* stylelint-enable plugin/use_theme_colors */
+    background-position: right center;
+    background-repeat: no-repeat;
+  }
+
+  &:disabled {
+    pointer-events: none;
+    color: var(--sys-color-state-disabled);
+    background-color: var(--sys-color-state-disabled-container);
+  }
+
+  &:focus-visible {
+    outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
+  }
 }
 
 select option {

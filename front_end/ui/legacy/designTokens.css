@@ -106,4 +106,10 @@
   --sys-typescale-body4-line-height: 16px;
   --sys-typescale-body5-line-height: 16px;
   --sys-typescale-monospace-line-height: 1.2;
+  --combobox-dropdown-arrow: var(--image-file-arrow-drop-down-light);
+}
+
+.theme-with-dark-background,
+:host-context(.theme-with-dark-background) {
+  --combobox-dropdown-arrow: var(--image-file-arrow-drop-down-dark);
 }

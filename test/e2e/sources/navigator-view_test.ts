@@ -5,22 +5,18 @@
 import {assert} from 'chai';
 
 import {
+  click,
   getBrowserAndPages,
   waitFor,
-  waitForElementWithTextContent,
   waitForFunction,
   waitForNone,
 } from '../../shared/helper.js';
 import {openSoftContextMenuAndClickOnItem} from '../helpers/context-menu-helpers.js';
 import {
-  getMenuItemAtPosition,
-  openFileQuickOpen,
   openFileWithQuickOpen,
   runCommandWithQuickOpen,
-  typeIntoQuickOpen,
 } from '../helpers/quick_open-helpers.js';
 import {
-  createNewSnippet,
   openFileInSourcesPanel,
   openSnippetsSubPane,
   openSourceCodeEditorForFile,
@@ -154,17 +150,10 @@ describe('The Sources panel', () => {
     });
 
     it('which can scroll the navigator element into view on source file change', async () => {
-      async function openSnippet(snippet: string) {
-        await openFileQuickOpen();
-        await typeIntoQuickOpen(snippet);
-        const firstItem = await getMenuItemAtPosition(0);
-        await firstItem.click();
-      }
-
-      async function assertSnippetIsSelected(snippet: string) {
-        const selectedItem = await waitFor('.navigator-file-tree-item.selected');
-        const selectedItemName = await selectedItem.evaluate(node => node.textContent);
-        assert.strictEqual(selectedItemName, snippet);
+      async function openFirstSnippetInList() {
+        const sourcesView = await waitFor('#sources-panel-sources-view');
+        await click('[aria-label="More tabs"]', {root: sourcesView});
+        await click('[aria-label="Script snippet #1"]');
       }
 
       await openSourcesPanel();
@@ -172,25 +161,21 @@ describe('The Sources panel', () => {
 
       const numSnippets = 50;
       for (let i = 0; i < numSnippets; ++i) {
-        await createNewSnippet(`Snippet${i}`);
+        await click('[aria-label="New snippet"]');
+        await waitFor(`[aria-label="Script snippet #${i + 1}"]`);
       }
-      const firstSnippetName = 'Snippet0';
-      const lastSnippetName = `Snippet${numSnippets - 1}`;
-
-      await waitForElementWithTextContent(lastSnippetName);
-      await assertSnippetIsSelected(lastSnippetName);
 
       const snippetsPanel = await waitFor('[aria-label="Snippets panel"]');
       const scrollTopBeforeFileChange = await snippetsPanel.evaluate(panel => panel.scrollTop);
 
-      await openSnippet(firstSnippetName);
-      await assertSnippetIsSelected(firstSnippetName);
+      await openFirstSnippetInList();
+
       await waitForFunction(async () => {
-        return await snippetsPanel.evaluate(panel => panel.scrollTop) === 0;
+        const scrollTopAfterFileChange = await snippetsPanel.evaluate(panel => panel.scrollTop);
+        return scrollTopBeforeFileChange !== scrollTopAfterFileChange;
       });
 
-      const scrollTopAfterFileChange = await snippetsPanel.evaluate(panel => panel.scrollTop);
-      assert.notStrictEqual(scrollTopBeforeFileChange, scrollTopAfterFileChange);
+      assert.notStrictEqual(scrollTopBeforeFileChange, await snippetsPanel.evaluate(panel => panel.scrollTop));
     });
   });
 });

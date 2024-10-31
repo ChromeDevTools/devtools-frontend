@@ -166,6 +166,13 @@ x-link .inline-icon { /* stylelint-disable-line selector-type-no-unknown */
   z-index: 1;
 }
 
+summary label {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+  gap: var(--sys-size-3);
+}
+
 summary label input[type="checkbox"] {
   margin-top: 1px;
 }

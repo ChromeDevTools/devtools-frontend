@@ -1733,10 +1733,10 @@ export class TimelineUIUtils {
   /**
    * Get attribution data for a given URL.
    *
-   * @param url URL to check for attribution data.
-   * @param attributions Array of performance attributions. Immutable.
+   * @param {string} url URL to check for attribution data.
+   * @param {Trace.Types.Events.PerformanceAttribution[]} attributions Array of performance attributions. Immutable.
    *
-   * @returns Attribution name or null if no attribution is found.
+   * @return {string|null} Attribution name or null if no attribution is found.
    */
   static getAttributionForUrl(url: string, attributions: Trace.Types.Events.PerformanceAttribution[]): string|null {
     const attribution = attributions.find(attribution => {

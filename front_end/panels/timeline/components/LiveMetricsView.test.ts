@@ -86,10 +86,6 @@ function getFieldMessage(view: Element): HTMLElement|null {
   return view.shadowRoot!.querySelector('#field-setup .field-data-message');
 }
 
-function getDataDescriptions(view: Element): HTMLElement {
-  return view.shadowRoot!.querySelector('.data-descriptions') as HTMLElement;
-}
-
 function getLiveMetricsTitle(view: Element): HTMLElement {
   // There may be multiple, but this should always be the first one.
   return view.shadowRoot!.querySelector('.live-metrics > .section-title') as HTMLElement;
@@ -732,12 +728,8 @@ describeWithMockConnection('LiveMetricsView', () => {
       const fieldMessage = getFieldMessage(view);
       assert.match(fieldMessage!.innerText, /See how your local metrics compare/);
 
-      const dataDescriptions = getDataDescriptions(view);
-      assert.match(dataDescriptions.innerText, /local metrics/);
-      assert.notMatch(dataDescriptions.innerText, /field data/);
-
       const title = getLiveMetricsTitle(view);
-      assert.strictEqual(title.innerText, 'Local metrics');
+      assert.strictEqual(title.innerText, 'Local metrics ');
     });
 
     it('should show when crux is enabled', async () => {
@@ -767,12 +759,8 @@ describeWithMockConnection('LiveMetricsView', () => {
       // We expect it to say something like Jan 1 - Jan 29 2024.
       assert.match(fieldMessage!.innerText, /Jan.+2024/);
 
-      const dataDescriptions = getDataDescriptions(view);
-      assert.match(dataDescriptions.innerText, /local metrics/);
-      assert.match(dataDescriptions.innerText, /field data/);
-
       const title = getLiveMetricsTitle(view);
-      assert.strictEqual(title.innerText, 'Local and field metrics');
+      assert.strictEqual(title.innerText, 'Local and field metrics ');
     });
 
     it('should show empty values when crux is enabled but there is no field data', async () => {
@@ -795,12 +783,8 @@ describeWithMockConnection('LiveMetricsView', () => {
       const fieldMessage = getFieldMessage(view);
       assert.match(fieldMessage!.textContent!, /Not enough data/);
 
-      const dataDescriptions = getDataDescriptions(view);
-      assert.match(dataDescriptions.innerText, /local metrics/);
-      assert.match(dataDescriptions.innerText, /field data/);
-
       const title = getLiveMetricsTitle(view);
-      assert.strictEqual(title.innerText, 'Local and field metrics');
+      assert.strictEqual(title.innerText, 'Local and field metrics ');
     });
 
     it('should make initial request on render when crux is enabled', async () => {

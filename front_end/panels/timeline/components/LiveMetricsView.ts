@@ -10,7 +10,9 @@ import '../../../ui/components/menus/menus.js';
 import './MetricCard.js';
 
 import * as Common from '../../../core/common/common.js';
+import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
+import type * as Platform from '../../../core/platform/platform.js';
 import type * as SDK from '../../../core/sdk/sdk.js';
 import * as CrUXManager from '../../../models/crux-manager/crux-manager.js';
 import * as EmulationModel from '../../../models/emulation/emulation.js';
@@ -219,23 +221,10 @@ const UIStrings = {
    */
   seeHowYourLocalMetricsCompare: 'See how your local metrics compare to real user data in the {PH1}.',
   /**
-   * @description Text block explaining that local metrics are collected from the local environment used to load the page being tested. PH1 will be a link with text that will be translated separately.
-   * @example {local metrics} PH1
+   * @description Tooltip text for a link that goes to documentation explaining the difference between local and field metrics. "Local metrics" are performance metrics measured in the developers local environment. "field data" is data measured by real users in the field.
    */
-  theLocalMetricsAre: 'The {PH1} are captured from the current page using your network connection and device.',
-  /**
-   * @description Link text that is inserted in another translated text block that describes performance metrics measured in the developers local environment.
-   */
-  localMetricsLink: 'local metrics',
-  /**
-   * @description Text block explaining that field metrics are measured by real users using many different connections and hardware over a 28 period. PH1 will be a link with text that will be translated separately.
-   * @example {field data} PH1
-   */
-  theFieldMetricsAre: 'The {PH1} is measured by real users using many different network connections and devices.',
-  /**
-   * @description Link text that is inserted in another translated text block that describes performance data measured by real users in the field.
-   */
-  fieldDataLink: 'field data',
+  learnMoreAboutMetrics:
+      'Local metrics are captured from the current page using your network connection and device. Field data is measured by real users using many different network connections and devices. Click to learn more about local and field metrics.',
   /**
    * @description Tooltip text explaining that this user interaction was ignored when calculating the Interaction to Next Paint (INP) metric because the interaction delay fell beyond the 98th percentile of interaction delays on this page. "INP" is an acronym and should not be translated.
    */
@@ -909,24 +898,6 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
     `;
   }
 
-  #renderDataDescriptions(): LitHtml.LitTemplate {
-    const fieldEnabled = CrUXManager.CrUXManager.instance().getConfigSetting().get().enabled;
-
-    const localLink =
-        UI.XLink.XLink.create('https://goo.gle/perf-local-metrics', i18nString(UIStrings.localMetricsLink));
-    const localEl = i18n.i18n.getFormatLocalizedString(str_, UIStrings.theLocalMetricsAre, {PH1: localLink});
-
-    const fieldLink = UI.XLink.XLink.create('https://goo.gle/perf-field-data', i18nString(UIStrings.fieldDataLink));
-    const fieldEl = i18n.i18n.getFormatLocalizedString(str_, UIStrings.theFieldMetricsAre, {PH1: fieldLink});
-
-    return html`
-      <div class="data-descriptions">
-        <div>${localEl}</div>
-        ${fieldEnabled ? html`<div>${fieldEl}</div>` : nothing}
-      </div>
-    `;
-  }
-
   #renderLogSection(): LitHtml.LitTemplate {
     // clang-format off
     return html`
@@ -1128,13 +1099,25 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
     const liveMetricsTitle =
         fieldEnabled ? i18nString(UIStrings.localAndFieldMetrics) : i18nString(UIStrings.localMetrics);
 
+    const helpLink = 'https://web.dev/articles/lab-and-field-data-differences#lab_data_versus_field_data' as
+        Platform.DevToolsPath.UrlString;
+
     // clang-format off
     const output = html`
       <div class="container">
         <div class="live-metrics-view">
           <main class="live-metrics"
           >
-            <h2 class="section-title">${liveMetricsTitle}</h2>
+            <h2 class="section-title">
+              ${liveMetricsTitle}
+              <devtools-button
+                class="section-title-help"
+                title=${i18nString(UIStrings.learnMoreAboutMetrics)}
+                .iconName=${'help'}
+                .variant=${Buttons.Button.Variant.ICON}
+                @click=${() => Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(helpLink)}
+              ></devtools-button>
+            </h2>
             <div class="metric-cards"
               on-render=${ComponentHelpers.Directives.nodeRenderedCallback(node => {
                 this.#tooltipContainerEl = node;
@@ -1150,7 +1133,6 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
                 ${this.#renderInpCard()}
               </div>
             </div>
-            ${this.#renderDataDescriptions()}
             ${this.#renderLogSection()}
           </main>
           <aside class="next-steps" aria-labelledby="next-steps-section-title">

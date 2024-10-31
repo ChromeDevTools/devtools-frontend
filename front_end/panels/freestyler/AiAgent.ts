@@ -171,7 +171,7 @@ export abstract class AiAgent<T> {
         .filter(response => {
           return response.type === ResponseType.USER_QUERY;
         })
-        .at(-1)
+        .at(0)
         ?.query;
   }
 

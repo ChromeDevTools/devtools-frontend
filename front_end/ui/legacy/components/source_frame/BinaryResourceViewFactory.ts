@@ -100,49 +100,4 @@ export class BinaryResourceViewFactory {
     }
     return hex;
   }
-
-  static uint8ArrayToHexViewer(array: Uint8Array): string {
-    let output = '';
-    let line = 0;
-
-    while ((line * 16) < array.length) {
-      const lineArray = array.slice(line * 16, (line + 1) * 16);
-
-      // line number
-      output += BinaryResourceViewFactory.numberToHex(line, 8) + ':';
-
-      // hex
-      let hexColsPrinted = 0;
-      for (let i = 0; i < lineArray.length; i++) {
-        if (i % 2 === 0) {
-          output += ' ';
-          hexColsPrinted++;
-        }
-        output += BinaryResourceViewFactory.numberToHex(lineArray[i], 2);
-        hexColsPrinted += 2;
-      }
-
-      // hex-ascii padding
-      while (hexColsPrinted < 42) {
-        output += ' ';
-        hexColsPrinted++;
-      }
-
-      // ascii
-      for (let i = 0; i < lineArray.length; i++) {
-        const code = lineArray[i];
-        if (code >= 32 && code <= 126) {
-          // printable ascii character
-          output += String.fromCharCode(code);
-        } else {
-          // non-printable
-          output += '.';
-        }
-      }
-
-      output += '\n';
-      line++;
-    }
-    return output;
-  }
 }

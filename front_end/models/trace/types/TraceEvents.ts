@@ -95,6 +95,7 @@ export interface ArgsData {
   url?: string;
   navigationId?: string;
   frame?: string;
+  attribution?: string;
 }
 
 export interface CallFrame {
@@ -1287,9 +1288,7 @@ export interface PerformanceMark extends UserTiming {
 export interface PerformanceAttribution extends UserTiming {
   args: Args&{
     data: ArgsData & {
-      src: string,
-      slug: string,
-      name: string,
+      detail: string,
     },
   };
 }

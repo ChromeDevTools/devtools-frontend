@@ -48,7 +48,7 @@ export interface UserTimingsData {
    * Attribution events triggered with the performance.mark() API
    * https://developer.mozilla.org/en-US/docs/Web/API/Performance/attribution
    */
-  performanceAttributionEvents: readonly Types.Events.PerformanceAttribution[];
+  performanceAttributions: readonly Types.Events.PerformanceAttribution[];
 }
 let handlerState = HandlerState.UNINITIALIZED;
 
@@ -201,6 +201,6 @@ export function data(): UserTimingsData {
     // TODO(crbug/41484172): UserTimingsHandler.test.ts fails if this is not copied.
     performanceMarks: [...performanceMarkEvents],
     timestampEvents: [...timestampEvents],
-    performanceAttributionEvents: [...performanceAttributionEvents],
+    performanceAttributions: [...performanceAttributionEvents],
   };
 }

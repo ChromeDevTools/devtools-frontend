@@ -192,6 +192,10 @@ const UIStrings = {
    */
   module: 'Module',
   /**
+   *@description Text for a performance attribution event
+   */
+  attribution: 'Attribution',
+  /**
    *@description Label for a group of JavaScript files
    */
   script: 'Script',
@@ -1209,6 +1213,7 @@ export class TimelineUIUtils {
       if (url) {
         const {lineNumber, columnNumber} = Trace.Helpers.Trace.getZeroIndexedLineAndColumnForEvent(event);
         contentHelper.appendLocationRow(i18nString(UIStrings.script), url, lineNumber || 0, columnNumber);
+        TimelineUIUtils.potentiallyAddAttribution(url, contentHelper, parsedTrace);
       }
       const isEager = Boolean(event.args.data?.eager);
       if (isEager) {
@@ -1706,6 +1711,29 @@ export class TimelineUIUtils {
     }
 
     return contentHelper.fragment;
+  }
+
+  /**
+   * Potentially Add an attribution row if data is available.
+   *
+   * @param url URL to check for attribution data.
+   * @param contentHelper
+   * @param parsedTrace
+   */
+  static potentiallyAddAttribution(url: string, contentHelper: TimelineDetailsContentHelper, parsedTrace: Trace.Handlers.Types.ParsedTrace): void {
+    // Add an attribution row if the url matches one of the attributions
+    const attributions = parsedTrace.UserTimings.performanceAttributions;
+    // Will be in JSON.parse(parsedTrace.UserTimings.performanceAttributions[x].args.data.detail).path
+    const attribution = attributions.find(attribution => {
+      const detail = JSON.parse(attribution.args.data.detail);
+      const parsedUrl = new URL(url);
+      return detail.path.includes(parsedUrl.pathname);
+    });
+    if (attribution) {
+      const detail = JSON.parse(attribution.args.data.detail);
+      const name = 'core' === detail.slug ? 'Wordpress Core' : 'WordPress Plugin - ' + detail.name;
+      contentHelper.appendTextRow('Attribution', name);
+    }
   }
 
   static statsForTimeRange(

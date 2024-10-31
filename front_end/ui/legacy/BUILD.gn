@@ -196,6 +196,7 @@ ts_library("unittests") {
     "Context.test.ts",
     "ContextMenu.test.ts",
     "DockController.test.ts",
+    "FilterBar.test.ts",
     "Fragment.test.ts",
     "Geometry.test.ts",
     "Infobar.test.ts",

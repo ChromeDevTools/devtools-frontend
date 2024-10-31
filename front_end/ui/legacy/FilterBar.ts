@@ -39,6 +39,7 @@ import filterStyles from './filter.css.legacy.js';
 import {KeyboardShortcut, Modifiers} from './KeyboardShortcut.js';
 import {bindCheckbox} from './SettingsUI.js';
 import type {Suggestions} from './SuggestBox.js';
+import * as ThemeSupport from './theme_support/theme_support.js';
 import {Toolbar, type ToolbarButton, ToolbarFilter, ToolbarInput, ToolbarSettingToggle} from './Toolbar.js';
 import {Tooltip} from './Tooltip.js';
 import {CheckboxLabel, createTextChild} from './UIUtils.js';
@@ -266,6 +267,50 @@ export class TextFilterUI extends Common.ObjectWrapper.ObjectWrapper<FilterUIEve
     this.setValue('');
   }
 }
+
+interface NamedBitSetFilterUIOptions {
+  items: Item[];
+  setting?: Common.Settings.Setting<{[key: string]: boolean}>;
+}
+export class NamedBitSetFilterUIElement extends HTMLElement {
+  #options: NamedBitSetFilterUIOptions = {items: []};
+  readonly #shadow = this.attachShadow({mode: 'open'});
+  #namedBitSetFilterUI?: NamedBitSetFilterUI;
+
+  set options(options: NamedBitSetFilterUIOptions) {
+    this.#options = options;
+  }
+
+  getOrCreateNamedBitSetFilterUI(): NamedBitSetFilterUI {
+    if (this.#namedBitSetFilterUI) {
+      return this.#namedBitSetFilterUI;
+    }
+
+    const namedBitSetFilterUI = new NamedBitSetFilterUI(this.#options.items, this.#options.setting);
+    namedBitSetFilterUI.element().classList.add('named-bitset-filter');
+
+    const disclosureElement = this.#shadow.createChild('div', 'named-bit-set-filter-disclosure');
+    disclosureElement.appendChild(namedBitSetFilterUI.element());
+
+    // Translate existing filter ("ObjectWrapper") events to DOM CustomEvents so clients can
+    // use lit templates to bind listeners.
+    namedBitSetFilterUI.addEventListener(FilterUIEvents.FILTER_CHANGED, this.#filterChanged.bind(this));
+
+    this.#namedBitSetFilterUI = namedBitSetFilterUI;
+    return this.#namedBitSetFilterUI;
+  }
+
+  connectedCallback(): void {
+    ThemeSupport.ThemeSupport.instance().appendStyle(this.#shadow, filterStyles);
+  }
+
+  #filterChanged(): void {
+    const domEvent = new CustomEvent('filterChanged');
+    this.dispatchEvent(domEvent);
+  }
+}
+
+customElements.define('devtools-named-bit-set-filter', NamedBitSetFilterUIElement);
 
 export class NamedBitSetFilterUI extends Common.ObjectWrapper.ObjectWrapper<FilterUIEventTypes> implements FilterUI {
   private readonly filtersElement: HTMLDivElement;

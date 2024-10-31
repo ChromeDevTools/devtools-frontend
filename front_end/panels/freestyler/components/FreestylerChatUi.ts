@@ -382,7 +382,7 @@ export class FreestylerChatUi extends HTMLElement {
       return;
     }
 
-    const scrollContainer = this.#shadow.querySelector('.messages-scroll-container') as HTMLElement;
+    const scrollContainer = this.#shadow.querySelector('.chat-ui main') as HTMLElement;
     if (!scrollContainer) {
       return;
     }
@@ -910,14 +910,12 @@ export class FreestylerChatUi extends HTMLElement {
   #renderMessages = (): LitHtml.TemplateResult => {
     // clang-format off
     return html`
-      <div class="messages-scroll-container" @scroll=${this.#handleScroll}>
-        <div class="messages-container">
-          ${this.#props.messages.map((message, _, array) =>
-            this.#renderChatMessage(message, {
-              isLast: array.at(-1) === message,
-            }),
-          )}
-        </div>
+      <div class="messages-container">
+        ${this.#props.messages.map((message, _, array) =>
+          this.#renderChatMessage(message, {
+            isLast: array.at(-1) === message,
+          }),
+        )}
       </div>
     `;
     // clang-format on
@@ -927,7 +925,7 @@ export class FreestylerChatUi extends HTMLElement {
     const suggestions = this.#getEmptyStateSuggestions();
 
     // clang-format off
-    return html`<div class="empty-state-container messages-scroll-container">
+    return html`<div class="empty-state-container">
       <div class="header">
         <div class="icon">
           <devtools-icon
@@ -1095,7 +1093,7 @@ export class FreestylerChatUi extends HTMLElement {
   #renderDisabledState(contents: LitHtml.TemplateResult): LitHtml.TemplateResult {
     // clang-format off
     return html`
-      <div class="empty-state-container messages-scroll-container">
+      <div class="empty-state-container">
         <div class="disabled-view">
           <div class="disabled-view-icon-container">
             <devtools-icon .data=${{
@@ -1119,31 +1117,29 @@ export class FreestylerChatUi extends HTMLElement {
 
     // clang-format off
     return html`
-      <main class="messages-scroll-container" @scroll=${this.#handleScroll}>
-        <div class="messages-container">
-          <section class="no-agent-message" jslog=${VisualLogging.section('no-agent-entrypoint')}>
-            <div class="header">
-              <devtools-icon name="smart-assistant"></devtools-icon>
-              <h2>${lockedString(UIStringsNotTranslate.ai)}</h2>
-            </div>
-            <div class="instructions">
-              <p>${lockedString(UIStringsNotTranslate.getStarted)}</p>
-              ${config.devToolsFreestyler?.enabled ? html`
-                <p><strong>${lockedString(UIStringsNotTranslate.cssHelp)}</strong> ${lockedString(UIStringsNotTranslate.cssHelpExplainer)}</p>
-              ` : LitHtml.nothing}
-              ${(config.devToolsAiAssistanceFileAgent?.enabled || config.devToolsAiAssistanceFileAgentDogfood?.enabled) ? html`
-                <p><strong>${lockedString(UIStringsNotTranslate.fileHelp)}</strong> ${lockedString(UIStringsNotTranslate.fileHelpExplainer)}</p>
-              ` : LitHtml.nothing}
-              ${(config.devToolsAiAssistanceNetworkAgent?.enabled  || config.devToolsExplainThisResourceDogfood?.enabled) ? html`
-                <p><strong>${lockedString(UIStringsNotTranslate.networkHelp)}</strong> ${lockedString(UIStringsNotTranslate.networkHelpExplainer)}</p>
-              ` : LitHtml.nothing}
-              ${(config.devToolsAiAssistancePerformanceAgent?.enabled || config.devToolsAiAssistancePerformanceAgentDogfood?.enabled) ? html`
-                <p><strong>${lockedString(UIStringsNotTranslate.performanceHelp)}</strong> ${lockedString(UIStringsNotTranslate.performanceHelpExplainer)}</p>
-              ` : LitHtml.nothing}
-            </div>
-          </section>
-        </div>
-      </main>
+      <div class="messages-container">
+        <section class="no-agent-message" jslog=${VisualLogging.section('no-agent-entrypoint')}>
+          <div class="header">
+            <devtools-icon name="smart-assistant"></devtools-icon>
+            <h2>${lockedString(UIStringsNotTranslate.ai)}</h2>
+          </div>
+          <div class="instructions">
+            <p>${lockedString(UIStringsNotTranslate.getStarted)}</p>
+            ${config.devToolsFreestyler?.enabled ? html`
+              <p><strong>${lockedString(UIStringsNotTranslate.cssHelp)}</strong> ${lockedString(UIStringsNotTranslate.cssHelpExplainer)}</p>
+            ` : LitHtml.nothing}
+            ${(config.devToolsAiAssistanceFileAgent?.enabled || config.devToolsAiAssistanceFileAgentDogfood?.enabled) ? html`
+              <p><strong>${lockedString(UIStringsNotTranslate.fileHelp)}</strong> ${lockedString(UIStringsNotTranslate.fileHelpExplainer)}</p>
+            ` : LitHtml.nothing}
+            ${(config.devToolsAiAssistanceNetworkAgent?.enabled  || config.devToolsExplainThisResourceDogfood?.enabled) ? html`
+              <p><strong>${lockedString(UIStringsNotTranslate.networkHelp)}</strong> ${lockedString(UIStringsNotTranslate.networkHelpExplainer)}</p>
+            ` : LitHtml.nothing}
+            ${(config.devToolsAiAssistancePerformanceAgent?.enabled || config.devToolsAiAssistancePerformanceAgentDogfood?.enabled) ? html`
+              <p><strong>${lockedString(UIStringsNotTranslate.performanceHelp)}</strong> ${lockedString(UIStringsNotTranslate.performanceHelpExplainer)}</p>
+            ` : LitHtml.nothing}
+          </div>
+        </section>
+      </div>
     `;
     // clang-format on
   }
@@ -1172,7 +1168,7 @@ export class FreestylerChatUi extends HTMLElement {
     // clang-format off
     LitHtml.render(html`
       <div class="chat-ui">
-        <main>
+        <main @scroll=${this.#handleScroll}>
           ${this.#renderMainContents()}
           <form class="input-form" @submit=${this.#handleSubmit}>
             ${this.#props.state !== State.CONSENT_VIEW ? html`

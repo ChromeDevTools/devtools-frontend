@@ -331,10 +331,9 @@ select.toolbar-item {
   height: var(--sys-size-9);
   border-radius: var(--sys-shape-corner-extra-small);
 
-  &:disabled,
-  &:disabled:hover,
-  &:disabled:active,
-  &:disabled:hover:active {
+  &:disabled {
+    opacity: 100%;
+    pointer-events: none;
     background-color: var(--sys-color-state-disabled-container);
     color: var(--sys-color-state-disabled);
 

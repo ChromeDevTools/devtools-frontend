@@ -439,6 +439,9 @@ export class ShadowMatcher extends matcherBase(ShadowMatch) {
       return null;
     }
     const valueNodes = ASTUtils.siblings(ASTUtils.declValue(node));
+    if (valueNodes.length === 0) {
+      return null;
+    }
     const valueText = matching.ast.textRange(valueNodes[0], valueNodes[valueNodes.length - 1]);
     return new ShadowMatch(
         valueText, node, matching.ast.propertyName === 'text-shadow' ? ShadowType.TEXT_SHADOW : ShadowType.BOX_SHADOW);

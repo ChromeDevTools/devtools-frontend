@@ -36,6 +36,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       '--garbage-space': 'this-is-garbage-text',
       '--prop': 'customproperty',
       '--zero': '0',
+      '--empty': '',
     };
 
     mockStylePropertiesSection = sinon.createStubInstance(Elements.StylePropertiesSection.StylePropertiesSection);
@@ -319,7 +320,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
 
         it('should clicking on the jump-to icon reveal the resolved animation group', async () => {
           const stubAnimationGroup = sinon.createStubInstance(SDK.AnimationModel.AnimationGroup);
-          const revealerSpy = sinon.spy(Common.Revealer.RevealerRegistry.instance(), 'reveal');
+          const revealerSpy = sinon.stub(Common.Revealer.RevealerRegistry.instance(), 'reveal');
           const getAnimationGroupForAnimationStub =
               sinon.stub(SDK.AnimationModel.AnimationModel.prototype, 'getAnimationGroupForAnimation')
                   .resolves(stubAnimationGroup);
@@ -788,6 +789,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       assert.deepStrictEqual(
           await matchProperty('var(--no, var(--no2))'),
           {hasUnresolvedVars: true, computedText: 'color: var(--no, var(--no2))'});
+      assert.deepStrictEqual(await matchProperty(''), {hasUnresolvedVars: false, computedText: 'color:'});
     });
 
     it('layers correctly with the font renderer', () => {

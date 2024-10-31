@@ -67,6 +67,8 @@ describe('CSSMatchedStyles', () => {
                 {name: '--baz', value: 'active-baz !important', important: true},
                 {name: '--baz', value: 'passive-baz'},
                 {name: '--dark', value: 'darkgrey'},
+                {name: '--empty', value: ''},
+                {name: '--empty2', value: 'var(--empty)'},
                 {name: '--light', value: 'lightgrey'},
                 {name: '--theme', value: 'var(--dark)'},
                 {name: '--shadow', value: '1px var(--theme)'},
@@ -110,6 +112,8 @@ describe('CSSMatchedStyles', () => {
       await testCssValueEquals('--shadow', '1px darkgrey');
       await testCssValueEquals('--width', '1px');
       await testCssValueEquals('--diamond', 'active-foo active-foo');
+      await testCssValueEquals('--empty', '');
+      await testCssValueEquals('--empty2', '');
     });
 
     it('correctly resolves the declaration', async () => {

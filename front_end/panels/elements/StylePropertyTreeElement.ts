@@ -259,7 +259,7 @@ export class VariableRenderer implements MatchRenderer<SDK.CSSPropertyParser.Var
     const renderedFallback = match.fallback.length > 0 ? Renderer.render(match.fallback, context) : undefined;
 
     const {declaration, value: variableValue} = this.resolveVariable(match) ?? {};
-    const fromFallback = !variableValue;
+    const fromFallback = variableValue === undefined;
     const computedValue = variableValue ?? this.fallbackValue(match);
 
     const varSwatch = new InlineEditor.LinkSwatch.CSSVarSwatch();
@@ -1706,7 +1706,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
         })]);
 
     const decl = SDK.CSSPropertyParser.ASTUtils.siblings(SDK.CSSPropertyParser.ASTUtils.declValue(matching.ast.tree));
-    return matching.getComputedTextRange(decl[0], decl[decl.length - 1]);
+    return decl.length > 0 ? matching.getComputedTextRange(decl[0], decl[decl.length - 1]) : '';
   }
 
   refreshIfComputedValueChanged(): void {

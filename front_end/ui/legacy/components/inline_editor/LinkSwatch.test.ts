@@ -34,6 +34,25 @@ describeWithLocale('CSSVarSwatch', () => {
     assert.instanceOf(component, HTMLElement, 'The swatch is an instance of HTMLElement');
   });
 
+  it('renders a var function with empty computed value', () => {
+    const component = new InlineEditor.LinkSwatch.CSSVarSwatch();
+    renderElementIntoDOM(component);
+    component.data = {
+      variableName: '--test',
+      computedValue: '',
+      fromFallback: false,
+      fallbackText: null,
+      onLinkActivate: () => {},
+    };
+
+    assertVarSwatch(component, {
+      valueTooltip: '',
+      linkTooltip: '',
+      isDefined: true,
+      varText: '--test',
+    });
+  });
+
   it('renders a var function without fallback', () => {
     const component = new InlineEditor.LinkSwatch.CSSVarSwatch();
     renderElementIntoDOM(component);

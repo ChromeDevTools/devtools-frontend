@@ -609,11 +609,11 @@ export function tokenizeDeclaration(propertyName: string, propertyValue: string)
   }
 
   const childNodes = ASTUtils.children(decl);
-  if (childNodes.length < 3) {
+  if (childNodes.length < 2) {
     return null;
   }
   const [varName, colon, tree] = childNodes;
-  if (!varName || varName.type.isError || !colon || colon.type.isError || !tree || tree.type.isError) {
+  if (!varName || varName.type.isError || !colon || colon.type.isError || tree?.type.isError) {
     return null;
   }
 

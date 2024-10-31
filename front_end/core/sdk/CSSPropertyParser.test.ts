@@ -206,9 +206,24 @@ describe('CSSPropertyParser', () => {
     });
 
     it('correctly tokenizes invalid text', () => {
-      assert.isNull(SDK.CSSPropertyParser.tokenizeDeclaration('--p', ''));
       assert.isNull(SDK.CSSPropertyParser.tokenizeDeclaration('--p', '/*'));
       assert.isNull(SDK.CSSPropertyParser.tokenizeDeclaration('--p', '}'));
+    });
+
+    it('correctly tokenizes empty text', () => {
+      const ast = tokenizeDeclaration('--p', '');
+      const topNode = ast.tree.parent?.parent?.parent;
+      assert.exists(topNode);
+      assert.strictEqual(Printer.walk(ast.subtree(topNode)).get(), ` StyleSheet: *{--p: ;}
+| RuleSet: *{--p: ;}
+|| UniversalSelector: *
+|| Block: {--p: ;}
+||| {
+||| Declaration: --p:
+|||| VariableName: --p
+|||| :
+||| ;
+||| }`);
     });
 
     it('correctly parses property names', () => {

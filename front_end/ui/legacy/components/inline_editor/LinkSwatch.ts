@@ -118,7 +118,7 @@ export class CSSVarSwatch extends HTMLElement {
   protected render(data: CSSVarSwatchRenderData): void {
     const {variableName, fromFallback, computedValue, onLinkActivate} = data;
 
-    const isDefined = Boolean(computedValue) && !fromFallback;
+    const isDefined = computedValue !== null && !fromFallback;
     const title = isDefined ? computedValue ?? '' : i18nString(UIStrings.sIsNotDefined, {PH1: variableName});
 
     this.#link = new BaseLinkSwatch();

@@ -3670,6 +3670,16 @@
                             "items": {
                                 "$ref": "CSSRuleType"
                             }
+                        },
+                        {
+                            "name": "startingStyles",
+                            "description": "@starting-style CSS at-rule array.\nThe array enumerates @starting-style at-rules starting with the innermost one, going outwards.",
+                            "experimental": true,
+                            "optional": true,
+                            "type": "array",
+                            "items": {
+                                "$ref": "CSSStartingStyle"
+                            }
                         }
                     ]
                 },
@@ -3684,7 +3694,8 @@
                         "ContainerRule",
                         "LayerRule",
                         "ScopeRule",
-                        "StyleRule"
+                        "StyleRule",
+                        "StartingStyleRule"
                     ]
                 },
                 {
@@ -4027,6 +4038,12 @@
                             "description": "Optional logical axes queried for the container.",
                             "optional": true,
                             "$ref": "DOM.LogicalAxes"
+                        },
+                        {
+                            "name": "queriesScrollState",
+                            "description": "true if the query contains scroll-state() queries.",
+                            "optional": true,
+                            "type": "boolean"
                         }
                     ]
                 },
@@ -4096,6 +4113,26 @@
                             "description": "Layer name.",
                             "type": "string"
                         },
+                        {
+                            "name": "range",
+                            "description": "The associated rule header range in the enclosing stylesheet (if\navailable).",
+                            "optional": true,
+                            "$ref": "SourceRange"
+                        },
+                        {
+                            "name": "styleSheetId",
+                            "description": "Identifier of the stylesheet containing this object (if exists).",
+                            "optional": true,
+                            "$ref": "StyleSheetId"
+                        }
+                    ]
+                },
+                {
+                    "id": "CSSStartingStyle",
+                    "description": "CSS Starting Style at-rule descriptor.",
+                    "experimental": true,
+                    "type": "object",
+                    "properties": [
                         {
                             "name": "range",
                             "description": "The associated rule header range in the enclosing stylesheet (if\navailable).",
@@ -7166,7 +7203,7 @@
                 },
                 {
                     "name": "getContainerForNode",
-                    "description": "Returns the query container of the given node based on container query\nconditions: containerName, physical, and logical axes. If no axes are\nprovided, the style container is returned, which is the direct parent or the\nclosest element with a matching container-name.",
+                    "description": "Returns the query container of the given node based on container query\nconditions: containerName, physical and logical axes, and whether it queries\nscroll-state. If no axes are provided and queriesScrollState is false, the\nstyle container is returned, which is the direct parent or the closest\nelement with a matching container-name.",
                     "experimental": true,
                     "parameters": [
                         {
@@ -7187,6 +7224,11 @@
                             "name": "logicalAxes",
                             "optional": true,
                             "$ref": "LogicalAxes"
+                        },
+                        {
+                            "name": "queriesScrollState",
+                            "optional": true,
+                            "type": "boolean"
                         }
                     ],
                     "returns": [
@@ -24927,7 +24969,8 @@
                     "enum": [
                         "suspended",
                         "running",
-                        "closed"
+                        "closed",
+                        "interrupted"
                     ]
                 },
                 {

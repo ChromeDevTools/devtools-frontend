@@ -1173,9 +1173,10 @@ declare namespace ProtocolProxyApi {
 
     /**
      * Returns the query container of the given node based on container query
-     * conditions: containerName, physical, and logical axes. If no axes are
-     * provided, the style container is returned, which is the direct parent or the
-     * closest element with a matching container-name.
+     * conditions: containerName, physical and logical axes, and whether it queries
+     * scroll-state. If no axes are provided and queriesScrollState is false, the
+     * style container is returned, which is the direct parent or the closest
+     * element with a matching container-name.
      */
     invoke_getContainerForNode(params: Protocol.DOM.GetContainerForNodeRequest): Promise<Protocol.DOM.GetContainerForNodeResponse>;
 

@@ -2467,6 +2467,11 @@ export namespace CSS {
      * The array keeps the types of ancestor CSSRules from the innermost going outwards.
      */
     ruleTypes?: CSSRuleType[];
+    /**
+     * @starting-style CSS at-rule array.
+     * The array enumerates @starting-style at-rules starting with the innermost one, going outwards.
+     */
+    startingStyles?: CSSStartingStyle[];
   }
 
   /**
@@ -2480,6 +2485,7 @@ export namespace CSS {
     LayerRule = 'LayerRule',
     ScopeRule = 'ScopeRule',
     StyleRule = 'StyleRule',
+    StartingStyleRule = 'StartingStyleRule',
   }
 
   /**
@@ -2733,6 +2739,10 @@ export namespace CSS {
      * Optional logical axes queried for the container.
      */
     logicalAxes?: DOM.LogicalAxes;
+    /**
+     * true if the query contains scroll-state() queries.
+     */
+    queriesScrollState?: boolean;
   }
 
   /**
@@ -2785,6 +2795,21 @@ export namespace CSS {
      * Layer name.
      */
     text: string;
+    /**
+     * The associated rule header range in the enclosing stylesheet (if
+     * available).
+     */
+    range?: SourceRange;
+    /**
+     * Identifier of the stylesheet containing this object (if exists).
+     */
+    styleSheetId?: StyleSheetId;
+  }
+
+  /**
+   * CSS Starting Style at-rule descriptor.
+   */
+  export interface CSSStartingStyle {
     /**
      * The associated rule header range in the enclosing stylesheet (if
      * available).
@@ -4808,6 +4833,7 @@ export namespace DOM {
     containerName?: string;
     physicalAxes?: PhysicalAxes;
     logicalAxes?: LogicalAxes;
+    queriesScrollState?: boolean;
   }
 
   export interface GetContainerForNodeResponse extends ProtocolResponseWithError {
@@ -16490,6 +16516,7 @@ export namespace WebAudio {
     Suspended = 'suspended',
     Running = 'running',
     Closed = 'closed',
+    Interrupted = 'interrupted',
   }
 
   /**

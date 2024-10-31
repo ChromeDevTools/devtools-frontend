@@ -7689,14 +7689,6 @@ export const NativeFunctions = [
     signatures: [["fuzzer_id","fuzzer_data"]]
   },
   {
-    name: "GamepadAxisEvent",
-    signatures: [["type","?eventInitDict"]]
-  },
-  {
-    name: "GamepadButtonEvent",
-    signatures: [["type","?eventInitDict"]]
-  },
-  {
     name: "GamepadEvent",
     signatures: [["type","?eventInitDict"]]
   },
@@ -8556,7 +8548,7 @@ export const NativeFunctions = [
   },
   {
     name: "install",
-    signatures: [["manifest_id","?install_url"]]
+    signatures: [["?manifest_id","?install_url"]]
   },
   {
     name: "AnalyserNode",

@@ -439,7 +439,7 @@ describe('The Console Tab', () => {
   });
 
   describe('for memory objects', () => {
-    const MEMORY_ICON_SELECTOR = '[aria-label="Reveal in Memory inspector panel"]';
+    const MEMORY_ICON_SELECTOR = '[aria-label="Open in Memory inspector panel"]';
 
     it('shows one memory icon to open memory inspector for ArrayBuffers (description)', async () => {
       const {frontend} = getBrowserAndPages();

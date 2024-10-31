@@ -636,7 +636,9 @@ export async function openNestedWorkerFile(selectors: NestedFileSelector) {
 
 export async function inspectMemory(variableName: string) {
   await openSoftContextMenuAndClickOnItem(
-      `[data-object-property-name-for-test="${variableName}"]`, 'Reveal in Memory inspector panel');
+      `[data-object-property-name-for-test="${variableName}"]`,
+      'Open in Memory inspector panel',
+  );
 }
 
 export async function typeIntoSourcesAndSave(text: string) {

@@ -36,11 +36,11 @@ const UIStrings = {
   /**
    *@description button: Title of button to reveal the corresponding request of rule set in Elements panel
    */
-  buttonClickToRevealInElementsPanel: 'Click to reveal in Elements panel',
+  clickToOpenInElementsPanel: 'Click to open in Elements panel',
   /**
    *@description button: Title of button to reveal the corresponding request of rule set in Network panel
    */
-  buttonClickToRevealInNetworkPanel: 'Click to reveal in Network panel',
+  clickToOpenInNetworkPanel: 'Click to open in Network panel',
   /**
    *@description Value of status, specifying rule set contains how many errors.
    */
@@ -170,7 +170,7 @@ function ruleSetRenderer(
     return html`
       <button class="link" role="link"
         @click=${revealSpeculationRulesInElements}
-        title=${i18nString(UIStrings.buttonClickToRevealInElementsPanel)}
+        title=${i18nString(UIStrings.clickToOpenInElementsPanel)}
         style=${LitHtml.Directives.styleMap({
           border: 'none',
           background: 'none',
@@ -197,7 +197,7 @@ function ruleSetRenderer(
         ${location}
       </button>
     `;
-            // clang-format on
+    // clang-format on
   }
 
   function ruleSetRendererOutOfDocument(ruleSet: Protocol.Preload.RuleSet, location: string): LitHtml.TemplateResult {
@@ -225,7 +225,7 @@ function ruleSetRenderer(
     return html`
       <button class="link" role="link"
         @click=${revealSpeculationRulesInNetwork}
-        title=${i18nString(UIStrings.buttonClickToRevealInNetworkPanel)}
+        title=${i18nString(UIStrings.clickToOpenInNetworkPanel)}
         style=${LitHtml.Directives.styleMap({
           border: 'none',
           background: 'none',
@@ -251,7 +251,7 @@ function ruleSetRenderer(
         ${location}
       </button>
     `;
-            // clang-format on
+    // clang-format on
   }
 
   const location = PreloadingString.ruleSetLocationShort(ruleSet, pageURL);

@@ -37,7 +37,7 @@ const UIStrings = {
   /**
    *@description A context menu item to reveal a node in the DOM tree of the Elements Panel
    */
-  revealInElementsPanel: 'Reveal in Elements panel',
+  openInElementsPanel: 'Open in Elements panel',
   /**
    *@description Text in Event Listeners Widget of the Elements panel
    */
@@ -340,7 +340,7 @@ export class ObjectEventListenerBar extends UI.TreeOutline.TreeElement {
       }
       if (object.subtype === 'node') {
         menu.defaultSection().appendItem(
-            i18nString(UIStrings.revealInElementsPanel), () => Common.Revealer.reveal(object),
+            i18nString(UIStrings.openInElementsPanel), () => Common.Revealer.reveal(object),
             {jslogContext: 'reveal-in-elements'});
       }
       menu.defaultSection().appendItem(

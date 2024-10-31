@@ -96,7 +96,7 @@ const UIStrings = {
   /**
    *@description Context menu item for style property in edit mode
    */
-  revealInSourcesPanel: 'Reveal in Sources panel',
+  openInSourcesPanel: 'Open in Sources panel',
   /**
    *@description A context menu item in Styles panel to copy CSS declaration
    */
@@ -1961,7 +1961,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
     }
     const revealCallback = this.navigateToSource.bind(this) as () => void;
     contextMenu.defaultSection().appendItem(
-        i18nString(UIStrings.revealInSourcesPanel), revealCallback, {jslogContext: 'reveal-in-sources-panel'});
+        i18nString(UIStrings.openInSourcesPanel), revealCallback, {jslogContext: 'reveal-in-sources-panel'});
     void contextMenu.show();
   }
 

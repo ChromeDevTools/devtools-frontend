@@ -110,7 +110,7 @@ const UIStrings = {
   /**
    * @description A context menu item to reveal a node in the DOM tree of the Elements Panel
    */
-  revealInElementsPanel: 'Reveal in Elements panel',
+  openInElementsPanel: 'Open in Elements panel',
   /**
    * @description Warning/error text displayed when a node cannot be found in the current page.
    */
@@ -1293,7 +1293,7 @@ export class ContextMenuProvider implements
       return;
     }
     contextMenu.revealSection().appendItem(
-        i18nString(UIStrings.revealInElementsPanel), () => Common.Revealer.reveal(object),
+        i18nString(UIStrings.openInElementsPanel), () => Common.Revealer.reveal(object),
         {jslogContext: 'elements.reveal-node'});
   }
 }

@@ -23,7 +23,7 @@ const UIStrings = {
   /**
    *@description Title for a link to the Elements panel
    */
-  clickToRevealInElementsPanel: 'Click to reveal in Elements panel',
+  clickToOpenInElementsPanel: 'Click to open in Elements panel',
   /**
    *@description Name of a network resource type
    */
@@ -120,8 +120,7 @@ async function maybeCreateLinkToElementsPanel(opener: Protocol.Page.FrameId|SDK.
     return null;
   }
   const linkElement = linkifyIcon(
-      'code-circle', i18nString(UIStrings.clickToRevealInElementsPanel),
-      () => Common.Revealer.reveal(linkTargetDOMNode));
+      'code-circle', i18nString(UIStrings.clickToOpenInElementsPanel), () => Common.Revealer.reveal(linkTargetDOMNode));
   const label = document.createElement('span');
   label.textContent = `<${linkTargetDOMNode.nodeName().toLocaleLowerCase()}>`;
   linkElement.insertBefore(label, linkElement.firstChild);

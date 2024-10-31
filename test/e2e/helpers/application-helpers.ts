@@ -41,7 +41,7 @@ export async function navigateToServiceWorkers() {
 
 export async function navigateToFrame(name: string) {
   await doubleClickTreeItem(`[aria-label="${name}"]`);
-  await waitFor('[title="Click to reveal in Sources panel"]');
+  await waitFor('[title="Click to open in Sources panel"]');
   await expectVeEvents([
     veClick('Panel: resources > Pane: sidebar > Tree > TreeItem: frames > TreeItem: frame'),
     veImpressionsUnder('Panel: resources', [veImpressionForFrameDetails()]),

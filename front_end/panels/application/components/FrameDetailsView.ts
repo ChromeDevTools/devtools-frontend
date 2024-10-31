@@ -61,11 +61,11 @@ const UIStrings = {
   /**
    *@description Title for a link to the Sources panel
    */
-  clickToRevealInSourcesPanel: 'Click to reveal in Sources panel',
+  clickToOpenInSourcesPanel: 'Click to open in Sources panel',
   /**
    *@description Title for a link to the Network panel
    */
-  clickToRevealInNetworkPanel: 'Click to reveal in Network panel',
+  clickToOpenInNetworkPanel: 'Click to open in Network panel',
   /**
    *@description Title for unreachable URL field
    */
@@ -73,7 +73,7 @@ const UIStrings = {
   /**
    *@description Title for a link that applies a filter to the network panel
    */
-  clickToRevealInNetworkPanelMight: 'Click to reveal in Network panel (might require page reload)',
+  clickToOpenInNetworkPanelMight: 'Click to open in Network panel (might require page reload)',
   /**
    *@description The origin of a URL (https://web.dev/same-site-same-origin/#origin)
    *(for a lot of languages this does not need to be translated, please translate only where necessary)
@@ -87,7 +87,7 @@ const UIStrings = {
   /**
    *@description Title for a link to the Elements panel
    */
-  clickToRevealInElementsPanel: 'Click to reveal in Elements panel',
+  clickToOpenInElementsPanel: 'Click to open in Elements panel',
   /**
    *@description Title for ad frame type field
    */
@@ -391,7 +391,7 @@ export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappabl
     const sourceCode = this.#uiSourceCodeForFrame(this.#frame);
     return renderIconLink(
         'breakpoint-circle',
-        i18nString(UIStrings.clickToRevealInSourcesPanel),
+        i18nString(UIStrings.clickToOpenInSourcesPanel),
         () => Common.Revealer.reveal(sourceCode),
         'reveal-in-sources',
     );
@@ -402,7 +402,7 @@ export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappabl
       const resource = this.#frame.resourceForURL(this.#frame.url);
       if (resource && resource.request) {
         const request = resource.request;
-        return renderIconLink('arrow-up-down-circle', i18nString(UIStrings.clickToRevealInNetworkPanel), () => {
+        return renderIconLink('arrow-up-down-circle', i18nString(UIStrings.clickToOpenInNetworkPanel), () => {
           const requestLocation = NetworkForward.UIRequestLocation.UIRequestLocation.tab(
               request, NetworkForward.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT);
           return Common.Revealer.reveal(requestLocation);
@@ -446,7 +446,7 @@ export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappabl
       if (unreachableUrl) {
         return renderIconLink(
             'arrow-up-down-circle',
-            i18nString(UIStrings.clickToRevealInNetworkPanelMight),
+            i18nString(UIStrings.clickToOpenInNetworkPanelMight),
             ():
                 void => {
                   void Common.Revealer.reveal(NetworkForward.UIFilter.UIRequestFilter.filters([
@@ -489,7 +489,7 @@ export class FrameDetailsReportView extends LegacyWrapper.LegacyWrapper.Wrappabl
           <devtools-report-key>${i18nString(UIStrings.ownerElement)}</devtools-report-key>
           <devtools-report-value class="without-min-width">
             <div class="inline-items">
-              <button class="link text-link" role="link" tabindex=0 title=${i18nString(UIStrings.clickToRevealInElementsPanel)}
+              <button class="link text-link" role="link" tabindex=0 title=${i18nString(UIStrings.clickToOpenInElementsPanel)}
                 @mouseenter=${() => this.#frame?.highlight()}
                 @mouseleave=${() => SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight()}
                 @click=${() => Common.Revealer.reveal(linkTargetDOMNode)}

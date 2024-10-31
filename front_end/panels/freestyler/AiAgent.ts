@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Host from '../../core/host/host.js';
+import { TimelineUIUtils } from '../timeline/TimelineUIUtils.js';
 
 export const enum ResponseType {
   CONTEXT = 'context',
@@ -373,6 +374,17 @@ STOP`;
     for await (const response of this.handleContextDetails(options.selected)) {
       this.#addHistory(id, response);
       yield response;
+    }
+
+    // Potentially enhance the query with Attribution context.
+    if (options.selected?.selectedNode?.id === 'EvaluateScript' || options.selected?.selectedNode?.id === 'CompileScript') {
+      const url = options.selected?.selectedNode?.event?.args?.data?.url;
+      if (url) {
+        const attribution = TimelineUIUtils.getAttributionForUrl(url, [...options.selected.parsedTrace.UserTimings.performanceAttributions]);
+        if (attribution) {
+          query = `${query}\n\nNote:Attribution for this source: ${attribution}`;
+        }
+      }
     }
 
     query = await this.enhanceQuery(query, options.selected);

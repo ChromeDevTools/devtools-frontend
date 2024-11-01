@@ -570,6 +570,10 @@ const UIStrings = {
    *@description Text for a WordPress plugin attribution
    */
   wordpressPlugin: 'WordPress Plugin',
+  /**
+   *@description Text for a WordPress theme attribution
+   */
+  wordpressTheme: 'WordPress Theme',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineUIUtils.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -1745,7 +1749,17 @@ export class TimelineUIUtils {
     });
     if (attribution) {
       const detail = JSON.parse(attribution.args.data.detail);
-      return 'core' === detail.slug ? i18nString(UIStrings.wordpressCore) : i18nString(UIStrings.wordpressPlugin) + ' - ' + detail.name;
+
+      // Determine the type of attribution is based on the attribution name. It can be either a plugin, theme or core enqueue.
+      let type = '';
+      if (attribution.name.includes('core')) {
+        type = UIStrings.wordpressCore;
+      } else if (attribution.name.includes('plugin')) {
+        type = UIStrings.wordpressPlugin;
+      } else if (attribution.name.includes('theme')) {
+        type = UIStrings.wordpressTheme;
+      }
+      return `${type} - ${detail.name}`;
     }
     return null;
   }

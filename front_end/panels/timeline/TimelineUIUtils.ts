@@ -565,7 +565,7 @@ const UIStrings = {
   /**
    *@description Text for a WordPress core attribution
    */
-  wordpressCore: 'Wordpress Core',
+  wordpressCore: 'WordPress Core',
   /**
    *@description Text for a WordPress plugin attribution
    */

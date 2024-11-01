@@ -429,6 +429,10 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
       devToolsPrivacyUI: {
         enabled: false,
       },
+      devToolsEnableOriginBoundCookies: {
+        portBindingEnabled: false,
+        schemeBindingEnabled: false,
+      },
       isOffTheRecord: false,
     };
     if ('hostConfigForTesting' in globalThis) {

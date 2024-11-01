@@ -365,6 +365,11 @@ export interface HostConfigPrivacyUI {
   enabled: boolean;
 }
 
+export interface HostConfigEnableOriginBoundCookies {
+  portBindingEnabled: boolean;
+  schemeBindingEnabled: boolean;
+}
+
 // We use `RecursivePartial` here to enforce that DevTools code is able to
 // handle `HostConfig` objects of an unexpected shape. This can happen if
 // the implementation in the Chromium backend is changed without correctly
@@ -386,6 +391,7 @@ export type HostConfig = Platform.TypeScriptUtilities.RecursivePartial<{
    * or guest mode, rather than a "normal" profile.
    */
   isOffTheRecord: boolean,
+  devToolsEnableOriginBoundCookies: HostConfigEnableOriginBoundCookies,
 }>;
 
 /**

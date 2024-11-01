@@ -546,6 +546,11 @@ export function getGetHostConfigStub(config: Root.Runtime.HostConfig): sinon.Sin
       enabled: false,
       ...config.devToolsPrivacyUI,
     } as Root.Runtime.HostConfigPrivacyUI,
+    devToolsEnableOriginBoundCookies: {
+      portBindingEnabled: false,
+      schemeBindingEnabled: false,
+      ...config.devToolsEnableOriginBoundCookies,
+    } as Root.Runtime.HostConfigEnableOriginBoundCookies,
     isOffTheRecord: false,
   });
 }

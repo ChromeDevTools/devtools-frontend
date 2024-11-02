@@ -16,7 +16,7 @@ import {type HandlerName, HandlerState} from './types.js';
 
 // We don't need to know which process / thread these events occurred in,
 // because they are effectively global, so we just track all that we find.
-const allEvents: Types.Events.EventTiming[] = [];
+const allEvents: Types.Events.EventTimingBeginOrEnd[] = [];
 
 const beginCommitCompositorFrameEvents: Types.Events.BeginCommitCompositorFrame[] = [];
 const parseMetaViewportEvents: Types.Events.ParseMetaViewport[] = [];
@@ -28,7 +28,7 @@ const INP_MEDIUM_TIMING = Helpers.Timing.millisecondsToMicroseconds(Types.Timing
 
 export interface UserInteractionsData {
   /** All the user events we found in the trace */
-  allEvents: readonly Types.Events.EventTiming[];
+  allEvents: readonly Types.Events.EventTimingBeginOrEnd[];
   /** All the BeginCommitCompositorFrame events we found in the trace */
   beginCommitCompositorFrameEvents: readonly Types.Events.BeginCommitCompositorFrame[];
   /** All the ParseMetaViewport events we found in the trace */
@@ -279,18 +279,16 @@ export async function finalize(): Promise<void> {
       // If we cannot find an end event, bail and drop this event.
       continue;
     }
-    if (!interactionStartEvent.args.data?.type || !interactionStartEvent.args.data?.interactionId) {
-      // A valid interaction event that we care about has to have a type (e.g.
-      // pointerdown, keyup).
-      //
-      // We also need to ensure it has an interactionId. We already checked
-      // this in the handleEvent() function, but we do it here also to satisfy
-      // TypeScript.
+    const {type, interactionId, timeStamp, processingStart, processingEnd} = interactionStartEvent.args.data;
+    if (!type || !interactionId || !timeStamp || !processingStart || !processingEnd) {
+      // A valid interaction event that we care about has to have a type (e.g. pointerdown, keyup).
+      // We also need to ensure it has an interactionId and various timings. There are edge cases where these aren't included in the trace event.
       continue;
     }
 
-    // In the future we will add microsecond timestamps to the trace events,
-    // but until then we can use the millisecond precision values that are in
+    // In the future we will add microsecond timestamps to the trace events…
+    // (See https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/renderer/core/timing/window_performance.cc;l=900-901;drc=b503c262e425eae59ced4a80d59d176ed07152c7 )
+    // …but until then we can use the millisecond precision values that are in
     // the trace event. To adjust them to be relative to the event.ts and the
     // trace timestamps, for both processingStart and processingEnd we subtract
     // the event timestamp (NOT event.ts, but the timeStamp millisecond value
@@ -299,17 +297,17 @@ export async function finalize(): Promise<void> {
     // that is relative to event.ts, and can be used when drawing boxes.
     // There is some inaccuracy here as we are converting milliseconds to microseconds, but it is good enough until the backend emits more accurate numbers.
     const processingStartRelativeToTraceTime = Types.Timing.MicroSeconds(
-        Helpers.Timing.millisecondsToMicroseconds(interactionStartEvent.args.data.processingStart) -
-            Helpers.Timing.millisecondsToMicroseconds(interactionStartEvent.args.data.timeStamp) +
-            interactionStartEvent.ts,
+        Helpers.Timing.millisecondsToMicroseconds(processingStart) -
+            Helpers.Timing.millisecondsToMicroseconds(timeStamp) + interactionStartEvent.ts,
     );
 
     const processingEndRelativeToTraceTime = Types.Timing.MicroSeconds(
-        (Helpers.Timing.millisecondsToMicroseconds(interactionStartEvent.args.data.processingEnd) -
-         Helpers.Timing.millisecondsToMicroseconds(interactionStartEvent.args.data.timeStamp)) +
+        (Helpers.Timing.millisecondsToMicroseconds(processingEnd) -
+         Helpers.Timing.millisecondsToMicroseconds(timeStamp)) +
         interactionStartEvent.ts);
 
-    const frameId = interactionStartEvent.args.frame ?? interactionStartEvent.args.data.frame;
+    // Ultimate frameId fallback only needed for TSC, see comments in the type.
+    const frameId = interactionStartEvent.args.frame ?? interactionStartEvent.args.data.frame ?? '';
     const navigation = Helpers.Trace.getNavigationForTraceEvent(interactionStartEvent, frameId, navigationsByFrameId);
     const navigationId = navigation?.args.data?.navigationId;
     const interactionEvent =

@@ -266,28 +266,38 @@ export interface End extends Event {
  */
 export type SyntheticComplete = Complete;
 
-export interface EventTiming extends Event {
-  ph: Phase.ASYNC_NESTABLE_START|Phase.ASYNC_NESTABLE_END;
+// TODO(paulirish): Migrate to the new (Sept 2024) EventTiming trace events.
+// See https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/renderer/core/timing/window_performance.cc;l=900-901;drc=b503c262e425eae59ced4a80d59d176ed07152c7
+export type EventTimingBeginOrEnd = EventTimingBegin|EventTimingEnd;
+
+export interface EventTimingBegin extends Event {
+  ph: Phase.ASYNC_NESTABLE_START;
   name: Name.EVENT_TIMING;
   id: string;
   args: Args&{
-    frame: string,
-    data?: ArgsData&{
+    // https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/renderer/core/timing/performance_event_timing.cc;l=297;drc=4f00803ca25c0d0480ed14844d6406933c21e80e
+    data: ArgsData & {
       cancelable: boolean,
       duration: MilliSeconds,
-      processingEnd: MilliSeconds,
-      processingStart: MilliSeconds,
-      timeStamp: MilliSeconds,
-      interactionId?: number, type: string,
+      type: string,
+      interactionId: number,
+      interactionOffset: number,
+      nodeId: Protocol.DOM.BackendNodeId,
+      frame?: string,  // From May 2022 onwards, this is where frame is located. https://chromium-review.googlesource.com/c/chromium/src/+/3632661
+      processingEnd?: MilliSeconds,
+      processingStart?: MilliSeconds,
+      timeStamp?: MilliSeconds,
+      enqueuedToMainThreadTime?: MilliSeconds,
+      commitFinishTime?: MilliSeconds,
     },
+    frame?: string,  // Prior to May 2022, `frame` was here in args.
   };
 }
-
-export interface EventTimingBegin extends EventTiming {
-  ph: Phase.ASYNC_NESTABLE_START;
-}
-export interface EventTimingEnd extends EventTiming {
+export interface EventTimingEnd extends Event {
   ph: Phase.ASYNC_NESTABLE_END;
+  name: Name.EVENT_TIMING;
+  id: string;
+  args: Args;
 }
 
 export interface GPUTask extends Complete {
@@ -1449,7 +1459,7 @@ export type SyntheticConsoleTimingPair = SyntheticEventPair<ConsoleTime>;
 
 export type SyntheticAnimationPair = SyntheticEventPair<Animation>;
 
-export interface SyntheticInteractionPair extends SyntheticEventPair<EventTiming> {
+export interface SyntheticInteractionPair extends SyntheticEventPair<EventTimingBeginOrEnd> {
   // InteractionID and type are available within the beginEvent's data, but we
   // put them on the top level for ease of access.
   interactionId: number;
@@ -1989,7 +1999,7 @@ export function isInteractiveTime(event: Event): event is InteractiveTime {
   return event.name === 'InteractiveTime';
 }
 
-export function isEventTiming(event: Event): event is EventTiming {
+export function isEventTiming(event: Event): event is EventTimingBeginOrEnd {
   return event.name === Name.EVENT_TIMING;
 }
 

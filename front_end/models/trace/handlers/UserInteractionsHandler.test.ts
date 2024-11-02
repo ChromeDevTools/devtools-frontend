@@ -67,11 +67,7 @@ describe('UserInteractionsHandler', function() {
     }
 
     const data = Trace.Handlers.ModelHandlers.UserInteractions.data();
-    const clicks = data.allEvents.filter(event => {
-      if (!event.args.data) {
-        return false;
-      }
-
+    const clicks = data.allEvents.filter(Trace.Types.Events.isEventTimingStart).filter(event => {
       return event.args.data.type === 'click';
     });
 
@@ -184,8 +180,8 @@ describe('UserInteractionsHandler', function() {
   it('detects correct events for a click and keydown interaction', async () => {
     await processTrace(this, 'slow-interaction-keydown.json.gz');
     const data = Trace.Handlers.ModelHandlers.UserInteractions.data();
-    const foundInteractions =
-        data.allEvents.filter(e => e.args.data && e.args.data.duration > 1 && e.args.data.interactionId);
+    const foundInteractions = data.allEvents.filter(Trace.Types.Events.isEventTimingStart)
+                                  .filter(e => e.args.data && e.args.data.duration > 1 && e.args.data.interactionId);
     // We expect there to be 3 interactions:
     // User clicks on input:
     // 1.pointerdown, 2. pointerup, 3. click
@@ -276,7 +272,7 @@ describe('UserInteractionsHandler', function() {
           },
         },
       },
-    ] as unknown as Trace.Types.Events.EventTiming[];
+    ] as unknown as Trace.Types.Events.EventTimingBeginOrEnd[];
     Trace.Handlers.ModelHandlers.UserInteractions.reset();
     for (const event of events) {
       Trace.Handlers.ModelHandlers.UserInteractions.handleEvent(event);

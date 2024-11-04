@@ -528,7 +528,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     const {mouseEvent, timeInMicroSeconds} = data;
     // If the user is no longer holding shift, remove any existing marker.
     if (!mouseEvent.shiftKey) {
-      const removedCount = this.#overlays.removeOverlaysOfType('CURSOR_TIMESTAMP_MARKER');
+      const removedCount = this.#overlays.removeOverlaysOfType('TIMESTAMP_MARKER');
       if (removedCount > 0) {
         // Don't trigger lots of updates on a mouse move if we didn't actually
         // remove any overlays.
@@ -537,10 +537,10 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     }
 
     if (!mouseEvent.metaKey && mouseEvent.shiftKey) {
-      // CURSOR_TIMESTAMP_MARKER is a singleton; if one already exists it will
+      // TIMESTAMP_MARKER is a singleton; if one already exists it will
       // be updated rather than create an entirely new one.
       this.addOverlay({
-        type: 'CURSOR_TIMESTAMP_MARKER',
+        type: 'TIMESTAMP_MARKER',
         timestamp: timeInMicroSeconds,
       });
     }

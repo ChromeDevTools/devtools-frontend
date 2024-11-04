@@ -398,15 +398,15 @@ describeWithEnvironment('Overlays', () => {
       assert.isOk(overlayDOM);
     });
 
-    it('only renders one CURSOR_TIMESTAMP_MARKER as it is a singleton', async function() {
+    it('only renders one TIMESTAMP_MARKER as it is a singleton', async function() {
       const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
       const {overlays, container} = setupChartWithDimensionsAndAnnotationOverlayListeners(parsedTrace);
       overlays.add({
-        type: 'CURSOR_TIMESTAMP_MARKER',
+        type: 'TIMESTAMP_MARKER',
         timestamp: parsedTrace.Meta.traceBounds.min,
       });
       overlays.add({
-        type: 'CURSOR_TIMESTAMP_MARKER',
+        type: 'TIMESTAMP_MARKER',
         timestamp: parsedTrace.Meta.traceBounds.max,
       });
       await overlays.update();
@@ -979,8 +979,8 @@ describeWithEnvironment('Overlays', () => {
     });
 
     it('defines a log for cursor timestamp marker', () => {
-      const overlay: Overlays.Overlays.CursorTimestampMarker = {
-        type: 'CURSOR_TIMESTAMP_MARKER',
+      const overlay: Overlays.Overlays.TimestampMarker = {
+        type: 'TIMESTAMP_MARKER',
         timestamp: 1_000 as Trace.Types.Timing.MicroSeconds,
       };
       const context = Overlays.Overlays.jsLogContext(overlay);

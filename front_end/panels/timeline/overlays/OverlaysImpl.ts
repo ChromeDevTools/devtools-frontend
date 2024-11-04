@@ -155,7 +155,7 @@ function traceWindowForOverlay(overlay: TimelineOverlay): Trace.Types.Timing.Tra
       }
       break;
     }
-    case 'CURSOR_TIMESTAMP_MARKER': {
+    case 'TIMESTAMP_MARKER': {
       overlayMinBounds.push(overlay.timestamp);
       break;
     }
@@ -212,7 +212,8 @@ export function entriesForOverlay(overlay: TimelineOverlay): readonly OverlayEnt
       }
       break;
     }
-    case 'CURSOR_TIMESTAMP_MARKER': {
+    case 'TIMESTAMP_MARKER': {
+      // This overlay type isn't associated to any entry, so just break here.
       break;
     }
     case 'CANDY_STRIPED_TIME_RANGE': {
@@ -255,8 +256,8 @@ export interface TimespanBreakdown {
   renderLocation?: 'BOTTOM_OF_TIMELINE'|'BELOW_EVENT'|'ABOVE_EVENT';
 }
 
-export interface CursorTimestampMarker {
-  type: 'CURSOR_TIMESTAMP_MARKER';
+export interface TimestampMarker {
+  type: 'TIMESTAMP_MARKER';
   timestamp: Trace.Types.Timing.MicroSeconds;
 }
 
@@ -264,7 +265,7 @@ export interface CursorTimestampMarker {
  * All supported overlay types.
  */
 export type TimelineOverlay = EntrySelected|EntryOutline|TimeRangeLabel|EntryLabel|EntriesLink|TimespanBreakdown|
-    CursorTimestampMarker|CandyStripedTimeRange;
+    TimestampMarker|CandyStripedTimeRange;
 
 export interface TimelineOverlaySetOptions {
   updateTraceWindow: boolean;
@@ -275,9 +276,9 @@ export interface TimelineOverlaySetOptions {
  * exist at any given time. If one exists and the add() method is called, the
  * new overlay will replace the existing one.
  */
-type SingletonOverlay = EntrySelected|CursorTimestampMarker;
+type SingletonOverlay = EntrySelected|TimestampMarker;
 export function overlayIsSingleton(overlay: TimelineOverlay): overlay is SingletonOverlay {
-  return overlay.type === 'CURSOR_TIMESTAMP_MARKER' || overlay.type === 'ENTRY_SELECTED';
+  return overlay.type === 'TIMESTAMP_MARKER' || overlay.type === 'ENTRY_SELECTED';
 }
 
 /**
@@ -790,7 +791,7 @@ export class Overlays extends EventTarget {
         break;
       }
 
-      case 'CURSOR_TIMESTAMP_MARKER': {
+      case 'TIMESTAMP_MARKER': {
         const {visibleWindow} = this.#dimensions.trace;
         // Only update the position if the timestamp of this marker is within
         // the visible bounds.
@@ -827,7 +828,7 @@ export class Overlays extends EventTarget {
     }
   }
 
-  #positionTimestampMarker(overlay: CursorTimestampMarker, element: HTMLElement): void {
+  #positionTimestampMarker(overlay: TimestampMarker, element: HTMLElement): void {
     // Because we are adjusting the x position, we can use either chart here.
     const x = this.#xPixelForMicroSeconds('main', overlay.timestamp);
     element.style.left = `${x}px`;
@@ -1470,7 +1471,7 @@ export class Overlays extends EventTarget {
         }
         break;
       }
-      case 'CURSOR_TIMESTAMP_MARKER':
+      case 'TIMESTAMP_MARKER':
         break;
       case 'CANDY_STRIPED_TIME_RANGE':
         break;
@@ -1504,7 +1505,7 @@ export class Overlays extends EventTarget {
         component?.checkSectionLabelPositioning();
         break;
       }
-      case 'CURSOR_TIMESTAMP_MARKER':
+      case 'TIMESTAMP_MARKER':
         break;
       case 'CANDY_STRIPED_TIME_RANGE':
         break;
@@ -1830,7 +1831,7 @@ export function jsLogContext(overlay: TimelineOverlay): string|null {
     case 'TIMESPAN_BREAKDOWN': {
       return 'timeline.overlays.timespan-breakdown';
     }
-    case 'CURSOR_TIMESTAMP_MARKER': {
+    case 'TIMESTAMP_MARKER': {
       return 'timeline.overlays.cursor-timestamp-marker';
     }
     case 'CANDY_STRIPED_TIME_RANGE': {

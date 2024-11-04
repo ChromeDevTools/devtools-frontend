@@ -100,7 +100,7 @@ To remove one or some overlays, check out the `remove()` or `removeOverlaysOfTyp
 
 ### Creating a new overlay
 
-To create a new overlay, first define its type. This is done as an interface, and must contain a `type` field.
+To create a new overlay, add it in the `OverlaysImpl.ts` file, first define its type. This is done as an interface, and must contain a `type` field.
 
 All other fields are completely custom and depend on the specifics of the overlay.
 
@@ -115,6 +115,7 @@ export interface EntrySelected {
 ```
 
 Once you have done this, add the interface to the union type `TimelineOverlay`. This will likely trigger some TypeScript errors because there are some places in the code where we check we have exhaustively dealt with every possible overlay type.
+Also if you want to make this overlay a singleton, add the interface to the union type `SingletonOverlay`.
 
 When you create an overlay by default it will be created as a `div` with a class, and no contents. Sometimes this is all you need (for example, the `ENTRY_SELECTED` outline has no other HTML), but if you need more you can tell the Overlays class what DOM to create for your overlay. To do this, modify the `#createElementForNewOverlay` method. You will see examples there of how we use custom elements to build out overlays.
 

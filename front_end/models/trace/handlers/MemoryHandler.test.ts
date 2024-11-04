@@ -13,7 +13,6 @@ describe('MemoryHandler', function() {
 
   it('gathers update counters', async function() {
     const events = await TraceLoader.rawEvents(this, 'web-dev.json.gz');
-    Trace.Handlers.ModelHandlers.Meta.initialize();
     for (const event of events) {
       Trace.Handlers.ModelHandlers.Meta.handleEvent(event);
       Trace.Handlers.ModelHandlers.Memory.handleEvent(event);

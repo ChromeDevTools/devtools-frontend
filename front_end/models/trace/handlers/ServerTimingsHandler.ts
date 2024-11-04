@@ -7,19 +7,12 @@ import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
 
 import {data as networkData} from './NetworkRequestsHandler.js';
-import {type HandlerName, HandlerState} from './types.js';
+import type {HandlerName} from './types.js';
 
 const serverTimings: Types.Events.SyntheticServerTiming[] = [];
 
-let handlerState = HandlerState.UNINITIALIZED;
-
 export function reset(): void {
   serverTimings.length = 0;
-  handlerState = HandlerState.UNINITIALIZED;
-}
-
-export function initialize(): void {
-  handlerState = HandlerState.INITIALIZED;
 }
 
 export function handleEvent(_event: Types.Events.Event): void {
@@ -27,12 +20,8 @@ export function handleEvent(_event: Types.Events.Event): void {
 }
 
 export async function finalize(): Promise<void> {
-  if (handlerState !== HandlerState.INITIALIZED) {
-    throw new Error('Server Timings handler is not initialized');
-  }
   extractServerTimings();
   Helpers.Trace.sortTraceEventsInPlace(serverTimings);
-  handlerState = HandlerState.FINALIZED;
 }
 
 const RESPONSE_START_METRIC_NAME = 'response-start';
@@ -124,10 +113,6 @@ function createSyntheticServerTiming(
 }
 
 export function data(): {serverTimings: Types.Events.SyntheticServerTiming[]} {
-  if (handlerState !== HandlerState.FINALIZED) {
-    throw new Error('Server Timing handler is not finalized');
-  }
-
   return {
     serverTimings,
   };

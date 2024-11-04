@@ -11,29 +11,9 @@ type DataArgsMap = Map<keyof DataArgs, DataArgs[keyof DataArgs]>;
 type DataArgsProcessedDataMap = Map<keyof DataArgsProcessedData, DataArgsProcessedData[keyof DataArgsProcessedData]>;
 
 describe('NetworkRequestsHandler', function() {
-  describe('error handling', () => {
-    it('throws if handleEvent is called before it is initialized', () => {
-      assert.throws(() => {
-        Trace.Handlers.ModelHandlers.NetworkRequests.handleEvent({} as Trace.Types.Events.Event);
-      }, 'Network Request handler is not initialized');
-    });
-
-    it('throws if finalize is called before initialize', async () => {
-      let thrown: Error|null = null;
-      try {
-        await Trace.Handlers.ModelHandlers.NetworkRequests.finalize();
-      } catch (e) {
-        thrown = e as Error;
-      }
-      assert.strictEqual(thrown?.message, 'Network Request handler is not initialized');
-    });
-  });
-
   describe('network requests calculations', () => {
     beforeEach(() => {
       Trace.Handlers.ModelHandlers.Meta.reset();
-      Trace.Handlers.ModelHandlers.Meta.initialize();
-      Trace.Handlers.ModelHandlers.NetworkRequests.initialize();
     });
 
     it('calculates network requests correctly', async function() {
@@ -200,8 +180,6 @@ describe('NetworkRequestsHandler', function() {
   describe('parses the change priority request', () => {
     beforeEach(() => {
       Trace.Handlers.ModelHandlers.Meta.reset();
-      Trace.Handlers.ModelHandlers.Meta.initialize();
-      Trace.Handlers.ModelHandlers.NetworkRequests.initialize();
     });
 
     it('changes priority of the resouce', async function() {
@@ -232,8 +210,6 @@ describe('NetworkRequestsHandler', function() {
   describe('redirects', () => {
     beforeEach(() => {
       Trace.Handlers.ModelHandlers.Meta.reset();
-      Trace.Handlers.ModelHandlers.Meta.initialize();
-      Trace.Handlers.ModelHandlers.NetworkRequests.initialize();
     });
 
     it('calculates redirects correctly (navigations)', async function() {
@@ -306,8 +282,6 @@ describe('NetworkRequestsHandler', function() {
   describe('initiators', () => {
     beforeEach(() => {
       Trace.Handlers.ModelHandlers.Meta.reset();
-      Trace.Handlers.ModelHandlers.Meta.initialize();
-      Trace.Handlers.ModelHandlers.NetworkRequests.initialize();
     });
 
     it('calculate the initiator by `initiator` field correctly', async function() {

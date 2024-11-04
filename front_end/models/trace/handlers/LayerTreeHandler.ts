@@ -6,9 +6,7 @@ import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
 
 import {data as metaHandlerData} from './MetaHandler.js';
-import {type HandlerName, HandlerState} from './types.js';
-
-let handlerState = HandlerState.UNINITIALIZED;
+import type {HandlerName} from './types.js';
 
 const paintEvents: Types.Events.Paint[] = [];
 const snapshotEvents: Types.Events.DisplayItemListSnapshot[] = [];
@@ -24,7 +22,6 @@ type RelevantLayerTreeEvent =
 
 const relevantEvents: RelevantLayerTreeEvent[] = [];
 export function reset(): void {
-  handlerState = HandlerState.UNINITIALIZED;
   paintEvents.length = 0;
   snapshotEvents.length = 0;
   paintToSnapshotMap.clear();
@@ -33,14 +30,6 @@ export function reset(): void {
   currentMainFrameLayerTreeId = null;
   updateLayerEvents.length = 0;
   relevantEvents.length = 0;
-}
-
-export function initialize(): void {
-  if (handlerState !== HandlerState.UNINITIALIZED) {
-    throw new Error('LayerTree Handler was not reset before being initialized');
-  }
-
-  handlerState = HandlerState.INITIALIZED;
 }
 
 export function handleEvent(event: Types.Events.Event): void {
@@ -55,10 +44,6 @@ export function handleEvent(event: Types.Events.Event): void {
 }
 
 export async function finalize(): Promise<void> {
-  if (handlerState !== HandlerState.INITIALIZED) {
-    throw new Error('LayerTree Handler is not initialized');
-  }
-
   const metaData = metaHandlerData();
   Helpers.Trace.sortTraceEventsInPlace(relevantEvents);
 
@@ -117,8 +102,6 @@ export async function finalize(): Promise<void> {
       paintToSnapshotMap.set(paintEvent, event);
     }
   }
-
-  handlerState = HandlerState.FINALIZED;
 }
 
 export interface LayerTreeData {

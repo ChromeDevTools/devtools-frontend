@@ -8,8 +8,6 @@ import * as Trace from '../trace.js';
 describe('GPUHandler', function() {
   beforeEach(() => {
     Trace.Handlers.ModelHandlers.Meta.reset();
-    Trace.Handlers.ModelHandlers.Meta.initialize();
-    Trace.Handlers.ModelHandlers.GPU.initialize();
   });
 
   it('finds all the GPU Tasks for the main GPU Thread', async function() {

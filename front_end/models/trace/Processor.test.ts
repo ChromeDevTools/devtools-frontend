@@ -139,6 +139,7 @@ describeWithEnvironment('TraceProcessor', function() {
     const baseHandler = {
       data() {},
       handleEvent() {},
+      async finalize() {},
       reset() {},
     };
 

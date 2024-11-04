@@ -29,6 +29,9 @@ export function handleEvent(event: Types.Events.Event): void {
   }
 }
 
+export async function finalize(): Promise<void> {
+}
+
 export interface SelectorStatsData {
   dataForUpdateLayoutEvent: Map<Types.Events.UpdateLayoutTree, {
     timings: Types.Events.SelectorTiming[],

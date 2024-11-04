@@ -23,7 +23,6 @@ function invalidationDataForTestAssertion(invalidation: Trace.Types.Events.Inval
 describe('InvalidationsHandler', () => {
   beforeEach(() => {
     Trace.Handlers.ModelHandlers.Invalidations.reset();
-    Trace.Handlers.ModelHandlers.Invalidations.initialize();
   });
 
   it('finds the right invalidators for a layout where attributes have been changed', async function() {

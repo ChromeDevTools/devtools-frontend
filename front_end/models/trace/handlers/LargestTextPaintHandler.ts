@@ -27,6 +27,9 @@ export function handleEvent(event: Types.Events.Event): void {
   textPaintByDOMNodeId.set(event.args.data.DOMNodeId, event);
 }
 
+export async function finalize(): Promise<void> {
+}
+
 export function data(): Map<Protocol.DOM.BackendNodeId, Types.Events.LargestTextPaintCandidate> {
   return textPaintByDOMNodeId;
 }

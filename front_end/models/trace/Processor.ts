@@ -52,6 +52,7 @@ declare global {
 export interface ParseOptions {
   /**
    * If the trace was just recorded on the current page, rather than an imported file.
+   * TODO(paulirish): Maybe remove. This is currently unused by the Processor and Handlers
    * @default false
    */
   isFreshRecording?: boolean;
@@ -170,7 +171,7 @@ export class TraceProcessor extends EventTarget {
     }
     try {
       this.#status = Status.PARSING;
-      await this.#computeParsedTrace(traceEvents, Boolean(options.isFreshRecording));
+      await this.#computeParsedTrace(traceEvents);
       if (this.#data && !options.isCPUProfile) {  // We do not calculate insights for CPU Profiles.
         this.#computeInsights(this.#data, traceEvents);
       }
@@ -184,7 +185,7 @@ export class TraceProcessor extends EventTarget {
   /**
    * Run all the handlers and set the result to `#data`.
    */
-  async #computeParsedTrace(traceEvents: readonly Types.Events.Event[], freshRecording: boolean): Promise<void> {
+  async #computeParsedTrace(traceEvents: readonly Types.Events.Event[]): Promise<void> {
     /**
      * We want to yield regularly to maintain responsiveness. If we yield too often, we're wasting idle time.
      * We could do this by checking `performance.now()` regularly, but it's an expensive call in such a hot loop.
@@ -200,11 +201,6 @@ export class TraceProcessor extends EventTarget {
     // Reset.
     for (const handler of sortedHandlers) {
       handler.reset();
-    }
-
-    // Initialize.
-    for (const handler of sortedHandlers) {
-      handler.initialize?.(freshRecording);
     }
 
     // Handle each event.

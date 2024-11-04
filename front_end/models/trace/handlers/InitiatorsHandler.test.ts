@@ -8,7 +8,6 @@ import * as Trace from '../trace.js';
 describe('InitiatorsHandler', () => {
   beforeEach(() => {
     Trace.Handlers.ModelHandlers.Initiators.reset();
-    Trace.Handlers.ModelHandlers.Initiators.initialize();
   });
 
   it('for an UpdateLayoutTree event it sets the initiator to the previous ScheduledStyleRecalculation event',

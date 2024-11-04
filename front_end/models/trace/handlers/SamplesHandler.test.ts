@@ -14,9 +14,6 @@ async function handleEventsFromTraceFile(context: Mocha.Context|Mocha.Suite|null
   Trace.Handlers.ModelHandlers.Meta.reset();
   Trace.Handlers.ModelHandlers.Samples.reset();
 
-  Trace.Handlers.ModelHandlers.Meta.initialize();
-  Trace.Handlers.ModelHandlers.Samples.initialize();
-
   for (const event of traceEvents) {
     Trace.Handlers.ModelHandlers.Meta.handleEvent(event);
     Trace.Handlers.ModelHandlers.Samples.handleEvent(event);
@@ -140,8 +137,6 @@ describeWithEnvironment('SamplesHandler', function() {
         makeProfileChunkEvent([{id: E, children: []}], [], [], 0),
       ];
       Trace.Handlers.ModelHandlers.Samples.reset();
-
-      Trace.Handlers.ModelHandlers.Samples.initialize();
 
       for (const event of [mockProfileEvent, ...mockChunks]) {
         Trace.Handlers.ModelHandlers.Samples.handleEvent(event);

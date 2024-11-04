@@ -7,10 +7,8 @@ import * as Trace from '../trace.js';
 
 async function processTrace(context: Mocha.Suite|Mocha.Context|null, url: string): Promise<void> {
   Trace.Handlers.ModelHandlers.Meta.reset();
-  Trace.Handlers.ModelHandlers.Meta.initialize();
 
   Trace.Handlers.ModelHandlers.LayoutShifts.reset();
-  Trace.Handlers.ModelHandlers.LayoutShifts.initialize();
 
   try {
     const events = await TraceLoader.rawEvents(context, url);
@@ -33,7 +31,6 @@ describe('LayoutShiftsHandler', function() {
     // run the meta handler here, too, so that later on we can get the IDs of
     // the main renderer process and thread.
     Trace.Handlers.ModelHandlers.Meta.reset();
-    Trace.Handlers.ModelHandlers.Meta.initialize();
 
     Trace.Handlers.ModelHandlers.LayoutShifts.reset();
   });

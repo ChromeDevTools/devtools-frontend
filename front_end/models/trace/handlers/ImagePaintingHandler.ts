@@ -112,6 +112,9 @@ export function handleEvent(event: Types.Events.Event): void {
   }
 }
 
+export async function finalize(): Promise<void> {
+}
+
 export interface ImagePaintData {
   paintImageByDrawLazyPixelRef: Map<number, Types.Events.PaintImage>;
   paintImageForEvent: Map<Types.Events.Event, Types.Events.PaintImage>;

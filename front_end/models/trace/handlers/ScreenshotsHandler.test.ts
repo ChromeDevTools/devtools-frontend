@@ -28,7 +28,6 @@ describe('ScreenshotsHandler', function() {
     // and later we will pass events to the meta handler, otherwise the
     // screenshots handler will fail.
     Trace.Handlers.ModelHandlers.Meta.reset();
-    Trace.Handlers.ModelHandlers.Meta.initialize();
 
     Trace.Handlers.ModelHandlers.Screenshots.reset();
   });

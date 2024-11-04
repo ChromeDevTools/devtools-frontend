@@ -69,27 +69,6 @@ describe('MetaHandler', function() {
     ];
 
     Trace.Handlers.ModelHandlers.Meta.reset();
-    Trace.Handlers.ModelHandlers.Meta.initialize();
-  });
-
-  describe('error handling', function() {
-    it('throws if data is called before finalize', function() {
-      for (const event of baseEvents) {
-        Trace.Handlers.ModelHandlers.Meta.handleEvent(event);
-      }
-
-      assert.throws(() => {
-        Trace.Handlers.ModelHandlers.Meta.data();
-      }, 'Handler is not finalized');
-    });
-
-    it('throws if initialize is called without a reset', function() {
-      // Due to the beforeEach the handler is already initialized, so calling
-      // it a second time should throw an error.
-      assert.throws(() => {
-        Trace.Handlers.ModelHandlers.Meta.initialize();
-      }, 'Handler was not reset');
-    });
   });
 
   describe('browser process ID', function() {
@@ -154,7 +133,6 @@ describe('MetaHandler', function() {
     it('provides a list of main frame only navigations', async function() {
       const events = await TraceLoader.rawEvents(this, 'multiple-navigations-with-iframes.json.gz');
       Trace.Handlers.ModelHandlers.Meta.reset();
-      Trace.Handlers.ModelHandlers.Meta.initialize();
       for (const event of events) {
         Trace.Handlers.ModelHandlers.Meta.handleEvent(event);
       }
@@ -183,7 +161,6 @@ describe('MetaHandler', function() {
     it('finds the main frame ID for a trace that started with a page reload', async function() {
       const events = await TraceLoader.rawEvents(this, 'reload-and-trace-page.json.gz');
       Trace.Handlers.ModelHandlers.Meta.reset();
-      Trace.Handlers.ModelHandlers.Meta.initialize();
       for (const event of events) {
         Trace.Handlers.ModelHandlers.Meta.handleEvent(event);
       }
@@ -195,7 +172,6 @@ describe('MetaHandler', function() {
     it('tracks the frames for found processes', async function() {
       const events = await TraceLoader.rawEvents(this, 'reload-and-trace-page.json.gz');
       Trace.Handlers.ModelHandlers.Meta.reset();
-      Trace.Handlers.ModelHandlers.Meta.initialize();
       for (const event of events) {
         Trace.Handlers.ModelHandlers.Meta.handleEvent(event);
       }
@@ -215,7 +191,6 @@ describe('MetaHandler', function() {
     it('finds the GPU process and GPU Thread', async function() {
       const events = await TraceLoader.rawEvents(this, 'threejs-gpu.json.gz');
       Trace.Handlers.ModelHandlers.Meta.reset();
-      Trace.Handlers.ModelHandlers.Meta.initialize();
       for (const event of events) {
         Trace.Handlers.ModelHandlers.Meta.handleEvent(event);
       }
@@ -250,7 +225,6 @@ describe('MetaHandler', function() {
     }
 
     Trace.Handlers.ModelHandlers.Meta.reset();
-    Trace.Handlers.ModelHandlers.Meta.initialize();
     for (const event of traceEvents) {
       Trace.Handlers.ModelHandlers.Meta.handleEvent(event);
     }
@@ -288,7 +262,6 @@ describe('MetaHandler', function() {
     }
 
     Trace.Handlers.ModelHandlers.Meta.reset();
-    Trace.Handlers.ModelHandlers.Meta.initialize();
     for (const event of traceEvents) {
       Trace.Handlers.ModelHandlers.Meta.handleEvent(event);
     }
@@ -345,7 +318,6 @@ describe('MetaHandler', function() {
     }
 
     Trace.Handlers.ModelHandlers.Meta.reset();
-    Trace.Handlers.ModelHandlers.Meta.initialize();
     for (const event of traceEvents) {
       Trace.Handlers.ModelHandlers.Meta.handleEvent(event);
     }
@@ -403,7 +375,6 @@ describe('MetaHandler', function() {
     }
 
     Trace.Handlers.ModelHandlers.Meta.reset();
-    Trace.Handlers.ModelHandlers.Meta.initialize();
     for (const event of traceEvents) {
       Trace.Handlers.ModelHandlers.Meta.handleEvent(event);
     }
@@ -433,7 +404,6 @@ describe('MetaHandler', function() {
     });
 
     Trace.Handlers.ModelHandlers.Meta.reset();
-    Trace.Handlers.ModelHandlers.Meta.initialize();
     for (const event of traceEvents) {
       Trace.Handlers.ModelHandlers.Meta.handleEvent(event);
     }
@@ -455,7 +425,6 @@ describe('MetaHandler', function() {
     }
 
     Trace.Handlers.ModelHandlers.Meta.reset();
-    Trace.Handlers.ModelHandlers.Meta.initialize();
     for (const event of traceEvents) {
       Trace.Handlers.ModelHandlers.Meta.handleEvent(event);
     }

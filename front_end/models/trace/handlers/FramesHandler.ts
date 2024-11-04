@@ -11,7 +11,7 @@ import {data as layerTreeHandlerData, type LayerTreeData} from './LayerTreeHandl
 import {data as metaHandlerData, type MetaHandlerData} from './MetaHandler.js';
 import {data as rendererHandlerData, type RendererHandlerData} from './RendererHandler.js';
 import * as Threads from './Threads.js';
-import {type HandlerName, HandlerState} from './types.js';
+import type {HandlerName} from './types.js';
 
 /**
  * IMPORTANT: this handler is slightly different to the rest. This is because
@@ -23,21 +23,12 @@ import {type HandlerName, HandlerState} from './types.js';
  *
  * In time we expect to migrate this code to a more "typical" handler.
  */
-let handlerState = HandlerState.UNINITIALIZED;
 
 const allEvents: Types.Events.Event[] = [];
 let model: TimelineFrameModel|null = null;
 
 export function reset(): void {
-  handlerState = HandlerState.UNINITIALIZED;
   allEvents.length = 0;
-}
-export function initialize(): void {
-  if (handlerState !== HandlerState.UNINITIALIZED) {
-    throw new Error('FramesHandler was not reset before being initialized');
-  }
-
-  handlerState = HandlerState.INITIALIZED;
 }
 
 export function handleEvent(event: Types.Events.Event): void {
@@ -45,10 +36,6 @@ export function handleEvent(event: Types.Events.Event): void {
 }
 
 export async function finalize(): Promise<void> {
-  if (handlerState !== HandlerState.INITIALIZED) {
-    throw new Error('FramesHandler is not initialized');
-  }
-
   // Snapshot events can be emitted out of order, so we need to sort before
   // building the frames model.
   Helpers.Trace.sortTraceEventsInPlace(allEvents);

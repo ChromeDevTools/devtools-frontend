@@ -5,8 +5,6 @@
 import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
 
-import {HandlerState} from './types.js';
-
 /**
  * IMPORTANT!
  * See UserTimings.md in this directory for some handy documentation on
@@ -43,7 +41,6 @@ export interface UserTimingsData {
    */
   timestampEvents: readonly Types.Events.TimeStamp[];
 }
-let handlerState = HandlerState.UNINITIALIZED;
 
 export function reset(): void {
   syntheticEvents.length = 0;
@@ -51,7 +48,6 @@ export function reset(): void {
   performanceMarkEvents.length = 0;
   consoleTimings.length = 0;
   timestampEvents.length = 0;
-  handlerState = HandlerState.INITIALIZED;
 }
 
 const resourceTimingNames = [
@@ -143,10 +139,6 @@ function userTimingComparator(
 }
 
 export function handleEvent(event: Types.Events.Event): void {
-  if (handlerState !== HandlerState.INITIALIZED) {
-    throw new Error('UserTimings handler is not initialized');
-  }
-
   if (ignoredNames.includes(event.name)) {
     return;
   }
@@ -167,21 +159,12 @@ export function handleEvent(event: Types.Events.Event): void {
 }
 
 export async function finalize(): Promise<void> {
-  if (handlerState !== HandlerState.INITIALIZED) {
-    throw new Error('UserTimings handler is not initialized');
-  }
-
   const asyncEvents = [...performanceMeasureEvents, ...consoleTimings];
   syntheticEvents = Helpers.Trace.createMatchedSortedSyntheticEvents(asyncEvents);
   syntheticEvents = syntheticEvents.sort((a, b) => userTimingComparator(a, b, [...syntheticEvents]));
-  handlerState = HandlerState.FINALIZED;
 }
 
 export function data(): UserTimingsData {
-  if (handlerState !== HandlerState.FINALIZED) {
-    throw new Error('UserTimings handler is not finalized');
-  }
-
   return {
     performanceMeasures: syntheticEvents.filter(e => e.cat === 'blink.user_timing') as
         Types.Events.SyntheticUserTimingPair[],

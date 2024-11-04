@@ -5,7 +5,7 @@
 import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
 
-import {type HandlerName, HandlerState} from './types.js';
+import type {HandlerName} from './types.js';
 import {data as userTimingsData} from './UserTimingsHandler.js';
 
 const extensionFlameChartEntries: Types.Extensions.SyntheticExtensionTrackEntry[] = [];
@@ -18,14 +18,12 @@ export interface ExtensionTraceData {
   extensionMarkers: readonly Types.Extensions.SyntheticExtensionMarker[];
   entryToNode: Map<Types.Events.Event, Helpers.TreeHelpers.TraceEntryNode>;
 }
-let handlerState = HandlerState.UNINITIALIZED;
 
 export function handleEvent(_event: Types.Events.Event): void {
   // Implementation not needed because data is sourced from UserTimingsHandler
 }
 
 export function reset(): void {
-  handlerState = HandlerState.INITIALIZED;
   extensionFlameChartEntries.length = 0;
   extensionTrackData.length = 0;
   extensionMarkers.length = 0;
@@ -33,11 +31,7 @@ export function reset(): void {
 }
 
 export async function finalize(): Promise<void> {
-  if (handlerState !== HandlerState.INITIALIZED) {
-    throw new Error('ExtensionTraceData handler is not initialized');
-  }
   createExtensionFlameChartEntries();
-  handlerState = HandlerState.FINALIZED;
 }
 
 function createExtensionFlameChartEntries(): void {
@@ -120,10 +114,6 @@ export function extensionDataInTiming(timing: Types.Events.SyntheticUserTimingPa
 }
 
 export function data(): ExtensionTraceData {
-  if (handlerState !== HandlerState.FINALIZED) {
-    throw new Error('ExtensionTraceData handler is not finalized');
-  }
-
   return {
     entryToNode,
     extensionTrackData: [...extensionTrackData],

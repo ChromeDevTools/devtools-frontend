@@ -6,8 +6,6 @@ import * as Platform from '../../../core/platform/platform.js';
 import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
 
-import {HandlerState} from './types.js';
-
 // We track the renderer processes we see in each frame on the way through the trace.
 const rendererProcessesByFrameId: FrameProcessData = new Map();
 
@@ -67,7 +65,6 @@ const eventPhasesOfInterestForTraceBounds = new Set([
   Types.Events.Phase.INSTANT,
 ]);
 
-let handlerState = HandlerState.UNINITIALIZED;
 // Tracks if the trace is a generic trace, which here means that it did not come from athe DevTools Performance Panel recording.
 // We assume a trace is generic, and mark it as not generic if we see any of:
 // - TracingStartedInPage
@@ -104,16 +101,6 @@ export function reset(): void {
   traceStartedTimeFromTracingStartedEvent = Types.Timing.MicroSeconds(-1);
 
   traceIsGeneric = true;
-
-  handlerState = HandlerState.UNINITIALIZED;
-}
-
-export function initialize(): void {
-  if (handlerState !== HandlerState.UNINITIALIZED) {
-    throw new Error('Meta Handler was not reset');
-  }
-
-  handlerState = HandlerState.INITIALIZED;
 }
 
 function updateRendererProcessByFrame(event: Types.Events.Event, frame: Types.Events.TraceFrame): void {
@@ -147,10 +134,6 @@ function updateRendererProcessByFrame(event: Types.Events.Event, frame: Types.Ev
 }
 
 export function handleEvent(event: Types.Events.Event): void {
-  if (handlerState !== HandlerState.INITIALIZED) {
-    throw new Error('Meta Handler is not initialized');
-  }
-
   if (traceIsGeneric && CHROME_WEB_TRACE_EVENTS.has(event.name as Types.Events.Name)) {
     traceIsGeneric = false;
   }
@@ -336,10 +319,6 @@ export function handleEvent(event: Types.Events.Event): void {
 }
 
 export async function finalize(): Promise<void> {
-  if (handlerState !== HandlerState.INITIALIZED) {
-    throw new Error('Handler is not initialized');
-  }
-
   // We try to set the minimum time by finding the event with the smallest
   // timestamp. However, if we also got a timestamp from the
   // TracingStartedInBrowser event, we should always use that.
@@ -412,8 +391,6 @@ export async function finalize(): Promise<void> {
       mainFrameURL = firstMainFrameNav.args.data.documentLoaderURL;
     }
   }
-
-  handlerState = HandlerState.FINALIZED;
 }
 
 export type MetaHandlerData = {
@@ -464,10 +441,6 @@ export type FrameProcessData =
         Map<Types.Events.ProcessID, {frame: Types.Events.TraceFrame, window: Types.Timing.TraceWindowMicroSeconds}[]>>;
 
 export function data(): MetaHandlerData {
-  if (handlerState !== HandlerState.FINALIZED) {
-    throw new Error('Meta Handler is not finalized');
-  }
-
   return {
     traceBounds: {...traceBounds},
     browserProcessId,

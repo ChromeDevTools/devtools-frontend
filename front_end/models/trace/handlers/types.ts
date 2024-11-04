@@ -7,9 +7,8 @@ import type * as ModelHandlers from './ModelHandlers.js';
 
 export interface Handler {
   reset(): void;
-  initialize?(freshRecording?: boolean): void;
   handleEvent(data: {}): void;
-  finalize?(): Promise<void>;
+  finalize(): Promise<void>;
   data(): unknown;
   deps?(): HandlerName[];
   handleUserConfig?(config: Types.Configuration.Configuration): void;
@@ -65,9 +64,3 @@ type DeepWriteable<T> = {
 export type ParsedTraceMutable = DeepWriteable<ParsedTrace>;
 
 export type Handlers = typeof ModelHandlers;
-
-export const enum HandlerState {
-  UNINITIALIZED = 1,
-  INITIALIZED = 2,
-  FINALIZED = 3,
-}

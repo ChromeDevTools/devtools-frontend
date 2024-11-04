@@ -4,10 +4,6 @@
 
 import * as Types from '../types/types.js';
 
-import {HandlerState} from './types.js';
-
-let handlerState = HandlerState.UNINITIALIZED;
-
 const invalidationsForEvent = new Map<Types.Events.Event, Types.Events.InvalidationTrackingEvent[]>();
 const invalidationCountForEvent = new Map<Types.Events.Event, number>();
 
@@ -19,7 +15,6 @@ let hasPainted = false;
 const allInvalidationTrackingEvents: Array<Types.Events.InvalidationTrackingEvent> = [];
 
 export function reset(): void {
-  handlerState = HandlerState.UNINITIALIZED;
   invalidationsForEvent.clear();
   lastRecalcStyleEvent = null;
   allInvalidationTrackingEvents.length = 0;
@@ -30,14 +25,6 @@ export function reset(): void {
 let maxInvalidationsPerEvent: number|null = null;
 export function handleUserConfig(userConfig: Types.Configuration.Configuration): void {
   maxInvalidationsPerEvent = userConfig.maxInvalidationEventsPerEvent;
-}
-
-export function initialize(): void {
-  if (handlerState !== HandlerState.UNINITIALIZED) {
-    throw new Error('InvalidationsHandler was not reset before being initialized');
-  }
-
-  handlerState = HandlerState.INITIALIZED;
 }
 
 function addInvalidationToEvent(event: Types.Events.Event, invalidation: Types.Events.InvalidationTrackingEvent): void {
@@ -132,11 +119,6 @@ export function handleEvent(event: Types.Events.Event): void {
 }
 
 export async function finalize(): Promise<void> {
-  if (handlerState !== HandlerState.INITIALIZED) {
-    throw new Error('InvalidationsHandler is not initialized');
-  }
-
-  handlerState = HandlerState.FINALIZED;
 }
 
 interface InvalidationsData {

@@ -663,7 +663,6 @@ describeWithEnvironment('RendererHandler', function() {
       ],
     ]);
 
-    Trace.Handlers.ModelHandlers.Samples.initialize();
     await Trace.Handlers.ModelHandlers.Samples.finalize();
     Trace.Handlers.ModelHandlers.Renderer.buildHierarchy(processes, {filter: {has: () => true}});
 
@@ -796,9 +795,6 @@ describeWithEnvironment('RendererHandler', function() {
       Trace.Handlers.ModelHandlers.Renderer.reset();
       Trace.Handlers.ModelHandlers.Meta.reset();
       Trace.Handlers.ModelHandlers.Samples.reset();
-      Trace.Handlers.ModelHandlers.Meta.initialize();
-      Trace.Handlers.ModelHandlers.Samples.initialize();
-      Trace.Handlers.ModelHandlers.Renderer.initialize();
 
       for (const event of traceEvents) {
         Trace.Handlers.ModelHandlers.Meta.handleEvent(event);

@@ -23,6 +23,9 @@ export function handleEvent(event: Types.Events.Event): void {
   }
 }
 
+export async function finalize(): Promise<void> {
+}
+
 export function data(): MemoryData {
   return {updateCountersByProcess};
 }

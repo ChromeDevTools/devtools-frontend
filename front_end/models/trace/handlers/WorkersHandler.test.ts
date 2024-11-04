@@ -9,7 +9,6 @@ describe('WorkersHandler', () => {
   beforeEach(async function() {
     Trace.Handlers.ModelHandlers.Workers.reset();
     const events = await TraceLoader.rawEvents(this, 'two-workers.json.gz');
-    Trace.Handlers.ModelHandlers.Workers.initialize();
     for (const event of events) {
       Trace.Handlers.ModelHandlers.Workers.handleEvent(event);
     }

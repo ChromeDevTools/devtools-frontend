@@ -10,7 +10,7 @@ import * as Types from '../types/types.js';
 import {data as metaHandlerData} from './MetaHandler.js';
 import {ScoreClassification} from './PageLoadMetricsHandler.js';
 import {data as screenshotsHandlerData} from './ScreenshotsHandler.js';
-import {type HandlerName, HandlerState} from './types.js';
+import type {HandlerName} from './types.js';
 
 // We start with a score of zero and step through all Layout Shift records from
 // all renderers. Each record not only tells us which renderer it is, but also
@@ -114,17 +114,7 @@ type ScoreRecord = {
 // Includes drops to 0 when session windows end.
 const scoreRecords: ScoreRecord[] = [];
 
-let handlerState = HandlerState.UNINITIALIZED;
-
-export function initialize(): void {
-  if (handlerState !== HandlerState.UNINITIALIZED) {
-    throw new Error('LayoutShifts Handler was not reset');
-  }
-  handlerState = HandlerState.INITIALIZED;
-}
-
 export function reset(): void {
-  handlerState = HandlerState.UNINITIALIZED;
   layoutShiftEvents.length = 0;
   layoutInvalidationEvents.length = 0;
   scheduleStyleInvalidationEvents.length = 0;
@@ -144,10 +134,6 @@ export function reset(): void {
 }
 
 export function handleEvent(event: Types.Events.Event): void {
-  if (handlerState !== HandlerState.INITIALIZED) {
-    throw new Error('Handler is not initialized');
-  }
-
   if (Types.Events.isLayoutShift(event) && !event.args.data?.had_recent_input) {
     layoutShiftEvents.push(event);
     return;
@@ -273,7 +259,6 @@ export async function finalize(): Promise<void> {
   await buildLayoutShiftsClusters();
   buildScoreRecords();
   collectNodes();
-  handlerState = HandlerState.FINALIZED;
 }
 
 async function buildLayoutShiftsClusters(): Promise<void> {
@@ -509,10 +494,6 @@ async function buildLayoutShiftsClusters(): Promise<void> {
 }
 
 export function data(): LayoutShifts {
-  if (handlerState !== HandlerState.FINALIZED) {
-    throw new Error('Layout Shifts Handler is not finalized');
-  }
-
   return {
     clusters,
     sessionMaxScore,

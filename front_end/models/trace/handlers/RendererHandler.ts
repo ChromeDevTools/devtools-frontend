@@ -9,7 +9,7 @@ import * as Types from '../types/types.js';
 import {data as auctionWorkletsData} from './AuctionWorkletsHandler.js';
 import {data as metaHandlerData, type FrameProcessData} from './MetaHandler.js';
 import {data as samplesHandlerData} from './SamplesHandler.js';
-import {type HandlerName, HandlerState} from './types.js';
+import type {HandlerName} from './types.js';
 
 /**
  * This handler builds the hierarchy of trace events and profile calls
@@ -37,7 +37,6 @@ let allTraceEntries: Types.Events.Event[] = [];
 
 const completeEventStack: (Types.Events.SyntheticComplete)[] = [];
 
-let handlerState = HandlerState.UNINITIALIZED;
 let config: Types.Configuration.Configuration = Types.Configuration.defaults();
 
 const makeRendererProcess = (): RendererProcess => ({
@@ -71,22 +70,9 @@ export function reset(): void {
   allTraceEntries.length = 0;
   completeEventStack.length = 0;
   compositorTileWorkers.length = 0;
-  handlerState = HandlerState.UNINITIALIZED;
-}
-
-export function initialize(): void {
-  if (handlerState !== HandlerState.UNINITIALIZED) {
-    throw new Error('Renderer Handler was not reset');
-  }
-
-  handlerState = HandlerState.INITIALIZED;
 }
 
 export function handleEvent(event: Types.Events.Event): void {
-  if (handlerState !== HandlerState.INITIALIZED) {
-    throw new Error('Renderer Handler is not initialized');
-  }
-
   if (Types.Events.isThreadName(event) && event.args.name?.startsWith('CompositorTileWorker')) {
     compositorTileWorkers.push({
       pid: event.pid,
@@ -115,24 +101,15 @@ export function handleEvent(event: Types.Events.Event): void {
 }
 
 export async function finalize(): Promise<void> {
-  if (handlerState !== HandlerState.INITIALIZED) {
-    throw new Error('Renderer Handler is not initialized');
-  }
-
   const {mainFrameId, rendererProcessesByFrame, threadsInProcess} = metaHandlerData();
   assignMeta(processes, mainFrameId, rendererProcessesByFrame, threadsInProcess);
   sanitizeProcesses(processes);
   buildHierarchy(processes);
   sanitizeThreads(processes);
   Helpers.Trace.sortTraceEventsInPlace(allTraceEntries);
-  handlerState = HandlerState.FINALIZED;
 }
 
 export function data(): RendererHandlerData {
-  if (handlerState !== HandlerState.FINALIZED) {
-    throw new Error('Renderer Handler is not finalized');
-  }
-
   return {
     processes: new Map(processes),
     compositorTileWorkers: new Map(gatherCompositorThreads()),

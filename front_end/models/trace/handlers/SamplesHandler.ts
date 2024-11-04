@@ -8,8 +8,6 @@ import * as CPUProfile from '../../cpu_profile/cpu_profile.js';
 import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
 
-import {HandlerState} from './types.js';
-
 const events = new Map<Types.Events.ProcessID, Map<Types.Events.ThreadID, Types.Events.Complete[]>>();
 
 const profilesInProcess = new Map<Types.Events.ProcessID, Map<Types.Events.ThreadID, ProfileData>>();
@@ -25,8 +23,6 @@ const entryToNode = new Map<Types.Events.Event, Helpers.TreeHelpers.TraceEntryNo
 // are matched by profile id, which we then finish processing to export
 // events matched by thread id.
 const preprocessedData = new Map<Types.Events.ProcessID, Map<Types.Events.ProfileID, PreprocessedData>>();
-
-let handlerState = HandlerState.UNINITIALIZED;
 
 function buildProfileCalls(): void {
   for (const [processId, profiles] of preprocessedData) {
@@ -110,22 +106,9 @@ export function reset(): void {
   preprocessedData.clear();
   profilesInProcess.clear();
   entryToNode.clear();
-  handlerState = HandlerState.UNINITIALIZED;
-}
-
-export function initialize(): void {
-  if (handlerState !== HandlerState.UNINITIALIZED) {
-    throw new Error('Samples Handler was not reset');
-  }
-
-  handlerState = HandlerState.INITIALIZED;
 }
 
 export function handleEvent(event: Types.Events.Event): void {
-  if (handlerState !== HandlerState.INITIALIZED) {
-    throw new Error('Samples Handler is not initialized');
-  }
-
   /**
    * A fake trace event created to support CDP.Profiler.Profiles in the
    * trace engine.
@@ -201,19 +184,10 @@ export function handleEvent(event: Types.Events.Event): void {
 }
 
 export async function finalize(): Promise<void> {
-  if (handlerState !== HandlerState.INITIALIZED) {
-    throw new Error('Samples Handler is not initialized');
-  }
   buildProfileCalls();
-
-  handlerState = HandlerState.FINALIZED;
 }
 
 export function data(): SamplesHandlerData {
-  if (handlerState !== HandlerState.FINALIZED) {
-    throw new Error('Samples Handler is not finalized');
-  }
-
   return {
     profilesInProcess,
     entryToNode,

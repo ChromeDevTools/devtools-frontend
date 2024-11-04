@@ -7,7 +7,7 @@ import * as Types from '../types/types.js';
 
 import {data as metaHandlerData} from './MetaHandler.js';
 import {ScoreClassification} from './PageLoadMetricsHandler.js';
-import {type HandlerName, HandlerState} from './types.js';
+import type {HandlerName} from './types.js';
 
 // This handler serves two purposes. It generates a list of events that are
 // used to show user clicks in the timeline. It is also used to gather
@@ -64,7 +64,6 @@ const interactionEvents: Types.Events.SyntheticInteractionPair[] = [];
 const interactionEventsWithNoNesting: Types.Events.SyntheticInteractionPair[] = [];
 const eventTimingEndEventsById = new Map<string, Types.Events.EventTimingEnd>();
 const eventTimingStartEventsForInteractions: Types.Events.EventTimingBegin[] = [];
-let handlerState = HandlerState.UNINITIALIZED;
 
 export function reset(): void {
   allEvents.length = 0;
@@ -75,14 +74,9 @@ export function reset(): void {
   eventTimingEndEventsById.clear();
   interactionEventsWithNoNesting.length = 0;
   longestInteractionEvent = null;
-  handlerState = HandlerState.INITIALIZED;
 }
 
 export function handleEvent(event: Types.Events.Event): void {
-  if (handlerState !== HandlerState.INITIALIZED) {
-    throw new Error('Handler is not initialized');
-  }
-
   if (Types.Events.isBeginCommitCompositorFrame(event)) {
     beginCommitCompositorFrameEvents.push(event);
     return;
@@ -343,7 +337,6 @@ export async function finalize(): Promise<void> {
     interactionEvents.push(interactionEvent);
   }
 
-  handlerState = HandlerState.FINALIZED;
   interactionEventsWithNoNesting.push(...removeNestedInteractions(interactionEvents));
 
   // Pick the longest interactions from the set that were not nested, as we

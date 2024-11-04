@@ -2,8 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Types from '../types/types.js';
 import type * as Protocol from '../../../generated/protocol.js';
+import * as Types from '../types/types.js';
+
 /**
  * If the LCP resource was an image, and that image was fetched over the
  * network, we want to be able to find the network request in order to construct
@@ -37,6 +38,9 @@ export function handleEvent(event: Types.Events.Event): void {
   }
 
   imageByDOMNodeId.set(event.args.data.DOMNodeId, event);
+}
+
+export async function finalize(): Promise<void> {
 }
 
 export function data(): Map<Protocol.DOM.BackendNodeId, Types.Events.LargestImagePaintCandidate> {

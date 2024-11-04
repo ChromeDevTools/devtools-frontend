@@ -21,7 +21,6 @@ This folder contains the new trace engine that was first implemented for the Per
 │NetworkRequestHandler│     │...many more handlers │
 │                     │     │                      │
 │     reset()         │     │                      │
-│     initialize()    │     │                      │
 │                     │     │                      │
 │     handleEvent()   │     │                      │
 │                     │     │                      │

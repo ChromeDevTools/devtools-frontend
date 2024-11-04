@@ -79,14 +79,12 @@ export class DrJonesFileAgent extends AiAgent<Workspace.UISourceCode.UISourceCod
   readonly clientFeature = Host.AidaClient.ClientFeature.CHROME_DRJONES_FILE_AGENT;
   get userTier(): string|undefined {
     const config = Common.Settings.Settings.instance().getHostConfig();
-    return config.devToolsAiAssistanceFileAgent?.userTier ?? config.devToolsAiAssistanceFileAgentDogfood?.userTier;
+    return config.devToolsAiAssistanceFileAgent?.userTier;
   }
   get options(): AidaRequestOptions {
     const config = Common.Settings.Settings.instance().getHostConfig();
-    const temperature =
-        config.devToolsAiAssistanceFileAgent?.temperature ?? config.devToolsAiAssistanceFileAgentDogfood?.temperature;
-    const modelId =
-        config.devToolsAiAssistanceFileAgent?.modelId ?? config.devToolsAiAssistanceFileAgentDogfood?.modelId;
+    const temperature = config.devToolsAiAssistanceFileAgent?.temperature;
+    const modelId = config.devToolsAiAssistanceFileAgent?.modelId;
 
     return {
       temperature,

@@ -215,14 +215,13 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
 
   #getAiAssistanceSettingDescription(): Platform.UIString.LocalizedString {
     const config = Common.Settings.Settings.instance().getHostConfig();
-    if (config.devToolsAiAssistancePerformanceAgent?.enabled ||
-        config.devToolsAiAssistancePerformanceAgentDogfood?.enabled) {
+    if (config.devToolsAiAssistancePerformanceAgent?.enabled) {
       return i18nString(UIStrings.helpUnderstandStylingNetworkPerformanceAndFile);
     }
-    if (config.devToolsAiAssistanceFileAgent?.enabled || config.devToolsAiAssistanceFileAgentDogfood?.enabled) {
+    if (config.devToolsAiAssistanceFileAgent?.enabled) {
       return i18nString(UIStrings.helpUnderstandStylingNetworkAndFile);
     }
-    if (config.devToolsAiAssistanceNetworkAgent?.enabled || config.devToolsExplainThisResourceDogfood?.enabled) {
+    if (config.devToolsAiAssistanceNetworkAgent?.enabled) {
       return i18nString(UIStrings.helpUnderstandStylingAndNetworkRequest);
     }
     return i18nString(UIStrings.helpUnderstandStyling);
@@ -230,14 +229,13 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
 
   #getAiAssistanceSettingInfo(): Platform.UIString.LocalizedString {
     const config = Common.Settings.Settings.instance().getHostConfig();
-    if (config.devToolsAiAssistancePerformanceAgent?.enabled ||
-        config.devToolsAiAssistancePerformanceAgentDogfood?.enabled) {
+    if (config.devToolsAiAssistancePerformanceAgent?.enabled) {
       return i18nString(UIStrings.explainStylingNetworkPerformanceAndFile);
     }
-    if (config.devToolsAiAssistanceFileAgent?.enabled || config.devToolsAiAssistanceFileAgentDogfood?.enabled) {
+    if (config.devToolsAiAssistanceFileAgent?.enabled) {
       return i18nString(UIStrings.explainStylingNetworkAndFile);
     }
-    if (config.devToolsAiAssistanceNetworkAgent?.enabled || config.devToolsExplainThisResourceDogfood?.enabled) {
+    if (config.devToolsAiAssistanceNetworkAgent?.enabled) {
       return i18nString(UIStrings.explainStylingAndNetworkRequest);
     }
     return i18nString(UIStrings.explainStyling);

@@ -107,14 +107,12 @@ export class DrJonesNetworkAgent extends AiAgent<SDK.NetworkRequest.NetworkReque
   readonly clientFeature = Host.AidaClient.ClientFeature.CHROME_DRJONES_NETWORK_AGENT;
   get userTier(): string|undefined {
     const config = Common.Settings.Settings.instance().getHostConfig();
-    return config.devToolsAiAssistanceNetworkAgent?.userTier ?? config.devToolsExplainThisResourceDogfood?.userTier;
+    return config.devToolsAiAssistanceNetworkAgent?.userTier;
   }
   get options(): AidaRequestOptions {
     const config = Common.Settings.Settings.instance().getHostConfig();
-    const temperature =
-        config.devToolsAiAssistanceNetworkAgent?.temperature ?? config.devToolsExplainThisResourceDogfood?.temperature;
-    const modelId =
-        config.devToolsAiAssistanceNetworkAgent?.modelId ?? config.devToolsExplainThisResourceDogfood?.modelId;
+    const temperature = config.devToolsAiAssistanceNetworkAgent?.temperature;
+    const modelId = config.devToolsAiAssistanceNetworkAgent?.modelId;
 
     return {
       temperature,

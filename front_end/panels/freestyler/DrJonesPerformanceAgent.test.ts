@@ -12,7 +12,7 @@ import {DrJonesPerformanceAgent, ResponseType} from './freestyler.js';
 describeWithEnvironment('DrJonesPerformanceAgent', () => {
   function mockHostConfig(modelId?: string, temperature?: number) {
     getGetHostConfigStub({
-      devToolsAiAssistancePerformanceAgentDogfood: {
+      devToolsAiAssistancePerformanceAgent: {
         modelId,
         temperature,
       },

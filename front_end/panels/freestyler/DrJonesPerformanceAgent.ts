@@ -130,12 +130,12 @@ export class DrJonesPerformanceAgent extends AiAgent<TimelineUtils.AICallTree.AI
   readonly clientFeature = Host.AidaClient.ClientFeature.CHROME_DRJONES_PERFORMANCE_AGENT;
   get userTier(): string|undefined {
     const config = Common.Settings.Settings.instance().getHostConfig();
-    return config.devToolsAiAssistancePerformanceAgentDogfood?.userTier;
+    return config.devToolsAiAssistancePerformanceAgent?.userTier;
   }
   get options(): AidaRequestOptions {
     const config = Common.Settings.Settings.instance().getHostConfig();
-    const temperature = config.devToolsAiAssistancePerformanceAgentDogfood?.temperature;
-    const modelId = config.devToolsAiAssistancePerformanceAgentDogfood?.modelId;
+    const temperature = config.devToolsAiAssistancePerformanceAgent?.temperature;
+    const modelId = config.devToolsAiAssistancePerformanceAgent?.modelId;
 
     return {
       temperature,

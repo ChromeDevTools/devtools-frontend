@@ -20,7 +20,7 @@ import * as UI from '../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import {PanelUtils} from '../../utils/utils.js';
-import {AgentType, type ContextDetail, ErrorType} from '../AiAgent.js';
+import {AgentType, type ContextDetail, type ConversationContext, ErrorType} from '../AiAgent.js';
 
 import freestylerChatUiStyles from './freestylerChatUi.css.js';
 import type {UserActionRowProps} from './UserActionRow.js';
@@ -313,10 +313,10 @@ export interface Props {
   state: State;
   aidaAvailability: Host.AidaClient.AidaAccessPreconditions;
   messages: ChatMessage[];
-  selectedElement: SDK.DOMModel.DOMNode|null;
-  selectedFile: Workspace.UISourceCode.UISourceCode|null;
-  selectedNetworkRequest: SDK.NetworkRequest.NetworkRequest|null;
-  selectedAiCallTree: TimelineUtils.AICallTree.AICallTree|null;
+  selectedElement: ConversationContext<SDK.DOMModel.DOMNode>|null;
+  selectedFile: ConversationContext<Workspace.UISourceCode.UISourceCode>|null;
+  selectedNetworkRequest: ConversationContext<SDK.NetworkRequest.NetworkRequest>|null;
+  selectedAiCallTree: ConversationContext<TimelineUtils.AICallTree.AICallTree>|null;
   isLoading: boolean;
   canShowFeedbackForm: boolean;
   userInfo: Pick<Host.InspectorFrontendHostAPI.SyncInformation, 'accountImage'|'accountFullName'>;
@@ -416,15 +416,20 @@ export class FreestylerChatUi extends HTMLElement {
       });
     });
 
-    const isInputDisabledCheckForFreestylerAgent = !Boolean(this.#props.selectedElement) || showsSideEffects;
-    const isInputDisabledCheckForDrJonesNetworkAgent = !Boolean(this.#props.selectedNetworkRequest);
-    const isInputDisabledCheckForDrJonesFileAgent =
-        !Boolean(this.#props.selectedFile) || !this.#props.selectedFile?.contentType().isTextType();
+    if (!isAidaAvailable || isConsentView || !this.#props.agentType) {
+      return true;
+    }
 
-    return (this.#props.agentType === AgentType.FREESTYLER && isInputDisabledCheckForFreestylerAgent) ||
-        (this.#props.agentType === AgentType.DRJONES_NETWORK_REQUEST && isInputDisabledCheckForDrJonesNetworkAgent) ||
-        (this.#props.agentType === AgentType.DRJONES_FILE && isInputDisabledCheckForDrJonesFileAgent) ||
-        !isAidaAvailable || isConsentView || !this.#props.agentType;
+    switch (this.#props.agentType) {
+      case AgentType.FREESTYLER:
+        return !this.#props.selectedElement || showsSideEffects;
+      case AgentType.DRJONES_NETWORK_REQUEST:
+        return !this.#props.selectedNetworkRequest;
+      case AgentType.DRJONES_FILE:
+        return !this.#props.selectedFile || !this.#props.selectedFile.getItem().contentType().isTextType();
+      case AgentType.DRJONES_PERFORMANCE:
+        return !this.#props.selectedAiCallTree;
+    }
   };
 
   #handleScroll = (ev: Event): void => {
@@ -804,14 +809,15 @@ export class FreestylerChatUi extends HTMLElement {
       return html`${LitHtml.nothing}`;
     }
 
-    const icon = PanelUtils.getIconForSourceFile(this.#props.selectedFile);
+    const icon = PanelUtils.getIconForSourceFile(this.#props.selectedFile.getItem());
 
     // clang-format off
     return html`<div class="select-element">
-    <div role=button class=${resourceClass}
-    @click=${this.#props.onSelectedFileRequestClick}>
-      ${icon}${this.#props.selectedFile?.displayName()}
-    </div></div>`;
+      <div role=button class=${resourceClass}
+        @click=${this.#props.onSelectedFileRequestClick}>
+          ${icon}${this.#props.selectedFile?.getItem().displayName()}
+      </div>
+    </div>`;
     // clang-format on
   }
 
@@ -825,13 +831,14 @@ export class FreestylerChatUi extends HTMLElement {
       return html`${LitHtml.nothing}`;
     }
 
-    const icon = PanelUtils.getIconForNetworkRequest(this.#props.selectedNetworkRequest);
+    const icon = PanelUtils.getIconForNetworkRequest(this.#props.selectedNetworkRequest.getItem());
     // clang-format off
     return html`<div class="select-element">
-    <div role=button class=${resourceClass}
-    @click=${this.#props.onSelectedNetworkRequestClick}>
-      ${icon}${this.#props.selectedNetworkRequest?.name()}
-    </div></div>`;
+      <div role=button class=${resourceClass}
+        @click=${this.#props.onSelectedNetworkRequestClick}>
+          ${icon}${this.#props.selectedNetworkRequest?.getItem().name()}
+        </div>
+    </div>`;
     // clang-format on
   };
 
@@ -880,7 +887,7 @@ export class FreestylerChatUi extends HTMLElement {
       return html`${LitHtml.nothing}`;
     }
 
-    const {event} = this.#props.selectedAiCallTree.selectedNode;
+    const {event} = this.#props.selectedAiCallTree.getItem().selectedNode;
     if (!event) {
       return html`${LitHtml.nothing}`;
     }

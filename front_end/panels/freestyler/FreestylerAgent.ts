@@ -16,6 +16,7 @@ import {
   AiAgent,
   type AidaRequestOptions,
   type ContextResponse,
+  ConversationContext,
   debugLog,
   isDebugMode,
   type ParsedResponse,
@@ -206,6 +207,28 @@ type AgentOptions = {
   createExtensionScope?: CreateExtensionScopeFunction,
   execJs?: typeof executeJsCode,
 };
+
+export class NodeContext extends ConversationContext<SDK.DOMModel.DOMNode> {
+  #node: SDK.DOMModel.DOMNode;
+
+  constructor(node: SDK.DOMModel.DOMNode) {
+    super();
+    this.#node = node;
+  }
+
+  getOrigin(): string {
+    const ownerDocument = this.#node.ownerDocument;
+    if (!ownerDocument) {
+      // The node is detached from a document.
+      return 'detached';
+    }
+    return new URL(ownerDocument.documentURL).origin;
+  }
+
+  getItem(): SDK.DOMModel.DOMNode {
+    return this.#node;
+  }
+}
 
 /**
  * One agent instance handles one conversation. Create a new agent
@@ -606,7 +629,8 @@ export class FreestylerAgent extends AiAgent<SDK.DOMModel.DOMNode> {
   }
 
   override async *
-      handleContextDetails(selectedElement: SDK.DOMModel.DOMNode|null): AsyncGenerator<ContextResponse, void, void> {
+      handleContextDetails(selectedElement: ConversationContext<SDK.DOMModel.DOMNode>|null):
+          AsyncGenerator<ContextResponse, void, void> {
     if (!selectedElement) {
       return;
     }
@@ -615,14 +639,16 @@ export class FreestylerAgent extends AiAgent<SDK.DOMModel.DOMNode> {
       title: lockedString(UIStringsNotTranslate.analyzingThePrompt),
       details: [{
         title: lockedString(UIStringsNotTranslate.dataUsed),
-        text: await FreestylerAgent.describeElement(selectedElement),
+        text: await FreestylerAgent.describeElement(selectedElement.getItem()),
       }],
     };
   }
 
-  override async enhanceQuery(query: string, selectedElement: SDK.DOMModel.DOMNode|null): Promise<string> {
+  override async enhanceQuery(query: string, selectedElement: ConversationContext<SDK.DOMModel.DOMNode>|null):
+      Promise<string> {
     const elementEnchantmentQuery = selectedElement ?
-        `# Inspected element\n\n${await FreestylerAgent.describeElement(selectedElement)}\n\n# User request\n\n` :
+        `# Inspected element\n\n${
+            await FreestylerAgent.describeElement(selectedElement.getItem())}\n\n# User request\n\n` :
         '';
     return `${elementEnchantmentQuery}QUERY: ${query}`;
   }

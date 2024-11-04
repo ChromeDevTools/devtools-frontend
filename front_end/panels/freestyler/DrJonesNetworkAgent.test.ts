@@ -15,7 +15,14 @@ import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import {createNetworkPanelForMockConnection} from '../../testing/NetworkHelpers.js';
 import * as Coordinator from '../../ui/components/render_coordinator/render_coordinator.js';
 
-import {allowHeader, DrJonesNetworkAgent, formatHeaders, formatInitiatorUrl, ResponseType} from './freestyler.js';
+import {
+  allowHeader,
+  DrJonesNetworkAgent,
+  formatHeaders,
+  formatInitiatorUrl,
+  RequestContext,
+  ResponseType,
+} from './freestyler.js';
 
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
@@ -215,7 +222,8 @@ describeWithMockConnection('DrJonesNetworkAgent', () => {
         aidaClient: mockAidaClient(generateAnswer),
       });
 
-      const responses = await Array.fromAsync(agent.run('test', {selected: selectedNetworkRequest}));
+      const responses =
+          await Array.fromAsync(agent.run('test', {selected: new RequestContext(selectedNetworkRequest)}));
       assert.deepStrictEqual(responses, [
         {
           type: ResponseType.USER_QUERY,

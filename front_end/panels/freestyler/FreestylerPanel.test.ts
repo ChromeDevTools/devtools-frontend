@@ -311,7 +311,7 @@ describeWithEnvironment('FreestylerPanel', () => {
         panel.show(document.body);
 
         sinon.assert.calledWith(mockView, sinon.match({
-          selectedElement: node,
+          selectedElement: new Freestyler.NodeContext(node),
         }));
       });
 
@@ -334,7 +334,7 @@ describeWithEnvironment('FreestylerPanel', () => {
         UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, node);
 
         sinon.assert.calledWith(mockView, sinon.match({
-          selectedElement: node,
+          selectedElement: new Freestyler.NodeContext(node),
         }));
       });
 
@@ -393,7 +393,7 @@ describeWithEnvironment('FreestylerPanel', () => {
         panel.show(document.body);
 
         sinon.assert.calledWith(mockView, sinon.match({
-          selectedNetworkRequest: networkRequest,
+          selectedNetworkRequest: new Freestyler.RequestContext(networkRequest),
         }));
       });
 
@@ -414,7 +414,7 @@ describeWithEnvironment('FreestylerPanel', () => {
         UI.Context.Context.instance().setFlavor(SDK.NetworkRequest.NetworkRequest, networkRequest);
 
         sinon.assert.calledWith(mockView, sinon.match({
-          selectedNetworkRequest: networkRequest,
+          selectedNetworkRequest: new Freestyler.RequestContext(networkRequest),
         }));
       });
 
@@ -448,7 +448,7 @@ describeWithEnvironment('FreestylerPanel', () => {
         panel.show(document.body);
 
         sinon.assert.calledWith(mockView, sinon.match({
-          selectedAiCallTree,
+          selectedAiCallTree: new Freestyler.CallTreeContext(selectedAiCallTree as TimelineUtils.AICallTree.AICallTree),
         }));
       });
 
@@ -469,7 +469,7 @@ describeWithEnvironment('FreestylerPanel', () => {
         UI.Context.Context.instance().setFlavor(TimelineUtils.AICallTree.AICallTree, selectedAiCallTree);
 
         sinon.assert.calledWith(mockView, sinon.match({
-          selectedAiCallTree,
+          selectedAiCallTree: new Freestyler.CallTreeContext(selectedAiCallTree as TimelineUtils.AICallTree.AICallTree),
         }));
       });
 
@@ -503,7 +503,7 @@ describeWithEnvironment('FreestylerPanel', () => {
         panel.show(document.body);
 
         sinon.assert.calledWith(mockView, sinon.match({
-          selectedFile: uiSourceCode,
+          selectedFile: new Freestyler.FileContext(uiSourceCode),
         }));
       });
 
@@ -524,7 +524,7 @@ describeWithEnvironment('FreestylerPanel', () => {
         UI.Context.Context.instance().setFlavor(Workspace.UISourceCode.UISourceCode, uiSourceCode);
 
         sinon.assert.calledWith(mockView, sinon.match({
-          selectedFile: uiSourceCode,
+          selectedFile: new Freestyler.FileContext(uiSourceCode),
         }));
       });
 

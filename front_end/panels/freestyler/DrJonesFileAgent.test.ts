@@ -16,7 +16,7 @@ import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import {loadBasicSourceMapExample} from '../../testing/SourceMapHelpers.js';
 import {createContentProviderUISourceCodes} from '../../testing/UISourceCodeHelpers.js';
 
-import {DrJonesFileAgent, formatSourceMapDetails, ResponseType} from './freestyler.js';
+import {DrJonesFileAgent, FileContext, formatSourceMapDetails, ResponseType} from './freestyler.js';
 
 describeWithMockConnection('DrJonesFileAgent', () => {
   function mockHostConfig(modelId?: string, temperature?: number) {
@@ -162,7 +162,8 @@ describeWithMockConnection('DrJonesFileAgent', () => {
       });
 
       const uiSourceCode = project.uiSourceCodeForURL(url);
-      const responses = await Array.fromAsync(agent.run('test', {selected: uiSourceCode}));
+      const responses =
+          await Array.fromAsync(agent.run('test', {selected: uiSourceCode ? new FileContext(uiSourceCode) : null}));
 
       assert.deepStrictEqual(responses, [
         {

@@ -15,6 +15,7 @@ import {
   type AidaRequestOptions,
   type ContextDetail,
   type ContextResponse,
+  ConversationContext,
   type ParsedResponse,
   ResponseType,
 } from './AiAgent.js';
@@ -97,6 +98,23 @@ const UIStringsNotTranslate = {
 
 const lockedString = i18n.i18n.lockedString;
 
+export class RequestContext extends ConversationContext<SDK.NetworkRequest.NetworkRequest> {
+  #request: SDK.NetworkRequest.NetworkRequest;
+
+  constructor(request: SDK.NetworkRequest.NetworkRequest) {
+    super();
+    this.#request = request;
+  }
+
+  getOrigin(): string {
+    return new URL(this.#request.url()).origin;
+  }
+
+  getItem(): SDK.NetworkRequest.NetworkRequest {
+    return this.#request;
+  }
+}
+
 /**
  * One agent instance handles one conversation. Create a new agent
  * instance for a new conversation.
@@ -121,7 +139,7 @@ export class DrJonesNetworkAgent extends AiAgent<SDK.NetworkRequest.NetworkReque
   }
 
   async *
-      handleContextDetails(selectedNetworkRequest: SDK.NetworkRequest.NetworkRequest|null):
+      handleContextDetails(selectedNetworkRequest: ConversationContext<SDK.NetworkRequest.NetworkRequest>|null):
           AsyncGenerator<ContextResponse, void, void> {
     if (!selectedNetworkRequest) {
       return;
@@ -130,14 +148,15 @@ export class DrJonesNetworkAgent extends AiAgent<SDK.NetworkRequest.NetworkReque
     yield {
       type: ResponseType.CONTEXT,
       title: lockedString(UIStringsNotTranslate.analyzingNetworkData),
-      details: createContextDetailsForDrJonesNetworkAgent(selectedNetworkRequest),
+      details: createContextDetailsForDrJonesNetworkAgent(selectedNetworkRequest.getItem()),
     };
   }
 
-  override async enhanceQuery(query: string, selectedNetworkRequest: SDK.NetworkRequest.NetworkRequest|null):
-      Promise<string> {
+  override async enhanceQuery(
+      query: string,
+      selectedNetworkRequest: ConversationContext<SDK.NetworkRequest.NetworkRequest>|null): Promise<string> {
     const networkEnchantmentQuery = selectedNetworkRequest ?
-        `# Selected network request \n${formatNetworkRequest(selectedNetworkRequest)}\n\n# User request\n\n` :
+        `# Selected network request \n${formatNetworkRequest(selectedNetworkRequest.getItem())}\n\n# User request\n\n` :
         '';
     return `${networkEnchantmentQuery}${query}`;
   }

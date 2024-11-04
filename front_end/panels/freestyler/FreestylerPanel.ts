@@ -15,6 +15,7 @@ import * as LitHtml from '../../ui/lit-html/lit-html.js';
 import {
   AgentType,
   type AiAgent,
+  type ConversationContext,
   ErrorType,
   type ResponseData,
   ResponseType,
@@ -30,12 +31,14 @@ import {
 } from './components/FreestylerChatUi.js';
 import {
   DrJonesFileAgent,
+  FileContext,
 } from './DrJonesFileAgent.js';
 import {
   DrJonesNetworkAgent,
+  RequestContext,
 } from './DrJonesNetworkAgent.js';
-import {DrJonesPerformanceAgent} from './DrJonesPerformanceAgent.js';
-import {FreestylerAgent} from './FreestylerAgent.js';
+import {CallTreeContext, DrJonesPerformanceAgent} from './DrJonesPerformanceAgent.js';
+import {FreestylerAgent, NodeContext} from './FreestylerAgent.js';
 import freestylerPanelStyles from './freestylerPanel.css.js';
 
 const {html} = LitHtml;
@@ -171,6 +174,34 @@ function defaultView(input: FreestylerChatUiProps, output: ViewOutput, target: H
     })}></devtools-freestyler-chat-ui>
   `, target, {host: input}); // eslint-disable-line rulesdir/lit_html_host_this
   // clang-format on
+}
+
+function createNodeContext(node: SDK.DOMModel.DOMNode|null): NodeContext|null {
+  if (!node) {
+    return null;
+  }
+  return new NodeContext(node);
+}
+
+function createFileContext(file: Workspace.UISourceCode.UISourceCode|null): FileContext|null {
+  if (!file) {
+    return null;
+  }
+  return new FileContext(file);
+}
+
+function createRequestContext(request: SDK.NetworkRequest.NetworkRequest|null): RequestContext|null {
+  if (!request) {
+    return null;
+  }
+  return new RequestContext(request);
+}
+
+function createCallTreeContext(callTree: TimelineUtils.AICallTree.AICallTree|null): CallTreeContext|null {
+  if (!callTree) {
+    return null;
+  }
+  return new CallTreeContext(callTree);
 }
 
 let freestylerPanelInstance: FreestylerPanel;
@@ -325,10 +356,13 @@ export class FreestylerPanel extends UI.Panel.Panel {
     this.#viewProps = {
       ...this.#viewProps,
       inspectElementToggled: this.#toggleSearchElementAction.toggled(),
-      selectedElement: selectedElementFilter(UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode)),
-      selectedNetworkRequest: UI.Context.Context.instance().flavor(SDK.NetworkRequest.NetworkRequest),
-      selectedAiCallTree: UI.Context.Context.instance().flavor(TimelineUtils.AICallTree.AICallTree),
-      selectedFile: UI.Context.Context.instance().flavor(Workspace.UISourceCode.UISourceCode),
+      selectedElement:
+          createNodeContext(selectedElementFilter(UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode))),
+      selectedNetworkRequest:
+          createRequestContext(UI.Context.Context.instance().flavor(SDK.NetworkRequest.NetworkRequest)),
+      selectedAiCallTree:
+          createCallTreeContext(UI.Context.Context.instance().flavor(TimelineUtils.AICallTree.AICallTree)),
+      selectedFile: createFileContext(UI.Context.Context.instance().flavor(Workspace.UISourceCode.UISourceCode)),
     };
     this.doUpdate();
 
@@ -388,41 +422,41 @@ export class FreestylerPanel extends UI.Panel.Panel {
   };
 
   #handleDOMNodeFlavorChange = (ev: Common.EventTarget.EventTargetEvent<SDK.DOMModel.DOMNode>): void => {
-    if (this.#viewProps.selectedElement === ev.data) {
+    if (this.#viewProps.selectedElement?.getItem() === ev.data) {
       return;
     }
 
-    this.#viewProps.selectedElement = selectedElementFilter(ev.data);
+    this.#viewProps.selectedElement = createNodeContext(selectedElementFilter(ev.data));
     this.doUpdate();
   };
 
   #handleNetworkRequestFlavorChange =
       (ev: Common.EventTarget.EventTargetEvent<SDK.NetworkRequest.NetworkRequest>): void => {
-        if (this.#viewProps.selectedNetworkRequest === ev.data) {
+        if (this.#viewProps.selectedNetworkRequest?.getItem() === ev.data) {
           return;
         }
 
-        this.#viewProps.selectedNetworkRequest = Boolean(ev.data) ? ev.data : null;
+        this.#viewProps.selectedNetworkRequest = Boolean(ev.data) ? new RequestContext(ev.data) : null;
         this.doUpdate();
       };
 
   #handleTraceEntryNodeFlavorChange =
       (ev: Common.EventTarget.EventTargetEvent<TimelineUtils.AICallTree.AICallTree>): void => {
-        if (this.#viewProps.selectedAiCallTree === ev.data) {
+        if (this.#viewProps.selectedAiCallTree?.getItem() === ev.data) {
           return;
         }
 
-        this.#viewProps.selectedAiCallTree = Boolean(ev.data) ? ev.data : null;
+        this.#viewProps.selectedAiCallTree = Boolean(ev.data) ? new CallTreeContext(ev.data) : null;
         this.doUpdate();
       };
 
   #handleUISourceCodeFlavorChange =
       (ev: Common.EventTarget.EventTargetEvent<Workspace.UISourceCode.UISourceCode>): void => {
-        if (this.#viewProps.selectedFile === ev.data) {
+        if (this.#viewProps.selectedFile?.getItem() === ev.data) {
           return;
         }
 
-        this.#viewProps.selectedFile = Boolean(ev.data) ? ev.data : null;
+        this.#viewProps.selectedFile = Boolean(ev.data) ? new FileContext(ev.data) : null;
         this.doUpdate();
       };
 
@@ -462,14 +496,15 @@ export class FreestylerPanel extends UI.Panel.Panel {
   #handleSelectedNetworkRequestClick(): void|Promise<void> {
     if (this.#viewProps.selectedNetworkRequest) {
       const requestLocation = NetworkForward.UIRequestLocation.UIRequestLocation.tab(
-          this.#viewProps.selectedNetworkRequest, NetworkForward.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT);
+          this.#viewProps.selectedNetworkRequest.getItem(),
+          NetworkForward.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT);
       return Common.Revealer.reveal(requestLocation);
     }
   }
 
   #handleSelectedFileClick(): void|Promise<void> {
     if (this.#viewProps.selectedFile) {
-      return Common.Revealer.reveal(this.#viewProps.selectedFile.uiLocation(0, 0));
+      return Common.Revealer.reveal(this.#viewProps.selectedFile.getItem().uiLocation(0, 0));
     }
   }
 
@@ -522,10 +557,10 @@ export class FreestylerPanel extends UI.Panel.Panel {
     } else if (this.#currentAgent.type !== targetAgentType) {
       this.#currentAgent = this.#createAgent(targetAgentType);
     }
+    this.#viewProps.agentType = this.#currentAgent.type;
     this.#viewOutput.freestylerChatUi?.focusTextInput();
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.FreestylerOpenedFromElementsPanelFloatingButton);
     this.#viewProps.messages = [];
-    this.#viewProps.agentType = this.#currentAgent.type;
     this.doUpdate();
     void this.#doConversation(this.#currentAgent.runFromHistory());
   }
@@ -614,23 +649,30 @@ export class FreestylerPanel extends UI.Panel.Panel {
     }
     this.#runAbortController = new AbortController();
     const signal = this.#runAbortController.signal;
-
-    let runner: AsyncGenerator<ResponseData, void, void>|undefined;
+    let context: ConversationContext<unknown>|null;
     switch (this.#currentAgent.type) {
       case AgentType.FREESTYLER:
-        runner = this.#currentAgent.run(text, {signal, selected: this.#viewProps.selectedElement});
+        context = this.#viewProps.selectedElement;
         break;
       case AgentType.DRJONES_FILE:
-        runner = this.#currentAgent.run(text, {signal, selected: this.#viewProps.selectedFile});
+        context = this.#viewProps.selectedFile;
         break;
       case AgentType.DRJONES_NETWORK_REQUEST:
-        runner = this.#currentAgent.run(text, {signal, selected: this.#viewProps.selectedNetworkRequest});
+        context = this.#viewProps.selectedNetworkRequest;
         break;
       case AgentType.DRJONES_PERFORMANCE:
-        runner = this.#currentAgent.run(text, {signal, selected: this.#viewProps.selectedAiCallTree});
+        context = this.#viewProps.selectedAiCallTree;
         break;
     }
-
+    // If a different context is provided, it must be from the same origin.
+    if (context && !context.isOriginAllowed(this.#currentAgent.origin)) {
+      // TODO: inform the user here.
+      // throw new Error('cross-origin context data should not be included');
+    }
+    const runner = this.#currentAgent.run(text, {
+      signal,
+      selected: context,
+    });
     UI.ARIAUtils.alert(lockedString(UIStringsNotTranslate.answerLoading));
     await this.#doConversation(runner);
     UI.ARIAUtils.alert(lockedString(UIStringsNotTranslate.answerReady));

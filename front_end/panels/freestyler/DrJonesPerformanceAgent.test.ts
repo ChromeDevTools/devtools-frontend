@@ -7,7 +7,7 @@ import {describeWithEnvironment, getGetHostConfigStub} from '../../testing/Envir
 import {TraceLoader} from '../../testing/TraceLoader.js';
 import * as TimelineUtils from '../timeline/utils/utils.js';
 
-import {DrJonesPerformanceAgent, ResponseType} from './freestyler.js';
+import {CallTreeContext, DrJonesPerformanceAgent, ResponseType} from './freestyler.js';
 
 describeWithEnvironment('DrJonesPerformanceAgent', () => {
   function mockHostConfig(modelId?: string, temperature?: number) {
@@ -133,7 +133,7 @@ describeWithEnvironment('DrJonesPerformanceAgent', () => {
         aidaClient: mockAidaClient(generateAnswer),
       });
 
-      const responses = await Array.fromAsync(agent.run('test', {selected: aiCallTree}));
+      const responses = await Array.fromAsync(agent.run('test', {selected: new CallTreeContext(aiCallTree)}));
       const expectedData = '\n\n' +
           `
 
@@ -198,7 +198,7 @@ self: 3
         serialize: () => 'Mock call tree',
       } as unknown as TimelineUtils.AICallTree.AICallTree;
 
-      const enhancedQuery1 = await agent.enhanceQuery('What is this?', mockAiCallTree);
+      const enhancedQuery1 = await agent.enhanceQuery('What is this?', new CallTreeContext(mockAiCallTree));
       assert.strictEqual(enhancedQuery1, 'Mock call tree\n\n# User request\n\nWhat is this?');
 
       // Create history state of the above query
@@ -227,13 +227,13 @@ self: 3
       ]]);
 
       const query2 = 'But what about this follow-up question?';
-      const enhancedQuery2 = await agent.enhanceQuery(query2, mockAiCallTree);
+      const enhancedQuery2 = await agent.enhanceQuery(query2, new CallTreeContext(mockAiCallTree));
       assert.strictEqual(enhancedQuery2, query2);
       assert.isFalse(enhancedQuery2.includes(mockAiCallTree.serialize()));
 
       // Just making sure any subsequent chat doesnt include it either.
       const query3 = 'And this 3rd question?';
-      const enhancedQuery3 = await agent.enhanceQuery(query3, mockAiCallTree);
+      const enhancedQuery3 = await agent.enhanceQuery(query3, new CallTreeContext(mockAiCallTree));
       assert.strictEqual(enhancedQuery3, query3);
       assert.isFalse(enhancedQuery3.includes(mockAiCallTree.serialize()));
     });

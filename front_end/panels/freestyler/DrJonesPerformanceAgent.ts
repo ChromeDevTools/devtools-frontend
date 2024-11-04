@@ -12,6 +12,7 @@ import {
   AiAgent,
   type AidaRequestOptions,
   type ContextResponse,
+  ConversationContext,
   type ParsedResponse,
   ResponseType,
 } from './AiAgent.js';
@@ -120,6 +121,24 @@ const UIStringsNotTranslate = {
 
 const lockedString = i18n.i18n.lockedString;
 
+export class CallTreeContext extends ConversationContext<TimelineUtils.AICallTree.AICallTree> {
+  #callTree: TimelineUtils.AICallTree.AICallTree;
+
+  constructor(callTree: TimelineUtils.AICallTree.AICallTree) {
+    super();
+    this.#callTree = callTree;
+  }
+
+  getOrigin(): string {
+    // TODO: implement cross-origin checks for the PerformanceAgent.
+    return '';
+  }
+
+  getItem(): TimelineUtils.AICallTree.AICallTree {
+    return this.#callTree;
+  }
+}
+
 /**
  * One agent instance handles one conversation. Create a new agent
  * instance for a new conversation.
@@ -144,7 +163,7 @@ export class DrJonesPerformanceAgent extends AiAgent<TimelineUtils.AICallTree.AI
   }
 
   async *
-      handleContextDetails(aiCallTree: TimelineUtils.AICallTree.AICallTree|null):
+      handleContextDetails(aiCallTree: ConversationContext<TimelineUtils.AICallTree.AICallTree>|null):
           AsyncGenerator<ContextResponse, void, void> {
     yield {
       type: ResponseType.CONTEXT,
@@ -152,14 +171,15 @@ export class DrJonesPerformanceAgent extends AiAgent<TimelineUtils.AICallTree.AI
       details: [
         {
           title: 'Selected call tree',
-          text: aiCallTree?.serialize() ?? '',
+          text: aiCallTree?.getItem().serialize() ?? '',
         },
       ],
     };
   }
 
-  override async enhanceQuery(query: string, aiCallTree: TimelineUtils.AICallTree.AICallTree|null): Promise<string> {
-    const treeStr = aiCallTree?.serialize();
+  override async enhanceQuery(query: string, aiCallTree: ConversationContext<TimelineUtils.AICallTree.AICallTree>|null):
+      Promise<string> {
+    const treeStr = aiCallTree?.getItem().serialize();
 
     // Collect the queries from previous messages in this session
     const prevQueries: string[] = [];

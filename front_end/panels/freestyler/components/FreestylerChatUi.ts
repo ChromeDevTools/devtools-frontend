@@ -116,6 +116,10 @@ const UIStringsNotTranslate = {
    */
   inputPlaceholderForDrJonesPerformanceAgent: 'Ask a question about the selected item and its call tree',
   /**
+   * @description Placeholder text for the input shown when the conversation is blocked because a cross-origin context was selected.
+   */
+  crossOriginError: 'To talk about data from another origin, start a new chat',
+  /**
    *@description Title for the send icon button.
    */
   sendButtonTitle: 'Send',
@@ -246,22 +250,6 @@ const str_ = i18n.i18n.registerUIStrings('panels/freestyler/components/Freestyle
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const lockedString = i18n.i18n.lockedString;
 
-function getInputPlaceholderString(state: State, agentType?: AgentType): Platform.UIString.LocalizedString {
-  if (state === State.CONSENT_VIEW || !agentType) {
-    return i18nString(UIStrings.followTheSteps);
-  }
-  switch (agentType) {
-    case AgentType.FREESTYLER:
-      return lockedString(UIStringsNotTranslate.inputPlaceholderForFreestylerAgent);
-    case AgentType.DRJONES_FILE:
-      return lockedString(UIStringsNotTranslate.inputPlaceholderForDrJonesFileAgent);
-    case AgentType.DRJONES_NETWORK_REQUEST:
-      return lockedString(UIStringsNotTranslate.inputPlaceholderForDrJonesNetworkAgent);
-    case AgentType.DRJONES_PERFORMANCE:
-      return lockedString(UIStringsNotTranslate.inputPlaceholderForDrJonesPerformanceAgent);
-  }
-}
-
 export interface Step {
   isLoading: boolean;
   thought?: string;
@@ -321,6 +309,7 @@ export interface Props {
   canShowFeedbackForm: boolean;
   userInfo: Pick<Host.InspectorFrontendHostAPI.SyncInformation, 'accountImage'|'accountFullName'>;
   agentType?: AgentType;
+  blockedByCrossOrigin: boolean;
 }
 
 // The model returns multiline code blocks in an erroneous way with the language being in new line.
@@ -408,6 +397,9 @@ export class FreestylerChatUi extends HTMLElement {
   }
 
   #isTextInputDisabled = (): boolean => {
+    if (this.#props.blockedByCrossOrigin) {
+      return true;
+    }
     const isAidaAvailable = this.#props.aidaAvailability === Host.AidaClient.AidaAccessPreconditions.AVAILABLE;
     const isConsentView = this.#props.state === State.CONSENT_VIEW;
     const showsSideEffects = this.#props.messages.some(message => {
@@ -867,7 +859,7 @@ export class FreestylerChatUi extends HTMLElement {
         <div class=${resourceClass}>${
           this.#props.selectedElement
             ? LitHtml.Directives.until(
-                  Common.Linkifier.Linkifier.linkify(this.#props.selectedElement),
+                  Common.Linkifier.Linkifier.linkify(this.#props.selectedElement.getItem()),
                 )
             : html`<span>${
               lockedString(UIStringsNotTranslate.noElementSelected)
@@ -994,6 +986,27 @@ export class FreestylerChatUi extends HTMLElement {
     }
   };
 
+  #getInputPlaceholderString(): Platform.UIString.LocalizedString {
+    const state = this.#props.state;
+    const agentType = this.#props.agentType;
+    if (state === State.CONSENT_VIEW || !agentType) {
+      return i18nString(UIStrings.followTheSteps);
+    }
+    if (this.#props.blockedByCrossOrigin) {
+      return lockedString(UIStringsNotTranslate.crossOriginError);
+    }
+    switch (agentType) {
+      case AgentType.FREESTYLER:
+        return lockedString(UIStringsNotTranslate.inputPlaceholderForFreestylerAgent);
+      case AgentType.DRJONES_FILE:
+        return lockedString(UIStringsNotTranslate.inputPlaceholderForDrJonesFileAgent);
+      case AgentType.DRJONES_NETWORK_REQUEST:
+        return lockedString(UIStringsNotTranslate.inputPlaceholderForDrJonesNetworkAgent);
+      case AgentType.DRJONES_PERFORMANCE:
+        return lockedString(UIStringsNotTranslate.inputPlaceholderForDrJonesPerformanceAgent);
+    }
+  }
+
   #renderChatInput = (): LitHtml.TemplateResult => {
     // clang-format off
     return html`
@@ -1002,7 +1015,7 @@ export class FreestylerChatUi extends HTMLElement {
           .disabled=${this.#isTextInputDisabled()}
           wrap="hard"
           @keydown=${this.#handleTextAreaKeyDown}
-          placeholder=${getInputPlaceholderString(this.#props.state, this.#props.agentType)}
+          placeholder=${this.#getInputPlaceholderString()}
           jslog=${VisualLogging.textField('query').track({ keydown: 'Enter' })}></textarea>
           ${this.#props.isLoading
             ? html`<devtools-button

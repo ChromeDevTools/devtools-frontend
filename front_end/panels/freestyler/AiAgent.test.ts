@@ -9,7 +9,7 @@ import {
 
 import * as Freestyler from './freestyler.js';
 
-const {AiAgent, ResponseType} = Freestyler;
+const {AiAgent, ResponseType, ConversationContext} = Freestyler;
 
 class AiAgentMock extends AiAgent<unknown> {
   type = Freestyler.AgentType.FREESTYLER;
@@ -223,6 +223,57 @@ describeWithEnvironment('AiAgent', () => {
           text: 'second answer',
         },
       ]);
+    });
+  });
+
+  describe('ConversationContext', () => {
+    function getTestContext(origin: string) {
+      class TestContext extends ConversationContext<undefined> {
+        override getOrigin(): string {
+          return origin;
+        }
+        override getItem(): undefined {
+          return undefined;
+        }
+      }
+      return new TestContext();
+    }
+    it('checks context origins', () => {
+      const tests = [
+        {
+          contextOrigin: 'https://google.test',
+          agentOrigin: 'https://google.test',
+          isAllowed: true,
+        },
+        {
+          contextOrigin: 'https://google.test',
+          agentOrigin: 'about:blank',
+          isAllowed: false,
+        },
+        {
+          contextOrigin: 'https://google.test',
+          agentOrigin: 'https://www.google.test',
+          isAllowed: false,
+        },
+        {
+          contextOrigin: 'https://a.test',
+          agentOrigin: 'https://b.test',
+          isAllowed: false,
+        },
+        {
+          contextOrigin: 'https://a.test',
+          agentOrigin: 'file:///tmp',
+          isAllowed: false,
+        },
+        {
+          contextOrigin: 'https://a.test',
+          agentOrigin: 'http://a.test',
+          isAllowed: false,
+        },
+      ];
+      for (const test of tests) {
+        assert.strictEqual(getTestContext(test.contextOrigin).isOriginAllowed(test.agentOrigin), test.isAllowed);
+      }
     });
   });
 });

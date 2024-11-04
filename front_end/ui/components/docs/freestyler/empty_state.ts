@@ -34,6 +34,7 @@ const component = new Freestyler.FreestylerChatUi({
   isLoading: false,
   canShowFeedbackForm: false,
   userInfo: {},
+  blockedByCrossOrigin: false,
 });
 
 document.getElementById('container')?.appendChild(component);

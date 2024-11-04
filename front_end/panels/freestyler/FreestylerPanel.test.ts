@@ -4,6 +4,7 @@
 
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
+import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import {findMenuItemWithLabel, getMenu} from '../../testing/ContextMenuHelpers.js';
@@ -798,5 +799,43 @@ describeWithEnvironment('FreestylerPanel', () => {
 
     // We don't show the context menu if there are not entries
     assert.isUndefined(contextMenu);
+  });
+  describe('cross-origin', () => {
+    it('blocks input on cross origin requests', async () => {
+      const networkRequest = sinon.createStubInstance(SDK.NetworkRequest.NetworkRequest, {
+        url: 'https://a.test' as Platform.DevToolsPath.UrlString,
+      });
+      UI.Context.Context.instance().setFlavor(SDK.NetworkRequest.NetworkRequest, networkRequest);
+      panel = new Freestyler.FreestylerPanel(mockView, {
+        aidaClient: getTestAidaClient(),
+        aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
+        syncInfo: getTestSyncInfo(),
+      });
+      panel.markAsRoot();
+      panel.show(document.body);
+
+      sinon.assert.calledWith(mockView, sinon.match({
+        selectedNetworkRequest: new Freestyler.RequestContext(networkRequest),
+        blockedByCrossOrigin: false,
+      }));
+
+      // Send a query for https://a.test.
+      panel.handleAction('drjones.network-floating-button');
+      mockView.lastCall.args[0].onTextSubmit('test');
+      await drainMicroTasks();
+
+      // Change context to https://b.test.
+      const networkRequest2 = sinon.createStubInstance(SDK.NetworkRequest.NetworkRequest, {
+        url: 'https://b.test' as Platform.DevToolsPath.UrlString,
+      });
+      UI.Context.Context.instance().setFlavor(SDK.NetworkRequest.NetworkRequest, networkRequest2);
+      panel.handleAction('drjones.network-floating-button');
+      await drainMicroTasks();
+
+      sinon.assert.calledWith(mockView, sinon.match({
+        selectedNetworkRequest: new Freestyler.RequestContext(networkRequest2),
+        blockedByCrossOrigin: true,
+      }));
+    });
   });
 });

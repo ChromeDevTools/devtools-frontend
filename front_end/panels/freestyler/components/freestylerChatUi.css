@@ -101,7 +101,7 @@
   }
 
   &:disabled {
-    color: var(--sys-color-state-disabled);
+    color: var(--sys-color-on-surface-subtle);
     background-color: var(--sys-color-state-disabled-container);
     border-color: transparent;
   }

@@ -60,6 +60,7 @@ css
       isLoading: false,
       canShowFeedbackForm: false,
       userInfo: {},
+      blockedByCrossOrigin: false,
       ...options,
     };
   }

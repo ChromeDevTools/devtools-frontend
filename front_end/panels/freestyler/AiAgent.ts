@@ -151,7 +151,6 @@ export abstract class AiAgent<T> {
   readonly #sessionId: string = crypto.randomUUID();
   #aidaClient: Host.AidaClient.AidaClient;
   #serverSideLoggingEnabled: boolean;
-  #origin?: string;
   abstract readonly preamble: string;
   abstract readonly options: AidaRequestOptions;
   abstract readonly clientFeature: Host.AidaClient.ClientFeature;
@@ -163,6 +162,11 @@ export abstract class AiAgent<T> {
    * the history chuck it created
    */
   #history = new Map<number, ResponseData[]>();
+  /**
+   * Might need to be part of history in case we allow chatting in
+   * historical conversations.
+   */
+  #origin?: string;
 
   constructor(opts: AgentOptions) {
     this.#aidaClient = opts.aidaClient;

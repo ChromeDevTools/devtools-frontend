@@ -216,6 +216,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
       selectedFile: null,
       selectedNetworkRequest: null,
       selectedAiCallTree: null,
+      blockedByCrossOrigin: false,
     };
   }
 
@@ -433,7 +434,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
     }
 
     this.#viewProps.selectedElement = createNodeContext(selectedElementFilter(ev.data));
-    this.doUpdate();
+    this.#onContextSelectionChanged();
   };
 
   #handleNetworkRequestFlavorChange =
@@ -443,7 +444,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
         }
 
         this.#viewProps.selectedNetworkRequest = Boolean(ev.data) ? new RequestContext(ev.data) : null;
-        this.doUpdate();
+        this.#onContextSelectionChanged();
       };
 
   #handleTraceEntryNodeFlavorChange =
@@ -453,7 +454,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
         }
 
         this.#viewProps.selectedAiCallTree = Boolean(ev.data) ? new CallTreeContext(ev.data) : null;
-        this.doUpdate();
+        this.#onContextSelectionChanged();
       };
 
   #handleUISourceCodeFlavorChange =
@@ -463,7 +464,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
         }
 
         this.#viewProps.selectedFile = Boolean(ev.data) ? new FileContext(ev.data) : null;
-        this.doUpdate();
+        this.#onContextSelectionChanged();
       };
 
   #handleFreestylerEnabledSettingChanged = (): void => {
@@ -568,6 +569,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
     this.#viewOutput.freestylerChatUi?.focusTextInput();
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.FreestylerOpenedFromElementsPanelFloatingButton);
     this.#viewProps.messages = [];
+    this.#onContextSelectionChanged();
     this.doUpdate();
     void this.#doConversation(this.#currentAgent.runFromHistory());
   }
@@ -618,6 +620,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
     }
     this.#viewProps.messages = [];
     this.#viewProps.agentType = undefined;
+    this.#onContextSelectionChanged();
     this.doUpdate();
   }
 
@@ -633,6 +636,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
     this.#viewProps.isLoading = false;
     if (this.#currentAgent) {
       this.#currentAgent = this.#createAgent(this.#currentAgent.type);
+      this.#onContextSelectionChanged();
     }
     this.#cancel();
     this.doUpdate();
@@ -646,12 +650,26 @@ export class FreestylerPanel extends UI.Panel.Panel {
     this.doUpdate();
   }
 
-  async #startConversation(text: string): Promise<void> {
+  #onContextSelectionChanged(): void {
     if (!this.#currentAgent) {
+      this.#viewProps.blockedByCrossOrigin = false;
+      this.doUpdate();
       return;
     }
-    this.#runAbortController = new AbortController();
-    const signal = this.#runAbortController.signal;
+    const currentContext = this.#getConversationContext();
+    if (!currentContext) {
+      this.#viewProps.blockedByCrossOrigin = false;
+      this.doUpdate();
+      return;
+    }
+    this.#viewProps.blockedByCrossOrigin = !currentContext.isOriginAllowed(this.#currentAgent.origin);
+    this.doUpdate();
+  }
+
+  #getConversationContext(): ConversationContext<unknown>|null {
+    if (!this.#currentAgent) {
+      return null;
+    }
     let context: ConversationContext<unknown>|null;
     switch (this.#currentAgent.type) {
       case AgentType.FREESTYLER:
@@ -667,10 +685,21 @@ export class FreestylerPanel extends UI.Panel.Panel {
         context = this.#viewProps.selectedAiCallTree;
         break;
     }
+    return context;
+  }
+
+  async #startConversation(text: string): Promise<void> {
+    if (!this.#currentAgent) {
+      return;
+    }
+    this.#runAbortController = new AbortController();
+    const signal = this.#runAbortController.signal;
+    const context = this.#getConversationContext();
     // If a different context is provided, it must be from the same origin.
     if (context && !context.isOriginAllowed(this.#currentAgent.origin)) {
-      // TODO: inform the user here.
-      // throw new Error('cross-origin context data should not be included');
+      // This error should not be reached. If it happens, some
+      // invariants do not hold anymore.
+      throw new Error('cross-origin context data should not be included');
     }
     const runner = this.#currentAgent.run(text, {
       signal,

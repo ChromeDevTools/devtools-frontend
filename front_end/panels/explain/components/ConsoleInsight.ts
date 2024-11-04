@@ -8,7 +8,6 @@ import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as Platform from '../../../core/platform/platform.js';
-import * as SDK from '../../../core/sdk/sdk.js';
 import * as Marked from '../../../third_party/marked/marked.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import type * as IconButton from '../../../ui/components/icon_button/icon_button.js';
@@ -95,9 +94,9 @@ const UIStrings = {
    */
   notLoggedIn: 'This feature is only available when you sign into Chrome with your Google account.',
   /**
-   * @description The title of the button that opens Chrome settings.
+   * @description The title of a button which opens the Chrome SignIn page.
    */
-  updateSettings: 'Update Settings',
+  signIn: 'Sign in',
   /**
    * @description The header shown when the internet connection is not
    * available.
@@ -168,7 +167,7 @@ const CODE_SNIPPET_WARNING_URL = 'https://support.google.com/legal/answer/135054
 const LEARNMORE_URL = 'https://goo.gle/devtools-console-messages-ai' as Platform.DevToolsPath.UrlString;
 const REPORT_URL = 'https://support.google.com/legal/troubleshooter/1114905?hl=en#ts=1115658%2C13380504' as
     Platform.DevToolsPath.UrlString;
-const CHROME_SETTINGS_URL = 'chrome://settings' as Platform.DevToolsPath.UrlString;
+const SIGN_IN_URL = 'https://accounts.google.com' as Platform.DevToolsPath.UrlString;
 
 const enum State {
   INSIGHT = 'insight',
@@ -529,17 +528,8 @@ export class ConsoleInsight extends HTMLElement {
     }
   }
 
-  #onGoToChromeSettings(): void {
-    const rootTarget = SDK.TargetManager.TargetManager.instance().rootTarget();
-    if (rootTarget === null) {
-      return;
-    }
-    const url = CHROME_SETTINGS_URL;
-    void rootTarget.targetAgent().invoke_createTarget({url}).then(result => {
-      if (result.getError()) {
-        Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(url);
-      }
-    });
+  #onGoToSignIn(): void {
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(SIGN_IN_URL);
   }
 
   #focusHeader(): void {
@@ -740,7 +730,7 @@ export class ConsoleInsight extends HTMLElement {
         <div class="filler"></div>
         <div>
           <devtools-button
-            @click=${this.#onGoToChromeSettings}
+            @click=${this.#onGoToSignIn}
             .data=${
               {
                 variant: Buttons.Button.Variant.PRIMARY,
@@ -748,7 +738,7 @@ export class ConsoleInsight extends HTMLElement {
               } as Buttons.Button.ButtonData
             }
           >
-            ${UIStrings.updateSettings}
+            ${UIStrings.signIn}
           </devtools-button>
         </div>
       </footer>`;

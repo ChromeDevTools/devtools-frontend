@@ -33,7 +33,7 @@ async function drainMicroTasks() {
 }
 
 describeWithEnvironment('FreestylerPanel', () => {
-  let mockView: sinon.SinonStub;
+  let mockView: sinon.SinonStub<[Freestyler.Props, unknown, HTMLElement]>;
   let panel: Freestyler.FreestylerPanel;
 
   beforeEach(() => {
@@ -611,17 +611,17 @@ describeWithEnvironment('FreestylerPanel', () => {
         syncInfo: getTestSyncInfo(),
       });
       panel.handleAction('freestyler.elements-floating-button');
-      (mockView.lastCall.args.at(0) as Freestyler.Props).onTextSubmit('test');
+      mockView.lastCall.args[0].onTextSubmit('test');
       await drainMicroTasks();
 
-      assert.deepEqual(mockView.lastCall.args.at(0).messages, [
+      assert.deepEqual(mockView.lastCall.args[0].messages, [
         {
-          entity: 'user',
+          entity: Freestyler.ChatMessageEntity.USER,
           text: 'test',
         },
         {
           answer: 'test',
-          entity: 'model',
+          entity: Freestyler.ChatMessageEntity.MODEL,
           rpcId: undefined,
           suggestions: undefined,
           steps: [],
@@ -631,7 +631,7 @@ describeWithEnvironment('FreestylerPanel', () => {
       const button = toolbar!.shadowRoot!.querySelector('devtools-button[aria-label=\'New chat\']');
       assert.instanceOf(button, HTMLElement);
       dispatchClickEvent(button);
-      assert.deepEqual(mockView.lastCall.args.at(0).messages, []);
+      assert.deepEqual(mockView.lastCall.args[0].messages, []);
     });
 
     it('should switch agents and restore history', async () => {
@@ -641,17 +641,16 @@ describeWithEnvironment('FreestylerPanel', () => {
         syncInfo: getTestSyncInfo(),
       });
       panel.handleAction('freestyler.elements-floating-button');
-      (mockView.lastCall.args.at(0) as Freestyler.Props).onTextSubmit('User question to Freestyler?');
+      mockView.lastCall.args[0].onTextSubmit('User question to Freestyler?');
       await drainMicroTasks();
-
-      assert.deepEqual(mockView.lastCall.args.at(0).messages, [
+      assert.deepEqual(mockView.lastCall.args[0].messages, [
         {
-          entity: 'user',
+          entity: Freestyler.ChatMessageEntity.USER,
           text: 'User question to Freestyler?',
         },
         {
           answer: 'test',
-          entity: 'model',
+          entity: Freestyler.ChatMessageEntity.MODEL,
           rpcId: undefined,
           suggestions: undefined,
           steps: [],
@@ -659,16 +658,16 @@ describeWithEnvironment('FreestylerPanel', () => {
       ]);
 
       panel.handleAction('drjones.network-floating-button');
-      (mockView.lastCall.args.at(0) as Freestyler.Props).onTextSubmit('User question to DrJones?');
+      mockView.lastCall.args[0].onTextSubmit('User question to DrJones?');
       await drainMicroTasks();
-      assert.deepEqual(mockView.lastCall.args.at(0).messages, [
+      assert.deepEqual(mockView.lastCall.args[0].messages, [
         {
-          entity: 'user',
+          entity: Freestyler.ChatMessageEntity.USER,
           text: 'User question to DrJones?',
         },
         {
           answer: 'test',
-          entity: 'model',
+          entity: Freestyler.ChatMessageEntity.MODEL,
           rpcId: undefined,
           suggestions: undefined,
           steps: [],
@@ -686,14 +685,14 @@ describeWithEnvironment('FreestylerPanel', () => {
       contextMenu.invokeHandler(freestylerEntry.id());
 
       await drainMicroTasks();
-      assert.deepEqual(mockView.lastCall.args.at(0).messages, [
+      assert.deepEqual(mockView.lastCall.args[0].messages, [
         {
-          entity: 'user',
+          entity: Freestyler.ChatMessageEntity.USER,
           text: 'User question to Freestyler?',
         },
         {
           answer: 'test',
-          entity: 'model',
+          entity: Freestyler.ChatMessageEntity.MODEL,
           rpcId: undefined,
           suggestions: undefined,
           steps: [],
@@ -709,17 +708,17 @@ describeWithEnvironment('FreestylerPanel', () => {
       syncInfo: getTestSyncInfo(),
     });
     panel.handleAction('freestyler.elements-floating-button');
-    (mockView.lastCall.args.at(0) as Freestyler.Props).onTextSubmit('test');
+    mockView.lastCall.args[0].onTextSubmit('test');
     await drainMicroTasks();
 
-    assert.deepEqual(mockView.lastCall.args.at(0).messages, [
+    assert.deepEqual(mockView.lastCall.args[0].messages, [
       {
-        entity: 'user',
+        entity: Freestyler.ChatMessageEntity.USER,
         text: 'test',
       },
       {
         answer: 'test',
-        entity: 'model',
+        entity: Freestyler.ChatMessageEntity.MODEL,
         rpcId: undefined,
         suggestions: undefined,
         steps: [],
@@ -729,7 +728,75 @@ describeWithEnvironment('FreestylerPanel', () => {
     const button = toolbar!.shadowRoot!.querySelector('devtools-button[aria-label=\'Clear chat\']');
     assert.instanceOf(button, HTMLElement);
     dispatchClickEvent(button);
-    assert.deepEqual(mockView.lastCall.args.at(0).messages, []);
-    assert.deepEqual(mockView.lastCall.args.at(0).agentType, undefined);
+    assert.deepEqual(mockView.lastCall.args[0].messages, []);
+    assert.deepEqual(mockView.lastCall.args[0].agentType, undefined);
+  });
+
+  it('should have empty state after clear chat history', async () => {
+    panel = new Freestyler.FreestylerPanel(mockView, {
+      aidaClient: getTestAidaClient(),
+      aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
+      syncInfo: getTestSyncInfo(),
+    });
+    panel.handleAction('freestyler.elements-floating-button');
+    mockView.lastCall.args[0].onTextSubmit('User question to Freestyler?');
+    await drainMicroTasks();
+    assert.deepEqual(mockView.lastCall.args[0].messages, [
+      {
+        entity: Freestyler.ChatMessageEntity.USER,
+        text: 'User question to Freestyler?',
+      },
+      {
+        answer: 'test',
+        entity: Freestyler.ChatMessageEntity.MODEL,
+        rpcId: undefined,
+        suggestions: undefined,
+        steps: [],
+      },
+    ]);
+
+    panel.handleAction('drjones.network-floating-button');
+    mockView.lastCall.args[0].onTextSubmit('User question to DrJones?');
+    await drainMicroTasks();
+    assert.deepEqual(mockView.lastCall.args[0].messages, [
+      {
+        entity: Freestyler.ChatMessageEntity.USER,
+        text: 'User question to DrJones?',
+      },
+      {
+        answer: 'test',
+        entity: Freestyler.ChatMessageEntity.MODEL,
+        rpcId: undefined,
+        suggestions: undefined,
+        steps: [],
+      },
+    ]);
+
+    let toolbar = panel.contentElement.querySelector('.freestyler-left-toolbar');
+    let button = toolbar!.shadowRoot!.querySelector('devtools-button[aria-label=\'History\']');
+    assert.instanceOf(button, HTMLElement);
+    let contextMenu = getMenu(() => {
+      dispatchClickEvent(button!);
+    });
+    const clearAll = findMenuItemWithLabel(contextMenu.footerSection(), 'Clear chat history')!;
+    assert.isDefined(clearAll);
+    contextMenu.invokeHandler(clearAll.id());
+    await drainMicroTasks();
+    assert.deepEqual(mockView.lastCall.args[0].messages, []);
+    assert.deepEqual(mockView.lastCall.args[0].agentType, undefined);
+
+    await drainMicroTasks();
+    contextMenu.discard();
+    await drainMicroTasks();
+
+    toolbar = panel.contentElement.querySelector('.freestyler-left-toolbar');
+    button = toolbar!.shadowRoot!.querySelector('devtools-button[aria-label=\'History\']');
+    assert.instanceOf(button, HTMLElement);
+    contextMenu = getMenu(() => {
+      dispatchClickEvent(button);
+    });
+
+    // We don't show the context menu if there are not entries
+    assert.isUndefined(contextMenu);
   });
 });

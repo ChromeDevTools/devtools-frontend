@@ -72,6 +72,10 @@ const UIStrings = {
    *@description AI assistance UI text clearing the current chat session.
    */
   clearChat: 'Clear chat',
+  /**
+   *@description AI assistance UI text that deletes all history entries.
+   */
+  clearChatHistory: 'Clear chat history',
 };
 
 /*
@@ -533,6 +537,10 @@ export class FreestylerPanel extends UI.Panel.Panel {
   }
 
   #onHistoryClicked(event: Event): void {
+    if ([...this.#agents].every(agent => agent.isEmpty)) {
+      return;
+    }
+
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
 
     for (const agent of [...this.#agents].reverse()) {
@@ -552,7 +560,25 @@ export class FreestylerPanel extends UI.Panel.Panel {
       );
     }
 
+    contextMenu.footerSection().appendItem(
+        i18nString(UIStrings.clearChatHistory),
+        () => {
+          this.#clearHistory();
+        },
+    );
+
     void contextMenu.show();
+  }
+
+  #clearHistory(): void {
+    this.#agents = new Set();
+    this.#freestylerAgent = this.#createFreestylerAgent();
+    this.#drJonesFileAgent = this.#createDrJonesFileAgent();
+    this.#drJonesNetworkAgent = this.#createDrJonesNetworkAgent();
+    this.#drJonesPerformanceAgent = this.#createDrJonesPerformanceAgent();
+    this.#viewProps.messages = [];
+    this.#viewProps.agentType = undefined;
+    this.doUpdate();
   }
 
   #onDeleteClicked(): void {

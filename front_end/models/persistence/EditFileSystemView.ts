@@ -39,13 +39,17 @@ import type {PlatformFileSystem} from './PlatformFileSystem.js';
 
 const UIStrings = {
   /**
+   *@description Text in Edit File System View of the Workspace settings in Settings to indicate that the following string is a folder URL
+   */
+  url: 'URL',
+  /**
    *@description Text in Edit File System View of the Workspace settings in Settings
    */
-  excludedFolders: 'Excluded folders',
+  excludedFolders: 'Excluded sub-folders',
   /**
    *@description Text to add something
    */
-  add: 'Add',
+  add: 'Add folder',
   /**
    * @description Placeholder text for an area of the UI that shows which folders have been excluded
    * from being show in DevTools. When the user has not yet chosen any folders to exclude, this text
@@ -91,13 +95,13 @@ export class EditFileSystemView extends UI.Widget.VBox implements UI.ListWidget.
       IsolatedFileSystemManager.instance().addEventListener(Events.ExcludedFolderRemoved, this.update, this),
     ];
 
-    const excludedFoldersHeader = this.contentElement.createChild('div', 'file-system-header');
-    excludedFoldersHeader.createChild('div', 'file-system-header-text').textContent =
-        i18nString(UIStrings.excludedFolders);
-    const addButton = UI.UIUtils.createTextButton(
-        i18nString(UIStrings.add), this.addExcludedFolderButtonClicked.bind(this),
-        {className: 'add-button', jslogContext: 'settings.add-excluded-folder'});
-    excludedFoldersHeader.appendChild(addButton);
+    const excludedFoldersHeader = this.contentElement.createChild('div', 'excluded-folder-header');
+    excludedFoldersHeader.createChild('span').textContent = i18nString(UIStrings.url);
+    excludedFoldersHeader.createChild('span', 'excluded-folder-url').textContent = fileSystemPath;
+
+    const excludeSubFoldersText = this.contentElement.createChild('span', 'exclude-subfolders-text');
+    excludeSubFoldersText.textContent = i18nString(UIStrings.excludedFolders);
+
     this.excludedFoldersList = new UI.ListWidget.ListWidget(this);
     this.excludedFoldersList.element.classList.add('file-system-list');
 
@@ -106,6 +110,12 @@ export class EditFileSystemView extends UI.Widget.VBox implements UI.ListWidget.
     excludedFoldersPlaceholder.textContent = i18nString(UIStrings.none);
     this.excludedFoldersList.setEmptyPlaceholder(excludedFoldersPlaceholder);
     this.excludedFoldersList.show(this.contentElement);
+
+    const addButton = UI.UIUtils.createTextButton(
+        i18nString(UIStrings.add), this.addExcludedFolderButtonClicked.bind(this),
+        {className: 'add-button', jslogContext: 'settings.add-excluded-folder'});
+
+    this.contentElement.appendChild(addButton);
 
     this.update();
   }

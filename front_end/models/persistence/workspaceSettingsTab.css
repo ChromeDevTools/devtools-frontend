@@ -4,106 +4,39 @@
  * found in the LICENSE file.
  */
 
-.workspace-settings-tab header {
-  padding: 0 0 6px;
+.mappings-info, .folder-exclude-pattern {
+  height: var(--settings-single-item-height);
 }
 
-.workspace-settings-tab header > h1 {
-  font-size: 18px;
-  font-weight: normal;
-  margin: 0;
-  padding-bottom: 3px;
+.mapping-view-container {
+  padding-left: 0;
+  padding-right: 0;
 }
 
-.workspace-settings-tab .settings-content {
-  overflow-y: auto;
-  overflow-x: hidden;
-  margin: 8px 8px 8px 0;
-  padding: 0 4px;
-  flex: auto;
-}
-
-.workspace-settings-tab .settings-container {
-  width: 100%;
-  column-width: 288px;
-}
-
-.workspace-settings-tab .settings-tab.settings-container {
-  column-width: 308px;
-}
-
-.workspace-settings-tab .settings-container-wrapper {
-  position: absolute;
-  top: 31px;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  overflow: auto;
-  padding-top: 9px;
-}
-
-.workspace-settings-tab .settings-tab.settings-content {
-  margin: 0;
-  padding: 0;
-}
-
-.workspace-settings-tab .settings-tab p {
-  margin: 12px 0;
-}
-
-.workspace-settings-tab p.folder-exclude-pattern {
-  display: grid;
-  align-items: center;
-}
-
-.workspace-settings-tab p.folder-exclude-pattern > input {
-  width: 80%;
-  margin-left: 10px;
-}
-
-.workspace-settings-tab .settings-tab .file-system-container {
-  border-top: 1px solid var(--sys-color-divider);
-  padding: 19px 0 10px;
-  margin: 20px 0;
-}
-
-.workspace-settings-tab .settings-tab .file-system-header {
+.folder-exclude-pattern {
   display: flex;
-  flex-direction: row;
   align-items: center;
+
+  & > input {
+    flex: 1;
+  }
 }
 
-.workspace-settings-tab .settings-tab .file-system-name {
-  font-weight: bold;
-  flex: none;
-  margin-right: 10px;
-  font-size: 15px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 70%;
+label {
+  padding-bottom: 0;
 }
 
-.workspace-settings-tab .settings-tab .file-system-path {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  flex: auto;
+.mappings-info {
+  border: none;
 }
 
-.workspace-settings-tab .settings-info-message {
-  background-color: var(--sys-color-neutral-container);
-  border-radius: 5px;
-  padding: 10px;
-  margin: 20px 0;
-}
+.add-button-container {
+  max-width: var(--sys-size-37);
+  margin-left: var(--sys-size-8);
+  width: 100%;
 
-.workspace-settings-tab .settings-tab.settings-content.settings-container {
-  column-width: initial;
-  overflow: hidden;
-  padding-bottom: 1px;
-  padding-right: 10px;
-
-  > devtools-button {
-    margin: 0 0 3px 5px;
+  & .add-folder {
+    min-width: var(--sys-size-31);
+    max-width: var(--sys-size-37);
   }
 }

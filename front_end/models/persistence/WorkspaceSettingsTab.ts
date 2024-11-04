@@ -4,6 +4,7 @@
 
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
+import * as Cards from '../../ui/components/cards/cards.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
@@ -27,11 +28,11 @@ const UIStrings = {
   /**
    *@description Text of the add button in Workspace Settings Tab of the Workspace settings in Settings
    */
-  addFolder: 'Add folder…',
+  addFolder: 'Add folder',
   /**
    *@description Label element text content in Workspace Settings Tab of the Workspace settings in Settings
    */
-  folderExcludePattern: 'Folder exclude pattern',
+  folderExcludePattern: 'Exclude from workspace',
   /**
    *@description Label for an item to remove something
    */
@@ -42,7 +43,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class WorkspaceSettingsTab extends UI.Widget.VBox {
   containerElement: HTMLElement;
-  private readonly fileSystemsListContainer: HTMLElement;
+  #addButtonContainer: HTMLElement;
   private readonly elementByPath: Map<Platform.DevToolsPath.UrlString, Element>;
   private readonly mappingViewByPath: Map<Platform.DevToolsPath.UrlString, EditFileSystemView>;
 
@@ -51,12 +52,9 @@ export class WorkspaceSettingsTab extends UI.Widget.VBox {
 
     this.element.setAttribute('jslog', `${VisualLogging.pane('workspace')}`);
 
-    this.element.classList.add('workspace-settings-tab');
-    const header = this.element.createChild('header');
-    UI.UIUtils.createTextChild(header.createChild('h1'), i18nString(UIStrings.workspace));
-
-    this.containerElement = this.element.createChild('div', 'settings-container-wrapper')
-                                .createChild('div', 'settings-tab settings-content settings-container');
+    this.containerElement =
+        this.contentElement.createChild('div', 'settings-card-container-wrapper').createChild('div');
+    this.containerElement.classList.add('settings-card-container');
 
     IsolatedFileSystemManager.instance().addEventListener(
         Events.FileSystemAdded, event => this.fileSystemAdded(event.data), this);
@@ -65,27 +63,31 @@ export class WorkspaceSettingsTab extends UI.Widget.VBox {
 
     const folderExcludePatternInput = this.createFolderExcludePatternInput();
     folderExcludePatternInput.classList.add('folder-exclude-pattern');
-    this.containerElement.appendChild(folderExcludePatternInput);
+    const mappingsAreInferredInfo = document.createElement('div');
+    mappingsAreInferredInfo.classList.add('mappings-info');
+    UI.UIUtils.createTextChild(mappingsAreInferredInfo, i18nString(UIStrings.mappingsAreInferredAutomatically));
 
-    const div = this.containerElement.createChild('div', 'settings-info-message');
-    UI.UIUtils.createTextChild(div, i18nString(UIStrings.mappingsAreInferredAutomatically));
-
-    this.fileSystemsListContainer = this.containerElement.createChild('div', '');
-
-    const addButton = UI.UIUtils.createTextButton(
-        i18nString(UIStrings.addFolder), this.addFileSystemClicked.bind(this),
-        {jslogContext: 'sources.add-folder-to-workspace'});
-    this.containerElement.appendChild(addButton);
-    this.setDefaultFocusedElement(addButton);
+    const card = new Cards.Card.Card();
+    this.containerElement.appendChild(card);
+    card.data = {
+      heading: i18nString(UIStrings.workspace),
+      content: [folderExcludePatternInput, mappingsAreInferredInfo],
+    };
 
     this.elementByPath = new Map();
-
     this.mappingViewByPath = new Map();
 
     const fileSystems = IsolatedFileSystemManager.instance().fileSystems();
     for (let i = 0; i < fileSystems.length; ++i) {
       this.addItem(fileSystems[i]);
     }
+
+    this.#addButtonContainer = this.containerElement.createChild('div', 'add-button-container');
+    const addButton = UI.UIUtils.createTextButton(
+        i18nString(UIStrings.addFolder), this.addFileSystemClicked.bind(this),
+        {jslogContext: 'sources.add-folder-to-workspace'});
+    addButton.classList.add('add-folder');
+    this.#addButtonContainer.appendChild(addButton);
   }
 
   override wasShown(): void {
@@ -93,19 +95,20 @@ export class WorkspaceSettingsTab extends UI.Widget.VBox {
     this.registerCSSFiles([workspaceSettingsTabStyles]);
   }
 
-  private createFolderExcludePatternInput(): Element {
-    const p = document.createElement('p');
-    const labelElement = p.createChild('label');
+  private createFolderExcludePatternInput(): HTMLElement {
+    const excludePatternElement = document.createElement('div');
+    excludePatternElement.classList.add('folder-exclude-pattern');
+    const labelElement = excludePatternElement.createChild('label');
     labelElement.textContent = i18nString(UIStrings.folderExcludePattern);
     const folderExcludeSetting = IsolatedFileSystemManager.instance().workspaceFolderExcludePatternSetting();
     const inputElement = UI.UIUtils.createInput('', 'text', folderExcludeSetting.name);
     UI.ARIAUtils.bindLabelToControl(labelElement, inputElement);
-    p.appendChild(inputElement);
+    excludePatternElement.appendChild(inputElement);
     const setValue =
         UI.UIUtils.bindInput(inputElement, folderExcludeSetting.set.bind(folderExcludeSetting), regexValidator, false);
     folderExcludeSetting.addChangeListener(() => setValue.call(null, folderExcludeSetting.get()));
     setValue(folderExcludeSetting.get());
-    return p;
+    return excludePatternElement;
 
     function regexValidator(value: string): {valid: boolean, errorMessage: (string|undefined)} {
       let regex;
@@ -129,41 +132,34 @@ export class WorkspaceSettingsTab extends UI.Widget.VBox {
             fileSystem) {
       return;
     }
-    const element = this.renderFileSystem(fileSystem);
-    this.elementByPath.set(fileSystem.path(), element);
+    const filename = this.getFilename(fileSystem);
+    const removeButton = UI.UIUtils.createTextButton(
+        i18nString(UIStrings.remove), this.removeFileSystemClicked.bind(this, fileSystem),
+        {jslogContext: 'settings.remove-file-system'});
 
-    this.fileSystemsListContainer.appendChild(element);
-
+    const mappingViewContainer = document.createElement('div');
+    mappingViewContainer.classList.add('mapping-view-container');
+    const fileSystemExcludeCard = new Cards.Card.Card();
+    this.containerElement.insertBefore(fileSystemExcludeCard, this.#addButtonContainer);
+    fileSystemExcludeCard.data = {
+      heading: filename,
+      headingIconName: 'folder',
+      headingSuffix: removeButton,
+      content: [mappingViewContainer],
+    };
     const mappingView = new EditFileSystemView(fileSystem.path());
     this.mappingViewByPath.set(fileSystem.path(), mappingView);
     mappingView.element.classList.add('file-system-mapping-view');
-    mappingView.show(element);
+
+    mappingView.show(mappingViewContainer);
+
+    this.elementByPath.set(fileSystem.path(), fileSystemExcludeCard);
   }
 
-  private renderFileSystem(fileSystem: PlatformFileSystem): Element {
+  private getFilename(fileSystem: PlatformFileSystem): string {
     const fileSystemPath = fileSystem.path();
     const lastIndexOfSlash = fileSystemPath.lastIndexOf('/');
-    const folderName = fileSystemPath.substr(lastIndexOfSlash + 1);
-
-    const element = document.createElement('div');
-    element.classList.add('file-system-container');
-    const header = element.createChild('div', 'file-system-header');
-
-    const nameElement = header.createChild('div', 'file-system-name');
-    nameElement.textContent = folderName;
-    UI.ARIAUtils.markAsHeading(nameElement, 2);
-    const path = header.createChild('div', 'file-system-path');
-    path.textContent = fileSystemPath;
-    UI.Tooltip.Tooltip.install(path, fileSystemPath);
-
-    const toolbar = new UI.Toolbar.Toolbar('');
-    const button =
-        new UI.Toolbar.ToolbarButton(i18nString(UIStrings.remove), 'cross', undefined, 'settings.remove-file-system');
-    button.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, this.removeFileSystemClicked.bind(this, fileSystem));
-    toolbar.appendToolbarItem(button);
-    header.appendChild(toolbar.element);
-
-    return element;
+    return fileSystemPath.substr(lastIndexOfSlash + 1);
   }
 
   private removeFileSystemClicked(fileSystem: PlatformFileSystem): void {

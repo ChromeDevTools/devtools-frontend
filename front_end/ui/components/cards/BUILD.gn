@@ -30,7 +30,9 @@ devtools_entrypoint("bundle") {
     ":css_files",
   ]
 
-  visibility = default_components_visibility
+  visibility = [ "../../../models/persistence/*" ]
+
+  visibility += default_components_visibility
 }
 
 ts_library("unittests") {

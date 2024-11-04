@@ -41,6 +41,7 @@ devtools_module("persistence") {
     "../../models/breakpoints:bundle",
     "../../models/text_utils:bundle",
     "../../models/workspace:bundle",
+    "../../ui/components/cards:bundle",
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/utils:bundle",
   ]

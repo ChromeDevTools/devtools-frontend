@@ -2174,16 +2174,6 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
 
     const {markerIndices, colorBuckets, titleIndices} = this.getDrawableData(context, timelineData);
 
-    context.save();
-    this.forEachGroupInViewport((offset, index, group, isFirst, groupHeight) => {
-      if (this.isGroupFocused(index)) {
-        context.fillStyle =
-            ThemeSupport.ThemeSupport.instance().getComputedValue('--selected-group-background', this.contentElement);
-        context.fillRect(0, offset, canvasWidth, groupHeight - group.style.padding);
-      }
-    });
-    context.restore();
-
     const groups = this.rawTimelineData?.groups || [];
     const trackIndex = groups.findIndex(g => g.name.includes('Main'));
     const group = groups.at(trackIndex);
@@ -2678,14 +2668,9 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       if (this.isGroupCollapsible(index) && !group.expanded || group.style.shareHeaderLine) {
         // In edit mode, we draw an extra rectangle for the save icon.
         const labelBackgroundWidth = this.labelWidthForGroup(context, group);
-        if (this.isGroupFocused(index)) {
-          context.fillStyle =
-              ThemeSupport.ThemeSupport.instance().getComputedValue('--selected-group-background', this.contentElement);
-        } else {
-          const parsedColor = Common.Color.parse(group.style.backgroundColor);
-          if (parsedColor) {
-            context.fillStyle = (parsedColor.setAlpha(0.8).asString() as string);
-          }
+        const parsedColor = Common.Color.parse(group.style.backgroundColor);
+        if (parsedColor) {
+          context.fillStyle = (parsedColor.setAlpha(0.8).asString() as string);
         }
         context.fillRect(
             iconsWidth + HEADER_LEFT_PADDING, offset + HEADER_LABEL_Y_PADDING, labelBackgroundWidth,

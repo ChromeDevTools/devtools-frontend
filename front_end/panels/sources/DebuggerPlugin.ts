@@ -566,18 +566,23 @@ export class DebuggerPlugin extends Plugin {
       scriptFile.addSourceMapURL(url);
     }
 
-    function addDebugInfoURL(scriptFile: Bindings.ResourceScriptMapping.ResourceScriptFile): void {
+    function addDebugInfoURL(
+        this: DebuggerPlugin, scriptFile: Bindings.ResourceScriptMapping.ResourceScriptFile): void {
       const dialog =
-          AddDebugInfoURLDialog.createAddDWARFSymbolsURLDialog(addDebugInfoURLDialogCallback.bind(null, scriptFile));
+          AddDebugInfoURLDialog.createAddDWARFSymbolsURLDialog(addDebugInfoURLDialogCallback.bind(this, scriptFile));
       dialog.show();
     }
 
     function addDebugInfoURLDialogCallback(
-        scriptFile: Bindings.ResourceScriptMapping.ResourceScriptFile, url: Platform.DevToolsPath.UrlString): void {
+        this: DebuggerPlugin, scriptFile: Bindings.ResourceScriptMapping.ResourceScriptFile,
+        url: Platform.DevToolsPath.UrlString): void {
       if (!url) {
         return;
       }
       scriptFile.addDebugInfoURL(url);
+      if (scriptFile.script?.debuggerModel) {
+        this.updateScriptFile(scriptFile.script?.debuggerModel);
+      }
     }
 
     if (this.uiSourceCode.project().type() === Workspace.Workspace.projectTypes.Network &&
@@ -593,7 +598,7 @@ export class DebuggerPlugin extends Plugin {
             !Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().pluginManager.hasPluginForScript(
                 scriptFile.script)) {
           contextMenu.debugSection().appendItem(
-              i18nString(UIStrings.addWasmDebugInfo), addDebugInfoURL.bind(null, scriptFile),
+              i18nString(UIStrings.addWasmDebugInfo), addDebugInfoURL.bind(this, scriptFile),
               {jslogContext: 'add-wasm-debug-info'});
         }
       }

@@ -495,8 +495,7 @@ describe('The Debugger Language Plugins', () => {
     assert.deepEqual(sourceLocations, ['unreachable.ll:6', 'unreachable.html:27', 'unreachable.html:30']);
   });
 
-  // Test needs to be updated after a protocol change.
-  it.skip('[crbug.com/372419542], shows a warning when no debug info is present', async () => {
+  it('shows a warning when no debug info is present', async () => {
     const extension = await loadExtension(
         'TestExtension', `${getResourcesPathWithDevToolsHostname()}/extensions/language_extensions.html`);
     await extension.evaluate(() => {
@@ -514,14 +513,15 @@ describe('The Debugger Language Plugins', () => {
         }
       }
 
-      RegisterExtension(new MissingInfoPlugin(), 'MissingInfo', {language: 'WebAssembly', symbol_types: ['None']});
+      RegisterExtension(
+          new MissingInfoPlugin(), 'MissingInfo', {language: 'WebAssembly', symbol_types: ['ExternalDWARF']});
     });
 
     await openSourcesPanel();
     await click(PAUSE_ON_UNCAUGHT_EXCEPTION_SELECTOR);
     await goToResource('sources/wasm/unreachable.html');
-    await addDummyExternalDWARFInfo('unreachable.wasm');
     await waitFor(RESUME_BUTTON);
+    await addDummyExternalDWARFInfo('unreachable.wasm');
 
     const incompleteMessage = `Failed to load any debug info for ${getResourcesPath()}/sources/wasm/unreachable.wasm.`;
     const infoBar = await waitFor(`.infobar-error[aria-label="${incompleteMessage}"`);

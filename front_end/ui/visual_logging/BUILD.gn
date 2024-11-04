@@ -21,6 +21,7 @@ devtools_module("visual_logging") {
   deps = [
     "../../core/common:bundle",
     "../../core/host:bundle",
+    "../../core/root:bundle",
     "../components/render_coordinator:bundle",
   ]
 }

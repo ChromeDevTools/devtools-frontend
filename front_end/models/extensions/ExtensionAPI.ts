@@ -1146,9 +1146,17 @@ self.injectedExtensionAPI = function(
     },
   };
 
+  const protocolGet = Object.getOwnPropertyDescriptor(URL.prototype, 'protocol')?.get;
+  function getProtocol(url: string): string {
+    if (!protocolGet) {
+      throw new Error('URL.protocol is not available');
+    }
+    return protocolGet.call(new URL(url));
+  }
+
   function canAccessResource(resource: APIImpl.ResourceData): boolean {
     try {
-      return extensionInfo.allowFileAccess || (new URL(resource.url)).protocol !== 'file:';
+      return extensionInfo.allowFileAccess || getProtocol(resource.url) !== 'file:';
     } catch (e) {
       return false;
     }

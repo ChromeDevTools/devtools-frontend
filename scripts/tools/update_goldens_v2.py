@@ -64,5 +64,5 @@ def build_parser():
 if __name__ == '__main__':
     main(
         ProjectConfig(platforms=['linux', 'mac', 'win64'],
-                      builder_prefix='devtools_frontend',
+                      builder_prefix='dtf',
                       ignore_failed_builders=True), sys.argv[1:])

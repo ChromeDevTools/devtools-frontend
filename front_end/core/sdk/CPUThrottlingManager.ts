@@ -35,6 +35,10 @@ export class CPUThrottlingManager extends Common.ObjectWrapper.ObjectWrapper<Eve
   }
 
   setCPUThrottlingRate(rate: number): void {
+    if (rate === this.#cpuThrottlingRateInternal) {
+      return;
+    }
+
     this.#cpuThrottlingRateInternal = rate;
     for (const emulationModel of TargetManager.instance().models(EmulationModel)) {
       void emulationModel.setCPUThrottlingRate(this.#cpuThrottlingRateInternal);

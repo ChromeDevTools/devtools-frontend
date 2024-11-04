@@ -144,10 +144,22 @@ export class TimelineController implements Trace.TracingManager.TracingManagerCl
     if (this.tracingManager) {
       this.tracingManager.stop();
     }
+    // When throttling is applied to the main renderer, it can slow down the
+    // collection of trace events once tracing has completed. Therefore we
+    // temporarily disable throttling whilst the final trace event collection
+    // takes place. Once it is done, we re-enable it (this is the existing
+    // behaviour within DevTools; the throttling settling is sticky + global).
+    const throttlingManager = SDK.CPUThrottlingManager.CPUThrottlingManager.instance();
+    const rateDuringRecording = throttlingManager.cpuThrottlingRate();
+    // 1 = no throttling (CPU is 1x'd)
+    throttlingManager.setCPUThrottlingRate(1);
 
     this.client.loadingStarted();
     await this.waitForTracingToStop();
     await this.allSourcesFinished();
+
+    // Now we re-enable throttling again to maintain the setting being persistent.
+    throttlingManager.setCPUThrottlingRate(rateDuringRecording);
 
     await LiveMetrics.LiveMetrics.instance().enable();
   }

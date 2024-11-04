@@ -175,6 +175,7 @@ export namespace Accessibility {
    * - from 'activedescendant' to 'owns' - relationships between elements other than parent/child/sibling.
    */
   export const enum AXPropertyName {
+    Actions = 'actions',
     Busy = 'busy',
     Disabled = 'disabled',
     Editable = 'editable',
@@ -757,6 +758,8 @@ export namespace Audits {
     ExcludeDomainNonASCII = 'ExcludeDomainNonASCII',
     ExcludeThirdPartyCookieBlockedInFirstPartySet = 'ExcludeThirdPartyCookieBlockedInFirstPartySet',
     ExcludeThirdPartyPhaseout = 'ExcludeThirdPartyPhaseout',
+    ExcludePortMismatch = 'ExcludePortMismatch',
+    ExcludeSchemeMismatch = 'ExcludeSchemeMismatch',
   }
 
   export const enum CookieWarningReason {
@@ -3799,6 +3802,7 @@ export namespace DOM {
     Check = 'check',
     Before = 'before',
     After = 'after',
+    SelectArrow = 'select-arrow',
     Marker = 'marker',
     Backdrop = 'backdrop',
     Column = 'column',

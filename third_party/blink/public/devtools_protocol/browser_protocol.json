@@ -210,6 +210,7 @@
                     "description": "Values of AXProperty name:\n- from 'busy' to 'roledescription': states which apply to every AX node\n- from 'live' to 'root': attributes which apply to nodes in live regions\n- from 'autocomplete' to 'valuetext': attributes which apply to widgets\n- from 'checked' to 'selected': states which apply to widgets\n- from 'activedescendant' to 'owns' - relationships between elements other than parent/child/sibling.",
                     "type": "string",
                     "enum": [
+                        "actions",
                         "busy",
                         "disabled",
                         "editable",
@@ -1048,7 +1049,9 @@
                         "ExcludeSamePartyCrossPartyContext",
                         "ExcludeDomainNonASCII",
                         "ExcludeThirdPartyCookieBlockedInFirstPartySet",
-                        "ExcludeThirdPartyPhaseout"
+                        "ExcludeThirdPartyPhaseout",
+                        "ExcludePortMismatch",
+                        "ExcludeSchemeMismatch"
                     ]
                 },
                 {
@@ -5695,6 +5698,7 @@
                         "check",
                         "before",
                         "after",
+                        "select-arrow",
                         "marker",
                         "backdrop",
                         "column",

@@ -80,7 +80,6 @@ function launchChrome() {
     'DeferRendererTasksAfterInput',                // crbug.com/361078921
     'PMProcessPriorityPolicy',                     // crbug.com/361252079
     'MojoChannelAssociatedSendUsesRunOrPostTask',  // crbug.com/376228320
-    'BoostRenderProcessForLoading',
   ];
   const launchArgs = [
     '--remote-allow-origins=*',

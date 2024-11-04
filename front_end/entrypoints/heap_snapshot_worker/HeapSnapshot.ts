@@ -2469,7 +2469,7 @@ export abstract class HeapSnapshot {
 
   private calculateDiffForClass(
       baseAggregate: HeapSnapshotModel.HeapSnapshotModel.AggregateForDiff,
-      aggregate: HeapSnapshotModel.HeapSnapshotModel.Aggregate): HeapSnapshotModel.HeapSnapshotModel.Diff|null {
+      aggregate?: HeapSnapshotModel.HeapSnapshotModel.Aggregate): HeapSnapshotModel.HeapSnapshotModel.Diff|null {
     const baseIds = baseAggregate.ids;
     const baseIndexes = baseAggregate.indexes;
     const baseSelfSizes = baseAggregate.selfSizes;
@@ -2480,7 +2480,7 @@ export abstract class HeapSnapshot {
     let j = 0;
     const l = baseIds.length;
     const m = indexes.length;
-    const diff = new HeapSnapshotModel.HeapSnapshotModel.Diff(aggregate.name);
+    const diff = new HeapSnapshotModel.HeapSnapshotModel.Diff(aggregate ? aggregate.name : '');
 
     const nodeB = this.createNode(indexes[j]);
     while (i < l && j < m) {

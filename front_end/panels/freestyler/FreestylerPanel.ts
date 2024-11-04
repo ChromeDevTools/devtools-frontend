@@ -113,55 +113,6 @@ function selectedElementFilter(maybeNode: SDK.DOMModel.DOMNode|null): SDK.DOMMod
   return null;
 }
 
-// TODO(ergunsh): Use the WidgetElement instead of separately creating the toolbar.
-function createToolbar(
-    target: HTMLElement,
-    {onHistoryClick, onNewAgentClick, onDeleteClick}:
-        {onHistoryClick: (event: Event) => void, onNewAgentClick: () => void, onDeleteClick: () => void}): void {
-  const toolbarContainer = target.createChild('div', 'freestyler-toolbar-container');
-  const leftToolbar = new UI.Toolbar.Toolbar('freestyler-left-toolbar', toolbarContainer);
-  const rightToolbar = new UI.Toolbar.Toolbar('freestyler-right-toolbar', toolbarContainer);
-
-  const clearButton =
-      new UI.Toolbar.ToolbarButton(i18nString(UIStrings.newChat), 'plus', undefined, 'freestyler.new-chat');
-  clearButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, onNewAgentClick);
-  leftToolbar.appendToolbarItem(clearButton);
-  leftToolbar.appendSeparator();
-  const historyButton =
-      new UI.Toolbar.ToolbarButton(i18nString(UIStrings.history), 'history', undefined, 'freestyler.history');
-  historyButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, event => {
-    onHistoryClick(event.data);
-  });
-  leftToolbar.appendToolbarItem(historyButton);
-  const deleteButton =
-      new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clearChat), 'bin', undefined, 'freestyler.delete');
-  deleteButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, onDeleteClick);
-  leftToolbar.appendToolbarItem(deleteButton);
-
-  const link = UI.XLink.XLink.create(
-      AI_ASSISTANCE_SEND_FEEDBACK, i18nString(UIStrings.sendFeedback), undefined, undefined,
-      'freestyler.send-feedback');
-  link.style.setProperty('display', null);
-  link.style.setProperty('text-decoration', 'none');
-  link.style.setProperty('padding', '0 var(--sys-size-3)');
-  const linkItem = new UI.Toolbar.ToolbarItem(link);
-  rightToolbar.appendToolbarItem(linkItem);
-
-  rightToolbar.appendSeparator();
-  const helpButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.help), 'help', undefined, 'freestyler.help');
-  helpButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, () => {
-    Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(AI_ASSISTANCE_HELP);
-  });
-  rightToolbar.appendToolbarItem(helpButton);
-
-  const settingsButton =
-      new UI.Toolbar.ToolbarButton(i18nString(UIStrings.settings), 'gear', undefined, 'freestyler.settings');
-  settingsButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, () => {
-    void UI.ViewManager.ViewManager.instance().showView('chrome-ai');
-  });
-  rightToolbar.appendToolbarItem(settingsButton);
-}
-
 function defaultView(input: FreestylerChatUiProps, output: ViewOutput, target: HTMLElement): void {
   // clang-format off
   LitHtml.render(html`
@@ -217,6 +168,13 @@ export class FreestylerPanel extends UI.Panel.Panel {
   #freestylerEnabledSetting: Common.Settings.Setting<boolean>|undefined;
   #changeManager = new ChangeManager();
 
+  #newChatButton =
+      new UI.Toolbar.ToolbarButton(i18nString(UIStrings.newChat), 'plus', undefined, 'freestyler.new-chat');
+  #historyEntriesButton =
+      new UI.Toolbar.ToolbarButton(i18nString(UIStrings.history), 'history', undefined, 'freestyler.history');
+  #deleteHistoryEntryButton =
+      new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clearChat), 'bin', undefined, 'freestyler.delete');
+
   #agents = new Set<AiAgent<unknown>>();
   #currentAgent?: AiAgent<unknown>;
 
@@ -228,11 +186,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
     super(FreestylerPanel.panelName);
     this.#freestylerEnabledSetting = this.#getAiAssistanceEnabledSetting();
 
-    createToolbar(this.contentElement, {
-      onNewAgentClick: this.#clearMessages.bind(this),
-      onHistoryClick: this.#onHistoryClicked.bind(this),
-      onDeleteClick: this.#onDeleteClicked.bind(this),
-    });
+    this.#createToolbar();
     this.#toggleSearchElementAction =
         UI.ActionRegistry.ActionRegistry.instance().getAction('elements.toggle-element-search');
     this.#aidaClient = aidaClient;
@@ -265,6 +219,47 @@ export class FreestylerPanel extends UI.Panel.Panel {
     };
   }
 
+  #createToolbar(): void {
+    const toolbarContainer = this.contentElement.createChild('div', 'freestyler-toolbar-container');
+    const leftToolbar = new UI.Toolbar.Toolbar('freestyler-left-toolbar', toolbarContainer);
+    const rightToolbar = new UI.Toolbar.Toolbar('freestyler-right-toolbar', toolbarContainer);
+
+    this.#newChatButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, this.#clearMessages.bind(this));
+    leftToolbar.appendToolbarItem(this.#newChatButton);
+    leftToolbar.appendSeparator();
+
+    this.#historyEntriesButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, event => {
+      this.#onHistoryClicked(event.data);
+    });
+    leftToolbar.appendToolbarItem(this.#historyEntriesButton);
+    this.#deleteHistoryEntryButton.addEventListener(
+        UI.Toolbar.ToolbarButton.Events.CLICK, this.#onDeleteClicked.bind(this));
+    leftToolbar.appendToolbarItem(this.#deleteHistoryEntryButton);
+
+    const link = UI.XLink.XLink.create(
+        AI_ASSISTANCE_SEND_FEEDBACK, i18nString(UIStrings.sendFeedback), undefined, undefined,
+        'freestyler.send-feedback');
+    link.style.setProperty('display', null);
+    link.style.setProperty('text-decoration', 'none');
+    link.style.setProperty('padding', '0 var(--sys-size-3)');
+    const linkItem = new UI.Toolbar.ToolbarItem(link);
+    rightToolbar.appendToolbarItem(linkItem);
+
+    rightToolbar.appendSeparator();
+    const helpButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.help), 'help', undefined, 'freestyler.help');
+    helpButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, () => {
+      Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(AI_ASSISTANCE_HELP);
+    });
+    rightToolbar.appendToolbarItem(helpButton);
+
+    const settingsButton =
+        new UI.Toolbar.ToolbarButton(i18nString(UIStrings.settings), 'gear', undefined, 'freestyler.settings');
+    settingsButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, () => {
+      void UI.ViewManager.ViewManager.instance().showView('chrome-ai');
+    });
+    rightToolbar.appendToolbarItem(settingsButton);
+  }
+
   #getChatUiState(): FreestylerChatUiState {
     const config = Common.Settings.Settings.instance().getHostConfig();
     const blockedByAge = config.aidaAvailability?.blockedByAge === true;
@@ -291,6 +286,17 @@ export class FreestylerPanel extends UI.Panel.Panel {
       case AgentType.DRJONES_PERFORMANCE:
         return this.#createDrJonesPerformanceAgent();
     }
+  }
+
+  #updateToolbarState(): void {
+    this.#historyEntriesButton.applyEnabledState([...this.#agents].some(agent => !agent.isEmpty));
+    this.#deleteHistoryEntryButton.applyEnabledState(Boolean(this.#currentAgent && !this.#currentAgent.isEmpty));
+    /*
+    * If there is no agent disable new chat button
+    * If the agent is empty disable new chat button
+    */
+    const newChatEnabled = this.#currentAgent ? (this.#currentAgent.isEmpty ? false : true) : false;
+    this.#newChatButton.applyEnabledState(newChatEnabled);
   }
 
   #createFreestylerAgent(): FreestylerAgent {
@@ -471,6 +477,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
   };
 
   doUpdate(): void {
+    this.#updateToolbarState();
     this.view(this.#viewProps, this.#viewOutput, this.#contentContainer);
   }
 
@@ -566,10 +573,6 @@ export class FreestylerPanel extends UI.Panel.Panel {
   }
 
   #onHistoryClicked(event: Event): void {
-    if ([...this.#agents].every(agent => agent.isEmpty)) {
-      return;
-    }
-
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
 
     for (const agent of [...this.#agents].reverse()) {

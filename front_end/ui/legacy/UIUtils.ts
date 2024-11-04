@@ -1100,13 +1100,6 @@ export function createTextButton(text: string, clickHandler?: ((arg0: Event) => 
   button.variant = opts?.variant ? opts.variant : Buttons.Button.Variant.OUTLINED;
   if (clickHandler) {
     button.addEventListener('click', clickHandler);
-    button.addEventListener('keydown', (event: KeyboardEvent): void => {
-      if (event.key === 'Enter' || event.key === 'Space') {
-        // Make sure we don't propagate 'Enter' or 'Space' key events to parents,
-        // so that these get turned into 'click' events properly.
-        event.stopImmediatePropagation();
-      }
-    });
   }
   if (opts?.jslogContext) {
     button.setAttribute('jslog', `${VisualLogging.action().track({click: true}).context(opts.jslogContext)}`);

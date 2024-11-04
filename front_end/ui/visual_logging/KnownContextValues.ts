@@ -618,6 +618,8 @@ export const knownContextValues = new Set([
   'changes.reveal-source',
   'changes.revert',
   'checked',
+  'chevron-left',
+  'chevron-right',
   'chrome-ai',
   'chrome-android-mobile',
   'chrome-android-mobile-high-end',

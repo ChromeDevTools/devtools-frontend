@@ -71,79 +71,41 @@
   display: inline-block;
 }
 
-/*
-  Scroll driven animation below is used for generating shadows
-  when the `.suggestions` area is scrollable.
-*/
-.suggestions {
-  display: flex;
-  overflow-y: hidden;
-  overflow-x: auto;
-  scrollbar-width: none;
-  gap: var(--sys-size-3);
-  scroll-timeline: --scroll-timeline x; /* stylelint-disable-line property-no-unknown */
-  animation: detect-scroll;
-  animation-timeline: --scroll-timeline; /* stylelint-disable-line property-no-unknown */
-  animation-fill-mode: none;
+.suggestions-container {
+  overflow: hidden;
   position: relative;
-}
+  display: flex;
 
-.suggestions::before,
-.suggestions::after {
-  content: "";
-  display: block;
-  position: sticky;
-  min-width: var(--sys-size-3);
-  height: var(--sys-size-11);
-  left: 0;
-  right: 0;
-  z-index: 999;
-  animation-name: reveal;
-  animation-timeline: --scroll-timeline; /* stylelint-disable-line property-no-unknown */
-  animation-fill-mode: both;
-}
-
-.suggestions::before {
-  top: 0;
-  visibility: var(--visibility-if-can-scroll, hidden);
-  animation-range: var(--sys-size-6) var(--sys-size-11); /* stylelint-disable-line property-no-unknown */
-  background:
-    radial-gradient(
-      farthest-side at 0 50%,
-      var(--app-color-scroll-area-shadow-start),
-      transparent
-    );
-}
-
-.suggestions::after {
-  bottom: 0;
-  visibility: var(--visibility-if-can-scroll, hidden);
-  animation-direction: reverse;
-  /* stylelint-disable-next-line property-no-unknown */
-  animation-range:
-    calc(100% - var(--sys-size-11))
-    calc(100% - var(--sys-size-6));
-  background:
-    radial-gradient(
-      farthest-side at 100% 50%,
-      var(--app-color-scroll-area-shadow-start),
-      transparent
-    );
-}
-
-@keyframes reveal {
-  0% {
-    opacity: 0%;
+  .suggestions-scroll-container {
+    display: flex;
+    overflow: auto hidden;
+    scrollbar-width: none;
+    gap: var(--sys-size-3);
+    padding-right: var(--sys-size-1);
   }
 
-  100% {
-    opacity: 100%;
+  .scroll-button-container {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    width: var(--sys-size-15);
+    z-index: 999;
   }
-}
 
-@keyframes detect-scroll {
-  from,
-  to {
-    --visibility-if-can-scroll: visible;
+  .scroll-button-container.hidden {
+    display: none;
+  }
+
+  .scroll-button-container.left {
+    left: 0;
+    background: linear-gradient(90deg, var(--sys-color-cdt-base-container) 0%, var(--sys-color-cdt-base-container) 50%, transparent);
+  }
+
+  .scroll-button-container.right {
+    right: 0;
+    background: linear-gradient(90deg, transparent, var(--sys-color-cdt-base-container) 50%);
+    justify-content: flex-end;
   }
 }

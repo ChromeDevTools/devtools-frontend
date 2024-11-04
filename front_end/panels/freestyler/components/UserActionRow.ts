@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as Platform from '../../../core/platform/platform.js';
@@ -55,12 +56,21 @@ const UIStringsNotTranslate = {
    * issue with the AI assistance message.
    */
   report: 'Report legal issue',
+  /**
+   * @description The title of the button for scrolling to see next suggestions
+   */
+  scrollToNext: 'Scroll to next suggestions',
+  /**
+   * @description The title of the button for scrolling to see previous suggestions
+   */
+  scrollToPrevious: 'Scroll to previous suggestions',
 };
 
 const lockedString = i18n.i18n.lockedString;
 
 const REPORT_URL = 'https://support.google.com/legal/troubleshooter/1114905?hl=en#ts=1115658%2C13380504' as
     Platform.DevToolsPath.UrlString;
+const SCROLL_ROUNDING_OFFSET = 1;
 export interface UserActionRowProps {
   showRateButtons: boolean;
   onFeedbackSubmit: (rate: Host.AidaClient.Rating, feedback?: string) => void;
@@ -75,6 +85,11 @@ export class UserActionRow extends HTMLElement {
   #isShowingFeedbackForm = false;
   #currentRating?: Host.AidaClient.Rating;
   #isSubmitButtonDisabled = true;
+  #suggestionsScrollContainerRef = LitHtml.Directives.createRef<HTMLElement>();
+  #suggestionsLeftScrollButtonContainerRef = LitHtml.Directives.createRef<HTMLElement>();
+  #suggestionsRightScrollButtonContainerRef = LitHtml.Directives.createRef<HTMLElement>();
+  #suggestionsResizeObserver = new ResizeObserver(() => this.#handleSuggestionsScrollOrResize());
+  #suggestionsEvaluateLayoutThrottler = new Common.Throttler.Throttler(50);
 
   constructor(props: UserActionRowProps) {
     super();
@@ -84,12 +99,43 @@ export class UserActionRow extends HTMLElement {
   set props(props: UserActionRowProps) {
     this.#props = props;
     this.#render();
+    this.#evaluateSuggestionsLayout();
   }
 
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [userActionRowStyles, Input.textInputStyles];
     this.#render();
+    this.#evaluateSuggestionsLayout();
+
+    if (this.#suggestionsScrollContainerRef.value) {
+      this.#suggestionsResizeObserver.observe(this.#suggestionsScrollContainerRef.value);
+    }
   }
+
+  disconnectedCallback(): void {
+    this.#suggestionsResizeObserver.disconnect();
+  }
+
+  #handleSuggestionsScrollOrResize = (): void => {
+    void this.#suggestionsEvaluateLayoutThrottler.schedule(() => {
+      this.#evaluateSuggestionsLayout();
+      return Promise.resolve();
+    });
+  };
+
+  #scrollSuggestionsScrollContainer = (direction: 'left'|'right'): void => {
+    const suggestionsScrollContainer = this.#suggestionsScrollContainerRef.value;
+    if (!suggestionsScrollContainer) {
+      return;
+    }
+
+    suggestionsScrollContainer.scroll({
+      top: 0,
+      left: direction === 'left' ? suggestionsScrollContainer.scrollLeft - suggestionsScrollContainer.clientWidth :
+                                   suggestionsScrollContainer.scrollLeft + suggestionsScrollContainer.clientWidth,
+      behavior: 'smooth',
+    });
+  };
 
   #handleRateClick(rating: Host.AidaClient.Rating): void {
     if (this.#currentRating === rating) {
@@ -177,6 +223,22 @@ export class UserActionRow extends HTMLElement {
     }
   };
 
+  #evaluateSuggestionsLayout = (): void => {
+    const suggestionsScrollContainer = this.#suggestionsScrollContainerRef.value;
+    const leftScrollButtonContainer = this.#suggestionsLeftScrollButtonContainerRef.value;
+    const rightScrollButtonContainer = this.#suggestionsRightScrollButtonContainerRef.value;
+    if (!suggestionsScrollContainer || !leftScrollButtonContainer || !rightScrollButtonContainer) {
+      return;
+    }
+
+    const shouldShowLeftButton = suggestionsScrollContainer.scrollLeft > SCROLL_ROUNDING_OFFSET;
+    const shouldShowRightButton =
+        suggestionsScrollContainer.scrollLeft + suggestionsScrollContainer.offsetWidth + SCROLL_ROUNDING_OFFSET <
+        suggestionsScrollContainer.scrollWidth;
+    leftScrollButtonContainer.classList.toggle('hidden', !shouldShowLeftButton);
+    rightScrollButtonContainer.classList.toggle('hidden', !shouldShowRightButton);
+  };
+
   #renderFeedbackForm(): LitHtml.LitTemplate {
     // clang-format off
     return html`
@@ -232,6 +294,54 @@ export class UserActionRow extends HTMLElement {
     // clang-format on
   }
 
+  #renderSuggestions(): LitHtml.LitTemplate {
+    // clang-format off
+    if (!this.#props.suggestions) {
+      return LitHtml.nothing;
+    }
+
+    return html`<div class="suggestions-container">
+      <div class="scroll-button-container left hidden" ${LitHtml.Directives.ref(this.#suggestionsLeftScrollButtonContainerRef)}>
+        <devtools-button
+          class='scroll-button'
+          .data=${{
+            variant: Buttons.Button.Variant.ICON,
+            size: Buttons.Button.Size.SMALL,
+            iconName: 'chevron-left',
+            title: lockedString(UIStringsNotTranslate.scrollToPrevious),
+            jslogContext: 'chevron-left',
+          } as Buttons.Button.ButtonData}
+          @click=${() => this.#scrollSuggestionsScrollContainer('left')}
+        ></devtools-button>
+      </div>
+      <div class="suggestions-scroll-container" @scroll=${this.#handleSuggestionsScrollOrResize} ${LitHtml.Directives.ref(this.#suggestionsScrollContainerRef)}>
+        ${this.#props.suggestions?.map(suggestion => html`<devtools-button
+          class='suggestion'
+          .data=${{
+            variant: Buttons.Button.Variant.OUTLINED,
+            title: suggestion,
+            jslogContext: 'suggestion',
+          } as Buttons.Button.ButtonData}
+          @click=${() => this.#props.handleSuggestionClick(suggestion)}
+        >${suggestion}</devtools-button>`)}
+      </div>
+      <div class="scroll-button-container right hidden" ${LitHtml.Directives.ref(this.#suggestionsRightScrollButtonContainerRef)}>
+        <devtools-button
+          class='scroll-button'
+          .data=${{
+            variant: Buttons.Button.Variant.ICON,
+            size: Buttons.Button.Size.SMALL,
+            iconName: 'chevron-right',
+            title: lockedString(UIStringsNotTranslate.scrollToNext),
+            jslogContext: 'chevron-right',
+          } as Buttons.Button.ButtonData}
+          @click=${() => this.#scrollSuggestionsScrollContainer('right')}
+        ></devtools-button>
+      </div>
+    </div>`;
+    // clang-format on
+  }
+
   #render(): void {
     // clang-format off
     LitHtml.render(
@@ -240,17 +350,7 @@ export class UserActionRow extends HTMLElement {
           <div class="rate-buttons">
             ${this.#props.showRateButtons ? this.#renderButtons() : LitHtml.nothing}
           </div>
-          ${this.#props.suggestions ?
-            html`<div class="suggestions">
-              ${this.#props.suggestions?.map(suggestion => html`<devtools-button
-                .data=${{
-                  variant: Buttons.Button.Variant.OUTLINED,
-                  title: suggestion,
-                  jslogContext: 'suggestion',
-                } as Buttons.Button.ButtonData}
-                @click=${() => this.#props.handleSuggestionClick(suggestion)}
-              >${suggestion}</devtools-button>`)}
-            </div>` : LitHtml.nothing}
+          ${this.#props.suggestions ? this.#renderSuggestions() : LitHtml.nothing}
         </div>
         ${this.#isShowingFeedbackForm
           ? this.#renderFeedbackForm()

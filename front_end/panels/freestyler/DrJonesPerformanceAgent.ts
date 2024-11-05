@@ -5,7 +5,8 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import type * as TimelineUtils from '../../panels/timeline/utils/utils.js';
+import * as TimelineUtils from '../../panels/timeline/utils/utils.js';
+import * as PanelUtils from '../utils/utils.js';
 
 import {
   AgentType,
@@ -129,13 +130,32 @@ export class CallTreeContext extends ConversationContext<TimelineUtils.AICallTre
     this.#callTree = callTree;
   }
 
-  getOrigin(): string {
+  override getOrigin(): string {
     // TODO: implement cross-origin checks for the PerformanceAgent.
     return '';
   }
 
-  getItem(): TimelineUtils.AICallTree.AICallTree {
+  override getItem(): TimelineUtils.AICallTree.AICallTree {
     return this.#callTree;
+  }
+
+  override getIcon(): HTMLElement {
+    const iconData = {
+      iconName: 'performance',
+      color: 'var(--sys-color-on-surface-subtle)',
+    };
+    const icon = PanelUtils.PanelUtils.createIconElement(iconData, 'Performance');
+    icon.classList.add('icon');
+    return icon;
+  }
+
+  override getTitle(): string {
+    const {event} = this.#callTree.selectedNode;
+    if (!event) {
+      return 'unknown';
+    }
+
+    return TimelineUtils.EntryName.nameForEntry(event);
   }
 }
 

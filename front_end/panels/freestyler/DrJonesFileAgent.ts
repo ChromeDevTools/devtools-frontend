@@ -7,6 +7,7 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import type * as Workspace from '../../models/workspace/workspace.js';
+import * as PanelUtils from '../utils/utils.js';
 
 import {
   AgentType,
@@ -78,12 +79,20 @@ export class FileContext extends ConversationContext<Workspace.UISourceCode.UISo
     this.#file = file;
   }
 
-  getOrigin(): string {
+  override getOrigin(): string {
     return new URL(this.#file.url()).origin;
   }
 
-  getItem(): Workspace.UISourceCode.UISourceCode {
+  override getItem(): Workspace.UISourceCode.UISourceCode {
     return this.#file;
+  }
+
+  override getIcon(): HTMLElement {
+    return PanelUtils.PanelUtils.getIconForSourceFile(this.#file);
+  }
+
+  override getTitle(): string {
+    return this.#file.displayName();
   }
 }
 

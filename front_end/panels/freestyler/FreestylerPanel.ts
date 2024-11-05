@@ -178,6 +178,11 @@ export class FreestylerPanel extends UI.Panel.Panel {
   #agents = new Set<AiAgent<unknown>>();
   #currentAgent?: AiAgent<unknown>;
 
+  #selectedFile: FileContext|null = null;
+  #selectedElement: NodeContext|null = null;
+  #selectedCallTree: CallTreeContext|null = null;
+  #selectedRequest: RequestContext|null = null;
+
   constructor(private view: View = defaultView, {aidaClient, aidaAvailability, syncInfo}: {
     aidaClient: Host.AidaClient.AidaClient,
     aidaAvailability: Host.AidaClient.AidaAccessPreconditions,
@@ -205,17 +210,13 @@ export class FreestylerPanel extends UI.Panel.Panel {
       onInspectElementClick: this.#handleSelectElementClick.bind(this),
       onFeedbackSubmit: this.#handleFeedbackSubmit.bind(this),
       onCancelClick: this.#cancel.bind(this),
-      onSelectedNetworkRequestClick: this.#handleSelectedNetworkRequestClick.bind(this),
-      onSelectedFileRequestClick: this.#handleSelectedFileClick.bind(this),
+      onContextClick: this.#handleContextClick.bind(this),
       canShowFeedbackForm: this.#serverSideLoggingEnabled,
       userInfo: {
         accountImage: syncInfo.accountImage,
         accountFullName: syncInfo.accountFullName,
       },
-      selectedElement: null,
-      selectedFile: null,
-      selectedNetworkRequest: null,
-      selectedAiCallTree: null,
+      selectedContext: null,
       blockedByCrossOrigin: false,
     };
   }
@@ -360,16 +361,17 @@ export class FreestylerPanel extends UI.Panel.Panel {
     void this.#handleAidaAvailabilityChange();
     void this
         .#handleFreestylerEnabledSettingChanged();  // If the setting was switched on/off while the FreestylerPanel was not shown.
+    this.#selectedElement =
+        createNodeContext(selectedElementFilter(UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode))),
+    this.#selectedRequest =
+        createRequestContext(UI.Context.Context.instance().flavor(SDK.NetworkRequest.NetworkRequest)),
+    this.#selectedCallTree =
+        createCallTreeContext(UI.Context.Context.instance().flavor(TimelineUtils.AICallTree.AICallTree)),
+    this.#selectedFile = createFileContext(UI.Context.Context.instance().flavor(Workspace.UISourceCode.UISourceCode)),
     this.#viewProps = {
       ...this.#viewProps,
       inspectElementToggled: this.#toggleSearchElementAction.toggled(),
-      selectedElement:
-          createNodeContext(selectedElementFilter(UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode))),
-      selectedNetworkRequest:
-          createRequestContext(UI.Context.Context.instance().flavor(SDK.NetworkRequest.NetworkRequest)),
-      selectedAiCallTree:
-          createCallTreeContext(UI.Context.Context.instance().flavor(TimelineUtils.AICallTree.AICallTree)),
-      selectedFile: createFileContext(UI.Context.Context.instance().flavor(Workspace.UISourceCode.UISourceCode)),
+      selectedContext: this.#getConversationContext(),
     };
     this.doUpdate();
 
@@ -429,31 +431,31 @@ export class FreestylerPanel extends UI.Panel.Panel {
   };
 
   #handleDOMNodeFlavorChange = (ev: Common.EventTarget.EventTargetEvent<SDK.DOMModel.DOMNode>): void => {
-    if (this.#viewProps.selectedElement?.getItem() === ev.data) {
+    if (this.#selectedElement?.getItem() === ev.data) {
       return;
     }
 
-    this.#viewProps.selectedElement = createNodeContext(selectedElementFilter(ev.data));
+    this.#selectedElement = createNodeContext(selectedElementFilter(ev.data));
     this.#onContextSelectionChanged();
   };
 
   #handleNetworkRequestFlavorChange =
       (ev: Common.EventTarget.EventTargetEvent<SDK.NetworkRequest.NetworkRequest>): void => {
-        if (this.#viewProps.selectedNetworkRequest?.getItem() === ev.data) {
+        if (this.#selectedRequest?.getItem() === ev.data) {
           return;
         }
 
-        this.#viewProps.selectedNetworkRequest = Boolean(ev.data) ? new RequestContext(ev.data) : null;
+        this.#selectedRequest = Boolean(ev.data) ? new RequestContext(ev.data) : null;
         this.#onContextSelectionChanged();
       };
 
   #handleTraceEntryNodeFlavorChange =
       (ev: Common.EventTarget.EventTargetEvent<TimelineUtils.AICallTree.AICallTree>): void => {
-        if (this.#viewProps.selectedAiCallTree?.getItem() === ev.data) {
+        if (this.#selectedCallTree?.getItem() === ev.data) {
           return;
         }
 
-        this.#viewProps.selectedAiCallTree = Boolean(ev.data) ? new CallTreeContext(ev.data) : null;
+        this.#selectedCallTree = Boolean(ev.data) ? new CallTreeContext(ev.data) : null;
         this.#onContextSelectionChanged();
       };
 
@@ -463,10 +465,10 @@ export class FreestylerPanel extends UI.Panel.Panel {
         if (!newFile) {
           return;
         }
-        if (this.#viewProps.selectedFile?.getItem() === newFile) {
+        if (this.#selectedFile?.getItem() === newFile) {
           return;
         }
-        this.#viewProps.selectedFile = new FileContext(ev.data);
+        this.#selectedFile = new FileContext(ev.data);
         this.#onContextSelectionChanged();
       };
 
@@ -504,19 +506,21 @@ export class FreestylerPanel extends UI.Panel.Panel {
     });
   }
 
-  #handleSelectedNetworkRequestClick(): void|Promise<void> {
-    if (this.#viewProps.selectedNetworkRequest) {
+  #handleContextClick(): void|Promise<void> {
+    const context = this.#viewProps.selectedContext;
+    if (context instanceof RequestContext) {
       const requestLocation = NetworkForward.UIRequestLocation.UIRequestLocation.tab(
-          this.#viewProps.selectedNetworkRequest.getItem(),
-          NetworkForward.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT);
+          context.getItem(), NetworkForward.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT);
       return Common.Revealer.reveal(requestLocation);
     }
-  }
-
-  #handleSelectedFileClick(): void|Promise<void> {
-    if (this.#viewProps.selectedFile) {
-      return Common.Revealer.reveal(this.#viewProps.selectedFile.getItem().uiLocation(0, 0));
+    if (context instanceof FileContext) {
+      return Common.Revealer.reveal(context.getItem().uiLocation(0, 0));
     }
+    if (context instanceof CallTreeContext) {
+      const trace = new SDK.TraceObject.RevealableEvent(event);
+      return Common.Revealer.reveal(trace);
+    }
+    // Node picker is using linkifier.
   }
 
   handleAction(actionId: string): void {
@@ -631,6 +635,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
     this.#currentAgent = agent;
     this.#viewProps.messages = [];
     this.#viewProps.agentType = agent.type;
+    this.#onContextSelectionChanged();
     await this.#doConversation(agent.runFromHistory());
   }
 
@@ -660,6 +665,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
       return;
     }
     const currentContext = this.#getConversationContext();
+    this.#viewProps.selectedContext = currentContext;
     if (!currentContext) {
       this.#viewProps.blockedByCrossOrigin = false;
       this.doUpdate();
@@ -676,16 +682,16 @@ export class FreestylerPanel extends UI.Panel.Panel {
     let context: ConversationContext<unknown>|null;
     switch (this.#currentAgent.type) {
       case AgentType.FREESTYLER:
-        context = this.#viewProps.selectedElement;
+        context = this.#selectedElement;
         break;
       case AgentType.DRJONES_FILE:
-        context = this.#viewProps.selectedFile;
+        context = this.#selectedFile;
         break;
       case AgentType.DRJONES_NETWORK_REQUEST:
-        context = this.#viewProps.selectedNetworkRequest;
+        context = this.#selectedRequest;
         break;
       case AgentType.DRJONES_PERFORMANCE:
-        context = this.#viewProps.selectedAiCallTree;
+        context = this.#selectedCallTree;
         break;
     }
     return context;

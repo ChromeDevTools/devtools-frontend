@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Host from '../../core/host/host.js';
+import type * as LitHtml from '../../ui/lit-html/lit-html.js';
 
 export const enum ResponseType {
   CONTEXT = 'context',
@@ -130,6 +131,9 @@ const MAX_STEP = 10;
 export abstract class ConversationContext<T> {
   abstract getOrigin(): string;
   abstract getItem(): T;
+  abstract getIcon(): HTMLElement;
+  abstract getTitle(): string|ReturnType<typeof LitHtml.Directives.until>;
+
   isOriginAllowed(agentOrigin: string|undefined): boolean {
     if (!agentOrigin) {
       return true;

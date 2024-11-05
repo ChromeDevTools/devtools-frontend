@@ -4,7 +4,6 @@
 
 import * as Host from '../../../core/host/host.js';
 import type * as SDK from '../../../core/sdk/sdk.js';
-import type * as TimelineUtils from '../../../panels/timeline/utils/utils.js';
 import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {describeWithEnvironment, getGetHostConfigStub} from '../../../testing/EnvironmentHelpers.js';
 import * as Marked from '../../../third_party/marked/marked.js';
@@ -46,17 +45,13 @@ css
       onInspectElementClick: noop,
       onFeedbackSubmit: noop,
       onCancelClick: noop,
-      onSelectedNetworkRequestClick: noop,
-      onSelectedFileRequestClick: noop,
+      onContextClick: noop,
       inspectElementToggled: false,
       state: Freestyler.State.CHAT_VIEW,
       agentType: Freestyler.AgentType.FREESTYLER,
       aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
       messages,
-      selectedElement: new Freestyler.NodeContext({} as unknown as SDK.DOMModel.DOMNode),
-      selectedFile: null,
-      selectedNetworkRequest: new Freestyler.RequestContext({} as unknown as SDK.NetworkRequest.NetworkRequest),
-      selectedAiCallTree: new Freestyler.CallTreeContext({} as unknown as TimelineUtils.AICallTree.AICallTree),
+      selectedContext: new Freestyler.NodeContext({} as unknown as SDK.DOMModel.DOMNode),
       isLoading: false,
       canShowFeedbackForm: false,
       userInfo: {},

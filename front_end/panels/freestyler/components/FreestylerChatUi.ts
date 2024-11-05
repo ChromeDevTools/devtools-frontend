@@ -9,9 +9,6 @@ import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as Platform from '../../../core/platform/platform.js';
-import * as SDK from '../../../core/sdk/sdk.js';
-import type * as Workspace from '../../../models/workspace/workspace.js';
-import * as TimelineUtils from '../../../panels/timeline/utils/utils.js';
 import * as Marked from '../../../third_party/marked/marked.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import type * as IconButton from '../../../ui/components/icon_button/icon_button.js';
@@ -19,7 +16,6 @@ import * as MarkdownView from '../../../ui/components/markdown_view/markdown_vie
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
-import {PanelUtils} from '../../utils/utils.js';
 import {AgentType, type ContextDetail, type ConversationContext, ErrorType} from '../AiAgent.js';
 
 import freestylerChatUiStyles from './freestylerChatUi.css.js';
@@ -295,16 +291,12 @@ export interface Props {
   onInspectElementClick: () => void;
   onFeedbackSubmit: (rpcId: number, rate: Host.AidaClient.Rating, feedback?: string) => void;
   onCancelClick: () => void;
-  onSelectedNetworkRequestClick: () => void | Promise<void>;
-  onSelectedFileRequestClick: () => void | Promise<void>;
+  onContextClick: () => void | Promise<void>;
   inspectElementToggled: boolean;
   state: State;
   aidaAvailability: Host.AidaClient.AidaAccessPreconditions;
   messages: ChatMessage[];
-  selectedElement: ConversationContext<SDK.DOMModel.DOMNode>|null;
-  selectedFile: ConversationContext<Workspace.UISourceCode.UISourceCode>|null;
-  selectedNetworkRequest: ConversationContext<SDK.NetworkRequest.NetworkRequest>|null;
-  selectedAiCallTree: ConversationContext<TimelineUtils.AICallTree.AICallTree>|null;
+  selectedContext: ConversationContext<unknown>|null;
   isLoading: boolean;
   canShowFeedbackForm: boolean;
   userInfo: Pick<Host.InspectorFrontendHostAPI.SyncInformation, 'accountImage'|'accountFullName'>;
@@ -412,15 +404,20 @@ export class FreestylerChatUi extends HTMLElement {
       return true;
     }
 
+    if (!this.#props.selectedContext) {
+      return true;
+    }
+
+    // Agent-specific input disabled rules.
     switch (this.#props.agentType) {
       case AgentType.FREESTYLER:
-        return !this.#props.selectedElement || showsSideEffects;
+        return showsSideEffects;
       case AgentType.DRJONES_NETWORK_REQUEST:
-        return !this.#props.selectedNetworkRequest;
+        return false;
       case AgentType.DRJONES_FILE:
-        return !this.#props.selectedFile;
+        return false;
       case AgentType.DRJONES_PERFORMANCE:
-        return !this.#props.selectedAiCallTree;
+        return false;
     }
   };
 
@@ -779,132 +776,52 @@ export class FreestylerChatUi extends HTMLElement {
     if (!this.#props.agentType) {
       return LitHtml.nothing;
     }
-    switch (this.#props.agentType) {
-      case AgentType.FREESTYLER:
-        return this.#renderSelectAnElement();
-      case AgentType.DRJONES_FILE:
-        return this.#renderSelectedFileName();
-      case AgentType.DRJONES_NETWORK_REQUEST:
-        return this.#renderSelectedNetworkRequest();
-      case AgentType.DRJONES_PERFORMANCE:
-        return this.#renderSelectedTask();
-    }
+    return this.#renderContextSelector();
   }
 
-  #renderSelectedFileName(): LitHtml.TemplateResult {
+  #renderContextSelector(): LitHtml.LitTemplate {
     const resourceClass = LitHtml.Directives.classMap({
-      'not-selected': !this.#props.selectedFile,
+      'not-selected': !this.#props.selectedContext,
       'resource-link': true,
     });
 
-    if (!this.#props.selectedFile) {
-      return html`${LitHtml.nothing}`;
+    // TODO: currently the picker behavior is SDKNode specific.
+    const hasPickerBehavior = this.#props.agentType === AgentType.FREESTYLER;
+
+    if (!this.#props.selectedContext && !hasPickerBehavior) {
+      return LitHtml.nothing;
     }
 
-    const icon = PanelUtils.getIconForSourceFile(this.#props.selectedFile.getItem());
+    const icon = this.#props.selectedContext?.getIcon() ?? LitHtml.nothing;
 
     // clang-format off
     return html`<div class="select-element">
+      ${
+        hasPickerBehavior ? html`
+          <devtools-button
+            .data=${{
+                variant: Buttons.Button.Variant.ICON_TOGGLE,
+                size: Buttons.Button.Size.REGULAR,
+                iconName: 'select-element',
+                toggledIconName: 'select-element',
+                toggleType: Buttons.Button.ToggleType.PRIMARY,
+                toggled: this.#props.inspectElementToggled,
+                title: lockedString(UIStringsNotTranslate.selectAnElement),
+                jslogContext: 'select-element',
+            } as Buttons.Button.ButtonData}
+            @click=${this.#props.onInspectElementClick}
+          ></devtools-button>
+        ` : LitHtml.nothing
+      }
       <div role=button class=${resourceClass}
-        @click=${this.#props.onSelectedFileRequestClick}>
-          ${icon}${this.#props.selectedFile?.getItem().displayName()}
+        @click=${this.#props.onContextClick}>
+          ${icon}${this.#props.selectedContext?.getTitle() ?? html`<span>${
+            lockedString(UIStringsNotTranslate.noElementSelected)
+          }</span>`}
       </div>
     </div>`;
     // clang-format on
   }
-
-  #renderSelectedNetworkRequest = (): LitHtml.TemplateResult => {
-    const resourceClass = LitHtml.Directives.classMap({
-      'not-selected': !this.#props.selectedNetworkRequest,
-      'resource-link': true,
-    });
-
-    if (!this.#props.selectedNetworkRequest) {
-      return html`${LitHtml.nothing}`;
-    }
-
-    const icon = PanelUtils.getIconForNetworkRequest(this.#props.selectedNetworkRequest.getItem());
-    // clang-format off
-    return html`<div class="select-element">
-      <div role=button class=${resourceClass}
-        @click=${this.#props.onSelectedNetworkRequestClick}>
-          ${icon}${this.#props.selectedNetworkRequest?.getItem().name()}
-        </div>
-    </div>`;
-    // clang-format on
-  };
-
-  #renderSelectAnElement = (): LitHtml.TemplateResult => {
-    const resourceClass = LitHtml.Directives.classMap({
-      'not-selected': !this.#props.selectedElement,
-      'resource-link': true,
-    });
-
-    // clang-format off
-    return html`
-      <div class="select-element">
-        <devtools-button
-          .data=${{
-              variant: Buttons.Button.Variant.ICON_TOGGLE,
-              size: Buttons.Button.Size.REGULAR,
-              iconName: 'select-element',
-              toggledIconName: 'select-element',
-              toggleType: Buttons.Button.ToggleType.PRIMARY,
-              toggled: this.#props.inspectElementToggled,
-              title: lockedString(UIStringsNotTranslate.selectAnElement),
-              jslogContext: 'select-element',
-          } as Buttons.Button.ButtonData}
-          @click=${this.#props.onInspectElementClick}
-        ></devtools-button>
-        <div class=${resourceClass}>${
-          this.#props.selectedElement
-            ? LitHtml.Directives.until(
-                  Common.Linkifier.Linkifier.linkify(this.#props.selectedElement.getItem()),
-                )
-            : html`<span>${
-              lockedString(UIStringsNotTranslate.noElementSelected)
-            }</span>`
-        }</div>
-      </div>`;
-    // clang-format on
-  };
-
-  #renderSelectedTask = (): LitHtml.TemplateResult => {
-    const resourceClass = LitHtml.Directives.classMap({
-      'not-selected': !this.#props.selectedAiCallTree,
-      'resource-task': true,
-    });
-
-    if (!this.#props.selectedAiCallTree) {
-      return html`${LitHtml.nothing}`;
-    }
-
-    const {event} = this.#props.selectedAiCallTree.getItem().selectedNode;
-    if (!event) {
-      return html`${LitHtml.nothing}`;
-    }
-
-    const displayName = TimelineUtils.EntryName.nameForEntry(event);
-    const handleClick = (): void => {
-      const trace = new SDK.TraceObject.RevealableEvent(event);
-      void Common.Revealer.reveal(trace);
-    };
-
-    const iconData = {
-      iconName: 'performance',
-      color: 'var(--sys-color-on-surface-subtle)',
-    };
-    const icon = PanelUtils.createIconElement(iconData, 'Performance');
-    icon.classList.add('icon');
-
-    // clang-format off
-    return html`<div class="select-element">
-      <div role=button class=${resourceClass} @click=${handleClick}>
-        ${icon}${displayName}
-      </div>
-    </div>`;
-    // clang-format on
-  };
 
   #renderMessages = (): LitHtml.TemplateResult => {
     // clang-format off

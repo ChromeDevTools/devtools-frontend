@@ -310,9 +310,10 @@ describeWithEnvironment('FreestylerPanel', () => {
         UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, node);
         panel.markAsRoot();
         panel.show(document.body);
+        panel.handleAction('freestyler.elements-floating-button');
 
         sinon.assert.calledWith(mockView, sinon.match({
-          selectedElement: new Freestyler.NodeContext(node),
+          selectedContext: new Freestyler.NodeContext(node),
         }));
       });
 
@@ -325,8 +326,9 @@ describeWithEnvironment('FreestylerPanel', () => {
         });
         panel.markAsRoot();
         panel.show(document.body);
+        panel.handleAction('freestyler.elements-floating-button');
         sinon.assert.calledWith(mockView, sinon.match({
-          selectedElement: null,
+          selectedContext: null,
         }));
 
         const node = sinon.createStubInstance(SDK.DOMModel.DOMNode, {
@@ -335,7 +337,7 @@ describeWithEnvironment('FreestylerPanel', () => {
         UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, node);
 
         sinon.assert.calledWith(mockView, sinon.match({
-          selectedElement: new Freestyler.NodeContext(node),
+          selectedContext: new Freestyler.NodeContext(node),
         }));
       });
 
@@ -348,8 +350,9 @@ describeWithEnvironment('FreestylerPanel', () => {
         });
         panel.markAsRoot();
         panel.show(document.body);
+        panel.handleAction('freestyler.elements-floating-button');
         sinon.assert.calledWith(mockView, sinon.match({
-          selectedElement: null,
+          selectedContext: null,
         }));
 
         const node = sinon.createStubInstance(SDK.DOMModel.DOMNode, {
@@ -358,7 +361,7 @@ describeWithEnvironment('FreestylerPanel', () => {
         UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, node);
 
         sinon.assert.calledWith(mockView, sinon.match({
-          selectedElement: null,
+          selectedContext: null,
         }));
       });
 
@@ -392,9 +395,10 @@ describeWithEnvironment('FreestylerPanel', () => {
         UI.Context.Context.instance().setFlavor(SDK.NetworkRequest.NetworkRequest, networkRequest);
         panel.markAsRoot();
         panel.show(document.body);
+        panel.handleAction('drjones.network-floating-button');
 
         sinon.assert.calledWith(mockView, sinon.match({
-          selectedNetworkRequest: new Freestyler.RequestContext(networkRequest),
+          selectedContext: new Freestyler.RequestContext(networkRequest),
         }));
       });
 
@@ -407,15 +411,16 @@ describeWithEnvironment('FreestylerPanel', () => {
         });
         panel.markAsRoot();
         panel.show(document.body);
+        panel.handleAction('drjones.network-floating-button');
         sinon.assert.calledWith(mockView, sinon.match({
-          selectedNetworkRequest: null,
+          selectedContext: null,
         }));
 
         const networkRequest = sinon.createStubInstance(SDK.NetworkRequest.NetworkRequest);
         UI.Context.Context.instance().setFlavor(SDK.NetworkRequest.NetworkRequest, networkRequest);
 
         sinon.assert.calledWith(mockView, sinon.match({
-          selectedNetworkRequest: new Freestyler.RequestContext(networkRequest),
+          selectedContext: new Freestyler.RequestContext(networkRequest),
         }));
       });
 
@@ -447,9 +452,10 @@ describeWithEnvironment('FreestylerPanel', () => {
         UI.Context.Context.instance().setFlavor(TimelineUtils.AICallTree.AICallTree, selectedAiCallTree);
         panel.markAsRoot();
         panel.show(document.body);
+        panel.handleAction('drjones.performance-panel-context');
 
         sinon.assert.calledWith(mockView, sinon.match({
-          selectedAiCallTree: new Freestyler.CallTreeContext(selectedAiCallTree as TimelineUtils.AICallTree.AICallTree),
+          selectedContext: new Freestyler.CallTreeContext(selectedAiCallTree as TimelineUtils.AICallTree.AICallTree),
         }));
       });
 
@@ -462,15 +468,16 @@ describeWithEnvironment('FreestylerPanel', () => {
         });
         panel.markAsRoot();
         panel.show(document.body);
+        panel.handleAction('drjones.performance-panel-context');
         sinon.assert.calledWith(mockView, sinon.match({
-          selectedAiCallTree: null,
+          selectedContext: null,
         }));
 
         const selectedAiCallTree = {};
         UI.Context.Context.instance().setFlavor(TimelineUtils.AICallTree.AICallTree, selectedAiCallTree);
 
         sinon.assert.calledWith(mockView, sinon.match({
-          selectedAiCallTree: new Freestyler.CallTreeContext(selectedAiCallTree as TimelineUtils.AICallTree.AICallTree),
+          selectedContext: new Freestyler.CallTreeContext(selectedAiCallTree as TimelineUtils.AICallTree.AICallTree),
         }));
       });
 
@@ -502,9 +509,10 @@ describeWithEnvironment('FreestylerPanel', () => {
         UI.Context.Context.instance().setFlavor(Workspace.UISourceCode.UISourceCode, uiSourceCode);
         panel.markAsRoot();
         panel.show(document.body);
+        panel.handleAction('drjones.sources-panel-context');
 
         sinon.assert.calledWith(mockView, sinon.match({
-          selectedFile: new Freestyler.FileContext(uiSourceCode),
+          selectedContext: new Freestyler.FileContext(uiSourceCode),
         }));
       });
 
@@ -517,15 +525,16 @@ describeWithEnvironment('FreestylerPanel', () => {
         });
         panel.markAsRoot();
         panel.show(document.body);
+        panel.handleAction('drjones.sources-panel-context');
         sinon.assert.calledWith(mockView, sinon.match({
-          selectedFile: null,
+          selectedContext: null,
         }));
 
         const uiSourceCode = sinon.createStubInstance(Workspace.UISourceCode.UISourceCode);
         UI.Context.Context.instance().setFlavor(Workspace.UISourceCode.UISourceCode, uiSourceCode);
 
         sinon.assert.calledWith(mockView, sinon.match({
-          selectedFile: new Freestyler.FileContext(uiSourceCode),
+          selectedContext: new Freestyler.FileContext(uiSourceCode),
         }));
       });
 
@@ -813,9 +822,10 @@ describeWithEnvironment('FreestylerPanel', () => {
       });
       panel.markAsRoot();
       panel.show(document.body);
+      panel.handleAction('drjones.network-floating-button');
 
       sinon.assert.calledWith(mockView, sinon.match({
-        selectedNetworkRequest: new Freestyler.RequestContext(networkRequest),
+        selectedContext: new Freestyler.RequestContext(networkRequest),
         blockedByCrossOrigin: false,
       }));
 
@@ -833,7 +843,7 @@ describeWithEnvironment('FreestylerPanel', () => {
       await drainMicroTasks();
 
       sinon.assert.calledWith(mockView, sinon.match({
-        selectedNetworkRequest: new Freestyler.RequestContext(networkRequest2),
+        selectedContext: new Freestyler.RequestContext(networkRequest2),
         blockedByCrossOrigin: true,
       }));
     });

@@ -229,6 +229,12 @@ describeWithEnvironment('AiAgent', () => {
   describe('ConversationContext', () => {
     function getTestContext(origin: string) {
       class TestContext extends ConversationContext<undefined> {
+        override getIcon(): HTMLElement {
+          throw new Error('Method not implemented.');
+        }
+        override getTitle(): string {
+          throw new Error('Method not implemented.');
+        }
         override getOrigin(): string {
           return origin;
         }

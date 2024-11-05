@@ -9,6 +9,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
+import * as LitHtml from '../../ui/lit-html/lit-html.js';
 
 import {
   type ActionResponse,
@@ -228,6 +229,16 @@ export class NodeContext extends ConversationContext<SDK.DOMModel.DOMNode> {
 
   getItem(): SDK.DOMModel.DOMNode {
     return this.#node;
+  }
+
+  override getIcon(): HTMLElement {
+    return document.createElement('span');
+  }
+
+  override getTitle(): string|ReturnType<typeof LitHtml.Directives.until> {
+    return LitHtml.Directives.until(
+        Common.Linkifier.Linkifier.linkify(this.#node),
+    );
   }
 }
 

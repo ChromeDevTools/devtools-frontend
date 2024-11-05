@@ -37,10 +37,14 @@ export class BinaryResourceViewFactory {
   }
 
   createBase64View(): ResourceSourceFrame {
-    return new ResourceSourceFrame(
+    const resourceFrame = new ResourceSourceFrame(
         TextUtils.StaticContentProvider.StaticContentProvider.fromString(
             this.contentUrl, this.resourceType, this.streamingContent.content().base64),
         this.resourceType.canonicalMimeType(), {lineNumbers: false, lineWrapping: true});
+    this.streamingContent.addEventListener(TextUtils.StreamingContentData.Events.CHUNK_ADDED, () => {
+      void resourceFrame.setContent(this.base64());
+    });
+    return resourceFrame;
   }
 
   createHexView(): StreamingContentHexView {
@@ -48,10 +52,14 @@ export class BinaryResourceViewFactory {
   }
 
   createUtf8View(): ResourceSourceFrame {
-    return new ResourceSourceFrame(
+    const resourceFrame = new ResourceSourceFrame(
         TextUtils.StaticContentProvider.StaticContentProvider.fromString(
             this.contentUrl, this.resourceType, this.utf8()),
         this.resourceType.canonicalMimeType(), {lineNumbers: true, lineWrapping: true});
+    this.streamingContent.addEventListener(TextUtils.StreamingContentData.Events.CHUNK_ADDED, () => {
+      void resourceFrame.setContent(this.utf8());
+    });
+    return resourceFrame;
   }
 
   static #uint8ArrayToHexString(uint8Array: Uint8Array): string {

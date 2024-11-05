@@ -4,27 +4,12 @@
  * found in the LICENSE file.
  */
 
-:host {
-  overflow: hidden;
-}
-
-.header {
-  padding: 0 0 6px;
-  border-bottom: 1px solid var(--sys-color-divider);
-  font-size: 18px;
-  font-weight: normal;
-  flex: none;
-}
 
 .add-locations-button {
-  flex: none;
-  margin: 10px 5px;
-  min-width: 140px;
-  align-self: flex-start;
+  border: none;
 }
 
 .locations-list {
-  max-width: 600px;
   min-width: 340px;
   flex: auto;
 }

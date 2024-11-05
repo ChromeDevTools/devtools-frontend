@@ -40,7 +40,7 @@ export interface SidebarSingleInsightSetData {
  * "enable experimental performance insights" experiment. This is used to enable
  * us to ship incrementally without turning insights on by default for all
  * users. */
-const EXPERIMENTAL_INSIGHTS: ReadonlySet<typeof Insights.Helpers.BaseInsight> = new Set([
+const EXPERIMENTAL_INSIGHTS: ReadonlySet<typeof Insights.Helpers.BaseInsightComponent> = new Set([
   Insights.FontDisplay.FontDisplay,
 ]);
 
@@ -49,7 +49,7 @@ const EXPERIMENTAL_INSIGHTS: ReadonlySet<typeof Insights.Helpers.BaseInsight> = 
  * The order of this array is the order the insights will be shown in the sidebar.
  * TODO(crbug.com/368135130): sort this in a smart way!
  */
-const ALL_INSIGHTS: typeof Insights.Helpers.BaseInsight[] = [
+const ALL_INSIGHTS: typeof Insights.Helpers.BaseInsightComponent[] = [
   Insights.InteractionToNextPaint.InteractionToNextPaint,
   Insights.LCPPhases.LCPPhases,
   Insights.LCPDiscovery.LCPDiscovery,
@@ -145,7 +145,7 @@ export class SidebarSingleInsightSet extends HTMLElement {
   }
 
   #getCLS(insightSetKey: string): {value: number, worstShiftEvent: Trace.Types.Events.Event|null} {
-    const insight = Trace.Insights.Common.getInsight('CumulativeLayoutShift', this.#data.insights, insightSetKey);
+    const insight = Trace.Insights.Common.getInsight('CLSCulprits', this.#data.insights, insightSetKey);
     if (!insight) {
       // Unlike the other metrics, there is still a value for this metric even with no data.
       // This means this view will always display a CLS score.
@@ -193,7 +193,7 @@ export class SidebarSingleInsightSet extends HTMLElement {
     `;
   }
 
-  #insightsForRendering(): typeof Insights.Helpers.BaseInsight[] {
+  #insightsForRendering(): typeof Insights.Helpers.BaseInsightComponent[] {
     const includeExperimental = Root.Runtime.experiments.isEnabled(
         Root.Runtime.ExperimentName.TIMELINE_EXPERIMENTAL_INSIGHTS,
     );

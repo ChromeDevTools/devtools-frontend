@@ -11,7 +11,7 @@ import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
 import {eventRef} from './EventRef.js';
-import {BaseInsight, shouldRenderForCategory} from './Helpers.js';
+import {BaseInsightComponent, shouldRenderForCategory} from './Helpers.js';
 import {Category} from './types.js';
 
 const {html} = LitHtml;
@@ -40,7 +40,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/RenderBlocking.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export class RenderBlockingRequests extends BaseInsight {
+export class RenderBlockingRequests extends BaseInsightComponent {
   static override readonly litTagName = LitHtml.literal`devtools-performance-render-blocking-requests`;
   override insightCategory: Category = Category.LCP;
   override internalName: string = 'render-blocking-requests';
@@ -64,7 +64,7 @@ export class RenderBlockingRequests extends BaseInsight {
     };
   }
 
-  #renderRenderBlocking(insightResult: Trace.Insights.Types.InsightResults['RenderBlocking']): LitHtml.TemplateResult {
+  #renderRenderBlocking(insightResult: Trace.Insights.Types.InsightModels['RenderBlocking']): LitHtml.TemplateResult {
     const estimatedSavings = insightResult.metricSavings?.FCP;
     const MAX_REQUESTS = 3;
     const topRequests = insightResult.renderBlockingRequests.slice(0, MAX_REQUESTS);

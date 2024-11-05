@@ -173,8 +173,8 @@ export class LayoutShiftDetails extends HTMLElement {
     this.dispatchEvent(new Insights.EventRef.EventReferenceClick(event));
   }
 
-  #renderAnimation(failure: Trace.Insights.InsightRunners.CumulativeLayoutShift.NoncompositedAnimationFailure):
-      LitHtml.TemplateResult|null {
+  #renderAnimation(failure: Trace.Insights.Models.CLSCulprits.NoncompositedAnimationFailure): LitHtml.TemplateResult
+      |null {
     const event = failure.animation;
     if (!event) {
       return null;
@@ -201,7 +201,7 @@ export class LayoutShiftDetails extends HTMLElement {
     // clang-format on
   }
 
-  #renderRootCauseValues(rootCauses: Trace.Insights.InsightRunners.CumulativeLayoutShift.LayoutShiftRootCausesData|
+  #renderRootCauseValues(rootCauses: Trace.Insights.Models.CLSCulprits.LayoutShiftRootCausesData|
                          undefined): LitHtml.TemplateResult|null {
     return html`
       ${rootCauses?.fontRequests.map(fontReq => this.#renderFontRequest(fontReq))}
@@ -227,8 +227,7 @@ export class LayoutShiftDetails extends HTMLElement {
   #renderShiftRow(
       shift: Trace.Types.Events.SyntheticLayoutShift, parsedTrace: Trace.Handlers.Types.ParsedTrace,
       elementsShifted: Trace.Types.Events.TraceImpactedNode[],
-      rootCauses: Trace.Insights.InsightRunners.CumulativeLayoutShift.LayoutShiftRootCausesData|
-      undefined): LitHtml.TemplateResult|null {
+      rootCauses: Trace.Insights.Models.CLSCulprits.LayoutShiftRootCausesData|undefined): LitHtml.TemplateResult|null {
     const score = shift.args.data?.weighted_score_delta;
     if (!score) {
       return null;
@@ -291,7 +290,7 @@ export class LayoutShiftDetails extends HTMLElement {
       return null;
     }
     const insightsId = layoutShift.args.data?.navigationId ?? Trace.Types.Events.NO_NAVIGATION;
-    const clsInsight = traceInsightsSets.get(insightsId)?.data.CumulativeLayoutShift;
+    const clsInsight = traceInsightsSets.get(insightsId)?.model.CLSCulprits;
     if (!clsInsight || clsInsight instanceof Error) {
       return null;
     }
@@ -337,7 +336,7 @@ export class LayoutShiftDetails extends HTMLElement {
       return null;
     }
     const insightsId = cluster.navigationId ?? Trace.Types.Events.NO_NAVIGATION;
-    const clsInsight = traceInsightsSets.get(insightsId)?.data.CumulativeLayoutShift;
+    const clsInsight = traceInsightsSets.get(insightsId)?.model.CLSCulprits;
     if (!clsInsight || clsInsight instanceof Error) {
       return null;
     }

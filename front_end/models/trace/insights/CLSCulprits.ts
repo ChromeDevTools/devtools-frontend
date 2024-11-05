@@ -7,9 +7,9 @@ import type * as Protocol from '../../../generated/protocol.js';
 import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
 
-import type {InsightResult, InsightSetContext, RequiredData} from './types.js';
+import type {InsightModel, InsightSetContext, RequiredData} from './types.js';
 
-export type CLSInsightResult = InsightResult<{
+export type CLSCulpritsInsightModel = InsightModel<{
   animationFailures: readonly NoncompositedAnimationFailure[],
   shifts: Map<Types.Events.SyntheticLayoutShift, LayoutShiftRootCausesData>,
   clusters: Types.Events.SyntheticLayoutShiftCluster[],
@@ -406,7 +406,8 @@ function getFontRootCauses(
   return rootCausesByShift;
 }
 
-export function generateInsight(parsedTrace: RequiredData<typeof deps>, context: InsightSetContext): CLSInsightResult {
+export function generateInsight(
+    parsedTrace: RequiredData<typeof deps>, context: InsightSetContext): CLSCulpritsInsightModel {
   const isWithinContext = (event: Types.Events.Event): boolean => Helpers.Timing.eventIsInBounds(event, context.bounds);
 
   const compositeAnimationEvents = parsedTrace.Animations.animations.filter(isWithinContext);

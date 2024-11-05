@@ -10,7 +10,7 @@ import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
 import {eventRef} from './EventRef.js';
-import {BaseInsight, shouldRenderForCategory} from './Helpers.js';
+import {BaseInsightComponent, shouldRenderForCategory} from './Helpers.js';
 import type * as SidebarInsight from './SidebarInsight.js';
 import type {TableData} from './Table.js';
 import {Category} from './types.js';
@@ -34,7 +34,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/FontDisplay.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export class FontDisplay extends BaseInsight {
+export class FontDisplay extends BaseInsightComponent {
   static override readonly litTagName = LitHtml.literal`devtools-performance-font-display`;
   override insightCategory = Category.INP;
   override internalName: string = 'font-display';
@@ -62,7 +62,7 @@ export class FontDisplay extends BaseInsight {
     return [...this.#overlayForRequest.values()];
   }
 
-  #render(insight: Trace.Insights.Types.InsightResults['FontDisplay']): LitHtml.TemplateResult {
+  #render(insight: Trace.Insights.Types.InsightModels['FontDisplay']): LitHtml.TemplateResult {
     // clang-format off
     return html`
         <div class="insights">

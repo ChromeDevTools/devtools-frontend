@@ -5,19 +5,19 @@
 import * as Helpers from '../helpers/helpers.js';
 import type * as Types from '../types/types.js';
 
-import {type InsightResult, type InsightSetContext, InsightWarning, type RequiredData} from './types.js';
+import {type InsightModel, type InsightSetContext, InsightWarning, type RequiredData} from './types.js';
 
 export function deps(): ['Meta', 'UserInteractions'] {
   return ['Meta', 'UserInteractions'];
 }
 
-export type ViewportInsightResult = InsightResult<{
+export type ViewportInsightModel = InsightModel<{
   mobileOptimized: boolean | null,
   viewportEvent?: Types.Events.ParseMetaViewport,
 }>;
 
 export function generateInsight(
-    parsedTrace: RequiredData<typeof deps>, context: InsightSetContext): ViewportInsightResult {
+    parsedTrace: RequiredData<typeof deps>, context: InsightSetContext): ViewportInsightModel {
   const compositorEvents = parsedTrace.UserInteractions.beginCommitCompositorFrameEvents.filter(event => {
     if (event.args.frame !== context.frameId) {
       return false;

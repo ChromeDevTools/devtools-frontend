@@ -14,7 +14,7 @@ import type * as Linkifier from '../../../../ui/components/linkifier/linkifier.j
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
-import {BaseInsight, shouldRenderForCategory} from './Helpers.js';
+import {BaseInsightComponent, shouldRenderForCategory} from './Helpers.js';
 import type * as SidebarInsight from './SidebarInsight.js';
 import type {TableData} from './Table.js';
 import {Category} from './types.js';
@@ -58,13 +58,13 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/SlowCSSSelector.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export class SlowCSSSelector extends BaseInsight {
+export class SlowCSSSelector extends BaseInsightComponent {
   static override readonly litTagName = LitHtml.literal`devtools-performance-slow-css-selector`;
   override insightCategory: Category = Category.ALL;
   override internalName: string = 'slow-css-selector';
   override userVisibleTitle: string = i18nString(UIStrings.title);
   override description: string = i18nString(UIStrings.description);
-  #slowCSSSelector: Trace.Insights.InsightRunners.SlowCSSSelector.SlowCSSSelectorInsightResult|null = null;
+  #slowCSSSelector: Trace.Insights.Models.SlowCSSSelector.SlowCSSSelectorInsightModel|null = null;
   #selectorLocations: Map<string, Protocol.CSS.SourceRange[]> = new Map();
 
   override createOverlays(): Overlays.Overlays.TimelineOverlay[] {

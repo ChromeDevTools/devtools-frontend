@@ -58,8 +58,7 @@ export class AnimationsTrackAppender implements TrackAppender {
 
   #eventAppendedCallbackFunction(event: Trace.Types.Events.Event, index: number): void {
     if (event && Trace.Types.Events.isSyntheticAnimation(event)) {
-      const CLSInsight = Trace.Insights.InsightRunners.CumulativeLayoutShift;
-      const failures = CLSInsight.getNonCompositedFailure(event);
+      const failures = Trace.Insights.Models.CLSCulprits.getNonCompositedFailure(event);
       if (failures.length) {
         addDecorationToEvent(this.#compatibilityBuilder.getFlameChartTimelineData(), index, {
           type: PerfUI.FlameChart.FlameChartDecorationType.WARNING_TRIANGLE,

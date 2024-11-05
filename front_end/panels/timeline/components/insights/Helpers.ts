@@ -47,7 +47,7 @@ export interface BaseInsightData {
 
 // TODO(crbug.com/371615739): BaseInsight, SidebarInsight should be combined.
 // This is an abstract base class so the component naming rules do not apply.
-export abstract class BaseInsight extends HTMLElement {
+export abstract class BaseInsightComponent extends HTMLElement {
   abstract internalName: string;
   abstract insightCategory: Category;
   abstract userVisibleTitle: string;

@@ -76,9 +76,9 @@ export class TraceProcessor extends EventTarget {
     return new TraceProcessor(Handlers.ModelHandlers, Types.Configuration.defaults());
   }
 
-  static getEnabledInsightRunners(parsedTrace: Handlers.Types.ParsedTrace): Partial<Insights.Types.InsightRunnersType> {
-    const enabledInsights = {} as Insights.Types.InsightRunnersType;
-    for (const [name, insight] of Object.entries(Insights.InsightRunners)) {
+  static getEnabledInsightRunners(parsedTrace: Handlers.Types.ParsedTrace): Partial<Insights.Types.InsightModelsType> {
+    const enabledInsights = {} as Insights.Types.InsightModelsType;
+    for (const [name, insight] of Object.entries(Insights.Models)) {
       const deps = insight.deps();
       if (deps.some(dep => !parsedTrace[dep])) {
         continue;
@@ -344,8 +344,8 @@ export class TraceProcessor extends EventTarget {
 
   #computeInsightSets(
       insights: Insights.Types.TraceInsightSets, parsedTrace: Handlers.Types.ParsedTrace,
-      insightRunners: Partial<typeof Insights.InsightRunners>, context: Insights.Types.InsightSetContext): void {
-    const data = {} as Insights.Types.InsightSets['data'];
+      insightRunners: Partial<typeof Insights.Models>, context: Insights.Types.InsightSetContext): void {
+    const model = {} as Insights.Types.InsightSet['model'];
 
     for (const [name, insight] of Object.entries(insightRunners)) {
       let insightResult;
@@ -354,7 +354,7 @@ export class TraceProcessor extends EventTarget {
       } catch (err) {
         insightResult = err;
       }
-      Object.assign(data, {[name]: insightResult});
+      Object.assign(model, {[name]: insightResult});
     }
 
     let id, urlString, navigation;
@@ -382,7 +382,7 @@ export class TraceProcessor extends EventTarget {
       navigation,
       frameId: context.frameId,
       bounds: context.bounds,
-      data,
+      model,
     };
     insights.set(insightSets.id, insightSets);
   }

@@ -8,13 +8,13 @@ import type * as Handlers from '../handlers/handlers.js';
 import * as Helpers from '../helpers/helpers.js';
 import type * as Types from '../types/types.js';
 
-import type {InsightResult, InsightSetContext, RequiredData} from './types.js';
+import type {InsightModel, InsightSetContext, RequiredData} from './types.js';
 
 export function deps(): ['Meta', 'NetworkRequests', 'Renderer', 'ImagePainting'] {
   return ['Meta', 'NetworkRequests', 'Renderer', 'ImagePainting'];
 }
 
-export type ThirdPartyWebInsightResult = InsightResult<{
+export type ThirdPartiesInsightModel = InsightModel<{
   entityByRequest: Map<Types.Events.SyntheticNetworkRequest, Extras.ThirdParties.Entity>,
   requestsByEntity: Map<Extras.ThirdParties.Entity, Types.Events.SyntheticNetworkRequest[]>,
   summaryByRequest: Map<Types.Events.SyntheticNetworkRequest, Extras.ThirdParties.Summary>,
@@ -38,7 +38,7 @@ function getRelatedEvents(
 }
 
 export function generateInsight(
-    parsedTrace: RequiredData<typeof deps>, context: InsightSetContext): ThirdPartyWebInsightResult {
+    parsedTrace: RequiredData<typeof deps>, context: InsightSetContext): ThirdPartiesInsightModel {
   const networkRequests = parsedTrace.NetworkRequests.byTime.filter(event => {
     if (!context.navigation) {
       return false;

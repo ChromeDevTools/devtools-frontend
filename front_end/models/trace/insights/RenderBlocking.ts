@@ -10,7 +10,7 @@ import * as Types from '../types/types.js';
 
 import {findLCPRequest} from './Common.js';
 import {
-  type InsightResult,
+  type InsightModel,
   type InsightSetContext,
   type InsightSetContextWithNavigation,
   InsightWarning,
@@ -18,7 +18,7 @@ import {
   type RequiredData,
 } from './types.js';
 
-export type RenderBlockingInsightResult = InsightResult<{
+export type RenderBlockingInsightModel = InsightModel<{
   renderBlockingRequests: Types.Events.SyntheticNetworkRequest[],
   requestIdToWastedMs?: Map<string, number>,
 }>;
@@ -106,7 +106,7 @@ function hasImageLCP(parsedTrace: RequiredData<typeof deps>, context: InsightSet
 function computeSavings(
     parsedTrace: RequiredData<typeof deps>, context: InsightSetContextWithNavigation,
     renderBlockingRequests: Types.Events.SyntheticNetworkRequest[]):
-    Pick<RenderBlockingInsightResult, 'metricSavings'|'requestIdToWastedMs'>|undefined {
+    Pick<RenderBlockingInsightModel, 'metricSavings'|'requestIdToWastedMs'>|undefined {
   if (!context.lantern) {
     return;
   }
@@ -150,7 +150,7 @@ function computeSavings(
 }
 
 export function generateInsight(
-    parsedTrace: RequiredData<typeof deps>, context: InsightSetContext): RenderBlockingInsightResult {
+    parsedTrace: RequiredData<typeof deps>, context: InsightSetContext): RenderBlockingInsightModel {
   if (!context.navigation) {
     return {
       renderBlockingRequests: [],

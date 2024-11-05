@@ -6,7 +6,7 @@ import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js'
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
-import type {BaseInsight} from './Helpers.js';
+import type {BaseInsightComponent} from './Helpers.js';
 import tableStyles from './table.css.js';
 
 const {html} = LitHtml;
@@ -33,7 +33,7 @@ export type TableState = {
 };
 
 export interface TableData {
-  insight: BaseInsight;
+  insight: BaseInsightComponent;
   headers: string[];
   rows: TableDataRow[];
 }
@@ -47,7 +47,7 @@ export class Table extends HTMLElement {
 
   readonly #shadow = this.attachShadow({mode: 'open'});
   readonly #boundRender = this.#render.bind(this);
-  #insight?: BaseInsight;
+  #insight?: BaseInsightComponent;
   #state?: TableState;
   #headers?: string[];
   #rows?: TableDataRow[];

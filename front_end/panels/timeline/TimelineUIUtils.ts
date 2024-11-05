@@ -1450,7 +1450,7 @@ export class TimelineUIUtils {
           contentHelper.appendTextRow(i18nString(UIStrings.relatedNode), nodeName);
         }
 
-        const CLSInsight = Trace.Insights.InsightRunners.CumulativeLayoutShift;
+        const CLSInsight = Trace.Insights.Models.CLSCulprits;
         const failures = CLSInsight.getNonCompositedFailure(event);
         if (!failures.length) {
           break;

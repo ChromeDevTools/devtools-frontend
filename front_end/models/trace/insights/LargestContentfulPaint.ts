@@ -7,7 +7,7 @@ import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
 
 import {findLCPRequest} from './Common.js';
-import {type InsightResult, type InsightSetContext, InsightWarning, type RequiredData} from './types.js';
+import {type InsightModel, type InsightSetContext, InsightWarning, type RequiredData} from './types.js';
 
 export function deps(): ['NetworkRequests', 'PageLoadMetrics', 'LargestImagePaint', 'Meta'] {
   return ['NetworkRequests', 'PageLoadMetrics', 'LargestImagePaint', 'Meta'];
@@ -35,7 +35,7 @@ interface LCPPhases {
   renderDelay: Types.Timing.MilliSeconds;
 }
 
-export type LCPInsightResult = InsightResult<{
+export type LCPInsightModel = InsightModel<{
   lcpMs?: Types.Timing.MilliSeconds,
   lcpTs?: Types.Timing.MilliSeconds,
   lcpEvent?: Types.Events.LargestContentfulPaintCandidate,
@@ -99,7 +99,7 @@ function breakdownPhases(
   };
 }
 
-export function generateInsight(parsedTrace: RequiredData<typeof deps>, context: InsightSetContext): LCPInsightResult {
+export function generateInsight(parsedTrace: RequiredData<typeof deps>, context: InsightSetContext): LCPInsightModel {
   if (!context.navigation) {
     return {};
   }

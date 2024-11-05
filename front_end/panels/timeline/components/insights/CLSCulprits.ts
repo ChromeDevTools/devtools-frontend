@@ -8,7 +8,7 @@ import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
 import {EventReferenceClick} from './EventRef.js';
-import {BaseInsight, shouldRenderForCategory} from './Helpers.js';
+import {BaseInsightComponent, shouldRenderForCategory} from './Helpers.js';
 import {Category} from './types.js';
 
 const {html} = LitHtml;
@@ -59,7 +59,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/CLSCulprits.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export class CLSCulprits extends BaseInsight {
+export class CLSCulprits extends BaseInsightComponent {
   static override readonly litTagName = LitHtml.literal`devtools-performance-cls-culprits`;
   override insightCategory: Category = Category.CLS;
   override internalName: string = 'cls-culprits';
@@ -67,8 +67,7 @@ export class CLSCulprits extends BaseInsight {
   override description: string = i18nString(UIStrings.description);
 
   override createOverlays(): Overlays.Overlays.TimelineOverlay[] {
-    const insight =
-        Trace.Insights.Common.getInsight('CumulativeLayoutShift', this.data.insights, this.data.insightSetKey);
+    const insight = Trace.Insights.Common.getInsight('CLSCulprits', this.data.insights, this.data.insightSetKey);
 
     const clustersByScore =
         insight?.clusters.toSorted((a, b) => b.clusterCumulativeScore - a.clusterCumulativeScore) ?? [];
@@ -98,8 +97,7 @@ export class CLSCulprits extends BaseInsight {
   getTopCulprits(
       cluster: Trace.Types.Events.SyntheticLayoutShiftCluster,
       culpritsByShift:
-          Map<Trace.Types.Events.LayoutShift,
-              Trace.Insights.InsightRunners.CumulativeLayoutShift.LayoutShiftRootCausesData>): string[] {
+          Map<Trace.Types.Events.LayoutShift, Trace.Insights.Models.CLSCulprits.LayoutShiftRootCausesData>): string[] {
     const MAX_TOP_CULPRITS = 3;
     const causes: Array<string> = [];
     if (causes.length === MAX_TOP_CULPRITS) {
@@ -171,14 +169,12 @@ export class CLSCulprits extends BaseInsight {
   }
 
   override getRelatedEvents(): Trace.Types.Events.Event[] {
-    const insight =
-        Trace.Insights.Common.getInsight('CumulativeLayoutShift', this.data.insights, this.data.insightSetKey);
+    const insight = Trace.Insights.Common.getInsight('CLSCulprits', this.data.insights, this.data.insightSetKey);
     return insight?.relatedEvents ?? [];
   }
 
   override render(): void {
-    const insight =
-        Trace.Insights.Common.getInsight('CumulativeLayoutShift', this.data.insights, this.data.insightSetKey);
+    const insight = Trace.Insights.Common.getInsight('CLSCulprits', this.data.insights, this.data.insightSetKey);
     if (!insight) {
       return;
     }

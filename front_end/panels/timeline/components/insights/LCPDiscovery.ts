@@ -11,7 +11,7 @@ import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
 import {eventRef} from './EventRef.js';
-import {BaseInsight, shouldRenderForCategory} from './Helpers.js';
+import {BaseInsightComponent, shouldRenderForCategory} from './Helpers.js';
 import type * as SidebarInsight from './SidebarInsight.js';
 import {Category} from './types.js';
 
@@ -109,7 +109,7 @@ function getImageData(
   return data;
 }
 
-export class LCPDiscovery extends BaseInsight {
+export class LCPDiscovery extends BaseInsightComponent {
   static override readonly litTagName = LitHtml.literal`devtools-performance-lcp-discovery`;
   override insightCategory: Category = Category.LCP;
   override internalName: string = 'lcp-discovery';

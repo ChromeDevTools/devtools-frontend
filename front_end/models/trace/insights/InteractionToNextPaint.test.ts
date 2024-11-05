@@ -29,7 +29,7 @@ describeWithEnvironment('InteractionToNextPaint', function() {
         bounds: data.Meta.traceBounds,
         frameId: data.Meta.mainFrameId,
       };
-      const insight = Trace.Insights.InsightRunners.InteractionToNextPaint.generateInsight(data, context);
+      const insight = Trace.Insights.Models.InteractionToNextPaint.generateInsight(data, context);
       assert.strictEqual(insight.longestInteractionEvent?.dur, longest);
       assert.strictEqual(insight.highPercentileInteractionEvent?.dur, highPercentile);
     });

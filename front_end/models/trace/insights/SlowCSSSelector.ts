@@ -6,13 +6,13 @@ import * as Helpers from '../helpers/helpers.js';
 import {type SelectorTiming, SelectorTimingsKey} from '../types/TraceEvents.js';
 import * as Types from '../types/types.js';
 
-import type {InsightResult, InsightSetContext, RequiredData} from './types.js';
+import type {InsightModel, InsightSetContext, RequiredData} from './types.js';
 
 export function deps(): ['SelectorStats'] {
   return ['SelectorStats'];
 }
 
-export type SlowCSSSelectorInsightResult = InsightResult<{
+export type SlowCSSSelectorInsightModel = InsightModel<{
   totalElapsedMs: Types.Timing.MilliSeconds,
   totalMatchAttempts: number,
   totalMatchCount: number,
@@ -52,7 +52,7 @@ function aggregateSelectorStats(
 }
 
 export function generateInsight(
-    parsedTrace: RequiredData<typeof deps>, context: InsightSetContext): SlowCSSSelectorInsightResult {
+    parsedTrace: RequiredData<typeof deps>, context: InsightSetContext): SlowCSSSelectorInsightModel {
   const selectorStatsData = parsedTrace.SelectorStats;
 
   if (!selectorStatsData) {

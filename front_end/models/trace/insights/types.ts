@@ -6,7 +6,7 @@ import type * as Handlers from '../handlers/handlers.js';
 import type * as Lantern from '../lantern/lantern.js';
 import type * as Types from '../types/types.js';
 
-import type * as InsightsRunners from './InsightRunners.js';
+import type * as Models from './Models.js';
 
 /**
  * Context for the portion of the trace an insight should look at.
@@ -33,7 +33,7 @@ export interface LanternContext {
   metrics: Record<string, Lantern.Metrics.MetricResult>;
 }
 
-export type InsightRunnersType = typeof InsightsRunners;
+export type InsightModelsType = typeof Models;
 
 export enum InsightWarning {
   NO_FP = 'NO_FP',
@@ -53,7 +53,7 @@ export interface MetricSavings {
   /* eslint-enable @typescript-eslint/naming-convention */
 }
 
-export type InsightResult<R extends Record<string, unknown>> = R&{
+export type InsightModel<R extends Record<string, unknown>> = R&{
   relatedEvents?: Types.Events.Event[],
   warnings?: InsightWarning[],
   metricSavings?: MetricSavings,
@@ -64,22 +64,22 @@ export type InsightResult<R extends Record<string, unknown>> = R&{
  * this could instead represent the duration from the beginning of the trace up to the first recorded
  * navigation (or the end of the trace).
  */
-export type InsightSets = {
+export type InsightSet = {
   /** If for a navigation, this is the navigationId. Else it is Trace.Types.Events.NO_NAVIGATION. */
   id: Types.Events.NavigationId,
   /** The URL to show in the accordion list. */
   url: URL,
   frameId: string,
   bounds: Types.Timing.TraceWindowMicroSeconds,
-  data: InsightResults,
+  model: InsightModels,
   navigation?: Types.Events.NavigationStart,
 };
 
 /**
- * Contains insights for a specific navigation.
+ * Contains insights for a specific insight set.
  */
-export type InsightResults = {
-  [I in keyof InsightRunnersType]: ReturnType<InsightRunnersType[I]['generateInsight']>;
+export type InsightModels = {
+  [I in keyof InsightModelsType]: ReturnType<InsightModelsType[I]['generateInsight']>;
 };
 
 /**
@@ -88,7 +88,7 @@ export type InsightResults = {
  * If the analyzed trace started after the navigation, and has meaningful work with that span, there is no
  * navigation to map it to. In this case `Types.Events.NO_NAVIGATION` is used for the key.
  */
-export type TraceInsightSets = Map<Types.Events.NavigationId, InsightSets>;
+export type TraceInsightSets = Map<Types.Events.NavigationId, InsightSet>;
 
 /**
  * Represents the narrow set of dependencies defined by an insight's `deps()` function. `Meta` is always included regardless of `deps()`.

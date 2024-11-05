@@ -9,7 +9,7 @@ import * as Trace from '../../../../models/trace/trace.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
-import {BaseInsight, shouldRenderForCategory} from './Helpers.js';
+import {BaseInsightComponent, shouldRenderForCategory} from './Helpers.js';
 import type * as SidebarInsight from './SidebarInsight.js';
 import type {TableData} from './Table.js';
 import {Category} from './types.js';
@@ -61,7 +61,7 @@ interface PhaseData {
   percent: string;
 }
 
-export class LCPPhases extends BaseInsight {
+export class LCPPhases extends BaseInsightComponent {
   static override readonly litTagName = LitHtml.literal`devtools-performance-lcp-by-phases`;
   override insightCategory: Category = Category.LCP;
   override internalName: string = 'lcp-by-phase';
@@ -77,7 +77,7 @@ export class LCPPhases extends BaseInsight {
     if (!insightsByNavigation) {
       return [];
     }
-    const lcpInsight = insightsByNavigation.data.LargestContentfulPaint;
+    const lcpInsight = insightsByNavigation.model.LargestContentfulPaint;
     if (lcpInsight instanceof Error) {
       return [];
     }
@@ -138,7 +138,7 @@ export class LCPPhases extends BaseInsight {
       return [];
     }
 
-    const lcpInsight = insightsByNavigation.data.LargestContentfulPaint;
+    const lcpInsight = insightsByNavigation.model.LargestContentfulPaint;
     if (lcpInsight instanceof Error) {
       return [];
     }

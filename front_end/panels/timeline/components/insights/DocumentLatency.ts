@@ -9,7 +9,7 @@ import * as Trace from '../../../../models/trace/trace.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
-import {BaseInsight, shouldRenderForCategory} from './Helpers.js';
+import {BaseInsightComponent, shouldRenderForCategory} from './Helpers.js';
 import {Category} from './types.js';
 
 const {html} = LitHtml;
@@ -75,7 +75,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/DocumentLatency.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export class DocumentLatency extends BaseInsight {
+export class DocumentLatency extends BaseInsightComponent {
   static override readonly litTagName = LitHtml.literal`devtools-performance-document-latency`;
   override insightCategory: Category = Category.ALL;
   override internalName: string = 'document-latency';
@@ -155,7 +155,7 @@ export class DocumentLatency extends BaseInsight {
     return overlays;
   }
 
-  #renderInsight(insight: Trace.Insights.Types.InsightResults['DocumentLatency']): LitHtml.LitTemplate {
+  #renderInsight(insight: Trace.Insights.Types.InsightModels['DocumentLatency']): LitHtml.LitTemplate {
     if (!insight.data) {
       return LitHtml.nothing;
     }

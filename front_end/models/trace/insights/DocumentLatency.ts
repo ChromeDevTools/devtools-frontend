@@ -5,7 +5,7 @@
 import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
 
-import type {InsightResult, InsightSetContext, RequiredData} from './types.js';
+import type {InsightModel, InsightSetContext, RequiredData} from './types.js';
 
 // Due to the way that DevTools throttling works we cannot see if server response took less than ~570ms.
 // We set our failure threshold to 600ms to avoid those false positives but we want devs to shoot for 100ms.
@@ -15,7 +15,7 @@ const TARGET_MS = 100;
 // Threshold for compression savings.
 const IGNORE_THRESHOLD_IN_BYTES = 1400;
 
-export type DocumentLatencyInsightResult = InsightResult<{
+export type DocumentLatencyInsightModel = InsightModel<{
   data?: {
     serverResponseTime: Types.Timing.MilliSeconds,
     serverResponseTooSlow: boolean,
@@ -104,7 +104,7 @@ function getCompressionSavings(request: Types.Events.SyntheticNetworkRequest): n
 }
 
 export function generateInsight(
-    parsedTrace: RequiredData<typeof deps>, context: InsightSetContext): DocumentLatencyInsightResult {
+    parsedTrace: RequiredData<typeof deps>, context: InsightSetContext): DocumentLatencyInsightModel {
   if (!context.navigation) {
     return {};
   }

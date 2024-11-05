@@ -58,7 +58,7 @@ describeWithEnvironment('DocumentLatency', function() {
 
     const navigation = getFirstOrError(data.Meta.navigationsByNavigationId.values());
     const context = createContextForNavigation(data, navigation, data.Meta.mainFrameId);
-    const insight = Trace.Insights.InsightRunners.DocumentLatency.generateInsight(data, context);
+    const insight = Trace.Insights.Models.DocumentLatency.generateInsight(data, context);
     assert.strictEqual(insight.data?.serverResponseTime, 1043);
     assert(insight.data?.serverResponseTooSlow);
     assert.deepEqual(insight.metricSavings, {FCP: 943, LCP: 943} as Trace.Insights.Types.MetricSavings);
@@ -92,7 +92,7 @@ describeWithEnvironment('DocumentLatency', function() {
 
     const navigation = getFirstOrError(data.Meta.navigationsByNavigationId.values());
     const context = createContextForNavigation(data, navigation, data.Meta.mainFrameId);
-    const insight = Trace.Insights.InsightRunners.DocumentLatency.generateInsight(data, context);
+    const insight = Trace.Insights.Models.DocumentLatency.generateInsight(data, context);
     assert.strictEqual(insight.data?.uncompressedResponseBytes, 39799);
     assert.deepEqual(insight.metricSavings, {FCP: 0, LCP: 0} as Trace.Insights.Types.MetricSavings);
   });

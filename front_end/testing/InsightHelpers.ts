@@ -30,9 +30,9 @@ export function createContextForNavigation(
   };
 }
 
-export function getInsightOrError<InsightName extends keyof Trace.Insights.Types.InsightResults>(
+export function getInsightOrError<InsightName extends keyof Trace.Insights.Types.InsightModels>(
     insightName: InsightName, insights: Trace.Insights.Types.TraceInsightSets,
-    navigation?: Trace.Types.Events.NavigationStart): Trace.Insights.Types.InsightResults[InsightName] {
+    navigation?: Trace.Types.Events.NavigationStart): Trace.Insights.Types.InsightModels[InsightName] {
   let key;
   if (navigation) {
     if (!navigation.args.data?.navigationId) {
@@ -48,13 +48,13 @@ export function getInsightOrError<InsightName extends keyof Trace.Insights.Types
     throw new Error('missing navInsights');
   }
 
-  const insight = insightSets.data[insightName];
+  const insight = insightSets.model[insightName];
   if (insight instanceof Error) {
     throw insight;
   }
 
   // For some reason typescript won't narrow the type by removing Error, so do it manually.
-  return insight as Trace.Insights.Types.InsightResults[InsightName];
+  return insight as Trace.Insights.Types.InsightModels[InsightName];
 }
 
 export function getFirstOrError<T>(iterator: IterableIterator<T>): T {

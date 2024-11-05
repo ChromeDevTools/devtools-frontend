@@ -6,10 +6,10 @@ import type * as Handlers from '../handlers/handlers.js';
 import * as Helpers from '../helpers/helpers.js';
 import type * as Types from '../types/types.js';
 
-import type {InsightResults, InsightSetContextWithNavigation, TraceInsightSets} from './types.js';
+import type {InsightModels, InsightSetContextWithNavigation, TraceInsightSets} from './types.js';
 
-export function getInsight<InsightName extends keyof InsightResults>(
-    insightName: InsightName, insights: TraceInsightSets|null, key: string|null): InsightResults[InsightName]|null {
+export function getInsight<InsightName extends keyof InsightModels>(
+    insightName: InsightName, insights: TraceInsightSets|null, key: string|null): InsightModels[InsightName]|null {
   if (!insights || !key) {
     return null;
   }
@@ -19,13 +19,13 @@ export function getInsight<InsightName extends keyof InsightResults>(
     return null;
   }
 
-  const insight = insightSets.data[insightName];
+  const insight = insightSets.model[insightName];
   if (insight instanceof Error) {
     return null;
   }
 
   // For some reason typescript won't narrow the type by removing Error, so do it manually.
-  return insight as InsightResults[InsightName];
+  return insight as InsightModels[InsightName];
 }
 
 /**

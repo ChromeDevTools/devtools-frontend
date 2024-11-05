@@ -5,18 +5,18 @@
 import * as Helpers from '../helpers/helpers.js';
 import type {SyntheticInteractionPair} from '../types/TraceEvents.js';
 
-import type {InsightResult, InsightSetContext, RequiredData} from './types.js';
+import type {InsightModel, InsightSetContext, RequiredData} from './types.js';
 
 export function deps(): ['UserInteractions'] {
   return ['UserInteractions'];
 }
 
-export type INPInsightResult = InsightResult<{
+export type INPInsightModel = InsightModel<{
   longestInteractionEvent?: SyntheticInteractionPair,
   highPercentileInteractionEvent?: SyntheticInteractionPair,
 }>;
 
-export function generateInsight(parsedTrace: RequiredData<typeof deps>, context: InsightSetContext): INPInsightResult {
+export function generateInsight(parsedTrace: RequiredData<typeof deps>, context: InsightSetContext): INPInsightModel {
   const interactionEvents = parsedTrace.UserInteractions.interactionEventsWithNoNesting.filter(event => {
     return Helpers.Timing.eventIsInBounds(event, context.bounds);
   });

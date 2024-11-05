@@ -9,7 +9,7 @@ import * as Trace from '../../../../models/trace/trace.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
-import {BaseInsight, shouldRenderForCategory} from './Helpers.js';
+import {BaseInsightComponent, shouldRenderForCategory} from './Helpers.js';
 import {Category} from './types.js';
 
 const {html} = LitHtml;
@@ -27,7 +27,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/Viewport.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export class Viewport extends BaseInsight {
+export class Viewport extends BaseInsightComponent {
   static override readonly litTagName = LitHtml.literal`devtools-performance-viewport`;
   override insightCategory: Category = Category.INP;
   override internalName: string = 'viewport';
@@ -39,7 +39,7 @@ export class Viewport extends BaseInsight {
     return [];
   }
 
-  #render(insight: Trace.Insights.Types.InsightResults['Viewport']): LitHtml.TemplateResult {
+  #render(insight: Trace.Insights.Types.InsightModels['Viewport']): LitHtml.TemplateResult {
     const backendNodeId = insight.viewportEvent?.args.data.node_id;
 
     // clang-format off

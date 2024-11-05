@@ -6,13 +6,13 @@ import * as Platform from '../../../core/platform/platform.js';
 import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
 
-import type {InsightResult, InsightSetContext, RequiredData} from './types.js';
+import type {InsightModel, InsightSetContext, RequiredData} from './types.js';
 
 export function deps(): ['Meta', 'NetworkRequests', 'LayoutShifts'] {
   return ['Meta', 'NetworkRequests', 'LayoutShifts'];
 }
 
-export type FontDisplayResult = InsightResult<{
+export type FontDisplayInsightModel = InsightModel<{
   fonts: Array<{
     request: Types.Events.SyntheticNetworkRequest,
     display: string,
@@ -20,7 +20,8 @@ export type FontDisplayResult = InsightResult<{
   }>,
 }>;
 
-export function generateInsight(parsedTrace: RequiredData<typeof deps>, context: InsightSetContext): FontDisplayResult {
+export function generateInsight(
+    parsedTrace: RequiredData<typeof deps>, context: InsightSetContext): FontDisplayInsightModel {
   const fonts = [];
   for (const event of parsedTrace.LayoutShifts.beginRemoteFontLoadEvents) {
     if (!Helpers.Timing.eventIsInBounds(event, context.bounds)) {

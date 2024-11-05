@@ -36,7 +36,7 @@ describeWithEnvironment('Viewport', function() {
       event.args.is_mobile_optimized = false;
     }
 
-    const insight = Trace.Insights.InsightRunners.Viewport.generateInsight(data, context);
+    const insight = Trace.Insights.Models.Viewport.generateInsight(data, context);
     assert.strictEqual(insight.mobileOptimized, false);
   });
 });

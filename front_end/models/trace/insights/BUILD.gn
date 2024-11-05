@@ -8,16 +8,16 @@ import("../../visibility.gni")
 
 devtools_module("insights") {
   sources = [
+    "CLSCulprits.ts",
     "Common.ts",
-    "CumulativeLayoutShift.ts",
     "DocumentLatency.ts",
     "FontDisplay.ts",
-    "InsightRunners.ts",
     "InteractionToNextPaint.ts",
     "LargestContentfulPaint.ts",
+    "Models.ts",
     "RenderBlocking.ts",
     "SlowCSSSelector.ts",
-    "ThirdPartyWeb.ts",
+    "ThirdParties.ts",
     "Viewport.ts",
     "types.ts",
   ]
@@ -45,14 +45,14 @@ ts_library("unittests") {
   testonly = true
 
   sources = [
-    "CumulativeLayoutShift.test.ts",
+    "CLSCulprits.test.ts",
     "DocumentLatency.test.ts",
     "FontDisplay.test.ts",
     "InteractionToNextPaint.test.ts",
     "LargestContentfulPaint.test.ts",
     "RenderBlocking.test.ts",
     "SlowCSSSelector.test.ts",
-    "ThirdPartyWeb.test.ts",
+    "ThirdParties.test.ts",
     "Viewport.test.ts",
   ]
 

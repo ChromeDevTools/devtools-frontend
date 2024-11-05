@@ -10,7 +10,7 @@ import * as Trace from '../../../../models/trace/trace.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
-import {BaseInsight, shouldRenderForCategory} from './Helpers.js';
+import {BaseInsightComponent, shouldRenderForCategory} from './Helpers.js';
 import {Category} from './types.js';
 
 const {html} = LitHtml;
@@ -52,7 +52,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/InteractionToNextPaint.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export class InteractionToNextPaint extends BaseInsight {
+export class InteractionToNextPaint extends BaseInsightComponent {
   static override readonly litTagName = LitHtml.literal`devtools-performance-inp`;
   override insightCategory: Category = Category.INP;
   override internalName: string = 'inp';

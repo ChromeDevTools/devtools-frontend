@@ -15,12 +15,12 @@ export async function processTrace(testContext: Mocha.Suite|Mocha.Context|null, 
   return {data: parsedTrace, insights};
 }
 
-describeWithEnvironment('ThirdPartyWeb', function() {
+describeWithEnvironment('ThirdParties', function() {
   it('categorizes third party web requests (simple)', async () => {
     const {data, insights} = await processTrace(this, 'load-simple.json.gz');
     assert.strictEqual(insights.size, 2);
     const insight =
-        getInsightOrError('ThirdPartyWeb', insights, getFirstOrError(data.Meta.navigationsByNavigationId.values()));
+        getInsightOrError('ThirdParties', insights, getFirstOrError(data.Meta.navigationsByNavigationId.values()));
 
     const entityByRequestResult = [...insight.entityByRequest.entries()].map(([request, entity]) => {
       return [request.args.data.url, entity.name];
@@ -72,7 +72,7 @@ describeWithEnvironment('ThirdPartyWeb', function() {
     const {data, insights} = await processTrace(this, 'lantern/paul/trace.json.gz');
     assert.strictEqual(insights.size, 1);
     const insight =
-        getInsightOrError('ThirdPartyWeb', insights, getFirstOrError(data.Meta.navigationsByNavigationId.values()));
+        getInsightOrError('ThirdParties', insights, getFirstOrError(data.Meta.navigationsByNavigationId.values()));
 
     const entityNames = [...insight.entityByRequest.values()].map(entity => entity.name);
     assert.deepEqual([...new Set(entityNames)], [

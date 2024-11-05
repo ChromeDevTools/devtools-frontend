@@ -62,14 +62,12 @@ export class CSSContainerQueryContainer {
       return;
     }
     const containerType = styles.get('container-type');
-    const contain = styles.get('contain');
     const writingMode = styles.get('writing-mode');
-    if (!containerType || !contain || !writingMode) {
+    if (!containerType || !writingMode) {
       return;
     }
 
-    // The final queried axes are the union of both properties.
-    const queryAxis = getQueryAxis(`${containerType} ${contain}`);
+    const queryAxis = getQueryAxisFromContainerType(`${containerType}`);
     const physicalAxis = getPhysicalAxisFromQueryAxis(queryAxis, writingMode);
     let width, height;
     if (physicalAxis === PhysicalAxis.BOTH || physicalAxis === PhysicalAxis.HORIZONTAL) {
@@ -88,28 +86,18 @@ export class CSSContainerQueryContainer {
   }
 }
 
-export const getQueryAxis = (propertyValue: string): QueryAxis => {
+export const getQueryAxisFromContainerType = (propertyValue: string): QueryAxis => {
   const segments = propertyValue.split(' ');
   let isInline = false;
-  let isBlock = false;
   for (const segment of segments) {
     if (segment === 'size') {
       return QueryAxis.BOTH;
     }
     isInline = isInline || segment === 'inline-size';
-    isBlock = isBlock || segment === 'block-size';
-  }
-
-  if (isInline && isBlock) {
-    return QueryAxis.BOTH;
   }
   if (isInline) {
     return QueryAxis.INLINE;
   }
-  if (isBlock) {
-    return QueryAxis.BLOCK;
-  }
-
   return QueryAxis.NONE;
 };
 

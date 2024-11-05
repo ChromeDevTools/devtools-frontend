@@ -4,29 +4,23 @@
 
 import * as SDK from './sdk.js';
 
-const {getPhysicalAxisFromQueryAxis, getQueryAxis, PhysicalAxis, QueryAxis} = SDK.CSSContainerQuery;
+const {getPhysicalAxisFromQueryAxis, getQueryAxisFromContainerType, PhysicalAxis, QueryAxis} = SDK.CSSContainerQuery;
 
 describe('CSSContainerQuery', () => {
-  describe('getQueryAxis', () => {
-    it('gets the query axis of no containment correctly', () => {
-      assert.strictEqual(getQueryAxis(''), QueryAxis.NONE);
-      assert.strictEqual(getQueryAxis('style layout'), QueryAxis.NONE);
+  describe('getQueryAxisFromContainerType', () => {
+    it('gets the query axis of no container-type correctly', () => {
+      assert.strictEqual(getQueryAxisFromContainerType(''), QueryAxis.NONE);
+      assert.strictEqual(getQueryAxisFromContainerType('normal'), QueryAxis.NONE);
     });
 
     it('gets the query axis of an inline container query correctly', () => {
-      assert.strictEqual(getQueryAxis('inline-size layout style'), QueryAxis.INLINE);
-      assert.strictEqual(getQueryAxis('layout inline-size style inline-size'), QueryAxis.INLINE);
+      assert.strictEqual(getQueryAxisFromContainerType('inline-size'), QueryAxis.INLINE);
+      assert.strictEqual(getQueryAxisFromContainerType('scroll-state inline-size'), QueryAxis.INLINE);
     });
 
-    it('gets the query axis of a block container query correctly', () => {
-      assert.strictEqual(getQueryAxis('block-size layout style'), QueryAxis.BLOCK);
-      assert.strictEqual(getQueryAxis('layout block-size style block-size'), QueryAxis.BLOCK);
-    });
-
-    it('gets the query axis of inline-block container query correctly', () => {
-      assert.strictEqual(getQueryAxis('inline-size layout style block-size'), QueryAxis.BOTH);
-      assert.strictEqual(getQueryAxis('layout size style'), QueryAxis.BOTH);
-      assert.strictEqual(getQueryAxis('size'), QueryAxis.BOTH);
+    it('gets the query axis of size container query correctly', () => {
+      assert.strictEqual(getQueryAxisFromContainerType('size'), QueryAxis.BOTH);
+      assert.strictEqual(getQueryAxisFromContainerType('scroll-state size'), QueryAxis.BOTH);
     });
   });
 

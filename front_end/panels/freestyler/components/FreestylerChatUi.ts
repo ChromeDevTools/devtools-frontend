@@ -737,14 +737,14 @@ export class FreestylerChatUi extends HTMLElement {
       // clang-format on
     }
 
-    const shouldShowSuggestions = (isLast && !this.#props.isLoading && message.suggestions);
     // clang-format off
     return html`
-      <section class="chat-message answer" jslog=${VisualLogging.section('answer')}>
+      <section
+        class="chat-message answer"
+        jslog=${VisualLogging.section('answer')}
+      >
         <div class="message-info">
-          <devtools-icon
-            name="smart-assistant"
-          ></devtools-icon>
+          <devtools-icon name="smart-assistant"></devtools-icon>
           <div class="message-name">
             <h2>${lockedString(UIStringsNotTranslate.ai)}</h2>
           </div>
@@ -758,14 +758,17 @@ export class FreestylerChatUi extends HTMLElement {
             });
           },
         )}
-        ${
-          message.answer
-            ? html`<p>${this.#renderTextAsMarkdown(message.answer)}</p>`
-            : LitHtml.nothing
-        }
+        ${message.answer
+          ? html`<p>${this.#renderTextAsMarkdown(message.answer)}</p>`
+          : LitHtml.nothing}
         ${this.#renderError(message)}
         <div class="actions">
-          ${this.#renderUserActionRow(message.rpcId, shouldShowSuggestions ? message.suggestions : undefined)}
+          ${isLast && this.#props.isLoading
+            ? LitHtml.nothing
+            : this.#renderUserActionRow(
+                message.rpcId,
+                isLast ? message.suggestions : undefined,
+              )}
         </div>
       </section>
     `;

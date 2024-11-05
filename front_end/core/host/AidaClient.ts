@@ -16,6 +16,7 @@ export enum Entity {
 }
 
 export const enum Rating {
+  SENTIMENT_UNSPECIFIED = 'SENTIMENT_UNSPECIFIED',
   POSITIVE = 'POSITIVE',
   NEGATIVE = 'NEGATIVE',
 }

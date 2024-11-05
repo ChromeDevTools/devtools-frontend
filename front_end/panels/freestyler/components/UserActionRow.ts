@@ -139,6 +139,11 @@ export class UserActionRow extends HTMLElement {
 
   #handleRateClick(rating: Host.AidaClient.Rating): void {
     if (this.#currentRating === rating) {
+      this.#currentRating = undefined;
+      this.#isShowingFeedbackForm = false;
+      // This effectively reset the user rating
+      this.#props.onFeedbackSubmit(Host.AidaClient.Rating.SENTIMENT_UNSPECIFIED);
+      this.#render();
       return;
     }
 
@@ -168,36 +173,42 @@ export class UserActionRow extends HTMLElement {
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(REPORT_URL);
   };
 
-  #renderButtons(): LitHtml.TemplateResult {
+  #renderButtons(): LitHtml.LitTemplate {
+    // clang-format off
+    const rateButtons = html`
+      <devtools-button
+          .data=${{
+            variant: Buttons.Button.Variant.ICON,
+            size: Buttons.Button.Size.SMALL,
+            iconName: 'thumb-up',
+            toggledIconName: 'thumb-up-filled',
+            toggled: this.#currentRating === Host.AidaClient.Rating.POSITIVE,
+            toggleType: Buttons.Button.ToggleType.PRIMARY,
+            title: lockedString(UIStringsNotTranslate.thumbsUp),
+            jslogContext: 'thumbs-up',
+          } as Buttons.Button.ButtonData}
+          @click=${() => this.#handleRateClick(Host.AidaClient.Rating.POSITIVE)}
+        ></devtools-button>
+        <devtools-button
+          .data=${{
+            variant: Buttons.Button.Variant.ICON,
+            size: Buttons.Button.Size.SMALL,
+            iconName: 'thumb-down',
+            toggledIconName: 'thumb-down-filled',
+            toggled: this.#currentRating === Host.AidaClient.Rating.NEGATIVE,
+            toggleType: Buttons.Button.ToggleType.PRIMARY,
+            title: lockedString(UIStringsNotTranslate.thumbsDown),
+            jslogContext: 'thumbs-down',
+          } as Buttons.Button.ButtonData}
+          @click=${() => this.#handleRateClick(Host.AidaClient.Rating.NEGATIVE)}
+        ></devtools-button>
+        <div class="vertical-separator"></div>`;
+    // clang-format off
+
     // clang-format off
     return html`
-      <devtools-button
-        .data=${{
-          variant: Buttons.Button.Variant.ICON,
-          size: Buttons.Button.Size.SMALL,
-          iconName: 'thumb-up',
-          toggledIconName: 'thumb-up-filled',
-          toggled: this.#currentRating === Host.AidaClient.Rating.POSITIVE,
-          toggleType: Buttons.Button.ToggleType.PRIMARY,
-          title: lockedString(UIStringsNotTranslate.thumbsUp),
-          jslogContext: 'thumbs-up',
-        } as Buttons.Button.ButtonData}
-        @click=${() => this.#handleRateClick(Host.AidaClient.Rating.POSITIVE)}
-      ></devtools-button>
-      <devtools-button
-        .data=${{
-          variant: Buttons.Button.Variant.ICON,
-          size: Buttons.Button.Size.SMALL,
-          iconName: 'thumb-down',
-          toggledIconName: 'thumb-down-filled',
-          toggled: this.#currentRating === Host.AidaClient.Rating.NEGATIVE,
-          toggleType: Buttons.Button.ToggleType.PRIMARY,
-          title: lockedString(UIStringsNotTranslate.thumbsDown),
-          jslogContext: 'thumbs-down',
-        } as Buttons.Button.ButtonData}
-        @click=${() => this.#handleRateClick(Host.AidaClient.Rating.NEGATIVE)}
-      ></devtools-button>
-      <div class="vertical-separator"></div>
+    <div class="rate-buttons">
+      ${this.#props.showRateButtons ? rateButtons : LitHtml.nothing}
       <devtools-button
         .data=${
           {
@@ -210,7 +221,7 @@ export class UserActionRow extends HTMLElement {
         }
         @click=${this.#handleReportClick}
       ></devtools-button>
-    `;
+    </div>`;
     // clang-format on
   }
 
@@ -240,6 +251,10 @@ export class UserActionRow extends HTMLElement {
   };
 
   #renderFeedbackForm(): LitHtml.LitTemplate {
+    if (!this.#isShowingFeedbackForm) {
+      return LitHtml.nothing;
+    }
+
     // clang-format off
     return html`
       <form class="feedback-form" @submit=${this.#handleSubmit}>
@@ -295,11 +310,10 @@ export class UserActionRow extends HTMLElement {
   }
 
   #renderSuggestions(): LitHtml.LitTemplate {
-    // clang-format off
     if (!this.#props.suggestions) {
       return LitHtml.nothing;
     }
-
+    // clang-format off
     return html`<div class="suggestions-container">
       <div class="scroll-button-container left hidden" ${LitHtml.Directives.ref(this.#suggestionsLeftScrollButtonContainerRef)}>
         <devtools-button
@@ -347,15 +361,10 @@ export class UserActionRow extends HTMLElement {
     LitHtml.render(
       html`
         <div class="feedback">
-          <div class="rate-buttons">
-            ${this.#props.showRateButtons ? this.#renderButtons() : LitHtml.nothing}
-          </div>
-          ${this.#props.suggestions ? this.#renderSuggestions() : LitHtml.nothing}
+          ${this.#renderButtons()}
+          ${this.#renderSuggestions()}
         </div>
-        ${this.#isShowingFeedbackForm
-          ? this.#renderFeedbackForm()
-          : LitHtml.nothing
-        }
+        ${this.#renderFeedbackForm()}
       `,
       this.#shadow,
       {host: this},

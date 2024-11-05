@@ -5,8 +5,11 @@
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as SDK from '../../core/sdk/sdk.js';
+import * as Buttons from '../../ui/components/buttons/buttons.js';
+import * as Cards from '../../ui/components/cards/cards.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
+import settingsScreenStyles from '../settings/settingsScreen.css.js';
 
 import throttlingSettingsTabStyles from './throttlingSettingsTab.css.js';
 
@@ -14,11 +17,11 @@ const UIStrings = {
   /**
    *@description Text in Throttling Settings Tab of the Network panel
    */
-  networkThrottlingProfiles: 'Network Throttling Profiles',
+  networkThrottlingProfiles: 'Network throttling profiles',
   /**
    *@description Text of add conditions button in Throttling Settings Tab of the Network panel
    */
-  addCustomProfile: 'Add custom profile...',
+  addCustomProfile: 'Add profile',
   /**
    *@description A value in milliseconds
    *@example {3} PH1
@@ -129,21 +132,30 @@ export class ThrottlingSettingsTab extends UI.Widget.VBox implements
 
     this.element.setAttribute('jslog', `${VisualLogging.pane('throttling-conditions')}`);
 
-    const header = this.contentElement.createChild('div', 'header');
-    header.textContent = i18nString(UIStrings.networkThrottlingProfiles);
-    UI.ARIAUtils.markAsHeading(header, 1);
+    const settingsContent =
+        this.contentElement.createChild('div', 'settings-card-container-wrapper').createChild('div');
+    settingsContent.classList.add('settings-card-container', 'ignore-list-settings');
 
-    const addButton =
-        UI.UIUtils.createTextButton(i18nString(UIStrings.addCustomProfile), this.addButtonClicked.bind(this), {
-          className: 'add-conditions-button',
-          jslogContext: 'network.add-conditions',
-        });
-    this.contentElement.appendChild(addButton);
+    const addButton = new Buttons.Button.Button();
+    addButton.classList.add('add-conditions-button');
+    addButton.data = {
+      variant: Buttons.Button.Variant.OUTLINED,
+      iconName: 'plus',
+      jslogContext: 'network.add-conditions',
+    };
+    addButton.textContent = i18nString(UIStrings.addCustomProfile);
+    addButton.addEventListener('click', () => this.addButtonClicked());
 
+    const listContainer = settingsContent.createChild('div');
+    const card = new Cards.Card.Card();
+    settingsContent.appendChild(card);
+    card.data = {
+      heading: i18nString(UIStrings.networkThrottlingProfiles),
+      content: [listContainer, addButton],
+    };
     this.list = new UI.ListWidget.ListWidget(this);
     this.list.element.classList.add('conditions-list');
-
-    this.list.show(this.contentElement);
+    this.list.show(listContainer);
 
     this.customSetting = Common.Settings.Settings.instance().moduleSetting('custom-network-conditions');
     this.customSetting.addChangeListener(this.conditionsUpdated, this);
@@ -154,7 +166,7 @@ export class ThrottlingSettingsTab extends UI.Widget.VBox implements
   override wasShown(): void {
     super.wasShown();
     this.list.registerCSSFiles([throttlingSettingsTabStyles]);
-    this.registerCSSFiles([throttlingSettingsTabStyles]);
+    this.registerCSSFiles([throttlingSettingsTabStyles, settingsScreenStyles]);
     this.conditionsUpdated();
   }
 

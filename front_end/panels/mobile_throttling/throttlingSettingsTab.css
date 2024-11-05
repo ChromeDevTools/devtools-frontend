@@ -4,27 +4,12 @@
  * found in the LICENSE file.
  */
 
-:host {
-  overflow: hidden;
-}
-
-.header {
-  padding: 0 0 6px;
-  border-bottom: 1px solid var(--sys-color-divider);
-  font-size: 18px;
-  font-weight: normal;
-  flex: none;
-}
 
 .add-conditions-button {
-  flex: none;
-  margin: 10px 5px;
-  min-width: 140px;
-  align-self: flex-start;
+  border: none;
 }
 
 .conditions-list {
-  min-width: 640px;
   flex: auto;
 }
 
@@ -57,7 +42,7 @@
 .conditions-list-title {
   text-align: start;
   display: flex;
-  flex: auto;
+  flex-grow: 1;
   align-items: flex-start;
 }
 

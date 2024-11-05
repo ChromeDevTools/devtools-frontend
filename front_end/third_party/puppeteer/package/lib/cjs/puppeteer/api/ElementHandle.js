@@ -873,14 +873,28 @@ let ElementHandle = (() => {
             const { x, y } = await this.clickablePoint();
             await this.frame.page().touchscreen.tap(x, y);
         }
+        /**
+         * This method scrolls the element into view if needed, and then
+         * starts a touch in the center of the element.
+         * @returns A {@link TouchHandle} representing the touch that was started
+         */
         async touchStart() {
             await this.scrollIntoViewIfNeeded();
             const { x, y } = await this.clickablePoint();
-            await this.frame.page().touchscreen.touchStart(x, y);
+            return await this.frame.page().touchscreen.touchStart(x, y);
         }
-        async touchMove() {
+        /**
+         * This method scrolls the element into view if needed, and then
+         * moves the touch to the center of the element.
+         * @param touch - An optional {@link TouchHandle}. If provided, this touch
+         * will be moved. If not provided, the first active touch will be moved.
+         */
+        async touchMove(touch) {
             await this.scrollIntoViewIfNeeded();
             const { x, y } = await this.clickablePoint();
+            if (touch) {
+                return await touch.move(x, y);
+            }
             await this.frame.page().touchscreen.touchMove(x, y);
         }
         async touchEnd() {

@@ -116,21 +116,24 @@ let CdpElementHandle = (() => {
                 await super.scrollIntoView();
             }
         }
-        async uploadFile(...filePaths) {
+        async uploadFile(...files) {
             const isMultiple = await this.evaluate(element => {
                 return element.multiple;
             });
-            (0, assert_js_1.assert)(filePaths.length <= 1 || isMultiple, 'Multiple file uploads only work with <input type=file multiple>');
+            (0, assert_js_1.assert)(files.length <= 1 || isMultiple, 'Multiple file uploads only work with <input type=file multiple>');
             // Locate all files and confirm that they exist.
             const path = environment_js_1.environment.value.path;
-            const files = filePaths.map(filePath => {
-                if (path.win32.isAbsolute(filePath) || path.posix.isAbsolute(filePath)) {
-                    return filePath;
-                }
-                else {
-                    return path.resolve(filePath);
-                }
-            });
+            if (path) {
+                files = files.map(filePath => {
+                    if (path.win32.isAbsolute(filePath) ||
+                        path.posix.isAbsolute(filePath)) {
+                        return filePath;
+                    }
+                    else {
+                        return path.resolve(filePath);
+                    }
+                });
+            }
             /**
              * The zero-length array is a special case, it seems that
              * DOM.setFileInputFiles does not actually update the files in that case, so

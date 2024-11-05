@@ -2841,9 +2841,6 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       get fs() {
         throw new Error('fs is not available in this environment');
       },
-      get path() {
-        throw new Error('path is not available in this environment');
-      },
       get ScreenRecorder() {
         throw new Error('ScreenRecorder is not available in this environment');
       }
@@ -2853,7 +2850,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   /**
    * @internal
    */
-  const packageVersion = '23.6.1';
+  const packageVersion = '23.7.0';
 
   /**
    * @license
@@ -3072,6 +3069,12 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    * @public
    */
   class TimeoutError extends PuppeteerError {}
+  /**
+   * TouchError is thrown when an attempt is made to move or end a touch that does
+   * not exist.
+   * @public
+   */
+  class TouchError extends PuppeteerError {}
   /**
    * ProtocolError is emitted whenever there is an error from the protocol.
    *
@@ -4786,7 +4789,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   }) => {
     return cssQuerySelectorAll(element, selector);
   });
-  const source = "\"use strict\";var g=Object.defineProperty;var X=Object.getOwnPropertyDescriptor;var B=Object.getOwnPropertyNames;var Y=Object.prototype.hasOwnProperty;var l=(t,e)=>{for(var r in e)g(t,r,{get:e[r],enumerable:!0})},J=(t,e,r,o)=>{if(e&&typeof e==\"object\"||typeof e==\"function\")for(let n of B(e))!Y.call(t,n)&&n!==r&&g(t,n,{get:()=>e[n],enumerable:!(o=X(e,n))||o.enumerable});return t};var z=t=>J(g({},\"__esModule\",{value:!0}),t);var pe={};l(pe,{default:()=>he});module.exports=z(pe);var N=class extends Error{constructor(e,r){super(e,r),this.name=this.constructor.name}get[Symbol.toStringTag](){return this.constructor.name}},p=class extends N{};var c=class t{static create(e){return new t(e)}static async race(e){let r=new Set;try{let o=e.map(n=>n instanceof t?(n.#n&&r.add(n),n.valueOrThrow()):n);return await Promise.race(o)}finally{for(let o of r)o.reject(new Error(\"Timeout cleared\"))}}#e=!1;#r=!1;#o;#t;#a=new Promise(e=>{this.#t=e});#n;#i;constructor(e){e&&e.timeout>0&&(this.#i=new p(e.message),this.#n=setTimeout(()=>{this.reject(this.#i)},e.timeout))}#l(e){clearTimeout(this.#n),this.#o=e,this.#t()}resolve(e){this.#r||this.#e||(this.#e=!0,this.#l(e))}reject(e){this.#r||this.#e||(this.#r=!0,this.#l(e))}resolved(){return this.#e}finished(){return this.#e||this.#r}value(){return this.#o}#s;valueOrThrow(){return this.#s||(this.#s=(async()=>{if(await this.#a,this.#r)throw this.#o;return this.#o})()),this.#s}};var L=new Map,F=t=>{let e=L.get(t);return e||(e=new Function(`return ${t}`)(),L.set(t,e),e)};var x={};l(x,{ariaQuerySelector:()=>G,ariaQuerySelectorAll:()=>b});var G=(t,e)=>globalThis.__ariaQuerySelector(t,e),b=async function*(t,e){yield*await globalThis.__ariaQuerySelectorAll(t,e)};var E={};l(E,{cssQuerySelector:()=>K,cssQuerySelectorAll:()=>Z});var K=(t,e)=>t.querySelector(e),Z=function(t,e){return t.querySelectorAll(e)};var A={};l(A,{customQuerySelectors:()=>P});var v=class{#e=new Map;register(e,r){if(!r.queryOne&&r.queryAll){let o=r.queryAll;r.queryOne=(n,i)=>{for(let s of o(n,i))return s;return null}}else if(r.queryOne&&!r.queryAll){let o=r.queryOne;r.queryAll=(n,i)=>{let s=o(n,i);return s?[s]:[]}}else if(!r.queryOne||!r.queryAll)throw new Error(\"At least one query method must be defined.\");this.#e.set(e,{querySelector:r.queryOne,querySelectorAll:r.queryAll})}unregister(e){this.#e.delete(e)}get(e){return this.#e.get(e)}clear(){this.#e.clear()}},P=new v;var R={};l(R,{pierceQuerySelector:()=>ee,pierceQuerySelectorAll:()=>te});var ee=(t,e)=>{let r=null,o=n=>{let i=document.createTreeWalker(n,NodeFilter.SHOW_ELEMENT);do{let s=i.currentNode;s.shadowRoot&&o(s.shadowRoot),!(s instanceof ShadowRoot)&&s!==n&&!r&&s.matches(e)&&(r=s)}while(!r&&i.nextNode())};return t instanceof Document&&(t=t.documentElement),o(t),r},te=(t,e)=>{let r=[],o=n=>{let i=document.createTreeWalker(n,NodeFilter.SHOW_ELEMENT);do{let s=i.currentNode;s.shadowRoot&&o(s.shadowRoot),!(s instanceof ShadowRoot)&&s!==n&&s.matches(e)&&r.push(s)}while(i.nextNode())};return t instanceof Document&&(t=t.documentElement),o(t),r};var u=(t,e)=>{if(!t)throw new Error(e)};var y=class{#e;#r;#o;#t;constructor(e,r){this.#e=e,this.#r=r}async start(){let e=this.#t=c.create(),r=await this.#e();if(r){e.resolve(r);return}this.#o=new MutationObserver(async()=>{let o=await this.#e();o&&(e.resolve(o),await this.stop())}),this.#o.observe(this.#r,{childList:!0,subtree:!0,attributes:!0})}async stop(){u(this.#t,\"Polling never started.\"),this.#t.finished()||this.#t.reject(new Error(\"Polling stopped\")),this.#o&&(this.#o.disconnect(),this.#o=void 0)}result(){return u(this.#t,\"Polling never started.\"),this.#t.valueOrThrow()}},w=class{#e;#r;constructor(e){this.#e=e}async start(){let e=this.#r=c.create(),r=await this.#e();if(r){e.resolve(r);return}let o=async()=>{if(e.finished())return;let n=await this.#e();if(!n){window.requestAnimationFrame(o);return}e.resolve(n),await this.stop()};window.requestAnimationFrame(o)}async stop(){u(this.#r,\"Polling never started.\"),this.#r.finished()||this.#r.reject(new Error(\"Polling stopped\"))}result(){return u(this.#r,\"Polling never started.\"),this.#r.valueOrThrow()}},T=class{#e;#r;#o;#t;constructor(e,r){this.#e=e,this.#r=r}async start(){let e=this.#t=c.create(),r=await this.#e();if(r){e.resolve(r);return}this.#o=setInterval(async()=>{let o=await this.#e();o&&(e.resolve(o),await this.stop())},this.#r)}async stop(){u(this.#t,\"Polling never started.\"),this.#t.finished()||this.#t.reject(new Error(\"Polling stopped\")),this.#o&&(clearInterval(this.#o),this.#o=void 0)}result(){return u(this.#t,\"Polling never started.\"),this.#t.valueOrThrow()}};var _={};l(_,{PCombinator:()=>H,pQuerySelector:()=>fe,pQuerySelectorAll:()=>$});var a=class{static async*map(e,r){for await(let o of e)yield await r(o)}static async*flatMap(e,r){for await(let o of e)yield*r(o)}static async collect(e){let r=[];for await(let o of e)r.push(o);return r}static async first(e){for await(let r of e)return r}};var C={};l(C,{textQuerySelectorAll:()=>m});var re=new Set([\"checkbox\",\"image\",\"radio\"]),oe=t=>t instanceof HTMLSelectElement||t instanceof HTMLTextAreaElement||t instanceof HTMLInputElement&&!re.has(t.type),ne=new Set([\"SCRIPT\",\"STYLE\"]),f=t=>!ne.has(t.nodeName)&&!document.head?.contains(t),I=new WeakMap,j=t=>{for(;t;)I.delete(t),t instanceof ShadowRoot?t=t.host:t=t.parentNode},W=new WeakSet,se=new MutationObserver(t=>{for(let e of t)j(e.target)}),d=t=>{let e=I.get(t);if(e||(e={full:\"\",immediate:[]},!f(t)))return e;let r=\"\";if(oe(t))e.full=t.value,e.immediate.push(t.value),t.addEventListener(\"input\",o=>{j(o.target)},{once:!0,capture:!0});else{for(let o=t.firstChild;o;o=o.nextSibling){if(o.nodeType===Node.TEXT_NODE){e.full+=o.nodeValue??\"\",r+=o.nodeValue??\"\";continue}r&&e.immediate.push(r),r=\"\",o.nodeType===Node.ELEMENT_NODE&&(e.full+=d(o).full)}r&&e.immediate.push(r),t instanceof Element&&t.shadowRoot&&(e.full+=d(t.shadowRoot).full),W.has(t)||(se.observe(t,{childList:!0,characterData:!0,subtree:!0}),W.add(t))}return I.set(t,e),e};var m=function*(t,e){let r=!1;for(let o of t.childNodes)if(o instanceof Element&&f(o)){let n;o.shadowRoot?n=m(o.shadowRoot,e):n=m(o,e);for(let i of n)yield i,r=!0}r||t instanceof Element&&f(t)&&d(t).full.includes(e)&&(yield t)};var k={};l(k,{checkVisibility:()=>le,pierce:()=>S,pierceAll:()=>O});var ie=[\"hidden\",\"collapse\"],le=(t,e)=>{if(!t)return e===!1;if(e===void 0)return t;let r=t.nodeType===Node.TEXT_NODE?t.parentElement:t,o=window.getComputedStyle(r),n=o&&!ie.includes(o.visibility)&&!ae(r);return e===n?t:!1};function ae(t){let e=t.getBoundingClientRect();return e.width===0||e.height===0}var ce=t=>\"shadowRoot\"in t&&t.shadowRoot instanceof ShadowRoot;function*S(t){ce(t)?yield t.shadowRoot:yield t}function*O(t){t=S(t).next().value,yield t;let e=[document.createTreeWalker(t,NodeFilter.SHOW_ELEMENT)];for(let r of e){let o;for(;o=r.nextNode();)o.shadowRoot&&(yield o.shadowRoot,e.push(document.createTreeWalker(o.shadowRoot,NodeFilter.SHOW_ELEMENT)))}}var Q={};l(Q,{xpathQuerySelectorAll:()=>q});var q=function*(t,e,r=-1){let n=(t.ownerDocument||document).evaluate(e,t,null,XPathResult.ORDERED_NODE_ITERATOR_TYPE),i=[],s;for(;(s=n.iterateNext())&&(i.push(s),!(r&&i.length===r)););for(let h=0;h<i.length;h++)s=i[h],yield s,delete i[h]};var ue=/[-\\w\\P{ASCII}*]/u,H=(r=>(r.Descendent=\">>>\",r.Child=\">>>>\",r))(H||{}),V=t=>\"querySelectorAll\"in t,M=class{#e;#r=[];#o=void 0;elements;constructor(e,r){this.elements=[e],this.#e=r,this.#t()}async run(){if(typeof this.#o==\"string\")switch(this.#o.trimStart()){case\":scope\":this.#t();break}for(;this.#o!==void 0;this.#t()){let e=this.#o;typeof e==\"string\"?e[0]&&ue.test(e[0])?this.elements=a.flatMap(this.elements,async function*(r){V(r)&&(yield*r.querySelectorAll(e))}):this.elements=a.flatMap(this.elements,async function*(r){if(!r.parentElement){if(!V(r))return;yield*r.querySelectorAll(e);return}let o=0;for(let n of r.parentElement.children)if(++o,n===r)break;yield*r.parentElement.querySelectorAll(`:scope>:nth-child(${o})${e}`)}):this.elements=a.flatMap(this.elements,async function*(r){switch(e.name){case\"text\":yield*m(r,e.value);break;case\"xpath\":yield*q(r,e.value);break;case\"aria\":yield*b(r,e.value);break;default:let o=P.get(e.name);if(!o)throw new Error(`Unknown selector type: ${e.name}`);yield*o.querySelectorAll(r,e.value)}})}}#t(){if(this.#r.length!==0){this.#o=this.#r.shift();return}if(this.#e.length===0){this.#o=void 0;return}let e=this.#e.shift();switch(e){case\">>>>\":{this.elements=a.flatMap(this.elements,S),this.#t();break}case\">>>\":{this.elements=a.flatMap(this.elements,O),this.#t();break}default:this.#r=e,this.#t();break}}},D=class{#e=new WeakMap;calculate(e,r=[]){if(e===null)return r;e instanceof ShadowRoot&&(e=e.host);let o=this.#e.get(e);if(o)return[...o,...r];let n=0;for(let s=e.previousSibling;s;s=s.previousSibling)++n;let i=this.calculate(e.parentNode,[n]);return this.#e.set(e,i),[...i,...r]}},U=(t,e)=>{if(t.length+e.length===0)return 0;let[r=-1,...o]=t,[n=-1,...i]=e;return r===n?U(o,i):r<n?-1:1},de=async function*(t){let e=new Set;for await(let o of t)e.add(o);let r=new D;yield*[...e.values()].map(o=>[o,r.calculate(o)]).sort(([,o],[,n])=>U(o,n)).map(([o])=>o)},$=function(t,e){let r=JSON.parse(e);if(r.some(o=>{let n=0;return o.some(i=>(typeof i==\"string\"?++n:n=0,n>1))}))throw new Error(\"Multiple deep combinators found in sequence.\");return de(a.flatMap(r,o=>{let n=new M(t,o);return n.run(),n.elements}))},fe=async function(t,e){for await(let r of $(t,e))return r;return null};var me=Object.freeze({...x,...A,...R,..._,...C,...k,...Q,...E,Deferred:c,createFunction:F,createTextContent:d,IntervalPoller:T,isSuitableNodeForTextMatching:f,MutationPoller:y,RAFPoller:w}),he=me;\n";
+  const source = "\"use strict\";var g=Object.defineProperty;var X=Object.getOwnPropertyDescriptor;var B=Object.getOwnPropertyNames;var Y=Object.prototype.hasOwnProperty;var l=(t,e)=>{for(var r in e)g(t,r,{get:e[r],enumerable:!0})},J=(t,e,r,o)=>{if(e&&typeof e==\"object\"||typeof e==\"function\")for(let n of B(e))!Y.call(t,n)&&n!==r&&g(t,n,{get:()=>e[n],enumerable:!(o=X(e,n))||o.enumerable});return t};var z=t=>J(g({},\"__esModule\",{value:!0}),t);var pe={};l(pe,{default:()=>he});module.exports=z(pe);var N=class extends Error{constructor(e,r){super(e,r),this.name=this.constructor.name}get[Symbol.toStringTag](){return this.constructor.name}},p=class extends N{};var c=class t{static create(e){return new t(e)}static async race(e){let r=new Set;try{let o=e.map(n=>n instanceof t?(n.#n&&r.add(n),n.valueOrThrow()):n);return await Promise.race(o)}finally{for(let o of r)o.reject(new Error(\"Timeout cleared\"))}}#e=!1;#r=!1;#o;#t;#a=new Promise(e=>{this.#t=e});#n;#i;constructor(e){e&&e.timeout>0&&(this.#i=new p(e.message),this.#n=setTimeout(()=>{this.reject(this.#i)},e.timeout))}#l(e){clearTimeout(this.#n),this.#o=e,this.#t()}resolve(e){this.#r||this.#e||(this.#e=!0,this.#l(e))}reject(e){this.#r||this.#e||(this.#r=!0,this.#l(e))}resolved(){return this.#e}finished(){return this.#e||this.#r}value(){return this.#o}#s;valueOrThrow(){return this.#s||(this.#s=(async()=>{if(await this.#a,this.#r)throw this.#o;return this.#o})()),this.#s}};var L=new Map,F=t=>{let e=L.get(t);return e||(e=new Function(`return ${t}`)(),L.set(t,e),e)};var x={};l(x,{ariaQuerySelector:()=>G,ariaQuerySelectorAll:()=>b});var G=(t,e)=>globalThis.__ariaQuerySelector(t,e),b=async function*(t,e){yield*await globalThis.__ariaQuerySelectorAll(t,e)};var E={};l(E,{cssQuerySelector:()=>K,cssQuerySelectorAll:()=>Z});var K=(t,e)=>t.querySelector(e),Z=function(t,e){return t.querySelectorAll(e)};var A={};l(A,{customQuerySelectors:()=>P});var v=class{#e=new Map;register(e,r){if(!r.queryOne&&r.queryAll){let o=r.queryAll;r.queryOne=(n,i)=>{for(let s of o(n,i))return s;return null}}else if(r.queryOne&&!r.queryAll){let o=r.queryOne;r.queryAll=(n,i)=>{let s=o(n,i);return s?[s]:[]}}else if(!r.queryOne||!r.queryAll)throw new Error(\"At least one query method must be defined.\");this.#e.set(e,{querySelector:r.queryOne,querySelectorAll:r.queryAll})}unregister(e){this.#e.delete(e)}get(e){return this.#e.get(e)}clear(){this.#e.clear()}},P=new v;var R={};l(R,{pierceQuerySelector:()=>ee,pierceQuerySelectorAll:()=>te});var ee=(t,e)=>{let r=null,o=n=>{let i=document.createTreeWalker(n,NodeFilter.SHOW_ELEMENT);do{let s=i.currentNode;s.shadowRoot&&o(s.shadowRoot),!(s instanceof ShadowRoot)&&s!==n&&!r&&s.matches(e)&&(r=s)}while(!r&&i.nextNode())};return t instanceof Document&&(t=t.documentElement),o(t),r},te=(t,e)=>{let r=[],o=n=>{let i=document.createTreeWalker(n,NodeFilter.SHOW_ELEMENT);do{let s=i.currentNode;s.shadowRoot&&o(s.shadowRoot),!(s instanceof ShadowRoot)&&s!==n&&s.matches(e)&&r.push(s)}while(i.nextNode())};return t instanceof Document&&(t=t.documentElement),o(t),r};var u=(t,e)=>{if(!t)throw new Error(e)};var y=class{#e;#r;#o;#t;constructor(e,r){this.#e=e,this.#r=r}async start(){let e=this.#t=c.create(),r=await this.#e();if(r){e.resolve(r);return}this.#o=new MutationObserver(async()=>{let o=await this.#e();o&&(e.resolve(o),await this.stop())}),this.#o.observe(this.#r,{childList:!0,subtree:!0,attributes:!0})}async stop(){u(this.#t,\"Polling never started.\"),this.#t.finished()||this.#t.reject(new Error(\"Polling stopped\")),this.#o&&(this.#o.disconnect(),this.#o=void 0)}result(){return u(this.#t,\"Polling never started.\"),this.#t.valueOrThrow()}},w=class{#e;#r;constructor(e){this.#e=e}async start(){let e=this.#r=c.create(),r=await this.#e();if(r){e.resolve(r);return}let o=async()=>{if(e.finished())return;let n=await this.#e();if(!n){window.requestAnimationFrame(o);return}e.resolve(n),await this.stop()};window.requestAnimationFrame(o)}async stop(){u(this.#r,\"Polling never started.\"),this.#r.finished()||this.#r.reject(new Error(\"Polling stopped\"))}result(){return u(this.#r,\"Polling never started.\"),this.#r.valueOrThrow()}},S=class{#e;#r;#o;#t;constructor(e,r){this.#e=e,this.#r=r}async start(){let e=this.#t=c.create(),r=await this.#e();if(r){e.resolve(r);return}this.#o=setInterval(async()=>{let o=await this.#e();o&&(e.resolve(o),await this.stop())},this.#r)}async stop(){u(this.#t,\"Polling never started.\"),this.#t.finished()||this.#t.reject(new Error(\"Polling stopped\")),this.#o&&(clearInterval(this.#o),this.#o=void 0)}result(){return u(this.#t,\"Polling never started.\"),this.#t.valueOrThrow()}};var _={};l(_,{PCombinator:()=>H,pQuerySelector:()=>fe,pQuerySelectorAll:()=>$});var a=class{static async*map(e,r){for await(let o of e)yield await r(o)}static async*flatMap(e,r){for await(let o of e)yield*r(o)}static async collect(e){let r=[];for await(let o of e)r.push(o);return r}static async first(e){for await(let r of e)return r}};var C={};l(C,{textQuerySelectorAll:()=>m});var re=new Set([\"checkbox\",\"image\",\"radio\"]),oe=t=>t instanceof HTMLSelectElement||t instanceof HTMLTextAreaElement||t instanceof HTMLInputElement&&!re.has(t.type),ne=new Set([\"SCRIPT\",\"STYLE\"]),f=t=>!ne.has(t.nodeName)&&!document.head?.contains(t),I=new WeakMap,j=t=>{for(;t;)I.delete(t),t instanceof ShadowRoot?t=t.host:t=t.parentNode},W=new WeakSet,se=new MutationObserver(t=>{for(let e of t)j(e.target)}),d=t=>{let e=I.get(t);if(e||(e={full:\"\",immediate:[]},!f(t)))return e;let r=\"\";if(oe(t))e.full=t.value,e.immediate.push(t.value),t.addEventListener(\"input\",o=>{j(o.target)},{once:!0,capture:!0});else{for(let o=t.firstChild;o;o=o.nextSibling){if(o.nodeType===Node.TEXT_NODE){e.full+=o.nodeValue??\"\",r+=o.nodeValue??\"\";continue}r&&e.immediate.push(r),r=\"\",o.nodeType===Node.ELEMENT_NODE&&(e.full+=d(o).full)}r&&e.immediate.push(r),t instanceof Element&&t.shadowRoot&&(e.full+=d(t.shadowRoot).full),W.has(t)||(se.observe(t,{childList:!0,characterData:!0,subtree:!0}),W.add(t))}return I.set(t,e),e};var m=function*(t,e){let r=!1;for(let o of t.childNodes)if(o instanceof Element&&f(o)){let n;o.shadowRoot?n=m(o.shadowRoot,e):n=m(o,e);for(let i of n)yield i,r=!0}r||t instanceof Element&&f(t)&&d(t).full.includes(e)&&(yield t)};var k={};l(k,{checkVisibility:()=>le,pierce:()=>T,pierceAll:()=>O});var ie=[\"hidden\",\"collapse\"],le=(t,e)=>{if(!t)return e===!1;if(e===void 0)return t;let r=t.nodeType===Node.TEXT_NODE?t.parentElement:t,o=window.getComputedStyle(r),n=o&&!ie.includes(o.visibility)&&!ae(r);return e===n?t:!1};function ae(t){let e=t.getBoundingClientRect();return e.width===0||e.height===0}var ce=t=>\"shadowRoot\"in t&&t.shadowRoot instanceof ShadowRoot;function*T(t){ce(t)?yield t.shadowRoot:yield t}function*O(t){t=T(t).next().value,yield t;let e=[document.createTreeWalker(t,NodeFilter.SHOW_ELEMENT)];for(let r of e){let o;for(;o=r.nextNode();)o.shadowRoot&&(yield o.shadowRoot,e.push(document.createTreeWalker(o.shadowRoot,NodeFilter.SHOW_ELEMENT)))}}var Q={};l(Q,{xpathQuerySelectorAll:()=>q});var q=function*(t,e,r=-1){let n=(t.ownerDocument||document).evaluate(e,t,null,XPathResult.ORDERED_NODE_ITERATOR_TYPE),i=[],s;for(;(s=n.iterateNext())&&(i.push(s),!(r&&i.length===r)););for(let h=0;h<i.length;h++)s=i[h],yield s,delete i[h]};var ue=/[-\\w\\P{ASCII}*]/u,H=(r=>(r.Descendent=\">>>\",r.Child=\">>>>\",r))(H||{}),V=t=>\"querySelectorAll\"in t,M=class{#e;#r=[];#o=void 0;elements;constructor(e,r){this.elements=[e],this.#e=r,this.#t()}async run(){if(typeof this.#o==\"string\")switch(this.#o.trimStart()){case\":scope\":this.#t();break}for(;this.#o!==void 0;this.#t()){let e=this.#o;typeof e==\"string\"?e[0]&&ue.test(e[0])?this.elements=a.flatMap(this.elements,async function*(r){V(r)&&(yield*r.querySelectorAll(e))}):this.elements=a.flatMap(this.elements,async function*(r){if(!r.parentElement){if(!V(r))return;yield*r.querySelectorAll(e);return}let o=0;for(let n of r.parentElement.children)if(++o,n===r)break;yield*r.parentElement.querySelectorAll(`:scope>:nth-child(${o})${e}`)}):this.elements=a.flatMap(this.elements,async function*(r){switch(e.name){case\"text\":yield*m(r,e.value);break;case\"xpath\":yield*q(r,e.value);break;case\"aria\":yield*b(r,e.value);break;default:let o=P.get(e.name);if(!o)throw new Error(`Unknown selector type: ${e.name}`);yield*o.querySelectorAll(r,e.value)}})}}#t(){if(this.#r.length!==0){this.#o=this.#r.shift();return}if(this.#e.length===0){this.#o=void 0;return}let e=this.#e.shift();switch(e){case\">>>>\":{this.elements=a.flatMap(this.elements,T),this.#t();break}case\">>>\":{this.elements=a.flatMap(this.elements,O),this.#t();break}default:this.#r=e,this.#t();break}}},D=class{#e=new WeakMap;calculate(e,r=[]){if(e===null)return r;e instanceof ShadowRoot&&(e=e.host);let o=this.#e.get(e);if(o)return[...o,...r];let n=0;for(let s=e.previousSibling;s;s=s.previousSibling)++n;let i=this.calculate(e.parentNode,[n]);return this.#e.set(e,i),[...i,...r]}},U=(t,e)=>{if(t.length+e.length===0)return 0;let[r=-1,...o]=t,[n=-1,...i]=e;return r===n?U(o,i):r<n?-1:1},de=async function*(t){let e=new Set;for await(let o of t)e.add(o);let r=new D;yield*[...e.values()].map(o=>[o,r.calculate(o)]).sort(([,o],[,n])=>U(o,n)).map(([o])=>o)},$=function(t,e){let r=JSON.parse(e);if(r.some(o=>{let n=0;return o.some(i=>(typeof i==\"string\"?++n:n=0,n>1))}))throw new Error(\"Multiple deep combinators found in sequence.\");return de(a.flatMap(r,o=>{let n=new M(t,o);return n.run(),n.elements}))},fe=async function(t,e){for await(let r of $(t,e))return r;return null};var me=Object.freeze({...x,...A,...R,..._,...C,...k,...Q,...E,Deferred:c,createFunction:F,createTextContent:d,IntervalPoller:S,isSuitableNodeForTextMatching:f,MutationPoller:y,RAFPoller:w}),he=me;\n";
 
   /**
    * @license
@@ -6673,20 +6676,34 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         } = await this.clickablePoint();
         await this.frame.page().touchscreen.tap(x, y);
       }
+      /**
+       * This method scrolls the element into view if needed, and then
+       * starts a touch in the center of the element.
+       * @returns A {@link TouchHandle} representing the touch that was started
+       */
       async touchStart() {
         await this.scrollIntoViewIfNeeded();
         const {
           x,
           y
         } = await this.clickablePoint();
-        await this.frame.page().touchscreen.touchStart(x, y);
+        return await this.frame.page().touchscreen.touchStart(x, y);
       }
-      async touchMove() {
+      /**
+       * This method scrolls the element into view if needed, and then
+       * moves the touch to the center of the element.
+       * @param touch - An optional {@link TouchHandle}. If provided, this touch
+       * will be moved. If not provided, the first active touch will be moved.
+       */
+      async touchMove(touch) {
         await this.scrollIntoViewIfNeeded();
         const {
           x,
           y
         } = await this.clickablePoint();
+        if (touch) {
+          return await touch.move(x, y);
+        }
         await this.frame.page().touchscreen.touchMove(x, y);
       }
       async touchEnd() {
@@ -9968,6 +9985,21 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
 
   /**
    * @license
+   * Copyright 2024 Google Inc.
+   * SPDX-License-Identifier: Apache-2.0
+   */
+  /**
+   * @internal
+   */
+  function createIncrementalIdGenerator() {
+    let id = 0;
+    return () => {
+      return ++id;
+    };
+  }
+
+  /**
+   * @license
    * Copyright 2017 Google Inc.
    * SPDX-License-Identifier: Apache-2.0
    */
@@ -10116,15 +10148,63 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     /**
      * @internal
      */
-    constructor() {}
+    constructor() {
+      /**
+       * @internal
+       */
+      _defineProperty(this, "idGenerator", createIncrementalIdGenerator());
+      /**
+       * @internal
+       */
+      _defineProperty(this, "touches", []);
+    }
+    /**
+     * @internal
+     */
+    removeHandle(handle) {
+      const index = this.touches.indexOf(handle);
+      if (index === -1) {
+        return;
+      }
+      this.touches.splice(index, 1);
+    }
     /**
      * Dispatches a `touchstart` and `touchend` event.
      * @param x - Horizontal position of the tap.
      * @param y - Vertical position of the tap.
      */
     async tap(x, y) {
-      await this.touchStart(x, y);
-      await this.touchEnd();
+      const touch = await this.touchStart(x, y);
+      await touch.end();
+    }
+    /**
+     * Dispatches a `touchMove` event on the first touch that is active.
+     * @param x - Horizontal position of the move.
+     * @param y - Vertical position of the move.
+     *
+     * @remarks
+     *
+     * Not every `touchMove` call results in a `touchmove` event being emitted,
+     * depending on the browser's optimizations. For example, Chrome
+     * {@link https://developer.chrome.com/blog/a-more-compatible-smoother-touch/#chromes-new-model-the-throttled-async-touchmove-model | throttles}
+     * touch move events.
+     */
+    async touchMove(x, y) {
+      const touch = this.touches[0];
+      if (!touch) {
+        throw new TouchError('Must start a new Touch first');
+      }
+      return await touch.move(x, y);
+    }
+    /**
+     * Dispatches a `touchend` event on the first touch that is active.
+     */
+    async touchEnd() {
+      const touch = this.touches.shift();
+      if (!touch) {
+        throw new TouchError('Must start a new Touch first');
+      }
+      await touch.end();
     }
   }
 
@@ -11701,6 +11781,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   var _poller = /*#__PURE__*/new WeakMap();
   var _signal = /*#__PURE__*/new WeakMap();
   var _reruns = /*#__PURE__*/new WeakMap();
+  var _onAbortSignal = /*#__PURE__*/new WeakMap();
   class WaitTask {
     constructor(world, options, fn, ...args) {
       _classPrivateFieldInitSpec(this, _world, void 0);
@@ -11714,13 +11795,14 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       _classPrivateFieldInitSpec(this, _poller, void 0);
       _classPrivateFieldInitSpec(this, _signal, void 0);
       _classPrivateFieldInitSpec(this, _reruns, []);
+      _classPrivateFieldInitSpec(this, _onAbortSignal, () => {
+        void this.terminate(_classPrivateFieldGet(_signal, this)?.reason);
+      });
       _classPrivateFieldSet(_world, this, world);
       _classPrivateFieldSet(_polling, this, options.polling);
       _classPrivateFieldSet(_root, this, options.root);
       _classPrivateFieldSet(_signal, this, options.signal);
-      _classPrivateFieldGet(_signal, this)?.addEventListener('abort', () => {
-        void this.terminate(_classPrivateFieldGet(_signal, this)?.reason);
-      }, {
+      _classPrivateFieldGet(_signal, this)?.addEventListener('abort', _classPrivateFieldGet(_onAbortSignal, this), {
         once: true
       });
       switch (typeof fn) {
@@ -11813,6 +11895,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     }
     async terminate(error) {
       _classPrivateFieldGet(_world, this).taskManager.delete(this);
+      _classPrivateFieldGet(_signal, this)?.removeEventListener('abort', _classPrivateFieldGet(_onAbortSignal, this));
       clearTimeout(_classPrivateFieldGet(_timeout, this));
       if (error && !_classPrivateFieldGet(_result, this).finished()) {
         _classPrivateFieldGet(_result, this).reject(error);
@@ -12930,15 +13013,6 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     get label() {
       return _classPrivateFieldGet(_label, this);
     }
-  }
-  /**
-   * @internal
-   */
-  function createIncrementalIdGenerator() {
-    let id = 0;
-    return () => {
-      return ++id;
-    };
   }
 
   /**
@@ -15255,20 +15329,22 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
           await super.scrollIntoView();
         }
       }
-      async uploadFile(...filePaths) {
+      async uploadFile(...files) {
         const isMultiple = await this.evaluate(element => {
           return element.multiple;
         });
-        assert(filePaths.length <= 1 || isMultiple, 'Multiple file uploads only work with <input type=file multiple>');
+        assert(files.length <= 1 || isMultiple, 'Multiple file uploads only work with <input type=file multiple>');
         // Locate all files and confirm that they exist.
         const path = environment.value.path;
-        const files = filePaths.map(filePath => {
-          if (path.win32.isAbsolute(filePath) || path.posix.isAbsolute(filePath)) {
-            return filePath;
-          } else {
-            return path.resolve(filePath);
-          }
-        });
+        if (path) {
+          files = files.map(filePath => {
+            if (path.win32.isAbsolute(filePath) || path.posix.isAbsolute(filePath)) {
+              return filePath;
+            } else {
+              return path.resolve(filePath);
+            }
+          });
+        }
         /**
          * The zero-length array is a special case, it seems that
          * DOM.setFileInputFiles does not actually update the files in that case, so
@@ -20048,51 +20124,88 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       throw error;
     }
   }
+  var _started = /*#__PURE__*/new WeakMap();
+  var _touchScreen = /*#__PURE__*/new WeakMap();
+  var _touchPoint = /*#__PURE__*/new WeakMap();
   var _client15 = /*#__PURE__*/new WeakMap();
   var _keyboard2 = /*#__PURE__*/new WeakMap();
-  class CdpTouchscreen extends Touchscreen {
-    constructor(client, keyboard) {
-      super();
+  class CdpTouchHandle {
+    constructor(client, touchScreen, keyboard, touchPoint) {
+      _classPrivateFieldInitSpec(this, _started, false);
+      _classPrivateFieldInitSpec(this, _touchScreen, void 0);
+      _classPrivateFieldInitSpec(this, _touchPoint, void 0);
       _classPrivateFieldInitSpec(this, _client15, void 0);
       _classPrivateFieldInitSpec(this, _keyboard2, void 0);
       _classPrivateFieldSet(_client15, this, client);
+      _classPrivateFieldSet(_touchScreen, this, touchScreen);
       _classPrivateFieldSet(_keyboard2, this, keyboard);
+      _classPrivateFieldSet(_touchPoint, this, touchPoint);
     }
     updateClient(client) {
       _classPrivateFieldSet(_client15, this, client);
     }
-    async touchStart(x, y) {
+    async start() {
+      if (_classPrivateFieldGet(_started, this)) {
+        throw new TouchError('Touch has already started');
+      }
       await _classPrivateFieldGet(_client15, this).send('Input.dispatchTouchEvent', {
         type: 'touchStart',
-        touchPoints: [{
-          x: Math.round(x),
-          y: Math.round(y),
-          radiusX: 0.5,
-          radiusY: 0.5,
-          force: 0.5
-        }],
+        touchPoints: [_classPrivateFieldGet(_touchPoint, this)],
         modifiers: _classPrivateFieldGet(_keyboard2, this)._modifiers
       });
+      _classPrivateFieldSet(_started, this, true);
     }
-    async touchMove(x, y) {
-      await _classPrivateFieldGet(_client15, this).send('Input.dispatchTouchEvent', {
+    move(x, y) {
+      _classPrivateFieldGet(_touchPoint, this).x = Math.round(x);
+      _classPrivateFieldGet(_touchPoint, this).y = Math.round(y);
+      return _classPrivateFieldGet(_client15, this).send('Input.dispatchTouchEvent', {
         type: 'touchMove',
-        touchPoints: [{
-          x: Math.round(x),
-          y: Math.round(y),
-          radiusX: 0.5,
-          radiusY: 0.5,
-          force: 0.5
-        }],
+        touchPoints: [_classPrivateFieldGet(_touchPoint, this)],
         modifiers: _classPrivateFieldGet(_keyboard2, this)._modifiers
       });
     }
-    async touchEnd() {
+    async end() {
       await _classPrivateFieldGet(_client15, this).send('Input.dispatchTouchEvent', {
         type: 'touchEnd',
-        touchPoints: [],
+        touchPoints: [_classPrivateFieldGet(_touchPoint, this)],
         modifiers: _classPrivateFieldGet(_keyboard2, this)._modifiers
       });
+      _classPrivateFieldGet(_touchScreen, this).removeHandle(this);
+    }
+  }
+  /**
+   * @internal
+   */
+  var _client16 = /*#__PURE__*/new WeakMap();
+  var _keyboard3 = /*#__PURE__*/new WeakMap();
+  class CdpTouchscreen extends Touchscreen {
+    constructor(client, keyboard) {
+      super();
+      _classPrivateFieldInitSpec(this, _client16, void 0);
+      _classPrivateFieldInitSpec(this, _keyboard3, void 0);
+      _classPrivateFieldSet(_client16, this, client);
+      _classPrivateFieldSet(_keyboard3, this, keyboard);
+    }
+    updateClient(client) {
+      _classPrivateFieldSet(_client16, this, client);
+      this.touches.forEach(t => {
+        t.updateClient(client);
+      });
+    }
+    async touchStart(x, y) {
+      const id = this.idGenerator();
+      const touchPoint = {
+        x: Math.round(x),
+        y: Math.round(y),
+        radiusX: 0.5,
+        radiusY: 0.5,
+        force: 0.5,
+        id
+      };
+      const touch = new CdpTouchHandle(_classPrivateFieldGet(_client16, this), this, _classPrivateFieldGet(_keyboard3, this), touchPoint);
+      await touch.start();
+      this.touches.push(touch);
+      return touch;
     }
   }
 
@@ -20112,7 +20225,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    *
    * @public
    */
-  var _client16 = /*#__PURE__*/new WeakMap();
+  var _client17 = /*#__PURE__*/new WeakMap();
   var _recording = /*#__PURE__*/new WeakMap();
   var _path = /*#__PURE__*/new WeakMap();
   class Tracing {
@@ -20120,16 +20233,16 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
      * @internal
      */
     constructor(client) {
-      _classPrivateFieldInitSpec(this, _client16, void 0);
+      _classPrivateFieldInitSpec(this, _client17, void 0);
       _classPrivateFieldInitSpec(this, _recording, false);
       _classPrivateFieldInitSpec(this, _path, void 0);
-      _classPrivateFieldSet(_client16, this, client);
+      _classPrivateFieldSet(_client17, this, client);
     }
     /**
      * @internal
      */
     updateClient(client) {
-      _classPrivateFieldSet(_client16, this, client);
+      _classPrivateFieldSet(_client17, this, client);
     }
     /**
      * Starts a trace for the current page.
@@ -20159,7 +20272,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       });
       _classPrivateFieldSet(_path, this, path);
       _classPrivateFieldSet(_recording, this, true);
-      await _classPrivateFieldGet(_client16, this).send('Tracing.start', {
+      await _classPrivateFieldGet(_client17, this).send('Tracing.start', {
         transferMode: 'ReturnAsStream',
         traceConfig: {
           excludedCategories,
@@ -20173,10 +20286,10 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
      */
     async stop() {
       const contentDeferred = Deferred.create();
-      _classPrivateFieldGet(_client16, this).once('Tracing.tracingComplete', async event => {
+      _classPrivateFieldGet(_client17, this).once('Tracing.tracingComplete', async event => {
         try {
           assert(event.stream, 'Missing "stream"');
-          const readable = await getReadableFromProtocolStream(_classPrivateFieldGet(_client16, this), event.stream);
+          const readable = await getReadableFromProtocolStream(_classPrivateFieldGet(_client17, this), event.stream);
           const typedArray = await getReadableAsTypedArray(readable, _classPrivateFieldGet(_path, this));
           contentDeferred.resolve(typedArray ?? undefined);
         } catch (error) {
@@ -20187,7 +20300,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
           }
         }
       });
-      await _classPrivateFieldGet(_client16, this).send('Tracing.end');
+      await _classPrivateFieldGet(_client17, this).send('Tracing.end');
       _classPrivateFieldSet(_recording, this, false);
       return await contentDeferred.valueOrThrow();
     }
@@ -20197,21 +20310,21 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    * @internal
    */
   var _world4 = /*#__PURE__*/new WeakMap();
-  var _client17 = /*#__PURE__*/new WeakMap();
+  var _client18 = /*#__PURE__*/new WeakMap();
   var _id7 = /*#__PURE__*/new WeakMap();
   var _targetType2 = /*#__PURE__*/new WeakMap();
   class CdpWebWorker extends WebWorker {
     constructor(client, url, targetId, targetType, consoleAPICalled, exceptionThrown) {
       super(url);
       _classPrivateFieldInitSpec(this, _world4, void 0);
-      _classPrivateFieldInitSpec(this, _client17, void 0);
+      _classPrivateFieldInitSpec(this, _client18, void 0);
       _classPrivateFieldInitSpec(this, _id7, void 0);
       _classPrivateFieldInitSpec(this, _targetType2, void 0);
       _classPrivateFieldSet(_id7, this, targetId);
-      _classPrivateFieldSet(_client17, this, client);
+      _classPrivateFieldSet(_client18, this, client);
       _classPrivateFieldSet(_targetType2, this, targetType);
       _classPrivateFieldSet(_world4, this, new IsolatedWorld(this, new TimeoutSettings()));
-      _classPrivateFieldGet(_client17, this).once('Runtime.executionContextCreated', async event => {
+      _classPrivateFieldGet(_client18, this).once('Runtime.executionContextCreated', async event => {
         _classPrivateFieldGet(_world4, this).setContext(new ExecutionContext(client, event.context, _classPrivateFieldGet(_world4, this)));
       });
       _classPrivateFieldGet(_world4, this).emitter.on('consoleapicalled', async event => {
@@ -20223,18 +20336,18 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
           debugError(err);
         }
       });
-      _classPrivateFieldGet(_client17, this).on('Runtime.exceptionThrown', exceptionThrown);
-      _classPrivateFieldGet(_client17, this).once(exports.CDPSessionEvent.Disconnected, () => {
+      _classPrivateFieldGet(_client18, this).on('Runtime.exceptionThrown', exceptionThrown);
+      _classPrivateFieldGet(_client18, this).once(exports.CDPSessionEvent.Disconnected, () => {
         _classPrivateFieldGet(_world4, this).dispose();
       });
       // This might fail if the target is closed before we receive all execution contexts.
-      _classPrivateFieldGet(_client17, this).send('Runtime.enable').catch(debugError);
+      _classPrivateFieldGet(_client18, this).send('Runtime.enable').catch(debugError);
     }
     mainRealm() {
       return _classPrivateFieldGet(_world4, this);
     }
     get client() {
-      return _classPrivateFieldGet(_client17, this);
+      return _classPrivateFieldGet(_client18, this);
     }
     async close() {
       switch (_classPrivateFieldGet(_targetType2, this)) {
@@ -20346,7 +20459,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   var _primaryTarget = /*#__PURE__*/new WeakMap();
   var _tabTargetClient = /*#__PURE__*/new WeakMap();
   var _tabTarget = /*#__PURE__*/new WeakMap();
-  var _keyboard3 = /*#__PURE__*/new WeakMap();
+  var _keyboard4 = /*#__PURE__*/new WeakMap();
   var _mouse = /*#__PURE__*/new WeakMap();
   var _touchscreen = /*#__PURE__*/new WeakMap();
   var _frameManager2 = /*#__PURE__*/new WeakMap();
@@ -20390,7 +20503,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       _classPrivateFieldInitSpec(this, _primaryTarget, void 0);
       _classPrivateFieldInitSpec(this, _tabTargetClient, void 0);
       _classPrivateFieldInitSpec(this, _tabTarget, void 0);
-      _classPrivateFieldInitSpec(this, _keyboard3, void 0);
+      _classPrivateFieldInitSpec(this, _keyboard4, void 0);
       _classPrivateFieldInitSpec(this, _mouse, void 0);
       _classPrivateFieldInitSpec(this, _touchscreen, void 0);
       _classPrivateFieldInitSpec(this, _frameManager2, void 0);
@@ -20431,9 +20544,9 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       assert(_classPrivateFieldGet(_tabTarget, this), 'Tab target is not defined.');
       _classPrivateFieldSet(_primaryTarget, this, _target3);
       _classPrivateFieldSet(_targetManager, this, _target3._targetManager());
-      _classPrivateFieldSet(_keyboard3, this, new CdpKeyboard(client));
-      _classPrivateFieldSet(_mouse, this, new CdpMouse(client, _classPrivateFieldGet(_keyboard3, this)));
-      _classPrivateFieldSet(_touchscreen, this, new CdpTouchscreen(client, _classPrivateFieldGet(_keyboard3, this)));
+      _classPrivateFieldSet(_keyboard4, this, new CdpKeyboard(client));
+      _classPrivateFieldSet(_mouse, this, new CdpMouse(client, _classPrivateFieldGet(_keyboard4, this)));
+      _classPrivateFieldSet(_touchscreen, this, new CdpTouchscreen(client, _classPrivateFieldGet(_keyboard4, this)));
       _classPrivateFieldSet(_frameManager2, this, new FrameManager(client, this, this._timeoutSettings));
       _classPrivateFieldSet(_emulationManager, this, new EmulationManager(client));
       _classPrivateFieldSet(_tracing, this, new Tracing(client));
@@ -20541,7 +20654,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       return _classPrivateFieldGet(_frameManager2, this).mainFrame();
     }
     get keyboard() {
-      return _classPrivateFieldGet(_keyboard3, this);
+      return _classPrivateFieldGet(_keyboard4, this);
     }
     get touchscreen() {
       return _classPrivateFieldGet(_touchscreen, this);
@@ -21007,7 +21120,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     assert(_classPrivateFieldGet(_primaryTargetClient, this) instanceof CdpCDPSession, 'CDPSession is not instance of CDPSessionImpl');
     _classPrivateFieldSet(_primaryTarget, this, _classPrivateFieldGet(_primaryTargetClient, this)._target());
     assert(_classPrivateFieldGet(_primaryTarget, this), 'Missing target on swap');
-    _classPrivateFieldGet(_keyboard3, this).updateClient(newSession);
+    _classPrivateFieldGet(_keyboard4, this).updateClient(newSession);
     _classPrivateFieldGet(_mouse, this).updateClient(newSession);
     _classPrivateFieldGet(_touchscreen, this).updateClient(newSession);
     _classPrivateFieldGet(_emulationManager, this).updateClient(newSession);
@@ -24123,9 +24236,9 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    * @internal
    */
   const PUPPETEER_REVISIONS = Object.freeze({
-    chrome: '130.0.6723.69',
-    'chrome-headless-shell': '130.0.6723.69',
-    firefox: 'stable_131.0.3'
+    chrome: '130.0.6723.91',
+    'chrome-headless-shell': '130.0.6723.91',
+    firefox: 'stable_132.0'
   });
 
   /**
@@ -24248,6 +24361,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   exports.TextQueryHandler = TextQueryHandler;
   exports.TimeoutError = TimeoutError;
   exports.TimeoutSettings = TimeoutSettings;
+  exports.TouchError = TouchError;
   exports.Touchscreen = Touchscreen;
   exports.Tracing = Tracing;
   exports.UTILITY_WORLD_NAME = UTILITY_WORLD_NAME;
@@ -24266,7 +24380,6 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   exports.connect = connect;
   exports.createClientError = createClientError;
   exports.createEvaluationError = createEvaluationError;
-  exports.createIncrementalIdGenerator = createIncrementalIdGenerator;
   exports.createProtocolErrorMessage = createProtocolErrorMessage;
   exports.customQueryHandlers = customQueryHandlers;
   exports.debug = debug;

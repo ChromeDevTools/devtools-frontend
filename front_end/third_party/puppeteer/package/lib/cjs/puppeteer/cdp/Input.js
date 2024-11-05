@@ -7,6 +7,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CdpTouchscreen = exports.CdpMouse = exports.CdpKeyboard = void 0;
 const Input_js_1 = require("../api/Input.js");
+const Errors_js_1 = require("../common/Errors.js");
 const USKeyboardLayout_js_1 = require("../common/USKeyboardLayout.js");
 const assert_js_1 = require("../util/assert.js");
 /**
@@ -423,6 +424,53 @@ exports.CdpMouse = CdpMouse;
 /**
  * @internal
  */
+class CdpTouchHandle {
+    #started = false;
+    #touchScreen;
+    #touchPoint;
+    #client;
+    #keyboard;
+    constructor(client, touchScreen, keyboard, touchPoint) {
+        this.#client = client;
+        this.#touchScreen = touchScreen;
+        this.#keyboard = keyboard;
+        this.#touchPoint = touchPoint;
+    }
+    updateClient(client) {
+        this.#client = client;
+    }
+    async start() {
+        if (this.#started) {
+            throw new Errors_js_1.TouchError('Touch has already started');
+        }
+        await this.#client.send('Input.dispatchTouchEvent', {
+            type: 'touchStart',
+            touchPoints: [this.#touchPoint],
+            modifiers: this.#keyboard._modifiers,
+        });
+        this.#started = true;
+    }
+    move(x, y) {
+        this.#touchPoint.x = Math.round(x);
+        this.#touchPoint.y = Math.round(y);
+        return this.#client.send('Input.dispatchTouchEvent', {
+            type: 'touchMove',
+            touchPoints: [this.#touchPoint],
+            modifiers: this.#keyboard._modifiers,
+        });
+    }
+    async end() {
+        await this.#client.send('Input.dispatchTouchEvent', {
+            type: 'touchEnd',
+            touchPoints: [this.#touchPoint],
+            modifiers: this.#keyboard._modifiers,
+        });
+        this.#touchScreen.removeHandle(this);
+    }
+}
+/**
+ * @internal
+ */
 class CdpTouchscreen extends Input_js_1.Touchscreen {
     #client;
     #keyboard;
@@ -433,43 +481,24 @@ class CdpTouchscreen extends Input_js_1.Touchscreen {
     }
     updateClient(client) {
         this.#client = client;
+        this.touches.forEach(t => {
+            t.updateClient(client);
+        });
     }
     async touchStart(x, y) {
-        await this.#client.send('Input.dispatchTouchEvent', {
-            type: 'touchStart',
-            touchPoints: [
-                {
-                    x: Math.round(x),
-                    y: Math.round(y),
-                    radiusX: 0.5,
-                    radiusY: 0.5,
-                    force: 0.5,
-                },
-            ],
-            modifiers: this.#keyboard._modifiers,
-        });
-    }
-    async touchMove(x, y) {
-        await this.#client.send('Input.dispatchTouchEvent', {
-            type: 'touchMove',
-            touchPoints: [
-                {
-                    x: Math.round(x),
-                    y: Math.round(y),
-                    radiusX: 0.5,
-                    radiusY: 0.5,
-                    force: 0.5,
-                },
-            ],
-            modifiers: this.#keyboard._modifiers,
-        });
-    }
-    async touchEnd() {
-        await this.#client.send('Input.dispatchTouchEvent', {
-            type: 'touchEnd',
-            touchPoints: [],
-            modifiers: this.#keyboard._modifiers,
-        });
+        const id = this.idGenerator();
+        const touchPoint = {
+            x: Math.round(x),
+            y: Math.round(y),
+            radiusX: 0.5,
+            radiusY: 0.5,
+            force: 0.5,
+            id,
+        };
+        const touch = new CdpTouchHandle(this.#client, this, this.#keyboard, touchPoint);
+        await touch.start();
+        this.touches.push(touch);
+        return touch;
     }
 }
 exports.CdpTouchscreen = CdpTouchscreen;

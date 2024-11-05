@@ -173,14 +173,16 @@ let BidiElementHandle = (() => {
         async uploadFile(...files) {
             // Locate all files and confirm that they exist.
             const path = environment.value.path;
-            files = files.map(file => {
-                if (path.win32.isAbsolute(file) || path.posix.isAbsolute(file)) {
-                    return file;
-                }
-                else {
-                    return path.resolve(file);
-                }
-            });
+            if (path) {
+                files = files.map(file => {
+                    if (path.win32.isAbsolute(file) || path.posix.isAbsolute(file)) {
+                        return file;
+                    }
+                    else {
+                        return path.resolve(file);
+                    }
+                });
+            }
             await this.frame.setFiles(this, files);
         }
         async *queryAXTree(name, role) {

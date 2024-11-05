@@ -168,6 +168,7 @@
     "package/lib/esm/puppeteer/util/decorators.js",
     "package/lib/esm/puppeteer/util/disposable.js",
     "package/lib/esm/puppeteer/util/encoding.js",
+    "package/lib/esm/puppeteer/util/incremental-id-generator.js",
     "package/lib/esm/puppeteer/util/util.js",
     "package/lib/esm/third_party/mitt/mitt.js",
     "package/lib/esm/third_party/parsel-js/parsel-js.js",

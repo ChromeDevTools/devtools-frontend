@@ -12,7 +12,7 @@ import type { ScreenRecorder } from './node/ScreenRecorder.js';
 export declare const isNode: boolean;
 export interface EnvironmentDependencies {
     fs: typeof FS;
-    path: typeof Path;
+    path?: typeof Path;
     ScreenRecorder: typeof ScreenRecorder;
 }
 /**

@@ -6,7 +6,7 @@
 import type { Protocol } from 'devtools-protocol';
 import type { CDPSession } from '../api/CDPSession.js';
 import type { Point } from '../api/ElementHandle.js';
-import { Keyboard, Mouse, Touchscreen, type KeyDownOptions, type KeyPressOptions, type KeyboardTypeOptions, type MouseClickOptions, type MouseMoveOptions, type MouseOptions, type MouseWheelOptions } from '../api/Input.js';
+import { Keyboard, Mouse, Touchscreen, type TouchHandle, type KeyDownOptions, type KeyPressOptions, type KeyboardTypeOptions, type MouseClickOptions, type MouseMoveOptions, type MouseOptions, type MouseWheelOptions } from '../api/Input.js';
 import { type KeyInput } from '../common/USKeyboardLayout.js';
 /**
  * @internal
@@ -47,12 +47,23 @@ export declare class CdpMouse extends Mouse {
 /**
  * @internal
  */
+declare class CdpTouchHandle implements TouchHandle {
+    #private;
+    constructor(client: CDPSession, touchScreen: CdpTouchscreen, keyboard: CdpKeyboard, touchPoint: Protocol.Input.TouchPoint);
+    updateClient(client: CDPSession): void;
+    start(): Promise<void>;
+    move(x: number, y: number): Promise<void>;
+    end(): Promise<void>;
+}
+/**
+ * @internal
+ */
 export declare class CdpTouchscreen extends Touchscreen {
     #private;
+    touches: CdpTouchHandle[];
     constructor(client: CDPSession, keyboard: CdpKeyboard);
     updateClient(client: CDPSession): void;
-    touchStart(x: number, y: number): Promise<void>;
-    touchMove(x: number, y: number): Promise<void>;
-    touchEnd(): Promise<void>;
+    touchStart(x: number, y: number): Promise<TouchHandle>;
 }
+export {};
 //# sourceMappingURL=Input.d.ts.map

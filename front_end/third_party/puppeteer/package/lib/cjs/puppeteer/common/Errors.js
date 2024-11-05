@@ -5,7 +5,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.TargetCloseError = exports.UnsupportedOperation = exports.ProtocolError = exports.TimeoutError = exports.PuppeteerError = void 0;
+exports.TargetCloseError = exports.UnsupportedOperation = exports.ProtocolError = exports.TouchError = exports.TimeoutError = exports.PuppeteerError = void 0;
 /**
  * The base class for all Puppeteer-specific errors
  *
@@ -40,6 +40,14 @@ exports.PuppeteerError = PuppeteerError;
 class TimeoutError extends PuppeteerError {
 }
 exports.TimeoutError = TimeoutError;
+/**
+ * TouchError is thrown when an attempt is made to move or end a touch that does
+ * not exist.
+ * @public
+ */
+class TouchError extends PuppeteerError {
+}
+exports.TouchError = TouchError;
 /**
  * ProtocolError is emitted whenever there is an error from the protocol.
  *

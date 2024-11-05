@@ -8,7 +8,7 @@ import type { Frame } from '../api/Frame.js';
 import type { AwaitableIterable, ElementFor, EvaluateFuncWith, HandleFor, HandleOr, NodeFor } from '../common/types.js';
 import type { KeyInput } from '../common/USKeyboardLayout.js';
 import { _isElementHandle } from './ElementHandleSymbol.js';
-import type { KeyboardTypeOptions, KeyPressOptions, MouseClickOptions } from './Input.js';
+import type { KeyboardTypeOptions, KeyPressOptions, MouseClickOptions, TouchHandle } from './Input.js';
 import { JSHandle } from './JSHandle.js';
 import type { QueryOptions, ScreenshotOptions, WaitForSelectorOptions } from './Page.js';
 /**
@@ -494,8 +494,19 @@ export declare abstract class ElementHandle<ElementType extends Node = Element> 
      * If the element is detached from DOM, the method throws an error.
      */
     tap(this: ElementHandle<Element>): Promise<void>;
-    touchStart(this: ElementHandle<Element>): Promise<void>;
-    touchMove(this: ElementHandle<Element>): Promise<void>;
+    /**
+     * This method scrolls the element into view if needed, and then
+     * starts a touch in the center of the element.
+     * @returns A {@link TouchHandle} representing the touch that was started
+     */
+    touchStart(this: ElementHandle<Element>): Promise<TouchHandle>;
+    /**
+     * This method scrolls the element into view if needed, and then
+     * moves the touch to the center of the element.
+     * @param touch - An optional {@link TouchHandle}. If provided, this touch
+     * will be moved. If not provided, the first active touch will be moved.
+     */
+    touchMove(this: ElementHandle<Element>, touch?: TouchHandle): Promise<void>;
     touchEnd(this: ElementHandle<Element>): Promise<void>;
     /**
      * Calls {@link https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/focus | focus} on the element.

@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import { Keyboard, Mouse, MouseButton, Touchscreen, } from '../api/Input.js';
+import { TouchError } from '../common/Errors.js';
 import { _keyDefinitions, } from '../common/USKeyboardLayout.js';
 import { assert } from '../util/assert.js';
 /**
@@ -418,6 +419,53 @@ export class CdpMouse extends Mouse {
 /**
  * @internal
  */
+class CdpTouchHandle {
+    #started = false;
+    #touchScreen;
+    #touchPoint;
+    #client;
+    #keyboard;
+    constructor(client, touchScreen, keyboard, touchPoint) {
+        this.#client = client;
+        this.#touchScreen = touchScreen;
+        this.#keyboard = keyboard;
+        this.#touchPoint = touchPoint;
+    }
+    updateClient(client) {
+        this.#client = client;
+    }
+    async start() {
+        if (this.#started) {
+            throw new TouchError('Touch has already started');
+        }
+        await this.#client.send('Input.dispatchTouchEvent', {
+            type: 'touchStart',
+            touchPoints: [this.#touchPoint],
+            modifiers: this.#keyboard._modifiers,
+        });
+        this.#started = true;
+    }
+    move(x, y) {
+        this.#touchPoint.x = Math.round(x);
+        this.#touchPoint.y = Math.round(y);
+        return this.#client.send('Input.dispatchTouchEvent', {
+            type: 'touchMove',
+            touchPoints: [this.#touchPoint],
+            modifiers: this.#keyboard._modifiers,
+        });
+    }
+    async end() {
+        await this.#client.send('Input.dispatchTouchEvent', {
+            type: 'touchEnd',
+            touchPoints: [this.#touchPoint],
+            modifiers: this.#keyboard._modifiers,
+        });
+        this.#touchScreen.removeHandle(this);
+    }
+}
+/**
+ * @internal
+ */
 export class CdpTouchscreen extends Touchscreen {
     #client;
     #keyboard;
@@ -428,43 +476,24 @@ export class CdpTouchscreen extends Touchscreen {
     }
     updateClient(client) {
         this.#client = client;
+        this.touches.forEach(t => {
+            t.updateClient(client);
+        });
     }
     async touchStart(x, y) {
-        await this.#client.send('Input.dispatchTouchEvent', {
-            type: 'touchStart',
-            touchPoints: [
-                {
-                    x: Math.round(x),
-                    y: Math.round(y),
-                    radiusX: 0.5,
-                    radiusY: 0.5,
-                    force: 0.5,
-                },
-            ],
-            modifiers: this.#keyboard._modifiers,
-        });
-    }
-    async touchMove(x, y) {
-        await this.#client.send('Input.dispatchTouchEvent', {
-            type: 'touchMove',
-            touchPoints: [
-                {
-                    x: Math.round(x),
-                    y: Math.round(y),
-                    radiusX: 0.5,
-                    radiusY: 0.5,
-                    force: 0.5,
-                },
-            ],
-            modifiers: this.#keyboard._modifiers,
-        });
-    }
-    async touchEnd() {
-        await this.#client.send('Input.dispatchTouchEvent', {
-            type: 'touchEnd',
-            touchPoints: [],
-            modifiers: this.#keyboard._modifiers,
-        });
+        const id = this.idGenerator();
+        const touchPoint = {
+            x: Math.round(x),
+            y: Math.round(y),
+            radiusX: 0.5,
+            radiusY: 0.5,
+            force: 0.5,
+            id,
+        };
+        const touch = new CdpTouchHandle(this.#client, this, this.#keyboard, touchPoint);
+        await touch.start();
+        this.touches.push(touch);
+        return touch;
     }
 }
 //# sourceMappingURL=Input.js.map

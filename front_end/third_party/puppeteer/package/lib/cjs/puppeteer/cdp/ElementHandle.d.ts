@@ -27,7 +27,7 @@ export declare class CdpElementHandle<ElementType extends Node = Element> extend
     get frame(): CdpFrame;
     contentFrame(this: ElementHandle<HTMLIFrameElement>): Promise<CdpFrame>;
     scrollIntoView(this: CdpElementHandle<Element>): Promise<void>;
-    uploadFile(this: CdpElementHandle<HTMLInputElement>, ...filePaths: string[]): Promise<void>;
+    uploadFile(this: CdpElementHandle<HTMLInputElement>, ...files: string[]): Promise<void>;
     autofill(data: AutofillData): Promise<void>;
     queryAXTree(name?: string | undefined, role?: string | undefined): AwaitableIterable<ElementHandle<Node>>;
 }

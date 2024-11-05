@@ -349,6 +349,8 @@ SOURCES = [
   "package/lib/esm/puppeteer/util/disposable.js",
   "package/lib/esm/puppeteer/util/encoding.d.ts",
   "package/lib/esm/puppeteer/util/encoding.js",
+  "package/lib/esm/puppeteer/util/incremental-id-generator.d.ts",
+  "package/lib/esm/puppeteer/util/incremental-id-generator.js",
   "package/lib/esm/puppeteer/util/util.d.ts",
   "package/lib/esm/puppeteer/util/util.js",
   "package/lib/esm/third_party/mitt/mitt.d.ts",

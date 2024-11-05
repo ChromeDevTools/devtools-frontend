@@ -241,9 +241,8 @@ export declare abstract class Browser extends EventEmitter<BrowserEvents> {
      * You can find the debugger URL (`webSocketDebuggerUrl`) from
      * `http://HOST:PORT/json/version`.
      *
-     * See {@link
-     * https://chromedevtools.github.io/devtools-protocol/#how-do-i-access-the-browser-target
-     * | browser endpoint} for more information.
+     * See {@link https://chromedevtools.github.io/devtools-protocol/#how-do-i-access-the-browser-target | browser endpoint}
+     * for more information.
      *
      * @remarks The format is always `ws://HOST:PORT/devtools/browser/<id>`.
      */
@@ -1990,8 +1989,19 @@ export declare abstract class ElementHandle<ElementType extends Node = Element> 
      * If the element is detached from DOM, the method throws an error.
      */
     tap(this: ElementHandle<Element>): Promise<void>;
-    touchStart(this: ElementHandle<Element>): Promise<void>;
-    touchMove(this: ElementHandle<Element>): Promise<void>;
+    /**
+     * This method scrolls the element into view if needed, and then
+     * starts a touch in the center of the element.
+     * @returns A {@link TouchHandle} representing the touch that was started
+     */
+    touchStart(this: ElementHandle<Element>): Promise<TouchHandle>;
+    /**
+     * This method scrolls the element into view if needed, and then
+     * moves the touch to the center of the element.
+     * @param touch - An optional {@link TouchHandle}. If provided, this touch
+     * will be moved. If not provided, the first active touch will be moved.
+     */
+    touchMove(this: ElementHandle<Element>, touch?: TouchHandle): Promise<void>;
     touchEnd(this: ElementHandle<Element>): Promise<void>;
     /**
      * Calls {@link https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/focus | focus} on the element.
@@ -6678,6 +6688,7 @@ declare namespace Puppeteer_2 {
         MouseMoveOptions,
         MouseButton,
         Mouse,
+        TouchHandle,
         Touchscreen,
         JSHandle,
         Metrics,
@@ -6754,6 +6765,7 @@ declare namespace Puppeteer_2 {
         KnownDevices,
         PuppeteerError,
         TimeoutError,
+        TouchError,
         ProtocolError,
         UnsupportedOperation,
         EventType,
@@ -7403,10 +7415,38 @@ export declare class TimeoutError extends PuppeteerError {
 }
 
 /**
+ * TouchError is thrown when an attempt is made to move or end a touch that does
+ * not exist.
+ * @public
+ */
+export declare class TouchError extends PuppeteerError {
+}
+
+/**
+ * The TouchHandle interface exposes methods to manipulate touches that have been started
+ * @public
+ */
+export declare interface TouchHandle {
+    /**
+     * Dispatches a `touchMove` event for this touch.
+     * @param x - Horizontal position of the move.
+     * @param y - Vertical position of the move.
+     */
+    move(x: number, y: number): Promise<void>;
+    /**
+     * Dispatches a `touchend` event for this touch.
+     */
+    end(): Promise<void>;
+}
+
+/**
  * The Touchscreen class exposes touchscreen events.
  * @public
  */
 export declare abstract class Touchscreen {
+
+
+
 
     /**
      * Dispatches a `touchstart` and `touchend` event.
@@ -7418,10 +7458,11 @@ export declare abstract class Touchscreen {
      * Dispatches a `touchstart` event.
      * @param x - Horizontal position of the tap.
      * @param y - Vertical position of the tap.
+     * @returns A handle for the touch that was started.
      */
-    abstract touchStart(x: number, y: number): Promise<void>;
+    abstract touchStart(x: number, y: number): Promise<TouchHandle>;
     /**
-     * Dispatches a `touchMove` event.
+     * Dispatches a `touchMove` event on the first touch that is active.
      * @param x - Horizontal position of the move.
      * @param y - Vertical position of the move.
      *
@@ -7432,11 +7473,11 @@ export declare abstract class Touchscreen {
      * {@link https://developer.chrome.com/blog/a-more-compatible-smoother-touch/#chromes-new-model-the-throttled-async-touchmove-model | throttles}
      * touch move events.
      */
-    abstract touchMove(x: number, y: number): Promise<void>;
+    touchMove(x: number, y: number): Promise<void>;
     /**
-     * Dispatches a `touchend` event.
+     * Dispatches a `touchend` event on the first touch that is active.
      */
-    abstract touchEnd(): Promise<void>;
+    touchEnd(): Promise<void>;
 }
 
 /**

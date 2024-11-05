@@ -5,6 +5,7 @@
  */
 import { Deferred } from '../util/Deferred.js';
 import { rewriteError } from '../util/ErrorLike.js';
+import { createIncrementalIdGenerator } from '../util/incremental-id-generator.js';
 import { ProtocolError, TargetCloseError } from './Errors.js';
 import { debugError } from './util.js';
 /**
@@ -119,14 +120,5 @@ export class Callback {
     get label() {
         return this.#label;
     }
-}
-/**
- * @internal
- */
-export function createIncrementalIdGenerator() {
-    let id = 0;
-    return () => {
-        return ++id;
-    };
 }
 //# sourceMappingURL=CallbackRegistry.js.map

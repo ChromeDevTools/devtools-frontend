@@ -21,6 +21,11 @@
   }
   holder.a.x = holder.d[0];
   holder.d[0].x = [1, 2, 3];
+  (function () {
+    class DuplicatedClassName {}
+    holder.e = new DuplicatedClassName();
+    holder.f = new DuplicatedClassName();
+  })();
   document.getElementById('update').addEventListener('click', function () {
     holder.b = new DuplicatedClassName();
     holder.e = new DuplicatedClassName();

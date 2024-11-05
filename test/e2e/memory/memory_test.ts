@@ -580,9 +580,10 @@ describe('The Memory Panel', function() {
     await takeHeapSnapshot();
     await waitForNonEmptyHeapSnapshotData();
     await setClassFilter('DuplicatedClassName');
-    let rows = await waitForMany('tr.data-grid-data-grid-node', 2);
+    let rows = await waitForMany('tr.data-grid-data-grid-node', 3);
     assert.strictEqual(30, await getCountFromCategoryRow(rows[0]));
     assert.strictEqual(3, await getCountFromCategoryRow(rows[1]));
+    assert.strictEqual(2, await getCountFromCategoryRow(rows[2]));
     await focusTableRow(rows[0]);
     await expandFocusedRow();
     const {frontend, target} = await getBrowserAndPages();
@@ -598,10 +599,12 @@ describe('The Memory Panel', function() {
     await waitForNonEmptyHeapSnapshotData();
     await changeViewViaDropdown('Comparison');
     await setClassFilter('DuplicatedClassName');
-    rows = await waitForMany('tr.data-grid-data-grid-node', 2);
+    rows = await waitForMany('tr.data-grid-data-grid-node', 3);
     assert.strictEqual(5, await getAddedCountFromComparisonRow(rows[0]));
     assert.strictEqual(1, await getRemovedCountFromComparisonRow(rows[0]));
     assert.strictEqual(1, await getAddedCountFromComparisonRow(rows[1]));
     assert.strictEqual(10, await getRemovedCountFromComparisonRow(rows[1]));
+    assert.strictEqual(0, await getAddedCountFromComparisonRow(rows[2]));
+    assert.strictEqual(2, await getRemovedCountFromComparisonRow(rows[2]));
   });
 });

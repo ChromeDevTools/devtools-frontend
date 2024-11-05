@@ -1333,7 +1333,7 @@ export abstract class HeapSnapshot {
         selfSizes[i] = node.selfSize();
       }
 
-      result[classKey] = {indexes, ids, selfSizes};
+      result[classKey] = {name: node.className(), indexes, ids, selfSizes};
     }
 
     this.#aggregatesForDiffInternal = {interfaceDefinitions, aggregates: result};
@@ -2480,7 +2480,7 @@ export abstract class HeapSnapshot {
     let j = 0;
     const l = baseIds.length;
     const m = indexes.length;
-    const diff = new HeapSnapshotModel.HeapSnapshotModel.Diff(aggregate ? aggregate.name : '');
+    const diff = new HeapSnapshotModel.HeapSnapshotModel.Diff(aggregate ? aggregate.name : baseAggregate.name);
 
     const nodeB = this.createNode(indexes[j]);
     while (i < l && j < m) {

@@ -194,6 +194,7 @@ async function executeJsCode(
 }
 
 const MAX_OBSERVATION_BYTE_LENGTH = 25_000;
+const OBSERVATION_TIMEOUT = 5_000;
 
 type CreateExtensionScopeFunction = (changes: ChangeManager) => {
   install(): Promise<void>, uninstall(): Promise<void>,
@@ -453,10 +454,16 @@ export class FreestylerAgent extends AiAgent<SDK.DOMModel.DOMNode> {
           canceled: true,
         };
       }
-      const result = await this.#execJs(
-          functionDeclaration,
-          {throwOnSideEffect},
-      );
+      const result = await Promise.race([
+        this.#execJs(
+            functionDeclaration,
+            {throwOnSideEffect},
+            ),
+        new Promise<never>((_, reject) => {
+          setTimeout(
+              () => reject(new Error('Script execution exceeded the maximum allowed time.')), OBSERVATION_TIMEOUT);
+        }),
+      ]);
       const byteCount = Platform.StringUtilities.countWtf8Bytes(result);
       Host.userMetrics.freestylerEvalResponseSize(byteCount);
       if (byteCount > MAX_OBSERVATION_BYTE_LENGTH) {

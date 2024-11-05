@@ -315,6 +315,11 @@ const UIStrings = {
    */
   enableRemoteFileLoading:
       'Allow `DevTools` to load resources, such as source maps, from remote file paths. Disabled by default for security reasons.',
+  /**
+   * @description Tooltip text for a setting that controls the network cache. Disabling the network cache can simulate the network connections of users that are visiting a page for the first time.
+   */
+  networkCacheExplanation:
+      'Disabling the network cache will simulate a network experience similar to a first time visitor.',
 };
 const str_ = i18n.i18n.registerUIStrings('core/sdk/sdk-meta.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
@@ -1040,6 +1045,9 @@ Common.Settings.registerSettingExtension({
       title: i18nLazyString(UIStrings.enableCache),
     },
   ],
+  learnMore: {
+    tooltip: i18nLazyString(UIStrings.networkCacheExplanation),
+  },
 });
 
 Common.Settings.registerSettingExtension({

@@ -2,9 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as CrUXManager from '../../../models/crux-manager/crux-manager.js';
+import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
@@ -121,6 +123,20 @@ const UIStrings = {
    * @description Column header for table cell values representing a phase duration (in milliseconds) that was measured in the developers local environment.
    */
   duration: 'Local duration (ms)',
+  /**
+   * @description Tooltip text for a link that goes to documentation explaining the Largest Contentful Paint (LCP) metric. "LCP" is an acronym and should not be translated.
+   */
+  lcpHelpTooltip:
+      'LCP reports the render time of the largest image, text block, or video visible in the viewport. Click here to learn more about LCP.',
+  /**
+   * @description Tooltip text for a link that goes to documentation explaining the Cumulative Layout Shift (CLS) metric. "CLS" is an acronym and should not be translated.
+   */
+  clsHelpTooltip: 'CLS measures the amount of unexpected shifted content. Click here to learn more about CLS.',
+  /**
+   * @description Tooltip text for a link that goes to documentation explaining the Interaction to Next Paint (INP) metric. "INP" is an acronym and should not be translated.
+   */
+  inpHelpTooltip:
+      'INP measures the overall responsiveness to all click, tap, and keyboard interactions. Click here to learn more about INP.',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/MetricCard.ts', UIStrings);
@@ -288,6 +304,28 @@ export class MetricCard extends HTMLElement {
         return v => v === 0 ? '0' : v.toFixed(2);
       case 'INP':
         return v => i18n.TimeUtilities.preciseMillisToString(v);
+    }
+  }
+
+  #getHelpLink(): Platform.DevToolsPath.UrlString {
+    switch (this.#data.metric) {
+      case 'LCP':
+        return 'https://web.dev/articles/lcp' as Platform.DevToolsPath.UrlString;
+      case 'CLS':
+        return 'https://web.dev/articles/cls' as Platform.DevToolsPath.UrlString;
+      case 'INP':
+        return 'https://web.dev/articles/inp' as Platform.DevToolsPath.UrlString;
+    }
+  }
+
+  #getHelpTooltip(): string {
+    switch (this.#data.metric) {
+      case 'LCP':
+        return i18nString(UIStrings.lcpHelpTooltip);
+      case 'CLS':
+        return i18nString(UIStrings.clsHelpTooltip);
+      case 'INP':
+        return i18nString(UIStrings.inpHelpTooltip);
     }
   }
 
@@ -579,12 +617,20 @@ export class MetricCard extends HTMLElement {
 
   #render = (): void => {
     const fieldEnabled = CrUXManager.CrUXManager.instance().getConfigSetting().get().enabled;
+    const helpLink = this.#getHelpLink();
 
     // clang-format off
     const output = html`
       <div class="metric-card">
         <h3 class="title">
           ${this.#getTitle()}
+          <devtools-button
+            class="title-help"
+            title=${this.#getHelpTooltip()}
+            .iconName=${'help'}
+            .variant=${Buttons.Button.Variant.ICON}
+            @click=${() => Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(helpLink)}
+          ></devtools-button>
         </h3>
         <div tabindex="0" class="metric-values-section"
           @mouseenter=${() => this.#showTooltip(500)}

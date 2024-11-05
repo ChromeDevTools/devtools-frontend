@@ -10,7 +10,6 @@ import '../../../ui/components/menus/menus.js';
 import './MetricCard.js';
 
 import * as Common from '../../../core/common/common.js';
-import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as Platform from '../../../core/platform/platform.js';
 import type * as SDK from '../../../core/sdk/sdk.js';
@@ -176,11 +175,6 @@ const UIStrings = {
    */
   simulateDifferentDevices: 'simulate different devices',
   /**
-   * @description Tooltip text that explains how disabling the network cache can simulate the network connections of users that are visiting a page for the first time.
-   */
-  networkCacheExplanation:
-      'Disabling the network cache will simulate a network experience similar to a first time visitor.',
-  /**
    * @description Text label for a checkbox that controls if the network cache is disabled.
    */
   disableNetworkCache: 'Disable network cache',
@@ -221,10 +215,14 @@ const UIStrings = {
    */
   seeHowYourLocalMetricsCompare: 'See how your local metrics compare to real user data in the {PH1}.',
   /**
+   * @description Text for a link that goes to more documentation about local and field data. "Local" refers to performance metrics measured in the developers local environment. "field data" is data measured by real users in the field.
+   */
+  localFieldLearnMoreLink: 'Learn more about local and field data',
+  /**
    * @description Tooltip text for a link that goes to documentation explaining the difference between local and field metrics. "Local metrics" are performance metrics measured in the developers local environment. "field data" is data measured by real users in the field.
    */
-  learnMoreAboutMetrics:
-      'Local metrics are captured from the current page using your network connection and device. Field data is measured by real users using many different network connections and devices. Click to learn more about local and field metrics.',
+  localFieldLearnMoreTooltip:
+      'Local metrics are captured from the current page using your network connection and device. Field data is measured by real users using many different network connections and devices.',
   /**
    * @description Tooltip text explaining that this user interaction was ignored when calculating the Interaction to Next Paint (INP) metric because the interaction delay fell beyond the 98th percentile of interaction delays on this page. "INP" is an acronym and should not be translated.
    */
@@ -664,12 +662,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
             textOverride: i18nString(UIStrings.disableNetworkCache),
           } as Settings.SettingCheckbox.SettingCheckboxData}
         ></setting-checkbox>
-        <devtools-icon
-          class="setting-hint"
-          name="help"
-          title=${i18nString(UIStrings.networkCacheExplanation)}
-        ></devtools-icon>
-        </div>
+      </div>
     `;
     // clang-format on
   }
@@ -1106,18 +1099,8 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
     const output = html`
       <div class="container">
         <div class="live-metrics-view">
-          <main class="live-metrics"
-          >
-            <h2 class="section-title">
-              ${liveMetricsTitle}
-              <devtools-button
-                class="section-title-help"
-                title=${i18nString(UIStrings.learnMoreAboutMetrics)}
-                .iconName=${'help'}
-                .variant=${Buttons.Button.Variant.ICON}
-                @click=${() => Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(helpLink)}
-              ></devtools-button>
-            </h2>
+          <main class="live-metrics">
+            <h2 class="section-title">${liveMetricsTitle}</h2>
             <div class="metric-cards"
               on-render=${ComponentHelpers.Directives.nodeRenderedCallback(node => {
                 this.#tooltipContainerEl = node;
@@ -1133,6 +1116,11 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
                 ${this.#renderInpCard()}
               </div>
             </div>
+            <x-link
+              href=${helpLink}
+              class="local-field-link"
+              title=${i18nString(UIStrings.localFieldLearnMoreTooltip)}
+            >${i18nString(UIStrings.localFieldLearnMoreLink)}</x-link>
             ${this.#renderLogSection()}
           </main>
           <aside class="next-steps" aria-labelledby="next-steps-section-title">

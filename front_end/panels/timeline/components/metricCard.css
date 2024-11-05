@@ -10,14 +10,25 @@
   background-color: var(--sys-color-surface3);
   height: 100%;
   box-sizing: border-box;
+
+  &:not(:hover) .title-help {
+    visibility: hidden;
+  }
 }
 
 .title {
+  display: flex;
+  justify-content: space-between;
   font-size: var(--sys-typescale-headline5-size);
   line-height: var(--sys-typescale-headline5-line-height);
   font-weight: var(--ref-typeface-weight-medium);
   margin: 0;
   margin-bottom: 6px;
+}
+
+.title-help {
+  height: var(--sys-typescale-headline5-line-height);
+  margin-left: 4px;
 }
 
 .metric-values-section {

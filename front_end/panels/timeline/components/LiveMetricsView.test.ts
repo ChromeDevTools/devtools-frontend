@@ -729,7 +729,7 @@ describeWithMockConnection('LiveMetricsView', () => {
       assert.match(fieldMessage!.innerText, /See how your local metrics compare/);
 
       const title = getLiveMetricsTitle(view);
-      assert.strictEqual(title.innerText, 'Local metrics ');
+      assert.strictEqual(title.innerText, 'Local metrics');
     });
 
     it('should show when crux is enabled', async () => {
@@ -760,7 +760,7 @@ describeWithMockConnection('LiveMetricsView', () => {
       assert.match(fieldMessage!.innerText, /Jan.+2024/);
 
       const title = getLiveMetricsTitle(view);
-      assert.strictEqual(title.innerText, 'Local and field metrics ');
+      assert.strictEqual(title.innerText, 'Local and field metrics');
     });
 
     it('should show empty values when crux is enabled but there is no field data', async () => {
@@ -784,7 +784,7 @@ describeWithMockConnection('LiveMetricsView', () => {
       assert.match(fieldMessage!.textContent!, /Not enough data/);
 
       const title = getLiveMetricsTitle(view);
-      assert.strictEqual(title.innerText, 'Local and field metrics ');
+      assert.strictEqual(title.innerText, 'Local and field metrics');
     });
 
     it('should make initial request on render when crux is enabled', async () => {

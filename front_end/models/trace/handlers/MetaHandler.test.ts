@@ -50,7 +50,7 @@ describe('MetaHandler', function() {
         tid: Trace.Types.Events.ThreadID(775),
         ts: Trace.Types.Timing.MicroSeconds(800),
         name: 'navigationStart',
-      } as Trace.Types.Events.NavigationStart,
+      } as Trace.Types.Events.NavigationStartUnreliable,
       {
         ...defaultTraceEvent,
         args: {

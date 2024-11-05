@@ -49,6 +49,11 @@ describeWithLocale('TimelineOverviewCalculator', () => {
     const fakeNavStart = {
       // Trace Engine events are in microseconds
       ts: 100_000,
+      args: {
+        data: {
+          documentLoaderURL: 'https://example.com',
+        },
+      },
     } as unknown as Trace.Types.Events.NavigationStart;
     calculator.setNavStartTimes([fakeNavStart]);
     // There is a navigation at 100ms, so this time gets changed to 5ms

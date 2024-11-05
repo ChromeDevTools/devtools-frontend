@@ -294,9 +294,8 @@ export function handleEvent(event: Types.Events.Event): void {
   // Track all navigation events. Note that there can be navigation start events
   // but where the documentLoaderURL is empty. As far as the trace rendering is
   // concerned, these events are noise so we filter them out here.
-  // (The filtering of empty URLs is done in the
-  // isNavigationStartWithURL check)
-  if (Types.Events.isNavigationStartWithURL(event) && event.args.data) {
+  // (The filtering of empty URLs is done in the isNavigationStart check)
+  if (Types.Events.isNavigationStart(event) && event.args.data) {
     const navigationId = event.args.data.navigationId;
     if (navigationsByNavigationId.has(navigationId)) {
       // We have only ever seen this situation once, in crbug.com/1503982, where the user ran:

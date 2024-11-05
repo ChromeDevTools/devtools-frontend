@@ -52,6 +52,8 @@ export const enum Phase {
   CLOCK_SYNC = 'c',
 }
 
+export type NonEmptyString = string&{_tag: 'NonEmptyString'};
+
 export function isNestableAsyncPhase(phase: Phase): boolean {
   return phase === Phase.ASYNC_NESTABLE_START || phase === Phase.ASYNC_NESTABLE_END ||
       phase === Phase.ASYNC_NESTABLE_INSTANT;
@@ -594,11 +596,13 @@ export interface Mark extends Event {
   ph: Phase.MARK;
 }
 
-export interface NavigationStart extends Mark {
+// An unreliable and non-legit navigationStart. See NavigationStartWithUrl
+export interface NavigationStartUnreliable extends Mark {
   name: 'navigationStart';
   args: Args&{
     data?: ArgsData & {
-      documentLoaderURL: string,
+      /** An empty documentLoaderURL means this navigationStart is unreliable noise and can be ignored. */
+      documentLoaderURL: never,
       isLoadingMainFrame: boolean,
       // isOutermostMainFrame was introduced in crrev.com/c/3625434 and exists
       // because of Fenced Frames
@@ -620,6 +624,16 @@ export interface NavigationStart extends Mark {
       url?: string,
     },
         frame: string,
+  };
+}
+
+// NavigationStart but definitely has a populated documentLoaderURL
+export interface NavigationStart extends NavigationStartUnreliable {
+  args: NavigationStartUnreliable['args']&{
+    data: NavigationStartUnreliable['args']['data'] & {
+      /** This navigationStart is valid, as the documentLoaderURL isn't empty. */
+      documentLoaderURL: NonEmptyString,
+    },
   };
 }
 
@@ -984,8 +998,9 @@ export interface ResourceChangePriority extends Instant {
   };
 }
 
+/** Only sent for navigations. https://source.chromium.org/chromium/chromium/src/+/main:content/browser/devtools/devtools_instrumentation.cc;l=1612-1647;drc=ec7daf93d0479b758610c75f4e146fd4d2d6ed2b */
 export interface ResourceWillSendRequest extends Instant {
-  name: 'ResourceWillSendRequest';
+  name: Name.RESOURCE_WILL_SEND_REQUEST;
   args: Args&{
     data: ArgsData & {
       requestId: string,
@@ -1017,6 +1032,7 @@ export interface ResourceReceivedData extends Instant {
   };
 }
 
+/** See https://mdn.github.io/shared-assets/images/diagrams/api/performance/timestamp-diagram.svg  */
 interface ResourceReceiveResponseTimingData {
   connectEnd: MilliSeconds;
   connectStart: MilliSeconds;
@@ -1028,6 +1044,7 @@ interface ResourceReceiveResponseTimingData {
   pushStart: MilliSeconds;
   receiveHeadersEnd: MilliSeconds;
   receiveHeadersStart: MilliSeconds;
+  /** When the network service is about to handle a request, ie. just before going to the HTTP cache or going to the network for DNS/connection setup. */
   requestTime: Seconds;
   sendEnd: MilliSeconds;
   sendStart: MilliSeconds;
@@ -1933,9 +1950,10 @@ export function isCommitLoad(
   return event.name === 'CommitLoad';
 }
 
-export function isNavigationStart(
+/** @deprecated You probably want `isNavigationStart` instead. */
+export function isNavigationStartUnreliable(
     event: Event,
-    ): event is NavigationStart {
+    ): event is NavigationStartUnreliable {
   return event.name === 'navigationStart';
 }
 
@@ -2090,8 +2108,9 @@ export function isPrePaint(
   return event.name === 'PrePaint';
 }
 
-export function isNavigationStartWithURL(event: Event): event is NavigationStart {
-  return Boolean(isNavigationStart(event) && event.args.data && event.args.data.documentLoaderURL !== '');
+/** A VALID navigation start (as it has a populated documentLoaderURL) */
+export function isNavigationStart(event: Event): event is NavigationStart {
+  return Boolean(isNavigationStartUnreliable(event) && event.args.data && event.args.data.documentLoaderURL !== '');
 }
 
 export function isMainFrameViewport(

@@ -255,6 +255,9 @@ export async function finalize(): Promise<void> {
       finalPriority = request.changePriority.args.data.priority;
     }
 
+    // Network timings are complicated.
+    // https://raw.githubusercontent.com/GoogleChrome/lighthouse/main/docs/Network-Timings.svg is generally correct, but.. less so for navigations/redirects/etc.
+
     // Start time
     // =======================
     // The time where the request started, which is either the first willSendRequest

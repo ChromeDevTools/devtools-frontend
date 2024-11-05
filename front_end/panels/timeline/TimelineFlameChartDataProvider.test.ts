@@ -214,7 +214,7 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
     const filter = new Timeline.TimelineFilters.TimelineRegExp(/Evaluate script/);
     const results = dataProvider.search(bounds, filter);
     assert.lengthOf(results, 12);
-    assert.deepEqual(results[0], {index: 154, startTimeMilli: 122411041.395, provider: 'main'});
+    assert.deepEqual(results[0], {index: 153, startTimeMilli: 122411041.395, provider: 'main'});
   });
 
   it('delete annotations associated with an event', async function() {

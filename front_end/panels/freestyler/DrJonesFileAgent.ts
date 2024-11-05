@@ -148,18 +148,25 @@ function createContextDetailsForDrJonesFileAgent(
   ];
 }
 
-function formatFile(selectedFile: Workspace.UISourceCode.UISourceCode): string {
+export function formatFile(selectedFile: Workspace.UISourceCode.UISourceCode): string {
   const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
-  return `File Name: ${selectedFile.displayName()}
-URL: ${selectedFile.url()}
-${formatSourceMapDetails(selectedFile, debuggerWorkspaceBinding)}
-File Content:
-${formatFileContent(selectedFile.content())}`;
+  const sourceMapDetails = formatSourceMapDetails(selectedFile, debuggerWorkspaceBinding);
+  const lines = [
+    `File name: ${selectedFile.displayName()}`,
+    `URL: ${selectedFile.url()}`,
+    sourceMapDetails,
+    `File content:
+${formatFileContent(selectedFile)}`,
+  ];
+  return lines.filter(line => line.trim() !== '').join('\n');
 }
 
-function formatFileContent(content: string): string {
-  const formattedContent = content.length > MAX_FILE_SIZE ? content.slice(0, MAX_FILE_SIZE) + '...\n' : content + '\n';
-  return '```' + formattedContent + '```';
+function formatFileContent(selectedFile: Workspace.UISourceCode.UISourceCode): string {
+  const content = selectedFile.contentType().isTextType() ? selectedFile.content() : '<binary data>';
+  const truncated = content.length > MAX_FILE_SIZE ? content.slice(0, MAX_FILE_SIZE) + '...' : content;
+  return `\`\`\`
+${truncated}
+\`\`\``;
 }
 
 export function formatSourceMapDetails(

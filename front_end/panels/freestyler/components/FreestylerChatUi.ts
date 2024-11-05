@@ -418,7 +418,7 @@ export class FreestylerChatUi extends HTMLElement {
       case AgentType.DRJONES_NETWORK_REQUEST:
         return !this.#props.selectedNetworkRequest;
       case AgentType.DRJONES_FILE:
-        return !this.#props.selectedFile || !this.#props.selectedFile.getItem().contentType().isTextType();
+        return !this.#props.selectedFile;
       case AgentType.DRJONES_PERFORMANCE:
         return !this.#props.selectedAiCallTree;
     }

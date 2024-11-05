@@ -459,11 +459,14 @@ export class FreestylerPanel extends UI.Panel.Panel {
 
   #handleUISourceCodeFlavorChange =
       (ev: Common.EventTarget.EventTargetEvent<Workspace.UISourceCode.UISourceCode>): void => {
-        if (this.#viewProps.selectedFile?.getItem() === ev.data) {
+        const newFile = ev.data;
+        if (!newFile) {
           return;
         }
-
-        this.#viewProps.selectedFile = Boolean(ev.data) ? new FileContext(ev.data) : null;
+        if (this.#viewProps.selectedFile?.getItem() === newFile) {
+          return;
+        }
+        this.#viewProps.selectedFile = new FileContext(ev.data);
         this.#onContextSelectionChanged();
       };
 

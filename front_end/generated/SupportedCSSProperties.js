@@ -519,6 +519,7 @@ export const generatedProperties = [
    "inset-block-start",
    "inset-inline-end",
    "inset-inline-start",
+   "interactivity",
    "interpolate-size",
    "isolation",
    "justify-content",
@@ -2531,6 +2532,14 @@ export const generatedProperties = [
  {
   "inherited": true,
   "keywords": [
+   "auto",
+   "inert"
+  ],
+  "name": "interactivity"
+ },
+ {
+  "inherited": true,
+  "keywords": [
    "numeric-only",
    "allow-keywords"
   ],
@@ -4223,8 +4232,7 @@ export const generatedProperties = [
   "keywords": [
    "visible",
    "hidden",
-   "collapse",
-   "inert"
+   "collapse"
   ],
   "name": "visibility"
  },
@@ -5440,6 +5448,12 @@ export const generatedPropertyValues = {
    "all"
   ]
  },
+ "interactivity": {
+  "values": [
+   "auto",
+   "inert"
+  ]
+ },
  "interpolate-size": {
   "values": [
    "numeric-only",
@@ -6377,8 +6391,7 @@ export const generatedPropertyValues = {
   "values": [
    "visible",
    "hidden",
-   "collapse",
-   "inert"
+   "collapse"
   ]
  },
  "white-space-collapse": {

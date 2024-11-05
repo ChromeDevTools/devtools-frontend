@@ -1618,6 +1618,7 @@ export const knownContextValues = new Set([
   'integer-64-bit',
   'integer-8-bit',
   'interactions',
+  'interactivity',
   'interest-groups',
   'internal',
   'internet-explorer-10',

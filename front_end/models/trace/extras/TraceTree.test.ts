@@ -2,19 +2,20 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Protocol from '../../generated/protocol.js';
-import * as Timeline from '../../panels/timeline/timeline.js';
-import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import type * as Protocol from '../../../generated/protocol.js';
+import * as Timeline from '../../../panels/timeline/timeline.js';
+import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {
   getMainThread,
   makeCompleteEvent,
   makeProfileCall,
-} from '../../testing/TraceHelpers.js';
-import {TraceLoader} from '../../testing/TraceLoader.js';
-import * as TimelineModel from '../timeline_model/timeline_model.js';
-import * as Trace from '../trace/trace.js';
+} from '../../../testing/TraceHelpers.js';
+import {TraceLoader} from '../../../testing/TraceLoader.js';
+import * as Trace from '../trace.js';
 
-describeWithEnvironment('TimelineProfileTree', () => {
+import * as TraceTree from './TraceTree.js';
+
+describeWithEnvironment('TraceTree', () => {
   describe('TopDownRootNode', () => {
     it('builds the root node and its children properly from an event tree', () => {
       // This builds the following tree:
@@ -28,7 +29,7 @@ describeWithEnvironment('TimelineProfileTree', () => {
         eventB,
         eventC,
       ];
-      const root = new TimelineModel.TimelineProfileTree.TopDownRootNode(
+      const root = new TraceTree.TopDownRootNode(
           events, [], Trace.Types.Timing.MilliSeconds(0), Trace.Types.Timing.MilliSeconds(200_000));
 
       const children = root.children();
@@ -56,14 +57,14 @@ describeWithEnvironment('TimelineProfileTree', () => {
         eventD,
         eventB,
       ];
-      const root = new TimelineModel.TimelineProfileTree.TopDownRootNode(
+      const root = new TraceTree.TopDownRootNode(
           events, [], Trace.Types.Timing.MilliSeconds(0), Trace.Types.Timing.MilliSeconds(200_000));
 
       const rootChildren = root.children();
       assert.strictEqual(rootChildren.size, 2);
 
       const rootChildIterator = rootChildren.values();
-      const nodeA = rootChildIterator.next().value as TimelineModel.TimelineProfileTree.TopDownNode;
+      const nodeA = rootChildIterator.next().value as TraceTree.TopDownNode;
       assert.strictEqual(nodeA.event, eventA);
       assert.strictEqual(rootChildIterator.next().value!.event, eventB);
 
@@ -91,7 +92,7 @@ describeWithEnvironment('TimelineProfileTree', () => {
         eventC,
         eventD,
       ];
-      const root = new TimelineModel.TimelineProfileTree.TopDownRootNode(
+      const root = new TraceTree.TopDownRootNode(
           events, [], Trace.Types.Timing.MilliSeconds(0), Trace.Types.Timing.MilliSeconds(200_000));
 
       const rootChildren = root.children();
@@ -99,7 +100,7 @@ describeWithEnvironment('TimelineProfileTree', () => {
 
       const rootChildIterator = rootChildren.values();
       assert.strictEqual(rootChildIterator.next().value!.event, eventA);
-      const nodeB = rootChildIterator.next().value as TimelineModel.TimelineProfileTree.TopDownNode;
+      const nodeB = rootChildIterator.next().value as TraceTree.TopDownNode;
       assert.strictEqual(nodeB.event, eventB);
 
       const nodeBChildren = nodeB.children();
@@ -129,7 +130,7 @@ describeWithEnvironment('TimelineProfileTree', () => {
         eventD,
         eventE,
       ];
-      const root = new TimelineModel.TimelineProfileTree.TopDownRootNode(
+      const root = new TraceTree.TopDownRootNode(
           events, [], Trace.Types.Timing.MilliSeconds(0), Trace.Types.Timing.MilliSeconds(200_000));
 
       const rootChildren = root.children();
@@ -139,7 +140,7 @@ describeWithEnvironment('TimelineProfileTree', () => {
       assert.strictEqual(
           rootChildIterator.next().value!.selfTime, Trace.Helpers.Timing.microSecondsToMilliseconds(eventA.dur));
 
-      const nodeB = rootChildIterator.next().value as TimelineModel.TimelineProfileTree.TopDownNode;
+      const nodeB = rootChildIterator.next().value as TraceTree.TopDownNode;
       const nodeBSelfTime = Trace.Types.Timing.MicroSeconds(eventB.dur - eventC.dur - eventD.dur);
       assert.strictEqual(nodeB.selfTime, Trace.Helpers.Timing.microSecondsToMilliseconds(nodeBSelfTime));
 
@@ -176,7 +177,7 @@ describeWithEnvironment('TimelineProfileTree', () => {
         eventB,
         eventC,
       ];
-      const root = new TimelineModel.TimelineProfileTree.TopDownRootNode(
+      const root = new TraceTree.TopDownRootNode(
           events, [], Trace.Types.Timing.MilliSeconds(0), Trace.Types.Timing.MilliSeconds(200_000));
 
       const children = root.children();
@@ -204,24 +205,24 @@ describeWithEnvironment('TimelineProfileTree', () => {
         eventD,
         eventB,
       ];
-      const root = new TimelineModel.TimelineProfileTree.BottomUpRootNode(
-          events, new TimelineModel.TimelineModelFilter.TimelineInvisibleEventsFilter([]), [],
-          Trace.Types.Timing.MilliSeconds(0), Trace.Types.Timing.MilliSeconds(200_000), null);
+      const root = new TraceTree.BottomUpRootNode(
+          events, new Trace.Extras.TraceFilter.InvisibleEventsFilter([]), [], Trace.Types.Timing.MilliSeconds(0),
+          Trace.Types.Timing.MilliSeconds(200_000), null);
       const rootChildren = root.children();
       assert.strictEqual(rootChildren.size, 4);
 
       const rootChildIterator = rootChildren.values();
 
-      const nodeC = rootChildIterator.next().value as TimelineModel.TimelineProfileTree.TopDownNode;
+      const nodeC = rootChildIterator.next().value as TraceTree.TopDownNode;
       assert.strictEqual(nodeC.event, eventC);
 
-      const nodeD = rootChildIterator.next().value as TimelineModel.TimelineProfileTree.TopDownNode;
+      const nodeD = rootChildIterator.next().value as TraceTree.TopDownNode;
       assert.strictEqual(nodeD.event, eventD);
 
-      const nodeA = rootChildIterator.next().value as TimelineModel.TimelineProfileTree.TopDownNode;
+      const nodeA = rootChildIterator.next().value as TraceTree.TopDownNode;
       assert.strictEqual(nodeA.event, eventA);
 
-      const nodeB = rootChildIterator.next().value as TimelineModel.TimelineProfileTree.TopDownNode;
+      const nodeB = rootChildIterator.next().value as TraceTree.TopDownNode;
       assert.strictEqual(nodeB.event, eventB);
 
       const nodeCChildren = nodeC.children();
@@ -258,24 +259,24 @@ describeWithEnvironment('TimelineProfileTree', () => {
         eventD,
       ];
 
-      const root = new TimelineModel.TimelineProfileTree.BottomUpRootNode(
-          events, new TimelineModel.TimelineModelFilter.TimelineInvisibleEventsFilter([]), [],
-          Trace.Types.Timing.MilliSeconds(0), Trace.Types.Timing.MilliSeconds(200_000), null);
+      const root = new TraceTree.BottomUpRootNode(
+          events, new Trace.Extras.TraceFilter.InvisibleEventsFilter([]), [], Trace.Types.Timing.MilliSeconds(0),
+          Trace.Types.Timing.MilliSeconds(200_000), null);
       const rootChildren = root.children();
       assert.strictEqual(rootChildren.size, 4);
 
       const rootChildIterator = rootChildren.values();
 
-      const nodeA = rootChildIterator.next().value as TimelineModel.TimelineProfileTree.TopDownNode;
+      const nodeA = rootChildIterator.next().value as TraceTree.TopDownNode;
       assert.strictEqual(nodeA.event, eventA);
 
-      const nodeC = rootChildIterator.next().value as TimelineModel.TimelineProfileTree.TopDownNode;
+      const nodeC = rootChildIterator.next().value as TraceTree.TopDownNode;
       assert.strictEqual(nodeC.event, eventC);
 
-      const nodeD = rootChildIterator.next().value as TimelineModel.TimelineProfileTree.TopDownNode;
+      const nodeD = rootChildIterator.next().value as TraceTree.TopDownNode;
       assert.strictEqual(nodeD.event, eventD);
 
-      const nodeB = rootChildIterator.next().value as TimelineModel.TimelineProfileTree.TopDownNode;
+      const nodeB = rootChildIterator.next().value as TraceTree.TopDownNode;
       assert.strictEqual(nodeB.event, eventB);
 
       const nodeCChildren = nodeC.children();
@@ -314,9 +315,9 @@ describeWithEnvironment('TimelineProfileTree', () => {
         eventD,
         eventE,
       ];
-      const root = new TimelineModel.TimelineProfileTree.BottomUpRootNode(
-          events, new TimelineModel.TimelineModelFilter.TimelineInvisibleEventsFilter([]), [],
-          Trace.Types.Timing.MilliSeconds(0), Trace.Types.Timing.MilliSeconds(200_000), null);
+      const root = new TraceTree.BottomUpRootNode(
+          events, new Trace.Extras.TraceFilter.InvisibleEventsFilter([]), [], Trace.Types.Timing.MilliSeconds(0),
+          Trace.Types.Timing.MilliSeconds(200_000), null);
 
       const rootChildren = root.children();
       assert.strictEqual(rootChildren.size, 5);
@@ -325,17 +326,17 @@ describeWithEnvironment('TimelineProfileTree', () => {
       assert.strictEqual(
           rootChildIterator.next().value!.selfTime, Trace.Helpers.Timing.microSecondsToMilliseconds(eventA.dur));
 
-      const nodeC = rootChildIterator.next().value as TimelineModel.TimelineProfileTree.TopDownNode;
+      const nodeC = rootChildIterator.next().value as TraceTree.TopDownNode;
       assert.strictEqual(nodeC.selfTime, Trace.Helpers.Timing.microSecondsToMilliseconds(eventC.dur));
 
-      const nodeE = rootChildIterator.next().value as TimelineModel.TimelineProfileTree.TopDownNode;
+      const nodeE = rootChildIterator.next().value as TraceTree.TopDownNode;
       assert.strictEqual(nodeE.selfTime, Trace.Helpers.Timing.microSecondsToMilliseconds(eventE.dur));
 
-      const nodeD = rootChildIterator.next().value as TimelineModel.TimelineProfileTree.TopDownNode;
+      const nodeD = rootChildIterator.next().value as TraceTree.TopDownNode;
       const nodeDSelfTime = Trace.Types.Timing.MicroSeconds(eventD.dur - eventE.dur);
       assert.strictEqual(nodeD.selfTime, Trace.Helpers.Timing.microSecondsToMilliseconds(nodeDSelfTime));
 
-      const nodeB = rootChildIterator.next().value as TimelineModel.TimelineProfileTree.TopDownNode;
+      const nodeB = rootChildIterator.next().value as TraceTree.TopDownNode;
       const nodeBSelfTime = Trace.Types.Timing.MicroSeconds(eventB.dur - eventC.dur - eventD.dur);
       assert.strictEqual(nodeB.selfTime, Trace.Helpers.Timing.microSecondsToMilliseconds(nodeBSelfTime));
     });
@@ -349,12 +350,12 @@ describeWithEnvironment('TimelineProfileTree', () => {
       const textFilter = new Timeline.TimelineFilters.TimelineRegExp();
       const modelFilters = [
         Timeline.TimelineUIUtils.TimelineUIUtils.visibleEventsFilter(),
-        new TimelineModel.TimelineModelFilter.ExclusiveNameFilter([
+        new Trace.Extras.TraceFilter.ExclusiveNameFilter([
           Trace.Types.Events.Name.RUN_TASK,
         ]),
       ];
-      const root = new TimelineModel.TimelineProfileTree.BottomUpRootNode(
-          mainThread.entries, textFilter, modelFilters, bounds.min, bounds.max, null);
+      const root =
+          new TraceTree.BottomUpRootNode(mainThread.entries, textFilter, modelFilters, bounds.min, bounds.max, null);
       const rootChildren = root.children();
       const values = Array.from(rootChildren.values());
       // Find the list of profile calls that have been calculated as the top level rows in the Bottom Up table.
@@ -380,7 +381,7 @@ describeWithEnvironment('TimelineProfileTree', () => {
       if (!profileCallEntry) {
         throw new Error('Could not find a profile call');
       }
-      const eventId = TimelineModel.TimelineProfileTree.generateEventID(profileCallEntry);
+      const eventId = TraceTree.generateEventID(profileCallEntry);
       assert.strictEqual(eventId, 'f:performConcurrentWorkOnRoot@7');
     });
 
@@ -397,7 +398,7 @@ describeWithEnvironment('TimelineProfileTree', () => {
       if (!profileCallEntry) {
         throw new Error('Could not find a profile call');
       }
-      const eventId = TimelineModel.TimelineProfileTree.generateEventID(profileCallEntry);
+      const eventId = TraceTree.generateEventID(profileCallEntry);
       assert.strictEqual(eventId, 'f:Compile@0');
     });
   });
@@ -405,7 +406,7 @@ describeWithEnvironment('TimelineProfileTree', () => {
   describe('eventStackFrame', () => {
     it('extracts the stackFrame for ProfileCalls', async function() {
       const event = makeProfileCall('somefunc', 100, 10, undefined, undefined, undefined, 'https://x.com/file.mjs');
-      const stackFrame = TimelineModel.TimelineProfileTree.eventStackFrame(event) as Protocol.Runtime.CallFrame;
+      const stackFrame = TraceTree.eventStackFrame(event) as Protocol.Runtime.CallFrame;
       assert.strictEqual(stackFrame.functionName, 'somefunc');
       assert.strictEqual(stackFrame.url, 'https://x.com/file.mjs');
     });

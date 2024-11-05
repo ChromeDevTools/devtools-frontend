@@ -8,7 +8,6 @@ import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
-import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 import * as Trace from '../../models/trace/trace.js';
 
 import type {Client} from './TimelineController.js';
@@ -36,7 +35,7 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
   private buffer: string;
   private firstRawChunk: boolean;
   private totalSize!: number;
-  private filter: TimelineModel.TimelineModelFilter.TimelineModelFilter|null;
+  private filter: Trace.Extras.TraceFilter.TraceFilter|null;
   #traceIsCPUProfile: boolean;
   #collectedEvents: Trace.Types.Events.Event[] = [];
   #metadata: Trace.Types.File.MetaData|null;
@@ -88,7 +87,7 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
     loader.#traceIsCPUProfile = true;
 
     try {
-      const events = TimelineModel.TimelineJSProfile.TimelineJSProfileProcessor.createFakeTraceFromCpuProfile(
+      const events = Trace.Extras.TimelineJSProfile.TimelineJSProfileProcessor.createFakeTraceFromCpuProfile(
           profile, Trace.Types.Events.ThreadID(1));
 
       window.setTimeout(async () => {
@@ -249,7 +248,7 @@ export class TimelineLoader implements Common.StringOutputStream.OutputStream {
   }
 
   #parseCPUProfileFormatFromFile(parsedTrace: Protocol.Profiler.Profile): void {
-    const traceEvents = TimelineModel.TimelineJSProfile.TimelineJSProfileProcessor.createFakeTraceFromCpuProfile(
+    const traceEvents = Trace.Extras.TimelineJSProfile.TimelineJSProfileProcessor.createFakeTraceFromCpuProfile(
         parsedTrace, Trace.Types.Events.ThreadID(1));
 
     this.#collectEvents(traceEvents);

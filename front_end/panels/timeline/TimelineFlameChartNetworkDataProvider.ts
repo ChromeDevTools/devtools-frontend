@@ -4,7 +4,6 @@
 
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
-import type * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -489,7 +488,7 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
    */
   search(
       visibleWindow: Trace.Types.Timing.TraceWindowMicroSeconds,
-      filter?: TimelineModel.TimelineModelFilter.TimelineModelFilter,
+      filter?: Trace.Extras.TraceFilter.TraceFilter,
       ): PerfUI.FlameChart.DataProviderSearchResult[] {
     const results: PerfUI.FlameChart.DataProviderSearchResult[] = [];
     for (let i = 0; i < this.#events.length; i++) {

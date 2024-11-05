@@ -129,7 +129,6 @@ group("unittests") {
     "models/persistence:unittests",
     "models/source_map_scopes:unittests",
     "models/text_utils:unittests",
-    "models/timeline_model:unittests",
     "models/trace:unittests",
     "models/trace/extras:unittests",
     "models/trace/handlers:unittests",

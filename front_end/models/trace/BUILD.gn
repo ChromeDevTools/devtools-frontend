@@ -19,6 +19,8 @@ devtools_module("trace") {
     "../../core/common:bundle",
     "../../core/platform:bundle",
     "../../core/sdk:bundle",
+    "../../generated:protocol",
+    "../cpu_profile:bundle",
     "extras:bundle",
     "handlers:bundle",
     "helpers:bundle",

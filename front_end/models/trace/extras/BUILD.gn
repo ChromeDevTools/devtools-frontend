@@ -14,6 +14,9 @@ devtools_module("extras") {
     "MainThreadActivity.ts",
     "Metadata.ts",
     "ThirdParties.ts",
+    "TimelineJSProfile.ts",
+    "TraceFilter.ts",
+    "TraceTree.ts",
     "URLForEntry.ts",
   ]
 
@@ -46,6 +49,8 @@ ts_library("unittests") {
     "MainThreadActivity.test.ts",
     "Metadata.test.ts",
     "ThirdParties.test.ts",
+    "TraceFilter.test.ts",
+    "TraceTree.test.ts",
     "URLForEntry.test.ts",
   ]
 

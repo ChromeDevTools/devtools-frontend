@@ -4,7 +4,6 @@
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import type * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -41,7 +40,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class EventsTimelineTreeView extends TimelineTreeView {
   private readonly filtersControl: Filters;
   private readonly delegate: TimelineModeViewDelegate;
-  private currentTree!: TimelineModel.TimelineProfileTree.Node;
+  private currentTree!: Trace.Extras.TraceTree.Node;
   constructor(delegate: TimelineModeViewDelegate) {
     super();
     this.element.setAttribute('jslog', `${VisualLogging.pane('event-log').track({resize: true})}`);
@@ -53,7 +52,7 @@ export class EventsTimelineTreeView extends TimelineTreeView {
     this.splitWidget.showBoth();
   }
 
-  override filters(): TimelineModel.TimelineModelFilter.TimelineModelFilter[] {
+  override filters(): Trace.Extras.TraceFilter.TraceFilter[] {
     return [...super.filters(), ...this.filtersControl.filters()];
   }
 
@@ -64,7 +63,7 @@ export class EventsTimelineTreeView extends TimelineTreeView {
     }
   }
 
-  override buildTree(): TimelineModel.TimelineProfileTree.Node {
+  override buildTree(): Trace.Extras.TraceTree.Node {
     this.currentTree = this.buildTopDownTree(true, null);
     return this.currentTree;
   }
@@ -78,7 +77,7 @@ export class EventsTimelineTreeView extends TimelineTreeView {
     }
   }
 
-  private findNodeWithEvent(event: Trace.Types.Events.Event): TimelineModel.TimelineProfileTree.Node|null {
+  private findNodeWithEvent(event: Trace.Types.Events.Event): Trace.Extras.TraceTree.Node|null {
     if (event.name === Trace.Types.Events.Name.RUN_TASK) {
       // No node is ever created for the top level RunTask event, so
       // bail out preemptively
@@ -132,7 +131,7 @@ export class EventsTimelineTreeView extends TimelineTreeView {
     this.filtersControl.populateToolbar(toolbar);
   }
 
-  override showDetailsForNode(node: TimelineModel.TimelineProfileTree.Node): boolean {
+  override showDetailsForNode(node: Trace.Extras.TraceTree.Node): boolean {
     const parsedTrace = this.parsedTrace();
     if (!parsedTrace) {
       return false;
@@ -146,7 +145,7 @@ export class EventsTimelineTreeView extends TimelineTreeView {
     return true;
   }
 
-  override onHover(node: TimelineModel.TimelineProfileTree.Node|null): void {
+  override onHover(node: Trace.Extras.TraceTree.Node|null): void {
     this.delegate.highlightEvent(node && node.event);
   }
 }
@@ -162,7 +161,7 @@ export class Filters extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
     this.filtersInternal = [this.categoryFilter, this.durationFilter];
   }
 
-  filters(): TimelineModel.TimelineModelFilter.TimelineModelFilter[] {
+  filters(): Trace.Extras.TraceFilter.TraceFilter[] {
     return this.filtersInternal;
   }
 

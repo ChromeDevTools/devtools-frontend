@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import type * as Protocol from '../../generated/protocol.js';
-import type * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 import type * as Trace from '../../models/trace/trace.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {makeInstantEvent} from '../../testing/TraceHelpers.js';
@@ -50,7 +49,7 @@ describeWithEnvironment('TimelineLoader', () => {
     },
     async loadingComplete(
         collectedEvents: Trace.Types.Events.Event[],
-        exclusiveFilter: TimelineModel.TimelineModelFilter.TimelineModelFilter|null,
+        exclusiveFilter: Trace.Extras.TraceFilter.TraceFilter|null,
         isCpuProfile: boolean,
     ) {
       loadingCompleteSpy(collectedEvents, exclusiveFilter, isCpuProfile);

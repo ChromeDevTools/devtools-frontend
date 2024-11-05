@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as TimelineModel from '../../../models/timeline_model/timeline_model.js';
 import * as Trace from '../../../models/trace/trace.js';
 
 import {nameForEntry} from './EntryName.js';
@@ -11,8 +10,7 @@ import {SourceMapsResolver} from './SourceMapsResolver.js';
 
 /** Iterates from a node down through its descendents. If the callback returns true, the loop stops. */
 function depthFirstWalk(
-    nodes: MapIterator<TimelineModel.TimelineProfileTree.Node>,
-    callback: (arg0: TimelineModel.TimelineProfileTree.Node) => void|true): void {
+    nodes: MapIterator<Trace.Extras.TraceTree.Node>, callback: (arg0: Trace.Extras.TraceTree.Node) => void|true): void {
   for (const node of nodes) {
     if (callback?.(node)) {
       break;
@@ -23,8 +21,8 @@ function depthFirstWalk(
 
 export class AICallTree {
   constructor(
-      public selectedNode: TimelineModel.TimelineProfileTree.Node,
-      public rootNode: TimelineModel.TimelineProfileTree.TopDownRootNode,
+      public selectedNode: Trace.Extras.TraceTree.Node,
+      public rootNode: Trace.Extras.TraceTree.TopDownRootNode,
       // TODO: see if we can avoid passing around this entire thing.
       public parsedTrace: Trace.Handlers.Types.ParsedTrace,
   ) {
@@ -44,14 +42,14 @@ export class AICallTree {
     }
     const overlappingEvents = threadEvents.filter(e => Trace.Helpers.Timing.eventIsInBounds(e, selectedEventBounds));
 
-    const visibleEventsFilter = new TimelineModel.TimelineModelFilter.TimelineVisibleEventsFilter(visibleTypes());
+    const visibleEventsFilter = new Trace.Extras.TraceFilter.VisibleEventsFilter(visibleTypes());
     const customFilter = new AITreeFilter(timings.duration);
     // Build a tree bounded by the selected event's timestamps, and our other filters applied
-    const rootNode = new TimelineModel.TimelineProfileTree.TopDownRootNode(
+    const rootNode = new Trace.Extras.TraceTree.TopDownRootNode(
         overlappingEvents, [visibleEventsFilter, customFilter], timings.startTime, timings.endTime, false, null);
 
     // Walk the tree to find selectedNode
-    let selectedNode: TimelineModel.TimelineProfileTree.Node|null = null;
+    let selectedNode: Trace.Extras.TraceTree.Node|null = null;
     depthFirstWalk([rootNode].values(), node => {
       if (node.event === selectedEvent) {
         selectedNode = node;
@@ -70,7 +68,7 @@ export class AICallTree {
 
   /** Define precisely how the call tree is serialized. Typically called from within `DrJonesPerformanceAgent` */
   serialize(): string {
-    const nodeToIdMap = new Map<TimelineModel.TimelineProfileTree.Node, number>();
+    const nodeToIdMap = new Map<Trace.Extras.TraceTree.Node, number>();
     // Keep a map of URLs. We'll output a LUT to keep size down.
     const allUrls: string[] = [];
 
@@ -90,9 +88,9 @@ export class AICallTree {
 
   /* This custom YAML-like format with an adjacency list for children is 35% more token efficient than JSON */
   static stringifyNode(
-      node: TimelineModel.TimelineProfileTree.Node, parsedTrace: Trace.Handlers.Types.ParsedTrace,
-      selectedNode: TimelineModel.TimelineProfileTree.Node,
-      nodeToIdMap: Map<TimelineModel.TimelineProfileTree.Node, number>, allUrls: string[]): string {
+      node: Trace.Extras.TraceTree.Node, parsedTrace: Trace.Handlers.Types.ParsedTrace,
+      selectedNode: Trace.Extras.TraceTree.Node, nodeToIdMap: Map<Trace.Extras.TraceTree.Node, number>,
+      allUrls: string[]): string {
     const event = node.event;
     if (!event) {
       throw new Error('Event required');
@@ -105,7 +103,7 @@ export class AICallTree {
 
     // Identifier string includes an id and name:
     //   eg "[13] Parse HTML" or "[45] parseCPUProfileFormatFromFile"
-    const getIdentifier = (node: TimelineModel.TimelineProfileTree.Node): string => {
+    const getIdentifier = (node: Trace.Extras.TraceTree.Node): string => {
       if (!node.event || typeof node.id !== 'string') {
         throw new Error('ok');
       }
@@ -147,7 +145,7 @@ export class AICallTree {
   }
 }
 
-export class AITreeFilter extends TimelineModel.TimelineModelFilter.TimelineModelFilter {
+export class AITreeFilter extends Trace.Extras.TraceFilter.TraceFilter {
   #minDuration: Trace.Types.Timing.MicroSeconds;
   constructor(eventDuration: Trace.Types.Timing.MilliSeconds) {
     super();

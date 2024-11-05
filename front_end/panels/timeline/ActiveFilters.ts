@@ -1,7 +1,6 @@
 // Copyright 2023 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-import type * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 import type * as Trace from '../../models/trace/trace.js';
 
 let instance: ActiveFilters|null = null;
@@ -23,13 +22,13 @@ export class ActiveFilters {
     instance = null;
   }
 
-  #activeFilters: TimelineModel.TimelineModelFilter.TimelineModelFilter[] = [];
+  #activeFilters: Trace.Extras.TraceFilter.TraceFilter[] = [];
 
-  activeFilters(): readonly TimelineModel.TimelineModelFilter.TimelineModelFilter[] {
+  activeFilters(): readonly Trace.Extras.TraceFilter.TraceFilter[] {
     return this.#activeFilters;
   }
 
-  setFilters(newFilters: TimelineModel.TimelineModelFilter.TimelineModelFilter[]): void {
+  setFilters(newFilters: Trace.Extras.TraceFilter.TraceFilter[]): void {
     this.#activeFilters = newFilters;
   }
 

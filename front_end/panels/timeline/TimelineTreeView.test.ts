@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 import * as Trace from '../../models/trace/trace.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
@@ -35,13 +34,13 @@ describeWithEnvironment('TimelineTreeView', function() {
       eventTreeView.setModelWithEvents(consoleTimings, parsedTrace);
       const tree = eventTreeView.buildTree();
       const topNodesIterator = tree.children().values();
-      const firstNode = topNodesIterator.next().value as TimelineModel.TimelineProfileTree.Node;
+      const firstNode = topNodesIterator.next().value as Trace.Extras.TraceTree.Node;
       assert.strictEqual(firstNode.event?.name, 'first console time');
 
-      const secondNode = topNodesIterator.next().value as TimelineModel.TimelineProfileTree.Node;
+      const secondNode = topNodesIterator.next().value as Trace.Extras.TraceTree.Node;
       assert.strictEqual(secondNode.event?.name, 'third console time');
 
-      const bottomNode = firstNode.children().values().next().value as TimelineModel.TimelineProfileTree.Node;
+      const bottomNode = firstNode.children().values().next().value as Trace.Extras.TraceTree.Node;
       assert.strictEqual(bottomNode.event?.name, 'second console time');
     });
 
@@ -52,10 +51,10 @@ describeWithEnvironment('TimelineTreeView', function() {
       eventTreeView.setModelWithEvents(consoleTimings, parsedTrace);
       const tree = eventTreeView.buildTree();
       const topNodesIterator = tree.children().values();
-      const firstNode = topNodesIterator.next().value as TimelineModel.TimelineProfileTree.Node;
+      const firstNode = topNodesIterator.next().value as Trace.Extras.TraceTree.Node;
       assert.strictEqual(firstNode.event?.name, 'mark1');
 
-      const secondNode = topNodesIterator.next().value as TimelineModel.TimelineProfileTree.Node;
+      const secondNode = topNodesIterator.next().value as Trace.Extras.TraceTree.Node;
       assert.strictEqual(secondNode.event?.name, 'mark3');
     });
 
@@ -110,16 +109,16 @@ describeWithEnvironment('TimelineTreeView', function() {
 
       const tree = bottomUpTreeView.buildTree();
       const topNodesIterator = tree.children().values();
-      const firstNode = topNodesIterator.next().value as TimelineModel.TimelineProfileTree.Node;
+      const firstNode = topNodesIterator.next().value as Trace.Extras.TraceTree.Node;
       assert.strictEqual(firstNode.event?.name, 'second console time');
 
-      const secondNode = topNodesIterator.next().value as TimelineModel.TimelineProfileTree.Node;
+      const secondNode = topNodesIterator.next().value as Trace.Extras.TraceTree.Node;
       assert.strictEqual(secondNode.event?.name, 'first console time');
 
-      const thirdNode = topNodesIterator.next().value as TimelineModel.TimelineProfileTree.Node;
+      const thirdNode = topNodesIterator.next().value as Trace.Extras.TraceTree.Node;
       assert.strictEqual(thirdNode.event?.name, 'third console time');
 
-      const childNode = firstNode.children().values().next().value as TimelineModel.TimelineProfileTree.Node;
+      const childNode = firstNode.children().values().next().value as Trace.Extras.TraceTree.Node;
       assert.strictEqual(childNode.event?.name, 'first console time');
     });
   });
@@ -136,13 +135,13 @@ describeWithEnvironment('TimelineTreeView', function() {
 
       const tree = callTreeView.buildTree();
       const topNodesIterator = tree.children().values();
-      const firstNode = topNodesIterator.next().value as TimelineModel.TimelineProfileTree.Node;
+      const firstNode = topNodesIterator.next().value as Trace.Extras.TraceTree.Node;
       assert.strictEqual(firstNode.event?.name, 'first console time');
 
-      const secondNode = topNodesIterator.next().value as TimelineModel.TimelineProfileTree.Node;
+      const secondNode = topNodesIterator.next().value as Trace.Extras.TraceTree.Node;
       assert.strictEqual(secondNode.event?.name, 'third console time');
 
-      const childNode = firstNode.children().values().next().value as TimelineModel.TimelineProfileTree.Node;
+      const childNode = firstNode.children().values().next().value as Trace.Extras.TraceTree.Node;
       assert.strictEqual(childNode.event?.name, 'second console time');
     });
   });

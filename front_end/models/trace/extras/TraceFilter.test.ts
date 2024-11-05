@@ -2,19 +2,20 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
-import {TraceLoader} from '../../testing/TraceLoader.js';
-import * as TimelineModel from '../timeline_model/timeline_model.js';
-import * as Trace from '../trace/trace.js';
+import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
+import {TraceLoader} from '../../../testing/TraceLoader.js';
+import * as Trace from '../trace.js';
 
-describeWithEnvironment('TimelineModelFilter', () => {
-  describe('TimelineVisibleEventsFilter', () => {
+import * as TraceFilter from './TraceFilter.js';
+
+describeWithEnvironment('TraceFilter', () => {
+  describe('VisibleEventsFilter', () => {
     it('accepts events that are set in the constructor and rejects other events', async function() {
       const {parsedTrace} = await TraceLoader.traceEngine(this, 'user-timings.json.gz');
       const userTimingEvent = (parsedTrace.UserTimings.performanceMeasures).at(0);
       assert.isOk(userTimingEvent);
 
-      const visibleFilter = new TimelineModel.TimelineModelFilter.TimelineVisibleEventsFilter([
+      const visibleFilter = new TraceFilter.VisibleEventsFilter([
         // Set an random record type to be visible - the exact type is not important for the test.
         Trace.Types.Events.Name.USER_TIMING,
       ]);
@@ -28,8 +29,7 @@ describeWithEnvironment('TimelineModelFilter', () => {
         const consoleTimingEvent = (parsedTrace.UserTimings.consoleTimings).at(0);
         assert.isOk(consoleTimingEvent);
         assert.strictEqual(
-            TimelineModel.TimelineModelFilter.TimelineVisibleEventsFilter.eventType(consoleTimingEvent),
-            Trace.Types.Events.Name.CONSOLE_TIME);
+            TraceFilter.VisibleEventsFilter.eventType(consoleTimingEvent), Trace.Types.Events.Name.CONSOLE_TIME);
       });
 
       it('returns UserTiming if the event has the blink.user_timing category', async function() {
@@ -37,8 +37,7 @@ describeWithEnvironment('TimelineModelFilter', () => {
         const userTimingEvent = (parsedTrace.UserTimings.performanceMeasures).at(0);
         assert.isOk(userTimingEvent);
         assert.strictEqual(
-            TimelineModel.TimelineModelFilter.TimelineVisibleEventsFilter.eventType(userTimingEvent),
-            Trace.Types.Events.Name.USER_TIMING);
+            TraceFilter.VisibleEventsFilter.eventType(userTimingEvent), Trace.Types.Events.Name.USER_TIMING);
       });
 
       it('returns the event name if the event is any other category', async function() {
@@ -46,8 +45,7 @@ describeWithEnvironment('TimelineModelFilter', () => {
         const layoutShiftEvent = parsedTrace.LayoutShifts.clusters.at(0)?.events.at(0);
         assert.isOk(layoutShiftEvent);
         assert.strictEqual(
-            TimelineModel.TimelineModelFilter.TimelineVisibleEventsFilter.eventType(layoutShiftEvent),
-            Trace.Types.Events.Name.LAYOUT_SHIFT);
+            TraceFilter.VisibleEventsFilter.eventType(layoutShiftEvent), Trace.Types.Events.Name.LAYOUT_SHIFT);
       });
     });
   });
@@ -58,7 +56,7 @@ describeWithEnvironment('TimelineModelFilter', () => {
       const userTimingEvent = (parsedTrace.UserTimings.performanceMeasures).at(0);
       assert.isOk(userTimingEvent);
 
-      const invisibleFilter = new TimelineModel.TimelineModelFilter.TimelineInvisibleEventsFilter([
+      const invisibleFilter = new TraceFilter.InvisibleEventsFilter([
         Trace.Types.Events.Name.USER_TIMING,
 
       ]);
@@ -70,7 +68,7 @@ describeWithEnvironment('TimelineModelFilter', () => {
       const layoutShiftEvent = parsedTrace.LayoutShifts.clusters.at(0)?.events.at(0);
       assert.isOk(layoutShiftEvent);
 
-      const invisibleFilter = new TimelineModel.TimelineModelFilter.TimelineInvisibleEventsFilter([
+      const invisibleFilter = new TraceFilter.InvisibleEventsFilter([
         Trace.Types.Events.Name.USER_TIMING,
 
       ]);
@@ -84,7 +82,7 @@ describeWithEnvironment('TimelineModelFilter', () => {
       const userTimingEvent = (parsedTrace.UserTimings.performanceMeasures).at(0);
       assert.isOk(userTimingEvent);
 
-      const filter = new TimelineModel.TimelineModelFilter.ExclusiveNameFilter([
+      const filter = new TraceFilter.ExclusiveNameFilter([
         Trace.Types.Events.Name.LAYOUT_SHIFT,
       ]);
       assert.isTrue(filter.accept(userTimingEvent));
@@ -95,7 +93,7 @@ describeWithEnvironment('TimelineModelFilter', () => {
       const layoutShiftEvent = parsedTrace.LayoutShifts.clusters.at(0)?.events.at(0);
       assert.isOk(layoutShiftEvent);
 
-      const filter = new TimelineModel.TimelineModelFilter.ExclusiveNameFilter([
+      const filter = new TraceFilter.ExclusiveNameFilter([
         Trace.Types.Events.Name.LAYOUT_SHIFT,
       ]);
       assert.isFalse(filter.accept(layoutShiftEvent));

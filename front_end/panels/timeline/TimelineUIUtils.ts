@@ -191,6 +191,7 @@ const UIStrings = {
    *@description Text for a module, the programming concept
    */
   module: 'Module',
+
   /**
    *@description Label for a group of JavaScript files
    */
@@ -557,6 +558,22 @@ const UIStrings = {
    * @description Label for a string that describes the priority at which a task was scheduled, like 'background' for low-priority tasks, and 'user-blocking' for high priority.
    */
   priority: 'Priority',
+  /**
+   *@description Text for a performance attribution event
+   */
+  attribution: 'Attribution',
+  /**
+   *@description Text for a WordPress core attribution
+   */
+  wordpressCore: 'Core',
+  /**
+   *@description Text for a WordPress plugin attribution
+   */
+  wordpressPlugin: 'WordPress Plugin',
+  /**
+   *@description Text for a WordPress theme attribution
+   */
+  wordpressTheme: 'WordPress Theme',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineUIUtils.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -1209,6 +1226,10 @@ export class TimelineUIUtils {
       if (url) {
         const {lineNumber, columnNumber} = Trace.Helpers.Trace.getZeroIndexedLineAndColumnForEvent(event);
         contentHelper.appendLocationRow(i18nString(UIStrings.script), url, lineNumber || 0, columnNumber);
+        const attribution = TimelineUIUtils.getAttributionForUrl(url, [...parsedTrace.UserTimings.performanceAttributions]);
+        if (attribution) {
+          contentHelper.appendTextRow(i18nString(UIStrings.attribution), attribution);
+        }
       }
       const isEager = Boolean(event.args.data?.eager);
       if (isEager) {
@@ -1315,6 +1336,10 @@ export class TimelineUIUtils {
         if (url) {
           const {lineNumber, columnNumber} = Trace.Helpers.Trace.getZeroIndexedLineAndColumnForEvent(event);
           contentHelper.appendLocationRow(i18nString(UIStrings.script), url, lineNumber || 0, columnNumber);
+          const attribution = TimelineUIUtils.getAttributionForUrl(url, [...parsedTrace.UserTimings.performanceAttributions]);
+          if (attribution) {
+            contentHelper.appendTextRow(i18nString(UIStrings.attribution), attribution);
+          }
         }
         break;
       }
@@ -1706,6 +1731,37 @@ export class TimelineUIUtils {
     }
 
     return contentHelper.fragment;
+  }
+
+  /**
+   * Get attribution data for a given URL.
+   *
+   * @param {string} url URL to check for attribution data.
+   * @param {Trace.Types.Events.PerformanceAttribution[]} attributions Array of performance attributions. Immutable.
+   *
+   * @return {string|null} Attribution name or null if no attribution is found.
+   */
+  static getAttributionForUrl(url: string, attributions: Trace.Types.Events.PerformanceAttribution[]): string|null {
+    const attribution = attributions.find(attribution => {
+      const detail = JSON.parse(attribution.args.data.detail);
+      const parsedUrl = new URL(url);
+      return detail.path.includes(parsedUrl.pathname);
+    });
+    if (attribution) {
+      const detail = JSON.parse(attribution.args.data.detail);
+
+      // Determine the type of attribution is based on the attribution name. It can be either a plugin, theme or core enqueue.
+      let type = '';
+      if (attribution.name.includes('core')) {
+        type = UIStrings.wordpressCore;
+      } else if (attribution.name.includes('plugin')) {
+        type = UIStrings.wordpressPlugin;
+      } else if (attribution.name.includes('theme')) {
+        type = UIStrings.wordpressTheme;
+      }
+      return `${type} - ${detail.name}`;
+    }
+    return null;
   }
 
   static statsForTimeRange(

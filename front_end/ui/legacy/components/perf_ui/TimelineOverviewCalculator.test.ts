@@ -30,7 +30,7 @@ describeWithLocale('TimelineOverviewCalculator', () => {
     const calculator = new PerfUI.TimelineOverviewCalculator.TimelineOverviewCalculator();
     calculator.setDisplayWidth(200);
     calculator.setBounds(MilliSeconds(0), MilliSeconds(100));
-    const result = calculator.formatValue(55.234);
+    const result = calculator.formatValue(MilliSeconds(55.234));
     assert.deepEqual(result, '55\u00A0ms');
   });
 
@@ -38,7 +38,7 @@ describeWithLocale('TimelineOverviewCalculator', () => {
     const calculator = new PerfUI.TimelineOverviewCalculator.TimelineOverviewCalculator();
     calculator.setDisplayWidth(200);
     calculator.setBounds(MilliSeconds(0), MilliSeconds(100));
-    const result = calculator.formatValue(55.234, 2);
+    const result = calculator.formatValue(MilliSeconds(55.234), 2);
     assert.deepEqual(result, '55.23\u00A0ms');
   });
 
@@ -52,7 +52,7 @@ describeWithLocale('TimelineOverviewCalculator', () => {
     } as unknown as Trace.Types.Events.NavigationStart;
     calculator.setNavStartTimes([fakeNavStart]);
     // There is a navigation at 100ms, so this time gets changed to 5ms
-    const result = calculator.formatValue(105);
+    const result = calculator.formatValue(MilliSeconds(105));
     assert.deepEqual(result, '5\u00A0ms');
   });
 

@@ -290,7 +290,7 @@ export class TimelineOverviewPane extends Common.ObjectWrapper.eventMixin<EventT
     const left = haveRecords && this.windowStartTime ? Math.min((this.windowStartTime - absoluteMin) / timeSpan, 1) : 0;
     const right = haveRecords && this.windowEndTime < Infinity ? (this.windowEndTime - absoluteMin) / timeSpan : 1;
     this.muteOnWindowChanged = true;
-    this.overviewGrid.setWindow(left, right);
+    this.overviewGrid.setWindowRatio(left, right);
     this.muteOnWindowChanged = false;
   }
 

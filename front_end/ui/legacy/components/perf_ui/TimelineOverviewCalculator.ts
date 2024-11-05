@@ -41,7 +41,7 @@ export class TimelineOverviewCalculator implements Calculator {
     );
   }
 
-  formatValue(value: number, precision?: number): string {
+  formatValue(time: Trace.Types.Timing.MilliSeconds, precision?: number): string {
     // If there are nav start times the value needs to be remapped.
     if (this.navStartTimes) {
       // Find the latest possible nav start time which is considered earlier
@@ -51,14 +51,14 @@ export class TimelineOverviewCalculator implements Calculator {
             this.navStartTimes[i].ts,
         );
 
-        if (value > startTimeMilliseconds) {
-          value -= (startTimeMilliseconds - this.zeroTime());
+        if (time > startTimeMilliseconds) {
+          time = Trace.Types.Timing.MilliSeconds(time - (startTimeMilliseconds - this.zeroTime()));
           break;
         }
       }
     }
 
-    return i18n.TimeUtilities.preciseMillisToString(value - this.zeroTime(), precision);
+    return i18n.TimeUtilities.preciseMillisToString(time - this.zeroTime(), precision);
   }
 
   maximumBoundary(): Trace.Types.Timing.MilliSeconds {

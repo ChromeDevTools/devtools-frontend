@@ -346,7 +346,7 @@ export class OverviewPane extends Common.ObjectWrapper.eventMixin<OverviewPaneEv
   selectRange(timeLeft: number, timeRight: number): void {
     const startTime = this.dataProvider.minimumBoundary();
     const totalTime = this.dataProvider.totalTime();
-    this.overviewGrid.setWindow((timeLeft - startTime) / totalTime, (timeRight - startTime) / totalTime);
+    this.overviewGrid.setWindowRatio((timeLeft - startTime) / totalTime, (timeRight - startTime) / totalTime);
   }
 
   onWindowChanged(event: Common.EventTarget.EventTargetEvent<PerfUI.OverviewGrid.WindowChangedWithPositionEvent>):

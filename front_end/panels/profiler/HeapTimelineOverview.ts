@@ -15,8 +15,8 @@ export class HeapTimelineOverview extends Common.ObjectWrapper.eventMixin<EventT
   overviewContainer: HTMLElement;
   overviewGrid: PerfUI.OverviewGrid.OverviewGrid;
   overviewCanvas: HTMLCanvasElement;
-  windowLeft: number;
-  windowRight: number;
+  windowLeftRatio: number;
+  windowRightRatio: number;
   readonly yScale: SmoothScale;
   readonly xScale: SmoothScale;
   profileSamples: Samples;
@@ -24,7 +24,7 @@ export class HeapTimelineOverview extends Common.ObjectWrapper.eventMixin<EventT
   updateOverviewCanvas?: boolean;
   updateGridTimerId?: number;
   updateTimerId?: number|null;
-  windowWidth?: number;
+  windowWidthRatio?: number;
   constructor() {
     super();
     this.element.id = 'heap-recording-view';
@@ -40,9 +40,9 @@ export class HeapTimelineOverview extends Common.ObjectWrapper.eventMixin<EventT
     this.overviewContainer.appendChild(this.overviewGrid.element);
     this.overviewGrid.addEventListener(PerfUI.OverviewGrid.Events.WINDOW_CHANGED, this.onWindowChanged, this);
 
-    this.windowLeft = 0.0;
-    this.windowRight = 1.0;
-    this.overviewGrid.setWindow(this.windowLeft, this.windowRight);
+    this.windowLeftRatio = 0.0;
+    this.windowRightRatio = 1.0;
+    this.overviewGrid.setWindowRatio(this.windowLeftRatio, this.windowRightRatio);
     this.yScale = new SmoothScale();
     this.xScale = new SmoothScale();
 
@@ -210,9 +210,9 @@ export class HeapTimelineOverview extends Common.ObjectWrapper.eventMixin<EventT
   }
 
   updateBoundaries(): void {
-    this.windowLeft = this.overviewGrid.windowLeft();
-    this.windowRight = this.overviewGrid.windowRight();
-    this.windowWidth = this.windowRight - this.windowLeft;
+    this.windowLeftRatio = this.overviewGrid.windowLeftRatio();
+    this.windowRightRatio = this.overviewGrid.windowRightRatio();
+    this.windowWidthRatio = this.windowRightRatio - this.windowLeftRatio;
   }
 
   update(): void {
@@ -237,8 +237,8 @@ export class HeapTimelineOverview extends Common.ObjectWrapper.eventMixin<EventT
     const sizes = this.profileSamples.sizes;
     const startTime = timestamps[0];
     const totalTime = this.profileSamples.totalTime;
-    const timeLeft = startTime + totalTime * this.windowLeft;
-    const timeRight = startTime + totalTime * this.windowRight;
+    const timeLeft = startTime + totalTime * this.windowLeftRatio;
+    const timeRight = startTime + totalTime * this.windowRightRatio;
     const minIndex =
         Platform.ArrayUtilities.lowerBound(timestamps, timeLeft, Platform.ArrayUtilities.DEFAULT_COMPARATOR);
     const maxIndex =

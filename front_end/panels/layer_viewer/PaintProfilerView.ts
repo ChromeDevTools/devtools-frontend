@@ -217,11 +217,11 @@ export class PaintProfilerView extends Common.ObjectWrapper.eventMixin<EventType
     if (!snapshot) {
       this.update();
       this.populatePieChart(0, []);
-      this.selectionWindowInternal.setEnabled(false);
+      this.selectionWindowInternal.setResizeEnabled(false);
       return;
     }
 
-    this.selectionWindowInternal.setEnabled(true);
+    this.selectionWindowInternal.setResizeEnabled(true);
     this.progressBanner.classList.remove('hidden');
     this.updateImage();
 
@@ -370,8 +370,8 @@ export class PaintProfilerView extends Common.ObjectWrapper.eventMixin<EventType
       return null;
     }
 
-    const screenLeft = (this.selectionWindowInternal.windowLeft || 0) * this.canvas.width;
-    const screenRight = (this.selectionWindowInternal.windowRight || 0) * this.canvas.width;
+    const screenLeft = (this.selectionWindowInternal.windowLeftRatio || 0) * this.canvas.width;
+    const screenRight = (this.selectionWindowInternal.windowRightRatio || 0) * this.canvas.width;
     const barLeft = Math.floor(screenLeft / this.outerBarWidth);
     const barRight = Math.floor((screenRight + this.innerBarWidth - this.barPaddingWidth / 2) / this.outerBarWidth);
     const stepLeft = Platform.NumberUtilities.clamp(barLeft * this.samplesPerBar, 0, this.log.length - 1);
@@ -409,7 +409,7 @@ export class PaintProfilerView extends Common.ObjectWrapper.eventMixin<EventType
     this.snapshot = null;
     this.profiles = null;
     this.selectionWindowInternal.reset();
-    this.selectionWindowInternal.setEnabled(false);
+    this.selectionWindowInternal.setResizeEnabled(false);
   }
   override wasShown(): void {
     super.wasShown();

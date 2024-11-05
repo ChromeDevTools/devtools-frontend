@@ -84,7 +84,7 @@ export class BinaryResourceView extends UI.Widget.VBox {
       new BinaryViewObject(
           'base64', i18n.i18n.lockedString('Base64'), i18nString(UIStrings.copiedAsBase),
           this.binaryResourceViewFactory.createBase64View.bind(this.binaryResourceViewFactory),
-          () => Promise.resolve(this.binaryResourceViewFactory.base64())),
+          this.binaryResourceViewFactory.base64.bind(this.binaryResourceViewFactory)),
       new BinaryViewObject(
           'hex', i18nString(UIStrings.hexViewer), i18nString(UIStrings.copiedAsHex),
           this.binaryResourceViewFactory.createHexView.bind(this.binaryResourceViewFactory),
@@ -105,7 +105,7 @@ export class BinaryResourceView extends UI.Widget.VBox {
 
     const copyButton = new UI.Toolbar.ToolbarButton(i18nString(UIStrings.copyToClipboard), 'copy');
     copyButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, _event => {
-      void this.copySelectedViewToClipboard();
+      this.copySelectedViewToClipboard();
     }, this);
     this.toolbar.appendToolbarItem(copyButton);
 
@@ -129,12 +129,12 @@ export class BinaryResourceView extends UI.Widget.VBox {
     return binaryViewObject || null;
   }
 
-  private async copySelectedViewToClipboard(): Promise<void> {
+  private copySelectedViewToClipboard(): void {
     const viewObject = this.getCurrentViewObject();
     if (!viewObject) {
       return;
     }
-    Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(await viewObject.content());
+    Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(viewObject.content());
     this.copiedText.setText(viewObject.copiedMessage);
     this.copiedText.element.classList.remove('fadeout');
     function addFadeoutClass(this: BinaryResourceView): void {
@@ -208,13 +208,12 @@ export class BinaryViewObject {
   type: string;
   label: string;
   copiedMessage: string;
-  content: () => Promise<string>;
+  content: () => string;
   private createViewFn: () => UI.Widget.Widget;
   private view: UI.Widget.Widget|null;
 
   constructor(
-      type: string, label: string, copiedMessage: string, createViewFn: () => UI.Widget.Widget,
-      content: () => Promise<string>) {
+      type: string, label: string, copiedMessage: string, createViewFn: () => UI.Widget.Widget, content: () => string) {
     this.type = type;
     this.label = label;
     this.copiedMessage = copiedMessage;

@@ -30,4 +30,18 @@ describeWithEnvironment('BinaryResourceViewFactory', () => {
     assert.strictEqual(
         await getResourceText(factory.createUtf8View()), 'sending this utf-8 string as a binary message...');
   });
+
+  it('returns the right content for the "copy-to-clipboard" getters', async () => {
+    const base64content = new TextUtils.ContentData.ContentData(
+        'c2VuZGluZyB0aGlzIHV0Zi04IHN0cmluZyBhcyBhIGJpbmFyeSBtZXNzYWdlLi4u', true, '');
+    const factory = new SourceFrame.BinaryResourceViewFactory.BinaryResourceViewFactory(
+        TextUtils.StreamingContentData.StreamingContentData.from(base64content),
+        'http://example.com' as Platform.DevToolsPath.UrlString, Common.ResourceType.resourceTypes.WebSocket);
+
+    assert.strictEqual(factory.base64(), 'c2VuZGluZyB0aGlzIHV0Zi04IHN0cmluZyBhcyBhIGJpbmFyeSBtZXNzYWdlLi4u');
+    assert.strictEqual(
+        factory.hex(),
+        '73656e64696e672074686973207574662d3820737472696e6720617320612062696e617279206d6573736167652e2e2e');
+    assert.strictEqual(factory.utf8(), 'sending this utf-8 string as a binary message...');
+  });
 });

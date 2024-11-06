@@ -6903,6 +6903,11 @@ export const NativeFunctions = [
     signatures: [["?options"]]
   },
   {
+    name: "requestClose",
+    signatures: [["?returnValue"]],
+    receivers: ["HTMLDialogElement"]
+  },
+  {
     name: "reportEvent",
     signatures: [["event"]]
   },

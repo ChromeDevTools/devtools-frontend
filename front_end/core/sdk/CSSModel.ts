@@ -990,6 +990,10 @@ class CSSDispatcher implements ProtocolProxyApi.CSSDispatcher {
   styleSheetRemoved({styleSheetId}: Protocol.CSS.StyleSheetRemovedEvent): void {
     this.#cssModel.styleSheetRemoved(styleSheetId);
   }
+
+  // TODO(crbug.com/376426033): Implement after protocol roll.
+  computedStyleUpdated(_params: Protocol.CSS.ComputedStyleUpdatedEvent): void {
+  }
 }
 
 class ComputedStyleLoader {

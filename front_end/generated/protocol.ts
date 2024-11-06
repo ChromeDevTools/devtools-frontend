@@ -3312,6 +3312,10 @@ export namespace CSS {
     ranges: SourceRange[];
   }
 
+  export interface TrackComputedStyleUpdatesForNodeRequest {
+    nodeId?: DOM.NodeId;
+  }
+
   export interface TrackComputedStyleUpdatesRequest {
     propertiesToTrack: CSSComputedStyleProperty[];
   }
@@ -3507,6 +3511,13 @@ export namespace CSS {
      * Identifier of the removed stylesheet.
      */
     styleSheetId: StyleSheetId;
+  }
+
+  export interface ComputedStyleUpdatedEvent {
+    /**
+     * The node id that has updated computed styles.
+     */
+    nodeId: DOM.NodeId;
   }
 }
 

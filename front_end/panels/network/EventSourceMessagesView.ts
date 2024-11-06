@@ -100,7 +100,7 @@ export class EventSourceMessagesView extends UI.Widget.VBox {
       refreshCallback: undefined,
     });
     this.dataGrid.setStriped(true);
-    this.dataGrid.setStickToBottom(true);
+    this.dataGrid.setEnableAutoScrollToBottom(true);
     this.dataGrid.setRowContextMenuCallback(this.onRowContextMenu.bind(this));
     this.dataGrid.markColumnAsSortedBy('time', DataGrid.DataGrid.Order.Ascending);
     this.sortItems();

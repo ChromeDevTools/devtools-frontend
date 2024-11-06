@@ -1144,7 +1144,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
         this.handleContextMenuForRequest(contextMenu, request);
       }
     });
-    this.dataGrid.setStickToBottom(true);
+    this.dataGrid.setEnableAutoScrollToBottom(true);
     this.dataGrid.setName('network-log');
     this.dataGrid.setResizeMethod(DataGrid.DataGrid.ResizeMethod.LAST);
     this.dataGrid.element.classList.add('network-log-grid');
@@ -1595,7 +1595,6 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
 
     this.dataGrid.rootNode().removeChildren();
     this.updateSummaryBar();
-    this.dataGrid.setStickToBottom(true);
     this.scheduleRefresh();
   }
 

@@ -190,7 +190,7 @@ export class ResourceWebSocketFrameView extends UI.Widget.VBox {
       refreshCallback: undefined,
     });
     this.dataGrid.setRowContextMenuCallback(onRowContextMenu.bind(this));
-    this.dataGrid.setStickToBottom(true);
+    this.dataGrid.setEnableAutoScrollToBottom(true);
     this.dataGrid.setCellClass('websocket-frame-view-td');
     this.timeComparator =
         (resourceWebSocketFrameNodeTimeComparator as

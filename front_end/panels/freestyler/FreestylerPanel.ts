@@ -525,6 +525,13 @@ export class FreestylerPanel extends UI.Panel.Panel {
   }
 
   handleAction(actionId: string): void {
+    if (this.#viewProps.isLoading) {
+      // If running some queries already, focus the input with the abort
+      // button and do nothing.
+      this.#viewOutput.freestylerChatUi?.focusTextInput();
+      return;
+    }
+
     let targetAgentType: AgentType|undefined;
     switch (actionId) {
       case 'freestyler.elements-floating-button': {

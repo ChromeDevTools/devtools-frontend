@@ -79,6 +79,10 @@ const UIStrings = {
    *@description AI assistance UI text that deletes all history entries.
    */
   clearChatHistory: 'Clear chat history',
+  /**
+   *@description AI assistance UI text explains that he user had no pas conversations.
+   */
+  noPastConversations: 'No past conversations',
 };
 
 /*
@@ -294,15 +298,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
   }
 
   #updateToolbarState(): void {
-    this.#historyEntriesButton.applyEnabledState([...this.#agents].some(agent => !agent.isEmpty));
-    this.#deleteHistoryEntryButton.setVisible(Boolean(this.#currentAgent));
-    this.#deleteHistoryEntryButton.applyEnabledState(Boolean(this.#currentAgent && !this.#currentAgent.isEmpty));
-    /*
-    * If there is no agent disable new chat button
-    * If the agent is empty disable new chat button
-    */
-    const newChatEnabled = this.#currentAgent ? (this.#currentAgent.isEmpty ? false : true) : false;
-    this.#newChatButton.applyEnabledState(newChatEnabled);
+    this.#deleteHistoryEntryButton.setVisible(Boolean(this.#currentAgent && !this.#currentAgent.isEmpty));
   }
 
   #createFreestylerAgent(): FreestylerAgent {
@@ -610,6 +606,12 @@ export class FreestylerPanel extends UI.Panel.Panel {
             void this.#switchAgent(agent);
           },
       );
+    }
+
+    if (contextMenu.defaultSection().items.length === 0) {
+      contextMenu.defaultSection().appendItem(i18nString(UIStrings.noPastConversations), () => {}, {
+        disabled: true,
+      });
     }
 
     contextMenu.footerSection().appendItem(

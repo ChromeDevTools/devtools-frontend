@@ -805,9 +805,8 @@ describeWithEnvironment('FreestylerPanel', () => {
     contextMenu = getMenu(() => {
       dispatchClickEvent(button);
     });
-
-    // We don't show the context menu if there are not entries
-    assert.isUndefined(contextMenu);
+    const menuItem = findMenuItemWithLabel(contextMenu.defaultSection(), 'No past conversations');
+    assert(menuItem);
   });
   describe('cross-origin', () => {
     it('blocks input on cross origin requests', async () => {

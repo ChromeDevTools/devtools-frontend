@@ -74,6 +74,7 @@
   padding: var(--sys-size-5) 0;
   border-radius: var(--sys-shape-corner-medium-small);
   margin-bottom: var(--sys-size-5);
+  color: var(--sys-color-on-surface-subtle);
 }
 
 .chat-input-container {

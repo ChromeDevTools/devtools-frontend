@@ -1045,7 +1045,7 @@ export class FreestylerChatUi extends HTMLElement {
   };
 
   #getDisclaimerText = (): Platform.UIString.LocalizedString => {
-    if (this.#props.state === State.CONSENT_VIEW || !this.#props.agentType) {
+    if (this.#props.state === State.CONSENT_VIEW || !this.#props.agentType || this.#props.isReadOnly) {
       return i18nString(UIStrings.inputDisclaimerForEmptyState);
     }
     switch (this.#props.agentType) {

@@ -160,6 +160,7 @@ export abstract class AiAgent<T> {
   abstract readonly clientFeature: Host.AidaClient.ClientFeature;
   abstract readonly userTier: string|undefined;
   abstract handleContextDetails(select: ConversationContext<T>|null): AsyncGenerator<ContextResponse, void, void>;
+  #generatedFromHistory = false;
 
   /**
    * Mapping between the unique request id and
@@ -201,6 +202,10 @@ export abstract class AiAgent<T> {
         })
         .at(0)
         ?.query;
+  }
+
+  get isHistoryEntry(): boolean {
+    return this.#generatedFromHistory;
   }
 
   #structuredLog: Array<{
@@ -389,6 +394,10 @@ STOP`;
   async * run(query: string, options: {
     signal?: AbortSignal, selected: ConversationContext<T>|null,
   }): AsyncGenerator<ResponseData, void, void> {
+    if (this.#generatedFromHistory) {
+      throw new Error('History entries are read-only.');
+    }
+
     // First context set on the agent determines its origin from now on.
     if (options.selected && this.#origin === undefined && options.selected) {
       this.#origin = options.selected.getOrigin();
@@ -532,6 +541,11 @@ STOP`;
   }
 
   async * runFromHistory(): AsyncGenerator<ResponseData, void, void> {
+    if (this.isEmpty) {
+      return;
+    }
+
+    this.#generatedFromHistory = true;
     for (const historyChunk of this.#history.values()) {
       for (const entry of historyChunk) {
         yield entry;

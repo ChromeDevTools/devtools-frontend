@@ -72,9 +72,9 @@ const UIStrings = {
    */
   history: 'History',
   /**
-   *@description AI assistance UI text clearing the current chat session.
+   *@description AI assistance UI text deleting the current chat session.
    */
-  clearChat: 'Clear chat',
+  deleteChat: 'Delete chat',
   /**
    *@description AI assistance UI text that deletes all history entries.
    */
@@ -173,7 +173,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
   #historyEntriesButton =
       new UI.Toolbar.ToolbarButton(i18nString(UIStrings.history), 'history', undefined, 'freestyler.history');
   #deleteHistoryEntryButton =
-      new UI.Toolbar.ToolbarButton(i18nString(UIStrings.clearChat), 'bin', undefined, 'freestyler.delete');
+      new UI.Toolbar.ToolbarButton(i18nString(UIStrings.deleteChat), 'bin', undefined, 'freestyler.delete');
 
   #agents = new Set<AiAgent<unknown>>();
   #currentAgent?: AiAgent<unknown>;
@@ -219,6 +219,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
       },
       selectedContext: null,
       blockedByCrossOrigin: false,
+      isReadOnly: false,
     };
   }
 
@@ -293,6 +294,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
 
   #updateToolbarState(): void {
     this.#historyEntriesButton.applyEnabledState([...this.#agents].some(agent => !agent.isEmpty));
+    this.#deleteHistoryEntryButton.setVisible(Boolean(this.#currentAgent));
     this.#deleteHistoryEntryButton.applyEnabledState(Boolean(this.#currentAgent && !this.#currentAgent.isEmpty));
     /*
     * If there is no agent disable new chat button
@@ -577,7 +579,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
 
     if (!this.#currentAgent) {
       this.#currentAgent = this.#createAgent(targetAgentType);
-    } else if (this.#currentAgent.type !== targetAgentType) {
+    } else if (this.#currentAgent.type !== targetAgentType || this.#currentAgent.isHistoryEntry) {
       this.#currentAgent = this.#createAgent(targetAgentType);
     }
     this.#viewProps.agentType = this.#currentAgent.type;
@@ -586,6 +588,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
     this.#viewProps.messages = [];
     this.#onContextSelectionChanged();
     this.doUpdate();
+    this.#viewProps.isReadOnly = false;
     void this.#doConversation(this.#currentAgent.runFromHistory());
   }
 
@@ -644,6 +647,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
     this.#viewProps.messages = [];
     this.#viewProps.agentType = agent.type;
     this.#onContextSelectionChanged();
+    this.#viewProps.isReadOnly = true;
     await this.#doConversation(agent.runFromHistory());
   }
 
@@ -680,6 +684,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
       return;
     }
     this.#viewProps.blockedByCrossOrigin = !currentContext.isOriginAllowed(this.#currentAgent.origin);
+    this.#viewProps.isReadOnly = this.#currentAgent.isHistoryEntry;
     this.doUpdate();
   }
 

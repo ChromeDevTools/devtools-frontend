@@ -735,7 +735,7 @@ describeWithEnvironment('FreestylerPanel', () => {
       },
     ]);
     const toolbar = panel.contentElement.querySelector('.freestyler-left-toolbar');
-    const button = toolbar!.shadowRoot!.querySelector('devtools-button[aria-label=\'Clear chat\']');
+    const button = toolbar!.shadowRoot!.querySelector('devtools-button[aria-label=\'Delete chat\']');
     assert.instanceOf(button, HTMLElement);
     dispatchClickEvent(button);
     assert.deepEqual(mockView.lastCall.args[0].messages, []);

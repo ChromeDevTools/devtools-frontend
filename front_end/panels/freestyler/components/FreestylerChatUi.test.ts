@@ -57,6 +57,7 @@ css
       canShowFeedbackForm: false,
       userInfo: {},
       blockedByCrossOrigin: false,
+      isReadOnly: false,
       ...options,
     };
   }

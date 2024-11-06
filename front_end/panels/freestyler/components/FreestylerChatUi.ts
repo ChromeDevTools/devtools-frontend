@@ -122,7 +122,7 @@ const UIStringsNotTranslate = {
   /**
    *@description Title for the start new chat
    */
-  startNewChatButtonTitle: 'Start new chat',
+  startNewChat: 'Start new chat',
   /**
    *@description Title for the cancel icon button.
    */
@@ -208,6 +208,10 @@ const UIStringsNotTranslate = {
    *@description Aria label for the cancel icon to be read by screen reader
    */
   canceled: 'Canceled',
+  /**
+   *@description Text displayed when the chat input is disabled due to reading past conversation.
+   */
+  pastConversation: 'You\'re viewing a past conversation.',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/freestyler/components/FreestylerChatUi.ts', UIStrings);
@@ -270,6 +274,7 @@ export interface Props {
   canShowFeedbackForm: boolean;
   userInfo: Pick<Host.InspectorFrontendHostAPI.SyncInformation, 'accountImage'|'accountFullName'>;
   agentType?: AgentType;
+  isReadOnly: boolean;
   blockedByCrossOrigin: boolean;
 }
 
@@ -900,6 +905,26 @@ export class FreestylerChatUi extends HTMLElement {
     }
   }
 
+  #renderReadOnlySection(): LitHtml.TemplateResult {
+    // clang-format off
+    return html`<div
+      class="chat-readonly-container"
+      jslog=${VisualLogging.section('read-only')}
+    >
+      <span>${lockedString(UIStringsNotTranslate.pastConversation)}</span>
+      <devtools-button
+        aria-label=${lockedString(UIStringsNotTranslate.startNewChat)}
+        @click=${this.#onNewConversation}
+        .data=${{
+          variant: Buttons.Button.Variant.TEXT,
+          title: lockedString(UIStringsNotTranslate.startNewChat),
+          jslogContext: 'start-new-chat',
+        } as Buttons.Button.ButtonData}
+      >${lockedString(UIStringsNotTranslate.startNewChat)}</devtools-button>
+    </div>`;
+    // clang-format on
+  }
+
   #renderChatInputButton(): LitHtml.TemplateResult {
     if (this.#props.isLoading) {
       // clang-format off
@@ -923,17 +948,17 @@ export class FreestylerChatUi extends HTMLElement {
       // clang-format off
       return html`<devtools-button
         class="chat-input-button"
-        aria-label=${lockedString(UIStringsNotTranslate.startNewChatButtonTitle)}
+        aria-label=${lockedString(UIStringsNotTranslate.startNewChat)}
         @click=${this.#onNewConversation}
         .data=${
           {
             variant: Buttons.Button.Variant.PRIMARY,
             size: Buttons.Button.Size.REGULAR,
-            title: lockedString(UIStringsNotTranslate.startNewChatButtonTitle),
+            title: lockedString(UIStringsNotTranslate.startNewChat),
             jslogContext: 'start-new-chat',
           } as Buttons.Button.ButtonData
         }
-      >${lockedString(UIStringsNotTranslate.startNewChatButtonTitle)}</devtools-button>`;
+      >${lockedString(UIStringsNotTranslate.startNewChat)}</devtools-button>`;
       // clang-format on
     }
     // clang-format off
@@ -952,7 +977,6 @@ export class FreestylerChatUi extends HTMLElement {
         } as Buttons.Button.ButtonData
       }
     ></devtools-button>`;
-    // clang-format on
   }
 
   #renderChatInput = (): LitHtml.LitTemplate => {
@@ -962,15 +986,25 @@ export class FreestylerChatUi extends HTMLElement {
 
     // clang-format off
     return html`
+    <form class="input-form" @submit=${this.#handleSubmit}>
+      ${this.#props.state !== State.CONSENT_VIEW ? html`
+        <div class="input-header">
+          <div class="header-link-container">
+            ${this.#renderSelection()}
+          </div>
+        </div>
+      ` : LitHtml.nothing}
       <div class="chat-input-container">
         <textarea class="chat-input"
           .disabled=${this.#isTextInputDisabled()}
           wrap="hard"
           @keydown=${this.#handleTextAreaKeyDown}
           placeholder=${this.#getInputPlaceholderString()}
-          jslog=${VisualLogging.textField('query').track({ keydown: 'Enter' })}></textarea>
-          ${this.#renderChatInputButton()}
-      </div>`;
+          jslog=${VisualLogging.textField('query').track({ keydown: 'Enter' })}
+        ></textarea>
+        ${this.#renderChatInputButton()}
+      </div>
+    </form>`;
     // clang-format on
   };
 
@@ -1153,16 +1187,10 @@ export class FreestylerChatUi extends HTMLElement {
       <div class="chat-ui">
         <main @scroll=${this.#handleScroll}>
           ${this.#renderMainContents()}
-          <form class="input-form" @submit=${this.#handleSubmit}>
-            ${this.#props.state !== State.CONSENT_VIEW ? html`
-              <div class="input-header">
-                <div class="header-link-container">
-                  ${this.#renderSelection()}
-                </div>
-              </div>
-            ` : LitHtml.nothing}
-            ${this.#renderChatInput()}
-          </form>
+          ${this.#props.isReadOnly ?
+              this.#renderReadOnlySection() :
+              this.#renderChatInput()
+          }
         </main>
         <footer class="disclaimer">
           <p class="disclaimer-text">

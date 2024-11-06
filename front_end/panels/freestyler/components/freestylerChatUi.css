@@ -47,7 +47,8 @@
   /* 688px is the max width of the input form + left and right paddings: var(--sys-size-36) + 2 * var(--sys-size-5)  */
   /* stylelint-disable-next-line at-rule-no-unknown */
   @container (width > 688px) {
-    --half-scrollbar-width: calc((100cqw - 100%) / 2); /* stylelint-disable-line unit-no-unknown */
+    /* stylelint-disable-next-line unit-no-unknown */
+    --half-scrollbar-width: calc((100cqw - 100%) / 2);
 
     margin-left: var(--half-scrollbar-width);
     margin-right: calc(-1 * var(--half-scrollbar-width));
@@ -60,6 +61,19 @@
   @container (height < 224px) {
     position: static;
   }
+}
+
+.chat-readonly-container {
+  display: flex;
+  width: 100%;
+  max-width: var(--sys-size-36);
+  justify-content: center;
+  align-items: center;
+  background-color: var(--sys-color-surface3);
+  font: var(--sys-typescale-body4-regular);
+  padding: var(--sys-size-5) 0;
+  border-radius: var(--sys-shape-corner-medium-small);
+  margin-bottom: var(--sys-size-5);
 }
 
 .chat-input-container {
@@ -138,7 +152,8 @@
   /* 688px is the max width of the input form + left and right paddings: var(--sys-size-36) + 2 * var(--sys-size-5)  */
   /* stylelint-disable-next-line at-rule-no-unknown */
   @container (width > 688px) {
-    --half-scrollbar-width: calc((100cqw - 100%) / 2); /* stylelint-disable-line unit-no-unknown */
+    /* stylelint-disable-next-line unit-no-unknown */
+    --half-scrollbar-width: calc((100cqw - 100%) / 2);
 
     margin-left: var(--half-scrollbar-width);
     margin-right: calc(-1 * var(--half-scrollbar-width));
@@ -466,7 +481,8 @@ main {
   /* 688px is the max width of the input form + left and right paddings: var(--sys-size-36) + 2 * var(--sys-size-5)  */
   /* stylelint-disable-next-line at-rule-no-unknown */
   @container (width > 688px) {
-    --half-scrollbar-width: calc((100cqw - 100%) / 2); /* stylelint-disable-line unit-no-unknown */
+    /* stylelint-disable-next-line unit-no-unknown */
+    --half-scrollbar-width: calc((100cqw - 100%) / 2);
 
     margin-left: var(--half-scrollbar-width);
     margin-right: calc(-1 * var(--half-scrollbar-width));

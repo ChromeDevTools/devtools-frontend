@@ -46,6 +46,7 @@ css
       onFeedbackSubmit: noop,
       onCancelClick: noop,
       onContextClick: noop,
+      onNewConversation: noop,
       inspectElementToggled: false,
       state: Freestyler.State.CHAT_VIEW,
       agentType: Freestyler.AgentType.FREESTYLER,

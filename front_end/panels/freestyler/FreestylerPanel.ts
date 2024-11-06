@@ -211,6 +211,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
       onFeedbackSubmit: this.#handleFeedbackSubmit.bind(this),
       onCancelClick: this.#cancel.bind(this),
       onContextClick: this.#handleContextClick.bind(this),
+      onNewConversation: this.#clearMessages.bind(this),
       canShowFeedbackForm: this.#serverSideLoggingEnabled,
       userInfo: {
         accountImage: syncInfo.accountImage,

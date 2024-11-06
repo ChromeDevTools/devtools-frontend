@@ -120,6 +120,10 @@ const UIStringsNotTranslate = {
    */
   sendButtonTitle: 'Send',
   /**
+   *@description Title for the start new chat
+   */
+  startNewChatButtonTitle: 'Start new chat',
+  /**
    *@description Title for the cancel icon button.
    */
   cancelButtonTitle: 'Cancel',
@@ -292,6 +296,7 @@ export interface Props {
   onFeedbackSubmit: (rpcId: number, rate: Host.AidaClient.Rating, feedback?: string) => void;
   onCancelClick: () => void;
   onContextClick: () => void | Promise<void>;
+  onNewConversation: () => void;
   inspectElementToggled: boolean;
   state: State;
   aidaAvailability: Host.AidaClient.AidaAccessPreconditions;
@@ -874,6 +879,10 @@ export class FreestylerChatUi extends HTMLElement {
     // clang-format on
   };
 
+  #onNewConversation(): void {
+    this.#props.onNewConversation();
+  }
+
   #getEmptyStateSuggestions = (): string[] => {
     if (!this.#props.agentType) {
       return [];
@@ -927,6 +936,61 @@ export class FreestylerChatUi extends HTMLElement {
     }
   }
 
+  #renderChatInputButton(): LitHtml.TemplateResult {
+    if (this.#props.isLoading) {
+      // clang-format off
+      return html`<devtools-button
+        class="chat-input-button"
+        aria-label=${lockedString(UIStringsNotTranslate.cancelButtonTitle)}
+        @click=${this.#handleCancel}
+        .data=${
+          {
+            variant: Buttons.Button.Variant.ICON,
+            size: Buttons.Button.Size.REGULAR,
+            iconName: 'record-stop',
+            title: lockedString(UIStringsNotTranslate.cancelButtonTitle),
+            jslogContext: 'stop',
+          } as Buttons.Button.ButtonData
+        }
+      ></devtools-button>`;
+      // clang-format on
+    }
+    if (this.#props.blockedByCrossOrigin) {
+      // clang-format off
+      return html`<devtools-button
+        class="chat-input-button"
+        aria-label=${lockedString(UIStringsNotTranslate.startNewChatButtonTitle)}
+        @click=${this.#onNewConversation}
+        .data=${
+          {
+            variant: Buttons.Button.Variant.PRIMARY,
+            size: Buttons.Button.Size.REGULAR,
+            title: lockedString(UIStringsNotTranslate.startNewChatButtonTitle),
+            jslogContext: 'start-new-chat',
+          } as Buttons.Button.ButtonData
+        }
+      >${lockedString(UIStringsNotTranslate.startNewChatButtonTitle)}</devtools-button>`;
+      // clang-format on
+    }
+    // clang-format off
+    return html`<devtools-button
+      class="chat-input-button"
+      aria-label=${lockedString(UIStringsNotTranslate.sendButtonTitle)}
+      .data=${
+        {
+          type: 'submit',
+          variant: Buttons.Button.Variant.ICON,
+          size: Buttons.Button.Size.REGULAR,
+          disabled: this.#isTextInputDisabled(),
+          iconName: 'send',
+          title: lockedString(UIStringsNotTranslate.sendButtonTitle),
+          jslogContext: 'send',
+        } as Buttons.Button.ButtonData
+      }
+    ></devtools-button>`;
+    // clang-format on
+  }
+
   #renderChatInput = (): LitHtml.TemplateResult => {
     // clang-format off
     return html`
@@ -937,37 +1001,7 @@ export class FreestylerChatUi extends HTMLElement {
           @keydown=${this.#handleTextAreaKeyDown}
           placeholder=${this.#getInputPlaceholderString()}
           jslog=${VisualLogging.textField('query').track({ keydown: 'Enter' })}></textarea>
-          ${this.#props.isLoading
-            ? html`<devtools-button
-              class="chat-input-button"
-              aria-label=${lockedString(UIStringsNotTranslate.cancelButtonTitle)}
-              @click=${this.#handleCancel}
-              .data=${
-                {
-                  variant: Buttons.Button.Variant.ICON,
-                  size: Buttons.Button.Size.REGULAR,
-                  disabled: this.#isTextInputDisabled(),
-                  iconName: 'record-stop',
-                  title: lockedString(UIStringsNotTranslate.cancelButtonTitle),
-                  jslogContext: 'stop',
-                } as Buttons.Button.ButtonData
-              }
-            ></devtools-button>`
-            : html`<devtools-button
-              class="chat-input-button"
-              aria-label=${lockedString(UIStringsNotTranslate.sendButtonTitle)}
-              .data=${
-                {
-                  type: 'submit',
-                  variant: Buttons.Button.Variant.ICON,
-                  size: Buttons.Button.Size.REGULAR,
-                  disabled: this.#isTextInputDisabled(),
-                  iconName: 'send',
-                  title: lockedString(UIStringsNotTranslate.sendButtonTitle),
-                  jslogContext: 'send',
-                } as Buttons.Button.ButtonData
-              }
-            ></devtools-button>`}
+          ${this.#renderChatInputButton()}
       </div>`;
     // clang-format on
   };

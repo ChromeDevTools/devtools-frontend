@@ -118,35 +118,64 @@ css
       assert.strictEqual(chatInput.placeholder, 'Ask a question about the selected element');
     });
 
-    it('shows usage instructions', async () => {
-      const stub = getGetHostConfigStub({
-        devToolsFreestyler: {
-          enabled: true,
-        },
-        devToolsAiAssistanceNetworkAgent: {
-          enabled: true,
-        },
-        devToolsAiAssistanceFileAgent: {
-          enabled: true,
-        },
-        devToolsAiAssistancePerformanceAgent: {
-          enabled: true,
-        },
-      });
-      const props = getProp({
-        agentType: undefined,
-      });
-      const chat = new Freestyler.FreestylerChatUi(props);
-      renderElementIntoDOM(chat);
-      const instructions = chat.shadowRoot?.querySelectorAll('.instructions strong');
-      assert.isDefined(instructions);
-      assert.strictEqual(instructions?.length, 4);
-      assert.strictEqual(instructions[0].textContent, 'CSS help:');
-      assert.strictEqual(instructions[1].textContent, 'File insights:');
-      assert.strictEqual(instructions[2].textContent, 'Network request insights:');
-      assert.strictEqual(instructions[3].textContent, 'Performance analysis:');
+    describe('no agent empty state', () => {
+      it('should show feature cards for enabled features', () => {
+        const stub = getGetHostConfigStub({
+          devToolsFreestyler: {
+            enabled: true,
+          },
+          devToolsAiAssistanceNetworkAgent: {
+            enabled: true,
+          },
+          devToolsAiAssistanceFileAgent: {
+            enabled: true,
+          },
+          devToolsAiAssistancePerformanceAgent: {
+            enabled: true,
+          },
+        });
+        const props = getProp({
+          agentType: undefined,
+        });
+        const chat = new Freestyler.FreestylerChatUi(props);
+        renderElementIntoDOM(chat);
+        const featureCards = chat.shadowRoot?.querySelectorAll('.feature-card');
+        assert.isDefined(featureCards);
+        assert.strictEqual(featureCards?.length, 4);
+        assert.strictEqual(featureCards[0].querySelector('.feature-card-content h3')?.textContent, 'CSS styles');
+        assert.strictEqual(featureCards[1].querySelector('.feature-card-content h3')?.textContent, 'Network');
+        assert.strictEqual(featureCards[2].querySelector('.feature-card-content h3')?.textContent, 'Files');
+        assert.strictEqual(featureCards[3].querySelector('.feature-card-content h3')?.textContent, 'Performance');
 
-      stub.restore();
+        stub.restore();
+      });
+
+      it('should not show any feature cards if none of the entrypoints are available', () => {
+        const stub = getGetHostConfigStub({
+          devToolsFreestyler: {
+            enabled: false,
+          },
+          devToolsAiAssistanceNetworkAgent: {
+            enabled: false,
+          },
+          devToolsAiAssistanceFileAgent: {
+            enabled: false,
+          },
+          devToolsAiAssistancePerformanceAgent: {
+            enabled: false,
+          },
+        });
+        const props = getProp({
+          agentType: undefined,
+        });
+        const chat = new Freestyler.FreestylerChatUi(props);
+        renderElementIntoDOM(chat);
+        const featureCards = chat.shadowRoot?.querySelectorAll('.feature-card');
+        assert.isDefined(featureCards);
+        assert.strictEqual(featureCards?.length, 0);
+
+        stub.restore();
+      });
     });
   });
 });

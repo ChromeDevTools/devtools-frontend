@@ -264,35 +264,6 @@
   }
 }
 
-.no-agent-message {
-  user-select: text;
-  cursor: initial;
-  display: flex;
-  flex-direction: column;
-  gap: var(--sys-size-5);
-  width: 100%;
-  padding: var(--sys-size-7) var(--sys-size-5);
-  height: 100%;
-
-  .header {
-    display: flex;
-    align-items: center;
-    height: var(--sys-size-11);
-    gap: var(--sys-size-4);
-
-    h2 {
-      font: var(--sys-typescale-body4-bold);
-    }
-  }
-
-  .instructions {
-    display: flex;
-    flex-direction: column;
-    gap: var(--sys-size-6);
-    line-height: 18px;
-  }
-}
-
 .indicator {
   color: var(--sys-color-green-bright);
 }
@@ -530,13 +501,49 @@ main {
     }
   }
 
-  .suggestions {
+  .empty-state-content {
     display: flex;
     flex-direction: column;
     gap: var(--sys-size-5);
     align-items: center;
     justify-content: center;
     align-self: start;
+  }
+}
+
+.feature-card {
+  display: flex;
+  padding: var(--sys-size-4) var(--sys-size-6);
+  gap: 10px;
+  background-color: var(--sys-color-surface2);
+  border-radius: var(--sys-shape-corner-medium-small);
+  width: var(--sys-size-32);
+  align-items: center;
+
+  .feature-card-icon {
+    width: var(--sys-size-12);
+    height: var(--sys-size-12);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--sys-color-tonal-container);
+    border-radius: var(--sys-shape-corner-full);
+
+    devtools-icon {
+      width: 18px;
+      height: 18px;
+    }
+  }
+
+  .feature-card-content {
+    h3 {
+      font: var(--sys-typescale-body3-medium);
+    }
+
+    p {
+      font: var(--sys-typescale-body4-regular);
+      line-height: 18px;
+    }
   }
 }
 

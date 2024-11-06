@@ -55,6 +55,7 @@ grd_files_release_sources = [
   "front_end/Images/breakpoint-circle.svg",
   "front_end/Images/breakpoint-crossed-filled.svg",
   "front_end/Images/breakpoint-crossed.svg",
+  "front_end/Images/brush-2.svg",
   "front_end/Images/brush-filled.svg",
   "front_end/Images/brush.svg",
   "front_end/Images/bug.svg",

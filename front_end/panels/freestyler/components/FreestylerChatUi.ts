@@ -140,6 +140,10 @@ const UIStringsNotTranslate = {
    */
   emptyStateText: 'How can I help you?',
   /**
+   *@description Text for the empty state of the AI assistance panel when there is no agent selected.
+   */
+  noAgentStateText: 'Explore AI assistance',
+  /**
    * @description The error message when the LLM loop is stopped for some reason (Max steps reached or request to LLM failed)
    */
   systemError:
@@ -204,46 +208,6 @@ const UIStringsNotTranslate = {
    *@description Aria label for the cancel icon to be read by screen reader
    */
   canceled: 'Canceled',
-  /*
-   * @description Header text for instructions on how to use the AI assistance feature.
-   */
-  getStarted: 'Hi! Here’s how to get started:',
-  /**
-   * @description AI assistance for CSS.
-   */
-  cssHelp: 'CSS help:',
-  /**
-   * @description Explanation on how to use AI assistance for DOM elements.
-   */
-  cssHelpExplainer:
-      'Navigate to the Elements panel, right-click a DOM element, and select "Ask AI assistant". I’ll be happy to explain its styles or behavior.',
-  /**
-   * @description AI assistance for files.
-   */
-  fileHelp: 'File insights:',
-  /**
-   * @description Explanation on how to use AI assistance for files in the Sources panel.
-   */
-  fileHelpExplainer:
-      'Open the Sources panel, right-click a file, and select "Ask AI". I can provide insights into its purpose or origin.',
-  /**
-   * @description AI assistance for network requests.
-   */
-  networkHelp: 'Network request insights:',
-  /**
-   * @description Explanation on how to use AI assistance for network requests.
-   */
-  networkHelpExplainer:
-      'In the Network panel, right-click any request and select "Ask AI assistant". I’ll help break down what’s happening with each request.',
-  /**
-   * @description AI assistance for performance traces.
-   */
-  performanceHelp: 'Performance analysis:',
-  /**
-   * @description Explanation on how to use AI assistance for performance traces.
-   */
-  performanceHelpExplainer:
-      'In the Performance panel, run a trace. Then, right-click any function in the timeline and select "Ask AI". I’ll help you analyze its performance impact and suggest improvements.',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/freestyler/components/FreestylerChatUi.ts', UIStrings);
@@ -858,7 +822,7 @@ export class FreestylerChatUi extends HTMLElement {
         </div>
         <h1>${lockedString(UIStringsNotTranslate.emptyStateText)}</h1>
       </div>
-      <div class="suggestions">
+      <div class="empty-state-content">
         ${suggestions.map(suggestion => {
           return html`<devtools-button
             class="suggestion"
@@ -991,7 +955,11 @@ export class FreestylerChatUi extends HTMLElement {
     // clang-format on
   }
 
-  #renderChatInput = (): LitHtml.TemplateResult => {
+  #renderChatInput = (): LitHtml.LitTemplate => {
+    if (!this.#props.agentType) {
+      return LitHtml.nothing;
+    }
+
     // clang-format off
     return html`
       <div class="chat-input-container">
@@ -1087,33 +1055,75 @@ export class FreestylerChatUi extends HTMLElement {
 
   #renderNoAgentState(): LitHtml.TemplateResult {
     const config = Common.Settings.Settings.instance().getHostConfig();
+    const featureCards: {
+      icon: string,
+      heading: string,
+      content: LitHtml.TemplateResult,
+    }[] =
+        [
+          ...(config.devToolsFreestyler?.enabled ? [{
+            icon: 'brush-2',
+            heading: 'CSS styles',
+            content: html`Open <button class="link" role="link" jslog=${
+                VisualLogging.link('open-elements-panel').track({click: true})} @click=${() => {
+              void UI.ViewManager.ViewManager.instance().showView('elements');
+            }}>Elements</button> to ask about CSS styles`,
+          }] :
+                                                   []),
+          ...(config.devToolsAiAssistanceNetworkAgent?.enabled) ? [{
+            icon: 'arrow-up-down',
+            heading: 'Network',
+            content: html`Open <button class="link" role="link" jslog=${
+                VisualLogging.link('open-network-panel').track({click: true})} @click=${() => {
+              void UI.ViewManager.ViewManager.instance().showView('network');
+            }}>Network</button> to ask about a request's details`,
+          }] :
+                                                                  [],
+          ...(config.devToolsAiAssistanceFileAgent?.enabled) ? [{
+            icon: 'document',
+            heading: 'Files',
+            content: html`Open <button class="link" role="link" jslog=${
+                VisualLogging.link('open-sources-panel').track({click: true})} @click=${() => {
+              void UI.ViewManager.ViewManager.instance().showView('sources');
+            }}>Sources</button> to ask about a file's content`,
+          }] :
+                                                               [],
+          ...(config.devToolsAiAssistancePerformanceAgent?.enabled ? [{
+            icon: 'performance',
+            heading: 'Performance',
+            content: html`Open <button class="link" role="link" jslog=${
+                VisualLogging.link('open-performance-panel').track({click: true})} @click=${() => {
+              void UI.ViewManager.ViewManager.instance().showView('timeline');
+            }}>Performance</button> to ask about a trace item`,
+          }] :
+                                                                     []),
+        ];
 
     // clang-format off
     return html`
-      <div class="messages-container">
-        <section class="no-agent-message" jslog=${VisualLogging.section('no-agent-entrypoint')}>
-          <div class="header">
-            <devtools-icon name="smart-assistant"></devtools-icon>
-            <h2>${lockedString(UIStringsNotTranslate.ai)}</h2>
+      <div class="empty-state-container">
+        <div class="header">
+          <div class="icon">
+            <devtools-icon
+              name="smart-assistant"
+            ></devtools-icon>
           </div>
-          <div class="instructions">
-            <p>${lockedString(UIStringsNotTranslate.getStarted)}</p>
-            ${config.devToolsFreestyler?.enabled ? html`
-              <p><strong>${lockedString(UIStringsNotTranslate.cssHelp)}</strong> ${lockedString(UIStringsNotTranslate.cssHelpExplainer)}</p>
-            ` : LitHtml.nothing}
-            ${(config.devToolsAiAssistanceFileAgent?.enabled) ? html`
-              <p><strong>${lockedString(UIStringsNotTranslate.fileHelp)}</strong> ${lockedString(UIStringsNotTranslate.fileHelpExplainer)}</p>
-            ` : LitHtml.nothing}
-            ${(config.devToolsAiAssistanceNetworkAgent?.enabled) ? html`
-              <p><strong>${lockedString(UIStringsNotTranslate.networkHelp)}</strong> ${lockedString(UIStringsNotTranslate.networkHelpExplainer)}</p>
-            ` : LitHtml.nothing}
-            ${(config.devToolsAiAssistancePerformanceAgent?.enabled) ? html`
-              <p><strong>${lockedString(UIStringsNotTranslate.performanceHelp)}</strong> ${lockedString(UIStringsNotTranslate.performanceHelpExplainer)}</p>
-            ` : LitHtml.nothing}
-          </div>
-        </section>
-      </div>
-    `;
+          <h1>${lockedString(UIStringsNotTranslate.noAgentStateText)}</h1>
+        </div>
+        <div class="empty-state-content">
+          ${featureCards.map(featureCard => html`
+            <div class="feature-card">
+              <div class="feature-card-icon">
+                <devtools-icon name=${featureCard.icon}></devtools-icon>
+              </div>
+              <div class="feature-card-content">
+                <h3>${featureCard.heading}</h3>
+                <p>${featureCard.content}</p>
+              </div>
+            </div>
+          `)}
+        </div>
+      </div>`;
     // clang-format on
   }
 

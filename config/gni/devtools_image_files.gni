@@ -62,6 +62,7 @@ devtools_svg_sources = [
   "breakpoint-circle.svg",
   "breakpoint-crossed-filled.svg",
   "breakpoint-crossed.svg",
+  "brush-2.svg",
   "brush-filled.svg",
   "brush.svg",
   "bug.svg",

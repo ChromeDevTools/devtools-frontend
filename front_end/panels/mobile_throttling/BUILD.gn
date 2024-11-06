@@ -31,6 +31,7 @@ devtools_module("mobile_throttling") {
     "../../ui/components/icon_button:bundle",
     "../../ui/legacy:bundle",
     "../../ui/visual_logging:bundle",
+    "../settings:bundle",
   ]
 }
 

@@ -577,9 +577,8 @@ export class FreestylerPanel extends UI.Panel.Panel {
       return;
     }
 
-    if (!this.#currentAgent) {
-      this.#currentAgent = this.#createAgent(targetAgentType);
-    } else if (this.#currentAgent.type !== targetAgentType || this.#currentAgent.isHistoryEntry) {
+    if (!this.#currentAgent || this.#currentAgent.type !== targetAgentType || this.#currentAgent.isHistoryEntry ||
+        targetAgentType === AgentType.DRJONES_PERFORMANCE) {
       this.#currentAgent = this.#createAgent(targetAgentType);
     }
     this.#viewProps.agentType = this.#currentAgent.type;
@@ -680,11 +679,14 @@ export class FreestylerPanel extends UI.Panel.Panel {
     this.#viewProps.selectedContext = currentContext;
     if (!currentContext) {
       this.#viewProps.blockedByCrossOrigin = false;
+      this.#viewProps.requiresNewConversation = false;
       this.doUpdate();
       return;
     }
     this.#viewProps.blockedByCrossOrigin = !currentContext.isOriginAllowed(this.#currentAgent.origin);
     this.#viewProps.isReadOnly = this.#currentAgent.isHistoryEntry;
+    this.#viewProps.requiresNewConversation = this.#currentAgent.type === AgentType.DRJONES_PERFORMANCE &&
+        Boolean(this.#currentAgent.context) && this.#currentAgent.context !== currentContext;
     this.doUpdate();
   }
 

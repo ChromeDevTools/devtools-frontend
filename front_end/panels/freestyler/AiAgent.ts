@@ -172,6 +172,7 @@ export abstract class AiAgent<T> {
    * historical conversations.
    */
   #origin?: string;
+  #context?: ConversationContext<T>;
 
   constructor(opts: AgentOptions) {
     this.#aidaClient = opts.aidaClient;
@@ -192,6 +193,10 @@ export abstract class AiAgent<T> {
 
   get origin(): string|undefined {
     return this.#origin;
+  }
+
+  get context(): ConversationContext<T>|undefined {
+    return this.#context;
   }
 
   get title(): string|undefined {
@@ -401,6 +406,10 @@ STOP`;
     // First context set on the agent determines its origin from now on.
     if (options.selected && this.#origin === undefined && options.selected) {
       this.#origin = options.selected.getOrigin();
+    }
+    // Remember if the context that is set.
+    if (options.selected && !this.#context) {
+      this.#context = options.selected;
     }
     const id = this.#runId++;
 

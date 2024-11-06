@@ -17,7 +17,8 @@ describe('Heavy Ad issue', () => {
     await goToResource('elements/quirks-mode.html');
   });
 
-  it('should display correct information', async () => {
+  // Frequently fails on multiple CQ bots. https://luci-analysis.appspot.com/p/devtools-frontend/clusters?q=heavy&interval=7d
+  it.skip('[crbug.com/375892666]: should display correct information', async () => {
     await navigateToIssuesTab();
     const {frontend} = getBrowserAndPages();
     frontend.evaluate(() => {

@@ -219,6 +219,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
       },
       selectedContext: null,
       blockedByCrossOrigin: false,
+      stripLinks: false,
       isReadOnly: false,
     };
   }
@@ -520,7 +521,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
       return Common.Revealer.reveal(context.getItem().uiLocation(0, 0));
     }
     if (context instanceof CallTreeContext) {
-      const trace = new SDK.TraceObject.RevealableEvent(event);
+      const trace = new SDK.TraceObject.RevealableEvent(context.getItem().selectedNode.event);
       return Common.Revealer.reveal(trace);
     }
     // Node picker is using linkifier.
@@ -687,6 +688,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
     this.#viewProps.isReadOnly = this.#currentAgent.isHistoryEntry;
     this.#viewProps.requiresNewConversation = this.#currentAgent.type === AgentType.DRJONES_PERFORMANCE &&
         Boolean(this.#currentAgent.context) && this.#currentAgent.context !== currentContext;
+    this.#viewProps.stripLinks = this.#viewProps.agentType === AgentType.DRJONES_PERFORMANCE;
     this.doUpdate();
   }
 

@@ -35,6 +35,70 @@ css
 }`,
       }));
     });
+
+    describe('link/image stripping', () => {
+      const linkCases = [
+        '[link text](https://z.com)',
+        'A response with [link text](https://z.com).',
+        '[*link text*](https://z.com)',
+        '[**text** `with code`](https://z.com).',
+        'plain link https://z.com .',
+        'link in quotes \'https://z.com\' .',
+      ];
+
+      const renderToElem = (string: string, renderer: MarkdownView.MarkdownView.MarkdownLitRenderer): Element => {
+        const component = new MarkdownView.MarkdownView.MarkdownView();
+        renderElementIntoDOM(component, {allowMultipleChildren: true});
+        component.data = {tokens: Marked.Marked.lexer(string), renderer};
+        assert.exists(component.shadowRoot?.firstElementChild);
+        return component.shadowRoot.firstElementChild;
+      };
+
+      it('strips links if stripLinks true', () => {
+        const linklessRenderer = new MarkdownRendererWithCodeBlock({stripLinks: true});
+        for (const linkCase of linkCases) {
+          const elem = renderToElem(linkCase, linklessRenderer);
+          assert.strictEqual(elem.querySelectorAll('a, x-link, devtools-link').length, 0);
+          assert.strictEqual(
+              ['<a', '<x-link', '<devtools-link'].some(tagName => elem.outerHTML.includes(tagName)), false);
+          assert.ok(elem.textContent?.includes('( https://z.com )'), linkCase);
+        }
+      });
+
+      it('leaves links intact by default', () => {
+        const linkfulRenderer = new MarkdownRendererWithCodeBlock();
+        for (const linkCase of linkCases) {
+          const elem = renderToElem(linkCase, linkfulRenderer);
+          assert.strictEqual(elem.querySelectorAll('a, x-link, devtools-link').length, 1);
+          assert.strictEqual(
+              ['<a', '<x-link', '<devtools-link'].some(tagName => elem.outerHTML.includes(tagName)), true);
+          assert.strictEqual(elem.textContent?.includes('( https://z.com )'), false);
+        }
+      });
+
+      const imageCases = [
+        '![image alt](https://z.com/i.png)',
+        'A response with ![image alt](https://z.com/i.png).',
+        '![*image alt*](https://z.com/i.png)',
+        '![**text** `with code`](https://z.com/i.png).',
+        'plain image href https://z.com/i.png .',
+        'link in quotes \'https://z.com/i.png\' .',
+      ];
+
+      it('strips images if stripLinks true', () => {
+        const linklessRenderer = new MarkdownRendererWithCodeBlock({stripLinks: true});
+        for (const imageCase of imageCases) {
+          const elem = renderToElem(imageCase, linklessRenderer);
+          assert.strictEqual(elem.querySelectorAll('a, x-link, devtools-link, img, devtools-markdown-image').length, 0);
+          assert.strictEqual(
+              ['<a', '<x-link', '<devtools-link', '<img', '<devtools-markdown-image'].some(
+                  tagName => elem.outerHTML.includes(tagName)),
+              false);
+
+          assert.ok(elem.textContent?.includes('( https://z.com/i.png )'), imageCase);
+        }
+      });
+    });
   });
 
   function getProp(options: Partial<Freestyler.Props>): Freestyler.Props {
@@ -57,6 +121,7 @@ css
       canShowFeedbackForm: false,
       userInfo: {},
       blockedByCrossOrigin: false,
+      stripLinks: false,
       isReadOnly: false,
       ...options,
     };

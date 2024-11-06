@@ -8,6 +8,22 @@
   --code-background-color: var(--sys-color-surface4);
 }
 
+@keyframes typing {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+.animating {
+  overflow: hidden;
+  white-space: nowrap;
+  animation: typing 0.3s steps(40, end);
+}
+
+.pending {
+  display: none !important; /* stylelint-disable-line declaration-no-important */
+}
+
+
 .message {
   line-height: 18px;
   font-size: 12px;

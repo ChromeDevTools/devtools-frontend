@@ -24,6 +24,12 @@ function getFakeToken(token: TestToken): Marked.Marked.Token {
   return token as unknown as Marked.Marked.Token;
 }
 
+function renderTemplateResult(templateResult: LitHtml.TemplateResult): HTMLElement {
+  const container = document.createElement('container');
+  LitHtml.render(templateResult, container);  // eslint-disable-line rulesdir/lit_html_host_this
+  return container;
+}
+
 describeWithEnvironment('MarkdownView', () => {
   describe('tokenizer', () => {
     it('tokenizers links in single quotes', () => {
@@ -65,45 +71,53 @@ describeWithEnvironment('MarkdownView', () => {
     const renderer = new MarkdownView.MarkdownView.MarkdownLitRenderer();
 
     it('wraps paragraph tokens in <p> tags', () => {
-      const renderResult = renderer.renderToken(getFakeToken({type: 'paragraph', tokens: []}));
-      assert.deepStrictEqual(renderResult.strings.raw, ['<p>', '</p>']);
+      const container = renderTemplateResult(renderer.renderToken(getFakeToken({type: 'paragraph', tokens: []})));
+
+      assert.exists(container.querySelector('p'));
     });
 
     it('wraps an unordered list token in <ul> tags', () => {
-      const renderResult = renderer.renderToken(getFakeToken({type: 'list', items: []}));
-      assert.deepStrictEqual(renderResult.strings.raw, ['<ul>', '</ul>']);
+      const container = renderTemplateResult(renderer.renderToken(getFakeToken({type: 'list', items: []})));
+
+      assert.exists(container.querySelector('ul'));
     });
 
     it('wraps list items in <li> tags', () => {
-      const renderResult = renderer.renderToken(getFakeToken({type: 'list_item', tokens: []}));
-      assert.deepStrictEqual(renderResult.strings.raw, ['<li>', '</li>']);
+      const container = renderTemplateResult(renderer.renderToken(getFakeToken({type: 'list_item', tokens: []})));
+      assert.exists(container.querySelector('li'));
     });
 
     it('wraps a codespan token in <code> tags', () => {
-      const renderResult = renderer.renderToken(getFakeToken({type: 'codespan', text: 'const foo = 42;'}));
-      assert.deepStrictEqual(renderResult.strings.raw, ['<code>', '</code>']);
-      assert.deepStrictEqual(renderResult.values, ['const foo = 42;']);
+      const container =
+          renderTemplateResult(renderer.renderToken(getFakeToken({type: 'codespan', text: 'const foo = 42;'})));
+
+      const code = container.querySelector('code');
+      assert.exists(code);
+      assert.deepStrictEqual(code.textContent, 'const foo = 42;');
     });
 
     it('renders childless text tokens as-is', () => {
-      const renderResult = renderer.renderToken(getFakeToken({type: 'text', text: 'Simple text token'}));
-      assert.deepStrictEqual(renderResult.values, ['Simple text token']);
+      const container =
+          renderTemplateResult(renderer.renderToken(getFakeToken({type: 'text', text: 'Simple text token'})));
+
+      assert.deepStrictEqual(container.childTextNodes().length, 1);
+      assert.deepStrictEqual(container.childTextNodes()[0].textContent, 'Simple text token');
     });
 
     it('renders nested text tokens correctly', () => {
-      const renderResult = renderer.renderToken(getFakeToken({
+      const container = renderTemplateResult(renderer.renderToken(getFakeToken({
         type: 'text',
         text: 'This text should not be rendered. Only the subtokens!',
         tokens: [
           getFakeToken({type: 'text', text: 'Nested raw text'}),
           getFakeToken({type: 'codespan', text: 'and a nested codespan to boot'}),
         ],
-      }));
+      })));
 
-      const renderedParts = renderResult.values[0] as LitHtml.TemplateResult[];
-      assert.strictEqual(renderedParts.length, 2);
-      assert.deepStrictEqual(renderedParts[0].values, ['Nested raw text']);
-      assert.deepStrictEqual(renderedParts[1].values, ['and a nested codespan to boot']);
+      assert.notInclude(container.textContent, 'This text should not be rendered. Only the subtokens!');
+      assert.include(container.textContent, 'Nested raw text');
+      assert.exists(container.querySelector('code'));
+      assert.deepStrictEqual(container.querySelector('code')?.textContent, 'and a nested codespan to boot');
     });
 
     it('throws an error for invalid or unsupported token types', () => {
@@ -160,6 +174,14 @@ describeWithEnvironment('MarkdownView', () => {
       const renderResult = renderer.renderToken(getFakeToken({type: 'em', text: 'em text'})).strings.join('');
 
       assert.isTrue(renderResult.includes('<em'));
+    });
+    it('sets custom classes on the token types', () => {
+      renderer.setCustomClasses({em: 'custom-class'});
+
+      const renderResult = renderer.renderToken(getFakeToken({type: 'em', text: 'em text'}));
+      const container = renderTemplateResult(renderResult);
+      assert.isTrue(
+          container.querySelector('em')?.classList.contains('custom-class'), 'Expected custom-class to be applied');
     });
   });
 

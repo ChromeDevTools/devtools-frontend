@@ -8,7 +8,6 @@ import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as Cards from '../../ui/components/cards/cards.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
-import settingsScreenStyles from '../settings/settingsScreen.css.js';
 
 import locationsSettingsTabStyles from './locationsSettingsTab.css.js';
 
@@ -168,7 +167,7 @@ export class LocationsSettingsTab extends UI.Widget.VBox implements UI.ListWidge
 
   override wasShown(): void {
     super.wasShown();
-    this.registerCSSFiles([locationsSettingsTabStyles, settingsScreenStyles]);
+    this.registerCSSFiles([locationsSettingsTabStyles]);
     this.list.registerCSSFiles([locationsSettingsTabStyles]);
     this.locationsUpdated();
   }

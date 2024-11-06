@@ -52,7 +52,6 @@ devtools_entrypoint("bundle") {
   visibility = [
     ":*",
     "../../entrypoints/*",
-    "../../panels/mobile_throttling/*",
     "../../panels/profiler/*",
   ]
 

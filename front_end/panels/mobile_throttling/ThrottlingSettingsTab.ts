@@ -9,7 +9,6 @@ import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as Cards from '../../ui/components/cards/cards.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
-import settingsScreenStyles from '../settings/settingsScreen.css.js';
 
 import throttlingSettingsTabStyles from './throttlingSettingsTab.css.js';
 
@@ -166,7 +165,7 @@ export class ThrottlingSettingsTab extends UI.Widget.VBox implements
   override wasShown(): void {
     super.wasShown();
     this.list.registerCSSFiles([throttlingSettingsTabStyles]);
-    this.registerCSSFiles([throttlingSettingsTabStyles, settingsScreenStyles]);
+    this.registerCSSFiles([throttlingSettingsTabStyles]);
     this.conditionsUpdated();
   }
 

@@ -70,3 +70,28 @@
 .locations-input-container {
   padding: 1px;
 }
+
+.settings-card-container-wrapper {
+  padding-top: var(--sys-size-8);
+  padding-bottom: var(--sys-size-8);
+  overflow: auto;
+  scrollbar-width: thin;
+}
+
+@media (max-width: 1000px) {
+  .settings-card-container-wrapper {
+    position: absolute;
+    top: var(--sys-size-8);
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: auto;
+  }
+}
+
+.settings-card-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sys-size-9);
+}

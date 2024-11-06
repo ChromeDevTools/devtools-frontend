@@ -11,6 +11,7 @@ import * as LighthouseReport from '../../third_party/lighthouse/report/report.js
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import type {
   NodeDetailsJSON, ReportJSON, RunnerResultArtifacts, SourceLocationDetailsJSON} from './LighthouseReporterTypes.js';
@@ -91,6 +92,10 @@ export class LighthouseReportRenderer {
     reportEl._lighthouseResultForTesting = lhr;
     // @ts-ignore Expose Artifacts on DOM for e2e tests
     reportEl._lighthouseArtifactsForTesting = artifacts;
+
+    // This should block the report rendering as we need visual logging ready
+    // before the user starts interacting with the report.
+    LighthouseReportRenderer.installVisualLogging(reportEl);
 
     // Linkifying requires the target be loaded. Do not block the report
     // from rendering, as this is just an embellishment and the main target
@@ -175,6 +180,47 @@ export class LighthouseReportRenderer {
       UI.Tooltip.Tooltip.install(origHTMLElement, '');
       origHTMLElement.textContent = '';
       origHTMLElement.appendChild(element);
+    }
+  }
+
+  static installVisualLogging(el: Element): void {
+    for (const auditEl of el.getElementsByClassName('lh-audit')) {
+      const summaryEl = auditEl.querySelector('summary');
+      if (!summaryEl) {
+        continue;
+      }
+
+      const id = auditEl.id;
+      if (!id) {
+        continue;
+      }
+
+      auditEl.setAttribute('jslog', `${VisualLogging.item(`lighthouse.audit.${id}`)}`);
+
+      let state: string|undefined;
+      for (const className of auditEl.classList) {
+        switch (className) {
+          case 'lh-audit--pass':
+            state = 'pass';
+            break;
+          case 'lh-audit--average':
+            state = 'average';
+            break;
+          case 'lh-audit--fail':
+            state = 'fail';
+            break;
+          case 'lh-audit--informative':
+            state = 'informative';
+            break;
+        }
+      }
+
+      if (!state) {
+        continue;
+      }
+
+      summaryEl.setAttribute(
+          'jslog', `${VisualLogging.expand(`lighthouse.audit-summary.${state}`).track({click: true})}`);
     }
   }
 }

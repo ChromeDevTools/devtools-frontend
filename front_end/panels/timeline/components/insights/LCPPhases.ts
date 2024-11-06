@@ -77,13 +77,13 @@ export class LCPPhases extends BaseInsightComponent {
     if (!insightsByNavigation) {
       return [];
     }
-    const lcpInsight = insightsByNavigation.model.LargestContentfulPaint;
-    if (lcpInsight instanceof Error) {
+    const insight = insightsByNavigation.model.LCPPhases;
+    if (insight instanceof Error) {
       return [];
     }
 
-    const timing = lcpInsight.lcpMs;
-    const phases = lcpInsight.phases;
+    const timing = insight.lcpMs;
+    const phases = insight.phases;
 
     if (!timing || !phases) {
       return [];
@@ -138,21 +138,21 @@ export class LCPPhases extends BaseInsightComponent {
       return [];
     }
 
-    const lcpInsight = insightsByNavigation.model.LargestContentfulPaint;
-    if (lcpInsight instanceof Error) {
+    const insight = insightsByNavigation.model.LCPPhases;
+    if (insight instanceof Error) {
       return [];
     }
 
-    const phases = lcpInsight.phases;
-    const lcpTs = lcpInsight.lcpTs;
+    const phases = insight.phases;
+    const lcpTs = insight.lcpTs;
     if (!phases || !lcpTs) {
       return [];
     }
     const lcpMicroseconds = Trace.Types.Timing.MicroSeconds(Trace.Helpers.Timing.millisecondsToMicroseconds(lcpTs));
 
     const overlays: Overlays.Overlays.TimelineOverlay[] = [];
-    if (lcpInsight.lcpRequest) {
-      overlays.push({type: 'ENTRY_OUTLINE', entry: lcpInsight.lcpRequest, outlineReason: 'INFO'});
+    if (insight.lcpRequest) {
+      overlays.push({type: 'ENTRY_OUTLINE', entry: insight.lcpRequest, outlineReason: 'INFO'});
     }
 
     const sections = [];
@@ -261,8 +261,7 @@ export class LCPPhases extends BaseInsightComponent {
   }
 
   override getRelatedEvents(): Trace.Types.Events.Event[] {
-    const insight =
-        Trace.Insights.Common.getInsight('LargestContentfulPaint', this.data.insights, this.data.insightSetKey);
+    const insight = Trace.Insights.Common.getInsight('LCPPhases', this.data.insights, this.data.insightSetKey);
     if (!insight?.lcpEvent) {
       return [];
     }

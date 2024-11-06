@@ -96,6 +96,7 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
     // Does not include "font display", which is experimental.
     assert.deepEqual(userVisibleTitles, [
       'LCP by phase',
+      'LCP request discovery',
       'Layout shift culprits',
       'Third parties',
     ]);
@@ -124,6 +125,7 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
     // Does not include "font display", which is experimental.
     assert.deepEqual(userVisibleTitles, [
       'LCP by phase',
+      'LCP request discovery',
       'Layout shift culprits',
       'Font display',
       'Third parties',

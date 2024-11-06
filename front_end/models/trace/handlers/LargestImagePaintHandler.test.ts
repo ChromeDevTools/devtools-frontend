@@ -18,8 +18,8 @@ describe('LargestImagePaintHandler', function() {
     }
 
     const data = Trace.Handlers.ModelHandlers.LargestImagePaint.data();
-    assert.strictEqual(data.size, 1);
-    const imageForLCP = data.get(10 as Protocol.DOM.BackendNodeId);
+    assert.strictEqual(data.imageByDOMNodeId.size, 1);
+    const imageForLCP = data.imageByDOMNodeId.get(10 as Protocol.DOM.BackendNodeId);
     assert.exists(imageForLCP);
     assert.strictEqual(imageForLCP?.args.data?.DOMNodeId, 10 as Protocol.DOM.BackendNodeId);
     assert.strictEqual(imageForLCP?.args.data?.imageUrl, 'https://via.placeholder.com/2000.jpg');

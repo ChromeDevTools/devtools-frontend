@@ -71,7 +71,7 @@ interface LCPImageDiscoveryData {
 
 function getImageData(
     insights: Trace.Insights.Types.TraceInsightSets|null, insightSetKey: string|null): LCPImageDiscoveryData|null {
-  const insight = Trace.Insights.Common.getInsight('LargestContentfulPaint', insights, insightSetKey);
+  const insight = Trace.Insights.Common.getInsight('LCPDiscovery', insights, insightSetKey);
   if (!insight) {
     return null;
   }
@@ -235,8 +235,7 @@ export class LCPDiscovery extends BaseInsightComponent {
   }
 
   override getRelatedEvents(): Trace.Types.Events.Event[] {
-    const insight =
-        Trace.Insights.Common.getInsight('LargestContentfulPaint', this.data.insights, this.data.insightSetKey);
+    const insight = Trace.Insights.Common.getInsight('LCPDiscovery', this.data.insights, this.data.insightSetKey);
     if (!insight?.lcpEvent || !insight?.lcpRequest) {
       return [];
     }

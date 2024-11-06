@@ -135,7 +135,7 @@ export class SidebarSingleInsightSet extends HTMLElement {
 
   #getLCP(insightSetKey: string):
       {value: Trace.Types.Timing.MicroSeconds, event: Trace.Types.Events.LargestContentfulPaintCandidate}|null {
-    const insight = Trace.Insights.Common.getInsight('LargestContentfulPaint', this.#data.insights, insightSetKey);
+    const insight = Trace.Insights.Common.getInsight('LCPPhases', this.#data.insights, insightSetKey);
     if (!insight || !insight.lcpMs || !insight.lcpEvent) {
       return null;
     }

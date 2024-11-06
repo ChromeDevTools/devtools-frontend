@@ -16,11 +16,11 @@ export async function processTrace(testContext: Mocha.Suite|Mocha.Context|null, 
   return {data: parsedTrace, insights};
 }
 
-describeWithEnvironment('LargestContentfulPaint', function() {
+describeWithEnvironment('LCPPhases', function() {
   it('calculates text lcp phases', async () => {
     const {data, insights} = await processTrace(this, 'lcp-web-font.json.gz');
     const firstNav = getFirstOrError(data.Meta.navigationsByNavigationId.values());
-    const insight = getInsightOrError('LargestContentfulPaint', insights, firstNav);
+    const insight = getInsightOrError('LCPPhases', insights, firstNav);
 
     assert.strictEqual(insight.lcpMs, 106.482);
 
@@ -32,7 +32,7 @@ describeWithEnvironment('LargestContentfulPaint', function() {
   it('calculates image lcp phases', async () => {
     const {data, insights} = await processTrace(this, 'lcp-images.json.gz');
     const firstNav = getFirstOrError(data.Meta.navigationsByNavigationId.values());
-    const insight = getInsightOrError('LargestContentfulPaint', insights, firstNav);
+    const insight = getInsightOrError('LCPPhases', insights, firstNav);
 
     assert.strictEqual(insight.lcpMs, 109.623);
 
@@ -49,33 +49,11 @@ describeWithEnvironment('LargestContentfulPaint', function() {
     assert.deepEqual(phases, {ttfb: '6.94', loadTime: '12.09', loadDelay: '33.74', renderDelay: '56.85'});
   });
 
-  it('calculates image lcp attributes', async () => {
-    const {data, insights} = await processTrace(this, 'lcp-images.json.gz');
-    const firstNav = getFirstOrError(data.Meta.navigationsByNavigationId.values());
-    const insight = getInsightOrError('LargestContentfulPaint', insights, firstNav);
-    const {shouldIncreasePriorityHint, shouldPreloadImage, shouldRemoveLazyLoading} = insight;
-
-    assert.strictEqual(shouldRemoveLazyLoading, false);
-    assert.strictEqual(shouldPreloadImage, false);
-    assert.strictEqual(shouldIncreasePriorityHint, true);
-  });
-
-  it('calculates the LCP optimal time as the document request download start time', async () => {
-    const {data, insights} = await processTrace(this, 'web-dev-with-commit.json.gz');
-    const firstNav = getFirstOrError(data.Meta.navigationsByNavigationId.values());
-    const insight = getInsightOrError('LargestContentfulPaint', insights, firstNav);
-    assert.strictEqual(
-        insight.earliestDiscoveryTimeTs,
-        // this is the TTFB for the document request
-        122411004828,
-    );
-  });
-
   describe('warnings', function() {
     it('warns when there is no lcp', async () => {
       const {data, insights} = await processTrace(this, 'user-timings.json.gz');
       const firstNav = getFirstOrError(data.Meta.navigationsByNavigationId.values());
-      const insight = getInsightOrError('LargestContentfulPaint', insights, firstNav);
+      const insight = getInsightOrError('LCPPhases', insights, firstNav);
 
       assert.strictEqual(insight.lcpMs, undefined);
       assert.strictEqual(insight.phases, undefined);
@@ -85,7 +63,7 @@ describeWithEnvironment('LargestContentfulPaint', function() {
     it('no main document url', async () => {
       const {data, insights} = await processTrace(this, 'about-blank-first.json.gz');
       const firstNav = getFirstOrError(data.Meta.navigationsByNavigationId.values());
-      const insight = getInsightOrError('LargestContentfulPaint', insights, firstNav);
+      const insight = getInsightOrError('LCPPhases', insights, firstNav);
 
       assert.strictEqual(insight.lcpMs, 204.909);
       assert.strictEqual(insight.phases, undefined);
@@ -96,7 +74,7 @@ describeWithEnvironment('LargestContentfulPaint', function() {
   it('can handle old traces with missing data and return null for breakdowns of the phases', async () => {
     const {data, insights} = await processTrace(this, 'multiple-navigations.json.gz');
     const firstNav = getFirstOrError(data.Meta.navigationsByNavigationId.values());
-    const insight = getInsightOrError('LargestContentfulPaint', insights, firstNav);
+    const insight = getInsightOrError('LCPPhases', insights, firstNav);
     // This insight has invalid phase data, so we expect the value to be undefined.
     assert.isUndefined(insight.phases);
   });

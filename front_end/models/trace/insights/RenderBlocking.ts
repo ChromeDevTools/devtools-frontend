@@ -6,9 +6,8 @@ import * as Protocol from '../../../generated/protocol.js';
 import * as Handlers from '../handlers/handlers.js';
 import * as Helpers from '../helpers/helpers.js';
 import type * as Lantern from '../lantern/lantern.js';
-import * as Types from '../types/types.js';
+import type * as Types from '../types/types.js';
 
-import {findLCPRequest} from './Common.js';
 import {
   type InsightModel,
   type InsightSetContext,
@@ -85,22 +84,7 @@ function estimateSavingsWithGraphs(
 }
 
 function hasImageLCP(parsedTrace: RequiredData<typeof deps>, context: InsightSetContextWithNavigation): boolean {
-  const frameMetrics = parsedTrace.PageLoadMetrics.metricScoresByFrameId.get(context.frameId);
-  if (!frameMetrics) {
-    throw new Error('no frame metrics');
-  }
-
-  const navMetrics = frameMetrics.get(context.navigationId);
-  if (!navMetrics) {
-    throw new Error('no navigation metrics');
-  }
-  const metricScore = navMetrics.get(Handlers.ModelHandlers.PageLoadMetrics.MetricName.LCP);
-  const lcpEvent = metricScore?.event;
-  if (!lcpEvent || !Types.Events.isLargestContentfulPaintCandidate(lcpEvent)) {
-    return false;
-  }
-
-  return findLCPRequest(parsedTrace, context, lcpEvent) !== null;
+  return parsedTrace.LargestImagePaint.lcpRequestByNavigation.get(context.navigation) !== undefined;
 }
 
 function computeSavings(

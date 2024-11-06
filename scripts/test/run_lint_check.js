@@ -11,10 +11,8 @@ const {extname, join} = require('path');
 const globby = require('globby');
 const yargs = require('yargs/yargs');
 const {hideBin} = require('yargs/helpers');
-const childProcess = require('child_process');
-const {promisify} = require('util');
+const {spawn} = require('child_process');
 const {readFileSync} = require('fs');
-const spawnAsync = promisify(childProcess.spawnSync);
 
 const {
   devtoolsRootPath,
@@ -102,11 +100,17 @@ async function runStylelint(files) {
  */
 async function runLitAnalyzer(files) {
   const readLitAnalyzerConfigFromCompilerOptions = () => {
-    const {compilerOptions} = JSON.parse(readFileSync(tsconfigJsonPath(), 'utf-8'));
+    const {compilerOptions} = JSON.parse(
+        readFileSync(tsconfigJsonPath(), 'utf-8'),
+    );
     const {plugins} = compilerOptions;
-    const tsLitPluginOptions = plugins.find(plugin => plugin.name === 'ts-lit-plugin');
+    const tsLitPluginOptions = plugins.find(
+        plugin => plugin.name === 'ts-lit-plugin',
+    );
     if (tsLitPluginOptions === null) {
-      throw new Error(`Failed to find ts-lit-plugin options in ${tsconfigJsonPath()}`);
+      throw new Error(
+          `Failed to find ts-lit-plugin options in ${tsconfigJsonPath()}`,
+      );
     }
     return tsLitPluginOptions;
   };
@@ -118,12 +122,36 @@ async function runLitAnalyzer(files) {
       ...Object.entries(rules).flatMap(([k, v]) => [`--rules.${k}`, v]),
       ...subsetFiles,
     ];
-    const result = await spawnAsync(nodePath(), args, {
-      encoding: 'utf-8',
-      cwd: devtoolsRootPath(),
-      stdio: 'inherit',
+
+    const result = {
+      output: '',
+      error: '',
+      status: false,
+    };
+
+    return await new Promise(resolve => {
+      const litAnalyzerProcess = spawn(nodePath(), args, {
+        encoding: 'utf-8',
+        cwd: devtoolsRootPath(),
+      });
+
+      litAnalyzerProcess.stdout.on('data', data => {
+        result.output += `\n${data.toString()}`;
+      });
+      litAnalyzerProcess.stderr.on('data', data => {
+        result.error += `\n${data.toString()}`;
+      });
+
+      litAnalyzerProcess.on('error', message => {
+        result.error += `\n${message}`;
+        resolve(result);
+      });
+
+      litAnalyzerProcess.on('exit', code => {
+        result.status = code === 0;
+        resolve(result);
+      });
     });
-    return result.status === 0;
   };
 
   const getSplitFiles = filesToSplit => {
@@ -145,13 +173,21 @@ async function runLitAnalyzer(files) {
     return splitFiles;
   };
 
-  const result = await Promise.all(
+  const results = await Promise.all(
       getSplitFiles(files).map(filesBatch => {
         return getLitAnalyzerResult(filesBatch);
       }),
   );
+  for (const result of results) {
+    if (result.output) {
+      console.log(result.output);
+    }
+    if (result.error) {
+      console.log(result.error);
+    }
+  }
 
-  return result.every(r => r);
+  return results.every(r => r.status);
 }
 
 async function run() {

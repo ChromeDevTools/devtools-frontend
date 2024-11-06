@@ -100,21 +100,23 @@
 
   .scroll-button-container.left {
     left: 0;
-    background: linear-gradient(
-      90deg,
-      var(--sys-color-cdt-base-container) 0%,
-      var(--sys-color-cdt-base-container) 50%,
-      transparent
-    );
+    background:
+      linear-gradient(
+        90deg,
+        var(--sys-color-cdt-base-container) 0%,
+        var(--sys-color-cdt-base-container) 50%,
+        transparent
+      );
   }
 
   .scroll-button-container.right {
     right: 0;
-    background: linear-gradient(
-      90deg,
-      transparent,
-      var(--sys-color-cdt-base-container) 50%
-    );
+    background:
+      linear-gradient(
+        90deg,
+        transparent,
+        var(--sys-color-cdt-base-container) 50%
+      );
     justify-content: flex-end;
   }
 }

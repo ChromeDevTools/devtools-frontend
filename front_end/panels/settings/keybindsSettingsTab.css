@@ -10,7 +10,7 @@
 }
 
 .keybinds-key {
-  display:flex;
+  display: flex;
   align-items: center;
   justify-content: center;
   height: var(--sys-size-11);
@@ -19,14 +19,14 @@
   white-space: nowrap;
   border-radius: var(--sys-shape-corner-small);
   background: var(--sys-color-tonal-container);
-  padding: 0px var(--sys-size-4);
+  padding: 0 var(--sys-size-4);
 }
 
 .keybinds-list-item {
   margin: 0 var(--sys-size-6);
   padding: var(--sys-size-4) 0;
   display: grid;
-  grid-template-rows: 1fr ;
+  grid-template-rows: 1fr;
   grid-template-columns: 1fr 30px 2fr 30px 30px;
 }
 

@@ -18,7 +18,8 @@
   }
 }
 
-.exclude-subfolders-text, .file-system-list-empty {
+.exclude-subfolders-text,
+.file-system-list-empty {
   padding: 0 var(--sys-size-6);
   height: var(--sys-size-13);
 }

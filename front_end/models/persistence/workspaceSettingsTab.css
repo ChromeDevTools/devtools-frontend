@@ -4,7 +4,8 @@
  * found in the LICENSE file.
  */
 
-.mappings-info, .folder-exclude-pattern {
+.mappings-info,
+.folder-exclude-pattern {
   height: var(--settings-single-item-height);
 }
 

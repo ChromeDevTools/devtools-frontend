@@ -1,11 +1,20 @@
 var fs = require('fs');
+var getHomedir = require('./homedir');
 var path = require('path');
 var caller = require('./caller');
 var nodeModulesPaths = require('./node-modules-paths');
 var normalizeOptions = require('./normalize-options');
 var isCore = require('is-core-module');
 
-var realpathFS = fs.realpath && typeof fs.realpath.native === 'function' ? fs.realpath.native : fs.realpath;
+var realpathFS = process.platform !== 'win32' && fs.realpath && typeof fs.realpath.native === 'function' ? fs.realpath.native : fs.realpath;
+
+var homedir = getHomedir();
+var defaultPaths = function () {
+    return [
+        path.join(homedir, '.node_modules'),
+        path.join(homedir, '.node_libraries')
+    ];
+};
 
 var defaultIsFile = function isFile(file, cb) {
     fs.stat(file, function (err, stat) {
@@ -98,7 +107,7 @@ module.exports = function resolve(x, options, callback) {
     var basedir = opts.basedir || path.dirname(caller());
     var parent = opts.filename || basedir;
 
-    opts.paths = opts.paths || [];
+    opts.paths = opts.paths || defaultPaths();
 
     // ensure that `basedir` is an absolute path at this point, resolving against the process' current working directory
     var absoluteStart = path.resolve(basedir);

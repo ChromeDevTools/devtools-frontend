@@ -28,14 +28,14 @@ node_action("generate_css_vars") {
 }
 
 node_action("optimize_images") {
-  script = "node_modules/rollup/dist/bin/rollup"
+  script = "node_modules/@rollup/wasm-node/dist/bin/rollup"
 
   _bundled_entrypoint = target_gen_dir + "/Images.prebundle.js"
   _output_file_location = target_gen_dir + "/Images.js"
 
   inputs = [
     _bundled_entrypoint,
-    "rollup.config.js",
+    "rollup.config.mjs",
     devtools_location_prepend + "node_modules/svgo/package.json",
   ]
   foreach(svg_image, devtools_src_svg_files) {
@@ -53,7 +53,7 @@ node_action("optimize_images") {
     # and instead looks if `stderr` is empty.
     "--silent",
     "--config",
-    rebase_path("rollup.config.js", root_build_dir),
+    rebase_path("rollup.config.mjs", root_build_dir),
     "--input",
     rebase_path(_bundled_entrypoint, root_build_dir),
     "--file",

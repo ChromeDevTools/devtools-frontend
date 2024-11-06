@@ -1,30 +1,39 @@
 var isCore = require('is-core-module');
 var fs = require('fs');
 var path = require('path');
+var getHomedir = require('./homedir');
 var caller = require('./caller');
 var nodeModulesPaths = require('./node-modules-paths');
 var normalizeOptions = require('./normalize-options');
 
-var realpathFS = fs.realpathSync && typeof fs.realpathSync.native === 'function' ? fs.realpathSync.native : fs.realpathSync;
+var realpathFS = process.platform !== 'win32' && fs.realpathSync && typeof fs.realpathSync.native === 'function' ? fs.realpathSync.native : fs.realpathSync;
+
+var homedir = getHomedir();
+var defaultPaths = function () {
+    return [
+        path.join(homedir, '.node_modules'),
+        path.join(homedir, '.node_libraries')
+    ];
+};
 
 var defaultIsFile = function isFile(file) {
     try {
-        var stat = fs.statSync(file);
+        var stat = fs.statSync(file, { throwIfNoEntry: false });
     } catch (e) {
         if (e && (e.code === 'ENOENT' || e.code === 'ENOTDIR')) return false;
         throw e;
     }
-    return stat.isFile() || stat.isFIFO();
+    return !!stat && (stat.isFile() || stat.isFIFO());
 };
 
 var defaultIsDir = function isDirectory(dir) {
     try {
-        var stat = fs.statSync(dir);
+        var stat = fs.statSync(dir, { throwIfNoEntry: false });
     } catch (e) {
         if (e && (e.code === 'ENOENT' || e.code === 'ENOTDIR')) return false;
         throw e;
     }
-    return stat.isDirectory();
+    return !!stat && stat.isDirectory();
 };
 
 var defaultRealpathSync = function realpathSync(x) {
@@ -82,7 +91,7 @@ module.exports = function resolveSync(x, options) {
     var basedir = opts.basedir || path.dirname(caller());
     var parent = opts.filename || basedir;
 
-    opts.paths = opts.paths || [];
+    opts.paths = opts.paths || defaultPaths();
 
     // ensure that `basedir` is an absolute path at this point, resolving against the process' current working directory
     var absoluteStart = maybeRealpathSync(realpathSync, path.resolve(basedir), opts);

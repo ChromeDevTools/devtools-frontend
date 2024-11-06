@@ -55,14 +55,14 @@ devtools_entrypoint("bundle") {
 }
 
 node_action("bundled_library") {
-  script = "node_modules/rollup/dist/bin/rollup"
+  script = "node_modules/@rollup/wasm-node/dist/bin/rollup"
 
   _bundled_entrypoint = target_gen_dir + "/injected.js"
   _output_file_location = target_gen_dir + "/injected.generated.js"
 
   inputs = [
     _bundled_entrypoint,
-    "rollup.config.js",
+    "rollup.config.mjs",
   ]
 
   deps = [ ":bundle" ]
@@ -73,7 +73,7 @@ node_action("bundled_library") {
     # and instead looks if `stderr` is empty.
     "--silent",
     "--config",
-    rebase_path("rollup.config.js", root_build_dir),
+    rebase_path("rollup.config.mjs", root_build_dir),
     "--input",
     rebase_path(_bundled_entrypoint, root_build_dir),
     "--file",

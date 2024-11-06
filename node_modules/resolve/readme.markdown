@@ -1,18 +1,22 @@
-# resolve
+# resolve <sup>[![Version Badge][2]][1]</sup>
 
-implements the [node `require.resolve()`
-algorithm](https://nodejs.org/api/modules.html#modules_all_together)
-such that you can `require.resolve()` on behalf of a file asynchronously and
-synchronously
+implements the [node `require.resolve()` algorithm](https://nodejs.org/api/modules.html#modules_all_together) such that you can `require.resolve()` on behalf of a file asynchronously and synchronously
 
-[![build status](https://secure.travis-ci.org/browserify/resolve.png)](http://travis-ci.org/browserify/resolve)
+[![github actions][actions-image]][actions-url]
+[![coverage][codecov-image]][codecov-url]
+[![dependency status][5]][6]
+[![dev dependency status][7]][8]
+[![License][license-image]][license-url]
+[![Downloads][downloads-image]][downloads-url]
+
+[![npm badge][11]][1]
 
 # example
 
 asynchronously resolve:
 
 ```js
-var resolve = require('resolve');
+var resolve = require('resolve/async'); // or, require('resolve')
 resolve('tap', { basedir: __dirname }, function (err, res) {
     if (err) console.error(err);
     else console.log(res);
@@ -27,8 +31,8 @@ $ node example/async.js
 synchronously resolve:
 
 ```js
-var resolve = require('resolve');
-var res = resolve.sync('tap', { basedir: __dirname });
+var resolve = require('resolve/sync'); // or, `require('resolve').sync
+var res = resolve('tap', { basedir: __dirname });
 console.log(res);
 ```
 
@@ -41,6 +45,8 @@ $ node example/sync.js
 
 ```js
 var resolve = require('resolve');
+var async = require('resolve/async');
+var sync = require('resolve/sync');
 ```
 
 For both the synchronous and asynchronous methods, errors may have any of the following `err.code` values:
@@ -67,7 +73,7 @@ options are:
 
 * opts.isFile - function to asynchronously test whether a file exists
 
-* opts.isDirectory - function to asynchronously test whether a directory exists
+* opts.isDirectory - function to asynchronously test whether a file exists and is a directory
 
 * opts.realpath - function to asynchronously resolve a potential symlink to its real path
 
@@ -79,7 +85,7 @@ options are:
 * `opts.packageFilter(pkg, pkgfile, dir)` - transform the parsed package.json contents before looking at the "main" field
   * pkg - package data
   * pkgfile - path to package.json
-  * dir - directory for package.json
+  * dir - directory that contains package.json
 
 * `opts.pathFilter(pkg, path, relativePath)` - transform a path within a package
   * pkg - package data
@@ -177,7 +183,7 @@ options are:
 
 * opts.isFile - function to synchronously test whether a file exists
 
-* opts.isDirectory - function to synchronously test whether a directory exists
+* opts.isDirectory - function to synchronously test whether a file exists and is a directory
 
 * opts.realpathSync - function to synchronously resolve a potential symlink to its real path
 
@@ -187,7 +193,7 @@ options are:
 
 * `opts.packageFilter(pkg, dir)` - transform the parsed package.json contents before looking at the "main" field
   * pkg - package data
-  * dir - directory for package.json (Note: the second argument will change to "pkgfile" in v2)
+  * dir - directory that contains package.json (Note: the second argument will change to "pkgfile" in v2)
 
 * `opts.pathFilter(pkg, path, relativePath)` - transform a path within a package
   * pkg - package data
@@ -277,3 +283,19 @@ npm install resolve
 # license
 
 MIT
+
+[1]: https://npmjs.org/package/resolve
+[2]: https://versionbadg.es/browserify/resolve.svg
+[5]: https://david-dm.org/browserify/resolve.svg
+[6]: https://david-dm.org/browserify/resolve
+[7]: https://david-dm.org/browserify/resolve/dev-status.svg
+[8]: https://david-dm.org/browserify/resolve#info=devDependencies
+[11]: https://nodei.co/npm/resolve.png?downloads=true&stars=true
+[license-image]: https://img.shields.io/npm/l/resolve.svg
+[license-url]: LICENSE
+[downloads-image]: https://img.shields.io/npm/dm/resolve.svg
+[downloads-url]: https://npm-stat.com/charts.html?package=resolve
+[codecov-image]: https://codecov.io/gh/browserify/resolve/branch/main/graphs/badge.svg
+[codecov-url]: https://app.codecov.io/gh/browserify/resolve/
+[actions-image]: https://img.shields.io/endpoint?url=https://github-actions-badge-u3jn4tfpocch.runkit.sh/browserify/resolve
+[actions-url]: https://github.com/browserify/resolve/actions

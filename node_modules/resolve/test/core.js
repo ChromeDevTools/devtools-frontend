@@ -1,6 +1,10 @@
 var test = require('tape');
 var keys = require('object-keys');
+var semver = require('semver');
+
 var resolve = require('../');
+
+var brokenNode = semver.satisfies(process.version, '11.11 - 11.13');
 
 test('core modules', function (t) {
     t.test('isCore()', function (st) {
@@ -22,10 +26,13 @@ test('core modules', function (t) {
 
         for (var i = 0; i < cores.length; ++i) {
             var mod = cores[i];
+            // note: this must be require, not require.resolve, due to https://github.com/nodejs/node/issues/43274
             var requireFunc = function () { require(mod); }; // eslint-disable-line no-loop-func
-            console.log(mod, resolve.core, resolve.core[mod]);
+            t.comment(mod + ': ' + resolve.core[mod]);
             if (resolve.core[mod]) {
                 st.doesNotThrow(requireFunc, mod + ' supported; requiring does not throw');
+            } else if (brokenNode) {
+                st.ok(true, 'this version of node is broken: attempting to require things that fail to resolve breaks "home_paths" tests');
             } else {
                 st.throws(requireFunc, mod + ' not supported; requiring throws');
             }

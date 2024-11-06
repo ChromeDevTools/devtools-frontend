@@ -1,17 +1,17 @@
 import { Pattern, MicromatchOptions, PatternRe } from '../../types';
 import Settings from '../../settings';
-export declare type PatternSegment = StaticPatternSegment | DynamicPatternSegment;
-declare type StaticPatternSegment = {
+export type PatternSegment = StaticPatternSegment | DynamicPatternSegment;
+type StaticPatternSegment = {
     dynamic: false;
     pattern: Pattern;
 };
-declare type DynamicPatternSegment = {
+type DynamicPatternSegment = {
     dynamic: true;
     pattern: Pattern;
     patternRe: PatternRe;
 };
-export declare type PatternSection = PatternSegment[];
-export declare type PatternInfo = {
+export type PatternSection = PatternSegment[];
+export type PatternInfo = {
     /**
      * Indicates that the pattern has a globstar (more than a single section).
      */

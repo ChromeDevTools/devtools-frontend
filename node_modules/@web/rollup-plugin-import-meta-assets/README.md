@@ -18,6 +18,16 @@ This doesn't work in the browser without transformation. This plugin makes it po
 const myImg = new URL('./assets/my-img.png', import.meta.url);
 ```
 
+### Dynamic variables
+
+You can also use dynamic variables like so:
+
+```js
+const myImg = new URL(`./assets/${myImg}.png`, import.meta.url);
+```
+
+Please consult the [dynamic-import-vars plugin](https://github.com/rollup/plugins/blob/master/packages/dynamic-import-vars) documentation for options and limitations.
+
 ## Install
 
 Using npm:

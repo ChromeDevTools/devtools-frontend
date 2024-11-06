@@ -72,7 +72,8 @@ def typescript_compiler_path():
 
 
 def hosted_mode_script_path():
-    return path.join(devtools_root_path(), 'scripts', 'hosted_mode', 'server.js')
+    return path.join(devtools_root_path(), 'scripts', 'hosted_mode',
+                     'server.js')
 
 
 def esbuild_path():
@@ -94,13 +95,15 @@ def downloaded_chrome_binary_path():
 
 
 def license_checker_path():
-    return path.join(node_modules_path(), 'license-checker', 'bin', 'license-checker')
+    return path.join(node_modules_path(), 'license-checker', 'bin',
+                     'license-checker')
 
 
 def rollup_path():
     return path.join(
         node_modules_path(),
-        'rollup',
+        '@rollup',
+        'wasm-node',
         'dist',
         'bin',
         'rollup',
@@ -116,4 +119,5 @@ def package_json_path():
 
 
 def browser_protocol_path():
-    return path.join(third_party_path(), 'blink', 'public', 'devtools_protocol', 'browser_protocol.pdl')
+    return path.join(third_party_path(), 'blink', 'public',
+                     'devtools_protocol', 'browser_protocol.pdl')

@@ -4,5 +4,10 @@ import { Pattern } from '../types';
  */
 export declare function unixify(filepath: string): string;
 export declare function makeAbsolute(cwd: string, filepath: string): string;
-export declare function escape(pattern: Pattern): Pattern;
 export declare function removeLeadingDotSegment(entry: string): string;
+export declare const escape: typeof escapeWindowsPath;
+export declare function escapeWindowsPath(pattern: Pattern): Pattern;
+export declare function escapePosixPath(pattern: Pattern): Pattern;
+export declare const convertPathToPattern: typeof convertWindowsPathToPattern;
+export declare function convertWindowsPathToPattern(filepath: string): Pattern;
+export declare function convertPosixPathToPattern(filepath: string): Pattern;

@@ -10,7 +10,6 @@ This package provides methods for traversing the file system and returning pathn
 <summary><strong>Details</strong></summary>
 
 * [Highlights](#highlights)
-* [Donation](#donation)
 * [Old and modern mode](#old-and-modern-mode)
 * [Pattern syntax](#pattern-syntax)
   * [Basic syntax](#basic-syntax)
@@ -25,7 +24,8 @@ This package provides methods for traversing the file system and returning pathn
   * [Helpers](#helpers)
     * [generateTasks](#generatetaskspatterns-options)
     * [isDynamicPattern](#isdynamicpatternpattern-options)
-    * [escapePath](#escapepathpattern)
+    * [escapePath](#escapepathpath)
+	* [convertPathToPattern](#convertpathtopatternpath)
 * [Options](#options-3)
   * [Common](#common)
     * [concurrency](#concurrency)
@@ -74,12 +74,6 @@ This package provides methods for traversing the file system and returning pathn
 * Object mode. Can return more than just strings.
 * Error-tolerant.
 
-## Donation
-
-Do you like this project? Support it by donating, creating an issue or pull request.
-
-[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)][paypal_mrmlnc]
-
 ## Old and modern mode
 
 This package works in two modes, depending on the environment in which it is used.
@@ -95,7 +89,7 @@ The modern mode is faster. Learn more about the [internal mechanism][nodelib_fs_
 
 There is more than one form of syntax: basic and advanced. Below is a brief overview of the supported features. Also pay attention to our [FAQ](#faq).
 
-> :book: This package uses a [`micromatch`][micromatch] as a library for pattern matching.
+> :book: This package uses [`micromatch`][micromatch] as a library for pattern matching.
 
 ### Basic syntax
 
@@ -142,6 +136,8 @@ npm install fast-glob
 
 ```js
 fg(patterns, [options])
+fg.async(patterns, [options])
+fg.glob(patterns, [options])
 ```
 
 Returns a `Promise` with an array of matching entries.
@@ -158,6 +154,7 @@ const entries = await fg(['.editorconfig', '**/index.js'], { dot: true });
 
 ```js
 fg.sync(patterns, [options])
+fg.globSync(patterns, [options])
 ```
 
 Returns an array of matching entries.
@@ -174,6 +171,7 @@ const entries = fg.sync(['.editorconfig', '**/index.js'], { dot: true });
 
 ```js
 fg.stream(patterns, [options])
+fg.globStream(patterns, [options])
 ```
 
 Returns a [`ReadableStream`][node_js_stream_readable_streams] when the `data` event will be emitted with matching entry.
@@ -264,21 +262,57 @@ Any correct pattern.
 
 See [Options](#options-3) section.
 
-#### `escapePath(pattern)`
+#### `escapePath(path)`
 
-Returns a path with escaped special characters (`*?|(){}[]`, `!` at the beginning of line, `@+!` before the opening parenthesis).
+Returns the path with escaped special characters depending on the platform.
+
+* Posix:
+  * `*?|(){}[]`;
+  * `!` at the beginning of line;
+  * `@+!` before the opening parenthesis;
+  * `\\` before non-special characters;
+* Windows:
+  * `(){}[]`
+  * `!` at the beginning of line;
+  * `@+!` before the opening parenthesis;
+  * Characters like `*?|` cannot be used in the path ([windows_naming_conventions][windows_naming_conventions]), so they will not be escaped;
 
 ```js
-fg.escapePath('!abc'); // \\!abc
-fg.escapePath('C:/Program Files (x86)'); // C:/Program Files \\(x86\\)
+fg.escapePath('!abc');
+// \\!abc
+fg.escapePath('[OpenSource] mrmlnc – fast-glob (Deluxe Edition) 2014') + '/*.flac'
+// \\[OpenSource\\] mrmlnc – fast-glob \\(Deluxe Edition\\) 2014/*.flac
+
+fg.posix.escapePath('C:\\Program Files (x86)\\**\\*');
+// C:\\\\Program Files \\(x86\\)\\*\\*\\*
+fg.win32.escapePath('C:\\Program Files (x86)\\**\\*');
+// Windows: C:\\Program Files \\(x86\\)\\**\\*
 ```
 
-##### pattern
+#### `convertPathToPattern(path)`
 
-* Required: `true`
-* Type: `string`
+Converts a path to a pattern depending on the platform, including special character escaping.
 
-Any string, for example, a path to a file.
+* Posix. Works similarly to the `fg.posix.escapePath` method.
+* Windows. Works similarly to the `fg.win32.escapePath` method, additionally converting backslashes to forward slashes in cases where they are not escape characters (`!()+@{}[]`).
+
+```js
+fg.convertPathToPattern('[OpenSource] mrmlnc – fast-glob (Deluxe Edition) 2014') + '/*.flac';
+// \\[OpenSource\\] mrmlnc – fast-glob \\(Deluxe Edition\\) 2014/*.flac
+
+fg.convertPathToPattern('C:/Program Files (x86)/**/*');
+// Posix: C:/Program Files \\(x86\\)/\\*\\*/\\*
+// Windows: C:/Program Files \\(x86\\)/**/*
+
+fg.convertPathToPattern('C:\\Program Files (x86)\\**\\*');
+// Posix: C:\\\\Program Files \\(x86\\)\\*\\*\\*
+// Windows: C:/Program Files \\(x86\\)/**/*
+
+fg.posix.convertPathToPattern('\\\\?\\c:\\Program Files (x86)') + '/**/*';
+// Posix: \\\\\\?\\\\c:\\\\Program Files \\(x86\\)/**/* (broken pattern)
+fg.win32.convertPathToPattern('\\\\?\\c:\\Program Files (x86)') + '/**/*';
+// Windows: //?/c:/Program Files \\(x86\\)/**/*
+```
 
 ## Options
 
@@ -292,6 +326,22 @@ Any string, for example, a path to a file.
 Specifies the maximum number of concurrent requests from a reader to read directories.
 
 > :book: The higher the number, the higher the performance and load on the file system. If you want to read in quiet mode, set the value to a comfortable number or `1`.
+
+<details>
+
+<summary>More details</summary>
+
+In Node, there are [two types of threads][nodejs_thread_pool]: Event Loop (code) and a Thread Pool (fs, dns, …). The thread pool size controlled by the `UV_THREADPOOL_SIZE` environment variable. Its default size is 4 ([documentation][libuv_thread_pool]). The pool is one for all tasks within a single Node process.
+
+Any code can make 4 real concurrent accesses to the file system. The rest of the FS requests will wait in the queue.
+
+> :book: Each new instance of FG in the same Node process will use the same Thread pool.
+
+But this package also has the `concurrency` option. This option allows you to control the number of concurrent accesses to the FS at the package level. By default, this package has a value equal to the number of cores available for the current Node process. This allows you to set a value smaller than the pool size (`concurrency: 1`) or, conversely, to prepare tasks for the pool queue more quickly (`concurrency: Number.POSITIVE_INFINITY`).
+
+So, in fact, this package can **only make 4 concurrent requests to the FS**. You can increase this value by using an environment variable (`UV_THREADPOOL_SIZE`), but in practice this does not give a multiple advantage.
+
+</details>
 
 #### cwd
 
@@ -653,11 +703,11 @@ Always use forward-slashes in glob expressions (patterns and [`ignore`](#ignore)
 ```ts
 [
 	'directory/*',
-	path.join(process.cwd(), '**').replace(/\\/g, '/')
+	fg.convertPathToPattern(process.cwd()) + '/**'
 ]
 ```
 
-> :book: Use the [`normalize-path`][npm_normalize_path] or the [`unixify`][npm_unixify] package to convert Windows-style path to a Unix-style path.
+> :book: Use the [`.convertPathToPattern`](#convertpathtopatternpath) package to convert Windows-style path to a Unix-style path.
 
 Read more about [matching with backslashes][micromatch_backslashes].
 
@@ -678,7 +728,7 @@ Refers to Bash. You need to escape special characters:
 fg.sync(['\\(special-*file\\).txt']) // ['(special-*file).txt']
 ```
 
-Read more about [matching special characters as literals][picomatch_matching_special_characters_as_literals].
+Read more about [matching special characters as literals][picomatch_matching_special_characters_as_literals]. Or use the [`.escapePath`](#escapepathpath).
 
 ## How to exclude directory from reading?
 
@@ -704,11 +754,15 @@ You have to understand that if you write the pattern to exclude directories, the
 
 ## How to use UNC path?
 
-You cannot use [Uniform Naming Convention (UNC)][unc_path] paths as patterns (due to syntax), but you can use them as [`cwd`](#cwd) directory.
+You cannot use [Uniform Naming Convention (UNC)][unc_path] paths as patterns (due to syntax) directly, but you can use them as [`cwd`](#cwd) directory or use the `fg.convertPathToPattern` method.
 
 ```ts
+// cwd
 fg.sync('*', { cwd: '\\\\?\\C:\\Python27' /* or //?/C:/Python27 */ });
 fg.sync('Python27/*', { cwd: '\\\\?\\C:\\' /* or //?/C:/ */ });
+
+// .convertPathToPattern
+fg.sync(fg.convertPathToPattern('\\\\?\\c:\\Python27') + '/*');
 ```
 
 ## Compatible with `node-glob`?
@@ -735,25 +789,10 @@ fg.sync('Python27/*', { cwd: '\\\\?\\C:\\' /* or //?/C:/ */ });
 
 ## Benchmarks
 
-### Server
+You can see results [here](https://github.com/mrmlnc/fast-glob/actions/workflows/benchmark.yml?query=branch%3Amaster) for every commit into the `main` branch.
 
-Link: [Vultr Bare Metal][vultr_pricing_baremetal]
-
-* Processor: E3-1270v6 (8 CPU)
-* RAM: 32GB
-* Disk: SSD ([Intel DC S3520 SSDSC2BB240G7][intel_ssd])
-
-You can see results [here][github_gist_benchmark_server] for latest release.
-
-### Nettop
-
-Link: [Zotac bi323][zotac_bi323]
-
-* Processor: Intel N3150 (4 CPU)
-* RAM: 8GB
-* Disk: SSD ([Silicon Power SP060GBSS3S55S25][silicon_power_ssd])
-
-You can see results [here][github_gist_benchmark_nettop] for latest release.
+* **Product benchmark** – comparison with the main competitors.
+* **Regress benchmark** – regression between the current version and the version from the npm registry.
 
 ## Changelog
 
@@ -764,12 +803,9 @@ See the [Releases section of our GitHub project][github_releases] for changelog 
 This software is released under the terms of the MIT license.
 
 [bash_hackers_syntax_expansion_brace]: https://wiki.bash-hackers.org/syntax/expansion/brace
-[github_gist_benchmark_nettop]: https://gist.github.com/mrmlnc/f06246b197f53c356895fa35355a367c#file-fg-benchmark-nettop-product-txt
-[github_gist_benchmark_server]: https://gist.github.com/mrmlnc/f06246b197f53c356895fa35355a367c#file-fg-benchmark-server-product-txt
 [github_releases]: https://github.com/mrmlnc/fast-glob/releases
 [glob_definition]: https://en.wikipedia.org/wiki/Glob_(programming)
 [glob_linux_man]: http://man7.org/linux/man-pages/man3/glob.3.html
-[intel_ssd]: https://ark.intel.com/content/www/us/en/ark/products/93012/intel-ssd-dc-s3520-series-240gb-2-5in-sata-6gb-s-3d1-mlc.html
 [micromatch_backslashes]: https://github.com/micromatch/micromatch#backslashes
 [micromatch_braces]: https://github.com/micromatch/braces
 [micromatch_extended_globbing]: https://github.com/micromatch/micromatch#extended-globbing
@@ -783,13 +819,12 @@ This software is released under the terms of the MIT license.
 [nodelib_fs_scandir_old_and_modern_modern]: https://github.com/nodelib/nodelib/blob/master/packages/fs/fs.scandir/README.md#old-and-modern-mode
 [npm_normalize_path]: https://www.npmjs.com/package/normalize-path
 [npm_unixify]: https://www.npmjs.com/package/unixify
-[paypal_mrmlnc]:https://paypal.me/mrmlnc
 [picomatch_matching_behavior]: https://github.com/micromatch/picomatch#matching-behavior-vs-bash
 [picomatch_matching_special_characters_as_literals]: https://github.com/micromatch/picomatch#matching-special-characters-as-literals
 [picomatch_posix_brackets]: https://github.com/micromatch/picomatch#posix-brackets
 [regular_expressions_brackets]: https://www.regular-expressions.info/brackets.html
-[silicon_power_ssd]: https://www.silicon-power.com/web/product-1
-[unc_path]: https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-dtyp/62e862f4-2a51-452e-8eeb-dc4ff5ee33cc
-[vultr_pricing_baremetal]: https://www.vultr.com/pricing/baremetal
+[unc_path]: https://learn.microsoft.com/openspecs/windows_protocols/ms-dtyp/62e862f4-2a51-452e-8eeb-dc4ff5ee33cc
 [wikipedia_case_sensitivity]: https://en.wikipedia.org/wiki/Case_sensitivity
-[zotac_bi323]: https://www.zotac.com/ee/product/mini_pcs/zbox-bi323
+[nodejs_thread_pool]: https://nodejs.org/en/docs/guides/dont-block-the-event-loop
+[libuv_thread_pool]: http://docs.libuv.org/en/v1.x/threadpool.html
+[windows_naming_conventions]: https://learn.microsoft.com/en-us/windows/win32/fileio/naming-a-file#naming-conventions

@@ -2267,9 +2267,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         false;
 
     const containerType = styles.get('container-type');
-    const contain = styles.get('contain');
-    const isContainer =
-        SDK.CSSContainerQuery.getQueryAxis(`${containerType} ${contain}`) !== SDK.CSSContainerQuery.QueryAxis.NONE;
+    const isContainer = containerType && containerType !== '' && containerType !== 'normal';
 
     if (isGrid) {
       this.pushGridAdorner(this.tagTypeContext, isSubgrid);

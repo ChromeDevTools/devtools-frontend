@@ -64,9 +64,13 @@ const UIStrings = {
    */
   sendFeedback: 'Send feedback',
   /**
-   *@description Announcement text for screen readers when the chat is cleared.
+   *@description Announcement text for screen readers when a new chat is created.
    */
-  chatCleared: 'Chat cleared',
+  newChatCreated: 'New chat created',
+  /**
+   *@description Announcement text for screen readers when the chat is deleted.
+   */
+  chatDeleted: 'Chat deleted',
   /**
    *@description AI assistance UI text creating selecting a history entry.
    */
@@ -215,7 +219,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
       onFeedbackSubmit: this.#handleFeedbackSubmit.bind(this),
       onCancelClick: this.#cancel.bind(this),
       onContextClick: this.#handleContextClick.bind(this),
-      onNewConversation: this.#clearMessages.bind(this),
+      onNewConversation: this.#newChat.bind(this),
       canShowFeedbackForm: this.#serverSideLoggingEnabled,
       userInfo: {
         accountImage: syncInfo.accountImage,
@@ -233,7 +237,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
     const leftToolbar = new UI.Toolbar.Toolbar('freestyler-left-toolbar', toolbarContainer);
     const rightToolbar = new UI.Toolbar.Toolbar('freestyler-right-toolbar', toolbarContainer);
 
-    this.#newChatButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, this.#clearMessages.bind(this));
+    this.#newChatButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, this.#newChat.bind(this));
     leftToolbar.appendToolbarItem(this.#newChatButton);
     leftToolbar.appendSeparator();
 
@@ -642,6 +646,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
     this.#viewProps.agentType = undefined;
     this.#onContextSelectionChanged();
     this.doUpdate();
+    UI.ARIAUtils.alert(i18nString(UIStrings.chatDeleted));
   }
 
   async #switchAgent(agent: AiAgent<unknown>): Promise<void> {
@@ -653,7 +658,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
     await this.#doConversation(agent.runFromHistory());
   }
 
-  #clearMessages(): void {
+  #newChat(): void {
     this.#viewProps.messages = [];
     this.#viewProps.isLoading = false;
     if (this.#currentAgent) {
@@ -662,7 +667,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
     }
     this.#cancel();
     this.doUpdate();
-    UI.ARIAUtils.alert(i18nString(UIStrings.chatCleared));
+    UI.ARIAUtils.alert(i18nString(UIStrings.newChatCreated));
   }
 
   #runAbortController = new AbortController();

@@ -5,14 +5,6 @@ import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 
 import {SecurityPanelSidebarTreeElement} from './SecurityPanelSidebarTreeElement.js';
 
-export class ShowCookieReportEvent extends Event {
-  static readonly eventName = 'showcookiereport';
-
-  constructor() {
-    super(ShowCookieReportEvent.eventName, {bubbles: true, composed: true});
-  }
-}
-
 export class CookieReportTreeElement extends SecurityPanelSidebarTreeElement {
   constructor(title: string) {
     super(title);
@@ -20,7 +12,7 @@ export class CookieReportTreeElement extends SecurityPanelSidebarTreeElement {
   }
 
   override onselect(): boolean {
-    this.listItemElement.dispatchEvent(new ShowCookieReportEvent());
+    this.listItemElement.dispatchEvent(new CustomEvent('showCookieReport', {bubbles: true, composed: true}));
     return true;
   }
 }

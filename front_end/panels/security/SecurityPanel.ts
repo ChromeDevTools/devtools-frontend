@@ -14,6 +14,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as LitHtml from '../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
+import {CookieReportView} from './CookieReportView.js';
 import lockIconStyles from './lockIcon.css.js';
 import mainViewStyles from './mainView.css.js';
 import {ShowOriginEvent} from './OriginTreeElement.js';
@@ -534,6 +535,7 @@ export type ViewInput = {
   panel: SecurityPanel,
 };
 export type ViewOutput = {
+  setVisibleView: (view: UI.Widget.VBox) => void,
   splitWidget: UI.SplitWidget.SplitWidget,
   mainView: SecurityMainView,
   visibleView: UI.Widget.VBox|null,
@@ -560,7 +562,7 @@ export class SecurityPanel extends UI.Panel.Panel implements SDK.TargetManager.S
     <devtools-split-widget
     .options=${{vertical: true, settingName: 'security'}}
     ${UI.Widget.widgetRef(UI.SplitWidget.SplitWidget, e => {output.splitWidget = e;})}>
-          <devtools-widget
+        <devtools-widget
           slot="main"
           .widgetClass=${SecurityMainView}
           .widgetParams=${[input.panel] as SecurityMainViewProps}
@@ -569,6 +571,7 @@ export class SecurityPanel extends UI.Panel.Panel implements SDK.TargetManager.S
         <devtools-widget
           slot="sidebar"
           .widgetClass=${SecurityPanelSidebar}
+          @showCookieReport=${()=>output.setVisibleView(new CookieReportView())}
           ${UI.Widget.widgetRef(SecurityPanelSidebar, e => {output.sidebar = e;})}>
         </devtools-widget>
     </devtools-split-widget>`,
@@ -654,6 +657,7 @@ export class SecurityPanel extends UI.Panel.Panel implements SDK.TargetManager.S
     // The sidebar element will trigger displaying the main view. Rather than making a redundant call to display the main view, we rely on this.
     this.sidebar.securityOverviewElement.select(true);
   }
+
   showOrigin(origin: Platform.DevToolsPath.UrlString): void {
     const originState = this.origins.get(origin);
     if (!originState) {
@@ -821,7 +825,9 @@ export class SecurityPanel extends UI.Panel.Panel implements SDK.TargetManager.S
     const {frame} = event.data;
     const request = this.lastResponseReceivedForLoaderId.get(frame.loaderId);
 
-    this.selectAndSwitchToMainView();
+    if (!(this.visibleView instanceof CookieReportView)) {
+      this.selectAndSwitchToMainView();
+    }
     this.sidebar.clearOrigins();
     this.origins.clear();
     this.lastResponseReceivedForLoaderId.clear();

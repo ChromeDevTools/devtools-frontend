@@ -51,6 +51,7 @@ export class ComputedStyleModel extends Common.ObjectWrapper.ObjectWrapper<Event
         cssModel.addEventListener(SDK.CSSModel.Events.MediaQueryResultChanged, this.onComputedStyleChanged, this),
         cssModel.addEventListener(SDK.CSSModel.Events.PseudoStateForced, this.onComputedStyleChanged, this),
         cssModel.addEventListener(SDK.CSSModel.Events.ModelWasEnabled, this.onComputedStyleChanged, this),
+        cssModel.addEventListener(SDK.CSSModel.Events.ComputedStyleUpdated, this.onComputedStyleChanged, this),
         domModel.addEventListener(SDK.DOMModel.Events.DOMMutated, this.onDOMModelChanged, this),
         resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.FrameResized, this.onFrameResized, this),
       ];
@@ -59,6 +60,12 @@ export class ComputedStyleModel extends Common.ObjectWrapper.ObjectWrapper<Event
 
   private onComputedStyleChanged(event: Common.EventTarget.EventTargetEvent<ComputedStyleChangedEvent>|null): void {
     delete this.computedStylePromise;
+    // If the event contains `nodeId` and that's not the same as this node's id
+    // we don't emit the COMPUTED_STYLE_CHANGED event.
+    if (event?.data && 'nodeId' in event.data && event.data.nodeId !== this.nodeInternal?.id) {
+      return;
+    }
+
     this.dispatchEventToListeners(Events.COMPUTED_STYLE_CHANGED, event?.data ?? null);
   }
 
@@ -125,8 +132,8 @@ export const enum Events {
 }
 
 export type ComputedStyleChangedEvent = SDK.CSSStyleSheetHeader.CSSStyleSheetHeader|
-                                        SDK.CSSModel.StyleSheetChangedEvent|void|SDK.CSSModel.PseudoStateForcedEvent|
-                                        null;
+                                        SDK.CSSModel.StyleSheetChangedEvent|SDK.CSSModel.PseudoStateForcedEvent|
+                                        SDK.CSSModel.ComputedStyleUpdatedEvent|null|void;
 
 export type EventTypes = {
   [Events.COMPUTED_STYLE_CHANGED]: ComputedStyleChangedEvent,

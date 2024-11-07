@@ -291,6 +291,10 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
     fontsWidget.show(this.contentElement);
   }
 
+  #handleNodeChange(event: Common.EventTarget.EventTargetEvent<SDK.DOMModel.DOMNode|null>): void {
+    void this.computedStyleModel.cssModel()?.trackComputedStyleUpdatesForNode(event.data?.id);
+  }
+
   override onResize(): void {
     const isNarrow = this.contentElement.offsetWidth < 260;
     this.#computedStylesTree.classList.toggle('computed-narrow', isNarrow);
@@ -299,6 +303,14 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
   override wasShown(): void {
     super.wasShown();
     this.registerCSSFiles([computedStyleSidebarPaneStyles]);
+
+    void this.computedStyleModel.cssModel()?.trackComputedStyleUpdatesForNode(this.computedStyleModel.node()?.id);
+    UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, this.#handleNodeChange, this);
+  }
+
+  override willHide(): void {
+    void this.computedStyleModel.cssModel()?.trackComputedStyleUpdatesForNode(undefined);
+    UI.Context.Context.instance().removeFlavorChangeListener(SDK.DOMModel.DOMNode, this.#handleNodeChange, this);
   }
 
   override async doUpdate(): Promise<void> {

@@ -200,7 +200,6 @@ UI.ActionRegistration.registerActionExtension({
   contextTypes(): [] {
     return [];
   },
-  setting,
   category: UI.ActionRegistration.ActionCategory.GLOBAL,
   title: i18nLazyString(UIStrings.askAi),
   async loadActionDelegate() {
@@ -230,7 +229,6 @@ UI.ActionRegistration.registerActionExtension({
   contextTypes() {
     return [];
   },
-  setting,
   category: UI.ActionRegistration.ActionCategory.GLOBAL,
   title: i18nLazyString(UIStrings.askAi),
   async loadActionDelegate() {

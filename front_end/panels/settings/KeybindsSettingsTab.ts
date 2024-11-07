@@ -23,7 +23,7 @@ const UIStrings = {
   /**
    *@description Text appearing before a select control offering users their choice of keyboard shortcut presets.
    */
-  matchShortcutsFromPreset: 'Match shortcuts from preset',
+  matchShortcutsFromPreset: 'Shortcut preset',
   /**
    *@description Screen reader label for list of keyboard shortcuts in settings
    */

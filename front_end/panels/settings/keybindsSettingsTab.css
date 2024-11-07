@@ -28,10 +28,7 @@
   display: grid;
   grid-template-rows: 1fr;
   grid-template-columns: 1fr 30px 2fr 30px 30px;
-}
-
-.keybinds-list-item:not(.keybinds-category-header) {
-  border-top: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
 }
 
 .keybinds-list-item:focus-visible {
@@ -43,7 +40,7 @@
 }
 
 .keybinds-list-text.keybinds-action-name {
-  grid-row: 1 / 3;
+  grid-row: 1 / 1;
 }
 
 .keybinds-shortcut,
@@ -108,8 +105,8 @@
   white-space: nowrap;
 }
 
-.keybinds-header-wrapper + .keybinds-list-item-wrapper > .keybinds-list-item {
-  border: none;
+.keybinds-list-item-wrapper + .keybinds-header-wrapper {
+  margin-top: var(--sys-size-9);
 }
 
 .keybinds-list-item-wrapper:has(:not(.keybinds-category-header):hover),

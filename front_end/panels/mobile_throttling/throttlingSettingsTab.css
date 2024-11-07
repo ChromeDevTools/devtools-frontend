@@ -5,6 +5,7 @@
  */
 
 .add-conditions-button {
+  margin-bottom: var(--sys-size-5);
   border: none;
 }
 
@@ -96,21 +97,10 @@
 }
 
 .settings-card-container-wrapper {
-  padding-top: var(--sys-size-8);
   padding-bottom: var(--sys-size-8);
   overflow: auto;
-  scrollbar-width: thin;
-}
-
-@media (max-width: 1000px) {
-  .settings-card-container-wrapper {
-    position: absolute;
-    top: var(--sys-size-8);
-    left: 0;
-    right: 0;
-    bottom: 0;
-    overflow: auto;
-  }
+  position: absolute;
+  inset: var(--sys-size-8) 0 0;
 }
 
 .settings-card-container {

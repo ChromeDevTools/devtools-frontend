@@ -13,7 +13,7 @@
   break-inside: avoid;
   min-width: var(--sys-size-31);
   max-width: var(--sys-size-37);
-  margin: var(--sys-size-3) var(--sys-size-5) var(--sys-size-5) var(--sys-size-5);
+  margin: var(--sys-size-3) var(--sys-size-6) var(--sys-size-5) var(--sys-size-5);
   flex: 1;
 }
 

@@ -74,12 +74,8 @@ div:has(.settings-select) + div:has(.settings-select) {
 .settings-card-container-wrapper {
   padding-bottom: var(--sys-size-8);
   overflow: auto;
-  scrollbar-width: thin;
   position: absolute;
-  top: var(--sys-size-8);
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: var(--sys-size-8) 0 0;
 }
 
 .settings-card-container {

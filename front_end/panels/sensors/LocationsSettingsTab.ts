@@ -161,8 +161,6 @@ export class LocationsSettingsTab extends UI.Widget.VBox implements UI.ListWidge
 
     this.customSetting.set(list);
     this.customSetting.addChangeListener(this.locationsUpdated, this);
-
-    this.setDefaultFocusedElement(addButton);
   }
 
   override wasShown(): void {

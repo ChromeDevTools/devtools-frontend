@@ -9064,6 +9064,8 @@ export namespace Network {
     SchemefulSameSiteUnspecifiedTreatedAsLax = 'SchemefulSameSiteUnspecifiedTreatedAsLax',
     SamePartyFromCrossPartyContext = 'SamePartyFromCrossPartyContext',
     NameValuePairExceedsMaxSize = 'NameValuePairExceedsMaxSize',
+    PortMismatch = 'PortMismatch',
+    SchemeMismatch = 'SchemeMismatch',
   }
 
   /**
@@ -13602,7 +13604,8 @@ export namespace Page {
   }
 
   /**
-   * Fired for top level page lifecycle events such as navigation, load, paint, etc.
+   * Fired for lifecycle events (navigation, load, paint, etc) in the current
+   * target (including local frames).
    */
   export interface LifecycleEventEvent {
     /**
@@ -14794,6 +14797,7 @@ export namespace Storage {
     ExcessiveReportingOrigins = 'excessiveReportingOrigins',
     NoHistograms = 'noHistograms',
     InsufficientBudget = 'insufficientBudget',
+    InsufficientNamedBudget = 'insufficientNamedBudget',
     NoMatchingSourceFilterData = 'noMatchingSourceFilterData',
     NotRegistered = 'notRegistered',
     ProhibitedByBrowserPolicy = 'prohibitedByBrowserPolicy',

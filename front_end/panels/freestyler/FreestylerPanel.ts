@@ -659,12 +659,9 @@ export class FreestylerPanel extends UI.Panel.Panel {
         continue;
       }
 
-      contextMenu.defaultSection().appendItem(
-          title,
-          () => {
-            void this.#switchAgent(agent);
-          },
-      );
+      contextMenu.defaultSection().appendItem(title, () => {
+        void this.#switchAgent(agent);
+      });
     }
 
     if (contextMenu.defaultSection().items.length === 0) {
@@ -706,6 +703,10 @@ export class FreestylerPanel extends UI.Panel.Panel {
   }
 
   async #switchAgent(agent: AiAgent<unknown>): Promise<void> {
+    if (this.#currentAgent === agent) {
+      return;
+    }
+
     this.#currentAgent = agent;
     this.#viewProps.messages = [];
     this.#viewProps.agentType = agent.type;

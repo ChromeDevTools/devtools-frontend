@@ -35,6 +35,7 @@ import type * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as Cards from '../../ui/components/cards/cards.js';
+import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -86,7 +87,7 @@ const UIStrings = {
    * @description Warning text shown when the user has entered text to filter the
    * list of experiments, but no experiments match the filter.
    */
-  noResults: 'Warning: No experiments match the filter',
+  noResults: 'No experiments match the filter',
   /**
    *@description Text that is usually a hyperlink to more documentation
    */
@@ -467,6 +468,9 @@ export class ExperimentsSettingsTab extends SettingsTab {
 
   private createExperimentsWarningSubsection(warningMessage: string): HTMLElement {
     const subsection = document.createElement('div');
+    subsection.classList.add('experiments-warning-subsection');
+    const warningIcon = IconButton.Icon.create('warning');
+    subsection.appendChild(warningIcon);
     const warning = subsection.createChild('span');
     warning.textContent = warningMessage;
     return subsection;

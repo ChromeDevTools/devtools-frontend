@@ -146,6 +146,16 @@ devtools-button.link-icon {
   overflow: visible !important; /* stylelint-disable-line declaration-no-important */
 }
 
+.experiments-warning-subsection {
+  display: flex;
+  align-items: center;
+
+  > devtools-icon {
+    color: var(--sys-color-orange-bright);
+    margin-right: var(--sys-size-4);
+  }
+}
+
 @media (forced-colors: active) {
   .settings-window-title {
     color: canvastext;

@@ -297,7 +297,7 @@ export async function getQuotaUsage() {
   const storageRow = await waitFor('.quota-usage-row');
   const quotaString = await storageRow.evaluate(el => el.textContent || '');
   const [usedQuotaText, modifier] =
-      quotaString.replace(/^\D*([\d.]+)\D*(kM?)B.used.out.of\D*\d+\D*.?B.*$/, '$1 $2').split(' ');
+      quotaString.replaceAll(',', '').replace(/^\D*([\d.]+)\D*(kM?)B.used.out.of\D*\d+\D*.?B.*$/, '$1 $2').split(' ');
   let usedQuota = Number.parseInt(usedQuotaText, 10);
   if (modifier === 'k') {
     usedQuota *= 1000;

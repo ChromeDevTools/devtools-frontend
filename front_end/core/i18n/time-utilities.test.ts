@@ -14,11 +14,29 @@ describeWithLocale('preciseMillisToString', () => {
     assert.strictEqual(outputString, '8\xA0ms');
   });
 
-  it('formats without a given precision', () => {
+  it('formats big number without a given precision', () => {
+    const inputNumber = 723123;
+    const outputString = i18n.TimeUtilities.preciseMillisToString(inputNumber);
+    assert.strictEqual(outputString, '723,123\xA0ms');
+  });
+
+  it('formats with a given precision', () => {
     const inputNumber = 7.84;
     const precision = 2;
     const outputString = i18n.TimeUtilities.preciseMillisToString(inputNumber, precision);
     assert.strictEqual(outputString, '7.84\xA0ms');
+  });
+
+  it('formats with a given precision, rounding as expected', () => {
+    assert.strictEqual(i18n.TimeUtilities.preciseMillisToString(5.55555, 2), '5.56\xA0ms');
+    assert.strictEqual(i18n.TimeUtilities.preciseMillisToString(-5.55555, 2), '-5.56\xA0ms');
+    assert.strictEqual(i18n.TimeUtilities.preciseMillisToString(5.555, 2), '5.56\xA0ms');
+    assert.strictEqual(i18n.TimeUtilities.preciseMillisToString(-5.55, 2), '-5.55\xA0ms');  // ties break towards zero!
+    assert.strictEqual(i18n.TimeUtilities.preciseMillisToString(9.99999, 1), '10.0\xA0ms');
+    assert.strictEqual(i18n.TimeUtilities.preciseMillisToString(9.95, 1), '10.0\xA0ms');
+    assert.strictEqual(i18n.TimeUtilities.preciseMillisToString(9.94, 1), '9.9\xA0ms');
+    assert.strictEqual(i18n.TimeUtilities.preciseMillisToString(1.001, 1), '1.0\xA0ms');
+    assert.strictEqual(i18n.TimeUtilities.preciseMillisToString(1.001, 0), '1\xA0ms');
   });
 });
 
@@ -121,7 +139,7 @@ describeWithLocale('millisToString', () => {
   it('formats less than 24 hours', () => {
     const inputNumber = 20000000;
     const outputString = i18n.TimeUtilities.millisToString(inputNumber);
-    assert.strictEqual(outputString, '5.6\xA0hrs');
+    assert.strictEqual(outputString, '5.6\xA0hr');
   });
 
   it('formats days', () => {

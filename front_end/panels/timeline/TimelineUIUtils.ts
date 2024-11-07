@@ -722,7 +722,7 @@ export class TimelineUIUtils {
       case Trace.Types.Events.Name.MAJOR_GC:
       case Trace.Types.Events.Name.MINOR_GC: {
         const delta = unsafeEventArgs['usedHeapSizeBefore'] - unsafeEventArgs['usedHeapSizeAfter'];
-        detailsText = i18nString(UIStrings.sCollected, {PH1: Platform.NumberUtilities.bytesToString(delta)});
+        detailsText = i18nString(UIStrings.sCollected, {PH1: i18n.ByteUtilities.bytesToString(delta)});
         break;
       }
       case Trace.Types.Events.Name.FUNCTION_CALL: {
@@ -1089,8 +1089,7 @@ export class TimelineUIUtils {
       contentHelper.appendTextRow(
           i18nString(UIStrings.compilationCacheStatus), i18nString(UIStrings.scriptLoadedFromCache));
       contentHelper.appendTextRow(
-          i18nString(UIStrings.compilationCacheSize),
-          Platform.NumberUtilities.bytesToString(eventData.consumedCacheSize));
+          i18nString(UIStrings.compilationCacheSize), i18n.ByteUtilities.bytesToString(eventData.consumedCacheSize));
       const cacheKind = eventData.cacheKind;
       if (cacheKind) {
         contentHelper.appendTextRow(i18nString(UIStrings.compilationCacheKind), cacheKind);
@@ -1240,7 +1239,7 @@ export class TimelineUIUtils {
       case Trace.Types.Events.Name.MAJOR_GC:
       case Trace.Types.Events.Name.MINOR_GC: {
         const delta = unsafeEventArgs['usedHeapSizeBefore'] - unsafeEventArgs['usedHeapSizeAfter'];
-        contentHelper.appendTextRow(i18nString(UIStrings.collected), Platform.NumberUtilities.bytesToString(delta));
+        contentHelper.appendTextRow(i18nString(UIStrings.collected), i18n.ByteUtilities.bytesToString(delta));
         break;
       }
 
@@ -1293,7 +1292,7 @@ export class TimelineUIUtils {
         url = unsafeEventData && unsafeEventData['url'] as Platform.DevToolsPath.UrlString;
         contentHelper.appendTextRow(
             i18nString(UIStrings.compilationCacheSize),
-            Platform.NumberUtilities.bytesToString(unsafeEventData['producedCacheSize']));
+            i18n.ByteUtilities.bytesToString(unsafeEventData['producedCacheSize']));
         break;
       }
 
@@ -1305,7 +1304,7 @@ export class TimelineUIUtils {
         }
         contentHelper.appendTextRow(
             i18nString(UIStrings.compilationCacheSize),
-            Platform.NumberUtilities.bytesToString(unsafeEventData['producedCacheSize']));
+            i18n.ByteUtilities.bytesToString(unsafeEventData['producedCacheSize']));
         break;
       }
 

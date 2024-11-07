@@ -29,7 +29,6 @@
  */
 
 import * as i18n from '../../core/i18n/i18n.js';
-import * as Platform from '../../core/platform/platform.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
@@ -660,8 +659,8 @@ export class TimelineEventOverviewMemory extends TimelineEventOverview {
     ctx.stroke();
 
     this.heapSizeLabel.textContent = i18nString(UIStrings.sSDash, {
-      PH1: Platform.NumberUtilities.bytesToString(minUsedHeapSize),
-      PH2: Platform.NumberUtilities.bytesToString(maxUsedHeapSize),
+      PH1: i18n.ByteUtilities.bytesToString(minUsedHeapSize),
+      PH2: i18n.ByteUtilities.bytesToString(maxUsedHeapSize),
     });
   }
 }

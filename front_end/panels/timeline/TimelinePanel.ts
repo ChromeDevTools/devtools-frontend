@@ -521,6 +521,12 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     topPaneElement.id = 'timeline-overview-panel';
 
     this.#minimapComponent.show(topPaneElement);
+    this.#minimapComponent.addEventListener(PerfUI.TimelineOverviewPane.Events.OVERVIEW_PANE_MOUSE_MOVE, event => {
+      this.flameChart.addTimestampMarkerOverlay(event.data.timeInMicroSeconds);
+    });
+    this.#minimapComponent.addEventListener(PerfUI.TimelineOverviewPane.Events.OVERVIEW_PANE_MOUSE_LEAVE, async () => {
+      await this.flameChart.removeTimestampMarkerOverlay();
+    });
 
     this.statusPaneContainer = this.timelinePane.element.createChild('div', 'status-pane-container fill');
 

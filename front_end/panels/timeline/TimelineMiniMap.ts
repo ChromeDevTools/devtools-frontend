@@ -65,6 +65,16 @@ export class TimelineMiniMap extends
           this.addBreadcrumb(event.data);
         });
 
+    // We want to add/remove an overlay for these two events, and the overlay system is controlled by
+    // `TimelineFlameChartView`, so we need to dispatch them up to the `TimelinePanel` level to call
+    // `TimelineFlameChartView` -> `addOverlay()/removeOverlay()`.
+    this.#overviewComponent.addEventListener(PerfUI.TimelineOverviewPane.Events.OVERVIEW_PANE_MOUSE_MOVE, event => {
+      this.dispatchEventToListeners(PerfUI.TimelineOverviewPane.Events.OVERVIEW_PANE_MOUSE_MOVE, event.data);
+    });
+    this.#overviewComponent.addEventListener(PerfUI.TimelineOverviewPane.Events.OVERVIEW_PANE_MOUSE_LEAVE, () => {
+      this.dispatchEventToListeners(PerfUI.TimelineOverviewPane.Events.OVERVIEW_PANE_MOUSE_LEAVE);
+    });
+
     this.#breadcrumbsUI.addEventListener(TimelineComponents.BreadcrumbsUI.BreadcrumbActivatedEvent.eventName, event => {
       const {breadcrumb, childBreadcrumbsRemoved} =
           (event as TimelineComponents.BreadcrumbsUI.BreadcrumbActivatedEvent);

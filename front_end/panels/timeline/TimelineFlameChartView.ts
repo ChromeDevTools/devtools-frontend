@@ -524,25 +524,33 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     }
   }
 
+  addTimestampMarkerOverlay(timestamp: Trace.Types.Timing.MicroSeconds): void {
+    // TIMESTAMP_MARKER is a singleton. If one already exists, it will
+    // be updated instead of creating a new one.
+    this.addOverlay({
+      type: 'TIMESTAMP_MARKER',
+      timestamp,
+    });
+  }
+
+  async removeTimestampMarkerOverlay(): Promise<void> {
+    const removedCount = this.#overlays.removeOverlaysOfType('TIMESTAMP_MARKER');
+    if (removedCount > 0) {
+      // Don't trigger lots of updates on a mouse move if we didn't actually
+      // remove any overlays.
+      await this.#overlays.update();
+    }
+  }
+
   async #processFlameChartMouseMoveEvent(data: PerfUI.FlameChart.EventTypes['MouseMove']): Promise<void> {
     const {mouseEvent, timeInMicroSeconds} = data;
     // If the user is no longer holding shift, remove any existing marker.
     if (!mouseEvent.shiftKey) {
-      const removedCount = this.#overlays.removeOverlaysOfType('TIMESTAMP_MARKER');
-      if (removedCount > 0) {
-        // Don't trigger lots of updates on a mouse move if we didn't actually
-        // remove any overlays.
-        await this.#overlays.update();
-      }
+      await this.removeTimestampMarkerOverlay();
     }
 
     if (!mouseEvent.metaKey && mouseEvent.shiftKey) {
-      // TIMESTAMP_MARKER is a singleton; if one already exists it will
-      // be updated rather than create an entirely new one.
-      this.addOverlay({
-        type: 'TIMESTAMP_MARKER',
-        timestamp: timeInMicroSeconds,
-      });
+      this.addTimestampMarkerOverlay(timeInMicroSeconds);
     }
   }
 
@@ -1138,6 +1146,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     }
     void this.#overlays.update();
   }
+
   removeOverlay(removedOverlay: Overlays.Overlays.TimelineOverlay): void {
     this.#overlays.remove(removedOverlay);
     void this.#overlays.update();

@@ -17,8 +17,8 @@ export class TimelineOverviewCalculator implements Calculator {
     return (time - this.#minimumBoundary) / this.boundarySpan() * this.workingArea;
   }
 
-  positionToTime(position: number): number {
-    return position / this.workingArea * this.boundarySpan() + this.#minimumBoundary;
+  positionToTime(position: number): Trace.Types.Timing.MilliSeconds {
+    return Trace.Types.Timing.MilliSeconds(position / this.workingArea * this.boundarySpan() + this.#minimumBoundary);
   }
 
   setBounds(minimumBoundary: Trace.Types.Timing.MilliSeconds, maximumBoundary: Trace.Types.Timing.MilliSeconds): void {

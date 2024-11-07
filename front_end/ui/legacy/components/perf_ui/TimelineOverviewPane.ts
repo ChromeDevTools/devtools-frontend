@@ -108,6 +108,19 @@ export class TimelineOverviewPane extends Common.ObjectWrapper.eventMixin<EventT
     this.cursorPosition = mouseEvent.offsetX + offsetLeftRelativeToCursorArea;
     this.cursorElement.style.left = this.cursorPosition + 'px';
     this.cursorElement.style.visibility = 'visible';
+
+    // Dispatch an event to notify the flame chart to show a timestamp marker for the current timestamp if it's visible
+    // in the flame chart.
+    const timeInMilliSeconds = this.overviewCalculator.positionToTime(this.cursorPosition);
+    const timeWindow = this.overviewGrid.calculateWindowValue();
+    if (Trace.Types.Timing.MilliSeconds(timeWindow.rawStartValue) <= timeInMilliSeconds &&
+        timeInMilliSeconds <= Trace.Types.Timing.MilliSeconds(timeWindow.rawEndValue)) {
+      const timeInMicroSeconds = Trace.Helpers.Timing.millisecondsToMicroseconds(timeInMilliSeconds);
+      this.dispatchEventToListeners(Events.OVERVIEW_PANE_MOUSE_MOVE, {timeInMicroSeconds});
+    } else {
+      this.dispatchEventToListeners(Events.OVERVIEW_PANE_MOUSE_LEAVE);
+    }
+
     void this.overviewInfo.setContent(this.buildOverviewInfo());
   }
 
@@ -123,6 +136,7 @@ export class TimelineOverviewPane extends Common.ObjectWrapper.eventMixin<EventT
 
   private hideCursor(): void {
     this.cursorElement.style.visibility = 'hidden';
+    this.dispatchEventToListeners(Events.OVERVIEW_PANE_MOUSE_LEAVE);
     this.overviewInfo.hide();
   }
 
@@ -351,7 +365,8 @@ export class TimelineOverviewPane extends Common.ObjectWrapper.eventMixin<EventT
 export const enum Events {
   OVERVIEW_PANE_WINDOW_CHANGED = 'OverviewPaneWindowChanged',
   OVERVIEW_PANE_BREADCRUMB_ADDED = 'OverviewPaneBreadcrumbAdded',
-  OPEN_SIDEBAR_BUTTON_CLICKED = 'OpenSidebarButtonClicked',
+  OVERVIEW_PANE_MOUSE_MOVE = 'OverviewPaneMouseMove',
+  OVERVIEW_PANE_MOUSE_LEAVE = 'OverviewPaneMouseLeave',
 }
 
 export interface OverviewPaneWindowChangedEvent {
@@ -364,12 +379,15 @@ export interface OverviewPaneBreadcrumbAddedEvent {
   endTime: Trace.Types.Timing.MilliSeconds;
 }
 
-export interface OpenSidebarButtonClicked {}
+export interface OverviewPaneMouseMoveEvent {
+  timeInMicroSeconds: Trace.Types.Timing.MicroSeconds;
+}
 
 export type EventTypes = {
   [Events.OVERVIEW_PANE_WINDOW_CHANGED]: OverviewPaneWindowChangedEvent,
   [Events.OVERVIEW_PANE_BREADCRUMB_ADDED]: OverviewPaneBreadcrumbAddedEvent,
-  [Events.OPEN_SIDEBAR_BUTTON_CLICKED]: OpenSidebarButtonClicked,
+  [Events.OVERVIEW_PANE_MOUSE_MOVE]: OverviewPaneMouseMoveEvent,
+  [Events.OVERVIEW_PANE_MOUSE_LEAVE]: void,
 };
 
 export interface TimelineOverview {

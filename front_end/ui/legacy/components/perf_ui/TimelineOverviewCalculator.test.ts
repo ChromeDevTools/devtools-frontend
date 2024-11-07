@@ -23,7 +23,7 @@ describeWithLocale('TimelineOverviewCalculator', () => {
     calculator.setDisplayWidth(200);
     calculator.setBounds(MilliSeconds(0), MilliSeconds(100));
 
-    assert.strictEqual(calculator.positionToTime(100), 50);
+    assert.strictEqual(calculator.positionToTime(100), MilliSeconds(50));
   });
 
   it('formats time values', async () => {

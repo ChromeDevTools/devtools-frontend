@@ -516,7 +516,7 @@ export class TimelineFilmStripOverview extends TimelineEventOverview {
     if (!calculator) {
       return null;
     }
-    const timeMilliSeconds = Trace.Types.Timing.MilliSeconds(calculator.positionToTime(x));
+    const timeMilliSeconds = calculator.positionToTime(x);
     const timeMicroSeconds = Trace.Helpers.Timing.millisecondsToMicroseconds(timeMilliSeconds);
     const frame = Trace.Extras.FilmStrip.frameClosestToTimestamp(this.#filmStrip, timeMicroSeconds);
     if (frame === this.lastFrame) {

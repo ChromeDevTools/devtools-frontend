@@ -110,6 +110,7 @@ devtools_entrypoint("bundle") {
     ":*",
     "../../entrypoints/*",
     "../../panels/explain/*",
+    "../../panels/freestyler/*",
     "../../panels/network/*",
     "../browser_debugger/*",
   ]

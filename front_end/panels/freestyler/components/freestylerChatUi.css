@@ -475,8 +475,9 @@ main {
   align-items: center;
   justify-content: center;
   font: var(--sys-typescale-headline4);
-  gap: var(--sys-size-11);
+  gap: var(--sys-size-8);
   padding: var(--sys-size-3);
+  max-width: var(--sys-size-33);
 
   /* Prevents the container from jumping when the scrollbar is shown */
   /* 688px is the max width of the input form + left and right paddings: var(--sys-size-36) + 2 * var(--sys-size-5)  */
@@ -516,6 +517,11 @@ main {
     h1 {
       font: var(--sys-typescale-headline4);
     }
+
+    p {
+      text-align: center;
+      font: var(--sys-typescale-body4-regular);
+    }
   }
 
   .empty-state-content {
@@ -534,12 +540,12 @@ main {
   gap: 10px;
   background-color: var(--sys-color-surface2);
   border-radius: var(--sys-shape-corner-medium-small);
-  width: var(--sys-size-32);
+  width: 100%;
   align-items: center;
 
   .feature-card-icon {
-    width: var(--sys-size-12);
-    height: var(--sys-size-12);
+    min-width: var(--sys-size-12);
+    min-height: var(--sys-size-12);
     display: flex;
     justify-content: center;
     align-items: center;

@@ -7,7 +7,11 @@ import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Workspace from '../../models/workspace/workspace.js';
+import * as ElementsPanel from '../../panels/elements/elements.js';
 import * as NetworkForward from '../../panels/network/forward/forward.js';
+import * as NetworkPanel from '../../panels/network/network.js';
+import * as SourcesPanel from '../../panels/sources/sources.js';
+import * as TimelinePanel from '../../panels/timeline/timeline.js';
 import * as TimelineUtils from '../../panels/timeline/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as LitHtml from '../../ui/lit-html/lit-html.js';
@@ -358,10 +362,45 @@ export class FreestylerPanel extends UI.Panel.Panel {
     return freestylerPanelInstance;
   }
 
+  // We select the default agent based on the open panels if
+  // there isn't any active conversation.
+  #selectDefaultAgentIfNeeded(): void {
+    // If there already is an agent and not it is not empty,
+    // we don't automatically change the agent.
+    if (this.#currentAgent && !this.#currentAgent.isEmpty) {
+      return;
+    }
+
+    const config = Common.Settings.Settings.instance().getHostConfig();
+    const isElementsPanelVisible =
+        Boolean(UI.Context.Context.instance().flavor(ElementsPanel.ElementsPanel.ElementsPanel));
+    const isNetworkPanelVisible = Boolean(UI.Context.Context.instance().flavor(NetworkPanel.NetworkPanel.NetworkPanel));
+    const isSourcesPanelVisible = Boolean(UI.Context.Context.instance().flavor(SourcesPanel.SourcesPanel.SourcesPanel));
+    const isPerformancePanelVisible =
+        Boolean(UI.Context.Context.instance().flavor(TimelinePanel.TimelinePanel.TimelinePanel));
+
+    let targetAgentType: AgentType|undefined = undefined;
+    if (isElementsPanelVisible && config.devToolsFreestyler?.enabled) {
+      targetAgentType = AgentType.FREESTYLER;
+    } else if (isNetworkPanelVisible && config.devToolsAiAssistanceNetworkAgent?.enabled) {
+      targetAgentType = AgentType.DRJONES_NETWORK_REQUEST;
+    } else if (isSourcesPanelVisible && config.devToolsAiAssistanceFileAgent?.enabled) {
+      targetAgentType = AgentType.DRJONES_FILE;
+    } else if (isPerformancePanelVisible && config.devToolsAiAssistancePerformanceAgent?.enabled) {
+      targetAgentType = AgentType.DRJONES_PERFORMANCE;
+    }
+
+    this.#currentAgent = targetAgentType ? this.#createAgent(targetAgentType) : undefined;
+    this.#viewProps.agentType = targetAgentType;
+    this.#onContextSelectionChanged();
+    this.doUpdate();
+  }
+
   override wasShown(): void {
     this.registerCSSFiles([freestylerPanelStyles]);
     this.#viewOutput.freestylerChatUi?.restoreScrollPosition();
     this.#viewOutput.freestylerChatUi?.focusTextInput();
+    this.#selectDefaultAgentIfNeeded();
     void this.#handleAidaAvailabilityChange();
     void this
         .#handleFreestylerEnabledSettingChanged();  // If the setting was switched on/off while the FreestylerPanel was not shown.
@@ -374,6 +413,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
     this.#selectedFile = createFileContext(UI.Context.Context.instance().flavor(Workspace.UISourceCode.UISourceCode)),
     this.#viewProps = {
       ...this.#viewProps,
+      agentType: this.#currentAgent?.type,
       inspectElementToggled: this.#toggleSearchElementAction.toggled(),
       selectedContext: this.#getConversationContext(),
     };
@@ -391,7 +431,14 @@ export class FreestylerPanel extends UI.Panel.Panel {
         TimelineUtils.AICallTree.AICallTree, this.#handleTraceEntryNodeFlavorChange);
     UI.Context.Context.instance().addFlavorChangeListener(
         Workspace.UISourceCode.UISourceCode, this.#handleUISourceCodeFlavorChange);
-
+    UI.Context.Context.instance().addFlavorChangeListener(
+        ElementsPanel.ElementsPanel.ElementsPanel, this.#selectDefaultAgentIfNeeded, this);
+    UI.Context.Context.instance().addFlavorChangeListener(
+        NetworkPanel.NetworkPanel.NetworkPanel, this.#selectDefaultAgentIfNeeded, this);
+    UI.Context.Context.instance().addFlavorChangeListener(
+        SourcesPanel.SourcesPanel.SourcesPanel, this.#selectDefaultAgentIfNeeded, this);
+    UI.Context.Context.instance().addFlavorChangeListener(
+        TimelinePanel.TimelinePanel.TimelinePanel, this.#selectDefaultAgentIfNeeded, this);
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistancePanelOpened);
   }
 
@@ -408,6 +455,14 @@ export class FreestylerPanel extends UI.Panel.Panel {
         TimelineUtils.AICallTree.AICallTree, this.#handleTraceEntryNodeFlavorChange);
     UI.Context.Context.instance().removeFlavorChangeListener(
         Workspace.UISourceCode.UISourceCode, this.#handleUISourceCodeFlavorChange);
+    UI.Context.Context.instance().removeFlavorChangeListener(
+        ElementsPanel.ElementsPanel.ElementsPanel, this.#selectDefaultAgentIfNeeded, this);
+    UI.Context.Context.instance().removeFlavorChangeListener(
+        NetworkPanel.NetworkPanel.NetworkPanel, this.#selectDefaultAgentIfNeeded, this);
+    UI.Context.Context.instance().removeFlavorChangeListener(
+        SourcesPanel.SourcesPanel.SourcesPanel, this.#selectDefaultAgentIfNeeded, this);
+    UI.Context.Context.instance().removeFlavorChangeListener(
+        TimelinePanel.TimelinePanel.TimelinePanel, this.#selectDefaultAgentIfNeeded, this);
   }
 
   #handleAidaAvailabilityChange = async(): Promise<void> => {
@@ -638,12 +693,13 @@ export class FreestylerPanel extends UI.Panel.Panel {
 
   #onDeleteClicked(): void {
     if (this.#currentAgent) {
-      const agentType = this.#currentAgent.type;
       this.#agents.delete(this.#currentAgent);
-      this.#currentAgent = this.#createAgent(agentType);
+      this.#currentAgent = undefined;
     }
+
     this.#viewProps.messages = [];
-    this.#viewProps.agentType = undefined;
+
+    this.#selectDefaultAgentIfNeeded();
     this.#onContextSelectionChanged();
     this.doUpdate();
     UI.ARIAUtils.alert(i18nString(UIStrings.chatDeleted));
@@ -661,11 +717,10 @@ export class FreestylerPanel extends UI.Panel.Panel {
   #newChat(): void {
     this.#viewProps.messages = [];
     this.#viewProps.isLoading = false;
-    if (this.#currentAgent) {
-      this.#currentAgent = this.#createAgent(this.#currentAgent.type);
-      this.#onContextSelectionChanged();
-    }
+    this.#currentAgent = undefined;
     this.#cancel();
+
+    this.#selectDefaultAgentIfNeeded();
     this.doUpdate();
     UI.ARIAUtils.alert(i18nString(UIStrings.newChatCreated));
   }

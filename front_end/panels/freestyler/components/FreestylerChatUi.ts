@@ -941,7 +941,11 @@ export class FreestylerChatUi extends HTMLElement {
     }
   }
 
-  #renderReadOnlySection(): LitHtml.TemplateResult {
+  #renderReadOnlySection(): LitHtml.LitTemplate {
+    if (!this.#props.agentType) {
+      return LitHtml.nothing;
+    }
+
     // clang-format off
     return html`<div
       class="chat-readonly-container"
@@ -1179,6 +1183,7 @@ export class FreestylerChatUi extends HTMLElement {
             ></devtools-icon>
           </div>
           <h1>${lockedString(UIStringsNotTranslate.noAgentStateText)}</h1>
+          <p>To chat about an item, right-click and select <strong>Ask AI</strong></p>
         </div>
         <div class="empty-state-content">
           ${featureCards.map(featureCard => html`

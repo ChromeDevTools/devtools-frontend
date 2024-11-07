@@ -116,9 +116,14 @@
   }
 
   &:disabled {
-    color: var(--sys-color-on-surface-subtle);
+    color: var(--sys-color-state-disabled);
     background-color: var(--sys-color-state-disabled-container);
     border-color: transparent;
+
+    &::placeholder {
+      color: var(--sys-color-on-surface-subtle);
+      opacity: 100%;
+    }
   }
 }
 

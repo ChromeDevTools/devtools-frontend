@@ -103,6 +103,10 @@ export class ShortcutDialog extends HTMLElement {
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#renderBound);
   }
 
+  #getKeysFromBinding(binding: string): string[] {
+    return binding.split(/[\s+]+/).map(word => word.trim());  // Split on one or more spaces or + symbols
+  }
+
   #render(): void {
     if (!ComponentHelpers.ScheduledRender.isScheduledRender(this)) {
       throw new Error('Shortcut dialog render was not scheduled');
@@ -124,7 +128,6 @@ export class ShortcutDialog extends HTMLElement {
       ></devtools-button>
       <devtools-dialog
         @clickoutsidedialog=${this.#closeDialog}
-        .showConnector=${true}
         .origin=${() => {
           if (!this.#showButton) {
             throw new Error('Button not found');
@@ -142,7 +145,6 @@ export class ShortcutDialog extends HTMLElement {
           <span class="keybinds-category-header-text">${i18nString(UIStrings.dialogTitle)}</span>
           <devtools-button
             @click=${this.#closeDialog}
-            class='close-icon'
             .data=${{
               variant: Buttons.Button.Variant.TOOLBAR,
               iconName: 'cross',
@@ -155,17 +157,16 @@ export class ShortcutDialog extends HTMLElement {
           ${this.#shortcuts.map(shortcut =>
             html`
               <li class="keybinds-list-item">
-                <div class="keybinds-action-name keybinds-list-text">${shortcut.title}</div>
-                ${shortcut.bindings.map((binding, index) =>
-                  html`
-                    <div class="keybinds-shortcut keybinds-list-text">
-                      <span class="keybinds-key">${binding}</span>
-                    </div>
-                    ${shortcut.bindings.at(index + 1) ?
-                      html`<span class="keybinds-shortcut-separator"> - </span>`
-                      : LitHtml.nothing
-                    }
-                `)}
+                <div>${shortcut.title}</div>
+                ${shortcut.bindings.map(binding => {
+                  return html`
+                  <div class="keys-container">
+                    ${this.#getKeysFromBinding(binding).map(key => html`
+                        <span class="keybinds-key">${key}</span>
+                    `)}
+                  </div>
+                `;
+                  })}
               </li>`,
           )}
         </ul>

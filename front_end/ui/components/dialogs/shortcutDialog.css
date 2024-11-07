@@ -5,69 +5,56 @@
  */
 
 .keybinds-category-header {
-  white-space: nowrap;
-  padding: 0 10px 20px;
   display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--sys-size-4) var(--sys-size-6) var(--sys-size-6) var(--sys-size-8);
 }
 
 .keybinds-category-header-text {
-  line-height: 24px;
-  flex: auto;
-  font-weight: bold;
-}
-
-.keybinds-key {
-  padding: 0.1em 0.6em;
-  border: 1px solid var(--sys-color-neutral-outline);
-  font-size: 11px;
-  background-color: var(--sys-color-neutral-container);
-  color: var(--sys-color-on-surface);
-  border-radius: 3px;
-  display: inline-block;
-  margin: 0 0.1em;
-  text-shadow: 0 1px 0 var(--sys-color-cdt-base-container);
-  line-height: 1.5;
-  white-space: nowrap;
+  font-size: var(--sys-typescale-body3-size);
+  font-weight: var(--ref-typeface-weight-medium);
 }
 
 .keybinds-list {
-  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sys-size-4);
   margin: 0;
-  padding: 0;
+  padding: 0 var(--sys-size-8);
 }
 
 .keybinds-list-item {
-  line-height: 30px;
   display: flex;
-  padding: 0 10px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 30px;
 }
 
 .keybinds-list-text {
+  font-size: var(--sys-typescale-body4-size);
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
   user-select: none;
   color: var(--sys-color-on-surface);
-  text-align: start;
-  position: relative;
-  margin-right: 0;
 }
 
-.keybinds-shortcut-separator {
-  white-space: pre-wrap;
+.keys-container {
+  display: flex;
+  gap: var(--sys-size-3);
 }
 
-.keybinds-action-name {
-  flex: auto;
-  padding-right: 30px;
-}
-
-.keybinds-shortcut {
-  flex: none;
-}
-
-.close-icon {
-  width: 12px;
-  height: 12px;
-  padding-top: 2px;
+.keybinds-key {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  padding: var(--sys-size-4);
+  min-width: var(--sys-size-11);
+  height: var(--sys-size-11);
+  font: var(--sys-typescale-body5-medium);
+  white-space: nowrap;
+  border-radius: var(--sys-shape-corner-small);
+  background: var(--sys-color-tonal-container);
 }

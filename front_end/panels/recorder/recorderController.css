@@ -140,7 +140,3 @@ devtools-recording-list-view {
 .feedback .x-link:focus-visible {
   outline: -webkit-focus-ring-color auto 1px;
 }
-
-devtools-shortcut-dialog {
-  padding-right: 6px;
-}

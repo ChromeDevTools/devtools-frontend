@@ -685,10 +685,8 @@ export class Dialog extends HTMLElement {
     LitHtml.render(html`
       <dialog @click=${this.#handlePointerEvent} @pointermove=${this.#handlePointerEvent} @cancel=${this.#onCancel}
               jslog=${VisualLogging.dialog(this.#props.jslogContext).track({resize: true, keydown: 'Escape'}).parent('mapped')}>
-        <div id="content-wrap">
-          <div id="content">
-            <slot></slot>
-          </div>
+        <div id="content">
+          <slot></slot>
         </div>
       </dialog>
     `, this.#shadow, { host: this });

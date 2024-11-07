@@ -127,6 +127,7 @@ export class ShortcutDialog extends HTMLElement {
         } as Buttons.Button.ButtonData}
       ></devtools-button>
       <devtools-dialog
+        class="shortcuts-dialog"
         @clickoutsidedialog=${this.#closeDialog}
         .origin=${() => {
           if (!this.#showButton) {

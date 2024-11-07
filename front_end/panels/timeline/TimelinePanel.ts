@@ -45,6 +45,7 @@ import * as Workspace from '../../models/workspace/workspace.js';
 import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
 import * as Adorners from '../../ui/components/adorners/adorners.js';
 import type * as Buttons from '../../ui/components/buttons/buttons.js';
+import * as ShortcutDialog from '../../ui/components/dialogs/dialogs.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
@@ -1069,6 +1070,14 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     if (!isNode) {
       this.panelRightToolbar.appendSeparator();
       this.panelRightToolbar.appendToolbarItem(this.showSettingsPaneButton);
+    }
+
+    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_ALTERNATIVE_NAVIGATION)) {
+      // TODO: Fill the shortcuts dialog with shortcuts for the cuttently selected navigation option
+      const shortcutDialog = new ShortcutDialog.ShortcutDialog.ShortcutDialog();
+      shortcutDialog.data = {shortcuts: [{title: 'Shortcut Title', bindings: ['Ctrl+E']}]};
+      const dialogToolbarItem = new UI.Toolbar.ToolbarItem(shortcutDialog);
+      this.panelRightToolbar.appendToolbarItem(dialogToolbarItem);
     }
   }
 

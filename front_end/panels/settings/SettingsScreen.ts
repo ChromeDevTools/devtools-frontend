@@ -34,6 +34,7 @@ import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
+import * as Cards from '../../ui/components/cards/cards.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
@@ -44,6 +45,11 @@ import type {KeybindsSettingsTab} from './KeybindsSettingsTab.js';
 import settingsScreenStyles from './settingsScreen.css.js';
 
 const UIStrings = {
+
+  /**
+   *@description Card header in Experiments settings tab that list all available unstable experiments that can be turned on or off.
+   */
+  unstableExperiments: 'Unstable experiments',
   /**
    *@description Name of the Settings view
    */
@@ -53,30 +59,21 @@ const UIStrings = {
    */
   shortcuts: 'Shortcuts',
   /**
-   *@description Text in Settings Screen of the Settings
-   */
-  preferences: 'Preferences',
-  /**
    *@description Text of button in Settings Screen of the Settings
    */
   restoreDefaultsAndReload: 'Restore defaults and reload',
   /**
-   *@description Text in Settings Screen of the Settings
+   *@description Card header in Experiments settings tab that list all available stable experiments that can be turned on or off.
    */
   experiments: 'Experiments',
   /**
    *@description Message shown in the experiments panel to warn users about any possible unstable features.
    */
-  theseExperimentsCouldBeUnstable:
-      'These experiments could be unstable or unreliable and may require you to restart DevTools.',
+  theseExperimentsCouldBeUnstable: 'Warning: These experiments could be unstable or unreliable.',
   /**
    *@description Message text content in Settings Screen of the Settings
    */
-  theseExperimentsAreParticularly: 'These experiments are particularly unstable. Enable at your own risk.',
-  /**
-   *@description Warning text content in Settings Screen of the Settings
-   */
-  warning: 'WARNING:',
+  theseExperimentsAreParticularly: 'Warning: These experiments are particularly unstable. Enable at your own risk.',
   /**
    *@description Message to display if a setting change requires a reload of DevTools
    */
@@ -89,7 +86,7 @@ const UIStrings = {
    * @description Warning text shown when the user has entered text to filter the
    * list of experiments, but no experiments match the filter.
    */
-  noResults: 'No experiments match the filter',
+  noResults: 'Warning: No experiments match the filter',
   /**
    *@description Text that is usually a hyperlink to more documentation
    */
@@ -103,6 +100,12 @@ const str_ = i18n.i18n.registerUIStrings('panels/settings/SettingsScreen.ts', UI
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 let settingsScreenInstance: SettingsScreen;
+
+function createSettingsCard(heading: Common.UIString.LocalizedString, ...content: HTMLElement[]): Cards.Card.Card {
+  const card = new Cards.Card.Card();
+  card.data = {heading, content};
+  return card;
+}
 
 export class SettingsScreen extends UI.Widget.VBox implements UI.View.ViewLocationResolver {
   private readonly tabbedLocation: UI.View.TabbedViewLocation;
@@ -240,28 +243,14 @@ export class SettingsScreen extends UI.Widget.VBox implements UI.View.ViewLocati
 
 abstract class SettingsTab extends UI.Widget.VBox {
   containerElement: HTMLElement;
-  constructor(name: string, id?: string) {
+  constructor(id?: string) {
     super();
     this.element.classList.add('settings-tab-container');
     if (id) {
       this.element.id = id;
     }
-    const header = this.element.createChild('header');
-    UI.UIUtils.createTextChild(header.createChild('h1'), name);
-    this.containerElement = this.element.createChild('div', 'settings-container-wrapper')
-                                .createChild('div', 'settings-tab settings-content settings-container');
-  }
-
-  protected appendSection(name?: string): HTMLElement {
-    const block = this.containerElement.createChild('div', 'settings-block');
-    if (name) {
-      UI.ARIAUtils.markAsGroup(block);
-      const title = block.createChild('div', 'settings-section-title');
-      title.textContent = name;
-      UI.ARIAUtils.markAsHeading(title, 2);
-      UI.ARIAUtils.setLabel(block, name);
-    }
-    return block;
+    this.containerElement =
+        this.contentElement.createChild('div', 'settings-card-container-wrapper').createChild('div');
   }
 
   abstract highlightObject(_object: Object): void;
@@ -272,9 +261,10 @@ export class GenericSettingsTab extends SettingsTab {
   private readonly settingToControl = new Map<Common.Settings.Setting<unknown>, HTMLElement>();
 
   constructor() {
-    super(i18nString(UIStrings.preferences), 'preferences-tab-content');
+    super('preferences-tab-content');
 
     this.element.setAttribute('jslog', `${VisualLogging.pane('preferences')}`);
+    this.containerElement.classList.add('settings-multicolumn-card-container');
 
     // GRID, MOBILE, EMULATION, and RENDERING are intentionally excluded from this list.
     const explicitSectionOrder: Common.Settings.SettingCategory[] = [
@@ -318,7 +308,7 @@ export class GenericSettingsTab extends SettingsTab {
     const restoreAndReloadButton = UI.UIUtils.createTextButton(
         i18nString(UIStrings.restoreDefaultsAndReload), restoreAndReload,
         {jslogContext: 'settings.restore-defaults-and-reload'});
-    this.appendSection().appendChild(restoreAndReloadButton);
+    this.containerElement.appendChild(restoreAndReloadButton);
 
     function restoreAndReload(): void {
       Common.Settings.Settings.instance().clearAll();
@@ -355,8 +345,7 @@ export class GenericSettingsTab extends SettingsTab {
     const settingUI = Components.Linkifier.LinkHandlerSettingUI.instance() as UI.SettingsUI.SettingUI;
     const element = settingUI.settingElement();
     if (element) {
-      const sectionElement = this.createStandardSectionElement(sectionName, settings);
-      sectionElement.appendChild(element);
+      this.createStandardSectionElement(sectionName, settings, element);
     }
   }
 
@@ -366,16 +355,20 @@ export class GenericSettingsTab extends SettingsTab {
     if (category === Common.Settings.SettingCategory.EXTENSIONS) {
       this.createExtensionSection(settings);
     } else if (category === Common.Settings.SettingCategory.SYNC && settings.length > 0) {
-      this.containerElement.appendChild(this.syncSection);
+      const syncCard = createSettingsCard(
+          Common.SettingRegistration.getLocalizedSettingsCategory(Common.SettingRegistration.SettingCategory.SYNC),
+          this.syncSection);
+      this.containerElement.appendChild(syncCard);
     } else if (settings.length > 0) {
       this.createStandardSectionElement(category, settings);
     }
   }
 
   private createStandardSectionElement(
-      category: Common.Settings.SettingCategory, settings: Common.Settings.SettingRegistration[]): Element {
+      category: Common.Settings.SettingCategory, settings: Common.Settings.SettingRegistration[],
+      content?: Element): void {
     const uiSectionName = Common.Settings.getLocalizedSettingsCategory(category);
-    const sectionElement = this.appendSection(uiSectionName);
+    const sectionElement = document.createElement('div');
     for (const settingRegistration of settings) {
       const setting = Common.Settings.Settings.instance().moduleSetting(settingRegistration.settingName);
       const settingControl = UI.SettingsUI.createControlForSetting(setting);
@@ -384,7 +377,11 @@ export class GenericSettingsTab extends SettingsTab {
         sectionElement.appendChild(settingControl);
       }
     }
-    return sectionElement;
+    if (content) {
+      sectionElement.appendChild(content);
+    }
+    const card = createSettingsCard(uiSectionName, sectionElement);
+    this.containerElement.appendChild(card);
   }
 
   highlightObject(setting: Object): void {
@@ -398,14 +395,16 @@ export class GenericSettingsTab extends SettingsTab {
 }
 
 export class ExperimentsSettingsTab extends SettingsTab {
-  #experimentsSection: HTMLElement|undefined;
-  #unstableExperimentsSection: HTMLElement|undefined;
+  #experimentsSection: Cards.Card.Card|undefined;
+  #unstableExperimentsSection: Cards.Card.Card|undefined;
   #inputElement: HTMLInputElement;
   private readonly experimentToControl = new Map<Root.Runtime.Experiment, HTMLElement>();
 
   constructor() {
-    super(i18nString(UIStrings.experiments), 'experiments-tab-content');
-    const filterSection = this.appendSection();
+    super('experiments-tab-content');
+    this.containerElement.classList.add('settings-card-container');
+
+    const filterSection = this.containerElement.createChild('div');
     filterSection.classList.add('experiments-filter');
 
     this.element.setAttribute('jslog', `${VisualLogging.pane('experiments')}`);
@@ -434,36 +433,42 @@ export class ExperimentsSettingsTab extends SettingsTab {
     const unstableExperiments = experiments.filter(e => e.unstable && e.title.toLowerCase().includes(filterText));
     const stableExperiments = experiments.filter(e => !e.unstable && e.title.toLowerCase().includes(filterText));
     if (stableExperiments.length) {
-      this.#experimentsSection = this.appendSection();
+      const experimentsBlock = document.createElement('div');
+      experimentsBlock.classList.add('settings-experiments-block');
       const warningMessage = i18nString(UIStrings.theseExperimentsCouldBeUnstable);
-      this.#experimentsSection.appendChild(this.createExperimentsWarningSubsection(warningMessage));
+      const warningSection = this.createExperimentsWarningSubsection(warningMessage);
       for (const experiment of stableExperiments) {
-        this.#experimentsSection.appendChild(this.createExperimentCheckbox(experiment));
+        experimentsBlock.appendChild(this.createExperimentCheckbox(experiment));
       }
+      this.#experimentsSection =
+          createSettingsCard(i18nString(UIStrings.experiments), warningSection, experimentsBlock);
+      this.containerElement.appendChild(this.#experimentsSection);
     }
     if (unstableExperiments.length) {
-      this.#unstableExperimentsSection = this.appendSection();
+      const experimentsBlock = document.createElement('div');
+      experimentsBlock.classList.add('settings-experiments-block');
       const warningMessage = i18nString(UIStrings.theseExperimentsAreParticularly);
-      this.#unstableExperimentsSection.appendChild(this.createExperimentsWarningSubsection(warningMessage));
       for (const experiment of unstableExperiments) {
-        this.#unstableExperimentsSection.appendChild(this.createExperimentCheckbox(experiment));
+        experimentsBlock.appendChild(this.createExperimentCheckbox(experiment));
       }
+      this.#unstableExperimentsSection = createSettingsCard(
+          i18nString(UIStrings.unstableExperiments), this.createExperimentsWarningSubsection(warningMessage),
+          experimentsBlock);
+      this.containerElement.appendChild(this.#unstableExperimentsSection);
     }
     if (!stableExperiments.length && !unstableExperiments.length) {
-      this.#experimentsSection = this.appendSection();
-      const warning = this.#experimentsSection.createChild('span');
+      const warning = document.createElement('span');
       warning.textContent = i18nString(UIStrings.noResults);
       UI.ARIAUtils.alert(warning.textContent);
+      this.#experimentsSection = createSettingsCard(i18nString(UIStrings.experiments), warning);
+      this.containerElement.appendChild(this.#experimentsSection);
     }
   }
 
-  private createExperimentsWarningSubsection(warningMessage: string): Element {
+  private createExperimentsWarningSubsection(warningMessage: string): HTMLElement {
     const subsection = document.createElement('div');
-    const warning = subsection.createChild('span', 'settings-experiments-warning-subsection-warning');
-    warning.textContent = i18nString(UIStrings.warning);
-    UI.UIUtils.createTextChild(subsection, ' ');
-    const message = subsection.createChild('span', 'settings-experiments-warning-subsection-message');
-    message.textContent = warningMessage;
+    const warning = subsection.createChild('span');
+    warning.textContent = warningMessage;
     return subsection;
   }
 

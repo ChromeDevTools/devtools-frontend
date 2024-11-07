@@ -4,14 +4,17 @@
  * found in the LICENSE file.
  */
 :host {
+  display: flex;
   max-width: var(--sys-size-37);
   width: 100%;
 }
 
 .card {
+  break-inside: avoid;
   min-width: var(--sys-size-31);
   max-width: var(--sys-size-37);
   margin: var(--sys-size-3) var(--sys-size-5) var(--sys-size-5) var(--sys-size-5);
+  flex: 1;
 }
 
 .heading-wrapper {

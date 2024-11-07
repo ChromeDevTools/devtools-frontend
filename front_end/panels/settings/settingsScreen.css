@@ -17,54 +17,8 @@
   flex: auto;
 }
 
-.settings-container {
-  width: 100%;
-  column-width: 288px;
-}
-
-.settings-block {
-  display: block;
-  padding-bottom: 9px;
-  width: 288px;
-  break-inside: avoid;
-}
-
-.settings-tab.settings-container {
-  column-width: 308px;
-}
-
-.settings-tab .settings-block {
-  margin-left: 20px;
-}
-
-.settings-line {
-  padding-bottom: 5px;
-  margin-bottom: 5px;
-}
-
-.settings-key-cell {
-  display: inline-block;
-  width: 153px;
-  white-space: nowrap;
-  text-align: right;
-  vertical-align: middle;
-  padding-right: 6px;
-}
-
-.settings-cell {
-  display: inline-block;
-  width: 135px;
-  vertical-align: middle;
-}
-
-.settings-section-title {
-  font-size: 120%;
-  text-align: left;
-}
-
-.settings-combine-keys {
-  margin: 0 0.3em;
-  font-size: 9px;
+.settings-experiments-block {
+  padding: 0 var(--sys-size-6) var(--sys-size-5) var(--sys-size-4);
 }
 
 fieldset {
@@ -81,36 +35,20 @@ fieldset {
 
 label {
   padding-right: 8px;
-  padding-bottom: 8px;
 }
 
 .experiments-filter label {
   padding-bottom: 0;
 }
 
-.settings-tab p {
-  margin: 6px 0;
-}
-
-.settings-block p p {
-  padding-left: 30px;
-}
-
 .settings-select {
   align-items: center;
   display: grid;
+  row-gap: var(--sys-size-3);
 }
 
-.settings-experiments-warning-subsection-warning {
-  color: var(--sys-color-error);
-}
-
-.settings-experiments-warning-subsection-message {
-  color: inherit;
-}
-
-.settings-content input[type="checkbox"] {
-  margin: 1px 7px 1px 2px;
+div:has(.settings-select) + div:has(.settings-select) {
+  padding-top: var(--sys-size-5);
 }
 
 .settings-window-label-element {
@@ -133,33 +71,15 @@ label {
   }
 }
 
-.settings-container-wrapper {
-  position: absolute;
-  top: 31px;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  overflow: auto;
-  padding-top: 9px;
-  border-top: 1px solid var(--sys-color-divider);
-}
-
 .settings-card-container-wrapper {
-  padding-top: var(--sys-size-8);
   padding-bottom: var(--sys-size-8);
   overflow: auto;
   scrollbar-width: thin;
-}
-
-@media (max-width: 1000px) {
-  .settings-card-container-wrapper {
-    position: absolute;
-    top: var(--sys-size-8);
-    left: 0;
-    right: 0;
-    bottom: 0;
-    overflow: auto;
-  }
+  position: absolute;
+  top: var(--sys-size-8);
+  left: 0;
+  right: 0;
+  bottom: 0;
 }
 
 .settings-card-container {
@@ -169,49 +89,33 @@ label {
   gap: var(--sys-size-9);
 }
 
-.settings-tab.settings-content {
-  margin: 0;
-  padding: 0;
+.settings-multicolumn-card-container {
+  column-width: var(--sys-size-32);
+  column-gap: var(--sys-size-11);
+
+  > * + * {
+    margin-top: var(--sys-size-8);
+  }
+
+  > devtools-button {
+    margin-left: var(--sys-size-5);
+  }
 }
 
-.settings-tab-container {
-  flex: auto;
-  overflow: hidden;
-}
-
-.settings-tab-container header {
-  padding: 0 0 6px;
-}
-
-#experiments-tab-content .settings-container {
-  column-width: auto;
-}
-
-#experiments-tab-content .settings-block {
-  width: auto;
-  margin-left: 0;
-  margin-right: 10px;
-}
-
-.settings-tab-container header > h1 {
-  font-size: 18px;
-  font-weight: normal;
-  margin: 0;
-  padding-bottom: 3px;
-  white-space: nowrap;
-}
-
-.settings-tab .settings-section-title {
-  margin-left: -20px;
-  color: var(--sys-color-on-surface-subtle);
-}
-
-.settings-tab select {
+.settings-card-container-wrapper select {
   margin-left: 10px;
-  width: 80%;
+  width: var(--sys-size-28);
+}
+
+.settings-card-container-wrapper setting-checkbox { /* stylelint-disable-line selector-type-no-unknown */
+  min-height: var(--sys-size-13);
+  position: relative;
+  left: calc(var(--sys-size-4) * -1);
 }
 
 .settings-experiment {
+  margin: 0;
+  min-height: var(--sys-size-13);
   display: grid;
   grid-template-columns: auto min-content auto 1fr;
 

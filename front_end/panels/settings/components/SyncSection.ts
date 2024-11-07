@@ -5,7 +5,7 @@
 import '../../../ui/components/chrome_link/chrome_link.js';
 import '../../../ui/components/settings/settings.js';
 
-import * as Common from '../../../core/common/common.js';
+import type * as Common from '../../../core/common/common.js';
 import type * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as Platform from '../../../core/platform/platform.js';
@@ -77,7 +77,6 @@ export class SyncSection extends HTMLElement {
     // clang-format off
     LitHtml.render(html`
       <fieldset>
-        <legend>${Common.Settings.getLocalizedSettingsCategory(Common.Settings.SettingCategory.SYNC)}</legend>
         ${renderAccountInfoOrWarning(this.#syncInfo)}
         <setting-checkbox .data=${
             {setting: this.#syncSetting}}>

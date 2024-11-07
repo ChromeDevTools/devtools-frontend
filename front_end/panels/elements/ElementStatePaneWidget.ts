@@ -68,6 +68,7 @@ enum SpecificPseudoStates {
 export class ElementStatePaneWidget extends UI.Widget.Widget {
   private readonly inputs: HTMLInputElement[];
   private readonly inputStates: WeakMap<HTMLInputElement, string>;
+  private readonly duals: Map<SpecificPseudoStates, SpecificPseudoStates>;
   private cssModel?: SDK.CSSModel.CSSModel|null;
   private specificPseudoStateDivs: Map<SpecificPseudoStates, HTMLDivElement>;
   private specificHeader: HTMLDetailsElement;
@@ -80,6 +81,7 @@ export class ElementStatePaneWidget extends UI.Widget.Widget {
     const inputs: HTMLInputElement[] = [];
     this.inputs = inputs;
     this.inputStates = new WeakMap();
+    this.duals = new Map();
     const createSectionHeader = (title: string): HTMLDivElement => {
       const sectionHeaderContainer = document.createElement('div');
       sectionHeaderContainer.classList.add('section-header');
@@ -96,7 +98,12 @@ export class ElementStatePaneWidget extends UI.Widget.Widget {
       if (!state) {
         return;
       }
-      node.domModel().cssModel().forcePseudoState(node, state, event.target.checked);
+      const checked = event.target.checked;
+      const dual = this.duals.get(state as SpecificPseudoStates);
+      if (checked && dual) {
+        node.domModel().cssModel().forcePseudoState(node, dual, false);
+      }
+      node.domModel().cssModel().forcePseudoState(node, state, checked);
     };
     const createElementStateCheckbox = (state: string): HTMLDivElement => {
       const div = document.createElement('div');
@@ -110,7 +117,10 @@ export class ElementStatePaneWidget extends UI.Widget.Widget {
       div.appendChild(label);
       return div;
     };
-
+    const setDualStateCheckboxes = (first: SpecificPseudoStates, second: SpecificPseudoStates): void => {
+      this.duals.set(first, second);
+      this.duals.set(second, first);
+    };
     const createEmulateFocusedPageCheckbox = (): Element => {
       const div = document.createElement('div');
       div.classList.add('page-state-checkbox');
@@ -210,6 +220,12 @@ export class ElementStatePaneWidget extends UI.Widget.Widget {
       elementSpecificContainer.appendChild(div);
     });
 
+    setDualStateCheckboxes(SpecificPseudoStates.VALID, SpecificPseudoStates.INVALID);
+    setDualStateCheckboxes(SpecificPseudoStates.USER_VALID, SpecificPseudoStates.USER_INVALID);
+    setDualStateCheckboxes(SpecificPseudoStates.READ_ONLY, SpecificPseudoStates.READ_WRITE);
+    setDualStateCheckboxes(SpecificPseudoStates.IN_RANGE, SpecificPseudoStates.OUT_OF_RANGE);
+    setDualStateCheckboxes(SpecificPseudoStates.ENABLED, SpecificPseudoStates.DISABLED);
+
     this.specificHeader = document.createElement('details');
     this.specificHeader.classList.add('specific-details');
 
@@ -287,6 +303,19 @@ export class ElementStatePaneWidget extends UI.Widget.Widget {
       return isElementOfTypes(node, ['input']) &&
           (node.getAttribute('type') === 'checkbox' || node.getAttribute('type') === 'radio');
     };
+    const isContentEditable = (node: SDK.DOMModel.DOMNode): boolean => {
+      return node.getAttribute('contenteditable') !== undefined ||
+          Boolean(node.parentNode && isContentEditable(node.parentNode));
+    };
+    const isDisabled = (node: SDK.DOMModel.DOMNode): boolean => {
+      return node.getAttribute('disabled') !== undefined;
+    };
+    const isMutable = (node: SDK.DOMModel.DOMNode): boolean => {
+      if (isElementOfTypes(node, ['input', 'textarea'])) {
+        return node.getAttribute('readonly') === undefined && !isDisabled(node);
+      }
+      return isContentEditable(node);
+    };
     // An autonomous custom element is called a form-associated custom element if the element is associated with a custom element definition whose form-associated field is set to true.
     // https://html.spec.whatwg.org/multipage/custom-elements.html#form-associated-custom-element
     const isFormAssociatedCustomElement = async(node: SDK.DOMModel.DOMNode): Promise<boolean> => {
@@ -300,8 +329,8 @@ export class ElementStatePaneWidget extends UI.Widget.Widget {
 
     if (isElementOfTypes(node, ['button', 'input', 'select', 'textarea', 'optgroup', 'option', 'fieldset']) ||
         isFormAssociated) {
-      hideSpecificCheckbox(SpecificPseudoStates.ENABLED, false);
-      hideSpecificCheckbox(SpecificPseudoStates.DISABLED, false);
+      hideSpecificCheckbox(SpecificPseudoStates.ENABLED, !isDisabled(node));
+      hideSpecificCheckbox(SpecificPseudoStates.DISABLED, isDisabled(node));
     } else {
       hideSpecificCheckbox(SpecificPseudoStates.ENABLED, true);
       hideSpecificCheckbox(SpecificPseudoStates.DISABLED, true);
@@ -319,8 +348,13 @@ export class ElementStatePaneWidget extends UI.Widget.Widget {
     if (isElementOfTypes(node, ['input', 'select', 'textarea'])) {
       hideSpecificCheckbox(SpecificPseudoStates.USER_VALID, false);
       hideSpecificCheckbox(SpecificPseudoStates.USER_INVALID, false);
-      hideSpecificCheckbox(SpecificPseudoStates.REQUIRED, false);
-      hideSpecificCheckbox(SpecificPseudoStates.OPTIONAL, false);
+      if (node.getAttribute('required') === undefined) {
+        hideSpecificCheckbox(SpecificPseudoStates.REQUIRED, false);
+        hideSpecificCheckbox(SpecificPseudoStates.OPTIONAL, true);
+      } else {
+        hideSpecificCheckbox(SpecificPseudoStates.REQUIRED, true);
+        hideSpecificCheckbox(SpecificPseudoStates.OPTIONAL, false);
+      }
     } else {
       hideSpecificCheckbox(SpecificPseudoStates.USER_VALID, true);
       hideSpecificCheckbox(SpecificPseudoStates.USER_INVALID, true);
@@ -328,27 +362,11 @@ export class ElementStatePaneWidget extends UI.Widget.Widget {
       hideSpecificCheckbox(SpecificPseudoStates.OPTIONAL, true);
     }
 
-    if (isElementOfTypes(node, ['input', 'textarea'])) {
-      hideSpecificCheckbox(SpecificPseudoStates.READ_WRITE, false);
-    } else {
+    if (isMutable(node)) {
       hideSpecificCheckbox(SpecificPseudoStates.READ_WRITE, true);
-    }
-
-    if (isElementOfTypes(node, [
-          'button',
-          'datalist',
-          'fieldset',
-          'label',
-          'legend',
-          'meter',
-          'optgroup',
-          'option',
-          'output',
-          'progress',
-          'select',
-        ])) {
       hideSpecificCheckbox(SpecificPseudoStates.READ_ONLY, false);
     } else {
+      hideSpecificCheckbox(SpecificPseudoStates.READ_WRITE, false);
       hideSpecificCheckbox(SpecificPseudoStates.READ_ONLY, true);
     }
 

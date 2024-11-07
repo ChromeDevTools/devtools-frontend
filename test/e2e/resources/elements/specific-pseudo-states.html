@@ -1,0 +1,97 @@
+<!--
+  Copyright 2024 The Chromium Authors. All rights reserved.
+  Use of this source code is governed by a BSD-style license that can be
+  found in the LICENSE file.
+-->
+<style></style>
+<div>
+  <span id="test1" class="test-case start-read-only">Some immutable text</span>
+  <span id="test2" class="test-case start-read-write" contenteditable>Some editable text</span>
+  <span contenteditable
+    ><i id="test3" class="test-case start-read-write">Children are also editable</i></span
+  >
+  <textarea id="test4" class="test-case start-optional start-read-write start-enabled start-valid">
+A textarea</textarea
+  >
+  <textarea id="test5" class="test-case start-optional start-read-only start-enabled" readonly>
+An immutable textarea</textarea
+  >
+  <textarea id="test6" class="test-case start-optional start-read-only start-disabled" disabled>
+A disabled textarea</textarea
+  >
+  <textarea
+    id="test7"
+    class="test-case start-optional start-read-only start-disabled"
+    readonly
+    disabled
+  >
+An immutable disabled textarea</textarea
+  >
+  <input
+    id="test8"
+    class="test-case start-required start-read-write start-enabled start-valid"
+    type="text"
+    value="A required text input"
+    required
+  />
+  <input
+    id="test9"
+    class="test-case start-optional start-read-only start-enabled"
+    type="text"
+    readonly
+    value="An immutable text input"
+  />
+  <input
+    id="test10"
+    class="test-case start-optional start-read-only start-disabled"
+    type="text"
+    disabled
+    value="A disabled text input"
+  />
+  <input
+    id="test11"
+    class="test-case start-optional start-read-only start-disabled"
+    type="text"
+    readonly
+    disabled
+    value="An immutable disabled text input"
+  />
+  <button id="test12" class="test-case start-optional start-read-only start-enabled start-valid">
+    A button
+  </button>
+  <button id="test13" class="test-case start-optional start-read-only start-disabled" disabled>
+    A disabled button
+  </button>
+  <select id="test14" class="test-case start-optional start-read-only start-enabled start-valid">
+    <option>Option 1</option>
+    <option>Option 2</option>
+  </select>
+  <select
+    id="test15"
+    class="test-case start-required start-read-only start-enabled start-valid"
+    required
+  >
+    <option>Option 1</option>
+    <option>Option 2</option>
+  </select>
+  <select id="test16" class="test-case start-optional start-read-only start-disabled" disabled>
+    <option>Option 1</option>
+    <option>Option 2</option>
+  </select>
+  <input
+    id="test17"
+    type="number"
+    class="test-case start-optional start-read-write start-enabled start-in-range start-valid"
+    min="1"
+    max="10"
+    value="5"
+  />
+  <input
+    id="test18"
+    type="number"
+    class="test-case start-optional start-read-write start-enabled start-out-of-range start-invalid"
+    min="1"
+    max="10"
+    value="13"
+  />
+</div>

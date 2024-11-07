@@ -17,12 +17,12 @@ import {
   pressKey,
   step,
   summonSearchBox,
-  timeout,
   typeText,
   waitFor,
   waitForAria,
   waitForFunction,
   waitForNone,
+  waitForVisible,
 } from '../../shared/helper.js';
 
 import {openSoftContextMenuAndClickOnItem} from './context-menu-helpers.js';
@@ -66,6 +66,7 @@ export const STYLE_PROPERTIES_SELECTOR = '.tree-outline-disclosure [role="treeit
 const CSS_AUTHORING_HINTS_ICON_SELECTOR = '.hint';
 export const SEARCH_BOX_SELECTOR = '.search-bar';
 const SEARCH_RESULTS_MATCHES = '.search-results-matches';
+export const EMULATE_FOCUSED_PAGE = 'Emulate a focused page';
 
 export const openLayoutPane = async () => {
   await step('Open Layout pane', async () => {
@@ -385,6 +386,16 @@ export const expandSelectedNodeRecursively = async () => {
   ]);
 };
 
+export const findElementById = async (id: string) => {
+  await pressKey('f', {control: true});
+  await waitFor('.search-bar:not(.hidden)');
+  await typeText('#' + id);
+  await pressKey('Enter');
+  await waitFor(`.highlight > .webkit-html-tag[aria-label*="\\"${id}\\"`);
+  await pressKey('Escape');
+  await waitFor('.search-bar.hidden');
+};
+
 function veImpressionForSelectedNodeMenu(content: string) {
   const isPeudoElement = content.startsWith('::');
   if (isPeudoElement) {
@@ -416,13 +427,29 @@ function veImpressionForSelectedNodeMenu(content: string) {
                             ])]);
 }
 
-export const forcePseudoState = async (pseudoState: string) => {
+export const showForceState = async (specificStates?: boolean) => {
+  // Check if it is already visible
+  if (!(await $(EMULATE_FOCUSED_PAGE, undefined, 'aria'))) {
+    await click('[aria-label="Toggle Element State"]');
+    await waitForAria(EMULATE_FOCUSED_PAGE);
+  }
+
+  if (specificStates) {
+    const specificStatesPane = await waitFor('.specific-pseudo-states');
+    if (!(await specificStatesPane.evaluate(node => node.checkVisibility()))) {
+      await click('.force-specific-element-header');
+      await waitForVisible('.specific-pseudo-states');
+    }
+  }
+};
+
+export const forcePseudoState = async (pseudoState: string, specificStates?: boolean) => {
   // Open element & page state pane and wait for it to be loaded asynchronously
-  await click('[aria-label="Toggle Element State"]');
+  await showForceState(specificStates);
 
   const stateEl = await waitForAria(pseudoState);
   // FIXME(crbug/1112692): Refactor test to remove the timeout.
-  await timeout(100);
+  // await timeout(100);
   await stateEl.click();
   await expectVeEvents([
     veClick('Panel: elements > Pane: styles > ToggleSubpane: element-states'),
@@ -438,7 +465,7 @@ export const forcePseudoState = async (pseudoState: string) => {
                                                                veImpression('Toggle: target'),
                                                              ])]),
     veChange(`Panel: elements > Pane: styles > Pane: element-states > Toggle: ${
-        pseudoState === 'Emulate a focused page' ? 'emulate-page-focus' : pseudoState.substr(1)}`),
+        pseudoState === EMULATE_FOCUSED_PAGE ? 'emulate-page-focus' : pseudoState.substr(1)}`),
   ]);
 };
 
@@ -447,7 +474,7 @@ export const removePseudoState = async (pseudoState: string) => {
   await stateEl.click();
   await expectVeEvents([
     veChange(`Panel: elements > Pane: styles > Pane: element-states > Toggle: ${
-        pseudoState === 'Emulate a focused page' ? 'emulate-page-focus' : pseudoState.substr(1)}`),
+        pseudoState === EMULATE_FOCUSED_PAGE ? 'emulate-page-focus' : pseudoState.substr(1)}`),
   ]);
 };
 
@@ -493,7 +520,6 @@ export const toggleShowAllComputedProperties = async () => {
   await waitForComputedPaneChange(initialContent);
   await expectVeEvents(
       [veChange('Panel: elements > Pane: computed > Toggle: show-inherited-computed-style-properties')]);
-
 };
 
 export const waitForDomNodeToBeVisible = async (elementSelector: string) => {
@@ -858,7 +884,6 @@ export const clickOnFirstLinkInStylesPanel = async () => {
   const stylesPane = await waitFor('div.styles-pane');
   await click('div.styles-section-subtitle button.devtools-link', {root: stylesPane});
   await expectVeEvents([veClick('Panel: elements > Pane: styles > Section: style-properties > Link: css-location')]);
-
 };
 
 export const toggleClassesPane = async () => {
@@ -974,7 +999,6 @@ function veImpressionForAccessibilityPane() {
 export const toggleAccessibilityTree = async () => {
   await click('aria/Switch to Accessibility Tree view');
   await expectVeEvents([veClick('Panel: elements > Action: toggle-accessibility-tree')]);
-
 };
 
 export const getPropertiesWithHints = async () => {

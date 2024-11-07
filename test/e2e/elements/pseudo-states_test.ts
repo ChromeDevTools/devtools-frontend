@@ -4,10 +4,11 @@
 
 import {assert} from 'chai';
 
-import {debuggerStatement, getBrowserAndPages, goToResource, step} from '../../shared/helper.js';
-
+import {debuggerStatement, getBrowserAndPages, goToResource, step, waitFor} from '../../shared/helper.js';
 import {
   assertGutterDecorationForDomNodeExists,
+  EMULATE_FOCUSED_PAGE,
+  findElementById,
   forcePseudoState,
   getComputedStylesForDomNode,
   removePseudoState,
@@ -22,9 +23,9 @@ const TARGET_SHOWN_ON_HOVER_SELECTOR = '.show-on-hover';
 const TARGET_SHOWN_ON_FOCUS_SELECTOR = '.show-on-focus';
 const TARGET_SHOWN_ON_TARGET_SELECTOR = '#show-on-target';
 
-// Flaky test group.
-describe.skip('[crbug.com/1280763]: The Elements tab', () => {
-  it('can force :hover state for selected DOM node', async () => {
+describe('The Elements tab', () => {
+  // Flaky test
+  it.skipOnPlatforms(['mac'], '[crbug.com/1280763]: can force :hover state for selected DOM node', async () => {
     const {frontend} = getBrowserAndPages();
 
     await goToResource('elements/hover.html');
@@ -48,7 +49,8 @@ describe.skip('[crbug.com/1280763]: The Elements tab', () => {
     assert.strictEqual(displayComputedStyle, 'inline');
   });
 
-  it('can force :target state for selected DOM node', async () => {
+  // Flaky test
+  it.skipOnPlatforms(['mac'], '[crbug.com/1280763]: can force :target state for selected DOM node', async () => {
     const {frontend} = getBrowserAndPages();
 
     await goToResource('elements/target.html');
@@ -73,7 +75,8 @@ describe.skip('[crbug.com/1280763]: The Elements tab', () => {
     assert.strictEqual(displayComputedStyle, 'inline');
   });
 
-  it('can force :focus state for selected DOM node', async () => {
+  // Flaky test
+  it.skipOnPlatforms(['mac'], '[crbug.com/1280763]: can force :focus state for selected DOM node', async () => {
     const {frontend} = getBrowserAndPages();
 
     await goToResource('elements/focus.html');
@@ -100,7 +103,8 @@ describe.skip('[crbug.com/1280763]: The Elements tab', () => {
     assert.strictEqual(backgroundColorComputedStyle, 'rgb(0, 128, 0)');
   });
 
-  it('can remove :focus state', async () => {
+  // Flaky test
+  it.skipOnPlatforms(['mac'], '[crbug.com/1280763]: can remove :focus state', async () => {
     const {frontend} = getBrowserAndPages();
 
     await goToResource('elements/focus.html');
@@ -135,7 +139,8 @@ describe.skip('[crbug.com/1280763]: The Elements tab', () => {
     assert.strictEqual(hiddenDisplayStyle, 'none');
   });
 
-  it('can toggle emulate a focused page', async () => {
+  // Flaky test
+  it.skipOnPlatforms(['mac'], '[crbug.com/1280763]: can toggle emulate a focused page', async () => {
     const {frontend, target} = getBrowserAndPages();
 
     await goToResource('elements/dissapearing-popup.html');
@@ -156,15 +161,112 @@ describe.skip('[crbug.com/1280763]: The Elements tab', () => {
     });
 
     await step('Verify #result is visible', async () => {
-      await forcePseudoState('Emulate a focused page');
+      await forcePseudoState(EMULATE_FOCUSED_PAGE);
       await target.keyboard.press('Tab');
       await waitForPartialContentOfSelectedElementsNode('<p id=\u200B"result" class>\u200B');
     });
 
     await step('Verify #result is hidden', async () => {
-      await removePseudoState('Emulate a focused page');
+      await removePseudoState(EMULATE_FOCUSED_PAGE);
       await target.keyboard.press('Tab');
       await waitForPartialContentOfSelectedElementsNode('<p id=\u200B"result" class=\u200B"hide">\u200B');
     });
   });
+
+  const dualCasesOneCheckbox = [
+    {start: 'enabled', dual: 'disabled', elementCount: 9},
+    {start: 'disabled', dual: 'enabled', elementCount: 6},
+    {start: 'read-only', dual: 'read-write', elementCount: 12},
+    {start: 'read-write', dual: 'read-only', elementCount: 6},
+    {start: 'required', dual: 'optional', elementCount: 2},
+    {start: 'optional', dual: 'required', elementCount: 13},
+  ];
+  for (const {start, dual, elementCount} of dualCasesOneCheckbox) {
+    // Flaky test
+    it.skipOnPlatforms(['mac'], `[crbug.com/1280763]: can force ${start} elements to be :${dual}`, async () => {
+      const {target} = getBrowserAndPages();
+
+      await goToResource('elements/specific-pseudo-states.html');
+      await waitForElementsStyleSection();
+
+      // Verify assumptions behind our test file.
+
+      // These combinations should not exist.
+      assert.deepEqual(await target.$$(`.start-${start}:${dual}`), []);
+      assert.deepEqual(await target.$$(`.test-case:not(.start-${start}):${start}`), []);
+
+      // Before we do anything, pseudoClasses should be as expected.
+      const cls = `.start-${start}`;
+      const ids = await Promise.all((await target.$$(cls)).map(el => el.evaluate(node => node.id)));
+      const byPseudoClass = await target.$$(`${cls}:${start}`);
+      assert.strictEqual(ids.length, byPseudoClass.length);
+      assert.strictEqual(ids.length, elementCount);
+
+      const id = ids[0];
+      await findElementById(id);
+      const unforcedSelector = `#${id}:${start}`;
+      const forcedSelector = `#${id}:${dual}`;
+      assert.deepEqual(await target.$$(forcedSelector), []);
+      assert.strictEqual((await target.$$(unforcedSelector)).length, 1);
+
+      await forcePseudoState(':' + dual, true);
+
+      assert.deepEqual(await target.$$(unforcedSelector), []);
+      assert.strictEqual((await target.$$(forcedSelector)).length, 1);
+
+      await removePseudoState(':' + dual);
+
+      assert.deepEqual(await target.$$(forcedSelector), []);
+      assert.strictEqual((await target.$$(unforcedSelector)).length, 1);
+    });
+  }
+
+  const dualCasesTwoCheckboxes = [
+    {start: 'valid', dual: 'invalid', elementCount: 6},
+    {start: 'invalid', dual: 'valid', elementCount: 1},
+    {start: 'in-range', dual: 'out-of-range', elementCount: 1},
+    {start: 'out-of-range', dual: 'in-range', elementCount: 1},
+  ];
+  for (const {start, dual, elementCount} of dualCasesTwoCheckboxes) {
+    // Flaky test
+    it.skipOnPlatforms(
+        ['mac'], `[crbug.com/1280763]: can force ${start} elements to be :${dual} but not both`, async () => {
+          const {target} = getBrowserAndPages();
+
+          await goToResource('elements/specific-pseudo-states.html');
+          await waitForElementsStyleSection();
+
+          // Verify assumptions behind our test file.
+          // These combinations should not exist.
+          assert.deepEqual(await target.$$(`.start-${start}:${dual}`), []);
+          assert.deepEqual(await target.$$(`.test-case:not(.start-${start}):${start}`), []);
+
+          // Before we do anything, pseudoClasses should be as expected.
+          const cls = `.start-${start}`;
+          const ids = await Promise.all((await target.$$(cls)).map(el => el.evaluate(node => node.id)));
+          const byPseudoClass = await target.$$(`${cls}:${start}`);
+          assert.strictEqual(ids.length, byPseudoClass.length);
+          assert.strictEqual(ids.length, elementCount);
+
+          const id = ids[0];
+          await findElementById(id);
+          const unforcedSelector = `#${id}:${start}`;
+          const forcedSelector = `#${id}:${dual}`;
+          assert.deepEqual(await target.$$(forcedSelector), []);
+          assert.strictEqual((await target.$$(unforcedSelector)).length, 1);
+
+          await forcePseudoState(':' + dual, true);
+          await waitFor(`input[type="checkbox"][title=":${dual}"]:checked`);
+
+          assert.deepEqual(await target.$$(unforcedSelector), []);
+          assert.strictEqual((await target.$$(forcedSelector)).length, 1);
+
+          await forcePseudoState(':' + start, true);
+          await waitFor(`input[type="checkbox"][title=":${start}"]:checked`);
+          await waitFor(`input[type="checkbox"][title=":${dual}"]:not(:checked)`);
+
+          assert.deepEqual(await target.$$(forcedSelector), []);
+          assert.strictEqual((await target.$$(unforcedSelector)).length, 1);
+        });
+  }
 });

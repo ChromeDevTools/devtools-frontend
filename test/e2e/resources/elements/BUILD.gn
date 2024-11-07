@@ -61,6 +61,7 @@ copy_to_gen("elements") {
     "simple-body-color.html",
     "simple-styled-page.html",
     "slot-element.html",
+    "specific-pseudo-states.html",
     "style-pane-properties.html",
     "styles-disable-inherited.html",
     "stylesheets-with-various-sources.html",

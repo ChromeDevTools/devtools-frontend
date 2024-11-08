@@ -120,15 +120,19 @@ describe.skip('[crbug.com/12345678] Foo', () => {
 });
 ```
 
-if all the tests for `Foo` should be skipped. If you are disabling a flaky test,
-consider disabling it only on the affected platforms. For example:
+if all the tests for `Foo` should be skipped. Note that it is preferable to
+skip individual tests so that test results list the skipped tests, rather than
+skipping groups of tests.
+
+If you are disabling a flaky test, consider disabling it only on the affected
+platforms. For example:
 
 ```js
 // Consistently flakes on Mac and Windows bots.
 it.skipOnPlatforms(['mac', 'win32'], '[crbug.com/xxx] ...', () => {...});
 
 // Skipped on Linux because the world isn't round.
-describe.skipOnPlatforms(['linux'], '[crbug.com/xxx] ...', () => {...});
+it.skipOnPlatforms(['linux'], '[crbug.com/xxx] ...', () => {...});
 ```
 
 ### De-flaking E2E tests

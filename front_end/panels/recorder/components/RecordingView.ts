@@ -688,12 +688,12 @@ export class RecordingView extends HTMLElement {
           // clang-format off
           replaySettingsFragments.push(html`<div>
             ${i18nString(UIStrings.download, {
-              value: Platform.NumberUtilities.bytesToString(
+              value: i18n.ByteUtilities.bytesToString(
                 this.#settings.networkConditionsSettings.download,
               ),
             })},
             ${i18nString(UIStrings.upload, {
-              value: Platform.NumberUtilities.bytesToString(
+              value: i18n.ByteUtilities.bytesToString(
                 this.#settings.networkConditionsSettings.upload,
               ),
             })},

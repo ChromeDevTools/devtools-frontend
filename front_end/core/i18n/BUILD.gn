@@ -12,7 +12,9 @@ import("//$devtools_root_location/config/gni/i18n.gni")
 
 devtools_module("i18n") {
   sources = [
+    "ByteUtilities.ts",
     "DevToolsLocale.ts",
+    "NumberFormatter.ts",
     "i18nImpl.ts",
     "i18nTypes.ts",
     "time-utilities.ts",
@@ -85,6 +87,7 @@ ts_library("unittests") {
   testonly = true
 
   sources = [
+    "ByteUtilities.test.ts",
     "DevToolsLocale.test.ts",
     "i18n.test.ts",
     "time-utilities.test.ts",

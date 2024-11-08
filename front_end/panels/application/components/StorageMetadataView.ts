@@ -5,7 +5,6 @@
 import '../../../ui/components/report_view/report_view.js';
 
 import * as i18n from '../../../core/i18n/i18n.js';
-import * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
@@ -216,7 +215,7 @@ export class StorageMetadataView extends LegacyWrapper.LegacyWrapper.WrappableCo
       ${this.key(i18nString(UIStrings.durability))}
       ${this.value(durability)}
       ${this.key(i18nString(UIStrings.quota))}
-      ${this.value(Platform.NumberUtilities.bytesToString(quota))}
+      ${this.value(i18n.ByteUtilities.bytesToString(quota))}
       ${this.key(i18nString(UIStrings.expiration))}
       ${this.value(this.#getExpirationString())}`;
   }

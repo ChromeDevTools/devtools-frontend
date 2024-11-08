@@ -1272,26 +1272,26 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
       this.summaryToolbarInternal.appendSeparator();
       appendChunk(
           i18nString(UIStrings.sSTransferred, {
-            PH1: Platform.NumberUtilities.bytesToString(selectedTransferSize),
-            PH2: Platform.NumberUtilities.bytesToString(transferSize),
+            PH1: i18n.ByteUtilities.bytesToString(selectedTransferSize),
+            PH2: i18n.ByteUtilities.bytesToString(transferSize),
           }),
           i18nString(UIStrings.sBSBTransferredOverNetwork, {PH1: selectedTransferSize, PH2: transferSize}));
       this.summaryToolbarInternal.appendSeparator();
       appendChunk(
           i18nString(UIStrings.sSResources, {
-            PH1: Platform.NumberUtilities.bytesToString(selectedResourceSize),
-            PH2: Platform.NumberUtilities.bytesToString(resourceSize),
+            PH1: i18n.ByteUtilities.bytesToString(selectedResourceSize),
+            PH2: i18n.ByteUtilities.bytesToString(resourceSize),
           }),
           i18nString(UIStrings.sBSBResourcesLoadedByThePage, {PH1: selectedResourceSize, PH2: resourceSize}));
     } else {
       appendChunk(i18nString(UIStrings.sRequests, {PH1: nodeCount}));
       this.summaryToolbarInternal.appendSeparator();
       appendChunk(
-          i18nString(UIStrings.sTransferred, {PH1: Platform.NumberUtilities.bytesToString(transferSize)}),
+          i18nString(UIStrings.sTransferred, {PH1: i18n.ByteUtilities.bytesToString(transferSize)}),
           i18nString(UIStrings.sBTransferredOverNetwork, {PH1: transferSize}));
       this.summaryToolbarInternal.appendSeparator();
       appendChunk(
-          i18nString(UIStrings.sResources, {PH1: Platform.NumberUtilities.bytesToString(resourceSize)}),
+          i18nString(UIStrings.sResources, {PH1: i18n.ByteUtilities.bytesToString(resourceSize)}),
           i18nString(UIStrings.sBResourcesLoadedByThePage, {PH1: resourceSize}));
     }
 

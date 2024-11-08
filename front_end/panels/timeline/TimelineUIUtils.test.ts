@@ -631,7 +631,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
       assert.deepEqual(rowData, [
         {
           title: 'Timestamp',
-          value: '1058.3\xA0ms',
+          value: '1,058.3\xA0ms',
         },
         {title: 'Details', value: '{   "hello": "world"\n}'},
       ]);
@@ -653,7 +653,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
       assert.deepEqual(rowData, [
         {
           title: 'Timestamp',
-          value: '1005.5\xA0ms',
+          value: '1,005.5\xA0ms',
         },
         {
           title: 'Details',

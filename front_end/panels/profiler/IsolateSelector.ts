@@ -4,7 +4,6 @@
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -172,7 +171,7 @@ export class IsolateSelector extends UI.Widget.VBox implements UI.ListControl.Li
       total += isolate.usedHeapSize();
       trend += isolate.usedHeapSizeGrowRate();
     }
-    this.totalValueDiv.textContent = Platform.NumberUtilities.bytesToString(total);
+    this.totalValueDiv.textContent = i18n.ByteUtilities.bytesToString(total);
     IsolateSelector.formatTrendElement(trend, this.totalTrendDiv);
   }
 
@@ -182,7 +181,7 @@ export class IsolateSelector extends UI.Widget.VBox implements UI.ListControl.Li
     if (Math.abs(changeRateBytesPerSecond) < changeRateThresholdBytesPerSecond) {
       return;
     }
-    const changeRateText = Platform.NumberUtilities.bytesToString(Math.abs(changeRateBytesPerSecond));
+    const changeRateText = i18n.ByteUtilities.bytesToString(Math.abs(changeRateBytesPerSecond));
     let changeText, changeLabel;
     if (changeRateBytesPerSecond > 0) {
       changeText = '\u2B06' + i18nString(UIStrings.changeRate, {PH1: changeRateText});
@@ -267,7 +266,7 @@ export class ListItem {
   }
 
   updateStats(): void {
-    this.heapDiv.textContent = Platform.NumberUtilities.bytesToString(this.isolate.usedHeapSize());
+    this.heapDiv.textContent = i18n.ByteUtilities.bytesToString(this.isolate.usedHeapSize());
     IsolateSelector.formatTrendElement(this.isolate.usedHeapSizeGrowRate(), this.trendDiv);
   }
 

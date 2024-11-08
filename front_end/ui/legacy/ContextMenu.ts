@@ -553,11 +553,11 @@ export class ContextMenu extends SubMenu {
   }
 
   private innerShow(): void {
-    const menuObject = this.buildMenuDescriptors();
-
     if (!this.eventTarget) {
       return;
     }
+
+    const menuObject = this.buildMenuDescriptors();
     const ownerDocument = (this.eventTarget as HTMLElement).ownerDocument;
     if (this.useSoftMenu || ContextMenu.useSoftMenu ||
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.isHostedMode()) {

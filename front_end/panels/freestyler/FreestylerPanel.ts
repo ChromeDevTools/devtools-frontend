@@ -648,7 +648,11 @@ export class FreestylerPanel extends UI.Panel.Panel {
   }
 
   #onHistoryClicked(event: Event): void {
-    const contextMenu = new UI.ContextMenu.ContextMenu(event);
+    const boundingRect = this.#historyEntriesButton.element.getBoundingClientRect();
+    const contextMenu = new UI.ContextMenu.ContextMenu(event, {
+      x: boundingRect.left,
+      y: boundingRect.bottom,
+    });
 
     for (const agent of [...this.#agents].reverse()) {
       if (agent.isEmpty) {

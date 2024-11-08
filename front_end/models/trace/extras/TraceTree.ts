@@ -103,7 +103,7 @@ export class TopDownNode extends Node {
     }
     const startTime = root.startTime;
     const endTime = root.endTime;
-    const instantEventCallback = root.doNotAggregate ? onInstantEvent : undefined;
+    const instantEventCallback = (root.doNotAggregate || root.includeInstantEvents) ? onInstantEvent : undefined;
     const eventIdCallback = root.doNotAggregate ? undefined : generateEventID;
     const eventGroupIdCallback = root.getEventGroupIdCallback();
     let depth = 0;
@@ -238,18 +238,21 @@ export class TopDownNode extends Node {
 
 export class TopDownRootNode extends TopDownNode {
   readonly filter: (e: Types.Events.Event) => boolean;
+  /** This is all events passed in to create the tree, and it's very likely that it included events outside of the passed startTime/endTime as that filtering is done in `Helpers.Trace.forEachEvent` */
   readonly events: Types.Events.Event[];
   readonly startTime: Types.Timing.MilliSeconds;
   readonly endTime: Types.Timing.MilliSeconds;
   eventGroupIdCallback: ((arg0: Types.Events.Event) => string)|null|undefined;
+  /** Default behavior is to aggregate similar trace events into one Node based on generateEventID(), eventGroupIdCallback(), etc. Set true to keep nodes 1:1 with events. */
   readonly doNotAggregate: boolean|undefined;
+  readonly includeInstantEvents?: boolean;
   override totalTime: number;
   override selfTime: number;
 
   constructor(
       events: Types.Events.Event[], filters: TraceFilter[], startTime: Types.Timing.MilliSeconds,
       endTime: Types.Timing.MilliSeconds, doNotAggregate?: boolean,
-      eventGroupIdCallback?: ((arg0: Types.Events.Event) => string)|null) {
+      eventGroupIdCallback?: ((arg0: Types.Events.Event) => string)|null, includeInstantEvents?: boolean) {
     super('', null, null);
     this.root = this;
     this.events = events;
@@ -258,6 +261,8 @@ export class TopDownRootNode extends TopDownNode {
     this.endTime = endTime;
     this.eventGroupIdCallback = eventGroupIdCallback;
     this.doNotAggregate = doNotAggregate;
+    this.includeInstantEvents = includeInstantEvents;
+
     this.totalTime = endTime - startTime;
     this.selfTime = this.totalTime;
   }

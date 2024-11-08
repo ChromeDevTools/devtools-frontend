@@ -8,13 +8,6 @@
   box-sizing: border-box;
 }
 
-header > h1 {
-  font-size: 18px;
-  font-weight: normal;
-  margin: 0;
-  white-space: nowrap;
-}
-
 .shared-disclaimer {
   background: linear-gradient(135deg, var(--sys-color-gradient-primary), var(--sys-color-gradient-tertiary));
   border-radius: var(--sys-size-5);
@@ -45,7 +38,7 @@ header > h1 {
   display: grid;
   grid-template-columns: 1fr auto auto;
   border-radius: var(--sys-size-5);
-  box-shadow: var(--sys-elevation-level3); /* stylelint-disable-line plugin/use_theme_colors */
+  box-shadow: var(--sys-elevation-level2);
   margin: var(--sys-size-11) 0 var(--sys-size-4);
   line-height: var(--sys-typescale-body5-line-height);
   min-width: var(--sys-size-28);
@@ -154,13 +147,9 @@ header > h1 {
 
 .settings-container-wrapper {
   position: absolute;
-  top: 31px;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: var(--sys-size-8) 0 0;
   overflow: auto;
-  padding: var(--sys-size-6);
-  border-top: 1px solid var(--sys-color-divider);
+  padding: var(--sys-size-3) var(--sys-size-6) var(--sys-size-6);
   display: flex;
   flex-direction: column;
 }

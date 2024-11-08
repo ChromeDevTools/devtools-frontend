@@ -139,10 +139,6 @@ const UIStrings = {
    */
   privacyNotice: 'Google Privacy Policy',
   /**
-   *@description Header for the AI innovations settings page
-   */
-  aiInnovations: 'AI innovations',
-  /**
    *@description Label for a toggle to enable the Console Insights feature
    */
   enableConsoleInsights: 'Enable `Console insights`',
@@ -536,9 +532,6 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     LitHtml.render(html`
-      <header>
-        <h1>${i18nString(UIStrings.aiInnovations)}</h1>
-      </header>
       <div class="settings-container-wrapper" jslog=${VisualLogging.pane('chrome-ai')}>
         ${this.#renderSharedDisclaimer()}
         ${this.#consoleInsightsSetting || this.#aiAssistanceSetting ? html`

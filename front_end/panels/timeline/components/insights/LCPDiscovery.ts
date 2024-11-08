@@ -20,15 +20,6 @@ const {html} = LitHtml;
 
 const UIStrings = {
   /**
-   *@description Title of an insight that provides details about the LCP metric, and the network requests necessary to load it. Details how the LCP request was discoverable - in other words, the path necessary to load it (ex: network requests, JavaScript)
-   */
-  title: 'LCP request discovery',
-  /**
-   *@description Description of an insight that provides details about the LCP metric, and the network requests necessary to load it.
-   */
-  description:
-      'Optimize LCP by making the LCP image [discoverable](https://web.dev/articles/optimize-lcp#1_eliminate_resource_load_delay) from the HTML immediately, and [avoiding lazy-loading](https://web.dev/articles/lcp-lazy-loading)',
-  /**
    * @description Text to tell the user how long after the earliest discovery time their LCP element loaded.
    * @example {401ms} PH1
    */
@@ -55,7 +46,6 @@ const UIStrings = {
    *@example {Server response time} PH1
    */
   failedAriaLabel: 'Insight check failed: {PH1}',
-
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/LCPDiscovery.ts', UIStrings);
@@ -112,8 +102,6 @@ export class LCPDiscovery extends BaseInsightComponent<LCPDiscoveryInsightModel>
   static override readonly litTagName = LitHtml.literal`devtools-performance-lcp-discovery`;
   override insightCategory: Category = Category.LCP;
   override internalName: string = 'lcp-discovery';
-  override userVisibleTitle: string = i18nString(UIStrings.title);
-  override description: string = i18nString(UIStrings.description);
 
   #adviceIcon(didFail: boolean, label: string): LitHtml.TemplateResult {
     const icon = didFail ? 'clear' : 'check-circle';
@@ -197,13 +185,17 @@ export class LCPDiscovery extends BaseInsightComponent<LCPDiscoveryInsightModel>
     // clang-format on
   }
 
-  #renderDiscovery(imageData: LCPImageDiscoveryData): LitHtml.TemplateResult {
+  #renderDiscovery(imageData: LCPImageDiscoveryData): LitHtml.LitTemplate {
+    if (!this.model) {
+      return LitHtml.nothing;
+    }
+
     // clang-format off
     return html`
         <div class="insights">
           <devtools-performance-sidebar-insight .data=${{
-            title: this.userVisibleTitle,
-            description: this.description,
+            title: this.model.title,
+            description: this.model.description,
             internalName: this.internalName,
             expanded: this.isActive(),
             estimatedSavingsTime: imageData.estimatedSavings,

@@ -15,14 +15,6 @@ import {Category} from './types.js';
 const {html} = LitHtml;
 
 const UIStrings = {
-  /** Title of an insight that provides details about why elements shift/move on the page. The causes for these shifts are referred to as culprits ("reasons"). */
-  title: 'Layout shift culprits',
-  /**
-   * @description Description of a DevTools insight that identifies the reasons that elements shift on the page.
-   * This is displayed after a user expands the section to see more. No character length limits.
-   */
-  description:
-      'Layout shifts occur when elements move absent any user interaction. [Investigate the causes of layout shifts](https://web.dev/articles/optimize-cls), such as elements being added, removed, or their fonts changing as the page loads.',
   /**
    *@description Text indicating the worst layout shift cluster.
    */
@@ -64,8 +56,6 @@ export class CLSCulprits extends BaseInsightComponent<CLSCulpritsInsightModel> {
   static override readonly litTagName = LitHtml.literal`devtools-performance-cls-culprits`;
   override insightCategory: Category = Category.CLS;
   override internalName: string = 'cls-culprits';
-  override userVisibleTitle: string = i18nString(UIStrings.title);
-  override description: string = i18nString(UIStrings.description);
 
   override createOverlays(): Overlays.Overlays.TimelineOverlay[] {
     const clustersByScore =
@@ -137,8 +127,11 @@ export class CLSCulprits extends BaseInsightComponent<CLSCulpritsInsightModel> {
     this.dispatchEvent(new EventReferenceClick(event));
   }
 
-  #render(culprits: Array<string>, worstCluster: Trace.Types.Events.SyntheticLayoutShiftCluster):
-      LitHtml.TemplateResult {
+  #render(culprits: Array<string>, worstCluster: Trace.Types.Events.SyntheticLayoutShiftCluster): LitHtml.LitTemplate {
+    if (!this.model) {
+      return LitHtml.nothing;
+    }
+
     const ts = Trace.Types.Timing.MicroSeconds(worstCluster.ts - (this.data.parsedTrace?.Meta.traceBounds.min ?? 0));
     const clusterTs = i18n.TimeUtilities.formatMicroSecondsTime(ts);
 
@@ -147,8 +140,8 @@ export class CLSCulprits extends BaseInsightComponent<CLSCulpritsInsightModel> {
     return html`
         <div class="insights">
             <devtools-performance-sidebar-insight .data=${{
-              title: this.userVisibleTitle,
-              description: this.description,
+              title: this.model.title,
+              description: this.model.description,
               internalName: this.internalName,
               expanded: this.isActive(),
             }}

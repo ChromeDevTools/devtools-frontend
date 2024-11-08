@@ -2,11 +2,27 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as i18n from '../../../core/i18n/i18n.js';
 import * as Handlers from '../handlers/handlers.js';
 import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
 
 import {type InsightModel, type InsightSetContext, InsightWarning, type RequiredData} from './types.js';
+
+const UIStrings = {
+  /**
+   *@description Title of an insight that provides details about the LCP metric, broken down by phases / parts.
+   */
+  title: 'LCP by phase',
+  /**
+   * @description Description of a DevTools insight that presents a breakdown for the LCP metric by phases.
+   * This is displayed after a user expands the section to see more. No character length limits.
+   */
+  description:
+      'Each [phase has specific improvement strategies](https://web.dev/articles/optimize-lcp#lcp-breakdown). Ideally, most of the LCP time should be spent on loading the resources, not within delays.',
+};
+const str_ = i18n.i18n.registerUIStrings('models/trace/insights/LCPPhases.ts', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export function deps(): ['NetworkRequests', 'PageLoadMetrics', 'LargestImagePaint', 'Meta'] {
   return ['NetworkRequests', 'PageLoadMetrics', 'LargestImagePaint', 'Meta'];
@@ -94,10 +110,14 @@ function breakdownPhases(
   };
 }
 
+function finalize(partialModel: Omit<LCPPhasesInsightModel, 'title'|'description'>): LCPPhasesInsightModel {
+  return {title: i18nString(UIStrings.title), description: i18nString(UIStrings.description), ...partialModel};
+}
+
 export function generateInsight(
     parsedTrace: RequiredData<typeof deps>, context: InsightSetContext): LCPPhasesInsightModel {
   if (!context.navigation) {
-    return {};
+    return finalize({});
   }
 
   const networkRequests = parsedTrace.NetworkRequests;
@@ -114,7 +134,7 @@ export function generateInsight(
   const metricScore = navMetrics.get(Handlers.ModelHandlers.PageLoadMetrics.MetricName.LCP);
   const lcpEvent = metricScore?.event;
   if (!lcpEvent || !Types.Events.isLargestContentfulPaintCandidate(lcpEvent)) {
-    return {warnings: [InsightWarning.NO_LCP]};
+    return finalize({warnings: [InsightWarning.NO_LCP]});
   }
 
   // This helps calculate the phases.
@@ -125,24 +145,24 @@ export function generateInsight(
 
   const docRequest = networkRequests.byTime.find(req => req.args.data.requestId === context.navigationId);
   if (!docRequest) {
-    return {lcpMs, lcpTs, lcpEvent, lcpRequest, warnings: [InsightWarning.NO_DOCUMENT_REQUEST]};
+    return finalize({lcpMs, lcpTs, lcpEvent, lcpRequest, warnings: [InsightWarning.NO_DOCUMENT_REQUEST]});
   }
 
   if (!lcpRequest) {
-    return {
+    return finalize({
       lcpMs,
       lcpTs,
       lcpEvent,
       lcpRequest,
       phases: breakdownPhases(context.navigation, docRequest, lcpMs, lcpRequest) ?? undefined,
-    };
+    });
   }
 
-  return {
+  return finalize({
     lcpMs,
     lcpTs,
     lcpEvent,
     lcpRequest,
     phases: breakdownPhases(context.navigation, docRequest, lcpMs, lcpRequest) ?? undefined,
-  };
+  });
 }

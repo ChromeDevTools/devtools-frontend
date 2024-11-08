@@ -4,6 +4,7 @@
 
 import '../../../../ui/components/markdown_view/markdown_view.js';
 
+import type {InsightModel} from '../../../../models/trace/insights/types.js';
 import type * as Trace from '../../../../models/trace/trace.js';
 import * as Marked from '../../../../third_party/marked/marked.js';
 import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js';
@@ -45,11 +46,9 @@ export interface BaseInsightData {
 
 // TODO(crbug.com/371615739): BaseInsight, SidebarInsight should be combined.
 // This is an abstract base class so the component naming rules do not apply.
-export abstract class BaseInsightComponent<T> extends HTMLElement {
+export abstract class BaseInsightComponent<T extends InsightModel<{}>> extends HTMLElement {
   abstract internalName: string;
   abstract insightCategory: Category;
-  abstract userVisibleTitle: string;
-  abstract description: string;
   // So we can use the TypeScript BaseInsight class without getting warnings
   // about litTagName. Every child should overrwrite this.
   static readonly litTagName = LitHtml.literal``;
@@ -89,13 +88,13 @@ export abstract class BaseInsightComponent<T> extends HTMLElement {
     this.dataset.insightName = this.internalName;
 
     // TODO(crbug.com/371615739): this should be moved to model/trace/insights
-    if (!this.#hasRegisteredRelatedEvents) {
+    if (!this.#hasRegisteredRelatedEvents && this.#model) {
       this.#hasRegisteredRelatedEvents = true;
 
       const events = this.getRelatedEvents();
       if (events.length) {
         this.dispatchEvent(new SidebarInsight.InsightProvideRelatedEvents(
-            this.userVisibleTitle, events, this.#dispatchInsightActivatedEvent.bind(this)));
+            this.#model.title, events, this.#dispatchInsightActivatedEvent.bind(this)));
       }
     }
   }

@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as i18n from '../../../core/i18n/i18n.js';
 import * as Protocol from '../../../generated/protocol.js';
 import * as Handlers from '../handlers/handlers.js';
 import * as Helpers from '../helpers/helpers.js';
@@ -16,6 +17,22 @@ import {
   type LanternContext,
   type RequiredData,
 } from './types.js';
+
+const UIStrings = {
+  /**
+   * @description Title of an insight that provides the user with the list of network requests that blocked and therefore slowed down the page rendering and becoming visible to the user.
+   */
+  title: 'Render blocking requests',
+  /**
+   * @description Text to describe that there are requests blocking rendering, which may affect LCP.
+   */
+  description: 'Requests are blocking the page\'s initial render, which may delay LCP. ' +
+      '[Deferring or inlining](https://web.dev/learn/performance/understanding-the-critical-path#render-blocking_resources/) ' +
+      'can move these network requests out of the critical path.',
+};
+
+const str_ = i18n.i18n.registerUIStrings('models/trace/insights/RenderBlocking.ts', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export type RenderBlockingInsightModel = InsightModel<{
   renderBlockingRequests: Types.Events.SyntheticNetworkRequest[],
@@ -133,12 +150,16 @@ function computeSavings(
   return {metricSavings, requestIdToWastedMs};
 }
 
+function finalize(partialModel: Omit<RenderBlockingInsightModel, 'title'|'description'>): RenderBlockingInsightModel {
+  return {title: i18nString(UIStrings.title), description: i18nString(UIStrings.description), ...partialModel};
+}
+
 export function generateInsight(
     parsedTrace: RequiredData<typeof deps>, context: InsightSetContext): RenderBlockingInsightModel {
   if (!context.navigation) {
-    return {
+    return finalize({
       renderBlockingRequests: [],
-    };
+    });
   }
 
   const firstPaintTs = parsedTrace.PageLoadMetrics.metricScoresByFrameId.get(context.frameId)
@@ -146,10 +167,10 @@ export function generateInsight(
                            ?.get(Handlers.ModelHandlers.PageLoadMetrics.MetricName.FP)
                            ?.event?.ts;
   if (!firstPaintTs) {
-    return {
+    return finalize({
       renderBlockingRequests: [],
       warnings: [InsightWarning.NO_FP],
-    };
+    });
   }
 
   let renderBlockingRequests: Types.Events.SyntheticNetworkRequest[] = [];
@@ -195,9 +216,9 @@ export function generateInsight(
     return b.dur - a.dur;
   });
 
-  return {
+  return finalize({
     relatedEvents: renderBlockingRequests,
     renderBlockingRequests,
     ...savings,
-  };
+  });
 }

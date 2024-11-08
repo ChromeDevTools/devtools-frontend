@@ -19,16 +19,6 @@ const {html} = LitHtml;
 
 const UIStrings = {
   /**
-   * @description Title of an insight that provides the user with the list of network requests that blocked and therefore slowed down the page rendering and becoming visible to the user.
-   */
-  title: 'Render blocking requests',
-  /**
-   * @description Text to describe that there are requests blocking rendering, which may affect LCP.
-   */
-  description: 'Requests are blocking the page\'s initial render, which may delay LCP. ' +
-      '[Deferring or inlining](https://web.dev/learn/performance/understanding-the-critical-path#render-blocking_resources/) ' +
-      'can move these network requests out of the critical path.',
-  /**
    * @description Label to describe a network request (that happens to be render-blocking).
    */
   renderBlockingRequest: 'Request',
@@ -45,8 +35,6 @@ export class RenderBlocking extends BaseInsightComponent<RenderBlockingInsightMo
   static override readonly litTagName = LitHtml.literal`devtools-performance-render-blocking-requests`;
   override insightCategory: Category = Category.LCP;
   override internalName: string = 'render-blocking-requests';
-  override userVisibleTitle: string = i18nString(UIStrings.title);
-  override description: string = i18nString(UIStrings.description);
 
   override createOverlays(): Overlays.Overlays.TimelineOverlay[] {
     if (!this.model) {
@@ -64,7 +52,11 @@ export class RenderBlocking extends BaseInsightComponent<RenderBlockingInsightMo
     };
   }
 
-  #renderRenderBlocking(insightResult: Trace.Insights.Types.InsightModels['RenderBlocking']): LitHtml.TemplateResult {
+  #renderRenderBlocking(insightResult: Trace.Insights.Types.InsightModels['RenderBlocking']): LitHtml.LitTemplate {
+    if (!this.model) {
+      return LitHtml.nothing;
+    }
+
     const estimatedSavings = insightResult.metricSavings?.FCP;
     const MAX_REQUESTS = 3;
     const topRequests = insightResult.renderBlockingRequests.slice(0, MAX_REQUESTS);
@@ -73,8 +65,8 @@ export class RenderBlocking extends BaseInsightComponent<RenderBlockingInsightMo
     return html`
         <div class="insights">
           <devtools-performance-sidebar-insight .data=${{
-            title: this.userVisibleTitle,
-            description: this.description,
+            title: this.model.title,
+            description: this.model.description,
             internalName: this.internalName,
             expanded: this.isActive(),
             estimatedSavingsTime: estimatedSavings,

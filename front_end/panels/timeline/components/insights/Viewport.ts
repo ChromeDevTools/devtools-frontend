@@ -4,7 +4,6 @@
 
 import './NodeLink.js';
 
-import * as i18n from '../../../../core/i18n/i18n.js';
 import type {ViewportInsightModel} from '../../../../models/trace/insights/Viewport.js';
 import type * as Trace from '../../../../models/trace/trace.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
@@ -15,40 +14,29 @@ import {Category} from './types.js';
 
 const {html} = LitHtml;
 
-const UIStrings = {
-  /** Title of an insight that provides details about if the page's viewport is optimized for mobile viewing. */
-  title: 'Viewport not optimized for mobile',
-  /**
-   * @description Text to tell the user how a viewport meta element can improve performance. \xa0 is a non-breaking space
-   */
-  description:
-      'The page\'s viewport is not mobile-optimized, so tap interactions may be [delayed by up to 300\xA0ms](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/).',
-};
-
-const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/Viewport.ts', UIStrings);
-const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-
 export class Viewport extends BaseInsightComponent<ViewportInsightModel> {
   static override readonly litTagName = LitHtml.literal`devtools-performance-viewport`;
   override insightCategory: Category = Category.INP;
   override internalName: string = 'viewport';
-  override userVisibleTitle: string = i18nString(UIStrings.title);
-  override description: string = i18nString(UIStrings.description);
 
   override createOverlays(): Overlays.Overlays.TimelineOverlay[] {
     // TODO(b/351757418): create overlay for synthetic input delay events
     return [];
   }
 
-  #render(insight: Trace.Insights.Types.InsightModels['Viewport']): LitHtml.TemplateResult {
+  #render(insight: Trace.Insights.Types.InsightModels['Viewport']): LitHtml.LitTemplate {
+    if (!this.model) {
+      return LitHtml.nothing;
+    }
+
     const backendNodeId = insight.viewportEvent?.args.data.node_id;
 
     // clang-format off
     return html`
         <div class="insights">
             <devtools-performance-sidebar-insight .data=${{
-              title: this.userVisibleTitle,
-              description: this.description,
+              title: this.model.title,
+              description: this.model.description,
               expanded: this.isActive(),
               internalName: this.internalName,
               estimatedSavingsTime: insight.metricSavings?.INP,

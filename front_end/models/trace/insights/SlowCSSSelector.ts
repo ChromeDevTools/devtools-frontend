@@ -2,11 +2,28 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as i18n from '../../../core/i18n/i18n.js';
 import * as Helpers from '../helpers/helpers.js';
 import {type SelectorTiming, SelectorTimingsKey} from '../types/TraceEvents.js';
 import * as Types from '../types/types.js';
 
 import type {InsightModel, InsightSetContext, RequiredData} from './types.js';
+
+const UIStrings = {
+  /**
+   *@description Title of an insight that provides details about slow CSS selectors.
+   */
+  title: 'CSS Selector costs',
+
+  /**
+   * @description Text to describe how to improve the performance of CSS selectors.
+   */
+  description:
+      'If Recalculate Style costs remain high, selector optimization can reduce them. [Optimize the selectors](https://developer.chrome.com/docs/devtools/performance/selector-stats) with both high elapsed time and high slow-path %. Simpler selectors, fewer selectors, a smaller DOM, and a shallower DOM will all reduce matching costs.',
+};
+
+const str_ = i18n.i18n.registerUIStrings('models/trace/insights/SlowCSSSelector.ts', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export function deps(): ['SelectorStats'] {
   return ['SelectorStats'];
@@ -51,6 +68,10 @@ function aggregateSelectorStats(
   return [...selectorMap.values()];
 }
 
+function finalize(partialModel: Omit<SlowCSSSelectorInsightModel, 'title'|'description'>): SlowCSSSelectorInsightModel {
+  return {title: i18nString(UIStrings.title), description: i18nString(UIStrings.description), ...partialModel};
+}
+
 export function generateInsight(
     parsedTrace: RequiredData<typeof deps>, context: InsightSetContext): SlowCSSSelectorInsightModel {
   const selectorStatsData = parsedTrace.SelectorStats;
@@ -81,7 +102,7 @@ export function generateInsight(
     return b[SelectorTimingsKey.MatchAttempts] - a[SelectorTimingsKey.MatchAttempts];
   });
 
-  return {
+  return finalize({
     // TODO: should we identify UpdateLayout events as linked to this insight?
     relatedEvents: [],
     totalElapsedMs: Types.Timing.MilliSeconds(totalElapsedUs / 1000.0),
@@ -89,5 +110,5 @@ export function generateInsight(
     totalMatchCount,
     topElapsedMs: sortByElapsedMs.slice(0, 3),
     topMatchAttempts: sortByMatchAttempts.slice(0, 3),
-  };
+  });
 }

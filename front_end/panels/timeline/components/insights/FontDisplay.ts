@@ -19,13 +19,6 @@ import {Category} from './types.js';
 const {html} = LitHtml;
 
 const UIStrings = {
-  /** Title of an insight that provides details about the fonts used on the page, and the value of their `font-display` properties. */
-  title: 'Font display',
-  /**
-   * @description Text to tell the user about the font-display CSS feature to help improve a the UX of a page.
-   */
-  description:
-      'Consider setting [`font-display`](https://developer.chrome.com/blog/font-display) to `swap` or `optional` to ensure text is consistently visible. `swap` can be further optimized to mitigate layout shifts with [font metric overrides](https://developer.chrome.com/blog/font-fallbacks).',
   /** Column for a font loaded by the page to render text. */
   fontColumn: 'Font',
   /** Column for the amount of time wasted. */
@@ -39,8 +32,6 @@ export class FontDisplay extends BaseInsightComponent<FontDisplayInsightModel> {
   static override readonly litTagName = LitHtml.literal`devtools-performance-font-display`;
   override insightCategory = Category.INP;
   override internalName: string = 'font-display';
-  override userVisibleTitle: string = i18nString(UIStrings.title);
-  override description: string = i18nString(UIStrings.description);
 
   #overlayForRequest = new Map<Trace.Types.Events.SyntheticNetworkRequest, Overlays.Overlays.TimelineOverlay>();
 
@@ -62,13 +53,17 @@ export class FontDisplay extends BaseInsightComponent<FontDisplayInsightModel> {
     return [...this.#overlayForRequest.values()];
   }
 
-  #render(insight: Trace.Insights.Types.InsightModels['FontDisplay']): LitHtml.TemplateResult {
+  #render(insight: Trace.Insights.Types.InsightModels['FontDisplay']): LitHtml.LitTemplate {
+    if (!this.model) {
+      return LitHtml.nothing;
+    }
+
     // clang-format off
     return html`
         <div class="insights">
             <devtools-performance-sidebar-insight .data=${{
-              title: this.userVisibleTitle,
-              description: this.description,
+              title: this.model.title,
+              description: this.model.description,
               expanded: this.isActive(),
               internalName: this.internalName,
               estimatedSavingsTime: insight.metricSavings?.FCP,

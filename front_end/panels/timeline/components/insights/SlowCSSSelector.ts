@@ -24,17 +24,6 @@ const {html} = LitHtml;
 
 const UIStrings = {
   /**
-   *@description Title of an insight that provides details about slow CSS selectors.
-   */
-  title: 'CSS Selector costs',
-
-  /**
-   * @description Text to describe how to improve the performance of CSS selectors.
-   */
-  description:
-      'If Recalculate Style costs remain high, selector optimization can reduce them. [Optimize the selectors](https://developer.chrome.com/docs/devtools/performance/selector-stats) with both high elapsed time and high slow-path %. Simpler selectors, fewer selectors, a smaller DOM, and a shallower DOM will all reduce matching costs.',
-
-  /**
    *@description Column name for count of elements that the engine attempted to match against a style rule
    */
   matchAttempts: 'Match attempts',
@@ -63,8 +52,6 @@ export class SlowCSSSelector extends BaseInsightComponent<SlowCSSSelectorInsight
   static override readonly litTagName = LitHtml.literal`devtools-performance-slow-css-selector`;
   override insightCategory: Category = Category.ALL;
   override internalName: string = 'slow-css-selector';
-  override userVisibleTitle: string = i18nString(UIStrings.title);
-  override description: string = i18nString(UIStrings.description);
   #selectorLocations: Map<string, Protocol.CSS.SourceRange[]> = new Map();
 
   override createOverlays(): Overlays.Overlays.TimelineOverlay[] {
@@ -133,17 +120,21 @@ export class SlowCSSSelector extends BaseInsightComponent<SlowCSSSelectorInsight
   }
 
   renderSlowCSSSelector(): LitHtml.LitTemplate {
+    if (!this.model) {
+      return LitHtml.nothing;
+    }
+
     const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
     const cssModel = target?.model(SDK.CSSModel.CSSModel);
     const time = (us: Trace.Types.Timing.MicroSeconds): string =>
         i18n.TimeUtilities.millisToString(Platform.Timing.microSecondsToMilliSeconds(us));
 
     // clang-format off
-    return this.model ? html`
+    return html`
       <div class="insights">
         <devtools-performance-sidebar-insight .data=${{
-              title: this.userVisibleTitle,
-              description: this.description,
+              title: this.model.title,
+              description: this.model.description,
               internalName: this.internalName,
               expanded: this.isActive(),
           } as SidebarInsight.InsightDetails}
@@ -194,7 +185,7 @@ export class SlowCSSSelector extends BaseInsightComponent<SlowCSSSelectorInsight
             </div>
           </div>
         </devtools-performance-sidebar-insight>
-      </div>` : LitHtml.nothing;
+      </div>`;
     // clang-format on
   }
 

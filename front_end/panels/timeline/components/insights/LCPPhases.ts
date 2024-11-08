@@ -19,16 +19,6 @@ const {html} = LitHtml;
 
 const UIStrings = {
   /**
-   *@description Title of an insight that provides details about the LCP metric, broken down by phases / parts.
-   */
-  title: 'LCP by phase',
-  /**
-   * @description Description of a DevTools insight that presents a breakdown for the LCP metric by phases.
-   * This is displayed after a user expands the section to see more. No character length limits.
-   */
-  description:
-      'Each [phase has specific improvement strategies](https://web.dev/articles/optimize-lcp#lcp-breakdown). Ideally, most of the LCP time should be spent on loading the resources, not within delays.',
-  /**
    *@description Time to first byte title for the Largest Contentful Paint's phases timespan breakdown.
    */
   timeToFirstByte: 'Time to first byte',
@@ -66,8 +56,6 @@ export class LCPPhases extends BaseInsightComponent<LCPPhasesInsightModel> {
   static override readonly litTagName = LitHtml.literal`devtools-performance-lcp-by-phases`;
   override insightCategory: Category = Category.LCP;
   override internalName: string = 'lcp-by-phase';
-  override userVisibleTitle: string = i18nString(UIStrings.title);
-  override description: string = i18nString(UIStrings.description);
   #overlay: Overlays.Overlays.TimespanBreakdown|null = null;
 
   #getPhaseData(): PhaseData[] {
@@ -202,6 +190,10 @@ export class LCPPhases extends BaseInsightComponent<LCPPhasesInsightModel> {
   }
 
   #renderLCPPhases(phaseData: PhaseData[]): LitHtml.LitTemplate {
+    if (!this.model) {
+      return LitHtml.nothing;
+    }
+
     const rows = phaseData.map(({phase, percent}) => {
       const section = this.#overlay?.sections.find(section => phase === section.label);
       return {
@@ -217,8 +209,8 @@ export class LCPPhases extends BaseInsightComponent<LCPPhasesInsightModel> {
     return html`
     <div class="insights">
       <devtools-performance-sidebar-insight .data=${{
-            title: this.userVisibleTitle,
-            description: this.description,
+            title: this.model.title,
+            description: this.model.description,
             internalName: this.internalName,
             expanded: this.isActive(),
         } as SidebarInsight.InsightDetails}

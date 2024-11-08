@@ -54,6 +54,8 @@ export interface MetricSavings {
 }
 
 export type InsightModel<R extends Record<string, unknown>> = R&{
+  title: string,
+  description: string,
   relatedEvents?: Types.Events.Event[],
   warnings?: InsightWarning[],
   metricSavings?: MetricSavings,

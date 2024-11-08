@@ -22,14 +22,6 @@ type ThirdPartiesEntries = Array<[
 ]>;
 
 const UIStrings = {
-  /** Title of an insight that provides details about the code on a web page that the user doesn't control (referred to as "third-party code"). */
-  title: 'Third parties',
-  /**
-   * @description Description of a DevTools insight that identifies the code on the page that the user doesn't control.
-   * This is displayed after a user expands the section to see more. No character length limits.
-   */
-  description: 'Third party code can significantly impact load performance. ' +
-      '[Reduce and defer loading of third party code](https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/loading-third-party-javascript/) to prioritize your page\'s content.',
   /** Label for a table column that displays the name of a third-party provider. */
   columnThirdParty: 'Third party',
   /** Label for a column in a data table; entries will be the download size of a web resource in kilobytes. */
@@ -45,8 +37,6 @@ export class ThirdParties extends BaseInsightComponent<ThirdPartiesInsightModel>
   static override readonly litTagName = LitHtml.literal`devtools-performance-third-parties`;
   override insightCategory: Category = Category.ALL;
   override internalName: string = 'third-parties';
-  override userVisibleTitle: string = i18nString(UIStrings.title);
-  override description: string = i18nString(UIStrings.description);
 
   #overlaysForEntity = new Map<Trace.Extras.ThirdParties.Entity, Overlays.Overlays.TimelineOverlay[]>();
 
@@ -80,7 +70,11 @@ export class ThirdParties extends BaseInsightComponent<ThirdPartiesInsightModel>
     return overlays;
   }
 
-  #render(entries: ThirdPartiesEntries): LitHtml.TemplateResult {
+  #render(entries: ThirdPartiesEntries): LitHtml.LitTemplate {
+    if (!this.model) {
+      return LitHtml.nothing;
+    }
+
     const topTransferSizeEntries = entries.sort((a, b) => b[1].transferSize - a[1].transferSize).slice(0, 6);
     const topMainThreadTimeEntries = entries.sort((a, b) => b[1].mainThreadTime - a[1].mainThreadTime).slice(0, 6);
 
@@ -88,8 +82,8 @@ export class ThirdParties extends BaseInsightComponent<ThirdPartiesInsightModel>
     return html`
         <div class="insights">
             <devtools-performance-sidebar-insight .data=${{
-              title: this.userVisibleTitle,
-              description: this.description,
+              title: this.model.title,
+              description: this.model.description,
               internalName: this.internalName,
               expanded: this.isActive(),
             }}

@@ -2,12 +2,26 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
 
 import type {InsightModel, InsightSetContext, RequiredData} from './types.js';
+
+const UIStrings = {
+  /** Title of an insight that provides details about why elements shift/move on the page. The causes for these shifts are referred to as culprits ("reasons"). */
+  title: 'Layout shift culprits',
+  /**
+   * @description Description of a DevTools insight that identifies the reasons that elements shift on the page.
+   * This is displayed after a user expands the section to see more. No character length limits.
+   */
+  description:
+      'Layout shifts occur when elements move absent any user interaction. [Investigate the causes of layout shifts](https://web.dev/articles/optimize-cls), such as elements being added, removed, or their fonts changing as the page loads.',
+};
+const str_ = i18n.i18n.registerUIStrings('models/trace/insights/CLSCulprits.ts', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export type CLSCulpritsInsightModel = InsightModel<{
   animationFailures: readonly NoncompositedAnimationFailure[],
@@ -406,6 +420,10 @@ function getFontRootCauses(
   return rootCausesByShift;
 }
 
+function finalize(partialModel: Omit<CLSCulpritsInsightModel, 'title'|'description'>): CLSCulpritsInsightModel {
+  return {title: i18nString(UIStrings.title), description: i18nString(UIStrings.description), ...partialModel};
+}
+
 export function generateInsight(
     parsedTrace: RequiredData<typeof deps>, context: InsightSetContext): CLSCulpritsInsightModel {
   const isWithinContext = (event: Types.Events.Event): boolean => Helpers.Timing.eventIsInBounds(event, context.bounds);
@@ -444,11 +462,11 @@ export function generateInsight(
     relatedEvents.push(worstCluster);
   }
 
-  return {
+  return finalize({
     relatedEvents,
     animationFailures,
     shifts: rootCausesByShift,
     clusters,
     worstCluster,
-  };
+  });
 }

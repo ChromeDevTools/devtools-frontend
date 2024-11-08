@@ -2,11 +2,25 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
 
 import type {InsightModel, InsightSetContext, RequiredData} from './types.js';
+
+const UIStrings = {
+  /** Title of an insight that provides details about the fonts used on the page, and the value of their `font-display` properties. */
+  title: 'Font display',
+  /**
+   * @description Text to tell the user about the font-display CSS feature to help improve a the UX of a page.
+   */
+  description:
+      'Consider setting [`font-display`](https://developer.chrome.com/blog/font-display) to `swap` or `optional` to ensure text is consistently visible. `swap` can be further optimized to mitigate layout shifts with [font metric overrides](https://developer.chrome.com/blog/font-fallbacks).',
+};
+
+const str_ = i18n.i18n.registerUIStrings('models/trace/insights/FontDisplay.ts', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export function deps(): ['Meta', 'NetworkRequests', 'LayoutShifts'] {
   return ['Meta', 'NetworkRequests', 'LayoutShifts'];
@@ -19,6 +33,10 @@ export type FontDisplayInsightModel = InsightModel<{
     wastedTime: Types.Timing.MilliSeconds,
   }>,
 }>;
+
+function finalize(partialModel: Omit<FontDisplayInsightModel, 'title'|'description'>): FontDisplayInsightModel {
+  return {title: i18nString(UIStrings.title), description: i18nString(UIStrings.description), ...partialModel};
+}
 
 export function generateInsight(
     parsedTrace: RequiredData<typeof deps>, context: InsightSetContext): FontDisplayInsightModel {
@@ -58,9 +76,9 @@ export function generateInsight(
 
   const savings = Math.max(...fonts.map(f => f.wastedTime)) as Types.Timing.MilliSeconds;
 
-  return {
+  return finalize({
     relatedEvents: fonts.map(f => f.request),
     fonts,
     metricSavings: {FCP: savings},
-  };
+  });
 }

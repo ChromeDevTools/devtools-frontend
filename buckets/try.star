@@ -123,27 +123,11 @@ builder_coverage(
 )
 
 builder_coverage(
-    covered_oss = ["mac"],
-    builder_factory = try_builder,
-    builder_name_pattern = "devtools_frontend_%s_rel",
-    recipe_name = "devtools/devtools-frontend",
-    execution_timeout = default_timeout,
-    properties = {"clobber": True},
-)
-
-builder_coverage(
     covered_oss = ["mac_arm64"],
     builder_factory = try_builder,
     builder_name_pattern = "devtools_frontend_%s_rel",
     recipe_name = "devtools/devtools-frontend",
     execution_timeout = default_timeout,
-)
-
-builder_coverage(
-    covered_oss = ["linux", "win64"],
-    builder_factory = try_builder,
-    builder_name_pattern = "devtools_frontend_%s_rel",
-    recipe_name = "devtools/devtools-frontend",
 )
 
 builder_coverage(
@@ -171,14 +155,6 @@ builder_coverage(
     recipe_name = "devtools/dtf-e2e-stress",
     execution_timeout = default_timeout,
     priority = 50,
-)
-
-builder_coverage(
-    covered_oss = ["linux", "mac", "win64"],
-    builder_factory = try_builder,
-    builder_name_pattern = "devtools_screenshot_%s_rel",
-    recipe_name = "devtools/dtf-screenshots",
-    execution_timeout = 2 * time.hour,
 )
 
 def try_pair(
@@ -269,10 +245,6 @@ cq_builders = struct(
         "cpp_debug_extension_e2e_rel",
         "devtools_frontend_linux_dbg",
         "devtools_frontend_linux_dbg_fastbuild",
-        "devtools_frontend_linux_rel",
-        "devtools_frontend_mac_rel",
-        "devtools_frontend_mac_arm64_rel",
-        "devtools_frontend_win64_rel",
         "dtf_linux_dbg",
         "dtf_linux_dbg_fastbuild",
         "dtf_linux_rel",
@@ -297,13 +269,6 @@ cq_builders = struct(
         "cpp_debug_extension_e2e_dbg",
         "cpp_debug_extension_e2e_rel",
         "devtools_frontend_linux_blink_light_rel",
-        "devtools_frontend_linux_rel",
-        "devtools_frontend_mac_rel",
-        "devtools_frontend_mac_arm64_rel",
-        "devtools_screenshot_linux_rel",
-        "devtools_screenshot_mac_rel",
-        "devtools_screenshot_mac_arm64_rel",
-        "devtools_screenshot_win64_rel",
         "devtools_frontend_shuffled_linux_rel",
         "devtools_frontend_shuffled_mac_rel",
         "devtools_frontend_shuffled_win64_rel",

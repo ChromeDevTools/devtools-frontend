@@ -31,18 +31,17 @@ class LanguageExtensionEndpointImpl extends ExtensionEndpoint {
 export class LanguageExtensionEndpoint implements Bindings.DebuggerLanguagePlugins.DebuggerLanguagePlugin {
   private readonly supportedScriptTypes: {
     language: string,
-    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
     // eslint-disable-next-line @typescript-eslint/naming-convention
     symbol_types: Array<string>,
   };
-  private endpoint: LanguageExtensionEndpointImpl;
-  private extensionOrigin: string;
-  name: string;
+  private readonly endpoint: LanguageExtensionEndpointImpl;
+  private readonly extensionOrigin: string;
+  readonly allowFileAccess: boolean;
+  readonly name: string;
 
   constructor(
-      extensionOrigin: string, name: string, supportedScriptTypes: {
+      allowFileAccess: boolean, extensionOrigin: string, name: string, supportedScriptTypes: {
         language: string,
-        // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
         // eslint-disable-next-line @typescript-eslint/naming-convention
         symbol_types: Array<string>,
       },
@@ -51,9 +50,26 @@ export class LanguageExtensionEndpoint implements Bindings.DebuggerLanguagePlugi
     this.extensionOrigin = extensionOrigin;
     this.supportedScriptTypes = supportedScriptTypes;
     this.endpoint = new LanguageExtensionEndpointImpl(this, port);
+    this.allowFileAccess = allowFileAccess;
+  }
+
+  canAccessURL(url: string): boolean {
+    try {
+      return this.allowFileAccess || new URL(url).protocol !== 'file:';
+    } catch (e) {
+      return false;
+    }
   }
 
   handleScript(script: SDK.Script.Script): boolean {
+    try {
+      if (!this.canAccessURL(script.contentURL()) || (script.hasSourceURL && !this.canAccessURL(script.sourceURL)) ||
+          (script.debugSymbols?.externalURL && !this.canAccessURL(script.debugSymbols.externalURL))) {
+        return false;
+      }
+    } catch (e) {
+      return false;
+    }
     const language = script.scriptLanguage();
     return language !== null && script.debugSymbols !== null && language === this.supportedScriptTypes.language &&
         this.supportedScriptTypes.symbol_types.includes(script.debugSymbols.type);
@@ -71,6 +87,9 @@ export class LanguageExtensionEndpoint implements Bindings.DebuggerLanguagePlugi
   /** Notify the plugin about a new script
    */
   addRawModule(rawModuleId: string, symbolsURL: string, rawModule: Chrome.DevTools.RawModule): Promise<string[]> {
+    if (!this.canAccessURL(symbolsURL) || !this.canAccessURL(rawModule.url)) {
+      return Promise.resolve([]);
+    }
     return this.endpoint.sendRequest(
                PrivateAPI.LanguageExtensionPluginCommands.AddRawModule, {rawModuleId, symbolsURL, rawModule}) as
         Promise<string[]>;

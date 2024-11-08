@@ -787,6 +787,47 @@ describeWithDevtoolsExtension('Wasm extension API', {}, context => {
   });
 });
 
+class StubLanguageExtension implements Chrome.DevTools.LanguageExtensionPlugin {
+  async addRawModule(): Promise<string[]|{missingSymbolFiles: string[]}> {
+    return [];
+  }
+  async sourceLocationToRawLocation(): Promise<Chrome.DevTools.RawLocationRange[]> {
+    return [];
+  }
+  async rawLocationToSourceLocation(): Promise<Chrome.DevTools.SourceLocation[]> {
+    return [];
+  }
+  async getScopeInfo(): Promise<Chrome.DevTools.ScopeInfo> {
+    throw new Error('Method not implemented.');
+  }
+  async listVariablesInScope(): Promise<Chrome.DevTools.Variable[]> {
+    return [];
+  }
+  async removeRawModule(): Promise<void> {
+  }
+  async getFunctionInfo(): Promise<{frames: Array<Chrome.DevTools.FunctionInfo>, missingSymbolFiles: Array<string>}|
+                                   {missingSymbolFiles: Array<string>}|{frames: Array<Chrome.DevTools.FunctionInfo>}> {
+    return {frames: []};
+  }
+  async getInlinedFunctionRanges(): Promise<Chrome.DevTools.RawLocationRange[]> {
+    return [];
+  }
+  async getInlinedCalleesRanges(): Promise<Chrome.DevTools.RawLocationRange[]> {
+    return [];
+  }
+  async getMappedLines(): Promise<number[]|undefined> {
+    return undefined;
+  }
+  async evaluate(): Promise<Chrome.DevTools.RemoteObject|Chrome.DevTools.ForeignObject|null> {
+    return null;
+  }
+  async getProperties(): Promise<Chrome.DevTools.PropertyDescriptor[]> {
+    return [];
+  }
+  async releaseObject(): Promise<void> {
+  }
+}
+
 describeWithDevtoolsExtension('Language Extension API', {}, context => {
   it('reports loaded resources', async () => {
     const target = createTarget();
@@ -814,3 +855,47 @@ describeWithDevtoolsExtension('Language Extension API', {}, context => {
     assert.deepEqual(resource, expectedResource);
   });
 });
+
+for (const allowFileAccess of [true, false]) {
+  describeWithDevtoolsExtension(
+      `Language Extension API with {allowFileAccess: ${allowFileAccess}}`, {allowFileAccess}, context => {
+        let target: SDK.Target.Target;
+        beforeEach(() => {
+          target = createTarget();
+          const targetManager = target.targetManager();
+          const workspace = Workspace.Workspace.WorkspaceImpl.instance();
+          const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
+          target.setInspectedURL('http://example.com' as Platform.DevToolsPath.UrlString);
+          const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance(
+              {forceNew: true, targetManager, resourceMapping});
+          Bindings.IgnoreListManager.IgnoreListManager.instance({forceNew: true, debuggerWorkspaceBinding});
+        });
+
+        it('passes allowFileAccess to the LanguageExtensionEndpoint', async () => {
+          const endpointSpy =
+              sinon.spy(Extensions.LanguageExtensionEndpoint.LanguageExtensionEndpoint.prototype, 'handleScript');
+          const plugin = new StubLanguageExtension();
+          await context.chrome.devtools?.languageServices.registerLanguageExtensionPlugin(plugin, 'plugin', {
+            language: Protocol.Debugger.ScriptLanguage.JavaScript,
+            symbol_types: [Protocol.Debugger.DebugSymbolsType.SourceMap],
+          });
+
+          const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
+          assert.isOk(debuggerModel);
+          debuggerModel.parsedScriptSource(
+              '0' as Protocol.Runtime.ScriptId, 'file:///source/url' as Platform.DevToolsPath.UrlString, 0, 0, 100, 100,
+              0, '', {}, false, 'file:///source/url.map', false, false, 200, true, null, null,
+              Protocol.Debugger.ScriptLanguage.JavaScript, [{
+                type: Protocol.Debugger.DebugSymbolsType.SourceMap,
+                externalURL: 'file:///source/url.map',
+              }],
+              null);
+
+          assert.isTrue(endpointSpy.calledOnce);
+          assert.strictEqual(
+              (endpointSpy.thisValues[0] as Extensions.LanguageExtensionEndpoint.LanguageExtensionEndpoint)
+                  .allowFileAccess,
+              allowFileAccess);
+        });
+      });
+}

@@ -35,10 +35,10 @@ export function getResourcesPathWithDevToolsHostname() {
   return getResourcesPath(getDevToolsFrontendHostname());
 }
 
-export async function loadExtension(name: string, startPage?: string) {
+export async function loadExtension(name: string, startPage?: string, allowFileAccess?: boolean) {
   startPage = startPage || `${getResourcesPathWithDevToolsHostname()}/extensions/empty_extension.html`;
   const {frontend} = getBrowserAndPages();
-  const extensionInfo = {startPage, name};
+  const extensionInfo = {startPage, name, allowFileAccess};
 
   // Because the injected script is shared across calls for the target, we cannot run multiple instances concurrently.
   const load = loadExtensionPromise.then(() => doLoad(frontend, extensionInfo));

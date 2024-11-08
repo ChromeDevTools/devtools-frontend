@@ -313,8 +313,12 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     const symbol_types_array =
         (Array.isArray(symbol_types) && symbol_types.every(e => typeof e === 'string') ? symbol_types : []);
     const extensionOrigin = this.getExtensionOrigin(_shared_port);
-    const endpoint =
-        new LanguageExtensionEndpoint(extensionOrigin, pluginName, {language, symbol_types: symbol_types_array}, port);
+    const registration = this.registeredExtensions.get(extensionOrigin);
+    if (!registration) {
+      throw new Error('Received a message from an unregistered extension');
+    }
+    const endpoint = new LanguageExtensionEndpoint(
+        registration.allowFileAccess, extensionOrigin, pluginName, {language, symbol_types: symbol_types_array}, port);
     pluginManager.addPlugin(endpoint);
     return this.status.OK();
   }

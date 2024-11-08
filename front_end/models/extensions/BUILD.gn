@@ -64,6 +64,7 @@ ts_library("unittests") {
   sources = [
     "ExtensionServer.test.ts",
     "HostUrlPattern.test.ts",
+    "LanguageExtensionEndpoint.test.ts",
     "RecorderPluginManager.test.ts",
   ]
 

@@ -98,7 +98,8 @@ describe('The Debugger Language Plugins', () => {
   it('can show C filenames after loading the module', async () => {
     const {target} = getBrowserAndPages();
     const extension = await loadExtension(
-        'TestExtension', `${getResourcesPathWithDevToolsHostname()}/extensions/language_extensions.html`);
+        'TestExtension', `${getResourcesPathWithDevToolsHostname()}/extensions/language_extensions.html`,
+        /* allowFileAccess*/ true);
     await extension.evaluate(() => {
       // A simple plugin that resolves to a single source file
       class SingleFilePlugin {
@@ -129,7 +130,8 @@ describe('The Debugger Language Plugins', () => {
   // Resolve a single code offset to a source line to test the correctness of offset computations.
   it('use correct code offsets to interpret raw locations', async () => {
     const extension = await loadExtension(
-        'TestExtension', `${getResourcesPathWithDevToolsHostname()}/extensions/language_extensions.html`);
+        'TestExtension', `${getResourcesPathWithDevToolsHostname()}/extensions/language_extensions.html`,
+        /* allowFileAccess */ true);
     const locationLabels = WasmLocationLabels.load('extensions/unreachable.wat', 'extensions/unreachable.wasm');
     await extension.evaluate((mappings: LabelMapping[]) => {
       class LocationMappingPlugin {
@@ -186,7 +188,8 @@ describe('The Debugger Language Plugins', () => {
   it('resolve locations for breakpoints correctly', async () => {
     const locationLabels = WasmLocationLabels.load('extensions/global_variable.wat', 'extensions/global_variable.wasm');
     const extension = await loadExtension(
-        'TestExtension', `${getResourcesPathWithDevToolsHostname()}/extensions/language_extensions.html`);
+        'TestExtension', `${getResourcesPathWithDevToolsHostname()}/extensions/language_extensions.html`,
+        /* allowFileAccess */ true);
     await extension.evaluate((mappings: LabelMapping[]) => {
       // This plugin will emulate a source mapping with a single file and a single corresponding source line and byte
       // code offset pair.
@@ -260,7 +263,8 @@ describe('The Debugger Language Plugins', () => {
 
   it('shows top-level and nested variables', async () => {
     const extension = await loadExtension(
-        'TestExtension', `${getResourcesPathWithDevToolsHostname()}/extensions/language_extensions.html`);
+        'TestExtension', `${getResourcesPathWithDevToolsHostname()}/extensions/language_extensions.html`,
+        /* allowFileAccess */ true);
     await extension.evaluateHandle(() => {
       class VariableListingPlugin {
         private modules:
@@ -323,7 +327,8 @@ describe('The Debugger Language Plugins', () => {
 
   it('shows inline frames', async () => {
     const extension = await loadExtension(
-        'TestExtension', `${getResourcesPathWithDevToolsHostname()}/extensions/language_extensions.html`);
+        'TestExtension', `${getResourcesPathWithDevToolsHostname()}/extensions/language_extensions.html`,
+        /* allowFileAccess */ true);
     await extension.evaluate(() => {
       class InliningPlugin {
         private modules: Map<string, {
@@ -430,7 +435,8 @@ describe('The Debugger Language Plugins', () => {
 
   it('falls back to wasm function names when inline info not present', async () => {
     const extension = await loadExtension(
-        'TestExtension', `${getResourcesPathWithDevToolsHostname()}/extensions/language_extensions.html`);
+        'TestExtension', `${getResourcesPathWithDevToolsHostname()}/extensions/language_extensions.html`,
+        /* allowFileAccess */ true);
     await extension.evaluate(() => {
       class InliningPlugin {
         private modules: Map<string, {
@@ -497,7 +503,8 @@ describe('The Debugger Language Plugins', () => {
 
   it('shows a warning when no debug info is present', async () => {
     const extension = await loadExtension(
-        'TestExtension', `${getResourcesPathWithDevToolsHostname()}/extensions/language_extensions.html`);
+        'TestExtension', `${getResourcesPathWithDevToolsHostname()}/extensions/language_extensions.html`,
+        /* allowFileAccess */ true);
     await extension.evaluate(() => {
       class MissingInfoPlugin {
         private modules: Map<string, {
@@ -541,7 +548,8 @@ describe('The Debugger Language Plugins', () => {
 
   it('shows warnings when function info not present', async () => {
     const extension = await loadExtension(
-        'TestExtension', `${getResourcesPathWithDevToolsHostname()}/extensions/language_extensions.html`);
+        'TestExtension', `${getResourcesPathWithDevToolsHostname()}/extensions/language_extensions.html`,
+        /* allowFileAccess */ true);
     await extension.evaluate(() => {
       class MissingInfoPlugin {
         private modules: Map<string, {
@@ -613,7 +621,8 @@ describe('The Debugger Language Plugins', () => {
 
   it('connects warnings to the developer resource panel', async () => {
     const extension = await loadExtension(
-        'TestExtension', `${getResourcesPathWithDevToolsHostname()}/extensions/language_extensions.html`);
+        'TestExtension', `${getResourcesPathWithDevToolsHostname()}/extensions/language_extensions.html`,
+        /* allowFileAccess */ true);
     await extension.evaluate(() => {
       class MissingInfoPlugin {
         async addRawModule() {
@@ -667,7 +676,8 @@ describe('The Debugger Language Plugins', () => {
 
   it('shows variable values with the evaluate API', async () => {
     const extension = await loadExtension(
-        'TestExtension', `${getResourcesPathWithDevToolsHostname()}/extensions/language_extensions.html`);
+        'TestExtension', `${getResourcesPathWithDevToolsHostname()}/extensions/language_extensions.html`,
+        /* allowFileAccess */ true);
     await extension.evaluate(() => {
       class EvalPlugin {
         private modules:
@@ -792,7 +802,8 @@ describe('The Debugger Language Plugins', () => {
 
   it('shows variable value in popover', async () => {
     const extension = await loadExtension(
-        'TestExtension', `${getResourcesPathWithDevToolsHostname()}/extensions/language_extensions.html`);
+        'TestExtension', `${getResourcesPathWithDevToolsHostname()}/extensions/language_extensions.html`,
+        /* allowFileAccess */ true);
     await extension.evaluate(() => {
       class VariableListingPlugin {
         private modules:
@@ -875,7 +886,8 @@ describe('The Debugger Language Plugins', () => {
   it('shows sensible error messages.', async () => {
     const {frontend} = getBrowserAndPages();
     const extension = await loadExtension(
-        'TestExtension', `${getResourcesPathWithDevToolsHostname()}/extensions/language_extensions.html`);
+        'TestExtension', `${getResourcesPathWithDevToolsHostname()}/extensions/language_extensions.html`,
+        /* allowFileAccess */ true);
     await extension.evaluate(() => {
       class FormattingErrorsPlugin {
         private modules:
@@ -994,7 +1006,8 @@ describe('The Debugger Language Plugins', () => {
   it('can access wasm data directly', async () => {
     const {target} = getBrowserAndPages();
     const extension = await loadExtension(
-        'TestExtension', `${getResourcesPathWithDevToolsHostname()}/extensions/language_extensions.html`);
+        'TestExtension', `${getResourcesPathWithDevToolsHostname()}/extensions/language_extensions.html`,
+        /* allowFileAccess */ true);
     await extension.evaluate(() => {
       class WasmDataExtension {
         constructor() {
@@ -1066,7 +1079,8 @@ describe('The Debugger Language Plugins', () => {
   it('lets users manually attach debug info', async () => {
     const {target} = getBrowserAndPages();
     const extension = await loadExtension(
-        'TestExtension', `${getResourcesPathWithDevToolsHostname()}/extensions/language_extensions.html`);
+        'TestExtension', `${getResourcesPathWithDevToolsHostname()}/extensions/language_extensions.html`,
+        /* allowFileAccess */ true);
     await extension.evaluate(() => {
       // A simple plugin that resolves to a single source file
       class DWARFSymbolsWithSingleFilePlugin {
@@ -1143,7 +1157,8 @@ describe('The Debugger Language Plugins', () => {
   it('auto-steps over unmapped code correctly', async () => {
     const {frontend} = getBrowserAndPages();
     const extension = await loadExtension(
-        'TestExtension', `${getResourcesPathWithDevToolsHostname()}/extensions/language_extensions.html`);
+        'TestExtension', `${getResourcesPathWithDevToolsHostname()}/extensions/language_extensions.html`,
+        /* allowFileAccess */ true);
     const locationLabels = WasmLocationLabels.load('extensions/stepping.wat', 'extensions/stepping.wasm');
 
     await goToWasmResource('stepping.wasm', {autoLoadModule: true});

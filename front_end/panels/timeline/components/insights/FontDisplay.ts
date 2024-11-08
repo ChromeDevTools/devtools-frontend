@@ -5,7 +5,8 @@
 import './Table.js';
 
 import * as i18n from '../../../../core/i18n/i18n.js';
-import * as Trace from '../../../../models/trace/trace.js';
+import type {FontDisplayInsightModel} from '../../../../models/trace/insights/FontDisplay.js';
+import type * as Trace from '../../../../models/trace/trace.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
@@ -34,7 +35,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/FontDisplay.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export class FontDisplay extends BaseInsightComponent {
+export class FontDisplay extends BaseInsightComponent<FontDisplayInsightModel> {
   static override readonly litTagName = LitHtml.literal`devtools-performance-font-display`;
   override insightCategory = Category.INP;
   override internalName: string = 'font-display';
@@ -46,12 +47,11 @@ export class FontDisplay extends BaseInsightComponent {
   override createOverlays(): Overlays.Overlays.TimelineOverlay[] {
     this.#overlayForRequest.clear();
 
-    const insight = Trace.Insights.Common.getInsight('FontDisplay', this.data.insights, this.data.insightSetKey);
-    if (!insight) {
+    if (!this.model) {
       return [];
     }
 
-    for (const font of insight.fonts) {
+    for (const font of this.model.fonts) {
       this.#overlayForRequest.set(font.request, {
         type: 'ENTRY_OUTLINE',
         entry: font.request,
@@ -97,19 +97,18 @@ export class FontDisplay extends BaseInsightComponent {
   }
 
   override getRelatedEvents(): Trace.Types.Events.Event[] {
-    const insight = Trace.Insights.Common.getInsight('FontDisplay', this.data.insights, this.data.insightSetKey);
-    return insight?.relatedEvents ?? [];
+    return this.model?.relatedEvents ?? [];
   }
 
   override render(): void {
-    const insight = Trace.Insights.Common.getInsight('FontDisplay', this.data.insights, this.data.insightSetKey);
-    const shouldShow = insight && insight.fonts.find(font => font.wastedTime);
+    const model = this.model;
+    const shouldShow = model && model.fonts.find(font => font.wastedTime);
 
     const matchesCategory = shouldRenderForCategory({
       activeCategory: this.data.activeCategory,
       insightCategory: this.insightCategory,
     });
-    const output = shouldShow && matchesCategory ? this.#render(insight) : LitHtml.nothing;
+    const output = shouldShow && matchesCategory ? this.#render(model) : LitHtml.nothing;
     LitHtml.render(output, this.shadow, {host: this});
   }
 }

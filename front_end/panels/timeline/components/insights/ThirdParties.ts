@@ -6,7 +6,8 @@ import './Table.js';
 
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
-import * as Trace from '../../../../models/trace/trace.js';
+import type {ThirdPartiesInsightModel} from '../../../../models/trace/insights/ThirdParties.js';
+import type * as Trace from '../../../../models/trace/trace.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
@@ -40,7 +41,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/ThirdParties.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export class ThirdParties extends BaseInsightComponent {
+export class ThirdParties extends BaseInsightComponent<ThirdPartiesInsightModel> {
   static override readonly litTagName = LitHtml.literal`devtools-performance-third-parties`;
   override insightCategory: Category = Category.ALL;
   override internalName: string = 'third-parties';
@@ -52,14 +53,13 @@ export class ThirdParties extends BaseInsightComponent {
   override createOverlays(): Overlays.Overlays.TimelineOverlay[] {
     this.#overlaysForEntity.clear();
 
-    const insight = Trace.Insights.Common.getInsight('ThirdParties', this.data.insights, this.data.insightSetKey);
-    if (!insight) {
+    if (!this.model) {
       return [];
     }
 
     const overlays: Overlays.Overlays.TimelineOverlay[] = [];
-    for (const [entity, requests] of insight.requestsByEntity) {
-      if (entity === insight.firstPartyEntity) {
+    for (const [entity, requests] of this.model.requestsByEntity) {
+      if (entity === this.model.firstPartyEntity) {
         continue;
       }
 
@@ -133,13 +133,12 @@ export class ThirdParties extends BaseInsightComponent {
   }
 
   override getRelatedEvents(): Trace.Types.Events.Event[] {
-    const insight = Trace.Insights.Common.getInsight('ThirdParties', this.data.insights, this.data.insightSetKey);
-    return insight?.relatedEvents ?? [];
+    return this.model?.relatedEvents ?? [];
   }
 
   override render(): void {
-    const insight = Trace.Insights.Common.getInsight('ThirdParties', this.data.insights, this.data.insightSetKey);
-    const entries = insight && [...insight.summaryByEntity.entries()].filter(kv => kv[0] !== insight.firstPartyEntity);
+    const model = this.model;
+    const entries = model && [...model.summaryByEntity.entries()].filter(kv => kv[0] !== model.firstPartyEntity);
     const shouldShow = entries?.length;
 
     const matchesCategory = shouldRenderForCategory({

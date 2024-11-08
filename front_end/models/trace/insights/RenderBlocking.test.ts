@@ -16,7 +16,7 @@ export async function processTrace(testContext: Mocha.Suite|Mocha.Context|null, 
   return {data: parsedTrace, insights};
 }
 
-describeWithEnvironment('RenderBlockingRequests', function() {
+describeWithEnvironment('RenderBlocking', function() {
   it('finds render blocking requests', async () => {
     const {data, insights} = await processTrace(this, 'load-simple.json.gz');
     assert.deepStrictEqual(

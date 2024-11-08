@@ -6,6 +6,7 @@ import '../../../../ui/components/icon_button/icon_button.js';
 
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
+import type {LCPDiscoveryInsightModel} from '../../../../models/trace/insights/LCPDiscovery.js';
 import * as Trace from '../../../../models/trace/trace.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import type * as Overlays from '../../overlays/overlays.js';
@@ -69,20 +70,18 @@ interface LCPImageDiscoveryData {
   estimatedSavings: Trace.Types.Timing.MilliSeconds|null;
 }
 
-function getImageData(
-    insights: Trace.Insights.Types.TraceInsightSets|null, insightSetKey: string|null): LCPImageDiscoveryData|null {
-  const insight = Trace.Insights.Common.getInsight('LCPDiscovery', insights, insightSetKey);
-  if (!insight) {
+function getImageData(model: LCPDiscoveryInsightModel|null): LCPImageDiscoveryData|null {
+  if (!model) {
     return null;
   }
 
-  if (insight.lcpRequest === undefined) {
+  if (model.lcpRequest === undefined) {
     return null;
   }
 
-  const shouldIncreasePriorityHint = insight.shouldIncreasePriorityHint;
-  const shouldPreloadImage = insight.shouldPreloadImage;
-  const shouldRemoveLazyLoading = insight.shouldRemoveLazyLoading;
+  const shouldIncreasePriorityHint = model.shouldIncreasePriorityHint;
+  const shouldPreloadImage = model.shouldPreloadImage;
+  const shouldRemoveLazyLoading = model.shouldRemoveLazyLoading;
 
   const imageLCP = shouldIncreasePriorityHint !== undefined && shouldPreloadImage !== undefined &&
       shouldRemoveLazyLoading !== undefined;
@@ -96,20 +95,20 @@ function getImageData(
     shouldIncreasePriorityHint,
     shouldPreloadImage,
     shouldRemoveLazyLoading,
-    request: insight.lcpRequest,
+    request: model.lcpRequest,
     discoveryDelay: null,
-    estimatedSavings: insight.metricSavings?.LCP ?? null,
+    estimatedSavings: model.metricSavings?.LCP ?? null,
   };
 
-  if (insight.earliestDiscoveryTimeTs && insight.lcpRequest) {
-    const discoveryDelay = insight.lcpRequest.ts - insight.earliestDiscoveryTimeTs;
+  if (model.earliestDiscoveryTimeTs && model.lcpRequest) {
+    const discoveryDelay = model.lcpRequest.ts - model.earliestDiscoveryTimeTs;
     data.discoveryDelay = Trace.Types.Timing.MicroSeconds(discoveryDelay);
   }
 
   return data;
 }
 
-export class LCPDiscovery extends BaseInsightComponent {
+export class LCPDiscovery extends BaseInsightComponent<LCPDiscoveryInsightModel> {
   static override readonly litTagName = LitHtml.literal`devtools-performance-lcp-discovery`;
   override insightCategory: Category = Category.LCP;
   override internalName: string = 'lcp-discovery';
@@ -138,7 +137,7 @@ export class LCPDiscovery extends BaseInsightComponent {
   }
 
   override createOverlays(): Overlays.Overlays.TimelineOverlay[] {
-    const imageResults = getImageData(this.data.insights, this.data.insightSetKey);
+    const imageResults = getImageData(this.model);
     if (!imageResults || !imageResults.discoveryDelay) {
       return [];
     }
@@ -235,17 +234,16 @@ export class LCPDiscovery extends BaseInsightComponent {
   }
 
   override getRelatedEvents(): Trace.Types.Events.Event[] {
-    const insight = Trace.Insights.Common.getInsight('LCPDiscovery', this.data.insights, this.data.insightSetKey);
-    if (!insight?.lcpEvent || !insight?.lcpRequest) {
+    if (!this.model?.lcpEvent || !this.model?.lcpRequest) {
       return [];
     }
 
     // TODO: add entire request initiator chain?
-    return [insight.lcpEvent, insight.lcpRequest];
+    return [this.model.lcpEvent, this.model.lcpRequest];
   }
 
   override render(): void {
-    const imageResults = getImageData(this.data.insights, this.data.insightSetKey);
+    const imageResults = getImageData(this.model);
     const matchesCategory = shouldRenderForCategory({
       activeCategory: this.data.activeCategory,
       insightCategory: this.insightCategory,

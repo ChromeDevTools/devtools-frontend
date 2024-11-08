@@ -33,7 +33,8 @@ export type TableState = {
 };
 
 export interface TableData {
-  insight: BaseInsightComponent;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  insight: BaseInsightComponent<any>;
   headers: string[];
   rows: TableDataRow[];
 }
@@ -47,7 +48,8 @@ export class Table extends HTMLElement {
 
   readonly #shadow = this.attachShadow({mode: 'open'});
   readonly #boundRender = this.#render.bind(this);
-  #insight?: BaseInsightComponent;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  #insight?: BaseInsightComponent<any>;
   #state?: TableState;
   #headers?: string[];
   #rows?: TableDataRow[];

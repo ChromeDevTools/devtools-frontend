@@ -12,7 +12,7 @@ export function deps(): ['NetworkRequests', 'PageLoadMetrics', 'LargestImagePain
   return ['NetworkRequests', 'PageLoadMetrics', 'LargestImagePaint', 'Meta'];
 }
 
-export type LCPDiscoveryModel = InsightModel<{
+export type LCPDiscoveryInsightModel = InsightModel<{
   lcpEvent?: Types.Events.LargestContentfulPaintCandidate,
   shouldRemoveLazyLoading?: boolean,
   shouldIncreasePriorityHint?: boolean,
@@ -22,7 +22,8 @@ export type LCPDiscoveryModel = InsightModel<{
   earliestDiscoveryTimeTs?: Types.Timing.MicroSeconds,
 }>;
 
-export function generateInsight(parsedTrace: RequiredData<typeof deps>, context: InsightSetContext): LCPDiscoveryModel {
+export function generateInsight(
+    parsedTrace: RequiredData<typeof deps>, context: InsightSetContext): LCPDiscoveryInsightModel {
   if (!context.navigation) {
     return {};
   }

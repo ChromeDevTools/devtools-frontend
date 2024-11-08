@@ -6,7 +6,8 @@ import './Table.js';
 
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
-import * as Trace from '../../../../models/trace/trace.js';
+import type {RenderBlockingInsightModel} from '../../../../models/trace/insights/RenderBlocking.js';
+import type * as Trace from '../../../../models/trace/trace.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
@@ -40,7 +41,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/RenderBlocking.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export class RenderBlockingRequests extends BaseInsightComponent {
+export class RenderBlocking extends BaseInsightComponent<RenderBlockingInsightModel> {
   static override readonly litTagName = LitHtml.literal`devtools-performance-render-blocking-requests`;
   override insightCategory: Category = Category.LCP;
   override internalName: string = 'render-blocking-requests';
@@ -48,12 +49,11 @@ export class RenderBlockingRequests extends BaseInsightComponent {
   override description: string = i18nString(UIStrings.description);
 
   override createOverlays(): Overlays.Overlays.TimelineOverlay[] {
-    const insight = Trace.Insights.Common.getInsight('RenderBlocking', this.data.insights, this.data.insightSetKey);
-    if (!insight) {
+    if (!this.model) {
       return [];
     }
 
-    return insight.renderBlockingRequests.map(request => this.#createOverlayForRequest(request));
+    return this.model.renderBlockingRequests.map(request => this.#createOverlayForRequest(request));
   }
 
   #createOverlayForRequest(request: Trace.Types.Events.SyntheticNetworkRequest): Overlays.Overlays.EntryOutline {
@@ -101,26 +101,25 @@ export class RenderBlockingRequests extends BaseInsightComponent {
   }
 
   override getRelatedEvents(): Trace.Types.Events.Event[] {
-    const insight = Trace.Insights.Common.getInsight('RenderBlocking', this.data.insights, this.data.insightSetKey);
-    return insight?.relatedEvents ?? [];
+    return this.model?.relatedEvents ?? [];
   }
 
   override render(): void {
-    const insight = Trace.Insights.Common.getInsight('RenderBlocking', this.data.insights, this.data.insightSetKey);
-    const hasBlockingRequests = insight?.renderBlockingRequests && insight.renderBlockingRequests.length > 0;
+    const model = this.model;
+    const hasBlockingRequests = model?.renderBlockingRequests && model.renderBlockingRequests.length > 0;
     const matchesCategory = shouldRenderForCategory({
       activeCategory: this.data.activeCategory,
       insightCategory: this.insightCategory,
     });
-    const output = hasBlockingRequests && matchesCategory ? this.#renderRenderBlocking(insight) : LitHtml.nothing;
+    const output = hasBlockingRequests && matchesCategory ? this.#renderRenderBlocking(model) : LitHtml.nothing;
     LitHtml.render(output, this.shadow, {host: this});
   }
 }
 
 declare global {
   interface HTMLElementTagNameMap {
-    'devtools-performance-render-blocking-requests': RenderBlockingRequests;
+    'devtools-performance-render-blocking-requests': RenderBlocking;
   }
 }
 
-customElements.define('devtools-performance-render-blocking-requests', RenderBlockingRequests);
+customElements.define('devtools-performance-render-blocking-requests', RenderBlocking);

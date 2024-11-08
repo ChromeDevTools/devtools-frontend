@@ -9,6 +9,7 @@ import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../../generated/protocol.js';
+import type {SlowCSSSelectorInsightModel} from '../../../../models/trace/insights/SlowCSSSelector.js';
 import * as Trace from '../../../../models/trace/trace.js';
 import type * as Linkifier from '../../../../ui/components/linkifier/linkifier.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
@@ -58,13 +59,12 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/SlowCSSSelector.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export class SlowCSSSelector extends BaseInsightComponent {
+export class SlowCSSSelector extends BaseInsightComponent<SlowCSSSelectorInsightModel> {
   static override readonly litTagName = LitHtml.literal`devtools-performance-slow-css-selector`;
   override insightCategory: Category = Category.ALL;
   override internalName: string = 'slow-css-selector';
   override userVisibleTitle: string = i18nString(UIStrings.title);
   override description: string = i18nString(UIStrings.description);
-  #slowCSSSelector: Trace.Insights.Models.SlowCSSSelector.SlowCSSSelectorInsightModel|null = null;
   #selectorLocations: Map<string, Protocol.CSS.SourceRange[]> = new Map();
 
   override createOverlays(): Overlays.Overlays.TimelineOverlay[] {
@@ -139,7 +139,7 @@ export class SlowCSSSelector extends BaseInsightComponent {
         i18n.TimeUtilities.millisToString(Platform.Timing.microSecondsToMilliSeconds(us));
 
     // clang-format off
-    return this.#slowCSSSelector ? html`
+    return this.model ? html`
       <div class="insights">
         <devtools-performance-sidebar-insight .data=${{
               title: this.userVisibleTitle,
@@ -155,9 +155,9 @@ export class SlowCSSSelector extends BaseInsightComponent {
                   insight: this,
                   headers: [i18nString(UIStrings.total), ''],
                   rows: [
-                    {values: [i18nString(UIStrings.elapsed), i18n.TimeUtilities.millisToString(this.#slowCSSSelector.totalElapsedMs)]},
-                    {values: [i18nString(UIStrings.matchAttempts), this.#slowCSSSelector.totalMatchAttempts]},
-                    {values: [i18nString(UIStrings.matchCount), this.#slowCSSSelector.totalMatchCount]},
+                    {values: [i18nString(UIStrings.elapsed), i18n.TimeUtilities.millisToString(this.model.totalElapsedMs)]},
+                    {values: [i18nString(UIStrings.matchAttempts), this.model.totalMatchAttempts]},
+                    {values: [i18nString(UIStrings.matchCount), this.model.totalMatchCount]},
                   ],
                 } as TableData}>
               </devtools-performance-table>`}
@@ -167,7 +167,7 @@ export class SlowCSSSelector extends BaseInsightComponent {
                 .data=${{
                   insight: this,
                   headers: [i18nString(UIStrings.topSelectors), i18nString(UIStrings.elapsed)],
-                  rows: this.#slowCSSSelector.topElapsedMs.map(selector => {
+                  rows: this.model.topElapsedMs.map(selector => {
                     return {
                       values: [
                       html`${selector.selector} ${LitHtml.Directives.until(this.getSelectorLinks(cssModel, selector))}`,
@@ -182,7 +182,7 @@ export class SlowCSSSelector extends BaseInsightComponent {
                 .data=${{
                   insight: this,
                   headers: [i18nString(UIStrings.topSelectors), i18nString(UIStrings.matchAttempts)],
-                  rows: this.#slowCSSSelector.topMatchAttempts.map(selector => {
+                  rows: this.model.topMatchAttempts.map(selector => {
                     return {
                       values: [
                       html`${selector.selector} ${LitHtml.Directives.until(this.getSelectorLinks(cssModel, selector))}` as unknown as string,
@@ -199,15 +199,11 @@ export class SlowCSSSelector extends BaseInsightComponent {
   }
 
   #hasDataToRender(): boolean {
-    this.#slowCSSSelector =
-        Trace.Insights.Common.getInsight('SlowCSSSelector', this.data.insights, this.data.insightSetKey);
-    return this.#slowCSSSelector !== null && this.#slowCSSSelector.topElapsedMs.length !== 0 &&
-        this.#slowCSSSelector.topMatchAttempts.length !== 0;
+    return this.model !== null && this.model.topElapsedMs.length !== 0 && this.model.topMatchAttempts.length !== 0;
   }
 
   override getRelatedEvents(): Trace.Types.Events.Event[] {
-    const insight = Trace.Insights.Common.getInsight('SlowCSSSelector', this.data.insights, this.data.insightSetKey);
-    return insight?.relatedEvents ?? [];
+    return this.model?.relatedEvents ?? [];
   }
 
   override render(): void {

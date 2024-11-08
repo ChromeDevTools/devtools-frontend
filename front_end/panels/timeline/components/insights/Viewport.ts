@@ -5,7 +5,8 @@
 import './NodeLink.js';
 
 import * as i18n from '../../../../core/i18n/i18n.js';
-import * as Trace from '../../../../models/trace/trace.js';
+import type {ViewportInsightModel} from '../../../../models/trace/insights/Viewport.js';
+import type * as Trace from '../../../../models/trace/trace.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
@@ -27,7 +28,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/Viewport.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export class Viewport extends BaseInsightComponent {
+export class Viewport extends BaseInsightComponent<ViewportInsightModel> {
   static override readonly litTagName = LitHtml.literal`devtools-performance-viewport`;
   override insightCategory: Category = Category.INP;
   override internalName: string = 'viewport';
@@ -65,14 +66,14 @@ export class Viewport extends BaseInsightComponent {
   }
 
   override render(): void {
-    const viewportInsight = Trace.Insights.Common.getInsight('Viewport', this.data.insights, this.data.insightSetKey);
-    const shouldShow = viewportInsight && viewportInsight.mobileOptimized === false;
+    const model = this.model;
+    const shouldShow = model && model.mobileOptimized === false;
 
     const matchesCategory = shouldRenderForCategory({
       activeCategory: this.data.activeCategory,
       insightCategory: this.insightCategory,
     });
-    const output = shouldShow && matchesCategory ? this.#render(viewportInsight) : LitHtml.nothing;
+    const output = shouldShow && matchesCategory ? this.#render(model) : LitHtml.nothing;
     LitHtml.render(output, this.shadow, {host: this});
   }
 }

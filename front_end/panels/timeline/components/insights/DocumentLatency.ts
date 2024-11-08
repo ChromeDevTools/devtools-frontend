@@ -5,6 +5,7 @@
 import '../../../../ui/components/icon_button/icon_button.js';
 
 import * as i18n from '../../../../core/i18n/i18n.js';
+import type {DocumentLatencyInsightModel} from '../../../../models/trace/insights/DocumentLatency.js';
 import * as Trace from '../../../../models/trace/trace.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import type * as Overlays from '../../overlays/overlays.js';
@@ -75,7 +76,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/DocumentLatency.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export class DocumentLatency extends BaseInsightComponent {
+export class DocumentLatency extends BaseInsightComponent<DocumentLatencyInsightModel> {
   static override readonly litTagName = LitHtml.literal`devtools-performance-document-latency`;
   override insightCategory: Category = Category.ALL;
   override internalName: string = 'document-latency';
@@ -98,17 +99,16 @@ export class DocumentLatency extends BaseInsightComponent {
   }
 
   override createOverlays(): Overlays.Overlays.TimelineOverlay[] {
-    const insight = Trace.Insights.Common.getInsight('DocumentLatency', this.data.insights, this.data.insightSetKey);
-    if (!insight?.data?.documentRequest) {
+    if (!this.model?.data?.documentRequest) {
       return [];
     }
 
     const overlays: Overlays.Overlays.TimelineOverlay[] = [];
-    const event = insight.data.documentRequest;
-    const redirectDurationMicro = Trace.Helpers.Timing.millisecondsToMicroseconds(insight.data.redirectDuration);
+    const event = this.model.data.documentRequest;
+    const redirectDurationMicro = Trace.Helpers.Timing.millisecondsToMicroseconds(this.model.data.redirectDuration);
 
     const sections = [];
-    if (insight.data.redirectDuration) {
+    if (this.model.data.redirectDuration) {
       const bounds = Trace.Helpers.Timing.traceWindowFromMicroSeconds(
           event.ts,
           (event.ts + redirectDurationMicro) as Trace.Types.Timing.MicroSeconds,
@@ -116,8 +116,9 @@ export class DocumentLatency extends BaseInsightComponent {
       sections.push({bounds, label: i18nString(UIStrings.redirectsLabel), showDuration: true});
       overlays.push({type: 'CANDY_STRIPED_TIME_RANGE', bounds, entry: event});
     }
-    if (insight.data.serverResponseTooSlow) {
-      const serverResponseTimeMicro = Trace.Helpers.Timing.millisecondsToMicroseconds(insight.data.serverResponseTime);
+    if (this.model.data.serverResponseTooSlow) {
+      const serverResponseTimeMicro =
+          Trace.Helpers.Timing.millisecondsToMicroseconds(this.model.data.serverResponseTime);
       // NOTE: NetworkRequestHandlers never makes a synthetic network request event if `timing` is missing.
       const sendEnd = event.args.data.timing?.sendEnd ?? Trace.Types.Timing.MilliSeconds(0);
       const sendEndMicro = Trace.Helpers.Timing.millisecondsToMicroseconds(sendEnd);
@@ -127,7 +128,7 @@ export class DocumentLatency extends BaseInsightComponent {
       );
       sections.push({bounds, label: i18nString(UIStrings.serverResponseTimeLabel), showDuration: true});
     }
-    if (insight.data.uncompressedResponseBytes) {
+    if (this.model.data.uncompressedResponseBytes) {
       const bounds = Trace.Helpers.Timing.traceWindowFromMicroSeconds(
           event.args.data.syntheticData.downloadStart,
           (event.args.data.syntheticData.downloadStart + event.args.data.syntheticData.download) as
@@ -141,7 +142,7 @@ export class DocumentLatency extends BaseInsightComponent {
       overlays.push({
         type: 'TIMESPAN_BREAKDOWN',
         sections,
-        entry: insight.data.documentRequest,
+        entry: this.model.data.documentRequest,
         // Always render below because the document request is guaranteed to be
         // the first request in the network track.
         renderLocation: 'BELOW_EVENT',
@@ -149,7 +150,7 @@ export class DocumentLatency extends BaseInsightComponent {
     }
     overlays.push({
       type: 'ENTRY_SELECTED',
-      entry: insight.data.documentRequest,
+      entry: this.model.data.documentRequest,
     });
 
     return overlays;
@@ -195,22 +196,21 @@ export class DocumentLatency extends BaseInsightComponent {
   }
 
   override getRelatedEvents(): Trace.Types.Events.Event[] {
-    const insight = Trace.Insights.Common.getInsight('DocumentLatency', this.data.insights, this.data.insightSetKey);
-    return insight?.relatedEvents ?? [];
+    return this.model?.relatedEvents ?? [];
   }
 
   override render(): void {
-    const insight = Trace.Insights.Common.getInsight('DocumentLatency', this.data.insights, this.data.insightSetKey);
-    if (insight?.data === undefined) {
+    if (this.model?.data === undefined) {
       return;
     }
+
     const matchesCategory = shouldRenderForCategory({
       activeCategory: this.data.activeCategory,
       insightCategory: this.insightCategory,
     });
-    const hasFailure = insight?.data?.redirectDuration > 0 || insight?.data?.serverResponseTooSlow ||
-        insight.data.uncompressedResponseBytes > 0;
-    const output = (matchesCategory && hasFailure) ? this.#renderInsight(insight) : LitHtml.nothing;
+    const hasFailure = this.model?.data?.redirectDuration > 0 || this.model?.data?.serverResponseTooSlow ||
+        this.model.data.uncompressedResponseBytes > 0;
+    const output = (matchesCategory && hasFailure) ? this.#renderInsight(this.model) : LitHtml.nothing;
     LitHtml.render(output, this.shadow, {host: this});
   }
 }

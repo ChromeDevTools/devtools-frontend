@@ -6,6 +6,7 @@ import './Table.js';
 
 import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
+import type {INPInsightModel} from '../../../../models/trace/insights/InteractionToNextPaint.js';
 import * as Trace from '../../../../models/trace/trace.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import type * as Overlays from '../../overlays/overlays.js';
@@ -52,7 +53,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/InteractionToNextPaint.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export class InteractionToNextPaint extends BaseInsightComponent {
+export class InteractionToNextPaint extends BaseInsightComponent<INPInsightModel> {
   static override readonly litTagName = LitHtml.literal`devtools-performance-inp`;
   override insightCategory: Category = Category.INP;
   override internalName: string = 'inp';
@@ -60,13 +61,11 @@ export class InteractionToNextPaint extends BaseInsightComponent {
   override description: string = i18nString(UIStrings.description);
 
   override createOverlays(): Overlays.Overlays.TimelineOverlay[] {
-    const insight =
-        Trace.Insights.Common.getInsight('InteractionToNextPaint', this.data.insights, this.data.insightSetKey);
-    if (!insight) {
+    if (!this.model) {
       return [];
     }
 
-    const event = insight.longestInteractionEvent;
+    const event = this.model.longestInteractionEvent;
     if (!event) {
       return [];
     }
@@ -150,15 +149,11 @@ export class InteractionToNextPaint extends BaseInsightComponent {
   }
 
   override getRelatedEvents(): Trace.Types.Events.Event[] {
-    const insight =
-        Trace.Insights.Common.getInsight('InteractionToNextPaint', this.data.insights, this.data.insightSetKey);
-    return insight?.relatedEvents ?? [];
+    return this.model?.relatedEvents ?? [];
   }
 
   override render(): void {
-    const insight =
-        Trace.Insights.Common.getInsight('InteractionToNextPaint', this.data.insights, this.data.insightSetKey);
-    const event = insight?.longestInteractionEvent;
+    const event = this.model?.longestInteractionEvent;
 
     const matchesCategory = shouldRenderForCategory({
       activeCategory: this.data.activeCategory,

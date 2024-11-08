@@ -40,27 +40,27 @@ export interface SidebarSingleInsightSetData {
  * "enable experimental performance insights" experiment. This is used to enable
  * us to ship incrementally without turning insights on by default for all
  * users. */
-const EXPERIMENTAL_INSIGHTS: ReadonlySet<typeof Insights.Helpers.BaseInsightComponent> = new Set([
-  Insights.FontDisplay.FontDisplay,
+const EXPERIMENTAL_INSIGHTS: ReadonlySet<string> = new Set([
+  'FontDisplay',
 ]);
 
 /**
  * Every insight (INCLUDING experimental ones)
- * The order of this array is the order the insights will be shown in the sidebar.
+ * The order of these properties is the order the insights will be shown in the sidebar.
  * TODO(crbug.com/368135130): sort this in a smart way!
  */
-const ALL_INSIGHTS: typeof Insights.Helpers.BaseInsightComponent[] = [
-  Insights.InteractionToNextPaint.InteractionToNextPaint,
-  Insights.LCPPhases.LCPPhases,
-  Insights.LCPDiscovery.LCPDiscovery,
-  Insights.CLSCulprits.CLSCulprits,
-  Insights.RenderBlocking.RenderBlockingRequests,
-  Insights.DocumentLatency.DocumentLatency,
-  Insights.FontDisplay.FontDisplay,
-  Insights.Viewport.Viewport,
-  Insights.ThirdParties.ThirdParties,
-  Insights.SlowCSSSelector.SlowCSSSelector,
-] as const;
+const INSIGHT_NAME_TO_COMPONENT = {
+  InteractionToNextPaint: Insights.InteractionToNextPaint.InteractionToNextPaint,
+  LCPPhases: Insights.LCPPhases.LCPPhases,
+  LCPDiscovery: Insights.LCPDiscovery.LCPDiscovery,
+  CLSCulprits: Insights.CLSCulprits.CLSCulprits,
+  RenderBlocking: Insights.RenderBlocking.RenderBlocking,
+  DocumentLatency: Insights.DocumentLatency.DocumentLatency,
+  FontDisplay: Insights.FontDisplay.FontDisplay,
+  Viewport: Insights.Viewport.Viewport,
+  ThirdParties: Insights.ThirdParties.ThirdParties,
+  SlowCSSSelector: Insights.SlowCSSSelector.SlowCSSSelector,
+};
 
 export class SidebarSingleInsightSet extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
@@ -193,37 +193,42 @@ export class SidebarSingleInsightSet extends HTMLElement {
     `;
   }
 
-  #insightsForRendering(): typeof Insights.Helpers.BaseInsightComponent[] {
+  #renderInsights(
+      insightSets: Trace.Insights.Types.TraceInsightSets|null,
+      parsedTrace: Trace.Handlers.Types.ParsedTrace|null,
+      insightSetKey: string,
+      ): LitHtml.TemplateResult {
     const includeExperimental = Root.Runtime.experiments.isEnabled(
         Root.Runtime.ExperimentName.TIMELINE_EXPERIMENTAL_INSIGHTS,
     );
 
-    if (includeExperimental) {
-      return ALL_INSIGHTS;
+    const models = insightSets?.get(insightSetKey)?.model;
+    if (!models) {
+      return html``;
     }
 
-    return ALL_INSIGHTS.filter(insight => !EXPERIMENTAL_INSIGHTS.has(insight));
-  }
+    const components: LitHtml.TemplateResult[] = [];
+    for (const [name, componentClass] of Object.entries(INSIGHT_NAME_TO_COMPONENT)) {
+      if (!includeExperimental && EXPERIMENTAL_INSIGHTS.has(name)) {
+        continue;
+      }
 
-  #renderInsights(
-      insights: Trace.Insights.Types.TraceInsightSets|null,
-      parsedTrace: Trace.Handlers.Types.ParsedTrace|null,
-      insightSetKey: string,
-      ): LitHtml.TemplateResult {
-    const insightComponents = this.#insightsForRendering();
-    // clang-format off
-    return html`${insightComponents.map(component => {
-      return html`<div data-single-insight-wrapper>
-        <${component.litTagName}
-          .insights=${insights}
+      // clang-format off
+      const component = html`<div data-single-insight-wrapper>
+        <${componentClass.litTagName}
+          .model=${models[name as keyof typeof models]}
           .parsedTrace=${parsedTrace}
           .insightSetKey=${insightSetKey}
           .activeInsight=${this.#data.activeInsight}
           .activeCategory=${this.#data.activeCategory}>
-        </${component.litTagName}>
+        </${componentClass.litTagName}>
       </div>`;
-    })}`;
-    // clang-format on
+      // clang-format on
+
+      components.push(component);
+    }
+
+    return html`${components}`;
   }
 
   #render(): void {

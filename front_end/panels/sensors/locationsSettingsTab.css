@@ -10,7 +10,7 @@
 }
 
 .locations-list {
-  min-width: 340px;
+  margin-top: var(--sys-size-3);
   flex: auto;
 }
 
@@ -72,6 +72,7 @@
 }
 
 .settings-card-container-wrapper {
+  scrollbar-gutter: stable;
   padding-bottom: var(--sys-size-8);
   overflow: auto;
   position: absolute;

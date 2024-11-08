@@ -172,6 +172,8 @@ devtools_issue_description_files = [
   "cookieWarnThirdPartyPhaseoutRead.md",
   "cookieExcludeThirdPartyPhaseoutSet.md",
   "cookieExcludeThirdPartyPhaseoutRead.md",
+  "cookieExcludePortMismatch.md",
+  "cookieExcludeSchemeMismatch.md",
   "cookieWarnMetadataGrantRead.md",
   "cookieWarnMetadataGrantSet.md",
   "propertyRuleIssue.md",

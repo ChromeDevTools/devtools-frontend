@@ -413,6 +413,8 @@ grd_files_release_sources = [
   "front_end/models/issues_manager/descriptions/cookieCrossSiteRedirectDowngrade.md",
   "front_end/models/issues_manager/descriptions/cookieExcludeBlockedWithinRelatedWebsiteSet.md",
   "front_end/models/issues_manager/descriptions/cookieExcludeDomainNonAscii.md",
+  "front_end/models/issues_manager/descriptions/cookieExcludePortMismatch.md",
+  "front_end/models/issues_manager/descriptions/cookieExcludeSchemeMismatch.md",
   "front_end/models/issues_manager/descriptions/cookieExcludeThirdPartyPhaseoutRead.md",
   "front_end/models/issues_manager/descriptions/cookieExcludeThirdPartyPhaseoutSet.md",
   "front_end/models/issues_manager/descriptions/cookieWarnDomainNonAscii.md",

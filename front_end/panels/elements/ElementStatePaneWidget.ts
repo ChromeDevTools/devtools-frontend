@@ -59,11 +59,12 @@ enum SpecificPseudoStates {
   IN_RANGE = 'in-range',
   OUT_OF_RANGE = 'out-of-range',
   VISITED = 'visited',
+  LINK = 'link',
   CHECKED = 'checked',
   INDETERMINATE = 'indeterminate',
   PLACEHOLDER_SHOWN = 'placeholder-shown',
   AUTOFILL = 'autofill',
-}  // TODO(crbug.com/332914922): Also add :link and tests for :visited when the bug is fixed.
+}
 
 export class ElementStatePaneWidget extends UI.Widget.Widget {
   private readonly inputs: HTMLInputElement[];
@@ -207,6 +208,7 @@ export class ElementStatePaneWidget extends UI.Widget.Widget {
         SpecificPseudoStates.OUT_OF_RANGE, createElementStateCheckbox(SpecificPseudoStates.OUT_OF_RANGE));
     this.specificPseudoStateDivs.set(
         SpecificPseudoStates.VISITED, createElementStateCheckbox(SpecificPseudoStates.VISITED));
+    this.specificPseudoStateDivs.set(SpecificPseudoStates.LINK, createElementStateCheckbox(SpecificPseudoStates.LINK));
     this.specificPseudoStateDivs.set(
         SpecificPseudoStates.CHECKED, createElementStateCheckbox(SpecificPseudoStates.CHECKED));
     this.specificPseudoStateDivs.set(
@@ -225,6 +227,7 @@ export class ElementStatePaneWidget extends UI.Widget.Widget {
     setDualStateCheckboxes(SpecificPseudoStates.READ_ONLY, SpecificPseudoStates.READ_WRITE);
     setDualStateCheckboxes(SpecificPseudoStates.IN_RANGE, SpecificPseudoStates.OUT_OF_RANGE);
     setDualStateCheckboxes(SpecificPseudoStates.ENABLED, SpecificPseudoStates.DISABLED);
+    setDualStateCheckboxes(SpecificPseudoStates.VISITED, SpecificPseudoStates.LINK);
 
     this.specificHeader = document.createElement('details');
     this.specificHeader.classList.add('specific-details');
@@ -381,8 +384,10 @@ export class ElementStatePaneWidget extends UI.Widget.Widget {
 
     if (isElementOfTypes(node, ['a', 'area']) && node.getAttribute('href') !== undefined) {
       hideSpecificCheckbox(SpecificPseudoStates.VISITED, false);
+      hideSpecificCheckbox(SpecificPseudoStates.LINK, false);
     } else {
       hideSpecificCheckbox(SpecificPseudoStates.VISITED, true);
+      hideSpecificCheckbox(SpecificPseudoStates.LINK, true);
     }
 
     if (isInputWithTypeRadioOrCheckbox(node) || isElementOfTypes(node, ['option'])) {

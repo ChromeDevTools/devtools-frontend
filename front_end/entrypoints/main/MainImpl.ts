@@ -400,11 +400,6 @@ export class MainImpl {
     );
 
     Root.Runtime.experiments.register(
-        Root.Runtime.ExperimentName.EXTENSION_STORAGE_VIEWER,
-        'Extension storage in Application panel',
-    );
-
-    Root.Runtime.experiments.register(
         Root.Runtime.ExperimentName.FLOATING_ENTRY_POINTS_FOR_AI_ASSISTANCE,
         'Floating entry points for the AI assistance panel');
 

@@ -4,7 +4,6 @@
 
 import type * as Common from '../../core/common/common.js';
 import type * as Platform from '../../core/platform/platform.js';
-import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import {createTarget, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
@@ -196,8 +195,6 @@ describeWithMockConnection('ApplicationPanelSidebar', () => {
   });
 
   it('shows extension storage based on added models', async () => {
-    Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.EXTENSION_STORAGE_VIEWER);
-
     for (const useTreeView of [false, true]) {
       Application.ResourcesPanel.ResourcesPanel.instance({forceNew: true});
       const sidebar = await Application.ResourcesPanel.ResourcesPanel.showAndGetSidebar();
@@ -241,8 +238,6 @@ describeWithMockConnection('ApplicationPanelSidebar', () => {
   });
 
   it('does not add extension storage if already added by another model', async () => {
-    Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.EXTENSION_STORAGE_VIEWER);
-
     Application.ResourcesPanel.ResourcesPanel.instance({forceNew: true});
     const sidebar = await Application.ResourcesPanel.ResourcesPanel.showAndGetSidebar();
 

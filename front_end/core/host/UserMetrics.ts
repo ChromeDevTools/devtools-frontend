@@ -1024,7 +1024,6 @@ export enum DevtoolsExperiments {
   'timeline-rpp-sidebar' = 95,
   'timeline-observations' = 96,
   'timeline-server-timings' = 98,
-  'extension-storage-viewer' = 100,
   'floating-entry-points-for-ai-assistance' = 101,
   'timeline-experimental-insights' = 102,
   'timeline-dim-unrelated-events' = 103,

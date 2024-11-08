@@ -36,7 +36,6 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
-import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
@@ -281,7 +280,7 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
   serviceWorkersTreeElement: ServiceWorkersTreeElement;
   localStorageListTreeElement: ExpandableApplicationPanelTreeElement;
   sessionStorageListTreeElement: ExpandableApplicationPanelTreeElement;
-  extensionStorageListTreeElement: ExpandableApplicationPanelTreeElement|undefined;
+  extensionStorageListTreeElement: ExpandableApplicationPanelTreeElement;
   indexedDBListTreeElement: IndexedDBTreeElement;
   interestGroupTreeElement: InterestGroupTreeElement;
   cookieListTreeElement: ExpandableApplicationPanelTreeElement;
@@ -364,17 +363,15 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
 
     storageTreeElement.appendChild(this.sessionStorageListTreeElement);
 
-    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.EXTENSION_STORAGE_VIEWER)) {
-      this.extensionStorageListTreeElement =
-          new ExpandableApplicationPanelTreeElement(panel, i18nString(UIStrings.extensionStorage), 'extension-storage');
-      this.extensionStorageListTreeElement.setLink(
-          'https://developer.chrome.com/docs/extensions/reference/api/storage/?utm_source=devtools' as
-          Platform.DevToolsPath.UrlString);
-      const extensionStorageIcon = IconButton.Icon.create('table');
-      this.extensionStorageListTreeElement.setLeadingIcons([extensionStorageIcon]);
+    this.extensionStorageListTreeElement =
+        new ExpandableApplicationPanelTreeElement(panel, i18nString(UIStrings.extensionStorage), 'extension-storage');
+    this.extensionStorageListTreeElement.setLink(
+        'https://developer.chrome.com/docs/extensions/reference/api/storage/?utm_source=devtools' as
+        Platform.DevToolsPath.UrlString);
+    const extensionStorageIcon = IconButton.Icon.create('table');
+    this.extensionStorageListTreeElement.setLeadingIcons([extensionStorageIcon]);
 
-      storageTreeElement.appendChild(this.extensionStorageListTreeElement);
-    }
+    storageTreeElement.appendChild(this.extensionStorageListTreeElement);
 
     this.indexedDBListTreeElement = new IndexedDBTreeElement(panel);
     this.indexedDBListTreeElement.setLink(
@@ -472,14 +469,12 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox implements SDK.Targe
         },
         {scoped: true});
 
-    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.EXTENSION_STORAGE_VIEWER)) {
-      SDK.TargetManager.TargetManager.instance().observeModels(
-          ExtensionStorageModel, {
-            modelAdded: (model: ExtensionStorageModel) => this.extensionStorageModelAdded(model),
-            modelRemoved: (model: ExtensionStorageModel) => this.extensionStorageModelRemoved(model),
-          },
-          {scoped: true});
-    }
+    SDK.TargetManager.TargetManager.instance().observeModels(
+        ExtensionStorageModel, {
+          modelAdded: (model: ExtensionStorageModel) => this.extensionStorageModelAdded(model),
+          modelRemoved: (model: ExtensionStorageModel) => this.extensionStorageModelRemoved(model),
+        },
+        {scoped: true});
 
     SDK.TargetManager.TargetManager.instance().observeModels(
         IndexedDBModel, {

@@ -131,7 +131,6 @@ const REGISTERED_EXPERIMENTS = [
   Root.Runtime.ExperimentName.FULL_ACCESSIBILITY_TREE,
   Root.Runtime.ExperimentName.TIMELINE_SHOW_POST_MESSAGE_EVENTS,
   Root.Runtime.ExperimentName.TIMELINE_ENHANCED_TRACES,
-  Root.Runtime.ExperimentName.EXTENSION_STORAGE_VIEWER,
   Root.Runtime.ExperimentName.TIMELINE_EXPERIMENTAL_INSIGHTS,
   Root.Runtime.ExperimentName.TIMELINE_DIM_UNRELATED_EVENTS,
   Root.Runtime.ExperimentName.TIMELINE_ALTERNATIVE_NAVIGATION,

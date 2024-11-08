@@ -686,8 +686,7 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     if (!this.editingNode) {
       return;
     }
-    const valueBeforeEditing =
-        (this.editingNode.data[columnId] === null ? '' : this.editingNode.data[columnId] as string | boolean);
+    const valueBeforeEditing = this.editingNode.data[columnId];
     const currentEditingNode = this.editingNode;
 
     function moveToNextIfNeeded(this: DataGridImpl<T>, wasChange: boolean): void {

@@ -15,14 +15,16 @@ class ConsoleMessage {
     #text;
     #args;
     #stackTraceLocations;
+    #frame;
     /**
      * @internal
      */
-    constructor(type, text, args, stackTraceLocations) {
+    constructor(type, text, args, stackTraceLocations, frame) {
         this.#type = type;
         this.#text = text;
         this.#args = args;
         this.#stackTraceLocations = stackTraceLocations;
+        this.#frame = frame;
     }
     /**
      * The type of the console message.
@@ -46,7 +48,8 @@ class ConsoleMessage {
      * The location of the console message.
      */
     location() {
-        return this.#stackTraceLocations[0] ?? {};
+        return (this.#stackTraceLocations[0] ??
+            (this.#frame ? { url: this.#frame.url() } : {}));
     }
     /**
      * The array of locations on the stack of the console message.

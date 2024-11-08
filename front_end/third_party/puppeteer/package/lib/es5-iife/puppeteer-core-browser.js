@@ -2850,7 +2850,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   /**
    * @internal
    */
-  const packageVersion = '23.7.0';
+  const packageVersion = '23.7.1';
 
   /**
    * @license
@@ -13142,19 +13142,22 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   var _text = /*#__PURE__*/new WeakMap();
   var _args2 = /*#__PURE__*/new WeakMap();
   var _stackTraceLocations = /*#__PURE__*/new WeakMap();
+  var _frame = /*#__PURE__*/new WeakMap();
   class ConsoleMessage {
     /**
      * @internal
      */
-    constructor(type, text, args, stackTraceLocations) {
+    constructor(type, text, args, stackTraceLocations, frame) {
       _classPrivateFieldInitSpec(this, _type2, void 0);
       _classPrivateFieldInitSpec(this, _text, void 0);
       _classPrivateFieldInitSpec(this, _args2, void 0);
       _classPrivateFieldInitSpec(this, _stackTraceLocations, void 0);
+      _classPrivateFieldInitSpec(this, _frame, void 0);
       _classPrivateFieldSet(_type2, this, type);
       _classPrivateFieldSet(_text, this, text);
       _classPrivateFieldSet(_args2, this, args);
       _classPrivateFieldSet(_stackTraceLocations, this, stackTraceLocations);
+      _classPrivateFieldSet(_frame, this, frame);
     }
     /**
      * The type of the console message.
@@ -13178,7 +13181,9 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
      * The location of the console message.
      */
     location() {
-      return _classPrivateFieldGet(_stackTraceLocations, this)[0] ?? {};
+      return _classPrivateFieldGet(_stackTraceLocations, this)[0] ?? (_classPrivateFieldGet(_frame, this) ? {
+        url: _classPrivateFieldGet(_frame, this).url()
+      } : {});
     }
     /**
      * The array of locations on the stack of the console message.
@@ -16165,7 +16170,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    * @internal
    */
   var _expectedLifecycle = /*#__PURE__*/new WeakMap();
-  var _frame = /*#__PURE__*/new WeakMap();
+  var _frame2 = /*#__PURE__*/new WeakMap();
   var _timeout3 = /*#__PURE__*/new WeakMap();
   var _navigationRequest = /*#__PURE__*/new WeakMap();
   var _subscriptions2 = /*#__PURE__*/new WeakMap();
@@ -16179,10 +16184,10 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   var _navigationResponseReceived = /*#__PURE__*/new WeakMap();
   var _LifecycleWatcher_brand = /*#__PURE__*/new WeakSet();
   class LifecycleWatcher {
-    constructor(networkManager, _frame2, waitUntil, timeout, signal) {
+    constructor(networkManager, _frame3, waitUntil, timeout, signal) {
       _classPrivateMethodInitSpec(this, _LifecycleWatcher_brand);
       _classPrivateFieldInitSpec(this, _expectedLifecycle, void 0);
-      _classPrivateFieldInitSpec(this, _frame, void 0);
+      _classPrivateFieldInitSpec(this, _frame2, void 0);
       _classPrivateFieldInitSpec(this, _timeout3, void 0);
       _classPrivateFieldInitSpec(this, _navigationRequest, null);
       _classPrivateFieldInitSpec(this, _subscriptions2, new DisposableStack());
@@ -16199,7 +16204,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       } else if (typeof waitUntil === 'string') {
         waitUntil = [waitUntil];
       }
-      _classPrivateFieldSet(_initialLoaderId, this, _frame2._loaderId);
+      _classPrivateFieldSet(_initialLoaderId, this, _frame3._loaderId);
       _classPrivateFieldSet(_expectedLifecycle, this, waitUntil.map(value => {
         const protocolEvent = puppeteerToProtocolLifecycle.get(value);
         assert(protocolEvent, 'Unknown value for options.waitUntil: ' + value);
@@ -16208,11 +16213,11 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       signal?.addEventListener('abort', () => {
         _classPrivateFieldGet(_terminationDeferred, this).reject(signal.reason);
       });
-      _classPrivateFieldSet(_frame, this, _frame2);
+      _classPrivateFieldSet(_frame2, this, _frame3);
       _classPrivateFieldSet(_timeout3, this, timeout);
-      const frameManagerEmitter = _classPrivateFieldGet(_subscriptions2, this).use(new EventEmitter(_frame2._frameManager));
+      const frameManagerEmitter = _classPrivateFieldGet(_subscriptions2, this).use(new EventEmitter(_frame3._frameManager));
       frameManagerEmitter.on(exports.FrameManagerEvent.LifecycleEvent, _assertClassBrand(_LifecycleWatcher_brand, this, _checkLifecycleComplete).bind(this));
-      const frameEmitter = _classPrivateFieldGet(_subscriptions2, this).use(new EventEmitter(_frame2));
+      const frameEmitter = _classPrivateFieldGet(_subscriptions2, this).use(new EventEmitter(_frame3));
       frameEmitter.on(exports.FrameEvent.FrameNavigatedWithinDocument, _assertClassBrand(_LifecycleWatcher_brand, this, _navigatedWithinDocument).bind(this));
       frameEmitter.on(exports.FrameEvent.FrameNavigated, _assertClassBrand(_LifecycleWatcher_brand, this, _navigated).bind(this));
       frameEmitter.on(exports.FrameEvent.FrameSwapped, _assertClassBrand(_LifecycleWatcher_brand, this, _frameSwapped).bind(this));
@@ -16257,7 +16262,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    * SPDX-License-Identifier: Apache-2.0
    */
   function _onRequest(request) {
-    if (request.frame() !== _classPrivateFieldGet(_frame, this) || !request.isNavigationRequest()) {
+    if (request.frame() !== _classPrivateFieldGet(_frame2, this) || !request.isNavigationRequest()) {
       return;
     }
     _classPrivateFieldSet(_navigationRequest, this, request);
@@ -16283,7 +16288,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     _classPrivateFieldGet(_navigationResponseReceived, this)?.resolve();
   }
   function _onFrameDetached(frame) {
-    if (_classPrivateFieldGet(_frame, this) === frame) {
+    if (_classPrivateFieldGet(_frame2, this) === frame) {
       _classPrivateFieldGet(_terminationDeferred, this).resolve(new Error('Navigating frame was detached'));
       return;
     }
@@ -16305,14 +16310,14 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   }
   function _checkLifecycleComplete() {
     // We expect navigation to commit.
-    if (!checkLifecycle(_classPrivateFieldGet(_frame, this), _classPrivateFieldGet(_expectedLifecycle, this))) {
+    if (!checkLifecycle(_classPrivateFieldGet(_frame2, this), _classPrivateFieldGet(_expectedLifecycle, this))) {
       return;
     }
     _classPrivateFieldGet(_lifecycleDeferred, this).resolve();
     if (_classPrivateFieldGet(_hasSameDocumentNavigation, this)) {
       _classPrivateFieldGet(_sameDocumentNavigationDeferred, this).resolve(undefined);
     }
-    if (_classPrivateFieldGet(_swapped, this) || _classPrivateFieldGet(_frame, this)._loaderId !== _classPrivateFieldGet(_initialLoaderId, this)) {
+    if (_classPrivateFieldGet(_swapped, this) || _classPrivateFieldGet(_frame2, this)._loaderId !== _classPrivateFieldGet(_initialLoaderId, this)) {
       _classPrivateFieldGet(_newDocumentNavigationDeferred, this).resolve(undefined);
     }
     function checkLifecycle(frame, expectedLifecycle) {
@@ -16831,7 +16836,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   var _hasPostData = /*#__PURE__*/new WeakMap();
   var _postData = /*#__PURE__*/new WeakMap();
   var _headers = /*#__PURE__*/new WeakMap();
-  var _frame3 = /*#__PURE__*/new WeakMap();
+  var _frame4 = /*#__PURE__*/new WeakMap();
   var _initiator = /*#__PURE__*/new WeakMap();
   class CdpHTTPRequest extends HTTPRequest {
     get client() {
@@ -16848,7 +16853,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       _classPrivateFieldInitSpec(this, _hasPostData, false);
       _classPrivateFieldInitSpec(this, _postData, void 0);
       _classPrivateFieldInitSpec(this, _headers, {});
-      _classPrivateFieldInitSpec(this, _frame3, void 0);
+      _classPrivateFieldInitSpec(this, _frame4, void 0);
       _classPrivateFieldInitSpec(this, _initiator, void 0);
       _classPrivateFieldSet(_client10, this, client);
       this.id = data.requestId;
@@ -16859,7 +16864,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       _classPrivateFieldSet(_method, this, data.request.method);
       _classPrivateFieldSet(_postData, this, data.request.postData);
       _classPrivateFieldSet(_hasPostData, this, data.request.hasPostData ?? false);
-      _classPrivateFieldSet(_frame3, this, frame);
+      _classPrivateFieldSet(_frame4, this, frame);
       this._redirectChain = redirectChain;
       _classPrivateFieldSet(_initiator, this, data.initiator);
       this.interception.enabled = allowInterception;
@@ -16900,7 +16905,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       return this._response;
     }
     frame() {
-      return _classPrivateFieldGet(_frame3, this);
+      return _classPrivateFieldGet(_frame4, this);
     }
     isNavigationRequest() {
       return _classPrivateFieldGet(_isNavigationRequest, this);
@@ -24236,9 +24241,9 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    * @internal
    */
   const PUPPETEER_REVISIONS = Object.freeze({
-    chrome: '130.0.6723.91',
-    'chrome-headless-shell': '130.0.6723.91',
-    firefox: 'stable_132.0'
+    chrome: '130.0.6723.116',
+    'chrome-headless-shell': '130.0.6723.116',
+    firefox: 'stable_132.0.1'
   });
 
   /**

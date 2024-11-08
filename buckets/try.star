@@ -97,21 +97,6 @@ devtools_frontend_linux_blink_light_rel</a> but has
 devtools_skip_typecheck=True.""",
 )
 
-try_builder(
-    name = "devtools_frontend_linux_dbg_fastbuild",
-    recipe_name = "devtools/devtools-frontend",
-    dimensions = dimensions.default_ubuntu,
-    execution_timeout = default_timeout,
-    properties = {
-        "builder_config": "Debug",
-        "devtools_skip_typecheck": True,
-        "coverage": False,
-    },
-    description_html = """
-This is the same with <a href="https://ci.chromium.org/p/devtools-frontend/builders/try/devtools_frontend_linux_dbg">
-devtools_frontend_linux_dbg</a> but has devtools_skip_typecheck=True.""",
-)
-
 builder_coverage(
     covered_oss = ["linux", "win64", "mac"],
     builder_factory = try_builder,
@@ -137,15 +122,6 @@ builder_coverage(
     recipe_name = "devtools/devtools-frontend",
     execution_timeout = default_timeout + 15 * time.minute,
     priority = 50,
-)
-
-builder_coverage(
-    covered_oss = ["linux"],
-    builder_factory = try_builder,
-    builder_name_pattern = "devtools_frontend_%s_dbg",
-    recipe_name = "devtools/devtools-frontend",
-    execution_timeout = default_timeout,
-    properties = {"builder_config": "Debug"},
 )
 
 builder_coverage(
@@ -243,8 +219,6 @@ cq_builders = struct(
     devtools_builders = [
         "cpp_debug_extension_e2e_dbg",
         "cpp_debug_extension_e2e_rel",
-        "devtools_frontend_linux_dbg",
-        "devtools_frontend_linux_dbg_fastbuild",
         "dtf_linux_dbg",
         "dtf_linux_dbg_fastbuild",
         "dtf_linux_rel",
@@ -262,8 +236,6 @@ cq_builders = struct(
         # Quarantine a builder here
         # This will make them experiment with the given percentage
         "dtf_mac_arm64_rel": 100,
-        "dtf_linux_dbg": 20,
-        "dtf_linux_dbg_fastbuild": 20,
     },
     includable_only_builders = [
         "cpp_debug_extension_e2e_dbg",

@@ -24,6 +24,7 @@ interface Config {
   chromeBinary: string;
   serverType: ServerType;
   debug: boolean;
+  headless: boolean;
   coverage: boolean;
   repetitions: number;
   onDiff: {update: boolean|string[], throw: boolean};
@@ -103,6 +104,7 @@ export const TestConfig: Config = {
   chromeBinary: options['chrome-binary'] ?? defaultChromePath(),
   serverType: ServerType.HOSTED_MODE,
   debug: options['debug'],
+  headless: options['headless'],
   coverage: options['coverage'],
   repetitions: options['repeat'],
   onDiff: {

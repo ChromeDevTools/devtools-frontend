@@ -44,6 +44,7 @@ export function commandLineArgs(yargs: any) {
           'artifacts-dir',
           {type: 'string', desc: 'Path to a directory to store test artifacts in (e.g., coverage reports)'})
       .option('debug', {type: 'boolean', desc: 'Execute tests in debug mode'})
+      .option('headless', {type: 'boolean', desc: 'Run tests headless even when in debug mode'})
       .option('coverage', {type: 'boolean', desc: 'Enable coverage reporting'})
       .option('chrome-binary', {type: 'string', desc: 'Run tests with a custom chrome binary'})
       .option('repeat', {type: 'number', default: 1, desc: 'Repeat tests'})

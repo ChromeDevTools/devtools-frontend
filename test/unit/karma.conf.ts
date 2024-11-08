@@ -111,7 +111,7 @@ module.exports = function(config: any) {
           '--use-mock-keychain',
           '--disable-features=DialMediaRouteProvider',
           '--password-store=basic',
-          ...(TestConfig.debug ? [] : ['--headless=new']),
+          ...(TestConfig.debug && !TestConfig.headless ? [] : ['--headless=new']),
           '--disable-extensions',
         ],
       },

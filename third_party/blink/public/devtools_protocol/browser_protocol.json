@@ -4889,7 +4889,7 @@
                 },
                 {
                     "name": "trackComputedStyleUpdatesForNode",
-                    "description": "Starts tracking the given node for the computed style updates\nand whenever the computed style is updated for node, it queues\na `computedStyleUpdated` event with throttling.",
+                    "description": "Starts tracking the given node for the computed style updates\nand whenever the computed style is updated for node, it queues\na `computedStyleUpdated` event with throttling.\nThere can only be 1 node tracked for computed style updates\nso passing a new node id removes tracking from the previous node.\nPass `undefined` to disable tracking.",
                     "experimental": true,
                     "parameters": [
                         {
@@ -12421,7 +12421,7 @@
                 },
                 {
                     "id": "RequestId",
-                    "description": "Unique request identifier.",
+                    "description": "Unique network request identifier.\nNote that this does not identify individual HTTP requests that are part of\na network request.",
                     "type": "string"
                 },
                 {
@@ -13369,7 +13369,7 @@
                         },
                         {
                             "name": "stack",
-                            "description": "Initiator JavaScript stack trace, set for Script only.",
+                            "description": "Initiator JavaScript stack trace, set for Script only.\nRequires the Debugger domain to be enabled.",
                             "optional": true,
                             "$ref": "Runtime.StackTrace"
                         },
@@ -24535,7 +24535,7 @@
             "types": [
                 {
                     "id": "RequestId",
-                    "description": "Unique request identifier.",
+                    "description": "Unique request identifier.\nNote that this does not identify individual HTTP requests that are part of\na network request.",
                     "type": "string"
                 },
                 {

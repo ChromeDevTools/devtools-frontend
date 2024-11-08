@@ -2322,6 +2322,9 @@ experimental domain CSS
   # Starts tracking the given node for the computed style updates
   # and whenever the computed style is updated for node, it queues
   # a `computedStyleUpdated` event with throttling.
+  # There can only be 1 node tracked for computed style updates
+  # so passing a new node id removes tracking from the previous node.
+  # Pass `undefined` to disable tracking.
   experimental command trackComputedStyleUpdatesForNode
     parameters
       optional DOM.NodeId nodeId
@@ -5704,7 +5707,9 @@ domain Network
   # Unique loader identifier.
   type LoaderId extends string
 
-  # Unique request identifier.
+  # Unique network request identifier.
+  # Note that this does not identify individual HTTP requests that are part of
+  # a network request.
   type RequestId extends string
 
   # Unique intercepted request identifier.
@@ -6218,6 +6223,7 @@ domain Network
         preflight
         other
       # Initiator JavaScript stack trace, set for Script only.
+      # Requires the Debugger domain to be enabled.
       optional Runtime.StackTrace stack
       # Initiator URL, set for Parser type or for Script type (when script is importing module) or for SignedExchange type.
       optional string url
@@ -11503,6 +11509,8 @@ domain Fetch
   depends on Page
 
   # Unique request identifier.
+  # Note that this does not identify individual HTTP requests that are part of
+  # a network request.
   type RequestId extends string
 
   # Stages of the request to handle. Request will intercept before the request is

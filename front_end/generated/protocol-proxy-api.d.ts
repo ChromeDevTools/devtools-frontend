@@ -707,6 +707,9 @@ declare namespace ProtocolProxyApi {
      * Starts tracking the given node for the computed style updates
      * and whenever the computed style is updated for node, it queues
      * a `computedStyleUpdated` event with throttling.
+     * There can only be 1 node tracked for computed style updates
+     * so passing a new node id removes tracking from the previous node.
+     * Pass `undefined` to disable tracking.
      */
     invoke_trackComputedStyleUpdatesForNode(params: Protocol.CSS.TrackComputedStyleUpdatesForNodeRequest): Promise<Protocol.ProtocolResponseWithError>;
 

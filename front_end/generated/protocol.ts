@@ -8153,7 +8153,9 @@ export namespace Network {
   export type LoaderId = OpaqueIdentifier<string, 'Protocol.Network.LoaderId'>;
 
   /**
-   * Unique request identifier.
+   * Unique network request identifier.
+   * Note that this does not identify individual HTTP requests that are part of
+   * a network request.
    */
   export type RequestId = OpaqueIdentifier<string, 'Protocol.Network.RequestId'>;
 
@@ -8906,6 +8908,7 @@ export namespace Network {
     type: InitiatorType;
     /**
      * Initiator JavaScript stack trace, set for Script only.
+     * Requires the Debugger domain to be enabled.
      */
     stack?: Runtime.StackTrace;
     /**
@@ -16178,6 +16181,8 @@ export namespace Fetch {
 
   /**
    * Unique request identifier.
+   * Note that this does not identify individual HTTP requests that are part of
+   * a network request.
    */
   export type RequestId = OpaqueIdentifier<string, 'Protocol.Fetch.RequestId'>;
 

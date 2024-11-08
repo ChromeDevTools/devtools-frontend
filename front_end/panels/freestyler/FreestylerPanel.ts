@@ -668,7 +668,8 @@ export class FreestylerPanel extends UI.Panel.Panel {
       });
     }
 
-    if (contextMenu.defaultSection().items.length === 0) {
+    const historyEmpty = contextMenu.defaultSection().items.length === 0;
+    if (historyEmpty) {
       contextMenu.defaultSection().appendItem(i18nString(UIStrings.noPastConversations), () => {}, {
         disabled: true,
       });
@@ -678,6 +679,9 @@ export class FreestylerPanel extends UI.Panel.Panel {
         i18nString(UIStrings.clearChatHistory),
         () => {
           this.#clearHistory();
+        },
+        {
+          disabled: historyEmpty,
         },
     );
 

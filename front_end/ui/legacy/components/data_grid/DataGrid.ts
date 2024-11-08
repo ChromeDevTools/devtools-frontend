@@ -666,11 +666,16 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   }
 
   private startEditingConfig(_element: Element): UI.InplaceEditor.Config<any> {
-    return new UI.InplaceEditor.Config(this.editingCommitted.bind(this), this.editingCancelled.bind(this));
+    return new UI.InplaceEditor.Config(this.editingCommitted.bind(this), this.editingCancelled.bind(this), undefined);
   }
 
   private editingCommitted(
-      element: Element, newText: any, oldText: any, context: string|undefined, moveDirection: string): void {
+      element: Element,
+      newText: any,
+      _oldText: string|boolean|null,
+      _context: string|undefined,
+      moveDirection: string,
+      ): void {
     const columnId = this.columnIdFromNode(element);
     if (!columnId) {
       this.editingCancelled(element);

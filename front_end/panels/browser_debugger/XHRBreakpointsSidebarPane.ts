@@ -137,19 +137,20 @@ export class XHRBreakpointsSidebarPane extends UI.Widget.VBox implements UI.Cont
     UI.ARIAUtils.setLabel(inputElement, i18nString(UIStrings.urlBreakpoint));
     this.addListElement(inputElementContainer, this.#list.element.firstChild as Element | null);
 
-    function finishEditing(this: XHRBreakpointsSidebarPane, accept: boolean, e: Element, text: string): void {
+    const commit = (_element: Element, newText: string): void => {
       this.removeListElement(inputElementContainer);
-      if (accept) {
-        SDK.DOMDebuggerModel.DOMDebuggerManager.instance().addXHRBreakpoint(text, true);
-        this.setBreakpoint(text);
-      }
+      SDK.DOMDebuggerModel.DOMDebuggerManager.instance().addXHRBreakpoint(newText, true);
+      this.setBreakpoint(newText);
       this.update();
-    }
+    };
 
-    const config = new UI.InplaceEditor.Config(finishEditing.bind(this, true), finishEditing.bind(this, false));
-    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    UI.InplaceEditor.InplaceEditor.startEditing(inputElement, config as UI.InplaceEditor.Config<any>);
+    const cancel = (): void => {
+      this.removeListElement(inputElementContainer);
+      this.update();
+    };
+
+    const config = new UI.InplaceEditor.Config(commit, cancel, undefined);
+    UI.InplaceEditor.InplaceEditor.startEditing(inputElement, config);
   }
 
   heightForItem(_item: string): number {
@@ -336,33 +337,35 @@ export class XHRBreakpointsSidebarPane extends UI.Widget.VBox implements UI.Cont
       element.classList.add('hidden');
     }
 
-    function finishEditing(this: XHRBreakpointsSidebarPane, accept: boolean, e: Element, text: string): void {
+    const commit = (inputElement: Element, newText: string, _oldText: string|null, element?: Element): void => {
       this.removeListElement(inputElement);
-      if (accept) {
-        SDK.DOMDebuggerModel.DOMDebuggerManager.instance().removeXHRBreakpoint(breakKeyword);
-        this.removeBreakpoint(breakKeyword);
-        let enabled = true;
-        if (element) {
-          const breakpointEntryElement = containerToBreakpointEntry.get(element);
-          const checkboxElement =
-              breakpointEntryElement ? breakpointEntryToCheckbox.get(breakpointEntryElement) : undefined;
-          if (checkboxElement) {
-            enabled = checkboxElement.checked;
-          }
+      SDK.DOMDebuggerModel.DOMDebuggerManager.instance().removeXHRBreakpoint(breakKeyword);
+      this.removeBreakpoint(breakKeyword);
+      let enabled = true;
+      if (element) {
+        const breakpointEntryElement = containerToBreakpointEntry.get(element);
+        const checkboxElement =
+            breakpointEntryElement ? breakpointEntryToCheckbox.get(breakpointEntryElement) : undefined;
+        if (checkboxElement) {
+          enabled = checkboxElement.checked;
         }
-        SDK.DOMDebuggerModel.DOMDebuggerManager.instance().addXHRBreakpoint(text, enabled);
-        this.setBreakpoint(text);
-        this.#list.selectItem(text);
-      } else if (element) {
+      }
+      SDK.DOMDebuggerModel.DOMDebuggerManager.instance().addXHRBreakpoint(newText, enabled);
+      this.setBreakpoint(newText);
+      this.#list.selectItem(newText);
+      this.focus();
+    };
+
+    const cancel = (inputElement: Element, element?: Element): void => {
+      this.removeListElement(inputElement);
+      if (element) {
         element.classList.remove('hidden');
       }
       this.focus();
-    }
+    };
 
-    const config = new UI.InplaceEditor.Config(finishEditing.bind(this, true), finishEditing.bind(this, false));
-    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    UI.InplaceEditor.InplaceEditor.startEditing(inputElement, config as UI.InplaceEditor.Config<any>);
+    const config = new UI.InplaceEditor.Config(commit, cancel, element);
+    UI.InplaceEditor.InplaceEditor.startEditing(inputElement, config);
   }
 
   flavorChanged(_object: Object|null): void {

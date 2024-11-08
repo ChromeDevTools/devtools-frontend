@@ -1303,8 +1303,13 @@ export class StylePropertiesSection {
   }
 
   private async editingMediaCommitted(
-      query: SDK.CSSQuery.CSSQuery, element: Element, newContent: string, _oldContent: string,
-      _context: Context|undefined, _moveDirection: string): Promise<void> {
+      query: SDK.CSSQuery.CSSQuery,
+      element: Element,
+      newContent: string,
+      _oldContent: string|null,
+      _context: Context|undefined,
+      _moveDirection: string,
+      ): Promise<void> {
     this.parentPane.setEditingStyle(false);
     this.editingMediaFinished(element);
 
@@ -1446,8 +1451,8 @@ export class StylePropertiesSection {
       element.textContent = textContent.replace(/\s+/g, ' ').trim();
     }
 
-    const config =
-        new UI.InplaceEditor.Config(this.editingSelectorCommitted.bind(this), this.editingSelectorCancelled.bind(this));
+    const config = new UI.InplaceEditor.Config(
+        this.editingSelectorCommitted.bind(this), this.editingSelectorCancelled.bind(this), undefined);
     UI.InplaceEditor.InplaceEditor.startEditing(this.selectorElement, config);
 
     const selection = element.getComponentSelection();
@@ -1490,8 +1495,12 @@ export class StylePropertiesSection {
   }
 
   editingSelectorCommitted(
-      element: Element, newContent: string, oldContent: string, context: Context|undefined,
-      moveDirection: string): void {
+      element: Element,
+      newContent: string,
+      oldContent: string|null,
+      context: Context|undefined,
+      moveDirection: string,
+      ): void {
     this.editingSelectorEnded();
     if (newContent) {
       newContent = newContent.trim();

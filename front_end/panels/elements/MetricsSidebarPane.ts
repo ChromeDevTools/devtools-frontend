@@ -428,7 +428,7 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
   }
 
   private applyUserInput(
-      element: Element, userInput: string, previousContent: string, context: {
+      element: Element, userInput: string, previousContent: string|null, context: {
         box: string,
         styleProperty: string,
         computedStyle: Map<string, string>,
@@ -519,12 +519,17 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
     }
   }
 
-  private editingCommitted(element: Element, userInput: string, previousContent: string, context: {
-    box: string,
-    styleProperty: string,
-    computedStyle: Map<string, string>,
-    keyDownHandler: (arg0: Event) => void,
-  }): void {
+  private editingCommitted(
+      element: Element,
+      userInput: string,
+      previousContent: string|null,
+      context: {
+        box: string,
+        styleProperty: string,
+        computedStyle: Map<string, string>,
+        keyDownHandler: (arg0: Event) => void,
+      },
+      ): void {
     this.editingEnded(element, context);
     this.applyUserInput(element, userInput, previousContent, context, true);
   }

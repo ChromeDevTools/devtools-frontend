@@ -12,7 +12,7 @@ let inplaceEditorInstance: InplaceEditor<unknown>|null = null;
 
 export class InplaceEditor<T> {
   private focusRestorer?: ElementFocusRestorer;
-  static startEditing<T>(element: Element, config?: Config<T>): Controller|null {
+  static startEditing<T>(element: Element, config: Config<T>): Controller|null {
     if (!inplaceEditorInstance) {
       inplaceEditorInstance = new InplaceEditor();
     }
@@ -76,12 +76,11 @@ export class InplaceEditor<T> {
     }
   }
 
-  startEditing(element: Element, inputConfig?: Config<T>): Controller|null {
+  startEditing(element: Element, config: Config<T>): Controller|null {
     if (!markBeingEdited(element, true)) {
       return null;
     }
 
-    const config = inputConfig || new Config(function() {}, function() {});
     const editingContext: EditingContext<T> = {element, config, oldRole: null, oldTabIndex: null, oldText: null};
     const committedCallback = config.commitHandler;
     const cancelledCallback = config.cancelHandler;
@@ -95,7 +94,7 @@ export class InplaceEditor<T> {
     editingContext.oldText = this.editorContent(editingContext);
 
     function blurEventListener(e?: Event): void {
-      if (config.blurHandler && !config.blurHandler(element, e)) {
+      if (!config.blurHandler(element, e)) {
         return;
       }
       editingCommitted.call(element);
@@ -125,7 +124,7 @@ export class InplaceEditor<T> {
     function editingCommitted(this: Element): void {
       cleanUpAfterEditing();
 
-      committedCallback(this, self.editorContent(editingContext), editingContext.oldText || '', context, moveDirection);
+      committedCallback(this, self.editorContent(editingContext), editingContext.oldText, context, moveDirection);
       element.dispatchEvent(new Event('change'));
     }
 
@@ -188,23 +187,28 @@ export class InplaceEditor<T> {
   }
 }
 
-export type CommitHandler<T> = (arg0: Element, arg1: string, arg2: string, arg3: T, arg4: string) => void;
-export type CancelHandler<T> = (arg0: Element, arg1: T) => void;
-export type BlurHandler = (arg0: Element, arg1?: Event|undefined) => boolean;
+export type CommitHandler<T> =
+    (element: Element, newText: string, oldText: string|null, context: T, moveDirection: string) => void;
+export type CancelHandler<T> = (element: Element, context: T) => void;
+export type BlurHandler = (element: Element, event?: Event) => boolean;
 
-export class Config<T = undefined> {
+export class Config<T> {
   commitHandler: CommitHandler<T>;
   cancelHandler: CancelHandler<T>;
   context: T;
-  blurHandler: BlurHandler|undefined;
-  pasteHandler!: EventHandler|null;
-  postKeydownFinishHandler!: EventHandler|null;
+  blurHandler: BlurHandler;
+  pasteHandler?: EventHandler;
+  postKeydownFinishHandler?: EventHandler;
 
   constructor(
-      commitHandler: CommitHandler<T>, cancelHandler: CancelHandler<T>, context?: T, blurHandler?: BlurHandler) {
+      commitHandler: CommitHandler<T>,
+      cancelHandler: CancelHandler<T>,
+      context: T,
+      blurHandler: BlurHandler = () => true,
+  ) {
     this.commitHandler = commitHandler;
     this.cancelHandler = cancelHandler;
-    this.context = context as T;
+    this.context = context;
     this.blurHandler = blurHandler;
   }
 

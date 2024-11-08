@@ -996,7 +996,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     removeZeroWidthSpaceRecursive(attribute);
 
     const config = new UI.InplaceEditor.Config(
-        this.attributeEditingCommitted.bind(this), this.editingCancelled.bind(this), attributeName || undefined);
+        this.attributeEditingCommitted.bind(this), this.editingCancelled.bind(this), attributeName);
 
     function postKeyDownFinishHandler(event: Event): string {
       UI.UIUtils.handleElementValueModifications(event, attribute);
@@ -1032,7 +1032,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
       container.textContent = textNode.nodeValue();
     }  // Strip the CSS or JS highlighting if present.
     const config = new UI.InplaceEditor.Config(
-        this.textNodeEditingCommitted.bind(this, textNode), this.editingCancelled.bind(this));
+        this.textNodeEditingCommitted.bind(this, textNode), this.editingCancelled.bind(this), null);
     this.updateEditorHandles(textNodeElement, config);
     const componentSelection = this.listItemElement.getComponentSelection();
     componentSelection && componentSelection.selectAllChildren(textNodeElement);
@@ -1074,8 +1074,13 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     };
 
     function editingCommitted(
-        this: ElementsTreeElement, element: Element, newTagName: string, oldText: string, tagName: string|null,
-        moveDirection: string): void {
+        this: ElementsTreeElement,
+        element: Element,
+        newTagName: string,
+        oldText: string|null,
+        tagName: string|null,
+        moveDirection: string,
+        ): void {
       if (!tagNameElement) {
         return;
       }
@@ -1104,7 +1109,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     return true;
   }
 
-  private updateEditorHandles<T>(element: Element, config?: UI.InplaceEditor.Config<T>): void {
+  private updateEditorHandles<T>(element: Element, config: UI.InplaceEditor.Config<T>): void {
     const editorHandles = UI.InplaceEditor.InplaceEditor.startEditing(element, config);
     if (!editorHandles) {
       this.editing = null;
@@ -1241,7 +1246,12 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   private attributeEditingCommitted(
-      element: Element, newText: string, oldText: string, attributeName: string, moveDirection: string): void {
+      element: Element,
+      newText: string,
+      oldText: string|null,
+      attributeName: string|null,
+      moveDirection: string,
+      ): void {
     this.editing = null;
 
     const treeOutline = this.treeOutline;
@@ -1305,7 +1315,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
       }
     }
 
-    if ((attributeName.trim() || newText.trim()) && oldText !== newText) {
+    if (attributeName !== null && (attributeName.trim() || newText.trim()) && oldText !== newText) {
       this.nodeInternal.setAttribute(attributeName, newText, moveToNextAttributeIfNeeded.bind(this));
       return;
     }
@@ -1315,7 +1325,12 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   private tagNameEditingCommitted(
-      element: Element, newText: string, oldText: string, tagName: string|null, moveDirection: string): void {
+      element: Element,
+      newText: string,
+      oldText: string|null,
+      tagName: string|null,
+      moveDirection: string,
+      ): void {
     this.editing = null;
     const self = this;
 

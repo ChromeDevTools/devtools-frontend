@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../../../core/i18n/i18n.js';
+import * as Platform from '../../../../core/platform/platform.js';
 import type * as Trace from '../../../../models/trace/trace.js';
 import * as Buttons from '../../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js';
@@ -185,7 +186,7 @@ export class SidebarInsight extends HTMLElement {
       timeString = i18n.TimeUtilities.millisToString(this.#estimatedSavingsTime);
     }
     if (this.#estimatedSavingsBytes !== undefined && this.#estimatedSavingsBytes > 0) {
-      bytesString = i18n.ByteUtilities.bytesToString(this.#estimatedSavingsBytes);
+      bytesString = Platform.NumberUtilities.bytesToString(this.#estimatedSavingsBytes);
     }
 
     if (timeString && bytesString) {

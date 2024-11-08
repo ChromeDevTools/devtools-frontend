@@ -1715,7 +1715,7 @@ export class ExpandableTextPropertyValue extends ObjectPropertyValue {
     this.maxDisplayableTextLength = 10000000;
 
     const byteCount = Platform.StringUtilities.countWtf8Bytes(text);
-    const totalBytesText = i18n.ByteUtilities.bytesToString(byteCount);
+    const totalBytesText = Platform.NumberUtilities.bytesToString(byteCount);
     if (this.text.length < this.maxDisplayableTextLength) {
       this.expandElementText = i18nString(UIStrings.showMoreS, {PH1: totalBytesText});
       this.expandElement.setAttribute('data-text', this.expandElementText);

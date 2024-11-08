@@ -5,7 +5,7 @@
 import '../../../ui/components/request_link_icon/request_link_icon.js';
 
 import * as i18n from '../../../core/i18n/i18n.js';
-import type * as Platform from '../../../core/platform/platform.js';
+import * as Platform from '../../../core/platform/platform.js';
 import type * as SDK from '../../../core/sdk/sdk.js';
 import * as Helpers from '../../../models/trace/helpers/helpers.js';
 import * as Trace from '../../../models/trace/trace.js';
@@ -223,7 +223,8 @@ export class NetworkRequestDetails extends HTMLElement {
       lengthText += i18nString(UIStrings.FromServiceWorker);
     }
     if (this.#networkRequest.args.data.encodedDataLength || !lengthText) {
-      lengthText = `${i18n.ByteUtilities.bytesToString(this.#networkRequest.args.data.encodedDataLength)}${lengthText}`;
+      lengthText =
+          `${Platform.NumberUtilities.bytesToString(this.#networkRequest.args.data.encodedDataLength)}${lengthText}`;
     }
     return this.#renderRow(i18nString(UIStrings.encodedData), lengthText);
   }
@@ -324,7 +325,7 @@ export class NetworkRequestDetails extends HTMLElement {
           ${this.#renderRow(i18nString(UIStrings.priority), NetworkRequestTooltip.renderPriorityValue(this.#networkRequest))}
           ${this.#renderRow(i18nString(UIStrings.mimeType), networkData.mimeType)}
           ${this.#renderEncodedDataLength()}
-          ${this.#renderRow(i18nString(UIStrings.decodedBody), i18n.ByteUtilities.bytesToString(this.#networkRequest.args.data.decodedBodyLength))}
+          ${this.#renderRow(i18nString(UIStrings.decodedBody), Platform.NumberUtilities.bytesToString(this.#networkRequest.args.data.decodedBodyLength))}
           ${this.#renderBlockingRow()}
           ${this.#renderFromCache()}
         </div>

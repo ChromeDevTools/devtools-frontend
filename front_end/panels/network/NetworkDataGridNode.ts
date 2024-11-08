@@ -1406,7 +1406,7 @@ export class NetworkRequestNode extends NetworkNode {
   }
 
   private renderSizeCell(cell: HTMLElement): void {
-    const resourceSize = i18n.ByteUtilities.bytesToString(this.requestInternal.resourceSize);
+    const resourceSize = Platform.NumberUtilities.bytesToString(this.requestInternal.resourceSize);
 
     if (this.requestInternal.cachedInMemory()) {
       UI.UIUtils.createTextChild(cell, i18nString(UIStrings.memoryCache));
@@ -1419,7 +1419,7 @@ export class NetworkRequestNode extends NetworkNode {
       UI.UIUtils.createTextChild(cell, i18n.i18n.lockedString('(ServiceWorker router)'));
       let tooltipText;
       if (serviceWorkerRouterInfo.matchedSourceType === Protocol.Network.ServiceWorkerRouterSource.Network) {
-        const transferSize = i18n.ByteUtilities.bytesToString(this.requestInternal.transferSize);
+        const transferSize = Platform.NumberUtilities.bytesToString(this.requestInternal.transferSize);
         tooltipText = i18nString(
             UIStrings.matchedToServiceWorkerRouterWithNetworkSource,
             {PH1: ruleIdMatched, PH2: transferSize, PH3: resourceSize});
@@ -1449,7 +1449,7 @@ export class NetworkRequestNode extends NetworkNode {
       UI.Tooltip.Tooltip.install(cell, i18nString(UIStrings.servedFromDiskCacheResourceSizeS, {PH1: resourceSize}));
       cell.classList.add('network-dim-cell');
     } else {
-      const transferSize = i18n.ByteUtilities.bytesToString(this.requestInternal.transferSize);
+      const transferSize = Platform.NumberUtilities.bytesToString(this.requestInternal.transferSize);
       UI.UIUtils.createTextChild(cell, transferSize);
       UI.Tooltip.Tooltip.install(cell, `${transferSize} transferred over network, resource size: ${resourceSize}`);
     }

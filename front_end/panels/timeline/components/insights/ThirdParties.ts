@@ -103,7 +103,7 @@ export class ThirdParties extends BaseInsightComponent {
                         rows: topTransferSizeEntries.map(([entity, summary]) => ({
                           values: [
                             entity.name,
-                            i18n.ByteUtilities.bytesToString(summary.transferSize),
+                            Platform.NumberUtilities.bytesToString(summary.transferSize),
                           ],
                           overlays: this.#overlaysForEntity.get(entity),
                         })),

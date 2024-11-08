@@ -542,10 +542,10 @@ export class CoverageView extends UI.Widget.VBox {
       const used = total - unused;
       const percentUsed = total ? Math.round(100 * used / total) : 0;
       return i18nString(UIStrings.sOfSSUsedSoFarSUnused, {
-        PH1: i18n.ByteUtilities.bytesToString(used),
-        PH2: i18n.ByteUtilities.bytesToString(total),
+        PH1: Platform.NumberUtilities.bytesToString(used),
+        PH2: Platform.NumberUtilities.bytesToString(total),
         PH3: percentUsed,
-        PH4: i18n.ByteUtilities.bytesToString(unused),
+        PH4: Platform.NumberUtilities.bytesToString(unused),
       });
     }
   }

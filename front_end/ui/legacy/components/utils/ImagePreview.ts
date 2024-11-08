@@ -100,7 +100,7 @@ export class ImagePreview {
     const content = resource.content ? resource.content : resource.url.split('base64,')[1];
     const contentSize = resource.contentSize();
     const resourceSize = contentSize ? contentSize : Platform.StringUtilities.base64ToSize(content);
-    const resourceSizeText = resourceSize > 0 ? i18n.ByteUtilities.bytesToString(resourceSize) : '';
+    const resourceSizeText = resourceSize > 0 ? Platform.NumberUtilities.bytesToString(resourceSize) : '';
 
     return new Promise(resolve => {
       const imageElement = document.createElement('img');

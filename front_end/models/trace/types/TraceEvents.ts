@@ -2635,6 +2635,7 @@ export function isJSInvocationEvent(event: Event): boolean {
   switch (event.name) {
     case Name.RUN_MICROTASKS:
     case Name.FUNCTION_CALL:
+    // TODO(paulirish): Define types for these Evaluate* events
     case Name.EVALUATE_SCRIPT:
     case Name.EVALUATE_MODULE:
     case Name.EVENT_DISPATCH:

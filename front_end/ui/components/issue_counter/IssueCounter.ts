@@ -67,7 +67,19 @@ export interface IssueCounterData {
   compact?: boolean;
 }
 
-const listFormat = new Intl.ListFormat(navigator.language, {type: 'unit', style: 'short'});
+// Lazily instantiate the formatter as the constructor takes 50ms+
+const listFormatter = (function defineFormatter() {
+  let intlListFormat: Intl.ListFormat;
+  return {
+    format(...args: Parameters<Intl.ListFormat['format']>): ReturnType<Intl.ListFormat['format']> {
+      if (!intlListFormat) {
+        const opts: Intl.ListFormatOptions = {type: 'unit', style: 'short'};
+        intlListFormat = new Intl.ListFormat(i18n.DevToolsLocale.DevToolsLocale.instance().locale, opts);
+      }
+      return intlListFormat.format(...args);
+    },
+  };
+})();
 
 export function getIssueCountsEnumeration(
     issuesManager: IssuesManager.IssuesManager.IssuesManager, omitEmpty: boolean = true): string {
@@ -81,7 +93,7 @@ export function getIssueCountsEnumeration(
     i18nString(UIStrings.breakingChanges, {issueCount: counts[1]}),
     i18nString(UIStrings.possibleImprovements, {issueCount: counts[2]}),
   ];
-  return listFormat.format(phrases.filter((_, i) => omitEmpty ? counts[i] > 0 : true));
+  return listFormatter.format(phrases.filter((_, i) => omitEmpty ? counts[i] > 0 : true));
 }
 
 export class IssueCounter extends HTMLElement {

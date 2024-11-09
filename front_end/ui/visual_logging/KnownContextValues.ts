@@ -356,6 +356,7 @@ export const knownContextValues = new Set([
   'allocation-stack',
   'allow-pasting',
   'allow-scroll-past-eof',
+  'allow-scroll-past-eof-false',
   'alpha',
   'am',
   'anchor-link',

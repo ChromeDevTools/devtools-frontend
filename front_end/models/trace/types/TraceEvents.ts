@@ -677,7 +677,10 @@ export interface MarkerEvent extends Event {
 }
 
 export function isMarkerEvent(event: Event): event is MarkerEvent {
-  return markerTypeGuards.some(fn => fn(event));
+  if (event.ph === Phase.INSTANT || event.ph === Phase.MARK) {
+    return markerTypeGuards.some(fn => fn(event));
+  }
+  return false;
 }
 
 const pageLoadEventTypeGuards = [
@@ -686,7 +689,10 @@ const pageLoadEventTypeGuards = [
 ];
 
 export function eventIsPageLoadEvent(event: Event): event is PageLoadEvent {
-  return pageLoadEventTypeGuards.some(fn => fn(event));
+  if (event.ph === Phase.INSTANT || event.ph === Phase.MARK) {
+    return pageLoadEventTypeGuards.some(fn => fn(event));
+  }
+  return false;
 }
 
 export interface LargestContentfulPaintCandidate extends Mark {

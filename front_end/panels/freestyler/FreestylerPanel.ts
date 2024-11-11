@@ -295,57 +295,39 @@ export class FreestylerPanel extends UI.Panel.Panel {
   }
 
   #createAgent(agentType: AgentType): AiAgent<unknown> {
+    const options = {
+      aidaClient: this.#aidaClient,
+      serverSideLoggingEnabled: this.#serverSideLoggingEnabled,
+    };
+    let agent: AiAgent<unknown>;
     switch (agentType) {
-      case AgentType.FREESTYLER:
-        return this.#createFreestylerAgent();
-      case AgentType.DRJONES_FILE:
-        return this.#createDrJonesFileAgent();
-      case AgentType.DRJONES_NETWORK_REQUEST:
-        return this.#createDrJonesNetworkAgent();
-      case AgentType.DRJONES_PERFORMANCE:
-        return this.#createDrJonesPerformanceAgent();
+      case AgentType.FREESTYLER: {
+        agent = new FreestylerAgent({
+          ...options,
+          changeManager: this.#changeManager,
+        });
+        break;
+      }
+      case AgentType.DRJONES_NETWORK_REQUEST: {
+        agent = new DrJonesNetworkAgent(options);
+        break;
+      }
+      case AgentType.DRJONES_FILE: {
+        agent = new DrJonesFileAgent(options);
+        break;
+      }
+      case AgentType.DRJONES_PERFORMANCE: {
+        agent = new DrJonesPerformanceAgent(options);
+        break;
+      }
     }
+
+    this.#agents.add(agent);
+    return agent;
   }
 
   #updateToolbarState(): void {
     this.#deleteHistoryEntryButton.setVisible(Boolean(this.#currentAgent && !this.#currentAgent.isEmpty));
-  }
-
-  #createFreestylerAgent(): FreestylerAgent {
-    const agent = new FreestylerAgent({
-      aidaClient: this.#aidaClient,
-      changeManager: this.#changeManager,
-      serverSideLoggingEnabled: this.#serverSideLoggingEnabled,
-    });
-    this.#agents.add(agent);
-    return agent;
-  }
-
-  #createDrJonesFileAgent(): DrJonesFileAgent {
-    const agent = new DrJonesFileAgent({
-      aidaClient: this.#aidaClient,
-      serverSideLoggingEnabled: this.#serverSideLoggingEnabled,
-    });
-    this.#agents.add(agent);
-    return agent;
-  }
-
-  #createDrJonesNetworkAgent(): DrJonesNetworkAgent {
-    const agent = new DrJonesNetworkAgent({
-      aidaClient: this.#aidaClient,
-      serverSideLoggingEnabled: this.#serverSideLoggingEnabled,
-    });
-    this.#agents.add(agent);
-    return agent;
-  }
-
-  #createDrJonesPerformanceAgent(): DrJonesPerformanceAgent {
-    const agent = new DrJonesPerformanceAgent({
-      aidaClient: this.#aidaClient,
-      serverSideLoggingEnabled: this.#serverSideLoggingEnabled,
-    });
-    this.#agents.add(agent);
-    return agent;
   }
 
   static async instance(opts: {

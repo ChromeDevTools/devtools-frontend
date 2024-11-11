@@ -259,7 +259,8 @@ export class FreestylerPanel extends UI.Panel.Panel {
         'freestyler.send-feedback');
     link.style.setProperty('display', null);
     link.style.setProperty('text-decoration', 'none');
-    link.style.setProperty('padding', '0 var(--sys-size-3)');
+    link.style.setProperty('margin', '0 var(--sys-size-3)');
+    link.style.setProperty('height', 'calc(100% - 6px)');
     const linkItem = new UI.Toolbar.ToolbarItem(link);
     rightToolbar.appendToolbarItem(linkItem);
 

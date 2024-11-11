@@ -280,6 +280,13 @@ describe('Matchers for SDK.CSSPropertyParser.BottomUpTreeMatching', () => {
       assert.deepStrictEqual(
           match('animation', '1s linear var(--non-existent, --animation-name)'),
           ['--non-existent', '--animation-name']);
+      assert.deepStrictEqual(match('animation', '1s step-start 0s kf'), ['kf']);
+      assert.deepStrictEqual(match('animation', '1s step-end 0s kf'), ['kf']);
+      assert.deepStrictEqual(match('animation', '1s steps(1, jump-start) 0s kf'), ['kf']);
+      assert.deepStrictEqual(match('animation', '1s steps(1, jump-end) 0s kf'), ['kf']);
+      assert.deepStrictEqual(match('animation', '1s steps(1, jump-none) 0s kf'), ['kf']);
+      assert.deepStrictEqual(match('animation', '1s steps(1, start) 0s kf'), ['kf']);
+      assert.deepStrictEqual(match('animation', '1s steps(1, end) 0s kf'), ['kf']);
     }
   });
 

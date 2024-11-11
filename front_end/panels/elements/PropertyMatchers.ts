@@ -292,6 +292,9 @@ export class LinkableNameMatcher extends matcherBase(LinkableNameMatch) {
         'ease-in': AnimationLonghandPart.EASING_FUNCTION,
         'ease-out': AnimationLonghandPart.EASING_FUNCTION,
         'ease-in-out': AnimationLonghandPart.EASING_FUNCTION,
+        steps: AnimationLonghandPart.EASING_FUNCTION,
+        'step-start': AnimationLonghandPart.EASING_FUNCTION,
+        'step-end': AnimationLonghandPart.EASING_FUNCTION,
       }),
   );
 

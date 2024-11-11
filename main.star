@@ -250,6 +250,7 @@ luci.cq(
 exec("//buckets/ci.star")
 exec("//buckets/ci-hp.star")
 exec("//buckets/try.star")
+exec("//buckets/try-misc.star")
 exec("//buckets/serving_app.star")
 
 exec("//buckets/cpp_debugging_extension.star")

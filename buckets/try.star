@@ -11,6 +11,7 @@ load(
     "defaults",
     "dimensions",
     "recipe",
+    "try_builder_base",
 )
 
 BUCKET_NAME = "try"
@@ -35,18 +36,7 @@ bucket(
 try_builders = []
 
 def try_builder(properties = None, **kwargs):
-    properties = properties or {}
-    properties["$build/reclient"] = {
-        "instance": "rbe-chromium-untrusted",
-        "metrics_project": "chromium-reclient-metrics",
-    }
-    builder(
-        bucket = BUCKET_NAME,
-        builder_group = "tryserver.devtools-frontend",
-        service_account = TRY_ACCOUNT,
-        properties = properties,
-        **kwargs
-    )
+    try_builder_base(properties = properties, **kwargs)
     try_builders.append(kwargs["name"])
 
 def presubmit_builder(name, dimensions, **kvargs):
@@ -70,14 +60,6 @@ builder_coverage(
 )
 
 try_builder(
-    name = "devtools_frontend_linux_blink_rel",
-    recipe_name = "chromium_trybot",
-    dimensions = dimensions.default_ubuntu,
-    execution_timeout = 2 * time.hour,
-    build_numbers = True,
-)
-
-try_builder(
     name = "devtools_frontend_linux_blink_light_rel",
     recipe_name = "chromium_trybot",
     dimensions = dimensions.beefy_ubuntu,
@@ -98,39 +80,11 @@ devtools_skip_typecheck=True.""",
 )
 
 builder_coverage(
-    covered_oss = ["linux", "win64", "mac"],
-    builder_factory = try_builder,
-    builder_name_pattern = "dtf_%s_experiments",
-    recipe_name = "devtools/devtools-frontend",
-    execution_timeout = default_timeout,
-    build_numbers = True,
-    properties = {"run_experimental_steps": True},
-)
-
-builder_coverage(
     covered_oss = ["mac_arm64"],
     builder_factory = try_builder,
     builder_name_pattern = "devtools_frontend_%s_rel",
     recipe_name = "devtools/devtools-frontend",
     execution_timeout = default_timeout,
-)
-
-builder_coverage(
-    covered_oss = ["linux", "win64", "mac", "mac_arm64"],
-    builder_factory = try_builder,
-    builder_name_pattern = "devtools_frontend_shuffled_%s_rel",
-    recipe_name = "devtools/devtools-frontend",
-    execution_timeout = default_timeout + 15 * time.minute,
-    priority = 50,
-)
-
-builder_coverage(
-    covered_oss = ["linux", "win64", "mac", "mac_arm64"],
-    builder_factory = try_builder,
-    builder_name_pattern = "e2e_stressor_%s",
-    recipe_name = "devtools/dtf-e2e-stress",
-    execution_timeout = default_timeout,
-    priority = 50,
 )
 
 def try_pair(

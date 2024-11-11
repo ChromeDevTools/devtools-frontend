@@ -6,6 +6,8 @@ AUTOROLLER_ACCOUNT = "devtools-ci-autoroll-builder@chops-service-accounts.iam.gs
 CI_ACCOUNT = "devtools-frontend-ci-builder@chops-service-accounts.iam.gserviceaccount.com"
 TRY_ACCOUNT = "devtools-frontend-try-builder@chops-service-accounts.iam.gserviceaccount.com"
 
+TRY_BUCKET_NAME = "try"
+
 defaults = struct(
     cipd_package = "infra/recipe_bundles/chromium.googlesource.com/chromium/tools/build",
     cipd_version = "refs/heads/main",
@@ -315,3 +317,17 @@ cq_retry_config = cq.retry_config(
     transient_failure_weight = 1,
     timeout_weight = 4,
 )
+
+def try_builder_base(properties = None, **kwargs):
+    properties = properties or {}
+    properties["$build/reclient"] = {
+        "instance": "rbe-chromium-untrusted",
+        "metrics_project": "chromium-reclient-metrics",
+    }
+    builder(
+        bucket = TRY_BUCKET_NAME,
+        builder_group = "tryserver.devtools-frontend",
+        service_account = TRY_ACCOUNT,
+        properties = properties,
+        **kwargs
+    )

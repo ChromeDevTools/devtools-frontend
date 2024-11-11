@@ -606,6 +606,7 @@ export const knownContextValues = new Set([
   'call-tree',
   'cancel',
   'cancel-animation-frame',
+  'cancel-cross-origin-context-chat',
   'candara',
   'canplay',
   'canplaythrough',

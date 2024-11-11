@@ -125,12 +125,32 @@
       opacity: 100%;
     }
   }
+
+  &.one-big-button {
+    /* start new chat button */
+    --right-padding: 100px;
+  }
+
+  &.two-big-buttons {
+    /* cancel + start new chat button */
+    --right-padding: 172px;
+  }
 }
 
-.chat-input-button {
+.chat-input-buttons {
   position: absolute;
   right: 0;
   bottom: 0;
+  display: flex;
+  flex-direction: row;
+}
+
+.chat-input-button {
+  padding-bottom: 3px;
+  padding-right: var(--sys-size-3);
+}
+
+.chat-cancel-context-button {
   padding-bottom: 3px;
   padding-right: var(--sys-size-3);
 }

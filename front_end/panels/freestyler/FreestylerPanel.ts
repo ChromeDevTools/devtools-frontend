@@ -190,6 +190,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
   #agents = new Set<AiAgent<unknown>>();
   #currentAgent?: AiAgent<unknown>;
 
+  #previousSameOriginContext?: ConversationContext<unknown>;
   #selectedFile: FileContext|null = null;
   #selectedElement: NodeContext|null = null;
   #selectedCallTree: CallTreeContext|null = null;
@@ -223,7 +224,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
       onFeedbackSubmit: this.#handleFeedbackSubmit.bind(this),
       onCancelClick: this.#cancel.bind(this),
       onContextClick: this.#handleContextClick.bind(this),
-      onNewConversation: this.#newChat.bind(this),
+      onNewConversation: this.#handleNewChatRequest.bind(this),
       canShowFeedbackForm: this.#serverSideLoggingEnabled,
       userInfo: {
         accountImage: syncInfo.accountImage,
@@ -241,7 +242,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
     const leftToolbar = new UI.Toolbar.Toolbar('freestyler-left-toolbar', toolbarContainer);
     const rightToolbar = new UI.Toolbar.Toolbar('freestyler-right-toolbar', toolbarContainer);
 
-    this.#newChatButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, this.#newChat.bind(this));
+    this.#newChatButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, this.#handleNewChatRequest.bind(this));
     leftToolbar.appendToolbarItem(this.#newChatButton);
     leftToolbar.appendSeparator();
 
@@ -723,7 +724,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
     await this.#doConversation(agent.runFromHistory());
   }
 
-  #newChat(): void {
+  #handleNewChatRequest(): void {
     this.#viewProps.messages = [];
     this.#viewProps.isLoading = false;
     this.#currentAgent = undefined;
@@ -734,6 +735,12 @@ export class FreestylerPanel extends UI.Panel.Panel {
     UI.ARIAUtils.alert(i18nString(UIStrings.newChatCreated));
   }
 
+  #handleCrossOriginChatCancellation(): void {
+    if (this.#previousSameOriginContext) {
+      this.#onContextSelectionChanged(this.#previousSameOriginContext);
+    }
+  }
+
   #runAbortController = new AbortController();
   #cancel(): void {
     this.#runAbortController.abort();
@@ -741,13 +748,13 @@ export class FreestylerPanel extends UI.Panel.Panel {
     this.doUpdate();
   }
 
-  #onContextSelectionChanged(): void {
+  #onContextSelectionChanged(contextToRestore?: ConversationContext<unknown>): void {
     if (!this.#currentAgent) {
       this.#viewProps.blockedByCrossOrigin = false;
       this.doUpdate();
       return;
     }
-    const currentContext = this.#getConversationContext();
+    const currentContext = contextToRestore ?? this.#getConversationContext();
     this.#viewProps.selectedContext = currentContext;
     if (!currentContext) {
       this.#viewProps.blockedByCrossOrigin = false;
@@ -756,6 +763,12 @@ export class FreestylerPanel extends UI.Panel.Panel {
       return;
     }
     this.#viewProps.blockedByCrossOrigin = !currentContext.isOriginAllowed(this.#currentAgent.origin);
+    if (!this.#viewProps.blockedByCrossOrigin) {
+      this.#previousSameOriginContext = currentContext;
+    }
+    if (this.#viewProps.blockedByCrossOrigin && this.#previousSameOriginContext) {
+      this.#viewProps.onCancelCrossOriginChat = this.#handleCrossOriginChatCancellation.bind(this);
+    }
     this.#viewProps.isReadOnly = this.#currentAgent.isHistoryEntry;
     this.#viewProps.requiresNewConversation = this.#currentAgent.type === AgentType.DRJONES_PERFORMANCE &&
         Boolean(this.#currentAgent.context) && this.#currentAgent.context !== currentContext;

@@ -269,6 +269,7 @@ export interface Props {
   onCancelClick: () => void;
   onContextClick: () => void | Promise<void>;
   onNewConversation: () => void;
+  onCancelCrossOriginChat?: () => void;
   inspectElementToggled: boolean;
   state: State;
   aidaAvailability: Host.AidaClient.AidaAccessPreconditions;
@@ -885,6 +886,10 @@ export class FreestylerChatUi extends HTMLElement {
     this.#props.onNewConversation();
   }
 
+  #onCancelCrossOriginChat(): void {
+    this.#props.onCancelCrossOriginChat?.();
+  }
+
   #getEmptyStateSuggestions = (): string[] => {
     if (!this.#props.agentType) {
       return [];
@@ -965,7 +970,7 @@ export class FreestylerChatUi extends HTMLElement {
     // clang-format on
   }
 
-  #renderChatInputButton(): LitHtml.TemplateResult {
+  #renderChatInputButtons(): LitHtml.TemplateResult {
     if (this.#props.isLoading) {
       // clang-format off
       return html`<devtools-button
@@ -986,19 +991,32 @@ export class FreestylerChatUi extends HTMLElement {
     }
     if (this.#props.blockedByCrossOrigin || this.#props.requiresNewConversation) {
       // clang-format off
-      return html`<devtools-button
-        class="chat-input-button"
-        aria-label=${lockedString(UIStringsNotTranslate.startNewChat)}
-        @click=${this.#onNewConversation}
-        .data=${
-          {
-            variant: Buttons.Button.Variant.PRIMARY,
-            size: Buttons.Button.Size.REGULAR,
-            title: lockedString(UIStringsNotTranslate.startNewChat),
-            jslogContext: 'start-new-chat',
-          } as Buttons.Button.ButtonData
-        }
-      >${lockedString(UIStringsNotTranslate.startNewChat)}</devtools-button>`;
+      return html`
+        ${this.#props.blockedByCrossOrigin && Boolean(this.#props.onCancelCrossOriginChat) ? html`<devtools-button
+          class="chat-cancel-context-button"
+          @click=${this.#onCancelCrossOriginChat}
+          .data=${
+            {
+              variant: Buttons.Button.Variant.TEXT,
+              size: Buttons.Button.Size.REGULAR,
+              jslogContext: 'cancel-cross-origin-context-chat',
+            } as Buttons.Button.ButtonData
+          }
+        >${lockedString(UIStringsNotTranslate.cancelButtonTitle)}</devtools-button>` : LitHtml.nothing}
+        <devtools-button
+          class="chat-input-button"
+          aria-label=${lockedString(UIStringsNotTranslate.startNewChat)}
+          @click=${this.#onNewConversation}
+          .data=${
+            {
+              variant: Buttons.Button.Variant.PRIMARY,
+              size: Buttons.Button.Size.REGULAR,
+              title: lockedString(UIStringsNotTranslate.startNewChat),
+              jslogContext: 'start-new-chat',
+            } as Buttons.Button.ButtonData
+          }
+        >${lockedString(UIStringsNotTranslate.startNewChat)}</devtools-button>
+      `;
       // clang-format on
     }
     // clang-format off
@@ -1024,6 +1042,12 @@ export class FreestylerChatUi extends HTMLElement {
       return LitHtml.nothing;
     }
 
+    const cls = LitHtml.Directives.classMap({
+      'chat-input': true,
+      'one-big-button': Boolean(this.#props.requiresNewConversation),
+      'two-big-buttons': this.#props.blockedByCrossOrigin,
+    });
+
     // clang-format off
     return html`
     <form class="input-form" @submit=${this.#handleSubmit}>
@@ -1035,14 +1059,16 @@ export class FreestylerChatUi extends HTMLElement {
         </div>
       ` : LitHtml.nothing}
       <div class="chat-input-container">
-        <textarea class="chat-input"
+        <textarea class=${cls}
           .disabled=${this.#isTextInputDisabled()}
           wrap="hard"
           @keydown=${this.#handleTextAreaKeyDown}
           placeholder=${this.#getInputPlaceholderString()}
           jslog=${VisualLogging.textField('query').track({ keydown: 'Enter' })}
         ></textarea>
-        ${this.#renderChatInputButton()}
+        <div class="chat-input-buttons">
+          ${this.#renderChatInputButtons()}
+        </div>
       </div>
     </form>`;
     // clang-format on

@@ -654,6 +654,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
     const contextMenu = new UI.ContextMenu.ContextMenu(event, {
       x: boundingRect.left,
       y: boundingRect.bottom,
+      useSoftMenu: true,
     });
 
     for (const agent of [...this.#agents].reverse()) {

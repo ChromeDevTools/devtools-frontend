@@ -111,7 +111,19 @@ function breakdownPhases(
 }
 
 function finalize(partialModel: Omit<LCPPhasesInsightModel, 'title'|'description'>): LCPPhasesInsightModel {
-  return {title: i18nString(UIStrings.title), description: i18nString(UIStrings.description), ...partialModel};
+  const relatedEvents = [];
+  if (partialModel.lcpEvent) {
+    relatedEvents.push(partialModel.lcpEvent);
+  }
+  if (partialModel.lcpRequest) {
+    relatedEvents.push(partialModel.lcpRequest);
+  }
+  return {
+    title: i18nString(UIStrings.title),
+    description: i18nString(UIStrings.description),
+    ...partialModel,
+    relatedEvents,
+  };
 }
 
 export function generateInsight(

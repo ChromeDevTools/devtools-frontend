@@ -126,10 +126,6 @@ export class ThirdParties extends BaseInsightComponent<ThirdPartiesInsightModel>
     // clang-format on
   }
 
-  override getRelatedEvents(): Trace.Types.Events.Event[] {
-    return this.model?.relatedEvents ?? [];
-  }
-
   override render(): void {
     const model = this.model;
     const entries = model && [...model.summaryByEntity.entries()].filter(kv => kv[0] !== model.firstPartyEntity);

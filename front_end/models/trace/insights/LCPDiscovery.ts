@@ -39,7 +39,16 @@ export type LCPDiscoveryInsightModel = InsightModel<{
 }>;
 
 function finalize(partialModel: Omit<LCPDiscoveryInsightModel, 'title'|'description'>): LCPDiscoveryInsightModel {
-  return {title: i18nString(UIStrings.title), description: i18nString(UIStrings.description), ...partialModel};
+  const relatedEvents = partialModel.lcpEvent && partialModel.lcpRequest ?
+      // TODO: add entire request initiator chain?
+      [partialModel.lcpEvent, partialModel.lcpRequest] :
+      [];
+  return {
+    title: i18nString(UIStrings.title),
+    description: i18nString(UIStrings.description),
+    ...partialModel,
+    relatedEvents,
+  };
 }
 
 export function generateInsight(

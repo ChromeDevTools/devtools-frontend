@@ -184,10 +184,6 @@ export class DocumentLatency extends BaseInsightComponent<DocumentLatencyInsight
         // clang-format on
   }
 
-  override getRelatedEvents(): Trace.Types.Events.Event[] {
-    return this.model?.relatedEvents ?? [];
-  }
-
   override render(): void {
     if (this.model?.data === undefined) {
       return;

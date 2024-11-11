@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../../../core/i18n/i18n.js';
+import type {InsightModel} from '../../../../models/trace/insights/types.js';
 import type * as Trace from '../../../../models/trace/trace.js';
 import * as Buttons from '../../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js';
@@ -51,8 +52,9 @@ export class InsightActivated extends Event {
   static readonly eventName = 'insightactivated';
 
   constructor(
-      public name: string, public insightSetKey: string, public overlays: Overlays.Overlays.TimelineOverlay[],
-      public relatedEvents: Trace.Types.Events.Event[]) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      public model: InsightModel<any>, public insightSetKey: string,
+      public overlays: Overlays.Overlays.TimelineOverlay[]) {
     super(InsightActivated.eventName, {bubbles: true, composed: true});
   }
 }

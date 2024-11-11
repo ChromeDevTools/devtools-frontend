@@ -92,10 +92,6 @@ export class RenderBlocking extends BaseInsightComponent<RenderBlockingInsightMo
             // clang-format on
   }
 
-  override getRelatedEvents(): Trace.Types.Events.Event[] {
-    return this.model?.relatedEvents ?? [];
-  }
-
   override render(): void {
     const model = this.model;
     const hasBlockingRequests = model?.renderBlockingRequests && model.renderBlockingRequests.length > 0;

@@ -213,13 +213,15 @@ export class SidebarSingleInsightSet extends HTMLElement {
         continue;
       }
 
+      const model = models[name as keyof typeof models];
+
       // clang-format off
       const component = html`<div data-single-insight-wrapper>
         <${componentClass.litTagName}
-          .model=${models[name as keyof typeof models]}
+          .selected=${this.#data.activeInsight?.model === model}
+          .model=${model}
           .parsedTrace=${parsedTrace}
           .insightSetKey=${insightSetKey}
-          .activeInsight=${this.#data.activeInsight}
           .activeCategory=${this.#data.activeCategory}>
         </${componentClass.litTagName}>
       </div>`;

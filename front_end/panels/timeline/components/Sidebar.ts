@@ -13,10 +13,9 @@ import {SidebarAnnotationsTab} from './SidebarAnnotationsTab.js';
 import {SidebarInsightsTab} from './SidebarInsightsTab.js';
 
 export interface ActiveInsight {
-  name: string;
+  model: Trace.Insights.Types.InsightModel<{}>;
   insightSetKey: string;
   overlays: Overlays.Overlays.TimelineOverlay[];
-  relatedEvents: Trace.Types.Events.Event[];
 }
 
 export class RemoveAnnotation extends Event {

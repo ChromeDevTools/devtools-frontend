@@ -193,10 +193,6 @@ export class SlowCSSSelector extends BaseInsightComponent<SlowCSSSelectorInsight
     return this.model !== null && this.model.topElapsedMs.length !== 0 && this.model.topMatchAttempts.length !== 0;
   }
 
-  override getRelatedEvents(): Trace.Types.Events.Event[] {
-    return this.model?.relatedEvents ?? [];
-  }
-
   override render(): void {
     const matchesCategory = shouldRenderForCategory({
       activeCategory: this.data.activeCategory,

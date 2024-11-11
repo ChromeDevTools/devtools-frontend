@@ -15,7 +15,7 @@ import type * as Overlays from '../../overlays/overlays.js';
 import sidebarInsightStyles from './sidebarInsight.css.js';
 import * as SidebarInsight from './SidebarInsight.js';
 import type {TableState} from './Table.js';
-import {type ActiveInsight, Category} from './types.js';
+import {Category} from './types.js';
 
 const {html} = LitHtml;
 
@@ -26,21 +26,10 @@ export function shouldRenderForCategory(options: {
   return options.activeCategory === Category.ALL || options.activeCategory === options.insightCategory;
 }
 
-export function insightIsActive(options: {
-  activeInsight: ActiveInsight|null,
-  insightName: string,
-  insightSetKey: string|null,
-}): boolean {
-  const active = options.activeInsight && options.activeInsight.name === options.insightName &&
-      options.activeInsight.insightSetKey === options.insightSetKey;
-  return Boolean(active);
-}
-
 export interface BaseInsightData {
   parsedTrace: Trace.Handlers.Types.ParsedTrace|null;
   /** The key into `insights` that contains this particular insight. */
   insightSetKey: string|null;
-  activeInsight: ActiveInsight|null;
   activeCategory: Category;
 }
 
@@ -55,6 +44,7 @@ export abstract class BaseInsightComponent<T extends InsightModel<{}>> extends H
 
   protected readonly shadow = this.attachShadow({mode: 'open'});
 
+  #selected = false;
   #model: T|null = null;
 
   get model(): T|null {
@@ -64,7 +54,6 @@ export abstract class BaseInsightComponent<T extends InsightModel<{}>> extends H
   protected data: BaseInsightData = {
     parsedTrace: null,
     insightSetKey: null,
-    activeInsight: null,
     activeCategory: Category.ALL,
   };
 
@@ -87,16 +76,20 @@ export abstract class BaseInsightComponent<T extends InsightModel<{}>> extends H
     // Used for unit test purposes when querying the DOM.
     this.dataset.insightName = this.internalName;
 
-    // TODO(crbug.com/371615739): this should be moved to model/trace/insights
     if (!this.#hasRegisteredRelatedEvents && this.#model) {
       this.#hasRegisteredRelatedEvents = true;
 
-      const events = this.getRelatedEvents();
+      const events = this.#model.relatedEvents ?? [];
       if (events.length) {
         this.dispatchEvent(new SidebarInsight.InsightProvideRelatedEvents(
             this.#model.title, events, this.#dispatchInsightActivatedEvent.bind(this)));
       }
     }
+  }
+
+  set selected(selected: boolean) {
+    this.#selected = selected;
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
 
   set model(model: T) {
@@ -111,11 +104,6 @@ export abstract class BaseInsightComponent<T extends InsightModel<{}>> extends H
 
   set insightSetKey(insightSetKey: string|null) {
     this.data.insightSetKey = insightSetKey;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
-  }
-
-  set activeInsight(activeInsight: ActiveInsight|null) {
-    this.data.activeInsight = activeInsight;
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
 
@@ -144,11 +132,9 @@ export abstract class BaseInsightComponent<T extends InsightModel<{}>> extends H
     this.sharedTableState.selectionIsSticky = false;
 
     this.dispatchEvent(new SidebarInsight.InsightActivated(
-        this.internalName,
+        this.model,
         this.data.insightSetKey,
         this.getInitialOverlays(),
-        // TODO: this could be cached.
-        this.getRelatedEvents(),
         ));
   }
 
@@ -179,11 +165,6 @@ export abstract class BaseInsightComponent<T extends InsightModel<{}>> extends H
     return this.#initialOverlays;
   }
 
-  // Should be overrided by subclasses.
-  protected getRelatedEvents(): Trace.Types.Events.Event[] {
-    return [];
-  }
-
   protected abstract createOverlays(): Overlays.Overlays.TimelineOverlay[];
 
   #baseRender(): void {
@@ -196,11 +177,7 @@ export abstract class BaseInsightComponent<T extends InsightModel<{}>> extends H
   abstract render(): void;
 
   protected isActive(): boolean {
-    return insightIsActive({
-      activeInsight: this.data.activeInsight,
-      insightName: this.internalName,
-      insightSetKey: this.data.insightSetKey,
-    });
+    return this.#selected;
   }
 }
 

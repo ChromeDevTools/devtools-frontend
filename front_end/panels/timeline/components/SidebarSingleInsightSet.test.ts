@@ -142,6 +142,11 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
     const navigationId = '8463DF94CD61B265B664E7F768183DE3';
     assert.isTrue(insights.has(navigationId));
 
+    const model = insights.get(navigationId)?.model.LCPPhases;
+    if (!model) {
+      throw new Error('missing LCPPhases model');
+    }
+
     const component = new Components.SidebarSingleInsightSet.SidebarSingleInsightSet();
     renderElementIntoDOM(component);
     component.data = {
@@ -150,10 +155,9 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
       insightSetKey: navigationId,
       activeCategory: InsightComponents.Types.Category.ALL,
       activeInsight: {
-        name: 'lcp-by-phase',
+        model,
         insightSetKey: navigationId,
         overlays: [],
-        relatedEvents: [],
       },
     };
     await coordinator.done();

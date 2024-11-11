@@ -224,15 +224,6 @@ export class LCPDiscovery extends BaseInsightComponent<LCPDiscoveryInsightModel>
     // clang-format on
   }
 
-  override getRelatedEvents(): Trace.Types.Events.Event[] {
-    if (!this.model?.lcpEvent || !this.model?.lcpRequest) {
-      return [];
-    }
-
-    // TODO: add entire request initiator chain?
-    return [this.model.lcpEvent, this.model.lcpRequest];
-  }
-
   override render(): void {
     const imageResults = getImageData(this.model);
     const matchesCategory = shouldRenderForCategory({

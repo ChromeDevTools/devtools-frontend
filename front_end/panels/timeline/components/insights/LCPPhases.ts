@@ -234,20 +234,6 @@ export class LCPPhases extends BaseInsightComponent<LCPPhasesInsightModel> {
     return phaseData ? phaseData.length > 0 : false;
   }
 
-  override getRelatedEvents(): Trace.Types.Events.Event[] {
-    const insight = this.model;
-    if (!insight?.lcpEvent) {
-      return [];
-    }
-
-    const relatedEvents: Trace.Types.Events.Event[] = [insight.lcpEvent];
-    if (insight.lcpRequest) {
-      relatedEvents.push(insight.lcpRequest);
-    }
-
-    return relatedEvents;
-  }
-
   override render(): void {
     const phaseData = this.#getPhaseData();
     const matchesCategory = shouldRenderForCategory({

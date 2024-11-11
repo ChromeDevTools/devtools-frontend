@@ -91,10 +91,6 @@ export class FontDisplay extends BaseInsightComponent<FontDisplayInsightModel> {
     // clang-format on
   }
 
-  override getRelatedEvents(): Trace.Types.Events.Event[] {
-    return this.model?.relatedEvents ?? [];
-  }
-
   override render(): void {
     const model = this.model;
     const shouldShow = model && model.fonts.find(font => font.wastedTime);

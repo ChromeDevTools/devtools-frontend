@@ -572,8 +572,8 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     // is not on the DOM. That only happens when the sidebar tabbed pane component is set to Annotations.
     // In that case, clicking on the insight chip will do nothing.
     this.#sideBar.element.addEventListener(TimelineInsights.SidebarInsight.InsightActivated.eventName, event => {
-      const {name, insightSetKey, overlays, relatedEvents} = event;
-      this.#setActiveInsight({name, insightSetKey, overlays, relatedEvents});
+      const {model, insightSetKey, overlays} = event;
+      this.#setActiveInsight({model, insightSetKey, overlays});
     });
 
     this.#sideBar.element.addEventListener(TimelineInsights.SidebarInsight.InsightProvideOverlays.eventName, event => {

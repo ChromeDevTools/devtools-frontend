@@ -432,7 +432,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_DIM_UNRELATED_EVENTS)) {
       // The insight's `relatedEvents` property likely already includes the events associated with
       // and overlay, but just in case not, include both arrays. Duplicates are fine.
-      const relatedEvents = [...entries, ...this.#activeInsight?.relatedEvents || []];
+      const relatedEvents = [...entries, ...this.#activeInsight?.model.relatedEvents || []];
       this.#dimInsightRelatedEvents(relatedEvents);
     }
 

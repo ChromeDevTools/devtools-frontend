@@ -141,10 +141,6 @@ export class InteractionToNextPaint extends BaseInsightComponent<INPInsightModel
             // clang-format on
   }
 
-  override getRelatedEvents(): Trace.Types.Events.Event[] {
-    return this.model?.relatedEvents ?? [];
-  }
-
   override render(): void {
     const event = this.model?.longestInteractionEvent;
 

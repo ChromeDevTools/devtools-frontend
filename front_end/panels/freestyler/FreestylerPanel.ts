@@ -703,6 +703,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
     if (this.#currentAgent) {
       this.#agents.delete(this.#currentAgent);
       this.#currentAgent = undefined;
+      this.#cancel();
     }
 
     this.#viewProps.messages = [];

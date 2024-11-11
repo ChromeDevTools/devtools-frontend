@@ -65,6 +65,7 @@ import {AnnotationModifiedEvent, ModificationsManager} from './ModificationsMana
 import * as Overlays from './overlays/overlays.js';
 import {cpuprofileJsonGenerator, traceJsonGenerator} from './SaveFileFormatter.js';
 import {type Client, TimelineController} from './TimelineController.js';
+import type {TimelineFlameChartDataProvider} from './TimelineFlameChartDataProvider.js';
 import {TimelineFlameChartView} from './TimelineFlameChartView.js';
 import {TimelineHistoryManager} from './TimelineHistoryManager.js';
 import {TimelineLandingPage} from './TimelineLandingPage.js';
@@ -446,6 +447,8 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
   #eventToRelatedInsights: TimelineComponents.RelatedInsightChips.EventToRelatedInsightsMap = new Map();
 
+  #onMainEntryHovered: (event: Common.EventTarget.EventTargetEvent<number>) => void;
+
   constructor() {
     super('timeline');
     const adornerContent = document.createElement('span');
@@ -543,6 +546,10 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
     this.flameChart.getMainFlameChart().addEventListener(
         PerfUI.FlameChart.Events.CHART_PLAYABLE_STATE_CHANGED, this.#onChartPlayableStateChangeBound, this);
+
+    this.#onMainEntryHovered = this.#onEntryHovered.bind(this, this.flameChart.getMainDataProvider());
+    this.flameChart.getMainFlameChart().addEventListener(
+        PerfUI.FlameChart.Events.ENTRY_HOVERED, this.#onMainEntryHovered);
 
     this.searchableViewInternal = new UI.SearchableView.SearchableView(this.flameChart, null);
     this.searchableViewInternal.setMinimumSize(0, 100);
@@ -911,6 +918,21 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       this.brickBreakerToolbarButtonAdded = false;
       this.panelToolbar.removeToolbarItem(this.brickBreakerToolbarButton);
     }
+  }
+
+  #onEntryHovered(dataProvider: TimelineFlameChartDataProvider, event: Common.EventTarget.EventTargetEvent<number>):
+      void {
+    const entryIndex = event.data;
+    if (entryIndex === -1) {
+      this.#minimapComponent.clearBoundsHighlight();
+      return;
+    }
+    const traceEvent = dataProvider.eventByIndex(entryIndex);
+    if (!traceEvent) {
+      return;
+    }
+    const bounds = Trace.Helpers.Timing.traceWindowFromEvent(traceEvent);
+    this.#minimapComponent.highlightBounds(bounds, /* withBracket */ false);
   }
 
   private loadFromCpuProfile(profile: Protocol.Profiler.Profile|null): void {

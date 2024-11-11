@@ -147,6 +147,14 @@ export function traceWindowFromMicroSeconds(
   return traceWindow;
 }
 
+export function traceWindowFromEvent(event: Types.Events.Event): Types.Timing.TraceWindowMicroSeconds {
+  return {
+    min: event.ts,
+    max: Types.Timing.MicroSeconds(event.ts + (event.dur ?? 0)),
+    range: event.dur ?? Types.Timing.MicroSeconds(0),
+  };
+}
+
 export interface BoundsIncludeTimeRange {
   timeRange: Types.Timing.TraceWindowMicroSeconds;
   bounds: Types.Timing.TraceWindowMicroSeconds;

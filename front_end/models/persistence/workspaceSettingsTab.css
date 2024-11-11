@@ -32,12 +32,12 @@ label {
 }
 
 .add-button-container {
-  max-width: var(--sys-size-37);
+  max-width: var(--sys-size-35);
   margin-left: var(--sys-size-8);
   width: 100%;
 
   & .add-folder {
     min-width: var(--sys-size-31);
-    max-width: var(--sys-size-37);
+    max-width: var(--sys-size-35);
   }
 }

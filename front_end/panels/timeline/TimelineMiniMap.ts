@@ -202,8 +202,8 @@ export class TimelineMiniMap extends
     };
   }
 
-  highlightBounds(bounds: Trace.Types.Timing.TraceWindowMicroSeconds): void {
-    this.#overviewComponent.highlightBounds(bounds);
+  highlightBounds(bounds: Trace.Types.Timing.TraceWindowMicroSeconds, withBracket: boolean = false): void {
+    this.#overviewComponent.highlightBounds(bounds, withBracket);
   }
   clearBoundsHighlight(): void {
     this.#overviewComponent.clearBoundsHighlight();

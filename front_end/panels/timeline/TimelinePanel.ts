@@ -576,7 +576,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
       const overlaysBounds = overlays && Overlays.Overlays.traceWindowContainingOverlays(overlays);
       if (overlaysBounds) {
-        this.#minimapComponent.highlightBounds(overlaysBounds);
+        this.#minimapComponent.highlightBounds(overlaysBounds, /* withBracket */ true);
       } else {
         this.#minimapComponent.clearBoundsHighlight();
       }
@@ -615,7 +615,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
     this.#sideBar.element.addEventListener(TimelineInsights.SidebarInsight.InsightSetHovered.eventName, event => {
       if (event.bounds) {
-        this.#minimapComponent.highlightBounds(event.bounds);
+        this.#minimapComponent.highlightBounds(event.bounds, /* withBracket */ true);
       } else {
         this.#minimapComponent.clearBoundsHighlight();
       }

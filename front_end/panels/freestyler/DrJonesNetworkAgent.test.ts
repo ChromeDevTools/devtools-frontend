@@ -82,20 +82,19 @@ describeWithMockConnection('DrJonesNetworkAgent', () => {
         serverSideLoggingEnabled: true,
       });
       sinon.stub(agent, 'preamble').value('preamble');
-      agent.chatNewHistoryForTesting = [
-        {
-          type: ResponseType.USER_QUERY,
-          query: 'questions',
-        },
-        {
-          type: ResponseType.QUERYING,
-          query: 'questions',
-        },
-        {
-          type: ResponseType.ANSWER,
-          text: 'answer',
-        },
-      ];
+      agent.chatNewHistoryForTesting = new Map([[
+        0,
+        [
+          {
+            type: ResponseType.QUERYING,
+            query: 'questions',
+          },
+          {
+            type: ResponseType.ANSWER,
+            text: 'answer',
+          },
+        ],
+      ]]);
       assert.deepStrictEqual(
           agent.buildRequest({
             input: 'test input',

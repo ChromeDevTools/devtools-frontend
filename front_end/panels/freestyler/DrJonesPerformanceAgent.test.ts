@@ -63,20 +63,19 @@ describeWithEnvironment('DrJonesPerformanceAgent', () => {
         serverSideLoggingEnabled: true,
       });
       sinon.stub(agent, 'preamble').value('preamble');
-      agent.chatNewHistoryForTesting = [
-        {
-          type: ResponseType.USER_QUERY,
-          query: 'question',
-        },
-        {
-          type: ResponseType.QUERYING,
-          query: 'question',
-        },
-        {
-          type: ResponseType.ANSWER,
-          text: 'answer',
-        },
-      ];
+      agent.chatNewHistoryForTesting = new Map([[
+        0,
+        [
+          {
+            type: ResponseType.QUERYING,
+            query: 'question',
+          },
+          {
+            type: ResponseType.ANSWER,
+            text: 'answer',
+          },
+        ],
+      ]]);
       assert.deepStrictEqual(
           agent.buildRequest({
             input: 'test input',
@@ -203,30 +202,29 @@ self: 3
       assert.strictEqual(enhancedQuery1, 'Mock call tree\n\n# User request\n\nWhat is this?');
 
       // Create history state of the above query
-      agent.chatNewHistoryForTesting = [
-        {
-          type: ResponseType.USER_QUERY,
-          query: 'What is this?',
-        },
-        {
-          type: ResponseType.CONTEXT,
-          title: 'Analyzing call tree',
-          details: [
-            {
-              title: 'Selected call tree',
-              text: mockAiCallTree.serialize(),
-            },
-          ],
-        },
-        {
-          type: ResponseType.QUERYING,
-          query: enhancedQuery1,
-        },
-        {
-          type: ResponseType.ANSWER,
-          text: 'test answer',
-        },
-      ];
+      agent.chatNewHistoryForTesting = new Map([[
+        0,
+        [
+          {
+            type: ResponseType.CONTEXT,
+            title: 'Analyzing call tree',
+            details: [
+              {
+                title: 'Selected call tree',
+                text: mockAiCallTree.serialize(),
+              },
+            ],
+          },
+          {
+            type: ResponseType.QUERYING,
+            query: enhancedQuery1,
+          },
+          {
+            type: ResponseType.ANSWER,
+            text: 'test answer',
+          },
+        ],
+      ]]);
 
       const query2 = 'But what about this follow-up question?';
       const enhancedQuery2 = await agent.enhanceQuery(query2, new CallTreeContext(mockAiCallTree));

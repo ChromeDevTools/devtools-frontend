@@ -184,6 +184,22 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     });
     Utils.ImageCache.emitter.addEventListener(
         'screenshot-loaded', () => this.dispatchEventToListeners(Events.DATA_CHANGED));
+
+    Common.Settings.Settings.instance()
+        .moduleSetting('skip-stack-frames-pattern')
+        .addChangeListener(this.#onIgnoreListChanged.bind(this));
+    Common.Settings.Settings.instance()
+        .moduleSetting('skip-content-scripts')
+        .addChangeListener(this.#onIgnoreListChanged.bind(this));
+    Common.Settings.Settings.instance()
+        .moduleSetting('automatically-ignore-list-known-third-party-scripts')
+        .addChangeListener(this.#onIgnoreListChanged.bind(this));
+    Common.Settings.Settings.instance()
+        .moduleSetting('enable-ignore-listing')
+        .addChangeListener(this.#onIgnoreListChanged.bind(this));
+    Common.Settings.Settings.instance()
+        .moduleSetting('skip-anonymous-scripts')
+        .addChangeListener(this.#onIgnoreListChanged.bind(this));
   }
 
   hasTrackConfigurationMode(): boolean {
@@ -292,22 +308,25 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     if (Utils.IgnoreList.isIgnoreListedEntry(entry)) {
       contextMenu.defaultSection().appendItem(i18nString(UIStrings.removeScriptFromIgnoreList), () => {
         Bindings.IgnoreListManager.IgnoreListManager.instance().unIgnoreListURL(url);
-        this.timelineData(/* rebuild= */ true);
-        this.dispatchEventToListeners(Events.DATA_CHANGED);
+        this.#onIgnoreListChanged();
       }, {
         jslogContext: 'remove-from-ignore-list',
       });
     } else {
       contextMenu.defaultSection().appendItem(i18nString(UIStrings.addScriptToIgnoreList), () => {
         Bindings.IgnoreListManager.IgnoreListManager.instance().ignoreListURL(url);
-        this.timelineData(/* rebuild= */ true);
-        this.dispatchEventToListeners(Events.DATA_CHANGED);
+        this.#onIgnoreListChanged();
       }, {
         jslogContext: 'add-to-ignore-list',
       });
     }
 
     return contextMenu;
+  }
+
+  #onIgnoreListChanged(): void {
+    this.timelineData(/* rebuild= */ true);
+    this.dispatchEventToListeners(Events.DATA_CHANGED);
   }
 
   entryHasAnnotations(entryIndex: number): boolean {

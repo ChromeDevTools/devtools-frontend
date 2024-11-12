@@ -344,6 +344,22 @@ export class AnnotationOverlayActionEvent extends Event {
   }
 }
 
+export class TimeRangeMouseOverEvent extends Event {
+  static readonly eventName = 'timerangemouseoverevent';
+
+  constructor(public overlay: TimeRangeLabel) {
+    super(TimeRangeMouseOverEvent.eventName, {bubbles: true});
+  }
+}
+
+export class TimeRangeMouseOutEvent extends Event {
+  static readonly eventName = 'timerangemouseoutevent';
+
+  constructor() {
+    super(TimeRangeMouseOutEvent.eventName, {bubbles: true});
+  }
+}
+
 interface EntriesLinkVisibleEntries {
   entryFrom: Trace.Types.Events.Event;
   entryTo: Trace.Types.Events.Event|undefined;
@@ -1417,6 +1433,12 @@ export class Overlays extends EventTarget {
         });
         component.addEventListener(Components.TimeRangeOverlay.TimeRangeRemoveEvent.eventName, () => {
           this.dispatchEvent(new AnnotationOverlayActionEvent(overlay, 'Remove'));
+        });
+        component.addEventListener('mouseover', () => {
+          this.dispatchEvent(new TimeRangeMouseOverEvent(overlay));
+        });
+        component.addEventListener('mouseout', () => {
+          this.dispatchEvent(new TimeRangeMouseOutEvent());
         });
         div.appendChild(component);
         return div;

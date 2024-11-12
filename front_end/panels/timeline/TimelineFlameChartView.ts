@@ -1461,6 +1461,10 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
       this.mainFlameChart.hideHighlight();
     }
   }
+
+  overlays(): Overlays.Overlays.Overlays {
+    return this.#overlays;
+  }
 }
 
 export class Selection {

@@ -564,6 +564,16 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.#splitWidget.enableShowModeSaving();
     this.#splitWidget.show(this.element);
 
+    this.flameChart.overlays().addEventListener(Overlays.Overlays.TimeRangeMouseOverEvent.eventName, event => {
+      const {overlay} = event as Overlays.Overlays.TimeRangeMouseOverEvent;
+      const overlayBounds = overlay && Overlays.Overlays.traceWindowContainingOverlays([overlay]);
+      this.#minimapComponent.highlightBounds(overlayBounds, /* withBracket */ false);
+    });
+
+    this.flameChart.overlays().addEventListener(Overlays.Overlays.TimeRangeMouseOutEvent.eventName, () => {
+      this.#minimapComponent.clearBoundsHighlight();
+    });
+
     this.#sideBar.element.addEventListener(TimelineInsights.SidebarInsight.InsightDeactivated.eventName, () => {
       this.#setActiveInsight(null);
     });

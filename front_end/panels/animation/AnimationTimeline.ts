@@ -966,7 +966,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements
         lastDraw = gridWidth;
         const label = UI.UIUtils.createSVGChild(this.#grid, 'text', 'animation-timeline-grid-label');
         label.textContent = isScrollDriven ? `${time.toFixed(0)}px` : i18n.TimeUtilities.millisToString(time);
-        label.setAttribute('x', (gridWidth + 10).toString());
+        label.setAttribute('x', (gridWidth + 12).toString());
         label.setAttribute('y', '16');
       }
     }

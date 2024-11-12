@@ -517,19 +517,20 @@ c`;
         serverSideLoggingEnabled: true,
       });
       sinon.stub(agent, 'preamble').value('preamble');
-      agent.chatNewHistoryForTesting = new Map([[
-        0,
-        [
-          {
-            type: Freestyler.ResponseType.QUERYING,
-            query: 'question',
-          },
-          {
-            type: Freestyler.ResponseType.ANSWER,
-            text: 'answer',
-          },
-        ],
-      ]]);
+      agent.chatNewHistoryForTesting = [
+        {
+          type: Freestyler.ResponseType.USER_QUERY,
+          query: 'question',
+        },
+        {
+          type: Freestyler.ResponseType.QUERYING,
+          query: 'question',
+        },
+        {
+          type: Freestyler.ResponseType.ANSWER,
+          text: 'answer',
+        },
+      ];
       assert.deepStrictEqual(
           agent.buildRequest({
             input: 'test input',

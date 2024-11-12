@@ -64,7 +64,6 @@ export abstract class BaseInsightComponent<T extends InsightModel<{}>> extends H
     selectionIsSticky: false,
   };
   #initialOverlays: Overlays.Overlays.TimelineOverlay[]|null = null;
-  #hasRegisteredRelatedEvents = false;
 
   protected scheduleRender(): void {
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
@@ -75,19 +74,14 @@ export abstract class BaseInsightComponent<T extends InsightModel<{}>> extends H
     this.setAttribute('jslog', `${VisualLogging.section(`timeline.insights.${this.internalName}`)}`);
     // Used for unit test purposes when querying the DOM.
     this.dataset.insightName = this.internalName;
-
-    if (!this.#hasRegisteredRelatedEvents && this.#model) {
-      this.#hasRegisteredRelatedEvents = true;
-
-      const events = this.#model.relatedEvents ?? [];
-      if (events.length) {
-        this.dispatchEvent(new SidebarInsight.InsightProvideRelatedEvents(
-            this.#model.title, events, this.#dispatchInsightActivatedEvent.bind(this)));
-      }
-    }
   }
 
   set selected(selected: boolean) {
+    if (!this.#selected && selected) {
+      this.dispatchEvent(
+          new SidebarInsight.InsightProvideOverlays(this.getInitialOverlays(), {updateTraceWindow: true}));
+    }
+
     this.#selected = selected;
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
@@ -131,11 +125,7 @@ export abstract class BaseInsightComponent<T extends InsightModel<{}>> extends H
     this.sharedTableState.selectedRowEl = null;
     this.sharedTableState.selectionIsSticky = false;
 
-    this.dispatchEvent(new SidebarInsight.InsightActivated(
-        this.model,
-        this.data.insightSetKey,
-        this.getInitialOverlays(),
-        ));
+    this.dispatchEvent(new SidebarInsight.InsightActivated(this.model, this.data.insightSetKey));
   }
 
   /**

@@ -53,8 +53,7 @@ export class InsightActivated extends Event {
 
   constructor(
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      public model: InsightModel<any>, public insightSetKey: string,
-      public overlays: Overlays.Overlays.TimelineOverlay[]) {
+      public model: InsightModel<any>, public insightSetKey: string) {
     super(InsightActivated.eventName, {bubbles: true, composed: true});
   }
 }
@@ -90,15 +89,6 @@ export class InsightProvideOverlays extends Event {
   }
 }
 
-export class InsightProvideRelatedEvents extends Event {
-  static readonly eventName = 'insightproviderelatedevents';
-
-  constructor(
-      public label: string, public events: Array<Trace.Types.Events.Event>, public activateInsight: () => void) {
-    super(InsightProvideRelatedEvents.eventName, {bubbles: true, composed: true});
-  }
-}
-
 declare global {
   interface GlobalEventHandlersEventMap {
     [InsightActivated.eventName]: InsightActivated;
@@ -106,7 +96,6 @@ declare global {
     [InsightSetHovered.eventName]: InsightSetHovered;
     [InsightSetZoom.eventName]: InsightSetZoom;
     [InsightProvideOverlays.eventName]: InsightProvideOverlays;
-    [InsightProvideRelatedEvents.eventName]: InsightProvideRelatedEvents;
   }
 }
 

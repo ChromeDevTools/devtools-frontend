@@ -578,12 +578,9 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       this.#setActiveInsight(null);
     });
 
-    // TODO(crbug.com/372946179): when clicking on an insight chip, this event never fires if the insight tab
-    // is not on the DOM. That only happens when the sidebar tabbed pane component is set to Annotations.
-    // In that case, clicking on the insight chip will do nothing.
     this.#sideBar.element.addEventListener(TimelineInsights.SidebarInsight.InsightActivated.eventName, event => {
-      const {model, insightSetKey, overlays} = event;
-      this.#setActiveInsight({model, insightSetKey, overlays});
+      const {model, insightSetKey} = event;
+      this.#setActiveInsight({model, insightSetKey});
     });
 
     this.#sideBar.element.addEventListener(TimelineInsights.SidebarInsight.InsightProvideOverlays.eventName, event => {
@@ -598,19 +595,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
         this.#minimapComponent.clearBoundsHighlight();
       }
     });
-
-    this.#sideBar.element.addEventListener(
-        TimelineInsights.SidebarInsight.InsightProvideRelatedEvents.eventName, event => {
-          const relatedInsight = {
-            insightLabel: event.label,
-            activateInsight: event.activateInsight,
-          };
-          for (const traceEvent of event.events) {
-            const relatedInsights = this.#eventToRelatedInsights.get(traceEvent) ?? [];
-            relatedInsights.push(relatedInsight);
-            this.#eventToRelatedInsights.set(traceEvent, relatedInsights);
-          }
-        });
 
     this.flameChart.element.addEventListener(TimelineInsights.EventRef.EventReferenceClick.eventName, event => {
       const fromTraceEvent = selectionFromEvent(event.event);
@@ -1889,10 +1873,27 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
     this.#setActiveInsight(null);
 
-    this.#eventToRelatedInsights.clear();
     const traceInsightsSets = this.#traceEngineModel.traceInsights(traceIndex);
     this.flameChart.setInsights(traceInsightsSets, this.#eventToRelatedInsights);
     this.#sideBar.setInsights(traceInsightsSets);
+
+    this.#eventToRelatedInsights.clear();
+    if (traceInsightsSets) {
+      for (const [insightSetKey, insightSet] of traceInsightsSets) {
+        for (const model of Object.values(insightSet.model)) {
+          for (const event of model.relatedEvents ?? []) {
+            const relatedInsights = this.#eventToRelatedInsights.get(event) ?? [];
+            this.#eventToRelatedInsights.set(event, relatedInsights);
+            relatedInsights.push({
+              insightLabel: model.title,
+              activateInsight: () => {
+                this.#setActiveInsight({model, insightSetKey});
+              },
+            });
+          }
+        }
+      }
+    }
 
     this.#showSidebarIfRequired();
   }

@@ -494,10 +494,7 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     if (!this.#activeInsight) {
       this.mainFlameChart.disableDimming();
       this.networkFlameChart.disableDimming();
-      return;
     }
-
-    this.setOverlays(this.#activeInsight.overlays, {updateTraceWindow: true});
   }
 
   /**

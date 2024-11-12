@@ -157,7 +157,6 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
       activeInsight: {
         model,
         insightSetKey: navigationId,
-        overlays: [],
       },
     };
     await coordinator.done();

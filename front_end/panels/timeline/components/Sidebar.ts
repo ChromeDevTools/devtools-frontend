@@ -7,7 +7,6 @@ import * as Root from '../../../core/root/root.js';
 import type * as Trace from '../../../models/trace/trace.js';
 import * as Adorners from '../../../ui/components/adorners/adorners.js';
 import * as UI from '../../../ui/legacy/legacy.js';
-import type * as Overlays from '../overlays/overlays.js';
 
 import {SidebarAnnotationsTab} from './SidebarAnnotationsTab.js';
 import {SidebarInsightsTab} from './SidebarInsightsTab.js';
@@ -15,7 +14,6 @@ import {SidebarInsightsTab} from './SidebarInsightsTab.js';
 export interface ActiveInsight {
   model: Trace.Insights.Types.InsightModel<{}>;
   insightSetKey: string;
-  overlays: Overlays.Overlays.TimelineOverlay[];
 }
 
 export class RemoveAnnotation extends Event {

@@ -860,7 +860,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements
         this.#pauseButton.setEnabled(false);
       }
     } else {
-      this.setDuration(Math.max(500, group.finiteDuration() + 100));
+      this.setDuration(group.finiteDuration());
       this.#playbackRateButtons.forEach(button => {
         button.removeAttribute('disabled');
       });
@@ -1053,8 +1053,6 @@ export class AnimationTimeline extends UI.Widget.VBox implements
     this.setCurrentTimeText(this.#scrubberCurrentTime());
     if (this.#scrubberPlayer.playState.toString() === 'pending' || this.#scrubberPlayer.playState === 'running') {
       this.element.window().requestAnimationFrame(this.updateScrubber.bind(this));
-    } else if (this.#scrubberPlayer.playState === 'finished') {
-      this.clearCurrentTimeText();
     }
   }
 

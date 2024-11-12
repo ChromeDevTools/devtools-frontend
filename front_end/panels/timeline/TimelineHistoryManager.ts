@@ -232,7 +232,11 @@ export class TimelineHistoryManager {
     this.recordings = [];
     this.lastActiveTrace = null;
     this.updateState();
-    this.buttonInternal.setText(i18nString(UIStrings.noRecordings));
+    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_OBSERVATIONS)) {
+      this.buttonInternal.setText(i18nString(UIStrings.landingPageTitle));
+    } else {
+      this.buttonInternal.setText(i18nString(UIStrings.noRecordings));
+    }
     this.nextNumberByDomain.clear();
   }
 

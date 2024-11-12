@@ -233,7 +233,6 @@ group("unittests") {
     "ui/components/text_editor:unittests",
     "ui/components/text_prompt:unittests",
     "ui/components/tree_outline:unittests",
-    "ui/components/two_states_counter:unittests",
     "ui/legacy:copy_stylesheets_for_server",
     "ui/legacy:unittests",
     "ui/legacy/components/color_picker:unittests",

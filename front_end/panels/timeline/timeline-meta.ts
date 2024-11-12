@@ -320,7 +320,7 @@ Common.Settings.registerSettingExtension({
   storageType: Common.Settings.SettingStorageType.SYNCED,
   settingName: 'annotations-hidden',
   settingType: Common.Settings.SettingType.BOOLEAN,
-  defaultValue: true,
+  defaultValue: false,
 });
 
 Common.Linkifier.registerLinkifier({

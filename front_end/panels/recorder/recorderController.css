@@ -65,7 +65,7 @@ select {
   padding: 0 var(--sys-size-6) 0 var(--sys-size-5);
   position: relative;
   color: var(--sys-color-on-surface);
-  background-color: var(--sys-color-cdt-base-container);
+  background-color: transparent;
   text-overflow: ellipsis;
   background-image: var(--combobox-dropdown-arrow);
   background-position: right center;

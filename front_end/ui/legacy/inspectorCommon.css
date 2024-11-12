@@ -392,7 +392,7 @@ input::placeholder {
   outline: none;
   padding: 0 var(--sys-size-9) 0 var(--sys-size-5);
   background-image: var(--combobox-dropdown-arrow);
-  background-color: var(--sys-color-surface);
+  background-color: transparent;
   background-position: right center;
   background-repeat: no-repeat;
 }

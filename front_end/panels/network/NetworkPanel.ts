@@ -125,16 +125,29 @@ const UIStrings = {
    */
   importHarFile: 'Import `HAR` file...',
   /**
-   * @description Tooltip text that appears when hovering over the largeicon download button in the
-   * Network Panel. HAR is a file format (HTTP Archive) and should not be translated. This action
-   * triggers the download of a HAR file.
+   * @description Tooltip text that appears when hovering over the download button in the Network
+   * panel, when the setting to allow generating HAR files with sensitive data is enabled. HAR is
+   * a file format (HTTP Archive) and should not be translated. This action triggers a context
+   * menu with two options, one to download HAR sanitized and one to download HAR with sensitive
+   * data.
+   */
+  exportHar: 'Export `HAR` (either sanitized or with sensitive data)',
+  /**
+   * @description Tooltip text that appears when hovering over the download button in the Network
+   * panel, when the setting to allow generating HAR files with sensitive data is disabled. HAR is
+   * a file format (HTTP Archive) and should not be translated. This action triggers the download
+   * of a HAR file.
+   *
+   * This string is also used as the first item in the context menu for the download button in
+   * the Network panel, when the setting to allow generating HAR files with sensitive data is
+   * enabled.
    */
   exportHarSanitized: 'Export `HAR` (sanitized)...',
   /**
-   * @description Context menu item in the export long click button of the Network panel, which is
-   * only available when the Network setting to allow generating HAR with sensitive data is active.
-   * HAR is a file format (HTTP Archive) and should not be translated. This action triggers the
-   * download of a HAR file with sensitive data included.
+   * @description Context menu item in the context menu for the download button of the Network panel,
+   * which is only available when the Network setting to allow generating HAR with sensitive data
+   * is active. HAR is a file format (HTTP Archive) and should not be translated. This action
+   * triggers the download of a HAR file with sensitive data included.
    */
   exportHarWithSensitiveData: 'Export `HAR` (with sensitive data)...',
   /**
@@ -470,6 +483,19 @@ export class NetworkPanel extends UI.Panel.Panel implements
         this.networkRecordFilmStripSetting, i18nString(UIStrings.captureScreenshotsWhenLoadingA),
         i18nString(UIStrings.captureScreenshots)));
 
+    const exportHarContextMenu = (contextMenu: UI.ContextMenu.ContextMenu): void => {
+      contextMenu.defaultSection().appendItem(
+          i18nString(UIStrings.exportHarSanitized),
+          this.networkLogView.exportAll.bind(this.networkLogView, {sanitize: true}),
+          {jslogContext: 'export-har'},
+      );
+      contextMenu.defaultSection().appendItem(
+          i18nString(UIStrings.exportHarWithSensitiveData),
+          this.networkLogView.exportAll.bind(this.networkLogView, {sanitize: false}),
+          {jslogContext: 'export-har-with-sensitive-data'},
+      );
+    };
+
     this.panelToolbar.appendSeparator();
     const importHarButton =
         new UI.Toolbar.ToolbarButton(i18nString(UIStrings.importHarFile), 'import', undefined, 'import-har');
@@ -482,35 +508,17 @@ export class NetworkPanel extends UI.Panel.Panel implements
         UI.Toolbar.ToolbarButton.Events.CLICK,
         this.networkLogView.exportAll.bind(this.networkLogView, {sanitize: true}), this);
     this.panelToolbar.appendToolbarItem(exportHarButton);
+    const exportHarMenuButton = new UI.Toolbar.ToolbarMenuButton(
+        exportHarContextMenu, /* isIconDropdown */ true, /* useSoftMenu */ false, 'export-har-menu', 'download');
+    exportHarMenuButton.setTitle(i18nString(UIStrings.exportHar));
+    this.panelToolbar.appendToolbarItem(exportHarMenuButton);
 
-    // Support for exporting HAR (with sensitive data), which is added via a long-click
-    // context menu on the Export button in the Network panel.
-    // Checkout https://goo.gle/devtools-har-exclude-cookies-design for more details.
     const networkShowOptionsToGenerateHarWithSensitiveData = Common.Settings.Settings.instance().createSetting(
         'network.show-options-to-generate-har-with-sensitive-data', false);
-    let controller: UI.UIUtils.LongClickController|null = null;
     const updateShowOptionsToGenerateHarWithSensitiveData = (): void => {
-      exportHarButton.setLongClickable(networkShowOptionsToGenerateHarWithSensitiveData.get());
-      if (controller !== null) {
-        controller.dispose();
-        controller = null;
-      }
-      if (networkShowOptionsToGenerateHarWithSensitiveData.get()) {
-        controller = new UI.UIUtils.LongClickController(exportHarButton.element, event => {
-          const contextMenu = new UI.ContextMenu.ContextMenu(event);
-          contextMenu.defaultSection().appendItem(
-              i18nString(UIStrings.exportHarSanitized),
-              this.networkLogView.exportAll.bind(this.networkLogView, {sanitize: true}),
-              {jslogContext: 'export-har'},
-          );
-          contextMenu.defaultSection().appendItem(
-              i18nString(UIStrings.exportHarWithSensitiveData),
-              this.networkLogView.exportAll.bind(this.networkLogView, {sanitize: false}),
-              {jslogContext: 'export-har-with-sensitive-data'},
-          );
-          void contextMenu.show();
-        });
-      }
+      const showOptionsToGenerateHarWithSensitiveData = networkShowOptionsToGenerateHarWithSensitiveData.get();
+      exportHarButton.setVisible(!showOptionsToGenerateHarWithSensitiveData);
+      exportHarMenuButton.setVisible(showOptionsToGenerateHarWithSensitiveData);
     };
     networkShowOptionsToGenerateHarWithSensitiveData.addChangeListener(updateShowOptionsToGenerateHarWithSensitiveData);
     updateShowOptionsToGenerateHarWithSensitiveData();

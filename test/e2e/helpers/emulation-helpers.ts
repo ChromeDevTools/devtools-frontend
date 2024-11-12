@@ -10,7 +10,6 @@ import {
   getBrowserAndPages,
   goToResource,
   waitFor,
-  waitForFunction,
 } from '../../shared/helper.js';
 
 import {
@@ -125,18 +124,8 @@ export const selectFoldableDevice = async () => {
 };
 
 export const clickDevicePosture = async (name: string) => {
-  const waitForNotExpanded = async () => {
-    const toolbar = await waitFor(DEVICE_TOOLBAR_SELECTOR);
-    const dropdown = await waitFor(DEVICE_POSTURE_DROPDOWN_SELECTOR, toolbar);
-    await waitForFunction(async () => {
-      const expanded = await dropdown.evaluate(el => el.getAttribute('aria-expanded'));
-      return expanded === null;
-    });
-  };
-
   await clickDevicePostureDropDown();
   await click(`[aria-label*="${name}, unchecked"]`);
-  await waitForNotExpanded();
 };
 
 export const getDevicePostureDropDown = async () => {

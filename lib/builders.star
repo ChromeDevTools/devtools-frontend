@@ -266,7 +266,7 @@ def generate_ci_configs(configurations, builders):
                     execution_timeout = b.execution_timeout,
                     console_category = "Linux",
                     notifies = [] if b.notification_muted else c.notifiers,
-                    properties = b.properties or {},
+                    properties = properties,
                     priority = c.priority,
                     description_html = b.description_html,
                 )

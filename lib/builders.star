@@ -2,6 +2,8 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
+load("//lib/siso.star", "SISO")
+
 AUTOROLLER_ACCOUNT = "devtools-ci-autoroll-builder@chops-service-accounts.iam.gserviceaccount.com"
 CI_ACCOUNT = "devtools-frontend-ci-builder@chops-service-accounts.iam.gserviceaccount.com"
 TRY_ACCOUNT = "devtools-frontend-try-builder@chops-service-accounts.iam.gserviceaccount.com"
@@ -154,7 +156,8 @@ def builder_descriptor(
         notification_muted = False,
         properties = None,
         execution_timeout = default_timeout,
-        description_html = None):
+        description_html = None,
+        use_siso = SISO.NONE):
     return struct(
         name = name,
         recipe_name = recipe_name,
@@ -164,6 +167,7 @@ def builder_descriptor(
         properties = properties,
         execution_timeout = execution_timeout,
         description_html = description_html,
+        use_siso = use_siso,
     )
 
 def bucket(
@@ -257,6 +261,7 @@ def generate_ci_configs(configurations, builders):
         for b in builders:
             if c.name in b.consoles:
                 properties = b.properties or {}
+                properties.update(b.use_siso)
                 if c.branch_number:
                     properties["branch_number"] = c.branch_number
                 ci_builder(

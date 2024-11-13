@@ -11,6 +11,7 @@ load(
     "dimensions",
     "generate_ci_configs",
 )
+load("//lib/siso.star", "SISO")
 load("//definitions.star", "versions")
 
 DEFAULT_PRIORITY = 30
@@ -53,12 +54,14 @@ generate_ci_configs(
             recipe_name = "chromium_integration",
             consoles = ["ci"],
             execution_timeout = 3 * time.hour,
+            use_siso = SISO.CHROMIUM_TRUSTED,
         ),
         builder_descriptor(
             name = "DevTools Linux Fastbuild",
             recipe_name = "chromium_integration",
             consoles = ["ci"],
             execution_timeout = 3 * time.hour,
+            use_siso = SISO.CHROMIUM_TRUSTED,
             description_html = """
 This is the same with <a href="https://ci.chromium.org/p/devtools-frontend/builders/ci/DevTools%20Linux">
 DevTools Linux</a> but has devtools_skip_typecheck=True.""",

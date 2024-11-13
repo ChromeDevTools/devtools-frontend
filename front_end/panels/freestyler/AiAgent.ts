@@ -219,16 +219,12 @@ export abstract class AiAgent<T> {
     rawResponse?: Host.AidaClient.AidaResponse,
   }> = [];
   async aidaFetch(
-      input: string,
+      request: Host.AidaClient.AidaRequest,
       options?: {signal?: AbortSignal},
       ): Promise<{
     response: string,
     rpcId?: number,
   }> {
-    const request = this.buildRequest({
-      input,
-    });
-
     let rawResponse: Host.AidaClient.AidaResponse|undefined = undefined;
     let response = '';
     let rpcId: number|undefined;
@@ -413,6 +409,13 @@ STOP`;
     }
     const id = this.#runId++;
 
+    const enhancedQuery = await this.enhanceQuery(query, options.selected);
+
+    // Request is built here to capture history up to this point.
+    let request = this.buildRequest({
+      input: enhancedQuery,
+    });
+
     const response = {
       type: ResponseType.USER_QUERY,
       query,
@@ -425,7 +428,7 @@ STOP`;
       yield response;
     }
 
-    query = await this.enhanceQuery(query, options.selected);
+    query = enhancedQuery;
 
     for (let i = 0; i < MAX_STEP; i++) {
       const queryResponse = {
@@ -438,7 +441,7 @@ STOP`;
       let rpcId: number|undefined;
       try {
         const fetchResult = await this.aidaFetch(
-            query,
+            request,
             {signal: options.signal},
         );
         response = fetchResult.response;
@@ -529,8 +532,12 @@ STOP`;
       if (action) {
         const result = yield* this.handleAction(action, rpcId);
         this.#addHistory(id, result);
-        yield result;
         query = `OBSERVATION: ${result.output}`;
+        // Capture history state for the next iteration query.
+        request = this.buildRequest({
+          input: query,
+        });
+        yield result;
       }
 
       if (i === MAX_STEP - 1) {

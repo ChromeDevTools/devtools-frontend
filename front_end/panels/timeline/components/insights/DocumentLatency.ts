@@ -10,7 +10,8 @@ import * as Trace from '../../../../models/trace/trace.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
-import {BaseInsightComponent, shouldRenderForCategory} from './Helpers.js';
+import {BaseInsightComponent} from './BaseInsightComponent.js';
+import {shouldRenderForCategory} from './Helpers.js';
 import {Category} from './types.js';
 
 const {html} = LitHtml;
@@ -145,43 +146,38 @@ export class DocumentLatency extends BaseInsightComponent<DocumentLatencyInsight
     return overlays;
   }
 
-  #renderInsight(): LitHtml.LitTemplate {
+  override getEstimatedSavingsTime(): Trace.Types.Timing.MilliSeconds|null {
+    return this.model?.metricSavings?.FCP ?? null;
+  }
+
+  override getEstimatedSavingsBytes(): number|null {
+    return this.model?.data?.uncompressedResponseBytes ?? null;
+  }
+
+  #renderContent(): LitHtml.LitTemplate {
     if (!this.model?.data) {
       return LitHtml.nothing;
     }
 
     // clang-format off
     return html`
-    <div class="insights">
-      <devtools-performance-sidebar-insight .data=${{
-            title: this.model.title,
-            description: this.model.description,
-            expanded: this.isActive(),
-            internalName: this.internalName,
-            estimatedSavingsTime: this.model.metricSavings?.FCP,
-            estimatedSavingsBytes: this.model.data.uncompressedResponseBytes,
-        }}
-        @insighttoggleclick=${this.onSidebarClick}
-      >
-        <div slot="insight-content" class="insight-section">
-          <ul class="insight-results insight-icon-results">
-            <li class="insight-entry">
-              ${this.#check(this.model.data.redirectDuration === 0,
-                i18nString(UIStrings.passingRedirects), i18nString(UIStrings.failedRedirects))}
-            </li>
-            <li class="insight-entry">
-              ${this.#check(!this.model.data.serverResponseTooSlow,
-                i18nString(UIStrings.passingServerResponseTime), i18nString(UIStrings.failedServerResponseTime))}
-            </li>
-            <li class="insight-entry">
-              ${this.#check(this.model.data.uncompressedResponseBytes === 0,
-                i18nString(UIStrings.passingTextCompression), i18nString(UIStrings.failedTextCompression))}
-            </li>
-          </ul>
-        </div>
-      </devtools-performance-sidebar-insight>
-    </div>`;
-        // clang-format on
+      <div class="insight-section">
+        <ul class="insight-results insight-icon-results">
+          <li class="insight-entry">
+            ${this.#check(this.model.data.redirectDuration === 0,
+              i18nString(UIStrings.passingRedirects), i18nString(UIStrings.failedRedirects))}
+          </li>
+          <li class="insight-entry">
+            ${this.#check(!this.model.data.serverResponseTooSlow,
+              i18nString(UIStrings.passingServerResponseTime), i18nString(UIStrings.failedServerResponseTime))}
+          </li>
+          <li class="insight-entry">
+            ${this.#check(this.model.data.uncompressedResponseBytes === 0,
+              i18nString(UIStrings.passingTextCompression), i18nString(UIStrings.failedTextCompression))}
+          </li>
+        </ul>
+      </div>`;
+    // clang-format on
   }
 
   override render(): void {
@@ -193,10 +189,10 @@ export class DocumentLatency extends BaseInsightComponent<DocumentLatencyInsight
       activeCategory: this.data.activeCategory,
       insightCategory: this.insightCategory,
     });
-    const hasFailure = this.model?.data?.redirectDuration > 0 || this.model?.data?.serverResponseTooSlow ||
+    const hasFailure = this.model.data.redirectDuration > 0 || this.model.data.serverResponseTooSlow ||
         this.model.data.uncompressedResponseBytes > 0;
-    const output = (matchesCategory && hasFailure) ? this.#renderInsight() : LitHtml.nothing;
-    LitHtml.render(output, this.shadow, {host: this});
+    const output = (matchesCategory && hasFailure) ? this.#renderContent() : LitHtml.nothing;
+    this.renderWithContent(output);
   }
 }
 

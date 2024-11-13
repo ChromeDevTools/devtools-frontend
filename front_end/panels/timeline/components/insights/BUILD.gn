@@ -9,13 +9,14 @@ import("../../../../../scripts/build/typescript/typescript.gni")
 
 generate_css("css_files") {
   sources = [
-    "sidebarInsight.css",
+    "baseInsightComponent.css",
     "table.css",
   ]
 }
 
 devtools_module("insights") {
   sources = [
+    "BaseInsightComponent.ts",
     "CLSCulprits.ts",
     "DocumentLatency.ts",
     "EventRef.ts",
@@ -69,7 +70,7 @@ devtools_entrypoint("bundle") {
 ts_library("unittests") {
   testonly = true
 
-  sources = [ "SidebarInsight.test.ts" ]
+  sources = [ "BaseInsightComponent.test.ts" ]
 
   deps = [
     ":bundle",

@@ -11,8 +11,9 @@ import type * as Trace from '../../../../models/trace/trace.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
+import {BaseInsightComponent} from './BaseInsightComponent.js';
 import {eventRef} from './EventRef.js';
-import {BaseInsightComponent, shouldRenderForCategory} from './Helpers.js';
+import {shouldRenderForCategory} from './Helpers.js';
 import {Category} from './types.js';
 
 const {html} = LitHtml;
@@ -52,44 +53,36 @@ export class RenderBlocking extends BaseInsightComponent<RenderBlockingInsightMo
     };
   }
 
-  #renderRenderBlocking(insightResult: Trace.Insights.Types.InsightModels['RenderBlocking']): LitHtml.LitTemplate {
+  override getEstimatedSavingsTime(): Trace.Types.Timing.MilliSeconds|null {
+    return this.model?.metricSavings?.FCP ?? null;
+  }
+
+  #renderContent(): LitHtml.LitTemplate {
     if (!this.model) {
       return LitHtml.nothing;
     }
 
-    const estimatedSavings = insightResult.metricSavings?.FCP;
     const MAX_REQUESTS = 3;
-    const topRequests = insightResult.renderBlockingRequests.slice(0, MAX_REQUESTS);
+    const topRequests = this.model.renderBlockingRequests.slice(0, MAX_REQUESTS);
 
     // clang-format off
     return html`
-        <div class="insights">
-          <devtools-performance-sidebar-insight .data=${{
-            title: this.model.title,
-            description: this.model.description,
-            internalName: this.internalName,
-            expanded: this.isActive(),
-            estimatedSavingsTime: estimatedSavings,
-          }}
-          @insighttoggleclick=${this.onSidebarClick} >
-            <div slot="insight-content" class="insight-section">
-              ${html`<devtools-performance-table
-                .data=${{
-                  insight: this,
-                  headers: [i18nString(UIStrings.renderBlockingRequest), i18nString(UIStrings.duration)],
-                  rows: topRequests.map(request => ({
-                    values: [
-                      eventRef(request),
-                      i18n.TimeUtilities.millisToString(Platform.Timing.microSecondsToMilliSeconds(request.dur)),
-                    ],
-                    overlays: [this.#createOverlayForRequest(request)],
-                  })),
-                }}>
-              </devtools-performance-table>`}
-            </div>
-          </devtools-performance-sidebar-insight>
+      <div class="insight-section">
+        ${html`<devtools-performance-table
+          .data=${{
+            insight: this,
+            headers: [i18nString(UIStrings.renderBlockingRequest), i18nString(UIStrings.duration)],
+            rows: topRequests.map(request => ({
+              values: [
+                eventRef(request),
+                i18n.TimeUtilities.millisToString(Platform.Timing.microSecondsToMilliSeconds(request.dur)),
+              ],
+              overlays: [this.#createOverlayForRequest(request)],
+            })),
+          }}>
+        </devtools-performance-table>`}
       </div>`;
-            // clang-format on
+    // clang-format on
   }
 
   override render(): void {
@@ -99,8 +92,8 @@ export class RenderBlocking extends BaseInsightComponent<RenderBlockingInsightMo
       activeCategory: this.data.activeCategory,
       insightCategory: this.insightCategory,
     });
-    const output = hasBlockingRequests && matchesCategory ? this.#renderRenderBlocking(model) : LitHtml.nothing;
-    LitHtml.render(output, this.shadow, {host: this});
+    const output = hasBlockingRequests && matchesCategory ? this.#renderContent() : LitHtml.nothing;
+    this.renderWithContent(output);
   }
 }
 

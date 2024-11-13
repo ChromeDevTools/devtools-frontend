@@ -10,9 +10,9 @@ import type * as Trace from '../../../../models/trace/trace.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
+import {BaseInsightComponent} from './BaseInsightComponent.js';
 import {eventRef} from './EventRef.js';
-import {BaseInsightComponent, shouldRenderForCategory} from './Helpers.js';
-import type * as SidebarInsight from './SidebarInsight.js';
+import {shouldRenderForCategory} from './Helpers.js';
 import type {TableData} from './Table.js';
 import {Category} from './types.js';
 
@@ -53,54 +53,46 @@ export class FontDisplay extends BaseInsightComponent<FontDisplayInsightModel> {
     return [...this.#overlayForRequest.values()];
   }
 
-  #render(insight: Trace.Insights.Types.InsightModels['FontDisplay']): LitHtml.LitTemplate {
+  override getEstimatedSavingsTime(): Trace.Types.Timing.MilliSeconds|null {
+    return this.model?.metricSavings?.FCP ?? null;
+  }
+
+  #renderContent(): LitHtml.LitTemplate {
     if (!this.model) {
       return LitHtml.nothing;
     }
 
     // clang-format off
     return html`
-        <div class="insights">
-            <devtools-performance-sidebar-insight .data=${{
-              title: this.model.title,
-              description: this.model.description,
-              expanded: this.isActive(),
-              internalName: this.internalName,
-              estimatedSavingsTime: insight.metricSavings?.FCP,
-            } as SidebarInsight.InsightDetails}
-            @insighttoggleclick=${this.onSidebarClick}>
-                <div slot="insight-content" class="insight-section">
-                  ${html`<devtools-performance-table
-                    .data=${{
-                      insight: this,
-                      headers: [i18nString(UIStrings.fontColumn), 'font-display', i18nString(UIStrings.wastedTimeColumn)],
-                      rows: insight.fonts.map(font => ({
-                        values: [
-                          // TODO(crbug.com/369422196): the font name would be nicer here.
-                          eventRef(font.request),
-                          font.display,
-                          i18n.TimeUtilities.millisToString(font.wastedTime),
-                        ],
-                        overlays: [this.#overlayForRequest.get(font.request)],
-                      })),
-                    } as TableData}>
-                  </devtools-performance-table>`}
-                </div>
-            </devtools-performance-sidebar-insight>
-        </div>`;
+      <div class="insight-section">
+        ${html`<devtools-performance-table
+          .data=${{
+            insight: this,
+            headers: [i18nString(UIStrings.fontColumn), 'font-display', i18nString(UIStrings.wastedTimeColumn)],
+            rows: this.model.fonts.map(font => ({
+              values: [
+                // TODO(crbug.com/369422196): the font name would be nicer here.
+                eventRef(font.request),
+                font.display,
+                i18n.TimeUtilities.millisToString(font.wastedTime),
+              ],
+              overlays: [this.#overlayForRequest.get(font.request)],
+            })),
+          } as TableData}>
+        </devtools-performance-table>`}
+      </div>`;
     // clang-format on
   }
 
   override render(): void {
-    const model = this.model;
-    const shouldShow = model && model.fonts.find(font => font.wastedTime);
+    const shouldShow = this.model?.fonts.find(font => font.wastedTime);
 
     const matchesCategory = shouldRenderForCategory({
       activeCategory: this.data.activeCategory,
       insightCategory: this.insightCategory,
     });
-    const output = shouldShow && matchesCategory ? this.#render(model) : LitHtml.nothing;
-    LitHtml.render(output, this.shadow, {host: this});
+    const output = shouldShow && matchesCategory ? this.#renderContent() : LitHtml.nothing;
+    this.renderWithContent(output);
   }
 }
 

@@ -8,7 +8,7 @@ import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js'
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import * as Utils from '../../utils/utils.js';
 
-import sidebarInsightStyles from './sidebarInsight.css.js';
+import baseInsightComponentStyles from './baseInsightComponent.css.js';
 
 const {html} = LitHtml;
 
@@ -28,7 +28,7 @@ class EventRef extends HTMLElement {
   #event: Trace.Types.Events.Event|null = null;
 
   connectedCallback(): void {
-    this.#shadow.adoptedStyleSheets = [sidebarInsightStyles];
+    this.#shadow.adoptedStyleSheets = [baseInsightComponentStyles];
   }
 
   set text(text: string) {

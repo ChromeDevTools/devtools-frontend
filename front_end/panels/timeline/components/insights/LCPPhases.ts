@@ -10,8 +10,8 @@ import * as Trace from '../../../../models/trace/trace.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
-import {BaseInsightComponent, shouldRenderForCategory} from './Helpers.js';
-import type * as SidebarInsight from './SidebarInsight.js';
+import {BaseInsightComponent} from './BaseInsightComponent.js';
+import {shouldRenderForCategory} from './Helpers.js';
 import type {TableData} from './Table.js';
 import {Category} from './types.js';
 
@@ -189,7 +189,7 @@ export class LCPPhases extends BaseInsightComponent<LCPPhasesInsightModel> {
     return overlays;
   }
 
-  #renderLCPPhases(phaseData: PhaseData[]): LitHtml.LitTemplate {
+  #renderContent(phaseData: PhaseData[]): LitHtml.LitTemplate {
     if (!this.model) {
       return LitHtml.nothing;
     }
@@ -207,26 +207,15 @@ export class LCPPhases extends BaseInsightComponent<LCPPhasesInsightModel> {
 
     // clang-format off
     return html`
-    <div class="insights">
-      <devtools-performance-sidebar-insight .data=${{
-            title: this.model.title,
-            description: this.model.description,
-            internalName: this.internalName,
-            expanded: this.isActive(),
-        } as SidebarInsight.InsightDetails}
-        @insighttoggleclick=${this.onSidebarClick}
-      >
-        <div slot="insight-content" class="insight-section">
-          ${html`<devtools-performance-table
-            .data=${{
-              insight: this,
-              headers: [i18nString(UIStrings.phase), i18nString(UIStrings.percentLCP)],
-              rows,
-            } as TableData}>
-          </devtools-performance-table>`}
-        </div>
-      </devtools-performance-sidebar-insight>
-    </div>`;
+      <div class="insight-section">
+        ${html`<devtools-performance-table
+          .data=${{
+            insight: this,
+            headers: [i18nString(UIStrings.phase), i18nString(UIStrings.percentLCP)],
+            rows,
+          } as TableData}>
+        </devtools-performance-table>`}
+      </div>`;
     // clang-format on
   }
 
@@ -241,8 +230,8 @@ export class LCPPhases extends BaseInsightComponent<LCPPhasesInsightModel> {
       insightCategory: this.insightCategory,
     });
     const shouldRender = matchesCategory && this.#hasDataToRender(phaseData);
-    const output = shouldRender ? this.#renderLCPPhases(phaseData) : LitHtml.nothing;
-    LitHtml.render(output, this.shadow, {host: this});
+    const output = shouldRender ? this.#renderContent(phaseData) : LitHtml.nothing;
+    this.renderWithContent(output);
   }
 }
 

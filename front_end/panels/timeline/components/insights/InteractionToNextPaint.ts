@@ -11,7 +11,8 @@ import * as Trace from '../../../../models/trace/trace.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
-import {BaseInsightComponent, shouldRenderForCategory} from './Helpers.js';
+import {BaseInsightComponent} from './BaseInsightComponent.js';
+import {shouldRenderForCategory} from './Helpers.js';
 import {Category} from './types.js';
 
 const {html} = LitHtml;
@@ -96,49 +97,35 @@ export class InteractionToNextPaint extends BaseInsightComponent<INPInsightModel
     ];
   }
 
-  #render(event: Trace.Types.Events.SyntheticInteractionPair): LitHtml.LitTemplate {
-    if (!this.model) {
-      return LitHtml.nothing;
-    }
-
+  #renderContent(event: Trace.Types.Events.SyntheticInteractionPair): LitHtml.LitTemplate {
     const time = (us: Trace.Types.Timing.MicroSeconds): string =>
         i18n.TimeUtilities.millisToString(Platform.Timing.microSecondsToMilliSeconds(us));
 
     // clang-format off
     return html`
-        <div class="insights">
-            <devtools-performance-sidebar-insight .data=${{
-            title: this.model.title,
-            description: this.model.description,
-            internalName: this.internalName,
-            expanded: this.isActive(),
-            }}
-            @insighttoggleclick=${this.onSidebarClick}>
-                <div slot="insight-content" class="insight-section">
-                  ${html`<devtools-performance-table
-                    .data=${{
-                      insight: this,
-                      headers: [i18nString(UIStrings.phase), i18nString(UIStrings.duration)],
-                      rows: [
-                        {
-                          values: [i18nString(UIStrings.inputDelay), time(event.inputDelay)],
-                          overlays: this.#createOverlaysForPhase(event, 0),
-                        },
-                        {
-                          values: [i18nString(UIStrings.processingDuration), time(event.mainThreadHandling)],
-                          overlays: this.#createOverlaysForPhase(event, 1),
-                        },
-                        {
-                          values: [i18nString(UIStrings.presentationDelay), time(event.presentationDelay)],
-                          overlays: this.#createOverlaysForPhase(event, 2),
-                        },
-                      ],
-                    }}>
-                  </devtools-performance-table>`}
-                </div>
-            </devtools-performance-sidebar-insight>
-        </div>`;
-            // clang-format on
+      <div class="insight-section">
+        ${html`<devtools-performance-table
+          .data=${{
+            insight: this,
+            headers: [i18nString(UIStrings.phase), i18nString(UIStrings.duration)],
+            rows: [
+              {
+                values: [i18nString(UIStrings.inputDelay), time(event.inputDelay)],
+                overlays: this.#createOverlaysForPhase(event, 0),
+              },
+              {
+                values: [i18nString(UIStrings.processingDuration), time(event.mainThreadHandling)],
+                overlays: this.#createOverlaysForPhase(event, 1),
+              },
+              {
+                values: [i18nString(UIStrings.presentationDelay), time(event.presentationDelay)],
+                overlays: this.#createOverlaysForPhase(event, 2),
+              },
+            ],
+          }}>
+        </devtools-performance-table>`}
+      </div>`;
+    // clang-format on
   }
 
   override render(): void {
@@ -148,8 +135,8 @@ export class InteractionToNextPaint extends BaseInsightComponent<INPInsightModel
       activeCategory: this.data.activeCategory,
       insightCategory: this.insightCategory,
     });
-    const output = event && matchesCategory ? this.#render(event) : LitHtml.nothing;
-    LitHtml.render(output, this.shadow, {host: this});
+    const output = event && matchesCategory ? this.#renderContent(event) : LitHtml.nothing;
+    this.renderWithContent(output);
   }
 }
 

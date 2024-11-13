@@ -11,7 +11,8 @@ import type * as Trace from '../../../../models/trace/trace.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
-import {BaseInsightComponent, shouldRenderForCategory} from './Helpers.js';
+import {BaseInsightComponent} from './BaseInsightComponent.js';
+import {shouldRenderForCategory} from './Helpers.js';
 import {Category} from './types.js';
 
 const {html} = LitHtml;
@@ -70,7 +71,7 @@ export class ThirdParties extends BaseInsightComponent<ThirdPartiesInsightModel>
     return overlays;
   }
 
-  #render(entries: ThirdPartiesEntries): LitHtml.LitTemplate {
+  #renderContent(entries: ThirdPartiesEntries): LitHtml.LitTemplate {
     if (!this.model) {
       return LitHtml.nothing;
     }
@@ -80,49 +81,39 @@ export class ThirdParties extends BaseInsightComponent<ThirdPartiesInsightModel>
 
     // clang-format off
     return html`
-        <div class="insights">
-            <devtools-performance-sidebar-insight .data=${{
-              title: this.model.title,
-              description: this.model.description,
-              internalName: this.internalName,
-              expanded: this.isActive(),
-            }}
-            @insighttoggleclick=${this.onSidebarClick}>
-                <div slot="insight-content">
-                  <div class="insight-section">
-                    ${html`<devtools-performance-table
-                      .data=${{
-                        insight: this,
-                        headers: [i18nString(UIStrings.columnThirdParty), i18nString(UIStrings.columnTransferSize)],
-                        rows: topTransferSizeEntries.map(([entity, summary]) => ({
-                          values: [
-                            entity.name,
-                            i18n.ByteUtilities.bytesToString(summary.transferSize),
-                          ],
-                          overlays: this.#overlaysForEntity.get(entity),
-                        })),
-                      }}>
-                    </devtools-performance-table>`}
-                  </div>
+      <div>
+        <div class="insight-section">
+          ${html`<devtools-performance-table
+            .data=${{
+              insight: this,
+              headers: [i18nString(UIStrings.columnThirdParty), i18nString(UIStrings.columnTransferSize)],
+              rows: topTransferSizeEntries.map(([entity, summary]) => ({
+                values: [
+                  entity.name,
+                  i18n.ByteUtilities.bytesToString(summary.transferSize),
+                ],
+                overlays: this.#overlaysForEntity.get(entity),
+              })),
+            }}>
+          </devtools-performance-table>`}
+        </div>
 
-                  <div class="insight-section">
-                    ${html`<devtools-performance-table
-                      .data=${{
-                        insight: this,
-                        headers: [i18nString(UIStrings.columnThirdParty), i18nString(UIStrings.columnBlockingTime)],
-                        rows: topMainThreadTimeEntries.map(([entity, summary]) => ({
-                          values: [
-                            entity.name,
-                            i18n.TimeUtilities.millisToString(Platform.Timing.microSecondsToMilliSeconds(summary.mainThreadTime)),
-                          ],
-                          overlays: this.#overlaysForEntity.get(entity),
-                        })),
-                      }}>
-                    </devtools-performance-table>`}
-                  </div>
-                </div>
-            </devtools-performance-sidebar-insight>
-        </div>`;
+        <div class="insight-section">
+          ${html`<devtools-performance-table
+            .data=${{
+              insight: this,
+              headers: [i18nString(UIStrings.columnThirdParty), i18nString(UIStrings.columnBlockingTime)],
+              rows: topMainThreadTimeEntries.map(([entity, summary]) => ({
+                values: [
+                  entity.name,
+                  i18n.TimeUtilities.millisToString(Platform.Timing.microSecondsToMilliSeconds(summary.mainThreadTime)),
+                ],
+                overlays: this.#overlaysForEntity.get(entity),
+              })),
+            }}>
+          </devtools-performance-table>`}
+        </div>
+      </div>`;
     // clang-format on
   }
 
@@ -135,8 +126,8 @@ export class ThirdParties extends BaseInsightComponent<ThirdPartiesInsightModel>
       activeCategory: this.data.activeCategory,
       insightCategory: this.insightCategory,
     });
-    const output = shouldShow && matchesCategory ? this.#render(entries) : LitHtml.nothing;
-    LitHtml.render(output, this.shadow, {host: this});
+    const output = shouldShow && matchesCategory ? this.#renderContent(entries) : LitHtml.nothing;
+    this.renderWithContent(output);
   }
 }
 

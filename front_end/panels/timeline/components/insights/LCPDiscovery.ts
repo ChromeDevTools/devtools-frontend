@@ -10,9 +10,9 @@ import * as Trace from '../../../../models/trace/trace.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
+import {BaseInsightComponent} from './BaseInsightComponent.js';
 import {eventRef} from './EventRef.js';
-import {BaseInsightComponent, shouldRenderForCategory} from './Helpers.js';
-import type * as SidebarInsight from './SidebarInsight.js';
+import {shouldRenderForCategory} from './Helpers.js';
 import {Category} from './types.js';
 
 const {html} = LitHtml;
@@ -184,42 +184,35 @@ export class LCPDiscovery extends BaseInsightComponent<LCPDiscoveryInsightModel>
     // clang-format on
   }
 
-  #renderDiscovery(imageData: LCPImageDiscoveryData): LitHtml.LitTemplate {
+  override getEstimatedSavingsTime(): Trace.Types.Timing.MilliSeconds|null {
+    return getImageData(this.model)?.estimatedSavings ?? null;
+  }
+
+  #renderContent(imageData: LCPImageDiscoveryData): LitHtml.LitTemplate {
     if (!this.model) {
       return LitHtml.nothing;
     }
 
     // clang-format off
     return html`
-        <div class="insights">
-          <devtools-performance-sidebar-insight .data=${{
-            title: this.model.title,
-            description: this.model.description,
-            internalName: this.internalName,
-            expanded: this.isActive(),
-            estimatedSavingsTime: imageData.estimatedSavings,
-          } as SidebarInsight.InsightDetails}
-          @insighttoggleclick=${this.onSidebarClick}>
-            <div slot="insight-content" class="insight-section">
-              <div class="insight-results">
-                <ul class="insight-icon-results">
-                  <li class="insight-entry">
-                    ${this.#adviceIcon(imageData.shouldIncreasePriorityHint, i18nString(UIStrings.fetchPriorityApplied))}
-                    <span>${i18nString(UIStrings.fetchPriorityApplied)}</span>
-                  </li>
-                  <li class="insight-entry">
-                    ${this.#adviceIcon(imageData.shouldPreloadImage, i18nString(UIStrings.requestDiscoverable))}
-                    <span>${i18nString(UIStrings.requestDiscoverable)}</span>
-                  </li>
-                  <li class="insight-entry">
-                    ${this.#adviceIcon(imageData.shouldRemoveLazyLoading, i18nString(UIStrings.lazyLoadNotApplied))}
-                    <span>${i18nString(UIStrings.lazyLoadNotApplied)}</span>
-                  </li>
-                </ul>
-              </div>
-              ${this.#renderImage(imageData)}
-            </div>
-          </devtools-performance-sidebar-insight>
+      <div class="insight-section">
+        <div class="insight-results">
+          <ul class="insight-icon-results">
+            <li class="insight-entry">
+              ${this.#adviceIcon(imageData.shouldIncreasePriorityHint, i18nString(UIStrings.fetchPriorityApplied))}
+              <span>${i18nString(UIStrings.fetchPriorityApplied)}</span>
+            </li>
+            <li class="insight-entry">
+              ${this.#adviceIcon(imageData.shouldPreloadImage, i18nString(UIStrings.requestDiscoverable))}
+              <span>${i18nString(UIStrings.requestDiscoverable)}</span>
+            </li>
+            <li class="insight-entry">
+              ${this.#adviceIcon(imageData.shouldRemoveLazyLoading, i18nString(UIStrings.lazyLoadNotApplied))}
+              <span>${i18nString(UIStrings.lazyLoadNotApplied)}</span>
+            </li>
+          </ul>
+        </div>
+        ${this.#renderImage(imageData)}
       </div>`;
     // clang-format on
   }
@@ -230,8 +223,8 @@ export class LCPDiscovery extends BaseInsightComponent<LCPDiscoveryInsightModel>
       activeCategory: this.data.activeCategory,
       insightCategory: this.insightCategory,
     });
-    const output = imageResults && matchesCategory ? this.#renderDiscovery(imageResults) : LitHtml.nothing;
-    LitHtml.render(output, this.shadow, {host: this});
+    const output = imageResults && matchesCategory ? this.#renderContent(imageResults) : LitHtml.nothing;
+    this.renderWithContent(output);
   }
 }
 

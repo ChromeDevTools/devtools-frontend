@@ -2,14 +2,17 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as Trace from '../../../../models/trace/trace.js';
 import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
-import type {BaseInsightComponent} from './Helpers.js';
+import type * as BaseInsightComponent from './BaseInsightComponent.js';
 import tableStyles from './table.css.js';
 
 const {html} = LitHtml;
+
+type BaseInsightComponent = BaseInsightComponent.BaseInsightComponent<Trace.Insights.Types.InsightModel<{}>>;
 
 /**
  * @fileoverview An interactive table component.
@@ -33,8 +36,7 @@ export type TableState = {
 };
 
 export interface TableData {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  insight: BaseInsightComponent<any>;
+  insight: BaseInsightComponent;
   headers: string[];
   rows: TableDataRow[];
 }
@@ -48,8 +50,7 @@ export class Table extends HTMLElement {
 
   readonly #shadow = this.attachShadow({mode: 'open'});
   readonly #boundRender = this.#render.bind(this);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  #insight?: BaseInsightComponent<any>;
+  #insight?: BaseInsightComponent;
   #state?: TableState;
   #headers?: string[];
   #rows?: TableDataRow[];

@@ -4,17 +4,18 @@
 
 import '../../../../ui/components/markdown_view/markdown_view.js';
 
+import * as Trace from '../../../../models/trace/trace.js';
 import * as Marked from '../../../../third_party/marked/marked.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
-import {Category} from './types.js';
 
 const {html} = LitHtml;
 
 export function shouldRenderForCategory(options: {
-  activeCategory: Category,
-  insightCategory: Category,
+  activeCategory: Trace.Insights.Types.InsightCategory,
+  insightCategory: Trace.Insights.Types.InsightCategory,
 }): boolean {
-  return options.activeCategory === Category.ALL || options.activeCategory === options.insightCategory;
+  return options.activeCategory === Trace.Insights.Types.InsightCategory.ALL ||
+      options.activeCategory === options.insightCategory;
 }
 
 /**

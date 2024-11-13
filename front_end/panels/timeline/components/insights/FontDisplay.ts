@@ -12,9 +12,7 @@ import type * as Overlays from '../../overlays/overlays.js';
 
 import {BaseInsightComponent} from './BaseInsightComponent.js';
 import {eventRef} from './EventRef.js';
-import {shouldRenderForCategory} from './Helpers.js';
 import type {TableData} from './Table.js';
-import {Category} from './types.js';
 
 const {html} = LitHtml;
 
@@ -30,7 +28,6 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class FontDisplay extends BaseInsightComponent<FontDisplayInsightModel> {
   static override readonly litTagName = LitHtml.literal`devtools-performance-font-display`;
-  override insightCategory = Category.INP;
   override internalName: string = 'font-display';
 
   #overlayForRequest = new Map<Trace.Types.Events.SyntheticNetworkRequest, Overlays.Overlays.TimelineOverlay>();
@@ -86,12 +83,7 @@ export class FontDisplay extends BaseInsightComponent<FontDisplayInsightModel> {
 
   override render(): void {
     const shouldShow = this.model?.fonts.find(font => font.wastedTime);
-
-    const matchesCategory = shouldRenderForCategory({
-      activeCategory: this.data.activeCategory,
-      insightCategory: this.insightCategory,
-    });
-    const output = shouldShow && matchesCategory ? this.#renderContent() : LitHtml.nothing;
+    const output = shouldShow ? this.#renderContent() : LitHtml.nothing;
     this.renderWithContent(output);
   }
 }

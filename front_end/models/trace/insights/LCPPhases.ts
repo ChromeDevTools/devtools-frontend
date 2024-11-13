@@ -7,7 +7,13 @@ import * as Handlers from '../handlers/handlers.js';
 import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
 
-import {type InsightModel, type InsightSetContext, InsightWarning, type RequiredData} from './types.js';
+import {
+  InsightCategory,
+  type InsightModel,
+  type InsightSetContext,
+  InsightWarning,
+  type RequiredData,
+} from './types.js';
 
 const UIStrings = {
   /**
@@ -110,7 +116,7 @@ function breakdownPhases(
   };
 }
 
-function finalize(partialModel: Omit<LCPPhasesInsightModel, 'title'|'description'>): LCPPhasesInsightModel {
+function finalize(partialModel: Omit<LCPPhasesInsightModel, 'title'|'description'|'category'>): LCPPhasesInsightModel {
   const relatedEvents = [];
   if (partialModel.lcpEvent) {
     relatedEvents.push(partialModel.lcpEvent);
@@ -121,6 +127,7 @@ function finalize(partialModel: Omit<LCPPhasesInsightModel, 'title'|'description
   return {
     title: i18nString(UIStrings.title),
     description: i18nString(UIStrings.description),
+    category: InsightCategory.LCP,
     ...partialModel,
     relatedEvents,
   };

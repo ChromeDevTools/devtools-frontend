@@ -6,7 +6,7 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import * as Helpers from '../helpers/helpers.js';
 import type {SyntheticInteractionPair} from '../types/TraceEvents.js';
 
-import type {InsightModel, InsightSetContext, RequiredData} from './types.js';
+import {InsightCategory, type InsightModel, type InsightSetContext, type RequiredData} from './types.js';
 
 const UIStrings = {
   /**
@@ -32,8 +32,13 @@ export type INPInsightModel = InsightModel<{
   highPercentileInteractionEvent?: SyntheticInteractionPair,
 }>;
 
-function finalize(partialModel: Omit<INPInsightModel, 'title'|'description'>): INPInsightModel {
-  return {title: i18nString(UIStrings.title), description: i18nString(UIStrings.description), ...partialModel};
+function finalize(partialModel: Omit<INPInsightModel, 'title'|'description'|'category'>): INPInsightModel {
+  return {
+    title: i18nString(UIStrings.title),
+    description: i18nString(UIStrings.description),
+    category: InsightCategory.INP,
+    ...partialModel,
+  };
 }
 
 export function generateInsight(parsedTrace: RequiredData<typeof deps>, context: InsightSetContext): INPInsightModel {

@@ -7,7 +7,7 @@ import * as Helpers from '../helpers/helpers.js';
 import {type SelectorTiming, SelectorTimingsKey} from '../types/TraceEvents.js';
 import * as Types from '../types/types.js';
 
-import type {InsightModel, InsightSetContext, RequiredData} from './types.js';
+import {InsightCategory, type InsightModel, type InsightSetContext, type RequiredData} from './types.js';
 
 const UIStrings = {
   /**
@@ -68,8 +68,14 @@ function aggregateSelectorStats(
   return [...selectorMap.values()];
 }
 
-function finalize(partialModel: Omit<SlowCSSSelectorInsightModel, 'title'|'description'>): SlowCSSSelectorInsightModel {
-  return {title: i18nString(UIStrings.title), description: i18nString(UIStrings.description), ...partialModel};
+function finalize(partialModel: Omit<SlowCSSSelectorInsightModel, 'title'|'description'|'category'>):
+    SlowCSSSelectorInsightModel {
+  return {
+    title: i18nString(UIStrings.title),
+    description: i18nString(UIStrings.description),
+    category: InsightCategory.ALL,
+    ...partialModel,
+  };
 }
 
 export function generateInsight(

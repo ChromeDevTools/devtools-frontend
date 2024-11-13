@@ -10,14 +10,11 @@ import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
 import {BaseInsightComponent} from './BaseInsightComponent.js';
-import {shouldRenderForCategory} from './Helpers.js';
-import {Category} from './types.js';
 
 const {html} = LitHtml;
 
 export class Viewport extends BaseInsightComponent<ViewportInsightModel> {
   static override readonly litTagName = LitHtml.literal`devtools-performance-viewport`;
-  override insightCategory: Category = Category.INP;
   override internalName: string = 'viewport';
 
   override createOverlays(): Overlays.Overlays.TimelineOverlay[] {
@@ -52,12 +49,7 @@ export class Viewport extends BaseInsightComponent<ViewportInsightModel> {
   override render(): void {
     const model = this.model;
     const shouldShow = model && model.mobileOptimized === false;
-
-    const matchesCategory = shouldRenderForCategory({
-      activeCategory: this.data.activeCategory,
-      insightCategory: this.insightCategory,
-    });
-    const output = shouldShow && matchesCategory ? this.#renderContent() : LitHtml.nothing;
+    const output = shouldShow ? this.#renderContent() : LitHtml.nothing;
     this.renderWithContent(output);
   }
 }

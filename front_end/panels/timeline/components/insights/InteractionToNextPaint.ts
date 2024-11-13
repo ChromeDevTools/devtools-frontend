@@ -12,8 +12,6 @@ import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
 import {BaseInsightComponent} from './BaseInsightComponent.js';
-import {shouldRenderForCategory} from './Helpers.js';
-import {Category} from './types.js';
 
 const {html} = LitHtml;
 
@@ -47,7 +45,6 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class InteractionToNextPaint extends BaseInsightComponent<INPInsightModel> {
   static override readonly litTagName = LitHtml.literal`devtools-performance-inp`;
-  override insightCategory: Category = Category.INP;
   override internalName: string = 'inp';
 
   override createOverlays(): Overlays.Overlays.TimelineOverlay[] {
@@ -131,11 +128,7 @@ export class InteractionToNextPaint extends BaseInsightComponent<INPInsightModel
   override render(): void {
     const event = this.model?.longestInteractionEvent;
 
-    const matchesCategory = shouldRenderForCategory({
-      activeCategory: this.data.activeCategory,
-      insightCategory: this.insightCategory,
-    });
-    const output = event && matchesCategory ? this.#renderContent(event) : LitHtml.nothing;
+    const output = event ? this.#renderContent(event) : LitHtml.nothing;
     this.renderWithContent(output);
   }
 }

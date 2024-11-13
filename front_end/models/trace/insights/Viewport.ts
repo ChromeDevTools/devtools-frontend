@@ -6,7 +6,13 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import * as Helpers from '../helpers/helpers.js';
 import type * as Types from '../types/types.js';
 
-import {type InsightModel, type InsightSetContext, InsightWarning, type RequiredData} from './types.js';
+import {
+  InsightCategory,
+  type InsightModel,
+  type InsightSetContext,
+  InsightWarning,
+  type RequiredData,
+} from './types.js';
 
 const UIStrings = {
   /** Title of an insight that provides details about if the page's viewport is optimized for mobile viewing. */
@@ -30,8 +36,13 @@ export type ViewportInsightModel = InsightModel<{
   viewportEvent?: Types.Events.ParseMetaViewport,
 }>;
 
-function finalize(partialModel: Omit<ViewportInsightModel, 'title'|'description'>): ViewportInsightModel {
-  return {title: i18nString(UIStrings.title), description: i18nString(UIStrings.description), ...partialModel};
+function finalize(partialModel: Omit<ViewportInsightModel, 'title'|'description'|'category'>): ViewportInsightModel {
+  return {
+    title: i18nString(UIStrings.title),
+    description: i18nString(UIStrings.description),
+    category: InsightCategory.INP,
+    ...partialModel,
+  };
 }
 
 export function generateInsight(

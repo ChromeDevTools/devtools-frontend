@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Trace from '../../../../models/trace/trace.js';
+import * as Trace from '../../../../models/trace/trace.js';
 import {renderElementIntoDOM} from '../../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../../testing/EnvironmentHelpers.js';
 import * as Coordinator from '../../../../ui/components/render_coordinator/render_coordinator.js';
@@ -19,7 +19,6 @@ describeWithEnvironment('BaseInsightComponent', () => {
 
   class TestInsightComponent extends BaseInsightComponent<Trace.Insights.Types.InsightModel<{}>> {
     override internalName = 'test-insight';
-    override insightCategory = Insights.Types.Category.ALL;
     override createOverlays(): TimelineOverlay[] {
       return [];
     }
@@ -33,7 +32,11 @@ describeWithEnvironment('BaseInsightComponent', () => {
     it('renders insight title even when not active', async () => {
       const component = new TestInsightComponent();
       component.selected = false;
-      component.model = {title: 'LCP by Phase', description: 'some description'};
+      component.model = {
+        title: 'LCP by Phase',
+        description: 'some description',
+        category: Trace.Insights.Types.InsightCategory.ALL,
+      };
       renderElementIntoDOM(component);
 
       await coordinator.done();
@@ -51,7 +54,11 @@ describeWithEnvironment('BaseInsightComponent', () => {
     it('renders title, description and content when toggled', async () => {
       const component = new TestInsightComponent();
       component.selected = true;
-      component.model = {title: 'LCP by Phase', description: 'some description'};
+      component.model = {
+        title: 'LCP by Phase',
+        description: 'some description',
+        category: Trace.Insights.Types.InsightCategory.ALL,
+      };
       renderElementIntoDOM(component);
 
       await coordinator.done();

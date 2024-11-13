@@ -16,9 +16,7 @@ import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
 import {BaseInsightComponent} from './BaseInsightComponent.js';
-import {shouldRenderForCategory} from './Helpers.js';
 import type {TableData} from './Table.js';
-import {Category} from './types.js';
 
 const {html} = LitHtml;
 
@@ -50,7 +48,6 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class SlowCSSSelector extends BaseInsightComponent<SlowCSSSelectorInsightModel> {
   static override readonly litTagName = LitHtml.literal`devtools-performance-slow-css-selector`;
-  override insightCategory: Category = Category.ALL;
   override internalName: string = 'slow-css-selector';
   #selectorLocations: Map<string, Protocol.CSS.SourceRange[]> = new Map();
 
@@ -184,11 +181,7 @@ export class SlowCSSSelector extends BaseInsightComponent<SlowCSSSelectorInsight
   }
 
   override render(): void {
-    const matchesCategory = shouldRenderForCategory({
-      activeCategory: this.data.activeCategory,
-      insightCategory: this.insightCategory,
-    });
-    const shouldRender = matchesCategory && this.#hasDataToRender();
+    const shouldRender = this.#hasDataToRender();
     const output = shouldRender ? this.renderSlowCSSSelector() : LitHtml.nothing;
     this.renderWithContent(output);
   }

@@ -6,7 +6,7 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
 
-import type {InsightModel, InsightSetContext, RequiredData} from './types.js';
+import {InsightCategory, type InsightModel, type InsightSetContext, type RequiredData} from './types.js';
 
 const UIStrings = {
   /**
@@ -119,8 +119,14 @@ function getCompressionSavings(request: Types.Events.SyntheticNetworkRequest): n
   return estimatedSavings < IGNORE_THRESHOLD_IN_BYTES ? 0 : estimatedSavings;
 }
 
-function finalize(partialModel: Omit<DocumentLatencyInsightModel, 'title'|'description'>): DocumentLatencyInsightModel {
-  return {title: i18nString(UIStrings.title), description: i18nString(UIStrings.description), ...partialModel};
+function finalize(partialModel: Omit<DocumentLatencyInsightModel, 'title'|'description'|'category'>):
+    DocumentLatencyInsightModel {
+  return {
+    title: i18nString(UIStrings.title),
+    description: i18nString(UIStrings.description),
+    category: InsightCategory.ALL,
+    ...partialModel,
+  };
 }
 
 export function generateInsight(

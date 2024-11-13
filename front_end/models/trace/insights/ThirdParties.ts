@@ -9,7 +9,7 @@ import type * as Handlers from '../handlers/handlers.js';
 import * as Helpers from '../helpers/helpers.js';
 import type * as Types from '../types/types.js';
 
-import type {InsightModel, InsightSetContext, RequiredData} from './types.js';
+import {InsightCategory, type InsightModel, type InsightSetContext, type RequiredData} from './types.js';
 
 const UIStrings = {
   /** Title of an insight that provides details about the code on a web page that the user doesn't control (referred to as "third-party code"). */
@@ -52,8 +52,14 @@ function getRelatedEvents(
   return events;
 }
 
-function finalize(partialModel: Omit<ThirdPartiesInsightModel, 'title'|'description'>): ThirdPartiesInsightModel {
-  return {title: i18nString(UIStrings.title), description: i18nString(UIStrings.description), ...partialModel};
+function finalize(partialModel: Omit<ThirdPartiesInsightModel, 'title'|'description'|'category'>):
+    ThirdPartiesInsightModel {
+  return {
+    title: i18nString(UIStrings.title),
+    description: i18nString(UIStrings.description),
+    category: InsightCategory.ALL,
+    ...partialModel,
+  };
 }
 
 export function generateInsight(

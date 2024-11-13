@@ -10,6 +10,7 @@ import type * as Lantern from '../lantern/lantern.js';
 import type * as Types from '../types/types.js';
 
 import {
+  InsightCategory,
   type InsightModel,
   type InsightSetContext,
   type InsightSetContextWithNavigation,
@@ -150,8 +151,14 @@ function computeSavings(
   return {metricSavings, requestIdToWastedMs};
 }
 
-function finalize(partialModel: Omit<RenderBlockingInsightModel, 'title'|'description'>): RenderBlockingInsightModel {
-  return {title: i18nString(UIStrings.title), description: i18nString(UIStrings.description), ...partialModel};
+function finalize(partialModel: Omit<RenderBlockingInsightModel, 'title'|'description'|'category'>):
+    RenderBlockingInsightModel {
+  return {
+    title: i18nString(UIStrings.title),
+    description: i18nString(UIStrings.description),
+    category: InsightCategory.LCP,
+    ...partialModel,
+  };
 }
 
 export function generateInsight(

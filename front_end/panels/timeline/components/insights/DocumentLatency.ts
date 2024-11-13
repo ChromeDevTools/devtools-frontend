@@ -11,8 +11,6 @@ import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
 import {BaseInsightComponent} from './BaseInsightComponent.js';
-import {shouldRenderForCategory} from './Helpers.js';
-import {Category} from './types.js';
 
 const {html} = LitHtml;
 
@@ -70,7 +68,6 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class DocumentLatency extends BaseInsightComponent<DocumentLatencyInsightModel> {
   static override readonly litTagName = LitHtml.literal`devtools-performance-document-latency`;
-  override insightCategory: Category = Category.ALL;
   override internalName: string = 'document-latency';
 
   #check(didPass: boolean, good: string, bad: string): LitHtml.TemplateResult {
@@ -185,13 +182,9 @@ export class DocumentLatency extends BaseInsightComponent<DocumentLatencyInsight
       return;
     }
 
-    const matchesCategory = shouldRenderForCategory({
-      activeCategory: this.data.activeCategory,
-      insightCategory: this.insightCategory,
-    });
     const hasFailure = this.model.data.redirectDuration > 0 || this.model.data.serverResponseTooSlow ||
         this.model.data.uncompressedResponseBytes > 0;
-    const output = (matchesCategory && hasFailure) ? this.#renderContent() : LitHtml.nothing;
+    const output = hasFailure ? this.#renderContent() : LitHtml.nothing;
     this.renderWithContent(output);
   }
 }

@@ -53,9 +53,17 @@ export interface MetricSavings {
   /* eslint-enable @typescript-eslint/naming-convention */
 }
 
+export enum InsightCategory {
+  ALL = 'All',
+  INP = 'INP',
+  LCP = 'LCP',
+  CLS = 'CLS',
+}
+
 export type InsightModel<R extends Record<string, unknown>> = R&{
   title: string,
   description: string,
+  category: InsightCategory,
   relatedEvents?: Types.Events.Event[],
   warnings?: InsightWarning[],
   metricSavings?: MetricSavings,

@@ -12,8 +12,6 @@ import type * as Overlays from '../../overlays/overlays.js';
 
 import {BaseInsightComponent} from './BaseInsightComponent.js';
 import {eventRef} from './EventRef.js';
-import {shouldRenderForCategory} from './Helpers.js';
-import {Category} from './types.js';
 
 const {html} = LitHtml;
 
@@ -99,7 +97,6 @@ function getImageData(model: LCPDiscoveryInsightModel|null): LCPImageDiscoveryDa
 
 export class LCPDiscovery extends BaseInsightComponent<LCPDiscoveryInsightModel> {
   static override readonly litTagName = LitHtml.literal`devtools-performance-lcp-discovery`;
-  override insightCategory: Category = Category.LCP;
   override internalName: string = 'lcp-discovery';
 
   #adviceIcon(didFail: boolean, label: string): LitHtml.TemplateResult {
@@ -219,11 +216,7 @@ export class LCPDiscovery extends BaseInsightComponent<LCPDiscoveryInsightModel>
 
   override render(): void {
     const imageResults = getImageData(this.model);
-    const matchesCategory = shouldRenderForCategory({
-      activeCategory: this.data.activeCategory,
-      insightCategory: this.insightCategory,
-    });
-    const output = imageResults && matchesCategory ? this.#renderContent(imageResults) : LitHtml.nothing;
+    const output = imageResults ? this.#renderContent(imageResults) : LitHtml.nothing;
     this.renderWithContent(output);
   }
 }

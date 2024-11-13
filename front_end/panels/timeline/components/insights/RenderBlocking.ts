@@ -13,8 +13,6 @@ import type * as Overlays from '../../overlays/overlays.js';
 
 import {BaseInsightComponent} from './BaseInsightComponent.js';
 import {eventRef} from './EventRef.js';
-import {shouldRenderForCategory} from './Helpers.js';
-import {Category} from './types.js';
 
 const {html} = LitHtml;
 
@@ -34,7 +32,6 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class RenderBlocking extends BaseInsightComponent<RenderBlockingInsightModel> {
   static override readonly litTagName = LitHtml.literal`devtools-performance-render-blocking-requests`;
-  override insightCategory: Category = Category.LCP;
   override internalName: string = 'render-blocking-requests';
 
   override createOverlays(): Overlays.Overlays.TimelineOverlay[] {
@@ -88,11 +85,7 @@ export class RenderBlocking extends BaseInsightComponent<RenderBlockingInsightMo
   override render(): void {
     const model = this.model;
     const hasBlockingRequests = model?.renderBlockingRequests && model.renderBlockingRequests.length > 0;
-    const matchesCategory = shouldRenderForCategory({
-      activeCategory: this.data.activeCategory,
-      insightCategory: this.insightCategory,
-    });
-    const output = hasBlockingRequests && matchesCategory ? this.#renderContent() : LitHtml.nothing;
+    const output = hasBlockingRequests ? this.#renderContent() : LitHtml.nothing;
     this.renderWithContent(output);
   }
 }

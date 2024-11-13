@@ -12,8 +12,6 @@ import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
 import {BaseInsightComponent} from './BaseInsightComponent.js';
-import {shouldRenderForCategory} from './Helpers.js';
-import {Category} from './types.js';
 
 const {html} = LitHtml;
 
@@ -36,7 +34,6 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class ThirdParties extends BaseInsightComponent<ThirdPartiesInsightModel> {
   static override readonly litTagName = LitHtml.literal`devtools-performance-third-parties`;
-  override insightCategory: Category = Category.ALL;
   override internalName: string = 'third-parties';
 
   #overlaysForEntity = new Map<Trace.Extras.ThirdParties.Entity, Overlays.Overlays.TimelineOverlay[]>();
@@ -122,11 +119,7 @@ export class ThirdParties extends BaseInsightComponent<ThirdPartiesInsightModel>
     const entries = model && [...model.summaryByEntity.entries()].filter(kv => kv[0] !== model.firstPartyEntity);
     const shouldShow = entries?.length;
 
-    const matchesCategory = shouldRenderForCategory({
-      activeCategory: this.data.activeCategory,
-      insightCategory: this.insightCategory,
-    });
-    const output = shouldShow && matchesCategory ? this.#renderContent(entries) : LitHtml.nothing;
+    const output = shouldShow ? this.#renderContent(entries) : LitHtml.nothing;
     this.renderWithContent(output);
   }
 }

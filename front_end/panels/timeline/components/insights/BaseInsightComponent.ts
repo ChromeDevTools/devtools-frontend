@@ -17,7 +17,6 @@ import baseInsightComponentStyles from './baseInsightComponent.css.js';
 import {md} from './Helpers.js';
 import * as SidebarInsight from './SidebarInsight.js';
 import type {TableState} from './Table.js';
-import {Category} from './types.js';
 
 const {html} = LitHtml;
 
@@ -48,12 +47,10 @@ export interface BaseInsightData {
   parsedTrace: Trace.Handlers.Types.ParsedTrace|null;
   /** The key into `insights` that contains this particular insight. */
   insightSetKey: string|null;
-  activeCategory: Category;
 }
 
 export abstract class BaseInsightComponent<T extends InsightModel<{}>> extends HTMLElement {
   abstract internalName: string;
-  abstract insightCategory: Category;
   // So we can use the TypeScript BaseInsight class without getting warnings
   // about litTagName. Every child should overrwrite this.
   static readonly litTagName = LitHtml.literal``;
@@ -70,7 +67,6 @@ export abstract class BaseInsightComponent<T extends InsightModel<{}>> extends H
   protected data: BaseInsightData = {
     parsedTrace: null,
     insightSetKey: null,
-    activeCategory: Category.ALL,
   };
 
   // eslint-disable-next-line rulesdir/no_bound_component_methods
@@ -118,11 +114,6 @@ export abstract class BaseInsightComponent<T extends InsightModel<{}>> extends H
 
   set insightSetKey(insightSetKey: string|null) {
     this.data.insightSetKey = insightSetKey;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
-  }
-
-  set activeCategory(activeCategory: Category) {
-    this.data.activeCategory = activeCategory;
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
 

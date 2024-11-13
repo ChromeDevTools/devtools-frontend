@@ -8,6 +8,7 @@ import * as Trace from '../../../models/trace/trace.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
+import {shouldRenderForCategory} from './insights/Helpers.js';
 import * as Insights from './insights/insights.js';
 import type {ActiveInsight} from './Sidebar.js';
 import styles from './sidebarSingleInsightSet.css.js';
@@ -31,7 +32,7 @@ export interface SidebarSingleInsightSetData {
   parsedTrace: Trace.Handlers.Types.ParsedTrace|null;
   insights: Trace.Insights.Types.TraceInsightSets|null;
   insightSetKey: Trace.Types.Events.NavigationId|null;
-  activeCategory: Insights.Types.Category;
+  activeCategory: Trace.Insights.Types.InsightCategory;
   activeInsight: ActiveInsight|null;
 }
 
@@ -70,7 +71,7 @@ export class SidebarSingleInsightSet extends HTMLElement {
     parsedTrace: null,
     insights: null,
     insightSetKey: null,
-    activeCategory: Insights.Types.Category.ALL,
+    activeCategory: Trace.Insights.Types.InsightCategory.ALL,
     activeInsight: null,
   };
 
@@ -84,7 +85,7 @@ export class SidebarSingleInsightSet extends HTMLElement {
   }
 
   #metricIsVisible(label: 'LCP'|'CLS'|'INP'): boolean {
-    if (this.#data.activeCategory === Insights.Types.Category.ALL) {
+    if (this.#data.activeCategory === Trace.Insights.Types.InsightCategory.ALL) {
       return true;
     }
     return label === this.#data.activeCategory;
@@ -197,14 +198,14 @@ export class SidebarSingleInsightSet extends HTMLElement {
       insightSets: Trace.Insights.Types.TraceInsightSets|null,
       parsedTrace: Trace.Handlers.Types.ParsedTrace|null,
       insightSetKey: string,
-      ): LitHtml.TemplateResult {
+      ): LitHtml.LitTemplate {
     const includeExperimental = Root.Runtime.experiments.isEnabled(
         Root.Runtime.ExperimentName.TIMELINE_EXPERIMENTAL_INSIGHTS,
     );
 
     const models = insightSets?.get(insightSetKey)?.model;
     if (!models) {
-      return html``;
+      return LitHtml.nothing;
     }
 
     const components: LitHtml.TemplateResult[] = [];
@@ -214,15 +215,18 @@ export class SidebarSingleInsightSet extends HTMLElement {
       }
 
       const model = models[name as keyof typeof models];
+      if (!model ||
+          !shouldRenderForCategory({activeCategory: this.#data.activeCategory, insightCategory: model.category})) {
+        continue;
+      }
 
       // clang-format off
-      const component = html`<div data-single-insight-wrapper>
+      const component = html`<div>
         <${componentClass.litTagName}
           .selected=${this.#data.activeInsight?.model === model}
           .model=${model}
           .parsedTrace=${parsedTrace}
           .insightSetKey=${insightSetKey}
-          .activeCategory=${this.#data.activeCategory}>
         </${componentClass.litTagName}>
       </div>`;
       // clang-format on

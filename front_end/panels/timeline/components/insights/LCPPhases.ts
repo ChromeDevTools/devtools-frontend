@@ -11,9 +11,7 @@ import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
 import {BaseInsightComponent} from './BaseInsightComponent.js';
-import {shouldRenderForCategory} from './Helpers.js';
 import type {TableData} from './Table.js';
-import {Category} from './types.js';
 
 const {html} = LitHtml;
 
@@ -54,7 +52,6 @@ interface PhaseData {
 
 export class LCPPhases extends BaseInsightComponent<LCPPhasesInsightModel> {
   static override readonly litTagName = LitHtml.literal`devtools-performance-lcp-by-phases`;
-  override insightCategory: Category = Category.LCP;
   override internalName: string = 'lcp-by-phase';
   #overlay: Overlays.Overlays.TimespanBreakdown|null = null;
 
@@ -225,11 +222,7 @@ export class LCPPhases extends BaseInsightComponent<LCPPhasesInsightModel> {
 
   override render(): void {
     const phaseData = this.#getPhaseData();
-    const matchesCategory = shouldRenderForCategory({
-      activeCategory: this.data.activeCategory,
-      insightCategory: this.insightCategory,
-    });
-    const shouldRender = matchesCategory && this.#hasDataToRender(phaseData);
+    const shouldRender = this.#hasDataToRender(phaseData);
     const output = shouldRender ? this.#renderContent(phaseData) : LitHtml.nothing;
     this.renderWithContent(output);
   }

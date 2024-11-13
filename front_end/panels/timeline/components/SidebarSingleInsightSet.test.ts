@@ -3,14 +3,14 @@
 // found in the LICENSE file.
 
 import * as Root from '../../../core/root/root.js';
-import type * as Trace from '../../../models/trace/trace.js';
+import * as Trace from '../../../models/trace/trace.js';
 import {getCleanTextContentFromElements, renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 
 import * as Components from './components.js';
-import * as InsightComponents from './insights/insights.js';
+import type * as InsightComponents from './insights/insights.js';
 
 type BaseInsightComponent =
     InsightComponents.BaseInsightComponent.BaseInsightComponent<Trace.Insights.Types.InsightModel<{}>>;
@@ -40,7 +40,7 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
       parsedTrace,
       insights,
       insightSetKey: navigationId,
-      activeCategory: InsightComponents.Types.Category.ALL,
+      activeCategory: Trace.Insights.Types.InsightCategory.ALL,
       activeInsight: null,
     };
     await coordinator.done();
@@ -67,7 +67,7 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
       parsedTrace,
       insights,
       insightSetKey: firstNavigation,
-      activeCategory: InsightComponents.Types.Category.ALL,
+      activeCategory: Trace.Insights.Types.InsightCategory.ALL,
       activeInsight: null,
     };
     await coordinator.done();
@@ -96,7 +96,7 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
       parsedTrace,
       insights,
       insightSetKey: firstNavigation,
-      activeCategory: InsightComponents.Types.Category.ALL,
+      activeCategory: Trace.Insights.Types.InsightCategory.ALL,
       activeInsight: null,
     };
     await coordinator.done();
@@ -134,7 +134,7 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
       parsedTrace,
       insights,
       insightSetKey: navigationId,
-      activeCategory: InsightComponents.Types.Category.ALL,
+      activeCategory: Trace.Insights.Types.InsightCategory.ALL,
       activeInsight: {
         model,
         insightSetKey: navigationId,

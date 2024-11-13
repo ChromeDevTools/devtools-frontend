@@ -8,7 +8,7 @@ import type * as Protocol from '../../../generated/protocol.js';
 import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
 
-import type {InsightModel, InsightSetContext, RequiredData} from './types.js';
+import {InsightCategory, type InsightModel, type InsightSetContext, type RequiredData} from './types.js';
 
 const UIStrings = {
   /** Title of an insight that provides details about why elements shift/move on the page. The causes for these shifts are referred to as culprits ("reasons"). */
@@ -420,8 +420,14 @@ function getFontRootCauses(
   return rootCausesByShift;
 }
 
-function finalize(partialModel: Omit<CLSCulpritsInsightModel, 'title'|'description'>): CLSCulpritsInsightModel {
-  return {title: i18nString(UIStrings.title), description: i18nString(UIStrings.description), ...partialModel};
+function finalize(partialModel: Omit<CLSCulpritsInsightModel, 'title'|'description'|'category'>):
+    CLSCulpritsInsightModel {
+  return {
+    title: i18nString(UIStrings.title),
+    description: i18nString(UIStrings.description),
+    category: InsightCategory.CLS,
+    ...partialModel,
+  };
 }
 
 export function generateInsight(

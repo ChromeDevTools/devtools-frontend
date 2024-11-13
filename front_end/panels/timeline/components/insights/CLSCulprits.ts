@@ -10,8 +10,6 @@ import type * as Overlays from '../../overlays/overlays.js';
 
 import {BaseInsightComponent} from './BaseInsightComponent.js';
 import {EventReferenceClick} from './EventRef.js';
-import {shouldRenderForCategory} from './Helpers.js';
-import {Category} from './types.js';
 
 const {html} = LitHtml;
 
@@ -55,7 +53,6 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class CLSCulprits extends BaseInsightComponent<CLSCulpritsInsightModel> {
   static override readonly litTagName = LitHtml.literal`devtools-performance-cls-culprits`;
-  override insightCategory: Category = Category.CLS;
   override internalName: string = 'cls-culprits';
 
   override createOverlays(): Overlays.Overlays.TimelineOverlay[] {
@@ -162,12 +159,7 @@ export class CLSCulprits extends BaseInsightComponent<CLSCulpritsInsightModel> {
 
     const hasCulprits = causes.length > 0;
 
-    const matchesCategory = shouldRenderForCategory({
-      activeCategory: this.data.activeCategory,
-      insightCategory: this.insightCategory,
-    });
-    const output =
-        hasCulprits && matchesCategory ? this.#renderContent(causes, this.model.worstCluster) : LitHtml.nothing;
+    const output = hasCulprits ? this.#renderContent(causes, this.model.worstCluster) : LitHtml.nothing;
     this.renderWithContent(output);
   }
 }

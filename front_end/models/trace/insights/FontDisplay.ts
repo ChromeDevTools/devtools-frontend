@@ -7,7 +7,7 @@ import * as Platform from '../../../core/platform/platform.js';
 import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
 
-import type {InsightModel, InsightSetContext, RequiredData} from './types.js';
+import {InsightCategory, type InsightModel, type InsightSetContext, type RequiredData} from './types.js';
 
 const UIStrings = {
   /** Title of an insight that provides details about the fonts used on the page, and the value of their `font-display` properties. */
@@ -34,8 +34,14 @@ export type FontDisplayInsightModel = InsightModel<{
   }>,
 }>;
 
-function finalize(partialModel: Omit<FontDisplayInsightModel, 'title'|'description'>): FontDisplayInsightModel {
-  return {title: i18nString(UIStrings.title), description: i18nString(UIStrings.description), ...partialModel};
+function finalize(partialModel: Omit<FontDisplayInsightModel, 'title'|'description'|'category'>):
+    FontDisplayInsightModel {
+  return {
+    title: i18nString(UIStrings.title),
+    description: i18nString(UIStrings.description),
+    category: InsightCategory.INP,
+    ...partialModel,
+  };
 }
 
 export function generateInsight(

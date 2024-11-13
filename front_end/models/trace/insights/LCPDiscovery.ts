@@ -7,7 +7,13 @@ import * as Handlers from '../handlers/handlers.js';
 import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
 
-import {type InsightModel, type InsightSetContext, InsightWarning, type RequiredData} from './types.js';
+import {
+  InsightCategory,
+  type InsightModel,
+  type InsightSetContext,
+  InsightWarning,
+  type RequiredData,
+} from './types.js';
 
 const UIStrings = {
   /**
@@ -38,7 +44,8 @@ export type LCPDiscoveryInsightModel = InsightModel<{
   earliestDiscoveryTimeTs?: Types.Timing.MicroSeconds,
 }>;
 
-function finalize(partialModel: Omit<LCPDiscoveryInsightModel, 'title'|'description'>): LCPDiscoveryInsightModel {
+function finalize(partialModel: Omit<LCPDiscoveryInsightModel, 'title'|'description'|'category'>):
+    LCPDiscoveryInsightModel {
   const relatedEvents = partialModel.lcpEvent && partialModel.lcpRequest ?
       // TODO: add entire request initiator chain?
       [partialModel.lcpEvent, partialModel.lcpRequest] :
@@ -46,6 +53,7 @@ function finalize(partialModel: Omit<LCPDiscoveryInsightModel, 'title'|'descript
   return {
     title: i18nString(UIStrings.title),
     description: i18nString(UIStrings.description),
+    category: InsightCategory.LCP,
     ...partialModel,
     relatedEvents,
   };

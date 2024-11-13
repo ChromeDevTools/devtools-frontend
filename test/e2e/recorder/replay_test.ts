@@ -658,7 +658,7 @@ describe('Recorder', function() {
     );
   });
 
-  it('should be able to  navigate to a prerendered page', async () => {
+  it('should be able to navigate to a prerendered page', async () => {
     await setupRecorderWithScriptAndReplay({
       title: 'Test Recording',
       steps: [

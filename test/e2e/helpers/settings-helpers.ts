@@ -31,6 +31,13 @@ export const openPanelViaMoreTools = async (panelTitle: string) => {
   // Click the desired menu item
   await click(`aria/${panelTitle}[role="menuitem"]`);
 
+  // Wait for the triple dot menu to be collapsed.
+  const button = await waitForAria('Customize and control DevTools');
+  await waitForFunction(async () => {
+    const expanded = await button.evaluate(el => el.getAttribute('aria-expanded'));
+    return expanded === null;
+  });
+
   // Wait for the corresponding panel to appear.
   await waitForAria(`${panelTitle} panel[role="tabpanel"]`);
 };

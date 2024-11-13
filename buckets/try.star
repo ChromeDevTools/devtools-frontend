@@ -1,3 +1,7 @@
+# Copyright 2024 The DevTools Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
 load(
     "//lib/builders.star",
     "TRY_ACCOUNT",
@@ -13,6 +17,7 @@ load(
     "recipe",
     "try_builder_base",
 )
+load("//lib/siso.star", "SISO")
 
 BUCKET_NAME = "try"
 
@@ -65,6 +70,7 @@ try_builder(
     dimensions = dimensions.beefy_ubuntu,
     execution_timeout = 2 * time.hour,
     build_numbers = True,
+    use_siso = SISO.CHROMIUM_UNTRUSTED,
 )
 
 try_builder(
@@ -73,6 +79,7 @@ try_builder(
     dimensions = dimensions.beefy_ubuntu,
     execution_timeout = 2 * time.hour,
     build_numbers = True,
+    use_siso = SISO.CHROMIUM_UNTRUSTED,
     description_html = """
 This is the same with <a href="https://ci.chromium.org/p/devtools-frontend/builders/try/devtools_frontend_linux_blink_light_rel">
 devtools_frontend_linux_blink_light_rel</a> but has

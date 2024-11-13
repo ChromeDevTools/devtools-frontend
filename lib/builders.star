@@ -323,8 +323,9 @@ cq_retry_config = cq.retry_config(
     timeout_weight = 4,
 )
 
-def try_builder_base(properties = None, **kwargs):
+def try_builder_base(properties = None, use_siso = SISO.NONE, **kwargs):
     properties = properties or {}
+    properties.update(use_siso)
     properties["$build/reclient"] = {
         "instance": "rbe-chromium-untrusted",
         "metrics_project": "chromium-reclient-metrics",

@@ -214,6 +214,8 @@ ol.tree-outline:not(.hide-selection-when-blurred) li.selected:focus {
   & .tree-variant-navigation li.selected:focus,
   .tree-variant-navigation li.selected:focus devtools-icon {
     color: var(--app-color-navigation-drawer-label-selected);
+
+    --override-file-source-icon-color: var(--app-color-navigation-drawer-label-selected);
   }
 }
 

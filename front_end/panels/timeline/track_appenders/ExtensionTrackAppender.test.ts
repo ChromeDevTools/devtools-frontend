@@ -165,7 +165,7 @@ describeWithEnvironment('ExtensionTrackAppender', function() {
       const allExtensionTrackEntries =
           parsedTrace.ExtensionTraceData.extensionTrackData.map(track => Object.values(track.entriesByTrack)).flat(2);
       for (const event of allExtensionTrackEntries) {
-        assert.strictEqual(extensionTrackAppenders[0].titleForEvent(event), event.name);
+        assert.notStrictEqual(extensionTrackAppenders[0].titleForEvent(event), event.name);
         if (event.args.color === 'tertiary') {
           // "tertiary" color category is mapped to --ref-palette-green70
           // which is faked out to 10, 10, 10
@@ -221,14 +221,13 @@ describeWithEnvironment('ExtensionTrackAppender', function() {
     });
   });
 
-  describe('highlightedEntryInfo', function() {
-    it('returns the info for an entry correctly', function() {
+  describe('titleForEvent', function() {
+    it('returns the title for an entry correctly', function() {
       const allExtensionTrackEntries =
           parsedTrace.ExtensionTraceData.extensionTrackData.map(track => Object.values(track.entriesByTrack)).flat(2);
-      const highlightedEntryInfo = extensionTrackAppenders[0].highlightedEntryInfo(allExtensionTrackEntries[0]);
+      const title = extensionTrackAppenders[0].titleForEvent(allExtensionTrackEntries[0]);
       // The i18n encodes spaces using the u00A0 unicode character.
-      assert.strictEqual(highlightedEntryInfo.formattedTime, '1.00\u00A0s');
-      assert.strictEqual(highlightedEntryInfo.title, 'A hint if needed');
+      assert.strictEqual(title, 'A hint if needed');
     });
   });
 });

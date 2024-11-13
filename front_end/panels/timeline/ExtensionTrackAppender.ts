@@ -5,10 +5,9 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 
-import {buildGroupStyle, buildTrackHeader, getFormattedTime} from './AppenderUtils.js';
+import {buildGroupStyle, buildTrackHeader} from './AppenderUtils.js';
 import {
   type CompatibilityTracksAppender,
-  type HighlightedEntryInfo,
   type TrackAppender,
   type TrackAppenderName,
   VisualLoggingTrackName,
@@ -100,17 +99,9 @@ export class ExtensionTrackAppender implements TrackAppender {
   }
 
   titleForEvent(event: Trace.Types.Events.Event): string {
+    if (Trace.Types.Extensions.isSyntheticExtensionEntry(event) && event.args.tooltipText) {
+      return event.args.tooltipText;
+    }
     return event.name;
-  }
-
-  /**
-   * Returns the info shown when an event added by this appender
-   * is hovered in the timeline.
-   */
-  highlightedEntryInfo(event: Trace.Types.Events.Event): HighlightedEntryInfo {
-    const title = Trace.Types.Extensions.isSyntheticExtensionEntry(event) && event.args.tooltipText ?
-        event.args.tooltipText :
-        this.titleForEvent(event);
-    return {title, formattedTime: getFormattedTime(event.dur)};
   }
 }

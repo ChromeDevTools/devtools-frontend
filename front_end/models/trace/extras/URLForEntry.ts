@@ -7,12 +7,13 @@ import type * as Handlers from '../handlers/handlers.js';
 import * as Types from '../types/types.js';
 
 /**
- * Use this helper whenever resolving an URL's source mapping is not an
- * option. For example when processing non-ui data. Otherwise use the
- * helper SourceMapsResolver::resolvedURLForEntry
+ * INSTEAD, you probably want `SourceMapsResolver.resolvedURLForEntry()`!
+ * If an URL will be displayed in the UI, it's likely you should NOT use `getNonResolved`.
  *
- * If an URL will be displayed in the UI, it's likely you should not use
- * this helper and prefer the other option instead.
+ * Use `getNonResolved` method whenever resolving an URL's source mapping is not an
+ * option. For example when processing non-ui data.
+ *
+ * TODO: migrate existing uses of this over to resolvedURLForEntry.
  */
 
 export function getNonResolved(

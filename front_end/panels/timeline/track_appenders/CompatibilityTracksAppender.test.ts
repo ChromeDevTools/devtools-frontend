@@ -138,7 +138,7 @@ describeWithEnvironment('CompatibilityTracksAppender', function() {
     });
   });
 
-  describe('highlightedEntryInfo', () => {
+  describe('popoverInfo', () => {
     it('shows the correct warning for a long task when hovered', async function() {
       await initTrackAppender(this, 'simple-js-program.json.gz');
       const events = parsedTrace.Renderer?.allTraceEntries;
@@ -149,7 +149,7 @@ describeWithEnvironment('CompatibilityTracksAppender', function() {
       if (!longTask) {
         throw new Error('Could not find long task');
       }
-      const info = tracksAppender.highlightedEntryInfo(longTask, 2);
+      const info = tracksAppender.popoverInfo(longTask, 2);
       assert.strictEqual(info.warningElements?.length, 1);
       const warning = info.warningElements?.[0];
       if (!(warning instanceof HTMLSpanElement)) {
@@ -169,7 +169,7 @@ describeWithEnvironment('CompatibilityTracksAppender', function() {
       if (!recalcStyles) {
         throw new Error('Could not find recalc styles');
       }
-      const info = tracksAppender.highlightedEntryInfo(recalcStyles, 2);
+      const info = tracksAppender.popoverInfo(recalcStyles, 2);
       assert.strictEqual(info.warningElements?.length, 1);
       const warning = info.warningElements?.[0];
       if (!(warning instanceof HTMLSpanElement)) {
@@ -189,7 +189,7 @@ describeWithEnvironment('CompatibilityTracksAppender', function() {
       if (!layout) {
         throw new Error('Could not find layout');
       }
-      const info = tracksAppender.highlightedEntryInfo(layout, 2);
+      const info = tracksAppender.popoverInfo(layout, 2);
       assert.strictEqual(info.warningElements?.length, 1);
       const warning = info.warningElements?.[0];
       if (!(warning instanceof HTMLSpanElement)) {
@@ -217,7 +217,7 @@ describeWithEnvironment('CompatibilityTracksAppender', function() {
       if (!idleCallback) {
         throw new Error('Could not find idle callback');
       }
-      const info = tracksAppender.highlightedEntryInfo(idleCallback, 2);
+      const info = tracksAppender.popoverInfo(idleCallback, 2);
       assert.strictEqual(info.warningElements?.length, 1);
       const warning = info.warningElements?.[0];
       if (!(warning instanceof HTMLSpanElement)) {

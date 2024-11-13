@@ -38,6 +38,17 @@ describeWithEnvironment('TimingTrackAppender', function() {
     entryTypeByLevel = [];
   });
 
+  function getMockInfo(event?: Trace.Types.Events.Event) {
+    const defaultInfo: Timeline.CompatibilityTracksAppender.PopoverInfo = {
+      title: event ? timingsTrackAppender.titleForEvent(event) : 'title',
+      formattedTime: event ? Timeline.AppenderUtils.getFormattedTime(event.dur) : 'time',
+      warningElements: [],
+      additionalElements: [],
+      url: null,
+    };
+    return defaultInfo;
+  }
+
   describe('appendTrackAtLevel', () => {
     it('marks all levels used by the track with the `TrackAppender` type', () => {
       // 8 levels should be taken:
@@ -208,12 +219,12 @@ describeWithEnvironment('TimingTrackAppender', function() {
     });
   });
 
-  describe('highlightedEntryInfo', () => {
+  describe('popoverInfo', () => {
     it('shows the time of the mark, not the duration, if the event is a performance mark', () => {
       const firstMark = parsedTrace.UserTimings.performanceMarks[0];
-      const highlightedEntryInfo = timingsTrackAppender.highlightedEntryInfo(firstMark);
-      assert.deepEqual(highlightedEntryInfo, {
-        title: '[mark]: myMark',
+      const popoverInfo = getMockInfo(firstMark);
+      timingsTrackAppender.setPopoverInfo(firstMark, popoverInfo);
+      assert.deepInclude(popoverInfo, {
         formattedTime: '1.12\u00A0s',
       });
     });
@@ -221,11 +232,10 @@ describeWithEnvironment('TimingTrackAppender', function() {
     it('shows the time of the mark for an LCP event', () => {
       const largestContentfulPaint = parsedTrace.PageLoadMetrics.allMarkerEvents.find(
           marker => marker.name === 'largestContentfulPaint::Candidate');
-      if (!largestContentfulPaint) {
-        throw new Error('Could not find LCP event');
-      }
-      const highlightedEntryInfo = timingsTrackAppender.highlightedEntryInfo(largestContentfulPaint);
-      assert.deepEqual(highlightedEntryInfo, {
+      assert.exists(largestContentfulPaint);
+      const popoverInfo = getMockInfo(largestContentfulPaint);
+      timingsTrackAppender.setPopoverInfo(largestContentfulPaint, popoverInfo);
+      assert.deepInclude(popoverInfo, {
         title: 'LCP',
         formattedTime: '2.42\u00A0s',
       });
@@ -234,11 +244,10 @@ describeWithEnvironment('TimingTrackAppender', function() {
     it('shows the time of the mark for an FCP event', () => {
       const firstContentfulPaint =
           parsedTrace.PageLoadMetrics.allMarkerEvents.find(marker => marker.name === 'firstContentfulPaint');
-      if (!firstContentfulPaint) {
-        throw new Error('Could not find FCP event');
-      }
-      const highlightedEntryInfo = timingsTrackAppender.highlightedEntryInfo(firstContentfulPaint);
-      assert.deepEqual(highlightedEntryInfo, {
+      assert.exists(firstContentfulPaint);
+      const popoverInfo = getMockInfo(firstContentfulPaint);
+      timingsTrackAppender.setPopoverInfo(firstContentfulPaint, popoverInfo);
+      assert.deepInclude(popoverInfo, {
         title: 'FCP',
         formattedTime: '2.42\u00A0s',
       });
@@ -246,11 +255,10 @@ describeWithEnvironment('TimingTrackAppender', function() {
 
     it('shows the time of the mark for a DCL event', () => {
       const dclEvent = parsedTrace.PageLoadMetrics.allMarkerEvents.find(marker => marker.name === 'MarkDOMContent');
-      if (!dclEvent) {
-        throw new Error('Could not find DCL event');
-      }
-      const highlightedEntryInfo = timingsTrackAppender.highlightedEntryInfo(dclEvent);
-      assert.deepEqual(highlightedEntryInfo, {
+      assert.exists(dclEvent);
+      const popoverInfo = getMockInfo(dclEvent);
+      timingsTrackAppender.setPopoverInfo(dclEvent, popoverInfo);
+      assert.deepInclude(popoverInfo, {
         title: 'DCL',
         formattedTime: '2.42\u00A0s',
       });
@@ -258,26 +266,29 @@ describeWithEnvironment('TimingTrackAppender', function() {
 
     it('shows the time of a console.timestamp event in the hover info', () => {
       const timestampEvent = parsedTrace.UserTimings.timestampEvents[0];
-      const highlightedEntryInfo = timingsTrackAppender.highlightedEntryInfo(timestampEvent);
+      const popoverInfo = getMockInfo(timestampEvent);
+      timingsTrackAppender.setPopoverInfo(timestampEvent, popoverInfo);
 
-      assert.deepEqual(highlightedEntryInfo, {
+      assert.deepInclude(popoverInfo, {
         title: 'TimeStamp: a timestamp',
         formattedTime: '615.25\u00A0ms',
       });
     });
 
     it('returns the info for a performance.measure calls correctly', () => {
-      const performanceMeasures = parsedTrace.UserTimings.performanceMeasures;
-      const highlightedEntryInfo = timingsTrackAppender.highlightedEntryInfo(performanceMeasures[0]);
+      const performanceMeasure = parsedTrace.UserTimings.performanceMeasures[0];
+      const popoverInfo = getMockInfo(performanceMeasure);
+      timingsTrackAppender.setPopoverInfo(performanceMeasure, popoverInfo);
       // The i18n encodes spaces using the u00A0 unicode character.
-      assert.strictEqual(highlightedEntryInfo.formattedTime, ('500.07\u00A0ms'));
+      assert.strictEqual(popoverInfo.formattedTime, ('500.07\u00A0ms'));
     });
 
     it('returns the info for a console.time calls correctly', () => {
-      const consoleTimings = parsedTrace.UserTimings.consoleTimings;
-      const highlightedEntryInfo = timingsTrackAppender.highlightedEntryInfo(consoleTimings[0]);
+      const consoleTiming = parsedTrace.UserTimings.consoleTimings[0];
+      const popoverInfo = getMockInfo(consoleTiming);
+      timingsTrackAppender.setPopoverInfo(consoleTiming, popoverInfo);
       // The i18n encodes spaces using the u00A0 unicode character.
-      assert.strictEqual(highlightedEntryInfo.formattedTime, ('1.60\u00A0s'));
+      assert.strictEqual(popoverInfo.formattedTime, ('1.60\u00A0s'));
     });
   });
 
@@ -328,8 +339,10 @@ describeWithEnvironment('TimingTrackAppender', function() {
 
     it('returns the correct color and title for extension markers', function() {
       const extensionMarkers = parsedTrace.ExtensionTraceData.extensionMarkers;
+      assert.lengthOf(extensionMarkers, 1);
       for (const event of extensionMarkers) {
-        assert.strictEqual(timingsTrackAppender.titleForEvent(event), event.name);
+        // tooltipText is supplied, so the title should be that.
+        assert.notStrictEqual(timingsTrackAppender.titleForEvent(event), event.name);
         if (event.args.color === 'error') {
           // "error" color category is mapped to --ref-palette-error50
           // which is faked out to 10, 10, 10
@@ -366,8 +379,9 @@ describeWithEnvironment('TimingTrackAppender', function() {
       const extensionMarker = parsedTrace.ExtensionTraceData.extensionMarkers.at(0);
       assert.isOk(extensionMarker, 'did not find any extension markers');
 
-      const highlightedEntryInfo = timingsTrackAppender.highlightedEntryInfo(extensionMarker);
-      assert.strictEqual(highlightedEntryInfo.title, 'A mark');
+      const popoverInfo = getMockInfo(extensionMarker);
+      timingsTrackAppender.setPopoverInfo(extensionMarker, popoverInfo);
+      assert.strictEqual(popoverInfo.title, 'A mark');
     });
     describe('toggling', function() {
       it('Does not append extension data when the configuration is set to disabled', async function() {

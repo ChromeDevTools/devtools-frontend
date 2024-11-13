@@ -281,14 +281,13 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
   private textPadding: number;
   private highlightedMarkerIndex: number;
   /**
-   * Represents the index of the entry that the user's mouse cursor is over.
-   * Note that this is updated as the user moves their cursor: they do not have
-   * to click for this to be updated.
+   * The index of the entry that's hovered (typically), or focused because of searchResult or other reasons.focused via searchResults, or focused by other means.
+   * Updated as the cursor moves. Meanwhile `selectedEntryIndex` is the entry that's been clicked.
    **/
   private highlightedEntryIndex: number;
   /**
    * Represents the index of the entry that is selected. For an entry to be
-   * selected, it has to be clicked by the user.
+   * selected, it has to be clicked by the user (generally).
    **/
   private selectedEntryIndex: number;
   private rawTimelineDataLength: number;
@@ -804,7 +803,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
         return null;
     }
     const element = document.createElement('div');
-    element.createChild('span', 'timeline-info-title').textContent = iconTooltip;
+    element.createChild('span', 'popoverinfo-title').textContent = iconTooltip;
 
     return element;
   }
@@ -870,12 +869,11 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     }
     const group = data.groups.at(this.selectedGroupIndex);
     // If the mouse is hovering over the hidden descendants arrow, get an element that shows how many children are hidden, otherwise an element with the event name and length
-    const entryInfo = (isMouseOverRevealChildrenArrow && group) ?
-        this.dataProvider.prepareHighlightedHiddenEntriesArrowInfo &&
-            this.dataProvider.prepareHighlightedHiddenEntriesArrowInfo(entryIndex) :
-        entryIndex !== null && this.dataProvider.prepareHighlightedEntryInfo(entryIndex);
-    if (entryInfo) {
-      this.popoverElement.appendChild(entryInfo);
+    const popoverElement = (isMouseOverRevealChildrenArrow && group) ?
+        this.dataProvider.preparePopoverForCollapsedArrow?.(entryIndex) :
+        entryIndex !== null && this.dataProvider.preparePopoverElement(entryIndex);
+    if (popoverElement) {
+      this.popoverElement.appendChild(popoverElement);
       this.updatePopoverOffset();
     }
     this.lastPopoverState = {
@@ -4093,9 +4091,9 @@ export interface FlameChartDataProvider {
 
   timelineData(rebuild?: boolean): FlameChartTimelineData|null;
 
-  prepareHighlightedEntryInfo(entryIndex: number): Element|null;
+  preparePopoverElement(entryIndex: number): Element|null;
 
-  prepareHighlightedHiddenEntriesArrowInfo?(entryIndex: number): Element|null;
+  preparePopoverForCollapsedArrow?(entryIndex: number): Element|null;
 
   canJumpToEntry(entryIndex: number): boolean;
 

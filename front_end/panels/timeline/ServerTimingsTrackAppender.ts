@@ -6,10 +6,9 @@ import * as Root from '../../core/root/root.js';
 import type * as Trace from '../../models/trace/trace.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 
-import {buildGroupStyle, buildTrackHeader, getFormattedTime} from './AppenderUtils.js';
+import {buildGroupStyle, buildTrackHeader} from './AppenderUtils.js';
 import {
   type CompatibilityTracksAppender,
-  type HighlightedEntryInfo,
   type TrackAppender,
   type TrackAppenderName,
   VisualLoggingTrackName,
@@ -89,13 +88,5 @@ export class ServerTimingsTrackAppender implements TrackAppender {
 
   titleForEvent(event: Trace.Types.Events.Event): string {
     return event.name;
-  }
-
-  /**
-   * Returns the info shown when an event added by this appender
-   * is hovered in the timeline.
-   */
-  highlightedEntryInfo(event: Trace.Types.Events.Event): HighlightedEntryInfo {
-    return {title: event.name, formattedTime: getFormattedTime(event.dur)};
   }
 }

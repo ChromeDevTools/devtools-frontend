@@ -113,13 +113,4 @@ describeWithEnvironment('ServerTimingsTrackAppender', function() {
       }
     });
   });
-
-  describe('highlightedEntryInfo', function() {
-    it('returns the info for an entry correctly', function() {
-      const serverTimings = parsedTrace.ServerTimings.serverTimings;
-      const highlightedEntryInfo = serverTimingsTrackAppender.highlightedEntryInfo(serverTimings[0]);
-      // The i18n encodes spaces using the u00A0 unicode character.
-      assert.strictEqual(highlightedEntryInfo.formattedTime, '1.00\u00A0s');
-    });
-  });
 });

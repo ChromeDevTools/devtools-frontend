@@ -93,7 +93,7 @@ export class ProfileFlameChartDataProvider implements PerfUI.FlameChart.FlameCha
     throw 'Not implemented.';
   }
 
-  prepareHighlightedEntryInfo(_entryIndex: number): Element|null {
+  preparePopoverElement(_entryIndex: number): Element|null {
     throw 'Not implemented.';
   }
 

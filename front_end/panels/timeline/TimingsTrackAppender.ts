@@ -8,7 +8,7 @@ import * as Trace from '../../models/trace/trace.js';
 import {buildGroupStyle, buildTrackHeader, getFormattedTime} from './AppenderUtils.js';
 import {
   type CompatibilityTracksAppender,
-  type HighlightedEntryInfo,
+  type PopoverInfo,
   type TrackAppender,
   type TrackAppenderName,
   VisualLoggingTrackName,
@@ -307,18 +307,13 @@ export class TimingsTrackAppender implements TrackAppender {
     if (Trace.Types.Events.isPerformanceMark(event)) {
       return `[mark]: ${event.name}`;
     }
+    if (Trace.Types.Extensions.isSyntheticExtensionEntry(event) && event.args.tooltipText) {
+      return event.args.tooltipText;
+    }
     return event.name;
   }
 
-  /**
-   * Returns the info shown when an event added by this appender
-   * is hovered in the timeline.
-   */
-  highlightedEntryInfo(event: Trace.Types.Events.Event): HighlightedEntryInfo {
-    const title = Trace.Types.Extensions.isSyntheticExtensionEntry(event) && event.args.tooltipText ?
-        event.args.tooltipText :
-        this.titleForEvent(event);
-
+  setPopoverInfo(event: Trace.Types.Events.Event, info: PopoverInfo): void {
     // If an event is a marker event, rather than show a duration of 0, we can instead show the time that the event happened, which is much more useful. We do this currently for:
     // Page load events: DCL, FCP and LCP
     // performance.mark() events
@@ -331,9 +326,7 @@ export class TimingsTrackAppender implements TrackAppender {
           this.#parsedTrace.Meta.navigationsByNavigationId,
           this.#parsedTrace.Meta.navigationsByFrameId,
       );
-      return {title, formattedTime: getFormattedTime(timeOfEvent)};
+      info.formattedTime = getFormattedTime(timeOfEvent);
     }
-
-    return {title, formattedTime: getFormattedTime(event.dur)};
   }
 }

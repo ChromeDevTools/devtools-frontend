@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as Trace from '../../models/trace/trace.js';
 import type * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
@@ -25,11 +26,12 @@ import {
 import {TimingsTrackAppender} from './TimingsTrackAppender.js';
 import * as TimelineUtils from './utils/utils.js';
 
-export type HighlightedEntryInfo = {
+export type PopoverInfo = {
   title: string,
   formattedTime: string,
-  warningElements?: HTMLSpanElement[],
-  additionalElement?: HTMLElement,
+  url: string|null,
+  warningElements: HTMLSpanElement[],
+  additionalElements: HTMLElement[],
 };
 
 let showPostMessageEvents: boolean|undefined;
@@ -124,9 +126,9 @@ export interface TrackAppender {
    */
   titleForEvent?(event: Trace.Types.Events.Event): string;
   /**
-   * Returns the info shown when an event in the timeline is hovered.
+   * Updates the standard popover (AKA tooltip) some appender specific details.
    */
-  highlightedEntryInfo?(event: Trace.Types.Events.Event): Partial<HighlightedEntryInfo>;
+  setPopoverInfo?(event: Trace.Types.Events.Event, info: PopoverInfo): void;
   /**
    * Returns the a callback function to draw an event to overrides the normal rectangle draw operation.
    */
@@ -645,47 +647,42 @@ export class CompatibilityTracksAppender {
   /**
    * Returns the info shown when an event in the timeline is hovered.
    */
-  highlightedEntryInfo(event: Trace.Types.Events.Event, level: number): HighlightedEntryInfo {
+  popoverInfo(event: Trace.Types.Events.Event, level: number): PopoverInfo {
     const track = this.#trackForLevel.get(level);
     if (!track) {
       throw new Error('Track not found for level');
     }
 
-    // Add any warnings information to the tooltip. Done here to avoid duplicating this call in every appender.
-    // By doing this here, we ensure that any warnings that are
-    // added to the WarningsHandler are automatically used and added
-    // to the tooltip.
-    const warningElements: HTMLSpanElement[] =
-        TimelineComponents.DetailsView.buildWarningElementsForEvent(event, this.#parsedTrace);
-
-    let title = this.titleForEvent(event, level);
-    let formattedTime = getFormattedTime(event.dur);
-    let additionalElement;
-
-    // If the track defines a custom highlight, call it and use its values.
-    if (track.highlightedEntryInfo) {
-      const {
-        title: customTitle,
-        formattedTime: customFormattedTime,
-        warningElements: extraWarningElements,
-        additionalElement: element,
-      } = track.highlightedEntryInfo(event);
-      if (customTitle) {
-        title = customTitle;
-      }
-      if (customFormattedTime) {
-        formattedTime = customFormattedTime;
-      }
-      if (extraWarningElements) {
-        warningElements.push(...extraWarningElements);
-      }
-      additionalElement = element;
-    }
-    return {
-      title,
-      formattedTime,
-      warningElements,
-      additionalElement,
+    // Defaults here, though tracks may chose to redefine title/formattedTime
+    const info: PopoverInfo = {
+      title: this.titleForEvent(event, level),
+      formattedTime: getFormattedTime(event.dur),
+      warningElements: TimelineComponents.DetailsView.buildWarningElementsForEvent(event, this.#parsedTrace),
+      additionalElements: [],
+      url: null,
     };
+
+    // If the track defines its own popoverInfo(), it'll update values within
+    if (track.setPopoverInfo) {
+      track.setPopoverInfo(event, info);
+    }
+
+    // If there's a url associated, add into additionalElements
+    const url = URL.parse(
+        info.url ?? TimelineUtils.SourceMapsResolver.SourceMapsResolver.resolvedURLForEntry(this.#parsedTrace, event) ??
+        '');
+    if (url) {
+      const MAX_PATH_LENGTH = 45;
+      const MAX_ORIGIN_LENGTH = 30;
+      const path = Platform.StringUtilities.trimMiddle(url.href.replace(url.origin, ''), MAX_PATH_LENGTH);
+      const origin =
+          Platform.StringUtilities.trimEndWithMaxLength(url.origin.replace('https://', ''), MAX_ORIGIN_LENGTH);
+      const urlElems = document.createElement('div');
+      urlElems.createChild('span', 'popoverinfo-url-path').textContent = path;
+      urlElems.createChild('span', 'popoverinfo-url-origin').textContent = `(${origin})`;
+      info.additionalElements.push(urlElems);
+    }
+
+    return info;
   }
 }

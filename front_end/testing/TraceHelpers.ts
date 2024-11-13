@@ -463,7 +463,7 @@ export class FakeFlameChartProvider implements PerfUI.FlameChart.FlameChartDataP
     return 3;
   }
 
-  prepareHighlightedEntryInfo(_entryIndex: number): Element|null {
+  preparePopoverElement(_entryIndex: number): Element|null {
     return null;
   }
 

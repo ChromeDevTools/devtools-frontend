@@ -81,7 +81,7 @@ export function buildTrackHeader(
  * Returns the time info shown when an event is hovered in the timeline.
  * @param totalTime the total time of the hovered event.
  * @param selfTime the self time of the hovered event.
- * @returns the formatted time string for highlightedEntryInfo
+ * @returns the formatted time string for popoverInfo
  */
 export function getFormattedTime(
     totalTime?: Trace.Types.Timing.MicroSeconds, selfTime?: Trace.Types.Timing.MicroSeconds): string {

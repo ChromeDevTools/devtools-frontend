@@ -16,19 +16,29 @@
   margin-right: 5px;
 }
 
-.timeline-flamechart-popover span.timeline-info-network-time {
+.timeline-flamechart-popover span.popoverinfo-network-time {
   color: var(--sys-color-primary);
 }
 
-.timeline-flamechart-popover span.timeline-info-time {
+.timeline-flamechart-popover span.popoverinfo-time {
   color: var(--sys-color-green);
 }
 
-.timeline-flamechart-popover span.timeline-info-warning {
+.timeline-flamechart-popover span.popoverinfo-warning {
   color: var(--sys-color-error);
 }
 
-.timeline-flamechart-popover span.timeline-info-warning * {
+.timeline-flamechart-popover span.popoverinfo-url-path,
+.timeline-flamechart-popover span.popoverinfo-url-origin {
+  color: var(--sys-color-token-subtle);
+  font-size: 11px;
+}
+
+.timeline-flamechart-popover span.popoverinfo-url-origin {
+  font-style: italic;
+}
+
+.timeline-flamechart-popover span.popoverinfo-warning * {
   color: inherit;
 }
 

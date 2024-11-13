@@ -402,7 +402,7 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
     return this.#networkTrackAppender?.webSocketIdToLevel.has(levelIndex) || false;
   }
 
-  prepareHighlightedEntryInfo(index: number): Element|null {
+  preparePopoverElement(index: number): Element|null {
     const event = this.#events[index];
     if (Trace.Types.Events.isSyntheticNetworkRequest(event)) {
       const element = document.createElement('div');

@@ -48,7 +48,7 @@ Migrating a track consists of taking the code in the data provider corresponding
 
 5. Move the handling of the extra features.
 
-    This is usually achieved by implementing the methods `colorForEvent`, `titleForEvent` and `highlightedEntryInfo`. Note how The implementation of these methods should be equivalent to the codepaths of the methods with the same names in the data provider related to the tracks/events being migrated. Here again we should look out for opportunities to introduce helpers to share between track appenders.
+    This is usually achieved by implementing the methods `colorForEvent`, `titleForEvent` and `popoverInfo`. Note how The implementation of these methods should be equivalent to the codepaths of the methods with the same names in the data provider related to the tracks/events being migrated. Here again we should look out for opportunities to introduce helpers to share between track appenders.
 
     Note: Queries done by the FlameChart renderer for events' extra features are passed from the data provider to the CompatibilityTracksAppender ([see example](https://source.chromium.org/chromium/_/chromium/devtools/devtools-frontend/+/3925b7d73681966c9a8c844c49c7e815ecdcff82:front_end/panels/timeline/TimelineFlameChartDataProvider.ts;l=1083)), which then [forwards](https://source.chromium.org/chromium/_/chromium/devtools/devtools-frontend/+/3925b7d73681966c9a8c844c49c7e815ecdcff82:front_end/panels/timeline/CompatibilityTracksAppender.ts;l=107) the query to the appropriate track appender using the data added when `registerTrackForLevel` was called.
 

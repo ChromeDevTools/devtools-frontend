@@ -68,6 +68,8 @@ export class SourceMapsResolver extends EventTarget {
    * (f.e. if an app is bundled). Thus, beyond a URL we can use code
    * location data like line and column numbers to obtain the specific
    * authored code according to the source mappings.
+   *
+   * TODO(andoli): This can return incorrect scripts if the target page has been reloaded since the trace.
    */
   static resolvedCodeLocationForEntry(entry: Trace.Types.Events.Event): ResolvedCodeLocationData|null {
     let callFrame = null;

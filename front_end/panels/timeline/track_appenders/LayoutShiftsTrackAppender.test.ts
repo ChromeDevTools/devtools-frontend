@@ -84,9 +84,18 @@ describeWithEnvironment('LayoutShiftsTrackAppender', function() {
     const {layoutShiftsTrackAppender, parsedTrace} = await renderTrackAppender(this, 'cls-no-nav.json.gz');
     const shifts = parsedTrace.LayoutShifts.clusters.flatMap(c => c.events);
     await layoutShiftsTrackAppender.preloadScreenshots(shifts);
-    const info = layoutShiftsTrackAppender.highlightedEntryInfo(shifts[3]);
+
+    const info: Timeline.CompatibilityTracksAppender.PopoverInfo = {
+      title: 'title',
+      formattedTime: 'time',
+      warningElements: [],
+      additionalElements: [],
+      url: null,
+    };
+
+    layoutShiftsTrackAppender.setPopoverInfo(shifts[3], info);
     assert.strictEqual(info.title, 'Layout shift');
     assert.strictEqual(info.formattedTime, '0.0197');
-    assert.strictEqual(info.additionalElement?.nodeName, 'DIV');
+    assert.strictEqual(info.additionalElements?.at(0)?.nodeName, 'DIV');
   });
 });

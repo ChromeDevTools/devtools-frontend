@@ -13,7 +13,7 @@ import {buildGroupStyle, buildTrackHeader} from './AppenderUtils.js';
 import {
   type CompatibilityTracksAppender,
   type DrawOverride,
-  type HighlightedEntryInfo,
+  type PopoverInfo,
   type TrackAppender,
   type TrackAppenderName,
   VisualLoggingTrackName,
@@ -143,31 +143,25 @@ export class LayoutShiftsTrackAppender implements TrackAppender {
     return '';
   }
 
-  /**
-   * Returns the info shown when an event added by this appender
-   * is hovered in the timeline.
-   */
-  highlightedEntryInfo(event: Trace.Types.Events.Event): HighlightedEntryInfo {
+  setPopoverInfo(event: Trace.Types.Events.Event, info: PopoverInfo): void {
     const score = Trace.Types.Events.isLayoutShift(event)       ? event.args.data?.weighted_score_delta ?? 0 :
         Trace.Types.Events.isSyntheticLayoutShiftCluster(event) ? event.clusterCumulativeScore :
                                                                   -1;
-    const title = Trace.Types.Events.isLayoutShift(event)       ? i18nString(UIStrings.layoutShift) :
+    // Score isn't a duration, but the UI works anyhow.
+    info.formattedTime = score.toFixed(4);
+    info.title = Trace.Types.Events.isLayoutShift(event)        ? i18nString(UIStrings.layoutShift) :
         Trace.Types.Events.isSyntheticLayoutShiftCluster(event) ? i18nString(UIStrings.layoutShiftCluster) :
                                                                   event.name;
 
-    let additionalElement;
     if (Trace.Types.Events.isSyntheticLayoutShift(event)) {
       // Screenshots are max 500x500 naturally, but on a laptop in dock-to-right, 500px tall usually doesn't fit.
       // In the future, we may investigate a way to dynamically scale this tooltip content per available space.
       const maxSize = new UI.Geometry.Size(510, 400);
       const vizElem = LayoutShiftsTrackAppender.createShiftViz(event, this.#parsedTrace, maxSize);
       if (vizElem) {
-        additionalElement = vizElem;
+        info.additionalElements.push(vizElem);
       }
     }
-
-    // Score isn't a duration, but the UI works anyhow.
-    return {title, formattedTime: score.toFixed(4), additionalElement};
   }
 
   getDrawOverride(event: Trace.Types.Events.Event): DrawOverride|undefined {

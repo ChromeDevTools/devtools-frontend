@@ -493,7 +493,7 @@ class TickingFlameChartDataProvider implements PerfUI.FlameChart.FlameChartDataP
     return false;
   }
 
-  prepareHighlightedEntryInfo(index: number): Element|null {
+  preparePopoverElement(index: number): Element|null {
     const element = document.createElement('div');
     (this.eventMap.get(index) as Event).decorate(element);
     return element;

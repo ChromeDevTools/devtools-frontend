@@ -9,7 +9,7 @@ import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import {buildGroupStyle, buildTrackHeader} from './AppenderUtils.js';
 import {
   type CompatibilityTracksAppender,
-  type HighlightedEntryInfo,
+  type PopoverInfo,
   type TrackAppender,
   type TrackAppenderName,
   VisualLoggingTrackName,
@@ -148,12 +148,11 @@ export class InteractionsTrackAppender implements TrackAppender {
     return this.#colorGenerator.colorForID(idForColorGeneration);
   }
 
-  highlightedEntryInfo(event: Trace.Types.Events.Event): HighlightedEntryInfo {
+  setPopoverInfo(event: Trace.Types.Events.Event, info: PopoverInfo): void {
     if (Trace.Types.Events.isSyntheticInteraction(event)) {
       const breakdown = new Components.InteractionBreakdown.InteractionBreakdown();
       breakdown.entry = event;
-      return {title: '', formattedTime: '', additionalElement: breakdown};
+      info.additionalElements.push(breakdown);
     }
-    return {title: '', formattedTime: ''};
   }
 }

@@ -32,6 +32,7 @@ devtools_entrypoint("entrypoint") {
     "../../panels/timeline:meta",
     "../../panels/web_audio:meta",
     "../../panels/webauthn:meta",
+    "../../panels/whats_new:meta",
     "../main:bundle",
     "../shell",
   ]

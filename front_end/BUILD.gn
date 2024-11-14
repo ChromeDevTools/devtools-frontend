@@ -201,6 +201,7 @@ group("unittests") {
     "panels/utils:unittests",
     "panels/web_audio:unittests",
     "panels/webauthn:unittests",
+    "panels/whats_new:unittests",
     "services/trace_bounds:unittests",
     "testing",
     "third_party/chromium/client-variations:unittests",

@@ -28,6 +28,7 @@ devtools_entrypoint("bundle") {
     "../../panels/explain/*",
     "../../panels/freestyler/*",
     "../../panels/timeline/*",
+    "../../panels/whats_new/*",
     "../../ui/components/docs/console_insight/*",
     "../../ui/components/docs/freestyler/*",
     "../../ui/components/docs/markdown_view/*",

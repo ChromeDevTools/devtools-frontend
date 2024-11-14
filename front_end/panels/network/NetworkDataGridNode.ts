@@ -1489,6 +1489,7 @@ export class NetworkRequestNode extends NetworkNode {
       const aiButtonContainer = document.createElement('span');
       aiButtonContainer.classList.add('ai-button-container');
       const floatingButton = new FloatingButton.FloatingButton.FloatingButton({
+        title: action.title(),
         iconName: 'smart-assistant',
       });
       floatingButton.addEventListener('click', ev => {

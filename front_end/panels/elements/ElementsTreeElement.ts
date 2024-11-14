@@ -537,6 +537,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     if (this.contentElement && !this.aiButtonContainer) {
       this.aiButtonContainer = this.contentElement.createChild('span', 'ai-button-container');
       const floatingButton = new FloatingButton.FloatingButton.FloatingButton({
+        title: action.title(),
         iconName: 'smart-assistant',
       });
       floatingButton.addEventListener('click', ev => {

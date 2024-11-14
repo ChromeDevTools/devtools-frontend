@@ -8,10 +8,11 @@ import * as LitHtml from '../../lit-html/lit-html.js';
 
 import floatingButtonStyles from './floatingButton.css.js';
 
-const {html} = LitHtml;
+const {html, Directives: {ifDefined}} = LitHtml;
 
 interface FloatingButtonData {
   iconName: string;
+  title?: string;
   disabled?: boolean;
 }
 
@@ -36,7 +37,7 @@ export class FloatingButton extends HTMLElement {
   #render(): void {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
-    LitHtml.render(html`<button class="floating-button" .disabled=${Boolean(this.#data.disabled)}><devtools-icon class="icon" name=${this.#data.iconName}></devtools-icon></button>`, this.#shadow, {host: this});
+    LitHtml.render(html`<button class="floating-button" title=${ifDefined(this.#data.title)} .disabled=${Boolean(this.#data.disabled)}><devtools-icon class="icon" name=${this.#data.iconName}></devtools-icon></button>`, this.#shadow, {host: this});
     // clang-format on
   }
 }

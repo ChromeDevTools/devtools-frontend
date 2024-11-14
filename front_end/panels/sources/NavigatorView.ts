@@ -1418,6 +1418,7 @@ export class NavigatorSourceTreeElement extends UI.TreeOutline.TreeElement {
     if (!this.aiButtonContainer) {
       this.aiButtonContainer = this.listItemElement.createChild('span', 'ai-button-container');
       const floatingButton = new FloatingButton.FloatingButton.FloatingButton({
+        title: action.title(),
         iconName: 'smart-assistant',
       });
       floatingButton.addEventListener('click', ev => {

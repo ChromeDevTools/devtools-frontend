@@ -7,10 +7,13 @@
 .list {
   flex: auto 0 1;
   overflow-y: auto;
-  border: 1px solid var(--sys-color-divider);
   flex-direction: column;
 
   --override-background-list-item-color: hsl(0deg 0% 96%);
+
+  &:has(div) {
+    border: var(--sys-size-1) solid var(--sys-color-divider);
+  }
 }
 
 .theme-with-dark-background .list,

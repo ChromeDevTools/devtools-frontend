@@ -133,7 +133,7 @@ export class ThrottlingSettingsTab extends UI.Widget.VBox implements
 
     const settingsContent =
         this.contentElement.createChild('div', 'settings-card-container-wrapper').createChild('div');
-    settingsContent.classList.add('settings-card-container', 'ignore-list-settings');
+    settingsContent.classList.add('settings-card-container', 'throttling-conditions-settings');
 
     const addButton = new Buttons.Button.Button();
     addButton.classList.add('add-conditions-button');

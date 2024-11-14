@@ -199,8 +199,10 @@ export class ListWidget<T> extends VBox {
       this.element.focus();
       this.delegate.removeItemRequested(this.items[index], index);
       ARIAUtils.alert(i18nString(UIStrings.removedItem));
-      // focus on the next item in the list, or the last item if we're removing the last item
-      (this.elements[Math.min(index, this.elements.length - 1)] as HTMLElement).focus();
+      if (this.elements.length >= 1) {
+        // focus on the next item in the list, or the last item if we're removing the last item
+        (this.elements[Math.min(index, this.elements.length - 1)] as HTMLElement).focus();
+      }
     }
   }
 

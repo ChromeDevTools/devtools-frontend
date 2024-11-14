@@ -1091,12 +1091,15 @@ export function createTextButton(text: string, clickHandler?: ((arg0: Event) => 
   jslogContext?: string,
   variant?: Buttons.Button.Variant,
   title?: string,
+  icon?: string,
 }): Buttons.Button.Button {
   const button = new Buttons.Button.Button();
   if (opts?.className) {
     button.className = opts.className;
   }
+
   button.textContent = text;
+  button.iconName = opts?.icon;
   button.variant = opts?.variant ? opts.variant : Buttons.Button.Variant.OUTLINED;
   if (clickHandler) {
     button.addEventListener('click', clickHandler);

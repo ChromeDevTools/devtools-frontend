@@ -107,6 +107,7 @@ grd_files_release_sources = [
   "front_end/Images/dock-window.svg",
   "front_end/Images/document.svg",
   "front_end/Images/dog-paw.svg",
+  "front_end/Images/domain.svg",
   "front_end/Images/dots-horizontal.svg",
   "front_end/Images/dots-vertical.svg",
   "front_end/Images/download.svg",

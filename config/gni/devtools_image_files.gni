@@ -110,6 +110,7 @@ devtools_svg_sources = [
   "dock-window.svg",
   "document.svg",
   "dog-paw.svg",
+  "domain.svg",
   "dots-horizontal.svg",
   "dots-vertical.svg",
   "download.svg",

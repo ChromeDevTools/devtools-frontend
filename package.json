@@ -32,7 +32,6 @@
     "lint": "vpython3 third_party/node/node.py --output scripts/test/run_lint_check.js",
     "prebuild": "gn gen out/Default",
     "rdb": "rdb stream -new -realm chrome:public --",
-    "setup-dtrun": "cd scripts/devtools_run && npm link",
     "start": "node -e 'console.log(`This script has been removed in favor of --custom-devtools-frontend. For more information, see https://docs.google.com/document/d/1COgCBWWuTh2o-Zbp6h_z0h0LtlJaimaEDsION4RZPxc/edit?usp=sharing`);'",
     "stylelint-test": "vpython3 third_party/node/node.py --output ./node_modules/.bin/mocha \"./scripts/stylelint_rules/tests/*_test.js\"",
     "webtest": "vpython3 third_party/node/node.py --output scripts/npm_test.js",

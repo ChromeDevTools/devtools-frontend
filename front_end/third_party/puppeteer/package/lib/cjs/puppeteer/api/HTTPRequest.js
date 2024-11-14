@@ -20,6 +20,7 @@ exports.DEFAULT_INTERCEPT_RESOLUTION_PRIORITY = 0;
  * following events are emitted by Puppeteer's `page`:
  *
  * - `request`: emitted when the request is issued by the page.
+ *
  * - `requestfinished` - emitted when the response body is downloaded and the
  *   request is complete.
  *

@@ -443,6 +443,9 @@ class CdpPage extends Page_js_1.Page {
     getDefaultTimeout() {
         return this._timeoutSettings.timeout();
     }
+    getDefaultNavigationTimeout() {
+        return this._timeoutSettings.navigationTimeout();
+    }
     async queryObjects(prototypeHandle) {
         (0, assert_js_1.assert)(!prototypeHandle.disposed, 'Prototype JSHandle is disposed!');
         (0, assert_js_1.assert)(prototypeHandle.id, 'Prototype JSHandle must not be referencing primitive value');

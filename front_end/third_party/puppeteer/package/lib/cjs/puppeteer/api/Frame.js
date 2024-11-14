@@ -304,7 +304,9 @@ let Frame = (() => {
                         const iframe = __addDisposableResource(env_2, iframe_1, false);
                         const frame = await iframe.contentFrame();
                         if (frame?._id === this._id) {
-                            return iframe.move();
+                            return (await parentFrame
+                                .mainRealm()
+                                .adoptHandle(iframe));
                         }
                     }
                     catch (e_1) {

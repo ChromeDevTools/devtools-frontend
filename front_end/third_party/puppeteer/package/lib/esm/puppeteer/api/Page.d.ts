@@ -783,6 +783,10 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      */
     abstract getDefaultTimeout(): number;
     /**
+     * Maximum navigation time in milliseconds.
+     */
+    abstract getDefaultNavigationTimeout(): number;
+    /**
      * Creates a locator for the provided selector. See {@link Locator} for
      * details and supported actions.
      *

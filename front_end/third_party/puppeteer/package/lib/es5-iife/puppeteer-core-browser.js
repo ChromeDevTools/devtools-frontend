@@ -2850,7 +2850,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   /**
    * @internal
    */
-  const packageVersion = '23.7.1';
+  const packageVersion = '23.8.0';
 
   /**
    * @license
@@ -8592,7 +8592,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
               const iframe = __addDisposableResource$5(env_2, iframe_1, false);
               const frame = await iframe.contentFrame();
               if (frame?._id === this._id) {
-                return iframe.move();
+                return await parentFrame.mainRealm().adoptHandle(iframe);
               }
             } catch (e_1) {
               env_2.error = e_1;
@@ -9482,6 +9482,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    * following events are emitted by Puppeteer's `page`:
    *
    * - `request`: emitted when the request is issued by the page.
+   *
    * - `requestfinished` - emitted when the response body is downloaded and the
    *   request is complete.
    *
@@ -20706,6 +20707,9 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     getDefaultTimeout() {
       return this._timeoutSettings.timeout();
     }
+    getDefaultNavigationTimeout() {
+      return this._timeoutSettings.navigationTimeout();
+    }
     async queryObjects(prototypeHandle) {
       assert(!prototypeHandle.disposed, 'Prototype JSHandle is disposed!');
       assert(prototypeHandle.id, 'Prototype JSHandle must not be referencing primitive value');
@@ -24241,9 +24245,9 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    * @internal
    */
   const PUPPETEER_REVISIONS = Object.freeze({
-    chrome: '130.0.6723.116',
-    'chrome-headless-shell': '130.0.6723.116',
-    firefox: 'stable_132.0.1'
+    chrome: '131.0.6778.69',
+    'chrome-headless-shell': '131.0.6778.69',
+    firefox: 'stable_132.0.2'
   });
 
   /**

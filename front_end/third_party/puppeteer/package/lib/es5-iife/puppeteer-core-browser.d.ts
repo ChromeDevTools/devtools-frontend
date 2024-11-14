@@ -3024,6 +3024,7 @@ export declare type Handler<T = unknown> = (event: T) => void;
  * following events are emitted by Puppeteer's `page`:
  *
  * - `request`: emitted when the request is issued by the page.
+ *
  * - `requestfinished` - emitted when the response body is downloaded and the
  *   request is complete.
  *
@@ -4651,6 +4652,10 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      * Maximum time in milliseconds.
      */
     abstract getDefaultTimeout(): number;
+    /**
+     * Maximum navigation time in milliseconds.
+     */
+    abstract getDefaultNavigationTimeout(): number;
     /**
      * Creates a locator for the provided selector. See {@link Locator} for
      * details and supported actions.

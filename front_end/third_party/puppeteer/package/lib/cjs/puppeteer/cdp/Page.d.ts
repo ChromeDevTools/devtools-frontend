@@ -55,6 +55,7 @@ export declare class CdpPage extends Page {
     setDefaultNavigationTimeout(timeout: number): void;
     setDefaultTimeout(timeout: number): void;
     getDefaultTimeout(): number;
+    getDefaultNavigationTimeout(): number;
     queryObjects<Prototype>(prototypeHandle: JSHandle<Prototype>): Promise<JSHandle<Prototype[]>>;
     cookies(...urls: string[]): Promise<Cookie[]>;
     deleteCookie(...cookies: DeleteCookiesRequest[]): Promise<void>;

@@ -319,6 +319,9 @@ let BidiPage = (() => {
         getDefaultTimeout() {
             return this._timeoutSettings.timeout();
         }
+        getDefaultNavigationTimeout() {
+            return this._timeoutSettings.navigationTimeout();
+        }
         isJavaScriptEnabled() {
             return this.#cdpEmulationManager.javascriptEnabled;
         }

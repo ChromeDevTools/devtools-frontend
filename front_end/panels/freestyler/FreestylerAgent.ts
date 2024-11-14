@@ -15,12 +15,12 @@ import {
   type ActionResponse,
   AgentType,
   AiAgent,
-  type AidaRequestOptions,
   type ContextResponse,
   ConversationContext,
   debugLog,
   isDebugMode,
   type ParsedResponse,
+  type RequestOptions,
   ResponseType,
   type SideEffectResponse,
 } from './AiAgent.js';
@@ -262,7 +262,7 @@ export class FreestylerAgent extends AiAgent<SDK.DOMModel.DOMNode> {
     return config.devToolsFreestyler?.executionMode ?? Root.Runtime.HostConfigFreestylerExecutionMode.ALL_SCRIPTS;
   }
 
-  get options(): AidaRequestOptions {
+  get options(): RequestOptions {
     const config = Common.Settings.Settings.instance().getHostConfig();
     const temperature = config.devToolsFreestyler?.temperature;
     const modelId = config.devToolsFreestyler?.modelId;

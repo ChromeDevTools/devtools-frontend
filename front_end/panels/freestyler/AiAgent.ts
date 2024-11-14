@@ -87,16 +87,11 @@ export interface UserQuery {
 export type ResponseData = AnswerResponse|ErrorResponse|ActionResponse|SideEffectResponse|ThoughtResponse|TitleResponse|
     QueryResponse|ContextResponse|UserQuery;
 
-export interface AidaBuildRequestOptions {
+export interface BuildRequestOptions {
   input: string;
 }
 
-export interface HistoryChunk {
-  text: string;
-  entity: Host.AidaClient.Entity;
-}
-
-export interface AidaRequestOptions {
+export interface RequestOptions {
   temperature?: number;
   modelId?: string;
 }
@@ -156,7 +151,7 @@ export abstract class AiAgent<T> {
   #aidaClient: Host.AidaClient.AidaClient;
   #serverSideLoggingEnabled: boolean;
   abstract readonly preamble: string;
-  abstract readonly options: AidaRequestOptions;
+  abstract readonly options: RequestOptions;
   abstract readonly clientFeature: Host.AidaClient.ClientFeature;
   abstract readonly userTier: string|undefined;
   abstract handleContextDetails(select: ConversationContext<T>|null): AsyncGenerator<ContextResponse, void, void>;
@@ -178,7 +173,7 @@ export abstract class AiAgent<T> {
     this.#serverSideLoggingEnabled = opts.serverSideLoggingEnabled ?? false;
   }
 
-  get chatHistoryForTesting(): Array<HistoryChunk> {
+  get chatHistoryForTesting(): Array<Host.AidaClient.HistoryChunk> {
     return this.#chatHistoryForAida;
   }
 
@@ -250,7 +245,7 @@ export abstract class AiAgent<T> {
     return {response, rpcId};
   }
 
-  buildRequest(opts: AidaBuildRequestOptions): Host.AidaClient.AidaRequest {
+  buildRequest(opts: BuildRequestOptions): Host.AidaClient.AidaRequest {
     const history = this.#chatHistoryForAida;
     const request: Host.AidaClient.AidaRequest = {
       input: opts.input,
@@ -317,8 +312,8 @@ STOP`;
     return text;
   }
 
-  get #chatHistoryForAida(): HistoryChunk[] {
-    const history: Array<HistoryChunk> = [];
+  get #chatHistoryForAida(): Host.AidaClient.HistoryChunk[] {
+    const history: Array<Host.AidaClient.HistoryChunk> = [];
     let response: {
       title?: string,
       thought?: string,

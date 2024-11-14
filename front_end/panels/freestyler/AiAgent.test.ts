@@ -23,7 +23,7 @@ class AiAgentMock extends AiAgent<unknown> {
   clientFeature: Host.AidaClient.ClientFeature = 0;
   userTier: undefined;
 
-  options: Freestyler.AidaRequestOptions = {
+  options: Freestyler.RequestOptions = {
     temperature: 1,
     modelId: 'test model',
   };

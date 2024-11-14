@@ -13,11 +13,11 @@ import * as PanelUtils from '../utils/utils.js';
 import {
   AgentType,
   AiAgent,
-  type AidaRequestOptions,
   type ContextDetail,
   type ContextResponse,
   ConversationContext,
   type ParsedResponse,
+  type RequestOptions,
   ResponseType,
 } from './AiAgent.js';
 
@@ -136,7 +136,7 @@ export class DrJonesNetworkAgent extends AiAgent<SDK.NetworkRequest.NetworkReque
     const config = Common.Settings.Settings.instance().getHostConfig();
     return config.devToolsAiAssistanceNetworkAgent?.userTier;
   }
-  get options(): AidaRequestOptions {
+  get options(): RequestOptions {
     const config = Common.Settings.Settings.instance().getHostConfig();
     const temperature = config.devToolsAiAssistanceNetworkAgent?.temperature;
     const modelId = config.devToolsAiAssistanceNetworkAgent?.modelId;

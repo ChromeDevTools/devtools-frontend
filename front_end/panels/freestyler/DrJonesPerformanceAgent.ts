@@ -11,10 +11,10 @@ import * as PanelUtils from '../utils/utils.js';
 import {
   AgentType,
   AiAgent,
-  type AidaRequestOptions,
   type ContextResponse,
   ConversationContext,
   type ParsedResponse,
+  type RequestOptions,
   ResponseType,
 } from './AiAgent.js';
 
@@ -171,7 +171,7 @@ export class DrJonesPerformanceAgent extends AiAgent<TimelineUtils.AICallTree.AI
     const config = Common.Settings.Settings.instance().getHostConfig();
     return config.devToolsAiAssistancePerformanceAgent?.userTier;
   }
-  get options(): AidaRequestOptions {
+  get options(): RequestOptions {
     const config = Common.Settings.Settings.instance().getHostConfig();
     const temperature = config.devToolsAiAssistancePerformanceAgent?.temperature;
     const modelId = config.devToolsAiAssistancePerformanceAgent?.modelId;

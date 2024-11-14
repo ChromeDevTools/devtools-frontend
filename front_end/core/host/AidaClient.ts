@@ -21,7 +21,7 @@ export const enum Rating {
   NEGATIVE = 'NEGATIVE',
 }
 
-export interface Chunk {
+export interface HistoryChunk {
   text: string;
   entity: Entity;
 }
@@ -65,10 +65,10 @@ export interface AidaRequest {
   input: string;
   preamble?: string;
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  chat_history?: Chunk[];
+  chat_history?: HistoryChunk[];
   client: string;
   options?: {
-    temperature?: Number,
+    temperature?: number,
     // eslint-disable-next-line @typescript-eslint/naming-convention
     model_id?: string,
   };

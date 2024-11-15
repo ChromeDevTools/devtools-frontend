@@ -35,8 +35,10 @@ devtools_module("security") {
     "../../core/i18n:bundle",
     "../../core/sdk:bundle",
     "../../generated:protocol",
+    "../../models/issues_manager:bundle",
     "../../panels/network/forward:bundle",
     "../../ui/legacy:bundle",
+    "../../ui/legacy/components/data_grid:bundle",
   ]
 }
 
@@ -72,6 +74,7 @@ ts_library("unittests") {
   testonly = true
 
   sources = [
+    "CookieReportView.test.ts",
     "SecurityModel.test.ts",
     "SecurityPanel.test.ts",
   ]

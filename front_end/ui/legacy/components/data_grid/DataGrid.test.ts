@@ -20,13 +20,11 @@ describeWithEnvironment('DataGrid', () => {
     let widget!: DataGrid.DataGrid.DataGridWidget<unknown>;
 
     const dataGridOptions: DataGrid.DataGrid.DataGridWidgetOptions<unknown> = {
-      implParams: {
-        displayName: 'testGrid',
-        columns: [{
-          id: 'test',
-          sortable: false,
-        }],
-      },
+      displayName: 'testGrid',
+      columns: [{
+        id: 'test',
+        sortable: false,
+      }],
       nodes: [new DataGrid.DataGrid.DataGridNode({test: 'testNode'})],
       markAsRoot: true,
     };
@@ -34,6 +32,7 @@ describeWithEnvironment('DataGrid', () => {
     // clang-format off
         render(
             html`
+        <!-- @ts-ignore -->
         <devtools-data-grid-widget
             .options=${dataGridOptions}
             ${widgetRef(DataGrid.DataGrid.DataGridWidget, e => { widget = e; })}
@@ -41,8 +40,6 @@ describeWithEnvironment('DataGrid', () => {
         `,
         container, {host: this});
     // clang-format on
-
-    await new Promise(resolve => setTimeout(resolve, 0));
 
     assert.exists(widget);
     // There is a single test row

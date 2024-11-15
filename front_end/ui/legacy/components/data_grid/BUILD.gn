@@ -46,6 +46,7 @@ devtools_entrypoint("bundle") {
     "../../../../panels/media/*",
     "../../../../panels/network/*",
     "../../../../panels/profiler/*",
+    "../../../../panels/security/*",
     "../../../../panels/timeline/*",
     "../../../../panels/webauthn/*",
     "../cookie_table/*",

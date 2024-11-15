@@ -23,6 +23,7 @@ devtools_entrypoint("bundle") {
 
   visibility = [
     "../../entrypoints/lighthouse_worker/*",
+    "../../models/issues_manager:issues_manager",
     "../../models/trace/*",
   ]
 

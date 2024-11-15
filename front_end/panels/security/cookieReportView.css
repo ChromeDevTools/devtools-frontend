@@ -44,3 +44,7 @@
   padding-right: var(--sys-size-6);
   flex-shrink: 0;
 }
+
+.data-grid {
+  flex: auto;
+}

@@ -53,6 +53,7 @@ devtools_module("issues_manager") {
     "../../models/text_utils:bundle",
     "../../models/workspace:bundle",
     "../../third_party/marked:bundle",
+    "../../third_party/third-party-web:bundle",
   ]
 
   public_deps = [ ":descriptions" ]
@@ -231,6 +232,7 @@ devtools_entrypoint("bundle") {
     "../../panels/elements/*",
     "../../panels/issues/*",
     "../../panels/network/*",
+    "../../panels/security/*",
     "../../panels/sources/*",
     "../../testing/*",
     "../../ui/components/docs/issue_counter/*",

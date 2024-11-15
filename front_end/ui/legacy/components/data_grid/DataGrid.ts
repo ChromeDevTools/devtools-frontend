@@ -2471,61 +2471,62 @@ export class DataGridWidget<T> extends UI.Widget.VBox {
   }
 }
 
-export interface DataGridWidgetOptions<T> {
-  implParams: Parameters;
-  dataGridImpl?: DataGridImpl<T>;
-  markAsRoot?: boolean;
-  nodes: DataGridNode<T>[];
-}
+export type DataGridWidgetOptions<T> = Parameters&{
+  markAsRoot?: boolean,
+  striped?: boolean, nodes: DataGridNode<T>[],
+};
 
 export class DataGridWidgetElement<T> extends UI.Widget.WidgetElement<DataGridWidget<T>> {
   #options: DataGridWidgetOptions<T>;
+  widget?: DataGridWidget<T>;
 
   constructor() {
     super();
     // default values for options
     this.#options = {
-      implParams: {
-        displayName: 'dataGrid',
-        columns: [],
-      },
+      displayName: 'dataGrid',
+      columns: [],
       nodes: [],
     };
   }
 
   set options(options: DataGridWidgetOptions<T>) {
     this.#options = options;
+    this.#updateGrid();
   }
 
   override createWidget(): DataGridWidget<T> {
-    const {
-      implParams,
-      markAsRoot,
-      nodes,
-    } = this.#options;
-
-    if (!this.#options.dataGridImpl) {
-      this.#options.dataGridImpl = new DataGridImpl<T>(implParams);
-    }
-
-    this.#options.dataGridImpl.rootNode().removeChildren();
-    for (const node of nodes) {
-      this.#options.dataGridImpl.rootNode().appendChild(node);
-    }
+    const dataGridImpl = new DataGridImpl<T>(this.#options);
 
     // Translate existing DataGridImpl ("ObjectWrapper") events to DOM CustomEvents so clients can
     // use lit templates to bind listeners.
-    this.#options.dataGridImpl.addEventListener(Events.SELECTED_NODE, this.#selectedNode.bind(this));
-    this.#options.dataGridImpl.addEventListener(Events.DESELECTED_NODE, this.#deselectedNode.bind(this));
-    this.#options.dataGridImpl.addEventListener(Events.OPENED_NODE, this.#openedNode.bind(this));
-    this.#options.dataGridImpl.addEventListener(Events.SORTING_CHANGED, this.#sortingChanged.bind(this));
-    this.#options.dataGridImpl.addEventListener(Events.PADDING_CHANGED, this.#paddingChanged.bind(this));
-    const widget = this.#options.dataGridImpl.asWidget(this);
+    dataGridImpl.addEventListener(Events.SELECTED_NODE, this.#selectedNode.bind(this));
+    dataGridImpl.addEventListener(Events.DESELECTED_NODE, this.#deselectedNode.bind(this));
+    dataGridImpl.addEventListener(Events.OPENED_NODE, this.#openedNode.bind(this));
+    dataGridImpl.addEventListener(Events.SORTING_CHANGED, this.#sortingChanged.bind(this));
+    dataGridImpl.addEventListener(Events.PADDING_CHANGED, this.#paddingChanged.bind(this));
+    this.widget = dataGridImpl.asWidget(this);
 
-    if (markAsRoot) {
-      widget.markAsRoot();
+    if (this.#options.markAsRoot) {
+      this.widget.markAsRoot();
     }
-    return widget;
+
+    this.#updateGrid();
+
+    return this.widget;
+  }
+
+  #updateGrid(): void {
+    if (this.widget) {
+      this.widget.dataGrid.rootNode().removeChildren();
+      for (const node of this.#options.nodes) {
+        this.widget.dataGrid.rootNode().appendChild(node);
+      }
+
+      if (this.#options.striped) {
+        this.widget.dataGrid.setStriped(true);
+      }
+    }
   }
 
   #selectedNode(event: Common.EventTarget.EventTargetEvent<DataGridNode<T>>): void {

@@ -26,7 +26,7 @@ export interface OriginalScope {
    * Other languages might require language-specific scope kinds, in which case we'll print the
    * kind as-is.
    */
-  kind: string;
+  kind?: string;
   name?: string;
   variables: string[];
   children: OriginalScope[];
@@ -101,10 +101,10 @@ function decodeOriginalScope(encodedOriginalScope: string, names: string[]): Ori
     line += item.line;
     const {column} = item;
     if (isStart(item)) {
-      kindIdx += item.kind;
-      const kind = resolveName(kindIdx, names);
-      if (kind === undefined) {
-        throw new Error(`Scope does not have a valid kind '${kind}'`);
+      let kind: string|undefined;
+      if (item.kind !== undefined) {
+        kindIdx += item.kind;
+        kind = resolveName(kindIdx, names);
       }
       const name = resolveName(item.name, names);
       const variables = item.variables.map(idx => names[idx]);
@@ -132,10 +132,15 @@ function decodeOriginalScope(encodedOriginalScope: string, names: string[]): Ori
 interface EncodedOriginalScopeStart {
   line: number;
   column: number;
-  kind: number;
   flags: number;
   name?: number;
+  kind?: number;
   variables: number[];
+}
+
+export const enum EncodedOriginalScopeFlag {
+  HAS_NAME = 0x1,
+  HAS_KIND = 0x2,
 }
 
 interface EncodedOriginalScopeEnd {
@@ -144,7 +149,7 @@ interface EncodedOriginalScopeEnd {
 }
 
 function isStart(item: EncodedOriginalScopeStart|EncodedOriginalScopeEnd): item is EncodedOriginalScopeStart {
-  return 'kind' in item;
+  return 'flags' in item;
 }
 
 function*
@@ -173,13 +178,15 @@ function*
     const startItem: EncodedOriginalScopeStart = {
       line,
       column,
-      kind: iter.nextVLQ(),
       flags: iter.nextVLQ(),
       variables: [],
     };
 
-    if (startItem.flags & 0x1) {
+    if (startItem.flags & EncodedOriginalScopeFlag.HAS_NAME) {
       startItem.name = iter.nextVLQ();
+    }
+    if (startItem.flags & EncodedOriginalScopeFlag.HAS_KIND) {
+      startItem.kind = iter.nextVLQ();
     }
 
     while (iter.hasNext() && iter.peek() !== ',') {

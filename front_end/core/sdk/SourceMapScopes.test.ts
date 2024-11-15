@@ -31,6 +31,18 @@ describe('decodeOriginalScopes', () => {
     assert.throws(() => decodeOriginalScopes([scopes], names), /Malformed/);
   });
 
+  it('decodes scopes without "kind"', () => {
+    const names: string[] = [];
+    const scope = new OriginalScopeBuilder(names).start(0, 0).end(5, 0).build();
+
+    const originalScopes = decodeOriginalScopes([scope], names);
+
+    assert.lengthOf(originalScopes, 1);
+    const {root} = originalScopes[0];
+
+    assert.isUndefined(root.kind);
+  });
+
   it('decodes a global scope', () => {
     const names: string[] = [];
     const scope = new OriginalScopeBuilder(names).start(0, 0, 'global').end(5, 0).build();

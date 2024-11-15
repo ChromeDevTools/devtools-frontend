@@ -141,21 +141,28 @@ export class OriginalScopeBuilder {
     this.#names = names;
   }
 
-  start(line: number, column: number, kind: string, name?: string, variables?: string[]): this {
+  start(line: number, column: number, kind?: string, name?: string, variables?: string[]): this {
     if (this.#encodedScope !== '') {
       this.#encodedScope += ',';
     }
 
     const lineDiff = line - this.#lastLine;
     this.#lastLine = line;
-    const flags = (name !== undefined ? 0x1 : 0x0);
+    let flags = 0;
+    const nameIdxAndKindIdx: number[] = [];
 
-    this.#encodedScope += encodeVlqList([lineDiff, column, this.#encodeKind(kind), flags]);
-
-    if (name !== undefined) {
-      this.#encodedScope += encodeVlq(this.#nameIdx(name));
+    if (name) {
+      flags |= SDK.SourceMapScopes.EncodedOriginalScopeFlag.HAS_NAME;
+      nameIdxAndKindIdx.push(this.#nameIdx(name));
     }
-    if (variables !== undefined) {
+    if (kind) {
+      flags |= SDK.SourceMapScopes.EncodedOriginalScopeFlag.HAS_KIND;
+      nameIdxAndKindIdx.push(this.#encodeKind(kind));
+    }
+
+    this.#encodedScope += encodeVlqList([lineDiff, column, flags, ...nameIdxAndKindIdx]);
+
+    if (variables) {
       this.#encodedScope += encodeVlqList(variables.map(variable => this.#nameIdx(variable)));
     }
 

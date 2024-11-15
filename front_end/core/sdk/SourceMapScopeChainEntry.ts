@@ -78,7 +78,7 @@ export class SourceMapScopeChainEntry implements ScopeChainEntry {
       case 'block':
         return Protocol.Debugger.ScopeType.Block;
     }
-    return this.#scope.kind;
+    return this.#scope.kind ?? '';
   }
 
   typeName(): string {
@@ -90,7 +90,7 @@ export class SourceMapScopeChainEntry implements ScopeChainEntry {
       case 'block':
         return i18nString(UIStrings.block);
     }
-    return this.#scope.kind;
+    return this.#scope.kind ?? '';
   }
 
   name(): string|undefined {

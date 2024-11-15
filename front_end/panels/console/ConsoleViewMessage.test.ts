@@ -16,9 +16,34 @@ import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
+import * as Console from './console.js';
 // The css files aren't exported by the bundle, so we need to import it directly.
 // eslint-disable-next-line rulesdir/es_modules_import
 import consoleViewStyles from './consoleView.css.js';
+
+describe('ConsoleViewMessage', () => {
+  describe('concatErrorDescriptionAndIssueSummary', () => {
+    const {concatErrorDescriptionAndIssueSummary} = Console.ConsoleViewMessage;
+
+    it('correctly appends the issue summary in case of single line error descriptions', () => {
+      assert.strictEqual(
+          concatErrorDescriptionAndIssueSummary(
+              'TypeError: Failed to fetch',
+              'Access blocked by CORS policy: Cross origin requests are not allowed by request mode.'),
+          'TypeError: Failed to fetch. Access blocked by CORS policy: Cross origin requests are not allowed by request mode.',
+      );
+    });
+
+    it('correctly inserts the issue summary in case of multi-line error descriptions', () => {
+      assert.strictEqual(
+          concatErrorDescriptionAndIssueSummary(
+              'TypeError: Failed to fetch\n  at (index):25:5',
+              'Access blocked by CORS policy: Cross origin requests are not allowed by request mode.'),
+          'TypeError: Failed to fetch. Access blocked by CORS policy: Cross origin requests are not allowed by request mode.\n  at (index):25:5',
+      );
+    });
+  });
+});
 
 describeWithMockConnection('ConsoleViewMessage', () => {
   describe('anchor rendering', () => {

@@ -1239,12 +1239,12 @@ describeWithEnvironment('SourceMap', () => {
       // 'foo' calls 'bar', 'bar' calls 'baz'. 'bar' and 'baz' are inlined into 'foo'.
       const names: string[] = [];
       const originalScopes = [new OriginalScopeBuilder(names)
-                                  .start(0, 0, 'global')
-                                  .start(10, 0, 'function', 'foo')
+                                  .start(0, 0, {kind: 'global'})
+                                  .start(10, 0, {kind: 'function', name: 'foo'})
                                   .end(20, 0)
-                                  .start(30, 0, 'function', 'bar')
+                                  .start(30, 0, {kind: 'function', name: 'bar'})
                                   .end(40, 0)
-                                  .start(50, 0, 'function', 'baz')
+                                  .start(50, 0, {kind: 'function', name: 'baz'})
                                   .end(60, 0)
                                   .end(70, 0)
                                   .build()];

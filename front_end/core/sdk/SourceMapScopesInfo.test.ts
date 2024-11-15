@@ -17,8 +17,8 @@ describe('SourceMapScopesInfo', () => {
     it('returns the single original function name if nothing was inlined', () => {
       const names: string[] = [];
       const originalScopes = [new OriginalScopeBuilder(names)
-                                  .start(0, 0, 'global')
-                                  .start(5, 0, 'function', 'foo')
+                                  .start(0, 0, {kind: 'global'})
+                                  .start(5, 0, {kind: 'function', name: 'foo'})
                                   .end(10, 0)
                                   .end(20, 0)
                                   .build()];
@@ -40,12 +40,12 @@ describe('SourceMapScopesInfo', () => {
       // 'foo' calls 'bar', 'bar' calls 'baz'. 'bar' and 'baz' are inlined into 'foo'.
       const names: string[] = [];
       const originalScopes = [new OriginalScopeBuilder(names)
-                                  .start(0, 0, 'global')
-                                  .start(10, 0, 'function', 'foo')
+                                  .start(0, 0, {kind: 'global'})
+                                  .start(10, 0, {kind: 'function', name: 'foo'})
                                   .end(20, 0)
-                                  .start(30, 0, 'function', 'bar')
+                                  .start(30, 0, {kind: 'function', name: 'bar'})
                                   .end(40, 0)
-                                  .start(50, 0, 'function', 'baz')
+                                  .start(50, 0, {kind: 'function', name: 'baz'})
                                   .end(60, 0)
                                   .end(70, 0)
                                   .build()];
@@ -117,11 +117,11 @@ describe('SourceMapScopesInfo', () => {
 
       const names: string[] = [];
       const originalScopes = [new OriginalScopeBuilder(names)
-                                  .start(0, 0, 'global')
-                                  .start(0, 14, 'function', 'inner')
+                                  .start(0, 0, {kind: 'global'})
+                                  .start(0, 14, {kind: 'function', name: 'inner'})
                                   .end(2, 1)
-                                  .start(4, 14, 'function', 'outer')
-                                  .start(5, 12, 'block')
+                                  .start(4, 14, {kind: 'function', name: 'outer'})
+                                  .start(5, 12, {kind: 'block'})
                                   .end(7, 3)
                                   .end(8, 1)
                                   .end(11, 0)
@@ -189,11 +189,11 @@ describe('SourceMapScopesInfo', () => {
 
       const names: string[] = [];
       const originalScopes = [new OriginalScopeBuilder(names)
-                                  .start(0, 0, 'global')
-                                  .start(0, 14, 'function', 'inner')
+                                  .start(0, 0, {kind: 'global'})
+                                  .start(0, 14, {kind: 'function', name: 'inner'})
                                   .end(2, 1)
-                                  .start(4, 14, 'function', 'outer')
-                                  .start(5, 12, 'block')
+                                  .start(4, 14, {kind: 'function', name: 'outer'})
+                                  .start(5, 12, {kind: 'block'})
                                   .end(7, 3)
                                   .end(8, 1)
                                   .end(11, 0)
@@ -264,11 +264,11 @@ describe('SourceMapScopesInfo', () => {
 
       const names: string[] = [];
       const originalScopes = [new OriginalScopeBuilder(names)
-                                  .start(0, 0, 'global')
-                                  .start(0, 14, 'function', 'inner')
+                                  .start(0, 0, {kind: 'global'})
+                                  .start(0, 14, {kind: 'function', name: 'inner'})
                                   .end(2, 1)
-                                  .start(4, 14, 'function', 'outer')
-                                  .start(5, 12, 'block')
+                                  .start(4, 14, {kind: 'function', name: 'outer'})
+                                  .start(5, 12, {kind: 'block'})
                                   .end(7, 3)
                                   .end(8, 1)
                                   .end(11, 0)
@@ -308,8 +308,8 @@ describe('SourceMapScopesInfo', () => {
     it('returns false for scope info without variables or bindings', () => {
       const names: string[] = [];
       const originalScopes = [new OriginalScopeBuilder(names)
-                                  .start(0, 0, 'global')
-                                  .start(10, 0, 'function', 'foo')
+                                  .start(0, 0, {kind: 'global'})
+                                  .start(10, 0, {kind: 'function', name: 'foo'})
                                   .end(20, 0)
                                   .end(30, 0)
                                   .build()];
@@ -330,8 +330,8 @@ describe('SourceMapScopesInfo', () => {
     it('returns false for scope info with variables but no bindings', () => {
       const names: string[] = [];
       const originalScopes = [new OriginalScopeBuilder(names)
-                                  .start(0, 0, 'global')
-                                  .start(10, 0, 'function', 'foo', ['variable1', 'variable2'])
+                                  .start(0, 0, {kind: 'global'})
+                                  .start(10, 0, {kind: 'function', name: 'foo', variables: ['variable1', 'variable2']})
                                   .end(20, 0)
                                   .end(30, 0)
                                   .build()];
@@ -352,8 +352,8 @@ describe('SourceMapScopesInfo', () => {
     it('returns true for scope info with variables and bindings', () => {
       const names: string[] = [];
       const originalScopes = [new OriginalScopeBuilder(names)
-                                  .start(0, 0, 'global')
-                                  .start(10, 0, 'function', 'foo', ['variable1', 'variable2'])
+                                  .start(0, 0, {kind: 'global'})
+                                  .start(10, 0, {kind: 'function', name: 'foo', variables: ['variable1', 'variable2']})
                                   .end(20, 0)
                                   .end(30, 0)
                                   .build()];
@@ -410,7 +410,7 @@ describe('SourceMapScopesInfo', () => {
 
     it('returns null when the inner-most generated range doesn\'t have an original scope', () => {
       const names: string[] = [];
-      const originalScopes = [new OriginalScopeBuilder(names).start(0, 0, 'global').end(20, 0).build()];
+      const originalScopes = [new OriginalScopeBuilder(names).start(0, 0, {kind: 'global'}).end(20, 0).build()];
 
       const generatedRanges = new GeneratedRangeBuilder(names)
                                   .start(0, 0, {definition: {sourceIdx: 0, scopeIdx: 0}})
@@ -429,7 +429,7 @@ describe('SourceMapScopesInfo', () => {
 
     it('returns the original global scope when paused in the global scope', () => {
       const names: string[] = [];
-      const originalScopes = [new OriginalScopeBuilder(names).start(0, 0, 'global').end(20, 0).build()];
+      const originalScopes = [new OriginalScopeBuilder(names).start(0, 0, {kind: 'global'}).end(20, 0).build()];
 
       const generatedRanges =
           new GeneratedRangeBuilder(names).start(0, 0, {definition: {sourceIdx: 0, scopeIdx: 0}}).end(0, 100).build();
@@ -451,8 +451,8 @@ describe('SourceMapScopesInfo', () => {
        () => {
          const names: string[] = [];
          const originalScopes = [new OriginalScopeBuilder(names)
-                                     .start(0, 0, 'function', 'outer')
-                                     .start(5, 0, 'function', 'inner')
+                                     .start(0, 0, {kind: 'function', name: 'outer'})
+                                     .start(5, 0, {kind: 'function', name: 'inner'})
                                      .end(15, 0)
                                      .end(20, 0)
                                      .build()];
@@ -483,8 +483,8 @@ describe('SourceMapScopesInfo', () => {
     it('drops inner block scopes if a return value is present to account for V8 oddity', () => {
       const names: string[] = [];
       const originalScopes = [new OriginalScopeBuilder(names)
-                                  .start(0, 0, 'function', 'someFn')
-                                  .start(5, 0, 'block')
+                                  .start(0, 0, {kind: 'function', name: 'someFn'})
+                                  .start(5, 0, {kind: 'block'})
                                   .end(15, 0)
                                   .end(20, 0)
                                   .build()];
@@ -533,12 +533,13 @@ describe('SourceMapScopesInfo', () => {
       //         CDP scopes to work well.
 
       const names: string[] = [];
-      const originalScopes = [new OriginalScopeBuilder(names)
-                                  .start(0, 0, 'global')
-                                  .start(10, 0, 'function', 'someFn', ['fooVariable', 'barVariable'])
-                                  .end(20, 0)
-                                  .end(30, 0)
-                                  .build()];
+      const originalScopes =
+          [new OriginalScopeBuilder(names)
+               .start(0, 0, {kind: 'global'})
+               .start(10, 0, {kind: 'function', name: 'someFn', variables: ['fooVariable', 'barVariable']})
+               .end(20, 0)
+               .end(30, 0)
+               .build()];
 
       const generatedRanges = new GeneratedRangeBuilder(names)
                                   .start(0, 0, {definition: {sourceIdx: 0, scopeIdx: 0}})
@@ -602,8 +603,8 @@ describe('SourceMapScopesInfo', () => {
 
       const names: string[] = [];
       const originalScopes = [new OriginalScopeBuilder(names)
-                                  .start(0, 0, 'global', undefined, ['fooConstant', 'barVariable'])
-                                  .start(10, 0, 'function', 'someFn')
+                                  .start(0, 0, {kind: 'global', variables: ['fooConstant', 'barVariable']})
+                                  .start(10, 0, {kind: 'function', name: 'someFn'})
                                   .end(20, 0)
                                   .end(30, 0)
                                   .build()];
@@ -670,11 +671,11 @@ describe('SourceMapScopesInfo', () => {
 
       const names: string[] = [];
       const originalScopes = [new OriginalScopeBuilder(names)
-                                  .start(0, 0, 'global', undefined, ['inner', 'outer'])
-                                  .start(0, 14, 'function', 'inner', ['x'])
+                                  .start(0, 0, {kind: 'global', variables: ['inner', 'outer']})
+                                  .start(0, 14, {kind: 'function', name: 'inner', variables: ['x']})
                                   .end(3, 1)
-                                  .start(5, 14, 'function', 'outer', ['y'])
-                                  .start(6, 9, 'block')
+                                  .start(5, 14, {kind: 'function', name: 'outer', variables: ['y']})
+                                  .start(6, 9, {kind: 'block'})
                                   .end(8, 3)
                                   .end(9, 1)
                                   .end(12, 0)

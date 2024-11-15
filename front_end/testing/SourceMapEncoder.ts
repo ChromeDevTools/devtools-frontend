@@ -141,7 +141,9 @@ export class OriginalScopeBuilder {
     this.#names = names;
   }
 
-  start(line: number, column: number, kind?: string, name?: string, variables?: string[]): this {
+  start(
+      line: number, column: number,
+      options?: {name?: string, kind?: string, isStackFrame?: boolean, variables?: string[]}): this {
     if (this.#encodedScope !== '') {
       this.#encodedScope += ',';
     }
@@ -151,19 +153,22 @@ export class OriginalScopeBuilder {
     let flags = 0;
     const nameIdxAndKindIdx: number[] = [];
 
-    if (name) {
+    if (options?.name) {
       flags |= SDK.SourceMapScopes.EncodedOriginalScopeFlag.HAS_NAME;
-      nameIdxAndKindIdx.push(this.#nameIdx(name));
+      nameIdxAndKindIdx.push(this.#nameIdx(options.name));
     }
-    if (kind) {
+    if (options?.kind) {
       flags |= SDK.SourceMapScopes.EncodedOriginalScopeFlag.HAS_KIND;
-      nameIdxAndKindIdx.push(this.#encodeKind(kind));
+      nameIdxAndKindIdx.push(this.#encodeKind(options?.kind));
+    }
+    if (options?.isStackFrame) {
+      flags |= SDK.SourceMapScopes.EncodedOriginalScopeFlag.IS_STACK_FRAME;
     }
 
     this.#encodedScope += encodeVlqList([lineDiff, column, flags, ...nameIdxAndKindIdx]);
 
-    if (variables) {
-      this.#encodedScope += encodeVlqList(variables.map(variable => this.#nameIdx(variable)));
+    if (options?.variables) {
+      this.#encodedScope += encodeVlqList(options.variables.map(variable => this.#nameIdx(variable)));
     }
 
     return this;

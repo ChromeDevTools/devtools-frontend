@@ -133,12 +133,13 @@ The following components in [crbug] are owned by the Chrome DevTools team.
 | `Chromium>Platform>DevTools>Application`   | Application panel                                             |
 | `Chromium>Platform>DevTools>Console`       | Console panel                                                 |
 | `Chromium>Platform>DevTools>Elements`      | Elements panel                                                |
+| `Chromium>Platform>DevTools>Infra`         | Issues related to DevTools' infrastructure                    |
 | `Chromium>Platform>DevTools>Issues`        | Issues panel                                                  |
 | `Chromium>Platform>DevTools>Memory`        | Heap/Memory Profiling, Memory Analysis                        |
 | `Chromium>Platform>DevTools>Mobile`        | Mobile Emulation / Debugging                                  |
 | `Chromium>Platform>DevTools>Network`       | Network, Network conditions,  Network request blocking panels |
 | `Chromium>Platform>DevTools>Performance`   | Performance, Performance Monitor, Performance Insights panels |
-| `Chromium>Platform>DevTools>Platform`      | Protocol, Backend, DevTools Extensions                        |
+| `Chromium>Platform>DevTools>Extensions`    | Issues related to DevTools extensions and extensibility       |
 | `Chromium>Platform>DevTools>Recorder`      | Recorder panel                                                |
 | `Chromium>Platform>DevTools>Security`      | Security panel                                                |
 | `Chromium>Platform>DevTools>Sources`       | Sources panel                                                 |

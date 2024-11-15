@@ -25,7 +25,7 @@ describe('SourceMapScopesInfo', () => {
 
       const generatedRanges = new GeneratedRangeBuilder(names)
                                   .start(0, 0, {definition: {sourceIdx: 0, scopeIdx: 0}})
-                                  .start(0, 0, {definition: {sourceIdx: 0, scopeIdx: 1}, isFunctionScope: true})
+                                  .start(0, 0, {definition: {sourceIdx: 0, scopeIdx: 1}, isStackFrame: true})
                                   .end(0, 5)
                                   .end(0, 5)
                                   .build();
@@ -53,7 +53,7 @@ describe('SourceMapScopesInfo', () => {
       const generatedRanges =
           new GeneratedRangeBuilder(names)
               .start(0, 0, {definition: {sourceIdx: 0, scopeIdx: 0}})
-              .start(0, 0, {definition: {sourceIdx: 0, scopeIdx: 1}, isFunctionScope: true})
+              .start(0, 0, {definition: {sourceIdx: 0, scopeIdx: 1}, isStackFrame: true})
               .start(0, 5, {definition: {sourceIdx: 0, scopeIdx: 3}, callsite: {sourceIdx: 0, line: 15, column: 0}})
               .start(0, 5, {definition: {sourceIdx: 0, scopeIdx: 5}, callsite: {sourceIdx: 0, line: 35, column: 0}})
               .end(0, 10)
@@ -129,9 +129,9 @@ describe('SourceMapScopesInfo', () => {
 
       const generatedRanges = new GeneratedRangeBuilder(names)
                                   .start(0, 0, {definition: {sourceIdx: 0, scopeIdx: 0}})
-                                  .start(0, 10, {definition: {sourceIdx: 0, scopeIdx: 1}, isFunctionScope: true})
+                                  .start(0, 10, {definition: {sourceIdx: 0, scopeIdx: 1}, isStackFrame: true})
                                   .end(0, 28)
-                                  .start(1, 10, {definition: {sourceIdx: 0, scopeIdx: 3}, isFunctionScope: true})
+                                  .start(1, 10, {definition: {sourceIdx: 0, scopeIdx: 3}, isStackFrame: true})
                                   .start(1, 21, {definition: {sourceIdx: 0, scopeIdx: 4}})
                                   .end(1, 26)
                                   .end(1, 27)
@@ -202,7 +202,7 @@ describe('SourceMapScopesInfo', () => {
       const generatedRanges =
           new GeneratedRangeBuilder(names)
               .start(0, 0, {definition: {sourceIdx: 0, scopeIdx: 0}})
-              .start(0, 10, {definition: {sourceIdx: 0, scopeIdx: 3}, isFunctionScope: true})
+              .start(0, 10, {definition: {sourceIdx: 0, scopeIdx: 3}, isStackFrame: true})
               .start(0, 21, {definition: {sourceIdx: 0, scopeIdx: 4}})
               .start(0, 22, {definition: {sourceIdx: 0, scopeIdx: 1}, callsite: {sourceIdx: 0, line: 6, column: 4}})
               .end(0, 36)
@@ -316,7 +316,7 @@ describe('SourceMapScopesInfo', () => {
 
       const generatedRanges = new GeneratedRangeBuilder(names)
                                   .start(0, 0, {definition: {sourceIdx: 0, scopeIdx: 0}})
-                                  .start(0, 10, {definition: {sourceIdx: 0, scopeIdx: 1}, isFunctionScope: true})
+                                  .start(0, 10, {definition: {sourceIdx: 0, scopeIdx: 1}, isStackFrame: true})
                                   .end(0, 20)
                                   .end(0, 30)
                                   .build();
@@ -338,7 +338,7 @@ describe('SourceMapScopesInfo', () => {
 
       const generatedRanges = new GeneratedRangeBuilder(names)
                                   .start(0, 0, {definition: {sourceIdx: 0, scopeIdx: 0}})
-                                  .start(0, 10, {definition: {sourceIdx: 0, scopeIdx: 1}, isFunctionScope: true})
+                                  .start(0, 10, {definition: {sourceIdx: 0, scopeIdx: 1}, isStackFrame: true})
                                   .end(0, 20)
                                   .end(0, 30)
                                   .build();
@@ -361,7 +361,7 @@ describe('SourceMapScopesInfo', () => {
       const generatedRanges =
           new GeneratedRangeBuilder(names)
               .start(0, 0, {definition: {sourceIdx: 0, scopeIdx: 0}})
-              .start(0, 10, {definition: {sourceIdx: 0, scopeIdx: 1}, isFunctionScope: true, bindings: ['a', 'b']})
+              .start(0, 10, {definition: {sourceIdx: 0, scopeIdx: 1}, isStackFrame: true, bindings: ['a', 'b']})
               .end(0, 20)
               .end(0, 30)
               .build();

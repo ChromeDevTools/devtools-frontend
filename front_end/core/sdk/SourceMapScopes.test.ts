@@ -434,19 +434,35 @@ describe('decodeGeneratedRanges', () => {
     ]);
   });
 
-  it('decodes the "isFunctionScope" flag', () => {
+  it('decodes the "isStackFrame" flag in generated ranges', () => {
     const range = new GeneratedRangeBuilder([])
                       .start(0, 0)
-                      .start(5, 0, {isFunctionScope: true})
+                      .start(5, 0, {isStackFrame: true})
                       .end(10, 0)
-                      .start(20, 4, {isFunctionScope: false})
+                      .start(20, 4, {isStackFrame: false})
                       .end(30, 0)
                       .end(40, 0)
                       .build();
 
     const [generatedRange] = decodeGeneratedRanges(range, [], []);
     assert.lengthOf(generatedRange.children, 2);
-    assert.isTrue(generatedRange.children[0].isFunctionScope);
-    assert.isFalse(generatedRange.children[1].isFunctionScope);
+    assert.isTrue(generatedRange.children[0].isStackFrame);
+    assert.isFalse(generatedRange.children[1].isStackFrame);
+  });
+
+  it('decodes the "isHidden" flag', () => {
+    const range = new GeneratedRangeBuilder([])
+                      .start(0, 0)
+                      .start(5, 0, {isHidden: true})
+                      .end(10, 0)
+                      .start(20, 4)
+                      .end(30, 0)
+                      .end(40, 0)
+                      .build();
+
+    const [generatedRange] = decodeGeneratedRanges(range, [], []);
+    assert.lengthOf(generatedRange.children, 2);
+    assert.isTrue(generatedRange.children[0].isHidden);
+    assert.isFalse(generatedRange.children[1].isHidden);
   });
 });

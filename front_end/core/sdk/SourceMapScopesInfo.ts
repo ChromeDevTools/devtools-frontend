@@ -65,7 +65,7 @@ export class SourceMapScopesInfo {
         // Record the name and call-site if the range corresponds to an inlined function.
         result.inlinedFunctions.push({name: range.originalScope?.name ?? '', callsite: range.callsite});
       }
-      if (range.isFunctionScope) {
+      if (range.isStackFrame) {
         // We arrived at an actual generated JS function, don't go further.
         // The corresponding original scope could not actually be a function
         // (e.g. a block scope transpiled down to a JS function), but we'll

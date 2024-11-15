@@ -28,6 +28,7 @@ export interface OriginalScope {
    */
   kind?: string;
   name?: string;
+  isStackFrame: boolean;
   variables: string[];
   children: OriginalScope[];
   parent?: OriginalScope;
@@ -44,7 +45,12 @@ export interface GeneratedRange {
   /**
    * Whether this generated range is an actual JavaScript function in the generated code.
    */
-  isFunctionScope: boolean;
+  isStackFrame: boolean;
+  /**
+   * Whether calls to this generated range should be hidden from stack traces even if
+   * this range has an `originalScope`.
+   */
+  isHidden: boolean;
 
   /**
    * If this `GeneratedRange` is the result of inlining `originalScope`, then `callsite`
@@ -108,7 +114,15 @@ function decodeOriginalScope(encodedOriginalScope: string, names: string[]): Ori
       }
       const name = resolveName(item.name, names);
       const variables = item.variables.map(idx => names[idx]);
-      const scope: OriginalScope = {start: {line, column}, end: {line, column}, kind, name, variables, children: []};
+      const scope: OriginalScope = {
+        start: {line, column},
+        end: {line, column},
+        kind,
+        name,
+        isStackFrame: Boolean(item.flags & EncodedOriginalScopeFlag.IS_STACK_FRAME),
+        variables,
+        children: [],
+      };
       scopeStack.push(scope);
       scopeForItemIndex.set(index, scope);
     } else {
@@ -141,6 +155,7 @@ interface EncodedOriginalScopeStart {
 export const enum EncodedOriginalScopeFlag {
   HAS_NAME = 0x1,
   HAS_KIND = 0x2,
+  IS_STACK_FRAME = 0x4,
 }
 
 interface EncodedOriginalScopeEnd {
@@ -203,7 +218,8 @@ export function decodeGeneratedRanges(
   const rangeStack: GeneratedRange[] = [{
     start: {line: 0, column: 0},
     end: {line: 0, column: 0},
-    isFunctionScope: false,
+    isStackFrame: false,
+    isHidden: false,
     children: [],
     values: [],
   }];
@@ -214,7 +230,8 @@ export function decodeGeneratedRanges(
       const range: GeneratedRange = {
         start: {line: item.line, column: item.column},
         end: {line: item.line, column: item.column},
-        isFunctionScope: Boolean(item.flags & EncodedGeneratedRangeFlag.IS_FUNCTION_SCOPE),
+        isStackFrame: Boolean(item.flags & EncodedGeneratedRangeFlag.IS_STACK_FRAME),
+        isHidden: Boolean(item.flags & EncodedGeneratedRangeFlag.IS_HIDDEN),
         values: [],
         children: [],
       };
@@ -315,7 +332,8 @@ interface EncodedGeneratedRangeEnd {
 export const enum EncodedGeneratedRangeFlag {
   HAS_DEFINITION = 0x1,
   HAS_CALLSITE = 0x2,
-  IS_FUNCTION_SCOPE = 0x4,
+  IS_STACK_FRAME = 0x4,
+  IS_HIDDEN = 0x8,
 }
 
 function isRangeStart(item: EncodedGeneratedRangeStart|EncodedGeneratedRangeEnd): item is EncodedGeneratedRangeStart {

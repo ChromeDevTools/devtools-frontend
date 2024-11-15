@@ -471,7 +471,7 @@ export class ChartViewport extends UI.Widget.VBox {
     });
   }
 
-  private update(): void {
+  override update(): void {
     this.updateRangeSelectionOverlay();
     this.delegate.update();
   }

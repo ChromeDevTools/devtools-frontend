@@ -208,7 +208,7 @@ export class ProfileFlameChart extends
     this.dispatchEventToListeners(PerfUI.FlameChart.Events.ENTRY_INVOKED, event.data);
   }
 
-  update(): void {
+  override update(): void {
     this.overviewPane.update();
     this.mainPane.update();
   }
@@ -373,7 +373,7 @@ export class OverviewPane extends Common.ObjectWrapper.eventMixin<OverviewPaneEv
     this.updateTimerId = this.element.window().requestAnimationFrame(this.update.bind(this));
   }
 
-  update(): void {
+  override update(): void {
     this.updateTimerId = 0;
     const timelineData = this.timelineData();
     if (!timelineData) {

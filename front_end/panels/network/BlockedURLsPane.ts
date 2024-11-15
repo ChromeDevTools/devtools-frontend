@@ -212,7 +212,7 @@ export class BlockedURLsPane extends UI.Widget.VBox implements
     return editor;
   }
 
-  update(): void {
+  override update(): void {
     const enabled = this.manager.blockingEnabled();
     this.list.element.classList.toggle('blocking-disabled', !enabled && Boolean(this.manager.blockedPatterns().length));
 

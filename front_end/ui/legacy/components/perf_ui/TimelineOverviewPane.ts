@@ -196,7 +196,7 @@ export class TimelineOverviewPane extends Common.ObjectWrapper.eventMixin<EventT
     });
   }
 
-  private update(start?: Trace.Types.Timing.MilliSeconds, end?: Trace.Types.Timing.MilliSeconds): void {
+  override update(start?: Trace.Types.Timing.MilliSeconds, end?: Trace.Types.Timing.MilliSeconds): void {
     if (!this.isShowing()) {
       return;
     }
@@ -473,7 +473,7 @@ export class TimelineOverviewBase extends UI.Widget.VBox implements TimelineOver
     return this.calculatorInternal;
   }
 
-  update(): void {
+  override update(): void {
     throw new Error('Not implemented');
   }
 

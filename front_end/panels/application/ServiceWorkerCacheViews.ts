@@ -285,7 +285,10 @@ export class ServiceWorkerCacheView extends UI.View.SimpleView {
     node.remove();
   }
 
-  update(cache: SDK.ServiceWorkerCacheModel.Cache): void {
+  override update(cache: SDK.ServiceWorkerCacheModel.Cache|null = null): void {
+    if (!cache) {
+      return;
+    }
     this.cache = cache;
     this.resetDataGrid();
     void this.updateData(true);

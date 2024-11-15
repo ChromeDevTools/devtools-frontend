@@ -157,7 +157,7 @@ export class ClassesPaneWidget extends UI.Widget.Widget {
     this.registerCSSFiles([classesPaneWidgetStyles]);
   }
 
-  private update(): void {
+  override update(): void {
     if (!this.isShowing()) {
       return;
     }

@@ -80,7 +80,7 @@ export class DeviceModeWrapper extends UI.Widget.VBox {
     this.captureScreenshot(false, clip);
   }
 
-  private update(force: boolean): void {
+  override update(force?: boolean): void {
     this.toggleDeviceModeAction.setToggled(this.showDeviceModeSetting.get());
     if (!force) {
       const showing = this.deviceModeView && this.deviceModeView.isShowing();

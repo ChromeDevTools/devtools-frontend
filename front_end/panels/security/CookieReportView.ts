@@ -106,10 +106,10 @@ export class CookieReportView extends UI.Widget.VBox {
     super(true, undefined, element);
     this.#view = view;
 
-    this.doUpdate();
+    void this.doUpdate();
   }
 
-  doUpdate(): void {
+  override async doUpdate(): Promise<void> {
     this.#view(this, this, this.contentElement);
   }
 

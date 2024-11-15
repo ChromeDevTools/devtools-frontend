@@ -128,7 +128,7 @@ export class EditFileSystemView extends UI.Widget.VBox implements UI.ListWidget.
     return IsolatedFileSystemManager.instance().fileSystem(this.fileSystemPath) as PlatformFileSystem;
   }
 
-  private update(): void {
+  override update(): void {
     if (this.muteUpdate) {
       return;
     }

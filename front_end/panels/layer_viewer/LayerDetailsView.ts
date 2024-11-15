@@ -297,7 +297,7 @@ export class LayerDetailsView extends Common.ObjectWrapper.eventMixin<EventTypes
         i18nString(UIStrings.nearestLayerShiftingContaining), constraint.nearestLayerShiftingContainingBlock());
   }
 
-  update(): void {
+  override update(): void {
     const layer = this.selection && this.selection.layer();
     if (!layer) {
       this.tableElement.remove();

@@ -262,7 +262,7 @@ export class ElementStatePaneWidget extends UI.Widget.Widget {
     this.registerCSSFiles([elementStatePaneWidgetStyles]);
     this.update();
   }
-  private update(): void {
+  override update(): void {
     let node = UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
     if (node) {
       node = node.enclosingElementOrSelf();

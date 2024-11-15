@@ -232,7 +232,7 @@ export class IsolateSelector extends UI.Widget.VBox implements UI.ListControl.Li
         SDK.CPUProfilerModel.CPUProfilerModel, model && model.target().model(SDK.CPUProfilerModel.CPUProfilerModel));
   }
 
-  update(): void {
+  override update(): void {
     this.updateTotal();
     this.list.invalidateRange(0, this.items.length);
   }

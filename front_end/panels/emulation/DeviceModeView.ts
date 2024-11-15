@@ -598,7 +598,7 @@ export class Ruler extends UI.Widget.VBox {
     void this.throttler.schedule(this.update.bind(this));
   }
 
-  private update(): Promise<void> {
+  override update(): Promise<void> {
     const zoomFactor = UI.ZoomManager.ZoomManager.instance().zoomFactor();
     const size = this.horizontal ? this.contentElementInternal.offsetWidth : this.contentElementInternal.offsetHeight;
 

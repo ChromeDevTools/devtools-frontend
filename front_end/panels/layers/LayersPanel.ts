@@ -153,7 +153,7 @@ export class LayersPanel extends UI.Panel.PanelWithSidebar implements SDK.Target
     void this.updateThrottler.schedule(this.update.bind(this));
   }
 
-  private update(): Promise<void> {
+  override update(): Promise<void> {
     if (this.model) {
       this.layerViewHost.setLayerTree(this.model.layerTree());
       const resourceModel = this.model.target().model(SDK.ResourceTreeModel.ResourceTreeModel);

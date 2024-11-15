@@ -137,7 +137,7 @@ export class TimelinePaintProfilerView extends UI.SplitWidget.SplitWidget {
     return tracingLayerTree ? tracingLayerTree.pictureForRasterTile(data.tileId.id_ref) : null;
   }
 
-  private update(): void {
+  override update(): void {
     this.logTreeView.setCommandLog([]);
     void this.paintProfilerView.setSnapshotAndLog(null, [], null);
 

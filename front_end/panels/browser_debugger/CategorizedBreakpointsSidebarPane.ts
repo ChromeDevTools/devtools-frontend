@@ -249,7 +249,7 @@ export abstract class CategorizedBreakpointsSidebarPane extends UI.Widget.VBox {
     return null;
   }
 
-  private update(): void {
+  override update(): void {
     const target = UI.Context.Context.instance().flavor(SDK.Target.Target);
     const debuggerModel = target ? target.model(SDK.DebuggerModel.DebuggerModel) : null;
     const details = debuggerModel ? debuggerModel.debuggerPausedDetails() : null;

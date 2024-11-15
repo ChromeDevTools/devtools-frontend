@@ -377,7 +377,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
     this.#currentAgent = targetAgentType ? this.#createAgent(targetAgentType) : undefined;
     this.#viewProps.agentType = targetAgentType;
     this.#onContextSelectionChanged();
-    this.doUpdate();
+    void this.doUpdate();
   }
 
   override wasShown(): void {
@@ -401,7 +401,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
       inspectElementToggled: this.#toggleSearchElementAction.toggled(),
       selectedContext: this.#getConversationContext(),
     };
-    this.doUpdate();
+    void this.doUpdate();
 
     this.#freestylerEnabledSetting?.addChangeListener(this.#handleFreestylerEnabledSettingChanged, this);
     Host.AidaClient.HostConfigTracker.instance().addEventListener(
@@ -460,7 +460,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
         accountFullName: syncInfo.accountFullName,
       };
       this.#viewProps.state = this.#getChatUiState();
-      this.doUpdate();
+      void this.doUpdate();
     }
   };
 
@@ -470,7 +470,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
     }
 
     this.#viewProps.inspectElementToggled = ev.data;
-    this.doUpdate();
+    void this.doUpdate();
   };
 
   #handleDOMNodeFlavorChange = (ev: Common.EventTarget.EventTargetEvent<SDK.DOMModel.DOMNode>): void => {
@@ -522,10 +522,10 @@ export class FreestylerPanel extends UI.Panel.Panel {
     }
 
     this.#viewProps.state = nextChatUiState;
-    this.doUpdate();
+    void this.doUpdate();
   };
 
-  doUpdate(): void {
+  override async doUpdate(): Promise<void> {
     this.#updateToolbarState();
     this.view(this.#viewProps, this.#viewOutput, this.#contentContainer);
   }
@@ -626,7 +626,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.FreestylerOpenedFromElementsPanelFloatingButton);
     this.#viewProps.messages = [];
     this.#onContextSelectionChanged();
-    this.doUpdate();
+    void this.doUpdate();
     this.#viewProps.isReadOnly = false;
     void this.#doConversation(this.#currentAgent.runFromHistory());
   }
@@ -678,7 +678,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
     this.#currentAgent = undefined;
     this.#viewProps.messages = [];
     this.#viewProps.agentType = undefined;
-    this.doUpdate();
+    void this.doUpdate();
   }
 
   #onDeleteClicked(): void {
@@ -692,7 +692,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
 
     this.#selectDefaultAgentIfNeeded();
     this.#onContextSelectionChanged();
-    this.doUpdate();
+    void this.doUpdate();
     UI.ARIAUtils.alert(i18nString(UIStrings.chatDeleted));
   }
 
@@ -716,7 +716,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
     this.#cancel();
 
     this.#selectDefaultAgentIfNeeded();
-    this.doUpdate();
+    void this.doUpdate();
     UI.ARIAUtils.alert(i18nString(UIStrings.newChatCreated));
   }
 
@@ -730,13 +730,13 @@ export class FreestylerPanel extends UI.Panel.Panel {
   #cancel(): void {
     this.#runAbortController.abort();
     this.#viewProps.isLoading = false;
-    this.doUpdate();
+    void this.doUpdate();
   }
 
   #onContextSelectionChanged(contextToRestore?: ConversationContext<unknown>): void {
     if (!this.#currentAgent) {
       this.#viewProps.blockedByCrossOrigin = false;
-      this.doUpdate();
+      void this.doUpdate();
       return;
     }
     const currentContext = contextToRestore ?? this.#getConversationContext();
@@ -744,7 +744,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
     if (!currentContext) {
       this.#viewProps.blockedByCrossOrigin = false;
       this.#viewProps.requiresNewConversation = false;
-      this.doUpdate();
+      void this.doUpdate();
       return;
     }
     this.#viewProps.blockedByCrossOrigin = !currentContext.isOriginAllowed(this.#currentAgent.origin);
@@ -758,7 +758,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
     this.#viewProps.requiresNewConversation = this.#currentAgent.type === AgentType.DRJONES_PERFORMANCE &&
         Boolean(this.#currentAgent.context) && this.#currentAgent.context !== currentContext;
     this.#viewProps.stripLinks = this.#viewProps.agentType === AgentType.DRJONES_PERFORMANCE;
-    this.doUpdate();
+    void this.doUpdate();
   }
 
   #getConversationContext(): ConversationContext<unknown>|null {
@@ -909,7 +909,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
         }
       }
 
-      this.doUpdate();
+      void this.doUpdate();
       this.#viewOutput.freestylerChatUi?.scrollToLastMessage();
     }
   }

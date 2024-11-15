@@ -372,7 +372,7 @@ export class XHRBreakpointsSidebarPane extends UI.Widget.VBox implements UI.Cont
     this.update();
   }
 
-  private update(): void {
+  override update(): void {
     const isEmpty = this.#breakpoints.length === 0;
     this.#list.element.classList.toggle('hidden', isEmpty);
     this.#emptyElement.classList.toggle('hidden', !isEmpty);

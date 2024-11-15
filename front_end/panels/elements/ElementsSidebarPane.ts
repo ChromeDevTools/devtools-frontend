@@ -6,7 +6,7 @@ import * as Common from '../../core/common/common.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import {ComputedStyleModel, Events, type ComputedStyleChangedEvent} from './ComputedStyleModel.js';
+import {type ComputedStyleChangedEvent, ComputedStyleModel, Events} from './ComputedStyleModel.js';
 
 export class ElementsSidebarPane extends UI.Widget.VBox {
   protected computedStyleModelInternal: ComputedStyleModel;
@@ -34,11 +34,11 @@ export class ElementsSidebarPane extends UI.Widget.VBox {
     return this.computedStyleModelInternal;
   }
 
-  async doUpdate(): Promise<void> {
+  override async doUpdate(): Promise<void> {
     return;
   }
 
-  update(): void {
+  override update(): void {
     this.updateWhenVisible = !this.isShowing();
     if (this.updateWhenVisible) {
       return;

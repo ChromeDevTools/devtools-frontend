@@ -63,7 +63,7 @@ export class InspectedPagePlaceholder extends Common.ObjectWrapper.eventMixin<Ev
     return {x: left, y: top, width: right - left, height: bottom - top};
   }
 
-  update(force?: boolean): void {
+  override update(force?: boolean): void {
     delete this.updateId;
     const rect = this.dipPageRect();
     const bounds = {

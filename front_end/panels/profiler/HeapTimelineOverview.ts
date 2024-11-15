@@ -215,7 +215,7 @@ export class HeapTimelineOverview extends Common.ObjectWrapper.eventMixin<EventT
     this.windowWidthRatio = this.windowRightRatio - this.windowLeftRatio;
   }
 
-  update(): void {
+  override update(): void {
     this.updateTimerId = null;
     if (!this.isShowing()) {
       return;

@@ -87,7 +87,10 @@ and a separate CL with a proper roll.
 
 ### Run in a pre-built Chromium
 
-You can run a [build](#Build) of DevTools frontend in a pre-built Chromium in order to avoid the expensive Chromium build. For example, you can use the latest version of Chrome Canary, or the downloaded binary in `third_party/chrome`.
+You can run a [build](#Build) of DevTools frontend in a pre-built Chrome or Chromium in order to avoid the expensive build. Options:
+
+- Use the downloaded Chrome for Testing binary in `third_party/chrome`.
+- Use the latest Chrome Canary. This includes any DevTools features that are only available in regular Chrome builds (`is_official_build` + `is_chrome_branded`), such as GenAI-related features.
 
 #### Running from file system
 

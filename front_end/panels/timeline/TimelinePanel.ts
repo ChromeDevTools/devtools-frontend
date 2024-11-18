@@ -317,6 +317,22 @@ const UIStrings = {
    * @description Tooltip text for a button that takes the user back to the default view which shows performance metrics that are live.
    */
   backToLiveMetrics: 'Go back to the live metrics page',
+  /**
+   * @description Description of the Timeline in/out zoom action that appears in the Performance panel shortcuts dialog.
+   */
+  timelineZoomInOut: 'Timeline zoom in/out',
+  /**
+   * @description Description of the Timeline fast in/out zoom action that appears in the Performance panel shortcuts dialog.
+   */
+  timelineFastZoomInOut: 'Timeline fast zoom in/out',
+  /**
+   * @description Description of the Timeline up/down scroll action that appears in the Performance panel shortcuts dialog.
+   */
+  timelineScrollUpDown: 'Timeline up/down',
+  /**
+   * @description Description of the Timeline right/left panning action that appears in the Performance panel shortcuts dialog.
+   */
+  timelinePanLeftRight: 'Timeline right/left',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelinePanel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -1091,10 +1107,19 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_ALTERNATIVE_NAVIGATION)) {
       // TODO: Fill the shortcuts dialog with shortcuts for the cuttently selected navigation option
       const shortcutDialog = new ShortcutDialog.ShortcutDialog.ShortcutDialog();
-      shortcutDialog.data = {shortcuts: [{title: 'Shortcut Title', bindings: ['Ctrl+E']}]};
+      shortcutDialog.data = {shortcuts: this.#getShortcutsInfo()};
       const dialogToolbarItem = new UI.Toolbar.ToolbarItem(shortcutDialog);
       this.panelRightToolbar.appendToolbarItem(dialogToolbarItem);
     }
+  }
+
+  #getShortcutsInfo(): ShortcutDialog.ShortcutDialog.Shortcut[] {
+    return [
+      {title: i18nString(UIStrings.timelineZoomInOut), bindings: ['Scroll', 'W/S']},
+      {title: i18nString(UIStrings.timelineFastZoomInOut), bindings: ['Shift W/S']},
+      {title: i18nString(UIStrings.timelineScrollUpDown), bindings: ['Shift Scroll']},
+      {title: i18nString(UIStrings.timelinePanLeftRight), bindings: ['A/D']},
+    ];
   }
 
   private createSettingsPane(): void {

@@ -159,15 +159,17 @@ export class ShortcutDialog extends HTMLElement {
             html`
               <li class="keybinds-list-item">
                 <div>${shortcut.title}</div>
-                ${shortcut.bindings.map(binding => {
-                  return html`
-                  <div class="keys-container">
-                    ${this.#getKeysFromBinding(binding).map(key => html`
-                        <span class="keybinds-key">${key}</span>
-                    `)}
+                <div class="shortcuts-for-actions">
+                  ${shortcut.bindings.map(binding => {
+                    return html`
+                    <div class="keys-container">
+                      ${this.#getKeysFromBinding(binding).map(key => html`
+                          <span class="keybinds-key">${key}</span>
+                      `)}
+                    </div>
+                  `;
+                    })}
                   </div>
-                `;
-                  })}
               </li>`,
           )}
         </ul>

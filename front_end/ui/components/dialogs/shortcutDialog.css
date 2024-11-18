@@ -13,7 +13,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: var(--sys-size-4) var(--sys-size-6) var(--sys-size-6) var(--sys-size-8);
+  padding: 0 var(--sys-size-6) var(--sys-size-5) var(--sys-size-8);
 }
 
 .keybinds-category-header-text {
@@ -26,7 +26,7 @@
   flex-direction: column;
   gap: var(--sys-size-4);
   margin: 0;
-  padding: 0 var(--sys-size-8);
+  padding: 0 var(--sys-size-8) var(--sys-size-3) var(--sys-size-8);
 }
 
 .keybinds-list-item {
@@ -47,6 +47,13 @@
 
 .keys-container {
   display: flex;
+  gap: var(--sys-size-3);
+}
+
+.shortcuts-for-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
   gap: var(--sys-size-3);
 }
 

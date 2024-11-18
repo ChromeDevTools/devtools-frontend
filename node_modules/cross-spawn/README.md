@@ -1,23 +1,16 @@
 # cross-spawn
 
-[![NPM version][npm-image]][npm-url] [![Downloads][downloads-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Build status][appveyor-image]][appveyor-url] [![Coverage Status][codecov-image]][codecov-url] [![Dependency status][david-dm-image]][david-dm-url] [![Dev Dependency status][david-dm-dev-image]][david-dm-dev-url]
+[![NPM version][npm-image]][npm-url] [![Downloads][downloads-image]][npm-url] [![Build Status][ci-image]][ci-url] [![Build status][appveyor-image]][appveyor-url]
 
 [npm-url]:https://npmjs.org/package/cross-spawn
 [downloads-image]:https://img.shields.io/npm/dm/cross-spawn.svg
 [npm-image]:https://img.shields.io/npm/v/cross-spawn.svg
-[travis-url]:https://travis-ci.org/moxystudio/node-cross-spawn
-[travis-image]:https://img.shields.io/travis/moxystudio/node-cross-spawn/master.svg
+[ci-url]:https://github.com/moxystudio/cross-spawn/actions/workflows/ci.yaml
+[ci-image]:https://github.com/moxystudio/node-cross-spawn/actions/workflows/ci.yaml/badge.svg
 [appveyor-url]:https://ci.appveyor.com/project/satazor/node-cross-spawn
 [appveyor-image]:https://img.shields.io/appveyor/ci/satazor/node-cross-spawn/master.svg
-[codecov-url]:https://codecov.io/gh/moxystudio/node-cross-spawn
-[codecov-image]:https://img.shields.io/codecov/c/github/moxystudio/node-cross-spawn/master.svg
-[david-dm-url]:https://david-dm.org/moxystudio/node-cross-spawn
-[david-dm-image]:https://img.shields.io/david/moxystudio/node-cross-spawn.svg
-[david-dm-dev-url]:https://david-dm.org/moxystudio/node-cross-spawn?type=dev
-[david-dm-dev-image]:https://img.shields.io/david/dev/moxystudio/node-cross-spawn.svg
 
 A cross platform solution to node's spawn and spawnSync.
-
 
 ## Installation
 

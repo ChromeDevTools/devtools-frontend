@@ -101,7 +101,7 @@ export class FileContext extends ConversationContext<Workspace.UISourceCode.UISo
  * instance for a new conversation.
  */
 export class DrJonesFileAgent extends AiAgent<Workspace.UISourceCode.UISourceCode> {
-  override type = AgentType.DRJONES_FILE;
+  override readonly type = AgentType.DRJONES_FILE;
   readonly preamble = preamble;
   readonly clientFeature = Host.AidaClient.ClientFeature.CHROME_DRJONES_FILE_AGENT;
   get userTier(): string|undefined {
@@ -212,14 +212,3 @@ export function formatSourceMapDetails(
   }
   return sourceMapDetails;
 }
-
-function setDebugFreestylerEnabled(enabled: boolean): void {
-  if (enabled) {
-    localStorage.setItem('debugFreestylerEnabled', 'true');
-  } else {
-    localStorage.removeItem('debugFreestylerEnabled');
-  }
-}
-
-// @ts-ignore
-globalThis.setDebugFreestylerEnabled = setDebugFreestylerEnabled;

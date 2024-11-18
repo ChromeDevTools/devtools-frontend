@@ -13,6 +13,7 @@ import * as LitHtml from '../../ui/lit-html/lit-html.js';
 
 import {
   type ActionResponse,
+  type AgentOptions as BaseAgentOptions,
   AgentType,
   AiAgent,
   type ContextResponse,
@@ -201,14 +202,12 @@ type CreateExtensionScopeFunction = (changes: ChangeManager) => {
   install(): Promise<void>, uninstall(): Promise<void>,
 };
 
-type AgentOptions = {
-  aidaClient: Host.AidaClient.AidaClient,
-  changeManager?: ChangeManager,
-  confirmSideEffectForTest?: typeof Promise.withResolvers,
-  serverSideLoggingEnabled?: boolean,
-  createExtensionScope?: CreateExtensionScopeFunction,
-  execJs?: typeof executeJsCode,
-};
+interface AgentOptions extends BaseAgentOptions {
+  changeManager?: ChangeManager;
+  confirmSideEffectForTest?: typeof Promise.withResolvers;
+  createExtensionScope?: CreateExtensionScopeFunction;
+  execJs?: typeof executeJsCode;
+}
 
 export class NodeContext extends ConversationContext<SDK.DOMModel.DOMNode> {
   #node: SDK.DOMModel.DOMNode;
@@ -247,7 +246,7 @@ export class NodeContext extends ConversationContext<SDK.DOMModel.DOMNode> {
  * instance for a new conversation.
  */
 export class FreestylerAgent extends AiAgent<SDK.DOMModel.DOMNode> {
-  override type = AgentType.FREESTYLER;
+  override readonly type = AgentType.FREESTYLER;
 
   readonly preamble = preamble;
   readonly clientFeature = Host.AidaClient.ClientFeature.CHROME_FREESTYLER;

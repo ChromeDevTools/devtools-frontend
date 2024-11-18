@@ -164,7 +164,7 @@ export class CallTreeContext extends ConversationContext<TimelineUtils.AICallTre
  * instance for a new conversation.
  */
 export class DrJonesPerformanceAgent extends AiAgent<TimelineUtils.AICallTree.AICallTree> {
-  override type = AgentType.DRJONES_PERFORMANCE;
+  override readonly type = AgentType.DRJONES_PERFORMANCE;
   readonly preamble = preamble;
   readonly clientFeature = Host.AidaClient.ClientFeature.CHROME_DRJONES_PERFORMANCE_AGENT;
   get userTier(): string|undefined {
@@ -224,14 +224,3 @@ export class DrJonesPerformanceAgent extends AiAgent<TimelineUtils.AICallTree.AI
     };
   }
 }
-
-function setDebugFreestylerEnabled(enabled: boolean): void {
-  if (enabled) {
-    localStorage.setItem('debugFreestylerEnabled', 'true');
-  } else {
-    localStorage.removeItem('debugFreestylerEnabled');
-  }
-}
-
-// @ts-ignore
-globalThis.setDebugFreestylerEnabled = setDebugFreestylerEnabled;

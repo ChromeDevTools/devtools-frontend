@@ -1227,6 +1227,91 @@ ANSWER: this is the answer`,
     });
   });
 
+  describe('history', () => {
+    let element: sinon.SinonStubbedInstance<SDK.DOMModel.DOMNode>;
+    beforeEach(() => {
+      mockHostConfig();
+      element = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+      // @ts-ignore
+      setAiAssistancePersistentHistory(true);
+    });
+
+    it('stores history via AiHistoryStorage', async () => {
+      let count = 0;
+      async function* generateMultipleTimes() {
+        if (count === 1) {
+          yield {
+            explanation: 'ANSWER: this is the answer',
+            metadata: {},
+            completed: true,
+          };
+          return;
+        }
+        count++;
+        yield {
+          explanation: `THOUGHT: thought ${count}\nTITLE:test\nACTION\nconsole.log('test')\nSTOP\n`,
+          metadata: {},
+          completed: false,
+        };
+      }
+      const historyStub = sinon.stub(Freestyler.AiHistoryStorage.instance(), 'upsertHistoryEntry');
+      const execJs = sinon.spy(async () => 'undefined');
+      const agent = new FreestylerAgent({
+        aidaClient: mockAidaClient(generateMultipleTimes),
+        createExtensionScope,
+        execJs,
+      });
+
+      await Array.fromAsync(agent.run('test', {selected: new Freestyler.NodeContext(element)}));
+
+      assert.deepStrictEqual(historyStub.lastCall.args[0].history, [
+        {
+          type: Freestyler.ResponseType.USER_QUERY,
+          query: 'test',
+        },
+        {
+          type: Freestyler.ResponseType.CONTEXT,
+          title: 'Analyzing the prompt',
+          details: [{
+            text: '* Its selector is `undefined`',
+            title: 'Data used',
+          }],
+        },
+        {
+          type: Freestyler.ResponseType.QUERYING,
+          query: '# Inspected element\n\n* Its selector is `undefined`\n\n# User request\n\nQUERY: test',
+        },
+        {
+          type: Freestyler.ResponseType.TITLE,
+          title: 'test',
+          rpcId: undefined,
+        },
+        {
+          type: Freestyler.ResponseType.THOUGHT,
+          thought: 'thought 1',
+          rpcId: undefined,
+        },
+        {
+          type: Freestyler.ResponseType.ACTION,
+          code: 'console.log(\'test\')',
+          output: 'undefined',
+          canceled: false,
+          rpcId: undefined,
+        },
+        {
+          type: Freestyler.ResponseType.QUERYING,
+          query: 'OBSERVATION: undefined',
+        },
+        {
+          type: Freestyler.ResponseType.ANSWER,
+          text: 'this is the answer',
+          suggestions: undefined,
+          rpcId: undefined,
+        },
+      ]);
+    });
+  });
+
   describe('HostConfigFreestylerExecutionMode', () => {
     let element: sinon.SinonStubbedInstance<SDK.DOMModel.DOMNode>;
     beforeEach(() => {

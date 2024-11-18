@@ -19,6 +19,7 @@ generate_css("css_files") {
 devtools_module("freestyler") {
   sources = [
     "AiAgent.ts",
+    "AiHistoryStorage.ts",
     "ChangeManager.ts",
     "DrJonesFileAgent.ts",
     "DrJonesNetworkAgent.ts",
@@ -83,6 +84,7 @@ ts_library("unittests") {
 
   sources = [
     "AiAgent.test.ts",
+    "AiHistoryStorage.test.ts",
     "ChangeManager.test.ts",
     "DrJonesFileAgent.test.ts",
     "DrJonesNetworkAgent.test.ts",

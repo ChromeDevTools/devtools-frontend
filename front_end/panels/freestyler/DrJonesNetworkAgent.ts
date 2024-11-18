@@ -129,7 +129,7 @@ export class RequestContext extends ConversationContext<SDK.NetworkRequest.Netwo
  * instance for a new conversation.
  */
 export class DrJonesNetworkAgent extends AiAgent<SDK.NetworkRequest.NetworkRequest> {
-  override type = AgentType.DRJONES_NETWORK_REQUEST;
+  override readonly type = AgentType.DRJONES_NETWORK_REQUEST;
   readonly preamble = preamble;
   readonly clientFeature = Host.AidaClient.ClientFeature.CHROME_DRJONES_NETWORK_AGENT;
   get userTier(): string|undefined {

@@ -23,7 +23,11 @@ import {
   ErrorType,
   type ResponseData,
   ResponseType,
+  type SerializedAgent,
 } from './AiAgent.js';
+import {
+  AiHistoryStorage,
+} from './AiHistoryStorage.js';
 import {ChangeManager} from './ChangeManager.js';
 import {
   ChatMessageEntity,
@@ -235,6 +239,10 @@ export class FreestylerPanel extends UI.Panel.Panel {
       stripLinks: false,
       isReadOnly: false,
     };
+
+    for (const historyEntry of AiHistoryStorage.instance().getHistory()) {
+      this.#createAgent(historyEntry.type, historyEntry);
+    }
   }
 
   #createToolbar(): void {
@@ -294,7 +302,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
     }
   }
 
-  #createAgent(agentType: AgentType): AiAgent<unknown> {
+  #createAgent(agentType: AgentType, history?: SerializedAgent): AiAgent<unknown> {
     const options = {
       aidaClient: this.#aidaClient,
       serverSideLoggingEnabled: this.#serverSideLoggingEnabled,
@@ -320,6 +328,10 @@ export class FreestylerPanel extends UI.Panel.Panel {
         agent = new DrJonesPerformanceAgent(options);
         break;
       }
+    }
+
+    if (history) {
+      agent.populateHistoryFromStorage(history);
     }
 
     this.#agents.add(agent);
@@ -682,12 +694,15 @@ export class FreestylerPanel extends UI.Panel.Panel {
     this.#currentAgent = undefined;
     this.#viewProps.messages = [];
     this.#viewProps.agentType = undefined;
+    this.#runAbortController.abort();
+    void AiHistoryStorage.instance().deleteAll();
     void this.doUpdate();
   }
 
   #onDeleteClicked(): void {
     if (this.#currentAgent) {
       this.#agents.delete(this.#currentAgent);
+      void AiHistoryStorage.instance().deleteHistoryEntry(this.#currentAgent.id);
       this.#currentAgent = undefined;
       this.#cancel();
     }

@@ -5,6 +5,8 @@
 import * as Host from '../../core/host/host.js';
 import type * as LitHtml from '../../ui/lit-html/lit-html.js';
 
+import {AiHistoryStorage} from './AiHistoryStorage.js';
+
 export const enum ResponseType {
   CONTEXT = 'context',
   TITLE = 'title',
@@ -96,7 +98,7 @@ export interface RequestOptions {
   modelId?: string;
 }
 
-interface AgentOptions {
+export interface AgentOptions {
   aidaClient: Host.AidaClient.AidaClient;
   serverSideLoggingEnabled?: boolean;
 }
@@ -121,7 +123,14 @@ export const enum AgentType {
   DRJONES_PERFORMANCE = 'drjones-performance',
 }
 
+export interface SerializedAgent {
+  id: string;
+  type: AgentType;
+  history: HistoryEntryStorage;
+}
+
 const MAX_STEP = 10;
+export type HistoryEntryStorage = ResponseData[];
 
 export abstract class ConversationContext<T> {
   abstract getOrigin(): string;
@@ -147,6 +156,7 @@ export abstract class AiAgent<T> {
   }
 
   abstract type: AgentType;
+  #id: string = crypto.randomUUID();
   readonly #sessionId: string = crypto.randomUUID();
   #aidaClient: Host.AidaClient.AidaClient;
   #serverSideLoggingEnabled: boolean;
@@ -160,7 +170,7 @@ export abstract class AiAgent<T> {
   /**
    * Historical responses.
    */
-  #history: Array<ResponseData> = [];
+  #history: HistoryEntryStorage = [];
   /**
    * Might need to be part of history in case we allow chatting in
    * historical conversations.
@@ -177,8 +187,12 @@ export abstract class AiAgent<T> {
     return this.#chatHistoryForAida;
   }
 
-  set chatNewHistoryForTesting(history: Array<ResponseData>) {
+  set chatNewHistoryForTesting(history: HistoryEntryStorage) {
     this.#history = history;
+  }
+
+  get id(): string {
+    return this.#id;
   }
 
   get isEmpty(): boolean {
@@ -204,6 +218,20 @@ export abstract class AiAgent<T> {
 
   get isHistoryEntry(): boolean {
     return this.#generatedFromHistory;
+  }
+
+  serialized(): SerializedAgent {
+    return {
+      id: this.id,
+      type: this.type,
+      history: this.#history,
+    };
+  }
+
+  populateHistoryFromStorage(entry: SerializedAgent): void {
+    this.#id = entry.id;
+    this.#history = entry.history;
+    this.#generatedFromHistory = true;
   }
 
   #structuredLog: Array<{
@@ -379,6 +407,10 @@ STOP`;
 
   #addHistory(data: ResponseData): void {
     this.#history.push(data);
+    // Remove condition to store the history in storage
+    if (isHistoryEnabled()) {
+      void AiHistoryStorage.instance().upsertHistoryEntry(this.serialized());
+    }
   }
 
   async * run(query: string, options: {
@@ -578,3 +610,17 @@ function setDebugFreestylerEnabled(enabled: boolean): void {
 }
 // @ts-ignore
 globalThis.setDebugFreestylerEnabled = setDebugFreestylerEnabled;
+
+export function isHistoryEnabled(): boolean {
+  return Boolean(localStorage.getItem('persistentHistoryAiAssistance'));
+}
+
+function setAiAssistancePersistentHistory(enabled: boolean): void {
+  if (enabled) {
+    localStorage.setItem('persistentHistoryAiAssistance', 'true');
+  } else {
+    localStorage.removeItem('persistentHistoryAiAssistance');
+  }
+}
+// @ts-ignore
+globalThis.setAiAssistancePersistentHistory = setAiAssistancePersistentHistory;

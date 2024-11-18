@@ -617,18 +617,22 @@ export class FreestylerPanel extends UI.Panel.Panel {
       return;
     }
 
+    let newAgent = false;
     if (!this.#currentAgent || this.#currentAgent.type !== targetAgentType || this.#currentAgent.isHistoryEntry ||
         targetAgentType === AgentType.DRJONES_PERFORMANCE) {
       this.#currentAgent = this.#createAgent(targetAgentType);
+      newAgent = true;
     }
     this.#viewProps.agentType = this.#currentAgent.type;
     this.#viewOutput.freestylerChatUi?.focusTextInput();
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.FreestylerOpenedFromElementsPanelFloatingButton);
-    this.#viewProps.messages = [];
     this.#onContextSelectionChanged();
     void this.doUpdate();
-    this.#viewProps.isReadOnly = false;
-    void this.#doConversation(this.#currentAgent.runFromHistory());
+    if (newAgent) {
+      this.#viewProps.messages = [];
+      this.#viewProps.isReadOnly = false;
+      void this.#doConversation(this.#currentAgent.runFromHistory());
+    }
   }
 
   #onHistoryClicked(event: Event): void {

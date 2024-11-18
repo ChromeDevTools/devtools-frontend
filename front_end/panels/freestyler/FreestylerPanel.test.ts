@@ -896,6 +896,7 @@ describeWithEnvironment('FreestylerPanel', () => {
     const menuItem = findMenuItemWithLabel(contextMenu.defaultSection(), 'No past conversations');
     assert(menuItem);
   });
+
   describe('cross-origin', () => {
     it('blocks input on cross origin requests', async () => {
       const networkRequest = sinon.createStubInstance(SDK.NetworkRequest.NetworkRequest, {
@@ -933,6 +934,76 @@ describeWithEnvironment('FreestylerPanel', () => {
         selectedContext: new Freestyler.RequestContext(networkRequest2),
         blockedByCrossOrigin: true,
       }));
+    });
+
+    it('should be able to continue same-origin requests', async () => {
+      const stub = getGetHostConfigStub({
+        devToolsFreestyler: {
+          enabled: true,
+        },
+      });
+      panel = new Freestyler.FreestylerPanel(mockView, {
+        aidaClient: getTestAidaClient(),
+        aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
+        syncInfo: getTestSyncInfo(),
+      });
+      UI.Context.Context.instance().setFlavor(
+          ElementsPanel.ElementsPanel.ElementsPanel,
+          sinon.createStubInstance(ElementsPanel.ElementsPanel.ElementsPanel));
+
+      panel.handleAction('freestyler.elements-floating-button');
+      mockView.lastCall.args[0].onTextSubmit('test');
+      await drainMicroTasks();
+
+      assert.deepEqual(mockView.lastCall.args[0].messages, [
+        {
+          entity: Freestyler.ChatMessageEntity.USER,
+          text: 'test',
+        },
+        {
+          answer: 'test',
+          entity: Freestyler.ChatMessageEntity.MODEL,
+          rpcId: undefined,
+          suggestions: undefined,
+          steps: [],
+        },
+      ]);
+
+      UI.Context.Context.instance().setFlavor(
+          ElementsPanel.ElementsPanel.ElementsPanel,
+          sinon.createStubInstance(ElementsPanel.ElementsPanel.ElementsPanel));
+
+      panel.handleAction('freestyler.elements-floating-button');
+      mockView.lastCall.args[0].onTextSubmit('test2');
+      await drainMicroTasks();
+
+      assert.strictEqual(mockView.lastCall.args[0].isReadOnly, false);
+      assert.deepEqual(mockView.lastCall.args[0].messages, [
+        {
+          entity: Freestyler.ChatMessageEntity.USER,
+          text: 'test',
+        },
+        {
+          answer: 'test',
+          entity: Freestyler.ChatMessageEntity.MODEL,
+          rpcId: undefined,
+          suggestions: undefined,
+          steps: [],
+        },
+        {
+          entity: Freestyler.ChatMessageEntity.USER,
+          text: 'test2',
+        },
+        {
+          answer: 'test',
+          entity: Freestyler.ChatMessageEntity.MODEL,
+          rpcId: undefined,
+          suggestions: undefined,
+          steps: [],
+        },
+      ]);
+
+      stub.restore();
     });
   });
 

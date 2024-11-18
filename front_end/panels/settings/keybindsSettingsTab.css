@@ -29,6 +29,10 @@
   grid-template-rows: 1fr;
   grid-template-columns: 1fr 30px 2fr 30px 30px;
   border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
+
+  &:last-of-type {
+    border-bottom: unset;
+  }
 }
 
 .keybinds-list-item:focus-visible {
@@ -110,7 +114,8 @@
 }
 
 .keybinds-list-item-wrapper:has(:not(.keybinds-category-header):hover),
-.keybinds-list-item-wrapper:has(.keybinds-list-item:not(.keybinds-editing)):focus-within {
+.keybinds-list-item-wrapper:has(
+  .keybinds-list-item:not(.keybinds-editing)):focus-within {
   background: var(--sys-color-state-hover-on-subtle);
 }
 

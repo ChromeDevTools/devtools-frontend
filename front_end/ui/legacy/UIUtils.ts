@@ -1216,7 +1216,7 @@ export function setTitle(element: HTMLElement, title: string): void {
   Tooltip.install(element, title);
 }
 
-export class CheckboxLabel extends HTMLSpanElement {
+export class CheckboxLabel extends HTMLElement {
   private readonly shadowRootInternal!: DocumentFragment;
   checkboxElement!: HTMLInputElement;
   textElement!: HTMLElement;
@@ -1237,10 +1237,7 @@ export class CheckboxLabel extends HTMLSpanElement {
 
   static create(title?: string, checked?: boolean, subtitle?: string, jslogContext?: string, small?: boolean):
       CheckboxLabel {
-    if (!CheckboxLabel.constructorInternal) {
-      CheckboxLabel.constructorInternal = registerCustomElement('span', 'dt-checkbox', CheckboxLabel);
-    }
-    const element = (CheckboxLabel.constructorInternal() as CheckboxLabel);
+    const element = document.createElement('dt-checkbox') as CheckboxLabel;
     element.checkboxElement.checked = Boolean(checked);
     if (jslogContext) {
       element.checkboxElement.setAttribute(
@@ -1258,8 +1255,10 @@ export class CheckboxLabel extends HTMLSpanElement {
   }
 
   private static lastId = 0;
-  static constructorInternal: (() => Element)|null = null;
 }
+
+// Skip registerCustomElement flow as it's incompatible with Safari with this specific custom element.
+self.customElements.define('dt-checkbox', CheckboxLabel);
 
 export class DevToolsIconLabel extends HTMLSpanElement {
   readonly #icon: IconButton.Icon.Icon;

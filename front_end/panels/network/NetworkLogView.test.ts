@@ -880,7 +880,7 @@ function clickCheckbox(checkbox: HTMLInputElement) {
 
 function getCheckbox(filterBar: UI.FilterBar.FilterBar, title: string) {
   const checkbox =
-      filterBar.element.querySelector(`[title="${title}"] span`)?.shadowRoot?.querySelector('input') || null;
+      filterBar.element.querySelector(`[title="${title}"] dt-checkbox`)?.shadowRoot?.querySelector('input') || null;
   assert.instanceOf(checkbox, HTMLInputElement);
   return checkbox;
 }

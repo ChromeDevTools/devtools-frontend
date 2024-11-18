@@ -16,7 +16,8 @@
       true,
       {
         "ignoreTypes": [
-          "/^devtools-/"
+          "/^devtools-/",
+          "/^dt-/"
         ]
       }
     ],

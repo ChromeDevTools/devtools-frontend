@@ -73,7 +73,7 @@ describeWithMockConnection('StorageView', () => {
     const container = view.element.shadowRoot?.querySelector('.clear-storage-header') || null;
     assert.instanceOf(container, HTMLDivElement);
     const customQuotaCheckbox =
-        container.shadowRoot!.querySelector('.quota-override-row span')!.shadowRoot!.querySelector(
+        container.shadowRoot!.querySelector('.quota-override-row dt-checkbox')!.shadowRoot!.querySelector(
             '[title="Simulate custom storage quota"]');
     assert.instanceOf(customQuotaCheckbox, HTMLInputElement);
     customQuotaCheckbox.checked = true;

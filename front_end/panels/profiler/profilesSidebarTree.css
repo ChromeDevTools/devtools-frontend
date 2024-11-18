@@ -129,7 +129,7 @@ ol.tree-outline {
   margin-top: var(--sys-size-6);
   line-height: var(--sys-size-8);
 
-  &:hover:not(:has(span[is="dt-checkbox"])) .selection {
+  &:hover:not(:has(dt-checkbox)) .selection {
     background-color: transparent;
   }
 }

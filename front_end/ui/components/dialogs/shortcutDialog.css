@@ -57,6 +57,13 @@
   gap: var(--sys-size-3);
 }
 
+.nav-radio-buttons {
+  display: flex;
+  flex-direction: column;
+  padding: 0 var(--sys-size-8);
+  gap: var(--sys-size-3);
+}
+
 .keybinds-key {
   display: flex;
   align-items: center;

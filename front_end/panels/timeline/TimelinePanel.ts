@@ -1107,10 +1107,23 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_ALTERNATIVE_NAVIGATION)) {
       // TODO: Fill the shortcuts dialog with shortcuts for the cuttently selected navigation option
       const shortcutDialog = new ShortcutDialog.ShortcutDialog.ShortcutDialog();
+      shortcutDialog.prependElement(this.#getNavigationSetting());
       shortcutDialog.data = {shortcuts: this.#getShortcutsInfo()};
       const dialogToolbarItem = new UI.Toolbar.ToolbarItem(shortcutDialog);
       this.panelRightToolbar.appendToolbarItem(dialogToolbarItem);
     }
+  }
+
+  #getNavigationSetting(): HTMLElement {
+    const navigationRadioButtons = document.createElement('form');
+    navigationRadioButtons.classList.add('nav-radio-buttons');
+    UI.ARIAUtils.markAsRadioGroup(navigationRadioButtons);
+    const modernNavRadioButton = UI.UIUtils.createRadioLabel('perf-nav-option', 'Modern');
+    const classicNavRadioButton = UI.UIUtils.createRadioLabel('perf-nav-option', 'Classic');
+    navigationRadioButtons.appendChild(modernNavRadioButton);
+    navigationRadioButtons.appendChild(classicNavRadioButton);
+
+    return navigationRadioButtons;
   }
 
   #getShortcutsInfo(): ShortcutDialog.ShortcutDialog.Shortcut[] {

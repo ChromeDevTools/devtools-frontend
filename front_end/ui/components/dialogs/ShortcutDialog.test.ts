@@ -13,8 +13,11 @@ import * as Dialogs from './dialogs.js';
 const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 describeWithLocale('ShortcutDialog', () => {
-  async function getShortcutDialog(open?: boolean) {
+  async function getShortcutDialog(open?: boolean, prependedElement?: HTMLElement) {
     const shortcutDialog = new Dialogs.ShortcutDialog.ShortcutDialog();
+    if (prependedElement) {
+      shortcutDialog.prependElement(prependedElement);
+    }
     shortcutDialog.data = {shortcuts: [{title: 'Shortcut Title', bindings: ['Ctrl+E']}], open};
     Helpers.renderElementIntoDOM(shortcutDialog);
     await coordinator.done();
@@ -44,5 +47,16 @@ describeWithLocale('ShortcutDialog', () => {
     const dialog = getDialogFromShortcutDialog(shortcutDialog);
 
     assert.isFalse(dialog.hasAttribute('open'));
+  });
+
+  it('prepends provived element to the dialog content', async () => {
+    const prependedElement = document.createElement('div');
+    prependedElement.classList.add('prepended-element');
+
+    const shortcutDialog = await getShortcutDialog(true, prependedElement);
+    const dialog = getDialogFromShortcutDialog(shortcutDialog);
+    const prependedElementInShortcutDialog = dialog.querySelector('div.prepended-element');
+
+    assert.instanceOf(prependedElementInShortcutDialog, HTMLDivElement);
   });
 });

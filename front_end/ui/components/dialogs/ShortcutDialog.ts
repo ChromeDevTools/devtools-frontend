@@ -69,6 +69,7 @@ export class ShortcutDialog extends HTMLElement {
   #showButton: Buttons.Button.Button|null = null;
   #shortcuts: Shortcut[] = [];
   #openOnRender = false;
+  #prependedElement: HTMLElement|null = null;
 
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [shortcutDialogStyles];
@@ -107,6 +108,10 @@ export class ShortcutDialog extends HTMLElement {
     return binding.split(/[\s+]+/).map(word => word.trim());  // Split on one or more spaces or + symbols
   }
 
+  prependElement(element: HTMLElement): void {
+    this.#prependedElement = element;
+  }
+
   #render(): void {
     if (!ComponentHelpers.ScheduledRender.isScheduledRender(this)) {
       throw new Error('Shortcut dialog render was not scheduled');
@@ -142,18 +147,19 @@ export class ShortcutDialog extends HTMLElement {
           this.#dialog = node as DialogElement;
         })}
       >
-        <div class="keybinds-category-header">
-          <span class="keybinds-category-header-text">${i18nString(UIStrings.dialogTitle)}</span>
-          <devtools-button
-            @click=${this.#closeDialog}
-            .data=${{
-              variant: Buttons.Button.Variant.TOOLBAR,
-              iconName: 'cross',
-              title: i18nString(UIStrings.close),
-            } as Buttons.Button.ButtonData}
+      <div class="keybinds-category-header">
+        <span class="keybinds-category-header-text">${i18nString(UIStrings.dialogTitle)}</span>
+        <devtools-button
+        @click=${this.#closeDialog}
+        .data=${{
+          variant: Buttons.Button.Variant.TOOLBAR,
+          iconName: 'cross',
+          title: i18nString(UIStrings.close),
+        } as Buttons.Button.ButtonData}
             jslog=${VisualLogging.close().track({click: true})}
-          ></devtools-button>
-        </div>
+            ></devtools-button>
+          </div>
+        ${(this.#prependedElement) ? html`${this.#prependedElement}` : LitHtml.nothing}
         <ul class="keybinds-list">
           ${this.#shortcuts.map(shortcut =>
             html`

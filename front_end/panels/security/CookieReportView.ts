@@ -79,9 +79,11 @@ export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export interface ViewInput {
   gridData: DataGrid.DataGrid.DataGridNode<CookieReportNodeData>[];
   onFilterChanged: () => void;
+  onSortingChanged: () => void;
 }
 export interface ViewOutput {
   namedBitSetFilterUI?: UI.FilterBar.NamedBitSetFilterUI;
+  dataGrid?: DataGrid.DataGrid.DataGridImpl<CookieReportNodeData>;
 }
 
 export interface CookieReportNodeData {
@@ -121,6 +123,7 @@ export class CookieReportView extends UI.Widget.VBox {
   namedBitSetFilterUI?: UI.FilterBar.NamedBitSetFilterUI;
   #cookieRows: Map<string, IssuesManager.CookieIssue.CookieReportInfo> = new Map();
   #view: View;
+  dataGrid?: DataGrid.DataGrid.DataGridImpl<CookieReportNodeData>;
   gridData: DataGrid.DataGrid.DataGridNode<CookieReportNodeData>[] = [];
 
   constructor(element?: HTMLElement, view: View = (input, output, target) => {
@@ -128,13 +131,12 @@ export class CookieReportView extends UI.Widget.VBox {
       nodes: input.gridData,
       displayName: i18nString(UIStrings.report),
       columns: [
-        // TODO(crbug.com/365737493): Make the table sortable
-        {id: 'name', title: i18nString(UIStrings.name), weight: 1, sortable: false},
-        {id: 'domain', title: i18nString(UIStrings.domain), weight: 1, sortable: false},
-        {id: 'type', title: i18nString(UIStrings.type), weight: 1, sortable: false},
-        {id: 'platform', title: i18nString(UIStrings.platform), weight: 1, sortable: false},
-        {id: 'status', title: i18nString(UIStrings.status), weight: 1, sortable: false},
-        {id: 'recommendation', title: i18nString(UIStrings.recommendation), weight: 1, sortable: false},
+        {id: 'name', title: i18nString(UIStrings.name), weight: 1, sortable: true},
+        {id: 'domain', title: i18nString(UIStrings.domain), weight: 1, sortable: true},
+        {id: 'type', title: i18nString(UIStrings.type), weight: 1, sortable: true},
+        {id: 'platform', title: i18nString(UIStrings.platform), weight: 1, sortable: true},
+        {id: 'status', title: i18nString(UIStrings.status), weight: 1, sortable: true},
+        {id: 'recommendation', title: i18nString(UIStrings.recommendation), weight: 1, sortable: true},
       ],
       striped: true,
     };
@@ -148,18 +150,22 @@ export class CookieReportView extends UI.Widget.VBox {
             </div>
             <devtools-named-bit-set-filter
               class="filter"
-              @filterChanged=${()=>input.onFilterChanged()}
+              @filterChanged=${input.onFilterChanged}
               .options=${{items: filterItems}}
               ${ref((el?: Element) => {
-                  if(el instanceof UI.FilterBar.NamedBitSetFilterUIElement){
-                    output.namedBitSetFilterUI = el.getOrCreateNamedBitSetFilterUI();
-                  }
+                if(el instanceof UI.FilterBar.NamedBitSetFilterUIElement){
+                  output.namedBitSetFilterUI = el.getOrCreateNamedBitSetFilterUI();
+                }
               })}
             ></devtools-named-bit-set-filter>
             <!-- @ts-ignore -->
             <devtools-data-grid-widget
-                .options=${dataGridOptions}
-              ></devtools-data-grid-widget>
+              @sortingChanged=${input.onSortingChanged}
+              .options=${dataGridOptions}
+              ${UI.Widget.widgetRef(DataGrid.DataGrid.DataGridWidget, w => {
+                output.dataGrid = w.dataGrid;
+              })}
+            ></devtools-data-grid-widget>
         </div>
     `, target, {host: this});
     // clang-format on
@@ -188,6 +194,10 @@ export class CookieReportView extends UI.Widget.VBox {
     this.update();
   }
 
+  onSortingChanged(): void {
+    this.update();
+  }
+
   #onIssueEventReceived(event: Common.EventTarget.EventTargetEvent<IssuesManager.IssuesManager.IssueAddedEvent>): void {
     if (event.data.issue instanceof IssuesManager.CookieIssue.CookieIssue) {
       if (this.#cookieRows.has(event.data.issue.cookieId())) {
@@ -212,6 +222,30 @@ export class CookieReportView extends UI.Widget.VBox {
             return this.namedBitSetFilterUI.accept(CookieReportView.getStatusString(row.status));
           }
           return true;
+        })
+        .sort((a, b) => {
+          if (!this.dataGrid) {
+            return 0;
+          }
+          const columnId = this.dataGrid.sortColumnId();
+          let result = 0;
+          if (columnId === 'name') {
+            result = a.name.localeCompare(b.name);
+          } else if (columnId === 'domain') {
+            result = a.domain.localeCompare(b.domain);
+          } else if (columnId === 'type') {
+            result = (a.type ?? i18nString(UIStrings.unknown)).localeCompare((b.type ?? i18nString(UIStrings.unknown)));
+          } else if (columnId === 'platform') {
+            result = (a.platform ?? i18nString(UIStrings.unknown))
+                         .localeCompare((b.platform ?? i18nString(UIStrings.unknown)));
+          } else if (columnId === 'status') {
+            result =
+                CookieReportView.getStatusString(a.status).localeCompare(CookieReportView.getStatusString(b.status));
+          } else if (columnId === 'recommendation') {
+            result = (a.recommendation ?? i18nString(UIStrings.unknown))
+                         .localeCompare((b.recommendation ?? i18nString(UIStrings.unknown)));
+          }
+          return this.dataGrid.isSortOrderAscending() ? result : -result;
         })
         .map(
             row => new DataGrid.DataGrid.DataGridNode<CookieReportNodeData>(

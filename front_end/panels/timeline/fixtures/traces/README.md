@@ -213,3 +213,7 @@ Contains a trace where one Layout event has 26 invalidations associated with it.
 ### scheduler-post-task
 
 Generated from the [scheduler story](https://github.com/ChromeDevTools/performance-stories/tree/main/scheduler). Contains a series of `scheduler.postTask()` calls of different priority and delay, some nested and some ending up cancelled.
+
+### image-delivery
+
+Generate from a page load [this HTML file](https://gist.github.com/adamraine/397e2bd08665f9e45f6072e446715115). Contains a series of test cases for the image delivery insight.

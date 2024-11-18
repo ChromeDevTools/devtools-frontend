@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Platform from '../../../core/platform/platform.js';
 import * as Types from '../types/types.js';
 
 /**
@@ -37,11 +38,14 @@ const paintImageByLazyPixelRef: Map<number, Types.Events.PaintImage> = new Map()
 // have a relationship to a individual PaintImage event.
 const eventToPaintImage: Map<Types.Events.Event, Types.Events.PaintImage> = new Map();
 
+const urlToPaintImage: Map<string, Types.Events.PaintImage[]> = new Map();
+
 export function reset(): void {
   paintImageEvents.clear();
   decodeLazyPixelRefEvents.clear();
   paintImageByLazyPixelRef.clear();
   eventToPaintImage.clear();
+  urlToPaintImage.clear();
 }
 
 export function handleEvent(event: Types.Events.Event): void {
@@ -51,6 +55,12 @@ export function handleEvent(event: Types.Events.Event): void {
     forThread.push(event);
     forProcess.set(event.tid, forThread);
     paintImageEvents.set(event.pid, forProcess);
+
+    if (event.args.data.url) {
+      const paintsForUrl = Platform.MapUtilities.getWithDefault(urlToPaintImage, event.args.data.url, () => []);
+      paintsForUrl.push(event);
+    }
+
     return;
   }
 
@@ -118,11 +128,13 @@ export async function finalize(): Promise<void> {
 export interface ImagePaintData {
   paintImageByDrawLazyPixelRef: Map<number, Types.Events.PaintImage>;
   paintImageForEvent: Map<Types.Events.Event, Types.Events.PaintImage>;
+  paintImageEventForUrl: Map<string, Types.Events.PaintImage[]>;
 }
 
 export function data(): ImagePaintData {
   return {
     paintImageByDrawLazyPixelRef: paintImageByLazyPixelRef,
     paintImageForEvent: eventToPaintImage,
+    paintImageEventForUrl: urlToPaintImage,
   };
 }

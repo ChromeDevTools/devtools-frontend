@@ -1,5 +1,7 @@
 # Chromium DevTools Issues Guidelines
 
+[goo.gle/chromium-devtools-issues](https://goo.gle/chromium-devtools-issues)
+
 This document explains how Chromium DevTools (related) issues are tracked in the
 `Chromium>Platform>DevTools` component tree of [crbug], how we define and manage
 priorities and Service Level Objectives (SLOs), as well as the overall bug life

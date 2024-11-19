@@ -268,15 +268,6 @@ export class IssueAggregator extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   }
 
   #onIssueAdded(event: Common.EventTarget.EventTargetEvent<IssuesManager.IssuesManager.IssueAddedEvent>): void {
-    const excludeFromAggregate = [
-      Protocol.Audits.CookieWarningReason.WarnThirdPartyCookieHeuristic,
-      Protocol.Audits.CookieWarningReason.WarnDeprecationTrialMetadata,
-    ];
-
-    if (excludeFromAggregate.some(exclude => event.data.issue.code().includes(exclude))) {
-      return;
-    }
-
     this.#aggregateIssue(event.data.issue);
   }
 
@@ -289,7 +280,16 @@ export class IssueAggregator extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     this.dispatchEventToListeners(Events.FULL_UPDATE_REQUIRED);
   }
 
-  #aggregateIssue(issue: IssuesManager.Issue.Issue): AggregatedIssue {
+  #aggregateIssue(issue: IssuesManager.Issue.Issue): AggregatedIssue|undefined {
+    const excludeFromAggregate = [
+      Protocol.Audits.CookieWarningReason.WarnThirdPartyCookieHeuristic,
+      Protocol.Audits.CookieWarningReason.WarnDeprecationTrialMetadata,
+    ];
+
+    if (excludeFromAggregate.some(exclude => issue.code().includes(exclude))) {
+      return;
+    }
+
     const map = issue.isHidden() ? this.#hiddenAggregatedIssuesByKey : this.#aggregatedIssuesByKey;
     const aggregatedIssue = this.#aggregateIssueByStatus(map, issue);
     this.dispatchEventToListeners(Events.AGGREGATED_ISSUE_UPDATED, aggregatedIssue);

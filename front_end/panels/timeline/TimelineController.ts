@@ -155,10 +155,10 @@ export class TimelineController implements Trace.TracingManager.TracingManagerCl
 
     this.client.loadingStarted();
     await this.waitForTracingToStop();
-    await this.allSourcesFinished();
 
     // Now we re-enable throttling again to maintain the setting being persistent.
     throttlingManager.setCPUThrottlingRate(rateDuringRecording);
+    await this.allSourcesFinished();
 
     await LiveMetrics.LiveMetrics.instance().enable();
   }

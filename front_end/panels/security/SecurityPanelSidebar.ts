@@ -8,6 +8,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
+import {CookieControlsTreeElement} from './CookieControlsTreeElement.js';
 import {CookieReportTreeElement} from './CookieReportTreeElement.js';
 import lockIconStyles from './lockIcon.css.js';
 import {OriginTreeElement} from './OriginTreeElement.js';
@@ -33,6 +34,10 @@ const UIStrings = {
    *@description Sidebar element text in the Security panel
    */
   cookieReport: 'Third-party cookies',
+  /**
+   *@description Sidebar element text in the Security panel
+   */
+  flagControls: 'Controls',
   /**
    *@description Text in Security Panel of the Security panel
    */
@@ -90,6 +95,7 @@ export class SecurityPanelSidebar extends UI.Widget.VBox {
 
     if (Common.Settings.Settings.instance().getHostConfig().devToolsPrivacyUI?.enabled) {
       const privacyTreeSection = this.#addSidebarSection(i18nString(UIStrings.privacy), 'privacy');
+      privacyTreeSection.appendChild(new CookieControlsTreeElement(i18nString(UIStrings.flagControls)));
       privacyTreeSection.appendChild(new CookieReportTreeElement(i18nString(UIStrings.cookieReport)));
     }
 

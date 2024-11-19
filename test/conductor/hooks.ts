@@ -40,7 +40,7 @@ const viewportWidth = 1280;
 const viewportHeight = 720;
 // Adding some offset to the window size used in the headful mode
 // so to account for the size of the browser UI.
-// Values are choosen by trial and error to make sure that the window
+// Values are chosen by trial and error to make sure that the window
 // size is not much bigger than the viewport but so that the entire
 // viewport is visible.
 const windowWidth = viewportWidth + 50;

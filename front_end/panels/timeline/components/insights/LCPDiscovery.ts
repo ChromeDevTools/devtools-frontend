@@ -11,7 +11,7 @@ import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
 import {BaseInsightComponent} from './BaseInsightComponent.js';
-import {eventRef} from './EventRef.js';
+import {imageRef} from './EventRef.js';
 
 const {html} = LitHtml;
 
@@ -157,30 +157,6 @@ export class LCPDiscovery extends BaseInsightComponent<LCPDiscoveryInsightModel>
     ];
   }
 
-  #handleBadImage(event: Event): void {
-    const img = event.target as HTMLImageElement;
-    img.style.display = 'none';
-  }
-
-  #renderImage(imageData: LCPImageDiscoveryData): LitHtml.TemplateResult {
-    // clang-format off
-    return html`
-      <div class="lcp-element">
-        ${imageData.request.args.data.mimeType.includes('image') ?
-          html`
-        <img
-          class="element-img"
-          src=${imageData.request.args.data.url}
-          @error=${this.#handleBadImage}
-           />`: LitHtml.nothing}
-        <span class="element-img-details">
-          ${eventRef(imageData.request)}
-          <span class="element-img-details-size">${i18n.ByteUtilities.bytesToString(imageData.request.args.data.decodedBodyLength ?? 0)}</span>
-        </span>
-      </div>`;
-    // clang-format on
-  }
-
   override getEstimatedSavingsTime(): Trace.Types.Timing.MilliSeconds|null {
     return getImageData(this.model)?.estimatedSavings ?? null;
   }
@@ -209,7 +185,7 @@ export class LCPDiscovery extends BaseInsightComponent<LCPDiscoveryInsightModel>
             </li>
           </ul>
         </div>
-        ${this.#renderImage(imageData)}
+        ${imageRef(imageData.request)}
       </div>`;
     // clang-format on
   }

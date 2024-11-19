@@ -52,6 +52,7 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
       'LCP by phase',
       'LCP request discovery',
       'Render blocking requests',
+      'Improve image delivery',
       'Document request latency',
       'Third parties',
     ]);
@@ -79,6 +80,7 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
       'LCP by phase',
       'LCP request discovery',
       'Layout shift culprits',
+      'Improve image delivery',
       'Third parties',
     ]);
   });
@@ -108,6 +110,7 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
       'LCP by phase',
       'LCP request discovery',
       'Layout shift culprits',
+      'Improve image delivery',
       'Font display',
       'Third parties',
     ]);

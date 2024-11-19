@@ -52,8 +52,10 @@ export function deps(): ['NetworkRequests', 'Meta', 'ImagePainting'] {
   return ['NetworkRequests', 'Meta', 'ImagePainting'];
 }
 
+export type ImageOptimizationType = 'modern-format-or-compression'|'compression'|'video-format'|'responsive-size';
+
 export interface ImageOptimization {
-  type: 'modern-format-or-compression'|'compression'|'video-format'|'responsive-size';
+  type: ImageOptimizationType;
   byteSavings: number;
 }
 

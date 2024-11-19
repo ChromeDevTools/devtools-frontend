@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import * as Trace from '../../../../models/trace/trace.js';
 import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js';
@@ -78,6 +79,71 @@ export function eventRef(event: EventRefSupportedEvents): LitHtml.TemplateResult
   ></devtools-performance-event-ref>`;
 }
 
+class ImageRef extends HTMLElement {
+  readonly #shadow = this.attachShadow({mode: 'open'});
+  readonly #boundRender = this.#render.bind(this);
+
+  #request?: Trace.Types.Events.SyntheticNetworkRequest;
+  #imagePaint?: Trace.Types.Events.PaintImage;
+
+  connectedCallback(): void {
+    this.#shadow.adoptedStyleSheets = [baseInsightComponentStyles];
+  }
+
+  set request(request: Trace.Types.Events.SyntheticNetworkRequest) {
+    this.#request = request;
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+  }
+
+  set imagePaint(imagePaint: Trace.Types.Events.PaintImage|undefined) {
+    this.#imagePaint = imagePaint;
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
+  }
+
+  #render(): void {
+    if (!this.#request) {
+      return;
+    }
+
+    // clang-format off
+    LitHtml.render(html`
+      <div class="image-ref">
+        ${this.#request.args.data.mimeType.includes('image') ? html`
+          <img
+            class="element-img"
+            src=${this.#request.args.data.url}
+            @error=${handleBadImage}/>
+        `: LitHtml.nothing}
+        <span class="element-img-details">
+          ${eventRef(this.#request)}
+          <span class="element-img-details-size">${
+            this.#imagePaint ?
+              `${this.#imagePaint.args.data.srcWidth}x${this.#imagePaint.args.data.srcHeight}` :
+              i18n.ByteUtilities.bytesToString(this.#request.args.data.decodedBodyLength ?? 0)
+          }</span>
+        </span>
+      </div>
+    `, this.#shadow, {host: this});
+    // clang-format on
+  }
+}
+
+function handleBadImage(event: Event): void {
+  const img = event.target as HTMLImageElement;
+  img.style.display = 'none';
+}
+
+export function imageRef(
+    request: Trace.Types.Events.SyntheticNetworkRequest,
+    imagePaint?: Trace.Types.Events.PaintImage): LitHtml.TemplateResult {
+  return html`
+    <devtools-performance-image-ref
+      .request=${request}
+      .imagePaint=${imagePaint}
+    ></devtools-performance-image-ref>
+  `;
+}
+
 declare global {
   interface GlobalEventHandlersEventMap {
     [EventReferenceClick.eventName]: EventReferenceClick;
@@ -85,7 +151,9 @@ declare global {
 
   interface HTMLElementTagNameMap {
     'devtools-performance-event-ref': EventRef;
+    'devtools-performance-image-ref': ImageRef;
   }
 }
 
 customElements.define('devtools-performance-event-ref', EventRef);
+customElements.define('devtools-performance-image-ref', ImageRef);

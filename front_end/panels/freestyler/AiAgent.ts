@@ -431,6 +431,8 @@ STOP`;
 
     const enhancedQuery = await this.enhanceQuery(query, options.selected);
 
+    Host.userMetrics.freestylerQueryLength(enhancedQuery.length);
+
     // Request is built here to capture history up to this point.
     let request = this.buildRequest({
       input: enhancedQuery,

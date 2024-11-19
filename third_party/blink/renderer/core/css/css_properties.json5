@@ -6254,12 +6254,13 @@
       interpolable: true,
       field_group: "*",
       field_template: "external",
-      include_paths: ["third_party/blink/renderer/core/style/gap_data_list.h"],
-      default_value: "GapDataList::DefaultGapColorDataList()",
-      type_name: "GapDataList",
+      include_paths: ["third_party/blink/renderer/core/style/gap_data_list.h",
+                      "third_party/blink/renderer/core/css/style_color.h"],
+      default_value: "GapDataList<StyleColor>::DefaultGapColorDataList()",
+      type_name: "GapDataList<StyleColor>",
       keywords: ["currentcolor"],
       typedom_types: ["Keyword"],
-      converter: "ConvertGapColorDataList",
+      converter: "ConvertGapDecorationColorDataList",
       invalidate: ["paint"],
     },
     {
@@ -6282,10 +6283,11 @@
       interpolable: true,
       field_group: "*",
       field_template: "external",
-      default_value: "3",
-      type_name: "int",
+      default_value: "GapDataList<int>::DefaultGapWidthDataList()",
+      include_paths: ["third_party/blink/renderer/core/style/gap_data_list.h"],
+      type_name: "GapDataList<int>",
       computed_style_custom_functions: ["initial", "getter", "setter"],
-      converter: "ConvertColumnRuleWidth",
+      converter: "ConvertGapDecorationWidthDataList",
       keywords: ["thin", "medium", "thick"],
       typedom_types: ["Keyword", "Length"],
       invalidate: ["paint"],
@@ -6895,6 +6897,7 @@
     {
       name: "word-break",
       property_methods: ["CSSValueFromComputedStyleInternal"],
+      style_builder_custom_functions: ["value"],
       inherited: true,
       field_group: "*",
       field_template: "keyword",
@@ -7645,20 +7648,6 @@
       // modified by position-area in AnchorEvaluatorImpl.
       priority: 1,
       invalidate: ["layout", "out-of-flow", "paint"],
-    },
-    {
-      name: "inset-area",
-      surrogate_for: "position-area",
-      runtime_flag: "CSSInsetAreaProperty",
-
-      property_methods: ["ParseSingleValue", "CSSValueFromComputedStyleInternal"],
-      keywords: [
-        "none", "top", "bottom", "center", "left", "right", "x-start", "x-end",
-        "y-start", "y-end", "start", "end", "self-start", "self-end", "all"
-      ],
-      typedom_types: ["Keyword"],
-      valid_for_position_try: true,
-      priority: 1,
     },
     // Shorthands
     {
@@ -8412,10 +8401,11 @@
       property_methods: ["ParseSingleValue", "ColorIncludingFallback"],
       field_group: "*->visited",
       field_template: "external",
-      include_paths: ["third_party/blink/renderer/core/style/gap_data_list.h"],
-      default_value: "GapDataList::DefaultGapColorDataList()",
-      type_name: "GapDataList",
-      converter: "ConvertGapColorDataList",
+      include_paths: ["third_party/blink/renderer/core/style/gap_data_list.h",
+                      "third_party/blink/renderer/core/css/style_color.h"],
+      default_value: "GapDataList<StyleColor>::DefaultGapColorDataList()",
+      type_name: "GapDataList<StyleColor>",
+      converter: "ConvertGapDecorationColorDataList",
       invalidate: ["paint"],
     },
     {

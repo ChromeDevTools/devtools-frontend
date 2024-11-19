@@ -514,7 +514,6 @@ export const generatedProperties = [
    "initial-letter",
    "initial-value",
    "inline-size",
-   "inset-area",
    "inset-block-end",
    "inset-block-start",
    "inset-inline-end",
@@ -2482,26 +2481,6 @@ export const generatedProperties = [
    "left"
   ],
   "name": "inset"
- },
- {
-  "keywords": [
-   "none",
-   "top",
-   "bottom",
-   "center",
-   "left",
-   "right",
-   "x-start",
-   "x-end",
-   "y-start",
-   "y-end",
-   "start",
-   "end",
-   "self-start",
-   "self-end",
-   "all"
-  ],
-  "name": "inset-area"
  },
  {
   "longhands": [
@@ -5427,25 +5406,6 @@ export const generatedPropertyValues = {
  "inline-size": {
   "values": [
    "auto"
-  ]
- },
- "inset-area": {
-  "values": [
-   "none",
-   "top",
-   "bottom",
-   "center",
-   "left",
-   "right",
-   "x-start",
-   "x-end",
-   "y-start",
-   "y-end",
-   "start",
-   "end",
-   "self-start",
-   "self-end",
-   "all"
   ]
  },
  "interactivity": {

@@ -358,3 +358,53 @@ describeWithMockConnection('IssueAggregator', () => {
     assert.strictEqual(aggregator.numberOfHiddenAggregatedIssues(), 0);
   });
 });
+
+describeWithMockConnection('IssueAggregator', () => {
+  function getTestMitigationCookieIssue(warningReason: Protocol.Audits.CookieWarningReason): IssuesManager.Issue.Issue {
+    return IssuesManager.IssuesManager.createIssuesFromProtocolIssue(model, {
+      code: Protocol.Audits.InspectorIssueCode.CookieIssue,
+      details: {
+        cookieIssueDetails: {
+          cookie: {
+            name: 'test',
+            path: '/',
+            domain: 'a.test',
+          },
+          cookieExclusionReasons: [],
+          cookieWarningReasons: [warningReason],
+          operation: Protocol.Audits.CookieOperation.ReadCookie,
+          cookieUrl: 'a.test',
+        },
+      },
+    })[0];
+  }
+
+  let issuesManager: IssuesManager.IssuesManager.IssuesManager;
+  let model: SDK.IssuesModel.IssuesModel;
+
+  beforeEach(() => {
+    const showThirdPartyIssuesSetting = createFakeSetting('third party flag', true);
+    issuesManager = new IssuesManager.IssuesManager.IssuesManager(showThirdPartyIssuesSetting);
+    const target = createTarget();
+    model = target.model(SDK.IssuesModel.IssuesModel) as SDK.IssuesModel.IssuesModel;
+  });
+
+  it('should not aggregate mitigation related cookie issues', async () => {
+    // Preexisting issues should not be added
+    issuesManager.addIssue(
+        model, getTestMitigationCookieIssue(Protocol.Audits.CookieWarningReason.WarnDeprecationTrialMetadata));
+    issuesManager.addIssue(
+        model, getTestMitigationCookieIssue(Protocol.Audits.CookieWarningReason.WarnThirdPartyCookieHeuristic));
+
+    const aggregator = new Issues.IssueAggregator.IssueAggregator(issuesManager);
+
+    // Issues added after aggregator creation should not exist either
+    issuesManager.addIssue(
+        model, getTestMitigationCookieIssue(Protocol.Audits.CookieWarningReason.WarnDeprecationTrialMetadata));
+    issuesManager.addIssue(
+        model, getTestMitigationCookieIssue(Protocol.Audits.CookieWarningReason.WarnThirdPartyCookieHeuristic));
+
+    assert.strictEqual(aggregator.numberOfAggregatedIssues(), 0);
+    assert.strictEqual(aggregator.numberOfHiddenAggregatedIssues(), 0);
+  });
+});

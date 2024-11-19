@@ -240,7 +240,7 @@ export class TimelineMiniMap extends
   }
 
   #setMarkers(parsedTrace: Trace.Handlers.Types.ParsedTrace): void {
-    const markers = new Map<number, Element>();
+    const markers = new Map<number, HTMLDivElement>();
 
     const {Meta, PageLoadMetrics} = parsedTrace;
 

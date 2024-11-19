@@ -45,7 +45,7 @@ export class TimelineOverviewPane extends Common.ObjectWrapper.eventMixin<EventT
   private readonly cursorArea: HTMLElement;
   private cursorElement: HTMLElement;
   private overviewControls: TimelineOverview[];
-  private markers: Map<number, Element>;
+  private markers: Map<number, HTMLDivElement>;
   private readonly overviewInfo: OverviewInfo;
   private readonly updateThrottler: Common.Throttler.Throttler;
   private cursorEnabled: boolean;
@@ -209,12 +209,31 @@ export class TimelineOverviewPane extends Common.ObjectWrapper.eventMixin<EventT
     this.updateWindow();
   }
 
-  setMarkers(markers: Map<number, Element>): void {
+  setMarkers(markers: Map<number, HTMLDivElement>): void {
     this.markers = markers;
   }
 
-  getMarkers(): Map<number, Element> {
+  getMarkers(): Map<number, HTMLDivElement> {
     return this.markers;
+  }
+
+  /**
+   * Dim the time marker outside the highlight time bounds.
+   *
+   * @param highlightBounds the time bounds to highlight, if it is empty, it means to highlight everything.
+   */
+  #dimMarkers(highlightBounds?: Trace.Types.Timing.TraceWindowMicroSeconds): void {
+    for (const time of this.markers.keys()) {
+      const marker = this.markers.get(time);
+      if (!marker) {
+        continue;
+      }
+      const timeInMicroSeconds = Trace.Helpers.Timing.millisecondsToMicroseconds(Trace.Types.Timing.MilliSeconds(time));
+      const dim = highlightBounds && !Trace.Helpers.Timing.timestampIsInBounds(highlightBounds, timeInMicroSeconds);
+
+      // `filter: grayscale(1)`  will make the element fully completely grayscale.
+      marker.style.filter = `grayscale(${dim ? 1 : 0})`;
+    }
   }
 
   private updateMarkers(): void {
@@ -383,7 +402,7 @@ export class TimelineOverviewPane extends Common.ObjectWrapper.eventMixin<EventT
   highlightBounds(bounds: Trace.Types.Timing.TraceWindowMicroSeconds, withBracket: boolean): void {
     const left = this.overviewCalculator.computePosition(Trace.Helpers.Timing.microSecondsToMilliseconds(bounds.min));
     const right = this.overviewCalculator.computePosition(Trace.Helpers.Timing.microSecondsToMilliseconds(bounds.max));
-
+    this.#dimMarkers(bounds);
     // Update the punch out rectangle to the not-to-desaturate time range.
     const punchRect = this.#dimHighlightSVG.querySelector('rect.punch');
     punchRect?.setAttribute('x', left.toString());
@@ -399,6 +418,7 @@ export class TimelineOverviewPane extends Common.ObjectWrapper.eventMixin<EventT
   }
 
   clearBoundsHighlight(): void {
+    this.#dimMarkers();
     this.#dimHighlightSVG.classList.add('hidden');
   }
 }

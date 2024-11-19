@@ -2180,7 +2180,7 @@ export class TimelineUIUtils {
     return stylesContainer;
   }
 
-  static createEventDivider(event: Trace.Types.Events.Event, zeroTime: number): Element {
+  static createEventDivider(event: Trace.Types.Events.Event, zeroTime: number): HTMLDivElement {
     const eventDivider = document.createElement('div');
     eventDivider.classList.add('resources-event-divider');
     const {startTime: eventStartTime} = Trace.Helpers.Timing.eventTimingsMilliSeconds(event);

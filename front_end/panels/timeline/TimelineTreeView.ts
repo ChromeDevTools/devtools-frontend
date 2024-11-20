@@ -44,11 +44,6 @@ const UIStrings = {
    */
   selectItemForDetails: 'Select item for details.',
   /**
-   *@description Time in miliseconds
-   *@example {30.1} PH1
-   */
-  fms: '{PH1} ms',
-  /**
    *@description Number followed by percent sign
    *@example {20} PH1
    */
@@ -743,9 +738,9 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<Gri
     }
     const cell = this.createTD(columnId);
     cell.className = 'numeric-column';
-    cell.setAttribute('title', i18nString(UIStrings.fms, {PH1: value.toFixed(4)}));
+    cell.setAttribute('title', i18n.TimeUtilities.preciseMillisToString(value, 4));
     const textDiv = cell.createChild('div');
-    textDiv.createChild('span').textContent = i18nString(UIStrings.fms, {PH1: value.toFixed(1)});
+    textDiv.createChild('span').textContent = i18n.TimeUtilities.preciseMillisToString(value, 1);
 
     if (showPercents && this.treeView.exposePercentages()) {
       textDiv.createChild('span', 'percent-column').textContent =

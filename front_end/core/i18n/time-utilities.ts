@@ -160,6 +160,23 @@ export function preciseMillisToString(ms: number, precision = 0): string {
   return formatter.format(ms);
 }
 
+const preciseSecondsToStringFormattersCache = new Map<number, NumberFormatter>();
+
+export function preciseSecondsToString(ms: number, precision = 0): string {
+  let formatter = preciseSecondsToStringFormattersCache.get(precision);
+  if (!formatter) {
+    formatter = defineFormatter({
+      style: 'unit',
+      unit: 'second',
+      unitDisplay: 'narrow',
+      minimumFractionDigits: precision,
+      maximumFractionDigits: precision,
+    });
+    preciseSecondsToStringFormattersCache.set(precision, formatter);
+  }
+  return formatter.format(ms);
+}
+
 export function secondsToString(seconds: number, higherResolution?: boolean): string {
   if (!isFinite(seconds)) {
     return '-';

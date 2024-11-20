@@ -258,11 +258,6 @@ const UIStrings = {
    */
   stop: 'Stop',
   /**
-   *@description Time text content in Timeline Panel of the Performance panel
-   *@example {2.12} PH1
-   */
-  ssec: '{PH1} sec',
-  /**
    *
    * @description Text for exporting basic traces
    */
@@ -2635,7 +2630,7 @@ export class StatusPane extends UI.Widget.VBox {
 
   startTimer(): void {
     this.startTime = Date.now();
-    this.timeUpdateTimer = window.setInterval(this.updateTimer.bind(this), 1000);
+    this.timeUpdateTimer = window.setInterval(this.updateTimer.bind(this), 100);
     this.updateTimer();
   }
 
@@ -2653,8 +2648,9 @@ export class StatusPane extends UI.Widget.VBox {
     if (!this.timeUpdateTimer || !this.time) {
       return;
     }
-    const elapsed = (Date.now() - this.startTime) / 1000;
-    this.time.textContent = i18nString(UIStrings.ssec, {PH1: Math.round(elapsed)});
+
+    const seconds = (Date.now() - this.startTime) / 1000;
+    this.time.textContent = i18n.TimeUtilities.preciseSecondsToString(seconds, 1);
   }
 
   private arrangeDialog(parent: Element): void {

@@ -26,11 +26,6 @@ const UIStrings = {
    */
   durationFilter: 'Duration filter',
   /**
-   *@description Text in Events Timeline Tree View of the Performance panel
-   *@example {2} PH1
-   */
-  Dms: '{PH1} ms',
-  /**
    *@description Text for everything
    */
   all: 'All',
@@ -170,7 +165,7 @@ export class Filters extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
         durationFilterChanged.bind(this), i18nString(UIStrings.durationFilter), undefined, 'duration');
     for (const durationMs of Filters.durationFilterPresetsMs) {
       durationFilterUI.addOption(durationFilterUI.createOption(
-          durationMs ? `≥ ${i18nString(UIStrings.Dms, {PH1: durationMs})}` : i18nString(UIStrings.all),
+          durationMs ? `≥ ${i18n.TimeUtilities.millisToString(durationMs)}` : i18nString(UIStrings.all),
           String(durationMs)));
     }
     toolbar.appendToolbarItem(durationFilterUI);

@@ -164,7 +164,7 @@ export class ShortcutDialog extends HTMLElement {
           ${this.#shortcuts.map(shortcut =>
             html`
               <li class="keybinds-list-item">
-                <div>${shortcut.title}</div>
+                <div class="keybinds-list-title">${shortcut.title}</div>
                 <div class="shortcuts-for-actions">
                   ${shortcut.bindings.map(binding => {
                     return html`

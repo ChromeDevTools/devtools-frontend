@@ -50,6 +50,21 @@ dialog:focus-visible {
   clip-path: polygon(var(--content-clip-path));
 }
 
+.dialog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--sys-size-5) var(--sys-size-5) var(--sys-size-5) var(--sys-size-8);
+}
+
+.dialog-header-text {
+  font: var(--sys-typescale-body2-medium);
+}
+
+.dialog-content {
+  padding: 0 var(--sys-size-8);
+}
+
 @keyframes slideIn {
   from {
     transform: translateY(var(--dialog-offset-y));

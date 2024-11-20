@@ -7,16 +7,23 @@ import("../../../../../scripts/build/typescript/typescript.gni")
 
 ts_library("ts") {
   testonly = true
-  sources = [ "basic.ts" ]
+  sources = [
+    "basic.ts",
+    "button_dialog.ts",
+  ]
 
   deps = [
     "../../../../../front_end/ui/lit-html:bundle",
+    "../../../../testing",
     "../../dialogs:bundle",
   ]
 }
 
 copy_to_gen("dialog") {
   testonly = true
-  sources = [ "basic.html" ]
+  sources = [
+    "basic.html",
+    "button_dialog.html",
+  ]
   deps = [ ":ts" ]
 }

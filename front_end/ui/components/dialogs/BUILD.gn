@@ -9,6 +9,7 @@ import("../../../../scripts/build/typescript/typescript.gni")
 
 generate_css("css_files") {
   sources = [
+    "buttonDialog.css",
     "dialog.css",
     "iconDialog.css",
     "shortcutDialog.css",
@@ -17,6 +18,7 @@ generate_css("css_files") {
 
 devtools_module("dialogs") {
   sources = [
+    "ButtonDialog.ts",
     "Dialog.ts",
     "IconDialog.ts",
     "ShortcutDialog.ts",
@@ -45,6 +47,7 @@ ts_library("unittests") {
   testonly = true
 
   sources = [
+    "ButtonDialog.test.ts",
     "Dialog.test.ts",
     "ShortcutDialog.test.ts",
   ]

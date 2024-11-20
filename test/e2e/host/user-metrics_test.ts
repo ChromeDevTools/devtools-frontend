@@ -454,7 +454,8 @@ describe('User Metrics for Issue Panel', () => {
     ]);
   });
 
-  it('dispatch events when a link to an element is clicked', async () => {
+  // Flaky
+  it.skip('[crbug.com/380037466]: dispatch events when a link to an element is clicked', async () => {
     await goToResource('elements/element-reveal-inline-issue.html');
     await click('.issue');
 

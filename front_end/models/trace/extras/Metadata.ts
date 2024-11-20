@@ -5,7 +5,8 @@
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as Types from '../types/types.js';
 
-export async function forNewRecording(isCpuProfile: boolean, recordStartTime?: number): Promise<Types.File.MetaData> {
+export async function forNewRecording(
+    isCpuProfile: boolean, recordStartTime?: number, emulatedDeviceTitle?: string): Promise<Types.File.MetaData> {
   try {
     if (isCpuProfile) {
       // For CPU profile, only specify data origin
@@ -36,15 +37,33 @@ export async function forNewRecording(isCpuProfile: boolean, recordStartTime?: n
     const hardwareConcurrency =
         cpuThrottlingManager.hasPrimaryPageTargetSet() ? await getConcurrencyOrTimeout() : undefined;
     const cpuThrottling = SDK.CPUThrottlingManager.CPUThrottlingManager.instance().cpuThrottlingRate();
-    const networkConditions = SDK.NetworkManager.MultitargetNetworkManager.instance().networkConditions();
-    const networkTitle =
-        typeof networkConditions.title === 'function' ? networkConditions.title() : networkConditions.title;
+    const networkConditions = SDK.NetworkManager.MultitargetNetworkManager.instance().isThrottling() ?
+        SDK.NetworkManager.MultitargetNetworkManager.instance().networkConditions() :
+        undefined;
+
+    let networkThrottlingConditions;
+    let networkTitle;
+    if (networkConditions) {
+      networkThrottlingConditions = {
+        download: networkConditions.download,
+        upload: networkConditions.upload,
+        latency: networkConditions.latency,
+        packetLoss: networkConditions.packetLoss,
+        packetQueueLength: networkConditions.packetQueueLength,
+        packetReordering: networkConditions.packetReordering,
+        targetLatency: networkConditions.targetLatency,
+      };
+      networkTitle =
+          typeof networkConditions.title === 'function' ? networkConditions.title() : networkConditions.title;
+    }
 
     return {
       source: 'DevTools',
       startTime: recordStartTime ? new Date(recordStartTime).toJSON() : undefined,  // ISO-8601 timestamp
-      cpuThrottling,
+      emulatedDeviceTitle,
+      cpuThrottling: cpuThrottling !== 1 ? cpuThrottling : undefined,
       networkThrottling: networkTitle,
+      networkThrottlingConditions,
       hardwareConcurrency,
       dataOrigin: Types.File.DataOrigin.TRACE_EVENTS,
     };

@@ -16,7 +16,10 @@ devtools_module("types") {
     "TraceEvents.ts",
   ]
 
-  deps = [ "../../../generated" ]
+  deps = [
+    "../../../core/sdk:bundle",
+    "../../../generated",
+  ]
 }
 
 devtools_entrypoint("bundle") {

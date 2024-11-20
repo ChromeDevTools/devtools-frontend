@@ -68,6 +68,7 @@ export interface IssueCounterData {
 }
 
 // Lazily instantiate the formatter as the constructor takes 50ms+
+// TODO: move me and others like me to i18n module
 const listFormatter = (function defineFormatter() {
   let intlListFormat: Intl.ListFormat;
   return {

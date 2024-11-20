@@ -40,6 +40,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
+import * as EmulationModel from '../../models/emulation/emulation.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
@@ -2136,6 +2137,20 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.flameChart.getMainFlameChart().update();
   }
 
+  #deviceModeModel(): EmulationModel.DeviceModeModel.DeviceModeModel|null {
+    // This is wrapped in a try/catch because in some DevTools entry points
+    // (such as worker_app.ts) the Emulation panel is not included and as such
+    // the below code fails; it tries to instantiate the model which requires
+    // reading the value of a setting which has not been registered.
+    // In this case, we fallback to 'ALL'. See crbug.com/361515458 for an
+    // example bug that this resolves.
+    try {
+      return EmulationModel.DeviceModeModel.DeviceModeModel.instance();
+    } catch {
+      return null;
+    }
+  }
+
   /**
    * This is called with we are done loading a trace from a file, or after we
    * have recorded a fresh trace.
@@ -2176,8 +2191,17 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       return;
     }
 
-    metadata = metadata ? metadata :
-                          await Trace.Extras.Metadata.forNewRecording(isCpuProfile, recordingStartTime ?? undefined);
+    if (!metadata) {
+      const deviceModeModel = this.#deviceModeModel();
+      let emulatedDeviceTitle;
+      if (deviceModeModel?.type() === EmulationModel.DeviceModeModel.Type.Device) {
+        emulatedDeviceTitle = deviceModeModel.device()?.title ?? undefined;
+      } else if (deviceModeModel?.type() === EmulationModel.DeviceModeModel.Type.Responsive) {
+        emulatedDeviceTitle = 'Responsive';
+      }
+      metadata = await Trace.Extras.Metadata.forNewRecording(
+          isCpuProfile, recordingStartTime ?? undefined, emulatedDeviceTitle);
+    }
 
     try {
       await this.#executeNewTrace(collectedEvents, recordingIsFresh, metadata);
@@ -2210,7 +2234,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
         },
         filmStripForPreview: Trace.Extras.FilmStrip.fromParsedTrace(parsedTrace),
         parsedTrace,
-        startTime: recordingStartTime ?? null,
+        metadata,
       });
     } catch (error) {
       // If we errored during the parsing stage, it

@@ -13,11 +13,12 @@ describeWithEnvironment('Trace Metadata', () => {
     sinon.stub(cpuThrottlingManager, 'getHardwareConcurrency').returns(Promise.resolve(1));
     sinon.stub(cpuThrottlingManager, 'cpuThrottlingRate').returns(2);
     const networkManager = SDK.NetworkManager.MultitargetNetworkManager.instance({forceNew: true});
+    sinon.stub(networkManager, 'isThrottling').returns(true);
     sinon.stub(networkManager, 'networkConditions').returns({
       title: 'Slow 3G',
       download: 1,
-      upload: 1,
-      latency: 1,
+      upload: 2,
+      latency: 3,
     });
     const metadata = await Trace.Extras.Metadata.forNewRecording(/* isCpuProfile= */ false);
     assert.deepEqual(metadata, {
@@ -25,7 +26,17 @@ describeWithEnvironment('Trace Metadata', () => {
       startTime: undefined,
       cpuThrottling: 2,
       networkThrottling: 'Slow 3G',
+      networkThrottlingConditions: {
+        download: 1,
+        latency: 3,
+        upload: 2,
+        packetLoss: undefined,
+        packetQueueLength: undefined,
+        packetReordering: undefined,
+        targetLatency: undefined,
+      },
       dataOrigin: Trace.Types.File.DataOrigin.TRACE_EVENTS,
+      emulatedDeviceTitle: undefined,
       hardwareConcurrency: 1,
     });
   });
@@ -36,6 +47,7 @@ describeWithEnvironment('Trace Metadata', () => {
     sinon.stub(cpuThrottlingManager, 'getHardwareConcurrency').returns(Promise.resolve(1));
     sinon.stub(cpuThrottlingManager, 'cpuThrottlingRate').returns(2);
     const networkManager = SDK.NetworkManager.MultitargetNetworkManager.instance({forceNew: true});
+    sinon.stub(networkManager, 'isThrottling').returns(true);
     sinon.stub(networkManager, 'networkConditions').returns({
       title: () => 'Slow 3G',
       download: 1,
@@ -48,6 +60,16 @@ describeWithEnvironment('Trace Metadata', () => {
       startTime: undefined,
       cpuThrottling: 2,
       networkThrottling: 'Slow 3G',
+      networkThrottlingConditions: {
+        download: 1,
+        latency: 1,
+        upload: 1,
+        packetLoss: undefined,
+        packetQueueLength: undefined,
+        packetReordering: undefined,
+        targetLatency: undefined,
+      },
+      emulatedDeviceTitle: undefined,
       dataOrigin: Trace.Types.File.DataOrigin.TRACE_EVENTS,
       hardwareConcurrency: 1,
     });
@@ -59,6 +81,7 @@ describeWithEnvironment('Trace Metadata', () => {
     const getHardwareConcurrencyStub = sinon.stub(cpuThrottlingManager, 'getHardwareConcurrency');
     sinon.stub(cpuThrottlingManager, 'cpuThrottlingRate').returns(2);
     const networkManager = SDK.NetworkManager.MultitargetNetworkManager.instance({forceNew: true});
+    sinon.stub(networkManager, 'isThrottling').returns(true);
     sinon.stub(networkManager, 'networkConditions').returns({
       title: () => 'Slow 3G',
       download: 1,
@@ -71,7 +94,17 @@ describeWithEnvironment('Trace Metadata', () => {
       startTime: undefined,
       cpuThrottling: 2,
       networkThrottling: 'Slow 3G',
+      networkThrottlingConditions: {
+        download: 1,
+        latency: 1,
+        upload: 1,
+        packetLoss: undefined,
+        packetQueueLength: undefined,
+        packetReordering: undefined,
+        targetLatency: undefined,
+      },
       dataOrigin: Trace.Types.File.DataOrigin.TRACE_EVENTS,
+      emulatedDeviceTitle: undefined,
       hardwareConcurrency: undefined,
     });
     assert.strictEqual(getHardwareConcurrencyStub.callCount, 0);

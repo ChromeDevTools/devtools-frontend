@@ -19,7 +19,6 @@ import {
   type ContextResponse,
   ConversationContext,
   debugLog,
-  isDebugMode,
   type ParsedResponse,
   type RequestOptions,
   ResponseType,
@@ -610,10 +609,6 @@ export class FreestylerAgent extends AiAgent<SDK.DOMModel.DOMNode> {
         }
 
         const sideEffectConfirmationPromiseWithResolvers = this.#confirmSideEffect<boolean>();
-        if (isDebugMode()) {
-          window.dispatchEvent(new CustomEvent(
-              'freestylersideeffect', {detail: {confirm: sideEffectConfirmationPromiseWithResolvers.resolve}}));
-        }
 
         yield {
           type: ResponseType.SIDE_EFFECT,

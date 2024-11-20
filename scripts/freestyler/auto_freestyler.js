@@ -264,10 +264,17 @@ class Example {
 
       await this.#devtoolsPage.locator('aria/Ask a question about the selected element').fill(query);
 
-      this.#devtoolsPage.evaluate(() => {
-        window.addEventListener('freestylersideeffect', ev => {
-          ev.detail.confirm();
-        });
+      const abort = new AbortController();
+      const autoAcceptEvals = async signal => {
+        while (!signal.aborted) {
+          await this.#devtoolsPage.locator('aria/Continue').click({signal});
+        }
+      };
+      autoAcceptEvals(abort.signal).catch(err => {
+        if (err.message === 'This operation was aborted') {
+          return;
+        }
+        console.error('autoAcceptEvals', err);
       });
 
       const done = this.#devtoolsPage.evaluate(() => {
@@ -282,6 +289,7 @@ class Example {
 
       await this.#devtoolsPage.keyboard.press('Enter');
       await done;
+      abort.abort();
 
       const result = JSON.parse(await this.#devtoolsPage.evaluate(() => {
         return localStorage.getItem('freestylerStructuredLog');

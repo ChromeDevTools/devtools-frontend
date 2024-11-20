@@ -126,10 +126,11 @@ export class InteractionToNextPaint extends BaseInsightComponent<INPInsightModel
   }
 
   override render(): void {
-    const event = this.model?.longestInteractionEvent;
+    if (!this.model?.longestInteractionEvent) {
+      return;
+    }
 
-    const output = event ? this.#renderContent(event) : LitHtml.nothing;
-    this.renderWithContent(output);
+    this.renderWithContent(this.#renderContent(this.model.longestInteractionEvent));
   }
 }
 

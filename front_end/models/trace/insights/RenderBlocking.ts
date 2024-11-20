@@ -151,12 +151,13 @@ function computeSavings(
   return {metricSavings, requestIdToWastedMs};
 }
 
-function finalize(partialModel: Omit<RenderBlockingInsightModel, 'title'|'description'|'category'>):
+function finalize(partialModel: Omit<RenderBlockingInsightModel, 'title'|'description'|'category'|'shouldShow'>):
     RenderBlockingInsightModel {
   return {
     title: i18nString(UIStrings.title),
     description: i18nString(UIStrings.description),
     category: InsightCategory.LCP,
+    shouldShow: partialModel.renderBlockingRequests.length > 0,
     ...partialModel,
   };
 }

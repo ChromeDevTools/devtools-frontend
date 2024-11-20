@@ -57,11 +57,7 @@ interface LCPImageDiscoveryData {
   estimatedSavings: Trace.Types.Timing.MilliSeconds|null;
 }
 
-function getImageData(model: LCPDiscoveryInsightModel|null): LCPImageDiscoveryData|null {
-  if (!model) {
-    return null;
-  }
-
+function getImageData(model: LCPDiscoveryInsightModel): LCPImageDiscoveryData|null {
   if (model.lcpRequest === undefined) {
     return null;
   }
@@ -121,6 +117,10 @@ export class LCPDiscovery extends BaseInsightComponent<LCPDiscoveryInsightModel>
   }
 
   override createOverlays(): Overlays.Overlays.TimelineOverlay[] {
+    if (!this.model) {
+      return [];
+    }
+
     const imageResults = getImageData(this.model);
     if (!imageResults || !imageResults.discoveryDelay) {
       return [];
@@ -158,6 +158,10 @@ export class LCPDiscovery extends BaseInsightComponent<LCPDiscoveryInsightModel>
   }
 
   override getEstimatedSavingsTime(): Trace.Types.Timing.MilliSeconds|null {
+    if (!this.model) {
+      return null;
+    }
+
     return getImageData(this.model)?.estimatedSavings ?? null;
   }
 
@@ -191,6 +195,10 @@ export class LCPDiscovery extends BaseInsightComponent<LCPDiscoveryInsightModel>
   }
 
   override render(): void {
+    if (!this.model) {
+      return;
+    }
+
     const imageResults = getImageData(this.model);
     const output = imageResults ? this.#renderContent(imageResults) : LitHtml.nothing;
     this.renderWithContent(output);

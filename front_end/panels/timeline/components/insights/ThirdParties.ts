@@ -115,12 +115,12 @@ export class ThirdParties extends BaseInsightComponent<ThirdPartiesInsightModel>
   }
 
   override render(): void {
-    const model = this.model;
-    const entries = model && [...model.summaryByEntity.entries()].filter(kv => kv[0] !== model.firstPartyEntity);
-    const shouldShow = entries?.length;
+    if (!this.model) {
+      return;
+    }
 
-    const output = shouldShow ? this.#renderContent(entries) : LitHtml.nothing;
-    this.renderWithContent(output);
+    const entries = [...this.model.summaryByEntity.entries()].filter(kv => kv[0] !== this.model?.firstPartyEntity);
+    this.renderWithContent(this.#renderContent(entries));
   }
 }
 

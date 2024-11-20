@@ -125,8 +125,11 @@ export class ImageDelivery extends BaseInsightComponent<ImageDeliveryInsightMode
   }
 
   override render(): void {
-    const output = this.#renderContent();
-    this.renderWithContent(output);
+    if (!this.model) {
+      return;
+    }
+
+    this.renderWithContent(this.#renderContent());
   }
 }
 

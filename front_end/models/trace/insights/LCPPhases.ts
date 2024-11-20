@@ -116,7 +116,8 @@ function breakdownPhases(
   };
 }
 
-function finalize(partialModel: Omit<LCPPhasesInsightModel, 'title'|'description'|'category'>): LCPPhasesInsightModel {
+function finalize(partialModel: Omit<LCPPhasesInsightModel, 'title'|'description'|'category'|'shouldShow'>):
+    LCPPhasesInsightModel {
   const relatedEvents = [];
   if (partialModel.lcpEvent) {
     relatedEvents.push(partialModel.lcpEvent);
@@ -128,6 +129,8 @@ function finalize(partialModel: Omit<LCPPhasesInsightModel, 'title'|'description
     title: i18nString(UIStrings.title),
     description: i18nString(UIStrings.description),
     category: InsightCategory.LCP,
+    // TODO: should move the component's "getPhaseData" to model.
+    shouldShow: Boolean(partialModel.phases) && (partialModel.lcpMs ?? 0) > 0,
     ...partialModel,
     relatedEvents,
   };

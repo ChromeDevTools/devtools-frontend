@@ -32,11 +32,12 @@ export type INPInsightModel = InsightModel<{
   highPercentileInteractionEvent?: SyntheticInteractionPair,
 }>;
 
-function finalize(partialModel: Omit<INPInsightModel, 'title'|'description'|'category'>): INPInsightModel {
+function finalize(partialModel: Omit<INPInsightModel, 'title'|'description'|'category'|'shouldShow'>): INPInsightModel {
   return {
     title: i18nString(UIStrings.title),
     description: i18nString(UIStrings.description),
     category: InsightCategory.INP,
+    shouldShow: Boolean(partialModel.longestInteractionEvent),
     ...partialModel,
   };
 }

@@ -36,11 +36,13 @@ export type ViewportInsightModel = InsightModel<{
   viewportEvent?: Types.Events.ParseMetaViewport,
 }>;
 
-function finalize(partialModel: Omit<ViewportInsightModel, 'title'|'description'|'category'>): ViewportInsightModel {
+function finalize(partialModel: Omit<ViewportInsightModel, 'title'|'description'|'category'|'shouldShow'>):
+    ViewportInsightModel {
   return {
     title: i18nString(UIStrings.title),
     description: i18nString(UIStrings.description),
     category: InsightCategory.INP,
+    shouldShow: partialModel.mobileOptimized === false,
     ...partialModel,
   };
 }

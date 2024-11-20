@@ -216,7 +216,7 @@ export class SidebarSingleInsightSet extends HTMLElement {
       }
 
       const model = models[name as keyof typeof models];
-      if (!model ||
+      if (!model || !model.shouldShow ||
           !shouldRenderForCategory({activeCategory: this.#data.activeCategory, insightCategory: model.category})) {
         continue;
       }

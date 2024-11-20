@@ -64,6 +64,8 @@ export type InsightModel<R extends Record<string, unknown>> = R&{
   title: string,
   description: string,
   category: InsightCategory,
+  /** True if there is anything of interest to display to the user. */
+  shouldShow: boolean,
   relatedEvents?: Types.Events.Event[],
   warnings?: InsightWarning[],
   metricSavings?: MetricSavings,

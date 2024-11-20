@@ -420,12 +420,14 @@ function getFontRootCauses(
   return rootCausesByShift;
 }
 
-function finalize(partialModel: Omit<CLSCulpritsInsightModel, 'title'|'description'|'category'>):
+function finalize(partialModel: Omit<CLSCulpritsInsightModel, 'title'|'description'|'category'|'shouldShow'>):
     CLSCulpritsInsightModel {
   return {
     title: i18nString(UIStrings.title),
     description: i18nString(UIStrings.description),
     category: InsightCategory.CLS,
+    // TODO: getTopCulprits in component needs to move to model so this can be set here.
+    shouldShow: true,
     ...partialModel,
   };
 }

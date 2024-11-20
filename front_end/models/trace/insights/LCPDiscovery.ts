@@ -44,7 +44,7 @@ export type LCPDiscoveryInsightModel = InsightModel<{
   earliestDiscoveryTimeTs?: Types.Timing.MicroSeconds,
 }>;
 
-function finalize(partialModel: Omit<LCPDiscoveryInsightModel, 'title'|'description'|'category'>):
+function finalize(partialModel: Omit<LCPDiscoveryInsightModel, 'title'|'description'|'category'|'shouldShow'>):
     LCPDiscoveryInsightModel {
   const relatedEvents = partialModel.lcpEvent && partialModel.lcpRequest ?
       // TODO: add entire request initiator chain?
@@ -54,6 +54,10 @@ function finalize(partialModel: Omit<LCPDiscoveryInsightModel, 'title'|'descript
     title: i18nString(UIStrings.title),
     description: i18nString(UIStrings.description),
     category: InsightCategory.LCP,
+    shouldShow: Boolean(
+        partialModel.lcpRequest &&
+        (partialModel.shouldIncreasePriorityHint || partialModel.shouldPreloadImage ||
+         partialModel.shouldRemoveLazyLoading)),
     ...partialModel,
     relatedEvents,
   };

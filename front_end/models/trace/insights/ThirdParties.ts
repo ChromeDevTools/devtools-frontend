@@ -52,12 +52,14 @@ function getRelatedEvents(
   return events;
 }
 
-function finalize(partialModel: Omit<ThirdPartiesInsightModel, 'title'|'description'|'category'>):
+function finalize(partialModel: Omit<ThirdPartiesInsightModel, 'title'|'description'|'category'|'shouldShow'>):
     ThirdPartiesInsightModel {
   return {
     title: i18nString(UIStrings.title),
     description: i18nString(UIStrings.description),
     category: InsightCategory.ALL,
+    shouldShow:
+        Boolean([...partialModel.summaryByEntity.entries()].find(kv => kv[0] !== partialModel.firstPartyEntity)),
     ...partialModel,
   };
 }

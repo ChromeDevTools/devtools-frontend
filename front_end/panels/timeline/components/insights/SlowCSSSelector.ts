@@ -116,7 +116,7 @@ export class SlowCSSSelector extends BaseInsightComponent<SlowCSSSelectorInsight
     return links;
   }
 
-  renderSlowCSSSelector(): LitHtml.LitTemplate {
+  #renderContent(): LitHtml.LitTemplate {
     if (!this.model) {
       return LitHtml.nothing;
     }
@@ -176,14 +176,12 @@ export class SlowCSSSelector extends BaseInsightComponent<SlowCSSSelectorInsight
     // clang-format on
   }
 
-  #hasDataToRender(): boolean {
-    return this.model !== null && this.model.topElapsedMs.length !== 0 && this.model.topMatchAttempts.length !== 0;
-  }
-
   override render(): void {
-    const shouldRender = this.#hasDataToRender();
-    const output = shouldRender ? this.renderSlowCSSSelector() : LitHtml.nothing;
-    this.renderWithContent(output);
+    if (!this.model) {
+      return;
+    }
+
+    this.renderWithContent(this.#renderContent());
   }
 }
 

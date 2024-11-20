@@ -47,10 +47,11 @@ export class Viewport extends BaseInsightComponent<ViewportInsightModel> {
   }
 
   override render(): void {
-    const model = this.model;
-    const shouldShow = model && model.mobileOptimized === false;
-    const output = shouldShow ? this.#renderContent() : LitHtml.nothing;
-    this.renderWithContent(output);
+    if (!this.model) {
+      return;
+    }
+
+    this.renderWithContent(this.#renderContent());
   }
 }
 

@@ -119,12 +119,19 @@ function getCompressionSavings(request: Types.Events.SyntheticNetworkRequest): n
   return estimatedSavings < IGNORE_THRESHOLD_IN_BYTES ? 0 : estimatedSavings;
 }
 
-function finalize(partialModel: Omit<DocumentLatencyInsightModel, 'title'|'description'|'category'>):
+function finalize(partialModel: Omit<DocumentLatencyInsightModel, 'title'|'description'|'category'|'shouldShow'>):
     DocumentLatencyInsightModel {
+  let hasFailure = false;
+  if (partialModel.data) {
+    hasFailure = partialModel.data.redirectDuration > 0 || partialModel.data.serverResponseTooSlow ||
+        partialModel.data.uncompressedResponseBytes > 0;
+  }
+
   return {
     title: i18nString(UIStrings.title),
     description: i18nString(UIStrings.description),
     category: InsightCategory.ALL,
+    shouldShow: hasFailure,
     ...partialModel,
   };
 }

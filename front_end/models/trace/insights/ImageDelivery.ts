@@ -75,12 +75,13 @@ export type ImageDeliveryInsightModel = InsightModel<{
   optimizableImages: OptimizableImage[],
 }>;
 
-function finalize(partialModel: Omit<ImageDeliveryInsightModel, 'title'|'description'|'category'>):
+function finalize(partialModel: Omit<ImageDeliveryInsightModel, 'title'|'description'|'category'|'shouldShow'>):
     ImageDeliveryInsightModel {
   return {
     title: i18nString(UIStrings.title),
     description: i18nString(UIStrings.description),
     category: InsightCategory.LCP,
+    shouldShow: partialModel.optimizableImages.length > 0,
     ...partialModel,
     relatedEvents: partialModel.optimizableImages.map(image => image.request),
   };

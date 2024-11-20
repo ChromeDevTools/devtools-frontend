@@ -182,10 +182,7 @@ export class DocumentLatency extends BaseInsightComponent<DocumentLatencyInsight
       return;
     }
 
-    const hasFailure = this.model.data.redirectDuration > 0 || this.model.data.serverResponseTooSlow ||
-        this.model.data.uncompressedResponseBytes > 0;
-    const output = hasFailure ? this.#renderContent() : LitHtml.nothing;
-    this.renderWithContent(output);
+    this.renderWithContent(this.#renderContent());
   }
 }
 

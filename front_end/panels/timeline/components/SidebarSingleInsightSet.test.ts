@@ -52,7 +52,6 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
       'LCP by phase',
       'LCP request discovery',
       'Render blocking requests',
-      'Improve image delivery',
       'Document request latency',
       'Third parties',
     ]);

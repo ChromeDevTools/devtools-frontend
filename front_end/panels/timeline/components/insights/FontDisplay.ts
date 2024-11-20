@@ -82,9 +82,11 @@ export class FontDisplay extends BaseInsightComponent<FontDisplayInsightModel> {
   }
 
   override render(): void {
-    const shouldShow = this.model?.fonts.find(font => font.wastedTime);
-    const output = shouldShow ? this.#renderContent() : LitHtml.nothing;
-    this.renderWithContent(output);
+    if (!this.model) {
+      return;
+    }
+
+    this.renderWithContent(this.#renderContent());
   }
 }
 

@@ -216,15 +216,13 @@ export class LCPPhases extends BaseInsightComponent<LCPPhasesInsightModel> {
     // clang-format on
   }
 
-  #hasDataToRender(phaseData: PhaseData[]): boolean {
-    return phaseData ? phaseData.length > 0 : false;
-  }
-
   override render(): void {
+    if (!this.model) {
+      return;
+    }
+
     const phaseData = this.#getPhaseData();
-    const shouldRender = this.#hasDataToRender(phaseData);
-    const output = shouldRender ? this.#renderContent(phaseData) : LitHtml.nothing;
-    this.renderWithContent(output);
+    this.renderWithContent(this.#renderContent(phaseData));
   }
 }
 

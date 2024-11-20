@@ -7,14 +7,17 @@
 .excluded-folder-header {
   display: flex;
   flex-direction: column;
-  height: var(--sys-size-16);
+  min-height: var(--sys-size-16);
   border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
   padding: var(--sys-size-5) var(--sys-size-6);
 
+  & > .url-header {
+    height: var(--sys-size-9);
+  }
+
   & > .excluded-folder-url {
     color: var(--sys-color-on-surface-subtle);
-    overflow: hidden;
-    text-overflow: ellipsis;
+    overflow-wrap: break-word;
   }
 }
 

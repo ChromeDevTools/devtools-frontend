@@ -149,7 +149,9 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineTreeView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-export class TimelineTreeView extends UI.Widget.VBox implements UI.SearchableView.Searchable {
+export class TimelineTreeView extends
+    Common.ObjectWrapper.eventMixin<TimelineTreeView.EventTypes, typeof UI.Widget.VBox>(UI.Widget.VBox)
+        implements UI.SearchableView.Searchable {
   #selectedEvents: Trace.Types.Events.Event[]|null;
   private searchResults: Trace.Extras.TraceTree.Node[];
   linkifier!: Components.Linkifier.Linkifier;
@@ -172,8 +174,9 @@ export class TimelineTreeView extends UI.Widget.VBox implements UI.SearchableVie
   private caseSensitiveButton: UI.Toolbar.ToolbarToggle|undefined;
   private regexButton: UI.Toolbar.ToolbarToggle|undefined;
   private matchWholeWord: UI.Toolbar.ToolbarToggle|undefined;
-
   #parsedTrace: Trace.Handlers.Types.ParsedTrace|null = null;
+  #lastHighlightedEvent: HTMLElement|null = null;
+  eventToTreeNode: WeakMap<Trace.Types.Events.Event, Trace.Extras.TraceTree.Node> = new WeakMap();
 
   constructor() {
     super();
@@ -237,6 +240,9 @@ export class TimelineTreeView extends UI.Widget.VBox implements UI.SearchableVie
     });
     this.dataGrid.addEventListener(DataGrid.DataGrid.Events.SORTING_CHANGED, this.sortingChanged, this);
     this.dataGrid.element.addEventListener('mousemove', this.onMouseMove.bind(this), true);
+    this.dataGrid.element.addEventListener(
+        'mouseleave', () => this.dispatchEventToListeners(TimelineTreeView.Events.TREE_ROW_HOVERED, null));
+    this.dataGrid.addEventListener(DataGrid.DataGrid.Events.OPENED_NODE, this.onGridNodeOpened, this);
     this.dataGrid.setResizeMethod(DataGrid.DataGrid.ResizeMethod.LAST);
     this.dataGrid.setRowContextMenuCallback(this.onContextMenu.bind(this));
     this.dataGrid.asWidget().show(mainView.element);
@@ -267,6 +273,22 @@ export class TimelineTreeView extends UI.Widget.VBox implements UI.SearchableVie
     this.startTime = startTime;
     this.endTime = endTime;
     this.refreshTree();
+  }
+
+  highlightEventInTree(event: Trace.Types.Events.Event|null): void {
+    // Potentially clear last highlight
+    const dataGridElem = event && this.dataGridElementForEvent(event);
+    if (!event || (dataGridElem && dataGridElem !== this.#lastHighlightedEvent)) {
+      this.#lastHighlightedEvent?.style.setProperty('background-color', '');
+    }
+
+    if (event) {
+      const rowElem = dataGridElem;
+      if (rowElem) {
+        this.#lastHighlightedEvent = rowElem;
+        this.#lastHighlightedEvent.style.backgroundColor = 'var(--sys-color-yellow-container)';
+      }
+    }
   }
 
   filters(): Trace.Extras.TraceFilter.TraceFilter[] {
@@ -318,9 +340,6 @@ export class TimelineTreeView extends UI.Widget.VBox implements UI.SearchableVie
     return this.#selectedEvents || [];
   }
 
-  onHover(_node: Trace.Extras.TraceTree.Node|null): void {
-  }
-
   appendContextMenuItems(_contextMenu: UI.ContextMenu.ContextMenu, _node: Trace.Extras.TraceTree.Node): void {
   }
 
@@ -370,6 +389,9 @@ export class TimelineTreeView extends UI.Widget.VBox implements UI.SearchableVie
     for (const child of children.values()) {
       // Exclude the idle time off the total calculation.
       const gridNode = new TreeGridNode(child, totalUsedTime, maxSelfTime, maxTotalTime, this);
+      for (const e of child.events) {
+        this.eventToTreeNode.set(e, child);
+      }
       this.dataGrid.insertChild(gridNode);
     }
     this.sortingChanged();
@@ -527,14 +549,22 @@ export class TimelineTreeView extends UI.Widget.VBox implements UI.SearchableVie
     const gridNode = event.target && (event.target instanceof Node) ?
         (this.dataGrid.dataGridNodeFromNode((event.target as Node))) :
         null;
-    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration
-    // @ts-expect-error
-    const profileNode = gridNode && gridNode._profileNode;
+    const profileNode = (gridNode as TreeGridNode)?.profileNode;
     if (profileNode === this.lastHoveredProfileNode) {
       return;
     }
     this.lastHoveredProfileNode = profileNode;
     this.onHover(profileNode);
+  }
+
+  onHover(node: Trace.Extras.TraceTree.Node|null): void {
+    this.dispatchEventToListeners(TimelineTreeView.Events.TREE_ROW_HOVERED, node);
+  }
+
+  // TODO: do this on selection (before opened)
+  onGridNodeOpened(): void {
+    const node = this.dataGrid.selectedNode as TreeGridNode;
+    this.dispatchEventToListeners(TimelineTreeView.Events.TREE_ROW_HOVERED, node.profileNode);
   }
 
   private onContextMenu(
@@ -549,8 +579,16 @@ export class TimelineTreeView extends UI.Widget.VBox implements UI.SearchableVie
     }
   }
 
+  dataGridElementForEvent(event: Trace.Types.Events.Event|null): HTMLElement|null {
+    if (!event) {
+      return null;
+    }
+    const treeNode = this.eventToTreeNode.get(event);
+    return (treeNode && this.dataGridNodeForTreeNode(treeNode)?.element()) ?? null;
+  }
+
   dataGridNodeForTreeNode(treeNode: Trace.Extras.TraceTree.Node): GridNode|null {
-    return profileNodeToTreeGridNode.get(treeNode) || null;
+    return treeNodeToGridNode.get(treeNode) || null;
   }
 
   // UI.SearchableView.Searchable implementation
@@ -595,6 +633,16 @@ export class TimelineTreeView extends UI.Widget.VBox implements UI.SearchableVie
   supportsRegexSearch(): boolean {
     return true;
   }
+}
+
+export namespace TimelineTreeView {
+  export const enum Events {
+    TREE_ROW_HOVERED = 'TreeRowHovered',
+  }
+
+  export type EventTypes = {
+    [Events.TREE_ROW_HOVERED]: Trace.Extras.TraceTree.Node|null,
+  };
 }
 
 export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<GridNode> {
@@ -651,10 +699,8 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<Gri
       if (this.linkElement) {
         container.createChild('div', 'activity-link').appendChild(this.linkElement);
       }
-      const eventStyle = TimelineUIUtils.eventStyle(event);
-      const eventCategory = eventStyle.category;
-      UI.ARIAUtils.setLabel(icon, eventCategory.title);
-      icon.style.backgroundColor = eventCategory.getComputedColorValue();
+      UI.ARIAUtils.setLabel(icon, TimelineUIUtils.eventStyle(event).category.title);
+      icon.style.backgroundColor = TimelineUIUtils.eventColor(event);
       if (Trace.Types.Extensions.isSyntheticExtensionEntry(event)) {
         icon.style.backgroundColor = Extensions.ExtensionUI.extensionEntryColor(event);
       }
@@ -720,7 +766,7 @@ export class TreeGridNode extends GridNode {
       treeView: TimelineTreeView) {
     super(profileNode, grandTotalTime, maxSelfTime, maxTotalTime, treeView);
     this.setHasChildren(this.profileNode.hasChildren());
-    profileNodeToTreeGridNode.set(profileNode, this);
+    treeNodeToGridNode.set(profileNode, this);
   }
 
   override populate(): void {
@@ -733,12 +779,15 @@ export class TreeGridNode extends GridNode {
     }
     for (const node of this.profileNode.children().values()) {
       const gridNode = new TreeGridNode(node, this.grandTotalTime, this.maxSelfTime, this.maxTotalTime, this.treeView);
+      for (const e of node.events) {
+        this.treeView.eventToTreeNode.set(e, node);
+      }
       this.insertChildOrdered(gridNode);
     }
   }
 }
 
-const profileNodeToTreeGridNode = new WeakMap<Trace.Extras.TraceTree.Node, TreeGridNode>();
+const treeNodeToGridNode = new WeakMap<Trace.Extras.TraceTree.Node, TreeGridNode>();
 
 export class AggregatedTimelineTreeView extends TimelineTreeView {
   protected readonly groupBySetting: Common.Settings.Setting<AggregatedTimelineTreeView.GroupBy>;
@@ -794,7 +843,7 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
     icon: (Element|undefined),
   } {
     const categories = Utils.EntryStyles.getCategoryStyles();
-    const color = node.id && node.event ? TimelineUIUtils.eventColor(node.event) : categories['other'].color;
+    const color = TimelineUIUtils.eventColor(node.event);
     const unattributed = i18nString(UIStrings.unattributed);
 
     const id = typeof node.id === 'symbol' ? undefined : node.id;

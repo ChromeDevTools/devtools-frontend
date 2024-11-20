@@ -1703,7 +1703,7 @@ export class DataGridNode<T> {
     return this.elementInternal as Element;
   }
 
-  protected createElement(): Element {
+  protected createElement(): HTMLElement {
     this.elementInternal = document.createElement('tr');
     this.elementInternal.setAttribute(
         'jslog', `${VisualLogging.tableRow().track({keydown: 'ArrowUp|ArrowDown|ArrowLeft|ArrowRight|Enter|Space'})}`);
@@ -1736,7 +1736,7 @@ export class DataGridNode<T> {
     return this.elementInternal;
   }
 
-  existingElement(): Element|null {
+  existingElement(): HTMLElement|null {
     return this.elementInternal || null;
   }
 

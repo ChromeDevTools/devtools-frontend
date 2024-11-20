@@ -13,17 +13,23 @@ export class Node {
   totalTime: number;
   selfTime: number;
   id: string|symbol;
-  event: Types.Events.Event|null;
+  /** The first trace event encountered that necessitated the creation of this tree node. */
+  event: Types.Events.Event;
+  /** All of the trace events associated with this aggregate node.
+   * Minor: In the case of Event Log (EventsTimelineTreeView), the node is not aggregate and this will only hold 1 event, the same that's in this.event
+   */
+  events: Types.Events.Event[];
   parent!: Node|null;
   groupId: string;
   isGroupNodeInternal: boolean;
   depth: number;
 
-  constructor(id: string|symbol, event: Types.Events.Event|null) {
+  constructor(id: string|symbol, event: Types.Events.Event) {
     this.totalTime = 0;
     this.selfTime = 0;
     this.id = id;
     this.event = event;
+    this.events = [event];
 
     this.groupId = '';
     this.isGroupNodeInternal = false;
@@ -67,7 +73,7 @@ export class TopDownNode extends Node {
   childrenInternal: ChildrenCache|null;
   override parent: TopDownNode|null;
 
-  constructor(id: string|symbol, event: Types.Events.Event|null, parent: TopDownNode|null) {
+  constructor(id: string|symbol, event: Types.Events.Event, parent: TopDownNode|null) {
     super(id, event);
     this.root = parent && parent.root;
     this.hasChildrenInternal = false;
@@ -180,6 +186,8 @@ export class TopDownNode extends Node {
         node = new TopDownNode(id, e, self);
         node.groupId = groupId;
         children.set(id, node);
+      } else {
+        node.events.push(e);
       }
       node.selfTime += duration;
       node.totalTime += duration;
@@ -238,8 +246,6 @@ export class TopDownNode extends Node {
 
 export class TopDownRootNode extends TopDownNode {
   readonly filter: (e: Types.Events.Event) => boolean;
-  /** This is all events passed in to create the tree, and it's very likely that it included events outside of the passed startTime/endTime as that filtering is done in `Helpers.Trace.forEachEvent` */
-  readonly events: Types.Events.Event[];
   readonly startTime: Types.Timing.MilliSeconds;
   readonly endTime: Types.Timing.MilliSeconds;
   eventGroupIdCallback: ((arg0: Types.Events.Event) => string)|null|undefined;
@@ -253,7 +259,8 @@ export class TopDownRootNode extends TopDownNode {
       events: Types.Events.Event[], filters: TraceFilter[], startTime: Types.Timing.MilliSeconds,
       endTime: Types.Timing.MilliSeconds, doNotAggregate?: boolean,
       eventGroupIdCallback?: ((arg0: Types.Events.Event) => string)|null, includeInstantEvents?: boolean) {
-    super('', null, null);
+    super('', events[0], null);
+    this.event = events[0];
     this.root = this;
     this.events = events;
     this.filter = (e: Types.Events.Event): boolean => filters.every(f => f.accept(e));
@@ -281,14 +288,13 @@ export class TopDownRootNode extends TopDownNode {
     }
     const groupNodes = new Map<string, GroupNode>();
     for (const node of flatNodes.values()) {
-      if (!node.event) {
-        continue;
-      }
       const groupId = this.eventGroupIdCallback(node.event);
       let groupNode = groupNodes.get(groupId);
       if (!groupNode) {
-        groupNode = new GroupNode(groupId, this, node.event);
+        groupNode = new GroupNode(groupId, this, node.events);
         groupNodes.set(groupId, groupNode);
+      } else {
+        groupNode.events.push(...node.events);
       }
       groupNode.addChild(node as BottomUpNode, node.selfTime, node.totalTime);
     }
@@ -303,7 +309,6 @@ export class TopDownRootNode extends TopDownNode {
 
 export class BottomUpRootNode extends Node {
   private childrenInternal: ChildrenCache|null;
-  readonly events: Types.Events.Event[];
   private textFilter: TraceFilter;
   readonly filter: (e: Types.Events.Event) => boolean;
   readonly startTime: Types.Timing.MilliSeconds;
@@ -315,7 +320,7 @@ export class BottomUpRootNode extends Node {
       events: Types.Events.Event[], textFilter: TraceFilter, filters: TraceFilter[],
       startTime: Types.Timing.MilliSeconds, endTime: Types.Timing.MilliSeconds,
       eventGroupIdCallback: ((arg0: Types.Events.Event) => string)|null) {
-    super('', null);
+    super('', events[0]);
     this.childrenInternal = null;
     this.events = events;
     this.textFilter = textFilter;
@@ -388,6 +393,8 @@ export class BottomUpRootNode extends Node {
       if (!node) {
         node = new BottomUpNode(root, id, event, false, root);
         nodeById.set(id, node);
+      } else {
+        node.events.push(event);
       }
       node.selfTime += selfTimeStack.pop() || 0;
       if (firstNodeStack.pop()) {
@@ -415,14 +422,13 @@ export class BottomUpRootNode extends Node {
     }
     const groupNodes = new Map<string, GroupNode>();
     for (const node of flatNodes.values()) {
-      if (!node.event) {
-        continue;
-      }
       const groupId = this.eventGroupIdCallback(node.event);
       let groupNode = groupNodes.get(groupId);
       if (!groupNode) {
-        groupNode = new GroupNode(groupId, this, node.event);
+        groupNode = new GroupNode(groupId, this, node.events);
         groupNodes.set(groupId, groupNode);
+      } else {
+        groupNode.events.push(...node.events);
       }
       groupNode.addChild(node as BottomUpNode, node.selfTime, node.selfTime);
     }
@@ -433,9 +439,11 @@ export class BottomUpRootNode extends Node {
 export class GroupNode extends Node {
   private readonly childrenInternal: ChildrenCache;
   override isGroupNodeInternal: boolean;
+  override events: Types.Events.Event[];
 
-  constructor(id: string, parent: BottomUpRootNode|TopDownRootNode, event: Types.Events.Event) {
-    super(id, event);
+  constructor(id: string, parent: BottomUpRootNode|TopDownRootNode, events: Types.Events.Event[]) {
+    super(id, events[0]);
+    this.events = events;
     this.childrenInternal = new Map();
     this.parent = parent;
     this.isGroupNodeInternal = true;
@@ -539,6 +547,8 @@ export class BottomUpNode extends Node {
         const hasChildren = eventStack.length > self.depth;
         node = new BottomUpNode(self.root, childId, event, hasChildren, self);
         nodeById.set(childId, node);
+      } else {
+        node.events.push(e);
       }
       const actualEndTime = currentEndTime !== undefined ? Math.min(currentEndTime, endTime) : endTime;
       const totalTime = actualEndTime - Math.max(currentStartTime, lastTimeMarker);

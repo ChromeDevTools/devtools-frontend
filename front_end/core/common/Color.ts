@@ -2154,12 +2154,12 @@ export class Legacy implements Color {
 
   /**
    * Returns a new color using the NTSC formula for making a RGB color grayscale.
-   * Note: this is ill-defined for colors with alpha, and alpha is not modified.
+   * Note: We override with an alpha of 50% to enhance the dimming effect.
    */
   grayscale(): Legacy {
-    const [r, g, b, a] = this.#rgbaInternal;
+    const [r, g, b] = this.#rgbaInternal;
     const gray = r * 0.299 + g * 0.587 + b * 0.114;
-    return new Legacy([gray, gray, gray, a], Format.RGBA);
+    return new Legacy([gray, gray, gray, 0.5], Format.RGBA);
   }
 
   setAlpha(alpha: number): Legacy {

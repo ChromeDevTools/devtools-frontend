@@ -39,7 +39,7 @@ import {
   selectionIsRange,
   type TimelineSelection,
 } from './TimelineSelection.js';
-import {AggregatedTimelineTreeView} from './TimelineTreeView.js';
+import {AggregatedTimelineTreeView, TimelineTreeView} from './TimelineTreeView.js';
 import type {TimelineMarkerStyle} from './TimelineUIUtils.js';
 
 const UIStrings = {
@@ -53,8 +53,9 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineFlameChartView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.FlameChart.FlameChartDelegate,
-                                                                      UI.SearchableView.Searchable {
+export class TimelineFlameChartView extends
+    Common.ObjectWrapper.eventMixin<TimelineTreeView.EventTypes, typeof UI.Widget.VBox>(UI.Widget.VBox)
+        implements PerfUI.FlameChart.FlameChartDelegate, UI.SearchableView.Searchable {
   private readonly delegate: TimelineModeViewDelegate;
   /**
    * Tracks the indexes of matched entries when the user searches the panel.
@@ -165,6 +166,10 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
     this.mainDataProvider = new TimelineFlameChartDataProvider();
     this.mainDataProvider.addEventListener(
         TimelineFlameChartDataProviderEvents.DATA_CHANGED, () => this.mainFlameChart.scheduleUpdate());
+    this.mainDataProvider.addEventListener(
+        TimelineFlameChartDataProviderEvents.FLAME_CHART_ITEM_HOVERED,
+        e => this.detailsView.revealEventInTreeView(e.data));
+
     this.mainFlameChart = new PerfUI.FlameChart.FlameChart(this.mainDataProvider, this, {
       groupExpansionSetting: mainViewGroupExpansionSetting,
       // The TimelineOverlays are used for selected elements
@@ -312,6 +317,19 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
           PerfUI.FlameChart.Events.ENTRIES_LINK_ANNOTATION_CREATED, this.#onNetworkEntriesLinkAnnotationCreated, this);
     }
 
+    this.detailsView.addEventListener(TimelineTreeView.Events.TREE_ROW_HOVERED, node => {
+      if (!Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_DIM_UNRELATED_EVENTS)) {
+        return;
+      }
+      const events = node?.data?.events;
+      if (events) {
+        this.#dimInsightRelatedEvents(events);
+      } else {
+        this.mainFlameChart.disableDimming();
+        this.networkFlameChart.disableDimming();
+      }
+    });
+
     /**
      * NOTE: ENTRY_SELECTED, ENTRY_INVOKED and ENTRY_HOVERED are not always super obvious:
      * ENTRY_SELECTED: is KEYBOARD ONLY selection of events (e.g. navigating through the flamechart with your arrow keys)
@@ -355,8 +373,8 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
 
   #dimInsightRelatedEvents(relatedEvents: Trace.Types.Events.Event[]): void {
     // Dim all events except those related to the active insight.
-    const relevantMainEvents = relatedEvents.map(event => this.mainDataProvider.indexForEvent(event) ?? -1);
-    const relevantNetworkEvents = relatedEvents.map(event => this.networkDataProvider.indexForEvent(event) ?? -1);
+    const relatedMainIndices = relatedEvents.map(event => this.mainDataProvider.indexForEvent(event) ?? -1);
+    const relatedNetworkIndices = relatedEvents.map(event => this.networkDataProvider.indexForEvent(event) ?? -1);
 
     // Further, overlays defining a trace bounds do not dim an event that falls within those bounds.
     for (const overlay of this.#currentInsightOverlays) {
@@ -382,15 +400,15 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
       if (overlayEvent) {
         if (this.mainDataProvider.indexForEvent(overlayEvent) !== null) {
           provider = this.mainDataProvider;
-          relevantEvents = relevantMainEvents;
+          relevantEvents = relatedMainIndices;
         } else if (this.networkDataProvider.indexForEvent(overlayEvent) !== null) {
           provider = this.networkDataProvider;
-          relevantEvents = relevantNetworkEvents;
+          relevantEvents = relatedNetworkIndices;
         }
       } else if (overlay.type === 'TIMESPAN_BREAKDOWN') {
         // For this overlay type, if there is no associated event it is rendered on mainFlameChart.
         provider = this.mainDataProvider;
-        relevantEvents = relevantMainEvents;
+        relevantEvents = relatedMainIndices;
       }
 
       if (!provider || !relevantEvents) {
@@ -399,8 +417,8 @@ export class TimelineFlameChartView extends UI.Widget.VBox implements PerfUI.Fla
 
       relevantEvents.push(...provider.search(bounds).map(r => r.index));
     }
-    this.mainFlameChart.enableDimming(relevantMainEvents);
-    this.networkFlameChart.enableDimming(relevantNetworkEvents);
+    this.mainFlameChart.enableDimming(relatedMainIndices);
+    this.networkFlameChart.enableDimming(relatedNetworkIndices);
   }
 
   setOverlays(overlays: Overlays.Overlays.TimelineOverlay[], options: Overlays.Overlays.TimelineOverlaySetOptions):

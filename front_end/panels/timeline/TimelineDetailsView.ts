@@ -27,7 +27,7 @@ import {
   type TimelineSelection,
 } from './TimelineSelection.js';
 import {TimelineSelectorStatsView} from './TimelineSelectorStatsView.js';
-import {BottomUpTimelineTreeView, CallTreeTimelineTreeView, type TimelineTreeView} from './TimelineTreeView.js';
+import {BottomUpTimelineTreeView, CallTreeTimelineTreeView, TimelineTreeView} from './TimelineTreeView.js';
 import {TimelineDetailsContentHelper, TimelineUIUtils} from './TimelineUIUtils.js';
 
 const UIStrings = {
@@ -68,7 +68,8 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineDetailsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-export class TimelineDetailsView extends UI.Widget.VBox {
+export class TimelineDetailsView extends
+    Common.ObjectWrapper.eventMixin<TimelineTreeView.EventTypes, typeof UI.Widget.VBox>(UI.Widget.VBox) {
   private readonly detailsLinkifier: Components.Linkifier.Linkifier;
   private tabbedPane: UI.TabbedPane.TabbedPane;
   private readonly defaultDetailsWidget: UI.Widget.VBox;
@@ -126,6 +127,12 @@ export class TimelineDetailsView extends UI.Widget.VBox {
     this.appendTab(Tab.EventLog, i18nString(UIStrings.eventLog), eventsView);
     this.rangeDetailViews.set(Tab.EventLog, eventsView);
 
+    this.rangeDetailViews.values().forEach(view => {
+      view.addEventListener(
+          TimelineTreeView.Events.TREE_ROW_HOVERED,
+          node => this.dispatchEventToListeners(TimelineTreeView.Events.TREE_ROW_HOVERED, node.data));
+    });
+
     this.#networkRequestDetails =
         new TimelineComponents.NetworkRequestDetails.NetworkRequestDetails(this.detailsLinkifier);
 
@@ -151,6 +158,12 @@ export class TimelineDetailsView extends UI.Widget.VBox {
 
   getDetailsContentElementForTest(): HTMLElement {
     return this.defaultDetailsContentElement;
+  }
+
+  revealEventInTreeView(event: Trace.Types.Events.Event|null): void {
+    if (this.tabbedPane.visibleView instanceof TimelineTreeView) {
+      this.tabbedPane.visibleView.highlightEventInTree(event);
+    }
   }
 
   async #onTraceBoundsChange(event: TraceBounds.TraceBounds.StateChangedEvent): Promise<void> {

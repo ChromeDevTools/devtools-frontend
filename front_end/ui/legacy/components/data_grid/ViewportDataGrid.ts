@@ -270,7 +270,7 @@ export class ViewportDataGridNode<T> extends DataGridNode<ViewportDataGridNode<T
     this.isStripedInternal = false;
   }
 
-  override element(): Element {
+  override element(): HTMLElement {
     const existingElement = this.existingElement();
     const element = existingElement || this.createElement();
     if (!existingElement || this.stale) {

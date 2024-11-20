@@ -776,6 +776,8 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
         additionalContent.push(...popoverInfo.additionalElements);
       }
 
+      this.dispatchEventToListeners(Events.FLAME_CHART_ITEM_HOVERED, event);
+
     } else if (entryType === EntryType.FRAME) {
       const frame = (this.entryData[entryIndex] as Trace.Types.Events.LegacyTimelineFrame);
       time =
@@ -790,6 +792,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
         title = i18nString(UIStrings.frame);
       }
     } else {
+      this.dispatchEventToListeners(Events.FLAME_CHART_ITEM_HOVERED, null);
       return null;
     }
 
@@ -913,12 +916,12 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
 
   private drawFrame(
       entryIndex: number, context: CanvasRenderingContext2D, barX: number, barY: number, barWidth: number,
-      barHeight: number): void {
+      barHeight: number, transformColor: (color: string) => string): void {
     const hPadding = 1;
     const frame = this.entryData[entryIndex] as Trace.Types.Events.LegacyTimelineFrame;
     barX += hPadding;
     barWidth -= 2 * hPadding;
-    context.fillStyle = this.entryColor(entryIndex);
+    context.fillStyle = transformColor(this.entryColor(entryIndex));
 
     if (frame.dropped) {
       if (frame.isPartial) {
@@ -973,11 +976,12 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
 
   decorateEntry(
       entryIndex: number, context: CanvasRenderingContext2D, text: string|null, barX: number, barY: number,
-      barWidth: number, barHeight: number, unclippedBarX: number, timeToPixelRatio: number): boolean {
+      barWidth: number, barHeight: number, unclippedBarX: number, timeToPixelRatio: number,
+      transformColor: (color: string) => string): boolean {
     const entryType = this.#entryTypeForIndex(entryIndex);
 
     if (entryType === EntryType.FRAME) {
-      this.drawFrame(entryIndex, context, barX, barY, barWidth, barHeight);
+      this.drawFrame(entryIndex, context, barX, barY, barWidth, barHeight, transformColor);
       return true;
     }
 
@@ -1317,10 +1321,12 @@ export const InstantEventVisibleDurationMs = Trace.Types.Timing.MilliSeconds(0.0
 
 export const enum Events {
   DATA_CHANGED = 'DataChanged',
+  FLAME_CHART_ITEM_HOVERED = 'FlameChartItemHovered',
 }
 
 export type EventTypes = {
   [Events.DATA_CHANGED]: void,
+  [Events.FLAME_CHART_ITEM_HOVERED]: Trace.Types.Events.Event|null,
 };
 
 // an entry is a trace event, they are classified into "entry types"

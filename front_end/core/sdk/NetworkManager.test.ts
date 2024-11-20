@@ -58,6 +58,56 @@ describeWithMockConnection('MultitargetNetworkManager', () => {
     }
     assert.isTrue(expectedCall.calledOnceWith({origin: 'https://example.com'}));
   });
+
+  it('blocking settings are consistent after change', async () => {
+    const multitargetNetworkManager = SDK.NetworkManager.MultitargetNetworkManager.instance({forceNew: true});
+    let eventCounter = 0;
+    multitargetNetworkManager.addEventListener(
+        SDK.NetworkManager.MultitargetNetworkManager.Events.BLOCKED_PATTERNS_CHANGED, () => eventCounter++);
+    const blockingEnabledSetting = Common.Settings.Settings.instance().moduleSetting('request-blocking-enabled');
+    const blockedPatternsSetting: Common.Settings.Setting<SDK.NetworkManager.BlockedPattern[]> =
+        Common.Settings.Settings.instance().createSetting('network-blocked-patterns', []);
+
+    // Change blocking setting via Common.Settings.Settings.
+    assert.isFalse(multitargetNetworkManager.isBlocking());
+    assert.isFalse(multitargetNetworkManager.blockingEnabled());
+    blockingEnabledSetting.set(true);
+    assert.strictEqual(eventCounter, 1);
+    assert.isFalse(multitargetNetworkManager.isBlocking());
+    assert.isTrue(multitargetNetworkManager.blockingEnabled());
+    blockedPatternsSetting.set([{url: 'example.com', enabled: true}]);
+    assert.strictEqual(eventCounter, 2);
+    assert.isTrue(multitargetNetworkManager.isBlocking());
+    assert.isTrue(multitargetNetworkManager.blockingEnabled());
+    blockedPatternsSetting.set([]);
+    assert.strictEqual(eventCounter, 3);
+    assert.isFalse(multitargetNetworkManager.isBlocking());
+    assert.isTrue(multitargetNetworkManager.blockingEnabled());
+    blockingEnabledSetting.set(false);
+    assert.strictEqual(eventCounter, 4);
+    assert.isFalse(multitargetNetworkManager.isBlocking());
+    assert.isFalse(multitargetNetworkManager.blockingEnabled());
+
+    // Change blocking setting via MultitargetNetworkManager.
+    assert.isFalse(multitargetNetworkManager.isBlocking());
+    assert.isFalse(multitargetNetworkManager.blockingEnabled());
+    multitargetNetworkManager.setBlockingEnabled(true);
+    assert.strictEqual(eventCounter, 5);
+    assert.isFalse(multitargetNetworkManager.isBlocking());
+    assert.isTrue(multitargetNetworkManager.blockingEnabled());
+    multitargetNetworkManager.setBlockedPatterns([{url: 'example.com', enabled: true}]);
+    assert.strictEqual(eventCounter, 6);
+    assert.isTrue(multitargetNetworkManager.isBlocking());
+    assert.isTrue(multitargetNetworkManager.blockingEnabled());
+    multitargetNetworkManager.setBlockedPatterns([]);
+    assert.strictEqual(eventCounter, 7);
+    assert.isFalse(multitargetNetworkManager.isBlocking());
+    assert.isTrue(multitargetNetworkManager.blockingEnabled());
+    multitargetNetworkManager.setBlockingEnabled(false);
+    assert.strictEqual(eventCounter, 8);
+    assert.isFalse(multitargetNetworkManager.isBlocking());
+    assert.isFalse(multitargetNetworkManager.blockingEnabled());
+  });
 });
 
 describe('NetworkDispatcher', () => {

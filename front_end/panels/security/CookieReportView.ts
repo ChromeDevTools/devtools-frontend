@@ -4,6 +4,7 @@
 
 import type * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as SDK from '../../core/sdk/sdk.js';
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -173,6 +174,10 @@ export class CookieReportView extends UI.Widget.VBox {
     super(true, undefined, element);
     this.#view = view;
 
+    SDK.TargetManager.TargetManager.instance().addModelListener(
+        SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.PrimaryPageChanged,
+        this.#onPrimaryPageChanged, this);
+
     this.#issuesManager = IssuesManager.IssuesManager.IssuesManager.instance();
     this.#issuesManager.addEventListener(
         IssuesManager.IssuesManager.Events.ISSUE_ADDED, this.#onIssueEventReceived, this);
@@ -195,6 +200,11 @@ export class CookieReportView extends UI.Widget.VBox {
   }
 
   onSortingChanged(): void {
+    this.update();
+  }
+
+  #onPrimaryPageChanged(): void {
+    this.#cookieRows.clear();
     this.update();
   }
 

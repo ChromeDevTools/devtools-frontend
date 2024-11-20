@@ -290,13 +290,6 @@ export class UserMetrics {
         EnumeratedHistogram.StyleTextCopied, value, StyleTextCopied.MAX_VALUE);
   }
 
-  manifestSectionSelected(sectionTitle: string): void {
-    const code =
-        ManifestSectionCodes[sectionTitle as keyof typeof ManifestSectionCodes] || ManifestSectionCodes.OtherSection;
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-        EnumeratedHistogram.ManifestSectionSelected, code, ManifestSectionCodes.MAX_VALUE);
-  }
-
   cssHintShown(type: CSSHintType): void {
     InspectorFrontendHostInstance.recordEnumeratedHistogram(
         EnumeratedHistogram.CSSHintShown, type, CSSHintType.MAX_VALUE);

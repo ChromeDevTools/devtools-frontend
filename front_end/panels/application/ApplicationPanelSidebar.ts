@@ -1185,7 +1185,6 @@ export class ManifestChildTreeElement extends ApplicationPanelTreeElement {
     (this.parent as AppManifestTreeElement)?.showManifestView();
     this.#sectionElement.scrollIntoView();
     UI.ARIAUtils.alert(i18nString(UIStrings.onInvokeAlert, {PH1: this.listItemElement.title}));
-    Host.userMetrics.manifestSectionSelected(this.listItemElement.title);
   }
   // direct focus to the corresponding element
   onInvokeElementKeydown(event: KeyboardEvent): void {

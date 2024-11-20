@@ -481,7 +481,7 @@ describeWithEnvironment('ThreadAppender', function() {
       assert.deepEqual(flameChartData.entryStartTimes, [0.1, 0.1, 0.1, 0.2]);
       assert.deepEqual(flameChartData.entryTotalTimes, [0.2, 0.1, 0.025, 0.1]);
       assert.strictEqual(threadAppenders.length, 1);
-      assert.strictEqual(threadAppenders[0].titleForEvent(callFrameB), 'On ignore list');
+      assert.strictEqual(threadAppenders[0].titleForEvent(callFrameB), 'On ignore list (\\\/bundled\\.js$)');
     });
   });
   describe('showAllEvents', () => {

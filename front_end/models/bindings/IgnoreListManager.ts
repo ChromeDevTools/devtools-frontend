@@ -219,10 +219,33 @@ export class IgnoreListManager implements SDK.TargetManager.SDKModelObserver<SDK
     if (this.#isIgnoreListedURLCache.has(url)) {
       return Boolean(this.#isIgnoreListedURLCache.get(url));
     }
-    const regex = this.getSkipStackFramesPatternSetting().asRegExp();
-    const isIgnoreListed = (regex && regex.test(url)) || false;
+
+    const isIgnoreListed = this.getFirstMatchedRegex(url) !== null;
     this.#isIgnoreListedURLCache.set(url, isIgnoreListed);
     return isIgnoreListed;
+  }
+
+  getFirstMatchedRegex(url: Platform.DevToolsPath.UrlString): RegExp|null {
+    if (!url) {
+      return null;
+    }
+    const regexPatterns = this.getSkipStackFramesPatternSetting().getAsArray();
+    const regexValue = this.urlToRegExpString(url);
+    if (!regexValue) {
+      return null;
+    }
+
+    for (let i = 0; i < regexPatterns.length; ++i) {
+      const item = regexPatterns[i];
+      if (item.disabled || item.disabledForUrl === url) {
+        continue;
+      }
+      const regex = new RegExp(item.pattern);
+      if (regex.test(url)) {
+        return regex;
+      }
+    }
+    return null;
   }
 
   private sourceMapAttached(

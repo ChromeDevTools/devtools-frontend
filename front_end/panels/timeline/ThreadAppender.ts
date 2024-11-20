@@ -29,10 +29,11 @@ import * as Utils from './utils/utils.js';
 
 const UIStrings = {
   /**
-   *@description Text shown for an entry in the flame chart that is ignored because it matches
+   * @description Text shown for an entry in the flame chart that is ignored because it matches
    * a predefined ignore list.
+   * @example {/analytics\.js$} rule
    */
-  onIgnoreList: 'On ignore list',
+  onIgnoreList: 'On ignore list ({rule})',
   /**
    * @description Refers to the "Main frame", meaning the top level frame. See https://www.w3.org/TR/html401/present/frames.html
    * @example{example.com} PH1
@@ -571,7 +572,8 @@ export class ThreadAppender implements TrackAppender {
    */
   titleForEvent(entry: Trace.Types.Events.Event): string {
     if (Utils.IgnoreList.isIgnoreListedEntry(entry)) {
-      return i18nString(UIStrings.onIgnoreList);
+      const rule = Utils.IgnoreList.getIgnoredReasonString(entry);
+      return i18nString(UIStrings.onIgnoreList, {rule});
     }
     return Utils.EntryName.nameForEntry(entry, this.#parsedTrace);
   }

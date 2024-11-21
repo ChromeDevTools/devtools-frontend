@@ -1116,20 +1116,20 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   }
 
   #getNavigationSetting(): HTMLElement {
-    const currentNavSetting = Common.Settings.moduleSetting('flamechart-mouse-wheel-action').get();
+    const currentNavSetting = Common.Settings.moduleSetting('flamechart-selected-navigation').get();
     const navigationRadioButtons = document.createElement('form');
     navigationRadioButtons.classList.add('nav-radio-buttons');
     UI.ARIAUtils.markAsRadioGroup(navigationRadioButtons);
     const modernNavRadioButton = UI.UIUtils.createRadioLabel(
-        'flamechart-mouse-wheel-action', 'Modern', /* checked*/ currentNavSetting === 'scroll');
+        'flamechart-selected-navigation', 'Modern', /* checked*/ currentNavSetting === 'modern');
     // Change EventListener is only triggered when the radio button is selected
     modernNavRadioButton.radioElement.addEventListener('change', () => {
-      Common.Settings.moduleSetting('flamechart-mouse-wheel-action').set('scroll');
+      Common.Settings.moduleSetting('flamechart-selected-navigation').set('modern');
     });
     const classicNavRadioButton = UI.UIUtils.createRadioLabel(
-        'flamechart-mouse-wheel-action', 'Classic', /* checked*/ currentNavSetting === 'zoom');
+        'flamechart-selected-navigation', 'Classic', /* checked*/ currentNavSetting === 'classic');
     classicNavRadioButton.radioElement.addEventListener('change', () => {
-      Common.Settings.moduleSetting('flamechart-mouse-wheel-action').set('zoom');
+      Common.Settings.moduleSetting('flamechart-selected-navigation').set('classic');
     });
 
     navigationRadioButtons.appendChild(modernNavRadioButton);

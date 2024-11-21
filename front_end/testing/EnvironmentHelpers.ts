@@ -286,7 +286,7 @@ export async function initializeGlobalVars({reset = true} = {}) {
     createSettingValue(
         Common.Settings.SettingCategory.CONSOLE, 'console-trace-expand', false, Common.Settings.SettingType.BOOLEAN),
     createSettingValue(
-        Common.Settings.SettingCategory.PERFORMANCE, 'flamechart-mouse-wheel-action', false,
+        Common.Settings.SettingCategory.PERFORMANCE, 'flamechart-selected-navigation', false,
         Common.Settings.SettingType.ENUM),
     createSettingValue(
         Common.Settings.SettingCategory.ELEMENTS, 'show-css-property-documentation-on-hover', false,

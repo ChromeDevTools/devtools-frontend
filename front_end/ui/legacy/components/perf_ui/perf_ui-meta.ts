@@ -70,19 +70,19 @@ Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.PERFORMANCE,
   storageType: Common.Settings.SettingStorageType.SYNCED,
   title: i18nLazyString(UIStrings.flamechartMouseWheelAction),
-  settingName: 'flamechart-mouse-wheel-action',
+  settingName: 'flamechart-selected-navigation',
   settingType: Common.Settings.SettingType.ENUM,
-  defaultValue: 'zoom',
+  defaultValue: 'classic',
   options: [
     {
       title: i18nLazyString(UIStrings.scroll),
       text: i18nLazyString(UIStrings.scroll),
-      value: 'scroll',
+      value: 'modern',
     },
     {
       title: i18nLazyString(UIStrings.zoom),
       text: i18nLazyString(UIStrings.zoom),
-      value: 'zoom',
+      value: 'classic',
     },
   ],
 });

@@ -1327,7 +1327,7 @@ export const knownContextValues = new Set([
   'fit-to-window',
   'fix-this-issue',
   'flame',
-  'flamechart-mouse-wheel-action',
+  'flamechart-selected-navigation',
   'flex',
   'flex-basis',
   'flex-direction',

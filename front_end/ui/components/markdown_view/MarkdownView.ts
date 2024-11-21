@@ -54,6 +54,21 @@ export class MarkdownView extends HTMLElement {
     this.#update();
   }
 
+  finishAnimations(): void {
+    const animatingElements = this.#shadow.querySelectorAll('.animating');
+    for (const element of animatingElements) {
+      element.classList.remove('animating');
+    }
+
+    const pendingElements = this.#shadow.querySelectorAll('.pending');
+    for (const element of pendingElements) {
+      element.classList.remove('pending');
+    }
+    this.#isAnimating = false;
+    this.#animationEnabled = false;
+    this.#renderer.setCustomClasses({});
+  }
+
   #animate(): void {
     if (this.#isAnimating) {
       return;

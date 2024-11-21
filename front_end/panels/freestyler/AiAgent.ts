@@ -177,6 +177,11 @@ export abstract class AiAgent<T> {
    */
   #origin?: string;
   #context?: ConversationContext<T>;
+  #structuredLog: Array<{
+    request: Host.AidaClient.AidaRequest,
+    response: string,
+    rawResponse?: Host.AidaClient.AidaResponse,
+  }> = [];
 
   constructor(opts: AgentOptions) {
     this.#aidaClient = opts.aidaClient;
@@ -234,18 +239,11 @@ export abstract class AiAgent<T> {
     this.#generatedFromHistory = true;
   }
 
-  #structuredLog: Array<{
-    request: Host.AidaClient.AidaRequest,
-    response: string,
-    rawResponse?: Host.AidaClient.AidaResponse,
-  }> = [];
-  async aidaFetch(
-      request: Host.AidaClient.AidaRequest,
-      options?: {signal?: AbortSignal},
-      ): Promise<{
-    response: string,
-    rpcId?: number,
-  }> {
+  async *
+      aidaFetch(
+          request: Host.AidaClient.AidaRequest,
+          options?: {signal?: AbortSignal},
+          ): AsyncGenerator<{parsedResponse: ParsedResponse, completed: boolean, rpcId?: number}, void, void> {
     let rawResponse: Host.AidaClient.AidaResponse|undefined = undefined;
     let response = '';
     let rpcId: number|undefined;
@@ -256,6 +254,8 @@ export abstract class AiAgent<T> {
               meta => meta.attributionAction === Host.AidaClient.RecitationAction.BLOCK)) {
         throw new Error('Attribution action does not allow providing the response');
       }
+      const parsedResponse = this.parseResponse(response);
+      yield {rpcId, parsedResponse, completed: rawResponse.completed};
     }
 
     debugLog({
@@ -269,8 +269,6 @@ export abstract class AiAgent<T> {
       rawResponse,
     });
     localStorage.setItem('freestylerStructuredLog', JSON.stringify(this.#structuredLog));
-
-    return {response, rpcId};
   }
 
   buildRequest(opts: BuildRequestOptions): Host.AidaClient.AidaRequest {
@@ -459,15 +457,22 @@ STOP`;
       } as const;
       this.#addHistory(queryResponse);
       yield queryResponse;
-      let response: string;
       let rpcId: number|undefined;
+      let parsedResponse: ParsedResponse|undefined = undefined;
       try {
-        const fetchResult = await this.aidaFetch(
-            request,
-            {signal: options.signal},
-        );
-        response = fetchResult.response;
-        rpcId = fetchResult.rpcId;
+        for await (const fetchResult of this.aidaFetch(request, {signal: options.signal})) {
+          rpcId = fetchResult.rpcId;
+          parsedResponse = fetchResult.parsedResponse;
+
+          // Only yield partial responses here and do not add partial answers to the history.
+          if (!fetchResult.completed && 'answer' in parsedResponse && parsedResponse.answer) {
+            yield {
+              type: ResponseType.ANSWER,
+              text: parsedResponse.answer,
+              rpcId,
+            };
+          }
+        }
       } catch (err) {
         debugLog('Error calling the AIDA API', err);
 
@@ -494,7 +499,17 @@ STOP`;
         break;
       }
 
-      const parsedResponse = this.parseResponse(response);
+      if (!parsedResponse) {
+        const response = {
+          type: ResponseType.ERROR,
+          error: ErrorType.UNKNOWN,
+          rpcId,
+        } as const;
+        Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceError);
+        this.#addHistory(response);
+        yield response;
+        break;
+      }
 
       if ('answer' in parsedResponse) {
         const {

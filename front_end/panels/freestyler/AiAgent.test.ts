@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Host from '../../core/host/host.js';
+import * as Host from '../../core/host/host.js';
 import {
   describeWithEnvironment,
 } from '../../testing/EnvironmentHelpers.js';
@@ -10,6 +10,36 @@ import {
 import * as Freestyler from './freestyler.js';
 
 const {AiAgent, ResponseType, ConversationContext, ErrorType} = Freestyler;
+
+function mockAidaClient(
+    fetch: (_: Host.AidaClient.AidaRequest, options?: {signal: AbortSignal}) =>
+        AsyncGenerator<Host.AidaClient.AidaResponse, void, void>,
+    ): Host.AidaClient.AidaClient {
+  return {
+    fetch,
+    registerClientEvent: () => Promise.resolve({}),
+  };
+}
+
+function mockConversationContext(): Freestyler.ConversationContext<unknown> {
+  return new (class extends ConversationContext<unknown>{
+    override getOrigin(): string {
+      return 'origin';
+    }
+
+    override getItem(): unknown {
+      return null;
+    }
+
+    override getIcon(): HTMLElement {
+      return document.createElement('span');
+    }
+
+    override getTitle(): string {
+      return 'title';
+    }
+  })();
+}
 
 class AiAgentMock extends AiAgent<unknown> {
   type = Freestyler.AgentType.FREESTYLER;
@@ -293,6 +323,111 @@ describeWithEnvironment('AiAgent', () => {
         {
           entity: 2,
           text: 'answer2',
+        },
+      ]);
+    });
+  });
+
+  describe('run', () => {
+    describe('partial yielding for answers', () => {
+      it('should yield partial answer with final answer at the end', async () => {
+        async function* generateAnswerAfterPartial() {
+          yield {
+            explanation: 'Partial ans',
+            metadata: {},
+            completed: false,
+          };
+
+          yield {
+            explanation: 'Partial answer is now completed',
+            metadata: {},
+            completed: true,
+          };
+        }
+        const agent = new AiAgentMock({
+          aidaClient: mockAidaClient(generateAnswerAfterPartial),
+        });
+
+        const responses = await Array.fromAsync(agent.run('query', {selected: mockConversationContext()}));
+
+        assert.deepStrictEqual(responses, [
+          {
+            type: ResponseType.USER_QUERY,
+            query: 'query',
+          },
+          {
+            type: ResponseType.QUERYING,
+            query: 'query',
+          },
+          {
+            type: ResponseType.ANSWER,
+            text: 'Partial ans',
+            rpcId: undefined,
+          },
+          {
+            type: ResponseType.ANSWER,
+            text: 'Partial answer is now completed',
+            rpcId: undefined,
+            suggestions: undefined,
+          },
+        ]);
+      });
+
+      it('should not add partial answers to history', async () => {
+        async function* generateAnswerAfterPartial() {
+          yield {
+            explanation: 'Partial ans',
+            metadata: {},
+            completed: false,
+          };
+
+          yield {
+            explanation: 'Partial answer is now completed',
+            metadata: {},
+            completed: true,
+          };
+        }
+        const agent = new AiAgentMock({
+          aidaClient: mockAidaClient(generateAnswerAfterPartial),
+        });
+
+        await Array.fromAsync(agent.run('query', {selected: mockConversationContext()}));
+
+        assert.deepStrictEqual(agent.chatHistoryForTesting, [
+          {
+            entity: Host.AidaClient.Entity.USER,
+            text: 'query',
+          },
+          {
+            entity: Host.AidaClient.Entity.SYSTEM,
+            text: 'Partial answer is now completed',
+          },
+        ]);
+      });
+    });
+
+    it('should yield unknown error when aidaFetch does not return anything', async () => {
+      async function* generateNothing() {
+      }
+      const agent = new AiAgentMock({
+        aidaClient: mockAidaClient(generateNothing),
+      });
+
+      const responses = await Array.fromAsync(agent.run('query', {selected: mockConversationContext()}));
+
+      assert.deepStrictEqual(responses, [
+        {
+          type: ResponseType.USER_QUERY,
+          query: 'query',
+        },
+        {
+          type: ResponseType.QUERYING,
+          query: 'query',
+        },
+        {
+          type: ResponseType.ERROR,
+          error: ErrorType.UNKNOWN,
+          rpcId: undefined,
         },
       ]);
     });

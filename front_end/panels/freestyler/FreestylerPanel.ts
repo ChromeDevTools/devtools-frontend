@@ -829,6 +829,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
       steps: [],
     };
     let step: Step = {isLoading: true};
+    this.#viewProps.isLoading = true;
     for await (const data of generator) {
       step.sideEffect = undefined;
       switch (data.type) {
@@ -837,7 +838,6 @@ export class FreestylerPanel extends UI.Panel.Panel {
             entity: ChatMessageEntity.USER,
             text: data.query,
           });
-          this.#viewProps.isLoading = true;
           systemMessage = {
             entity: ChatMessageEntity.MODEL,
             steps: [],
@@ -907,13 +907,11 @@ export class FreestylerPanel extends UI.Panel.Panel {
             systemMessage.steps.pop();
           }
           step.isLoading = false;
-          this.#viewProps.isLoading = false;
           break;
         }
         case ResponseType.ERROR: {
           systemMessage.error = data.error;
           systemMessage.rpcId = undefined;
-          this.#viewProps.isLoading = false;
           const lastStep = systemMessage.steps.at(-1);
           if (lastStep) {
             // Mark the last step as cancelled to make the UI feel better.
@@ -928,8 +926,19 @@ export class FreestylerPanel extends UI.Panel.Panel {
       }
 
       void this.doUpdate();
-      this.#viewOutput.freestylerChatUi?.scrollToLastMessage();
+
+      // This handles scrolling to the bottom for live conversations when:
+      // * User submits the query & the context step is shown.
+      // * There is a side effect dialog  shown.
+      if (!this.#viewProps.isReadOnly &&
+          (data.type === ResponseType.CONTEXT || data.type === ResponseType.SIDE_EFFECT)) {
+        this.#viewOutput.freestylerChatUi?.scrollToBottom();
+      }
     }
+
+    this.#viewProps.isLoading = false;
+    this.#viewOutput.freestylerChatUi?.finishTextAnimations();
+    void this.doUpdate();
   }
 }
 

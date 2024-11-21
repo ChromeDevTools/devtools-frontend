@@ -1001,6 +1001,43 @@ STOP`,
       ]);
     });
 
+    it('should execute an action only once even when the partial response contains an action', async () => {
+      const execJs = sinon.spy();
+      async function* generatePartialAndFullAction() {
+        yield {
+          explanation: `THOUGHT: I am thinking.
+
+ACTION
+console.log('hel
+          `,
+          metadata: {},
+          completed: false,
+        };
+
+        sinon.assert.notCalled(execJs);
+        yield {
+          explanation: `THOUGHT: I am thinking.
+
+ACTION
+console.log('hello');
+STOP
+          `,
+          metadata: {},
+          completed: true,
+        };
+      }
+
+      const agent = new FreestylerAgent({
+        aidaClient: mockAidaClient(generatePartialAndFullAction),
+        createExtensionScope,
+        execJs,
+      });
+      await Array.fromAsync(agent.run('test', {selected: new Freestyler.NodeContext(element)}));
+
+      sinon.assert.calledOnce(execJs);
+      assert.include(execJs.lastCall.args[0], 'console.log(\'hello\');');
+    });
+
     it('generates a response if nothing is returned', async () => {
       async function* generateNothing() {
         yield {

@@ -6,7 +6,7 @@
 var __addDisposableResource = (this && this.__addDisposableResource) || function (env, value, async) {
     if (value !== null && value !== void 0) {
         if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
-        var dispose;
+        var dispose, inner;
         if (async) {
             if (!Symbol.asyncDispose) throw new TypeError("Symbol.asyncDispose is not defined.");
             dispose = value[Symbol.asyncDispose];
@@ -14,8 +14,10 @@ var __addDisposableResource = (this && this.__addDisposableResource) || function
         if (dispose === void 0) {
             if (!Symbol.dispose) throw new TypeError("Symbol.dispose is not defined.");
             dispose = value[Symbol.dispose];
+            if (async) inner = dispose;
         }
         if (typeof dispose !== "function") throw new TypeError("Object not disposable.");
+        if (inner) dispose = function() { try { inner.call(this); } catch (e) { return Promise.reject(e); } };
         env.stack.push({ value: value, dispose: dispose, async: async });
     }
     else if (async) {
@@ -29,17 +31,22 @@ var __disposeResources = (this && this.__disposeResources) || (function (Suppres
             env.error = env.hasError ? new SuppressedError(e, env.error, "An error was suppressed during disposal.") : e;
             env.hasError = true;
         }
+        var r, s = 0;
         function next() {
-            while (env.stack.length) {
-                var rec = env.stack.pop();
+            while (r = env.stack.pop()) {
                 try {
-                    var result = rec.dispose && rec.dispose.call(rec.value);
-                    if (rec.async) return Promise.resolve(result).then(next, function(e) { fail(e); return next(); });
+                    if (!r.async && s === 1) return s = 0, env.stack.push(r), Promise.resolve().then(next);
+                    if (r.dispose) {
+                        var result = r.dispose.call(r.value);
+                        if (r.async) return s |= 2, Promise.resolve(result).then(next, function(e) { fail(e); return next(); });
+                    }
+                    else s |= 1;
                 }
                 catch (e) {
                     fail(e);
                 }
             }
+            if (s === 1) return env.hasError ? Promise.reject(env.error) : Promise.resolve();
             if (env.hasError) throw env.error;
         }
         return next();
@@ -62,15 +69,13 @@ import { Binding } from './Binding.js';
 import { CdpElementHandle } from './ElementHandle.js';
 import { CdpJSHandle } from './JSHandle.js';
 import { addPageBinding, CDP_BINDING_PREFIX, createEvaluationError, valueFromRemoteObject, } from './utils.js';
-const ariaQuerySelectorBinding = new Binding('__ariaQuerySelector', ARIAQueryHandler.queryOne, '' // custom init
-);
+const ariaQuerySelectorBinding = new Binding('__ariaQuerySelector', ARIAQueryHandler.queryOne, '');
 const ariaQuerySelectorAllBinding = new Binding('__ariaQuerySelectorAll', (async (element, selector) => {
     const results = ARIAQueryHandler.queryAll(element, selector);
     return await element.realm.evaluateHandle((...elements) => {
         return elements;
     }, ...(await AsyncIterableUtil.collect(results)));
-}), '' // custom init
-);
+}), '');
 /**
  * @internal
  */
@@ -253,7 +258,7 @@ export class ExecutionContext extends EventEmitter {
      * const result = await executionContext.evaluate(
      *   (a, b) => a + b,
      *   oneHandle,
-     *   twoHandle
+     *   twoHandle,
      * );
      * await oneHandle.dispose();
      * await twoHandle.dispose();
@@ -283,7 +288,7 @@ export class ExecutionContext extends EventEmitter {
      * ```ts
      * const context = await page.mainFrame().executionContext();
      * const handle: JSHandle<typeof globalThis> = await context.evaluateHandle(
-     *   () => Promise.resolve(self)
+     *   () => Promise.resolve(self),
      * );
      * ```
      *
@@ -304,7 +309,7 @@ export class ExecutionContext extends EventEmitter {
      *   });
      * const stringHandle: JSHandle<string> = await context.evaluateHandle(
      *   body => body.innerHTML,
-     *   body
+     *   body,
      * );
      * console.log(await stringHandle.jsonValue()); // prints body's innerHTML
      * // Always dispose your garbage! :)
@@ -393,7 +398,6 @@ export class ExecutionContext extends EventEmitter {
         }
         function convertArgument(context, arg) {
             if (typeof arg === 'bigint') {
-                // eslint-disable-line valid-typeof
                 return { unserializableValue: `${arg.toString()}n` };
             }
             if (Object.is(arg, -0)) {

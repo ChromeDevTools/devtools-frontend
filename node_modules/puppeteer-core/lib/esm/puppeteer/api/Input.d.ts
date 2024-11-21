@@ -286,7 +286,7 @@ export type MouseButton = (typeof MouseButton)[keyof typeof MouseButton];
  *     selection.addRange(range);
  *   },
  *   fromJSHandle,
- *   toJSHandle
+ *   toJSHandle,
  * );
  * ```
  *
@@ -364,14 +364,14 @@ export declare abstract class Mouse {
      *
      * ```ts
      * await page.goto(
-     *   'https://mdn.mozillademos.org/en-US/docs/Web/API/Element/wheel_event$samples/Scaling_an_element_via_the_wheel?revision=1587366'
+     *   'https://mdn.mozillademos.org/en-US/docs/Web/API/Element/wheel_event$samples/Scaling_an_element_via_the_wheel?revision=1587366',
      * );
      *
      * const elem = await page.$('div');
      * const boundingBox = await elem.boundingBox();
      * await page.mouse.move(
      *   boundingBox.x + boundingBox.width / 2,
-     *   boundingBox.y + boundingBox.height / 2
+     *   boundingBox.y + boundingBox.height / 2,
      * );
      *
      * await page.mouse.wheel({deltaY: -100});
@@ -415,6 +415,22 @@ export declare abstract class Mouse {
     }): Promise<void>;
 }
 /**
+ * The TouchHandle interface exposes methods to manipulate touches that have been started
+ * @public
+ */
+export interface TouchHandle {
+    /**
+     * Dispatches a `touchMove` event for this touch.
+     * @param x - Horizontal position of the move.
+     * @param y - Vertical position of the move.
+     */
+    move(x: number, y: number): Promise<void>;
+    /**
+     * Dispatches a `touchend` event for this touch.
+     */
+    end(): Promise<void>;
+}
+/**
  * The Touchscreen class exposes touchscreen events.
  * @public
  */
@@ -422,7 +438,19 @@ export declare abstract class Touchscreen {
     /**
      * @internal
      */
+    idGenerator: import("../util/incremental-id-generator.js").GetIdFn;
+    /**
+     * @internal
+     */
+    touches: TouchHandle[];
+    /**
+     * @internal
+     */
     constructor();
+    /**
+     * @internal
+     */
+    removeHandle(handle: TouchHandle): void;
     /**
      * Dispatches a `touchstart` and `touchend` event.
      * @param x - Horizontal position of the tap.
@@ -433,10 +461,11 @@ export declare abstract class Touchscreen {
      * Dispatches a `touchstart` event.
      * @param x - Horizontal position of the tap.
      * @param y - Vertical position of the tap.
+     * @returns A handle for the touch that was started.
      */
-    abstract touchStart(x: number, y: number): Promise<void>;
+    abstract touchStart(x: number, y: number): Promise<TouchHandle>;
     /**
-     * Dispatches a `touchMove` event.
+     * Dispatches a `touchMove` event on the first touch that is active.
      * @param x - Horizontal position of the move.
      * @param y - Vertical position of the move.
      *
@@ -447,10 +476,10 @@ export declare abstract class Touchscreen {
      * {@link https://developer.chrome.com/blog/a-more-compatible-smoother-touch/#chromes-new-model-the-throttled-async-touchmove-model | throttles}
      * touch move events.
      */
-    abstract touchMove(x: number, y: number): Promise<void>;
+    touchMove(x: number, y: number): Promise<void>;
     /**
-     * Dispatches a `touchend` event.
+     * Dispatches a `touchend` event on the first touch that is active.
      */
-    abstract touchEnd(): Promise<void>;
+    touchEnd(): Promise<void>;
 }
 //# sourceMappingURL=Input.d.ts.map

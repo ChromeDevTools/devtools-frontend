@@ -28,7 +28,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.connectBidiOverCdp = void 0;
+exports.connectBidiOverCdp = connectBidiOverCdp;
 const BidiMapper = __importStar(require("chromium-bidi/lib/cjs/bidiMapper/BidiMapper.js"));
 const Debug_js_1 = require("../common/Debug.js");
 const Errors_js_1 = require("../common/Errors.js");
@@ -65,7 +65,6 @@ async function connectBidiOverCdp(cdp) {
     /* selfTargetId= */ '', undefined, bidiServerLogger);
     return pptrBiDiConnection;
 }
-exports.connectBidiOverCdp = connectBidiOverCdp;
 /**
  * Manages CDPSessions for BidiServer.
  * @internal

@@ -3,6 +3,8 @@
  * Copyright 2017 Google Inc.
  * SPDX-License-Identifier: Apache-2.0
  */
+import { TouchError } from '../common/Errors.js';
+import { createIncrementalIdGenerator } from '../util/incremental-id-generator.js';
 /**
  * Keyboard provides an api for managing a virtual keyboard.
  * The high level api is {@link Keyboard."type"},
@@ -103,7 +105,7 @@ export const MouseButton = Object.freeze({
  *     selection.addRange(range);
  *   },
  *   fromJSHandle,
- *   toJSHandle
+ *   toJSHandle,
  * );
  * ```
  *
@@ -148,15 +150,62 @@ export class Touchscreen {
     /**
      * @internal
      */
+    idGenerator = createIncrementalIdGenerator();
+    /**
+     * @internal
+     */
+    touches = [];
+    /**
+     * @internal
+     */
     constructor() { }
+    /**
+     * @internal
+     */
+    removeHandle(handle) {
+        const index = this.touches.indexOf(handle);
+        if (index === -1) {
+            return;
+        }
+        this.touches.splice(index, 1);
+    }
     /**
      * Dispatches a `touchstart` and `touchend` event.
      * @param x - Horizontal position of the tap.
      * @param y - Vertical position of the tap.
      */
     async tap(x, y) {
-        await this.touchStart(x, y);
-        await this.touchEnd();
+        const touch = await this.touchStart(x, y);
+        await touch.end();
+    }
+    /**
+     * Dispatches a `touchMove` event on the first touch that is active.
+     * @param x - Horizontal position of the move.
+     * @param y - Vertical position of the move.
+     *
+     * @remarks
+     *
+     * Not every `touchMove` call results in a `touchmove` event being emitted,
+     * depending on the browser's optimizations. For example, Chrome
+     * {@link https://developer.chrome.com/blog/a-more-compatible-smoother-touch/#chromes-new-model-the-throttled-async-touchmove-model | throttles}
+     * touch move events.
+     */
+    async touchMove(x, y) {
+        const touch = this.touches[0];
+        if (!touch) {
+            throw new TouchError('Must start a new Touch first');
+        }
+        return await touch.move(x, y);
+    }
+    /**
+     * Dispatches a `touchend` event on the first touch that is active.
+     */
+    async touchEnd() {
+        const touch = this.touches.shift();
+        if (!touch) {
+            throw new TouchError('Must start a new Touch first');
+        }
+        await touch.end();
     }
 }
 //# sourceMappingURL=Input.js.map

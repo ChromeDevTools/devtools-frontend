@@ -21,7 +21,6 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./Browser.js"), exports);
 __exportStar(require("./BrowsingContext.js"), exports);
-__exportStar(require("./Connection.js"), exports);
 __exportStar(require("./Navigation.js"), exports);
 __exportStar(require("./Realm.js"), exports);
 __exportStar(require("./Request.js"), exports);

@@ -270,6 +270,9 @@ let BrowsingContext = (() => {
         }
         dispose(reason) {
             this.#reason = reason;
+            for (const context of this.#children.values()) {
+                context.dispose('Parent browsing context was disposed');
+            }
             this[disposeSymbol]();
         }
         async activate() {

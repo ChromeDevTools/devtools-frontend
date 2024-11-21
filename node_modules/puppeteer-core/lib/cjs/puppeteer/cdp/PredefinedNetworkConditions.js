@@ -18,19 +18,19 @@ exports.PredefinedNetworkConditions = void 0;
  *   const browser = await puppeteer.launch();
  *   const page = await browser.newPage();
  *   await page.emulateNetworkConditions(
- *     PredefinedNetworkConditions['Slow 3G']
+ *     PredefinedNetworkConditions['Slow 3G'],
  *   );
  *   await page.goto('https://www.google.com');
  *   await page.emulateNetworkConditions(
- *     PredefinedNetworkConditions['Fast 3G']
+ *     PredefinedNetworkConditions['Fast 3G'],
  *   );
  *   await page.goto('https://www.google.com');
  *   await page.emulateNetworkConditions(
- *     PredefinedNetworkConditions['Slow 4G']
+ *     PredefinedNetworkConditions['Slow 4G'],
  *   ); // alias to Fast 3G.
  *   await page.goto('https://www.google.com');
  *   await page.emulateNetworkConditions(
- *     PredefinedNetworkConditions['Fast 4G']
+ *     PredefinedNetworkConditions['Fast 4G'],
  *   );
  *   await page.goto('https://www.google.com');
  *   // other actions...

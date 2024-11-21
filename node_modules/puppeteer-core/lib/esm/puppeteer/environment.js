@@ -16,9 +16,6 @@ export const environment = {
         get fs() {
             throw new Error('fs is not available in this environment');
         },
-        get path() {
-            throw new Error('path is not available in this environment');
-        },
         get ScreenRecorder() {
             throw new Error('ScreenRecorder is not available in this environment');
         },

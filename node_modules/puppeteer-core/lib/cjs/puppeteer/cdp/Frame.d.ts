@@ -5,6 +5,7 @@
  */
 import type { Protocol } from 'devtools-protocol';
 import type { CDPSession } from '../api/CDPSession.js';
+import type { ElementHandle } from '../api/ElementHandle.js';
 import type { WaitForOptions } from '../api/Frame.js';
 import { Frame } from '../api/Frame.js';
 import type { HTTPResponse } from '../api/HTTPResponse.js';
@@ -74,5 +75,6 @@ export declare class CdpFrame extends Frame {
     get detached(): boolean;
     [disposeSymbol](): void;
     exposeFunction(): never;
+    frameElement(): Promise<ElementHandle<HTMLIFrameElement> | null>;
 }
 //# sourceMappingURL=Frame.d.ts.map

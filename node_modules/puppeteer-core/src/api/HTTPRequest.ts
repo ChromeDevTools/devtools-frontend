@@ -43,9 +43,14 @@ export interface InterceptResolutionState {
 export interface ResponseForRequest {
   status: number;
   /**
-   * Optional response headers. All values are converted to strings.
+   * Optional response headers.
+   *
+   * The record values will be converted to string following:
+   * Arrays' values will be mapped to String
+   * (Used when you need multiple headers with the same name).
+   * Non-arrays will be converted to String.
    */
-  headers: Record<string, unknown>;
+  headers: Record<string, string | string[] | unknown>;
   contentType: string;
   body: string | Uint8Array;
 }
@@ -72,6 +77,7 @@ export const DEFAULT_INTERCEPT_RESOLUTION_PRIORITY = 0;
  * following events are emitted by Puppeteer's `page`:
  *
  * - `request`: emitted when the request is issued by the page.
+ *
  * - `requestfinished` - emitted when the response body is downloaded and the
  *   request is complete.
  *
@@ -225,7 +231,7 @@ export abstract class HTTPRequest {
    * is finalized.
    */
   enqueueInterceptAction(
-    pendingHandler: () => void | PromiseLike<unknown>
+    pendingHandler: () => void | PromiseLike<unknown>,
   ): void {
     this.interception.handlers.push(pendingHandler);
   }
@@ -234,7 +240,7 @@ export abstract class HTTPRequest {
    * @internal
    */
   abstract _abort(
-    errorReason: Protocol.Network.ErrorReason | null
+    errorReason: Protocol.Network.ErrorReason | null,
   ): Promise<void>;
 
   /**
@@ -378,6 +384,10 @@ export abstract class HTTPRequest {
    */
   abstract failure(): {errorText: string} | null;
 
+  #canBeIntercepted(): boolean {
+    return !this.url().startsWith('data:') && !this._fromMemoryCache;
+  }
+
   /**
    * Continues request with optional request overrides.
    *
@@ -408,10 +418,9 @@ export abstract class HTTPRequest {
    */
   async continue(
     overrides: ContinueRequestOverrides = {},
-    priority?: number
+    priority?: number,
   ): Promise<void> {
-    // Request interception is not supported for data: urls.
-    if (this.url().startsWith('data:')) {
+    if (!this.#canBeIntercepted()) {
       return;
     }
     assert(this.interception.enabled, 'Request Interception is not enabled!');
@@ -477,10 +486,9 @@ export abstract class HTTPRequest {
    */
   async respond(
     response: Partial<ResponseForRequest>,
-    priority?: number
+    priority?: number,
   ): Promise<void> {
-    // Mocking responses for dataURL requests is not currently supported.
-    if (this.url().startsWith('data:')) {
+    if (!this.#canBeIntercepted()) {
       return;
     }
     assert(this.interception.enabled, 'Request Interception is not enabled!');
@@ -524,10 +532,9 @@ export abstract class HTTPRequest {
    */
   async abort(
     errorCode: ErrorCode = 'failed',
-    priority?: number
+    priority?: number,
   ): Promise<void> {
-    // Request interception is not supported for data: urls.
-    if (this.url().startsWith('data:')) {
+    if (!this.#canBeIntercepted()) {
       return;
     }
     const errorReason = errorReasons[errorCode];
@@ -609,7 +616,7 @@ export type ActionResult = 'continue' | 'abort' | 'respond';
  * @internal
  */
 export function headersArray(
-  headers: Record<string, string | string[]>
+  headers: Record<string, string | string[]>,
 ): Array<{name: string; value: string}> {
   const result = [];
   for (const name in headers) {
@@ -621,7 +628,7 @@ export function headersArray(
       result.push(
         ...values.map(value => {
           return {name, value: value + ''};
-        })
+        }),
       );
     }
   }

@@ -82,7 +82,6 @@ export const debug = (prefix) => {
         if (!prefixMatchesDebugLevel) {
             return;
         }
-        // eslint-disable-next-line no-console
         console.log(`${prefix}:`, ...logArgs);
     };
 };

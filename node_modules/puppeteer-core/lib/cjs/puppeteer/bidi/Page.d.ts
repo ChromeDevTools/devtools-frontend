@@ -62,6 +62,7 @@ export declare class BidiPage extends Page {
     setDefaultNavigationTimeout(timeout: number): void;
     setDefaultTimeout(timeout: number): void;
     getDefaultTimeout(): number;
+    getDefaultNavigationTimeout(): number;
     isJavaScriptEnabled(): boolean;
     setGeolocation(options: GeolocationOptions): Promise<void>;
     setJavaScriptEnabled(enabled: boolean): Promise<void>;

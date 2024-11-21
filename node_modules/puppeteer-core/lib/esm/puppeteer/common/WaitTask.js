@@ -28,9 +28,7 @@ export class WaitTask {
         this.#polling = options.polling;
         this.#root = options.root;
         this.#signal = options.signal;
-        this.#signal?.addEventListener('abort', () => {
-            void this.terminate(this.#signal?.reason);
-        }, {
+        this.#signal?.addEventListener('abort', this.#onAbortSignal, {
             once: true,
         });
         switch (typeof fn) {
@@ -115,6 +113,7 @@ export class WaitTask {
     }
     async terminate(error) {
         this.#world.taskManager.delete(this);
+        this.#signal?.removeEventListener('abort', this.#onAbortSignal);
         clearTimeout(this.#timeout);
         if (error && !this.#result.finished()) {
             this.#result.reject(error);
@@ -166,6 +165,9 @@ export class WaitTask {
             cause: error,
         });
     }
+    #onAbortSignal = () => {
+        void this.terminate(this.#signal?.reason);
+    };
 }
 /**
  * @internal

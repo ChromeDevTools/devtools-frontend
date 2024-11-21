@@ -3,6 +3,7 @@
  * Copyright 2022 Google Inc.
  * SPDX-License-Identifier: Apache-2.0
  */
+import { CdpHTTPRequest } from './HTTPRequest.js';
 /**
  * Helper class to track network events by request ID
  *
@@ -125,6 +126,29 @@ export class NetworkEventManager {
     }
     forgetQueuedEventGroup(networkRequestId) {
         this.#queuedEventGroupMap.delete(networkRequestId);
+    }
+    printState() {
+        function replacer(_key, value) {
+            if (value instanceof Map) {
+                return {
+                    dataType: 'Map',
+                    value: Array.from(value.entries()), // or with spread: value: [...value]
+                };
+            }
+            else if (value instanceof CdpHTTPRequest) {
+                return {
+                    dataType: 'CdpHTTPRequest',
+                    value: `${value.id}: ${value.url()}`,
+                };
+            }
+            {
+                return value;
+            }
+        }
+        console.log('httpRequestsMap', JSON.stringify(this.#httpRequestsMap, replacer, 2));
+        console.log('requestWillBeSentMap', JSON.stringify(this.#requestWillBeSentMap, replacer, 2));
+        console.log('requestWillBeSentMap', JSON.stringify(this.#responseReceivedExtraInfoMap, replacer, 2));
+        console.log('requestWillBeSentMap', JSON.stringify(this.#requestPausedMap, replacer, 2));
     }
 }
 //# sourceMappingURL=NetworkEventManager.js.map

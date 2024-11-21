@@ -85,7 +85,7 @@
     "lit-analyzer": "2.0.3",
     "mocha": "9.2.2",
     "postcss": "8.4.38",
-    "puppeteer-core": "23.0.2",
+    "puppeteer-core": "23.8.0",
     "recast": "0.20.5",
     "rimraf": "3.0.2",
     "rollup-plugin-sourcemaps2": "0.4.2",

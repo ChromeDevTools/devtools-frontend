@@ -555,7 +555,7 @@ export declare abstract class Frame extends EventEmitter<FrameEvents> {
      * await frame.waitForFunction(
      *   selector => !!document.querySelector(selector),
      *   {}, // empty options object
-     *   selector
+     *   selector,
      * );
      * ```
      *
@@ -752,7 +752,7 @@ export declare abstract class Frame extends EventEmitter<FrameEvents> {
      *   frame.click('#connect-bluetooth'),
      * ]);
      * await devicePrompt.select(
-     *   await devicePrompt.waitForDevice(({name}) => name.includes('My Device'))
+     *   await devicePrompt.waitForDevice(({name}) => name.includes('My Device')),
      * );
      * ```
      *

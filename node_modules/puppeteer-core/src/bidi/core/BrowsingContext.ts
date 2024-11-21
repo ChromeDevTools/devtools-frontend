@@ -123,14 +123,14 @@ export class BrowsingContext extends EventEmitter<{
     parent: BrowsingContext | undefined,
     id: string,
     url: string,
-    originalOpener: string | null
+    originalOpener: string | null,
   ): BrowsingContext {
     const browsingContext = new BrowsingContext(
       userContext,
       parent,
       id,
       url,
-      originalOpener
+      originalOpener,
     );
     browsingContext.#initialize();
     return browsingContext;
@@ -154,7 +154,7 @@ export class BrowsingContext extends EventEmitter<{
     parent: BrowsingContext | undefined,
     id: string,
     url: string,
-    originalOpener: string | null
+    originalOpener: string | null,
   ) {
     super();
 
@@ -169,14 +169,14 @@ export class BrowsingContext extends EventEmitter<{
 
   #initialize() {
     const userContextEmitter = this.#disposables.use(
-      new EventEmitter(this.userContext)
+      new EventEmitter(this.userContext),
     );
     userContextEmitter.once('closed', ({reason}) => {
       this.dispose(`Browsing context already closed: ${reason}`);
     });
 
     const sessionEmitter = this.#disposables.use(
-      new EventEmitter(this.#session)
+      new EventEmitter(this.#session),
     );
     sessionEmitter.on('browsingContext.contextCreated', info => {
       if (info.parent !== this.id) {
@@ -188,12 +188,12 @@ export class BrowsingContext extends EventEmitter<{
         this,
         info.context,
         info.url,
-        info.originalOpener
+        info.originalOpener,
       );
       this.#children.set(info.context, browsingContext);
 
       const browsingContextEmitter = this.#disposables.use(
-        new EventEmitter(browsingContext)
+        new EventEmitter(browsingContext),
       );
       browsingContextEmitter.once('closed', () => {
         browsingContextEmitter.removeAllListeners();
@@ -248,7 +248,7 @@ export class BrowsingContext extends EventEmitter<{
       this.#navigation = Navigation.from(this);
 
       const navigationEmitter = this.#disposables.use(
-        new EventEmitter(this.#navigation)
+        new EventEmitter(this.#navigation),
       );
       for (const eventName of ['fragment', 'failed', 'aborted'] as const) {
         navigationEmitter.once(eventName, ({url}) => {
@@ -335,6 +335,9 @@ export class BrowsingContext extends EventEmitter<{
   @inertIfDisposed
   private dispose(reason?: string): void {
     this.#reason = reason;
+    for (const context of this.#children.values()) {
+      context.dispose('Parent browsing context was disposed');
+    }
     this[disposeSymbol]();
   }
 
@@ -353,7 +356,7 @@ export class BrowsingContext extends EventEmitter<{
     return context.#reason!;
   })
   async captureScreenshot(
-    options: CaptureScreenshotOptions = {}
+    options: CaptureScreenshotOptions = {},
   ): Promise<string> {
     const {
       result: {data},
@@ -372,7 +375,7 @@ export class BrowsingContext extends EventEmitter<{
     await Promise.all(
       [...this.#children.values()].map(async child => {
         await child.close(promptUnload);
-      })
+      }),
     );
     await this.#session.send('browsingContext.close', {
       context: this.id,
@@ -397,7 +400,7 @@ export class BrowsingContext extends EventEmitter<{
   })
   async navigate(
     url: string,
-    wait?: Bidi.BrowsingContext.ReadinessState
+    wait?: Bidi.BrowsingContext.ReadinessState,
   ): Promise<void> {
     await this.#session.send('browsingContext.navigate', {
       context: this.id,
@@ -500,14 +503,14 @@ export class BrowsingContext extends EventEmitter<{
   })
   async addPreloadScript(
     functionDeclaration: string,
-    options: AddPreloadScriptOptions = {}
+    options: AddPreloadScriptOptions = {},
   ): Promise<string> {
     return await this.userContext.browser.addPreloadScript(
       functionDeclaration,
       {
         ...options,
         contexts: [this],
-      }
+      },
     );
   }
 
@@ -539,7 +542,7 @@ export class BrowsingContext extends EventEmitter<{
     return context.#reason!;
   })
   async getCookies(
-    options: GetCookiesOptions = {}
+    options: GetCookiesOptions = {},
   ): Promise<Bidi.Network.Cookie[]> {
     const {
       result: {cookies},
@@ -573,7 +576,7 @@ export class BrowsingContext extends EventEmitter<{
   })
   async setFiles(
     element: Bidi.Script.SharedReference,
-    files: string[]
+    files: string[],
   ): Promise<void> {
     await this.#session.send('input.setFiles', {
       context: this.id,
@@ -598,7 +601,7 @@ export class BrowsingContext extends EventEmitter<{
     await this.#session.subscribe(events, [this.id]);
   }
 
-  [disposeSymbol](): void {
+  override [disposeSymbol](): void {
     this.#reason ??=
       'Browsing context already closed, probably because the user context closed.';
     this.emit('closed', {reason: this.#reason});
@@ -623,7 +626,7 @@ export class BrowsingContext extends EventEmitter<{
             context: this.id,
           },
         });
-      })
+      }),
     );
   }
 
@@ -633,7 +636,7 @@ export class BrowsingContext extends EventEmitter<{
   })
   async locateNodes(
     locator: Bidi.BrowsingContext.Locator,
-    startNodes: [Bidi.Script.SharedReference, ...Bidi.Script.SharedReference[]]
+    startNodes: [Bidi.Script.SharedReference, ...Bidi.Script.SharedReference[]],
   ): Promise<Bidi.Script.NodeRemoteValue[]> {
     // TODO: add other locateNodes options if needed.
     const result = await this.#session.send('browsingContext.locateNodes', {

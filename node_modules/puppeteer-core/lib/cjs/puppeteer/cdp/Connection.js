@@ -5,7 +5,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isTargetClosedError = exports.Connection = void 0;
+exports.Connection = void 0;
+exports.isTargetClosedError = isTargetClosedError;
 const CDPSession_js_1 = require("../api/CDPSession.js");
 const CallbackRegistry_js_1 = require("../common/CallbackRegistry.js");
 const Debug_js_1 = require("../common/Debug.js");
@@ -222,5 +223,4 @@ exports.Connection = Connection;
 function isTargetClosedError(error) {
     return error instanceof Errors_js_1.TargetCloseError;
 }
-exports.isTargetClosedError = isTargetClosedError;
 //# sourceMappingURL=Connection.js.map

@@ -7,7 +7,7 @@
 var __addDisposableResource = (this && this.__addDisposableResource) || function (env, value, async) {
     if (value !== null && value !== void 0) {
         if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
-        var dispose;
+        var dispose, inner;
         if (async) {
             if (!Symbol.asyncDispose) throw new TypeError("Symbol.asyncDispose is not defined.");
             dispose = value[Symbol.asyncDispose];
@@ -15,8 +15,10 @@ var __addDisposableResource = (this && this.__addDisposableResource) || function
         if (dispose === void 0) {
             if (!Symbol.dispose) throw new TypeError("Symbol.dispose is not defined.");
             dispose = value[Symbol.dispose];
+            if (async) inner = dispose;
         }
         if (typeof dispose !== "function") throw new TypeError("Object not disposable.");
+        if (inner) dispose = function() { try { inner.call(this); } catch (e) { return Promise.reject(e); } };
         env.stack.push({ value: value, dispose: dispose, async: async });
     }
     else if (async) {
@@ -30,17 +32,22 @@ var __disposeResources = (this && this.__disposeResources) || (function (Suppres
             env.error = env.hasError ? new SuppressedError(e, env.error, "An error was suppressed during disposal.") : e;
             env.hasError = true;
         }
+        var r, s = 0;
         function next() {
-            while (env.stack.length) {
-                var rec = env.stack.pop();
+            while (r = env.stack.pop()) {
                 try {
-                    var result = rec.dispose && rec.dispose.call(rec.value);
-                    if (rec.async) return Promise.resolve(result).then(next, function(e) { fail(e); return next(); });
+                    if (!r.async && s === 1) return s = 0, env.stack.push(r), Promise.resolve().then(next);
+                    if (r.dispose) {
+                        var result = r.dispose.call(r.value);
+                        if (r.async) return s |= 2, Promise.resolve(result).then(next, function(e) { fail(e); return next(); });
+                    }
+                    else s |= 1;
                 }
                 catch (e) {
                     fail(e);
                 }
             }
+            if (s === 1) return env.hasError ? Promise.reject(env.error) : Promise.resolve();
             if (env.hasError) throw env.error;
         }
         return next();
@@ -50,7 +57,12 @@ var __disposeResources = (this && this.__disposeResources) || (function (Suppres
     return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
 });
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.bubble = exports.guarded = exports.invokeAtMostOnceForArguments = exports.inertIfDisposed = exports.throwIfDisposed = exports.moveable = void 0;
+exports.moveable = moveable;
+exports.throwIfDisposed = throwIfDisposed;
+exports.inertIfDisposed = inertIfDisposed;
+exports.invokeAtMostOnceForArguments = invokeAtMostOnceForArguments;
+exports.guarded = guarded;
+exports.bubble = bubble;
 const disposable_js_1 = require("./disposable.js");
 const Mutex_js_1 = require("./Mutex.js");
 const instances = new WeakSet();
@@ -86,7 +98,6 @@ function moveable(Class, _) {
     }
     return Class;
 }
-exports.moveable = moveable;
 function throwIfDisposed(message = value => {
     return `Attempted to use disposed ${value.constructor.name}.`;
 }) {
@@ -99,7 +110,6 @@ function throwIfDisposed(message = value => {
         };
     };
 }
-exports.throwIfDisposed = throwIfDisposed;
 function inertIfDisposed(target, _) {
     return function (...args) {
         if (this.disposed) {
@@ -108,7 +118,6 @@ function inertIfDisposed(target, _) {
         return target.call(this, ...args);
     };
 }
-exports.inertIfDisposed = inertIfDisposed;
 /**
  * The decorator only invokes the target if the target has not been invoked with
  * the same arguments before. The decorated method throws an error if it's
@@ -145,7 +154,6 @@ function invokeAtMostOnceForArguments(target, _) {
         return target.call(this, ...args);
     };
 }
-exports.invokeAtMostOnceForArguments = invokeAtMostOnceForArguments;
 function guarded(getKey = function () {
     return this;
 }) {
@@ -175,7 +183,6 @@ function guarded(getKey = function () {
         };
     };
 }
-exports.guarded = guarded;
 const bubbleHandlers = new WeakMap();
 const bubbleInitializer = function (events) {
     const handlers = bubbleHandlers.get(this) ?? new Map();
@@ -199,7 +206,6 @@ const bubbleInitializer = function (events) {
  * the field owner.
  */
 // The type is too complicated to type.
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 function bubble(events) {
     return ({ set, get }, context) => {
         context.addInitializer(function () {
@@ -231,5 +237,4 @@ function bubble(events) {
         };
     };
 }
-exports.bubble = bubble;
 //# sourceMappingURL=decorators.js.map

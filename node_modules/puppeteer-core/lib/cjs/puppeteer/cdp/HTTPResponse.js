@@ -52,7 +52,7 @@ class CdpHTTPResponse extends HTTPResponse_js_1.HTTPResponse {
             return;
         }
         const firstLine = extraInfo.headersText.split('\r', 1)[0];
-        if (!firstLine) {
+        if (!firstLine || firstLine.length > 1_000) {
             return;
         }
         const match = firstLine.match(/[^ ]* [^ ]* (.*)/);

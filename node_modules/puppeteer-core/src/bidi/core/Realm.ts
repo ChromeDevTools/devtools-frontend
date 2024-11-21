@@ -89,7 +89,7 @@ export abstract class Realm extends EventEmitter<{
   async callFunction(
     functionDeclaration: string,
     awaitPromise: boolean,
-    options: CallFunctionOptions = {}
+    options: CallFunctionOptions = {},
   ): Promise<Bidi.Script.EvaluateResult> {
     const {result} = await this.session.send('script.callFunction', {
       functionDeclaration,
@@ -107,7 +107,7 @@ export abstract class Realm extends EventEmitter<{
   async evaluate(
     expression: string,
     awaitPromise: boolean,
-    options: EvaluateOptions = {}
+    options: EvaluateOptions = {},
   ): Promise<Bidi.Script.EvaluateResult> {
     const {result} = await this.session.send('script.evaluate', {
       expression,
@@ -126,7 +126,7 @@ export abstract class Realm extends EventEmitter<{
     if (!this.executionContextId) {
       const {result} = await (this.session.connection as BidiConnection).send(
         'cdp.resolveRealm',
-        {realm: this.id}
+        {realm: this.id},
       );
       this.executionContextId = result.executionContextId;
     }
@@ -134,7 +134,7 @@ export abstract class Realm extends EventEmitter<{
     return this.executionContextId;
   }
 
-  [disposeSymbol](): void {
+  override [disposeSymbol](): void {
     this.#reason ??=
       'Realm already destroyed, probably because all associated browsing contexts closed.';
     this.emit('destroyed', {reason: this.#reason});
@@ -168,7 +168,7 @@ export class WindowRealm extends Realm {
 
   #initialize(): void {
     const browsingContextEmitter = this.disposables.use(
-      new EventEmitter(this.browsingContext)
+      new EventEmitter(this.browsingContext),
     );
     browsingContextEmitter.on('closed', ({reason}) => {
       this.dispose(reason);
@@ -233,7 +233,7 @@ export class DedicatedWorkerRealm extends Realm {
   static from(
     owner: DedicatedWorkerOwnerRealm,
     id: string,
-    origin: string
+    origin: string,
   ): DedicatedWorkerRealm {
     const realm = new DedicatedWorkerRealm(owner, id, origin);
     realm.#initialize();
@@ -246,7 +246,7 @@ export class DedicatedWorkerRealm extends Realm {
   private constructor(
     owner: DedicatedWorkerOwnerRealm,
     id: string,
-    origin: string
+    origin: string,
   ) {
     super(id, origin);
     this.owners = new Set([owner]);
@@ -282,7 +282,7 @@ export class DedicatedWorkerRealm extends Realm {
 
   override get session(): Session {
     // SAFETY: At least one owner will exist.
-    return this.owners.values().next().value.session;
+    return this.owners.values().next().value!.session;
   }
 }
 

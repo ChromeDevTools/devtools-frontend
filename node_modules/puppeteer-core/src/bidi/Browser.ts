@@ -82,13 +82,17 @@ export class BidiBrowser extends Browser {
           default: Bidi.Session.UserPromptHandlerType.Ignore,
         },
         webSocketUrl: true,
+        // Puppeteer with WebDriver BiDi does not support prerendering
+        // yet because WebDriver BiDi behavior is not specified. See
+        // https://github.com/w3c/webdriver-bidi/issues/321.
+        'goog:prerenderingDisabled': true,
       },
     });
 
     await session.subscribe(
       session.capabilities.browserName.toLocaleLowerCase().includes('firefox')
         ? BidiBrowser.subscribeModules
-        : [...BidiBrowser.subscribeModules, ...BidiBrowser.subscribeCdpEvents]
+        : [...BidiBrowser.subscribeModules, ...BidiBrowser.subscribeCdpEvents],
     );
 
     const browser = new BidiBrowser(session.browser, opts);
@@ -161,19 +165,19 @@ export class BidiBrowser extends Browser {
       BrowserContextEvent.TargetCreated,
       target => {
         this.#trustedEmitter.emit(BrowserEvent.TargetCreated, target);
-      }
+      },
     );
     browserContext.trustedEmitter.on(
       BrowserContextEvent.TargetChanged,
       target => {
         this.#trustedEmitter.emit(BrowserEvent.TargetChanged, target);
-      }
+      },
     );
     browserContext.trustedEmitter.on(
       BrowserContextEvent.TargetDestroyed,
       target => {
         this.#trustedEmitter.emit(BrowserEvent.TargetDestroyed, target);
-      }
+      },
     );
 
     return browserContext;
@@ -213,7 +217,7 @@ export class BidiBrowser extends Browser {
   }
 
   override async createBrowserContext(
-    _options?: BrowserContextOptions
+    _options?: BrowserContextOptions,
   ): Promise<BidiBrowserContext> {
     const userContext = await this.#browserCore.createUserContext();
     return this.#createBrowserContext(userContext);

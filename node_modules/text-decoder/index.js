@@ -17,6 +17,10 @@ module.exports = class TextDecoder {
     }
   }
 
+  get remaining () {
+    return this.decoder.remaining
+  }
+
   push (data) {
     if (typeof data === 'string') return data
     return this.decoder.decode(data)

@@ -5,9 +5,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createIncrementalIdGenerator = exports.Callback = exports.CallbackRegistry = void 0;
+exports.Callback = exports.CallbackRegistry = void 0;
 const Deferred_js_1 = require("../util/Deferred.js");
 const ErrorLike_js_1 = require("../util/ErrorLike.js");
+const incremental_id_generator_js_1 = require("../util/incremental-id-generator.js");
 const Errors_js_1 = require("./Errors.js");
 const util_js_1 = require("./util.js");
 /**
@@ -17,7 +18,7 @@ const util_js_1 = require("./util.js");
  */
 class CallbackRegistry {
     #callbacks = new Map();
-    #idGenerator = createIncrementalIdGenerator();
+    #idGenerator = (0, incremental_id_generator_js_1.createIncrementalIdGenerator)();
     create(label, timeout, request) {
         const callback = new Callback(this.#idGenerator(), label, timeout);
         this.#callbacks.set(callback.id, callback);
@@ -125,14 +126,4 @@ class Callback {
     }
 }
 exports.Callback = Callback;
-/**
- * @internal
- */
-function createIncrementalIdGenerator() {
-    let id = 0;
-    return () => {
-        return ++id;
-    };
-}
-exports.createIncrementalIdGenerator = createIncrementalIdGenerator;
 //# sourceMappingURL=CallbackRegistry.js.map

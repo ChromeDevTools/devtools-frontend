@@ -459,6 +459,16 @@ Same as normal pipeline except instead of returning the last stream it returns
 a promise representing the done callback. Note you should error handle this
 promise if you use this version.
 
+## Helpers
+
+#### `bool = isStream(stream)`
+
+#### `bool = isStreamx(stream)`
+
+#### `err = getStreamError(stream, [options])`
+
+Returns `null` if the stream has no errors.
+
 ## Utilities
 
 Streamx aims to be minimal and stable. It therefore only contains a minimal set of utilities.

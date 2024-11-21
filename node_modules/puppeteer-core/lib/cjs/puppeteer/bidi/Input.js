@@ -8,6 +8,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.BidiTouchscreen = exports.BidiMouse = exports.BidiKeyboard = void 0;
 const Input_js_1 = require("../api/Input.js");
 const Errors_js_1 = require("../common/Errors.js");
+const Errors_js_2 = require("../common/Errors.js");
 var SourceActionsType;
 (function (SourceActionsType) {
     SourceActionsType["None"] = "none";
@@ -523,67 +524,76 @@ exports.BidiMouse = BidiMouse;
 /**
  * @internal
  */
-class BidiTouchscreen extends Input_js_1.Touchscreen {
+class BidiTouchHandle {
+    #started = false;
+    #x;
+    #y;
+    #bidiId;
     #page;
-    constructor(page) {
-        super();
+    #touchScreen;
+    #properties;
+    constructor(page, touchScreen, id, x, y, properties) {
         this.#page = page;
+        this.#touchScreen = touchScreen;
+        this.#x = Math.round(x);
+        this.#y = Math.round(y);
+        this.#properties = properties;
+        this.#bidiId = `${"__puppeteer_finger" /* InputId.Finger */}_${id}`;
     }
-    async touchStart(x, y, options = {}) {
+    async start(options = {}) {
+        if (this.#started) {
+            throw new Errors_js_2.TouchError('Touch has already started');
+        }
         await this.#page.mainFrame().browsingContext.performActions([
             {
                 type: SourceActionsType.Pointer,
-                id: "__puppeteer_finger" /* InputId.Finger */,
+                id: this.#bidiId,
                 parameters: {
                     pointerType: "touch" /* Bidi.Input.PointerType.Touch */,
                 },
                 actions: [
                     {
                         type: ActionType.PointerMove,
-                        x: Math.round(x),
-                        y: Math.round(y),
+                        x: this.#x,
+                        y: this.#y,
                         origin: options.origin,
                     },
                     {
+                        ...this.#properties,
                         type: ActionType.PointerDown,
                         button: 0,
-                        width: 0.5 * 2, // 2 times default touch radius.
-                        height: 0.5 * 2, // 2 times default touch radius.
-                        pressure: 0.5,
-                        altitudeAngle: Math.PI / 2,
                     },
                 ],
             },
         ]);
+        this.#started = true;
     }
-    async touchMove(x, y, options = {}) {
-        await this.#page.mainFrame().browsingContext.performActions([
+    move(x, y) {
+        const newX = Math.round(x);
+        const newY = Math.round(y);
+        return this.#page.mainFrame().browsingContext.performActions([
             {
                 type: SourceActionsType.Pointer,
-                id: "__puppeteer_finger" /* InputId.Finger */,
+                id: this.#bidiId,
                 parameters: {
                     pointerType: "touch" /* Bidi.Input.PointerType.Touch */,
                 },
                 actions: [
                     {
+                        ...this.#properties,
                         type: ActionType.PointerMove,
-                        x: Math.round(x),
-                        y: Math.round(y),
-                        origin: options.origin,
-                        width: 0.5 * 2, // 2 times default touch radius.
-                        height: 0.5 * 2, // 2 times default touch radius.
-                        pressure: 0.5,
-                        altitudeAngle: Math.PI / 2,
+                        x: newX,
+                        y: newY,
                     },
                 ],
             },
         ]);
     }
-    async touchEnd() {
+    async end() {
         await this.#page.mainFrame().browsingContext.performActions([
             {
                 type: SourceActionsType.Pointer,
-                id: "__puppeteer_finger" /* InputId.Finger */,
+                id: this.#bidiId,
                 parameters: {
                     pointerType: "touch" /* Bidi.Input.PointerType.Touch */,
                 },
@@ -595,6 +605,30 @@ class BidiTouchscreen extends Input_js_1.Touchscreen {
                 ],
             },
         ]);
+        this.#touchScreen.removeHandle(this);
+    }
+}
+/**
+ * @internal
+ */
+class BidiTouchscreen extends Input_js_1.Touchscreen {
+    #page;
+    constructor(page) {
+        super();
+        this.#page = page;
+    }
+    async touchStart(x, y, options = {}) {
+        const id = this.idGenerator();
+        const properties = {
+            width: 0.5 * 2, // 2 times default touch radius.
+            height: 0.5 * 2, // 2 times default touch radius.
+            pressure: 0.5,
+            altitudeAngle: Math.PI / 2,
+        };
+        const touch = new BidiTouchHandle(this.#page, this, id, x, y, properties);
+        await touch.start(options);
+        this.touches.push(touch);
+        return touch;
     }
 }
 exports.BidiTouchscreen = BidiTouchscreen;

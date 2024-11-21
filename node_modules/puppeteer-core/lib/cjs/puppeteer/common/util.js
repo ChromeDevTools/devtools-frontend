@@ -5,7 +5,17 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.filterAsync = exports.fromAbortSignal = exports.fromEmitterEvent = exports.unitToPixels = exports.parsePDFOptions = exports.NETWORK_IDLE_TIME = exports.getSourceUrlComment = exports.SOURCE_URL_REGEX = exports.UTILITY_WORLD_NAME = exports.timeout = exports.validateDialogType = exports.getReadableFromProtocolStream = exports.getReadableAsTypedArray = exports.evaluationString = exports.isDate = exports.isRegExp = exports.isPlainObject = exports.isNumber = exports.isString = exports.getSourcePuppeteerURLIfAvailable = exports.withSourcePuppeteerURLIfNone = exports.PuppeteerURL = exports.DEFAULT_VIEWPORT = exports.debugError = void 0;
+exports.unitToPixels = exports.NETWORK_IDLE_TIME = exports.SOURCE_URL_REGEX = exports.UTILITY_WORLD_NAME = exports.isDate = exports.isRegExp = exports.isPlainObject = exports.isNumber = exports.isString = exports.getSourcePuppeteerURLIfAvailable = exports.withSourcePuppeteerURLIfNone = exports.PuppeteerURL = exports.DEFAULT_VIEWPORT = exports.debugError = void 0;
+exports.evaluationString = evaluationString;
+exports.getReadableAsTypedArray = getReadableAsTypedArray;
+exports.getReadableFromProtocolStream = getReadableFromProtocolStream;
+exports.validateDialogType = validateDialogType;
+exports.timeout = timeout;
+exports.getSourceUrlComment = getSourceUrlComment;
+exports.parsePDFOptions = parsePDFOptions;
+exports.fromEmitterEvent = fromEmitterEvent;
+exports.fromAbortSignal = fromAbortSignal;
+exports.filterAsync = filterAsync;
 const rxjs_js_1 = require("../../third_party/rxjs/rxjs.js");
 const environment_js_1 = require("../environment.js");
 const version_js_1 = require("../generated/version.js");
@@ -134,7 +144,9 @@ exports.isDate = isDate;
 /**
  * @internal
  */
-function evaluationString(fun, ...args) {
+function evaluationString(
+// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
+fun, ...args) {
     if ((0, exports.isString)(fun)) {
         (0, assert_js_1.assert)(args.length === 0, 'Cannot evaluate a string with arguments');
         return fun;
@@ -147,7 +159,6 @@ function evaluationString(fun, ...args) {
     }
     return `(${fun})(${args.map(serializeArgument).join(',')})`;
 }
-exports.evaluationString = evaluationString;
 /**
  * @internal
  */
@@ -191,7 +202,6 @@ async function getReadableAsTypedArray(readable, path) {
         return null;
     }
 }
-exports.getReadableAsTypedArray = getReadableAsTypedArray;
 /**
  * @internal
  */
@@ -221,7 +231,6 @@ async function getReadableFromProtocolStream(client, handle) {
         },
     });
 }
-exports.getReadableFromProtocolStream = getReadableFromProtocolStream;
 /**
  * @internal
  */
@@ -239,7 +248,6 @@ function validateDialogType(type) {
     (0, assert_js_1.assert)(dialogType, `Unknown javascript dialog type: ${type}`);
     return dialogType;
 }
-exports.validateDialogType = validateDialogType;
 /**
  * @internal
  */
@@ -250,7 +258,6 @@ function timeout(ms, cause) {
             throw new Errors_js_1.TimeoutError(`Timed out after waiting ${ms}ms`, { cause });
         }));
 }
-exports.timeout = timeout;
 /**
  * @internal
  */
@@ -258,14 +265,13 @@ exports.UTILITY_WORLD_NAME = '__puppeteer_utility_world__' + version_js_1.packag
 /**
  * @internal
  */
-exports.SOURCE_URL_REGEX = /^[\040\t]*\/\/[@#] sourceURL=\s*(\S*?)\s*$/m;
+exports.SOURCE_URL_REGEX = /^[\x20\t]*\/\/[@#] sourceURL=\s{0,10}(\S*?)\s{0,10}$/m;
 /**
  * @internal
  */
 function getSourceUrlComment(url) {
     return `//# sourceURL=${url}`;
 }
-exports.getSourceUrlComment = getSourceUrlComment;
 /**
  * @internal
  */
@@ -319,7 +325,6 @@ function parsePDFOptions(options = {}, lengthUnit = 'in') {
         margin,
     };
 }
-exports.parsePDFOptions = parsePDFOptions;
 /**
  * @internal
  */
@@ -374,7 +379,6 @@ function fromEmitterEvent(emitter, eventName) {
         };
     });
 }
-exports.fromEmitterEvent = fromEmitterEvent;
 /**
  * @internal
  */
@@ -389,7 +393,6 @@ function fromAbortSignal(signal, cause) {
         }))
         : rxjs_js_1.NEVER;
 }
-exports.fromAbortSignal = fromAbortSignal;
 /**
  * @internal
  */
@@ -402,5 +405,4 @@ function filterAsync(predicate) {
         }));
     });
 }
-exports.filterAsync = filterAsync;
 //# sourceMappingURL=util.js.map

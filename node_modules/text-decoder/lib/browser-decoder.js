@@ -3,6 +3,10 @@ module.exports = class BrowserDecoder {
     this.decoder = new TextDecoder(encoding === 'utf16le' ? 'utf16-le' : encoding)
   }
 
+  get remaining () {
+    return -1
+  }
+
   decode (data) {
     return this.decoder.decode(data, { stream: true })
   }

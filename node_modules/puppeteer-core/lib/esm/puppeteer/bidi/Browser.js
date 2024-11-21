@@ -94,6 +94,10 @@ let BidiBrowser = (() => {
                         default: "ignore" /* Bidi.Session.UserPromptHandlerType.Ignore */,
                     },
                     webSocketUrl: true,
+                    // Puppeteer with WebDriver BiDi does not support prerendering
+                    // yet because WebDriver BiDi behavior is not specified. See
+                    // https://github.com/w3c/webdriver-bidi/issues/321.
+                    'goog:prerenderingDisabled': true,
                 },
             });
             await session.subscribe(session.capabilities.browserName.toLocaleLowerCase().includes('firefox')

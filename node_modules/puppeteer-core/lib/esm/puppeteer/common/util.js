@@ -123,7 +123,9 @@ export const isDate = (obj) => {
 /**
  * @internal
  */
-export function evaluationString(fun, ...args) {
+export function evaluationString(
+// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
+fun, ...args) {
     if (isString(fun)) {
         assert(args.length === 0, 'Cannot evaluate a string with arguments');
         return fun;
@@ -242,7 +244,7 @@ export const UTILITY_WORLD_NAME = '__puppeteer_utility_world__' + packageVersion
 /**
  * @internal
  */
-export const SOURCE_URL_REGEX = /^[\040\t]*\/\/[@#] sourceURL=\s*(\S*?)\s*$/m;
+export const SOURCE_URL_REGEX = /^[\x20\t]*\/\/[@#] sourceURL=\s{0,10}(\S*?)\s{0,10}$/m;
 /**
  * @internal
  */

@@ -12,7 +12,7 @@ import * as PQuerySelector from './PQuerySelector.js';
  */
 declare const PuppeteerUtil: Readonly<{
     Deferred: typeof Deferred;
-    createFunction: (functionValue: string) => (...args: unknown[]) => unknown;
+    createFunction: (functionValue: string) => ((...args: unknown[]) => unknown);
     createTextContent: (root: Node) => import("./TextContent.js").TextContent;
     IntervalPoller: typeof IntervalPoller;
     isSuitableNodeForTextMatching: (node: Node) => boolean;
@@ -23,8 +23,8 @@ declare const PuppeteerUtil: Readonly<{
     xpathQuerySelectorAll: (root: Node, selector: string, maxResults?: number) => Iterable<Node>;
     pierce(root: Node): IterableIterator<Node | ShadowRoot>;
     pierceAll(root: Node): IterableIterator<Node | ShadowRoot>;
-    checkVisibility: (node: Node | null, visible?: boolean | undefined) => boolean | Node;
-    textQuerySelectorAll: (root: Node, selector: string) => Generator<Element, any, unknown>;
+    checkVisibility: (node: Node | null, visible?: boolean) => Node | boolean;
+    textQuerySelectorAll: (root: Node, selector: string) => Generator<Element>;
     PCombinator: typeof PQuerySelector.PCombinator;
     pQuerySelectorAll: (root: Node, selector: string) => import("../index.js").AwaitableIterable<Node>;
     pQuerySelector: (root: Node, selector: string) => Promise<Node | null>;

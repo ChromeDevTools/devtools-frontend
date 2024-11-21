@@ -56,7 +56,6 @@ const NON_ELEMENT_NODE_ROLES = new Set(['StaticText', 'InlineTextBox']);
  * @internal
  */
 let CdpElementHandle = (() => {
-    var _a, _b;
     let _classSuper = ElementHandle_js_1.ElementHandle;
     let _instanceExtraInitializers = [];
     let _contentFrame_decorators;
@@ -67,8 +66,8 @@ let CdpElementHandle = (() => {
         static {
             const _metadata = typeof Symbol === "function" && Symbol.metadata ? Object.create(_classSuper[Symbol.metadata] ?? null) : void 0;
             _contentFrame_decorators = [(0, decorators_js_1.throwIfDisposed)()];
-            _scrollIntoView_decorators = [(0, decorators_js_1.throwIfDisposed)(), (_a = ElementHandle_js_1.ElementHandle).bindIsolatedHandle.bind(_a)];
-            _uploadFile_decorators = [(0, decorators_js_1.throwIfDisposed)(), (_b = ElementHandle_js_1.ElementHandle).bindIsolatedHandle.bind(_b)];
+            _scrollIntoView_decorators = [(0, decorators_js_1.throwIfDisposed)(), ElementHandle_js_1.bindIsolatedHandle];
+            _uploadFile_decorators = [(0, decorators_js_1.throwIfDisposed)(), ElementHandle_js_1.bindIsolatedHandle];
             _autofill_decorators = [(0, decorators_js_1.throwIfDisposed)()];
             __esDecorate(this, null, _contentFrame_decorators, { kind: "method", name: "contentFrame", static: false, private: false, access: { has: obj => "contentFrame" in obj, get: obj => obj.contentFrame }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _scrollIntoView_decorators, { kind: "method", name: "scrollIntoView", static: false, private: false, access: { has: obj => "scrollIntoView" in obj, get: obj => obj.scrollIntoView }, metadata: _metadata }, null, _instanceExtraInitializers);
@@ -117,21 +116,24 @@ let CdpElementHandle = (() => {
                 await super.scrollIntoView();
             }
         }
-        async uploadFile(...filePaths) {
+        async uploadFile(...files) {
             const isMultiple = await this.evaluate(element => {
                 return element.multiple;
             });
-            (0, assert_js_1.assert)(filePaths.length <= 1 || isMultiple, 'Multiple file uploads only work with <input type=file multiple>');
+            (0, assert_js_1.assert)(files.length <= 1 || isMultiple, 'Multiple file uploads only work with <input type=file multiple>');
             // Locate all files and confirm that they exist.
             const path = environment_js_1.environment.value.path;
-            const files = filePaths.map(filePath => {
-                if (path.win32.isAbsolute(filePath) || path.posix.isAbsolute(filePath)) {
-                    return filePath;
-                }
-                else {
-                    return path.resolve(filePath);
-                }
-            });
+            if (path) {
+                files = files.map(filePath => {
+                    if (path.win32.isAbsolute(filePath) ||
+                        path.posix.isAbsolute(filePath)) {
+                        return filePath;
+                    }
+                    else {
+                        return path.resolve(filePath);
+                    }
+                });
+            }
             /**
              * The zero-length array is a special case, it seems that
              * DOM.setFileInputFiles does not actually update the files in that case, so

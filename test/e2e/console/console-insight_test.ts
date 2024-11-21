@@ -8,7 +8,6 @@ import type * as puppeteer from 'puppeteer-core';
 import type * as Root from '../../../front_end/core/root/root.js';
 import type * as Console from '../../../front_end/panels/console/console.js';
 import {click, getBrowserAndPages, hover, setDevToolsSettings, waitFor, waitForNone} from '../../shared/helper.js';
-
 import {clickOnContextMenu, CONSOLE_TAB_SELECTOR} from '../helpers/console-helpers.js';
 
 describe('ConsoleInsight', function() {
@@ -220,7 +219,7 @@ describe('ConsoleInsight', function() {
       // Replace dynamic line and column numbers in stacktraces with ':1:1'.
       // Ignore stacktrace added by Puppeteer.
       return message.replace(/:\d+:\d+/gi, ':1:1')
-          .replaceAll(/\n    at pptr:;CdpFrame\.%3Can….js%3A\d+%3A\d+\):1:1/gi, '');
+          .replaceAll(/\n    at pptr:;CdpFrame\.%3Can…js%3A\d+%3A\d+\):1:1/gi, '');
     };
     const consoleModule = (await frontend.evaluateHandle('import(\'./panels/console/console.js\')')) as
         puppeteer.JSHandle<typeof Console>;

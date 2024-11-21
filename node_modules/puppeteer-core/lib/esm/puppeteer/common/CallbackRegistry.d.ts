@@ -34,12 +34,4 @@ export declare class Callback {
     get error(): ProtocolError;
     get label(): string;
 }
-/**
- * @internal
- */
-export declare function createIncrementalIdGenerator(): GetIdFn;
-/**
- * @internal
- */
-export type GetIdFn = () => number;
 //# sourceMappingURL=CallbackRegistry.d.ts.map

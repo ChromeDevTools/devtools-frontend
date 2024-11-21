@@ -6,6 +6,8 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Touchscreen = exports.Mouse = exports.MouseButton = exports.Keyboard = void 0;
+const Errors_js_1 = require("../common/Errors.js");
+const incremental_id_generator_js_1 = require("../util/incremental-id-generator.js");
 /**
  * Keyboard provides an api for managing a virtual keyboard.
  * The high level api is {@link Keyboard."type"},
@@ -107,7 +109,7 @@ exports.MouseButton = Object.freeze({
  *     selection.addRange(range);
  *   },
  *   fromJSHandle,
- *   toJSHandle
+ *   toJSHandle,
  * );
  * ```
  *
@@ -153,15 +155,62 @@ class Touchscreen {
     /**
      * @internal
      */
+    idGenerator = (0, incremental_id_generator_js_1.createIncrementalIdGenerator)();
+    /**
+     * @internal
+     */
+    touches = [];
+    /**
+     * @internal
+     */
     constructor() { }
+    /**
+     * @internal
+     */
+    removeHandle(handle) {
+        const index = this.touches.indexOf(handle);
+        if (index === -1) {
+            return;
+        }
+        this.touches.splice(index, 1);
+    }
     /**
      * Dispatches a `touchstart` and `touchend` event.
      * @param x - Horizontal position of the tap.
      * @param y - Vertical position of the tap.
      */
     async tap(x, y) {
-        await this.touchStart(x, y);
-        await this.touchEnd();
+        const touch = await this.touchStart(x, y);
+        await touch.end();
+    }
+    /**
+     * Dispatches a `touchMove` event on the first touch that is active.
+     * @param x - Horizontal position of the move.
+     * @param y - Vertical position of the move.
+     *
+     * @remarks
+     *
+     * Not every `touchMove` call results in a `touchmove` event being emitted,
+     * depending on the browser's optimizations. For example, Chrome
+     * {@link https://developer.chrome.com/blog/a-more-compatible-smoother-touch/#chromes-new-model-the-throttled-async-touchmove-model | throttles}
+     * touch move events.
+     */
+    async touchMove(x, y) {
+        const touch = this.touches[0];
+        if (!touch) {
+            throw new Errors_js_1.TouchError('Must start a new Touch first');
+        }
+        return await touch.move(x, y);
+    }
+    /**
+     * Dispatches a `touchend` event on the first touch that is active.
+     */
+    async touchEnd() {
+        const touch = this.touches.shift();
+        if (!touch) {
+            throw new Errors_js_1.TouchError('Must start a new Touch first');
+        }
+        await touch.end();
     }
 }
 exports.Touchscreen = Touchscreen;

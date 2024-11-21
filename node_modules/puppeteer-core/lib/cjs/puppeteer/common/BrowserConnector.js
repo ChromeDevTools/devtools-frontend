@@ -28,7 +28,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports._connectToBrowser = void 0;
+exports._connectToBrowser = _connectToBrowser;
 const BrowserConnector_js_1 = require("../bidi/BrowserConnector.js");
 const BrowserConnector_js_2 = require("../cdp/BrowserConnector.js");
 const environment_js_1 = require("../environment.js");
@@ -57,7 +57,6 @@ async function _connectToBrowser(options) {
         return cdpBrowser;
     }
 }
-exports._connectToBrowser = _connectToBrowser;
 /**
  * Establishes a websocket connection by given options and returns both transport and
  * endpoint url the transport is connected to.

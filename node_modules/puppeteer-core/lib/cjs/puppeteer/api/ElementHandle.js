@@ -41,7 +41,7 @@ var __esDecorate = (this && this.__esDecorate) || function (ctor, descriptorIn, 
 var __addDisposableResource = (this && this.__addDisposableResource) || function (env, value, async) {
     if (value !== null && value !== void 0) {
         if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
-        var dispose;
+        var dispose, inner;
         if (async) {
             if (!Symbol.asyncDispose) throw new TypeError("Symbol.asyncDispose is not defined.");
             dispose = value[Symbol.asyncDispose];
@@ -49,8 +49,10 @@ var __addDisposableResource = (this && this.__addDisposableResource) || function
         if (dispose === void 0) {
             if (!Symbol.dispose) throw new TypeError("Symbol.dispose is not defined.");
             dispose = value[Symbol.dispose];
+            if (async) inner = dispose;
         }
         if (typeof dispose !== "function") throw new TypeError("Object not disposable.");
+        if (inner) dispose = function() { try { inner.call(this); } catch (e) { return Promise.reject(e); } };
         env.stack.push({ value: value, dispose: dispose, async: async });
     }
     else if (async) {
@@ -64,17 +66,22 @@ var __disposeResources = (this && this.__disposeResources) || (function (Suppres
             env.error = env.hasError ? new SuppressedError(e, env.error, "An error was suppressed during disposal.") : e;
             env.hasError = true;
         }
+        var r, s = 0;
         function next() {
-            while (env.stack.length) {
-                var rec = env.stack.pop();
+            while (r = env.stack.pop()) {
                 try {
-                    var result = rec.dispose && rec.dispose.call(rec.value);
-                    if (rec.async) return Promise.resolve(result).then(next, function(e) { fail(e); return next(); });
+                    if (!r.async && s === 1) return s = 0, env.stack.push(r), Promise.resolve().then(next);
+                    if (r.dispose) {
+                        var result = r.dispose.call(r.value);
+                        if (r.async) return s |= 2, Promise.resolve(result).then(next, function(e) { fail(e); return next(); });
+                    }
+                    else s |= 1;
                 }
                 catch (e) {
                     fail(e);
                 }
             }
+            if (s === 1) return env.hasError ? Promise.reject(env.error) : Promise.resolve();
             if (env.hasError) throw env.error;
         }
         return next();
@@ -89,6 +96,7 @@ var __setFunctionName = (this && this.__setFunctionName) || function (f, name, p
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ElementHandle = void 0;
+exports.bindIsolatedHandle = bindIsolatedHandle;
 const GetQueryHandler_js_1 = require("../common/GetQueryHandler.js");
 const LazyArg_js_1 = require("../common/LazyArg.js");
 const util_js_1 = require("../common/util.js");
@@ -97,6 +105,58 @@ const AsyncIterableUtil_js_1 = require("../util/AsyncIterableUtil.js");
 const decorators_js_1 = require("../util/decorators.js");
 const ElementHandleSymbol_js_1 = require("./ElementHandleSymbol.js");
 const JSHandle_js_1 = require("./JSHandle.js");
+/**
+ * A given method will have it's `this` replaced with an isolated version of
+ * `this` when decorated with this decorator.
+ *
+ * All changes of isolated `this` are reflected on the actual `this`.
+ *
+ * @internal
+ */
+function bindIsolatedHandle(target, _) {
+    return async function (...args) {
+        // If the handle is already isolated, then we don't need to adopt it
+        // again.
+        if (this.realm === this.frame.isolatedRealm()) {
+            return await target.call(this, ...args);
+        }
+        let adoptedThis;
+        if (this['isolatedHandle']) {
+            adoptedThis = this['isolatedHandle'];
+        }
+        else {
+            this['isolatedHandle'] = adoptedThis = await this.frame
+                .isolatedRealm()
+                .adoptHandle(this);
+        }
+        const result = await target.call(adoptedThis, ...args);
+        // If the function returns `adoptedThis`, then we return `this`.
+        if (result === adoptedThis) {
+            return this;
+        }
+        // If the function returns a handle, transfer it into the current realm.
+        if (result instanceof JSHandle_js_1.JSHandle) {
+            return await this.realm.transferHandle(result);
+        }
+        // If the function returns an array of handlers, transfer them into the
+        // current realm.
+        if (Array.isArray(result)) {
+            await Promise.all(result.map(async (item, index, result) => {
+                if (item instanceof JSHandle_js_1.JSHandle) {
+                    result[index] = await this.realm.transferHandle(item);
+                }
+            }));
+        }
+        if (result instanceof Map) {
+            await Promise.all([...result.entries()].map(async ([key, value]) => {
+                if (value instanceof JSHandle_js_1.JSHandle) {
+                    result.set(key, await this.realm.transferHandle(value));
+                }
+            }));
+        }
+        return result;
+    };
+}
 /**
  * ElementHandle represents an in-page DOM element.
  *
@@ -131,7 +191,6 @@ const JSHandle_js_1 = require("./JSHandle.js");
  * @public
  */
 let ElementHandle = (() => {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _0, _1, _2, _3, _4, _5;
     let _classSuper = JSHandle_js_1.JSHandle;
     let _instanceExtraInitializers = [];
     let _getProperty_decorators;
@@ -169,37 +228,37 @@ let ElementHandle = (() => {
     return class ElementHandle extends _classSuper {
         static {
             const _metadata = typeof Symbol === "function" && Symbol.metadata ? Object.create(_classSuper[Symbol.metadata] ?? null) : void 0;
-            _getProperty_decorators = [(0, decorators_js_1.throwIfDisposed)(), (_a = ElementHandle).bindIsolatedHandle.bind(_a)];
-            _getProperties_decorators = [(0, decorators_js_1.throwIfDisposed)(), (_b = ElementHandle).bindIsolatedHandle.bind(_b)];
-            _jsonValue_decorators = [(0, decorators_js_1.throwIfDisposed)(), (_c = ElementHandle).bindIsolatedHandle.bind(_c)];
-            _$_decorators = [(0, decorators_js_1.throwIfDisposed)(), (_d = ElementHandle).bindIsolatedHandle.bind(_d)];
+            _getProperty_decorators = [(0, decorators_js_1.throwIfDisposed)(), bindIsolatedHandle];
+            _getProperties_decorators = [(0, decorators_js_1.throwIfDisposed)(), bindIsolatedHandle];
+            _jsonValue_decorators = [(0, decorators_js_1.throwIfDisposed)(), bindIsolatedHandle];
+            _$_decorators = [(0, decorators_js_1.throwIfDisposed)(), bindIsolatedHandle];
             _$$_decorators = [(0, decorators_js_1.throwIfDisposed)()];
-            _private_$$_decorators = [(_e = ElementHandle).bindIsolatedHandle.bind(_e)];
-            _waitForSelector_decorators = [(0, decorators_js_1.throwIfDisposed)(), (_f = ElementHandle).bindIsolatedHandle.bind(_f)];
-            _isVisible_decorators = [(0, decorators_js_1.throwIfDisposed)(), (_g = ElementHandle).bindIsolatedHandle.bind(_g)];
-            _isHidden_decorators = [(0, decorators_js_1.throwIfDisposed)(), (_h = ElementHandle).bindIsolatedHandle.bind(_h)];
-            _toElement_decorators = [(0, decorators_js_1.throwIfDisposed)(), (_j = ElementHandle).bindIsolatedHandle.bind(_j)];
-            _clickablePoint_decorators = [(0, decorators_js_1.throwIfDisposed)(), (_k = ElementHandle).bindIsolatedHandle.bind(_k)];
-            _hover_decorators = [(0, decorators_js_1.throwIfDisposed)(), (_l = ElementHandle).bindIsolatedHandle.bind(_l)];
-            _click_decorators = [(0, decorators_js_1.throwIfDisposed)(), (_m = ElementHandle).bindIsolatedHandle.bind(_m)];
-            _drag_decorators = [(0, decorators_js_1.throwIfDisposed)(), (_o = ElementHandle).bindIsolatedHandle.bind(_o)];
-            _dragEnter_decorators = [(0, decorators_js_1.throwIfDisposed)(), (_p = ElementHandle).bindIsolatedHandle.bind(_p)];
-            _dragOver_decorators = [(0, decorators_js_1.throwIfDisposed)(), (_q = ElementHandle).bindIsolatedHandle.bind(_q)];
-            _drop_decorators = [(0, decorators_js_1.throwIfDisposed)(), (_r = ElementHandle).bindIsolatedHandle.bind(_r)];
-            _dragAndDrop_decorators = [(0, decorators_js_1.throwIfDisposed)(), (_s = ElementHandle).bindIsolatedHandle.bind(_s)];
-            _select_decorators = [(0, decorators_js_1.throwIfDisposed)(), (_t = ElementHandle).bindIsolatedHandle.bind(_t)];
-            _tap_decorators = [(0, decorators_js_1.throwIfDisposed)(), (_u = ElementHandle).bindIsolatedHandle.bind(_u)];
-            _touchStart_decorators = [(0, decorators_js_1.throwIfDisposed)(), (_v = ElementHandle).bindIsolatedHandle.bind(_v)];
-            _touchMove_decorators = [(0, decorators_js_1.throwIfDisposed)(), (_w = ElementHandle).bindIsolatedHandle.bind(_w)];
-            _touchEnd_decorators = [(0, decorators_js_1.throwIfDisposed)(), (_x = ElementHandle).bindIsolatedHandle.bind(_x)];
-            _focus_decorators = [(0, decorators_js_1.throwIfDisposed)(), (_y = ElementHandle).bindIsolatedHandle.bind(_y)];
-            _type_decorators = [(0, decorators_js_1.throwIfDisposed)(), (_z = ElementHandle).bindIsolatedHandle.bind(_z)];
-            _press_decorators = [(0, decorators_js_1.throwIfDisposed)(), (_0 = ElementHandle).bindIsolatedHandle.bind(_0)];
-            _boundingBox_decorators = [(0, decorators_js_1.throwIfDisposed)(), (_1 = ElementHandle).bindIsolatedHandle.bind(_1)];
-            _boxModel_decorators = [(0, decorators_js_1.throwIfDisposed)(), (_2 = ElementHandle).bindIsolatedHandle.bind(_2)];
-            _screenshot_decorators = [(0, decorators_js_1.throwIfDisposed)(), (_3 = ElementHandle).bindIsolatedHandle.bind(_3)];
-            _isIntersectingViewport_decorators = [(0, decorators_js_1.throwIfDisposed)(), (_4 = ElementHandle).bindIsolatedHandle.bind(_4)];
-            _scrollIntoView_decorators = [(0, decorators_js_1.throwIfDisposed)(), (_5 = ElementHandle).bindIsolatedHandle.bind(_5)];
+            _private_$$_decorators = [bindIsolatedHandle];
+            _waitForSelector_decorators = [(0, decorators_js_1.throwIfDisposed)(), bindIsolatedHandle];
+            _isVisible_decorators = [(0, decorators_js_1.throwIfDisposed)(), bindIsolatedHandle];
+            _isHidden_decorators = [(0, decorators_js_1.throwIfDisposed)(), bindIsolatedHandle];
+            _toElement_decorators = [(0, decorators_js_1.throwIfDisposed)(), bindIsolatedHandle];
+            _clickablePoint_decorators = [(0, decorators_js_1.throwIfDisposed)(), bindIsolatedHandle];
+            _hover_decorators = [(0, decorators_js_1.throwIfDisposed)(), bindIsolatedHandle];
+            _click_decorators = [(0, decorators_js_1.throwIfDisposed)(), bindIsolatedHandle];
+            _drag_decorators = [(0, decorators_js_1.throwIfDisposed)(), bindIsolatedHandle];
+            _dragEnter_decorators = [(0, decorators_js_1.throwIfDisposed)(), bindIsolatedHandle];
+            _dragOver_decorators = [(0, decorators_js_1.throwIfDisposed)(), bindIsolatedHandle];
+            _drop_decorators = [(0, decorators_js_1.throwIfDisposed)(), bindIsolatedHandle];
+            _dragAndDrop_decorators = [(0, decorators_js_1.throwIfDisposed)(), bindIsolatedHandle];
+            _select_decorators = [(0, decorators_js_1.throwIfDisposed)(), bindIsolatedHandle];
+            _tap_decorators = [(0, decorators_js_1.throwIfDisposed)(), bindIsolatedHandle];
+            _touchStart_decorators = [(0, decorators_js_1.throwIfDisposed)(), bindIsolatedHandle];
+            _touchMove_decorators = [(0, decorators_js_1.throwIfDisposed)(), bindIsolatedHandle];
+            _touchEnd_decorators = [(0, decorators_js_1.throwIfDisposed)(), bindIsolatedHandle];
+            _focus_decorators = [(0, decorators_js_1.throwIfDisposed)(), bindIsolatedHandle];
+            _type_decorators = [(0, decorators_js_1.throwIfDisposed)(), bindIsolatedHandle];
+            _press_decorators = [(0, decorators_js_1.throwIfDisposed)(), bindIsolatedHandle];
+            _boundingBox_decorators = [(0, decorators_js_1.throwIfDisposed)(), bindIsolatedHandle];
+            _boxModel_decorators = [(0, decorators_js_1.throwIfDisposed)(), bindIsolatedHandle];
+            _screenshot_decorators = [(0, decorators_js_1.throwIfDisposed)(), bindIsolatedHandle];
+            _isIntersectingViewport_decorators = [(0, decorators_js_1.throwIfDisposed)(), bindIsolatedHandle];
+            _scrollIntoView_decorators = [(0, decorators_js_1.throwIfDisposed)(), bindIsolatedHandle];
             __esDecorate(this, null, _getProperty_decorators, { kind: "method", name: "getProperty", static: false, private: false, access: { has: obj => "getProperty" in obj, get: obj => obj.getProperty }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _getProperties_decorators, { kind: "method", name: "getProperties", static: false, private: false, access: { has: obj => "getProperties" in obj, get: obj => obj.getProperties }, metadata: _metadata }, null, _instanceExtraInitializers);
             __esDecorate(this, null, _jsonValue_decorators, { kind: "method", name: "jsonValue", static: false, private: false, access: { has: obj => "jsonValue" in obj, get: obj => obj.jsonValue }, metadata: _metadata }, null, _instanceExtraInitializers);
@@ -241,58 +300,6 @@ let ElementHandle = (() => {
          * trying to adopt it multiple times
          */
         isolatedHandle = __runInitializers(this, _instanceExtraInitializers);
-        /**
-         * A given method will have it's `this` replaced with an isolated version of
-         * `this` when decorated with this decorator.
-         *
-         * All changes of isolated `this` are reflected on the actual `this`.
-         *
-         * @internal
-         */
-        static bindIsolatedHandle(target, _) {
-            return async function (...args) {
-                // If the handle is already isolated, then we don't need to adopt it
-                // again.
-                if (this.realm === this.frame.isolatedRealm()) {
-                    return await target.call(this, ...args);
-                }
-                let adoptedThis;
-                if (this['isolatedHandle']) {
-                    adoptedThis = this['isolatedHandle'];
-                }
-                else {
-                    this['isolatedHandle'] = adoptedThis = await this.frame
-                        .isolatedRealm()
-                        .adoptHandle(this);
-                }
-                const result = await target.call(adoptedThis, ...args);
-                // If the function returns `adoptedThis`, then we return `this`.
-                if (result === adoptedThis) {
-                    return this;
-                }
-                // If the function returns a handle, transfer it into the current realm.
-                if (result instanceof JSHandle_js_1.JSHandle) {
-                    return await this.realm.transferHandle(result);
-                }
-                // If the function returns an array of handlers, transfer them into the
-                // current realm.
-                if (Array.isArray(result)) {
-                    await Promise.all(result.map(async (item, index, result) => {
-                        if (item instanceof JSHandle_js_1.JSHandle) {
-                            result[index] = await this.realm.transferHandle(item);
-                        }
-                    }));
-                }
-                if (result instanceof Map) {
-                    await Promise.all([...result.entries()].map(async ([key, value]) => {
-                        if (value instanceof JSHandle_js_1.JSHandle) {
-                            result.set(key, await this.realm.transferHandle(value));
-                        }
-                    }));
-                }
-                return result;
-            };
-        }
         /**
          * @internal
          */
@@ -452,10 +459,10 @@ let ElementHandle = (() => {
          * ```ts
          * const tweetHandle = await page.$('.tweet');
          * expect(await tweetHandle.$eval('.like', node => node.innerText)).toBe(
-         *   '100'
+         *   '100',
          * );
          * expect(await tweetHandle.$eval('.retweets', node => node.innerText)).toBe(
-         *   '10'
+         *   '10',
          * );
          * ```
          *
@@ -520,7 +527,7 @@ let ElementHandle = (() => {
          * ```ts
          * const feedHandle = await page.$('.feed');
          * expect(
-         *   await feedHandle.$$eval('.tweet', nodes => nodes.map(n => n.innerText))
+         *   await feedHandle.$$eval('.tweet', nodes => nodes.map(n => n.innerText)),
          * ).toEqual(['Hello!', 'Hi!']);
          * ```
          *
@@ -658,7 +665,7 @@ let ElementHandle = (() => {
          *
          * ```ts
          * const element: ElementHandle<Element> = await page.$(
-         *   '.class-name-of-anchor'
+         *   '.class-name-of-anchor',
          * );
          * // DO NOT DISPOSE `element`, this will be always be the same handle.
          * const anchor: ElementHandle<HTMLAnchorElement> =
@@ -866,14 +873,28 @@ let ElementHandle = (() => {
             const { x, y } = await this.clickablePoint();
             await this.frame.page().touchscreen.tap(x, y);
         }
+        /**
+         * This method scrolls the element into view if needed, and then
+         * starts a touch in the center of the element.
+         * @returns A {@link TouchHandle} representing the touch that was started
+         */
         async touchStart() {
             await this.scrollIntoViewIfNeeded();
             const { x, y } = await this.clickablePoint();
-            await this.frame.page().touchscreen.touchStart(x, y);
+            return await this.frame.page().touchscreen.touchStart(x, y);
         }
-        async touchMove() {
+        /**
+         * This method scrolls the element into view if needed, and then
+         * moves the touch to the center of the element.
+         * @param touch - An optional {@link TouchHandle}. If provided, this touch
+         * will be moved. If not provided, the first active touch will be moved.
+         */
+        async touchMove(touch) {
             await this.scrollIntoViewIfNeeded();
             const { x, y } = await this.clickablePoint();
+            if (touch) {
+                return await touch.move(x, y);
+            }
             await this.frame.page().touchscreen.touchMove(x, y);
         }
         async touchEnd() {
@@ -1095,8 +1116,8 @@ let ElementHandle = (() => {
                 const border = [
                     { x: rect.left, y: rect.top },
                     { x: rect.left + rect.width, y: rect.top },
-                    { x: rect.left + rect.width, y: rect.top + rect.bottom },
-                    { x: rect.left, y: rect.top + rect.bottom },
+                    { x: rect.left + rect.width, y: rect.top + rect.height },
+                    { x: rect.left, y: rect.top + rect.height },
                 ];
                 const padding = transformQuadWithOffsets(border, offsets.border);
                 const content = transformQuadWithOffsets(padding, offsets.padding);

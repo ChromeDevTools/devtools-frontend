@@ -4,27 +4,27 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 export * from './index.js';
-import { PuppeteerNode } from './node/PuppeteerNode.js';
+import * as Puppeteer from './index.js';
 /**
  * @public
  */
-declare const puppeteer: PuppeteerNode;
+declare const puppeteer: Puppeteer.PuppeteerNode;
 export declare const 
 /**
  * @public
  */
-connect: (options: import("./index.js").ConnectOptions) => Promise<import("./index.js").Browser>, 
+connect: (options: Puppeteer.ConnectOptions) => Promise<Puppeteer.Browser>, 
 /**
  * @public
  */
-defaultArgs: (options?: import("./index.js").BrowserLaunchArgumentOptions) => string[], 
+defaultArgs: (options?: Puppeteer.BrowserLaunchArgumentOptions) => string[], 
 /**
  * @public
  */
-executablePath: (channel?: import("./index.js").ChromeReleaseChannel | undefined) => string, 
+executablePath: (channel?: Puppeteer.ChromeReleaseChannel) => string, 
 /**
  * @public
  */
-launch: (options?: import("./index.js").PuppeteerLaunchOptions) => Promise<import("./index.js").Browser>;
+launch: (options?: Puppeteer.PuppeteerLaunchOptions) => Promise<Puppeteer.Browser>;
 export default puppeteer;
 //# sourceMappingURL=puppeteer-core.d.ts.map

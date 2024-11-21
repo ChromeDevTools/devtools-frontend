@@ -284,7 +284,9 @@ export class ChromeTargetManager extends EventEmitter {
         ]).catch(debugError);
     };
     #finishInitializationIfReady(targetId) {
-        targetId !== undefined && this.#targetsIdsForInit.delete(targetId);
+        if (targetId !== undefined) {
+            this.#targetsIdsForInit.delete(targetId);
+        }
         if (this.#targetsIdsForInit.size === 0) {
             this.#initializeDeferred.resolve();
         }

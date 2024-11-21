@@ -80,7 +80,7 @@ export class FrameManager extends EventEmitter<FrameManagerEvents> {
   constructor(
     client: CDPSession,
     page: CdpPage,
-    timeoutSettings: TimeoutSettings
+    timeoutSettings: TimeoutSettings,
   ) {
     super();
     this.#client = client;
@@ -115,7 +115,7 @@ export class FrameManager extends EventEmitter<FrameManagerEvents> {
     });
     try {
       await swapped.valueOrThrow();
-    } catch (err) {
+    } catch {
       this.#removeFramesRecursively(mainFrame);
     }
   }
@@ -129,7 +129,7 @@ export class FrameManager extends EventEmitter<FrameManagerEvents> {
     this.#client = client;
     assert(
       this.#client instanceof CdpCDPSession,
-      'CDPSession is not an instance of CDPSessionImpl.'
+      'CDPSession is not an instance of CDPSessionImpl.',
     );
     const frame = this._frameTree.getMainFrame();
     if (frame) {
@@ -174,9 +174,9 @@ export class FrameManager extends EventEmitter<FrameManagerEvents> {
         await this.#frameTreeHandled?.valueOrThrow();
         this.#onFrameDetached(
           event.frameId,
-          event.reason as Protocol.Page.FrameDetachedEventReason
+          event.reason as Protocol.Page.FrameDetachedEventReason,
         );
-      }
+      },
     );
     session.on('Page.frameStartedLoading', async event => {
       await this.#frameTreeHandled?.valueOrThrow();
@@ -259,7 +259,7 @@ export class FrameManager extends EventEmitter<FrameManagerEvents> {
     await Promise.all(
       this.frames().map(async frame => {
         return await frame.addExposedFunctionBinding(binding);
-      })
+      }),
     );
   }
 
@@ -268,12 +268,12 @@ export class FrameManager extends EventEmitter<FrameManagerEvents> {
     await Promise.all(
       this.frames().map(async frame => {
         return await frame.removeExposedFunctionBinding(binding);
-      })
+      }),
     );
   }
 
   async evaluateOnNewDocument(
-    source: string
+    source: string,
   ): Promise<NewDocumentScriptEvaluation> {
     const {identifier} = await this.mainFrame()
       ._client()
@@ -284,7 +284,7 @@ export class FrameManager extends EventEmitter<FrameManagerEvents> {
     const preloadScript = new CdpPreloadScript(
       this.mainFrame(),
       identifier,
-      source
+      source,
     );
 
     this.#scriptsToEvaluateOnNewDocument.set(identifier, preloadScript);
@@ -292,7 +292,7 @@ export class FrameManager extends EventEmitter<FrameManagerEvents> {
     await Promise.all(
       this.frames().map(async frame => {
         return await frame.addPreloadScript(preloadScript);
-      })
+      }),
     );
 
     return {identifier};
@@ -302,7 +302,7 @@ export class FrameManager extends EventEmitter<FrameManagerEvents> {
     const preloadScript = this.#scriptsToEvaluateOnNewDocument.get(identifier);
     if (!preloadScript) {
       throw new Error(
-        `Script to evaluate on new document with id ${identifier} not found`
+        `Script to evaluate on new document with id ${identifier} not found`,
       );
     }
 
@@ -320,7 +320,7 @@ export class FrameManager extends EventEmitter<FrameManagerEvents> {
             identifier,
           })
           .catch(debugError);
-      })
+      }),
     );
   }
 
@@ -376,13 +376,13 @@ export class FrameManager extends EventEmitter<FrameManagerEvents> {
 
   #handleFrameTree(
     session: CDPSession,
-    frameTree: Protocol.Page.FrameTree
+    frameTree: Protocol.Page.FrameTree,
   ): void {
     if (frameTree.frame.parentId) {
       this.#onFrameAttached(
         session,
         frameTree.frame.id,
-        frameTree.frame.parentId
+        frameTree.frame.parentId,
       );
     }
     if (!this.#frameNavigatedReceived.has(frameTree.frame.id)) {
@@ -403,15 +403,14 @@ export class FrameManager extends EventEmitter<FrameManagerEvents> {
   #onFrameAttached(
     session: CDPSession,
     frameId: string,
-    parentFrameId: string
+    parentFrameId: string,
   ): void {
     let frame = this.frame(frameId);
     if (frame) {
-      if (session && frame.client !== this.#client) {
-        // TODO: check this condition. It might not be correct for
-        // nested frames.
+      const parentFrame = this.frame(parentFrameId);
+      if (session && parentFrame && frame.client !== parentFrame?.client) {
         // If an OOP iframes becomes a normal iframe
-        // again it is first attached to the parent page before the
+        // again it is first attached to the parent frame before the
         // target is removed.
         frame.updateClient(session);
       }
@@ -425,7 +424,7 @@ export class FrameManager extends EventEmitter<FrameManagerEvents> {
 
   async #onFrameNavigated(
     framePayload: Protocol.Page.Frame,
-    navigationType: Protocol.Page.NavigationType
+    navigationType: Protocol.Page.NavigationType,
   ): Promise<void> {
     const frameId = framePayload.id;
     const isMainFrame = !framePayload.parentId;
@@ -485,7 +484,7 @@ export class FrameManager extends EventEmitter<FrameManagerEvents> {
               grantUniveralAccess: true,
             })
             .catch(debugError);
-        })
+        }),
     );
 
     this.#isolatedWorlds.add(key);
@@ -505,7 +504,7 @@ export class FrameManager extends EventEmitter<FrameManagerEvents> {
 
   #onFrameDetached(
     frameId: string,
-    reason: Protocol.Page.FrameDetachedEventReason
+    reason: Protocol.Page.FrameDetachedEventReason,
   ): void {
     const frame = this.frame(frameId);
     if (!frame) {
@@ -527,7 +526,7 @@ export class FrameManager extends EventEmitter<FrameManagerEvents> {
 
   #onExecutionContextCreated(
     contextPayload: Protocol.Runtime.ExecutionContextDescription,
-    session: CDPSession
+    session: CDPSession,
   ): void {
     const auxData = contextPayload.auxData as {frameId?: string} | undefined;
     const frameId = auxData && auxData.frameId;
@@ -554,7 +553,7 @@ export class FrameManager extends EventEmitter<FrameManagerEvents> {
     const context = new ExecutionContext(
       frame?.client || this.#client,
       contextPayload,
-      world
+      world,
     );
     world.setContext(context);
   }

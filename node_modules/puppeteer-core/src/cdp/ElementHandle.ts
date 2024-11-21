@@ -7,7 +7,11 @@
 import type {Protocol} from 'devtools-protocol';
 
 import type {CDPSession} from '../api/CDPSession.js';
-import {ElementHandle, type AutofillData} from '../api/ElementHandle.js';
+import {
+  bindIsolatedHandle,
+  ElementHandle,
+  type AutofillData,
+} from '../api/ElementHandle.js';
 import type {AwaitableIterable} from '../common/types.js';
 import {debugError} from '../common/util.js';
 import {environment} from '../environment.js';
@@ -36,7 +40,7 @@ export class CdpElementHandle<
 
   constructor(
     world: IsolatedWorld,
-    remoteObject: Protocol.Runtime.RemoteObject
+    remoteObject: Protocol.Runtime.RemoteObject,
   ) {
     super(new CdpJSHandle(world, remoteObject));
   }
@@ -62,7 +66,7 @@ export class CdpElementHandle<
   }
 
   override async contentFrame(
-    this: ElementHandle<HTMLIFrameElement>
+    this: ElementHandle<HTMLIFrameElement>,
   ): Promise<CdpFrame>;
 
   @throwIfDisposed()
@@ -77,9 +81,9 @@ export class CdpElementHandle<
   }
 
   @throwIfDisposed()
-  @ElementHandle.bindIsolatedHandle
+  @bindIsolatedHandle
   override async scrollIntoView(
-    this: CdpElementHandle<Element>
+    this: CdpElementHandle<Element>,
   ): Promise<void> {
     await this.assertConnectedElement();
     try {
@@ -94,28 +98,33 @@ export class CdpElementHandle<
   }
 
   @throwIfDisposed()
-  @ElementHandle.bindIsolatedHandle
+  @bindIsolatedHandle
   override async uploadFile(
     this: CdpElementHandle<HTMLInputElement>,
-    ...filePaths: string[]
+    ...files: string[]
   ): Promise<void> {
     const isMultiple = await this.evaluate(element => {
       return element.multiple;
     });
     assert(
-      filePaths.length <= 1 || isMultiple,
-      'Multiple file uploads only work with <input type=file multiple>'
+      files.length <= 1 || isMultiple,
+      'Multiple file uploads only work with <input type=file multiple>',
     );
 
     // Locate all files and confirm that they exist.
     const path = environment.value.path;
-    const files = filePaths.map(filePath => {
-      if (path.win32.isAbsolute(filePath) || path.posix.isAbsolute(filePath)) {
-        return filePath;
-      } else {
-        return path.resolve(filePath);
-      }
-    });
+    if (path) {
+      files = files.map(filePath => {
+        if (
+          path.win32.isAbsolute(filePath) ||
+          path.posix.isAbsolute(filePath)
+        ) {
+          return filePath;
+        } else {
+          return path.resolve(filePath);
+        }
+      });
+    }
 
     /**
      * The zero-length array is a special case, it seems that
@@ -130,7 +139,7 @@ export class CdpElementHandle<
 
         // Dispatch events for this case because it should behave akin to a user action.
         element.dispatchEvent(
-          new Event('input', {bubbles: true, composed: true})
+          new Event('input', {bubbles: true, composed: true}),
         );
         element.dispatchEvent(new Event('change', {bubbles: true}));
       });
@@ -165,7 +174,7 @@ export class CdpElementHandle<
 
   override async *queryAXTree(
     name?: string | undefined,
-    role?: string | undefined
+    role?: string | undefined,
   ): AwaitableIterable<ElementHandle<Node>> {
     const {nodes} = await this.client.send('Accessibility.queryAXTree', {
       objectId: this.id,

@@ -67,9 +67,10 @@ export class IsolatedWorld extends Realm {
      * Waits for the next context to be set on the isolated world.
      */
     async #waitForExecutionContext() {
+        const error = new Error('Execution context was destroyed');
         const result = await firstValueFrom(fromEmitterEvent(this.#emitter, 'context').pipe(raceWith(fromEmitterEvent(this.#emitter, 'disposed').pipe(map(() => {
             // The message has to match the CDP message expected by the WaitTask class.
-            throw new Error('Execution context was destroyed');
+            throw error;
         })), timeout(this.timeoutSettings.timeout()))));
         return result;
     }

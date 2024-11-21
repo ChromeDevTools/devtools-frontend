@@ -28,7 +28,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports._connectToBiDiBrowser = void 0;
+exports._connectToBiDiBrowser = _connectToBiDiBrowser;
 const Connection_js_1 = require("../cdp/Connection.js");
 const Errors_js_1 = require("../common/Errors.js");
 const util_js_1 = require("../common/util.js");
@@ -55,7 +55,6 @@ async function _connectToBiDiBrowser(connectionTransport, url, options) {
     });
     return bidiBrowser;
 }
-exports._connectToBiDiBrowser = _connectToBiDiBrowser;
 /**
  * Returns a BiDiConnection established to the endpoint specified by the options and a
  * callback closing the browser. Callback depends on whether the connection is pure BiDi

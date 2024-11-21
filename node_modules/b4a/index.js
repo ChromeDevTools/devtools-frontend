@@ -115,6 +115,38 @@ function readInt32LE (buffer, offset) {
   return toBuffer(buffer).readInt32LE(offset)
 }
 
+function writeDoubleBE (buffer, value, offset) {
+  return toBuffer(buffer).writeDoubleBE(value, offset)
+}
+
+function writeFloatBE (buffer, value, offset) {
+  return toBuffer(buffer).writeFloatBE(value, offset)
+}
+
+function writeUInt32BE (buffer, value, offset) {
+  return toBuffer(buffer).writeUInt32BE(value, offset)
+}
+
+function writeInt32BE (buffer, value, offset) {
+  return toBuffer(buffer).writeInt32BE(value, offset)
+}
+
+function readDoubleBE (buffer, offset) {
+  return toBuffer(buffer).readDoubleBE(offset)
+}
+
+function readFloatBE (buffer, offset) {
+  return toBuffer(buffer).readFloatBE(offset)
+}
+
+function readUInt32BE (buffer, offset) {
+  return toBuffer(buffer).readUInt32BE(offset)
+}
+
+function readInt32BE (buffer, offset) {
+  return toBuffer(buffer).readInt32BE(offset)
+}
+
 module.exports = {
   isBuffer,
   isEncoding,
@@ -144,5 +176,14 @@ module.exports = {
   readDoubleLE,
   readFloatLE,
   readUInt32LE,
-  readInt32LE
+  readInt32LE,
+  writeDoubleBE,
+  writeFloatBE,
+  writeUInt32BE,
+  writeInt32BE,
+  readDoubleBE,
+  readFloatBE,
+  readUInt32BE,
+  readInt32BE
+
 }

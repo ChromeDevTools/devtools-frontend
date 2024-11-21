@@ -80,6 +80,9 @@
   "core/common/ResourceType.ts | ws": {
     "message": "WS"
   },
+  "core/common/Revealer.ts | animationsPanel": {
+    "message": "Animasiya paneli"
+  },
   "core/common/Revealer.ts | applicationPanel": {
     "message": "Tətbiq paneli"
   },
@@ -199,27 +202,6 @@
   },
   "core/host/ResourceLoader.ts | unknownError": {
     "message": "Naməlum xəta"
-  },
-  "core/i18n/time-utilities.ts | fdays": {
-    "message": "{PH1} gün"
-  },
-  "core/i18n/time-utilities.ts | fhrs": {
-    "message": "{PH1} saat"
-  },
-  "core/i18n/time-utilities.ts | fmin": {
-    "message": "{PH1} dəq"
-  },
-  "core/i18n/time-utilities.ts | fmms": {
-    "message": "{PH1} μs"
-  },
-  "core/i18n/time-utilities.ts | fms": {
-    "message": "{PH1} ms"
-  },
-  "core/i18n/time-utilities.ts | fmsExpanded": {
-    "message": "{PH1} millisaniyə"
-  },
-  "core/i18n/time-utilities.ts | fs": {
-    "message": "{PH1} s"
   },
   "core/sdk/CPUProfilerModel.ts | profileD": {
     "message": "Profil {PH1}"
@@ -455,6 +437,9 @@
   "core/sdk/PageResourceLoader.ts | loadCanceledDueToReloadOf": {
     "message": "Yoxlanılan səhifənin yenidən yüklənməsi ilə əlaqədar yükləmə ləğv edildi"
   },
+  "core/sdk/RehydratingConnection.ts | noSourceText": {
+    "message": "Mənbə mətni yoxdur"
+  },
   "core/sdk/Script.ts | scriptRemovedOrDeleted": {
     "message": "Skript çıxarıldı və ya silindi."
   },
@@ -688,6 +673,9 @@
   },
   "core/sdk/sdk-meta.ts | highlightAdFrames": {
     "message": "Reklam çərçivələrini vurğulayın"
+  },
+  "core/sdk/sdk-meta.ts | networkCacheExplanation": {
+    "message": "Şəbəkə keşinin deaktiv edilməsi ilk dəfə gələn ziyarətçi kimi şəbəkə təcrübəsini simulyasiya edəcək."
   },
   "core/sdk/sdk-meta.ts | networkRequestBlocking": {
     "message": "Şəbəkə sorğusunun bloklanması"
@@ -1163,9 +1151,6 @@
   "generated/Deprecation.ts | CSSCustomStateDeprecatedSyntax": {
     "message": ":--customstatename köhnəlib. :state(customstatename) sintaksisindən istifadə edin."
   },
-  "generated/Deprecation.ts | CSSInsetAreaProperty": {
-    "message": "inset-area xüsusiyyəti köhnəlib. Əvəzində position-area xüsusiyyətini istifadə edin."
-  },
   "generated/Deprecation.ts | CSSSelectorInternalMediaControlsOverlayCastButton": {
     "message": "Defolt Yayım inteqrasiyasını deaktiv etmək üçün-internal-media-controls-overlay-cast-button seçicisindən istifadə etmək əvəzinə disableRemotePlayback atributu istifadə edilməlidir."
   },
@@ -1207,9 +1192,6 @@
   },
   "generated/Deprecation.ts | GeolocationInsecureOriginDeprecatedNotRemoved": {
     "message": "getCurrentPosition() və watchPosition() güvənsiz mənşələrdə köhnəlib. Bu funksiyadan istifadə etmək üçün tətbiqinizi HTTPS kimi güvənli mənbəyə keçirməyi düşünməlisiniz. Ətraflı məlumat üçün baxın: https://goo.gle/chrome-insecure-origins."
-  },
-  "generated/Deprecation.ts | GetInnerHTML": {
-    "message": "getInnerHTML() funksiyası köhnəlib və tezliklə bu brauzerdən silinəcək. Əvəzində getHTML() istifadə edin."
   },
   "generated/Deprecation.ts | GetUserMediaInsecureOrigin": {
     "message": "getUserMedia() artıq güvənsiz mənşələrdə işləmir. Bu funksiyadan istifadə etmək üçün tətbiqinizi HTTPS kimi güvənli mənbəyə keçirməyi düşünməlisiniz. Ətraflı məlumat üçün baxın: https://goo.gle/chrome-insecure-origins."
@@ -1590,7 +1572,7 @@
     "message": "sıfırlayın"
   },
   "models/persistence/EditFileSystemView.ts | add": {
-    "message": "Əlavə edin"
+    "message": "Qovluq əlavə edin"
   },
   "models/persistence/EditFileSystemView.ts | enterAPath": {
     "message": "Yol daxil edin"
@@ -1599,7 +1581,7 @@
     "message": "Unikal keçid daxil edin"
   },
   "models/persistence/EditFileSystemView.ts | excludedFolders": {
-    "message": "İstisna edilən qovluqlar"
+    "message": "İstisna edilən alt qovluqlar"
   },
   "models/persistence/EditFileSystemView.ts | folderPath": {
     "message": "Qovluq yolu"
@@ -1609,6 +1591,9 @@
   },
   "models/persistence/EditFileSystemView.ts | sViaDevtools": {
     "message": "{PH1} (via .devtools)"
+  },
+  "models/persistence/EditFileSystemView.ts | url": {
+    "message": "URL"
   },
   "models/persistence/IsolatedFileSystem.ts | blobCouldNotBeLoaded": {
     "message": "Blob yüklənmədi."
@@ -1659,10 +1644,10 @@
     "message": "PlatformFileSystem faylları oxuya bilmir."
   },
   "models/persistence/WorkspaceSettingsTab.ts | addFolder": {
-    "message": "Qovluq əlavə edin…"
+    "message": "Qovluq əlavə edin"
   },
   "models/persistence/WorkspaceSettingsTab.ts | folderExcludePattern": {
-    "message": "Qovluq istisna şablonu"
+    "message": "İş yerindən istisna edin"
   },
   "models/persistence/WorkspaceSettingsTab.ts | mappingsAreInferredAutomatically": {
     "message": "Xəritəçəkmə avtomatik olaraq nəticələnir."
@@ -1703,8 +1688,65 @@
   "models/persistence/persistence-meta.ts | workspace": {
     "message": "İş yeri"
   },
-  "models/timeline_model/TimelineJSProfile.ts | threadS": {
-    "message": "Axın {PH1}"
+  "models/trace/insights/CLSCulprits.ts | description": {
+    "message": "Düzən dəyişməsi elementlər hər hansı istifadəçi qarşılıqlı əlaqəsi olmadan hərəkət etdikdə meydana gəlir. Səhifə yükləndikcə elementlərin əlavə edilməsi, silinməsi və ya şriftlərinin dəyişməsi kimi [düzənin dəyişməsinin səbəblərini araşdırın](https://web.dev/articles/optimize-cls)."
+  },
+  "models/trace/insights/CLSCulprits.ts | title": {
+    "message": "Düzən tənzimləməsi üzrə problemlərin səbəbləri"
+  },
+  "models/trace/insights/DocumentLatency.ts | description": {
+    "message": "İlk şəbəkə sorğunuz ən vacibdir.  Yönləndirmələrdən yayınaraq sürətli server cavabı və mətn sıxılması təmin etməklə gecikmə müddətini azaldın."
+  },
+  "models/trace/insights/DocumentLatency.ts | title": {
+    "message": "Sənəd sorğusunun gecikməsi"
+  },
+  "models/trace/insights/FontDisplay.ts | description": {
+    "message": "Mətnin davamlı görünməsini təmin etmək üçün [font-display](https://developer.chrome.com/blog/font-display) elementini swap və ya optional olaraq ayarlayın. [Şrift göstərici əvəzləmələri](https://developer.chrome.com/blog/font-fallbacks) ilə düzən tənzimləmələrini azaltmaq üçün swap daha da optimallaşdırıla bilər."
+  },
+  "models/trace/insights/FontDisplay.ts | title": {
+    "message": "Şrift displeyi"
+  },
+  "models/trace/insights/InteractionToNextPaint.ts | description": {
+    "message": "Ən uzun mərhələdən araşdırmağa başlayın. [Gecikmələr minimallaşdırıla bilər](https://web.dev/articles/optimize-inp#optimize_interactions). Emal müddətini azaltmaq üçün [əsas mövzu xərclərini](https://web.dev/articles/optimize-long-tasks) (əsasən JS) optimallaşdırın."
+  },
+  "models/trace/insights/InteractionToNextPaint.ts | title": {
+    "message": "Fazaya görə INP"
+  },
+  "models/trace/insights/LCPDiscovery.ts | description": {
+    "message": "LCP şəklini dərhal HTML-dən [kəşf edilə bilən](https://web.dev/articles/optimize-lcp#1_eliminate_resource_load_delay) edərək LCP-ni optimallaşdırın və [gec yüklənmədən çəkinin](https://web.dev/articles/lcp-lazy-loading)"
+  },
+  "models/trace/insights/LCPDiscovery.ts | title": {
+    "message": "LCP sorğunun kəşfi"
+  },
+  "models/trace/insights/LCPPhases.ts | description": {
+    "message": "Hər [fazanın öz spesifik təkmilləşmə strategiyaları var](https://web.dev/articles/optimize-lcp#lcp-breakdown). İdeal olaraq LCP vaxtının çox hissəsi gecikmələrə deyil, resursların yüklənməsinə sərf edilməlidir."
+  },
+  "models/trace/insights/LCPPhases.ts | title": {
+    "message": "Mərhələ üzrə LCP"
+  },
+  "models/trace/insights/RenderBlocking.ts | description": {
+    "message": "Sorğular səhifənin ilkin vizualizasiyasını bloklayır, bu da LCP-ni gecikdirə bilər. [Təxirə salınma və ya aktivləşdirmə](https://web.dev/learn/performance/understanding-the-critical-path#render-blocking_resources/) bu şəbəkə sorğularını kritik yoldan kənarlaşdıra bilər."
+  },
+  "models/trace/insights/RenderBlocking.ts | title": {
+    "message": "Bloklama sorğularını göstərin"
+  },
+  "models/trace/insights/SlowCSSSelector.ts | description": {
+    "message": "Yenidən hesablama stili xərcləri yüksək olaraq qalırsa, seçici optimallaşdırması onları azalda bilər. Həm yüksək keçən vaxt, həm də yüksək asta yol % ilə [seçicilərin optimallaşdırılması](https://developer.chrome.com/docs/devtools/performance/selector-stats). Daha sadə seçicilər, daha az seçici, daha kiçik DOM və daha dayaz DOM uyğunlaşma xərclərini azaldacaq."
+  },
+  "models/trace/insights/SlowCSSSelector.ts | title": {
+    "message": "CSS Seçici xərcləri"
+  },
+  "models/trace/insights/ThirdParties.ts | description": {
+    "message": "Üçüncü tərəf kodu yüklənmə performansına əhəmiyyətli dərəcədə təsir göstərə bilər. Səhifənin kontentini prioritet etmək üçün [üçüncü tərəf kodunun yüklənməsini azaldın və təxirə salın](https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/loading-third-party-javascript/)."
+  },
+  "models/trace/insights/ThirdParties.ts | title": {
+    "message": "Üçüncü tərəflər"
+  },
+  "models/trace/insights/Viewport.ts | description": {
+    "message": "Səhifənin baxış portu mobil üçün optimallaşdırılmayıb, buna görə də toxunuş interaksiyaları [300 ms-ə qədər ləngiyə bilər](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/)."
+  },
+  "models/trace/insights/Viewport.ts | title": {
+    "message": "Baxış portu mobil üçün optimallaşdırılmayıb"
   },
   "models/workspace/UISourceCode.ts | index": {
     "message": "(indeks)"
@@ -2771,8 +2813,8 @@
   "panels/application/OpenedWindowDetailsView.ts | accessToOpener": {
     "message": "Açıcıya giriş"
   },
-  "panels/application/OpenedWindowDetailsView.ts | clickToRevealInElementsPanel": {
-    "message": "Elementlər panelində üzə çıxarmaq üçün klikləyin"
+  "panels/application/OpenedWindowDetailsView.ts | clickToOpenInElementsPanel": {
+    "message": "Elementlər panelində açmaq üçün klikləyin"
   },
   "panels/application/OpenedWindowDetailsView.ts | closed": {
     "message": "bağlıdır"
@@ -3662,17 +3704,17 @@
   "panels/application/components/FrameDetailsView.ts | childDescription": {
     "message": "Bu çərçivə reklamın törəmə çərçivəsi kimi müəyyənləşdirilib"
   },
-  "panels/application/components/FrameDetailsView.ts | clickToRevealInElementsPanel": {
-    "message": "Elementlər panelində üzə çıxarmaq üçün klikləyin"
+  "panels/application/components/FrameDetailsView.ts | clickToOpenInElementsPanel": {
+    "message": "Elementlər panelində açmaq üçün klikləyin"
   },
-  "panels/application/components/FrameDetailsView.ts | clickToRevealInNetworkPanel": {
-    "message": "Şəbəkə panelində göstərmək üçün klikləyin"
+  "panels/application/components/FrameDetailsView.ts | clickToOpenInNetworkPanel": {
+    "message": "Şəbəkə panelində açmaq üçün klikləyin"
   },
-  "panels/application/components/FrameDetailsView.ts | clickToRevealInNetworkPanelMight": {
-    "message": "Şəbəkə panelində üzə çıxarmaq üçün klikləyin (səhifənin yenidən yüklənməsini tələb edə bilər)"
+  "panels/application/components/FrameDetailsView.ts | clickToOpenInNetworkPanelMight": {
+    "message": "Şəbəkə panelində açmaq üçün klikləyin (səhifənin yenidən yüklənməsini tələb edə bilər)"
   },
-  "panels/application/components/FrameDetailsView.ts | clickToRevealInSourcesPanel": {
-    "message": "Mənbələr panelində üzə çıxarmaq üçün klikləyin"
+  "panels/application/components/FrameDetailsView.ts | clickToOpenInSourcesPanel": {
+    "message": "Mənbələr panelində açmaq üçün klikləyin"
   },
   "panels/application/components/FrameDetailsView.ts | contentSecurityPolicy": {
     "message": "Məzmun Təhlükəsizliyi Siyasəti (MTS)"
@@ -4448,6 +4490,9 @@
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusUaChangeRequiresReload": {
     "message": "Ön yükləmə naviqasiyasında İstifadəçi Agenti Dəyişdirildi."
   },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusWindowClosed": {
+    "message": "Əvvəlcədən yüklənilmiş səhifə window.close() adlandırıldığı üçün boşaldıldı."
+  },
   "panels/application/preloading/components/PreloadingString.ts | statusFailure": {
     "message": "Alınmadı"
   },
@@ -4466,14 +4511,14 @@
   "panels/application/preloading/components/PreloadingString.ts | statusSuccess": {
     "message": "Alındı"
   },
-  "panels/application/preloading/components/RuleSetGrid.ts | buttonClickToRevealInElementsPanel": {
-    "message": "Elementlər panelində göstərmək üçün klikləyin"
-  },
-  "panels/application/preloading/components/RuleSetGrid.ts | buttonClickToRevealInNetworkPanel": {
-    "message": "Şəbəkə panelində göstərmək üçün klikləyin"
-  },
   "panels/application/preloading/components/RuleSetGrid.ts | buttonRevealPreloadsAssociatedWithRuleSet": {
     "message": "Bu qayda toplusu ilə əlaqələndirilmiş spekulyativ yükləmələri aşkar edin"
+  },
+  "panels/application/preloading/components/RuleSetGrid.ts | clickToOpenInElementsPanel": {
+    "message": "Elementlər panelində açmaq üçün klikləyin"
+  },
+  "panels/application/preloading/components/RuleSetGrid.ts | clickToOpenInNetworkPanel": {
+    "message": "Şəbəkə panelində açmaq üçün klikləyin"
   },
   "panels/application/preloading/components/RuleSetGrid.ts | errors": {
     "message": "{errorCount,plural, =1{# xəta}other{# xəta}}"
@@ -5663,6 +5708,9 @@
   "panels/elements/ElementStatePaneWidget.ts | forceElementState": {
     "message": "Element vəziyyətini məcburi tətbiq edin"
   },
+  "panels/elements/ElementStatePaneWidget.ts | learnMore": {
+    "message": "Ətraflı məlumat"
+  },
   "panels/elements/ElementStatePaneWidget.ts | toggleElementState": {
     "message": "Element Vəziyyətini Dəyişdirin"
   },
@@ -5690,8 +5738,8 @@
   "panels/elements/ElementsPanel.ts | nodeCannotBeFoundInTheCurrent": {
     "message": "Cari səhifədə qovşağı tapmaq mümkün deyil."
   },
-  "panels/elements/ElementsPanel.ts | revealInElementsPanel": {
-    "message": "Elementlər panelində göstərin"
+  "panels/elements/ElementsPanel.ts | openInElementsPanel": {
+    "message": "Elementlər panelində açın"
   },
   "panels/elements/ElementsPanel.ts | showComputedStylesSidebar": {
     "message": "Müəyyən edilmiş üslublardan ibarət kənar paneli göstərin"
@@ -5987,11 +6035,14 @@
   "panels/elements/StylePropertyTreeElement.ts | gridEditorButton": {
     "message": "grid redaktorunu açın"
   },
+  "panels/elements/StylePropertyTreeElement.ts | jumpToAnimationsPanel": {
+    "message": "Animasiyalar panelinə keçin"
+  },
   "panels/elements/StylePropertyTreeElement.ts | openColorPickerS": {
     "message": "Rəng seçicisini açın. {PH1}"
   },
-  "panels/elements/StylePropertyTreeElement.ts | revealInSourcesPanel": {
-    "message": "Mənbələr panelində göstərin"
+  "panels/elements/StylePropertyTreeElement.ts | openInSourcesPanel": {
+    "message": "Mənbələr panelində açın"
   },
   "panels/elements/StylePropertyTreeElement.ts | shiftClickToChangeColorFormat": {
     "message": "Rəng formatını dəyişmək üçün Shift düyməsinə basaraq klikləyin."
@@ -6395,11 +6446,11 @@
   "panels/event_listeners/EventListenersView.ts | noEventListeners": {
     "message": "Hadisə dinləyicisi yoxdur"
   },
+  "panels/event_listeners/EventListenersView.ts | openInElementsPanel": {
+    "message": "Elementlər panelində açın"
+  },
   "panels/event_listeners/EventListenersView.ts | passive": {
     "message": "Passiv"
-  },
-  "panels/event_listeners/EventListenersView.ts | revealInElementsPanel": {
-    "message": "Elementlər panelində göstərin"
   },
   "panels/event_listeners/EventListenersView.ts | togglePassive": {
     "message": "Passiv seçimi keçirin"
@@ -6467,6 +6518,9 @@
   "panels/explain/components/ConsoleInsight.ts | settingsLink": {
     "message": "Ayarlarda Console insights"
   },
+  "panels/explain/components/ConsoleInsight.ts | signIn": {
+    "message": "Daxil olun"
+  },
   "panels/explain/components/ConsoleInsight.ts | signInToUse": {
     "message": "Bu xüsusiyyəti istifadə etmək üçün daxil olun"
   },
@@ -6475,9 +6529,6 @@
   },
   "panels/explain/components/ConsoleInsight.ts | turnOnInSettings": {
     "message": "Konsol xəbərdarlıqlarını və xətalarını başa düşmək və həll etmək məqsədilə Sİ köməyi almaq üçün {PH1} seçimini aktivləşdirin."
-  },
-  "panels/explain/components/ConsoleInsight.ts | updateSettings": {
-    "message": "Ayarları yeniləyin"
   },
   "panels/explain/explain-meta.ts | enableConsoleInsights": {
     "message": "Konsol mesajlarını süni intellektin köməyi ilə anlamaq"
@@ -6498,16 +6549,31 @@
     "message": "Bu ayar admininiz tərəfindən idarə olunur"
   },
   "panels/explain/explain-meta.ts | wrongLocale": {
-    "message": "Bu xüsusiyyəti istifadə etmək üçün DevTools Ayarlarında Dil seçiminizi ingilis dili olaraq yeniləyin"
+    "message": "Bu funksiyadan istifadə etmək üçün DevTools ayarlarında dil seçimini ingilis dili olaraq ayarlayın"
   },
-  "panels/freestyler/FreestylerPanel.ts | chatCleared": {
-    "message": "Çat təmizləndi"
+  "panels/freestyler/FreestylerPanel.ts | chatDeleted": {
+    "message": "Söhbət silindi"
   },
-  "panels/freestyler/FreestylerPanel.ts | clearChat": {
-    "message": "Söhbəti təmizləyin"
+  "panels/freestyler/FreestylerPanel.ts | clearChatHistory": {
+    "message": "Söhbət tarixçəsini silin"
+  },
+  "panels/freestyler/FreestylerPanel.ts | deleteChat": {
+    "message": "Söhbəti silin"
   },
   "panels/freestyler/FreestylerPanel.ts | help": {
     "message": "Kömək"
+  },
+  "panels/freestyler/FreestylerPanel.ts | history": {
+    "message": "Tarixçə"
+  },
+  "panels/freestyler/FreestylerPanel.ts | newChat": {
+    "message": "Yeni söhbət"
+  },
+  "panels/freestyler/FreestylerPanel.ts | newChatCreated": {
+    "message": "Yeni söhbət yaradıldı"
+  },
+  "panels/freestyler/FreestylerPanel.ts | noPastConversations": {
+    "message": "Keçmiş söhbətlər yoxdur"
   },
   "panels/freestyler/FreestylerPanel.ts | sendFeedback": {
     "message": "Rəy göndərin"
@@ -6539,6 +6605,12 @@
   "panels/freestyler/components/FreestylerChatUi.ts | turnOnForStylesAndRequests": {
     "message": "Üslublar və şəbəkə sorğuları ilə bağlı yardım almaq üçün aktiv edin: {PH1}"
   },
+  "panels/freestyler/components/FreestylerChatUi.ts | turnOnForStylesRequestsAndFiles": {
+    "message": "Üslublar, şəbəkə sorğuları və fayllarla bağlı yardım almaq üçün {PH1} funksiyasını aktivləşdirin"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | turnOnForStylesRequestsPerformanceAndFiles": {
+    "message": "Üslublar, şəbəkə sorğuları, performans və fayllarla bağlı yardım almaq üçün {PH1} funksiyasını aktivləşdirin"
+  },
   "panels/freestyler/freestyler-meta.ts | aiAssistance": {
     "message": "Sİ assistenti"
   },
@@ -6558,7 +6630,7 @@
     "message": "Sİ assistentini göstərin"
   },
   "panels/freestyler/freestyler-meta.ts | wrongLocale": {
-    "message": "Bu funksiyadan istifadə etmək üçün DevTools ayarlarında Dil seçimini İngilis dili olaraq ayarlayın"
+    "message": "Bu funksiyadan istifadə etmək üçün DevTools ayarlarında dil seçimini ingilis dili olaraq ayarlayın"
   },
   "panels/issues/AffectedBlockedByResponseView.ts | blockedResource": {
     "message": "Bloklanan Resurs"
@@ -7400,8 +7472,8 @@
   "panels/linear_memory_inspector/LinearMemoryInspectorController.ts | couldNotOpenLinearMemory": {
     "message": "Xətti yaddaş inspektorunu açmaq mümkün olmadı: buferin yerini tapmaq alınmadı."
   },
-  "panels/linear_memory_inspector/LinearMemoryInspectorController.ts | revealInMemoryInspectorPanel": {
-    "message": "Yaddaş inspektoru panelində göstərin"
+  "panels/linear_memory_inspector/LinearMemoryInspectorController.ts | openInMemoryInspectorPanel": {
+    "message": "Yaddaş inspektoru panelində açın"
   },
   "panels/linear_memory_inspector/LinearMemoryInspectorPane.ts | noOpenInspections": {
     "message": "Açıq yoxlama yoxdur"
@@ -7752,7 +7824,7 @@
     "message": "Asta 3G və 6x CPU yavaşlaması"
   },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | addCustomProfile": {
-    "message": "Fərdi profil əlavə edin..."
+    "message": "Profil əlavə edin"
   },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | dms": {
     "message": "{PH1} ms"
@@ -7773,7 +7845,7 @@
     "message": "Gecikmə {PH1} ms - {PH2} ms (daxil olmaqla) arasında tam ədəd olmalıdır"
   },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | networkThrottlingProfiles": {
-    "message": "Şəbəkə Məhdudiyyəti Profilləri"
+    "message": "Şəbəkə məhdudiyyəti profilləri"
   },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | off": {
     "message": "Deaktiv"
@@ -8543,14 +8615,17 @@
   "panels/network/NetworkPanel.ts | networkSettings": {
     "message": "Şəbəkə ayarları"
   },
+  "panels/network/NetworkPanel.ts | openInNetworkPanel": {
+    "message": "Şəbəkə panelində açın"
+  },
+  "panels/network/NetworkPanel.ts | openInNetworkPanelMissingRequest": {
+    "message": "Şəbəkə panelində açın (sorğu yoxdur)"
+  },
   "panels/network/NetworkPanel.ts | preserveLog": {
     "message": "Jurnalı saxlayın"
   },
   "panels/network/NetworkPanel.ts | recordingFrames": {
     "message": "Çərçivələr qeydə alınır..."
-  },
-  "panels/network/NetworkPanel.ts | revealInNetworkPanel": {
-    "message": "Şəbəkə panelində üzə çıxarın"
   },
   "panels/network/NetworkPanel.ts | search": {
     "message": "Axtarın"
@@ -8770,6 +8845,18 @@
   },
   "panels/network/RequestTimingView.ts | retrievalTimeS": {
     "message": "Əldə Etmə Vaxtı: {PH1}"
+  },
+  "panels/network/RequestTimingView.ts | routerActualSource": {
+    "message": "Həqiqi mənbə: {PH1}"
+  },
+  "panels/network/RequestTimingView.ts | routerCacheLookup": {
+    "message": "Keş axtarışı"
+  },
+  "panels/network/RequestTimingView.ts | routerEvaluation": {
+    "message": "Ruterin qiymətləndirilməsi"
+  },
+  "panels/network/RequestTimingView.ts | routerMatchedSource": {
+    "message": "Uyğunlaşan mənbə: {PH1}"
   },
   "panels/network/RequestTimingView.ts | serverPush": {
     "message": "Server Yönləndirməsi"
@@ -10433,6 +10520,24 @@
   "panels/search/SearchView.ts | searching": {
     "message": "Axtarır…"
   },
+  "panels/security/CookieReportView.ts | allowed": {
+    "message": "İcazə verilib"
+  },
+  "panels/security/CookieReportView.ts | allowedByException": {
+    "message": "İstisna ilə icazə verilir"
+  },
+  "panels/security/CookieReportView.ts | blocked": {
+    "message": "Bloklanıb"
+  },
+  "panels/security/CookieReportView.ts | body": {
+    "message": "Ayarlarından asılı olaraq istifadəçilər tərəfindən məhdudlaşdırıla bilən üçüncü tərəf kukiləri. İstifadəçi kukiləri məhdudlaşdırmağı seçərsə, bu sayt onlar üçün işləməyə bilər."
+  },
+  "panels/security/CookieReportView.ts | learnMoreLink": {
+    "message": "Üçüncü tərəf kukilərindən necə istifadə edildiyi haqqında ətraflı məlumat əldə edin"
+  },
+  "panels/security/CookieReportView.ts | title": {
+    "message": "Üçüncü tərəf kukiləri"
+  },
   "panels/security/SecurityModel.ts | cipherWithMAC": {
     "message": "{PH2} ilə {PH1}"
   },
@@ -10733,6 +10838,9 @@
   "panels/security/SecurityPanel.ts | yourPageRequestedNonsecure": {
     "message": "Səhifəniz təhlükəsiz olmayan və bloklanmış resurlar üçün sorğu göndərdi."
   },
+  "panels/security/SecurityPanelSidebar.ts | cookieReport": {
+    "message": "Üçüncü tərəf kukiləri"
+  },
   "panels/security/SecurityPanelSidebar.ts | mainOrigin": {
     "message": "Əsas mənbə"
   },
@@ -10747,6 +10855,9 @@
   },
   "panels/security/SecurityPanelSidebar.ts | overview": {
     "message": "İcmal"
+  },
+  "panels/security/SecurityPanelSidebar.ts | privacy": {
+    "message": "Məxfilik"
   },
   "panels/security/SecurityPanelSidebar.ts | reloadToViewDetails": {
     "message": "Detallara baxmaq üçün yenidən yükləyin"
@@ -10773,10 +10884,7 @@
     "message": "Təhlükəsizlik və Məxfiliyi göstərin"
   },
   "panels/sensors/LocationsSettingsTab.ts | addLocation": {
-    "message": "Məkan əlavə edin..."
-  },
-  "panels/sensors/LocationsSettingsTab.ts | customLocations": {
-    "message": "Fərdi məkanlar"
+    "message": "Məkan əlavə edin"
   },
   "panels/sensors/LocationsSettingsTab.ts | lat": {
     "message": "En"
@@ -10807,6 +10915,9 @@
   },
   "panels/sensors/LocationsSettingsTab.ts | locationNameMustBeLessThanS": {
     "message": "Məkan adı {PH1} simvoldan az olmalıdır"
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locations": {
+    "message": "Məkanlar"
   },
   "panels/sensors/LocationsSettingsTab.ts | long": {
     "message": "Uzun"
@@ -10858,6 +10969,9 @@
   },
   "panels/sensors/SensorsView.ts | forcesSelectedIdleStateEmulation": {
     "message": "Seçilmiş fəaliyyətsiz vəziyyət emulyasiyasına məcbur edir"
+  },
+  "panels/sensors/SensorsView.ts | forcesSelectedPressureStateEmulation": {
+    "message": "Seçilmiş təzyiq statusu emulyasiyasına məcbur edir"
   },
   "panels/sensors/SensorsView.ts | forcesTouchInsteadOfClick": {
     "message": "Klik əvəzinə toxunuş əməliyyatına yönəldir"
@@ -10931,6 +11045,12 @@
   "panels/sensors/sensors-meta.ts | accelerometer": {
     "message": "akselerometr"
   },
+  "panels/sensors/sensors-meta.ts | cpuPressure": {
+    "message": "CPU təzyiqi"
+  },
+  "panels/sensors/sensors-meta.ts | critical": {
+    "message": "Kritik"
+  },
   "panels/sensors/sensors-meta.ts | deviceOrientation": {
     "message": "cihazın orientasiyası"
   },
@@ -10939,6 +11059,9 @@
   },
   "panels/sensors/sensors-meta.ts | emulateIdleDetectorState": {
     "message": "Fəaliyyətsiz Detektor vəziyyətini emulyasiya edin"
+  },
+  "panels/sensors/sensors-meta.ts | fair": {
+    "message": "Kafi"
   },
   "panels/sensors/sensors-meta.ts | forceEnabled": {
     "message": "Məcburi aktivləşdirildi"
@@ -10958,8 +11081,17 @@
   "panels/sensors/sensors-meta.ts | noIdleEmulation": {
     "message": "Fəaliyyətsiz emulyasiya yoxdur"
   },
+  "panels/sensors/sensors-meta.ts | noPressureEmulation": {
+    "message": "Əvəzləməyin"
+  },
+  "panels/sensors/sensors-meta.ts | nominal": {
+    "message": "Nominal"
+  },
   "panels/sensors/sensors-meta.ts | sensors": {
     "message": "Sensorlar"
+  },
+  "panels/sensors/sensors-meta.ts | serious": {
+    "message": "Ciddi"
   },
   "panels/sensors/sensors-meta.ts | showLocations": {
     "message": "Məkanları göstərin"
@@ -10991,9 +11123,6 @@
   "panels/settings/AISettingsTab.ts | ageRestricted": {
     "message": "Bu funksiya yalnız 18 yaşı tamam olmuş istifadəçilər üçün əlçatandır"
   },
-  "panels/settings/AISettingsTab.ts | aiInnovations": {
-    "message": "Sİ innovasiyaları"
-  },
   "panels/settings/AISettingsTab.ts | boostYourProductivity": {
     "message": "Sİ ilə məhsuldarlığınızı artırın"
   },
@@ -11021,6 +11150,9 @@
   "panels/settings/AISettingsTab.ts | explainStylingNetworkAndFile": {
     "message": "Sİ dəstəkli ideyalarla CSS üslublarını, şəbəkə fəaliyyətini və fayl mənşələrini anlayın"
   },
+  "panels/settings/AISettingsTab.ts | explainStylingNetworkPerformanceAndFile": {
+    "message": "Sİ dəstəkli ideyalarla CSS üslublarını, şəbəkə fəaliyyətini, performans çətinliklərini və fayl mənşələrini anlayın"
+  },
   "panels/settings/AISettingsTab.ts | freestylerSendsData": {
     "message": "Doğrulanan səhifənin Veb API vasitəsilə əldə edə biləcəyi istənilən data şəbəkə sorğuları, fayllar və performans izləri izahat yaratmaq üçün Google-a göndərilir. Bu funksiyanı təkmilləşdirmək üçün bu dataya insan redaktorlar baxa bilərlər. Şəxsi və ya həssas məlumat olan səhifələrdə istifadə etməyin."
   },
@@ -11035,6 +11167,9 @@
   },
   "panels/settings/AISettingsTab.ts | helpUnderstandStylingNetworkAndFile": {
     "message": "CSS üslublarını, şəbəkə sorğularını və faylları anlamaqda kömək alın"
+  },
+  "panels/settings/AISettingsTab.ts | helpUnderstandStylingNetworkPerformanceAndFile": {
+    "message": "CSS üslublarını, şəbəkə sorğularını, performansını və faylları anlamaqda kömək alın"
   },
   "panels/settings/AISettingsTab.ts | learnMore": {
     "message": "Ətraflı məlumat"
@@ -11088,10 +11223,7 @@
     "message": "Mənbə xəritələrindən məlum üçüncü tərəf skriptləri"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | customExclusionRules": {
-    "message": "Fərdi istisna qaydaları:"
-  },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | debuggerWillSkipThroughThe": {
-    "message": "Sazlayıcı bu skriptlərdən keçməyəcək və ya yalnız ona təsir edən istisnaları pozmayacaq və Performans paneli uyğun gələn detallı diaqram elementlərini yığcamlaşdıracaq."
+    "message": "Fərdi istisna qaydaları"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | enableIgnoreListing": {
     "message": "Nəzərə almama siyahısını aktiv edin"
@@ -11100,16 +11232,19 @@
     "message": "Bütün nəzərə alınmayanlar siyahısını deaktiv etmək üçün seçimi ləğv edin"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | frameworkIgnoreList": {
-    "message": "Çərçivə üzrə nəzərə almama siyahısı"
+    "message": "Nəzərə almama siyahısı"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | generalExclusionRules": {
-    "message": "Ümumi istisna qaydaları:"
+    "message": "Ümumi istisna qaydaları"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreListAnonymousScripts": {
     "message": "Eval və ya konsoldan anonim skriptlər"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreListContentScripts": {
     "message": "Artırmalar tərəfindən daxil edilən kontent skriptləri"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreListingDescription": {
+    "message": "Aktivləşdirildikdə sazlayıcı nəzərə almama siyahılarını ötürəcək və yalnız onlara təsir edən istisnaları nəzərə almayacaq və Performans paneli uyğunlaşan detallı diaqramı elementlərini yığcamlaşdıracaq."
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreScriptsWhoseNamesMatchS": {
     "message": "Adları \"{PH1}\" ilə uyğunlaşan skriptləri nəzərə almayın"
@@ -11154,7 +11289,7 @@
     "message": "Klaviatura qısayolları siyahısı"
   },
   "panels/settings/KeybindsSettingsTab.ts | matchShortcutsFromPreset": {
-    "message": "Əvvəlcədən ayarlanmış elementdən qısayolları uyğunlaşdırın"
+    "message": "Qısayol üzrə hazır ayar"
   },
   "panels/settings/KeybindsSettingsTab.ts | noShortcutForAction": {
     "message": "Əməliyyat üçün qısayol yoxdur"
@@ -11187,7 +11322,7 @@
     "message": "Bu qısayol {PH1} tərəfindən istifadə edilir: {PH2}."
   },
   "panels/settings/SettingsScreen.ts | experiments": {
-    "message": "Eksperimentlər"
+    "message": "Təcrübələr"
   },
   "panels/settings/SettingsScreen.ts | filterExperimentsLabel": {
     "message": "Filtr"
@@ -11196,13 +11331,10 @@
     "message": "Ətraflı məlumat"
   },
   "panels/settings/SettingsScreen.ts | noResults": {
-    "message": "Heç bir təcrübə filtrə uyğun gəlmir"
+    "message": "Xəbərdarlıq: Filtrlə uyğunlaşan heç bir təcrübə yoxdur"
   },
   "panels/settings/SettingsScreen.ts | oneOrMoreSettingsHaveChanged": {
     "message": "Yenidən yükləmənin qüvvəyə minməsini tələb edən bir və ya daha çox ayar dəyişdirilib."
-  },
-  "panels/settings/SettingsScreen.ts | preferences": {
-    "message": "Tərcihlər"
   },
   "panels/settings/SettingsScreen.ts | restoreDefaultsAndReload": {
     "message": "Defoltları bərpa edin və yenidən yükləyin"
@@ -11217,13 +11349,13 @@
     "message": "Qısayollar"
   },
   "panels/settings/SettingsScreen.ts | theseExperimentsAreParticularly": {
-    "message": "Bu təcrübələr xüsusilə qeyri-sabitdir. Riski öz üzərinizə götürməklə aktivləşdirin."
+    "message": "Xəbərdarlıq: Bu təcrübələr xüsusilə qeyri-sabitdir. Riski öz üzərinizə götürməklə aktivləşdirin."
   },
   "panels/settings/SettingsScreen.ts | theseExperimentsCouldBeUnstable": {
-    "message": "Bu təcrübələr qeyri-sabit və ya etibarsız ola bilər və DevTools'u yenidən başlatmağınızı tələb edə bilər."
+    "message": "Xəbərdarlıq: Bu təcrübələr qeyri-sabit və ya etibarsız ola bilər."
   },
-  "panels/settings/SettingsScreen.ts | warning": {
-    "message": "XƏBƏRDARLIQ:"
+  "panels/settings/SettingsScreen.ts | unstableExperiments": {
+    "message": "Qeyri-sabit təcrübələr"
   },
   "panels/settings/components/SyncSection.ts | preferencesSyncDisabled": {
     "message": "Bu ayarı aktiv etmək üçün əvvəlcə Chrome'da ayarların sinxronizasiyasını aktiv etməlisiniz."
@@ -11239,6 +11371,12 @@
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
     "message": "Fərdi cihaz əlavə edin..."
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | customDevices": {
+    "message": "Fərdi cihazlar"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | defaultDevices": {
+    "message": "Defolt tətbiqlər"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | device": {
     "message": "Cihaz"
@@ -11257,9 +11395,6 @@
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | devicePixelRatio": {
     "message": "Cihaz piksel nisbəti"
-  },
-  "panels/settings/emulation/DevicesSettingsTab.ts | emulatedDevices": {
-    "message": "Emulyasiya edilmiş cihazlar"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | height": {
     "message": "Hündürlük"
@@ -12656,23 +12791,11 @@
   "panels/timeline/TimelineHistoryManager.ts | landingPageTitle": {
     "message": "Canlı göstərici"
   },
-  "panels/timeline/TimelineHistoryManager.ts | moments": {
-    "message": "anlar"
-  },
   "panels/timeline/TimelineHistoryManager.ts | noRecordings": {
     "message": "(qeyd yoxdur)"
   },
-  "panels/timeline/TimelineHistoryManager.ts | sAgo": {
-    "message": "({PH1} əvvəl)"
-  },
   "panels/timeline/TimelineHistoryManager.ts | sD": {
     "message": "{PH1} #{PH2}"
-  },
-  "panels/timeline/TimelineHistoryManager.ts | sH": {
-    "message": "{PH1} s"
-  },
-  "panels/timeline/TimelineHistoryManager.ts | sM": {
-    "message": "{PH1} m"
   },
   "panels/timeline/TimelineHistoryManager.ts | selectTimelineSession": {
     "message": "Taymlayn sessiyası seçin"
@@ -12709,6 +12832,9 @@
   },
   "panels/timeline/TimelinePanel.ts | SignificantOverheadDueToPaint": {
     "message": "- Rəng aləti ilə əlaqədar əhəmiyyətli üst dəyər"
+  },
+  "panels/timeline/TimelinePanel.ts | backToLiveMetrics": {
+    "message": "Canlı göstəricilər səhifəsinə qayıdın"
   },
   "panels/timeline/TimelinePanel.ts | bufferUsage": {
     "message": "Bufer istifadəsi"
@@ -12774,7 +12900,7 @@
     "message": "Seçilən çərçivə"
   },
   "panels/timeline/TimelinePanel.ts | hideSidebar": {
-    "message": "Tək kənar paneli gizlədin"
+    "message": "Yan paneli gizlədin"
   },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "Profayler başladılır…"
@@ -13100,6 +13226,9 @@
   "panels/timeline/TimelineUIUtils.ts | currentClusterScore": {
     "message": "Cari klaster xalı"
   },
+  "panels/timeline/TimelineUIUtils.ts | delay": {
+    "message": "Gecikmə"
+  },
   "panels/timeline/TimelineUIUtils.ts | description": {
     "message": "Təsvir"
   },
@@ -13228,6 +13357,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | preview": {
     "message": "Önbaxış keçirin"
+  },
+  "panels/timeline/TimelineUIUtils.ts | priority": {
+    "message": "Prioritet"
   },
   "panels/timeline/TimelineUIUtils.ts | processingDuration": {
     "message": "Emal müddəti"
@@ -13445,366 +13577,6 @@
   "panels/timeline/components/DetailsView.ts | websocketProtocol": {
     "message": "WebSocket protokolu"
   },
-  "panels/timeline/components/EntryName.ts | anonymous": {
-    "message": "(anonim)"
-  },
-  "panels/timeline/components/EntryName.ts | eventDispatchS": {
-    "message": "Tədbir: {PH1}"
-  },
-  "panels/timeline/components/EntryName.ts | frame": {
-    "message": "Çərçivə"
-  },
-  "panels/timeline/components/EntryName.ts | wsConnectionClosed": {
-    "message": "WebSocket bağlandı"
-  },
-  "panels/timeline/components/EntryName.ts | wsConnectionOpened": {
-    "message": "WebSocket açıldı"
-  },
-  "panels/timeline/components/EntryName.ts | wsConnectionOpenedWithUrl": {
-    "message": "WebSocket açıldı: {PH1}"
-  },
-  "panels/timeline/components/EntryStyles.ts | animation": {
-    "message": "Animasiya"
-  },
-  "panels/timeline/components/EntryStyles.ts | animationFrameFired": {
-    "message": "Animasiya çərçivəsi əldə edildi"
-  },
-  "panels/timeline/components/EntryStyles.ts | async": {
-    "message": "Asinxron"
-  },
-  "panels/timeline/components/EntryStyles.ts | asyncTask": {
-    "message": "Asinxron tapşırıq"
-  },
-  "panels/timeline/components/EntryStyles.ts | cacheModule": {
-    "message": "Keş modul kodu"
-  },
-  "panels/timeline/components/EntryStyles.ts | cacheScript": {
-    "message": "Keş skript kodu"
-  },
-  "panels/timeline/components/EntryStyles.ts | cachedWasmModule": {
-    "message": "Keşlənmiş Wasm modulu"
-  },
-  "panels/timeline/components/EntryStyles.ts | cancelAnimationFrame": {
-    "message": "Animasiya çərçivəsini ləğv edin"
-  },
-  "panels/timeline/components/EntryStyles.ts | cancelIdleCallback": {
-    "message": "Fəaliyyətsiz geri çağırışı ləğv edin"
-  },
-  "panels/timeline/components/EntryStyles.ts | commit": {
-    "message": "İcra edin"
-  },
-  "panels/timeline/components/EntryStyles.ts | compileCode": {
-    "message": "Kodu tərtib edin"
-  },
-  "panels/timeline/components/EntryStyles.ts | compileModule": {
-    "message": "Modul tərtib edin"
-  },
-  "panels/timeline/components/EntryStyles.ts | compileScript": {
-    "message": "Skript tərtib edin"
-  },
-  "panels/timeline/components/EntryStyles.ts | compiledWasmModule": {
-    "message": "Tərtib edilmiş Wasm modulu"
-  },
-  "panels/timeline/components/EntryStyles.ts | compositeLayers": {
-    "message": "Birləşik təbəqələr"
-  },
-  "panels/timeline/components/EntryStyles.ts | computeIntersections": {
-    "message": "Kəsişmələri hesablayın"
-  },
-  "panels/timeline/components/EntryStyles.ts | consoleTime": {
-    "message": "Konsol vaxtı"
-  },
-  "panels/timeline/components/EntryStyles.ts | cppGc": {
-    "message": "CPP GC"
-  },
-  "panels/timeline/components/EntryStyles.ts | createWebsocket": {
-    "message": "WebSocket yaradın"
-  },
-  "panels/timeline/components/EntryStyles.ts | decrypt": {
-    "message": "Şifrini açın"
-  },
-  "panels/timeline/components/EntryStyles.ts | decryptReply": {
-    "message": "Cavabın şifrini açın"
-  },
-  "panels/timeline/components/EntryStyles.ts | deserializeCodeCache": {
-    "message": "Kod keşini seriyadan çıxarın"
-  },
-  "panels/timeline/components/EntryStyles.ts | destroyWebsocket": {
-    "message": "WebSocket'i ləğv edin"
-  },
-  "panels/timeline/components/EntryStyles.ts | digest": {
-    "message": "Xülasə"
-  },
-  "panels/timeline/components/EntryStyles.ts | digestReply": {
-    "message": "Xülasə cavab"
-  },
-  "panels/timeline/components/EntryStyles.ts | domGc": {
-    "message": "DOM GC"
-  },
-  "panels/timeline/components/EntryStyles.ts | domcontentloadedEvent": {
-    "message": "DOMContentLoaded hadisəsi"
-  },
-  "panels/timeline/components/EntryStyles.ts | drawFrame": {
-    "message": "Çərçivə çəkin"
-  },
-  "panels/timeline/components/EntryStyles.ts | drawing": {
-    "message": "Çertyoj"
-  },
-  "panels/timeline/components/EntryStyles.ts | embedderCallback": {
-    "message": "Yerləşdiricinin geri çağırılması"
-  },
-  "panels/timeline/components/EntryStyles.ts | encrypt": {
-    "message": "Şifrələyin"
-  },
-  "panels/timeline/components/EntryStyles.ts | encryptReply": {
-    "message": "Cavabı şifrləyin"
-  },
-  "panels/timeline/components/EntryStyles.ts | evaluateModule": {
-    "message": "Modulu qiymətləndirin"
-  },
-  "panels/timeline/components/EntryStyles.ts | evaluateScript": {
-    "message": "Skripti dəyərləndirin"
-  },
-  "panels/timeline/components/EntryStyles.ts | event": {
-    "message": "Hadisə"
-  },
-  "panels/timeline/components/EntryStyles.ts | eventTiming": {
-    "message": "Tədbir zamanlaması"
-  },
-  "panels/timeline/components/EntryStyles.ts | experience": {
-    "message": "Təcrübə"
-  },
-  "panels/timeline/components/EntryStyles.ts | finishLoading": {
-    "message": "Yükləməni tamamlayın"
-  },
-  "panels/timeline/components/EntryStyles.ts | fireIdleCallback": {
-    "message": "Fəaliyyətsiz geri çağırış başladın"
-  },
-  "panels/timeline/components/EntryStyles.ts | firstContentfulPaint": {
-    "message": "İlk Məzmunlu Rəng"
-  },
-  "panels/timeline/components/EntryStyles.ts | firstPaint": {
-    "message": "Birinci Rəng"
-  },
-  "panels/timeline/components/EntryStyles.ts | frameStart": {
-    "message": "Çərçivənin başladılması"
-  },
-  "panels/timeline/components/EntryStyles.ts | frameStartMainThread": {
-    "message": "Çərçivənin başlanğıcı (əsas axın)"
-  },
-  "panels/timeline/components/EntryStyles.ts | frameStartedLoading": {
-    "message": "Çərçivə yüklənməyə başladı"
-  },
-  "panels/timeline/components/EntryStyles.ts | functionCall": {
-    "message": "Funksiya çağırışı"
-  },
-  "panels/timeline/components/EntryStyles.ts | gcEvent": {
-    "message": "GC tədbiri"
-  },
-  "panels/timeline/components/EntryStyles.ts | gpu": {
-    "message": "GPU"
-  },
-  "panels/timeline/components/EntryStyles.ts | hitTest": {
-    "message": "Kursor testi"
-  },
-  "panels/timeline/components/EntryStyles.ts | idle": {
-    "message": "Fəaliyyətsiz"
-  },
-  "panels/timeline/components/EntryStyles.ts | imageDecode": {
-    "message": "Şəklin deşifrə edilməsi"
-  },
-  "panels/timeline/components/EntryStyles.ts | installTimer": {
-    "message": "Taymer quraşdırın"
-  },
-  "panels/timeline/components/EntryStyles.ts | invalidateLayout": {
-    "message": "Düzəni etibarsızlaşdırın"
-  },
-  "panels/timeline/components/EntryStyles.ts | jsFrame": {
-    "message": "JS çərçivəsi"
-  },
-  "panels/timeline/components/EntryStyles.ts | largestContentfulPaint": {
-    "message": "Ən Böyük Məzmunlu Rəng"
-  },
-  "panels/timeline/components/EntryStyles.ts | layerize": {
-    "message": "Qatlaşdırın"
-  },
-  "panels/timeline/components/EntryStyles.ts | layout": {
-    "message": "Düzən"
-  },
-  "panels/timeline/components/EntryStyles.ts | layoutShift": {
-    "message": "Düzənin dəyişilməsi"
-  },
-  "panels/timeline/components/EntryStyles.ts | layoutShiftCluster": {
-    "message": "Düzənin dəyişməsi klasteri"
-  },
-  "panels/timeline/components/EntryStyles.ts | loading": {
-    "message": "Yüklənir"
-  },
-  "panels/timeline/components/EntryStyles.ts | majorGc": {
-    "message": "Əsas GC"
-  },
-  "panels/timeline/components/EntryStyles.ts | messaging": {
-    "message": "Mesajlaşma"
-  },
-  "panels/timeline/components/EntryStyles.ts | minorGc": {
-    "message": "Kiçik GC"
-  },
-  "panels/timeline/components/EntryStyles.ts | onMessage": {
-    "message": "Aktiv mesajı"
-  },
-  "panels/timeline/components/EntryStyles.ts | onloadEvent": {
-    "message": "Yüklənən hadisə"
-  },
-  "panels/timeline/components/EntryStyles.ts | optimizeCode": {
-    "message": "Kodu optimallaşdırın"
-  },
-  "panels/timeline/components/EntryStyles.ts | other": {
-    "message": "Digər"
-  },
-  "panels/timeline/components/EntryStyles.ts | paint": {
-    "message": "Rəngləyin"
-  },
-  "panels/timeline/components/EntryStyles.ts | paintImage": {
-    "message": "Şəkli rəngləyin"
-  },
-  "panels/timeline/components/EntryStyles.ts | paintSetup": {
-    "message": "Rəngin ayarlanması"
-  },
-  "panels/timeline/components/EntryStyles.ts | painting": {
-    "message": "Rəngləmə"
-  },
-  "panels/timeline/components/EntryStyles.ts | parseAndCompile": {
-    "message": "Təhlil edin və tərtib edin"
-  },
-  "panels/timeline/components/EntryStyles.ts | parseHtml": {
-    "message": "HTML'i parselləyin"
-  },
-  "panels/timeline/components/EntryStyles.ts | parseStylesheet": {
-    "message": "Üslub vərəqini təhlil edin"
-  },
-  "panels/timeline/components/EntryStyles.ts | prePaint": {
-    "message": "Ön boyama"
-  },
-  "panels/timeline/components/EntryStyles.ts | profilingOverhead": {
-    "message": "Profilləşdirmə üzrə üst dəyər"
-  },
-  "panels/timeline/components/EntryStyles.ts | rasterizePaint": {
-    "message": "Rəngi rasterizasiya edin"
-  },
-  "panels/timeline/components/EntryStyles.ts | rasterizing": {
-    "message": "Rasterizasiya edilir"
-  },
-  "panels/timeline/components/EntryStyles.ts | recalculateStyle": {
-    "message": "Üslubu yenidən müəyyənləşdirin"
-  },
-  "panels/timeline/components/EntryStyles.ts | receiveData": {
-    "message": "Datanın qəbul edilməsi"
-  },
-  "panels/timeline/components/EntryStyles.ts | receiveResponse": {
-    "message": "Cavab qəbul edin"
-  },
-  "panels/timeline/components/EntryStyles.ts | receiveWebsocketHandshake": {
-    "message": "WebSocket uyğunlaşdırmasını qəbul edin"
-  },
-  "panels/timeline/components/EntryStyles.ts | removeTimer": {
-    "message": "Taymeri silin"
-  },
-  "panels/timeline/components/EntryStyles.ts | rendering": {
-    "message": "Göstərilir"
-  },
-  "panels/timeline/components/EntryStyles.ts | requestAnimationFrame": {
-    "message": "Animasiya çərçivəsi üzrə sorğu göndərin"
-  },
-  "panels/timeline/components/EntryStyles.ts | requestIdleCallback": {
-    "message": "Fəaliyyətsiz geri çağırış sorğusu"
-  },
-  "panels/timeline/components/EntryStyles.ts | requestMainThreadFrame": {
-    "message": "Əsas axın çərçivəsi üzrə sorğu göndərin"
-  },
-  "panels/timeline/components/EntryStyles.ts | runMicrotasks": {
-    "message": "Mikrotapşırıqlar icra edin"
-  },
-  "panels/timeline/components/EntryStyles.ts | schedulePostMessage": {
-    "message": "postMessage vaxtını planlaşdırın"
-  },
-  "panels/timeline/components/EntryStyles.ts | scheduleStyleRecalculation": {
-    "message": "Üslubun yenidən müəyyənləşdirilməsini planlaşdırın"
-  },
-  "panels/timeline/components/EntryStyles.ts | scripting": {
-    "message": "Skript yazılır"
-  },
-  "panels/timeline/components/EntryStyles.ts | scroll": {
-    "message": "Sürüşdürün"
-  },
-  "panels/timeline/components/EntryStyles.ts | sendRequest": {
-    "message": "Sorğu göndərin"
-  },
-  "panels/timeline/components/EntryStyles.ts | sendWebsocketHandshake": {
-    "message": "WebSocket uyğunlaşdırması göndərin"
-  },
-  "panels/timeline/components/EntryStyles.ts | sign": {
-    "message": "İmza"
-  },
-  "panels/timeline/components/EntryStyles.ts | signReply": {
-    "message": "Cavabı imzalayın"
-  },
-  "panels/timeline/components/EntryStyles.ts | streamingCompileTask": {
-    "message": "Tərtib tapşırığı yayımlanır"
-  },
-  "panels/timeline/components/EntryStyles.ts | streamingWasmResponse": {
-    "message": "Wasm cavabı yayımlanır"
-  },
-  "panels/timeline/components/EntryStyles.ts | system": {
-    "message": "Sistem"
-  },
-  "panels/timeline/components/EntryStyles.ts | task": {
-    "message": "Tapşırıq"
-  },
-  "panels/timeline/components/EntryStyles.ts | timerFired": {
-    "message": "Taymer təqdim edildi"
-  },
-  "panels/timeline/components/EntryStyles.ts | timestamp": {
-    "message": "Vaxt qeydi"
-  },
-  "panels/timeline/components/EntryStyles.ts | updateLayer": {
-    "message": "Təbəqəni yeniləyin"
-  },
-  "panels/timeline/components/EntryStyles.ts | updateLayerTree": {
-    "message": "Təbəqə qrafikini yeniləyin"
-  },
-  "panels/timeline/components/EntryStyles.ts | userTiming": {
-    "message": "İstifadəçi zamanlaması"
-  },
-  "panels/timeline/components/EntryStyles.ts | verify": {
-    "message": "Doğrulayın"
-  },
-  "panels/timeline/components/EntryStyles.ts | verifyReply": {
-    "message": "Cavabı yoxlayın"
-  },
-  "panels/timeline/components/EntryStyles.ts | waitingForNetwork": {
-    "message": "Şəbəkə gözlənilir"
-  },
-  "panels/timeline/components/EntryStyles.ts | wasmModuleCacheHit": {
-    "message": "Wasm modulu üzrə keş girişi"
-  },
-  "panels/timeline/components/EntryStyles.ts | wasmModuleCacheInvalid": {
-    "message": "Wasm modulu keşi yanlışdır"
-  },
-  "panels/timeline/components/EntryStyles.ts | willSendRequest": {
-    "message": "Sorğu göndərəcək"
-  },
-  "panels/timeline/components/EntryStyles.ts | wsMessageReceived": {
-    "message": "WebSocket mesajını qəbul edin"
-  },
-  "panels/timeline/components/EntryStyles.ts | wsMessageSent": {
-    "message": "WebSocket mesajı göndərin"
-  },
-  "panels/timeline/components/EntryStyles.ts | xhrLoad": {
-    "message": "XHR yükləməsi"
-  },
-  "panels/timeline/components/EntryStyles.ts | xhrReadyStateChange": {
-    "message": "XHR readyState dəyişiklik"
-  },
   "panels/timeline/components/FieldSettingsDialog.ts | add": {
     "message": "Əlavə edin"
   },
@@ -13919,6 +13691,9 @@
   "panels/timeline/components/LayoutShiftDetails.ts | total": {
     "message": "Ümumi"
   },
+  "panels/timeline/components/LayoutShiftDetails.ts | unsizedImage": {
+    "message": "Ölçüsü olmayan təsvir"
+  },
   "panels/timeline/components/LiveMetricsView.ts | allDevices": {
     "message": "Bütün cihazlar"
   },
@@ -13929,7 +13704,7 @@
     "message": "Cari jurnalı təmizləyin"
   },
   "panels/timeline/components/LiveMetricsView.ts | collectionPeriod": {
-    "message": "Toplama müddəti:"
+    "message": "Toplama müddəti: {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | dateRange": {
     "message": "{PH1} - {PH2}"
@@ -13943,6 +13718,9 @@
   "panels/timeline/components/LiveMetricsView.ts | disableNetworkCache": {
     "message": "Şəbəkə keşini deaktiv edin"
   },
+  "panels/timeline/components/LiveMetricsView.ts | duration": {
+    "message": "Lokal müddət (ms)"
+  },
   "panels/timeline/components/LiveMetricsView.ts | elementRenderDelay": {
     "message": "Element vizualizasiyasının gecikməsi"
   },
@@ -13954,9 +13732,6 @@
   },
   "panels/timeline/components/LiveMetricsView.ts | fieldData": {
     "message": "Sahə datası"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | fieldDataLink": {
-    "message": "sahə datası"
   },
   "panels/timeline/components/LiveMetricsView.ts | inpInteraction": {
     "message": "INP qarşılıqlı əlaqəsi qarşılıqlı gecikmələrin 98-ci faizindədir."
@@ -13985,11 +13760,17 @@
   "panels/timeline/components/LiveMetricsView.ts | localAndFieldMetrics": {
     "message": "Lokal və sahə göstəriciləri"
   },
+  "panels/timeline/components/LiveMetricsView.ts | localFieldLearnMoreLink": {
+    "message": "Yerli və sahə datası haqqında ətraflı məlumat əldə edin"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | localFieldLearnMoreTooltip": {
+    "message": "Lokal ölçülər şəbəkə bağlantınız və cihazınızdan istifadə edərək cari səhifədən əldə edilir. Sahə datası bir çox müxtəlif şəbəkə bağlantısı və cihaz istifadə edən real istifadəçilər tərəfindən ölçülür."
+  },
   "panels/timeline/components/LiveMetricsView.ts | localMetrics": {
     "message": "Lokal göstəricilər"
   },
-  "panels/timeline/components/LiveMetricsView.ts | localMetricsLink": {
-    "message": "lokal göstəricilər"
+  "panels/timeline/components/LiveMetricsView.ts | logToConsole": {
+    "message": "Əlavə interaksiya datasını konsola daxil edin"
   },
   "panels/timeline/components/LiveMetricsView.ts | mobile": {
     "message": "Mobil"
@@ -13997,11 +13778,14 @@
   "panels/timeline/components/LiveMetricsView.ts | needsDataOption": {
     "message": "{PH1} - Data yoxdur"
   },
-  "panels/timeline/components/LiveMetricsView.ts | networkCacheExplanation": {
-    "message": "Şəbəkə keşinin deaktiv edilməsi ilk dəfə gələn ziyarətçi kimi şəbəkə təcrübəsini simulyasiya edəcək."
+  "panels/timeline/components/LiveMetricsView.ts | network": {
+    "message": "Şəbəkə: {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | nextSteps": {
     "message": "Növbəti addımlar"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | notEnoughData": {
+    "message": "Kifayət qədər data yoxdur"
   },
   "panels/timeline/components/LiveMetricsView.ts | numShifts": {
     "message": "{shiftCount,plural, =1{{shiftCount} tənzimləmə}other{{shiftCount} tənzimləmə}}"
@@ -14012,11 +13796,20 @@
   "panels/timeline/components/LiveMetricsView.ts | originOptionWithKey": {
     "message": "Mənbə: {PH1}"
   },
+  "panels/timeline/components/LiveMetricsView.ts | percentDevices": {
+    "message": "{PH1}% mobil, {PH2}% masaüstü"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | phase": {
+    "message": "Mərhələ"
+  },
   "panels/timeline/components/LiveMetricsView.ts | presentationDelay": {
     "message": "Təqdimat gecikməsi"
   },
   "panels/timeline/components/LiveMetricsView.ts | processingDuration": {
     "message": "Emal müddəti"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | realUserEnvironments": {
+    "message": "Real istifadəçi mühitləri"
   },
   "panels/timeline/components/LiveMetricsView.ts | resourceLoadDelay": {
     "message": "Resurs yükləmənin ləngiməsi"
@@ -14045,20 +13838,14 @@
   "panels/timeline/components/LiveMetricsView.ts | tablet": {
     "message": "Planşet"
   },
-  "panels/timeline/components/LiveMetricsView.ts | theFieldMetricsAre": {
-    "message": "{PH1} bir çox müxtəlif şəbəkə bağlantısı və cihaz istifadə edən real istifadəçilər tərəfindən ölçülür."
-  },
-  "panels/timeline/components/LiveMetricsView.ts | theLocalMetricsAre": {
-    "message": "{PH1} şəbəkə bağlantınız və cihazınızdan istifadə edərək cari səhifədən əldə edilir."
-  },
   "panels/timeline/components/LiveMetricsView.ts | timeToFirstByte": {
     "message": "İlk bayta qədər keçən vaxt"
   },
   "panels/timeline/components/LiveMetricsView.ts | tryDisablingThrottling": {
-    "message": "Real istifadəçilərin 75 faizi şəbəkədə tənzimlənməmiş bağlantıya bənzər gecikmələrlə qarşılaşıb."
+    "message": "75 faiz məhdudiyyət ilə simulyasiya edilə bilməyəcək qədər sürətlidir"
   },
   "panels/timeline/components/LiveMetricsView.ts | tryUsingThrottling": {
-    "message": "Real istifadəçilərin 75 faizi şəbəkədə {PH1} tənzimləməsinə bənzər gecikmələrlə qarşılaşdı."
+    "message": "75 faiz {PH1} məhdudiyyətinə bənzəyir"
   },
   "panels/timeline/components/LiveMetricsView.ts | urlOption": {
     "message": "URL"
@@ -14075,6 +13862,9 @@
   "panels/timeline/components/MetricCard.ts | betweenRange": {
     "message": "({PH1}-{PH2})"
   },
+  "panels/timeline/components/MetricCard.ts | clsHelpTooltip": {
+    "message": "CLS gözlənilməz və yer dəyişmiş kontentin miqdarını ölçür. CLS haqqında ətraflı məlumat üçün buraya klikləyin."
+  },
   "panels/timeline/components/MetricCard.ts | considerTesting": {
     "message": "Lokal test şərtlərini nəzərdən keçirin"
   },
@@ -14090,8 +13880,14 @@
   "panels/timeline/components/MetricCard.ts | gtRange": {
     "message": "(>{PH1})"
   },
+  "panels/timeline/components/MetricCard.ts | inpHelpTooltip": {
+    "message": "INP bütün klik, toxunma və klaviatura interaksiyalarına ümumi responsivliyi ölçür. INP haqqında ətraflı məlumat üçün buraya klikləyin."
+  },
   "panels/timeline/components/MetricCard.ts | interactToMeasure": {
     "message": "INP ölçmək üçün səhifə ilə interaksiya edin"
+  },
+  "panels/timeline/components/MetricCard.ts | lcpHelpTooltip": {
+    "message": "LCP baxış portunda görünən ən böyük təsvir, mətn bloku və ya videonun vizualizasiya vaxtını bildirir. LCP haqqında ətraflı məlumat üçün buraya klikləyin."
   },
   "panels/timeline/components/MetricCard.ts | leqRange": {
     "message": "(≤{PH1})"
@@ -14213,6 +14009,9 @@
   "panels/timeline/components/NetworkRequestDetails.ts | FromServiceWorker": {
     "message": " (buradan service worker)"
   },
+  "panels/timeline/components/NetworkRequestDetails.ts | blocking": {
+    "message": "Bloklama"
+  },
   "panels/timeline/components/NetworkRequestDetails.ts | decodedBody": {
     "message": "Deşifrə edilmiş əsas hissə"
   },
@@ -14221,6 +14020,9 @@
   },
   "panels/timeline/components/NetworkRequestDetails.ts | fromCache": {
     "message": "Keşdən"
+  },
+  "panels/timeline/components/NetworkRequestDetails.ts | inBodyParserBlocking": {
+    "message": "Daxili təhlil bloklaması"
   },
   "panels/timeline/components/NetworkRequestDetails.ts | initiatedBy": {
     "message": "Başladan"
@@ -14240,6 +14042,9 @@
   "panels/timeline/components/NetworkRequestDetails.ts | priority": {
     "message": "Prioritet"
   },
+  "panels/timeline/components/NetworkRequestDetails.ts | renderBlocking": {
+    "message": "Vizualizasiya bloklama"
+  },
   "panels/timeline/components/NetworkRequestDetails.ts | requestMethod": {
     "message": "Sorğu metodu"
   },
@@ -14248,6 +14053,9 @@
   },
   "panels/timeline/components/NetworkRequestTooltip.ts | contentDownloading": {
     "message": "Kontent endirilir"
+  },
+  "panels/timeline/components/NetworkRequestTooltip.ts | duration": {
+    "message": "Müddət"
   },
   "panels/timeline/components/NetworkRequestTooltip.ts | priority": {
     "message": "Prioritet"
@@ -14342,9 +14150,6 @@
   "panels/timeline/components/insights/CLSCulprits.ts | animation": {
     "message": "Animasiya"
   },
-  "panels/timeline/components/insights/CLSCulprits.ts | description": {
-    "message": "Düzən dəyişməsi elementlər hər hansı istifadəçi qarşılıqlı əlaqəsi olmadan hərəkət etdikdə meydana gəlir. Səhifə yükləndikcə elementlərin əlavə edilməsi, silinməsi və ya şriftlərinin dəyişməsi kimi [düzənin dəyişməsinin səbəblərini araşdırın](https://web.dev/articles/optimize-cls)."
-  },
   "panels/timeline/components/insights/CLSCulprits.ts | fontRequest": {
     "message": "Şrift sorğusu"
   },
@@ -14354,20 +14159,17 @@
   "panels/timeline/components/insights/CLSCulprits.ts | layoutShiftCluster": {
     "message": "Düzənin dəyişməsi klasteri @ {PH1}"
   },
-  "panels/timeline/components/insights/CLSCulprits.ts | title": {
-    "message": "Düzən tənzimləməsi üzrə problemlərin səbəbləri"
-  },
   "panels/timeline/components/insights/CLSCulprits.ts | topCulprits": {
     "message": "Düzənin dəyişməsi üzrə ən məşhur problemlərin səbəbləri"
+  },
+  "panels/timeline/components/insights/CLSCulprits.ts | unsizedImages": {
+    "message": "Ölçüsüz təsvirlər"
   },
   "panels/timeline/components/insights/CLSCulprits.ts | worstCluster": {
     "message": "Ən pis klaster"
   },
   "panels/timeline/components/insights/CLSCulprits.ts | worstLayoutShiftCluster": {
     "message": "Ən pis düzən dəyişməsi klasteri"
-  },
-  "panels/timeline/components/insights/DocumentLatency.ts | description": {
-    "message": "İlk şəbəkə sorğunuz ən vacibdir.  Yönləndirmələrdən yayınaraq sürətli server cavabı və mətn sıxılması təmin etməklə gecikmə müddətini azaldın."
   },
   "panels/timeline/components/insights/DocumentLatency.ts | failedAriaLabel": {
     "message": "İdeya yoxlaması alınmadı: {PH1}"
@@ -14399,26 +14201,14 @@
   "panels/timeline/components/insights/DocumentLatency.ts | successAriaLabel": {
     "message": "İdeya yoxlamasından keçdiniz: {PH1}"
   },
-  "panels/timeline/components/insights/DocumentLatency.ts | title": {
-    "message": "Sənəd sorğusunun gecikməsi"
-  },
   "panels/timeline/components/insights/DocumentLatency.ts | uncompressedDownload": {
     "message": "Yığcamlaşdırılmamış endirmə"
-  },
-  "panels/timeline/components/insights/FontDisplay.ts | description": {
-    "message": "Mətnin davamlı görünməsini təmin etmək üçün swap və ya optional [şrift displeyindən](https://developer.chrome.com/blog/font-display) istifadə edin. swapŞrift metrik əvəzləmələri ilə düzən tənzimləmələrini azaltmaq üçün [daha da optimallaşdırıla bilər](https://developer.chrome.com/blog/font-fallbacks)."
   },
   "panels/timeline/components/insights/FontDisplay.ts | fontColumn": {
     "message": "Şrift"
   },
-  "panels/timeline/components/insights/FontDisplay.ts | title": {
-    "message": "Şrift displeyi"
-  },
   "panels/timeline/components/insights/FontDisplay.ts | wastedTimeColumn": {
     "message": "Vaxt itkisi"
-  },
-  "panels/timeline/components/insights/InteractionToNextPaint.ts | description": {
-    "message": "Ən uzun mərhələdən araşdırmağa başlayın. [Gecikmələr minimallaşdırıla bilər](https://web.dev/articles/optimize-inp#optimize_interactions). Emal müddətini azaltmaq üçün [əsas mövzu xərclərini](https://web.dev/articles/optimize-long-tasks) (əsasən JS) optimallaşdırın."
   },
   "panels/timeline/components/insights/InteractionToNextPaint.ts | duration": {
     "message": "Müddət"
@@ -14434,12 +14224,6 @@
   },
   "panels/timeline/components/insights/InteractionToNextPaint.ts | processingDuration": {
     "message": "Emal müddəti"
-  },
-  "panels/timeline/components/insights/InteractionToNextPaint.ts | title": {
-    "message": "Fazaya görə INP"
-  },
-  "panels/timeline/components/insights/LCPDiscovery.ts | description": {
-    "message": "LCP şəklini dərhal HTML-dən [kəşf edilə bilən](https://web.dev/articles/optimize-lcp#1_eliminate_resource_load_delay) edərək LCP-ni optimallaşdırın və [gec yüklənmədən çəkinin](https://web.dev/articles/lcp-lazy-loading)"
   },
   "panels/timeline/components/insights/LCPDiscovery.ts | failedAriaLabel": {
     "message": "İdeya yoxlaması alınmadı: {PH1}"
@@ -14459,12 +14243,6 @@
   "panels/timeline/components/insights/LCPDiscovery.ts | successAriaLabel": {
     "message": "İdeya yoxlamasından keçdiniz: {PH1}"
   },
-  "panels/timeline/components/insights/LCPDiscovery.ts | title": {
-    "message": "LCP sorğunun kəşfi"
-  },
-  "panels/timeline/components/insights/LCPPhases.ts | description": {
-    "message": "Hər [fazanın öz spesifik təkmilləşmə strategiyaları var](https://web.dev/articles/optimize-lcp#lcp-breakdown). İdeal olaraq LCP vaxtının çox hissəsi gecikmələrə deyil, resursların yüklənməsinə sərf edilməlidir."
-  },
   "panels/timeline/components/insights/LCPPhases.ts | elementRenderDelay": {
     "message": "Element vizualizasiyasının gecikməsi"
   },
@@ -14483,32 +14261,11 @@
   "panels/timeline/components/insights/LCPPhases.ts | timeToFirstByte": {
     "message": "İlk bayta qədər keçən vaxt"
   },
-  "panels/timeline/components/insights/LCPPhases.ts | title": {
-    "message": "Mərhələ üzrə LCP"
-  },
-  "panels/timeline/components/insights/RenderBlocking.ts | description": {
-    "message": "Sorğular səhifənin ilkin vizualizasiyasını bloklayır, bu da LCP-ni gecikdirə bilər. [Təxirə salınma və ya aktivləşdirmə](https://web.dev/learn/performance/understanding-the-critical-path#render-blocking_resources/) bu şəbəkə sorğularını kritik yoldan kənarlaşdıra bilər."
-  },
   "panels/timeline/components/insights/RenderBlocking.ts | duration": {
     "message": "Müddət"
   },
   "panels/timeline/components/insights/RenderBlocking.ts | renderBlockingRequest": {
     "message": "Sorğu"
-  },
-  "panels/timeline/components/insights/RenderBlocking.ts | title": {
-    "message": "Bloklama sorğularını göstərin"
-  },
-  "panels/timeline/components/insights/SidebarInsight.ts | estimatedSavings": {
-    "message": "Təxmini yadda saxlanılanlar: {PH1}"
-  },
-  "panels/timeline/components/insights/SidebarInsight.ts | estimatedSavingsTimingAndBytes": {
-    "message": "Təxmini qənaət: {PH1} && {PH2}"
-  },
-  "panels/timeline/components/insights/SidebarInsight.ts | viewDetails": {
-    "message": "{PH1} haqqında təfərrüatlara baxın"
-  },
-  "panels/timeline/components/insights/SlowCSSSelector.ts | description": {
-    "message": "Yenidən hesablama stili xərcləri yüksək olaraq qalırsa, seçici optimallaşdırması onları azalda bilər. Həm yüksək keçən vaxt, həm də yüksək asta yol % ilə [seçicilərin optimallaşdırılması](https://developer.chrome.com/docs/devtools/performance/selector-stats). Daha sadə seçicilər, daha az seçici, daha kiçik DOM və daha dayaz DOM uyğunlaşma xərclərini azaldacaq."
   },
   "panels/timeline/components/insights/SlowCSSSelector.ts | elapsed": {
     "message": "Keçən vaxt"
@@ -14518,9 +14275,6 @@
   },
   "panels/timeline/components/insights/SlowCSSSelector.ts | matchCount": {
     "message": "Uyğunluq sayı"
-  },
-  "panels/timeline/components/insights/SlowCSSSelector.ts | title": {
-    "message": "CSS Seçici xərcləri"
   },
   "panels/timeline/components/insights/SlowCSSSelector.ts | topSelectors": {
     "message": "Ən yaxşı seçicilər"
@@ -14536,18 +14290,6 @@
   },
   "panels/timeline/components/insights/ThirdParties.ts | columnTransferSize": {
     "message": "Ötürülmə ölçüsü"
-  },
-  "panels/timeline/components/insights/ThirdParties.ts | description": {
-    "message": "Üçüncü tərəf kodu yüklənmə performansına əhəmiyyətli dərəcədə təsir göstərə bilər. Səhifənin kontentini prioritet etmək üçün [üçüncü tərəf kodunun yüklənməsini azaldın və təxirə salın](https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/loading-third-party-javascript/)."
-  },
-  "panels/timeline/components/insights/ThirdParties.ts | title": {
-    "message": "Üçüncü tərəflər"
-  },
-  "panels/timeline/components/insights/Viewport.ts | description": {
-    "message": "Səhifənin baxış portu mobil üçün optimallaşdırılmayıb, buna görə də toxunuş interaksiyaları [300 ms-ə qədər ləngiyə bilər](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/)."
-  },
-  "panels/timeline/components/insights/Viewport.ts | title": {
-    "message": "Baxış portu mobil üçün optimallaşdırılmayıb"
   },
   "panels/timeline/overlays/components/EntriesLinkOverlay.ts | diagram": {
     "message": "Daxiletmələr arasındakı keçidlər"
@@ -14599,6 +14341,375 @@
   },
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "Dayandırın"
+  },
+  "panels/timeline/utils/EntryName.ts | anonymous": {
+    "message": "(anonim)"
+  },
+  "panels/timeline/utils/EntryName.ts | eventDispatchS": {
+    "message": "Tədbir: {PH1}"
+  },
+  "panels/timeline/utils/EntryName.ts | frame": {
+    "message": "Çərçivə"
+  },
+  "panels/timeline/utils/EntryName.ts | wsConnectionClosed": {
+    "message": "WebSocket bağlandı"
+  },
+  "panels/timeline/utils/EntryName.ts | wsConnectionOpened": {
+    "message": "WebSocket açıldı"
+  },
+  "panels/timeline/utils/EntryName.ts | wsConnectionOpenedWithUrl": {
+    "message": "WebSocket açıldı: {PH1}"
+  },
+  "panels/timeline/utils/EntryStyles.ts | abortPostTaskCallback": {
+    "message": "postTask-ı ləğv edin"
+  },
+  "panels/timeline/utils/EntryStyles.ts | animation": {
+    "message": "Animasiya"
+  },
+  "panels/timeline/utils/EntryStyles.ts | animationFrameFired": {
+    "message": "Animasiya çərçivəsi əldə edildi"
+  },
+  "panels/timeline/utils/EntryStyles.ts | async": {
+    "message": "Asinxron"
+  },
+  "panels/timeline/utils/EntryStyles.ts | asyncTask": {
+    "message": "Asinxron tapşırıq"
+  },
+  "panels/timeline/utils/EntryStyles.ts | cacheModule": {
+    "message": "Keş modul kodu"
+  },
+  "panels/timeline/utils/EntryStyles.ts | cacheScript": {
+    "message": "Keş skript kodu"
+  },
+  "panels/timeline/utils/EntryStyles.ts | cachedWasmModule": {
+    "message": "Keşlənmiş Wasm modulu"
+  },
+  "panels/timeline/utils/EntryStyles.ts | cancelAnimationFrame": {
+    "message": "Animasiya çərçivəsini ləğv edin"
+  },
+  "panels/timeline/utils/EntryStyles.ts | cancelIdleCallback": {
+    "message": "Fəaliyyətsiz geri çağırışı ləğv edin"
+  },
+  "panels/timeline/utils/EntryStyles.ts | commit": {
+    "message": "İcra edin"
+  },
+  "panels/timeline/utils/EntryStyles.ts | compileCode": {
+    "message": "Kodu tərtib edin"
+  },
+  "panels/timeline/utils/EntryStyles.ts | compileModule": {
+    "message": "Modul tərtib edin"
+  },
+  "panels/timeline/utils/EntryStyles.ts | compileScript": {
+    "message": "Skript tərtib edin"
+  },
+  "panels/timeline/utils/EntryStyles.ts | compiledWasmModule": {
+    "message": "Tərtib edilmiş Wasm modulu"
+  },
+  "panels/timeline/utils/EntryStyles.ts | compositeLayers": {
+    "message": "Birləşik təbəqələr"
+  },
+  "panels/timeline/utils/EntryStyles.ts | computeIntersections": {
+    "message": "Kəsişmələri hesablayın"
+  },
+  "panels/timeline/utils/EntryStyles.ts | consoleTime": {
+    "message": "Konsol vaxtı"
+  },
+  "panels/timeline/utils/EntryStyles.ts | cppGc": {
+    "message": "CPP GC"
+  },
+  "panels/timeline/utils/EntryStyles.ts | createWebsocket": {
+    "message": "WebSocket yaradın"
+  },
+  "panels/timeline/utils/EntryStyles.ts | decrypt": {
+    "message": "Şifrini açın"
+  },
+  "panels/timeline/utils/EntryStyles.ts | decryptReply": {
+    "message": "Cavabın şifrini açın"
+  },
+  "panels/timeline/utils/EntryStyles.ts | deserializeCodeCache": {
+    "message": "Kod keşini seriyadan çıxarın"
+  },
+  "panels/timeline/utils/EntryStyles.ts | destroyWebsocket": {
+    "message": "WebSocket'i ləğv edin"
+  },
+  "panels/timeline/utils/EntryStyles.ts | digest": {
+    "message": "Xülasə"
+  },
+  "panels/timeline/utils/EntryStyles.ts | digestReply": {
+    "message": "Xülasə cavab"
+  },
+  "panels/timeline/utils/EntryStyles.ts | domGc": {
+    "message": "DOM GC"
+  },
+  "panels/timeline/utils/EntryStyles.ts | domcontentloadedEvent": {
+    "message": "DOMContentLoaded hadisəsi"
+  },
+  "panels/timeline/utils/EntryStyles.ts | drawFrame": {
+    "message": "Çərçivə çəkin"
+  },
+  "panels/timeline/utils/EntryStyles.ts | drawing": {
+    "message": "Çertyoj"
+  },
+  "panels/timeline/utils/EntryStyles.ts | embedderCallback": {
+    "message": "Yerləşdiricinin geri çağırılması"
+  },
+  "panels/timeline/utils/EntryStyles.ts | encrypt": {
+    "message": "Şifrələyin"
+  },
+  "panels/timeline/utils/EntryStyles.ts | encryptReply": {
+    "message": "Cavabı şifrləyin"
+  },
+  "panels/timeline/utils/EntryStyles.ts | evaluateModule": {
+    "message": "Modulu qiymətləndirin"
+  },
+  "panels/timeline/utils/EntryStyles.ts | evaluateScript": {
+    "message": "Skripti dəyərləndirin"
+  },
+  "panels/timeline/utils/EntryStyles.ts | event": {
+    "message": "Hadisə"
+  },
+  "panels/timeline/utils/EntryStyles.ts | eventTiming": {
+    "message": "Tədbir zamanlaması"
+  },
+  "panels/timeline/utils/EntryStyles.ts | experience": {
+    "message": "Təcrübə"
+  },
+  "panels/timeline/utils/EntryStyles.ts | finishLoading": {
+    "message": "Yükləməni tamamlayın"
+  },
+  "panels/timeline/utils/EntryStyles.ts | fireIdleCallback": {
+    "message": "Fəaliyyətsiz geri çağırış başladın"
+  },
+  "panels/timeline/utils/EntryStyles.ts | firstContentfulPaint": {
+    "message": "İlk Məzmunlu Rəng"
+  },
+  "panels/timeline/utils/EntryStyles.ts | firstPaint": {
+    "message": "Birinci Rəng"
+  },
+  "panels/timeline/utils/EntryStyles.ts | frameStart": {
+    "message": "Çərçivənin başladılması"
+  },
+  "panels/timeline/utils/EntryStyles.ts | frameStartMainThread": {
+    "message": "Çərçivənin başlanğıcı (əsas axın)"
+  },
+  "panels/timeline/utils/EntryStyles.ts | frameStartedLoading": {
+    "message": "Çərçivə yüklənməyə başladı"
+  },
+  "panels/timeline/utils/EntryStyles.ts | functionCall": {
+    "message": "Funksiya çağırışı"
+  },
+  "panels/timeline/utils/EntryStyles.ts | gcEvent": {
+    "message": "GC tədbiri"
+  },
+  "panels/timeline/utils/EntryStyles.ts | gpu": {
+    "message": "GPU"
+  },
+  "panels/timeline/utils/EntryStyles.ts | hitTest": {
+    "message": "Kursor testi"
+  },
+  "panels/timeline/utils/EntryStyles.ts | idle": {
+    "message": "Fəaliyyətsiz"
+  },
+  "panels/timeline/utils/EntryStyles.ts | imageDecode": {
+    "message": "Şəklin deşifrə edilməsi"
+  },
+  "panels/timeline/utils/EntryStyles.ts | installTimer": {
+    "message": "Taymer quraşdırın"
+  },
+  "panels/timeline/utils/EntryStyles.ts | invalidateLayout": {
+    "message": "Düzəni etibarsızlaşdırın"
+  },
+  "panels/timeline/utils/EntryStyles.ts | jsFrame": {
+    "message": "JS çərçivəsi"
+  },
+  "panels/timeline/utils/EntryStyles.ts | largestContentfulPaint": {
+    "message": "Ən Böyük Məzmunlu Rəng"
+  },
+  "panels/timeline/utils/EntryStyles.ts | layerize": {
+    "message": "Qatlaşdırın"
+  },
+  "panels/timeline/utils/EntryStyles.ts | layout": {
+    "message": "Düzən"
+  },
+  "panels/timeline/utils/EntryStyles.ts | layoutShift": {
+    "message": "Düzənin dəyişilməsi"
+  },
+  "panels/timeline/utils/EntryStyles.ts | layoutShiftCluster": {
+    "message": "Düzənin dəyişməsi klasteri"
+  },
+  "panels/timeline/utils/EntryStyles.ts | loading": {
+    "message": "Yüklənir"
+  },
+  "panels/timeline/utils/EntryStyles.ts | majorGc": {
+    "message": "Əsas GC"
+  },
+  "panels/timeline/utils/EntryStyles.ts | messaging": {
+    "message": "Mesajlaşma"
+  },
+  "panels/timeline/utils/EntryStyles.ts | minorGc": {
+    "message": "Kiçik GC"
+  },
+  "panels/timeline/utils/EntryStyles.ts | onMessage": {
+    "message": "Aktiv mesajı"
+  },
+  "panels/timeline/utils/EntryStyles.ts | onloadEvent": {
+    "message": "Yüklənən hadisə"
+  },
+  "panels/timeline/utils/EntryStyles.ts | optimizeCode": {
+    "message": "Kodu optimallaşdırın"
+  },
+  "panels/timeline/utils/EntryStyles.ts | other": {
+    "message": "Digər"
+  },
+  "panels/timeline/utils/EntryStyles.ts | paint": {
+    "message": "Rəngləyin"
+  },
+  "panels/timeline/utils/EntryStyles.ts | paintImage": {
+    "message": "Şəkli rəngləyin"
+  },
+  "panels/timeline/utils/EntryStyles.ts | paintSetup": {
+    "message": "Rəngin ayarlanması"
+  },
+  "panels/timeline/utils/EntryStyles.ts | painting": {
+    "message": "Rəngləmə"
+  },
+  "panels/timeline/utils/EntryStyles.ts | parseAndCompile": {
+    "message": "Təhlil edin və tərtib edin"
+  },
+  "panels/timeline/utils/EntryStyles.ts | parseHtml": {
+    "message": "HTML'i parselləyin"
+  },
+  "panels/timeline/utils/EntryStyles.ts | parseStylesheet": {
+    "message": "Üslub vərəqini təhlil edin"
+  },
+  "panels/timeline/utils/EntryStyles.ts | prePaint": {
+    "message": "Ön boyama"
+  },
+  "panels/timeline/utils/EntryStyles.ts | profilingOverhead": {
+    "message": "Profilləşdirmə üzrə üst dəyər"
+  },
+  "panels/timeline/utils/EntryStyles.ts | rasterizePaint": {
+    "message": "Rəngi rasterizasiya edin"
+  },
+  "panels/timeline/utils/EntryStyles.ts | rasterizing": {
+    "message": "Rasterizasiya edilir"
+  },
+  "panels/timeline/utils/EntryStyles.ts | recalculateStyle": {
+    "message": "Üslubu yenidən müəyyənləşdirin"
+  },
+  "panels/timeline/utils/EntryStyles.ts | receiveData": {
+    "message": "Datanın qəbul edilməsi"
+  },
+  "panels/timeline/utils/EntryStyles.ts | receiveResponse": {
+    "message": "Cavab qəbul edin"
+  },
+  "panels/timeline/utils/EntryStyles.ts | receiveWebsocketHandshake": {
+    "message": "WebSocket uyğunlaşdırmasını qəbul edin"
+  },
+  "panels/timeline/utils/EntryStyles.ts | removeTimer": {
+    "message": "Taymeri silin"
+  },
+  "panels/timeline/utils/EntryStyles.ts | rendering": {
+    "message": "Göstərilir"
+  },
+  "panels/timeline/utils/EntryStyles.ts | requestAnimationFrame": {
+    "message": "Animasiya çərçivəsi üzrə sorğu göndərin"
+  },
+  "panels/timeline/utils/EntryStyles.ts | requestIdleCallback": {
+    "message": "Fəaliyyətsiz geri çağırış sorğusu"
+  },
+  "panels/timeline/utils/EntryStyles.ts | requestMainThreadFrame": {
+    "message": "Əsas axın çərçivəsi üzrə sorğu göndərin"
+  },
+  "panels/timeline/utils/EntryStyles.ts | runMicrotasks": {
+    "message": "Mikrotapşırıqlar icra edin"
+  },
+  "panels/timeline/utils/EntryStyles.ts | runPostTaskCallback": {
+    "message": "postTask-ı işə salın"
+  },
+  "panels/timeline/utils/EntryStyles.ts | schedulePostMessage": {
+    "message": "postMessage vaxtını planlaşdırın"
+  },
+  "panels/timeline/utils/EntryStyles.ts | schedulePostTaskCallback": {
+    "message": "postTask-ı planlaşdırın"
+  },
+  "panels/timeline/utils/EntryStyles.ts | scheduleStyleRecalculation": {
+    "message": "Üslubun yenidən müəyyənləşdirilməsini planlaşdırın"
+  },
+  "panels/timeline/utils/EntryStyles.ts | scripting": {
+    "message": "Skript yazılır"
+  },
+  "panels/timeline/utils/EntryStyles.ts | scroll": {
+    "message": "Sürüşdürün"
+  },
+  "panels/timeline/utils/EntryStyles.ts | sendRequest": {
+    "message": "Sorğu göndərin"
+  },
+  "panels/timeline/utils/EntryStyles.ts | sendWebsocketHandshake": {
+    "message": "WebSocket uyğunlaşdırması göndərin"
+  },
+  "panels/timeline/utils/EntryStyles.ts | sign": {
+    "message": "İmza"
+  },
+  "panels/timeline/utils/EntryStyles.ts | signReply": {
+    "message": "Cavabı imzalayın"
+  },
+  "panels/timeline/utils/EntryStyles.ts | streamingCompileTask": {
+    "message": "Tərtib tapşırığı yayımlanır"
+  },
+  "panels/timeline/utils/EntryStyles.ts | streamingWasmResponse": {
+    "message": "Wasm cavabı yayımlanır"
+  },
+  "panels/timeline/utils/EntryStyles.ts | system": {
+    "message": "Sistem"
+  },
+  "panels/timeline/utils/EntryStyles.ts | task": {
+    "message": "Tapşırıq"
+  },
+  "panels/timeline/utils/EntryStyles.ts | timerFired": {
+    "message": "Taymer təqdim edildi"
+  },
+  "panels/timeline/utils/EntryStyles.ts | timestamp": {
+    "message": "Vaxt qeydi"
+  },
+  "panels/timeline/utils/EntryStyles.ts | updateLayer": {
+    "message": "Təbəqəni yeniləyin"
+  },
+  "panels/timeline/utils/EntryStyles.ts | updateLayerTree": {
+    "message": "Təbəqə qrafikini yeniləyin"
+  },
+  "panels/timeline/utils/EntryStyles.ts | userTiming": {
+    "message": "İstifadəçi zamanlaması"
+  },
+  "panels/timeline/utils/EntryStyles.ts | verify": {
+    "message": "Doğrulayın"
+  },
+  "panels/timeline/utils/EntryStyles.ts | verifyReply": {
+    "message": "Cavabı yoxlayın"
+  },
+  "panels/timeline/utils/EntryStyles.ts | waitingForNetwork": {
+    "message": "Şəbəkə gözlənilir"
+  },
+  "panels/timeline/utils/EntryStyles.ts | wasmModuleCacheHit": {
+    "message": "Wasm modulu üzrə keş girişi"
+  },
+  "panels/timeline/utils/EntryStyles.ts | wasmModuleCacheInvalid": {
+    "message": "Wasm modulu keşi yanlışdır"
+  },
+  "panels/timeline/utils/EntryStyles.ts | willSendRequest": {
+    "message": "Sorğu göndərəcək"
+  },
+  "panels/timeline/utils/EntryStyles.ts | wsMessageReceived": {
+    "message": "WebSocket mesajını qəbul edin"
+  },
+  "panels/timeline/utils/EntryStyles.ts | wsMessageSent": {
+    "message": "WebSocket mesajı göndərin"
+  },
+  "panels/timeline/utils/EntryStyles.ts | xhrLoad": {
+    "message": "XHR yükləməsi"
+  },
+  "panels/timeline/utils/EntryStyles.ts | xhrReadyStateChange": {
+    "message": "XHR readyState dəyişiklik"
   },
   "panels/utils/utils.ts | requestContentHeadersOverridden": {
     "message": "Sorğu kontenti və başlıqlar əvəzlənib"
@@ -14750,6 +14861,33 @@
   "panels/webauthn/webauthn-meta.ts | webauthn": {
     "message": "WebAuthn"
   },
+  "panels/whats_new/ReleaseNoteView.ts | close": {
+    "message": "Bağlayın"
+  },
+  "panels/whats_new/ReleaseNoteView.ts | learnMore": {
+    "message": "Ətraflı məlumat"
+  },
+  "panels/whats_new/whats_new-meta.ts | bug": {
+    "message": "baq"
+  },
+  "panels/whats_new/whats_new-meta.ts | doNotShowWhatsNewAfterEachUpdate": {
+    "message": "Hər yeniləmədən sonra yenilikləri göstərməyin"
+  },
+  "panels/whats_new/whats_new-meta.ts | releaseNotes": {
+    "message": "Buraxılış qeydləri"
+  },
+  "panels/whats_new/whats_new-meta.ts | reportADevtoolsIssue": {
+    "message": "DevTools problemi barədə bildirin"
+  },
+  "panels/whats_new/whats_new-meta.ts | showWhatsNew": {
+    "message": "Yenilikləri göstərin"
+  },
+  "panels/whats_new/whats_new-meta.ts | showWhatsNewAfterEachUpdate": {
+    "message": "Hər yeniləmədən sonra yeniliklər göstərilsin"
+  },
+  "panels/whats_new/whats_new-meta.ts | whatsNew": {
+    "message": "Yeniliklər"
+  },
   "ui/components/data_grid/DataGrid.ts | enterToSort": {
     "message": "Sütun sıralama vəziyyəti: {PH1}. Sıralama filtri tətbiq etmək üçün enter düyməsini basın"
   },
@@ -14866,6 +15004,9 @@
   },
   "ui/components/request_link_icon/RequestLinkIcon.ts | shortenedURL": {
     "message": "Qısaldılmış keçid"
+  },
+  "ui/components/settings/SettingCheckbox.ts | learnMore": {
+    "message": "Ətraflı məlumat"
   },
   "ui/components/survey_link/SurveyLink.ts | anErrorOccurredWithTheSurvey": {
     "message": "Sorğu ilə bağlı xəta baş verdi"
@@ -15545,8 +15686,8 @@
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | noProperties": {
     "message": "Xüsusiyyət yoxdur"
   },
-  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | revealInMemoryInpector": {
-    "message": "Yaddaş inspektoru panelində göstərin"
+  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | openInMemoryInpector": {
+    "message": "Yaddaş inspektoru panelində açın"
   },
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | showAllD": {
     "message": "Hamısını göstərin: {PH1}"
@@ -15760,6 +15901,9 @@
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | allowPasting": {
     "message": "əlavə etməyə icazə verin"
+  },
+  "ui/legacy/components/source_frame/SourceFrame.ts | binaryContentError": {
+    "message": "Redaktor ikili datanı göstərə bilməz. Bu resursu yoxlamaq üçün \"Şəbəkə\" panelindəki \"Cavab\" tabını istifadə edin."
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | bytecodePositionXs": {
     "message": "Bayt kodunun yeri 0x{PH1}"

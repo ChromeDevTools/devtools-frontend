@@ -707,6 +707,7 @@ describeWithMockConnection('LiveMetricsView', () => {
         'url-DESKTOP': null,
         'url-PHONE': null,
         'url-TABLET': null,
+        warnings: [],
       };
 
       sinon.stub(CrUXManager.CrUXManager.instance(), 'getFieldDataForCurrentPage').callsFake(async () => mockFieldData);
@@ -785,6 +786,17 @@ describeWithMockConnection('LiveMetricsView', () => {
 
       const title = getLiveMetricsTitle(view);
       assert.strictEqual(title.innerText, 'Local and field metrics');
+    });
+
+    it('should display any warning from crux', async () => {
+      mockFieldData.warnings.push('Warning from crux');
+
+      const view = renderLiveMetrics();
+
+      await coordinator.done();
+
+      const fieldMessage = getFieldMessage(view);
+      assert.match(fieldMessage!.textContent!, /Warning from crux/);
     });
 
     it('should make initial request on render when crux is enabled', async () => {

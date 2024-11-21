@@ -96,6 +96,7 @@ describeWithMockConnection('FieldSettingsDialog', () => {
       'url-DESKTOP': null,
       'url-PHONE': null,
       'url-TABLET': null,
+      warnings: [],
     };
 
     cruxManager.getConfigSetting().set({enabled: false, override: ''});

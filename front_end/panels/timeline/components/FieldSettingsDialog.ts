@@ -188,7 +188,12 @@ export class FieldSettingsDialog extends HTMLElement {
   async #urlHasFieldData(url: string): Promise<boolean> {
     const cruxManager = CrUXManager.CrUXManager.instance();
     const result = await cruxManager.getFieldDataForPage(url);
-    return Object.values(result).some(v => v);
+    return Object.entries(result).some(([key, value]) => {
+      if (key === 'warnings') {
+        return false;
+      }
+      return Boolean(value);
+    });
   }
 
   async #submit(enabled: boolean): Promise<void> {

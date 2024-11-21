@@ -3,7 +3,18 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
+import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
+
+const UIStrings = {
+  /**
+   * @description Warning message indicating that the user will see real user data for a URL which is different from the URL they are currently looking at.
+   */
+  fieldOverrideWarning: 'Field data is configured for a different URL than the current page.',
+};
+
+const str_ = i18n.i18n.registerUIStrings('models/crux-manager/CrUXManager.ts', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 // This key is expected to be visible in the frontend.
 // b/349721878
@@ -67,6 +78,8 @@ export interface CrUXResponse {
 
 export type PageResult = {
   [K in`${PageScope}-${DeviceScope}`]: CrUXResponse|null;
+}&{
+  warnings: string[],
 };
 
 export interface OriginMapping {
@@ -161,6 +174,7 @@ export class CrUXManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
       'url-DESKTOP': null,
       'url-PHONE': null,
       'url-TABLET': null,
+      warnings: [],
     };
 
     try {
@@ -212,10 +226,15 @@ export class CrUXManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
    * the main document URL cannot be found.
    */
   async getFieldDataForCurrentPage(): Promise<PageResult> {
-    const pageUrl = this.#configSetting.get().overrideEnabled ?
-        this.#configSetting.get().override || '' :
-        this.#getMappedUrl(this.#mainDocumentUrl || await this.#getInspectedURL());
-    return this.getFieldDataForPage(pageUrl);
+    const currentUrl = this.#mainDocumentUrl || await this.#getInspectedURL();
+    const urlForCrux = this.#configSetting.get().overrideEnabled ? this.#configSetting.get().override || '' :
+                                                                   this.#getMappedUrl(currentUrl);
+
+    const result = await this.getFieldDataForPage(urlForCrux);
+    if (currentUrl !== urlForCrux) {
+      result.warnings.push(i18nString(UIStrings.fieldOverrideWarning));
+    }
+    return result;
   }
 
   async #getInspectedURL(): Promise<string> {

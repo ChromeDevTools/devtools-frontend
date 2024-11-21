@@ -860,8 +860,15 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
       PH1: dateEl,
     });
 
+    const warnings = this.#cruxPageResult?.warnings || [];
+
     return html`
-      <div class="field-data-message">${message}</div>
+      <div class="field-data-message">
+        <div>${message}</div>
+        ${warnings.map(warning => html`
+          <div class="field-data-warning">${warning}</div>
+        `)}
+      </div>
     `;
   }
 

@@ -277,6 +277,11 @@
   margin-bottom: 12px;
 }
 
+.field-data-warning {
+  margin-top: 4px;
+  color: var(--color-error-text);
+}
+
 .collection-period-range {
   font-weight: var(--ref-typeface-weight-medium);
 }

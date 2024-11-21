@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as Common from '../../../../core/common/common.js';
 import * as Trace from '../../../../models/trace/trace.js';
 import {renderElementIntoDOM} from '../../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../../testing/EnvironmentHelpers.js';
@@ -33,8 +34,8 @@ describeWithEnvironment('BaseInsightComponent', () => {
       const component = new TestInsightComponent();
       component.selected = false;
       component.model = {
-        title: 'LCP by Phase',
-        description: 'some description',
+        title: 'LCP by Phase' as Common.UIString.LocalizedString,
+        description: 'some description' as Common.UIString.LocalizedString,
         category: Trace.Insights.Types.InsightCategory.ALL,
         shouldShow: true,
       };
@@ -56,8 +57,8 @@ describeWithEnvironment('BaseInsightComponent', () => {
       const component = new TestInsightComponent();
       component.selected = true;
       component.model = {
-        title: 'LCP by Phase',
-        description: 'some description',
+        title: 'LCP by Phase' as Common.UIString.LocalizedString,
+        description: 'some description' as Common.UIString.LocalizedString,
         category: Trace.Insights.Types.InsightCategory.ALL,
         shouldShow: true,
       };

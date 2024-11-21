@@ -27,6 +27,8 @@ devtools_module("utils") {
     "../../../models/timeline_model:bundle",
     "../../../models/trace:bundle",
     "../../../models/workspace:bundle",
+    "../../../third_party/marked:bundle",
+    "../../../ui/components/markdown_view:bundle",
     "../../../ui/legacy:bundle",
   ]
 }

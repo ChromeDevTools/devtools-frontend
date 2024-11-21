@@ -292,11 +292,6 @@ x-link { /* stylelint-disable-line selector-type-no-unknown */
   margin-top: 8px;
 }
 
-.environment-recs-title {
-  margin-top: 12px;
-  font-weight: var(--ref-typeface-weight-medium);
-}
-
 .environment-recs-list {
   margin: 0;
   padding-left: 20px;

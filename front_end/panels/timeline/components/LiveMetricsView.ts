@@ -26,6 +26,7 @@ import * as UI from '../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as MobileThrottling from '../../mobile_throttling/mobile_throttling.js';
+import {md} from '../utils/Helpers.js';
 
 import liveMetricsViewStyles from './liveMetricsView.css.js';
 import type {MetricCardData} from './MetricCard.js';
@@ -166,14 +167,10 @@ const UIStrings = {
    */
   percentDevices: '{PH1}% mobile, {PH2}% desktop',
   /**
-   * @description Text block explaining how to simulate different mobile and desktop devices. The placeholder at the end will be a link with the text "simulate different devices" translated separately.
-   * @example {simulate different devices} PH1
+   * @description Text block explaining how to simulate different mobile and desktop devices.
    */
-  useDeviceToolbar: 'Use the device toolbar to {PH1}.',
-  /**
-   * @description Text for a link that is inserted inside a larger text block that explains how to simulate different mobile and desktop devices.
-   */
-  simulateDifferentDevices: 'simulate different devices',
+  useDeviceToolbar:
+      'Use the [device toolbar](https://developer.chrome.com/docs/devtools/device-mode) and configure throttling to simulate real user environments and identify more performance issues.',
   /**
    * @description Text label for a checkbox that controls if the network cache is disabled.
    */
@@ -232,10 +229,6 @@ const UIStrings = {
    * @description Tooltip for a button that will remove everything from the currently selected log.
    */
   clearCurrentLog: 'Clear the current log',
-  /**
-   * @description Title for a section that contains more information about real user environments. This message is meant to prompt the user to understand the conditions experienced by real users.
-   */
-  realUserEnvironments: 'Real user environments',
   /**
    * @description Title for a page load phase that measures the time between when the page load starts and the time when the first byte of the initial document is downloaded.
    */
@@ -625,10 +618,6 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
   #renderRecordingSettings(): LitHtml.LitTemplate {
     const fieldEnabled = CrUXManager.CrUXManager.instance().getConfigSetting().get().enabled;
 
-    const deviceLinkEl = UI.XLink.XLink.create(
-        'https://developer.chrome.com/docs/devtools/device-mode', i18nString(UIStrings.simulateDifferentDevices));
-    const deviceMessage = i18n.i18n.getFormatLocalizedString(str_, UIStrings.useDeviceToolbar, {PH1: deviceLinkEl});
-
     const deviceRecEl = document.createElement('span');
     deviceRecEl.classList.add('environment-rec');
     deviceRecEl.textContent = this.#getDeviceRec() || i18nString(UIStrings.notEnoughData);
@@ -640,9 +629,8 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
     // clang-format off
     return html`
       <h3 class="card-title">${i18nString(UIStrings.environmentSettings)}</h3>
-      <div class="device-toolbar-description">${deviceMessage}</div>
+      <div class="device-toolbar-description">${md(i18nString(UIStrings.useDeviceToolbar))}</div>
       ${fieldEnabled ? html`
-        <div class="environment-recs-title">${i18nString(UIStrings.realUserEnvironments)}</div>
         <ul class="environment-recs-list">
           <li>${i18n.i18n.getFormatLocalizedString(str_, UIStrings.device, {PH1: deviceRecEl})}</li>
           <li>${i18n.i18n.getFormatLocalizedString(str_, UIStrings.network, {PH1: networkRecEl})}</li>

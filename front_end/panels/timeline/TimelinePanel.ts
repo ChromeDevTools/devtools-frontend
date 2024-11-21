@@ -463,6 +463,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   #pendingAriaMessage: string|null = null;
 
   #eventToRelatedInsights: TimelineComponents.RelatedInsightChips.EventToRelatedInsightsMap = new Map();
+  #shortcutsDialog: ShortcutDialog.ShortcutDialog.ShortcutDialog = new ShortcutDialog.ShortcutDialog.ShortcutDialog();
 
   #onMainEntryHovered: (event: Common.EventTarget.EventTargetEvent<number>) => void;
 
@@ -1106,29 +1107,30 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     }
 
     if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_ALTERNATIVE_NAVIGATION)) {
-      // TODO: Fill the shortcuts dialog with shortcuts for the cuttently selected navigation option
-      const shortcutDialog = new ShortcutDialog.ShortcutDialog.ShortcutDialog();
-      shortcutDialog.prependElement(this.#getNavigationSetting());
-      shortcutDialog.data = {shortcuts: this.#getShortcutsInfo()};
-      const dialogToolbarItem = new UI.Toolbar.ToolbarItem(shortcutDialog);
+      this.#shortcutsDialog.prependElement(this.#getNavigationSetting());
+      const dialogToolbarItem = new UI.Toolbar.ToolbarItem(this.#shortcutsDialog);
       this.panelRightToolbar.appendToolbarItem(dialogToolbarItem);
     }
   }
 
   #getNavigationSetting(): HTMLElement {
     const currentNavSetting = Common.Settings.moduleSetting('flamechart-selected-navigation').get();
+    this.#shortcutsDialog.data = {shortcuts: this.#getShortcutsInfo(currentNavSetting === 'classic')};
+
     const navigationRadioButtons = document.createElement('form');
     navigationRadioButtons.classList.add('nav-radio-buttons');
     UI.ARIAUtils.markAsRadioGroup(navigationRadioButtons);
     const modernNavRadioButton = UI.UIUtils.createRadioLabel(
-        'flamechart-selected-navigation', 'Modern', /* checked*/ currentNavSetting === 'modern');
+        'flamechart-selected-navigation', 'Modern', /* checked */ currentNavSetting === 'modern');
     // Change EventListener is only triggered when the radio button is selected
     modernNavRadioButton.radioElement.addEventListener('change', () => {
+      this.#shortcutsDialog.data = {shortcuts: this.#getShortcutsInfo(/* isNavClassic */ false)};
       Common.Settings.moduleSetting('flamechart-selected-navigation').set('modern');
     });
     const classicNavRadioButton = UI.UIUtils.createRadioLabel(
-        'flamechart-selected-navigation', 'Classic', /* checked*/ currentNavSetting === 'classic');
+        'flamechart-selected-navigation', 'Classic', /* checked */ currentNavSetting === 'classic');
     classicNavRadioButton.radioElement.addEventListener('change', () => {
+      this.#shortcutsDialog.data = {shortcuts: this.#getShortcutsInfo(/* isNavClassic */ true)};
       Common.Settings.moduleSetting('flamechart-selected-navigation').set('classic');
     });
 
@@ -1138,12 +1140,21 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     return navigationRadioButtons;
   }
 
-  #getShortcutsInfo(): ShortcutDialog.ShortcutDialog.Shortcut[] {
+  #getShortcutsInfo(isNavClassic: boolean): ShortcutDialog.ShortcutDialog.Shortcut[] {
+    if (isNavClassic) {
+      return [
+        {title: i18nString(UIStrings.timelineScrollUpDown), bindings: ['Shift Scroll']},
+        {title: i18nString(UIStrings.timelineZoomInOut), bindings: ['Scroll', 'W/S']},
+        {title: i18nString(UIStrings.timelineFastZoomInOut), bindings: ['Shift W/S']},
+        {title: i18nString(UIStrings.timelinePanLeftRight), bindings: ['A/D']},
+      ];
+    }
+
     return [
-      {title: i18nString(UIStrings.timelineZoomInOut), bindings: ['Scroll', 'W/S']},
-      {title: i18nString(UIStrings.timelineFastZoomInOut), bindings: ['Shift W/S']},
-      {title: i18nString(UIStrings.timelineScrollUpDown), bindings: ['Shift Scroll']},
-      {title: i18nString(UIStrings.timelinePanLeftRight), bindings: ['A/D']},
+      {title: i18nString(UIStrings.timelineScrollUpDown), bindings: ['Scroll', 'Shift up/down']},
+      {title: i18nString(UIStrings.timelineZoomInOut), bindings: ['Cmd Scroll', 'W/S', '+/-']},
+      {title: i18nString(UIStrings.timelineFastZoomInOut), bindings: ['Shift W/S', 'Shift +/-']},
+      {title: i18nString(UIStrings.timelinePanLeftRight), bindings: ['A/D', 'Shift Scroll', 'Shift left/right']},
     ];
   }
 

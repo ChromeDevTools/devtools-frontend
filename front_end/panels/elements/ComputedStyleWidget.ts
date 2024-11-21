@@ -496,7 +496,7 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
             'contextmenu', this.handleContextMenuEvent.bind(this, matchedStyles, data.property));
         return html`${traceElement}`;
       }
-      return html`<span style="cursor: text; color: var(--sys-color-token-subtle);">${data.name}</span>`;
+      return html`<span style="cursor: text; color: var(--sys-color-on-surface-subtle);">${data.name}</span>`;
     };
   }
 

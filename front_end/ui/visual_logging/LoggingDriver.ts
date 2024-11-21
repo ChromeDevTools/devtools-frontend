@@ -221,7 +221,13 @@ async function process(): Promise<void> {
           loggingState.pendingChangeContext = event.inputType;
           pendingChange.add(element);
         }, {capture: true});
-        element.addEventListener('change', () => logPendingChange(element), {capture: true});
+        element.addEventListener('change', (event: Event) => {
+          const target = event?.target ?? element;
+          if (['checkbox', 'radio'].includes((target as HTMLInputElement).type)) {
+            loggingState.pendingChangeContext = (target as HTMLInputElement).checked ? 'on' : 'off';
+          }
+          logPendingChange(element);
+        }, {capture: true});
         element.addEventListener('focusout', () => {
           if (loggingState.pendingChangeContext) {
             void logPendingChange(element);
@@ -300,9 +306,6 @@ function logPendingChange(element: Element): void {
   const loggingState = getLoggingState(element);
   if (!loggingState) {
     return;
-  }
-  if (['checkbox', 'radio'].includes((element as HTMLInputElement).type)) {
-    loggingState.pendingChangeContext = (element as HTMLInputElement).checked ? 'on' : 'off';
   }
   void logChange(element);
   delete loggingState.pendingChangeContext;

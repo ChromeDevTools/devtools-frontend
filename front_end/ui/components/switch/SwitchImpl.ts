@@ -65,12 +65,12 @@ export class Switch extends HTMLElement {
     /* eslint-disable rulesdir/inject_checkbox_styles */
     // clang-format off
     LitHtml.render(html`
-    <label role="button">
+    <label role="button" jslog=${jslog || LitHtml.nothing}>
       <input type="checkbox"
         @change=${this.#handleChange}
         ?disabled=${this.#disabled}
         .checked=${this.#checked}
-        jslog=${jslog || LitHtml.nothing}>
+      >
       <span class="slider" @click=${(ev: Event) => ev.stopPropagation()}></span>
     </label>
     `, this.#shadow, {host: this});

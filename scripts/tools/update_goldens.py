@@ -55,7 +55,6 @@ class ProjectConfig:
 TOOLS_DIR = os.path.dirname(os.path.abspath(__file__))
 BASE_DIR = os.path.normpath(os.path.join(TOOLS_DIR, '..', '..'))
 DEPOT_TOOLS_DIR = os.path.join(BASE_DIR, 'third_party', 'depot_tools')
-GSUTIL = os.path.join(DEPOT_TOOLS_DIR, 'gsutil.py')
 VPYTHON = os.path.join(DEPOT_TOOLS_DIR, 'vpython3')
 GOLDENS_DIR = os.path.join(BASE_DIR, 'test', 'interactions', 'goldens')
 
@@ -64,13 +63,12 @@ WARNING_BUILDERS_STILL_RUNNING = 'Patchset %s has builders that are still ' \
 WARNING_BUILDERS_FAILED = 'Patchset %s has builders that failed:\n  %s\n'
 WARNING_BUILDERS_MISSING = 'Patchset %s does not have screenshot tests for ' \
     'all platform.\nOnly these builders found:\n  %s'
-WARNING_GSUTIL_CONNECTIVITY = (
-    'Ups! gsutil seems to not work for you right '
+WARNING_GCS_CONNECTIVITY = (
+    'Ups! "gcloud storage" seems to not work for you right '
     'now.\nThis is either a connectivity problem or a configuration issue.\n'
     'Make sure you are logged in with your Google account and you are included '
     'in the devtools-dev@google.com group.\n'
-    'Try running "./third_party/depot_tools/gsutil.py config" command.\n'
-    'When prompted for a project id, please use "v8-infra".\n')
+    'Try running "gcloud config set core/project v8-infra" command.\n')
 WARNING_GIT_DIRTY = 'Before attempting to apply screenshot patches, please' \
     'make sure your local repo is clean.\nFolder %s seems to contain ' \
     'un-committed changes.' % GOLDENS_DIR
@@ -154,7 +152,7 @@ def trigger(project_config, options):
 
 def update(project_config, options):
     test_clean_git()
-    test_gsutil_connectivity(project_config)
+    test_gcs_connectivity(project_config)
     wait_sec = options.wait_sec
     if wait_sec:
         wait_sec = max(wait_sec, 30)
@@ -205,15 +203,15 @@ def test_clean_git():
         sys.exit(0)
 
 
-def test_gsutil_connectivity(project_config):
-    """Test if gsutil needs to be configured for current user."""
-    process = subprocess.Popen(gsutil_cmd('ls', project_config.gs_root),
+def test_gcs_connectivity(project_config):
+    """Test if gcloud needs to be configured for current user."""
+    process = subprocess.Popen(gcstorage_cmd('ls', project_config.gs_root),
                                stdout=subprocess.PIPE,
                                stderr=subprocess.PIPE)
     _, stderr = process.communicate()
     if process.returncode != 0:
         print(stderr.decode('utf-8'), '\n')
-        print(WARNING_GSUTIL_CONNECTIVITY)
+        print(WARNING_GCS_CONNECTIVITY)
         sys.exit(0)
 
 
@@ -403,7 +401,7 @@ def download_patches(project_config, results, destination_dir, verbose):
         local_path = os.path.join(destination_dir, patch_platform + '.patch')
         if verbose:
             print('Downloading patch file from: ' + gs_location)
-        run_command(gsutil_cmd('cp', gs_location, local_path), verbose)
+        run_command(gcstorage_cmd('cp', gs_location, local_path), verbose)
         patches.append(local_path)
     return patches
 
@@ -446,8 +444,8 @@ def run_command(command, verbose, message=None):
         sys.exit(1)
 
 
-def gsutil_cmd(*args):
-    return [VPYTHON, GSUTIL] + list(args)
+def gcstorage_cmd(*args):
+    return ["gcloud", "storage"] + list(args)
 
 
 if __name__ == '__main__':

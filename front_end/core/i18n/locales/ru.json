@@ -80,6 +80,9 @@
   "core/common/ResourceType.ts | ws": {
     "message": "WS"
   },
+  "core/common/Revealer.ts | animationsPanel": {
+    "message": "Панель \"Анимация\""
+  },
   "core/common/Revealer.ts | applicationPanel": {
     "message": "Панель приложения"
   },
@@ -199,27 +202,6 @@
   },
   "core/host/ResourceLoader.ts | unknownError": {
     "message": "Неизвестная ошибка"
-  },
-  "core/i18n/time-utilities.ts | fdays": {
-    "message": "{PH1} дн."
-  },
-  "core/i18n/time-utilities.ts | fhrs": {
-    "message": "{PH1} ч."
-  },
-  "core/i18n/time-utilities.ts | fmin": {
-    "message": "{PH1} мин."
-  },
-  "core/i18n/time-utilities.ts | fmms": {
-    "message": "{PH1} мкс"
-  },
-  "core/i18n/time-utilities.ts | fms": {
-    "message": "{PH1} мс"
-  },
-  "core/i18n/time-utilities.ts | fmsExpanded": {
-    "message": "{PH1} мс"
-  },
-  "core/i18n/time-utilities.ts | fs": {
-    "message": "{PH1} сек."
   },
   "core/sdk/CPUProfilerModel.ts | profileD": {
     "message": "Профиль {PH1}"
@@ -455,6 +437,9 @@
   "core/sdk/PageResourceLoader.ts | loadCanceledDueToReloadOf": {
     "message": "Загрузка отменена из-за перезапуска проверенной страницы."
   },
+  "core/sdk/RehydratingConnection.ts | noSourceText": {
+    "message": "Исходный текст отсутствует."
+  },
   "core/sdk/Script.ts | scriptRemovedOrDeleted": {
     "message": "Скрипт удален."
   },
@@ -688,6 +673,9 @@
   },
   "core/sdk/sdk-meta.ts | highlightAdFrames": {
     "message": "Выделять фреймы объявлений"
+  },
+  "core/sdk/sdk-meta.ts | networkCacheExplanation": {
+    "message": "Отключение сетевого кеша имитирует сетевое взаимодействие, аналогичное первому посещению"
   },
   "core/sdk/sdk-meta.ts | networkRequestBlocking": {
     "message": "Блокировка сетевых запросов"
@@ -1163,9 +1151,6 @@
   "generated/Deprecation.ts | CSSCustomStateDeprecatedSyntax": {
     "message": ":--customstatename больше не поддерживается. Используйте синтаксис :state(customstatename)."
   },
-  "generated/Deprecation.ts | CSSInsetAreaProperty": {
-    "message": "Свойство inset-area больше не поддерживается. Используйте вместо него свойство position-area."
-  },
   "generated/Deprecation.ts | CSSSelectorInternalMediaControlsOverlayCastButton": {
     "message": "Чтобы отключить интеграцию Google Cast по умолчанию, вместо селектора -internal-media-controls-overlay-cast-button используйте атрибут disableRemotePlayback."
   },
@@ -1207,9 +1192,6 @@
   },
   "generated/Deprecation.ts | GeolocationInsecureOriginDeprecatedNotRemoved": {
     "message": "Методы getCurrentPosition() и watchPosition() в небезопасных источниках больше не поддерживаются. Чтобы использовать их, задайте для приложения безопасный источник, например HTTPS. Подробнее: https://goo.gle/chrome-insecure-origins."
-  },
-  "generated/Deprecation.ts | GetInnerHTML": {
-    "message": "Функция getInnerHTML() больше не поддерживается и скоро будет удалена из этого браузера. Вместо нее используйте функцию getHTML()."
   },
   "generated/Deprecation.ts | GetUserMediaInsecureOrigin": {
     "message": "Метод getUserMedia() больше не работает с небезопасными источниками. Чтобы использовать его, задайте для приложения безопасный источник, например HTTPS. Подробнее: https://goo.gle/chrome-insecure-origins."
@@ -1590,7 +1572,7 @@
     "message": "сбросить"
   },
   "models/persistence/EditFileSystemView.ts | add": {
-    "message": "Добавить"
+    "message": "Добавить папку"
   },
   "models/persistence/EditFileSystemView.ts | enterAPath": {
     "message": "Укажите путь."
@@ -1599,7 +1581,7 @@
     "message": "Введите уникальный путь."
   },
   "models/persistence/EditFileSystemView.ts | excludedFolders": {
-    "message": "Исключенные папки"
+    "message": "Исключенные подпапки"
   },
   "models/persistence/EditFileSystemView.ts | folderPath": {
     "message": "Путь к папке"
@@ -1609,6 +1591,9 @@
   },
   "models/persistence/EditFileSystemView.ts | sViaDevtools": {
     "message": "{PH1} (через инструменты разработчика)"
+  },
+  "models/persistence/EditFileSystemView.ts | url": {
+    "message": "URL"
   },
   "models/persistence/IsolatedFileSystem.ts | blobCouldNotBeLoaded": {
     "message": "Не удалось загрузить BLOB-объект."
@@ -1659,10 +1644,10 @@
     "message": "PlatformFileSystem не может читать файлы."
   },
   "models/persistence/WorkspaceSettingsTab.ts | addFolder": {
-    "message": "Добавить папку…"
+    "message": "Добавить папку"
   },
   "models/persistence/WorkspaceSettingsTab.ts | folderExcludePattern": {
-    "message": "Шаблон исключения папки"
+    "message": "Исключить из рабочей области"
   },
   "models/persistence/WorkspaceSettingsTab.ts | mappingsAreInferredAutomatically": {
     "message": "Сопоставления определяются автоматически"
@@ -1703,8 +1688,65 @@
   "models/persistence/persistence-meta.ts | workspace": {
     "message": "Рабочая область"
   },
-  "models/timeline_model/TimelineJSProfile.ts | threadS": {
-    "message": "Поток {PH1}"
+  "models/trace/insights/CLSCulprits.ts | description": {
+    "message": "Смещение макета происходит, когда элементы передвигаются без взаимодействия с пользователем. Это может быть связано с добавлением и удалением элементов или изменением их шрифтов при загрузке страницы. [Выясните причины сдвигов.](https://web.dev/articles/optimize-cls)"
+  },
+  "models/trace/insights/CLSCulprits.ts | title": {
+    "message": "Причины смещения макета"
+  },
+  "models/trace/insights/DocumentLatency.ts | description": {
+    "message": "Ваш первый сетевой запрос – самый важный.  Уменьшайте задержку, избегая переадресации, ускоряя ответ сервера и используя сжатие текста."
+  },
+  "models/trace/insights/DocumentLatency.ts | title": {
+    "message": "Задержка при запросе документа"
+  },
+  "models/trace/insights/FontDisplay.ts | description": {
+    "message": "Рекомендуем использовать свойство [font-display](https://developer.chrome.com/blog/font-display) со значением swap или optional, чтобы весь текст был одинаково виден. Значение swap можно дополнительно оптимизировать, чтобы с помощью [переопределения показателей шрифта](https://developer.chrome.com/blog/font-fallbacks) уменьшить смещения макета."
+  },
+  "models/trace/insights/FontDisplay.ts | title": {
+    "message": "Используемые шрифты"
+  },
+  "models/trace/insights/InteractionToNextPaint.ts | description": {
+    "message": "Начните анализ с самого длинного этапа. Задержки [можно уменьшить](https://web.dev/articles/optimize-inp#optimize_interactions). Чтобы сократить продолжительность обработки, [оптимизируйте затраты основного потока](https://web.dev/articles/optimize-long-tasks). Обычно они относятся к JS."
+  },
+  "models/trace/insights/InteractionToNextPaint.ts | title": {
+    "message": "INP по этапам"
+  },
+  "models/trace/insights/LCPDiscovery.ts | description": {
+    "message": "Оптимизируйте LCP, сделав возможным [находить](https://web.dev/articles/optimize-lcp#1_eliminate_resource_load_delay) самое крупное изображение прямо из HTML-кода. Также советуем [избегать отложенной загрузки](https://web.dev/articles/lcp-lazy-loading)."
+  },
+  "models/trace/insights/LCPDiscovery.ts | title": {
+    "message": "Информация об LCP и связанных запросах"
+  },
+  "models/trace/insights/LCPPhases.ts | description": {
+    "message": "Для каждого этапа [есть стратегии улучшения](https://web.dev/articles/optimize-lcp#lcp-breakdown). В идеале большая часть времени, требуемого на полную отрисовку элементов LCP, должна тратиться на загрузку ресурсов, а не на задержки."
+  },
+  "models/trace/insights/LCPPhases.ts | title": {
+    "message": "LCP по этапам"
+  },
+  "models/trace/insights/RenderBlocking.ts | description": {
+    "message": "Запросы блокируют обработку при первоначальной загрузке страницы. Это может привести к увеличению значения LCP. [Отсрочка или встраивание](https://web.dev/learn/performance/understanding-the-critical-path#render-blocking_resources/) могут избавить от негативного воздействия этих сетевых запросов."
+  },
+  "models/trace/insights/RenderBlocking.ts | title": {
+    "message": "Запросы, блокирующие отрисовку страницы"
+  },
+  "models/trace/insights/SlowCSSSelector.ts | description": {
+    "message": "Если затраты на повторный расчет стиля остаются высокими, оптимизация селектора может их снизить. [Оптимизируйте селекторы](https://developer.chrome.com/docs/devtools/performance/selector-stats) с большим временем выполнения и высоким процентом медленного пути. Затраты на сопоставление можно снижать, используя более простые селекторы и сокращая их количество, а также за счет более компактной структуры DOM."
+  },
+  "models/trace/insights/SlowCSSSelector.ts | title": {
+    "message": "Затраты на селектор CSS"
+  },
+  "models/trace/insights/ThirdParties.ts | description": {
+    "message": "Сторонний код может сильно замедлить загрузку страницы. [Сократите и отсрочьте загрузку стороннего кода,](https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/loading-third-party-javascript/) чтобы ускорить показ своего контента."
+  },
+  "models/trace/insights/ThirdParties.ts | title": {
+    "message": "Сторонний код"
+  },
+  "models/trace/insights/Viewport.ts | description": {
+    "message": "Область просмотра страницы не оптимизирована для мобильных устройств, поэтому при касании экрана [может возникать задержка до 300 мс](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/)."
+  },
+  "models/trace/insights/Viewport.ts | title": {
+    "message": "Область просмотра не оптимизирована для мобильных устройств"
   },
   "models/workspace/UISourceCode.ts | index": {
     "message": "(индекс)"
@@ -2771,7 +2813,7 @@
   "panels/application/OpenedWindowDetailsView.ts | accessToOpener": {
     "message": "Доступ к открывающей странице"
   },
-  "panels/application/OpenedWindowDetailsView.ts | clickToRevealInElementsPanel": {
+  "panels/application/OpenedWindowDetailsView.ts | clickToOpenInElementsPanel": {
     "message": "Нажмите, чтобы открыть на панели \"Элементы\""
   },
   "panels/application/OpenedWindowDetailsView.ts | closed": {
@@ -3662,17 +3704,17 @@
   "panels/application/components/FrameDetailsView.ts | childDescription": {
     "message": "Это дочерний фрейм одного из рекламных объявлений."
   },
-  "panels/application/components/FrameDetailsView.ts | clickToRevealInElementsPanel": {
+  "panels/application/components/FrameDetailsView.ts | clickToOpenInElementsPanel": {
     "message": "Нажмите, чтобы открыть на панели \"Элементы\""
   },
-  "panels/application/components/FrameDetailsView.ts | clickToRevealInNetworkPanel": {
+  "panels/application/components/FrameDetailsView.ts | clickToOpenInNetworkPanel": {
     "message": "Нажмите, чтобы открыть на панели \"Сеть\""
   },
-  "panels/application/components/FrameDetailsView.ts | clickToRevealInNetworkPanelMight": {
-    "message": "Нажмите, чтобы показать на панели \"Сеть\" (может потребоваться перезагрузка страницы)"
+  "panels/application/components/FrameDetailsView.ts | clickToOpenInNetworkPanelMight": {
+    "message": "Нажмите, чтобы открыть на панели \"Сеть\" (может потребоваться перезагрузка страницы)"
   },
-  "panels/application/components/FrameDetailsView.ts | clickToRevealInSourcesPanel": {
-    "message": "Нажмите, чтобы открыть панель \"Источники\""
+  "panels/application/components/FrameDetailsView.ts | clickToOpenInSourcesPanel": {
+    "message": "Нажмите, чтобы открыть на панели \"Источники\""
   },
   "panels/application/components/FrameDetailsView.ts | contentSecurityPolicy": {
     "message": "Content Security Policy (CSP)"
@@ -4448,6 +4490,9 @@
   "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusUaChangeRequiresReload": {
     "message": "При переходе с предварительной отрисовкой произошла смена агента пользователя."
   },
+  "panels/application/preloading/components/PreloadingString.ts | prerenderFinalStatusWindowClosed": {
+    "message": "Данные предварительно отрисованной страницы были выгружены с помощью метода window.close()."
+  },
   "panels/application/preloading/components/PreloadingString.ts | statusFailure": {
     "message": "Ошибка"
   },
@@ -4466,14 +4511,14 @@
   "panels/application/preloading/components/PreloadingString.ts | statusSuccess": {
     "message": "Готово"
   },
-  "panels/application/preloading/components/RuleSetGrid.ts | buttonClickToRevealInElementsPanel": {
-    "message": "Нажмите, чтобы открыть на панели \"Элементы\""
-  },
-  "panels/application/preloading/components/RuleSetGrid.ts | buttonClickToRevealInNetworkPanel": {
-    "message": "Нажмите, чтобы открыть на панели \"Сеть\""
-  },
   "panels/application/preloading/components/RuleSetGrid.ts | buttonRevealPreloadsAssociatedWithRuleSet": {
     "message": "Показать спекулятивные загрузки, связанные с этим набором правил"
+  },
+  "panels/application/preloading/components/RuleSetGrid.ts | clickToOpenInElementsPanel": {
+    "message": "Нажмите, чтобы открыть на панели \"Элементы\""
+  },
+  "panels/application/preloading/components/RuleSetGrid.ts | clickToOpenInNetworkPanel": {
+    "message": "Открыть на панели \"Сеть\""
   },
   "panels/application/preloading/components/RuleSetGrid.ts | errors": {
     "message": "{errorCount,plural, =1{# ошибка}one{# ошибка}few{# ошибки}many{# ошибок}other{# ошибки}}"
@@ -5663,6 +5708,9 @@
   "panels/elements/ElementStatePaneWidget.ts | forceElementState": {
     "message": "Установить состояние элемента"
   },
+  "panels/elements/ElementStatePaneWidget.ts | learnMore": {
+    "message": "Подробнее…"
+  },
   "panels/elements/ElementStatePaneWidget.ts | toggleElementState": {
     "message": "Показать или скрыть состояние элемента"
   },
@@ -5690,7 +5738,7 @@
   "panels/elements/ElementsPanel.ts | nodeCannotBeFoundInTheCurrent": {
     "message": "Узел не найден на текущей странице."
   },
-  "panels/elements/ElementsPanel.ts | revealInElementsPanel": {
+  "panels/elements/ElementsPanel.ts | openInElementsPanel": {
     "message": "Открыть на панели \"Элементы\""
   },
   "panels/elements/ElementsPanel.ts | showComputedStylesSidebar": {
@@ -5987,10 +6035,13 @@
   "panels/elements/StylePropertyTreeElement.ts | gridEditorButton": {
     "message": "Открыть редактор grid"
   },
+  "panels/elements/StylePropertyTreeElement.ts | jumpToAnimationsPanel": {
+    "message": "Перейти на панель \"Анимация\""
+  },
   "panels/elements/StylePropertyTreeElement.ts | openColorPickerS": {
     "message": "Открыть палитру. {PH1}"
   },
-  "panels/elements/StylePropertyTreeElement.ts | revealInSourcesPanel": {
+  "panels/elements/StylePropertyTreeElement.ts | openInSourcesPanel": {
     "message": "Открыть на панели \"Источники\""
   },
   "panels/elements/StylePropertyTreeElement.ts | shiftClickToChangeColorFormat": {
@@ -6395,11 +6446,11 @@
   "panels/event_listeners/EventListenersView.ts | noEventListeners": {
     "message": "Нет прослушивателей событий"
   },
+  "panels/event_listeners/EventListenersView.ts | openInElementsPanel": {
+    "message": "Открыть на панели \"Элементы\""
+  },
   "panels/event_listeners/EventListenersView.ts | passive": {
     "message": "Пассивен"
-  },
-  "panels/event_listeners/EventListenersView.ts | revealInElementsPanel": {
-    "message": "Открыть на панели \"Элементы\""
   },
   "panels/event_listeners/EventListenersView.ts | togglePassive": {
     "message": "Перевести в пассивное состояние"
@@ -6467,6 +6518,9 @@
   "panels/explain/components/ConsoleInsight.ts | settingsLink": {
     "message": "Console insights в настройках"
   },
+  "panels/explain/components/ConsoleInsight.ts | signIn": {
+    "message": "Войти"
+  },
   "panels/explain/components/ConsoleInsight.ts | signInToUse": {
     "message": "Чтобы использовать эту функцию, войдите в аккаунт."
   },
@@ -6475,9 +6529,6 @@
   },
   "panels/explain/components/ConsoleInsight.ts | turnOnInSettings": {
     "message": "Включите функцию {PH1}, чтобы получать помощь ИИ при анализе и устранении предупреждений и ошибок консоли."
-  },
-  "panels/explain/components/ConsoleInsight.ts | updateSettings": {
-    "message": "Обновить настройки"
   },
   "panels/explain/explain-meta.ts | enableConsoleInsights": {
     "message": "Генерировать пояснения к сообщениям в консоли с помощью ИИ"
@@ -6498,16 +6549,31 @@
     "message": "Этим параметром управляет администратор."
   },
   "panels/explain/explain-meta.ts | wrongLocale": {
-    "message": "Чтобы использовать эту функцию, в настройках инструментов разработчика измените язык на английский."
+    "message": "Чтобы пользоваться этой функцией, в настройках инструментов разработчика выберите английский язык."
   },
-  "panels/freestyler/FreestylerPanel.ts | chatCleared": {
-    "message": "Сообщения в чате удалены"
+  "panels/freestyler/FreestylerPanel.ts | chatDeleted": {
+    "message": "Чат удален"
   },
-  "panels/freestyler/FreestylerPanel.ts | clearChat": {
-    "message": "Очистить чат"
+  "panels/freestyler/FreestylerPanel.ts | clearChatHistory": {
+    "message": "Удалить историю чата"
+  },
+  "panels/freestyler/FreestylerPanel.ts | deleteChat": {
+    "message": "Удалить чат"
   },
   "panels/freestyler/FreestylerPanel.ts | help": {
     "message": "Справка"
+  },
+  "panels/freestyler/FreestylerPanel.ts | history": {
+    "message": "История"
+  },
+  "panels/freestyler/FreestylerPanel.ts | newChat": {
+    "message": "Новый чат"
+  },
+  "panels/freestyler/FreestylerPanel.ts | newChatCreated": {
+    "message": "Создан новый чат"
+  },
+  "panels/freestyler/FreestylerPanel.ts | noPastConversations": {
+    "message": "Обсуждения не найдены"
   },
   "panels/freestyler/FreestylerPanel.ts | sendFeedback": {
     "message": "Отправить отзыв"
@@ -6538,6 +6604,12 @@
   },
   "panels/freestyler/components/FreestylerChatUi.ts | turnOnForStylesAndRequests": {
     "message": "Если вам нужна помощь со стилями и сетевыми запросами, включите {PH1}"
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | turnOnForStylesRequestsAndFiles": {
+    "message": "Если вам нужна помощь со стилями, сетевыми запросами или файлами, включите {PH1}."
+  },
+  "panels/freestyler/components/FreestylerChatUi.ts | turnOnForStylesRequestsPerformanceAndFiles": {
+    "message": "Если вам нужна помощь со стилями, сетевыми запросами, производительностью или файлами, включите {PH1}."
   },
   "panels/freestyler/freestyler-meta.ts | aiAssistance": {
     "message": "Помощь от ИИ"
@@ -7400,7 +7472,7 @@
   "panels/linear_memory_inspector/LinearMemoryInspectorController.ts | couldNotOpenLinearMemory": {
     "message": "Не удалось открыть инспектор линейной памяти. Буфер не найден."
   },
-  "panels/linear_memory_inspector/LinearMemoryInspectorController.ts | revealInMemoryInspectorPanel": {
+  "panels/linear_memory_inspector/LinearMemoryInspectorController.ts | openInMemoryInspectorPanel": {
     "message": "Открыть на панели \"Инспектор памяти\""
   },
   "panels/linear_memory_inspector/LinearMemoryInspectorPane.ts | noOpenInspections": {
@@ -7752,7 +7824,7 @@
     "message": "Медленная 3G-сеть и 6-кратное замедление процессора"
   },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | addCustomProfile": {
-    "message": "Добавить специальный профиль…"
+    "message": "Добавить профиль"
   },
   "panels/mobile_throttling/ThrottlingSettingsTab.ts | dms": {
     "message": "{PH1} ms"
@@ -8543,14 +8615,17 @@
   "panels/network/NetworkPanel.ts | networkSettings": {
     "message": "Настройки сети"
   },
+  "panels/network/NetworkPanel.ts | openInNetworkPanel": {
+    "message": "Открыть на панели \"Сеть\""
+  },
+  "panels/network/NetworkPanel.ts | openInNetworkPanelMissingRequest": {
+    "message": "Открыть на панели \"Сеть\" (запрос отсутствует)"
+  },
   "panels/network/NetworkPanel.ts | preserveLog": {
     "message": "Сохранять журнал"
   },
   "panels/network/NetworkPanel.ts | recordingFrames": {
     "message": "Запись фреймов…"
-  },
-  "panels/network/NetworkPanel.ts | revealInNetworkPanel": {
-    "message": "Открыть на панели \"Сеть\""
   },
   "panels/network/NetworkPanel.ts | search": {
     "message": "Поиск"
@@ -8770,6 +8845,18 @@
   },
   "panels/network/RequestTimingView.ts | retrievalTimeS": {
     "message": "Время извлечения: {PH1}"
+  },
+  "panels/network/RequestTimingView.ts | routerActualSource": {
+    "message": "Действительный источник: {PH1}"
+  },
+  "panels/network/RequestTimingView.ts | routerCacheLookup": {
+    "message": "Свойство Cache Lookup"
+  },
+  "panels/network/RequestTimingView.ts | routerEvaluation": {
+    "message": "Время оценки маршрутизатора"
+  },
+  "panels/network/RequestTimingView.ts | routerMatchedSource": {
+    "message": "Найденный источник: {PH1}"
   },
   "panels/network/RequestTimingView.ts | serverPush": {
     "message": "Отправка данных по инициативе сервера"
@@ -10433,6 +10520,24 @@
   "panels/search/SearchView.ts | searching": {
     "message": "Поиск…"
   },
+  "panels/security/CookieReportView.ts | allowed": {
+    "message": "Разрешен"
+  },
+  "panels/security/CookieReportView.ts | allowedByException": {
+    "message": "Разрешен (как исключение)"
+  },
+  "panels/security/CookieReportView.ts | blocked": {
+    "message": "Заблокирован"
+  },
+  "panels/security/CookieReportView.ts | body": {
+    "message": "Сторонние файлы cookie, доступ к которым может быть ограничен настройками пользователя. Если на файлы cookie установлены ограничения, сайт может не работать."
+  },
+  "panels/security/CookieReportView.ts | learnMoreLink": {
+    "message": "Подробнее о том, как используются сторонние файлы cookie…"
+  },
+  "panels/security/CookieReportView.ts | title": {
+    "message": "Сторонние файлы cookie"
+  },
   "panels/security/SecurityModel.ts | cipherWithMAC": {
     "message": "{PH1} и {PH2}"
   },
@@ -10733,6 +10838,9 @@
   "panels/security/SecurityPanel.ts | yourPageRequestedNonsecure": {
     "message": "Ваша страница отправила запрос в незащищенные источники, которые были заблокированы."
   },
+  "panels/security/SecurityPanelSidebar.ts | cookieReport": {
+    "message": "Сторонние файлы cookie"
+  },
   "panels/security/SecurityPanelSidebar.ts | mainOrigin": {
     "message": "Главный источник"
   },
@@ -10747,6 +10855,9 @@
   },
   "panels/security/SecurityPanelSidebar.ts | overview": {
     "message": "Обзор"
+  },
+  "panels/security/SecurityPanelSidebar.ts | privacy": {
+    "message": "Конфиденциальность"
   },
   "panels/security/SecurityPanelSidebar.ts | reloadToViewDetails": {
     "message": "Перезагрузите, чтобы увидеть подробные сведения."
@@ -10773,10 +10884,7 @@
     "message": "Показать панель \"Безопасность и конфиденциальность\""
   },
   "panels/sensors/LocationsSettingsTab.ts | addLocation": {
-    "message": "Добавить расположение"
-  },
-  "panels/sensors/LocationsSettingsTab.ts | customLocations": {
-    "message": "Пользовательские местоположения"
+    "message": "Добавить местоположение"
   },
   "panels/sensors/LocationsSettingsTab.ts | lat": {
     "message": "Широта"
@@ -10807,6 +10915,9 @@
   },
   "panels/sensors/LocationsSettingsTab.ts | locationNameMustBeLessThanS": {
     "message": "Количество символов в названии места должно быть меньше {PH1}."
+  },
+  "panels/sensors/LocationsSettingsTab.ts | locations": {
+    "message": "Местоположения"
   },
   "panels/sensors/LocationsSettingsTab.ts | long": {
     "message": "Долгота"
@@ -10858,6 +10969,9 @@
   },
   "panels/sensors/SensorsView.ts | forcesSelectedIdleStateEmulation": {
     "message": "Запускает выбранную эмуляцию состояния бездействия."
+  },
+  "panels/sensors/SensorsView.ts | forcesSelectedPressureStateEmulation": {
+    "message": "Запускает выбранную эмуляцию состояния давления."
   },
   "panels/sensors/SensorsView.ts | forcesTouchInsteadOfClick": {
     "message": "Позволяет использовать только сенсорный ввод."
@@ -10931,6 +11045,12 @@
   "panels/sensors/sensors-meta.ts | accelerometer": {
     "message": "акселерометр"
   },
+  "panels/sensors/sensors-meta.ts | cpuPressure": {
+    "message": "Давление ЦП"
+  },
+  "panels/sensors/sensors-meta.ts | critical": {
+    "message": "Критическое"
+  },
   "panels/sensors/sensors-meta.ts | deviceOrientation": {
     "message": "ориентация устройства"
   },
@@ -10939,6 +11059,9 @@
   },
   "panels/sensors/sensors-meta.ts | emulateIdleDetectorState": {
     "message": "Эмулировать состояние Idle Detector"
+  },
+  "panels/sensors/sensors-meta.ts | fair": {
+    "message": "Удовлетворительное"
   },
   "panels/sensors/sensors-meta.ts | forceEnabled": {
     "message": "Принудительно включено"
@@ -10953,13 +11076,22 @@
     "message": "региональные настройки"
   },
   "panels/sensors/sensors-meta.ts | locations": {
-    "message": "Места"
+    "message": "Местоположения"
   },
   "panels/sensors/sensors-meta.ts | noIdleEmulation": {
     "message": "Отменить эмуляцию бездействия"
   },
+  "panels/sensors/sensors-meta.ts | noPressureEmulation": {
+    "message": "Не переопределять"
+  },
+  "panels/sensors/sensors-meta.ts | nominal": {
+    "message": "Номинальное"
+  },
   "panels/sensors/sensors-meta.ts | sensors": {
     "message": "Датчики"
+  },
+  "panels/sensors/sensors-meta.ts | serious": {
+    "message": "Серьезное"
   },
   "panels/sensors/sensors-meta.ts | showLocations": {
     "message": "Показать местоположения"
@@ -10991,9 +11123,6 @@
   "panels/settings/AISettingsTab.ts | ageRestricted": {
     "message": "Эта функция доступна только пользователям, которым уже исполнилось 18 лет."
   },
-  "panels/settings/AISettingsTab.ts | aiInnovations": {
-    "message": "Искусственный интеллект"
-  },
   "panels/settings/AISettingsTab.ts | boostYourProductivity": {
     "message": "Работайте эффективнее с ИИ"
   },
@@ -11021,6 +11150,9 @@
   "panels/settings/AISettingsTab.ts | explainStylingNetworkAndFile": {
     "message": "Анализируйте CSS-стили, сетевую активность и источники файлов, опираясь на подсказки от ИИ."
   },
+  "panels/settings/AISettingsTab.ts | explainStylingNetworkPerformanceAndFile": {
+    "message": "Анализируйте CSS-стили, сетевую активность, проблемы с производительностью, а также источники файлов, опираясь на подсказки от ИИ."
+  },
   "panels/settings/AISettingsTab.ts | freestylerSendsData": {
     "message": "Любые данные, к которым проверяемая страница обращается через веб-API, сетевые запросы, файлы и трассировку производительности, отправляются в Google для генерации объяснений. Наши специалисты могут просматривать такие данные, чтобы улучшать эту функцию. Не указывайте на страницах личную и конфиденциальную информацию."
   },
@@ -11035,6 +11167,9 @@
   },
   "panels/settings/AISettingsTab.ts | helpUnderstandStylingNetworkAndFile": {
     "message": "Разберитесь в CSS-стилях, сетевых запросах и файлах с помощью ИИ."
+  },
+  "panels/settings/AISettingsTab.ts | helpUnderstandStylingNetworkPerformanceAndFile": {
+    "message": "Разберитесь в CSS-стилях, сетевых запросах, производительности и файлах с помощью ИИ."
   },
   "panels/settings/AISettingsTab.ts | learnMore": {
     "message": "Подробнее"
@@ -11088,10 +11223,7 @@
     "message": "Известные сторонние скрипты из карт исходных кодов"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | customExclusionRules": {
-    "message": "Пользовательские правила исключений:"
-  },
-  "panels/settings/FrameworkIgnoreListSettingsTab.ts | debuggerWillSkipThroughThe": {
-    "message": "Отладчик не будет обрабатывать эти скрипты или прерываться на исключениях, связанных только с ними, а соответствующие элементы флейм-графа на панели производительности будут свернуты."
+    "message": "Настраиваемые правила исключений"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | enableIgnoreListing": {
     "message": "Включить список игнорирования"
@@ -11100,16 +11232,19 @@
     "message": "Снимите флажок, чтобы отключить список игнорируемых"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | frameworkIgnoreList": {
-    "message": "Список игнорируемых фреймворков"
+    "message": "Список игнорирования"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | generalExclusionRules": {
-    "message": "Общие правила исключений:"
+    "message": "Общие правила исключений"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreListAnonymousScripts": {
     "message": "Анонимные скрипты из консоли или раздела оценки"
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreListContentScripts": {
     "message": "Скрипты для содержимого, внедренные расширениями"
+  },
+  "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreListingDescription": {
+    "message": "Включенный отладчик не будет обрабатывать скрипты из списка игнорирования и прерываться на исключениях, связанных только с ними. Соответствующие элементы флейм-графа на панели \"Производительность\" будут свернуты."
   },
   "panels/settings/FrameworkIgnoreListSettingsTab.ts | ignoreScriptsWhoseNamesMatchS": {
     "message": "Игнорировать скрипты, имена которых соответствуют шаблону {PH1}"
@@ -11154,7 +11289,7 @@
     "message": "Список сочетаний клавиш"
   },
   "panels/settings/KeybindsSettingsTab.ts | matchShortcutsFromPreset": {
-    "message": "Соответствующие сочетания клавиш из набора"
+    "message": "Набор настроек сочетаний клавиш"
   },
   "panels/settings/KeybindsSettingsTab.ts | noShortcutForAction": {
     "message": "Нет сочетания клавиш для этого действия"
@@ -11187,7 +11322,7 @@
     "message": "Это сочетание клавиш используется элементом \"{PH1}: {PH2}\""
   },
   "panels/settings/SettingsScreen.ts | experiments": {
-    "message": "Экспериментальные функции"
+    "message": "Эксперименты"
   },
   "panels/settings/SettingsScreen.ts | filterExperimentsLabel": {
     "message": "Фильтр"
@@ -11196,13 +11331,10 @@
     "message": "Подробнее…"
   },
   "panels/settings/SettingsScreen.ts | noResults": {
-    "message": "Нет экспериментов, соответствующих условиям фильтра."
+    "message": "Внимание! Нет экспериментов, соответствующих фильтру."
   },
   "panels/settings/SettingsScreen.ts | oneOrMoreSettingsHaveChanged": {
     "message": "Чтобы изменения настроек вступили в силу, перезапустите инструменты разработчика."
-  },
-  "panels/settings/SettingsScreen.ts | preferences": {
-    "message": "Параметры"
   },
   "panels/settings/SettingsScreen.ts | restoreDefaultsAndReload": {
     "message": "Восстановить настройки по умолчанию и обновить страницу"
@@ -11217,13 +11349,13 @@
     "message": "Сочетания клавиш"
   },
   "panels/settings/SettingsScreen.ts | theseExperimentsAreParticularly": {
-    "message": "Эти эксперименты крайне ненадежны. Включая их, вы берете на себя весь риск."
+    "message": "Внимание! Эти экспериментальные функции нестабильны. Включая их, вы берете на себя всю ответственность."
   },
   "panels/settings/SettingsScreen.ts | theseExperimentsCouldBeUnstable": {
-    "message": "Эти эксперименты могут быть нестабильны или ненадежны. Может потребоваться перезапуск инструментов разработчика."
+    "message": "Внимание! Эти экспериментальные функции могут быть нестабильны или ненадежны."
   },
-  "panels/settings/SettingsScreen.ts | warning": {
-    "message": "ВНИМАНИЕ!"
+  "panels/settings/SettingsScreen.ts | unstableExperiments": {
+    "message": "Нестабильные эксперименты"
   },
   "panels/settings/components/SyncSection.ts | preferencesSyncDisabled": {
     "message": "Чтобы включить этот параметр, необходимо активировать синхронизацию настроек в Chrome."
@@ -11239,6 +11371,12 @@
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | addCustomDevice": {
     "message": "Добавить пользовательское устройство"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | customDevices": {
+    "message": "Свои устройства"
+  },
+  "panels/settings/emulation/DevicesSettingsTab.ts | defaultDevices": {
+    "message": "Стандартные устройства"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | device": {
     "message": "Устройство"
@@ -11257,9 +11395,6 @@
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | devicePixelRatio": {
     "message": "Соотношение логических и физических пикселей устройства"
-  },
-  "panels/settings/emulation/DevicesSettingsTab.ts | emulatedDevices": {
-    "message": "Эмулированные устройства"
   },
   "panels/settings/emulation/DevicesSettingsTab.ts | height": {
     "message": "Высота"
@@ -12102,7 +12237,7 @@
     "message": "Активировать точки останова"
   },
   "panels/sources/sources-meta.ts | addFolder": {
-    "message": "Добавление папки"
+    "message": "Добавить папку"
   },
   "panels/sources/sources-meta.ts | addFolderToWorkspace": {
     "message": "Добавить папку в рабочую область"
@@ -12656,23 +12791,11 @@
   "panels/timeline/TimelineHistoryManager.ts | landingPageTitle": {
     "message": "Показатели в реальном времени"
   },
-  "panels/timeline/TimelineHistoryManager.ts | moments": {
-    "message": "моменты"
-  },
   "panels/timeline/TimelineHistoryManager.ts | noRecordings": {
     "message": "(записей нет)"
   },
-  "panels/timeline/TimelineHistoryManager.ts | sAgo": {
-    "message": "({PH1} назад)"
-  },
   "panels/timeline/TimelineHistoryManager.ts | sD": {
     "message": "{PH1} {PH2}"
-  },
-  "panels/timeline/TimelineHistoryManager.ts | sH": {
-    "message": "{PH1} ч."
-  },
-  "panels/timeline/TimelineHistoryManager.ts | sM": {
-    "message": "{PH1} м"
   },
   "panels/timeline/TimelineHistoryManager.ts | selectTimelineSession": {
     "message": "Выбрать сеанс хронологии"
@@ -12709,6 +12832,9 @@
   },
   "panels/timeline/TimelinePanel.ts | SignificantOverheadDueToPaint": {
     "message": "– Значительное ресурсопотребление из-за инструментирования отображения"
+  },
+  "panels/timeline/TimelinePanel.ts | backToLiveMetrics": {
+    "message": "Перейти на страницу с показателями в реальном времени"
   },
   "panels/timeline/TimelinePanel.ts | bufferUsage": {
     "message": "Использование буфера"
@@ -12774,7 +12900,7 @@
     "message": "Вы выбрали фрейм"
   },
   "panels/timeline/TimelinePanel.ts | hideSidebar": {
-    "message": "Скрыть отдельную боковую панель"
+    "message": "Скрыть боковую панель"
   },
   "panels/timeline/TimelinePanel.ts | initializingProfiler": {
     "message": "Запуск профилировщика…"
@@ -13100,6 +13226,9 @@
   "panels/timeline/TimelineUIUtils.ts | currentClusterScore": {
     "message": "Оценка текущего кластера"
   },
+  "panels/timeline/TimelineUIUtils.ts | delay": {
+    "message": "Задержка"
+  },
   "panels/timeline/TimelineUIUtils.ts | description": {
     "message": "Описание"
   },
@@ -13228,6 +13357,9 @@
   },
   "panels/timeline/TimelineUIUtils.ts | preview": {
     "message": "Предварительный просмотр"
+  },
+  "panels/timeline/TimelineUIUtils.ts | priority": {
+    "message": "Приоритет"
   },
   "panels/timeline/TimelineUIUtils.ts | processingDuration": {
     "message": "Длительность обработки"
@@ -13445,366 +13577,6 @@
   "panels/timeline/components/DetailsView.ts | websocketProtocol": {
     "message": "Протокол WebSocket"
   },
-  "panels/timeline/components/EntryName.ts | anonymous": {
-    "message": "(анонимно)"
-  },
-  "panels/timeline/components/EntryName.ts | eventDispatchS": {
-    "message": "Событие: {PH1}"
-  },
-  "panels/timeline/components/EntryName.ts | frame": {
-    "message": "Фрейм"
-  },
-  "panels/timeline/components/EntryName.ts | wsConnectionClosed": {
-    "message": "Соединение WebSocket закрыто"
-  },
-  "panels/timeline/components/EntryName.ts | wsConnectionOpened": {
-    "message": "Соединение WebSocket установлено"
-  },
-  "panels/timeline/components/EntryName.ts | wsConnectionOpenedWithUrl": {
-    "message": "Соединение WebSocket установлено: {PH1}"
-  },
-  "panels/timeline/components/EntryStyles.ts | animation": {
-    "message": "Анимация"
-  },
-  "panels/timeline/components/EntryStyles.ts | animationFrameFired": {
-    "message": "Запущен фрейм анимации"
-  },
-  "panels/timeline/components/EntryStyles.ts | async": {
-    "message": "Асинхронный"
-  },
-  "panels/timeline/components/EntryStyles.ts | asyncTask": {
-    "message": "Асинхронная задача"
-  },
-  "panels/timeline/components/EntryStyles.ts | cacheModule": {
-    "message": "Код модуля кеша"
-  },
-  "panels/timeline/components/EntryStyles.ts | cacheScript": {
-    "message": "Кеширование кода скрипта"
-  },
-  "panels/timeline/components/EntryStyles.ts | cachedWasmModule": {
-    "message": "Кешированный модуль Wasm"
-  },
-  "panels/timeline/components/EntryStyles.ts | cancelAnimationFrame": {
-    "message": "Отключить фрейм анимации"
-  },
-  "panels/timeline/components/EntryStyles.ts | cancelIdleCallback": {
-    "message": "Отмена вызова функции в период простоя"
-  },
-  "panels/timeline/components/EntryStyles.ts | commit": {
-    "message": "Перенос"
-  },
-  "panels/timeline/components/EntryStyles.ts | compileCode": {
-    "message": "Компиляция кода"
-  },
-  "panels/timeline/components/EntryStyles.ts | compileModule": {
-    "message": "Компиляция модуля"
-  },
-  "panels/timeline/components/EntryStyles.ts | compileScript": {
-    "message": "Компиляция скрипта"
-  },
-  "panels/timeline/components/EntryStyles.ts | compiledWasmModule": {
-    "message": "Скомпилированный модуль Wasm"
-  },
-  "panels/timeline/components/EntryStyles.ts | compositeLayers": {
-    "message": "Составные слои"
-  },
-  "panels/timeline/components/EntryStyles.ts | computeIntersections": {
-    "message": "Рассчет пересечений"
-  },
-  "panels/timeline/components/EntryStyles.ts | consoleTime": {
-    "message": "Время консоли"
-  },
-  "panels/timeline/components/EntryStyles.ts | cppGc": {
-    "message": "Сборка мусора в C++"
-  },
-  "panels/timeline/components/EntryStyles.ts | createWebsocket": {
-    "message": "Создать объект WebSocket"
-  },
-  "panels/timeline/components/EntryStyles.ts | decrypt": {
-    "message": "Расшифровка"
-  },
-  "panels/timeline/components/EntryStyles.ts | decryptReply": {
-    "message": "Расшифровка ответа"
-  },
-  "panels/timeline/components/EntryStyles.ts | deserializeCodeCache": {
-    "message": "Десериализация кеша кода"
-  },
-  "panels/timeline/components/EntryStyles.ts | destroyWebsocket": {
-    "message": "Уничтожить WebSocket"
-  },
-  "panels/timeline/components/EntryStyles.ts | digest": {
-    "message": "Сводка"
-  },
-  "panels/timeline/components/EntryStyles.ts | digestReply": {
-    "message": "Краткий ответ"
-  },
-  "panels/timeline/components/EntryStyles.ts | domGc": {
-    "message": "Сборка мусора DOM"
-  },
-  "panels/timeline/components/EntryStyles.ts | domcontentloadedEvent": {
-    "message": "Событие DOMContentLoaded"
-  },
-  "panels/timeline/components/EntryStyles.ts | drawFrame": {
-    "message": "Рисование фрейма"
-  },
-  "panels/timeline/components/EntryStyles.ts | drawing": {
-    "message": "Отрисовка"
-  },
-  "panels/timeline/components/EntryStyles.ts | embedderCallback": {
-    "message": "Обратный вызов встраивателя"
-  },
-  "panels/timeline/components/EntryStyles.ts | encrypt": {
-    "message": "Зашифровать"
-  },
-  "panels/timeline/components/EntryStyles.ts | encryptReply": {
-    "message": "Шифрование ответа"
-  },
-  "panels/timeline/components/EntryStyles.ts | evaluateModule": {
-    "message": "Оценка модуля"
-  },
-  "panels/timeline/components/EntryStyles.ts | evaluateScript": {
-    "message": "Оценка скрипта"
-  },
-  "panels/timeline/components/EntryStyles.ts | event": {
-    "message": "Событие"
-  },
-  "panels/timeline/components/EntryStyles.ts | eventTiming": {
-    "message": "Временные метки события"
-  },
-  "panels/timeline/components/EntryStyles.ts | experience": {
-    "message": "Взаимодействие"
-  },
-  "panels/timeline/components/EntryStyles.ts | finishLoading": {
-    "message": "Завершение загрузки"
-  },
-  "panels/timeline/components/EntryStyles.ts | fireIdleCallback": {
-    "message": "Вызов функции в период простоя"
-  },
-  "panels/timeline/components/EntryStyles.ts | firstContentfulPaint": {
-    "message": "Первое существенное отображение"
-  },
-  "panels/timeline/components/EntryStyles.ts | firstPaint": {
-    "message": "Первое отображение"
-  },
-  "panels/timeline/components/EntryStyles.ts | frameStart": {
-    "message": "Запуск фрейма"
-  },
-  "panels/timeline/components/EntryStyles.ts | frameStartMainThread": {
-    "message": "Начало фрейма (основной поток)"
-  },
-  "panels/timeline/components/EntryStyles.ts | frameStartedLoading": {
-    "message": "Фрейм начал загружаться"
-  },
-  "panels/timeline/components/EntryStyles.ts | functionCall": {
-    "message": "Вызов функции"
-  },
-  "panels/timeline/components/EntryStyles.ts | gcEvent": {
-    "message": "Событие сборки мусора"
-  },
-  "panels/timeline/components/EntryStyles.ts | gpu": {
-    "message": "Графический процессор"
-  },
-  "panels/timeline/components/EntryStyles.ts | hitTest": {
-    "message": "Проверка нажатия"
-  },
-  "panels/timeline/components/EntryStyles.ts | idle": {
-    "message": "Бездействует"
-  },
-  "panels/timeline/components/EntryStyles.ts | imageDecode": {
-    "message": "Расшифровка изображения"
-  },
-  "panels/timeline/components/EntryStyles.ts | installTimer": {
-    "message": "Установка таймера"
-  },
-  "panels/timeline/components/EntryStyles.ts | invalidateLayout": {
-    "message": "Аннулировать макет"
-  },
-  "panels/timeline/components/EntryStyles.ts | jsFrame": {
-    "message": "Фрейм JS"
-  },
-  "panels/timeline/components/EntryStyles.ts | largestContentfulPaint": {
-    "message": "Самое крупное существенное отображение"
-  },
-  "panels/timeline/components/EntryStyles.ts | layerize": {
-    "message": "Создание слоев"
-  },
-  "panels/timeline/components/EntryStyles.ts | layout": {
-    "message": "Макет"
-  },
-  "panels/timeline/components/EntryStyles.ts | layoutShift": {
-    "message": "Смещение макета"
-  },
-  "panels/timeline/components/EntryStyles.ts | layoutShiftCluster": {
-    "message": "Кластер смещения макета"
-  },
-  "panels/timeline/components/EntryStyles.ts | loading": {
-    "message": "Загрузка"
-  },
-  "panels/timeline/components/EntryStyles.ts | majorGc": {
-    "message": "Полная сборка мусора"
-  },
-  "panels/timeline/components/EntryStyles.ts | messaging": {
-    "message": "Сообщения"
-  },
-  "panels/timeline/components/EntryStyles.ts | minorGc": {
-    "message": "Быстрая сборка мусора"
-  },
-  "panels/timeline/components/EntryStyles.ts | onMessage": {
-    "message": "Сообщение о включении"
-  },
-  "panels/timeline/components/EntryStyles.ts | onloadEvent": {
-    "message": "Событие onload"
-  },
-  "panels/timeline/components/EntryStyles.ts | optimizeCode": {
-    "message": "Оптимизировать код"
-  },
-  "panels/timeline/components/EntryStyles.ts | other": {
-    "message": "Другое"
-  },
-  "panels/timeline/components/EntryStyles.ts | paint": {
-    "message": "Отображение"
-  },
-  "panels/timeline/components/EntryStyles.ts | paintImage": {
-    "message": "Отрисовка изображения"
-  },
-  "panels/timeline/components/EntryStyles.ts | paintSetup": {
-    "message": "Настройка отрисовки"
-  },
-  "panels/timeline/components/EntryStyles.ts | painting": {
-    "message": "Отображение"
-  },
-  "panels/timeline/components/EntryStyles.ts | parseAndCompile": {
-    "message": "Синтаксический анализ и компиляция"
-  },
-  "panels/timeline/components/EntryStyles.ts | parseHtml": {
-    "message": "Синтаксический анализ HTML"
-  },
-  "panels/timeline/components/EntryStyles.ts | parseStylesheet": {
-    "message": "Синтаксический анализ таблицы стилей"
-  },
-  "panels/timeline/components/EntryStyles.ts | prePaint": {
-    "message": "Предварительная отрисовка"
-  },
-  "panels/timeline/components/EntryStyles.ts | profilingOverhead": {
-    "message": "Ресурсопотребление профилирования"
-  },
-  "panels/timeline/components/EntryStyles.ts | rasterizePaint": {
-    "message": "Растрирование отрисовки"
-  },
-  "panels/timeline/components/EntryStyles.ts | rasterizing": {
-    "message": "Растрирование"
-  },
-  "panels/timeline/components/EntryStyles.ts | recalculateStyle": {
-    "message": "Повторный расчет стиля"
-  },
-  "panels/timeline/components/EntryStyles.ts | receiveData": {
-    "message": "Прием данных"
-  },
-  "panels/timeline/components/EntryStyles.ts | receiveResponse": {
-    "message": "Получение ответа"
-  },
-  "panels/timeline/components/EntryStyles.ts | receiveWebsocketHandshake": {
-    "message": "Получение подтверждения WebSocket"
-  },
-  "panels/timeline/components/EntryStyles.ts | removeTimer": {
-    "message": "Удалить таймер"
-  },
-  "panels/timeline/components/EntryStyles.ts | rendering": {
-    "message": "Отрисовка"
-  },
-  "panels/timeline/components/EntryStyles.ts | requestAnimationFrame": {
-    "message": "Запрос фрейма анимации"
-  },
-  "panels/timeline/components/EntryStyles.ts | requestIdleCallback": {
-    "message": "Запрос вызова функции в период простоя"
-  },
-  "panels/timeline/components/EntryStyles.ts | requestMainThreadFrame": {
-    "message": "Запрос фрейма основного потока"
-  },
-  "panels/timeline/components/EntryStyles.ts | runMicrotasks": {
-    "message": "Запуск микрозадач"
-  },
-  "panels/timeline/components/EntryStyles.ts | schedulePostMessage": {
-    "message": "Запланировать выполнение функции postMessage"
-  },
-  "panels/timeline/components/EntryStyles.ts | scheduleStyleRecalculation": {
-    "message": "Расписание пересчета стилей"
-  },
-  "panels/timeline/components/EntryStyles.ts | scripting": {
-    "message": "Выполнение скриптов"
-  },
-  "panels/timeline/components/EntryStyles.ts | scroll": {
-    "message": "Прокрутка"
-  },
-  "panels/timeline/components/EntryStyles.ts | sendRequest": {
-    "message": "Отправка запроса"
-  },
-  "panels/timeline/components/EntryStyles.ts | sendWebsocketHandshake": {
-    "message": "Отправка подтверждения WebSocket"
-  },
-  "panels/timeline/components/EntryStyles.ts | sign": {
-    "message": "Подписание"
-  },
-  "panels/timeline/components/EntryStyles.ts | signReply": {
-    "message": "Подпись ответа"
-  },
-  "panels/timeline/components/EntryStyles.ts | streamingCompileTask": {
-    "message": "Потоковая передача задачи компиляции"
-  },
-  "panels/timeline/components/EntryStyles.ts | streamingWasmResponse": {
-    "message": "Потоковая передача ответа Wasm"
-  },
-  "panels/timeline/components/EntryStyles.ts | system": {
-    "message": "Система"
-  },
-  "panels/timeline/components/EntryStyles.ts | task": {
-    "message": "Задача"
-  },
-  "panels/timeline/components/EntryStyles.ts | timerFired": {
-    "message": "Таймер запущен"
-  },
-  "panels/timeline/components/EntryStyles.ts | timestamp": {
-    "message": "Временная метка"
-  },
-  "panels/timeline/components/EntryStyles.ts | updateLayer": {
-    "message": "Обновление слоя"
-  },
-  "panels/timeline/components/EntryStyles.ts | updateLayerTree": {
-    "message": "Обновление дерева слоев"
-  },
-  "panels/timeline/components/EntryStyles.ts | userTiming": {
-    "message": "Пользовательское время"
-  },
-  "panels/timeline/components/EntryStyles.ts | verify": {
-    "message": "Подтвердить"
-  },
-  "panels/timeline/components/EntryStyles.ts | verifyReply": {
-    "message": "Проверка ответа"
-  },
-  "panels/timeline/components/EntryStyles.ts | waitingForNetwork": {
-    "message": "Ожидание подключения к сети"
-  },
-  "panels/timeline/components/EntryStyles.ts | wasmModuleCacheHit": {
-    "message": "Совпадение в кеше модуля Wasm"
-  },
-  "panels/timeline/components/EntryStyles.ts | wasmModuleCacheInvalid": {
-    "message": "Недействительный кеш модуля Wasm"
-  },
-  "panels/timeline/components/EntryStyles.ts | willSendRequest": {
-    "message": "Будет отправлен запрос"
-  },
-  "panels/timeline/components/EntryStyles.ts | wsMessageReceived": {
-    "message": "Получение сообщения по протоколу WebSocket"
-  },
-  "panels/timeline/components/EntryStyles.ts | wsMessageSent": {
-    "message": "Отправка сообщения по протоколу WebSocket"
-  },
-  "panels/timeline/components/EntryStyles.ts | xhrLoad": {
-    "message": "Загрузка XHR"
-  },
-  "panels/timeline/components/EntryStyles.ts | xhrReadyStateChange": {
-    "message": "Изменение XHR readyState"
-  },
   "panels/timeline/components/FieldSettingsDialog.ts | add": {
     "message": "Добавить"
   },
@@ -13919,6 +13691,9 @@
   "panels/timeline/components/LayoutShiftDetails.ts | total": {
     "message": "Всего"
   },
+  "panels/timeline/components/LayoutShiftDetails.ts | unsizedImage": {
+    "message": "Изображение с незаданными размерами"
+  },
   "panels/timeline/components/LiveMetricsView.ts | allDevices": {
     "message": "Все устройства"
   },
@@ -13929,7 +13704,7 @@
     "message": "Очистить журнал"
   },
   "panels/timeline/components/LiveMetricsView.ts | collectionPeriod": {
-    "message": "Период, за который собраны данные:"
+    "message": "Период, за который собраны данные: {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | dateRange": {
     "message": "{PH1} – {PH2}"
@@ -13943,6 +13718,9 @@
   "panels/timeline/components/LiveMetricsView.ts | disableNetworkCache": {
     "message": "Отключить сетевой кеш"
   },
+  "panels/timeline/components/LiveMetricsView.ts | duration": {
+    "message": "Длительность в локальной среде (мс)"
+  },
   "panels/timeline/components/LiveMetricsView.ts | elementRenderDelay": {
     "message": "Задержка при отрисовке элемента"
   },
@@ -13954,9 +13732,6 @@
   },
   "panels/timeline/components/LiveMetricsView.ts | fieldData": {
     "message": "Данные наблюдений"
-  },
-  "panels/timeline/components/LiveMetricsView.ts | fieldDataLink": {
-    "message": "данные наблюдений"
   },
   "panels/timeline/components/LiveMetricsView.ts | inpInteraction": {
     "message": "INP входит в 98-й процентиль задержек взаимодействия"
@@ -13985,11 +13760,17 @@
   "panels/timeline/components/LiveMetricsView.ts | localAndFieldMetrics": {
     "message": "Локальные и наблюдаемые показатели"
   },
+  "panels/timeline/components/LiveMetricsView.ts | localFieldLearnMoreLink": {
+    "message": "Подробнее о данных локальных метрик и реального пользовательского опыта…"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | localFieldLearnMoreTooltip": {
+    "message": "Локальные показатели получены от текущей страницы на основе информации о вашем устройстве и сетевом подключении. Наблюдаемые данные получены от пользователей на основе информации о различных устройствах и сетевых подключениях."
+  },
   "panels/timeline/components/LiveMetricsView.ts | localMetrics": {
     "message": "Локальные показатели"
   },
-  "panels/timeline/components/LiveMetricsView.ts | localMetricsLink": {
-    "message": "локальные показатели"
+  "panels/timeline/components/LiveMetricsView.ts | logToConsole": {
+    "message": "Внести дополнительные сведения в журнал консоли"
   },
   "panels/timeline/components/LiveMetricsView.ts | mobile": {
     "message": "Мобильное устройство"
@@ -13997,11 +13778,14 @@
   "panels/timeline/components/LiveMetricsView.ts | needsDataOption": {
     "message": "{PH1}: нет данных"
   },
-  "panels/timeline/components/LiveMetricsView.ts | networkCacheExplanation": {
-    "message": "Отключение сетевого кеша имитирует сетевое взаимодействие, аналогичное первому посещению"
+  "panels/timeline/components/LiveMetricsView.ts | network": {
+    "message": "Ограничение пропускной способности сети: {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | nextSteps": {
     "message": "Дальнейшие действия"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | notEnoughData": {
+    "message": "Недостаточно данных."
   },
   "panels/timeline/components/LiveMetricsView.ts | numShifts": {
     "message": "{shiftCount,plural, =1{{shiftCount} изменение}one{{shiftCount} изменение}few{{shiftCount} изменения}many{{shiftCount} изменений}other{{shiftCount} изменения}}"
@@ -14012,11 +13796,20 @@
   "panels/timeline/components/LiveMetricsView.ts | originOptionWithKey": {
     "message": "Источник: {PH1}"
   },
+  "panels/timeline/components/LiveMetricsView.ts | percentDevices": {
+    "message": "Мобильные устройства: {PH1} %, ПК: {PH2} %."
+  },
+  "panels/timeline/components/LiveMetricsView.ts | phase": {
+    "message": "Этап"
+  },
   "panels/timeline/components/LiveMetricsView.ts | presentationDelay": {
     "message": "Задержка вывода ответа на экран"
   },
   "panels/timeline/components/LiveMetricsView.ts | processingDuration": {
     "message": "Продолжительность обработки"
+  },
+  "panels/timeline/components/LiveMetricsView.ts | realUserEnvironments": {
+    "message": "Среды реальных пользователей"
   },
   "panels/timeline/components/LiveMetricsView.ts | resourceLoadDelay": {
     "message": "Задержка загрузки ресурса"
@@ -14045,20 +13838,14 @@
   "panels/timeline/components/LiveMetricsView.ts | tablet": {
     "message": "Планшет"
   },
-  "panels/timeline/components/LiveMetricsView.ts | theFieldMetricsAre": {
-    "message": "Эти {PH1} получены от пользователей на основе информации о различных устройствах и сетевых подключениях."
-  },
-  "panels/timeline/components/LiveMetricsView.ts | theLocalMetricsAre": {
-    "message": "Эти {PH1} получены от текущей страницы на основе информации о вашем устройстве и сетевом подключении."
-  },
   "panels/timeline/components/LiveMetricsView.ts | timeToFirstByte": {
     "message": "Time to First Byte"
   },
   "panels/timeline/components/LiveMetricsView.ts | tryDisablingThrottling": {
-    "message": "Значение 75-го процентиля реальных пользователей, испытавших задержки в сети, аналогичные задержкам при подключении без ограничения пропускной способности сети"
+    "message": "Значение 75-го процентиля слишком высоко для имитации с ограничением пропускной способности сети"
   },
   "panels/timeline/components/LiveMetricsView.ts | tryUsingThrottling": {
-    "message": "Значение 75-го процентиля реальных пользователей, испытавших задержки в сети, аналогичные задержкам при ограничении пропускной способности {PH1}"
+    "message": "Значение 75-го процентиля аналогично значениям ограничения пропускной способности {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | urlOption": {
     "message": "URL"
@@ -14075,6 +13862,9 @@
   "panels/timeline/components/MetricCard.ts | betweenRange": {
     "message": "({PH1}–{PH2})"
   },
+  "panels/timeline/components/MetricCard.ts | clsHelpTooltip": {
+    "message": "Показатель CLS указывает на величину непредвиденного смещения элементов контента. Нажмите, чтобы узнать больше о CLS."
+  },
   "panels/timeline/components/MetricCard.ts | considerTesting": {
     "message": "Учтите локальные условия для теста"
   },
@@ -14090,8 +13880,14 @@
   "panels/timeline/components/MetricCard.ts | gtRange": {
     "message": "(>{PH1})"
   },
+  "panels/timeline/components/MetricCard.ts | inpHelpTooltip": {
+    "message": "Показатель INP измеряет скорость отклика на действия пользователя. Нажмите, чтобы узнать больше о INP."
+  },
   "panels/timeline/components/MetricCard.ts | interactToMeasure": {
     "message": "Начните взаимодействовать со страницей, чтобы измерить INP."
+  },
+  "panels/timeline/components/MetricCard.ts | lcpHelpTooltip": {
+    "message": "Показатель LCP сообщает время, за которое самое большое изображение, видео или текстовое поле отрисовывается в области просмотра. Нажмите, чтобы узнать больше о LCP."
   },
   "panels/timeline/components/MetricCard.ts | leqRange": {
     "message": "(≤{PH1})"
@@ -14213,6 +14009,9 @@
   "panels/timeline/components/NetworkRequestDetails.ts | FromServiceWorker": {
     "message": " (источник: service worker)"
   },
+  "panels/timeline/components/NetworkRequestDetails.ts | blocking": {
+    "message": "Блокировка"
+  },
   "panels/timeline/components/NetworkRequestDetails.ts | decodedBody": {
     "message": "Декодированное тело запроса"
   },
@@ -14221,6 +14020,9 @@
   },
   "panels/timeline/components/NetworkRequestDetails.ts | fromCache": {
     "message": "Из кеша"
+  },
+  "panels/timeline/components/NetworkRequestDetails.ts | inBodyParserBlocking": {
+    "message": "Блокировка синтаксического анализатора"
   },
   "panels/timeline/components/NetworkRequestDetails.ts | initiatedBy": {
     "message": "Инициирующее событие"
@@ -14240,6 +14042,9 @@
   "panels/timeline/components/NetworkRequestDetails.ts | priority": {
     "message": "Приоритет"
   },
+  "panels/timeline/components/NetworkRequestDetails.ts | renderBlocking": {
+    "message": "Блокировка отрисовки"
+  },
   "panels/timeline/components/NetworkRequestDetails.ts | requestMethod": {
     "message": "Метод запроса"
   },
@@ -14248,6 +14053,9 @@
   },
   "panels/timeline/components/NetworkRequestTooltip.ts | contentDownloading": {
     "message": "Загрузка контента"
+  },
+  "panels/timeline/components/NetworkRequestTooltip.ts | duration": {
+    "message": "Продолжительность"
   },
   "panels/timeline/components/NetworkRequestTooltip.ts | priority": {
     "message": "Приоритет"
@@ -14342,9 +14150,6 @@
   "panels/timeline/components/insights/CLSCulprits.ts | animation": {
     "message": "Анимация"
   },
-  "panels/timeline/components/insights/CLSCulprits.ts | description": {
-    "message": "Смещение макета происходит, когда элементы передвигаются без взаимодействия с пользователем. Это может быть связано с добавлением и удалением элементов или изменением их шрифтов при загрузке страницы. [Выясните причины сдвигов.](https://web.dev/articles/optimize-cls)"
-  },
   "panels/timeline/components/insights/CLSCulprits.ts | fontRequest": {
     "message": "Запрос шрифта"
   },
@@ -14354,20 +14159,17 @@
   "panels/timeline/components/insights/CLSCulprits.ts | layoutShiftCluster": {
     "message": "Кластер смещения макета (начало: {PH1})"
   },
-  "panels/timeline/components/insights/CLSCulprits.ts | title": {
-    "message": "Причины смещения макета"
-  },
   "panels/timeline/components/insights/CLSCulprits.ts | topCulprits": {
     "message": "Основные причины смещения макета"
+  },
+  "panels/timeline/components/insights/CLSCulprits.ts | unsizedImages": {
+    "message": "Изображения с незаданными размерами"
   },
   "panels/timeline/components/insights/CLSCulprits.ts | worstCluster": {
     "message": "Худший кластер"
   },
   "panels/timeline/components/insights/CLSCulprits.ts | worstLayoutShiftCluster": {
     "message": "Худший кластер смещения макета"
-  },
-  "panels/timeline/components/insights/DocumentLatency.ts | description": {
-    "message": "Ваш первый сетевой запрос – самый важный.  Уменьшайте задержку, избегая переадресации, ускоряя ответ сервера и используя сжатие текста."
   },
   "panels/timeline/components/insights/DocumentLatency.ts | failedAriaLabel": {
     "message": "Не удалось проверить статистику: {PH1}"
@@ -14399,26 +14201,14 @@
   "panels/timeline/components/insights/DocumentLatency.ts | successAriaLabel": {
     "message": "Проверка статистики пройдена: {PH1}"
   },
-  "panels/timeline/components/insights/DocumentLatency.ts | title": {
-    "message": "Задержка при запросе документа"
-  },
   "panels/timeline/components/insights/DocumentLatency.ts | uncompressedDownload": {
     "message": "Скачивание несжатого файла"
-  },
-  "panels/timeline/components/insights/FontDisplay.ts | description": {
-    "message": "Рекомендуем использовать свойство [font-display](https://developer.chrome.com/blog/font-display) со значением swap или optional, чтобы весь текст был одинаково виден. swap можно дополнительно оптимизировать, чтобы с помощью [переопределения показателей шрифта](https://developer.chrome.com/blog/font-fallbacks) уменьшить смещения макета."
   },
   "panels/timeline/components/insights/FontDisplay.ts | fontColumn": {
     "message": "Шрифт"
   },
-  "panels/timeline/components/insights/FontDisplay.ts | title": {
-    "message": "Используемые шрифты"
-  },
   "panels/timeline/components/insights/FontDisplay.ts | wastedTimeColumn": {
     "message": "Потери времени"
-  },
-  "panels/timeline/components/insights/InteractionToNextPaint.ts | description": {
-    "message": "Начните анализ с самого длинного этапа. Задержки [можно уменьшить](https://web.dev/articles/optimize-inp#optimize_interactions). Чтобы сократить продолжительность обработки, [оптимизируйте затраты основного потока](https://web.dev/articles/optimize-long-tasks). Обычно они относятся к JS."
   },
   "panels/timeline/components/insights/InteractionToNextPaint.ts | duration": {
     "message": "Продолжительность"
@@ -14434,12 +14224,6 @@
   },
   "panels/timeline/components/insights/InteractionToNextPaint.ts | processingDuration": {
     "message": "Длительность обработки"
-  },
-  "panels/timeline/components/insights/InteractionToNextPaint.ts | title": {
-    "message": "INP по этапам"
-  },
-  "panels/timeline/components/insights/LCPDiscovery.ts | description": {
-    "message": "Оптимизируйте LCP, сделав возможным [находить](https://web.dev/articles/optimize-lcp#1_eliminate_resource_load_delay) самое крупное изображение прямо из HTML-кода. Также советуем [избегать отложенной загрузки](https://web.dev/articles/lcp-lazy-loading)."
   },
   "panels/timeline/components/insights/LCPDiscovery.ts | failedAriaLabel": {
     "message": "Не удалось проверить статистику: {PH1}"
@@ -14459,12 +14243,6 @@
   "panels/timeline/components/insights/LCPDiscovery.ts | successAriaLabel": {
     "message": "Проверка статистики пройдена: {PH1}"
   },
-  "panels/timeline/components/insights/LCPDiscovery.ts | title": {
-    "message": "Информация об LCP и связанных запросах"
-  },
-  "panels/timeline/components/insights/LCPPhases.ts | description": {
-    "message": "Для каждого этапа [есть стратегии улучшения](https://web.dev/articles/optimize-lcp#lcp-breakdown). В идеале большая часть времени, требуемого на полную отрисовку элементов LCP, должна тратиться на загрузку ресурсов, а не на задержки."
-  },
   "panels/timeline/components/insights/LCPPhases.ts | elementRenderDelay": {
     "message": "Задержка при отрисовке элемента"
   },
@@ -14483,32 +14261,11 @@
   "panels/timeline/components/insights/LCPPhases.ts | timeToFirstByte": {
     "message": "Time to First Byte"
   },
-  "panels/timeline/components/insights/LCPPhases.ts | title": {
-    "message": "LCP по этапам"
-  },
-  "panels/timeline/components/insights/RenderBlocking.ts | description": {
-    "message": "Запросы блокируют обработку при первоначальной загрузке страницы. Это может привести к увеличению значения LCP. [Отсрочка или встраивание](https://web.dev/learn/performance/understanding-the-critical-path#render-blocking_resources/) могут избавить от негативного воздействия этих сетевых запросов."
-  },
   "panels/timeline/components/insights/RenderBlocking.ts | duration": {
     "message": "Продолжительность"
   },
   "panels/timeline/components/insights/RenderBlocking.ts | renderBlockingRequest": {
     "message": "Запрос"
-  },
-  "panels/timeline/components/insights/RenderBlocking.ts | title": {
-    "message": "Запросы, блокирующие отрисовку страницы"
-  },
-  "panels/timeline/components/insights/SidebarInsight.ts | estimatedSavings": {
-    "message": "Ожидаемая экономия: {PH1}"
-  },
-  "panels/timeline/components/insights/SidebarInsight.ts | estimatedSavingsTimingAndBytes": {
-    "message": "Ожидаемая экономия: {PH1} и {PH2}"
-  },
-  "panels/timeline/components/insights/SidebarInsight.ts | viewDetails": {
-    "message": "Показать подробные сведения для объекта \"{PH1}\""
-  },
-  "panels/timeline/components/insights/SlowCSSSelector.ts | description": {
-    "message": "Если затраты на повторный расчет стиля остаются высокими, оптимизация селектора может их снизить. [Оптимизируйте селекторы](https://developer.chrome.com/docs/devtools/performance/selector-stats) с большим временем выполнения и высоким процентом медленного пути. Затраты на сопоставление можно снижать, используя более простые селекторы и сокращая их количество, а также за счет более компактной структуры DOM."
   },
   "panels/timeline/components/insights/SlowCSSSelector.ts | elapsed": {
     "message": "Прошедшее время"
@@ -14518,9 +14275,6 @@
   },
   "panels/timeline/components/insights/SlowCSSSelector.ts | matchCount": {
     "message": "Совпадения"
-  },
-  "panels/timeline/components/insights/SlowCSSSelector.ts | title": {
-    "message": "Затраты на селектор CSS"
   },
   "panels/timeline/components/insights/SlowCSSSelector.ts | topSelectors": {
     "message": "Основные селекторы"
@@ -14536,18 +14290,6 @@
   },
   "panels/timeline/components/insights/ThirdParties.ts | columnTransferSize": {
     "message": "Объем переданных данных"
-  },
-  "panels/timeline/components/insights/ThirdParties.ts | description": {
-    "message": "Сторонний код может сильно замедлить загрузку страницы. [Сократите и отсрочьте загрузку стороннего кода,](https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/loading-third-party-javascript/) чтобы ускорить показ своего контента."
-  },
-  "panels/timeline/components/insights/ThirdParties.ts | title": {
-    "message": "Сторонний код"
-  },
-  "panels/timeline/components/insights/Viewport.ts | description": {
-    "message": "Область просмотра страницы не оптимизирована для мобильных устройств, поэтому при касании экрана [может возникать задержка до 300 мс](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/)."
-  },
-  "panels/timeline/components/insights/Viewport.ts | title": {
-    "message": "Область просмотра не оптимизирована для мобильных устройств"
   },
   "panels/timeline/overlays/components/EntriesLinkOverlay.ts | diagram": {
     "message": "Связи между записями"
@@ -14599,6 +14341,375 @@
   },
   "panels/timeline/timeline-meta.ts | stop": {
     "message": "Остановить"
+  },
+  "panels/timeline/utils/EntryName.ts | anonymous": {
+    "message": "(анонимно)"
+  },
+  "panels/timeline/utils/EntryName.ts | eventDispatchS": {
+    "message": "Событие: {PH1}"
+  },
+  "panels/timeline/utils/EntryName.ts | frame": {
+    "message": "Фрейм"
+  },
+  "panels/timeline/utils/EntryName.ts | wsConnectionClosed": {
+    "message": "Соединение WebSocket закрыто"
+  },
+  "panels/timeline/utils/EntryName.ts | wsConnectionOpened": {
+    "message": "Соединение WebSocket установлено"
+  },
+  "panels/timeline/utils/EntryName.ts | wsConnectionOpenedWithUrl": {
+    "message": "Соединение WebSocket установлено: {PH1}"
+  },
+  "panels/timeline/utils/EntryStyles.ts | abortPostTaskCallback": {
+    "message": "Отменить postTask"
+  },
+  "panels/timeline/utils/EntryStyles.ts | animation": {
+    "message": "Анимация"
+  },
+  "panels/timeline/utils/EntryStyles.ts | animationFrameFired": {
+    "message": "Запущен фрейм анимации"
+  },
+  "panels/timeline/utils/EntryStyles.ts | async": {
+    "message": "Асинхронный"
+  },
+  "panels/timeline/utils/EntryStyles.ts | asyncTask": {
+    "message": "Асинхронная задача"
+  },
+  "panels/timeline/utils/EntryStyles.ts | cacheModule": {
+    "message": "Код модуля кеша"
+  },
+  "panels/timeline/utils/EntryStyles.ts | cacheScript": {
+    "message": "Кеширование кода скрипта"
+  },
+  "panels/timeline/utils/EntryStyles.ts | cachedWasmModule": {
+    "message": "Кешированный модуль Wasm"
+  },
+  "panels/timeline/utils/EntryStyles.ts | cancelAnimationFrame": {
+    "message": "Отключить фрейм анимации"
+  },
+  "panels/timeline/utils/EntryStyles.ts | cancelIdleCallback": {
+    "message": "Отмена вызова функции в период простоя"
+  },
+  "panels/timeline/utils/EntryStyles.ts | commit": {
+    "message": "Перенос"
+  },
+  "panels/timeline/utils/EntryStyles.ts | compileCode": {
+    "message": "Компиляция кода"
+  },
+  "panels/timeline/utils/EntryStyles.ts | compileModule": {
+    "message": "Компиляция модуля"
+  },
+  "panels/timeline/utils/EntryStyles.ts | compileScript": {
+    "message": "Компиляция скрипта"
+  },
+  "panels/timeline/utils/EntryStyles.ts | compiledWasmModule": {
+    "message": "Скомпилированный модуль Wasm"
+  },
+  "panels/timeline/utils/EntryStyles.ts | compositeLayers": {
+    "message": "Составные слои"
+  },
+  "panels/timeline/utils/EntryStyles.ts | computeIntersections": {
+    "message": "Рассчет пересечений"
+  },
+  "panels/timeline/utils/EntryStyles.ts | consoleTime": {
+    "message": "Время консоли"
+  },
+  "panels/timeline/utils/EntryStyles.ts | cppGc": {
+    "message": "Сборка мусора в C++"
+  },
+  "panels/timeline/utils/EntryStyles.ts | createWebsocket": {
+    "message": "Создать объект WebSocket"
+  },
+  "panels/timeline/utils/EntryStyles.ts | decrypt": {
+    "message": "Расшифровка"
+  },
+  "panels/timeline/utils/EntryStyles.ts | decryptReply": {
+    "message": "Расшифровка ответа"
+  },
+  "panels/timeline/utils/EntryStyles.ts | deserializeCodeCache": {
+    "message": "Десериализация кеша кода"
+  },
+  "panels/timeline/utils/EntryStyles.ts | destroyWebsocket": {
+    "message": "Уничтожить WebSocket"
+  },
+  "panels/timeline/utils/EntryStyles.ts | digest": {
+    "message": "Сводка"
+  },
+  "panels/timeline/utils/EntryStyles.ts | digestReply": {
+    "message": "Краткий ответ"
+  },
+  "panels/timeline/utils/EntryStyles.ts | domGc": {
+    "message": "Сборка мусора DOM"
+  },
+  "panels/timeline/utils/EntryStyles.ts | domcontentloadedEvent": {
+    "message": "Событие DOMContentLoaded"
+  },
+  "panels/timeline/utils/EntryStyles.ts | drawFrame": {
+    "message": "Рисование фрейма"
+  },
+  "panels/timeline/utils/EntryStyles.ts | drawing": {
+    "message": "Отрисовка"
+  },
+  "panels/timeline/utils/EntryStyles.ts | embedderCallback": {
+    "message": "Обратный вызов встраивателя"
+  },
+  "panels/timeline/utils/EntryStyles.ts | encrypt": {
+    "message": "Зашифровать"
+  },
+  "panels/timeline/utils/EntryStyles.ts | encryptReply": {
+    "message": "Шифрование ответа"
+  },
+  "panels/timeline/utils/EntryStyles.ts | evaluateModule": {
+    "message": "Оценка модуля"
+  },
+  "panels/timeline/utils/EntryStyles.ts | evaluateScript": {
+    "message": "Оценка скрипта"
+  },
+  "panels/timeline/utils/EntryStyles.ts | event": {
+    "message": "Событие"
+  },
+  "panels/timeline/utils/EntryStyles.ts | eventTiming": {
+    "message": "Временные метки события"
+  },
+  "panels/timeline/utils/EntryStyles.ts | experience": {
+    "message": "Взаимодействие"
+  },
+  "panels/timeline/utils/EntryStyles.ts | finishLoading": {
+    "message": "Завершение загрузки"
+  },
+  "panels/timeline/utils/EntryStyles.ts | fireIdleCallback": {
+    "message": "Вызов функции в период простоя"
+  },
+  "panels/timeline/utils/EntryStyles.ts | firstContentfulPaint": {
+    "message": "Первое существенное отображение"
+  },
+  "panels/timeline/utils/EntryStyles.ts | firstPaint": {
+    "message": "Первое отображение"
+  },
+  "panels/timeline/utils/EntryStyles.ts | frameStart": {
+    "message": "Запуск фрейма"
+  },
+  "panels/timeline/utils/EntryStyles.ts | frameStartMainThread": {
+    "message": "Начало фрейма (основной поток)"
+  },
+  "panels/timeline/utils/EntryStyles.ts | frameStartedLoading": {
+    "message": "Фрейм начал загружаться"
+  },
+  "panels/timeline/utils/EntryStyles.ts | functionCall": {
+    "message": "Вызов функции"
+  },
+  "panels/timeline/utils/EntryStyles.ts | gcEvent": {
+    "message": "Событие сборки мусора"
+  },
+  "panels/timeline/utils/EntryStyles.ts | gpu": {
+    "message": "Графический процессор"
+  },
+  "panels/timeline/utils/EntryStyles.ts | hitTest": {
+    "message": "Проверка нажатия"
+  },
+  "panels/timeline/utils/EntryStyles.ts | idle": {
+    "message": "Бездействует"
+  },
+  "panels/timeline/utils/EntryStyles.ts | imageDecode": {
+    "message": "Расшифровка изображения"
+  },
+  "panels/timeline/utils/EntryStyles.ts | installTimer": {
+    "message": "Установка таймера"
+  },
+  "panels/timeline/utils/EntryStyles.ts | invalidateLayout": {
+    "message": "Аннулировать макет"
+  },
+  "panels/timeline/utils/EntryStyles.ts | jsFrame": {
+    "message": "Фрейм JS"
+  },
+  "panels/timeline/utils/EntryStyles.ts | largestContentfulPaint": {
+    "message": "Самое крупное существенное отображение"
+  },
+  "panels/timeline/utils/EntryStyles.ts | layerize": {
+    "message": "Создание слоев"
+  },
+  "panels/timeline/utils/EntryStyles.ts | layout": {
+    "message": "Макет"
+  },
+  "panels/timeline/utils/EntryStyles.ts | layoutShift": {
+    "message": "Смещение макета"
+  },
+  "panels/timeline/utils/EntryStyles.ts | layoutShiftCluster": {
+    "message": "Кластер смещения макета"
+  },
+  "panels/timeline/utils/EntryStyles.ts | loading": {
+    "message": "Загрузка"
+  },
+  "panels/timeline/utils/EntryStyles.ts | majorGc": {
+    "message": "Полная сборка мусора"
+  },
+  "panels/timeline/utils/EntryStyles.ts | messaging": {
+    "message": "Сообщения"
+  },
+  "panels/timeline/utils/EntryStyles.ts | minorGc": {
+    "message": "Быстрая сборка мусора"
+  },
+  "panels/timeline/utils/EntryStyles.ts | onMessage": {
+    "message": "Сообщение о включении"
+  },
+  "panels/timeline/utils/EntryStyles.ts | onloadEvent": {
+    "message": "Событие onload"
+  },
+  "panels/timeline/utils/EntryStyles.ts | optimizeCode": {
+    "message": "Оптимизировать код"
+  },
+  "panels/timeline/utils/EntryStyles.ts | other": {
+    "message": "Другое"
+  },
+  "panels/timeline/utils/EntryStyles.ts | paint": {
+    "message": "Отображение"
+  },
+  "panels/timeline/utils/EntryStyles.ts | paintImage": {
+    "message": "Отрисовка изображения"
+  },
+  "panels/timeline/utils/EntryStyles.ts | paintSetup": {
+    "message": "Настройка отрисовки"
+  },
+  "panels/timeline/utils/EntryStyles.ts | painting": {
+    "message": "Отображение"
+  },
+  "panels/timeline/utils/EntryStyles.ts | parseAndCompile": {
+    "message": "Синтаксический анализ и компиляция"
+  },
+  "panels/timeline/utils/EntryStyles.ts | parseHtml": {
+    "message": "Синтаксический анализ HTML"
+  },
+  "panels/timeline/utils/EntryStyles.ts | parseStylesheet": {
+    "message": "Синтаксический анализ таблицы стилей"
+  },
+  "panels/timeline/utils/EntryStyles.ts | prePaint": {
+    "message": "Предварительная отрисовка"
+  },
+  "panels/timeline/utils/EntryStyles.ts | profilingOverhead": {
+    "message": "Ресурсопотребление профилирования"
+  },
+  "panels/timeline/utils/EntryStyles.ts | rasterizePaint": {
+    "message": "Растрирование отрисовки"
+  },
+  "panels/timeline/utils/EntryStyles.ts | rasterizing": {
+    "message": "Растрирование"
+  },
+  "panels/timeline/utils/EntryStyles.ts | recalculateStyle": {
+    "message": "Повторный расчет стиля"
+  },
+  "panels/timeline/utils/EntryStyles.ts | receiveData": {
+    "message": "Прием данных"
+  },
+  "panels/timeline/utils/EntryStyles.ts | receiveResponse": {
+    "message": "Получение ответа"
+  },
+  "panels/timeline/utils/EntryStyles.ts | receiveWebsocketHandshake": {
+    "message": "Получение подтверждения WebSocket"
+  },
+  "panels/timeline/utils/EntryStyles.ts | removeTimer": {
+    "message": "Удалить таймер"
+  },
+  "panels/timeline/utils/EntryStyles.ts | rendering": {
+    "message": "Отрисовка"
+  },
+  "panels/timeline/utils/EntryStyles.ts | requestAnimationFrame": {
+    "message": "Запрос фрейма анимации"
+  },
+  "panels/timeline/utils/EntryStyles.ts | requestIdleCallback": {
+    "message": "Запрос вызова функции в период простоя"
+  },
+  "panels/timeline/utils/EntryStyles.ts | requestMainThreadFrame": {
+    "message": "Запрос фрейма основного потока"
+  },
+  "panels/timeline/utils/EntryStyles.ts | runMicrotasks": {
+    "message": "Запуск микрозадач"
+  },
+  "panels/timeline/utils/EntryStyles.ts | runPostTaskCallback": {
+    "message": "Запустить postTask"
+  },
+  "panels/timeline/utils/EntryStyles.ts | schedulePostMessage": {
+    "message": "Запланировать выполнение функции postMessage"
+  },
+  "panels/timeline/utils/EntryStyles.ts | schedulePostTaskCallback": {
+    "message": "Запланировать postTask"
+  },
+  "panels/timeline/utils/EntryStyles.ts | scheduleStyleRecalculation": {
+    "message": "Расписание пересчета стилей"
+  },
+  "panels/timeline/utils/EntryStyles.ts | scripting": {
+    "message": "Выполнение скриптов"
+  },
+  "panels/timeline/utils/EntryStyles.ts | scroll": {
+    "message": "Прокрутка"
+  },
+  "panels/timeline/utils/EntryStyles.ts | sendRequest": {
+    "message": "Отправка запроса"
+  },
+  "panels/timeline/utils/EntryStyles.ts | sendWebsocketHandshake": {
+    "message": "Отправка подтверждения WebSocket"
+  },
+  "panels/timeline/utils/EntryStyles.ts | sign": {
+    "message": "Подписание"
+  },
+  "panels/timeline/utils/EntryStyles.ts | signReply": {
+    "message": "Подпись ответа"
+  },
+  "panels/timeline/utils/EntryStyles.ts | streamingCompileTask": {
+    "message": "Потоковая передача задачи компиляции"
+  },
+  "panels/timeline/utils/EntryStyles.ts | streamingWasmResponse": {
+    "message": "Потоковая передача ответа Wasm"
+  },
+  "panels/timeline/utils/EntryStyles.ts | system": {
+    "message": "Система"
+  },
+  "panels/timeline/utils/EntryStyles.ts | task": {
+    "message": "Задача"
+  },
+  "panels/timeline/utils/EntryStyles.ts | timerFired": {
+    "message": "Таймер запущен"
+  },
+  "panels/timeline/utils/EntryStyles.ts | timestamp": {
+    "message": "Временная метка"
+  },
+  "panels/timeline/utils/EntryStyles.ts | updateLayer": {
+    "message": "Обновление слоя"
+  },
+  "panels/timeline/utils/EntryStyles.ts | updateLayerTree": {
+    "message": "Обновление дерева слоев"
+  },
+  "panels/timeline/utils/EntryStyles.ts | userTiming": {
+    "message": "Пользовательское время"
+  },
+  "panels/timeline/utils/EntryStyles.ts | verify": {
+    "message": "Подтвердить"
+  },
+  "panels/timeline/utils/EntryStyles.ts | verifyReply": {
+    "message": "Проверка ответа"
+  },
+  "panels/timeline/utils/EntryStyles.ts | waitingForNetwork": {
+    "message": "Ожидание подключения к сети"
+  },
+  "panels/timeline/utils/EntryStyles.ts | wasmModuleCacheHit": {
+    "message": "Совпадение в кеше модуля Wasm"
+  },
+  "panels/timeline/utils/EntryStyles.ts | wasmModuleCacheInvalid": {
+    "message": "Недействительный кеш модуля Wasm"
+  },
+  "panels/timeline/utils/EntryStyles.ts | willSendRequest": {
+    "message": "Будет отправлен запрос"
+  },
+  "panels/timeline/utils/EntryStyles.ts | wsMessageReceived": {
+    "message": "Получение сообщения по протоколу WebSocket"
+  },
+  "panels/timeline/utils/EntryStyles.ts | wsMessageSent": {
+    "message": "Отправка сообщения по протоколу WebSocket"
+  },
+  "panels/timeline/utils/EntryStyles.ts | xhrLoad": {
+    "message": "Загрузка XHR"
+  },
+  "panels/timeline/utils/EntryStyles.ts | xhrReadyStateChange": {
+    "message": "Изменение XHR readyState"
   },
   "panels/utils/utils.ts | requestContentHeadersOverridden": {
     "message": "Содержимое и заголовки запроса переопределены"
@@ -14750,6 +14861,33 @@
   "panels/webauthn/webauthn-meta.ts | webauthn": {
     "message": "WebAuthn"
   },
+  "panels/whats_new/ReleaseNoteView.ts | close": {
+    "message": "Закрыть"
+  },
+  "panels/whats_new/ReleaseNoteView.ts | learnMore": {
+    "message": "Подробнее…"
+  },
+  "panels/whats_new/whats_new-meta.ts | bug": {
+    "message": "ошибка"
+  },
+  "panels/whats_new/whats_new-meta.ts | doNotShowWhatsNewAfterEachUpdate": {
+    "message": "Не показывать вкладку \"Что нового\" после каждого обновления"
+  },
+  "panels/whats_new/whats_new-meta.ts | releaseNotes": {
+    "message": "Примечания к выпуску"
+  },
+  "panels/whats_new/whats_new-meta.ts | reportADevtoolsIssue": {
+    "message": "Сообщить о проблеме в инструментах разработчика"
+  },
+  "panels/whats_new/whats_new-meta.ts | showWhatsNew": {
+    "message": "Показать вкладку \"Что нового\""
+  },
+  "panels/whats_new/whats_new-meta.ts | showWhatsNewAfterEachUpdate": {
+    "message": "Показывать вкладку \"Что нового\" после каждого обновления"
+  },
+  "panels/whats_new/whats_new-meta.ts | whatsNew": {
+    "message": "Что нового"
+  },
   "ui/components/data_grid/DataGrid.ts | enterToSort": {
     "message": "Сортировка столбцов: {PH1}. Нажмите Ввод, чтобы применить фильтр для сортировки."
   },
@@ -14866,6 +15004,9 @@
   },
   "ui/components/request_link_icon/RequestLinkIcon.ts | shortenedURL": {
     "message": "Короткий URL"
+  },
+  "ui/components/settings/SettingCheckbox.ts | learnMore": {
+    "message": "Подробнее…"
   },
   "ui/components/survey_link/SurveyLink.ts | anErrorOccurredWithTheSurvey": {
     "message": "Возникла проблема с опросом."
@@ -15545,7 +15686,7 @@
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | noProperties": {
     "message": "Нет свойств"
   },
-  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | revealInMemoryInpector": {
+  "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | openInMemoryInpector": {
     "message": "Открыть на панели \"Инспектор памяти\""
   },
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | showAllD": {
@@ -15760,6 +15901,9 @@
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | allowPasting": {
     "message": "разрешить вставку"
+  },
+  "ui/legacy/components/source_frame/SourceFrame.ts | binaryContentError": {
+    "message": "Редактор не смог распознать двоичные данные. Чтобы проверить этот ресурс, откройте вкладку \"Ответ\" на панели \"Сеть\"."
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | bytecodePositionXs": {
     "message": "Позиция байт-кода: 0x{PH1}"

@@ -103,12 +103,12 @@ export interface AgentOptions {
   serverSideLoggingEnabled?: boolean;
 }
 
-interface ParsedResponseAnswer {
+export interface ParsedResponseAnswer {
   answer: string;
   suggestions?: [string, ...string[]];
 }
 
-interface ParsedResponseStep {
+export interface ParsedResponseStep {
   thought?: string;
   title?: string;
   action?: string;
@@ -313,25 +313,21 @@ export abstract class AiAgent<T> {
     };
   }
 
-  formatHistoryChunkAnswer(text: string): string {
-    return text;
+  formatParsedResponseAnswer(step: ParsedResponseAnswer): string {
+    return step.answer;
   }
 
-  formatHistoryChunkObservation(observation: {
-    title?: string,
-    thought?: string,
-    action?: string,
-  }): string {
+  formatParsedResponseStep(step: ParsedResponseStep): string {
     let text = '';
-    if (observation.thought) {
-      text = `THOUGHT: ${observation.thought}`;
+    if (step.thought) {
+      text = `THOUGHT: ${step.thought}`;
     }
-    if (observation.title) {
-      text += `\nTITLE: ${observation.title}`;
+    if (step.title) {
+      text += `\nTITLE: ${step.title}`;
     }
-    if (observation.action) {
+    if (step.action) {
       text += `\nACTION
-${observation.action}
+${step.action}
 STOP`;
     }
 
@@ -355,11 +351,11 @@ STOP`;
           lastRunStartIdx = history.length;
           break;
         case ResponseType.QUERYING: {
-          const observation = this.formatHistoryChunkObservation(response);
-          if (observation) {
+          const thought = this.formatParsedResponseStep(response);
+          if (thought) {
             history.push({
               entity: Host.AidaClient.Entity.SYSTEM,
-              text: observation,
+              text: thought,
             });
             response = {};
           }
@@ -372,7 +368,7 @@ STOP`;
         case ResponseType.ANSWER:
           history.push({
             entity: Host.AidaClient.Entity.SYSTEM,
-            text: this.formatHistoryChunkAnswer(data.text),
+            text: this.formatParsedResponseAnswer({answer: data.text}),
           });
           break;
         case ResponseType.TITLE:
@@ -393,11 +389,11 @@ STOP`;
     }
     // Trailing history, should be the same as handling the
     // ResponseType.QUERYING branch above.
-    const observation = this.formatHistoryChunkObservation(response);
-    if (observation) {
+    const thought = this.formatParsedResponseStep(response);
+    if (thought) {
       history.push({
-        entity: Host.AidaClient.Entity.USER,
-        text: observation,
+        entity: Host.AidaClient.Entity.SYSTEM,
+        text: thought,
       });
     }
     return history;

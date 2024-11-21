@@ -848,7 +848,7 @@ STOP`,
               text: '# Inspected element\n\n* Its selector is `undefined`\n\n# User request\n\nQUERY: test',
             },
             {
-              entity: 1,
+              entity: 2,
               text: 'THOUGHT: I am thinking.\nTITLE: thinking\nACTION\nconst data = {\"test\": \"observation\"};\nSTOP',
             },
           ],

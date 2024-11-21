@@ -5,7 +5,11 @@
 import '../../ui/components/switch/switch.js';
 
 import * as Common from '../../core/common/common.js';
+import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import type * as Platform from '../../core/platform/platform.js';
+import * as SDK from '../../core/sdk/sdk.js';
+import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as Cards from '../../ui/components/cards/cards.js';  // eslint-disable-line @typescript-eslint/no-unused-vars
 import * as Input from '../../ui/components/input/input.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -73,6 +77,18 @@ const UIStrings = {
    *@description Text used for link within the heuristicExplanation to let the user learn more about the heuristic exception
    */
   scenarios: 'predefined scenarios',
+  /**
+   *@description Note at the bottom of the controls tool telling the user that their organization has an enterprise policy that controls cookies. This may disable the tool
+   */
+  enterpriseDisclaimer: 'Your organization manages third-party cookie access for this site',
+  /**
+   *@description Tooltip that appears when the user hovers over the card's enterprise icon
+   */
+  enterpriseTooltip: 'This setting is managed by your organization',
+  /**
+    +*@description Button with the enterpise disclaimer that takes the user to the relevant enterprise cookie chrome setting
+   */
+  viewDetails: 'View details',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/security/CookieControlsView.ts', UIStrings);
@@ -81,6 +97,7 @@ export const i18nFormatString = i18n.i18n.getFormatLocalizedString.bind(undefine
 
 export interface ViewInput {
   inputChanged: (newValue: boolean, setting: Common.Settings.Setting<boolean>) => void;
+  openChromeCookieSettings: () => void;
 }
 export interface ViewOutput {}
 
@@ -90,6 +107,9 @@ export class CookieControlsView extends UI.Widget.VBox {
   #view: View;
 
   constructor(element?: HTMLElement, view: View = (input, output, target) => {
+    // TODO(crbug.com/365737493): Determine whether the enterprise is present based on UI bindings
+    const enterprisePresent = false;
+
     const toggleSetting = Common.Settings.Settings.instance().moduleSetting('cookie-control-override-enabled');
     const gracePeriodSetting = Common.Settings.Settings.instance().moduleSetting('grace-period-mitigation-disabled');
     const heuristicSetting = Common.Settings.Settings.instance().moduleSetting('heuristic-mitigation-disabled');
@@ -102,10 +122,19 @@ export class CookieControlsView extends UI.Widget.VBox {
             <div class="card-title">${i18nString(UIStrings.cardTitle)}</div>
             <div class="body">${i18nString(UIStrings.cardDisclaimer)}</div>
           </div>
+          ${enterprisePresent ? html `
+            <devtools-icon
+              .name=${'domain'}
+              ${LitHtml.Directives.ref((el: Element|undefined) => {
+                UI.Tooltip.Tooltip.install(el as HTMLElement, i18nString(UIStrings.enterpriseTooltip));
+              })}>
+            </devtools-icon>` : LitHtml.nothing
+          }
         </div>
         <div>
           <devtools-switch
             .checked=${Boolean(toggleSetting.get())}
+            .disabled=${enterprisePresent}
             @switchchange=${(e: Event)=>{
                 input.inputChanged((e.target as HTMLInputElement).checked, toggleSetting);
               }}>
@@ -118,7 +147,7 @@ export class CookieControlsView extends UI.Widget.VBox {
       <div class="card-row">
         <label class='checkbox-label'>
           <input type='checkbox'
-            ?disabled=${!Boolean(toggleSetting.get())}
+            ?disabled=${enterprisePresent || !Boolean(toggleSetting.get())}
             ?checked=${!Boolean(gracePeriodSetting.get())}
             @change=${(e: Event)=>{
               input.inputChanged(!(e.target as HTMLInputElement).checked, gracePeriodSetting);
@@ -128,7 +157,7 @@ export class CookieControlsView extends UI.Widget.VBox {
             <div class="body">${i18nString(UIStrings.gracePeriodTitle)}</div>
             <div class="body">
               ${i18nFormatString(UIStrings.gracePeriodExplanation, {
-                  PH1: UI.Fragment.html`<x-link class="x-link" href="https://developers.google.com/privacy-sandbox/cookies/temporary-exceptions/grace-period" jslog=${VisualLogging.link('grace-period-link').track({click: true})}>${i18nString(UIStrings.gracePeriod)}</x-link>`,
+                  PH1: enterprisePresent ? i18nString(UIStrings.gracePeriod) :  UI.Fragment.html`<x-link class="x-link" href="https://developers.google.com/privacy-sandbox/cookies/temporary-exceptions/grace-period" jslog=${VisualLogging.link('grace-period-link').track({click: true})}>${i18nString(UIStrings.gracePeriod)}</x-link>`,
                 })}
             </div>
           </div>
@@ -140,7 +169,7 @@ export class CookieControlsView extends UI.Widget.VBox {
       <div class="card-row">
         <label class='checkbox-label'>
           <input type='checkbox'
-            ?disabled=${!Boolean(toggleSetting.get())}
+            ?disabled=${enterprisePresent || !Boolean(toggleSetting.get())}
             ?checked=${!Boolean(heuristicSetting.get())}
             @change=${(e: Event)=>{
               input.inputChanged(!(e.target as HTMLInputElement).checked, heuristicSetting);
@@ -150,11 +179,27 @@ export class CookieControlsView extends UI.Widget.VBox {
             <div class="body">${i18nString(UIStrings.heuristicTitle)}</div>
             <div class="body">
               ${i18nFormatString(UIStrings.heuristicExplanation, {
-                  PH1: UI.Fragment.html`<x-link class="x-link" href="https://developers.google.com/privacy-sandbox/cookies/temporary-exceptions/heuristics-based-exceptions" jslog=${VisualLogging.link('heuristic-link').track({click: true})}>${i18nString(UIStrings.scenarios)}</x-link>`,
+                  PH1: enterprisePresent ? i18nString(UIStrings.scenarios) : UI.Fragment.html`<x-link class="x-link" href="https://developers.google.com/privacy-sandbox/cookies/temporary-exceptions/heuristics-based-exceptions" jslog=${VisualLogging.link('heuristic-link').track({click: true})}>${i18nString(UIStrings.scenarios)}</x-link>`,
                 })}
             </div>
           </div>
         </label>
+      </div>
+    `;
+
+    const enterpriseDisclaimer = html`
+      <div class="enterprise">
+        <div class="text body">${i18nString(UIStrings.enterpriseDisclaimer)}</div>
+        <devtools-icon
+          .name=${'domain'}
+        ></devtools-icon>
+        <devtools-button
+          @click=${input.openChromeCookieSettings}
+          aria-label="View details"
+          .variant=${Buttons.Button.Variant.OUTLINED}
+          jslog=${VisualLogging.action('view-details').track({click: true})}>
+            ${i18nString(UIStrings.viewDetails)}
+        </devtools-button>
       </div>
     `;
 
@@ -166,7 +211,7 @@ export class CookieControlsView extends UI.Widget.VBox {
             <div class="body">${i18nString(UIStrings.viewExplanation)}</div>
           </div>
           <devtools-card>
-            <div slot="content" class='card'>
+            <div slot="content" class=${enterprisePresent ? 'card enterprise-disabled' : 'card'}>
               ${cardHeader}
               <div>
                 <div class="card-row text">
@@ -178,6 +223,7 @@ export class CookieControlsView extends UI.Widget.VBox {
               </div>
             </div>
           </devtools-card>
+          ${enterprisePresent ? enterpriseDisclaimer : LitHtml.nothing}
         </div>
       </div>
     `, target, {host: this});
@@ -197,6 +243,19 @@ export class CookieControlsView extends UI.Widget.VBox {
     UI.InspectorView.InspectorView.instance().displayDebuggedTabReloadRequiredWarning(
         i18nString(UIStrings.siteReloadMessage));
     this.update();
+  }
+
+  openChromeCookieSettings(): void {
+    const rootTarget = SDK.TargetManager.TargetManager.instance().rootTarget();
+    if (rootTarget === null) {
+      return;
+    }
+    const url = 'chrome://settings/cookies' as Platform.DevToolsPath.UrlString;
+    void rootTarget.targetAgent().invoke_createTarget({url}).then(result => {
+      if (result.getError()) {
+        Host.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(url);
+      }
+    });
   }
 
   override wasShown(): void {

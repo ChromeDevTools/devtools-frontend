@@ -233,7 +233,8 @@
 .timeline-details-view-row-value {
   display: inline-block;
   user-select: text;
-  padding: 0 3px;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
 .timeline-details-warning .timeline-details-view-row-value {

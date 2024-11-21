@@ -28,7 +28,7 @@ import {
 } from './TimelineSelection.js';
 import {TimelineSelectorStatsView} from './TimelineSelectorStatsView.js';
 import {BottomUpTimelineTreeView, CallTreeTimelineTreeView, TimelineTreeView} from './TimelineTreeView.js';
-import {TimelineDetailsContentHelper, TimelineUIUtils} from './TimelineUIUtils.js';
+import {TimelineUIUtils} from './TimelineUIUtils.js';
 
 const UIStrings = {
   /**
@@ -55,12 +55,6 @@ const UIStrings = {
    *@description Title of the Layers tool
    */
   layers: 'Layers',
-  /**
-   *@description Text in Timeline Details View of the Performance panel
-   *@example {1ms} PH1
-   *@example {10ms} PH2
-   */
-  rangeSS: 'Range:  {PH1} – {PH2}',
   /**
    *@description Title of the selector stats tab
    */
@@ -488,14 +482,8 @@ export class TimelineDetailsView extends
     const aggregatedStats = TimelineUIUtils.statsForTimeRange(this.#selectedEvents, startTime, endTime);
     const startOffset = startTime - minBoundsMilli;
     const endOffset = endTime - minBoundsMilli;
-
-    const contentHelper = new TimelineDetailsContentHelper(null, null);
-    contentHelper.addSection(i18nString(
-        UIStrings.rangeSS,
-        {PH1: i18n.TimeUtilities.millisToString(startOffset), PH2: i18n.TimeUtilities.millisToString(endOffset)}));
-    const pieChart = TimelineUIUtils.generatePieChart(aggregatedStats);
-    contentHelper.appendElementRow('', pieChart);
-    this.setContent(contentHelper.fragment);
+    const summaryDetails = TimelineUIUtils.generateSummaryDetails(aggregatedStats, startOffset, endOffset);
+    this.setContent(summaryDetails);
 
     // Find all recalculate style events data from range
     const isSelectorStatsEnabled =

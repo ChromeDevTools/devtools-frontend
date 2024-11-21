@@ -2275,6 +2275,50 @@ export class TimelineUIUtils {
 
     return element;
   }
+  // Generates a Summary component given a aggregated stats for categories.
+  static generateSummaryDetails(aggregatedStats: Record<string, number>, rangeStart: number, rangeEnd: number):
+      Element {
+    let total = 0;
+    // Calculate total of all categories.
+    for (const categoryName in aggregatedStats) {
+      total += aggregatedStats[categoryName];
+    }
+
+    const element = document.createElement('div');
+    element.classList.add('timeline-details-view-summary');
+
+    const summaryTable = new TimelineComponents.TimelineSummary.TimelineSummary();
+    let categories: TimelineComponents.TimelineSummary.CategoryData[] = [];
+
+    // Get stats values from categories.
+    for (const categoryName in Utils.EntryStyles.getCategoryStyles()) {
+      const category = Utils.EntryStyles.getCategoryStyles()[categoryName as keyof Utils.EntryStyles.CategoryPalette];
+      if (category.name === Utils.EntryStyles.EventCategory.IDLE) {
+        continue;
+      }
+      const value = aggregatedStats[category.name];
+      if (!value) {
+        continue;
+      }
+      const title = category.title;
+      const color = category.getCSSValue();
+      categories.push({value, color, title});
+    }
+
+    // Keeps the most useful categories on top.
+    categories = categories.sort((a, b) => b.value - a.value);
+    const start = Trace.Types.Timing.MilliSeconds(rangeStart);
+    const end = Trace.Types.Timing.MilliSeconds(rangeEnd);
+    summaryTable.data = {
+      rangeStart: start,
+      rangeEnd: end,
+      total,
+      categories,
+    };
+    const summaryTableContainer = element.createChild('div');
+    summaryTableContainer.appendChild(summaryTable);
+    return element;
+  }
 
   static generateDetailsContentForFrame(
       frame: Trace.Types.Events.LegacyTimelineFrame, filmStrip: Trace.Extras.FilmStrip.Data|null,

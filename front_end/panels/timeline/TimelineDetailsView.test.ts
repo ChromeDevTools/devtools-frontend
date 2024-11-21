@@ -122,7 +122,8 @@ describeWithEnvironment('TimelineDetailsView', function() {
     );
     await detailsView.setSelection(selection);
     const detailsContentElement = detailsView.getDetailsContentElementForTest();
-    const title = detailsContentElement.querySelector<HTMLElement>('.timeline-details-chip-title');
-    assert.strictEqual(title?.innerText, 'Range:  0 ms – 5.39 s');
+    const component = detailsContentElement.querySelector<HTMLElement>('devtools-performance-timeline-summary');
+    const range = component?.shadowRoot?.querySelector<HTMLElement>('.summary-range');
+    assert.strictEqual(range?.innerText, 'Range:  0 ms – 5.39 s');
   });
 });

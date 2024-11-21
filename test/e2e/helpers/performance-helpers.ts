@@ -77,7 +77,7 @@ export async function openCaptureSettings(sectionClassName: string) {
 }
 
 export async function searchForComponent(frontend: puppeteer.Page, searchEntry: string) {
-  await waitFor('.timeline-details-chip-body');
+  await waitFor('devtools-performance-timeline-summary');
   await summonSearchBox();
   await waitFor('.search-bar');
   await frontend.keyboard.type(searchEntry);
@@ -218,7 +218,7 @@ export async function reloadAndRecord() {
   // Make sure the timeline details panel appears. It's a sure way to assert
   // that a recording is actually displayed as some of the other elements in
   // the timeline remain in the DOM even after the recording has been cleared.
-  await waitFor('.timeline-details-chip-body');
+  await waitFor('devtools-performance-timeline-summary');
   await expectVeEvents(
       [veClick('Toolbar > Action: timeline.record-reload'), veImpressionForStatusDialog()], 'Panel: timeline');
 }
@@ -229,7 +229,7 @@ export async function stopRecording() {
   // Make sure the timeline details panel appears. It's a sure way to assert
   // that a recording is actually displayed as some of the other elements in
   // the timeline remain in the DOM even after the recording has been cleared.
-  await waitFor('.timeline-details-chip-body');
+  await waitFor('devtools-performance-timeline-summary');
   await expectVeEvents(
       [
         veClick('Toolbar > Toggle: timeline.toggle-recording'),
@@ -239,20 +239,29 @@ export async function stopRecording() {
 }
 
 export async function getTotalTimeFromSummary(): Promise<number> {
+  const minCategories = 2;
+  const categoryValues = await waitForMany('.category-value', minCategories);
+
+  const totalVal = categoryValues[categoryValues.length - 1];
+  const totalText = await totalVal.evaluate(node => node.textContent as string);
+  return parseInt(totalText, 10);
+}
+
+export async function getTotalTimeFromPie(): Promise<number> {
   const pieChartTotal = await waitFor('.pie-chart-total');
   const totalText = await pieChartTotal.evaluate(node => node.textContent as string);
   return parseInt(totalText, 10);
 }
 
 export async function getRenderingTimeFromSummary(): Promise<[number, string]> {
-  const pieChartSizes = await waitForMany('.pie-chart-size', 6);
-  const pieChartNames = await waitForMany('.pie-chart-name', 6);
+  const categoryValues = await waitForMany('.category-value', 6);
+  const categoryNames = await waitForMany('.category-name', 6);
 
   // update the index if the rendering time is showing in a different row
-  const chartName = await pieChartNames[2].evaluate(node => node.textContent as string);
-  const chartSize = await pieChartSizes[2].evaluate(node => node.textContent as string);
+  const categoryName = await categoryNames[1].evaluate(node => node.textContent as string);
+  const categoryValue = await categoryValues[1].evaluate(node => node.textContent as string);
 
-  return [parseInt(chartSize, 10), chartName];
+  return [parseInt(categoryValue, 10), categoryName];
 }
 
 export async function retrieveSelectedAndExpandedActivityItems(frontend: puppeteer.Page) {

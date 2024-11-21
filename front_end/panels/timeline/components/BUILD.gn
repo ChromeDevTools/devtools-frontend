@@ -24,6 +24,7 @@ generate_css("css_files") {
     "sidebarAnnotationsTab.css",
     "sidebarInsightsTab.css",
     "sidebarSingleInsightSet.css",
+    "timelineSummary.css",
   ]
 }
 
@@ -47,6 +48,7 @@ devtools_module("components") {
     "SidebarAnnotationsTab.ts",
     "SidebarInsightsTab.ts",
     "SidebarSingleInsightSet.ts",
+    "TimelineSummary.ts",
     "Utils.ts",
   ]
 
@@ -118,6 +120,7 @@ ts_library("unittests") {
     "SidebarAnnotationsTab.test.ts",
     "SidebarInsightsTab.test.ts",
     "SidebarSingleInsightSet.test.ts",
+    "TimelineSummary.test.ts",
     "Utils.test.ts",
   ]
 

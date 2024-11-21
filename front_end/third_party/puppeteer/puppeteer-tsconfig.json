@@ -104,6 +104,7 @@
     "package/lib/esm/puppeteer/common/CustomQueryHandler.js",
     "package/lib/esm/puppeteer/common/Debug.js",
     "package/lib/esm/puppeteer/common/Device.js",
+    "package/lib/esm/puppeteer/common/DownloadBehavior.js",
     "package/lib/esm/puppeteer/common/Errors.js",
     "package/lib/esm/puppeteer/common/EventEmitter.js",
     "package/lib/esm/puppeteer/common/FileChooser.js",

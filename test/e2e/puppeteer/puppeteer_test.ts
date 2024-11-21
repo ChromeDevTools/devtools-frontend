@@ -83,6 +83,7 @@ describe('Puppeteer', () => {
         undefined,
         undefined,
         undefined,
+        undefined,
         (target) => target.targetId === mainTargetId
       );
       const [, browser] = await Promise.all([

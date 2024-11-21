@@ -19,6 +19,9 @@ export class CdpHTTPRequest extends HTTPRequest {
     get client() {
         return this.#client;
     }
+    set client(newClient) {
+        this.#client = newClient;
+    }
     constructor(client, frame, interceptionId, allowInterception, data, redirectChain) {
         super();
         this.#client = client;

@@ -17,14 +17,14 @@ const Target_js_1 = require("./Target.js");
  */
 class CdpBrowser extends Browser_js_1.Browser {
     protocol = 'cdp';
-    static async _create(product, connection, contextIds, acceptInsecureCerts, defaultViewport, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets = true) {
+    static async _create(product, connection, contextIds, acceptInsecureCerts, defaultViewport, downloadBehavior, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets = true) {
         const browser = new CdpBrowser(product, connection, contextIds, defaultViewport, process, closeCallback, targetFilterCallback, isPageTargetCallback, waitForInitiallyDiscoveredTargets);
         if (acceptInsecureCerts) {
             await connection.send('Security.setIgnoreCertificateErrors', {
                 ignore: true,
             });
         }
-        await browser._attach();
+        await browser._attach(downloadBehavior);
         return browser;
     }
     #defaultViewport;
@@ -63,8 +63,11 @@ class CdpBrowser extends Browser_js_1.Browser {
     #emitDisconnected = () => {
         this.emit("disconnected" /* BrowserEvent.Disconnected */, undefined);
     };
-    async _attach() {
+    async _attach(downloadBehavior) {
         this.#connection.on(CDPSession_js_1.CDPSessionEvent.Disconnected, this.#emitDisconnected);
+        if (downloadBehavior) {
+            await this.#defaultContext.setDownloadBehavior(downloadBehavior);
+        }
         this.#targetManager.on("targetAvailable" /* TargetManagerEvent.TargetAvailable */, this.#onAttachedToTarget);
         this.#targetManager.on("targetGone" /* TargetManagerEvent.TargetGone */, this.#onDetachedFromTarget);
         this.#targetManager.on("targetChanged" /* TargetManagerEvent.TargetChanged */, this.#onTargetChanged);
@@ -97,12 +100,15 @@ class CdpBrowser extends Browser_js_1.Browser {
         return this.#isPageTargetCallback;
     }
     async createBrowserContext(options = {}) {
-        const { proxyServer, proxyBypassList } = options;
+        const { proxyServer, proxyBypassList, downloadBehavior } = options;
         const { browserContextId } = await this.#connection.send('Target.createBrowserContext', {
             proxyServer,
             proxyBypassList: proxyBypassList && proxyBypassList.join(','),
         });
         const context = new BrowserContext_js_1.CdpBrowserContext(this.#connection, this, browserContextId);
+        if (downloadBehavior) {
+            await context.setDownloadBehavior(downloadBehavior);
+        }
         this.#contexts.set(browserContextId, context);
         return context;
     }

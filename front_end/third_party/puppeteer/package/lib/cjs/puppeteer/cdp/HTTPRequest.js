@@ -22,6 +22,9 @@ class CdpHTTPRequest extends HTTPRequest_js_1.HTTPRequest {
     get client() {
         return this.#client;
     }
+    set client(newClient) {
+        this.#client = newClient;
+    }
     constructor(client, frame, interceptionId, allowInterception, data, redirectChain) {
         super();
         this.#client = client;

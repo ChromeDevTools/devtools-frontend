@@ -6,6 +6,7 @@
 import { type Permission } from '../api/Browser.js';
 import { BrowserContext } from '../api/BrowserContext.js';
 import type { Page } from '../api/Page.js';
+import type { DownloadBehavior } from '../common/DownloadBehavior.js';
 import type { CdpBrowser } from './Browser.js';
 import type { Connection } from './Connection.js';
 import type { CdpTarget } from './Target.js';
@@ -23,5 +24,6 @@ export declare class CdpBrowserContext extends BrowserContext {
     newPage(): Promise<Page>;
     browser(): CdpBrowser;
     close(): Promise<void>;
+    setDownloadBehavior(downloadBehavior: DownloadBehavior): Promise<void>;
 }
 //# sourceMappingURL=BrowserContext.d.ts.map

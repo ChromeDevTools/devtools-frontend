@@ -366,6 +366,10 @@ export declare interface BrowserConnectOptions {
      */
     defaultViewport?: Viewport | null;
     /**
+     * Sets the download behavior for the context.
+     */
+    downloadBehavior?: DownloadBehavior;
+    /**
      * Slows down Puppeteer operations by the specified amount of milliseconds to
      * aid debugging.
      */
@@ -580,6 +584,13 @@ export declare interface BrowserContextOptions {
      * Bypass the proxy for the given list of hosts.
      */
     proxyBypassList?: string[];
+    /**
+     * Behavior definition for when downloading a file.
+     *
+     * @remarks
+     * If not set, the default behavior will be used.
+     */
+    downloadBehavior?: DownloadBehavior;
 }
 
 /**
@@ -1625,6 +1636,37 @@ export declare abstract class Dialog {
      */
     dismiss(): Promise<void>;
 }
+
+/**
+ * @public
+ */
+export declare interface DownloadBehavior {
+    /**
+     * Whether to allow all or deny all download requests, or use default behavior if
+     * available.
+     *
+     * @remarks
+     * Setting this to `allowAndName` will name all files according to their download guids.
+     */
+    policy: DownloadPolicy;
+    /**
+     * The default path to save downloaded files to.
+     *
+     * @remarks
+     * Setting this is required if behavior is set to `allow` or `allowAndName`.
+     */
+    downloadPath?: string;
+}
+
+/**
+ * @license
+ * Copyright 2024 Google Inc.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+/**
+ * @public
+ */
+export declare type DownloadPolicy = 'deny' | 'allow' | 'allowAndName' | 'default';
 
 /**
  * @public
@@ -6800,6 +6842,8 @@ declare namespace Puppeteer_2 {
         NodeFor,
         KeyInput,
         Viewport,
+        DownloadPolicy,
+        DownloadBehavior,
         BrowserLaunchArgumentOptions,
         ChromeReleaseChannel,
         LaunchOptions,

@@ -10,7 +10,6 @@ const encoding_js_1 = require("../util/encoding.js");
  * @internal
  */
 class CdpHTTPResponse extends HTTPResponse_js_1.HTTPResponse {
-    #client;
     #request;
     #contentPromise = null;
     #bodyLoadedDeferred = Deferred_js_1.Deferred.create();
@@ -23,9 +22,8 @@ class CdpHTTPResponse extends HTTPResponse_js_1.HTTPResponse {
     #headers = {};
     #securityDetails;
     #timing;
-    constructor(client, request, responsePayload, extraInfo) {
+    constructor(request, responsePayload, extraInfo) {
         super();
-        this.#client = client;
         this.#request = request;
         this.#remoteAddress = {
             ip: responsePayload.remoteIPAddress,
@@ -98,7 +96,9 @@ class CdpHTTPResponse extends HTTPResponse_js_1.HTTPResponse {
                 .valueOrThrow()
                 .then(async () => {
                 try {
-                    const response = await this.#client.send('Network.getResponseBody', {
+                    // Use CDPSession from corresponding request to retrieve body, as it's client
+                    // might have been updated (e.g. for an adopted OOPIF).
+                    const response = await this.#request.client.send('Network.getResponseBody', {
                         requestId: this.#request.id,
                     });
                     return (0, encoding_js_1.stringToTypedArray)(response.body, response.base64Encoded);

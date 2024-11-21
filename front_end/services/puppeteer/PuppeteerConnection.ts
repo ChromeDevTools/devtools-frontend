@@ -2,9 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as puppeteer from '../../third_party/puppeteer/puppeteer.js';
-import type * as Protocol from '../../generated/protocol.js';
 import type * as SDK from '../../core/sdk/sdk.js';
+import type * as Protocol from '../../generated/protocol.js';
+import * as puppeteer from '../../third_party/puppeteer/puppeteer.js';
 
 class Transport implements puppeteer.ConnectionTransport {
   #connection: SDK.Connections.ParallelConnectionInterface;
@@ -84,9 +84,10 @@ export class PuppeteerConnectionHelper {
         [] /* contextIds */,
         false /* ignoreHTTPSErrors */,
         undefined /* defaultViewport */,
+        undefined /* DownloadBehavior */,
         undefined /* process */,
         undefined /* closeCallback */,
-        undefined,
+        undefined /* targetFilterCallback */,
         target => isPageTargetCallback((target as puppeteer.Target)._getTargetInfo()),
         false /* waitForInitiallyDiscoveredTargets */,
     );

@@ -136,6 +136,13 @@ class CdpBrowserContext extends BrowserContext_js_1.BrowserContext {
         (0, assert_js_1.assert)(this.#id, 'Default BrowserContext cannot be closed!');
         await this.#browser._disposeContext(this.#id);
     }
+    async setDownloadBehavior(downloadBehavior) {
+        await this.#connection.send('Browser.setDownloadBehavior', {
+            behavior: downloadBehavior.policy,
+            downloadPath: downloadBehavior.downloadPath,
+            browserContextId: this.#id,
+        });
+    }
 }
 exports.CdpBrowserContext = CdpBrowserContext;
 //# sourceMappingURL=BrowserContext.js.map

@@ -73,6 +73,14 @@ const UIStrings = {
    *@description Display name for the Cookie Report table. This string is used by the data grid for accessibility.
    */
   report: 'Third-Party Cookie Report',
+  /**
+   *@description The main string the user sees when there are no cookie issues to show. This will take place of the table
+   */
+  emptyReport: 'Not a crumb left',
+  /**
+   *@description Explanation to the user that there were no third-party cookie related issues found which is why they are not seeing the table/report
+   */
+  emptyReportExplanation: 'No issues with third-party cookies found',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/security/CookieReportView.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -149,24 +157,43 @@ export class CookieReportView extends UI.Widget.VBox {
               <div class="title">${i18nString(UIStrings.title)}</div>
               <div class="body">${i18nString(UIStrings.body)} <x-link class="x-link" href="https://developers.google.com/privacy-sandbox/cookies/prepare/audit-cookies" jslog=${VisualLogging.link('learn-more').track({click: true})}>${i18nString(UIStrings.learnMoreLink)}</x-link></div>
             </div>
-            <devtools-named-bit-set-filter
-              class="filter"
-              @filterChanged=${input.onFilterChanged}
-              .options=${{items: filterItems}}
-              ${ref((el?: Element) => {
-                if(el instanceof UI.FilterBar.NamedBitSetFilterUIElement){
-                  output.namedBitSetFilterUI = el.getOrCreateNamedBitSetFilterUI();
-                }
-              })}
-            ></devtools-named-bit-set-filter>
-            <!-- @ts-ignore -->
-            <devtools-data-grid-widget
-              @sortingChanged=${input.onSortingChanged}
-              .options=${dataGridOptions}
-              ${UI.Widget.widgetRef(DataGrid.DataGrid.DataGridWidget, w => {
-                output.dataGrid = w.dataGrid;
-              })}
-            ></devtools-data-grid-widget>
+            ${input.gridData.length > 0 ?
+              html`
+                <devtools-named-bit-set-filter
+                  class="filter"
+                  @filterChanged=${input.onFilterChanged}
+                  .options=${{items: filterItems}}
+                  ${ref((el?: Element) => {
+                    if(el instanceof UI.FilterBar.NamedBitSetFilterUIElement){
+                      output.namedBitSetFilterUI = el.getOrCreateNamedBitSetFilterUI();
+                    }
+                  })}
+                ></devtools-named-bit-set-filter>
+                <!-- @ts-ignore -->
+                <devtools-data-grid-widget
+                  @sortingChanged=${input.onSortingChanged}
+                  .options=${dataGridOptions}
+                  ${UI.Widget.widgetRef(DataGrid.DataGrid.DataGridWidget, w => {
+                    output.dataGrid = w.dataGrid;
+                  })}
+                ></devtools-data-grid-widget>
+              ` :
+              html `
+                <div class="empty-report">
+                  <devtools-icon
+                    class="cookie-off"
+                    .name=${'cookie_off'}
+                  ></devtools-icon>
+                  <div class="empty-report-title">
+                    ${i18nString(UIStrings.emptyReport)}
+                  </div>
+                  <div class="body">
+                    ${i18nString(UIStrings.emptyReportExplanation)}
+                  </div>
+                </div>
+              `
+            }
+
         </div>
     `, target, {host: this});
     // clang-format on

@@ -637,7 +637,6 @@ export class FreestylerPanel extends UI.Panel.Panel {
     }
     this.#viewProps.agentType = this.#currentAgent.type;
     this.#viewOutput.freestylerChatUi?.focusTextInput();
-    Host.userMetrics.actionTaken(Host.UserMetrics.Action.FreestylerOpenedFromElementsPanelFloatingButton);
     this.#onContextSelectionChanged();
     void this.doUpdate();
     if (newAgent) {

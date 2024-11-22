@@ -1195,7 +1195,10 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
     const cpuThrottlingToolbar = new UI.Toolbar.Toolbar('', throttlingPane.element);
     cpuThrottlingToolbar.appendText(i18nString(UIStrings.cpu));
-    this.cpuThrottlingSelect = MobileThrottling.ThrottlingManager.throttlingManager().createCPUThrottlingSelector();
+    // TODO(crbug.com/311438203): need to get recommended like we do in LiveMetricsView
+    const recommendedRate = 4;
+    this.cpuThrottlingSelect =
+        MobileThrottling.ThrottlingManager.throttlingManager().createCPUThrottlingSelector(recommendedRate);
     cpuThrottlingToolbar.appendToolbarItem(this.cpuThrottlingSelect);
 
     const networkThrottlingToolbar = new UI.Toolbar.Toolbar('', throttlingPane.element);
@@ -1221,8 +1224,10 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   private createNetworkConditionsSelect(): UI.Toolbar.ToolbarComboBox {
     const toolbarItem = new UI.Toolbar.ToolbarComboBox(null, i18nString(UIStrings.networkConditions));
     toolbarItem.setMaxWidth(140);
+    // TODO(crbug.com/311438203): need to get recommended like we do in LiveMetricsView
+    const recommendedConditions = null;
     MobileThrottling.ThrottlingManager.throttlingManager().decorateSelectWithNetworkThrottling(
-        toolbarItem.selectElement());
+        toolbarItem.selectElement(), recommendedConditions);
     return toolbarItem;
   }
 

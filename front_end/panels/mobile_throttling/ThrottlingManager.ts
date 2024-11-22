@@ -82,6 +82,12 @@ const UIStrings = {
    *@description Tooltip text for an input box that overrides navigator.hardwareConcurrency on the page
    */
   hardwareConcurrencySettingLabel: 'Override the value reported by navigator.hardwareConcurrency',
+  /**
+   * @description Text label for a selection box showing that a specific option is recommended.
+   * @example {Fast 4G} PH1
+   * @example {4x slowdown} PH1
+   */
+  recommendedThrottling: '{PH1} - recommended',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/mobile_throttling/ThrottlingManager.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -135,7 +141,9 @@ export class ThrottlingManager {
     return throttlingManagerInstance;
   }
 
-  decorateSelectWithNetworkThrottling(selectElement: HTMLSelectElement): NetworkThrottlingSelector {
+  decorateSelectWithNetworkThrottling(
+      selectElement: HTMLSelectElement,
+      recommendedConditions: SDK.NetworkManager.Conditions|null = null): NetworkThrottlingSelector {
     let options: (SDK.NetworkManager.Conditions|null)[] = [];
     const selector = new NetworkThrottlingSelector(populate, select, this.customNetworkConditionsSetting);
     selectElement.setAttribute(
@@ -156,7 +164,11 @@ export class ThrottlingManager {
         groupElement.label = group.title;
         for (const conditions of group.items) {
           // The title is usually an i18nLazyString except for custom values that are stored in the local storage in the form of a string.
-          const title = typeof conditions.title === 'function' ? conditions.title() : conditions.title;
+          let title = typeof conditions.title === 'function' ? conditions.title() : conditions.title;
+          if (conditions === recommendedConditions) {
+            title = i18nString(UIStrings.recommendedThrottling, {PH1: title});
+          }
+
           const option = new Option(title, title);
           UI.ARIAUtils.setLabel(option, i18nString(UIStrings.sS, {PH1: group.title, PH2: title}));
           const jslogContext = i === groups.length - 1 ?
@@ -296,7 +308,7 @@ export class ThrottlingManager {
     this.updatePanelIcon();
   }
 
-  createCPUThrottlingSelector(): UI.Toolbar.ToolbarComboBox {
+  createCPUThrottlingSelector(recommendedRate: number|null = null): UI.Toolbar.ToolbarComboBox {
     const control = new UI.Toolbar.ToolbarComboBox(
         event => this.setCPUThrottlingRate(this.cpuThrottlingRates[(event.target as HTMLSelectElement).selectedIndex]),
         i18nString(UIStrings.cpuThrottling), '', 'cpu-throttling');
@@ -305,7 +317,11 @@ export class ThrottlingManager {
 
     for (let i = 0; i < this.cpuThrottlingRates.length; ++i) {
       const rate = this.cpuThrottlingRates[i];
-      const title = rate === 1 ? i18nString(UIStrings.noThrottling) : i18nString(UIStrings.dSlowdown, {PH1: rate});
+      let title = rate === 1 ? i18nString(UIStrings.noThrottling) : i18nString(UIStrings.dSlowdown, {PH1: rate});
+      if (rate === recommendedRate) {
+        title = i18nString(UIStrings.recommendedThrottling, {PH1: title});
+      }
+
       const value = rate === 1 ? 'cpu-no-throttling' : `cpu-throttled-${rate}`;
       const option = control.createOption(title, value);
       control.addOption(option);

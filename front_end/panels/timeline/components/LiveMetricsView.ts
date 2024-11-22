@@ -557,7 +557,12 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
     // clang-format on
   }
 
-  #getNetworkRec(): string|null {
+  #getCpuRec(): number {
+    // TODO(cjamcl): will soon be set to recommended calibrated throttling - go/cpq:adaptive-throttling
+    return 4;
+  }
+
+  #getNetworkRecTitle(): string|null {
     const response = this.#getFieldMetricData('round_trip_time');
     if (!response?.percentiles) {
       return null;
@@ -570,6 +575,30 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
 
     if (rtt < RTT_MINIMUM) {
       return i18nString(UIStrings.tryDisablingThrottling);
+    }
+
+    const conditions = this.#getNetworkRec();
+    if (!conditions) {
+      return null;
+    }
+
+    const title = typeof conditions.title === 'function' ? conditions.title() : conditions.title;
+    return i18nString(UIStrings.tryUsingThrottling, {PH1: title});
+  }
+
+  #getNetworkRec(): SDK.NetworkManager.Conditions|null {
+    const response = this.#getFieldMetricData('round_trip_time');
+    if (!response?.percentiles) {
+      return null;
+    }
+
+    const rtt = Number(response.percentiles.p75);
+    if (!Number.isFinite(rtt)) {
+      return null;
+    }
+
+    if (rtt < RTT_MINIMUM) {
+      return null;
     }
 
     let closestPreset: SDK.NetworkManager.Conditions|null = null;
@@ -593,13 +622,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
       smallestDiff = diff;
     }
 
-    if (!closestPreset) {
-      return null;
-    }
-
-    const title = typeof closestPreset.title === 'function' ? closestPreset.title() : closestPreset.title;
-
-    return i18nString(UIStrings.tryUsingThrottling, {PH1: title});
+    return closestPreset;
   }
 
   #getDeviceRec(): string|null {
@@ -624,7 +647,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
 
     const networkRecEl = document.createElement('span');
     networkRecEl.classList.add('environment-rec');
-    networkRecEl.textContent = this.#getNetworkRec() || i18nString(UIStrings.notEnoughData);
+    networkRecEl.textContent = this.#getNetworkRecTitle() || i18nString(UIStrings.notEnoughData);
 
     // clang-format off
     return html`
@@ -637,10 +660,10 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
         </ul>
       ` : nothing}
       <div class="environment-option">
-        <devtools-cpu-throttling-selector></devtools-cpu-throttling-selector>
+        <devtools-cpu-throttling-selector .recommendedRate=${this.#getCpuRec()}></devtools-cpu-throttling-selector>
       </div>
       <div class="environment-option">
-        <devtools-network-throttling-selector></devtools-network-throttling-selector>
+        <devtools-network-throttling-selector .recommendedConditions=${this.#getNetworkRec()}></devtools-network-throttling-selector>
       </div>
       <div class="environment-option">
         <setting-checkbox

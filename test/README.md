@@ -68,7 +68,7 @@ load DevTools front-end modules, and exercises some code paths. It dumps some re
 against expectation files.
 ***
 
-Since these tests live in Chromium, we may need to perform three-way changes when changing DevTools front-end.
+Since these tests live in Chromium, we may need to perform three-way changes when changing DevTools front-end. Example: disable test in Chromium (https://chromium-review.googlesource.com/c/chromium/src/+/5851392), land front-end CL, then update and re-enable the Chromium test.
 
 ## DevTools back-end tests
 

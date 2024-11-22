@@ -945,6 +945,10 @@ describeWithMockConnection('LiveMetricsView', () => {
         assert.lengthOf(envRecs, 2);
         assert.strictEqual(envRecs[0].textContent, '30% mobile, 60% desktop');
         assert.match(envRecs[1].textContent!, /Slow 4G/);
+
+        const recNotice = view.shadowRoot!.querySelector('.environment-option devtools-network-throttling-selector')
+                              ?.shadowRoot!.querySelector('devtools-button');
+        assert.exists(recNotice);
       });
 
       it('should hide if no RTT data', async () => {
@@ -958,6 +962,10 @@ describeWithMockConnection('LiveMetricsView', () => {
         const envRecs = getEnvironmentRecs(view);
         assert.strictEqual(envRecs[0].textContent, '30% mobile, 60% desktop');
         assert.strictEqual(envRecs[1].textContent, 'Not enough data');
+
+        const recNotice = view.shadowRoot!.querySelector('.environment-option devtools-network-throttling-selector')
+                              ?.shadowRoot!.querySelector('devtools-button');
+        assert.notExists(recNotice);
       });
 
       it('should suggest no throttling for very low latency', async () => {
@@ -974,6 +982,10 @@ describeWithMockConnection('LiveMetricsView', () => {
         const envRecs = getEnvironmentRecs(view);
         assert.strictEqual(envRecs[0].textContent, '30% mobile, 60% desktop');
         assert.match(envRecs[1].textContent!, /too fast to simulate with throttling/);
+
+        const recNotice = view.shadowRoot!.querySelector('.environment-option devtools-network-throttling-selector')
+                              ?.shadowRoot!.querySelector('devtools-button');
+        assert.notExists(recNotice);
       });
 
       it('should ignore presets that are generally too far off', async () => {
@@ -990,6 +1002,10 @@ describeWithMockConnection('LiveMetricsView', () => {
         const envRecs = getEnvironmentRecs(view);
         assert.strictEqual(envRecs[0].textContent, '30% mobile, 60% desktop');
         assert.strictEqual(envRecs[1].textContent, 'Not enough data');
+
+        const recNotice = view.shadowRoot!.querySelector('.environment-option devtools-network-throttling-selector')
+                              ?.shadowRoot!.querySelector('devtools-button');
+        assert.notExists(recNotice);
       });
     });
 

@@ -155,6 +155,7 @@ export class UserActionRow extends HTMLElement {
 
   #handleClose = (): void => {
     this.#isShowingFeedbackForm = false;
+    this.#isSubmitButtonDisabled = true;
     this.#render();
   };
 

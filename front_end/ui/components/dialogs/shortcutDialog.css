@@ -70,8 +70,9 @@
 .nav-radio-buttons {
   display: flex;
   flex-direction: column;
-  padding: 0 var(--sys-size-8);
+  padding: 0 var(--sys-size-8) var(--sys-size-4) var(--sys-size-8);
   gap: var(--sys-size-3);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
 }
 
 .keybinds-key {

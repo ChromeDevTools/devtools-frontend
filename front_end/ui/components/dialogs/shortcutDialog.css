@@ -4,11 +4,6 @@
  * found in the LICENSE file.
  */
 
-.shortcuts-dialog {
-  /* overwrite 'white-space: pre' in the toolbar item parent element */
-  white-space: nowrap;
-}
-
 .keybinds-category-header {
   display: flex;
   justify-content: space-between;
@@ -24,8 +19,9 @@
 .keybinds-list {
   display: flex;
   flex-direction: column;
+  /* overwrite default`margin` and `padding` for the <ul> element */
   margin: 0;
-  padding: 0 var(--sys-size-8) var(--sys-size-3) var(--sys-size-8);
+  padding: 0;
 }
 
 .keybinds-list-item {

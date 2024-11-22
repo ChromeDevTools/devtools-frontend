@@ -329,13 +329,14 @@ describe('Recorder', function() {
         const {frontend} = getBrowserAndPages();
         await frontend.bringToFront();
         const shortcutDialog = await waitFor('devtools-shortcut-dialog');
+        const buttonDialog = await waitFor('devtools-button-dialog', shortcutDialog);
 
-        await click('devtools-button', {root: shortcutDialog});
+        await click('devtools-button', {root: buttonDialog});
 
-        const dialog = await waitFor('devtools-dialog', shortcutDialog);
+        const dialog = await waitFor('devtools-dialog', buttonDialog);
         assert.isOk(dialog);
 
-        const shortcuts = await $$('.keybinds-list-item', dialog);
+        const shortcuts = await $$('.keybinds-list-item', buttonDialog);
         assert.lengthOf(shortcuts, 4);
       });
     });

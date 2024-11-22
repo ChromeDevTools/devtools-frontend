@@ -11,24 +11,24 @@ import {
 
 describe('Shortcut dialog screenshot tests', () => {
   itScreenshot('renders the shortcut dialog button', async () => {
-    await loadComponentDocExample('shortcut_dialog/basic.html');
+    await loadComponentDocExample('dialog/shortcut_dialog.html');
     const container = await waitFor('#container');
-    await assertElementScreenshotUnchanged(container, 'shortcut_dialog/shortcut_dialog_closed.png');
+    await assertElementScreenshotUnchanged(container, 'dialog/shortcut_dialog_closed.png');
   });
 
   itScreenshot('renders the shortcut dialog', async () => {
-    await loadComponentDocExample('shortcut_dialog/basic.html');
+    await loadComponentDocExample('dialog/shortcut_dialog.html');
     const container = await waitFor('#container');
     const showButton = await waitFor('devtools-button', container);
     const animationEndPromise = waitForDialogAnimationEnd();
     await showButton.click();
     await animationEndPromise;
     // Have a larger threshold here: the font rendering is slightly different on CQ.
-    await assertElementScreenshotUnchanged(container, 'shortcut_dialog/shortcut_dialog_open.png', 3);
+    await assertElementScreenshotUnchanged(container, 'dialog/shortcut_dialog_open.png', 3);
   });
 
   itScreenshot('click the close button and close the shortcut dialog', async () => {
-    await loadComponentDocExample('shortcut_dialog/basic.html');
+    await loadComponentDocExample('dialog/shortcut_dialog.html');
     const container = await waitFor('#container');
 
     const showButton = await waitFor('devtools-button', container);
@@ -39,6 +39,6 @@ describe('Shortcut dialog screenshot tests', () => {
     const dialog = await waitFor('devtools-dialog');
     const closeButton = await waitFor('devtools-button', dialog);
     await closeButton.click();
-    await assertElementScreenshotUnchanged(container, 'shortcut_dialog/shortcut_dialog_closed_after_open.png');
+    await assertElementScreenshotUnchanged(container, 'dialog/shortcut_dialog_closed_after_open.png');
   });
 });

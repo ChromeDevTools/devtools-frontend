@@ -53,7 +53,6 @@ group("docs") {
     "./report",
     "./request_link_icon",
     "./select_menu",
-    "./shortcut_dialog",
     "./style_property_editor",
     "./survey_link",
     "./switch",

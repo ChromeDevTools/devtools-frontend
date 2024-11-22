@@ -10,6 +10,7 @@ ts_library("ts") {
   sources = [
     "basic.ts",
     "button_dialog.ts",
+    "shortcut_dialog.ts",
   ]
 
   deps = [
@@ -24,6 +25,7 @@ copy_to_gen("dialog") {
   sources = [
     "basic.html",
     "button_dialog.html",
+    "shortcut_dialog.html",
   ]
   deps = [ ":ts" ]
 }

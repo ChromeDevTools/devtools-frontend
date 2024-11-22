@@ -2,9 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as ComponentHelpers from '../../../../../front_end/ui/components/helpers/helpers.js';
 import * as FrontendHelpers from '../../../../testing/EnvironmentHelpers.js';  // eslint-disable-line rulesdir/es_modules_import
-import * as Dialogs from '../../../../ui/components/dialogs/dialogs.js';
+import * as Dialogs from '../../dialogs/dialogs.js';
+import * as ComponentHelpers from '../../helpers/helpers.js';
 
 await ComponentHelpers.ComponentServerSetup.setup();
 await FrontendHelpers.initializeGlobalVars();

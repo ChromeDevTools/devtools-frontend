@@ -27,29 +27,15 @@ describeWithLocale('ShortcutDialog', () => {
 
   function getDialogFromShortcutDialog(shortcutDialog: Dialogs.ShortcutDialog.ShortcutDialog) {
     assert.isNotNull(shortcutDialog.shadowRoot);
-    const dialog = shortcutDialog.shadowRoot.querySelector('devtools-dialog');
+    const dialog = shortcutDialog.shadowRoot.querySelector('devtools-button-dialog');
     if (!dialog) {
-      assert.fail('devtools-dialog not found');
+      assert.fail('devtools-button-dialog not found');
     }
     assert.instanceOf(dialog, HTMLElement);
     return dialog;
   }
 
-  it('should display dialog on initial render when provided prop', async () => {
-    const shortcutDialog = await getShortcutDialog(true);
-    const dialog = getDialogFromShortcutDialog(shortcutDialog);
-
-    assert.isTrue(dialog.hasAttribute('open'));
-  });
-
-  it('should not display dialog on initial render by default', async () => {
-    const shortcutDialog = await getShortcutDialog();
-    const dialog = getDialogFromShortcutDialog(shortcutDialog);
-
-    assert.isFalse(dialog.hasAttribute('open'));
-  });
-
-  it('prepends provived element to the dialog content', async () => {
+  it('prepends provided element to the dialog content', async () => {
     const prependedElement = document.createElement('div');
     prependedElement.classList.add('prepended-element');
 

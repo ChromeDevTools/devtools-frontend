@@ -103,18 +103,18 @@ export interface AgentOptions {
   serverSideLoggingEnabled?: boolean;
 }
 
-export interface ParsedResponseAnswer {
+export interface ParsedAnswer {
   answer: string;
   suggestions?: [string, ...string[]];
 }
 
-export interface ParsedResponseStep {
+export interface ParsedStep {
   thought?: string;
   title?: string;
   action?: string;
 }
 
-export type ParsedResponse = ParsedResponseAnswer|ParsedResponseStep;
+export type ParsedResponse = ParsedAnswer|ParsedStep;
 
 export const enum AgentType {
   FREESTYLER = 'freestyler',
@@ -313,11 +313,11 @@ export abstract class AiAgent<T> {
     };
   }
 
-  formatParsedResponseAnswer(step: ParsedResponseAnswer): string {
-    return step.answer;
+  formatParsedAnswer({answer}: ParsedAnswer): string {
+    return answer;
   }
 
-  formatParsedResponseStep(step: ParsedResponseStep): string {
+  formatParsedStep(step: ParsedStep): string {
     let text = '';
     if (step.thought) {
       text = `THOUGHT: ${step.thought}`;
@@ -336,12 +336,18 @@ STOP`;
 
   get #chatHistoryForAida(): Host.AidaClient.HistoryChunk[] {
     const history: Array<Host.AidaClient.HistoryChunk> = [];
-    let response: {
-      title?: string,
-      thought?: string,
-      action?: string,
-    } = {};
+    let currentParsedStep: ParsedStep = {};
     let lastRunStartIdx = 0;
+    const flushCurrentStep = (): void => {
+      const text = this.formatParsedStep(currentParsedStep);
+      if (text) {
+        history.push({
+          entity: Host.AidaClient.Entity.SYSTEM,
+          text,
+        });
+        currentParsedStep = {};
+      }
+    };
     for (const data of this.#history) {
       switch (data.type) {
         case ResponseType.CONTEXT:
@@ -351,14 +357,7 @@ STOP`;
           lastRunStartIdx = history.length;
           break;
         case ResponseType.QUERYING: {
-          const thought = this.formatParsedResponseStep(response);
-          if (thought) {
-            history.push({
-              entity: Host.AidaClient.Entity.SYSTEM,
-              text: thought,
-            });
-            response = {};
-          }
+          flushCurrentStep();
           history.push({
             entity: Host.AidaClient.Entity.USER,
             text: data.query,
@@ -368,34 +367,27 @@ STOP`;
         case ResponseType.ANSWER:
           history.push({
             entity: Host.AidaClient.Entity.SYSTEM,
-            text: this.formatParsedResponseAnswer({answer: data.text}),
+            text: this.formatParsedAnswer({answer: data.text}),
           });
           break;
         case ResponseType.TITLE:
-          response.title = data.title;
+          currentParsedStep.title = data.title;
           break;
         case ResponseType.THOUGHT:
-          response.thought = data.thought;
+          currentParsedStep.thought = data.thought;
           break;
         case ResponseType.ACTION:
-          response.action = data.code;
+          currentParsedStep.action = data.code;
           break;
         case ResponseType.ERROR:
           // Delete the end of history.
           history.splice(lastRunStartIdx);
-          response = {};
+          currentParsedStep = {};
           break;
       }
     }
-    // Trailing history, should be the same as handling the
-    // ResponseType.QUERYING branch above.
-    const thought = this.formatParsedResponseStep(response);
-    if (thought) {
-      history.push({
-        entity: Host.AidaClient.Entity.SYSTEM,
-        text: thought,
-      });
-    }
+    // Flush remaining step data into history.
+    flushCurrentStep();
     return history;
   }
 

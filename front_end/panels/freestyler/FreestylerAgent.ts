@@ -19,8 +19,8 @@ import {
   type ContextResponse,
   ConversationContext,
   debugLog,
+  type ParsedAnswer,
   type ParsedResponse,
-  type ParsedResponseAnswer,
   type RequestOptions,
   ResponseType,
   type SideEffectResponse,
@@ -666,7 +666,7 @@ export class FreestylerAgent extends AiAgent<SDK.DOMModel.DOMNode> {
     return `${elementEnchantmentQuery}QUERY: ${query}`;
   }
 
-  override formatParsedResponseAnswer(step: ParsedResponseAnswer): string {
-    return `ANSWER: ${step.answer}`;
+  override formatParsedAnswer({answer}: ParsedAnswer): string {
+    return `ANSWER: ${answer}`;
   }
 }

@@ -386,8 +386,20 @@ export class FreestylerPanel extends UI.Panel.Panel {
       targetAgentType = AgentType.DRJONES_PERFORMANCE;
     }
 
-    this.#currentAgent = targetAgentType ? this.#createAgent(targetAgentType) : undefined;
-    this.#viewProps.agentType = targetAgentType;
+    const agent = targetAgentType ? this.#createAgent(targetAgentType) : undefined;
+    this.#updateAgentState(agent);
+  }
+
+  #updateAgentState(agent?: AiAgent<unknown>): void {
+    if (this.#currentAgent !== agent) {
+      this.#cancel();
+      this.#currentAgent = agent;
+      this.#viewProps.agentType = this.#currentAgent?.type;
+      this.#viewProps.messages = [];
+      this.#viewProps.isLoading = false;
+      this.#viewProps.isReadOnly = this.#currentAgent?.isHistoryEntry ?? false;
+    }
+
     this.#onContextSelectionChanged();
     void this.doUpdate();
   }
@@ -491,7 +503,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
     }
 
     this.#selectedElement = createNodeContext(selectedElementFilter(ev.data));
-    this.#onContextSelectionChanged();
+    this.#updateAgentState(this.#currentAgent);
   };
 
   #handleNetworkRequestFlavorChange =
@@ -501,7 +513,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
         }
 
         this.#selectedRequest = Boolean(ev.data) ? new RequestContext(ev.data) : null;
-        this.#onContextSelectionChanged();
+        this.#updateAgentState(this.#currentAgent);
       };
 
   #handleTraceEntryNodeFlavorChange =
@@ -511,7 +523,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
         }
 
         this.#selectedCallTree = Boolean(ev.data) ? new CallTreeContext(ev.data) : null;
-        this.#onContextSelectionChanged();
+        this.#updateAgentState(this.#currentAgent);
       };
 
   #handleUISourceCodeFlavorChange =
@@ -524,7 +536,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
           return;
         }
         this.#selectedFile = new FileContext(ev.data);
-        this.#onContextSelectionChanged();
+        this.#updateAgentState(this.#currentAgent);
       };
 
   #handleFreestylerEnabledSettingChanged = (): void => {
@@ -629,21 +641,13 @@ export class FreestylerPanel extends UI.Panel.Panel {
       return;
     }
 
-    let newAgent = false;
+    let agent = this.#currentAgent;
     if (!this.#currentAgent || this.#currentAgent.type !== targetAgentType || this.#currentAgent.isHistoryEntry ||
         targetAgentType === AgentType.DRJONES_PERFORMANCE) {
-      this.#currentAgent = this.#createAgent(targetAgentType);
-      newAgent = true;
+      agent = this.#createAgent(targetAgentType);
     }
-    this.#viewProps.agentType = this.#currentAgent.type;
+    this.#updateAgentState(agent);
     this.#viewOutput.freestylerChatUi?.focusTextInput();
-    this.#onContextSelectionChanged();
-    void this.doUpdate();
-    if (newAgent) {
-      this.#viewProps.messages = [];
-      this.#viewProps.isReadOnly = false;
-      void this.#doConversation(this.#currentAgent.runFromHistory());
-    }
   }
 
   #onHistoryClicked(event: Event): void {
@@ -690,27 +694,17 @@ export class FreestylerPanel extends UI.Panel.Panel {
 
   #clearHistory(): void {
     this.#agents = new Set();
-    this.#currentAgent = undefined;
-    this.#viewProps.messages = [];
-    this.#viewProps.agentType = undefined;
-    this.#runAbortController.abort();
     void AiHistoryStorage.instance().deleteAll();
-    void this.doUpdate();
+    this.#updateAgentState();
   }
 
   #onDeleteClicked(): void {
     if (this.#currentAgent) {
       this.#agents.delete(this.#currentAgent);
       void AiHistoryStorage.instance().deleteHistoryEntry(this.#currentAgent.id);
-      this.#currentAgent = undefined;
-      this.#cancel();
     }
-
-    this.#viewProps.messages = [];
-
+    this.#updateAgentState();
     this.#selectDefaultAgentIfNeeded();
-    this.#onContextSelectionChanged();
-    void this.doUpdate();
     UI.ARIAUtils.alert(i18nString(UIStrings.chatDeleted));
   }
 
@@ -718,29 +712,21 @@ export class FreestylerPanel extends UI.Panel.Panel {
     if (this.#currentAgent === agent) {
       return;
     }
-
-    this.#currentAgent = agent;
-    this.#viewProps.messages = [];
-    this.#viewProps.agentType = agent.type;
-    this.#onContextSelectionChanged();
+    this.#updateAgentState(agent);
     this.#viewProps.isReadOnly = true;
     await this.#doConversation(agent.runFromHistory());
   }
 
   #handleNewChatRequest(): void {
-    this.#viewProps.messages = [];
-    this.#viewProps.isLoading = false;
-    this.#currentAgent = undefined;
-    this.#cancel();
-
+    this.#updateAgentState();
     this.#selectDefaultAgentIfNeeded();
-    void this.doUpdate();
     UI.ARIAUtils.alert(i18nString(UIStrings.newChatCreated));
   }
 
   #handleCrossOriginChatCancellation(): void {
     if (this.#previousSameOriginContext) {
       this.#onContextSelectionChanged(this.#previousSameOriginContext);
+      void this.doUpdate();
     }
   }
 
@@ -754,7 +740,6 @@ export class FreestylerPanel extends UI.Panel.Panel {
   #onContextSelectionChanged(contextToRestore?: ConversationContext<unknown>): void {
     if (!this.#currentAgent) {
       this.#viewProps.blockedByCrossOrigin = false;
-      void this.doUpdate();
       return;
     }
     const currentContext = contextToRestore ?? this.#getConversationContext();
@@ -762,7 +747,6 @@ export class FreestylerPanel extends UI.Panel.Panel {
     if (!currentContext) {
       this.#viewProps.blockedByCrossOrigin = false;
       this.#viewProps.requiresNewConversation = false;
-      void this.doUpdate();
       return;
     }
     this.#viewProps.blockedByCrossOrigin = !currentContext.isOriginAllowed(this.#currentAgent.origin);
@@ -772,11 +756,9 @@ export class FreestylerPanel extends UI.Panel.Panel {
     if (this.#viewProps.blockedByCrossOrigin && this.#previousSameOriginContext) {
       this.#viewProps.onCancelCrossOriginChat = this.#handleCrossOriginChatCancellation.bind(this);
     }
-    this.#viewProps.isReadOnly = this.#currentAgent.isHistoryEntry;
     this.#viewProps.requiresNewConversation = this.#currentAgent.type === AgentType.DRJONES_PERFORMANCE &&
         Boolean(this.#currentAgent.context) && this.#currentAgent.context !== currentContext;
     this.#viewProps.stripLinks = this.#viewProps.agentType === AgentType.DRJONES_PERFORMANCE;
-    void this.doUpdate();
   }
 
   #getConversationContext(): ConversationContext<unknown>|null {

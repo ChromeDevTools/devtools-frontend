@@ -2156,20 +2156,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.flameChart.getMainFlameChart().update();
   }
 
-  #deviceModeModel(): EmulationModel.DeviceModeModel.DeviceModeModel|null {
-    // This is wrapped in a try/catch because in some DevTools entry points
-    // (such as worker_app.ts) the Emulation panel is not included and as such
-    // the below code fails; it tries to instantiate the model which requires
-    // reading the value of a setting which has not been registered.
-    // In this case, we fallback to 'ALL'. See crbug.com/361515458 for an
-    // example bug that this resolves.
-    try {
-      return EmulationModel.DeviceModeModel.DeviceModeModel.instance();
-    } catch {
-      return null;
-    }
-  }
-
   /**
    * This is called with we are done loading a trace from a file, or after we
    * have recorded a fresh trace.
@@ -2211,7 +2197,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     }
 
     if (!metadata) {
-      const deviceModeModel = this.#deviceModeModel();
+      const deviceModeModel = EmulationModel.DeviceModeModel.DeviceModeModel.tryInstance();
       let emulatedDeviceTitle;
       if (deviceModeModel?.type() === EmulationModel.DeviceModeModel.Type.Device) {
         emulatedDeviceTitle = deviceModeModel.device()?.title ?? undefined;

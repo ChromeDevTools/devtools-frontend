@@ -279,7 +279,7 @@
 
 .field-data-warning {
   margin-top: 4px;
-  color: var(--color-error-text);
+  color: var(--sys-color-error);
 }
 
 .collection-period-range {

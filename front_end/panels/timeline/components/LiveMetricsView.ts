@@ -308,6 +308,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
   #interactionsListEl?: HTMLElement;
   #layoutShiftsListEl?: HTMLElement;
   #listIsScrolling = false;
+  #deviceModeModel = EmulationModel.DeviceModeModel.DeviceModeModel.tryInstance();
 
   constructor() {
     super();
@@ -396,8 +397,8 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
     const cruxManager = CrUXManager.CrUXManager.instance();
     cruxManager.addEventListener(CrUXManager.Events.FIELD_DATA_CHANGED, this.#onFieldDataChanged, this);
 
-    const emulationModel = this.#deviceModeModel();
-    emulationModel?.addEventListener(EmulationModel.DeviceModeModel.Events.UPDATED, this.#onEmulationChanged, this);
+    this.#deviceModeModel?.addEventListener(
+        EmulationModel.DeviceModeModel.Events.UPDATED, this.#onEmulationChanged, this);
 
     if (cruxManager.getConfigSetting().get().enabled) {
       void this.#refreshFieldDataForCurrentPage();
@@ -411,27 +412,13 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
 
-  #deviceModeModel(): EmulationModel.DeviceModeModel.DeviceModeModel|null {
-    // This is wrapped in a try/catch because in some DevTools entry points
-    // (such as worker_app.ts) the Emulation panel is not included and as such
-    // the below code fails; it tries to instantiate the model which requires
-    // reading the value of a setting which has not been registered.
-    // In this case, we fallback to 'ALL'. See crbug.com/361515458 for an
-    // example bug that this resolves.
-    try {
-      return EmulationModel.DeviceModeModel.DeviceModeModel.instance();
-    } catch {
-      return null;
-    }
-  }
-
   disconnectedCallback(): void {
     LiveMetrics.LiveMetrics.instance().removeEventListener(LiveMetrics.Events.STATUS, this.#onMetricStatus, this);
 
     const cruxManager = CrUXManager.CrUXManager.instance();
     cruxManager.removeEventListener(CrUXManager.Events.FIELD_DATA_CHANGED, this.#onFieldDataChanged, this);
 
-    this.#deviceModeModel()?.removeEventListener(
+    this.#deviceModeModel?.removeEventListener(
         EmulationModel.DeviceModeModel.Events.UPDATED, this.#onEmulationChanged, this);
   }
 
@@ -448,6 +435,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
         fieldValue: fieldData?.percentiles?.p75,
         histogram: fieldData?.histogram,
         tooltipContainer: this.#tooltipContainerEl,
+        warnings: this.#lcpValue?.warnings,
         phases: phases && [
           [i18nString(UIStrings.timeToFirstByte), phases.timeToFirstByte],
           [i18nString(UIStrings.resourceLoadDelay), phases.resourceLoadDelay],
@@ -482,6 +470,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
         fieldValue: fieldData?.percentiles?.p75,
         histogram: fieldData?.histogram,
         tooltipContainer: this.#tooltipContainerEl,
+        warnings: this.#clsValue?.warnings,
       } as MetricCardData}>
         ${clusterIsVisible ? html`
           <div class="related-info" slot="extra-info">
@@ -512,6 +501,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
         fieldValue: fieldData?.percentiles?.p75,
         histogram: fieldData?.histogram,
         tooltipContainer: this.#tooltipContainerEl,
+        warnings: this.#inpValue?.warnings,
         phases: phases && [
           [i18nString(UIStrings.inputDelay), phases.inputDelay],
           [i18nString(UIStrings.processingDuration), phases.processingDuration],
@@ -756,13 +746,11 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
   }
 
   #getAutoDeviceScope(): CrUXManager.DeviceScope {
-    const emulationModel = this.#deviceModeModel();
-
-    if (emulationModel === null) {
+    if (this.#deviceModeModel === null) {
       return 'ALL';
     }
 
-    if (emulationModel.isMobile()) {
+    if (this.#deviceModeModel.isMobile()) {
       if (this.#cruxPageResult?.[`${this.#fieldPageScope}-PHONE`]) {
         return 'PHONE';
       }

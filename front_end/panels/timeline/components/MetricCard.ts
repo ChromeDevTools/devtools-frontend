@@ -149,6 +149,7 @@ export interface MetricCardData {
   histogram?: CrUXManager.MetricResponse['histogram'];
   tooltipContainer?: HTMLElement;
   phases?: Array<[string, number]>;
+  warnings?: string[];
 }
 
 export class MetricCard extends HTMLElement {
@@ -670,6 +671,9 @@ export class MetricCard extends HTMLElement {
         </div>
         ${fieldEnabled ? html`<hr class="divider">` : nothing}
         ${this.#renderCompareString()}
+        ${this.#data.warnings?.map(warning => html`
+          <div class="warning">${warning}</div>
+        `)}
         ${this.#renderEnvironmentRecommendations()}
         <slot name="extra-info"></slot>
       </div>

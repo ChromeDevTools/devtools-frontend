@@ -13,6 +13,7 @@ devtools_module("live-metrics") {
     "../../core/host:bundle",
     "../../core/sdk:bundle",
     "../../generated:protocol",
+    "../emulation:bundle",
     "./web-vitals-injected:web-vitals-injected",
     "./web-vitals-injected/spec:bundle",
   ]

@@ -4,12 +4,25 @@
 
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
+import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
+import * as EmulationModel from '../../models/emulation/emulation.js';
 
 import * as Spec from './web-vitals-injected/spec/spec.js';
+
+const UIStrings = {
+  /**
+   * @description Warning text indicating that the Largest Contentful Paint (LCP) performance metric was affected by the user changing the simulated device.
+   */
+  lcpEmulationWarning:
+      'Simulating a new device after the page loads can affect LCP. Reload the page after simulating a new device for accurate LCP data.',
+};
+
+const str_ = i18n.i18n.registerUIStrings('models/live-metrics/LiveMetrics.ts', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 const LIVE_METRICS_WORLD_NAME = 'DevTools Performance Metrics';
 
@@ -40,7 +53,9 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
   #interactions: InteractionMap = new Map();
   #interactionsByGroupId = new Map<Spec.InteractionEntryGroupId, Interaction[]>();
   #layoutShifts: LayoutShift[] = [];
+  #lastEmulationChangeTime?: number;
   #mutex = new Common.Mutex.Mutex();
+  #deviceModeModel = EmulationModel.DeviceModeModel.DeviceModeModel.tryInstance();
 
   private constructor() {
     super();
@@ -135,6 +150,10 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
     }
 
     return true;
+  }
+
+  #onEmulationChanged(): void {
+    this.#lastEmulationChangeTime = Date.now();
   }
 
   /**
@@ -232,15 +251,21 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
       webVitalsEvent: Spec.WebVitalsEvent, executionContextId: Protocol.Runtime.ExecutionContextId): Promise<void> {
     switch (webVitalsEvent.name) {
       case 'LCP': {
+        const warnings: string[] = [];
         const lcpEvent: LCPValue = {
           value: webVitalsEvent.value,
           phases: webVitalsEvent.phases,
+          warnings,
         };
         if (webVitalsEvent.nodeIndex !== undefined) {
           const node = await this.#resolveDomNode(webVitalsEvent.nodeIndex, executionContextId);
           if (node) {
             lcpEvent.node = node;
           }
+        }
+
+        if (this.#lastEmulationChangeTime && Date.now() - this.#lastEmulationChangeTime < 500) {
+          warnings.push(i18nString(UIStrings.lcpEmulationWarning));
         }
 
         this.#lcpValue = lcpEvent;
@@ -495,6 +520,9 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
     });
     this.#scriptIdentifier = identifier;
 
+    this.#deviceModeModel?.addEventListener(
+        EmulationModel.DeviceModeModel.Events.UPDATED, this.#onEmulationChanged, this);
+
     this.#enabled = true;
   }
 
@@ -526,6 +554,9 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
     }
     this.#scriptIdentifier = undefined;
 
+    this.#deviceModeModel?.removeEventListener(
+        EmulationModel.DeviceModeModel.Events.UPDATED, this.#onEmulationChanged, this);
+
     this.#enabled = false;
   }
 }
@@ -536,7 +567,10 @@ export const enum Events {
 
 export type InteractionId = `interaction-${number}-${number}`;
 
-export type MetricValue = Pick<Spec.MetricChangeEvent, 'value'>;
+export interface MetricValue {
+  value: number;
+  warnings?: string[];
+}
 
 export interface LCPValue extends MetricValue {
   phases: Spec.LCPPhases;

@@ -17,6 +17,7 @@ group("resources") {
     "elements",
     "emulation",
     "extensions",
+    "freestyler",
     "host",
     "inline_editor",
     "issues",

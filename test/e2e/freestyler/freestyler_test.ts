@@ -83,11 +83,16 @@ describe('Freestyler', function() {
     }, messages);
   }
 
-  async function inspectNode(selector: string): Promise<void> {
+  async function inspectNode(selector: string, iframeId?: string): Promise<void> {
     const {frontend} = getBrowserAndPages();
     await click(CONSOLE_TAB_SELECTOR);
     await frontend.locator('aria/Console prompt').click();
-    await frontend.keyboard.type(`inspect(document.querySelector(${JSON.stringify(selector)}))`);
+    let inspectText = `inspect(document.querySelector(${JSON.stringify(selector)}))`;
+    if (iframeId) {
+      inspectText = `inspect(document.querySelector('iframe#${iframeId}').contentDocument.querySelector((${
+          JSON.stringify(selector)})))`;
+    }
+    await frontend.keyboard.type(inspectText);
     await frontend.keyboard.press('Enter');
   }
 
@@ -155,7 +160,15 @@ describe('Freestyler', function() {
     })) as Array<Log>;
   }
 
-  async function runWithMessages(query: string, messages: string[]): Promise<Array<Log>> {
+  async function runAiAssistance(options: {
+    query: string,
+    messages: string[],
+    resource?: string,
+    node?: string,
+    iframeId?: string,
+  }) {
+    const {messages, query, resource = '../resources/recorder/recorder.html', node = 'div', iframeId} = options;
+
     await setupMocks(
         {
           aidaAvailability: {},
@@ -164,9 +177,9 @@ describe('Freestyler', function() {
           },
         },
         messages);
-    await goToResource('../resources/recorder/recorder.html');
+    await goToResource(resource);
 
-    await inspectNode('div');
+    await inspectNode(node, iframeId);
     await openFreestyler();
     await turnOnAiAssistance();
     await enableDebugModeForFreestyler();
@@ -175,22 +188,28 @@ describe('Freestyler', function() {
   }
 
   it('gets data about elements', async () => {
-    const result = await runWithMessages('Change the background color for this element to blue', [
-      `THOUGHT: I can change the background color of an element by setting the background-color CSS property.
+    const result = await runAiAssistance({
+      query: 'Change the background color for this element to blue',
+      messages: [
+        `THOUGHT: I can change the background color of an element by setting the background-color CSS property.
 TITLE: changing the property
 ACTION
 const data = {
   color: window.getComputedStyle($0).color
 }
 STOP`,
-      'ANSWER: changed styles',
-    ]);
+        'ANSWER: changed styles',
+      ],
+    });
     assert.deepStrictEqual(result.at(-1)!.request.input, 'OBSERVATION: {"color":"rgb(0, 0, 0)"}');
   });
 
   it('gets handles trailing ;', async () => {
-    const result = await runWithMessages('Change the background color for this element to blue', [
-      `THOUGHT: I can change the background color of an element by setting the background-color CSS property.
+    const result = await runAiAssistance(
+        {
+          query: 'Change the background color for this element to blue',
+          messages: [
+            `THOUGHT: I can change the background color of an element by setting the background-color CSS property.
 TITLE: changing the property
 ACTION
 const originalWidth = $0.style.width;
@@ -204,14 +223,18 @@ const data = {
 $0.style.width = originalWidth; // Restore original width
 $0.style.height = originalHeight;
 STOP`,
-      'ANSWER: changed styles',
-    ]);
+            'ANSWER: changed styles',
+          ],
+        },
+    );
     assert.deepStrictEqual(result.at(-1)!.request.input, 'OBSERVATION: {"aspectRatio":"auto"}');
   });
 
   it('gets handles comments', async () => {
-    const result = await runWithMessages('Change the background color for this element to blue', [
-      `THOUGHT: I can change the background color of an element by setting the background-color CSS property.
+    const result = await runAiAssistance({
+      query: 'Change the background color for this element to blue',
+      messages: [
+        `THOUGHT: I can change the background color of an element by setting the background-color CSS property.
 TITLE: changing the property
 ACTION
 const originalWidth = $0.style.width;
@@ -225,21 +248,25 @@ const data = {
 $0.style.width = originalWidth; // Restore original width
 $0.style.height = originalHeight; // Restore original height
 STOP`,
-      'ANSWER: changed styles',
-    ]);
+        'ANSWER: changed styles',
+      ],
+    });
     assert.deepStrictEqual(result.at(-1)!.request.input, 'OBSERVATION: {"aspectRatio":"auto"}');
   });
 
   it('modifies the inline styles using the extension functions', async () => {
-    await runWithMessages('Change the background color for this element to blue', [
-      `THOUGHT: I can change the background color of an element by setting the background-color CSS property.
+    await runAiAssistance({
+      query: 'Change the background color for this element to blue',
+      messages: [
+        `THOUGHT: I can change the background color of an element by setting the background-color CSS property.
 TITLE: changing the property
 ACTION
 await setElementStyles($0, { 'background-color': 'blue' });
 await setElementStyles($0.parentElement, { 'background-color': 'green' });
 STOP`,
-      'ANSWER: changed styles',
-    ]);
+        'ANSWER: changed styles',
+      ],
+    });
 
     const {target} = getBrowserAndPages();
     await target.bringToFront();
@@ -249,5 +276,32 @@ STOP`,
           // @ts-ignore page context.
           window.getComputedStyle(document.querySelector('body')).backgroundColor === 'rgb(0, 128, 0)';
     });
+  });
+
+  it('executes in the correct realm', async () => {
+    const result = await runAiAssistance({
+      query: 'What is the document title',
+      messages: [
+        `THOUGHT: I can get the title via web API
+TITLE: getting the document title
+ACTION
+
+// TODO: Enable once this stop crashing the page
+// if(window.self === window.top){
+//   throw new Error('Access from non frame')
+// }
+
+const data = {
+  title: document.title,
+};
+STOP`,
+        'ANSWER: Title collected',
+      ],
+      resource: '../resources/freestyler/index.html',
+      node: 'div',
+      iframeId: 'iframe',
+    });
+
+    assert.deepStrictEqual(result.at(-1)!.request.input, 'OBSERVATION: {"title":"I have a title"}');
   });
 });

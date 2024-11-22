@@ -1038,10 +1038,11 @@ export class RecorderController extends LitElement {
   }
 
   #getShortcutsInfo(): Dialogs.ShortcutDialog.Shortcut[] {
-    const getBindingForAction = (action: Actions.RecorderActions): string[] => {
+    const getBindingForAction = (action: Actions.RecorderActions): string[][] => {
       const shortcuts = UI.ShortcutRegistry.ShortcutRegistry.instance().shortcutsForAction(action);
-
-      return shortcuts.map(shortcut => shortcut.title());
+      const shortcutsWithSplitBindings =
+          shortcuts.map(shortcut => shortcut.title().split(/[\s+]+/).map(word => word.trim()));
+      return shortcutsWithSplitBindings;
     };
 
     return [
@@ -1053,7 +1054,7 @@ export class RecorderController extends LitElement {
         title: i18nString(UIStrings.replayRecording),
         bindings: getBindingForAction(Actions.RecorderActions.REPLAY_RECORDING),
       },
-      {title: i18nString(UIStrings.copyShortcut), bindings: [`${Host.Platform.isMac() ? '⌘ C' : 'Ctrl+C'}`]},
+      {title: i18nString(UIStrings.copyShortcut), bindings: Host.Platform.isMac() ? [['⌘', 'C']] : [['Ctrl', 'C']]},
       {
         title: i18nString(UIStrings.toggleCode),
         bindings: getBindingForAction(Actions.RecorderActions.TOGGLE_CODE_VIEW),

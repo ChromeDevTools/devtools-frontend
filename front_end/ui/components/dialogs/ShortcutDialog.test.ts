@@ -18,7 +18,7 @@ describeWithLocale('ShortcutDialog', () => {
     if (prependedElement) {
       shortcutDialog.prependElement(prependedElement);
     }
-    shortcutDialog.data = {shortcuts: [{title: 'Shortcut Title', bindings: ['Ctrl+E']}], open};
+    shortcutDialog.data = {shortcuts: [{title: 'Shortcut Title', bindings: [['Ctrl+E']]}], open};
     Helpers.renderElementIntoDOM(shortcutDialog);
     await coordinator.done();
 

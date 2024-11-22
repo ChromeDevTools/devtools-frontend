@@ -14,11 +14,11 @@ shortcutDialog.data = {
   shortcuts: [
     {
       title: 'First Shortcut Title',
-      bindings: ['Ctrl+E'],
+      bindings: [['Ctrl+E']],
     },
     {
       title: 'Second Shortcut Title',
-      bindings: ['Ctrl+Enter', 'F8'],
+      bindings: [['Ctrl', 'Enter'], ['F8']],
     },
   ],
 };

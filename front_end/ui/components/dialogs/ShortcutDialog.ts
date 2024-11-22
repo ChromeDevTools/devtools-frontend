@@ -37,7 +37,7 @@ declare global {
 
 export interface Shortcut {
   title: string|Platform.UIString.LocalizedString;
-  bindings: string[];
+  bindings: string[][];
 }
 export interface ShortcutDialogData {
   shortcuts: Shortcut[];
@@ -63,10 +63,6 @@ export class ShortcutDialog extends HTMLElement {
     }
 
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#renderBound);
-  }
-
-  #getKeysFromBinding(binding: string): string[] {
-    return binding.split(/[\s+]+/).map(word => word.trim());  // Split on one or more spaces or + symbols
   }
 
   prependElement(element: HTMLElement): void {
@@ -99,7 +95,7 @@ export class ShortcutDialog extends HTMLElement {
                   ${shortcut.bindings.map(binding => {
                     return html`
                     <div class="keys-container">
-                      ${this.#getKeysFromBinding(binding).map(key => html`
+                      ${binding.map(key => html`
                           <span class="keybinds-key">${key}</span>
                       `)}
                     </div>

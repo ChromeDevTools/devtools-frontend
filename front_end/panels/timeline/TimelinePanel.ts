@@ -1143,18 +1143,21 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   #getShortcutsInfo(isNavClassic: boolean): ShortcutDialog.ShortcutDialog.Shortcut[] {
     if (isNavClassic) {
       return [
-        {title: i18nString(UIStrings.timelineScrollUpDown), bindings: ['Shift Scroll']},
-        {title: i18nString(UIStrings.timelineZoomInOut), bindings: ['Scroll', 'W/S']},
-        {title: i18nString(UIStrings.timelineFastZoomInOut), bindings: ['Shift W/S']},
-        {title: i18nString(UIStrings.timelinePanLeftRight), bindings: ['A/D']},
+        {title: i18nString(UIStrings.timelineScrollUpDown), bindings: [['Shift', 'Scroll']]},
+        {title: i18nString(UIStrings.timelineZoomInOut), bindings: [['Scroll'], ['W/S']]},
+        {title: i18nString(UIStrings.timelineFastZoomInOut), bindings: [['Shift', 'W/S']]},
+        {title: i18nString(UIStrings.timelinePanLeftRight), bindings: [['A/D']]},
       ];
     }
 
     return [
-      {title: i18nString(UIStrings.timelineScrollUpDown), bindings: ['Scroll', 'Shift up/down']},
-      {title: i18nString(UIStrings.timelineZoomInOut), bindings: ['Cmd Scroll', 'W/S', '+/-']},
-      {title: i18nString(UIStrings.timelineFastZoomInOut), bindings: ['Shift W/S', 'Shift +/-']},
-      {title: i18nString(UIStrings.timelinePanLeftRight), bindings: ['A/D', 'Shift Scroll', 'Shift left/right']},
+      {title: i18nString(UIStrings.timelineScrollUpDown), bindings: [['Scroll'], ['Shift', 'up/down']]},
+      {title: i18nString(UIStrings.timelineZoomInOut), bindings: [['Cmd', 'Scroll'], ['W/S'], ['+/-']]},
+      {title: i18nString(UIStrings.timelineFastZoomInOut), bindings: [['Shift', 'W/S'], ['Shift', '+/-']]},
+      {
+        title: i18nString(UIStrings.timelinePanLeftRight),
+        bindings: [['A/D'], ['Shift', 'Scroll'], ['Shift', 'left/right']],
+      },
     ];
   }
 

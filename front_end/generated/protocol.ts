@@ -785,6 +785,26 @@ export namespace Audits {
   }
 
   /**
+   * Represents the category of insight that a cookie issue falls under.
+   */
+  export const enum InsightType {
+    GitHubResource = 'GitHubResource',
+    GracePeriod = 'GracePeriod',
+    Heuristics = 'Heuristics',
+  }
+
+  /**
+   * Information about the suggested solution to a cookie issue.
+   */
+  export interface CookieIssueInsight {
+    type: InsightType;
+    /**
+     * Link to table entry in third-party cookie migration readiness list.
+     */
+    tableEntryUrl?: string;
+  }
+
+  /**
    * This information is currently necessary, as the front-end has a difficult
    * time finding a specific cookie. With this, we can convey specific error
    * information without the cookie.
@@ -808,6 +828,10 @@ export namespace Audits {
     siteForCookies?: string;
     cookieUrl?: string;
     request?: AffectedRequest;
+    /**
+     * The recommended solution to the issue.
+     */
+    insight?: CookieIssueInsight;
   }
 
   export const enum MixedContentResolutionStatus {
@@ -3810,7 +3834,7 @@ export namespace DOM {
   export const enum PseudoType {
     FirstLine = 'first-line',
     FirstLetter = 'first-letter',
-    Check = 'check',
+    Checkmark = 'checkmark',
     Before = 'before',
     After = 'after',
     SelectArrow = 'select-arrow',
@@ -3826,8 +3850,7 @@ export namespace DOM {
     FirstLineInherited = 'first-line-inherited',
     ScrollMarker = 'scroll-marker',
     ScrollMarkerGroup = 'scroll-marker-group',
-    ScrollNextButton = 'scroll-next-button',
-    ScrollPrevButton = 'scroll-prev-button',
+    ScrollButton = 'scroll-button',
     Scrollbar = 'scrollbar',
     ScrollbarThumb = 'scrollbar-thumb',
     ScrollbarButton = 'scrollbar-button',

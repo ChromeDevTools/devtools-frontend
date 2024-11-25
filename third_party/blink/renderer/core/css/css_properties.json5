@@ -3483,7 +3483,6 @@
       typedom_types: ["Keyword"],
       default_value: "numeric-only",
       invalidate: [],
-      runtime_flag: "CSSCalcSizeFunction",
     },
     {
       name: "isolation",
@@ -4785,6 +4784,7 @@
       ],
       typedom_types: ["Keyword"],
       invalidate: ["layout"],
+      field_group: "*",
     },
     {
       name: "scrollbar-width",

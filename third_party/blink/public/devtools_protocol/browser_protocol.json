@@ -1083,6 +1083,33 @@
                     ]
                 },
                 {
+                    "id": "InsightType",
+                    "description": "Represents the category of insight that a cookie issue falls under.",
+                    "type": "string",
+                    "enum": [
+                        "GitHubResource",
+                        "GracePeriod",
+                        "Heuristics"
+                    ]
+                },
+                {
+                    "id": "CookieIssueInsight",
+                    "description": "Information about the suggested solution to a cookie issue.",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "type",
+                            "$ref": "InsightType"
+                        },
+                        {
+                            "name": "tableEntryUrl",
+                            "description": "Link to table entry in third-party cookie migration readiness list.",
+                            "optional": true,
+                            "type": "string"
+                        }
+                    ]
+                },
+                {
                     "id": "CookieIssueDetails",
                     "description": "This information is currently necessary, as the front-end has a difficult\ntime finding a specific cookie. With this, we can convey specific error\ninformation without the cookie.",
                     "type": "object",
@@ -1131,6 +1158,12 @@
                             "name": "request",
                             "optional": true,
                             "$ref": "AffectedRequest"
+                        },
+                        {
+                            "name": "insight",
+                            "description": "The recommended solution to the issue.",
+                            "optional": true,
+                            "$ref": "CookieIssueInsight"
                         }
                     ]
                 },
@@ -5718,7 +5751,7 @@
                     "enum": [
                         "first-line",
                         "first-letter",
-                        "check",
+                        "checkmark",
                         "before",
                         "after",
                         "select-arrow",
@@ -5734,8 +5767,7 @@
                         "first-line-inherited",
                         "scroll-marker",
                         "scroll-marker-group",
-                        "scroll-next-button",
-                        "scroll-prev-button",
+                        "scroll-button",
                         "scrollbar",
                         "scrollbar-thumb",
                         "scrollbar-button",

@@ -93,7 +93,7 @@ export async function doubleClickSourceTreeItem(selector: string) {
 
 export async function waitForSourcesPanel(): Promise<void> {
   // Wait for the navigation panel to show up
-  await Promise.any([waitFor('.navigator-file-tree-item'), waitFor('.empty-view')]);
+  await waitFor('.navigator-file-tree-item, .empty-view');
 }
 
 export async function openSourcesPanel() {

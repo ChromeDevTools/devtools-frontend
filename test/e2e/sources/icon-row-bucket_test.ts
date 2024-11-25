@@ -89,11 +89,13 @@ describe('The row\'s icon bucket', function() {
   // can be changed to check the elements one by one using the safer hover/click helpers.
   // Or perhaps the tests only ever check a single element and the list checks are not needed at all.
   it('should display error messages', async () => {
-    await openFileInSourceTab('trusted-type-policy-violation-report-only.rawresponse');
+    await openFileInSourceTab('trusted-type-violations-enforced.rawresponse');
     const iconComponents = await getIconComponents('cm-messageIcon-error');
     const messages: string[] = [];
     const expectedMessages = [
-      '[Report Only] Refused to create a TrustedTypePolicy named \'policy2\' because it violates the following Content Security Policy directive: "trusted-types policy1".',
+      'Refused to create a TrustedTypePolicy named \'policy2\' because it violates the following Content Security Policy directive: "trusted-types policy1".',
+      'Uncaught TypeError: Failed to execute \'createPolicy\' on \'TrustedTypePolicyFactory\': Policy "policy2" disallowed.',
+
     ];
     for (const iconComponent of iconComponents) {
       await hoverElement(iconComponent);

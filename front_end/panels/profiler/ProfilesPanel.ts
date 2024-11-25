@@ -288,6 +288,9 @@ export class ProfilesPanel extends UI.Panel.PanelWithSidebar implements DataDisp
   }
 
   updateProfileTypeSpecificUI(): void {
+    if (this.selectedProfileType?.isInstantProfile()) {
+      this.toggleRecordButton.toggleOnClick(false);
+    }
     this.updateToggleRecordAction(this.toggleRecordAction.toggled());
   }
 

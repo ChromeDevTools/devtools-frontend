@@ -138,6 +138,10 @@ export class DetachedElementsProfileType extends
     return i18nString(UIStrings.detachedElementsDescription);
   }
 
+  override isInstantProfile(): boolean {
+    return true;
+  }
+
   // eslint-disable-next-line @typescript-eslint/naming-convention
   static readonly TypeId = 'DetachedElements';
 }

@@ -111,6 +111,42 @@ export class ThrottlingPresets {
     ];
   }
 
+  static getRecommendedNetworkPreset(rtt: number): SDK.NetworkManager.Conditions|null {
+    const RTT_COMPARISON_THRESHOLD = 200;
+    const RTT_MINIMUM = 60;
+
+    if (!Number.isFinite(rtt)) {
+      return null;
+    }
+
+    if (rtt < RTT_MINIMUM) {
+      return null;
+    }
+
+    let closestPreset: SDK.NetworkManager.Conditions|null = null;
+    let smallestDiff = Infinity;
+    for (const preset of ThrottlingPresets.networkPresets) {
+      const {targetLatency} = preset;
+      if (!targetLatency) {
+        continue;
+      }
+
+      const diff = Math.abs(targetLatency - rtt);
+      if (diff > RTT_COMPARISON_THRESHOLD) {
+        continue;
+      }
+
+      if (smallestDiff < diff) {
+        continue;
+      }
+
+      closestPreset = preset;
+      smallestDiff = diff;
+    }
+
+    return closestPreset;
+  }
+
   static networkPresets: SDK.NetworkManager.Conditions[] = [
     SDK.NetworkManager.Fast4GConditions,
     SDK.NetworkManager.Slow4GConditions,

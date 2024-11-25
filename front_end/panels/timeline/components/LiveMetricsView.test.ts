@@ -872,62 +872,6 @@ describeWithMockConnection('LiveMetricsView', () => {
       assert.strictEqual(lcpFieldEl2!.textContent, '2.00 s');
     });
 
-    it('auto device option should chose based on emulation', async () => {
-      mockFieldData['url-DESKTOP'] = createMockFieldData();
-
-      mockFieldData['url-PHONE'] = createMockFieldData();
-      mockFieldData['url-PHONE'].record.metrics.largest_contentful_paint!.percentiles!.p75 = 2000;
-
-      const view = renderLiveMetrics();
-
-      await coordinator.done();
-
-      selectDeviceOption(view, 'AUTO');
-
-      const lcpFieldEl1 = getFieldMetricValue(view, 'lcp');
-      assert.strictEqual(lcpFieldEl1!.textContent, '1.00 s');
-
-      for (const device of EmulationModel.EmulatedDevices.EmulatedDevicesList.instance().standard()) {
-        if (device.title === 'Moto G Power') {
-          EmulationModel.DeviceModeModel.DeviceModeModel.instance().emulate(
-              EmulationModel.DeviceModeModel.Type.Device, device, device.modes[0], 1);
-        }
-      }
-
-      await coordinator.done();
-
-      const lcpFieldEl2 = getFieldMetricValue(view, 'lcp');
-      assert.strictEqual(lcpFieldEl2!.textContent, '2.00 s');
-    });
-
-    it('auto device option should fall back to all devices', async () => {
-      mockFieldData['url-DESKTOP'] = createMockFieldData();
-
-      mockFieldData['url-ALL'] = createMockFieldData();
-      mockFieldData['url-ALL'].record.metrics.largest_contentful_paint!.percentiles!.p75 = 2000;
-
-      const view = renderLiveMetrics();
-
-      await coordinator.done();
-
-      selectDeviceOption(view, 'AUTO');
-
-      const lcpFieldEl1 = getFieldMetricValue(view, 'lcp');
-      assert.strictEqual(lcpFieldEl1!.textContent, '1.00 s');
-
-      for (const device of EmulationModel.EmulatedDevices.EmulatedDevicesList.instance().standard()) {
-        if (device.title === 'Moto G Power') {
-          EmulationModel.DeviceModeModel.DeviceModeModel.instance().emulate(
-              EmulationModel.DeviceModeModel.Type.Device, device, device.modes[0], 1);
-        }
-      }
-
-      await coordinator.done();
-
-      const lcpFieldEl2 = getFieldMetricValue(view, 'lcp');
-      assert.strictEqual(lcpFieldEl2!.textContent, '2.00 s');
-    });
-
     describe('network throttling recommendation', () => {
       it('should show for closest target RTT', async () => {
         mockFieldData['url-ALL'] = createMockFieldData();

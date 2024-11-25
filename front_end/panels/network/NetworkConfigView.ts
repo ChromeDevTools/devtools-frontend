@@ -213,7 +213,7 @@ export class NetworkConfigView extends UI.Widget.VBox {
     const title = i18nString(UIStrings.networkThrottling);
     const section = this.createSection(title, 'network-config-throttling');
     const networkThrottlingSelect = (section.createChild('select', 'chrome-select') as HTMLSelectElement);
-    MobileThrottling.ThrottlingManager.throttlingManager().decorateSelectWithNetworkThrottling(networkThrottlingSelect);
+    MobileThrottling.ThrottlingManager.throttlingManager().createNetworkThrottlingSelector(networkThrottlingSelect);
     UI.ARIAUtils.setLabel(networkThrottlingSelect, title);
   }
 

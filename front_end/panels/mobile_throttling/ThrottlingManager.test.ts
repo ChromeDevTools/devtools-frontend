@@ -65,7 +65,7 @@ describeWithEnvironment('ThrottlingManager', () => {
     it('listens to changes in cpu throttling setting', () => {
       const cpuThrottlingPresets = MobileThrottling.ThrottlingPresets.ThrottlingPresets.cpuThrottlingPresets;
       const throttlingManager = MobileThrottling.ThrottlingManager.throttlingManager();
-      const selector = throttlingManager.createCPUThrottlingSelector();
+      const selector = throttlingManager.createCPUThrottlingSelector().control;
       assert.strictEqual(
           cpuThrottlingPresets[selector.selectedIndex()], SDK.CPUThrottlingManager.CPUThrottlingRates.NO_THROTTLING);
 

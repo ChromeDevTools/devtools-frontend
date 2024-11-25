@@ -40,6 +40,7 @@ import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
+import * as CrUXManager from '../../models/crux-manager/crux-manager.js';
 import * as EmulationModel from '../../models/emulation/emulation.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as Workspace from '../../models/workspace/workspace.js';
@@ -411,8 +412,8 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   private loader?: TimelineLoader;
   private showScreenshotsToolbarCheckbox?: UI.Toolbar.ToolbarItem;
   private showMemoryToolbarCheckbox?: UI.Toolbar.ToolbarItem;
-  private networkThrottlingSelect?: UI.Toolbar.ToolbarComboBox;
-  private cpuThrottlingSelect?: UI.Toolbar.ToolbarComboBox;
+  private networkThrottlingSelect?: MobileThrottling.ThrottlingManager.NetworkThrottlingSelectorWrapper;
+  private cpuThrottlingSelect?: MobileThrottling.ThrottlingManager.CPUThrottlingSelectorWrapper;
   private fileSelectorElement?: HTMLInputElement;
   private selection: TimelineSelection|null = null;
   private traceLoadStart!: Trace.Types.Timing.MilliSeconds|null;
@@ -724,11 +725,24 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.registerCSSFiles([timelinePanelStyles]);
     // Record the performance tool load time.
     Host.userMetrics.panelLoaded('timeline', 'DevTools.Launch.Timeline');
+
+    const cruxManager = CrUXManager.CrUXManager.instance();
+    cruxManager.addEventListener(CrUXManager.Events.FIELD_DATA_CHANGED, this.#onFieldDataChanged, this);
+    this.#onFieldDataChanged();
   }
 
   override willHide(): void {
     UI.Context.Context.instance().setFlavor(TimelinePanel, null);
     this.#historyManager.cancelIfShowing();
+
+    const cruxManager = CrUXManager.CrUXManager.instance();
+    cruxManager.removeEventListener(CrUXManager.Events.FIELD_DATA_CHANGED, this.#onFieldDataChanged, this);
+  }
+
+  #onFieldDataChanged(): void {
+    const recs = Utils.Helpers.getThrottlingRecommendations();
+    this.cpuThrottlingSelect?.updateRecommendedRate(recs.cpuRate);
+    this.networkThrottlingSelect?.updateRecommendedConditions(recs.networkConditions);
   }
 
   loadFromEvents(events: Trace.Types.Events.Event[]): void {
@@ -1196,16 +1210,14 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
     const cpuThrottlingToolbar = new UI.Toolbar.Toolbar('', throttlingPane.element);
     cpuThrottlingToolbar.appendText(i18nString(UIStrings.cpu));
-    // TODO(crbug.com/311438203): need to get recommended like we do in LiveMetricsView
-    const recommendedRate = 4;
-    this.cpuThrottlingSelect =
-        MobileThrottling.ThrottlingManager.throttlingManager().createCPUThrottlingSelector(recommendedRate);
-    cpuThrottlingToolbar.appendToolbarItem(this.cpuThrottlingSelect);
+    this.cpuThrottlingSelect = MobileThrottling.ThrottlingManager.throttlingManager().createCPUThrottlingSelector();
+    this.cpuThrottlingSelect.control.setMinWidth(200);
+    this.cpuThrottlingSelect.control.setMaxWidth(200);
+    cpuThrottlingToolbar.appendToolbarItem(this.cpuThrottlingSelect.control);
 
     const networkThrottlingToolbar = new UI.Toolbar.Toolbar('', throttlingPane.element);
     networkThrottlingToolbar.appendText(i18nString(UIStrings.network));
-    this.networkThrottlingSelect = this.createNetworkConditionsSelect();
-    networkThrottlingToolbar.appendToolbarItem(this.networkThrottlingSelect);
+    networkThrottlingToolbar.appendToolbarItem(this.createNetworkConditionsSelectToolbarItem());
 
     const thirdPartyToolbar = new UI.Toolbar.Toolbar('', throttlingPane.element);
     thirdPartyToolbar.makeVertical();
@@ -1222,13 +1234,13 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.updateSettingsPaneVisibility();
   }
 
-  private createNetworkConditionsSelect(): UI.Toolbar.ToolbarComboBox {
+  private createNetworkConditionsSelectToolbarItem(): UI.Toolbar.ToolbarComboBox {
     const toolbarItem = new UI.Toolbar.ToolbarComboBox(null, i18nString(UIStrings.networkConditions));
-    toolbarItem.setMaxWidth(140);
-    // TODO(crbug.com/311438203): need to get recommended like we do in LiveMetricsView
-    const recommendedConditions = null;
-    MobileThrottling.ThrottlingManager.throttlingManager().decorateSelectWithNetworkThrottling(
-        toolbarItem.selectElement(), recommendedConditions);
+    toolbarItem.setMinWidth(200);
+    toolbarItem.setMaxWidth(200);
+    this.networkThrottlingSelect =
+        MobileThrottling.ThrottlingManager.throttlingManager().createNetworkThrottlingSelector(
+            toolbarItem.selectElement());
     return toolbarItem;
   }
 

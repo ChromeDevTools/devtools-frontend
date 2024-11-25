@@ -12,7 +12,6 @@ import './MetricCard.js';
 import * as Common from '../../../core/common/common.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as Platform from '../../../core/platform/platform.js';
-import type * as SDK from '../../../core/sdk/sdk.js';
 import * as CrUXManager from '../../../models/crux-manager/crux-manager.js';
 import * as EmulationModel from '../../../models/emulation/emulation.js';
 import * as LiveMetrics from '../../../models/live-metrics/live-metrics.js';
@@ -26,7 +25,7 @@ import * as UI from '../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as MobileThrottling from '../../mobile_throttling/mobile_throttling.js';
-import {md} from '../utils/Helpers.js';
+import {getThrottlingRecommendations, md} from '../utils/Helpers.js';
 
 import liveMetricsViewStyles from './liveMetricsView.css.js';
 import type {MetricCardData} from './MetricCard.js';
@@ -42,7 +41,6 @@ const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 const DEVICE_OPTION_LIST: DeviceOption[] = ['AUTO', ...CrUXManager.DEVICE_SCOPE_LIST];
 
-const RTT_COMPARISON_THRESHOLD = 200;
 const RTT_MINIMUM = 60;
 
 const UIStrings = {
@@ -295,10 +293,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
   #interactions: LiveMetrics.InteractionMap = new Map();
   #layoutShifts: LiveMetrics.LayoutShift[] = [];
 
-  #cruxPageResult?: CrUXManager.PageResult;
-
-  #fieldDeviceOption: DeviceOption = 'AUTO';
-  #fieldPageScope: CrUXManager.PageScope = 'url';
+  #cruxManager = CrUXManager.CrUXManager.instance();
 
   #toggleRecordAction: UI.ActionRegistration.Action;
   #recordReloadAction: UI.ActionRegistration.Action;
@@ -365,8 +360,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
     });
   }
 
-  #onFieldDataChanged(event: {data: CrUXManager.PageResult|undefined}): void {
-    this.#cruxPageResult = event.data;
+  #onFieldDataChanged(): void {
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
 
@@ -375,17 +369,8 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
   }
 
   async #refreshFieldDataForCurrentPage(): Promise<void> {
-    this.#cruxPageResult = await CrUXManager.CrUXManager.instance().getFieldDataForCurrentPage();
+    await this.#cruxManager.refresh();
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
-  }
-
-  #getSelectedFieldResponse(): CrUXManager.CrUXResponse|null|undefined {
-    const deviceScope = this.#fieldDeviceOption === 'AUTO' ? this.#getAutoDeviceScope() : this.#fieldDeviceOption;
-    return this.#cruxPageResult?.[`${this.#fieldPageScope}-${deviceScope}`];
-  }
-
-  #getFieldMetricData(fieldMetric: CrUXManager.StandardMetricNames): CrUXManager.MetricResponse|undefined {
-    return this.#getSelectedFieldResponse()?.record.metrics[fieldMetric];
   }
 
   connectedCallback(): void {
@@ -423,7 +408,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
   }
 
   #renderLcpCard(): LitHtml.LitTemplate {
-    const fieldData = this.#getFieldMetricData('largest_contentful_paint');
+    const fieldData = this.#cruxManager.getSelectedFieldMetricData('largest_contentful_paint');
     const node = this.#lcpValue?.node;
     const phases = this.#lcpValue?.phases;
 
@@ -456,7 +441,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
   }
 
   #renderClsCard(): LitHtml.LitTemplate {
-    const fieldData = this.#getFieldMetricData('cumulative_layout_shift');
+    const fieldData = this.#cruxManager.getSelectedFieldMetricData('cumulative_layout_shift');
 
     const clusterIds = new Set(this.#clsValue?.clusterShiftIds || []);
     const clusterIsVisible =
@@ -489,7 +474,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
   }
 
   #renderInpCard(): LitHtml.LitTemplate {
-    const fieldData = this.#getFieldMetricData('interaction_to_next_paint');
+    const fieldData = this.#cruxManager.getSelectedFieldMetricData('interaction_to_next_paint');
     const phases = this.#inpValue?.phases;
     const interaction = this.#inpValue && this.#interactions.get(this.#inpValue.interactionId);
 
@@ -547,13 +532,8 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
     // clang-format on
   }
 
-  #getCpuRec(): number {
-    // TODO(cjamcl): will soon be set to recommended calibrated throttling - go/cpq:adaptive-throttling
-    return 4;
-  }
-
   #getNetworkRecTitle(): string|null {
-    const response = this.#getFieldMetricData('round_trip_time');
+    const response = this.#cruxManager.getSelectedFieldMetricData('round_trip_time');
     if (!response?.percentiles) {
       return null;
     }
@@ -567,7 +547,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
       return i18nString(UIStrings.tryDisablingThrottling);
     }
 
-    const conditions = this.#getNetworkRec();
+    const conditions = MobileThrottling.ThrottlingPresets.ThrottlingPresets.getRecommendedNetworkPreset(rtt);
     if (!conditions) {
       return null;
     }
@@ -576,48 +556,10 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
     return i18nString(UIStrings.tryUsingThrottling, {PH1: title});
   }
 
-  #getNetworkRec(): SDK.NetworkManager.Conditions|null {
-    const response = this.#getFieldMetricData('round_trip_time');
-    if (!response?.percentiles) {
-      return null;
-    }
-
-    const rtt = Number(response.percentiles.p75);
-    if (!Number.isFinite(rtt)) {
-      return null;
-    }
-
-    if (rtt < RTT_MINIMUM) {
-      return null;
-    }
-
-    let closestPreset: SDK.NetworkManager.Conditions|null = null;
-    let smallestDiff = Infinity;
-    for (const preset of MobileThrottling.ThrottlingPresets.ThrottlingPresets.networkPresets) {
-      const {targetLatency} = preset;
-      if (!targetLatency) {
-        continue;
-      }
-
-      const diff = Math.abs(targetLatency - rtt);
-      if (diff > RTT_COMPARISON_THRESHOLD) {
-        continue;
-      }
-
-      if (smallestDiff < diff) {
-        continue;
-      }
-
-      closestPreset = preset;
-      smallestDiff = diff;
-    }
-
-    return closestPreset;
-  }
-
   #getDeviceRec(): string|null {
     // `form_factors` metric is only populated if CrUX data is fetched for all devices.
-    const fractions = this.#cruxPageResult?.[`${this.#fieldPageScope}-ALL`]?.record.metrics.form_factors?.fractions;
+    const fractions = this.#cruxManager.getFieldResponse(this.#cruxManager.fieldPageScope, 'ALL')
+                          ?.record.metrics.form_factors?.fractions;
     if (!fractions) {
       return null;
     }
@@ -629,7 +571,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
   }
 
   #renderRecordingSettings(): LitHtml.LitTemplate {
-    const fieldEnabled = CrUXManager.CrUXManager.instance().getConfigSetting().get().enabled;
+    const fieldEnabled = this.#cruxManager.getConfigSetting().get().enabled;
 
     const deviceRecEl = document.createElement('span');
     deviceRecEl.classList.add('environment-rec');
@@ -638,6 +580,8 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
     const networkRecEl = document.createElement('span');
     networkRecEl.classList.add('environment-rec');
     networkRecEl.textContent = this.#getNetworkRecTitle() || i18nString(UIStrings.notEnoughData);
+
+    const recs = getThrottlingRecommendations();
 
     // clang-format off
     return html`
@@ -650,10 +594,10 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
         </ul>
       ` : nothing}
       <div class="environment-option">
-        <devtools-cpu-throttling-selector .recommendedRate=${this.#getCpuRec()}></devtools-cpu-throttling-selector>
+        <devtools-cpu-throttling-selector .recommendedRate=${recs.cpuRate}></devtools-cpu-throttling-selector>
       </div>
       <div class="environment-option">
-        <devtools-network-throttling-selector .recommendedConditions=${this.#getNetworkRec()}></devtools-network-throttling-selector>
+        <devtools-network-throttling-selector .recommendedConditions=${recs.networkConditions}></devtools-network-throttling-selector>
       </div>
       <div class="environment-option">
         <setting-checkbox
@@ -669,7 +613,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
   }
 
   #getPageScopeLabel(pageScope: CrUXManager.PageScope): string {
-    const key = this.#cruxPageResult?.[`${pageScope}-ALL`]?.record.key[pageScope];
+    const key = this.#cruxManager.pageResult?.[`${pageScope}-ALL`]?.record.key[pageScope];
     if (key) {
       return pageScope === 'url' ? i18nString(UIStrings.urlOptionWithKey, {PH1: key}) :
                                    i18nString(UIStrings.originOptionWithKey, {PH1: key});
@@ -681,26 +625,26 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
 
   #onPageScopeMenuItemSelected(event: Menus.SelectMenu.SelectMenuItemSelectedEvent): void {
     if (event.itemValue === 'url') {
-      this.#fieldPageScope = 'url';
+      this.#cruxManager.fieldPageScope = 'url';
     } else {
-      this.#fieldPageScope = 'origin';
+      this.#cruxManager.fieldPageScope = 'origin';
     }
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
 
   #renderPageScopeSetting(): LitHtml.LitTemplate {
-    if (!CrUXManager.CrUXManager.instance().getConfigSetting().get().enabled) {
+    if (!this.#cruxManager.getConfigSetting().get().enabled) {
       return LitHtml.nothing;
     }
 
     const urlLabel = this.#getPageScopeLabel('url');
     const originLabel = this.#getPageScopeLabel('origin');
 
-    const buttonTitle = this.#fieldPageScope === 'url' ? urlLabel : originLabel;
+    const buttonTitle = this.#cruxManager.fieldPageScope === 'url' ? urlLabel : originLabel;
     const accessibleTitle = i18nString(UIStrings.showFieldDataForPage, {PH1: buttonTitle});
 
     // If there is no data at all we should force users to switch pages or reconfigure CrUX.
-    const shouldDisable = !this.#cruxPageResult?.['url-ALL'] && !this.#cruxPageResult?.['origin-ALL'];
+    const shouldDisable = !this.#cruxManager.pageResult?.['url-ALL'] && !this.#cruxManager.pageResult?.['origin-ALL'];
 
     return html`
       <devtools-select-menu
@@ -718,13 +662,13 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
       >
         <devtools-menu-item
           .value=${'url'}
-          .selected=${this.#fieldPageScope === 'url'}
+          .selected=${this.#cruxManager.fieldPageScope === 'url'}
         >
           ${urlLabel}
         </devtools-menu-item>
         <devtools-menu-item
           .value=${'origin'}
-          .selected=${this.#fieldPageScope === 'origin'}
+          .selected=${this.#cruxManager.fieldPageScope === 'origin'}
         >
           ${originLabel}
         </devtools-menu-item>
@@ -745,36 +689,16 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
     }
   }
 
-  #getAutoDeviceScope(): CrUXManager.DeviceScope {
-    if (this.#deviceModeModel === null) {
-      return 'ALL';
-    }
-
-    if (this.#deviceModeModel.isMobile()) {
-      if (this.#cruxPageResult?.[`${this.#fieldPageScope}-PHONE`]) {
-        return 'PHONE';
-      }
-
-      return 'ALL';
-    }
-
-    if (this.#cruxPageResult?.[`${this.#fieldPageScope}-DESKTOP`]) {
-      return 'DESKTOP';
-    }
-
-    return 'ALL';
-  }
-
   #getLabelForDeviceOption(deviceOption: DeviceOption): string {
-    const deviceScope = deviceOption === 'AUTO' ? this.#getAutoDeviceScope() : deviceOption;
+    const deviceScope = this.#cruxManager.getSelectedDeviceScope();
     const deviceScopeLabel = this.#getDeviceScopeDisplayName(deviceScope);
     const baseLabel = deviceOption === 'AUTO' ? i18nString(UIStrings.auto, {PH1: deviceScopeLabel}) : deviceScopeLabel;
 
-    if (!this.#cruxPageResult) {
+    if (!this.#cruxManager.pageResult) {
       return i18nString(UIStrings.loadingOption, {PH1: baseLabel});
     }
 
-    const result = this.#cruxPageResult[`${this.#fieldPageScope}-${deviceScope}`];
+    const result = this.#cruxManager.getSelectedFieldResponse();
     if (!result) {
       return i18nString(UIStrings.needsDataOption, {PH1: baseLabel});
     }
@@ -783,19 +707,20 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
   }
 
   #onDeviceOptionMenuItemSelected(event: Menus.SelectMenu.SelectMenuItemSelectedEvent): void {
-    this.#fieldDeviceOption = event.itemValue as DeviceOption;
+    this.#cruxManager.fieldDeviceOption = event.itemValue as DeviceOption;
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
 
   #renderDeviceScopeSetting(): LitHtml.LitTemplate {
-    if (!CrUXManager.CrUXManager.instance().getConfigSetting().get().enabled) {
+    if (!this.#cruxManager.getConfigSetting().get().enabled) {
       return LitHtml.nothing;
     }
+
     // If there is no data at all we should force users to try adjusting the page scope
     // before coming back to this option.
-    const shouldDisable = !this.#cruxPageResult?.[`${this.#fieldPageScope}-ALL`];
+    const shouldDisable = !this.#cruxManager.getFieldResponse(this.#cruxManager.fieldPageScope, 'ALL');
 
-    const currentDeviceLabel = this.#getLabelForDeviceOption(this.#fieldDeviceOption);
+    const currentDeviceLabel = this.#getLabelForDeviceOption(this.#cruxManager.fieldDeviceOption);
 
     // clang-format off
     return html`
@@ -816,7 +741,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
           return html`
             <devtools-menu-item
               .value=${deviceOption}
-              .selected=${this.#fieldDeviceOption === deviceOption}
+              .selected=${this.#cruxManager.fieldDeviceOption === deviceOption}
             >
               ${this.#getLabelForDeviceOption(deviceOption)}
             </devtools-menu-item>
@@ -828,7 +753,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
   }
 
   #getCollectionPeriodRange(): string|null {
-    const selectedResponse = this.#getSelectedFieldResponse();
+    const selectedResponse = this.#cruxManager.getSelectedFieldResponse();
     if (!selectedResponse) {
       return null;
     }
@@ -871,7 +796,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
       PH1: dateEl,
     });
 
-    const warnings = this.#cruxPageResult?.warnings || [];
+    const warnings = this.#cruxManager.pageResult?.warnings || [];
 
     return html`
       <div class="field-data-message">
@@ -884,7 +809,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
   }
 
   #renderFieldDataMessage(): LitHtml.LitTemplate {
-    if (CrUXManager.CrUXManager.instance().getConfigSetting().get().enabled) {
+    if (this.#cruxManager.getConfigSetting().get().enabled) {
       return this.#renderCollectionPeriod();
     }
 
@@ -1094,7 +1019,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
   }
 
   #render = (): void => {
-    const fieldEnabled = CrUXManager.CrUXManager.instance().getConfigSetting().get().enabled;
+    const fieldEnabled = this.#cruxManager.getConfigSetting().get().enabled;
     const liveMetricsTitle =
         fieldEnabled ? i18nString(UIStrings.localAndFieldMetrics) : i18nString(UIStrings.localMetrics);
 

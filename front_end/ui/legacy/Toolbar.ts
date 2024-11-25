@@ -1137,7 +1137,7 @@ export class ToolbarComboBox extends ToolbarItem<void> {
     this.selectElementInternal.appendChild(option);
   }
 
-  createOption(label: string, value?: string): Element {
+  createOption(label: string, value?: string): HTMLOptionElement {
     const option = (this.selectElementInternal.createChild('option') as HTMLOptionElement);
     option.text = label;
     if (typeof value !== 'undefined') {

@@ -34,6 +34,7 @@ devtools_entrypoint("bundle") {
     ":*",
     "../*",
     "../../panels/emulation/*",
+    "../crux-manager/*",
   ]
 
   visibility += devtools_models_visibility

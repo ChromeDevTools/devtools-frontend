@@ -9,7 +9,7 @@ const UIStrings = {
   /**
    *@description Text for no network throttling
    */
-  noThrottling: 'No throttling',
+  noThrottling: 'No CPU and no network throttling',
   /**
    *@description Text in Throttling Presets of the Network panel
    */

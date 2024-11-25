@@ -221,7 +221,7 @@ export class ThrottlingManager {
       const option = options[index];
       if (option) {
         button.setText(option.title);
-        button.setTitle(`${option.title} ${option.description}`);
+        button.setTitle(`${option.title}: ${option.description}`);
       }
     }
   }

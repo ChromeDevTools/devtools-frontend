@@ -280,6 +280,20 @@
 .field-data-warning {
   margin-top: 4px;
   color: var(--sys-color-error);
+  font-size: var(--sys-typescale-body4-size);
+  line-height: var(--sys-typescale-body4-line-height);
+  display: flex;
+
+  &::before {
+    content: " ";
+    width: var(--sys-typescale-body4-line-height);
+    height: var(--sys-typescale-body4-line-height);
+    mask-size: var(--sys-typescale-body4-line-height);
+    mask-image: var(--image-file-warning);
+    background-color: var(--sys-color-error);
+    margin-right: 4px;
+    flex-shrink: 0;
+  }
 }
 
 .collection-period-range {

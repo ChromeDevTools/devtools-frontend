@@ -74,7 +74,7 @@ describeWithEnvironment('AiAgent', () => {
         aidaClient: {} as Host.AidaClient.AidaClient,
       });
       assert.strictEqual(
-          agent.buildRequest({input: 'test input'}).options?.temperature,
+          agent.buildRequest({text: 'test input'}).options?.temperature,
           1,
       );
     });
@@ -85,7 +85,7 @@ describeWithEnvironment('AiAgent', () => {
       });
       agent.options.temperature = -1;
       assert.strictEqual(
-          agent.buildRequest({input: 'test input'}).options?.temperature,
+          agent.buildRequest({text: 'test input'}).options?.temperature,
           undefined,
       );
     });
@@ -95,7 +95,7 @@ describeWithEnvironment('AiAgent', () => {
         aidaClient: {} as Host.AidaClient.AidaClient,
       });
       assert.strictEqual(
-          agent.buildRequest({input: 'test input'}).options?.model_id,
+          agent.buildRequest({text: 'test input'}).options?.model_id,
           'test model',
       );
     });
@@ -106,7 +106,7 @@ describeWithEnvironment('AiAgent', () => {
         serverSideLoggingEnabled: true,
       });
       assert.strictEqual(
-          agent.buildRequest({input: 'test input'}).metadata?.disable_user_content_logging,
+          agent.buildRequest({text: 'test input'}).metadata?.disable_user_content_logging,
           false,
       );
     });
@@ -119,7 +119,7 @@ describeWithEnvironment('AiAgent', () => {
       assert.strictEqual(
           agent
               .buildRequest({
-                input: 'test input',
+                text: 'test input',
               })
               .metadata?.disable_user_content_logging,
           true,
@@ -131,16 +131,16 @@ describeWithEnvironment('AiAgent', () => {
         aidaClient: {} as Host.AidaClient.AidaClient,
         serverSideLoggingEnabled: false,
       });
-      const request = agent.buildRequest({input: 'test input'});
-      assert.strictEqual(request.input, 'test input');
-      assert.strictEqual(request.chat_history, undefined);
+      const request = agent.buildRequest({text: 'test input'});
+      assert.strictEqual(request.current_message?.parts[0].text, 'test input');
+      assert.strictEqual(request.historical_contexts, undefined);
     });
 
     it('builds a request with a sessionId', async () => {
       const agent = new AiAgentMock({
         aidaClient: {} as Host.AidaClient.AidaClient,
       });
-      const request = agent.buildRequest({input: 'test input'});
+      const request = agent.buildRequest({text: 'test input'});
       assert.strictEqual(request.metadata?.string_session_id, 'sessionId');
     });
 
@@ -148,10 +148,10 @@ describeWithEnvironment('AiAgent', () => {
       const agent = new AiAgentMock({
         aidaClient: {} as Host.AidaClient.AidaClient,
       });
-      const request = agent.buildRequest({input: 'test input'});
-      assert.strictEqual(request.input, 'test input');
+      const request = agent.buildRequest({text: 'test input'});
+      assert.strictEqual(request.current_message?.parts[0].text, 'test input');
       assert.strictEqual(request.preamble, 'preamble');
-      assert.strictEqual(request.chat_history, undefined);
+      assert.strictEqual(request.historical_contexts, undefined);
     });
 
     it('builds a request with chat history', async () => {
@@ -190,26 +190,24 @@ describeWithEnvironment('AiAgent', () => {
           text: 'answer',
         },
       ];
-      const request = agent.buildRequest({
-        input: 'test input',
-      });
-      assert.strictEqual(request.input, 'test input');
-      assert.deepStrictEqual(request.chat_history, [
+      const request = agent.buildRequest({text: 'test input'});
+      assert.strictEqual(request.current_message?.parts[0].text, 'test input');
+      assert.deepStrictEqual(request.historical_contexts, [
         {
-          text: 'test',
-          entity: 1,
+          parts: [{text: 'test'}],
+          role: 1,
         },
         {
-          entity: 2,
-          text: 'THOUGHT: thought\nTITLE: title\nACTION\naction\nSTOP',
+          role: 2,
+          parts: [{text: 'THOUGHT: thought\nTITLE: title\nACTION\naction\nSTOP'}],
         },
         {
-          entity: 1,
-          text: 'OBSERVATION: result',
+          role: 1,
+          parts: [{text: 'OBSERVATION: result'}],
         },
         {
-          entity: 2,
-          text: 'answer',
+          role: 2,
+          parts: [{text: 'answer'}],
         },
       ]);
     });
@@ -240,11 +238,9 @@ describeWithEnvironment('AiAgent', () => {
           error: ErrorType.ABORT,
         },
       ];
-      const request = agent.buildRequest({
-        input: 'test input',
-      });
-      assert.strictEqual(request.input, 'test input');
-      assert.deepStrictEqual(request.chat_history, undefined);
+      const request = agent.buildRequest({text: 'test input'});
+      assert.strictEqual(request.current_message?.parts[0].text, 'test input');
+      assert.deepStrictEqual(request.historical_contexts, undefined);
     });
 
     it('builds a request with aborted query in history before a real request', async () => {
@@ -303,26 +299,24 @@ describeWithEnvironment('AiAgent', () => {
           text: 'answer2',
         },
       ];
-      const request = agent.buildRequest({
-        input: 'test input',
-      });
-      assert.strictEqual(request.input, 'test input');
-      assert.deepStrictEqual(request.chat_history, [
+      const request = agent.buildRequest({text: 'test input'});
+      assert.strictEqual(request.current_message?.parts[0].text, 'test input');
+      assert.deepStrictEqual(request.historical_contexts, [
         {
-          text: 'test2',
-          entity: 1,
+          parts: [{text: 'test2'}],
+          role: 1,
         },
         {
-          entity: 2,
-          text: 'THOUGHT: thought2\nTITLE: title2\nACTION\naction2\nSTOP',
+          role: 2,
+          parts: [{text: 'THOUGHT: thought2\nTITLE: title2\nACTION\naction2\nSTOP'}],
         },
         {
-          entity: 1,
-          text: 'OBSERVATION: result2',
+          role: 1,
+          parts: [{text: 'OBSERVATION: result2'}],
         },
         {
-          entity: 2,
-          text: 'answer2',
+          role: 2,
+          parts: [{text: 'answer2'}],
         },
       ]);
     });
@@ -395,12 +389,12 @@ describeWithEnvironment('AiAgent', () => {
 
         assert.deepStrictEqual(agent.chatHistoryForTesting, [
           {
-            entity: Host.AidaClient.Entity.USER,
-            text: 'query',
+            role: Host.AidaClient.Role.USER,
+            parts: [{text: 'query'}],
           },
           {
-            entity: Host.AidaClient.Entity.SYSTEM,
-            text: 'Partial answer is now completed',
+            role: Host.AidaClient.Role.MODEL,
+            parts: [{text: 'Partial answer is now completed'}],
           },
         ]);
       });

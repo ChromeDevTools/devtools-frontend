@@ -4,6 +4,7 @@
 
 import {assert} from 'chai';
 
+import type * as Host from '../../../front_end/core/host/host.js';
 import type * as Root from '../../../front_end/core/root/root.js';
 import {expectError} from '../../conductor/events.js';
 import {click, getBrowserAndPages, goToResource} from '../../shared/helper.js';
@@ -132,7 +133,8 @@ describe('Freestyler', function() {
 
   interface Log {
     request: {
-      input: string,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      current_message: Host.AidaClient.Content,
     };
   }
 
@@ -201,7 +203,8 @@ STOP`,
         'ANSWER: changed styles',
       ],
     });
-    assert.deepStrictEqual(result.at(-1)!.request.input, 'OBSERVATION: {"color":"rgb(0, 0, 0)"}');
+    assert.deepStrictEqual(
+        result.at(-1)!.request.current_message, {role: 1, parts: [{text: 'OBSERVATION: {"color":"rgb(0, 0, 0)"}'}]});
   });
 
   it('gets handles trailing ;', async () => {
@@ -227,7 +230,8 @@ STOP`,
           ],
         },
     );
-    assert.deepStrictEqual(result.at(-1)!.request.input, 'OBSERVATION: {"aspectRatio":"auto"}');
+    assert.deepStrictEqual(
+        result.at(-1)!.request.current_message, {role: 1, parts: [{text: 'OBSERVATION: {"aspectRatio":"auto"}'}]});
   });
 
   it('gets handles comments', async () => {
@@ -251,7 +255,8 @@ STOP`,
         'ANSWER: changed styles',
       ],
     });
-    assert.deepStrictEqual(result.at(-1)!.request.input, 'OBSERVATION: {"aspectRatio":"auto"}');
+    assert.deepStrictEqual(
+        result.at(-1)!.request.current_message, {role: 1, parts: [{text: 'OBSERVATION: {"aspectRatio":"auto"}'}]});
   });
 
   it('modifies the inline styles using the extension functions', async () => {
@@ -302,6 +307,7 @@ STOP`,
       iframeId: 'iframe',
     });
 
-    assert.deepStrictEqual(result.at(-1)!.request.input, 'OBSERVATION: {"title":"I have a title"}');
+    assert.deepStrictEqual(
+        result.at(-1)!.request.current_message.parts[0].text, 'OBSERVATION: {"title":"I have a title"}');
   });
 });

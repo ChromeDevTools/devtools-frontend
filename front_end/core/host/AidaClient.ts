@@ -9,10 +9,13 @@ import {InspectorFrontendHostInstance} from './InspectorFrontendHost.js';
 import type {AidaClientResult, SyncInformation} from './InspectorFrontendHostAPI.js';
 import {bindOutputStream} from './ResourceLoader.js';
 
-export enum Entity {
-  UNKNOWN = 0,
+export enum Role {
+  // Unspecified role.
+  ROLE_UNSPECIFIED = 0,
+  // The user.
   USER = 1,
-  SYSTEM = 2,
+  // The model.
+  MODEL = 2,
 }
 
 export const enum Rating {
@@ -21,9 +24,27 @@ export const enum Rating {
   NEGATIVE = 'NEGATIVE',
 }
 
-export interface HistoryChunk {
-  text: string;
-  entity: Entity;
+// A `Content` represents a single turn message.
+export interface Content {
+  parts: Part[];
+  // The producer of the content.
+  role: Role;
+}
+
+export interface Part {
+  text?: string;
+  // Inline media bytes.
+  inlineData?: MediaBlob;
+}
+
+// Raw media bytes.
+export interface MediaBlob {
+  // The IANA standard MIME type of the source data.
+  // Currently supported types are: image/png, image/jpeg.
+  // Format: base64-encoded
+  // For reference: google3/google/x/pitchfork/aida/v1/content.proto
+  mimeType: string;
+  data: string;
 }
 
 export enum FunctionalityType {
@@ -62,10 +83,11 @@ export enum UserTier {
 }
 
 export interface AidaRequest {
-  input: string;
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  current_message?: Content;
   preamble?: string;
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  chat_history?: HistoryChunk[];
+  historical_contexts?: Content[];
   client: string;
   options?: {
     temperature?: number,
@@ -152,7 +174,7 @@ export class AidaAbortError extends Error {}
 export class AidaClient {
   static buildConsoleInsightsRequest(input: string): AidaRequest {
     const request: AidaRequest = {
-      input,
+      current_message: {parts: [{text: input}], role: Role.USER},
       client: CLIENT_NAME,
       functionality_type: FunctionalityType.EXPLAIN_ERROR,
       client_feature: ClientFeature.CHROME_CONSOLE_INSIGHTS,

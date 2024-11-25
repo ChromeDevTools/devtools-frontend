@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Host from '../../core/host/host.js';
+import * as Host from '../../core/host/host.js';
 import {describeWithEnvironment, getGetHostConfigStub} from '../../testing/EnvironmentHelpers.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
 import * as TimelineUtils from '../timeline/utils/utils.js';
@@ -39,7 +39,7 @@ describeWithEnvironment('DrJonesPerformanceAgent', () => {
         aidaClient: {} as Host.AidaClient.AidaClient,
       });
       assert.strictEqual(
-          agent.buildRequest({input: 'test input'}).options?.model_id,
+          agent.buildRequest({text: 'test input'}).options?.model_id,
           'test model',
       );
     });
@@ -50,7 +50,7 @@ describeWithEnvironment('DrJonesPerformanceAgent', () => {
         aidaClient: {} as Host.AidaClient.AidaClient,
       });
       assert.strictEqual(
-          agent.buildRequest({input: 'test input'}).options?.temperature,
+          agent.buildRequest({text: 'test input'}).options?.temperature,
           1,
       );
     });
@@ -79,20 +79,20 @@ describeWithEnvironment('DrJonesPerformanceAgent', () => {
       ];
       assert.deepStrictEqual(
           agent.buildRequest({
-            input: 'test input',
+            text: 'test input',
           }),
           {
-            input: 'test input',
+            current_message: {role: Host.AidaClient.Role.USER, parts: [{text: 'test input'}]},
             client: 'CHROME_DEVTOOLS',
             preamble: 'preamble',
-            chat_history: [
+            historical_contexts: [
               {
-                entity: 1,
-                text: 'question',
+                role: 1,
+                parts: [{text: 'question'}],
               },
               {
-                entity: 2,
-                text: 'answer',
+                role: 2,
+                parts: [{text: 'answer'}],
               },
             ],
             metadata: {
@@ -178,12 +178,12 @@ self: 3
 
       assert.deepStrictEqual(agent.chatHistoryForTesting, [
         {
-          entity: 1,
-          text: `${aiCallTree.serialize()}\n\n# User request\n\ntest`,
+          role: 1,
+          parts: [{text: `${aiCallTree.serialize()}\n\n# User request\n\ntest`}],
         },
         {
-          entity: 2,
-          text: 'This is the answer',
+          role: 2,
+          parts: [{text: 'This is the answer'}],
         },
       ]);
     });

@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
-import type * as Host from '../../core/host/host.js';
+import * as Host from '../../core/host/host.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
@@ -60,7 +60,7 @@ describeWithMockConnection('DrJonesFileAgent', () => {
         aidaClient: {} as Host.AidaClient.AidaClient,
       });
       assert.strictEqual(
-          agent.buildRequest({input: 'test input'}).options?.model_id,
+          agent.buildRequest({text: 'test input'}).options?.model_id,
           'test model',
       );
     });
@@ -71,7 +71,7 @@ describeWithMockConnection('DrJonesFileAgent', () => {
         aidaClient: {} as Host.AidaClient.AidaClient,
       });
       assert.strictEqual(
-          agent.buildRequest({input: 'test input'}).options?.temperature,
+          agent.buildRequest({text: 'test input'}).options?.temperature,
           1,
       );
     });
@@ -100,20 +100,20 @@ describeWithMockConnection('DrJonesFileAgent', () => {
       ];
       assert.deepStrictEqual(
           agent.buildRequest({
-            input: 'test input',
+            text: 'test input',
           }),
           {
-            input: 'test input',
+            current_message: {parts: [{text: 'test input'}], role: Host.AidaClient.Role.USER},
             client: 'CHROME_DEVTOOLS',
             preamble: 'preamble',
-            chat_history: [
+            historical_contexts: [
               {
-                entity: 1,
-                text: 'question',
+                role: 1,
+                parts: [{text: 'question'}],
               },
               {
-                entity: 2,
-                text: 'answer',
+                role: 2,
+                parts: [{text: 'answer'}],
               },
             ],
             metadata: {
@@ -224,8 +224,9 @@ test`,
 
       assert.deepStrictEqual(agent.chatHistoryForTesting, [
         {
-          entity: 1,
-          text: `# Selected file
+          role: 1,
+          parts: [{
+            text: `# Selected file
 File name: script.js
 URL: http://example.test/script.js
 File content:
@@ -236,10 +237,11 @@ File content:
 # User request
 
 test`,
+          }],
         },
         {
-          entity: 2,
-          text: 'This is the answer',
+          role: 2,
+          parts: [{text: 'This is the answer'}],
         },
       ]);
     });

@@ -13,7 +13,7 @@ describeWithEnvironment('AidaClient', () => {
     const stub = getGetHostConfigStub({});
     const request = Host.AidaClient.AidaClient.buildConsoleInsightsRequest('foo');
     assert.deepStrictEqual(request, {
-      input: 'foo',
+      current_message: {parts: [{text: 'foo'}], role: Host.AidaClient.Role.USER},
       client: 'CHROME_DEVTOOLS',
       client_feature: 1,
       functionality_type: 2,
@@ -30,7 +30,7 @@ describeWithEnvironment('AidaClient', () => {
     });
     const request = Host.AidaClient.AidaClient.buildConsoleInsightsRequest('foo');
     assert.deepStrictEqual(request, {
-      input: 'foo',
+      current_message: {parts: [{text: 'foo'}], role: Host.AidaClient.Role.USER},
       client: 'CHROME_DEVTOOLS',
       options: {
         temperature: 0.5,
@@ -50,7 +50,7 @@ describeWithEnvironment('AidaClient', () => {
     });
     const request = Host.AidaClient.AidaClient.buildConsoleInsightsRequest('foo');
     assert.deepStrictEqual(request, {
-      input: 'foo',
+      current_message: {parts: [{text: 'foo'}], role: Host.AidaClient.Role.USER},
       client: 'CHROME_DEVTOOLS',
       options: {
         temperature: 0,
@@ -70,7 +70,7 @@ describeWithEnvironment('AidaClient', () => {
     });
     const request = Host.AidaClient.AidaClient.buildConsoleInsightsRequest('foo');
     assert.deepStrictEqual(request, {
-      input: 'foo',
+      current_message: {parts: [{text: 'foo'}], role: Host.AidaClient.Role.USER},
       client: 'CHROME_DEVTOOLS',
       client_feature: 1,
       functionality_type: 2,
@@ -88,7 +88,7 @@ describeWithEnvironment('AidaClient', () => {
     });
     const request = Host.AidaClient.AidaClient.buildConsoleInsightsRequest('foo');
     assert.deepStrictEqual(request, {
-      input: 'foo',
+      current_message: {parts: [{text: 'foo'}], role: Host.AidaClient.Role.USER},
       client: 'CHROME_DEVTOOLS',
       options: {
         model_id: TEST_MODEL_ID,
@@ -112,7 +112,7 @@ describeWithEnvironment('AidaClient', () => {
     });
     const request = Host.AidaClient.AidaClient.buildConsoleInsightsRequest('foo');
     assert.deepStrictEqual(request, {
-      input: 'foo',
+      current_message: {parts: [{text: 'foo'}], role: Host.AidaClient.Role.USER},
       client: 'CHROME_DEVTOOLS',
       metadata: {
         disable_user_content_logging: true,

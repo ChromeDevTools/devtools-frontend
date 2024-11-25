@@ -8,6 +8,7 @@ node_ts_library("freestyler") {
   sources = [ "freestyler_test.ts" ]
 
   deps = [
+    "../../../front_end/core/host:bundle",
     "../../../front_end/core/root:bundle",
     "../../shared",
     "../helpers",

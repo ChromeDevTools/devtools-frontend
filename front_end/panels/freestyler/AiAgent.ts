@@ -90,7 +90,7 @@ export type ResponseData = AnswerResponse|ErrorResponse|ActionResponse|SideEffec
     QueryResponse|ContextResponse|UserQuery;
 
 export interface BuildRequestOptions {
-  input: string;
+  text: string;
 }
 
 export interface RequestOptions {
@@ -188,7 +188,7 @@ export abstract class AiAgent<T> {
     this.#serverSideLoggingEnabled = opts.serverSideLoggingEnabled ?? false;
   }
 
-  get chatHistoryForTesting(): Array<Host.AidaClient.HistoryChunk> {
+  get chatHistoryForTesting(): Array<Host.AidaClient.Content> {
     return this.#chatHistoryForAida;
   }
 
@@ -272,12 +272,14 @@ export abstract class AiAgent<T> {
   }
 
   buildRequest(opts: BuildRequestOptions): Host.AidaClient.AidaRequest {
+    const currentMessage = {parts: [{text: opts.text}], role: Host.AidaClient.Role.USER};
     const history = this.#chatHistoryForAida;
     const request: Host.AidaClient.AidaRequest = {
-      input: opts.input,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      current_message: currentMessage,
       preamble: this.preamble,
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      chat_history: history.length ? history : undefined,
+      historical_contexts: history.length ? history : undefined,
       client: Host.AidaClient.CLIENT_NAME,
       options: {
         temperature: AiAgent.validTemperature(this.options.temperature),
@@ -334,16 +336,16 @@ STOP`;
     return text;
   }
 
-  get #chatHistoryForAida(): Host.AidaClient.HistoryChunk[] {
-    const history: Array<Host.AidaClient.HistoryChunk> = [];
+  get #chatHistoryForAida(): Host.AidaClient.Content[] {
+    const history: Array<Host.AidaClient.Content> = [];
     let currentParsedStep: ParsedStep = {};
     let lastRunStartIdx = 0;
     const flushCurrentStep = (): void => {
       const text = this.formatParsedStep(currentParsedStep);
       if (text) {
         history.push({
-          entity: Host.AidaClient.Entity.SYSTEM,
-          text,
+          role: Host.AidaClient.Role.MODEL,
+          parts: [{text}],
         });
         currentParsedStep = {};
       }
@@ -359,15 +361,15 @@ STOP`;
         case ResponseType.QUERYING: {
           flushCurrentStep();
           history.push({
-            entity: Host.AidaClient.Entity.USER,
-            text: data.query,
+            role: Host.AidaClient.Role.USER,
+            parts: [{text: data.query}],
           });
           break;
         }
         case ResponseType.ANSWER:
           history.push({
-            entity: Host.AidaClient.Entity.SYSTEM,
-            text: this.formatParsedAnswer({answer: data.text}),
+            role: Host.AidaClient.Role.MODEL,
+            parts: [{text: this.formatParsedAnswer({answer: data.text})}],
           });
           break;
         case ResponseType.TITLE:
@@ -420,9 +422,7 @@ STOP`;
     Host.userMetrics.freestylerQueryLength(enhancedQuery.length);
 
     // Request is built here to capture history up to this point.
-    let request = this.buildRequest({
-      input: enhancedQuery,
-    });
+    let request = this.buildRequest({text: enhancedQuery});
 
     const response = {
       type: ResponseType.USER_QUERY,
@@ -559,9 +559,7 @@ STOP`;
         this.#addHistory(result);
         query = `OBSERVATION: ${result.output}`;
         // Capture history state for the next iteration query.
-        request = this.buildRequest({
-          input: query,
-        });
+        request = this.buildRequest({text: query});
         yield result;
       }
 

@@ -118,6 +118,12 @@
 
 .heap-snapshot-view td.object-column span.heap-object-source-link {
   float: right;
+
+  & > button.text-button.devtools-link {
+    background-color: inherit;
+    outline-offset: calc(-1 * var(--sys-size-1));
+    padding-inline: var(--sys-size-2) !important;  /* stylelint-disable-line declaration-no-important */
+  }
 }
 
 .heap-snapshot-view td.object-column span.heap-object-source-link:empty {

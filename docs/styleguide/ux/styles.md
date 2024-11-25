@@ -8,12 +8,12 @@ We define three sets of color token types, **reference/palette tokens**,
 **system tokens**, and **application tokens**.
 
 [**Reference or palette
-tokens**](https://source.chromium.org/chromium/chromium/src/+/main:third_party/devtools-frontend/src/front_end/ui/legacy/tokens.css)
+tokens**](https://crsrc.org/c/third_party/devtools-frontend/src/front_end/ui/legacy/tokens.css)
 (e.g. `--ref-palette-X`) are a set of base colors that get updated on [Chrome
 color theme change](###) and should not be directly used.
 
 [**System
-tokens**](https://source.chromium.org/chromium/chromium/src/+/main:third_party/devtools-frontend/src/front_end/ui/legacy/themeColors.css)
+tokens**](https://crsrc.org/c/third_party/devtools-frontend/src/front_end/ui/legacy/themeColors.css)
 (e.g. `--sys-color-X`) are a set of semantic tokens (use is often clear from
 name e.g. `--sys-color-error-container`). They reference palette tokens and
 incorporate light / dark mode switches and should be used in the code directly.
@@ -21,7 +21,7 @@ You can view all system tokens in their light and dark variant when running the
 component server with `npm run components-server` under *Theme Colors*.
 
 [**Application
-tokens**](https://source.chromium.org/chromium/chromium/src/+/main:third_party/devtools-frontend/src/front_end/ui/legacy/applicationColorTokens.css)
+tokens**](https://crsrc.org/c/third_party/devtools-frontend/src/front_end/ui/legacy/applicationColorTokens.css)
 (e.g. `--app-color-X`) reference palette tokens, and add more semantic meaning
 and handle exception cases, where system tokens are not enough. Should be
 defined for both light and dark modes. An example CL that adds application
@@ -51,7 +51,7 @@ Chrome's theming differentiates between two *default* color schemes (a blue
 **default** and a **grey default**), and a number of **accent** color schemes
 (blue, purple, yellow, and so on). In DevTools, the default schemes are defined
 as `baseline-grayscale` and `baseline-default` css classes in
-[themeColors.css](https://source.chromium.org/chromium/chromium/src/+/main:third_party/devtools-frontend/src/front_end/ui/legacy/themeColors.css).
+[themeColors.css](https://crsrc.org/c/third_party/devtools-frontend/src/front_end/ui/legacy/themeColors.css).
 The accent color schemes don't require extra color definitions and will adapt
 with the reference colors.
 
@@ -317,10 +317,32 @@ example CL that adds application tokens can be found
 ### Resources
 
   * [Reference color
-    tokens](https://source.chromium.org/chromium/chromium/src/+/main:third_party/devtools-frontend/src/front_end/ui/legacy/tokens.css)
+    tokens](https://crsrc.org/c/third_party/devtools-frontend/src/front_end/ui/legacy/tokens.css)
   * [System color
-    tokens](https://source.chromium.org/chromium/chromium/src/+/main:third_party/devtools-frontend/src/front_end/ui/legacy/themeColors.css)
+    tokens](https://crsrc.org/c/third_party/devtools-frontend/src/front_end/ui/legacy/themeColors.css)
   * [Application color
-    tokens](https://source.chromium.org/chromium/chromium/src/+/main:third_party/devtools-frontend/src/front_end/ui/legacy/applicationColorTokens.css)
+    tokens](https://crsrc.org/c/third_party/devtools-frontend/src/front_end/ui/legacy/applicationColorTokens.css)
   * [Color definitions in the CDT
     Figma](https://www.figma.com/design/A5iQBBNAe5zPFpJvUzUgW8/CDT-design-kit?node-id=337-5217&m=dev)
+
+## Sizes
+
+[**System
+tokens**](https://crsrc.org/c/third_party/devtools-frontend/src/front_end/ui/legacy/designTokens.css)
+include a set of tokens to be used for sizes, ranging from `--sys-size-1` (which
+corresponds to a single pixel) to `--sys-size-41` (which corresponds to the HD
+resolution width).
+
+### Usage
+
+#### Negative sizes
+
+Sometimes you might need to negate a size, for example to make up for some
+padding or margins. Use the pattern
+
+```css
+calc(-1 * var(--sys-size-X));
+```
+
+and try to avoid other patterns (like `calc(0px - var(...))`) that have a
+similar effect.

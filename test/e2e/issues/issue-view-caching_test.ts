@@ -23,7 +23,8 @@ import {
 } from '../helpers/issues-helpers.js';
 
 describe('IssueView cache', () => {
-  it('should correctly update the issue', async () => {
+  // Flakey on Windows only after a recent Chromium roll
+  it.skipOnPlatforms(['win32'], '[crbug.com/381055647] should correctly update the issue', async () => {
     await goToResource('empty.html');
     const {target} = getBrowserAndPages();
     async function triggerIssue() {

@@ -5,7 +5,6 @@
 import {assert} from 'chai';
 
 import {assertNotNullOrUndefined, getBrowserAndPages, goToResource} from '../../shared/helper.js';
-
 import {
   ensureResourceSectionIsExpanded,
   expandIssue,
@@ -16,57 +15,60 @@ import {
 } from '../helpers/issues-helpers.js';
 
 describe('CORS issues', () => {
-  it('should display CORS violations with the correct affected resources', async () => {
-    await goToResource('issues/cors-issue.html');
-    const {target} = getBrowserAndPages();
-    await target.evaluate(async () => {
-      // @ts-ignore
-      await window.doCorsFetches(`https://devtools.oopif.test:${document.location.port}`);
-    });
-    await navigateToIssuesTab();
-    await expandIssue();
-    const issueElement = await getIssueByTitle('Ensure CORS response header values are valid');
-    assertNotNullOrUndefined(issueElement);
-    const section = await getResourcesElement('requests', issueElement, '.cors-issue-affected-resource-label');
-    const text = await section.label.evaluate(el => el.textContent);
-    assert.strictEqual(text, '3 requests');
-    await ensureResourceSectionIsExpanded(section);
-    const expectedTableRows = [
-      [
-        'Request',
-        'Status',
-        'Preflight Request (if problematic)',
-        'Header',
-        'Problem',
-        'Invalid Value (if available)',
-      ],
-      [
-        /^devtools.oopif.test:.*/,
-        'blocked',
-        '',
-        'Access-Control-Allow-Origin',
-        'Missing Header',
-        '',
-      ],
-      [
-        /^devtools.oopif.test:.*/,
-        'blocked',
-        /^devtools.oopif.test:.*/,
-        'Access-Control-Allow-Origin',
-        'Missing Header',
-        '',
-      ],
-      [
-        /.*invalid-preflight.*/,
-        'blocked',
-        /.*invalid-preflight.*/,
-        'Access-Control-Allow-Origin',
-        'Missing Header',
-        '',
-      ],
-    ];
-    await waitForTableFromResourceSectionContents(section.content, expectedTableRows);
-  });
+  // Flakey on Windows only after a recent Chromium roll
+  it.skipOnPlatforms(
+      ['win32'], '[crbug.com/381055647] should display CORS violations with the correct affected resources',
+      async () => {
+        await goToResource('issues/cors-issue.html');
+        const {target} = getBrowserAndPages();
+        await target.evaluate(async () => {
+          // @ts-ignore
+          await window.doCorsFetches(`https://devtools.oopif.test:${document.location.port}`);
+        });
+        await navigateToIssuesTab();
+        await expandIssue();
+        const issueElement = await getIssueByTitle('Ensure CORS response header values are valid');
+        assertNotNullOrUndefined(issueElement);
+        const section = await getResourcesElement('requests', issueElement, '.cors-issue-affected-resource-label');
+        const text = await section.label.evaluate(el => el.textContent);
+        assert.strictEqual(text, '3 requests');
+        await ensureResourceSectionIsExpanded(section);
+        const expectedTableRows = [
+          [
+            'Request',
+            'Status',
+            'Preflight Request (if problematic)',
+            'Header',
+            'Problem',
+            'Invalid Value (if available)',
+          ],
+          [
+            /^devtools.oopif.test:.*/,
+            'blocked',
+            '',
+            'Access-Control-Allow-Origin',
+            'Missing Header',
+            '',
+          ],
+          [
+            /^devtools.oopif.test:.*/,
+            'blocked',
+            /^devtools.oopif.test:.*/,
+            'Access-Control-Allow-Origin',
+            'Missing Header',
+            '',
+          ],
+          [
+            /.*invalid-preflight.*/,
+            'blocked',
+            /.*invalid-preflight.*/,
+            'Access-Control-Allow-Origin',
+            'Missing Header',
+            '',
+          ],
+        ];
+        await waitForTableFromResourceSectionContents(section.content, expectedTableRows);
+      });
 
   it('should display credentialed+wildcard CORS issues with the correct affected resources', async () => {
     await goToResource('empty.html');
@@ -215,57 +217,60 @@ describe('CORS issues', () => {
     await waitForTableFromResourceSectionContents(section.content, expectedTableRows);
   });
 
-  it('should display invalid CORS ACAC values with the correct affected resources', async () => {
-    await goToResource('empty.html');
-    const {target} = getBrowserAndPages();
-    await target.evaluate(async () => {
-      const url = new URL('./issues/acac-invalid.rawresponse', document.location.toString())
-                      .toString()
-                      .replace('localhost', 'devtools.oopif.test');
-      try {
-        await fetch(url, {
-          method: 'POST',
-          credentials: 'include',
-          headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify({geeting: 'hello'}),
+  // Flakey on Windows only after a recent Chromium roll
+  it.skipOnPlatforms(
+      ['win32'], '[crbug.com/381055647] should display invalid CORS ACAC values with the correct affected resources',
+      async () => {
+        await goToResource('empty.html');
+        const {target} = getBrowserAndPages();
+        await target.evaluate(async () => {
+          const url = new URL('./issues/acac-invalid.rawresponse', document.location.toString())
+                          .toString()
+                          .replace('localhost', 'devtools.oopif.test');
+          try {
+            await fetch(url, {
+              method: 'POST',
+              credentials: 'include',
+              headers: {'Content-Type': 'application/json'},
+              body: JSON.stringify({geeting: 'hello'}),
+            });
+          } catch (e) {
+          }
+          try {
+            await fetch(url, {credentials: 'include'});
+          } catch (e) {
+          }
         });
-      } catch (e) {
-      }
-      try {
-        await fetch(url, {credentials: 'include'});
-      } catch (e) {
-      }
-    });
-    await navigateToIssuesTab();
-    await expandIssue();
-    const issueElement = await getIssueByTitle('Ensure CORS requests include credentials only when allowed');
-    assertNotNullOrUndefined(issueElement);
-    const section = await getResourcesElement('requests', issueElement, '.cors-issue-affected-resource-label');
-    const text = await section.label.evaluate(el => el.textContent);
-    assert.strictEqual(text, '2 requests');
-    await ensureResourceSectionIsExpanded(section);
-    const expectedTableRows = [
-      [
-        'Request',
-        'Status',
-        'Preflight Request (if problematic)',
-        'Access-Control-Allow-Credentials Header Value',
-      ],
-      [
-        'acac-invalid.rawresponse',
-        'blocked',
-        'acac-invalid.rawresponse',
-        'false',
-      ],
-      [
-        'acac-invalid.rawresponse',
-        'blocked',
-        '',
-        'false',
-      ],
-    ];
-    await waitForTableFromResourceSectionContents(section.content, expectedTableRows);
-  });
+        await navigateToIssuesTab();
+        await expandIssue();
+        const issueElement = await getIssueByTitle('Ensure CORS requests include credentials only when allowed');
+        assertNotNullOrUndefined(issueElement);
+        const section = await getResourcesElement('requests', issueElement, '.cors-issue-affected-resource-label');
+        const text = await section.label.evaluate(el => el.textContent);
+        assert.strictEqual(text, '2 requests');
+        await ensureResourceSectionIsExpanded(section);
+        const expectedTableRows = [
+          [
+            'Request',
+            'Status',
+            'Preflight Request (if problematic)',
+            'Access-Control-Allow-Credentials Header Value',
+          ],
+          [
+            'acac-invalid.rawresponse',
+            'blocked',
+            'acac-invalid.rawresponse',
+            'false',
+          ],
+          [
+            'acac-invalid.rawresponse',
+            'blocked',
+            '',
+            'false',
+          ],
+        ];
+        await waitForTableFromResourceSectionContents(section.content, expectedTableRows);
+      });
 
   it('should display CORS requests using disallowed methods with the correct affected resources', async () => {
     await goToResource('empty.html');
@@ -458,38 +463,41 @@ describe('CORS issues', () => {
     await waitForTableFromResourceSectionContents(section.content, expectedTableRows);
   });
 
-  it('should display CORS issues that are misconfiguring the redirect mode', async () => {
-    await goToResource('empty.html');
-    const {target} = getBrowserAndPages();
-    await target.evaluate(async () => {
-      try {
-        const url = new URL('/', document.location.toString())
-                        .toString()
-                        .replace('https://localhost', 'webdav://devtools.oopif.test');
-        await fetch(url, {mode: 'no-cors', redirect: 'manual'});
-      } catch (e) {
-      }
-    });
-    await navigateToIssuesTab();
-    await expandIssue();
-    const issueElement = await getIssueByTitle('Ensure no-cors requests configure redirect mode follow');
-    assertNotNullOrUndefined(issueElement);
-    const section = await getResourcesElement('request', issueElement, '.cors-issue-affected-resource-label');
-    const text = await section.label.evaluate(el => el.textContent);
-    assert.strictEqual(text, '1 request');
-    await ensureResourceSectionIsExpanded(section);
-    const expectedTableRows = [
-      [
-        'Request',
-        'Status',
-        'Source Location',
-      ],
-      [
-        /^devtools.oopif.test.*\//,
-        'blocked',
-        /.*:\d+/,
-      ],
-    ];
-    await waitForTableFromResourceSectionContents(section.content, expectedTableRows);
-  });
+  // Flakey on Windows only after a recent Chromium roll
+  it.skipOnPlatforms(
+      ['win32'], '[crbug.com/381055647] should display CORS issues that are misconfiguring the redirect mode',
+      async () => {
+        await goToResource('empty.html');
+        const {target} = getBrowserAndPages();
+        await target.evaluate(async () => {
+          try {
+            const url = new URL('/', document.location.toString())
+                            .toString()
+                            .replace('https://localhost', 'webdav://devtools.oopif.test');
+            await fetch(url, {mode: 'no-cors', redirect: 'manual'});
+          } catch (e) {
+          }
+        });
+        await navigateToIssuesTab();
+        await expandIssue();
+        const issueElement = await getIssueByTitle('Ensure no-cors requests configure redirect mode follow');
+        assertNotNullOrUndefined(issueElement);
+        const section = await getResourcesElement('request', issueElement, '.cors-issue-affected-resource-label');
+        const text = await section.label.evaluate(el => el.textContent);
+        assert.strictEqual(text, '1 request');
+        await ensureResourceSectionIsExpanded(section);
+        const expectedTableRows = [
+          [
+            'Request',
+            'Status',
+            'Source Location',
+          ],
+          [
+            /^devtools.oopif.test.*\//,
+            'blocked',
+            /.*:\d+/,
+          ],
+        ];
+        await waitForTableFromResourceSectionContents(section.content, expectedTableRows);
+      });
 });

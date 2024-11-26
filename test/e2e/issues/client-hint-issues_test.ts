@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import {assertNotNullOrUndefined, goToResource} from '../../shared/helper.js';
-
 import {
   ensureResourceSectionIsExpanded,
   expandIssue,
@@ -14,20 +13,24 @@ import {
 } from '../helpers/issues-helpers.js';
 
 describe('Client Hint issues test', () => {
-  it('should display issue when Client Hints are used with invalid origin for DelegateCH', async () => {
-    await goToResource('issues/client-hint-issue-DelegateCH-MetaTagAllowListInvalidOrigin.html');
-    await navigateToIssuesTab();
-    await expandIssue();
-    const issueElement = await getIssueByTitle('Client Hint meta tag contained invalid origin');
-    assertNotNullOrUndefined(issueElement);
-    const section = await getResourcesElement('2 sources', issueElement, '.affected-resource-label');
-    await ensureResourceSectionIsExpanded(section);
-    const expectedTableRows = [
-      ['client-hint-issue-DelegateCH-MetaTagAllowListInvalidOrigin.html:1'],
-      ['client-hint-issue-DelegateCH-MetaTagAllowListInvalidOrigin.html:4'],
-    ];
-    await waitForTableFromResourceSectionContents(section.content, expectedTableRows);
-  });
+  // Flakey on Windows only after a recent Chromium roll
+  it.skipOnPlatforms(
+      ['win32'],
+      '[crbug.com/381055647] should display issue when Client Hints are used with invalid origin for DelegateCH',
+      async () => {
+        await goToResource('issues/client-hint-issue-DelegateCH-MetaTagAllowListInvalidOrigin.html');
+        await navigateToIssuesTab();
+        await expandIssue();
+        const issueElement = await getIssueByTitle('Client Hint meta tag contained invalid origin');
+        assertNotNullOrUndefined(issueElement);
+        const section = await getResourcesElement('2 sources', issueElement, '.affected-resource-label');
+        await ensureResourceSectionIsExpanded(section);
+        const expectedTableRows = [
+          ['client-hint-issue-DelegateCH-MetaTagAllowListInvalidOrigin.html:1'],
+          ['client-hint-issue-DelegateCH-MetaTagAllowListInvalidOrigin.html:4'],
+        ];
+        await waitForTableFromResourceSectionContents(section.content, expectedTableRows);
+      });
 
   it('should display issue when Client Hints are modified by javascript for DelegateCH', async () => {
     await goToResource('issues/client-hint-issue-DelegateCH-MetaTagModifiedHTML.html');

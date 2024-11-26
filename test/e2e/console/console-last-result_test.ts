@@ -5,7 +5,6 @@
 import {assert} from 'chai';
 
 import {getBrowserAndPages, step} from '../../shared/helper.js';
-
 import {
   focusConsolePrompt,
   navigateToConsoleTab,
@@ -15,7 +14,8 @@ import {
 } from '../helpers/console-helpers.js';
 
 describe('The Console Tab', () => {
-  it('exposes the last evaluation using "$_"', async () => {
+  // Flakey on Windows only after a recent Chromium roll
+  it.skipOnPlatforms(['win32'], '[crbug.com/381055647] exposes the last evaluation using "$_"', async () => {
     const {frontend} = getBrowserAndPages();
 
     await step('turn off "Autocomplete from history"', async () => {

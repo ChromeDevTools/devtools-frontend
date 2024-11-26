@@ -6,6 +6,7 @@ import * as CrUXManager from '../../../models/crux-manager/crux-manager.js';
 import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {describeWithMockConnection} from '../../../testing/MockConnection.js';
 import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
+import * as UI from '../../../ui/legacy/legacy.js';
 
 import * as Components from './components.js';
 
@@ -16,37 +17,6 @@ const ENABLE_BUTTON_SELECTOR = 'devtools-button[data-field-data-enable]';
 const DISABLE_BUTTON_SELECTOR = 'devtools-button[data-field-data-disable]';
 const OVERRIDE_CHECKBOX_SELECTOR = 'input[type="checkbox"]';
 const OVERRIDE_TEXT_SELECTOR = 'input[type="text"]';
-
-function getMappingInputs(view: Element): Array<HTMLInputElement|undefined> {
-  const dgController = view.shadowRoot!.querySelector('devtools-data-grid-controller');
-  const dataGrid = dgController!.shadowRoot!.querySelector('devtools-data-grid');
-  const inputs = dataGrid!.shadowRoot!.querySelectorAll('input');
-  return Array.from(inputs);
-}
-
-function getAddMappingButton(view: Element): HTMLElementTagNameMap['devtools-button']|null {
-  const dgController = view.shadowRoot!.querySelector('devtools-data-grid-controller');
-  const dataGrid = dgController!.shadowRoot!.querySelector('devtools-data-grid');
-  return dataGrid!.shadowRoot!.querySelector('devtools-button#add-mapping-button');
-}
-
-function getDeleteMappingButtons(view: Element): HTMLElementTagNameMap['devtools-button'][] {
-  const dgController = view.shadowRoot!.querySelector('devtools-data-grid-controller');
-  const dataGrid = dgController!.shadowRoot!.querySelector('devtools-data-grid');
-  return Array.from(dataGrid!.shadowRoot!.querySelectorAll('devtools-button.delete-mapping'));
-}
-
-function getNewMappingButton(view: Element): HTMLElementTagNameMap['devtools-button'] {
-  return view.shadowRoot!.querySelector('.origin-mapping-button-section devtools-button') as
-      HTMLElementTagNameMap['devtools-button'];
-}
-
-function getMappingTableTextCells(view: Element): HTMLElement[] {
-  const dgController = view.shadowRoot!.querySelector('devtools-data-grid-controller');
-  const dataGrid = dgController!.shadowRoot!.querySelector('devtools-data-grid');
-  const cells = Array.from(dataGrid!.shadowRoot!.querySelectorAll('tr[aria-rowindex] td'));
-  return cells.filter(c => !c.firstElementChild) as HTMLElement[];
-}
 
 function mockResponse(): CrUXManager.CrUXResponse {
   return {
@@ -78,6 +48,20 @@ function mockResponse(): CrUXManager.CrUXResponse {
   };
 }
 
+function createFieldSettingsDialog(): Components.FieldSettingsDialog.FieldSettingsDialog {
+  const root = document.createElement('div');
+  renderElementIntoDOM(root);
+
+  const widget = new UI.Widget.Widget();
+  widget.markAsRoot();
+  widget.show(root);
+
+  const view = new Components.FieldSettingsDialog.FieldSettingsDialog();
+  widget.contentElement.append(view);
+
+  return view;
+}
+
 describeWithMockConnection('FieldSettingsDialog', () => {
   let cruxManager: CrUXManager.CrUXManager;
   let mockFieldData: CrUXManager.PageResult;
@@ -107,8 +91,7 @@ describeWithMockConnection('FieldSettingsDialog', () => {
   });
 
   it('should enable field when enable button clicked', async () => {
-    const view = new Components.FieldSettingsDialog.FieldSettingsDialog();
-    renderElementIntoDOM(view);
+    const view = createFieldSettingsDialog();
     await coordinator.done();
 
     assert.isFalse(cruxManager.getConfigSetting().get().enabled);
@@ -130,8 +113,7 @@ describeWithMockConnection('FieldSettingsDialog', () => {
   it('should disable field data when disable button clicked', async () => {
     cruxManager.getConfigSetting().set({enabled: true, override: ''});
 
-    const view = new Components.FieldSettingsDialog.FieldSettingsDialog();
-    renderElementIntoDOM(view);
+    const view = createFieldSettingsDialog();
     await coordinator.done();
 
     const openButton = view.shadowRoot!.querySelector(OPEN_BUTTON_SELECTOR) as HTMLElement;
@@ -153,8 +135,7 @@ describeWithMockConnection('FieldSettingsDialog', () => {
   it('should set URL override on enable', async () => {
     mockFieldData['url-ALL'] = mockResponse();
 
-    const view = new Components.FieldSettingsDialog.FieldSettingsDialog();
-    renderElementIntoDOM(view);
+    const view = createFieldSettingsDialog();
     await coordinator.done();
 
     view.shadowRoot!.querySelector<HTMLElement>(OPEN_BUTTON_SELECTOR)!.click();
@@ -184,8 +165,7 @@ describeWithMockConnection('FieldSettingsDialog', () => {
   it('should still set URL override on disable', async () => {
     mockFieldData['url-ALL'] = mockResponse();
 
-    const view = new Components.FieldSettingsDialog.FieldSettingsDialog();
-    renderElementIntoDOM(view);
+    const view = createFieldSettingsDialog();
     await coordinator.done();
 
     view.shadowRoot!.querySelector<HTMLElement>(OPEN_BUTTON_SELECTOR)!.click();
@@ -213,8 +193,7 @@ describeWithMockConnection('FieldSettingsDialog', () => {
   });
 
   it('should show message for URL override with no data', async () => {
-    const view = new Components.FieldSettingsDialog.FieldSettingsDialog();
-    renderElementIntoDOM(view);
+    const view = createFieldSettingsDialog();
     await coordinator.done();
 
     view.shadowRoot!.querySelector<HTMLElement>(OPEN_BUTTON_SELECTOR)!.click();
@@ -245,8 +224,7 @@ describeWithMockConnection('FieldSettingsDialog', () => {
   });
 
   it('should show message for malformed URL', async () => {
-    const view = new Components.FieldSettingsDialog.FieldSettingsDialog();
-    renderElementIntoDOM(view);
+    const view = createFieldSettingsDialog();
     await coordinator.done();
 
     view.shadowRoot!.querySelector<HTMLElement>(OPEN_BUTTON_SELECTOR)!.click();
@@ -282,8 +260,7 @@ describeWithMockConnection('FieldSettingsDialog', () => {
       overrideEnabled: true,
     });
 
-    const view = new Components.FieldSettingsDialog.FieldSettingsDialog();
-    renderElementIntoDOM(view);
+    const view = createFieldSettingsDialog();
     await coordinator.done();
 
     view.shadowRoot!.querySelector<HTMLElement>(OPEN_BUTTON_SELECTOR)!.click();
@@ -304,8 +281,7 @@ describeWithMockConnection('FieldSettingsDialog', () => {
       overrideEnabled: false,
     });
 
-    const view = new Components.FieldSettingsDialog.FieldSettingsDialog();
-    renderElementIntoDOM(view);
+    const view = createFieldSettingsDialog();
     await coordinator.done();
 
     view.shadowRoot!.querySelector<HTMLElement>(OPEN_BUTTON_SELECTOR)!.click();
@@ -317,236 +293,5 @@ describeWithMockConnection('FieldSettingsDialog', () => {
 
     assert.strictEqual(urlOverride, 'https://example.com');
     assert.isFalse(checked);
-  });
-
-  describe('origin mapping', () => {
-    it('should flush to settings on submit', async () => {
-      mockFieldData['url-ALL'] = mockResponse();
-
-      const view = new Components.FieldSettingsDialog.FieldSettingsDialog();
-      renderElementIntoDOM(view);
-      await coordinator.done();
-
-      view.shadowRoot!.querySelector<HTMLElement>(OPEN_BUTTON_SELECTOR)!.click();
-
-      await coordinator.done();
-
-      const newMappingButton = getNewMappingButton(view);
-      newMappingButton.click();
-
-      await coordinator.done();
-
-      const [devInput, prodInput] = getMappingInputs(view);
-      devInput!.value = 'http://localhost:8080/page1/';
-      devInput!.dispatchEvent(new Event('change'));
-
-      prodInput!.value = 'https://example.com/#asdf';
-      prodInput!.dispatchEvent(new Event('change'));
-
-      await coordinator.done();
-
-      const addMappingButton = getAddMappingButton(view);
-      addMappingButton!.click();
-
-      await coordinator.done({waitForWork: true});
-
-      const textCells = getMappingTableTextCells(view);
-      assert.deepStrictEqual(textCells.map(c => c!.textContent), [
-        'http://localhost:8080',
-        'https://example.com',
-      ]);
-
-      view.shadowRoot!.querySelector<HTMLElement>(ENABLE_BUTTON_SELECTOR)!.click();
-
-      await coordinator.done({waitForWork: true});
-
-      assert.isFalse(view.shadowRoot!.querySelector('devtools-dialog')!.shadowRoot!.querySelector('dialog')!.open);
-      assert.isTrue(cruxManager.getConfigSetting().get().enabled);
-      assert.strictEqual(cruxManager.getConfigSetting().get().override, '');
-      assert.deepStrictEqual(cruxManager.getConfigSetting().get().originMappings, [
-        {developmentOrigin: 'http://localhost:8080', productionOrigin: 'https://example.com'},
-      ]);
-    });
-
-    it('should warn if either URL is invalid', async () => {
-      mockFieldData['url-ALL'] = mockResponse();
-
-      const view = new Components.FieldSettingsDialog.FieldSettingsDialog();
-      renderElementIntoDOM(view);
-      await coordinator.done();
-
-      view.shadowRoot!.querySelector<HTMLElement>(OPEN_BUTTON_SELECTOR)!.click();
-
-      await coordinator.done();
-
-      const newMappingButton = getNewMappingButton(view);
-      newMappingButton.click();
-
-      await coordinator.done();
-
-      const [devInput, prodInput] = getMappingInputs(view);
-      devInput!.value = 'bad-one';
-      devInput!.dispatchEvent(new Event('change'));
-
-      prodInput!.value = 'bad-two';
-      prodInput!.dispatchEvent(new Event('change'));
-
-      await coordinator.done();
-
-      const addMappingButton = getAddMappingButton(view);
-      addMappingButton!.click();
-
-      await coordinator.done({waitForWork: true});
-
-      {
-        const textCells = getMappingTableTextCells(view);
-        assert.deepStrictEqual(textCells, []);
-      }
-
-      assert.strictEqual(
-          view.shadowRoot!.querySelector('.warning')!.textContent, '"bad-one" is not a valid origin or URL.');
-
-      devInput!.value = 'https://localhost:8080';
-      devInput!.dispatchEvent(new Event('change'));
-
-      await coordinator.done();
-
-      addMappingButton!.click();
-
-      await coordinator.done({waitForWork: true});
-
-      {
-        const textCells = getMappingTableTextCells(view);
-        assert.deepStrictEqual(textCells, []);
-      }
-
-      assert.strictEqual(
-          view.shadowRoot!.querySelector('.warning')!.textContent, '"bad-two" is not a valid origin or URL.');
-    });
-
-    it('should warn if there is not CrUX data for the prod origin', async () => {
-      const view = new Components.FieldSettingsDialog.FieldSettingsDialog();
-      renderElementIntoDOM(view);
-      await coordinator.done();
-
-      view.shadowRoot!.querySelector<HTMLElement>(OPEN_BUTTON_SELECTOR)!.click();
-
-      await coordinator.done();
-
-      const newMappingButton = getNewMappingButton(view);
-      newMappingButton.click();
-
-      await coordinator.done();
-
-      const [devInput, prodInput] = getMappingInputs(view);
-      devInput!.value = 'http://localhost:8080';
-      devInput!.dispatchEvent(new Event('change'));
-
-      prodInput!.value = 'https://no-field.com';
-      prodInput!.dispatchEvent(new Event('change'));
-
-      await coordinator.done();
-
-      const addMappingButton = getAddMappingButton(view);
-      addMappingButton!.click();
-
-      await coordinator.done({waitForWork: true});
-
-      const textCells = getMappingTableTextCells(view);
-      assert.deepStrictEqual(textCells, []);
-
-      assert.strictEqual(
-          view.shadowRoot!.querySelector('.warning')!.textContent,
-          'The Chrome UX Report does not have sufficient real-world speed data for this page.');
-    });
-
-    it('should warn if a mapping for the dev origin already exists', async () => {
-      mockFieldData['url-ALL'] = mockResponse();
-      cruxManager.getConfigSetting().set({
-        enabled: false,
-        override: '',
-        originMappings: [{developmentOrigin: 'http://localhost:8080', productionOrigin: 'https://google.com'}],
-      });
-
-      const view = new Components.FieldSettingsDialog.FieldSettingsDialog();
-      renderElementIntoDOM(view);
-      await coordinator.done();
-
-      view.shadowRoot!.querySelector<HTMLElement>(OPEN_BUTTON_SELECTOR)!.click();
-
-      await coordinator.done();
-
-      const newMappingButton = getNewMappingButton(view);
-      newMappingButton.click();
-
-      await coordinator.done();
-
-      const [devInput, prodInput] = getMappingInputs(view);
-      devInput!.value = 'http://localhost:8080';
-      devInput!.dispatchEvent(new Event('change'));
-
-      prodInput!.value = 'https://example.com';
-      prodInput!.dispatchEvent(new Event('change'));
-
-      await coordinator.done();
-
-      const addMappingButton = getAddMappingButton(view);
-      addMappingButton!.click();
-
-      await coordinator.done({waitForWork: true});
-
-      const textCells = getMappingTableTextCells(view);
-      assert.deepStrictEqual(textCells.map(c => c!.textContent), [
-        'http://localhost:8080',
-        'https://google.com',
-      ]);
-
-      assert.strictEqual(
-          view.shadowRoot!.querySelector('.warning')!.textContent,
-          '"http://localhost:8080" is already mapped to a production origin.');
-    });
-
-    it('should handle deleting entries', async () => {
-      cruxManager.getConfigSetting().set({
-        enabled: false,
-        override: '',
-        originMappings: [{developmentOrigin: 'http://localhost:8080', productionOrigin: 'https://google.com'}],
-      });
-
-      const view = new Components.FieldSettingsDialog.FieldSettingsDialog();
-      renderElementIntoDOM(view);
-      await coordinator.done();
-
-      view.shadowRoot!.querySelector<HTMLElement>(OPEN_BUTTON_SELECTOR)!.click();
-
-      await coordinator.done();
-
-      {
-        const textCells = getMappingTableTextCells(view);
-        assert.deepStrictEqual(textCells.map(c => c!.textContent), [
-          'http://localhost:8080',
-          'https://google.com',
-        ]);
-      }
-
-      const deleteButtons = getDeleteMappingButtons(view);
-      deleteButtons[0].click();
-
-      await coordinator.done();
-
-      {
-        const textCells = getMappingTableTextCells(view);
-        assert.deepStrictEqual(textCells, []);
-      }
-
-      view.shadowRoot!.querySelector<HTMLElement>(ENABLE_BUTTON_SELECTOR)!.click();
-
-      await coordinator.done({waitForWork: true});
-
-      assert.isFalse(view.shadowRoot!.querySelector('devtools-dialog')!.shadowRoot!.querySelector('dialog')!.open);
-      assert.isTrue(cruxManager.getConfigSetting().get().enabled);
-      assert.strictEqual(cruxManager.getConfigSetting().get().override, '');
-      assert.deepStrictEqual(cruxManager.getConfigSetting().get().originMappings, []);
-    });
   });
 });

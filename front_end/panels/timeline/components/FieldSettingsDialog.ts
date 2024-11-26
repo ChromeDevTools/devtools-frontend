@@ -3,11 +3,11 @@
 // found in the LICENSE file.
 
 import '../../../ui/components/data_grid/data_grid.js';
+import './OriginMap.js';
 
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as CrUXManager from '../../../models/crux-manager/crux-manager.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
-import type * as DataGrid from '../../../ui/components/data_grid/data_grid.js';
 import * as Dialogs from '../../../ui/components/dialogs/dialogs.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as Input from '../../../ui/components/input/input.js';
@@ -16,6 +16,7 @@ import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
 import fieldSettingsDialogStyles from './fieldSettingsDialog.css.js';
+import type {OriginMap} from './OriginMap.js';
 
 const UIStrings = {
   /**
@@ -78,45 +79,14 @@ const UIStrings = {
    */
   mapDevelopmentOrigins: 'Set a development origin to automatically get relevant field data for its production origin.',
   /**
-   * @description Title for a column in a data table representing a site origin used for development
-   */
-  developmentOrigin: 'Development origin',
-  /**
-   * @description Title for a column in a data table representing a site origin used by real users in a production environment
-   */
-  productionOrigin: 'Production origin',
-  /**
-   * @description Label for an input that accepts a site origin used for development
-   * @example {http://localhost:8080} PH1
-   */
-  developmentOriginValue: 'Development origin: {PH1}',
-  /**
-   * @description Label for an input that accepts a site origin used by real users in a production environment
-   * @example {https://example.com} PH1
-   */
-  productionOriginValue: 'Production origin: {PH1}',
-  /**
    * @description Text label for a button that adds a new editable row to a data table
    */
   new: 'New',
-  /**
-   * @description Text label for a button that saves the changes of an editable row in a data table
-   */
-  add: 'Add',
-  /**
-   * @description Text label for a button that deletes a row in a data table
-   */
-  delete: 'Delete',
   /**
    * @description Warning message explaining that an input origin is not a valid origin or URL.
    * @example {http//malformed.com} PH1
    */
   invalidOrigin: '"{PH1}" is not a valid origin or URL.',
-  /**
-   * @description Warning message explaining that an development origin is already mapped to a productionOrigin.
-   * @example {https://example.com} PH1
-   */
-  alreadyMapped: '"{PH1}" is already mapped to a production origin.',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/FieldSettingsDialog.ts', UIStrings);
@@ -142,11 +112,7 @@ export class FieldSettingsDialog extends HTMLElement {
   #urlOverride: string = '';
   #urlOverrideEnabled: boolean = false;
   #urlOverrideWarning = '';
-  #originMapWarning = '';
-  #originMappings: CrUXManager.OriginMapping[] = [];
-  #isEditingOriginGrid = false;
-  #editGridDevelopmentOrigin = '';
-  #editGridProductionOrigin = '';
+  #originMap?: OriginMap;
 
   constructor() {
     super();
@@ -164,19 +130,15 @@ export class FieldSettingsDialog extends HTMLElement {
     const configSetting = this.#configSetting.get();
     this.#urlOverride = configSetting.override || '';
     this.#urlOverrideEnabled = configSetting.overrideEnabled || false;
-    this.#originMappings = configSetting.originMappings || [];
     this.#urlOverrideWarning = '';
-    this.#originMapWarning = '';
-    this.#isEditingOriginGrid = false;
-    this.#editGridDevelopmentOrigin = '';
-    this.#editGridProductionOrigin = '';
   }
 
   #flushToSetting(enabled: boolean): void {
+    const value = this.#configSetting.get();
     this.#configSetting.set({
+      ...value,
       enabled,
       override: this.#urlOverride,
-      originMappings: this.#originMappings,
       overrideEnabled: this.#urlOverrideEnabled,
     });
   }
@@ -334,22 +296,6 @@ export class FieldSettingsDialog extends HTMLElement {
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
 
-  // Cannot use Lit template automatic binding because this event function is technically added to a different component
-  #onEditGridDevelopmentOriginChange = (event: Event): void => {
-    event.stopPropagation();
-    const input = event.target as HTMLInputElement;
-    this.#editGridDevelopmentOrigin = input.value;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
-  };
-
-  // Cannot use Lit template automatic binding because this event function is technically added to a different component
-  #onEditGridProductionOriginChange = (event: Event): void => {
-    event.stopPropagation();
-    const input = event.target as HTMLInputElement;
-    this.#editGridProductionOrigin = input.value;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
-  };
-
   #getOrigin(url: string): string|null {
     try {
       return new URL(url).origin;
@@ -358,209 +304,22 @@ export class FieldSettingsDialog extends HTMLElement {
     }
   }
 
-  #startEditingOriginMapping(): void {
-    this.#editGridDevelopmentOrigin = '';
-    this.#editGridProductionOrigin = '';
-    this.#isEditingOriginGrid = true;
-    this.#originMapWarning = '';
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
-  }
-
-  async #addOriginMapping(): Promise<void> {
-    const developmentOrigin = this.#getOrigin(this.#editGridDevelopmentOrigin);
-    const productionOrigin = this.#getOrigin(this.#editGridProductionOrigin);
-
-    if (!developmentOrigin) {
-      this.#originMapWarning = i18nString(UIStrings.invalidOrigin, {PH1: this.#editGridDevelopmentOrigin});
-      void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
-      return;
-    }
-
-    if (this.#originMappings.find(m => m.developmentOrigin === developmentOrigin)) {
-      this.#originMapWarning = i18nString(UIStrings.alreadyMapped, {PH1: developmentOrigin});
-      void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
-      return;
-    }
-
-    if (!productionOrigin) {
-      this.#originMapWarning = i18nString(UIStrings.invalidOrigin, {PH1: this.#editGridProductionOrigin});
-      void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
-      return;
-    }
-
-    const hasFieldData = await this.#urlHasFieldData(productionOrigin);
-    if (!hasFieldData) {
-      this.#originMapWarning = i18nString(UIStrings.doesNotHaveSufficientData, {PH1: this.#editGridProductionOrigin});
-      void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
-      return;
-    }
-
-    this.#originMappings.push({developmentOrigin, productionOrigin});
-    this.#editGridDevelopmentOrigin = '';
-    this.#editGridProductionOrigin = '';
-    this.#isEditingOriginGrid = false;
-    this.#originMapWarning = '';
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
-  }
-
-  #deleteOriginMapping(index: number): void {
-    this.#originMappings.splice(index, 1);
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
-  }
-
   #renderOriginMapGrid(): LitHtml.LitTemplate {
-    const rows: DataGrid.DataGridUtils.Row[] = this.#originMappings.map((mapping, index) => {
-      return {
-        cells: [
-          {
-            columnId: 'development-origin',
-            value: mapping.developmentOrigin,
-            title: mapping.developmentOrigin,
-          },
-          {
-            columnId: 'production-origin',
-            value: mapping.productionOrigin,
-            title: mapping.productionOrigin,
-          },
-          {
-            columnId: 'action-button',
-            value: i18nString(UIStrings.delete),
-            // clang-format off
-            renderer: value => html`
-              <div style="display: flex; align-items: center; justify-content: center;">
-                <devtools-button
-                  class="delete-mapping"
-                  .data=${{
-                    variant: Buttons.Button.Variant.ICON,
-                    size: Buttons.Button.Size.SMALL,
-                    title: value,
-                    iconName: 'bin',
-                    jslogContext: 'delete-origin-mapping',
-                  } as Buttons.Button.ButtonData}
-                  @click=${() => this.#deleteOriginMapping(index)}
-                ></devtools-button>
-              </div>
-            `,
-            // clang-format on
-          },
-        ],
-      };
-    });
-
-    if (this.#isEditingOriginGrid) {
-      // Input element is in a different component so we need to inject this in the style attribute
-      const inputStyle = 'width: 100%; box-sizing: border-box; border: none; background: none;';
-
-      rows.push({
-        cells: [
-          {
-            columnId: 'development-origin',
-            value: this.#editGridDevelopmentOrigin,
-            // clang-format off
-            renderer: value => html`
-              <input
-                type="text"
-                placeholder="http://localhost:8080"
-                aria-label=${
-                  i18nString(UIStrings.developmentOriginValue, {PH1: value as string})}
-                style=${inputStyle}
-                title=${ifDefined(value as string)}
-                @keyup=${this.#onEditGridDevelopmentOriginChange}
-                @change=${this.#onEditGridDevelopmentOriginChange} />
-            `,
-            // clang-format on
-          },
-          {
-            columnId: 'production-origin',
-            value: this.#editGridProductionOrigin,
-            // clang-format off
-            renderer: value => html`
-              <input
-                type="text"
-                placeholder="https://example.com"
-                aria-label=${
-                  i18nString(UIStrings.productionOriginValue, {PH1: value as string})}
-                style=${inputStyle}
-                title=${ifDefined(value as string)}
-                @keyup=${this.#onEditGridProductionOriginChange}
-                @change=${this.#onEditGridProductionOriginChange} />
-            `,
-            // clang-format on
-          },
-          {
-            columnId: 'action-button',
-            value: i18nString(UIStrings.add),
-            // clang-format off
-            renderer: value => html`
-              <div style="display: flex; align-items: center; justify-content: center;">
-                <devtools-button
-                  id="add-mapping-button"
-                  .data=${{
-                    variant: Buttons.Button.Variant.ICON,
-                    size: Buttons.Button.Size.SMALL,
-                    title: value,
-                    iconName: 'plus',
-                    disabled: !this.#editGridDevelopmentOrigin || !this.#editGridProductionOrigin,
-                    jslogContext: 'add-origin-mapping',
-                  } as Buttons.Button.ButtonData}
-                  @click=${() => this.#addOriginMapping()}
-                ></devtools-button>
-              </div>
-            `,
-            // clang-format on
-          },
-        ],
-      });
-    }
-
-    const gridData: DataGrid.DataGridController.DataGridControllerData = {
-      columns: [
-        {
-          id: 'development-origin',
-          title: i18nString(UIStrings.developmentOrigin),
-          widthWeighting: 13,
-          hideable: false,
-          visible: true,
-          sortable: false,
-        },
-        {
-          id: 'production-origin',
-          title: i18nString(UIStrings.productionOrigin),
-          widthWeighting: 13,
-          hideable: false,
-          visible: true,
-          sortable: false,
-        },
-        {
-          id: 'action-button',
-          title: '',
-          widthWeighting: 3,
-          hideable: false,
-          visible: true,
-          sortable: false,
-        },
-      ],
-      rows,
-    };
-
     // clang-format off
     return html`
-      <div>${i18nString(UIStrings.mapDevelopmentOrigins)}</div>
-      <devtools-data-grid-controller
-        class="origin-mapping-grid"
-        .data=${gridData as DataGrid.DataGridController.DataGridControllerData}
-      ></devtools-data-grid-controller>
-      ${this.#originMapWarning ? html`
-        <div class="warning" role="alert" aria-label=${this.#originMapWarning}>${this.#originMapWarning}</div>
-      ` : nothing}
+      <div class="origin-mapping-description">${i18nString(UIStrings.mapDevelopmentOrigins)}</div>
+      <devtools-origin-map
+        on-render=${ComponentHelpers.Directives.nodeRenderedCallback(node => {
+          this.#originMap = node as OriginMap;
+        })}
+      ></devtools-origin-map>
       <div class="origin-mapping-button-section">
         <devtools-button
-          @click=${this.#startEditingOriginMapping}
+          @click=${() => this.#originMap?.startCreation()}
           .data=${{
             variant: Buttons.Button.Variant.TEXT,
             title: i18nString(UIStrings.new),
             iconName: 'plus',
-            disabled: this.#isEditingOriginGrid,
           } as Buttons.Button.ButtonData}
           jslogContext=${'new-origin-mapping'}
         >${i18nString(UIStrings.new)}</devtools-button>

@@ -10,49 +10,33 @@
     <meta name="viewport" content="width=device-width" />
     <title>Button example</title>
     <style>
-      #container {
+      body {
+        overflow: auto  !important; /* stylelint-disable-line declaration-no-important */
+      }
+
+      div {
+        width: 500px;
         padding: 25px;
         display: flex;
         align-items: center;
         flex-wrap: wrap;
         gap: 10px;
       }
-      #toolbar {
-        background-color: var(--sys-color-cdt-base-container);
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        border-bottom: 1px solid var(--sys-color-divider);
-        padding: 0px 5px;
-        height: 29px;
-      }
-      #small-toolbar {
-        background-color: var(--sys-color-cdt-base-container);
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        border-bottom: 1px solid var(--sys-color-divider);
-        padding: 0px 5px;
-        height: 23px;
-      }
-      .separator {
-        background-color: var(--sys-color-divider);
-        width: 1px;
-        height: 17px;
-        margin: 0px 5px;
-      }
     </style>
   </head>
   <body>
-    <div id="container">
-    </div>
-    <div id="toolbar">
-    </div>
-    <div id="small-toolbar">
-    </div>
-    <form onsubmit="event.preventDefault(); alert('submitted');" id="form">
-      <input name="field" placeholder="Enter smth" />
-    </form>
+    <header>Buttons</header>
+    <div id="buttons"></div>
+    <header>Primary buttons</header>
+    <div id="primary-buttons"></div>
+    <header>Tonal buttons</header>
+    <div id="tonal-buttons"></div>
+    <header>Outlined buttons</header>
+    <div id="outlined-buttons"></div>
+    <header>Text buttons</header>
+    <div id="text-buttons"></div>
+    <header>Icon buttons</header>
+    <div id="icon-buttons"></div>
     <script type="module" src="./basic.js"></script>
   </body>
 </html>

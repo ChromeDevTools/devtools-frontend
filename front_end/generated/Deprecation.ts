@@ -219,6 +219,10 @@ export const UIStrings = {
    */
   V8SharedArrayBufferConstructedInExtensionWithoutIsolation: "Extensions should opt into cross-origin isolation to continue using `SharedArrayBuffer`. See https://developer.chrome.com/docs/extensions/mv3/cross-origin-isolation/.",
   /**
+   * @description This warning occurs when the website attempts to use the deprecated WebGPU limit `maxInterStageShaderComponents`.
+   */
+  WebGPULimitMaxInterStageShaderComponents: "The WebGPU limit `maxInterStageShaderComponents` is deprecated, instead use the WebGPU limit `maxInterStageShaderVariables`.",
+  /**
    * @description Warning displayed to developers when the Web SQL API is used to let them know this API is deprecated.
    */
   WebSQL: "Web SQL is deprecated. Please use SQLite WebAssembly or Indexed Database",
@@ -353,6 +357,9 @@ export const DEPRECATIONS_METADATA: Partial<Record<string, DeprecationDescriptor
   },
   "V8SharedArrayBufferConstructedInExtensionWithoutIsolation": {
     "milestone": 96
+  },
+  "WebGPULimitMaxInterStageShaderComponents": {
+    "chromeStatusFeature": 4853767735083008
   },
   "WebSQL": {
     "chromeStatusFeature": 5134293578285056,

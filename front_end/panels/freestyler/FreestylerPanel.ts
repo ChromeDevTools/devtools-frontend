@@ -84,13 +84,13 @@ const UIStrings = {
    */
   history: 'History',
   /**
-   *@description AI assistance UI text deleting the current chat session.
+   *@description AI assistance UI text deleting the current chat session from local history.
    */
-  deleteChat: 'Delete chat',
+  deleteChat: 'Delete local chat',
   /**
-   *@description AI assistance UI text that deletes all history entries.
+   *@description AI assistance UI text that deletes all local history entries.
    */
-  clearChatHistory: 'Clear chat history',
+  clearChatHistory: 'Clear local chats',
   /**
    *@description AI assistance UI text explains that he user had no pas conversations.
    */

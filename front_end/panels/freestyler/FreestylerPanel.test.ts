@@ -784,7 +784,7 @@ describeWithEnvironment('FreestylerPanel', () => {
       },
     ]);
     const toolbar = panel.contentElement.querySelector('.freestyler-left-toolbar');
-    const button = toolbar!.shadowRoot!.querySelector('devtools-button[aria-label=\'Delete chat\']');
+    const button = toolbar!.shadowRoot!.querySelector('devtools-button[aria-label=\'Delete local chat\']');
     assert.instanceOf(button, HTMLElement);
     dispatchClickEvent(button);
     assert.deepEqual(mockView.lastCall.args[0].messages, []);
@@ -822,7 +822,7 @@ describeWithEnvironment('FreestylerPanel', () => {
       },
     ]);
     const toolbar = panel.contentElement.querySelector('.freestyler-left-toolbar');
-    const button = toolbar!.shadowRoot!.querySelector('devtools-button[aria-label=\'Delete chat\']');
+    const button = toolbar!.shadowRoot!.querySelector('devtools-button[aria-label=\'Delete local chat\']');
     assert.instanceOf(button, HTMLElement);
     dispatchClickEvent(button);
     assert.deepEqual(mockView.lastCall.args[0].messages, []);
@@ -876,7 +876,7 @@ describeWithEnvironment('FreestylerPanel', () => {
     let contextMenu = getMenu(() => {
       dispatchClickEvent(button!);
     });
-    const clearAll = findMenuItemWithLabel(contextMenu.footerSection(), 'Clear chat history')!;
+    const clearAll = findMenuItemWithLabel(contextMenu.footerSection(), 'Clear local chats')!;
     assert.isDefined(clearAll);
     contextMenu.invokeHandler(clearAll.id());
     await drainMicroTasks();

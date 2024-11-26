@@ -127,23 +127,28 @@ export class SlowCSSSelector extends BaseInsightComponent<SlowCSSSelectorInsight
         i18n.TimeUtilities.millisToString(Platform.Timing.microSecondsToMilliSeconds(us));
 
     // clang-format off
-    return html`
-      <div>
+    const sections = [html`
+      <div class="insight-section">
+        <devtools-performance-table
+          .data=${{
+            insight: this,
+            headers: [i18nString(UIStrings.total), ''],
+            rows: [
+              {values: [i18nString(UIStrings.elapsed), i18n.TimeUtilities.millisToString(this.model.totalElapsedMs)]},
+              {values: [i18nString(UIStrings.matchAttempts), this.model.totalMatchAttempts]},
+              {values: [i18nString(UIStrings.matchCount), this.model.totalMatchCount]},
+            ],
+          } as TableData}>
+        </devtools-performance-table>
+      </div>
+    `];
+    // clang-format on
+
+    if (this.model.topElapsedMs.length) {
+      // clang-format off
+      sections.push(html`
         <div class="insight-section">
-          ${html`<devtools-performance-table
-            .data=${{
-              insight: this,
-              headers: [i18nString(UIStrings.total), ''],
-              rows: [
-                {values: [i18nString(UIStrings.elapsed), i18n.TimeUtilities.millisToString(this.model.totalElapsedMs)]},
-                {values: [i18nString(UIStrings.matchAttempts), this.model.totalMatchAttempts]},
-                {values: [i18nString(UIStrings.matchCount), this.model.totalMatchCount]},
-              ],
-            } as TableData}>
-          </devtools-performance-table>`}
-        </div>
-        <div class="insight-section">
-          ${html`<devtools-performance-table
+          <devtools-performance-table
             .data=${{
               insight: this,
               headers: [i18nString(UIStrings.topSelectors), i18nString(UIStrings.elapsed)],
@@ -155,10 +160,17 @@ export class SlowCSSSelector extends BaseInsightComponent<SlowCSSSelectorInsight
                 };
               }),
             } as TableData}>
-          </devtools-performance-table>`}
+          </devtools-performance-table>
         </div>
+      `);
+      // clang-format on
+    }
+
+    if (this.model.topMatchAttempts.length) {
+      // clang-format off
+      sections.push(html`
         <div class="insight-section">
-          ${html`<devtools-performance-table
+          <devtools-performance-table
             .data=${{
               insight: this,
               headers: [i18nString(UIStrings.topSelectors), i18nString(UIStrings.matchAttempts)],
@@ -170,10 +182,13 @@ export class SlowCSSSelector extends BaseInsightComponent<SlowCSSSelectorInsight
                 };
               }),
             } as TableData}>
-          </devtools-performance-table>`}
+          </devtools-performance-table>
         </div>
-      </div>`;
-    // clang-format on
+      `);
+      // clang-format on
+    }
+
+    return html`${sections}`;
   }
 
   override render(): void {

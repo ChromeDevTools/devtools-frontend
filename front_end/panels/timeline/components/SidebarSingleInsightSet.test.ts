@@ -23,6 +23,13 @@ function getUserVisibleInsights(component: Components.SidebarSingleInsightSet.Si
   return [...component.shadowRoot.querySelectorAll<BaseInsightComponent>('[data-insight-name]')];
 }
 
+function getPassedInsights(component: Components.SidebarSingleInsightSet.SidebarSingleInsightSet):
+    BaseInsightComponent[] {
+  assert.isOk(component.shadowRoot);
+  return [...component.shadowRoot.querySelectorAll<BaseInsightComponent>(
+      '.passed-insights-section [data-insight-name]')];
+}
+
 describeWithEnvironment('SidebarSingleInsightSet', () => {
   it('renders a list of insights', async function() {
     const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
@@ -54,6 +61,18 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
       'Render blocking requests',
       'Document request latency',
       'Third parties',
+      'Improve image delivery',
+      'Optimize viewport for mobile',
+      'CSS Selector costs',
+    ]);
+
+    const passedInsightTitles = getPassedInsights(component).flatMap(component => {
+      return getCleanTextContentFromElements(component.shadowRoot!, '.insight-title');
+    });
+    assert.deepEqual(passedInsightTitles, [
+      'Improve image delivery',
+      'Optimize viewport for mobile',
+      'CSS Selector costs',
     ]);
   });
 
@@ -81,6 +100,19 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
       'Layout shift culprits',
       'Improve image delivery',
       'Third parties',
+      'Document request latency',
+      'Optimize viewport for mobile',
+      'CSS Selector costs',
+    ]);
+
+    const passedInsightTitles = getPassedInsights(component).flatMap(component => {
+      return getCleanTextContentFromElements(component.shadowRoot!, '.insight-title');
+    });
+    // Does not include "font display", which is experimental.
+    assert.deepEqual(passedInsightTitles, [
+      'Document request latency',
+      'Optimize viewport for mobile',
+      'CSS Selector costs',
     ]);
   });
 
@@ -104,7 +136,7 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
     const userVisibleTitles = getUserVisibleInsights(component).flatMap(component => {
       return getCleanTextContentFromElements(component.shadowRoot!, '.insight-title');
     });
-    // Does not include "font display", which is experimental.
+    // Includes "font display", which is experimental.
     assert.deepEqual(userVisibleTitles, [
       'LCP by phase',
       'LCP request discovery',
@@ -112,6 +144,18 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
       'Improve image delivery',
       'Font display',
       'Third parties',
+      'Document request latency',
+      'Optimize viewport for mobile',
+      'CSS Selector costs',
+    ]);
+
+    const passedInsightTitles = getPassedInsights(component).flatMap(component => {
+      return getCleanTextContentFromElements(component.shadowRoot!, '.insight-title');
+    });
+    assert.deepEqual(passedInsightTitles, [
+      'Document request latency',
+      'Optimize viewport for mobile',
+      'CSS Selector costs',
     ]);
   });
 

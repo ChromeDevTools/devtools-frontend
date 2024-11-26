@@ -59,3 +59,11 @@
     padding: 0 1px;
   }
 }
+
+.passed-insights-section {
+  margin-top: var(--sys-size-5);
+
+  summary {
+    font-weight: var(--ref-typeface-weight-medium);
+  }
+}

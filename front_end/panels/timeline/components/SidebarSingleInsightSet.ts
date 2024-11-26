@@ -24,6 +24,11 @@ const UIStrings = {
    *@example {poor} PH3
    */
   metricScore: '{PH1}: {PH2} {PH3} score',
+  /**
+   * @description Summary text for an expandable dropdown that contains all insights in a passing state.
+   * @example {4} PH1
+   */
+  passedInsights: 'Passed insights ({PH1})',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/SidebarSingleInsightSet.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -209,14 +214,15 @@ export class SidebarSingleInsightSet extends HTMLElement {
       return LitHtml.nothing;
     }
 
-    const components: LitHtml.TemplateResult[] = [];
+    const shownInsights: LitHtml.TemplateResult[] = [];
+    const passedInsights: LitHtml.TemplateResult[] = [];
     for (const [name, componentClass] of Object.entries(INSIGHT_NAME_TO_COMPONENT)) {
       if (!includeExperimental && EXPERIMENTAL_INSIGHTS.has(name)) {
         continue;
       }
 
       const model = models[name as keyof typeof models];
-      if (!model || !model.shouldShow ||
+      if (!model ||
           !shouldRenderForCategory({activeCategory: this.#data.activeCategory, insightCategory: model.category})) {
         continue;
       }
@@ -232,10 +238,26 @@ export class SidebarSingleInsightSet extends HTMLElement {
       </div>`;
       // clang-format on
 
-      components.push(component);
+      if (model.shouldShow) {
+        shownInsights.push(component);
+      } else {
+        passedInsights.push(component);
+      }
     }
 
-    return html`${components}`;
+    // clang-format off
+    return html`
+      ${shownInsights}
+      ${passedInsights.length ? html`
+        <details class="passed-insights-section">
+          <summary>${i18nString(UIStrings.passedInsights, {
+            PH1: passedInsights.length,
+          })}</summary>
+          ${passedInsights}
+        </details>
+      ` : LitHtml.nothing}
+    `;
+    // clang-format on
   }
 
   #render(): void {

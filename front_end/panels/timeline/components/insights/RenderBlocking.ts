@@ -62,10 +62,14 @@ export class RenderBlocking extends BaseInsightComponent<RenderBlockingInsightMo
     const MAX_REQUESTS = 3;
     const topRequests = this.model.renderBlockingRequests.slice(0, MAX_REQUESTS);
 
+    if (!topRequests.length) {
+      return LitHtml.nothing;
+    }
+
     // clang-format off
     return html`
       <div class="insight-section">
-        ${html`<devtools-performance-table
+        <devtools-performance-table
           .data=${{
             insight: this,
             headers: [i18nString(UIStrings.renderBlockingRequest), i18nString(UIStrings.duration)],
@@ -77,8 +81,9 @@ export class RenderBlocking extends BaseInsightComponent<RenderBlockingInsightMo
               overlays: [this.#createOverlayForRequest(request)],
             })),
           }}>
-        </devtools-performance-table>`}
-      </div>`;
+        </devtools-performance-table>
+      </div>
+    `;
     // clang-format on
   }
 

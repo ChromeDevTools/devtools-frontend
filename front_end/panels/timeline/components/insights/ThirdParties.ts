@@ -76,11 +76,12 @@ export class ThirdParties extends BaseInsightComponent<ThirdPartiesInsightModel>
     const topTransferSizeEntries = entries.sort((a, b) => b[1].transferSize - a[1].transferSize).slice(0, 6);
     const topMainThreadTimeEntries = entries.sort((a, b) => b[1].mainThreadTime - a[1].mainThreadTime).slice(0, 6);
 
-    // clang-format off
-    return html`
-      <div>
+    const sections = [];
+    if (topTransferSizeEntries.length) {
+      // clang-format off
+      sections.push(html`
         <div class="insight-section">
-          ${html`<devtools-performance-table
+          <devtools-performance-table
             .data=${{
               insight: this,
               headers: [i18nString(UIStrings.columnThirdParty), i18nString(UIStrings.columnTransferSize)],
@@ -92,11 +93,17 @@ export class ThirdParties extends BaseInsightComponent<ThirdPartiesInsightModel>
                 overlays: this.#overlaysForEntity.get(entity),
               })),
             }}>
-          </devtools-performance-table>`}
+          </devtools-performance-table>
         </div>
+      `);
+      // clang-format on
+    }
 
+    if (topMainThreadTimeEntries.length) {
+      // clang-format off
+      sections.push(html`
         <div class="insight-section">
-          ${html`<devtools-performance-table
+          <devtools-performance-table
             .data=${{
               insight: this,
               headers: [i18nString(UIStrings.columnThirdParty), i18nString(UIStrings.columnBlockingTime)],
@@ -108,10 +115,13 @@ export class ThirdParties extends BaseInsightComponent<ThirdPartiesInsightModel>
                 overlays: this.#overlaysForEntity.get(entity),
               })),
             }}>
-          </devtools-performance-table>`}
+          </devtools-performance-table>
         </div>
-      </div>`;
-    // clang-format on
+      `);
+      // clang-format on
+    }
+
+    return html`${sections}`;
   }
 
   override render(): void {

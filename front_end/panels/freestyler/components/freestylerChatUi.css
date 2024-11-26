@@ -150,6 +150,10 @@
   padding-right: var(--sys-size-3);
 }
 
+.chat-inline-button {
+  padding-left: 3px;
+}
+
 .chat-cancel-context-button {
   padding-bottom: 3px;
   padding-right: var(--sys-size-3);

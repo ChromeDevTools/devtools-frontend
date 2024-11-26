@@ -1032,6 +1032,7 @@ export class FreestylerChatUi extends HTMLElement {
       <span>${lockedString(UIStringsNotTranslate.pastConversation)}</span>
       <devtools-button
         aria-label=${lockedString(UIStringsNotTranslate.startNewChat)}
+        class="chat-inline-button"
         @click=${this.#onNewConversation}
         .data=${{
           variant: Buttons.Button.Variant.TEXT,

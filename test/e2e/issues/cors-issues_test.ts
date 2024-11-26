@@ -70,41 +70,45 @@ describe('CORS issues', () => {
         await waitForTableFromResourceSectionContents(section.content, expectedTableRows);
       });
 
-  it('should display credentialed+wildcard CORS issues with the correct affected resources', async () => {
-    await goToResource('empty.html');
-    const {target} = getBrowserAndPages();
-    await target.evaluate(async () => {
-      try {
-        const url = new URL('./issues/origin-wildcard.rawresponse', document.location.toString())
-                        .toString()
-                        .replace('localhost', 'devtools.oopif.test');
-        await fetch(url, {credentials: 'include'});
-      } catch (e) {
-      }
-    });
-    await navigateToIssuesTab();
-    await expandIssue();
-    const issueElement =
-        await getIssueByTitle('Ensure credentialed requests are not sent to CORS resources with origin wildcards');
-    assertNotNullOrUndefined(issueElement);
-    const section = await getResourcesElement('request', issueElement, '.cors-issue-affected-resource-label');
-    const text = await section.label.evaluate(el => el.textContent);
-    assert.strictEqual(text, '1 request');
-    await ensureResourceSectionIsExpanded(section);
-    const expectedTableRows = [
-      [
-        'Request',
-        'Status',
-        'Preflight Request (if problematic)',
-      ],
-      [
-        'origin-wildcard.rawresponse',
-        'blocked',
-        '',
-      ],
-    ];
-    await waitForTableFromResourceSectionContents(section.content, expectedTableRows);
-  });
+  // Flakey on Windows only after a recent Chromium roll
+  it.skipOnPlatforms(
+      ['win32'],
+      '[crbug.com/381055647] should display credentialed+wildcard CORS issues with the correct affected resources',
+      async () => {
+        await goToResource('empty.html');
+        const {target} = getBrowserAndPages();
+        await target.evaluate(async () => {
+          try {
+            const url = new URL('./issues/origin-wildcard.rawresponse', document.location.toString())
+                            .toString()
+                            .replace('localhost', 'devtools.oopif.test');
+            await fetch(url, {credentials: 'include'});
+          } catch (e) {
+          }
+        });
+        await navigateToIssuesTab();
+        await expandIssue();
+        const issueElement =
+            await getIssueByTitle('Ensure credentialed requests are not sent to CORS resources with origin wildcards');
+        assertNotNullOrUndefined(issueElement);
+        const section = await getResourcesElement('request', issueElement, '.cors-issue-affected-resource-label');
+        const text = await section.label.evaluate(el => el.textContent);
+        assert.strictEqual(text, '1 request');
+        await ensureResourceSectionIsExpanded(section);
+        const expectedTableRows = [
+          [
+            'Request',
+            'Status',
+            'Preflight Request (if problematic)',
+          ],
+          [
+            'origin-wildcard.rawresponse',
+            'blocked',
+            '',
+          ],
+        ];
+        await waitForTableFromResourceSectionContents(section.content, expectedTableRows);
+      });
 
   it('should display invalid CORS preflight response codes with the correct affected resources', async () => {
     await goToResource('empty.html');
@@ -313,46 +317,50 @@ describe('CORS issues', () => {
     await waitForTableFromResourceSectionContents(section.content, expectedTableRows);
   });
 
-  it('should display CORS requests using disallowed headers with the correct affected resources', async () => {
-    await goToResource('empty.html');
-    const {target} = getBrowserAndPages();
-    await target.evaluate(async () => {
-      try {
-        // We can re-use `method-disallowed.rawresponse` for this test.
-        const url = new URL('./issues/method-disallowed.rawresponse', document.location.toString())
-                        .toString()
-                        .replace('localhost', 'devtools.oopif.test');
-        await fetch(url, {
-          headers: {'X-Foo': 'bar'},
+  // Flakey on Windows only after a recent Chromium roll
+  it.skipOnPlatforms(
+      ['win32'],
+      '[crbug.com/381055647] should display CORS requests using disallowed headers with the correct affected resources',
+      async () => {
+        await goToResource('empty.html');
+        const {target} = getBrowserAndPages();
+        await target.evaluate(async () => {
+          try {
+            // We can re-use `method-disallowed.rawresponse` for this test.
+            const url = new URL('./issues/method-disallowed.rawresponse', document.location.toString())
+                            .toString()
+                            .replace('localhost', 'devtools.oopif.test');
+            await fetch(url, {
+              headers: {'X-Foo': 'bar'},
+            });
+          } catch (e) {
+          }
         });
-      } catch (e) {
-      }
-    });
-    await navigateToIssuesTab();
-    await expandIssue();
-    const issueElement = await getIssueByTitle('Ensure CORS request includes only allowed headers');
-    assertNotNullOrUndefined(issueElement);
-    const section = await getResourcesElement('request', issueElement, '.cors-issue-affected-resource-label');
-    const text = await section.label.evaluate(el => el.textContent);
-    assert.strictEqual(text, '1 request');
-    await ensureResourceSectionIsExpanded(section);
+        await navigateToIssuesTab();
+        await expandIssue();
+        const issueElement = await getIssueByTitle('Ensure CORS request includes only allowed headers');
+        assertNotNullOrUndefined(issueElement);
+        const section = await getResourcesElement('request', issueElement, '.cors-issue-affected-resource-label');
+        const text = await section.label.evaluate(el => el.textContent);
+        assert.strictEqual(text, '1 request');
+        await ensureResourceSectionIsExpanded(section);
 
-    const expectedTableRows = [
-      [
-        'Request',
-        'Status',
-        'Preflight Request',
-        'Disallowed Request Header',
-      ],
-      [
-        'method-disallowed.rawresponse',
-        'blocked',
-        'method-disallowed.rawresponse',
-        'x-foo',
-      ],
-    ];
-    await waitForTableFromResourceSectionContents(section.content, expectedTableRows);
-  });
+        const expectedTableRows = [
+          [
+            'Request',
+            'Status',
+            'Preflight Request',
+            'Disallowed Request Header',
+          ],
+          [
+            'method-disallowed.rawresponse',
+            'blocked',
+            'method-disallowed.rawresponse',
+            'x-foo',
+          ],
+        ];
+        await waitForTableFromResourceSectionContents(section.content, expectedTableRows);
+      });
 
   it('should display CORS requests redirecting to credentialed URLs', async () => {
     await goToResource('empty.html');

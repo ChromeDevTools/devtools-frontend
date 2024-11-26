@@ -82,7 +82,7 @@ export interface CookieReportInfo {
   type?: string;
   platform?: string;
   status: CookieStatus;
-  recommendation?: string;
+  insight?: Protocol.Audits.CookieIssueInsight;
 }
 
 export class CookieIssue extends Issue {
@@ -281,6 +281,7 @@ export class CookieIssue extends Issue {
         type: entity?.category,
         platform: entity?.name,
         status,
+        insight: this.#issueDetails.insight,
       };
     }
 

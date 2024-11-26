@@ -101,27 +101,43 @@ export class ImageDelivery extends BaseInsightComponent<ImageDeliveryInsightMode
 
     const optimizableImages = this.model.optimizableImages;
 
-    // clang-format off
-    return html`
-      <div class="insight-section">
-        <devtools-performance-table
-          .data=${{
-            insight: this,
-            headers: [i18nString(UIStrings.sizeAppropriately)],
-            rows: this.#getTopImagesAsRows(optimizableImages, type => type === 'responsive-size', true),
-          }}>
-        </devtools-performance-table>
-      </div>
-      <div class="insight-section">
-        <devtools-performance-table
-          .data=${{
-            insight: this,
-            headers: [i18nString(UIStrings.optimizeFile)],
-            rows: this.#getTopImagesAsRows(optimizableImages, type => type !== 'responsive-size'),
-          }}>
-        </devtools-performance-table>
-      </div>`;
-    // clang-format on
+    const sections = [];
+
+    const responsiveSizeRows = this.#getTopImagesAsRows(optimizableImages, type => type === 'responsive-size', true);
+    if (responsiveSizeRows.length) {
+      // clang-format off
+      sections.push(html`
+        <div class="insight-section">
+          <devtools-performance-table
+            .data=${{
+              insight: this,
+              headers: [i18nString(UIStrings.sizeAppropriately)],
+              rows: responsiveSizeRows,
+            }}>
+          </devtools-performance-table>
+        </div>
+      `);
+      // clang-format on
+    }
+
+    const optimizeFormatRows = this.#getTopImagesAsRows(optimizableImages, type => type !== 'responsive-size');
+    if (optimizeFormatRows.length) {
+      // clang-format off
+      sections.push(html`
+        <div class="insight-section">
+          <devtools-performance-table
+            .data=${{
+              insight: this,
+              headers: [i18nString(UIStrings.optimizeFile)],
+              rows: optimizeFormatRows,
+            }}>
+          </devtools-performance-table>
+        </div>
+      `);
+      // clang-format on
+    }
+
+    return html`${sections}`;
   }
 
   override render(): void {

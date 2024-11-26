@@ -91,7 +91,7 @@ function configureChrome(executablePath: string) {
           path.join(SOURCE_ROOT, 'scripts', 'deps', 'set_lpac_acls.py'),
           path.dirname(executablePath),
         ],
-        {encoding: 'utf-8', stdio: 'inherit'});
+        {encoding: 'utf-8', stdio: 'inherit', shell: true});
     if (result.error || (result.status ?? 1) !== 0) {
       throw new Error('Setting permissions failed: ' + result.error?.message);
     }

@@ -153,10 +153,10 @@ describeWithEnvironment('Overlays', () => {
     const event = charts.mainProvider.eventByIndex?.(50);
     assert.isOk(event);
     const yPixel = overlays.yPixelForEventOnChart(event);
-    // The Y offset for the main chart is 233px, but we add 208px on (200px for the
+    // The Y offset for the main chart is 280px, but we add 208px on (200px for the
     // network chart, and 8px for the re-size handle) giving us the expected
     // 441px.
-    assert.strictEqual(yPixel, 441);
+    assert.strictEqual(yPixel, 488);
   });
 
   it('can adjust the y position of a main chart event when the network track is collapsed', async function() {
@@ -198,10 +198,10 @@ describeWithEnvironment('Overlays', () => {
     const event = charts.mainProvider.eventByIndex?.(50);
     assert.isOk(event);
     const yPixel = overlays.yPixelForEventOnChart(event);
-    // The Y offset for the main chart is 233px, but we add 34px on (the height
+    // The Y offset for the main chart is 280px, but we add 34px on (the height
     // of the collapsed network chart, with no resizer bar as it is hidden when
-    // the network track is collapsed). This gives us 233+34 = 267.
-    assert.strictEqual(yPixel, 267);
+    // the network track is collapsed). This gives us 280+34 = 314.
+    assert.strictEqual(yPixel, 314);
   });
 
   it('can calculate the y position of a network chart event', async function() {

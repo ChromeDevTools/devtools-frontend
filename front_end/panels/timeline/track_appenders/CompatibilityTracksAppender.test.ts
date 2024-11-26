@@ -49,12 +49,6 @@ describeWithEnvironment('CompatibilityTracksAppender', function() {
           ...parsedTrace.UserTimings.timestampEvents,
           ...parsedTrace.UserTimings.performanceMarks,
           ...parsedTrace.UserTimings.performanceMeasures,
-          ...parsedTrace.PageLoadMetrics.allMarkerEvents.toSorted((m1, m2) => {
-            // These get sorted based on the metric so we have to replicate
-            // that for this assertion.
-            return Timeline.TimingsTrackAppender.SORT_ORDER_PAGE_LOAD_MARKERS[m1.name] -
-                Timeline.TimingsTrackAppender.SORT_ORDER_PAGE_LOAD_MARKERS[m2.name];
-          }),
         ].sort((a, b) => a.ts - b.ts);
         assert.deepEqual(timingsTrackEvents, allTimingEvents);
       });
@@ -118,12 +112,6 @@ describeWithEnvironment('CompatibilityTracksAppender', function() {
           ...parsedTrace.UserTimings.timestampEvents,
           ...parsedTrace.UserTimings.performanceMarks,
           ...parsedTrace.UserTimings.performanceMeasures,
-          ...parsedTrace.PageLoadMetrics.allMarkerEvents.toSorted((m1, m2) => {
-            // These get sorted based on the metric so we have to replicate
-            // that for this assertion.
-            return Timeline.TimingsTrackAppender.SORT_ORDER_PAGE_LOAD_MARKERS[m1.name] -
-                Timeline.TimingsTrackAppender.SORT_ORDER_PAGE_LOAD_MARKERS[m2.name];
-          }),
         ].sort((a, b) => a.ts - b.ts);
         assert.deepEqual(timingsGroupEvents, allTimingEvents);
       });
@@ -230,12 +218,10 @@ describeWithEnvironment('CompatibilityTracksAppender', function() {
   it('can return the group for a given level', async () => {
     await initTrackAppender(this, 'web-dev-with-commit.json.gz');
     // The order of these groups might seem odd, but it's based on the setup in
-    // the initTrackAppender function which does Timings, GPU and then threads.
+    // the initTrackAppender function which does GPU and then threads.
     const groupForLevel0 = tracksAppender.groupForLevel(0);
-    assert.strictEqual(groupForLevel0?.name, 'Timings');
+    assert.strictEqual(groupForLevel0?.name, 'GPU');
     const groupForLevel1 = tracksAppender.groupForLevel(1);
-    assert.strictEqual(groupForLevel1?.name, 'GPU');
-    const groupForLevel2 = tracksAppender.groupForLevel(2);
-    assert.strictEqual(groupForLevel2?.name, 'Main — https://web.dev/');
+    assert.strictEqual(groupForLevel1?.name, 'Main — https://web.dev/');
   });
 });

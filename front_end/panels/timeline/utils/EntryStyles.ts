@@ -1103,3 +1103,24 @@ export function getTimelineMainEventCategories(): EventCategory[] {
 export function setTimelineMainEventCategories(categories: EventCategory[]): void {
   mainEventCategories = categories;
 }
+
+export function markerDetailsForEvent(event: Trace.Types.Events.Event): {
+  color: string,
+  title: string,
+} {
+  let title = '';
+  let color = 'var(--color-text-primary)';
+  if (Trace.Types.Events.isFirstContentfulPaint(event)) {
+    color = 'var(--sys-color-green-bright)';
+    title = Trace.Handlers.ModelHandlers.PageLoadMetrics.MetricName.FCP;
+  }
+  if (Trace.Types.Events.isLargestContentfulPaintCandidate(event)) {
+    color = 'var(--sys-color-green)';
+    title = Trace.Handlers.ModelHandlers.PageLoadMetrics.MetricName.LCP;
+  }
+  if (Trace.Types.Events.isNavigationStart(event)) {
+    color = 'var(--color-text-primary)';
+    title = Trace.Handlers.ModelHandlers.PageLoadMetrics.MetricName.NAV;
+  }
+  return {color, title};
+}

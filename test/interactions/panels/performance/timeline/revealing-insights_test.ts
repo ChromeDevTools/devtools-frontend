@@ -32,16 +32,20 @@ describe('Performance panel insights', () => {
       return await header.evaluate(elem => elem.getAttribute('aria-expanded') === 'true');
     });
 
-    // Clicking the insight should create an overlay. For the LCP request insight there are 3:
+    // Clicking the insight should create an overlay. For the LCP request insight there are 5:
     // 1. Candy stripe.
     // 2. Red outline on the event.
     // 3. "LCP loaded 33ms after..." timespan.
+    // 4. Navigation Timings Marker
+    // 5. FCP Timings Marker & LCP Timings Marker
     const overlays = await $$('.overlay-item', flameChart);
-    assert.lengthOf(overlays, 3);
+    assert.lengthOf(overlays, 5);
     const jsLogContexts = await Promise.all(overlays.map(async overlay => {
       return await overlay.evaluate(elem => elem.getAttribute('jslog') ?? '');
     }));
     assert.deepEqual(jsLogContexts, [
+      'Item; context: timeline.overlays.timings-marker',
+      'Item; context: timeline.overlays.timings-marker',
       'Item; context: timeline.overlays.entry-outline-error',
       'Item; context: timeline.overlays.candy-striped-time-range',
       'Item; context: timeline.overlays.timespan-breakdown',

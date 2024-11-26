@@ -3319,6 +3319,7 @@ export const knownContextValues = new Set([
   'timeline.overlays.entry-outline-info',
   'timeline.overlays.time-range',
   'timeline.overlays.timespan-breakdown',
+  'timeline.overlays.timings-marker',
   'timeline.previous-recording',
   'timeline.record-reload',
   'timeline.reveal-in-network',

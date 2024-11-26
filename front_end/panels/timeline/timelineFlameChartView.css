@@ -137,3 +137,37 @@
   bottom: 0;
   height: 100px;
 }
+
+.overlay-type-TIMINGS_MARKER {
+  bottom: 0;
+  width: 1px;
+  pointer-events: auto;
+}
+
+.marker-title {
+  display: flex;
+  justify-content: center;
+  width: var(--sys-size-13);
+  font-size: var(--sys-typescale-body4-size);
+  color: var(--sys-color-base);
+
+  &:hover {
+    cursor: default;
+    transition: opacity 0.2s ease;
+  }
+}
+
+.markers {
+  position: fixed;
+  display: flex;
+  bottom: 0;
+  width: 100%;
+}
+
+.overlay-popover span {
+  margin-right: var(--sys-size-3);
+}
+
+.overlay-popover span.overlay-popover-time {
+  color: var(--sys-color-green);
+}

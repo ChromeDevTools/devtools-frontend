@@ -47,6 +47,7 @@ devtools_entrypoint("bundle") {
     "../../network/*",
     "../components:*",
     "../components/insights:*",
+    "../overlays/*",
 
     # only for use in tests
     "../../../models/trace/handlers/*",

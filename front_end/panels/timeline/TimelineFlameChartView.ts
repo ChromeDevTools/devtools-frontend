@@ -53,6 +53,18 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineFlameChartView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
+/**
+ * This defines the order these markers will be rendered if they are at the
+ * same timestamp. The smaller number will be shown first - e.g. so if NavigationStart, MarkFCP,
+ * MarkLCPCandidate have the same timestamp, visually we
+ * will render [Nav][FCP][LCP] everytime.
+ */
+export const SORT_ORDER_PAGE_LOAD_MARKERS: Readonly<Record<string, number>> = {
+  [Trace.Types.Events.Name.NAVIGATION_START]: 0,
+  [Trace.Types.Events.Name.MARK_FCP]: 1,
+  [Trace.Types.Events.Name.MARK_LCP_CANDIDATE]: 2,
+};
+
 export class TimelineFlameChartView extends
     Common.ObjectWrapper.eventMixin<TimelineTreeView.EventTypes, typeof UI.Widget.VBox>(UI.Widget.VBox)
         implements PerfUI.FlameChart.FlameChartDelegate, UI.SearchableView.Searchable {
@@ -123,6 +135,7 @@ export class TimelineFlameChartView extends
 
   #currentInsightOverlays: Array<Overlays.Overlays.TimelineOverlay> = [];
   #activeInsight: TimelineComponents.Sidebar.ActiveInsight|null = null;
+  #markers: Array<Overlays.Overlays.TimelineOverlay> = [];
 
   #tooltipElement = document.createElement('div');
 
@@ -354,6 +367,12 @@ export class TimelineFlameChartView extends
       this.updateLinkSelectionAnnotationWithToEntry(this.networkDataProvider, event.data);
     }, this);
 
+    this.#overlays.addEventListener(Overlays.Overlays.EventReferenceClick.eventName, event => {
+      const eventRef = (event as Overlays.Overlays.EventReferenceClick);
+      const fromTraceEvent = selectionFromEvent(eventRef.event);
+      this.openSelectionDetailsView(fromTraceEvent);
+    });
+
     this.element.addEventListener('keydown', this.#keydownHandler.bind(this));
     this.element.addEventListener('pointerdown', this.#pointerDownHandler.bind(this));
     this.#boundRefreshAfterIgnoreList = this.#refreshAfterIgnoreList.bind(this);
@@ -419,6 +438,56 @@ export class TimelineFlameChartView extends
     }
     this.mainFlameChart.enableDimming(relatedMainIndices);
     this.networkFlameChart.enableDimming(relatedNetworkIndices);
+  }
+
+  #sortMarkersForPreferredVisualOrder(markers: Trace.Types.Events.Event[]): void {
+    markers.sort((m1, m2) => {
+      const m1Index = SORT_ORDER_PAGE_LOAD_MARKERS[m1.name] ?? Infinity;
+      const m2Index = SORT_ORDER_PAGE_LOAD_MARKERS[m2.name] ?? Infinity;
+      return m1Index - m2Index;
+    });
+  }
+
+  setMarkers(parsedTrace: Trace.Handlers.Types.ParsedTrace|null): void {
+    if (!parsedTrace) {
+      return;
+    }
+    // Clear out any markers.
+    this.bulkRemoveOverlays(this.#markers);
+    const markerEvents = parsedTrace.PageLoadMetrics.allMarkerEvents;
+    // Set markers for Navigations, LCP, FCP.
+    const markers = markerEvents.filter(
+        event => event.name === Trace.Types.Events.Name.NAVIGATION_START ||
+            event.name === Trace.Types.Events.Name.MARK_LCP_CANDIDATE ||
+            event.name === Trace.Types.Events.Name.MARK_FCP);
+
+    this.#sortMarkersForPreferredVisualOrder(markers);
+    const markerOverlays: Overlays.Overlays.TimingsMarker[] = [];
+    markers.forEach((marker, i) => {
+      const ts = Trace.Helpers.Timing.timeStampForEventAdjustedByClosestNavigation(
+          marker,
+          parsedTrace.Meta.traceBounds,
+          parsedTrace.Meta.navigationsByNavigationId,
+          parsedTrace.Meta.navigationsByFrameId,
+      );
+      // If any of the markers overlap in timing, lets put them on the same marker.
+      if (i > 0 && ts === markerOverlays[i - 1].adjustedTimestamp) {
+        markerOverlays[i - 1].entries.push(marker);
+        return;
+      }
+      const overlay = {
+        type: 'TIMINGS_MARKER',
+        entries: [marker],
+        adjustedTimestamp: ts,
+      } as Overlays.Overlays.TimingsMarker;
+      markerOverlays.push(overlay);
+    });
+    this.#markers = markerOverlays;
+    if (this.#markers.length === 0) {
+      return;
+    }
+
+    this.bulkAddOverlays(this.#markers);
   }
 
   setOverlays(overlays: Overlays.Overlays.TimelineOverlay[], options: Overlays.Overlays.TimelineOverlaySetOptions):
@@ -901,6 +970,7 @@ export class TimelineFlameChartView extends
     this.updateSearchResults(false, false);
     this.refreshMainFlameChart();
     this.#updateFlameCharts();
+    this.setMarkers(newParsedTrace);
   }
 
   setInsights(
@@ -1132,6 +1202,15 @@ export class TimelineFlameChartView extends
     if (this.#linkSelectionAnnotation &&
         this.#linkSelectionAnnotation.state === Trace.Types.File.EntriesLinkState.CREATION_NOT_STARTED) {
       this.#clearLinkSelectionAnnotation(true);
+    }
+  }
+
+  // Only opens the details view of a selection. This is used for Timing Markers. Timing markers replace
+  // their entry with a new UI. Becuase of that, thier entries can no longer be "selected" in the timings track,
+  // so if clicked, we only open their details view.
+  openSelectionDetailsView(selection: TimelineSelection|null): void {
+    if (this.detailsView) {
+      void this.detailsView.setSelection(selection);
     }
   }
 

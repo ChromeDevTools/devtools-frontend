@@ -434,6 +434,8 @@ export const enum MetricName {
   TBT = 'TBT',
   // Cumulative Layout Shift
   CLS = 'CLS',
+  // Navigation
+  NAV = 'Nav',
   // Note: INP is handled in UserInteractionsHandler
 }
 

@@ -77,7 +77,7 @@ describeWithEnvironment('TimelineFlameChartView', function() {
         new UI.SearchableView.SearchConfig(/* query */ searchQuery, /* caseSensitive */ false, /* isRegex */ false);
     flameChartView.performSearch(searchConfig, true);
 
-    assert.strictEqual(flameChartView.getSearchResults()?.length, 17);
+    assert.strictEqual(flameChartView.getSearchResults()?.length, 14);
     assertSelectionName('PrePaint');
 
     flameChartView.jumpToNextSearchResult();
@@ -207,26 +207,26 @@ describeWithEnvironment('TimelineFlameChartView', function() {
        }
 
        // Find the first node that has children to collapse and is visible in the timeline
-       const nodeOfGroup = flameChartView.getMainDataProvider().groupTreeEvents(mainTrack);
-       const firstNodeWithChildren = nodeOfGroup?.find(node => {
+       const groupTreeEvents = flameChartView.getMainDataProvider().groupTreeEvents(mainTrack);
+       const firstEventWithChildren = groupTreeEvents?.find(node => {
          const childrenAmount = parsedTrace.Renderer.entryToNode.get(node as Trace.Types.Events.Event)?.children.length;
          if (!childrenAmount) {
            return false;
          }
          return childrenAmount > 0 && node.cat === 'devtools.timeline';
        });
-       const node = parsedTrace.Renderer.entryToNode.get(firstNodeWithChildren as Trace.Types.Events.Event);
-       if (!node) {
-         throw new Error('Could not find a visible node with children');
-       }
+       assert.exists(firstEventWithChildren);
 
-       flameChartView.getMainFlameChart().setSelectedEntry(node?.id);
+       const nodeId = flameChartView.getMainDataProvider().indexForEvent(firstEventWithChildren);
+       assert.exists(nodeId);
+
+       flameChartView.getMainFlameChart().setSelectedEntry(nodeId);
 
        // Dispatch a shortcut keydown event that applies 'Hide Children' Context menu action
        const event = new KeyboardEvent('keydown', {code: 'KeyC'});
        flameChartView.getMainFlameChart().getCanvas().dispatchEvent(event);
 
-       const decorationsForEntry = flameChartView.getMainFlameChart().timelineData()?.entryDecorations[node?.id];
+       const decorationsForEntry = flameChartView.getMainFlameChart().timelineData()?.entryDecorations[nodeId];
        assert.deepEqual(decorationsForEntry, [
          {
            type: PerfUI.FlameChart.FlameChartDecorationType.HIDDEN_DESCENDANTS_ARROW,
@@ -466,7 +466,7 @@ describeWithEnvironment('TimelineFlameChartView', function() {
             * =============== foo ===============
             * =============== foo ===============
             * =============== foo ===============
-            * ===== wait =====   ===== wait =====  <-- ID=204
+            * ===== wait =====   ===== wait =====
             * = now =  = now =   = now =  = now =
             *
             * In this test we want to test that the Context Menu option available
@@ -475,10 +475,13 @@ describeWithEnvironment('TimelineFlameChartView', function() {
             *
             * To achieve that, we will dispatch the context menu on the 'wait' function that has only non-repeating
             * children.
-            * The ID of the first 'wait' is 204.
             **/
-
-           const nodeIdWithNoChildren = 204;
+           const mainThread = getMainThread(parsedTrace.Renderer);
+           const entry = findFirstEntry(mainThread.entries, entry => {
+             return Trace.Types.Events.isProfileCall(entry) && entry.callFrame.functionName === 'wait';
+           });
+           const nodeIdWithNoChildren = flameChartView.getMainDataProvider().indexForEvent(entry);
+           assert.exists(nodeIdWithNoChildren);
            generateContextMenuForNodeId(nodeIdWithNoChildren);
 
            // This entry has URL, so there are 5 always-shown actions, and one to add script to ignore list.
@@ -535,7 +538,7 @@ describeWithEnvironment('TimelineFlameChartView', function() {
             * =============== foo ===============
             * =============== foo ===============
             * =============== foo ===============
-            * =============== foo =============== <-- ID=200
+            * =============== foo ===============
             * =============== foo ===============
             * =============== foo ===============
             * ===== wait =====   ===== wait =====
@@ -546,11 +549,17 @@ describeWithEnvironment('TimelineFlameChartView', function() {
             * repeating children.
             *
             * To achieve that, we will dispatch the context menu on the 'foo' function that has child 'foo' calls.
-            * The ID of the a matching 'foo' is 200.
             **/
 
-           const nodeIdWithNoChildren = 200;
-           generateContextMenuForNodeId(nodeIdWithNoChildren);
+           const mainThread = getMainThread(parsedTrace.Renderer);
+           const entry = findFirstEntry(mainThread.entries, entry => {
+             return Trace.Types.Events.isProfileCall(entry) && entry.callFrame.functionName === 'foo';
+           });
+
+           const nodeId = flameChartView.getMainDataProvider().indexForEvent(entry);
+           assert.exists(nodeId);
+
+           generateContextMenuForNodeId(nodeId);
 
            // This entry has URL, so there are 5 always-shown actions, and one to add script to ignore list.
            assert.strictEqual(flameChartView.getMainFlameChart().getContextMenu()?.defaultSection().items.length, 6);
@@ -603,7 +612,7 @@ describeWithEnvironment('TimelineFlameChartView', function() {
       it('When an entry has no parent and has children, correctly make only Hide Children enabled in the Context Menu action',
          async function() {
            /** Part of this stack looks roughly like so (with some events omitted):
-            * =============== Task ============== <-- ID=62
+            * =============== Task ==============
             * =============== foo ===============
             * =============== foo ===============
             * =============== foo ===============
@@ -621,11 +630,22 @@ describeWithEnvironment('TimelineFlameChartView', function() {
             *
             * To achieve that, we will dispatch the context menu on the 'Task' function that is on the top of the stack
             * and has no parent.
-            * The ID of the a matching 'Task' is 62.
             **/
 
-           const nodeIdWithNoChildren = 62;
-           generateContextMenuForNodeId(nodeIdWithNoChildren);
+           const mainThread = getMainThread(parsedTrace.Renderer);
+           const entry = findFirstEntry(mainThread.entries, entry => {
+             const childrenAmount =
+                 parsedTrace.Renderer.entryToNode.get(entry as Trace.Types.Events.Event)?.children.length;
+             if (!childrenAmount) {
+               return false;
+             }
+             return Trace.Types.Events.isRunTask(entry);
+           });
+
+           const nodeId = flameChartView.getMainDataProvider().indexForEvent(entry);
+           assert.exists(nodeId);
+
+           generateContextMenuForNodeId(nodeId);
 
            // Hide function disabled
            assert.strictEqual(
@@ -674,7 +694,7 @@ describeWithEnvironment('TimelineFlameChartView', function() {
 
       it('Reset Trace Context Menu action is disabled before some action has been applied', async function() {
         /** Part of this stack looks roughly like so (with some events omitted):
-         * =============== Task ============== <-- ID=62
+         * =============== Task ==============
          * =============== foo ===============
          * =============== foo ===============
          * =============== foo ===============
@@ -689,10 +709,13 @@ describeWithEnvironment('TimelineFlameChartView', function() {
          *
          * To achieve that, we will first check if Reset Trace is disabled and then dispatch a Context Menu action on
          * "Task" entry and then check if Reset Trace is enabled.
-         * The ID of the a matching 'Task' is 62.
          **/
 
-        const nodeId = 62;
+        const mainThread = getMainThread(parsedTrace.Renderer);
+        const entry = findFirstEntry(mainThread.entries, entry => Trace.Types.Events.isRunTask(entry));
+        const nodeId = flameChartView.getMainDataProvider().indexForEvent(entry);
+        assert.exists(nodeId);
+
         generateContextMenuForNodeId(nodeId);
         assert.strictEqual(flameChartView.getMainFlameChart().getContextMenu()?.defaultSection().items.length, 5);
         assert.strictEqual(

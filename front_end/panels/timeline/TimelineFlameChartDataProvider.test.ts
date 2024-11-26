@@ -27,12 +27,6 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
         ...parsedTrace.UserTimings.timestampEvents,
         ...parsedTrace.UserTimings.performanceMarks,
         ...parsedTrace.UserTimings.performanceMeasures,
-        ...parsedTrace.PageLoadMetrics.allMarkerEvents.toSorted((m1, m2) => {
-          // These get sorted based on the metric so we have to replicate
-          // that for this assertion.
-          return Timeline.TimingsTrackAppender.SORT_ORDER_PAGE_LOAD_MARKERS[m1.name] -
-              Timeline.TimingsTrackAppender.SORT_ORDER_PAGE_LOAD_MARKERS[m2.name];
-        }),
       ].sort((a, b) => a.ts - b.ts);
       assert.deepEqual(groupTreeEvents, allTimingEvents);
     });
@@ -46,7 +40,7 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
         assert.fail('Could not find Timings track flame chart group');
       }
       const groupTreeEvents = dataProvider.groupTreeEvents(timingsTrackGroup);
-      assert.strictEqual(groupTreeEvents?.length, 12);
+      assert.strictEqual(groupTreeEvents?.length, 6);
       const allEventsAreSync = groupTreeEvents?.every(event => !Trace.Types.Events.isPhaseAsync(event.ph));
       assert.isTrue(allEventsAreSync);
     });
@@ -214,7 +208,7 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
     const filter = new Timeline.TimelineFilters.TimelineRegExp(/Evaluate script/);
     const results = dataProvider.search(bounds, filter);
     assert.lengthOf(results, 12);
-    assert.deepEqual(results[0], {index: 153, startTimeMilli: 122411041.395, provider: 'main'});
+    assert.deepEqual(results[0], {index: 147, startTimeMilli: 122411041.395, provider: 'main'});
   });
 
   it('delete annotations associated with an event', async function() {

@@ -76,16 +76,6 @@ describe('FlameChart', function() {
     // in the entry's border.
     const margin = 3;
 
-    // Click on an entry on the timings track first.
-    const titleForTimingEntry = 'label1';
-    const timeStampForTimingEntry = 251126671072;
-    const {x: timingEntryX, y: timingEntryY} =
-        await getCoordinatesForEntryWithTitleAndTs(titleForTimingEntry, timeStampForTimingEntry);
-    await frontend.mouse.click(timingEntryX + margin, timingEntryY + margin);
-    const timingTitleHandle = await waitFor('.timeline-details-chip-title');
-    const timingTitle = await timingTitleHandle.evaluate(element => element.innerHTML);
-    assert.isTrue(timingTitle.includes('label1'));
-
     // Now click on an entry on the main thread track and ensure details
     // are visible.
     const titleForMainEntry = 'Task';

@@ -51,49 +51,23 @@ describeWithEnvironment('TimingTrackAppender', function() {
 
   describe('appendTrackAtLevel', () => {
     it('marks all levels used by the track with the `TrackAppender` type', () => {
-      // 8 levels should be taken:
-      //   * 1 for page load marks.
+      // 7 levels should be taken:
       //   * 1 performance.marks.
       //   * 3 used by performance.measures.
       //   * 1 used by console timestamps.
       //   * 1 used by console.time calls.
-      const levelCount = 7;
+      const levelCount = 6;
       assert.strictEqual(entryTypeByLevel.length, levelCount);
       const allEntriesAreTrackAppender =
           entryTypeByLevel.every(type => type === Timeline.TimelineFlameChartDataProvider.EntryType.TRACK_APPENDER);
       assert.isTrue(allEntriesAreTrackAppender);
     });
-    it('creates a flamechart group for the timings track', () => {
-      assert.strictEqual(flameChartData.groups.length, 1);
-      assert.strictEqual(flameChartData.groups[0].name, 'Timings');
-    });
-    it('populates the markers array in ascendent order', () => {
-      const traceMarkers = parsedTrace.PageLoadMetrics.allMarkerEvents;
-      assert.strictEqual(flameChartData.markers.length, traceMarkers.length);
-      for (let i = 1; i < flameChartData.markers.length; i++) {
-        assert.isAtLeast(flameChartData.markers[i].startTime(), flameChartData.markers[i - 1].startTime());
-      }
-    });
-    it('creates a TimelineFlameChartMarker for each page load marker event in a trace', () => {
-      const traceMarkers = parsedTrace.PageLoadMetrics.allMarkerEvents;
-      assert.strictEqual(flameChartData.markers.length, traceMarkers.length);
-      for (const traceMarker of traceMarkers) {
-        const markerTimeMs = Trace.Helpers.Timing.microSecondsToMilliseconds(traceMarker.ts);
-        const flameChartMarker =
-            flameChartData.markers.find(flameChartMarker => flameChartMarker.startTime() === markerTimeMs);
-        assert.exists(flameChartMarker);
-      }
-      assert.strictEqual(flameChartData.markers.length, traceMarkers.length);
-    });
     it('adds start times correctly', () => {
-      const traceMarkers = parsedTrace.PageLoadMetrics.allMarkerEvents;
       const performanceMarks = parsedTrace.UserTimings.performanceMarks;
       const performanceMeasures = parsedTrace.UserTimings.performanceMeasures;
       const consoleTimings = parsedTrace.UserTimings.consoleTimings;
       const consoleTimestamps = parsedTrace.UserTimings.timestampEvents;
-      for (const event
-               of [...traceMarkers, ...performanceMarks, ...performanceMeasures, ...consoleTimings,
-                   ...consoleTimestamps]) {
+      for (const event of [...performanceMarks, ...performanceMeasures, ...consoleTimings, ...consoleTimestamps]) {
         const markerIndex = entryData.indexOf(event);
         assert.exists(markerIndex);
         assert.strictEqual(
@@ -101,14 +75,11 @@ describeWithEnvironment('TimingTrackAppender', function() {
       }
     });
     it('adds total times correctly', () => {
-      const traceMarkers = parsedTrace.PageLoadMetrics.allMarkerEvents;
       const performanceMarks = parsedTrace.UserTimings.performanceMarks;
       const performanceMeasures = parsedTrace.UserTimings.performanceMeasures;
       const consoleTimings = parsedTrace.UserTimings.consoleTimings;
       const consoleTimestamps = parsedTrace.UserTimings.timestampEvents;
-      for (const event
-               of [...traceMarkers, ...performanceMarks, ...performanceMeasures, ...consoleTimings,
-                   ...consoleTimestamps]) {
+      for (const event of [...performanceMarks, ...performanceMeasures, ...consoleTimings, ...consoleTimestamps]) {
         const markerIndex = entryData.indexOf(event);
         assert.exists(markerIndex);
         if (Trace.Types.Events.isMarkerEvent(event)) {
@@ -121,35 +92,6 @@ describeWithEnvironment('TimingTrackAppender', function() {
         assert.strictEqual(flameChartData.entryTotalTimes[markerIndex], expectedTotalTimeForEvent);
       }
     });
-  });
-
-  it('orders page load metrics that have the same timestamp', async function() {
-    entryData = [];
-    flameChartData = PerfUI.FlameChart.FlameChartTimelineData.createEmpty();
-    entryTypeByLevel = [];
-    // animation.json.gz has FP, FCP and LCP at the same timestamp, and we want
-    // to make sure visually the markers are ordered [FP][FCP][LCP].
-    const {parsedTrace} = await TraceLoader.traceEngine(this, 'animation.json.gz');
-    timingsTrackAppender = initTrackAppender(flameChartData, parsedTrace, entryData, entryTypeByLevel);
-    timingsTrackAppender.appendTrackAtLevel(0);
-    const {allMarkerEvents} = parsedTrace.PageLoadMetrics;
-
-    const firstPaint = allMarkerEvents.find(Trace.Types.Events.isFirstPaint);
-    const fcp = allMarkerEvents.find(Trace.Types.Events.isFirstContentfulPaint);
-    const lcp = allMarkerEvents.find(Trace.Types.Events.isLargestContentfulPaintCandidate);
-
-    assert.isOk(firstPaint);
-    assert.isOk(fcp);
-    assert.isOk(lcp);
-
-    // Prevent against the trace changing by ensuring all these events have the same timestamp.
-    assert.isTrue(firstPaint.ts === fcp.ts && fcp.ts === lcp.ts);
-
-    const indexes = [firstPaint, fcp, lcp].map(entry => entryData.indexOf(entry));
-    // Because of how we order page markers, we expect the indexes to be in
-    // this order which represents the visual order they are represented.
-    // (0, 1, 2) are this traces navigation start, DCL and Load event.
-    assert.deepEqual(indexes, [3, 4, 5]);
   });
 
   describe('colorForEvent and titleForEvent', () => {

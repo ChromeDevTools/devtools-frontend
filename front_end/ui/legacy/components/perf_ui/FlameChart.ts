@@ -863,7 +863,6 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
         isMouseOverRevealChildrenArrow === this.lastPopoverState.hiddenEntriesPopover) {
       return this.updatePopoverOffset();
     }
-    this.popoverElement.removeChildren();
     const data = this.timelineData();
     if (!data) {
       return;
@@ -874,14 +873,25 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
         this.dataProvider.preparePopoverForCollapsedArrow?.(entryIndex) :
         entryIndex !== null && this.dataProvider.preparePopoverElement(entryIndex);
     if (popoverElement) {
-      this.popoverElement.appendChild(popoverElement);
-      this.updatePopoverOffset();
+      this.updatePopoverContents(popoverElement);
     }
     this.lastPopoverState = {
       entryIndex,
       groupIndex: -1,
       hiddenEntriesPopover: isMouseOverRevealChildrenArrow,
     };
+  }
+
+  updatePopoverContents(popoverElement: Element): void {
+    this.popoverElement.removeChildren();
+    this.popoverElement.appendChild(popoverElement);
+    this.updatePopoverOffset();
+    this.lastPopoverState.entryIndex = -1;
+  }
+
+  updateMouseOffset(mouseX: number, mouseY: number): void {
+    this.lastMouseOffsetX = mouseX;
+    this.lastMouseOffsetY = mouseY;
   }
 
   #updatePopoverForGroup(groupIndex: number): void {

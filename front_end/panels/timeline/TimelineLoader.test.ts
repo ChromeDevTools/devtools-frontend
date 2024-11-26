@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import type * as Protocol from '../../generated/protocol.js';
-import type * as Trace from '../../models/trace/trace.js';
+import * as Trace from '../../models/trace/trace.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {makeInstantEvent} from '../../testing/TraceHelpers.js';
 
@@ -50,9 +50,9 @@ describeWithEnvironment('TimelineLoader', () => {
     async loadingComplete(
         collectedEvents: Trace.Types.Events.Event[],
         exclusiveFilter: Trace.Extras.TraceFilter.TraceFilter|null,
-        isCpuProfile: boolean,
+        metadata: Trace.Types.File.MetaData,
     ) {
-      loadingCompleteSpy(collectedEvents, exclusiveFilter, isCpuProfile);
+      loadingCompleteSpy(collectedEvents, exclusiveFilter, metadata);
     },
     recordingProgress: function(usage: number): void {
       recordingProgressSpy(usage);
@@ -87,12 +87,12 @@ describeWithEnvironment('TimelineLoader', () => {
     // function. TS doesn't know what the types are (they are [any, any] by
     // default), so we tell it that they align with the types of the
     // loadingComplete parameters.
-    const [collectedEvents, exclusiveFilter, isCpuProfile] =
+    const [collectedEvents, exclusiveFilter, metadata] =
         loadingCompleteSpy.args[0] as Parameters<Timeline.TimelineController.Client['loadingComplete']>;
     assert.isNull(exclusiveFilter);  // We are not filtering out any events for this trace.
     // Ensure that we loaded something that looks about right!
     assert.lengthOf(collectedEvents, 8252);
-    assert.isFalse(isCpuProfile);
+    assert.notStrictEqual(metadata?.dataOrigin, Trace.Types.File.DataOrigin.CPU_PROFILE);
   });
 
   it('can load a saved CPUProfile file', async () => {
@@ -110,13 +110,13 @@ describeWithEnvironment('TimelineLoader', () => {
     // function. TS doesn't know what the types are (they are [any, any] by
     // default), so we tell it that they align with the types of the
     // loadingComplete parameters.
-    const [collectedEvents, /* exclusiveFilter */, isCpuProfile] =
+    const [collectedEvents, /* exclusiveFilter */, metadata] =
         loadingCompleteSpy.args[0] as Parameters<Timeline.TimelineController.Client['loadingComplete']>;
     // We create fake trace event for CPU profile, includes one for
     // TracingStartedInPage, one for metadata, one for root, and one for CPU
     // profile
     assert.lengthOf(collectedEvents, 4);
-    assert.isTrue(isCpuProfile);
+    assert.strictEqual(metadata?.dataOrigin, Trace.Types.File.DataOrigin.CPU_PROFILE);
   });
 
   it('can load recorded trace events correctly', async () => {
@@ -137,12 +137,12 @@ describeWithEnvironment('TimelineLoader', () => {
     // function. TS doesn't know what the types are (they are [any, any] by
     // default), so we tell it that they align with the types of the
     // loadingComplete parameters.
-    const [collectedEvents, exclusiveFilter, isCpuProfile] =
+    const [collectedEvents, exclusiveFilter, metadata] =
         loadingCompleteSpy.args[0] as Parameters<Timeline.TimelineController.Client['loadingComplete']>;
     assert.isNull(exclusiveFilter);
     // Ensure that we loaded something that looks about right!
     assert.lengthOf(collectedEvents, testTraceEvents.length);
-    assert.isFalse(isCpuProfile);
+    assert.notStrictEqual(metadata?.dataOrigin, Trace.Types.File.DataOrigin.CPU_PROFILE);
   });
 
   it('can load recorded CPUProfile correctly', async () => {
@@ -160,11 +160,11 @@ describeWithEnvironment('TimelineLoader', () => {
     // function. TS doesn't know what the types are (they are [any, any] by
     // default), so we tell it that they align with the types of the
     // loadingComplete parameters.
-    const [collectedEvents, /* exclusiveFilter */, isCpuProfile] =
+    const [collectedEvents, /* exclusiveFilter */, metadata] =
         loadingCompleteSpy.args[0] as Parameters<Timeline.TimelineController.Client['loadingComplete']>;
     // We create fake trace event for CPU profile, includes one for TracingStartedInPage,
     // one for metadata, one for root, and one for CPU profile
     assert.lengthOf(collectedEvents, 4);
-    assert.isTrue(isCpuProfile);
+    assert.strictEqual(metadata?.dataOrigin, Trace.Types.File.DataOrigin.CPU_PROFILE);
   });
 });

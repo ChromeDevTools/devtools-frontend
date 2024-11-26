@@ -41,7 +41,6 @@ import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as CrUXManager from '../../models/crux-manager/crux-manager.js';
-import * as EmulationModel from '../../models/emulation/emulation.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
@@ -1684,8 +1683,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
           await this.loadingComplete(
               /* no collectedEvents */[],
               /* exclusiveFilter= */ null,
-              /* isCpuProfile= */ false,
-              /* recordingStartTime= */ null,
               /* metadata= */ null);
         });
     this.statusPane.showPane(this.statusPaneContainer);
@@ -2177,7 +2174,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
    **/
   async loadingComplete(
       collectedEvents: Trace.Types.Events.Event[], exclusiveFilter: Trace.Extras.TraceFilter.TraceFilter|null = null,
-      isCpuProfile: boolean, recordingStartTime: number|null, metadata: Trace.Types.File.MetaData|null): Promise<void> {
+      metadata: Trace.Types.File.MetaData|null): Promise<void> {
     this.#traceEngineModel.resetProcessor();
 
     delete this.loader;
@@ -2204,18 +2201,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
         this.#changeView({mode: 'LANDING_PAGE'});
       }
       return;
-    }
-
-    if (!metadata) {
-      const deviceModeModel = EmulationModel.DeviceModeModel.DeviceModeModel.tryInstance();
-      let emulatedDeviceTitle;
-      if (deviceModeModel?.type() === EmulationModel.DeviceModeModel.Type.Device) {
-        emulatedDeviceTitle = deviceModeModel.device()?.title ?? undefined;
-      } else if (deviceModeModel?.type() === EmulationModel.DeviceModeModel.Type.Responsive) {
-        emulatedDeviceTitle = 'Responsive';
-      }
-      metadata = await Trace.Extras.Metadata.forNewRecording(
-          isCpuProfile, recordingStartTime ?? undefined, emulatedDeviceTitle);
     }
 
     try {
@@ -2283,11 +2268,11 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
   async #executeNewTrace(
       collectedEvents: Trace.Types.Events.Event[], isFreshRecording: boolean,
-      metadata: Trace.Types.File.MetaData): Promise<void> {
+      metadata: Trace.Types.File.MetaData|null): Promise<void> {
     return this.#traceEngineModel.parse(
         collectedEvents,
         {
-          metadata,
+          metadata: metadata ?? undefined,
           isFreshRecording,
         },
     );

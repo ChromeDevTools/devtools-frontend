@@ -3,10 +3,12 @@
 // found in the LICENSE file.
 
 import * as SDK from '../../../core/sdk/sdk.js';
+import type * as CrUXManager from '../../crux-manager/crux-manager.js';
 import * as Types from '../types/types.js';
 
 export async function forNewRecording(
-    isCpuProfile: boolean, recordStartTime?: number, emulatedDeviceTitle?: string): Promise<Types.File.MetaData> {
+    isCpuProfile: boolean, recordStartTime?: number, emulatedDeviceTitle?: string,
+    cruxFieldData?: CrUXManager.PageResult[]): Promise<Types.File.MetaData> {
   try {
     if (isCpuProfile) {
       // For CPU profile, only specify data origin
@@ -66,6 +68,7 @@ export async function forNewRecording(
       networkThrottlingConditions,
       hardwareConcurrency,
       dataOrigin: Types.File.DataOrigin.TRACE_EVENTS,
+      cruxFieldData,
     };
   } catch {
     // If anything went wrong, it does not really matter. The impact is that we

@@ -159,16 +159,14 @@ export class KeybindsSettingsTab extends UI.Widget.VBox implements UI.ListContro
   }
 
   createElementForItem(item: KeybindsItem): Element {
-    const itemWrapper = document.createElement('div');
-    itemWrapper.classList.add('keybinds-list-item-wrapper');
+    const element = document.createElement('div');
 
     let itemContent;
     if (typeof item === 'string') {
-      itemWrapper.classList.add('keybinds-header-wrapper');
-      UI.ARIAUtils.setLevel(itemWrapper, 1);
-      itemContent = itemWrapper.createChild('div');
+      itemContent = element;
       itemContent.classList.add('keybinds-category-header');
       itemContent.textContent = UI.ActionRegistration.getLocalizedActionCategory(item);
+      UI.ARIAUtils.setLevel(itemContent, 1);
     } else {
       const listItem = new ShortcutListItem(item, this, item === this.editingItem);
       itemContent = listItem.element;
@@ -177,12 +175,13 @@ export class KeybindsSettingsTab extends UI.Widget.VBox implements UI.ListContro
         this.editingRow = listItem;
       }
       itemContent.classList.add('keybinds-list-item');
-      itemWrapper.appendChild(itemContent);
+      element.classList.add('keybinds-list-item-wrapper');
+      element.appendChild(itemContent);
     }
 
     UI.ARIAUtils.markAsListitem(itemContent);
     itemContent.tabIndex = item === this.list.selectedItem() && item !== this.editingItem ? 0 : -1;
-    return itemWrapper;
+    return element;
   }
 
   commitChanges(

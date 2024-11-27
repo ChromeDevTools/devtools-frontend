@@ -312,23 +312,22 @@ export class TimelineFlameChartView extends
     this.detailsSplitWidget.setSidebarWidget(this.detailsView);
     this.detailsSplitWidget.show(this.element);
 
+    // Event listeners for annotations.
     this.onMainAddEntryLabelAnnotation = this.onAddEntryLabelAnnotation.bind(this, this.mainDataProvider);
     this.onNetworkAddEntryLabelAnnotation = this.onAddEntryLabelAnnotation.bind(this, this.networkDataProvider);
     this.#onMainEntriesLinkAnnotationCreated = event =>
         this.onEntriesLinkAnnotationCreate(this.mainDataProvider, event.data.entryFromIndex);
     this.#onNetworkEntriesLinkAnnotationCreated = event =>
         this.onEntriesLinkAnnotationCreate(this.networkDataProvider, event.data.entryFromIndex);
-    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_ANNOTATIONS)) {
-      this.mainFlameChart.addEventListener(
-          PerfUI.FlameChart.Events.ENTRY_LABEL_ANNOTATION_ADDED, this.onMainAddEntryLabelAnnotation, this);
-      this.networkFlameChart.addEventListener(
-          PerfUI.FlameChart.Events.ENTRY_LABEL_ANNOTATION_ADDED, this.onNetworkAddEntryLabelAnnotation, this);
+    this.mainFlameChart.addEventListener(
+        PerfUI.FlameChart.Events.ENTRY_LABEL_ANNOTATION_ADDED, this.onMainAddEntryLabelAnnotation, this);
+    this.networkFlameChart.addEventListener(
+        PerfUI.FlameChart.Events.ENTRY_LABEL_ANNOTATION_ADDED, this.onNetworkAddEntryLabelAnnotation, this);
 
-      this.mainFlameChart.addEventListener(
-          PerfUI.FlameChart.Events.ENTRIES_LINK_ANNOTATION_CREATED, this.#onMainEntriesLinkAnnotationCreated, this);
-      this.networkFlameChart.addEventListener(
-          PerfUI.FlameChart.Events.ENTRIES_LINK_ANNOTATION_CREATED, this.#onNetworkEntriesLinkAnnotationCreated, this);
-    }
+    this.mainFlameChart.addEventListener(
+        PerfUI.FlameChart.Events.ENTRIES_LINK_ANNOTATION_CREATED, this.#onMainEntriesLinkAnnotationCreated, this);
+    this.networkFlameChart.addEventListener(
+        PerfUI.FlameChart.Events.ENTRIES_LINK_ANNOTATION_CREATED, this.#onNetworkEntriesLinkAnnotationCreated, this);
 
     this.detailsView.addEventListener(TimelineTreeView.Events.TREE_ROW_HOVERED, node => {
       if (!Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_DIM_UNRELATED_EVENTS)) {
@@ -910,30 +909,30 @@ export class TimelineFlameChartView extends
     this.delegate.select(selectionFromRangeMilliSeconds(
         Trace.Types.Timing.MilliSeconds(startTime), Trace.Types.Timing.MilliSeconds(endTime)));
 
-    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_ANNOTATIONS)) {
-      const bounds = Trace.Helpers.Timing.traceWindowFromMilliSeconds(
-          Trace.Types.Timing.MilliSeconds(startTime),
-          Trace.Types.Timing.MilliSeconds(endTime),
-      );
+    // We need to check if the user is updating the range because they are
+    // creating a time range annotation.
+    const bounds = Trace.Helpers.Timing.traceWindowFromMilliSeconds(
+        Trace.Types.Timing.MilliSeconds(startTime),
+        Trace.Types.Timing.MilliSeconds(endTime),
+    );
 
-      // If the current time range annotation exists, the range selection
-      // for it is in progress and we need to update its bounds.
-      //
-      // When the range selection is finished, the current range is set to null.
-      // If the current selection is null, create a new time range annotations.
-      if (this.#timeRangeSelectionAnnotation) {
-        this.#timeRangeSelectionAnnotation.bounds = bounds;
-        ModificationsManager.activeManager()?.updateAnnotation(this.#timeRangeSelectionAnnotation);
-      } else {
-        this.#timeRangeSelectionAnnotation = {
-          type: 'TIME_RANGE',
-          label: '',
-          bounds,
-        };
-        // Before creating a new range, make sure to delete the empty ranges.
-        ModificationsManager.activeManager()?.deleteEmptyRangeAnnotations();
-        ModificationsManager.activeManager()?.createAnnotation(this.#timeRangeSelectionAnnotation);
-      }
+    // If the current time range annotation exists, the range selection
+    // for it is in progress and we need to update its bounds.
+    //
+    // When the range selection is finished, the current range is set to null.
+    // If the current selection is null, create a new time range annotations.
+    if (this.#timeRangeSelectionAnnotation) {
+      this.#timeRangeSelectionAnnotation.bounds = bounds;
+      ModificationsManager.activeManager()?.updateAnnotation(this.#timeRangeSelectionAnnotation);
+    } else {
+      this.#timeRangeSelectionAnnotation = {
+        type: 'TIME_RANGE',
+        label: '',
+        bounds,
+      };
+      // Before creating a new range, make sure to delete the empty ranges.
+      ModificationsManager.activeManager()?.deleteEmptyRangeAnnotations();
+      ModificationsManager.activeManager()?.createAnnotation(this.#timeRangeSelectionAnnotation);
     }
   }
 

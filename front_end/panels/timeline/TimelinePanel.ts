@@ -679,7 +679,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   }
 
   #setActiveInsight(insight: TimelineComponents.Sidebar.ActiveInsight|null): void {
-    if (insight && this.#panelSidebarEnabled()) {
+    if (insight) {
       this.#splitWidget.showBoth();
     }
     this.#sideBar.setActiveInsight(insight);
@@ -974,20 +974,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     return checkboxItem;
   }
 
-  /**
-   * Users don't explicitly opt in to the sidebar, but if they opt into either
-   * Insights or Annotations, we will show the sidebar.
-   */
-  #panelSidebarEnabled(): boolean {
-    const sidebarEnabled = Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_INSIGHTS) ||
-        Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_ANNOTATIONS);
-    return sidebarEnabled;
-  }
   #addSidebarIconToToolbar(): void {
-    if (!this.#panelSidebarEnabled()) {
-      return;
-    }
-
     if (this.panelToolbar.hasItem(this.#sidebarToggleButton)) {
       return;
     }
@@ -1030,18 +1017,9 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       this.selectFileToLoad();
     });
 
-    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_ANNOTATIONS)) {
-      this.saveButton = new UI.Toolbar.ToolbarMenuButton(
-          this.populateDownloadMenu.bind(this), true, true, 'timeline.save-to-file-more-options', 'download');
-      this.saveButton.setTitle(i18nString(UIStrings.saveProfile));
-    } else {
-      this.saveButton = new UI.Toolbar.ToolbarButton(
-          i18nString(UIStrings.saveProfile), 'download', undefined, 'timeline.save-to-file');
-      this.saveButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, _event => {
-        Host.userMetrics.actionTaken(Host.UserMetrics.Action.PerfPanelTraceExported);
-        void this.saveToFile();
-      });
-    }
+    this.saveButton = new UI.Toolbar.ToolbarMenuButton(
+        this.populateDownloadMenu.bind(this), true, true, 'timeline.save-to-file-more-options', 'download');
+    this.saveButton.setTitle(i18nString(UIStrings.saveProfile));
 
     if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_ENHANCED_TRACES)) {
       this.saveButton.element.addEventListener('contextmenu', event => {
@@ -1278,9 +1256,8 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     }
     const traceEvents = this.#traceEngineModel.rawTraceEvents(this.#viewMode.traceIndex);
     const metadata = this.#traceEngineModel.metadata(this.#viewMode.traceIndex);
-    // Save modifications into the metadata if modifications experiment is on
-    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_ANNOTATIONS) && metadata &&
-        addModifications) {
+
+    if (metadata && addModifications) {
       metadata.modifications = ModificationsManager.activeManager()?.toJSON();
     } else if (metadata) {
       delete metadata.modifications;
@@ -1990,7 +1967,6 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
    * We automatically show the sidebar in only 2 scenarios:
    * 1. The user has never seen it before, so we show it once to aid discovery
    * 2. The user had it open, and we hid it (for example, during recording), so now we need to bring it back.
-   * We also check that the experiments are enabled, else we reveal an entirely empty sidebar.
    */
   #showSidebarIfRequired(): void {
     if (Root.Runtime.Runtime.queryParam('disable-auto-performance-sidebar-reveal') !== null) {
@@ -1999,9 +1975,8 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     }
     const needToRestore = this.#restoreSidebarVisibilityOnTraceLoad;
     const userHasSeenSidebar = this.#sideBar.userHasOpenedSidebarOnce();
-    const experimentsEnabled = this.#panelSidebarEnabled();
 
-    if (experimentsEnabled && (!userHasSeenSidebar || needToRestore)) {
+    if (!userHasSeenSidebar || needToRestore) {
       this.#splitWidget.showBoth();
     }
     this.#restoreSidebarVisibilityOnTraceLoad = false;

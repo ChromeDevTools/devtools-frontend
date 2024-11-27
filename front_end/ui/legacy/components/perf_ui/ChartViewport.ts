@@ -3,9 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../../../core/common/common.js';
-import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Platform from '../../../../core/platform/platform.js';
-import * as Root from '../../../../core/root/root.js';
 import * as Coordinator from '../../../components/render_coordinator/render_coordinator.js';
 import * as UI from '../../legacy.js';
 
@@ -33,7 +31,6 @@ export class ChartViewport extends UI.Widget.VBox {
   private vScrollElement: HTMLElement;
   private vScrollContent: HTMLElement;
   private readonly selectionOverlay: HTMLElement;
-  private selectedTimeSpanLabel: HTMLElement;
   private cursorElement: HTMLElement;
   private isDraggingInternal!: boolean;
   private totalHeight!: number;
@@ -58,8 +55,6 @@ export class ChartViewport extends UI.Widget.VBox {
   private cancelWindowTimesAnimation?: (() => void)|null;
 
   #config: Config;
-
-  #usingNewOverlayForTimeRange = Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_ANNOTATIONS);
 
   constructor(delegate: ChartViewportDelegate, config: Config) {
     super();
@@ -89,17 +84,11 @@ export class ChartViewport extends UI.Widget.VBox {
     this.vScrollElement.addEventListener('scroll', this.onScroll.bind(this), false);
 
     this.selectionOverlay = this.contentElement.createChild('div', 'chart-viewport-selection-overlay hidden');
-    this.selectedTimeSpanLabel = this.selectionOverlay.createChild('div', 'time-span');
 
     this.cursorElement = this.contentElement.createChild('div', 'chart-cursor-element hidden');
-    if (this.#usingNewOverlayForTimeRange) {
-      this.cursorElement.classList.add('using-new-overlays');
-    }
 
     this.reset();
-
     this.rangeSelectionStart = null;
-
     this.rangeSelectionEnd = null;
   }
 
@@ -112,7 +101,6 @@ export class ChartViewport extends UI.Widget.VBox {
     this.rangeSelectionEnabled = false;
     this.rangeSelectionStart = null;
     this.rangeSelectionEnd = null;
-    this.updateRangeSelectionOverlay();
   }
 
   isDragging(): boolean {
@@ -268,13 +256,6 @@ export class ChartViewport extends UI.Widget.VBox {
     this.isDraggingInternal = true;
     this.selectionOffsetShiftX = event.offsetX - event.pageX;
     this.selectionStartX = event.offsetX;
-    if (!this.#usingNewOverlayForTimeRange) {
-      const style = this.selectionOverlay.style;
-      style.left = this.selectionStartX + 'px';
-      style.width = '1px';
-      this.selectedTimeSpanLabel.textContent = '';
-      this.selectionOverlay.classList.remove('hidden');
-    }
     return true;
   }
 
@@ -300,7 +281,6 @@ export class ChartViewport extends UI.Widget.VBox {
     }
     this.rangeSelectionStart = Math.min(startTime, endTime);
     this.rangeSelectionEnd = Math.max(startTime, endTime);
-    this.updateRangeSelectionOverlay();
     this.delegate.updateRangeSelection(this.rangeSelectionStart, this.rangeSelectionEnd);
   }
 
@@ -319,25 +299,6 @@ export class ChartViewport extends UI.Widget.VBox {
     const start = this.pixelToTime(this.selectionStartX || 0);
     const end = this.pixelToTime(x);
     this.setRangeSelection(start, end);
-  }
-
-  private updateRangeSelectionOverlay(): void {
-    if (this.#usingNewOverlayForTimeRange) {
-      return;
-    }
-
-    const rangeSelectionStart = this.rangeSelectionStart || 0;
-    const rangeSelectionEnd = this.rangeSelectionEnd || 0;
-    const margin = 100;
-    const left =
-        Platform.NumberUtilities.clamp(this.timeToPosition(rangeSelectionStart), -margin, this.offsetWidth + margin);
-    const right =
-        Platform.NumberUtilities.clamp(this.timeToPosition(rangeSelectionEnd), -margin, this.offsetWidth + margin);
-    const style = this.selectionOverlay.style;
-    style.left = left + 'px';
-    style.width = (right - left) + 'px';
-    const timeSpan = rangeSelectionEnd - rangeSelectionStart;
-    this.selectedTimeSpanLabel.textContent = i18n.TimeUtilities.preciseMillisToString(timeSpan, 2);
   }
 
   private onScroll(): void {
@@ -472,7 +433,6 @@ export class ChartViewport extends UI.Widget.VBox {
   }
 
   override update(): void {
-    this.updateRangeSelectionOverlay();
     this.delegate.update();
   }
 

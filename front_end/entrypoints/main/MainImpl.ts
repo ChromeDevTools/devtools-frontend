@@ -380,11 +380,6 @@ export class MainImpl {
     );
 
     Root.Runtime.experiments.register(
-        Root.Runtime.ExperimentName.TIMELINE_ANNOTATIONS,
-        'Performance panel: enable annotations',
-    );
-
-    Root.Runtime.experiments.register(
         Root.Runtime.ExperimentName.TIMELINE_INSIGHTS,
         'Performance panel: enable performance insights',
     );
@@ -423,7 +418,6 @@ export class MainImpl {
       Root.Runtime.ExperimentName.AUTOFILL_VIEW,
       Root.Runtime.ExperimentName.TIMELINE_INSIGHTS,
       Root.Runtime.ExperimentName.TIMELINE_OBSERVATIONS,
-      Root.Runtime.ExperimentName.TIMELINE_ANNOTATIONS,
       Root.Runtime.ExperimentName.NETWORK_PANEL_FILTER_BAR_REDESIGN,
       Root.Runtime.ExperimentName.FLOATING_ENTRY_POINTS_FOR_AI_ASSISTANCE,
       ...(Root.Runtime.Runtime.queryParam('isChromeForTesting') ? ['protocol-monitor'] : []),

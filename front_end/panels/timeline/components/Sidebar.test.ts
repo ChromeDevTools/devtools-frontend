@@ -28,7 +28,6 @@ describeWithEnvironment('Sidebar', () => {
 
   beforeEach(() => {
     enableFeatureForTest(Root.Runtime.ExperimentName.TIMELINE_INSIGHTS);
-    enableFeatureForTest(Root.Runtime.ExperimentName.TIMELINE_ANNOTATIONS);
   });
 
   it('renders with two tabs for insights & annotations', async function() {

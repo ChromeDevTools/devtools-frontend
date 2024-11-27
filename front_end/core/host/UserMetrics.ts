@@ -1013,7 +1013,6 @@ export enum DevtoolsExperiments {
   'timeline-enhanced-traces' = 90,
   'timeline-compiled-sources' = 91,
   'timeline-debug-mode' = 93,
-  'perf-panel-annotations' = 94,
   'timeline-rpp-sidebar' = 95,
   'timeline-observations' = 96,
   'timeline-server-timings' = 98,

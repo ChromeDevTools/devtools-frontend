@@ -471,8 +471,8 @@ export class TimelineFlameChartView extends
           parsedTrace.Meta.navigationsByFrameId,
       );
       // If any of the markers overlap in timing, lets put them on the same marker.
-      if (i > 0 && ts === markerOverlays[i - 1].adjustedTimestamp) {
-        markerOverlays[i - 1].entries.push(marker);
+      if (i > 0 && ts === markerOverlays[markerOverlays.length - 1].adjustedTimestamp) {
+        markerOverlays[markerOverlays.length - 1].entries.push(marker);
         return;
       }
       const overlay = {

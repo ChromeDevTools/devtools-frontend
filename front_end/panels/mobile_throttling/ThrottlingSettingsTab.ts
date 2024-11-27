@@ -145,16 +145,17 @@ export class ThrottlingSettingsTab extends UI.Widget.VBox implements
     addButton.textContent = i18nString(UIStrings.addCustomProfile);
     addButton.addEventListener('click', () => this.addButtonClicked());
 
-    const listContainer = settingsContent.createChild('div');
+    const container = settingsContent.createChild('div');
     const card = new Cards.Card.Card();
     settingsContent.appendChild(card);
     card.data = {
       heading: i18nString(UIStrings.networkThrottlingProfiles),
-      content: [listContainer, addButton],
+      content: [container],
     };
     this.list = new UI.ListWidget.ListWidget(this);
     this.list.element.classList.add('conditions-list');
-    this.list.show(listContainer);
+    this.list.show(container);
+    container.appendChild(addButton);
 
     this.customSetting = Common.Settings.Settings.instance().moduleSetting('custom-network-conditions');
     this.customSetting.addChangeListener(this.conditionsUpdated, this);

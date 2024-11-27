@@ -5,13 +5,16 @@
  */
 
 .add-conditions-button {
-  margin-bottom: var(--sys-size-5);
+  margin: var(--sys-size-5) 0;
   border: none;
 }
 
 .conditions-list {
-  margin-top: var(--sys-size-3);
   flex: auto;
+
+  &:has(.list-item) {
+    margin-top: var(--sys-size-3);
+  }
 }
 
 .conditions-list-item {

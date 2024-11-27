@@ -26,7 +26,7 @@
 .conditions-list-text {
   text-overflow: ellipsis;
   overflow: hidden;
-  flex: 0 0 50px;
+  flex: 0 0 60px;
   user-select: none;
   color: var(--sys-color-on-surface);
   text-align: center;
@@ -73,6 +73,10 @@
   display: flex;
   flex-direction: row;
   margin: 6px 5px;
+
+  .conditions-list-title-text {
+    white-space: unset;
+  }
 }
 
 .conditions-edit-row input {
@@ -92,10 +96,8 @@
 }
 
 .conditions-edit-optional {
-  position: absolute;
-  bottom: -20px;
-  right: 0;
-  color: var(--sys-color-state-disabled);
+  margin-top: var(--sys-size-5);
+  color: var(--sys-color-on-surface-subtle);
 }
 
 .editor-buttons {

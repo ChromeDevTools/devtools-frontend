@@ -3280,6 +3280,7 @@ export const knownContextValues = new Set([
   'timeline.gpu',
   'timeline.history-item',
   'timeline.ignore-list',
+  'timeline.ignore-list-pattern.remove',
   'timeline.insights-tab',
   'timeline.insights.cls-culprits',
   'timeline.insights.document-latency',

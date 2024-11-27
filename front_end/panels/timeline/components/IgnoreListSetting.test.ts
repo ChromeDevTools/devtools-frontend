@@ -58,6 +58,14 @@ describeWithEnvironment('isIgnoreListedEntry', () => {
     assert.deepStrictEqual(ignoredRules[0].disabled, false);
     assert.deepStrictEqual(ignoredRules[1].regex, 'rule 1');
     assert.deepStrictEqual(ignoredRules[1].disabled, false);
+
+    // Check the remove buttons are rendered
+    assert.isNotNull(component.shadowRoot);
+    const regexRowsElements = component.shadowRoot.querySelectorAll<HTMLElement>('.regex-row');
+    Array.from(regexRowsElements).forEach(row => {
+      const removeButton = row.querySelector('devtools-button');
+      assert.exists(removeButton);
+    });
   });
 
   it('Able to render the disabled ignore listed rules', async () => {
@@ -90,6 +98,22 @@ describeWithEnvironment('isIgnoreListedEntry', () => {
     rule1CheckBox?.click();
     assert.isFalse(isIgnoreRegexDisabled('rule 1'));
   });
+
+  it('Able to remove an ignore list rule', async () => {
+    const component = await renderIgnoreListSetting();
+
+    assert.isNotNull(component.shadowRoot);
+    const regexRows = component.shadowRoot.querySelectorAll<HTMLElement>('.regex-row');
+    // "rule 1" is the second in the view.
+    // Add sanity checks to make sure.
+    const checkboxShadow = regexRows[1].querySelector('dt-checkbox')?.shadowRoot;
+    assert.strictEqual(checkboxShadow?.querySelector('label')?.textContent, 'rule 1');
+    assert.isTrue(isRegexInIgnoredList('rule 1'));
+
+    const rule1RemoveButton = regexRows[1].querySelector('devtools-button');
+    rule1RemoveButton?.click();
+    assert.isFalse(isRegexInIgnoredList('rule 1'));
+  });
 });
 
 function ignoreRegex(regexValue: string): void {
@@ -118,6 +142,21 @@ function isIgnoreRegexDisabled(regexValue: string): boolean {
   for (const regexPattern of regexPatterns) {
     if (regexPattern.pattern === regexValue) {
       return regexPattern.disabled ?? false;
+    }
+  }
+  return false;
+}
+
+/**
+ * Returns if the regex is in the ignore list, no matter if it is disabled.
+ */
+function isRegexInIgnoredList(regexValue: string): boolean {
+  const regexPatterns =
+      (Common.Settings.Settings.instance().moduleSetting('skip-stack-frames-pattern') as Common.Settings.RegExpSetting)
+          .getAsArray();
+  for (const regexPattern of regexPatterns) {
+    if (regexPattern.pattern === regexValue) {
+      return true;
     }
   }
   return false;

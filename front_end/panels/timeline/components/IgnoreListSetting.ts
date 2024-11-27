@@ -34,6 +34,11 @@ const UIStrings = {
    *@example {ad.*?} regex
    */
   ignoreScriptsWhoseNamesMatchS: 'Ignore scripts whose names match \'\'{regex}\'\'',
+  /**
+   *@description Label for the button to remove an regex
+   *@example {ad.*?} regex
+   */
+  removeRegex: 'Remove the regex: \'\'{regex}\'\'',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/IgnoreListSetting.ts', UIStrings);
@@ -83,16 +88,34 @@ export class IgnoreListSetting extends HTMLElement {
     // the user.
   }
 
-  #renderItem(regex: Common.Settings.RegExpSettingItem): LitHtml.TemplateResult {
-    const checkbox = UI.UIUtils.CheckboxLabel.create(
+  #removeRegexByIndex(index: number): void {
+    this.#regexPatterns.splice(index, 1);
+    this.#getSkipStackFramesPatternSetting().setAsArray(this.#regexPatterns);
+  }
+
+  #renderItem(regex: Common.Settings.RegExpSettingItem, index: number): LitHtml.TemplateResult {
+    const checkboxWithLabel = UI.UIUtils.CheckboxLabel.create(
         regex.pattern, !regex.disabled, /* subtitle*/ undefined, /* jslogContext*/ 'timeline.ignore-list-pattern');
     const helpText = i18nString(UIStrings.ignoreScriptsWhoseNamesMatchS, {regex: regex.pattern});
-    UI.Tooltip.Tooltip.install(checkbox, helpText);
-    checkbox.checkboxElement.ariaLabel = helpText;
-    checkbox.checkboxElement.addEventListener('change', this.#onRegexEnableToggled.bind(this, regex, checkbox), false);
+    UI.Tooltip.Tooltip.install(checkboxWithLabel, helpText);
+    checkboxWithLabel.checkboxElement.ariaLabel = helpText;
+    checkboxWithLabel.checkboxElement.addEventListener(
+        'change', this.#onRegexEnableToggled.bind(this, regex, checkboxWithLabel), false);
+    // clang-format off
     return html`
-      <div class='regex-row'>${checkbox}</div>
+      <div class='regex-row'>
+        ${checkboxWithLabel}
+        <devtools-button
+            @click=${this.#removeRegexByIndex.bind(this, index)}
+            .data=${{
+            variant: Buttons.Button.Variant.ICON,
+            iconName: 'bin',
+            title: i18nString(UIStrings.removeRegex, {regex: regex.pattern}),
+            jslogContext: 'timeline.ignore-list-pattern.remove',
+          } as Buttons.Button.ButtonData}></devtools-button>
+      </div>
     `;
+    // clang-format on
   }
 
   #render(): void {

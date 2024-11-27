@@ -6,3 +6,20 @@
 .ignore-list-setting-description {
   margin-bottom: 5px;
 }
+
+.regex-row {
+  display: flex;
+
+  /* The tag name of CheckboxLabel element */
+  dt-checkbox {
+    flex: auto;
+  }
+
+  devtools-button {
+    height: 24px;
+  }
+
+  &:not(:hover) devtools-button {
+    display: none;
+  }
+}

@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import {assertNotNullOrUndefined, getBrowserAndPages, goToResource} from '../../shared/helper.js';
-
 import {
   ensureResourceSectionIsExpanded,
   expandIssue,
@@ -18,7 +17,8 @@ describe('Quota Issues', () => {
     await goToResource('empty.html');
   });
 
-  it('should display correct information', async () => {
+  // Flakey on Windows only after a recent Chromium roll
+  it.skipOnPlatforms(['win32'], '[crbug.com/381055647] should display correct information', async () => {
     await navigateToIssuesTab();
     const {frontend} = getBrowserAndPages();
     frontend.evaluate(() => {

@@ -432,44 +432,46 @@ describe('CORS issues', () => {
     await waitForTableFromResourceSectionContents(section.content, expectedTableRows);
   });
 
-  it('should display CORS issues that are unsupported by the scheme', async () => {
-    await goToResource('empty.html');
-    const {target} = getBrowserAndPages();
-    await target.evaluate(async () => {
-      try {
-        const url = new URL('/', document.location.toString())
-                        .toString()
-                        .replace('https://localhost', 'webdav://devtools.oopif.test');
-        await fetch(url);
-      } catch (e) {
-      }
-    });
-    await navigateToIssuesTab();
-    await expandIssue();
-    const issueElement = await getIssueByTitle('Ensure CORS requests are made on supported schemes');
-    assertNotNullOrUndefined(issueElement);
-    const section = await getResourcesElement('request', issueElement, '.cors-issue-affected-resource-label');
-    const text = await section.label.evaluate(el => el.textContent);
-    assert.strictEqual(text, '1 request');
-    await ensureResourceSectionIsExpanded(section);
-    const expectedTableRows = [
-      [
-        'Request',
-        'Status',
-        'Initiator Context',
-        'Source Location',
-        'Unsupported Scheme',
-      ],
-      [
-        /^devtools.oopif.test.*\//,
-        'blocked',
-        /^https:\/\/localhost.*/,
-        /.*:\d+/,
-        'webdav',
-      ],
-    ];
-    await waitForTableFromResourceSectionContents(section.content, expectedTableRows);
-  });
+  // Flakey on Windows only after a recent Chromium roll
+  it.skipOnPlatforms(
+      ['win32'], '[crbug.com/381055647] should display CORS issues that are unsupported by the scheme', async () => {
+        await goToResource('empty.html');
+        const {target} = getBrowserAndPages();
+        await target.evaluate(async () => {
+          try {
+            const url = new URL('/', document.location.toString())
+                            .toString()
+                            .replace('https://localhost', 'webdav://devtools.oopif.test');
+            await fetch(url);
+          } catch (e) {
+          }
+        });
+        await navigateToIssuesTab();
+        await expandIssue();
+        const issueElement = await getIssueByTitle('Ensure CORS requests are made on supported schemes');
+        assertNotNullOrUndefined(issueElement);
+        const section = await getResourcesElement('request', issueElement, '.cors-issue-affected-resource-label');
+        const text = await section.label.evaluate(el => el.textContent);
+        assert.strictEqual(text, '1 request');
+        await ensureResourceSectionIsExpanded(section);
+        const expectedTableRows = [
+          [
+            'Request',
+            'Status',
+            'Initiator Context',
+            'Source Location',
+            'Unsupported Scheme',
+          ],
+          [
+            /^devtools.oopif.test.*\//,
+            'blocked',
+            /^https:\/\/localhost.*/,
+            /.*:\d+/,
+            'webdav',
+          ],
+        ];
+        await waitForTableFromResourceSectionContents(section.content, expectedTableRows);
+      });
 
   // Flakey on Windows only after a recent Chromium roll
   it.skipOnPlatforms(

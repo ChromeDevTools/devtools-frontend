@@ -45,9 +45,9 @@ slot[name="heading-suffix"]::slotted(*) {
 }
 
 slot[name="content"]::slotted(*) {
-  padding: var(--sys-size-5) var(--sys-size-6);
+  padding: var(--sys-size-4) var(--sys-size-6);
 }
 
 slot[name="content"]::slotted(*:not(:first-child)) {
-  border-top: var(--sys-size-1) solid var(--sys-color-divider);
+  border-top: var(--sys-size-1) solid var(--app-color-card-divider);
 }

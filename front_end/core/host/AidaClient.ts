@@ -170,6 +170,7 @@ export const CLIENT_NAME = 'CHROME_DEVTOOLS';
 const CODE_CHUNK_SEPARATOR = '\n`````\n';
 
 export class AidaAbortError extends Error {}
+export class AidaBlockError extends Error {}
 
 export class AidaClient {
   static buildConsoleInsightsRequest(input: string): AidaRequest {
@@ -295,6 +296,9 @@ export class AidaClient {
               metadata.attributionMetadata = [];
             }
             metadata.attributionMetadata.push(result.metadata.attributionMetadata);
+            if (result.metadata.attributionMetadata.attributionAction === RecitationAction.BLOCK) {
+              throw new AidaBlockError();
+            }
           }
         }
         if ('textChunk' in result) {

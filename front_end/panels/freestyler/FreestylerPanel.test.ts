@@ -1303,4 +1303,39 @@ describeWithEnvironment('FreestylerPanel', () => {
          });
     });
   });
+
+  it('erases previous partial response on blocked error', async () => {
+    async function* generateAnswerAndError() {
+      yield {
+        explanation: 'ANSWER: This is the first part of the answer.',
+        metadata: {},
+        completed: false,
+      };
+      throw new Host.AidaClient.AidaBlockError();
+    }
+
+    const mockAidaClient = {
+      fetch: generateAnswerAndError,
+      registerClientEvent: sinon.spy(),
+    };
+
+    const messages: Freestyler.ModelChatMessage[] = [];
+    const viewMock = sinon.stub().callsFake((props: Freestyler.Props) => {
+      messages.push(JSON.parse(JSON.stringify(props.messages[1])));
+    });
+
+    panel = new Freestyler.FreestylerPanel(viewMock, {
+      aidaClient: mockAidaClient,
+      aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
+      syncInfo: getTestSyncInfo(),
+    });
+    panel.handleAction('freestyler.elements-floating-button');
+    viewMock.lastCall.args[0].onTextSubmit('test');
+    await drainMicroTasks();
+
+    assert.strictEqual(messages[2].answer, 'This is the first part of the answer.');
+    assert.isUndefined(messages[2].error);
+    assert.isUndefined(messages[3].answer);
+    assert.strictEqual(messages[3].error, 'block');
+  });
 });

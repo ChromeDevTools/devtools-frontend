@@ -904,6 +904,9 @@ export class FreestylerPanel extends UI.Panel.Panel {
               systemMessage.steps.pop();
             }
           }
+          if (data.error === ErrorType.BLOCK) {
+            systemMessage.answer = undefined;
+          }
         }
       }
 

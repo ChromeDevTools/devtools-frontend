@@ -778,6 +778,7 @@ export class FreestylerChatUi extends HTMLElement {
       let errorMessage;
       switch (message.error) {
         case ErrorType.UNKNOWN:
+        case ErrorType.BLOCK:
           errorMessage = UIStringsNotTranslate.systemError;
           break;
         case ErrorType.MAX_STEPS:

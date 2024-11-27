@@ -23,6 +23,7 @@ export const enum ErrorType {
   UNKNOWN = 'unknown',
   ABORT = 'abort',
   MAX_STEPS = 'max-steps',
+  BLOCK = 'block',
 }
 
 export interface AnswerResponse {
@@ -258,10 +259,6 @@ export abstract class AiAgent<T> {
     for await (rawResponse of this.#aidaClient.fetch(request, options)) {
       response = rawResponse.explanation;
       rpcId = rawResponse.metadata.rpcGlobalId ?? rpcId;
-      if (rawResponse.metadata.attributionMetadata?.some(
-              meta => meta.attributionAction === Host.AidaClient.RecitationAction.BLOCK)) {
-        throw new Error('Attribution action does not allow providing the response');
-      }
       const parsedResponse = this.parseResponse(response);
       yield {rpcId, parsedResponse, completed: rawResponse.completed};
     }
@@ -485,9 +482,10 @@ STOP`;
           break;
         }
 
+        const error = (err instanceof Host.AidaClient.AidaBlockError) ? ErrorType.BLOCK : ErrorType.UNKNOWN;
         const response = {
           type: ResponseType.ERROR,
-          error: ErrorType.UNKNOWN,
+          error,
           rpcId,
         } as const;
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceError);

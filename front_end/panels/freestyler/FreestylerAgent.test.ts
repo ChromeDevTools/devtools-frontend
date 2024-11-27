@@ -919,13 +919,10 @@ STOP`,
           explanation: 'ANSWER: this is the answer',
           metadata: {
             rpcGlobalId: 123,
-            attributionMetadata: [{
-              attributionAction: Host.AidaClient.RecitationAction.BLOCK,
-              citations: [],
-            }],
           },
-          completed: true,
+          completed: false,
         };
+        throw new Host.AidaClient.AidaBlockError();
       }
 
       const agent = new FreestylerAgent({
@@ -955,9 +952,14 @@ STOP`,
           query: '# Inspected element\n\n* Its selector is `undefined`\n\n# User request\n\nQUERY: test',
         },
         {
-          rpcId: undefined,
+          rpcId: 123,
+          text: 'this is the answer',
+          type: Freestyler.ResponseType.ANSWER,
+        },
+        {
+          rpcId: 123,
           type: Freestyler.ResponseType.ERROR,
-          error: Freestyler.ErrorType.UNKNOWN,
+          error: Freestyler.ErrorType.BLOCK,
         },
       ]);
     });

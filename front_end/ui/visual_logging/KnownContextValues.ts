@@ -3279,6 +3279,7 @@ export const knownContextValues = new Set([
   'timeline.flame-chart-view',
   'timeline.gpu',
   'timeline.history-item',
+  'timeline.ignore-list',
   'timeline.insights-tab',
   'timeline.insights.cls-culprits',
   'timeline.insights.document-latency',

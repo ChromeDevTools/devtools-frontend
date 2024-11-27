@@ -89,6 +89,7 @@ devtools_svg_sources = [
   "colon.svg",
   "color-picker-filled.svg",
   "color-picker.svg",
+  "compress.svg",
   "console-conditional-breakpoint.svg",
   "console-logpoint.svg",
   "cookie.svg",

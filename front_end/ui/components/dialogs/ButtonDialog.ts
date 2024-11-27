@@ -20,8 +20,9 @@ export interface ButtonDialogData {
   openOnRender?: boolean;
   jslogContext?: string;
   // The below are parts of ButtonData. See comments of ButtonData.
-  iconName: string;
   variant: Buttons.Button.Variant.PRIMARY_TOOLBAR|Buttons.Button.Variant.TOOLBAR|Buttons.Button.Variant.ICON;
+  iconName: string;
+  disabled?: boolean;
   iconTitle?: string;
   // The below are parts of DialogData. See comments of DialogData.
   position?: DialogVerticalPosition;
@@ -87,6 +88,7 @@ export class ButtonDialog extends HTMLElement {
         .data=${{
           variant: this.#data.variant,
           iconName: this.#data.iconName,
+          disabled: this.#data.disabled,
           title: this.#data.iconTitle,
           jslogContext: this.#data.jslogContext,
         } as Buttons.Button.ButtonData}

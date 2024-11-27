@@ -46,7 +46,7 @@ import * as Workspace from '../../models/workspace/workspace.js';
 import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
 import * as Adorners from '../../ui/components/adorners/adorners.js';
 import type * as Buttons from '../../ui/components/buttons/buttons.js';
-import * as ShortcutDialog from '../../ui/components/dialogs/dialogs.js';
+import * as Dialogs from '../../ui/components/dialogs/dialogs.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
@@ -458,7 +458,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   #pendingAriaMessage: string|null = null;
 
   #eventToRelatedInsights: TimelineComponents.RelatedInsightChips.EventToRelatedInsightsMap = new Map();
-  #shortcutsDialog: ShortcutDialog.ShortcutDialog.ShortcutDialog = new ShortcutDialog.ShortcutDialog.ShortcutDialog();
+  #shortcutsDialog: Dialogs.ShortcutDialog.ShortcutDialog = new Dialogs.ShortcutDialog.ShortcutDialog();
 
   #onMainEntryHovered: (event: Common.EventTarget.EventTargetEvent<number>) => void;
 
@@ -1083,9 +1083,14 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     // GC
     this.panelToolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButtonForId('components.collect-garbage'));
 
+    // Ignore list setting
+    this.panelToolbar.appendSeparator();
+    const showIgnoreListSetting = new TimelineComponents.IgnoreListSetting.IgnoreListSetting();
+    this.panelToolbar.appendToolbarItem(new UI.Toolbar.ToolbarItem(showIgnoreListSetting));
+
     // Isolate selector
-    const isolateSelector = new IsolateSelector();
     if (isNode) {
+      const isolateSelector = new IsolateSelector();
       this.panelToolbar.appendSeparator();
       this.panelToolbar.appendToolbarItem(isolateSelector);
     }
@@ -1130,7 +1135,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     return navigationRadioButtons;
   }
 
-  #getShortcutsInfo(isNavClassic: boolean): ShortcutDialog.ShortcutDialog.Shortcut[] {
+  #getShortcutsInfo(isNavClassic: boolean): Dialogs.ShortcutDialog.Shortcut[] {
     if (isNavClassic) {
       return [
         {title: i18nString(UIStrings.timelineScrollUpDown), bindings: [['Shift', 'Scroll']]},

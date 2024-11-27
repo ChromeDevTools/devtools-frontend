@@ -2655,6 +2655,17 @@ export function isJSInvocationEvent(event: Event): boolean {
   return false;
 }
 
+export interface FlowEvent extends Event {
+  // Contains a flow id created by perfetto for the flow this phase
+  // event belongs to.
+  id: number;
+  ph: Phase.FLOW_START|Phase.FLOW_END|Phase.FLOW_STEP;
+}
+
+export function isFlowPhaseEvent(event: Event): event is FlowEvent {
+  return event.ph === Phase.FLOW_START || event.ph === Phase.FLOW_STEP || event.ph === Phase.FLOW_END;
+}
+
 /**
  * This is an exhaustive list of events we track in the Performance
  * panel. Note not all of them are necessarliry shown in the flame

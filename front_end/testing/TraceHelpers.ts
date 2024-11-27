@@ -276,6 +276,26 @@ export function makeAsyncEndEvent(
   };
 }
 
+/**
+ * Builds a mock flow phase event.
+ */
+export function makeFlowPhaseEvent(
+    name: string, ts: number, cat: string = '*',
+    ph: Trace.Types.Events.Phase.FLOW_START|Trace.Types.Events.Phase.FLOW_END|Trace.Types.Events.Phase.FLOW_STEP,
+    id: number = 0, pid: number = 0, tid: number = 0): Trace.Types.Events.FlowEvent {
+  return {
+    args: {},
+    cat,
+    name,
+    id,
+    ph,
+    pid: Trace.Types.Events.ProcessID(pid),
+    tid: Trace.Types.Events.ThreadID(tid),
+    ts: Trace.Types.Timing.MicroSeconds(ts),
+    dur: Trace.Types.Timing.MicroSeconds(0),
+  };
+}
+
 export function makeCompleteEventInMilliseconds(
     name: string, tsMillis: number, durMillis: number, cat: string = '*', pid: number = 0,
     tid: number = 0): Trace.Types.Events.Complete {
@@ -661,6 +681,9 @@ export function getBaseTraceParseModelData(overrides: Partial<ParsedTrace> = {})
       workerIdByThread: new Map(),
       workerSessionIdEvents: [],
       workerURLById: new Map(),
+    },
+    FlowsHandler: {
+      flows: [],
     },
     ...overrides,
   };

@@ -45,6 +45,7 @@ label {
   align-items: center;
   display: grid;
   row-gap: var(--sys-size-3);
+  margin: var(--sys-size-4) 0;
 }
 
 div:has(.settings-select) + div:has(.settings-select) {
@@ -73,29 +74,46 @@ div:has(.settings-select) + div:has(.settings-select) {
 
 .settings-card-container-wrapper {
   scrollbar-gutter: stable;
-  padding-bottom: var(--sys-size-8);
+  padding: var(--sys-size-8) 0;
   overflow: auto;
   position: absolute;
   inset: var(--sys-size-8) 0 0;
+  container-type: inline-size; /* stylelint-disable-line property-no-unknown */
+  container-name: settings-content; /* stylelint-disable-line property-no-unknown */
 }
 
-.settings-card-container {
+.settings-card-container,
+.settings-multicolumn-card-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: var(--sys-size-9);
-}
-
-.settings-multicolumn-card-container {
-  column-width: var(--sys-size-32);
-  column-gap: var(--sys-size-11);
-
-  > * + * {
-    margin-top: var(--sys-size-8);
-  }
 
   > devtools-button {
+    min-width: var(--sys-size-31);
+    max-width: var(--sys-size-35);
+    width: 100%;
     margin-left: var(--sys-size-5);
+  }
+}
+
+/* In multi-column mode, we adopt single-column styles unless
+   enough space is available to actually show two columns (at 850px) */
+/* stylelint-disable-next-line at-rule-no-unknown */
+@container settings-content (min-width: 850px) {
+  .settings-multicolumn-card-container {
+    display: block;
+    column-width: var(--sys-size-32);
+    column-gap: var(--sys-size-11);
+    margin: 0 var(--sys-size-9);
+
+    > * + * {
+      margin-top: var(--sys-size-8);
+    }
+
+    > devtools-button {
+      align-self: start;
+    }
   }
 }
 

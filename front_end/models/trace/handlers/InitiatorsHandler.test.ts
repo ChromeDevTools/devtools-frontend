@@ -194,8 +194,10 @@ describe('InitiatorsHandler', () => {
   it('for a PostMessage Handler event the initiator is the PostMessage Dispatch event', async function() {
     const traceEvents = await TraceLoader.rawEvents(this, 'postmessage-initiators.json.gz');
     for (const event of traceEvents) {
+      Trace.Handlers.ModelHandlers.FlowsHandler.handleEvent(event);
       Trace.Handlers.ModelHandlers.Initiators.handleEvent(event);
     }
+    await Trace.Handlers.ModelHandlers.FlowsHandler.finalize();
     await Trace.Handlers.ModelHandlers.Initiators.finalize();
     const data = Trace.Handlers.ModelHandlers.Initiators.data();
 

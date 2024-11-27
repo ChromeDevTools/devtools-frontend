@@ -94,6 +94,10 @@ export class FileContext extends ConversationContext<Workspace.UISourceCode.UISo
   override getTitle(): string {
     return this.#file.displayName();
   }
+
+  override async refresh(): Promise<void> {
+    await this.#file.requestContentData();
+  }
 }
 
 /**
@@ -171,7 +175,8 @@ ${formatFileContent(selectedFile)}`,
 }
 
 function formatFileContent(selectedFile: Workspace.UISourceCode.UISourceCode): string {
-  const content = selectedFile.contentType().isTextType() ? selectedFile.content() : '<binary data>';
+  const contentData = selectedFile.workingCopyContentData();
+  const content = contentData.isTextContent ? contentData.text : '<binary data>';
   const truncated = content.length > MAX_FILE_SIZE ? content.slice(0, MAX_FILE_SIZE) + '...' : content;
   return `\`\`\`
 ${truncated}

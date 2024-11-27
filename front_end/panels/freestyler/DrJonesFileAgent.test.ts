@@ -137,6 +137,7 @@ describeWithMockConnection('DrJonesFileAgent', () => {
     mimeType?: string,
     url?: Platform.DevToolsPath.UrlString,
     resourceType?: Common.ResourceType.ResourceType,
+    requestContentData?: boolean,
   }): Promise<Workspace.UISourceCode.UISourceCode> {
     const url = options?.url ?? 'http://example.test/script.js' as Platform.DevToolsPath.UrlString;
     const {project} = createContentProviderUISourceCodes({
@@ -152,98 +153,118 @@ describeWithMockConnection('DrJonesFileAgent', () => {
     });
 
     const uiSourceCode = project.uiSourceCodeForURL(url);
-
     if (!uiSourceCode) {
       throw new Error('Failed to create a test uiSourceCode');
     }
-    await uiSourceCode.requestContentData();
+    if (!uiSourceCode.contentType().isTextType()) {
+      uiSourceCode?.setContent('binary', true);
+    }
+    if (options?.requestContentData) {
+      await uiSourceCode.requestContentData();
+    }
     return uiSourceCode;
   }
 
   describe('run', () => {
-    it('generates an answer', async () => {
-      async function* generateAnswer() {
-        yield {
-          explanation: 'This is the answer',
-          metadata: {
-            rpcGlobalId: 123,
-          },
-          completed: true,
-        };
-      }
+    const testArguments = [
+      {
+        name: 'content loaded',
+        requestContentData: true,
+      },
+      {
+        name: 'content not loaded',
+        requestContentData: false,
+      },
+    ];
 
-      const agent = new DrJonesFileAgent({
-        aidaClient: mockAidaClient(generateAnswer),
-      });
-
-      const uiSourceCode = await createUISourceCode();
-      const responses =
-          await Array.fromAsync(agent.run('test', {selected: uiSourceCode ? new FileContext(uiSourceCode) : null}));
-
-      assert.deepStrictEqual(responses, [
-        {
-          type: ResponseType.USER_QUERY,
-          query: 'test',
-        },
-        {
-          type: ResponseType.CONTEXT,
-          title: 'Analyzing file',
-          details: [
-            {
-              title: 'Selected file',
-              text: `File name: script.js
-URL: http://example.test/script.js
-File content:
-\`\`\`
-
-\`\`\``,
+    testArguments.forEach(args => {
+      it('generates an answer ' + args.name, async () => {
+        async function* generateAnswer() {
+          yield {
+            explanation: 'This is the answer',
+            metadata: {
+              rpcGlobalId: 123,
             },
-          ],
-        },
-        {
-          type: ResponseType.QUERYING,
-          query: `# Selected file
+            completed: true,
+          };
+        }
+
+        const agent = new DrJonesFileAgent({
+          aidaClient: mockAidaClient(generateAnswer),
+        });
+
+        const uiSourceCode = await createUISourceCode({
+          requestContentData: args.requestContentData,
+          content: 'content',
+        });
+        const responses =
+            await Array.fromAsync(agent.run('test', {selected: uiSourceCode ? new FileContext(uiSourceCode) : null}));
+
+        assert.deepStrictEqual(responses, [
+          {
+            type: ResponseType.USER_QUERY,
+            query: 'test',
+          },
+          {
+            type: ResponseType.CONTEXT,
+            title: 'Analyzing file',
+            details: [
+              {
+                title: 'Selected file',
+                text: `File name: script.js
+URL: http://example.test/script.js
+File content:
+\`\`\`
+content
+\`\`\``,
+              },
+            ],
+          },
+          {
+            type: ResponseType.QUERYING,
+            query: `# Selected file
 File name: script.js
 URL: http://example.test/script.js
 File content:
 \`\`\`
-
+content
 \`\`\`
 
 # User request
 
 test`,
-        },
-        {
-          type: ResponseType.ANSWER,
-          text: 'This is the answer',
-          suggestions: undefined,
-          rpcId: 123,
-        },
-      ]);
+          },
+          {
+            type: ResponseType.ANSWER,
+            text: 'This is the answer',
+            suggestions: undefined,
+            rpcId: 123,
+          },
+        ]);
 
-      assert.deepStrictEqual(agent.chatHistoryForTesting, [
-        {
-          role: 1,
-          parts: [{
-            text: `# Selected file
+        assert.deepStrictEqual(agent.chatHistoryForTesting, [
+          {
+            role: 1,
+            parts: [{
+              text: `# Selected file
 File name: script.js
 URL: http://example.test/script.js
 File content:
 \`\`\`
-
+content
 \`\`\`
 
 # User request
 
 test`,
-          }],
-        },
-        {
-          role: 2,
-          parts: [{text: 'This is the answer'}],
-        },
-      ]);
+            }],
+          },
+          {
+            role: 2,
+            parts: [{text: 'This is the answer'}],
+          },
+        ]);
+      });
     });
   });
 
@@ -267,6 +288,7 @@ test`,
     it('formats file content', async () => {
       const uiSourceCode = await createUISourceCode({
         content: 'lorem ipsum',
+        requestContentData: true,
       });
       assert.strictEqual(formatFile(uiSourceCode), `File name: script.js
 URL: http://example.test/script.js
@@ -281,6 +303,7 @@ lorem ipsum
         resourceType: Common.ResourceType.resourceTypes.Image,
         mimeType: 'application/png',
         url: 'http://example.test/test.png' as Platform.DevToolsPath.UrlString,
+        requestContentData: true,
       });
       assert.strictEqual(formatFile(uiSourceCode), `File name: test.png
 URL: http://example.test/test.png
@@ -293,6 +316,7 @@ File content:
     it('truncates long file content', async () => {
       const uiSourceCode = await createUISourceCode({
         content: 'lorem ipsum'.repeat(10_000),
+        requestContentData: true,
       });
       assert.strictEqual(formatFile(uiSourceCode), `File name: script.js
 URL: http://example.test/script.js

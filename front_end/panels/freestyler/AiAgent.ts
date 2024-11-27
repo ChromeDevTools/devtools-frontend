@@ -148,6 +148,14 @@ export abstract class ConversationContext<T> {
     // https://html.spec.whatwg.org/#ascii-serialisation-of-an-origin.
     return this.getOrigin() === agentOrigin;
   }
+
+  /**
+   * This method is called at the start of `AiAgent.run`.
+   * It will be overriden in subclasses to fetch data related to the context item.
+   */
+  async refresh(): Promise<void> {
+    return;
+  }
 }
 
 export abstract class AiAgent<T> {
@@ -407,6 +415,8 @@ STOP`;
     if (this.#generatedFromHistory) {
       throw new Error('History entries are read-only.');
     }
+
+    await options.selected?.refresh();
 
     // First context set on the agent determines its origin from now on.
     if (options.selected && this.#origin === undefined && options.selected) {

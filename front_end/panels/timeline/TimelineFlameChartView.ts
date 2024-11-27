@@ -463,21 +463,21 @@ export class TimelineFlameChartView extends
     this.#sortMarkersForPreferredVisualOrder(markers);
     const markerOverlays: Overlays.Overlays.TimingsMarker[] = [];
     markers.forEach((marker, i) => {
-      const ts = Trace.Helpers.Timing.timeStampForEventAdjustedByClosestNavigation(
+      const adjustedTimestamp = Trace.Helpers.Timing.timeStampForEventAdjustedByClosestNavigation(
           marker,
           parsedTrace.Meta.traceBounds,
           parsedTrace.Meta.navigationsByNavigationId,
           parsedTrace.Meta.navigationsByFrameId,
       );
       // If any of the markers overlap in timing, lets put them on the same marker.
-      if (i > 0 && ts === markerOverlays[markerOverlays.length - 1].adjustedTimestamp) {
+      if (i > 0 && marker.ts === markerOverlays[markerOverlays.length - 1].entries[0].ts) {
         markerOverlays[markerOverlays.length - 1].entries.push(marker);
         return;
       }
       const overlay = {
         type: 'TIMINGS_MARKER',
         entries: [marker],
-        adjustedTimestamp: ts,
+        adjustedTimestamp,
       } as Overlays.Overlays.TimingsMarker;
       markerOverlays.push(overlay);
     });

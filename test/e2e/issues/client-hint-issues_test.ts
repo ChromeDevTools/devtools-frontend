@@ -13,11 +13,8 @@ import {
 } from '../helpers/issues-helpers.js';
 
 describe('Client Hint issues test', () => {
-  // Flakey on Windows only after a recent Chromium roll
-  it.skipOnPlatforms(
-      ['win32'],
-      '[crbug.com/381055647] should display issue when Client Hints are used with invalid origin for DelegateCH',
-      async () => {
+  it(
+      'should display issue when Client Hints are used with invalid origin for DelegateCH', async () => {
         await goToResource('issues/client-hint-issue-DelegateCH-MetaTagAllowListInvalidOrigin.html');
         await navigateToIssuesTab();
         await expandIssue();

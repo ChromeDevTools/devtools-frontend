@@ -17,8 +17,7 @@ describe('Quota Issues', () => {
     await goToResource('empty.html');
   });
 
-  // Flakey on Windows only after a recent Chromium roll
-  it.skipOnPlatforms(['win32'], '[crbug.com/381055647] should display correct information', async () => {
+  it('should display correct information', async () => {
     await navigateToIssuesTab();
     const {frontend} = getBrowserAndPages();
     frontend.evaluate(() => {

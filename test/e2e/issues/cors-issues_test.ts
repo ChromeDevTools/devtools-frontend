@@ -15,10 +15,8 @@ import {
 } from '../helpers/issues-helpers.js';
 
 describe('CORS issues', () => {
-  // Flakey on Windows only after a recent Chromium roll
-  it.skipOnPlatforms(
-      ['win32'], '[crbug.com/381055647] should display CORS violations with the correct affected resources',
-      async () => {
+  it(
+      'should display CORS violations with the correct affected resources', async () => {
         await goToResource('issues/cors-issue.html');
         const {target} = getBrowserAndPages();
         await target.evaluate(async () => {
@@ -70,11 +68,8 @@ describe('CORS issues', () => {
         await waitForTableFromResourceSectionContents(section.content, expectedTableRows);
       });
 
-  // Flakey on Windows only after a recent Chromium roll
-  it.skipOnPlatforms(
-      ['win32'],
-      '[crbug.com/381055647] should display credentialed+wildcard CORS issues with the correct affected resources',
-      async () => {
+  it(
+      'should display credentialed+wildcard CORS issues with the correct affected resources', async () => {
         await goToResource('empty.html');
         const {target} = getBrowserAndPages();
         await target.evaluate(async () => {
@@ -221,10 +216,8 @@ describe('CORS issues', () => {
     await waitForTableFromResourceSectionContents(section.content, expectedTableRows);
   });
 
-  // Flakey on Windows only after a recent Chromium roll
-  it.skipOnPlatforms(
-      ['win32'], '[crbug.com/381055647] should display invalid CORS ACAC values with the correct affected resources',
-      async () => {
+  it(
+      'should display invalid CORS ACAC values with the correct affected resources', async () => {
         await goToResource('empty.html');
         const {target} = getBrowserAndPages();
         await target.evaluate(async () => {
@@ -317,11 +310,8 @@ describe('CORS issues', () => {
     await waitForTableFromResourceSectionContents(section.content, expectedTableRows);
   });
 
-  // Flakey on Windows only after a recent Chromium roll
-  it.skipOnPlatforms(
-      ['win32'],
-      '[crbug.com/381055647] should display CORS requests using disallowed headers with the correct affected resources',
-      async () => {
+  it(
+      'should display CORS requests using disallowed headers with the correct affected resources', async () => {
         await goToResource('empty.html');
         const {target} = getBrowserAndPages();
         await target.evaluate(async () => {
@@ -362,9 +352,8 @@ describe('CORS issues', () => {
         await waitForTableFromResourceSectionContents(section.content, expectedTableRows);
       });
 
-  // Flakey on Windows only after a recent Chromium roll
-  it.skipOnPlatforms(
-      ['win32'], '[crbug.com/381055647] should display CORS requests redirecting to credentialed URLs', async () => {
+  it(
+      'should display CORS requests redirecting to credentialed URLs', async () => {
         await goToResource('empty.html');
         const {target} = getBrowserAndPages();
         await target.evaluate(async () => {
@@ -398,9 +387,8 @@ describe('CORS issues', () => {
         await waitForTableFromResourceSectionContents(section.content, expectedTableRows);
       });
 
-  // Flakey on Windows only after a recent Chromium roll
-  it.skipOnPlatforms(
-      ['win32'], '[crbug.com/381055647] should display CORS issues that are disallowed by the mode', async () => {
+  it(
+      'should display CORS issues that are disallowed by the mode', async () => {
         await goToResource('empty.html');
         const {target} = getBrowserAndPages();
         await target.evaluate(async () => {
@@ -437,9 +425,8 @@ describe('CORS issues', () => {
         await waitForTableFromResourceSectionContents(section.content, expectedTableRows);
       });
 
-  // Flakey on Windows only after a recent Chromium roll
-  it.skipOnPlatforms(
-      ['win32'], '[crbug.com/381055647] should display CORS issues that are unsupported by the scheme', async () => {
+  it(
+      'should display CORS issues that are unsupported by the scheme', async () => {
         await goToResource('empty.html');
         const {target} = getBrowserAndPages();
         await target.evaluate(async () => {
@@ -478,10 +465,8 @@ describe('CORS issues', () => {
         await waitForTableFromResourceSectionContents(section.content, expectedTableRows);
       });
 
-  // Flakey on Windows only after a recent Chromium roll
-  it.skipOnPlatforms(
-      ['win32'], '[crbug.com/381055647] should display CORS issues that are misconfiguring the redirect mode',
-      async () => {
+  it(
+      'should display CORS issues that are misconfiguring the redirect mode', async () => {
         await goToResource('empty.html');
         const {target} = getBrowserAndPages();
         await target.evaluate(async () => {

@@ -91,9 +91,8 @@ describe('Cors Private Network issue', () => {
     await waitForTableFromResourceSectionContents(section.content, expectedTableRows);
   });
 
-  // Flakey on Windows only after a recent Chromium roll
-  it.skipOnPlatforms(
-      ['win32'], '[crbug.com/381055647] should display correct information for secure contexts', async () => {
+  it(
+      'should display correct information for secure contexts', async () => {
         await navigateToIssuesTab();
         const {frontend} = getBrowserAndPages();
         frontend.evaluate(() => {
@@ -166,9 +165,8 @@ describe('Cors Private Network issue', () => {
         await waitForTableFromResourceSectionContents(section.content, expectedTableRows);
       });
 
-  // Flakey on Windows only after a recent Chromium roll
-  it.skipOnPlatforms(
-      ['win32'], '[crbug.com/381055647] should display correct information for preflight request errors', async () => {
+  it(
+      'should display correct information for preflight request errors', async () => {
         await navigateToIssuesTab();
         const {frontend} = getBrowserAndPages();
         frontend.evaluate(() => {

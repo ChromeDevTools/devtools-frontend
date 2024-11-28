@@ -71,13 +71,13 @@ devtools-tree-outline {
 
 .axtree-button {
   position: absolute;
-  top: 16px;
-  right: 20px;
+  top: var(--sys-size-8);
+  right: var(--sys-size-9);
   background-color: var(--sys-color-cdt-base-container);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1;
-  border: 1px solid var(--sys-color-neutral-outline);
-  border-radius: 3px;
+  border-radius: var(--sys-shape-corner-full);
+  box-shadow: var(--sys-elevation-level1);
 }

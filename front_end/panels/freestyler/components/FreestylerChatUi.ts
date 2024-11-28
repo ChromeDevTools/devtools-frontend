@@ -1334,7 +1334,7 @@ export class FreestylerChatUi extends HTMLElement {
               this.#renderChatInput()
           }
         </main>
-        <footer class="disclaimer">
+        <footer class="disclaimer" jslog=${VisualLogging.section('footer')}>
           <p class="disclaimer-text">
             ${this.#getDisclaimerText()}
             <button

@@ -504,6 +504,7 @@ export function getGetHostConfigStub(config: Root.Runtime.HostConfig): sinon.Sin
   return sinon.stub(settings, 'getHostConfig').returns({
     aidaAvailability: {
       disallowLogging: false,
+      enterprisePolicyValue: 0,
       ...config.aidaAvailability,
     },
     devToolsConsoleInsights: {

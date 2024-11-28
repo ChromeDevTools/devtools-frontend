@@ -411,6 +411,7 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
         blockedByEnterprisePolicy: false,
         blockedByGeo: false,
         disallowLogging: true,
+        enterprisePolicyValue: 0,
       },
       devToolsConsoleInsights: {
         modelId: '',

@@ -305,12 +305,19 @@ export const enum ExperimentName {
   // when adding to this enum, you'll need to also add to REGISTERED_EXPERIMENTS in EnvironmentHelpers.ts
 }
 
+export enum GenAiEnterprisePolicyValue {
+  ALLOW = 0,
+  ALLOW_WITHOUT_LOGGING = 1,
+  DISABLE = 2,
+}
+
 export interface AidaAvailability {
   enabled: boolean;
   blockedByAge: boolean;
   blockedByEnterprisePolicy: boolean;
   blockedByGeo: boolean;
   disallowLogging: boolean;
+  enterprisePolicyValue: number;
 }
 
 export interface HostConfigConsoleInsights {

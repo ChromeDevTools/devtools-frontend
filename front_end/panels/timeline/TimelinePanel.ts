@@ -990,14 +990,18 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.panelToolbar.removeToolbarItem(this.#sidebarToggleButton);
   }
 
-  private populateDownloadMenu(contextMenu: UI.ContextMenu.ContextMenu): void {
+  #populateDownloadMenu(contextMenu: UI.ContextMenu.ContextMenu): void {
     contextMenu.viewSection().appendItem(i18nString(UIStrings.saveTraceWithAnnotationsMenuOption), () => {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.PerfPanelTraceExported);
       void this.saveToFile(/* isEnhancedTraces */ false, /* addModifications */ true);
+    }, {
+      jslogContext: 'timeline.save-to-file-with-annotations',
     });
     contextMenu.viewSection().appendItem(i18nString(UIStrings.saveTraceWithoutAnnotationsMenuOption), () => {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.PerfPanelTraceExported);
       void this.saveToFile();
+    }, {
+      jslogContext: 'timeline.save-to-file-without-annotations',
     });
   }
 
@@ -1018,7 +1022,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     });
 
     this.saveButton = new UI.Toolbar.ToolbarMenuButton(
-        this.populateDownloadMenu.bind(this), true, true, 'timeline.save-to-file-more-options', 'download');
+        this.#populateDownloadMenu.bind(this), true, true, 'timeline.save-to-file-more-options', 'download');
     this.saveButton.setTitle(i18nString(UIStrings.saveProfile));
 
     if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_ENHANCED_TRACES)) {

@@ -3325,6 +3325,8 @@ export const knownContextValues = new Set([
   'timeline.reveal-in-network',
   'timeline.save-to-file',
   'timeline.save-to-file-more-options',
+  'timeline.save-to-file-with-annotations',
+  'timeline.save-to-file-without-annotations',
   'timeline.settings',
   'timeline.setup',
   'timeline.show-history',

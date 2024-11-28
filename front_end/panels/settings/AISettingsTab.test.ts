@@ -209,4 +209,14 @@ describeWithEnvironment('AISettingsTab', () => {
     assert.strictEqual(toggleContainers[1].title, 'some reason');
     stub.restore();
   });
+
+  it('can turn feature off and clear history', async () => {
+    const {switches} = await renderAISettings();
+    Common.Settings.moduleSetting('ai-assistance-enabled').set(true);
+    Common.Settings.moduleSetting('ai-assistance-history-entries').set([{}, {}]);
+
+    (switches[1].parentElement as HTMLElement).click();
+    assert.isFalse(Common.Settings.moduleSetting('ai-assistance-enabled').get());
+    assert.isEmpty(Common.Settings.moduleSetting('ai-assistance-history-entries').get());
+  });
 });

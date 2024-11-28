@@ -169,6 +169,7 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
   readonly #shadow = this.attachShadow({mode: 'open'});
   #consoleInsightsSetting?: Common.Settings.Setting<boolean>;
   #aiAssistanceSetting?: Common.Settings.Setting<boolean>;
+  #aiAssistanceHistorySetting?: Common.Settings.Setting<unknown[]>;
   #isConsoleInsightsSettingExpanded = false;
   #isAiAssistanceSettingExpanded = false;
   #aidaAvailability = Host.AidaClient.AidaAccessPreconditions.NO_ACCOUNT_EMAIL;
@@ -185,6 +186,13 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
       this.#aiAssistanceSetting = Common.Settings.Settings.instance().moduleSetting('ai-assistance-enabled');
     } catch {
       this.#aiAssistanceSetting = undefined;
+    }
+    try {
+      this.#aiAssistanceHistorySetting =
+          // Name needs to match the one in AiHistoryStorage
+          Common.Settings.Settings.instance().moduleSetting('ai-assistance-history-entries');
+    } catch {
+      this.#aiAssistanceHistorySetting = undefined;
     }
     this.#boundOnAidaAvailabilityChange = this.#onAidaAvailabilityChange.bind(this);
   }
@@ -283,6 +291,11 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
     this.#aiAssistanceSetting.set(!oldSettingValue);
     if (!oldSettingValue && !this.#isAiAssistanceSettingExpanded) {
       this.#isAiAssistanceSettingExpanded = true;
+    }
+
+    // If history was create create and the value changes to `false`
+    if (this.#aiAssistanceHistorySetting && !this.#aiAssistanceSetting.get()) {
+      this.#aiAssistanceHistorySetting.set([]);
     }
     void this.render();
   }

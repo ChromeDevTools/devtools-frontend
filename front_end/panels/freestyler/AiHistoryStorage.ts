@@ -13,10 +13,8 @@ export class AiHistoryStorage {
   #mutex = new Common.Mutex.Mutex();
 
   constructor() {
-    this.#historySetting = Common.Settings.Settings.instance().createSetting(
-        'ai-assistance-history-entries',
-        [],
-    );
+    // This should not throw as we should be creating the setting in the `-meta.ts` file
+    this.#historySetting = Common.Settings.Settings.instance().moduleSetting('ai-assistance-history-entries');
   }
 
   clearForTest(): void {

@@ -2201,8 +2201,13 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     }
     this.dispatchEventToListeners(Events.CHART_PLAYABLE_STATE_CHANGED, wideEntryExists);
 
-    this.#drawCustomSymbols(context, timelineData);
-    this.drawMarkers(context, timelineData, markerIndices);
+    if (!this.#inTrackConfigEditMode) {
+      // In configuration mode, we do not render the actual flame chart, so we
+      // can skip checking for any custom symbols on any tracks.
+      this.#drawCustomSymbols(context, timelineData);
+      // Markers get in the way of the UI for editing, so hide them in edit mode.
+      this.drawMarkers(context, timelineData, markerIndices);
+    }
 
     this.drawEventTitles(context, timelineData, titleIndices, canvasWidth);
 
@@ -2821,6 +2826,12 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       const entryStartTime = entryStartTimes[entryIndex];
       const entryTotalTime = entryTotalTimes[entryIndex];
       const level = entryLevels[entryIndex];
+
+      // Skip if the group for this event has been hidden.
+      const group = this.dataProvider.groupForEvent?.(entryIndex);
+      if (group?.hidden) {
+        continue;
+      }
 
       const unclippedXStart = this.chartViewport.timeToPosition(entryStartTime);
       const unclippedXEnd = this.chartViewport.timeToPosition(entryStartTime + entryTotalTime);

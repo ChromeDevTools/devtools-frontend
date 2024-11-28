@@ -575,6 +575,10 @@ type ParsedTrace = Trace.Handlers.Types.ParsedTrace;
 export function getBaseTraceParseModelData(overrides: Partial<ParsedTrace> = {}): ParsedTrace {
   return {
     Animations: {animations: []},
+    AnimationFrames: {
+      animationFrames: [],
+      presentationForFrame: new Map(),
+    },
     LayoutShifts: {
       clusters: [],
       clustersByNavigationId: new Map(),

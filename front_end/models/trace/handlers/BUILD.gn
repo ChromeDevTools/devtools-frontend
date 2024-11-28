@@ -9,6 +9,7 @@ import("../../visibility.gni")
 
 devtools_module("handlers") {
   sources = [
+    "AnimationFramesHandler.ts",
     "AnimationHandler.ts",
     "AsyncCallStacksHandler.ts",
     "AuctionWorkletsHandler.ts",
@@ -66,6 +67,7 @@ ts_library("unittests") {
   testonly = true
 
   sources = [
+    "AnimationFramesHandler.test.ts",
     "AnimationHandler.test.ts",
     "AsyncCallStacksHandler.test.ts",
     "AuctionWorkletsHandler.test.ts",

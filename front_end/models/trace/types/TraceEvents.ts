@@ -1269,6 +1269,44 @@ export interface PairableAsyncEnd extends PairableAsync {
   ph: Phase.ASYNC_NESTABLE_END;
 }
 
+export interface AnimationFrame extends PairableAsync {
+  name: Name.ANIMATION_FRAME;
+  args?: AnimationFrameArgs;
+}
+export type AnimationFrameArgs = Args&{
+  animation_frame_timing_info: {
+    blocking_duration_ms: number,
+    duration_ms: number,
+    num_scripts: number,
+  },
+  id: string,
+};
+
+export interface AnimationFrameAsyncStart extends AnimationFrame {
+  ph: Phase.ASYNC_NESTABLE_START;
+}
+export interface AnimationFrameAsyncEnd extends AnimationFrame {
+  ph: Phase.ASYNC_NESTABLE_END;
+}
+
+export function isAnimationFrameAsyncStart(data: Event): data is AnimationFrameAsyncStart {
+  return data.name === Name.ANIMATION_FRAME && data.ph === Phase.ASYNC_NESTABLE_START;
+}
+export function isAnimationFrameAsyncEnd(data: Event): data is AnimationFrameAsyncEnd {
+  return data.name === Name.ANIMATION_FRAME && data.ph === Phase.ASYNC_NESTABLE_END;
+}
+
+export interface AnimationFramePresentation extends Event {
+  name: Name.ANIMATION_FRAME_PRESENTATION;
+  ph: Phase.ASYNC_NESTABLE_INSTANT;
+  args?: Args&{
+    id: string,
+  };
+}
+export function isAnimationFramePresentation(data: Event): data is AnimationFramePresentation {
+  return data.name === Name.ANIMATION_FRAME_PRESENTATION;
+}
+
 export interface UserTiming extends Event {
   id2?: {local?: string, global?: string};
   id?: string;
@@ -1475,6 +1513,7 @@ export interface SyntheticEventPair<T extends PairableAsync = PairableAsync> ext
 }
 
 export type SyntheticPipelineReporterPair = SyntheticEventPair<PipelineReporter>;
+export type SyntheticAnimationFramePair = SyntheticEventPair<AnimationFrame>;
 
 export type SyntheticUserTimingPair = SyntheticEventPair<PerformanceMeasure>;
 
@@ -2891,6 +2930,9 @@ export const enum Name {
 
   DOM_LOADING = 'domLoading',
   BEGIN_REMOTE_FONT_LOAD = 'BeginRemoteFontLoad',
+
+  ANIMATION_FRAME = 'AnimationFrame',
+  ANIMATION_FRAME_PRESENTATION = 'AnimationFrame::Presentation',
 }
 
 // NOT AN EXHAUSTIVE LIST: just some categories we use and refer

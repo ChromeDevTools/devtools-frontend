@@ -366,8 +366,8 @@ function getElementRoleTitle(role: string): string {
   }
 }
 
-function getSelectorPreview(step?: Models.Schema.Step): string {
-  if (!step || !('selectors' in step)) {
+function getSelectorPreview(step: Models.Schema.Step): string {
+  if (!('selectors' in step)) {
     return '';
   }
 
@@ -438,7 +438,7 @@ function viewFunction(input: ViewInput, _output: ViewOutput, target: HTMLElement
     step: input.step,
     section: input.section,
   });
-  const subtitle = input.step ? getSelectorPreview() : getSectionPreview();
+  const subtitle = input.step ? getSelectorPreview(input.step) : getSectionPreview();
 
   // clang-format off
   LitHtml.render(

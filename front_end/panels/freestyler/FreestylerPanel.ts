@@ -15,6 +15,7 @@ import * as TimelinePanel from '../../panels/timeline/timeline.js';
 import * as TimelineUtils from '../../panels/timeline/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as LitHtml from '../../ui/lit-html/lit-html.js';
+import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {
   AgentType,
@@ -247,6 +248,7 @@ export class FreestylerPanel extends UI.Panel.Panel {
 
   #createToolbar(): void {
     const toolbarContainer = this.contentElement.createChild('div', 'freestyler-toolbar-container');
+    toolbarContainer.setAttribute('jslog', VisualLogging.toolbar().toString());
     const leftToolbar = new UI.Toolbar.Toolbar('freestyler-left-toolbar', toolbarContainer);
     const rightToolbar = new UI.Toolbar.Toolbar('freestyler-right-toolbar', toolbarContainer);
 

@@ -94,9 +94,19 @@ export class LocalizedStringSet {
     }
 
     const formatter = this.getMessageFormatterFor(message);
-    const translatedString = formatter.format() as string;
-    this.cachedSimpleStrings.set(message, translatedString);
-    return translatedString;
+    try {
+      const translatedString = formatter.format() as string;
+      this.cachedSimpleStrings.set(message, translatedString);
+      return translatedString;
+    } catch (e) {
+      // The message could have been updated and use different placeholders then
+      // the translation. This is a rare edge case so it's fine to create a temporary
+      // IntlMessageFormat and fall back to the UIStrings message.
+      const formatter = new IntlMessageFormat.IntlMessageFormat(message, this.localeForFormatter, undefined, {ignoreTag: true});
+      const translatedString = formatter.format() as string;
+      this.cachedSimpleStrings.set(message, translatedString);
+      return translatedString;
+    }
   }
 
   private getFormattedLocalizedString(message: string, values: Values): string {

@@ -62,7 +62,7 @@ const saveSnapshotsIfTaken = () => {
 const restoreSnapshots = () => {
   if (!currentSnapshotPath || !existsSync(currentSnapshotPath)) {
     throw new Error(`Could not find snapshot for ${
-        currentSnapshotPath}. You can update the snapshots by running the tests with --diff=update.`);
+        currentSnapshotPath}. You can update the snapshots by running the tests with --on-diff=update.`);
   }
   currentSnapshot = JSON.parse(readFileSync(currentSnapshotPath, 'utf-8'));
 };

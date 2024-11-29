@@ -1014,7 +1014,7 @@
       }
     ]
   },
-  "Recorder [crbug.com/373417054] should record OOPIF interactions - 1": {
+  "Recorder should record OOPIF interactions - 1": {
     "title": "New Recording",
     "steps": [
       {

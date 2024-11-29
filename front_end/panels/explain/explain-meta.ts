@@ -105,14 +105,14 @@ Common.Settings.registerSettingExtension({
   reloadRequired: false,
   condition: config => isFeatureEnabled(config),
   disabledCondition: config => {
-    if (isLocaleRestricted()) {
-      return {disabled: true, reason: i18nString(UIStrings.wrongLocale)};
-    }
     if (isGeoRestricted(config)) {
       return {disabled: true, reason: i18nString(UIStrings.geoRestricted)};
     }
     if (isPolicyRestricted(config)) {
       return {disabled: true, reason: i18nString(UIStrings.policyRestricted)};
+    }
+    if (isLocaleRestricted()) {
+      return {disabled: true, reason: i18nString(UIStrings.wrongLocale)};
     }
     return {disabled: false};
   },

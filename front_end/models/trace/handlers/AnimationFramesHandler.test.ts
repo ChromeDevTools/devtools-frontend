@@ -5,13 +5,13 @@ import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as Trace from '../trace.js';
 
 async function parseEvents(events: readonly Trace.Types.Events.Event[]) {
-  Trace.Handlers.ModelHandlers.FlowsHandler.reset();
+  Trace.Handlers.ModelHandlers.Flows.reset();
   Trace.Handlers.ModelHandlers.AnimationFrames.reset();
   for (const event of events) {
-    Trace.Handlers.ModelHandlers.FlowsHandler.handleEvent(event);
+    Trace.Handlers.ModelHandlers.Flows.handleEvent(event);
     Trace.Handlers.ModelHandlers.AnimationFrames.handleEvent(event);
   }
-  await Trace.Handlers.ModelHandlers.FlowsHandler.finalize();
+  await Trace.Handlers.ModelHandlers.Flows.finalize();
   await Trace.Handlers.ModelHandlers.AnimationFrames.finalize();
 }
 

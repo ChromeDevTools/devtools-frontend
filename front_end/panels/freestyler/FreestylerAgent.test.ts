@@ -928,7 +928,6 @@ STOP`,
       const agent = new FreestylerAgent({
         aidaClient: mockAidaClient(generateAnswer),
         execJs: sinon.spy(),
-
       });
 
       const responses = await Array.fromAsync(agent.run('test', {selected: new Freestyler.NodeContext(element)}));
@@ -952,12 +951,10 @@ STOP`,
           query: '# Inspected element\n\n* Its selector is `undefined`\n\n# User request\n\nQUERY: test',
         },
         {
-          rpcId: 123,
           text: 'this is the answer',
           type: Freestyler.ResponseType.ANSWER,
         },
         {
-          rpcId: 123,
           type: Freestyler.ResponseType.ERROR,
           error: Freestyler.ErrorType.BLOCK,
         },
@@ -1088,7 +1085,6 @@ STOP
         {
           type: Freestyler.ResponseType.ERROR,
           error: Freestyler.ErrorType.UNKNOWN,
-          rpcId: undefined,
         },
       ]);
       sinon.assert.notCalled(execJs);

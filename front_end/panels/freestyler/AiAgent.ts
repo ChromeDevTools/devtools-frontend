@@ -36,7 +36,6 @@ export interface AnswerResponse {
 export interface ErrorResponse {
   type: ResponseType.ERROR;
   error: ErrorType;
-  rpcId?: number;
 }
 
 export interface ContextDetail {
@@ -464,7 +463,6 @@ STOP`;
             yield {
               type: ResponseType.ANSWER,
               text: parsedResponse.answer,
-              rpcId,
             };
           }
         }
@@ -475,7 +473,6 @@ STOP`;
           const response = {
             type: ResponseType.ERROR,
             error: ErrorType.ABORT,
-            rpcId,
           } as const;
           this.#addHistory(response);
           yield response;
@@ -486,7 +483,6 @@ STOP`;
         const response = {
           type: ResponseType.ERROR,
           error,
-          rpcId,
         } as const;
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceError);
         this.#addHistory(response);
@@ -499,7 +495,6 @@ STOP`;
         const response = {
           type: ResponseType.ERROR,
           error: ErrorType.UNKNOWN,
-          rpcId,
         } as const;
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceError);
         this.#addHistory(response);
@@ -526,7 +521,6 @@ STOP`;
           const response = {
             type: ResponseType.ERROR,
             error: ErrorType.UNKNOWN,
-            rpcId,
           } as const;
           Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceError);
           this.#addHistory(response);

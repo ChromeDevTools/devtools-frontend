@@ -356,7 +356,6 @@ describeWithEnvironment('AiAgent', () => {
           {
             type: ResponseType.ANSWER,
             text: 'Partial ans',
-            rpcId: undefined,
           },
           {
             type: ResponseType.ANSWER,
@@ -421,7 +420,6 @@ describeWithEnvironment('AiAgent', () => {
         {
           type: ResponseType.ERROR,
           error: ErrorType.UNKNOWN,
-          rpcId: undefined,
         },
       ]);
     });

@@ -1055,6 +1055,7 @@ export class ReloadActionDelegate implements UI.ActionRegistration.ActionDelegat
     switch (actionId) {
       case 'main.debug-reload':
         Components.Reload.reload();
+
         return true;
     }
     return false;

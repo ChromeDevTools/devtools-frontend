@@ -120,4 +120,51 @@ describe('AsyncCallStacksHandler', function() {
          assert.strictEqual(testRunEntryPoints?.[1], secondJSTaskRunEntryPoint);
        });
   });
+  describe('Resolving async JS tasks to schedulers', function() {
+    it('associates an async JS task to its scheduler', async function() {
+      const jsTaskScheduler = makeProfileCall('setTimeout', 0, 50, pid, tid);
+      const asyncTaskScheduled =
+          makeCompleteEvent(Trace.Types.Events.Name.DEBUGGER_ASYNC_TASK_SCHEDULED, 0, 0, cat, pid, tid);
+
+      const asyncTaskRun = makeCompleteEvent(Trace.Types.Events.Name.DEBUGGER_ASYNC_TASK_RUN, 60, 100, cat, tid, pid);
+      const jsTaskRunEntryPoint = makeCompleteEvent(Trace.Types.Events.Name.FUNCTION_CALL, 70, 20, cat, tid, pid);
+      const asyncJSTask1 = makeProfileCall('scheduledFunction', 71, 10, pid, tid);
+      const asyncJSTask2 = makeProfileCall('scheduledFunction', 81, 5, pid, tid);
+
+      const flowEvents = makeFlowEvents([asyncTaskScheduled, asyncTaskRun]);
+      const rendererEvents =
+          [jsTaskScheduler, asyncTaskScheduled, asyncTaskRun, jsTaskRunEntryPoint, asyncJSTask1, asyncJSTask2];
+      const allEvents = [...rendererEvents, ...flowEvents];
+
+      const asyncCallStacksData = await buildAsyncCallStacksHandlerData(allEvents);
+      let testScheduler = asyncCallStacksData.asyncCallToScheduler.get(asyncJSTask1);
+      assert.strictEqual(testScheduler, jsTaskScheduler);
+
+      testScheduler = asyncCallStacksData.asyncCallToScheduler.get(asyncJSTask2);
+      assert.strictEqual(testScheduler, jsTaskScheduler);
+    });
+    it('only associates the root async JS task in a subtree with the async task scheduler', async function() {
+      const jsTaskScheduler = makeProfileCall('setTimeout', 0, 50, pid, tid);
+      const asyncTaskScheduled =
+          makeCompleteEvent(Trace.Types.Events.Name.DEBUGGER_ASYNC_TASK_SCHEDULED, 0, 0, cat, pid, tid);
+
+      const asyncTaskRun = makeCompleteEvent(Trace.Types.Events.Name.DEBUGGER_ASYNC_TASK_RUN, 60, 100, cat, tid, pid);
+      const jsTaskRunEntryPoint = makeCompleteEvent(Trace.Types.Events.Name.FUNCTION_CALL, 70, 20, cat, tid, pid);
+      const asyncJSTask1 = makeProfileCall('scheduledFunction', 71, 10, pid, tid);
+      // Because of its timings, this profile call will be nested inside the one above.
+      const asyncJSTask2 = makeProfileCall('nestedFunction', 72, 5, pid, tid);
+
+      const flowEvents = makeFlowEvents([asyncTaskScheduled, asyncTaskRun]);
+      const rendererEvents =
+          [jsTaskScheduler, asyncTaskScheduled, asyncTaskRun, jsTaskRunEntryPoint, asyncJSTask1, asyncJSTask2];
+      const allEvents = [...rendererEvents, ...flowEvents];
+
+      const asyncCallStacksData = await buildAsyncCallStacksHandlerData(allEvents);
+      let testScheduler = asyncCallStacksData.asyncCallToScheduler.get(asyncJSTask1);
+      assert.strictEqual(testScheduler, jsTaskScheduler);
+
+      testScheduler = asyncCallStacksData.asyncCallToScheduler.get(asyncJSTask2);
+      assert.isUndefined(testScheduler);
+    });
+  });
 });

@@ -715,6 +715,7 @@ export function getBaseTraceParseModelData(overrides: Partial<ParsedTrace> = {})
     },
     AsyncCallStacks: {
       schedulerToRunEntryPoints: new Map(),
+      asyncCallToScheduler: new Map(),
     },
     ...overrides,
   };

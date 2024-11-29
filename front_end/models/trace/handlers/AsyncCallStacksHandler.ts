@@ -8,9 +8,11 @@ import {data as flowsHandlerData} from './FlowsHandler.js';
 import {data as rendererHandlerData} from './RendererHandler.js';
 
 const schedulerToRunEntryPoints: Map<Types.Events.SyntheticProfileCall, Types.Events.Event[]> = new Map();
+const asyncCallToScheduler: Map<Types.Events.SyntheticProfileCall, Types.Events.SyntheticProfileCall> = new Map();
 
 export function reset(): void {
   schedulerToRunEntryPoints.clear();
+  asyncCallToScheduler.clear();
 }
 
 export function handleEvent(_: Types.Events.Event): void {
@@ -35,12 +37,22 @@ export async function finalize(): Promise<void> {
       // Unexpected async call trace data shape, ignore.
       continue;
     }
-    const asyncEntryPoints = findNearestJsInvocationDescendants(asyncTaskRun, entryToNode);
+    const asyncEntryPoints = findFirstJsInvocationsForAsyncTaskRun(asyncTaskRun, entryToNode);
     if (!asyncEntryPoints) {
       // Unexpected async call trace data shape, ignore.
       continue;
     }
+    // Set scheduler -> schedulee mapping.
+    // The schedulee being the JS entrypoint
     schedulerToRunEntryPoints.set(asyncCaller, asyncEntryPoints);
+
+    // Set schedulee -> scheduler mapping.
+    // The schedulees being the JS calls (instead of the entrypoints as
+    // above, for usage ergonomics).
+    const scheduledProfileCalls = findFirstJSCallsForAsyncTaskRun(asyncTaskRun, entryToNode);
+    for (const call of scheduledProfileCalls) {
+      asyncCallToScheduler.set(call, asyncCaller);
+    }
   }
 }
 /**
@@ -80,13 +92,45 @@ function acceptJSInvocationsPredicate(event: Types.Events.Event): event is Types
  * entry point, so we return all of them to ensure the async stack is
  * in every event that applies.
  */
-function findNearestJsInvocationDescendants(
+function findFirstJsInvocationsForAsyncTaskRun(
     asyncTaskRun: Types.Events.DebuggerAsyncTaskRun,
     entryToNode: Map<Types.Events.Event, Helpers.TreeHelpers.TraceEntryNode>): Types.Events.Event[] {
   // Ignore descendants of other DebuggerAsyncTaskRuns since they
   // are part of another async task and have to be handled separately
   return findFirstDescendantsOfType(
       asyncTaskRun, entryToNode, acceptJSInvocationsPredicate, Types.Events.isDebuggerAsyncTaskRun);
+}
+
+/**
+ * Given an async task run event, returns the top level call frames
+ * (profile calls) directly called by the async task. This implies that
+ * any profile calls under another async task run event are ignored.
+ * These profile calls represent the JS task being scheduled, AKA
+ * the other part of the async stack.
+ *
+ * For example, here the profile calls "js 1", "js 2" and "js 4" would
+ * be returned:
+ *
+ * |------------------Async Task Run------------------|
+ * |--FunctionCall--|    |--FunctionCall--|
+ * |-js 1-||-js 2-|        |-js 4-|
+ * |-js 3-|
+ *
+ * But here, only "js 1" and "js 2" would be returned:
+ *
+ * |------------------Async Task Run------------------|
+ * |--FunctionCall--|    |------------------------|
+ * |-js 1-||-js 2-|       |---Async Task Run--|
+ * |-js 3-|                |--FunctionCall--|
+ *                          |-js 4-|
+ */
+function findFirstJSCallsForAsyncTaskRun(
+    asyncTaskRun: Types.Events.DebuggerAsyncTaskRun,
+    entryToNode: Map<Types.Events.Event, Helpers.TreeHelpers.TraceEntryNode>): Types.Events.SyntheticProfileCall[] {
+  // Ignore descendants of other DebuggerAsyncTaskRuns since they
+  // are part of another async task and have to be handled separately
+  return findFirstDescendantsOfType(
+      asyncTaskRun, entryToNode, Types.Events.isProfileCall, Types.Events.isDebuggerAsyncTaskRun);
 }
 
 /**
@@ -124,9 +168,14 @@ export function data(): {
   // trace event for the timeout callback run event (usually a
   // FunctionCall event).
   schedulerToRunEntryPoints: Map<Types.Events.SyntheticProfileCall, Types.Events.Event[]>,
+  // Given a profile call, returns the profile call that scheduled it.
+  // For example given a timeout callback run event, returns its
+  // setTimeout call event.
+  asyncCallToScheduler: Map<Types.Events.SyntheticProfileCall, Types.Events.SyntheticProfileCall>,
 } {
   return {
     schedulerToRunEntryPoints,
+    asyncCallToScheduler,
   };
 }
 

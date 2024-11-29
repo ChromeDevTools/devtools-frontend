@@ -1,5 +1,5 @@
 import * as fsScandir from '@nodelib/fs.scandir';
-import { Entry } from '../types';
+import type { Entry } from '../types';
 import Reader from './reader';
 export default class SyncReader extends Reader {
     protected readonly _scandir: typeof fsScandir.scandirSync;
@@ -13,4 +13,3 @@ export default class SyncReader extends Reader {
     private _handleEntry;
     private _pushToStorage;
 }
-//# sourceMappingURL=sync.d.ts.map

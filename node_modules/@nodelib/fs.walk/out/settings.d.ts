@@ -1,10 +1,10 @@
 import * as fsScandir from '@nodelib/fs.scandir';
-import { Entry, Errno } from './types';
+import type { Entry, Errno } from './types';
 export declare type FilterFunction<T> = (value: T) => boolean;
 export declare type DeepFilterFunction = FilterFunction<Entry>;
 export declare type EntryFilterFunction = FilterFunction<Entry>;
 export declare type ErrorFilterFunction = FilterFunction<Errno>;
-export declare type Options = {
+export interface Options {
     basePath?: string;
     concurrency?: number;
     deepFilter?: DeepFilterFunction;
@@ -15,7 +15,7 @@ export declare type Options = {
     pathSegmentSeparator?: string;
     stats?: boolean;
     throwErrorOnBrokenSymbolicLink?: boolean;
-};
+}
 export default class Settings {
     private readonly _options;
     readonly basePath?: string;
@@ -28,4 +28,3 @@ export default class Settings {
     constructor(_options?: Options);
     private _getValue;
 }
-//# sourceMappingURL=settings.d.ts.map

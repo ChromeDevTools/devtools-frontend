@@ -71,7 +71,7 @@ module.exports = {
         docs: {
             description: "Require or disallow strict mode directives",
             recommended: false,
-            url: "https://eslint.org/docs/rules/strict"
+            url: "https://eslint.org/docs/latest/rules/strict"
         },
 
         schema: [
@@ -105,7 +105,7 @@ module.exports = {
         if (ecmaFeatures.impliedStrict) {
             mode = "implied";
         } else if (mode === "safe") {
-            mode = ecmaFeatures.globalReturn ? "global" : "function";
+            mode = ecmaFeatures.globalReturn || context.languageOptions.sourceType === "commonjs" ? "global" : "function";
         }
 
         /**

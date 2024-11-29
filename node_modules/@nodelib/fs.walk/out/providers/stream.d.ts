@@ -1,7 +1,7 @@
 /// <reference types="node" />
 import { Readable } from 'stream';
 import AsyncReader from '../readers/async';
-import Settings from '../settings';
+import type Settings from '../settings';
 export default class StreamProvider {
     private readonly _root;
     private readonly _settings;
@@ -10,4 +10,3 @@ export default class StreamProvider {
     constructor(_root: string, _settings: Settings);
     read(): Readable;
 }
-//# sourceMappingURL=stream.d.ts.map

@@ -1,12 +1,12 @@
 import * as fsStat from '@nodelib/fs.stat';
 import * as fs from './adapters/fs';
-export declare type Options = {
+export interface Options {
     followSymbolicLinks?: boolean;
     fs?: Partial<fs.FileSystemAdapter>;
     pathSegmentSeparator?: string;
     stats?: boolean;
     throwErrorOnBrokenSymbolicLink?: boolean;
-};
+}
 export default class Settings {
     private readonly _options;
     readonly followSymbolicLinks: boolean;
@@ -18,4 +18,3 @@ export default class Settings {
     constructor(_options?: Options);
     private _getValue;
 }
-//# sourceMappingURL=settings.d.ts.map

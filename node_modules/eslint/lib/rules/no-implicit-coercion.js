@@ -72,6 +72,24 @@ function isMultiplyByOne(node) {
 }
 
 /**
+ * Checks whether the given node logically represents multiplication by a fraction of `1`.
+ * For example, `a * 1` in `a * 1 / b` is technically multiplication by `1`, but the
+ * whole expression can be logically interpreted as `a * (1 / b)` rather than `(a * 1) / b`.
+ * @param {BinaryExpression} node A BinaryExpression node to check.
+ * @param {SourceCode} sourceCode The source code object.
+ * @returns {boolean} Whether or not the node is a multiplying by a fraction of `1`.
+ */
+function isMultiplyByFractionOfOne(node, sourceCode) {
+    return node.type === "BinaryExpression" &&
+        node.operator === "*" &&
+        (node.right.type === "Literal" && node.right.value === 1) &&
+        node.parent.type === "BinaryExpression" &&
+        node.parent.operator === "/" &&
+        node.parent.left === node &&
+        !astUtils.isParenthesised(sourceCode, node);
+}
+
+/**
  * Checks whether the result of a node is numeric or not
  * @param {ASTNode} node The node to test
  * @returns {boolean} true if the node is a number literal or a `Number()`, `parseInt` or `parseFloat` call
@@ -175,7 +193,7 @@ module.exports = {
         docs: {
             description: "Disallow shorthand type conversions",
             recommended: false,
-            url: "https://eslint.org/docs/rules/no-implicit-coercion"
+            url: "https://eslint.org/docs/latest/rules/no-implicit-coercion"
         },
 
         fixable: "code",
@@ -217,7 +235,7 @@ module.exports = {
 
     create(context) {
         const options = parseOptions(context.options[0] || {});
-        const sourceCode = context.getSourceCode();
+        const sourceCode = context.sourceCode;
 
         /**
          * Reports an error and autofixes the node
@@ -290,7 +308,8 @@ module.exports = {
 
                 // 1 * foo
                 operatorAllowed = options.allow.includes("*");
-                const nonNumericOperand = !operatorAllowed && options.number && isMultiplyByOne(node) && getNonNumericOperand(node);
+                const nonNumericOperand = !operatorAllowed && options.number && isMultiplyByOne(node) && !isMultiplyByFractionOfOne(node, sourceCode) &&
+                    getNonNumericOperand(node);
 
                 if (nonNumericOperand) {
                     const recommendation = `Number(${sourceCode.getText(nonNumericOperand)})`;

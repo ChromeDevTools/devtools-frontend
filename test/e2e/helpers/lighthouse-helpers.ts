@@ -242,7 +242,7 @@ export async function interceptNextFileSave(): Promise<() => Promise<string>> {
         resolve(content);
       };
     });
-    nextFilePromise.finally(() => {
+    void nextFilePromise.finally(() => {
       // @ts-expect-error
       InspectorFrontendHost.save = original;
     });

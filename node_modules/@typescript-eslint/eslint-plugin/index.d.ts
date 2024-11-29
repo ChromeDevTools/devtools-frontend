@@ -1,4 +1,13 @@
-import type { TSESLint } from '@typescript-eslint/utils';
+import type {
+  ClassicConfig,
+  FlatConfig,
+} from '@typescript-eslint/utils/ts-eslint';
 
-export const rules: Record<string, TSESLint.RuleModule<string, unknown[]>>;
-export const configs: Record<string, TSESLint.Linter.Config>;
+import type rules from './rules';
+
+declare const cjsExport: {
+  configs: Record<string, ClassicConfig.Config>;
+  meta: FlatConfig.PluginMeta;
+  rules: typeof rules;
+};
+export = cjsExport;

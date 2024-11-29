@@ -1,6 +1,6 @@
 import SyncReader from '../readers/sync';
-import Settings from '../settings';
-import { Entry } from '../types';
+import type Settings from '../settings';
+import type { Entry } from '../types';
 export default class SyncProvider {
     private readonly _root;
     private readonly _settings;
@@ -8,4 +8,3 @@ export default class SyncProvider {
     constructor(_root: string, _settings: Settings);
     read(): Entry[];
 }
-//# sourceMappingURL=sync.d.ts.map

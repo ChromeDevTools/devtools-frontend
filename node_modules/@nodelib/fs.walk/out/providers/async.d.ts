@@ -1,7 +1,7 @@
 import AsyncReader from '../readers/async';
-import Settings from '../settings';
-import { Entry, Errno } from '../types';
-export declare type AsyncCallback = (err: Errno, entries: Entry[]) => void;
+import type Settings from '../settings';
+import type { Entry, Errno } from '../types';
+export declare type AsyncCallback = (error: Errno, entries: Entry[]) => void;
 export default class AsyncProvider {
     private readonly _root;
     private readonly _settings;
@@ -10,4 +10,3 @@ export default class AsyncProvider {
     constructor(_root: string, _settings: Settings);
     read(callback: AsyncCallback): void;
 }
-//# sourceMappingURL=async.d.ts.map

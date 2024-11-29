@@ -79,7 +79,7 @@ Parse a regular expression literal.
 - **Return:**
     - The AST of the regular expression.
 
-#### parser.parsePattern(source, start?, end?, uFlag?)
+#### parser.parsePattern(source, start?, end?, flags?)
 
 Parse a regular expression pattern.
 
@@ -87,7 +87,7 @@ Parse a regular expression pattern.
     - `source` (`string`) The source code to parse. E.g. `"abc"`.
     - `start?` (`number`) The start index in the source code. Default is `0`.
     - `end?` (`number`) The end index in the source code. Default is `source.length`.
-    - `uFlag?` (`boolean`) The flag to enable Unicode mode.
+    - `flags?` (`{ unicode?: boolean, unicodeSets?: boolean }`) The flags to enable Unicode mode, and Unicode Set mode.
 - **Return:**
     - The AST of the regular expression pattern.
 
@@ -118,7 +118,7 @@ Validate a regular expression literal.
     - `start?` (`number`) The start index in the source code. Default is `0`.
     - `end?` (`number`) The end index in the source code. Default is `source.length`.
 
-#### validator.validatePattern(source, start, end, uFlag)
+#### validator.validatePattern(source, start, end, flags)
 
 Validate a regular expression pattern.
 
@@ -126,7 +126,7 @@ Validate a regular expression pattern.
     - `source` (`string`) The source code to validate.
     - `start?` (`number`) The start index in the source code. Default is `0`.
     - `end?` (`number`) The end index in the source code. Default is `source.length`.
-    - `uFlag?` (`boolean`) The flag to enable Unicode mode.
+    - `flags?` (`{ unicode?: boolean, unicodeSets?: boolean }`) The flags to enable Unicode mode, and Unicode Set mode.
 
 #### validator.validateFlags(source, start, end)
 
@@ -172,6 +172,6 @@ Please use GitHub's Issues/PRs.
 - `npm run watch` runs tests with `--watch` option.
 
 [`AST.Node`]: src/ast.ts#L4
-[`RegExpParser.Options`]: src/parser.ts#L539
-[`RegExpValidator.Options`]: src/validator.ts#L127
-[`RegExpVisitor.Handlers`]: src/visitor.ts#L204
+[`RegExpParser.Options`]: src/parser.ts#L743
+[`RegExpValidator.Options`]: src/validator.ts#L220
+[`RegExpVisitor.Handlers`]: src/visitor.ts#L291

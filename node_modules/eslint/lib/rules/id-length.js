@@ -7,6 +7,12 @@
 "use strict";
 
 //------------------------------------------------------------------------------
+// Requirements
+//------------------------------------------------------------------------------
+
+const { getGraphemeCount } = require("../shared/string-utils");
+
+//------------------------------------------------------------------------------
 // Rule Definition
 //------------------------------------------------------------------------------
 
@@ -18,7 +24,7 @@ module.exports = {
         docs: {
             description: "Enforce minimum and maximum identifier lengths",
             recommended: false,
-            url: "https://eslint.org/docs/rules/id-length"
+            url: "https://eslint.org/docs/latest/rules/id-length"
         },
 
         schema: [
@@ -130,8 +136,10 @@ module.exports = {
                 const name = node.name;
                 const parent = node.parent;
 
-                const isShort = name.length < minLength;
-                const isLong = name.length > maxLength;
+                const nameLength = getGraphemeCount(name);
+
+                const isShort = nameLength < minLength;
+                const isLong = nameLength > maxLength;
 
                 if (!(isShort || isLong) || exceptions.has(name) || matchesExceptionPattern(name)) {
                     return; // Nothing to report

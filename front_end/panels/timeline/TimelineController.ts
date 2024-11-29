@@ -97,6 +97,7 @@ export class TimelineController implements Trace.TracingManager.TracingManagerCl
       disabledByDefault('devtools.timeline.frame'),
       disabledByDefault('devtools.timeline.stack'),
       disabledByDefault('v8.compile'),
+      disabledByDefault('v8.inspector'),
       disabledByDefault('v8.cpu_profiler.hires'),
       disabledByDefault('lighthouse'),
       'v8.execute',

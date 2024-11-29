@@ -1832,6 +1832,22 @@ export function isInvalidateLayout(event: Event): event is InvalidateLayout {
   return event.name === Name.INVALIDATE_LAYOUT;
 }
 
+export interface DebuggerAsyncTaskScheduled extends Event {
+  name: Name.DEBUGGER_ASYNC_TASK_SCHEDULED;
+}
+
+export function isDebuggerAsyncTaskScheduled(event: Event): event is DebuggerAsyncTaskScheduled {
+  return event.name === Name.DEBUGGER_ASYNC_TASK_SCHEDULED;
+}
+
+export interface DebuggerAsyncTaskRun extends Event {
+  name: Name.DEBUGGER_ASYNC_TASK_RUN;
+}
+
+export function isDebuggerAsyncTaskRun(event: Event): event is DebuggerAsyncTaskRun {
+  return event.name === Name.DEBUGGER_ASYNC_TASK_RUN;
+}
+
 class ProfileIdTag {
   readonly #profileIdTag: (symbol|undefined);
 }
@@ -2635,7 +2651,8 @@ export function isAbortPostTaskCallback(event: Event): event is RunPostTaskCallb
 /**
  * Generally, before JS is executed, a trace event is dispatched that
  * parents the JS calls. These we call "invocation" events. This
- * function determines if an event is one of such.
+ * function determines if an event is one of such. Note: these are also
+ * commonly referred to as "JS entry points".
  */
 export function isJSInvocationEvent(event: Event): boolean {
   switch (event.name) {
@@ -2740,6 +2757,8 @@ export const enum Name {
   SCHEDULE_POST_TASK_CALLBACK = 'SchedulePostTaskCallback',
   RUN_POST_TASK_CALLBACK = 'RunPostTaskCallback',
   ABORT_POST_TASK_CALLBACK = 'AbortPostTaskCallback',
+  DEBUGGER_ASYNC_TASK_RUN = 'v8::Debugger::AsyncTaskRun',
+  DEBUGGER_ASYNC_TASK_SCHEDULED = 'v8::Debugger::AsyncTaskScheduled',
 
   /* Gc */
   GC = 'GCEvent',

@@ -296,6 +296,32 @@ export function makeFlowPhaseEvent(
   };
 }
 
+/**
+ * Builds flow phase events for a list of events belonging to the same
+ * flow. `events` must be ordered.
+ */
+export function makeFlowEvents(events: Trace.Types.Events.Event[], flowId: number = 0): Trace.Types.Events.FlowEvent[] {
+  const lastEvent = events.at(-1);
+  const firstEvent = events.at(0);
+  if (!lastEvent || !firstEvent) {
+    return [];
+  }
+  const flowName = events[0].name;
+  const flowStart = makeFlowPhaseEvent(
+      flowName, firstEvent.ts, firstEvent.cat, Trace.Types.Events.Phase.FLOW_START, flowId, firstEvent.pid,
+      firstEvent.tid);
+  const flowEnd = makeFlowPhaseEvent(
+      flowName, lastEvent.ts, lastEvent.cat, Trace.Types.Events.Phase.FLOW_END, flowId, lastEvent.pid, lastEvent.tid);
+
+  const flowSteps: Trace.Types.Events.FlowEvent[] = [];
+  for (let i = 1; i < events.length - 1; i++) {
+    flowSteps.push(makeFlowPhaseEvent(
+        flowName, events[i].ts, events[i].cat, Trace.Types.Events.Phase.FLOW_STEP, flowId, events[i].pid,
+        events[i].tid));
+  }
+  return [flowStart, ...flowSteps, flowEnd];
+}
+
 export function makeCompleteEventInMilliseconds(
     name: string, tsMillis: number, durMillis: number, cat: string = '*', pid: number = 0,
     tid: number = 0): Trace.Types.Events.Complete {
@@ -355,9 +381,7 @@ export function makeEndEvent(
 }
 
 export function makeProfileCall(
-    functionName: string, tsMs: number, durMs: number,
-    pid: Trace.Types.Events.ProcessID = Trace.Types.Events.ProcessID(0),
-    tid: Trace.Types.Events.ThreadID = Trace.Types.Events.ThreadID(0), nodeId: number = 0,
+    functionName: string, tsUs: number, durUs: number, pid: number = 0, tid: number = 0, nodeId: number = 0,
     url: string = ''): Trace.Types.Events.SyntheticProfileCall {
   return {
     cat: '',
@@ -366,10 +390,10 @@ export function makeProfileCall(
     sampleIndex: 0,
     profileId: Trace.Types.Events.ProfileID('fake-profile-id'),
     ph: Trace.Types.Events.Phase.COMPLETE,
-    pid,
-    tid,
-    ts: Trace.Types.Timing.MicroSeconds(tsMs),
-    dur: Trace.Types.Timing.MicroSeconds(durMs),
+    pid: Trace.Types.Events.ProcessID(pid),
+    tid: Trace.Types.Events.ThreadID(tid),
+    ts: Trace.Types.Timing.MicroSeconds(tsUs),
+    dur: Trace.Types.Timing.MicroSeconds(durUs),
     callFrame: {
       functionName,
       scriptId: '' as Protocol.Runtime.ScriptId,
@@ -386,7 +410,7 @@ export const DevToolsTimelineCategory = 'disabled-by-default-devtools.timeline';
  * Mocks an object compatible with the return type of the
  * RendererHandler using only an array of ordered entries.
  */
-export function makeMockRendererHandlerData(entries: Trace.Types.Events.Event[]):
+export function makeMockRendererHandlerData(entries: Trace.Types.Events.Event[], pid: number = 1, tid: number = 1):
     Trace.Handlers.ModelHandlers.Renderer.RendererHandlerData {
   const {tree, entryToNode} = Trace.Helpers.TreeHelpers.treify(entries, {filter: {has: () => true}});
   const mockThread: Trace.Handlers.ModelHandlers.Renderer.RendererThread = {
@@ -399,7 +423,7 @@ export function makeMockRendererHandlerData(entries: Trace.Types.Events.Event[])
   const mockProcess: Trace.Handlers.ModelHandlers.Renderer.RendererProcess = {
     url: 'url',
     isOnMainFrame: true,
-    threads: new Map([[1 as Trace.Types.Events.ThreadID, mockThread]]),
+    threads: new Map([[tid as Trace.Types.Events.ThreadID, mockThread]]),
   };
 
   const renderereEvents: Trace.Types.Events.RendererEvent[] = [];
@@ -410,7 +434,7 @@ export function makeMockRendererHandlerData(entries: Trace.Types.Events.Event[])
   }
 
   return {
-    processes: new Map([[1 as Trace.Types.Events.ProcessID, mockProcess]]),
+    processes: new Map([[pid as Trace.Types.Events.ProcessID, mockProcess]]),
     compositorTileWorkers: new Map(),
     entryToNode,
     allTraceEntries: renderereEvents,
@@ -682,8 +706,11 @@ export function getBaseTraceParseModelData(overrides: Partial<ParsedTrace> = {})
       workerSessionIdEvents: [],
       workerURLById: new Map(),
     },
-    FlowsHandler: {
+    Flows: {
       flows: [],
+    },
+    AsyncCallStacks: {
+      schedulerToRunEntryPoints: new Map(),
     },
     ...overrides,
   };

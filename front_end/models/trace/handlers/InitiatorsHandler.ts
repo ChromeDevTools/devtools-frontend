@@ -188,6 +188,6 @@ export function data(): InitiatorsData {
   };
 }
 
-export function deps(): ['FlowsHandler'] {
-  return ['FlowsHandler'];
+export function deps(): ['Flows'] {
+  return ['Flows'];
 }

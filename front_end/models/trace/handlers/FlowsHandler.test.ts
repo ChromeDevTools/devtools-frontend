@@ -9,13 +9,13 @@ import {
 import * as Trace from '../trace.js';
 
 async function getFlowsHandlerData(events: Trace.Types.Events.Event[]):
-    Promise<ReturnType<typeof Trace.Handlers.ModelHandlers.FlowsHandler.data>> {
-  Trace.Handlers.ModelHandlers.FlowsHandler.reset();
+    Promise<ReturnType<typeof Trace.Handlers.ModelHandlers.Flows.data>> {
+  Trace.Handlers.ModelHandlers.Flows.reset();
   for (const event of events) {
-    Trace.Handlers.ModelHandlers.FlowsHandler.handleEvent(event);
+    Trace.Handlers.ModelHandlers.Flows.handleEvent(event);
   }
-  await Trace.Handlers.ModelHandlers.FlowsHandler.finalize();
-  return Trace.Handlers.ModelHandlers.FlowsHandler.data();
+  await Trace.Handlers.ModelHandlers.Flows.finalize();
+  return Trace.Handlers.ModelHandlers.Flows.data();
 }
 const cat = 'mewtwo';
 const pid = 0;

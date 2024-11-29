@@ -1051,6 +1051,7 @@ grd_files_debug_sources = [
   "front_end/models/trace/extras/TraceTree.js",
   "front_end/models/trace/extras/URLForEntry.js",
   "front_end/models/trace/handlers/AnimationHandler.js",
+  "front_end/models/trace/handlers/AsyncCallStacksHandler.js",
   "front_end/models/trace/handlers/AuctionWorkletsHandler.js",
   "front_end/models/trace/handlers/ExtensionTraceDataHandler.js",
   "front_end/models/trace/handlers/FlowsHandler.js",

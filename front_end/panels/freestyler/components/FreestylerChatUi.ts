@@ -886,19 +886,26 @@ export class FreestylerChatUi extends HTMLElement {
   }
 
   #renderContextSelector(): LitHtml.LitTemplate {
+    // TODO: currently the picker behavior is SDKNode specific.
+    const hasPickerBehavior = this.#props.agentType === AgentType.FREESTYLER;
+
     const resourceClass = LitHtml.Directives.classMap({
       'not-selected': !this.#props.selectedContext,
       'resource-link': true,
+      'allow-overflow': hasPickerBehavior,
     });
-
-    // TODO: currently the picker behavior is SDKNode specific.
-    const hasPickerBehavior = this.#props.agentType === AgentType.FREESTYLER;
 
     if (!this.#props.selectedContext && !hasPickerBehavior) {
       return LitHtml.nothing;
     }
 
     const icon = this.#props.selectedContext?.getIcon() ?? LitHtml.nothing;
+
+    const handleKeyDown = (ev: KeyboardEvent): void => {
+      if (ev.key === 'Enter') {
+        void this.#props.onContextClick();
+      }
+    };
 
     // clang-format off
     return html`<div class="select-element">
@@ -919,11 +926,16 @@ export class FreestylerChatUi extends HTMLElement {
           ></devtools-button>
         ` : LitHtml.nothing
       }
-      <div role=button class=${resourceClass}
-        @click=${this.#props.onContextClick}>
-          ${icon}${this.#props.selectedContext?.getTitle() ?? html`<span>${
-            lockedString(UIStringsNotTranslate.noElementSelected)
-          }</span>`}
+      <div
+        role=button
+        class=${resourceClass}
+        tabindex=${hasPickerBehavior ? '-1' : '0'}
+        @click=${this.#props.onContextClick}
+        @keydown=${handleKeyDown}
+      >
+        ${icon}${this.#props.selectedContext?.getTitle() ?? html`<span>${
+          lockedString(UIStringsNotTranslate.noElementSelected)
+        }</span>`}
       </div>
     </div>`;
     // clang-format on

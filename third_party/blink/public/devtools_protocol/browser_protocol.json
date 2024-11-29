@@ -1261,7 +1261,8 @@
                         "CorpNotSameOriginAfterDefaultedToSameOriginByCoep",
                         "CorpNotSameOriginAfterDefaultedToSameOriginByDip",
                         "CorpNotSameOriginAfterDefaultedToSameOriginByCoepAndDip",
-                        "CorpNotSameSite"
+                        "CorpNotSameSite",
+                        "SRIMessageSignatureMismatch"
                     ]
                 },
                 {
@@ -12961,7 +12962,8 @@
                         "corp-not-same-origin-after-defaulted-to-same-origin-by-coep",
                         "corp-not-same-origin-after-defaulted-to-same-origin-by-dip",
                         "corp-not-same-origin-after-defaulted-to-same-origin-by-coep-and-dip",
-                        "corp-not-same-site"
+                        "corp-not-same-site",
+                        "sri-message-signature-mismatch"
                     ]
                 },
                 {

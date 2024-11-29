@@ -106,6 +106,8 @@ export function getFormattedTime(
 
 /**
  * Returns the first level that is available for an event.
+ * Important: if you are walking through an array of events and calling this,
+ * the events MUST be sorted.
  */
 export function getEventLevel(event: Trace.Types.Events.Event, lastTimestampByLevel: LastTimestampByLevel): number {
   let level = 0;

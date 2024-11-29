@@ -413,6 +413,11 @@ export class MainImpl {
         'Performance panel: enable a switch to an alternative timeline navigation option',
     );
 
+    Root.Runtime.experiments.register(
+        Root.Runtime.ExperimentName.TIMELINE_IGNORE_LIST,
+        'Performance panel: enable an ignore list setting dialog',
+    );
+
     Root.Runtime.experiments.enableExperimentsByDefault([
       'css-type-component-length-deprecate',
       Root.Runtime.ExperimentName.AUTOFILL_VIEW,

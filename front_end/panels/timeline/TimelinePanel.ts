@@ -1084,9 +1084,11 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.panelToolbar.appendToolbarItem(UI.Toolbar.Toolbar.createActionButtonForId('components.collect-garbage'));
 
     // Ignore list setting
-    this.panelToolbar.appendSeparator();
-    const showIgnoreListSetting = new TimelineComponents.IgnoreListSetting.IgnoreListSetting();
-    this.panelToolbar.appendToolbarItem(new UI.Toolbar.ToolbarItem(showIgnoreListSetting));
+    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_IGNORE_LIST)) {
+      this.panelToolbar.appendSeparator();
+      const showIgnoreListSetting = new TimelineComponents.IgnoreListSetting.IgnoreListSetting();
+      this.panelToolbar.appendToolbarItem(new UI.Toolbar.ToolbarItem(showIgnoreListSetting));
+    }
 
     // Isolate selector
     if (isNode) {

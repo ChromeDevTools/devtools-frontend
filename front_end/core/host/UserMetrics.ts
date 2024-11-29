@@ -1020,10 +1020,11 @@ export enum DevtoolsExperiments {
   'timeline-experimental-insights' = 102,
   'timeline-dim-unrelated-events' = 103,
   'timeline-alternative-navigation' = 104,
+  'timeline-ignore-list' = 105,
   /* eslint-enable @typescript-eslint/naming-convention */
 
   // Increment this when new experiments are added.
-  MAX_VALUE = 105,
+  MAX_VALUE = 106,
 }
 
 export const enum CSSPropertyDocumentation {

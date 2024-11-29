@@ -2708,7 +2708,16 @@ export function isJSInvocationEvent(event: Event): boolean {
   if (event.name.startsWith('v8') || event.name.startsWith('V8')) {
     return true;
   }
+
+  if (isConsoleTaskRun(event)) {
+    return true;
+  }
   return false;
+}
+
+export function isConsoleTaskRun(event: Event): boolean {
+  return isProfileCall(event) && event.callFrame.functionName === 'run' && event.callFrame.columnNumber === -1 &&
+      event.callFrame.lineNumber === -1;
 }
 
 export interface FlowEvent extends Event {

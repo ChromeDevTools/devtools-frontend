@@ -5,6 +5,7 @@
 import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
 
+import {data as asyncCallStacksHandlerData} from './AsyncCallStacksHandler.js';
 import {data as flowsHandlerData} from './FlowsHandler.js';
 
 const lastScheduleStyleRecalcByFrame = new Map<string, Types.Events.ScheduleStyleRecalculation>();
@@ -29,9 +30,6 @@ const eventToInitiatorMap = new Map<Types.Events.Event, Types.Events.Event>();
 // multiple events, hence why the value for this map is an array.
 const initiatorToEventsMap = new Map<Types.Events.Event, Types.Events.Event[]>();
 
-const requestAnimationFrameEventsById: Map<number, Types.Events.RequestAnimationFrame> = new Map();
-const timerInstallEventsById: Map<number, Types.Events.TimerInstall> = new Map();
-const requestIdleCallbackEventsById: Map<number, Types.Events.RequestIdleCallback> = new Map();
 const webSocketCreateEventsById: Map<number, Types.Events.WebSocketCreate> = new Map();
 const schedulePostTaskCallbackEventsById: Map<number, Types.Events.SchedulePostTaskCallback> = new Map();
 
@@ -39,11 +37,8 @@ export function reset(): void {
   lastScheduleStyleRecalcByFrame.clear();
   lastInvalidationEventForFrame.clear();
   lastUpdateLayoutTreeByFrame.clear();
-  timerInstallEventsById.clear();
   eventToInitiatorMap.clear();
   initiatorToEventsMap.clear();
-  requestAnimationFrameEventsById.clear();
-  requestIdleCallbackEventsById.clear();
   webSocketCreateEventsById.clear();
   schedulePostTaskCallbackEventsById.clear();
 }
@@ -112,36 +107,6 @@ export function handleEvent(event: Types.Events.Event): void {
     }
     // Now clear the last invalidation for the frame: the last invalidation has been linked to a Layout event, so it cannot be the initiator for any future layouts.
     lastInvalidationEventForFrame.delete(event.args.beginData.frame);
-  } else if (Types.Events.isRequestAnimationFrame(event)) {
-    requestAnimationFrameEventsById.set(event.args.data.id, event);
-  } else if (Types.Events.isFireAnimationFrame(event)) {
-    // If we get a fire event, that means we should have had the
-    // RequestAnimationFrame event by now. If so, we can set that as the
-    // initiator for the fire event.
-    const matchingRequestEvent = requestAnimationFrameEventsById.get(event.args.data.id);
-    if (matchingRequestEvent) {
-      storeInitiator({
-        event,
-        initiator: matchingRequestEvent,
-      });
-    }
-  } else if (Types.Events.isTimerInstall(event)) {
-    timerInstallEventsById.set(event.args.data.timerId, event);
-  } else if (Types.Events.isTimerFire(event)) {
-    const matchingInstall = timerInstallEventsById.get(event.args.data.timerId);
-    if (matchingInstall) {
-      storeInitiator({event, initiator: matchingInstall});
-    }
-  } else if (Types.Events.isRequestIdleCallback(event)) {
-    requestIdleCallbackEventsById.set(event.args.data.id, event);
-  } else if (Types.Events.isFireIdleCallback(event)) {
-    const matchingRequestEvent = requestIdleCallbackEventsById.get(event.args.data.id);
-    if (matchingRequestEvent) {
-      storeInitiator({
-        event,
-        initiator: matchingRequestEvent,
-      });
-    }
   } else if (Types.Events.isWebSocketCreate(event)) {
     webSocketCreateEventsById.set(event.args.data.identifier, event);
   } else if (Types.Events.isWebSocketInfo(event) || Types.Events.isWebSocketTransfer(event)) {
@@ -172,8 +137,18 @@ function createRelationshipsFromFlows(): void {
   }
 }
 
+function createRelationshipsFromAsyncCallStacks(): void {
+  const asyncCallPairs = asyncCallStacksHandlerData().schedulerToRunEntryPoints.entries();
+  for (const [asyncCaller, asyncCallees] of asyncCallPairs) {
+    for (const asyncCallee of asyncCallees) {
+      storeInitiator({event: asyncCallee, initiator: asyncCaller});
+    }
+  }
+}
+
 export async function finalize(): Promise<void> {
   createRelationshipsFromFlows();
+  createRelationshipsFromAsyncCallStacks();
 }
 
 export interface InitiatorsData {
@@ -188,6 +163,6 @@ export function data(): InitiatorsData {
   };
 }
 
-export function deps(): ['Flows'] {
-  return ['Flows'];
+export function deps(): ['Flows', 'AsyncCallStacks'] {
+  return ['Flows', 'AsyncCallStacks'];
 }

@@ -8,6 +8,7 @@ copy_to_gen("traces") {
   sources = [
     "about-blank-first.json.gz",
     "animation.json.gz",
+    "async-js-calls.json.gz",
     "basic-stack.json.gz",
     "basic.cpuprofile.gz",
     "basic.json.gz",
@@ -58,7 +59,6 @@ copy_to_gen("traces") {
     "multiple-navigations-with-iframes.json.gz",
     "multiple-navigations.json.gz",
     "multiple-top-level-renderers.json.gz",
-    "nested-initiators.json.gz",
     "nested-interactions.json.gz",
     "network-requests-initiators.json.gz",
     "network-websocket-messages.json.gz",
@@ -83,7 +83,6 @@ copy_to_gen("traces") {
     "selector-stats-frame-test.json.gz",
     "selector-stats.json.gz",
     "server-timings.json.gz",
-    "set-timeout-long-task.json.gz",
     "shift-attribution.json.gz",
     "simple-js-program.json.gz",
     "slow-interaction-button-click.json.gz",

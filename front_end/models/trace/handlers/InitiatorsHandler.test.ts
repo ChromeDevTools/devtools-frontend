@@ -2,10 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as Trace from '../trace.js';
 
-describe('InitiatorsHandler', () => {
+describeWithEnvironment('InitiatorsHandler', () => {
   beforeEach(() => {
     Trace.Handlers.ModelHandlers.Initiators.reset();
   });
@@ -78,67 +79,76 @@ describe('InitiatorsHandler', () => {
        assert.strictEqual(initiator.ts, 122411054482);
      });
 
-  it('for a FireAnimationFrame event it sets the initiator to the RequestAnimationFrame event', async function() {
-    const traceEvents = await TraceLoader.rawEvents(this, 'timer-initiators.json.gz');
-    for (const event of traceEvents) {
-      Trace.Handlers.ModelHandlers.Initiators.handleEvent(event);
+  it('sets an initiator relationship between a requestAnimationFrame and the scheduled FunctionCall', async function() {
+    const {parsedTrace} = await TraceLoader.traceEngine(this, 'async-js-calls.json.gz');
+    const requestAnimationFrameCall = parsedTrace.Renderer.allTraceEntries.find(
+        e => Trace.Types.Events.isProfileCall(e) && e.callFrame.functionName === 'requestAnimationFrame');
+    if (!requestAnimationFrameCall) {
+      throw new Error('Could not find requestAnimationFrame call');
     }
-    await Trace.Handlers.ModelHandlers.Initiators.finalize();
-    const data = Trace.Handlers.ModelHandlers.Initiators.data();
-
-    const fireAnimationFrameEvent = traceEvents.find(Trace.Types.Events.isFireAnimationFrame);
-    if (!fireAnimationFrameEvent) {
-      throw new Error('Could not find FireAnimationFrame event');
-    }
-    const requestAnimationFrameEvent = traceEvents.find(Trace.Types.Events.isRequestAnimationFrame);
-    if (!requestAnimationFrameEvent) {
-      throw new Error('Could not find RequestAnimationFrame event');
+    const functionCallEvent = parsedTrace.Renderer.allTraceEntries.find(
+        e => Trace.Types.Events.isFunctionCall(e) && e.ts > requestAnimationFrameCall.ts);
+    if (!functionCallEvent) {
+      throw new Error('Could not find FunctionCall event');
     }
 
-    assert.strictEqual(data.eventToInitiator.get(fireAnimationFrameEvent), requestAnimationFrameEvent);
-    assert.deepEqual(data.initiatorToEvents.get(requestAnimationFrameEvent), [fireAnimationFrameEvent]);
+    assert.strictEqual(parsedTrace.Initiators.eventToInitiator.get(functionCallEvent), requestAnimationFrameCall);
+    assert.deepEqual(parsedTrace.Initiators.initiatorToEvents.get(requestAnimationFrameCall), [functionCallEvent]);
   });
 
-  it('for a TimerFire event sets the initiator to the TimerInstall', async function() {
-    const traceEvents = await TraceLoader.rawEvents(this, 'timer-initiators.json.gz');
-    for (const event of traceEvents) {
-      Trace.Handlers.ModelHandlers.Initiators.handleEvent(event);
+  it('sets an initiator relationship between a setTimeout and the scheduled FunctionCall', async function() {
+    const {parsedTrace} = await TraceLoader.traceEngine(this, 'async-js-calls.json.gz');
+    const setTimeoutCall =
+        parsedTrace.Renderer.allTraceEntries
+            .filter(e => Trace.Types.Events.isProfileCall(e) && e.callFrame.functionName === 'setTimeout')
+            .at(-1);
+    if (!setTimeoutCall) {
+      throw new Error('Could not find setTimeout call');
     }
-    await Trace.Handlers.ModelHandlers.Initiators.finalize();
-    const data = Trace.Handlers.ModelHandlers.Initiators.data();
-
-    const timerFireEvent = traceEvents.find(Trace.Types.Events.isTimerFire);
-    if (!timerFireEvent) {
-      throw new Error('Could not find TimerFire event');
-    }
-    const timerInstallEvent = traceEvents.find(Trace.Types.Events.isTimerInstall);
-    if (!timerInstallEvent) {
-      throw new Error('Could not find TimerInstall event');
+    const functionCallEvent = parsedTrace.Renderer.allTraceEntries.find(
+        e => Trace.Types.Events.isFunctionCall(e) && e.ts > setTimeoutCall.ts);
+    if (!functionCallEvent) {
+      throw new Error('Could not find FunctionCall event');
     }
 
-    assert.strictEqual(data.eventToInitiator.get(timerFireEvent), timerInstallEvent);
-    assert.deepEqual(data.initiatorToEvents.get(timerInstallEvent), [timerFireEvent]);
+    assert.strictEqual(parsedTrace.Initiators.eventToInitiator.get(functionCallEvent), setTimeoutCall);
+    assert.deepEqual(parsedTrace.Initiators.initiatorToEvents.get(setTimeoutCall), [functionCallEvent]);
   });
 
-  it('for a FireIdleCallback event sets the initiator to the RequestIdleCallback', async function() {
-    const traceEvents = await TraceLoader.rawEvents(this, 'timer-initiators.json.gz');
-    for (const event of traceEvents) {
-      Trace.Handlers.ModelHandlers.Initiators.handleEvent(event);
+  it('sets an initiator relationship between a requestIdleCallback and the scheduled FunctionCall', async function() {
+    const {parsedTrace} = await TraceLoader.traceEngine(this, 'async-js-calls.json.gz');
+    const requestIdleCallback = parsedTrace.Renderer.allTraceEntries.find(
+        e => Trace.Types.Events.isProfileCall(e) && e.callFrame.functionName === 'requestIdleCallback');
+    if (!requestIdleCallback) {
+      throw new Error('Could not find requestIdleCallback call');
     }
-    await Trace.Handlers.ModelHandlers.Initiators.finalize();
-    const data = Trace.Handlers.ModelHandlers.Initiators.data();
-
-    const fireIdleCallbackEvent = traceEvents.find(Trace.Types.Events.isFireIdleCallback);
-    if (!fireIdleCallbackEvent) {
-      throw new Error('Could not find FireIdleCallback event');
-    }
-    const requestIdleCallbackEvent = traceEvents.find(Trace.Types.Events.isRequestIdleCallback);
-    if (!requestIdleCallbackEvent) {
-      throw new Error('Could not find RequestIdleCallback event');
+    const functionCallEvent = parsedTrace.Renderer.allTraceEntries.find(
+        e => Trace.Types.Events.isFunctionCall(e) && e.ts > requestIdleCallback.ts);
+    if (!functionCallEvent) {
+      throw new Error('Could not find FunctionCall event');
     }
 
-    assert.strictEqual(data.eventToInitiator.get(fireIdleCallbackEvent), requestIdleCallbackEvent);
-    assert.deepEqual(data.initiatorToEvents.get(requestIdleCallbackEvent), [fireIdleCallbackEvent]);
+    assert.strictEqual(parsedTrace.Initiators.eventToInitiator.get(functionCallEvent), requestIdleCallback);
+    assert.deepEqual(parsedTrace.Initiators.initiatorToEvents.get(requestIdleCallback), [functionCallEvent]);
+  });
+
+  it('sets an initiator relationship between a console.createTask and the scheduled task.run', async function() {
+    const {parsedTrace} = await TraceLoader.traceEngine(this, 'async-js-calls.json.gz');
+    const schedulerFuntion = parsedTrace.Renderer.allTraceEntries.find(
+        e => Trace.Types.Events.isProfileCall(e) && e.callFrame.functionName === 'startExample');
+    if (!schedulerFuntion) {
+      throw new Error('Could not find scheduler function call');
+    }
+    const taskRunCalls = parsedTrace.Renderer.allTraceEntries.filter(
+        e => Trace.Types.Events.isConsoleTaskRun(e) && e.ts > schedulerFuntion.ts);
+    if (!taskRunCalls!.length) {
+      throw new Error('Could not find task.run call');
+    }
+
+    assert.strictEqual(parsedTrace.Initiators.eventToInitiator.get(taskRunCalls[0]), schedulerFuntion);
+    assert.strictEqual(parsedTrace.Initiators.eventToInitiator.get(taskRunCalls[1]), schedulerFuntion);
+    assert.deepEqual(
+        parsedTrace.Initiators.initiatorToEvents.get(schedulerFuntion), [taskRunCalls[1], taskRunCalls[0]]);
   });
 
   it('for a WebSocketSendHandshakeRequest the initiator is the WebSocketCreate event', async function() {

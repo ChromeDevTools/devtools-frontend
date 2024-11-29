@@ -32,6 +32,16 @@ describe('FlameChart', function() {
       if (!matchedIndex) {
         throw new Error('Match was not found');
       }
+      const entryGroup = panel.getFlameChart().getMainDataProvider().groupForEvent(matchedIndex);
+      const groupIndex = entryGroup && data.groups.indexOf(entryGroup);
+      if (groupIndex === null || groupIndex < 0) {
+        throw new Error('groupIndex was not found');
+      }
+      // Ensure the entry's track is expanded
+      if (!entryGroup?.expanded) {
+        mainFlameChart.toggleGroupExpand(groupIndex);
+      }
+
       const eventCoordinates = mainFlameChart.entryIndexToCoordinates(matchedIndex);
       if (!eventCoordinates) {
         throw new Error('Coordinates were not found');
@@ -39,6 +49,17 @@ describe('FlameChart', function() {
       const {x, y} = eventCoordinates;
       return {x, y};
     }, title, tsMicroSecs);
+  }
+
+  async function setWindowTimes(startMs: number, endMs: number): Promise<void> {
+    const {frontend} = getBrowserAndPages();
+    await frontend.evaluate((start: number, end: number) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const panel = (window as any).UI.panels.timeline as Timeline.TimelinePanel.TimelinePanel;
+      const mainFlameChart = panel.getFlameChart().getMainFlameChart();
+      mainFlameChart.setWindowTimes(start, end, false);
+      mainFlameChart.update();
+    }, startMs, endMs);
   }
   async function getOffsetForGroupWithName(title: string): Promise<number> {
     const {frontend} = getBrowserAndPages();
@@ -101,7 +122,7 @@ describe('FlameChart', function() {
   });
 
   it('reveals an event\'s initiator in the flamechart', async () => {
-    await loadComponentDocExample('performance_panel/basic.html?trace=web-dev');
+    await loadComponentDocExample('performance_panel/basic.html?trace=async-js-calls');
     await waitFor('.timeline-flamechart');
     const {frontend} = getBrowserAndPages();
 
@@ -110,24 +131,23 @@ describe('FlameChart', function() {
     const margin = 3;
 
     // Click on an entry that has an initiator and click the initiator link.
-    const titleForTimerFire = 'Timer fired';
-    const timeStampForTimerFire = 1020035170393;
+    const queryForFunctionCall = 'Function call';
+    const timeStampForFunctionCall = 131719500206;
     const {x: timerFireEntryX, y: timerFireEntryY} =
-        await getCoordinatesForEntryWithTitleAndTs(titleForTimerFire, timeStampForTimerFire);
+        await getCoordinatesForEntryWithTitleAndTs(queryForFunctionCall, timeStampForFunctionCall);
     await frontend.mouse.click(timerFireEntryX + margin, timerFireEntryY + margin);
 
-    const timerFireHandle = await waitFor('.timeline-details-chip-title');
-    const timerFireTitle = await timerFireHandle.evaluate(element => element.innerHTML);
-    assert.isTrue(timerFireTitle.includes('Timer fired'));
+    const functionCallHandle = await waitFor('.timeline-details-chip-title');
+    const functionCallTitle = await functionCallHandle.evaluate(element => element.innerHTML);
+    assert.isTrue(functionCallTitle.includes(queryForFunctionCall));
     const initiatorLink = await waitFor('[data-row-title="Initiated by"] .timeline-details-view-row-value');
     await initiatorLink.click();
 
     // Make sure the highlighting element is on the initiator, with some
     // margin error.
-    const titleForTimerInstall = 'Install timer';
-    const timeStampForTimerInstall = 1020035169385;
-    const {x: timerInstallEntryX, y: timerInstallEntryY} =
-        await getCoordinatesForEntryWithTitleAndTs(titleForTimerInstall, timeStampForTimerInstall);
+    const queryForRAF = 'requestAnimationFrame';
+    const timeStampForRaf = 131719499377;
+    const {x: rAFEntryX, y: rAFEntryY} = await getCoordinatesForEntryWithTitleAndTs(queryForRAF, timeStampForRaf);
 
     const highlightElement = await waitFor('.overlay-type-ENTRY_SELECTED');
 
@@ -136,53 +156,42 @@ describe('FlameChart', function() {
       return {x, y};
     });
 
-    assert.isTrue(highlightX <= timerInstallEntryX + margin && highlightX >= timerInstallEntryX - margin);
-    assert.isTrue(highlightY <= timerInstallEntryY + margin && highlightY >= timerInstallEntryY - margin);
+    assert.isTrue(highlightX <= rAFEntryX + margin && highlightX >= rAFEntryX - margin);
+    assert.isTrue(highlightY <= rAFEntryY + margin && highlightY >= rAFEntryY - margin);
 
     // Make sure the initiator details are visible.
     const installTimerHandle = await waitFor('.timeline-details-chip-title');
     const installTimerTitle = await installTimerHandle.evaluate(element => element.innerHTML);
-    assert.isTrue(installTimerTitle.includes('Install timer'));
+    assert.isTrue(installTimerTitle.includes(queryForRAF));
   });
 
-  it('navigates to the event\'s initiator and back to the initiated event in the flamechart ', async () => {
-    await loadComponentDocExample('performance_panel/basic.html?trace=web-dev');
+  it('navigates to the initiated event in the flamechart from its initiator\'s details', async () => {
+    await loadComponentDocExample('performance_panel/basic.html?trace=async-js-calls');
     await waitFor('.timeline-flamechart');
+    await setWindowTimes(131719487.460, 131719515.377);
     const {frontend} = getBrowserAndPages();
 
     // Add some margin to the coordinates so that we don't click right
     // in the entry's border.
     const margin = 3;
 
-    // Click on an entry that has an initiator and click the initiator link.
-    const titleForTimerFire = 'Timer fired';
-    const timeStampForTimerFire = 1020035170393;
-    const {x: timerFireEntryX, y: timerFireEntryY} =
-        await getCoordinatesForEntryWithTitleAndTs(titleForTimerFire, timeStampForTimerFire);
-    await frontend.mouse.click(timerFireEntryX + margin, timerFireEntryY + margin);
+    const queryForRAF = 'requestAnimationFrame';
+    const timeStampForRaf = 131719499377;
+    const {x: rAFEntryX, y: rAFEntryY} = await getCoordinatesForEntryWithTitleAndTs(queryForRAF, timeStampForRaf);
 
-    let timerFireHandle = await waitFor('.timeline-details-chip-title');
-    let timerFireTitle = await timerFireHandle.evaluate(element => element.innerHTML);
-    assert.isTrue(timerFireTitle.includes('Timer fired'));
-    let initiatorLink = await waitFor('[data-row-title="Initiated by"] .timeline-details-view-row-value');
+    await frontend.mouse.click(rAFEntryX, rAFEntryY + margin);
+
+    const functionCallHandle = await waitFor('.timeline-details-chip-title');
+    const functionCallTitle = await functionCallHandle.evaluate(element => element.innerHTML);
+    assert.isTrue(functionCallTitle.includes(queryForRAF));
+
+    const initiatorLink = await waitFor('[data-row-title="Initiator for"] .timeline-details-view-row-value');
     await initiatorLink.click();
 
-    // Make sure that the summary now contains the initiator info
+    // Make sure the initiated event details are visible.
     const installTimerHandle = await waitFor('.timeline-details-chip-title');
     const installTimerTitle = await installTimerHandle.evaluate(element => element.innerHTML);
-    assert.isTrue(installTimerTitle.includes('Install timer'));
-
-    // Find the field that has a link this event initiated and click it.
-    timerFireHandle = await waitFor('.timeline-details-chip-title');
-    timerFireTitle = await timerFireHandle.evaluate(element => element.innerHTML);
-    assert.isTrue(timerFireTitle.includes('Install timer'));
-    initiatorLink = await waitFor('[data-row-title="Initiator for"] .timeline-details-view-row-value');
-
-    await initiatorLink.click();
-    // Make sure the details contain the initial event name
-    timerFireHandle = await waitFor('.timeline-details-chip-title');
-    timerFireTitle = await timerFireHandle.evaluate(element => element.innerHTML);
-    assert.isTrue(timerFireTitle.includes('Timer fired'));
+    assert.isTrue(installTimerTitle.includes('Function call'));
   });
 
   it('the initiator link changes to text if the link is for an entry that is outside of the current breadcrumb',
@@ -196,15 +205,15 @@ describe('FlameChart', function() {
        const margin = 3;
 
        // Click on an entry that has an initiator.
-       const titleForTimerFire = 'Timer fired';
-       const timeStampForTimerFire = 1020035170393;
+       const queryForStyleRecalc = 'Recalculate style';
+       const timeStampForTimerFire = 1020035005603;
        const {x: timerFireEntryX, y: timerFireEntryY} =
-           await getCoordinatesForEntryWithTitleAndTs(titleForTimerFire, timeStampForTimerFire);
+           await getCoordinatesForEntryWithTitleAndTs(queryForStyleRecalc, timeStampForTimerFire);
        await frontend.mouse.click(timerFireEntryX + margin, timerFireEntryY + margin);
 
-       let timerFireHandle = await waitFor('.timeline-details-chip-title');
-       let timerFireTitle = await timerFireHandle.evaluate(element => element.innerHTML);
-       assert.isTrue(timerFireTitle.includes('Timer fired'));
+       const styleRecalcHandle = await waitFor('.timeline-details-chip-title');
+       const styleRecalcTitle = await styleRecalcHandle.evaluate(element => element.innerHTML);
+       assert.isTrue(styleRecalcTitle.includes(queryForStyleRecalc));
        let initiatorLink = await waitFor('[data-row-title="Initiated by"] .timeline-details-view-row-value');
 
        // Before a breadcrumb is created, the link to the entry initiator is activated. Check it by getting the 'role' attribute and ckecking if it is 'link'.
@@ -213,20 +222,17 @@ describe('FlameChart', function() {
        assert.strictEqual(initiatorLinkRole, 'link');
        // When the initiator link is active, its' text is the name of an entry it is linking to.
        let initiatorLinkText = await initiatorLink.evaluate(element => element.textContent);
-       assert.strictEqual(initiatorLinkText, 'Install timer');
+       assert.strictEqual(initiatorLinkText, 'Schedule style recalculation');
 
        // Create a breadcrumb that is outside of the entry the displayed link is linking to.
-       const breadcrumbStart = 1020034823 as Trace.Types.Timing.MilliSeconds;
-       const breadcrumbEnd = 1020034830 as Trace.Types.Timing.MilliSeconds;
+       const breadcrumbStart = 1020034993.608 as Trace.Types.Timing.MilliSeconds;
+       const breadcrumbEnd = 1020035017.841 as Trace.Types.Timing.MilliSeconds;
        await createTimelineBreadcrumb(breadcrumbStart, breadcrumbEnd);
 
-       timerFireHandle = await waitFor('.timeline-details-chip-title');
-       timerFireTitle = await timerFireHandle.evaluate(element => element.innerHTML);
-       assert.isTrue(timerFireTitle.includes('Timer fired'));
        // The link to the initiator is now deactivated and the name is followed by 'outside of the breadcrumb range'
        initiatorLink = await waitFor('[data-row-title="Initiated by"] .timeline-details-view-row-value');
        initiatorLinkText = await initiatorLink.evaluate(element => element.textContent);
-       assert.strictEqual(initiatorLinkText, 'Install timer (outside of the breadcrumb range)');
+       assert.strictEqual(initiatorLinkText, 'Schedule style recalculation (outside of the breadcrumb range)');
 
        // The link to the entry should not be active.
        initiatorLinkRole = await initiatorLink.evaluate(element => element.querySelector('span')?.getAttribute('role'));

@@ -9,184 +9,165 @@ import {TraceLoader} from '../../testing/TraceLoader.js';
 import * as Timeline from './timeline.js';
 
 describeWithEnvironment('Initiators', () => {
-  it('returns the initiator data', async function() {
-    const {parsedTrace} = await TraceLoader.traceEngine(this, 'set-timeout-long-task.json.gz');
+  describe('initiator-initiated event relationships', () => {
+    let requestIdleCallbackCall: Trace.Types.Events.SyntheticProfileCall;
+    let functionCallByrequestIdleCallback: Trace.Types.Events.Event;
+    let setTimeoutCall: Trace.Types.Events.SyntheticProfileCall;
+    let functionCallBySetTimeout: Trace.Types.Events.Event;
+    let rAFCall: Trace.Types.Events.SyntheticProfileCall;
+    let functionCallByRAF: Trace.Types.Events.Event;
 
-    const timerFireEvent =
-        Array.from(parsedTrace.Initiators.eventToInitiator.keys()).find(Trace.Types.Events.isTimerFire);
-    assert.exists(timerFireEvent);
-    const timerInstallEvent = parsedTrace.Initiators.eventToInitiator.get(timerFireEvent);
-    assert.exists(timerInstallEvent);
-    const initiatorData = Timeline.Initiators.initiatorsDataToDraw(parsedTrace, timerFireEvent, [], []);
+    let parsedTrace: Trace.Handlers.Types.ParsedTrace;
+    beforeEach(async function() {
+      parsedTrace = (await TraceLoader.traceEngine(this, 'async-js-calls.json.gz')).parsedTrace;
+      setTimeoutCall =
+          parsedTrace.Renderer.allTraceEntries
+              .filter(e => Trace.Types.Events.isProfileCall(e) && e.callFrame.functionName === 'setTimeout')
+              .at(-1) as Trace.Types.Events.SyntheticProfileCall;
+      assert.exists(setTimeoutCall);
+      assert.isTrue(Trace.Types.Events.isProfileCall(setTimeoutCall));
 
-    assert.deepEqual(initiatorData, [{
-                       event: timerFireEvent,
-                       initiator: timerInstallEvent,
-                     }]);
-  });
+      functionCallBySetTimeout =
+          parsedTrace.Renderer.allTraceEntries.find(
+              e => Trace.Types.Events.isFunctionCall(e) && e.ts > setTimeoutCall.ts) as Trace.Types.Events.Event;
+      assert.exists(functionCallBySetTimeout);
 
-  it('returns the initiator data for network requests', async function() {
-    const {parsedTrace} = await TraceLoader.traceEngine(this, 'network-requests-initiators.json.gz');
+      rAFCall =
+          parsedTrace.Renderer.allTraceEntries
+              .filter(e => Trace.Types.Events.isProfileCall(e) && e.callFrame.functionName === 'requestAnimationFrame')
+              .at(-1) as Trace.Types.Events.SyntheticProfileCall;
+      assert.exists(rAFCall);
+      assert.isTrue(Trace.Types.Events.isProfileCall(rAFCall));
 
-    // Find the network request to test, it is initiated by `youtube.com`.
-    const event = parsedTrace.NetworkRequests.byTime.find(event => event.ts === 1491680762420);
-    assert.exists(event);
-    // Find the `youtube.com` network request.
-    const initiator = parsedTrace.NetworkRequests.byTime.find(event => event.ts === 1491680629144);
-    assert.exists(initiator);
-    const initiatorData = Timeline.Initiators.initiatorsDataToDrawForNetwork(parsedTrace, event);
+      functionCallByRAF =
+          parsedTrace.Renderer.allTraceEntries.find(e => Trace.Types.Events.isFunctionCall(e) && e.ts > rAFCall.ts) as
+          Trace.Types.Events.Event;
+      assert.exists(functionCallByRAF);
 
-    assert.deepEqual(initiatorData, [{event, initiator}]);
-  });
+      requestIdleCallbackCall =
+          parsedTrace.Renderer.allTraceEntries
+              .filter(e => Trace.Types.Events.isProfileCall(e) && e.callFrame.functionName === 'requestIdleCallback')
+              .at(-1) as Trace.Types.Events.SyntheticProfileCall;
+      assert.exists(requestIdleCallbackCall);
+      assert.isTrue(Trace.Types.Events.isProfileCall(requestIdleCallbackCall));
 
-  it('can walk up the tree to find the first parent with an initiator', async function() {
-    const {parsedTrace} = await TraceLoader.traceEngine(this, 'set-timeout-long-task.json.gz');
-
-    // Find any of the fibonnaci() calls; they have a parent
-    // event (TimerFire) that has an initiator.
-    const fibonacciCall = parsedTrace.Renderer.allTraceEntries.find(entry => {
-      return Trace.Types.Events.isProfileCall(entry) && entry.callFrame.functionName === 'fibonacci';
+      functionCallByrequestIdleCallback = parsedTrace.Renderer.allTraceEntries.find(
+                                              e => Trace.Types.Events.isFunctionCall(e) &&
+                                                  e.ts > requestIdleCallbackCall.ts) as Trace.Types.Events.Event;
+      assert.exists(functionCallByrequestIdleCallback);
     });
-    assert.exists(fibonacciCall);
-
-    const timerFireEvent =
-        Array.from(parsedTrace.Initiators.eventToInitiator.keys()).find(Trace.Types.Events.isTimerFire);
-    assert.exists(timerFireEvent);
-    const timerInstallEvent = parsedTrace.Initiators.eventToInitiator.get(timerFireEvent);
-    assert.exists(timerInstallEvent);
-
-    // Find the initator data but starting at the fibonacci()
-    // call.
-    const initiatorsData = Timeline.Initiators.initiatorsDataToDraw(parsedTrace, fibonacciCall, [], []);
-
-    assert.deepEqual(initiatorsData, [{
-                       event: timerFireEvent,
-                       initiator: timerInstallEvent,
-                     }]);
-  });
-
-  it('will walk back through the initiators to find the entire chain', async function() {
-    const {parsedTrace} = await TraceLoader.traceEngine(this, 'nested-initiators.json.gz');
-
-    // Find any of the fibonnaci() calls; they have a parent
-    // event (TimerFire) that has an initiator.
-    const fibonacciCall = parsedTrace.Renderer.allTraceEntries.find(entry => {
-      return Trace.Types.Events.isProfileCall(entry) && entry.callFrame.functionName === 'fibonacci';
+    it('returns the initiator data', async function() {
+      const initiatorData = Timeline.Initiators.initiatorsDataToDraw(parsedTrace, functionCallBySetTimeout, [], []);
+      assert.deepEqual(initiatorData[0], {
+        event: functionCallBySetTimeout,
+        initiator: setTimeoutCall,
+      });
     });
-    assert.exists(fibonacciCall);
 
-    // Find the initators data but starting at the fibonacci()
-    // call. We expect to find two initiatorData objects here:
-    // 1. fibonacci() ===> TimerFire caused by TimerInstall
-    // 2. The TimerInstall from (1), caused by a prior TimerInstall.
-    const initiatorsData = Timeline.Initiators.initiatorsDataToDraw(parsedTrace, fibonacciCall, [], []);
+    it('can walk up the tree to find the first parent with an initiator', async function() {
+      // Find any of the bar() calls; they have a parent event
+      // (FunctionCall) that has an initiator.
+      const barCall = parsedTrace.Renderer.allTraceEntries.find(
+          e => Trace.Types.Events.isProfileCall(e) && e.callFrame.functionName === 'bar');
+      assert.exists(barCall);
 
-    assert.lengthOf(initiatorsData, 2);
-    for (const initiatorData of initiatorsData) {
-      // Ensure each initiatorData object has TimerInstall>TimerFire event to initiator.
-      assert.strictEqual(initiatorData.event.name, Trace.Types.Events.Name.TIMER_FIRE);
-      assert.strictEqual(initiatorData.initiator.name, Trace.Types.Events.Name.TIMER_INSTALL);
-    }
-  });
+      // Find the initator data but starting at the fibonacci()
+      // call.
+      const initiatorsData = Timeline.Initiators.initiatorsDataToDraw(parsedTrace, barCall, [], []);
 
-  it('will walk forward to find the events initiated by the selected entry', async function() {
-    const {parsedTrace} = await TraceLoader.traceEngine(this, 'nested-initiators.json.gz');
-
-    // Find any of the InstallTimer calls; they initiate other events.
-    const timerInstall = parsedTrace.Renderer.allTraceEntries.find(entry => {
-      return entry.name === Trace.Types.Events.Name.TIMER_INSTALL;
+      assert.deepEqual(initiatorsData[0], {
+        event: functionCallBySetTimeout,
+        initiator: setTimeoutCall,
+      });
     });
-    assert.exists(timerInstall);
 
-    // Find the initatorData objects starting at the TimerInstall
-    // call. We expect to find one initatorData here:
-    // TimerFire that was initiated by the entry we found - TimerInstall
+    it('will walk back through the initiators to find the entire chain', async function() {
+      // Find any of the baz() calls; they have a parent event
+      // (FunctionCall) that has an initiator.
+      const bazCall = parsedTrace.Renderer.allTraceEntries.find(
+          e => Trace.Types.Events.isProfileCall(e) && e.callFrame.functionName === 'baz');
+      assert.exists(bazCall);
 
-    const initatorsData = Timeline.Initiators.initiatorsDataToDraw(parsedTrace, timerInstall, [], []);
+      // Find the initators data but starting at the baz()
+      // call. We expect to find 3 initiatorData objects here:
+      // 1. baz() ===> FunctionCall caused by requestIdleCallback
+      // 2. The requestIdleCallback from (1), caused by a prior setTimeout.
+      // 3. The setTimeout from (2), caused by a prior requestAnimationFrame.
+      const initiatorsData = Timeline.Initiators.initiatorsDataToDraw(parsedTrace, bazCall, [], []);
 
-    assert.lengthOf(initatorsData, 1);
-    for (const initatorData of initatorsData) {
-      // Ensure each initiatorData object has TimerInstall>TimerFire event to initiator.
-      assert.strictEqual(initatorData.event.name, Trace.Types.Events.Name.TIMER_FIRE);
-      assert.strictEqual(initatorData.initiator.name, Trace.Types.Events.Name.TIMER_INSTALL);
-    }
-  });
+      assert.deepEqual(initiatorsData, [
+        {
+          event: functionCallByrequestIdleCallback,
+          initiator: requestIdleCallbackCall,
+        },
+        {
+          event: functionCallBySetTimeout,
+          initiator: setTimeoutCall,
+        },
+        {
+          event: functionCallByRAF,
+          initiator: rAFCall,
+        },
+      ]);
+    });
 
-  it('will return the closest expandable ancestor as an initiator in a pair if the initiator itself is hidden',
-     async function() {
-       const {parsedTrace} = await TraceLoader.traceEngine(this, 'nested-initiators.json.gz');
+    it('will walk forward to find the events initiated by the selected entry', async function() {
+      const initatorsData = Timeline.Initiators.initiatorsDataToDraw(parsedTrace, rAFCall, [], []);
+      assert.lengthOf(initatorsData, 1);
+      assert.strictEqual(initatorsData[0].event, functionCallByRAF);
+      assert.strictEqual(initatorsData[0].initiator, rAFCall);
+    });
 
-       // Find any of the InstallTimer calls; they initiate other events.
-       const timerInstall = parsedTrace.Renderer.allTraceEntries.find(entry => {
-         return entry.name === Trace.Types.Events.Name.TIMER_INSTALL;
-       });
-       assert.exists(timerInstall);
-       // Get the parent of InstallTimer to add to the expandable events array.
-       // When we add TimerInstall to hidden entries list, it will be the closest expandable parent and the initiator should point to it.
-       const timerInstallParent = parsedTrace.Renderer.entryToNode.get(timerInstall)?.parent;
-       assert.exists(timerInstallParent);
+    it('will return the closest expandable ancestor as an initiator in a pair if the initiator itself is hidden',
+       async function() {
+         // Get the parent of rAF to add to the expandable events array.
+         // When we add rAF to hidden entries list, it will be the
+         // closest expandable parent and the initiator should point to it.
+         const rAFParent = parsedTrace.Renderer.entryToNode.get(rAFCall)?.parent;
+         assert.exists(rAFParent);
 
-       // Find the initatorData objects starting at the TimerInstall
-       // call. We expect to find one initatorData here:
-       // TimerFire that was initiated by the entry we found - Parent of TimerInstall because TimerInstall is hidden
-       const initiatorsData = Timeline.Initiators.initiatorsDataToDraw(
-           parsedTrace, timerInstall, [timerInstall], [timerInstallParent?.entry]);
+         // Find the initatorData objects starting at the rAF
+         // call. We expect to find one initatorData here:
+         // rAF callback initiated by rAF -> Parent of rAF because rAF is hidden
+         const initiatorsData =
+             Timeline.Initiators.initiatorsDataToDraw(parsedTrace, rAFCall, [rAFCall], [rAFParent?.entry]);
 
-       assert.lengthOf(initiatorsData, 1);
-       // Ensure each initiatorData object has TimerInstall>TimerFire event to initiator.
-       for (const initiatorData of initiatorsData) {
-         assert.strictEqual(initiatorData.event.name, Trace.Types.Events.Name.TIMER_FIRE);
-         assert.strictEqual(initiatorData.initiator, timerInstallParent.entry);
+         assert.lengthOf(initiatorsData, 1);
+         assert.strictEqual(initiatorsData[0].event, functionCallByRAF);
+         assert.strictEqual(initiatorsData[0].initiator, rAFParent.entry);
          // Ensure the expandable entry is marked as hidden
-         assert.strictEqual(initiatorData.isInitiatorHidden, true);
-       }
-     });
-
-  it('will return the closest expandable ancestor as an initiated event in a pair if the event itself is hidden',
-     async function() {
-       const {parsedTrace} = await TraceLoader.traceEngine(this, 'nested-initiators.json.gz');
-
-       // Find any of the fibonnaci() calls; they have a parent
-       // event (TimerFire) that has an initiator.
-       const fibonacciCall = parsedTrace.Renderer.allTraceEntries.find(entry => {
-         return Trace.Types.Events.isProfileCall(entry) && entry.callFrame.functionName === 'fibonacci';
+         assert.strictEqual(initiatorsData[0].isInitiatorHidden, true);
        });
-       assert.exists(fibonacciCall);
 
-       // Find the initatorData objects but starting at the fibonacci()
-       // call. We expect to find two initiatorData objects here:
-       // 1. fibonacci() ===> TimerFire caused by TimerInstall
-       // 2. The TimerInstall from (1), caused by a prior TimerInstall.
-       let initiatorsData = Timeline.Initiators.initiatorsDataToDraw(parsedTrace, fibonacciCall, [], []);
+    it('will return the closest expandable ancestor as an initiated event in a pair if the event itself is hidden',
+       async function() {
+         const functionCallByRAFParent = parsedTrace.Renderer.entryToNode.get(functionCallByRAF)?.parent;
+         assert.exists(functionCallByRAFParent);
 
-       assert.lengthOf(initiatorsData, 2);
-       // Save the parents of initiated events and the events themselves to get initiators again with those as expandable and hidden
-       const timerFireParents: Trace.Types.Events.Event[] = [];
-       const initiatedEvents: Trace.Types.Events.Event[] = [];
+         const initiatorsData = Timeline.Initiators.initiatorsDataToDraw(
+             parsedTrace, rAFCall, [functionCallByRAF], [functionCallByRAFParent?.entry]);
 
-       for (const initiatorData of initiatorsData) {
-         // Ensure each initiatorData object has TimerInstall>TimerFire event to initiator.
-         assert.strictEqual(initiatorData.event.name, Trace.Types.Events.Name.TIMER_FIRE);
-         assert.strictEqual(initiatorData.initiator.name, Trace.Types.Events.Name.TIMER_INSTALL);
-         const parentEvent = parsedTrace.Renderer.entryToNode.get(initiatorData.event)?.parent?.entry;
-         if (parentEvent) {
-           timerFireParents.push(parentEvent);
-           initiatedEvents.push(initiatorData.event);
-         }
-       }
-
-       // Get initiatorData object again, now with the previously initiated events hidden and parents marked as expandable
-       initiatorsData =
-           Timeline.Initiators.initiatorsDataToDraw(parsedTrace, fibonacciCall, initiatedEvents, timerFireParents);
-       // The length should not change, just the inititated events.
-       assert.lengthOf(initiatorsData, 2);
-       for (let i = 0; i < initiatorsData.length; i++) {
-         const initiatorData = initiatorsData[i];
-         // Ensure each initiatorData object has TimerInstall>TimerFire event to initiator.
-         assert.strictEqual(initiatorData.event, timerFireParents[i]);
-         assert.strictEqual(initiatorData.initiator.name, Trace.Types.Events.Name.TIMER_INSTALL);
+         assert.lengthOf(initiatorsData, 1);
+         assert.strictEqual(initiatorsData[0].event, functionCallByRAFParent?.entry);
+         assert.strictEqual(initiatorsData[0].initiator, rAFCall);
          // Ensure the expandable entry is marked as hidden
-         assert.strictEqual(initiatorData.isEntryHidden, true);
-       }
-     });
+         assert.strictEqual(initiatorsData[0].isEntryHidden, true);
+       });
+  });
+
+  describe('Network Requests', function() {
+    it('returns the initiator data for network requests', async function() {
+      const {parsedTrace} = await TraceLoader.traceEngine(this, 'network-requests-initiators.json.gz');
+
+      // Find the network request to test, it is initiated by `youtube.com`.
+      const event = parsedTrace.NetworkRequests.byTime.find(event => event.ts === 1491680762420);
+      assert.exists(event);
+      // Find the `youtube.com` network request.
+      const initiator = parsedTrace.NetworkRequests.byTime.find(event => event.ts === 1491680629144);
+      assert.exists(initiator);
+      const initiatorData = Timeline.Initiators.initiatorsDataToDrawForNetwork(parsedTrace, event);
+
+      assert.deepEqual(initiatorData, [{event, initiator}]);
+    });
+  });
 });

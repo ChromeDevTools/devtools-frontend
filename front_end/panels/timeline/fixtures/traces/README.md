@@ -43,6 +43,11 @@ Generated from the [long-interaction story](https://github.com/ChromeDevTools/pe
 
 ## Example trace files
 
+### async-js-calls
+
+Contains `setTimeout`, `requestAnimationFrame` and `requestIdleCallback` calls and the JS async
+call stack tracking trace events ("v8::Debugger::AsyncTaskScheduled" and "v8::Debugger::AsyncTaskRun")
+
 ### basic
 
 A barebones trace file with the main details about processes and threads but
@@ -145,10 +150,6 @@ Generated from https://github.com/ChromeDevTools/performance-stories/tree/main/t
 ### timer-initiators
 
 Contains a `setTimeout`, `requestAnimationFrame` and `requestIdleCallback` call.
-
-### nested-initiators
-
-Contains a `setTimeout` triggered by a prior `setTimeout`, so there is a larger initiator chain.
 
 ### multiple-navigations-same-id
 

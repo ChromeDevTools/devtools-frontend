@@ -1280,6 +1280,7 @@ export const knownContextValues = new Set([
   'explain.console-message.hover',
   'explanation',
   'export-har',
+  'export-har-menu',
   'export-har-with-sensitive-data',
   'export-recording',
   'expose-internals',

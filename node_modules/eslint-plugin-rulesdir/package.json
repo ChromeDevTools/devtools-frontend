@@ -1,6 +1,6 @@
 {
   "name": "eslint-plugin-rulesdir",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Allows a local ESLint rules directory to be used without a command-line flag",
   "license": "MIT",
   "keywords": [

@@ -1,7 +1,6 @@
 'use strict';
 
-const isNil = require('ramda/src/isNil');
-const find = require('ramda/src/find');
+const { isNil, find } = require('rambda');
 const createAstUtils = require('../util/ast');
 
 const asyncMethods = [ 'async', 'callback', 'promise' ];

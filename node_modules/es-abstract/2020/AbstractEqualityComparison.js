@@ -8,7 +8,7 @@ var Type = require('./Type');
 
 var isNaN = require('../helpers/isNaN');
 
-// https://ecma-international.org/ecma-262/11.0/#sec-abstract-equality-comparison
+// https://262.ecma-international.org/11.0/#sec-abstract-equality-comparison
 
 module.exports = function AbstractEqualityComparison(x, y) {
 	var xType = Type(x);

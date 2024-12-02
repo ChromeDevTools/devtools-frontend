@@ -10,7 +10,7 @@ var abs = require('./abs');
 var floor = require('./floor');
 var modulo = require('./modulo');
 
-// https://ecma-international.org/ecma-262/6.0/#sec-touint8
+// https://262.ecma-international.org/6.0/#sec-touint8
 
 module.exports = function ToUint8(argument) {
 	var number = ToNumber(argument);

@@ -8,7 +8,7 @@ var hasRegExpMatcher = require('is-regex');
 
 var ToBoolean = require('./ToBoolean');
 
-// https://ecma-international.org/ecma-262/6.0/#sec-isregexp
+// https://262.ecma-international.org/6.0/#sec-isregexp
 
 module.exports = function IsRegExp(argument) {
 	if (!argument || typeof argument !== 'object') {

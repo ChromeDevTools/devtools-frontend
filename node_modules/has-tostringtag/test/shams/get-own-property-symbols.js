@@ -8,6 +8,7 @@ if (typeof Symbol === 'function' && typeof Symbol() === 'symbol') {
 		t.equal(typeof Symbol(), 'symbol');
 		t.end();
 	});
+	// @ts-expect-error CJS has top-level return
 	return;
 }
 
@@ -17,6 +18,7 @@ test('polyfilled Symbols', function (t) {
 	/* eslint-disable global-require */
 	t.equal(hasSymbolToStringTag(), false, 'hasSymbolToStringTag is false before polyfilling');
 
+	// @ts-expect-error no types defined
 	require('get-own-property-symbols');
 
 	require('../tests')(t);

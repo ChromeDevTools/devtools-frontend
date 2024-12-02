@@ -17,6 +17,9 @@ const path = require('path');
 //------------------------------------------------------------------------------
 
 const cache = {};
+
+const ruleExtensions = new Set(['.js', '.cjs', '.mjs', '.ts', '.cts', '.mts']);
+
 module.exports = {
   get rules() {
     const RULES_DIR = module.exports.RULES_DIR;
@@ -29,7 +32,7 @@ module.exports = {
       const rulesObject = {};
       rules.forEach((rulesDir) => {
         fs.readdirSync(rulesDir)
-          .filter(filename => filename.endsWith('.js') || filename.endsWith('.cjs') || filename.endsWith('.mjs'))
+          .filter(filename => ruleExtensions.has(path.extname(filename)))
           .map(filename => path.resolve(rulesDir, filename))
           .forEach((absolutePath) => {
             const ruleName = path.basename(absolutePath, path.extname(absolutePath));

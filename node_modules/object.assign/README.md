@@ -1,14 +1,13 @@
-#object.assign <sup>[![Version Badge][npm-version-svg]][npm-url]</sup>
+# object.assign <sup>[![Version Badge][npm-version-svg]][npm-url]</sup>
 
-[![Build Status][travis-svg]][travis-url]
+[![github actions][actions-image]][actions-url]
+[![coverage][codecov-image]][codecov-url]
 [![dependency status][deps-svg]][deps-url]
 [![dev dependency status][dev-deps-svg]][dev-deps-url]
 [![License][license-image]][license-url]
 [![Downloads][downloads-image]][downloads-url]
 
 [![npm badge][npm-badge-png]][npm-url]
-
-[![browser support][testling-png]][testling-url]
 
 An Object.assign shim. Invoke its "shim" method to shim Object.assign if it is unavailable.
 
@@ -126,10 +125,12 @@ Simply clone the repo, `npm install`, and run `npm test`
 [deps-url]: https://david-dm.org/ljharb/object.assign
 [dev-deps-svg]: https://david-dm.org/ljharb/object.assign/dev-status.svg?theme=shields.io
 [dev-deps-url]: https://david-dm.org/ljharb/object.assign#info=devDependencies
-[testling-png]: https://ci.testling.com/ljharb/object.assign.png
-[testling-url]: https://ci.testling.com/ljharb/object.assign
 [npm-badge-png]: https://nodei.co/npm/object.assign.png?downloads=true&stars=true
 [license-image]: http://img.shields.io/npm/l/object.assign.svg
 [license-url]: LICENSE
 [downloads-image]: http://img.shields.io/npm/dm/object.assign.svg
 [downloads-url]: http://npm-stat.com/charts.html?package=object.assign
+[codecov-image]: https://codecov.io/gh/ljharb/object.assign/branch/main/graphs/badge.svg
+[codecov-url]: https://app.codecov.io/gh/ljharb/object.assign/
+[actions-image]: https://img.shields.io/endpoint?url=https://github-actions-badge-u3jn4tfpocch.runkit.sh/ljharb/object.assign
+[actions-url]: https://github.com/ljharb/object.assign/actions

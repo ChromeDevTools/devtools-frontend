@@ -118,7 +118,6 @@ function findFirstExistingPath(
       tryPath.type === "index"
     ) {
       if (fileExists(tryPath.path)) {
-        // Not sure why we don't just return the full path? Why strip it?
         return TryPath.getStrippedPath(tryPath);
       }
     } else if (tryPath.type === "package") {
@@ -131,8 +130,7 @@ function findFirstExistingPath(
           fileExists
         );
         if (mainFieldMappedFile) {
-          // Not sure why we don't just return the full path? Why strip it?
-          return Filesystem.removeExtension(mainFieldMappedFile);
+          return mainFieldMappedFile;
         }
       }
     } else {

@@ -8,6 +8,7 @@ module.exports = {
 	'Abstract Relational Comparison': require('./5/AbstractRelationalComparison'),
 	'Strict Equality Comparison': require('./5/StrictEqualityComparison'),
 	abs: require('./5/abs'),
+	Canonicalize: require('./5/Canonicalize'),
 	CheckObjectCoercible: require('./5/CheckObjectCoercible'),
 	DateFromTime: require('./5/DateFromTime'),
 	Day: require('./5/Day'),

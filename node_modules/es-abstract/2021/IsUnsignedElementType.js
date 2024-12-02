@@ -4,8 +4,8 @@
 
 module.exports = function IsUnsignedElementType(type) {
 	return type === 'Uint8'
-        || type === 'Uint8C'
-        || type === 'Uint16'
-        || type === 'Uint32'
-        || type === 'BigUint64';
+		|| type === 'Uint8C'
+		|| type === 'Uint16'
+		|| type === 'Uint32'
+		|| type === 'BigUint64';
 };

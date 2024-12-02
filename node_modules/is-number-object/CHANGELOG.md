@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v1.0.7](https://github.com/inspect-js/is-number-object/compare/v1.0.6...v1.0.7) - 2022-04-01
+
+### Commits
+
+- [actions] reuse common workflows [`8f9a1b0`](https://github.com/inspect-js/is-number-object/commit/8f9a1b040a435a5c5d12150952d0e6f96d4f713a)
+- [meta] better `eccheck` command [`9dc8dff`](https://github.com/inspect-js/is-number-object/commit/9dc8dff273e4d0b954fd4f2a2eacc849d321b646)
+- [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `core-js`, `safe-publish-latest`, `tape` [`c50ecbf`](https://github.com/inspect-js/is-number-object/commit/c50ecbfc7577c69324fca4d2b40dd354c5156be9)
+- [actions] update codecov uploader [`f1a2560`](https://github.com/inspect-js/is-number-object/commit/f1a2560d4a996abea90f7a792069a35359869b67)
+- [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `aud`, `core-js`, `tape` [`4b06ace`](https://github.com/inspect-js/is-number-object/commit/4b06aceeba2ebf0887af020aa89caad8950e5f47)
+- [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `auto-changelog`, `core-js`, `tape` [`3dc0e8b`](https://github.com/inspect-js/is-number-object/commit/3dc0e8b0fcc96a9bc9936e9a62a523fe67bafca5)
+- [meta] add `bugs`/`homepage` package.json fields [`d7e0bcf`](https://github.com/inspect-js/is-number-object/commit/d7e0bcf1fe1b4a48d6500266c8b4058c854fecba)
+
 ## [v1.0.6](https://github.com/inspect-js/is-number-object/compare/v1.0.5...v1.0.6) - 2021-08-05
 
 ### Commits

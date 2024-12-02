@@ -1,7 +1,7 @@
 # tsconfig-paths
 
 [![npm version][version-image]][version-url]
-[![travis build][travis-image]][travis-url]
+[![build][build-image]][build-url]
 [![Coverage Status][codecov-image]][codecov-url]
 [![MIT license][license-image]][license-url]
 [![code style: prettier][prettier-image]][prettier-url]
@@ -258,8 +258,8 @@ yarn version --major
 
 [version-image]: https://img.shields.io/npm/v/tsconfig-paths.svg?style=flat
 [version-url]: https://www.npmjs.com/package/tsconfig-paths
-[travis-image]: https://travis-ci.com/dividab/tsconfig-paths.svg?branch=master&style=flat
-[travis-url]: https://travis-ci.com/dividab/tsconfig-paths
+[build-image]: https://github.com/dividab/tsconfig-paths/workflows/CI/badge.svg
+[build-url]: https://github.com/dividab/tsconfig-paths/actions/workflows/ci.yml?query=branch%3Amaster
 [codecov-image]: https://codecov.io/gh/dividab/tsconfig-paths/branch/master/graph/badge.svg
 [codecov-url]: https://codecov.io/gh/dividab/tsconfig-paths
 [license-image]: https://img.shields.io/github/license/dividab/tsconfig-paths.svg?style=flat

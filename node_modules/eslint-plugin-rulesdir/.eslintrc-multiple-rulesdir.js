@@ -13,7 +13,7 @@ if (!fs.existsSync(SYMLINK_LOCATION)) {
   fs.symlinkSync(__dirname, SYMLINK_LOCATION);
 }
 
-require('.').RULES_DIR = [path.resolve('fake-rule-dir-one'), path.resolve('fake-rule-dir-two')];
+require('.').RULES_DIR = [path.resolve('fake-rule-dir-one'), path.resolve('fake-rule-dir-two'), path.resolve('fake-rule-dir-three')];
 
 module.exports = {
   extends: 'airbnb-base',
@@ -25,6 +25,7 @@ module.exports = {
     'import/no-dynamic-require': 'off',
     'rulesdir/fake-rule': 'error',
     'rulesdir/another-fake-rule': 'error',
+    'rulesdir/yet-another-fake-rule': 'error',
   },
   plugins: [PACKAGE_NAME],
 };

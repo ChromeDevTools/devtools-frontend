@@ -148,7 +148,6 @@ function findFirstExistingPath(
         return doneCallback(err);
       }
       if (exists) {
-        // Not sure why we don't just return the full path? Why strip it?
         return doneCallback(undefined, TryPath.getStrippedPath(tryPath));
       }
       if (index === tryPaths.length - 1) {
@@ -180,11 +179,7 @@ function findFirstExistingPath(
               return doneCallback(mainFieldErr);
             }
             if (mainFieldMappedFile) {
-              // Not sure why we don't just return the full path? Why strip it?
-              return doneCallback(
-                undefined,
-                Filesystem.removeExtension(mainFieldMappedFile)
-              );
+              return doneCallback(undefined, mainFieldMappedFile);
             }
 
             // No field in package json was a valid option. Continue with the next path.

@@ -1,5 +1,5 @@
 'use strict';
 
-var $isNaN = Number.isNaN || function (a) { return a !== a; };
+var $isNaN = require('./isNaN');
 
-module.exports = Number.isFinite || function (x) { return typeof x === 'number' && !$isNaN(x) && x !== Infinity && x !== -Infinity; };
+module.exports = function (x) { return (typeof x === 'number' || typeof x === 'bigint') && !$isNaN(x) && x !== Infinity && x !== -Infinity; };

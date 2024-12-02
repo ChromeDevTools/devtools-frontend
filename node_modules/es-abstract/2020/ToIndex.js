@@ -1,8 +1,6 @@
 'use strict';
 
-var GetIntrinsic = require('get-intrinsic');
-
-var $RangeError = GetIntrinsic('%RangeError%');
+var $RangeError = require('es-errors/range');
 
 var ToInteger = require('./ToInteger');
 var ToLength = require('./ToLength');

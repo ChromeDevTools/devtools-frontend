@@ -13,8 +13,13 @@ module.exports = function (trimStart, t) {
 
 	// see https://codeblog.jonskeet.uk/2014/12/01/when-is-an-identifier-not-an-identifier-attack-of-the-mongolian-vowel-separator/
 	var mongolianVowelSeparator = '\u180E';
-	t.test('unicode >= 4 && < 6.3', { skip: !(/^\s$/).test(mongolianVowelSeparator) }, function (st) {
-		st.equal(trimStart(mongolianVowelSeparator + 'a' + mongolianVowelSeparator), 'a' + mongolianVowelSeparator, 'mongolian vowel separator is whitespace');
+	var mvsIsWS = (/^\s$/).test(mongolianVowelSeparator);
+	t.test('mongolian vowel separator: unicode >= 4 && < 6.3', function (st) {
+		st.equal(
+			trimStart(mongolianVowelSeparator + 'a' + mongolianVowelSeparator),
+			(mvsIsWS ? '' : mongolianVowelSeparator) + 'a' + mongolianVowelSeparator,
+			'mongolian vowel separator is ' + (mvsIsWS ? '' : 'not ') + 'whitespace'
+		);
 		st.end();
 	});
 

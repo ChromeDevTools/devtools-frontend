@@ -6,7 +6,7 @@ var $PromiseThen = callBound('Promise.prototype.then', true);
 
 var Type = require('./Type');
 
-// https://ecma-international.org/ecma-262/6.0/#sec-ispromise
+// https://262.ecma-international.org/6.0/#sec-ispromise
 
 module.exports = function IsPromise(x) {
 	if (Type(x) !== 'Object') {

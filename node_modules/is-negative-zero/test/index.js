@@ -4,6 +4,7 @@ var test = require('tape');
 var isNegativeZero = require('../');
 
 test('not negative zero', function (t) {
+	// @ts-expect-error
 	t.notOk(isNegativeZero(), 'undefined is not negative zero');
 	t.notOk(isNegativeZero(null), 'null is not negative zero');
 	t.notOk(isNegativeZero(false), 'false is not negative zero');

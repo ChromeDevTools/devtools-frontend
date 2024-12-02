@@ -9,7 +9,7 @@ var IsArray = require('./IsArray');
 var ToBoolean = require('./ToBoolean');
 var Type = require('./Type');
 
-// https://ecma-international.org/ecma-262/6.0/#sec-isconcatspreadable
+// https://262.ecma-international.org/6.0/#sec-isconcatspreadable
 
 module.exports = function IsConcatSpreadable(O) {
 	if (Type(O) !== 'Object') {

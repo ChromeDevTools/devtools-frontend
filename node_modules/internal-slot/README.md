@@ -1,5 +1,7 @@
 # internal-slot <sup>[![Version Badge][npm-version-svg]][package-url]</sup>
 
+[![github actions][actions-image]][actions-url]
+[![coverage][codecov-image]][codecov-url]
 [![dependency status][deps-svg]][deps-url]
 [![dev dependency status][dev-deps-svg]][dev-deps-url]
 [![License][license-image]][license-url]
@@ -50,3 +52,7 @@ Please email [@ljharb](https://github.com/ljharb) or see https://tidelift.com/se
 [license-url]: LICENSE
 [downloads-image]: https://img.shields.io/npm/dm/internal-slot.svg
 [downloads-url]: https://npm-stat.com/charts.html?package=internal-slot
+[codecov-image]: https://codecov.io/gh/ljharb/internal-slot/branch/main/graphs/badge.svg
+[codecov-url]: https://app.codecov.io/gh/ljharb/internal-slot/
+[actions-image]: https://img.shields.io/endpoint?url=https://github-actions-badge-u3jn4tfpocch.runkit.sh/ljharb/internal-slot
+[actions-url]: https://github.com/ljharb/internal-slot/actions

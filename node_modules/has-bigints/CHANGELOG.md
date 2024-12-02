@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v1.0.2](https://github.com/inspect-js/has-bigints/compare/v1.0.1...v1.0.2) - 2022-04-19
+
+### Commits
+
+- [actions] reuse common workflows [`a655b7f`](https://github.com/inspect-js/has-bigints/commit/a655b7f7733ba2de078b3a59a704c2795440d08c)
+- [actions] use `node/install` instead of `node/run`; use `codecov` action [`730a2e5`](https://github.com/inspect-js/has-bigints/commit/730a2e53d3f5f82ac43a11cb9753b11445d06d58)
+- [readme] add github actions/codecov badges; update URLs [`9a83788`](https://github.com/inspect-js/has-bigints/commit/9a8378861917b41ebb360a9d8ab3d39aa33acf7b)
+- [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `safe-publish-latest`, `tape` [`b1edc52`](https://github.com/inspect-js/has-bigints/commit/b1edc522ef6c23556e55b9c81b65fe884d1e2cc4)
+- [actions] update codecov uploader [`cbb1bd0`](https://github.com/inspect-js/has-bigints/commit/cbb1bd0eff486070a19283238da6afd33ca73b4b)
+- [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `aud`, `auto-changelog`, `tape` [`8717e6d`](https://github.com/inspect-js/has-bigints/commit/8717e6d6ae6b5010aea1fac5e48dfdfaf35d8c72)
+- [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `auto-changelog`, `safe-publish-latest`, `tape` [`5f70eab`](https://github.com/inspect-js/has-bigints/commit/5f70eab763118d40415f13e47446ea5c011fbe18)
+- [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `aud`, `tape` [`a1446bc`](https://github.com/inspect-js/has-bigints/commit/a1446bc3e806ce3911c73d6fbdd981f461c41019)
+- [meta] use `prepublishOnly` script for npm 7+ [`f2dd197`](https://github.com/inspect-js/has-bigints/commit/f2dd19716a06ca7a971644761e864f0435db278e)
+- [actions] use checkout v3 [`1ba72f1`](https://github.com/inspect-js/has-bigints/commit/1ba72f19ada076791ff193aca9d8537388d67ddb)
+- [Refactor] use a global variable to get the original BigInt instead of a global property [`a7ccfac`](https://github.com/inspect-js/has-bigints/commit/a7ccfac0414e56dadd263fd07c0b5141388df502)
+- [actions] skip `npm ls` on older nodes [`62d31e7`](https://github.com/inspect-js/has-bigints/commit/62d31e79658b16391458d0728e0dacbee8694ebb)
+
 ## [v1.0.1](https://github.com/inspect-js/has-bigints/compare/v1.0.0...v1.0.1) - 2020-12-13
 
 ### Commits

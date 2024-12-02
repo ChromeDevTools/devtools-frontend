@@ -1,8 +1,6 @@
 'use strict';
 
-var GetIntrinsic = require('get-intrinsic');
-
-var $EvalError = GetIntrinsic('%EvalError%');
+var $EvalError = require('es-errors/eval');
 
 var DaysInYear = require('./DaysInYear');
 var YearFromTime = require('./YearFromTime');

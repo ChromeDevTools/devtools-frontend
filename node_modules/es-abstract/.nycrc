@@ -5,6 +5,11 @@
 	"exclude": [
 		"coverage",
 		"operations",
-		"test"
+		"test",
+		"helpers/callBind.js",
+		"helpers/callBound.js",
+		"helpers/getOwnPropertyDescriptor.js",
+		"helpers/getSymbolDescription.js",
+		"helpers/regexTester.js"
 	]
 }

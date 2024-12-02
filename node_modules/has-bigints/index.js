@@ -1,6 +1,6 @@
 'use strict';
 
-var $BigInt = global.BigInt;
+var $BigInt = typeof BigInt !== 'undefined' && BigInt;
 
 module.exports = function hasNativeBigInts() {
 	return typeof $BigInt === 'function'

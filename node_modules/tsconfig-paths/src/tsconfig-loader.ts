@@ -9,7 +9,7 @@ import StripBom = require("strip-bom");
  * Typing for the parts of tsconfig that we care about
  */
 export interface Tsconfig {
-  extends?: string;
+  extends?: string | string[];
   compilerOptions?: {
     baseUrl?: string;
     paths?: { [key: string]: Array<string> };
@@ -122,51 +122,105 @@ export function loadTsconfig(
 
   const configString = readFileSync(configFilePath);
   const cleanedJson = StripBom(configString);
-  const config: Tsconfig = JSON5.parse(cleanedJson);
+  let config: Tsconfig;
+  try {
+    config = JSON5.parse(cleanedJson);
+  } catch (e) {
+    throw new Error(`${configFilePath} is malformed ${e.message}`);
+  }
+
   let extendedConfig = config.extends;
-
   if (extendedConfig) {
-    if (
-      typeof extendedConfig === "string" &&
-      extendedConfig.indexOf(".json") === -1
-    ) {
-      extendedConfig += ".json";
-    }
-    const currentDir = path.dirname(configFilePath);
-    let extendedConfigPath = path.join(currentDir, extendedConfig);
-    if (
-      extendedConfig.indexOf("/") !== -1 &&
-      extendedConfig.indexOf(".") !== -1 &&
-      !existsSync(extendedConfigPath)
-    ) {
-      extendedConfigPath = path.join(
-        currentDir,
-        "node_modules",
-        extendedConfig
+    let base: Tsconfig;
+
+    if (Array.isArray(extendedConfig)) {
+      base = extendedConfig.reduce(
+        (currBase, extendedConfigElement) =>
+          mergeTsconfigs(
+            currBase,
+            loadTsconfigFromExtends(
+              configFilePath,
+              extendedConfigElement,
+              existsSync,
+              readFileSync
+            )
+          ),
+        {}
+      );
+    } else {
+      base = loadTsconfigFromExtends(
+        configFilePath,
+        extendedConfig,
+        existsSync,
+        readFileSync
       );
     }
 
-    const base =
-      loadTsconfig(extendedConfigPath, existsSync, readFileSync) || {};
-
-    // baseUrl should be interpreted as relative to the base tsconfig,
-    // but we need to update it so it is relative to the original tsconfig being loaded
-    if (base.compilerOptions && base.compilerOptions.baseUrl) {
-      const extendsDir = path.dirname(extendedConfig);
-      base.compilerOptions.baseUrl = path.join(
-        extendsDir,
-        base.compilerOptions.baseUrl
-      );
-    }
-
-    return {
-      ...base,
-      ...config,
-      compilerOptions: {
-        ...base.compilerOptions,
-        ...config.compilerOptions,
-      },
-    };
+    return mergeTsconfigs(base, config);
   }
   return config;
+}
+
+/**
+ * Intended to be called only from loadTsconfig.
+ * Parameters don't have defaults because they should use the same as loadTsconfig.
+ */
+function loadTsconfigFromExtends(
+  configFilePath: string,
+  extendedConfigValue: string,
+  // eslint-disable-next-line no-shadow
+  existsSync: (path: string) => boolean,
+  readFileSync: (filename: string) => string
+): Tsconfig {
+  if (
+    typeof extendedConfigValue === "string" &&
+    extendedConfigValue.indexOf(".json") === -1
+  ) {
+    extendedConfigValue += ".json";
+  }
+  const currentDir = path.dirname(configFilePath);
+  let extendedConfigPath = path.join(currentDir, extendedConfigValue);
+  if (
+    extendedConfigValue.indexOf("/") !== -1 &&
+    extendedConfigValue.indexOf(".") !== -1 &&
+    !existsSync(extendedConfigPath)
+  ) {
+    extendedConfigPath = path.join(
+      currentDir,
+      "node_modules",
+      extendedConfigValue
+    );
+  }
+
+  const config =
+    loadTsconfig(extendedConfigPath, existsSync, readFileSync) || {};
+
+  // baseUrl should be interpreted as relative to extendedConfigPath,
+  // but we need to update it so it is relative to the original tsconfig being loaded
+  if (config.compilerOptions?.baseUrl) {
+    const extendsDir = path.dirname(extendedConfigValue);
+    config.compilerOptions.baseUrl = path.join(
+      extendsDir,
+      config.compilerOptions.baseUrl
+    );
+  }
+
+  return config;
+}
+
+function mergeTsconfigs(
+  base: Tsconfig | undefined,
+  config: Tsconfig | undefined
+): Tsconfig {
+  base = base || {};
+  config = config || {};
+
+  return {
+    ...base,
+    ...config,
+    compilerOptions: {
+      ...base.compilerOptions,
+      ...config.compilerOptions,
+    },
+  };
 }

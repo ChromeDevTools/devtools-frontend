@@ -1,4 +1,4 @@
-import * as TsConfigLoader from "./tsconfig-loader";
+import * as TsConfigLoader2 from "./tsconfig-loader";
 import * as path from "path";
 import { options } from "./options";
 
@@ -10,8 +10,8 @@ export interface ExplicitParams {
 }
 
 export type TsConfigLoader = (
-  params: TsConfigLoader.TsConfigLoaderParams
-) => TsConfigLoader.TsConfigLoaderResult;
+  params: TsConfigLoader2.TsConfigLoaderParams
+) => TsConfigLoader2.TsConfigLoaderResult;
 
 export interface ConfigLoaderParams {
   cwd: string;
@@ -45,7 +45,7 @@ export function loadConfig(cwd: string = options.cwd): ConfigLoaderResult {
 export function configLoader({
   cwd,
   explicitParams,
-  tsConfigLoader = TsConfigLoader.tsConfigLoader,
+  tsConfigLoader = TsConfigLoader2.tsConfigLoader,
 }: ConfigLoaderParams): ConfigLoaderResult {
   if (explicitParams) {
     // tslint:disable-next-line:no-shadowed-variable

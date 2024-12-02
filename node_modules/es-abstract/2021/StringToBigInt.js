@@ -3,8 +3,8 @@
 var GetIntrinsic = require('get-intrinsic');
 
 var $BigInt = GetIntrinsic('%BigInt%', true);
-var $TypeError = GetIntrinsic('%TypeError%');
-var $SyntaxError = GetIntrinsic('%SyntaxError%');
+var $TypeError = require('es-errors/type');
+var $SyntaxError = require('es-errors/syntax');
 
 // https://262.ecma-international.org/11.0/#sec-stringtobigint
 

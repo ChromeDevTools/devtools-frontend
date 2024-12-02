@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v1.0.2](https://github.com/ljharb/unbox-primitive/compare/v1.0.1...v1.0.2) - 2022-04-24
+
+### Commits
+
+- [actions] reuse common workflows [`e6420b9`](https://github.com/ljharb/unbox-primitive/commit/e6420b94eed3558ef3ecddbd3d85fe2f400d1db1)
+- [actions] update codecov uploader [`b90aff2`](https://github.com/ljharb/unbox-primitive/commit/b90aff2b17b70c1a7200eb5faa3f9e64ebf055f9)
+- [readme] add github actions/codecov badges; update URLs [`bcc39b9`](https://github.com/ljharb/unbox-primitive/commit/bcc39b9d6d101bad199c95604f94999f80d6da97)
+- [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `object-inspect`, `safe-publish-latest`, `tape` [`a704a32`](https://github.com/ljharb/unbox-primitive/commit/a704a32ec4af43cd0631317ae3a537012adc1610)
+- [Refactor] use `call-bind` instead of `function-bind` [`0a609f1`](https://github.com/ljharb/unbox-primitive/commit/0a609f1be6269cbf501482aacd9a0a1bd8596108)
+- [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `aud`, `auto-changelog`, `object-inspect`, `safe-publish-latest`, `tape` [`6a45317`](https://github.com/ljharb/unbox-primitive/commit/6a4531757d74af97c9d0770b102f81ce6ff0a8dc)
+- [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `aud`, `auto-changelog`, `object-inspect`, `tape` [`795c76f`](https://github.com/ljharb/unbox-primitive/commit/795c76f14c4df3c7ae934f7b14a98c07951ea9c7)
+- [Deps] update `has-bigints`, `has-symbols` [`257a065`](https://github.com/ljharb/unbox-primitive/commit/257a065496b4190c296d674bff342ea40cf8e176)
+
 ## [v1.0.1](https://github.com/ljharb/unbox-primitive/compare/v1.0.0...v1.0.1) - 2021-03-25
 
 ### Commits

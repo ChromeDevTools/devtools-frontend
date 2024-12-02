@@ -6,7 +6,6 @@
 	"rules": {
 		"id-length": 0,
 		"new-cap": [2, { "capIsNewExceptions": ["RequireObjectCoercible"] }],
-		"no-magic-numbers": [0],
-		"no-restricted-syntax": [2, "BreakStatement", "ContinueStatement", "DebuggerStatement", "LabeledStatement", "WithStatement"]
-	}
+		"no-restricted-syntax": [2, "BreakStatement", "ContinueStatement", "DebuggerStatement", "LabeledStatement", "WithStatement"],
+	},
 }

@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v1.13.3](https://github.com/inspect-js/object-inspect/compare/v1.13.2...v1.13.3) - 2024-11-09
+
+### Commits
+
+- [actions] split out node 10-20, and 20+ [`44395a8`](https://github.com/inspect-js/object-inspect/commit/44395a8fc1deda6718a5e125e86b9ffcaa1c7580)
+- [Fix] `quoteStyle`: properly escape only the containing quotes [`5137f8f`](https://github.com/inspect-js/object-inspect/commit/5137f8f7bea69a7fc671bb683fd35f244f38fc52)
+- [Refactor] clean up `quoteStyle` code [`450680c`](https://github.com/inspect-js/object-inspect/commit/450680cd50de4e689ee3b8e1d6db3a1bcf3fc18c)
+- [Tests] add `quoteStyle` escaping tests [`e997c59`](https://github.com/inspect-js/object-inspect/commit/e997c595aeaea84fd98ca35d7e1c3b5ab3ae26e0)
+- [Dev Deps] update `auto-changelog`, `es-value-fixtures`, `tape` [`d5a469c`](https://github.com/inspect-js/object-inspect/commit/d5a469c99ec07ccaeafc36ac4b36a93285086d48)
+- [Tests] replace `aud` with `npm audit` [`fb7815f`](https://github.com/inspect-js/object-inspect/commit/fb7815f9b72cae277a04f65bbb0543f85b88be62)
+- [Dev Deps] update `mock-property` [`11c817b`](https://github.com/inspect-js/object-inspect/commit/11c817bf10392aa017755962ba6bc89d731359ee)
+
 ## [v1.13.2](https://github.com/inspect-js/object-inspect/compare/v1.13.1...v1.13.2) - 2024-06-21
 
 ### Commits

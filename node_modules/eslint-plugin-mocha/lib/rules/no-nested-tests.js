@@ -8,7 +8,7 @@ module.exports = {
     meta: {
         type: 'problem',
         docs: {
-            description: 'Disallow tests to be nested within other tests ',
+            description: 'Disallow tests to be nested within other tests',
             url: 'https://github.com/lo1tuma/eslint-plugin-mocha/blob/master/docs/rules/no-nested-tests.md'
         },
         schema: []

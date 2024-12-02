@@ -3,9 +3,12 @@
 // var modulo = require('./modulo');
 var $floor = Math.floor;
 
-// http://262.ecma-international.org/5.1/#sec-5.2
+// http://262.ecma-international.org/11.0/#eqn-floor
 
 module.exports = function floor(x) {
 	// return x - modulo(x, 1);
+	if (typeof x === 'bigint') {
+		return x;
+	}
 	return $floor(x);
 };

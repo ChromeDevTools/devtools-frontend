@@ -1,20 +1,22 @@
 'use strict';
 
-const where = require('ramda/src/where');
-const includes = require('ramda/src/includes');
-const intersection = require('ramda/src/intersection');
-const pipe = require('ramda/src/pipe');
-const isEmpty = require('ramda/src/isEmpty');
-const complement = require('ramda/src/complement');
-const flip = require('ramda/src/flip');
-const filter = require('ramda/src/filter');
-const over = require('ramda/src/over');
-const lensProp = require('ramda/src/lensProp');
-const map = require('ramda/src/map');
-const view = require('ramda/src/view');
-const assoc = require('ramda/src/assoc');
-const allPass = require('ramda/src/allPass');
-const memoizeWith = require('ramda/src/memoizeWith');
+const {
+    where,
+    includes,
+    intersection,
+    pipe,
+    isEmpty,
+    complement,
+    flip,
+    filter,
+    over,
+    lensProp,
+    map,
+    view,
+    assoc,
+    allPass
+} = require('rambda');
+const { memoizeWith } = require('./memoizeWith');
 
 const INTERFACES = {
     BDD: 'BDD',
@@ -130,3 +132,4 @@ module.exports = {
     getTestCaseNames,
     getSuiteNames
 };
+

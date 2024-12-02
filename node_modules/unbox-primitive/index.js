@@ -1,15 +1,15 @@
 'use strict';
 
 var whichBoxedPrimitive = require('which-boxed-primitive');
-var bind = require('function-bind');
+var callBound = require('call-bind/callBound');
 var hasSymbols = require('has-symbols')();
 var hasBigInts = require('has-bigints')();
 
-var stringToString = bind.call(Function.call, String.prototype.toString);
-var numberValueOf = bind.call(Function.call, Number.prototype.valueOf);
-var booleanValueOf = bind.call(Function.call, Boolean.prototype.valueOf);
-var symbolValueOf = hasSymbols && bind.call(Function.call, Symbol.prototype.valueOf);
-var bigIntValueOf = hasBigInts && bind.call(Function.call, BigInt.prototype.valueOf);
+var stringToString = callBound('String.prototype.toString');
+var numberValueOf = callBound('Number.prototype.valueOf');
+var booleanValueOf = callBound('Boolean.prototype.valueOf');
+var symbolValueOf = hasSymbols && callBound('Symbol.prototype.valueOf');
+var bigIntValueOf = hasBigInts && callBound('BigInt.prototype.valueOf');
 
 module.exports = function unboxPrimitive(value) {
 	var which = whichBoxedPrimitive(value);

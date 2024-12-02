@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v1.0.2](https://github.com/inspect-js/is-weakref/compare/v1.0.1...v1.0.2) - 2021-12-10
+
+### Commits
+
+- [actions] reuse common workflows [`2375b1f`](https://github.com/inspect-js/is-weakref/commit/2375b1f9798b08c7af98481bbb38b4105835dacf)
+- [meta] do not publish workflow files [`4c1be42`](https://github.com/inspect-js/is-weakref/commit/4c1be423afacabf2f3aa9e8bf02f668bdeaf3a20)
+- [actions] use `node/install` instead of `node/run`; use `codecov` action [`7ec78ce`](https://github.com/inspect-js/is-weakref/commit/7ec78ce58c7553469eee97ae82fe147dfccde611)
+- [readme] update URLs [`6306f09`](https://github.com/inspect-js/is-weakref/commit/6306f09a7df388150fb1d0b855b6f9e60165a457)
+- [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `object-inspect`, `safe-publish-latest`, `tape` [`7a1601e`](https://github.com/inspect-js/is-weakref/commit/7a1601e93ae50a791751a96d33073f5e65f3d3c9)
+- [readme] add actions and codecov badges [`67ecd14`](https://github.com/inspect-js/is-weakref/commit/67ecd14b8b0192456932d1d54838accbf90ff5c0)
+- [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `auto-changelog`, `object-inspect`, `safe-publish-latest`, `tape` [`1a5013b`](https://github.com/inspect-js/is-weakref/commit/1a5013bddcb9edc23025571810f9a2eebda53683)
+- [actions] update codecov uploader [`b57b037`](https://github.com/inspect-js/is-weakref/commit/b57b037a547f3ecfa3d3f079a8015ec005c7181b)
+- [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `aud`, `object-inspect`, `tape` [`da49017`](https://github.com/inspect-js/is-weakref/commit/da49017800d628c9bcd2f094d49783d6ee649c50)
+- [meta] simplify "exports" [`9b88835`](https://github.com/inspect-js/is-weakref/commit/9b8883585506c135a3fcb9f55d0944a13b4eb3e6)
+- [Dev Deps] update `eslint`, `@ljharb/eslint-config`, `tape` [`c7e77f4`](https://github.com/inspect-js/is-weakref/commit/c7e77f495308f3385adfaa1f4ac78a2632e0bcde)
+- [Dev Deps] update `eslint` [`417b29e`](https://github.com/inspect-js/is-weakref/commit/417b29e7ceacebe24aef15422544443f4b59e181)
+- [meta] add `safe-publish-latest`; use `prepublishOnly` script for npm 7+ [`b1b99f4`](https://github.com/inspect-js/is-weakref/commit/b1b99f45e0977d10f8472e9272e48a696145c2b1)
+- [Deps] update `call-bind` [`aea342e`](https://github.com/inspect-js/is-weakref/commit/aea342e9e301deeb938e62b92a37cf991c5f7dbc)
+- [actions] update workflows [`786c2d3`](https://github.com/inspect-js/is-weakref/commit/786c2d3dd4486acec09786220d3dd9fd48e70e93)
+
 ## [v1.0.1](https://github.com/inspect-js/is-weakref/compare/v1.0.0...v1.0.1) - 2020-12-04
 
 ### Commits

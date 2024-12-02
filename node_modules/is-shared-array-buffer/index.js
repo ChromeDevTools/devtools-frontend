@@ -4,6 +4,7 @@ var callBound = require('call-bind/callBound');
 
 var $byteLength = callBound('SharedArrayBuffer.prototype.byteLength', true);
 
+/** @type {import('.')} */
 module.exports = $byteLength
 	? function isSharedArrayBuffer(obj) {
 		if (!obj || typeof obj !== 'object') {

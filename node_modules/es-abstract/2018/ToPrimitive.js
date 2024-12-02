@@ -2,7 +2,7 @@
 
 var toPrimitive = require('es-to-primitive/es2015');
 
-// https://ecma-international.org/ecma-262/6.0/#sec-toprimitive
+// https://262.ecma-international.org/6.0/#sec-toprimitive
 
 module.exports = function ToPrimitive(input) {
 	if (arguments.length > 1) {

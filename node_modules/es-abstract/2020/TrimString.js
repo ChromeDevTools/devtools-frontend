@@ -3,9 +3,7 @@
 var trimStart = require('string.prototype.trimstart');
 var trimEnd = require('string.prototype.trimend');
 
-var GetIntrinsic = require('get-intrinsic');
-
-var $TypeError = GetIntrinsic('%TypeError%');
+var $TypeError = require('es-errors/type');
 
 var RequireObjectCoercible = require('./RequireObjectCoercible');
 var ToString = require('./ToString');

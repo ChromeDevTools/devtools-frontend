@@ -11,3 +11,5 @@ trim_trailing_whitespace = true;
 spaces_in_brackets = false;
 end_of_line = lf;
 
+[CHANGELOG.md]
+indent_style = space

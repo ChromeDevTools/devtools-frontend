@@ -1,6 +1,6 @@
 {
   "author": "The Chromium Authors",
-  "bugs": "https://issues.chromium.org/issues?q=status:open componentid:1457055+",
+  "bugs": "http://goo.gle/devtools-bugs",
   "description": "Chrome DevTools UI",
   "homepage": "https://devtools.chrome.com",
   "keywords": [

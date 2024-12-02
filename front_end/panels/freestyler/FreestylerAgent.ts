@@ -580,8 +580,7 @@ export class FreestylerAgent extends AiAgent<SDK.DOMModel.DOMNode> {
     return output.trim();
   }
 
-  override async *
-      handleAction(action: string, rpcId?: number): AsyncGenerator<SideEffectResponse, ActionResponse, void> {
+  override async * handleAction(action: string): AsyncGenerator<SideEffectResponse, ActionResponse, void> {
     debugLog(`Action to execute: ${action}`);
     if (this.executionMode === Root.Runtime.HostConfigFreestylerExecutionMode.NO_SCRIPTS) {
       return {
@@ -589,7 +588,6 @@ export class FreestylerAgent extends AiAgent<SDK.DOMModel.DOMNode> {
         code: action,
         output: 'Error: JavaScript execution is currently disabled.',
         canceled: true,
-        rpcId,
       };
     }
 
@@ -605,7 +603,6 @@ export class FreestylerAgent extends AiAgent<SDK.DOMModel.DOMNode> {
             code: action,
             output: 'Error: JavaScript execution that modifies the page is currently disabled.',
             canceled: true,
-            rpcId,
           };
         }
 
@@ -621,7 +618,6 @@ export class FreestylerAgent extends AiAgent<SDK.DOMModel.DOMNode> {
                          Host.UserMetrics.Action.AiAssistanceSideEffectRejected,
             );
           },
-          rpcId,
         };
 
         result = await this.#generateObservation(action, {
@@ -634,7 +630,6 @@ export class FreestylerAgent extends AiAgent<SDK.DOMModel.DOMNode> {
         code: action,
         output: result.observation,
         canceled: result.canceled,
-        rpcId,
       };
     } finally {
       await scope.uninstall();

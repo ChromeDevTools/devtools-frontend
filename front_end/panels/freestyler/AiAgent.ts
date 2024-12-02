@@ -65,7 +65,6 @@ export interface SideEffectResponse {
   type: ResponseType.SIDE_EFFECT;
   code: string;
   confirm: (confirm: boolean) => void;
-  rpcId?: number;
 }
 
 export interface ActionResponse {
@@ -73,7 +72,6 @@ export interface ActionResponse {
   code: string;
   output: string;
   canceled: boolean;
-  rpcId?: number;
 }
 
 export interface QueryResponse {
@@ -303,7 +301,7 @@ export abstract class AiAgent<T> {
     return request;
   }
 
-  handleAction(action: string, rpcId?: number): AsyncGenerator<SideEffectResponse, ActionResponse, void>;
+  handleAction(action: string): AsyncGenerator<SideEffectResponse, ActionResponse, void>;
   handleAction(): never {
     throw new Error('Unexpected action found');
   }
@@ -557,7 +555,7 @@ STOP`;
       }
 
       if (action) {
-        const result = yield* this.handleAction(action, rpcId);
+        const result = yield* this.handleAction(action);
         this.#addHistory(result);
         query = `OBSERVATION: ${result.output}`;
         // Capture history state for the next iteration query.

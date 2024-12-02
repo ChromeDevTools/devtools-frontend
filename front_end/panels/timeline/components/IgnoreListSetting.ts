@@ -6,6 +6,7 @@ import '../../../ui/components/menus/menus.js';
 
 import * as Common from '../../../core/common/common.js';
 import * as i18n from '../../../core/i18n/i18n.js';
+import * as Bindings from '../../../models/bindings/bindings.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as Dialogs from '../../../ui/components/dialogs/dialogs.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
@@ -39,6 +40,28 @@ const UIStrings = {
    *@example {ad.*?} regex
    */
   removeRegex: 'Remove the regex: \'\'{regex}\'\'',
+  /**
+   *@description Aria accessible name in Ignore List Settings Dialog in Performance panel. It labels the input
+   * field used to add new or edit existing regular expressions that match file names to ignore in the debugger.
+   */
+  addNewRegex: 'Add a regular expression rule for the script\'s URL',
+  /**
+   * @description Aria accessible name in Ignore List Settings Dialog in Performance panel. It labels the checkbox of
+   * the input field used to enable the new regular expressions that match file names to ignore in the debugger.
+   */
+  ignoreScriptsWhoseNamesMatchNewRegex: 'Ignore scripts whose names match the new regex',
+  /**
+   *@description Error message in Framework Ignore List settings pane that declares pattern must not be empty
+   */
+  patternCannotBeEmpty: 'Rule can\'t be empty',
+  /**
+   *@description Error message in Framework Ignore List settings pane that declares pattern already exits
+   */
+  patternAlreadyExists: 'Rule already exists',
+  /**
+   *@description Error message in Framework Ignore List settings pane that declares pattern must be a valid regular expression
+   */
+  patternMustBeAValidRegular: 'Rule must be a valid regular expression',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/IgnoreListSetting.ts', UIStrings);
@@ -51,8 +74,16 @@ export class IgnoreListSetting extends HTMLElement {
       Common.Settings.Settings.instance().moduleSetting('enable-ignore-listing');
   readonly #regexPatterns = this.#getSkipStackFramesPatternSetting().getAsArray();
 
+  #newItemCheckbox = UI.UIUtils.CheckboxLabel.create(
+      /* title*/ undefined, /* checked*/ false, /* subtitle*/ undefined,
+      /* jslogContext*/ 'timeline.ignore-list-new-regex.checkbox');
+  #newItemInput = UI.UIUtils.createInput(
+      /* className*/ 'new-regex-text-input', /* type*/ 'text', /* jslogContext*/ 'timeline.ignore-list-new-regex.text');
+
   constructor() {
     super();
+
+    this.#initAddNewItem();
 
     Common.Settings.Settings.instance()
         .moduleSetting('skip-stack-frames-pattern')
@@ -74,6 +105,44 @@ export class IgnoreListSetting extends HTMLElement {
   #getSkipStackFramesPatternSetting(): Common.Settings.RegExpSetting {
     return Common.Settings.Settings.instance().moduleSetting('skip-stack-frames-pattern') as
         Common.Settings.RegExpSetting;
+  }
+
+  #onNewRegexAdded(): void {
+    const newRegex = this.#newItemInput.value.trim();
+    const {valid} = patternValidator(this.#regexPatterns, newRegex);
+    if (!valid) {
+      // It the new regex is invalid, let's skip it.
+      return;
+    }
+    Bindings.IgnoreListManager.IgnoreListManager.instance().addRegexToIgnoreList(newRegex);
+    this.#newItemCheckbox.checkboxElement.checked = false;
+    this.#newItemInput.value = '';
+  }
+
+  #handleKeyDown(event: KeyboardEvent): void {
+    // We do not want to create multi-line labels.
+    // Therefore, if the new key is `Enter` key, treat it
+    // as the end of the label input and blur the input field.
+    if (event.key === 'Enter' || event.key === 'Escape') {
+      this.#newItemInput.dispatchEvent(new FocusEvent('blur'));
+      return;
+    }
+  }
+
+  #handleInputChange(): void {
+    // Enable the rule if the text input field is not empty.
+    this.#newItemCheckbox.checkboxElement.checked = Boolean(this.#newItemInput.value.trim());
+  }
+
+  #initAddNewItem(): void {
+    const checkboxHelpText = i18nString(UIStrings.ignoreScriptsWhoseNamesMatchNewRegex);
+    const inputHelpText = i18nString(UIStrings.addNewRegex);
+    UI.Tooltip.Tooltip.install(this.#newItemCheckbox, checkboxHelpText);
+    UI.Tooltip.Tooltip.install(this.#newItemInput, inputHelpText);
+
+    this.#newItemInput.addEventListener('blur', this.#onNewRegexAdded.bind(this), false);
+    this.#newItemInput.addEventListener('keydown', this.#handleKeyDown.bind(this), false);
+    this.#newItemInput.addEventListener('input', this.#handleInputChange.bind(this), false);
   }
 
   #onRegexEnableToggled(regex: Common.Settings.RegExpSettingItem, checkbox: UI.UIUtils.CheckboxLabel): void {
@@ -138,6 +207,7 @@ export class IgnoreListSetting extends HTMLElement {
         <div class='ignore-list-setting-content'>
           <div class='ignore-list-setting-description'>${i18nString(UIStrings.ignoreListDescription)}</div>
           ${this.#regexPatterns.map(this.#renderItem.bind(this))}
+          <div class='new-regex-row'>${this.#newItemCheckbox}${this.#newItemInput}</div>
         </div>
       </devtools-button-dialog>
     `;
@@ -152,4 +222,42 @@ declare global {
   interface HTMLElementTagNameMap {
     'devtools-perf-ignore-list-setting': IgnoreListSetting;
   }
+}
+
+/**
+ * Returns if a new regex string is valid for the given regex setting array.
+ *
+ * Export for test reason
+ * @param existingRegexes an array of objects, each representing a regex pattern and its state.
+ * @param inputValue new regex in string format
+ * @returns if the regex is valid and if not, why it is invalid
+ */
+export function patternValidator(
+    existingRegexes: Common.Settings.RegExpSettingItem[], inputValue: string): ({valid: true}|{
+  valid: false,
+  errorMessage: string,
+}) {
+  const pattern = inputValue.trim();
+
+  if (!pattern.length) {
+    return {valid: false, errorMessage: i18nString(UIStrings.patternCannotBeEmpty)};
+  }
+
+  for (let i = 0; i < existingRegexes.length; ++i) {
+    const regexPattern = existingRegexes[i];
+    if (regexPattern.pattern === pattern && regexPattern.disabled === false &&
+        regexPattern.disabledForUrl === undefined) {
+      return {valid: false, errorMessage: i18nString(UIStrings.patternAlreadyExists)};
+    }
+  }
+
+  let regex;
+  try {
+    regex = new RegExp(pattern);
+  } catch (e) {
+  }
+  if (!regex) {
+    return {valid: false, errorMessage: i18nString(UIStrings.patternMustBeAValidRegular)};
+  }
+  return {valid: true};
 }

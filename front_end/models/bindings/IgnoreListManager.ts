@@ -391,10 +391,10 @@ export class IgnoreListManager implements SDK.TargetManager.SDKModelObserver<SDK
     if (!regexValue) {
       return;
     }
-    this.ignoreListRegex(regexValue, url);
+    this.addRegexToIgnoreList(regexValue, url);
   }
 
-  private ignoreListRegex(regexValue: string, disabledForUrl?: Platform.DevToolsPath.UrlString): void {
+  addRegexToIgnoreList(regexValue: string, disabledForUrl?: Platform.DevToolsPath.UrlString): void {
     const regexPatterns = this.getSkipStackFramesPatternSetting().getAsArray();
 
     let found = false;
@@ -607,7 +607,7 @@ export class IgnoreListManager implements SDK.TargetManager.SDKModelObserver<SDK
       // as entirely ignored.
       menuItems.push({
         text: i18nString(UIStrings.addDirectoryToIgnoreList),
-        callback: this.ignoreListRegex.bind(this, regexValue),
+        callback: this.addRegexToIgnoreList.bind(this, regexValue),
         jslogContext: 'add-directory-to-ignore-list',
       });
       menuItems.push(...this.getIgnoreListGeneralContextMenuItems(options));

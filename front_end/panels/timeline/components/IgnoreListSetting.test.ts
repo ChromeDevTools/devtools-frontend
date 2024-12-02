@@ -12,7 +12,7 @@ import * as Coordinator from '../../../ui/components/render_coordinator/render_c
 
 import * as TimelineComponents from './components.js';
 
-describeWithEnvironment('isIgnoreListedEntry', () => {
+describeWithEnvironment('Ignore List Setting', () => {
   async function renderIgnoreListSetting(): Promise<HTMLElement> {
     const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
     const component = new TimelineComponents.IgnoreListSetting.IgnoreListSetting();
@@ -32,6 +32,15 @@ describeWithEnvironment('isIgnoreListedEntry', () => {
         disabled: !checkboxShadow.querySelector('input')?.checked,
       };
     });
+  }
+
+  function getNewRegexInput(component: HTMLElement): HTMLInputElement {
+    assert.isNotNull(component.shadowRoot);
+    const newRegexRow = component.shadowRoot.querySelector<HTMLElement>('.new-regex-row');
+    const newRegexInput = newRegexRow?.querySelector<HTMLInputElement>('.new-regex-text-input');
+
+    assert.exists(newRegexInput);
+    return newRegexInput;
   }
 
   before(() => {
@@ -113,6 +122,85 @@ describeWithEnvironment('isIgnoreListedEntry', () => {
     const rule1RemoveButton = regexRows[1].querySelector('devtools-button');
     rule1RemoveButton?.click();
     assert.isFalse(isRegexInIgnoredList('rule 1'));
+  });
+
+  it('Able to render the add new regex row correctly', async () => {
+    const component = await renderIgnoreListSetting();
+    assert.isNotNull(component.shadowRoot);
+
+    const newRegexRows = component.shadowRoot.querySelectorAll<HTMLElement>('.new-regex-row');
+    // There should only be one add new regex row.
+    assert.strictEqual(newRegexRows.length, 1);
+    // There are two elements, one is checkbox, one is the input
+    const newRegexCheckboxes = newRegexRows[0].querySelectorAll<HTMLInputElement>('dt-checkbox');
+    assert.strictEqual(newRegexCheckboxes.length, 1);
+    const newRegexInputs = newRegexRows[0].querySelectorAll<HTMLInputElement>('.new-regex-text-input');
+    assert.strictEqual(newRegexInputs.length, 1);
+  });
+
+  it('Able to add an ignore list rule', async () => {
+    // Now there should only by 1 rule (`/node_modules/|/bower_components/`)
+    assert.isFalse(isRegexInIgnoredList('rule 1'));
+
+    const component = await renderIgnoreListSetting();
+    const newRegexInput = getNewRegexInput(component);
+
+    newRegexInput.value = 'rule 1';
+    newRegexInput.dispatchEvent(new FocusEvent('blur'));
+
+    assert.isTrue(isRegexInIgnoredList('rule 1'));
+  });
+
+  it('Do not add a duplicate ignore list rule', async () => {
+    disableIgnoreRegex('rule 1');
+    assert.isTrue(isIgnoreRegexDisabled('rule 1'));
+
+    const component = await renderIgnoreListSetting();
+    const newRegexInput = getNewRegexInput(component);
+
+    newRegexInput.value = 'rule 1';
+    newRegexInput.dispatchEvent(new FocusEvent('blur'));
+
+    assert.isFalse(isIgnoreRegexDisabled('rule 1'));
+  });
+});
+
+describeWithEnvironment('Pattern validator', () => {
+  it('Can validate the valid pattern', () => {
+    const validPattern = '^hello$';
+    const result = TimelineComponents.IgnoreListSetting.patternValidator([], validPattern);
+    assert.isTrue(result.valid);
+  });
+
+  it('Returns the reason for the empty pattern', () => {
+    const emptyPattern = '';
+    const result = TimelineComponents.IgnoreListSetting.patternValidator([], emptyPattern);
+    assert.isFalse(result.valid);
+    assert.strictEqual(result.errorMessage, 'Rule can\'t be empty');
+  });
+
+  it('Returns the reason for the existed pattern', () => {
+    const duplicatePattern = 'abc';
+    const existedRegex = {pattern: duplicatePattern, disabled: false};
+
+    const result = TimelineComponents.IgnoreListSetting.patternValidator([existedRegex], duplicatePattern);
+    assert.isFalse(result.valid);
+    assert.strictEqual(result.errorMessage, 'Rule already exists');
+  });
+
+  it('Returns true for the disabled existed pattern', () => {
+    const duplicatePattern = 'abc';
+    const existedRegex = {pattern: duplicatePattern, disabled: true};
+
+    const result = TimelineComponents.IgnoreListSetting.patternValidator([existedRegex], duplicatePattern);
+    assert.isTrue(result.valid);
+  });
+
+  it('Returns the reason for the invalid pattern', () => {
+    const invalidPattern = '[';
+    const result = TimelineComponents.IgnoreListSetting.patternValidator([], invalidPattern);
+    assert.isFalse(result.valid);
+    assert.strictEqual(result.errorMessage, 'Rule must be a valid regular expression');
   });
 });
 

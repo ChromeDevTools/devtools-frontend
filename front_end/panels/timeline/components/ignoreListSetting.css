@@ -23,3 +23,11 @@
     display: none;
   }
 }
+
+.new-regex-row {
+  display: flex;
+
+  .new-regex-text-input {
+    flex: auto;
+  }
+}

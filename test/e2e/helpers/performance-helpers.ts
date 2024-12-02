@@ -352,7 +352,7 @@ export async function disableCSSSelectorStats() {
       [veChange('Panel: timeline > Pane: timeline-settings-pane > Toggle: timeline-capture-selector-stats')]);
 }
 
-export function veImpressionForPerformancePanel(options?: {timelineLegacyLandingPage?: boolean}) {
+export function veImpressionForPerformancePanel() {
   return veImpression('Panel', 'timeline', [
     veImpression(
         'Toolbar', undefined,
@@ -369,9 +369,8 @@ export function veImpressionForPerformancePanel(options?: {timelineLegacyLanding
         ]),
     veImpression('Action', 'timeline.toggle-recording'),
     veImpression('Action', 'timeline.record-reload'),
-    ...(options?.timelineLegacyLandingPage ?
-            [veImpression('Link', 'learn-more')] :
-            [veImpression('DropDown', 'cpu-throttling'), veImpression('DropDown', 'network-conditions')]),
+    veImpression('DropDown', 'cpu-throttling'),
+    veImpression('DropDown', 'network-conditions'),
   ]);
 }
 

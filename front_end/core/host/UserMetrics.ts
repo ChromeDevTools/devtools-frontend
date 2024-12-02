@@ -1014,7 +1014,6 @@ export enum DevtoolsExperiments {
   'timeline-compiled-sources' = 91,
   'timeline-debug-mode' = 93,
   'timeline-rpp-sidebar' = 95,
-  'timeline-observations' = 96,
   'timeline-server-timings' = 98,
   'floating-entry-points-for-ai-assistance' = 101,
   'timeline-experimental-insights' = 102,

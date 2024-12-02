@@ -82,7 +82,6 @@ export async function reloadDevTools(options?: DevToolsFrontendReloadOptions&{
   await waitFor(`.panel.${selectedPanel}`);
   const expectClosedPanels = options?.expectClosedPanels;
   const newFilterBar = enableExperiments.includes('network-panel-filter-bar-redesign');
-  const timelineLegacyLandingPage = disableExperiments.includes('timeline-observations');
   const dockable = options?.canDock;
   const panelImpression = selectedPanel === 'elements' ? veImpressionForElementsPanel({dockable}) :
       selectedPanel === 'animations'                   ? veImpressionForAnimationsPanel() :
@@ -90,7 +89,7 @@ export async function reloadDevTools(options?: DevToolsFrontendReloadOptions&{
       selectedPanel === 'layers'                       ? veImpressionForLayersPanel() :
       selectedPanel === 'network'                      ? veImpressionForNetworkPanel({newFilterBar}) :
       selectedPanel === 'console'                      ? veImpressionForConsolePanel() :
-      selectedPanel === 'timeline'                     ? veImpressionForPerformancePanel({timelineLegacyLandingPage}) :
+      selectedPanel === 'timeline'                     ? veImpressionForPerformancePanel() :
       selectedPanel === 'sources'                      ? veImpressionForSourcesPanel() :
       selectedPanel === 'animations'                   ? veImpressionForSourcesPanel() :
       selectedPanel === 'changes'                      ? veImpressionForChangesPanel() :

@@ -385,11 +385,6 @@ export class MainImpl {
     );
 
     Root.Runtime.experiments.register(
-        Root.Runtime.ExperimentName.TIMELINE_OBSERVATIONS,
-        'Performance panel: enable live metrics landing page',
-    );
-
-    Root.Runtime.experiments.register(
         Root.Runtime.ExperimentName.TIMELINE_SERVER_TIMINGS,
         'Performance panel: enable server timings in the timeline',
     );
@@ -422,7 +417,6 @@ export class MainImpl {
       'css-type-component-length-deprecate',
       Root.Runtime.ExperimentName.AUTOFILL_VIEW,
       Root.Runtime.ExperimentName.TIMELINE_INSIGHTS,
-      Root.Runtime.ExperimentName.TIMELINE_OBSERVATIONS,
       Root.Runtime.ExperimentName.NETWORK_PANEL_FILTER_BAR_REDESIGN,
       Root.Runtime.ExperimentName.FLOATING_ENTRY_POINTS_FOR_AI_ASSISTANCE,
       ...(Root.Runtime.Runtime.queryParam('isChromeForTesting') ? ['protocol-monitor'] : []),
@@ -550,10 +544,8 @@ export class MainImpl {
 
     AutofillManager.AutofillManager.AutofillManager.instance();
 
-    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_OBSERVATIONS)) {
-      LiveMetrics.LiveMetrics.instance({forceNew: true});
-      CrUXManager.CrUXManager.instance({forceNew: true});
-    }
+    LiveMetrics.LiveMetrics.instance();
+    CrUXManager.CrUXManager.instance();
 
     new PauseListener();
 

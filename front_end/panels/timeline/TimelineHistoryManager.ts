@@ -5,7 +5,6 @@
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
-import * as Root from '../../core/root/root.js';
 import * as CrUXManager from '../../models/crux-manager/crux-manager.js';
 import type * as Trace from '../../models/trace/trace.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
@@ -40,10 +39,6 @@ const UIStrings = {
    *@description the title shown when the user is viewing the landing page which is showing live performance metrics that are updated automatically.
    */
   landingPageTitle: 'Live metrics',
-  /**
-   *@description Text that shows there is no recording
-   */
-  noRecordings: '(no recordings)',
   /**
    *@description Text in Timeline History Manager of the Performance panel
    *@example {example.com} PH1
@@ -230,26 +225,8 @@ export class TimelineHistoryManager {
     this.recordings = [];
     this.lastActiveTrace = null;
     this.updateState();
-    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_OBSERVATIONS)) {
-      this.buttonInternal.setText(i18nString(UIStrings.landingPageTitle));
-    } else {
-      this.buttonInternal.setText(i18nString(UIStrings.noRecordings));
-    }
+    this.buttonInternal.setText(i18nString(UIStrings.landingPageTitle));
     this.nextNumberByDomain.clear();
-  }
-
-  /**
-   * If the observations landing page experiment is enabled, we show the
-   * dropdown when there is 1 or more traces active, as even with 1 trace we
-   * need to give the user a way to get back to the index page. However, if that
-   * experiment is disabled, there is no need to show the dropdown until there
-   * are 2+ traces.
-   */
-  #minimumRequiredRecordings(): number {
-    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_OBSERVATIONS)) {
-      return 1;
-    }
-    return 2;
   }
 
   #getActiveTraceIndexForListControl(): number {
@@ -263,7 +240,7 @@ export class TimelineHistoryManager {
   }
 
   async showHistoryDropDown(): Promise<RecordingData|null> {
-    if (this.recordings.length < this.#minimumRequiredRecordings() || !this.enabled) {
+    if (this.recordings.length < 1 || !this.enabled) {
       return null;
     }
 
@@ -346,7 +323,7 @@ export class TimelineHistoryManager {
   }
 
   private updateState(): void {
-    this.action.setEnabled(this.recordings.length >= this.#minimumRequiredRecordings() && this.enabled);
+    this.action.setEnabled(this.recordings.length >= 1 && this.enabled);
   }
 
   static previewElement(parsedTraceIndex: number): Element {
@@ -522,9 +499,7 @@ export class DropDown implements UI.ListControl.ListDelegate<number> {
       return Promise.resolve(null);
     }
     const availableDropdownChoices = [...availableparsedTraceIndexes];
-    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_OBSERVATIONS)) {
-      availableDropdownChoices.unshift(LANDING_PAGE_INDEX_DROPDOWN_CHOICE);
-    }
+    availableDropdownChoices.unshift(LANDING_PAGE_INDEX_DROPDOWN_CHOICE);
     const instance = new DropDown(availableDropdownChoices);
     return instance.show(anchor, activeparsedTraceIndex);
   }

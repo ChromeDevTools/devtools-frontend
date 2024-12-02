@@ -59,7 +59,7 @@ async function setCruxRawResponse(path: string) {
 
 describe('The Performance panel landing page', () => {
   beforeEach(async () => {
-    await reloadDevTools({selectedPanel: {name: 'timeline'}, enableExperiments: ['timeline-observations']});
+    await reloadDevTools({selectedPanel: {name: 'timeline'}});
   });
 
   it('displays live metrics', async () => {

@@ -125,7 +125,6 @@ const REGISTERED_EXPERIMENTS = [
   Root.Runtime.ExperimentName.AUTOFILL_VIEW,
   Root.Runtime.ExperimentName.TIMELINE_INSIGHTS,
   Root.Runtime.ExperimentName.TIMELINE_DEBUG_MODE,
-  Root.Runtime.ExperimentName.TIMELINE_OBSERVATIONS,
   Root.Runtime.ExperimentName.TIMELINE_SERVER_TIMINGS,
   Root.Runtime.ExperimentName.FULL_ACCESSIBILITY_TREE,
   Root.Runtime.ExperimentName.TIMELINE_SHOW_POST_MESSAGE_EVENTS,

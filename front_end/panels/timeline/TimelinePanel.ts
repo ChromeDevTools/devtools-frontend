@@ -47,6 +47,7 @@ import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
 import * as Adorners from '../../ui/components/adorners/adorners.js';
 import type * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as Dialogs from '../../ui/components/dialogs/dialogs.js';
+import * as LegacyWrapper from '../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
@@ -69,7 +70,6 @@ import {type Client, TimelineController} from './TimelineController.js';
 import type {TimelineFlameChartDataProvider} from './TimelineFlameChartDataProvider.js';
 import {TimelineFlameChartView} from './TimelineFlameChartView.js';
 import {TimelineHistoryManager} from './TimelineHistoryManager.js';
-import {TimelineLandingPage} from './TimelineLandingPage.js';
 import {TimelineLoader} from './TimelineLoader.js';
 import {TimelineMiniMap} from './TimelineMiniMap.js';
 import timelinePanelStyles from './timelinePanel.css.js';
@@ -1053,16 +1053,14 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     // History
     this.panelToolbar.appendSeparator();
 
-    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_OBSERVATIONS)) {
-      this.homeButton = new UI.Toolbar.ToolbarButton(
-          i18nString(UIStrings.backToLiveMetrics), 'home', undefined, 'timeline.back-to-live-metrics');
-      this.homeButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, () => {
-        this.#changeView({mode: 'LANDING_PAGE'});
-        this.#historyManager.navigateToLandingPage();
-      });
-      this.panelToolbar.appendToolbarItem(this.homeButton);
-      this.panelToolbar.appendSeparator();
-    }
+    this.homeButton = new UI.Toolbar.ToolbarButton(
+        i18nString(UIStrings.backToLiveMetrics), 'home', undefined, 'timeline.back-to-live-metrics');
+    this.homeButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, () => {
+      this.#changeView({mode: 'LANDING_PAGE'});
+      this.#historyManager.navigateToLandingPage();
+    });
+    this.panelToolbar.appendToolbarItem(this.homeButton);
+    this.panelToolbar.appendSeparator();
 
     this.panelToolbar.appendToolbarItem(this.#historyManager.button());
     this.panelToolbar.registerCSSFiles([historyToolbarButtonStyles]);
@@ -2088,7 +2086,10 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       return;
     }
 
-    this.landingPage = new TimelineLandingPage(this.toggleRecordAction, {isNode});
+    this.landingPage = LegacyWrapper.LegacyWrapper.legacyWrapper(
+        UI.Widget.Widget, new TimelineComponents.LiveMetricsView.LiveMetricsView());
+    this.landingPage.element.classList.add('timeline-landing-page', 'fill');
+    this.landingPage.contentElement.classList.add('fill');
     this.landingPage.show(this.statusPaneContainer);
   }
 

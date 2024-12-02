@@ -1805,7 +1805,6 @@ grd_files_debug_sources = [
   "front_end/panels/timeline/TimelineFlameChartNetworkDataProvider.js",
   "front_end/panels/timeline/TimelineFlameChartView.js",
   "front_end/panels/timeline/TimelineHistoryManager.js",
-  "front_end/panels/timeline/TimelineLandingPage.js",
   "front_end/panels/timeline/TimelineLayersView.js",
   "front_end/panels/timeline/TimelineLoader.js",
   "front_end/panels/timeline/TimelineMiniMap.js",

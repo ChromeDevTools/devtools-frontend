@@ -179,7 +179,7 @@ export class NetworkRequestDetails extends HTMLElement {
         // want the one to reveal in network panel, so add a new class which will only be supported by Network panel.
         // Also we want to have a different behavior(select the network request) from the
         // `SDK.NetworkRequest.NetworkRequest` (highlight the network request once).
-        const contextMenu = new UI.ContextMenu.ContextMenu(event, {useSoftMenu: true});
+        const contextMenu = new UI.ContextMenu.ContextMenu(event);
         contextMenu.appendApplicableItems(new TimelineUtils.NetworkRequest.TimelineNetworkRequest(networkRequest));
         void contextMenu.show();
       });

@@ -127,7 +127,11 @@ export class CLSCulprits extends BaseInsightComponent<CLSCulpritsInsightModel> {
 
   #renderContent(culprits: Array<string>, worstCluster: Trace.Types.Events.SyntheticLayoutShiftCluster):
       LitHtml.LitTemplate {
-    const ts = Trace.Types.Timing.MicroSeconds(worstCluster.ts - (this.data.parsedTrace?.Meta.traceBounds.min ?? 0));
+    if (!this.bounds) {
+      return LitHtml.nothing;
+    }
+
+    const ts = Trace.Types.Timing.MicroSeconds(worstCluster.ts - this.bounds.min);
     const clusterTs = i18n.TimeUtilities.formatMicroSecondsTime(ts);
 
     // clang-format off

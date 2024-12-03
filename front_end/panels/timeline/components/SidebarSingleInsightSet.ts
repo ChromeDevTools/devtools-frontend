@@ -34,7 +34,6 @@ const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/SidebarSing
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export interface SidebarSingleInsightSetData {
-  parsedTrace: Trace.Handlers.Types.ParsedTrace|null;
   insights: Trace.Insights.Types.TraceInsightSets|null;
   insightSetKey: Trace.Types.Events.NavigationId|null;
   activeCategory: Trace.Insights.Types.InsightCategory;
@@ -74,7 +73,6 @@ export class SidebarSingleInsightSet extends HTMLElement {
   #renderBound = this.#render.bind(this);
 
   #data: SidebarSingleInsightSetData = {
-    parsedTrace: null,
     insights: null,
     insightSetKey: null,
     activeCategory: Trace.Insights.Types.InsightCategory.ALL,
@@ -202,18 +200,18 @@ export class SidebarSingleInsightSet extends HTMLElement {
 
   #renderInsights(
       insightSets: Trace.Insights.Types.TraceInsightSets|null,
-      parsedTrace: Trace.Handlers.Types.ParsedTrace|null,
       insightSetKey: string,
       ): LitHtml.LitTemplate {
     const includeExperimental = Root.Runtime.experiments.isEnabled(
         Root.Runtime.ExperimentName.TIMELINE_EXPERIMENTAL_INSIGHTS,
     );
 
-    const models = insightSets?.get(insightSetKey)?.model;
-    if (!models) {
+    const insightSet = insightSets?.get(insightSetKey);
+    if (!insightSet) {
       return LitHtml.nothing;
     }
 
+    const models = insightSet.model;
     const shownInsights: LitHtml.TemplateResult[] = [];
     const passedInsights: LitHtml.TemplateResult[] = [];
     for (const [name, componentClass] of Object.entries(INSIGHT_NAME_TO_COMPONENT)) {
@@ -232,7 +230,7 @@ export class SidebarSingleInsightSet extends HTMLElement {
         <${componentClass.litTagName}
           .selected=${this.#data.activeInsight?.model === model}
           .model=${model}
-          .parsedTrace=${parsedTrace}
+          .bounds=${insightSet.bounds}
           .insightSetKey=${insightSetKey}
         </${componentClass.litTagName}>
       </div>`;
@@ -262,11 +260,10 @@ export class SidebarSingleInsightSet extends HTMLElement {
 
   #render(): void {
     const {
-      parsedTrace,
       insights,
       insightSetKey,
     } = this.#data;
-    if (!parsedTrace || !insights || !insightSetKey) {
+    if (!insights || !insightSetKey) {
       LitHtml.render(html``, this.#shadow, {host: this});
       return;
     }
@@ -275,7 +272,7 @@ export class SidebarSingleInsightSet extends HTMLElement {
     LitHtml.render(html`
       <div class="navigation">
         ${this.#renderMetrics(insightSetKey)}
-        ${this.#renderInsights(insights, parsedTrace, insightSetKey)}
+        ${this.#renderInsights(insights, insightSetKey)}
         </div>
       `, this.#shadow, {host: this});
     // clang-format on

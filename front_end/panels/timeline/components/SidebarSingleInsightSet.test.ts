@@ -32,7 +32,7 @@ function getPassedInsights(component: Components.SidebarSingleInsightSet.Sidebar
 
 describeWithEnvironment('SidebarSingleInsightSet', () => {
   it('renders a list of insights', async function() {
-    const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const {insights} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
 
     assert.isOk(insights);
     // only one navigation in this trace.
@@ -44,7 +44,6 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
     const component = new Components.SidebarSingleInsightSet.SidebarSingleInsightSet();
     renderElementIntoDOM(component);
     component.data = {
-      parsedTrace,
       insights,
       insightSetKey: navigationId,
       activeCategory: Trace.Insights.Types.InsightCategory.ALL,
@@ -83,7 +82,6 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
     const firstNavigation = parsedTrace.Meta.mainFrameNavigations.at(0)?.args.data?.navigationId;
     assert.isOk(firstNavigation);
     component.data = {
-      parsedTrace,
       insights,
       insightSetKey: firstNavigation,
       activeCategory: Trace.Insights.Types.InsightCategory.ALL,
@@ -97,7 +95,6 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
     assert.deepEqual(userVisibleTitles, [
       'LCP by phase',
       'LCP request discovery',
-      'Layout shift culprits',
       'Improve image delivery',
       'Third parties',
       'Document request latency',
@@ -126,7 +123,6 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
     const firstNavigation = parsedTrace.Meta.mainFrameNavigations.at(0)?.args.data?.navigationId;
     assert.isOk(firstNavigation);
     component.data = {
-      parsedTrace,
       insights,
       insightSetKey: firstNavigation,
       activeCategory: Trace.Insights.Types.InsightCategory.ALL,
@@ -140,7 +136,6 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
     assert.deepEqual(userVisibleTitles, [
       'LCP by phase',
       'LCP request discovery',
-      'Layout shift culprits',
       'Improve image delivery',
       'Font display',
       'Third parties',
@@ -160,7 +155,7 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
   });
 
   it('will render the active insight fully', async function() {
-    const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const {insights} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
 
     assert.isOk(insights);
     // only one navigation in this trace.
@@ -177,7 +172,6 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
     const component = new Components.SidebarSingleInsightSet.SidebarSingleInsightSet();
     renderElementIntoDOM(component);
     component.data = {
-      parsedTrace,
       insights,
       insightSetKey: navigationId,
       activeCategory: Trace.Insights.Types.InsightCategory.ALL,

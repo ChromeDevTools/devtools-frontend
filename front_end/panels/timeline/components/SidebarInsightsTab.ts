@@ -193,7 +193,6 @@ export class SidebarInsightsTab extends HTMLElement {
       <div class="insight-sets-wrapper">
         ${[...this.#insights.values()].map(({id, url}, index) => {
           const data = {
-            parsedTrace: this.#parsedTrace,
             insights: this.#insights,
             insightSetKey: id,
             activeCategory: this.#selectedCategory,

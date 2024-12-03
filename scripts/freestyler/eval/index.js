@@ -155,7 +155,7 @@ const API = {
     const examplesMap = {};
     for (const example of examples) {
       const exampleId = example.exampleId;
-      const request = example.request.input;
+      const request = example.request.input || example.request.current_message.parts[0].text;
       const response = example.response;
       if (!examplesMap[exampleId]) {
         examplesMap[exampleId] = [];

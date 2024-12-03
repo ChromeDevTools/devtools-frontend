@@ -98,7 +98,7 @@ const UIStrings = {
   /**
    *@description Shown in the context menu when right clicking on a track header to enable the user to enter the track configuration mode.
    */
-  enterTrackConfigurationMode: 'Configure tracks…',
+  enterTrackConfigurationMode: 'Configure tracks',
   /**
    *@description Shown in the context menu when right clicking on a track header to allow the user to exit track configuration mode.
    */
@@ -1330,7 +1330,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       return;
     }
 
-    this.contextMenu = new UI.ContextMenu.ContextMenu(event, {useSoftMenu: true});
+    this.contextMenu = new UI.ContextMenu.ContextMenu(event);
     const label = i18nString(UIStrings.enterTrackConfigurationMode);
     this.contextMenu.defaultSection().appendItem(label, () => {
       this.#enterEditMode();
@@ -1344,7 +1344,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     if (this.#inTrackConfigEditMode === false) {
       return;
     }
-    this.contextMenu = new UI.ContextMenu.ContextMenu(event, {useSoftMenu: true});
+    this.contextMenu = new UI.ContextMenu.ContextMenu(event);
     const label = i18nString(UIStrings.exitTrackConfigurationMode);
     this.contextMenu.defaultSection().appendItem(label, () => {
       this.#exitEditMode();

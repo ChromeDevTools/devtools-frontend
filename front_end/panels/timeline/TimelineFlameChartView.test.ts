@@ -325,7 +325,7 @@ describeWithEnvironment('TimelineFlameChartView', function() {
       assert.strictEqual(flameChartView.getMainFlameChart().getContextMenu()?.defaultSection().items.length, 1);
       assert.strictEqual(
           flameChartView.getMainFlameChart().getContextMenu()?.defaultSection().items.at(0)?.buildDescriptor().label,
-          'Configure tracks…');
+          'Configure tracks');
     });
 
     describe('Context Menu Actions For Thread tracks', function() {

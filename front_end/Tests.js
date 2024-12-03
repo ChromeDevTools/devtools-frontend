@@ -190,6 +190,7 @@
       this.reportOk_();
     } catch (e) {
       this.reportFailure_(e);
+      throw e;
     }
   };
 

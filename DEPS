@@ -24,7 +24,7 @@ vars = {
   'inspector_protocol_revision': '69d69ddf3aa698b171886551a4a672c5af1ad902',
 
   # Keeping track of the last time we rollerd the browser protocol files.
-  'chromium_browser_protocol_revision' : '0f1883c11311f76031e61ab1585d2d5afe413172',
+  'chromium_browser_protocol_revision' : '533194d116ee9bd4521dfa9193b52b9ea205b806',
 
   'clang_format_url': 'https://chromium.googlesource.com/external/github.com/llvm/llvm-project/clang/tools/clang-format.git',
   'clang_format_revision': '3c0acd2d4e73dd911309d9e970ba09d58bf23a62',

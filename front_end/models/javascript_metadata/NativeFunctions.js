@@ -7854,7 +7854,7 @@ export const NativeFunctions = [
   },
   {
     name: "constant",
-    signatures: [["desc","bufferView"]]
+    signatures: [["desc","buffer"]]
   },
   {
     name: "argMin",

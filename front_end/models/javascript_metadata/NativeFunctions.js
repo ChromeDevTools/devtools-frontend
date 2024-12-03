@@ -8457,6 +8457,22 @@ export const NativeFunctions = [
     signatures: [["?options"]]
   },
   {
+    name: "SharedStorageAppendMethod",
+    signatures: [["key","value","?options"]]
+  },
+  {
+    name: "SharedStorageClearMethod",
+    signatures: [["?options"]]
+  },
+  {
+    name: "SharedStorageDeleteMethod",
+    signatures: [["key","?options"]]
+  },
+  {
+    name: "SharedStorageSetMethod",
+    signatures: [["key","value","?options"]]
+  },
+  {
     name: "selectURL",
     signatures: [["name","urls","?options"]]
   },

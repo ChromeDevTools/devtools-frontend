@@ -24,41 +24,27 @@ You will have to define 4 properties on your component:
 
 > Note that in most components, we use private methods and variables for storing this data, but because we are extending a base class, these are all `protected` instead.
 
-## 2. override the `render` method
+## 2. override the `renderContent` method
 
-You should then use `override render(): void` to implement the render method and follow the usual patterns of all our custom elements.
+You should then use `override renderContent(): LitHtml.LitTemplate` to implement the render method and follow the usual patterns of all our custom elements.
 
 You can use the `shouldRenderForCategory` helper method to determine if the insight should even be shown or not. If it should not, you can render nothing:
 
 ```ts
-override render(): void {
+override renderContent(): LitHtml.LitTemplate {
   const matchesCategory = shouldRenderForCategory({
     activeCategory: this.data.activeCategory,
     insightCategory: this.insightCategory,
   });
-  const output = matchesCategory ? this.#renderMyInsight() : LitHtml.nothing;
-  LitHtml.render(output, this.shadow, {host: this});
+  if (!matchesCategory) {
+    return LitHtml.nothing;
+  }
+
+  return LitHtml.html`
+    <div class="insight-section">Insight content goes here</div>
+  `;
 }
 ```
-
-Within your `renderMyInsight` method (please choose a better name!), you should use the `SidebarInsight` component and use its `slot`s to place your content in. You also have access to the `this.isActive()` method to determine if this insight is expanded or not.
-
-```ts
-<${SidebarInsight.SidebarInsight.litTagName} .data=${{
-  title: this.userVisibleTitle,
-  description: this.description,
-  expanded: this.isActive(),
-}}
-@insighttoggleclick=${this.onSidebarClick}
->
-  <div slot="insight-content" class="insight-section">
-    <!-- this content will be shown below the border in expanded mode -->
-  </div>
-</${SidebarInsight.SidebarInsight}>
-```
-
-If the content of your insight has multiple sections, remove `class="insight-section"` from the slot and place each section
-in its own `<div class="insight-section">` inside the slot.
 
 ## 3. Override the `createOverlays()` method
 

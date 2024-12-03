@@ -15,11 +15,6 @@ import {BaseInsightComponent} from './BaseInsightComponent.js';
 
 const {html} = LitHtml;
 
-type ThirdPartiesEntries = Array<[
-  Trace.Extras.ThirdParties.Entity,
-  Trace.Extras.ThirdParties.Summary,
-]>;
-
 const UIStrings = {
   /** Label for a table column that displays the name of a third-party provider. */
   columnThirdParty: 'Third party',
@@ -68,10 +63,12 @@ export class ThirdParties extends BaseInsightComponent<ThirdPartiesInsightModel>
     return overlays;
   }
 
-  #renderContent(entries: ThirdPartiesEntries): LitHtml.LitTemplate {
+  override renderContent(): LitHtml.LitTemplate {
     if (!this.model) {
       return LitHtml.nothing;
     }
+
+    const entries = [...this.model.summaryByEntity.entries()].filter(kv => kv[0] !== this.model?.firstPartyEntity);
 
     const topTransferSizeEntries = entries.sort((a, b) => b[1].transferSize - a[1].transferSize).slice(0, 6);
     const topMainThreadTimeEntries = entries.sort((a, b) => b[1].mainThreadTime - a[1].mainThreadTime).slice(0, 6);
@@ -122,15 +119,6 @@ export class ThirdParties extends BaseInsightComponent<ThirdPartiesInsightModel>
     }
 
     return html`${sections}`;
-  }
-
-  override render(): void {
-    if (!this.model) {
-      return;
-    }
-
-    const entries = [...this.model.summaryByEntity.entries()].filter(kv => kv[0] !== this.model?.firstPartyEntity);
-    this.renderWithContent(this.#renderContent(entries));
   }
 }
 

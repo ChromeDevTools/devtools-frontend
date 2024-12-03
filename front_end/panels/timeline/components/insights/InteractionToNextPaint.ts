@@ -94,7 +94,12 @@ export class InteractionToNextPaint extends BaseInsightComponent<INPInsightModel
     ];
   }
 
-  #renderContent(event: Trace.Types.Events.SyntheticInteractionPair): LitHtml.LitTemplate {
+  override renderContent(): LitHtml.LitTemplate {
+    const event = this.model?.longestInteractionEvent;
+    if (!event) {
+      return LitHtml.nothing;
+    }
+
     const time = (us: Trace.Types.Timing.MicroSeconds): string =>
         i18n.TimeUtilities.millisToString(Platform.Timing.microSecondsToMilliSeconds(us));
 
@@ -123,14 +128,6 @@ export class InteractionToNextPaint extends BaseInsightComponent<INPInsightModel
         </devtools-performance-table>`}
       </div>`;
     // clang-format on
-  }
-
-  override render(): void {
-    if (!this.model?.longestInteractionEvent) {
-      return;
-    }
-
-    this.renderWithContent(this.#renderContent(this.model.longestInteractionEvent));
   }
 }
 

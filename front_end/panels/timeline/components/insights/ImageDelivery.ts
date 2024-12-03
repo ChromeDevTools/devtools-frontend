@@ -94,7 +94,7 @@ export class ImageDelivery extends BaseInsightComponent<ImageDeliveryInsightMode
     return rows;
   }
 
-  #renderContent(): LitHtml.LitTemplate {
+  override renderContent(): LitHtml.LitTemplate {
     if (!this.model) {
       return LitHtml.nothing;
     }
@@ -138,14 +138,6 @@ export class ImageDelivery extends BaseInsightComponent<ImageDeliveryInsightMode
     }
 
     return html`${sections}`;
-  }
-
-  override render(): void {
-    if (!this.model) {
-      return;
-    }
-
-    this.renderWithContent(this.#renderContent());
   }
 }
 

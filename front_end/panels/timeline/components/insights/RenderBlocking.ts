@@ -54,7 +54,7 @@ export class RenderBlocking extends BaseInsightComponent<RenderBlockingInsightMo
     return this.model?.metricSavings?.FCP ?? null;
   }
 
-  #renderContent(): LitHtml.LitTemplate {
+  override renderContent(): LitHtml.LitTemplate {
     if (!this.model) {
       return LitHtml.nothing;
     }
@@ -85,14 +85,6 @@ export class RenderBlocking extends BaseInsightComponent<RenderBlockingInsightMo
       </div>
     `;
     // clang-format on
-  }
-
-  override render(): void {
-    if (!this.model) {
-      return;
-    }
-
-    this.renderWithContent(this.#renderContent());
   }
 }
 

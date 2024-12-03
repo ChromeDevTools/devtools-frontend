@@ -165,8 +165,13 @@ export class LCPDiscovery extends BaseInsightComponent<LCPDiscoveryInsightModel>
     return getImageData(this.model)?.estimatedSavings ?? null;
   }
 
-  #renderContent(imageData: LCPImageDiscoveryData): LitHtml.LitTemplate {
+  override renderContent(): LitHtml.LitTemplate {
     if (!this.model) {
+      return LitHtml.nothing;
+    }
+
+    const imageData = getImageData(this.model);
+    if (!imageData) {
       return LitHtml.nothing;
     }
 
@@ -192,16 +197,6 @@ export class LCPDiscovery extends BaseInsightComponent<LCPDiscoveryInsightModel>
         ${imageRef(imageData.request)}
       </div>`;
     // clang-format on
-  }
-
-  override render(): void {
-    if (!this.model) {
-      return;
-    }
-
-    const imageResults = getImageData(this.model);
-    const output = imageResults ? this.#renderContent(imageResults) : LitHtml.nothing;
-    this.renderWithContent(output);
   }
 }
 

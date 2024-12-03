@@ -54,7 +54,7 @@ export class FontDisplay extends BaseInsightComponent<FontDisplayInsightModel> {
     return this.model?.metricSavings?.FCP ?? null;
   }
 
-  #renderContent(): LitHtml.LitTemplate {
+  override renderContent(): LitHtml.LitTemplate {
     if (!this.model) {
       return LitHtml.nothing;
     }
@@ -79,14 +79,6 @@ export class FontDisplay extends BaseInsightComponent<FontDisplayInsightModel> {
         </devtools-performance-table>`}
       </div>`;
     // clang-format on
-  }
-
-  override render(): void {
-    if (!this.model) {
-      return;
-    }
-
-    this.renderWithContent(this.#renderContent());
   }
 }
 

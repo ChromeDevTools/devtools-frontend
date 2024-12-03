@@ -151,7 +151,7 @@ export class DocumentLatency extends BaseInsightComponent<DocumentLatencyInsight
     return this.model?.data?.uncompressedResponseBytes ?? null;
   }
 
-  #renderContent(): LitHtml.LitTemplate {
+  override renderContent(): LitHtml.LitTemplate {
     if (!this.model?.data) {
       return LitHtml.nothing;
     }
@@ -175,14 +175,6 @@ export class DocumentLatency extends BaseInsightComponent<DocumentLatencyInsight
         </ul>
       </div>`;
     // clang-format on
-  }
-
-  override render(): void {
-    if (this.model?.data === undefined) {
-      return;
-    }
-
-    this.renderWithContent(this.#renderContent());
   }
 }
 

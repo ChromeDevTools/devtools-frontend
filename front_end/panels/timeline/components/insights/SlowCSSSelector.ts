@@ -116,7 +116,7 @@ export class SlowCSSSelector extends BaseInsightComponent<SlowCSSSelectorInsight
     return links;
   }
 
-  #renderContent(): LitHtml.LitTemplate {
+  override renderContent(): LitHtml.LitTemplate {
     if (!this.model) {
       return LitHtml.nothing;
     }
@@ -189,14 +189,6 @@ export class SlowCSSSelector extends BaseInsightComponent<SlowCSSSelectorInsight
     }
 
     return html`${sections}`;
-  }
-
-  override render(): void {
-    if (!this.model) {
-      return;
-    }
-
-    this.renderWithContent(this.#renderContent());
   }
 }
 

@@ -125,9 +125,21 @@ export class CLSCulprits extends BaseInsightComponent<CLSCulpritsInsightModel> {
     this.dispatchEvent(new EventReferenceClick(event));
   }
 
-  #renderContent(culprits: Array<string>, worstCluster: Trace.Types.Events.SyntheticLayoutShiftCluster):
-      LitHtml.LitTemplate {
-    if (!this.bounds) {
+  override renderContent(): LitHtml.LitTemplate {
+    if (!this.model || !this.bounds) {
+      return LitHtml.nothing;
+    }
+
+    if (!this.model.clusters.length || !this.model.worstCluster) {
+      return LitHtml.nothing;
+    }
+
+    const worstCluster = this.model.worstCluster;
+    const culpritsByShift = this.model.shifts;
+
+    // TODO: getTopCulprits needs to move to model.
+    const culprits = this.getTopCulprits(worstCluster, culpritsByShift);
+    if (culprits.length === 0) {
       return LitHtml.nothing;
     }
 
@@ -146,25 +158,6 @@ export class CLSCulprits extends BaseInsightComponent<CLSCulpritsInsightModel> {
               })}
       </div>`;
     // clang-format on
-  }
-
-  override render(): void {
-    if (!this.model) {
-      return;
-    }
-
-    const culpritsByShift = this.model.shifts;
-    if (!this.model.clusters.length || !this.model.worstCluster) {
-      return;
-    }
-
-    // TODO: getTopCulprits needs to move to model.
-    const causes = this.getTopCulprits(this.model.worstCluster, culpritsByShift);
-
-    const hasCulprits = causes.length > 0;
-
-    const output = hasCulprits ? this.#renderContent(causes, this.model.worstCluster) : LitHtml.nothing;
-    this.renderWithContent(output);
   }
 }
 

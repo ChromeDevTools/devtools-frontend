@@ -26,7 +26,7 @@ export class Viewport extends BaseInsightComponent<ViewportInsightModel> {
     return this.model?.metricSavings?.INP ?? null;
   }
 
-  #renderContent(): LitHtml.LitTemplate {
+  override renderContent(): LitHtml.LitTemplate {
     if (!this.model) {
       return LitHtml.nothing;
     }
@@ -44,14 +44,6 @@ export class Viewport extends BaseInsightComponent<ViewportInsightModel> {
         </devtools-performance-node-link>` : LitHtml.nothing}
       </div>`;
     // clang-format on
-  }
-
-  override render(): void {
-    if (!this.model) {
-      return;
-    }
-
-    this.renderWithContent(this.#renderContent());
   }
 }
 

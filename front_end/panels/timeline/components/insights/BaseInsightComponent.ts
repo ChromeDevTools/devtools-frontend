@@ -70,7 +70,7 @@ export abstract class BaseInsightComponent<T extends InsightModel<{}>> extends H
   };
 
   // eslint-disable-next-line rulesdir/no_bound_component_methods
-  readonly #boundRender = this.render.bind(this);
+  readonly #boundRender = this.#render.bind(this);
   readonly sharedTableState: TableState = {
     selectedRowEl: null,
     selectionIsSticky: false,
@@ -196,7 +196,16 @@ export abstract class BaseInsightComponent<T extends InsightModel<{}>> extends H
 
   protected abstract createOverlays(): Overlays.Overlays.TimelineOverlay[];
 
-  protected abstract render(): void;
+  protected abstract renderContent(): LitHtml.LitTemplate;
+
+  #render(): void {
+    if (!this.model) {
+      return;
+    }
+
+    const output = this.renderContent();
+    this.#renderWithContent(output);
+  }
 
   getEstimatedSavingsTime(): Trace.Types.Timing.MilliSeconds|null {
     return null;
@@ -238,8 +247,8 @@ export abstract class BaseInsightComponent<T extends InsightModel<{}>> extends H
     return null;
   }
 
-  protected renderWithContent(content: LitHtml.LitTemplate): void {
-    if (content === LitHtml.nothing || !this.#model) {
+  #renderWithContent(content: LitHtml.LitTemplate): void {
+    if (!this.#model) {
       LitHtml.render(LitHtml.nothing, this.#shadowRoot, {host: this});
       return;
     }

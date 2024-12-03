@@ -186,10 +186,12 @@ export class LCPPhases extends BaseInsightComponent<LCPPhasesInsightModel> {
     return overlays;
   }
 
-  #renderContent(phaseData: PhaseData[]): LitHtml.LitTemplate {
+  override renderContent(): LitHtml.LitTemplate {
     if (!this.model) {
       return LitHtml.nothing;
     }
+
+    const phaseData = this.#getPhaseData();
 
     const rows = phaseData.map(({phase, percent}) => {
       const section = this.#overlay?.sections.find(section => phase === section.label);
@@ -214,15 +216,6 @@ export class LCPPhases extends BaseInsightComponent<LCPPhasesInsightModel> {
         </devtools-performance-table>`}
       </div>`;
     // clang-format on
-  }
-
-  override render(): void {
-    if (!this.model) {
-      return;
-    }
-
-    const phaseData = this.#getPhaseData();
-    this.renderWithContent(this.#renderContent(phaseData));
   }
 }
 

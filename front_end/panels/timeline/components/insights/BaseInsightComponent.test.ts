@@ -23,8 +23,8 @@ describeWithEnvironment('BaseInsightComponent', () => {
     override createOverlays(): TimelineOverlay[] {
       return [];
     }
-    override render(): void {
-      this.renderWithContent(html`<div>test content</div>`);
+    override renderContent(): LitHtml.LitTemplate {
+      return html`<div>test content</div>`;
     }
   }
   customElements.define('test-insight-component', TestInsightComponent);

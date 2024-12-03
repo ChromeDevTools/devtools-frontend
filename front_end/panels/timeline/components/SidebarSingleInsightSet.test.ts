@@ -60,6 +60,8 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
       'Render blocking requests',
       'Document request latency',
       'Third parties',
+      'INP by phase',
+      'Layout shift culprits',
       'Improve image delivery',
       'Optimize viewport for mobile',
       'CSS Selector costs',
@@ -69,6 +71,8 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
       return getCleanTextContentFromElements(component.shadowRoot!, '.insight-title');
     });
     assert.deepEqual(passedInsightTitles, [
+      'INP by phase',
+      'Layout shift culprits',
       'Improve image delivery',
       'Optimize viewport for mobile',
       'CSS Selector costs',
@@ -95,8 +99,11 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
     assert.deepEqual(userVisibleTitles, [
       'LCP by phase',
       'LCP request discovery',
+      'Layout shift culprits',
       'Improve image delivery',
       'Third parties',
+      'INP by phase',
+      'Render blocking requests',
       'Document request latency',
       'Optimize viewport for mobile',
       'CSS Selector costs',
@@ -107,6 +114,8 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
     });
     // Does not include "font display", which is experimental.
     assert.deepEqual(passedInsightTitles, [
+      'INP by phase',
+      'Render blocking requests',
       'Document request latency',
       'Optimize viewport for mobile',
       'CSS Selector costs',
@@ -136,9 +145,12 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
     assert.deepEqual(userVisibleTitles, [
       'LCP by phase',
       'LCP request discovery',
+      'Layout shift culprits',
       'Improve image delivery',
       'Font display',
       'Third parties',
+      'INP by phase',
+      'Render blocking requests',
       'Document request latency',
       'Optimize viewport for mobile',
       'CSS Selector costs',
@@ -148,6 +160,8 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
       return getCleanTextContentFromElements(component.shadowRoot!, '.insight-title');
     });
     assert.deepEqual(passedInsightTitles, [
+      'INP by phase',
+      'Render blocking requests',
       'Document request latency',
       'Optimize viewport for mobile',
       'CSS Selector costs',

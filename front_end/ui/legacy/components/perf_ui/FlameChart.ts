@@ -1421,25 +1421,22 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     // |highlightedEntryIndex| might be correct, but to make the code easier
     // to maintain, let's use |selectedEntryIndex|.
     this.contextMenu = this.dataProvider.customizedContextMenu?.(event, this.selectedEntryIndex, groupIndex) ??
-        new UI.ContextMenu.ContextMenu(event, {useSoftMenu: true});
+        new UI.ContextMenu.ContextMenu(event);
 
     // Generate context menu entries for annotations.
     const annotationSection = this.contextMenu.section('annotations');
-    const labelEntryAnnotationOption = annotationSection.appendItem(i18nString(UIStrings.labelEntry), () => {
+    annotationSection.appendItem(i18nString(UIStrings.labelEntry), () => {
       this.dispatchEventToListeners(
           Events.ENTRY_LABEL_ANNOTATION_ADDED, {entryIndex: this.selectedEntryIndex, withLinkCreationButton: false});
     }, {
       jslogContext: 'timeline.annotations.create-entry-label',
     });
 
-    labelEntryAnnotationOption.setShortcut('Double Click');
-
-    const linkEntriesAnnotationOption = annotationSection.appendItem(i18nString(UIStrings.linkEntries), () => {
+    annotationSection.appendItem(i18nString(UIStrings.linkEntries), () => {
       this.dispatchEventToListeners(Events.ENTRIES_LINK_ANNOTATION_CREATED, {entryFromIndex: this.selectedEntryIndex});
     }, {
       jslogContext: 'timeline.annotations.create-entries-link',
     });
-    linkEntriesAnnotationOption.setShortcut('Double Click');
 
     annotationSection.appendItem(i18nString(UIStrings.deleteAnnotations), () => {
       this.dataProvider.deleteAnnotationsForEntry?.(this.selectedEntryIndex);

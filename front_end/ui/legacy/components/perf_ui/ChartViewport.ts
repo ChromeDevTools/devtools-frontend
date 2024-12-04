@@ -364,25 +364,23 @@ export class ChartViewport extends UI.Widget.VBox {
     this.cursorElement.classList.toggle('hidden', !visible || this.isDraggingInternal);
   }
 
-  private onChartKeyDown(e: Event): void {
-    const mouseEvent = (e as MouseEvent);
-    this.showCursor(mouseEvent.shiftKey);
-    this.handleZoomPanKeys(e);
+  private onChartKeyDown(keyboardEvent: KeyboardEvent): void {
+    this.showCursor(keyboardEvent.shiftKey);
+    this.handleZoomPanScrollKeys(keyboardEvent);
   }
 
-  private onChartKeyUp(e: Event): void {
-    const mouseEvent = (e as MouseEvent);
-    this.showCursor(mouseEvent.shiftKey);
+  private onChartKeyUp(keyboardEvent: KeyboardEvent): void {
+    this.showCursor(keyboardEvent.shiftKey);
   }
 
-  private handleZoomPanKeys(e: Event): void {
-    const keyboardEvent = (e as KeyboardEvent);
-    // Do not zoom if the key combination has any modifiers other than shift key
-    if (UI.KeyboardShortcut.KeyboardShortcut.hasAtLeastOneModifier(e) && !keyboardEvent.shiftKey) {
+  private handleZoomPanScrollKeys(keyboardEvent: KeyboardEvent): void {
+    // Do not zoom, pan or scroll if the key combination has any modifiers other than shift key
+    if (UI.KeyboardShortcut.KeyboardShortcut.hasAtLeastOneModifier(keyboardEvent) && !keyboardEvent.shiftKey) {
       return;
     }
     const zoomFactor = keyboardEvent.shiftKey ? 0.8 : 0.3;
     const panOffset = keyboardEvent.shiftKey ? 320 : 160;
+    const scrollOffset = 50;
     switch (keyboardEvent.code) {
       case 'KeyA':
         this.handlePanGesture(-panOffset, /* animate */ true);
@@ -390,16 +388,28 @@ export class ChartViewport extends UI.Widget.VBox {
       case 'KeyD':
         this.handlePanGesture(panOffset, /* animate */ true);
         break;
+      case 'Equal':  // '+' key for zoom in
       case 'KeyW':
         this.handleZoomGesture(-zoomFactor);
         break;
+      case 'Minus':  // '-' key for zoom out
       case 'KeyS':
         this.handleZoomGesture(zoomFactor);
+        break;
+      case 'ArrowUp':
+        if (keyboardEvent.shiftKey) {
+          this.vScrollElement.scrollTop -= scrollOffset;
+        }
+        break;
+      case 'ArrowDown':
+        if (keyboardEvent.shiftKey) {
+          this.vScrollElement.scrollTop += scrollOffset;
+        }
         break;
       default:
         return;
     }
-    e.consume(true);
+    keyboardEvent.consume(true);
   }
 
   private handleZoomGesture(zoom: number): void {

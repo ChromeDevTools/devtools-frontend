@@ -1139,8 +1139,8 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   #getShortcutsInfo(isNavClassic: boolean): Dialogs.ShortcutDialog.Shortcut[] {
     if (isNavClassic) {
       return [
-        {title: i18nString(UIStrings.timelineScrollUpDown), bindings: [['Shift', 'Scroll']]},
-        {title: i18nString(UIStrings.timelineZoomInOut), bindings: [['Scroll'], ['W/S']]},
+        {title: i18nString(UIStrings.timelineScrollUpDown), bindings: [['Shift', 'Scroll'], ['Shift', '↑/↓']]},
+        {title: i18nString(UIStrings.timelineZoomInOut), bindings: [['Scroll'], ['W/S'], ['+/-']]},
         {title: i18nString(UIStrings.timelineFastZoomInOut), bindings: [['Shift', 'W/S']]},
         {title: i18nString(UIStrings.timelinePanLeftRight), bindings: [['A/D']]},
       ];
@@ -1155,7 +1155,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       {title: i18nString(UIStrings.timelineFastZoomInOut), bindings: [['Shift', 'W/S'], ['Shift', '+/-']]},
       {
         title: i18nString(UIStrings.timelinePanLeftRight),
-        bindings: [['A/D'], ['Shift', 'Scroll'], ['Shift', '←/→']],
+        bindings: [['Shift', 'Scroll'], ['Shift', '←/→'], ['A/D']],
       },
     ];
   }

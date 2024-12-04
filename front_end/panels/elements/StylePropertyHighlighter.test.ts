@@ -17,7 +17,7 @@ describeWithMockConnection('StylePropertyHighlighter', () => {
   }> {
     const target = createTarget();
     UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, sinon.createStubInstance(SDK.DOMModel.DOMNode));
-    const stylesSidebarPane = Elements.StylesSidebarPane.StylesSidebarPane.instance({forceNew: true});
+    const stylesSidebarPane = new Elements.StylesSidebarPane.StylesSidebarPane();
     const matchedStyles = await SDK.CSSMatchedStyles.CSSMatchedStyles.create({
       cssModel: target.model(SDK.CSSModel.CSSModel)!,
       node: stylesSidebarPane.node() as SDK.DOMModel.DOMNode,

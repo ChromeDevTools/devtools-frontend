@@ -279,7 +279,7 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
 
     crumbsContainer.appendChild(this.breadcrumbs);
 
-    this.stylesWidget = StylesSidebarPane.instance();
+    this.stylesWidget = new StylesSidebarPane();
     this.computedStyleWidget = new ComputedStyleWidget();
     this.metricsWidget = new MetricsSidebarPane();
 

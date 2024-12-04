@@ -49,7 +49,7 @@ describe('StylesSidebarPane', () => {
 
     describe('rebuildSectionsForMatchedStyleRulesForTest', () => {
       it('should add @position-try section', async () => {
-        const stylesSidebarPane = Elements.StylesSidebarPane.StylesSidebarPane.instance({forceNew: true});
+        const stylesSidebarPane = new Elements.StylesSidebarPane.StylesSidebarPane();
         const matchedStyles = await SDK.CSSMatchedStyles.CSSMatchedStyles.create({
           cssModel: stylesSidebarPane.cssModel() as SDK.CSSModel.CSSModel,
           node: sinon.createStubInstance(SDK.DOMModel.DOMNode),
@@ -87,7 +87,7 @@ describe('StylesSidebarPane', () => {
     });
 
     it('should add @font-palette-values section to the end', async () => {
-      const stylesSidebarPane = Elements.StylesSidebarPane.StylesSidebarPane.instance({forceNew: true});
+      const stylesSidebarPane = new Elements.StylesSidebarPane.StylesSidebarPane();
       const matchedStyles = await SDK.CSSMatchedStyles.CSSMatchedStyles.create({
         cssModel: stylesSidebarPane.cssModel() as SDK.CSSModel.CSSModel,
         node: sinon.createStubInstance(SDK.DOMModel.DOMNode),

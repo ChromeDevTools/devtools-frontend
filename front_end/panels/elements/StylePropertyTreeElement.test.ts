@@ -27,7 +27,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
   let mockVariableMap: Record<string, string>;
 
   beforeEach(async () => {
-    stylesSidebarPane = Elements.StylesSidebarPane.StylesSidebarPane.instance({forceNew: true});
+    stylesSidebarPane = new Elements.StylesSidebarPane.StylesSidebarPane();
     mockVariableMap = {
       '--a': 'red',
       '--b': 'blue',

@@ -248,7 +248,7 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
     this.contentElement.classList.add('styles-sidebar-computed-style-widget');
 
     this.computedStyleModel = new ComputedStyleModel();
-    this.computedStyleModel.addEventListener(Events.COMPUTED_STYLE_CHANGED, this.update, this);
+    this.computedStyleModel.addEventListener(Events.CSS_MODEL_CHANGED, this.update, this);
 
     this.showInheritedComputedStylePropertiesSetting =
         Common.Settings.Settings.instance().createSetting('show-inherited-computed-style-properties', false);

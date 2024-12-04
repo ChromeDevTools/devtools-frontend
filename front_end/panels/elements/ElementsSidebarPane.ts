@@ -6,7 +6,7 @@ import * as Common from '../../core/common/common.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
-import {type ComputedStyleChangedEvent, ComputedStyleModel, Events} from './ComputedStyleModel.js';
+import {ComputedStyleModel, type CSSModelChangedEvent, Events} from './ComputedStyleModel.js';
 
 export class ElementsSidebarPane extends UI.Widget.VBox {
   protected computedStyleModelInternal: ComputedStyleModel;
@@ -16,7 +16,7 @@ export class ElementsSidebarPane extends UI.Widget.VBox {
     super(true, delegatesFocus);
     this.element.classList.add('flex-none');
     this.computedStyleModelInternal = new ComputedStyleModel();
-    this.computedStyleModelInternal.addEventListener(Events.COMPUTED_STYLE_CHANGED, this.onCSSModelChanged, this);
+    this.computedStyleModelInternal.addEventListener(Events.CSS_MODEL_CHANGED, this.onCSSModelChanged, this);
 
     this.updateThrottler = new Common.Throttler.Throttler(100);
     this.updateWhenVisible = false;
@@ -57,6 +57,6 @@ export class ElementsSidebarPane extends UI.Widget.VBox {
     }
   }
 
-  onCSSModelChanged(_event: Common.EventTarget.EventTargetEvent<ComputedStyleChangedEvent|null>): void {
+  onCSSModelChanged(_event: Common.EventTarget.EventTargetEvent<CSSModelChangedEvent|null>): void {
   }
 }

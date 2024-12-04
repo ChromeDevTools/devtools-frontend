@@ -48,38 +48,24 @@ describe('FreestylerEvaluateAction', () => {
       sinon.restore();
     });
 
-    it('should throw an ExecutionError when the page returned with an error message', async () => {
-      try {
-        await executeWithResult({error: 'errorMessage'});
-        assert.fail('not reachable');
-      } catch (err) {
-        assert.instanceOf(err, Freestyler.ExecutionError);
-        assert.strictEqual(err.message, 'errorMessage');
-      }
+    it('should serialize a CDP error as a string', async () => {
+      assert.strictEqual(await executeWithResult({error: 'errorMessage'}), 'Error: errorMessage');
     });
 
     it('should throw an ExecutionError when the debugger is paused', async () => {
-      try {
-        await executeWithResult({error: 'errorMessage'}, true);
-        assert.fail('not reachable');
-      } catch (err) {
-        assert.instanceOf(err, Freestyler.ExecutionError);
-        assert.strictEqual(err.message, 'Cannot evaluate JavaScript because the execution is paused on a breakpoint.');
-      }
+      assert.strictEqual(
+          await executeWithResult({error: 'errorMessage'}, true),
+          'Error: Cannot evaluate JavaScript because the execution is paused on a breakpoint.');
     });
 
     it('should throw an ExecutionError with the description of the exception if response included exception details',
        async () => {
-         try {
-           await executeWithResult({
-             object: mockRemoteObject(),
-             exceptionDetails: mockExceptionDetails({description: 'Error description'}),
-           });
-           assert.fail('not reachable');
-         } catch (err) {
-           assert.instanceOf(err, Freestyler.ExecutionError);
-           assert.strictEqual(err.message, 'Error description');
-         }
+         assert.strictEqual(
+             await executeWithResult({
+               object: mockRemoteObject(),
+               exceptionDetails: mockExceptionDetails({description: 'Error description'}),
+             }),
+             'Error: Error description');
        });
 
     it('should throw a SideEffectError when the resulted exception starts with possible side effect error',
@@ -105,14 +91,18 @@ describe('FreestylerEvaluateAction', () => {
       return getExecutionContext(runtimeModel!);
     }
 
-    async function executeForTest(code: string) {
-      const actionExpression = `async function ($0) {
-        ${code}
-        ;
-        return ((typeof data !== "undefined") ? data : undefined);
-      }`;
+    async function executeForTest(action: string, throwOnSideEffect = false) {
+      const functionDeclaration = `async function ($0) {
+  try {
+    ${action}
+    ;
+    return ((typeof data !== "undefined") ? data : undefined);
+  } catch (error) {
+    return error;
+  }
+}`;
       return Freestyler.FreestylerEvaluateAction.execute(
-          actionExpression, [], await executionContextForTest(), {throwOnSideEffect: false});
+          functionDeclaration, [], await executionContextForTest(), {throwOnSideEffect});
     }
 
     it('should serialize primitive values correctly', async () => {
@@ -205,6 +195,19 @@ describe('FreestylerEvaluateAction', () => {
       const result = await executeForTest('const data = getComputedStyle(document.body)');
       const parsedResult = JSON.parse(result);
       assert.isUndefined(parsedResult[0]);
+    });
+
+    it('should not trigger a side-effect for returning data', async () => {
+      assert.deepStrictEqual(await executeForTest('const data = {}', true), '{}');
+    });
+
+    it('should not trigger a side-effect on errors', async () => {
+      assert.deepStrictEqual(await executeForTest('throw new Error("test")', true), 'Error: test');
+    });
+
+    it('should not trigger a side-effect on syntax errors', async () => {
+      assert.deepStrictEqual(
+          await executeForTest('const data = {;', true), 'Error: SyntaxError: Unexpected token \';\'');
     });
   });
 });

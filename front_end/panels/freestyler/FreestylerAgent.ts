@@ -27,7 +27,7 @@ import {
 } from './AiAgent.js';
 import {ChangeManager} from './ChangeManager.js';
 import {ExtensionScope, FREESTYLER_WORLD_NAME} from './ExtensionScope.js';
-import {ExecutionError, FreestylerEvaluateAction, SideEffectError} from './FreestylerEvaluateAction.js';
+import {formatError, FreestylerEvaluateAction, SideEffectError} from './FreestylerEvaluateAction.js';
 
 /*
 * Strings that don't need to be translated at this time.
@@ -168,7 +168,7 @@ async function executeJsCode(
   }
 
   if (executionContext.debuggerModel.selectedCallFrame()) {
-    throw new ExecutionError('Cannot evaluate JavaScript because the execution is paused on a breakpoint.');
+    return formatError('Cannot evaluate JavaScript because the execution is paused on a breakpoint.');
   }
 
   const result = await executionContext.evaluate(
@@ -180,19 +180,11 @@ async function executeJsCode(
       false, false);
 
   if ('error' in result) {
-    throw new ExecutionError('Cannot find $0');
+    return formatError('Cannot find $0');
   }
 
-  try {
-    return await FreestylerEvaluateAction.execute(
-        functionDeclaration, [result.object], executionContext, {throwOnSideEffect});
-  } catch (err) {
-    if (err instanceof ExecutionError) {
-      return `Error: ${err.message}`;
-    }
-
-    throw err;
-  }
+  return await FreestylerEvaluateAction.execute(
+      functionDeclaration, [result.object], executionContext, {throwOnSideEffect});
 }
 
 const MAX_OBSERVATION_BYTE_LENGTH = 25_000;
@@ -451,10 +443,14 @@ export class FreestylerAgent extends AiAgent<SDK.DOMModel.DOMNode> {
     canceled: boolean,
   }> {
     const functionDeclaration = `async function ($0) {
-      ${action}
-      ;
-      return ((typeof data !== "undefined") ? data : undefined);
-    }`;
+  try {
+    ${action}
+    ;
+    return ((typeof data !== "undefined") ? data : undefined);
+  } catch (error) {
+    return error;
+  }
+}`;
     try {
       const runConfirmed = await confirm ?? Promise.resolve(true);
       if (!runConfirmed) {
@@ -587,6 +583,17 @@ export class FreestylerAgent extends AiAgent<SDK.DOMModel.DOMNode> {
         type: ResponseType.ACTION,
         code: action,
         output: 'Error: JavaScript execution is currently disabled.',
+        canceled: true,
+      };
+    }
+
+    const selectedNode = UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
+    const target = selectedNode?.domModel().target() ?? UI.Context.Context.instance().flavor(SDK.Target.Target);
+    if (target?.model(SDK.DebuggerModel.DebuggerModel)?.selectedCallFrame()) {
+      return {
+        type: ResponseType.ACTION,
+        code: action,
+        output: 'Error: Cannot evaluate JavaScript because the execution is paused on a breakpoint.',
         canceled: true,
       };
     }

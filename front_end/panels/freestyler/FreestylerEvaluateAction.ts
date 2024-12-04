@@ -5,11 +5,16 @@
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 
-export class ExecutionError extends Error {}
+export function formatError(message: string): string {
+  return `Error: ${message}`;
+}
 export class SideEffectError extends Error {}
 
 /* istanbul ignore next */
 function stringifyObjectOnThePage(this: unknown): string {
+  if (this instanceof Error) {
+    return `Error: ${this.message}`;
+  }
   const seenBefore = new WeakMap();
   return JSON.stringify(this, function replacer(this: unknown, key: string, value: unknown) {
     if (typeof value === 'object' && value !== null) {
@@ -74,7 +79,7 @@ export class FreestylerEvaluateAction {
       functionDeclaration: string, args: Array<SDK.RemoteObject.RemoteObject>,
       executionContext: SDK.RuntimeModel.ExecutionContext, {throwOnSideEffect}: Options): Promise<string> {
     if (executionContext.debuggerModel.selectedCallFrame()) {
-      throw new ExecutionError('Cannot evaluate JavaScript because the execution is paused on a breakpoint.');
+      return formatError('Cannot evaluate JavaScript because the execution is paused on a breakpoint.');
     }
     const response = await executionContext.callFunctionOn({
       functionDeclaration,
@@ -95,7 +100,7 @@ export class FreestylerEvaluateAction {
       }
 
       if ('error' in response) {
-        throw new ExecutionError(response.error);
+        return formatError(response.error);
       }
 
       if (response.exceptionDetails) {
@@ -103,7 +108,7 @@ export class FreestylerEvaluateAction {
         if (SDK.RuntimeModel.RuntimeModel.isSideEffectFailure(response)) {
           throw new SideEffectError(exceptionDescription);
         }
-        throw new ExecutionError(exceptionDescription || 'JS exception');
+        return formatError(exceptionDescription ?? 'JS exception');
       }
 
       return stringifyRemoteObject(response.object);

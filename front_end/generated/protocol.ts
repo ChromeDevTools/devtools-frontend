@@ -3844,7 +3844,7 @@ export namespace DOM {
     Checkmark = 'checkmark',
     Before = 'before',
     After = 'after',
-    SelectArrow = 'select-arrow',
+    PickerIcon = 'picker-icon',
     Marker = 'marker',
     Backdrop = 'backdrop',
     Column = 'column',

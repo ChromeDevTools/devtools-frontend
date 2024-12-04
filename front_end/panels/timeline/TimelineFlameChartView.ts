@@ -125,7 +125,7 @@ export class TimelineFlameChartView extends
   #overlaysContainer: HTMLElement = document.createElement('div');
   #overlays: Overlays.Overlays.Overlays;
 
-  // Tracks the in-progress time range annotation when the user shift clicks + drags, or when the user uses the keyboard
+  // Tracks the in-progress time range annotation when the user alt/option clicks + drags, or when the user uses the keyboard
   #timeRangeSelectionAnnotation: Trace.Types.File.TimeRangeAnnotation|null = null;
 
   // Keep track of the link annotation that hasn't been fully selected yet.
@@ -703,10 +703,10 @@ export class TimelineFlameChartView extends
 
     switch (event.key) {
       // ArrowLeft + ArrowRight adjusts the right hand bound (the max) of the time range
-      // Shift + ArrowRight also starts a range if there isn't one already
+      // alt/option + ArrowRight also starts a range if there isn't one already
       case 'ArrowRight': {
         if (!this.#timeRangeSelectionAnnotation) {
-          if (event.shiftKey) {
+          if (event.altKey) {
             let startTime = visibleWindow.min;
             // Prefer the start time of the selected event, if there is one.
             if (this.#currentSelection) {

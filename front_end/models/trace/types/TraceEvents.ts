@@ -1873,6 +1873,9 @@ export function isInvalidateLayout(event: Event): event is InvalidateLayout {
 
 export interface DebuggerAsyncTaskScheduled extends Event {
   name: Name.DEBUGGER_ASYNC_TASK_SCHEDULED;
+  args: Args&{
+    taskName: string,
+  };
 }
 
 export function isDebuggerAsyncTaskScheduled(event: Event): event is DebuggerAsyncTaskScheduled {

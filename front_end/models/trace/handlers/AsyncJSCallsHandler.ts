@@ -8,7 +8,9 @@ import {data as flowsHandlerData} from './FlowsHandler.js';
 import {data as rendererHandlerData} from './RendererHandler.js';
 
 const schedulerToRunEntryPoints: Map<Types.Events.SyntheticProfileCall, Types.Events.Event[]> = new Map();
-const asyncCallToScheduler: Map<Types.Events.SyntheticProfileCall, Types.Events.SyntheticProfileCall> = new Map();
+const asyncCallToScheduler:
+    Map<Types.Events.SyntheticProfileCall, {taskName: string, scheduler: Types.Events.SyntheticProfileCall}> =
+        new Map();
 
 export function reset(): void {
   schedulerToRunEntryPoints.clear();
@@ -27,6 +29,7 @@ export async function finalize(): Promise<void> {
     if (!asyncTaskScheduled || !Types.Events.isDebuggerAsyncTaskScheduled(asyncTaskScheduled)) {
       continue;
     }
+    const taskName = asyncTaskScheduled.args.taskName;
     const asyncTaskRun = flow.at(1);
     if (!asyncTaskRun || !Types.Events.isDebuggerAsyncTaskRun(asyncTaskRun)) {
       // Unexpected flow shape, ignore.
@@ -51,7 +54,7 @@ export async function finalize(): Promise<void> {
     // above, for usage ergonomics).
     const scheduledProfileCalls = findFirstJSCallsForAsyncTaskRun(asyncTaskRun, entryToNode);
     for (const call of scheduledProfileCalls) {
-      asyncCallToScheduler.set(call, asyncCaller);
+      asyncCallToScheduler.set(call, {taskName, scheduler: asyncCaller});
     }
   }
 }
@@ -167,11 +170,11 @@ export function data(): {
   // For example, given a setTimeout call, returns the JS entry point
   // trace event for the timeout callback run event (usually a
   // FunctionCall event).
-  schedulerToRunEntryPoints: Map<Types.Events.SyntheticProfileCall, Types.Events.Event[]>,
+  schedulerToRunEntryPoints: typeof schedulerToRunEntryPoints,
   // Given a profile call, returns the profile call that scheduled it.
   // For example given a timeout callback run event, returns its
   // setTimeout call event.
-  asyncCallToScheduler: Map<Types.Events.SyntheticProfileCall, Types.Events.SyntheticProfileCall>,
+  asyncCallToScheduler: typeof asyncCallToScheduler,
 } {
   return {
     schedulerToRunEntryPoints,

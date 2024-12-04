@@ -124,8 +124,9 @@ describe('AsyncJSCallsHandler', function() {
     it('associates an async JS task to its scheduler', async function() {
       const jsTaskScheduler = makeProfileCall('setTimeout', 0, 50, pid, tid);
       const asyncTaskScheduled =
-          makeCompleteEvent(Trace.Types.Events.Name.DEBUGGER_ASYNC_TASK_SCHEDULED, 0, 0, cat, pid, tid);
-
+          makeCompleteEvent(Trace.Types.Events.Name.DEBUGGER_ASYNC_TASK_SCHEDULED, 0, 0, cat, pid, tid) as
+          Trace.Types.Events.DebuggerAsyncTaskScheduled;
+      asyncTaskScheduled.args.taskName = 'A task name';
       const asyncTaskRun = makeCompleteEvent(Trace.Types.Events.Name.DEBUGGER_ASYNC_TASK_RUN, 60, 100, cat, tid, pid);
       const jsTaskRunEntryPoint = makeCompleteEvent(Trace.Types.Events.Name.FUNCTION_CALL, 70, 20, cat, tid, pid);
       const asyncJSTask1 = makeProfileCall('scheduledFunction', 71, 10, pid, tid);
@@ -138,10 +139,12 @@ describe('AsyncJSCallsHandler', function() {
 
       const asyncCallStacksData = await buildAsyncJSCallsHandlerData(allEvents);
       let testScheduler = asyncCallStacksData.asyncCallToScheduler.get(asyncJSTask1);
-      assert.strictEqual(testScheduler, jsTaskScheduler);
+      assert.strictEqual(testScheduler?.scheduler, jsTaskScheduler);
+      assert.strictEqual(testScheduler?.taskName, asyncTaskScheduled.args.taskName);
 
       testScheduler = asyncCallStacksData.asyncCallToScheduler.get(asyncJSTask2);
-      assert.strictEqual(testScheduler, jsTaskScheduler);
+      assert.strictEqual(testScheduler?.scheduler, jsTaskScheduler);
+      assert.strictEqual(testScheduler?.taskName, asyncTaskScheduled.args.taskName);
     });
     it('only associates the root async JS task in a subtree with the async task scheduler', async function() {
       const jsTaskScheduler = makeProfileCall('setTimeout', 0, 50, pid, tid);
@@ -160,10 +163,10 @@ describe('AsyncJSCallsHandler', function() {
       const allEvents = [...rendererEvents, ...flowEvents];
 
       const asyncCallStacksData = await buildAsyncJSCallsHandlerData(allEvents);
-      let testScheduler = asyncCallStacksData.asyncCallToScheduler.get(asyncJSTask1);
+      let testScheduler = asyncCallStacksData.asyncCallToScheduler.get(asyncJSTask1)?.scheduler;
       assert.strictEqual(testScheduler, jsTaskScheduler);
 
-      testScheduler = asyncCallStacksData.asyncCallToScheduler.get(asyncJSTask2);
+      testScheduler = asyncCallStacksData.asyncCallToScheduler.get(asyncJSTask2)?.scheduler;
       assert.isUndefined(testScheduler);
     });
   });

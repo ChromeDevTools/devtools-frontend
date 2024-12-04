@@ -206,23 +206,45 @@ export class ChartViewport extends UI.Widget.VBox {
     this.totalTime = totalTime;
   }
 
-  private onMouseWheel(e: Event): void {
-    const wheelEvent = (e as WheelEvent);
-    const doZoomInstead = wheelEvent.shiftKey !==
-        (Common.Settings.Settings.instance().moduleSetting('flamechart-selected-navigation').get() === 'classic');
-    const panVertically = !doZoomInstead && (wheelEvent.deltaY || Math.abs(wheelEvent.deltaX) === 53);
-    const panHorizontally = doZoomInstead && Math.abs(wheelEvent.deltaX) > Math.abs(wheelEvent.deltaY);
-    if (panVertically) {
-      this.vScrollElement.scrollTop += (wheelEvent.deltaY || wheelEvent.deltaX) / 53 * this.offsetHeight / 8;
-    } else if (panHorizontally) {
-      this.handlePanGesture(wheelEvent.deltaX, /* animate */ true);
-    } else {  // Zoom.
-      const wheelZoomSpeed = 1 / 53;
-      this.handleZoomGesture(Math.pow(1.2, (wheelEvent.deltaY || wheelEvent.deltaX) * wheelZoomSpeed) - 1);
+  /**
+   * The mouse wheel can results in flamechart zoom, scroll and pan actions, depending on the scroll deltas and the selected navigation:
+   *
+   * Classic navigation:
+   * 1. Mouse Wheel --> Zoom
+   * 2. Mouse Wheel + Shift --> Scroll
+   * 3. Trackpad: Mouse Wheel AND horizontal scroll (deltaX > deltaY): --> Pan left/right
+   *
+   * Modern navigation:
+   * 1. Mouse Wheel -> Scroll
+   * 2. Mouse Wheel + Shift -> Pan left/right
+   * 3. Mouse Wheel + Ctrl/Cmd -> Zoom
+   * 4. Trackpad: Mouse Wheel AND horizontal scroll (deltaX > deltaY): --> Zoom
+   */
+  private onMouseWheel(wheelEvent: WheelEvent): void {
+    const navigation = Common.Settings.Settings.instance().moduleSetting('flamechart-selected-navigation').get();
+    const scrollDelta = (wheelEvent.deltaY || wheelEvent.deltaX) / 53 * this.offsetHeight / 8;
+    const zoomDelta = Math.pow(1.2, (wheelEvent.deltaY || wheelEvent.deltaX) * 1 / 53) - 1;
+
+    if (navigation === 'classic') {
+      if (wheelEvent.shiftKey) {  // Scroll
+        this.vScrollElement.scrollTop += scrollDelta;
+      } else if (Math.abs(wheelEvent.deltaX) > Math.abs(wheelEvent.deltaY)) {  // Pan left/right
+        this.handlePanGesture(wheelEvent.deltaX, /* animate */ true);
+      } else {  // Zoom
+        this.handleZoomGesture(zoomDelta);
+      }
+    } else if (navigation === 'modern') {
+      if (wheelEvent.shiftKey) {  // Pan left/right
+        this.handlePanGesture(wheelEvent.deltaY, /* animate */ true);
+      } else if (wheelEvent.ctrlKey || Math.abs(wheelEvent.deltaX) > Math.abs(wheelEvent.deltaY)) {  // Zoom
+        this.handleZoomGesture(zoomDelta);
+      } else {  // Scroll
+        this.vScrollElement.scrollTop += scrollDelta;
+      }
     }
 
     // Block swipe gesture.
-    e.consume(true);
+    wheelEvent.consume(true);
   }
 
   private startDragging(event: MouseEvent): boolean {

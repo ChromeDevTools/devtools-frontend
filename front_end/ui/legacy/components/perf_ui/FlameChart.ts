@@ -322,7 +322,6 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
   #font: string;
   #groupTreeRoot?: GroupTreeNode|null;
   #searchResultEntryIndex: number|null = null;
-  #searchResultHighlightElements: HTMLElement[] = [];
   #searchResultEntries: number[]|null = null;
   #inTrackConfigEditMode: boolean = false;
   #linkSelectionAnnotationIsInProgress: boolean = false;
@@ -553,19 +552,6 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
   }
 
   highlightAllEntries(entries: number[]): void {
-    // To avoid too many highlights when the search regex matches too many entries,
-    // for example, when user only types in "e" as the search query,
-    // We only highlight the search results when the number of matches is less than or equal to 200.
-    // TODO: current behavior is a bit jank, esp. with dimming treatment always being applied.
-    //       Can we lift this restriction - maybe by adding a stroke in canvas, which should be faster?
-    const MAX_HIGHLIGHTED_SEARCH_ELEMENTS: number = 200;
-    for (const entry of entries.slice(0, MAX_HIGHLIGHTED_SEARCH_ELEMENTS)) {
-      const searchElement = this.viewportElement.createChild('div', 'flame-chart-search-element');
-      this.#searchResultHighlightElements.push(searchElement);
-      searchElement.id = entry.toString();
-      this.updateElementPosition(searchElement, entry);
-    }
-
     if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_DIM_UNRELATED_EVENTS)) {
       this.#searchResultEntries = entries;
       // Must redraw for the dimming treatment (#searchResultEntries overrides entryIndicesToNotDim).
@@ -574,10 +560,6 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
   }
 
   removeSearchResultHighlights(): void {
-    for (const element of this.#searchResultHighlightElements) {
-      element.remove();
-    }
-    this.#searchResultHighlightElements = [];
     this.#searchResultEntries = null;
     // Must redraw for the dimming treatment (to turn it off / revert back to entryIndicesToNotDim).
     this.draw();
@@ -1550,10 +1532,10 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
           barWidth > minWidth;
     };
     let allFilteredIndexes: number[] = [];
-    for (const [color, {indexes}] of colorBuckets) {
+    for (const [color, {indexes, shouldDim}] of colorBuckets) {
       const filteredIndexes = indexes.filter(entryIndexIsInTrack);
       allFilteredIndexes = [...allFilteredIndexes, ...filteredIndexes];
-      this.#drawGenericEvents(context, timelineData, color, filteredIndexes);
+      this.#drawGenericEvents(context, timelineData, color, filteredIndexes, shouldDim);
     }
     const filteredTitleIndices = titleIndices.filter(entryIndexIsInTrack);
     this.drawEventTitles(context, timelineData, filteredTitleIndices, canvasWidth);
@@ -2190,11 +2172,11 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
           barWidth > 10;
     };
     let wideEntryExists: boolean = false;
-    for (const [color, {indexes}] of colorBuckets) {
+    for (const [color, {indexes, shouldDim}] of colorBuckets) {
       if (!wideEntryExists) {
         wideEntryExists = indexes.some(entryIndexIsInTrack);
       }
-      this.#drawGenericEvents(context, timelineData, color, indexes);
+      this.#drawGenericEvents(context, timelineData, color, indexes, shouldDim);
     }
     this.dispatchEventToListeners(Events.CHART_PLAYABLE_STATE_CHANGED, wideEntryExists);
 
@@ -2258,9 +2240,6 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     if (this.#searchResultEntryIndex !== null) {
       this.showPopoverForSearchResult(this.#searchResultEntryIndex);
     }
-    for (const element of this.#searchResultHighlightElements) {
-      this.updateElementPosition(element, Number(element.id));
-    }
     this.updateMarkerHighlight();
   }
 
@@ -2270,7 +2249,8 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
    * Drawn on a color by color basis to minimize the amount of times context.style is switched.
    */
   #drawGenericEvents(
-      context: CanvasRenderingContext2D, timelineData: FlameChartTimelineData, color: string, indexes: number[]): void {
+      context: CanvasRenderingContext2D, timelineData: FlameChartTimelineData, color: string, indexes: number[],
+      shouldDim: boolean): void {
     context.save();
     context.beginPath();
     for (let i = 0; i < indexes.length; ++i) {
@@ -2281,11 +2261,31 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
         continue;
       }
 
+      // Doesn't draw a rect, just adds the rect into the current path
       this.#drawEventRect(context, timelineData, entryIndex);
     }
+
+    this.#maybeAddOutlines(context, color, shouldDim);
     context.fillStyle = color;
     context.fill();
     context.restore();
+  }
+
+  /** In some dim/highlight situations, put a darker outline around the rect for added visual contrast */
+  #maybeAddOutlines(context: CanvasRenderingContext2D, color: string, shouldDim: boolean): void {
+    // We only want to add outlines when in a dimming state
+    if (!this.entryIndicesToNotDim && !this.#searchResultEntries) {
+      return;
+    }
+    // We only want to add outlines on highlighted/saturated entries (aka not dimmed/grayscale)
+    if (shouldDim) {
+      return;
+    }
+
+    // This foregroundColor is near-black in light mode, and vice-versa. Color mix so it's a good contrast, but still has the base flavor.
+    const foregroundColor = ThemeSupport.ThemeSupport.instance().getComputedValue('--sys-color-on-base');
+    context.strokeStyle = `color-mix(in srgb, ${color}, ${foregroundColor} 60%)`;
+    context.stroke();
   }
 
   /**
@@ -2491,8 +2491,11 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
    *  - Gathers marker events (LCP, FCP, DCL, etc.).
    *  - Gathers event titles that should be rendered.
    */
-  private getDrawableData(context: CanvasRenderingContext2D, timelineData: FlameChartTimelineData):
-      {colorBuckets: Map<string, {indexes: number[]}>, titleIndices: number[], markerIndices: number[]} {
+  private getDrawableData(context: CanvasRenderingContext2D, timelineData: FlameChartTimelineData): {
+    colorBuckets: Map<string, {indexes: number[], shouldDim: boolean}>,
+    titleIndices: number[],
+    markerIndices: number[],
+  } {
     // These are the event indexes of events that we are drawing onto the timeline that:
     // 1) have text within them
     // 2) are visually wide enough in pixels to make it worth rendering the text.
@@ -2516,7 +2519,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     // events stored in the `indexes` array for that color will be painted as
     // such. This way, when rendering events, we can render them based on
     // color, and ensure the minimum amount of changes to context.fillStyle.
-    const colorBuckets = new Map<string, {indexes: number[]}>();
+    const colorBuckets = new Map<string, {indexes: number[], shouldDim: boolean}>();
     for (let level = 0; level < this.dataProvider.maxStackDepth(); ++level) {
       // Since tracks can be reordered the |visibleLevelOffsets| is not necessarily sorted, so we need to check all levels.
       // Note that to check if a level is off the top of the screen, we can't
@@ -2575,10 +2578,12 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
         lastDrawOffset = barX;
 
         if (this.entryColorsCache) {
+          const shouldDim = this.#shouldDimEvent(entryIndex);
           const color = this.getColorForEntry(entryIndex);
+          // TODO(paulirish): The above ran shouldDimEvent twice, if perf is noticeable we could decompose and refactor transformColor/etc
           let bucket = colorBuckets.get(color);
           if (!bucket) {
-            bucket = {indexes: []};
+            bucket = {indexes: [], shouldDim};
             colorBuckets.set(color, bucket);
           }
           bucket.indexes.push(entryIndex);

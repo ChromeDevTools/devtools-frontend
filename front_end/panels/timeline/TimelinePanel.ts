@@ -566,6 +566,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
     this.searchableViewInternal = new UI.SearchableView.SearchableView(this.flameChart, null);
     this.searchableViewInternal.setMinimumSize(0, 100);
+    this.searchableViewInternal.setMinimalSearchQuerySize(2);  // At 1 it can introduce a bit of jank.
     this.searchableViewInternal.element.classList.add('searchable-view');
     this.searchableViewInternal.show(this.timelinePane.element);
     this.flameChart.show(this.searchableViewInternal.element);

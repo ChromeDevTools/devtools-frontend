@@ -50,6 +50,16 @@ function storeInitiator(data: {initiator: Types.Events.Event, event: Types.Event
   initiatorToEventsMap.set(data.initiator, eventsForInitiator);
 }
 
+/**
+ * IMPORTANT: Before adding support for new initiator relationships in
+ * trace events consider using Perfetto's flow API on the events in
+ * question, so that they get automatically computed.
+ * @see {@link flowsHandlerData}
+ *
+ * The events manually computed here were added before we had support
+ * for flow events. As such they should be migrated to use the flow
+ * API so that no manual parsing is needed.
+ */
 export function handleEvent(event: Types.Events.Event): void {
   if (Types.Events.isScheduleStyleRecalculation(event)) {
     lastScheduleStyleRecalcByFrame.set(event.args.data.frame, event);

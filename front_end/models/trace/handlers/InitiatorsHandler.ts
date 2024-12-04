@@ -5,7 +5,7 @@
 import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
 
-import {data as asyncCallStacksHandlerData} from './AsyncCallStacksHandler.js';
+import {data as AsyncJSCallsHandlerData} from './AsyncJSCallsHandler.js';
 import {data as flowsHandlerData} from './FlowsHandler.js';
 
 const lastScheduleStyleRecalcByFrame = new Map<string, Types.Events.ScheduleStyleRecalculation>();
@@ -147,8 +147,8 @@ function createRelationshipsFromFlows(): void {
   }
 }
 
-function createRelationshipsFromAsyncCallStacks(): void {
-  const asyncCallPairs = asyncCallStacksHandlerData().schedulerToRunEntryPoints.entries();
+function createRelationshipsFromAsyncJSCalls(): void {
+  const asyncCallPairs = AsyncJSCallsHandlerData().schedulerToRunEntryPoints.entries();
   for (const [asyncCaller, asyncCallees] of asyncCallPairs) {
     for (const asyncCallee of asyncCallees) {
       storeInitiator({event: asyncCallee, initiator: asyncCaller});
@@ -158,7 +158,7 @@ function createRelationshipsFromAsyncCallStacks(): void {
 
 export async function finalize(): Promise<void> {
   createRelationshipsFromFlows();
-  createRelationshipsFromAsyncCallStacks();
+  createRelationshipsFromAsyncJSCalls();
 }
 
 export interface InitiatorsData {
@@ -173,6 +173,6 @@ export function data(): InitiatorsData {
   };
 }
 
-export function deps(): ['Flows', 'AsyncCallStacks'] {
-  return ['Flows', 'AsyncCallStacks'];
+export function deps(): ['Flows', 'AsyncJSCalls'] {
+  return ['Flows', 'AsyncJSCalls'];
 }

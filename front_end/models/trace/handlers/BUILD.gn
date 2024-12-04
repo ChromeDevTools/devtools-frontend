@@ -11,7 +11,7 @@ devtools_module("handlers") {
   sources = [
     "AnimationFramesHandler.ts",
     "AnimationHandler.ts",
-    "AsyncCallStacksHandler.ts",
+    "AsyncJSCallsHandler.ts",
     "AuctionWorkletsHandler.ts",
     "ExtensionTraceDataHandler.ts",
     "FlowsHandler.ts",
@@ -69,7 +69,7 @@ ts_library("unittests") {
   sources = [
     "AnimationFramesHandler.test.ts",
     "AnimationHandler.test.ts",
-    "AsyncCallStacksHandler.test.ts",
+    "AsyncJSCallsHandler.test.ts",
     "AuctionWorkletsHandler.test.ts",
     "ExtensionTraceDataHandler.test.ts",
     "FlowsHandler.test.ts",

@@ -11,8 +11,8 @@ import * as Trace from '../trace.js';
 const cat = 'mewtwo';
 const pid = 1;
 const tid = 1;
-async function buildAsyncCallStacksHandlerData(events: Trace.Types.Events.Event[]):
-    Promise<ReturnType<typeof Trace.Handlers.ModelHandlers.AsyncCallStacks.data>> {
+async function buildAsyncJSCallsHandlerData(events: Trace.Types.Events.Event[]):
+    Promise<ReturnType<typeof Trace.Handlers.ModelHandlers.AsyncJSCalls.data>> {
   Trace.Handlers.ModelHandlers.Renderer.reset();
   Trace.Handlers.ModelHandlers.Flows.reset();
   Trace.Handlers.ModelHandlers.Flows.reset();
@@ -22,10 +22,10 @@ async function buildAsyncCallStacksHandlerData(events: Trace.Types.Events.Event[
   }
   await Trace.Handlers.ModelHandlers.Renderer.finalize();
   await Trace.Handlers.ModelHandlers.Flows.finalize();
-  await Trace.Handlers.ModelHandlers.AsyncCallStacks.finalize();
-  return Trace.Handlers.ModelHandlers.AsyncCallStacks.data();
+  await Trace.Handlers.ModelHandlers.AsyncJSCalls.finalize();
+  return Trace.Handlers.ModelHandlers.AsyncJSCalls.data();
 }
-describe('AsyncCallStacksHandler', function() {
+describe('AsyncJSCallsHandler', function() {
   describe('Resolving JS task schedulers to task run entrypoints', function() {
     it('associates a JS task scheduler profile call with the corresponding task run entry point', async function() {
       const jsTaskScheduler = makeProfileCall('setTimeout', 0, 50, pid, tid);
@@ -39,7 +39,7 @@ describe('AsyncCallStacksHandler', function() {
       const rendererEvents = [jsTaskScheduler, asyncTaskScheduled, asyncTaskRun, jsTaskRunEntryPoint];
       const allEvents = [...rendererEvents, ...flowEvents];
 
-      const asyncCallStacksData = await buildAsyncCallStacksHandlerData(allEvents);
+      const asyncCallStacksData = await buildAsyncJSCallsHandlerData(allEvents);
       const testRunEntryPoints = asyncCallStacksData.schedulerToRunEntryPoints.get(jsTaskScheduler);
       assert.strictEqual(testRunEntryPoints?.length, 1);
       assert.strictEqual(testRunEntryPoints?.[0], jsTaskRunEntryPoint);
@@ -62,7 +62,7 @@ describe('AsyncCallStacksHandler', function() {
       const rendererEvents = [foo, bar, jsTaskScheduler, asyncTaskScheduled, asyncTaskRun, jsTaskRunEntryPoint];
       const allEvents = [...rendererEvents, ...flowEvents];
 
-      const asyncCallStacksData = await buildAsyncCallStacksHandlerData(allEvents);
+      const asyncCallStacksData = await buildAsyncJSCallsHandlerData(allEvents);
       const testRunEntryPoints = asyncCallStacksData.schedulerToRunEntryPoints.get(jsTaskScheduler);
       assert.strictEqual(testRunEntryPoints?.length, 1);
       assert.strictEqual(testRunEntryPoints?.[0], jsTaskRunEntryPoint);
@@ -86,7 +86,7 @@ describe('AsyncCallStacksHandler', function() {
           [jsTaskScheduler, asyncTaskScheduled, asyncTaskRun, jsTaskRunEntryPoint, secondFakeEntryPoint];
       const allEvents = [...rendererEvents, ...flowEvents];
 
-      const asyncCallStacksData = await buildAsyncCallStacksHandlerData(allEvents);
+      const asyncCallStacksData = await buildAsyncJSCallsHandlerData(allEvents);
       const testRunEntryPoints = asyncCallStacksData.schedulerToRunEntryPoints.get(jsTaskScheduler);
       assert.strictEqual(testRunEntryPoints?.length, 1);
       assert.strictEqual(testRunEntryPoints?.[0], jsTaskRunEntryPoint);
@@ -113,7 +113,7 @@ describe('AsyncCallStacksHandler', function() {
              [jsTaskScheduler, asyncTaskScheduled, asyncTaskRun, firstJSTaskRunEntryPoint, secondJSTaskRunEntryPoint];
          const allEvents = [...rendererEvents, ...flowEvents];
 
-         const asyncCallStacksData = await buildAsyncCallStacksHandlerData(allEvents);
+         const asyncCallStacksData = await buildAsyncJSCallsHandlerData(allEvents);
          const testRunEntryPoints = asyncCallStacksData.schedulerToRunEntryPoints.get(jsTaskScheduler);
          assert.strictEqual(testRunEntryPoints?.length, 2);
          assert.strictEqual(testRunEntryPoints?.[0], firstJSTaskRunEntryPoint);
@@ -136,7 +136,7 @@ describe('AsyncCallStacksHandler', function() {
           [jsTaskScheduler, asyncTaskScheduled, asyncTaskRun, jsTaskRunEntryPoint, asyncJSTask1, asyncJSTask2];
       const allEvents = [...rendererEvents, ...flowEvents];
 
-      const asyncCallStacksData = await buildAsyncCallStacksHandlerData(allEvents);
+      const asyncCallStacksData = await buildAsyncJSCallsHandlerData(allEvents);
       let testScheduler = asyncCallStacksData.asyncCallToScheduler.get(asyncJSTask1);
       assert.strictEqual(testScheduler, jsTaskScheduler);
 
@@ -159,7 +159,7 @@ describe('AsyncCallStacksHandler', function() {
           [jsTaskScheduler, asyncTaskScheduled, asyncTaskRun, jsTaskRunEntryPoint, asyncJSTask1, asyncJSTask2];
       const allEvents = [...rendererEvents, ...flowEvents];
 
-      const asyncCallStacksData = await buildAsyncCallStacksHandlerData(allEvents);
+      const asyncCallStacksData = await buildAsyncJSCallsHandlerData(allEvents);
       let testScheduler = asyncCallStacksData.asyncCallToScheduler.get(asyncJSTask1);
       assert.strictEqual(testScheduler, jsTaskScheduler);
 

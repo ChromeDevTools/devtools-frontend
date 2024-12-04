@@ -470,13 +470,11 @@ export class NamedBitSetFilterUI extends Common.ObjectWrapper.ObjectWrapper<Filt
       this.allowedTypes.delete(typeName);
     } else {
       this.allowedTypes.add(typeName);
-      Host.userMetrics.legacyResourceTypeFilterItemSelected(typeName);
     }
 
     if (this.allowedTypes.size === 0) {
       this.allowedTypes.add(NamedBitSetFilterUI.ALL_TYPES);
     }
-    Host.userMetrics.legacyResourceTypeFilterNumberOfSelectedChanged(this.allowedTypes.size);
 
     if (this.setting) {
       // Settings do not support `Sets` so convert it back to the Map-like object.

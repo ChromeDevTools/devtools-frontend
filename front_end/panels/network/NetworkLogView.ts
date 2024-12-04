@@ -2648,7 +2648,6 @@ export class MoreFiltersDropDownUI extends
   private contextMenu?: UI.ContextMenu.ContextMenu;
   private activeFiltersCount: HTMLElement;
   private activeFiltersCountAdorner: Adorners.Adorner.Adorner;
-  private hasChanged = false;
 
   constructor() {
     super();
@@ -2688,13 +2687,11 @@ export class MoreFiltersDropDownUI extends
   }
 
   #onSettingChanged(): void {
-    this.hasChanged = true;
     this.dispatchEventToListeners(UI.FilterBar.FilterUIEvents.FILTER_CHANGED);
   }
 
   showMoreFiltersContextMenu(event: Common.EventTarget.EventTargetEvent<Event>): void {
     const mouseEvent = event.data;
-    this.hasChanged = false;
 
     this.networkHideDataURLSetting.addChangeListener(this.#onSettingChanged.bind(this));
     this.networkHideChromeExtensionsSetting.addChangeListener(this.#onSettingChanged.bind(this));

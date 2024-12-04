@@ -335,36 +335,6 @@ export class UserMetrics {
         'DevTools.VisualLogging.ProcessingTime', timeInMilliseconds);
   }
 
-  legacyResourceTypeFilterNumberOfSelectedChanged(itemCount: number): void {
-    const boundItemCount = Math.max(Math.min(itemCount, ResourceType.MAX_VALUE - 1), 1);
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-        EnumeratedHistogram.LegacyResourceTypeFilterNumberOfSelectedChanged, boundItemCount, ResourceType.MAX_VALUE);
-  }
-
-  legacyResourceTypeFilterItemSelected(resourceTypeName: string): void {
-    const resourceType = ResourceType[resourceTypeName as keyof typeof ResourceType];
-    if (resourceType === undefined) {
-      return;
-    }
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-        EnumeratedHistogram.LegacyResourceTypeFilterItemSelected, resourceType, ResourceType.MAX_VALUE);
-  }
-
-  resourceTypeFilterNumberOfSelectedChanged(itemCount: number): void {
-    const boundItemCount = Math.max(Math.min(itemCount, ResourceType.MAX_VALUE - 1), 1);
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-        EnumeratedHistogram.ResourceTypeFilterNumberOfSelectedChanged, boundItemCount, ResourceType.MAX_VALUE);
-  }
-
-  resourceTypeFilterItemSelected(resourceTypeName: string): void {
-    const resourceType = ResourceType[resourceTypeName as keyof typeof ResourceType];
-    if (resourceType === undefined) {
-      return;
-    }
-    InspectorFrontendHostInstance.recordEnumeratedHistogram(
-        EnumeratedHistogram.ResourceTypeFilterItemSelected, resourceType, ResourceType.MAX_VALUE);
-  }
-
   freestylerQueryLength(numberOfCharacters: number): void {
     InspectorFrontendHostInstance.recordCountHistogram(
         'DevTools.Freestyler.QueryLength', numberOfCharacters, 0, 100_000, 100);
@@ -1177,24 +1147,6 @@ export const enum DeveloperResourceScheme {
   FILE = 7,
   BLOB = 8,
   MAX_VALUE = 9,
-}
-
-export enum ResourceType {
-  /* eslint-disable @typescript-eslint/naming-convention -- Used by web_tests. */
-  all = 0,
-  Document = 1,
-  JavaScript = 2,
-  'Fetch and XHR' = 3,
-  CSS = 4,
-  Font = 5,
-  Image = 6,
-  Media = 7,
-  Manifest = 8,
-  WebSocket = 9,
-  WebAssembly = 10,
-  Other = 11,
-  /* eslint-enable @typescript-eslint/naming-convention */
-  MAX_VALUE = 12,
 }
 
 export enum Language {

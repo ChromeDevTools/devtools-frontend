@@ -7310,6 +7310,10 @@ export const NativeFunctions = [
     receivers: ["BarcodeDetector","FaceDetector","TextDetector"]
   },
   {
+    name: "languagePairAvailable",
+    signatures: [["sourceLanguage","targetLanguage"]]
+  },
+  {
     name: "registerAnimator",
     signatures: [["name","animatorCtor"]]
   },

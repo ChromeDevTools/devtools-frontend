@@ -28,7 +28,7 @@ table.interactive tbody tr {
 
 table.interactive tbody tr:hover,
 table.interactive tbody tr.selected {
-  background-color: var(--app-color-performance-sidebar-table-row-hover);
+  background-color: var(--sys-color-state-hover-on-subtle);
 }
 
 table thead th {

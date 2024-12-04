@@ -9,7 +9,7 @@ import * as i18n from '../../../../core/i18n/i18n.js';
 import type {
   ImageDeliveryInsightModel, ImageOptimizationType, OptimizableImage} from
   '../../../../models/trace/insights/ImageDelivery.js';
-import type * as Trace from '../../../../models/trace/trace.js';
+import * as Trace from '../../../../models/trace/trace.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
@@ -103,7 +103,9 @@ export class ImageDelivery extends BaseInsightComponent<ImageDeliveryInsightMode
 
     const sections = [];
 
-    const responsiveSizeRows = this.#getTopImagesAsRows(optimizableImages, type => type === 'responsive-size', true);
+    const responsiveSizeRows = this.#getTopImagesAsRows(
+        optimizableImages, type => type === Trace.Insights.Models.ImageDelivery.ImageOptimizationType.RESPONSIVE_SIZE,
+        true);
     if (responsiveSizeRows.length) {
       // clang-format off
       sections.push(html`
@@ -120,7 +122,8 @@ export class ImageDelivery extends BaseInsightComponent<ImageDeliveryInsightMode
       // clang-format on
     }
 
-    const optimizeFormatRows = this.#getTopImagesAsRows(optimizableImages, type => type !== 'responsive-size');
+    const optimizeFormatRows = this.#getTopImagesAsRows(
+        optimizableImages, type => type !== Trace.Insights.Models.ImageDelivery.ImageOptimizationType.RESPONSIVE_SIZE);
     if (optimizeFormatRows.length) {
       // clang-format off
       sections.push(html`

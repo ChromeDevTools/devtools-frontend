@@ -518,8 +518,13 @@ export class TimelineFlameChartView extends
     if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_DIM_UNRELATED_EVENTS)) {
       // The insight's `relatedEvents` property likely already includes the events associated with
       // and overlay, but just in case not, include both arrays. Duplicates are fine.
-      const relatedEvents = [...entries, ...this.#activeInsight?.model.relatedEvents || []];
-      this.#dimInsightRelatedEvents(relatedEvents);
+      let relatedEventsList = this.#activeInsight?.model.relatedEvents;
+      if (!relatedEventsList) {
+        relatedEventsList = [];
+      } else if (relatedEventsList instanceof Map) {
+        relatedEventsList = Array.from(relatedEventsList.keys());
+      }
+      this.#dimInsightRelatedEvents([...entries, ...relatedEventsList]);
     }
 
     if (options.updateTraceWindow) {

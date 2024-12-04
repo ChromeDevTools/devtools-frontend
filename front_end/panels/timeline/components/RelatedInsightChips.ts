@@ -16,12 +16,18 @@ const UIStrings = {
    *@description prefix shown next to related insight chips
    */
   insightKeyword: 'Insight',
+  /**
+   * @description Prefix shown next to related insight chips and containing the insight name.
+   * @example {Improve image delivery} PH1
+   */
+  insightWithName: 'Insight: {PH1}',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/RelatedInsightChips.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export interface RelatedInsight {
   insightLabel: string;
+  messages: string[];
   activateInsight: () => void;
 }
 export type EventToRelatedInsightsMap = Map<Trace.Types.Events.Event, RelatedInsight[]>;
@@ -70,21 +76,39 @@ export class RelatedInsightChips extends HTMLElement {
       return;
     }
 
-    const insightChips = relatedInsights.map(insight => {
+    // TODO: Render insight messages in a separate UX
+    // Right before insight chips is acceptable for now
+    const insightMessages = relatedInsights.flatMap(insight => {
+      return insight.messages.map(message => html`
+        <li class="insight-message-box">
+          <button type="button" @click=${this.#insightClick(insight)}>
+            <div class="insight-label">${i18nString(UIStrings.insightWithName, {
+                                    PH1: insight.insightLabel,
+                                  })}</div>
+            <div class="insight-message">${message}</div>
+          </button>
+        </li>
+      `);
+    });
+
+    const insightChips = relatedInsights.flatMap(insight => {
       // clang-format off
-      return html`
-      <li class="insight-chip">
-        <button type="button" @click=${this.#insightClick(insight)}>
-          <span class="keyword">${i18nString(UIStrings.insightKeyword)}</span>
-          <span class="insight-label">${insight.insightLabel}</span>
-        </button>
-      </li>
-      `;
+      return [html`
+        <li class="insight-chip">
+          <button type="button" @click=${this.#insightClick(insight)}>
+            <span class="keyword">${i18nString(UIStrings.insightKeyword)}</span>
+            <span class="insight-label">${insight.insightLabel}</span>
+          </button>
+        </li>
+      `];
       // clang-format on
     });
 
     // clang-format off
-    LitHtml.render(html`<ul>${insightChips}</ul>`, this.#shadow, {host: this});
+    LitHtml.render(html`
+      <ul>${insightMessages}</ul>
+      <ul>${insightChips}</ul>
+    `, this.#shadow, {host: this});
     // clang-format on
   }
 }

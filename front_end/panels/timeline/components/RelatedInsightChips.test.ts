@@ -33,6 +33,7 @@ describeWithEnvironment('RelatedInsightChips', () => {
     const relatedInsight: Components.RelatedInsightChips.RelatedInsight = {
       insightLabel: 'Some fake insight',
       activateInsight: () => {},
+      messages: [],
     };
     const relatedMap: Components.RelatedInsightChips.EventToRelatedInsightsMap = new Map();
     relatedMap.set(FAKE_EVENT, [relatedInsight]);
@@ -50,11 +51,43 @@ describeWithEnvironment('RelatedInsightChips', () => {
     assert.deepEqual(text, ['Some fake insight']);
   });
 
+  it('renders any insight messages', async () => {
+    const relatedInsight: Components.RelatedInsightChips.RelatedInsight = {
+      insightLabel: 'Some fake insight',
+      activateInsight: () => {},
+      messages: [
+        'Message 1',
+        'Message 2',
+      ],
+    };
+    const relatedMap: Components.RelatedInsightChips.EventToRelatedInsightsMap = new Map();
+    relatedMap.set(FAKE_EVENT, [relatedInsight]);
+
+    const component = new Components.RelatedInsightChips.RelatedInsightChips();
+    renderElementIntoDOM(component);
+    component.activeEvent = FAKE_EVENT;
+    component.eventToRelatedInsightsMap = relatedMap;
+    await coordinator.done();
+    assert.isOk(component.shadowRoot);
+
+    const regularChips = component.shadowRoot.querySelectorAll<HTMLElement>('li.insight-chip');
+    assert.lengthOf(regularChips, 1);
+
+    const optimizationChips = component.shadowRoot.querySelectorAll<HTMLElement>('li.insight-message-box');
+    assert.lengthOf(optimizationChips, 2);
+
+    const text1 = getCleanTextContentFromElements(optimizationChips[0], 'button');
+    assert.deepEqual(text1, ['Insight: Some fake insight Message 1']);
+    const text2 = getCleanTextContentFromElements(optimizationChips[1], 'button');
+    assert.deepEqual(text2, ['Insight: Some fake insight Message 2']);
+  });
+
   it('calls the activateInsight function when the insight is clicked', async () => {
     const activateStub = sinon.stub();
     const relatedInsight: Components.RelatedInsightChips.RelatedInsight = {
       insightLabel: 'Some fake insight',
       activateInsight: () => activateStub(),
+      messages: [],
     };
     const relatedMap: Components.RelatedInsightChips.EventToRelatedInsightsMap = new Map();
     relatedMap.set(FAKE_EVENT, [relatedInsight]);

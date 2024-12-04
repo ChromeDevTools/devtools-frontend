@@ -6,6 +6,10 @@ import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {getFirstOrError, getInsightOrError} from '../../../testing/InsightHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 
+import * as Insights from './insights.js';
+
+const {ImageOptimizationType} = Insights.Models.ImageDelivery;
+
 export async function processTrace(testContext: Mocha.Suite|Mocha.Context|null, traceFile: string) {
   const {parsedTrace, insights} = await TraceLoader.traceEngine(testContext, traceFile);
   if (!insights) {
@@ -43,7 +47,7 @@ describeWithEnvironment('ImageDelivery', function() {
             optimizations: [
               {
                 byteSavings: 1057876,
-                type: 'modern-format-or-compression',
+                type: ImageOptimizationType.MODERN_FORMAT_OR_COMPRESSION,
               },
             ],
             url:
@@ -53,7 +57,7 @@ describeWithEnvironment('ImageDelivery', function() {
             optimizations: [
               {
                 byteSavings: 682028,
-                type: 'video-format',
+                type: ImageOptimizationType.VIDEO_FORMAT,
               },
             ],
             url:
@@ -63,7 +67,7 @@ describeWithEnvironment('ImageDelivery', function() {
             optimizations: [
               {
                 byteSavings: 49760,
-                type: 'compression',
+                type: ImageOptimizationType.ADJUST_COMPRESSION,
               },
             ],
             url:
@@ -73,7 +77,9 @@ describeWithEnvironment('ImageDelivery', function() {
             optimizations: [
               {
                 byteSavings: 41421,
-                type: 'responsive-size',
+                type: ImageOptimizationType.RESPONSIVE_SIZE,
+                fileDimensions: {width: 2048, height: 1356},
+                displayDimensions: {width: 200, height: 132},
               },
             ],
             url:
@@ -83,11 +89,13 @@ describeWithEnvironment('ImageDelivery', function() {
             optimizations: [
               {
                 byteSavings: 134075,
-                type: 'modern-format-or-compression',
+                type: ImageOptimizationType.MODERN_FORMAT_OR_COMPRESSION,
               },
               {
                 byteSavings: 162947,
-                type: 'responsive-size',
+                type: ImageOptimizationType.RESPONSIVE_SIZE,
+                fileDimensions: {width: 640, height: 436},
+                displayDimensions: {width: 200, height: 136},
               },
             ],
             url: 'https://onlinepngtools.com/images/examples-onlinepngtools/elephant-hd-quality.png',

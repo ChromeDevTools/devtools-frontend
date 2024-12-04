@@ -1956,11 +1956,19 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     if (traceInsightsSets) {
       for (const [insightSetKey, insightSet] of traceInsightsSets) {
         for (const model of Object.values(insightSet.model)) {
-          for (const event of model.relatedEvents ?? []) {
+          let relatedEvents = model.relatedEvents;
+          if (!relatedEvents) {
+            relatedEvents = new Map();
+          } else if (Array.isArray(relatedEvents)) {
+            relatedEvents = new Map(relatedEvents.map(e => [e, []]));
+          }
+
+          for (const [event, messages] of relatedEvents.entries()) {
             const relatedInsights = this.#eventToRelatedInsights.get(event) ?? [];
             this.#eventToRelatedInsights.set(event, relatedInsights);
             relatedInsights.push({
               insightLabel: model.title,
+              messages,
               activateInsight: () => {
                 this.#setActiveInsight({model, insightSetKey});
               },

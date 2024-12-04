@@ -629,6 +629,11 @@ export declare abstract class ElementHandle<ElementType extends Node = Element> 
      * ```
      */
     abstract autofill(data: AutofillData): Promise<void>;
+    /**
+     * When connected using Chrome DevTools Protocol, it returns a
+     * DOM.BackendNodeId for the element.
+     */
+    abstract backendNodeId(): Promise<number>;
 }
 /**
  * @public

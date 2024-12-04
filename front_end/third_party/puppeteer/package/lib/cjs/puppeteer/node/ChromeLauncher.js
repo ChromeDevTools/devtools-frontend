@@ -88,7 +88,9 @@ class ChromeLauncher extends BrowserLauncher_js_1.BrowserLauncher {
         let chromeExecutable = executablePath;
         if (!chromeExecutable) {
             (0, assert_js_1.assert)(channel || !this.puppeteer._isPuppeteerCore, `An \`executablePath\` or \`channel\` must be specified for \`puppeteer-core\``);
-            chromeExecutable = this.executablePath(channel, options.headless ?? true);
+            chromeExecutable = channel
+                ? this.executablePath(channel)
+                : this.resolveExecutablePath(options.headless ?? true);
         }
         return {
             executablePath: chromeExecutable,
@@ -199,7 +201,7 @@ class ChromeLauncher extends BrowserLauncher_js_1.BrowserLauncher {
         chromeArguments.push(...args);
         return chromeArguments;
     }
-    executablePath(channel, headless) {
+    executablePath(channel, validatePath = true) {
         if (channel) {
             return (0, browsers_1.computeSystemExecutablePath)({
                 browser: browsers_1.Browser.CHROME,
@@ -207,7 +209,7 @@ class ChromeLauncher extends BrowserLauncher_js_1.BrowserLauncher {
             });
         }
         else {
-            return this.resolveExecutablePath(headless);
+            return this.resolveExecutablePath(undefined, validatePath);
         }
     }
 }

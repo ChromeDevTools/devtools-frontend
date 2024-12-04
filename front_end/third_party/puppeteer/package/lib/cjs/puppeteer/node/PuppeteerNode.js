@@ -47,7 +47,7 @@ const FirefoxLauncher_js_1 = require("./FirefoxLauncher.js");
  * @public
  */
 class PuppeteerNode extends Puppeteer_js_1.Puppeteer {
-    #_launcher;
+    #launcher;
     #lastLaunchedBrowser;
     /**
      * @internal
@@ -127,37 +127,47 @@ class PuppeteerNode extends Puppeteer_js_1.Puppeteer {
      * @param options - Options to configure launching behavior.
      */
     launch(options = {}) {
-        const { browser: product = this.defaultBrowser } = options;
-        this.#lastLaunchedBrowser = product;
+        const { browser = this.defaultBrowser } = options;
+        this.#lastLaunchedBrowser = browser;
+        switch (browser) {
+            case 'chrome':
+                this.defaultBrowserRevision = revisions_js_1.PUPPETEER_REVISIONS.chrome;
+                break;
+            case 'firefox':
+                this.defaultBrowserRevision = revisions_js_1.PUPPETEER_REVISIONS.firefox;
+                break;
+            default:
+                throw new Error(`Unknown product: ${browser}`);
+        }
+        this.#launcher = this.#getLauncher(browser);
         return this.#launcher.launch(options);
     }
     /**
      * @internal
      */
-    get #launcher() {
-        if (this.#_launcher &&
-            this.#_launcher.browser === this.lastLaunchedBrowser) {
-            return this.#_launcher;
+    #getLauncher(browser) {
+        if (this.#launcher && this.#launcher.browser === browser) {
+            return this.#launcher;
         }
-        switch (this.lastLaunchedBrowser) {
+        switch (browser) {
             case 'chrome':
-                this.defaultBrowserRevision = revisions_js_1.PUPPETEER_REVISIONS.chrome;
-                this.#_launcher = new ChromeLauncher_js_1.ChromeLauncher(this);
-                break;
+                return new ChromeLauncher_js_1.ChromeLauncher(this);
             case 'firefox':
-                this.defaultBrowserRevision = revisions_js_1.PUPPETEER_REVISIONS.firefox;
-                this.#_launcher = new FirefoxLauncher_js_1.FirefoxLauncher(this);
-                break;
+                return new FirefoxLauncher_js_1.FirefoxLauncher(this);
             default:
-                throw new Error(`Unknown product: ${this.#lastLaunchedBrowser}`);
+                throw new Error(`Unknown product: ${browser}`);
         }
-        return this.#_launcher;
     }
-    /**
-     * The default executable path.
-     */
-    executablePath(channel) {
-        return this.#launcher.executablePath(channel);
+    executablePath(optsOrChannel) {
+        if (optsOrChannel === undefined) {
+            return this.#getLauncher(this.lastLaunchedBrowser).executablePath(undefined, 
+            /* validatePath= */ false);
+        }
+        if (typeof optsOrChannel === 'string') {
+            return this.#getLauncher('chrome').executablePath(optsOrChannel, 
+            /* validatePath= */ false);
+        }
+        return this.#getLauncher(optsOrChannel.browser ?? this.lastLaunchedBrowser).resolveExecutablePath(optsOrChannel.headless, /* validatePath= */ false);
     }
     /**
      * @internal
@@ -198,15 +208,15 @@ class PuppeteerNode extends Puppeteer_js_1.Puppeteer {
      * @returns The name of the browser that is under automation.
      */
     get product() {
-        return this.#launcher.browser;
+        return this.lastLaunchedBrowser;
     }
     /**
      * @param options - Set of configurable options to set on the browser.
      *
-     * @returns The default flags that Chromium will be launched with.
+     * @returns The default arguments that the browser will be launched with.
      */
     defaultArgs(options = {}) {
-        return this.#launcher.defaultArgs(options);
+        return this.#getLauncher(options.browser ?? this.lastLaunchedBrowser).defaultArgs(options);
     }
     /**
      * Removes all non-current Firefox and Chrome binaries in the cache directory

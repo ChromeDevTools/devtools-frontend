@@ -10,11 +10,13 @@ import {
 } from '../api/Browser.js';
 import {BrowserContext} from '../api/BrowserContext.js';
 import type {Page} from '../api/Page.js';
+import type {Cookie, CookieData} from '../common/Cookie.js';
 import type {DownloadBehavior} from '../common/DownloadBehavior.js';
 import {assert} from '../util/assert.js';
 
 import type {CdpBrowser} from './Browser.js';
 import type {Connection} from './Connection.js';
+import {convertCookiesPartitionKeyFromPuppeteerToCdp} from './Page.js';
 import type {CdpTarget} from './Target.js';
 
 /**
@@ -98,6 +100,37 @@ export class CdpBrowserContext extends BrowserContext {
   override async close(): Promise<void> {
     assert(this.#id, 'Default BrowserContext cannot be closed!');
     await this.#browser._disposeContext(this.#id);
+  }
+
+  override async cookies(): Promise<Cookie[]> {
+    const {cookies} = await this.#connection.send('Storage.getCookies', {
+      browserContextId: this.#id,
+    });
+    return cookies.map(cookie => {
+      return {
+        ...cookie,
+        partitionKey: cookie.partitionKey
+          ? {
+              sourceOrigin: cookie.partitionKey.topLevelSite,
+              hasCrossSiteAncestor: cookie.partitionKey.hasCrossSiteAncestor,
+            }
+          : undefined,
+      };
+    });
+  }
+
+  override async setCookie(...cookies: CookieData[]): Promise<void> {
+    return await this.#connection.send('Storage.setCookies', {
+      browserContextId: this.#id,
+      cookies: cookies.map(cookie => {
+        return {
+          ...cookie,
+          partitionKey: convertCookiesPartitionKeyFromPuppeteerToCdp(
+            cookie.partitionKey,
+          ),
+        };
+      }),
+    });
   }
 
   public async setDownloadBehavior(

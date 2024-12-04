@@ -14,10 +14,7 @@ import {
 
 import type {Browser} from '../api/Browser.js';
 import type {Configuration} from '../common/Configuration.js';
-import type {
-  ConnectOptions,
-  BrowserConnectOptions,
-} from '../common/ConnectOptions.js';
+import type {ConnectOptions} from '../common/ConnectOptions.js';
 import {type CommonPuppeteerSettings, Puppeteer} from '../common/Puppeteer.js';
 import type {SupportedBrowser} from '../common/SupportedBrowser.js';
 import {PUPPETEER_REVISIONS} from '../revisions.js';
@@ -25,22 +22,7 @@ import {PUPPETEER_REVISIONS} from '../revisions.js';
 import type {BrowserLauncher} from './BrowserLauncher.js';
 import {ChromeLauncher} from './ChromeLauncher.js';
 import {FirefoxLauncher} from './FirefoxLauncher.js';
-import type {
-  BrowserLaunchArgumentOptions,
-  ChromeReleaseChannel,
-  LaunchOptions,
-} from './LaunchOptions.js';
-
-/**
- * @public
- */
-export interface PuppeteerLaunchOptions
-  extends LaunchOptions,
-    BrowserLaunchArgumentOptions,
-    BrowserConnectOptions {
-  browser?: SupportedBrowser;
-  extraPrefsFirefox?: Record<string, unknown>;
-}
+import type {ChromeReleaseChannel, LaunchOptions} from './LaunchOptions.js';
 
 /**
  * Extends the main {@link Puppeteer} class with Node specific behaviour for
@@ -78,7 +60,7 @@ export interface PuppeteerLaunchOptions
  * @public
  */
 export class PuppeteerNode extends Puppeteer {
-  #_launcher?: BrowserLauncher;
+  #launcher?: BrowserLauncher;
   #lastLaunchedBrowser?: SupportedBrowser;
 
   /**
@@ -167,42 +149,68 @@ export class PuppeteerNode extends Puppeteer {
    *
    * @param options - Options to configure launching behavior.
    */
-  launch(options: PuppeteerLaunchOptions = {}): Promise<Browser> {
-    const {browser: product = this.defaultBrowser} = options;
-    this.#lastLaunchedBrowser = product;
+  launch(options: LaunchOptions = {}): Promise<Browser> {
+    const {browser = this.defaultBrowser} = options;
+    this.#lastLaunchedBrowser = browser;
+    switch (browser) {
+      case 'chrome':
+        this.defaultBrowserRevision = PUPPETEER_REVISIONS.chrome;
+        break;
+      case 'firefox':
+        this.defaultBrowserRevision = PUPPETEER_REVISIONS.firefox;
+        break;
+      default:
+        throw new Error(`Unknown product: ${browser}`);
+    }
+    this.#launcher = this.#getLauncher(browser);
     return this.#launcher.launch(options);
   }
 
   /**
    * @internal
    */
-  get #launcher(): BrowserLauncher {
-    if (
-      this.#_launcher &&
-      this.#_launcher.browser === this.lastLaunchedBrowser
-    ) {
-      return this.#_launcher;
+  #getLauncher(browser: SupportedBrowser): BrowserLauncher {
+    if (this.#launcher && this.#launcher.browser === browser) {
+      return this.#launcher;
     }
-    switch (this.lastLaunchedBrowser) {
+    switch (browser) {
       case 'chrome':
-        this.defaultBrowserRevision = PUPPETEER_REVISIONS.chrome;
-        this.#_launcher = new ChromeLauncher(this);
-        break;
+        return new ChromeLauncher(this);
       case 'firefox':
-        this.defaultBrowserRevision = PUPPETEER_REVISIONS.firefox;
-        this.#_launcher = new FirefoxLauncher(this);
-        break;
+        return new FirefoxLauncher(this);
       default:
-        throw new Error(`Unknown product: ${this.#lastLaunchedBrowser}`);
+        throw new Error(`Unknown product: ${browser}`);
     }
-    return this.#_launcher;
   }
 
   /**
+   * The default executable path for a given ChromeReleaseChannel.
+   */
+  executablePath(channel: ChromeReleaseChannel): string;
+  /**
+   * The default executable path given LaunchOptions.
+   */
+  executablePath(options: LaunchOptions): string;
+  /**
    * The default executable path.
    */
-  executablePath(channel?: ChromeReleaseChannel): string {
-    return this.#launcher.executablePath(channel);
+  executablePath(): string;
+  executablePath(optsOrChannel?: ChromeReleaseChannel | LaunchOptions): string {
+    if (optsOrChannel === undefined) {
+      return this.#getLauncher(this.lastLaunchedBrowser).executablePath(
+        undefined,
+        /* validatePath= */ false,
+      );
+    }
+    if (typeof optsOrChannel === 'string') {
+      return this.#getLauncher('chrome').executablePath(
+        optsOrChannel,
+        /* validatePath= */ false,
+      );
+    }
+    return this.#getLauncher(
+      optsOrChannel.browser ?? this.lastLaunchedBrowser,
+    ).resolveExecutablePath(optsOrChannel.headless, /* validatePath= */ false);
   }
 
   /**
@@ -250,16 +258,18 @@ export class PuppeteerNode extends Puppeteer {
    * @returns The name of the browser that is under automation.
    */
   get product(): string {
-    return this.#launcher.browser;
+    return this.lastLaunchedBrowser;
   }
 
   /**
    * @param options - Set of configurable options to set on the browser.
    *
-   * @returns The default flags that Chromium will be launched with.
+   * @returns The default arguments that the browser will be launched with.
    */
-  defaultArgs(options: BrowserLaunchArgumentOptions = {}): string[] {
-    return this.#launcher.defaultArgs(options);
+  defaultArgs(options: LaunchOptions = {}): string[] {
+    return this.#getLauncher(
+      options.browser ?? this.lastLaunchedBrowser,
+    ).defaultArgs(options);
   }
 
   /**

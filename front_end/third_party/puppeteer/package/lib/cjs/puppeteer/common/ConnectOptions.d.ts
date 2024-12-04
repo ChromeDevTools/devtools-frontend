@@ -30,7 +30,7 @@ export interface SupportedWebDriverCapabilities {
  * connecting to an existing browser instance.
  * @public
  */
-export interface BrowserConnectOptions {
+export interface ConnectOptions {
     /**
      * Whether to ignore HTTPS errors during navigation.
      * @defaultValue `false`
@@ -77,11 +77,6 @@ export interface BrowserConnectOptions {
      * @defaultValue `180_000`
      */
     protocolTimeout?: number;
-}
-/**
- * @public
- */
-export interface ConnectOptions extends BrowserConnectOptions {
     browserWSEndpoint?: string;
     browserURL?: string;
     transport?: ConnectionTransport;
@@ -99,4 +94,9 @@ export interface ConnectOptions extends BrowserConnectOptions {
      */
     capabilities?: SupportedWebDriverCapabilities;
 }
+/**
+ * @deprecated Use {@link ConnectOptions}.
+ * @public
+ */
+export type BrowserConnectOptions = ConnectOptions;
 //# sourceMappingURL=ConnectOptions.d.ts.map

@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import { BrowserLauncher, type ResolvedLaunchArgs } from './BrowserLauncher.js';
-import type { BrowserLaunchArgumentOptions, PuppeteerNodeLaunchOptions } from './LaunchOptions.js';
+import type { LaunchOptions } from './LaunchOptions.js';
 import type { PuppeteerNode } from './PuppeteerNode.js';
 /**
  * @internal
@@ -15,14 +15,14 @@ export declare class FirefoxLauncher extends BrowserLauncher {
     /**
      * @internal
      */
-    computeLaunchArguments(options?: PuppeteerNodeLaunchOptions): Promise<ResolvedLaunchArgs>;
+    computeLaunchArguments(options?: LaunchOptions): Promise<ResolvedLaunchArgs>;
     /**
      * @internal
      */
     cleanUserDataDir(userDataDir: string, opts: {
         isTemp: boolean;
     }): Promise<void>;
-    executablePath(): string;
-    defaultArgs(options?: BrowserLaunchArgumentOptions): string[];
+    executablePath(_: unknown, validatePath?: boolean): string;
+    defaultArgs(options?: LaunchOptions): string[];
 }
 //# sourceMappingURL=FirefoxLauncher.d.ts.map

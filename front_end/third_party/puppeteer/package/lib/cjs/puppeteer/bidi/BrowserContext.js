@@ -312,6 +312,34 @@ let BidiBrowserContext = (() => {
             }
             return this.userContext.id;
         }
+        async cookies() {
+            const cookies = await this.userContext.getCookies();
+            return cookies.map(cookie => {
+                return (0, Page_js_1.bidiToPuppeteerCookie)(cookie, true);
+            });
+        }
+        async setCookie(...cookies) {
+            await Promise.all(cookies.map(async (cookie) => {
+                const bidiCookie = {
+                    domain: cookie.domain,
+                    name: cookie.name,
+                    value: {
+                        type: 'string',
+                        value: cookie.value,
+                    },
+                    ...(cookie.path !== undefined ? { path: cookie.path } : {}),
+                    ...(cookie.httpOnly !== undefined ? { httpOnly: cookie.httpOnly } : {}),
+                    ...(cookie.secure !== undefined ? { secure: cookie.secure } : {}),
+                    ...(cookie.sameSite !== undefined
+                        ? { sameSite: (0, Page_js_1.convertCookiesSameSiteCdpToBiDi)(cookie.sameSite) }
+                        : {}),
+                    ...{ expiry: (0, Page_js_1.convertCookiesExpiryCdpToBiDi)(cookie.expires) },
+                    // Chrome-specific properties.
+                    ...(0, Page_js_1.cdpSpecificCookiePropertiesFromPuppeteerToBidi)(cookie, 'sameParty', 'sourceScheme', 'priority', 'url'),
+                };
+                return await this.userContext.setCookie(bidiCookie, (0, Page_js_1.convertCookiesPartitionKeyFromPuppeteerToBiDi)(cookie.partitionKey));
+            }));
+        }
     };
 })();
 exports.BidiBrowserContext = BidiBrowserContext;

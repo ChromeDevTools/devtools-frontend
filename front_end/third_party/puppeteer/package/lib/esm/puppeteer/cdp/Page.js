@@ -480,11 +480,7 @@ export class CdpPage extends Page {
         for (const cookie of cookies) {
             const item = {
                 ...cookie,
-                // TODO: a breaking change neeeded to change the partition key
-                // type in Puppeteer.
-                partitionKey: cookie.partitionKey
-                    ? { topLevelSite: cookie.partitionKey, hasCrossSiteAncestor: false }
-                    : undefined,
+                partitionKey: convertCookiesPartitionKeyFromPuppeteerToCdp(cookie.partitionKey),
             };
             if (!cookie.url && pageURL.startsWith('http')) {
                 item.url = pageURL;
@@ -521,14 +517,7 @@ export class CdpPage extends Page {
                 cookies: items.map(cookieParam => {
                     return {
                         ...cookieParam,
-                        partitionKey: cookieParam.partitionKey
-                            ? {
-                                // TODO: a breaking change neeeded to change the partition key
-                                // type in Puppeteer.
-                                topLevelSite: cookieParam.partitionKey,
-                                hasCrossSiteAncestor: false,
-                            }
-                            : undefined,
+                        partitionKey: convertCookiesPartitionKeyFromPuppeteerToCdp(cookieParam.partitionKey),
                     };
                 }),
             });
@@ -921,6 +910,21 @@ function getIntersectionRect(clip, viewport) {
         y,
         width: Math.max(Math.min(clip.x + clip.width, viewport.x + viewport.width) - x, 0),
         height: Math.max(Math.min(clip.y + clip.height, viewport.y + viewport.height) - y, 0),
+    };
+}
+export function convertCookiesPartitionKeyFromPuppeteerToCdp(partitionKey) {
+    if (partitionKey === undefined) {
+        return undefined;
+    }
+    if (typeof partitionKey === 'string') {
+        return {
+            topLevelSite: partitionKey,
+            hasCrossSiteAncestor: false,
+        };
+    }
+    return {
+        topLevelSite: partitionKey.sourceOrigin,
+        hasCrossSiteAncestor: partitionKey.hasCrossSiteAncestor ?? false,
     };
 }
 //# sourceMappingURL=Page.js.map

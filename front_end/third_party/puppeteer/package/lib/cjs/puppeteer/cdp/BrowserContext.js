@@ -61,6 +61,7 @@ exports.CdpBrowserContext = void 0;
 const Browser_js_1 = require("../api/Browser.js");
 const BrowserContext_js_1 = require("../api/BrowserContext.js");
 const assert_js_1 = require("../util/assert.js");
+const Page_js_1 = require("./Page.js");
 /**
  * @internal
  */
@@ -135,6 +136,33 @@ class CdpBrowserContext extends BrowserContext_js_1.BrowserContext {
     async close() {
         (0, assert_js_1.assert)(this.#id, 'Default BrowserContext cannot be closed!');
         await this.#browser._disposeContext(this.#id);
+    }
+    async cookies() {
+        const { cookies } = await this.#connection.send('Storage.getCookies', {
+            browserContextId: this.#id,
+        });
+        return cookies.map(cookie => {
+            return {
+                ...cookie,
+                partitionKey: cookie.partitionKey
+                    ? {
+                        sourceOrigin: cookie.partitionKey.topLevelSite,
+                        hasCrossSiteAncestor: cookie.partitionKey.hasCrossSiteAncestor,
+                    }
+                    : undefined,
+            };
+        });
+    }
+    async setCookie(...cookies) {
+        return await this.#connection.send('Storage.setCookies', {
+            browserContextId: this.#id,
+            cookies: cookies.map(cookie => {
+                return {
+                    ...cookie,
+                    partitionKey: (0, Page_js_1.convertCookiesPartitionKeyFromPuppeteerToCdp)(cookie.partitionKey),
+                };
+            }),
+        });
     }
     async setDownloadBehavior(downloadBehavior) {
         await this.#connection.send('Browser.setDownloadBehavior', {

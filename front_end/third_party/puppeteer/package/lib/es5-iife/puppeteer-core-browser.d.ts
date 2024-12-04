@@ -323,6 +323,33 @@ export declare abstract class Browser extends EventEmitter<BrowserEvents> {
      */
     abstract disconnect(): Promise<void>;
     /**
+     * Returns all cookies in the default {@link BrowserContext}.
+     *
+     * @remarks
+     *
+     * Shortcut for
+     * {@link BrowserContext.cookies | browser.defaultBrowserContext().cookies()}.
+     */
+    cookies(): Promise<Cookie[]>;
+    /**
+     * Sets cookies in the default {@link BrowserContext}.
+     *
+     * @remarks
+     *
+     * Shortcut for
+     * {@link BrowserContext.setCookie | browser.defaultBrowserContext().setCookie()}.
+     */
+    setCookie(...cookies: Cookie[]): Promise<void>;
+    /**
+     * Removes cookies from the default {@link BrowserContext}.
+     *
+     * @remarks
+     *
+     * Shortcut for
+     * {@link BrowserContext.deleteCookie | browser.defaultBrowserContext().deleteCookie()}.
+     */
+    deleteCookie(...cookies: Cookie[]): Promise<void>;
+    /**
      * Whether Puppeteer is connected to this {@link Browser | browser}.
      *
      * @deprecated Use {@link Browser | Browser.connected}.
@@ -349,55 +376,10 @@ export declare abstract class Browser extends EventEmitter<BrowserEvents> {
 }
 
 /**
- * Generic browser options that can be passed when launching any browser or when
- * connecting to an existing browser instance.
+ * @deprecated Use {@link ConnectOptions}.
  * @public
  */
-export declare interface BrowserConnectOptions {
-    /**
-     * Whether to ignore HTTPS errors during navigation.
-     * @defaultValue `false`
-     */
-    acceptInsecureCerts?: boolean;
-    /**
-     * Sets the viewport for each page.
-     *
-     * @defaultValue '\{width: 800, height: 600\}'
-     */
-    defaultViewport?: Viewport | null;
-    /**
-     * Sets the download behavior for the context.
-     */
-    downloadBehavior?: DownloadBehavior;
-    /**
-     * Slows down Puppeteer operations by the specified amount of milliseconds to
-     * aid debugging.
-     */
-    slowMo?: number;
-    /**
-     * Callback to decide if Puppeteer should connect to a given target or not.
-     */
-    targetFilter?: TargetFilterCallback;
-
-    /**
-     * @defaultValue Determined at run time:
-     *
-     * - Launching Chrome - 'cdp'.
-     *
-     * - Launching Firefox - 'webDriverBiDi'.
-     *
-     * - Connecting to a browser - 'cdp'.
-     *
-     * @public
-     */
-    protocol?: ProtocolType;
-    /**
-     * Timeout setting for individual protocol (CDP) calls.
-     *
-     * @defaultValue `180_000`
-     */
-    protocolTimeout?: number;
-}
+export declare type BrowserConnectOptions = ConnectOptions;
 
 /**
  * {@link BrowserContext} represents individual user contexts within a
@@ -526,6 +508,19 @@ export declare abstract class BrowserContext extends EventEmitter<BrowserContext
      */
     abstract close(): Promise<void>;
     /**
+     * Gets all cookies in the browser context.
+     */
+    abstract cookies(): Promise<Cookie[]>;
+    /**
+     * Sets a cookie in the browser context.
+     */
+    abstract setCookie(...cookies: CookieData[]): Promise<void>;
+    /**
+     * Removes cookie in the browser context
+     * @param cookies - {@link Cookie | cookie} to remove
+     */
+    deleteCookie(...cookies: Cookie[]): Promise<void>;
+    /**
      * Whether this {@link BrowserContext | browser context} is closed.
      */
     get closed(): boolean;
@@ -649,48 +644,10 @@ export declare interface BrowserEvents extends Record<EventType, unknown> {
 }
 
 /**
- * Launcher options that only apply to Chrome.
- *
+ * @deprecated Use {@link LaunchOptions}.
  * @public
  */
-export declare interface BrowserLaunchArgumentOptions {
-    /**
-     * Whether to run the browser in headless mode.
-     *
-     * @remarks
-     *
-     * - `true` launches the browser in the
-     *   {@link https://developer.chrome.com/articles/new-headless/ | new headless}
-     *   mode.
-     *
-     * - `'shell'` launches
-     *   {@link https://developer.chrome.com/blog/chrome-headless-shell | shell}
-     *   known as the old headless mode.
-     *
-     * @defaultValue `true`
-     */
-    headless?: boolean | 'shell';
-    /**
-     * Path to a user data directory.
-     * {@link https://chromium.googlesource.com/chromium/src/+/refs/heads/main/docs/user_data_dir.md | see the Chromium docs}
-     * for more info.
-     */
-    userDataDir?: string;
-    /**
-     * Whether to auto-open a DevTools panel for each tab. If this is set to
-     * `true`, then `headless` will be forced to `false`.
-     * @defaultValue `false`
-     */
-    devtools?: boolean;
-    /**
-     * Specify the debugging port number to use
-     */
-    debuggingPort?: number;
-    /**
-     * Additional command line arguments to pass to the browser instance.
-     */
-    args?: string[];
-}
+export declare type BrowserLaunchArgumentOptions = LaunchOptions;
 
 /**
  * Describes a launcher - a class that is able to create and launch a browser instance.
@@ -702,9 +659,9 @@ export declare abstract class BrowserLauncher {
 
 
     get browser(): SupportedBrowser;
-    launch(options?: PuppeteerNodeLaunchOptions): Promise<Browser>;
-    abstract executablePath(channel?: ChromeReleaseChannel): string;
-    abstract defaultArgs(object: BrowserLaunchArgumentOptions): string[];
+    launch(options?: LaunchOptions): Promise<Browser>;
+    abstract executablePath(channel?: ChromeReleaseChannel, validatePath?: boolean): string;
+    abstract defaultArgs(object: LaunchOptions): string[];
 
 
 
@@ -986,7 +943,7 @@ connect: (options: Puppeteer_2.ConnectOptions) => Promise<Puppeteer_2.Browser>;
  */
 export declare class Connection extends EventEmitter<CDPSessionEvents> {
     
-    constructor(url: string, transport: ConnectionTransport, delay?: number, timeout?: number);
+    constructor(url: string, transport: ConnectionTransport, delay?: number, timeout?: number, rawErrors?: boolean);
     static fromSession(session: CDPSession): Connection | undefined;
 
     get timeout(): number;
@@ -1029,9 +986,54 @@ export declare interface ConnectionTransport {
 }
 
 /**
+ * Generic browser options that can be passed when launching any browser or when
+ * connecting to an existing browser instance.
  * @public
  */
-export declare interface ConnectOptions extends BrowserConnectOptions {
+export declare interface ConnectOptions {
+    /**
+     * Whether to ignore HTTPS errors during navigation.
+     * @defaultValue `false`
+     */
+    acceptInsecureCerts?: boolean;
+    /**
+     * Sets the viewport for each page.
+     *
+     * @defaultValue '\{width: 800, height: 600\}'
+     */
+    defaultViewport?: Viewport | null;
+    /**
+     * Sets the download behavior for the context.
+     */
+    downloadBehavior?: DownloadBehavior;
+    /**
+     * Slows down Puppeteer operations by the specified amount of milliseconds to
+     * aid debugging.
+     */
+    slowMo?: number;
+    /**
+     * Callback to decide if Puppeteer should connect to a given target or not.
+     */
+    targetFilter?: TargetFilterCallback;
+
+    /**
+     * @defaultValue Determined at run time:
+     *
+     * - Launching Chrome - 'cdp'.
+     *
+     * - Launching Firefox - 'webDriverBiDi'.
+     *
+     * - Connecting to a browser - 'cdp'.
+     *
+     * @public
+     */
+    protocol?: ProtocolType;
+    /**
+     * Timeout setting for individual protocol (CDP) calls.
+     *
+     * @defaultValue `180_000`
+     */
+    protocolTimeout?: number;
     browserWSEndpoint?: string;
     browserURL?: string;
     transport?: ConnectionTransport;
@@ -1116,6 +1118,8 @@ export declare interface ContinueRequestOverrides {
     headers?: Record<string, string>;
 }
 
+export declare function convertCookiesPartitionKeyFromPuppeteerToCdp(partitionKey: CookiePartitionKey | string | undefined): Protocol.Network.CookiePartitionKey | undefined;
+
 /**
  * Represents a cookie object.
  *
@@ -1181,7 +1185,7 @@ export declare interface Cookie {
      * source origin
      * (https://w3c.github.io/webdriver-bidi/#type-storage-PartitionKey).
      */
-    partitionKey?: string;
+    partitionKey?: CookiePartitionKey | string;
     /**
      * True if cookie partition key is opaque. Supported only in Chrome.
      */
@@ -1189,7 +1193,68 @@ export declare interface Cookie {
 }
 
 /**
- * Cookie parameter object
+ * Cookie parameter object used to set cookies in the browser-level cookies
+ * API.
+ *
+ * @public
+ */
+export declare interface CookieData {
+    /**
+     * Cookie name.
+     */
+    name: string;
+    /**
+     * Cookie value.
+     */
+    value: string;
+    /**
+     * Cookie domain.
+     */
+    domain: string;
+    /**
+     * Cookie path.
+     */
+    path?: string;
+    /**
+     * True if cookie is secure.
+     */
+    secure?: boolean;
+    /**
+     * True if cookie is http-only.
+     */
+    httpOnly?: boolean;
+    /**
+     * Cookie SameSite type.
+     */
+    sameSite?: CookieSameSite;
+    /**
+     * Cookie expiration date, session cookie if not set
+     */
+    expires?: number;
+    /**
+     * Cookie Priority. Supported only in Chrome.
+     */
+    priority?: CookiePriority;
+    /**
+     * True if cookie is SameParty. Supported only in Chrome.
+     */
+    sameParty?: boolean;
+    /**
+     * Cookie source scheme type. Supported only in Chrome.
+     */
+    sourceScheme?: CookieSourceScheme;
+    /**
+     * Cookie partition key. In Chrome, it matches the top-level site the
+     * partitioned cookie is available in. In Firefox, it matches the
+     * source origin
+     * (https://w3c.github.io/webdriver-bidi/#type-storage-PartitionKey).
+     */
+    partitionKey?: CookiePartitionKey | string;
+}
+
+/**
+ * Cookie parameter object used to set cookies in the page-level cookies
+ * API.
  *
  * @public
  */
@@ -1249,7 +1314,29 @@ export declare interface CookieParam {
      * source origin
      * (https://w3c.github.io/webdriver-bidi/#type-storage-PartitionKey).
      */
-    partitionKey?: string;
+    partitionKey?: CookiePartitionKey | string;
+}
+
+/**
+ * Represents a cookie partition key in Chrome.
+ *
+ * @public
+ */
+export declare interface CookiePartitionKey {
+    /**
+     * The site of the top-level URL the browser was visiting at the start of the request
+     * to the endpoint that set the cookie.
+     *
+     * In Chrome, maps to the CDP's `topLevelSite` partition key.
+     */
+    sourceOrigin: string;
+    /**
+     * Indicates if the cookie has any ancestors that are cross-site to
+     * the topLevelSite.
+     *
+     * Supported only in Chrome.
+     */
+    hasCrossSiteAncestor?: boolean;
 }
 
 /**
@@ -1481,7 +1568,7 @@ export declare const
 /**
  * @public
  */
-defaultArgs: (options?: Puppeteer_2.BrowserLaunchArgumentOptions) => string[];
+defaultArgs: (options?: Puppeteer_2.LaunchOptions) => string[];
 
 /**
  * @public
@@ -1510,7 +1597,7 @@ export declare interface DeleteCookiesRequest {
      * cookie is available in. In Firefox, it matches the source origin
      * (https://w3c.github.io/webdriver-bidi/#type-storage-PartitionKey).
      */
-    partitionKey?: string;
+    partitionKey?: CookiePartitionKey | string;
 }
 
 /**
@@ -2160,6 +2247,11 @@ export declare abstract class ElementHandle<ElementType extends Node = Element> 
      * ```
      */
     abstract autofill(data: AutofillData): Promise<void>;
+    /**
+     * When connected using Chrome DevTools Protocol, it returns a
+     * DOM.BackendNodeId for the element.
+     */
+    abstract backendNodeId(): Promise<number>;
 }
 
 /**
@@ -2271,7 +2363,11 @@ export declare const
 /**
  * @public
  */
-executablePath: (channel?: Puppeteer_2.ChromeReleaseChannel) => string;
+executablePath: {
+    (channel: Puppeteer_2.ChromeReleaseChannel): string;
+    (options: Puppeteer_2.LaunchOptions): string;
+    (): string;
+};
 
 /**
  * Defines experiment options for Puppeteer.
@@ -3824,13 +3920,13 @@ export declare const
 /**
  * @public
  */
-launch: (options?: Puppeteer_2.PuppeteerLaunchOptions) => Promise<Puppeteer_2.Browser>;
+launch: (options?: Puppeteer_2.LaunchOptions) => Promise<Puppeteer_2.Browser>;
 
 /**
  * Generic launch options that can be passed when launching any browser.
  * @public
  */
-export declare interface LaunchOptions {
+export declare interface LaunchOptions extends ConnectOptions {
     /**
      * Chrome Release Channel
      */
@@ -3906,6 +4002,42 @@ export declare interface LaunchOptions {
      * @defaultValue `true`
      */
     waitForInitialPage?: boolean;
+    /**
+     * Whether to run the browser in headless mode.
+     *
+     * @remarks
+     *
+     * - `true` launches the browser in the
+     *   {@link https://developer.chrome.com/articles/new-headless/ | new headless}
+     *   mode.
+     *
+     * - `'shell'` launches
+     *   {@link https://developer.chrome.com/blog/chrome-headless-shell | shell}
+     *   known as the old headless mode.
+     *
+     * @defaultValue `true`
+     */
+    headless?: boolean | 'shell';
+    /**
+     * Path to a user data directory.
+     * {@link https://chromium.googlesource.com/chromium/src/+/refs/heads/main/docs/user_data_dir.md | see the Chromium docs}
+     * for more info.
+     */
+    userDataDir?: string;
+    /**
+     * Whether to auto-open a DevTools panel for each tab. If this is set to
+     * `true`, then `headless` will be forced to `false`.
+     * @defaultValue `false`
+     */
+    devtools?: boolean;
+    /**
+     * Specify the debugging port number to use
+     */
+    debuggingPort?: number;
+    /**
+     * Additional command line arguments to pass to the browser instance.
+     */
+    args?: string[];
 }
 
 /**
@@ -5018,17 +5150,30 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      */
     $$eval<Selector extends string, Params extends unknown[], Func extends EvaluateFuncWith<Array<NodeFor<Selector>>, Params> = EvaluateFuncWith<Array<NodeFor<Selector>>, Params>>(selector: Selector, pageFunction: Func | string, ...args: Params): Promise<Awaited<ReturnType<Func>>>;
     /**
-     * If no URLs are specified, this method returns cookies for the current page
-     * URL. If URLs are specified, only cookies for those URLs are returned.
+     * If no URLs are specified, this method returns cookies for the
+     * current page URL. If URLs are specified, only cookies for those
+     * URLs are returned.
+     *
+     * @deprecated Page-level cookie API is deprecated. Use
+     * {@link Browser.cookies} or {@link BrowserContext.cookies} instead.
      */
     abstract cookies(...urls: string[]): Promise<Cookie[]>;
+    /**
+     * @deprecated Page-level cookie API is deprecated. Use
+     * {@link Browser.deleteCookie} or {@link BrowserContext.deleteCookie}
+     * instead.
+     */
     abstract deleteCookie(...cookies: DeleteCookiesRequest[]): Promise<void>;
     /**
      * @example
      *
-     * ```ts
+     *```ts
      * await page.setCookie(cookieObject1, cookieObject2);
-     * ```
+     *```
+     *
+     * @deprecated Page-level cookie API is deprecated. Use
+     * {@link Browser.setCookie} or {@link BrowserContext.setCookie}
+     * instead.
      */
     abstract setCookie(...cookies: CookieParam[]): Promise<void>;
     /**
@@ -5596,8 +5741,8 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      *
      * This is either the viewport set with the previous {@link Page.setViewport}
      * call or the default viewport set via
-     * {@link BrowserConnectOptions.defaultViewport |
-     * BrowserConnectOptions.defaultViewport}.
+     * {@link ConnectOptions.defaultViewport |
+     * ConnectOptions.defaultViewport}.
      */
     abstract viewport(): Viewport | null;
     /**
@@ -6784,6 +6929,7 @@ declare namespace Puppeteer_2 {
         ProtocolLifeCycleEvent,
         NetworkConditions,
         InternalNetworkConditions,
+        convertCookiesPartitionKeyFromPuppeteerToCdp,
         PredefinedNetworkConditions,
         TracingOptions,
         Tracing,
@@ -6796,16 +6942,18 @@ declare namespace Puppeteer_2 {
         ProtocolType,
         SupportedWebDriverCapability,
         SupportedWebDriverCapabilities,
-        BrowserConnectOptions,
         ConnectOptions,
+        BrowserConnectOptions,
         ConsoleMessageLocation,
         ConsoleMessageType,
         ConsoleMessage,
         CookieSameSite,
         CookiePriority,
         CookieSourceScheme,
+        CookiePartitionKey,
         Cookie,
         CookieParam,
+        CookieData,
         DeleteCookiesRequest,
         CustomQueryHandler,
         Device,
@@ -6844,12 +6992,11 @@ declare namespace Puppeteer_2 {
         Viewport,
         DownloadPolicy,
         DownloadBehavior,
-        BrowserLaunchArgumentOptions,
         ChromeReleaseChannel,
         LaunchOptions,
+        BrowserLaunchArgumentOptions,
         PuppeteerNodeLaunchOptions,
         BrowserLauncher,
-        PuppeteerLaunchOptions,
         PuppeteerNode,
         ScreenRecorder
     }
@@ -6868,14 +7015,6 @@ declare namespace Puppeteer_2 {
 export declare class PuppeteerError extends Error {
 
 
-}
-
-/**
- * @public
- */
-export declare interface PuppeteerLaunchOptions extends LaunchOptions, BrowserLaunchArgumentOptions, BrowserConnectOptions {
-    browser?: SupportedBrowser;
-    extraPrefsFirefox?: Record<string, unknown>;
 }
 
 /**
@@ -6984,11 +7123,19 @@ export declare class PuppeteerNode extends Puppeteer {
      *
      * @param options - Options to configure launching behavior.
      */
-    launch(options?: PuppeteerLaunchOptions): Promise<Browser>;
+    launch(options?: LaunchOptions): Promise<Browser>;
+    /**
+     * The default executable path for a given ChromeReleaseChannel.
+     */
+    executablePath(channel: ChromeReleaseChannel): string;
+    /**
+     * The default executable path given LaunchOptions.
+     */
+    executablePath(options: LaunchOptions): string;
     /**
      * The default executable path.
      */
-    executablePath(channel?: ChromeReleaseChannel): string;
+    executablePath(): string;
 
 
     /**
@@ -7013,9 +7160,9 @@ export declare class PuppeteerNode extends Puppeteer {
     /**
      * @param options - Set of configurable options to set on the browser.
      *
-     * @returns The default flags that Chromium will be launched with.
+     * @returns The default arguments that the browser will be launched with.
      */
-    defaultArgs(options?: BrowserLaunchArgumentOptions): string[];
+    defaultArgs(options?: LaunchOptions): string[];
     /**
      * Removes all non-current Firefox and Chrome binaries in the cache directory
      * identified by the provided Puppeteer configuration. The current browser
@@ -7034,11 +7181,10 @@ export declare class PuppeteerNode extends Puppeteer {
 }
 
 /**
- * Utility type exposed to enable users to define options that can be passed to
- * `puppeteer.launch` without having to list the set of all types.
+ * @deprecated Use {@link LaunchOptions}.
  * @public
  */
-export declare type PuppeteerNodeLaunchOptions = BrowserLaunchArgumentOptions & LaunchOptions & BrowserConnectOptions;
+export declare type PuppeteerNodeLaunchOptions = LaunchOptions;
 
 /**
  * @public

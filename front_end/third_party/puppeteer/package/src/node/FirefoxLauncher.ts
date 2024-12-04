@@ -15,10 +15,7 @@ import {debugError} from '../common/util.js';
 import {assert} from '../util/assert.js';
 
 import {BrowserLauncher, type ResolvedLaunchArgs} from './BrowserLauncher.js';
-import type {
-  BrowserLaunchArgumentOptions,
-  PuppeteerNodeLaunchOptions,
-} from './LaunchOptions.js';
+import type {LaunchOptions} from './LaunchOptions.js';
 import type {PuppeteerNode} from './PuppeteerNode.js';
 import {rm} from './util/fs.js';
 
@@ -65,7 +62,7 @@ export class FirefoxLauncher extends BrowserLauncher {
    * @internal
    */
   override async computeLaunchArguments(
-    options: PuppeteerNodeLaunchOptions = {},
+    options: LaunchOptions = {},
   ): Promise<ResolvedLaunchArgs> {
     const {
       ignoreDefaultArgs = false,
@@ -143,7 +140,7 @@ export class FirefoxLauncher extends BrowserLauncher {
       );
       firefoxExecutable = executablePath;
     } else {
-      firefoxExecutable = this.executablePath();
+      firefoxExecutable = this.executablePath(undefined);
     }
 
     return {
@@ -194,11 +191,14 @@ export class FirefoxLauncher extends BrowserLauncher {
     }
   }
 
-  override executablePath(): string {
-    return this.resolveExecutablePath();
+  override executablePath(_: unknown, validatePath = true): string {
+    return this.resolveExecutablePath(
+      undefined,
+      /* validatePath=*/ validatePath,
+    );
   }
 
-  override defaultArgs(options: BrowserLaunchArgumentOptions = {}): string[] {
+  override defaultArgs(options: LaunchOptions = {}): string[] {
     const {
       devtools = false,
       headless = !devtools,

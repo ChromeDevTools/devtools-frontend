@@ -12,7 +12,7 @@ import type { HTTPResponse } from '../api/HTTPResponse.js';
 import type { JSHandle } from '../api/JSHandle.js';
 import type { Credentials } from '../api/Page.js';
 import { Page, type GeolocationOptions, type MediaFeature, type Metrics, type NewDocumentScriptEvaluation, type ScreenshotOptions, type WaitTimeoutOptions } from '../api/Page.js';
-import type { Cookie, DeleteCookiesRequest, CookieParam } from '../common/Cookie.js';
+import type { Cookie, DeleteCookiesRequest, CookieParam, CookiePartitionKey } from '../common/Cookie.js';
 import { FileChooser } from '../common/FileChooser.js';
 import type { PDFOptions } from '../common/PDFOptions.js';
 import type { Viewport } from '../common/Viewport.js';
@@ -122,4 +122,5 @@ export declare class CdpPage extends Page {
      */
     waitForDevicePrompt(options?: WaitTimeoutOptions): Promise<DeviceRequestPrompt>;
 }
+export declare function convertCookiesPartitionKeyFromPuppeteerToCdp(partitionKey: CookiePartitionKey | string | undefined): Protocol.Network.CookiePartitionKey | undefined;
 //# sourceMappingURL=Page.d.ts.map

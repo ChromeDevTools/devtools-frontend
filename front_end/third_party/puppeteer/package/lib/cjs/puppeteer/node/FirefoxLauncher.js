@@ -108,7 +108,7 @@ class FirefoxLauncher extends BrowserLauncher_js_1.BrowserLauncher {
             firefoxExecutable = executablePath;
         }
         else {
-            firefoxExecutable = this.executablePath();
+            firefoxExecutable = this.executablePath(undefined);
         }
         return {
             isTempUserDataDir,
@@ -153,8 +153,9 @@ class FirefoxLauncher extends BrowserLauncher_js_1.BrowserLauncher {
             }
         }
     }
-    executablePath() {
-        return this.resolveExecutablePath();
+    executablePath(_, validatePath = true) {
+        return this.resolveExecutablePath(undefined, 
+        /* validatePath=*/ validatePath);
     }
     defaultArgs(options = {}) {
         const { devtools = false, headless = !devtools, args = [], userDataDir = null, } = options;

@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import type { ConnectionTransport } from '../common/ConnectionTransport.js';
-import type { BrowserConnectOptions, ConnectOptions } from '../common/ConnectOptions.js';
+import type { ConnectOptions } from '../common/ConnectOptions.js';
 import type { BidiBrowser } from './Browser.js';
 /**
  * Users should never call this directly; it's called when calling `puppeteer.connect`
@@ -14,5 +14,5 @@ import type { BidiBrowser } from './Browser.js';
  *
  * @internal
  */
-export declare function _connectToBiDiBrowser(connectionTransport: ConnectionTransport, url: string, options: BrowserConnectOptions & ConnectOptions): Promise<BidiBrowser>;
+export declare function _connectToBiDiBrowser(connectionTransport: ConnectionTransport, url: string, options: ConnectOptions): Promise<BidiBrowser>;
 //# sourceMappingURL=BrowserConnector.d.ts.map

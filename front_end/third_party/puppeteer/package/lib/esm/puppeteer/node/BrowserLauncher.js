@@ -230,10 +230,10 @@ export class BrowserLauncher {
     /**
      * @internal
      */
-    resolveExecutablePath(headless) {
+    resolveExecutablePath(headless, validatePath = true) {
         let executablePath = this.puppeteer.configuration.executablePath;
         if (executablePath) {
-            if (!existsSync(executablePath)) {
+            if (validatePath && !existsSync(executablePath)) {
                 throw new Error(`Tried to find the browser at the configured path (${executablePath}), but no executable was found.`);
             }
             return executablePath;
@@ -256,7 +256,7 @@ export class BrowserLauncher {
             browser: browserType,
             buildId: this.puppeteer.browserVersion,
         });
-        if (!existsSync(executablePath)) {
+        if (validatePath && !existsSync(executablePath)) {
             const configVersion = this.puppeteer.configuration?.[this.browser]?.version;
             if (configVersion) {
                 throw new Error(`Tried to find the browser at the configured path (${executablePath}) for version ${configVersion}, but no executable was found.`);

@@ -5,17 +5,10 @@
  */
 import type { Browser } from '../api/Browser.js';
 import type { Configuration } from '../common/Configuration.js';
-import type { ConnectOptions, BrowserConnectOptions } from '../common/ConnectOptions.js';
+import type { ConnectOptions } from '../common/ConnectOptions.js';
 import { type CommonPuppeteerSettings, Puppeteer } from '../common/Puppeteer.js';
 import type { SupportedBrowser } from '../common/SupportedBrowser.js';
-import type { BrowserLaunchArgumentOptions, ChromeReleaseChannel, LaunchOptions } from './LaunchOptions.js';
-/**
- * @public
- */
-export interface PuppeteerLaunchOptions extends LaunchOptions, BrowserLaunchArgumentOptions, BrowserConnectOptions {
-    browser?: SupportedBrowser;
-    extraPrefsFirefox?: Record<string, unknown>;
-}
+import type { ChromeReleaseChannel, LaunchOptions } from './LaunchOptions.js';
 /**
  * Extends the main {@link Puppeteer} class with Node specific behaviour for
  * fetching and downloading browsers.
@@ -110,11 +103,19 @@ export declare class PuppeteerNode extends Puppeteer {
      *
      * @param options - Options to configure launching behavior.
      */
-    launch(options?: PuppeteerLaunchOptions): Promise<Browser>;
+    launch(options?: LaunchOptions): Promise<Browser>;
+    /**
+     * The default executable path for a given ChromeReleaseChannel.
+     */
+    executablePath(channel: ChromeReleaseChannel): string;
+    /**
+     * The default executable path given LaunchOptions.
+     */
+    executablePath(options: LaunchOptions): string;
     /**
      * The default executable path.
      */
-    executablePath(channel?: ChromeReleaseChannel): string;
+    executablePath(): string;
     /**
      * @internal
      */
@@ -148,9 +149,9 @@ export declare class PuppeteerNode extends Puppeteer {
     /**
      * @param options - Set of configurable options to set on the browser.
      *
-     * @returns The default flags that Chromium will be launched with.
+     * @returns The default arguments that the browser will be launched with.
      */
-    defaultArgs(options?: BrowserLaunchArgumentOptions): string[];
+    defaultArgs(options?: LaunchOptions): string[];
     /**
      * Removes all non-current Firefox and Chrome binaries in the cache directory
      * identified by the provided Puppeteer configuration. The current browser

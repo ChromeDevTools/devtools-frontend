@@ -15,7 +15,7 @@ import { EventEmitter } from '../common/EventEmitter.js';
  */
 export declare class Connection extends EventEmitter<CDPSessionEvents> {
     #private;
-    constructor(url: string, transport: ConnectionTransport, delay?: number, timeout?: number);
+    constructor(url: string, transport: ConnectionTransport, delay?: number, timeout?: number, rawErrors?: boolean);
     static fromSession(session: CDPSession): Connection | undefined;
     /**
      * @internal

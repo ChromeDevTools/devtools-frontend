@@ -25,7 +25,7 @@ import {
   waitForVisible,
 } from '../../shared/helper.js';
 
-import {openSoftContextMenuAndClickOnItem} from './context-menu-helpers.js';
+import {openSubMenu} from './context-menu-helpers.js';
 import {
   expectVeEvents,
   veChange,
@@ -34,7 +34,6 @@ import {
   veImpressionForElementsPanel,
   veImpressionsUnder,
   veKeyDown,
-  veResize,
 } from './visual-logging-helpers.js';
 
 const SELECTED_TREE_ELEMENT_SELECTOR = '.selected[role="treeitem"]';
@@ -131,34 +130,12 @@ export const waitForAdorners = async (expectedAdorners: {textContent: string, is
 };
 
 export const toggleAdornerSetting = async (type: string) => {
-  await openSoftContextMenuAndClickOnItem(SELECTED_TREE_ELEMENT_SELECTOR, 'Badge settings\u2026');
-  const adornerSettings = await waitFor('.adorner-settings-pane');
-  await expectVeEvents([
-    veClick('Panel: elements > Tree: elements > TreeItem'),
-    veImpressionForSelectedNodeMenu(await getContentOfSelectedNode()),
-    veClick('Panel: elements > Tree: elements > TreeItem > Menu > Action: show-adorner-settings'),
-    veResize('Panel: elements > Tree: elements > TreeItem > Menu'),
-  ]);
-  await click(`[title=${type}]`, {root: adornerSettings});
+  await openSubMenu(SELECTED_TREE_ELEMENT_SELECTOR, 'Badge settings');
 
-  await expectVeEvents([
-    veImpressionsUnder('Panel: elements', [veImpression(
-                                              'Pane', 'adorner-settings',
-                                              [
-                                                veImpression('Toggle: ad'),
-                                                veImpression('Toggle: container'),
-                                                veImpression('Toggle: flex'),
-                                                veImpression('Toggle: grid'),
-                                                veImpression('Toggle: media'),
-                                                veImpression('Toggle: reveal'),
-                                                veImpression('Toggle: scroll-snap'),
-                                                veImpression('Toggle: slot'),
-                                                veImpression('Toggle: subgrid'),
-                                                veImpression('Toggle: top-layer'),
-                                                veImpression('Close'),
-                                              ])]),
-    veChange('Panel: elements > Pane: adorner-settings > Toggle: media'),
-  ]);
+  const adornerToggle =
+      await Promise.any([waitFor(`[aria-label="${type}, unchecked"]`), waitFor(`[aria-label="${type}, checked"]`)]);
+  await adornerToggle.click();
+  await expectVeEvents([veClick(`Menu > Toggle: ${type}`)]);
 };
 
 export const waitForSelectedNodeToBeExpanded = async () => {
@@ -402,7 +379,7 @@ function veImpressionForSelectedNodeMenu(content: string) {
     return veImpressionsUnder('Panel: elements > Tree: elements > TreeItem', [veImpression('Menu', undefined, [
                                 veImpression('Action', 'expand-recursively'),
                                 veImpression('Action', 'scroll-into-view'),
-                                veImpression('Action', 'show-adorner-settings'),
+                                veImpression('Item', 'show-adorner-settings'),
                                 veImpression('Action', 'store-as-global-variable'),
                               ])]);
   }
@@ -418,7 +395,7 @@ function veImpressionForSelectedNodeMenu(content: string) {
                               veImpression('Action', 'focus'),
                               veImpression('Action', 'paste'),
                               veImpression('Action', 'scroll-into-view'),
-                              veImpression('Action', 'show-adorner-settings'),
+                              veImpression('Item', 'show-adorner-settings'),
                               veImpression('Action', 'store-as-global-variable'),
                               veImpression('Item', 'break-on'),
                               veImpression('Item', 'copy'),

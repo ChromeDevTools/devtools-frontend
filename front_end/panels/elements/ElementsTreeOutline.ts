@@ -71,10 +71,6 @@ const UIStrings = {
    *@description Link text content in Elements Tree Outline of the Elements panel
    */
   reveal: 'reveal',
-  /**
-   * @description A context menu item to open the badge settings pane
-   */
-  adornerSettings: 'Badge settings\u2026',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/elements/ElementsTreeOutline.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -940,9 +936,7 @@ export class ElementsTreeOutline extends
       treeElement.populatePseudoElementContextMenu(contextMenu);
     }
 
-    contextMenu.viewSection().appendItem(i18nString(UIStrings.adornerSettings), () => {
-      ElementsPanel.instance().showAdornerSettingsPane();
-    }, {jslogContext: 'show-adorner-settings'});
+    ElementsPanel.instance().populateAdornerSettingsContextMenu(contextMenu);
 
     contextMenu.appendApplicableItems(treeElement.node());
     void contextMenu.show();

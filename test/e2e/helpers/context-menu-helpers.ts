@@ -68,3 +68,14 @@ export async function openSoftContextMenuAndClickOnItem(selector: string, label:
   const root = await waitForSoftContextMenu();
   await click(`[aria-label="${label}"]`, {root});
 }
+
+export async function openSubMenu(selector: string, text: string) {
+  // Find the selected node, right click.
+  await click(selector, {clickOptions: {button: 'right'}});
+
+  // Wait for the context menu option, and click it.
+  await waitForSoftContextMenu();
+
+  const subMenuEntryItem = await findSubMenuEntryItem(text);
+  await subMenuEntryItem.hover();
+}

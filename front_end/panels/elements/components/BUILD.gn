@@ -10,7 +10,6 @@ import("../../../../scripts/build/typescript/typescript.gni")
 generate_css("css_files") {
   sources = [
     "accessibilityTreeNode.css",
-    "adornerSettingsPane.css",
     "anchorFunctionLinkSwatch.css",
     "computedStyleProperty.css",
     "computedStyleTrace.css",
@@ -30,7 +29,6 @@ devtools_module("components") {
   sources = [
     "AccessibilityTreeNode.ts",
     "AdornerManager.ts",
-    "AdornerSettingsPane.ts",
     "AnchorFunctionLinkSwatch.ts",
     "CSSHintDetailsView.ts",
     "CSSPropertyDocsView.ts",

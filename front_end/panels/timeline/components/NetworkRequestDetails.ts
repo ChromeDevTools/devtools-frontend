@@ -49,10 +49,6 @@ const UIStrings = {
    */
   no: 'No',
   /**
-   *@description Text for previewing items
-   */
-  preview: 'Preview',
-  /**
    *@description Text to indicate to the user they are viewing an event representing a network request.
    */
   networkRequest: 'Network request',
@@ -296,6 +292,7 @@ export class NetworkRequestDetails extends HTMLElement {
                      this.#networkRequest.args.data.url as Platform.DevToolsPath.UrlString),
                  precomputedFeatures: undefined,
                  align: LegacyComponents.ImagePreview.Align.START,
+                 hideFileData: true,
                }) as HTMLImageElement);
 
       this.#requestPreviewElements.set(this.#networkRequest, previewElement);
@@ -303,7 +300,7 @@ export class NetworkRequestDetails extends HTMLElement {
 
     const requestPreviewElement = this.#requestPreviewElements.get(this.#networkRequest);
     if (requestPreviewElement) {
-      return this.#renderRow(i18nString(UIStrings.preview), requestPreviewElement);
+      return html`<div class="network-request-details-row">${requestPreviewElement}</div>`;
     }
     return null;
   }
@@ -318,6 +315,7 @@ export class NetworkRequestDetails extends HTMLElement {
     const output = html`
       ${this.#renderTitle()}
       ${this.#renderURL()}
+      ${await this.#renderPreviewElement()}
       <div class="network-request-details-cols">
         <div class="network-request-details-col">
           ${this.#renderRow(i18nString(UIStrings.requestMethod), networkData.requestMethod)}
@@ -335,7 +333,6 @@ export class NetworkRequestDetails extends HTMLElement {
         </div>
       </div>
       ${this.#renderInitiatedBy()}
-      ${await this.#renderPreviewElement()}
     `; // The last items are outside the 2 column layout because InitiatedBy can be very wide
     // clang-format on
     LitHtml.render(output, this.#shadow, {host: this});

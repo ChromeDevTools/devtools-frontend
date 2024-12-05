@@ -307,7 +307,8 @@ STOP`,
       iframeId: 'iframe',
     });
 
-    assert.deepStrictEqual(
-        result.at(-1)!.request.current_message.parts[0].text, 'OBSERVATION: {"title":"I have a title"}');
+    assert.deepStrictEqual(result.at(-1)!.request.current_message.parts[0], {
+      text: 'OBSERVATION: {"title":"I have a title"}',
+    });
   });
 });

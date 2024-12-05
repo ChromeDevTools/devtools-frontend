@@ -839,9 +839,9 @@ STOP`,
       assert.isUndefined(requests[0].historical_contexts, 'Unexpected historical contexts in the initial request');
       assert.exists(requests[0].current_message);
       assert.lengthOf(requests[0].current_message.parts, 1);
-      assert.strictEqual(
-          requests[0].current_message.parts[0].text,
-          '# Inspected element\n\n* Its selector is `undefined`\n\n# User request\n\nQUERY: test',
+      assert.deepStrictEqual(
+          requests[0].current_message.parts[0],
+          {text: '# Inspected element\n\n* Its selector is `undefined`\n\n# User request\n\nQUERY: test'},
           'Unexpected input text in the initial request');
       assert.strictEqual(requests[0].current_message.role, Host.AidaClient.Role.USER);
       assert.deepStrictEqual(
@@ -862,8 +862,8 @@ STOP`,
           'Unexpected historical contexts in the follow-up request');
       assert.exists(requests[1].current_message);
       assert.lengthOf(requests[1].current_message.parts, 1);
-      assert.strictEqual(
-          requests[1].current_message.parts[0].text, 'OBSERVATION: test data',
+      assert.deepStrictEqual(
+          requests[1].current_message.parts[0], {text: 'OBSERVATION: test data'},
           'Unexpected input in the follow-up request');
     });
 

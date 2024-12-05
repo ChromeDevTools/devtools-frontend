@@ -132,7 +132,7 @@ describeWithEnvironment('AiAgent', () => {
         serverSideLoggingEnabled: false,
       });
       const request = agent.buildRequest({text: 'test input'});
-      assert.strictEqual(request.current_message?.parts[0].text, 'test input');
+      assert.deepStrictEqual(request.current_message?.parts[0], {text: 'test input'});
       assert.strictEqual(request.historical_contexts, undefined);
     });
 
@@ -149,7 +149,7 @@ describeWithEnvironment('AiAgent', () => {
         aidaClient: {} as Host.AidaClient.AidaClient,
       });
       const request = agent.buildRequest({text: 'test input'});
-      assert.strictEqual(request.current_message?.parts[0].text, 'test input');
+      assert.deepStrictEqual(request.current_message?.parts[0], {text: 'test input'});
       assert.strictEqual(request.preamble, 'preamble');
       assert.strictEqual(request.historical_contexts, undefined);
     });
@@ -191,7 +191,7 @@ describeWithEnvironment('AiAgent', () => {
         },
       ];
       const request = agent.buildRequest({text: 'test input'});
-      assert.strictEqual(request.current_message?.parts[0].text, 'test input');
+      assert.deepStrictEqual(request.current_message?.parts[0], {text: 'test input'});
       assert.deepStrictEqual(request.historical_contexts, [
         {
           parts: [{text: 'test'}],
@@ -239,7 +239,7 @@ describeWithEnvironment('AiAgent', () => {
         },
       ];
       const request = agent.buildRequest({text: 'test input'});
-      assert.strictEqual(request.current_message?.parts[0].text, 'test input');
+      assert.deepStrictEqual(request.current_message?.parts[0], {text: 'test input'});
       assert.deepStrictEqual(request.historical_contexts, undefined);
     });
 
@@ -300,7 +300,7 @@ describeWithEnvironment('AiAgent', () => {
         },
       ];
       const request = agent.buildRequest({text: 'test input'});
-      assert.strictEqual(request.current_message?.parts[0].text, 'test input');
+      assert.deepStrictEqual(request.current_message?.parts[0], {text: 'test input'});
       assert.deepStrictEqual(request.historical_contexts, [
         {
           parts: [{text: 'test2'}],

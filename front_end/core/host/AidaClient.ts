@@ -31,10 +31,53 @@ export interface Content {
   role: Role;
 }
 
-export interface Part {
-  text?: string;
+export type Part = {
+  text: string,
+}|{
+  functionResponse: {
+    name: string,
+    response: Record<string, unknown>,
+  },
+}|{
   // Inline media bytes.
-  inlineData?: MediaBlob;
+  inlineData: MediaBlob,
+};
+
+export const enum ParametersTypes {
+  STRING = 1,
+  NUMBER = 2,
+  INTEGER = 3,
+  BOOLEAN = 4,
+  ARRAY = 5,
+  OBJECT = 6,
+}
+
+interface BaseFunctionParam {
+  description: string;
+  nullable?: boolean;
+}
+
+interface FunctionPrimitiveParams extends BaseFunctionParam {
+  type: ParametersTypes.BOOLEAN|ParametersTypes.INTEGER|ParametersTypes.STRING|ParametersTypes.BOOLEAN;
+}
+interface FunctionObjectParam extends BaseFunctionParam {
+  type: ParametersTypes.OBJECT;
+  // TODO: this can be also be ObjectParams
+  properties: {[Key in string]: FunctionPrimitiveParams};
+}
+// TODO: Add FunctionArrayParam
+
+/**
+ * More about function declaration can be read at
+ * https://ai.google.dev/gemini-api/docs/function-calling
+ */
+export interface FunctionDeclaration {
+  name: string;
+  /**
+   * A description for the LLM to understand what the specific function will do once called.
+   */
+  description: string;
+  parameters: FunctionObjectParam|FunctionPrimitiveParams;
 }
 
 // Raw media bytes.
@@ -83,12 +126,14 @@ export enum UserTier {
 }
 
 export interface AidaRequest {
+  client: string;
   // eslint-disable-next-line @typescript-eslint/naming-convention
   current_message?: Content;
   preamble?: string;
   // eslint-disable-next-line @typescript-eslint/naming-convention
   historical_contexts?: Content[];
-  client: string;
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  function_declarations?: FunctionDeclaration[];
   options?: {
     temperature?: number,
     // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -145,6 +190,11 @@ export interface AttributionMetadata {
   citations: Citation[];
 }
 
+export interface AidaFunctionCallResponse {
+  name: string;
+  args: Record<string, unknown>;
+}
+
 export interface AidaResponseMetadata {
   rpcGlobalId?: number;
   attributionMetadata?: AttributionMetadata[];
@@ -153,6 +203,7 @@ export interface AidaResponseMetadata {
 export interface AidaResponse {
   explanation: string;
   metadata: AidaResponseMetadata;
+  functionCall?: AidaFunctionCallResponse;
   completed: boolean;
 }
 
@@ -261,6 +312,7 @@ export class AidaClient {
     let chunk;
     const text = [];
     let inCodeChunk = false;
+    let functionCall: AidaFunctionCallResponse|undefined = undefined;
     const metadata: AidaResponseMetadata = {rpcGlobalId: 0};
     while ((chunk = await stream.read())) {
       let textUpdated = false;
@@ -315,6 +367,11 @@ export class AidaClient {
           }
           text.push(result.codeChunk.code);
           textUpdated = true;
+        } else if ('functionCallChunk' in result) {
+          functionCall = {
+            name: result.functionCallChunk.functionCall.name,
+            args: result.functionCallChunk.functionCall.args,
+          };
         } else if ('error' in result) {
           throw new Error(`Server responded: ${JSON.stringify(result)}`);
         } else {
@@ -332,6 +389,7 @@ export class AidaClient {
     yield {
       explanation: text.join('') + (inCodeChunk ? CODE_CHUNK_SEPARATOR : ''),
       metadata,
+      functionCall,
       completed: true,
     };
   }

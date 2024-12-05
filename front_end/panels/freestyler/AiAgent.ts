@@ -156,6 +156,10 @@ export abstract class ConversationContext<T> {
   }
 }
 
+interface AgentFunctionDefinition extends Host.AidaClient.FunctionDeclaration {
+  method: (...args: any[]) => Record<string, unknown>;
+}
+
 export abstract class AiAgent<T> {
   static validTemperature(temperature: number|undefined): number|undefined {
     return typeof temperature === 'number' && temperature >= 0 ? temperature : undefined;
@@ -171,6 +175,7 @@ export abstract class AiAgent<T> {
   abstract readonly clientFeature: Host.AidaClient.ClientFeature;
   abstract readonly userTier: string|undefined;
   abstract handleContextDetails(select: ConversationContext<T>|null): AsyncGenerator<ContextResponse, void, void>;
+  functionDefinitions: AgentFunctionDefinition[]|undefined;
   #generatedFromHistory = false;
 
   /**
@@ -231,6 +236,16 @@ export abstract class AiAgent<T> {
     return this.#generatedFromHistory;
   }
 
+  get functionDeclarations(): Host.AidaClient.FunctionDeclaration[]|undefined {
+    return this.functionDefinitions?.map(call => {
+      return {
+        name: call.name,
+        description: call.description,
+        parameters: call.parameters,
+      } satisfies Host.AidaClient.FunctionDeclaration;
+    });
+  }
+
   serialized(): SerializedAgent {
     return {
       id: this.id,
@@ -256,8 +271,17 @@ export abstract class AiAgent<T> {
     for await (rawResponse of this.#aidaClient.fetch(request, options)) {
       response = rawResponse.explanation;
       rpcId = rawResponse.metadata.rpcGlobalId ?? rpcId;
+
+      if (rawResponse.functionCall) {
+        throw new Error('Function calling not supported yet');
+      }
+
       const parsedResponse = this.parseResponse(response);
-      yield {rpcId, parsedResponse, completed: rawResponse.completed};
+      yield {
+        rpcId,
+        parsedResponse,
+        completed: rawResponse.completed,
+      };
     }
 
     debugLog({
@@ -273,16 +297,22 @@ export abstract class AiAgent<T> {
     localStorage.setItem('freestylerStructuredLog', JSON.stringify(this.#structuredLog));
   }
 
-  buildRequest(opts: BuildRequestOptions): Host.AidaClient.AidaRequest {
-    const currentMessage = {parts: [{text: opts.text}], role: Host.AidaClient.Role.USER};
+  buildRequest(part: Host.AidaClient.Part): Host.AidaClient.AidaRequest {
+    const currentMessage: Host.AidaClient.Content = {
+      parts: [part],
+      role: Host.AidaClient.Role.USER,
+    };
     const history = this.#chatHistoryForAida;
+    const declarations = this.functionDeclarations;
     const request: Host.AidaClient.AidaRequest = {
+      client: Host.AidaClient.CLIENT_NAME,
       // eslint-disable-next-line @typescript-eslint/naming-convention
       current_message: currentMessage,
       preamble: this.preamble,
       // eslint-disable-next-line @typescript-eslint/naming-convention
       historical_contexts: history.length ? history : undefined,
-      client: Host.AidaClient.CLIENT_NAME,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      ...(declarations ? {function_declarations: declarations} : {}),
       options: {
         temperature: AiAgent.validTemperature(this.options.temperature),
         // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -364,14 +394,18 @@ STOP`;
           flushCurrentStep();
           history.push({
             role: Host.AidaClient.Role.USER,
-            parts: [{text: data.query}],
+            parts: [{
+              text: data.query,
+            }],
           });
           break;
         }
         case ResponseType.ANSWER:
           history.push({
             role: Host.AidaClient.Role.MODEL,
-            parts: [{text: this.formatParsedAnswer({answer: data.text})}],
+            parts: [{
+              text: this.formatParsedAnswer({answer: data.text}),
+            }],
           });
           break;
         case ResponseType.TITLE:

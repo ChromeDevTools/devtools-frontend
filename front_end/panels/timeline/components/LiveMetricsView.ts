@@ -690,9 +690,14 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
   }
 
   #getLabelForDeviceOption(deviceOption: DeviceOption): string {
-    const deviceScope = this.#cruxManager.getSelectedDeviceScope();
-    const deviceScopeLabel = this.#getDeviceScopeDisplayName(deviceScope);
-    const baseLabel = deviceOption === 'AUTO' ? i18nString(UIStrings.auto, {PH1: deviceScopeLabel}) : deviceScopeLabel;
+    let baseLabel;
+    if (deviceOption === 'AUTO') {
+      const deviceScope = this.#cruxManager.getSelectedDeviceScope();
+      const deviceScopeLabel = this.#getDeviceScopeDisplayName(deviceScope);
+      baseLabel = i18nString(UIStrings.auto, {PH1: deviceScopeLabel});
+    } else {
+      baseLabel = this.#getDeviceScopeDisplayName(deviceOption);
+    }
 
     if (!this.#cruxManager.pageResult) {
       return i18nString(UIStrings.loadingOption, {PH1: baseLabel});

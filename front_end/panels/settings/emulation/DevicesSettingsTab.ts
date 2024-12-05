@@ -24,7 +24,7 @@ const UIStrings = {
   /**
    *@description Button to add a custom device (e.g. phone, tablet) the Device Toolbar.
    */
-  addCustomDevice: 'Add custom device...',
+  addCustomDevice: 'Add custom device',
   /**
    *@description Label/title for UI to add a new custom device type. Device means mobile/tablet etc.
    */

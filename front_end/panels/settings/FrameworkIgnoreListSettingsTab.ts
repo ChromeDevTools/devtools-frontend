@@ -55,7 +55,7 @@ const UIStrings = {
   /**
    *@description Text of the add pattern button in Framework Ignore List Settings Tab of the Settings
    */
-  addPattern: 'Add regex rule...',
+  addPattern: 'Add regex rule',
   /**
    *@description Aria accessible name in Framework Ignore List Settings Tab of the Settings
    */

@@ -256,17 +256,17 @@ describe('Recorder', function() {
     assertRecordingMatchesSnapshot(recording);
   });
 
-  // TODO: remove flakiness from recording network conditions.
-  it.skip('[crbug.com/1224832]: should also record network conditions', async () => {
+  it('should also record network conditions', async () => {
     await startRecording('recorder/recorder.html', {
-      networkCondition: 'Fast 3G',
+      networkCondition: '3G',
     });
 
     const {frontend, target} = getBrowserAndPages();
     await target.bringToFront();
     await target.click('#test');
     await frontend.bringToFront();
-    await changeNetworkConditions('Slow 3G');
+    await changeNetworkConditions('Slow 4G');
+    await raf(frontend);
     await openRecorderPanel();
     await target.bringToFront();
     await target.click('#test');
@@ -295,7 +295,7 @@ describe('Recorder', function() {
   });
 
   // Blocking Chromium PINS roll
-  it.skip('[crbug.com/1482078] should capture keyboard events on non-text inputs', async () => {
+  it('should capture keyboard events on non-text inputs', async () => {
     await startRecording('recorder/input.html', {untrustedEvents: true});
 
     const {target} = getBrowserAndPages();
@@ -328,9 +328,7 @@ describe('Recorder', function() {
     assertRecordingMatchesSnapshot(recording);
   });
 
-  // skipped until we figure out why the keyup for Enter is not recorded in
-  // 1% of the runs.
-  it.skip('[crbug.com/1473597] should capture a change that causes navigation without blur or change', async () => {
+  it('should capture a change that causes navigation without blur or change', async () => {
     await startRecording('recorder/programmatic-navigation-on-keydown.html');
 
     const {target} = getBrowserAndPages();
@@ -425,8 +423,7 @@ describe('Recorder', function() {
     await waitFor('.section .screenshot');
   });
 
-  // Flaky test
-  it.skip('[crbug.com/1443423]: should record interactions with popups', async () => {
+  it('should record interactions with popups', async () => {
     await startRecording('recorder/recorder.html', {untrustedEvents: true});
 
     const {target, browser} = getBrowserAndPages();

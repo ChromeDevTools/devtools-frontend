@@ -31,7 +31,12 @@ export function createEmulateNetworkConditionsStep(conditions: {
   upload: number,
   latency: number,
 }): EmulateNetworkConditionsStep {
-  return {type: StepType.EmulateNetworkConditions, ...conditions};
+  return {
+    type: StepType.EmulateNetworkConditions,
+    download: conditions.download,
+    upload: conditions.upload,
+    latency: conditions.latency,
+  };
 }
 
 export function areSelectorsEqual(stepA: Step, stepB: Step): boolean {

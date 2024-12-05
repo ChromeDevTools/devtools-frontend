@@ -3230,7 +3230,6 @@ export const knownContextValues = new Set([
   'timeline-invalidation-tracking',
   'timeline-layout-shift-details',
   'timeline-overview',
-  'timeline-rpp-sidebar',
   'timeline-scope',
   'timeline-server-timings',
   'timeline-settings-pane',

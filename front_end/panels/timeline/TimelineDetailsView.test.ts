@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Root from '../../core/root/root.js';
 import * as Trace from '../../models/trace/trace.js';
 import {doubleRaf} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
@@ -67,8 +66,6 @@ describeWithEnvironment('TimelineDetailsView', function() {
   });
 
   it('renders the layout shift component for a single layout shift', async function() {
-    Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.TIMELINE_INSIGHTS);
-
     const {parsedTrace} = await TraceLoader.traceEngine(this, 'shift-attribution.json.gz');
     const detailsView = new Timeline.TimelineDetailsView.TimelineDetailsView(mockViewDelegate);
     await detailsView.setModel(
@@ -86,8 +83,6 @@ describeWithEnvironment('TimelineDetailsView', function() {
   });
 
   it('renders the layout shift component for a selected cluster', async function() {
-    Root.Runtime.experiments.enableForTest(Root.Runtime.ExperimentName.TIMELINE_INSIGHTS);
-
     const {parsedTrace} = await TraceLoader.traceEngine(this, 'shift-attribution.json.gz');
     const detailsView = new Timeline.TimelineDetailsView.TimelineDetailsView(mockViewDelegate);
     await detailsView.setModel(

@@ -726,7 +726,7 @@ describeWithEnvironment('Overlays', () => {
       await overlays.update();
       const overlayDOM = container.querySelector<HTMLElement>('.overlay-type-ENTRY_SELECTED');
       assert.isOk(overlayDOM);
-      assert.strictEqual(window.parseInt(overlayDOM.style.width), 2);
+      assert.strictEqual(window.parseInt(overlayDOM.style.width), 17);
     });
 
     it('renders the duration and label for a time range overlay', async function() {

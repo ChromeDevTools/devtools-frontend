@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as Common from '../../../core/common/common.js';
-import * as Root from '../../../core/root/root.js';
 import type * as Trace from '../../../models/trace/trace.js';
 import * as Adorners from '../../../ui/components/adorners/adorners.js';
 import * as UI from '../../../ui/legacy/legacy.js';
@@ -72,11 +71,9 @@ export class SidebarWidget extends UI.Widget.VBox {
   constructor() {
     super();
     this.setMinimumSize(MIN_SIDEBAR_WIDTH_PX, 0);
-    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_INSIGHTS)) {
-      this.#tabbedPane.appendTab(
-          SidebarTabs.INSIGHTS, 'Insights', this.#insightsView, undefined, undefined, false, false, 0,
-          'timeline.insights-tab');
-    }
+    this.#tabbedPane.appendTab(
+        SidebarTabs.INSIGHTS, 'Insights', this.#insightsView, undefined, undefined, false, false, 0,
+        'timeline.insights-tab');
     this.#tabbedPane.appendTab(
         SidebarTabs.ANNOTATIONS, 'Annotations', this.#annotationsView, undefined, undefined, false, false, 1,
         'timeline.annotations-tab');

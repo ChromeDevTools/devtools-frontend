@@ -2,10 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Root from '../../../core/root/root.js';
 import type * as Trace from '../../../models/trace/trace.js';
 import {raf, renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
-import {describeWithEnvironment, enableFeatureForTest} from '../../../testing/EnvironmentHelpers.js';
+import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 
 import * as Components from './components.js';
@@ -25,10 +24,6 @@ describeWithEnvironment('Sidebar', () => {
     await raf();
     return sidebar;
   }
-
-  beforeEach(() => {
-    enableFeatureForTest(Root.Runtime.ExperimentName.TIMELINE_INSIGHTS);
-  });
 
   it('renders with two tabs for insights & annotations', async function() {
     const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');

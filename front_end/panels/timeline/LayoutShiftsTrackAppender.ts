@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import * as Root from '../../core/root/root.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as ComponentHelpers from '../../ui/components/helpers/helpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -100,13 +99,10 @@ export class LayoutShiftsTrackAppender implements TrackAppender {
    * layout shifts (the first available level to append more data).
    */
   #appendLayoutShiftsAtLevel(currentLevel: number): number {
+    const allClusters = this.#parsedTrace.LayoutShifts.clusters;
+    this.#compatibilityBuilder.appendEventsAtLevel(allClusters, currentLevel, this);
+
     const allLayoutShifts = this.#parsedTrace.LayoutShifts.clusters.flatMap(cluster => cluster.events);
-
-    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_INSIGHTS)) {
-      const allClusters = this.#parsedTrace.LayoutShifts.clusters;
-      this.#compatibilityBuilder.appendEventsAtLevel(allClusters, currentLevel, this);
-    }
-
     void this.preloadScreenshots(allLayoutShifts);
     return this.#compatibilityBuilder.appendEventsAtLevel(allLayoutShifts, currentLevel, this);
   }
@@ -165,25 +161,6 @@ export class LayoutShiftsTrackAppender implements TrackAppender {
   }
 
   getDrawOverride(event: Trace.Types.Events.Event): DrawOverride|undefined {
-    if (!Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_INSIGHTS)) {
-      // If the new CLS experience isn't on.. Continue to present that Shifts are 5ms long. (but now via drawOverrides)
-      // TODO: Remove this when the experiment ships
-      if (Trace.Types.Events.isLayoutShift(event)) {
-        return (context, x, y, _width, levelHeight, timeToPosition, transformColor) => {
-          const fakeDurMs = Trace.Helpers.Timing.microSecondsToMilliseconds(
-              Trace.Types.Timing.MicroSeconds(event.ts + LAYOUT_SHIFT_SYNTHETIC_DURATION));
-          const barEnd = timeToPosition(fakeDurMs);
-          const barWidth = barEnd - x;
-          context.fillStyle = transformColor(this.colorForEvent(event));
-          context.fillRect(x, y, barWidth - 0.5, levelHeight - 1);
-          return {
-            x,
-            width: barWidth,
-          };
-        };
-      }
-    }
-
     if (Trace.Types.Events.isLayoutShift(event)) {
       const score = event.args.data?.weighted_score_delta || 0;
 

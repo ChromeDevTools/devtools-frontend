@@ -4,7 +4,6 @@
 
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as TimelineModel from '../../models/timeline_model/timeline_model.js';
 import * as Trace from '../../models/trace/trace.js';
@@ -340,11 +339,9 @@ export class TimelineDetailsView extends
       this.#relatedInsightChips.eventToRelatedInsightsMap = this.#eventToRelatedInsightsMap;
     }
 
-    // Special case: if Insights experiment is enabled (on by default in M131)
-    // and the user selects a layout shift or a layout shift cluster, render
-    // the new layout shift details component.
-    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_INSIGHTS) &&
-        (Trace.Types.Events.isSyntheticLayoutShift(event) || Trace.Types.Events.isSyntheticLayoutShiftCluster(event))) {
+    // Special case: if the user selects a layout shift or a layout shift cluster,
+    // render the new layout shift details component.
+    if (Trace.Types.Events.isSyntheticLayoutShift(event) || Trace.Types.Events.isSyntheticLayoutShiftCluster(event)) {
       const isFreshRecording = Boolean(this.#parsedTrace && Tracker.instance().recordingIsFresh(this.#parsedTrace));
       this.#layoutShiftDetails.setData(event, this.#traceInsightsSets, this.#parsedTrace, isFreshRecording);
       this.setContent(this.#layoutShiftDetails);

@@ -293,7 +293,6 @@ export const enum ExperimentName {
   NETWORK_PANEL_FILTER_BAR_REDESIGN = 'network-panel-filter-bar-redesign',
   AUTOFILL_VIEW = 'autofill-view',
   TIMELINE_SHOW_POST_MESSAGE_EVENTS = 'timeline-show-postmessage-events',
-  TIMELINE_INSIGHTS = 'timeline-rpp-sidebar',
   TIMELINE_DEBUG_MODE = 'timeline-debug-mode',
   TIMELINE_ENHANCED_TRACES = 'timeline-enhanced-traces',
   TIMELINE_SERVER_TIMINGS = 'timeline-server-timings',

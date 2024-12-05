@@ -123,7 +123,6 @@ const REGISTERED_EXPERIMENTS = [
   'font-editor',
   Root.Runtime.ExperimentName.NETWORK_PANEL_FILTER_BAR_REDESIGN,
   Root.Runtime.ExperimentName.AUTOFILL_VIEW,
-  Root.Runtime.ExperimentName.TIMELINE_INSIGHTS,
   Root.Runtime.ExperimentName.TIMELINE_DEBUG_MODE,
   Root.Runtime.ExperimentName.TIMELINE_SERVER_TIMINGS,
   Root.Runtime.ExperimentName.FULL_ACCESSIBILITY_TREE,

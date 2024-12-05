@@ -8,21 +8,10 @@ const path = require('path');
 const parseURL = require('url').parse;
 const {argv} = require('yargs');
 
+const {getTestRunnerConfigSetting} = require('../test/test_config_helpers.js');
+
 const tracesMode = argv.traces || false;
 const serverPort = parseInt(process.env.PORT, 10) || (tracesMode ? 11010 : 8090);
-
-function getTestRunnerConfig() {
-  try {
-    return JSON.parse(process.env.TEST_RUNNER_JSON_CONFIG);
-  } catch {
-    // Return an empty object so any lookups return undefined
-    return {};
-  }
-}
-function getTestRunnerConfigSetting(settingKey, fallbackValue) {
-  const config = getTestRunnerConfig();
-  return config[settingKey] === undefined ? fallbackValue : config[settingKey];
-}
 
 /**
  * When you run npm run components-server we run the script as is from scripts/,

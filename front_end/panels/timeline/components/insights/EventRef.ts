@@ -84,7 +84,6 @@ class ImageRef extends HTMLElement {
   readonly #boundRender = this.#render.bind(this);
 
   #request?: Trace.Types.Events.SyntheticNetworkRequest;
-  #imagePaint?: Trace.Types.Events.PaintImage;
 
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [baseInsightComponentStyles];
@@ -92,11 +91,6 @@ class ImageRef extends HTMLElement {
 
   set request(request: Trace.Types.Events.SyntheticNetworkRequest) {
     this.#request = request;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
-  }
-
-  set imagePaint(imagePaint: Trace.Types.Events.PaintImage|undefined) {
-    this.#imagePaint = imagePaint;
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
 
@@ -117,9 +111,7 @@ class ImageRef extends HTMLElement {
         <span class="element-img-details">
           ${eventRef(this.#request)}
           <span class="element-img-details-size">${
-            this.#imagePaint ?
-              `${this.#imagePaint.args.data.srcWidth}x${this.#imagePaint.args.data.srcHeight}` :
-              i18n.ByteUtilities.bytesToString(this.#request.args.data.decodedBodyLength ?? 0)
+            i18n.ByteUtilities.bytesToString(this.#request.args.data.decodedBodyLength ?? 0)
           }</span>
         </span>
       </div>
@@ -133,13 +125,10 @@ function handleBadImage(event: Event): void {
   img.style.display = 'none';
 }
 
-export function imageRef(
-    request: Trace.Types.Events.SyntheticNetworkRequest,
-    imagePaint?: Trace.Types.Events.PaintImage): LitHtml.TemplateResult {
+export function imageRef(request: Trace.Types.Events.SyntheticNetworkRequest): LitHtml.TemplateResult {
   return html`
     <devtools-performance-image-ref
       .request=${request}
-      .imagePaint=${imagePaint}
     ></devtools-performance-image-ref>
   `;
 }

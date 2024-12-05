@@ -256,7 +256,8 @@ describe('Recorder', function() {
     assertRecordingMatchesSnapshot(recording);
   });
 
-  it('should also record network conditions', async () => {
+  // Flaky.
+  it.skip('[crbug.com/382417597]: should also record network conditions', async () => {
     await startRecording('recorder/recorder.html', {
       networkCondition: '3G',
     });

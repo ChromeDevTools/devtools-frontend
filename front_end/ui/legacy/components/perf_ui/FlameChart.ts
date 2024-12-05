@@ -2265,23 +2265,30 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
       this.#drawEventRect(context, timelineData, entryIndex);
     }
 
-    this.#maybeAddOutlines(context, color, shouldDim);
+    if (!shouldDim) {
+      // In some scenarios we want to draw outlines around events for added visual contrast.
+      // But we only do this if the events are not being dimmed.
+      this.#maybeAddOutlines(context, color);
+    }
+
     context.fillStyle = color;
     context.fill();
     context.restore();
   }
 
-  /** In some dim/highlight situations, put a darker outline around the rect for added visual contrast */
-  #maybeAddOutlines(context: CanvasRenderingContext2D, color: string, shouldDim: boolean): void {
-    // We only want to add outlines when in a dimming state
+  /**
+   * Adds dark outlines to the paths being drawn onto the canvas context if:
+   * 1. We are in a dimming state
+   * 2. The user has searched the flamechart using Cmd/Ctrl-F
+   *
+   * @param context - the canvas context to call stroke() on. Assumes there are a series of paths ready to be stroked.
+   * @param color - the fill color being used for the paths in the canvas context.
+   */
+  #maybeAddOutlines(context: CanvasRenderingContext2D, color: string): void {
+    // We only want to add outlines when in a dimming state and the user has searched for something.
     if (!this.entryIndicesToNotDim && !this.#searchResultEntries) {
       return;
     }
-    // We only want to add outlines on highlighted/saturated entries (aka not dimmed/grayscale)
-    if (shouldDim) {
-      return;
-    }
-
     // This foregroundColor is near-black in light mode, and vice-versa. Color mix so it's a good contrast, but still has the base flavor.
     const foregroundColor = ThemeSupport.ThemeSupport.instance().getComputedValue('--sys-color-on-base');
     context.strokeStyle = `color-mix(in srgb, ${color}, ${foregroundColor} 60%)`;

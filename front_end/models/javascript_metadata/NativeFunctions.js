@@ -7825,6 +7825,10 @@ export const NativeFunctions = [
     signatures: [["?config"]]
   },
   {
+    name: "setPreferredSinkId",
+    signatures: [["sinkId"]]
+  },
+  {
     name: "MediaStreamEvent",
     signatures: [["type","?eventInitDict"]]
   },

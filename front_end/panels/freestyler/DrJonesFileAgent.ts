@@ -15,7 +15,6 @@ import {
   type ContextDetail,
   type ContextResponse,
   ConversationContext,
-  type ParsedResponse,
   type RequestOptions,
   ResponseType,
 } from './AiAgent.js';
@@ -142,12 +141,6 @@ export class DrJonesFileAgent extends AiAgent<Workspace.UISourceCode.UISourceCod
     const fileEnchantmentQuery =
         selectedFile ? `# Selected file\n${formatFile(selectedFile.getItem())}\n\n# User request\n\n` : '';
     return `${fileEnchantmentQuery}${query}`;
-  }
-
-  override parseResponse(response: string): ParsedResponse {
-    return {
-      answer: response,
-    };
   }
 }
 

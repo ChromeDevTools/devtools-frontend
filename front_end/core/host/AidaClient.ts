@@ -34,6 +34,11 @@ export interface Content {
 export type Part = {
   text: string,
 }|{
+  functionCall: {
+    name: string,
+    args: Record<string, unknown>,
+  },
+}|{
   functionResponse: {
     name: string,
     response: Record<string, unknown>,
@@ -60,12 +65,17 @@ interface BaseFunctionParam {
 interface FunctionPrimitiveParams extends BaseFunctionParam {
   type: ParametersTypes.BOOLEAN|ParametersTypes.INTEGER|ParametersTypes.STRING|ParametersTypes.BOOLEAN;
 }
+
+interface FunctionArrayParam extends BaseFunctionParam {
+  type: ParametersTypes.ARRAY;
+  items: FunctionPrimitiveParams[];
+}
+
 interface FunctionObjectParam extends BaseFunctionParam {
   type: ParametersTypes.OBJECT;
   // TODO: this can be also be ObjectParams
-  properties: {[Key in string]: FunctionPrimitiveParams};
+  properties: {[Key in string]: FunctionPrimitiveParams|FunctionArrayParam};
 }
-// TODO: Add FunctionArrayParam
 
 /**
  * More about function declaration can be read at

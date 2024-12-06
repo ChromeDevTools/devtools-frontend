@@ -16,7 +16,6 @@ import {
   type ContextDetail,
   type ContextResponse,
   ConversationContext,
-  type ParsedResponse,
   type RequestOptions,
   ResponseType,
 } from './AiAgent.js';
@@ -168,12 +167,6 @@ export class DrJonesNetworkAgent extends AiAgent<SDK.NetworkRequest.NetworkReque
         `# Selected network request \n${formatNetworkRequest(selectedNetworkRequest.getItem())}\n\n# User request\n\n` :
         '';
     return `${networkEnchantmentQuery}${query}`;
-  }
-
-  override parseResponse(response: string): ParsedResponse {
-    return {
-      answer: response,
-    };
   }
 }
 

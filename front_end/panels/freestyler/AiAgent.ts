@@ -156,7 +156,7 @@ export abstract class ConversationContext<T> {
   }
 }
 
-interface AgentFunctionDefinition extends Host.AidaClient.FunctionDeclaration {
+export interface AgentFunctionDefinition extends Host.AidaClient.FunctionDeclaration {
   method: (...args: any[]) => Record<string, unknown>;
 }
 
@@ -191,7 +191,7 @@ export abstract class AiAgent<T> {
   #structuredLog: Array<{
     request: Host.AidaClient.AidaRequest,
     response: string,
-    rawResponse?: Host.AidaClient.AidaResponse,
+    aidaResponse?: Host.AidaClient.AidaResponse,
   }> = [];
 
   constructor(opts: AgentOptions) {
@@ -265,34 +265,34 @@ export abstract class AiAgent<T> {
           request: Host.AidaClient.AidaRequest,
           options?: {signal?: AbortSignal},
           ): AsyncGenerator<{parsedResponse: ParsedResponse, completed: boolean, rpcId?: number}, void, void> {
-    let rawResponse: Host.AidaClient.AidaResponse|undefined = undefined;
+    let aidaResponse: Host.AidaClient.AidaResponse|undefined = undefined;
     let response = '';
     let rpcId: number|undefined;
-    for await (rawResponse of this.#aidaClient.fetch(request, options)) {
-      response = rawResponse.explanation;
-      rpcId = rawResponse.metadata.rpcGlobalId ?? rpcId;
+    for await (aidaResponse of this.#aidaClient.fetch(request, options)) {
+      response = aidaResponse.explanation;
+      rpcId = aidaResponse.metadata.rpcGlobalId ?? rpcId;
 
-      if (rawResponse.functionCall) {
+      if (aidaResponse.functionCall) {
         throw new Error('Function calling not supported yet');
       }
 
-      const parsedResponse = this.parseResponse(response);
+      const parsedResponse = this.parseResponse(aidaResponse);
       yield {
         rpcId,
         parsedResponse,
-        completed: rawResponse.completed,
+        completed: aidaResponse.completed,
       };
     }
 
     debugLog({
       request,
-      response: rawResponse,
+      response: aidaResponse,
     });
 
     this.#structuredLog.push({
       request: structuredClone(request),
       response,
-      rawResponse,
+      aidaResponse,
     });
     localStorage.setItem('freestylerStructuredLog', JSON.stringify(this.#structuredLog));
   }
@@ -341,9 +341,12 @@ export abstract class AiAgent<T> {
     return query;
   }
 
-  parseResponse(response: string): ParsedResponse {
+  parseResponse(response: Host.AidaClient.AidaResponse): ParsedResponse {
+    if (response.functionCall && response.completed) {
+      throw new Error('Function calling not supported yet');
+    }
     return {
-      answer: response,
+      answer: response.explanation,
     };
   }
 

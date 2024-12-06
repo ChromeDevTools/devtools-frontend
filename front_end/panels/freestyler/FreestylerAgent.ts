@@ -264,13 +264,17 @@ export class FreestylerAgent extends AiAgent<SDK.DOMModel.DOMNode> {
     };
   }
 
-  override parseResponse(response: string): ParsedResponse {
+  override parseResponse(response: Host.AidaClient.AidaResponse): ParsedResponse {
+    if (response.functionCall) {
+      throw new Error('Function calling not supported yet');
+    }
+
     // We're returning an empty answer to denote the erroneous case.
-    if (!response) {
+    if (!response.explanation) {
       return {answer: ''};
     }
 
-    const lines = response.split('\n');
+    const lines = response.explanation.split('\n');
     let thought: string|undefined;
     let title: string|undefined;
     let action: string|undefined;
@@ -298,7 +302,7 @@ export class FreestylerAgent extends AiAgent<SDK.DOMModel.DOMNode> {
     // The block below ensures that the response we parse always contains a defining instruction tag.
     const hasDefiningInstruction = lines.some(line => isDefiningInstructionStart(line));
     if (!hasDefiningInstruction) {
-      return this.parseResponse(`ANSWER: ${response}`);
+      return this.parseResponse({...response, explanation: `ANSWER: ${response.explanation}`});
     }
 
     while (i < lines.length) {
@@ -397,7 +401,7 @@ export class FreestylerAgent extends AiAgent<SDK.DOMModel.DOMNode> {
     return {
       // If we could not parse the parts, consider the response to be an
       // answer.
-      answer: answer || response,
+      answer: answer || response.explanation,
       suggestions,
     };
   }

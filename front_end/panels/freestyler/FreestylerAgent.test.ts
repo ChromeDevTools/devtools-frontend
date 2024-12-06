@@ -43,24 +43,32 @@ describeWithEnvironment('FreestylerAgent', () => {
       aidaClient: {} as Host.AidaClient.AidaClient,
     });
 
+    function getParsedTextResponse(explanation: string): Freestyler.ParsedResponse {
+      return agent.parseResponse({
+        explanation,
+        metadata: {},
+        completed: false,
+      });
+    }
+
     it('parses a thought', async () => {
       const payload = 'some response';
       assert.deepStrictEqual(
-          agent.parseResponse(`THOUGHT: ${payload}`),
+          getParsedTextResponse(`THOUGHT: ${payload}`),
           {
             title: undefined,
             thought: payload,
           },
       );
       assert.deepStrictEqual(
-          agent.parseResponse(`   THOUGHT: ${payload}`),
+          getParsedTextResponse(`   THOUGHT: ${payload}`),
           {
             title: undefined,
             thought: payload,
           },
       );
       assert.deepStrictEqual(
-          agent.parseResponse(`Something\n   THOUGHT: ${payload}`),
+          getParsedTextResponse(`Something\n   THOUGHT: ${payload}`),
           {
             title: undefined,
             thought: payload,
@@ -70,21 +78,21 @@ describeWithEnvironment('FreestylerAgent', () => {
     it('parses a answer', async () => {
       const payload = 'some response';
       assert.deepStrictEqual(
-          agent.parseResponse(`ANSWER: ${payload}`),
+          getParsedTextResponse(`ANSWER: ${payload}`),
           {
             answer: payload,
             suggestions: undefined,
           },
       );
       assert.deepStrictEqual(
-          agent.parseResponse(`   ANSWER: ${payload}`),
+          getParsedTextResponse(`   ANSWER: ${payload}`),
           {
             answer: payload,
             suggestions: undefined,
           },
       );
       assert.deepStrictEqual(
-          agent.parseResponse(`Something\n   ANSWER: ${payload}`),
+          getParsedTextResponse(`Something\n   ANSWER: ${payload}`),
           {
             answer: payload,
             suggestions: undefined,
@@ -96,35 +104,35 @@ describeWithEnvironment('FreestylerAgent', () => {
 b
 c`;
       assert.deepStrictEqual(
-          agent.parseResponse(`ANSWER: ${payload}`),
+          getParsedTextResponse(`ANSWER: ${payload}`),
           {
             answer: payload,
             suggestions: undefined,
           },
       );
       assert.deepStrictEqual(
-          agent.parseResponse(`   ANSWER: ${payload}`),
+          getParsedTextResponse(`   ANSWER: ${payload}`),
           {
             answer: payload,
             suggestions: undefined,
           },
       );
       assert.deepStrictEqual(
-          agent.parseResponse(`Something\n   ANSWER: ${payload}`),
+          getParsedTextResponse(`Something\n   ANSWER: ${payload}`),
           {
             answer: payload,
             suggestions: undefined,
           },
       );
       assert.deepStrictEqual(
-          agent.parseResponse(`ANSWER: ${payload}\nTHOUGHT: thought`),
+          getParsedTextResponse(`ANSWER: ${payload}\nTHOUGHT: thought`),
           {
             answer: payload,
             suggestions: undefined,
           },
       );
       assert.deepStrictEqual(
-          agent.parseResponse(
+          getParsedTextResponse(
               `ANSWER: ${payload}\nOBSERVATION: observation`,
               ),
           {
@@ -133,7 +141,7 @@ c`;
           },
       );
       assert.deepStrictEqual(
-          agent.parseResponse(
+          getParsedTextResponse(
               `ANSWER: ${payload}\nACTION\naction\nSTOP`,
               ),
           {
@@ -148,7 +156,7 @@ c`;
   someKey: "value",
 }`;
       assert.deepStrictEqual(
-          agent.parseResponse(`ACTION\n${payload}\nSTOP`),
+          getParsedTextResponse(`ACTION\n${payload}\nSTOP`),
           {
             action: payload,
             title: undefined,
@@ -156,7 +164,7 @@ c`;
           },
       );
       assert.deepStrictEqual(
-          agent.parseResponse(`ACTION\n${payload}`),
+          getParsedTextResponse(`ACTION\n${payload}`),
           {
             action: payload,
             title: undefined,
@@ -164,7 +172,7 @@ c`;
           },
       );
       assert.deepStrictEqual(
-          agent.parseResponse(`ACTION\n\n${payload}\n\nSTOP`),
+          getParsedTextResponse(`ACTION\n\n${payload}\n\nSTOP`),
           {
             action: payload,
             title: undefined,
@@ -173,7 +181,7 @@ c`;
       );
 
       assert.deepStrictEqual(
-          agent.parseResponse(`ACTION\n\n${payload}\n\nANSWER: answer`),
+          getParsedTextResponse(`ACTION\n\n${payload}\n\nANSWER: answer`),
           {
             action: payload,
             title: undefined,
@@ -187,7 +195,7 @@ c`;
           styles
         };`;
       assert.deepStrictEqual(
-          agent.parseResponse(`ACTION\n${payload}STOP`),
+          getParsedTextResponse(`ACTION\n${payload}STOP`),
           {
             action: payload,
             title: undefined,
@@ -199,7 +207,7 @@ c`;
       const payload = 'some response';
       const title = 'this is the title';
       assert.deepStrictEqual(
-          agent.parseResponse(`THOUGHT: ${payload}\nTITLE: ${title}`),
+          getParsedTextResponse(`THOUGHT: ${payload}\nTITLE: ${title}`),
           {
             thought: payload,
             title,
@@ -212,7 +220,7 @@ c`;
   someKey: "value",
 }`;
       assert.deepStrictEqual(
-          agent.parseResponse(
+          getParsedTextResponse(
               `ACTION\n\`\`\`\n${payload}\n\`\`\`\nSTOP`,
               ),
           {
@@ -228,7 +236,7 @@ c`;
   someKey: "value",
 }`;
       assert.deepStrictEqual(
-          agent.parseResponse(
+          getParsedTextResponse(
               `ACTION\n\`\`\`\`\`\njs\n${payload}\n\`\`\`\`\`\nSTOP`,
               ),
           {
@@ -245,7 +253,7 @@ c`;
 }`;
       const thoughtPayload = 'thought';
       assert.deepStrictEqual(
-          agent.parseResponse(
+          getParsedTextResponse(
               `THOUGHT:${thoughtPayload}\nACTION\n${actionPayload}\nSTOP`,
               ),
           {
@@ -260,7 +268,7 @@ c`;
       const answerPayload = 'answer';
       const thoughtPayload = 'thought';
       assert.deepStrictEqual(
-          agent.parseResponse(
+          getParsedTextResponse(
               `THOUGHT:${thoughtPayload}\nANSWER:${answerPayload}`,
               ),
           {
@@ -275,7 +283,7 @@ c`;
       const suggestions = ['suggestion'] as [string];
       const suggestionsText = JSON.stringify(suggestions);
       assert.deepStrictEqual(
-          agent.parseResponse(
+          getParsedTextResponse(
               `ANSWER:${answerPayload}\nSUGGESTIONS: ${suggestionsText}`,
               ),
           {
@@ -293,7 +301,7 @@ c`;
 }`;
       const title = 'title';
       assert.deepStrictEqual(
-          agent.parseResponse(
+          getParsedTextResponse(
               `THOUGHT: ${thoughtPayload}\nTITLE: ${title}\nACTION\n${actionPayload}\nSTOP\nANSWER:${answerPayload}`,
               ),
           {
@@ -311,7 +319,7 @@ c`;
           styles
         };`;
       assert.deepStrictEqual(
-          agent.parseResponse(
+          getParsedTextResponse(
               `ACTION\n${payload}STOP\nANSWER:${answerPayload}\nSUGGESTIONS: ${JSON.stringify(suggestions)}`),
           {
             action: payload,
@@ -326,7 +334,7 @@ c`;
           styles
         };`;
       assert.deepStrictEqual(
-          agent.parseResponse(`ACTION\n${payload}STOP\nOBSERVATION:{styles: {}}`),
+          getParsedTextResponse(`ACTION\n${payload}STOP\nOBSERVATION:{styles: {}}`),
           {
             action: payload,
             thought: undefined,
@@ -341,7 +349,7 @@ c`;
         };`;
       const thoughtPayload = 'thought';
       assert.deepStrictEqual(
-          agent.parseResponse(`ACTION\n${payload}STOP\nTHOUGHT:${thoughtPayload}`),
+          getParsedTextResponse(`ACTION\n${payload}STOP\nTHOUGHT:${thoughtPayload}`),
           {
             action: payload,
             thought: thoughtPayload,
@@ -352,7 +360,7 @@ c`;
 
     it('parses a response as an answer', async () => {
       assert.deepStrictEqual(
-          agent.parseResponse(
+          getParsedTextResponse(
               'This is also an answer',
               ),
           {
@@ -364,7 +372,7 @@ c`;
 
     it('parses a response with no instruction tags as an answer and correctly parses suggestions', async () => {
       assert.deepStrictEqual(
-          agent.parseResponse(
+          getParsedTextResponse(
               'This is also an answer\nSUGGESTIONS: [\"suggestion\"]',
               ),
           {
@@ -377,7 +385,7 @@ c`;
     it('parses multi line thoughts', () => {
       const thoughtText = 'first line\nsecond line';
       assert.deepStrictEqual(
-          agent.parseResponse(`THOUGHT: ${thoughtText}`),
+          getParsedTextResponse(`THOUGHT: ${thoughtText}`),
           {
             thought: thoughtText,
             title: undefined,

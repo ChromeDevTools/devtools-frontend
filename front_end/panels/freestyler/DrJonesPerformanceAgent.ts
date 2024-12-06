@@ -13,7 +13,6 @@ import {
   AiAgent,
   type ContextResponse,
   ConversationContext,
-  type ParsedResponse,
   type RequestOptions,
   ResponseType,
 } from './AiAgent.js';
@@ -216,11 +215,5 @@ export class DrJonesPerformanceAgent extends AiAgent<TimelineUtils.AICallTree.AI
 
     const perfEnhancementQuery = aiCallTree ? `${treeStr}\n\n# User request\n\n` : '';
     return `${perfEnhancementQuery}${query}`;
-  }
-
-  override parseResponse(response: string): ParsedResponse {
-    return {
-      answer: response,
-    };
   }
 }

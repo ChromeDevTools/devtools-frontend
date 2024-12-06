@@ -80,6 +80,8 @@ export class IgnoreListSetting extends HTMLElement {
   #newItemInput = UI.UIUtils.createInput(
       /* className*/ 'new-regex-text-input', /* type*/ 'text', /* jslogContext*/ 'timeline.ignore-list-new-regex.text');
 
+  #editingRegexSetting: Common.Settings.RegExpSettingItem|null = null;
+
   constructor() {
     super();
 
@@ -107,31 +109,83 @@ export class IgnoreListSetting extends HTMLElement {
         Common.Settings.RegExpSetting;
   }
 
+  #startEditing(): void {
+    this.#editingRegexSetting = {pattern: this.#newItemInput.value, disabled: false, disabledForUrl: undefined};
+    // We need to push the temp regex here to update the flame chart.
+    // We are using the "skip-stack-frames-pattern" setting to determine which is rendered on flame chart. And the push
+    // here will update the setting's value.
+    this.#regexPatterns.push(this.#editingRegexSetting);
+  }
+
+  #finishEditing(): void {
+    if (!this.#editingRegexSetting) {
+      return;
+    }
+
+    const lastRegex = this.#regexPatterns.pop();
+    // Add a sanity check to make sure the last one is the editing one.
+    // In case the check fails, add back the last element.
+    if (lastRegex && lastRegex !== this.#editingRegexSetting) {
+      console.warn('The last regex is not the editing one.');
+      this.#regexPatterns.push(lastRegex);
+    }
+
+    this.#editingRegexSetting = null;
+    this.#getSkipStackFramesPatternSetting().setAsArray(this.#regexPatterns);
+  }
+
+  #resetInput(): void {
+    this.#newItemCheckbox.checkboxElement.checked = false;
+    this.#newItemInput.value = '';
+  }
+
   #onNewRegexAdded(): void {
     const newRegex = this.#newItemInput.value.trim();
-    const {valid} = patternValidator(this.#regexPatterns, newRegex);
+
+    this.#finishEditing();
+    const {valid} = patternValidator(this.#getExistingRegexes(), newRegex);
     if (!valid) {
       // It the new regex is invalid, let's skip it.
       return;
     }
     Bindings.IgnoreListManager.IgnoreListManager.instance().addRegexToIgnoreList(newRegex);
-    this.#newItemCheckbox.checkboxElement.checked = false;
-    this.#newItemInput.value = '';
+    this.#resetInput();
   }
 
   #handleKeyDown(event: KeyboardEvent): void {
-    // We do not want to create multi-line labels.
-    // Therefore, if the new key is `Enter` key, treat it
-    // as the end of the label input and blur the input field.
+    // When user press the 'Enter' or 'Escape', the current regex will be added and user can keep adding more regexes.
     if (event.key === 'Enter' || event.key === 'Escape') {
-      this.#newItemInput.dispatchEvent(new FocusEvent('blur'));
+      this.#onNewRegexAdded();
+      this.#startEditing();
       return;
     }
+  }
+
+  /**
+   * When it is in the 'preview' mode, the last regex in the array is the editing one.
+   * So we want to remove it for some usage, like rendering the existed rules or validating the rules.
+   */
+  #getExistingRegexes(): Common.Settings.RegExpSettingItem[] {
+    if (this.#editingRegexSetting) {
+      const lastRegex = this.#regexPatterns[this.#regexPatterns.length - 1];
+
+      // Add a sanity check to make sure the last one is the editing one.
+      if (lastRegex && lastRegex === this.#editingRegexSetting) {
+        // We don't want to modify the array itself, so just return a shadow copy of it.
+        return this.#regexPatterns.slice(0, -1);
+      }
+    }
+    return this.#regexPatterns;
   }
 
   #handleInputChange(): void {
     // Enable the rule if the text input field is not empty.
     this.#newItemCheckbox.checkboxElement.checked = Boolean(this.#newItemInput.value.trim());
+
+    if (this.#editingRegexSetting) {
+      this.#editingRegexSetting.pattern = this.#newItemInput.value.trim();
+      this.#getSkipStackFramesPatternSetting().setAsArray(this.#regexPatterns);
+    }
   }
 
   #initAddNewItem(): void {
@@ -143,6 +197,7 @@ export class IgnoreListSetting extends HTMLElement {
     this.#newItemInput.addEventListener('blur', this.#onNewRegexAdded.bind(this), false);
     this.#newItemInput.addEventListener('keydown', this.#handleKeyDown.bind(this), false);
     this.#newItemInput.addEventListener('input', this.#handleInputChange.bind(this), false);
+    this.#newItemInput.addEventListener('focus', this.#startEditing.bind(this), false);
   }
 
   #onRegexEnableToggled(regex: Common.Settings.RegExpSettingItem, checkbox: UI.UIUtils.CheckboxLabel): void {
@@ -206,7 +261,7 @@ export class IgnoreListSetting extends HTMLElement {
         } as Dialogs.ButtonDialog.ButtonDialogData}>
         <div class='ignore-list-setting-content'>
           <div class='ignore-list-setting-description'>${i18nString(UIStrings.ignoreListDescription)}</div>
-          ${this.#regexPatterns.map(this.#renderItem.bind(this))}
+          ${this.#getExistingRegexes().map(this.#renderItem.bind(this))}
           <div class='new-regex-row'>${this.#newItemCheckbox}${this.#newItemInput}</div>
         </div>
       </devtools-button-dialog>
@@ -245,8 +300,7 @@ export function patternValidator(
 
   for (let i = 0; i < existingRegexes.length; ++i) {
     const regexPattern = existingRegexes[i];
-    if (regexPattern.pattern === pattern && regexPattern.disabled === false &&
-        regexPattern.disabledForUrl === undefined) {
+    if (regexPattern.pattern === pattern && !regexPattern.disabled && regexPattern.disabledForUrl === undefined) {
       return {valid: false, errorMessage: i18nString(UIStrings.patternAlreadyExists)};
     }
   }

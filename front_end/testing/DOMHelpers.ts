@@ -142,6 +142,11 @@ export function dispatchMouseUpEvent<T extends Element>(element: T, options: Mou
   element.dispatchEvent(clickEvent);
 }
 
+export function dispatchBlurEvent<T extends Element>(element: T, options: FocusEventInit = {}) {
+  const focusEvent = new FocusEvent('blur', options);
+  element.dispatchEvent(focusEvent);
+}
+
 export function dispatchFocusEvent<T extends Element>(element: T, options: FocusEventInit = {}) {
   const focusEvent = new FocusEvent('focus', options);
   element.dispatchEvent(focusEvent);

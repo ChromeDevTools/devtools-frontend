@@ -45,13 +45,13 @@ export class RuleSetDetailsView extends LegacyWrapper.LegacyWrapper.WrappableCom
   }
 
   async #render(): Promise<void> {
-    const sourceText = await this.#getSourceText();
-
-    await coordinator.write('RuleSetDetailsView render', () => {
+    await coordinator.write('RuleSetDetailsView render', async () => {
       if (this.#data === null) {
         LitHtml.render(LitHtml.nothing, this.#shadow, {host: this});
         return;
       }
+
+      const sourceText = await this.#getSourceText();
 
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off

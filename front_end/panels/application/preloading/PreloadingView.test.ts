@@ -201,6 +201,7 @@ class NavigationEmulator {
     const prerenderUrl = 'https://example.com' + json['prerender'][0]['urls'][0];
 
     this.prerenderStatusUpdatedEvent = {
+      pipelineId: 'test-pipeline-id' as Protocol.Preload.PreloadPipelineId,
       key: {
         loaderId: this.loaderId,
         action: Protocol.Preload.SpeculationAction.Prerender,

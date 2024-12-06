@@ -1668,12 +1668,7 @@ export const NativeFunctions = [
   {
     name: "createConicGradient",
     signatures: [["startAngle","cx","cy"]],
-    receivers: ["CanvasRenderingContext2D","PaintRenderingContext2D"]
-  },
-  {
-    name: "createConicGradient",
-    signatures: [["startAngle","centerX","centerY"]],
-    receivers: ["OffscreenCanvasRenderingContext2D"]
+    receivers: ["CanvasRenderingContext2D","OffscreenCanvasRenderingContext2D","PaintRenderingContext2D"]
   },
   {
     name: "createLinearGradient",
@@ -7449,24 +7444,12 @@ export const NativeFunctions = [
     signatures: [["expires"]]
   },
   {
-    name: "transferToGPUTexture",
-    signatures: [["options"]]
-  },
-  {
-    name: "CanvasFilter",
-    signatures: [["init"]]
-  },
-  {
     name: "beginLayer",
     signatures: [["?options"]]
   },
   {
     name: "fillTextCluster",
     signatures: [["textCluster","x","y"]]
-  },
-  {
-    name: "placeElement",
-    signatures: [["element","x","y"]]
   },
   {
     name: "createMesh2DVertexBuffer",
@@ -7483,6 +7466,18 @@ export const NativeFunctions = [
   {
     name: "drawMesh",
     signatures: [["vertex_buffer","uv_buffer","index_buffer","image"]]
+  },
+  {
+    name: "transferToGPUTexture",
+    signatures: [["options"]]
+  },
+  {
+    name: "CanvasFilter",
+    signatures: [["init"]]
+  },
+  {
+    name: "placeElement",
+    signatures: [["element","x","y"]]
   },
   {
     name: "Path2D",

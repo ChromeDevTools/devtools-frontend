@@ -4698,6 +4698,54 @@
                     ]
                 },
                 {
+                    "name": "resolveValues",
+                    "description": "Resolve the specified values in the context of the provided element.\nFor example, a value of '1em' is evaluated according to the computed\n'font-size' of the element and a value 'calc(1px + 2px)' will be\nresolved to '3px'.",
+                    "parameters": [
+                        {
+                            "name": "values",
+                            "description": "Substitution functions (var()/env()/attr()) and cascade-dependent\nkeywords (revert/revert-layer) do not work.",
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        {
+                            "name": "nodeId",
+                            "description": "Id of the node in whose context the expression is evaluated",
+                            "$ref": "DOM.NodeId"
+                        },
+                        {
+                            "name": "propertyName",
+                            "description": "Only longhands and custom property names are accepted.",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "pseudoType",
+                            "description": "Pseudo element type, only works for pseudo elements that generate\nelements in the tree, such as ::before and ::after.",
+                            "experimental": true,
+                            "optional": true,
+                            "$ref": "DOM.PseudoType"
+                        },
+                        {
+                            "name": "pseudoIdentifier",
+                            "description": "Pseudo element custom ident.",
+                            "experimental": true,
+                            "optional": true,
+                            "type": "string"
+                        }
+                    ],
+                    "returns": [
+                        {
+                            "name": "results",
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    ]
+                },
+                {
                     "name": "getInlineStylesForNode",
                     "description": "Returns the styles defined inline (explicitly in the \"style\" attribute and implicitly, using DOM\nattributes) for a DOM node identified by `nodeId`.",
                     "parameters": [
@@ -15772,7 +15820,7 @@
                         },
                         {
                             "name": "headers",
-                            "description": "Raw response headers as they were received over the wire.",
+                            "description": "Raw response headers as they were received over the wire.\nDuplicate headers in the response are represented as a single key with their values\nconcatentated using `\\n` as the separator.\nSee also `headersText` that contains verbatim text for HTTP/1.*.",
                             "$ref": "Headers"
                         },
                         {
@@ -15827,7 +15875,7 @@
                         },
                         {
                             "name": "headers",
-                            "description": "Raw response headers as they were received over the wire.",
+                            "description": "Raw response headers as they were received over the wire.\nDuplicate headers in the response are represented as a single key with their values\nconcatentated using `\\n` as the separator.\nSee also `headersText` that contains verbatim text for HTTP/1.*.",
                             "$ref": "Headers"
                         }
                     ]
@@ -26355,6 +26403,11 @@
                     ]
                 },
                 {
+                    "id": "PreloadPipelineId",
+                    "description": "Chrome manages different types of preloads together using a\nconcept of preloading pipeline. For example, if a site uses a\nSpeculationRules for prerender, Chrome first starts a prefetch and\nthen upgrades it to prerender.\n\nCDP events for them are emitted separately but they share\n`PreloadPipelineId`.",
+                    "type": "string"
+                },
+                {
                     "id": "PrerenderFinalStatus",
                     "description": "List of FinalStatus reasons for Prerender2.",
                     "type": "string",
@@ -26569,6 +26622,10 @@
                             "$ref": "PreloadingAttemptKey"
                         },
                         {
+                            "name": "pipelineId",
+                            "$ref": "PreloadPipelineId"
+                        },
+                        {
                             "name": "initiatingFrameId",
                             "description": "The frame id of the frame initiating prefetch.",
                             "$ref": "Page.FrameId"
@@ -26598,6 +26655,10 @@
                         {
                             "name": "key",
                             "$ref": "PreloadingAttemptKey"
+                        },
+                        {
+                            "name": "pipelineId",
+                            "$ref": "PreloadPipelineId"
                         },
                         {
                             "name": "status",

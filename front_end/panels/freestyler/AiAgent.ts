@@ -272,7 +272,7 @@ export abstract class AiAgent<T> {
       response = aidaResponse.explanation;
       rpcId = aidaResponse.metadata.rpcGlobalId ?? rpcId;
 
-      if (aidaResponse.functionCall) {
+      if (aidaResponse.functionCalls) {
         throw new Error('Function calling not supported yet');
       }
 
@@ -342,7 +342,7 @@ export abstract class AiAgent<T> {
   }
 
   parseResponse(response: Host.AidaClient.AidaResponse): ParsedResponse {
-    if (response.functionCall && response.completed) {
+    if (response.functionCalls && response.completed) {
       throw new Error('Function calling not supported yet');
     }
     return {

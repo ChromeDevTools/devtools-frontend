@@ -265,7 +265,7 @@ export class FreestylerAgent extends AiAgent<SDK.DOMModel.DOMNode> {
   }
 
   override parseResponse(response: Host.AidaClient.AidaResponse): ParsedResponse {
-    if (response.functionCall) {
+    if (response.functionCalls) {
       throw new Error('Function calling not supported yet');
     }
 

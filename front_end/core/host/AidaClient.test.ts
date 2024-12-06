@@ -172,7 +172,7 @@ describeWithEnvironment('AidaClient', () => {
       {
         explanation: 'hello brave new world!',
         metadata: {rpcGlobalId: 123},
-        functionCall: undefined,
+        functionCalls: undefined,
         completed: true,
       },
     ]);
@@ -200,7 +200,7 @@ describeWithEnvironment('AidaClient', () => {
       {
         explanation: 'hello world',
         metadata: {rpcGlobalId: 123},
-        functionCall: undefined,
+        functionCalls: undefined,
         completed: true,
       },
     ]);
@@ -281,7 +281,7 @@ describeWithEnvironment('AidaClient', () => {
             'If it were so, it was a grievous fault,\n' +
             'And grievously hath Caesar answer’d it.\n',
         metadata: {rpcGlobalId: 123},
-        functionCall: undefined,
+        functionCalls: undefined,
         completed: true,
       },
     ]);
@@ -342,7 +342,7 @@ describeWithEnvironment('AidaClient', () => {
             },
           ],
         },
-        functionCall: undefined,
+        functionCalls: undefined,
         completed: true,
       },
     ]);

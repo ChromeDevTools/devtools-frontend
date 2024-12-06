@@ -81,6 +81,17 @@
 
 .insight-body {
   padding: 0 var(--sys-size-6) var(--sys-size-5) var(--sys-size-6);
+
+  .list-title {
+    margin-top: var(--sys-size-4);
+    margin-bottom: var(--sys-size-3);
+  }
+
+  ul {
+    /* left padding to bring the list bullets to the right place */
+    padding: 0 0 0 var(--sys-size-9);
+    margin: 0;
+  }
 }
 
 .insight-section {

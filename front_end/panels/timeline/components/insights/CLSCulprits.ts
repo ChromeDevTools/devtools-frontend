@@ -150,12 +150,14 @@ export class CLSCulprits extends BaseInsightComponent<CLSCulpritsInsightModel> {
     return html`
       <div class="insight-section">
         <span class="worst-cluster">${i18nString(UIStrings.worstCluster)}: <button type="button" class="timeline-link" @click=${() => this.#clickEvent(worstCluster)}>${i18nString(UIStrings.layoutShiftCluster, {PH1: clusterTs})}</button></span>
-          <p>${i18nString(UIStrings.topCulprits)}:</p>
-              ${culprits.map(culprit => {
-                return html `
-                  <li>${culprit}</li>
-                `;
-              })}
+          <p class="list-title">${i18nString(UIStrings.topCulprits)}:</p>
+          <ul class="worst-culprits">
+            ${culprits.map(culprit => {
+              return html `
+                <li>${culprit}</li>
+              `;
+            })}
+          </ul>
       </div>`;
     // clang-format on
   }

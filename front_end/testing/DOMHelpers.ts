@@ -267,6 +267,16 @@ export function getCleanTextContentFromElements(el: ShadowRoot|HTMLElement, sele
   });
 }
 
+/**
+ * Returns the text content for the first element matching the given `selector` within the provided `el`.
+ * Will error if no element is found matching the selector.
+ */
+export function getCleanTextContentFromSingleElement(el: ShadowRoot|HTMLElement, selector: string): string {
+  const element = el.querySelector(selector);
+  assert.isOk(element, `Could not find element with selector ${selector}`);
+  return element.textContent ? element.textContent.trim().replace(/[ \n]{2,}/g, ' ') : '';
+}
+
 export function assertNodeTextContent(component: NodeText.NodeText.NodeText, expectedContent: string) {
   assert.isNotNull(component.shadowRoot);
   const content = Array.from(component.shadowRoot.querySelectorAll('span')).map(span => span.textContent).join('');

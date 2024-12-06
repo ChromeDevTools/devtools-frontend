@@ -69,7 +69,10 @@ devtools_entrypoint("bundle") {
 ts_library("unittests") {
   testonly = true
 
-  sources = [ "BaseInsightComponent.test.ts" ]
+  sources = [
+    "BaseInsightComponent.test.ts",
+    "CLSCulprits.test.ts",
+  ]
 
   deps = [
     ":bundle",

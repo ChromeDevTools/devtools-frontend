@@ -112,6 +112,10 @@ export abstract class BaseInsightComponent<T extends InsightModel<{}>> extends H
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);
   }
 
+  get bounds(): Trace.Types.Timing.TraceWindowMicroSeconds|null {
+    return this.data.bounds;
+  }
+
   set bounds(bounds: Trace.Types.Timing.TraceWindowMicroSeconds|null) {
     this.data.bounds = bounds;
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#boundRender);

@@ -41,6 +41,11 @@ const UIStrings = {
    *@description Column name for a total sum.
    */
   total: 'Total',
+  /**
+   * @description Text status indicating that no CSS selector data was found.
+   */
+  enableSelectorData:
+      'No CSS selector data was found. CSS selector stats need to be enabled in the performance panel settings.',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/SlowCSSSelector.ts', UIStrings);
@@ -125,6 +130,10 @@ export class SlowCSSSelector extends BaseInsightComponent<SlowCSSSelectorInsight
     const cssModel = target?.model(SDK.CSSModel.CSSModel);
     const time = (us: Trace.Types.Timing.MicroSeconds): string =>
         i18n.TimeUtilities.millisToString(Platform.Timing.microSecondsToMilliSeconds(us));
+
+    if (!this.model.topMatchAttempts.length && !this.model.topElapsedMs.length) {
+      return html`<div class="insight-section">${i18nString(UIStrings.enableSelectorData)}</div>`;
+    }
 
     // clang-format off
     const sections = [html`

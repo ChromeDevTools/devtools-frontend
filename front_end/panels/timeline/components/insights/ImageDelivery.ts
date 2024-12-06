@@ -27,6 +27,10 @@ const UIStrings = {
    * @example {5} PH1
    */
   others: '{PH1} others',
+  /**
+   * @description Text status indicating that no potential optimizations were found for any image file
+   */
+  noOptimizableImages: 'No optimizable images',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/ImageDelivery.ts', UIStrings);
@@ -81,7 +85,7 @@ export class ImageDelivery extends BaseInsightComponent<ImageDeliveryInsightMode
     }
 
     if (!rows.length) {
-      return LitHtml.nothing;
+      return html`<div class="insight-section">${i18nString(UIStrings.noOptimizableImages)}</div>`;
     }
 
     // clang-format off

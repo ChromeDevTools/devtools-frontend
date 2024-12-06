@@ -47,6 +47,14 @@ const UIStrings = {
    * @description Text for a culprit type of Unsized images.
    */
   unsizedImages: 'Unsized Images',
+  /**
+   * @description Text status when there were no layout shifts detected.
+   */
+  noLayoutShifts: 'No layout shifts',
+  /**
+   * @description Text status when there no layout shifts culprits/root causes were found.
+   */
+  noCulprits: 'Could not detect any layout shift culprits',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/CLSCulprits.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -131,7 +139,7 @@ export class CLSCulprits extends BaseInsightComponent<CLSCulpritsInsightModel> {
     }
 
     if (!this.model.clusters.length || !this.model.worstCluster) {
-      return LitHtml.nothing;
+      return html`<div class="insight-section">${i18nString(UIStrings.noLayoutShifts)}</div>`;
     }
 
     const worstCluster = this.model.worstCluster;
@@ -140,7 +148,7 @@ export class CLSCulprits extends BaseInsightComponent<CLSCulpritsInsightModel> {
     // TODO: getTopCulprits needs to move to model.
     const culprits = this.getTopCulprits(worstCluster, culpritsByShift);
     if (culprits.length === 0) {
-      return LitHtml.nothing;
+      return html`<div class="insight-section">${i18nString(UIStrings.noCulprits)}</div>`;
     }
 
     const ts = Trace.Types.Timing.MicroSeconds(worstCluster.ts - this.bounds.min);

@@ -40,6 +40,10 @@ const UIStrings = {
    *@description Label used for the percentage a single phase/component/stage/section takes up of a larger duration.
    */
   percentLCP: '% of LCP',
+  /**
+   * @description Text status indicating that the the Largest Contentful Paint (LCP) metric timing was not found. "LCP" is an acronym and should not be translated.
+   */
+  noLcp: 'No LCP detected',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/LCPPhases.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -192,6 +196,9 @@ export class LCPPhases extends BaseInsightComponent<LCPPhasesInsightModel> {
     }
 
     const phaseData = this.#getPhaseData();
+    if (!phaseData.length) {
+      return html`<div class="insight-section">${i18nString(UIStrings.noLcp)}</div>`;
+    }
 
     const rows = phaseData.map(({phase, percent}) => {
       const section = this.#overlay?.sections.find(section => phase === section.label);

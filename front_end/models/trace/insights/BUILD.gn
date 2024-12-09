@@ -10,6 +10,7 @@ devtools_module("insights") {
   sources = [
     "CLSCulprits.ts",
     "Common.ts",
+    "DOMSize.ts",
     "DocumentLatency.ts",
     "FontDisplay.ts",
     "ImageDelivery.ts",
@@ -48,6 +49,7 @@ ts_library("unittests") {
 
   sources = [
     "CLSCulprits.test.ts",
+    "DOMSize.test.ts",
     "DocumentLatency.test.ts",
     "FontDisplay.test.ts",
     "ImageDelivery.test.ts",

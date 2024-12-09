@@ -218,3 +218,13 @@ Generated from the [scheduler story](https://github.com/ChromeDevTools/performan
 ### image-delivery
 
 Generate from a page load [this HTML file](https://gist.github.com/adamraine/397e2bd08665f9e45f6072e446715115). Contains a series of test cases for the image delivery insight.
+
+### dom-size
+
+Generate from a recording of [this HTML file](https://gist.github.com/adamraine/bfdb3cecca2322bf74f1e725d9a4699d) with the following steps:
+1. Set CPU throttling to 4x
+2. Start recording without reloading the page
+3. Click the button once
+4. Reload the page
+5. Click the button once
+6. End recording

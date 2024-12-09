@@ -418,6 +418,8 @@ export function makeMockRendererHandlerData(entries: Trace.Types.Events.Event[],
     name: 'thread',
     entries,
     profileCalls: entries.filter(Trace.Types.Events.isProfileCall),
+    layoutEvents: entries.filter(Trace.Types.Events.isLayout),
+    updateLayoutTreeEvents: entries.filter(Trace.Types.Events.isUpdateLayoutTree),
   };
 
   const mockProcess: Trace.Handlers.ModelHandlers.Renderer.RendererProcess = {

@@ -49,6 +49,8 @@ const makeRendererThread = (): RendererThread => ({
   name: null,
   entries: [],
   profileCalls: [],
+  layoutEvents: [],
+  updateLayoutTreeEvents: [],
 });
 
 const getOrCreateRendererProcess =
@@ -97,6 +99,18 @@ export function handleEvent(event: Types.Events.Event): void {
     const thread = getOrCreateRendererThread(process, event.tid);
     thread.entries.push(event);
     allTraceEntries.push(event);
+  }
+
+  if (Types.Events.isLayout(event)) {
+    const process = getOrCreateRendererProcess(processes, event.pid);
+    const thread = getOrCreateRendererThread(process, event.tid);
+    thread.layoutEvents.push(event);
+  }
+
+  if (Types.Events.isUpdateLayoutTree(event)) {
+    const process = getOrCreateRendererProcess(processes, event.pid);
+    const thread = getOrCreateRendererThread(process, event.tid);
+    thread.updateLayoutTreeEvents.push(event);
   }
 }
 
@@ -394,5 +408,7 @@ export interface RendererThread {
    */
   entries: Types.Events.Event[];
   profileCalls: Types.Events.SyntheticProfileCall[];
+  layoutEvents: Types.Events.Layout[];
+  updateLayoutTreeEvents: Types.Events.UpdateLayoutTree[];
   tree?: Helpers.TreeHelpers.TraceEntryTree;
 }

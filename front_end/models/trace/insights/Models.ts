@@ -4,6 +4,7 @@
 
 export * as CLSCulprits from './CLSCulprits.js';
 export * as DocumentLatency from './DocumentLatency.js';
+export * as DOMSize from './DOMSize.js';
 export * as FontDisplay from './FontDisplay.js';
 export * as ImageDelivery from './ImageDelivery.js';
 export * as InteractionToNextPaint from './InteractionToNextPaint.js';

@@ -1093,6 +1093,7 @@ grd_files_debug_sources = [
   "front_end/models/trace/helpers/TreeHelpers.js",
   "front_end/models/trace/insights/CLSCulprits.js",
   "front_end/models/trace/insights/Common.js",
+  "front_end/models/trace/insights/DOMSize.js",
   "front_end/models/trace/insights/DocumentLatency.js",
   "front_end/models/trace/insights/FontDisplay.js",
   "front_end/models/trace/insights/ImageDelivery.js",

@@ -60,7 +60,7 @@ for (const [localRating, localRatingText] of Object.entries(ratings)) {
     const tag = camelize(localRating) + capitalizeFirstLetter(camelize(fieldRating)) + 'DetailedCompare';
     const transition = localRating === fieldRating ? 'Additionally' : 'However';
     console.log(`  /**
-   * @description Text block that compares a local metric value to real user experiences. "field data" refers to performance data collected from real users on the site. "local" refers to a developers local testing environment.
+   * @description Text block that compares a local metric value to real user experiences. "field data" should be interpreted as "real user data". "local" refers to a developers local testing environment.
    * @example {LCP} PH1
    * @example {500 ms} PH2
    * @example {400 ms} PH3

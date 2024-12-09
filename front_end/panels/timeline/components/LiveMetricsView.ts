@@ -45,7 +45,7 @@ const RTT_MINIMUM = 60;
 
 const UIStrings = {
   /**
-   * @description Title of a view that shows performance metrics from the local environment and field metrics collected from real users in the field.
+   * @description Title of a view that shows performance metrics from the local environment and field metrics collected from real users. "field metrics" should be interpreted as "real user metrics".
    */
   localAndFieldMetrics: 'Local and field metrics',
   /**
@@ -69,7 +69,7 @@ const UIStrings = {
    */
   nextSteps: 'Next steps',
   /**
-   * @description Title of a section that shows options for how real user data in the field should be fetched.
+   * @description Title of a section that shows options for how real user data in the field should be fetched. This should be interpreted as "Real user data".
    */
   fieldData: 'Field data',
   /**
@@ -77,7 +77,7 @@ const UIStrings = {
    */
   environmentSettings: 'Environment settings',
   /**
-   * @description Label for an select box that selects which device type field data be shown for (e.g. desktop/mobile/all devices/etc).
+   * @description Label for an select box that selects which device type field data be shown for (e.g. desktop/mobile/all devices/etc). "field data" should be interpreted as "real user data".
    * @example {Mobile} PH1
    */
   showFieldDataForDevice: 'Show field data for device type: {PH1}',
@@ -91,7 +91,7 @@ const UIStrings = {
    */
   network: 'Network: {PH1}',
   /**
-   * @description Label for an select box that selects which device type field data be shown for (e.g. desktop/mobile/all devices/etc).
+   * @description Label for an select box that selects which device type real user data should be shown for (e.g. desktop/mobile/all devices/etc).
    * @example {Mobile} PH1
    */
   device: 'Device: {PH1}',
@@ -145,7 +145,7 @@ const UIStrings = {
    */
   originOptionWithKey: 'Origin: {PH1}',
   /**
-   * @description Label for an combo-box that indicates if field data should be taken from the page's URL or it's origin/domain.
+   * @description Label for an combo-box that indicates if field data should be taken from the page's URL or it's origin/domain. "field data" should be interpreted as "real user data".
    * @example {Origin: https://example.com} PH1
    */
   showFieldDataForPage: 'Show field data for {PH1}',
@@ -210,11 +210,11 @@ const UIStrings = {
    */
   seeHowYourLocalMetricsCompare: 'See how your local metrics compare to real user data in the {PH1}.',
   /**
-   * @description Text for a link that goes to more documentation about local and field data. "Local" refers to performance metrics measured in the developers local environment. "field data" is data measured by real users in the field.
+   * @description Text for a link that goes to more documentation about local and field data. "Local" refers to performance metrics measured in the developers local environment. "field data" should be interpreted as "real user data".
    */
   localFieldLearnMoreLink: 'Learn more about local and field data',
   /**
-   * @description Tooltip text for a link that goes to documentation explaining the difference between local and field metrics. "Local metrics" are performance metrics measured in the developers local environment. "field data" is data measured by real users in the field.
+   * @description Tooltip text for a link that goes to documentation explaining the difference between local and field metrics. "Local metrics" are performance metrics measured in the developers local environment. "field data" should be interpreted as "real user data".
    */
   localFieldLearnMoreTooltip:
       'Local metrics are captured from the current page using your network connection and device. Field data is measured by real users using many different network connections and devices.',

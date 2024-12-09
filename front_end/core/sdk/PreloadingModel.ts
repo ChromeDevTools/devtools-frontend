@@ -2,20 +2,20 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Common from '../common/common.js';
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
-
-import {assertNotNullOrUndefined} from '../platform/platform.js';
 import * as Protocol from '../../generated/protocol.js';
-import {SDKModel} from './SDKModel.js';
-import {Capability, type Target} from './Target.js';
-import {TargetManager} from './TargetManager.js';
+import type * as Common from '../common/common.js';
+import {assertNotNullOrUndefined} from '../platform/platform.js';
+
 import {
   Events as ResourceTreeModelEvents,
   PrimaryPageChangeType,
-  ResourceTreeModel,
   type ResourceTreeFrame,
+  ResourceTreeModel,
 } from './ResourceTreeModel.js';
+import {SDKModel} from './SDKModel.js';
+import {Capability, type Target} from './Target.js';
+import {TargetManager} from './TargetManager.js';
 
 export interface WithId<I, V> {
   id: I;
@@ -258,6 +258,7 @@ export class PreloadingModel extends SDKModel<EventTypes> {
     const attempt: PrefetchAttemptInternal = {
       action: Protocol.Preload.SpeculationAction.Prefetch,
       key: event.key,
+      pipelineId: event.pipelineId,
       status: convertPreloadingStatus(event.status),
       prefetchStatus: event.prefetchStatus || null,
       requestId: event.requestId,
@@ -272,6 +273,7 @@ export class PreloadingModel extends SDKModel<EventTypes> {
     const attempt: PrerenderAttemptInternal = {
       action: Protocol.Preload.SpeculationAction.Prerender,
       key: event.key,
+      pipelineId: event.pipelineId,
       status: convertPreloadingStatus(event.status),
       prerenderStatus: event.prerenderStatus || null,
       disallowedMojoInterface: event.disallowedMojoInterface || null,
@@ -429,6 +431,7 @@ export type PreloadingAttempt = PrefetchAttempt|PrerenderAttempt;
 export interface PrefetchAttempt {
   action: Protocol.Preload.SpeculationAction.Prefetch;
   key: Protocol.Preload.PreloadingAttemptKey;
+  pipelineId: Protocol.Preload.PreloadPipelineId|null;
   status: PreloadingStatus;
   prefetchStatus: Protocol.Preload.PrefetchStatus|null;
   requestId: Protocol.Network.RequestId;
@@ -439,6 +442,7 @@ export interface PrefetchAttempt {
 export interface PrerenderAttempt {
   action: Protocol.Preload.SpeculationAction.Prerender;
   key: Protocol.Preload.PreloadingAttemptKey;
+  pipelineId: Protocol.Preload.PreloadPipelineId|null;
   status: PreloadingStatus;
   prerenderStatus: Protocol.Preload.PrerenderFinalStatus|null;
   disallowedMojoInterface: string|null;
@@ -452,6 +456,7 @@ export type PreloadingAttemptInternal = PrefetchAttemptInternal|PrerenderAttempt
 export interface PrefetchAttemptInternal {
   action: Protocol.Preload.SpeculationAction.Prefetch;
   key: Protocol.Preload.PreloadingAttemptKey;
+  pipelineId: Protocol.Preload.PreloadPipelineId|null;
   status: PreloadingStatus;
   prefetchStatus: Protocol.Preload.PrefetchStatus|null;
   requestId: Protocol.Network.RequestId;
@@ -460,6 +465,7 @@ export interface PrefetchAttemptInternal {
 export interface PrerenderAttemptInternal {
   action: Protocol.Preload.SpeculationAction.Prerender;
   key: Protocol.Preload.PreloadingAttemptKey;
+  pipelineId: Protocol.Preload.PreloadPipelineId|null;
   status: PreloadingStatus;
   prerenderStatus: Protocol.Preload.PrerenderFinalStatus|null;
   disallowedMojoInterface: string|null;
@@ -524,7 +530,7 @@ class PreloadingAttemptRegistry {
     return this.enrich(attempt, sources.getById(id));
   }
 
-  // Returs preloading attempts that triggered by the rule set with `ruleSetId`.
+  // Returns preloading attempts that triggered by the rule set with `ruleSetId`.
   // `ruleSetId === null` means "do not filter".
   //
   // Returns reference. Don't save returned values.
@@ -560,6 +566,7 @@ class PreloadingAttemptRegistry {
           attempt = {
             action: Protocol.Preload.SpeculationAction.Prefetch,
             key,
+            pipelineId: null,
             status: PreloadingStatus.NOT_TRIGGERED,
             prefetchStatus: null,
             // Fill invalid request id.
@@ -570,6 +577,7 @@ class PreloadingAttemptRegistry {
           attempt = {
             action: Protocol.Preload.SpeculationAction.Prerender,
             key,
+            pipelineId: null,
             status: PreloadingStatus.NOT_TRIGGERED,
             prerenderStatus: null,
             disallowedMojoInterface: null,

@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../../core/common/common.js';
+import * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as Bindings from '../../../models/bindings/bindings.js';
 import * as Workspace from '../../../models/workspace/workspace.js';
@@ -10,6 +11,7 @@ import {
   dispatchBlurEvent,
   dispatchFocusEvent,
   dispatchInputEvent,
+  dispatchKeyDownEvent,
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
@@ -323,6 +325,18 @@ describeWithEnvironment('Ignore List Setting', () => {
       dispatchBlurEvent(newRegexInput);
       // When add an invalid rule, the temp regex will be removed.
       assert.strictEqual(regexPatterns.length, 3);
+    });
+
+    it('Clear the input when `Escape` is pressed', async () => {
+      const component = await renderIgnoreListSetting();
+      const newRegexInput = getNewRegexInput(component);
+
+      // This is a duplicate rule, so it is invalid.
+      newRegexInput.value = 'rule 2';
+
+      dispatchKeyDownEvent(newRegexInput, {key: Platform.KeyboardUtilities.ESCAPE_KEY});
+      // When add an invalid rule, the temp regex will be removed.
+      assert.strictEqual('', newRegexInput.value);
     });
   });
 });

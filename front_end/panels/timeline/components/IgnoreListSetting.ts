@@ -6,6 +6,7 @@ import '../../../ui/components/menus/menus.js';
 
 import * as Common from '../../../core/common/common.js';
 import * as i18n from '../../../core/i18n/i18n.js';
+import * as Platform from '../../../core/platform/platform.js';
 import * as Bindings from '../../../models/bindings/bindings.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as Dialogs from '../../../ui/components/dialogs/dialogs.js';
@@ -146,7 +147,7 @@ export class IgnoreListSetting extends HTMLElement {
     this.#newRegexInput.value = '';
   }
 
-  #onNewRegexAdded(): void {
+  #addNewRegexToIgnoreList(): void {
     const newRegex = this.#newRegexInput.value.trim();
 
     this.#finishEditing();
@@ -160,11 +161,22 @@ export class IgnoreListSetting extends HTMLElement {
   }
 
   #handleKeyDown(event: KeyboardEvent): void {
-    // When user press the 'Enter' or 'Escape', the current regex will be added and user can keep adding more regexes.
-    if (event.key === 'Enter' || event.key === 'Escape') {
-      this.#onNewRegexAdded();
+    // When user press the 'Enter', the current regex will be added and user can keep adding more regexes.
+    if (event.key === Platform.KeyboardUtilities.ENTER_KEY) {
+      this.#addNewRegexToIgnoreList();
       this.#startEditing();
       return;
+    }
+
+    // When user press the 'Escape', it means cancel the editing, so the current regex won't be added and the input will
+    // lose focus.
+    if (event.key === Platform.KeyboardUtilities.ESCAPE_KEY) {
+      // Escape key will close the dialog, and toggle the `Console` drawer. So we need to ignore other listeners.
+      event.stopImmediatePropagation();
+
+      this.#finishEditing();
+      this.#resetInput();
+      this.#newRegexInput.blur();
     }
   }
 
@@ -208,7 +220,7 @@ export class IgnoreListSetting extends HTMLElement {
     UI.Tooltip.Tooltip.install(this.#newRegexCheckbox, checkboxHelpText);
     UI.Tooltip.Tooltip.install(this.#newRegexInput, inputHelpText);
 
-    this.#newRegexInput.addEventListener('blur', this.#onNewRegexAdded.bind(this), false);
+    this.#newRegexInput.addEventListener('blur', this.#addNewRegexToIgnoreList.bind(this), false);
     this.#newRegexInput.addEventListener('keydown', this.#handleKeyDown.bind(this), false);
     this.#newRegexInput.addEventListener('input', this.#handleInputChange.bind(this), false);
     this.#newRegexInput.addEventListener('focus', this.#startEditing.bind(this), false);

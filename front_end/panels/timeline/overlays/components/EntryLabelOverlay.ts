@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as i18n from '../../../../core/i18n/i18n.js';
+import * as Platform from '../../../../core/platform/platform.js';
 import * as ComponentHelpers from '../../../../ui/components/helpers/helpers.js';
 import * as ThemeSupport from '../../../../ui/legacy/theme_support/theme_support.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
@@ -150,7 +151,7 @@ export class EntryLabelOverlay extends HTMLElement {
     // We do not want to create multi-line labels.
     // Therefore, if the new key is `Enter` key, treat it
     // as the end of the label input and blur the input field.
-    if (event.key === 'Enter' || event.key === 'Escape') {
+    if (event.key === Platform.KeyboardUtilities.ENTER_KEY || event.key === Platform.KeyboardUtilities.ESCAPE_KEY) {
       // Note that we do not stop the event propagating here; this is on
       // purpose because we need it to bubble up into TimelineFlameChartView's
       // handler. That updates the state and deals with the keydown.

@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as i18n from '../../../../core/i18n/i18n.js';
+import * as Platform from '../../../../core/platform/platform.js';
 import type * as Trace from '../../../../models/trace/trace.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../../ui/visual_logging/visual_logging.js';
@@ -236,7 +237,7 @@ export class TimeRangeOverlay extends HTMLElement {
     // as the end of the label input and blur the input field.
     // If the text field is empty when `Enter` or `Escape` are pressed,
     // dispatch an event to remove the time range.
-    if (event.key === 'Enter' || event.key === 'Escape') {
+    if (event.key === Platform.KeyboardUtilities.ENTER_KEY || event.key === Platform.KeyboardUtilities.ESCAPE_KEY) {
       // In DevTools, the `Escape` button will by default toggle the console
       // drawer, which we don't want here, so we need to call
       // `stopPropagation()`.

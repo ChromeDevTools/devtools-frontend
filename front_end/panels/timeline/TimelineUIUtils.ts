@@ -1979,7 +1979,7 @@ export class TimelineUIUtils {
       });
 
       link.addEventListener('keydown', event => {
-        if (event.key === 'Enter') {
+        if (event.key === Platform.KeyboardUtilities.ENTER_KEY) {
           TimelinePanel.instance().select(selectionFromEvent(entry));
           event.consume(true);
         }
@@ -2172,7 +2172,7 @@ export class TimelineUIUtils {
     container.tabIndex = 0;
     container.addEventListener('click', () => TimelinePanel.instance().select(selectionFromEvent(event)), false);
     container.addEventListener('keydown', keyEvent => {
-      if (keyEvent.key === 'Enter') {
+      if (keyEvent.key === Platform.KeyboardUtilities.ENTER_KEY) {
         TimelinePanel.instance().select(selectionFromEvent(event));
         keyEvent.consume(true);
       }

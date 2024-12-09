@@ -762,6 +762,7 @@ grd_files_debug_sources = [
   "front_end/core/common/JavaScriptMetaData.js",
   "front_end/core/common/Lazy.js",
   "front_end/core/common/Linkifier.js",
+  "front_end/core/common/MapWithDefault.js",
   "front_end/core/common/Mutex.js",
   "front_end/core/common/Object.js",
   "front_end/core/common/ParsedURL.js",

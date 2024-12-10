@@ -130,7 +130,7 @@ The following components in [crbug] are owned by the Chrome DevTools team.
 | ------------------------------------------ | ------------------------------------------------------------- |
 | `Chromium>Platform>DevTools`               | Issues that don't fit any specific category                   |
 | `Chromium>Platform>DevTools>Accessibility` | DevTools' accessibility                                       |
-| `Chromium>Platform>DevTools>AI`            | Console Insights and Freestyler panel                         |
+| `Chromium>Platform>DevTools>AI`            | Console Insights and AI Assistance panel                      |
 | `Chromium>Platform>DevTools>Animations`    | Animations panel                                              |
 | `Chromium>Platform>DevTools>Application`   | Application panel                                             |
 | `Chromium>Platform>DevTools>Console`       | Console panel                                                 |

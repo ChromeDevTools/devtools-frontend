@@ -150,7 +150,7 @@ devtools_entrypoint("bundle") {
     "../../../test/perf/*",
     "../../entrypoints/*",
     "../../models/trace/handlers:unittests",
-    "../../panels/freestyler/*",
+    "../../panels/ai_assistance/*",
     "../../testing",
     "../../testing/*",
     "../../ui/components/docs/performance_panel/*",

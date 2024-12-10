@@ -43,7 +43,7 @@ devtools_entrypoint("bundle") {
   visibility = [
     ":*",
     "..:*",
-    "../../freestyler/*",
+    "../../ai_assistance/*",
     "../../network/*",
     "../components:*",
     "../components/insights:*",

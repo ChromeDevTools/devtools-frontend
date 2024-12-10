@@ -41,7 +41,7 @@ devtools_entrypoint("bundle") {
     "../../../test/interactions/*",
     "../../core/sdk:unittests",
     "../../legacy_test_runner/*",
-    "../../panels/freestyler/*",
+    "../../panels/ai_assistance/*",
     "../../panels/lighthouse/*",
     "../../panels/network/*",
     "../../panels/recorder/*",

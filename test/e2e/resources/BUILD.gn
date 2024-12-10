@@ -7,6 +7,7 @@ import("../../../scripts/build/ninja/copy.gni")
 group("resources") {
   deps = [
     ":shared",
+    "ai_assistance",
     "animations",
     "application",
     "changes",
@@ -17,7 +18,6 @@ group("resources") {
     "elements",
     "emulation",
     "extensions",
-    "freestyler",
     "host",
     "inline_editor",
     "issues",

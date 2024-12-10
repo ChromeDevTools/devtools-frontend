@@ -66,7 +66,7 @@ export class AICallTree {
     return instance;
   }
 
-  /** Define precisely how the call tree is serialized. Typically called from within `DrJonesPerformanceAgent` */
+  /** Define precisely how the call tree is serialized. Typically called from within `PerformanceAgent` */
   serialize(): string {
     const nodeToIdMap = new Map<Trace.Extras.TraceTree.Node, number>();
     // Keep a map of URLs. We'll output a LUT to keep size down.

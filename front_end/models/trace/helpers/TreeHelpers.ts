@@ -193,7 +193,7 @@ export class AINode {
     return AINode.#filterRecursive(list, node => longEnough(node) && selfLongEnough(node));
   }
 
-  // Invoked from DrJonesPerformanceAgent
+  // Invoked from PerformanceAgent
   sanitize(): void {
     if (this.children) {
       this.children = AINode.#removeInexpensiveNodesRecursively(this.children, {

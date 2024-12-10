@@ -114,14 +114,14 @@ export enum ClientFeature {
   CLIENT_FEATURE_UNSPECIFIED = 0,
   // Chrome console insights feature.
   CHROME_CONSOLE_INSIGHTS = 1,
-  // Chrome freestyler.
-  CHROME_FREESTYLER = 2,
-  // Chrome DrJones Network Agent.
-  CHROME_DRJONES_NETWORK_AGENT = 7,
-  // Chrome DrJones Performance Agent.
-  CHROME_DRJONES_PERFORMANCE_AGENT = 8,
-  // Chrome DrJones File Agent.
-  CHROME_DRJONES_FILE_AGENT = 9,
+  // Chrome AI Assistance Styling Agent.
+  CHROME_STYLING_AGENT = 2,
+  // Chrome AI Assistance Network Agent.
+  CHROME_NETWORK_AGENT = 7,
+  // Chrome AI Assistance Performance Agent.
+  CHROME_PERFORMANCE_AGENT = 8,
+  // Chrome AI Assistance File Agent.
+  CHROME_FILE_AGENT = 9,
 }
 
 export enum UserTier {

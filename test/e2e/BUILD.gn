@@ -15,6 +15,7 @@ group("e2e") {
 
 node_ts_library("tests") {
   deps = [
+    "ai_assistance",
     "animations",
     "application",
     "assertion",
@@ -26,7 +27,6 @@ node_ts_library("tests") {
     "elements",
     "emulation",
     "extensions",
-    "freestyler",
     "host",
     "inline_editor",
     "issues",

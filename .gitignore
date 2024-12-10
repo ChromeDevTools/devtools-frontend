@@ -26,7 +26,7 @@ config.gypi
 npm-debug.log
 /scripts/javascript_natives/node_modules
 /scripts/protocol_typescript/*.js
-/scripts/freestyler/data
+/scripts/ai_assistance/data
 
 /build
 /buildtools

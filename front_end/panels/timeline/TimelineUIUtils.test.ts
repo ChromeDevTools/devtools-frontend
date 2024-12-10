@@ -22,9 +22,11 @@ import {
   setupPageResourceLoaderForSourceMap,
 } from '../../testing/SourceMapHelpers.js';
 import {
+  getBaseTraceParseModelData,
   getEventOfType,
   getMainThread,
   makeCompleteEvent,
+  makeMockRendererHandlerData,
   makeMockSamplesHandlerData,
   makeProfileCall,
 } from '../../testing/TraceHelpers.js';
@@ -247,22 +249,26 @@ describeWithMockConnection('TimelineUIUtils', function() {
         workerIdByThread: new Map(),
         workerURLById: new Map(),
       };
-      // This only includes data used in the SourceMapsResolver
-      const parsedTrace = {
+      // This only includes data used in the SourceMapsResolver and
+      // TimelineUIUtils
+      const parsedTrace = getBaseTraceParseModelData({
         Samples: makeMockSamplesHandlerData([profileCall]),
         Workers: workersData,
-      } as Trace.Handlers.Types.ParsedTrace;
+        Renderer: makeMockRendererHandlerData([profileCall]),
+      });
 
       const resolver = new Timeline.Utils.SourceMapsResolver.SourceMapsResolver(parsedTrace);
       await resolver.install();
 
-      const linkifier = new Components.Linkifier.Linkifier();
-      const node = await Timeline.TimelineUIUtils.TimelineUIUtils.buildDetailsNodeForTraceEvent(
-          profileCall, target, linkifier, true, parsedTrace);
-      if (!node) {
-        throw new Error('Node was unexpectedly null');
-      }
-      assert.isTrue(node.textContent?.startsWith('someFunction @'));
+      const details = await Timeline.TimelineUIUtils.TimelineUIUtils.buildTraceEventDetails(
+          parsedTrace,
+          profileCall,
+          new Components.Linkifier.Linkifier(),
+          false,
+      );
+      const stackTraceData = getStackTraceForDetailsElement(details);
+      assert.exists(stackTraceData);
+      assert.isTrue(stackTraceData[0].startsWith('someFunction @'));
     });
   });
   describe('adjusting timestamps for events and navigations', function() {
@@ -839,16 +845,9 @@ describeWithMockConnection('TimelineUIUtils', function() {
           new Components.Linkifier.Linkifier(),
           false,
       );
-      const rowData = getRowDataForDetailsElement(details);
-      assert.deepEqual(
-          rowData,
-          [
-            {
-              title: 'Function',
-              value: '(anonymous) @ www.google.com:21:17',
-            },
-          ],
-      );
+      const stackTraceData = getStackTraceForDetailsElement(details);
+      assert.exists(stackTraceData);
+      assert.strictEqual(stackTraceData[0], '(anonymous) @ www.google.com:21:17');
     });
     it('renders the stack trace of a ScheduleStyleRecalculation properly', async function() {
       Common.Linkifier.registerLinkifier({
@@ -1174,6 +1173,45 @@ describeWithMockConnection('TimelineUIUtils', function() {
         {title: 'Initiated by', value: 'Schedule postTask'},
         {title: 'Pending for', value: '200.1\xA0ms'},
       ]);
+    });
+    it('renders the stack trace of a profile call event', async function() {
+      // uses source maps
+      const {parsedTrace} = await TraceLoader.traceEngine(this, 'async-js-calls.json.gz');
+      const jsCall = parsedTrace.Renderer.allTraceEntries.find(
+          e => Trace.Types.Events.isProfileCall(e) && e.callFrame.functionName === 'baz');
+      assert.exists(jsCall);
+      const details = await Timeline.TimelineUIUtils.TimelineUIUtils.buildTraceEventDetails(
+          parsedTrace,
+          jsCall,
+          new Components.Linkifier.Linkifier(),
+          false,
+      );
+      const container = document.createElement('div');
+      renderElementIntoDOM(container);
+      container.appendChild(details);
+      const stackTraceContainer = container.querySelector('.stack-preview-container');
+      const stackTracesElements =
+          stackTraceContainer?.shadowRoot?.querySelector('.stack-preview-container')?.querySelectorAll('tbody');
+      assert.exists(stackTracesElements);
+      const testData = [...stackTracesElements].map(stackTraceElement => {
+        const description = stackTraceElement.querySelector<HTMLTableRowElement>('.stack-preview-async-row');
+        const stackFrameElements =
+            stackTraceElement.querySelectorAll<HTMLTableRowElement>('tr:not(.stack-preview-async-row)');
+        const stackFrames = [...stackFrameElements].map(frame => frame.innerText);
+        return {description: description?.innerText || '', stackFrames};
+      });
+      assert.deepEqual(
+          testData,
+          [
+            {description: '', stackFrames: ['\tbaz\t@\tunknown']},
+            {description: '\trequestIdleCallback\t\t', stackFrames: ['\tbar\t@\tunknown']},
+            {description: '\tsetTimeout\t\t', stackFrames: ['\tfoo\t@\tunknown']},
+            {
+              description: '\trequestAnimationFrame\t\t',
+              stackFrames: ['\tstartExample\t@\tunknown', '\t(anonymous)\t@\tunknown'],
+            },
+          ],
+      );
     });
   });
 

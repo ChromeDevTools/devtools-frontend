@@ -969,30 +969,6 @@ export class TimelineUIUtils {
         }
         break;
       }
-      case Trace.Types.Events.Name.PROFILE_CALL: {
-        details = document.createElement('span');
-        // This check is only added for convenience with the type checker.
-        if (!Trace.Types.Events.isProfileCall(event)) {
-          break;
-        }
-        const maybeResolvedData = Utils.SourceMapsResolver.SourceMapsResolver.resolvedCodeLocationForEntry(event);
-        const functionName = maybeResolvedData?.name || TimelineUIUtils.frameDisplayName(event.callFrame);
-        UI.UIUtils.createTextChild(details, functionName);
-        const location = this.linkifyLocation({
-          scriptId: event.callFrame['scriptId'],
-          url: event.callFrame['url'],
-          lineNumber: event.callFrame['lineNumber'],
-          columnNumber: event.callFrame['columnNumber'],
-          target,
-          isFreshRecording,
-          linkifier,
-        });
-        if (location) {
-          UI.UIUtils.createTextChild(details, ' @ ');
-          details.appendChild(location);
-        }
-        break;
-      }
 
       default: {
         /**
@@ -1000,7 +976,8 @@ export class TimelineUIUtils {
          * thus, we prevent extracting the stack trace again here.
          */
         if (Trace.Helpers.Trace.eventHasCategory(event, Trace.Types.Events.Categories.Console) ||
-            Trace.Types.Events.isUserTiming(event) || Trace.Types.Extensions.isSyntheticExtensionEntry(event)) {
+            Trace.Types.Events.isUserTiming(event) || Trace.Types.Extensions.isSyntheticExtensionEntry(event) ||
+            Trace.Types.Events.isProfileCall(event)) {
           detailsText = null;
         } else {
           details = this.linkifyTopCallFrame(event, target, linkifier, isFreshRecording) ?? null;
@@ -1684,7 +1661,8 @@ export class TimelineUIUtils {
     }
 
     const stackTrace = Trace.Helpers.Trace.getZeroIndexedStackTraceForEvent(event);
-    if (initiator || initiatorFor || stackTrace || parsedTrace?.Invalidations.invalidationsForEvent.get(event)) {
+    if (Trace.Types.Events.isProfileCall(event) || initiator || initiatorFor || stackTrace ||
+        parsedTrace?.Invalidations.invalidationsForEvent.get(event)) {
       await TimelineUIUtils.generateCauses(event, contentHelper, parsedTrace);
     }
 
@@ -1872,13 +1850,26 @@ export class TimelineUIUtils {
     return {callFrames} as Protocol.Runtime.StackTrace;
   }
 
-  private static async generateCauses(
+  static async generateCauses(
       event: Trace.Types.Events.Event, contentHelper: TimelineDetailsContentHelper,
       parsedTrace: Trace.Handlers.Types.ParsedTrace): Promise<void> {
     const {startTime} = Trace.Helpers.Timing.eventTimingsMilliSeconds(event);
     let initiatorStackLabel = i18nString(UIStrings.initiatorStackTrace);
     let stackLabel = i18nString(UIStrings.stackTrace);
-
+    const stackTraceForEvent = Trace.Extras.StackTraceForEvent.get(
+        event, parsedTrace, {isIgnoreListedCallback: Utils.IgnoreList.isIgnoreListedEntry});
+    if (Trace.Types.Events.isProfileCall(event) && stackTraceForEvent) {
+      contentHelper.addSection(i18nString(UIStrings.stackTrace));
+      contentHelper.createChildStackTraceElement(stackTraceForEvent);
+      // TODO(andoli): also build stack trace component for other events
+      // that have a stack trace using the StackTraceForEvent helper.
+    } else {
+      const stackTrace = Trace.Helpers.Trace.getZeroIndexedStackTraceForEvent(event);
+      if (stackTrace && stackTrace.length) {
+        contentHelper.addSection(stackLabel);
+        contentHelper.createChildStackTraceElement(TimelineUIUtils.stackTraceFromCallFrames(stackTrace));
+      }
+    }
     switch (event.name) {
       case Trace.Types.Events.Name.TIMER_FIRE:
         initiatorStackLabel = i18nString(UIStrings.timerInstalled);
@@ -1897,12 +1888,6 @@ export class TimelineUIUtils {
         initiatorStackLabel = i18nString(UIStrings.firstLayoutInvalidation);
         stackLabel = i18nString(UIStrings.layoutForced);
         break;
-    }
-
-    const stackTrace = Trace.Helpers.Trace.getZeroIndexedStackTraceForEvent(event);
-    if (stackTrace && stackTrace.length) {
-      contentHelper.addSection(stackLabel);
-      contentHelper.createChildStackTraceElement(TimelineUIUtils.stackTraceFromCallFrames(stackTrace));
     }
 
     const initiator = parsedTrace.Initiators.eventToInitiator.get(event);
@@ -2589,11 +2574,22 @@ export class TimelineDetailsContentHelper {
     if (!this.linkifierInternal) {
       return;
     }
-
+    const resolvedStackTrace: Protocol.Runtime.StackTrace = structuredClone(stackTrace);
+    let currentResolvedStackTrace: Protocol.Runtime.StackTrace|undefined = resolvedStackTrace;
+    while (currentResolvedStackTrace) {
+      currentResolvedStackTrace.callFrames = currentResolvedStackTrace.callFrames.map(
+          callFrame => ({
+            ...callFrame,
+            functionName:
+                Utils.SourceMapsResolver.SourceMapsResolver.resolvedCodeLocationForCallFrame(callFrame)?.name ||
+                callFrame.functionName,
+          }));
+      currentResolvedStackTrace = currentResolvedStackTrace.parent;
+    }
     const stackTraceElement =
         this.tableElement.createChild('div', 'timeline-details-view-row timeline-details-stack-values');
     const callFrameContents = LegacyComponents.JSPresentationUtils.buildStackTracePreviewContents(
-        this.target, this.linkifierInternal, {stackTrace, tabStops: true, showColumnNumber: true});
+        this.target, this.linkifierInternal, {stackTrace: resolvedStackTrace, tabStops: true, showColumnNumber: true});
     stackTraceElement.appendChild(callFrameContents.element);
   }
 }

@@ -170,6 +170,7 @@ describeWithEnvironment('StackTraceForTraceEvent', function() {
     // Modify the cache, to check it's used when possible
     const bottomFrame = stackTraceOfParent.callFrames.at(-1);
     assert.exists(bottomFrame);
+    const originalName = bottomFrame.functionName;
     bottomFrame.functionName = 'Overriden name';
 
     // Compute stack trace of foo, ensure the cache calculated with
@@ -204,5 +205,6 @@ describeWithEnvironment('StackTraceForTraceEvent', function() {
         description: 'requestAnimationFrame',
       },
     ]);
+    bottomFrame.functionName = originalName;
   });
 });

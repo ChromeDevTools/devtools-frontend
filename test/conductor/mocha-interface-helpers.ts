@@ -101,10 +101,9 @@ export function makeInstrumentedTestFunction(fn: Mocha.AsyncFunc, label: string)
     AsyncScope.abortSignal = abortController.signal;
     // Promisify the function in case it is sync.
     const promise = (async () => fn.call(this))();
-    const timeout = this.timeout();
+    const actualTimeout = this.timeout();
     // Disable test timeout.
     this.timeout(0);
-    const actualTimeout = timeout;
     const t = actualTimeout !== 0 ? setTimeout(async () => {
       abortController.abort();
       const stacks = [];
@@ -135,6 +134,7 @@ export function makeInstrumentedTestFunction(fn: Mocha.AsyncFunc, label: string)
             })
         .finally(() => {
           clearTimeout(t);
+          this.timeout(actualTimeout);
         });
     return testPromise;
   };

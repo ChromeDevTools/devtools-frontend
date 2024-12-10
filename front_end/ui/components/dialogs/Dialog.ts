@@ -555,7 +555,7 @@ export class Dialog extends HTMLElement {
             this.style.setProperty('--dialog-top', '0');
             this.style.setProperty('--dialog-margin', 'auto');
             this.style.setProperty('--dialog-margin-bottom', `${innerHeight - anchorTop}px`);
-            this.#hitArea.y = anchorTop - 2 * CONNECTOR_HEIGHT;
+            this.#hitArea.y = anchorTop - (CONNECTOR_HEIGHT * (this.showConnector ? 2 : 1));
             this.style.setProperty('--dialog-offset-y', `${DIALOG_ANIMATION_OFFSET}px`);
             this.style.setProperty(
                 '--dialog-max-height',

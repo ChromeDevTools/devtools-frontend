@@ -6464,13 +6464,7 @@ export const NativeFunctions = [
   },
   {
     name: "caretPositionFromPoint",
-    signatures: [["x","y","?options"]],
-    receivers: ["Document"]
-  },
-  {
-    name: "caretPositionFromPoint",
-    signatures: [["x"]],
-    receivers: ["TextMetrics"]
+    signatures: [["x","y","?options"]]
   },
   {
     name: "hasPrivateToken",
@@ -6871,6 +6865,10 @@ export const NativeFunctions = [
   {
     name: "ImageData",
     signatures: [["sw","sh","?settings"],["data","sw","?sh","?settings"]]
+  },
+  {
+    name: "getIndexFromOffset",
+    signatures: [["x"]]
   },
   {
     name: "getSelectionRects",
@@ -7449,7 +7447,7 @@ export const NativeFunctions = [
   },
   {
     name: "fillTextCluster",
-    signatures: [["textCluster","x","y"]]
+    signatures: [["textCluster","x","y","?options"]]
   },
   {
     name: "createMesh2DVertexBuffer",

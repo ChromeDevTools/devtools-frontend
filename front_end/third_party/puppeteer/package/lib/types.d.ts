@@ -6996,6 +6996,7 @@ declare namespace Puppeteer_2 {
         LaunchOptions,
         BrowserLaunchArgumentOptions,
         PuppeteerNodeLaunchOptions,
+        PuppeteerLaunchOptions,
         BrowserLauncher,
         PuppeteerNode,
         ScreenRecorder
@@ -7016,6 +7017,12 @@ export declare class PuppeteerError extends Error {
 
 
 }
+
+/**
+ * @deprecated Use {@link LaunchOptions}.
+ * @public
+ */
+export declare type PuppeteerLaunchOptions = LaunchOptions;
 
 /**
  * @public

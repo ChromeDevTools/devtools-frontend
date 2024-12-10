@@ -17,6 +17,7 @@ function formatElapsedTime() {
 }
 
 /* clang-format off */
+/** @type {import('./types').YargsInput} */
 const yargsObject = yargs
   .option('example-urls', {
     string: true,
@@ -42,6 +43,7 @@ const OUTPUT_DIR = path.resolve(__dirname, 'data');
 const {exampleUrls, label} = yargsObject;
 
 class Logger {
+  /** @type {import('./types').Logs} */
   #logs = {};
   #updateElapsedTimeInterval = 0;
   constructor() {
@@ -72,6 +74,11 @@ class Logger {
     this.log('head', -1, `${text}\n`);
   }
 
+  /**
+   * @param {string} id
+   * @param {number} index
+   * @param {string} text
+   */
   log(id, index, text) {
     this.#updateElapsedTime();
     this.#logs[id] = {index, text};
@@ -259,6 +266,10 @@ class Example {
     });
 
     const results = [];
+
+    /**
+     * @returns {Promise<import('./types').ExecutedExample>}
+     */
     const prompt = async query => {
       await this.#devtoolsPage.locator('aria/Ask a question about the selected element').click();
 
@@ -291,11 +302,12 @@ class Example {
       await done;
       abort.abort();
 
-      const result = JSON.parse(await this.#devtoolsPage.evaluate(() => {
+      /** @type {import('./types').IndividualPromptRequestResponse[]} */
+      const results = JSON.parse(await this.#devtoolsPage.evaluate(() => {
         return localStorage.getItem('freestylerStructuredLog');
       }));
 
-      return result.map(r => ({...r, exampleId: this.id()}));
+      return results.map(r => ({...r, exampleId: this.id()}));
     };
 
     for (const query of this.#queries) {
@@ -307,6 +319,8 @@ class Example {
     await this.#page.close();
     const elapsedTime = numberFormatter.format((performance.now() - executionStartTime) / 1000);
     this.log(`Finished (${elapsedTime}s)`);
+
+    /** @type {import('./types').ExecutedExample} */
     return {results, metadata: {exampleId: this.id(), explanation: this.#explanation}};
   }
 
@@ -326,6 +340,11 @@ class Example {
 }
 
 const logger = new Logger();
+
+/**
+ * @param {Example[]} examples
+ * @return {Promise<RunResult>}
+ */
 async function runInParallel(examples) {
   logger.head('Preparing examples...');
   for (const example of examples) {
@@ -348,8 +367,15 @@ async function runInParallel(examples) {
   return {allExampleResults, metadata};
 }
 
+/**
+ * @param {Example[]} examples
+ * @return {Promise<import('./types').RunResult>}
+ */
 async function runSequentially(examples) {
+  /** @type {import('./types').ExecutedExample[]} */
   const allExampleResults = [];
+
+  /** @type {import('./types').ExampleMetadata} */
   const metadata = [];
   logger.head('Running examples sequentially...');
   for (const example of examples) {
@@ -401,8 +427,11 @@ async function main() {
 
   logger.head('Preparing examples...');
   const examples = exampleUrls.map(exampleUrl => new Example(exampleUrl, browser));
+  /** @type {import('./types').IndividualPromptRequestResponse[]} */
   let allExampleResults = [];
+  /** @type {import('./types').ExampleMetadata[]} */
   let metadata = [];
+
   if (yargsObject.parallel) {
     ({allExampleResults, metadata} = await runInParallel(examples));
   } else {

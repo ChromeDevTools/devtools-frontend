@@ -43,6 +43,9 @@ GLOBAL_TYPESCRIPT_DEFINITION_FILES = [
               'global_defs.d.ts'),
     # Types for W3C FileSystem API
     path.join(NODE_MODULES_DIRECTORY, '@types', 'filesystem', 'index.d.ts'),
+    # Types for wicg task scheduling API
+    path.join(NODE_MODULES_DIRECTORY, '@types', 'wicg-task-scheduling',
+              'index.d.ts'),
 ]
 
 logging.basicConfig(

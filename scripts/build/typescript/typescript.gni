@@ -50,7 +50,8 @@ assert(!devtools_skip_typecheck || !is_official_build,
 #
 template("ts_library") {
   action(target_name) {
-    script = devtools_location_prepend + "scripts/build/typescript/ts_library.py"
+    script =
+        devtools_location_prepend + "scripts/build/typescript/ts_library.py"
 
     forward_variables_from(invoker,
                            [
@@ -70,6 +71,8 @@ template("ts_library") {
       devtools_location_prepend + "front_end/legacy/legacy-defs.d.ts",
       devtools_location_prepend + "front_end/global_typings/global_defs.d.ts",
       devtools_location_prepend + "node_modules/@types/filesystem/index.d.ts",
+      devtools_location_prepend +
+          "node_modules/@types/wicg-task-scheduling/index.d.ts",
     ]
 
     # When use_remoteexec=true, node actions run on remote Linux worker.

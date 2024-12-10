@@ -56,6 +56,7 @@
     "@types/rimraf": "3.0.2",
     "@types/sinon": "17.0.3",
     "@types/webidl2": "23.13.6",
+    "@types/wicg-task-scheduling": "2024.1.0",
     "@typescript-eslint/eslint-plugin": "7.18.0",
     "@typescript-eslint/parser": "7.18.0",
     "@web/rollup-plugin-import-meta-assets": "2.2.1",

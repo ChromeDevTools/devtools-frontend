@@ -580,7 +580,10 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
     this.flameChart.overlays().addEventListener(Overlays.Overlays.TimeRangeMouseOverEvent.eventName, event => {
       const {overlay} = event as Overlays.Overlays.TimeRangeMouseOverEvent;
-      const overlayBounds = overlay && Overlays.Overlays.traceWindowContainingOverlays([overlay]);
+      const overlayBounds = Overlays.Overlays.traceWindowContainingOverlays([overlay]);
+      if (!overlayBounds) {
+        return;
+      }
       this.#minimapComponent.highlightBounds(overlayBounds, /* withBracket */ false);
     });
 
@@ -602,7 +605,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
       this.flameChart.setOverlays(overlays, options);
 
-      const overlaysBounds = overlays && Overlays.Overlays.traceWindowContainingOverlays(overlays);
+      const overlaysBounds = Overlays.Overlays.traceWindowContainingOverlays(overlays);
       if (overlaysBounds) {
         this.#minimapComponent.highlightBounds(overlaysBounds, /* withBracket */ true);
       } else {

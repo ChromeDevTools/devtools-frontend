@@ -81,11 +81,16 @@ export interface TimeRangeLabel {
 /**
  * Given a list of overlays, this method will calculate the smallest possible
  * trace window that will contain all of the overlays.
- * `overlays` is expected to be non-empty.
+ * `overlays` is expected to be non-empty, and this will return `null` if it is empty.
  */
-export function traceWindowContainingOverlays(overlays: TimelineOverlay[]): Trace.Types.Timing.TraceWindowMicroSeconds {
+export function traceWindowContainingOverlays(overlays: TimelineOverlay[]): Trace.Types.Timing.TraceWindowMicroSeconds|
+    null {
   let minTime = Trace.Types.Timing.MicroSeconds(Number.POSITIVE_INFINITY);
   let maxTime = Trace.Types.Timing.MicroSeconds(Number.NEGATIVE_INFINITY);
+
+  if (overlays.length === 0) {
+    return null;
+  }
 
   for (const overlay of overlays) {
     const windowForOverlay = traceWindowForOverlay(overlay);

@@ -911,8 +911,17 @@ describeWithEnvironment('Overlays', () => {
         outlineReason: 'INFO',
       };
       const traceWindow = Overlays.Overlays.traceWindowContainingOverlays([overlay1, overlay2]);
+      if (!traceWindow) {
+        throw new Error('No trace window for overlays');
+      }
+
       assert.strictEqual(traceWindow.min, 0);
       assert.strictEqual(traceWindow.max, 105);
+    });
+
+    it('returns null for no overlays', () => {
+      const traceWindow = Overlays.Overlays.traceWindowContainingOverlays([]);
+      assert.isNull(traceWindow);
     });
   });
 

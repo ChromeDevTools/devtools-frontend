@@ -434,6 +434,9 @@ export class InspectorFrontendHostStub implements InspectorFrontendHostAPI {
         portBindingEnabled: false,
         schemeBindingEnabled: false,
       },
+      devToolsAnimationStylesInStylesTab: {
+        enabled: false,
+      },
       isOffTheRecord: false,
     };
     if ('hostConfigForTesting' in globalThis) {

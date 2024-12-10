@@ -30,7 +30,7 @@ const UIStrings = {
   /**
    * @description Text description for ignore list setting.
    */
-  ignoreListDescription: 'Add these exclusion rules would simplify the flame chart.',
+  ignoreListDescription: 'Add regular expression rules to remove matching scripts from the flame chart.',
   /**
    *@description Pattern title in Framework Ignore List Settings Tab of the Settings
    *@example {ad.*?} regex
@@ -215,6 +215,8 @@ export class IgnoreListSetting extends HTMLElement {
   }
 
   #initAddNewItem(): void {
+    this.#newRegexInput.placeholder = '/framework\\.js$';
+
     const checkboxHelpText = i18nString(UIStrings.ignoreScriptsWhoseNamesMatchNewRegex);
     const inputHelpText = i18nString(UIStrings.addNewRegex);
     UI.Tooltip.Tooltip.install(this.#newRegexCheckbox, checkboxHelpText);

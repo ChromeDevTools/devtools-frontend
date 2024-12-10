@@ -2374,12 +2374,14 @@ export class TimelineUIUtils {
   }
 
   static markerStyleForEvent(event: Trace.Types.Events.Event): TimelineMarkerStyle {
+    // Note: keep the colors matching that of `markerDetailsForEvent`.
+
     const tallMarkerDashStyle = [6, 4];
     const title = TimelineUIUtils.eventTitle(event);
 
     if (event.name !== Trace.Types.Events.Name.NAVIGATION_START &&
-            Trace.Helpers.Trace.eventHasCategory(event, Trace.Types.Events.Categories.Console) ||
-        Trace.Helpers.Trace.eventHasCategory(event, Trace.Types.Events.Categories.UserTiming)) {
+        (Trace.Helpers.Trace.eventHasCategory(event, Trace.Types.Events.Categories.Console) ||
+         Trace.Helpers.Trace.eventHasCategory(event, Trace.Types.Events.Categories.UserTiming))) {
       return {
         title,
         dashStyle: tallMarkerDashStyle,
@@ -2393,7 +2395,7 @@ export class TimelineUIUtils {
     let color = 'grey';
     switch (event.name) {
       case Trace.Types.Events.Name.NAVIGATION_START:
-        color = '#FF9800';
+        color = 'var(--color-text-primary)';
         tall = true;
         break;
       case Trace.Types.Events.Name.FRAME_STARTED_LOADING:
@@ -2413,11 +2415,11 @@ export class TimelineUIUtils {
         tall = true;
         break;
       case Trace.Types.Events.Name.MARK_FCP:
-        color = '#1A6937';
+        color = 'var(--sys-color-green-bright)';
         tall = true;
         break;
       case Trace.Types.Events.Name.MARK_LCP_CANDIDATE:
-        color = '#1A3422';
+        color = 'var(--sys-color-green)';
         tall = true;
         break;
       case Trace.Types.Events.Name.TIME_STAMP:
@@ -2636,7 +2638,7 @@ export function timeStampForEventAdjustedForClosestNavigationIfPossible(
 export function isMarkerEvent(parsedTrace: Trace.Handlers.Types.ParsedTrace, event: Trace.Types.Events.Event): boolean {
   const {Name} = Trace.Types.Events;
 
-  if (event.name === Name.TIME_STAMP) {
+  if (event.name === Name.TIME_STAMP || event.name === Name.NAVIGATION_START) {
     return true;
   }
 

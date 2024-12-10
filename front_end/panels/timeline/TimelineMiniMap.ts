@@ -242,19 +242,13 @@ export class TimelineMiniMap extends
   #setMarkers(parsedTrace: Trace.Handlers.Types.ParsedTrace): void {
     const markers = new Map<number, HTMLDivElement>();
 
-    const {Meta, PageLoadMetrics} = parsedTrace;
+    const {Meta} = parsedTrace;
 
-    // Add markers for navigation start times.
+    // Only add markers for navigation start times.
     const navStartEvents = Meta.mainFrameNavigations;
     const minTimeInMilliseconds = Trace.Helpers.Timing.microSecondsToMilliseconds(Meta.traceBounds.min);
 
     for (const event of navStartEvents) {
-      const {startTime} = Trace.Helpers.Timing.eventTimingsMilliSeconds(event);
-      markers.set(startTime, TimelineUIUtils.createEventDivider(event, minTimeInMilliseconds));
-    }
-
-    // Now add markers for the page load events
-    for (const event of PageLoadMetrics.allMarkerEvents) {
       const {startTime} = Trace.Helpers.Timing.eventTimingsMilliSeconds(event);
       markers.set(startTime, TimelineUIUtils.createEventDivider(event, minTimeInMilliseconds));
     }

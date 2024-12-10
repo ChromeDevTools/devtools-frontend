@@ -436,7 +436,7 @@ export class PreloadingAttemptView extends UI.Widget.VBox {
   render(): void {
     // Update preloaidng grid
     const filteringRuleSetId = this.ruleSetSelector.getSelected();
-    const rows = this.model.getPreloadingAttempts(filteringRuleSetId).map(({id, value}) => {
+    const rows = this.model.getRepresentativePreloadingAttempts(filteringRuleSetId).map(({id, value}) => {
       const attempt = value;
       const ruleSets = attempt.ruleSetIds.flatMap(id => {
         const ruleSet = this.model.getRuleSetById(id);
@@ -528,8 +528,8 @@ export class PreloadingSummaryView extends UI.Widget.VBox {
     this.usedPreloading.data = {
       pageURL: SDK.TargetManager.TargetManager.instance().scopeTarget()?.inspectedURL() ||
           ('' as Platform.DevToolsPath.UrlString),
-      previousAttempts: this.model.getPreloadingAttemptsOfPreviousPage().map(({value}) => value),
-      currentAttempts: this.model.getPreloadingAttempts(null).map(({value}) => value),
+      previousAttempts: this.model.getRepresentativePreloadingAttemptsOfPreviousPage().map(({value}) => value),
+      currentAttempts: this.model.getRepresentativePreloadingAttempts(null).map(({value}) => value),
     };
   }
 

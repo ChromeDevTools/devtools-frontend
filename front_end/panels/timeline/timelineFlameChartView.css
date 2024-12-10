@@ -50,9 +50,16 @@
   }
 }
 
+.overlay-type-ENTRY_SELECTED {
+  /* Ensure ENTRY_SELECTED overlays are always displayed on top of ENTRY_OUTLINE overlays */
+  z-index: 1;
+}
+
 .overlay-type-ENTRY_OUTLINE {
   background-color: transparent;
   border-width: 1px;
+  /* Ensure ENTRY_SELECTED overlays are always displayed on top of ENTRY_OUTLINE overlays */
+  z-index: 0;
 
   &.outline-reason-ERROR {
     border-color: var(--sys-color-error-bright);

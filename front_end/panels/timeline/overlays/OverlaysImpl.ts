@@ -783,11 +783,7 @@ export class Overlays extends EventTarget {
         break;
       }
       case 'ENTRY_OUTLINE': {
-        const selectedOverlay = this.overlaysOfType<EntrySelected>('ENTRY_SELECTED')?.at(0);
-        // Check if this entry has also been selected by the user. If it has,
-        // do not show the outline, but only show the selected outline.
-        const outlinedEntryIsSelected = Boolean(selectedOverlay && selectedOverlay.entry === overlay.entry);
-        if (!outlinedEntryIsSelected && this.entryIsVisibleOnChart(overlay.entry)) {
+        if (this.entryIsVisibleOnChart(overlay.entry)) {
           this.#setOverlayElementVisibility(element, true);
           this.#positionEntryBorderOutlineType(overlay.entry, element);
         } else {

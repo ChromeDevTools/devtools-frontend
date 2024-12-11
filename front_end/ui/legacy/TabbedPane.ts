@@ -75,6 +75,14 @@ const UIStrings = {
    *@description Indicates that a tab contains a preview feature (i.e., a beta / experimental feature).
    */
   previewFeature: 'Preview feature',
+  /**
+   * @description Text to move a tab forwar.
+   */
+  moveTabRight: 'Move right',
+  /**
+   * @description Text to move a tab backward.
+   */
+  moveTabLeft: 'Move left',
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/TabbedPane.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -385,6 +393,21 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
     const index = this.tabs.indexOf((this.currentTab as TabbedPaneTab));
     const nextIndex = Platform.NumberUtilities.mod(index - 1, this.tabs.length);
     this.selectTab(this.tabs[nextIndex].id, true);
+  }
+
+  getTabIndex(id: string): number {
+    const index = this.tabs.indexOf((this.tabsById.get(id) as TabbedPaneTab));
+    return index;
+  }
+
+  moveTabBackward(id: string, index: number): void {
+    this.insertBefore((this.tabsById.get(id) as TabbedPaneTab), index - 1);
+    this.updateTabSlider();
+  }
+
+  moveTabForward(id: string, index: number): void {
+    this.insertBefore((this.tabsById.get(id) as TabbedPaneTab), index + 2);
+    this.updateTabSlider();
   }
 
   lastOpenedTabIds(tabsCount: number): string[] {
@@ -1317,6 +1340,14 @@ export class TabbedPaneTab {
       this.closeTabs(this.tabbedPane.tabsToTheRight(this.id));
     }
 
+    function moveTabForward(this: TabbedPaneTab, tabIndex: number): void {
+      this.tabbedPane.moveTabForward(this.id, tabIndex);
+    }
+
+    function moveTabBackward(this: TabbedPaneTab, tabIndex: number): void {
+      this.tabbedPane.moveTabBackward(this.id, tabIndex);
+    }
+
     const contextMenu = new ContextMenu(event);
     if (this.closeable) {
       contextMenu.defaultSection().appendItem(i18nString(UIStrings.close), close.bind(this), {jslogContext: 'close'});
@@ -1330,6 +1361,15 @@ export class TabbedPaneTab {
     }
     if (this.delegate) {
       this.delegate.onContextMenu(this.id, contextMenu);
+    }
+    const tabIndex = this.tabbedPane.getTabIndex(this.id);
+    if (tabIndex > 0) {
+      contextMenu.defaultSection().appendItem(
+          i18nString(UIStrings.moveTabLeft), moveTabBackward.bind(this, tabIndex), {jslogContext: 'move-tab-backward'});
+    }
+    if (tabIndex < this.tabbedPane.tabsElement.childNodes.length - 1) {
+      contextMenu.defaultSection().appendItem(
+          i18nString(UIStrings.moveTabRight), moveTabForward.bind(this, tabIndex), {jslogContext: 'move-tab-forward'});
     }
     void contextMenu.show();
   }

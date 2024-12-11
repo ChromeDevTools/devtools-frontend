@@ -2314,6 +2314,8 @@ export const knownContextValues = new Set([
   'mouseover',
   'mouseup',
   'mousewheel',
+  'move-tab-backward',
+  'move-tab-forward',
   'move-to-bottom',
   'move-to-top',
   'mr',

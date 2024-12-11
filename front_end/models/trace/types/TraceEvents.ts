@@ -2705,22 +2705,24 @@ export function isJSInvocationEvent(event: Event): boolean {
     case Name.EVALUATE_MODULE:
     case Name.EVENT_DISPATCH:
     case Name.V8_EXECUTE:
+    case Name.V8_CONSOLE_RUN_TASK:
       return true;
   }
   // Also consider any new v8 trace events. (eg 'V8.RunMicrotasks' and 'v8.run')
   if (event.name.startsWith('v8') || event.name.startsWith('V8')) {
     return true;
   }
-
-  if (isConsoleTaskRun(event)) {
+  if (isConsoleRunTask(event)) {
     return true;
   }
   return false;
 }
+export interface ConsoleRunTask extends Event {
+  name: Name.V8_CONSOLE_RUN_TASK;
+}
 
-export function isConsoleTaskRun(event: Event): boolean {
-  return isProfileCall(event) && event.callFrame.functionName === 'run' && event.callFrame.columnNumber === -1 &&
-      event.callFrame.lineNumber === -1;
+export function isConsoleRunTask(event: Event): event is ConsoleRunTask {
+  return event.name === Name.V8_CONSOLE_RUN_TASK;
 }
 
 export interface FlowEvent extends Event {
@@ -2805,6 +2807,7 @@ export const enum Name {
   CRYPTO_DO_VERIFY = 'DoVerify',
   CRYPTO_DO_VERIFY_REPLY = 'DoVerifyReply',
   V8_EXECUTE = 'V8.Execute',
+  V8_CONSOLE_RUN_TASK = 'V8Console::runTask',
   SCHEDULE_POST_TASK_CALLBACK = 'SchedulePostTaskCallback',
   RUN_POST_TASK_CALLBACK = 'RunPostTaskCallback',
   ABORT_POST_TASK_CALLBACK = 'AbortPostTaskCallback',

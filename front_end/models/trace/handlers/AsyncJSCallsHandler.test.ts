@@ -40,9 +40,8 @@ describe('AsyncJSCallsHandler', function() {
       const allEvents = [...rendererEvents, ...flowEvents];
 
       const asyncCallStacksData = await buildAsyncJSCallsHandlerData(allEvents);
-      const testRunEntryPoints = asyncCallStacksData.schedulerToRunEntryPoints.get(jsTaskScheduler);
-      assert.strictEqual(testRunEntryPoints?.length, 1);
-      assert.strictEqual(testRunEntryPoints?.[0], jsTaskRunEntryPoint);
+      const testRunEntryPoint = asyncCallStacksData.schedulerToRunEntryPoints.get(jsTaskScheduler);
+      assert.strictEqual(testRunEntryPoint, jsTaskRunEntryPoint);
     });
 
     it('uses the nearest profile call ancestor of a debuggerTaskScheduled as JS task scheduler', async function() {
@@ -63,9 +62,8 @@ describe('AsyncJSCallsHandler', function() {
       const allEvents = [...rendererEvents, ...flowEvents];
 
       const asyncCallStacksData = await buildAsyncJSCallsHandlerData(allEvents);
-      const testRunEntryPoints = asyncCallStacksData.schedulerToRunEntryPoints.get(jsTaskScheduler);
-      assert.strictEqual(testRunEntryPoints?.length, 1);
-      assert.strictEqual(testRunEntryPoints?.[0], jsTaskRunEntryPoint);
+      const testRunEntryPoint = asyncCallStacksData.schedulerToRunEntryPoints.get(jsTaskScheduler);
+      assert.strictEqual(testRunEntryPoint, jsTaskRunEntryPoint);
     });
 
     it('uses the nearest JS entry point descendant of a debuggerTaskRun as async task run', async function() {
@@ -87,38 +85,9 @@ describe('AsyncJSCallsHandler', function() {
       const allEvents = [...rendererEvents, ...flowEvents];
 
       const asyncCallStacksData = await buildAsyncJSCallsHandlerData(allEvents);
-      const testRunEntryPoints = asyncCallStacksData.schedulerToRunEntryPoints.get(jsTaskScheduler);
-      assert.strictEqual(testRunEntryPoints?.length, 1);
-      assert.strictEqual(testRunEntryPoints?.[0], jsTaskRunEntryPoint);
+      const testRunEntryPoint = asyncCallStacksData.schedulerToRunEntryPoints.get(jsTaskScheduler);
+      assert.strictEqual(testRunEntryPoint, jsTaskRunEntryPoint);
     });
-    it('returns multiple JS entry point descendants of a debuggerTaskRun when they are not in the same subtree',
-       async function() {
-         const jsTaskScheduler = makeProfileCall('setTimeout', 0, 30, pid, tid);
-         const asyncTaskScheduled =
-             makeCompleteEvent(Trace.Types.Events.Name.DEBUGGER_ASYNC_TASK_SCHEDULED, 0, 0, cat, pid, tid);
-
-         const asyncTaskRun =
-             makeCompleteEvent(Trace.Types.Events.Name.DEBUGGER_ASYNC_TASK_RUN, 60, 100, cat, tid, pid);
-
-         // Two JS entry points belonging to different subtrees are
-         // descendants to the debuggerTaskRun event. Test both are
-         // used.
-         const firstJSTaskRunEntryPoint =
-             makeCompleteEvent(Trace.Types.Events.Name.FUNCTION_CALL, 70, 20, cat, tid, pid);
-         const secondJSTaskRunEntryPoint =
-             makeCompleteEvent(Trace.Types.Events.Name.FUNCTION_CALL, 90, 10, cat, tid, pid);
-
-         const flowEvents = makeFlowEvents([asyncTaskScheduled, asyncTaskRun]);
-         const rendererEvents =
-             [jsTaskScheduler, asyncTaskScheduled, asyncTaskRun, firstJSTaskRunEntryPoint, secondJSTaskRunEntryPoint];
-         const allEvents = [...rendererEvents, ...flowEvents];
-
-         const asyncCallStacksData = await buildAsyncJSCallsHandlerData(allEvents);
-         const testRunEntryPoints = asyncCallStacksData.schedulerToRunEntryPoints.get(jsTaskScheduler);
-         assert.strictEqual(testRunEntryPoints?.length, 2);
-         assert.strictEqual(testRunEntryPoints?.[0], firstJSTaskRunEntryPoint);
-         assert.strictEqual(testRunEntryPoints?.[1], secondJSTaskRunEntryPoint);
-       });
   });
   describe('Resolving async JS tasks to schedulers', function() {
     it('associates an async JS task to its scheduler', async function() {

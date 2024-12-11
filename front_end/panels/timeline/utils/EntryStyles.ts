@@ -48,6 +48,10 @@ const UIStrings = {
    */
   task: 'Task',
   /**
+   *@description Text in Timeline UIUtils of the Performance panel
+   */
+  consoleTaskRun: 'Run console task',
+  /**
    *@description Text for other types of items
    */
   other: 'Other',
@@ -1060,6 +1064,8 @@ export function maybeInitSylesMap(): EventStylesMap {
 
     [Trace.Types.Events.Name.ABORT_POST_TASK_CALLBACK]:
         new TimelineRecordStyle(i18nString(UIStrings.abortPostTaskCallback), defaultCategoryStyles.scripting),
+    [Trace.Types.Events.Name.V8_CONSOLE_RUN_TASK]:
+        new TimelineRecordStyle(i18nString(UIStrings.consoleTaskRun), defaultCategoryStyles.scripting),
   };
   return eventStylesMap;
 }

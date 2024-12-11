@@ -7,7 +7,7 @@ import * as Types from '../types/types.js';
 import {data as flowsHandlerData} from './FlowsHandler.js';
 import {data as rendererHandlerData} from './RendererHandler.js';
 
-const schedulerToRunEntryPoints: Map<Types.Events.SyntheticProfileCall, Types.Events.Event[]> = new Map();
+const schedulerToRunEntryPoints: Map<Types.Events.SyntheticProfileCall, Types.Events.Event> = new Map();
 const asyncCallToScheduler:
     Map<Types.Events.SyntheticProfileCall, {taskName: string, scheduler: Types.Events.SyntheticProfileCall}> =
         new Map();
@@ -40,14 +40,14 @@ export async function finalize(): Promise<void> {
       // Unexpected async call trace data shape, ignore.
       continue;
     }
-    const asyncEntryPoints = findFirstJsInvocationsForAsyncTaskRun(asyncTaskRun, entryToNode);
-    if (!asyncEntryPoints) {
+    const asyncEntryPoint = findFirstJsInvocationForAsyncTaskRun(asyncTaskRun, entryToNode);
+    if (!asyncEntryPoint) {
       // Unexpected async call trace data shape, ignore.
       continue;
     }
     // Set scheduler -> schedulee mapping.
     // The schedulee being the JS entrypoint
-    schedulerToRunEntryPoints.set(asyncCaller, asyncEntryPoints);
+    schedulerToRunEntryPoints.set(asyncCaller, asyncEntryPoint);
 
     // Set schedulee -> scheduler mapping.
     // The schedulees being the JS calls (instead of the entrypoints as
@@ -82,26 +82,23 @@ function findNearestProfileCallAncestor(
  * returns events that end up in the flame chart.
  */
 function acceptJSInvocationsPredicate(event: Types.Events.Event): event is Types.Events.Event {
-  return Types.Events.isJSInvocationEvent(event) && !event.name.startsWith('v8') && !event.name.startsWith('V8');
+  const eventIsConsoleRunTask = event.name === Types.Events.Name.V8_CONSOLE_RUN_TASK;
+  const eventIsV8EntryPoint = event.name.startsWith('v8') || event.name.startsWith('V8');
+  return Types.Events.isJSInvocationEvent(event) && (eventIsConsoleRunTask || !eventIsV8EntryPoint);
 }
 
 /**
  * Given a DebuggerAsyncTaskRun event, returns its closest JS entry
- * point descendants, which represent the task being scheduled.
- *
- * We return multiple entry points beacuse some of these are built
- * from samples (like `consoleTask.run()` ). Because of limitations with
- * sampling, multiple entry points can mistakenly be made from a single
- * entry point, so we return all of them to ensure the async stack is
- * in every event that applies.
+ * point descendant, which contains the task being scheduled.
  */
-function findFirstJsInvocationsForAsyncTaskRun(
+function findFirstJsInvocationForAsyncTaskRun(
     asyncTaskRun: Types.Events.DebuggerAsyncTaskRun,
-    entryToNode: Map<Types.Events.Event, Helpers.TreeHelpers.TraceEntryNode>): Types.Events.Event[] {
+    entryToNode: Map<Types.Events.Event, Helpers.TreeHelpers.TraceEntryNode>): Types.Events.Event|undefined {
   // Ignore descendants of other DebuggerAsyncTaskRuns since they
   // are part of another async task and have to be handled separately
   return findFirstDescendantsOfType(
-      asyncTaskRun, entryToNode, acceptJSInvocationsPredicate, Types.Events.isDebuggerAsyncTaskRun);
+             asyncTaskRun, entryToNode, acceptJSInvocationsPredicate, Types.Events.isDebuggerAsyncTaskRun)
+      .at(0);
 }
 
 /**
@@ -137,7 +134,7 @@ function findFirstJSCallsForAsyncTaskRun(
 }
 
 /**
- * Given a root event returns all the top level descendants that meet a
+ * Given a root event returns all the first descendants that meet a
  * predicate condition (predicateAccept) while ignoring subtrees whose
  * top event meets an ignore condition (predicateIgnore).
  */
@@ -166,7 +163,7 @@ function findFirstDescendantsOfType<T extends Types.Events.Event>(
 }
 
 export function data(): {
-  // Given a profile call, returns the JS entrypoints it scheduled (if any).
+  // Given a profile call, returns the JS entrypoint it scheduled (if any).
   // For example, given a setTimeout call, returns the JS entry point
   // trace event for the timeout callback run event (usually a
   // FunctionCall event).

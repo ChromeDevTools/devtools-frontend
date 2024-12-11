@@ -139,16 +139,11 @@ describeWithEnvironment('InitiatorsHandler', () => {
     if (!schedulerFuntion) {
       throw new Error('Could not find scheduler function call');
     }
-    const taskRunCalls = parsedTrace.Renderer.allTraceEntries.filter(
-        e => Trace.Types.Events.isConsoleTaskRun(e) && e.ts > schedulerFuntion.ts);
-    if (!taskRunCalls!.length) {
-      throw new Error('Could not find task.run call');
-    }
-
-    assert.strictEqual(parsedTrace.Initiators.eventToInitiator.get(taskRunCalls[0]), schedulerFuntion);
-    assert.strictEqual(parsedTrace.Initiators.eventToInitiator.get(taskRunCalls[1]), schedulerFuntion);
-    assert.deepEqual(
-        parsedTrace.Initiators.initiatorToEvents.get(schedulerFuntion), [taskRunCalls[1], taskRunCalls[0]]);
+    const consoleRunTask = parsedTrace.Renderer.allTraceEntries.find(
+        e => Trace.Types.Events.isConsoleRunTask(e) && e.ts > schedulerFuntion.ts);
+    assert.exists(consoleRunTask);
+    assert.strictEqual(parsedTrace.Initiators.eventToInitiator.get(consoleRunTask), schedulerFuntion);
+    assert.deepEqual(parsedTrace.Initiators.initiatorToEvents.get(schedulerFuntion), [consoleRunTask]);
   });
 
   it('for a WebSocketSendHandshakeRequest the initiator is the WebSocketCreate event', async function() {

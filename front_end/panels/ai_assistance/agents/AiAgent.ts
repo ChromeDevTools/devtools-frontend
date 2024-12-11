@@ -442,10 +442,7 @@ STOP`;
 
   #addHistory(data: ResponseData): void {
     this.#history.push(data);
-    // Remove condition to store the history in storage
-    if (isHistoryEnabled()) {
-      void AiHistoryStorage.instance().upsertHistoryEntry(this.serialized());
-    }
+    void AiHistoryStorage.instance().upsertHistoryEntry(this.serialized());
   }
 
   async * run(query: string, options: {
@@ -658,17 +655,3 @@ function setDebugFreestylerEnabled(enabled: boolean): void {
 }
 // @ts-ignore
 globalThis.setDebugFreestylerEnabled = setDebugFreestylerEnabled;
-
-export function isHistoryEnabled(): boolean {
-  return Boolean(localStorage.getItem('persistentHistoryAiAssistance'));
-}
-
-function setAiAssistancePersistentHistory(enabled: boolean): void {
-  if (enabled) {
-    localStorage.setItem('persistentHistoryAiAssistance', 'true');
-  } else {
-    localStorage.removeItem('persistentHistoryAiAssistance');
-  }
-}
-// @ts-ignore
-globalThis.setAiAssistancePersistentHistory = setAiAssistancePersistentHistory;

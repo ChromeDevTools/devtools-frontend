@@ -1284,8 +1284,6 @@ ANSWER: this is the answer`,
     beforeEach(() => {
       mockHostConfig();
       element = sinon.createStubInstance(SDK.DOMModel.DOMNode);
-      // @ts-ignore
-      setAiAssistancePersistentHistory(true);
     });
 
     it('stores history via AiHistoryStorage', async () => {

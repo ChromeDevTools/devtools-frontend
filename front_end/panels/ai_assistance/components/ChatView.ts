@@ -1159,6 +1159,9 @@ export class ChatView extends HTMLElement {
     // clang-format off
     return html`
     <form class="input-form" @submit=${this.#handleSubmit}>
+      <div class="input-form-shadow-container">
+        <div class="input-form-shadow"></div>
+      </div>
       ${this.#props.state !== State.CONSENT_VIEW ? html`
         <div class="input-header">
           <div class="header-link-container">

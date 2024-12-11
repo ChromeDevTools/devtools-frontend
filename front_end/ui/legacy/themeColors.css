@@ -396,6 +396,11 @@
    * Colors for element panel sidebar subtitle
    */
   --app-color-element-sidebar-subtitle: var(--ref-palette-neutral50);
+
+  /**
+   * Color for input driver for AI assistance chat
+   */
+  --app-color-ai-assistance-input-divider: rgb(0 0 0 / 10%);
 }
 
 :root.baseline-default {
@@ -779,4 +784,9 @@
    * Colors for element panel sidebar subtitle
    */
   --app-color-element-sidebar-subtitle: var(--sys-color-token-subtle);
+
+  /**
+   * Color for input driver for AI assistance chat
+   */
+  --app-color-ai-assistance-input-divider: rgb(255 255 255 / 15%);
 }

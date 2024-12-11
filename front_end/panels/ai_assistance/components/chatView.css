@@ -61,6 +61,28 @@
   @container (height < 224px) {
     position: static;
   }
+
+  & .input-form-shadow-container {
+    position: absolute;
+    top: 0;
+    left: -2px; /* Needed for aligning with other divider lines */
+    width: calc(100% + 4px); /* Needed for extending the divider line to the edges */
+    height: var(--sys-size-4);
+
+    & .input-form-shadow {
+      height: 100%;
+      box-shadow: 0 -3px 2px -2px var(--app-color-ai-assistance-input-divider);
+      animation: reveal;
+      /* stylelint-disable-next-line property-no-unknown */
+      animation-timeline: --scroll-timeline;
+      animation-fill-mode: both;
+
+      --visibility-if-can-scroll: var(--can-scroll) visible;
+      --visibility-if-cant-scroll: hidden;
+
+      visibility: var(--visibility-if-can-scroll, var(--visibility-if-cant-scroll));
+    }
+  }
 }
 
 .chat-readonly-container {
@@ -504,6 +526,12 @@ main {
   fixes the `.input-form` jumping on scroll issue.
   */
   transform: translateZ(1px);
+
+  /* stylelint-disable-next-line property-no-unknown */
+  scroll-timeline: --scroll-timeline y;
+  animation: detect-scroll;
+  /* stylelint-disable-next-line property-no-unknown */
+  animation-timeline: --scroll-timeline;
 }
 
 .empty-state-container {
@@ -651,4 +679,20 @@ main {
 .side-effect-buttons-container {
   display: flex;
   gap: var(--sys-size-4);
+}
+
+@keyframes reveal {
+  0%,
+  99% {
+    opacity: 100%;
+  }
+
+  100% {
+    opacity: 0%;
+  }
+}
+
+@keyframes detect-scroll {
+  from,
+  to { --can-scroll: ; }
 }

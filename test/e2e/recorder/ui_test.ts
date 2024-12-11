@@ -195,34 +195,36 @@ describe('Recorder', function() {
           assertRecordingMatchesSnapshot(recording);
         });
 
-        it('should select through the selector picker twice', async () => {
-          const {target, frontend} = getBrowserAndPages();
-          await frontend.bringToFront();
-          await frontend.waitForSelector('pierce/.settings');
+        // Flaky test
+        it.skipOnPlatforms(
+            ['mac'], '[crbug.com/383478771] should select through the selector picker twice', async () => {
+              const {target, frontend} = getBrowserAndPages();
+              await frontend.bringToFront();
+              await frontend.waitForSelector('pierce/.settings');
 
-          await target.bringToFront();
-          const element = await target.waitForSelector(
-              'a[href="recorder2.html"]',
-          );
-          await element?.click();
+              await target.bringToFront();
+              const element = await target.waitForSelector(
+                  'a[href="recorder2.html"]',
+              );
+              await element?.click();
 
-          await stopRecording();
+              await stopRecording();
 
-          await expandStep(frontend, 2);
-          await pickSelectorsForQuery('#test-button', frontend, target);
+              await expandStep(frontend, 2);
+              await pickSelectorsForQuery('#test-button', frontend, target);
 
-          let recording = await getCurrentRecording();
-          assertRecordingMatchesSnapshot(recording);
+              let recording = await getCurrentRecording();
+              assertRecordingMatchesSnapshot(recording);
 
-          await pickSelectorsForQuery(
-              'a[href="recorder.html"]',
-              frontend,
-              target,
-          );
+              await pickSelectorsForQuery(
+                  'a[href="recorder.html"]',
+                  frontend,
+                  target,
+              );
 
-          recording = await getCurrentRecording();
-          assertRecordingMatchesSnapshot(recording);
-        });
+              recording = await getCurrentRecording();
+              assertRecordingMatchesSnapshot(recording);
+            });
 
         it('should select through the selector picker during recording', async () => {
           const {target, frontend} = getBrowserAndPages();

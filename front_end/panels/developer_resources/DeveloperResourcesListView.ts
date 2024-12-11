@@ -197,6 +197,10 @@ export class DeveloperResourcesListView extends UI.Widget.VBox {
     }
   }
 
+  getNumberOfVisibleItems(): number {
+    return this.dataGrid.rootNode().children.length;
+  }
+
   private sortingChanged(): void {
     const columnId = this.dataGrid.sortColumnId();
     if (!columnId) {

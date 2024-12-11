@@ -41,6 +41,14 @@ const UIStrings = {
    * total. Resources are files related to the webpage.
    */
   resources: '{n, plural, =1 {# resource} other {# resources}}',
+  /**
+   * @description Nnumber of resource(s) match
+   */
+  numberOfResourceMatch: '{n, plural, =1 {# resource matches} other {# resources match}}',
+  /**
+   * @description No resource matches
+   */
+  noResourceMatches: 'No resource matches',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/developer_resources/DeveloperResourcesView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -141,6 +149,15 @@ export class DeveloperResourcesView extends UI.ThrottledWidget.ThrottledWidget {
     this.textFilterRegExp = text ? Platform.StringUtilities.createPlainTextSearchRegex(text, 'i') : null;
     this.listView.updateFilterAndHighlight(this.textFilterRegExp);
     this.updateStats();
+
+    const numberOfResourceMatch = this.listView.getNumberOfVisibleItems();
+    let resourceMatch = '';
+    if (numberOfResourceMatch === 0) {
+      resourceMatch = i18nString(UIStrings.noResourceMatches);
+    } else {
+      resourceMatch = i18nString(UIStrings.numberOfResourceMatch, {n: numberOfResourceMatch});
+    }
+    UI.ARIAUtils.alert(resourceMatch);
   }
 
   override wasShown(): void {

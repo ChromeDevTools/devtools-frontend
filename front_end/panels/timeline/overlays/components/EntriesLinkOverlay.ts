@@ -120,6 +120,7 @@ export class EntriesLinkOverlay extends HTMLElement {
   set entriesVisibility(entriesVisibility: {fromEntryVisibility: boolean, toEntryVisibility: boolean}) {
     this.#entryFromVisible = entriesVisibility.fromEntryVisibility;
     this.#entryToVisible = entriesVisibility.toEntryVisibility;
+    this.#redrawConnectionArrow();
   }
 
   // The arrow might be pointing either to an entry or an empty space.

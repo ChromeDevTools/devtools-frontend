@@ -1024,23 +1024,30 @@ export class Overlays extends EventTarget {
         return;
       }
 
-      const fromEntryParams = this.#positionEntryBorderOutlineType(entriesToConnect.entryFrom, entryFromWrapper);
-
-      if (!fromEntryParams) {
-        // Something went wrong, we should always have parameters for the 'from' entry
-        return;
-      }
-
-      const {
-        entryHeight: fromEntryHeight,
-        entryWidth: fromEntryWidth,
-        cutOffHeight: fromCutOffHeight = 0,
-        x: fromEntryX,
-        y: fromEntryY,
-      } = fromEntryParams;
-
       const entryFromVisibility = this.entryIsVisibleOnChart(entryFrom) && !fromEntryInCollapsedTrack;
       const entryToVisibility = entryTo ? this.entryIsVisibleOnChart(entryTo) && !toEntryInCollapsedTrack : false;
+
+      // If the entry is not currently visible, draw the arrow to the edge of the screen towards the entry on the Y-axis.
+      let fromEntryX = 0;
+      let fromEntryY = this.#yCoordinateForNotVisibleEntry(entryFrom);
+
+      // If the entry is visible, draw the arrow to the entry.
+      if (entryFromVisibility) {
+        const fromEntryParams = this.#positionEntryBorderOutlineType(entriesToConnect.entryFrom, entryFromWrapper);
+        if (fromEntryParams) {
+          const fromEntryHeight = fromEntryParams?.entryHeight;
+          const fromEntryWidth = fromEntryParams?.entryWidth;
+          const fromCutOffHeight = fromEntryParams?.cutOffHeight;
+          fromEntryX = fromEntryParams?.x;
+          fromEntryY = fromEntryParams?.y;
+
+          component.fromEntryCoordinateAndDimentions =
+              {x: fromEntryX, y: fromEntryY, length: fromEntryWidth, height: fromEntryHeight - fromCutOffHeight};
+        } else {
+          // Something went if the entry is visible and we cannot get its' parameters.
+          return;
+        }
+      }
 
       // If `fromEntry` is not visible and the link creation is not started yet, meaning that
       // only the button to create the link is displayed, delete the whole overlay.
@@ -1048,53 +1055,48 @@ export class Overlays extends EventTarget {
         this.dispatchEvent(new AnnotationOverlayActionEvent(overlay, 'Remove'));
       }
 
-      // If the 'from' entry is visible, set the entry Y as an arrow start coordinate. Ff not, get the canvas edge coordinate to for the arrow to start from.
-      const yPixelForFromArrow =
-          (entryFromVisibility ? fromEntryY : this.#yCoordinateForNotVisibleEntry(entryFrom)) ?? 0;
-      component.fromEntryIsSource = entryFromIsSource;
-      component.toEntryIsSource = entryToIsSource;
-
-      component.entriesVisibility = {
-        fromEntryVisibility: entryFromVisibility,
-        toEntryVisibility: entryToVisibility,
-      };
-
-      component.fromEntryCoordinateAndDimentions =
-          {x: fromEntryX, y: yPixelForFromArrow, length: fromEntryWidth, height: fromEntryHeight - fromCutOffHeight};
-
       // If entryTo exists, pass the coordinates and dimentions of the entry that the arrow snaps to.
       // If it does not, the event tracking mouse coordinates updates 'to coordinates' so the arrow follows the mouse instead.
       const entryToWrapper = component.entryToWrapper();
 
       if (entryTo && entryToWrapper) {
-        const toEntryParams = this.#positionEntryBorderOutlineType(entryTo, entryToWrapper);
-
-        if (!toEntryParams) {
-          // Something went wrong, we should have those parameters if 'to' entry exists
-          return;
-        }
-        const {
-          entryHeight: toEntryHeight,
-          entryWidth: toEntryWidth,
-          cutOffHeight: toCutOffHeight = 0,
-          x: toEntryX,
-          y: toEntryY,
-        } = toEntryParams;
-
+        let toEntryX = 0;
         // If the 'to' entry is visible, set the entry Y as an arrow coordinate to point to. If not, get the canvas edge coordate to point the arrow to.
-        const yPixelForToArrow =
-            this.entryIsVisibleOnChart(entryTo) ? toEntryY : this.#yCoordinateForNotVisibleEntry(entryTo) ?? 0;
+        let toEntryY = this.#yCoordinateForNotVisibleEntry(entryTo);
 
-        component.toEntryCoordinateAndDimentions = {
-          x: toEntryX,
-          y: yPixelForToArrow,
-          length: toEntryWidth,
-          height: toEntryHeight - toCutOffHeight,
-        };
+        if (entryToVisibility) {
+          const toEntryParams = this.#positionEntryBorderOutlineType(entryTo, entryToWrapper);
+
+          if (toEntryParams) {
+            const toEntryHeight = toEntryParams?.entryHeight;
+            const toEntryWidth = toEntryParams?.entryWidth;
+            const toCutOffHeight = toEntryParams?.cutOffHeight;
+            toEntryX = toEntryParams?.x;
+            toEntryY = toEntryParams?.y;
+
+            component.toEntryCoordinateAndDimentions = {
+              x: toEntryX,
+              y: toEntryY,
+              length: toEntryWidth,
+              height: toEntryHeight - toCutOffHeight,
+            };
+          } else {
+            // Something went if the entry is visible and we cannot get its' parameters.
+            return;
+          }
+        }
+
       } else if (this.#lastMouseOffsetX && this.#lastMouseOffsetY) {
         // The second coordinate for in progress link gets updated on mousemove
         this.#entriesLinkInProgress = overlay;
       }
+
+      component.fromEntryIsSource = entryFromIsSource;
+      component.toEntryIsSource = entryToIsSource;
+      component.entriesVisibility = {
+        fromEntryVisibility: entryFromVisibility,
+        toEntryVisibility: entryToVisibility,
+      };
     }
   }
 

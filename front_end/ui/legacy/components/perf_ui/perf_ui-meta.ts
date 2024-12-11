@@ -11,17 +11,19 @@ import type * as PerfUI from './perf_ui.js';
 
 const UIStrings = {
   /**
-   *@description Title of a setting under the Performance category in Settings
+   *@description Title of a setting under the Performance category in Settings.
+   * Selected navigation allows switching between 2 different sets of shortcuts
+   * and actions (like zoom on scroll or crtl/cmd + scroll) for navigating the performance panel.
    */
-  flamechartMouseWheelAction: 'Flamechart mouse wheel action:',
+  flamechartSelectedNavigation: 'Flamechart navigation:',
   /**
-   *@description The action to scroll
+   *@description Modern navigation option in the Performance Panel.
    */
-  scroll: 'Scroll',
+  modern: 'Modern',
   /**
-   *@description Text for zooming in
+   *@description Classic navigation option in the Performance Panel.
    */
-  zoom: 'Zoom',
+  classic: 'Classic',
   /**
    * @description Title of a setting under the Memory category in Settings. Live memory is memory
    * that is still in-use by the program (not dead). Allocation of live memory is when the program
@@ -69,19 +71,19 @@ UI.ActionRegistration.registerActionExtension({
 Common.Settings.registerSettingExtension({
   category: Common.Settings.SettingCategory.PERFORMANCE,
   storageType: Common.Settings.SettingStorageType.SYNCED,
-  title: i18nLazyString(UIStrings.flamechartMouseWheelAction),
+  title: i18nLazyString(UIStrings.flamechartSelectedNavigation),
   settingName: 'flamechart-selected-navigation',
   settingType: Common.Settings.SettingType.ENUM,
   defaultValue: 'classic',
   options: [
     {
-      title: i18nLazyString(UIStrings.scroll),
-      text: i18nLazyString(UIStrings.scroll),
+      title: i18nLazyString(UIStrings.modern),
+      text: i18nLazyString(UIStrings.modern),
       value: 'modern',
     },
     {
-      title: i18nLazyString(UIStrings.zoom),
-      text: i18nLazyString(UIStrings.zoom),
+      title: i18nLazyString(UIStrings.classic),
+      text: i18nLazyString(UIStrings.classic),
       value: 'classic',
     },
   ],

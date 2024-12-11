@@ -459,6 +459,12 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
   #eventToRelatedInsights: TimelineComponents.RelatedInsightChips.EventToRelatedInsightsMap = new Map();
   #shortcutsDialog: Dialogs.ShortcutDialog.ShortcutDialog = new Dialogs.ShortcutDialog.ShortcutDialog();
+  /**
+   * Navigation radio buttons located in the shortcuts dialog.
+   */
+  #navigationRadioButtons = document.createElement('form');
+  #modernNavRadioButton = UI.UIUtils.createRadioLabel('flamechart-selected-navigation', 'Modern');
+  #classicNavRadioButton = UI.UIUtils.createRadioLabel('flamechart-selected-navigation', 'Classic');
 
   #onMainEntryHovered: (event: Common.EventTarget.EventTargetEvent<number>) => void;
 
@@ -1106,37 +1112,45 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     }
 
     if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_ALTERNATIVE_NAVIGATION)) {
-      this.#shortcutsDialog.prependElement(this.#getNavigationSetting());
+      this.#setupNavigationSetting();
+      this.#shortcutsDialog.prependElement(this.#navigationRadioButtons);
       const dialogToolbarItem = new UI.Toolbar.ToolbarItem(this.#shortcutsDialog);
       this.panelRightToolbar.appendToolbarItem(dialogToolbarItem);
+      // The setting could have been changed from the Devtools Settings. Therefore, we
+      // need to update the radio buttons selection when the dialog is open.
+      this.#shortcutsDialog.addEventListener('click', this.#updateNavigationSettingSelection.bind(this));
     }
   }
 
-  #getNavigationSetting(): HTMLElement {
+  #setupNavigationSetting(): HTMLElement {
     const currentNavSetting = Common.Settings.moduleSetting('flamechart-selected-navigation').get();
     this.#shortcutsDialog.data = {shortcuts: this.#getShortcutsInfo(currentNavSetting === 'classic')};
 
-    const navigationRadioButtons = document.createElement('form');
-    navigationRadioButtons.classList.add('nav-radio-buttons');
-    UI.ARIAUtils.markAsRadioGroup(navigationRadioButtons);
-    const modernNavRadioButton = UI.UIUtils.createRadioLabel(
-        'flamechart-selected-navigation', 'Modern', /* checked */ currentNavSetting === 'modern');
+    this.#navigationRadioButtons.classList.add('nav-radio-buttons');
+    UI.ARIAUtils.markAsRadioGroup(this.#navigationRadioButtons);
     // Change EventListener is only triggered when the radio button is selected
-    modernNavRadioButton.radioElement.addEventListener('change', () => {
+    this.#modernNavRadioButton.radioElement.addEventListener('change', () => {
       this.#shortcutsDialog.data = {shortcuts: this.#getShortcutsInfo(/* isNavClassic */ false)};
       Common.Settings.moduleSetting('flamechart-selected-navigation').set('modern');
     });
-    const classicNavRadioButton = UI.UIUtils.createRadioLabel(
-        'flamechart-selected-navigation', 'Classic', /* checked */ currentNavSetting === 'classic');
-    classicNavRadioButton.radioElement.addEventListener('change', () => {
+    this.#classicNavRadioButton.radioElement.addEventListener('change', () => {
       this.#shortcutsDialog.data = {shortcuts: this.#getShortcutsInfo(/* isNavClassic */ true)};
       Common.Settings.moduleSetting('flamechart-selected-navigation').set('classic');
     });
 
-    navigationRadioButtons.appendChild(modernNavRadioButton);
-    navigationRadioButtons.appendChild(classicNavRadioButton);
+    this.#navigationRadioButtons.appendChild(this.#modernNavRadioButton);
+    this.#navigationRadioButtons.appendChild(this.#classicNavRadioButton);
 
-    return navigationRadioButtons;
+    return this.#navigationRadioButtons;
+  }
+
+  #updateNavigationSettingSelection(): void {
+    const currentNavSetting = Common.Settings.moduleSetting('flamechart-selected-navigation').get();
+    if (currentNavSetting === 'classic') {
+      this.#classicNavRadioButton.radioElement.checked = true;
+    } else if (currentNavSetting === 'modern') {
+      this.#modernNavRadioButton.radioElement.checked = true;
+    }
   }
 
   #getShortcutsInfo(isNavClassic: boolean): Dialogs.ShortcutDialog.Shortcut[] {

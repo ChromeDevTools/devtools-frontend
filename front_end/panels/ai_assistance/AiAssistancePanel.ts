@@ -669,9 +669,9 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         continue;
       }
 
-      contextMenu.defaultSection().appendItem(title, () => {
+      contextMenu.defaultSection().appendCheckboxItem(title, () => {
         void this.#switchAgent(agent);
-      });
+      }, {checked: (this.#currentAgent === agent)});
     }
 
     const historyEmpty = contextMenu.defaultSection().items.length === 0;

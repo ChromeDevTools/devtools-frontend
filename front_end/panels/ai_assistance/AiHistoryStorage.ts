@@ -14,7 +14,7 @@ export class AiHistoryStorage {
 
   constructor() {
     // This should not throw as we should be creating the setting in the `-meta.ts` file
-    this.#historySetting = Common.Settings.Settings.instance().moduleSetting('ai-assistance-history-entries');
+    this.#historySetting = Common.Settings.Settings.instance().createSetting('ai-assistance-history-entries', []);
   }
 
   clearForTest(): void {
@@ -24,7 +24,7 @@ export class AiHistoryStorage {
   async upsertHistoryEntry(agentEntry: SerializedAgent): Promise<void> {
     const release = await this.#mutex.acquire();
     try {
-      const history = await this.#historySetting.forceGet();
+      const history = structuredClone(await this.#historySetting.forceGet());
       const historyEntryIndex = history.findIndex(entry => entry.id === agentEntry.id);
       if (historyEntryIndex !== -1) {
         history[historyEntryIndex] = agentEntry;
@@ -40,7 +40,7 @@ export class AiHistoryStorage {
   async deleteHistoryEntry(id: string): Promise<void> {
     const release = await this.#mutex.acquire();
     try {
-      const history = await this.#historySetting.forceGet();
+      const history = structuredClone(await this.#historySetting.forceGet());
       this.#historySetting.set(
           history.filter(entry => entry.id !== id),
       );
@@ -59,11 +59,11 @@ export class AiHistoryStorage {
   }
 
   getHistory(): SerializedAgent[] {
-    return this.#historySetting.get();
+    return structuredClone(this.#historySetting.get());
   }
 
-  static instance(): AiHistoryStorage {
-    if (!instance) {
+  static instance(forceNew = false): AiHistoryStorage {
+    if (!instance || forceNew) {
       instance = new AiHistoryStorage();
     }
     return instance;

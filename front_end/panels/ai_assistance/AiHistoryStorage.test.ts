@@ -2,41 +2,64 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {
-  describeWithEnvironment,
-} from '../../testing/EnvironmentHelpers.js';
+import * as Common from '../../core/common/common.js';
 
-import * as Freestyler from './ai_assistance.js';
+import * as AiAssistance from './ai_assistance.js';
 
-describeWithEnvironment('Freestyler.AiHistoryStorage', () => {
-  const agent1: Freestyler.SerializedAgent = {
+describe('AiHistoryStorage', () => {
+  const agent1: AiAssistance.SerializedAgent = {
     id: 'id1',
-    type: Freestyler.AgentType.STYLING,
+    type: AiAssistance.AgentType.STYLING,
     history: [],
   };
-  const agent2: Freestyler.SerializedAgent = {
+  const agent2: AiAssistance.SerializedAgent = {
     id: 'id2',
-    type: Freestyler.AgentType.FILE,
+    type: AiAssistance.AgentType.FILE,
     history: [],
   };
-  const agent3: Freestyler.SerializedAgent = {
+  const agent3: AiAssistance.SerializedAgent = {
     id: 'id3',
-    type: Freestyler.AgentType.NETWORK,
+    type: AiAssistance.AgentType.NETWORK,
     history: [],
   };
 
-  afterEach(() => {
-    Freestyler.AiHistoryStorage.instance().clearForTest();
+  beforeEach(() => {
+    let data: Record<string, string> = {};
+    const dummyStorage = new Common.Settings.SettingsStorage({}, {
+      get(setting) {
+        return Promise.resolve(data[setting]);
+      },
+      set(setting, value) {
+        data[setting] = value;
+      },
+      clear() {
+        data = {};
+      },
+      remove(setting) {
+        delete data[setting];
+      },
+      register(_setting) {},
+    });
+    Common.Settings.Settings.instance({
+      forceNew: true,
+      syncedStorage: dummyStorage,
+      globalStorage: dummyStorage,
+      localStorage: dummyStorage,
+    });
   });
 
+  function getStorage() {
+    return AiAssistance.AiHistoryStorage.instance(true);
+  }
+
   it('should create and retrieve history entry', async () => {
-    const storage = Freestyler.AiHistoryStorage.instance();
+    const storage = getStorage();
     await storage.upsertHistoryEntry(agent1);
     assert.deepEqual(
         storage.getHistory(),
         [{
           id: 'id1',
-          type: 'freestyler' as Freestyler.AgentType,
+          type: 'freestyler' as AiAssistance.AgentType,
           history: [],
         }],
     );
@@ -46,12 +69,12 @@ describeWithEnvironment('Freestyler.AiHistoryStorage', () => {
         [
           {
             id: 'id1',
-            type: 'freestyler' as Freestyler.AgentType,
+            type: 'freestyler' as AiAssistance.AgentType,
             history: [],
           },
           {
             id: 'id2',
-            type: 'drjones-file' as Freestyler.AgentType,
+            type: 'drjones-file' as AiAssistance.AgentType,
             history: [],
           },
         ],
@@ -59,14 +82,14 @@ describeWithEnvironment('Freestyler.AiHistoryStorage', () => {
   });
 
   it('should update history entries correctly', async () => {
-    const storage = Freestyler.AiHistoryStorage.instance();
+    const storage = getStorage();
     await storage.upsertHistoryEntry(agent1);
     await storage.upsertHistoryEntry(agent2);
     await storage.upsertHistoryEntry({
       ...agent1,
       history: [
         {
-          type: Freestyler.ResponseType.USER_QUERY,
+          type: AiAssistance.ResponseType.USER_QUERY,
           query: 'text',
         },
       ],
@@ -76,17 +99,17 @@ describeWithEnvironment('Freestyler.AiHistoryStorage', () => {
         [
           {
             id: 'id1',
-            type: 'freestyler' as Freestyler.AgentType,
+            type: 'freestyler' as AiAssistance.AgentType,
             history: [
               {
-                type: Freestyler.ResponseType.USER_QUERY,
+                type: AiAssistance.ResponseType.USER_QUERY,
                 query: 'text',
               },
             ],
           },
           {
             id: 'id2',
-            type: 'drjones-file' as Freestyler.AgentType,
+            type: 'drjones-file' as AiAssistance.AgentType,
             history: [],
           },
         ],
@@ -98,22 +121,22 @@ describeWithEnvironment('Freestyler.AiHistoryStorage', () => {
         [
           {
             id: 'id1',
-            type: 'freestyler' as Freestyler.AgentType,
+            type: 'freestyler' as AiAssistance.AgentType,
             history: [
               {
-                type: Freestyler.ResponseType.USER_QUERY,
+                type: AiAssistance.ResponseType.USER_QUERY,
                 query: 'text',
               },
             ],
           },
           {
             id: 'id2',
-            type: 'drjones-file' as Freestyler.AgentType,
+            type: 'drjones-file' as AiAssistance.AgentType,
             history: [],
           },
           {
             id: 'id3',
-            type: 'drjones-network-request' as Freestyler.AgentType,
+            type: 'drjones-network-request' as AiAssistance.AgentType,
             history: [],
           },
         ],
@@ -121,7 +144,7 @@ describeWithEnvironment('Freestyler.AiHistoryStorage', () => {
   });
 
   it('should delete a single entry', async () => {
-    const storage = Freestyler.AiHistoryStorage.instance();
+    const storage = getStorage();
     await storage.upsertHistoryEntry(agent1);
     await storage.upsertHistoryEntry(agent2);
     await storage.upsertHistoryEntry(agent3);
@@ -131,14 +154,14 @@ describeWithEnvironment('Freestyler.AiHistoryStorage', () => {
         [
           {
             id: 'id1',
-            type: 'freestyler' as Freestyler.AgentType,
+            type: 'freestyler' as AiAssistance.AgentType,
             history: [
 
             ],
           },
           {
             id: 'id3',
-            type: 'drjones-network-request' as Freestyler.AgentType,
+            type: 'drjones-network-request' as AiAssistance.AgentType,
             history: [],
           },
         ],
@@ -146,7 +169,7 @@ describeWithEnvironment('Freestyler.AiHistoryStorage', () => {
   });
 
   it('should delete all entries', async () => {
-    const storage = Freestyler.AiHistoryStorage.instance();
+    const storage = getStorage();
     await storage.upsertHistoryEntry(agent1);
     await storage.upsertHistoryEntry(agent2);
     await storage.upsertHistoryEntry(agent3);

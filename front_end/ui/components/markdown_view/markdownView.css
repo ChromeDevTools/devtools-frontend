@@ -26,7 +26,7 @@
 .message {
   line-height: 18px;
   font-size: 12px;
-  color: var(--override-markdown-view-message-color, --sys-color-token-subtle);
+  color: var(--sys-color-on-surface);
   user-select: text;
 }
 

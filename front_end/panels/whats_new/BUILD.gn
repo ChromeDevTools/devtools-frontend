@@ -65,7 +65,10 @@ devtools_entrypoint("meta") {
 
 ts_library("unittests") {
   testonly = true
-  sources = [ "ReleaseNote.test.ts" ]
+  sources = [
+    "ReleaseNote.test.ts",
+    "ReleaseNoteView.test.ts",
+  ]
 
   deps = [
     ":bundle",

@@ -5,10 +5,7 @@
 import("../../../../scripts/build/ninja/copy.gni")
 
 copy_to_gen("resources-gen") {
-  sources = [
-    "WNDT.md",
-    "whatsnew.avif",
-  ]
+  sources = [ "WNDT.md" ]
 }
 
 group("whats_new_resources") {

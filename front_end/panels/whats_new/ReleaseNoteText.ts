@@ -10,7 +10,7 @@ import * as MarkdownView from '../../ui/components/markdown_view/markdown_view.j
 
 let registeredLinks = false;
 
-interface ReleaseNote {
+export interface ReleaseNote {
   version: number;
   header: string;
   markdownLinks: {key: string, link: string}[];
@@ -33,7 +33,7 @@ export function getReleaseNote(): ReleaseNote {
 
 let releaseNote: ReleaseNote = {
   version: 73,
-  header: 'Highlights from the Chrome 132 update',
+  header: 'What\'s new in DevTools 132',
   markdownLinks: [
     {
       key: 'ai-assistance',

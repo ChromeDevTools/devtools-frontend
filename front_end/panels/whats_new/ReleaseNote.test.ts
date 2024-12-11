@@ -41,7 +41,7 @@ describe('Release Note', () => {
       persistence: UI.ViewManager.ViewPersistence.CLOSEABLE,
       order: 1,
       async loadView() {
-        return WhatsNew.ReleaseNoteView.ReleaseNoteViewWrapper.instance();
+        return new WhatsNew.ReleaseNoteView.ReleaseNoteView();
       },
     });
 

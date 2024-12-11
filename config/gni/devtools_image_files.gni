@@ -18,7 +18,6 @@ devtools_image_files = [
   "toolbarResizerVertical.png",
   "touchCursor_2x.png",
   "touchCursor.png",
-  "whatsnew.avif",
 ]
 
 devtools_svg_sources = [
@@ -270,6 +269,7 @@ devtools_svg_sources = [
   "warning-filled.svg",
   "warning.svg",
   "watch.svg",
+  "whatsnew.svg",
   "width.svg",
   "zoom-in.svg",
 ]

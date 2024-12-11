@@ -78,7 +78,7 @@ UI.ViewManager.registerViewExtension({
   order: 1,
   async loadView() {
     const WhatsNew = await loadWhatsNewModule();
-    return WhatsNew.ReleaseNoteView.ReleaseNoteViewWrapper.instance();
+    return new WhatsNew.ReleaseNoteView.ReleaseNoteView();
   },
 });
 

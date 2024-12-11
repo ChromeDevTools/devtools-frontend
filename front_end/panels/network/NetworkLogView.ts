@@ -1999,7 +1999,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
     if (this.timeFilter && !this.timeFilter(request)) {
       return false;
     }
-    const categoryName = request.resourceType().category().title();
+    const categoryName = request.resourceType().category().name;
     if (!this.resourceCategoryFilterUI.accept(categoryName)) {
       return false;
     }

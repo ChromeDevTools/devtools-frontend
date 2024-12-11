@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
+import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
@@ -701,6 +702,37 @@ describeWithMockConnection('NetworkLogView', () => {
       urlContentOverridden,
       urlHeaderAndContentOverridden,
     ]);
+  });
+
+  it('filters localized resource categories', async () => {
+    // "simulate" other locale by stubbing out resource categories with a different text
+    sinon.stub(Common.ResourceType.resourceCategories.Document, 'title')
+        .returns(i18n.i18n.lockedString('<localized document>'));
+    sinon.stub(Common.ResourceType.resourceCategories.XHR, 'title').returns(i18n.i18n.lockedString('<localized xhr>'));
+
+    const documentRequest = createNetworkRequest('urlDocument', {finished: true});
+    documentRequest.setResourceType(Common.ResourceType.resourceTypes.Document);
+    const fetchRequest = createNetworkRequest('urlFetch', {finished: true});
+    fetchRequest.setResourceType(Common.ResourceType.resourceTypes.Fetch);
+
+    const filterBar = new UI.FilterBar.FilterBar('network-panel', true);
+    networkLogView = createNetworkLogView(filterBar);
+
+    networkLogView.markAsRoot();
+    networkLogView.show(document.body);
+    const rootNode = networkLogView.columns().dataGrid().rootNode();
+    const shownRequestUrls = () => rootNode.children.map(
+        n => (n as Network.NetworkDataGridNode.NetworkNode).request()?.url() as string | undefined);
+
+    const setting = Common.Settings.Settings.instance().createSetting('network-resource-type-filters', {});
+    setting.set({all: true});
+    assert.deepEqual(shownRequestUrls(), ['urlDocument', 'urlFetch']);
+
+    setting.set({[Common.ResourceType.resourceCategories.Document.name]: true});
+    assert.deepEqual(shownRequestUrls(), ['urlDocument']);
+
+    setting.set({[Common.ResourceType.resourceCategories.XHR.name]: true});
+    assert.deepEqual(shownRequestUrls(), ['urlFetch']);
   });
 
   it('"Copy all" commands respects filters', async () => {

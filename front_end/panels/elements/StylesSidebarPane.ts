@@ -53,7 +53,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import * as ElementsComponents from './components/components.js';
-import {ComputedStyleModel, type CSSModelChangedEvent} from './ComputedStyleModel.js';
+import type {ComputedStyleModel, CSSModelChangedEvent} from './ComputedStyleModel.js';
 import {ElementsPanel} from './ElementsPanel.js';
 import {ElementsSidebarPane} from './ElementsSidebarPane.js';
 import {ImagePreviewPopover} from './ImagePreviewPopover.js';
@@ -228,8 +228,8 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
   #updateAbortController?: AbortController;
   #updateComputedStylesAbortController?: AbortController;
 
-  constructor() {
-    super(true /* delegatesFocus */);
+  constructor(computedStyleModel: ComputedStyleModel) {
+    super(computedStyleModel, true /* delegatesFocus */);
     this.setMinimumSize(96, 26);
     this.registerCSSFiles([stylesSidebarPaneStyles]);
     Common.Settings.Settings.instance().moduleSetting('text-editor-indent').addChangeListener(this.update.bind(this));
@@ -242,7 +242,6 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     this.lastFilterChange = null;
     this.visibleSections = null;
     this.toolbarPaneElement = this.createStylesSidebarToolbar();
-    this.computedStyleModelInternal = new ComputedStyleModel();
 
     this.noMatchesElement = this.contentElement.createChild('div', 'gray-info-message hidden');
     this.noMatchesElement.textContent = i18nString(UIStrings.noMatchingSelectorOrStyle);

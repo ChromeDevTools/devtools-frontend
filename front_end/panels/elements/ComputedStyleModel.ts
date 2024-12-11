@@ -14,9 +14,9 @@ export class ComputedStyleModel extends Common.ObjectWrapper.ObjectWrapper<Event
   private computedStylePromise?: Promise<ComputedStyle|null>;
   constructor() {
     super();
-    this.nodeInternal = UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
     this.cssModelInternal = null;
     this.eventListeners = [];
+    this.nodeInternal = UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
     UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, this.onNodeChanged, this);
   }
 

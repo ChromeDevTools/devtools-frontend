@@ -49,6 +49,7 @@ import type {AXTreeNodeData} from './AccessibilityTreeUtils.js';
 import {AccessibilityTreeView} from './AccessibilityTreeView.js';
 import {ColorSwatchPopoverIcon} from './ColorSwatchPopoverIcon.js';
 import * as ElementsComponents from './components/components.js';
+import {ComputedStyleModel} from './ComputedStyleModel.js';
 import {ComputedStyleWidget} from './ComputedStyleWidget.js';
 import elementsPanelStyles from './elementsPanel.css.js';
 import type {ElementsTreeElement} from './ElementsTreeElement.js';
@@ -279,9 +280,10 @@ export class ElementsPanel extends UI.Panel.Panel implements UI.SearchableView.S
 
     crumbsContainer.appendChild(this.breadcrumbs);
 
-    this.stylesWidget = new StylesSidebarPane();
-    this.computedStyleWidget = new ComputedStyleWidget();
-    this.metricsWidget = new MetricsSidebarPane();
+    const computedStyleModel = new ComputedStyleModel();
+    this.stylesWidget = new StylesSidebarPane(computedStyleModel);
+    this.computedStyleWidget = new ComputedStyleWidget(computedStyleModel);
+    this.metricsWidget = new MetricsSidebarPane(computedStyleModel);
 
     Common.Settings.Settings.instance()
         .moduleSetting('sidebar-position')

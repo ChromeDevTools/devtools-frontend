@@ -21,13 +21,15 @@ import * as Elements from './elements.js';
 
 describeWithMockConnection('StylePropertyTreeElement', () => {
   let stylesSidebarPane: Elements.StylesSidebarPane.StylesSidebarPane;
+  let computedStyleModel: Elements.ComputedStyleModel.ComputedStyleModel;
   let mockStylePropertiesSection: sinon.SinonStubbedInstance<Elements.StylePropertiesSection.StylePropertiesSection>;
   let mockCssStyleDeclaration: sinon.SinonStubbedInstance<SDK.CSSStyleDeclaration.CSSStyleDeclaration>;
   let mockMatchedStyles: sinon.SinonStubbedInstance<SDK.CSSMatchedStyles.CSSMatchedStyles>;
   let mockVariableMap: Record<string, string>;
 
   beforeEach(async () => {
-    stylesSidebarPane = new Elements.StylesSidebarPane.StylesSidebarPane();
+    computedStyleModel = new Elements.ComputedStyleModel.ComputedStyleModel();
+    stylesSidebarPane = new Elements.StylesSidebarPane.StylesSidebarPane(computedStyleModel);
     mockVariableMap = {
       '--a': 'red',
       '--b': 'blue',

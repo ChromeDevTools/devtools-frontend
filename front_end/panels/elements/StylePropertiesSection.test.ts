@@ -82,6 +82,11 @@ function setUpStyles(
 }
 
 describeWithMockConnection('StylesPropertySection', () => {
+  let computedStyleModel: Elements.ComputedStyleModel.ComputedStyleModel;
+  beforeEach(() => {
+    computedStyleModel = new Elements.ComputedStyleModel.ComputedStyleModel();
+  });
+
   it('displays the proper sourceURL origin for constructed stylesheets', async () => {
     const cssModel = createTarget().model(SDK.CSSModel.CSSModel);
     assert.exists(cssModel);
@@ -161,7 +166,7 @@ describeWithMockConnection('StylesPropertySection', () => {
     Common.Settings.Settings.instance().moduleSetting('text-editor-indent').set('  ');
     const cssModel = createTarget().model(SDK.CSSModel.CSSModel);
     assert.exists(cssModel);
-    const stylesSidebarPane = new Elements.StylesSidebarPane.StylesSidebarPane();
+    const stylesSidebarPane = new Elements.StylesSidebarPane.StylesSidebarPane(computedStyleModel);
     const origin = Protocol.CSS.StyleSheetOrigin.Regular;
     const styleSheetId = '0' as Protocol.CSS.StyleSheetId;
     const range = {startLine: 0, startColumn: 0, endLine: 0, endColumn: 6};
@@ -214,7 +219,7 @@ describeWithMockConnection('StylesPropertySection', () => {
   it('updates property rule property names', async () => {
     const cssModel = createTarget().model(SDK.CSSModel.CSSModel);
     assert.exists(cssModel);
-    const stylesSidebarPane = new Elements.StylesSidebarPane.StylesSidebarPane();
+    const stylesSidebarPane = new Elements.StylesSidebarPane.StylesSidebarPane(computedStyleModel);
     const origin = Protocol.CSS.StyleSheetOrigin.Regular;
     const styleSheetId = '0' as Protocol.CSS.StyleSheetId;
     const range = {startLine: 0, startColumn: 0, endLine: 0, endColumn: 6};
@@ -274,7 +279,7 @@ describeWithMockConnection('StylesPropertySection', () => {
     Common.Settings.Settings.instance().moduleSetting('text-editor-indent').set('  ');
     const cssModel = createTarget().model(SDK.CSSModel.CSSModel);
     assert.exists(cssModel);
-    const stylesSidebarPane = new Elements.StylesSidebarPane.StylesSidebarPane();
+    const stylesSidebarPane = new Elements.StylesSidebarPane.StylesSidebarPane(computedStyleModel);
     const origin = Protocol.CSS.StyleSheetOrigin.Regular;
     const styleSheetId = '0' as Protocol.CSS.StyleSheetId;
     const range = {startLine: 0, startColumn: 0, endLine: 0, endColumn: 6};
@@ -302,7 +307,7 @@ describeWithMockConnection('StylesPropertySection', () => {
   it('renders active and inactive position-try rule sections correctly', async () => {
     const cssModel = createTarget().model(SDK.CSSModel.CSSModel);
     assert.exists(cssModel);
-    const stylesSidebarPane = new Elements.StylesSidebarPane.StylesSidebarPane();
+    const stylesSidebarPane = new Elements.StylesSidebarPane.StylesSidebarPane(computedStyleModel);
     const origin = Protocol.CSS.StyleSheetOrigin.Regular;
     const styleSheetId = '0' as Protocol.CSS.StyleSheetId;
     const range = {startLine: 0, startColumn: 0, endLine: 0, endColumn: 6};

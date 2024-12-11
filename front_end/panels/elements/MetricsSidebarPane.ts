@@ -36,6 +36,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
+import type {ComputedStyleModel} from './ComputedStyleModel.js';
 import {ElementsSidebarPane} from './ElementsSidebarPane.js';
 import metricsSidebarPaneStyles from './metricsSidebarPane.css.js';
 
@@ -51,8 +52,8 @@ export class MetricsSidebarPane extends ElementsSidebarPane {
   }[];
   private isEditingMetrics?: boolean;
 
-  constructor() {
-    super();
+  constructor(computedStyleModel: ComputedStyleModel) {
+    super(computedStyleModel);
 
     this.originalPropertyData = null;
     this.previousPropertyDataCandidate = null;

@@ -42,7 +42,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as LitHtml from '../../ui/lit-html/lit-html.js';
 
 import * as ElementsComponents from './components/components.js';
-import {type ComputedStyle, ComputedStyleModel, Events} from './ComputedStyleModel.js';
+import {type ComputedStyle, type ComputedStyleModel, Events} from './ComputedStyleModel.js';
 import computedStyleSidebarPaneStyles from './computedStyleSidebarPane.css.js';
 import {ImagePreviewPopover} from './ImagePreviewPopover.js';
 import {PlatformFontsWidget} from './PlatformFontsWidget.js';
@@ -242,12 +242,12 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
   #computedStylesTree = new TreeOutline.TreeOutline.TreeOutline<ComputedStyleData>();
   #treeData?: TreeOutline.TreeOutline.TreeOutlineData<ComputedStyleData>;
 
-  constructor() {
+  constructor(computedStyleModel: ComputedStyleModel) {
     super(true);
 
     this.contentElement.classList.add('styles-sidebar-computed-style-widget');
 
-    this.computedStyleModel = new ComputedStyleModel();
+    this.computedStyleModel = computedStyleModel;
     this.computedStyleModel.addEventListener(Events.CSS_MODEL_CHANGED, this.update, this);
 
     this.showInheritedComputedStylePropertiesSetting =

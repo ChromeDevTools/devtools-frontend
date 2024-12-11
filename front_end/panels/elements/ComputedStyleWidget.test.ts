@@ -11,12 +11,14 @@ import * as Elements from './elements.js';
 
 describeWithMockConnection('ComputedStyleWidget', () => {
   let target: SDK.Target.Target;
+  let computedStyleModel: Elements.ComputedStyleModel.ComputedStyleModel;
   let view: Elements.ComputedStyleWidget.ComputedStyleWidget;
   let trackComputedStyleUpdatesForNodeSpy: sinon.SinonSpy;
 
   beforeEach(() => {
     stubNoopSettings();
     target = createTarget();
+    computedStyleModel = new Elements.ComputedStyleModel.ComputedStyleModel();
     UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, null);
     trackComputedStyleUpdatesForNodeSpy =
         sinon.spy(SDK.CSSModel.CSSModel.prototype, 'trackComputedStyleUpdatesForNode');
@@ -34,7 +36,7 @@ describeWithMockConnection('ComputedStyleWidget', () => {
     assert.exists(model);
     const node = new SDK.DOMModel.DOMNode(model);
     UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, node);
-    view = new Elements.ComputedStyleWidget.ComputedStyleWidget();
+    view = new Elements.ComputedStyleWidget.ComputedStyleWidget(computedStyleModel);
     view.markAsRoot();
     view.show(document.body);
 
@@ -46,7 +48,7 @@ describeWithMockConnection('ComputedStyleWidget', () => {
     assert.exists(model);
     const node = new SDK.DOMModel.DOMNode(model);
     UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, node);
-    view = new Elements.ComputedStyleWidget.ComputedStyleWidget();
+    view = new Elements.ComputedStyleWidget.ComputedStyleWidget(computedStyleModel);
     view.markAsRoot();
     view.show(document.body);
 
@@ -62,7 +64,7 @@ describeWithMockConnection('ComputedStyleWidget', () => {
     assert.exists(model);
     const node = new SDK.DOMModel.DOMNode(model);
     UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, node);
-    view = new Elements.ComputedStyleWidget.ComputedStyleWidget();
+    view = new Elements.ComputedStyleWidget.ComputedStyleWidget(computedStyleModel);
     view.markAsRoot();
     view.show(document.body);
     view.hideWidget();

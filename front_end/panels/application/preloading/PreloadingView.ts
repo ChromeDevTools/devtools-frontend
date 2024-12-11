@@ -327,6 +327,8 @@ export class PreloadingRuleSetView extends UI.Widget.VBox {
 
 export class PreloadingAttemptView extends UI.Widget.VBox {
   private model: SDK.PreloadingModel.PreloadingModel;
+  // Note that we use id of (representative) preloading attempt while we show pipelines in grid.
+  // This is because `NOT_TRIGGERED` preloading attempts don't have pipeline id and we can use it.
   private focusedPreloadingAttemptId: SDK.PreloadingModel.PreloadingAttemptId|null = null;
 
   private readonly warningsContainer: HTMLDivElement;
@@ -438,13 +440,14 @@ export class PreloadingAttemptView extends UI.Widget.VBox {
     const filteringRuleSetId = this.ruleSetSelector.getSelected();
     const rows = this.model.getRepresentativePreloadingAttempts(filteringRuleSetId).map(({id, value}) => {
       const attempt = value;
+      const pipeline = this.model.getPipeline(attempt);
       const ruleSets = attempt.ruleSetIds.flatMap(id => {
         const ruleSet = this.model.getRuleSetById(id);
         return ruleSet === null ? [] : [ruleSet];
       });
       return {
         id,
-        attempt,
+        pipeline,
         ruleSets,
       };
     });

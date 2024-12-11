@@ -166,6 +166,32 @@ export class PreloadingModel extends SDKModel<EventTypes> {
     return document.preloadingAttempts.getAllRepresentative(null, document.sources);
   }
 
+  // Precondition: `pipelineId` should exists.
+  // Postcondition: The return value is not empty.
+  private getPipelineById(pipelineId: Protocol.Preload.PreloadPipelineId):
+      Map<Protocol.Preload.SpeculationAction, PreloadingAttempt>|null {
+    const document = this.currentDocument();
+    if (document === null) {
+      return null;
+    }
+
+    return document.preloadingAttempts.getPipeline(pipelineId, document.sources);
+  }
+
+  // Returns attemtps that are sit in the same preload pipeline.
+  getPipeline(attempt: PreloadingAttempt): PreloadPipeline {
+    let pipelineNullable = null;
+    if (attempt.pipelineId !== null) {
+      pipelineNullable = this.getPipelineById(attempt.pipelineId);
+    }
+    if (pipelineNullable === null) {
+      const pipeline = new Map();
+      pipeline.set(attempt.action, attempt);
+      return new PreloadPipeline(pipeline);
+    }
+    return new PreloadPipeline(pipelineNullable);
+  }
+
   private onPrimaryPageChanged(
       event: Common.EventTarget.EventTargetEvent<{frame: ResourceTreeFrame, type: PrimaryPageChangeType}>): void {
     const {frame, type} = event.data;
@@ -501,6 +527,40 @@ function makePreloadingAttemptId(key: Protocol.Preload.PreloadingAttemptKey): Pr
   return `${key.loaderId}:${action}:${key.url}:${targetHint}`;
 }
 
+export class PreloadPipeline {
+  private inner: Map<Protocol.Preload.SpeculationAction, PreloadingAttempt>;
+
+  constructor(inner: Map<Protocol.Preload.SpeculationAction, PreloadingAttempt>) {
+    if (inner.size === 0) {
+      throw new Error('unreachable');
+    }
+
+    this.inner = inner;
+  }
+
+  static newFromAttemptsForTesting(attempts: PreloadingAttempt[]): PreloadPipeline {
+    const inner = new Map();
+    for (const attempt of attempts) {
+      inner.set(attempt.action, attempt);
+    }
+    return new PreloadPipeline(inner);
+  }
+
+  getOriginallyTriggered(): PreloadingAttempt {
+    const attempt = this.getPrerender() || this.getPrefetch();
+    assertNotNullOrUndefined(attempt);
+    return attempt;
+  }
+
+  getPrefetch(): PreloadingAttempt|null {
+    return this.inner.get(Protocol.Preload.SpeculationAction.Prefetch) || null;
+  }
+
+  getPrerender(): PreloadingAttempt|null {
+    return this.inner.get(Protocol.Preload.SpeculationAction.Prerender) || null;
+  }
+}
+
 class PreloadingAttemptRegistry {
   private map: Map<PreloadingAttemptId, PreloadingAttemptInternal> =
       new Map<PreloadingAttemptId, PreloadingAttemptInternal>();
@@ -580,6 +640,25 @@ class PreloadingAttemptRegistry {
         .map(([id, value]) => ({id, value: this.enrich(value, sources.getById(id))}))
         .filter(({value}) => !ruleSetId || value.ruleSetIds.includes(ruleSetId))
         .filter(({value}) => this.isAttemptRepresentative(value));
+  }
+
+  getPipeline(pipelineId: Protocol.Preload.PreloadPipelineId, sources: SourceRegistry):
+      Map<Protocol.Preload.SpeculationAction, PreloadingAttempt>|null {
+    const pipeline = this.pipelines.get(pipelineId);
+
+    if (pipeline === undefined || pipeline.size === 0) {
+      return null;
+    }
+
+    const map: {[key: PreloadingAttemptId]: PreloadingAttemptInternal} = {};
+    for (const [id, attempt] of this.map.entries()) {
+      map[id] = attempt;
+    }
+    return new Map(pipeline.entries().map(([action, id]) => {
+      const attempt = this.getById(id, sources);
+      assertNotNullOrUndefined(attempt);
+      return [action, attempt];
+    }));
   }
 
   upsert(attempt: PreloadingAttemptInternal): void {

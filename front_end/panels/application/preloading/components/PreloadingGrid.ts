@@ -32,6 +32,10 @@ const UIStrings = {
    *@description Column header: Status of preloading attempt
    */
   status: 'Status',
+  /**
+   *@description Status: Prerender failed, but prefetch is available
+   */
+  prefetchFallbackReady: 'Prefetch fallback ready',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/preloading/components/PreloadingGrid.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -45,7 +49,7 @@ export interface PreloadingGridData {
 
 export interface PreloadingGridRow {
   id: string;
-  attempt: SDK.PreloadingModel.PreloadingAttempt;
+  pipeline: SDK.PreloadingModel.PreloadPipeline;
   ruleSets: Protocol.Preload.RuleSet[];
 }
 
@@ -120,67 +124,86 @@ export class PreloadingGrid extends LegacyWrapper.LegacyWrapper.WrappableCompone
   }
 
   #buildReportRows(): DataGrid.DataGridUtils.Row[] {
-    function statusRenderer(statusString: string, status: SDK.PreloadingModel.PreloadingStatus): LitHtml.LitTemplate {
-      if (status !== SDK.PreloadingModel.PreloadingStatus.FAILURE) {
-        return html`<div>${statusString}</div>`;
+    function statusRenderer(statusString: string, pipeline: SDK.PreloadingModel.PreloadPipeline): LitHtml.LitTemplate {
+      function render(color: string, iconName: string|null, message: string): LitHtml.LitTemplate {
+        const styleColor = {
+          color: `var(${color})`,
+        };
+        let icon;
+        if (iconName !== null) {
+          // Disabled until https://crbug.com/1079231 is fixed.
+          // clang-format off
+          icon = html`
+            <devtools-icon
+              .data=${{
+                iconName,
+                width: '16px',
+                height: '16px',
+                ...styleColor,
+              }}
+              style=${LitHtml.Directives.styleMap({
+                'vertical-align': 'sub',
+              })}
+            >
+            </devtools-icon>
+          `;
+          // clang-format on
+        }
+        // Disabled until https://crbug.com/1079231 is fixed.
+        // clang-format off
+        return html`
+          <div style=${LitHtml.Directives.styleMap(styleColor)}>
+            ${icon} ${message}
+          </div>
+        `;
+        // clang-format on
       }
 
-      // Disabled until https://crbug.com/1079231 is fixed.
-      // clang-format off
-      return html`
-        <div
-          style=${LitHtml.Directives.styleMap({
-            color: 'var(--sys-color-error)',
-          })}
-        >
-          <devtools-icon
-            .data=${{
-              iconName: 'cross-circle-filled',
-              color: 'var(--sys-color-error)',
-              width: '16px',
-              height: '16px',
-            }}
-            style=${LitHtml.Directives.styleMap({
-              'vertical-align': 'sub',
-            })}
-          >
-          </devtools-icon>
-          ${statusString}
-        </div>
-      `;
-              // clang-format on
+      if (pipeline.getPrerender()?.status === SDK.PreloadingModel.PreloadingStatus.FAILURE &&
+          (pipeline.getPrefetch()?.status === SDK.PreloadingModel.PreloadingStatus.READY ||
+           pipeline.getPrefetch()?.status === SDK.PreloadingModel.PreloadingStatus.SUCCESS)) {
+        return render('--sys-color-orange-bright', 'warning-filled', i18nString(UIStrings.prefetchFallbackReady));
+      }
+
+      if (pipeline.getOriginallyTriggered().status === SDK.PreloadingModel.PreloadingStatus.FAILURE) {
+        return render('--sys-color-error', 'cross-circle-filled', statusString);
+      }
+
+      return render('--sys-color-on-surface', null, statusString);
     }
 
     assertNotNullOrUndefined(this.#data);
 
     const pageURL = this.#data.pageURL;
     const securityOrigin = pageURL === '' ? null : (new Common.ParsedURL.ParsedURL(pageURL)).securityOrigin();
-    return this.#data.rows.map(
-        row => ({
-          cells: [
-            {columnId: 'id', value: row.id},
-            {
-              columnId: 'url',
-              value: this.#urlShort(row, securityOrigin),
-              title: row.attempt.key.url,
-            },
-            {columnId: 'action', value: PreloadingString.capitalizedAction(row.attempt.action)},
-            {
-              columnId: 'rule-set',
-              value: row.ruleSets.length === 0 ? '' : PreloadingString.ruleSetLocationShort(row.ruleSets[0], pageURL),
-            },
-            {
-              columnId: 'status',
-              value: PreloadingString.composedStatus(row.attempt),
-              renderer: status => statusRenderer(status as string, row.attempt.status),
-            },
-          ],
-        }));
+    return this.#data.rows.map(row => {
+      const attempt = row.pipeline.getOriginallyTriggered();
+      return {
+        cells: [
+          {columnId: 'id', value: row.id},
+          {
+            columnId: 'url',
+            value: this.#urlShort(row, securityOrigin),
+            title: attempt.key.url,
+          },
+          {columnId: 'action', value: PreloadingString.capitalizedAction(attempt.action)},
+          {
+            columnId: 'rule-set',
+            value: row.ruleSets.length === 0 ? '' : PreloadingString.ruleSetLocationShort(row.ruleSets[0], pageURL),
+          },
+          {
+            columnId: 'status',
+            value: PreloadingString.composedStatus(attempt),
+            renderer: status => statusRenderer(status as string, row.pipeline),
+          },
+        ],
+      };
+    });
   }
 
   // Shorten URL if a preloading attempt is same-origin.
   #urlShort(row: PreloadingGridRow, securityOrigin: string|null): string {
-    const url = row.attempt.key.url;
+    const url = row.pipeline.getOriginallyTriggered().key.url;
     return securityOrigin && url.startsWith(securityOrigin) ? url.slice(securityOrigin.length) : url;
   }
 }

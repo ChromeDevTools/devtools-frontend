@@ -191,11 +191,11 @@ export class NetworkThrottlingSelector extends HTMLElement {
         .showConnector=${false}
         .jslogContext=${'network-conditions'}
         .buttonTitle=${i18nString(UIStrings.network, {PH1: selectionTitle})}
-        title=${i18nString(UIStrings.networkThrottling, {PH1: selectionTitle})}
+        .title=${i18nString(UIStrings.networkThrottling, {PH1: selectionTitle})}
       >
         ${this.#groups.map(group => {
           return html`
-            <devtools-menu-group .name=${group.name}>
+            <devtools-menu-group .name=${group.name} .title=${group.name}>
               ${group.items.map(conditions => {
                 let title = this.#getConditionsTitle(conditions);
                 if (conditions === this.#recommendedConditions) {
@@ -208,6 +208,7 @@ export class NetworkThrottlingSelector extends HTMLElement {
                   <devtools-menu-item
                     .value=${key}
                     .selected=${selectedConditionsKey === key}
+                    .title=${title}
                     jslog=${VisualLogging.item(jslogContext).track({click: true})}
                   >
                     ${title}
@@ -217,6 +218,7 @@ export class NetworkThrottlingSelector extends HTMLElement {
               ${group.showCustomAddOption ? html`
                 <devtools-menu-item
                   .value=${1 /* This won't be displayed unless it has some value. */}
+                  .title=${i18nString(UIStrings.add)}
                   jslog=${VisualLogging.action('add').track({click: true})}
                   @click=${this.#onAddClick}
                 >

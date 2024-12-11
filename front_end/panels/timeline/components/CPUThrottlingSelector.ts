@@ -114,7 +114,7 @@ export class CPUThrottlingSelector extends HTMLElement {
             .showConnector=${false}
             .jslogContext=${'cpu-throttling'}
             .buttonTitle=${i18nString(UIStrings.cpu, {PH1: selectionTitle})}
-            title=${i18nString(UIStrings.cpuThrottling, {PH1: selectionTitle})}
+            .title=${i18nString(UIStrings.cpuThrottling, {PH1: selectionTitle})}
           >
           ${MobileThrottling.ThrottlingPresets.ThrottlingPresets.cpuThrottlingPresets.map(rate => {
             let title = rate === 1 ? i18nString(UIStrings.noThrottling) : i18nString(UIStrings.dSlowdown, {PH1: rate});
@@ -127,6 +127,7 @@ export class CPUThrottlingSelector extends HTMLElement {
               <devtools-menu-item
                 .value=${rate}
                 .selected=${this.#currentRate === rate}
+                .title=${title}
                 jslog=${VisualLogging.item(jslogContext).track({click: true})}
               >
                 ${title}

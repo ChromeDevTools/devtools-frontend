@@ -748,7 +748,6 @@ export class RecordingView extends HTMLElement {
             .showArrow=${true}
             .sideButton=${false}
             .showSelectedItem=${true}
-            .showConnector=${false}
             .jslogContext=${'network-conditions'}
             .position=${Dialogs.Dialog.DialogVerticalPosition.BOTTOM}
             .buttonTitle=${menuButtonTitle}
@@ -881,7 +880,6 @@ export class RecordingView extends HTMLElement {
                 .showArrow=${true}
                 .sideButton=${false}
                 .showSelectedItem=${true}
-                .showConnector=${false}
                 .position=${Dialogs.Dialog.DialogVerticalPosition.BOTTOM}
                 .buttonTitle=${converterFormatName || ''}
                 .jslogContext=${'code-format'}

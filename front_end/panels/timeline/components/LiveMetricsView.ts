@@ -669,7 +669,6 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
         .showArrow=${true}
         .sideButton=${false}
         .showSelectedItem=${true}
-        .showConnector=${false}
         .buttonTitle=${buttonTitle}
         .disabled=${shouldDisable}
         title=${accessibleTitle}
@@ -751,7 +750,6 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
         .showArrow=${true}
         .sideButton=${false}
         .showSelectedItem=${true}
-        .showConnector=${false}
         .buttonTitle=${i18nString(UIStrings.device, {PH1: currentDeviceLabel})}
         .disabled=${shouldDisable}
         title=${i18nString(UIStrings.showFieldDataForDevice, {PH1: currentDeviceLabel})}

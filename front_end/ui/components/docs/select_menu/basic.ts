@@ -75,7 +75,7 @@ const menus = [
     ],
     buttonTitle: 'Show dialog',
     position: Dialogs.Dialog.DialogVerticalPosition.BOTTOM,
-    showConnector: true,
+    showArrow: true,
   },
   {
     items: [
@@ -103,7 +103,7 @@ const menus = [
     ],
     buttonTitle: 'Show dialog',
     position: Dialogs.Dialog.DialogVerticalPosition.TOP,
-    showConnector: true,
+    showArrow: true,
     hasGroups: true,
   },
   {
@@ -148,12 +148,11 @@ menus.forEach((menu, i) => {
     selectMenu.buttonTitle = menu.buttonTitle;
   }
   selectMenu.position = menu.position || Dialogs.Dialog.DialogVerticalPosition.BOTTOM;
-  selectMenu.showConnector = Boolean(menu.showConnector);
   const firstMenuGroup = new Menus.SelectMenu.SelectMenuGroup();
   firstMenuGroup.name = 'Group 1';
   const secondMenuGroup = new Menus.SelectMenu.SelectMenuGroup();
   secondMenuGroup.name = 'Group 2';
-  selectMenu.showArrow = Boolean(menu.showArrow) || Boolean(menu.showConnector);
+  selectMenu.showArrow = Boolean(menu.showArrow);
   selectMenu.disabled = Boolean(menu.disabled);
   menu.items.forEach((item, j) => {
     const selectMenuItem = new Menus.Menu.MenuItem();

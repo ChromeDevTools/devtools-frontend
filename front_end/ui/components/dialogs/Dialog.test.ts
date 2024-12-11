@@ -39,7 +39,6 @@ describe('Dialog', () => {
       host.style.height = '100px';
 
       dialog.position = Dialogs.Dialog.DialogVerticalPosition.TOP;
-      dialog.showConnector = true;
       dialog.origin = host;
     });
     it('places the Dialog hit area correctly', async () => {
@@ -79,7 +78,6 @@ describe('Dialog', () => {
       content.innerHTML = 'Hi';
 
       dialog.horizontalAlignment = Dialogs.Dialog.DialogHorizontalAlignment.AUTO;
-      dialog.showConnector = true;
       dialog.origin = host;
 
       // Set the dialog's "window" to be the container element we just created.
@@ -139,7 +137,6 @@ describe('Dialog', () => {
       content.innerHTML = 'Hello, World<br/> I am <br/> a Dialog!';
 
       dialog.position = Dialogs.Dialog.DialogVerticalPosition.AUTO;
-      dialog.showConnector = true;
       dialog.origin = host;
 
       // Set the dialog's "window" to be the container element we just created.
@@ -182,7 +179,6 @@ describe('Dialog', () => {
       content.innerHTML = 'Hello, World<br/> I am <br/> a Dialog!';
 
       dialog.position = Dialogs.Dialog.DialogVerticalPosition.AUTO;
-      dialog.showConnector = true;
       dialog.origin = host;
 
       // Set the dialog's "window" to be the container element we just created.

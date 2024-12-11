@@ -827,7 +827,6 @@ export class JSONEditor extends LitElement {
             .showArrow=${true}
             .sideButton=${false}
             .showSelectedItem=${true}
-            .showConnector=${false}
             .position=${Dialogs.Dialog.DialogVerticalPosition.BOTTOM}
             .buttonTitle=${targetLabel || ''}
             jslog=${VisualLogging.dropDown('targets').track({click: true})}

@@ -338,7 +338,6 @@ export class FieldSettingsDialog extends HTMLElement {
       <div class="open-button-section">${this.#renderOpenButton()}</div>
       <devtools-dialog
         @clickoutsidedialog=${this.#closeDialog}
-        .showConnector=${true}
         .position=${Dialogs.Dialog.DialogVerticalPosition.AUTO}
         .horizontalAlignment=${Dialogs.Dialog.DialogHorizontalAlignment.CENTER}
         .jslogContext=${'timeline.field-data.settings'}

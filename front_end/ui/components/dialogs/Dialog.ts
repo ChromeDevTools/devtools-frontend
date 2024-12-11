@@ -63,11 +63,6 @@ interface DialogData {
    */
   horizontalAlignment: DialogHorizontalAlignment;
   /**
-   * Whether the connector from the dialog to its origin is shown.
-   */
-  showConnector: boolean;
-
-  /**
    * Optional function used to the determine the x coordinate of the connector's
    * end (tip of the triangle), relative to the viewport. If not defined, the x
    * coordinate of the origin's center is used instead.
@@ -121,7 +116,6 @@ export class Dialog extends HTMLElement {
     origin: MODAL,
     position: DialogVerticalPosition.BOTTOM,
     horizontalAlignment: DialogHorizontalAlignment.CENTER,
-    showConnector: false,
     getConnectorCustomXPosition: null,
     dialogShownCallback: null,
     windowBoundsService: WindowBoundsService.WindowBoundsService.WindowBoundsServiceImpl.instance(),
@@ -148,21 +142,6 @@ export class Dialog extends HTMLElement {
   // dialog open, but their focus is elsewhere, and they hit ESC, we should
   // still close the dialog.
   #onKeyDownBound = this.#onKeyDown.bind(this);
-
-  /**
-   * @deprecated
-   */
-  get showConnector(): boolean {
-    console.assert(this.#props.showConnector === false);
-    return this.#props.showConnector;
-  }
-
-  /**
-   * @deprecated
-   */
-  set showConnector(_showConnector: boolean) {
-    console.warn('Connector is no longer supported');
-  }
 
   get origin(): DialogOrigin {
     return this.#props.origin;

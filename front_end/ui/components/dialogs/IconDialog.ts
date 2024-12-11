@@ -132,7 +132,6 @@ export class IconDialog extends HTMLElement {
       ></devtools-icon>
       <devtools-dialog
         @clickoutsidedialog=${this.#closeDialog}
-        .showConnector=${true}
         .origin=${() => {
           if (!this.#icon) {
             throw new Error('Icon not found');

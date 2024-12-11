@@ -111,7 +111,6 @@ export class CPUThrottlingSelector extends HTMLElement {
             .showArrow=${true}
             .sideButton=${false}
             .showSelectedItem=${true}
-            .showConnector=${false}
             .jslogContext=${'cpu-throttling'}
             .buttonTitle=${i18nString(UIStrings.cpu, {PH1: selectionTitle})}
             .title=${i18nString(UIStrings.cpuThrottling, {PH1: selectionTitle})}

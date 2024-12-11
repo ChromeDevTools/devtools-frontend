@@ -33,12 +33,6 @@ export interface MenuData {
    */
   origin: Dialogs.Dialog.DialogOrigin;
   /**
-   * Determines if a connector from the dialog to it's origin
-   * is shown.
-   * Defaults to false.
-   */
-  showConnector: boolean;
-  /**
    * Determines if dividing lines between the menu's options
    * are shown.
    * Defaults to false.
@@ -74,7 +68,6 @@ export class Menu extends HTMLElement {
     origin: null,
     open: false,
     position: Dialogs.Dialog.DialogVerticalPosition.AUTO,
-    showConnector: false,
     showDivider: false,
     showSelectedItem: true,
     horizontalAlignment: Dialogs.Dialog.DialogHorizontalAlignment.AUTO,
@@ -110,15 +103,6 @@ export class Menu extends HTMLElement {
 
   set position(position: Dialogs.Dialog.DialogVerticalPosition) {
     this.#props.position = position;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#renderBound);
-  }
-
-  get showConnector(): boolean {
-    return this.#props.showConnector;
-  }
-
-  set showConnector(showConnector: boolean) {
-    this.#props.showConnector = showConnector;
     void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#renderBound);
   }
 
@@ -391,7 +375,6 @@ export class Menu extends HTMLElement {
         @clickoutsidedialog=${this.#closeDialog}
         @forceddialogclose=${this.#closeDialog}
         .position=${this.position}
-        .showConnector=${this.showConnector}
         .origin=${this.origin}
         .dialogShownCallback=${this.#dialogDeployed.bind(this)}
         .horizontalAlignment=${this.horizontalAlignment}

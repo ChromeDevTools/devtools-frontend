@@ -188,7 +188,6 @@ export class NetworkThrottlingSelector extends HTMLElement {
         .showArrow=${true}
         .sideButton=${false}
         .showSelectedItem=${true}
-        .showConnector=${false}
         .jslogContext=${'network-conditions'}
         .buttonTitle=${i18nString(UIStrings.network, {PH1: selectionTitle})}
         .title=${i18nString(UIStrings.networkThrottling, {PH1: selectionTitle})}

@@ -40,10 +40,13 @@ describeWithEnvironment('ImageDelivery', function() {
 
     const insight =
         getInsightOrError('ImageDelivery', insights, getFirstOrError(data.Meta.navigationsByNavigationId.values()));
+    assert.strictEqual(insight.totalByteSavings, 2007125);
     assert.deepStrictEqual(
-        insight.optimizableImages.map(o => ({url: o.request.args.data.url, optimizations: o.optimizations})),
+        insight.optimizableImages.map(
+            o => ({url: o.request.args.data.url, optimizations: o.optimizations, byteSavings: o.byteSavings})),
         [
           {
+            byteSavings: 1057876,
             optimizations: [
               {
                 byteSavings: 1057876,
@@ -54,6 +57,7 @@ describeWithEnvironment('ImageDelivery', function() {
                 'https://images.ctfassets.net/u275ja1nivmq/6T6z40ay5GFCUtwV7DONgh/0e23606ed1692d9721ab0f39a8d8a99e/yeti_cover.jpg',
           },
           {
+            byteSavings: 682028,
             optimizations: [
               {
                 byteSavings: 682028,
@@ -64,6 +68,7 @@ describeWithEnvironment('ImageDelivery', function() {
                 'https://raw.githubusercontent.com/GoogleChrome/lighthouse/refs/heads/main/cli/test/fixtures/dobetterweb/lighthouse-rotating.gif',
           },
           {
+            byteSavings: 49760,
             optimizations: [
               {
                 byteSavings: 49760,
@@ -74,6 +79,7 @@ describeWithEnvironment('ImageDelivery', function() {
                 'https://images.ctfassets.net/u275ja1nivmq/6T6z40ay5GFCUtwV7DONgh/0e23606ed1692d9721ab0f39a8d8a99e/yeti_cover.jpg?fm=webp',
           },
           {
+            byteSavings: 41421,
             optimizations: [
               {
                 byteSavings: 41421,
@@ -86,6 +92,7 @@ describeWithEnvironment('ImageDelivery', function() {
                 'https://raw.githubusercontent.com/GoogleChrome/lighthouse/refs/heads/main/cli/test/fixtures/byte-efficiency/lighthouse-2048x1356.webp',
           },
           {
+            byteSavings: 176040,
             optimizations: [
               {
                 byteSavings: 134075,

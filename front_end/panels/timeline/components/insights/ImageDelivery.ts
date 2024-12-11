@@ -59,6 +59,10 @@ export class ImageDelivery extends BaseInsightComponent<ImageDeliveryInsightMode
     };
   }
 
+  override getEstimatedSavingsBytes(): number|null {
+    return this.model?.totalByteSavings ?? null;
+  }
+
   override renderContent(): LitHtml.LitTemplate {
     if (!this.model) {
       return LitHtml.nothing;

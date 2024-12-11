@@ -2850,7 +2850,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   /**
    * @internal
    */
-  const packageVersion = '23.10.2';
+  const packageVersion = '23.10.3';
 
   /**
    * @license

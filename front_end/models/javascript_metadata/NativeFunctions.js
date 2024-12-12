@@ -7280,16 +7280,8 @@ export const NativeFunctions = [
     signatures: [["input","?options"]]
   },
   {
-    name: "supportsType",
-    signatures: [["type"]]
-  },
-  {
-    name: "supportsFormat",
-    signatures: [["format"]]
-  },
-  {
-    name: "supportsLength",
-    signatures: [["length"]]
+    name: "createOptionsAvailable",
+    signatures: [["options"]]
   },
   {
     name: "languageAvailable",

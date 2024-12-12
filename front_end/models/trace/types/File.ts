@@ -189,8 +189,8 @@ export interface MetaData {
   cpuThrottling?: number;
   hardwareConcurrency?: number;
   dataOrigin?: DataOrigin;
-  modifications?: Modifications;
   enhancedTraceVersion?: number;
+  modifications?: Modifications;
   cruxFieldData?: CrUXManager.PageResult[];
 }
 

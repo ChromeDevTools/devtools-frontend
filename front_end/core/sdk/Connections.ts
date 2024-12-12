@@ -8,6 +8,8 @@ import type * as Platform from '../platform/platform.js';
 import * as ProtocolClient from '../protocol_client/protocol_client.js';
 import * as Root from '../root/root.js';
 
+import {RehydratingConnection} from './RehydratingConnection.js';
+
 export class MainConnection implements ProtocolClient.InspectorBackend.Connection {
   onMessage: ((arg0: (Object|string)) => void)|null;
   #onDisconnect: ((arg0: string) => void)|null;
@@ -271,6 +273,9 @@ export async function initMainConnection(
 }
 
 function createMainConnection(websocketConnectionLost: () => void): ProtocolClient.InspectorBackend.Connection {
+  if (Root.Runtime.getPathName().includes('rehydrated_devtools_app')) {
+    return new RehydratingConnection();
+  }
   const wsParam = Root.Runtime.Runtime.queryParam('ws');
   const wssParam = Root.Runtime.Runtime.queryParam('wss');
   if (wsParam || wssParam) {

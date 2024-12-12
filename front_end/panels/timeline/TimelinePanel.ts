@@ -1393,9 +1393,42 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     if (this.state !== State.IDLE) {
       return;
     }
-    this.prepareToLoadTimeline();
-    this.loader = await TimelineLoader.loadFromFile(file, this);
+    const maximumTraceFileLengthToDetermineEnhancedTraces = 5000;
+    // We are expecting to locate the enhanced traces version within the first 5000
+    // characters of the trace file if the given trace file is enhanced traces.
+    // Doing so can avoid serializing the whole trace while needing to serialize
+    // it again in rehydrated session for enhanced traces.
+    const blob = file.slice(0, maximumTraceFileLengthToDetermineEnhancedTraces);
+    const content = await blob.text();
+    if (content.includes('enhancedTraceVersion')) {
+      await window.scheduler?.postTask(() => {
+        this.#launchRehydratedSession(file);
+      }, {priority: 'background'});
+    } else {
+      this.loader = await TimelineLoader.loadFromFile(file, this);
+      this.prepareToLoadTimeline();
+    }
     this.createFileSelector();
+  }
+
+  #launchRehydratedSession(file: File): void {
+    let rehydratingWindow: Window|null = null;
+    let pathToLaunch: string|null = null;
+    const url = new URL(window.location.href);
+    const pathToEntrypoint = url.pathname.slice(0, url.pathname.lastIndexOf('/'));
+    url.pathname = `${pathToEntrypoint}/rehydrated_devtools_app.html`;
+    pathToLaunch = url.toString();
+
+    // Clarifying the window the code is referring to
+    const hostWindow = window;
+    function onMessageHandler(ev: MessageEvent): void {
+      if (url && ev.data && ev.data.type === 'REHYDRATING_WINDOW_READY') {
+        rehydratingWindow?.postMessage({type: 'REHYDRATING_TRACE_FILE', traceFile: file}, url.origin);
+      }
+      hostWindow.removeEventListener('message', onMessageHandler);
+    }
+    hostWindow.addEventListener('message', onMessageHandler);
+    rehydratingWindow = hostWindow.open(pathToLaunch, /* target: */ undefined, 'noopener=false,popup=true');
   }
 
   async loadFromURL(url: Platform.DevToolsPath.UrlString): Promise<void> {

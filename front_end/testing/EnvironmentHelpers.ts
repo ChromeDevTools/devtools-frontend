@@ -553,6 +553,7 @@ export function getGetHostConfigStub(config: Root.Runtime.HostConfig): sinon.Sin
     } as Root.Runtime.HostConfigEnableOriginBoundCookies,
     devToolsAnimationStylesInStylesTab: {
       enabled: false,
+      ...config.devToolsAnimationStylesInStylesTab,
     } as Root.Runtime.HostConfigAnimationStylesInStylesTab,
     isOffTheRecord: false,
   });

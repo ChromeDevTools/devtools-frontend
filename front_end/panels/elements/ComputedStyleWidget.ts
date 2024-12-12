@@ -249,6 +249,7 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
 
     this.computedStyleModel = computedStyleModel;
     this.computedStyleModel.addEventListener(Events.CSS_MODEL_CHANGED, this.update, this);
+    this.computedStyleModel.addEventListener(Events.COMPUTED_STYLE_CHANGED, this.update, this);
 
     this.showInheritedComputedStylePropertiesSetting =
         Common.Settings.Settings.instance().createSetting('show-inherited-computed-style-properties', false);
@@ -291,26 +292,19 @@ export class ComputedStyleWidget extends UI.ThrottledWidget.ThrottledWidget {
     fontsWidget.show(this.contentElement);
   }
 
-  #handleNodeChange(event: Common.EventTarget.EventTargetEvent<SDK.DOMModel.DOMNode|null>): void {
-    void this.computedStyleModel.cssModel()?.trackComputedStyleUpdatesForNode(event.data?.id);
-  }
-
   override onResize(): void {
     const isNarrow = this.contentElement.offsetWidth < 260;
     this.#computedStylesTree.classList.toggle('computed-narrow', isNarrow);
   }
 
   override wasShown(): void {
+    UI.Context.Context.instance().setFlavor(ComputedStyleWidget, this);
     super.wasShown();
     this.registerCSSFiles([computedStyleSidebarPaneStyles]);
-
-    void this.computedStyleModel.cssModel()?.trackComputedStyleUpdatesForNode(this.computedStyleModel.node()?.id);
-    UI.Context.Context.instance().addFlavorChangeListener(SDK.DOMModel.DOMNode, this.#handleNodeChange, this);
   }
 
   override willHide(): void {
-    void this.computedStyleModel.cssModel()?.trackComputedStyleUpdatesForNode(undefined);
-    UI.Context.Context.instance().removeFlavorChangeListener(SDK.DOMModel.DOMNode, this.#handleNodeChange, this);
+    UI.Context.Context.instance().setFlavor(ComputedStyleWidget, null);
   }
 
   override async doUpdate(): Promise<void> {

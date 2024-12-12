@@ -110,48 +110,6 @@ describeWithEnvironment('StackTraceForTraceEvent', function() {
          },
        ]);
      });
-
-  it('correctly skips frames set to be ignored.', async function() {
-    const jsCall = parsedTrace.Renderer.allTraceEntries.find(
-        e => Trace.Types.Events.isProfileCall(e) && e.callFrame.functionName === 'baz');
-    assert.exists(jsCall);
-    const isIgnoreListedCallback = (e: Trace.Types.Events.Event) =>
-        Trace.Types.Events.isProfileCall(e) && e.callFrame.functionName === 'bar';
-    const stackTrace = Trace.Extras.StackTraceForEvent.get(jsCall, parsedTrace, {isIgnoreListedCallback});
-    assert.exists(stackTrace);
-    const stackTraceArray = shapeStackTraceAsArray(stackTrace);
-    assert.lengthOf(stackTraceArray, 4);
-
-    assert.deepEqual(stackTraceArray, [
-      {
-        callFrames: [
-          {columnNumber: 12, functionName: 'baz', lineNumber: 13, scriptId: '53' as Protocol.Runtime.ScriptId, url: ''},
-        ],
-        description: undefined,
-      },
-      {callFrames: [], description: 'requestIdleCallback'},
-      {
-        callFrames: [
-          {columnNumber: 12, functionName: 'foo', lineNumber: 0, scriptId: '53' as Protocol.Runtime.ScriptId, url: ''},
-        ],
-        description: 'setTimeout',
-      },
-      {
-        callFrames: [
-          {
-            columnNumber: 21,
-            functionName: 'startExample',
-            lineNumber: 25,
-            scriptId: '53' as Protocol.Runtime.ScriptId,
-            url: '',
-          },
-          {columnNumber: 0, functionName: '', lineNumber: 0, scriptId: '53', url: ''},
-        ],
-        description: 'requestAnimationFrame',
-      },
-    ]);
-  });
-
   it('uses cached data correctly.', async function() {
     const fooCall = parsedTrace.Renderer.allTraceEntries.find(
         e => Trace.Types.Events.isProfileCall(e) && e.callFrame.functionName === 'foo');

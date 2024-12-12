@@ -1856,9 +1856,8 @@ export class TimelineUIUtils {
     const {startTime} = Trace.Helpers.Timing.eventTimingsMilliSeconds(event);
     let initiatorStackLabel = i18nString(UIStrings.initiatorStackTrace);
     let stackLabel = i18nString(UIStrings.stackTrace);
-    const stackTraceForEvent = Trace.Extras.StackTraceForEvent.get(
-        event, parsedTrace, {isIgnoreListedCallback: Utils.IgnoreList.isIgnoreListedEntry});
-    if (Trace.Types.Events.isProfileCall(event) && stackTraceForEvent) {
+    const stackTraceForEvent = Trace.Extras.StackTraceForEvent.get(event, parsedTrace);
+    if (stackTraceForEvent) {
       contentHelper.addSection(i18nString(UIStrings.stackTrace));
       contentHelper.createChildStackTraceElement(stackTraceForEvent);
       // TODO(andoli): also build stack trace component for other events

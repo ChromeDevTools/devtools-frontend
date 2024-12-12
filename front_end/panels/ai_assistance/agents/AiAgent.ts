@@ -155,9 +155,13 @@ export abstract class ConversationContext<T> {
   }
 }
 
-export interface AgentFunctionDefinition extends Host.AidaClient.FunctionDeclaration {
-  method: (...args: any[]) => Record<string, unknown>;
-}
+export type FunctionDeclaration<Args extends Record<string, unknown>, ReturnType = Record<string, unknown>> = {
+  description: string,
+  parameters: Host.AidaClient.FunctionObjectParam,
+  handler: (args: Args) => Promise<ReturnType>,
+};
+
+export type FunctionDeclarations = Map<string, FunctionDeclaration<Record<string, unknown>, Record<string, unknown>>>;
 
 export abstract class AiAgent<T> {
   static validTemperature(temperature: number|undefined): number|undefined {
@@ -174,7 +178,7 @@ export abstract class AiAgent<T> {
   abstract readonly clientFeature: Host.AidaClient.ClientFeature;
   abstract readonly userTier: string|undefined;
   abstract handleContextDetails(select: ConversationContext<T>|null): AsyncGenerator<ContextResponse, void, void>;
-  functionDefinitions: AgentFunctionDefinition[]|undefined;
+  protected functionDeclarations: FunctionDeclarations = new Map();
   #generatedFromHistory = false;
 
   /**
@@ -199,7 +203,7 @@ export abstract class AiAgent<T> {
   }
 
   get chatHistoryForTesting(): Array<Host.AidaClient.Content> {
-    return this.#chatHistoryForAida;
+    return this.#buildChatHistoryForAida();
   }
 
   set chatNewHistoryForTesting(history: HistoryEntryStorage) {
@@ -235,14 +239,16 @@ export abstract class AiAgent<T> {
     return this.#generatedFromHistory;
   }
 
-  get functionDeclarations(): Host.AidaClient.FunctionDeclaration[]|undefined {
-    return this.functionDefinitions?.map(call => {
-      return {
-        name: call.name,
-        description: call.description,
-        parameters: call.parameters,
-      } satisfies Host.AidaClient.FunctionDeclaration;
-    });
+  #buildFunctionDeclarationsForAida(): Host.AidaClient.FunctionDeclaration[] {
+    const result: Host.AidaClient.FunctionDeclaration[] = [];
+    for (const [name, definition] of this.functionDeclarations.entries()) {
+      result.push({
+        name,
+        description: definition.description,
+        parameters: definition.parameters,
+      });
+    }
+    return result;
   }
 
   serialized(): SerializedAgent {
@@ -301,8 +307,8 @@ export abstract class AiAgent<T> {
       parts: [part],
       role: Host.AidaClient.Role.USER,
     };
-    const history = this.#chatHistoryForAida;
-    const declarations = this.functionDeclarations;
+    const history = this.#buildChatHistoryForAida();
+    const declarations = this.#buildFunctionDeclarationsForAida();
     const request: Host.AidaClient.AidaRequest = {
       client: Host.AidaClient.CLIENT_NAME,
       // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -311,7 +317,7 @@ export abstract class AiAgent<T> {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       historical_contexts: history.length ? history : undefined,
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      ...(declarations ? {function_declarations: declarations} : {}),
+      ...(declarations.length ? {function_declarations: declarations} : {}),
       options: {
         temperature: AiAgent.validTemperature(this.options.temperature),
         // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -323,7 +329,8 @@ export abstract class AiAgent<T> {
         user_tier: Host.AidaClient.convertToUserTierEnum(this.userTier),
       },
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      functionality_type: Host.AidaClient.FunctionalityType.CHAT,
+      functionality_type: declarations.length ? Host.AidaClient.FunctionalityType.AGENTIC_CHAT :
+                                                Host.AidaClient.FunctionalityType.CHAT,
       // eslint-disable-next-line @typescript-eslint/naming-convention
       client_feature: this.clientFeature,
     };
@@ -370,7 +377,7 @@ STOP`;
     return text;
   }
 
-  get #chatHistoryForAida(): Host.AidaClient.Content[] {
+  #buildChatHistoryForAida(): Host.AidaClient.Content[] {
     const history: Array<Host.AidaClient.Content> = [];
     let currentParsedStep: ParsedStep = {};
     let lastRunStartIdx = 0;

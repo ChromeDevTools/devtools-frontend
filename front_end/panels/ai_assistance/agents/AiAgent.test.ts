@@ -542,4 +542,57 @@ describeWithEnvironment('AiAgent', () => {
       }
     });
   });
+
+  describe('functions', () => {
+    class AgentWithFunction extends AiAgent<unknown> {
+      type = AiAssistance.AgentType.STYLING;
+      override preamble = 'preamble';
+      called = 0;
+
+      constructor(opts: AiAssistance.AgentOptions) {
+        super(opts);
+        this.functionDeclarations.set('testFn', {
+          description: 'test fn description',
+          parameters: {type: Host.AidaClient.ParametersTypes.OBJECT, properties: {}, description: 'arg description'},
+          handler: this.#test.bind(this),
+        });
+      }
+
+      async #test(args: {}) {
+        this.called++;
+        return args;
+      }
+
+      // eslint-disable-next-line require-yield
+      override async * handleContextDetails(): AsyncGenerator<AiAssistance.ContextResponse, void, void> {
+        return;
+      }
+
+      clientFeature: Host.AidaClient.ClientFeature = 0;
+      userTier: undefined;
+      options: AiAssistance.RequestOptions = {
+        temperature: 1,
+        modelId: 'test model',
+      };
+    }
+
+    it('should build a request with functions', () => {
+      const agent = new AgentWithFunction({
+        aidaClient: {} as Host.AidaClient.AidaClient,
+      });
+      agent.options.temperature = -1;
+      assert.deepStrictEqual(
+          agent.buildRequest({text: 'test input'}).function_declarations,
+          [{
+            description: 'test fn description',
+            name: 'testFn',
+            parameters: {
+              description: 'arg description',
+              properties: {},
+              type: 6,
+            },
+          }],
+      );
+    });
+  });
 });

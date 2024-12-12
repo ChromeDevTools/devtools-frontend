@@ -62,7 +62,7 @@ interface BaseFunctionParam {
   nullable?: boolean;
 }
 
-interface FunctionPrimitiveParams extends BaseFunctionParam {
+export interface FunctionPrimitiveParams extends BaseFunctionParam {
   type: ParametersTypes.BOOLEAN|ParametersTypes.INTEGER|ParametersTypes.STRING|ParametersTypes.BOOLEAN;
 }
 
@@ -71,7 +71,7 @@ interface FunctionArrayParam extends BaseFunctionParam {
   items: FunctionPrimitiveParams[];
 }
 
-interface FunctionObjectParam extends BaseFunctionParam {
+export interface FunctionObjectParam extends BaseFunctionParam {
   type: ParametersTypes.OBJECT;
   // TODO: this can be also be ObjectParams
   properties: {[Key in string]: FunctionPrimitiveParams|FunctionArrayParam};
@@ -107,6 +107,7 @@ export enum FunctionalityType {
   CHAT = 1,
   // The explain error functionality.
   EXPLAIN_ERROR = 2,
+  AGENTIC_CHAT = 5,
 }
 
 export enum ClientFeature {

@@ -63,7 +63,6 @@ devtools_module("timeline") {
     "EntriesFilter.ts",
     "EventsSerializer.ts",
     "EventsTimelineTreeView.ts",
-    "ExtensionDataGatherer.ts",
     "ExtensionTrackAppender.ts",
     "FreshRecording.ts",
     "GPUTrackAppender.ts",

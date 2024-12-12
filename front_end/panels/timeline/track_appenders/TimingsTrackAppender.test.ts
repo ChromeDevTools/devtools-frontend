@@ -15,7 +15,6 @@ function initTrackAppender(
     entryData: Trace.Types.Events.Event[],
     entryTypeByLevel: Timeline.TimelineFlameChartDataProvider.EntryType[],
     ): Timeline.TimingsTrackAppender.TimingsTrackAppender {
-  Timeline.ExtensionDataGatherer.ExtensionDataGatherer.instance().modelChanged(parsedTrace);
   const compatibilityTracksAppender = new Timeline.CompatibilityTracksAppender.CompatibilityTracksAppender(
       flameChartData, parsedTrace, entryData, entryTypeByLevel);
   return compatibilityTracksAppender.timingsTrackAppender();
@@ -327,7 +326,6 @@ describeWithEnvironment('TimingTrackAppender', function() {
     });
     describe('toggling', function() {
       it('Does not append extension data when the configuration is set to disabled', async function() {
-        Timeline.ExtensionDataGatherer.ExtensionDataGatherer.removeInstance();
         entryData = [];
         flameChartData = PerfUI.FlameChart.FlameChartTimelineData.createEmpty();
         entryTypeByLevel = [];

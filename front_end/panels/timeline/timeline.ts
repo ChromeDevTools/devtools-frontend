@@ -12,7 +12,6 @@ import * as CountersGraph from './CountersGraph.js';
 import * as EntriesFilter from './EntriesFilter.js';
 import * as EventsSerializer from './EventsSerializer.js';
 import * as EventsTimelineTreeView from './EventsTimelineTreeView.js';
-import * as ExtensionDataGatherer from './ExtensionDataGatherer.js';
 import * as ExtensionTrackAppender from './ExtensionTrackAppender.js';
 import * as FreshRecording from './FreshRecording.js';
 import * as GPUTrackAppender from './GPUTrackAppender.js';
@@ -57,7 +56,6 @@ export {
   EntriesFilter,
   EventsSerializer,
   EventsTimelineTreeView,
-  ExtensionDataGatherer,
   ExtensionTrackAppender,
   FreshRecording,
   GPUTrackAppender,

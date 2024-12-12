@@ -464,7 +464,8 @@ describeWithEnvironment('ThreadAppender', function() {
         Meta: {
           traceIsGeneric: false,
         },
-      } as Trace.Handlers.Types.ParsedTrace;
+        ExtensionTraceData: {entryToNode: new Map(), extensionMarkers: [], extensionTrackData: []},
+      } as unknown as Trace.Handlers.Types.ParsedTrace;
 
       // Add the script to ignore list and then append the flamechart data
       ignoreListManager.ignoreListURL(SCRIPT_TO_IGNORE);

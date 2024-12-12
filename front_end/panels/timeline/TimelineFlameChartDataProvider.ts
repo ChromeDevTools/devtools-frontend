@@ -38,7 +38,6 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 
 import {CompatibilityTracksAppender, type DrawOverride, type TrackAppenderName} from './CompatibilityTracksAppender.js';
-import {ExtensionDataGatherer} from './ExtensionDataGatherer.js';
 import {initiatorsDataToDraw} from './Initiators.js';
 import {ModificationsManager} from './ModificationsManager.js';
 import {ThreadAppender} from './ThreadAppender.js';
@@ -404,8 +403,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   setModel(parsedTrace: Trace.Handlers.Types.ParsedTrace|null, isCpuProfile = false): void {
     this.reset();
     this.parsedTrace = parsedTrace;
-    ExtensionDataGatherer.instance().modelChanged(parsedTrace);
-
     this.isCpuProfile = isCpuProfile;
     if (parsedTrace) {
       const {traceBounds} = parsedTrace.Meta;
@@ -524,8 +521,6 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       this.compatibilityTracksAppender?.threadAppenders().forEach(
           threadAppender => threadAppender.setHeaderAppended(false));
     }
-
-    ExtensionDataGatherer.removeInstance();
   }
 
   maxStackDepth(): number {

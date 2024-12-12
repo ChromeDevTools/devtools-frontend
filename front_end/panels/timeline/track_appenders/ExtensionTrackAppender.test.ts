@@ -18,7 +18,6 @@ function initTrackAppender(
     flameChartData: PerfUI.FlameChart.FlameChartTimelineData, parsedTrace: Trace.Handlers.Types.ParsedTrace,
     entryData: Trace.Types.Events.Event[], entryTypeByLevel: Timeline.TimelineFlameChartDataProvider.EntryType[]):
     Timeline.ExtensionTrackAppender.ExtensionTrackAppender[] {
-  Timeline.ExtensionDataGatherer.ExtensionDataGatherer.instance().modelChanged(parsedTrace);
   const compatibilityTracksAppender = new Timeline.CompatibilityTracksAppender.CompatibilityTracksAppender(
       flameChartData, parsedTrace, entryData, entryTypeByLevel);
 
@@ -34,7 +33,6 @@ describeWithEnvironment('ExtensionTrackAppender', function() {
   let entryTypeByLevel: Timeline.TimelineFlameChartDataProvider.EntryType[] = [];
 
   beforeEach(async function() {
-    Timeline.ExtensionDataGatherer.ExtensionDataGatherer.removeInstance();
     ({parsedTrace} = await TraceLoader.traceEngine(this, 'extension-tracks-and-marks.json.gz'));
     extensionTrackAppenders = initTrackAppender(flameChartData, parsedTrace, entryData, entryTypeByLevel);
     let level = 0;
@@ -117,7 +115,6 @@ describeWithEnvironment('ExtensionTrackAppender', function() {
          ] as ExtensionTestData[];
          const traceExtensionData = await createTraceExtensionDataFromTestInput(extensionData);
          const testParsedTrace = getBaseTraceParseModelData({ExtensionTraceData: traceExtensionData});
-         Timeline.ExtensionDataGatherer.ExtensionDataGatherer.removeInstance();
          entryData = [];
          flameChartData = PerfUI.FlameChart.FlameChartTimelineData.createEmpty();
          entryTypeByLevel = [];
@@ -205,7 +202,6 @@ describeWithEnvironment('ExtensionTrackAppender', function() {
 
   describe('toggling', function() {
     it('Does not append extension data when the configuration is set to disabled', async function() {
-      Timeline.ExtensionDataGatherer.ExtensionDataGatherer.removeInstance();
       entryData = [];
       flameChartData = PerfUI.FlameChart.FlameChartTimelineData.createEmpty();
       entryTypeByLevel = [];

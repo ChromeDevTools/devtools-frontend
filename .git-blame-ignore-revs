@@ -349,3 +349,6 @@ aaf6c64ae8d791f878599bf2cea8a9b1e6a5001c
 
 # Always add braces to single-line if-statements (https://crrev.com/c/1821526)
 1d6e57a0e314d709029cac52b98898b828f45a12
+
+# [AI Assistance] Renames and refactorings (https://crrev.com/c/6080811)
+786bd4290956c5b8560a03cf73d860572559e382

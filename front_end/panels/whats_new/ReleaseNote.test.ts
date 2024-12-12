@@ -28,6 +28,7 @@ describe('Release Note', () => {
           header: 'Highlights from Chrome 100 update',
           markdownLinks: [],
           link: 'https://developers.google.com/web/tools/chrome-devtools/' as Platform.DevToolsPath.UrlString,
+          videoLinks: [],
         },
     );
 

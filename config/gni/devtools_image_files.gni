@@ -104,6 +104,8 @@ devtools_svg_sources = [
   "deployed.svg",
   "device-fold.svg",
   "devices.svg",
+  "devtools-thumbnail.svg",
+  "devtools-tips.svg",
   "devtools.svg",
   "dock-bottom.svg",
   "dock-left.svg",

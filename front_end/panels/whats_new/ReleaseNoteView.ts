@@ -12,7 +12,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as LitHtml from '../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import {getReleaseNote, type ReleaseNote} from './ReleaseNoteText.js';
+import {getReleaseNote, type ReleaseNote, VideoType} from './ReleaseNoteText.js';
 
 const {render, html} = LitHtml;
 import releaseNoteViewStyles from './releaseNoteView.css.js';
@@ -27,10 +27,15 @@ const str_ = i18n.i18n.registerUIStrings('panels/whats_new/ReleaseNoteView.ts', 
 
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
+export const WHATS_NEW_THUMBNAIL = '../../Images/whatsnew.svg' as Platform.DevToolsPath.RawPathString;
+export const DEVTOOLS_TIPS_THUMBNAIL = '../../Images/devtools-tips.svg' as Platform.DevToolsPath.RawPathString;
+export const GENERAL_THUMBNAIL = '../../Images/devtools-thumbnail.svg' as Platform.DevToolsPath.RawPathString;
+
 export interface ViewInput {
   markdownContent: Marked.Marked.Token[][];
   getReleaseNote: () => ReleaseNote;
   openNewTab: (link: string) => void;
+  getThumbnailPath: (type: VideoType) => Platform.DevToolsPath.UrlString;
 }
 export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
 export type ViewOutput = unknown;
@@ -79,14 +84,18 @@ export class ReleaseNoteView extends UI.Widget.VBox {
 
         <div class="feature-container">
           <div class="video-container">
-            <x-link
-              href=${releaseNote.link}
-              jslog=${VisualLogging.link().track({click: true}).context('learn-more')}>
-                <div class="video">
-                  <img class="thumbnail" src=${new URL('../../Images/whatsnew.svg', import.meta.url).toString()}>
-                  <div class="thumbnail-description"><span>${releaseNote.header}</span></div>
-                </div>
-            </x-link>
+            ${releaseNote.videoLinks.map((value: {description: string, link: Platform.DevToolsPath.UrlString, type?: VideoType}) => {
+              return html`
+                <x-link
+                href=${value.link}
+                jslog=${VisualLogging.link().track({click: true}).context('learn-more')}>
+                  <div class="video">
+                    <img class="thumbnail" src=${input.getThumbnailPath(value.type ?? VideoType.WHATS_NEW)}>
+                    <div class="thumbnail-description"><span>${value.description}</span></div>
+                  </div>
+              </x-link>
+              `;
+            })}
           </div>
           ${markdownContent.map((markdown: Marked.Marked.Token[]) => {
             return html`<div class="feature"><devtools-markdown-view slot="content" .data=${{tokens: markdown} as MarkdownView.MarkdownView.MarkdownViewData}></devtools-markdown-view></div>`;
@@ -119,8 +128,25 @@ export class ReleaseNoteView extends UI.Widget.VBox {
           getReleaseNote,
           openNewTab: this.#openNewTab,
           markdownContent,
+          getThumbnailPath: this.#getThumbnailPath,
         },
         this, this.contentElement);
+  }
+
+  #getThumbnailPath(type: VideoType): Platform.DevToolsPath.UrlString {
+    let img;
+    switch (type) {
+      case VideoType.WHATS_NEW:
+        img = WHATS_NEW_THUMBNAIL;
+        break;
+      case VideoType.DEVTOOLS_TIPS:
+        img = DEVTOOLS_TIPS_THUMBNAIL;
+        break;
+      case VideoType.OTHER:
+        img = GENERAL_THUMBNAIL;
+        break;
+    }
+    return new URL(img, import.meta.url).toString() as Platform.DevToolsPath.UrlString;
   }
 
   #openNewTab(link: string): void {

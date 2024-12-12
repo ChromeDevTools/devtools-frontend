@@ -6,6 +6,7 @@
 // be shown in Canary (e.g. make sure the release notes are accurate).
 // https://github.com/ChromeDevTools/devtools-frontend/wiki/Release-Notes
 
+import type * as Platform from '../../core/platform/platform.js';
 import * as MarkdownView from '../../ui/components/markdown_view/markdown_view.js';
 
 let registeredLinks = false;
@@ -14,7 +15,14 @@ export interface ReleaseNote {
   version: number;
   header: string;
   markdownLinks: {key: string, link: string}[];
+  videoLinks: {description: string, link: Platform.DevToolsPath.UrlString, type?: VideoType}[];
   link: string;
+}
+
+export const enum VideoType {
+  WHATS_NEW = 'WhatsNew',
+  DEVTOOLS_TIPS = 'DevtoolsTips',
+  OTHER = 'Other',
 }
 
 export function setReleaseNoteForTest(testReleaseNote: ReleaseNote): void {
@@ -46,6 +54,13 @@ let releaseNote: ReleaseNote = {
     {
       key: 'interaction-phases',
       link: 'https://developer.chrome.com/blog/new-in-devtools-132/#interaction-phases',
+    },
+  ],
+  videoLinks: [
+    {
+      description: 'Highlights from the Chrome 132 update',
+      link: 'https://developer.chrome.com/blog/new-in-devtools-132/' as Platform.DevToolsPath.UrlString,
+      type: VideoType.WHATS_NEW,
     },
   ],
   link: 'https://developer.chrome.com/blog/new-in-devtools-132/',

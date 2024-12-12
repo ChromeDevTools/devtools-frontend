@@ -144,6 +144,7 @@ ts_library("unittests") {
 
   sources = [
     "BlockedURLsPane.test.ts",
+    "NetworkConfigView.test.ts",
     "NetworkDataGridNode.test.ts",
     "NetworkItemView.test.ts",
     "NetworkLogView.test.ts",

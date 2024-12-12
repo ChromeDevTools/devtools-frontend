@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import * as EmulationModel from '../emulation/emulation.js';
 
 const BASE_URL = new URL('../../../front_end/emulated_devices/', import.meta.url).toString();
@@ -37,5 +38,24 @@ describe('EmulatedDevices can compute CSS image URLs', () => {
         `a lot of ${BASE_URL}stuff in a ${BASE_URL}singleline and more url() @@url (not/a/resource.gif)`,
         EmulationModel.EmulatedDevices.computeRelativeImageURL(
             'a lot of @url(stuff) in a @url(single)line and more url() @@url (not/a/resource.gif)'));
+  });
+});
+
+describeWithEnvironment('emulatedDevices', () => {
+  it('before parsing, all Chrome UAs all have %s placeholder for major version patching', () => {
+    const devices = EmulationModel.EmulatedDevices.EmulatedDevicesList.rawEmulatedDevicesForTest();
+    const chromeRawDevices = devices.filter(d => d['user-agent'].includes(' Chrome/'));
+    assert.isAtLeast(chromeRawDevices.length, 20);
+    // We should not add any new UAs without the %s that gets patched via `patchUserAgentWithChromeVersion`
+    assert.isTrue(chromeRawDevices.every(d => d['user-agent'].includes('Chrome/%s')));
+  });
+
+  it('after parsing, all Chrome UAs all have %s placeholder for major version patching', () => {
+    const edList = new EmulationModel.EmulatedDevices.EmulatedDevicesList();
+    const parsedDevices = edList.standard();
+    const chromeDevices = parsedDevices.filter(d => d.userAgent.includes(' Chrome/'));
+    assert.isAtLeast(chromeDevices.length, 20);
+    // They are patched while parsed, so there should be none remaining
+    assert.lengthOf(chromeDevices.filter(d => d.userAgent.includes('Chrome/%s')), 0);
   });
 });

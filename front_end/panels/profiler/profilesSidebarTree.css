@@ -184,8 +184,18 @@ li .titles {
 
 li .titles > .title-container {
   z-index: 1;
-  text-overflow: ellipsis;
   overflow: hidden;
+}
+
+li .titles > .title-container:has(:not(.editing)) {
+  text-overflow: ellipsis;
+}
+
+li .titles > .title-container .title.editing {
+  display: flex;
+  overflow: hidden;
+  margin-inline: 0;
+  padding-inline: 0;
 }
 
 li.small .titles {

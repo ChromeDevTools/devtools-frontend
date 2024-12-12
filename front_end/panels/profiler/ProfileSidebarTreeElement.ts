@@ -99,8 +99,14 @@ export class ProfileSidebarTreeElement extends UI.TreeOutline.TreeElement {
   }
 
   editingCommitted(_container: Element, newTitle: string): void {
-    this.editing = null;
-    this.profile.setTitle(newTitle);
+    if (newTitle.trim().length === 0) {
+      if (this.editing) {
+        this.editing.cancel();
+      }
+    } else {
+      this.editing = null;
+      this.profile.setTitle(newTitle);
+    }
   }
 
   editingCancelled(): void {

@@ -145,7 +145,8 @@ devtools-button.link-icon {
 }
 
 .experiment-label {
-  margin-right: 2px;
+  margin: var(--sys-size-3) var(--sys-size-2) var(--sys-size-3) 0;
+  white-space: normal;
 }
 
 .settings-experiment-unstable {

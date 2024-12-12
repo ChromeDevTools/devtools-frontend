@@ -6,7 +6,9 @@ import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import type * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
+import type * as Protocol from '../../../generated/protocol.js';
 import * as Bindings from '../../../models/bindings/bindings.js';
+import * as Logs from '../../../models/logs/logs.js';
 import * as Workspace from '../../../models/workspace/workspace.js';
 import {
   createTarget,
@@ -46,6 +48,10 @@ describeWithMockConnection('FileAgent', () => {
       targetManager,
     });
     Bindings.IgnoreListManager.IgnoreListManager.instance({forceNew: true, debuggerWorkspaceBinding});
+  });
+
+  afterEach(() => {
+    sinon.restore();
   });
 
   describe('buildRequest', () => {
@@ -162,6 +168,52 @@ describeWithMockConnection('FileAgent', () => {
       await uiSourceCode.requestContentData();
     }
     return uiSourceCode;
+  }
+
+  function createNetworkRequest(): SDK.NetworkRequest.NetworkRequest {
+    const networkRequest = SDK.NetworkRequest.NetworkRequest.create(
+        'requestId' as Protocol.Network.RequestId,
+        'https://www.example.com/script.js' as Platform.DevToolsPath.UrlString, '' as Platform.DevToolsPath.UrlString,
+        null, null, null);
+    networkRequest.statusCode = 200;
+    networkRequest.setRequestHeaders([{name: 'content-type', value: 'bar1'}]);
+    networkRequest.responseHeaders = [{name: 'content-type', value: 'bar2'}, {name: 'x-forwarded-for', value: 'bar3'}];
+
+    const initiatorNetworkRequest = SDK.NetworkRequest.NetworkRequest.create(
+        'requestId' as Protocol.Network.RequestId, 'https://www.initiator.com' as Platform.DevToolsPath.UrlString,
+        '' as Platform.DevToolsPath.UrlString, null, null, null);
+    const initiatedNetworkRequest1 = SDK.NetworkRequest.NetworkRequest.create(
+        'requestId' as Protocol.Network.RequestId, 'https://www.example.com/1' as Platform.DevToolsPath.UrlString,
+        '' as Platform.DevToolsPath.UrlString, null, null, null);
+    const initiatedNetworkRequest2 = SDK.NetworkRequest.NetworkRequest.create(
+        'requestId' as Protocol.Network.RequestId, 'https://www.example.com/2' as Platform.DevToolsPath.UrlString,
+        '' as Platform.DevToolsPath.UrlString, null, null, null);
+
+    sinon.stub(Logs.NetworkLog.NetworkLog.instance(), 'initiatorGraphForRequest')
+        .withArgs(networkRequest)
+        .returns({
+          initiators: new Set([networkRequest, initiatorNetworkRequest]),
+          initiated: new Map([
+            [networkRequest, initiatorNetworkRequest],
+            [initiatedNetworkRequest1, networkRequest],
+            [initiatedNetworkRequest2, networkRequest],
+          ]),
+        })
+        .withArgs(initiatedNetworkRequest1)
+        .returns({
+          initiators: new Set([]),
+          initiated: new Map([
+            [initiatedNetworkRequest1, networkRequest],
+          ]),
+        })
+        .withArgs(initiatedNetworkRequest2)
+        .returns({
+          initiators: new Set([]),
+          initiated: new Map([
+            [initiatedNetworkRequest2, networkRequest],
+          ]),
+        });
+    return networkRequest;
   }
 
   describe('run', () => {
@@ -291,6 +343,29 @@ test`,
       });
       assert.strictEqual(formatFile(uiSourceCode), `File name: script.js
 URL: http://example.test/script.js
+File content:
+\`\`\`
+lorem ipsum
+\`\`\``);
+    });
+
+    it('formats file with associated request initiator chain', async () => {
+      const networkRequest = createNetworkRequest();
+      const uiSourceCode = await createUISourceCode({
+        content: 'lorem ipsum',
+        requestContentData: true,
+        url: networkRequest.url(),
+      });
+      sinon.stub(SDK.ResourceTreeModel.ResourceTreeModel.prototype, 'resourceForURL')
+          .withArgs(networkRequest.url())
+          .returns({request: networkRequest} as SDK.Resource.Resource);
+      assert.strictEqual(formatFile(uiSourceCode), `File name: script.js
+URL: https://www.example.com/script.js
+Request initiator chain:
+- URL: <redacted cross-origin initiator URL>
+\t- URL: https://www.example.com/script.js
+\t\t- URL: https://www.example.com/1
+\t\t- URL: https://www.example.com/2
 File content:
 \`\`\`
 lorem ipsum

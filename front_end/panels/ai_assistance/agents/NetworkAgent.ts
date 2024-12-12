@@ -378,7 +378,7 @@ function formatRequestInitiated(
  * Note: nothing here should include information from origins other than
  * the request's origin.
  */
-function formatRequestInitiatorChain(request: SDK.NetworkRequest.NetworkRequest): string {
+export function formatRequestInitiatorChain(request: SDK.NetworkRequest.NetworkRequest): string {
   const allowedOrigin = new URL(request.url()).origin;
   let initiatorChain = '';
   let lineStart = '- URL: ';

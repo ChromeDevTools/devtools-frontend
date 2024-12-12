@@ -20,6 +20,7 @@ devtools_module("insights") {
     "Models.ts",
     "RenderBlocking.ts",
     "SlowCSSSelector.ts",
+    "Statistics.ts",
     "ThirdParties.ts",
     "Viewport.ts",
     "types.ts",

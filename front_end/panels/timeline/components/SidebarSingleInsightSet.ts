@@ -49,23 +49,26 @@ const EXPERIMENTAL_INSIGHTS: ReadonlySet<string> = new Set([
   'FontDisplay',
 ]);
 
+type InsightNameToComponentMapping =
+    Record<string, typeof Insights.BaseInsightComponent.BaseInsightComponent<Trace.Insights.Types.InsightModel<{}>>>;
+
 /**
- * Every insight (INCLUDING experimental ones)
- * The order of these properties is the order the insights will be shown in the sidebar.
- * TODO(crbug.com/368135130): sort this in a smart way!
+ * Every insight (INCLUDING experimental ones).
+ *
+ * Order does not matter (but keep alphabetized).
  */
-const INSIGHT_NAME_TO_COMPONENT = {
-  InteractionToNextPaint: Insights.InteractionToNextPaint.InteractionToNextPaint,
-  LCPPhases: Insights.LCPPhases.LCPPhases,
-  LCPDiscovery: Insights.LCPDiscovery.LCPDiscovery,
+const INSIGHT_NAME_TO_COMPONENT: InsightNameToComponentMapping = {
   CLSCulprits: Insights.CLSCulprits.CLSCulprits,
-  RenderBlocking: Insights.RenderBlocking.RenderBlocking,
-  ImageDelivery: Insights.ImageDelivery.ImageDelivery,
   DocumentLatency: Insights.DocumentLatency.DocumentLatency,
   FontDisplay: Insights.FontDisplay.FontDisplay,
-  Viewport: Insights.Viewport.Viewport,
-  ThirdParties: Insights.ThirdParties.ThirdParties,
+  ImageDelivery: Insights.ImageDelivery.ImageDelivery,
+  InteractionToNextPaint: Insights.InteractionToNextPaint.InteractionToNextPaint,
+  LCPDiscovery: Insights.LCPDiscovery.LCPDiscovery,
+  LCPPhases: Insights.LCPPhases.LCPPhases,
+  RenderBlocking: Insights.RenderBlocking.RenderBlocking,
   SlowCSSSelector: Insights.SlowCSSSelector.SlowCSSSelector,
+  ThirdParties: Insights.ThirdParties.ThirdParties,
+  Viewport: Insights.Viewport.Viewport,
 };
 
 export class SidebarSingleInsightSet extends HTMLElement {
@@ -127,53 +130,10 @@ export class SidebarSingleInsightSet extends HTMLElement {
     // clang-format on
   }
 
-  #getINP(insightSetKey: string):
-      {value: Trace.Types.Timing.MicroSeconds, event: Trace.Types.Events.SyntheticInteractionPair}|null {
-    const insight = Trace.Insights.Common.getInsight('InteractionToNextPaint', this.#data.insights, insightSetKey);
-    if (!insight?.longestInteractionEvent?.dur) {
-      return null;
-    }
-
-    const value = insight.longestInteractionEvent.dur;
-    return {value, event: insight.longestInteractionEvent};
-  }
-
-  #getLCP(insightSetKey: string):
-      {value: Trace.Types.Timing.MicroSeconds, event: Trace.Types.Events.LargestContentfulPaintCandidate}|null {
-    const insight = Trace.Insights.Common.getInsight('LCPPhases', this.#data.insights, insightSetKey);
-    if (!insight || !insight.lcpMs || !insight.lcpEvent) {
-      return null;
-    }
-
-    const value = Trace.Helpers.Timing.millisecondsToMicroseconds(insight.lcpMs);
-    return {value, event: insight.lcpEvent};
-  }
-
-  #getCLS(insightSetKey: string): {value: number, worstShiftEvent: Trace.Types.Events.Event|null} {
-    const insight = Trace.Insights.Common.getInsight('CLSCulprits', this.#data.insights, insightSetKey);
-    if (!insight) {
-      // Unlike the other metrics, there is still a value for this metric even with no data.
-      // This means this view will always display a CLS score.
-      return {value: 0, worstShiftEvent: null};
-    }
-
-    // TODO(cjamcl): the CLS insight should be doing this for us.
-    let maxScore = 0;
-    let worstCluster;
-    for (const cluster of insight.clusters) {
-      if (cluster.clusterCumulativeScore > maxScore) {
-        maxScore = cluster.clusterCumulativeScore;
-        worstCluster = cluster;
-      }
-    }
-
-    return {value: maxScore, worstShiftEvent: worstCluster?.worstShiftEvent ?? null};
-  }
-
   #renderMetrics(insightSetKey: string): LitHtml.TemplateResult {
-    const lcp = this.#getLCP(insightSetKey);
-    const cls = this.#getCLS(insightSetKey);
-    const inp = this.#getINP(insightSetKey);
+    const lcp = Trace.Insights.Common.getLCP(this.#data.insights, insightSetKey);
+    const cls = Trace.Insights.Common.getCLS(this.#data.insights, insightSetKey);
+    const inp = Trace.Insights.Common.getINP(this.#data.insights, insightSetKey);
 
     return html`
     <div class="metrics-row">
@@ -214,12 +174,16 @@ export class SidebarSingleInsightSet extends HTMLElement {
     const models = insightSet.model;
     const shownInsights: LitHtml.TemplateResult[] = [];
     const passedInsights: LitHtml.TemplateResult[] = [];
-    for (const [name, componentClass] of Object.entries(INSIGHT_NAME_TO_COMPONENT)) {
+    for (const [name, model] of Object.entries(models)) {
+      const componentClass = INSIGHT_NAME_TO_COMPONENT[name as keyof Trace.Insights.Types.InsightModels];
+      if (!componentClass) {
+        continue;
+      }
+
       if (!includeExperimental && EXPERIMENTAL_INSIGHTS.has(name)) {
         continue;
       }
 
-      const model = models[name as keyof typeof models];
       if (!model ||
           !shouldRenderForCategory({activeCategory: this.#data.activeCategory, insightCategory: model.category})) {
         continue;

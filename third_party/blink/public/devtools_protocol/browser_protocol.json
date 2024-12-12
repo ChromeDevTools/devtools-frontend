@@ -3394,6 +3394,24 @@
                     ]
                 },
                 {
+                    "id": "CSSAnimationStyle",
+                    "description": "CSS style coming from animations with the name of the animation.",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "name",
+                            "description": "The name of the animation.",
+                            "optional": true,
+                            "type": "string"
+                        },
+                        {
+                            "name": "style",
+                            "description": "The style coming from the animation.",
+                            "$ref": "CSSStyle"
+                        }
+                    ]
+                },
+                {
                     "id": "InheritedStyleEntry",
                     "description": "Inherited CSS rule collection from ancestor node.",
                     "type": "object",
@@ -3411,6 +3429,28 @@
                             "items": {
                                 "$ref": "RuleMatch"
                             }
+                        }
+                    ]
+                },
+                {
+                    "id": "InheritedAnimatedStyleEntry",
+                    "description": "Inherited CSS style collection for animated styles from ancestor node.",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "animationStyles",
+                            "description": "Styles coming from the animations of the ancestor, if any, in the style inheritance chain.",
+                            "optional": true,
+                            "type": "array",
+                            "items": {
+                                "$ref": "CSSAnimationStyle"
+                            }
+                        },
+                        {
+                            "name": "transitionsStyle",
+                            "description": "The style coming from the transitions of the ancestor, if any, in the style inheritance chain.",
+                            "optional": true,
+                            "$ref": "CSSStyle"
                         }
                     ]
                 },
@@ -4766,6 +4806,43 @@
                             "description": "Attribute-defined element style (e.g. resulting from \"width=20 height=100%\").",
                             "optional": true,
                             "$ref": "CSSStyle"
+                        }
+                    ]
+                },
+                {
+                    "name": "getAnimatedStylesForNode",
+                    "description": "Returns the styles coming from animations & transitions\nincluding the animation & transition styles coming from inheritance chain.",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "nodeId",
+                            "$ref": "DOM.NodeId"
+                        }
+                    ],
+                    "returns": [
+                        {
+                            "name": "animationStyles",
+                            "description": "Styles coming from animations.",
+                            "optional": true,
+                            "type": "array",
+                            "items": {
+                                "$ref": "CSSAnimationStyle"
+                            }
+                        },
+                        {
+                            "name": "transitionsStyle",
+                            "description": "Style coming from transitions.",
+                            "optional": true,
+                            "$ref": "CSSStyle"
+                        },
+                        {
+                            "name": "inherited",
+                            "description": "Inherited style entries for animationsStyle and transitionsStyle from\nthe inheritance chain of the element.",
+                            "optional": true,
+                            "type": "array",
+                            "items": {
+                                "$ref": "InheritedAnimatedStyleEntry"
+                            }
                         }
                     ]
                 },

@@ -1269,6 +1269,14 @@ export namespace ProtocolMapping {
       returnType: Protocol.CSS.GetInlineStylesForNodeResponse;
     };
     /**
+     * Returns the styles coming from animations & transitions
+     * including the animation & transition styles coming from inheritance chain.
+     */
+    'CSS.getAnimatedStylesForNode': {
+      paramsType: [Protocol.CSS.GetAnimatedStylesForNodeRequest];
+      returnType: Protocol.CSS.GetAnimatedStylesForNodeResponse;
+    };
+    /**
      * Returns requested styles for a DOM node identified by `nodeId`.
      */
     'CSS.getMatchedStylesForNode': {

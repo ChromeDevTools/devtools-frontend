@@ -153,6 +153,7 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
       'Render blocking requests',
       'Document request latency',
       'Optimize viewport for mobile',
+      'Optimize DOM size',
       'CSS Selector costs',
     ]);
 
@@ -164,6 +165,7 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
       'Render blocking requests',
       'Document request latency',
       'Optimize viewport for mobile',
+      'Optimize DOM size',
       'CSS Selector costs',
     ]);
   });

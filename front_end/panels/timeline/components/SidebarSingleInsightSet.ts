@@ -47,6 +47,7 @@ export interface SidebarSingleInsightSetData {
  * users. */
 const EXPERIMENTAL_INSIGHTS: ReadonlySet<string> = new Set([
   'FontDisplay',
+  'DOMSize',
 ]);
 
 type InsightNameToComponentMapping =
@@ -59,6 +60,7 @@ type InsightNameToComponentMapping =
  */
 const INSIGHT_NAME_TO_COMPONENT: InsightNameToComponentMapping = {
   CLSCulprits: Insights.CLSCulprits.CLSCulprits,
+  DOMSize: Insights.DOMSize.DOMSize,
   DocumentLatency: Insights.DocumentLatency.DocumentLatency,
   FontDisplay: Insights.FontDisplay.FontDisplay,
   ImageDelivery: Insights.ImageDelivery.ImageDelivery,

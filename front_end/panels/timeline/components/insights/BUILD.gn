@@ -18,6 +18,7 @@ devtools_module("insights") {
   sources = [
     "BaseInsightComponent.ts",
     "CLSCulprits.ts",
+    "DOMSize.ts",
     "DocumentLatency.ts",
     "EventRef.ts",
     "FontDisplay.ts",

@@ -5,6 +5,7 @@
 import * as BaseInsightComponent from './BaseInsightComponent.js';
 import * as CLSCulprits from './CLSCulprits.js';
 import * as DocumentLatency from './DocumentLatency.js';
+import * as DOMSize from './DOMSize.js';
 import * as EventRef from './EventRef.js';
 import * as FontDisplay from './FontDisplay.js';
 import * as Helpers from './Helpers.js';
@@ -25,6 +26,7 @@ export {
   BaseInsightComponent,
   CLSCulprits,
   DocumentLatency,
+  DOMSize,
   EventRef,
   FontDisplay,
   Helpers,

@@ -1846,6 +1846,7 @@ grd_files_debug_sources = [
   "front_end/panels/timeline/components/ignoreListSetting.css.js",
   "front_end/panels/timeline/components/insights/BaseInsightComponent.js",
   "front_end/panels/timeline/components/insights/CLSCulprits.js",
+  "front_end/panels/timeline/components/insights/DOMSize.js",
   "front_end/panels/timeline/components/insights/DocumentLatency.js",
   "front_end/panels/timeline/components/insights/EventRef.js",
   "front_end/panels/timeline/components/insights/FontDisplay.js",

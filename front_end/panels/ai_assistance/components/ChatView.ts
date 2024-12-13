@@ -133,6 +133,22 @@ const UIStringsNotTranslate = {
    */
   inputPlaceholderForPerformanceAgent: 'Ask a question about the selected item and its call tree',
   /**
+   *@description Placeholder text for the chat UI input when there is no context selected.
+   */
+  inputPlaceholderForFreestylerAgentNoContext: 'Select an element to ask a question',
+  /**
+   *@description Placeholder text for the chat UI input when there is no context selected.
+   */
+  inputPlaceholderForNetworkAgentNoContext: 'Select a network request to ask a question',
+  /**
+   *@description Placeholder text for the chat UI input when there is no context selected.
+   */
+  inputPlaceholderForFileAgentNoContext: 'Select a file to ask a question',
+  /**
+   *@description Placeholder text for the chat UI input when there is no context selected.
+   */
+  inputPlaceholderForPerformanceAgentNoContext: 'Select an item to ask a question',
+  /**
    * @description Placeholder text for the input shown when the conversation is blocked because a cross-origin context was selected.
    */
   crossOriginError: 'To talk about data from another origin, start a new chat',
@@ -1043,13 +1059,19 @@ export class ChatView extends HTMLElement {
     }
     switch (agentType) {
       case AgentType.STYLING:
-        return lockedString(UIStringsNotTranslate.inputPlaceholderForFreestylerAgent);
+        return this.#props.selectedContext ? lockedString(UIStringsNotTranslate.inputPlaceholderForFreestylerAgent) :
+                                             lockedString(UIStringsNotTranslate.inputPlaceholderForFileAgentNoContext);
       case AgentType.FILE:
-        return lockedString(UIStringsNotTranslate.inputPlaceholderForFileAgent);
+        return this.#props.selectedContext ? lockedString(UIStringsNotTranslate.inputPlaceholderForFileAgent) :
+                                             lockedString(UIStringsNotTranslate.inputPlaceholderForFileAgentNoContext);
       case AgentType.NETWORK:
-        return lockedString(UIStringsNotTranslate.inputPlaceholderForNetworkAgent);
+        return this.#props.selectedContext ?
+            lockedString(UIStringsNotTranslate.inputPlaceholderForNetworkAgent) :
+            lockedString(UIStringsNotTranslate.inputPlaceholderForNetworkAgentNoContext);
       case AgentType.PERFORMANCE:
-        return lockedString(UIStringsNotTranslate.inputPlaceholderForPerformanceAgent);
+        return this.#props.selectedContext ?
+            lockedString(UIStringsNotTranslate.inputPlaceholderForPerformanceAgent) :
+            lockedString(UIStringsNotTranslate.inputPlaceholderForPerformanceAgentNoContext);
     }
   }
 

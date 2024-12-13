@@ -2627,13 +2627,8 @@ export function isV8Compile(event: Event): event is V8Compile {
 export interface FunctionCall extends Complete {
   name: Name.FUNCTION_CALL;
   args: Args&{
-    data?: {
+    data?: Partial<CallFrame>& {
       frame?: string,
-      columnNumber?: number,
-      lineNumber?: number,
-      functionName?: string,
-      scriptId?: number,
-      url?: string,
     },
   };
 }

@@ -270,6 +270,59 @@ describeWithMockConnection('TimelineUIUtils', function() {
       assert.exists(stackTraceData);
       assert.isTrue(stackTraceData[0].startsWith('someFunction @'));
     });
+    it('maps to the authored name and script of a function call', async function() {
+      const {script} = await loadBasicSourceMapExample(target);
+      const [lineNumber, columnNumber, ts, dur, pid, tid] =
+          [0, 51, 10, 100, Trace.Types.Events.ProcessID(1), Trace.Types.Events.ThreadID(1)];
+      const profileCall = makeProfileCall('function', ts, dur, pid, tid);
+
+      profileCall.callFrame = {
+        columnNumber,
+        functionName: 'minified',
+        lineNumber: 0,
+        scriptId: script.scriptId,
+        url: 'file://gen.js',
+      };
+
+      const functionCall = makeCompleteEvent(Trace.Types.Events.Name.FUNCTION_CALL, ts, dur, '', pid, tid) as
+          Trace.Types.Events.FunctionCall;
+      functionCall.args = {
+        data: {
+          // line and column number of function calls have an offset
+          // from CPU profile values.
+          columnNumber: columnNumber + 1,
+          lineNumber: lineNumber + 1,
+          functionName: 'minified',
+          scriptId: script.scriptId,
+          url: 'file://gen.js',
+        },
+      };
+      const workersData: Trace.Handlers.ModelHandlers.Workers.WorkersData = {
+        workerSessionIdEvents: [],
+        workerIdByThread: new Map(),
+        workerURLById: new Map(),
+      };
+      // This only includes data used in the SourceMapsResolver and
+      // TimelineUIUtils
+      const parsedTrace = getBaseTraceParseModelData({
+        Samples: makeMockSamplesHandlerData([profileCall]),
+        Workers: workersData,
+        Renderer: makeMockRendererHandlerData([functionCall]),
+      });
+
+      const resolver = new Timeline.Utils.SourceMapsResolver.SourceMapsResolver(parsedTrace);
+      await resolver.install();
+
+      const details = await Timeline.TimelineUIUtils.TimelineUIUtils.buildTraceEventDetails(
+          parsedTrace,
+          functionCall,
+          new Components.Linkifier.Linkifier(),
+          false,
+      );
+      const detailsData = getRowDataForDetailsElement(details).at(0);
+      assert.exists(detailsData);
+      assert.deepEqual(detailsData, {title: 'Function', value: 'someFunction @ gen.js:1:52'});
+    });
   });
   describe('adjusting timestamps for events and navigations', function() {
     it('adjusts the time for a DCL event after a navigation', async function() {

@@ -576,17 +576,19 @@ type LinkifyLocationOptions = {
 
 export class TimelineUIUtils {
   static frameDisplayName(frame: Protocol.Runtime.CallFrame): string {
+    const maybeResolvedData = Utils.SourceMapsResolver.SourceMapsResolver.resolvedCodeLocationForCallFrame(frame);
+    const functionName = maybeResolvedData?.name || frame.functionName;
     if (!Trace.Extras.TimelineJSProfile.TimelineJSProfileProcessor.isNativeRuntimeFrame(frame)) {
-      return UI.UIUtils.beautifyFunctionName(frame.functionName);
+      return UI.UIUtils.beautifyFunctionName(functionName);
     }
-    const nativeGroup = Trace.Extras.TimelineJSProfile.TimelineJSProfileProcessor.nativeGroup(frame.functionName);
+    const nativeGroup = Trace.Extras.TimelineJSProfile.TimelineJSProfileProcessor.nativeGroup(functionName);
     switch (nativeGroup) {
       case Trace.Extras.TimelineJSProfile.TimelineJSProfileProcessor.NativeGroups.COMPILE:
         return i18nString(UIStrings.compile);
       case Trace.Extras.TimelineJSProfile.TimelineJSProfileProcessor.NativeGroups.PARSE:
         return i18nString(UIStrings.parse);
     }
-    return frame.functionName;
+    return functionName;
   }
 
   static testContentMatching(
@@ -903,19 +905,18 @@ export class TimelineUIUtils {
         details = document.createElement('span');
 
         // FunctionCall events have an args.data that could be a CallFrame, if all the details are present, so we check for that.
-        if (Trace.Types.Events.isFunctionCall(event) && event.args.data &&
-            Trace.Types.Events.objectIsCallFrame(event.args.data)) {
+        const callFrame = Trace.Helpers.Trace.getZeroIndexedStackTraceForEvent(event)?.at(0);
+        if (Trace.Types.Events.isFunctionCall(event) && callFrame) {
           UI.UIUtils.createTextChild(
               details,
               TimelineUIUtils.frameDisplayName(
-                  {...event.args.data, scriptId: String(event.args.data.scriptId) as Protocol.Runtime.ScriptId}));
+                  {...callFrame, scriptId: String(callFrame.scriptId) as Protocol.Runtime.ScriptId}));
         }
-        const {lineNumber, columnNumber} = Trace.Helpers.Trace.getZeroIndexedLineAndColumnForEvent(event);
         const location = this.linkifyLocation({
           scriptId: unsafeEventData['scriptId'],
           url: unsafeEventData['url'],
-          lineNumber: lineNumber || 0,
-          columnNumber,
+          lineNumber: callFrame?.lineNumber || 0,
+          columnNumber: callFrame?.columnNumber,
           target,
           isFreshRecording,
           linkifier,

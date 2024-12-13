@@ -95,7 +95,7 @@ export class SourceMapsResolver extends EventTarget {
     }
     // If no source mapping was found for an entry's URL, then default
     // to the URL value contained in the event itself, if any.
-    const url = Trace.Extras.URLForEntry.getNonResolved(parsedTrace, entry);
+    const url = Trace.Handlers.Helpers.getNonResolvedURL(entry, parsedTrace);
     if (url) {
       return Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(url)?.url() ?? url;
     }

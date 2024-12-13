@@ -999,4 +999,23 @@ describeWithEnvironment('RendererHandler', function() {
       assert.isTrue(process?.url?.includes('fledge-demo.glitch.me'));
     }
   });
+  describe('ThirdParty', () => {
+    it('correctly creates entities (simple)', async function() {
+      const {Renderer} = await handleEventsFromTraceFile(this, 'load-simple.json.gz');
+      const entities = Array.from(Renderer.entityMappings.eventsByEntity.keys()).map(entity => entity.name);
+      const expectedEntities = ['localhost', 'Google Fonts'];
+      assert.deepEqual(entities, expectedEntities);
+    });
+    it('correctly creates entities', async function() {
+      const {Renderer} = await handleEventsFromTraceFile(this, 'lantern/paul/trace.json.gz');
+      const entityNames = [...Renderer.entityMappings.eventsByEntity.keys()].map(entity => entity.name);
+      assert.deepEqual([...new Set(entityNames)], [
+        'paulirish.com',
+        'Google Tag Manager',
+        'Google Fonts',
+        'Disqus',
+        'Google Analytics',
+      ]);
+    });
+  });
 });

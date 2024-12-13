@@ -8,33 +8,6 @@ import * as Trace from '../trace.js';
 
 describeWithEnvironment('ThirdParties', function() {
   describe('Entities', function() {
-    it('correctly makes up entities', async function() {
-      const expectedEntities = new Map<string, string>([
-        ['http://localhost:8080/', 'localhost'],
-        ['https://fonts.googleapis.com/css2?family=Orelega+One&display=swap', 'googleapis.com'],
-        ['https://emp.bbci.co.uk/emp/bump-4/bump-4.js', 'bbci.co.uk'],
-        ['http://localhost:8080/blocking.js', 'localhost'],
-        ['https://fonts.gstatic.com/s/orelegaone/v1/3qTpojOggD2XtAdFb-QXZFt93kY.woff2', 'gstatic.com'],
-        ['chrome-extension://chromeextension/something/exciting.js', 'chromeextension'],
-      ]);
-
-      for (const [url, expectedEntity] of expectedEntities.entries()) {
-        const gotEntity =
-            Trace.Extras.ThirdParties.makeUpEntity(new Map<string, Trace.Extras.ThirdParties.Entity>(), url)?.name ??
-            '';
-        assert.deepEqual(gotEntity, expectedEntity);
-      }
-    });
-    it('coreectly makes up chrome extension entity', async function() {
-      const url = 'chrome-extension://chromeextension/something/exciting.js';
-      const gotEntity =
-          Trace.Extras.ThirdParties.makeUpEntity(new Map<string, Trace.Extras.ThirdParties.Entity>(), url);
-      assert.exists(gotEntity);
-
-      assert.deepEqual(gotEntity.name, 'chromeextension');
-      assert.deepEqual(gotEntity.category, 'Chrome Extension');
-      assert.deepEqual(gotEntity.homepage, 'https://chromewebstore.google.com/detail/chromeextension');
-    });
     it('gets correct entitiesByRequest', async function() {
       const {parsedTrace} = await TraceLoader.traceEngine(this, 'load-simple.json.gz');
       const reqs = parsedTrace.NetworkRequests.byTime;

@@ -5,7 +5,7 @@
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as ThirdPartyWeb from '../../../third_party/third-party-web/third-party-web.js';
 import * as Extras from '../extras/extras.js';
-import type * as Handlers from '../handlers/handlers.js';
+import * as Handlers from '../handlers/handlers.js';
 import * as Helpers from '../helpers/helpers.js';
 import type * as Types from '../types/types.js';
 
@@ -83,7 +83,7 @@ export function generateInsight(
 
   const firstPartyUrl = context.navigation?.args.data?.documentLoaderURL ?? parsedTrace.Meta.mainFrameURL;
   const firstPartyEntity = ThirdPartyWeb.ThirdPartyWeb.getEntity(firstPartyUrl) ||
-      Extras.ThirdParties.makeUpEntity(madeUpEntityCache, firstPartyUrl);
+      Handlers.Helpers.makeUpEntity(madeUpEntityCache, firstPartyUrl);
 
   return finalize({
     relatedEvents: getRelatedEvents(summaries, firstPartyEntity),

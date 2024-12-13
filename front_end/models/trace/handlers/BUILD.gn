@@ -40,12 +40,14 @@ devtools_module("handlers") {
     "UserTimingsHandler.ts",
     "WarningsHandler.ts",
     "WorkersHandler.ts",
+    "helpers.ts",
     "types.ts",
   ]
 
   deps = [
     "../../../core/platform:bundle",
     "../../../generated",
+    "../../../third_party/third-party-web:bundle",
     "../../cpu_profile:bundle",
     "../helpers:bundle",
     "../types:bundle",
@@ -97,6 +99,7 @@ ts_library("unittests") {
     "UserTimingsHandler.test.ts",
     "WarningsHandler.test.ts",
     "WorkersHandler.test.ts",
+    "helpers.test.ts",
   ]
 
   deps = [

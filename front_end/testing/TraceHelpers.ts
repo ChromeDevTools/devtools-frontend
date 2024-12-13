@@ -440,6 +440,11 @@ export function makeMockRendererHandlerData(entries: Trace.Types.Events.Event[],
     compositorTileWorkers: new Map(),
     entryToNode,
     allTraceEntries: renderereEvents,
+    entityMappings: {
+      entityByEvent: new Map(),
+      eventsByEntity: new Map(),
+      createdEntityCache: new Map(),
+    },
   };
 }
 
@@ -625,6 +630,11 @@ export function getBaseTraceParseModelData(overrides: Partial<ParsedTrace> = {})
       compositorTileWorkers: new Map(),
       entryToNode: new Map(),
       allTraceEntries: [],
+      entityMappings: {
+        entityByEvent: new Map(),
+        eventsByEntity: new Map(),
+        createdEntityCache: new Map(),
+      },
     },
     Screenshots: {
       all: [],
@@ -649,6 +659,11 @@ export function getBaseTraceParseModelData(overrides: Partial<ParsedTrace> = {})
       byOrigin: new Map(),
       byTime: [],
       webSocket: [],
+      entityMappings: {
+        entityByEvent: new Map(),
+        eventsByEntity: new Map(),
+        createdEntityCache: new Map(),
+      },
     },
     GPU: {
       mainGPUThreadTasks: [],

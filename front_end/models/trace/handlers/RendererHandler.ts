@@ -7,7 +7,9 @@ import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
 
 import {data as auctionWorkletsData} from './AuctionWorkletsHandler.js';
+import * as HandlerHelpers from './helpers.js';
 import {data as metaHandlerData, type FrameProcessData} from './MetaHandler.js';
+import {data as networkRequestHandlerData} from './NetworkRequestsHandler.js';
 import {data as samplesHandlerData} from './SamplesHandler.js';
 import type {HandlerName} from './types.js';
 
@@ -24,6 +26,12 @@ import type {HandlerName} from './types.js';
  */
 
 const processes = new Map<Types.Events.ProcessID, RendererProcess>();
+
+const entityMappings: HandlerHelpers.EntityMappings = {
+  eventsByEntity: new Map<HandlerHelpers.Entity, Types.Events.Event[]>(),
+  entityByEvent: new Map<Types.Events.Event, HandlerHelpers.Entity>(),
+  createdEntityCache: new Map<string, HandlerHelpers.Entity>(),
+};
 
 // We track the compositor tile worker thread name events so that at the end we
 // can return these keyed by the process ID. These are used in the frontend to
@@ -69,6 +77,9 @@ export function handleUserConfig(userConfig: Types.Configuration.Configuration):
 export function reset(): void {
   processes.clear();
   entryToNode.clear();
+  entityMappings.eventsByEntity.clear();
+  entityMappings.entityByEvent.clear();
+  entityMappings.createdEntityCache.clear();
   allTraceEntries.length = 0;
   completeEventStack.length = 0;
   compositorTileWorkers.length = 0;
@@ -116,6 +127,10 @@ export function handleEvent(event: Types.Events.Event): void {
 
 export async function finalize(): Promise<void> {
   const {mainFrameId, rendererProcessesByFrame, threadsInProcess} = metaHandlerData();
+  const {entityMappings: networkEntityMappings} = networkRequestHandlerData();
+  // Build on top of the created entity cache to avoid de-dupes of entities that are made up.
+  entityMappings.createdEntityCache = new Map(networkEntityMappings.createdEntityCache);
+
   assignMeta(processes, mainFrameId, rendererProcessesByFrame, threadsInProcess);
   sanitizeProcesses(processes);
   buildHierarchy(processes);
@@ -129,6 +144,11 @@ export function data(): RendererHandlerData {
     compositorTileWorkers: new Map(gatherCompositorThreads()),
     entryToNode: new Map(entryToNode),
     allTraceEntries: [...allTraceEntries],
+    entityMappings: {
+      entityByEvent: new Map(entityMappings.entityByEvent),
+      eventsByEntity: new Map(entityMappings.eventsByEntity),
+      createdEntityCache: new Map(entityMappings.createdEntityCache),
+    },
   };
 }
 
@@ -336,6 +356,7 @@ export function buildHierarchy(
       // Update the entryToNode map with the entries from this thread
       for (const [entry, node] of treeData.entryToNode) {
         entryToNode.set(entry, node);
+        HandlerHelpers.updateEventForEntities(entry, entityMappings);
       }
     }
   }
@@ -374,7 +395,7 @@ export function makeCompleteEvent(event: Types.Events.Begin|Types.Events.End): T
 }
 
 export function deps(): HandlerName[] {
-  return ['Meta', 'Samples', 'AuctionWorklets'];
+  return ['Meta', 'Samples', 'AuctionWorklets', 'NetworkRequests'];
 }
 
 export interface RendererHandlerData {
@@ -390,6 +411,7 @@ export interface RendererHandlerData {
    * samples.
    */
   allTraceEntries: Types.Events.Event[];
+  entityMappings: HandlerHelpers.EntityMappings;
 }
 
 export interface RendererProcess {

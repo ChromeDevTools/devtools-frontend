@@ -11,4 +11,3 @@ export * as ThirdParties from './ThirdParties.js';
 export * as TimelineJSProfile from './TimelineJSProfile.js';
 export * as TraceFilter from './TraceFilter.js';
 export * as TraceTree from './TraceTree.js';
-export * as URLForEntry from './URLForEntry.js';

@@ -186,7 +186,7 @@ export class TimelineTreeView extends
     if (!this.#parsedTrace) {
       return name;
     }
-    return name + ':@' + Trace.Extras.URLForEntry.getNonResolved(this.#parsedTrace, event);
+    return name + ':@' + Trace.Handlers.Helpers.getNonResolvedURL(event, this.#parsedTrace);
   }
 
   setSearchableView(searchableView: UI.SearchableView.SearchableView): void {
@@ -685,8 +685,8 @@ export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<Gri
         iconContainer.insertBefore(info.icon, icon);
       }
     } else if (event) {
-      name.textContent = TimelineUIUtils.eventTitle(event);
       const parsedTrace = this.treeView.parsedTrace();
+      name.textContent = TimelineUIUtils.eventTitle(event);
       const target = parsedTrace ? targetForEvent(parsedTrace, event) : null;
       const linkifier = this.treeView.linkifier;
       const isFreshRecording = Boolean(parsedTrace && Tracker.instance().recordingIsFresh(parsedTrace));
@@ -956,7 +956,7 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
       case GroupBy.URL:
         return (event: Trace.Types.Events.Event) => {
           const parsedTrace = this.parsedTrace();
-          return parsedTrace ? Trace.Extras.URLForEntry.getNonResolved(parsedTrace, event) ?? '' : '';
+          return parsedTrace ? Trace.Handlers.Helpers.getNonResolvedURL(event, parsedTrace) ?? '' : '';
         };
       case GroupBy.Frame:
         return (event: Trace.Types.Events.Event) => {
@@ -974,7 +974,7 @@ export class AggregatedTimelineTreeView extends TimelineTreeView {
     if (!parsedTrace) {
       return '';
     }
-    const url = Trace.Extras.URLForEntry.getNonResolved(parsedTrace, event);
+    const url = Trace.Handlers.Helpers.getNonResolvedURL(event, parsedTrace);
     if (!url) {
       return '';
     }

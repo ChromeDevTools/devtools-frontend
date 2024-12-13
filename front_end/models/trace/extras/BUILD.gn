@@ -18,7 +18,6 @@ devtools_module("extras") {
     "TimelineJSProfile.ts",
     "TraceFilter.ts",
     "TraceTree.ts",
-    "URLForEntry.ts",
   ]
 
   deps = [
@@ -53,7 +52,6 @@ ts_library("unittests") {
     "ThirdParties.test.ts",
     "TraceFilter.test.ts",
     "TraceTree.test.ts",
-    "URLForEntry.test.ts",
   ]
 
   deps = [

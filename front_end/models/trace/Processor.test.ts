@@ -118,6 +118,7 @@ describeWithEnvironment('TraceProcessor', function() {
           Renderer: Trace.Handlers.ModelHandlers.Renderer,
           Samples: Trace.Handlers.ModelHandlers.Samples,
           AuctionWorklets: Trace.Handlers.ModelHandlers.AuctionWorklets,
+          NetworkRequests: Trace.Handlers.ModelHandlers.NetworkRequests,
         },
         Trace.Types.Configuration.defaults());
 

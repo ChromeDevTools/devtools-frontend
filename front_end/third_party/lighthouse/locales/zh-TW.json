@@ -2621,6 +2621,66 @@
   "flow-report/src/i18n/ui-strings.js | title": {
     "message": "Lighthouse 使用者流程報表"
   },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/CLSCulprits.js | description": {
+    "message": "版面配置位移是指元素在使用者未進行任何互動時移動。[調查版面配置位移的原因](https://web.dev/articles/optimize-cls)，例如在網頁載入期間新增、移除元素，或變更字型。"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/CLSCulprits.js | title": {
+    "message": "版面配置位移主因"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/DocumentLatency.js | description": {
+    "message": "第一個網路要求最為重要。避免重新導向、確保伺服器快速回應，並啟用文字壓縮功能，即可縮短延遲時間。"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/DocumentLatency.js | title": {
+    "message": "文件要求延遲"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/FontDisplay.js | description": {
+    "message": "建議將 [font-display](https://developer.chrome.com/blog/font-display) 設為 swap 或 optional，確保文字始終可見。swap 可透過[字型指標覆寫](https://developer.chrome.com/blog/font-fallbacks)，進一步減少版面配置位移。"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/FontDisplay.js | title": {
+    "message": "字型顯示"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/InteractionToNextPaint.js | description": {
+    "message": "從最長的階段開始調查，[可盡量縮短延遲時間](https://web.dev/articles/optimize-inp#optimize_interactions)。如要縮短處理時間，請[盡量降低主執行緒的成本](https://web.dev/articles/optimize-long-tasks)，通常是針對 JavaScript。"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/InteractionToNextPaint.js | title": {
+    "message": "依階段顯示 INP"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/LCPDiscovery.js | description": {
+    "message": "如要提升 LCP，請讓 LCP 圖片立即[顯示](https://web.dev/articles/optimize-lcp#1_eliminate_resource_load_delay)在 HTML 中，[避免延遲載入](https://web.dev/articles/lcp-lazy-loading)"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/LCPDiscovery.js | title": {
+    "message": "LCP 要求探索"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/LCPPhases.js | description": {
+    "message": "每個[階段都有特定改善策略](https://web.dev/articles/optimize-lcp#lcp-breakdown)。理想狀態下，大部分的 LCP 時間應該用於載入資源，而非延遲。"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/LCPPhases.js | title": {
+    "message": "依階段顯示 LCP"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/RenderBlocking.js | description": {
+    "message": "要求會阻礙網頁的初始轉譯作業，進而導致 LCP 延遲。你可以透過[延後或內嵌](https://web.dev/learn/performance/understanding-the-critical-path#render-blocking_resources/)的方式，將這些網路要求移出關鍵路徑。"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/RenderBlocking.js | title": {
+    "message": "轉譯封鎖要求"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/SlowCSSSelector.js | description": {
+    "message": "如果「重新計算樣式」的成本仍然偏高，可以使用選取器最佳化功能降低成本。針對經過時間偏長及慢速路徑百分比偏高的[選取器進行最佳化](https://developer.chrome.com/docs/devtools/performance/selector-stats)。選取器越簡單、數量越少，DOM 的規模越小、結構越單純，越能降低比對成本。"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/SlowCSSSelector.js | title": {
+    "message": "CSS 選取器成本"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ThirdParties.js | description": {
+    "message": "第三方程式碼可能會嚴重影響載入效能。建議[減少第三方程式碼並延遲載入](https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/loading-third-party-javascript/)，優先載入網頁內容。"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/ThirdParties.js | title": {
+    "message": "第三方"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/Viewport.js | description": {
+    "message": "網頁的可視區域並未針對行動裝置最佳化，因此輕觸互動可能會[延遲最多 300 毫秒](https://developer.chrome.com/blog/300ms-tap-delay-gone-away/)。"
+  },
+  "node_modules/@paulirish/trace_engine/models/trace/insights/Viewport.js | title": {
+    "message": "可視區域未針對行動裝置完成最佳化調整"
+  },
   "node_modules/lighthouse-stack-packs/packs/amp.js | efficient-animated-content": {
     "message": "你可以對動畫內容使用 [`amp-anim`](https://amp.dev/documentation/components/amp-anim/)，這樣一來，畫面外的內容即會盡量節省 CPU 用量。"
   },
@@ -2658,55 +2718,55 @@
     "message": "建議你使用元件開發套件 (CDK) 中的 `BreakpointObserver` 公用程式來管理圖片中斷點。[瞭解詳情](https://material.angular.io/cdk/layout/overview)。"
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | efficient-animated-content": {
-    "message": "Consider uploading your `GIF` to a service which will make it available to embed as an HTML5 video."
+    "message": "建議你採用能將上傳的 `GIF` 以 HTML5 影片形式嵌入的服務。"
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | modern-image-formats": {
     "message": "請考慮在網站上設定[含有 Convert 圖片樣式的 WebP 圖片格式](https://www.drupal.org/docs/core-modules-and-themes/core-modules/image-module/working-with-images#styles)。"
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | offscreen-images": {
-    "message": "Consider configuring lazy load images in `Drupal`. The field formatters for images support `lazy` or `eager`."
+    "message": "建議你在 `Drupal` 中設定延遲載入圖片。圖片的欄位格式設定工具支援 `lazy` 或 `eager`。"
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | prioritize-lcp-image": {
-    "message": "If the LCP element is dynamically added to the page, you should optimize the image in order to improve LCP. [Learn more](https://www.smashingmagazine.com/2023/08/methods-improving-drupal-largest-contentful-paint-core-web-vital/)."
+    "message": "如果 LCP 元素是以動態方式新增到網頁，必須完成圖片最佳化才能提升 LCP。[瞭解詳情](https://www.smashingmagazine.com/2023/08/methods-improving-drupal-largest-contentful-paint-core-web-vital/)。"
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | redirects": {
-    "message": "Redirects introduce additional delays before the page can be loaded. If the [Redirect](https://www.drupal.org/project/redirect) module is installed, review if unnecessary redirects can be removed. [Learn more](https://developers.google.com/web/tools/lighthouse/audits/redirects)."
+    "message": "重新導向會導致網頁載入的延遲時間更長。如果已安裝 [Redirect](https://www.drupal.org/project/redirect) 模組，請檢查是否可移除非必要的重新導向。[瞭解詳情](https://developers.google.com/web/tools/lighthouse/audits/redirects)。"
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | render-blocking-resources": {
-    "message": "Consider using [a module](https://www.drupal.org/project/critical_css) to inline critical CSS and JavaScript, and use the defer attribute for non-critical CSS or JavaScript."
+    "message": "建議你使用[模組](https://www.drupal.org/project/critical_css)來內嵌重要的 CSS 和 JavaScript，並針對重要性較低的 CSS 或 JavaScript 使用延遲屬性。"
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | server-response-time": {
-    "message": "Offload traffic with one or more `Drupal` caching modules such as `Internal Page Cache`, `Internal Dynamic Page Cache`, and `BigPipe`. Couple these with a CDN to further improve response time. Your hosting servers should make use of PHP OPcache. Consider using memory-caching such as Redis or Memcached to reduce database query times. Lastly use performant themes, modules, and faster servers to lower server response time."
+    "message": "使用 `Internal Page Cache`、`Internal Dynamic Page Cache` 和 `BigPipe` 等一或多個 `Drupal` 快取模組卸載流量。將上述模組搭配 CDN 使用，可進一步縮短回應時間。代管伺服器應採用 PHP OPcache。建議你使用 Redis 或 Memcache 等記憶體快取，縮短資料庫查詢時間。最後，請使用效能良好的主題、模組和速度更快的伺服器，縮短伺服器回應時間。"
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | total-byte-weight": {
-    "message": "Consider using [Responsive Image Styles](https://www.drupal.org/documentation/modules/responsive_image) to reduce the size of images loaded on your page. If you are using `Views` to show multiple content items on a page, consider implementing pagination to limit the number of content items shown on a given page."
+    "message": "建議你使用[回應式圖片樣式](https://www.drupal.org/documentation/modules/responsive_image)來縮減網頁載入圖片的大小。如果你使用 `Views` 在網頁上顯示多個內容項目，建議你實作分頁來限制特定網頁顯示的內容項目數量。"
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-css": {
-    "message": "Ensure you have enabled \"Aggregate CSS files\" in the \"Administration » Configuration » Development\" page."
+    "message": "確認你已啟用「Administration」»「Configuration」»「Development」頁面上的「Aggregate CSS files」。"
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unminified-javascript": {
-    "message": "Ensure you have enabled \"Aggregate JavaScript files\" in the \"Administration » Configuration » Development\" page."
+    "message": "確認你已啟用「Administration」»「Configuration」»「Development」頁面上的「Aggregate JavaScript files」。"
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unused-css-rules": {
-    "message": "Consider removing unused CSS rules and only attach the needed `Drupal` libraries to the relevant page or component in a page. See the [`Drupal` documentation](https://www.drupal.org/docs/develop/theming-drupal/adding-assets-css-js-to-a-drupal-theme-via-librariesyml#define) for details. To identify attached libraries that are adding extraneous CSS, try running [code coverage](https://developer.chrome.com/docs/devtools/coverage) in Chrome DevTools. You can identify the theme/module responsible from the URL of the stylesheet when CSS aggregation is disabled in your `Drupal` site. Look out for themes/modules that have many stylesheets in the list which have a lot of red in code coverage. A theme/module should only attach a stylesheet library if it is actually used on the page."
+    "message": "建議你移除未使用的 CSS 規則，並僅將必要的 `Drupal` 程式庫附加至相關網頁或網頁上的元件。詳情請參閱 [`Drupal` 說明文件](https://www.drupal.org/docs/develop/theming-drupal/adding-assets-css-js-to-a-drupal-theme-via-librariesyml#define)。如要找出會新增多餘 CSS 的附加程式庫，請前往 Chrome 開發人員工具執行[程式碼涵蓋率](https://developer.chrome.com/docs/devtools/coverage)功能。在 `Drupal` 網站上停用 CSS 匯總功能後，你可以透過樣式表網址找出有問題的主題/模組。如果在主題/模組的清單中，有許多樣式表的程式碼涵蓋率大量標示為紅色，請特別留意。主題/模組只應附加網頁實際使用的樣式表程式庫。"
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | unused-javascript": {
-    "message": "Consider removing unused JavaScript assets and only attach the needed `Drupal` libraries to the relevant page or component in a page. See the [Drupal documentation](https://www.drupal.org/docs/develop/theming-drupal/adding-assets-css-js-to-a-drupal-theme-via-librariesyml#define) for details. To identify attached libraries that are adding extraneous JavaScript, try running [code coverage](https://developer.chrome.com/docs/devtools/coverage) in Chrome DevTools. You can identify the theme/module responsible from the URL of the script when JavaScript aggregation is disabled in your `Drupal` site. Look out for themes/modules that have many scripts in the list which have a lot of red in code coverage. A theme/module should only attach a script library if it is actually used on the page."
+    "message": "建議你移除未使用的 JavaScript 資產，並僅將必要的 `Drupal` 程式庫附加至相關網頁或網頁上的元件。詳情請參閱 [Drupal 說明文件](https://www.drupal.org/docs/develop/theming-drupal/adding-assets-css-js-to-a-drupal-theme-via-librariesyml#define)。如要找出會新增多餘 JavaScript 的附加程式庫，請前往 Chrome 開發人員工具執行[程式碼涵蓋率](https://developer.chrome.com/docs/devtools/coverage)功能。在 `Drupal` 網站上停用 JavaScript 匯總功能後，你可以透過指令碼網址找出有問題的主題/模組。如果在主題/模組的清單中，有許多指令碼的程式碼涵蓋率大量標示為紅色，請特別留意。主題/模組只應附加網頁實際使用的指令碼程式庫。"
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | uses-long-cache-ttl": {
-    "message": "Set the \"Browser and proxy cache maximum age\" in the \"Administration » Configuration » Development\" page. Read about [`Drupal` cache and optimizing for performance](https://www.drupal.org/docs/8/api/cache-api/cache-api)."
+    "message": "在「Administration」»「Configuration」»「Development」頁面上設定「Browser and proxy cache maximum age」。瞭解 [`Drupal` 快取及如何提高效能](https://www.drupal.org/docs/8/api/cache-api/cache-api)。"
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | uses-optimized-images": {
-    "message": "Consider using [a module](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A123&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=image&solrsort=iss_project_release_usage+desc&op=Search) that automatically optimizes and reduces the size of images uploaded through the site while retaining quality. Also, ensure you are using the native [Responsive Image Styles](https://www.drupal.org/documentation/modules/responsive_image) provided from `Drupal` for all images rendered on the site."
+    "message": "如果圖片是透過網站上傳，建議你使用可自動最佳化及縮減圖片大小，而且不會影響畫質的[模組](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=im_vid_3%3A123&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=image&solrsort=iss_project_release_usage+desc&op=Search)。此外，請確保網站上所有轉譯的圖片都採用 `Drupal` 內建的[回應式圖片樣式](https://www.drupal.org/documentation/modules/responsive_image)。"
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | uses-rel-preconnect": {
-    "message": "`Preconnect` or `dns-prefetch` resource hints can be added by installing and configuring [a module](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=Preconnect&solrsort=score+desc&op=Search) that provides facilities for user agent resource hints."
+    "message": "如要新增 `Preconnect` 或 `dns-prefetch` 資源提示，可以安裝並設定[模組](https://www.drupal.org/project/project_module?f%5B0%5D=&f%5B1%5D=&f%5B2%5D=&f%5B3%5D=&f%5B4%5D=sm_field_project_type%3Afull&f%5B5%5D=&f%5B6%5D=&text=Preconnect&solrsort=score+desc&op=Search)來執行使用者代理程式資源提示的功能。"
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | uses-responsive-images": {
-    "message": "Ensure that you are using the native [Responsive Image Styles](https://www.drupal.org/documentation/modules/responsive_image) provided from `Drupal`. Use the Responsive Image Styles when rendering image fields through view modes, views, or images uploaded through the WYSIWYG editor."
+    "message": "確認你已採用 `Drupal` 內建的[回應式圖片樣式](https://www.drupal.org/documentation/modules/responsive_image)。透過檢視模式、檢視畫面或透過 WYSIWYG 編輯器上傳的圖片轉譯圖片欄位時，請採用回應式圖片樣式。"
   },
   "node_modules/lighthouse-stack-packs/packs/drupal.js | uses-text-compression": {
-    "message": "Text-based resources should be served with compression (gzip, deflate or brotli) to minimize total network bytes. Consider using a CDN that natively supports this, or configure the web server to perform this operation. [Learn more](https://developers.google.com/web/tools/lighthouse/audits/text-compression)."
+    "message": "提供的文字資源應經過 (gzip、deflate 或 brotli) 壓縮，盡量減少網路傳輸資料量。建議你使用原生支援這項功能的 CDN，或是設定網路伺服器來執行這項作業。[瞭解詳情](https://developers.google.com/web/tools/lighthouse/audits/text-compression)。"
   },
   "node_modules/lighthouse-stack-packs/packs/ezoic.js | font-display": {
     "message": "使用 [Ezoic Leap](https://pubdash.ezoic.com/speed) 並啟用 `Optimize Fonts` 以自動利用 `font-display` CSS 功能，確保系統在載入網站字型時使用者可以到文字。"
@@ -3036,7 +3096,7 @@
     "message": "有些 WordPress 外掛程式能協助你[內嵌重要的素材資源](https://wordpress.org/plugins/search/critical+css/)或[延後載入較不重要的資源](https://wordpress.org/plugins/search/defer+css+javascript/)。請注意，這些外掛程式的最佳化設定可能會對現有主題或外掛程式的功能有不良影響，因此你可能需要變更程式碼。"
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | server-response-time": {
-    "message": "Choose a lightweight theme (ideally a block theme) and implement full-page caching or a static site solution. Disable unnecessary plugins to minimize server overhead. Consider upgrading your hosting to managed or dedicated service."
+    "message": "選擇輕量主題 (最好是區塊主題)，並實作全頁快取或靜態網站解決方案。停用不必要的外掛程式，盡量減少伺服器負擔。建議你將代管作業升級為代管或專屬服務。"
   },
   "node_modules/lighthouse-stack-packs/packs/wordpress.js | total-byte-weight": {
     "message": "建議你在文章清單中顯示摘錄 (例如加入更多標記)、減少特定頁面顯示的文章數量、將較長的文章分為多個頁面，或使用可延遲載入留言的外掛程式。"

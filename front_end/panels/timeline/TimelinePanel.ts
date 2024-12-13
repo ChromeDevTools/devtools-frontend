@@ -460,6 +460,13 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   #eventToRelatedInsights: TimelineComponents.RelatedInsightChips.EventToRelatedInsightsMap = new Map();
   #shortcutsDialog: Dialogs.ShortcutDialog.ShortcutDialog = new Dialogs.ShortcutDialog.ShortcutDialog();
   /**
+   * Track if the user has opened the shortcuts dialog before. We do this so that the
+   * very first time the performance panel is open after the shortcuts dialog ships, we can
+   * automatically pop it open to aid discovery.
+   */
+  #userHadShortcutsDialogOpenedOnce = Common.Settings.Settings.instance().createSetting<boolean>(
+      'timeline.user-had-shortcuts-dialog-opened-once', false);
+  /**
    * Navigation radio buttons located in the shortcuts dialog.
    */
   #navigationRadioButtons = document.createElement('form');
@@ -1127,7 +1134,11 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
   #setupNavigationSetting(): HTMLElement {
     const currentNavSetting = Common.Settings.moduleSetting('flamechart-selected-navigation').get();
-    this.#shortcutsDialog.data = {shortcuts: this.#getShortcutsInfo(currentNavSetting === 'classic')};
+    const userHadShortcutsDialogOpenedOnce = this.#userHadShortcutsDialogOpenedOnce.get();
+    this.#shortcutsDialog.data = {
+      shortcuts: this.#getShortcutsInfo(currentNavSetting === 'classic'),
+      open: !userHadShortcutsDialogOpenedOnce,
+    };
 
     this.#navigationRadioButtons.classList.add('nav-radio-buttons');
     UI.ARIAUtils.markAsRadioGroup(this.#navigationRadioButtons);
@@ -1148,6 +1159,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.#classicNavRadioButton.setAttribute(
         'jslog', `${VisualLogging.action().track({click: true}).context('flamechart-select-classic-navigation')}`);
 
+    this.#userHadShortcutsDialogOpenedOnce.set(true);
     return this.#navigationRadioButtons;
   }
 

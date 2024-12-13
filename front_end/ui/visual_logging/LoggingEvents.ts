@@ -152,7 +152,7 @@ function contextFromKeyCodes(event: Event): string|undefined {
   return components.join('-');
 }
 
-async function contextAsNumber(context: string|undefined): Promise<number|undefined> {
+export async function contextAsNumber(context: string|undefined): Promise<number|undefined> {
   if (typeof context === 'undefined') {
     return undefined;
   }

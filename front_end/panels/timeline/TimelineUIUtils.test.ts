@@ -832,7 +832,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
           new Components.Linkifier.Linkifier(),
           false,
       );
-      const rowData = getRowDataForDetailsElement(details);
+      const rowData = getRowDataForDetailsElement(details).slice(0, 2);
       assert.deepEqual(
           rowData,
           [
@@ -841,7 +841,6 @@ describeWithMockConnection('TimelineUIUtils', function() {
               value: 'This is a child task',
             },
             {title: 'Tip', value: 'Do something about it'},
-            {title: undefined, value: 'appendACorgi @ localhost:3000/static/js/bundle.js:274:19'},
           ],
       );
     });
@@ -860,16 +859,13 @@ describeWithMockConnection('TimelineUIUtils', function() {
           new Components.Linkifier.Linkifier(),
           false,
       );
-      const rowData = getRowDataForDetailsElement(details);
+      const rowData = getRowDataForDetailsElement(details)[0];
       assert.deepEqual(
           rowData,
-          [
             {
               title: 'Description',
               value: 'This marks the start of a task',
             },
-            {title: undefined, value: 'mockChangeDetection @ localhost:3000/static/js/bundle.js:295:17'},
-          ],
       );
     });
 
@@ -991,9 +987,15 @@ describeWithMockConnection('TimelineUIUtils', function() {
           false,
       );
       const markerStackTraceData = getStackTraceForDetailsElement(markerDetails);
+      assert.exists(markerStackTraceData);
+      assert.lengthOf(markerStackTraceData, 15);
       assert.deepEqual(
-          markerStackTraceData,
-          ['mockChangeDetection @ localhost:3000/static/js/bundle.js:295:17'],
+          markerStackTraceData.slice(0, 3),
+          [
+            'mockChangeDetection @ localhost:3000/static/js/bundle.js:282:31',
+            'appendACorgi @ localhost:3000/static/js/bundle.js:216:24',
+            'invokeGuardedCallbackDev @ localhost:3000/static/js/bundle.js:11204:70',
+          ],
       );
 
       const trackEntryDetails = await Timeline.TimelineUIUtils.TimelineUIUtils.buildTraceEventDetails(
@@ -1003,9 +1005,15 @@ describeWithMockConnection('TimelineUIUtils', function() {
           false,
       );
       const trackEntryStackTraceData = getStackTraceForDetailsElement(trackEntryDetails);
+      assert.exists(trackEntryStackTraceData);
+      assert.lengthOf(trackEntryStackTraceData, 14);
       assert.deepEqual(
-          trackEntryStackTraceData,
-          ['appendACorgi @ localhost:3000/static/js/bundle.js:274:19'],
+          trackEntryStackTraceData.slice(0, 3),
+          [
+            'appendACorgi @ localhost:3000/static/js/bundle.js:216:24',
+            'invokeGuardedCallbackDev @ localhost:3000/static/js/bundle.js:11204:70',
+            'invokeGuardedCallback @ localhost:3000/static/js/bundle.js:11347:35',
+          ],
       );
     });
     it('renders the stack trace of user timings properly', async function() {

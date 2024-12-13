@@ -2,9 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as Platform from '../../../core/platform/platform.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import type * as Handlers from '../handlers/handlers.js';
-import type * as Helpers from '../helpers/helpers.js';
+import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
 
 export const stackTraceForEventInTrace =
@@ -24,11 +25,15 @@ export function get(event: Types.Events.Event, parsedTrace: Handlers.Types.Parse
   if (resultFromCache) {
     return resultFromCache;
   }
-  if (!Types.Events.isProfileCall(event)) {
-    return null;
+  let result: Protocol.Runtime.StackTrace|null = null;
+  if (Types.Events.isProfileCall(event)) {
+    result = getForProfileCall(event, parsedTrace);
+  } else if (Types.Extensions.isSyntheticExtensionEntry(event)) {
+    result = getForExtensionEntry(event, parsedTrace);
   }
-  const result = getForProfileCall(event, parsedTrace);
-  cacheForTrace.set(event, result);
+  if (result) {
+    cacheForTrace.set(event, result);
+  }
   return result;
 }
 
@@ -94,6 +99,59 @@ function getForProfileCall(
     node = node.parent;
   }
   return topStackTrace;
+}
+
+/**
+ * Finds the JS call in which an extension entry was injected (the
+ * code location that called the extension API), and returns its stack
+ * trace.
+ */
+function getForExtensionEntry(event: Types.Extensions.SyntheticExtensionEntry, parsedTrace: Handlers.Types.ParsedTrace):
+    Protocol.Runtime.StackTrace|null {
+  const eventCallPoint = Helpers.Trace.getZeroIndexedStackTraceForEvent(event)?.[0];
+  if (!eventCallPoint) {
+    return null;
+  }
+  const eventCallTime = Types.Events.isPerformanceMeasureBegin(event.rawSourceEvent) ?
+      event.rawSourceEvent.args.callTime :
+      event.rawSourceEvent.args.data?.callTime;
+  if (eventCallTime === undefined) {
+    return null;
+  }
+  const callsInThread = parsedTrace.Renderer.processes.get(event.pid)?.threads.get(event.tid)?.profileCalls;
+  if (!callsInThread) {
+    return null;
+  }
+  const matchByName = callsInThread.filter(e => {
+    return e.callFrame.functionName === eventCallPoint.functionName;
+  });
+
+  const lastCallBeforeEventIndex =
+      Platform.ArrayUtilities.nearestIndexFromEnd(matchByName, profileCall => profileCall.ts <= eventCallTime);
+  const firstCallAfterEventIndex =
+      Platform.ArrayUtilities.nearestIndexFromBeginning(matchByName, profileCall => profileCall.ts >= eventCallTime);
+  const lastCallBeforeEvent = typeof lastCallBeforeEventIndex === 'number' && matchByName.at(lastCallBeforeEventIndex);
+  const firstCallAfterEvent = typeof firstCallAfterEventIndex === 'number' && matchByName.at(firstCallAfterEventIndex);
+
+  let closestMatchingProfileCall: Types.Events.SyntheticProfileCall;
+  if (!lastCallBeforeEvent && !firstCallAfterEvent) {
+    return null;
+  }
+  if (!lastCallBeforeEvent) {
+    // Per the check above firstCallAfterEvent is guaranteed to exist
+    // but ts is unaware, so we cast the type.
+    closestMatchingProfileCall = firstCallAfterEvent as Types.Events.SyntheticProfileCall;
+  } else if (!firstCallAfterEvent) {
+    closestMatchingProfileCall = lastCallBeforeEvent;
+  } else if (Helpers.Trace.eventContainsTimestamp(lastCallBeforeEvent, eventCallTime)) {
+    closestMatchingProfileCall = lastCallBeforeEvent;
+  }  // pick the closest when the choice isn't clear.
+  else if (eventCallTime - lastCallBeforeEvent.ts < firstCallAfterEvent.ts - eventCallTime) {
+    closestMatchingProfileCall = lastCallBeforeEvent;
+  } else {
+    closestMatchingProfileCall = firstCallAfterEvent;
+  }
+  return get(closestMatchingProfileCall, parsedTrace);
 }
 /**
  * Determines if a function is a native JS API (like setTimeout,

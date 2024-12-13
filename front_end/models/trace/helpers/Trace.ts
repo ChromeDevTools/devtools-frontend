@@ -11,7 +11,6 @@ import * as Types from '../types/types.js';
 import {SyntheticEventsManager} from './SyntheticEvents.js';
 import {eventTimingsMicroSeconds} from './Timing.js';
 
-type MatchedPairType<T extends Types.Events.PairableAsync> = Types.Events.SyntheticEventPair<T>;
 type MatchingPairableAsyncEvents = {
   begin: Types.Events.PairableAsyncBegin|null,
   end: Types.Events.PairableAsyncEnd|null,
@@ -179,8 +178,8 @@ export function getNavigationForTraceEvent(
   return navigations[eventNavigationIndex];
 }
 
-export function extractId(event: Types.Events.PairableAsync|MatchedPairType<Types.Events.PairableAsync>): string|
-    undefined {
+export function extractId(event: Types.Events.PairableAsync|
+                          Types.Events.SyntheticEventPair<Types.Events.PairableAsync>): string|undefined {
   return event.id ?? event.id2?.global ?? event.id2?.local;
 }
 
@@ -288,9 +287,9 @@ export function createSortedSyntheticEvents<T extends Types.Events.PairableAsync
       end: Types.Events.PairableAsyncEnd | null,
       instant?: Types.Events.PairableAsyncInstant[],
     }>,
-    syntheticEventCallback?: (syntheticEvent: MatchedPairType<T>) => void,
-    ): MatchedPairType<T>[] {
-  const syntheticEvents: MatchedPairType<T>[] = [];
+    syntheticEventCallback?: (syntheticEvent: Types.Events.SyntheticEventPair<T>) => void,
+    ): Types.Events.SyntheticEventPair<T>[] {
+  const syntheticEvents: Types.Events.SyntheticEventPair<T>[] = [];
   for (const [id, eventsTriplet] of matchedPairs.entries()) {
     const beginEvent = eventsTriplet.begin;
     const endEvent = eventsTriplet.end;
@@ -311,7 +310,7 @@ export function createSortedSyntheticEvents<T extends Types.Events.PairableAsync
       beginEvent: Types.Events.PairableAsyncBegin,
       endEvent: Types.Events.PairableAsyncEnd|null,
       instantEvents?: Types.Events.PairableAsyncInstant[],
-    }): data is MatchedPairType<T>['args']['data'] {
+    }): data is Types.Events.SyntheticEventPair<T>['args']['data'] {
       const instantEventsMatch = data.instantEvents ? data.instantEvents.some(e => id === getSyntheticId(e)) : false;
       const endEventMatch = data.endEvent ? id === getSyntheticId(data.endEvent) : false;
       return Boolean(id) && (instantEventsMatch || endEventMatch);
@@ -321,8 +320,8 @@ export function createSortedSyntheticEvents<T extends Types.Events.PairableAsync
     }
     const targetEvent = endEvent || beginEvent;
 
-    const event = SyntheticEventsManager.registerSyntheticEvent<MatchedPairType<T>>({
-      rawSourceEvent: beginEvent,
+    const event = SyntheticEventsManager.registerSyntheticEvent<Types.Events.SyntheticEventPair<T>>({
+      rawSourceEvent: triplet.beginEvent,
       cat: targetEvent.cat,
       ph: targetEvent.ph,
       pid: targetEvent.pid,
@@ -352,8 +351,8 @@ export function createSortedSyntheticEvents<T extends Types.Events.PairableAsync
 }
 
 export function createMatchedSortedSyntheticEvents<T extends Types.Events.PairableAsync>(
-    unpairedAsyncEvents: T[],
-    syntheticEventCallback?: (syntheticEvent: MatchedPairType<T>) => void): MatchedPairType<T>[] {
+    unpairedAsyncEvents: T[], syntheticEventCallback?: (syntheticEvent: Types.Events.SyntheticEventPair<T>) => void):
+    Types.Events.SyntheticEventPair<T>[] {
   const matchedPairs = matchEvents(unpairedAsyncEvents);
   const syntheticEvents = createSortedSyntheticEvents<T>(matchedPairs, syntheticEventCallback);
   return syntheticEvents;
@@ -651,4 +650,8 @@ export function eventHasCategory(event: Types.Events.Event, category: string): b
 export function nodeIdForInvalidationEvent(event: Types.Events.InvalidationTrackingEvent): Protocol.DOM.BackendNodeId|
     null {
   return event.args.data.nodeId ?? null;
+}
+
+export function eventContainsTimestamp(event: Types.Events.Event, ts: Types.Timing.MicroSeconds): boolean {
+  return event.ts <= ts && event.ts + (event.dur || 0) >= ts;
 }

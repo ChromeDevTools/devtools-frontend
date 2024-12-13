@@ -1338,6 +1338,7 @@ export interface PerformanceMeasureBegin extends PairableUserTiming {
   args: Args&{
     detail?: string,
     stackTrace?: CallFrame[],
+    callTime?: MicroSeconds,
   };
   ph: Phase.ASYNC_NESTABLE_START;
 }
@@ -1350,6 +1351,7 @@ export interface PerformanceMark extends UserTiming {
     data?: ArgsData & {
       detail?: string,
       stackTrace?: CallFrame[],
+      callTime?: MicroSeconds,
     },
   };
   ph: Phase.INSTANT|Phase.MARK|Phase.ASYNC_NESTABLE_INSTANT;
@@ -1482,9 +1484,9 @@ export function isPipelineReporter(event: Event): event is PipelineReporter {
 // because synthetic events need to be registered in order to resolve
 // serialized event keys into event objects, so we ensure events are
 // registered at the time they are created by the SyntheticEventsManager.
-export interface SyntheticBased<Ph extends Phase = Phase> extends Event {
+export interface SyntheticBased<Ph extends Phase = Phase, T extends Event = Event> extends Event {
   ph: Ph;
-  rawSourceEvent: Event;
+  rawSourceEvent: T;
   _tag: 'SyntheticEntryTag';
 }
 
@@ -1495,8 +1497,8 @@ export function isSyntheticBased(event: Event): event is SyntheticBased {
 // Nestable async events with a duration are made up of two distinct
 // events: the begin, and the end. We need both of them to be able to
 // display the right information, so we create these synthetic events.
-export interface SyntheticEventPair<T extends PairableAsync = PairableAsync> extends SyntheticBased {
-  rawSourceEvent: Event;
+export interface SyntheticEventPair<T extends PairableAsync = PairableAsync> extends SyntheticBased<Phase, T> {
+  rawSourceEvent: T;
   name: T['name'];
   cat: T['cat'];
   id?: string;
@@ -2219,6 +2221,10 @@ export function isBeginRemoteFontLoad(event: Event): event is BeginRemoteFontLoa
 
 export function isPerformanceMeasure(event: Event): event is PerformanceMeasure {
   return isUserTiming(event) && isPhaseAsync(event.ph);
+}
+
+export function isPerformanceMeasureBegin(event: Event): event is PerformanceMeasureBegin {
+  return isPerformanceMeasure(event) && event.ph === Phase.ASYNC_NESTABLE_START;
 }
 
 export function isPerformanceMark(event: Event): event is PerformanceMark {

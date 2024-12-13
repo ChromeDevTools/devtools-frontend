@@ -3215,6 +3215,17 @@ export namespace CSS {
     forcedPseudoClasses: string[];
   }
 
+  export interface ForceStartingStyleRequest {
+    /**
+     * The element id for which to force the starting-style state.
+     */
+    nodeId: DOM.NodeId;
+    /**
+     * Boolean indicating if this is on or off.
+     */
+    forced: boolean;
+  }
+
   export interface GetBackgroundColorsRequest {
     /**
      * Id of the node to get background colors for.

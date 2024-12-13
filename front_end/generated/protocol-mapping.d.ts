@@ -1239,6 +1239,13 @@ export namespace ProtocolMapping {
       paramsType: [Protocol.CSS.ForcePseudoStateRequest];
       returnType: void;
     };
+    /**
+     * Ensures that the given node is in its starting-style state.
+     */
+    'CSS.forceStartingStyle': {
+      paramsType: [Protocol.CSS.ForceStartingStyleRequest];
+      returnType: void;
+    };
     'CSS.getBackgroundColors': {
       paramsType: [Protocol.CSS.GetBackgroundColorsRequest];
       returnType: Protocol.CSS.GetBackgroundColorsResponse;

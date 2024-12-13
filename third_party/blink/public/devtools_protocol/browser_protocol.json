@@ -4685,6 +4685,22 @@
                     ]
                 },
                 {
+                    "name": "forceStartingStyle",
+                    "description": "Ensures that the given node is in its starting-style state.",
+                    "parameters": [
+                        {
+                            "name": "nodeId",
+                            "description": "The element id for which to force the starting-style state.",
+                            "$ref": "DOM.NodeId"
+                        },
+                        {
+                            "name": "forced",
+                            "description": "Boolean indicating if this is on or off.",
+                            "type": "boolean"
+                        }
+                    ]
+                },
+                {
                     "name": "getBackgroundColors",
                     "parameters": [
                         {

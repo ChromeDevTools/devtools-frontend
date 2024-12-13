@@ -425,10 +425,11 @@ export class PreloadingAttemptView extends UI.Widget.VBox {
     if (preloadingAttempt === null) {
       this.preloadingDetails.data = null;
     } else {
+      const pipeline = this.model.getPipeline(preloadingAttempt);
       const ruleSets = preloadingAttempt.ruleSetIds.map(id => this.model.getRuleSetById(id)).filter(x => x !== null) as
           Protocol.Preload.RuleSet[];
       this.preloadingDetails.data = {
-        preloadingAttempt,
+        pipeline,
         ruleSets,
         pageURL: pageURL(),
       };
@@ -436,7 +437,7 @@ export class PreloadingAttemptView extends UI.Widget.VBox {
   }
 
   render(): void {
-    // Update preloaidng grid
+    // Update preloading grid
     const filteringRuleSetId = this.ruleSetSelector.getSelected();
     const rows = this.model.getRepresentativePreloadingAttempts(filteringRuleSetId).map(({id, value}) => {
       const attempt = value;

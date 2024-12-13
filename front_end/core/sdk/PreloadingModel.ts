@@ -559,6 +559,27 @@ export class PreloadPipeline {
   getPrerender(): PreloadingAttempt|null {
     return this.inner.get(Protocol.Preload.SpeculationAction.Prerender) || null;
   }
+
+  // Returns attempts in the order: prefetch < prerender.
+  getAttempts(): PreloadingAttempt[] {
+    const ret = [];
+
+    const prefetch = this.getPrefetch();
+    if (prefetch !== null) {
+      ret.push(prefetch);
+    }
+
+    const prerender = this.getPrerender();
+    if (prerender !== null) {
+      ret.push(prerender);
+    }
+
+    if (ret.length === 0) {
+      throw new Error('unreachable');
+    }
+
+    return ret;
+  }
 }
 
 class PreloadingAttemptRegistry {

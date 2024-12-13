@@ -449,6 +449,10 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         SourcesPanel.SourcesPanel.SourcesPanel, this.#selectDefaultAgentIfNeeded, this);
     UI.Context.Context.instance().addFlavorChangeListener(
         TimelinePanel.TimelinePanel.TimelinePanel, this.#selectDefaultAgentIfNeeded, this);
+    SDK.TargetManager.TargetManager.instance().addModelListener(
+        SDK.DOMModel.DOMModel, SDK.DOMModel.Events.AttrModified, this.#handleDOMNodeAttrChange, this);
+    SDK.TargetManager.TargetManager.instance().addModelListener(
+        SDK.DOMModel.DOMModel, SDK.DOMModel.Events.AttrRemoved, this.#handleDOMNodeAttrChange, this);
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistancePanelOpened);
   }
 
@@ -473,6 +477,18 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         SourcesPanel.SourcesPanel.SourcesPanel, this.#selectDefaultAgentIfNeeded, this);
     UI.Context.Context.instance().removeFlavorChangeListener(
         TimelinePanel.TimelinePanel.TimelinePanel, this.#selectDefaultAgentIfNeeded, this);
+    SDK.TargetManager.TargetManager.instance().removeModelListener(
+        SDK.DOMModel.DOMModel,
+        SDK.DOMModel.Events.AttrModified,
+        this.#handleDOMNodeAttrChange,
+        this,
+    );
+    SDK.TargetManager.TargetManager.instance().removeModelListener(
+        SDK.DOMModel.DOMModel,
+        SDK.DOMModel.Events.AttrRemoved,
+        this.#handleDOMNodeAttrChange,
+        this,
+    );
   }
 
   #handleAidaAvailabilityChange = async(): Promise<void> => {
@@ -507,6 +523,15 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     this.#selectedElement = createNodeContext(selectedElementFilter(ev.data));
     this.#updateAgentState(this.#currentAgent);
   };
+
+  #handleDOMNodeAttrChange =
+      (ev: Common.EventTarget.EventTargetEvent<{node: SDK.DOMModel.DOMNode, name: string}>): void => {
+        if (this.#selectedElement?.getItem() === ev.data.node) {
+          if (ev.data.name === 'class' || ev.data.name === 'id') {
+            void this.doUpdate();
+          }
+        }
+      };
 
   #handleNetworkRequestFlavorChange =
       (ev: Common.EventTarget.EventTargetEvent<SDK.NetworkRequest.NetworkRequest>): void => {

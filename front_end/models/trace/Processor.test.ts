@@ -365,5 +365,67 @@ describeWithEnvironment('TraceProcessor', function() {
       assert.strictEqual(insights[2].model.RenderBlocking.renderBlockingRequests.length, 0);
       assert.strictEqual(insights[3].model.RenderBlocking.renderBlockingRequests.length, 1);
     });
+
+    it('sorts insights by estimated savings and field data', async function() {
+      const getInsightOrder = async (includeMetadata: boolean) => {
+        const processor = Trace.Processor.TraceProcessor.createWithAllHandlers();
+        const file = await TraceLoader.rawEvents(this, 'image-delivery.json.gz');
+
+        let metadata;
+        if (includeMetadata) {
+          metadata = await TraceLoader.metadata(this, 'image-delivery.json.gz');
+        }
+
+        await processor.parse(file, {isFreshRecording: true, isCPUProfile: false, metadata});
+        if (!processor.insights) {
+          throw new Error('No insights');
+        }
+
+        const insightSet = Array.from(processor.insights.values()).at(-1);
+        if (!insightSet) {
+          throw new Error('No insight set');
+        }
+
+        // It's been sorted already ... but let's add some fake estimated savings and re-sort to
+        // better test the sorting.
+        insightSet.model.CLSCulprits.metricSavings = {CLS: 0.07};
+        processor.sortInsightSet(processor.insights, insightSet, metadata ?? null);
+
+        return Object.keys(insightSet.model);
+      };
+
+      const orderWithoutMetadata = await getInsightOrder(false);
+      assert.deepStrictEqual(orderWithoutMetadata, [
+        'CLSCulprits',
+        'Viewport',
+        'InteractionToNextPaint',
+        'LCPPhases',
+        'LCPDiscovery',
+        'RenderBlocking',
+        'ImageDelivery',
+        'DocumentLatency',
+        'FontDisplay',
+        'DOMSize',
+        'ThirdParties',
+        'SlowCSSSelector',
+      ]);
+
+      const orderWithMetadata = await getInsightOrder(true);
+      // Viewport is first, before CLSCulprits, since the field data produces a higher weight for INP than for CLS.
+      assert.deepStrictEqual(orderWithMetadata, [
+        'Viewport',
+        'CLSCulprits',
+        'InteractionToNextPaint',
+        'LCPPhases',
+        'LCPDiscovery',
+        'RenderBlocking',
+        'ImageDelivery',
+        'DocumentLatency',
+        'FontDisplay',
+        'DOMSize',
+        'ThirdParties',
+        'SlowCSSSelector',
+      ]);
+    });
   });
 });

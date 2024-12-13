@@ -3,18 +3,8 @@
 // found in the LICENSE file.
 
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
-import {getInsightOrError} from '../../../testing/InsightHelpers.js';
-import {TraceLoader} from '../../../testing/TraceLoader.js';
+import {getInsightOrError, processTrace} from '../../../testing/InsightHelpers.js';
 import * as Trace from '../../trace/trace.js';
-
-export async function processTrace(testContext: Mocha.Suite|Mocha.Context|null, traceFile: string) {
-  const {parsedTrace, insights} = await TraceLoader.traceEngine(testContext, traceFile);
-  if (!insights) {
-    throw new Error('No insights');
-  }
-
-  return {data: parsedTrace, insights};
-}
 
 describeWithEnvironment('RenderBlocking', function() {
   it('finds render blocking requests', async () => {

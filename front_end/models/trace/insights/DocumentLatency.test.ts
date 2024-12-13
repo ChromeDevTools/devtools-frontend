@@ -3,19 +3,15 @@
 // found in the LICENSE file.
 
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
-import {createContextForNavigation, getFirstOrError, getInsightOrError} from '../../../testing/InsightHelpers.js';
+import {
+  createContextForNavigation,
+  getFirstOrError,
+  getInsightOrError,
+  processTrace,
+} from '../../../testing/InsightHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as Trace from '../trace.js';
 import * as Types from '../types/types.js';
-
-export async function processTrace(testContext: Mocha.Suite|Mocha.Context|null, traceFile: string) {
-  const {parsedTrace, insights} = await TraceLoader.traceEngine(testContext, traceFile);
-  if (!insights) {
-    throw new Error('No insights');
-  }
-
-  return {data: parsedTrace, insights};
-}
 
 describeWithEnvironment('DocumentLatency', function() {
   it('reports savings for main document with redirects', async () => {

@@ -3,21 +3,11 @@
 // found in the LICENSE file.
 
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
-import {getFirstOrError, getInsightOrError} from '../../../testing/InsightHelpers.js';
-import {TraceLoader} from '../../../testing/TraceLoader.js';
+import {getFirstOrError, getInsightOrError, processTrace} from '../../../testing/InsightHelpers.js';
 
 import * as Insights from './insights.js';
 
 const {ImageOptimizationType} = Insights.Models.ImageDelivery;
-
-export async function processTrace(testContext: Mocha.Suite|Mocha.Context|null, traceFile: string) {
-  const {parsedTrace, insights} = await TraceLoader.traceEngine(testContext, traceFile);
-  if (!insights) {
-    throw new Error('No insights');
-  }
-
-  return {data: parsedTrace, insights};
-}
 
 describeWithEnvironment('ImageDelivery', function() {
   it('finds requests for remote fonts', async () => {

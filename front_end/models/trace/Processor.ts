@@ -347,8 +347,9 @@ export class TraceProcessor extends EventTarget {
    * Sort the insight models based on the impact of each insight's estimated savings, additionally weighted by the
    * worst metrics according to field data (if present).
    */
-  #sortInsightSet(
-      insights: Insights.Types.TraceInsightSets, insightSet: Insights.Types.InsightSet, options: ParseOptions): void {
+  sortInsightSet(
+      insights: Insights.Types.TraceInsightSets, insightSet: Insights.Types.InsightSet,
+      metadata: Types.File.MetaData|null): void {
     // The initial order of the insights is alphabetical, based on `front_end/models/trace/insights/Models.ts`.
     // The order here provides a baseline that groups insights in a more logical way.
     const baselineOrder: Record<keyof Insights.Types.InsightModels, null> = {
@@ -367,17 +368,21 @@ export class TraceProcessor extends EventTarget {
     };
 
     // Determine the weights for each metric based on field data, utilizing the same scoring curve that Lighthouse uses.
-    const weights = Insights.Common.calculateMetricWeightsForSorting(insightSet, options.metadata ?? null);
+    const weights = Insights.Common.calculateMetricWeightsForSorting(insightSet, metadata);
 
     // Normalize the estimated savings to a single number, weighted by its relative impact
     // to the page experience based on the same scoring curve that Lighthouse uses.
     const observedLcp = Insights.Common.getLCP(insights, insightSet.id)?.value;
-    const observedInp = Insights.Common.getINP(insights, insightSet.id)?.value;
     const observedCls = Insights.Common.getCLS(insights, insightSet.id).value;
+
+    // INP is special - if users did not interact with the page, we'll have no INP, but we should still
+    // be able to prioritize insights based on this metric. When we observe no interaction, instead use
+    // a default value for the baseline INP.
+    const observedInp = Insights.Common.getINP(insights, insightSet.id)?.value ?? 200;
+
     const observedLcpScore =
         observedLcp !== undefined ? Insights.Common.evaluateLCPMetricScore(observedLcp) : undefined;
-    const observedInpScore =
-        observedInp !== undefined ? Insights.Common.evaluateINPMetricScore(observedInp) : undefined;
+    const observedInpScore = Insights.Common.evaluateINPMetricScore(observedInp);
     const observedClsScore = Insights.Common.evaluateCLSMetricScore(observedCls);
 
     const insightToSortingRank = new Map<string, number>();
@@ -387,17 +392,17 @@ export class TraceProcessor extends EventTarget {
       const cls = model.metricSavings?.CLS ?? 0;
 
       const lcpPostSavings = observedLcp !== undefined ? Math.max(0, observedLcp - lcp) : undefined;
-      const inpPostSavings = observedInp !== undefined ? Math.max(0, observedInp - inp) : undefined;
-      const clsPostSavings = observedCls !== undefined ? Math.max(0, observedCls - cls) : undefined;
+      const inpPostSavings = Math.max(0, observedInp - inp);
+      const clsPostSavings = Math.max(0, observedCls - cls);
 
       let score = 0;
       if (weights.lcp && lcp && observedLcpScore !== undefined && lcpPostSavings !== undefined) {
         score += weights.lcp * (Insights.Common.evaluateLCPMetricScore(lcpPostSavings) - observedLcpScore);
       }
-      if (weights.inp && inp && observedInpScore !== undefined && inpPostSavings !== undefined) {
+      if (weights.inp && inp && observedInpScore !== undefined) {
         score += weights.inp * (Insights.Common.evaluateINPMetricScore(inpPostSavings) - observedInpScore);
       }
-      if (weights.cls && cls && observedClsScore !== undefined && clsPostSavings !== undefined) {
+      if (weights.cls && cls && observedClsScore !== undefined) {
         score += weights.cls * (Insights.Common.evaluateCLSMetricScore(clsPostSavings) - observedClsScore);
       }
 
@@ -476,7 +481,7 @@ export class TraceProcessor extends EventTarget {
       model,
     };
     insights.set(insightSet.id, insightSet);
-    this.#sortInsightSet(insights, insightSet, options);
+    this.sortInsightSet(insights, insightSet, options.metadata ?? null);
   }
 
   /**

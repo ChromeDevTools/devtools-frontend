@@ -4,6 +4,17 @@
 
 import * as Trace from '../models/trace/trace.js';
 
+import {TraceLoader} from './TraceLoader.js';
+
+export async function processTrace(testContext: Mocha.Suite|Mocha.Context|null, traceFile: string) {
+  const {parsedTrace, insights, metadata} = await TraceLoader.traceEngine(testContext, traceFile);
+  if (!insights) {
+    throw new Error('No insights');
+  }
+
+  return {data: parsedTrace, insights, metadata};
+}
+
 export function createContextForNavigation(
     parsedTrace: Trace.Handlers.Types.ParsedTrace, navigation: Trace.Types.Events.NavigationStart,
     frameId: string): Trace.Insights.Types.InsightSetContextWithNavigation {

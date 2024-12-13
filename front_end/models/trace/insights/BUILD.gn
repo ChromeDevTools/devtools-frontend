@@ -50,6 +50,7 @@ ts_library("unittests") {
 
   sources = [
     "CLSCulprits.test.ts",
+    "Common.test.ts",
     "DOMSize.test.ts",
     "DocumentLatency.test.ts",
     "FontDisplay.test.ts",
@@ -59,6 +60,7 @@ ts_library("unittests") {
     "LCPPhases.test.ts",
     "RenderBlocking.test.ts",
     "SlowCSSSelector.test.ts",
+    "Statistics.test.ts",
     "ThirdParties.test.ts",
     "Viewport.test.ts",
   ]

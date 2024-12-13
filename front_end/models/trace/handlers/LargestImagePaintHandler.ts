@@ -21,7 +21,6 @@ import type {HandlerName} from './types.js';
  * `LargestContentfulPaint::Candidate` will have. So, when we find an image
  * paint candidate, we can store it, keying it on the node ID.
  * Then, when it comes to finding the network request for an LCP image, we can
- *
  * use the nodeId from the LCP candidate to find the image candidate. That image
  * candidate also contains a `imageUrl` property, which will have the full URL
  * to the image.
@@ -29,18 +28,25 @@ import type {HandlerName} from './types.js';
 const imageByDOMNodeId = new Map<Protocol.DOM.BackendNodeId, Types.Events.LargestImagePaintCandidate>();
 const lcpRequestByNavigation = new Map<Types.Events.NavigationStart|null, Types.Events.SyntheticNetworkRequest>();
 const lcpPaintEventByNavigation = new Map<Types.Events.NavigationStart|null, Types.Events.LargestImagePaintCandidate>();
-let currentNavigation: Types.Events.NavigationStart|null;
+
+/**
+ * We track the latest navigation that happened because we want to relate each
+ * LargestImagePaintCandidate to the navigation it occurred after, but we have
+ * to track navigations per-frame to avoid us reading a navigation from one
+ * frame and treating it as the latest navigation across all frames.
+ */
+const lastNavigationPerFrame = new Map<string, Types.Events.NavigationStart>();
 
 export function reset(): void {
   imageByDOMNodeId.clear();
   lcpRequestByNavigation.clear();
   lcpPaintEventByNavigation.clear();
-  currentNavigation = null;
+  lastNavigationPerFrame.clear();
 }
 
 export function handleEvent(event: Types.Events.Event): void {
-  if (Types.Events.isNavigationStart(event)) {
-    currentNavigation = event;
+  if (Types.Events.isNavigationStart(event) && event.args.frame) {
+    lastNavigationPerFrame.set(event.args.frame, event);
     return;
   }
 
@@ -53,7 +59,13 @@ export function handleEvent(event: Types.Events.Event): void {
   }
 
   imageByDOMNodeId.set(event.args.data.DOMNodeId, event);
-  lcpPaintEventByNavigation.set(currentNavigation, event);
+
+  // Now relate this LargestImagePaintCandidate event to the last navigation
+  // that occurred within the same frame.
+  const navigationForEvent = lastNavigationPerFrame.get(event.args.frame);
+  if (navigationForEvent) {
+    lcpPaintEventByNavigation.set(navigationForEvent, event);
+  }
 }
 
 export async function finalize(): Promise<void> {

@@ -3,10 +3,11 @@
 // found in the LICENSE file.
 
 import type * as Protocol from '../../../generated/protocol.js';
+import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as Trace from '../trace.js';
 
-describe('LargestImagePaintHandler', function() {
+describeWithEnvironment('LargestImagePaintHandler', function() {
   beforeEach(async () => {
     Trace.Handlers.ModelHandlers.LargestImagePaint.reset();
   });
@@ -23,5 +24,22 @@ describe('LargestImagePaintHandler', function() {
     assert.exists(imageForLCP);
     assert.strictEqual(imageForLCP?.args.data?.DOMNodeId, 10 as Protocol.DOM.BackendNodeId);
     assert.strictEqual(imageForLCP?.args.data?.imageUrl, 'https://via.placeholder.com/2000.jpg');
+  });
+
+  it('is able to identify the LCP image request for each navigation', async function() {
+    // The handler depends on Meta + Network requests, let's just execute
+    // all of them rather than call them individually.
+    const {parsedTrace} = await TraceLoader.traceEngine(this, 'lcp-multiple-frames.json.gz');
+
+    const {mainFrameNavigations} = parsedTrace.Meta;
+    // There is only one main frame navigation in this trace.
+    assert.lengthOf(mainFrameNavigations, 1);
+    const mainNavigation = mainFrameNavigations.at(0);
+    assert.isOk(mainNavigation);
+
+    const {lcpRequestByNavigation} = parsedTrace.LargestImagePaint;
+    const lcpRequest = lcpRequestByNavigation.get(mainNavigation);
+    assert.isOk(lcpRequest);
+    assert.strictEqual(lcpRequest.args.data.url, 'https://placehold.co/1000.jpg');
   });
 });

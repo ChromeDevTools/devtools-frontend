@@ -228,3 +228,14 @@ Generate from a recording of [this HTML file](https://gist.github.com/adamraine/
 4. Reload the page
 5. Click the button once
 6. End recording
+
+### lcp-multiple-frames
+
+Generated from [lcp-iframes story](https://github.com/ChromeDevTools/performance-stories/tree/main/lcp-iframes).
+
+Contains a page load that has two frames (main frame + iframe). There are two images loaded in each:
+
+- the iframe loads placeholder.co/50.jpg and placeholder.co/2000.jpg
+- the main frame loads placeholder.co/100.jpg and placeholder.co/1000.jpg
+
+This trace is used to verify the fix for a bug [crbug.com/384000716] where we incorrectly associated image requests to the wrong navigation when calculating the LCP image.

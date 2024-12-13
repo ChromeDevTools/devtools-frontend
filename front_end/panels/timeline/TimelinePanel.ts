@@ -1115,6 +1115,8 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       this.#setupNavigationSetting();
       this.#shortcutsDialog.prependElement(this.#navigationRadioButtons);
       const dialogToolbarItem = new UI.Toolbar.ToolbarItem(this.#shortcutsDialog);
+      dialogToolbarItem.element.setAttribute(
+          'jslog', `${VisualLogging.action().track({click: true}).context('timeline.shortcuts-dialog-toggle')}`);
       this.panelRightToolbar.appendToolbarItem(dialogToolbarItem);
       // The setting could have been changed from the Devtools Settings. Therefore, we
       // need to update the radio buttons selection when the dialog is open.
@@ -1131,15 +1133,19 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     // Change EventListener is only triggered when the radio button is selected
     this.#modernNavRadioButton.radioElement.addEventListener('change', () => {
       this.#shortcutsDialog.data = {shortcuts: this.#getShortcutsInfo(/* isNavClassic */ false)};
-      Common.Settings.moduleSetting('flamechart-selected-navigation').set('modern');
+      Common.Settings.moduleSetting('timeline.select-modern-navigation').set('modern');
     });
     this.#classicNavRadioButton.radioElement.addEventListener('change', () => {
       this.#shortcutsDialog.data = {shortcuts: this.#getShortcutsInfo(/* isNavClassic */ true)};
-      Common.Settings.moduleSetting('flamechart-selected-navigation').set('classic');
+      Common.Settings.moduleSetting('timeline.select-classic-navigation').set('classic');
     });
 
     this.#navigationRadioButtons.appendChild(this.#modernNavRadioButton);
+    this.#modernNavRadioButton.setAttribute(
+        'jslog', `${VisualLogging.action().track({click: true}).context('flamechart-select-modern-navigation')}`);
     this.#navigationRadioButtons.appendChild(this.#classicNavRadioButton);
+    this.#classicNavRadioButton.setAttribute(
+        'jslog', `${VisualLogging.action().track({click: true}).context('flamechart-select-classic-navigation')}`);
 
     return this.#navigationRadioButtons;
   }

@@ -290,8 +290,8 @@ export class RenderingOptionsView extends UI.Widget.VBox {
   }
 
   #appendCheckbox(
-      label: string, subtitle: string, setting: Common.Settings.Setting<boolean>,
-      metric?: UI.SettingsUI.UserMetricOptions): UI.UIUtils.CheckboxLabel {
+      label: Common.UIString.LocalizedString, subtitle: Common.UIString.LocalizedString,
+      setting: Common.Settings.Setting<boolean>, metric?: UI.SettingsUI.UserMetricOptions): UI.UIUtils.CheckboxLabel {
     const checkbox = UI.UIUtils.CheckboxLabel.create(label, false, subtitle, setting.name);
     UI.SettingsUI.bindCheckbox(checkbox.checkboxElement, setting, metric);
     this.contentElement.appendChild(checkbox);

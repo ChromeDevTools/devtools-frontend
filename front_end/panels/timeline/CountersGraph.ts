@@ -210,8 +210,9 @@ export class CountersGraph extends UI.Widget.VBox {
     this.currentValuesBar.id = 'counter-values-bar';
   }
 
-  private createCounter(uiName: string, settingsKey: string, color: string, formatter?: ((arg0: number) => string)):
-      Counter {
+  private createCounter(
+      uiName: Common.UIString.LocalizedString, settingsKey: string, color: string,
+      formatter?: ((arg0: number) => string)): Counter {
     const counter = new Counter();
     this.counters.push(counter);
     this.counterUI.push(new CounterUI(this, uiName, settingsKey, color, counter, formatter));
@@ -423,8 +424,8 @@ export class CounterUI {
   private marker: HTMLElement;
 
   constructor(
-      countersPane: CountersGraph, title: string, settingsKey: string, graphColor: string, counter: Counter,
-      formatter?: (arg0: number) => string) {
+      countersPane: CountersGraph, title: Common.UIString.LocalizedString, settingsKey: string, graphColor: string,
+      counter: Counter, formatter?: (arg0: number) => string) {
     this.countersPane = countersPane;
     this.counter = counter;
     this.formatter = formatter || Platform.NumberUtilities.withThousandsSeparator;

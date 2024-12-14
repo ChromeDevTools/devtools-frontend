@@ -820,8 +820,9 @@ export class Layers3DView extends Common.ObjectWrapper.eventMixin<EventTypes, ty
     return closestObject;
   }
 
-  private createVisibilitySetting(caption: string, name: string, value: boolean, toolbar: UI.Toolbar.Toolbar):
-      Common.Settings.Setting<boolean> {
+  private createVisibilitySetting(
+      caption: Common.UIString.LocalizedString, name: string, value: boolean,
+      toolbar: UI.Toolbar.Toolbar): Common.Settings.Setting<boolean> {
     const setting = Common.Settings.Settings.instance().createSetting(name, value);
     setting.setTitle(caption);
     setting.addChangeListener(this.update, this);

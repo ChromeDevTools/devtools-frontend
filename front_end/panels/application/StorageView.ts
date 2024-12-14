@@ -221,8 +221,7 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
     this.previousOverrideFieldValue = '';
     const quotaOverrideCheckboxRow = quota.appendRow();
     quotaOverrideCheckboxRow.classList.add('quota-override-row');
-    this.quotaOverrideCheckbox =
-        UI.UIUtils.CheckboxLabel.create(i18nString(UIStrings.simulateCustomStorage), false, '');
+    this.quotaOverrideCheckbox = UI.UIUtils.CheckboxLabel.create(i18nString(UIStrings.simulateCustomStorage), false);
     this.quotaOverrideCheckbox.setAttribute(
         'jslog', `${VisualLogging.toggle('simulate-custom-quota').track({change: true})}`);
     quotaOverrideCheckboxRow.appendChild(this.quotaOverrideCheckbox);
@@ -277,7 +276,9 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
     SDK.TargetManager.TargetManager.instance().observeTargets(this);
   }
 
-  private appendItem(section: UI.ReportView.Section, title: string, settingName: Protocol.Storage.StorageType): void {
+  private appendItem(
+      section: UI.ReportView.Section, title: Platform.UIString.LocalizedString,
+      settingName: Protocol.Storage.StorageType): void {
     const row = section.appendRow();
     const setting = this.settings.get(settingName);
     if (setting) {

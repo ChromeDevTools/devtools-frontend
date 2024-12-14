@@ -1235,8 +1235,9 @@ export class CheckboxLabel extends HTMLElement {
     this.shadowRootInternal.createChild('slot');
   }
 
-  static create(title?: string, checked?: boolean, subtitle?: string, jslogContext?: string, small?: boolean):
-      CheckboxLabel {
+  static create(
+      title?: Platform.UIString.LocalizedString, checked?: boolean, subtitle?: Platform.UIString.LocalizedString,
+      jslogContext?: string, small?: boolean): CheckboxLabel {
     const element = document.createElement('dt-checkbox') as CheckboxLabel;
     element.checkboxElement.checked = Boolean(checked);
     if (jslogContext) {
@@ -1252,6 +1253,14 @@ export class CheckboxLabel extends HTMLElement {
     }
     element.checkboxElement.classList.toggle('small', small);
     return element;
+  }
+
+  /** Only to be used when the checkbox label is 'generated' (a regex, a className, etc). Most checkboxes should be create()'d with UIStrings */
+  static createWithStringLiteral(
+      title?: string, checked?: boolean, subtitle?: Platform.UIString.LocalizedString, jslogContext?: string,
+      small?: boolean): CheckboxLabel {
+    const stringLiteral = title as Platform.UIString.LocalizedString;
+    return CheckboxLabel.create(stringLiteral, checked, subtitle, jslogContext, small);
   }
 
   private static lastId = 0;

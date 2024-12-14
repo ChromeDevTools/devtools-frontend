@@ -259,7 +259,7 @@ export class IgnoreListSetting extends HTMLElement {
   }
 
   #renderItem(regex: Common.Settings.RegExpSettingItem, index: number): LitHtml.TemplateResult {
-    const checkboxWithLabel = UI.UIUtils.CheckboxLabel.create(
+    const checkboxWithLabel = UI.UIUtils.CheckboxLabel.createWithStringLiteral(
         regex.pattern, !regex.disabled, /* subtitle*/ undefined, /* jslogContext*/ 'timeline.ignore-list-pattern');
     const helpText = i18nString(UIStrings.ignoreScriptsWhoseNamesMatchS, {regex: regex.pattern});
     UI.Tooltip.Tooltip.install(checkboxWithLabel, helpText);

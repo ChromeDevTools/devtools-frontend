@@ -367,7 +367,7 @@ export class Deprecation {
 
 export class Setting<V> {
   #titleFunction?: () => Platform.UIString.LocalizedString;
-  #titleInternal!: string;
+  #titleInternal!: Platform.UIString.LocalizedString;
   #registration: SettingRegistration|null = null;
   #requiresUserAction?: boolean;
   #value?: V;
@@ -395,14 +395,14 @@ export class Setting<V> {
     this.eventSupport.removeEventListener(this.name, listener, thisObject);
   }
 
-  title(): string {
+  title(): Platform.UIString.LocalizedString {
     if (this.#titleInternal) {
       return this.#titleInternal;
     }
     if (this.#titleFunction) {
       return this.#titleFunction();
     }
-    return '';
+    return '' as Platform.UIString.LocalizedString;
   }
 
   setTitleFunction(titleFunction: (() => Platform.UIString.LocalizedString)|undefined): void {
@@ -411,7 +411,7 @@ export class Setting<V> {
     }
   }
 
-  setTitle(title: string): void {
+  setTitle(title: Platform.UIString.LocalizedString): void {
     this.#titleInternal = title;
   }
 

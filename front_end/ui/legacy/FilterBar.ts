@@ -497,8 +497,8 @@ export class CheckboxFilterUI extends Common.ObjectWrapper.ObjectWrapper<FilterU
   private label: CheckboxLabel;
   private checkboxElement: HTMLInputElement;
   constructor(
-      className: string, title: string, activeWhenChecked?: boolean, setting?: Common.Settings.Setting<boolean>,
-      jslogContext?: string) {
+      className: string, title: Common.UIString.LocalizedString, activeWhenChecked?: boolean,
+      setting?: Common.Settings.Setting<boolean>, jslogContext?: string) {
     super();
     this.filterElement = document.createElement('div');
     this.filterElement.classList.add('filter-checkbox-filter');

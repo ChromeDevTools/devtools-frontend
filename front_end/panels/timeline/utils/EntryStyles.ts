@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../../core/i18n/i18n.js';
+import type * as Platform from '../../../core/platform/platform.js';
 import * as Trace from '../../../models/trace/trace.js';
 import * as ThemeSupport from '../../../ui/legacy/theme_support/theme_support.js';
 
@@ -555,13 +556,15 @@ export class TimelineRecordStyle {
 }
 export class TimelineCategory {
   name: EventCategory;
-  title: string;
+  title: Platform.UIString.LocalizedString;
   visible: boolean;
   childColor: string;
   colorInternal: string;
   #hidden?: boolean;
 
-  constructor(name: EventCategory, title: string, visible: boolean, childColor: string, color: string) {
+  constructor(
+      name: EventCategory, title: Platform.UIString.LocalizedString, visible: boolean, childColor: string,
+      color: string) {
     this.name = name;
     this.title = title;
     this.visible = visible;

@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as Platform from '../platform/platform.js';
+
 import * as Root from './root.js';
 
 describe('Runtime', () => {
@@ -35,8 +37,8 @@ describe('Runtime', () => {
   });
 
   it('allConfigurableExperiments returns all registered experiments', () => {
-    Root.Runtime.experiments.register('example', 'example');
-    Root.Runtime.experiments.register('configurable', 'configurable');
+    Root.Runtime.experiments.register('example', 'example' as Platform.UIString.LocalizedString);
+    Root.Runtime.experiments.register('configurable', 'configurable' as Platform.UIString.LocalizedString);
 
     const experiments = Root.Runtime.experiments.allConfigurableExperiments();
 

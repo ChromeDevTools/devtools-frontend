@@ -1250,7 +1250,8 @@ export class ToolbarCheckbox extends ToolbarItem<void> {
   inputElement: HTMLInputElement;
 
   constructor(
-      text: string, tooltip?: string, listener?: ((arg0: MouseEvent) => void), jslogContext?: string, small?: boolean) {
+      text: Common.UIString.LocalizedString, tooltip?: Common.UIString.LocalizedString,
+      listener?: ((arg0: MouseEvent) => void), jslogContext?: string, small?: boolean) {
     super(CheckboxLabel.create(text));
     this.element.classList.add('checkbox');
     this.inputElement = (this.element as CheckboxLabel).checkboxElement;
@@ -1287,8 +1288,10 @@ export class ToolbarCheckbox extends ToolbarItem<void> {
 }
 
 export class ToolbarSettingCheckbox extends ToolbarCheckbox {
-  constructor(setting: Common.Settings.Setting<boolean>, tooltip?: string, alternateTitle?: string) {
-    super(alternateTitle || setting.title() || '', tooltip, undefined, setting.name);
+  constructor(
+      setting: Common.Settings.Setting<boolean>, tooltip?: Common.UIString.LocalizedString,
+      alternateTitle?: Common.UIString.LocalizedString) {
+    super(alternateTitle || setting.title(), tooltip, undefined, setting.name);
     bindCheckbox(this.inputElement, setting);
   }
 }

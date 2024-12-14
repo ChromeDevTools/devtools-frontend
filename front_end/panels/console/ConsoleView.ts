@@ -584,8 +584,9 @@ export class ConsoleView extends UI.Widget.VBox implements
   }
 
   static appendSettingsCheckboxToToolbar(
-      toolbar: UI.Toolbar.Toolbar, settingOrSetingName: Common.Settings.Setting<boolean>|string, title: string,
-      alternateTitle?: string): UI.Toolbar.ToolbarSettingCheckbox {
+      toolbar: UI.Toolbar.Toolbar, settingOrSetingName: Common.Settings.Setting<boolean>|string,
+      title: Common.UIString.LocalizedString,
+      alternateTitle?: Common.UIString.LocalizedString): UI.Toolbar.ToolbarSettingCheckbox {
     let setting: Common.Settings.Setting<boolean>;
     if (typeof settingOrSetingName === 'string') {
       setting = Common.Settings.Settings.instance().moduleSetting(settingOrSetingName);

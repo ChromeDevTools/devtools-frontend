@@ -675,7 +675,7 @@ export interface MetricInfo {
   color: string;
 }
 export interface ChartInfo {
-  title: string;
+  title: Common.UIString.LocalizedString;
   metrics: {name: string, color: string}[];
   max?: number;
   currentMax?: number;

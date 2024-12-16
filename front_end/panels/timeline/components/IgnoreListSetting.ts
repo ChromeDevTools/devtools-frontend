@@ -199,8 +199,9 @@ export class IgnoreListSetting extends HTMLElement {
 
   #handleInputChange(): void {
     const newRegex = this.#newRegexInput.value.trim();
+    const newRegexIsNotEmpty = Boolean(newRegex);
     // Enable the rule if the text input field is not empty.
-    this.#newRegexCheckbox.checkboxElement.checked = Boolean(newRegex);
+    this.#newRegexCheckbox.checkboxElement.checked = newRegexIsNotEmpty;
     const {valid, message} = patternValidator(this.#getExistingRegexes(), newRegex);
 
     this.#newRegexInput.classList.toggle('error-input', !valid);
@@ -210,6 +211,7 @@ export class IgnoreListSetting extends HTMLElement {
 
     if (this.#editingRegexSetting) {
       this.#editingRegexSetting.pattern = this.#newRegexInput.value.trim();
+      this.#editingRegexSetting.disabled = !newRegexIsNotEmpty;
       this.#getSkipStackFramesPatternSetting().setAsArray(this.#regexPatterns);
     }
   }

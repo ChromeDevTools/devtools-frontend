@@ -7272,6 +7272,10 @@ export const NativeFunctions = [
     signatures: [["feature"]]
   },
   {
+    name: "availability",
+    signatures: [["?options"]]
+  },
+  {
     name: "rewrite",
     signatures: [["input","?options"]]
   },

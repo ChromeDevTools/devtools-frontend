@@ -537,6 +537,7 @@ export const generatedProperties = [
    "mask-repeat",
    "mask-size",
    "mask-type",
+   "masonry-fill",
    "masonry-slack",
    "masonry-template-tracks",
    "masonry-track-end",
@@ -622,6 +623,7 @@ export const generatedProperties = [
    "ry",
    "scale",
    "scroll-behavior",
+   "scroll-initial-target",
    "scroll-margin-block-end",
    "scroll-margin-block-start",
    "scroll-margin-bottom",
@@ -644,7 +646,6 @@ export const generatedProperties = [
    "scroll-snap-type",
    "scroll-start-block",
    "scroll-start-inline",
-   "scroll-start-target",
    "scroll-start-x",
    "scroll-start-y",
    "scroll-timeline-axis",
@@ -2763,6 +2764,13 @@ export const generatedProperties = [
  },
  {
   "keywords": [
+   "normal",
+   "reverse"
+  ],
+  "name": "masonry-fill"
+ },
+ {
+  "keywords": [
    "normal"
   ],
   "name": "masonry-slack"
@@ -3393,6 +3401,13 @@ export const generatedProperties = [
   "name": "scroll-behavior"
  },
  {
+  "keywords": [
+   "none",
+   "nearest"
+  ],
+  "name": "scroll-initial-target"
+ },
+ {
   "longhands": [
    "scroll-margin-top",
    "scroll-margin-right",
@@ -3559,13 +3574,6 @@ export const generatedProperties = [
  },
  {
   "name": "scroll-start-inline"
- },
- {
-  "keywords": [
-   "none",
-   "auto"
-  ],
-  "name": "scroll-start-target"
  },
  {
   "name": "scroll-start-x"
@@ -5531,6 +5539,12 @@ export const generatedPropertyValues = {
    "alpha"
   ]
  },
+ "masonry-fill": {
+  "values": [
+   "normal",
+   "reverse"
+  ]
+ },
  "masonry-slack": {
   "values": [
    "normal"
@@ -5884,6 +5898,12 @@ export const generatedPropertyValues = {
    "smooth"
   ]
  },
+ "scroll-initial-target": {
+  "values": [
+   "none",
+   "nearest"
+  ]
+ },
  "scroll-marker-group": {
   "values": [
    "none",
@@ -5955,12 +5975,6 @@ export const generatedPropertyValues = {
    "both",
    "mandatory",
    "proximity"
-  ]
- },
- "scroll-start-target": {
-  "values": [
-   "none",
-   "auto"
   ]
  },
  "scrollbar-color": {

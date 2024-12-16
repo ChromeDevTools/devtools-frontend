@@ -140,11 +140,11 @@ describeWithMockConnection('NetworkLogView', () => {
     });
     assert.strictEqual(
         await Network.NetworkLogView.NetworkLogView.generateCurlCommand(request, 'unix'),
-        'curl \'http://localhost\' -H \'cookie: eva=\"Sg4=\"\'',
+        'curl \'http://localhost\' -b \'eva=\"Sg4=\"\'',
     );
     assert.strictEqual(
         await Network.NetworkLogView.NetworkLogView.generateCurlCommand(request, 'win'),
-        'curl ^"http://localhost^" -H ^"cookie: eva=^\\^"Sg4=^\\^"^"',
+        'curl ^"http://localhost^" -b ^"eva=^\\^"Sg4=^\\^"^"',
     );
   });
 
@@ -154,11 +154,11 @@ describeWithMockConnection('NetworkLogView', () => {
     });
     assert.strictEqual(
         await Network.NetworkLogView.NetworkLogView.generateCurlCommand(request, 'unix'),
-        'curl \'http://localhost\' -H \'cookie: eva=%22Sg4%3D%22\'',
+        'curl \'http://localhost\' -b \'eva=%22Sg4%3D%22\'',
     );
     assert.strictEqual(
         await Network.NetworkLogView.NetworkLogView.generateCurlCommand(request, 'win'),
-        'curl ^"http://localhost^" -H ^"cookie: eva=^%^22Sg4^%^3D^%^22^"',
+        'curl ^"http://localhost^" -b ^"eva=^%^22Sg4^%^3D^%^22^"',
     );
   });
 
@@ -168,11 +168,11 @@ describeWithMockConnection('NetworkLogView', () => {
     });
     assert.strictEqual(
         await Network.NetworkLogView.NetworkLogView.generateCurlCommand(request, 'unix'),
-        'curl \'http://localhost\' -H $\'cookie: query=evil\\n\\n & cmd /c calc.exe \\n\\n\'',
+        'curl \'http://localhost\' -b $\'query=evil\\n\\n & cmd /c calc.exe \\n\\n\'',
     );
     assert.strictEqual(
         await Network.NetworkLogView.NetworkLogView.generateCurlCommand(request, 'win'),
-        'curl ^\"http://localhost^\" -H ^\"cookie: query=evil^\n\n^\n\n ^& cmd /c calc.exe ^\n\n^\n\n^\"',
+        'curl ^\"http://localhost^\" -b ^\"query=evil^\n\n^\n\n ^& cmd /c calc.exe ^\n\n^\n\n^\"',
     );
   });
 

@@ -515,6 +515,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
       this.compatibilityTracksAppender?.reset();
       this.compatibilityTracksAppender = null;
       this.timelineDataInternal = null;
+      this.parsedTrace = null;
     } else if (!resetCompatibilityTracksAppender && this.timelineDataInternal) {
       this.compatibilityTracksAppender?.setFlameChartDataAndEntryData(
           this.timelineDataInternal, this.entryData, this.entryTypeByLevel);

@@ -170,6 +170,7 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
           'https://unpkg.com/react@18.2.0/umd/react.development.js' as Platform.DevToolsPath.UrlString;
       // Clear the data provider cache and add the React script to the ignore list.
       dataProvider.reset();
+      dataProvider.setModel(parsedTrace);
       ignoreListManager.ignoreListURL(SCRIPT_TO_IGNORE);
 
       const eventCountAfterIgnoreList = dataProvider.timelineData().entryStartTimes.length;
@@ -179,6 +180,7 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
 
       // Clear the data provider cache and unignore the script again
       dataProvider.reset();
+      dataProvider.setModel(parsedTrace);
       ignoreListManager.unIgnoreListURL(SCRIPT_TO_IGNORE);
       // Ensure that now we have un-ignored the URL that we get the full set of events again.
       assert.strictEqual(dataProvider.timelineData().entryStartTimes.length, eventCountBeforeIgnoreList);

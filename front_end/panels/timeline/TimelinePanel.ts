@@ -1145,19 +1145,19 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     // Change EventListener is only triggered when the radio button is selected
     this.#modernNavRadioButton.radioElement.addEventListener('change', () => {
       this.#shortcutsDialog.data = {shortcuts: this.#getShortcutsInfo(/* isNavClassic */ false)};
-      Common.Settings.moduleSetting('timeline.select-modern-navigation').set('modern');
+      Common.Settings.moduleSetting('flamechart-selected-navigation').set('modern');
     });
     this.#classicNavRadioButton.radioElement.addEventListener('change', () => {
       this.#shortcutsDialog.data = {shortcuts: this.#getShortcutsInfo(/* isNavClassic */ true)};
-      Common.Settings.moduleSetting('timeline.select-classic-navigation').set('classic');
+      Common.Settings.moduleSetting('flamechart-selected-navigation').set('classic');
     });
 
     this.#navigationRadioButtons.appendChild(this.#modernNavRadioButton);
     this.#modernNavRadioButton.setAttribute(
-        'jslog', `${VisualLogging.action().track({click: true}).context('flamechart-select-modern-navigation')}`);
+        'jslog', `${VisualLogging.action().track({click: true}).context('timeline.select-modern-navigation')}`);
     this.#navigationRadioButtons.appendChild(this.#classicNavRadioButton);
     this.#classicNavRadioButton.setAttribute(
-        'jslog', `${VisualLogging.action().track({click: true}).context('flamechart-select-classic-navigation')}`);
+        'jslog', `${VisualLogging.action().track({click: true}).context('timeline.select-classic-navigation')}`);
 
     this.#userHadShortcutsDialogOpenedOnce.set(true);
     return this.#navigationRadioButtons;

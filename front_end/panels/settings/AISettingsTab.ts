@@ -6,6 +6,7 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
+import * as Root from '../../core/root/root.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import type * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as Input from '../../ui/components/input/input.js';
@@ -46,8 +47,12 @@ const UIStrings = {
   /**
    *@description Text describing a fact to consider when using AI features
    */
-  adminSettings:
-      'Depending on your Google account management and/or region, Google may refrain from data collection. Depending on your organization’s settings, features available to managed users may vary.',
+  dataCollection: 'Depending on your region, Google may refrain from data collection.',
+  /**
+   *@description Text describing a fact to consider when using AI features
+   */
+  dataCollectionNoLogging:
+      'Your content will not be used by human reviewers to improve AI. Your organization may change these settings at any time. Depending on your Google account management and/or region, Google may refrain from data collection.',
   /**
    *@description Text describing the 'Console Insights' feature
    */
@@ -326,12 +331,17 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
     const privacyNoticeLink = UI.XLink.XLink.create(
         'https://policies.google.com/privacy', i18nString(UIStrings.privacyNotice), undefined, undefined,
         'privacy-notice');
+    const noLogging = Common.Settings.Settings.instance().getHostConfig().aidaAvailability?.enterprisePolicyValue ===
+        Root.Runtime.GenAiEnterprisePolicyValue.ALLOW_WITHOUT_LOGGING;
 
     const bulletPoints = [
       {icon: 'psychiatry', text: i18nString(UIStrings.experimentalFeatures)},
-      {icon: 'google', text: i18nString(UIStrings.sendsDataToGoogle)},
+      ...noLogging ? [] : [{icon: 'google', text: i18nString(UIStrings.sendsDataToGoogle)}],
       {icon: 'calendar-today', text: i18nString(UIStrings.retainData)},
-      {icon: 'corporate-fare', text: i18nString(UIStrings.adminSettings)},
+      {
+        icon: 'corporate-fare',
+        text: noLogging ? i18nString(UIStrings.dataCollectionNoLogging) : i18nString(UIStrings.dataCollection),
+      },
       {
         icon: 'policy',
         text: html`${i18n.i18n.getFormatLocalizedString(str_, UIStrings.termsOfServicePrivacyNotice, {

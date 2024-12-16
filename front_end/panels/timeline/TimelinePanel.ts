@@ -274,7 +274,7 @@ const UIStrings = {
   /**
    Label for a checkbox that toggles the visibility of data added by extensions of this panel (Performance).
    */
-  performanceExtension: 'Extension data',
+  showCustomtracks: 'Show custom tracks',
 
   /**
    * @description Tooltip for the the sidebar toggle in the Performance panel. Command to open/show the sidebar.
@@ -535,7 +535,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
     this.#thirdPartyTracksSetting = TimelinePanel.extensionDataVisibilitySetting();
     this.#thirdPartyTracksSetting.addChangeListener(this.#extensionDataVisibilityChanged, this);
-    this.#thirdPartyTracksSetting.setTitle(i18nString(UIStrings.performanceExtension));
+    this.#thirdPartyTracksSetting.setTitle(i18nString(UIStrings.showCustomtracks));
 
     const timelineToolbarContainer = this.element.createChild('div', 'timeline-toolbar-container');
     timelineToolbarContainer.setAttribute('jslog', `${VisualLogging.toolbar()}`);

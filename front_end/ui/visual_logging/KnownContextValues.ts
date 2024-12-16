@@ -1330,6 +1330,7 @@ export const knownContextValues = new Set([
   'endpoints',
   'enter',
   'enterpictureinpicture',
+  'enterprise-enabled',
   'error',
   'error-message',
   'errors-and-warnings',

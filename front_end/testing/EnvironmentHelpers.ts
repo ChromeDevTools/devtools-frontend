@@ -556,5 +556,12 @@ export function getGetHostConfigStub(config: Root.Runtime.HostConfig): sinon.Sin
       ...config.devToolsAnimationStylesInStylesTab,
     } as Root.Runtime.HostConfigAnimationStylesInStylesTab,
     isOffTheRecord: false,
+    thirdPartyCookieControls: {
+      thirdPartyCookieRestrictionEnabled: false,
+      thirdPartyCookieMetadataEnabled: true,
+      thirdPartyCookieHeuristicsEnabled: true,
+      managedBlockThirdPartyCookies: 'Unset',
+      ...config.thirdPartyCookieControls,
+    } as Root.Runtime.HostConfigThirdPartyCookieControls,
   });
 }

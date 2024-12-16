@@ -378,6 +378,13 @@ export interface HostConfigAnimationStylesInStylesTab {
   enabled: boolean;
 }
 
+export interface HostConfigThirdPartyCookieControls {
+  thirdPartyCookieRestrictionEnabled: boolean;
+  thirdPartyCookieMetadataEnabled: boolean;
+  thirdPartyCookieHeuristicsEnabled: boolean;
+  managedBlockThirdPartyCookies: string|boolean;
+}
+
 // We use `RecursivePartial` here to enforce that DevTools code is able to
 // handle `HostConfig` objects of an unexpected shape. This can happen if
 // the implementation in the Chromium backend is changed without correctly
@@ -401,6 +408,7 @@ export type HostConfig = Platform.TypeScriptUtilities.RecursivePartial<{
   isOffTheRecord: boolean,
   devToolsEnableOriginBoundCookies: HostConfigEnableOriginBoundCookies,
   devToolsAnimationStylesInStylesTab: HostConfigAnimationStylesInStylesTab,
+  thirdPartyCookieControls: HostConfigThirdPartyCookieControls,
 }>;
 
 /**

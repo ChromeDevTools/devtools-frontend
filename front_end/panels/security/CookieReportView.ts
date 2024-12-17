@@ -392,7 +392,7 @@ export class CookieReportView extends UI.Widget.VBox {
             insight.tableEntryUrl ?
                 insight.tableEntryUrl :
                 'https://github.com/privacysandbox/privacy-sandbox-dev-support/blob/main/3pc-migration-readiness.md',
-            i18nString(UIStrings.guidance), undefined, undefined, 'github-resource');
+            i18nString(UIStrings.guidance), undefined, undefined, 'readiness-list-link');
 
         return html`${i18n.i18n.getFormatLocalizedString(str_, UIStrings.gitHubResource, {
           PH1: githubLink,
@@ -402,7 +402,7 @@ export class CookieReportView extends UI.Widget.VBox {
         const gracePeriodLink = UI.XLink.XLink.create(
             'https://developers.google.com/privacy-sandbox/cookies/dashboard?url=' +
                 (domain.charAt(0) === '.' ? domain.substring(1) : domain),
-            i18nString(UIStrings.reportedIssues), undefined, undefined, 'grace-period');
+            i18nString(UIStrings.reportedIssues), undefined, undefined, 'compatibility-lookup-link');
 
         return html`${i18n.i18n.getFormatLocalizedString(str_, UIStrings.gracePeriod, {
           PH1: gracePeriodLink,

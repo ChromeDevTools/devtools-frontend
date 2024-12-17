@@ -85,8 +85,8 @@ export class ConsoleViewport {
     this.topGapElement.textContent = '\uFEFF';
     this.bottomGapElement.textContent = '\uFEFF';
 
-    UI.ARIAUtils.markAsHidden(this.topGapElement);
-    UI.ARIAUtils.markAsHidden(this.bottomGapElement);
+    UI.ARIAUtils.setHidden(this.topGapElement, true);
+    UI.ARIAUtils.setHidden(this.bottomGapElement, true);
 
     this.provider = provider;
     this.element.addEventListener('scroll', this.onScroll.bind(this), false);

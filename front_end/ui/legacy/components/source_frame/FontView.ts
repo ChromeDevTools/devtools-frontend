@@ -107,7 +107,7 @@ export class FontView extends UI.View.SimpleView {
     if (!this.fontPreviewElement) {
       return;
     }
-    UI.ARIAUtils.markAsHidden(this.fontPreviewElement);
+    UI.ARIAUtils.setHidden(this.fontPreviewElement, true);
     this.fontPreviewElement.style.overflow = 'hidden';
     this.fontPreviewElement.style.setProperty('font-family', uniqueFontName);
     this.fontPreviewElement.style.setProperty('visibility', 'hidden');

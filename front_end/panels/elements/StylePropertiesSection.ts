@@ -247,7 +247,7 @@ export class StylePropertiesSection {
             new UI.Toolbar.Toolbar('sidebar-pane-section-toolbar new-rule-toolbar', this.element);
       }
       this.newStyleRuleToolbar.appendToolbarItem(newRuleButton);
-      UI.ARIAUtils.markAsHidden(this.newStyleRuleToolbar.element);
+      UI.ARIAUtils.setHidden(this.newStyleRuleToolbar.element, true);
     }
 
     if (Root.Runtime.experiments.isEnabled('font-editor') && this.editable) {

@@ -192,7 +192,7 @@ export class XHRBreakpointsSidebarPane extends UI.Widget.VBox implements UI.Cont
 
     const title = item ? i18nString(UIStrings.urlContainsS, {PH1: item}) : i18nString(UIStrings.anyXhrOrFetch);
     const label = UI.UIUtils.CheckboxLabel.create(title, enabled, undefined, undefined, /* small */ true);
-    UI.ARIAUtils.markAsHidden(label);
+    UI.ARIAUtils.setHidden(label, true);
     UI.ARIAUtils.setLabel(element, title);
     element.appendChild(label);
     label.checkboxElement.addEventListener('click', this.checkboxClicked.bind(this, item, enabled), false);

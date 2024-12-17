@@ -308,8 +308,8 @@ export class HeapSnapshotGridNode extends
         const percentSpan = UI.Fragment.html`<span class="percent-column">${this.data[percentColumn]}</span>`;
         div.appendChild(percentSpan);
         div.classList.add('profile-multiple-values');
-        UI.ARIAUtils.markAsHidden(valueSpan);
-        UI.ARIAUtils.markAsHidden(percentSpan);
+        UI.ARIAUtils.setHidden(valueSpan, true);
+        UI.ARIAUtils.setHidden(percentSpan, true);
         this.setCellAccessibleName(
             i18nString(
                 UIStrings.genericStringsTwoPlaceholders, {PH1: this.data[columnId], PH2: this.data[percentColumn]}),

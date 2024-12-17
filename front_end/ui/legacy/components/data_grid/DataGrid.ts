@@ -2003,7 +2003,7 @@ export class DataGridNode<T> {
     this.cellAccessibleTextMap.set(columnId, name);
     // Mark all direct children of cell as hidden so cell name is properly announced
     for (let i = 0; i < cell.children.length; i++) {
-      UI.ARIAUtils.markAsHidden(cell.children[i]);
+      UI.ARIAUtils.setHidden(cell.children[i], true);
     }
     UI.ARIAUtils.setLabel(cell, name);
   }

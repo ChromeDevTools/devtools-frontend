@@ -522,7 +522,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
       const selectedElementCommand = '$0';
       UI.Tooltip.Tooltip.install(
           this.hintElement, i18nString(UIStrings.useSInTheConsoleToReferToThis, {PH1: selectedElementCommand}));
-      UI.ARIAUtils.markAsHidden(this.hintElement);
+      UI.ARIAUtils.setHidden(this.hintElement, true);
     }
   }
 

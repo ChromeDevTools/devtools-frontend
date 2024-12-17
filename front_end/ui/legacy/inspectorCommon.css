@@ -564,7 +564,8 @@ span[is="dt-icon-label"] {
 }
 
 ::selection {
-  background-color: var(--sys-color-tonal-container);
+  background-color: var(--sys-color-state-text-highlight);
+  color: var(--sys-color-state-on-text-highlight);
 }
 
 button.link {

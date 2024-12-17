@@ -308,7 +308,7 @@ describe('SelectMenu', () => {
 
   itScreenshot('renders a menu with a connector', async () => {
     await loadComponentDocExample('select_menu/basic.html');
-    await testScreenshotOnPlaceholder('#place-holder-3', 'select_menu/select_menu_with_connector.png');
+    await testScreenshotOnPlaceholder('#place-holder-3', 'select_menu/select_menu.png');
   });
 
   itScreenshot('renders a menu with groups', async () => {

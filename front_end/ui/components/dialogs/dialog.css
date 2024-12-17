@@ -40,14 +40,10 @@ dialog:focus-visible {
   min-width: var(--content-min-width);
   background: var(--color-background-elevation-dark-only);
   border-radius: var(--sys-size-5);
-  padding-top: var(--content-padding-top);
-  padding-bottom: var(--content-padding-bottom);
-  box-shadow: var(--override-content-box-shadow);
   max-height: var(--dialog-max-height);
   max-width: var(--dialog-max-width);
   overflow: auto;
   outline: none;
-  clip-path: polygon(var(--content-clip-path));
 }
 
 .dialog-header {

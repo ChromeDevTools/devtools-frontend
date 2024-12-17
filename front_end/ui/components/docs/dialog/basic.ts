@@ -9,7 +9,6 @@ import * as ComponentHelpers from '../../helpers/helpers.js';
 await ComponentHelpers.ComponentServerSetup.setup();
 await FrontendHelpers.initializeGlobalVars();
 
-const showConnectors = [true, false];
 const verticalPositions = [Dialogs.Dialog.DialogVerticalPosition.TOP, Dialogs.Dialog.DialogVerticalPosition.BOTTOM];
 const horizontalAlignments = [
   Dialogs.Dialog.DialogHorizontalAlignment.AUTO,
@@ -22,7 +21,6 @@ const horizontalAlignments = [
 const root = document.getElementById('root') as HTMLElement;
 
 let i = 0;
-for (const showConnector of showConnectors) {
   for (const verticalPosition of verticalPositions) {
     const row = document.createElement('div');
     row.classList.add('row');
@@ -44,7 +42,6 @@ for (const showConnector of showConnectors) {
 
       dialog.position = verticalPosition;
       dialog.horizontalAlignment = horizontalAlignment;
-      dialog.showConnector = showConnector;
       dialog.origin = host;
       dialog.id = `dialog-${i}`;
 
@@ -58,12 +55,11 @@ for (const showConnector of showConnectors) {
       const div = document.createElement('div');
       div.classList.add('dialog-content');
       div.style.padding = '0 1em';
-      div.innerHTML = `Hello, World<br/>Show connector: ${showConnector}<br/>Vertical position: ${
-          verticalPosition}<br/>Horizontal alignment: ${horizontalAlignment}`;
+      div.innerHTML =
+          `Hello, World<br/>Vertical position: ${verticalPosition}<br/>Horizontal alignment: ${horizontalAlignment}`;
       dialog.appendChild(div);
       root.appendChild(dialog);
       i++;
-    }
   }
 }
 
@@ -88,7 +84,6 @@ for (const verticalPosition of verticalPositions) {
 
     dialog.position = verticalPosition;
     dialog.horizontalAlignment = horizontalAlignment;
-    dialog.showConnector = true;
     dialog.origin = host;
     dialog.id = `dialog-${i}`;
 
@@ -148,6 +143,7 @@ function renderDifferentModeExample() {
     });
     const div = document.createElement('div');
     div.classList.add('dialog-content');
+    div.style.padding = '0 var(--sys-size-8)';
 
     div.innerHTML = 'Hello, World';
     dialog.appendChild(div);

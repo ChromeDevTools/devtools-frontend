@@ -255,6 +255,7 @@ describe('Dialog', () => {
         });
     describe('with an anchor and possible overflow', () => {
       const CONTAINER_WIDTH = 500;
+      const CONTAINER_HEIGHT = 500;
       const HOST_OFFSET = 100;
       const HOST_HEIGHT = 100;
       const devtoolsDialog = new Dialogs.Dialog.Dialog();
@@ -265,7 +266,7 @@ describe('Dialog', () => {
         // of DevTools bounding element.
         container = document.createElement('div');
         container.style.width = `${CONTAINER_WIDTH}px`;
-        container.style.height = `${CONTAINER_WIDTH}px`;
+        container.style.height = `${CONTAINER_HEIGHT}px`;
         container.style.position = 'fixed';
         container.style.top = '0';
         container.style.left = '0';
@@ -318,7 +319,7 @@ describe('Dialog', () => {
            assert.strictEqual(dialogLeftBorderLimitPosition, CONTAINER_WIDTH);
            assert.strictEqual(
                dialog.clientHeight,
-               CONTAINER_WIDTH - Dialogs.Dialog.CONNECTOR_HEIGHT - HOST_HEIGHT - HOST_OFFSET +
+               CONTAINER_HEIGHT - Dialogs.Dialog.DIALOG_PADDING_FROM_WINDOW - HOST_HEIGHT - HOST_OFFSET +
                    2 * Dialogs.Dialog.DIALOG_VERTICAL_PADDING);
          });
       it('sets the max width and height correctly when the dialog\'s content dimensions exceed the viewport and the dialog is anchored to the right',

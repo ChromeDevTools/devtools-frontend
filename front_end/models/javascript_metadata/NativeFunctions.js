@@ -3498,11 +3498,6 @@ export const NativeFunctions = [
     signatures: [["?measureName"]]
   },
   {
-    name: "getEntries",
-    signatures: [["?options"]],
-    receivers: ["Performance"]
-  },
-  {
     name: "getEntriesByName",
     signatures: [["name","?type"],["name","?entryType"]]
   },
@@ -6527,10 +6522,6 @@ export const NativeFunctions = [
     signatures: [["root","node","?init"]]
   },
   {
-    name: "moveBefore",
-    signatures: [["node","child"]]
-  },
-  {
     name: "Observable",
     signatures: [["callback"]]
   },
@@ -6561,6 +6552,10 @@ export const NativeFunctions = [
   {
     name: "last",
     signatures: [["?options"]]
+  },
+  {
+    name: "moveBefore",
+    signatures: [["node","child"]]
   },
   {
     name: "expand",

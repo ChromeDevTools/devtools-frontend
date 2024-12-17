@@ -55,14 +55,19 @@ dialog:focus-visible {
   justify-content: space-between;
   align-items: center;
   padding: var(--sys-size-5) var(--sys-size-5) var(--sys-size-5) var(--sys-size-8);
-}
 
-.dialog-header-text {
-  font: var(--sys-typescale-body2-medium);
+  &:empty {
+    padding: 0;
+    height: var(--sys-size-7);
+  }
+
+  .dialog-header-text {
+    font: var(--sys-typescale-body2-medium);
+  }
 }
 
 .dialog-content {
-  padding: 0 var(--sys-size-8);
+  padding: 0 0 var(--sys-size-7);
   overflow: hidden;
 }
 

@@ -21,7 +21,7 @@
   flex-direction: column;
   /* overwrite default`margin` and `padding` for the <ul> element */
   margin: 0;
-  padding: 0;
+  padding: 0 var(--sys-size-8);
 }
 
 .keybinds-list-item {

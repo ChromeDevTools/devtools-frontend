@@ -564,7 +564,8 @@ describe('Dialog', () => {
 
       assert.isNotNull(dialog.shadowRoot);
       const dialogHeader = dialog.shadowRoot.querySelector('.dialog-header');
-      assert.notExists(dialogHeader);
+      assert.exists(dialogHeader);
+      assert.isEmpty(dialogHeader.children);
     });
 
     it('should render a close button in the dialog if closeButton is true', async () => {

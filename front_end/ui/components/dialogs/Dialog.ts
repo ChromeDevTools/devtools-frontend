@@ -705,7 +705,6 @@ export class Dialog extends HTMLElement {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     return html`
-      <div class="dialog-header">
         <span class="dialog-header-text">${this.#props.dialogTitle}</span>
         ${this.#props.closeButton ? html`
           <devtools-button
@@ -718,7 +717,6 @@ export class Dialog extends HTMLElement {
             jslog=${VisualLogging.close().track({click: true})}
           ></devtools-button>
         ` : LitHtml.nothing}
-      </div>
     `;
     // clang-format on
   }
@@ -745,7 +743,7 @@ export class Dialog extends HTMLElement {
       <dialog @click=${this.#handlePointerEvent} @pointermove=${this.#handlePointerEvent} @cancel=${this.#onCancel}
               jslog=${VisualLogging.dialog(this.#props.jslogContext).track({resize: true, keydown: 'Escape'}).parent('mapped')}>
         <div id="content">
-          ${this.#renderHeaderRow()}
+          <div class="dialog-header">${this.#renderHeaderRow()}</div>
           <div class='dialog-content'>
             <slot></slot>
           </div>

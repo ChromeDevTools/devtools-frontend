@@ -23,6 +23,7 @@ buttonDialog.data = {
   dialogTitle: 'Button dialog example',
 };
 const div = document.createElement('div');
+div.style.padding = '0 var(--sys-size-8)';
 div.createChild('div').innerHTML = 'Hello, World';
 div.createChild('div').innerHTML = 'This is a super long content. This is a super long content';
 buttonDialog.appendChild(div);

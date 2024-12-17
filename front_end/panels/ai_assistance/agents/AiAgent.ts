@@ -28,7 +28,7 @@ export const enum ErrorType {
 export interface AnswerResponse {
   type: ResponseType.ANSWER;
   text: string;
-  rpcId?: number;
+  rpcId?: Host.AidaClient.RpcGlobalId;
   suggestions?: [string, ...string[]];
 }
 
@@ -51,13 +51,13 @@ export interface ContextResponse {
 export interface TitleResponse {
   type: ResponseType.TITLE;
   title: string;
-  rpcId?: number;
+  rpcId?: Host.AidaClient.RpcGlobalId;
 }
 
 export interface ThoughtResponse {
   type: ResponseType.THOUGHT;
   thought: string;
-  rpcId?: number;
+  rpcId?: Host.AidaClient.RpcGlobalId;
 }
 
 export interface SideEffectResponse {
@@ -269,10 +269,12 @@ export abstract class AiAgent<T> {
       aidaFetch(
           request: Host.AidaClient.AidaRequest,
           options?: {signal?: AbortSignal},
-          ): AsyncGenerator<{parsedResponse: ParsedResponse, completed: boolean, rpcId?: number}, void, void> {
+          ):
+          AsyncGenerator<
+              {parsedResponse: ParsedResponse, completed: boolean, rpcId?: Host.AidaClient.RpcGlobalId}, void, void> {
     let aidaResponse: Host.AidaClient.AidaResponse|undefined = undefined;
     let response = '';
-    let rpcId: number|undefined;
+    let rpcId: Host.AidaClient.RpcGlobalId|undefined;
     for await (aidaResponse of this.#aidaClient.fetch(request, options)) {
       response = aidaResponse.explanation;
       rpcId = aidaResponse.metadata.rpcGlobalId ?? rpcId;
@@ -492,7 +494,7 @@ STOP`;
       } as const;
       this.#addHistory(queryResponse);
       yield queryResponse;
-      let rpcId: number|undefined;
+      let rpcId: Host.AidaClient.RpcGlobalId|undefined;
       let parsedResponse: ParsedResponse|undefined = undefined;
       try {
         for await (const fetchResult of this.aidaFetch(request, {signal: options.signal})) {

@@ -585,7 +585,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     void this.#toggleSearchElementAction.execute();
   }
 
-  #handleFeedbackSubmit(rpcId: number, rating: Host.AidaClient.Rating, feedback?: string): void {
+  #handleFeedbackSubmit(rpcId: Host.AidaClient.RpcGlobalId, rating: Host.AidaClient.Rating, feedback?: string): void {
     void this.#aidaClient.registerClientEvent({
       corresponding_aida_rpc_global_id: rpcId,
       disable_user_content_logging: !this.#serverSideLoggingEnabled,

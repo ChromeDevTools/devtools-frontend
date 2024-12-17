@@ -136,6 +136,8 @@ export enum UserTier {
   PUBLIC = 3,
 }
 
+export type RpcGlobalId = string|number;
+
 export interface AidaRequest {
   client: string;
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -166,7 +168,7 @@ export interface AidaRequest {
 
 export interface AidaDoConversationClientEvent {
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  corresponding_aida_rpc_global_id: number;
+  corresponding_aida_rpc_global_id: RpcGlobalId;
   // eslint-disable-next-line @typescript-eslint/naming-convention
   disable_user_content_logging: boolean;
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -207,7 +209,7 @@ export interface AidaFunctionCallResponse {
 }
 
 export interface AidaResponseMetadata {
-  rpcGlobalId?: number;
+  rpcGlobalId?: RpcGlobalId;
   attributionMetadata?: AttributionMetadata[];
 }
 

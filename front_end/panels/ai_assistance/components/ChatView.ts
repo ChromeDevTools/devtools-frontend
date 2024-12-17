@@ -291,7 +291,7 @@ export interface ModelChatMessage {
   suggestions?: [string, ...string[]];
   answer?: string;
   error?: ErrorType;
-  rpcId?: number;
+  rpcId?: Host.AidaClient.RpcGlobalId;
 }
 
 export type ChatMessage = UserChatMessage|ModelChatMessage;
@@ -304,7 +304,7 @@ export const enum State {
 export interface Props {
   onTextSubmit: (text: string) => void;
   onInspectElementClick: () => void;
-  onFeedbackSubmit: (rpcId: number, rate: Host.AidaClient.Rating, feedback?: string) => void;
+  onFeedbackSubmit: (rpcId: Host.AidaClient.RpcGlobalId, rate: Host.AidaClient.Rating, feedback?: string) => void;
   onCancelClick: () => void;
   onContextClick: () => void | Promise<void>;
   onNewConversation: () => void;
@@ -585,7 +585,8 @@ export class ChatView extends HTMLElement {
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceDynamicSuggestionClicked);
   };
 
-  #renderUserActionRow(rpcId?: number, suggestions?: [string, ...string[]]): LitHtml.TemplateResult {
+  #renderUserActionRow(rpcId?: Host.AidaClient.RpcGlobalId, suggestions?: [string, ...string[]]):
+      LitHtml.TemplateResult {
     // clang-format off
     return html`<devtools-user-action-row
       .props=${{

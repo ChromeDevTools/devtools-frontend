@@ -189,9 +189,11 @@ function createRelationshipsFromFlows(): void {
 }
 
 function createRelationshipsFromAsyncJSCalls(): void {
-  const asyncCallPairs = AsyncJSCallsHandlerData().schedulerToRunEntryPoints.entries();
-  for (const [asyncCaller, asyncCallee] of asyncCallPairs) {
-    storeInitiator({event: asyncCallee, initiator: asyncCaller});
+  const asyncCallEntries = AsyncJSCallsHandlerData().schedulerToRunEntryPoints.entries();
+  for (const [asyncCaller, asyncCallees] of asyncCallEntries) {
+    for (const asyncCallee of asyncCallees) {
+      storeInitiator({event: asyncCallee, initiator: asyncCaller});
+    }
   }
 }
 

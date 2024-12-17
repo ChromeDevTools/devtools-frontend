@@ -33,7 +33,6 @@ export const renderElementIntoDOM = (element: HTMLElement, renderOptions: Render
   if (container.childNodes.length !== 0 && !allowMultipleChildren) {
     throw new Error(`renderElementIntoDOM expects the container to be empty ${container.innerHTML}`);
   }
-
   container.appendChild(element);
   return element;
 };

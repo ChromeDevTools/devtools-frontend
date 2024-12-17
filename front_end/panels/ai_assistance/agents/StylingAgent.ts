@@ -10,7 +10,8 @@ import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
-import {ChangeManager} from '../ChangeManager.js';
+import {linkifyNodeReference} from '../../elements/DOMLinkifier.js';
+import {AI_ASSISTANCE_CSS_CLASS_NAME, ChangeManager} from '../ChangeManager.js';
 import {EvaluateAction, formatError, SideEffectError} from '../EvaluateAction.js';
 import {ExtensionScope, FREESTYLER_WORLD_NAME} from '../ExtensionScope.js';
 
@@ -226,8 +227,10 @@ export class NodeContext extends ConversationContext<SDK.DOMModel.DOMNode> {
   }
 
   override getTitle(): string|ReturnType<typeof LitHtml.Directives.until> {
+    const hiddenClassList =
+        this.#node.classNames().filter(className => className.startsWith(AI_ASSISTANCE_CSS_CLASS_NAME));
     return LitHtml.Directives.until(
-        Common.Linkifier.Linkifier.linkify(this.#node),
+        linkifyNodeReference(this.#node, {hiddenClassList}),
     );
   }
 }

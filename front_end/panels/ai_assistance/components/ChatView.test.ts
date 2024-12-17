@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as Host from '../../../core/host/host.js';
-import type * as SDK from '../../../core/sdk/sdk.js';
 import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {describeWithEnvironment, getGetHostConfigStub} from '../../../testing/EnvironmentHelpers.js';
 import * as Marked from '../../../third_party/marked/marked.js';
@@ -104,6 +103,8 @@ css
   function getProp(options: Partial<Freestyler.Props>): Freestyler.Props {
     const noop = () => {};
     const messages: Freestyler.ChatMessage[] = options.messages ?? [];
+    const selectedContext = sinon.createStubInstance(Freestyler.NodeContext);
+    selectedContext.getTitle.returns('');
     return {
       onTextSubmit: noop,
       onInspectElementClick: noop,
@@ -116,7 +117,7 @@ css
       agentType: Freestyler.AgentType.STYLING,
       aidaAvailability: Host.AidaClient.AidaAccessPreconditions.AVAILABLE,
       messages,
-      selectedContext: new Freestyler.NodeContext({} as unknown as SDK.DOMModel.DOMNode),
+      selectedContext,
       isLoading: false,
       canShowFeedbackForm: false,
       userInfo: {},

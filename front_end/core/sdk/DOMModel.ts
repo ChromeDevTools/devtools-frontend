@@ -1044,6 +1044,11 @@ export class DOMNode {
 
     return this.domModel().nodeForId(response.nodeId);
   }
+
+  classNames(): string[] {
+    const classes = this.getAttribute('class');
+    return classes ? classes.split(/\s+/) : [];
+  }
 }
 
 export namespace DOMNode {

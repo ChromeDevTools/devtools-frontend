@@ -174,6 +174,10 @@ export function generateInsight(
       continue;
     }
 
+    if (request.args.data.mimeType === 'image/svg+xml') {
+      continue;
+    }
+
     const imagePaints =
         parsedTrace.ImagePainting.paintImageEventForUrl.get(request.args.data.url)?.filter(isWithinContext);
 

@@ -3391,6 +3391,7 @@ export const knownContextValues = new Set([
   'timeline-counters-graph-js-heap-size-used',
   'timeline-counters-graph-nodes',
   'timeline-debug-mode',
+  'timeline-dim-third-parties',
   'timeline-dim-unrelated-events',
   'timeline-disable-js-sampling',
   'timeline-enhanced-traces',

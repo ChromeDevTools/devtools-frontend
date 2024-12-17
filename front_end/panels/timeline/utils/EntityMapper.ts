@@ -2,15 +2,19 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Trace from '../../../models/trace/trace.js';
+import * as Trace from '../../../models/trace/trace.js';
 
 export class EntityMapper {
   #parsedTrace: Trace.Handlers.Types.ParsedTrace;
   #entityMappings: Trace.Handlers.Helpers.EntityMappings;
+  #firstPartyEntity: Trace.Handlers.Helpers.Entity|null;
+  #thirdPartyEvents: Trace.Types.Events.Event[] = [];
 
   constructor(parsedTrace: Trace.Handlers.Types.ParsedTrace) {
     this.#parsedTrace = parsedTrace;
     this.#entityMappings = this.#initializeEntityMappings(this.#parsedTrace);
+    this.#firstPartyEntity = this.#findFirstPartyEntity();
+    this.#thirdPartyEvents = this.#getThirdPartyEvents();
   }
 
   /**
@@ -38,6 +42,21 @@ export class EntityMapper {
       eventsByEntity,
       createdEntityCache,
     };
+  }
+
+  #findFirstPartyEntity(): Trace.Handlers.Helpers.Entity|null {
+    // As a starting point, we consider the first navigation as the 1P.
+    const nav = Array.from(this.#parsedTrace.Meta.navigationsByNavigationId.values()).sort((a, b) => a.ts - b.ts)[0];
+    const firstPartyUrl = nav?.args.data?.documentLoaderURL ?? this.#parsedTrace.Meta.mainFrameURL;
+    return Trace.Handlers.Helpers.getEntityForUrl(firstPartyUrl, this.#entityMappings.createdEntityCache) ?? null;
+  }
+
+  #getThirdPartyEvents(): Trace.Types.Events.Event[] {
+    const entries = Array.from(this.#entityMappings.eventsByEntity.entries());
+    const thirdPartyEvents = entries.flatMap(([entity, requests]) => {
+      return entity.name !== this.#firstPartyEntity?.name ? requests : [];
+    });
+    return thirdPartyEvents;
   }
 
   #mergeEventsByEntities(
@@ -68,6 +87,14 @@ export class EntityMapper {
    */
   eventsForEntity(entity: Trace.Handlers.Helpers.Entity): Trace.Types.Events.Event[] {
     return this.#entityMappings.eventsByEntity.get(entity) ?? [];
+  }
+
+  firstPartyEntity(): Trace.Handlers.Helpers.Entity|null {
+    return this.#firstPartyEntity;
+  }
+
+  thirdPartyEvents(): Trace.Types.Events.Event[] {
+    return this.#thirdPartyEvents;
   }
 
   mappings(): Trace.Handlers.Helpers.EntityMappings {

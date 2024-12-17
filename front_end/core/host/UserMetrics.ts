@@ -942,8 +942,9 @@ export enum KeyboardShortcutAction {
   'elements.refresh-event-listeners' = 115,
   'coverage.clear' = 116,
   'coverage.export' = 117,
+  'timeline.dim-third-parties' = 118,
   /* eslint-enable @typescript-eslint/naming-convention */
-  MAX_VALUE = 118,
+  MAX_VALUE = 119,
 }
 
 export const enum IssueOpener {
@@ -994,10 +995,11 @@ export enum DevtoolsExperiments {
   'timeline-dim-unrelated-events' = 103,
   'timeline-alternative-navigation' = 104,
   'timeline-ignore-list' = 105,
+  'timeline-third-party-dependencies' = 106,
   /* eslint-enable @typescript-eslint/naming-convention */
 
   // Increment this when new experiments are added.
-  MAX_VALUE = 106,
+  MAX_VALUE = 107,
 }
 
 export const enum CSSPropertyDocumentation {

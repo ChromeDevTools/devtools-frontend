@@ -389,6 +389,13 @@ export class TimelineFlameChartView extends
     return this.element;
   }
 
+  dimEvents(events: Trace.Types.Events.Event[]): void {
+    const relatedMainIndices = events.map(event => this.mainDataProvider.indexForEvent(event) ?? -1);
+    const relatedNetworkIndices = events.map(event => this.networkDataProvider.indexForEvent(event) ?? -1);
+    this.mainFlameChart.enableDimming(relatedMainIndices, false /** shouldAddOutlines */);
+    this.networkFlameChart.enableDimming(relatedNetworkIndices, false /** shouldAddOutlines */);
+  }
+
   #dimInsightRelatedEvents(relatedEvents: Trace.Types.Events.Event[]): void {
     // Dim all events except those related to the active insight.
     const relatedMainIndices = relatedEvents.map(event => this.mainDataProvider.indexForEvent(event) ?? -1);
@@ -435,8 +442,13 @@ export class TimelineFlameChartView extends
 
       relevantEvents.push(...provider.search(bounds).map(r => r.index));
     }
-    this.mainFlameChart.enableDimming(relatedMainIndices);
-    this.networkFlameChart.enableDimming(relatedNetworkIndices);
+    this.mainFlameChart.enableDimmingForUnrelatedEntries(relatedMainIndices);
+    this.networkFlameChart.enableDimmingForUnrelatedEntries(relatedNetworkIndices);
+  }
+
+  disableAllDimming(): void {
+    this.mainFlameChart.disableDimming();
+    this.networkFlameChart.disableDimming();
   }
 
   #sortMarkersForPreferredVisualOrder(markers: Trace.Types.Events.Event[]): void {

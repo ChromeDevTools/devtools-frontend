@@ -91,4 +91,34 @@ describeWithEnvironment('EntityMapper', function() {
       });
     });
   });
+  describe('first party', () => {
+    it('correctly captures the first party entity', async function() {
+      const {parsedTrace: localhostTrace} = await TraceLoader.traceEngine(this, 'load-simple.json.gz');
+      let mapper = new Utils.EntityMapper.EntityMapper(localhostTrace);
+      let got = mapper.firstPartyEntity();
+      assert.deepEqual(got?.name, 'localhost');
+
+      const {parsedTrace: paulTrace} = await TraceLoader.traceEngine(this, 'lantern/paul/trace.json.gz');
+      mapper = new Utils.EntityMapper.EntityMapper(paulTrace);
+      got = mapper.firstPartyEntity();
+      assert.deepEqual(got?.name, 'paulirish.com');
+
+      const {parsedTrace: webDevTrace} = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+      mapper = new Utils.EntityMapper.EntityMapper(webDevTrace);
+      got = mapper.firstPartyEntity();
+      assert.deepEqual(got?.name, 'web.dev');
+    });
+    it('correctly captures 3p events', async function() {
+      const {parsedTrace: paulTrace} = await TraceLoader.traceEngine(this, 'lantern/paul/trace.json.gz');
+      const mapper = new Utils.EntityMapper.EntityMapper(paulTrace);
+      const got = mapper.firstPartyEntity();
+      assert.exists(got);
+      assert.deepEqual(got.name, 'paulirish.com');
+      const firstPartyEvents = mapper.eventsForEntity(got);
+      const gotThirdPartyEvents = mapper.thirdPartyEvents();
+      gotThirdPartyEvents.forEach(e => {
+        assert.isTrue(!firstPartyEvents.includes(e));
+      });
+    });
+  });
 });

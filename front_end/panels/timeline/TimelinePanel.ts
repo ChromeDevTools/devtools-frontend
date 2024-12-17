@@ -329,6 +329,10 @@ const UIStrings = {
    * @description Description of the Timeline right/left panning action that appears in the Performance panel shortcuts dialog.
    */
   timelinePanLeftRight: 'Timeline right/left',
+  /**
+   * @description Title for the Dim 3rd Parties checkbox.
+   */
+  dimThirdParties: 'Dim 3rd Parties',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelinePanel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -374,6 +378,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   private readonly timelinePane: UI.Widget.VBox;
   readonly #minimapComponent = new TimelineMiniMap();
   #viewMode: ViewMode = {mode: 'LANDING_PAGE'};
+  readonly #dimThirdPartiesSetting: Common.Settings.Setting<boolean>|null = null;
 
   /**
    * We get given any filters for a new trace when it is recorded/imported.
@@ -424,6 +429,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
   #traceEngineModel: Trace.TraceModel.Model;
   #sourceMapsResolver: Utils.SourceMapsResolver.SourceMapsResolver|null = null;
+  #entityMapper: Utils.EntityMapper.EntityMapper|null = null;
   #onSourceMapsNodeNamesResolvedBound = this.#onSourceMapsNodeNamesResolved.bind(this);
   readonly #onChartPlayableStateChangeBound: (event: Common.EventTarget.EventTargetEvent<boolean>) => void;
   #sidebarToggleButton = this.#splitWidget.createShowHideSidebarButton(
@@ -532,6 +538,13 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.showMemorySetting = Common.Settings.Settings.instance().createSetting('timeline-show-memory', false);
     this.showMemorySetting.setTitle(i18nString(UIStrings.memory));
     this.showMemorySetting.addChangeListener(this.onMemoryModeChanged, this);
+
+    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_THIRD_PARTY_DEPENDENCIES)) {
+      this.#dimThirdPartiesSetting =
+          Common.Settings.Settings.instance().createSetting('timeline-dim-third-parties', false);
+      this.#dimThirdPartiesSetting.setTitle(i18nString(UIStrings.dimThirdParties));
+      this.#dimThirdPartiesSetting.addChangeListener(this.onDimThirdPartiesChanged, this);
+    }
 
     this.#thirdPartyTracksSetting = TimelinePanel.extensionDataVisibilitySetting();
     this.#thirdPartyTracksSetting.addChangeListener(this.#extensionDataVisibilityChanged, this);
@@ -879,6 +892,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
         this.#setModelForActiveTrace();
         this.#removeStatusPane();
         this.#showSidebarIfRequired();
+        this.#dimThirdPartiesIfRequired(newMode.traceIndex);
         return;
       }
 
@@ -1104,6 +1118,13 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       this.panelToolbar.appendSeparator();
       const showIgnoreListSetting = new TimelineComponents.IgnoreListSetting.IgnoreListSetting();
       this.panelToolbar.appendToolbarItem(new UI.Toolbar.ToolbarItem(showIgnoreListSetting));
+    }
+
+    if (Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_THIRD_PARTY_DEPENDENCIES) &&
+        this.#dimThirdPartiesSetting) {
+      const dimThirdPartiesCheckbox =
+          this.createSettingCheckbox(this.#dimThirdPartiesSetting, i18nString(UIStrings.dimThirdParties));
+      this.panelToolbar.appendToolbarItem(dimThirdPartiesCheckbox);
     }
 
     // Isolate selector
@@ -1489,6 +1510,13 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.updateMiniMap();
     this.doResize();
     this.select(null);
+  }
+
+  private onDimThirdPartiesChanged(): void {
+    if (this.#viewMode.mode !== 'VIEWING_TRACE') {
+      return;
+    }
+    this.#dimThirdPartiesIfRequired(this.#viewMode.traceIndex);
   }
 
   #extensionDataVisibilityChanged(): void {
@@ -2002,6 +2030,9 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
         Utils.SourceMapsResolver.SourceMappingsUpdated.eventName, this.#onSourceMapsNodeNamesResolvedBound);
     void this.#sourceMapsResolver.install();
 
+    // Initialize EntityMapper
+    this.#entityMapper = new Utils.EntityMapper.EntityMapper(parsedTrace);
+
     this.statusPane?.updateProgressBar(i18nString(UIStrings.processed), 80);
     this.updateMiniMap();
     this.statusPane?.updateProgressBar(i18nString(UIStrings.processed), 90);
@@ -2083,6 +2114,20 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       this.#splitWidget.showBoth();
     }
     this.#restoreSidebarVisibilityOnTraceLoad = false;
+  }
+
+  #dimThirdPartiesIfRequired(traceIndex: number): void {
+    const parsedTrace = this.#traceEngineModel.parsedTrace(traceIndex);
+    if (!parsedTrace) {
+      return;
+    }
+    const thirdPartyEvents = this.#entityMapper?.thirdPartyEvents() ?? [];
+    if (this.#dimThirdPartiesSetting?.get() && thirdPartyEvents.length) {
+      this.flameChart.dimEvents(thirdPartyEvents);
+    } else {
+      // Ensure dimming stores are cleared, and there is no dimming.
+      this.flameChart.disableAllDimming();
+    }
   }
 
   // Build a map mapping annotated entries to the colours that are used to display them in the FlameChart.

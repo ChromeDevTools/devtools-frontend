@@ -690,6 +690,15 @@ describeWithMockConnection('LiveMetricsView', () => {
     assert.strictEqual(mockHandleAction.firstCall.args[1], 'timeline.record-reload');
   });
 
+  it('should show minimal view for Node connections', async () => {
+    const view = renderLiveMetrics();
+    view.isNode = true;
+    await coordinator.done();
+
+    const title = view.shadowRoot?.querySelector('.section-title');
+    assert.strictEqual(title!.textContent!, 'Node performance');
+  });
+
   describe('field data', () => {
     let target: SDK.Target.Target;
     let mockFieldData: CrUXManager.PageResult;

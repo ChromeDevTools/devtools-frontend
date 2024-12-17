@@ -2180,8 +2180,9 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       return;
     }
 
-    this.landingPage = LegacyWrapper.LegacyWrapper.legacyWrapper(
-        UI.Widget.Widget, new TimelineComponents.LiveMetricsView.LiveMetricsView());
+    const liveMetrics = new TimelineComponents.LiveMetricsView.LiveMetricsView();
+    liveMetrics.isNode = isNode;
+    this.landingPage = LegacyWrapper.LegacyWrapper.legacyWrapper(UI.Widget.Widget, liveMetrics);
     this.landingPage.element.classList.add('timeline-landing-page', 'fill');
     this.landingPage.contentElement.classList.add('fill');
     this.landingPage.show(this.statusPaneContainer);

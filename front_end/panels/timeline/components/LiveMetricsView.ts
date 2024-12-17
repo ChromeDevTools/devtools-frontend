@@ -278,6 +278,14 @@ const UIStrings = {
    * @description Tooltip text for a button that will open the Chrome DevTools console to and log additional details about a user interaction.
    */
   logToConsole: 'Log additional interaction data to the console',
+  /**
+   * @description Title of a view that can be used to analyze the performance of a Node process as a timeline. "Node" is a product name and should not be translated.
+   */
+  nodePerformanceTimeline: 'Node performance',
+  /**
+   * @description Description of a view that can be used to analyze the performance of a Node process as a timeline. "Node" is a product name and should not be translated.
+   */
+  nodeClickToRecord: 'Record a performance timeline of the connected Node process.',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/LiveMetricsView.ts', UIStrings);
@@ -285,6 +293,8 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableComponent {
   readonly #shadow = this.attachShadow({mode: 'open'});
+
+  #isNode: boolean = false;
 
   #lcpValue?: LiveMetrics.LCPValue;
   #clsValue?: LiveMetrics.CLSValue;
@@ -309,6 +319,11 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
 
     this.#toggleRecordAction = UI.ActionRegistry.ActionRegistry.instance().getAction('timeline.toggle-recording');
     this.#recordReloadAction = UI.ActionRegistry.ActionRegistry.instance().getAction('timeline.record-reload');
+  }
+
+  set isNode(isNode: boolean) {
+    this.#isNode = isNode;
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
 
   #onMetricStatus(event: {data: LiveMetrics.StatusEvent}): void {
@@ -1021,7 +1036,24 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
     // clang-format on
   }
 
+  #renderNodeView(): LitHtml.LitTemplate {
+    return html`
+      <div class="node-view">
+        <main>
+          <h2 class="section-title">${i18nString(UIStrings.nodePerformanceTimeline)}</h2>
+          <div class="node-description">${i18nString(UIStrings.nodeClickToRecord)}</div>
+          <div class="record-action-card">${this.#renderRecordAction(this.#toggleRecordAction)}</div>
+        </main>
+      </div>
+    `;
+  }
+
   #render = (): void => {
+    if (this.#isNode) {
+      LitHtml.render(this.#renderNodeView(), this.#shadow, {host: this});
+      return;
+    }
+
     const fieldEnabled = this.#cruxManager.getConfigSetting().get().enabled;
     const liveMetricsTitle =
         fieldEnabled ? i18nString(UIStrings.localAndFieldMetrics) : i18nString(UIStrings.localMetrics);

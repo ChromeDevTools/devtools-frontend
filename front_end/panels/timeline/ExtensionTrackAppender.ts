@@ -5,9 +5,10 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 
-import {buildGroupStyle, buildTrackHeader} from './AppenderUtils.js';
+import {buildGroupStyle, buildTrackHeader, getFormattedTime} from './AppenderUtils.js';
 import {
   type CompatibilityTracksAppender,
+  type PopoverInfo,
   type TrackAppender,
   type TrackAppenderName,
   VisualLoggingTrackName,
@@ -99,9 +100,13 @@ export class ExtensionTrackAppender implements TrackAppender {
   }
 
   titleForEvent(event: Trace.Types.Events.Event): string {
-    if (Trace.Types.Extensions.isSyntheticExtensionEntry(event) && event.args.tooltipText) {
-      return event.args.tooltipText;
-    }
     return event.name;
+  }
+
+  setPopoverInfo(event: Trace.Types.Events.Event, info: PopoverInfo): void {
+    info.title = Trace.Types.Extensions.isSyntheticExtensionEntry(event) && event.args.tooltipText ?
+        event.args.tooltipText :
+        this.titleForEvent(event);
+    info.formattedTime = getFormattedTime(event.dur);
   }
 }

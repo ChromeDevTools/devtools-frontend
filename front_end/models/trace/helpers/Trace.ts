@@ -18,13 +18,18 @@ type MatchingPairableAsyncEvents = {
 };
 
 /**
- * Extracts the raw stack trace of known trace events. Most likely than
+ * Extracts the raw stack trace in known trace events. Most likely than
  * not you want to use `getZeroIndexedStackTraceForEvent`, which returns
  * the stack with zero based numbering. Since some trace events are
  * one based this function can yield unexpected results when used
  * indiscriminately.
+ *
+ * Note: this only returns the stack trace contained in the payload of
+ * an event, which only contains the synchronous portion of the call
+ * stack. If you want to obtain the whole stack trace you might need to
+ * use the @see Trace.Extras.StackTraceForEvent util.
  */
-export function stackTraceForEvent(event: Types.Events.Event): Types.Events.CallFrame[]|null {
+export function stackTraceInEvent(event: Types.Events.Event): Types.Events.CallFrame[]|null {
   if (event.args?.data?.stackTrace) {
     return event.args.data.stackTrace;
   }
@@ -35,10 +40,10 @@ export function stackTraceForEvent(event: Types.Events.Event): Types.Events.Call
     return event.args.beginData?.stackTrace || null;
   }
   if (Types.Extensions.isSyntheticExtensionEntry(event)) {
-    return stackTraceForEvent(event.rawSourceEvent);
+    return stackTraceInEvent(event.rawSourceEvent);
   }
   if (Types.Events.isSyntheticUserTiming(event)) {
-    return stackTraceForEvent(event.rawSourceEvent);
+    return stackTraceInEvent(event.rawSourceEvent);
   }
   if (Types.Events.isFunctionCall(event)) {
     const data = event.args.data;
@@ -398,9 +403,14 @@ export function getZeroIndexedLineAndColumnForEvent(event: Types.Events.Event): 
  * that are 1 or 0 indexed.
  * This function knows which events return 1 indexed numbers and normalizes
  * them. The UI expects 0 indexed line numbers, so that is what we return.
+ *
+ * Note: this only returns the stack trace contained in the payload of
+ * an event, which only contains the synchronous portion of the call
+ * stack. If you want to obtain the whole stack trace you might need to
+ * use the @see Trace.Extras.StackTraceForEvent util.
  */
 export function getZeroIndexedStackTraceForEvent(event: Types.Events.Event): Types.Events.CallFrame[]|null {
-  const stack = stackTraceForEvent(event);
+  const stack = stackTraceInEvent(event);
   if (!stack) {
     return null;
   }

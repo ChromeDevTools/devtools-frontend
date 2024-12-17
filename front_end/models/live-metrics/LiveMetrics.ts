@@ -159,8 +159,7 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
    * DOM nodes can't be sent over a runtime binding, so we have to retrieve
    * them separately.
    */
-  async #resolveDomNode(index: number, executionContextId: Protocol.Runtime.ExecutionContextId):
-      Promise<SDK.DOMModel.DOMNode|null> {
+  async #resolveNodeRef(index: number, executionContextId: Protocol.Runtime.ExecutionContextId): Promise<NodeRef|null> {
     if (!this.#target) {
       return null;
     }
@@ -184,15 +183,21 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
       return null;
     }
 
-    const remoteObject = runtimeModel.createRemoteObject(result);
-    return domModel.pushObjectAsNodeToFrontend(remoteObject);
-  }
+    let remoteObject;
+    try {
+      remoteObject = runtimeModel.createRemoteObject(result);
+      const node = await domModel.pushObjectAsNodeToFrontend(remoteObject);
+      if (!node) {
+        return null;
+      }
 
-  async #refreshNode(domModel: SDK.DOMModel.DOMModel, node: SDK.DOMModel.DOMNode):
-      Promise<SDK.DOMModel.DOMNode|undefined> {
-    const backendNodeId = node.backendNodeId();
-    const nodes = await domModel.pushNodesByBackendIdsToFrontend(new Set([backendNodeId]));
-    return nodes?.get(backendNodeId) || undefined;
+      const link = await Common.Linkifier.Linkifier.linkify(node);
+      return {node, link};
+    } catch {
+      return null;
+    } finally {
+      remoteObject?.release();
+    }
   }
 
   #sendStatusUpdate(): void {
@@ -221,24 +226,29 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
   async #onDocumentUpdate(event: Common.EventTarget.EventTargetEvent<SDK.DOMModel.DOMModel>): Promise<void> {
     const domModel = event.data;
 
-    const allLayoutAffectedNodes = this.#layoutShifts.flatMap(shift => shift.affectedNodes);
-    const toRefresh: Array<{node?: SDK.DOMModel.DOMNode}> =
-        [this.#lcpValue || {}, ...this.#interactions.values(), ...allLayoutAffectedNodes];
+    const toRefresh = [
+      this.#lcpValue?.nodeRef,
+      ...this.#interactions.values().map(i => i.nodeRef),
+      ...this.#layoutShifts.flatMap(shift => shift.affectedNodeRefs),
+    ].filter((nodeRef): nodeRef is NodeRef => Boolean(nodeRef));
 
-    const allPromises = toRefresh.map(item => {
-      const node = item.node;
-      if (node === undefined) {
+    const idsToRefresh = new Set(toRefresh.map(nodeRef => nodeRef.node.backendNodeId()));
+    const nodes = await domModel.pushNodesByBackendIdsToFrontend(idsToRefresh);
+    if (!nodes) {
+      return;
+    }
+
+    const allPromises = toRefresh.map(async nodeRef => {
+      const refreshedNode = nodes.get(nodeRef.node.backendNodeId());
+
+      // It is possible for the refreshed node to be undefined even though it was defined previously.
+      // We should keep the affected nodes consistent from the user perspective, so we will just keep the stale node instead of removing it.
+      if (!refreshedNode) {
         return;
       }
 
-      return this.#refreshNode(domModel, node).then(refreshedNode => {
-        // In theory, it is possible for `node` to be undefined even though it was defined previously.
-        // We should keep the affected nodes consistent from the user perspective, so we will just keep the stale node instead of removing it.
-        // This is unlikely to happen in practice.
-        if (refreshedNode) {
-          item.node = refreshedNode;
-        }
-      });
+      nodeRef.node = refreshedNode;
+      nodeRef.link = await Common.Linkifier.Linkifier.linkify(refreshedNode);
     });
 
     await Promise.all(allPromises);
@@ -257,9 +267,9 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
           warnings,
         };
         if (webVitalsEvent.nodeIndex !== undefined) {
-          const node = await this.#resolveDomNode(webVitalsEvent.nodeIndex, executionContextId);
-          if (node) {
-            lcpEvent.node = node;
+          const nodeRef = await this.#resolveNodeRef(webVitalsEvent.nodeIndex, executionContextId);
+          if (nodeRef) {
+            lcpEvent.nodeRef = nodeRef;
           }
         }
 
@@ -321,26 +331,25 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper<EventTypes> 
         }
 
         if (webVitalsEvent.nodeIndex !== undefined) {
-          const node = await this.#resolveDomNode(webVitalsEvent.nodeIndex, executionContextId);
+          const node = await this.#resolveNodeRef(webVitalsEvent.nodeIndex, executionContextId);
           if (node) {
-            interaction.node = node;
+            interaction.nodeRef = node;
           }
         }
         break;
       }
       case 'LayoutShift': {
         const nodePromises = webVitalsEvent.affectedNodeIndices.map(nodeIndex => {
-          return this.#resolveDomNode(nodeIndex, executionContextId);
+          return this.#resolveNodeRef(nodeIndex, executionContextId);
         });
 
-        const affectedNodes = (await Promise.all(nodePromises))
-                                  .filter((node): node is SDK.DOMModel.DOMNode => Boolean(node))
-                                  .map(node => ({node}));
+        const affectedNodes =
+            (await Promise.all(nodePromises)).filter((nodeRef): nodeRef is NodeRef => Boolean(nodeRef));
 
         const layoutShift: LayoutShift = {
           score: webVitalsEvent.score,
           uniqueLayoutShiftId: webVitalsEvent.uniqueLayoutShiftId,
-          affectedNodes,
+          affectedNodeRefs: affectedNodes,
         };
         this.#layoutShifts.push(layoutShift);
         break;
@@ -572,9 +581,14 @@ export interface MetricValue {
   warnings?: string[];
 }
 
+export interface NodeRef {
+  node: SDK.DOMModel.DOMNode;
+  link: Node;
+}
+
 export interface LCPValue extends MetricValue {
   phases: Spec.LCPPhases;
-  node?: SDK.DOMModel.DOMNode;
+  nodeRef?: NodeRef;
 }
 
 export interface INPValue extends MetricValue {
@@ -589,7 +603,7 @@ export interface CLSValue extends MetricValue {
 export interface LayoutShift {
   score: number;
   uniqueLayoutShiftId: Spec.UniqueLayoutShiftId;
-  affectedNodes: Array<{node: SDK.DOMModel.DOMNode}>;
+  affectedNodeRefs: NodeRef[];
 }
 
 export interface Interaction {
@@ -601,7 +615,7 @@ export interface Interaction {
   nextPaintTime: number;
   phases: Spec.INPPhases;
   longAnimationFrameTimings: Spec.PerformanceLongAnimationFrameTimingJSON[];
-  node?: SDK.DOMModel.DOMNode;
+  nodeRef?: NodeRef;
 }
 
 export interface StatusEvent {

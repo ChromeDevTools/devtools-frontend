@@ -32,8 +32,7 @@ import type {MetricCardData} from './MetricCard.js';
 import metricValueStyles from './metricValueStyles.css.js';
 import {CLS_THRESHOLDS, INP_THRESHOLDS, renderMetricValue} from './Utils.js';
 
-const {html, nothing, Directives} = LitHtml;
-const {until} = Directives;
+const {html, nothing} = LitHtml;
 
 type DeviceOption = CrUXManager.DeviceScope|'AUTO';
 
@@ -409,7 +408,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
 
   #renderLcpCard(): LitHtml.LitTemplate {
     const fieldData = this.#cruxManager.getSelectedFieldMetricData('largest_contentful_paint');
-    const node = this.#lcpValue?.node;
+    const nodeLink = this.#lcpValue?.nodeRef?.link;
     const phases = this.#lcpValue?.phases;
 
     // clang-format off
@@ -428,10 +427,10 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
           [i18nString(UIStrings.elementRenderDelay), phases.elementRenderDelay],
         ],
       } as MetricCardData}>
-        ${node ? html`
+        ${nodeLink ? html`
             <div class="related-info" slot="extra-info">
               <span class="related-info-label">${i18nString(UIStrings.lcpElement)}</span>
-              <span class="related-info-link">${until(Common.Linkifier.Linkifier.linkify(node))}</span>
+              <span class="related-info-link">${nodeLink}</span>
             </div>
           `
           : nothing}
@@ -906,8 +905,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
                       html`<span class="interaction-inp-chip" title=${i18nString(UIStrings.inpInteraction)}>INP</span>`
                     : nothing}
                   </span>
-                  <span class="interaction-node">${
-                    interaction.node && until(Common.Linkifier.Linkifier.linkify(interaction.node))}</span>
+                  <span class="interaction-node">${interaction.nodeRef?.link}</span>
                   ${isP98Excluded ? html`<devtools-icon
                     class="interaction-info"
                     name="info"
@@ -1011,8 +1009,8 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
             <li id=${layoutShift.uniqueLayoutShiftId} class="log-item layout-shift" tabindex="-1">
               <div class="layout-shift-score">Layout shift score: ${metricValue}</div>
               <div class="layout-shift-nodes">
-                ${layoutShift.affectedNodes.map(({node}) => html`
-                  <div class="layout-shift-node">${until(Common.Linkifier.Linkifier.linkify(node))}</div>
+                ${layoutShift.affectedNodeRefs.map(({link}) => html`
+                  <div class="layout-shift-node">${link}</div>
                 `)}
               </div>
             </li>

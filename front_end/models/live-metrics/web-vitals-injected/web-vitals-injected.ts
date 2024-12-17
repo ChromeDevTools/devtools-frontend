@@ -77,11 +77,11 @@ function sendEventToDevTools(event: Spec.WebVitalsEvent): void {
   window[Spec.EVENT_BINDING_NAME](payload);
 }
 
-const nodeList: Node[] = [];
+const nodeList: WeakRef<Node>[] = [];
 
 function establishNodeIndex(node: Node): number {
   const index = nodeList.length;
-  nodeList.push(node);
+  nodeList.push(new WeakRef(node));
   return index;
 }
 
@@ -95,7 +95,7 @@ function establishNodeIndex(node: Node): number {
  * for the specified index.
  */
 window.getNodeForIndex = (index: number): Node|undefined => {
-  return nodeList[index];
+  return nodeList[index].deref();
 };
 
 function limitScripts(loafs: Spec.PerformanceLongAnimationFrameTimingJSON[]):

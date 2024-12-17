@@ -1167,8 +1167,12 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     const currentNavSetting = Common.Settings.moduleSetting('flamechart-selected-navigation').get();
     if (currentNavSetting === 'classic') {
       this.#classicNavRadioButton.radioElement.checked = true;
+      Host.userMetrics.navigationSettingAtFirstTimelineLoad(
+          Host.UserMetrics.TimelineNavigationSetting.SWITCHED_TO_CLASSIC);
     } else if (currentNavSetting === 'modern') {
       this.#modernNavRadioButton.radioElement.checked = true;
+      Host.userMetrics.navigationSettingAtFirstTimelineLoad(
+          Host.UserMetrics.TimelineNavigationSetting.SWITCHED_TO_MODERN);
     }
   }
 
@@ -2048,6 +2052,18 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     }
 
     this.#showSidebarIfRequired();
+
+    // When the timeline is loaded for the first time, log what navigation setting is selected.
+    // This will allow us to get an estimate number of people using each option.
+    if (this.#traceEngineModel.size() === 1) {
+      if (Common.Settings.moduleSetting('flamechart-selected-navigation').get() === 'classic') {
+        Host.userMetrics.navigationSettingAtFirstTimelineLoad(
+            Host.UserMetrics.TimelineNavigationSetting.CLASSIC_AT_SESSION_FIRST_TRACE);
+      } else {
+        Host.userMetrics.navigationSettingAtFirstTimelineLoad(
+            Host.UserMetrics.TimelineNavigationSetting.MODERN_AT_SESSION_FIRST_TRACE);
+      }
+    }
   }
 
   /**

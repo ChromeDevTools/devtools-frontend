@@ -438,6 +438,7 @@ const EnumeratedHistogram = {
   SourcesPanelFileDebugged: 'DevTools.SourcesPanelFileDebugged',
   SourcesPanelFileOpened: 'DevTools.SourcesPanelFileOpened',
   NetworkPanelResponsePreviewOpened: 'DevTools.NetworkPanelResponsePreviewOpened',
+  TimelineNavigationSettingState: 'DevTools.TimelineNavigationSettingState',
   StyleTextCopied: 'DevTools.StyleTextCopied',
   SyncSetting: 'DevTools.SyncSetting',
   CSSPropertyDocumentation: 'DevTools.CSSPropertyDocumentation',

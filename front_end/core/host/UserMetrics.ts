@@ -182,6 +182,11 @@ export class UserMetrics {
         EnumeratedHistogram.ExperimentEnabledAtLaunch, experiment, DevtoolsExperiments.MAX_VALUE);
   }
 
+  navigationSettingAtFirstTimelineLoad(state: TimelineNavigationSetting): void {
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(
+        EnumeratedHistogram.TimelineNavigationSettingState, state, TimelineNavigationSetting.MAX_VALUE);
+  }
+
   experimentDisabledAtLaunch(experimentId: string): void {
     const experiment = DevtoolsExperiments[experimentId as keyof typeof DevtoolsExperiments];
     if (experiment === undefined) {
@@ -1430,4 +1435,14 @@ export const enum AnimationPointDragType {
   FINISH_ENDPOINT_MOVE = 3,
   OTHER = 4,
   MAX_VALUE = 5,
+}
+
+export const enum TimelineNavigationSetting {
+  // Setting is set to classic when the first trace of the session is recorded or loaded.
+  CLASSIC_AT_SESSION_FIRST_TRACE = 0,
+  // Setting is set to modern when the first trace of the session is recorded or loaded.
+  MODERN_AT_SESSION_FIRST_TRACE = 1,
+  SWITCHED_TO_CLASSIC = 2,
+  SWITCHED_TO_MODERN = 3,
+  MAX_VALUE = 4,
 }

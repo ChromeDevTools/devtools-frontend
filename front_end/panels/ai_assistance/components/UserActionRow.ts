@@ -141,6 +141,7 @@ export class UserActionRow extends HTMLElement {
     if (this.#currentRating === rating) {
       this.#currentRating = undefined;
       this.#isShowingFeedbackForm = false;
+      this.#isSubmitButtonDisabled = true;
       // This effectively reset the user rating
       this.#props.onFeedbackSubmit(Host.AidaClient.Rating.SENTIMENT_UNSPECIFIED);
       this.#render();

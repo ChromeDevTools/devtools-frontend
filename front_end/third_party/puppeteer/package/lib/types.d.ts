@@ -5701,6 +5701,9 @@ export declare abstract class Page extends EventEmitter<PageEvents> {
      *   await page.emulateVisionDeficiency('blurredVision');
      *   await page.screenshot({path: 'blurred-vision.png'});
      *
+     *   await page.emulateVisionDeficiency('reducedContrast');
+     *   await page.screenshot({path: 'reduced-contrast.png'});
+     *
      *   await browser.close();
      * })();
      * ```
@@ -7499,6 +7502,13 @@ export declare interface SnapshotOptions {
      * @defaultValue `true`
      */
     interestingOnly?: boolean;
+    /**
+     * If true, gets accessibility trees for each of the iframes in the frame
+     * subtree.
+     *
+     * @defaultValue `false`
+     */
+    includeIframes?: boolean;
     /**
      * Root node to get the accessibility tree for
      * @defaultValue The root node of the entire page.

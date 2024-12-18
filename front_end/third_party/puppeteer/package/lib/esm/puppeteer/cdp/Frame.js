@@ -98,7 +98,7 @@ let CdpFrame = (() => {
                 [MAIN_WORLD]: new IsolatedWorld(this, this._frameManager.timeoutSettings),
                 [PUPPETEER_WORLD]: new IsolatedWorld(this, this._frameManager.timeoutSettings),
             };
-            this.accessibility = new Accessibility(this.worlds[MAIN_WORLD]);
+            this.accessibility = new Accessibility(this.worlds[MAIN_WORLD], frameId);
             this.on(FrameEvent.FrameSwappedByActivation, () => {
                 // Emulate loading process for swapped frames.
                 this._onLoadingStarted();

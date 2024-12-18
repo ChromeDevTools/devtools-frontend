@@ -181,7 +181,7 @@ let BidiFrame = (() => {
                 default: Realm_js_1.BidiFrameRealm.from(this.browsingContext.defaultRealm, this),
                 internal: Realm_js_1.BidiFrameRealm.from(this.browsingContext.createWindowRealm(`__puppeteer_internal_${Math.ceil(Math.random() * 10000)}`), this),
             };
-            this.accessibility = new Accessibility_js_1.Accessibility(this.realms.default);
+            this.accessibility = new Accessibility_js_1.Accessibility(this.realms.default, this._id);
         }
         #initialize() {
             for (const browsingContext of this.browsingContext.children) {
@@ -365,9 +365,14 @@ let BidiFrame = (() => {
                 return frame.#detached$();
             });
             return await (0, rxjs_js_1.firstValueFrom)((0, rxjs_js_1.combineLatest)([
-                (0, util_js_1.fromEmitterEvent)(this.browsingContext, 'navigation')
+                (0, rxjs_js_1.race)((0, util_js_1.fromEmitterEvent)(this.browsingContext, 'navigation'), (0, util_js_1.fromEmitterEvent)(this.browsingContext, 'historyUpdated').pipe((0, rxjs_js_1.map)(() => {
+                    return { navigation: null };
+                })))
                     .pipe((0, rxjs_js_1.first)())
                     .pipe((0, rxjs_js_1.switchMap)(({ navigation }) => {
+                    if (navigation === null) {
+                        return (0, rxjs_js_1.of)(null);
+                    }
                     return this.#waitForLoad$(options).pipe((0, rxjs_js_1.delayWhen)(() => {
                         if (frames.length === 0) {
                             return (0, rxjs_js_1.of)(undefined);
@@ -378,6 +383,9 @@ let BidiFrame = (() => {
                     }))), (0, rxjs_js_1.switchMap)(() => {
                         if (navigation.request) {
                             function requestFinished$(request) {
+                                if (navigation === null) {
+                                    return (0, rxjs_js_1.of)(null);
+                                }
                                 // Reduces flakiness if the response events arrive after
                                 // the load event.
                                 // Usually, the response or error is already there at this point.
@@ -400,6 +408,9 @@ let BidiFrame = (() => {
                 })),
                 this.#waitForNetworkIdle$(options),
             ]).pipe((0, rxjs_js_1.map)(([navigation]) => {
+                if (!navigation) {
+                    return null;
+                }
                 const request = navigation.request;
                 if (!request) {
                     return null;

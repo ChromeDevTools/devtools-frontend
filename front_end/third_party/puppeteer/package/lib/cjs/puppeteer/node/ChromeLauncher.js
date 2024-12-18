@@ -159,6 +159,7 @@ class ChromeLauncher extends BrowserLauncher_js_1.BrowserLauncher {
             '--disable-breakpad',
             '--disable-client-side-phishing-detection',
             '--disable-component-extensions-with-background-pages',
+            '--disable-crash-reporter', // No crash reporting in CfT.
             '--disable-default-apps',
             '--disable-dev-shm-usage',
             '--disable-extensions',
@@ -172,8 +173,8 @@ class ChromeLauncher extends BrowserLauncher_js_1.BrowserLauncher {
             '--disable-sync',
             '--enable-automation',
             '--export-tagged-pdf',
-            '--generate-pdf-document-outline',
             '--force-color-profile=srgb',
+            '--generate-pdf-document-outline',
             '--metrics-recording-only',
             '--no-first-run',
             '--password-store=basic',

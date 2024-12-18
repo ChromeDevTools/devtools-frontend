@@ -101,7 +101,7 @@ let CdpFrame = (() => {
                 [IsolatedWorlds_js_1.MAIN_WORLD]: new IsolatedWorld_js_1.IsolatedWorld(this, this._frameManager.timeoutSettings),
                 [IsolatedWorlds_js_1.PUPPETEER_WORLD]: new IsolatedWorld_js_1.IsolatedWorld(this, this._frameManager.timeoutSettings),
             };
-            this.accessibility = new Accessibility_js_1.Accessibility(this.worlds[IsolatedWorlds_js_1.MAIN_WORLD]);
+            this.accessibility = new Accessibility_js_1.Accessibility(this.worlds[IsolatedWorlds_js_1.MAIN_WORLD], frameId);
             this.on(Frame_js_1.FrameEvent.FrameSwappedByActivation, () => {
                 // Emulate loading process for swapped frames.
                 this._onLoadingStarted();

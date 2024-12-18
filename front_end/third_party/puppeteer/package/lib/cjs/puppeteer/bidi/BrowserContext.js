@@ -147,17 +147,15 @@ let BidiBrowserContext = (() => {
                 const page = this.#createPage(browsingContext);
                 // We need to wait for the DOMContentLoaded as the
                 // browsingContext still may be navigating from the about:blank
-                browsingContext.once('DOMContentLoaded', () => {
-                    if (browsingContext.originalOpener) {
-                        for (const context of this.userContext.browsingContexts) {
-                            if (context.id === browsingContext.originalOpener) {
-                                this.#pages
-                                    .get(context)
-                                    .trustedEmitter.emit("popup" /* PageEvent.Popup */, page);
-                            }
+                if (browsingContext.originalOpener) {
+                    for (const context of this.userContext.browsingContexts) {
+                        if (context.id === browsingContext.originalOpener) {
+                            this.#pages
+                                .get(context)
+                                .trustedEmitter.emit("popup" /* PageEvent.Popup */, page);
                         }
                     }
-                });
+                }
             });
             this.userContext.on('closed', () => {
                 this.trustedEmitter.removeAllListeners();

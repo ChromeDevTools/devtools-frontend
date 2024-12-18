@@ -94,6 +94,13 @@ export interface SnapshotOptions {
      */
     interestingOnly?: boolean;
     /**
+     * If true, gets accessibility trees for each of the iframes in the frame
+     * subtree.
+     *
+     * @defaultValue `false`
+     */
+    includeIframes?: boolean;
+    /**
      * Root node to get the accessibility tree for
      * @defaultValue The root node of the entire page.
      */
@@ -126,7 +133,7 @@ export declare class Accessibility {
     /**
      * @internal
      */
-    constructor(realm: Realm);
+    constructor(realm: Realm, frameId?: string);
     /**
      * Captures the current state of the accessibility tree.
      * The returned object represents the root accessible node of the page.

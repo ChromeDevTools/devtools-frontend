@@ -2850,7 +2850,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
   /**
    * @internal
    */
-  const packageVersion = '23.10.4';
+  const packageVersion = '23.11.0';
 
   /**
    * @license
@@ -4298,7 +4298,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    * Copyright 2023 Google Inc.
    * SPDX-License-Identifier: Apache-2.0
    */
-  var __addDisposableResource$b = undefined && undefined.__addDisposableResource || function (env, value, async) {
+  var __addDisposableResource$c = undefined && undefined.__addDisposableResource || function (env, value, async) {
     if (value !== null && value !== void 0) {
       if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
       var dispose, inner;
@@ -4331,7 +4331,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     }
     return value;
   };
-  var __disposeResources$b = undefined && undefined.__disposeResources || function (SuppressedError) {
+  var __disposeResources$c = undefined && undefined.__disposeResources || function (SuppressedError) {
     return function (env) {
       function fail(e) {
         env.error = env.hasError ? new SuppressedError(e, env.error, "An error was suppressed during disposal.") : e;
@@ -4378,7 +4378,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       hasError: false
     };
     try {
-      const array = __addDisposableResource$b(env_1, await iterator.evaluateHandle(async (iterator, size) => {
+      const array = __addDisposableResource$c(env_1, await iterator.evaluateHandle(async (iterator, size) => {
         const results = [];
         while (results.length < size) {
           const result = await iterator.next();
@@ -4391,7 +4391,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       }, size), false);
       const properties = await array.getProperties();
       const handles = properties.values();
-      const stack = __addDisposableResource$b(env_1, new DisposableStack(), false);
+      const stack = __addDisposableResource$c(env_1, new DisposableStack(), false);
       stack.defer(() => {
         for (const handle_1 of handles) {
           const env_2 = {
@@ -4400,13 +4400,13 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
             hasError: false
           };
           try {
-            const handle = __addDisposableResource$b(env_2, handle_1, false);
+            const handle = __addDisposableResource$c(env_2, handle_1, false);
             handle[disposeSymbol]();
           } catch (e_2) {
             env_2.error = e_2;
             env_2.hasError = true;
           } finally {
-            __disposeResources$b(env_2);
+            __disposeResources$c(env_2);
           }
         }
       });
@@ -4416,7 +4416,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       env_1.error = e_1;
       env_1.hasError = true;
     } finally {
-      __disposeResources$b(env_1);
+      __disposeResources$c(env_1);
     }
   }
   /**
@@ -4439,7 +4439,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       hasError: false
     };
     try {
-      const generatorHandle = __addDisposableResource$b(env_3, await handle.evaluateHandle(iterable => {
+      const generatorHandle = __addDisposableResource$c(env_3, await handle.evaluateHandle(iterable => {
         return async function* () {
           yield* iterable;
         }();
@@ -4449,7 +4449,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       env_3.error = e_3;
       env_3.hasError = true;
     } finally {
-      __disposeResources$b(env_3);
+      __disposeResources$c(env_3);
     }
   }
 
@@ -4483,7 +4483,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     // have to make it public.
     return new _LazyArg(get);
   });
-  var __addDisposableResource$a = undefined && undefined.__addDisposableResource || function (env, value, async) {
+  var __addDisposableResource$b = undefined && undefined.__addDisposableResource || function (env, value, async) {
     if (value !== null && value !== void 0) {
       if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
       var dispose, inner;
@@ -4516,7 +4516,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     }
     return value;
   };
-  var __disposeResources$a = undefined && undefined.__disposeResources || function (SuppressedError) {
+  var __disposeResources$b = undefined && undefined.__disposeResources || function (SuppressedError) {
     return function (env) {
       function fail(e) {
         env.error = env.hasError ? new SuppressedError(e, env.error, "An error was suppressed during disposal.") : e;
@@ -4599,7 +4599,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         hasError: false
       };
       try {
-        const handle = __addDisposableResource$a(env_1, await element.evaluateHandle(this._querySelectorAll, selector, LazyArg.create(context => {
+        const handle = __addDisposableResource$b(env_1, await element.evaluateHandle(this._querySelectorAll, selector, LazyArg.create(context => {
           return context.puppeteerUtil;
         })), false);
         yield* transposeIterableHandle(handle);
@@ -4607,7 +4607,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         env_1.error = e_1;
         env_1.hasError = true;
       } finally {
-        __disposeResources$a(env_1);
+        __disposeResources$b(env_1);
       }
     }
     /**
@@ -4622,7 +4622,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         hasError: false
       };
       try {
-        const result = __addDisposableResource$a(env_2, await element.evaluateHandle(this._querySelector, selector, LazyArg.create(context => {
+        const result = __addDisposableResource$b(env_2, await element.evaluateHandle(this._querySelector, selector, LazyArg.create(context => {
           return context.puppeteerUtil;
         })), false);
         if (!(_isElementHandle in result)) {
@@ -4633,7 +4633,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         env_2.error = e_2;
         env_2.hasError = true;
       } finally {
-        __disposeResources$a(env_2);
+        __disposeResources$b(env_2);
       }
     }
     /**
@@ -4651,7 +4651,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       };
       try {
         let frame;
-        const element = __addDisposableResource$a(env_3, await (async () => {
+        const element = __addDisposableResource$b(env_3, await (async () => {
           if (!(_isElementHandle in elementOrFrame)) {
             frame = elementOrFrame;
             return;
@@ -4674,7 +4674,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
           };
           try {
             signal?.throwIfAborted();
-            const handle = __addDisposableResource$a(env_4, await frame.isolatedRealm().waitForFunction(async (PuppeteerUtil, query, selector, root, visible) => {
+            const handle = __addDisposableResource$b(env_4, await frame.isolatedRealm().waitForFunction(async (PuppeteerUtil, query, selector, root, visible) => {
               const querySelector = PuppeteerUtil.createFunction(query);
               const node = await querySelector(root ?? document, selector, PuppeteerUtil);
               return PuppeteerUtil.checkVisibility(node, visible);
@@ -4697,7 +4697,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
             env_4.error = e_3;
             env_4.hasError = true;
           } finally {
-            __disposeResources$a(env_4);
+            __disposeResources$b(env_4);
           }
         } catch (error) {
           if (!isErrorLike(error)) {
@@ -4713,7 +4713,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         env_3.error = e_4;
         env_3.hasError = true;
       } finally {
-        __disposeResources$a(env_3);
+        __disposeResources$b(env_3);
       }
     }
   }
@@ -5436,7 +5436,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    * Copyright 2023 Google Inc.
    * SPDX-License-Identifier: Apache-2.0
    */
-  var __addDisposableResource$9 = undefined && undefined.__addDisposableResource || function (env, value, async) {
+  var __addDisposableResource$a = undefined && undefined.__addDisposableResource || function (env, value, async) {
     if (value !== null && value !== void 0) {
       if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
       var dispose, inner;
@@ -5469,7 +5469,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     }
     return value;
   };
-  var __disposeResources$9 = undefined && undefined.__disposeResources || function (SuppressedError) {
+  var __disposeResources$a = undefined && undefined.__disposeResources || function (SuppressedError) {
     return function (env) {
       function fail(e) {
         env.error = env.hasError ? new SuppressedError(e, env.error, "An error was suppressed during disposal.") : e;
@@ -5599,13 +5599,13 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
             mutex = new Mutex();
             mutexes.set(key, mutex);
           }
-          const _ = __addDisposableResource$9(env_1, await mutex.acquire(), true);
+          const _ = __addDisposableResource$a(env_1, await mutex.acquire(), true);
           return await target.call(this, ...args);
         } catch (e_1) {
           env_1.error = e_1;
           env_1.hasError = true;
         } finally {
-          const result_1 = __disposeResources$9(env_1);
+          const result_1 = __disposeResources$a(env_1);
           if (result_1) await result_1;
         }
       };
@@ -5660,7 +5660,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     if (target) Object.defineProperty(target, contextIn.name, descriptor);
     done = true;
   };
-  var __addDisposableResource$8 = undefined && undefined.__addDisposableResource || function (env, value, async) {
+  var __addDisposableResource$9 = undefined && undefined.__addDisposableResource || function (env, value, async) {
     if (value !== null && value !== void 0) {
       if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
       var dispose, inner;
@@ -5693,7 +5693,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     }
     return value;
   };
-  var __disposeResources$8 = undefined && undefined.__disposeResources || function (SuppressedError) {
+  var __disposeResources$9 = undefined && undefined.__disposeResources || function (SuppressedError) {
     return function (env) {
       function fail(e) {
         env.error = env.hasError ? new SuppressedError(e, env.error, "An error was suppressed during disposal.") : e;
@@ -5825,7 +5825,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
             hasError: false
           };
           try {
-            const handle = __addDisposableResource$8(env_1, results[key], false);
+            const handle = __addDisposableResource$9(env_1, results[key], false);
             if (handle) {
               map.set(value, handle.move());
             }
@@ -5833,7 +5833,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
             env_1.error = e_1;
             env_1.hasError = true;
           } finally {
-            __disposeResources$8(env_1);
+            __disposeResources$9(env_1);
           }
         }
         return map;
@@ -5939,7 +5939,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     if (target) Object.defineProperty(target, contextIn.name, descriptor);
     done = true;
   };
-  var __addDisposableResource$7 = undefined && undefined.__addDisposableResource || function (env, value, async) {
+  var __addDisposableResource$8 = undefined && undefined.__addDisposableResource || function (env, value, async) {
     if (value !== null && value !== void 0) {
       if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
       var dispose, inner;
@@ -5972,7 +5972,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     }
     return value;
   };
-  var __disposeResources$7 = undefined && undefined.__disposeResources || function (SuppressedError) {
+  var __disposeResources$8 = undefined && undefined.__disposeResources || function (SuppressedError) {
     return function (env) {
       function fail(e) {
         env.error = env.hasError ? new SuppressedError(e, env.error, "An error was suppressed during disposal.") : e;
@@ -6324,7 +6324,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         };
         try {
           pageFunction = withSourcePuppeteerURLIfNone(this.$eval.name, pageFunction);
-          const elementHandle = __addDisposableResource$7(env_1, await this.$(selector), false);
+          const elementHandle = __addDisposableResource$8(env_1, await this.$(selector), false);
           if (!elementHandle) {
             throw new Error(`Error: failed to find element matching selector "${selector}"`);
           }
@@ -6333,7 +6333,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
           env_1.error = e_1;
           env_1.hasError = true;
         } finally {
-          __disposeResources$7(env_1);
+          __disposeResources$8(env_1);
         }
       }
       /**
@@ -6392,7 +6392,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         try {
           pageFunction = withSourcePuppeteerURLIfNone(this.$$eval.name, pageFunction);
           const results = await this.$$(selector);
-          const elements = __addDisposableResource$7(env_2, await this.evaluateHandle((_, ...elements) => {
+          const elements = __addDisposableResource$8(env_2, await this.evaluateHandle((_, ...elements) => {
             return elements;
           }, ...results), false);
           const [result] = await Promise.all([elements.evaluate(pageFunction, ...args), ...results.map(results => {
@@ -6403,7 +6403,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
           env_2.error = e_2;
           env_2.hasError = true;
         } finally {
-          __disposeResources$7(env_2);
+          __disposeResources$8(env_2);
         }
       }
       /**
@@ -7011,7 +7011,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
           await this.assertConnectedElement();
           // eslint-disable-next-line rulesdir/use-using -- Returns `this`.
           const handle = await _assertClassBrand(_ElementHandle_brand, this, _asSVGElementHandle).call(this);
-          const target = __addDisposableResource$7(env_5, handle && (await _assertClassBrand(_ElementHandle_brand, handle, _getOwnerSVGElement).call(handle)), false);
+          const target = __addDisposableResource$8(env_5, handle && (await _assertClassBrand(_ElementHandle_brand, handle, _getOwnerSVGElement).call(handle)), false);
           return await (target ?? this).evaluate(async (element, threshold) => {
             const visibleRatio = await new Promise(resolve => {
               const observer = new IntersectionObserver(entries => {
@@ -7026,7 +7026,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
           env_5.error = e_5;
           env_5.hasError = true;
         } finally {
-          __disposeResources$7(env_5);
+          __disposeResources$8(env_5);
         }
       }
       /**
@@ -7481,7 +7481,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
           hasError: false
         };
         try {
-          const handle = __addDisposableResource$7(env_3, await frame.frameElement(), false);
+          const handle = __addDisposableResource$8(env_3, await frame.frameElement(), false);
           if (!handle) {
             throw new Error('Unsupported frame type');
           }
@@ -7510,7 +7510,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
           env_3.error = e_3;
           env_3.hasError = true;
         } finally {
-          __disposeResources$7(env_3);
+          __disposeResources$8(env_3);
         }
       }
       const box = boxes.find(box => {
@@ -7554,7 +7554,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
           hasError: false
         };
         try {
-          const handle = __addDisposableResource$7(env_4, await frame.frameElement(), false);
+          const handle = __addDisposableResource$8(env_4, await frame.frameElement(), false);
           if (!handle) {
             throw new Error('Unsupported frame type');
           }
@@ -7580,7 +7580,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
           env_4.error = e_4;
           env_4.hasError = true;
         } finally {
-          __disposeResources$7(env_4);
+          __disposeResources$8(env_4);
         }
       }
       return point;
@@ -7615,7 +7615,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     box.width = Math.max(box.x >= 0 ? Math.min(width - box.x, box.width) : Math.min(width, box.width + box.x), 0);
     box.height = Math.max(box.y >= 0 ? Math.min(height - box.y, box.height) : Math.min(height, box.height + box.y), 0);
   }
-  var __addDisposableResource$6 = undefined && undefined.__addDisposableResource || function (env, value, async) {
+  var __addDisposableResource$7 = undefined && undefined.__addDisposableResource || function (env, value, async) {
     if (value !== null && value !== void 0) {
       if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
       var dispose, inner;
@@ -7648,7 +7648,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     }
     return value;
   };
-  var __disposeResources$6 = undefined && undefined.__disposeResources || function (SuppressedError) {
+  var __disposeResources$7 = undefined && undefined.__disposeResources || function (SuppressedError) {
     return function (env) {
       function fail(e) {
         env.error = env.hasError ? new SuppressedError(e, env.error, "An error was suppressed during disposal.") : e;
@@ -7937,13 +7937,13 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         hasError: false
       };
       try {
-        const handle = __addDisposableResource$6(env_1, await this.waitHandle(options), false);
+        const handle = __addDisposableResource$7(env_1, await this.waitHandle(options), false);
         return await handle.jsonValue();
       } catch (e_1) {
         env_1.error = e_1;
         env_1.hasError = true;
       } finally {
-        __disposeResources$6(env_1);
+        __disposeResources$7(env_1);
       }
     }
     /**
@@ -8401,7 +8401,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     if (target) Object.defineProperty(target, contextIn.name, descriptor);
     done = true;
   };
-  var __addDisposableResource$5 = undefined && undefined.__addDisposableResource || function (env, value, async) {
+  var __addDisposableResource$6 = undefined && undefined.__addDisposableResource || function (env, value, async) {
     if (value !== null && value !== void 0) {
       if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
       var dispose, inner;
@@ -8434,7 +8434,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     }
     return value;
   };
-  var __disposeResources$5 = undefined && undefined.__disposeResources || function (SuppressedError) {
+  var __disposeResources$6 = undefined && undefined.__disposeResources || function (SuppressedError) {
     return function (env) {
       function fail(e) {
         env.error = env.hasError ? new SuppressedError(e, env.error, "An error was suppressed during disposal.") : e;
@@ -8614,7 +8614,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
           if (!parentFrame) {
             return null;
           }
-          const list = __addDisposableResource$5(env_1, await parentFrame.isolatedRealm().evaluateHandle(() => {
+          const list = __addDisposableResource$6(env_1, await parentFrame.isolatedRealm().evaluateHandle(() => {
             return document.querySelectorAll('iframe,frame');
           }), false);
           for await (const iframe_1 of transposeIterableHandle(list)) {
@@ -8624,7 +8624,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
               hasError: false
             };
             try {
-              const iframe = __addDisposableResource$5(env_2, iframe_1, false);
+              const iframe = __addDisposableResource$6(env_2, iframe_1, false);
               const frame = await iframe.contentFrame();
               if (frame?._id === this._id) {
                 return await parentFrame.mainRealm().adoptHandle(iframe);
@@ -8633,7 +8633,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
               env_2.error = e_1;
               env_2.hasError = true;
             } finally {
-              __disposeResources$5(env_2);
+              __disposeResources$6(env_2);
             }
           }
           return null;
@@ -8641,7 +8641,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
           env_1.error = e_2;
           env_1.hasError = true;
         } finally {
-          __disposeResources$5(env_1);
+          __disposeResources$6(env_1);
         }
       }
       /**
@@ -9082,7 +9082,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
           hasError: false
         };
         try {
-          const handle = __addDisposableResource$5(env_3, await this.$(selector), false);
+          const handle = __addDisposableResource$6(env_3, await this.$(selector), false);
           assert(handle, `No element found for selector: ${selector}`);
           await handle.click(options);
           await handle.dispose();
@@ -9090,7 +9090,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
           env_3.error = e_3;
           env_3.hasError = true;
         } finally {
-          __disposeResources$5(env_3);
+          __disposeResources$6(env_3);
         }
       }
       /**
@@ -9106,14 +9106,14 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
           hasError: false
         };
         try {
-          const handle = __addDisposableResource$5(env_4, await this.$(selector), false);
+          const handle = __addDisposableResource$6(env_4, await this.$(selector), false);
           assert(handle, `No element found for selector: ${selector}`);
           await handle.focus();
         } catch (e_4) {
           env_4.error = e_4;
           env_4.hasError = true;
         } finally {
-          __disposeResources$5(env_4);
+          __disposeResources$6(env_4);
         }
       }
       /**
@@ -9130,14 +9130,14 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
           hasError: false
         };
         try {
-          const handle = __addDisposableResource$5(env_5, await this.$(selector), false);
+          const handle = __addDisposableResource$6(env_5, await this.$(selector), false);
           assert(handle, `No element found for selector: ${selector}`);
           await handle.hover();
         } catch (e_5) {
           env_5.error = e_5;
           env_5.hasError = true;
         } finally {
-          __disposeResources$5(env_5);
+          __disposeResources$6(env_5);
         }
       }
       /**
@@ -9165,14 +9165,14 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
           hasError: false
         };
         try {
-          const handle = __addDisposableResource$5(env_6, await this.$(selector), false);
+          const handle = __addDisposableResource$6(env_6, await this.$(selector), false);
           assert(handle, `No element found for selector: ${selector}`);
           return await handle.select(...values);
         } catch (e_6) {
           env_6.error = e_6;
           env_6.hasError = true;
         } finally {
-          __disposeResources$5(env_6);
+          __disposeResources$6(env_6);
         }
       }
       /**
@@ -9188,14 +9188,14 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
           hasError: false
         };
         try {
-          const handle = __addDisposableResource$5(env_7, await this.$(selector), false);
+          const handle = __addDisposableResource$6(env_7, await this.$(selector), false);
           assert(handle, `No element found for selector: ${selector}`);
           await handle.tap();
         } catch (e_7) {
           env_7.error = e_7;
           env_7.hasError = true;
         } finally {
-          __disposeResources$5(env_7);
+          __disposeResources$6(env_7);
         }
       }
       /**
@@ -9226,14 +9226,14 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
           hasError: false
         };
         try {
-          const handle = __addDisposableResource$5(env_8, await this.$(selector), false);
+          const handle = __addDisposableResource$6(env_8, await this.$(selector), false);
           assert(handle, `No element found for selector: ${selector}`);
           await handle.type(text, options);
         } catch (e_8) {
           env_8.error = e_8;
           env_8.hasError = true;
         } finally {
-          __disposeResources$5(env_8);
+          __disposeResources$6(env_8);
         }
       }
       /**
@@ -10333,7 +10333,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     if (target) Object.defineProperty(target, contextIn.name, descriptor);
     done = true;
   };
-  var __addDisposableResource$4 = undefined && undefined.__addDisposableResource || function (env, value, async) {
+  var __addDisposableResource$5 = undefined && undefined.__addDisposableResource || function (env, value, async) {
     if (value !== null && value !== void 0) {
       if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
       var dispose, inner;
@@ -10366,7 +10366,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     }
     return value;
   };
-  var __disposeResources$4 = undefined && undefined.__disposeResources || function (SuppressedError) {
+  var __disposeResources$5 = undefined && undefined.__disposeResources || function (SuppressedError) {
     return function (env) {
       function fail(e) {
         env.error = env.hasError ? new SuppressedError(e, env.error, "An error was suppressed during disposal.") : e;
@@ -11262,7 +11262,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
           hasError: false
         };
         try {
-          const _guard = __addDisposableResource$4(env_2, await this.browserContext().startScreenshot(), false);
+          const _guard = __addDisposableResource$5(env_2, await this.browserContext().startScreenshot(), false);
           const options = {
             ...userOptions,
             clip: userOptions.clip ? {
@@ -11303,7 +11303,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
             }
           }
           setDefaultScreenshotOptions(options);
-          const stack = __addDisposableResource$4(env_2, new AsyncDisposableStack(), true);
+          const stack = __addDisposableResource$5(env_2, new AsyncDisposableStack(), true);
           if (options.clip) {
             if (options.fullPage) {
               throw new Error("'clip' and 'fullPage' are mutually exclusive");
@@ -11346,7 +11346,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
           env_2.error = e_2;
           env_2.hasError = true;
         } finally {
-          const result_1 = __disposeResources$4(env_2);
+          const result_1 = __disposeResources$5(env_2);
           if (result_1) await result_1;
         }
       }
@@ -11738,7 +11738,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       };
       try {
         const viewport = this.viewport();
-        const stack = __addDisposableResource$4(env_1, new DisposableStack(), false);
+        const stack = __addDisposableResource$5(env_1, new DisposableStack(), false);
         if (viewport && viewport.deviceScaleFactor !== 0) {
           await this.setViewport({
             ...viewport,
@@ -11755,7 +11755,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         env_1.error = e_1;
         env_1.hasError = true;
       } finally {
-        __disposeResources$4(env_1);
+        __disposeResources$5(env_1);
       }
     }
   })();
@@ -12214,6 +12214,71 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    * Copyright 2018 Google Inc.
    * SPDX-License-Identifier: Apache-2.0
    */
+  var __addDisposableResource$4 = undefined && undefined.__addDisposableResource || function (env, value, async) {
+    if (value !== null && value !== void 0) {
+      if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
+      var dispose, inner;
+      if (async) {
+        if (!Symbol.asyncDispose) throw new TypeError("Symbol.asyncDispose is not defined.");
+        dispose = value[Symbol.asyncDispose];
+      }
+      if (dispose === void 0) {
+        if (!Symbol.dispose) throw new TypeError("Symbol.dispose is not defined.");
+        dispose = value[Symbol.dispose];
+        if (async) inner = dispose;
+      }
+      if (typeof dispose !== "function") throw new TypeError("Object not disposable.");
+      if (inner) dispose = function () {
+        try {
+          inner.call(this);
+        } catch (e) {
+          return Promise.reject(e);
+        }
+      };
+      env.stack.push({
+        value: value,
+        dispose: dispose,
+        async: async
+      });
+    } else if (async) {
+      env.stack.push({
+        async: true
+      });
+    }
+    return value;
+  };
+  var __disposeResources$4 = undefined && undefined.__disposeResources || function (SuppressedError) {
+    return function (env) {
+      function fail(e) {
+        env.error = env.hasError ? new SuppressedError(e, env.error, "An error was suppressed during disposal.") : e;
+        env.hasError = true;
+      }
+      var r,
+        s = 0;
+      function next() {
+        while (r = env.stack.pop()) {
+          try {
+            if (!r.async && s === 1) return s = 0, env.stack.push(r), Promise.resolve().then(next);
+            if (r.dispose) {
+              var result = r.dispose.call(r.value);
+              if (r.async) return s |= 2, Promise.resolve(result).then(next, function (e) {
+                fail(e);
+                return next();
+              });
+            } else s |= 1;
+          } catch (e) {
+            fail(e);
+          }
+        }
+        if (s === 1) return env.hasError ? Promise.reject(env.error) : Promise.resolve();
+        if (env.hasError) throw env.error;
+      }
+      return next();
+    };
+  }(typeof SuppressedError === "function" ? SuppressedError : function (error, suppressed, message) {
+    var e = new Error(message);
+    return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
+  });
   /**
    * The Accessibility class provides methods for inspecting the browser's
    * accessibility tree. The accessibility tree is used by assistive technology
@@ -12237,13 +12302,16 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
    * @public
    */
   var _realm = /*#__PURE__*/new WeakMap();
+  var _frameId = /*#__PURE__*/new WeakMap();
   class Accessibility {
     /**
      * @internal
      */
-    constructor(realm) {
+    constructor(realm, frameId = '') {
       _classPrivateFieldInitSpec(this, _realm, void 0);
+      _classPrivateFieldInitSpec(this, _frameId, void 0);
       _classPrivateFieldSet(_realm, this, realm);
+      _classPrivateFieldSet(_frameId, this, frameId);
     }
     /**
      * Captures the current state of the accessibility tree.
@@ -12287,11 +12355,14 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
     async snapshot(options = {}) {
       const {
         interestingOnly = true,
-        root = null
+        root = null,
+        includeIframes = false
       } = options;
       const {
         nodes
-      } = await _classPrivateFieldGet(_realm, this).environment.client.send('Accessibility.getFullAXTree');
+      } = await _classPrivateFieldGet(_realm, this).environment.client.send('Accessibility.getFullAXTree', {
+        frameId: _classPrivateFieldGet(_frameId, this)
+      });
       let backendNodeId;
       if (root) {
         const {
@@ -12302,9 +12373,44 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         backendNodeId = node.backendNodeId;
       }
       const defaultRoot = AXNode.createTree(_classPrivateFieldGet(_realm, this), nodes);
+      const populateIframes = async root => {
+        if (root.payload.role?.value === 'Iframe') {
+          const env_1 = {
+            stack: [],
+            error: void 0,
+            hasError: false
+          };
+          try {
+            if (!root.payload.backendDOMNodeId) {
+              return;
+            }
+            const handle = __addDisposableResource$4(env_1, await _classPrivateFieldGet(_realm, this).adoptBackendNode(root.payload.backendDOMNodeId), false);
+            if (!handle || !('contentFrame' in handle)) {
+              return;
+            }
+            const frame = await handle.contentFrame();
+            if (!frame) {
+              return;
+            }
+            const iframeSnapshot = await frame.accessibility.snapshot(options);
+            root.iframeSnapshot = iframeSnapshot ?? undefined;
+          } catch (e_1) {
+            env_1.error = e_1;
+            env_1.hasError = true;
+          } finally {
+            __disposeResources$4(env_1);
+          }
+        }
+        for (const child of root.children) {
+          await populateIframes(child);
+        }
+      };
       let needle = defaultRoot;
       if (!defaultRoot) {
         return null;
+      }
+      if (includeIframes) {
+        await populateIframes(defaultRoot);
       }
       if (backendNodeId) {
         needle = defaultRoot.find(node => {
@@ -12336,10 +12442,16 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       if (children.length) {
         serializedNode.children = children;
       }
+      if (node.iframeSnapshot) {
+        if (!serializedNode.children) {
+          serializedNode.children = [];
+        }
+        serializedNode.children.push(node.iframeSnapshot);
+      }
       return [serializedNode];
     }
     collectInterestingNodes(collection, node, insideControl) {
-      if (node.isInteresting(insideControl)) {
+      if (node.isInteresting(insideControl) || node.iframeSnapshot) {
         collection.add(node);
       }
       if (node.isLeafNode()) {
@@ -12366,6 +12478,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
       _classPrivateMethodInitSpec(this, _AXNode_brand);
       _defineProperty(this, "payload", void 0);
       _defineProperty(this, "children", []);
+      _defineProperty(this, "iframeSnapshot", void 0);
       _classPrivateFieldInitSpec(this, _richlyEditable, false);
       _classPrivateFieldInitSpec(this, _editable, false);
       _classPrivateFieldInitSpec(this, _focusable, false);
@@ -14043,7 +14156,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
         });
       }
       async emulateVisionDeficiency(type) {
-        const visionDeficiencies = new Set(['none', 'achromatopsia', 'blurredVision', 'deuteranopia', 'protanopia', 'tritanopia']);
+        const visionDeficiencies = new Set(['none', 'achromatopsia', 'blurredVision', 'deuteranopia', 'protanopia', 'reducedContrast', 'tritanopia']);
         assert(!type || visionDeficiencies.has(type), `Unsupported vision deficiency: ${type}`);
         await _classPrivateFieldGet(_visionDeficiencyState, this).setState({
           active: true,
@@ -16336,7 +16449,7 @@ var Puppeteer = function (exports, _PuppeteerURL, _LazyArg, _ARIAQueryHandler, _
           [MAIN_WORLD]: new IsolatedWorld(this, this._frameManager.timeoutSettings),
           [PUPPETEER_WORLD]: new IsolatedWorld(this, this._frameManager.timeoutSettings)
         };
-        this.accessibility = new Accessibility(this.worlds[MAIN_WORLD]);
+        this.accessibility = new Accessibility(this.worlds[MAIN_WORLD], frameId);
         this.on(exports.FrameEvent.FrameSwappedByActivation, () => {
           // Emulate loading process for swapped frames.
           this._onLoadingStarted();

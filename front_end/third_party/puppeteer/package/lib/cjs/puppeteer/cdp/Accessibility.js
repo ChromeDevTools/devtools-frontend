@@ -4,6 +4,58 @@
  * Copyright 2018 Google Inc.
  * SPDX-License-Identifier: Apache-2.0
  */
+var __addDisposableResource = (this && this.__addDisposableResource) || function (env, value, async) {
+    if (value !== null && value !== void 0) {
+        if (typeof value !== "object" && typeof value !== "function") throw new TypeError("Object expected.");
+        var dispose, inner;
+        if (async) {
+            if (!Symbol.asyncDispose) throw new TypeError("Symbol.asyncDispose is not defined.");
+            dispose = value[Symbol.asyncDispose];
+        }
+        if (dispose === void 0) {
+            if (!Symbol.dispose) throw new TypeError("Symbol.dispose is not defined.");
+            dispose = value[Symbol.dispose];
+            if (async) inner = dispose;
+        }
+        if (typeof dispose !== "function") throw new TypeError("Object not disposable.");
+        if (inner) dispose = function() { try { inner.call(this); } catch (e) { return Promise.reject(e); } };
+        env.stack.push({ value: value, dispose: dispose, async: async });
+    }
+    else if (async) {
+        env.stack.push({ async: true });
+    }
+    return value;
+};
+var __disposeResources = (this && this.__disposeResources) || (function (SuppressedError) {
+    return function (env) {
+        function fail(e) {
+            env.error = env.hasError ? new SuppressedError(e, env.error, "An error was suppressed during disposal.") : e;
+            env.hasError = true;
+        }
+        var r, s = 0;
+        function next() {
+            while (r = env.stack.pop()) {
+                try {
+                    if (!r.async && s === 1) return s = 0, env.stack.push(r), Promise.resolve().then(next);
+                    if (r.dispose) {
+                        var result = r.dispose.call(r.value);
+                        if (r.async) return s |= 2, Promise.resolve(result).then(next, function(e) { fail(e); return next(); });
+                    }
+                    else s |= 1;
+                }
+                catch (e) {
+                    fail(e);
+                }
+            }
+            if (s === 1) return env.hasError ? Promise.reject(env.error) : Promise.resolve();
+            if (env.hasError) throw env.error;
+        }
+        return next();
+    };
+})(typeof SuppressedError === "function" ? SuppressedError : function (error, suppressed, message) {
+    var e = new Error(message);
+    return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
+});
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Accessibility = void 0;
 /**
@@ -30,11 +82,13 @@ exports.Accessibility = void 0;
  */
 class Accessibility {
     #realm;
+    #frameId;
     /**
      * @internal
      */
-    constructor(realm) {
+    constructor(realm, frameId = '') {
         this.#realm = realm;
+        this.#frameId = frameId;
     }
     /**
      * Captures the current state of the accessibility tree.
@@ -76,8 +130,10 @@ class Accessibility {
      * @returns An AXNode object representing the snapshot.
      */
     async snapshot(options = {}) {
-        const { interestingOnly = true, root = null } = options;
-        const { nodes } = await this.#realm.environment.client.send('Accessibility.getFullAXTree');
+        const { interestingOnly = true, root = null, includeIframes = false, } = options;
+        const { nodes } = await this.#realm.environment.client.send('Accessibility.getFullAXTree', {
+            frameId: this.#frameId,
+        });
         let backendNodeId;
         if (root) {
             const { node } = await this.#realm.environment.client.send('DOM.describeNode', {
@@ -86,9 +142,42 @@ class Accessibility {
             backendNodeId = node.backendNodeId;
         }
         const defaultRoot = AXNode.createTree(this.#realm, nodes);
+        const populateIframes = async (root) => {
+            if (root.payload.role?.value === 'Iframe') {
+                const env_1 = { stack: [], error: void 0, hasError: false };
+                try {
+                    if (!root.payload.backendDOMNodeId) {
+                        return;
+                    }
+                    const handle = __addDisposableResource(env_1, (await this.#realm.adoptBackendNode(root.payload.backendDOMNodeId)), false);
+                    if (!handle || !('contentFrame' in handle)) {
+                        return;
+                    }
+                    const frame = await handle.contentFrame();
+                    if (!frame) {
+                        return;
+                    }
+                    const iframeSnapshot = await frame.accessibility.snapshot(options);
+                    root.iframeSnapshot = iframeSnapshot ?? undefined;
+                }
+                catch (e_1) {
+                    env_1.error = e_1;
+                    env_1.hasError = true;
+                }
+                finally {
+                    __disposeResources(env_1);
+                }
+            }
+            for (const child of root.children) {
+                await populateIframes(child);
+            }
+        };
         let needle = defaultRoot;
         if (!defaultRoot) {
             return null;
+        }
+        if (includeIframes) {
+            await populateIframes(defaultRoot);
         }
         if (backendNodeId) {
             needle = defaultRoot.find(node => {
@@ -120,10 +209,16 @@ class Accessibility {
         if (children.length) {
             serializedNode.children = children;
         }
+        if (node.iframeSnapshot) {
+            if (!serializedNode.children) {
+                serializedNode.children = [];
+            }
+            serializedNode.children.push(node.iframeSnapshot);
+        }
         return [serializedNode];
     }
     collectInterestingNodes(collection, node, insideControl) {
-        if (node.isInteresting(insideControl)) {
+        if (node.isInteresting(insideControl) || node.iframeSnapshot) {
             collection.add(node);
         }
         if (node.isLeafNode()) {
@@ -139,6 +234,7 @@ exports.Accessibility = Accessibility;
 class AXNode {
     payload;
     children = [];
+    iframeSnapshot;
     #richlyEditable = false;
     #editable = false;
     #focusable = false;

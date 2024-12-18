@@ -120,7 +120,10 @@ export class BidiHTTPRequest extends HTTPRequest {
         return this.#request.navigation !== undefined;
     }
     initiator() {
-        return this.#request.initiator;
+        return {
+            ...this.#request.initiator,
+            type: this.#request.initiator?.type ?? 'other',
+        };
     }
     redirectChain() {
         return this.#redirectChain.slice();

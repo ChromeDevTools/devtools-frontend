@@ -10,6 +10,8 @@ import * as SourceMapScopes from '../../../models/source_map_scopes/source_map_s
 import * as Trace from '../../../models/trace/trace.js';
 import * as Workspace from '../../../models/workspace/workspace.js';
 
+import type * as EntityMapper from './EntityMapper.js';
+
 type ResolvedCodeLocationData = {
   name: string|null,
   devtoolsLocation: Workspace.UISourceCode.UILocation|null,
@@ -31,6 +33,7 @@ export const resolvedCodeLocationDataNames: Map<string, ResolvedCodeLocationData
 
 export class SourceMapsResolver extends EventTarget {
   #parsedTrace: Trace.Handlers.Types.ParsedTrace;
+  #entityMapper: EntityMapper.EntityMapper|null = null;
 
   #isResolving = false;
 
@@ -41,9 +44,10 @@ export class SourceMapsResolver extends EventTarget {
   // those workers too.
   #debuggerModelsToListen = new Set<SDK.DebuggerModel.DebuggerModel>();
 
-  constructor(parsedTrace: Trace.Handlers.Types.ParsedTrace) {
+  constructor(parsedTrace: Trace.Handlers.Types.ParsedTrace, entityMapper?: EntityMapper.EntityMapper) {
     super();
     this.#parsedTrace = parsedTrace;
+    this.#entityMapper = entityMapper ?? null;
   }
 
   static clearResolvedNodeNames(): void {
@@ -183,6 +187,10 @@ export class SourceMapsResolver extends EventTarget {
               await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().rawLocationToUILocation(
                   location);
           updatedMappings ||= Boolean(uiLocation);
+          if (uiLocation?.uiSourceCode.url() && this.#entityMapper) {
+            // Update mappings for the related events of the entity.
+            this.#entityMapper.updateSourceMapEntities(node.callFrame, uiLocation.uiSourceCode.url());
+          }
 
           SourceMapsResolver.storeResolvedCodeDataForCallFrame(
               node.callFrame, {name: resolvedFunctionName, devtoolsLocation: uiLocation, script});

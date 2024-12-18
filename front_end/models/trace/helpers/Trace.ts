@@ -57,6 +57,19 @@ export function stackTraceInEvent(event: Types.Events.Event): Types.Events.CallF
     }
     return [{columnNumber, lineNumber, url, scriptId, functionName}];
   }
+  if (Types.Events.isProfileCall(event)) {
+    // Of type Protocol.Runtime.CallFrame, handle accordingly.
+    const callFrame = event.callFrame;
+    if (!callFrame) {
+      return null;
+    }
+    const {columnNumber, lineNumber, url, scriptId, functionName} = callFrame;
+    if (lineNumber === undefined || functionName === undefined || columnNumber === undefined ||
+        scriptId === undefined || url === undefined) {
+      return null;
+    }
+    return [{columnNumber, lineNumber, url, scriptId, functionName}];
+  }
   return null;
 }
 
@@ -660,6 +673,16 @@ export function eventHasCategory(event: Types.Events.Event, category: string): b
 export function nodeIdForInvalidationEvent(event: Types.Events.InvalidationTrackingEvent): Protocol.DOM.BackendNodeId|
     null {
   return event.args.data.nodeId ?? null;
+}
+
+/**
+ * This compares Types.Events.CallFrame with Protocol.Runtime.CallFrame and checks for equality.
+ */
+export function isMatchingCallFrame(
+    eventFrame: Types.Events.CallFrame, nodeFrame: Protocol.Runtime.CallFrame): boolean {
+  return eventFrame.columnNumber === nodeFrame.columnNumber && eventFrame.lineNumber === nodeFrame.lineNumber &&
+      String(eventFrame.scriptId) === nodeFrame.scriptId && eventFrame.url === nodeFrame.url &&
+      eventFrame.functionName === nodeFrame.functionName;
 }
 
 export function eventContainsTimestamp(event: Types.Events.Event, ts: Types.Timing.MicroSeconds): boolean {

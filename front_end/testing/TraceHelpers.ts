@@ -493,6 +493,27 @@ export function makeMockSamplesHandlerData(profileCalls: Trace.Types.Events.Synt
   };
 }
 
+export function makeMockEntityData(events: Trace.Types.Events.Event[]): Trace.Handlers.Helpers.EntityMappings {
+  const eventsByEntity = new Map<Trace.Handlers.Helpers.Entity, Trace.Types.Events.Event[]>();
+  const entityByEvent = new Map<Trace.Types.Events.Event, Trace.Handlers.Helpers.Entity>();
+  const createdEntityCache = new Map<string, Trace.Handlers.Helpers.Entity>();
+
+  events.forEach(event => {
+    const entity = Trace.Handlers.Helpers.getEntityForEvent(event, createdEntityCache);
+    if (!entity) {
+      return;
+    }
+    if (eventsByEntity.has(entity)) {
+      const events = eventsByEntity.get(entity) ?? [];
+      events?.push(event);
+    } else {
+      eventsByEntity.set(entity, [event]);
+    }
+    entityByEvent.set(event, entity);
+  });
+  return {eventsByEntity, entityByEvent, createdEntityCache};
+}
+
 export class FakeFlameChartProvider implements PerfUI.FlameChart.FlameChartDataProvider {
   minimumBoundary(): number {
     return 0;

@@ -18,6 +18,7 @@ import {MockProtocolBackend} from '../../../testing/MockScopeChain.js';
 import {encodeSourceMap} from '../../../testing/SourceMapEncoder.js';
 import {loadBasicSourceMapExample} from '../../../testing/SourceMapHelpers.js';
 import {
+  makeMockRendererHandlerData,
   makeMockSamplesHandlerData,
   makeProfileCall,
 } from '../../../testing/TraceHelpers.js';
@@ -115,6 +116,10 @@ function parsedTraceFromProfileCalls(profileCalls: Trace.Types.Events.SyntheticP
   return {
     Samples: makeMockSamplesHandlerData(profileCalls),
     Workers: workersData,
+    Renderer: makeMockRendererHandlerData(profileCalls),
+    NetworkRequests:
+        {entityMappings: {entityByEvent: new Map(), eventsByEntity: new Map(), createdEntityCache: new Map()}},
+    Meta: {mainFrameURL: 'https://example.com', navigationsByNavigationId: new Map()},
   } as Trace.Handlers.Types.ParsedTrace;
 }
 
@@ -222,7 +227,8 @@ describeWithMockConnection('SourceMapsResolver', () => {
 
       // For a profile call with mappings, it must return the mapped script.
       const traceWithMappings = parsedTraceFromProfileCalls([profileCallWithMappings]);
-      let resolver = new Utils.SourceMapsResolver.SourceMapsResolver(traceWithMappings);
+      const mapperWithMappings = new Utils.EntityMapper.EntityMapper(traceWithMappings);
+      let resolver = new Utils.SourceMapsResolver.SourceMapsResolver(traceWithMappings, mapperWithMappings);
       await resolver.install();
       let sourceMappedURL =
           Utils.SourceMapsResolver.SourceMapsResolver.resolvedURLForEntry(traceWithMappings, profileCallWithMappings);
@@ -230,7 +236,8 @@ describeWithMockConnection('SourceMapsResolver', () => {
 
       // For a profile call without mappings, it must return the original URL
       const traceWithoutMappings = parsedTraceFromProfileCalls([profileCallWithNoMappings]);
-      resolver = new Utils.SourceMapsResolver.SourceMapsResolver(traceWithoutMappings);
+      const mapperWithoutMappings = new Utils.EntityMapper.EntityMapper(traceWithoutMappings);
+      resolver = new Utils.SourceMapsResolver.SourceMapsResolver(traceWithoutMappings, mapperWithoutMappings);
       await resolver.install();
       sourceMappedURL = Utils.SourceMapsResolver.SourceMapsResolver.resolvedURLForEntry(
           traceWithoutMappings, profileCallWithNoMappings);
@@ -246,6 +253,80 @@ describeWithMockConnection('SourceMapsResolver', () => {
       sourceMapsResolver.addEventListener(Utils.SourceMapsResolver.SourceMappingsUpdated.eventName, listener);
       await sourceMapsResolver.install();
       assert.isTrue(listener.notCalled);
+    });
+  });
+  describe('updating entity mapping', () => {
+    it('correctly updates mapping for event that maps to a script', async function() {
+      const {scriptId} = await loadCodeLocationResolvingScenario();
+
+      const profileCall =
+          makeProfileCall('function', 10, 100, Trace.Types.Events.ProcessID(1), Trace.Types.Events.ThreadID(1));
+      const LINE_NUMBER = 0;
+      const COLUMN_NUMBER = 9;
+      profileCall.callFrame = {
+        lineNumber: LINE_NUMBER,
+        columnNumber: COLUMN_NUMBER,
+        functionName: 'minified',
+        scriptId,
+        url: 'http://example-domain.com/',
+      };
+      const profileCallUnmapped =
+          makeProfileCall('function', 10, 100, Trace.Types.Events.ProcessID(1), Trace.Types.Events.ThreadID(1));
+      profileCallUnmapped.callFrame = {
+        lineNumber: 2,
+        columnNumber: 0,
+        functionName: '',
+        scriptId,
+        url: 'http://example-domain.com/',
+      };
+
+      const trace = parsedTraceFromProfileCalls([profileCall, profileCallUnmapped]);
+      const mapper = new Utils.EntityMapper.EntityMapper(trace);
+
+      const testEntity = {
+        name: 'example-domain.com',
+        company: 'example-domain.com',
+        category: '',
+        categories: [],
+        domains: ['example-domain.com'],
+        averageExecutionTime: 0,
+        totalExecutionTime: 0,
+        totalOccurrences: 0,
+        isUnrecognized: true,
+      };
+      // Set a fake entity for this event that should get overriden. Initially
+      // both traces are mapped together, after the sourcemap that should change
+      mapper.mappings().entityByEvent.set(profileCall, testEntity);
+      mapper.mappings().entityByEvent.set(profileCallUnmapped, testEntity);
+      mapper.mappings().eventsByEntity.set(testEntity, [profileCall, profileCallUnmapped]);
+      mapper.mappings().createdEntityCache.set('example-domain.com', testEntity);
+
+      const resolver = new Utils.SourceMapsResolver.SourceMapsResolver(trace, mapper);
+      // This should update the entities
+      await resolver.install();
+      const afterEntityOfEvent = mapper.entityForEvent(profileCall);
+      const expected = {
+        name: 'example.com',
+        company: 'example.com',
+        category: '',
+        categories: [],
+        domains: ['example.com'],
+        averageExecutionTime: 0,
+        totalExecutionTime: 0,
+        totalOccurrences: 0,
+        isUnrecognized: true,
+      };
+      assert.exists(afterEntityOfEvent);
+      assert.deepEqual(afterEntityOfEvent, expected);
+      // The mapped event should now map to its new entity.
+      const gotEventsMapped = mapper.eventsForEntity(afterEntityOfEvent) ?? [];
+      assert.deepEqual(gotEventsMapped, [profileCall]);
+
+      // The unmapped event should keep its original entity.
+      const gotEventsUnmapped = mapper.eventsForEntity(testEntity) ?? [];
+      assert.deepEqual(gotEventsUnmapped, [profileCallUnmapped]);
+      const gotUnmappedEntity = mapper.entityForEvent(profileCallUnmapped);
+      assert.deepEqual(gotUnmappedEntity, testEntity);
     });
   });
 });

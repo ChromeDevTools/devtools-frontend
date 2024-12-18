@@ -2023,9 +2023,13 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
       }
     }
 
+    // Initialize EntityMapper
+    this.#entityMapper = new Utils.EntityMapper.EntityMapper(parsedTrace);
+
     // Set up SourceMapsResolver to ensure we resolve any function names in
     // profile calls.
-    this.#sourceMapsResolver = new Utils.SourceMapsResolver.SourceMapsResolver(parsedTrace);
+    // Pass in the entity mapper.
+    this.#sourceMapsResolver = new Utils.SourceMapsResolver.SourceMapsResolver(parsedTrace, this.#entityMapper);
     this.#sourceMapsResolver.addEventListener(
         Utils.SourceMapsResolver.SourceMappingsUpdated.eventName, this.#onSourceMapsNodeNamesResolvedBound);
     void this.#sourceMapsResolver.install();

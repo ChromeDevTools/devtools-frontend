@@ -8,6 +8,7 @@ import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import type * as Overlays from '../../overlays/overlays.js';
 
 import type * as BaseInsightComponent from './BaseInsightComponent.js';
+import {EventReferenceClick} from './EventRef.js';
 import tableStyles from './table.css.js';
 
 const {html} = LitHtml;
@@ -104,6 +105,14 @@ export class Table extends HTMLElement {
 
     const index = [...rowEl.parentElement.children].indexOf(rowEl);
     if (index === -1) {
+      return;
+    }
+
+    // If the desired overlays consist of just a single ENTRY_OUTLINE, then
+    // it is more intuitive to just select the target event.
+    const overlays = this.#rows?.[index]?.overlays;
+    if (overlays?.length === 1 && overlays[0].type === 'ENTRY_OUTLINE') {
+      this.dispatchEvent(new EventReferenceClick(overlays[0].entry));
       return;
     }
 

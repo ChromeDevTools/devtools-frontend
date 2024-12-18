@@ -154,7 +154,7 @@ const UIStrings = {
   /**
    * @description Message shown to the user if the age check is not successful.
    */
-  ageRestricted: 'This feature is only available to users who are 18 years of age or older',
+  ageRestricted: 'This feature is only available to users who are 18 years of age or older.',
   /**
    * @description The error message when the user is not logged in into Chrome.
    */
@@ -378,24 +378,33 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
     // clang-format on
   }
 
-  #getDisabledReason(): string|undefined {
+  #getDisabledReasons(): string[] {
+    const reasons = [];
     switch (this.#aidaAvailability) {
       case Host.AidaClient.AidaAccessPreconditions.NO_ACCOUNT_EMAIL:
       case Host.AidaClient.AidaAccessPreconditions.SYNC_IS_PAUSED:
-        return i18nString(UIStrings.notLoggedIn);
-      case Host.AidaClient.AidaAccessPreconditions.NO_INTERNET:
-        return i18nString(UIStrings.offline);
+        reasons.push(i18nString(UIStrings.notLoggedIn));
+        break;
+      // @ts-expect-error
+      case Host.AidaClient.AidaAccessPreconditions.NO_INTERNET:  // fallthrough
+        reasons.push(i18nString(UIStrings.offline));
+      case Host.AidaClient.AidaAccessPreconditions.AVAILABLE: {
+        // No age check if there is no logged in user. Age check would always fail in that case.
+        const config = Common.Settings.Settings.instance().getHostConfig();
+        if (config?.aidaAvailability?.blockedByAge === true) {
+          reasons.push(i18nString(UIStrings.ageRestricted));
+        }
+      }
     }
-
-    const config = Common.Settings.Settings.instance().getHostConfig();
-    if (config?.aidaAvailability?.blockedByAge === true) {
-      return i18nString(UIStrings.ageRestricted);
-    }
-    // `consoleInsightsSetting` and `aiAssistantSetting` are both disabled for the same reason.
-    return this.#consoleInsightsSetting?.disabledReason();
+    // `consoleInsightsSetting` and `aiAssistantSetting` are both disabled for the same reasons.
+    const disabledReasons = this.#consoleInsightsSetting?.disabledReasons() || [];
+    reasons.push(...disabledReasons);
+    return reasons;
   }
 
-  #renderConsoleInsightsSetting(disabledReason?: string): LitHtml.TemplateResult {
+  #renderConsoleInsightsSetting(disabledReasons: string[]): LitHtml.TemplateResult {
+    const isDisabled = disabledReasons.length > 0;
+    const disabledReasonsJoined = disabledReasons.join('\n') || undefined;
     const detailsClasses = {
       'whole-row': true,
       open: this.#isConsoleInsightsSettingExpanded,
@@ -427,15 +436,15 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
       </div>
       <div class="divider"></div>
       <div class="toggle-container centered"
-        title=${ifDefined(disabledReason)}
+        title=${ifDefined(disabledReasonsJoined)}
         @click=${this.#toggleConsoleInsightsSetting.bind(this)}
       >
         <devtools-switch
-          .checked=${Boolean(this.#consoleInsightsSetting?.get()) && !Boolean(disabledReason)}
+          .checked=${Boolean(this.#consoleInsightsSetting?.get()) && !isDisabled}
           .jslogContext=${this.#consoleInsightsSetting?.name || ''}
-          .disabled=${Boolean(disabledReason)}
+          .disabled=${isDisabled}
           @switchchange=${this.#toggleConsoleInsightsSetting.bind(this)}
-          aria-label=${disabledReason || i18nString(UIStrings.enableConsoleInsights)}
+          aria-label=${disabledReasonsJoined || i18nString(UIStrings.enableConsoleInsights)}
         ></devtools-switch>
       </div>
       <div class=${classMap(detailsClasses)}>
@@ -463,7 +472,9 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
     // clang-format on
   }
 
-  #renderAiAssistanceSetting(disabledReason?: string): LitHtml.TemplateResult {
+  #renderAiAssistanceSetting(disabledReasons: string[]): LitHtml.TemplateResult {
+    const isDisabled = disabledReasons.length > 0;
+    const disabledReasonsJoined = disabledReasons.join('\n') || undefined;
     const detailsClasses = {
       'whole-row': true,
       open: this.#isAiAssistanceSettingExpanded,
@@ -495,15 +506,15 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
       </div>
       <div class="divider"></div>
       <div class="toggle-container centered"
-        title=${ifDefined(disabledReason)}
+        title=${ifDefined(disabledReasonsJoined)}
         @click=${this.#toggleAiAssistanceSetting.bind(this)}
       >
         <devtools-switch
-          .checked=${Boolean(this.#aiAssistanceSetting?.get()) && !Boolean(disabledReason)}
+          .checked=${Boolean(this.#aiAssistanceSetting?.get()) && !isDisabled}
           .jslogContext=${this.#aiAssistanceSetting?.name || ''}
-          .disabled=${Boolean(disabledReason)}
+          .disabled=${isDisabled}
           @switchchange=${this.#toggleAiAssistanceSetting.bind(this)}
-          aria-label=${disabledReason || i18nString(UIStrings.enableAiAssistance)}
+          aria-label=${disabledReasonsJoined || i18nString(UIStrings.enableAiAssistance)}
         ></devtools-switch>
       </div>
       <div class=${classMap(detailsClasses)}>
@@ -531,26 +542,30 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
     // clang-format on
   }
 
-  #renderDisabledExplainer(disabledReason: string): LitHtml.LitTemplate {
+  #renderDisabledExplainer(disabledReasons: string[]): LitHtml.LitTemplate {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
     return html`
       <div class="disabled-explainer">
-        <devtools-icon .data=${{
-          iconName: 'warning',
-          color: 'var(--sys-color-orange)',
-          width: 'var(--sys-size-8)',
-          height: 'var(--sys-size-8)',
-        } as IconButton.Icon.IconData}>
-        </devtools-icon>
-        ${disabledReason}
+        ${disabledReasons.map(reason => html`
+          <div class="disabled-explainer-row">
+            <devtools-icon .data=${{
+              iconName: 'warning',
+              color: 'var(--sys-color-orange)',
+              width: 'var(--sys-size-8)',
+              height: 'var(--sys-size-8)',
+            } as IconButton.Icon.IconData}>
+            </devtools-icon>
+            ${reason}
+          </div>
+        `)}
       </div>
     `;
     // clang-format on
   }
 
   override async render(): Promise<void> {
-    const disabledReason = this.#getDisabledReason();
+    const disabledReasons = this.#getDisabledReasons();
 
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off
@@ -558,10 +573,10 @@ export class AISettingsTab extends LegacyWrapper.LegacyWrapper.WrappableComponen
       <div class="settings-container-wrapper" jslog=${VisualLogging.pane('chrome-ai')}>
         ${this.#renderSharedDisclaimer()}
         ${this.#consoleInsightsSetting || this.#aiAssistanceSetting ? html`
-          ${Boolean(disabledReason) ? this.#renderDisabledExplainer(disabledReason as string) : LitHtml.nothing}
+          ${disabledReasons.length ? this.#renderDisabledExplainer(disabledReasons) : LitHtml.nothing}
           <div class="settings-container">
-            ${this.#consoleInsightsSetting ? this.#renderConsoleInsightsSetting(disabledReason) : LitHtml.nothing}
-            ${this.#aiAssistanceSetting ? this.#renderAiAssistanceSetting(disabledReason) : LitHtml.nothing}
+            ${this.#consoleInsightsSetting ? this.#renderConsoleInsightsSetting(disabledReasons) : LitHtml.nothing}
+            ${this.#aiAssistanceSetting ? this.#renderAiAssistanceSetting(disabledReasons) : LitHtml.nothing}
           </div>
         ` : LitHtml.nothing}
       </div>

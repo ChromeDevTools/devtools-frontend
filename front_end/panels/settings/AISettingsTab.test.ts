@@ -168,7 +168,7 @@ describeWithEnvironment('AISettingsTab', () => {
   });
 
   it('disables switches if blocked by age', async () => {
-    const underAgeExplainer = 'This feature is only available to users who are 18 years of age or older';
+    const underAgeExplainer = 'This feature is only available to users who are 18 years of age or older.';
     const aidaAccessStub = sinon.stub(Host.AidaClient.AidaClient, 'checkAccessPreconditions');
     aidaAccessStub.returns(Promise.resolve(Host.AidaClient.AidaAccessPreconditions.AVAILABLE));
     const hostConfigStub = getGetHostConfigStub({
@@ -223,7 +223,7 @@ describeWithEnvironment('AISettingsTab', () => {
       settingType: Common.Settings.SettingType.BOOLEAN,
       defaultValue: false,
       disabledCondition: () => {
-        return {disabled: true, reason: 'some reason'};
+        return {disabled: true, reasons: ['some reason']};
       },
     });
     Common.Settings.moduleSetting('ai-assistance-enabled').setRegistration({
@@ -231,7 +231,7 @@ describeWithEnvironment('AISettingsTab', () => {
       settingType: Common.Settings.SettingType.BOOLEAN,
       defaultValue: true,
       disabledCondition: () => {
-        return {disabled: true, reason: 'some reason'};
+        return {disabled: true, reasons: ['some reason']};
       },
     });
     const stub = sinon.stub(Host.AidaClient.AidaClient, 'checkAccessPreconditions');

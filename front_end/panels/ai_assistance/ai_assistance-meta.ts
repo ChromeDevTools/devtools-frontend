@@ -37,17 +37,17 @@ const UIStrings = {
    * @description Message shown to the user if the DevTools locale is not
    * supported.
    */
-  wrongLocale: 'To use this feature, set your language preference to English in DevTools settings',
+  wrongLocale: 'To use this feature, set your language preference to English in DevTools settings.',
   /**
    * @description Message shown to the user if the user's region is not
    * supported.
    */
-  geoRestricted: 'This feature is unavailable in your region',
+  geoRestricted: 'This feature is unavailable in your region.',
   /**
    * @description Message shown to the user if the enterprise policy does
    * not allow this feature.
    */
-  policyRestricted: 'This setting is managed by your administrator',
+  policyRestricted: 'This setting is managed by your administrator.',
 };
 
 const str_ = i18n.i18n.registerUIStrings('panels/ai_assistance/ai_assistance-meta.ts', UIStrings);
@@ -123,14 +123,18 @@ Common.Settings.registerSettingExtension({
   reloadRequired: false,
   condition: isAnyFeatureAvailable,
   disabledCondition: config => {
+    const reasons = [];
     if (isGeoRestricted(config)) {
-      return {disabled: true, reason: i18nString(UIStrings.geoRestricted)};
+      reasons.push(i18nString(UIStrings.geoRestricted));
     }
     if (isPolicyRestricted(config)) {
-      return {disabled: true, reason: i18nString(UIStrings.policyRestricted)};
+      reasons.push(i18nString(UIStrings.policyRestricted));
     }
     if (isLocaleRestricted()) {
-      return {disabled: true, reason: i18nString(UIStrings.wrongLocale)};
+      reasons.push(i18nString(UIStrings.wrongLocale));
+    }
+    if (reasons.length > 0) {
+      return {disabled: true, reasons};
     }
     return {disabled: false};
   },

@@ -431,14 +431,14 @@ export class Setting<V> {
     return this.#disabled || false;
   }
 
-  disabledReason(): string|undefined {
+  disabledReasons(): string[] {
     if (this.#registration?.disabledCondition) {
       const result = this.#registration.disabledCondition(Settings.instance().getHostConfig());
       if (result.disabled) {
-        return result.reason;
+        return result.reasons;
       }
     }
-    return undefined;
+    return [];
   }
 
   setDisabled(disabled: boolean): void {

@@ -122,7 +122,7 @@ describeWithEnvironment('ConsoleInsight', () => {
       settingType: Common.Settings.SettingType.BOOLEAN,
       defaultValue: true,
       disabledCondition: () => {
-        return {disabled: true, reason: 'disabled for test'};
+        return {disabled: true, reasons: ['disabled for test']};
       },
     });
     component = new Explain.ConsoleInsight(

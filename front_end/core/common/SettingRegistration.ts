@@ -330,5 +330,5 @@ interface RawSettingExtensionOption {
 export type SettingExtensionOption = LocalizedSettingExtensionOption|RawSettingExtensionOption;
 export type DisabledConditionResult = {
   disabled: true,
-  reason: string,
+  reasons: string[],
 }|{disabled: false};

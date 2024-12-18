@@ -31,7 +31,7 @@ const UIStrings = {
    */
   networkThrottling: 'Network throttling: {PH1}',
   /**
-   * @description Text label for a selection box showing that a specific option is recommended.
+   * @description Text label for a selection box showing that a specific option is recommended for network throttling.
    * @example {Fast 4G} PH1
    */
   recommendedThrottling: '{PH1} - recommended',

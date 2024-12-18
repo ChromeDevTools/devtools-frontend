@@ -93,7 +93,7 @@ const UIStrings = {
    */
   hardwareConcurrencySettingLabel: 'Override the value reported by navigator.hardwareConcurrency',
   /**
-   * @description Text label for a selection box showing that a specific option is recommended.
+   * @description Text label for a selection box showing that a specific option is recommended for CPU or Network throttling.
    * @example {Fast 4G} PH1
    * @example {4x slowdown} PH1
    */

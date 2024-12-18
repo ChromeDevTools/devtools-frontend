@@ -23,6 +23,11 @@ const UIStrings = {
    *@example {example.com} PH1
    */
   nodejsS: 'Node.js: {PH1}',
+  /**
+   *@description Text in DevTools window title when debugging a Node.js app
+   *@example {example.com} PH1
+   */
+  NodejsTitleS: 'DevTools - Node.js: {PH1}',
 };
 const str_ = i18n.i18n.registerUIStrings('entrypoints/node_app/NodeMain.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -104,6 +109,7 @@ export class NodeChildTargetManager extends SDK.SDKModel.SDKModel<void> implemen
 
   attachedToTarget({sessionId, targetInfo}: Protocol.Target.AttachedToTargetEvent): void {
     const name = i18nString(UIStrings.nodejsS, {PH1: targetInfo.url});
+    document.title = i18nString(UIStrings.NodejsTitleS, {PH1: targetInfo.url});
     const connection = new NodeConnection(this.#targetAgent, sessionId);
     this.#childConnections.set(sessionId, connection);
     const target = this.#targetManager.createTarget(

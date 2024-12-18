@@ -166,6 +166,7 @@ export class SettingsScreen extends UI.Widget.VBox implements UI.View.ViewLocati
 
     settingsScreen.reportTabOnReveal = true;
     const dialog = new UI.Dialog.Dialog('settings');
+    dialog.contentElement.removeAttribute('aria-modal');
     dialog.contentElement.tabIndex = -1;
     dialog.addCloseButton();
     dialog.setOutsideClickCallback(() => {});

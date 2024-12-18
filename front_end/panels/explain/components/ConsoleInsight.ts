@@ -788,10 +788,14 @@ export class ConsoleInsight extends HTMLElement {
               data-rating=${'true'}
               .data=${
                 {
-                  variant: Buttons.Button.Variant.ICON,
+                  variant: Buttons.Button.Variant.ICON_TOGGLE,
                   size: Buttons.Button.Size.SMALL,
                   iconName: 'thumb-up',
-                  active: this.#selectedRating !== undefined && this.#selectedRating,
+                  toggledIconName: 'thumb-up',
+                  toggleOnClick: false,
+                  toggleType: Buttons.Button.ToggleType.PRIMARY,
+                  disabled: this.#selectedRating !== undefined,
+                  toggled: this.#selectedRating === true,
                   title: i18nString(UIStrings.goodResponse),
                   jslogContext: 'thumbs-up',
                 } as Buttons.Button.ButtonData
@@ -802,10 +806,14 @@ export class ConsoleInsight extends HTMLElement {
               data-rating=${'false'}
               .data=${
                 {
-                  variant: Buttons.Button.Variant.ICON,
+                  variant: Buttons.Button.Variant.ICON_TOGGLE,
                   size: Buttons.Button.Size.SMALL,
                   iconName: 'thumb-down',
-                  active: this.#selectedRating !== undefined && !this.#selectedRating,
+                  toggledIconName: 'thumb-down',
+                  toggleOnClick: false,
+                  toggleType: Buttons.Button.ToggleType.PRIMARY,
+                  disabled: this.#selectedRating !== undefined,
+                  toggled: this.#selectedRating === false,
                   title: i18nString(UIStrings.badResponse),
                   jslogContext: 'thumbs-down',
                 } as Buttons.Button.ButtonData

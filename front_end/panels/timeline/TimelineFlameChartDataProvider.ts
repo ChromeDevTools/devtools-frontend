@@ -149,16 +149,18 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   constructor() {
     super();
     this.reset();
-    this.#font = `${PerfUI.Font.DEFAULT_FONT_SIZE} ${PerfUI.Font.getFontFamilyForCanvas()}`;
-    this.droppedFramePatternCanvas = document.createElement('canvas');
-    this.partialFramePatternCanvas = document.createElement('canvas');
-    this.preparePatternCanvas();
+    // This section is in fact covered by `this.reset()` but we still need them in the constructor for compile reason.
     this.timelineDataInternal = null;
     this.currentLevel = 0;
     this.compatibilityTracksAppender = null;
     this.parsedTrace = null;
     this.minimumBoundaryInternal = 0;
     this.timeSpan = 0;
+
+    this.#font = `${PerfUI.Font.DEFAULT_FONT_SIZE} ${PerfUI.Font.getFontFamilyForCanvas()}`;
+    this.droppedFramePatternCanvas = document.createElement('canvas');
+    this.partialFramePatternCanvas = document.createElement('canvas');
+    this.preparePatternCanvas();
 
     this.headerLevel1 = this.buildGroupStyle({shareHeaderLine: false});
     this.headerLevel2 = this.buildGroupStyle({padding: 2, nestingLevel: 1, collapsible: false});
@@ -503,25 +505,42 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     return this.#font;
   }
 
-  // resetCompatibilityTracksAppender boolean set to false does not recreate the thread appenders
-  reset(resetCompatibilityTracksAppender: boolean = true): void {
+  // Clear the cache and rebuild the timeline data
+  // This should be called when the trace file is the same but we want to rebuild the timeline date.
+  // Some possible example: when we hide/unhide an event, or the ignore list is changed etc.
+  clearTimelineDataCache(): void {
     this.currentLevel = 0;
     this.entryData = [];
     this.entryTypeByLevel = [];
     this.entryIndexToTitle = [];
     this.#eventIndexByEvent = new Map();
 
-    if (resetCompatibilityTracksAppender) {
-      this.compatibilityTracksAppender?.reset();
-      this.compatibilityTracksAppender = null;
-      this.timelineDataInternal = null;
-      this.parsedTrace = null;
-    } else if (!resetCompatibilityTracksAppender && this.timelineDataInternal) {
+    if (this.timelineDataInternal) {
       this.compatibilityTracksAppender?.setFlameChartDataAndEntryData(
           this.timelineDataInternal, this.entryData, this.entryTypeByLevel);
       this.compatibilityTracksAppender?.threadAppenders().forEach(
           threadAppender => threadAppender.setHeaderAppended(false));
     }
+  }
+
+  // Reset all data other than the UI elements.
+  // This should be called when
+  // - initialized the data provider
+  // - a new trace file is coming (when `setModel()` is called)
+  // etc.
+  reset(): void {
+    this.currentLevel = 0;
+    this.entryData = [];
+    this.entryTypeByLevel = [];
+    this.entryIndexToTitle = [];
+    this.#eventIndexByEvent = new Map();
+    this.minimumBoundaryInternal = 0;
+    this.timeSpan = 0;
+
+    this.compatibilityTracksAppender?.reset();
+    this.compatibilityTracksAppender = null;
+    this.timelineDataInternal = null;
+    this.parsedTrace = null;
   }
 
   maxStackDepth(): number {
@@ -543,7 +562,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     this.timelineDataInternal = PerfUI.FlameChart.FlameChartTimelineData.createEmpty();
 
     if (rebuild) {
-      this.reset(/* resetCompatibilityTracksAppender= */ false);
+      this.clearTimelineDataCache();
     }
 
     this.currentLevel = 0;

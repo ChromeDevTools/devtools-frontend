@@ -1845,6 +1845,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     ModificationsManager.reset();
     this.#uninstallSourceMapsResolver();
     this.flameChart.getMainDataProvider().reset();
+    this.flameChart.getNetworkDataProvider().reset();
     this.flameChart.reset();
     this.#changeView({mode: 'LANDING_PAGE'});
   }

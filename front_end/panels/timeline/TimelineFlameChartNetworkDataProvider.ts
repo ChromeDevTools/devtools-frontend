@@ -24,36 +24,44 @@ import {
 import * as TimelineUtils from './utils/utils.js';
 
 export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.FlameChartDataProvider {
-  #minimumBoundaryInternal: number;
-  #timeSpan: number;
-  #events: NetworkTrackEvent[];
-  #maxLevel: number;
-  #networkTrackAppender: NetworkTrackAppender|null;
+  #minimumBoundary: number = 0;
+  #timeSpan: number = 0;
+  #events: NetworkTrackEvent[] = [];
+  #maxLevel: number = 0;
+  #networkTrackAppender: NetworkTrackAppender|null = null;
 
-  #timelineDataInternal?: PerfUI.FlameChart.FlameChartTimelineData|null;
-  #lastSelection?: Selection;
-  #parsedTrace: Trace.Handlers.Types.ParsedTrace|null;
+  #timelineDataInternal: PerfUI.FlameChart.FlameChartTimelineData|null = null;
+  #lastSelection: Selection|null = null;
+  #parsedTrace: Trace.Handlers.Types.ParsedTrace|null = null;
   #eventIndexByEvent: Map<NetworkTrackEvent, number|null> = new Map();
   // -1 means no entry is selected.
   #lastInitiatorEntry: number = -1;
   #lastInitiatorsData: PerfUI.FlameChart.FlameChartInitiatorData[] = [];
 
   constructor() {
-    this.#minimumBoundaryInternal = 0;
-    this.#timeSpan = 0;
-    this.#events = [];
+    this.reset();
+  }
+
+  // Reset all data other than the UI elements.
+  // This should be called when
+  // - initialized the data provider
+  // - a new trace file is coming (when `setModel()` is called)
+  // etc.
+  reset(): void {
     this.#maxLevel = 0;
+    this.#minimumBoundary = 0;
+    this.#timeSpan = 0;
+    this.#eventIndexByEvent.clear();
+    this.#events = [];
+    this.#timelineDataInternal = null;
+    this.#parsedTrace = null;
 
     this.#networkTrackAppender = null;
-    this.#parsedTrace = null;
   }
 
   setModel(parsedTrace: Trace.Handlers.Types.ParsedTrace|null): void {
-    this.#timelineDataInternal = null;
-    this.#events = [];
+    this.reset();
     this.#parsedTrace = parsedTrace;
-    this.#eventIndexByEvent.clear();
-
     if (this.#parsedTrace) {
       this.setEvents(this.#parsedTrace);
       this.#setTimingBoundsData(this.#parsedTrace);
@@ -108,7 +116,7 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
   }
 
   minimumBoundary(): number {
-    return this.#minimumBoundaryInternal;
+    return this.#minimumBoundary;
   }
 
   totalTime(): number {
@@ -428,8 +436,8 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
     const {traceBounds} = newParsedTrace.Meta;
     const minTime = Trace.Helpers.Timing.microSecondsToMilliseconds(traceBounds.min);
     const maxTime = Trace.Helpers.Timing.microSecondsToMilliseconds(traceBounds.max);
-    this.#minimumBoundaryInternal = minTime;
-    this.#timeSpan = minTime === maxTime ? 1000 : maxTime - this.#minimumBoundaryInternal;
+    this.#minimumBoundary = minTime;
+    this.#timeSpan = minTime === maxTime ? 1000 : maxTime - this.#minimumBoundary;
   }
 
   /**

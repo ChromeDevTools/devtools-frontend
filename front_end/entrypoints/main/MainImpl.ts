@@ -404,11 +404,6 @@ export class MainImpl {
     );
 
     Root.Runtime.experiments.register(
-        Root.Runtime.ExperimentName.TIMELINE_IGNORE_LIST,
-        'Performance panel: enable an ignore list setting dialog',
-    );
-
-    Root.Runtime.experiments.register(
         Root.Runtime.ExperimentName.TIMELINE_THIRD_PARTY_DEPENDENCIES,
         'Performance panel: enable third party depenedency features',
     );

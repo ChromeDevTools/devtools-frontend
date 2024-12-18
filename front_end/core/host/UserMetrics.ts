@@ -994,7 +994,6 @@ export enum DevtoolsExperiments {
   'timeline-experimental-insights' = 102,
   'timeline-dim-unrelated-events' = 103,
   'timeline-alternative-navigation' = 104,
-  'timeline-ignore-list' = 105,
   'timeline-third-party-dependencies' = 106,
   /* eslint-enable @typescript-eslint/naming-convention */
 

@@ -11,7 +11,7 @@ import {
 } from '../../../testing/EnvironmentHelpers.js';
 import * as AiAssistance from '../ai_assistance.js';
 
-const {StylingAgent} = AiAssistance;
+const {StylingAgent, ErrorType} = AiAssistance;
 
 describeWithEnvironment('StylingAgent', () => {
   function mockHostConfig(
@@ -693,7 +693,7 @@ c`;
 
           count++;
         }
-        const execJs = sinon.mock().twice();
+        const execJs = sinon.mock().once();
         execJs.onCall(0).throws(new AiAssistance.SideEffectError('EvalError: Possible side-effect in debug-evaluate'));
         const agent = new StylingAgent({
           aidaClient: mockAidaClient(generateActionAndAnswer),
@@ -709,6 +709,42 @@ c`;
 
         assert.strictEqual(actionStep.output, 'Error: User denied code execution with side effects.');
         assert.strictEqual(execJs.getCalls().length, 1);
+      });
+
+      it('returns error when side effect is aborted', async () => {
+        const promise = Promise.withResolvers();
+        const stub = sinon.stub().returns(promise);
+        async function* generateAction() {
+          yield {
+            explanation: `ACTION
+            $0.style.backgroundColor = 'red'
+            STOP`,
+            metadata: {},
+            completed: true,
+          };
+        }
+        const execJs = sinon.mock().once().throws(
+            new AiAssistance.SideEffectError('EvalError: Possible side-effect in debug-evaluate'));
+        const agent = new StylingAgent({
+          aidaClient: mockAidaClient(generateAction),
+          createExtensionScope,
+          confirmSideEffectForTest: stub,
+          execJs,
+        });
+        const controller = new AbortController();
+
+        const agentPromise = Array.fromAsync(
+            agent.run('test', {selected: new AiAssistance.NodeContext(element), signal: controller.signal}));
+        await stub.calledOnce;
+        const awaitTimeout = (delay: number) => new Promise(resolve => setTimeout(resolve, delay));
+        await awaitTimeout(10).then(() => controller.abort());
+        const responses = await agentPromise;
+
+        const errorStep = responses.at(-1) as AiAssistance.ErrorResponse;
+        assert.strictEqual(execJs.getCalls().length, 1);
+        assert.exists(errorStep);
+        assert.strictEqual(errorStep.error, ErrorType.ABORT);
+        await promise.promise.then(value => assert.strictEqual(value, false));
       });
     });
 

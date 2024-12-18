@@ -582,7 +582,9 @@ export class StylingAgent extends AiAgent<SDK.DOMModel.DOMNode> {
     return output.trim();
   }
 
-  override async * handleAction(action: string): AsyncGenerator<SideEffectResponse, ActionResponse, void> {
+  override async *
+      handleAction(action: string, options?: {signal?: AbortSignal}):
+          AsyncGenerator<SideEffectResponse, ActionResponse, void> {
     debugLog(`Action to execute: ${action}`);
     if (this.executionMode === Root.Runtime.HostConfigFreestylerExecutionMode.NO_SCRIPTS) {
       return {
@@ -620,6 +622,10 @@ export class StylingAgent extends AiAgent<SDK.DOMModel.DOMNode> {
         }
 
         const sideEffectConfirmationPromiseWithResolvers = this.#confirmSideEffect<boolean>();
+
+        options?.signal?.addEventListener('abort', () => {
+          sideEffectConfirmationPromiseWithResolvers.resolve(false);
+        }, {once: true});
 
         yield {
           type: ResponseType.SIDE_EFFECT,

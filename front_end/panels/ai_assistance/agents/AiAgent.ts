@@ -339,7 +339,8 @@ export abstract class AiAgent<T> {
     return request;
   }
 
-  handleAction(action: string): AsyncGenerator<SideEffectResponse, ActionResponse, void>;
+  handleAction(action: string, options?: {signal?: AbortSignal}):
+      AsyncGenerator<SideEffectResponse, ActionResponse, void>;
   handleAction(): never {
     throw new Error('Unexpected action found');
   }
@@ -510,10 +511,7 @@ STOP`;
         debugLog('Error calling the AIDA API', err);
 
         if (err instanceof Host.AidaClient.AidaAbortError) {
-          const response = {
-            type: ResponseType.ERROR,
-            error: ErrorType.ABORT,
-          } as const;
+          const response = this.#createAbortResponse();
           this.#addHistory(response);
           yield response;
           break;
@@ -597,7 +595,13 @@ STOP`;
       }
 
       if (action) {
-        const result = yield* this.handleAction(action);
+        const result = yield* this.handleAction(action, {signal: options.signal});
+        if (options?.signal?.aborted) {
+          const response = this.#createAbortResponse();
+          this.#addHistory(response);
+          yield response;
+          break;
+        }
         this.#addHistory(result);
         query = `OBSERVATION: ${result.output}`;
         // Capture history state for the next iteration query.
@@ -630,6 +634,13 @@ STOP`;
     for (const entry of this.#history) {
       yield entry;
     }
+  }
+
+  #createAbortResponse(): ResponseData {
+    return {
+      type: ResponseType.ERROR,
+      error: ErrorType.ABORT,
+    };
   }
 }
 

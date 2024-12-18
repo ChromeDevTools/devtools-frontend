@@ -7297,11 +7297,6 @@ export const NativeFunctions = [
   },
   {
     name: "detect",
-    signatures: [["input"]],
-    receivers: ["LanguageDetector"]
-  },
-  {
-    name: "detect",
     signatures: [["image"]],
     receivers: ["BarcodeDetector","FaceDetector","TextDetector"]
   },

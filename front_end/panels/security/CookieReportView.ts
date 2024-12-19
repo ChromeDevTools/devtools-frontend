@@ -111,19 +111,71 @@ const UIStrings = {
   /**
    *@description String representing the GitHubResource insight type. Used as filter chip text to allow the user to filter the table based on recommendation.
    */
-  gitHubResourceTypeString: 'Github',
+  gitHubResourceInsightTypeString: 'Github',
   /**
    *@description String representing the GracePeriod insight type. Used as filter chip text to allow the user to filter the table based on recommendation.
    */
-  gracePeriodTypeString: 'Grace Period',
+  gracePeriodInsightTypeString: 'Grace Period',
   /**
    *@description String representing the GitHubResource insight type. Used as filter chip text to allow the user to filter the table based on recommendation.
    */
-  heuristicsTypeString: 'Heuristics',
+  heuristicsInisightTypeString: 'Heuristics',
   /**
    *@description String representing a null insight type. Used as filter chip text to allow the user to filter the table based on recommendation.
    */
-  otherTypeString: 'Other',
+  otherInsightTypeString: 'Other',
+  /**
+   *@description String representing the Advertising cookie type. Used to format 'ad' category from the Third Party Web dataset.
+   */
+  adCookieTypeString: 'Advertising',
+  /**
+   *@description String representing the Analytics cookie type. Used to format 'analytics' category from the Third Party Web dataset.
+   */
+  analyticsCookieTypeString: 'Analytics',
+  /**
+   *@description String representing the Social cookie type. Used to format 'social' category from the Third Party Web dataset.
+   */
+  socialCookieTypeString: 'Social',
+  /**
+   *@description String representing the Video cookie type. Used to format 'video' category from the Third Party Web dataset.
+   */
+  videoCookieTypeString: 'Video',
+  /**
+   *@description String representing the Utility cookie type. Used to format 'utility' category from the Third Party Web dataset.
+   */
+  utilityCookieTypeString: 'Utility',
+  /**
+   *@description String representing the Hosting cookie type. Used to format 'hosting' category from the Third Party Web dataset.
+   */
+  hostingCookieTypeString: 'Hosting',
+  /**
+   *@description String representing the Marketing cookie type. Used to format 'marketing' category from the Third Party Web dataset.
+   */
+  marketingCookieTypeString: 'Marketing',
+  /**
+   *@description String representing the Customer Success cookie type. Used to format 'customer-success' category from the Third Party Web dataset.
+   */
+  customerSuccessCookieTypeString: 'Customer Success',
+  /**
+   *@description String representing the Content cookie type. Used to format 'content' category from the Third Party Web dataset.
+   */
+  contentCookieTypeString: 'Content',
+  /**
+   *@description String representing the CDN cookie type. Used to format 'cdn' category from the Third Party Web dataset.
+   */
+  cdnCookieTypeString: 'CDN',
+  /**
+   *@description String representing the Tag Manager cookie type. Used to format 'tag-manager' category from the Third Party Web dataset.
+   */
+  tagManagerCookieTypeString: 'Tag Manager',
+  /**
+   *@description String representing the Consent Provider cookie type. Used to format 'consent-provider' category from the Third Party Web dataset.
+   */
+  consentProviderCookieTypeString: 'Consent Provider',
+  /**
+   *@description String representing the Other cookie type. Used to format 'other' category from the Third Party Web dataset.
+   */
+  otherCookieTypeString: 'Other',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/security/CookieReportView.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -332,7 +384,7 @@ export class CookieReportView extends UI.Widget.VBox {
                 {
                   name: row.name,
                   domain: row.domain,
-                  type: row.type ?? i18nString(UIStrings.unknown),
+                  type: CookieReportView.getCookieTypeString(row.type),
                   platform: row.platform ?? i18nString(UIStrings.unknown),
                   status: CookieReportView.getStatusString(row.status),
                   recommendation: CookieReportView.getRecommendation(row.domain, row.insight),
@@ -359,18 +411,18 @@ export class CookieReportView extends UI.Widget.VBox {
 
   static getInsightTypeString(insight?: Protocol.Audits.CookieIssueInsight): string {
     if (!insight) {
-      return i18nString(UIStrings.otherTypeString);
+      return i18nString(UIStrings.otherInsightTypeString);
     }
 
     switch (insight.type) {
       case Protocol.Audits.InsightType.GitHubResource:
-        return i18nString(UIStrings.gitHubResourceTypeString);
+        return i18nString(UIStrings.gitHubResourceInsightTypeString);
       case Protocol.Audits.InsightType.GracePeriod:
-        return i18nString(UIStrings.gracePeriodTypeString);
+        return i18nString(UIStrings.gracePeriodInsightTypeString);
       case Protocol.Audits.InsightType.Heuristics:
-        return i18nString(UIStrings.heuristicsTypeString);
+        return i18nString(UIStrings.heuristicsInisightTypeString);
       default:
-        return i18nString(UIStrings.otherTypeString);
+        return i18nString(UIStrings.otherInsightTypeString);
     }
   }
 
@@ -412,6 +464,41 @@ export class CookieReportView extends UI.Widget.VBox {
         return html`${i18nString(UIStrings.heuristics)}`;
       default:
         return html`${i18nString(UIStrings.other)}`;
+    }
+  }
+
+  static getCookieTypeString(type?: string): string {
+    if (!type) {
+      return i18nString(UIStrings.otherCookieTypeString);
+    }
+
+    switch (type) {
+      case 'ad':
+        return i18nString(UIStrings.adCookieTypeString);
+      case 'analytics':
+        return i18nString(UIStrings.analyticsCookieTypeString);
+      case 'social':
+        return i18nString(UIStrings.socialCookieTypeString);
+      case 'video':
+        return i18nString(UIStrings.videoCookieTypeString);
+      case 'utility':
+        return i18nString(UIStrings.utilityCookieTypeString);
+      case 'hosting':
+        return i18nString(UIStrings.hostingCookieTypeString);
+      case 'marketing':
+        return i18nString(UIStrings.marketingCookieTypeString);
+      case 'customer-success':
+        return i18nString(UIStrings.customerSuccessCookieTypeString);
+      case 'content':
+        return i18nString(UIStrings.contentCookieTypeString);
+      case 'cdn':
+        return i18nString(UIStrings.cdnCookieTypeString);
+      case 'tag-manager':
+        return i18nString(UIStrings.tagManagerCookieTypeString);
+      case 'consent-provider':
+        return i18nString(UIStrings.consentProviderCookieTypeString);
+      default:
+        return i18nString(UIStrings.otherCookieTypeString);
     }
   }
 }

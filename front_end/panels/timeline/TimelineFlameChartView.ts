@@ -57,13 +57,19 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
  * This defines the order these markers will be rendered if they are at the
  * same timestamp. The smaller number will be shown first - e.g. so if NavigationStart, MarkFCP,
  * MarkLCPCandidate have the same timestamp, visually we
- * will render [Nav][FCP][LCP] everytime.
+ * will render [Nav][FCP][DCL][LCP] everytime.
  */
 export const SORT_ORDER_PAGE_LOAD_MARKERS: Readonly<Record<string, number>> = {
   [Trace.Types.Events.Name.NAVIGATION_START]: 0,
-  [Trace.Types.Events.Name.MARK_FCP]: 1,
-  [Trace.Types.Events.Name.MARK_LCP_CANDIDATE]: 2,
+  [Trace.Types.Events.Name.MARK_LOAD]: 1,
+  [Trace.Types.Events.Name.MARK_FCP]: 2,
+  [Trace.Types.Events.Name.MARK_DOM_CONTENT]: 3,
+  [Trace.Types.Events.Name.MARK_LCP_CANDIDATE]: 4,
 };
+
+// Threshold to match up overlay markers that are off by a tiny amount so they aren't rendered
+// on top of each other.
+const TIMESTAMP_THRESHOLD_MS = Trace.Types.Timing.MicroSeconds(10);
 
 export class TimelineFlameChartView extends
     Common.ObjectWrapper.eventMixin<TimelineTreeView.EventTypes, typeof UI.Widget.VBox>(UI.Widget.VBox)
@@ -466,15 +472,17 @@ export class TimelineFlameChartView extends
     // Clear out any markers.
     this.bulkRemoveOverlays(this.#markers);
     const markerEvents = parsedTrace.PageLoadMetrics.allMarkerEvents;
-    // Set markers for Navigations, LCP, FCP.
+    // Set markers for Navigations, LCP, FCP, DCL, L.
     const markers = markerEvents.filter(
         event => event.name === Trace.Types.Events.Name.NAVIGATION_START ||
             event.name === Trace.Types.Events.Name.MARK_LCP_CANDIDATE ||
-            event.name === Trace.Types.Events.Name.MARK_FCP);
+            event.name === Trace.Types.Events.Name.MARK_FCP ||
+            event.name === Trace.Types.Events.Name.MARK_DOM_CONTENT ||
+            event.name === Trace.Types.Events.Name.MARK_LOAD);
 
     this.#sortMarkersForPreferredVisualOrder(markers);
-    const markerOverlays: Overlays.Overlays.TimingsMarker[] = [];
-    markers.forEach((marker, i) => {
+    const overlayByTs = new Map<Trace.Types.Timing.MicroSeconds, Overlays.Overlays.TimingsMarker>();
+    markers.forEach(marker => {
       const adjustedTimestamp = Trace.Helpers.Timing.timeStampForEventAdjustedByClosestNavigation(
           marker,
           parsedTrace.Meta.traceBounds,
@@ -482,17 +490,24 @@ export class TimelineFlameChartView extends
           parsedTrace.Meta.navigationsByFrameId,
       );
       // If any of the markers overlap in timing, lets put them on the same marker.
-      if (i > 0 && marker.ts === markerOverlays[markerOverlays.length - 1].entries[0].ts) {
-        markerOverlays[markerOverlays.length - 1].entries.push(marker);
-        return;
+      let matchingOverlay = false;
+      for (const [ts, overlay] of overlayByTs.entries()) {
+        if (Math.abs(marker.ts - ts) <= TIMESTAMP_THRESHOLD_MS) {
+          overlay.entries.push(marker);
+          matchingOverlay = true;
+          break;
+        }
       }
-      const overlay = {
-        type: 'TIMINGS_MARKER',
-        entries: [marker],
-        adjustedTimestamp,
-      } as Overlays.Overlays.TimingsMarker;
-      markerOverlays.push(overlay);
+      if (!matchingOverlay) {
+        const overlay = {
+          type: 'TIMINGS_MARKER',
+          entries: [marker],
+          adjustedTimestamp,
+        } as Overlays.Overlays.TimingsMarker;
+        overlayByTs.set(marker.ts, overlay);
+      }
     });
+    const markerOverlays: Overlays.Overlays.TimingsMarker[] = [...overlayByTs.values()];
     this.#markers = markerOverlays;
     if (this.#markers.length === 0) {
       return;

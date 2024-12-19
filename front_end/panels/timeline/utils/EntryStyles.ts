@@ -1131,5 +1131,13 @@ export function markerDetailsForEvent(event: Trace.Types.Events.Event): {
     color = 'var(--color-text-primary)';
     title = Trace.Handlers.ModelHandlers.PageLoadMetrics.MetricName.NAV;
   }
+  if (Trace.Types.Events.isMarkDOMContent(event)) {
+    color = 'var(--color-text-disabled)';
+    title = Trace.Handlers.ModelHandlers.PageLoadMetrics.MetricName.DCL;
+  }
+  if (Trace.Types.Events.isMarkLoad(event)) {
+    color = 'var(--color-text-disabled)';
+    title = Trace.Handlers.ModelHandlers.PageLoadMetrics.MetricName.L;
+  }
   return {color, title};
 }

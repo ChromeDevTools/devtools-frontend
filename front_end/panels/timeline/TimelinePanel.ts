@@ -516,7 +516,7 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.toggleRecordAction = UI.ActionRegistry.ActionRegistry.instance().getAction('timeline.toggle-recording');
     this.recordReloadAction = UI.ActionRegistry.ActionRegistry.instance().getAction('timeline.record-reload');
 
-    this.#historyManager = new TimelineHistoryManager(this.#minimapComponent);
+    this.#historyManager = new TimelineHistoryManager(this.#minimapComponent, isNode);
 
     this.traceLoadStart = null;
 
@@ -1085,14 +1085,16 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     // History
     this.panelToolbar.appendSeparator();
 
-    this.homeButton = new UI.Toolbar.ToolbarButton(
-        i18nString(UIStrings.backToLiveMetrics), 'home', undefined, 'timeline.back-to-live-metrics');
-    this.homeButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, () => {
-      this.#changeView({mode: 'LANDING_PAGE'});
-      this.#historyManager.navigateToLandingPage();
-    });
-    this.panelToolbar.appendToolbarItem(this.homeButton);
-    this.panelToolbar.appendSeparator();
+    if (!isNode) {
+      this.homeButton = new UI.Toolbar.ToolbarButton(
+          i18nString(UIStrings.backToLiveMetrics), 'home', undefined, 'timeline.back-to-live-metrics');
+      this.homeButton.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, () => {
+        this.#changeView({mode: 'LANDING_PAGE'});
+        this.#historyManager.navigateToLandingPage();
+      });
+      this.panelToolbar.appendToolbarItem(this.homeButton);
+      this.panelToolbar.appendSeparator();
+    }
 
     this.panelToolbar.appendToolbarItem(this.#historyManager.button());
     this.panelToolbar.registerCSSFiles([historyToolbarButtonStyles]);

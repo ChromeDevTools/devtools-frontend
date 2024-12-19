@@ -23,6 +23,44 @@ describeWithEnvironment('TimelineHistoryManager', function() {
   });
 
   it('shows the dropdown including a landing page link', async function() {
+    assert.strictEqual(historyManager.button().element.innerText!, 'Live metrics');
+
+    const {parsedTrace, metadata} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    historyManager.addRecording(
+        {
+          data: {
+            parsedTraceIndex: 1,
+            type: 'TRACE_INDEX',
+          },
+          filmStripForPreview: null,
+          parsedTrace,
+          metadata,
+        },
+    );
+
+    assert.strictEqual(historyManager.button().element.innerText!, 'web.dev #1');
+
+    const showPromise = historyManager.showHistoryDropDown();
+    const glassPane = document.querySelector('div[data-devtools-glass-pane]');
+    const dropdown =
+        glassPane?.shadowRoot?.querySelector('.widget')?.shadowRoot?.querySelector<HTMLElement>('.drop-down');
+    assert.isOk(dropdown);
+
+    const menuItemText = Array.from(dropdown.querySelectorAll<HTMLDivElement>('[role="menuitem"]'), elem => {
+      return elem.innerText.replaceAll('\n', '');
+    });
+    assert.deepEqual(menuItemText, ['Live metrics', 'web.dev1× slowdown, No throttling']);
+
+    // Cancel the dropdown, which also resolves the show() promise, meaning we
+    // don't leak it into other tests.
+    historyManager.cancelIfShowing();
+    await showPromise;
+  });
+
+  it('uses Node specific landing page title', async function() {
+    historyManager = new Timeline.TimelineHistoryManager.TimelineHistoryManager(undefined, true);
+    assert.strictEqual(historyManager.button().element.innerText!, 'New recording');
+
     const {parsedTrace, metadata} = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
     historyManager.addRecording(
         {
@@ -45,7 +83,7 @@ describeWithEnvironment('TimelineHistoryManager', function() {
     const menuItemText = Array.from(dropdown.querySelectorAll<HTMLDivElement>('[role="menuitem"]'), elem => {
       return elem.innerText.replaceAll('\n', '');
     });
-    assert.deepEqual(menuItemText, ['Live metrics', 'web.dev1× slowdown, No throttling']);
+    assert.deepEqual(menuItemText, ['New recording', 'web.dev1× slowdown, No throttling']);
 
     // Cancel the dropdown, which also resolves the show() promise, meaning we
     // don't leak it into other tests.

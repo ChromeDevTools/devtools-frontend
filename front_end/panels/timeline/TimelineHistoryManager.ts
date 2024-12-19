@@ -5,7 +5,6 @@
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
-import * as CrUXManager from '../../models/crux-manager/crux-manager.js';
 import type * as Trace from '../../models/trace/trace.js';
 import * as IconButton from '../../ui/components/icon_button/icon_button.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -39,6 +38,10 @@ const UIStrings = {
    *@description the title shown when the user is viewing the landing page which is showing live performance metrics that are updated automatically.
    */
   landingPageTitle: 'Live metrics',
+  /**
+   * @description the title shown when the user is viewing the landing page which can be used to make a new performance recording.
+   */
+  nodeLandingPageTitle: 'New recording',
   /**
    *@description Text in Timeline History Manager of the Performance panel
    *@example {example.com} PH1
@@ -112,12 +115,17 @@ export class TimelineHistoryManager {
   private enabled: boolean;
   private lastActiveTrace: RecordingData|null = null;
   #minimapComponent?: TimelineMiniMap;
-  constructor(minimapComponent?: TimelineMiniMap) {
+  #landingPageTitle: Common.UIString.LocalizedString;
+
+  constructor(minimapComponent?: TimelineMiniMap, isNode?: boolean) {
     this.recordings = [];
     this.#minimapComponent = minimapComponent;
     this.action = UI.ActionRegistry.ActionRegistry.instance().getAction('timeline.show-history');
     this.nextNumberByDomain = new Map();
     this.buttonInternal = new ToolbarButton(this.action);
+
+    this.#landingPageTitle =
+        isNode ? i18nString(UIStrings.nodeLandingPageTitle) : i18nString(UIStrings.landingPageTitle);
 
     UI.ARIAUtils.markAsMenuButton(this.buttonInternal.element);
     this.clear();
@@ -160,25 +168,6 @@ export class TimelineHistoryManager {
     ];
     this.totalHeight = this.allOverviews.reduce((acc, entry) => acc + entry.height, 0);
     this.enabled = true;
-
-    CrUXManager.CrUXManager.instance().addEventListener(CrUXManager.Events.FIELD_DATA_CHANGED, () => {
-      this.#updateLandingPageTitleIfActive();
-    });
-  }
-
-  /**
-   * If the user changes the CrUX consent status, the title shown in the
-   * dropdown could be outdated, as we show "Local" or "Local and field"
-   * depending on if the user has consented.
-   * This method will be called whenever the CrUXManager detects a change, and
-   * we use it as a chance to re-evaluate if the title needs changing or not.
-   */
-  #updateLandingPageTitleIfActive(): void {
-    if (this.lastActiveTrace?.type === 'LANDING_PAGE') {
-      const title = this.title(this.lastActiveTrace);
-      this.buttonInternal.setTitle(title);
-      this.buttonInternal.setText(title);
-    }
   }
 
   addRecording(newInput: NewHistoryRecordingData): void {
@@ -225,7 +214,7 @@ export class TimelineHistoryManager {
     this.recordings = [];
     this.lastActiveTrace = null;
     this.updateState();
-    this.buttonInternal.setText(i18nString(UIStrings.landingPageTitle));
+    this.buttonInternal.setText(this.#landingPageTitle);
     this.nextNumberByDomain.clear();
   }
 
@@ -247,7 +236,7 @@ export class TimelineHistoryManager {
     // DropDown.show() function finishes when the dropdown menu is closed via selection or losing focus
     const activeTraceIndex = await DropDown.show(
         this.recordings.map(recording => recording.parsedTraceIndex), this.#getActiveTraceIndexForListControl(),
-        this.buttonInternal.element);
+        this.buttonInternal.element, this.#landingPageTitle);
 
     if (activeTraceIndex === null) {
       return null;
@@ -336,7 +325,7 @@ export class TimelineHistoryManager {
 
   private title(item: RecordingData): string {
     if (item.type === 'LANDING_PAGE') {
-      return i18nString(UIStrings.landingPageTitle);
+      return this.#landingPageTitle;
     }
 
     const data = TimelineHistoryManager.dataForTraceIndex(item.parsedTraceIndex);
@@ -463,8 +452,11 @@ export class DropDown implements UI.ListControl.ListDelegate<number> {
   private readonly listControl: UI.ListControl.ListControl<number>;
   private readonly focusRestorer: UI.UIUtils.ElementFocusRestorer;
   private selectionDone: ((arg0: number|null) => void)|null;
+  #landingPageTitle: Common.UIString.LocalizedString;
 
-  constructor(availableparsedTraceIndexes: number[]) {
+  constructor(availableparsedTraceIndexes: number[], landingPageTitle: Common.UIString.LocalizedString) {
+    this.#landingPageTitle = landingPageTitle;
+
     this.glassPane = new UI.GlassPane.GlassPane();
     this.glassPane.setSizeBehavior(UI.GlassPane.SizeBehavior.MEASURE_CONTENT);
     this.glassPane.setOutsideClickCallback(() => this.close(null));
@@ -493,14 +485,16 @@ export class DropDown implements UI.ListControl.ListDelegate<number> {
     this.selectionDone = null;
   }
 
-  static show(availableparsedTraceIndexes: number[], activeparsedTraceIndex: number, anchor: Element):
+  static show(
+      availableparsedTraceIndexes: number[], activeparsedTraceIndex: number, anchor: Element,
+      landingPageTitle: Common.UIString.LocalizedString = i18nString(UIStrings.landingPageTitle)):
       Promise<number|null> {
     if (DropDown.instance) {
       return Promise.resolve(null);
     }
     const availableDropdownChoices = [...availableparsedTraceIndexes];
     availableDropdownChoices.unshift(LANDING_PAGE_INDEX_DROPDOWN_CHOICE);
-    const instance = new DropDown(availableDropdownChoices);
+    const instance = new DropDown(availableDropdownChoices, landingPageTitle);
     return instance.show(anchor, activeparsedTraceIndex);
   }
 
@@ -588,7 +582,7 @@ export class DropDown implements UI.ListControl.ListDelegate<number> {
     div.appendChild(icon);
 
     const text = document.createElement('span');
-    text.innerText = i18nString(UIStrings.landingPageTitle);
+    text.innerText = this.#landingPageTitle;
     div.appendChild(text);
     return div;
   }

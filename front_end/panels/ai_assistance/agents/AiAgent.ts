@@ -155,13 +155,11 @@ export abstract class ConversationContext<T> {
   }
 }
 
-export type FunctionDeclaration<Args extends Record<string, unknown>, ReturnType = Record<string, unknown>> = {
+export type FunctionDeclaration<Args, ReturnType> = {
   description: string,
   parameters: Host.AidaClient.FunctionObjectParam,
   handler: (args: Args) => Promise<ReturnType>,
 };
-
-export type FunctionDeclarations = Map<string, FunctionDeclaration<Record<string, unknown>, Record<string, unknown>>>;
 
 export abstract class AiAgent<T> {
   static validTemperature(temperature: number|undefined): number|undefined {
@@ -178,7 +176,7 @@ export abstract class AiAgent<T> {
   abstract readonly clientFeature: Host.AidaClient.ClientFeature;
   abstract readonly userTier: string|undefined;
   abstract handleContextDetails(select: ConversationContext<T>|null): AsyncGenerator<ContextResponse, void, void>;
-  protected functionDeclarations: FunctionDeclarations = new Map();
+  #functionDeclarations = new Map<string, FunctionDeclaration<unknown, unknown>>();
   #generatedFromHistory = false;
 
   /**
@@ -203,7 +201,21 @@ export abstract class AiAgent<T> {
   }
 
   get chatHistoryForTesting(): Array<Host.AidaClient.Content> {
-    return this.#buildChatHistoryForAida();
+    return this.buildChatHistoryForAida();
+  }
+
+  declareFunction<Args, ReturnType>(name: string, declaration: FunctionDeclaration<Args, ReturnType>): void {
+    if (this.#functionDeclarations.has(name)) {
+      throw new Error(`Duplicate function declaration ${name}`);
+    }
+    this.#functionDeclarations.set(name, declaration as FunctionDeclaration<unknown, unknown>);
+  }
+
+  async callFunction(name: string, args: unknown): Promise<Record<string, unknown>> {
+    const call = this.#functionDeclarations.get(name);
+    return (call ? await call.handler(args) : {
+             error: `Function ${name} is not found.`,
+           }) as Record<string, unknown>;
   }
 
   set chatNewHistoryForTesting(history: HistoryEntryStorage) {
@@ -241,7 +253,7 @@ export abstract class AiAgent<T> {
 
   #buildFunctionDeclarationsForAida(): Host.AidaClient.FunctionDeclaration[] {
     const result: Host.AidaClient.FunctionDeclaration[] = [];
-    for (const [name, definition] of this.functionDeclarations.entries()) {
+    for (const [name, definition] of this.#functionDeclarations.entries()) {
       result.push({
         name,
         description: definition.description,
@@ -278,11 +290,6 @@ export abstract class AiAgent<T> {
     for await (aidaResponse of this.#aidaClient.fetch(request, options)) {
       response = aidaResponse.explanation;
       rpcId = aidaResponse.metadata.rpcGlobalId ?? rpcId;
-
-      if (aidaResponse.functionCalls) {
-        throw new Error('Function calling not supported yet');
-      }
-
       const parsedResponse = this.parseResponse(aidaResponse);
       yield {
         rpcId,
@@ -309,7 +316,7 @@ export abstract class AiAgent<T> {
       parts: [part],
       role: Host.AidaClient.Role.USER,
     };
-    const history = this.#buildChatHistoryForAida();
+    const history = this.buildChatHistoryForAida();
     const declarations = this.#buildFunctionDeclarationsForAida();
     const request: Host.AidaClient.AidaRequest = {
       client: Host.AidaClient.CLIENT_NAME,
@@ -380,7 +387,7 @@ STOP`;
     return text;
   }
 
-  #buildChatHistoryForAida(): Host.AidaClient.Content[] {
+  buildChatHistoryForAida(): Host.AidaClient.Content[] {
     const history: Array<Host.AidaClient.Content> = [];
     let currentParsedStep: ParsedStep = {};
     let lastRunStartIdx = 0;

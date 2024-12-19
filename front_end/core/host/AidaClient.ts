@@ -68,7 +68,7 @@ export interface FunctionPrimitiveParams extends BaseFunctionParam {
 
 interface FunctionArrayParam extends BaseFunctionParam {
   type: ParametersTypes.ARRAY;
-  items: FunctionPrimitiveParams[];
+  items: FunctionPrimitiveParams;
 }
 
 export interface FunctionObjectParam extends BaseFunctionParam {
@@ -87,7 +87,7 @@ export interface FunctionDeclaration {
    * A description for the LLM to understand what the specific function will do once called.
    */
   description: string;
-  parameters: FunctionObjectParam|FunctionPrimitiveParams;
+  parameters: FunctionObjectParam|FunctionPrimitiveParams|FunctionArrayParam;
 }
 
 // Raw media bytes.
@@ -141,7 +141,7 @@ export type RpcGlobalId = string|number;
 export interface AidaRequest {
   client: string;
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  current_message?: Content;
+  current_message: Content;
   preamble?: string;
   // eslint-disable-next-line @typescript-eslint/naming-convention
   historical_contexts?: Content[];

@@ -342,12 +342,12 @@ export class FieldSettingsDialog extends HTMLElement {
         .position=${Dialogs.Dialog.DialogVerticalPosition.AUTO}
         .horizontalAlignment=${Dialogs.Dialog.DialogHorizontalAlignment.CENTER}
         .jslogContext=${'timeline.field-data.settings'}
+        .dialogTitle=${i18nString(UIStrings.configureFieldData)}
         on-render=${ComponentHelpers.Directives.nodeRenderedCallback(node => {
           this.#dialog = node as Dialogs.Dialog.Dialog;
         })}
       >
         <div class="content">
-          <h2 class="title">${i18nString(UIStrings.configureFieldData)}</h2>
           <div>${descriptionEl}</div>
           <div class="privacy-disclosure">
             <h3 class="section-title">${i18nString(UIStrings.privacyDisclosure)}</h3>

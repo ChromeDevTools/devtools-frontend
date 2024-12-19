@@ -847,10 +847,10 @@ export class NetworkLogViewColumns {
     let color = 'transparent';
     switch (className) {
       case 'network-dcl-divider':
-        color = '#0867CB';
+        color = ThemeSupport.ThemeSupport.instance().getComputedValue('--sys-color-blue');
         break;
       case 'network-load-divider':
-        color = '#B31412';
+        color = ThemeSupport.ThemeSupport.instance().getComputedValue('--sys-color-error');
         break;
       default:
         return;

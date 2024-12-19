@@ -2589,11 +2589,11 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
   }
 
   static getDCLEventColor(): string {
-    return '--sys-color-token-attribute-value';
+    return '--sys-color-blue';
   }
 
   static getLoadEventColor(): string {
-    return '--sys-color-token-property-special';
+    return '--sys-color-error';
   }
 }
 

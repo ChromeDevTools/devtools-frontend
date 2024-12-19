@@ -63,10 +63,7 @@ describe('The Console\'s errors', () => {
         source: 'resource-errors.html:20',
         stackPreview: `
 loadXHR @ resource-errors.html:20
-step2 @ resource-errors.html:12
-error
-performActions @ resource-errors.html:7
-(anonymous) @ resource-errors.html:30`,
+step2 @ resource-errors.html:12`,
         wrapperClasses: 'console-message-wrapper console-error-level',
       },
       {

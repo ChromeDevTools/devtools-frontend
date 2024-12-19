@@ -737,4 +737,88 @@ describe('SourceMapScopesInfo', () => {
       }
     });
   });
+
+  describe('findOriginalFunctionName', () => {
+    const [scopeInfoWithRanges, scopeInfoWithMappings] = (function() {
+      // Separate sandbox, otherwise global beforeEach/afterAll will reset our source map.
+      const sandbox = sinon.createSandbox();
+      const sourceMap = sandbox.createStubInstance(SDK.SourceMap.SourceMap);
+      sourceMap.findEntry.callsFake((line, column) => {
+        assert.strictEqual(line, 0);
+        switch (column) {
+          case 10:
+            return new SDK.SourceMap.SourceMapEntry(
+                line, column, /* sourceIndex */ 0, /* sourceUrl */ undefined, /* sourceLine */ 5, /* sourceColumn */ 0);
+          case 30:
+            return new SDK.SourceMap.SourceMapEntry(
+                line, column, /* sourceIndex */ 0, /* sourceUrl */ undefined, /* sourceLine */ 15,
+                /* sourceColumn */ 2);
+          case 50:
+            return new SDK.SourceMap.SourceMapEntry(
+                line, column, /* sourceIndex */ 0, /* sourceUrl */ undefined, /* sourceLine */ 25,
+                /* sourceColumn */ 4);
+          case 110:
+            return new SDK.SourceMap.SourceMapEntry(
+                line, column, /* sourceIndex */ 0, /* sourceUrl */ undefined, /* sourceLine */ 55,
+                /* sourceColumn */ 2);
+          case 150:
+            return null;
+        }
+        return null;
+      });
+      const names: string[] = [];
+      const originalScopes = [new OriginalScopeBuilder(names)
+                                  .start(0, 0, {kind: 'global'})
+                                  .start(10, 10, {kind: 'function', name: 'myAuthoredFunction', isStackFrame: true})
+                                  .start(20, 15, {kind: 'block'})
+                                  .end(30, 3)
+                                  .end(40, 1)
+                                  .start(50, 10, {kind: 'function', isStackFrame: true})
+                                  .end(60, 1)
+                                  .end(70, 0)
+                                  .build()];
+      const scopeInfoWithMappings =
+          SourceMapScopesInfo.parseFromMap(sourceMap, {names, originalScopes, generatedRanges: ''});
+      const generatedRanges = new GeneratedRangeBuilder(names)
+                                  .start(0, 0, {definition: {sourceIdx: 0, scopeIdx: 0}})
+                                  .start(0, 20, {definition: {sourceIdx: 0, scopeIdx: 1}})
+                                  .start(0, 40, {definition: {sourceIdx: 0, scopeIdx: 2}})
+                                  .end(0, 60)
+                                  .end(0, 80)
+                                  .start(0, 100, {definition: {sourceIdx: 0, scopeIdx: 5}})
+                                  .end(0, 120)
+                                  .start(0, 140)
+                                  .end(0, 160)
+                                  .end(0, 180)
+                                  .build();
+      const scopeInfoWithRanges = SourceMapScopesInfo.parseFromMap(sourceMap, {names, originalScopes, generatedRanges});
+      return [scopeInfoWithRanges, scopeInfoWithMappings];
+    })();
+
+    [{name: 'with GeneratedRanges', scopeInfo: scopeInfoWithRanges},
+     {name: 'with mappings', scopeInfo: scopeInfoWithMappings},
+    ].forEach(({name, scopeInfo}) => {
+      describe(name, () => {
+        it('provides the original name for a position inside a function', () => {
+          assert.strictEqual(scopeInfo.findOriginalFunctionName({line: 0, column: 30}), 'myAuthoredFunction');
+        });
+
+        it('provides the original name for a position inside a block scope of a function', () => {
+          assert.strictEqual(scopeInfo.findOriginalFunctionName({line: 0, column: 50}), 'myAuthoredFunction');
+        });
+
+        it('returns null for a position inside the global scope', () => {
+          assert.isNull(scopeInfo.findOriginalFunctionName({line: 0, column: 10}));
+        });
+
+        it('returns null for a position inside a range with no corresponding original scope', () => {
+          assert.isNull(scopeInfo.findOriginalFunctionName({line: 0, column: 150}));
+        });
+
+        it('returns the empty string for an unnamed function (not null)', () => {
+          assert.strictEqual(scopeInfo.findOriginalFunctionName({line: 0, column: 110}), '');
+        });
+      });
+    });
+  });
 });

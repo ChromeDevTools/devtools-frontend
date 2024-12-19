@@ -598,7 +598,7 @@ class NetworkAnalyzer {
   static findLastDocumentForUrl<T extends Lantern.NetworkRequest>(records: Array<T>, resourceUrl: string): T|undefined {
     // equalWithExcludedFragments is expensive, so check that the resourceUrl starts with the request url first
     const matchingRequests = records.filter(
-        request => request.resourceType === 'Document' &&
+        request => request.resourceType === 'Document' && !request.failed &&
             // Note: `request.url` should never have a fragment, else this optimization gives wrong results.
             resourceUrl.startsWith(request.url) && UrlUtils.equalWithExcludedFragments(request.url, resourceUrl),
     );

@@ -1153,10 +1153,13 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
   #setupNavigationSetting(): HTMLElement {
     const currentNavSetting = Common.Settings.moduleSetting('flamechart-selected-navigation').get();
+    const hideTheDialogForTests: string|null = localStorage.getItem('hide-shortcuts-dialog-for-test');
     const userHadShortcutsDialogOpenedOnce = this.#userHadShortcutsDialogOpenedOnce.get();
+
     this.#shortcutsDialog.data = {
       shortcuts: this.#getShortcutsInfo(currentNavSetting === 'classic'),
-      open: !userHadShortcutsDialogOpenedOnce,
+      open: !userHadShortcutsDialogOpenedOnce && hideTheDialogForTests !== 'true' &&
+          !Host.InspectorFrontendHost.isUnderTest(),
     };
 
     this.#navigationRadioButtons.classList.add('nav-radio-buttons');

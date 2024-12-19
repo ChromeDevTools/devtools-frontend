@@ -586,24 +586,25 @@ export class StylingAgent extends AiAgent<SDK.DOMModel.DOMNode> {
       handleAction(action: string, options?: {signal?: AbortSignal}):
           AsyncGenerator<SideEffectResponse, ActionResponse, void> {
     debugLog(`Action to execute: ${action}`);
-    if (this.executionMode === Root.Runtime.HostConfigFreestylerExecutionMode.NO_SCRIPTS) {
+
+    function createCancelledResult(output: string): ActionResponse {
       return {
         type: ResponseType.ACTION,
         code: action,
-        output: 'Error: JavaScript execution is currently disabled.',
+        output,
         canceled: true,
       };
+    }
+
+    if (this.executionMode === Root.Runtime.HostConfigFreestylerExecutionMode.NO_SCRIPTS) {
+      return createCancelledResult('Error: JavaScript execution is currently disabled.');
     }
 
     const selectedNode = UI.Context.Context.instance().flavor(SDK.DOMModel.DOMNode);
     const target = selectedNode?.domModel().target() ?? UI.Context.Context.instance().flavor(SDK.Target.Target);
     if (target?.model(SDK.DebuggerModel.DebuggerModel)?.selectedCallFrame()) {
-      return {
-        type: ResponseType.ACTION,
-        code: action,
-        output: 'Error: Cannot evaluate JavaScript because the execution is paused on a breakpoint.',
-        canceled: true,
-      };
+      return createCancelledResult(
+          'Error: Cannot evaluate JavaScript because the execution is paused on a breakpoint.');
     }
 
     const scope = this.#createExtensionScope(this.#changes);
@@ -613,15 +614,21 @@ export class StylingAgent extends AiAgent<SDK.DOMModel.DOMNode> {
       debugLog(`Action result: ${JSON.stringify(result)}`);
       if (result.sideEffect) {
         if (this.executionMode === Root.Runtime.HostConfigFreestylerExecutionMode.SIDE_EFFECT_FREE_SCRIPTS_ONLY) {
-          return {
-            type: ResponseType.ACTION,
-            code: action,
-            output: 'Error: JavaScript execution that modifies the page is currently disabled.',
-            canceled: true,
-          };
+          return createCancelledResult('Error: JavaScript execution that modifies the page is currently disabled.');
+        }
+
+        if (options?.signal?.aborted) {
+          return createCancelledResult('Error: evaluation has been cancelled');
         }
 
         const sideEffectConfirmationPromiseWithResolvers = this.#confirmSideEffect<boolean>();
+
+        void sideEffectConfirmationPromiseWithResolvers.promise.then(result => {
+          Host.userMetrics.actionTaken(
+              result ? Host.UserMetrics.Action.AiAssistanceSideEffectConfirmed :
+                       Host.UserMetrics.Action.AiAssistanceSideEffectRejected,
+          );
+        });
 
         options?.signal?.addEventListener('abort', () => {
           sideEffectConfirmationPromiseWithResolvers.resolve(false);
@@ -632,10 +639,6 @@ export class StylingAgent extends AiAgent<SDK.DOMModel.DOMNode> {
           code: action,
           confirm: (result: boolean) => {
             sideEffectConfirmationPromiseWithResolvers.resolve(result);
-            Host.userMetrics.actionTaken(
-                result ? Host.UserMetrics.Action.AiAssistanceSideEffectConfirmed :
-                         Host.UserMetrics.Action.AiAssistanceSideEffectRejected,
-            );
           },
         };
 

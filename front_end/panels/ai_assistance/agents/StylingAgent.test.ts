@@ -712,8 +712,7 @@ c`;
       });
 
       it('returns error when side effect is aborted', async () => {
-        const promise = Promise.withResolvers();
-        const stub = sinon.stub().returns(promise);
+        const selected = new AiAssistance.NodeContext(element);
         async function* generateAction() {
           yield {
             explanation: `ACTION
@@ -725,26 +724,31 @@ c`;
         }
         const execJs = sinon.mock().once().throws(
             new AiAssistance.SideEffectError('EvalError: Possible side-effect in debug-evaluate'));
+        const sideEffectConfirmationPromise = Promise.withResolvers();
         const agent = new StylingAgent({
           aidaClient: mockAidaClient(generateAction),
           createExtensionScope,
-          confirmSideEffectForTest: stub,
+          confirmSideEffectForTest: sinon.stub().returns(sideEffectConfirmationPromise),
           execJs,
         });
-        const controller = new AbortController();
 
-        const agentPromise = Array.fromAsync(
-            agent.run('test', {selected: new AiAssistance.NodeContext(element), signal: controller.signal}));
-        await stub.calledOnce;
-        const awaitTimeout = (delay: number) => new Promise(resolve => setTimeout(resolve, delay));
-        await awaitTimeout(10).then(() => controller.abort());
-        const responses = await agentPromise;
+        const responses: AiAssistance.ResponseData[] = [];
+        const controller = new AbortController();
+        for await (const result of agent.run('test', {selected, signal: controller.signal})) {
+          responses.push(result);
+          if (result.type === 'side-effect') {
+            // Initial code invocation resulting in a side-effect
+            // happened.
+            assert.isTrue(execJs.calledOnce);
+            // Emulate abort when waiting for the side-effect confirmation.
+            controller.abort();
+          }
+        }
 
         const errorStep = responses.at(-1) as AiAssistance.ErrorResponse;
-        assert.strictEqual(execJs.getCalls().length, 1);
         assert.exists(errorStep);
         assert.strictEqual(errorStep.error, ErrorType.ABORT);
-        await promise.promise.then(value => assert.strictEqual(value, false));
+        assert.strictEqual(await sideEffectConfirmationPromise.promise, false);
       });
     });
 

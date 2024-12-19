@@ -7,6 +7,7 @@ import '../../../../ui/components/report_view/report_view.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import type * as Platform from '../../../../core/platform/platform.js';
 import type * as Protocol from '../../../../generated/protocol.js';
+import * as Buttons from '../../../../ui/components/buttons/buttons.js';
 import * as ChromeLink from '../../../../ui/components/chrome_link/chrome_link.js';
 import * as Dialogs from '../../../../ui/components/dialogs/dialogs.js';
 import * as IconButton from '../../../../ui/components/icon_button/icon_button.js';
@@ -148,27 +149,24 @@ export class PreloadingDisabledInfobar extends LegacyWrapper.LegacyWrapper.Wrapp
           ${header}
         </span>
 
-        <devtools-icon-dialog
+        <devtools-button-dialog
           .data=${{
-            iconData: {
-              iconName: 'info',
-              color: 'var(--icon-default-hover)',
-              width: '16px',
-              height: '16px',
-            },
+            iconName: 'info',
+            variant: Buttons.Button.Variant.ICON,
             closeButton: true,
             position: Dialogs.Dialog.DialogVerticalPosition.AUTO,
             horizontalAlignment: Dialogs.Dialog.DialogHorizontalAlignment.AUTO,
             closeOnESC: true,
             closeOnScroll: false,
-          }}
+            dialogTitle: i18nString(UIStrings.titleReasonsPreventingPreloading),
+          } as Dialogs.ButtonDialog.ButtonDialogData}
           jslog=${VisualLogging.dialog('preloading-disabled').track({resize: true, keydown: 'Escape'})}
         >
           ${this.#dialogContents()}
-        </devtools-icon-dialog>
+        </devtools-button-dialog>
       </div>
     `;
-            // clang-format on
+    // clang-format on
   }
 
   #dialogContents(): LitHtml.LitTemplate {
@@ -186,19 +184,13 @@ export class PreloadingDisabledInfobar extends LegacyWrapper.LegacyWrapper.Wrapp
 
     return html`
       <div id='contents'>
-        <div id='title'>${i18nString(UIStrings.titleReasonsPreventingPreloading)}</div>
-
         <devtools-report>
           ${this.#maybeDisalebByPreference()}
           ${this.#maybeDisalebByDataSaver()}
           ${this.#maybeDisalebByBatterySaver()}
           ${this.#maybeDisalebByHoldbackPrefetchSpeculationRules()}
           ${this.#maybeDisalebByHoldbackPrerenderSpeculationRules()}
-
-          <devtools-report-divider>
-          </devtools-report-divider>
         </devtools-report>
-
         <div id='footer'>
           ${learnMoreLink}
           ${iconLink}

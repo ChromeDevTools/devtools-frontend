@@ -28,7 +28,6 @@ group("docs") {
     "./floating_button",
     "./icon_button",
     "./icon_component",
-    "./icon_dialog",
     "./input",
     "./issue_counter",
     "./issue_link_icon",

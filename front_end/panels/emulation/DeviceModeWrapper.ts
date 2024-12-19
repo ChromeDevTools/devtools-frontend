@@ -2,7 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Common from '../../core/common/common.js';
+import * as Common from '../../core/common/common.js';
+import type * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
@@ -19,11 +20,13 @@ export class DeviceModeWrapper extends UI.Widget.VBox {
   private deviceModeView: DeviceModeView|null;
   private readonly toggleDeviceModeAction: UI.ActionRegistration.Action;
   private showDeviceModeSetting: Common.Settings.Setting<boolean>;
+  private enableOncePossible: boolean;
 
   private constructor(inspectedPagePlaceholder: InspectedPagePlaceholder) {
     super();
     this.inspectedPagePlaceholder = inspectedPagePlaceholder;
     this.deviceModeView = null;
+    this.enableOncePossible = false;
     this.toggleDeviceModeAction = UI.ActionRegistry.ActionRegistry.instance().getAction('emulation.toggle-device-mode');
     const model = EmulationModel.DeviceModeModel.DeviceModeModel.instance();
     this.showDeviceModeSetting = model.enabledSetting();
@@ -32,6 +35,8 @@ export class DeviceModeWrapper extends UI.Widget.VBox {
     SDK.TargetManager.TargetManager.instance().addModelListener(
         SDK.OverlayModel.OverlayModel, SDK.OverlayModel.Events.SCREENSHOT_REQUESTED,
         this.screenshotRequestedFromOverlay, this);
+    SDK.TargetManager.TargetManager.instance().addEventListener(
+        SDK.TargetManager.Events.INSPECTED_URL_CHANGED, this.inspectedUrlChanged, this);
     this.update(true);
   }
 
@@ -50,6 +55,26 @@ export class DeviceModeWrapper extends UI.Widget.VBox {
     }
 
     return deviceModeWrapperInstance;
+  }
+
+  inspectedUrlChanged(event: {data: SDK.Target.Target}): void {
+    const url = event.data.inspectedURL();
+    // Only allow device mode for non chrome:// pages.
+    const canEnable = url !== null && !Common.ParsedURL.schemeIs(url as Platform.DevToolsPath.UrlString, 'chrome:');
+    this.toggleDeviceModeAction.setEnabled(canEnable);
+    if (!canEnable && this.isDeviceModeOn()) {
+      // Device mode is enabled, but we navigated to a chrome:// page.
+      // Remember to enable device mode again when next possible.
+      this.toggleDeviceMode();
+      this.enableOncePossible = true;
+    }
+    if (canEnable && !this.isDeviceModeOn() && this.enableOncePossible) {
+      // Device mode is not enabled, could be enabled, and we have a reminder to enable.
+      this.toggleDeviceMode();
+      this.enableOncePossible = false;
+    }
+
+    this.update();
   }
 
   toggleDeviceMode(): void {

@@ -36,15 +36,34 @@ export const reloadDockableFrontEnd = async () => {
   await reloadDevTools({canDock: true});
 };
 
-export const openDeviceToolbar = async () => {
+export const deviceModeIsEnabled = async () => {
   const deviceToolbarToggler = await waitFor(DEVICE_TOOLBAR_TOGGLER_SELECTOR);
-  const togglerARIAPressed = await deviceToolbarToggler.evaluate(element => element.getAttribute('aria-pressed'));
-  const isOpen = togglerARIAPressed === 'true';
-  if (isOpen) {
+  const pressed = await deviceToolbarToggler.evaluate(element => {
+    const button = element.shadowRoot?.querySelector('.primary-toggle') as HTMLButtonElement;
+    return button.getAttribute('aria-pressed');
+  });
+  return pressed === 'true';
+};
+
+export const clickDeviceModeToggler = async () => {
+  const deviceToolbarToggler = await waitFor(DEVICE_TOOLBAR_TOGGLER_SELECTOR);
+  await clickElement(deviceToolbarToggler);
+};
+
+export const openDeviceToolbar = async () => {
+  if (await deviceModeIsEnabled()) {
     return;
   }
-  await clickElement(deviceToolbarToggler);
+  await clickDeviceModeToggler();
   await waitFor(DEVICE_TOOLBAR_SELECTOR);
+};
+
+export const deviceModeButtonCanEnable = async () => {
+  const deviceToolbarToggler = await waitFor(DEVICE_TOOLBAR_TOGGLER_SELECTOR);
+  return await deviceToolbarToggler.evaluate(element => {
+    const button = element.shadowRoot?.querySelector('.primary-toggle') as HTMLButtonElement;
+    return !button.disabled;
+  });
 };
 
 export const showMediaQueryInspector = async () => {

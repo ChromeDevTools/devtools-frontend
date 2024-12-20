@@ -766,8 +766,13 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
         this.viewportElement.style.cursor = 'pointer';
         return;
       case HoverType.INSIDE_TRACK:
+      case HoverType.OUTSIDE_TRACKS:
         this.updateHighlight();
         return;
+      case HoverType.ERROR:
+        return;
+      default:
+        Platform.assertNever(hoverType, `Invalid hovering type: ${hoverType}`);
     }
   }
 
@@ -790,7 +795,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
         iconTooltip = `Move ${displayName} track down`;
         break;
       case HoverType.TRACK_CONFIG_HIDE_BUTTON:
-        if (this.groupIsLastVisibleTopLevel(group)) {
+        if (this.groupIsLastVisibleTopLevel(groupIndex)) {
           iconTooltip = 'Can not hide the last top level track';
         } else {
           iconTooltip = `Hide ${displayName} track`;
@@ -1024,42 +1029,45 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
 
     // If any button is clicked, we should handle the action only and ignore others.
     const {groupIndex, hoverType} = this.coordinatesToGroupIndexAndHoverType(mouseEvent.offsetX, mouseEvent.offsetY);
-    if (groupIndex >= 0) {
-      switch (hoverType) {
-        case HoverType.TRACK_CONFIG_UP_BUTTON:
-          this.moveGroupUp(groupIndex);
-          return;
-        case HoverType.TRACK_CONFIG_DOWN_BUTTON:
-          this.moveGroupDown(groupIndex);
-          return;
-        case HoverType.TRACK_CONFIG_HIDE_BUTTON:
-          if (this.groupIsLastVisibleTopLevel(this.rawTimelineData?.groups[groupIndex])) {
-            // If this is the last visible top-level group, we will not allow you hiding the track.
-            return;
-          }
-          this.hideGroup(groupIndex);
-          return;
-        case HoverType.TRACK_CONFIG_SHOW_BUTTON:
-          this.showGroup(groupIndex);
-          return;
-        case HoverType.INSIDE_TRACK_HEADER:
-          this.#selectGroup(groupIndex);
-          this.toggleGroupExpand(groupIndex);
-          return;
-        case HoverType.INSIDE_TRACK: {
-          this.#selectGroup(groupIndex);
-
-          const timelineData = this.timelineData();
-          if (mouseEvent.shiftKey && this.highlightedEntryIndex !== -1 && timelineData) {
-            const start = timelineData.entryStartTimes[this.highlightedEntryIndex];
-            const end = start + timelineData.entryTotalTimes[this.highlightedEntryIndex];
-            this.chartViewport.setRangeSelection(start, end);
-          } else {
-            this.chartViewport.onClick(mouseEvent);
-            this.dispatchEventToListeners(Events.ENTRY_INVOKED, this.highlightedEntryIndex);
-          }
+    // There could be a special case, when there is no group and all entries are appended directly, for example the
+    // Memory panel.
+    // In this case, the |groupIndex| will be -1, and |groups| should be empty.
+    // All the functions here can handle the -1 groupIndex properly, so we don't need to add extra check here.
+    switch (hoverType) {
+      case HoverType.TRACK_CONFIG_UP_BUTTON:
+        this.moveGroupUp(groupIndex);
+        return;
+      case HoverType.TRACK_CONFIG_DOWN_BUTTON:
+        this.moveGroupDown(groupIndex);
+        return;
+      case HoverType.TRACK_CONFIG_HIDE_BUTTON:
+        if (this.groupIsLastVisibleTopLevel(groupIndex)) {
+          // If this is the last visible top-level group, we will not allow you hiding the track.
           return;
         }
+        this.hideGroup(groupIndex);
+        return;
+      case HoverType.TRACK_CONFIG_SHOW_BUTTON:
+        this.showGroup(groupIndex);
+        return;
+      case HoverType.INSIDE_TRACK_HEADER:
+        this.#selectGroup(groupIndex);
+        this.toggleGroupExpand(groupIndex);
+        return;
+      case HoverType.INSIDE_TRACK:
+      case HoverType.OUTSIDE_TRACKS: {
+        this.#selectGroup(groupIndex);
+
+        const timelineData = this.timelineData();
+        if (mouseEvent.shiftKey && this.highlightedEntryIndex !== -1 && timelineData) {
+          const start = timelineData.entryStartTimes[this.highlightedEntryIndex];
+          const end = start + timelineData.entryTotalTimes[this.highlightedEntryIndex];
+          this.chartViewport.setRangeSelection(start, end);
+        } else {
+          this.chartViewport.onClick(mouseEvent);
+          this.dispatchEventToListeners(Events.ENTRY_INVOKED, this.highlightedEntryIndex);
+        }
+        return;
       }
     }
   }
@@ -2704,9 +2712,9 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     // When it is normal mode, there are no icons to the left of a track.
     // When it is in edit mode, there are three icons to customize the groups.
     const iconsWidth = this.#inTrackConfigEditMode ? EDIT_MODE_TOTAL_ICON_WIDTH : 0;
-    this.forEachGroupInViewport((offset, index, group) => {
+    this.forEachGroupInViewport((offset, groupIndex, group) => {
       context.font = this.#font;
-      if (this.isGroupCollapsible(index) && !group.expanded || group.style.shareHeaderLine) {
+      if (this.isGroupCollapsible(groupIndex) && !group.expanded || group.style.shareHeaderLine) {
         // In edit mode, we draw an extra rectangle for the save icon.
         const labelBackgroundWidth = this.labelWidthForGroup(context, group);
         const parsedColor = Common.Color.parse(group.style.backgroundColor);
@@ -2752,7 +2760,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
           // If this is the last visible top-level group, we will disable the hide action.
           drawIcon(
               context, HIDE_ICON_LEFT, offset, EDIT_ICON_WIDTH, group.hidden ? showIconPath : hideIconPath,
-              this.groupIsLastVisibleTopLevel(group) ? '--sys-color-state-disabled' : iconColor);
+              this.groupIsLastVisibleTopLevel(groupIndex) ? '--sys-color-state-disabled' : iconColor);
         }
       }
     });
@@ -3724,10 +3732,11 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     return style.height !== style.itemsHeight;
   }
 
-  groupIsLastVisibleTopLevel(group?: Group): boolean {
-    if (!group) {
+  groupIsLastVisibleTopLevel(groupIndex: number): boolean {
+    if (groupIndex < 0 || !this.rawTimelineData) {
       return true;
     }
+    const group = this.rawTimelineData.groups[groupIndex];
     const visibleTopLevelGroupNumber =
         this.#groupTreeRoot?.children.filter(track => !this.rawTimelineData?.groups[track.index].hidden).length;
     return visibleTopLevelGroupNumber === 1 && group.style.nestingLevel === 0 && !group.hidden;

@@ -229,6 +229,9 @@ Generate from a recording of [this HTML file](https://gist.github.com/adamraine/
 5. Click the button once
 6. End recording
 
+### dom-size-long
+Contains a trace from a site with a large DOM. It also happens to have many flows with duplicated flow bindings, so it's useful to test the FlowsHandler remains quick.
+
 ### lcp-multiple-frames
 
 Generated from [lcp-iframes story](https://github.com/ChromeDevTools/performance-stories/tree/main/lcp-iframes).

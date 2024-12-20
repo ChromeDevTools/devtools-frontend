@@ -20,6 +20,7 @@ copy_to_gen("traces") {
     "cls-multiple-frames.json.gz",
     "cls-no-nav.json.gz",
     "cls-single-frame.json.gz",
+    "dom-size-long.json.gz",
     "dom-size.json.gz",
     "enhanced-traces.json.gz",
     "extension-tracks-and-marks.json.gz",

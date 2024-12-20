@@ -34,9 +34,8 @@ async function timeFixture(fixture: string): Promise<number> {
 
 describe('Performance panel trace load performance', () => {
   const allTestValues: {name: string, values: number[]}[] = [];
-
   // Slow test
-  describe.skip('[crbug.com/383713603]: Total trace load time', () => {
+  describe.skip('[crbug.com/383713603]: Large CPU profile load benchmark', () => {
     beforeEach(async () => {
       // Reload devtools to get a fresh version of the panel on each
       // run and prevent a skew due to caching, etc.
@@ -44,13 +43,38 @@ describe('Performance panel trace load performance', () => {
     });
     const RUNS = 10;
     const testValues = {
-      name: 'TraceLoad',
+      name: 'LargeCPULoad',
       values: [] as number[],
     };
     for (let run = 1; run <= RUNS; run++) {
-      it(`run ${run}/${RUNS}`, async function() {
+      it('run large cpu profile benchmark', async function() {
         this.timeout(20_000);
         const duration = await timeFixture('large-profile.cpuprofile');
+        // Ensure only 2 decimal places.
+        const timeTaken = Number(duration.toFixed(2));
+        testValues.values.push(timeTaken);
+      });
+    }
+    after(() => {
+      allTestValues.push(testValues);
+    });
+  });
+
+  describe('Large DOM trace load benchmark', () => {
+    beforeEach(async () => {
+      // Reload devtools to get a fresh version of the panel on each
+      // run and prevent a skew due to caching, etc.
+      await reloadDevTools();
+    });
+    const RUNS = 10;
+    const testValues = {
+      name: 'LargeDOMTraceLoad',
+      values: [] as number[],
+    };
+    for (let run = 1; run <= RUNS; run++) {
+      it('run large dom trace load benchmark', async function() {
+        this.timeout(8_000);
+        const duration = await timeFixture('dom-size-long.json');
         // Ensure only 2 decimal places.
         const timeTaken = Number(duration.toFixed(2));
         testValues.values.push(timeTaken);
@@ -96,10 +120,10 @@ describe('Performance panel trace load performance', () => {
       addBenchmarkResult(benchmark);
       /* eslint-disable no-console */
       console.log(`Benchmark name: ${testValues.name}`);
-      console.log(`Mean boot time: ${meanMeasure}ms`);
-      console.log(`50th percentile boot time: ${percentile50}ms`);
-      console.log(`90th percentile boot time: ${percentile90}ms`);
-      console.log(`99th percentile boot time: ${percentile99}ms`);
+      console.log(`Mean time: ${meanMeasure}ms`);
+      console.log(`50th percentile time: ${percentile50}ms`);
+      console.log(`90th percentile time: ${percentile90}ms`);
+      console.log(`99th percentile time: ${percentile99}ms`);
       /* eslint-enable no-console */
     }
   });

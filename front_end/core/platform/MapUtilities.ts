@@ -85,7 +85,7 @@ export class Multimap<K, V> {
 export function getWithDefault<K extends {}, V>(
     map: WeakMap<K, V>|Map<K, V>, key: K, defaultValueFactory: (key?: K) => V): V {
   let value = map.get(key);
-  if (!value) {
+  if (value === undefined || value === null) {
     value = defaultValueFactory(key);
     map.set(key, value);
   }

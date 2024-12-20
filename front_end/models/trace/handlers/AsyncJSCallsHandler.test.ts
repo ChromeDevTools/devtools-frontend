@@ -96,7 +96,7 @@ describe('AsyncJSCallsHandler', function() {
        async function() {
          const jsTaskScheduler = makeCompleteEvent(Trace.Types.Events.Name.FUNCTION_CALL, 0, 30, cat, tid, pid);
          const asyncTaskScheduled =
-             makeCompleteEvent(Trace.Types.Events.Name.DEBUGGER_ASYNC_TASK_SCHEDULED, 0, 0, cat, pid, tid);
+             makeCompleteEvent(Trace.Types.Events.Name.DEBUGGER_ASYNC_TASK_SCHEDULED, 5, 0, cat, pid, tid);
 
          const asyncTaskRun =
              makeCompleteEvent(Trace.Types.Events.Name.DEBUGGER_ASYNC_TASK_RUN, 60, 100, cat, tid, pid);
@@ -122,7 +122,7 @@ describe('AsyncJSCallsHandler', function() {
       const jsTaskScheduler = makeCompleteEvent(Trace.Types.Events.Name.FUNCTION_CALL, 0, 30, cat, tid, pid);
       // Two asyncTaskScheduled events right under the function call.
       const asyncTaskScheduled1 =
-          makeCompleteEvent(Trace.Types.Events.Name.DEBUGGER_ASYNC_TASK_SCHEDULED, 0, 0, cat, pid, tid);
+          makeCompleteEvent(Trace.Types.Events.Name.DEBUGGER_ASYNC_TASK_SCHEDULED, 5, 0, cat, pid, tid);
 
       const asyncTaskScheduled2 =
           makeCompleteEvent(Trace.Types.Events.Name.DEBUGGER_ASYNC_TASK_SCHEDULED, 10, 0, cat, pid, tid);

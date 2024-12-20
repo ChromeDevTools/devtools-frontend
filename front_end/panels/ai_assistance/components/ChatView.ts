@@ -508,6 +508,8 @@ export class ChatView extends HTMLElement {
         return false;
       case AgentType.PERFORMANCE:
         return false;
+      case AgentType.PATCH:
+        return false;
     }
   };
 
@@ -1043,6 +1045,12 @@ export class ChatView extends HTMLElement {
           'Where is most of the time being spent in this call tree?',
           'How can I reduce the time of this call tree?',
         ];
+      case AgentType.PATCH:
+        return [
+          'What can you help me with?',
+          'Why isn’t this element visible?',
+          'How do I center this element?',
+        ];
     }
   };
 
@@ -1059,6 +1067,8 @@ export class ChatView extends HTMLElement {
       return lockedString(UIStringsNotTranslate.crossOriginError);
     }
     switch (agentType) {
+      case AgentType.PATCH:
+        return lockedString(UIStringsNotTranslate.inputPlaceholderForFreestylerAgent);
       case AgentType.STYLING:
         return this.#props.selectedContext ? lockedString(UIStringsNotTranslate.inputPlaceholderForFreestylerAgent) :
                                              lockedString(UIStringsNotTranslate.inputPlaceholderForFileAgentNoContext);
@@ -1215,6 +1225,11 @@ export class ChatView extends HTMLElement {
     const noLogging = Common.Settings.Settings.instance().getHostConfig().aidaAvailability?.enterprisePolicyValue ===
         Root.Runtime.GenAiEnterprisePolicyValue.ALLOW_WITHOUT_LOGGING;
     switch (this.#props.agentType) {
+      case AgentType.PATCH:
+        if (noLogging) {
+          return lockedString(UIStringsNotTranslate.inputDisclaimerForFreestylerAgentEnterpriseNoLogging);
+        }
+        return lockedString(UIStringsNotTranslate.inputDisclaimerForFreestylerAgent);
       case AgentType.STYLING:
         if (noLogging) {
           return lockedString(UIStringsNotTranslate.inputDisclaimerForFreestylerAgentEnterpriseNoLogging);

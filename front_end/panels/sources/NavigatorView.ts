@@ -1120,6 +1120,13 @@ export class NavigatorView extends UI.Widget.VBox implements SDK.TargetManager.O
               project.remove();
             }
           }, {jslogContext: 'remove-folder-from-workspace'});
+
+          if (UI.ActionRegistry.ActionRegistry.instance().hasAction('ai-assistance.filesystem')) {
+            contextMenu.headerSection().appendAction(
+                'ai-assistance.filesystem',
+            );
+            UI.Context.Context.instance().setFlavor(Persistence.FileSystemWorkspaceBinding.FileSystem, project);
+          }
         }
       } else {
         if (!(node instanceof NavigatorGroupTreeNode)) {

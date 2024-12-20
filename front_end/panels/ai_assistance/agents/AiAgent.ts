@@ -118,6 +118,7 @@ export const enum AgentType {
   FILE = 'drjones-file',
   NETWORK = 'drjones-network-request',
   PERFORMANCE = 'drjones-performance',
+  PATCH = 'patch',
 }
 
 export interface SerializedAgent {

@@ -1161,6 +1161,7 @@ grd_files_debug_sources = [
   "front_end/panels/ai_assistance/agents/AiAgent.js",
   "front_end/panels/ai_assistance/agents/FileAgent.js",
   "front_end/panels/ai_assistance/agents/NetworkAgent.js",
+  "front_end/panels/ai_assistance/agents/PatchAgent.js",
   "front_end/panels/ai_assistance/agents/PerformanceAgent.js",
   "front_end/panels/ai_assistance/agents/StylingAgent.js",
   "front_end/panels/ai_assistance/aiAssistancePanel.css.js",

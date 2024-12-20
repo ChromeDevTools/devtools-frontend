@@ -7594,10 +7594,6 @@ export const NativeFunctions = [
     signatures: [["url","?eventSourceInitDict"]]
   },
   {
-    name: "FileSystemChangeRecord",
-    signatures: [["root","changedHandle","relativePathComponents","type","?relativePathMovedFrom"]]
-  },
-  {
     name: "queryPermission",
     signatures: [["?descriptor"]]
   },

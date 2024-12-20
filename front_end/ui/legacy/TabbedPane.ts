@@ -1172,7 +1172,7 @@ export class TabbedPaneTab {
     iconContainer.classList.add('tabbed-pane-header-tab-icon');
     const iconNode = measuring ? this.createMeasureClone(this.icon) : this.icon;
     iconContainer.appendChild(iconNode);
-    tabElement.insertBefore(iconContainer, titleElement);
+    titleElement.insertAdjacentElement('beforebegin', iconContainer);
     tabIcons.set(tabElement, iconContainer);
   }
 

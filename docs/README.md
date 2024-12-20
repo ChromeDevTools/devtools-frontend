@@ -52,6 +52,7 @@ below.**
 ### Policies
 
 *   [Chromium DevTools Slow-Close Policy](./policy/slow-close.md)
+*   [DevTools Page Zoom Accessibility Policy](./policy/gar-page-zoom-policy.md)
 
 ### Useful Commands
 

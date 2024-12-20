@@ -2733,6 +2733,8 @@ export const knownContextValues = new Set([
   'redirect-source-request-url',
   'reduce',
   'reduced-contrast',
+  'references',
+  'references.console-insights',
   'refresh',
   'refresh-caches',
   'refresh-database',

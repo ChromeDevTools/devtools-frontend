@@ -208,9 +208,18 @@ export interface AidaFunctionCallResponse {
   args: Record<string, unknown>;
 }
 
+export interface FactualityFact {
+  sourceUri?: string;
+}
+
+export interface FactualityMetadata {
+  facts: FactualityFact[];
+}
+
 export interface AidaResponseMetadata {
   rpcGlobalId?: RpcGlobalId;
-  attributionMetadata?: AttributionMetadata[];
+  attributionMetadata?: AttributionMetadata;
+  factualityMetadata?: FactualityMetadata;
 }
 
 export interface AidaResponse {
@@ -326,7 +335,7 @@ export class AidaClient {
     const text = [];
     let inCodeChunk = false;
     const functionCalls: AidaFunctionCallResponse[] = [];
-    const metadata: AidaResponseMetadata = {rpcGlobalId: 0};
+    let metadata: AidaResponseMetadata = {rpcGlobalId: 0};
     while ((chunk = await stream.read())) {
       let textUpdated = false;
       // The AIDA response is a JSON array of objects, split at the object
@@ -355,15 +364,9 @@ export class AidaClient {
 
       for (const result of results) {
         if ('metadata' in result) {
-          metadata.rpcGlobalId = result.metadata.rpcGlobalId;
-          if ('attributionMetadata' in result.metadata) {
-            if (!metadata.attributionMetadata) {
-              metadata.attributionMetadata = [];
-            }
-            metadata.attributionMetadata.push(result.metadata.attributionMetadata);
-            if (result.metadata.attributionMetadata.attributionAction === RecitationAction.BLOCK) {
-              throw new AidaBlockError();
-            }
+          metadata = result.metadata;
+          if (metadata?.attributionMetadata?.attributionAction === RecitationAction.BLOCK) {
+            throw new AidaBlockError();
           }
         }
         if ('textChunk' in result) {

@@ -1014,10 +1014,10 @@ STOP`,
           explanation: 'ANSWER: this is the answer',
           metadata: {
             rpcGlobalId: 123,
-            attributionMetadata: [{
+            attributionMetadata: {
               attributionAction: Host.AidaClient.RecitationAction.ACTION_UNSPECIFIED,
               citations: [],
-            }],
+            },
           },
           completed: true,
         };

@@ -131,6 +131,10 @@ const UIStrings = {
    * @description Text for a link to Chrome DevTools Settings.
    */
   settingsLink: '`Console insights` in Settings',
+  /**
+   * @description The title of the list of references/recitations that were used to generate the insight.
+   */
+  references: 'Sources and related content',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/explain/components/ConsoleInsight.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -563,6 +567,34 @@ export class ConsoleInsight extends HTMLElement {
     // clang-format on
   }
 
+  #maybeRenderRelatedContent(): LitHtml.LitTemplate {
+    if (this.#state.type !== State.INSIGHT || !this.#state.metadata.factualityMetadata?.facts.length) {
+      return LitHtml.nothing;
+    }
+    // clang-format off
+    return html`
+      <details jslog=${VisualLogging.expand('references').track({click: true})}>
+        <summary>${i18nString(UIStrings.references)}</summary>
+        <ul>
+          ${this.#state.metadata?.factualityMetadata?.facts.map(fact => {
+            return fact.sourceUri ? html`
+              <li>
+                <x-link
+                  href=${fact.sourceUri}
+                  class="link"
+                  jslog=${VisualLogging.link('references.console-insights').track({click: true})}
+                >
+                  ${fact.sourceUri}
+                </x-link>
+              </li>
+            ` : LitHtml.nothing;
+          })}
+        </ul>
+      </details>
+    `;
+    // clang-format on
+  }
+
   #renderMain(): LitHtml.TemplateResult {
     const jslog = `${VisualLogging.section(this.#state.type).track({resize: true})}`;
     // clang-format off
@@ -587,6 +619,7 @@ export class ConsoleInsight extends HTMLElement {
               .data=${{tokens: this.#state.tokens, renderer: this.#renderer, animationEnabled: true} as MarkdownView.MarkdownView.MarkdownViewData}>
             </devtools-markdown-view>`: this.#state.explanation
           }
+          ${this.#maybeRenderRelatedContent()}
           <details jslog=${VisualLogging.expand('sources').track({click: true})}>
             <summary>${i18nString(UIStrings.inputData)}</summary>
             <devtools-console-insight-sources-list .sources=${this.#state.sources} .isPageReloadRecommended=${this.#state.isPageReloadRecommended}>

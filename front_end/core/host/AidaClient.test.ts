@@ -293,7 +293,7 @@ describeWithEnvironment('AidaClient', () => {
           const response = JSON.stringify([
             {
               textChunk: {text: 'Chunk1\n'},
-              metadata: {rpcGlobalId: 123, attributionMetadata: {attributionAction: 'NO_ACTION', citations: []}},
+              metadata: {rpcGlobalId: 123},
             },
             {
               textChunk: {text: 'Chunk2\n'},
@@ -319,13 +319,10 @@ describeWithEnvironment('AidaClient', () => {
             'Chunk2\n',
         metadata: {
           rpcGlobalId: 123,
-          attributionMetadata: [
-            {attributionAction: Host.AidaClient.RecitationAction.NO_ACTION, citations: []},
-            {
-              attributionAction: Host.AidaClient.RecitationAction.CITE,
-              citations: [{startIndex: 0, endIndex: 1, url: 'https://example.com'}],
-            },
-          ],
+          attributionMetadata: {
+            attributionAction: Host.AidaClient.RecitationAction.CITE,
+            citations: [{startIndex: 0, endIndex: 1, url: 'https://example.com'}],
+          },
         },
         completed: false,
       },
@@ -334,13 +331,10 @@ describeWithEnvironment('AidaClient', () => {
             'Chunk2\n',
         metadata: {
           rpcGlobalId: 123,
-          attributionMetadata: [
-            {attributionAction: Host.AidaClient.RecitationAction.NO_ACTION, citations: []},
-            {
-              attributionAction: Host.AidaClient.RecitationAction.CITE,
-              citations: [{startIndex: 0, endIndex: 1, url: 'https://example.com'}],
-            },
-          ],
+          attributionMetadata: {
+            attributionAction: Host.AidaClient.RecitationAction.CITE,
+            citations: [{startIndex: 0, endIndex: 1, url: 'https://example.com'}],
+          },
         },
         functionCalls: undefined,
         completed: true,

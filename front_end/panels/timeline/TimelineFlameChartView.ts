@@ -988,7 +988,7 @@ export class TimelineFlameChartView extends
     this.#updateDetailViews();
   }
 
-  setModel(newParsedTrace: Trace.Handlers.Types.ParsedTrace|null, isCpuProfile = false): void {
+  setModel(newParsedTrace: Trace.Handlers.Types.ParsedTrace, isCpuProfile = false): void {
     if (newParsedTrace === this.#parsedTrace) {
       return;
     }

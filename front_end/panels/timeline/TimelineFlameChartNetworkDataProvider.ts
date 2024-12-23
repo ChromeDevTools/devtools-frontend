@@ -59,13 +59,12 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
     this.#networkTrackAppender = null;
   }
 
-  setModel(parsedTrace: Trace.Handlers.Types.ParsedTrace|null): void {
+  setModel(parsedTrace: Trace.Handlers.Types.ParsedTrace): void {
     this.reset();
     this.#parsedTrace = parsedTrace;
-    if (this.#parsedTrace) {
-      this.setEvents(this.#parsedTrace);
-      this.#setTimingBoundsData(this.#parsedTrace);
-    }
+
+    this.setEvents(this.#parsedTrace);
+    this.#setTimingBoundsData(this.#parsedTrace);
   }
 
   setEvents(parsedTrace: Trace.Handlers.Types.ParsedTrace): void {

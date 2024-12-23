@@ -56,7 +56,7 @@ export async function getMainFlameChartWithTracks(
   dataProvider.setModel(parsedTrace);
   const tracksAppender = dataProvider.compatibilityTracksAppenderInstance();
   tracksAppender.setVisibleTracks(trackAppenderNames);
-  dataProvider.buildFromTrackAppenders(
+  dataProvider.buildFromTrackAppendersForTest(
       {filterThreadsByName: trackName, expandedTracks: expanded ? trackAppenderNames : undefined});
   const delegate = new MockFlameChartDelegate();
   const flameChart = new PerfUI.FlameChart.FlameChart(dataProvider, delegate);

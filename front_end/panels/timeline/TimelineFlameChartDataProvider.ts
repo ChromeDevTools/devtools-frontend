@@ -108,24 +108,17 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     PerfUI.FlameChart.FlameChartDataProvider {
   private droppedFramePatternCanvas: HTMLCanvasElement;
   private partialFramePatternCanvas: HTMLCanvasElement;
-  private timelineDataInternal: PerfUI.FlameChart.FlameChartTimelineData|null;
-  private currentLevel: number;
+  private timelineDataInternal: PerfUI.FlameChart.FlameChartTimelineData|null = null;
+  private currentLevel = 0;
 
-  // The Performance and the Timeline models are expected to be
-  // deprecated in favor of using parsedTrace (new RPP engine) only
-  // as part of the work in crbug.com/1386091. For this reason they
-  // have the "legacy" prefix on their name.
-  private compatibilityTracksAppender: CompatibilityTracksAppender|null;
-  private parsedTrace: Trace.Handlers.Types.ParsedTrace|null;
+  private compatibilityTracksAppender: CompatibilityTracksAppender|null = null;
+  private parsedTrace: Trace.Handlers.Types.ParsedTrace|null = null;
   private isCpuProfile = false;
 
-  private minimumBoundaryInternal: number;
-  private timeSpan: number;
-  private readonly headerLevel1: PerfUI.FlameChart.GroupStyle;
-  private readonly headerLevel2: PerfUI.FlameChart.GroupStyle;
-  private readonly staticHeader: PerfUI.FlameChart.GroupStyle;
-  private framesHeader: PerfUI.FlameChart.GroupStyle;
-  private readonly screenshotsHeader: PerfUI.FlameChart.GroupStyle;
+  #minimumBoundary: number = 0;
+  private timeSpan: number = 0;
+  private readonly framesGroupStyle: PerfUI.FlameChart.GroupStyle;
+  private readonly screenshotsGroupStyle: PerfUI.FlameChart.GroupStyle;
 
   // Contains all the entries that are DRAWN onto the track. Entries that have
   // been hidden - either by a user action, or because they aren't visible at
@@ -138,44 +131,31 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   // Trace.Types.Events.Event directly. See crrev.com/c/5973695 for details.
   private entryData: Trace.Types.Events.Event[] = [];
 
-  private entryTypeByLevel!: EntryType[];
-  private entryIndexToTitle!: string[];
-  private lastInitiatorEntry!: number;
+  private entryTypeByLevel: EntryType[] = [];
+  private entryIndexToTitle: string[] = [];
+  private lastInitiatorEntry: number = -1;
   private lastInitiatorsData: PerfUI.FlameChart.FlameChartInitiatorData[] = [];
-  private lastSelection?: Selection;
-  #font: string;
+
+  private lastSelection: Selection|null = null;
+  readonly #font = `${PerfUI.Font.DEFAULT_FONT_SIZE} ${PerfUI.Font.getFontFamilyForCanvas()}`;
   #eventIndexByEvent: WeakMap<Trace.Types.Events.Event, number|null> = new WeakMap();
 
   constructor() {
     super();
     this.reset();
-    // This section is in fact covered by `this.reset()` but we still need them in the constructor for compile reason.
-    this.timelineDataInternal = null;
-    this.currentLevel = 0;
-    this.compatibilityTracksAppender = null;
-    this.parsedTrace = null;
-    this.minimumBoundaryInternal = 0;
-    this.timeSpan = 0;
 
-    this.#font = `${PerfUI.Font.DEFAULT_FONT_SIZE} ${PerfUI.Font.getFontFamilyForCanvas()}`;
     this.droppedFramePatternCanvas = document.createElement('canvas');
     this.partialFramePatternCanvas = document.createElement('canvas');
     this.preparePatternCanvas();
 
-    this.headerLevel1 = this.buildGroupStyle({shareHeaderLine: false});
-    this.headerLevel2 = this.buildGroupStyle({padding: 2, nestingLevel: 1, collapsible: false});
-    this.staticHeader = this.buildGroupStyle({collapsible: false});
-    this.framesHeader = this.buildGroupStyle({useFirstLineForOverview: true});
-    this.screenshotsHeader =
+    this.framesGroupStyle = this.buildGroupStyle({useFirstLineForOverview: true});
+    this.screenshotsGroupStyle =
         this.buildGroupStyle({useFirstLineForOverview: true, nestingLevel: 1, collapsible: false, itemsHeight: 150});
 
     ThemeSupport.ThemeSupport.instance().addEventListener(ThemeSupport.ThemeChangeEvent.eventName, () => {
       const headers = [
-        this.headerLevel1,
-        this.headerLevel2,
-        this.staticHeader,
-        this.framesHeader,
-        this.screenshotsHeader,
+        this.framesGroupStyle,
+        this.screenshotsGroupStyle,
       ];
       for (const header of headers) {
         header.color = ThemeSupport.ThemeSupport.instance().getComputedValue('--sys-color-on-surface');
@@ -402,17 +382,15 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     return Object.assign(defaultGroupStyle, extra);
   }
 
-  setModel(parsedTrace: Trace.Handlers.Types.ParsedTrace|null, isCpuProfile = false): void {
+  setModel(parsedTrace: Trace.Handlers.Types.ParsedTrace, isCpuProfile = false): void {
     this.reset();
     this.parsedTrace = parsedTrace;
     this.isCpuProfile = isCpuProfile;
-    if (parsedTrace) {
-      const {traceBounds} = parsedTrace.Meta;
-      const minTime = Trace.Helpers.Timing.microSecondsToMilliseconds(traceBounds.min);
-      const maxTime = Trace.Helpers.Timing.microSecondsToMilliseconds(traceBounds.max);
-      this.minimumBoundaryInternal = minTime;
-      this.timeSpan = minTime === maxTime ? 1000 : maxTime - this.minimumBoundaryInternal;
-    }
+    const {traceBounds} = parsedTrace.Meta;
+    const minTime = Trace.Helpers.Timing.microSecondsToMilliseconds(traceBounds.min);
+    const maxTime = Trace.Helpers.Timing.microSecondsToMilliseconds(traceBounds.max);
+    this.#minimumBoundary = minTime;
+    this.timeSpan = minTime === maxTime ? 1000 : maxTime - this.#minimumBoundary;
   }
 
   /**
@@ -450,7 +428,8 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   /**
    * Builds the flame chart data using the track appenders
    */
-  buildFromTrackAppenders(options?: {filterThreadsByName?: string, expandedTracks?: Set<TrackAppenderName>}): void {
+  buildFromTrackAppendersForTest(options?: {filterThreadsByName?: string, expandedTracks?: Set<TrackAppenderName>}):
+      void {
     if (!this.compatibilityTracksAppender) {
       return;
     }
@@ -534,7 +513,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     this.entryTypeByLevel = [];
     this.entryIndexToTitle = [];
     this.#eventIndexByEvent = new Map();
-    this.minimumBoundaryInternal = 0;
+    this.#minimumBoundary = 0;
     this.timeSpan = 0;
 
     this.compatibilityTracksAppender?.reset();
@@ -549,19 +528,20 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
 
   /**
    * Builds the flame chart data using the tracks appender (which use
-   * the new trace engine) and the legacy code paths present in this
-   * file. The result built data is cached and returned.
+   * the new trace engine). The result built data is cached and returned.
    */
   timelineData(rebuild: boolean = false): PerfUI.FlameChart.FlameChartTimelineData {
-    if (this.timelineDataInternal && this.timelineDataInternal.entryLevels.length !== 0 && !rebuild) {
-      // The flame chart data is built already, so return the cached
-      // data.
+    if (!rebuild && this.timelineDataInternal && this.timelineDataInternal.entryLevels.length !== 0) {
+      // If the flame chart data is built already and we don't want to rebuild, we can return the cached data.
+      // |entryLevels.length| is used to check if the cached data is not empty (correctly built),
       return this.timelineDataInternal;
     }
 
     this.timelineDataInternal = PerfUI.FlameChart.FlameChartTimelineData.createEmpty();
 
     if (rebuild) {
+      // This function will interact with the |compatibilityTracksAppender|, which needs the reference of
+      // |timelineDataInternal|, so make sure this is called after the correct |timelineDataInternal|.
       this.clearTimelineDataCache();
     }
 
@@ -664,7 +644,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
   }
 
   minimumBoundary(): number {
-    return this.minimumBoundaryInternal;
+    return this.#minimumBoundary;
   }
 
   totalTime(): number {
@@ -718,10 +698,10 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     const filmStrip = Trace.Extras.FilmStrip.fromParsedTrace(this.parsedTrace);
     const hasScreenshots = filmStrip.frames.length > 0;
 
-    this.framesHeader.collapsible = hasScreenshots;
+    this.framesGroupStyle.collapsible = hasScreenshots;
     const expanded = Root.Runtime.Runtime.queryParam('flamechart-force-expand') === 'frames';
 
-    this.appendHeader(i18nString(UIStrings.frames), this.framesHeader, false /* selectable */, expanded);
+    this.appendHeader(i18nString(UIStrings.frames), this.framesGroupStyle, false /* selectable */, expanded);
 
     this.entryTypeByLevel[this.currentLevel] = EntryType.FRAME;
     for (const frame of this.parsedTrace.Frames.frames) {
@@ -739,7 +719,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     if (!this.timelineDataInternal || !this.parsedTrace) {
       return;
     }
-    this.appendHeader('', this.screenshotsHeader, false /* selectable */);
+    this.appendHeader('', this.screenshotsGroupStyle, false /* selectable */);
     this.entryTypeByLevel[this.currentLevel] = EntryType.SCREENSHOT;
     let prevTimestamp: Trace.Types.Timing.MilliSeconds|undefined = undefined;
 

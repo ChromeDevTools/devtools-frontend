@@ -8,7 +8,7 @@ import * as path from 'path';
 
 import {formatAsPatch, resultAssertionsDiff, ResultsDBReporter} from '../../test/conductor/karma-resultsdb-reporter.js';
 import {CHECKOUT_ROOT, GEN_DIR, SOURCE_ROOT} from '../../test/conductor/paths.js';
-// eslint-disable-next-line  rulesdir/es_modules_import
+// eslint-disable-next-line  rulesdir/es-modules-import
 import * as ResultsDb from '../../test/conductor/resultsdb.js';
 import {loadTests, TestConfig} from '../../test/conductor/test_config.js';
 

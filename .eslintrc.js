@@ -131,15 +131,15 @@ module.exports = {
     'import/no-duplicates': 'error',
 
     // Try to spot '// console.log()' left over from debugging
-    'rulesdir/commented_out_console': 'error',
+    'rulesdir/no-commented-out-console': 'error',
 
     // Prevent imports being commented out rather than deleted.
-    'rulesdir/commented_out_import': 'error',
+    'rulesdir/no-commented-out-import': 'error',
 
     // DevTools specific rules
-    'rulesdir/es_modules_import': 'error',
-    'rulesdir/check_license_header': 'error',
-    'rulesdir/html_tagged_template': 'error',
+    'rulesdir/es-modules-import': 'error',
+    'rulesdir/check-license-header': 'error',
+    'rulesdir/html-tagged-template': 'error',
     /**
      * Ensures that JS Doc comments are properly aligned - all the starting
      * `*` are in the right place.
@@ -195,10 +195,10 @@ module.exports = {
        */
       '@typescript-eslint/no-non-null-assertion': 'error',
       '@typescript-eslint/consistent-type-imports': 'error',
-      'rulesdir/no_underscored_properties': 'error',
-      'rulesdir/prefer_readonly_keyword': 'error',
-      'rulesdir/inline_type_imports': 'error',
-      'rulesdir/enforce_default_import_name': ['error', {
+      'rulesdir/no-underscored-properties': 'error',
+      'rulesdir/prefer-readonly-keyword': 'error',
+      'rulesdir/inline-type-imports': 'error',
+      'rulesdir/enforce-default-import-name': ['error', {
         // Enforce that any import of models/trace/trace.js names the import Trace.
         modulePath: path.join(__dirname, 'front_end', 'models', 'trace', 'trace.js'),
         importName: 'Trace'
@@ -291,12 +291,12 @@ module.exports = {
       'mocha/no-global-tests': 'error',
       'mocha/no-nested-tests': 'error',
 
-      'rulesdir/check_test_definitions' : 'error',
-      'rulesdir/avoid_assert_equal' : 'error',
-      'rulesdir/no_repeated_tests' : 'error',
-      'rulesdir/compare_arrays_with_assert_deepequal' : 'error',
-      'rulesdir/ban_screenshot_test_outside_perf_panel' : 'error',
-      'rulesdir/trace_engine_test_timeouts' : 'error',
+      'rulesdir/check-test-definitions' : 'error',
+      'rulesdir/no-assert-equal' : 'error',
+      'rulesdir/no-repeated-tests' : 'error',
+      'rulesdir/compare-arrays-with-assert-deepequal' : 'error',
+      'rulesdir/no-screenshot-test-outside-perf-panel' : 'error',
+      'rulesdir/trace-engine-test-timeouts' : 'error',
       '@typescript-eslint/no-non-null-assertion' : 'off',
     },
     settings: {

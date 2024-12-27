@@ -62,7 +62,7 @@ export class Switch extends HTMLElement {
 
   #render(): void {
     const jslog = this.#jslogContext && VisualLogging.toggle(this.#jslogContext).track({change: true});
-    /* eslint-disable rulesdir/inject_checkbox_styles */
+    /* eslint-disable rulesdir/inject-checkbox-styles */
     // clang-format off
     LitHtml.render(html`
     <label role="button" jslog=${jslog || LitHtml.nothing}>
@@ -75,7 +75,7 @@ export class Switch extends HTMLElement {
     </label>
     `, this.#shadow, {host: this});
     // clang-format on
-    /* eslint-enable rulesdir/inject_checkbox_styles */
+    /* eslint-enable rulesdir/inject-checkbox-styles */
   }
 }
 

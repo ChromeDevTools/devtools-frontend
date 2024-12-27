@@ -10,10 +10,10 @@ module.exports = {
       // anything, so we leave return types to the developer within the
       // component_docs folder.
       '@typescript-eslint/explicit-function-return-type' : 'off',
-      'rulesdir/ban_style_tags_in_lit_html' : 'off',
+      'rulesdir/no-style-tags-in-lit-html' : 'off',
       // We use LitHtml to help render examples sometimes and we don't use
       // {host: this} as often the `this` is the window.
-      'rulesdir/lit_html_host_this' : 'off',
+      'rulesdir/lit-html-host-this' : 'off',
     }
   }]
 };

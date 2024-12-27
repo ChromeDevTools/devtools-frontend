@@ -12,7 +12,7 @@ import { fileURLToPath } from 'url';
 import yargs from 'yargs';
 
 // False positive from the ESLint rule: crbug.com/1319352
-// eslint-disable-next-line rulesdir/es_modules_import
+// eslint-disable-next-line rulesdir/es-modules-import
 import {hideBin} from 'yargs/helpers';
 
 const flags = yargs(hideBin(process.argv)).option('fix', {

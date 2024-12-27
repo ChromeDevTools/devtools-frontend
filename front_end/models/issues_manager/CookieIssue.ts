@@ -29,11 +29,11 @@ const UIStrings = {
   /**
    *@description Phrase used to describe the security of a context. Substitued like 'a secure context' or 'a secure origin'.
    */
-  aSecure: 'a secure',  // eslint-disable-line rulesdir/l10n_no_unused_message
+  aSecure: 'a secure',  // eslint-disable-line rulesdir/l10n-no-unused-message
   /**
    * @description Phrase used to describe the security of a context. Substitued like 'an insecure context' or 'an insecure origin'.
    */
-  anInsecure: 'an insecure',  // eslint-disable-line rulesdir/l10n_no_unused_message
+  anInsecure: 'an insecure',  // eslint-disable-line rulesdir/l10n-no-unused-message
   /**
    * @description Label for a link for SameParty Issues. 'Attribute' refers to a cookie attribute.
    */

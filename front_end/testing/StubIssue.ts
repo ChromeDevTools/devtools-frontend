@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as Protocol from '../generated/protocol.js';
-// eslint-disable-next-line rulesdir/es_modules_import
+// eslint-disable-next-line rulesdir/es-modules-import
 import {
   Issue,
   IssueCategory,

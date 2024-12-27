@@ -9,6 +9,6 @@ rulesDirPlugin.RULES_DIR = path.join(__dirname, '..', '..', '..', 'scripts', 'es
 module.exports = {
   rules : {
     // The code is rolled up and tree-shaken independently from the regular entrypoints.
-    'rulesdir/es_modules_import' : 'off',
+    'rulesdir/es-modules-import' : 'off',
   }
 };

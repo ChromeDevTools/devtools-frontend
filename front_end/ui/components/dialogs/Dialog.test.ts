@@ -4,7 +4,7 @@
 
 import * as Platform from '../../../core/platform/platform.js';
 import type * as WindowBoundsService from '../../../services/window_bounds/window_bounds.js';
-import * as Helpers from '../../../testing/DOMHelpers.js';  // eslint-disable-line rulesdir/es_modules_import
+import * as Helpers from '../../../testing/DOMHelpers.js';  // eslint-disable-line rulesdir/es-modules-import
 import {describeWithLocale} from '../../../testing/EnvironmentHelpers.js';
 import * as Coordinator from '../render_coordinator/render_coordinator.js';
 

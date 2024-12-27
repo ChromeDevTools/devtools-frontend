@@ -16,7 +16,7 @@ import {
   makeProfileCall,
 } from '../../../testing/TraceHelpers.js';
 
-import { // eslint-disable-line rulesdir/es_modules_import
+import { // eslint-disable-line rulesdir/es-modules-import
   loadCodeLocationResolvingScenario,
 } from './SourceMapsResolver.test.js';
 import * as Utils from './utils.js';

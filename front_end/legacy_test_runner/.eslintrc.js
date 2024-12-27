@@ -8,6 +8,6 @@ rulesDirPlugin.RULES_DIR = path.join(__dirname, '..', '..', 'scripts', 'eslint_r
 
 module.exports = {
   rules : {
-    'rulesdir/es_modules_import' : 'off',
+    'rulesdir/es-modules-import' : 'off',
   }
 };

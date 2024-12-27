@@ -24,7 +24,7 @@
     "collect-strings": "vpython3 third_party/node/node.py --output third_party/i18n/collect-strings.js front_end",
     "components-server": "vpython3 third_party/node/node.py --output scripts/component_server/server.js",
     "debug-webtest": "vpython3 third_party/node/node.py --output scripts/npm_test.js --debug-devtools",
-    "eslint-test": "vpython3 third_party/node/node.py --output node_modules/mocha/bin/mocha \"./scripts/eslint_rules/tests/*_test.js\"",
+    "eslint-test": "vpython3 third_party/node/node.py --output node_modules/mocha/bin/mocha \"./scripts/eslint_rules/tests/*.test.js\"",
     "build-test": "vpython3 third_party/node/node.py --output node_modules/mocha/bin/mocha \"./scripts/build/tests/*_test.js\"",
     "generate-dark-mode-styles": "vpython3 third_party/node/node.py --output scripts/dark_mode/generate_dark_theme_sheet.js",
     "generate-protocol-resources": "scripts/deps/generate_protocol_resources.py && git cl format --js",

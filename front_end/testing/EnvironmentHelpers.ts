@@ -429,7 +429,7 @@ describeWithLocale.only = function(title: string, fn: (this: Mocha.Suite) => voi
   });
 };
 describeWithLocale.skip = function(title: string, fn: (this: Mocha.Suite) => void) {
-  // eslint-disable-next-line rulesdir/check_test_definitions
+  // eslint-disable-next-line rulesdir/check-test-definitions
   return describe.skip(title, function() {
     fn.call(this);
   });

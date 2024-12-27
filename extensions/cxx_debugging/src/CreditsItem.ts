@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/check_component_naming, rulesdir/no_underscored_properties, rulesdir/ban_style_tags_in_lit_html, rulesdir/ban_a_tags_in_lit_html, rulesdir/lit_html_host_this */
+/* eslint-disable rulesdir/check-component-naming, rulesdir/no-underscored-properties, rulesdir/no-style-tags-in-lit-html, rulesdir/no-a-tags-in-lit-html, rulesdir/lit-html-host-this */
 import {html, render} from 'lit-html';
 
 export type CreditsItemData = {

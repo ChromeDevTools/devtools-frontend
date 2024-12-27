@@ -9,7 +9,7 @@ rulesDirPlugin.RULES_DIR = path.join(__dirname, '..', 'lib');
 
 module.exports = {
   rules : {
-    'rulesdir/no_only_eslint_tests' : 'error',
+    'rulesdir/no-only-eslint-tests' : 'error',
     // errors on it('test') with no body
     'mocha/no-pending-tests' : 'error',
     // errors on {describe, it}.only

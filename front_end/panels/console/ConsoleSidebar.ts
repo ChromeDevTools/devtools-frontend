@@ -242,7 +242,7 @@ export class FilterTreeElement extends ConsoleSidebarTreeElement {
 
   private updateGroupTitle(messageCount: number): string {
     if (this.uiStringForFilterCount) {
-      // eslint-disable-next-line rulesdir/l10n_i18nString_call_only_with_uistrings
+      // eslint-disable-next-line rulesdir/l10n-i18nString-call-only-with-uistrings
       return i18nString(this.uiStringForFilterCount, {n: messageCount});
     }
     return '';

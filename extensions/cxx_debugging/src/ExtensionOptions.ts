@@ -2,15 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable rulesdir/check_component_naming */
-/* eslint-disable rulesdir/inject_checkbox_styles */
-/* eslint-disable rulesdir/lit_html_host_this */
+/* eslint-disable rulesdir/check-component-naming */
+/* eslint-disable rulesdir/inject-checkbox-styles */
+/* eslint-disable rulesdir/lit-html-host-this */
 
 import './CreditsItem.js';
 import './ModuleConfigurationList.js';
 
 import {html, render} from 'lit-html';
-import {until} from 'lit-html/directives/until.js';  // eslint-disable-line rulesdir/es_modules_import
+import {until} from 'lit-html/directives/until.js';  // eslint-disable-line rulesdir/es-modules-import
 
 import {type CreditsItemData} from './CreditsItem.js';
 import {type Storage} from './DevToolsPluginHost.js';

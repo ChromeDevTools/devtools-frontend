@@ -7,7 +7,7 @@ import * as LitHtml from '../../../../../front_end/ui/lit-html/lit-html.js';
 import * as RecorderComponents from '../../../../panels/recorder/components/components.js';
 import * as FrontendHelpers from '../../../../testing/EnvironmentHelpers.js';
 
-const {html} = LitHtml;  // eslint-disable-line rulesdir/es_modules_import
+const {html} = LitHtml;  // eslint-disable-line rulesdir/es-modules-import
 
 await ComponentHelpers.ComponentServerSetup.setup();
 await FrontendHelpers.initializeGlobalVars();

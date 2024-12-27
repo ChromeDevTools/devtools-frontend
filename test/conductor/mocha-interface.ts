@@ -4,7 +4,7 @@
 
 import * as Mocha from 'mocha';
 // @ts-expect-error
-import * as commonInterface from 'mocha/lib/interfaces/common.js';  // eslint-disable-line rulesdir/es_modules_import
+import * as commonInterface from 'mocha/lib/interfaces/common.js';  // eslint-disable-line rulesdir/es-modules-import
 import * as Path from 'path';
 
 import {makeInstrumentedTestFunction, platform, type Platform} from './mocha-interface-helpers.js';

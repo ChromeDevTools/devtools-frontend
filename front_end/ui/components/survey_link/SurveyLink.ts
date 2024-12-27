@@ -123,7 +123,7 @@ export class SurveyLink extends HTMLElement {
     const ariaDisabled = this.#state !== State.SHOW_LINK;
 
     // clang-format off
-    // eslint-disable-next-line rulesdir/ban_style_tags_in_lit_html
+    // eslint-disable-next-line rulesdir/no-style-tags-in-lit-html
     const output = html`
       <button class="link ${linkState}" tabindex=${ariaDisabled ? '-1' : '0'} .disabled=${ariaDisabled} aria-disabled=${ariaDisabled} @click=${this.#sendSurvey}>
         <devtools-icon class="link-icon" .data=${{iconName: 'review', color: 'var(--sys-color-primary)', width: 'var(--issue-link-icon-size, 16px)', height: 'var(--issue-link-icon-size, 16px)'}}></devtools-icon><!--

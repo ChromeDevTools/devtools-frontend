@@ -9,7 +9,7 @@ rulesDirPlugin.RULES_DIR = path.join(__dirname, '..', '..', '..', '..', 'scripts
 
 module.exports = {
   rules: {
-    'rulesdir/ban_imports_in_directory': [
+    'rulesdir/no-imports-in-directory': [
       'error', {
         bannedImportPaths: [path.join(__dirname, '..', '..', '..', 'core', 'sdk', 'sdk.js')]
       }

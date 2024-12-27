@@ -7,11 +7,11 @@ import {
   getEventPromise,
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
-// eslint-disable-next-line rulesdir/es_modules_import
+// eslint-disable-next-line rulesdir/es-modules-import
 import * as EnvironmentHelpers from '../../../testing/EnvironmentHelpers.js';
 import type * as SuggestionInput from '../../../ui/components/suggestion_input/suggestion_input.js';
 import * as Models from '../models/models.js';
-// eslint-disable-next-line rulesdir/es_modules_import
+// eslint-disable-next-line rulesdir/es-modules-import
 import * as RecorderHelpers from '../testing/RecorderHelpers.js';
 
 import type * as Components from './components.js';

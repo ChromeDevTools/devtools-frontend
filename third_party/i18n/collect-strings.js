@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/* eslint-disable no-console, max-len, rulesdir/check_license_header */
+/* eslint-disable no-console, max-len, rulesdir/check-license-header */
 
 /**
  * @license Copyright 2018 The Lighthouse Authors. All Rights Reserved.

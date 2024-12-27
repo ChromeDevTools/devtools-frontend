@@ -2,9 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {luminance} from '../front_end/core/common/ColorUtils.js';  // eslint-disable-line rulesdir/es_modules_import
+import {luminance} from '../front_end/core/common/ColorUtils.js';  // eslint-disable-line rulesdir/es-modules-import
 
-import {createChild, type AreaBounds, type Bounds, type Position} from './common.js';
+import {type AreaBounds, type Bounds, createChild, type Position} from './common.js';
 import {applyMatrixToPoint, parseHexa} from './highlight_common.js';
 
 /**

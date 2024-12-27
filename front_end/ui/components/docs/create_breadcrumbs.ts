@@ -8,7 +8,7 @@ const {html} = LitHtml;
 export function init(): void {
   const container = document.createElement('ul');
   // clang-format off
-  // eslint-disable-next-line rulesdir/ban_a_tags_in_lit_html
+  // eslint-disable-next-line rulesdir/no-a-tags-in-lit-html
   LitHtml.render(html`
 
   <style>

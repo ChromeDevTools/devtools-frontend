@@ -851,7 +851,7 @@ export class History {
     return serializedHistoryItems;
   }
 
-  // eslint-disable-next-line rulesdir/prefer_readonly_keyword
+  // eslint-disable-next-line rulesdir/prefer-readonly-keyword
   keys(): ReadonlyArray<HistoryItemKey> {
     return this.items;
   }

@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 // TODO(crbug.com/348449529): refactor to proper devtools module
-// eslint-disable-next-line rulesdir/es_modules_import
+// eslint-disable-next-line rulesdir/es-modules-import
 import {calculateSumOfBlockingTime} from './TBTUtils.js';
 
 describe('TotalBlockingTime utils', () => {

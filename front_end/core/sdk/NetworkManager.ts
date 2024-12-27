@@ -1972,7 +1972,7 @@ export class ConditionsSerializer implements Serializer<Conditions, Conditions> 
     const parsed = JSON.parse(serialized);
     return {
       ...parsed,
-      // eslint-disable-next-line rulesdir/l10n_i18nString_call_only_with_uistrings
+      // eslint-disable-next-line rulesdir/l10n-i18nString-call-only-with-uistrings
       title: parsed.i18nTitleKey ? i18nLazyString(parsed.i18nTitleKey) : parsed.title,
     };
   }

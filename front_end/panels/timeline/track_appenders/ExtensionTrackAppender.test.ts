@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import { // eslint-disable-line rulesdir/es_modules_import
+import { // eslint-disable-line rulesdir/es-modules-import
   createTraceExtensionDataFromTestInput,
   type ExtensionTestData,
 } from '../../../models/trace/handlers/ExtensionTraceDataHandler.test.js';

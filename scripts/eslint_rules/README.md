@@ -7,10 +7,14 @@ npm run lint
 ```
 command and implicitly via the [Presubmit checks](../../test/README.md#Presubmit-checks).
 
+We follow the ESLint [Rule Naming Conventions](https://eslint.org/docs/latest/contribute/core-rules#rule-naming-conventions)
+and consistently use dashes to separate words (instead of underscores), and prefix
+all rules that disallow something with `no-`.
+
 ## Testing the rules
 
 When writing a custom ESLint rule, place the logic into a file `lib/foo.js` and
-add a corresponding test for the logic to `tests/foo_test.js`.
+add a corresponding test for the logic to `tests/foo.test.js`.
 
 You can use
 ```

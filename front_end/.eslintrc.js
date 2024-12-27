@@ -10,16 +10,16 @@ rulesDirPlugin.RULES_DIR = path.join(__dirname, '..', 'scripts', 'eslint_rules',
 module.exports = {
   rules: {
     // L10n rules are only relevant in 'front_end'.
-    'rulesdir/l10n_filename_matches': [
+    'rulesdir/l10n-filename-matches': [
       'error', {
         rootFrontendDirectory: __dirname,
       }
     ],
-    'rulesdir/l10n_i18nString_call_only_with_uistrings': 'error',
-    'rulesdir/l10n_no_i18nString_calls_module_instantiation': 'error',
-    'rulesdir/l10n_no_locked_or_placeholder_only_phrase': 'error',
-    'rulesdir/l10n_no_uistrings_export': 'error',
-    'rulesdir/l10n_no_unused_message': 'error',
+    'rulesdir/l10n-i18nString-call-only-with-uistrings': 'error',
+    'rulesdir/l10n-no-i18nString-calls-module-instantiation': 'error',
+    'rulesdir/l10n-no-locked-or-placeholder-only-phrase': 'error',
+    'rulesdir/l10n-no-uistrings-export': 'error',
+    'rulesdir/l10n-no-unused-message': 'error',
   },
   overrides: [
     {
@@ -32,25 +32,25 @@ module.exports = {
               allowIIFEs:true,
             },
         ],
-        'rulesdir/no_importing_images_from_src': 'error',
-        'rulesdir/enforce_bound_render_for_schedule_render': 'error',
-        'rulesdir/enforce_custom_event_names': 'error',
-        'rulesdir/set_data_type_reference': 'error',
-        'rulesdir/no_bound_component_methods': 'error',
-        'rulesdir/lit_no_style_interpolation': 'error',
-        'rulesdir/ban_self_closing_custom_element_tagnames': 'error',
-        'rulesdir/ban_style_tags_in_lit_html': 'error',
-        'rulesdir/ban_a_tags_in_lit_html': 'error',
-        'rulesdir/check_css_import': 'error',
+        'rulesdir/no-importing-images-from-src': 'error',
+        'rulesdir/enforce-bound-render-for-schedule-render': 'error',
+        'rulesdir/enforce-custom-event-names': 'error',
+        'rulesdir/set-data-type-reference': 'error',
+        'rulesdir/no-bound-component-methods': 'error',
+        'rulesdir/lit-no-style-interpolation': 'error',
+        'rulesdir/no-self-closing-custom-element-tagnames': 'error',
+        'rulesdir/no-style-tags-in-lit-html': 'error',
+        'rulesdir/no-a-tags-in-lit-html': 'error',
+        'rulesdir/check-css-import': 'error',
         'rulesdir/enforce-optional-properties-last': 'error',
-        'rulesdir/check_enumerated_histograms': 'error',
-        'rulesdir/check_was_shown_methods': 'error',
-        'rulesdir/static_custom_event_names': 'error',
-        'rulesdir/lit_html_host_this': 'error',
-        'rulesdir/lit_html_no_attribute_quotes': 'error',
-        'rulesdir/lit_template_result_or_nothing': 'error',
-        'rulesdir/inject_checkbox_styles': 'error',
-        'rulesdir/jslog_context_list': 'error',
+        'rulesdir/check-enumerated-histograms': 'error',
+        'rulesdir/check-was-shown-methods': 'error',
+        'rulesdir/static-custom-event-names': 'error',
+        'rulesdir/lit-html-host-this': 'error',
+        'rulesdir/lit-html-no-attribute-quotes': 'error',
+        'rulesdir/lit-template-result-or-nothing': 'error',
+        'rulesdir/inject-checkbox-styles': 'error',
+        'rulesdir/jslog-context-list': 'error',
       }
     },
     {
@@ -74,7 +74,7 @@ module.exports = {
     {
       files: ['panels/**/components/*.ts', 'ui/components/**/*.ts', 'entrypoints/**/*.ts'],
       rules: {
-        'rulesdir/use_private_class_members': 'error',
+        'rulesdir/prefer-private-class-members': 'error',
       }
     },
     // TODO(crbug/1402569): Remove once LitElement is fully adopted.
@@ -82,13 +82,13 @@ module.exports = {
       files: ['panels/recorder/**/*.ts', 'panels/protocol_monitor/**/*.ts', 'ui/components/suggestion_input/*.ts'],
       rules: {
         // TODO(crbug/1402569): Reenable once https://github.com/microsoft/TypeScript/issues/48885 is closed.
-        'rulesdir/use_private_class_members': 'off',
+        'rulesdir/prefer-private-class-members': 'off',
       }
     },
     {
       files: ['generated/SupportedCSSProperties.js'],
       rules: {
-        'rulesdir/jslog_context_list': 'error',
+        'rulesdir/jslog-context-list': 'error',
       }
     }
   ]

@@ -3,7 +3,8 @@
 // found in the LICENSE file.
 
 import {CustomFormatters, type TypeInfo} from '../src/CustomFormatters.js';
-import * as Formatters from '../src/Formatters.js';  // eslint-disable-line rulesdir/es_modules_import
+import * as Formatters from '../src/Formatters.js';  // eslint-disable-line rulesdir/es-modules-import
+
 import {TestValue, TestWasmInterface} from './TestUtils.js';
 
 describe('Formatters', () => {

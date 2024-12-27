@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/* eslint-disable max-len, rulesdir/check_license_header */
+/* eslint-disable max-len, rulesdir/check-license-header */
 
 /**
  * @license Copyright 2022 The Lighthouse Authors. All Rights Reserved.

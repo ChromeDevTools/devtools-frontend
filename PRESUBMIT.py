@@ -209,7 +209,7 @@ def _CheckDevToolsRunESLintTests(input_api, output_api):
 
     mocha_path = devtools_paths.mocha_path()
     eslint_tests_path = input_api.os_path.join(eslint_rules_dir_path, 'tests',
-                                               '*_test.js')
+                                               '*.test.js')
 
     results = [output_api.PresubmitNotifyResult('ESLint rules unit tests')]
     results.extend(

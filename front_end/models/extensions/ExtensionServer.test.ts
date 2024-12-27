@@ -368,7 +368,7 @@ describeWithDevtoolsExtension('Runtime hosts policy', {hostsPolicy}, context => 
     target.setInspectedURL(allowedUrl);
     {
       const result = await new Promise<object>(cb => context.chrome.devtools?.network.getHAR(cb));
-      // eslint-disable-next-line rulesdir/compare_arrays_with_assert_deepequal
+      // eslint-disable-next-line rulesdir/compare-arrays-with-assert-deepequal
       assert.hasAnyKeys(result, ['entries']);
     }
   });
@@ -378,7 +378,7 @@ describeWithDevtoolsExtension('Runtime hosts policy', {hostsPolicy}, context => 
     target.setInspectedURL('http://example.com2' as Platform.DevToolsPath.UrlString);
     {
       const result = await new Promise<object>(cb => context.chrome.devtools?.network.getHAR(cb));
-      // eslint-disable-next-line rulesdir/compare_arrays_with_assert_deepequal
+      // eslint-disable-next-line rulesdir/compare-arrays-with-assert-deepequal
       assert.hasAnyKeys(result, ['entries']);
     }
   });

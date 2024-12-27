@@ -30,7 +30,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('models/issues_manager/DeprecationIssue.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
-// eslint-disable-next-line rulesdir/l10n_filename_matches
+// eslint-disable-next-line rulesdir/l10n-filename-matches
 const strDeprecation = i18n.i18n.registerUIStrings('generated/Deprecation.ts', Deprecation.UIStrings);
 const i18nLazyDeprecationString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, strDeprecation);
 

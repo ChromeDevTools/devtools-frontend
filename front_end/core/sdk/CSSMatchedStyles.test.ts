@@ -261,8 +261,8 @@ describe('CSSMatchedStyles', () => {
         --a: var(--b);
         --b: var(--a);
         `;
-      assert.strictEqual(await compute('--a', [simpleCycle], []), null);
-      assert.strictEqual(await compute('--b', [simpleCycle], []), null);
+      assert.isNull(await compute('--a', [simpleCycle], []));
+      assert.isNull(await compute('--b', [simpleCycle], []));
 
       const cycleOnUnusedFallback = `
         --a: 2;
@@ -277,46 +277,46 @@ describe('CSSMatchedStyles', () => {
         --a: var(--b, 1);
         --b: var(--a, 2);
         `;
-      assert.strictEqual(await compute('--a', [simpleCycleWithFallbacks], []), null);
-      assert.strictEqual(await compute('--b', [simpleCycleWithFallbacks], []), null);
+      assert.isNull(await compute('--a', [simpleCycleWithFallbacks], []));
+      assert.isNull(await compute('--b', [simpleCycleWithFallbacks], []));
 
       const longerCycle = `
         --a: var(--b);
         --b: var(--c);
         --c: var(--a);
         `;
-      assert.strictEqual(await compute('--a', [longerCycle], []), null);
-      assert.strictEqual(await compute('--b', [longerCycle], []), null);
-      assert.strictEqual(await compute('--c', [longerCycle], []), null);
+      assert.isNull(await compute('--a', [longerCycle], []));
+      assert.isNull(await compute('--b', [longerCycle], []));
+      assert.isNull(await compute('--c', [longerCycle], []));
 
       const longerCycleWithFallbacks = `
         --a: var(--b, 2);
         --b: var(--c, 3);
         --c: var(--a, 4);
         `;
-      assert.strictEqual(await compute('--a', [longerCycleWithFallbacks], []), null);
-      assert.strictEqual(await compute('--b', [longerCycleWithFallbacks], []), null);
-      assert.strictEqual(await compute('--c', [longerCycleWithFallbacks], []), null);
+      assert.isNull(await compute('--a', [longerCycleWithFallbacks], []));
+      assert.isNull(await compute('--b', [longerCycleWithFallbacks], []));
+      assert.isNull(await compute('--c', [longerCycleWithFallbacks], []));
 
       const pointingIntoCycle = `
         ${longerCycle}
         --d: var(--a);
         --e: var(--b);
         `;
-      assert.strictEqual(await compute('--a', [pointingIntoCycle], []), null);
-      assert.strictEqual(await compute('--b', [pointingIntoCycle], []), null);
-      assert.strictEqual(await compute('--c', [pointingIntoCycle], []), null);
-      assert.strictEqual(await compute('--d', [pointingIntoCycle], []), null);
-      assert.strictEqual(await compute('--e', [pointingIntoCycle], []), null);
+      assert.isNull(await compute('--a', [pointingIntoCycle], []));
+      assert.isNull(await compute('--b', [pointingIntoCycle], []));
+      assert.isNull(await compute('--c', [pointingIntoCycle], []));
+      assert.isNull(await compute('--d', [pointingIntoCycle], []));
+      assert.isNull(await compute('--e', [pointingIntoCycle], []));
 
       const pointingIntoCycleWithFallback = `
         ${longerCycle}
         --d: var(--a, 4);
         --e: var(--b, 5);
         `;
-      assert.strictEqual(await compute('--a', [pointingIntoCycleWithFallback], []), null);
-      assert.strictEqual(await compute('--b', [pointingIntoCycleWithFallback], []), null);
-      assert.strictEqual(await compute('--c', [pointingIntoCycleWithFallback], []), null);
+      assert.isNull(await compute('--a', [pointingIntoCycleWithFallback], []));
+      assert.isNull(await compute('--b', [pointingIntoCycleWithFallback], []));
+      assert.isNull(await compute('--c', [pointingIntoCycleWithFallback], []));
       assert.strictEqual(await compute('--d', [pointingIntoCycleWithFallback], []), '4');
       assert.strictEqual(await compute('--e', [pointingIntoCycleWithFallback], []), '5');
 
@@ -326,29 +326,29 @@ describe('CSSMatchedStyles', () => {
         --c: var(--a) var(--b);
         --d: var(--c);
         `;
-      assert.strictEqual(await compute('--a', [multipleEdges], []), null);
-      assert.strictEqual(await compute('--b', [multipleEdges], []), null);
-      assert.strictEqual(await compute('--c', [multipleEdges], []), null);
-      assert.strictEqual(await compute('--d', [multipleEdges], []), null);
+      assert.isNull(await compute('--a', [multipleEdges], []));
+      assert.isNull(await compute('--b', [multipleEdges], []));
+      assert.isNull(await compute('--c', [multipleEdges], []));
+      assert.isNull(await compute('--d', [multipleEdges], []));
 
       const pointingIntoMultipleEdgeCycle = `
         ${multipleEdges}
         --e: var(--c) var(--d);
         `;
-      assert.strictEqual(await compute('--a', [pointingIntoMultipleEdgeCycle], []), null);
-      assert.strictEqual(await compute('--b', [pointingIntoMultipleEdgeCycle], []), null);
-      assert.strictEqual(await compute('--c', [pointingIntoMultipleEdgeCycle], []), null);
-      assert.strictEqual(await compute('--d', [pointingIntoMultipleEdgeCycle], []), null);
-      assert.strictEqual(await compute('--e', [pointingIntoMultipleEdgeCycle], []), null);
+      assert.isNull(await compute('--a', [pointingIntoMultipleEdgeCycle], []));
+      assert.isNull(await compute('--b', [pointingIntoMultipleEdgeCycle], []));
+      assert.isNull(await compute('--c', [pointingIntoMultipleEdgeCycle], []));
+      assert.isNull(await compute('--d', [pointingIntoMultipleEdgeCycle], []));
+      assert.isNull(await compute('--e', [pointingIntoMultipleEdgeCycle], []));
 
       const pointingIntoMultipleEdgeCycleWithFallback = `
         ${multipleEdges}
         --e: var(--c, 4) var(--d, 5);
         `;
-      assert.strictEqual(await compute('--a', [pointingIntoMultipleEdgeCycleWithFallback], []), null);
-      assert.strictEqual(await compute('--b', [pointingIntoMultipleEdgeCycleWithFallback], []), null);
-      assert.strictEqual(await compute('--c', [pointingIntoMultipleEdgeCycleWithFallback], []), null);
-      assert.strictEqual(await compute('--d', [pointingIntoMultipleEdgeCycleWithFallback], []), null);
+      assert.isNull(await compute('--a', [pointingIntoMultipleEdgeCycleWithFallback], []));
+      assert.isNull(await compute('--b', [pointingIntoMultipleEdgeCycleWithFallback], []));
+      assert.isNull(await compute('--c', [pointingIntoMultipleEdgeCycleWithFallback], []));
+      assert.isNull(await compute('--d', [pointingIntoMultipleEdgeCycleWithFallback], []));
       assert.strictEqual(await compute('--e', [pointingIntoMultipleEdgeCycleWithFallback], []), '4 5');
 
       const multipleCyclesWithFallback = `
@@ -358,12 +358,12 @@ describe('CSSMatchedStyles', () => {
         --f: var(--d);
         --g: var(--a, var(--d, 5));
         `;
-      assert.strictEqual(await compute('--a', [multipleCyclesWithFallback], []), null);
-      assert.strictEqual(await compute('--b', [multipleCyclesWithFallback], []), null);
-      assert.strictEqual(await compute('--c', [multipleCyclesWithFallback], []), null);
-      assert.strictEqual(await compute('--d', [multipleCyclesWithFallback], []), null);
-      assert.strictEqual(await compute('--e', [multipleCyclesWithFallback], []), null);
-      assert.strictEqual(await compute('--f', [multipleCyclesWithFallback], []), null);
+      assert.isNull(await compute('--a', [multipleCyclesWithFallback], []));
+      assert.isNull(await compute('--b', [multipleCyclesWithFallback], []));
+      assert.isNull(await compute('--c', [multipleCyclesWithFallback], []));
+      assert.isNull(await compute('--d', [multipleCyclesWithFallback], []));
+      assert.isNull(await compute('--e', [multipleCyclesWithFallback], []));
+      assert.isNull(await compute('--f', [multipleCyclesWithFallback], []));
       assert.strictEqual(await compute('--g', [multipleCyclesWithFallback], []), '5');
 
       const notACycle = `
@@ -374,7 +374,7 @@ describe('CSSMatchedStyles', () => {
         --b: var(--a);
         `;
       assert.strictEqual(await compute('--a', [notACycle], [[inherited]]), '1');
-      assert.strictEqual(await compute('--b', [notACycle], [[inherited]]), null);
+      assert.isNull(await compute('--b', [notACycle], [[inherited]]));
     });
   });
 

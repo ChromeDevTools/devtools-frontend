@@ -300,7 +300,7 @@ describe('DataGrid', () => {
       await coordinator.done();
       const table = component.shadowRoot.querySelector('table');
       assert.instanceOf(table, HTMLTableElement);
-      assert.strictEqual(table.getAttribute('aria-label'), null);
+      assert.isNull(table.getAttribute('aria-label'));
     });
 
     it('adds rowcount and colcount to the table', async () => {
@@ -333,7 +333,7 @@ describe('DataGrid', () => {
       const cityHeader = getHeaderCellForColumnId(component.shadowRoot, 'city');
       const countryHeader = getHeaderCellForColumnId(component.shadowRoot, 'country');
       assert.strictEqual(cityHeader.getAttribute('aria-sort'), 'none');
-      assert.strictEqual(countryHeader.getAttribute('aria-sort'), null);
+      assert.isNull(countryHeader.getAttribute('aria-sort'));
     });
 
     it('labels a column when it is sorted in ASC order', async () => {

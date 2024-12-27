@@ -77,7 +77,7 @@ describe('The Network Tab', function() {
     const checkbox = await waitFor('[title^="Disable cache"]');
     const checked = await checkbox.evaluate(box => (box as HTMLInputElement).checked);
 
-    assert.strictEqual(checked, false, 'The disable cache checkbox should be unchecked');
+    assert.isFalse(checked, 'The disable cache checkbox should be unchecked');
   });
 
   it('shows Last-Modified', async () => {

@@ -106,7 +106,7 @@ describeWithMockConnection('ElementStatePaneWidget', () => {
       const args = checkboxes.lastCall.args;
       assert.strictEqual(args[0], node, 'Called forcePseudoState with wrong node');
       assert.strictEqual(args[1], pseudoClass, 'Called forcePseudoState with wrong pseudo-state');
-      assert.strictEqual(args[2], true, 'Called forcePseudoState with wrong enable state');
+      assert.isTrue(args[2], 'Called forcePseudoState with wrong enable state');
     }
   });
 

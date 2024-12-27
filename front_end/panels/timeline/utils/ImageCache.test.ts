@@ -48,11 +48,11 @@ describe('ImageCache', () => {
   it('loadImage resolves invalid images to null', async () => {
     const datauri = 'data:image/jpg;base64,INVALIDDATA';
     const res = await loadImage(datauri);
-    assert.strictEqual(res, null);
+    assert.isNull(res);
   });
 
   it('getOrQueue should return null for a new screenshot', () => {
-    assert.strictEqual(getOrQueue(syntheticScreenshot1), null);
+    assert.isNull(getOrQueue(syntheticScreenshot1));
   });
 
   it('getOrQueue should return the same image for the same screenshot', async () => {

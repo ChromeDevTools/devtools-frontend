@@ -258,7 +258,7 @@ describe('NetworkDispatcher', () => {
       networkDispatcher.requestWillBeSent(requestWillBeSentEvent);
       networkDispatcher.responseReceived(responseReceivedEvent);
 
-      assert.deepEqual(networkDispatcher.requestForId('mockId')?.fromEarlyHints(), true);
+      assert.isTrue(networkDispatcher.requestForId('mockId')?.fromEarlyHints());
     });
 
     it('has populated early hints headers after receiving \'repsonseReceivedEarlyHints\'', () => {

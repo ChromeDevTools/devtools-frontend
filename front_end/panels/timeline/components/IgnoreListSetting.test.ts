@@ -80,9 +80,9 @@ describeWithEnvironment('Ignore List Setting', () => {
     // There is a default rule `/node_modules/|/bower_components/`
     assert.lengthOf(ignoredRules, 2);
     assert.deepEqual(ignoredRules[0].regex, '/node_modules/|/bower_components/');
-    assert.deepEqual(ignoredRules[0].disabled, false);
+    assert.isFalse(ignoredRules[0].disabled);
     assert.deepEqual(ignoredRules[1].regex, 'rule 1');
-    assert.deepEqual(ignoredRules[1].disabled, false);
+    assert.isFalse(ignoredRules[1].disabled);
 
     // Check the remove buttons are rendered
     assert.isNotNull(component.shadowRoot);
@@ -102,9 +102,9 @@ describeWithEnvironment('Ignore List Setting', () => {
     // There is a default rule `/node_modules/|/bower_components/`
     assert.lengthOf(ignoredRules, 2);
     assert.deepEqual(ignoredRules[0].regex, '/node_modules/|/bower_components/');
-    assert.deepEqual(ignoredRules[0].disabled, false);
+    assert.isFalse(ignoredRules[0].disabled);
     assert.deepEqual(ignoredRules[1].regex, 'rule 1');
-    assert.deepEqual(ignoredRules[1].disabled, true);
+    assert.isTrue(ignoredRules[1].disabled);
   });
 
   it('Able to toggle the disable status of an ignore listed rules', async () => {

@@ -230,8 +230,8 @@ describe('BaseNode', () => {
       assert.ok(clonedIdMap.has('E'), 'did not include dependency');
       assert.ok(clonedIdMap.has('B'), 'did not include branched dependency');
       assert.ok(clonedIdMap.has('C'), 'did not include branched dependency');
-      assert.strictEqual(clonedIdMap.get('G'), undefined);
-      assert.strictEqual(clonedIdMap.get('H'), undefined);
+      assert.isUndefined(clonedIdMap.get('G'));
+      assert.isUndefined(clonedIdMap.get('H'));
     });
 
     it('should throw if original node is not in cloned graph', () => {
@@ -288,7 +288,7 @@ describe('BaseNode', () => {
   describe('#hasCycle', () => {
     it('should return false for DAGs', () => {
       const graph = createComplexGraph();
-      assert.strictEqual(BaseNode.hasCycle(graph.nodeA), false);
+      assert.isFalse(BaseNode.hasCycle(graph.nodeA));
     });
 
     it('should return false for triangular DAGs', () => {
@@ -303,7 +303,7 @@ describe('BaseNode', () => {
       nodeA.addDependent(nodeB);
       nodeB.addDependent(nodeC);
 
-      assert.strictEqual(BaseNode.hasCycle(nodeA), false);
+      assert.isFalse(BaseNode.hasCycle(nodeA));
     });
 
     it('should return true for basic cycles', () => {
@@ -316,7 +316,7 @@ describe('BaseNode', () => {
       nodeB.addDependent(nodeC);
       nodeC.addDependent(nodeA);
 
-      assert.strictEqual(BaseNode.hasCycle(nodeA), true);
+      assert.isTrue(BaseNode.hasCycle(nodeA));
     });
 
     it('should return true for children', () => {
@@ -331,7 +331,7 @@ describe('BaseNode', () => {
       nodeB.addDependent(nodeC);
       nodeB.addDependent(nodeA);
 
-      assert.strictEqual(BaseNode.hasCycle(nodeC), true);
+      assert.isTrue(BaseNode.hasCycle(nodeC));
     });
 
     it('should return true for complex cycles', () => {
@@ -357,14 +357,14 @@ describe('BaseNode', () => {
       nodeF.addDependent(nodeG);
       nodeG.addDependent(nodeC);
 
-      assert.strictEqual(BaseNode.hasCycle(nodeA), true);
-      assert.strictEqual(BaseNode.hasCycle(nodeB), true);
-      assert.strictEqual(BaseNode.hasCycle(nodeC), true);
-      assert.strictEqual(BaseNode.hasCycle(nodeD), true);
-      assert.strictEqual(BaseNode.hasCycle(nodeE), true);
-      assert.strictEqual(BaseNode.hasCycle(nodeF), true);
-      assert.strictEqual(BaseNode.hasCycle(nodeG), true);
-      assert.strictEqual(BaseNode.hasCycle(nodeH), true);
+      assert.isTrue(BaseNode.hasCycle(nodeA));
+      assert.isTrue(BaseNode.hasCycle(nodeB));
+      assert.isTrue(BaseNode.hasCycle(nodeC));
+      assert.isTrue(BaseNode.hasCycle(nodeD));
+      assert.isTrue(BaseNode.hasCycle(nodeE));
+      assert.isTrue(BaseNode.hasCycle(nodeF));
+      assert.isTrue(BaseNode.hasCycle(nodeG));
+      assert.isTrue(BaseNode.hasCycle(nodeH));
     });
 
     it('works for very large graphs', () => {
@@ -378,7 +378,7 @@ describe('BaseNode', () => {
       }
 
       lastNode.addDependent(root);
-      assert.strictEqual(BaseNode.hasCycle(root), true);
+      assert.isTrue(BaseNode.hasCycle(root));
     });
   });
 });

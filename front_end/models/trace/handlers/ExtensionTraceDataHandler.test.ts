@@ -369,13 +369,13 @@ describe('ExtensionTraceDataHandler', function() {
 
       const firstTrackData = extensionHandlerOutput.extensionTrackData[0];
       assert.strictEqual(firstTrackData.name, 'Group 1');
-      assert.strictEqual(firstTrackData.isTrackGroup, true);
+      assert.isTrue(firstTrackData.isTrackGroup);
       assert.deepEqual(Object.keys(firstTrackData.entriesByTrack), ['Track 1', 'Track 2', 'Track 3']);
       assert.deepEqual(Object.values(firstTrackData.entriesByTrack).map(entries => entries.length), [2, 1, 1]);
 
       const secondTrackData = extensionHandlerOutput.extensionTrackData[1];
       assert.strictEqual(secondTrackData.name, 'Group 2');
-      assert.strictEqual(secondTrackData.isTrackGroup, true);
+      assert.isTrue(secondTrackData.isTrackGroup);
       assert.deepEqual(Object.keys(secondTrackData.entriesByTrack), ['Track 1']);
       assert.deepEqual(Object.values(secondTrackData.entriesByTrack).map(entries => entries.length), [1]);
 

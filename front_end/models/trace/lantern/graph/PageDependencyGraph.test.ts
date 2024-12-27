@@ -502,9 +502,9 @@ describe('PageDependencyGraph', () => {
 
       assert.lengthOf(nodes, 3);
       assert.strictEqual(nodes[0].id, 1);
-      assert.strictEqual(nodes[0].isMainDocument(), false);
-      assert.strictEqual(nodes[1].isMainDocument(), true);
-      assert.strictEqual(nodes[2].isMainDocument(), false);
+      assert.isFalse(nodes[0].isMainDocument());
+      assert.isTrue(nodes[1].isMainDocument());
+      assert.isFalse(nodes[2].isMainDocument());
     });
 
     it('should link up script initiators', () => {

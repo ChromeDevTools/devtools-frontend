@@ -95,9 +95,9 @@ describe('ColorUtils', () => {
   });
 
   it('is able to find APCA threshold by font size and weight', () => {
-    assert.deepEqual(Common.ColorUtils.getAPCAThreshold('11px', '100'), null);
+    assert.isNull(Common.ColorUtils.getAPCAThreshold('11px', '100'));
     assert.deepEqual(Common.ColorUtils.getAPCAThreshold('121px', '100'), 60);
-    assert.deepEqual(Common.ColorUtils.getAPCAThreshold('16px', '100'), null);
+    assert.isNull(Common.ColorUtils.getAPCAThreshold('16px', '100'));
     assert.deepEqual(Common.ColorUtils.getAPCAThreshold('16px', '400'), 90);
     assert.deepEqual(Common.ColorUtils.getAPCAThreshold('16px', '900'), 50);
   });

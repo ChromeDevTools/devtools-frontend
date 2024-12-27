@@ -1255,7 +1255,7 @@ describe('The Styles pane', () => {
     const innerText = await infobox.evaluate(node => {
       return node.shadowRoot?.querySelector('span')?.innerText;
     });
-    assert.strictEqual(innerText?.toLowerCase().startsWith('specificity'), true);
+    assert.isTrue(innerText?.toLowerCase().startsWith('specificity'));
   });
 
   describe('Editing', () => {

@@ -1190,7 +1190,7 @@ describe('TreeOutline', () => {
       await component.expandRecursively(Number.POSITIVE_INFINITY);
       await waitForRenderedTreeNodeCount(shadowRoot, NODE_COUNT_BASIC_DATA_FULLY_EXPANDED);
       const leafNodeCSGOffice = getVisibleTreeNodeByText(shadowRoot, 'CSG');
-      assert.strictEqual(leafNodeCSGOffice.getAttribute('aria-expanded'), null);
+      assert.isNull(leafNodeCSGOffice.getAttribute('aria-expanded'));
     });
   });
 
@@ -1377,7 +1377,7 @@ describe('TreeOutlineUtils', () => {
 
     it('returns null if no path is found', async () => {
       const path = await TreeOutline.TreeOutlineUtils.getPathToTreeNode(basicTreeData, '-1');
-      assert.strictEqual(path, null);
+      assert.isNull(path);
     });
   });
 });

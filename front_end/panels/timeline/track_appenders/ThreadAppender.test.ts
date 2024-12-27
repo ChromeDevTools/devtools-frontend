@@ -130,18 +130,18 @@ describeWithEnvironment('ThreadAppender', function() {
     // This group corresponds to the header that wraps the raster tracks
     // together. It isn't selectable and isn't nested
     assert.strictEqual(flameChartData.groups[1].name, 'Raster');
-    assert.strictEqual(flameChartData.groups[1].selectable, false);
+    assert.isFalse(flameChartData.groups[1].selectable);
     assert.strictEqual(flameChartData.groups[1].style.nestingLevel, 0);
 
     // These groups correspond to the raster tracks titles, or the
     // individual raster tracks themselves. They are selectable and
     // nested
     assert.strictEqual(flameChartData.groups[2].name, 'Rasterizer thread 1');
-    assert.strictEqual(flameChartData.groups[2].selectable, true);
+    assert.isTrue(flameChartData.groups[2].selectable);
     assert.strictEqual(flameChartData.groups[2].style.nestingLevel, 1);
 
     assert.strictEqual(flameChartData.groups[3].name, 'Rasterizer thread 2');
-    assert.strictEqual(flameChartData.groups[3].selectable, true);
+    assert.isTrue(flameChartData.groups[3].selectable);
     assert.strictEqual(flameChartData.groups[3].style.nestingLevel, 1);
   });
 

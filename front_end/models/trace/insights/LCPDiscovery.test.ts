@@ -12,9 +12,9 @@ describeWithEnvironment('LCPDiscovery', function() {
     const insight = getInsightOrError('LCPDiscovery', insights, firstNav);
     const {shouldIncreasePriorityHint, shouldPreloadImage, shouldRemoveLazyLoading} = insight;
 
-    assert.strictEqual(shouldRemoveLazyLoading, false);
-    assert.strictEqual(shouldPreloadImage, false);
-    assert.strictEqual(shouldIncreasePriorityHint, true);
+    assert.isFalse(shouldRemoveLazyLoading);
+    assert.isFalse(shouldPreloadImage);
+    assert.isTrue(shouldIncreasePriorityHint);
   });
 
   it('calculates the LCP optimal time as the document request download start time', async () => {

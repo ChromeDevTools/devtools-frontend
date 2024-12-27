@@ -17,7 +17,7 @@ describeWithEnvironment('Viewport', function() {
     const insight =
         getInsightOrError('Viewport', insights, getFirstOrError(data.Meta.navigationsByNavigationId.values()));
 
-    assert.strictEqual(insight.mobileOptimized, true);
+    assert.isTrue(insight.mobileOptimized);
   });
 
   it('detects mobile unoptimized viewport', async () => {
@@ -32,6 +32,6 @@ describeWithEnvironment('Viewport', function() {
     }
 
     const insight = Trace.Insights.Models.Viewport.generateInsight(data, context);
-    assert.strictEqual(insight.mobileOptimized, false);
+    assert.isFalse(insight.mobileOptimized);
   });
 });

@@ -54,12 +54,12 @@ describeWithEnvironment('Utils', () => {
       assert.deepEqual(NumberWithUnit.parse('[Sek]() 100'), {firstPart: '', unitPart: 'Sek', lastPart: ' 100'});
 
       // error cases
-      assert.deepEqual(NumberWithUnit.parse(''), null);
-      assert.deepEqual(NumberWithUnit.parse('100s'), null);
-      assert.deepEqual(NumberWithUnit.parse('100[s]('), null);
-      assert.deepEqual(NumberWithUnit.parse('100[s]'), null);
-      assert.deepEqual(NumberWithUnit.parse('100[s'), null);
-      assert.deepEqual(NumberWithUnit.parse('100 s]('), null);
+      assert.isNull(NumberWithUnit.parse(''));
+      assert.isNull(NumberWithUnit.parse('100s'));
+      assert.isNull(NumberWithUnit.parse('100[s]('));
+      assert.isNull(NumberWithUnit.parse('100[s]'));
+      assert.isNull(NumberWithUnit.parse('100[s'));
+      assert.isNull(NumberWithUnit.parse('100 s]('));
     });
   });
 

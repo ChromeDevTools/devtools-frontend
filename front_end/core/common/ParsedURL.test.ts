@@ -159,17 +159,17 @@ describe('Parsed URL', () => {
 
   it('checks that URL is valid', () => {
     const urlTest = 'http://www.example.com#?test';
-    assert.strictEqual(ParsedURL.isValidUrlString(urlTest), true, 'URL validation was incorrect');
+    assert.isTrue(ParsedURL.isValidUrlString(urlTest), 'URL validation was incorrect');
   });
 
   it('checks that file:// URL is valid', () => {
     const urlTest = 'file:///usr/lib';
-    assert.strictEqual(ParsedURL.isValidUrlString(urlTest), true, 'URL validation was incorrect');
+    assert.isTrue(ParsedURL.isValidUrlString(urlTest), 'URL validation was incorrect');
   });
 
   it('checks that "://" is not a valid URL', () => {
     const urlTest = '://';
-    assert.strictEqual(ParsedURL.isValidUrlString(urlTest), false, 'URL validation was incorrect');
+    assert.isFalse(ParsedURL.isValidUrlString(urlTest), 'URL validation was incorrect');
   });
 
   it('converts URL with a hash to a URL without a hash', () => {
@@ -358,7 +358,7 @@ describe('Parsed URL', () => {
     const hrefTest = 'www.example.com';
     const baseUrlTest = 'www.example.com' as Platform.DevToolsPath.UrlString;
     const completeUrl = ParsedURL.completeURL(baseUrlTest, hrefTest);
-    assert.strictEqual(completeUrl, null, 'complete URL is not returned correctly');
+    assert.isNull(completeUrl, 'complete URL is not returned correctly');
   });
 
   it('uses the completeURL function to return the href if the base URL is a data URL', () => {
@@ -421,7 +421,7 @@ describe('Parsed URL', () => {
     const splitResult = ParsedURL.splitLineAndColumn(stringTest);
     assert.strictEqual(splitResult.url, 'http://www.example.com/foo.js', 'URL is not correct');
     assert.strictEqual(splitResult.lineNumber, 14, 'line number is incorrect');
-    assert.strictEqual(splitResult.columnNumber, undefined, 'column number is incorrect');
+    assert.isUndefined(splitResult.columnNumber, 'column number is incorrect');
   });
 
   it('uses the splitLineAndColumn function to return the line and column numbers if the URL contains them', () => {

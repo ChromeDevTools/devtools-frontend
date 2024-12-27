@@ -202,8 +202,8 @@ export const y = "";
   it('Extracts expected whitespace from beginnings of lines', () => {
     assert.strictEqual(Explain.lineWhitespace(' a'), ' ');
     assert.strictEqual(Explain.lineWhitespace('a'), '');
-    assert.strictEqual(Explain.lineWhitespace(' '), null);
-    assert.strictEqual(Explain.lineWhitespace(''), null);
+    assert.isNull(Explain.lineWhitespace(' '));
+    assert.isNull(Explain.lineWhitespace(''));
     assert.strictEqual(Explain.lineWhitespace('\t\ta'), '\t\t');
   });
 

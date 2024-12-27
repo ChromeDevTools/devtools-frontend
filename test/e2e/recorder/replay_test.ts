@@ -98,10 +98,7 @@ describe('Recorder', function() {
           },
         ],
       });
-      assert.strictEqual(
-          await target.evaluate(() => document.querySelector('input')?.checked),
-          true,
-      );
+      assert.isTrue(await target.evaluate(() => document.querySelector('input')?.checked));
     });
 
     it('should be able to replay keyboard events', async () => {

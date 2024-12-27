@@ -430,7 +430,7 @@ describeWithMockConnection('RequestHeadersView', () => {
         assert.strictEqual(valueEditable.textContent?.trim(), headerValue);
       } else {
         assert.strictEqual(shadowRoot.querySelector('.header-value')?.textContent?.trim(), headerValue);
-        assert.strictEqual(valueEditableComponent, null);
+        assert.isNull(valueEditableComponent);
       }
     };
 

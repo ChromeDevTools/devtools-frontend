@@ -147,7 +147,7 @@ function checkHeaderSectionRow(
         nameEditable.textContent?.trim() + (row.shadowRoot.querySelector('.header-name')?.textContent || '').trim();
     assert.strictEqual(textContent, headerName);
   } else {
-    assert.strictEqual(nameEditableComponent, null);
+    assert.isNull(nameEditableComponent);
     assert.strictEqual(row.shadowRoot.querySelector('.header-name')?.textContent?.trim(), headerName);
   }
 
@@ -160,7 +160,7 @@ function checkHeaderSectionRow(
     assert.instanceOf(valueEditable, HTMLSpanElement);
     assert.strictEqual(valueEditable.textContent?.trim(), headerValue);
   } else {
-    assert.strictEqual(valueEditableComponent, null);
+    assert.isNull(valueEditableComponent);
     assert.strictEqual(row.shadowRoot.querySelector('.header-value')?.textContent?.trim(), headerValue);
   }
 }
@@ -1331,7 +1331,7 @@ describeWithEnvironment('ResponseHeaderSection', () => {
     assert.isNotNull(rows[0].shadowRoot);
     assert.strictEqual(rows[0].shadowRoot.querySelector('.header-name')?.textContent?.trim(), 'set-cookie:');
     assert.strictEqual(rows[0].shadowRoot.querySelector('.header-value')?.textContent?.trim(), 'user=123');
-    assert.strictEqual(rows[0].shadowRoot.querySelector('.row')?.classList.contains('header-overridden'), false);
+    assert.isFalse(rows[0].shadowRoot.querySelector('.row')?.classList.contains('header-overridden'));
   });
 
   it('does not mark unset headers (which cause the request to be blocked) as overridden', async () => {

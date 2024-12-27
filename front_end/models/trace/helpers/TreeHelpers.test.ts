@@ -507,12 +507,12 @@ describe('TreeHelpers', () => {
 
       // Now we can make sure the pre-serialized data is also correct.
       assert.strictEqual(v8RunNode.name, 'v8.run');
-      assert.strictEqual(v8RunNode.selected, true);
+      assert.isTrue(v8RunNode.selected);
       assert.strictEqual(v8RunNode.duration, 0.49);
       assert.strictEqual(v8RunNode.children?.length, 3);
 
       assert.strictEqual(aiNodeTree.name, 'EvaluateScript');
-      assert.strictEqual(aiNodeTree.selected, undefined);
+      assert.isUndefined(aiNodeTree.selected);
       assert.strictEqual(aiNodeTree.duration, 0.5);
       assert.strictEqual(aiNodeTree.children?.length, 1);
 
@@ -520,9 +520,9 @@ describe('TreeHelpers', () => {
       assert.exists(v8RunNode);
 
       assert.strictEqual(parseFnAINode.name, 'V8.ParseFunction');
-      assert.strictEqual(parseFnAINode.selected, undefined);
+      assert.isUndefined(parseFnAINode.selected);
       assert.strictEqual(parseFnAINode.duration, 0.001);
-      assert.strictEqual(parseFnAINode.children, undefined);
+      assert.isUndefined(parseFnAINode.children);
     });
   });
 });

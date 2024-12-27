@@ -43,7 +43,7 @@ describeWithLocale('Preview toggle', () => {
         setEnabledStub.firstCall.calledWith('testExperiment', true),
         'experiments.setEnabled was not called with the correct experiment');
     assert.strictEqual(spy.callCount, 1);
-    assert.strictEqual(spy.firstCall.firstArg, true);
+    assert.isTrue(spy.firstCall.firstArg);
   });
 
   it('calls out correctly to disable experiment', async () => {
@@ -73,6 +73,6 @@ describeWithLocale('Preview toggle', () => {
         setEnabledStub.firstCall.calledWith('testExperiment', false),
         'experiments.setEnabled was not called with the correct experiment');
     assert.strictEqual(spy.callCount, 1);
-    assert.strictEqual(spy.firstCall.firstArg, false);
+    assert.isFalse(spy.firstCall.firstArg);
   });
 });

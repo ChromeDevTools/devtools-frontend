@@ -29,7 +29,7 @@ describe('IssueResolver', () => {
         throw new Error('This should not get called');
       });
       assert.isTrue(issuesManager.hasEventListeners(IssuesManager.IssuesManager.Events.ISSUE_ADDED));
-      assert.strictEqual(issue, null);
+      assert.isNull(issue);
       issueResolver.clear();
     });
 
@@ -39,7 +39,7 @@ describe('IssueResolver', () => {
       const issueResolver = new IssuesManager.IssueResolver.IssueResolver(issuesManager);
       const waitForCall = new Promise<IssuesManager.Issue.Issue>(resolve => {
         const issue = issueResolver.tryGet(issueId1, resolve);
-        assert.strictEqual(issue, null);
+        assert.isNull(issue);
       });
       assert.isTrue(issuesManager.hasEventListeners(IssuesManager.IssuesManager.Events.ISSUE_ADDED));
       const mockIssue = StubIssue.createFromIssueId(issueId1);

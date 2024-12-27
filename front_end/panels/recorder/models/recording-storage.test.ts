@@ -48,7 +48,7 @@ describeWithEnvironment('RecordingStorage', () => {
       storageName: 'recording_2',
       flow: flow2,
     });
-    assert.deepEqual(await storage.getRecording('recording_3'), undefined);
+    assert.isUndefined(await storage.getRecording('recording_3'));
     assert.deepEqual(await storage.updateRecording('recording_2', flow3), {
       storageName: 'recording_2',
       flow: flow3,

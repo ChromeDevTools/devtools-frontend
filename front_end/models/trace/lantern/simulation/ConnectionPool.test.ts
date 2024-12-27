@@ -49,7 +49,7 @@ describe('ConnectionPool', () => {
       // Make sure 6 connections are created for each origin
       assert.lengthOf(pool.connectionsByOrigin.get('http://example.com'), 6);
       // Make sure it populates connectionWasReused
-      assert.strictEqual(pool.connectionReusedByRequestId.get('1'), false);
+      assert.isFalse(pool.connectionReusedByRequestId.get('1'));
 
       const connection = pool.connectionsByOrigin.get('http://example.com')[0];
       assert.strictEqual(connection.rtt, rtt);
@@ -164,7 +164,7 @@ describe('ConnectionPool', () => {
     it('noop for request without connection', () => {
       const requestA = request();
       const pool = new ConnectionPool([requestA], simulationOptions({rtt, throughput}));
-      assert.strictEqual(pool.release(requestA), undefined);
+      assert.isUndefined(pool.release(requestA));
     });
 
     it('frees the connection for reissue', () => {

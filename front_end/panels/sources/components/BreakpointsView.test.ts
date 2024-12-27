@@ -478,10 +478,10 @@ describeWithEnvironment('BreakpointsSidebarController', () => {
           {forceNew: true, breakpointManager, settings});
       settings.moduleSetting('breakpoints-active').set(true);
       let data = await controller.getUpdatedBreakpointViewData();
-      assert.strictEqual(data.breakpointsActive, true);
+      assert.isTrue(data.breakpointsActive);
       settings.moduleSetting('breakpoints-active').set(false);
       data = await controller.getUpdatedBreakpointViewData();
-      assert.strictEqual(data.breakpointsActive, false);
+      assert.isFalse(data.breakpointsActive);
     });
 
     it('marks groups as editable based on conditional breakpoint support', async () => {

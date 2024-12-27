@@ -340,8 +340,8 @@ describe('NetworkAnalyzer', () => {
     }
 
     it('should return null for no/missing records', () => {
-      assert.strictEqual(estimateThroughput([]), null);
-      assert.strictEqual(estimateThroughput([createThroughputRecord(0, 0, {finished: false})]), null);
+      assert.isNull(estimateThroughput([]));
+      assert.isNull(estimateThroughput([createThroughputRecord(0, 0, {finished: false})]));
     });
 
     it('should compute correctly for a basic waterfall', () => {

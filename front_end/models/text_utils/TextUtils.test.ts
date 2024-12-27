@@ -8,16 +8,15 @@ describe('TextUtils', () => {
   describe('Utils', () => {
     describe('isSpaceChar', () => {
       it('returns the correct result for various inputs', () => {
-        assert.strictEqual(TextUtils.TextUtils.Utils.isSpaceChar(' '), true, 'space was not a space char');
-        assert.strictEqual(TextUtils.TextUtils.Utils.isSpaceChar('\t'), true, 'tab was not a space char');
-        assert.strictEqual(TextUtils.TextUtils.Utils.isSpaceChar('\f'), true, 'formfeed was not a space char');
-        assert.strictEqual(TextUtils.TextUtils.Utils.isSpaceChar('\r'), true, 'return was not a space char');
-        assert.strictEqual(TextUtils.TextUtils.Utils.isSpaceChar('\v'), true, 'vertical tab was not a space char');
-        assert.strictEqual(
-            TextUtils.TextUtils.Utils.isSpaceChar('\xA0'), true, 'non-breaking space was not a space char');
-        assert.strictEqual(TextUtils.TextUtils.Utils.isSpaceChar('\0'), false, 'null was a space char');
-        assert.strictEqual(TextUtils.TextUtils.Utils.isSpaceChar('a'), false, 'a was a space char');
-        assert.strictEqual(TextUtils.TextUtils.Utils.isSpaceChar('A'), false, 'A was a space char');
+        assert.isTrue(TextUtils.TextUtils.Utils.isSpaceChar(' '), 'space was not a space char');
+        assert.isTrue(TextUtils.TextUtils.Utils.isSpaceChar('\t'), 'tab was not a space char');
+        assert.isTrue(TextUtils.TextUtils.Utils.isSpaceChar('\f'), 'formfeed was not a space char');
+        assert.isTrue(TextUtils.TextUtils.Utils.isSpaceChar('\r'), 'return was not a space char');
+        assert.isTrue(TextUtils.TextUtils.Utils.isSpaceChar('\v'), 'vertical tab was not a space char');
+        assert.isTrue(TextUtils.TextUtils.Utils.isSpaceChar('\xA0'), 'non-breaking space was not a space char');
+        assert.isFalse(TextUtils.TextUtils.Utils.isSpaceChar('\0'), 'null was a space char');
+        assert.isFalse(TextUtils.TextUtils.Utils.isSpaceChar('a'), 'a was a space char');
+        assert.isFalse(TextUtils.TextUtils.Utils.isSpaceChar('A'), 'A was a space char');
       });
     });
 
@@ -105,7 +104,7 @@ describe('TextUtils', () => {
       const filterParser = new TextUtils.TextUtils.FilterParser(['TestVal1']);
       const result = filterParser.parse(testVal);
       assert.strictEqual(result[0].text, testVal, 'text value was not returned correctly');
-      assert.strictEqual(result[0].negative, false, 'negative value was not returned correctly');
+      assert.isFalse(result[0].negative, 'negative value was not returned correctly');
     });
 
     describe('parse', () => {
@@ -330,7 +329,7 @@ describe('TextUtils', () => {
       assert.strictEqual(cloned.key, 'a', 'key was incorrect');
       assert.strictEqual(cloned.text, 'b', 'text was incorrect');
       assert.deepEqual(cloned.regex, /a/, 'regex was incorrect');
-      assert.strictEqual(cloned.negative, true, 'negative was incorrect');
+      assert.isTrue(cloned.negative, 'negative was incorrect');
     });
   });
 
@@ -351,11 +350,11 @@ describe('TextUtils', () => {
       const tokenizer = new TextUtils.TextUtils.BalancedJSONTokenizer(callback, findMultiple);
 
       let result = tokenizer.write('a');
-      assert.strictEqual(result, true, 'return value was incorrect');
+      assert.isTrue(result, 'return value was incorrect');
       assert.deepEqual(callbackResults, [], 'callback was called');
 
       result = tokenizer.write('{}');
-      assert.strictEqual(result, true, 'return value was incorrect');
+      assert.isTrue(result, 'return value was incorrect');
       assert.deepEqual(callbackResults, ['a{}'], 'callback had unexpected results');
     });
 
@@ -368,7 +367,7 @@ describe('TextUtils', () => {
       const tokenizer = new TextUtils.TextUtils.BalancedJSONTokenizer(callback, findMultiple);
 
       const result = tokenizer.write('{}}');
-      assert.strictEqual(result, true, 'return value was incorrect');
+      assert.isTrue(result, 'return value was incorrect');
       assert.deepEqual(callbackResults, ['{}'], 'callback had unexpected results');
       assert.strictEqual(tokenizer.remainder(), '}', 'remainder was incorrect');
     });
@@ -382,7 +381,7 @@ describe('TextUtils', () => {
       const tokenizer = new TextUtils.TextUtils.BalancedJSONTokenizer(callback, findMultiple);
 
       const result = tokenizer.write('"""');
-      assert.strictEqual(result, true, 'return value was incorrect');
+      assert.isTrue(result, 'return value was incorrect');
       assert.deepEqual(callbackResults, [], 'callback had unexpected results');
       assert.strictEqual(tokenizer.remainder(), '"""', 'remainder was incorrect');
     });
@@ -396,7 +395,7 @@ describe('TextUtils', () => {
       const tokenizer = new TextUtils.TextUtils.BalancedJSONTokenizer(callback, findMultiple);
 
       const result = tokenizer.write('}}');
-      assert.strictEqual(result, false, 'return value was incorrect');
+      assert.isFalse(result, 'return value was incorrect');
       assert.deepEqual(callbackResults, [], 'callback had unexpected results');
       assert.strictEqual(tokenizer.remainder(), '}}', 'remainder was incorrect');
     });
@@ -410,7 +409,7 @@ describe('TextUtils', () => {
       const tokenizer = new TextUtils.TextUtils.BalancedJSONTokenizer(callback, findMultiple);
 
       const result = tokenizer.write(']]');
-      assert.strictEqual(result, false, 'return value was incorrect');
+      assert.isFalse(result, 'return value was incorrect');
       assert.deepEqual(callbackResults, [], 'callback had unexpected results');
       assert.strictEqual(tokenizer.remainder(), ']]', 'remainder was incorrect');
     });
@@ -421,7 +420,7 @@ describe('TextUtils', () => {
 
     it('handles empty string', () => {
       const result = isMinified('');
-      assert.strictEqual(result, false, 'was minified');
+      assert.isFalse(result, 'was minified');
     });
 
     it('correctly detects a minified HTML document', () => {
@@ -432,7 +431,7 @@ describe('TextUtils', () => {
 <style>* { color: black; }</style>
 </html>
 `;
-      assert.strictEqual(isMinified(text), true);
+      assert.isTrue(isMinified(text));
     });
 
     it('correctly detects minified Closure-style modules', () => {
@@ -450,7 +449,7 @@ for(let e=0;e<l.lineCount();++e){const t=l.lineAt(e);s.lastIndex=0;const i=s.exe
 }catch(e){_._DumpException(e)}
 //# sourceMappingURL=http://some.staging-system.some-company.com/path/to/my/amazing/sourcemap/for/this/file.js.map
 // Some Company.`;
-      assert.strictEqual(isMinified(text), true);
+      assert.isTrue(isMinified(text));
     });
 
     it('doesn\'t detect JavaScript with one very long line in the end as minified', () => {
@@ -464,7 +463,7 @@ for(let e=0;e<l.lineCount();++e){const t=l.lineAt(e);s.lastIndex=0;const i=s.exe
       }
       exports += '};\n';
       const text = `${functions}${exports}`;
-      assert.strictEqual(isMinified(text), false);
+      assert.isFalse(isMinified(text));
     });
   });
 

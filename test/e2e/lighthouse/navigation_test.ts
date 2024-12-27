@@ -98,10 +98,10 @@ describe('Navigation', function() {
     assert.match(lhr.finalUrl, /^https:\/\/localhost:[0-9]+\/test\/e2e\/resources\/lighthouse\/hello.html/);
 
     assert.strictEqual(lhr.configSettings.throttlingMethod, 'simulate');
-    assert.strictEqual(lhr.configSettings.disableStorageReset, false);
+    assert.isFalse(lhr.configSettings.disableStorageReset);
     assert.strictEqual(lhr.configSettings.formFactor, 'mobile');
     assert.strictEqual(lhr.configSettings.throttling.rttMs, 150);
-    assert.strictEqual(lhr.configSettings.screenEmulation.disabled, true);
+    assert.isTrue(lhr.configSettings.screenEmulation.disabled);
     assert.include(lhr.configSettings.emulatedUserAgent, 'Mobile');
     assert.include(lhr.environment.networkUserAgent, 'Mobile');
 
@@ -240,10 +240,10 @@ describe('Navigation', function() {
     assert.deepEqual(erroredAudits, []);
 
     assert.deepEqual(Object.keys(lhr.categories), ['performance', 'best-practices']);
-    assert.strictEqual(lhr.configSettings.disableStorageReset, true);
+    assert.isTrue(lhr.configSettings.disableStorageReset);
     assert.strictEqual(lhr.configSettings.formFactor, 'desktop');
     assert.strictEqual(lhr.configSettings.throttling.rttMs, 40);
-    assert.strictEqual(lhr.configSettings.screenEmulation.disabled, true);
+    assert.isTrue(lhr.configSettings.screenEmulation.disabled);
     assert.notInclude(lhr.configSettings.emulatedUserAgent, 'Mobile');
     assert.notInclude(lhr.environment.networkUserAgent, 'Mobile');
 

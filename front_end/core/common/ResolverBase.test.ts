@@ -62,7 +62,7 @@ describe('ResolverBase', () => {
         throw new Error('This should not get called');
       });
       resolver.assertIsListening();
-      assert.strictEqual(obj, null);
+      assert.isNull(obj);
       resolver.clear();
     });
 
@@ -70,7 +70,7 @@ describe('ResolverBase', () => {
       const resolver = new ResolverTestImpl();
       const waitForCall = new Promise<TestClass>(resolve => {
         const obj = resolver.tryGet(id, resolve);
-        assert.strictEqual(obj, null);
+        assert.isNull(obj);
       });
       resolver.assertIsListening();
       resolver.onResolve(id, testObj);

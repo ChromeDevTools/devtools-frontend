@@ -148,7 +148,7 @@ describeWithMockConnection('DebuggerModel', () => {
       });
       assert.strictEqual(debuggerModel?.createRawLocationByURL(url, 0)?.scriptId, SCRIPT_ID_ONE);
       assert.strictEqual(debuggerModel?.createRawLocationByURL(url, 20, 1)?.scriptId, SCRIPT_ID_TWO);
-      assert.strictEqual(debuggerModel?.createRawLocationByURL(url, 5, 5), null);
+      assert.isNull(debuggerModel?.createRawLocationByURL(url, 5, 5));
     });
   });
 

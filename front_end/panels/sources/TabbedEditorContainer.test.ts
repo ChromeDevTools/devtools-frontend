@@ -51,16 +51,16 @@ describe('TabbedEditorContainer', () => {
         assert.lengthOf(keys, 3);
         assert.propertyVal(keys[0], 'url', 'http://localhost/foo.js');
         assert.propertyVal(keys[0], 'resourceType', Common.ResourceType.resourceTypes.Script);
-        assert.strictEqual(history.selectionRange(keys[0]), undefined);
-        assert.strictEqual(history.scrollLineNumber(keys[0]), undefined);
+        assert.isUndefined(history.selectionRange(keys[0]));
+        assert.isUndefined(history.scrollLineNumber(keys[0]));
         assert.propertyVal(keys[1], 'url', 'webpack:///src/foo.vue');
         assert.propertyVal(keys[1], 'resourceType', Common.ResourceType.resourceTypes.SourceMapScript);
-        assert.strictEqual(history.selectionRange(keys[1]), undefined);
+        assert.isUndefined(history.selectionRange(keys[1]));
         assert.strictEqual(history.scrollLineNumber(keys[1]), 5);
         assert.propertyVal(keys[2], 'url', 'http://localhost/foo.js');
         assert.propertyVal(keys[2], 'resourceType', Common.ResourceType.resourceTypes.SourceMapScript);
-        assert.strictEqual(history.selectionRange(keys[2]), undefined);
-        assert.strictEqual(history.scrollLineNumber(keys[2]), undefined);
+        assert.isUndefined(history.selectionRange(keys[2]));
+        assert.isUndefined(history.scrollLineNumber(keys[2]));
       });
 
       it('gracefully ignores items with invalid resource type names', () => {

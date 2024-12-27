@@ -424,7 +424,7 @@ describeWithEnvironment('HeaderSectionRow', () => {
     assert.instanceOf(nameEditable, HTMLElement);
     const row = component.shadowRoot.querySelector('.row');
     assert.instanceOf(row, HTMLDivElement);
-    assert.strictEqual(row.querySelector('devtools-icon.disallowed-characters'), null);
+    assert.isNull(row.querySelector('devtools-icon.disallowed-characters'));
     assert.isTrue(hasReloadPrompt(component.shadowRoot));
 
     nameEditable.focus();
@@ -436,7 +436,7 @@ describeWithEnvironment('HeaderSectionRow', () => {
 
     dispatchKeyDownEvent(nameEditable, {key: 'Escape', bubbles: true, composed: true});
     await coordinator.done();
-    assert.strictEqual(row.querySelector('devtools-icon.disallowed-characters'), null);
+    assert.isNull(row.querySelector('devtools-icon.disallowed-characters'));
     assert.isTrue(hasReloadPrompt(component.shadowRoot));
   });
 
@@ -580,11 +580,11 @@ describeWithEnvironment('HeaderSectionRow', () => {
   });
 
   it('recoginzes only alphanumeric characters, dashes, and underscores as valid in header names', () => {
-    assert.strictEqual(NetworkComponents.HeaderSectionRow.isValidHeaderName('AlphaNumeric123'), true);
-    assert.strictEqual(NetworkComponents.HeaderSectionRow.isValidHeaderName('Alpha Numeric'), false);
-    assert.strictEqual(NetworkComponents.HeaderSectionRow.isValidHeaderName('AlphaNumeric123!'), false);
-    assert.strictEqual(NetworkComponents.HeaderSectionRow.isValidHeaderName('With-dashes_and_underscores'), true);
-    assert.strictEqual(NetworkComponents.HeaderSectionRow.isValidHeaderName('no*'), false);
+    assert.isTrue(NetworkComponents.HeaderSectionRow.isValidHeaderName('AlphaNumeric123'));
+    assert.isFalse(NetworkComponents.HeaderSectionRow.isValidHeaderName('Alpha Numeric'));
+    assert.isFalse(NetworkComponents.HeaderSectionRow.isValidHeaderName('AlphaNumeric123!'));
+    assert.isTrue(NetworkComponents.HeaderSectionRow.isValidHeaderName('With-dashes_and_underscores'));
+    assert.isFalse(NetworkComponents.HeaderSectionRow.isValidHeaderName('no*'));
   });
 
   it('allows removing a header override', async () => {

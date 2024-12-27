@@ -15,7 +15,7 @@ describe('Console', () => {
       assert.lengthOf(messages, 1);
       assert.strictEqual(messages[0].text, 'Foo');
       assert.strictEqual(messages[0].level, Common.Console.MessageLevel.INFO);
-      assert.strictEqual(messages[0].show, true);
+      assert.isTrue(messages[0].show);
     });
 
     it('stores messages', () => {
@@ -47,7 +47,7 @@ describe('Console', () => {
       console.log('Lorem Ipsum');
       const messages = console.messages();
       assert.lengthOf(messages, 1);
-      assert.strictEqual(messages[0].show, false);  // Infos don't popup the Console panel by default
+      assert.isFalse(messages[0].show);  // Infos don't popup the Console panel by default
       assert.strictEqual(messages[0].level, Common.Console.MessageLevel.INFO);
     });
   });
@@ -58,7 +58,7 @@ describe('Console', () => {
       console.warn('Lorem Ipsum');
       const messages = console.messages();
       assert.lengthOf(messages, 1);
-      assert.strictEqual(messages[0].show, false);  // Warnings don't popup the Console panel by default
+      assert.isFalse(messages[0].show);  // Warnings don't popup the Console panel by default
       assert.strictEqual(messages[0].level, Common.Console.MessageLevel.WARNING);
     });
   });
@@ -69,7 +69,7 @@ describe('Console', () => {
       console.error('Lorem Ipsum');
       const messages = console.messages();
       assert.lengthOf(messages, 1);
-      assert.strictEqual(messages[0].show, true);  // Errors popup the Console panel by default
+      assert.isTrue(messages[0].show);  // Errors popup the Console panel by default
       assert.strictEqual(messages[0].level, Common.Console.MessageLevel.ERROR);
     });
 
@@ -79,8 +79,8 @@ describe('Console', () => {
       console.error('Baz', true);
       const messages = console.messages();
       assert.lengthOf(messages, 2);
-      assert.strictEqual(messages[0].show, false);
-      assert.strictEqual(messages[1].show, true);
+      assert.isFalse(messages[0].show);
+      assert.isTrue(messages[1].show);
     });
   });
 });

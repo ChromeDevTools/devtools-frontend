@@ -640,8 +640,7 @@ describe('ExtensionServer', () => {
     const extensionOrigin = 'chrome://abcdef' as Platform.DevToolsPath.UrlString;
     const almostOrigin = `${extensionOrigin}/` as Platform.DevToolsPath.UrlString;
     const expectation = `${extensionOrigin}/foo` as Platform.DevToolsPath.UrlString;
-    assert.strictEqual(
-        undefined,
+    assert.isUndefined(
         Extensions.ExtensionServer.ExtensionServer.expandResourcePath(extensionOrigin, 'http://example.com/foo'));
     assert.strictEqual(
         expectation, Extensions.ExtensionServer.ExtensionServer.expandResourcePath(extensionOrigin, expectation));
@@ -650,8 +649,7 @@ describe('ExtensionServer', () => {
     assert.strictEqual(
         expectation, Extensions.ExtensionServer.ExtensionServer.expandResourcePath(extensionOrigin, 'foo'));
 
-    assert.strictEqual(
-        undefined,
+    assert.isUndefined(
         Extensions.ExtensionServer.ExtensionServer.expandResourcePath(almostOrigin, 'http://example.com/foo'));
     assert.strictEqual(
         expectation, Extensions.ExtensionServer.ExtensionServer.expandResourcePath(almostOrigin, expectation));

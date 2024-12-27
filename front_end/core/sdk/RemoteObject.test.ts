@@ -14,16 +14,16 @@ describe('RemoteObject', () => {
       const remoteObject = SDK.RemoteObject.RemoteObject.fromLocalObject(undefined);
 
       assert.deepEqual(remoteObject.type, 'undefined');
-      assert.deepEqual(remoteObject.subtype, undefined);
-      assert.deepEqual(remoteObject.value, undefined);
+      assert.isUndefined(remoteObject.subtype);
+      assert.isUndefined(remoteObject.value);
       assert.deepEqual(remoteObject.description, 'undefined');
-      assert.deepEqual(remoteObject.unserializableValue(), undefined);
-      assert.deepEqual(remoteObject.hasChildren, false);
+      assert.isUndefined(remoteObject.unserializableValue());
+      assert.isFalse(remoteObject.hasChildren);
 
       const callArguments = SDK.RemoteObject.RemoteObject.toCallArgument(remoteObject);
 
-      assert.deepEqual(callArguments.value, undefined);
-      assert.deepEqual(callArguments.unserializableValue, undefined);
+      assert.isUndefined(callArguments.value);
+      assert.isUndefined(callArguments.unserializableValue);
     });
 
     it('can handle null', () => {
@@ -31,30 +31,30 @@ describe('RemoteObject', () => {
 
       assert.deepEqual(remoteObject.type, 'object');
       assert.deepEqual(remoteObject.subtype, 'null');
-      assert.deepEqual(remoteObject.value, null);
+      assert.isNull(remoteObject.value);
       assert.deepEqual(remoteObject.description, 'null');
-      assert.deepEqual(remoteObject.unserializableValue(), undefined);
-      assert.deepEqual(remoteObject.hasChildren, false);
+      assert.isUndefined(remoteObject.unserializableValue());
+      assert.isFalse(remoteObject.hasChildren);
 
       const callArguments = SDK.RemoteObject.RemoteObject.toCallArgument(remoteObject);
 
-      assert.deepEqual(callArguments.value, null);
-      assert.deepEqual(callArguments.unserializableValue, undefined);
+      assert.isNull(callArguments.value);
+      assert.isUndefined(callArguments.unserializableValue);
     });
 
     it('can handle bigints', () => {
       const remoteObject = SDK.RemoteObject.RemoteObject.fromLocalObject(1n);
 
       assert.deepEqual(remoteObject.type, 'bigint');
-      assert.deepEqual(remoteObject.subtype, undefined);
+      assert.isUndefined(remoteObject.subtype);
       assert.deepEqual(remoteObject.value, 1n);
       assert.deepEqual(remoteObject.description, '1');
       assert.deepEqual(remoteObject.unserializableValue(), '1n');
-      assert.deepEqual(remoteObject.hasChildren, false);
+      assert.isFalse(remoteObject.hasChildren);
 
       const callArguments = SDK.RemoteObject.RemoteObject.toCallArgument(remoteObject);
 
-      assert.deepEqual(callArguments.value, undefined);
+      assert.isUndefined(callArguments.value);
       assert.deepEqual(callArguments.unserializableValue, '1n');
     });
 
@@ -62,50 +62,50 @@ describe('RemoteObject', () => {
       const remoteObject = SDK.RemoteObject.RemoteObject.fromLocalObject(42);
 
       assert.deepEqual(remoteObject.type, 'number');
-      assert.deepEqual(remoteObject.subtype, undefined);
+      assert.isUndefined(remoteObject.subtype);
       assert.deepEqual(remoteObject.value, 42);
       assert.deepEqual(remoteObject.description, '42');
-      assert.deepEqual(remoteObject.unserializableValue(), undefined);
-      assert.deepEqual(remoteObject.hasChildren, false);
+      assert.isUndefined(remoteObject.unserializableValue());
+      assert.isFalse(remoteObject.hasChildren);
 
       const callArguments = SDK.RemoteObject.RemoteObject.toCallArgument(remoteObject);
 
       assert.deepEqual(callArguments.value, 42);
-      assert.deepEqual(callArguments.unserializableValue, undefined);
+      assert.isUndefined(callArguments.unserializableValue);
     });
 
     it('can handle strings', () => {
       const remoteObject = SDK.RemoteObject.RemoteObject.fromLocalObject('foo string');
 
       assert.deepEqual(remoteObject.type, 'string');
-      assert.deepEqual(remoteObject.subtype, undefined);
+      assert.isUndefined(remoteObject.subtype);
       assert.deepEqual(remoteObject.value, 'foo string');
       assert.deepEqual(remoteObject.description, 'foo string');
-      assert.deepEqual(remoteObject.unserializableValue(), undefined);
-      assert.deepEqual(remoteObject.hasChildren, false);
+      assert.isUndefined(remoteObject.unserializableValue());
+      assert.isFalse(remoteObject.hasChildren);
 
       const callArguments = SDK.RemoteObject.RemoteObject.toCallArgument(remoteObject);
 
       assert.deepEqual(callArguments.value, 'foo string');
-      assert.deepEqual(callArguments.unserializableValue, undefined);
+      assert.isUndefined(callArguments.unserializableValue);
     });
 
     it('can handle NaN', () => {
       const remoteObject = SDK.RemoteObject.RemoteObject.fromLocalObject(NaN);
 
       assert.deepEqual(remoteObject.type, 'number');
-      assert.deepEqual(remoteObject.subtype, undefined);
+      assert.isUndefined(remoteObject.subtype);
       // Since equality comparisons don't work for NaN, we check if it is a number and if its string
       // representation is the correct one.
       assert.deepEqual(typeof remoteObject.value, 'number');
       assert.deepEqual(String(remoteObject.value), String(NaN));
       assert.deepEqual(remoteObject.description, 'NaN');
       assert.deepEqual(remoteObject.unserializableValue(), 'NaN');
-      assert.deepEqual(remoteObject.hasChildren, false);
+      assert.isFalse(remoteObject.hasChildren);
 
       const callArguments = SDK.RemoteObject.RemoteObject.toCallArgument(remoteObject);
 
-      assert.deepEqual(callArguments.value, undefined);
+      assert.isUndefined(callArguments.value);
       assert.deepEqual(callArguments.unserializableValue, 'NaN');
     });
 
@@ -113,15 +113,15 @@ describe('RemoteObject', () => {
       const remoteObject = SDK.RemoteObject.RemoteObject.fromLocalObject(Infinity);
 
       assert.deepEqual(remoteObject.type, 'number');
-      assert.deepEqual(remoteObject.subtype, undefined);
+      assert.isUndefined(remoteObject.subtype);
       assert.deepEqual(remoteObject.value, Infinity);
       assert.deepEqual(remoteObject.description, 'Infinity');
       assert.deepEqual(remoteObject.unserializableValue(), 'Infinity');
-      assert.deepEqual(remoteObject.hasChildren, false);
+      assert.isFalse(remoteObject.hasChildren);
 
       const callArguments = SDK.RemoteObject.RemoteObject.toCallArgument(remoteObject);
 
-      assert.deepEqual(callArguments.value, undefined);
+      assert.isUndefined(callArguments.value);
       assert.deepEqual(callArguments.unserializableValue, 'Infinity');
     });
 
@@ -129,15 +129,15 @@ describe('RemoteObject', () => {
       const remoteObject = SDK.RemoteObject.RemoteObject.fromLocalObject(-Infinity);
 
       assert.deepEqual(remoteObject.type, 'number');
-      assert.deepEqual(remoteObject.subtype, undefined);
+      assert.isUndefined(remoteObject.subtype);
       assert.deepEqual(remoteObject.value, -Infinity);
       assert.deepEqual(remoteObject.description, '-Infinity');
       assert.deepEqual(remoteObject.unserializableValue(), '-Infinity');
-      assert.deepEqual(remoteObject.hasChildren, false);
+      assert.isFalse(remoteObject.hasChildren);
 
       const callArguments = SDK.RemoteObject.RemoteObject.toCallArgument(remoteObject);
 
-      assert.deepEqual(callArguments.value, undefined);
+      assert.isUndefined(callArguments.value);
       assert.deepEqual(callArguments.unserializableValue, '-Infinity');
     });
 
@@ -145,15 +145,15 @@ describe('RemoteObject', () => {
       const remoteObject = SDK.RemoteObject.RemoteObject.fromLocalObject(-0);
 
       assert.deepEqual(remoteObject.type, 'number');
-      assert.deepEqual(remoteObject.subtype, undefined);
+      assert.isUndefined(remoteObject.subtype);
       assert.deepEqual(remoteObject.value, -0);
       assert.deepEqual(remoteObject.description, '0');
       assert.deepEqual(remoteObject.unserializableValue(), '-0');
-      assert.deepEqual(remoteObject.hasChildren, false);
+      assert.isFalse(remoteObject.hasChildren);
 
       const callArguments = SDK.RemoteObject.RemoteObject.toCallArgument(remoteObject);
 
-      assert.deepEqual(callArguments.value, undefined);
+      assert.isUndefined(callArguments.value);
       assert.deepEqual(callArguments.unserializableValue, '-0');
     });
 
@@ -164,30 +164,30 @@ describe('RemoteObject', () => {
       assert.deepEqual(remoteObject.subtype, 'array');
       assert.deepEqual(remoteObject.value, [1n, 2, NaN, -0, null, undefined]);
       assert.deepEqual(remoteObject.description, '[1, 2, NaN, 0, null, undefined]');
-      assert.deepEqual(remoteObject.unserializableValue(), undefined);
+      assert.isUndefined(remoteObject.unserializableValue());
       assert.deepEqual(remoteObject.arrayLength(), 6);
-      assert.deepEqual(remoteObject.hasChildren, true);
+      assert.isTrue(remoteObject.hasChildren);
 
       const callArguments = SDK.RemoteObject.RemoteObject.toCallArgument(remoteObject);
 
       assert.deepEqual(callArguments.value, [1n, 2, NaN, -0, null, undefined]);
-      assert.deepEqual(callArguments.unserializableValue, undefined);
+      assert.isUndefined(callArguments.unserializableValue);
     });
 
     it('can handle an object', () => {
       const remoteObject = SDK.RemoteObject.RemoteObject.fromLocalObject({foo: 'bar'});
 
       assert.deepEqual(remoteObject.type, 'object');
-      assert.deepEqual(remoteObject.subtype, undefined);
+      assert.isUndefined(remoteObject.subtype);
       assert.deepEqual(remoteObject.value, {foo: 'bar'});
       assert.deepEqual(remoteObject.description, '{foo: "bar"}');
-      assert.deepEqual(remoteObject.unserializableValue(), undefined);
-      assert.deepEqual(remoteObject.hasChildren, true);
+      assert.isUndefined(remoteObject.unserializableValue());
+      assert.isTrue(remoteObject.hasChildren);
 
       const callArguments = SDK.RemoteObject.RemoteObject.toCallArgument(remoteObject);
 
       assert.deepEqual(callArguments.value, {foo: 'bar'});
-      assert.deepEqual(callArguments.unserializableValue, undefined);
+      assert.isUndefined(callArguments.unserializableValue);
     });
 
     it('can handle a nested object', () => {
@@ -195,16 +195,16 @@ describe('RemoteObject', () => {
           {foo: 'bar', baz: {nested: 34}, another: {nested: {object: true}}});
 
       assert.deepEqual(remoteObject.type, 'object');
-      assert.deepEqual(remoteObject.subtype, undefined);
+      assert.isUndefined(remoteObject.subtype);
       assert.deepEqual(remoteObject.value, {foo: 'bar', baz: {nested: 34}, another: {nested: {object: true}}});
       assert.deepEqual(remoteObject.description, '{foo: "bar", baz: {nested: 34}, another: {nested: {object: true}}}');
-      assert.deepEqual(remoteObject.unserializableValue(), undefined);
-      assert.deepEqual(remoteObject.hasChildren, true);
+      assert.isUndefined(remoteObject.unserializableValue());
+      assert.isTrue(remoteObject.hasChildren);
 
       const callArguments = SDK.RemoteObject.RemoteObject.toCallArgument(remoteObject);
 
       assert.deepEqual(callArguments.value, {foo: 'bar', baz: {nested: 34}, another: {nested: {object: true}}});
-      assert.deepEqual(callArguments.unserializableValue, undefined);
+      assert.isUndefined(callArguments.unserializableValue);
     });
 
     it('can handle the function arguments object', () => {
@@ -213,28 +213,28 @@ describe('RemoteObject', () => {
       })(1, 2, 3, 4));
 
       assert.deepEqual(remoteObject.type, 'object');
-      assert.deepEqual(remoteObject.subtype, undefined);
+      assert.isUndefined(remoteObject.subtype);
       // We can't represent an `Arguments` object, but we can compare its structure
       assert.deepEqual(String(remoteObject.value), '[object Arguments]');
       assert.deepEqual(Object.keys(remoteObject.value), ['0', '1', '2', '3']);
       assert.deepEqual(Object.values(remoteObject.value), [1, 2, 3, 4]);
       assert.deepEqual(remoteObject.description, '{0: 1, 1: 2, 2: 3, 3: 4}');
-      assert.deepEqual(remoteObject.unserializableValue(), undefined);
-      assert.deepEqual(remoteObject.hasChildren, true);
+      assert.isUndefined(remoteObject.unserializableValue());
+      assert.isTrue(remoteObject.hasChildren);
 
       const callArguments = SDK.RemoteObject.RemoteObject.toCallArgument(remoteObject);
 
       assert.deepEqual(String(callArguments.value), '[object Arguments]');
       assert.deepEqual(Object.keys(callArguments.value), ['0', '1', '2', '3']);
       assert.deepEqual(Object.values(callArguments.value), [1, 2, 3, 4]);
-      assert.deepEqual(callArguments.unserializableValue, undefined);
+      assert.isUndefined(callArguments.unserializableValue);
     });
 
     it('can handle a function', () => {
       const remoteObject = SDK.RemoteObject.RemoteObject.fromLocalObject(function func() {});
 
       assert.deepEqual(remoteObject.type, 'function');
-      assert.deepEqual(remoteObject.subtype, undefined);
+      assert.isUndefined(remoteObject.subtype);
       // We can't represent an `Function` object, but we can compare its structure
       assert.deepEqual(typeof remoteObject.value, 'function');
       const funcStrs = [
@@ -244,32 +244,32 @@ describe('RemoteObject', () => {
       ];
       assert.deepInclude(funcStrs, String(remoteObject.value));
       assert.deepInclude(funcStrs, remoteObject.description);
-      assert.deepEqual(remoteObject.unserializableValue(), undefined);
-      assert.deepEqual(remoteObject.hasChildren, false);
+      assert.isUndefined(remoteObject.unserializableValue());
+      assert.isFalse(remoteObject.hasChildren);
 
       const callArguments = SDK.RemoteObject.RemoteObject.toCallArgument(remoteObject);
 
       assert.deepInclude(funcStrs, String(callArguments.value));
-      assert.deepEqual(callArguments.unserializableValue, undefined);
+      assert.isUndefined(callArguments.unserializableValue);
     });
 
     it('can handle an error', () => {
       const remoteObject = SDK.RemoteObject.RemoteObject.fromLocalObject(new Error('Some error message'));
 
       assert.deepEqual(remoteObject.type, 'object');
-      assert.deepEqual(remoteObject.subtype, undefined);
+      assert.isUndefined(remoteObject.subtype);
       // We can't represent an `Error` object, but we can compare its structure
       assert.deepEqual(typeof remoteObject.value, 'object');
       assert.deepEqual(String(remoteObject.value), 'Error: Some error message');
       assert.deepEqual(remoteObject.description, '{}');
-      assert.deepEqual(remoteObject.unserializableValue(), undefined);
-      assert.deepEqual(remoteObject.hasChildren, false);
+      assert.isUndefined(remoteObject.unserializableValue());
+      assert.isFalse(remoteObject.hasChildren);
 
       const callArguments = SDK.RemoteObject.RemoteObject.toCallArgument(remoteObject);
 
       assert.deepEqual(typeof callArguments.value, 'object');
       assert.deepEqual(String(callArguments.value), 'Error: Some error message');
-      assert.deepEqual(callArguments.unserializableValue, undefined);
+      assert.isUndefined(callArguments.unserializableValue);
     });
 
     it('can handle a Date', () => {
@@ -299,13 +299,13 @@ describe('RemoteObject', () => {
       // string as-is and compare that.
       assert.deepEqual(
           Date.parse(remoteObject.description), Date.parse('Tue Mar 10 2020 15:38:57 GMT+0000 (Greenwich Mean Time)'));
-      assert.deepEqual(remoteObject.unserializableValue(), undefined);
-      assert.deepEqual(remoteObject.hasChildren, false);
+      assert.isUndefined(remoteObject.unserializableValue());
+      assert.isFalse(remoteObject.hasChildren);
 
       const callArguments = SDK.RemoteObject.RemoteObject.toCallArgument(remoteObject);
 
       assert.deepEqual(callArguments.value, createNewFixedTimeDate());
-      assert.deepEqual(callArguments.unserializableValue, undefined);
+      assert.isUndefined(callArguments.unserializableValue);
     });
   });
 

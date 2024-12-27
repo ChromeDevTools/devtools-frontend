@@ -37,7 +37,7 @@ describe('FileUtils', () => {
 
       const hasNoError = await reader.read(output);
 
-      assert.strictEqual(hasNoError, true);
+      assert.isTrue(hasNoError);
       assert.strictEqual(chunkCount, 41);
       assert.strictEqual(text.join(''), output.data(), 'Read text is different from written text');
     });
@@ -71,7 +71,7 @@ describe('FileUtils', () => {
       const cfreader = new ChunkedFileReader(compressedFile, chunkSize, () => ++chunkCount);
 
       const hasNoError = await cfreader.read(output);
-      assert.strictEqual(hasNoError, true);
+      assert.isTrue(hasNoError);
       assert.strictEqual(expectedText, output.data(), 'Read text is different from written text');
     });
   });

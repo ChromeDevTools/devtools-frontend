@@ -410,6 +410,7 @@ describeWithMockConnection('BreakpointManager', () => {
     assert.exists(modelBreakpoint);
 
     // Make sure that we do not have a linked script yet.
+    // eslint-disable-next-line rulesdir/no-assert-equal-boolean-null-undefined
     assert.strictEqual(modelBreakpoint.currentState, null);
 
     // Now await restoring the breakpoint.

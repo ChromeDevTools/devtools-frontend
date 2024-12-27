@@ -48,7 +48,7 @@ describeWithMockConnection('CSSModel', () => {
 
     const cssModelHeader = await addedPromise;
     assert.deepEqual(cssModelHeader.sourceURL, '');
-    assert.deepEqual(cssModelHeader.isConstructed, true);
+    assert.isTrue(cssModelHeader.isConstructed);
   });
 
   describe('on primary page change', () => {

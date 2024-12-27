@@ -748,7 +748,7 @@ c`;
         const errorStep = responses.at(-1) as AiAssistance.ErrorResponse;
         assert.exists(errorStep);
         assert.strictEqual(errorStep.error, ErrorType.ABORT);
-        assert.strictEqual(await sideEffectConfirmationPromise.promise, false);
+        assert.isFalse(await sideEffectConfirmationPromise.promise);
       });
     });
 

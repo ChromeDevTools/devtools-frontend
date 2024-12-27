@@ -791,7 +791,7 @@ describeWithMockConnection('PreloadingAttemptView', () => {
 
     const buttons = report.querySelectorAll('devtools-report-value:nth-of-type(2) devtools-button');
     assert.strictEqual(buttons[0].textContent?.trim(), 'Inspect');
-    assert.strictEqual(buttons[0].getAttribute('disabled'), null);
+    assert.isNull(buttons[0].getAttribute('disabled'));
   });
 
   it('shows prerender details with Investigate button for Ready', async () => {
@@ -862,7 +862,7 @@ describeWithMockConnection('PreloadingAttemptView', () => {
 
     const buttons = report.querySelectorAll('devtools-report-value:nth-of-type(2) devtools-button');
     assert.strictEqual(buttons[0].textContent?.trim(), 'Inspect');
-    assert.strictEqual(buttons[0].getAttribute('disabled'), null);
+    assert.isNull(buttons[0].getAttribute('disabled'));
   });
 
   it('shows prerender details with Investigate (disabled) button for Failure', async () => {

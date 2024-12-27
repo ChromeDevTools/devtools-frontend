@@ -89,9 +89,9 @@ describe('Snapshot', function() {
 
     // No trace was collected in snapshot mode.
     const viewTrace = await $textContent('View Trace', reportEl);
-    assert.strictEqual(viewTrace, null);
+    assert.isNull(viewTrace);
     const viewOriginalTrace = await $textContent('View Original Trace', reportEl);
-    assert.strictEqual(viewOriginalTrace, null);
+    assert.isNull(viewOriginalTrace);
 
     // Ensure service worker is not cleared in snapshot mode.
     assert.strictEqual(await getServiceWorkerCount(), 1);

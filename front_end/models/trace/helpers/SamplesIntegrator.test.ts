@@ -67,7 +67,7 @@ describeWithEnvironment('SamplesIntegrator', function() {
         ...Trace.Types.Configuration.defaults(),
       };
       config.debugMode = true;
-      assert.strictEqual(Trace.Types.Configuration.defaults().debugMode, false, 'Default config should not be mutable');
+      assert.isFalse(Trace.Types.Configuration.defaults().debugMode, 'Default config should not be mutable');
 
       const integrator =
           new Trace.Helpers.SamplesIntegrator.SamplesIntegrator(parsedBasicProfile, PROFILE_ID, pid, tid, config);

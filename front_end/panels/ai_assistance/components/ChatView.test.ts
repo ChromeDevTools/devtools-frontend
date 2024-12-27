@@ -58,8 +58,7 @@ css
         for (const linkCase of linkCases) {
           const elem = renderToElem(linkCase, linklessRenderer);
           assert.lengthOf(elem.querySelectorAll('a, x-link, devtools-link'), 0);
-          assert.strictEqual(
-              ['<a', '<x-link', '<devtools-link'].some(tagName => elem.outerHTML.includes(tagName)), false);
+          assert.isFalse(['<a', '<x-link', '<devtools-link'].some(tagName => elem.outerHTML.includes(tagName)));
           assert.ok(elem.textContent?.includes('( https://z.com )'), linkCase);
         }
       });
@@ -69,9 +68,8 @@ css
         for (const linkCase of linkCases) {
           const elem = renderToElem(linkCase, linkfulRenderer);
           assert.lengthOf(elem.querySelectorAll('a, x-link, devtools-link'), 1);
-          assert.strictEqual(
-              ['<a', '<x-link', '<devtools-link'].some(tagName => elem.outerHTML.includes(tagName)), true);
-          assert.strictEqual(elem.textContent?.includes('( https://z.com )'), false);
+          assert.isTrue(['<a', '<x-link', '<devtools-link'].some(tagName => elem.outerHTML.includes(tagName)));
+          assert.isFalse(elem.textContent?.includes('( https://z.com )'));
         }
       });
 
@@ -89,10 +87,8 @@ css
         for (const imageCase of imageCases) {
           const elem = renderToElem(imageCase, linklessRenderer);
           assert.lengthOf(elem.querySelectorAll('a, x-link, devtools-link, img, devtools-markdown-image'), 0);
-          assert.strictEqual(
-              ['<a', '<x-link', '<devtools-link', '<img', '<devtools-markdown-image'].some(
-                  tagName => elem.outerHTML.includes(tagName)),
-              false);
+          assert.isFalse(['<a', '<x-link', '<devtools-link', '<img', '<devtools-markdown-image'].some(
+              tagName => elem.outerHTML.includes(tagName)));
 
           assert.ok(elem.textContent?.includes('( https://z.com/i.png )'), imageCase);
         }

@@ -64,7 +64,7 @@ describe('Composite Progress Bar', () => {
     const composite = new CompositeProgress(indicator);
     const subProgress = composite.createSubProgress();
 
-    assert.strictEqual(indicator.getTitle, undefined);
+    assert.isUndefined(indicator.getTitle);
     assert.strictEqual(indicator.getWorkCompleted, 0);
     assert.strictEqual(indicator.getTotalWork, 1);
 
@@ -98,7 +98,7 @@ describe('Composite Progress Bar', () => {
     // Creates a sub progress with the weight of 3
     const subProgress2 = composite.createSubProgress(3);
 
-    assert.strictEqual(indicator.getTitle, undefined);
+    assert.isUndefined(indicator.getTitle);
     assert.strictEqual(indicator.getWorkCompleted, 0);
     assert.strictEqual(indicator.getTotalWork, 1);
 
@@ -154,17 +154,17 @@ describe('Composite Progress Bar', () => {
     const composite1 = new CompositeProgress(subProgress01);
     const subProgress11 = composite1.createSubProgress(10);  // Weight should have no effect
 
-    assert.strictEqual(indicator.getTitle, undefined);
+    assert.isUndefined(indicator.getTitle);
     assert.strictEqual(indicator.getWorkCompleted, 0);
     assert.strictEqual(indicator.getTotalWork, 1);
 
     subProgress11.setWorked(10);
-    assert.strictEqual(indicator.getTitle, undefined);
+    assert.isUndefined(indicator.getTitle);
     assert.strictEqual(indicator.getWorkCompleted, 0);
     assert.strictEqual(indicator.getTotalWork, 1);
 
     subProgress11.setTotalWork(100);
-    assert.strictEqual(indicator.getTitle, undefined);
+    assert.isUndefined(indicator.getTitle);
     assert.strictEqual(indicator.getWorkCompleted, 0.1);
     assert.strictEqual(indicator.getTotalWork, 1);
 
@@ -188,14 +188,14 @@ describe('Composite Progress Bar', () => {
     const composite = new CompositeProgress(indicator);
     const subProgress = composite.createSubProgress();
 
-    assert.strictEqual(indicator.getTitle, undefined);
+    assert.isUndefined(indicator.getTitle);
     assert.strictEqual(indicator.getWorkCompleted, 0);
     assert.strictEqual(indicator.getTotalWork, 1);
     assert.strictEqual(subProgress.getWorked(), 0);
 
     subProgress.incrementWorked();
 
-    assert.strictEqual(indicator.getTitle, undefined);
+    assert.isUndefined(indicator.getTitle);
     assert.strictEqual(indicator.getWorkCompleted, 0);
     assert.strictEqual(indicator.getTotalWork, 1);
     assert.strictEqual(subProgress.getWorked(), 1);

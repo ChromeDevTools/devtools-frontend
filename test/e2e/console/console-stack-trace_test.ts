@@ -90,12 +90,12 @@ describe('The Console Tab', () => {
 
     // assert that hidden rows are not shown initially
     let showHidden = stack ? await stack.evaluate(x => x.classList.contains('show-hidden-rows')) : null;
-    assert.strictEqual(showHidden, false);
+    assert.isFalse(showHidden);
 
     // assert that after clicking 'show all'-button, hidden rows are shown
     await click(SHOW_MORE_LINK);
     showHidden = stack ? await stack.evaluate(x => x.classList.contains('show-hidden-rows')) : null;
-    assert.strictEqual(showHidden, true);
+    assert.isTrue(showHidden);
 
     const expectedUnhidden = [
       {text: '\nshown3 @ showMe.js:10', visible: true},
@@ -123,6 +123,6 @@ describe('The Console Tab', () => {
     // assert that after clicking 'show less'-button, hidden rows are hidden again
     await click(SHOW_LESS_LINK);
     showHidden = stack ? await stack.evaluate(x => x.classList.contains('show-hidden-rows')) : null;
-    assert.strictEqual(showHidden, false);
+    assert.isFalse(showHidden);
   });
 });

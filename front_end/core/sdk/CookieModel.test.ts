@@ -81,13 +81,13 @@ describeWithMockConnection('CookieModel', () => {
       assert.strictEqual(cookies[0].size(), 23);
       assert.strictEqual(cookies[0].value(), 'value');
       assert.strictEqual(cookies[0].expires(), 42000);
-      assert.strictEqual(cookies[0].httpOnly(), false);
-      assert.strictEqual(cookies[0].secure(), false);
+      assert.isFalse(cookies[0].httpOnly());
+      assert.isFalse(cookies[0].secure());
       assert.strictEqual(cookies[0].priority(), Protocol.Network.CookiePriority.Medium);
       assert.strictEqual(cookies[0].sourcePort(), 80);
       assert.strictEqual(cookies[0].sourceScheme(), Protocol.Network.CookieSourceScheme.NonSecure);
       assert.strictEqual(cookies[0].partitionKey().topLevelSite, 'https://example.net');
-      assert.strictEqual(cookies[0].partitionKey().hasCrossSiteAncestor, false);
+      assert.isFalse(cookies[0].partitionKey().hasCrossSiteAncestor);
     }
   });
 
@@ -246,7 +246,7 @@ describeWithMockConnection('CookieModel', () => {
     assert.strictEqual(cookies2[0].domain(), '.example.com');
     assert.strictEqual(cookies2[0].name(), 'name');
     assert.strictEqual(cookies2[0].partitionKey().topLevelSite, 'https://example.net');
-    assert.strictEqual(cookies2[0].partitionKey().hasCrossSiteAncestor, false);
+    assert.isFalse(cookies2[0].partitionKey().hasCrossSiteAncestor);
 
     await model.deleteCookie(SDK.Cookie.Cookie.fromProtocolCookie(PROTOCOL_COOKIE_PARTITIONED));
 

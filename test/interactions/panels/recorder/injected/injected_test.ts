@@ -223,7 +223,7 @@ describe('Injected', () => {
     });
     it('should not return a text selector for elements > maximum length', async () => {
       const selectors = await getSelectorOfButtonWithLength(MAXIMUM_LENGTH + 1);
-      assert.deepEqual(selectors, undefined);
+      assert.isUndefined(selectors);
     });
     it('should return a text selector correctly with same prefix elements', async () => {
       let selectors = await getSelectorOfButtonWithLength(

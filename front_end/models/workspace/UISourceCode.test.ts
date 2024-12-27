@@ -77,7 +77,7 @@ describe('UISourceCode', () => {
 
     const result = await sutObject.sut.requestMetadata();
 
-    assert.strictEqual(result, null);
+    assert.isNull(result);
   });
 
   it('can return full display name', async () => {

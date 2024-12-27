@@ -34,7 +34,7 @@ describeWithEnvironment('ResourceType class', () => {
     assert.strictEqual(
         resourceType.category().shortTitle(), 'Category Test Short Title',
         'category short title was not set correctly');
-    assert.strictEqual(resourceType.isTextType(), true, 'resource type was not set correctly');
+    assert.isTrue(resourceType.isTextType(), 'resource type was not set correctly');
   });
 
   it('is able to return a document resource from the string "text/html"', () => {
@@ -411,13 +411,13 @@ describeWithEnvironment('ResourceType class', () => {
 
   it('treats a Ping as Other', () => {
     const resourceType = resourceTypes.Ping;
-    assert.strictEqual(resourceType.isTextType(), false, 'A ping is not a text type');
+    assert.isFalse(resourceType.isTextType(), 'A ping is not a text type');
     assert.strictEqual(resourceType.canonicalMimeType(), '', 'A ping does not have an associated mime type');
   });
 
   it('treats a CSPViolationsReport as Other', () => {
     const resourceType = resourceTypes.CSPViolationReport;
-    assert.strictEqual(resourceType.isTextType(), false, 'A ping is not a text type');
+    assert.isFalse(resourceType.isTextType(), 'A ping is not a text type');
     assert.strictEqual(resourceType.canonicalMimeType(), '', 'A ping does not have an associated mime type');
   });
 });

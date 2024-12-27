@@ -30,12 +30,12 @@ describe('Watch Expression Pane', () => {
 
     // Retrieve watch element and ensure that it is expanded
     const initialExpandCheck = await element.evaluate(e => e.classList.contains('expanded'));
-    assert.strictEqual(initialExpandCheck, true);
+    assert.isTrue(initialExpandCheck);
 
     // Begin editing and check that element is now collapsed.
     await frontend.keyboard.press('Enter');
     const editingExpandCheck = await element.evaluate(e => e.classList.contains('expanded'));
-    assert.strictEqual(editingExpandCheck, false);
+    assert.isFalse(editingExpandCheck);
 
     // Remove the watch so that it does not interfere with other tests.
     await frontend.keyboard.press('Escape');

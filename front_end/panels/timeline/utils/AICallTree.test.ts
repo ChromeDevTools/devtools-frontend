@@ -147,39 +147,39 @@ describe('AITreeFilter', () => {
   it('always includes the selected event', () => {
     const selectedEvent = makeEvent('selected', 0, 100);
     const filter = new Utils.AICallTree.AITreeFilter(selectedEvent);
-    assert.strictEqual(filter.accept(selectedEvent), true);
+    assert.isTrue(filter.accept(selectedEvent));
   });
 
   it('includes events that are long enough', () => {
     const selectedEvent = makeEvent('selected', 0, 100);
     const filter = new Utils.AICallTree.AITreeFilter(selectedEvent);
 
-    assert.strictEqual(filter.accept(makeEvent('short', 0, 1)), true);
-    assert.strictEqual(filter.accept(makeEvent('short', 0, 0.6)), true);
-    assert.strictEqual(filter.accept(makeEvent('long', 0, 101)), true);
-    assert.strictEqual(filter.accept(makeEvent('long', 0, 200)), true);
-    assert.strictEqual(filter.accept(makeEvent('long', 0, 1000)), true);
+    assert.isTrue(filter.accept(makeEvent('short', 0, 1)));
+    assert.isTrue(filter.accept(makeEvent('short', 0, 0.6)));
+    assert.isTrue(filter.accept(makeEvent('long', 0, 101)));
+    assert.isTrue(filter.accept(makeEvent('long', 0, 200)));
+    assert.isTrue(filter.accept(makeEvent('long', 0, 1000)));
   });
 
   it('excludes events that are too short', () => {
     const selectedEvent = makeEvent('selected', 0, 100);
     const filter = new Utils.AICallTree.AITreeFilter(selectedEvent);
 
-    assert.strictEqual(filter.accept(makeEvent('short', 0, 0)), false);
-    assert.strictEqual(filter.accept(makeEvent('short', 0, 0.1)), false);
-    assert.strictEqual(filter.accept(makeEvent('short', 0, 0.4)), false);
+    assert.isFalse(filter.accept(makeEvent('short', 0, 0)));
+    assert.isFalse(filter.accept(makeEvent('short', 0, 0.1)));
+    assert.isFalse(filter.accept(makeEvent('short', 0, 0.4)));
   });
 
   it('excludes COMPILE_CODE nodes if non-selected', () => {
     const selectedEvent = makeEvent('selected', 0, 100);
     const compileCodeEvent = makeEvent(Trace.Types.Events.Name.COMPILE_CODE, 0, 100);
     const filter = new Utils.AICallTree.AITreeFilter(selectedEvent);
-    assert.strictEqual(filter.accept(compileCodeEvent), false);
+    assert.isFalse(filter.accept(compileCodeEvent));
   });
 
   it('includes COMPILE_CODE nodes if selected', () => {
     const selectedEvent = makeEvent(Trace.Types.Events.Name.COMPILE_CODE, 0, 100);
     const filter = new Utils.AICallTree.AITreeFilter(selectedEvent);
-    assert.strictEqual(filter.accept(selectedEvent), true);
+    assert.isTrue(filter.accept(selectedEvent));
   });
 });

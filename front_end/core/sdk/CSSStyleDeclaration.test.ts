@@ -58,7 +58,7 @@ describeWithMockConnection('CSSStyleDeclaration', () => {
       ['implicit', false],
       ['index', 0],
     ]);
-    assert.strictEqual(style.allProperties()[0].activeInStyle(), true);
+    assert.isTrue(style.allProperties()[0].activeInStyle());
 
     assertPropertValues(style.allProperties()[1], [
       ['name', 'margin-top'],
@@ -66,7 +66,7 @@ describeWithMockConnection('CSSStyleDeclaration', () => {
       ['implicit', false],
       ['index', 1],
     ]);
-    assert.strictEqual(style.allProperties()[1].activeInStyle(), true);
+    assert.isTrue(style.allProperties()[1].activeInStyle());
 
     assertPropertValues(style.allProperties()[2], [
       ['name', 'margin-top'],
@@ -74,7 +74,7 @@ describeWithMockConnection('CSSStyleDeclaration', () => {
       ['implicit', true],
       ['index', 2],
     ]);
-    assert.strictEqual(style.allProperties()[2].activeInStyle(), false);
+    assert.isFalse(style.allProperties()[2].activeInStyle());
 
     assertPropertValues(style.allProperties()[3], [
       ['name', 'margin-right'],
@@ -82,7 +82,7 @@ describeWithMockConnection('CSSStyleDeclaration', () => {
       ['implicit', true],
       ['index', 3],
     ]);
-    assert.strictEqual(style.allProperties()[3].activeInStyle(), true);
+    assert.isTrue(style.allProperties()[3].activeInStyle());
 
     assertPropertValues(style.allProperties()[4], [
       ['name', 'margin-bottom'],
@@ -90,7 +90,7 @@ describeWithMockConnection('CSSStyleDeclaration', () => {
       ['implicit', true],
       ['index', 4],
     ]);
-    assert.strictEqual(style.allProperties()[4].activeInStyle(), true);
+    assert.isTrue(style.allProperties()[4].activeInStyle());
 
     assertPropertValues(style.allProperties()[5], [
       ['name', 'margin-left'],
@@ -98,7 +98,7 @@ describeWithMockConnection('CSSStyleDeclaration', () => {
       ['implicit', true],
       ['index', 5],
     ]);
-    assert.strictEqual(style.allProperties()[5].activeInStyle(), true);
+    assert.isTrue(style.allProperties()[5].activeInStyle());
   });
 
   it('should correctly compute active and inactive declarations', () => {

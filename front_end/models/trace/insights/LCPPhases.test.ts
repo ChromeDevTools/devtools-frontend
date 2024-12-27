@@ -45,8 +45,8 @@ describeWithEnvironment('LCPPhases', function() {
       const firstNav = getFirstOrError(data.Meta.navigationsByNavigationId.values());
       const insight = getInsightOrError('LCPPhases', insights, firstNav);
 
-      assert.strictEqual(insight.lcpMs, undefined);
-      assert.strictEqual(insight.phases, undefined);
+      assert.isUndefined(insight.lcpMs);
+      assert.isUndefined(insight.phases);
       assert.strictEqual(insight.warnings?.[0], 'NO_LCP');
     });
 
@@ -56,7 +56,7 @@ describeWithEnvironment('LCPPhases', function() {
       const insight = getInsightOrError('LCPPhases', insights, firstNav);
 
       assert.strictEqual(insight.lcpMs, 204.909);
-      assert.strictEqual(insight.phases, undefined);
+      assert.isUndefined(insight.phases);
       assert.strictEqual(insight.warnings?.[0], 'NO_DOCUMENT_REQUEST');
     });
   });

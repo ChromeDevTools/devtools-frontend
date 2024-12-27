@@ -13,9 +13,7 @@ ruleTester.run('prefer-readonly-keyword', rule, {
   valid: [
     {
       filename: 'foo.ts',
-      code: `class X {
-        private foo: readonly string[];
-      }`,
+      code: 'class Foo { private foo: readonly string[]; }',
     },
     {
       filename: 'foo.ts',
@@ -29,26 +27,44 @@ ruleTester.run('prefer-readonly-keyword', rule, {
 
   invalid: [
     {
+      code: 'class Foo { private foo: ReadonlyArray<string>; }',
+      output: 'class Foo { private foo: readonly string[]; }',
       filename: 'foo.ts',
-      code: `class X {
-        private foo: ReadonlyArray<string>;
-      }`,
-      errors: [{message: 'Prefer the readonly keyword over the ReadonlyArray type.'}]
+      errors: [
+        {
+          messageId: 'useReadonlyKeyword',
+        },
+      ]
     },
     {
-      filename: 'foo.ts',
       code: 'function x(foo: ReadonlyArray<string>) {}',
-      errors: [{message: 'Prefer the readonly keyword over the ReadonlyArray type.'}]
+      output: 'function x(foo: readonly string[]) {}',
+      filename: 'foo.ts',
+      errors: [
+        {
+          messageId: 'useReadonlyKeyword',
+        },
+      ]
     },
     {
-      filename: 'foo.ts',
       code: 'function x(foo: readonly string[]): ReadonlyArray<string> {}',
-      errors: [{message: 'Prefer the readonly keyword over the ReadonlyArray type.'}]
+      output: 'function x(foo: readonly string[]): readonly string[] {}',
+      filename: 'foo.ts',
+      errors: [
+        {
+          messageId: 'useReadonlyKeyword',
+        },
+      ]
     },
     {
-      filename: 'foo.ts',
       code: 'const x: ReadonlyArray<string> = []',
-      errors: [{message: 'Prefer the readonly keyword over the ReadonlyArray type.'}]
+      output: 'const x: readonly string[] = []',
+      filename: 'foo.ts',
+      errors: [
+        {
+          messageId: 'useReadonlyKeyword',
+        },
+      ]
     },
   ]
 });

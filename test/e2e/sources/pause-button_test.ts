@@ -49,7 +49,7 @@ describe('Sources Tab', () => {
       await waitFor(PAUSE_INDICATOR_SELECTOR);
       await executionLineHighlighted();
 
-      assert.deepStrictEqual(await getOpenSources(), ['infinity-loop.html']);
+      assert.deepEqual(await getOpenSources(), ['infinity-loop.html']);
     });
   });
 });

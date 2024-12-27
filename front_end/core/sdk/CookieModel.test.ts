@@ -197,7 +197,7 @@ describeWithMockConnection('CookieModel', () => {
     cookieModel.addBlockedCookie(cookie, [blockedReason]);
     const cookieToBlockedReasons = cookieModel.getCookieToBlockedReasonsMap();
     assert.strictEqual(cookieToBlockedReasons.size, 1);
-    assert.deepStrictEqual(cookieToBlockedReasons.get(cookie), [blockedReason]);
+    assert.deepEqual(cookieToBlockedReasons.get(cookie), [blockedReason]);
 
     navigate(getMainFrame(target));
     assert.strictEqual(cookieModel.getCookieToBlockedReasonsMap().size, 0);

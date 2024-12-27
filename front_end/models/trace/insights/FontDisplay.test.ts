@@ -21,7 +21,7 @@ describeWithEnvironment('FontDisplay', function() {
     const insight =
         getInsightOrError('FontDisplay', insights, getFirstOrError(data.Meta.navigationsByNavigationId.values()));
 
-    assert.deepStrictEqual(insight.fonts.map(f => ({...f, request: f.request.args.data.url})), [
+    assert.deepEqual(insight.fonts.map(f => ({...f, request: f.request.args.data.url})), [
       {
         request: 'https://fonts.gstatic.com/s/ptsans/v17/jizaRExUiTo99u79D0KExcOPIDU.woff2',
         display: 'auto',

@@ -65,7 +65,7 @@ describe('Snapshot', function() {
 
     assert.strictEqual(lhr.gatherMode, 'snapshot');
 
-    assert.deepStrictEqual(artifacts.ViewportDimensions, {
+    assert.deepEqual(artifacts.ViewportDimensions, {
       innerHeight: 823,
       innerWidth: 412,
       outerHeight: 823,
@@ -75,8 +75,8 @@ describe('Snapshot', function() {
 
     const {auditResults, erroredAudits, failedAudits} = getAuditsBreakdown(lhr);
     assert.strictEqual(auditResults.length, 88);
-    assert.deepStrictEqual(erroredAudits, []);
-    assert.deepStrictEqual(failedAudits.map(audit => audit.id), [
+    assert.deepEqual(erroredAudits, []);
+    assert.deepEqual(failedAudits.map(audit => audit.id), [
       'document-title',
       'html-has-lang',
       'label',

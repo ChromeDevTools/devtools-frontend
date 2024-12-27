@@ -138,7 +138,7 @@ describeWithMockConnection('OriginMap', () => {
     await coordinator.done();
 
     const mappings = getOriginMappings(view);
-    assert.deepStrictEqual(mappings, [
+    assert.deepEqual(mappings, [
       ['http://localhost:8080', 'https://example.com', undefined],
     ]);
   });
@@ -156,7 +156,7 @@ describeWithMockConnection('OriginMap', () => {
     await coordinator.done();
 
     const mappings = getOriginMappings(view);
-    assert.deepStrictEqual(mappings, [
+    assert.deepEqual(mappings, [
       [
         'http://localhost:8080',
         'https://no-data.com',
@@ -178,7 +178,7 @@ describeWithMockConnection('OriginMap', () => {
     await coordinator.done();
 
     const mappings = getOriginMappings(view);
-    assert.deepStrictEqual(mappings, [
+    assert.deepEqual(mappings, [
       ['http://localhost:8080', 'https://no-data.com', undefined],
     ]);
   });
@@ -196,7 +196,7 @@ describeWithMockConnection('OriginMap', () => {
 
     {
       const mappings = getOriginMappings(view);
-      assert.deepStrictEqual(mappings, [
+      assert.deepEqual(mappings, [
         ['http://localhost:8080', 'https://example.com', undefined],
       ]);
     }
@@ -213,7 +213,7 @@ describeWithMockConnection('OriginMap', () => {
 
     {
       const mappings = getOriginMappings(view);
-      assert.deepStrictEqual(mappings, [
+      assert.deepEqual(mappings, [
         ['http://localhost:8080', 'https://example.com', undefined],
         ['http://localhost:8081', 'https://example2.com', undefined],
       ]);
@@ -252,7 +252,7 @@ describeWithMockConnection('OriginMap', () => {
     await coordinator.done();
 
     const mappings = getOriginMappings(originMap);
-    assert.deepStrictEqual(mappings, [
+    assert.deepEqual(mappings, [
       ['http://localhost:8080', 'https://example.com', undefined],
     ]);
   });
@@ -277,7 +277,7 @@ describeWithMockConnection('OriginMap', () => {
     await coordinator.done();
 
     const mappings = getOriginMappings(originMap);
-    assert.deepStrictEqual(mappings, []);
+    assert.deepEqual(mappings, []);
     assert.isNull(getDevInput(originMap));
     assert.isNull(getProdInput(originMap));
   });
@@ -302,7 +302,7 @@ describeWithMockConnection('OriginMap', () => {
     await coordinator.done();
 
     const mappings = getOriginMappings(originMap);
-    assert.deepStrictEqual(mappings, [
+    assert.deepEqual(mappings, [
       ['http://localhost:8080', 'https://example.com', undefined],
     ]);
   });
@@ -323,8 +323,7 @@ describeWithMockConnection('OriginMap', () => {
     await coordinator.done();
 
     const errors = getValidationErrors(originMap);
-    assert.deepStrictEqual(
-        errors, '"bad-origin" is not a valid origin or URL.\n"jj**Sdafsdf" is not a valid origin or URL.');
+    assert.deepEqual(errors, '"bad-origin" is not a valid origin or URL.\n"jj**Sdafsdf" is not a valid origin or URL.');
 
     const confirmButton = getConfirmButton(originMap);
     assert.isTrue(confirmButton!.shadowRoot?.querySelector('button')!.disabled);
@@ -354,7 +353,7 @@ describeWithMockConnection('OriginMap', () => {
     await coordinator.done();
 
     const errors = getValidationErrors(originMap);
-    assert.deepStrictEqual(errors, '"http://localhost:8080" is already mapped to a production origin.');
+    assert.deepEqual(errors, '"http://localhost:8080" is already mapped to a production origin.');
 
     const confirmButton = getConfirmButton(originMap);
     assert.isFalse(confirmButton!.shadowRoot?.querySelector('button')!.disabled);

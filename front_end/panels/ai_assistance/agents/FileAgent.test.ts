@@ -103,7 +103,7 @@ describeWithMockConnection('FileAgent', () => {
           text: 'answer',
         },
       ];
-      assert.deepStrictEqual(
+      assert.deepEqual(
           agent.buildRequest({
             text: 'test input',
           }),
@@ -251,7 +251,7 @@ describeWithMockConnection('FileAgent', () => {
         const responses =
             await Array.fromAsync(agent.run('test', {selected: uiSourceCode ? new FileContext(uiSourceCode) : null}));
 
-        assert.deepStrictEqual(responses, [
+        assert.deepEqual(responses, [
           {
             type: ResponseType.USER_QUERY,
             query: 'test',
@@ -293,7 +293,7 @@ test`,
           },
         ]);
 
-        assert.deepStrictEqual(agent.chatHistoryForTesting, [
+        assert.deepEqual(agent.chatHistoryForTesting, [
           {
             role: 1,
             parts: [{

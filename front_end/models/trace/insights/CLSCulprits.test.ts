@@ -44,7 +44,7 @@ describeWithEnvironment('CLSCulprits', function() {
           animation: top,
         },
       ];
-      assert.deepStrictEqual(animationFailures, expected);
+      assert.deepEqual(animationFailures, expected);
     });
     // Flaky test.
     it.skip('[crbug.com/370382177]: gets the correct non composited animations for shift', async function() {
@@ -72,7 +72,7 @@ describeWithEnvironment('CLSCulprits', function() {
           animation: simpleAnimation,
         },
       ];
-      assert.deepStrictEqual(shiftAnimations, expectedWithShift);
+      assert.deepEqual(shiftAnimations, expectedWithShift);
 
       const expectedAll: Models.CLSCulprits.NoncompositedAnimationFailure[] = [
         {
@@ -89,7 +89,7 @@ describeWithEnvironment('CLSCulprits', function() {
         },
       ];
       // animationFailures should include both root causes failures, and failures without associated shifts.
-      assert.deepStrictEqual(animationFailures, expectedAll);
+      assert.deepEqual(animationFailures, expectedAll);
     });
 
     it('returns no insights when there are no non-composited animations', async function() {

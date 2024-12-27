@@ -164,12 +164,12 @@ describeWithLocale('StepEditor', () => {
     );
     await editor.updateComplete;
 
-    assert.deepStrictEqual(await step, {
+    assert.deepEqual(await step, {
       type: Models.Schema.StepType.Change,
       selectors: ['.cls'],
       value: 'Value',
     });
-    assert.deepStrictEqual(getAllInputValues(editor), [
+    assert.deepEqual(getAllInputValues(editor), [
       'change',
       '.cls',
       'Value',
@@ -202,13 +202,13 @@ describeWithLocale('StepEditor', () => {
     );
     await editor.updateComplete;
 
-    assert.deepStrictEqual(await step, {
+    assert.deepEqual(await step, {
       type: Models.Schema.StepType.Click,
       selectors: ['.cls'],
       offsetX: 1,
       offsetY: 1,
     });
-    assert.deepStrictEqual(getAllInputValues(editor), [
+    assert.deepEqual(getAllInputValues(editor), [
       'click',
       '.cls',
       '1',
@@ -238,12 +238,12 @@ describeWithLocale('StepEditor', () => {
     );
     await editor.updateComplete;
 
-    assert.deepStrictEqual(await step, {
+    assert.deepEqual(await step, {
       type: Models.Schema.StepType.CustomStep,
       name: 'test',
       parameters: {custom: 'test'},
     });
-    assert.deepStrictEqual(getAllInputValues(editor), [
+    assert.deepEqual(getAllInputValues(editor), [
       'customStep',
       'test',
       '{"custom":"test"}',
@@ -315,11 +315,11 @@ describeWithLocale('StepEditor', () => {
 
     await addOptionalField(editor, 'x');
 
-    assert.deepStrictEqual(await step, {
+    assert.deepEqual(await step, {
       type: Models.Schema.StepType.Scroll,
       x: 0,
     });
-    assert.deepStrictEqual(getAllInputValues(editor), ['scroll', '0']);
+    assert.deepEqual(getAllInputValues(editor), ['scroll', '0']);
   });
 
   it('should add the duration field', async () => {
@@ -333,14 +333,14 @@ describeWithLocale('StepEditor', () => {
 
     await addOptionalField(editor, 'duration');
 
-    assert.deepStrictEqual(await step, {
+    assert.deepEqual(await step, {
       type: Models.Schema.StepType.Click,
       offsetX: 1,
       offsetY: 1,
       selectors: ['.cls'],
       duration: 50,
     });
-    assert.deepStrictEqual(getAllInputValues(editor), [
+    assert.deepEqual(getAllInputValues(editor), [
       'click',
       '.cls',
       '1',
@@ -358,12 +358,12 @@ describeWithLocale('StepEditor', () => {
 
     await addOptionalField(editor, 'properties');
 
-    assert.deepStrictEqual(await step, {
+    assert.deepEqual(await step, {
       type: Models.Schema.StepType.WaitForElement,
       selectors: ['.cls'],
       properties: {},
     });
-    assert.deepStrictEqual(getAllInputValues(editor), [
+    assert.deepEqual(getAllInputValues(editor), [
       'waitForElement',
       '.cls',
       '{}',
@@ -379,12 +379,12 @@ describeWithLocale('StepEditor', () => {
 
     await addOptionalField(editor, 'timeout');
 
-    assert.deepStrictEqual(await step, {
+    assert.deepEqual(await step, {
       type: Models.Schema.StepType.Navigate,
       url: 'https://example.com',
       timeout: 5000,
     });
-    assert.deepStrictEqual(getAllInputValues(editor), [
+    assert.deepEqual(getAllInputValues(editor), [
       'navigate',
       'https://example.com',
       '5000',
@@ -400,8 +400,8 @@ describeWithLocale('StepEditor', () => {
 
     await deleteOptionalField(editor, 'x');
 
-    assert.deepStrictEqual(await step, {type: Models.Schema.StepType.Scroll});
-    assert.deepStrictEqual(getAllInputValues(editor), ['scroll']);
+    assert.deepEqual(await step, {type: Models.Schema.StepType.Scroll});
+    assert.deepEqual(getAllInputValues(editor), ['scroll']);
   });
 
   it('should add/remove frames', async () => {
@@ -414,11 +414,11 @@ describeWithLocale('StepEditor', () => {
 
       await clickFrameLevelButton(editor, '.add-frame');
 
-      assert.deepStrictEqual(await step, {
+      assert.deepEqual(await step, {
         type: Models.Schema.StepType.Scroll,
         frame: [0, 0],
       });
-      assert.deepStrictEqual(getAllInputValues(editor), ['scroll', '0', '0']);
+      assert.deepEqual(getAllInputValues(editor), ['scroll', '0', '0']);
 
       assert.isTrue(
           editor.shadowRoot?.activeElement?.matches(
@@ -431,11 +431,11 @@ describeWithLocale('StepEditor', () => {
 
       await clickFrameLevelButton(editor, '.remove-frame');
 
-      assert.deepStrictEqual(await step, {
+      assert.deepEqual(await step, {
         type: Models.Schema.StepType.Scroll,
         frame: [0],
       });
-      assert.deepStrictEqual(getAllInputValues(editor), ['scroll', '0']);
+      assert.deepEqual(getAllInputValues(editor), ['scroll', '0']);
 
       assert.isTrue(
           editor.shadowRoot?.activeElement?.matches(
@@ -456,11 +456,11 @@ describeWithLocale('StepEditor', () => {
 
       await clickSelectorLevelButton(editor, [0, 0], '.add-selector-part');
 
-      assert.deepStrictEqual(await step, {
+      assert.deepEqual(await step, {
         type: Models.Schema.StepType.Scroll,
         selectors: [['.part1', '.cls']],
       });
-      assert.deepStrictEqual(getAllInputValues(editor), [
+      assert.deepEqual(getAllInputValues(editor), [
         'scroll',
         '.part1',
         '.cls',
@@ -478,11 +478,11 @@ describeWithLocale('StepEditor', () => {
 
       await clickSelectorLevelButton(editor, [0, 0], '.remove-selector-part');
 
-      assert.deepStrictEqual(await step, {
+      assert.deepEqual(await step, {
         type: Models.Schema.StepType.Scroll,
         selectors: ['.cls'],
       });
-      assert.deepStrictEqual(getAllInputValues(editor), ['scroll', '.cls']);
+      assert.deepEqual(getAllInputValues(editor), ['scroll', '.cls']);
 
       assert.isTrue(
           editor.shadowRoot?.activeElement?.matches(
@@ -502,11 +502,11 @@ describeWithLocale('StepEditor', () => {
 
       await clickSelectorLevelButton(editor, [0], '.add-selector');
 
-      assert.deepStrictEqual(await step, {
+      assert.deepEqual(await step, {
         type: Models.Schema.StepType.Scroll,
         selectors: ['.part1', '.cls'],
       });
-      assert.deepStrictEqual(getAllInputValues(editor), [
+      assert.deepEqual(getAllInputValues(editor), [
         'scroll',
         '.part1',
         '.cls',
@@ -522,11 +522,11 @@ describeWithLocale('StepEditor', () => {
 
       await clickSelectorLevelButton(editor, [1], '.remove-selector');
 
-      assert.deepStrictEqual(await step, {
+      assert.deepEqual(await step, {
         type: Models.Schema.StepType.Scroll,
         selectors: ['.part1'],
       });
-      assert.deepStrictEqual(getAllInputValues(editor), ['scroll', '.part1']);
+      assert.deepEqual(getAllInputValues(editor), ['scroll', '.part1']);
       assert.isTrue(
           editor.shadowRoot?.activeElement?.matches(
               'devtools-suggestion-input[data-path="selectors.0.0"]',
@@ -579,12 +579,12 @@ describeWithLocale('StepEditor', () => {
     const step = getStepEditedPromise(editor);
     await addOptionalField(editor, 'count');
 
-    assert.deepStrictEqual(await step, {
+    assert.deepEqual(await step, {
       type: Models.Schema.StepType.WaitForElement,
       selectors: ['.cls'],
       count: 1,
     });
-    assert.deepStrictEqual(getAllInputValues(editor), [
+    assert.deepEqual(getAllInputValues(editor), [
       'waitForElement',
       '.cls',
       '1',
@@ -618,7 +618,7 @@ describeWithLocale('StepEditor', () => {
     );
     await editor.updateComplete;
 
-    assert.deepStrictEqual(await step, {
+    assert.deepEqual(await step, {
       type: Models.Schema.StepType.Navigate,
       url: 'www.example.com',
       assertedEvents: [{
@@ -642,12 +642,12 @@ describeWithLocale('StepEditor', () => {
 
       editor.renderRoot.querySelectorAll<HTMLElement>('.add-attribute-assertion')[0]?.click();
 
-      assert.deepStrictEqual(await step, {
+      assert.deepEqual(await step, {
         type: Models.Schema.StepType.WaitForElement,
         selectors: ['.part1'],
         attributes: {a: 'b', attribute: 'value'},
       });
-      assert.deepStrictEqual(getAllInputValues(editor), [
+      assert.deepEqual(getAllInputValues(editor), [
         'waitForElement',
         '.part1',
         'a',
@@ -661,12 +661,12 @@ describeWithLocale('StepEditor', () => {
 
       editor.renderRoot.querySelectorAll<HTMLElement>('.remove-attribute-assertion')[1]?.click();
 
-      assert.deepStrictEqual(await step, {
+      assert.deepEqual(await step, {
         type: Models.Schema.StepType.WaitForElement,
         selectors: ['.part1'],
         attributes: {a: 'b'},
       });
-      assert.deepStrictEqual(getAllInputValues(editor), [
+      assert.deepEqual(getAllInputValues(editor), [
         'waitForElement',
         '.part1',
         'a',
@@ -700,7 +700,7 @@ describeWithLocale('StepEditor', () => {
     );
     await editor.updateComplete;
 
-    assert.deepStrictEqual(await step, {
+    assert.deepEqual(await step, {
       type: Models.Schema.StepType.WaitForElement,
       selectors: ['.part1'],
       attributes: {

@@ -1103,6 +1103,6 @@ describeWithMockConnection('InterceptedRequest', () => {
       {name: 'set-cookie', value: 'override_duplicate'},
       {name: 'set-cookie', value: 'malformed_override'},
     ];
-    assert.deepStrictEqual(SDK.NetworkManager.InterceptedRequest.mergeSetCookieHeaders(original, overrides), expected);
+    assert.deepEqual(SDK.NetworkManager.InterceptedRequest.mergeSetCookieHeaders(original, overrides), expected);
   });
 });

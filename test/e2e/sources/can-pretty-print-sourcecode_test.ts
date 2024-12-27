@@ -110,7 +110,7 @@ describe('The Sources Tab', function() {
         '}',
       ];
       const actualPrettyText = await retrieveCodeMirrorEditorContent();
-      assert.deepStrictEqual(expectedPrettyLines, actualPrettyText);
+      assert.deepEqual(expectedPrettyLines, actualPrettyText);
     });
 
     await step('can highlight the pretty-printed text', async () => {

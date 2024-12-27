@@ -104,7 +104,7 @@ describe('MetaHandler', function() {
       await Trace.Handlers.ModelHandlers.Meta.finalize();
       const data = Trace.Handlers.ModelHandlers.Meta.data();
       assert.strictEqual(data.topLevelRendererIds.size, 1);
-      assert.deepStrictEqual([...data.topLevelRendererIds], [Trace.Types.Events.ProcessID(8051)]);
+      assert.deepEqual([...data.topLevelRendererIds], [Trace.Types.Events.ProcessID(8051)]);
     });
   });
 
@@ -231,16 +231,16 @@ describe('MetaHandler', function() {
     await Trace.Handlers.ModelHandlers.Meta.finalize();
 
     const data = Trace.Handlers.ModelHandlers.Meta.data();
-    assert.deepStrictEqual([...data.topLevelRendererIds], [3601132]);
+    assert.deepEqual([...data.topLevelRendererIds], [3601132]);
 
     const rendererProcesses = data.rendererProcessesByFrame.get(data.mainFrameId);
     if (!rendererProcesses) {
       assert.fail('No renderer processes found');
       return;
     }
-    assert.deepStrictEqual([...rendererProcesses?.keys()], [3601132]);
+    assert.deepEqual([...rendererProcesses?.keys()], [3601132]);
     const windowMinTime = 1143381875846;
-    assert.deepStrictEqual(
+    assert.deepEqual(
         [...rendererProcesses?.values()], [[{
           frame: {
             frame: '1D148CB660D1F96ED70D78DC6A53267B',
@@ -268,7 +268,7 @@ describe('MetaHandler', function() {
     await Trace.Handlers.ModelHandlers.Meta.finalize();
 
     const data = Trace.Handlers.ModelHandlers.Meta.data();
-    assert.deepStrictEqual([...data.topLevelRendererIds], [78450, 78473, 79194]);
+    assert.deepEqual([...data.topLevelRendererIds], [78450, 78473, 79194]);
 
     const rendererProcesses = data.rendererProcessesByFrame.get(data.mainFrameId);
     if (!rendererProcesses) {
@@ -277,8 +277,8 @@ describe('MetaHandler', function() {
     }
 
     const windowMinTime = 3550807444741;
-    assert.deepStrictEqual([...rendererProcesses?.keys()], [78450, 78473, 79194]);
-    assert.deepStrictEqual([...rendererProcesses?.values()], [
+    assert.deepEqual([...rendererProcesses?.keys()], [78450, 78473, 79194]);
+    assert.deepEqual([...rendererProcesses?.values()], [
       [{
         frame: {
           frame: 'E70A9327100EBD78F1C03582BBBE8E5F',
@@ -324,7 +324,7 @@ describe('MetaHandler', function() {
     await Trace.Handlers.ModelHandlers.Meta.finalize();
 
     const data = Trace.Handlers.ModelHandlers.Meta.data();
-    assert.deepStrictEqual([...data.topLevelRendererIds], [2080]);
+    assert.deepEqual([...data.topLevelRendererIds], [2080]);
 
     const rendererProcesses = data.rendererProcessesByFrame.get(data.mainFrameId);
     if (!rendererProcesses) {
@@ -332,8 +332,8 @@ describe('MetaHandler', function() {
       return;
     }
 
-    assert.deepStrictEqual([...rendererProcesses?.keys()], [2080]);
-    assert.deepStrictEqual([...rendererProcesses?.values()], [
+    assert.deepEqual([...rendererProcesses?.keys()], [2080]);
+    assert.deepEqual([...rendererProcesses?.values()], [
       [
         {
           frame: {

@@ -84,10 +84,10 @@ describeWithEnvironment('SamplesIntegrator', function() {
       assert.strictEqual(jsSampleEvents[2].dur, 0);
       assert.strictEqual(jsSampleEvents[3].dur, 0);
 
-      assert.deepStrictEqual(jsSampleEvents[0].args.data.stackTrace.map(f => f.functionName), ['a']);
-      assert.deepStrictEqual(jsSampleEvents[1].args.data.stackTrace.map(f => f.functionName), ['a']);
-      assert.deepStrictEqual(jsSampleEvents[2].args.data.stackTrace.map(f => f.functionName), ['a', 'b']);
-      assert.deepStrictEqual(jsSampleEvents[3].args.data.stackTrace.map(f => f.functionName), ['a', 'b']);
+      assert.deepEqual(jsSampleEvents[0].args.data.stackTrace.map(f => f.functionName), ['a']);
+      assert.deepEqual(jsSampleEvents[1].args.data.stackTrace.map(f => f.functionName), ['a']);
+      assert.deepEqual(jsSampleEvents[2].args.data.stackTrace.map(f => f.functionName), ['a', 'b']);
+      assert.deepEqual(jsSampleEvents[3].args.data.stackTrace.map(f => f.functionName), ['a', 'b']);
     });
   });
 

@@ -77,7 +77,7 @@ describeWithMockConnection('CSSPlugin', () => {
     sinon.stub(SDK.CSSModel.CSSModel.prototype, 'getClassNames').withArgs(STYLESHEET_ID).resolves(CLASS_NAMES);
     const completionResult =
         await autocompletion!({state: {field: () => {}}} as unknown as CodeMirror.CompletionContext);
-    assert.deepStrictEqual(completionResult, {
+    assert.deepEqual(completionResult, {
       from: FROM,
       options: [
         {type: 'constant', label: CLASS_NAMES[0]},

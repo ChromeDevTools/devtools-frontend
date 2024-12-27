@@ -20,7 +20,7 @@ describe('RecorderPluginManager', () => {
     manager.addPlugin(plugin);
     manager.removePlugin(plugin);
 
-    assert.deepStrictEqual(events, [
+    assert.deepEqual(events, [
       {
         event: 'pluginAdded',
         plugin,

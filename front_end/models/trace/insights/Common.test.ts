@@ -35,18 +35,18 @@ describeWithEnvironment('Common', function() {
       // No field data defaults to even split of weights.
       metadata.cruxFieldData = undefined;
       let weights = calculateMetricWeightsForSorting(insightSet, metadata);
-      assert.deepStrictEqual(weights, {lcp: 1 / 3, inp: 1 / 3, cls: 1 / 3});
+      assert.deepEqual(weights, {lcp: 1 / 3, inp: 1 / 3, cls: 1 / 3});
 
       metadata.cruxFieldData = [];
       weights = calculateMetricWeightsForSorting(insightSet, metadata);
-      assert.deepStrictEqual(weights, {lcp: 1 / 3, inp: 1 / 3, cls: 1 / 3});
+      assert.deepEqual(weights, {lcp: 1 / 3, inp: 1 / 3, cls: 1 / 3});
     });
 
     it('returns weights based on field data', async () => {
       const {insightSet, metadata} = await process(this, 'image-delivery.json.gz');
 
       const weights = calculateMetricWeightsForSorting(insightSet, metadata);
-      assert.deepStrictEqual(weights, {lcp: 0.07778127820223579, inp: 0.5504200439526509, cls: 0.37179867784511333});
+      assert.deepEqual(weights, {lcp: 0.07778127820223579, inp: 0.5504200439526509, cls: 0.37179867784511333});
     });
   });
 });

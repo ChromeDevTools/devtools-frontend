@@ -18,7 +18,7 @@ describe('Metrics: Lantern FCP', () => {
     const data = await getComputationDataFromFixture({trace});
     const result = FirstContentfulPaint.compute(data);
 
-    assert.deepStrictEqual(
+    assert.deepEqual(
         {
           timing: Math.round(result.timing),
           optimistic: Math.round(result.optimisticEstimate.timeInMs),

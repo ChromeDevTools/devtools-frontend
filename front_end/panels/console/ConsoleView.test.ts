@@ -227,7 +227,7 @@ describeWithMockConnection('ConsoleView', () => {
         SDK.ConsoleModel.Events.MessageAdded,
         createConsoleMessage(target, 'await new Promise(() => ())', SDK.ConsoleModel.FrontendMessageType.Command));
 
-    assert.deepStrictEqual(consoleHistorySetting.get(), ['await new Promise(() => ())']);
+    assert.deepEqual(consoleHistorySetting.get(), ['await new Promise(() => ())']);
   });
 
   it('keeps updating the issue counter when re-attached after detaching', async () => {

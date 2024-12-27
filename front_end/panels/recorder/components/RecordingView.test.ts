@@ -135,13 +135,13 @@ describeWithEnvironment('RecordingView', () => {
 
     // Click is handled async, therefore, waiting for the text editor.
     const textEditor = await waitForTextEditor(view);
-    assert.deepStrictEqual(textEditor.editor.state.selection.toJSON(), {
+    assert.deepEqual(textEditor.editor.state.selection.toJSON(), {
       ranges: [{anchor: 0, head: 0}],
       main: 0,
     });
 
     hoverOverScrollStep(view);
-    assert.deepStrictEqual(textEditor.editor.state.selection.toJSON(), {
+    assert.deepEqual(textEditor.editor.state.selection.toJSON(), {
       ranges: [{anchor: 34, head: 68}],
       main: 0,
     });

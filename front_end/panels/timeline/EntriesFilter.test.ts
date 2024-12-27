@@ -742,7 +742,7 @@ describeWithEnvironment('EntriesFilter', function() {
     // delete for smaller deepStrictEqual comparison
     simpleFooNode.children = [];
 
-    assert.deepStrictEqual(simpleFooNode, {
+    assert.deepEqual(simpleFooNode, {
       dur: 0.2,
       name: 'foo',
       selected: true,

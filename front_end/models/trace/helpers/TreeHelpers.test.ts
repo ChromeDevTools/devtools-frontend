@@ -488,7 +488,7 @@ describe('TreeHelpers', () => {
       assert.exists(v8RunNode);
 
       // First check the serialization as a while.
-      assert.deepStrictEqual(JSON.parse(JSON.stringify(aiNodeTree)), {
+      assert.deepEqual(JSON.parse(JSON.stringify(aiNodeTree)), {
         name: 'EvaluateScript',
         dur: 0.5,
         self: 0,

@@ -108,14 +108,14 @@ describeWithMockConnection('AppManifestView', () => {
       height: 512,
       formatted: '512×512px',
     } as Application.AppManifestView.ParsedSize];
-    assert.deepStrictEqual(parsed, expected);
+    assert.deepEqual(parsed, expected);
   });
 
   it('can handle missing ‘sizes’-field', async () => {
     view = new Application.AppManifestView.AppManifestView(emptyView, reportView, throttler);
     const parsed = view.parseSizes(
         undefined as unknown as string, 'Icon' as Platform.UIString.LocalizedString, 'https://web.dev/image.html', []);
-    assert.deepStrictEqual(parsed, []);
+    assert.deepEqual(parsed, []);
   });
 
   async function renderWithWarnings(manifest: string): Promise<string[]> {
@@ -181,7 +181,7 @@ describeWithMockConnection('AppManifestView', () => {
       'Richer PWA Install UI won’t be available on mobile. Please add at least one screenshot for which form_factor is not set or set to a value other than wide.',
       'Most operating systems require square icons. Please include at least one square icon in the array.',
     ];
-    assert.deepStrictEqual(actual, expected);
+    assert.deepEqual(actual, expected);
   });
 
   it('displays warnings for too many mobile screenshots', async () => {
@@ -224,7 +224,7 @@ describeWithMockConnection('AppManifestView', () => {
       'No more than 5 screenshots will be displayed on mobile. The rest will be ignored.',
       'Most operating systems require square icons. Please include at least one square icon in the array.',
     ];
-    assert.deepStrictEqual(actual, expected);
+    assert.deepEqual(actual, expected);
   });
 
   it('displays warnings for too many desktop screenshots and wrong aspect ratio', async () => {
@@ -292,7 +292,7 @@ describeWithMockConnection('AppManifestView', () => {
       'No more than 8 screenshots will be displayed on desktop. The rest will be ignored.',
       'Most operating systems require square icons. Please include at least one square icon in the array.',
     ];
-    assert.deepStrictEqual(actual, expected);
+    assert.deepEqual(actual, expected);
   });
 
   it('displays "form-factor", "platform" and "label" properties for screenshots', async () => {
@@ -312,10 +312,10 @@ describeWithMockConnection('AppManifestView', () => {
     const screenshotSection =
         reportView.element.shadowRoot?.querySelectorAll<HTMLDivElement>('.report-section')[7] || null;
     assert.instanceOf(screenshotSection, HTMLDivElement);
-    assert.deepStrictEqual(
+    assert.deepEqual(
         getCleanTextContentFromElements(screenshotSection, '.report-field-name').slice(0, 3),
         ['Form factor', 'Label', 'Platform']);
-    assert.deepStrictEqual(
+    assert.deepEqual(
         getCleanTextContentFromElements(screenshotSection, '.report-field-value').slice(0, 3),
         ['wide', 'Dummy Screenshot', 'windows']);
   });

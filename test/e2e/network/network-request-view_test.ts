@@ -50,7 +50,7 @@ const configureAndCheckHeaderOverrides = async () => {
   let responseHeaderSection = await waitFor('[aria-label="Response Headers"]', networkView);
 
   let row = await waitFor('.row', responseHeaderSection);
-  assert.deepStrictEqual(await getTextFromHeadersRow(row), ['cache-control:', 'max-age=3600']);
+  assert.deepEqual(await getTextFromHeadersRow(row), ['cache-control:', 'max-age=3600']);
 
   await waitForFunction(async () => {
     await click('.header-name', {root: row});
@@ -63,7 +63,7 @@ const configureAndCheckHeaderOverrides = async () => {
 
   const headersView = await waitFor('devtools-sources-headers-view');
   const headersViewRow = await waitFor('.row.padded', headersView);
-  assert.deepStrictEqual(await getTextFromHeadersRow(headersViewRow), ['cache-control', 'Foo']);
+  assert.deepEqual(await getTextFromHeadersRow(headersViewRow), ['cache-control', 'Foo']);
 
   await navigateToNetworkTab('hello.html');
   await selectRequestByName('hello.html');
@@ -74,7 +74,7 @@ const configureAndCheckHeaderOverrides = async () => {
 
   responseHeaderSection = await waitFor('[aria-label="Response Headers"]');
   row = await waitFor('.row.header-overridden', responseHeaderSection);
-  assert.deepStrictEqual(await getTextFromHeadersRow(row), ['cache-control:', 'Foo']);
+  assert.deepEqual(await getTextFromHeadersRow(row), ['cache-control:', 'Foo']);
 };
 
 describe('The Network Request view', () => {

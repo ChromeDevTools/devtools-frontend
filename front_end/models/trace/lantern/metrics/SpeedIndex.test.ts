@@ -26,7 +26,7 @@ describe('Metrics: Lantern Speed Index', () => {
       observedSpeedIndex,
     });
 
-    assert.deepStrictEqual(
+    assert.deepEqual(
         {
           timing: Math.round(result.timing),
           optimistic: Math.round(result.optimisticEstimate.timeInMs),
@@ -53,7 +53,7 @@ describe('Metrics: Lantern Speed Index', () => {
       observedSpeedIndex,
     });
 
-    assert.deepStrictEqual(
+    assert.deepEqual(
         {
           timing: Math.round(result.timing),
           optimistic: Math.round(result.optimisticEstimate.timeInMs),
@@ -78,7 +78,7 @@ describe('Metrics: Lantern Speed Index', () => {
 
   it('should scale coefficients forward', async () => {
     const result = SpeedIndex.getScaledCoefficients(300);
-    assert.deepStrictEqual(result, {
+    assert.deepEqual(result, {
       intercept: 0,
       optimistic: 2.525,
       pessimistic: 0.275,

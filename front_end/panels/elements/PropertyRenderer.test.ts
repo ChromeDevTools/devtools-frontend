@@ -18,17 +18,17 @@ describeWithEnvironment('PropertyRenderer', () => {
     it('parses text', () => {
       // Prevent normaliztaion to get an accurate representation of the parser result.
       sinon.stub(Element.prototype, 'normalize');
-      assert.deepStrictEqual(
+      assert.deepEqual(
           textFragments(
               Array.from(Elements.PropertyRenderer.Renderer.renderValueElement('--p', 'var(--v)', []).childNodes)),
           ['var', '(', '--v', ')']);
 
-      assert.deepStrictEqual(
+      assert.deepEqual(
           textFragments(Array.from(
               Elements.PropertyRenderer.Renderer.renderValueElement('--p', '/* comments are text */ 1px solid 4', [])
                   .childNodes)),
           ['/* comments are text */', ' ', '1px', ' ', 'solid', ' ', '4']);
-      assert.deepStrictEqual(
+      assert.deepEqual(
           textFragments(Array.from(
               Elements.PropertyRenderer.Renderer
                   .renderValueElement('--p', '2px var(--double, var(--fallback, black)) #32a1ce rgb(124 125 21 0)', [])
@@ -47,7 +47,7 @@ describeWithEnvironment('PropertyRenderer', () => {
       const ast = new SDK.CSSPropertyParser.SyntaxTree(property, rule, tree);
       const matchedResult = SDK.CSSPropertyParser.BottomUpTreeMatching.walk(ast, []);
       const context = new Elements.PropertyRenderer.RenderingContext(ast, new Map(), matchedResult);
-      assert.deepStrictEqual(
+      assert.deepEqual(
           textFragments(Elements.PropertyRenderer.Renderer.render(tree, context).nodes).join(''), rule,
           Printer.walk(ast).get());
     });
@@ -60,7 +60,7 @@ describeWithEnvironment('PropertyRenderer', () => {
       const ast = new SDK.CSSPropertyParser.SyntaxTree(property, rule, tree);
       const matchedResult = SDK.CSSPropertyParser.BottomUpTreeMatching.walk(ast, []);
       const context = new Elements.PropertyRenderer.RenderingContext(ast, new Map(), matchedResult);
-      assert.deepStrictEqual(
+      assert.deepEqual(
           textFragments(Elements.PropertyRenderer.Renderer.render(tree, context).nodes).join(''), property,
           Printer.walk(ast).get());
     });

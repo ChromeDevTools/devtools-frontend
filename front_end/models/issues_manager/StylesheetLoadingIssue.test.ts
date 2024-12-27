@@ -40,9 +40,9 @@ describeWithLocale('StylesheetLoadingIssue', () => {
     const stylesheetIssue = stylesheetIssues[0];
 
     assert.strictEqual(stylesheetIssue.getCategory(), IssuesManager.Issue.IssueCategory.OTHER);
-    assert.deepStrictEqual(stylesheetIssue.sources(), [issueDetails.sourceCodeLocation]);
+    assert.deepEqual(stylesheetIssue.sources(), [issueDetails.sourceCodeLocation]);
     const {url, requestId} = issueDetails.failedRequestInfo;
-    assert.deepStrictEqual(stylesheetIssue.requests(), [{url, requestId}]);
+    assert.deepEqual(stylesheetIssue.requests(), [{url, requestId}]);
     assert.strictEqual(stylesheetIssue.getKind(), IssuesManager.Issue.IssueKind.PAGE_ERROR);
     assert.isNotNull(stylesheetIssue.getDescription());
   });
@@ -63,7 +63,7 @@ describeWithLocale('StylesheetLoadingIssue', () => {
     const stylesheetIssue = stylesheetIssues[0];
 
     assert.strictEqual(stylesheetIssue.getCategory(), IssuesManager.Issue.IssueCategory.OTHER);
-    assert.deepStrictEqual(stylesheetIssue.sources(), [issueDetails.sourceCodeLocation]);
+    assert.deepEqual(stylesheetIssue.sources(), [issueDetails.sourceCodeLocation]);
     assert.strictEqual(stylesheetIssue.getKind(), IssuesManager.Issue.IssueKind.PAGE_ERROR);
     assert.isNotNull(stylesheetIssue.getDescription());
   });
@@ -124,15 +124,15 @@ describeWithLocale('StylesheetLoadingIssue', () => {
     const aggregatedIssues = Array.from(aggregator.aggregatedIssues());
     assert.lengthOf(aggregatedIssues, 2);
 
-    assert.deepStrictEqual(
+    assert.deepEqual(
         Array.from(aggregatedIssues[0].sources()),
         [issueDetails[0].sourceCodeLocation, issueDetails[1].sourceCodeLocation]);
-    assert.deepStrictEqual(
+    assert.deepEqual(
         Array.from(aggregatedIssues[1].sources()),
         [issueDetails[2].sourceCodeLocation, issueDetails[3].sourceCodeLocation]);
-    assert.deepStrictEqual(Array.from(aggregatedIssues[0].requests()), []);
+    assert.deepEqual(Array.from(aggregatedIssues[0].requests()), []);
     const {url, requestId} = issueDetails[3].failedRequestInfo as Protocol.Audits.FailedRequestInfo;
     assert.exists(requestId);
-    assert.deepStrictEqual(Array.from(aggregatedIssues[1].requests()), [{url, requestId}]);
+    assert.deepEqual(Array.from(aggregatedIssues[1].requests()), [{url, requestId}]);
   });
 });

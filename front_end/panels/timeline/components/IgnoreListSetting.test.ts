@@ -78,11 +78,11 @@ describeWithEnvironment('Ignore List Setting', () => {
     const ignoredRules = getAllRules(component);
 
     // There is a default rule `/node_modules/|/bower_components/`
-    assert.deepStrictEqual(ignoredRules.length, 2);
-    assert.deepStrictEqual(ignoredRules[0].regex, '/node_modules/|/bower_components/');
-    assert.deepStrictEqual(ignoredRules[0].disabled, false);
-    assert.deepStrictEqual(ignoredRules[1].regex, 'rule 1');
-    assert.deepStrictEqual(ignoredRules[1].disabled, false);
+    assert.deepEqual(ignoredRules.length, 2);
+    assert.deepEqual(ignoredRules[0].regex, '/node_modules/|/bower_components/');
+    assert.deepEqual(ignoredRules[0].disabled, false);
+    assert.deepEqual(ignoredRules[1].regex, 'rule 1');
+    assert.deepEqual(ignoredRules[1].disabled, false);
 
     // Check the remove buttons are rendered
     assert.isNotNull(component.shadowRoot);
@@ -100,11 +100,11 @@ describeWithEnvironment('Ignore List Setting', () => {
     const ignoredRules = getAllRules(component);
 
     // There is a default rule `/node_modules/|/bower_components/`
-    assert.deepStrictEqual(ignoredRules.length, 2);
-    assert.deepStrictEqual(ignoredRules[0].regex, '/node_modules/|/bower_components/');
-    assert.deepStrictEqual(ignoredRules[0].disabled, false);
-    assert.deepStrictEqual(ignoredRules[1].regex, 'rule 1');
-    assert.deepStrictEqual(ignoredRules[1].disabled, true);
+    assert.deepEqual(ignoredRules.length, 2);
+    assert.deepEqual(ignoredRules[0].regex, '/node_modules/|/bower_components/');
+    assert.deepEqual(ignoredRules[0].disabled, false);
+    assert.deepEqual(ignoredRules[1].regex, 'rule 1');
+    assert.deepEqual(ignoredRules[1].disabled, true);
   });
 
   it('Able to toggle the disable status of an ignore listed rules', async () => {

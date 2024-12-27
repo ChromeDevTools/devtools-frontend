@@ -87,7 +87,7 @@ describe('ScreenshotsHandler', function() {
 
       const msDifferences = getMsDifferences(syntheticScreenshots, originalScreenshotEvents);
       // These values indicate all the screenshots true timings are a tad more to the left.
-      assert.deepStrictEqual(msDifferences, [
+      assert.deepEqual(msDifferences, [
         -13.079, -16.381, -12.503, -5.405,  -14.108, -14.661, -11.944, -14.322, -3.532, -15.821, 0.254,
         -32.22,  -15.156, -13.219, -14.464, -16.135, -16.501, -33.165, -15.71,  -32.39, -32.445, -30.512,
       ]);
@@ -113,7 +113,7 @@ describe('ScreenshotsHandler', function() {
 
       const msDifferences = getMsDifferences(syntheticScreenshots, originalScreenshotEvents);
       // No adjustment made.
-      assert.deepStrictEqual(msDifferences, [
+      assert.deepEqual(msDifferences, [
         0,
         0,
         0,

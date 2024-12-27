@@ -70,7 +70,7 @@ describeWithMockConnection('LighthouseReportRenderer', () => {
     await Lighthouse.LighthouseReportRenderer.LighthouseReportRenderer.linkifyNodeDetails(sourceElement);
 
     assert.strictEqual(sourceElement.childNodes.length, NUM_NODES);
-    assert.deepStrictEqual([...sourceElement.childNodes].map(n => n.textContent), ['link1', 'link2', 'link3']);
+    assert.deepEqual([...sourceElement.childNodes].map(n => n.textContent), ['link1', 'link2', 'link3']);
   });
 
   it('resets tooltip', async () => {

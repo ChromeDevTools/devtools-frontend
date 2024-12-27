@@ -56,8 +56,8 @@ describeWithEnvironment('BreadcrumbsUI', () => {
 
     const breadcrumbsRanges = queryBreadcrumbs(component);
 
-    assert.deepStrictEqual(breadcrumbsRanges.length, 1);
-    assert.deepStrictEqual(breadcrumbsRanges, ['Full range (9.00 ms)']);
+    assert.deepEqual(breadcrumbsRanges.length, 1);
+    assert.deepEqual(breadcrumbsRanges, ['Full range (9.00 ms)']);
   });
 
   it('renders all the breadcrumbs provided', async () => {
@@ -93,11 +93,11 @@ describeWithEnvironment('BreadcrumbsUI', () => {
 
     const breadcrumbsRanges = queryBreadcrumbs(component);
 
-    assert.deepStrictEqual(breadcrumbsRanges.length, 2);
-    assert.deepStrictEqual(breadcrumbsRanges, ['Full range (9.00 ms)', '7.00 ms']);
+    assert.deepEqual(breadcrumbsRanges.length, 2);
+    assert.deepEqual(breadcrumbsRanges, ['Full range (9.00 ms)', '7.00 ms']);
 
     // There should always be one active breadcrumb
     const activeRange = queryActiveBreadcrumb(component);
-    assert.deepStrictEqual(activeRange.length, 1);
+    assert.deepEqual(activeRange.length, 1);
   });
 });

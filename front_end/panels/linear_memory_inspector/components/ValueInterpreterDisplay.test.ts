@@ -229,7 +229,7 @@ describeWithLocale('ValueInterpreterDisplay', () => {
 
     const actualValues = Array.from(dataValues).map(x => x.innerText);
     const expectedValues = ['0x47AC8401', '0x420C0C2B47AC8401'];
-    assert.deepStrictEqual(actualValues, expectedValues);
+    assert.deepEqual(actualValues, expectedValues);
   });
 
   it('renders value in selected LinearMemoryInspector.ValueInterpreterDisplayUtils.ValueTypes', () => {
@@ -251,7 +251,7 @@ describeWithLocale('ValueInterpreterDisplay', () => {
 
     const actualValues = Array.from(dataValues).map(x => x.innerText);
     const expectedValues = ['33793', '-31743', '88328.01'];
-    assert.deepStrictEqual(actualValues, expectedValues);
+    assert.deepEqual(actualValues, expectedValues);
   });
 
   it('renders only unsigned values for Octal and Hexadecimal representation', () => {
@@ -288,7 +288,7 @@ describeWithLocale('ValueInterpreterDisplay', () => {
 
     const actualValues = Array.from(dataValues).map(x => x.innerText);
     const expectedValues = ['310', '0xC9C8', '3419064776', '-875902520'];
-    assert.deepStrictEqual(actualValues, expectedValues);
+    assert.deepEqual(actualValues, expectedValues);
   });
 
   it('triggers a value changed event on selecting a new mode', async () => {

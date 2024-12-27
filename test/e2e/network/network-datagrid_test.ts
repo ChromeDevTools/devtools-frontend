@@ -420,7 +420,7 @@ describe('The Network Tab', function() {
     await waitForSomeRequestsToAppear(3);
 
     const updatedRequestNames = await getAllRequestNames();
-    assert.deepStrictEqual(updatedRequestNames, ['xhr.html', 'image.svg', 'image.svg']);
+    assert.deepEqual(updatedRequestNames, ['xhr.html', 'image.svg', 'image.svg']);
   });
 
   it('displays focused background color when request is selected via keyboard navigation', async () => {
@@ -436,7 +436,7 @@ describe('The Network Tab', function() {
       return document.querySelector('.network-log-grid tbody tr.selected')?.getAttribute('style');
     });
 
-    assert.deepStrictEqual(await getSelectedRequestBgColor(), 'background-color: var(--color-grid-focus-selected);');
+    assert.deepEqual(await getSelectedRequestBgColor(), 'background-color: var(--color-grid-focus-selected);');
   });
 
   it('shows the request panel when clicked during a websocket message (https://crbug.com/1222382)', async () => {

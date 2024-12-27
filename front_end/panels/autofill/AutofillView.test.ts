@@ -121,7 +121,7 @@ describeWithMockConnection('AutofillView', () => {
   const assertViewShowsEventData = (view: Autofill.AutofillView.AutofillView) => {
     const addressSpans = view.shadowRoot!.querySelectorAll('.address span');
     const addressText = [...addressSpans].map(div => div.textContent);
-    assert.deepStrictEqual(
+    assert.deepEqual(
         addressText, ['Crocodile', ' Middle ', 'Dundee', 'Uluru ToursOutback Road 1Bundaberg Queensland ', '12345']);
     const expectedHeaders = ['Form field', 'Predicted autofill value', 'Value', 'filledFieldIndex'];
     const expectedRows = [

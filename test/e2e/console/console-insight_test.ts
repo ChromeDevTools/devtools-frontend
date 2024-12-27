@@ -226,7 +226,7 @@ describe('ConsoleInsight', function() {
 
     for (let testIdx = 0; testIdx < messages.length; testIdx++) {
       const messageWithStacktrace = await frontend.evaluate(messageGetter, consoleModule, messages[testIdx], true);
-      assert.deepStrictEqual(messageWithStacktrace, tests[testIdx].expectedWithStackTrace);
+      assert.deepEqual(messageWithStacktrace, tests[testIdx].expectedWithStackTrace);
     }
   });
 });

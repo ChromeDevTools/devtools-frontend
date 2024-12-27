@@ -537,7 +537,7 @@ describe('normalizePositionData', () => {
       allPoints: [{x: 0, y: 0}, {x: 100, y: 0}, {x: 100, y: 100}, {x: 0, y: 100}],
     });
 
-    assert.deepStrictEqual(data, {
+    assert.deepEqual(data, {
       bounds: {
         minX: 0,
         maxX: 100,
@@ -590,10 +590,10 @@ describe('normalizePositionData', () => {
           allPoints: [{x: 0, y: 0}, {x: 100, y: 0}, {x: 100, y: 100}, {x: 0, y: 100}],
         });
 
-    assert.deepStrictEqual(data.rows.positive.positions.map(p => p.y), [2, 6, 10, 124]);
-    assert.deepStrictEqual(data.rows.negative.positions.map(p => p.y), [3, 6, 28, 50]);
-    assert.deepStrictEqual(data.columns.positive.positions.map(p => p.x), [1, 1, 2]);
-    assert.deepStrictEqual(data.columns.negative.positions.map(p => p.x), [2, 6, 11]);
+    assert.deepEqual(data.rows.positive.positions.map(p => p.y), [2, 6, 10, 124]);
+    assert.deepEqual(data.rows.negative.positions.map(p => p.y), [3, 6, 28, 50]);
+    assert.deepEqual(data.columns.positive.positions.map(p => p.x), [1, 1, 2]);
+    assert.deepEqual(data.columns.negative.positions.map(p => p.x), [2, 6, 11]);
   });
 
   it('detects first and last positions', () => {
@@ -670,10 +670,10 @@ describe('normalizePositionData', () => {
           allPoints: [{x: 0, y: 0}, {x: 30, y: 0}, {x: 30, y: 30}, {x: 0, y: 30}],
         });
 
-    assert.deepStrictEqual(data.rows.positive.positions, [{x: 0, y: 5}, {x: 0, y: 20}]);
-    assert.deepStrictEqual(data.rows.positive.names, [['foo', 'bar', 'baz'], ['test']]);
-    assert.deepStrictEqual(data.columns.positive.positions, [{x: 15, y: 0}, {x: 17, y: 0}]);
-    assert.deepStrictEqual(data.columns.positive.names, [['edge-start'], ['edge-end']]);
+    assert.deepEqual(data.rows.positive.positions, [{x: 0, y: 5}, {x: 0, y: 20}]);
+    assert.deepEqual(data.rows.positive.names, [['foo', 'bar', 'baz'], ['test']]);
+    assert.deepEqual(data.columns.positive.positions, [{x: 15, y: 0}, {x: 17, y: 0}]);
+    assert.deepEqual(data.columns.positive.names, [['edge-start'], ['edge-end']]);
   });
 });
 

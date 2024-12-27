@@ -932,7 +932,7 @@ describe('The Styles pane', () => {
     await waitForStyleRule('#inspected4');
 
     const inspectedRules = await getDisplayedCSSDeclarations();
-    assert.deepStrictEqual(inspectedRules, [
+    assert.deepEqual(inspectedRules, [
       'margin: 10px;',
       'margin-top: 10px;',
       'margin-right: 10px;',
@@ -1371,7 +1371,7 @@ describe('The Styles pane', () => {
         const swatches = await waitForMany('.color-swatch-inner', 3);
         const swatchColors = await Promise.all(
             swatches.map(swatch => swatch.evaluate(swatch => getComputedStyle(swatch).backgroundColor)));
-        assert.deepStrictEqual(swatchColors.slice(1), [red, blue]);
+        assert.deepEqual(swatchColors.slice(1), [red, blue]);
 
         return isLight ? swatchColors[0] === red : swatchColors[0] === blue;
       });

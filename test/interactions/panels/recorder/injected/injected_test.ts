@@ -170,7 +170,7 @@ describe('Injected', () => {
               .length,
         ];
       });
-      assert.deepStrictEqual(results, [1, 1, 1, 0, 0, 2]);
+      assert.deepEqual(results, [1, 1, 1, 0, 0, 2]);
     });
 
     it('should return not-optimized CSS selectors for duplicate elements', async () => {
@@ -223,7 +223,7 @@ describe('Injected', () => {
     });
     it('should not return a text selector for elements > maximum length', async () => {
       const selectors = await getSelectorOfButtonWithLength(MAXIMUM_LENGTH + 1);
-      assert.deepStrictEqual(selectors, undefined);
+      assert.deepEqual(selectors, undefined);
     });
     it('should return a text selector correctly with same prefix elements', async () => {
       let selectors = await getSelectorOfButtonWithLength(

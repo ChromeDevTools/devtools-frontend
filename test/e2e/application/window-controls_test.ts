@@ -26,7 +26,7 @@ describe('The Window Controls Overlay', () => {
     // Verify dropdown options
     const options = await controlsDropDown.$$('option');
     const values = await Promise.all(options.map(option => option.evaluate(el => el.value)));
-    assert.deepStrictEqual(values, ['Windows', 'Mac', 'Linux']);
+    assert.deepEqual(values, ['Windows', 'Mac', 'Linux']);
 
     // Verify selecting an option
     void selectOption(await controlsDropDown.toElement('select'), 'Linux');

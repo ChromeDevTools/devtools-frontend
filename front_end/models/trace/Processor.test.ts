@@ -254,7 +254,7 @@ describeWithEnvironment('TraceProcessor', function() {
       }
 
       assert.strictEqual(processor.insights.size, 1);
-      assert.deepStrictEqual([...processor.insights.keys()], [Trace.Types.Events.NO_NAVIGATION]);
+      assert.deepEqual([...processor.insights.keys()], [Trace.Types.Events.NO_NAVIGATION]);
     });
 
     it('captures errors thrown by insights', async function() {
@@ -294,7 +294,7 @@ describeWithEnvironment('TraceProcessor', function() {
         throw new Error('No insights');
       }
 
-      assert.deepStrictEqual([...processor.insights.keys()], [
+      assert.deepEqual([...processor.insights.keys()], [
         Trace.Types.Events.NO_NAVIGATION,
         '0BCFC23BC7D7BEDC9F93E912DCCEC1DA',
       ]);
@@ -313,7 +313,7 @@ describeWithEnvironment('TraceProcessor', function() {
         throw new Error('No insights');
       }
 
-      assert.deepStrictEqual([...processor.insights.keys()], [
+      assert.deepEqual([...processor.insights.keys()], [
         Trace.Types.Events.NO_NAVIGATION,
         '0BCFC23BC7D7BEDC9F93E912DCCEC1DA',
       ]);
@@ -339,7 +339,7 @@ describeWithEnvironment('TraceProcessor', function() {
         throw new Error('No insights');
       }
 
-      assert.deepStrictEqual([...processor.insights.keys()], [
+      assert.deepEqual([...processor.insights.keys()], [
         Trace.Types.Events.NO_NAVIGATION,
         '83ACBFD389F1F66EF79CEDB4076EB44A',
         '70BCD304FD2C098BA2513488AB0FF3F2',
@@ -395,7 +395,7 @@ describeWithEnvironment('TraceProcessor', function() {
       };
 
       const orderWithoutMetadata = await getInsightOrder(false);
-      assert.deepStrictEqual(orderWithoutMetadata, [
+      assert.deepEqual(orderWithoutMetadata, [
         'CLSCulprits',
         'Viewport',
         'InteractionToNextPaint',
@@ -412,7 +412,7 @@ describeWithEnvironment('TraceProcessor', function() {
 
       const orderWithMetadata = await getInsightOrder(true);
       // Viewport is first, before CLSCulprits, since the field data produces a higher weight for INP than for CLS.
-      assert.deepStrictEqual(orderWithMetadata, [
+      assert.deepEqual(orderWithMetadata, [
         'Viewport',
         'CLSCulprits',
         'InteractionToNextPaint',

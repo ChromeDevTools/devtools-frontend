@@ -40,7 +40,7 @@ if (process && import.meta.url === url.pathToFileURL(process.argv[1]).href) {
 }
 `,
     );
-    assert.deepStrictEqual(sourceMap, [1, 8, 8]);
+    assert.deepEqual(sourceMap, [1, 8, 8]);
   });
 
   it('should stringify a step', async () => {

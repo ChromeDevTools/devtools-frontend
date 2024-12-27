@@ -398,13 +398,12 @@ describe('CSSMatchedStyles', () => {
          inheritedPayload,
        });
 
-       assert.deepStrictEqual(
-           matchedStyles.nodeStyles().map(style => style.allProperties().map(prop => prop.propertyText)), [
-             ['--var: red;'],
-             ['color: var(--var);'],
-             ['--var: blue;'],
-             ['--var: red;'],
-           ]);
+       assert.deepEqual(matchedStyles.nodeStyles().map(style => style.allProperties().map(prop => prop.propertyText)), [
+         ['--var: red;'],
+         ['color: var(--var);'],
+         ['--var: blue;'],
+         ['--var: red;'],
+       ]);
      });
 
   describe('resolveGlobalKeyword', () => {

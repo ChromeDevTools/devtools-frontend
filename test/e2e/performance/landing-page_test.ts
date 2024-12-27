@@ -289,11 +289,11 @@ describe('The Performance panel landing page', () => {
 
     {
       const [lcpHistogram, clsHistogram, inpHistogram] = await waitForMany(HISTOGRAM_SELECTOR, 3);
-      assert.deepStrictEqual(
+      assert.deepEqual(
           await lcpHistogram.$$eval('.histogram-percent', els => els.map(el => el.textContent)), ['-', '-', '-']);
-      assert.deepStrictEqual(
+      assert.deepEqual(
           await clsHistogram.$$eval('.histogram-percent', els => els.map(el => el.textContent)), ['-', '-', '-']);
-      assert.deepStrictEqual(
+      assert.deepEqual(
           await inpHistogram.$$eval('.histogram-percent', els => els.map(el => el.textContent)), ['-', '-', '-']);
     }
 
@@ -308,11 +308,11 @@ describe('The Performance panel landing page', () => {
 
     {
       const [lcpHistogram, clsHistogram, inpHistogram] = await waitForMany(HISTOGRAM_SELECTOR, 3);
-      assert.deepStrictEqual(
+      assert.deepEqual(
           await lcpHistogram.$$eval('.histogram-percent', els => els.map(el => el.textContent)), ['96%', '3%', '1%']);
-      assert.deepStrictEqual(
+      assert.deepEqual(
           await clsHistogram.$$eval('.histogram-percent', els => els.map(el => el.textContent)), ['100%', '0%', '0%']);
-      assert.deepStrictEqual(
+      assert.deepEqual(
           await inpHistogram.$$eval('.histogram-percent', els => els.map(el => el.textContent)), ['98%', '2%', '1%']);
     }
 
@@ -322,11 +322,11 @@ describe('The Performance panel landing page', () => {
 
     {
       const [lcpHistogram, clsHistogram, inpHistogram] = await waitForMany(HISTOGRAM_SELECTOR, 3);
-      assert.deepStrictEqual(
+      assert.deepEqual(
           await lcpHistogram.$$eval('.histogram-percent', els => els.map(el => el.textContent)), ['-', '-', '-']);
-      assert.deepStrictEqual(
+      assert.deepEqual(
           await clsHistogram.$$eval('.histogram-percent', els => els.map(el => el.textContent)), ['-', '-', '-']);
-      assert.deepStrictEqual(
+      assert.deepEqual(
           await inpHistogram.$$eval('.histogram-percent', els => els.map(el => el.textContent)), ['-', '-', '-']);
     }
   });
@@ -402,7 +402,7 @@ describe('The Performance panel landing page', () => {
         const interactions = await waitForMany(INTERACTION_SELECTOR, 7);
         const interactionTypes = await Promise.all(
             interactions.map(el => el.$eval('.interaction-type', el => (el as HTMLElement).innerText)));
-        assert.deepStrictEqual(interactionTypes, [
+        assert.deepEqual(interactionTypes, [
           'pointer',
           'pointer INP',
           'pointer',
@@ -442,7 +442,7 @@ describe('The Performance panel landing page', () => {
 
       await tabExistsInDrawer('#tab-console-view');
       const messages = await getCurrentConsoleMessages();
-      assert.deepStrictEqual(messages, [
+      assert.deepEqual(messages, [
         '[DevTools] Long animation frames for 504ms pointer interaction',
         'Scripts:',
         'Array(3)',

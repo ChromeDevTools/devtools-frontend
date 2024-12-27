@@ -42,6 +42,6 @@ describe('Runtime', () => {
 
     const experiments = Root.Runtime.experiments.allConfigurableExperiments();
 
-    assert.deepStrictEqual(experiments.map(experiment => experiment.name), ['example', 'configurable']);
+    assert.deepEqual(experiments.map(experiment => experiment.name), ['example', 'configurable']);
   });
 });

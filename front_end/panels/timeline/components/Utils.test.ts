@@ -29,39 +29,37 @@ describeWithEnvironment('Utils', () => {
 
     it('parse', () => {
       // en
-      assert.deepStrictEqual(NumberWithUnit.parse('100[s]()'), {firstPart: '100', unitPart: 's', lastPart: ''});
-      assert.deepStrictEqual(NumberWithUnit.parse('100 [s]()'), {firstPart: '100 ', unitPart: 's', lastPart: ''});
+      assert.deepEqual(NumberWithUnit.parse('100[s]()'), {firstPart: '100', unitPart: 's', lastPart: ''});
+      assert.deepEqual(NumberWithUnit.parse('100 [s]()'), {firstPart: '100 ', unitPart: 's', lastPart: ''});
 
       // Decimal separators
-      assert.deepStrictEqual(
-          NumberWithUnit.parse('100.123[ms]()'), {firstPart: '100.123', unitPart: 'ms', lastPart: ''});
-      assert.deepStrictEqual(NumberWithUnit.parse('100,2[s]()'), {firstPart: '100,2', unitPart: 's', lastPart: ''});
+      assert.deepEqual(NumberWithUnit.parse('100.123[ms]()'), {firstPart: '100.123', unitPart: 'ms', lastPart: ''});
+      assert.deepEqual(NumberWithUnit.parse('100,2[s]()'), {firstPart: '100,2', unitPart: 's', lastPart: ''});
 
       // zh
-      assert.deepStrictEqual(NumberWithUnit.parse('100[毫秒]()'), {firstPart: '100', unitPart: '毫秒', lastPart: ''});
+      assert.deepEqual(NumberWithUnit.parse('100[毫秒]()'), {firstPart: '100', unitPart: '毫秒', lastPart: ''});
       // zh-Hans-CN-u-nu-hanidec
-      assert.deepStrictEqual(
-          NumberWithUnit.parse('一〇〇[毫秒]()'), {firstPart: '一〇〇', unitPart: '毫秒', lastPart: ''});
+      assert.deepEqual(NumberWithUnit.parse('一〇〇[毫秒]()'), {firstPart: '一〇〇', unitPart: '毫秒', lastPart: ''});
 
       // ar-SA (RTL language, but the UIString still places the number first in the string)
-      assert.deepStrictEqual(
+      assert.deepEqual(
           NumberWithUnit.parse('١٠٠[ملي ثانية]()'), {firstPart: '١٠٠', unitPart: 'ملي ثانية', lastPart: ''});
 
       // ar
-      assert.deepStrictEqual(
+      assert.deepEqual(
           NumberWithUnit.parse('100[ملي ثانية]()'), {firstPart: '100', unitPart: 'ملي ثانية', lastPart: ''});
 
       // sw (only one that places unit first)
-      assert.deepStrictEqual(NumberWithUnit.parse('[Sek]()100'), {firstPart: '', unitPart: 'Sek', lastPart: '100'});
-      assert.deepStrictEqual(NumberWithUnit.parse('[Sek]() 100'), {firstPart: '', unitPart: 'Sek', lastPart: ' 100'});
+      assert.deepEqual(NumberWithUnit.parse('[Sek]()100'), {firstPart: '', unitPart: 'Sek', lastPart: '100'});
+      assert.deepEqual(NumberWithUnit.parse('[Sek]() 100'), {firstPart: '', unitPart: 'Sek', lastPart: ' 100'});
 
       // error cases
-      assert.deepStrictEqual(NumberWithUnit.parse(''), null);
-      assert.deepStrictEqual(NumberWithUnit.parse('100s'), null);
-      assert.deepStrictEqual(NumberWithUnit.parse('100[s]('), null);
-      assert.deepStrictEqual(NumberWithUnit.parse('100[s]'), null);
-      assert.deepStrictEqual(NumberWithUnit.parse('100[s'), null);
-      assert.deepStrictEqual(NumberWithUnit.parse('100 s]('), null);
+      assert.deepEqual(NumberWithUnit.parse(''), null);
+      assert.deepEqual(NumberWithUnit.parse('100s'), null);
+      assert.deepEqual(NumberWithUnit.parse('100[s]('), null);
+      assert.deepEqual(NumberWithUnit.parse('100[s]'), null);
+      assert.deepEqual(NumberWithUnit.parse('100[s'), null);
+      assert.deepEqual(NumberWithUnit.parse('100 s]('), null);
     });
   });
 

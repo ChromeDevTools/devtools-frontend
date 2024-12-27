@@ -34,7 +34,7 @@ describeWithEnvironment('RendererHandler', function() {
     assert.strictEqual(renderers.processes.size, 4);
 
     const pids = [...renderers.processes].map(([pid]) => pid);
-    assert.deepStrictEqual(
+    assert.deepEqual(
         pids,
         [
           MAIN_FRAME_PID,   // Main frame process: localhost:5000
@@ -60,7 +60,7 @@ describeWithEnvironment('RendererHandler', function() {
     // Assert on whether it has correctly detected a given process to be on the
     // main frame or in a subframe.
     const isOnMainFrame = [...renderers.processes].map(([, process]) => process.isOnMainFrame);
-    assert.deepStrictEqual(
+    assert.deepEqual(
         isOnMainFrame,
         [
           true,   // Main frame process: localhost:5000

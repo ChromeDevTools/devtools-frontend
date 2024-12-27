@@ -24,7 +24,7 @@ describe('Metrics: Lantern TTI', () => {
       }),
     });
 
-    assert.deepStrictEqual(
+    assert.deepEqual(
         {
           timing: Math.round(result.timing),
           optimistic: Math.round(result.optimisticEstimate.timeInMs),
@@ -51,7 +51,7 @@ describe('Metrics: Lantern TTI', () => {
       }),
     });
 
-    assert.deepStrictEqual(
+    assert.deepEqual(
         {
           timing: Math.round(result.timing),
           optimistic: Math.round(result.optimisticEstimate.timeInMs),

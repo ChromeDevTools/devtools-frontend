@@ -77,7 +77,7 @@ describe('The Performance tool, Bottom-up panel', function() {
       await toggleCaseSensitive();
       await setFilter('H2');
       const foundActivities = await enumerateTreeItems();
-      assert.deepStrictEqual(foundActivities, ['H2']);
+      assert.deepEqual(foundActivities, ['H2']);
     });
   });
 
@@ -97,7 +97,7 @@ describe('The Performance tool, Bottom-up panel', function() {
       await toggleRegExButtonBottomUp();
       await setFilter('h2$');
       const foundActivities = await enumerateTreeItems();
-      assert.deepStrictEqual(foundActivities, ['H2', 'h2']);
+      assert.deepEqual(foundActivities, ['H2', 'h2']);
     });
   });
 
@@ -118,7 +118,7 @@ describe('The Performance tool, Bottom-up panel', function() {
       await setFilter('function');
 
       const foundActivities = await enumerateTreeItems();
-      assert.deepStrictEqual(foundActivities, ['Function call']);
+      assert.deepEqual(foundActivities, ['Function call']);
     });
   });
 
@@ -137,7 +137,7 @@ describe('The Performance tool, Bottom-up panel', function() {
       }
       await setFilter('h2');
       const foundActivities = await enumerateTreeItems();
-      assert.deepStrictEqual(foundActivities, expectedActivities);
+      assert.deepEqual(foundActivities, expectedActivities);
     });
   });
 
@@ -160,7 +160,7 @@ describe('The Performance tool, Bottom-up panel', function() {
       });
 
       const foundActivities = await enumerateTreeItems();
-      assert.deepStrictEqual(foundActivities, expectedActivities);
+      assert.deepEqual(foundActivities, expectedActivities);
     });
   });
 
@@ -182,12 +182,12 @@ describe('The Performance tool, Bottom-up panel', function() {
       }
 
       const initialActivities = await enumerateTreeItems();
-      assert.deepStrictEqual(initialActivities, [expectedActivities.at(0)]);
+      assert.deepEqual(initialActivities, [expectedActivities.at(0)]);
 
       await expandNodeRecursively(rootActivity);
 
       const foundActivities = await enumerateTreeItems();
-      assert.deepStrictEqual(foundActivities, expectedActivities);
+      assert.deepEqual(foundActivities, expectedActivities);
     });
   });
 
@@ -210,7 +210,7 @@ describe('The Performance tool, Bottom-up panel', function() {
       }
       await expandNodeRecursively(rootActivity);
       const foundActivities = await enumerateTreeItems();
-      assert.deepStrictEqual(foundActivities, expectedActivities);
+      assert.deepEqual(foundActivities, expectedActivities);
     });
   });
 });

@@ -20,7 +20,7 @@ describe('Metrics: Lantern LCP', () => {
       fcpResult: FirstContentfulPaint.compute(data),
     });
 
-    assert.deepStrictEqual(
+    assert.deepEqual(
         {
           timing: Math.round(result.timing),
           optimistic: Math.round(result.optimisticEstimate.timeInMs),

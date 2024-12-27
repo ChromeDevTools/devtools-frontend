@@ -950,7 +950,7 @@ describe('The Debugger Language Plugins', () => {
     await addDummyExternalDWARFInfo('unreachable.wasm');
     await waitFor(RESUME_BUTTON);
     const locals = await getValuesForScope('LOCAL', 0, 1);
-    assert.deepStrictEqual(locals, ['unreachable: undefined']);
+    assert.deepEqual(locals, ['unreachable: undefined']);
 
     const watchPane = await waitFor('[aria-label="Watch"]');
     const isExpanded = await watchPane.evaluate(element => {
@@ -977,7 +977,7 @@ describe('The Debugger Language Plugins', () => {
       const texts = await Promise.all(watchResults.map(async watch => await watch.evaluate(e => e.textContent)));
       return texts.every(t => t?.length) ? texts : null;
     });
-    assert.deepStrictEqual(watchTexts, ['foo: 23', 'bar: <not available>']);
+    assert.deepEqual(watchTexts, ['foo: 23', 'bar: <not available>']);
 
     const tooltipText = await watchResults[1].evaluate(e => {
       const errorElement = e.querySelector('.watch-expression-error');
@@ -1000,7 +1000,7 @@ describe('The Debugger Language Plugins', () => {
     });
 
     const messages = await getCurrentConsoleMessages();
-    assert.deepStrictEqual(messages.filter(m => !m.startsWith('[Formatter Errors]')), ['Uncaught No typeinfo for bar']);
+    assert.deepEqual(messages.filter(m => !m.startsWith('[Formatter Errors]')), ['Uncaught No typeinfo for bar']);
   });
 
   it('can access wasm data directly', async () => {
@@ -1147,11 +1147,11 @@ describe('The Debugger Language Plugins', () => {
     });
     const afterStepFunctionNames = await getCallFrameNames();
     // still in the same function:
-    assert.deepStrictEqual(beforeStepFunctionNames, afterStepFunctionNames);
+    assert.deepEqual(beforeStepFunctionNames, afterStepFunctionNames);
     // still in the same module:
-    assert.deepStrictEqual(beforeStepCallFrame[0], afterStepCallFrame[0]);
+    assert.deepEqual(beforeStepCallFrame[0], afterStepCallFrame[0]);
     // moved one instruction:
-    assert.deepStrictEqual(parseInt(beforeStepCallFrame[1], 16) + 2, parseInt(afterStepCallFrame[1], 16));
+    assert.deepEqual(parseInt(beforeStepCallFrame[1], 16) + 2, parseInt(afterStepCallFrame[1], 16));
   });
 
   it('auto-steps over unmapped code correctly', async () => {

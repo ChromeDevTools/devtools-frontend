@@ -36,7 +36,7 @@ describe('The Console Tab', () => {
     await typeIntoConsoleAndWaitForResult(getBrowserAndPages().frontend, 'await makeRequests();', 4, Level.Info);
 
     const result = await getCurrentConsoleMessages(false, Level.Info);
-    assert.deepStrictEqual(result.slice(0, -1), expectedResults, 'Fetching was not logged correctly');
+    assert.deepEqual(result.slice(0, -1), expectedResults, 'Fetching was not logged correctly');
   });
 
   it('does not log fetching when XMLHttpRequest Logging is disabled', async () => {

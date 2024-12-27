@@ -201,7 +201,7 @@ STOP`,
         'ANSWER: changed styles',
       ],
     });
-    assert.deepStrictEqual(
+    assert.deepEqual(
         result.at(-1)!.request.current_message, {role: 1, parts: [{text: 'OBSERVATION: {"color":"rgb(0, 0, 0)"}'}]});
   });
 
@@ -228,7 +228,7 @@ STOP`,
           ],
         },
     );
-    assert.deepStrictEqual(
+    assert.deepEqual(
         result.at(-1)!.request.current_message, {role: 1, parts: [{text: 'OBSERVATION: {"aspectRatio":"auto"}'}]});
   });
 
@@ -253,7 +253,7 @@ STOP`,
         'ANSWER: changed styles',
       ],
     });
-    assert.deepStrictEqual(
+    assert.deepEqual(
         result.at(-1)!.request.current_message, {role: 1, parts: [{text: 'OBSERVATION: {"aspectRatio":"auto"}'}]});
   });
 
@@ -305,7 +305,7 @@ STOP`,
       iframeId: 'iframe',
     });
 
-    assert.deepStrictEqual(result.at(-1)!.request.current_message.parts[0], {
+    assert.deepEqual(result.at(-1)!.request.current_message.parts[0], {
       text: 'OBSERVATION: {"title":"I have a title"}',
     });
   });

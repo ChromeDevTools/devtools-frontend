@@ -53,9 +53,9 @@ describe('Shortcuts Settings tab', () => {
     const shortcutsShortcuts = await shortcutsForAction('Show Shortcuts');
     const settingsShortcuts = await shortcutsForAction('Settings');
     const pauseShortcuts = await shortcutsForAction('Pause script execution');
-    assert.deepStrictEqual(shortcutsShortcuts, VS_CODE_SHORTCUTS_SHORTCUTS);
-    assert.deepStrictEqual(settingsShortcuts, VS_CODE_SETTINGS_SHORTCUTS);
-    assert.deepStrictEqual(pauseShortcuts, VS_CODE_PAUSE_SHORTCUTS);
+    assert.deepEqual(shortcutsShortcuts, VS_CODE_SHORTCUTS_SHORTCUTS);
+    assert.deepEqual(settingsShortcuts, VS_CODE_SETTINGS_SHORTCUTS);
+    assert.deepEqual(pauseShortcuts, VS_CODE_PAUSE_SHORTCUTS);
   });
 
   it('should apply new shortcuts when the preset is changed', async () => {
@@ -84,7 +84,7 @@ describe('Shortcuts Settings tab', () => {
     await editShortcutListItem('Toggle Console');
 
     const shortcutInputsText = await shortcutInputValues();
-    assert.deepStrictEqual(shortcutInputsText, CONSOLE_SHORTCUT_INPUT_TEXT);
+    assert.deepEqual(shortcutInputsText, CONSOLE_SHORTCUT_INPUT_TEXT);
   });
 
   it('should allow users to open the shortcut editor and change and add shortcuts', async () => {
@@ -104,12 +104,12 @@ describe('Shortcuts Settings tab', () => {
     await frontend.keyboard.up('Control');
 
     const shortcutInputsText = await shortcutInputValues();
-    assert.deepStrictEqual(shortcutInputsText, CONTROL_1_CONTROL_2_SHORTCUT_INPUTS_TEXT);
+    assert.deepEqual(shortcutInputsText, CONTROL_1_CONTROL_2_SHORTCUT_INPUTS_TEXT);
     await clickShortcutConfirmButton();
     await waitForNoElementsWithTextContent(ADD_SHORTCUT_LINK_TEXT);
 
     const shortcuts = await shortcutsForAction('Toggle Console');
-    assert.deepStrictEqual(shortcuts, CONTROL_1_CONTROL_2_SHORTCUT_DISPLAY_TEXT);
+    assert.deepEqual(shortcuts, CONTROL_1_CONTROL_2_SHORTCUT_DISPLAY_TEXT);
   });
 
   it('should allow users to open shortcut editor and change and reset shortcuts', async () => {
@@ -134,7 +134,7 @@ describe('Shortcuts Settings tab', () => {
     await waitForNoElementsWithTextContent(ADD_SHORTCUT_LINK_TEXT);
 
     const modifiedShortcuts = await shortcutsForAction('Start recording events');
-    assert.deepStrictEqual(modifiedShortcuts, CONTROL_1_CONTROL_2_SHORTCUT_DISPLAY_TEXT);
+    assert.deepEqual(modifiedShortcuts, CONTROL_1_CONTROL_2_SHORTCUT_DISPLAY_TEXT);
 
     await editShortcutListItem('Start recording events');
     await clickShortcutResetButton();
@@ -143,7 +143,7 @@ describe('Shortcuts Settings tab', () => {
     await waitForNoElementsWithTextContent(ADD_SHORTCUT_LINK_TEXT);
 
     const shortcuts = await shortcutsForAction('Start recording events');
-    assert.deepStrictEqual(shortcuts, defaultShortcuts, 'Default shortcuts weren\'t restored correctly');
+    assert.deepEqual(shortcuts, defaultShortcuts, 'Default shortcuts weren\'t restored correctly');
   });
 
   it('should allow users to open the shortcut editor and delete and reset shortcuts', async () => {
@@ -163,7 +163,7 @@ describe('Shortcuts Settings tab', () => {
     await frontend.keyboard.up('Control');
 
     const shortcutInputsText = await shortcutInputValues();
-    assert.deepStrictEqual(shortcutInputsText, CONTROL_1_CONTROL_2_SHORTCUT_INPUTS_TEXT);
+    assert.deepEqual(shortcutInputsText, CONTROL_1_CONTROL_2_SHORTCUT_INPUTS_TEXT);
 
     await clickShortcutDeleteButton(0);
     let shortcutInputTextAfterDeletion;
@@ -171,17 +171,17 @@ describe('Shortcuts Settings tab', () => {
       shortcutInputTextAfterDeletion = await shortcutInputValues();
       return shortcutInputTextAfterDeletion.length === 1;
     });
-    assert.deepStrictEqual(shortcutInputTextAfterDeletion, CONTROL_2_SHORTCUT_INPUT_TEXT);
+    assert.deepEqual(shortcutInputTextAfterDeletion, CONTROL_2_SHORTCUT_INPUT_TEXT);
 
     await clickShortcutResetButton();
     const shortcutInputTextAfterReset = await shortcutInputValues();
-    assert.deepStrictEqual(shortcutInputTextAfterReset, CONSOLE_SHORTCUT_INPUT_TEXT);
+    assert.deepEqual(shortcutInputTextAfterReset, CONSOLE_SHORTCUT_INPUT_TEXT);
 
     await clickShortcutConfirmButton();
     await waitForNoElementsWithTextContent(ADD_SHORTCUT_LINK_TEXT);
 
     const shortcuts = await shortcutsForAction('Toggle Console');
-    assert.deepStrictEqual(shortcuts, CONSOLE_SHORTCUT_DISPLAY_TEXT);
+    assert.deepEqual(shortcuts, CONSOLE_SHORTCUT_DISPLAY_TEXT);
   });
 
   it('should allow users to cancel an edit and discard their changes to shortcuts', async () => {
@@ -201,12 +201,12 @@ describe('Shortcuts Settings tab', () => {
     await frontend.keyboard.up('Control');
 
     const shortcutInputsText = await shortcutInputValues();
-    assert.deepStrictEqual(shortcutInputsText, CONTROL_1_CONTROL_2_SHORTCUT_INPUTS_TEXT);
+    assert.deepEqual(shortcutInputsText, CONTROL_1_CONTROL_2_SHORTCUT_INPUTS_TEXT);
     await clickShortcutCancelButton();
     await waitForNoElementsWithTextContent(ADD_SHORTCUT_LINK_TEXT);
 
     const shortcuts = await shortcutsForAction('Toggle Console');
-    assert.deepStrictEqual(shortcuts, CONSOLE_SHORTCUT_DISPLAY_TEXT);
+    assert.deepEqual(shortcuts, CONSOLE_SHORTCUT_DISPLAY_TEXT);
   });
 
   it('should allow users to set a multi-keypress shortcut (chord)', async () => {
@@ -223,12 +223,12 @@ describe('Shortcuts Settings tab', () => {
     await frontend.keyboard.up('Control');
 
     const shortcutInputsText = await shortcutInputValues();
-    assert.deepStrictEqual(shortcutInputsText, CONTROL_1_CONTROL_2_CHORD_INPUT_TEXT);
+    assert.deepEqual(shortcutInputsText, CONTROL_1_CONTROL_2_CHORD_INPUT_TEXT);
     await clickShortcutConfirmButton();
     await waitForNoElementsWithTextContent(ADD_SHORTCUT_LINK_TEXT);
 
     const shortcuts = await shortcutsForAction('Toggle Console');
-    assert.deepStrictEqual(shortcuts, CONTROL_1_CONTROL_2_CHORD_DISPLAY_TEXT);
+    assert.deepEqual(shortcuts, CONTROL_1_CONTROL_2_CHORD_DISPLAY_TEXT);
   });
 
   it('should display the physical key that is pressed rather than special characters', async () => {
@@ -244,7 +244,7 @@ describe('Shortcuts Settings tab', () => {
     await frontend.keyboard.up('Control');
 
     const shortcutInputsText = await shortcutInputValues();
-    assert.deepStrictEqual(shortcutInputsText, CONTROL_ALT_C_SHORTCUT_INPUT_TEXT);
+    assert.deepEqual(shortcutInputsText, CONTROL_ALT_C_SHORTCUT_INPUT_TEXT);
   });
 
   describe('[slow test]', function() {
@@ -265,12 +265,12 @@ describe('Shortcuts Settings tab', () => {
       await frontend.keyboard.up('Control');
 
       const shortcutInputsText = await shortcutInputValues();
-      assert.deepStrictEqual(shortcutInputsText, CONTROL_2_SHORTCUT_INPUT_TEXT);
+      assert.deepEqual(shortcutInputsText, CONTROL_2_SHORTCUT_INPUT_TEXT);
       await clickShortcutConfirmButton();
       await waitForNoElementsWithTextContent(ADD_SHORTCUT_LINK_TEXT);
 
       const shortcuts = await shortcutsForAction('Toggle Console');
-      assert.deepStrictEqual(shortcuts, CONTROL_2_SHORTCUT_DISPLAY_TEXT);
+      assert.deepEqual(shortcuts, CONTROL_2_SHORTCUT_DISPLAY_TEXT);
     });
   });
 });

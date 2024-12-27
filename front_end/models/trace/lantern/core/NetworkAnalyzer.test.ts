@@ -72,7 +72,7 @@ describe('NetworkAnalyzer', () => {
 
       const result = NetworkAnalyzer.estimateIfConnectionWasReused(records);
       const expected = new Map([[1, false], [2, true], [3, false], [4, false], [5, true]]);
-      assert.deepStrictEqual(result, expected);
+      assert.deepEqual(result, expected);
     });
 
     it('should estimate values when not trustworthy (duplicate IDs)', () => {
@@ -85,7 +85,7 @@ describe('NetworkAnalyzer', () => {
 
       const result = NetworkAnalyzer.estimateIfConnectionWasReused(records);
       const expected = new Map([[1, false], [2, false], [3, true], [4, true]]);
-      assert.deepStrictEqual(result, expected);
+      assert.deepEqual(result, expected);
     });
 
     it('should estimate values when not trustworthy (connectionReused nonsense)', () => {
@@ -122,7 +122,7 @@ describe('NetworkAnalyzer', () => {
 
       const result = NetworkAnalyzer.estimateIfConnectionWasReused(records);
       const expected = new Map([[1, false], [2, false], [3, true], [4, true]]);
-      assert.deepStrictEqual(result, expected);
+      assert.deepEqual(result, expected);
     });
 
     it('should estimate with earliest allowed reuse', () => {
@@ -135,7 +135,7 @@ describe('NetworkAnalyzer', () => {
 
       const result = NetworkAnalyzer.estimateIfConnectionWasReused(records);
       const expected = new Map([[1, false], [2, false], [3, true], [4, true]]);
-      assert.deepStrictEqual(result, expected);
+      assert.deepEqual(result, expected);
     });
 
     it('should work on a real trace', async () => {
@@ -153,7 +153,7 @@ describe('NetworkAnalyzer', () => {
       const request = createRecord({networkRequestTime: 0, networkEndTime: 1, timing});
       const result = NetworkAnalyzer.estimateRTTByOrigin([request]);
       const expected = {min: 99, max: 99, avg: 99, median: 99};
-      assert.deepStrictEqual(result.get('https://example.com'), expected);
+      assert.deepEqual(result.get('https://example.com'), expected);
     });
 
     it('should infer only one estimate if tcp and ssl start times are equal', () => {
@@ -161,7 +161,7 @@ describe('NetworkAnalyzer', () => {
       const request = createRecord({networkRequestTime: 0, networkEndTime: 1, timing});
       const result = NetworkAnalyzer.estimateRTTByOrigin([request]);
       const expected = {min: 99, max: 99, avg: 99, median: 99};
-      assert.deepStrictEqual(result.get('https://example.com'), expected);
+      assert.deepEqual(result.get('https://example.com'), expected);
     });
 
     it('should infer from tcp and ssl timing when available', () => {
@@ -169,7 +169,7 @@ describe('NetworkAnalyzer', () => {
       const request = createRecord({networkRequestTime: 0, networkEndTime: 1, timing});
       const result = NetworkAnalyzer.estimateRTTByOrigin([request]);
       const expected = {min: 49, max: 50, avg: 49.5, median: 49.5};
-      assert.deepStrictEqual(result.get('https://example.com'), expected);
+      assert.deepEqual(result.get('https://example.com'), expected);
     });
 
     it('should infer from connection timing when available for h3 (one estimate)', () => {
@@ -177,7 +177,7 @@ describe('NetworkAnalyzer', () => {
       const request = createRecord({networkRequestTime: 0, networkEndTime: 1, timing, protocol: 'h3'});
       const result = NetworkAnalyzer.estimateRTTByOrigin([request]);
       const expected = {min: 99, max: 99, avg: 99, median: 99};
-      assert.deepStrictEqual(result.get('https://example.com'), expected);
+      assert.deepEqual(result.get('https://example.com'), expected);
     });
 
     it('should infer from sendStart when available', () => {
@@ -188,7 +188,7 @@ describe('NetworkAnalyzer', () => {
       const request = createRecord({networkRequestTime: 0, networkEndTime: 1, timing});
       const result = NetworkAnalyzer.estimateRTTByOrigin([request], {coarseEstimateMultiplier: 1});
       const expected = {min: 50, max: 50, avg: 50, median: 50};
-      assert.deepStrictEqual(result.get('https://example.com'), expected);
+      assert.deepEqual(result.get('https://example.com'), expected);
     });
 
     it('should infer from download timing when available', () => {
@@ -202,7 +202,7 @@ describe('NetworkAnalyzer', () => {
         useHeadersEndEstimates: false,
       });
       const expected = {min: 1000, max: 1000, avg: 1000, median: 1000};
-      assert.deepStrictEqual(result.get('https://example.com'), expected);
+      assert.deepEqual(result.get('https://example.com'), expected);
     });
 
     it('should infer from TTFB when available', () => {
@@ -217,7 +217,7 @@ describe('NetworkAnalyzer', () => {
       // server response time.
       // 600 ms / 4 = 150ms
       const expected = {min: 150, max: 150, avg: 150, median: 150};
-      assert.deepStrictEqual(result.get('https://example.com'), expected);
+      assert.deepEqual(result.get('https://example.com'), expected);
     });
 
     it('should use coarse estimates on a per-origin basis', () => {
@@ -226,8 +226,8 @@ describe('NetworkAnalyzer', () => {
         createRecord({url: 'https://example2.com', timing: {sendStart: 150}}),
       ];
       const result = NetworkAnalyzer.estimateRTTByOrigin(records);
-      assert.deepStrictEqual(result.get('https://example.com'), {min: 99, max: 99, avg: 99, median: 99});
-      assert.deepStrictEqual(result.get('https://example2.com'), {min: 15, max: 15, avg: 15, median: 15});
+      assert.deepEqual(result.get('https://example.com'), {min: 99, max: 99, avg: 99, median: 99});
+      assert.deepEqual(result.get('https://example2.com'), {min: 15, max: 15, avg: 15, median: 15});
     });
 
     it('should handle untrustworthy connection information', () => {
@@ -244,7 +244,7 @@ describe('NetworkAnalyzer', () => {
         coarseEstimateMultiplier: 1,
       });
       const expected = {min: 50, max: 50, avg: 50, median: 50};
-      assert.deepStrictEqual(result.get('https://example.com'), expected);
+      assert.deepEqual(result.get('https://example.com'), expected);
     });
 
     it('should work on a real trace', async () => {
@@ -276,7 +276,7 @@ describe('NetworkAnalyzer', () => {
       const rttByOrigin = new Map([[NetworkAnalyzer.summary, 0]]);
       const result = NetworkAnalyzer.estimateServerResponseTimeByOrigin([request], {rttByOrigin});
       const expected = {min: 100, max: 100, avg: 100, median: 100};
-      assert.deepStrictEqual(result.get('https://example.com'), expected);
+      assert.deepEqual(result.get('https://example.com'), expected);
     });
 
     it('should subtract out rtt', () => {
@@ -285,7 +285,7 @@ describe('NetworkAnalyzer', () => {
       const rttByOrigin = new Map([[NetworkAnalyzer.summary, 50]]);
       const result = NetworkAnalyzer.estimateServerResponseTimeByOrigin([request], {rttByOrigin});
       const expected = {min: 50, max: 50, avg: 50, median: 50};
-      assert.deepStrictEqual(result.get('https://example.com'), expected);
+      assert.deepEqual(result.get('https://example.com'), expected);
     });
 
     it('should compute rtts when not provided', () => {
@@ -293,7 +293,7 @@ describe('NetworkAnalyzer', () => {
       const request = createRecord({networkRequestTime: 0, networkEndTime: 1, timing});
       const result = NetworkAnalyzer.estimateServerResponseTimeByOrigin([request]);
       const expected = {min: 50, max: 50, avg: 50, median: 50};
-      assert.deepStrictEqual(result.get('https://example.com'), expected);
+      assert.deepEqual(result.get('https://example.com'), expected);
     });
 
     it('should work on a real trace', async () => {
@@ -423,7 +423,7 @@ describe('NetworkAnalyzer', () => {
       const result = NetworkAnalyzer.computeRTTAndServerResponseTime(requests);
 
       expect(result.rtt).to.be.closeTo(0.082, 0.001);
-      assert.deepStrictEqual([...result.additionalRttByOrigin.entries()], [
+      assert.deepEqual([...result.additionalRttByOrigin.entries()], [
         [
           'https://www.paulirish.com',
           9.788999999999994,

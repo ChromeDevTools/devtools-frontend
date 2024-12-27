@@ -1054,7 +1054,7 @@ describeWithEnvironment('FreestylerPanel', () => {
         }));
 
         UI.Context.Context.instance().setFlavor(ElementsPanel.ElementsPanel.ElementsPanel, null);
-        assert.deepStrictEqual(mockView.lastCall.args[0].agentType, undefined);
+        assert.deepEqual(mockView.lastCall.args[0].agentType, undefined);
         stub.restore();
       });
 
@@ -1076,7 +1076,7 @@ describeWithEnvironment('FreestylerPanel', () => {
         panel.markAsRoot();
         panel.show(document.body);
 
-        assert.deepStrictEqual(mockView.lastCall.args[0].agentType, undefined);
+        assert.deepEqual(mockView.lastCall.args[0].agentType, undefined);
         stub.restore();
       });
     });
@@ -1126,7 +1126,7 @@ describeWithEnvironment('FreestylerPanel', () => {
         }));
 
         UI.Context.Context.instance().setFlavor(NetworkPanel.NetworkPanel.NetworkPanel, null);
-        assert.deepStrictEqual(mockView.lastCall.args[0].agentType, undefined);
+        assert.deepEqual(mockView.lastCall.args[0].agentType, undefined);
         stub.restore();
       });
 
@@ -1149,7 +1149,7 @@ describeWithEnvironment('FreestylerPanel', () => {
            panel.markAsRoot();
            panel.show(document.body);
 
-           assert.deepStrictEqual(mockView.lastCall.args[0].agentType, undefined);
+           assert.deepEqual(mockView.lastCall.args[0].agentType, undefined);
            stub.restore();
          });
     });
@@ -1199,7 +1199,7 @@ describeWithEnvironment('FreestylerPanel', () => {
         }));
 
         UI.Context.Context.instance().setFlavor(SourcesPanel.SourcesPanel.SourcesPanel, null);
-        assert.deepStrictEqual(mockView.lastCall.args[0].agentType, undefined);
+        assert.deepEqual(mockView.lastCall.args[0].agentType, undefined);
         stub.restore();
       });
 
@@ -1222,7 +1222,7 @@ describeWithEnvironment('FreestylerPanel', () => {
            panel.markAsRoot();
            panel.show(document.body);
 
-           assert.deepStrictEqual(mockView.lastCall.args[0].agentType, undefined);
+           assert.deepEqual(mockView.lastCall.args[0].agentType, undefined);
            stub.restore();
          });
     });
@@ -1274,7 +1274,7 @@ describeWithEnvironment('FreestylerPanel', () => {
         }));
 
         UI.Context.Context.instance().setFlavor(TimelinePanel.TimelinePanel.TimelinePanel, null);
-        assert.deepStrictEqual(mockView.lastCall.args[0].agentType, undefined);
+        assert.deepEqual(mockView.lastCall.args[0].agentType, undefined);
         stub.restore();
       });
 
@@ -1297,7 +1297,7 @@ describeWithEnvironment('FreestylerPanel', () => {
            panel.markAsRoot();
            panel.show(document.body);
 
-           assert.deepStrictEqual(mockView.lastCall.args[0].agentType, undefined);
+           assert.deepEqual(mockView.lastCall.args[0].agentType, undefined);
            stub.restore();
          });
     });

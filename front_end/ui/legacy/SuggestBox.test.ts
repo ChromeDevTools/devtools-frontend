@@ -64,7 +64,7 @@ describeWithLocale('SuggestBox', () => {
     suggestBox.updateSuggestions(
         anchorBox, [{text: 'First'}, {text: 'Hello'}, {text: 'The best suggestion'}], true, true, 'e');
 
-    assert.deepStrictEqual(delegate.appliedSuggestions, [{suggestion: 'First', isIntermediateSuggestion: true}]);
+    assert.deepEqual(delegate.appliedSuggestions, [{suggestion: 'First', isIntermediateSuggestion: true}]);
   });
 
   it('selects no item when "canShowForSingleItem" is false', () => {
@@ -72,7 +72,7 @@ describeWithLocale('SuggestBox', () => {
         anchorBox, [{text: 'First'}, {text: 'Hello', priority: 2}, {text: 'The best suggestion', priority: 5}], false,
         true, 'e');
 
-    assert.deepStrictEqual(delegate.appliedSuggestions, []);
+    assert.deepEqual(delegate.appliedSuggestions, []);
   });
 
   it('selects the highest priority item', () => {
@@ -80,7 +80,7 @@ describeWithLocale('SuggestBox', () => {
         anchorBox, [{text: 'First'}, {text: 'Hello', priority: 2}, {text: 'The best suggestion', priority: 5}], true,
         true, 'e');
 
-    assert.deepStrictEqual(
+    assert.deepEqual(
         delegate.appliedSuggestions, [{suggestion: 'The best suggestion', isIntermediateSuggestion: true}]);
   });
 
@@ -95,7 +95,7 @@ describeWithLocale('SuggestBox', () => {
     suggestBox.keyPressed(createKeyEvent('ArrowDown'));
     suggestBox.keyPressed(createKeyEvent('ArrowDown'));
 
-    assert.deepStrictEqual(delegate.appliedSuggestions, [
+    assert.deepEqual(delegate.appliedSuggestions, [
       {suggestion: 'The best suggestion', isIntermediateSuggestion: true},
       {suggestion: 'Hello', isIntermediateSuggestion: true},
       {suggestion: 'First', isIntermediateSuggestion: true},
@@ -111,7 +111,7 @@ describeWithLocale('SuggestBox', () => {
         true, 'e');
 
     suggestBox.keyPressed(createKeyEvent('Enter'));
-    assert.deepStrictEqual(delegate.accceptedSuggestions, ['The best suggestion']);
+    assert.deepEqual(delegate.accceptedSuggestions, ['The best suggestion']);
   });
 
   it('closes the controller element after accepting a suggestion', () => {

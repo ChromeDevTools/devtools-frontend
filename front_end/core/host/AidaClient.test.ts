@@ -12,7 +12,7 @@ describeWithEnvironment('AidaClient', () => {
   it('adds no model temperature if console insights is not enabled', () => {
     const stub = getGetHostConfigStub({});
     const request = Host.AidaClient.AidaClient.buildConsoleInsightsRequest('foo');
-    assert.deepStrictEqual(request, {
+    assert.deepEqual(request, {
       current_message: {parts: [{text: 'foo'}], role: Host.AidaClient.Role.USER},
       client: 'CHROME_DEVTOOLS',
       client_feature: 1,
@@ -29,7 +29,7 @@ describeWithEnvironment('AidaClient', () => {
       },
     });
     const request = Host.AidaClient.AidaClient.buildConsoleInsightsRequest('foo');
-    assert.deepStrictEqual(request, {
+    assert.deepEqual(request, {
       current_message: {parts: [{text: 'foo'}], role: Host.AidaClient.Role.USER},
       client: 'CHROME_DEVTOOLS',
       options: {
@@ -49,7 +49,7 @@ describeWithEnvironment('AidaClient', () => {
       },
     });
     const request = Host.AidaClient.AidaClient.buildConsoleInsightsRequest('foo');
-    assert.deepStrictEqual(request, {
+    assert.deepEqual(request, {
       current_message: {parts: [{text: 'foo'}], role: Host.AidaClient.Role.USER},
       client: 'CHROME_DEVTOOLS',
       options: {
@@ -69,7 +69,7 @@ describeWithEnvironment('AidaClient', () => {
       },
     });
     const request = Host.AidaClient.AidaClient.buildConsoleInsightsRequest('foo');
-    assert.deepStrictEqual(request, {
+    assert.deepEqual(request, {
       current_message: {parts: [{text: 'foo'}], role: Host.AidaClient.Role.USER},
       client: 'CHROME_DEVTOOLS',
       client_feature: 1,
@@ -87,7 +87,7 @@ describeWithEnvironment('AidaClient', () => {
       },
     });
     const request = Host.AidaClient.AidaClient.buildConsoleInsightsRequest('foo');
-    assert.deepStrictEqual(request, {
+    assert.deepEqual(request, {
       current_message: {parts: [{text: 'foo'}], role: Host.AidaClient.Role.USER},
       client: 'CHROME_DEVTOOLS',
       options: {
@@ -111,7 +111,7 @@ describeWithEnvironment('AidaClient', () => {
       },
     });
     const request = Host.AidaClient.AidaClient.buildConsoleInsightsRequest('foo');
-    assert.deepStrictEqual(request, {
+    assert.deepEqual(request, {
       current_message: {parts: [{text: 'foo'}], role: Host.AidaClient.Role.USER},
       client: 'CHROME_DEVTOOLS',
       metadata: {
@@ -153,7 +153,7 @@ describeWithEnvironment('AidaClient', () => {
 
     const provider = new Host.AidaClient.AidaClient();
     const results = await getAllResults(provider);
-    assert.deepStrictEqual(results, [
+    assert.deepEqual(results, [
       {
         explanation: 'hello ',
         metadata: {rpcGlobalId: 123},
@@ -191,7 +191,7 @@ describeWithEnvironment('AidaClient', () => {
 
     const provider = new Host.AidaClient.AidaClient();
     const results = await getAllResults(provider);
-    assert.deepStrictEqual(results, [
+    assert.deepEqual(results, [
       {
         explanation: 'hello world',
         metadata: {rpcGlobalId: 123},
@@ -233,7 +233,7 @@ describeWithEnvironment('AidaClient', () => {
 
     const provider = new Host.AidaClient.AidaClient();
     const results = await getAllResults(provider);
-    assert.deepStrictEqual(results, [
+    assert.deepEqual(results, [
       {
         explanation: 'Friends, Romans, countrymen, lend me your ears;\n' +
             'I come to bury Caesar, not to praise him.\n',
@@ -313,7 +313,7 @@ describeWithEnvironment('AidaClient', () => {
 
     const provider = new Host.AidaClient.AidaClient();
     const results = await getAllResults(provider);
-    assert.deepStrictEqual(results, [
+    assert.deepEqual(results, [
       {
         explanation: 'Chunk1\n' +
             'Chunk2\n',
@@ -391,7 +391,7 @@ describeWithEnvironment('AidaClient', () => {
 
     const provider = new Host.AidaClient.AidaClient();
     const results = (await getAllResults(provider)).map(r => r.explanation);
-    assert.deepStrictEqual(results, [
+    assert.deepEqual(results, [
       'hello ',
       'hello \n`````\nbrave \n`````\n',
       'hello \n`````\nbrave new World()\n`````\n',

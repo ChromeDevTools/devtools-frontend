@@ -109,7 +109,7 @@ describeWithMockConnection('NetworkPersistenceManager', () => {
         requestStage: Protocol.Fetch.RequestStage.Response,
       },
     ];
-    assert.deepStrictEqual(patterns, expected);
+    assert.deepEqual(patterns, expected);
   });
 
   it('recognizes forbidden network URLs', () => {
@@ -690,7 +690,7 @@ describeWithMockConnection('NetworkPersistenceManager', () => {
     workspace.dispatchEventToListeners(Workspace.Workspace.Events.ProjectRemoved, project);
 
     setTimeout(() => {
-      assert.deepStrictEqual(
+      assert.deepEqual(
           eventURLs, ['file:///path/to/overrides/.headers', 'file:///path/to/overrides/www.example.com/.headers']);
       assert.isFalse(networkPersistenceManager.hasMatchingNetworkUISourceCodeForHeaderOverridesFile({
         url: () => 'file:///path/to/overrides/www.example.com/.headers',

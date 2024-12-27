@@ -120,7 +120,7 @@ describeWithEnvironment('CreateRecordingView', () => {
     button.dispatchEvent(new Event('click'));
     const event = await onceClicked;
 
-    assert.deepStrictEqual(event.selectorTypesToRecord, [
+    assert.deepEqual(event.selectorTypesToRecord, [
       'aria',
       'text',
       'xpath',

@@ -50,7 +50,7 @@ describeWithLocale('ColorMixSwatch', () => {
     swatch.setColorMixText('color-mix(in hsl, yellow, yellow)');
     assert.lengthOf(cb.getCalls(), 4);
 
-    assert.deepStrictEqual(values, [
+    assert.deepEqual(values, [
       'color-mix(in srgb, red, red)',
       'color-mix(in srgb, blue, red)',
       'color-mix(in srgb, blue, purple)',

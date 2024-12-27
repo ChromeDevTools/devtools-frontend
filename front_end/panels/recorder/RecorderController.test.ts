@@ -100,7 +100,7 @@ describeWithEnvironment('RecorderController', () => {
       );
 
       const flow = controller.getUserFlow();
-      assert.deepStrictEqual(flow, {
+      assert.deepEqual(flow, {
         title: 'test',
         steps: [
           {
@@ -133,7 +133,7 @@ describeWithEnvironment('RecorderController', () => {
       );
 
       const flow = controller.getUserFlow();
-      assert.deepStrictEqual(flow, {
+      assert.deepEqual(flow, {
         title: 'test',
         steps: [
           {
@@ -161,7 +161,7 @@ describeWithEnvironment('RecorderController', () => {
       );
 
       const flow = controller.getUserFlow();
-      assert.deepStrictEqual(flow, {
+      assert.deepEqual(flow, {
         title: 'test',
         steps: [
           {
@@ -186,7 +186,7 @@ describeWithEnvironment('RecorderController', () => {
       );
 
       const flow = controller.getUserFlow();
-      assert.deepStrictEqual(flow, {title: 'test', steps: []});
+      assert.deepEqual(flow, {title: 'test', steps: []});
     });
 
     it('should adding a new step before a step with a breakpoint update the breakpoint indexes correctly', async () => {

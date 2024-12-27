@@ -105,7 +105,7 @@ describe('The Breakpoints Sidebar', () => {
       const sourceContent = await retrieveCodeMirrorEditorContent();
       const expectedCodeSnippets = expectedLocations.map(line => sourceContent[line - 1]);
 
-      assert.deepStrictEqual(actualCodeSnippets, expectedCodeSnippets);
+      assert.deepEqual(actualCodeSnippets, expectedCodeSnippets);
     });
   });
 

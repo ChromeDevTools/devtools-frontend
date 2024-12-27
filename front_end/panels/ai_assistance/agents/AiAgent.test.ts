@@ -131,7 +131,7 @@ describeWithEnvironment('AiAgent', () => {
         serverSideLoggingEnabled: false,
       });
       const request = agent.buildRequest({text: 'test input'});
-      assert.deepStrictEqual(request.current_message?.parts[0], {text: 'test input'});
+      assert.deepEqual(request.current_message?.parts[0], {text: 'test input'});
       assert.strictEqual(request.historical_contexts, undefined);
     });
 
@@ -148,7 +148,7 @@ describeWithEnvironment('AiAgent', () => {
         aidaClient: {} as Host.AidaClient.AidaClient,
       });
       const request = agent.buildRequest({text: 'test input'});
-      assert.deepStrictEqual(request.current_message?.parts[0], {text: 'test input'});
+      assert.deepEqual(request.current_message?.parts[0], {text: 'test input'});
       assert.strictEqual(request.preamble, 'preamble');
       assert.strictEqual(request.historical_contexts, undefined);
     });
@@ -190,8 +190,8 @@ describeWithEnvironment('AiAgent', () => {
         },
       ];
       const request = agent.buildRequest({text: 'test input'});
-      assert.deepStrictEqual(request.current_message?.parts[0], {text: 'test input'});
-      assert.deepStrictEqual(request.historical_contexts, [
+      assert.deepEqual(request.current_message?.parts[0], {text: 'test input'});
+      assert.deepEqual(request.historical_contexts, [
         {
           parts: [{text: 'test'}],
           role: 1,
@@ -238,8 +238,8 @@ describeWithEnvironment('AiAgent', () => {
         },
       ];
       const request = agent.buildRequest({text: 'test input'});
-      assert.deepStrictEqual(request.current_message?.parts[0], {text: 'test input'});
-      assert.deepStrictEqual(request.historical_contexts, undefined);
+      assert.deepEqual(request.current_message?.parts[0], {text: 'test input'});
+      assert.deepEqual(request.historical_contexts, undefined);
     });
 
     it('builds a request with aborted query in history before a real request', async () => {
@@ -299,8 +299,8 @@ describeWithEnvironment('AiAgent', () => {
         },
       ];
       const request = agent.buildRequest({text: 'test input'});
-      assert.deepStrictEqual(request.current_message?.parts[0], {text: 'test input'});
-      assert.deepStrictEqual(request.historical_contexts, [
+      assert.deepEqual(request.current_message?.parts[0], {text: 'test input'});
+      assert.deepEqual(request.historical_contexts, [
         {
           parts: [{text: 'test2'}],
           role: 1,
@@ -343,7 +343,7 @@ describeWithEnvironment('AiAgent', () => {
 
         const responses = await Array.fromAsync(agent.run('query', {selected: mockConversationContext()}));
 
-        assert.deepStrictEqual(responses, [
+        assert.deepEqual(responses, [
           {
             type: ResponseType.USER_QUERY,
             query: 'query',
@@ -385,7 +385,7 @@ describeWithEnvironment('AiAgent', () => {
 
         await Array.fromAsync(agent.run('query', {selected: mockConversationContext()}));
 
-        assert.deepStrictEqual(agent.chatHistoryForTesting, [
+        assert.deepEqual(agent.chatHistoryForTesting, [
           {
             role: Host.AidaClient.Role.USER,
             parts: [{text: 'query'}],
@@ -407,7 +407,7 @@ describeWithEnvironment('AiAgent', () => {
 
       const responses = await Array.fromAsync(agent.run('query', {selected: mockConversationContext()}));
 
-      assert.deepStrictEqual(responses, [
+      assert.deepEqual(responses, [
         {
           type: ResponseType.USER_QUERY,
           query: 'query',
@@ -457,7 +457,7 @@ describeWithEnvironment('AiAgent', () => {
       ];
 
       const responses = await Array.fromAsync(agent.runFromHistory());
-      assert.deepStrictEqual(responses, [
+      assert.deepEqual(responses, [
         {
           type: ResponseType.USER_QUERY,
           query: 'first question',
@@ -581,7 +581,7 @@ describeWithEnvironment('AiAgent', () => {
         aidaClient: {} as Host.AidaClient.AidaClient,
       });
       agent.options.temperature = -1;
-      assert.deepStrictEqual(
+      assert.deepEqual(
           agent.buildRequest({text: 'test input'}).function_declarations,
           [{
             description: 'test fn description',

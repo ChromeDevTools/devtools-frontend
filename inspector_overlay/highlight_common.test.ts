@@ -14,17 +14,17 @@ describe('highlight common helper', () => {
     assert.strictEqual(bounds.minY, 60);
     assert.strictEqual(bounds.maxX, 420);
     assert.strictEqual(bounds.maxY, 204);
-    assert.deepStrictEqual(bounds.leftmostXForY, {[60]: 100, [204]: 100});
-    assert.deepStrictEqual(bounds.bottommostYForX, {[100]: 204, [420]: 204});
-    assert.deepStrictEqual(bounds.rightmostXForY, {[60]: 420, [204]: 420});
-    assert.deepStrictEqual(bounds.topmostYForX, {[100]: 60, [420]: 60});
+    assert.deepEqual(bounds.leftmostXForY, {[60]: 100, [204]: 100});
+    assert.deepEqual(bounds.bottommostYForX, {[100]: 204, [420]: 204});
+    assert.deepEqual(bounds.rightmostXForY, {[60]: 420, [204]: 420});
+    assert.deepEqual(bounds.topmostYForX, {[100]: 60, [420]: 60});
   });
 
   it('can map points using writing-mode matrices', () => {
     const point = {x: 0, y: 0};
     const matrix = new DOMMatrix();
 
-    assert.deepStrictEqual(
+    assert.deepEqual(
         applyMatrixToPoint(point, matrix),
         {x: 0, y: 0},
         'The identity matrix does not move the point',
@@ -33,7 +33,7 @@ describe('highlight common helper', () => {
     point.x = 10;
     point.y = 10;
     matrix.translateSelf(10, 10, 0);
-    assert.deepStrictEqual(
+    assert.deepEqual(
         applyMatrixToPoint(point, matrix),
         {x: 20, y: 20},
         'A simple translation matrix does transform a point',

@@ -369,7 +369,7 @@ describeWithEnvironment('JSONEditor', () => {
          const parameterRecorderInput = inputs[1];
          const value = parameterRecorderInput.renderRoot.textContent?.replaceAll(/\s/g, '');
          const expectedValue = 'test';
-         assert.deepStrictEqual(value, expectedValue);
+         assert.deepEqual(value, expectedValue);
        });
 
     it('should show the command written in the input bar inside the editor when parameters are arrays with the correct value',
@@ -385,7 +385,7 @@ describeWithEnvironment('JSONEditor', () => {
          const parameterRecorderInput = inputs[1];
          const value = parameterRecorderInput.renderRoot.textContent?.replaceAll(/\s/g, '');
          const expectedValue = 'test';
-         assert.deepStrictEqual(value, expectedValue);
+         assert.deepEqual(value, expectedValue);
        });
 
     it('should show the command written in the input bar inside the editor when parameters are object with the correct value',
@@ -405,7 +405,7 @@ describeWithEnvironment('JSONEditor', () => {
          const parameterRecorderInput = inputs[1];
          const value = parameterRecorderInput.renderRoot.textContent?.replaceAll(/\s/g, '');
          const expectedValue = 'test1';
-         assert.deepStrictEqual(value, expectedValue);
+         assert.deepEqual(value, expectedValue);
        });
 
     it('should should every parameter of a command as undefined even if some parameters have not been entered inside the input bar',
@@ -428,7 +428,7 @@ describeWithEnvironment('JSONEditor', () => {
          const shadowRoot = jsonEditor.renderRoot;
          const displayedParameters = shadowRoot.querySelectorAll('.parameter');
          // Two parameters (test and test2) should be displayed because in the metadata, Test.test5 accepts two parameters
-         assert.deepStrictEqual(displayedParameters.length, 2);
+         assert.deepEqual(displayedParameters.length, 2);
        });
     it('does not output parameters if the input is invalid json', async () => {
       const cdpCommand = '"command": "Test.test", "parameters":';
@@ -436,7 +436,7 @@ describeWithEnvironment('JSONEditor', () => {
 
       const {inputs} = await renderEditorForCommand(command, parameters);
 
-      assert.deepStrictEqual(inputs.length, Object.keys(parameters).length + 1);
+      assert.deepEqual(inputs.length, Object.keys(parameters).length + 1);
     });
 
     it('does not output parameters if the parameters field is not an object', async () => {
@@ -446,7 +446,7 @@ describeWithEnvironment('JSONEditor', () => {
 
       const {inputs} = await renderEditorForCommand(command, parameters);
 
-      assert.deepStrictEqual(inputs.length, Object.keys(parameters).length + 1);
+      assert.deepEqual(inputs.length, Object.keys(parameters).length + 1);
     });
 
     it('does not output parameters if there is no parameter inserted in the input bar', async () => {
@@ -456,7 +456,7 @@ describeWithEnvironment('JSONEditor', () => {
 
       const {inputs} = await renderEditorForCommand(command, parameters);
 
-      assert.deepStrictEqual(inputs.length, Object.keys(parameters).length + 1);
+      assert.deepEqual(inputs.length, Object.keys(parameters).length + 1);
     });
 
     it('checks that the command input field remains empty when there is no command parameter entered', async () => {
@@ -470,7 +470,7 @@ describeWithEnvironment('JSONEditor', () => {
 
       const {displayedCommand} = await renderEditorForCommand(command, parameters);
 
-      assert.deepStrictEqual(displayedCommand, '');
+      assert.deepEqual(displayedCommand, '');
     });
 
     it('checks that the command input field remains if the command is not supported', async () => {
@@ -479,7 +479,7 @@ describeWithEnvironment('JSONEditor', () => {
       const {command, parameters} = ProtocolMonitor.ProtocolMonitor.parseCommandInput(JSON.stringify(cdpCommand));
       const {displayedCommand} = await renderEditorForCommand(command, parameters);
 
-      assert.deepStrictEqual(displayedCommand, '');
+      assert.deepEqual(displayedCommand, '');
     });
   });
 
@@ -507,7 +507,7 @@ describeWithEnvironment('JSONEditor', () => {
       // The first input bar corresponds to the filter bar, so we query the second one which corresponds to the CDP one.
       const toolbarInput = dataGrid.element.shadowRoot?.querySelectorAll('.toolbar')[1].shadowRoot?.querySelector(
           '.toolbar-input-prompt');
-      assert.deepStrictEqual(toolbarInput?.innerHTML, '{"command":"Test.test","parameters":{"test":"test"}}');
+      assert.deepEqual(toolbarInput?.innerHTML, '{"command":"Test.test","parameters":{"test":"test"}}');
     });
 
     it('should update the selected target inside the input bar', async () => {
@@ -529,7 +529,7 @@ describeWithEnvironment('JSONEditor', () => {
       await coordinator.done();
 
       // Should be index 1 because the targetId equals "value2" which corresponds to the index number 1
-      assert.deepStrictEqual(selector.selectedIndex(), 1);
+      assert.deepEqual(selector.selectedIndex(), 1);
     });
 
     // Flaky test.
@@ -550,7 +550,7 @@ describeWithEnvironment('JSONEditor', () => {
           // The first input bar corresponds to the filter bar, so we query the second one which corresponds to the CDP one.
           const toolbarInput = dataGrid.element.shadowRoot?.querySelectorAll('.toolbar')[1].shadowRoot?.querySelector(
               '.toolbar-input-prompt');
-          assert.deepStrictEqual(toolbarInput?.innerHTML, '');
+          assert.deepEqual(toolbarInput?.innerHTML, '');
         });
   });
   describe('Descriptions', () => {
@@ -578,7 +578,7 @@ describeWithEnvironment('JSONEditor', () => {
       await renderHoveredElement(param);
       const popupContent = serializePopupContent();
       const expectedPopupContent = 'test.Type:arrayLearnMore';
-      assert.deepStrictEqual(popupContent, expectedPopupContent);
+      assert.deepEqual(popupContent, expectedPopupContent);
     });
 
     it('should show the popup with the correct description for the description of command', async () => {
@@ -595,7 +595,7 @@ describeWithEnvironment('JSONEditor', () => {
       const popupContent = serializePopupContent();
 
       const expectedPopupContent = 'Description1.Returns:Test1LearnMore';
-      assert.deepStrictEqual(popupContent, expectedPopupContent);
+      assert.deepEqual(popupContent, expectedPopupContent);
     });
   });
 
@@ -611,7 +611,7 @@ describeWithEnvironment('JSONEditor', () => {
       await populateMetadata(jsonEditor);
 
       const suggestions = await renderSuggestionBox(command, jsonEditor, enumsByName);
-      assert.deepStrictEqual(suggestions, ['test', 'test1', 'test2']);
+      assert.deepEqual(suggestions, ['test', 'test1', 'test2']);
     });
 
     it('should display suggestion box with correct suggestions when the parameter is a boolean', async () => {
@@ -623,7 +623,7 @@ describeWithEnvironment('JSONEditor', () => {
 
       const suggestions = await renderSuggestionBox(command, jsonEditor);
 
-      assert.deepStrictEqual(suggestions, ['false', 'true']);
+      assert.deepEqual(suggestions, ['false', 'true']);
     });
 
     it('should show the suggestion box for enum parameters nested inside arrays', async () => {
@@ -675,7 +675,7 @@ describeWithEnvironment('JSONEditor', () => {
         return (item.textContent.replaceAll(/\s/g, ''));
       });
 
-      assert.deepStrictEqual(suggestions, ['test', 'test1', 'test2']);
+      assert.deepEqual(suggestions, ['test', 'test1', 'test2']);
     });
 
     it('should update the values inside the suggestion box when the command changes', async () => {
@@ -695,7 +695,7 @@ describeWithEnvironment('JSONEditor', () => {
 
       const newSuggestions = await renderSuggestionBox(newCommand, jsonEditor, enumsByName);
 
-      assert.deepStrictEqual(newSuggestions, ['newtest', 'newtest1', 'newtest2']);
+      assert.deepEqual(newSuggestions, ['newtest', 'newtest1', 'newtest2']);
     });
 
     it('should not display suggestion box when the parameter is neither a string or a boolean', async () => {
@@ -707,7 +707,7 @@ describeWithEnvironment('JSONEditor', () => {
 
       const suggestions = await renderSuggestionBox(command, jsonEditor);
 
-      assert.deepStrictEqual(suggestions, []);
+      assert.deepEqual(suggestions, []);
     });
   });
 
@@ -720,7 +720,7 @@ describeWithEnvironment('JSONEditor', () => {
 
          const expectedPlaceholder = '<empty_string>';
 
-         assert.deepStrictEqual(placeholder, expectedPlaceholder);
+         assert.deepEqual(placeholder, expectedPlaceholder);
        });
 
     it('should show 0 as a value inside input when clicking on plus button for optional number parameter', async () => {
@@ -730,7 +730,7 @@ describeWithEnvironment('JSONEditor', () => {
 
       const expectedValue = 0;
 
-      assert.deepStrictEqual(value, expectedValue);
+      assert.deepEqual(value, expectedValue);
     });
 
     it('should show false as a value inside input when clicking on plus button for optional boolean parameter',
@@ -741,7 +741,7 @@ describeWithEnvironment('JSONEditor', () => {
 
          const expectedValue = false;
 
-         assert.deepStrictEqual(value, expectedValue);
+         assert.deepEqual(value, expectedValue);
        });
 
     it('should show the keys with default values when clicking of plus button for optional object parameters',
@@ -786,7 +786,7 @@ describeWithEnvironment('JSONEditor', () => {
          // The -1 is need to not take into account the input for the command
          const numberOfInputs = jsonEditor.renderRoot.querySelectorAll('devtools-suggestion-input').length - 1;
 
-         assert.deepStrictEqual(numberOfInputs, 2);
+         assert.deepEqual(numberOfInputs, 2);
        });
   });
 
@@ -827,7 +827,7 @@ describeWithEnvironment('JSONEditor', () => {
 
          const expectedValues = ['', ''];
 
-         assert.deepStrictEqual(values, expectedValues);
+         assert.deepEqual(values, expectedValues);
        });
 
     it('should reset the value of array parameter to empty array when clicking on clear button', async () => {
@@ -868,7 +868,7 @@ describeWithEnvironment('JSONEditor', () => {
 
       const value = jsonEditor.parameters[0].value;
 
-      assert.deepStrictEqual(value, []);
+      assert.deepEqual(value, []);
     });
 
     it('should reset the value of optional object parameter to undefined after clicking on clear button', async () => {
@@ -924,7 +924,7 @@ describeWithEnvironment('JSONEditor', () => {
       // The -1 is need to not take into account the input for the command
       const numberOfInputs = jsonEditor.renderRoot.querySelectorAll('devtools-suggestion-input').length - 1;
 
-      assert.deepStrictEqual(numberOfInputs, 0);
+      assert.deepEqual(numberOfInputs, 0);
     });
   });
 
@@ -962,7 +962,7 @@ describeWithEnvironment('JSONEditor', () => {
       }
 
       const resultedParams = jsonEditor.getParameters();
-      assert.deepStrictEqual(expectedParams, resultedParams);
+      assert.deepEqual(expectedParams, resultedParams);
     });
 
     it('should add parameters when clicking on "Plus" button for array parameters', async () => {
@@ -996,7 +996,7 @@ describeWithEnvironment('JSONEditor', () => {
       // The -1 is need to not take into account the input for the command
       const numberOfInputs = jsonEditor.renderRoot.querySelectorAll('devtools-suggestion-input').length - 1;
 
-      assert.deepStrictEqual(numberOfInputs, 2);
+      assert.deepEqual(numberOfInputs, 2);
     });
   });
 
@@ -1082,7 +1082,7 @@ describeWithEnvironment('JSONEditor', () => {
 
          const response = await responsePromise as ProtocolComponents.JSONEditor.SubmitEditorEvent;
 
-         assert.deepStrictEqual(response.data.parameters, expectedParameters);
+         assert.deepEqual(response.data.parameters, expectedParameters);
        });
 
     it('should return the parameters in a format understandable by the ProtocolMonitor when sending a command via the send button',
@@ -1114,7 +1114,7 @@ describeWithEnvironment('JSONEditor', () => {
            testName: 'testValue',
          };
 
-         assert.deepStrictEqual(response.data.parameters, expectedParameters);
+         assert.deepEqual(response.data.parameters, expectedParameters);
        });
   });
 
@@ -1153,8 +1153,8 @@ describeWithEnvironment('JSONEditor', () => {
     const inputs = jsonEditor.renderRoot.querySelectorAll('devtools-suggestion-input');
     const addButtons = jsonEditor.renderRoot.querySelectorAll('devtools-button[title="Add a parameter"]');
 
-    assert.deepStrictEqual(inputs.length, 1);
-    assert.deepStrictEqual(addButtons.length, 0);
+    assert.deepEqual(inputs.length, 1);
+    assert.deepEqual(addButtons.length, 0);
   });
 
   it('checks that the selection of a target works', async () => {
@@ -1168,7 +1168,7 @@ describeWithEnvironment('JSONEditor', () => {
     selectMenu?.dispatchEvent(event);
     const expectedId = jsonEditor.targetId;
 
-    assert.deepStrictEqual(targetId, expectedId);
+    assert.deepEqual(targetId, expectedId);
   });
 
   it('should copy the CDP command to clipboard via copy event', async () => {
@@ -1254,7 +1254,7 @@ describeWithEnvironment('JSONEditor', () => {
     const parameters = shadowRoot.querySelectorAll('.parameter');
     // This expected value is equal to 6 because there are 5 different parameters inside typesByName + 1
     // for the name of the parameter (traceConfig)
-    assert.deepStrictEqual(parameters.length, 6);
+    assert.deepEqual(parameters.length, 6);
   });
 
   it('should return the parameters in a format understandable by the ProtocolMonitor when sending a command with object parameter that has no typeRef found in map',
@@ -1343,7 +1343,7 @@ describeWithEnvironment('JSONEditor', () => {
          },
        };
 
-       assert.deepStrictEqual(response.data.parameters, expectedParameters);
+       assert.deepEqual(response.data.parameters, expectedParameters);
      });
 
   it('should show the custom editor for an object param that has no type ref', async () => {
@@ -1378,7 +1378,7 @@ describeWithEnvironment('JSONEditor', () => {
 
     const numberOfInputs = jsonEditor.renderRoot.querySelectorAll('devtools-suggestion-input').length - 1;
 
-    assert.deepStrictEqual(numberOfInputs, 4);
+    assert.deepEqual(numberOfInputs, 4);
   });
 
   describe('Command suggestion filter', () => {

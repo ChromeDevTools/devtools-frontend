@@ -137,7 +137,7 @@ describeWithMockConnection('CrUXManager', () => {
                               .sort()
                               .map(body => JSON.parse(body) as CrUXManager.CrUXRequest);
 
-      assert.deepStrictEqual(pageResult, {
+      assert.deepEqual(pageResult, {
         'origin-ALL': mockResponse(),
         'origin-DESKTOP': mockResponse(),
         'origin-PHONE': mockResponse(),
@@ -149,7 +149,7 @@ describeWithMockConnection('CrUXManager', () => {
         warnings: [],
       });
 
-      assert.deepStrictEqual(fetchBodies, [
+      assert.deepEqual(fetchBodies, [
         {
           formFactor: 'DESKTOP',
           metrics: [
@@ -222,7 +222,7 @@ describeWithMockConnection('CrUXManager', () => {
                             status: 404,
                           }));
       const pageResult = await cruxManager.getFieldDataForPage('https://example.com');
-      assert.deepStrictEqual(pageResult, {
+      assert.deepEqual(pageResult, {
         'origin-ALL': null,
         'origin-DESKTOP': null,
         'origin-PHONE': null,
@@ -342,7 +342,7 @@ describeWithMockConnection('CrUXManager', () => {
 
       const result = await cruxManager.getFieldDataForCurrentPage();
 
-      assert.deepStrictEqual(result.warnings, []);
+      assert.deepEqual(result.warnings, []);
       assert.strictEqual(getFieldDataMock.callCount, 1);
       assert.strictEqual(getFieldDataMock.firstCall.args[0], 'https://example.com/main/');
     });
@@ -354,7 +354,7 @@ describeWithMockConnection('CrUXManager', () => {
 
       const result = await cruxManager.getFieldDataForCurrentPage();
 
-      assert.deepStrictEqual(result.warnings, ['Field data is configured for a different URL than the current page.']);
+      assert.deepEqual(result.warnings, ['Field data is configured for a different URL than the current page.']);
       assert.strictEqual(getFieldDataMock.callCount, 1);
       assert.strictEqual(getFieldDataMock.firstCall.args[0], 'https://example.com/override');
     });
@@ -371,7 +371,7 @@ describeWithMockConnection('CrUXManager', () => {
 
       const result = await cruxManager.getFieldDataForCurrentPage();
 
-      assert.deepStrictEqual(result.warnings, ['Field data is configured for a different URL than the current page.']);
+      assert.deepEqual(result.warnings, ['Field data is configured for a different URL than the current page.']);
       assert.strictEqual(getFieldDataMock.callCount, 1);
       assert.strictEqual(getFieldDataMock.firstCall.args[0], 'https://example.com/inspected');
     });
@@ -390,7 +390,7 @@ describeWithMockConnection('CrUXManager', () => {
 
       const result = await cruxManager.getFieldDataForCurrentPage();
 
-      assert.deepStrictEqual(result.warnings, ['Field data is configured for a different URL than the current page.']);
+      assert.deepEqual(result.warnings, ['Field data is configured for a different URL than the current page.']);
       assert.strictEqual(getFieldDataMock.callCount, 1);
       assert.strictEqual(getFieldDataMock.firstCall.args[0], 'https://google.com');
     });
@@ -400,7 +400,7 @@ describeWithMockConnection('CrUXManager', () => {
 
       const result = await cruxManager.getFieldDataForCurrentPage();
 
-      assert.deepStrictEqual(result.warnings, []);
+      assert.deepEqual(result.warnings, []);
       assert.strictEqual(getFieldDataMock.callCount, 1);
       assert.strictEqual(getFieldDataMock.firstCall.args[0], 'https://example.com/inspected');
     });
@@ -416,7 +416,7 @@ describeWithMockConnection('CrUXManager', () => {
 
       const result = await finishPromise;
 
-      assert.deepStrictEqual(result.warnings, []);
+      assert.deepEqual(result.warnings, []);
       assert.strictEqual(getFieldDataMock.callCount, 1);
       assert.strictEqual(getFieldDataMock.firstCall.args[0], 'https://example.com/awaitInspected');
     });

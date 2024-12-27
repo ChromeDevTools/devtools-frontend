@@ -36,15 +36,15 @@ describe('HighlightManager', () => {
   it('correctly translates ranges', () => {
     // "text"
     //    ^^
-    assert.deepStrictEqual(toText(walk('text').nextRange(2, 2)), 'xt');
+    assert.deepEqual(toText(walk('text').nextRange(2, 2)), 'xt');
 
     // "abcdef"
     //    ^ ^
-    assert.deepStrictEqual(toText(walk('abc<p>def</p>').nextRange(2, 3)), 'cde');
+    assert.deepEqual(toText(walk('abc<p>def</p>').nextRange(2, 3)), 'cde');
 
     // "abcdefghi"
     //    ^    ^
-    assert.deepStrictEqual(toText(walk('abc<p>def</p>ghi').nextRange(2, 6)), 'cdefgh');
+    assert.deepEqual(toText(walk('abc<p>def</p>ghi').nextRange(2, 6)), 'cdefgh');
 
     // ""
     //  ^
@@ -67,9 +67,9 @@ describe('HighlightManager', () => {
     // "abcdefghi"
     //  ^^^^^^^^^
     const walker = walk('abc<p>def</p>ghi');
-    assert.deepStrictEqual(toText(walker.nextRange(0, 3)), 'abc');
-    assert.deepStrictEqual(toText(walker.nextRange(3, 3)), 'def');
-    assert.deepStrictEqual(toText(walker.nextRange(6, 3)), 'ghi');
+    assert.deepEqual(toText(walker.nextRange(0, 3)), 'abc');
+    assert.deepEqual(toText(walker.nextRange(3, 3)), 'def');
+    assert.deepEqual(toText(walker.nextRange(6, 3)), 'ghi');
   });
 
   it('correctly highlights ranges', () => {
@@ -84,6 +84,6 @@ describe('HighlightManager', () => {
     ]);
     const highlight = CSS.highlights.get(Highlighting.HighlightManager.HIGHLIGHT_REGISTRY);
     assert.strictEqual(highlight?.size, 3);
-    assert.deepStrictEqual(Array.from(highlight!.keys()), ranges);
+    assert.deepEqual(Array.from(highlight!.keys()), ranges);
   });
 });

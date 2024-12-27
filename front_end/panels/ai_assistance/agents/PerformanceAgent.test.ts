@@ -76,7 +76,7 @@ describeWithEnvironment('PerformanceAgent', () => {
           text: 'answer',
         },
       ];
-      assert.deepStrictEqual(
+      assert.deepEqual(
           agent.buildRequest({
             text: 'test input',
           }),
@@ -151,7 +151,7 @@ dur: 3
 self: 3
 `.trim();
 
-      assert.deepStrictEqual(responses, [
+      assert.deepEqual(responses, [
         {
           type: ResponseType.USER_QUERY,
           query: 'test',
@@ -175,7 +175,7 @@ self: 3
         },
       ]);
 
-      assert.deepStrictEqual(agent.chatHistoryForTesting, [
+      assert.deepEqual(agent.chatHistoryForTesting, [
         {
           role: 1,
           parts: [{text: `${aiCallTree.serialize()}\n\n# User request\n\ntest`}],

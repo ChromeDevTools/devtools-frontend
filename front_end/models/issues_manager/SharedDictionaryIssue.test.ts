@@ -60,7 +60,7 @@ describeWithLocale('SharedDictionaryIssue', () => {
       const sharedDictionaryIssue = sharedDictionaryIssues[0];
 
       assert.strictEqual(sharedDictionaryIssue.getCategory(), IssuesManager.Issue.IssueCategory.OTHER);
-      assert.deepStrictEqual(sharedDictionaryIssue.details(), issueDetails);
+      assert.deepEqual(sharedDictionaryIssue.details(), issueDetails);
       assert.strictEqual(sharedDictionaryIssue.getKind(), IssuesManager.Issue.IssueKind.PAGE_ERROR);
       assert.isNotNull(sharedDictionaryIssue.getDescription());
     }

@@ -32,6 +32,6 @@ describeWithMockConnection('InterestGroupTreeElement', () => {
         .withArgs({ownerOrigin: OWNER, name: NAME})
         .returns(Promise.resolve({details: DETAILS} as Protocol.Storage.GetInterestGroupDetailsResponse));
     const details = await view.getInterestGroupDetails(OWNER, NAME);
-    assert.deepStrictEqual(details, DETAILS);
+    assert.deepEqual(details, DETAILS);
   });
 });

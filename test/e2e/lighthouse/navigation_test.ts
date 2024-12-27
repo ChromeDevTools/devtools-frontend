@@ -86,7 +86,7 @@ describe('Navigation', function() {
 
     const receivedCategories = Array.from(Object.keys(lhr.categories)).sort();
     const sentCategories = Array.from(lhr.configSettings.onlyCategories).sort();
-    assert.deepStrictEqual(receivedCategories, sentCategories);
+    assert.deepEqual(receivedCategories, sentCategories);
 
     // 1 initial about:blank jump
     // 1 navigation for the actual page load
@@ -111,7 +111,7 @@ describe('Navigation', function() {
         'Trace contained v8 profiler events',
     );
 
-    assert.deepStrictEqual(artifacts.ViewportDimensions, {
+    assert.deepEqual(artifacts.ViewportDimensions, {
       innerHeight: 823,
       innerWidth: 412,
       outerHeight: 823,
@@ -121,8 +121,8 @@ describe('Navigation', function() {
 
     const {auditResults, erroredAudits, failedAudits} = getAuditsBreakdown(lhr, ['max-potential-fid']);
     assert.strictEqual(auditResults.length, 157);
-    assert.deepStrictEqual(erroredAudits, []);
-    assert.deepStrictEqual(failedAudits.map(audit => audit.id), [
+    assert.deepEqual(erroredAudits, []);
+    assert.deepEqual(failedAudits.map(audit => audit.id), [
       'document-title',
       'html-has-lang',
       'render-blocking-resources',
@@ -199,8 +199,8 @@ describe('Navigation', function() {
 
     const {auditResults, erroredAudits, failedAudits} = getAuditsBreakdown(lhr, flakyAudits);
     assert.strictEqual(auditResults.length, 157);
-    assert.deepStrictEqual(erroredAudits, []);
-    assert.deepStrictEqual(failedAudits.map(audit => audit.id), [
+    assert.deepEqual(erroredAudits, []);
+    assert.deepEqual(failedAudits.map(audit => audit.id), [
       'document-title',
       'html-has-lang',
       'meta-description',
@@ -237,9 +237,9 @@ describe('Navigation', function() {
     assert.strictEqual(devicePixelRatio, 1);
 
     const {erroredAudits} = getAuditsBreakdown(lhr);
-    assert.deepStrictEqual(erroredAudits, []);
+    assert.deepEqual(erroredAudits, []);
 
-    assert.deepStrictEqual(Object.keys(lhr.categories), ['performance', 'best-practices']);
+    assert.deepEqual(Object.keys(lhr.categories), ['performance', 'best-practices']);
     assert.strictEqual(lhr.configSettings.disableStorageReset, true);
     assert.strictEqual(lhr.configSettings.formFactor, 'desktop');
     assert.strictEqual(lhr.configSettings.throttling.rttMs, 40);

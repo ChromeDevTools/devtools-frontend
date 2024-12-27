@@ -41,7 +41,7 @@ describeWithMockConnection('AutofillManager', () => {
           SDK.AutofillModel.Events.ADDRESS_FORM_FILLED, {autofillModel: model, event: inEvent});
       await new Promise(resolve => setTimeout(resolve, 0));
       assert.isTrue(showViewStub.calledOnceWithExactly('autofill-view'));
-      assert.deepStrictEqual(dispatchedAutofillEvents, [outEvent]);
+      assert.deepEqual(dispatchedAutofillEvents, [outEvent]);
     };
 
     it('with a single match', async () => {

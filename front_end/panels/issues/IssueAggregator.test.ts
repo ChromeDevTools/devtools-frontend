@@ -51,7 +51,7 @@ describeWithEnvironment('AggregatedIssue', () => {
     aggregatedIssue.addInstance(issue3);
 
     const actualCookieNames = [...aggregatedIssue.cookies()].map(c => c.name).sort();
-    assert.deepStrictEqual(actualCookieNames, ['cookie1', 'cookie2']);
+    assert.deepEqual(actualCookieNames, ['cookie1', 'cookie2']);
   });
 });
 
@@ -114,7 +114,7 @@ describeWithMockConnection('IssueAggregator', () => {
     const issues = Array.from(aggregator.aggregatedIssues());
     assert.strictEqual(issues.length, 3);
     const issueCodes = issues.map(r => r.aggregationKey().toString()).sort((a, b) => a.localeCompare(b));
-    assert.deepStrictEqual(issueCodes, ['codeA', 'codeB', 'codeC']);
+    assert.deepEqual(issueCodes, ['codeA', 'codeB', 'codeC']);
   });
 
   describe('aggregates issue kind', () => {
@@ -190,7 +190,7 @@ describeWithMockConnection('IssueAggregator', () => {
     const issues = Array.from(aggregator.aggregatedIssues());
     assert.strictEqual(issues.length, 1);
     const resolutions = [...issues[0].getHeavyAdIssues()].map(r => r.details().resolution).sort();
-    assert.deepStrictEqual(resolutions, [
+    assert.deepEqual(resolutions, [
       Protocol.Audits.HeavyAdResolutionStatus.HeavyAdBlocked,
       Protocol.Audits.HeavyAdResolutionStatus.HeavyAdWarning,
     ]);
@@ -225,7 +225,7 @@ describeWithMockConnection('IssueAggregator', () => {
       const issues = Array.from(aggregator.aggregatedIssues());
       assert.strictEqual(issues.length, 1);
       const locations = [...issues[0].sources()].sort((x, y) => JSON.stringify(x).localeCompare(JSON.stringify(y)));
-      assert.deepStrictEqual(locations, [
+      assert.deepEqual(locations, [
         {url: 'bar', lineNumber: 1, columnNumber: 1, scriptId: scriptId1},
         {url: 'bar', lineNumber: 1, columnNumber: 1},
         {url: 'baz', lineNumber: 1, columnNumber: 1},

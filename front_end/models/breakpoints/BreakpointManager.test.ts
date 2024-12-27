@@ -1636,7 +1636,7 @@ describeWithMockConnection('BreakpointManager', () => {
 
     // Expect that the breakpoint is only added to the network UI source code.
     assert.strictEqual(breakpoint, addedBreakpoint);
-    assert.deepStrictEqual(Array.from(breakpoint.getUiSourceCodes()), [uiSourceCode]);
+    assert.deepEqual(Array.from(breakpoint.getUiSourceCodes()), [uiSourceCode]);
   });
 
   it('updates a breakpoint after live editing the underlying script', async () => {

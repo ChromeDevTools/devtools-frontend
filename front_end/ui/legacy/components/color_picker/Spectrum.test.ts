@@ -61,6 +61,6 @@ describeWithMockConnection('PaletteGenerator', () => {
 
     const palette = await new Promise<ColorPicker.Spectrum.Palette>(r => new ColorPicker.Spectrum.PaletteGenerator(r));
 
-    assert.deepStrictEqual(palette.colors, ['#0f0']);
+    assert.deepEqual(palette.colors, ['#0f0']);
   });
 });

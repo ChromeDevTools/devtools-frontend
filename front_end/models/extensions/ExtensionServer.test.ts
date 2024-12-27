@@ -72,7 +72,7 @@ describeWithDevtoolsExtension('Extensions', {}, context => {
     const resources =
         await new Promise<Chrome.DevTools.Resource[]>(r => context.chrome.devtools!.inspectedWindow.getResources(r));
 
-    assert.deepStrictEqual(resources.map(r => r.url), ['https://example.com/', 'http://example.com']);
+    assert.deepEqual(resources.map(r => r.url), ['https://example.com/', 'http://example.com']);
   });
 });
 
@@ -113,9 +113,9 @@ describeWithDevtoolsExtension('Extensions', {}, context => {
     assert.strictEqual(manager.plugins().length, 1);
     assert.strictEqual(manager.plugins()[0].getMediaType(), 'text/javascript');
     assert.strictEqual(manager.plugins()[0].getName(), 'Test');
-    assert.deepStrictEqual(manager.plugins()[0].getCapabilities(), ['export']);
-    assert.deepStrictEqual(result, '{"name":"test","steps":[]}');
-    assert.deepStrictEqual(stepResult, '{"type":"scroll"}');
+    assert.deepEqual(manager.plugins()[0].getCapabilities(), ['export']);
+    assert.deepEqual(result, '{"name":"test","steps":[]}');
+    assert.deepEqual(stepResult, '{"type":"scroll"}');
 
     await context.chrome.devtools?.recorder.unregisterRecorderExtensionPlugin(extensionPlugin);
   });
@@ -139,7 +139,7 @@ describeWithDevtoolsExtension('Extensions', {}, context => {
     });
 
     assert.strictEqual(manager.plugins().length, 1);
-    assert.deepStrictEqual(manager.plugins()[0].getCapabilities(), ['replay']);
+    assert.deepEqual(manager.plugins()[0].getCapabilities(), ['replay']);
     assert.strictEqual(manager.plugins()[0].getName(), 'Replay');
 
     await context.chrome.devtools?.recorder.unregisterRecorderExtensionPlugin(extensionPlugin);
@@ -193,7 +193,7 @@ describeWithDevtoolsExtension('Extensions', {}, context => {
       steps: [],
     });
     const viewDescriptor = await onceShowRequested;
-    assert.deepStrictEqual(viewDescriptor.title, 'Test');
+    assert.deepEqual(viewDescriptor.title, 'Test');
 
     await context.chrome.devtools?.recorder.unregisterRecorderExtensionPlugin(extensionPlugin);
   });
@@ -224,7 +224,7 @@ describeWithDevtoolsExtension('Extensions', {}, context => {
     // that the ShowViewRequested command was not actually dispatched.
     await new Promise(resolve => context.chrome.devtools?.inspectedWindow.eval('1', undefined, resolve));
 
-    assert.deepStrictEqual(events, []);
+    assert.deepEqual(events, []);
     await context.chrome.devtools?.recorder.unregisterRecorderExtensionPlugin(extensionPlugin);
   });
 
@@ -255,7 +255,7 @@ describeWithDevtoolsExtension('Extensions', {}, context => {
       steps: [],
     });
     const viewDescriptor = await onceShowRequested;
-    assert.deepStrictEqual(viewDescriptor.title, 'Test');
+    assert.deepEqual(viewDescriptor.title, 'Test');
 
     const descriptor = manager.getViewDescriptor(viewDescriptor.id);
 
@@ -301,7 +301,7 @@ describeWithDevtoolsExtension('Extensions', {}, context => {
     }));
     target.setInspectedURL('http://example.com' as Platform.DevToolsPath.UrlString);
 
-    assert.deepStrictEqual(addExtensionSpy.returnValues, [undefined, true]);
+    assert.deepEqual(addExtensionSpy.returnValues, [undefined, true]);
   });
 
   it('correcly reenables extensions after navigation', async () => {
@@ -388,11 +388,11 @@ describeWithDevtoolsExtension('Runtime hosts policy', {hostsPolicy}, context => 
     const target = createTarget({type: SDK.Target.Type.FRAME});
     target.setInspectedURL(blockedUrl);
     assert.isTrue(addExtensionSpy.calledOnce, 'addExtension called once');
-    assert.deepStrictEqual(addExtensionSpy.returnValues, [undefined]);
+    assert.deepEqual(addExtensionSpy.returnValues, [undefined]);
 
     target.setInspectedURL(allowedUrl);
     assert.isTrue(addExtensionSpy.calledTwice, 'addExtension called twice');
-    assert.deepStrictEqual(addExtensionSpy.returnValues, [undefined, true]);
+    assert.deepEqual(addExtensionSpy.returnValues, [undefined, true]);
   });
 
   it('does not include blocked hosts in the HAR entries', async () => {
@@ -445,7 +445,7 @@ describeWithDevtoolsExtension('Runtime hosts policy', {hostsPolicy}, context => 
         r => context.chrome.devtools?.inspectedWindow.eval(
             '4', {frameURL: childFrameUrl}, (result, error) => r({result, error})));
 
-    assert.deepStrictEqual(result.error?.details, ['Permission denied']);
+    assert.deepEqual(result.error?.details, ['Permission denied']);
   });
 
   it('doesn\'t block evaluation on blocked sub-executioncontexts with useContentScriptContext', async () => {
@@ -478,7 +478,7 @@ describeWithDevtoolsExtension('Runtime hosts policy', {hostsPolicy}, context => 
         r => context.chrome.devtools?.inspectedWindow.eval(
             '4', {frameURL: childFrameUrl, useContentScriptContext: true}, (result, error) => r({result, error})));
 
-    assert.deepStrictEqual(result.result, 4);
+    assert.deepEqual(result.result, 4);
   });
 
   it('blocks evaluation on blocked sub-executioncontexts with explicit scriptExecutionContextOrigin', async () => {
@@ -508,7 +508,7 @@ describeWithDevtoolsExtension('Runtime hosts policy', {hostsPolicy}, context => 
             '4', {frameURL: childFrameUrl, scriptExecutionContext: childExeContextOrigin} as any,
             (result, error) => r({result, error})));
 
-    assert.deepStrictEqual(result.error?.details, ['Permission denied']);
+    assert.deepEqual(result.error?.details, ['Permission denied']);
   });
 
   it('blocks evaluation on blocked sub-executioncontexts', async () => {
@@ -524,7 +524,7 @@ describeWithDevtoolsExtension('Runtime hosts policy', {hostsPolicy}, context => 
         r => context.chrome.devtools?.inspectedWindow.eval(
             '4', {frameURL: childFrameUrl}, (result, error) => r({result, error})));
 
-    assert.deepStrictEqual(result.error?.details, ['Permission denied']);
+    assert.deepEqual(result.error?.details, ['Permission denied']);
   });
 
   async function createUISourceCode(
@@ -553,13 +553,13 @@ describeWithDevtoolsExtension('Runtime hosts policy', {hostsPolicy}, context => 
     assert.exists(context.chrome.devtools);
     const resources =
         await new Promise<Chrome.DevTools.Resource[]>(r => context.chrome.devtools?.inspectedWindow.getResources(r));
-    assert.deepStrictEqual(resources.map(r => r.url), [blockedUrl, allowedUrl]);
+    assert.deepEqual(resources.map(r => r.url), [blockedUrl, allowedUrl]);
 
     const resourceContents = await Promise.all(resources.map(
         resource => new Promise<{url: string, content?: string, encoding?: string}>(
             r => resource.getContent((content, encoding) => r({url: resource.url, content, encoding})))));
 
-    assert.deepStrictEqual(resourceContents, [
+    assert.deepEqual(resourceContents, [
       {url: blockedUrl, content: undefined, encoding: undefined},
       {url: allowedUrl, content: 'content', encoding: ''},
     ]);
@@ -618,19 +618,19 @@ describeWithDevtoolsExtension('Runtime hosts policy', {hostsPolicy}, context => 
     assert.exists(context.chrome.devtools);
     const resources =
         await new Promise<Chrome.DevTools.Resource[]>(r => context.chrome.devtools?.inspectedWindow.getResources(r));
-    assert.deepStrictEqual(resources.map(r => r.url), [blockedUrl, allowedUrl]);
+    assert.deepEqual(resources.map(r => r.url), [blockedUrl, allowedUrl]);
 
-    assert.deepStrictEqual(project.uiSourceCodeForURL(allowedUrl)?.content(), 'content');
-    assert.deepStrictEqual(project.uiSourceCodeForURL(blockedUrl)?.content(), 'content');
+    assert.deepEqual(project.uiSourceCodeForURL(allowedUrl)?.content(), 'content');
+    assert.deepEqual(project.uiSourceCodeForURL(blockedUrl)?.content(), 'content');
     const responses = await Promise.all(resources.map(
                           resource => new Promise<Object|undefined>(r => resource.setContent('modified', true, r)))) as
         Array<undefined|{code: string, details: string[]}>;
 
-    assert.deepStrictEqual(responses.map(response => response?.code), ['E_FAILED', 'OK']);
-    assert.deepStrictEqual(responses.map(response => response?.details), [['Permission denied'], []]);
+    assert.deepEqual(responses.map(response => response?.code), ['E_FAILED', 'OK']);
+    assert.deepEqual(responses.map(response => response?.details), [['Permission denied'], []]);
 
-    assert.deepStrictEqual(project.uiSourceCodeForURL(allowedUrl)?.content(), 'modified');
-    assert.deepStrictEqual(project.uiSourceCodeForURL(blockedUrl)?.content(), 'content');
+    assert.deepEqual(project.uiSourceCodeForURL(allowedUrl)?.content(), 'modified');
+    assert.deepEqual(project.uiSourceCodeForURL(blockedUrl)?.content(), 'content');
   });
 });
 

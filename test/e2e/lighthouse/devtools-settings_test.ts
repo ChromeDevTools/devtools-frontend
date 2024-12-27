@@ -97,8 +97,8 @@ describe('DevTools', function() {
       // An extra basic.css request with status code -1 appears, but only in e2e tests
       // This test is made more lenient since this only happens in the e2e environment
       // b/359984292
-      assert.deepStrictEqual(trimmedRequests[0], {url: 'hello.html', statusCode: 200});
-      assert.deepStrictEqual(trimmedRequests[1], {url: 'basic.css', statusCode: -1});
+      assert.deepEqual(trimmedRequests[0], {url: 'hello.html', statusCode: 200});
+      assert.deepEqual(trimmedRequests[1], {url: 'basic.css', statusCode: -1});
     });
   });
 
@@ -119,14 +119,14 @@ describe('DevTools', function() {
       const zoom75 = await waitForElementWithTextContent('75%');
       await zoom75.click();
 
-      assert.deepStrictEqual(await getTargetViewport(), IPAD_MINI_LANDSCAPE_VIEWPORT_DIMENSIONS);
+      assert.deepEqual(await getTargetViewport(), IPAD_MINI_LANDSCAPE_VIEWPORT_DIMENSIONS);
 
       await navigateToLighthouseTab('lighthouse/hello.html');
       await selectCategories(['performance']);
       await clickStartButton();
 
       const {artifacts} = await waitForResult();
-      assert.deepStrictEqual(artifacts.ViewportDimensions, {
+      assert.deepEqual(artifacts.ViewportDimensions, {
         innerHeight: 823,
         innerWidth: 412,
         outerHeight: 823,
@@ -136,7 +136,7 @@ describe('DevTools', function() {
 
       const zoomText = await zoomButton.evaluate(zoomButtonEl => zoomButtonEl.textContent);
       assert.strictEqual(zoomText, '75%');
-      assert.deepStrictEqual(await getTargetViewport(), IPAD_MINI_LANDSCAPE_VIEWPORT_DIMENSIONS);
+      assert.deepEqual(await getTargetViewport(), IPAD_MINI_LANDSCAPE_VIEWPORT_DIMENSIONS);
     });
   });
 });

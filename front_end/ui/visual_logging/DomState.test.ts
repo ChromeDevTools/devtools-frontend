@@ -191,25 +191,25 @@ describe('DomState', () => {
       <div id="1" class="box" style="left: 50px; top: 0;"></div>
       <div id="2" class="box" style="left: 0; top: 50px;"></div>`;
 
-    assert.deepStrictEqual(
+    assert.deepEqual(
         VisualLogging.DomState.visibleOverlap(el('1'), new DOMRect(0, 0, 200, 200)), new DOMRect(50, 0, 100, 100));
-    assert.deepStrictEqual(
+    assert.deepEqual(
         VisualLogging.DomState.visibleOverlap(el('2'), new DOMRect(0, 0, 200, 200)), new DOMRect(0, 50, 100, 100));
 
-    assert.deepStrictEqual(
+    assert.deepEqual(
         VisualLogging.DomState.visibleOverlap(el('1'), new DOMRect(0, 0, 100, 100)), new DOMRect(50, 0, 50, 100));
-    assert.deepStrictEqual(
+    assert.deepEqual(
         VisualLogging.DomState.visibleOverlap(el('2'), new DOMRect(0, 0, 100, 100)), new DOMRect(0, 50, 100, 50));
 
     assert.isNull(VisualLogging.DomState.visibleOverlap(el('1'), new DOMRect(0, 0, 50, 50)));
     assert.isNull(VisualLogging.DomState.visibleOverlap(el('2'), new DOMRect(0, 0, 50, 50)));
 
     assert.isNull(VisualLogging.DomState.visibleOverlap(el('1'), new DOMRect(0, 0, 50, 100)));
-    assert.deepStrictEqual(
+    assert.deepEqual(
         VisualLogging.DomState.visibleOverlap(el('2'), new DOMRect(0, 0, 50, 100)), new DOMRect(0, 50, 50, 50));
 
     assert.isNull(VisualLogging.DomState.visibleOverlap(el('1'), new DOMRect(25, 25, 25, 50)));
-    assert.deepStrictEqual(
+    assert.deepEqual(
         VisualLogging.DomState.visibleOverlap(el('2'), new DOMRect(25, 25, 25, 50)), new DOMRect(25, 50, 25, 25));
 
     assert.isNull(VisualLogging.DomState.visibleOverlap(el('1'), new DOMRect(25, 25, 30, 30)));

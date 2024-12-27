@@ -33,7 +33,7 @@ function renderTemplateResult(templateResult: LitHtml.TemplateResult): HTMLEleme
 describeWithEnvironment('MarkdownView', () => {
   describe('tokenizer', () => {
     it('tokenizers links in single quotes', () => {
-      assert.deepStrictEqual(Marked.Marked.lexer('\'https://example.com\''), [
+      assert.deepEqual(Marked.Marked.lexer('\'https://example.com\''), [
         {
           raw: '\'https://example.com\'',
           text: '\'https://example.com\'',
@@ -93,15 +93,15 @@ describeWithEnvironment('MarkdownView', () => {
 
       const code = container.querySelector('code');
       assert.exists(code);
-      assert.deepStrictEqual(code.textContent, 'const foo = 42;');
+      assert.deepEqual(code.textContent, 'const foo = 42;');
     });
 
     it('renders childless text tokens as-is', () => {
       const container =
           renderTemplateResult(renderer.renderToken(getFakeToken({type: 'text', text: 'Simple text token'})));
 
-      assert.deepStrictEqual(container.childTextNodes().length, 1);
-      assert.deepStrictEqual(container.childTextNodes()[0].textContent, 'Simple text token');
+      assert.deepEqual(container.childTextNodes().length, 1);
+      assert.deepEqual(container.childTextNodes()[0].textContent, 'Simple text token');
     });
 
     it('renders nested text tokens correctly', () => {
@@ -117,7 +117,7 @@ describeWithEnvironment('MarkdownView', () => {
       assert.notInclude(container.textContent, 'This text should not be rendered. Only the subtokens!');
       assert.include(container.textContent, 'Nested raw text');
       assert.exists(container.querySelector('code'));
-      assert.deepStrictEqual(container.querySelector('code')?.textContent, 'and a nested codespan to boot');
+      assert.deepEqual(container.querySelector('code')?.textContent, 'and a nested codespan to boot');
     });
 
     it('throws an error for invalid or unsupported token types', () => {
@@ -303,7 +303,7 @@ ${paragraphText}
 
       const listItems = Array.from(component.shadowRoot.querySelectorAll('li'));
       assert.strictEqual(listItems.length, 2);
-      assert.deepStrictEqual(listItems.map(item => item.textContent), listItemTexts);
+      assert.deepEqual(listItems.map(item => item.textContent), listItemTexts);
     });
 
     it('renders a codeblock', () => {

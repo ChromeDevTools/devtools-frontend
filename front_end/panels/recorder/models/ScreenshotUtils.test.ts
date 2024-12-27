@@ -46,25 +46,25 @@ describe('ScreenshotUtils', () => {
 
   it('can resize screenshots to be 160px wide and <= 240px high', async () => {
     const {resizeScreenshot} = Models.ScreenshotUtils;
-    assert.deepStrictEqual(
+    assert.deepEqual(
         await getScreenshotDimensions(
             await resizeScreenshot(await generateImage(400, 800)),
             ),
         [160, 240],
     );
-    assert.deepStrictEqual(
+    assert.deepEqual(
         await getScreenshotDimensions(
             await resizeScreenshot(await generateImage(800, 400)),
             ),
         [160, 80],
     );
-    assert.deepStrictEqual(
+    assert.deepEqual(
         await getScreenshotDimensions(
             await resizeScreenshot(await generateImage(80, 80)),
             ),
         [160, 160],
     );
-    assert.deepStrictEqual(
+    assert.deepEqual(
         await getScreenshotDimensions(
             await resizeScreenshot(await generateImage(80, 320)),
             ),

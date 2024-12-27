@@ -116,7 +116,7 @@ describeWithMockConnection('ResourceTreeModel', () => {
     assert.isNotNull(resourceTreeModel.mainFrame);
     resourceTreeModel.reloadPage();
     assert.isTrue(reload.calledOnce);
-    assert.deepStrictEqual(
+    assert.deepEqual(
         reload.args[0], [{ignoreCache: undefined, loaderId: LOADER_ID, scriptToEvaluateOnLoad: undefined}]);
   });
 

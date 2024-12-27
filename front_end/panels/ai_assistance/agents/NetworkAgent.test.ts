@@ -95,7 +95,7 @@ describeWithMockConnection('NetworkAgent', () => {
           text: 'answer',
         },
       ];
-      assert.deepStrictEqual(
+      assert.deepEqual(
           agent.buildRequest({
             text: 'test input',
           }),
@@ -224,7 +224,7 @@ describeWithMockConnection('NetworkAgent', () => {
 
       const responses =
           await Array.fromAsync(agent.run('test', {selected: new RequestContext(selectedNetworkRequest)}));
-      assert.deepStrictEqual(responses, [
+      assert.deepEqual(responses, [
         {
           type: ResponseType.USER_QUERY,
           query: 'test',
@@ -267,7 +267,7 @@ describeWithMockConnection('NetworkAgent', () => {
           rpcId: 123,
         },
       ]);
-      assert.deepStrictEqual(agent.chatHistoryForTesting, [
+      assert.deepEqual(agent.chatHistoryForTesting, [
         {
           role: 1,
           parts: [{

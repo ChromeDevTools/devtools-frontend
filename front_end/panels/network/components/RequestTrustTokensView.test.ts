@@ -51,7 +51,7 @@ describeWithLocale('RequestTrustTokensView', () => {
     const issuerElements = getElementsWithinComponent(component, 'ul.issuers-list > li', HTMLElement);
     const actualIssuers = [...issuerElements].map(e => e.textContent);
 
-    assert.deepStrictEqual(actualIssuers.sort(), expectedIssuers.sort());
+    assert.deepEqual(actualIssuers.sort(), expectedIssuers.sort());
   });
 
   it('renders a result section with success status for successful requests', () => {

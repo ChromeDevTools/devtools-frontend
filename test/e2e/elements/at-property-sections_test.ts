@@ -58,15 +58,15 @@ describe('The styles pane', () => {
 
   it('shows registered properties', async () => {
     await goToResourceAndWaitForStyleSection('elements/at-property.html');
-    assert.deepStrictEqual(await getStyleRuleProperties('--my-color', 3), {
+    assert.deepEqual(await getStyleRuleProperties('--my-color', 3), {
       properties: ['    inherits: false;', '    initial-value: red;', '    syntax: "<color>";'],
       subtitle: '<style>',
     });
-    assert.deepStrictEqual(await getStyleRuleProperties('--my-color2', 3), {
+    assert.deepEqual(await getStyleRuleProperties('--my-color2', 3), {
       properties: ['    inherits: false;', '    initial-value: #c0ffee;', '    syntax: "<color>";'],
       subtitle: '<style>',
     });
-    assert.deepStrictEqual(await getStyleRuleProperties('--my-cssom-color', 3), {
+    assert.deepEqual(await getStyleRuleProperties('--my-cssom-color', 3), {
       properties: ['    inherits: false;', '    initial-value: orange;', '    syntax: "<color>";'],
       subtitle: 'CSS.registerProperty',
     });
@@ -78,7 +78,7 @@ describe('The styles pane', () => {
     const stylesPane = await waitFor('div.styles-pane');
     {
       const section = await waitForElementWithTextContent('@property', stylesPane);
-      assert.deepStrictEqual(await section.evaluate(e => e.ariaExpanded), 'true');
+      assert.deepEqual(await section.evaluate(e => e.ariaExpanded), 'true');
       const rule = await getStyleRule('--my-color');
       assert.isTrue(await rule.evaluate(e => !e.classList.contains('hidden')));
     }
@@ -107,7 +107,7 @@ describe('The styles pane', () => {
     const stylesPane = await waitFor('div.styles-pane');
     {
       const section = await waitForElementWithTextContent('@property', stylesPane);
-      assert.deepStrictEqual(await section.evaluate(e => e.ariaExpanded), 'false');
+      assert.deepEqual(await section.evaluate(e => e.ariaExpanded), 'false');
       // Pick the style rule added last to ensure the sections are fully drawn
       const rule = await getStyleRule('--custom-prop-4');
       assert.isTrue(await rule.evaluate(e => e.classList.contains('hidden')));

@@ -63,7 +63,7 @@ describeWithEnvironment('StepView', () => {
     it('should produce actions for a step', async () => {
       const {viewFunction, getViewInput} = createViewFunctionSpy();
       await createStepView(viewFunction, {step});
-      assert.deepStrictEqual(getViewInput().actions, [
+      assert.deepEqual(getViewInput().actions, [
         {id: 'add-step-before', label: 'Add step before', group: 'stepManagement', groupTitle: 'Manage steps'},
         {id: 'add-step-after', label: 'Add step after', group: 'stepManagement', groupTitle: 'Manage steps'},
         {
@@ -79,7 +79,7 @@ describeWithEnvironment('StepView', () => {
     it('should produce actions for a section', async () => {
       const {viewFunction, getViewInput} = createViewFunctionSpy();
       await createStepView(viewFunction, {section});
-      assert.deepStrictEqual(getViewInput().actions, [
+      assert.deepEqual(getViewInput().actions, [
         {id: 'add-step-after', label: 'Add step after', group: 'stepManagement', groupTitle: 'Manage steps'},
       ]);
     });
@@ -95,7 +95,7 @@ describeWithEnvironment('StepView', () => {
       const event = await eventPromise;
 
       assert.strictEqual(event.position, 'before');
-      assert.deepStrictEqual(event.stepOrSection, step);
+      assert.deepEqual(event.stepOrSection, step);
     });
 
     it('should dispatch "AddStep before" events on sections', async () => {
@@ -110,7 +110,7 @@ describeWithEnvironment('StepView', () => {
       const event = await eventPromise;
 
       assert.strictEqual(event.position, 'before');
-      assert.deepStrictEqual(event.stepOrSection, section);
+      assert.deepEqual(event.stepOrSection, section);
     });
 
     it('should dispatch "AddStep after" events on steps', async () => {
@@ -125,7 +125,7 @@ describeWithEnvironment('StepView', () => {
       const event = await eventPromise;
 
       assert.strictEqual(event.position, 'after');
-      assert.deepStrictEqual(event.stepOrSection, step);
+      assert.deepEqual(event.stepOrSection, step);
     });
 
     it('should dispatch "Remove steps" events on steps', async () => {
@@ -139,7 +139,7 @@ describeWithEnvironment('StepView', () => {
       getViewInput().handleStepAction(new Menus.Menu.MenuItemSelectedEvent('remove-step'));
       const event = await eventPromise;
 
-      assert.deepStrictEqual(event.step, step);
+      assert.deepEqual(event.step, step);
     });
 
     it('should dispatch "Add breakpoint" event on steps', async () => {
@@ -153,7 +153,7 @@ describeWithEnvironment('StepView', () => {
       getViewInput().handleStepAction(new Menus.Menu.MenuItemSelectedEvent('add-breakpoint'));
       const event = await eventPromise;
 
-      assert.deepStrictEqual(event.index, 0);
+      assert.deepEqual(event.index, 0);
     });
 
     it('should dispatch "Remove breakpoint" event on steps', async () => {
@@ -167,7 +167,7 @@ describeWithEnvironment('StepView', () => {
       getViewInput().handleStepAction(new Menus.Menu.MenuItemSelectedEvent('remove-breakpoint'));
       const event = await eventPromise;
 
-      assert.deepStrictEqual(event.index, 0);
+      assert.deepEqual(event.index, 0);
     });
 
     it('should dispatch copy step as JSON events', async () => {
@@ -197,7 +197,7 @@ describeWithEnvironment('StepView', () => {
          getViewInput().onBreakpointClick();
          const event = await eventPromise;
 
-         assert.deepStrictEqual(event.index, 0);
+         assert.deepEqual(event.index, 0);
        });
 
     it('should dispatch "Remove breakpoint" event on breakpoint icon click if there already is a breakpoint on the step',
@@ -212,7 +212,7 @@ describeWithEnvironment('StepView', () => {
          getViewInput().onBreakpointClick();
          const event = await eventPromise;
 
-         assert.deepStrictEqual(event.index, 0);
+         assert.deepEqual(event.index, 0);
        });
   });
 });

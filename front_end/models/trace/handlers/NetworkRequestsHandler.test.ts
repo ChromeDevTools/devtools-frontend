@@ -224,7 +224,7 @@ describe('NetworkRequestsHandler', function() {
       const {byTime} = Trace.Handlers.ModelHandlers.NetworkRequests.data();
       assert.strictEqual(byTime.length, 2, 'Incorrect number of requests');
       assert.strictEqual(byTime[0].args.data.redirects.length, 0, 'Incorrect number of redirects (request 0)');
-      assert.deepStrictEqual(
+      assert.deepEqual(
           byTime[1].args.data.redirects,
           [
             {
@@ -257,7 +257,7 @@ describe('NetworkRequestsHandler', function() {
       const {byTime} = Trace.Handlers.ModelHandlers.NetworkRequests.data();
       assert.strictEqual(byTime.length, 2, 'Incorrect number of requests');
       assert.strictEqual(byTime[0].args.data.redirects.length, 0, 'Incorrect number of redirects (request 0)');
-      assert.deepStrictEqual(
+      assert.deepEqual(
           byTime[1].args.data.redirects,
           [
             {

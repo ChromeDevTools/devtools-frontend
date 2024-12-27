@@ -57,7 +57,7 @@ const puppeteer = require('puppeteer'); // v23.0.0 or later
   await browser.close();`;
     const actual = result.substring(0, expected.length);
     assert.strictEqual(actual, expected, `Unexpected start of generated result:\n${actual}`);
-    assert.deepStrictEqual(sourceMap, [1, 17, 6, 23, 9]);
+    assert.deepEqual(sourceMap, [1, 17, 6, 23, 9]);
   });
 
   it('should stringify a step', async () => {

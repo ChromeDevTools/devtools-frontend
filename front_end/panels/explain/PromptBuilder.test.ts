@@ -240,7 +240,7 @@ export const y = "";
         PREAMBLE,
         ERROR_MESSAGE,
       ].join('\n'));
-      assert.deepStrictEqual(sources, [{type: 'message', value: ERROR_MESSAGE}]);
+      assert.deepEqual(sources, [{type: 'message', value: ERROR_MESSAGE}]);
     });
 
     it('builds a prompt with related code', async () => {
@@ -281,7 +281,7 @@ export const y = "";
         '```',
       ].join('\n'));
 
-      assert.deepStrictEqual(
+      assert.deepEqual(
           sources, [{type: 'message', value: ERROR_MESSAGE}, {type: 'relatedCode', value: RELATED_CODE.trim()}]);
 
       Workspace.Workspace.WorkspaceImpl.instance().removeProject(project);
@@ -329,7 +329,7 @@ export const y = "";
         '```',
       ].join('\n'));
 
-      assert.deepStrictEqual(sources, [
+      assert.deepEqual(sources, [
         {type: 'message', value: ERROR_MESSAGE},
         {type: 'stacktrace', value: STACK_TRACE},
         {type: 'relatedCode', value: RELATED_CODE.trim()},
@@ -394,7 +394,7 @@ export const y = "";
         '```',
       ].join('\n'));
 
-      assert.deepStrictEqual(
+      assert.deepEqual(
           sources, [{type: 'message', value: ERROR_MESSAGE}, {type: 'networkRequest', value: RELATED_REQUEST}]);
     });
 
@@ -415,7 +415,7 @@ export const y = "";
         PREAMBLE,
         TRIMMED_ERROR_MESSAGE,
       ].join('\n'));
-      assert.deepStrictEqual(sources, [{type: 'message', value: TRIMMED_ERROR_MESSAGE}]);
+      assert.deepEqual(sources, [{type: 'message', value: TRIMMED_ERROR_MESSAGE}]);
     });
 
     it('trims a very long stack trace', async () => {
@@ -455,7 +455,7 @@ export const y = "";
         '```',
       ].join('\n'));
 
-      assert.deepStrictEqual(sources, [
+      assert.deepEqual(sources, [
         {type: 'message', value: ERROR_MESSAGE},
         {type: 'stacktrace', value: STACK_TRACE},
         {type: 'relatedCode', value: RELATED_CODE.trim()},
@@ -506,7 +506,7 @@ export const y = "";
       ].join('\n'));
 
       assert.isNotTrue(isPageReloadRecommended, 'PromptBuilder did recommend reloading the page');
-      assert.deepStrictEqual(
+      assert.deepEqual(
           sources, [{type: 'message', value: ERROR_MESSAGE}, {type: 'networkRequest', value: RELATED_REQUEST}]);
     });
 

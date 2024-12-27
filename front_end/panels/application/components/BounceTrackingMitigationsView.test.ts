@@ -60,7 +60,7 @@ describeWithMockConnection('BounceTrackingMitigationsView', () => {
       'Learn more: Bounce Tracking Mitigations',
     ];
 
-    assert.deepStrictEqual(sectionsText, expected);
+    assert.deepEqual(sectionsText, expected);
   });
 
   it('shows a message explaining that Bounce Tracking Mitigations must be enabled to use the panel', async () => {
@@ -79,7 +79,7 @@ describeWithMockConnection('BounceTrackingMitigationsView', () => {
       'Bounce tracking mitigations are disabled. To enable them, set the flag at Bounce Tracking Mitigations Feature Flag to "Enabled With Deletion".',
     ];
 
-    assert.deepStrictEqual(sectionsText, expected);
+    assert.deepEqual(sectionsText, expected);
   });
 
   it('hides deleted sites table and shows explanation message when there are no deleted tracking sites', async () => {
@@ -113,7 +113,7 @@ describeWithMockConnection('BounceTrackingMitigationsView', () => {
       'Learn more: Bounce Tracking Mitigations',
     ];
 
-    assert.deepStrictEqual(sectionsText, expected);
+    assert.deepEqual(sectionsText, expected);
   });
 
   it('renders deleted sites in a table', async () => {

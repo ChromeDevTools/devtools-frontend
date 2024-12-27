@@ -62,10 +62,10 @@ describeWithEnvironment('Release Note View', () => {
 
     for (let i = 0; i < 2; ++i) {
       assert.lengthOf(splitContent[i], 2);
-      assert.deepStrictEqual(splitContent[i][0].type, 'heading');
-      assert.deepStrictEqual(splitContent[i][1].type, 'paragraph');
-      assert.deepStrictEqual(splitContent[i][0].raw, content[i * 2]);
-      assert.deepStrictEqual(splitContent[i][1].raw, content[i * 2 + 1]);
+      assert.deepEqual(splitContent[i][0].type, 'heading');
+      assert.deepEqual(splitContent[i][1].type, 'paragraph');
+      assert.deepEqual(splitContent[i][0].raw, content[i * 2]);
+      assert.deepEqual(splitContent[i][1].raw, content[i * 2 + 1]);
     }
   });
 
@@ -81,10 +81,10 @@ describeWithEnvironment('Release Note View', () => {
     assert.lengthOf(splitContent, 1);
     assert.lengthOf(splitContent[0], 4);
 
-    assert.deepStrictEqual(splitContent[0][0].raw, h1);
-    assert.deepStrictEqual(splitContent[0][1].raw, CONTENT1);
-    assert.deepStrictEqual(splitContent[0][2].raw, h2);
-    assert.deepStrictEqual(splitContent[0][3].raw, CONTENT2);
+    assert.deepEqual(splitContent[0][0].raw, h1);
+    assert.deepEqual(splitContent[0][1].raw, CONTENT1);
+    assert.deepEqual(splitContent[0][2].raw, h2);
+    assert.deepEqual(splitContent[0][3].raw, CONTENT2);
   });
 
   it('splits headerless paragraphs into its own section', async () => {
@@ -98,8 +98,8 @@ describeWithEnvironment('Release Note View', () => {
     assert.lengthOf(splitContent[0], 1);
     assert.lengthOf(splitContent[1], 1);
 
-    assert.deepStrictEqual(splitContent[0][0].raw, CONTENT1);
-    assert.deepStrictEqual(splitContent[1][0].raw, h1);
+    assert.deepEqual(splitContent[0][0].raw, CONTENT1);
+    assert.deepEqual(splitContent[1][0].raw, h1);
   });
 
   it('renders markdown content', async () => {
@@ -136,7 +136,7 @@ describeWithEnvironment('Release Note View', () => {
     const releaseNotes = WhatsNew.ReleaseNoteText.getReleaseNote();
     const descriptions = Array.from(videos).map(n => n.innerText.trim());
     const expectedDescriptions = releaseNotes.videoLinks.map(video => video.description);
-    assert.deepStrictEqual(descriptions, expectedDescriptions);
+    assert.deepEqual(descriptions, expectedDescriptions);
   });
 
   it('renders expected thumbnails', async () => {
@@ -154,6 +154,6 @@ describeWithEnvironment('Release Note View', () => {
     ];
     const expectedFilepaths = expectedThumbnails.map(src => new URL(src, import.meta.url).toString());
 
-    assert.deepStrictEqual(thumbnailFilepaths, expectedFilepaths);
+    assert.deepEqual(thumbnailFilepaths, expectedFilepaths);
   });
 });

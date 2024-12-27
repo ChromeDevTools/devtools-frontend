@@ -9,8 +9,7 @@ import * as Trace from '../../trace/trace.js';
 describeWithEnvironment('RenderBlocking', function() {
   it('finds render blocking requests', async () => {
     const {data, insights} = await processTrace(this, 'load-simple.json.gz');
-    assert.deepStrictEqual(
-        [...insights.keys()], [Trace.Types.Events.NO_NAVIGATION, '0BCFC23BC7D7BEDC9F93E912DCCEC1DA']);
+    assert.deepEqual([...insights.keys()], [Trace.Types.Events.NO_NAVIGATION, '0BCFC23BC7D7BEDC9F93E912DCCEC1DA']);
     const insight =
         getInsightOrError('RenderBlocking', insights, data.Meta.navigationsByNavigationId.values().next().value);
 
@@ -34,7 +33,7 @@ describeWithEnvironment('RenderBlocking', function() {
 
   it('considers only the navigation specified by the context', async () => {
     const {data, insights} = await processTrace(this, 'multiple-navigations-render-blocking.json.gz');
-    assert.deepStrictEqual(
+    assert.deepEqual(
         [...insights.keys()],
         [Trace.Types.Events.NO_NAVIGATION, '8671F33ECE0C8DBAEFBC2F9A2D1D6107', '1AE2016BBCC48AA090FDAE2CBBA01900']);
     const navigations = Array.from(data.Meta.navigationsByNavigationId.values());
@@ -57,9 +56,9 @@ describeWithEnvironment('RenderBlocking', function() {
     const insightOne = getInsightOrError('RenderBlocking', insights);
     const insightTwo = getInsightOrError('RenderBlocking', insights, navigations[0]);
     const insightThree = getInsightOrError('RenderBlocking', insights, navigations[1]);
-    assert.deepStrictEqual(insightOne.renderBlockingRequests.map(r => r.args.data.requestId), []);
-    assert.deepStrictEqual(insightTwo.renderBlockingRequests.map(r => r.args.data.requestId), ['99116.2']);
-    assert.deepStrictEqual(insightThree.renderBlockingRequests.map(r => r.args.data.requestId), ['99116.5']);
+    assert.deepEqual(insightOne.renderBlockingRequests.map(r => r.args.data.requestId), []);
+    assert.deepEqual(insightTwo.renderBlockingRequests.map(r => r.args.data.requestId), ['99116.2']);
+    assert.deepEqual(insightThree.renderBlockingRequests.map(r => r.args.data.requestId), ['99116.5']);
   });
 
   it('considers only the frame specified by the context', async () => {
@@ -90,7 +89,7 @@ describeWithEnvironment('RenderBlocking', function() {
     const insight =
         getInsightOrError('RenderBlocking', insights, data.Meta.navigationsByNavigationId.values().next().value);
 
-    assert.deepStrictEqual(insight.renderBlockingRequests.map(r => r.args.data.url), [
+    assert.deepEqual(insight.renderBlockingRequests.map(r => r.args.data.url), [
       'http://localhost:8080/render-blocking/style.css',
       'http://localhost:8080/render-blocking/script.js?beforeImage',
     ]);
@@ -105,7 +104,7 @@ describeWithEnvironment('RenderBlocking', function() {
     const insight =
         getInsightOrError('RenderBlocking', insights, data.Meta.navigationsByNavigationId.values().next().value);
 
-    assert.deepStrictEqual(insight.metricSavings, {
+    assert.deepEqual(insight.metricSavings, {
       FCP: 0,
       LCP: 0,
     } as Trace.Insights.Types.MetricSavings);
@@ -115,7 +114,7 @@ describeWithEnvironment('RenderBlocking', function() {
       const url = insight.renderBlockingRequests.find(r => r.args.data.requestId === requestId)?.args.data.url;
       return [url, wastedMs];
     });
-    assert.deepStrictEqual(urlToWastedMs, []);
+    assert.deepEqual(urlToWastedMs, []);
   });
 
   it('estimates savings with Lantern (text LCP)', async () => {
@@ -124,7 +123,7 @@ describeWithEnvironment('RenderBlocking', function() {
     const insight =
         getInsightOrError('RenderBlocking', insights, data.Meta.navigationsByNavigationId.values().next().value);
 
-    assert.deepStrictEqual(insight.metricSavings, {
+    assert.deepEqual(insight.metricSavings, {
       FCP: 0,
       LCP: 0,
     } as Trace.Insights.Types.MetricSavings);
@@ -133,6 +132,6 @@ describeWithEnvironment('RenderBlocking', function() {
       const url = insight.renderBlockingRequests.find(r => r.args.data.requestId === requestId)?.args.data.url;
       return [url, wastedMs];
     });
-    assert.deepStrictEqual(urlToWastedMs, []);
+    assert.deepEqual(urlToWastedMs, []);
   });
 });

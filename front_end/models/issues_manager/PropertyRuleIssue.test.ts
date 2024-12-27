@@ -38,7 +38,7 @@ describeWithLocale('PropertyRuleIssue', () => {
     const propertyRuleIssue = propertyRuleIssues[0];
 
     assert.strictEqual(propertyRuleIssue.getCategory(), IssuesManager.Issue.IssueCategory.OTHER);
-    assert.deepStrictEqual(propertyRuleIssue.sources(), [issueDetails.sourceCodeLocation]);
+    assert.deepEqual(propertyRuleIssue.sources(), [issueDetails.sourceCodeLocation]);
     assert.strictEqual(propertyRuleIssue.getKind(), IssuesManager.Issue.IssueKind.PAGE_ERROR);
     assert.isNotNull(propertyRuleIssue.getDescription());
     assert.strictEqual(propertyRuleIssue.getPropertyName(), 'initial-value');

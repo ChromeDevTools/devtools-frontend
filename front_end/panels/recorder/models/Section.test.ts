@@ -40,13 +40,13 @@ describe('Section', () => {
     }
 
     it('should build not sections for empty steps', () => {
-      assert.deepStrictEqual(buildSections([]), []);
+      assert.deepEqual(buildSections([]), []);
     });
 
     it('should build a current page section for initial steps that do not cause navigation', () => {
       const step1 = makeStep();
       const step2 = makeStep();
-      assert.deepStrictEqual(buildSections([step1, step2]), [
+      assert.deepEqual(buildSections([step1, step2]), [
         {title: 'Current page', url: '', steps: [step1, step2]},
       ]);
     });
@@ -55,7 +55,7 @@ describe('Section', () => {
       {
         const step1 = makeNavigateStep();
         const step2 = makeStep();
-        assert.deepStrictEqual(buildSections([step1, step2]), [
+        assert.deepEqual(buildSections([step1, step2]), [
           {
             title: 'Test',
             url: 'https://example.com',
@@ -65,7 +65,7 @@ describe('Section', () => {
         ]);
       }
 
-      {const step1 = makeStepCausingNavigation(); const step2 = makeStep(); assert.deepStrictEqual(
+      {const step1 = makeStepCausingNavigation(); const step2 = makeStep(); assert.deepEqual(
           buildSections([step1, step2]),
           [
             {title: 'Current page', url: '', steps: [step1]},
@@ -80,7 +80,7 @@ describe('Section', () => {
       const step4 = makeStepCausingNavigation();
       const step5 = makeStep();
 
-      assert.deepStrictEqual(
+      assert.deepEqual(
           buildSections([step1, step2, step3, step4, step5]),
           [
             {title: 'Current page', url: '', steps: [step1, step2]},

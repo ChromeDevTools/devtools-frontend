@@ -137,8 +137,8 @@ describe('BaseNode', () => {
       const networkNode = new NetworkNode({});
       networkNode.setIsMainDocument(true);
 
-      assert.ok(node.cloneWithoutRelationships().isMainDocument());
-      assert.ok(networkNode.cloneWithoutRelationships().isMainDocument());
+      assert.isOk(node.cloneWithoutRelationships().isMainDocument());
+      assert.isOk(networkNode.cloneWithoutRelationships().isMainDocument());
     });
   });
 
@@ -226,10 +226,10 @@ describe('BaseNode', () => {
       clone.traverse(node => clonedIdMap.set(node.id, node));
 
       assert.strictEqual(clonedIdMap.size, 6);
-      assert.ok(clonedIdMap.has('F'), 'did not include target node');
-      assert.ok(clonedIdMap.has('E'), 'did not include dependency');
-      assert.ok(clonedIdMap.has('B'), 'did not include branched dependency');
-      assert.ok(clonedIdMap.has('C'), 'did not include branched dependency');
+      assert.isOk(clonedIdMap.has('F'), 'did not include target node');
+      assert.isOk(clonedIdMap.has('E'), 'did not include dependency');
+      assert.isOk(clonedIdMap.has('B'), 'did not include branched dependency');
+      assert.isOk(clonedIdMap.has('C'), 'did not include branched dependency');
       assert.isUndefined(clonedIdMap.get('G'));
       assert.isUndefined(clonedIdMap.get('H'));
     });

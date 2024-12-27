@@ -298,6 +298,7 @@ module.exports = {
       'rulesdir/no-assert-equal-boolean-null-undefined' : 'error',
       'rulesdir/no-repeated-tests' : 'error',
       'rulesdir/no-screenshot-test-outside-perf-panel' : 'error',
+      'rulesdir/prefer-assert-is-ok' : 'error',
       'rulesdir/prefer-assert-length-of' : 'error',
       'rulesdir/trace-engine-test-timeouts' : 'error',
       '@typescript-eslint/no-non-null-assertion' : 'off',

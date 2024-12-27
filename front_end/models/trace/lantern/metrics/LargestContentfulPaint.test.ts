@@ -35,7 +35,7 @@ describe('Metrics: Lantern LCP', () => {
           optimisticNodeTimings: 8,
           pessimisticNodeTimings: 9,
         });
-    assert.ok(result.optimisticGraph, 'should have created optimistic graph');
-    assert.ok(result.pessimisticGraph, 'should have created pessimistic graph');
+    assert.isOk(result.optimisticGraph, 'should have created optimistic graph');
+    assert.isOk(result.pessimisticGraph, 'should have created pessimistic graph');
   });
 });

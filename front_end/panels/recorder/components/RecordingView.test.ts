@@ -98,7 +98,7 @@ describeWithEnvironment('RecordingView', () => {
     const button = view.shadowRoot?.querySelector(
                        '.show-code',
                        ) as HTMLDivElement;
-    assert.ok(button);
+    assert.isOk(button);
     dispatchClickEvent(button);
   }
 
@@ -106,7 +106,7 @@ describeWithEnvironment('RecordingView', () => {
     const button = view.shadowRoot?.querySelector(
                        '[title="Hide code"]',
                        ) as HTMLDivElement;
-    assert.ok(button);
+    assert.isOk(button);
     dispatchClickEvent(button);
   }
 
@@ -122,7 +122,7 @@ describeWithEnvironment('RecordingView', () => {
     const menu = view.shadowRoot?.querySelector(
                      'devtools-select-menu',
                      ) as Menus.SelectMenu.SelectMenu;
-    assert.ok(menu);
+    assert.isOk(menu);
 
     const event = new Menus.SelectMenu.SelectMenuItemSelectedEvent(Models.ConverterIds.ConverterIds.REPLAY);
     menu.dispatchEvent(event);

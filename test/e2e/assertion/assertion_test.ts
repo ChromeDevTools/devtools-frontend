@@ -16,7 +16,7 @@ describe('Assertions', function() {
       });
     });
     await goToResource('cross_tool/default.html');
-    assert.ok(expectedErrors.some(error => error.includes('expected failure 1')));
+    assert.isOk(expectedErrors.some(error => error.includes('expected failure 1')));
   });
 
   it('console.error', async () => {
@@ -30,6 +30,6 @@ describe('Assertions', function() {
       });
     });
     await goToResource('cross_tool/default.html');
-    assert.ok(expectedErrors.some(error => error.includes('expected failure 2')));
+    assert.isOk(expectedErrors.some(error => error.includes('expected failure 2')));
   });
 });

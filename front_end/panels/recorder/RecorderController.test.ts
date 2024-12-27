@@ -57,7 +57,7 @@ describeWithEnvironment('RecorderController', () => {
       const createRecordingView = controller.shadowRoot?.querySelector(
           'devtools-create-recording-view',
       );
-      assert.ok(createRecordingView);
+      assert.isOk(createRecordingView);
       createRecordingView?.dispatchEvent(
           new Components.CreateRecordingView.RecordingCancelledEvent(),
       );
@@ -74,7 +74,7 @@ describeWithEnvironment('RecorderController', () => {
       const recordingView = controller.shadowRoot?.querySelector(
           'devtools-recording-view',
       );
-      assert.ok(recordingView);
+      assert.isOk(recordingView);
       recordingView?.dispatchEvent(event);
       await coordinator.done();
     }

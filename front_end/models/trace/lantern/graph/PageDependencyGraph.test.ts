@@ -71,7 +71,7 @@ describe('PageDependencyGraph', () => {
       const networkNodeOutput = PageDependencyGraph.getNetworkNodeOutput(networkRequests);
       for (let i = 0; i < networkRequests.length; i++) {
         const node = networkNodeOutput.nodes[i];
-        assert.ok(node, `did not create node at index ${i}`);
+        assert.isOk(node, `did not create node at index ${i}`);
         assert.strictEqual(node.id, i + 1);
         assert.strictEqual(node.type, 'network');
         assert.strictEqual(node.request, networkRequests[i]);

@@ -16,12 +16,12 @@ describe('ShortcutTreeNode', () => {
     const node = new UI.ShortcutRegistry.ShortcutTreeNode(0, 0);
     node.addKeyMapping([12, 154, 36], 'test action');
     const leafNode = node.getNode(12)?.getNode(154)?.getNode(36);
-    assert.ok(leafNode, 'node should have a descendant for the mapping');
+    assert.isOk(leafNode, 'node should have a descendant for the mapping');
     assert.include(
         leafNode?.actions() || [], 'test action', 'the mapping\'s node should have the \'test action\' action');
     assert.isTrue(node.hasChords(), 'node should have chords');
-    assert.ok(node.getNode(12), 'node should have a child for key=12');
-    assert.notOk(node.getNode(154), 'node should not have a direct child for key=154');
+    assert.isOk(node.getNode(12), 'node should have a child for key=12');
+    assert.isNotOk(node.getNode(154), 'node should not have a direct child for key=154');
   });
 
   it('can clear itself', () => {

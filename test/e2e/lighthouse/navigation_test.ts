@@ -106,7 +106,7 @@ describe('Navigation', function() {
     assert.include(lhr.environment.networkUserAgent, 'Mobile');
 
     const trace = artifacts.Trace;
-    assert.notOk(
+    assert.isNotOk(
         trace.traceEvents.some((e: Record<string, unknown>) => e.cat === 'disabled-by-default-v8.cpu_profiler'),
         'Trace contained v8 profiler events',
     );
@@ -130,7 +130,7 @@ describe('Navigation', function() {
     ]);
 
     const viewTraceButton = await $textContent('View Trace', reportEl);
-    assert.ok(!viewTraceButton);
+    assert.isOk(!viewTraceButton);
 
     // Test view trace button behavior
     // For some reason the CDP click command doesn't work here even if the tools menu is open.
@@ -207,7 +207,7 @@ describe('Navigation', function() {
     ]);
 
     const viewTraceButton = await $textContent('View Trace', reportEl);
-    assert.ok(viewTraceButton);
+    assert.isOk(viewTraceButton);
   });
 
   it('successfully returns a Lighthouse report when settings changed', async () => {
@@ -225,7 +225,7 @@ describe('Navigation', function() {
     const {reportEl, lhr, artifacts} = await waitForResult();
 
     const trace = artifacts.Trace;
-    assert.ok(
+    assert.isOk(
         trace.traceEvents.some((e: Record<string, unknown>) => e.cat === 'disabled-by-default-v8.cpu_profiler'),
         'Trace did not contain any v8 profiler events',
     );
@@ -248,7 +248,7 @@ describe('Navigation', function() {
     assert.notInclude(lhr.environment.networkUserAgent, 'Mobile');
 
     const viewTreemapButton = await $textContent('Ver gráfico de rectángulos', reportEl);
-    assert.ok(viewTreemapButton);
+    assert.isOk(viewTreemapButton);
 
     const footerIssueText = await reportEl.$eval('.lh-footer__version_issue', footerIssueEl => {
       return footerIssueEl.textContent;

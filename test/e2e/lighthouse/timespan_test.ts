@@ -97,8 +97,8 @@ describe('Timespan', function() {
 
     // Ensure the timespan captured the user interaction.
     const interactionAudit = lhr.audits['interaction-to-next-paint'];
-    assert.ok(interactionAudit.score);
-    assert.ok(interactionAudit.numericValue);
+    assert.isOk(interactionAudit.score);
+    assert.isOk(interactionAudit.numericValue);
     assert.strictEqual(interactionAudit.scoreDisplayMode, 'numeric');
 
     // Trace was collected in timespan mode.

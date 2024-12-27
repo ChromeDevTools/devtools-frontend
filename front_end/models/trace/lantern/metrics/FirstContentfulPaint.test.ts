@@ -33,8 +33,8 @@ describe('Metrics: Lantern FCP', () => {
           optimisticNodeTimings: 4,
           pessimisticNodeTimings: 4,
         });
-    assert.ok(result.optimisticGraph, 'should have created optimistic graph');
-    assert.ok(result.pessimisticGraph, 'should have created pessimistic graph');
+    assert.isOk(result.optimisticGraph, 'should have created optimistic graph');
+    assert.isOk(result.pessimisticGraph, 'should have created pessimistic graph');
   });
 
   it('should handle negative request networkEndTime', async () => {

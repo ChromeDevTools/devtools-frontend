@@ -19,7 +19,7 @@ describe('SplitView', () => {
     const resizer = view.shadowRoot?.querySelector(
                         '#resizer',
                         ) as HTMLDivElement;
-    assert.ok(resizer);
+    assert.isOk(resizer);
 
     assert.strictEqual(
         view.style.getPropertyValue('--current-main-area-size'),
@@ -59,7 +59,7 @@ describe('SplitView', () => {
     const resizer = view.shadowRoot?.querySelector(
                         '#resizer',
                         ) as HTMLDivElement;
-    assert.ok(resizer);
+    assert.isOk(resizer);
 
     view.style.width = '600px';
     view.style.height = '800px';
@@ -81,7 +81,7 @@ describe('SplitView', () => {
     const resizer = view.shadowRoot?.querySelector(
                         '#resizer',
                         ) as HTMLDivElement;
-    assert.ok(resizer);
+    assert.isOk(resizer);
 
     await coordinator.done({waitForWork: true});
 
@@ -99,7 +99,7 @@ describe('SplitView', () => {
     const resizer = view.shadowRoot?.querySelector(
                         '#resizer',
                         ) as HTMLDivElement;
-    assert.ok(resizer);
+    assert.isOk(resizer);
 
     view.style.width = '600px';
     view.style.height = '550px';

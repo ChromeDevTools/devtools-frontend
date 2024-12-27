@@ -57,7 +57,7 @@ describe('NetworkAnalyzer', () => {
 
   function assertCloseEnough(valueA, valueB, threshold = 1) {
     const message = `${valueA} was not close enough to ${valueB}`;
-    assert.ok(Math.abs(valueA - valueB) < threshold, message);
+    assert.isOk(Math.abs(valueA - valueB) < threshold, message);
   }
 
   describe('#estimateIfConnectionWasReused', () => {

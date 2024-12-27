@@ -199,7 +199,7 @@ describe('Recorder', function() {
       const frame = target.frames().find(
           frame => frame.url() === `${getResourcesPath()}/recorder/iframe2.html`,
       );
-      assert.ok(frame, 'Frame that the target page navigated to is not found');
+      assert.isOk(frame, 'Frame that the target page navigated to is not found');
     });
 
     it('should be able to replay events with xpath selectors', async () => {
@@ -224,7 +224,7 @@ describe('Recorder', function() {
       const frame = target.frames().find(
           frame => frame.url() === `${getResourcesPath()}/recorder/iframe2.html`,
       );
-      assert.ok(frame, 'Frame that the target page navigated to is not found');
+      assert.isOk(frame, 'Frame that the target page navigated to is not found');
     });
 
     it('should be able to override the value in text inputs that have a value already', async () => {
@@ -596,7 +596,7 @@ describe('Recorder', function() {
           frame => frame.url() ===
               `https://devtools.oopif.test:${getTestServerPort()}/test/e2e/resources/recorder/iframe2.html`,
       );
-      assert.ok(frame, 'Frame that the target page navigated to is not found');
+      assert.isOk(frame, 'Frame that the target page navigated to is not found');
     });
 
     it('should replay when clicked on slow replay', async () => {

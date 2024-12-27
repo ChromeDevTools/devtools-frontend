@@ -17,8 +17,8 @@ describeWithEnvironment('TraceModel', function() {
     });
 
     await TraceLoader.rawEvents(this, 'basic.json.gz').then(events => model.parse(events));
-    assert.ok(events.includes('PROGRESS_UPDATE'));
-    assert.ok(events.includes('COMPLETE'));
+    assert.isOk(events.includes('PROGRESS_UPDATE'));
+    assert.isOk(events.includes('COMPLETE'));
   });
 
   it('supports parsing a generic trace that has no browser specific details', async function() {

@@ -59,7 +59,7 @@ css
           const elem = renderToElem(linkCase, linklessRenderer);
           assert.lengthOf(elem.querySelectorAll('a, x-link, devtools-link'), 0);
           assert.isFalse(['<a', '<x-link', '<devtools-link'].some(tagName => elem.outerHTML.includes(tagName)));
-          assert.ok(elem.textContent?.includes('( https://z.com )'), linkCase);
+          assert.isOk(elem.textContent?.includes('( https://z.com )'), linkCase);
         }
       });
 
@@ -90,7 +90,7 @@ css
           assert.isFalse(['<a', '<x-link', '<devtools-link', '<img', '<devtools-markdown-image'].some(
               tagName => elem.outerHTML.includes(tagName)));
 
-          assert.ok(elem.textContent?.includes('( https://z.com/i.png )'), imageCase);
+          assert.isOk(elem.textContent?.includes('( https://z.com/i.png )'), imageCase);
         }
       });
     });

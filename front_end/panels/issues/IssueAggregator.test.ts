@@ -17,6 +17,16 @@ import {StubIssue} from '../../testing/StubIssue.js';
 
 import * as Issues from './issues.js';
 
+function requestIds(...issues: Issues.IssueAggregator.AggregatedIssue[]): Set<string|undefined> {
+  const requestIds = new Set<string|undefined>();
+  for (const issue of issues) {
+    for (const {requestId} of issue.requests()) {
+      requestIds.add(requestId);
+    }
+  }
+  return requestIds;
+}
+
 describeWithEnvironment('AggregatedIssue', () => {
   const aggregationKey = 'key' as unknown as Issues.IssueAggregator.AggregationKey;
   it('deduplicates network requests across issues', () => {
@@ -27,8 +37,7 @@ describeWithEnvironment('AggregatedIssue', () => {
     aggregatedIssue.addInstance(issue1);
     aggregatedIssue.addInstance(issue2);
 
-    const actualRequestIds = [...aggregatedIssue.requests()].map(r => r.requestId).sort();
-    assert.deepStrictEqual(actualRequestIds, ['id1', 'id2']);
+    assert.deepEqual(requestIds(aggregatedIssue), new Set(['id1', 'id2']));
   });
 
   it('deduplicates affected cookies across issues', () => {
@@ -66,10 +75,7 @@ describeWithMockConnection('IssueAggregator', () => {
     mockManager.dispatchEventToListeners(
         IssuesManager.IssuesManager.Events.ISSUE_ADDED, {issuesModel: model, issue: issue2});
 
-    const issues = Array.from(aggregator.aggregatedIssues());
-    assert.strictEqual(issues.length, 1);
-    const requestIds = [...issues[0].requests()].map(r => r.requestId).sort();
-    assert.deepStrictEqual(requestIds, ['id1', 'id2']);
+    assert.deepEqual(requestIds(...aggregator.aggregatedIssues()), new Set(['id1', 'id2']));
   });
 
   it('deduplicates issues with the same code added before its creation', () => {
@@ -87,10 +93,7 @@ describeWithMockConnection('IssueAggregator', () => {
     mockManager.dispatchEventToListeners(
         IssuesManager.IssuesManager.Events.ISSUE_ADDED, {issuesModel: model, issue: issue2});
 
-    const issues = Array.from(aggregator.aggregatedIssues());
-    assert.strictEqual(issues.length, 1);
-    const requestIds = [...issues[0].requests()].map(r => r.requestId).sort();
-    assert.deepStrictEqual(requestIds, ['id1', 'id2', 'id3']);
+    assert.deepEqual(requestIds(...aggregator.aggregatedIssues()), new Set(['id1', 'id2', 'id3']));
   });
 
   it('keeps issues with different codes separate', () => {

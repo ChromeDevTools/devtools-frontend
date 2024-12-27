@@ -42,7 +42,7 @@ const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 export interface RequestLinkIconData {
   linkToPreflight?: boolean;
   request?: SDK.NetworkRequest.NetworkRequest|null;
-  affectedRequest?: {requestId: Protocol.Network.RequestId, url?: string};
+  affectedRequest?: {requestId?: Protocol.Network.RequestId, url?: string};
   highlightHeader?: {section: NetworkForward.UIRequestLocation.UIHeaderSection, name: string};
   networkTab?: NetworkForward.UIRequestLocation.UIRequestTabs;
   requestResolver?: Logs.RequestResolver.RequestResolver;
@@ -71,7 +71,7 @@ export class RequestLinkIcon extends HTMLElement {
   #displayURL: boolean = false;
   #urlToDisplay?: string;
   #networkTab?: NetworkForward.UIRequestLocation.UIRequestTabs;
-  #affectedRequest?: {requestId: Protocol.Network.RequestId, url?: string};
+  #affectedRequest?: {requestId?: Protocol.Network.RequestId, url?: string};
   #additionalOnClickAction?: () => void;
   #reveal = Common.Revealer.reveal;
 
@@ -90,7 +90,7 @@ export class RequestLinkIcon extends HTMLElement {
     if (data.revealOverride) {
       this.#reveal = data.revealOverride;
     }
-    if (!this.#request && data.affectedRequest) {
+    if (!this.#request && data.affectedRequest && typeof data.affectedRequest.requestId !== 'undefined') {
       if (!this.#requestResolver) {
         throw new Error('A `RequestResolver` must be provided if an `affectedRequest` is provided.');
       }
@@ -183,7 +183,7 @@ export class RequestLinkIcon extends HTMLElement {
       // the concrete network request, or at least its request ID, we surround
       // the URL with a button, that opens the request in the Network panel.
       let template = this.#maybeRenderURL();
-      if (this.#request || this.#affectedRequest?.requestId) {
+      if (this.#request || this.#affectedRequest?.requestId !== undefined) {
         // clang-format off
         template = html`
           <button class=${LitHtml.Directives.classMap({link: Boolean(this.#request)})}

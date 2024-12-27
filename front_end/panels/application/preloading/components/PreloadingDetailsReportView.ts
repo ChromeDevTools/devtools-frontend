@@ -201,17 +201,16 @@ export class PreloadingDetailsReportView extends LegacyWrapper.LegacyWrapper.Wra
     if (attempt.action === Protocol.Preload.SpeculationAction.Prefetch && attempt.requestId !== undefined) {
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
+      const {requestId, key: {url}} = attempt;
+      const affectedRequest: {requestId?: Protocol.Network.RequestId, url?: string} = {requestId, url};
       value = html`
           <devtools-request-link-icon
             .data=${
               {
-                affectedRequest: {
-                  requestId: attempt.requestId,
-                  url: attempt.key.url,
-                },
+                affectedRequest,
                 requestResolver: this.#data.requestResolver || new Logs.RequestResolver.RequestResolver(),
                 displayURL: true,
-                urlToDisplay: attempt.key.url,
+                urlToDisplay: url,
               }
             }
           >

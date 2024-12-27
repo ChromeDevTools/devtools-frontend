@@ -737,8 +737,8 @@ export namespace Audits {
     /**
      * The unique request id.
      */
-    requestId: Network.RequestId;
-    url?: string;
+    requestId?: Network.RequestId;
+    url: string;
   }
 
   /**

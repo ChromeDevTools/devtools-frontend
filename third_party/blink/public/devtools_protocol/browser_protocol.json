@@ -1017,11 +1017,11 @@
                         {
                             "name": "requestId",
                             "description": "The unique request id.",
+                            "optional": true,
                             "$ref": "Network.RequestId"
                         },
                         {
                             "name": "url",
-                            "optional": true,
                             "type": "string"
                         }
                     ]

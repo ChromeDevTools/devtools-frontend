@@ -13,7 +13,7 @@ describeWithEnvironment('RenderBlocking', function() {
     const insight =
         getInsightOrError('RenderBlocking', insights, data.Meta.navigationsByNavigationId.values().next().value);
 
-    assert.strictEqual(insight.renderBlockingRequests.length, 2);
+    assert.lengthOf(insight.renderBlockingRequests, 2);
     assert.deepEqual(insight.renderBlockingRequests.map(r => r.args.data.url), [
       'https://fonts.googleapis.com/css2?family=Orelega+One&display=swap',
       'http://localhost:8080/styles.css',
@@ -26,7 +26,7 @@ describeWithEnvironment('RenderBlocking', function() {
     const insight =
         getInsightOrError('RenderBlocking', insights, data.Meta.navigationsByNavigationId.values().next().value);
 
-    assert.strictEqual(insight.renderBlockingRequests.length, 0);
+    assert.lengthOf(insight.renderBlockingRequests, 0);
     assert.strictEqual(insight.warnings?.length, 1);
     assert.strictEqual(insight.warnings?.[0], 'NO_FP');
   });
@@ -80,7 +80,7 @@ describeWithEnvironment('RenderBlocking', function() {
     const insight =
         getInsightOrError('RenderBlocking', insights, data.Meta.navigationsByNavigationId.values().next().value);
 
-    assert.strictEqual(insight.renderBlockingRequests.length, 0);
+    assert.lengthOf(insight.renderBlockingRequests, 0);
   });
 
   it('correctly handles body parser blocking requests', async () => {

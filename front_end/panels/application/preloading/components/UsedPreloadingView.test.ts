@@ -75,8 +75,8 @@ describeWithEnvironment('UsedPreloadingView', () => {
     const sections = getElementsWithinComponent(
         component, 'devtools-report devtools-report-section', ReportView.ReportView.ReportSection);
 
-    assert.strictEqual(headers.length, 2);
-    assert.strictEqual(sections.length, 3);
+    assert.lengthOf(headers, 2);
+    assert.lengthOf(sections, 3);
 
     assert.include(headers[0]?.textContent, 'Speculative loading status');
     assert.strictEqual(sections[0]?.querySelector('.status-badge span')?.textContent?.trim(), 'Success');
@@ -84,7 +84,7 @@ describeWithEnvironment('UsedPreloadingView', () => {
 
     assert.include(headers[1]?.textContent, 'Speculations initiated by this page');
     const badges = sections[1]?.querySelectorAll('.status-badge span') || [];
-    assert.strictEqual(badges.length, 1);
+    assert.lengthOf(badges, 1);
     assert.strictEqual(badges[0]?.textContent?.trim(), 'No speculative loads');
 
     assert.include(sections[2]?.textContent, 'Learn more: Speculative loading on developer.chrome.com');
@@ -134,8 +134,8 @@ describeWithEnvironment('UsedPreloadingView', () => {
     const sections = getElementsWithinComponent(
         component, 'devtools-report devtools-report-section', ReportView.ReportView.ReportSection);
 
-    assert.strictEqual(headers.length, 2);
-    assert.strictEqual(sections.length, 3);
+    assert.lengthOf(headers, 2);
+    assert.lengthOf(sections, 3);
 
     assert.include(headers[0]?.textContent, 'Speculative loading status');
     assert.strictEqual(sections[0]?.querySelector('.status-badge span')?.textContent?.trim(), 'Success');
@@ -143,7 +143,7 @@ describeWithEnvironment('UsedPreloadingView', () => {
 
     assert.include(headers[1]?.textContent, 'Speculations initiated by this page');
     const badges = sections[1]?.querySelectorAll('.status-badge span') || [];
-    assert.strictEqual(badges.length, 1);
+    assert.lengthOf(badges, 1);
     assert.strictEqual(badges[0]?.textContent?.trim(), 'No speculative loads');
 
     assert.include(sections[2]?.textContent, 'Learn more: Speculative loading on developer.chrome.com');
@@ -193,8 +193,8 @@ describeWithEnvironment('UsedPreloadingView', () => {
     const sections = getElementsWithinComponent(
         component, 'devtools-report devtools-report-section', ReportView.ReportView.ReportSection);
 
-    assert.strictEqual(headers.length, 3);
-    assert.strictEqual(sections.length, 4);
+    assert.lengthOf(headers, 3);
+    assert.lengthOf(sections, 4);
 
     assert.include(headers[0]?.textContent, 'Speculative loading status');
     assert.strictEqual(sections[0]?.querySelector('.status-badge span')?.textContent?.trim(), 'Failure');
@@ -207,7 +207,7 @@ describeWithEnvironment('UsedPreloadingView', () => {
 
     assert.include(headers[2]?.textContent, 'Speculations initiated by this page');
     const badges = sections[2]?.querySelectorAll('.status-badge span') || [];
-    assert.strictEqual(badges.length, 1);
+    assert.lengthOf(badges, 1);
     assert.strictEqual(badges[0]?.textContent?.trim(), 'No speculative loads');
 
     assert.include(sections[3]?.textContent, 'Learn more: Speculative loading on developer.chrome.com');
@@ -257,8 +257,8 @@ describeWithEnvironment('UsedPreloadingView', () => {
     const sections = getElementsWithinComponent(
         component, 'devtools-report devtools-report-section', ReportView.ReportView.ReportSection);
 
-    assert.strictEqual(headers.length, 3);
-    assert.strictEqual(sections.length, 4);
+    assert.lengthOf(headers, 3);
+    assert.lengthOf(sections, 4);
 
     assert.include(headers[0]?.textContent, 'Speculative loading status');
     assert.strictEqual(sections[0]?.querySelector('.status-badge span')?.textContent?.trim(), 'Failure');
@@ -272,7 +272,7 @@ describeWithEnvironment('UsedPreloadingView', () => {
 
     assert.include(headers[2]?.textContent, 'Speculations initiated by this page');
     const badges = sections[2]?.querySelectorAll('.status-badge span') || [];
-    assert.strictEqual(badges.length, 1);
+    assert.lengthOf(badges, 1);
     assert.strictEqual(badges[0]?.textContent?.trim(), 'No speculative loads');
 
     assert.include(sections[3]?.textContent, 'Learn more: Speculative loading on developer.chrome.com');
@@ -336,8 +336,8 @@ describeWithEnvironment('UsedPreloadingView', () => {
         component, 'devtools-resources-preloading-mismatched-headers-grid',
         PreloadingComponents.PreloadingMismatchedHeadersGrid.PreloadingMismatchedHeadersGrid);
 
-    assert.strictEqual(headers.length, 4);
-    assert.strictEqual(sections.length, 5);
+    assert.lengthOf(headers, 4);
+    assert.lengthOf(sections, 5);
 
     assert.include(headers[0]?.textContent, 'Speculative loading status');
     assert.include(
@@ -361,7 +361,7 @@ describeWithEnvironment('UsedPreloadingView', () => {
 
     assert.include(headers[3]?.textContent, 'Speculations initiated by this page');
     const badges = sections[3]?.querySelectorAll('.status-badge span') || [];
-    assert.strictEqual(badges.length, 1);
+    assert.lengthOf(badges, 1);
     assert.strictEqual(badges[0]?.textContent?.trim(), 'No speculative loads');
 
     assert.include(sections[4]?.textContent, 'Learn more: Speculative loading on developer.chrome.com');
@@ -411,8 +411,8 @@ describeWithEnvironment('UsedPreloadingView', () => {
     const sections = getElementsWithinComponent(
         component, 'devtools-report devtools-report-section', ReportView.ReportView.ReportSection);
 
-    assert.strictEqual(headers.length, 3);
-    assert.strictEqual(sections.length, 4);
+    assert.lengthOf(headers, 3);
+    assert.lengthOf(sections, 4);
 
     assert.include(headers[0]?.textContent, 'Speculative loading status');
     assert.strictEqual(sections[0]?.querySelector('.status-badge span')?.textContent?.trim(), 'Success');
@@ -426,7 +426,7 @@ describeWithEnvironment('UsedPreloadingView', () => {
 
     assert.include(headers[2]?.textContent, 'Speculations initiated by this page');
     const badges = sections[2]?.querySelectorAll('.status-badge span') || [];
-    assert.strictEqual(badges.length, 1);
+    assert.lengthOf(badges, 1);
     assert.strictEqual(badges[0]?.textContent?.trim(), 'No speculative loads');
 
     assert.include(sections[3]?.textContent, 'Learn more: Speculative loading on developer.chrome.com');
@@ -446,8 +446,8 @@ describeWithEnvironment('UsedPreloadingView', () => {
     const sections = getElementsWithinComponent(
         component, 'devtools-report devtools-report-section', ReportView.ReportView.ReportSection);
 
-    assert.strictEqual(headers.length, 2);
-    assert.strictEqual(sections.length, 3);
+    assert.lengthOf(headers, 2);
+    assert.lengthOf(sections, 3);
 
     assert.include(headers[0]?.textContent, 'Speculative loading status');
     assert.strictEqual(sections[0]?.querySelector('.status-badge span')?.textContent?.trim(), 'No speculative loads');
@@ -456,7 +456,7 @@ describeWithEnvironment('UsedPreloadingView', () => {
 
     assert.include(headers[1]?.textContent, 'Speculations initiated by this page');
     const badges = sections[1]?.querySelectorAll('.status-badge span') || [];
-    assert.strictEqual(badges.length, 1);
+    assert.lengthOf(badges, 1);
     assert.strictEqual(badges[0]?.textContent?.trim(), 'No speculative loads');
 
     assert.include(sections[2]?.textContent, 'Learn more: Speculative loading on developer.chrome.com');
@@ -491,8 +491,8 @@ describeWithEnvironment('UsedPreloadingView', () => {
     const sections = getElementsWithinComponent(
         component, 'devtools-report devtools-report-section', ReportView.ReportView.ReportSection);
 
-    assert.strictEqual(headers.length, 2);
-    assert.strictEqual(sections.length, 3);
+    assert.lengthOf(headers, 2);
+    assert.lengthOf(sections, 3);
 
     assert.include(headers[0]?.textContent, 'Speculative loading status');
     assert.strictEqual(sections[0]?.querySelector('.status-badge span')?.textContent?.trim(), 'Success');
@@ -500,7 +500,7 @@ describeWithEnvironment('UsedPreloadingView', () => {
 
     assert.include(headers[1]?.textContent, 'Speculations initiated by this page');
     const badges = sections[1]?.querySelectorAll('.status-badge span') || [];
-    assert.strictEqual(badges.length, 1);
+    assert.lengthOf(badges, 1);
     assert.strictEqual(badges[0]?.textContent?.trim(), 'No speculative loads');
 
     assert.include(sections[2]?.textContent, 'Learn more: Speculative loading on developer.chrome.com');
@@ -537,8 +537,8 @@ describeWithEnvironment('UsedPreloadingView', () => {
     const sections = getElementsWithinComponent(
         component, 'devtools-report devtools-report-section', ReportView.ReportView.ReportSection);
 
-    assert.strictEqual(headers.length, 4);
-    assert.strictEqual(sections.length, 5);
+    assert.lengthOf(headers, 4);
+    assert.lengthOf(sections, 5);
 
     assert.include(headers[0]?.textContent, 'Speculative loading status');
     assert.strictEqual(sections[0]?.querySelector('.status-badge span')?.textContent?.trim(), 'No speculative loads');
@@ -559,7 +559,7 @@ describeWithEnvironment('UsedPreloadingView', () => {
 
     assert.include(headers[3]?.textContent, 'Speculations initiated by this page');
     const badges = sections[3]?.querySelectorAll('.status-badge span') || [];
-    assert.strictEqual(badges.length, 1);
+    assert.lengthOf(badges, 1);
     assert.strictEqual(badges[0]?.textContent?.trim(), 'No speculative loads');
 
     assert.include(sections[4]?.textContent, 'Learn more: Speculative loading on developer.chrome.com');
@@ -609,8 +609,8 @@ describeWithEnvironment('UsedPreloadingView', () => {
     const sections = getElementsWithinComponent(
         component, 'devtools-report devtools-report-section', ReportView.ReportView.ReportSection);
 
-    assert.strictEqual(headers.length, 4);
-    assert.strictEqual(sections.length, 5);
+    assert.lengthOf(headers, 4);
+    assert.lengthOf(sections, 5);
 
     assert.include(headers[0]?.textContent, 'Speculative loading status');
     assert.strictEqual(sections[0]?.querySelector('.status-badge span')?.textContent?.trim(), 'No speculative loads');
@@ -623,7 +623,7 @@ describeWithEnvironment('UsedPreloadingView', () => {
 
     assert.include(headers[3]?.textContent, 'Speculations initiated by this page');
     const badges = sections[3]?.querySelectorAll('.status-badge span') || [];
-    assert.strictEqual(badges.length, 1);
+    assert.lengthOf(badges, 1);
     assert.strictEqual(badges[0]?.textContent?.trim(), 'No speculative loads');
 
     assert.include(sections[4]?.textContent, 'Learn more: Speculative loading on developer.chrome.com');
@@ -730,8 +730,8 @@ describeWithEnvironment('UsedPreloadingView', () => {
     const sections = getElementsWithinComponent(
         component, 'devtools-report devtools-report-section', ReportView.ReportView.ReportSection);
 
-    assert.strictEqual(headers.length, 2);
-    assert.strictEqual(sections.length, 3);
+    assert.lengthOf(headers, 2);
+    assert.lengthOf(sections, 3);
 
     assert.include(headers[0]?.textContent, 'Speculative loading status');
     assert.strictEqual(sections[0]?.querySelector('.status-badge span')?.textContent?.trim(), 'No speculative loads');
@@ -740,7 +740,7 @@ describeWithEnvironment('UsedPreloadingView', () => {
 
     assert.include(headers[1]?.textContent, 'Speculations initiated by this page');
     const badges = sections[1]?.querySelectorAll('.status-badge span') || [];
-    assert.strictEqual(badges.length, 4);
+    assert.lengthOf(badges, 4);
     assert.strictEqual(badges[0]?.textContent?.trim(), '1 not triggered');
     assert.strictEqual(badges[1]?.textContent?.trim(), '2 in progress');
     assert.strictEqual(badges[2]?.textContent?.trim(), '2 success');

@@ -128,7 +128,7 @@ describe('BaseNode', () => {
 
       assert.strictEqual(clone.id, '1');
       assert.notEqual(node, clone);
-      assert.strictEqual(clone.getDependencies().length, 0);
+      assert.lengthOf(clone.getDependencies(), 0);
     });
 
     it('should copy isMainDocument', () => {
@@ -153,7 +153,7 @@ describe('BaseNode', () => {
       assert.notEqual(node, clone);
 
       const dependencies = clone.getDependencies();
-      assert.strictEqual(dependencies.length, 1);
+      assert.lengthOf(dependencies, 1);
 
       const neighborClone = dependencies[0];
       assert.strictEqual(neighborClone.id, neighbor.id);

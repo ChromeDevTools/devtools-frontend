@@ -60,9 +60,9 @@ describeWithLocale('DeprecationIssue', () => {
           IssuesManager.IssuesManager.Events.ISSUE_ADDED, {issuesModel: mockModel, issue});
     }
     const aggregatedIssues = Array.from(aggregator.aggregatedIssues());
-    assert.strictEqual(aggregatedIssues.length, 1);
+    assert.lengthOf(aggregatedIssues, 1);
     const deprecationIssues = Array.from(aggregatedIssues[0].getDeprecationIssues());
-    assert.strictEqual(deprecationIssues.length, 2);
+    assert.lengthOf(deprecationIssues, 2);
   });
 
   it('does not aggregate issues with different types', () => {
@@ -76,6 +76,6 @@ describeWithLocale('DeprecationIssue', () => {
           IssuesManager.IssuesManager.Events.ISSUE_ADDED, {issuesModel: mockModel, issue});
     }
     const aggregatedIssues = Array.from(aggregator.aggregatedIssues());
-    assert.strictEqual(aggregatedIssues.length, 2);
+    assert.lengthOf(aggregatedIssues, 2);
   });
 });

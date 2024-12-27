@@ -317,7 +317,7 @@ export async function checkBreakpointDidNotActivate() {
     const breakpointIndicator = await Promise.all(pauseIndicators.map(elements => {
       return elements.evaluate(el => el.className);
     }));
-    assert.deepEqual(breakpointIndicator.length, 0, 'script had been paused');
+    assert.lengthOf(breakpointIndicator, 0, 'script had been paused');
   });
 }
 

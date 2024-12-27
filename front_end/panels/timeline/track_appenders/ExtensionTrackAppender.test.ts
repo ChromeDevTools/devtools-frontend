@@ -49,7 +49,7 @@ describeWithEnvironment('ExtensionTrackAppender', function() {
 
   describe('appendTrackAtLevel', function() {
     it('creates flamechart groups for the Extension tracks properly', function() {
-      assert.strictEqual(flameChartData.groups.length, 3);
+      assert.lengthOf(flameChartData.groups, 3);
       assert.strictEqual(flameChartData.groups[0].name, 'A track group — Custom track');
       assert.strictEqual(flameChartData.groups[0].startLevel, 0);
       assert.strictEqual(flameChartData.groups[0].style.nestingLevel, 0);
@@ -212,7 +212,7 @@ describeWithEnvironment('ExtensionTrackAppender', function() {
       extensionTrackAppenders.forEach(appender => {
         level = appender.appendTrackAtLevel(level);
       });
-      assert.strictEqual(flameChartData.groups.length, 0);
+      assert.lengthOf(flameChartData.groups, 0);
       Timeline.TimelinePanel.TimelinePanel.extensionDataVisibilitySetting().set(true);
     });
   });

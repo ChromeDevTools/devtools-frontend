@@ -108,7 +108,7 @@ describe('Multi-Workers', function() {
         await step('Wait for first worker to be expanded', async () => {
           await waitFor(selectedFile);
           const workers = await $$(expandedWorker);
-          assert.strictEqual(workers.length, 1);
+          assert.lengthOf(workers, 1);
         });
 
         await step('Break in and switch to a different worker', async () => {

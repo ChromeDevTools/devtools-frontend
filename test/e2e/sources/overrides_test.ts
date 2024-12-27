@@ -168,7 +168,7 @@ describe('Overrides panel', function() {
 
       // No file permission pop up
       const popups = await $$('aria/Select a folder to store override files in.', undefined, 'aria');
-      assert.strictEqual(popups.length, 0);
+      assert.lengthOf(popups, 0);
 
       // Open & close the file in the Sources panel
       const fileTab = await waitFor('[aria-label="coffees.json, file"]');
@@ -188,7 +188,7 @@ describe('Overrides panel', function() {
 
       // No file permission pop up
       const popups = await $$('aria/Select a folder to store override files in.', undefined, 'aria');
-      assert.strictEqual(popups.length, 0);
+      assert.lengthOf(popups, 0);
 
       // Open & close the file in the Sources panel
       const fileTab = await waitFor('[aria-label="coffees.json, file"]');
@@ -206,7 +206,7 @@ describe('Overrides panel', function() {
       const networkPanel = await waitFor('.tabbed-pane-header-tab.selected');
       const icons = await networkPanel.$$('.tabbed-pane-header-tab-icon');
 
-      assert.strictEqual(icons.length, 0);
+      assert.lengthOf(icons, 0);
     });
 
     await step('shows indicator when overrides setting is enabled', async () => {
@@ -225,7 +225,7 @@ describe('Overrides panel', function() {
       const icons = await networkPanel.$$('.tabbed-pane-header-tab-icon');
       const iconTitleElement = await icons[0].$('[title="Requests may be overridden locally, see the Sources panel"]');
 
-      assert.strictEqual(icons.length, 1);
+      assert.lengthOf(icons, 1);
       assert.isNotNull(iconTitleElement);
     });
 
@@ -239,7 +239,7 @@ describe('Overrides panel', function() {
       const networkPanel = await waitFor('.tabbed-pane-header-tab.selected');
       const icons = await networkPanel.$$('.tabbed-pane-header-tab-icon');
 
-      assert.strictEqual(icons.length, 0);
+      assert.lengthOf(icons, 0);
     });
 
     await step('shows indicator after enabling override in Overrides tab', async () => {
@@ -254,7 +254,7 @@ describe('Overrides panel', function() {
       const icons = await networkPanel.$$('.tabbed-pane-header-tab-icon');
       const iconTitleElement = await icons[0].$('[title="Requests may be overridden locally, see the Sources panel"]');
 
-      assert.strictEqual(icons.length, 1);
+      assert.lengthOf(icons, 1);
       assert.isNotNull(iconTitleElement);
     });
   });
@@ -271,7 +271,7 @@ describe('Overrides panel', function() {
       await waitForAria('Select folder for overrides');
 
       const assertElements = await $$('Select folder for overrides', undefined, 'aria');
-      assert.strictEqual(assertElements.length, 2);
+      assert.lengthOf(assertElements, 2);
     });
 
     await step('when overrides setting is enabled', async () => {
@@ -287,7 +287,7 @@ describe('Overrides panel', function() {
       await waitForAria('Enable Local Overrides');
 
       const assertElements = await $$('Enable Local Overrides', undefined, 'aria');
-      assert.strictEqual(assertElements.length, 1);
+      assert.lengthOf(assertElements, 1);
     });
   });
 
@@ -310,10 +310,10 @@ describe('Overrides panel', function() {
     const assertOverrideContentElements = await $$('Override content', undefined, 'aria');
     const assertOpenInElements = await $$('Open in containing folder', undefined, 'aria');
 
-    assert.strictEqual(assertShowAllElements.length, 0);
-    assert.strictEqual(assertAddFolderElements.length, 0);
-    assert.strictEqual(assertOverrideContentElements.length, 0);
-    assert.strictEqual(assertOpenInElements.length, 1);
+    assert.lengthOf(assertShowAllElements, 0);
+    assert.lengthOf(assertAddFolderElements, 0);
+    assert.lengthOf(assertOverrideContentElements, 0);
+    assert.lengthOf(assertOpenInElements, 1);
   });
 
   it('has correct context menu for main overrides folder', async () => {
@@ -335,9 +335,9 @@ describe('Overrides panel', function() {
     const assertRemoveFolderElements = await $$('Remove folder from workspace', undefined, 'aria');
     const assertDeleteElements = await $$('Delete', undefined, 'aria');
 
-    assert.strictEqual(assertAddFolderElements.length, 0);
-    assert.strictEqual(assertRemoveFolderElements.length, 0);
-    assert.strictEqual(assertDeleteElements.length, 0);
+    assert.lengthOf(assertAddFolderElements, 0);
+    assert.lengthOf(assertRemoveFolderElements, 0);
+    assert.lengthOf(assertDeleteElements, 0);
   });
 
   it('has correct context menu for sub overrides folder', async () => {
@@ -359,9 +359,9 @@ describe('Overrides panel', function() {
     const assertRemoveFolderElements = await $$('Remove folder from workspace', undefined, 'aria');
     const assertDeleteElements = await $$('Delete', undefined, 'aria');
 
-    assert.strictEqual(assertAddFolderElements.length, 0);
-    assert.strictEqual(assertRemoveFolderElements.length, 0);
-    assert.strictEqual(assertDeleteElements.length, 1);
+    assert.lengthOf(assertAddFolderElements, 0);
+    assert.lengthOf(assertRemoveFolderElements, 0);
+    assert.lengthOf(assertDeleteElements, 1);
   });
 
   it('show redirect dialog when override content of source mapped js file', async () => {
@@ -439,8 +439,8 @@ describe('Overrides panel', () => {
     const assertShowAllElements = await $$('Show all overrides', undefined, 'aria');
     const assertOverridesContentElements = await $$('Override content', undefined, 'aria');
 
-    assert.strictEqual(assertShowAllElements.length, 0);
-    assert.strictEqual(assertOverridesContentElements.length, 1);
+    assert.lengthOf(assertShowAllElements, 0);
+    assert.lengthOf(assertOverridesContentElements, 1);
   });
 });
 
@@ -514,7 +514,7 @@ describe('Overrides panel > Delete context menus', () => {
       await waitForNone('[role="dialog"]');
 
       const treeItems = await $$('.navigator-file-tree-item');
-      assert.strictEqual(treeItems.length, 0);
+      assert.lengthOf(treeItems, 0);
     });
   });
 });

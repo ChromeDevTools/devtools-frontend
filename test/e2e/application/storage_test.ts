@@ -76,7 +76,7 @@ describe('The Application Tab', () => {
 
       const rows = await getPieChartLegendRows();
       // Only assert that the legend entries are correct.
-      assert.strictEqual(rows.length, 2);
+      assert.lengthOf(rows, 2);
       assert.strictEqual(rows[0][2], 'IndexedDB');
       assert.strictEqual(rows[1][2], 'Total');
     });

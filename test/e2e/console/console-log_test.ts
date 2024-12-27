@@ -403,9 +403,9 @@ describe('The Console Tab', () => {
 
       // Check that the 'BG' text has the background image set.
       const textsAndStyles = await getConsoleMessageTextChunksWithStyle(frontend, ['backgroundImage']);
-      assert.strictEqual(textsAndStyles.length, 1);
+      assert.lengthOf(textsAndStyles, 1);
       const message = textsAndStyles[0];
-      assert.strictEqual(message.length, 2);
+      assert.lengthOf(message, 2);
       const textWithBackground = message[1];
       assert.strictEqual(textWithBackground[0], 'BG');
       assert.include(textWithBackground[1], 'data:image/png;base64');

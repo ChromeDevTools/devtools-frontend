@@ -35,7 +35,7 @@ describeWithMockConnection('MediaQueryInspector', () => {
     );
     inspector.markAsRoot();
     inspector.show(document.body);
-    assert.strictEqual(inspector.contentElement.querySelectorAll('.media-inspector-marker').length, 0);
+    assert.lengthOf(inspector.contentElement.querySelectorAll('.media-inspector-marker'), 0);
 
     const cssModel = target.model(SDK.CSSModel.CSSModel);
     assert.exists(cssModel);
@@ -50,6 +50,6 @@ describeWithMockConnection('MediaQueryInspector', () => {
         SDK.CSSModel.Events.StyleSheetAdded, {} as SDK.CSSStyleSheetHeader.CSSStyleSheetHeader);
     const [work] = await workScheduled;
     await work();
-    assert.strictEqual(inspector.contentElement.querySelectorAll('.media-inspector-marker').length, 1);
+    assert.lengthOf(inspector.contentElement.querySelectorAll('.media-inspector-marker'), 1);
   });
 });

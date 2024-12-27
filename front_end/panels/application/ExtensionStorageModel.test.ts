@@ -190,10 +190,10 @@ describeWithMockConnection('ExtensionStorageModel', () => {
     await addedPromise;
 
     STORAGE_AREAS.forEach(area => assert.exists(extensionStorageModel.storageForIdAndArea(initId, area)));
-    assert.strictEqual(4, extensionStorageModel.storages().length);
+    assert.lengthOf(extensionStorageModel.storages(), 4);
 
     runtime.executionContextCreated(mockExecutionContext);
-    assert.strictEqual(4, extensionStorageModel.storages().length);
+    assert.lengthOf(extensionStorageModel.storages(), 4);
   });
 
   it('removes ExtensionStorage when last ExecutionContext is removed', async () => {
@@ -219,15 +219,15 @@ describeWithMockConnection('ExtensionStorageModel', () => {
     await addedPromise;
 
     STORAGE_AREAS.forEach(area => assert.exists(extensionStorageModel.storageForIdAndArea(initId, area)));
-    assert.strictEqual(4, extensionStorageModel.storages().length);
+    assert.lengthOf(extensionStorageModel.storages(), 4);
 
     // If a single execution context is destroyed but another remains,
     // ExtensionStorage should not be removed.
     runtime.executionContextDestroyed(mockExecutionContext1.id);
-    assert.strictEqual(4, extensionStorageModel.storages().length);
+    assert.lengthOf(extensionStorageModel.storages(), 4);
 
     runtime.executionContextDestroyed(mockExecutionContext2.id);
-    assert.strictEqual(0, extensionStorageModel.storages().length);
+    assert.lengthOf(extensionStorageModel.storages(), 0);
   });
 
   it('matches service worker target on same origin', () => {

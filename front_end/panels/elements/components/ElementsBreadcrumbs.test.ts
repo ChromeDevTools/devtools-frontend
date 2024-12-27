@@ -303,7 +303,7 @@ describe('ElementsBreadcrumbs', () => {
         const scrollButtons = component.shadowRoot.querySelectorAll('button.overflow');
         assertElements(scrollButtons, HTMLButtonElement);
 
-        assert.strictEqual(scrollButtons.length, 2, 'there are two scroll buttons');
+        assert.lengthOf(scrollButtons, 2, 'there are two scroll buttons');
         const leftButton = scrollButtons[0];
         const rightButton = scrollButtons[1];
 

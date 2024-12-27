@@ -319,7 +319,7 @@ function parseNumberWithSpaces(number: string): number {
 
 async function getSizesFromRow(row: puppeteer.ElementHandle<Element>) {
   const numericData = await $$('.numeric-column>.profile-multiple-values>span', row);
-  assert.strictEqual(numericData.length, 4);
+  assert.lengthOf(numericData, 4);
   function readNumber(e: Element): string {
     return e.textContent as string;
   }

@@ -53,7 +53,7 @@ describeWithEnvironment('ScreenshotStorage', () => {
     const setting = Common.Settings.Settings.instance().createSetting<Recorder.ScreenshotStorage.ScreenshotMetaData[]>(
         'recorder-screenshots', []);
     const value = setting.get();
-    assert.strictEqual(value.length, 1);
+    assert.lengthOf(value, 1);
     assert.strictEqual(value[0].index, 1);
     assert.strictEqual(value[0].data, imageData);
   });

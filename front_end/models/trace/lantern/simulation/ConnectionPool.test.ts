@@ -47,7 +47,7 @@ describe('ConnectionPool', () => {
     it('should create the pool', () => {
       const pool = new ConnectionPool([request()], simulationOptions({rtt, throughput}));
       // Make sure 6 connections are created for each origin
-      assert.strictEqual(pool.connectionsByOrigin.get('http://example.com').length, 6);
+      assert.lengthOf(pool.connectionsByOrigin.get('http://example.com'), 6);
       // Make sure it populates connectionWasReused
       assert.strictEqual(pool.connectionReusedByRequestId.get('1'), false);
 
@@ -69,7 +69,7 @@ describe('ConnectionPool', () => {
       const pool = new ConnectionPool([recordA], simulationOptions({rtt, throughput}));
       const connection = pool.connectionsByOrigin.get('http://example.com')[0];
       assert.ok(connection.isH2(), 'should have set HTTP/2');
-      assert.strictEqual(pool.connectionsByOrigin.get('http://example.com').length, 1);
+      assert.lengthOf(pool.connectionsByOrigin.get('http://example.com'), 1);
     });
 
     it('should set origin-specific RTT properly', () => {
@@ -174,11 +174,11 @@ describe('ConnectionPool', () => {
 
       requests.forEach(request => pool.acquire(request));
 
-      assert.strictEqual(pool.connectionsInUse().length, 6);
+      assert.lengthOf(pool.connectionsInUse(), 6);
       assert.ok(!pool.acquire(requests[6]), 'had connection that is in use');
 
       pool.release(requests[0]);
-      assert.strictEqual(pool.connectionsInUse().length, 5);
+      assert.lengthOf(pool.connectionsInUse(), 5);
 
       assert.ok(pool.acquire(requests[6]), 'could not reissue released connection');
       assert.ok(!pool.acquire(requests[0]), 'had connection that is in use');

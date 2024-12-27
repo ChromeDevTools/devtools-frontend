@@ -75,7 +75,7 @@ describe('Recorder', function() {
 
     const recording = await stopRecording();
     const steps = (recording as UserFlow).steps.slice(2);
-    assert.strictEqual(steps.length, 2);
+    assert.lengthOf(steps, 2);
     for (const step of steps) {
       assert.strictEqual(step.type, 'click');
       assert.isTrue('duration' in step && step.duration && step.duration > 350);

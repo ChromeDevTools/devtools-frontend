@@ -75,10 +75,10 @@ describeWithEnvironment('SidebarAnnotationsTab', () => {
     // 2 entry labels and 1 labelled time range
     const annotationEntryIdentifierElements =
         component.shadowRoot.querySelectorAll<HTMLElement>('.annotation-identifier');
-    assert.strictEqual(annotationEntryIdentifierElements.length, 3);
+    assert.lengthOf(annotationEntryIdentifierElements, 3);
 
     const annotationEntryLabelElements = component.shadowRoot.querySelectorAll<HTMLElement>('.label');
-    assert.strictEqual(annotationEntryIdentifierElements.length, 3);
+    assert.lengthOf(annotationEntryIdentifierElements, 3);
 
     assert.strictEqual(annotationEntryLabelElements[0].innerText, 'Entry Label 1');
     assert.strictEqual(annotationEntryIdentifierElements[0].style['backgroundColor'], 'rgb(82, 252, 3)');
@@ -188,9 +188,9 @@ describeWithEnvironment('SidebarAnnotationsTab', () => {
 
     // Ensure there are 2 labels and their entry identifiers and labels and rendered
     const annotationIdentifierElements = component.shadowRoot.querySelectorAll<HTMLElement>('.annotation-identifier');
-    assert.strictEqual(annotationIdentifierElements.length, 2);
+    assert.lengthOf(annotationIdentifierElements, 2);
     let annotationLabelElements = component.shadowRoot.querySelectorAll<HTMLElement>('.label');
-    assert.strictEqual(annotationIdentifierElements.length, 2);
+    assert.lengthOf(annotationIdentifierElements, 2);
 
     assert.strictEqual(annotationLabelElements[0].innerText, 'Entry Label 1');
     assert.strictEqual(annotationLabelElements[1].innerText, 'Entry Label 2');
@@ -215,7 +215,7 @@ describeWithEnvironment('SidebarAnnotationsTab', () => {
     annotationLabelElements = component.shadowRoot.querySelectorAll<HTMLElement>('.label');
 
     // Ensure the labels changed to new ones and a labbel range was added
-    assert.strictEqual(annotationLabelElements.length, 3);
+    assert.lengthOf(annotationLabelElements, 3);
     assert.strictEqual(annotationLabelElements[0].innerText, 'New Entry Label 1');
     assert.strictEqual(annotationLabelElements[1].innerText, 'New Entry Label 2');
     assert.strictEqual(annotationLabelElements[2].innerText, 'Labelled Time Range');
@@ -250,7 +250,7 @@ describeWithEnvironment('SidebarAnnotationsTab', () => {
 
     // Ensure there is only one annotation displayed
     const annotationIdentifierElements = component.shadowRoot.querySelectorAll<HTMLElement>('.annotation-identifier');
-    assert.strictEqual(annotationIdentifierElements.length, 1);
+    assert.lengthOf(annotationIdentifierElements, 1);
   });
 
   it('displays multiple not started annotations if they are not different entries', async function() {
@@ -283,7 +283,7 @@ describeWithEnvironment('SidebarAnnotationsTab', () => {
 
     // Ensure both annotations are displayed
     const annotationIdentifierElements = component.shadowRoot.querySelectorAll<HTMLElement>('.annotation-identifier');
-    assert.strictEqual(annotationIdentifierElements.length, 2);
+    assert.lengthOf(annotationIdentifierElements, 2);
   });
 
 });

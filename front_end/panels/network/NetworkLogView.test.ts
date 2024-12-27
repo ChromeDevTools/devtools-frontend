@@ -304,7 +304,7 @@ describeWithMockConnection('NetworkLogView', () => {
           'Load: 251\u00a0ms',
         ]);
       } else {
-        assert.strictEqual(textElements.length, 0);
+        assert.lengthOf(textElements, 0);
       }
     });
   };
@@ -539,10 +539,10 @@ describeWithMockConnection('NetworkLogView', () => {
     networkLogView.show(document.body);
 
     const rootNode = networkLogView.columns().dataGrid().rootNode();
-    assert.strictEqual(rootNode.children.length, 1);
+    assert.lengthOf(rootNode.children, 1);
 
     networkLog.dispatchEventToListeners(Logs.NetworkLog.Events.RequestRemoved, {request});
-    assert.strictEqual(rootNode.children.length, 0);
+    assert.lengthOf(rootNode.children, 0);
   });
 
   it('correctly shows/hides "Copy all as HAR (with sensitive data)" menu item', async () => {

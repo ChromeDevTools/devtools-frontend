@@ -362,7 +362,7 @@ describeWithMockConnection('RequestHeadersView', () => {
     assert.isNotNull(responseHeadersCategory.shadowRoot);
 
     const linkElements = responseHeadersCategory.shadowRoot.querySelectorAll('x-link');
-    assert.strictEqual(linkElements.length, 2);
+    assert.lengthOf(linkElements, 2);
 
     assert.instanceOf(linkElements[0], HTMLElement);
     assert.strictEqual(linkElements[0].title, 'https://goo.gle/devtools-override');

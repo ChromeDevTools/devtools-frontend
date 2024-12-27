@@ -41,7 +41,7 @@ describeWithEnvironment('TimelineDetailsView', function() {
 
     const detailsContentElement = detailsView.getDetailsContentElementForTest();
     // NetworkRequestDetails and RelatedInsightsChips nodes.
-    assert.strictEqual(detailsContentElement.childNodes.length, 2);
+    assert.lengthOf(detailsContentElement.childNodes, 2);
   });
 
   it('displays the details for a frame correctly', async function() {

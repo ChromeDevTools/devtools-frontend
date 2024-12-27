@@ -249,7 +249,7 @@ describeWithMockConnection('CSSStyleDeclaration', () => {
 
     const style = new SDK.CSSStyleDeclaration.CSSStyleDeclaration(
         cssModel, null, stubCSSStyle, SDK.CSSStyleDeclaration.Type.Regular);
-    assert.strictEqual(style.allProperties().length, 1);
+    assert.lengthOf(style.allProperties(), 1);
     assertPropertValues(style.allProperties()[0], [
       ['name', '-webkit-background-clip'],
       ['value', 'border-box'],

@@ -8,17 +8,17 @@ describe('TypedArrayUtilities', () => {
   describe('BigUint32Array', () => {
     it('can be expandable', () => {
       const array = Platform.TypedArrayUtilities.createExpandableBigUint32Array();
-      assert.strictEqual(array.length, 0);
+      assert.lengthOf(array, 0);
       array.setValue(0, 33);
       array.setValue(1, 44);
-      assert.strictEqual(array.length, 2);
+      assert.lengthOf(array, 2);
       assert.strictEqual(array.getValue(0), 33);
       assert.strictEqual(array.getValue(1), 44);
       assert.strictEqual(array.asArrayOrFail() as Object, array);
     });
     it('can act as a Uint32Array', () => {
       const array = Platform.TypedArrayUtilities.createFixedBigUint32Array(15);
-      assert.strictEqual(array.length, 15);
+      assert.lengthOf(array, 15);
       assert.strictEqual(array.getValue(7), 0);
       array.setValue(7, 77);
       assert.strictEqual(array.getValue(7), 77);
@@ -26,7 +26,7 @@ describe('TypedArrayUtilities', () => {
     });
     it('can be bigger than a Uint32Array', () => {
       const array = Platform.TypedArrayUtilities.createFixedBigUint32Array(12_345_678, /* maxLengthForTesting=*/ 2e6);
-      assert.strictEqual(array.length, 12_345_678);
+      assert.lengthOf(array, 12_345_678);
       assert.strictEqual(array.getValue(0), 0);
       assert.strictEqual(array.getValue(500_000), 0);
       assert.strictEqual(array.getValue(5_000_000), 0);

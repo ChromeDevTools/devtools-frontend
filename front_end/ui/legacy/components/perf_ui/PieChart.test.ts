@@ -46,7 +46,7 @@ describeWithLocale('PieChart', () => {
       assert.isNotNull(chart.shadowRoot);
 
       const slices = chart.shadowRoot.querySelectorAll('path');
-      assert.strictEqual(slices.length, 2);
+      assert.lengthOf(slices, 2);
     });
 
     it('has a legend', () => {
@@ -57,7 +57,7 @@ describeWithLocale('PieChart', () => {
       assert.isNotNull(chart.shadowRoot);
 
       const legendRows = chart.shadowRoot.querySelectorAll('.pie-chart-legend-row');
-      assert.strictEqual(legendRows.length, 3);
+      assert.lengthOf(legendRows, 3);
     });
 
     it('formats the slice in the legend', () => {
@@ -102,7 +102,7 @@ describeWithLocale('PieChart', () => {
       assert.isNotNull(chart.shadowRoot);
 
       const legendRows = chart.shadowRoot.querySelectorAll('.pie-chart-legend-row');
-      assert.strictEqual(legendRows.length, 3);
+      assert.lengthOf(legendRows, 3);
 
       // Legend has one selected item.
       const fillingLegendRow = legendRows[0];
@@ -139,7 +139,7 @@ describeWithLocale('PieChart', () => {
       legendName!.click();
 
       const legendRows = chart.shadowRoot.querySelectorAll('.pie-chart-legend-row');
-      assert.strictEqual(legendRows.length, 3);
+      assert.lengthOf(legendRows, 3);
 
       const fillingLegendRow = legendRows[0];
       const crustLegendRow = legendRows[1];
@@ -164,7 +164,7 @@ describeWithLocale('PieChart', () => {
       slice!.dispatchEvent(new Event('click'));
 
       const legendRows = chart.shadowRoot.querySelectorAll('.pie-chart-legend-row');
-      assert.strictEqual(legendRows.length, 3);
+      assert.lengthOf(legendRows, 3);
 
       const fillingLegendRow = legendRows[0];
       const crustLegendRow = legendRows[1];
@@ -202,7 +202,7 @@ describeWithLocale('PieChart', () => {
       assert.isNotNull(chart.shadowRoot);
 
       const legendRows = chart.shadowRoot.querySelectorAll('.pie-chart-legend-row');
-      assert.strictEqual(legendRows.length, 0);
+      assert.lengthOf(legendRows, 0);
     });
 
     it('sets tabIndex=1 on total', () => {

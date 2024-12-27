@@ -116,7 +116,7 @@ describeWithMockConnection('NetworkNavigatorView', () => {
 
       const navigatorView = Sources.SourcesNavigator.NetworkNavigatorView.instance({forceNew: true});
       const rootElement = navigatorView.scriptsTree.rootElement();
-      assert.strictEqual(rootElement.children().length, 0);
+      assert.lengthOf(rootElement.children(), 0);
 
       project.removeProject();
     });

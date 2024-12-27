@@ -639,12 +639,11 @@ describe('normalizePositionData', () => {
           allPoints: [{x: 0, y: 0}, {x: 30, y: 0}, {x: 30, y: 30}, {x: 0, y: 30}],
         });
 
-    assert.strictEqual(data.rows.negative.positions.length, 0);
-    assert.strictEqual(data.columns.negative.positions.length, 0);
-    assert.strictEqual(
-        data.rows.positive.positions.length, 1, 'There should be only one row offset since there is only one name');
-    assert.strictEqual(
-        data.columns.positive.positions.length, 2, 'There should be 2 column offsets since there are 2 names');
+    assert.lengthOf(data.rows.negative.positions, 0);
+    assert.lengthOf(data.columns.negative.positions, 0);
+    assert.lengthOf(
+        data.rows.positive.positions, 1, 'There should be only one row offset since there is only one name');
+    assert.lengthOf(data.columns.positive.positions, 2, 'There should be 2 column offsets since there are 2 names');
   });
 
   it('returns the correct line name structure', () => {

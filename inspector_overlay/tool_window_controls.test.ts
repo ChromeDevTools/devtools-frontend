@@ -13,7 +13,7 @@ describe('WindowControlsOverlay', () => {
   it('creates initially hidden toolbars', () => {
     const verifyOverlayToolBar = (osType: string, location: string) => {
       const elementCollection = document.getElementsByClassName(`${osType}-${location}-image-group`);
-      assert.strictEqual(elementCollection.length, 1, `Expect ${osType} ${location} toolbar to be present`);
+      assert.lengthOf(elementCollection, 1, `Expect ${osType} ${location} toolbar to be present`);
 
       const element = elementCollection[0];
       assert.isTrue(element.classList.contains('hidden'), 'Expect the element to be hidden');
@@ -65,7 +65,7 @@ describe('WindowControlsOverlay', () => {
   it('clears overlay', () => {
     const elementCollection = document.getElementsByClassName('image-group');
 
-    assert.strictEqual(elementCollection.length, 4, 'Expect there to be 4 toolbars');
+    assert.lengthOf(elementCollection, 4, 'Expect there to be 4 toolbars');
 
     windowControlsOverlay.clearOverlays();
 

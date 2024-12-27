@@ -70,7 +70,7 @@ describeWithLocale('EndpointsGrid', () => {
     assert.deepEqual(header, ['Origin', 'Name', 'URL']);
 
     const rowValues = getValuesOfAllBodyRows(dataGrid.shadowRoot);
-    assert.strictEqual(rowValues.length, 3);
+    assert.lengthOf(rowValues, 3);
     assert.strictEqual(rowValues[0][0], 'https://www.my-page.com', 'Endpoint origin does not match');
     assert.strictEqual(rowValues[0][1], 'main-endpoint', 'Endpoint name does not match');
     assert.strictEqual(rowValues[0][2], 'https://www.reports-endpoint/main', 'Endpoint URL does not match');

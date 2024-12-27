@@ -20,7 +20,7 @@ describeWithEnvironment('TimelineFlameChartNetworkDataProvider', function() {
     dataProvider.setWindowTimes(minTime, maxTime);
 
     // TimelineFlameChartNetworkDataProvider only has network track, so should always be one track group.
-    assert.strictEqual(dataProvider.timelineData().groups.length, 1);
+    assert.lengthOf(dataProvider.timelineData().groups, 1);
     const networkTrackGroup = dataProvider.timelineData().groups[0];
 
     assert.deepEqual(dataProvider.minimumBoundary(), minTime);
@@ -33,7 +33,7 @@ describeWithEnvironment('TimelineFlameChartNetworkDataProvider', function() {
       const {startTime, endTime} = Trace.Helpers.Timing.eventTimingsMilliSeconds(request);
       return endTime - startTime;
     });
-    assert.deepEqual(dataProvider.timelineData().entryLevels.length, 6);
+    assert.lengthOf(dataProvider.timelineData().entryLevels, 6);
     assert.deepEqual(dataProvider.timelineData().entryLevels, [0, 1, 1, 1, 1, 2]);
     assertTimestampsEqual(dataProvider.timelineData().entryStartTimes, networkEventsStartTimes);
     assertTimestampsEqual(dataProvider.timelineData().entryTotalTimes, networkEventsTotalTimes);
@@ -106,7 +106,7 @@ describeWithEnvironment('TimelineFlameChartNetworkDataProvider', function() {
     dataProvider.setWindowTimes(minTime, maxTime);
 
     // Network track appender won't append the network track if there is no network requests.
-    assert.strictEqual(dataProvider.timelineData().groups.length, 0);
+    assert.lengthOf(dataProvider.timelineData().groups, 0);
 
     assert.deepEqual(dataProvider.minimumBoundary(), minTime);
     assert.deepEqual(dataProvider.totalTime(), maxTime - minTime);

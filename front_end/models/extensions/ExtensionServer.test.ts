@@ -98,7 +98,7 @@ describeWithDevtoolsExtension('Extensions', {}, context => {
     await context.chrome.devtools?.recorder.registerRecorderExtensionPlugin(extensionPlugin, 'Test', 'text/javascript');
 
     const manager = Extensions.RecorderPluginManager.RecorderPluginManager.instance();
-    assert.strictEqual(manager.plugins().length, 1);
+    assert.lengthOf(manager.plugins(), 1);
     const plugin = manager.plugins()[0];
 
     const result = await plugin.stringify({
@@ -110,7 +110,7 @@ describeWithDevtoolsExtension('Extensions', {}, context => {
       type: 'scroll',
     });
 
-    assert.strictEqual(manager.plugins().length, 1);
+    assert.lengthOf(manager.plugins(), 1);
     assert.strictEqual(manager.plugins()[0].getMediaType(), 'text/javascript');
     assert.strictEqual(manager.plugins()[0].getName(), 'Test');
     assert.deepEqual(manager.plugins()[0].getCapabilities(), ['export']);
@@ -130,7 +130,7 @@ describeWithDevtoolsExtension('Extensions', {}, context => {
     await context.chrome.devtools?.recorder.registerRecorderExtensionPlugin(extensionPlugin, 'Replay');
 
     const manager = Extensions.RecorderPluginManager.RecorderPluginManager.instance();
-    assert.strictEqual(manager.plugins().length, 1);
+    assert.lengthOf(manager.plugins(), 1);
     const plugin = manager.plugins()[0];
 
     await plugin.replay({
@@ -138,7 +138,7 @@ describeWithDevtoolsExtension('Extensions', {}, context => {
       steps: [],
     });
 
-    assert.strictEqual(manager.plugins().length, 1);
+    assert.lengthOf(manager.plugins(), 1);
     assert.deepEqual(manager.plugins()[0].getCapabilities(), ['replay']);
     assert.strictEqual(manager.plugins()[0].getName(), 'Replay');
 
@@ -157,7 +157,7 @@ describeWithDevtoolsExtension('Extensions', {}, context => {
     await context.chrome.devtools?.recorder.registerRecorderExtensionPlugin(extensionPlugin, 'Replay');
     const manager = Extensions.RecorderPluginManager.RecorderPluginManager.instance();
 
-    assert.strictEqual(manager.plugins().length, 1);
+    assert.lengthOf(manager.plugins(), 1);
 
     const plugin = manager.plugins()[0];
 
@@ -183,8 +183,8 @@ describeWithDevtoolsExtension('Extensions', {}, context => {
     await context.chrome.devtools?.recorder.registerRecorderExtensionPlugin(extensionPlugin, 'Replay');
     const manager = Extensions.RecorderPluginManager.RecorderPluginManager.instance();
 
-    assert.strictEqual(manager.plugins().length, 1);
-    assert.strictEqual(manager.views().length, 1);
+    assert.lengthOf(manager.plugins(), 1);
+    assert.lengthOf(manager.views(), 1);
 
     const plugin = manager.plugins()[0];
     const onceShowRequested = manager.once(Extensions.RecorderPluginManager.Events.SHOW_VIEW_REQUESTED);
@@ -211,8 +211,8 @@ describeWithDevtoolsExtension('Extensions', {}, context => {
     await context.chrome.devtools?.recorder.registerRecorderExtensionPlugin(extensionPlugin, 'Replay');
     const manager = Extensions.RecorderPluginManager.RecorderPluginManager.instance();
 
-    assert.strictEqual(manager.plugins().length, 1);
-    assert.strictEqual(manager.views().length, 1);
+    assert.lengthOf(manager.plugins(), 1);
+    assert.lengthOf(manager.views(), 1);
 
     const events: object[] = [];
     manager.addEventListener(Extensions.RecorderPluginManager.Events.SHOW_VIEW_REQUESTED, event => {
@@ -600,7 +600,7 @@ describeWithDevtoolsExtension('Runtime hosts policy', {hostsPolicy}, context => 
 
     await waitForFunction(() => requests.length >= 1);
 
-    assert.strictEqual(requests.length, 1);
+    assert.lengthOf(requests, 1);
     assert.exists(requests.find(e => e.request.url === allowedUrl));
     assert.notExists(requests.find(e => e.request.url === blockedUrl));
   });

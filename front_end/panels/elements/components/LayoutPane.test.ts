@@ -114,7 +114,7 @@ describeWithMockConnection('LayoutPane', () => {
     const component = await renderComponent();
     assert.isNotNull(component.shadowRoot);
 
-    assert.strictEqual(queryLabels(component, '[data-element]').length, 3);
+    assert.lengthOf(queryLabels(component, '[data-element]'), 3);
   });
 
   it('renders flex elements', async () => {
@@ -134,7 +134,7 @@ describeWithMockConnection('LayoutPane', () => {
     const component = await renderComponent();
     assert.isNotNull(component.shadowRoot);
 
-    assert.strictEqual(queryLabels(component, '[data-element]').length, 3);
+    assert.lengthOf(queryLabels(component, '[data-element]'), 3);
   });
 
   it('send an event when an element overlay is toggled', async () => {

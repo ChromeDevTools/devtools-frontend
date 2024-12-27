@@ -333,7 +333,7 @@ describeWithMockConnection('SharedStorageItemsView', function() {
     view.show(document.body);
     await refreshedPromise;
 
-    assert.strictEqual(view.getEntriesForTesting().length, 0);
+    assert.lengthOf(view.getEntriesForTesting(), 0);
 
     const metadataView = view.innerSplitWidget.sidebarWidget()?.contentElement.firstChild as
         ApplicationComponents.SharedStorageMetadataView.SharedStorageMetadataView;

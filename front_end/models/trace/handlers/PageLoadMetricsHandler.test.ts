@@ -263,7 +263,7 @@ describeWithEnvironment('PageLoadMetricsHandler', function() {
       for (const metricName of Trace.Types.Events.MarkerName) {
         const markerEventsOfThisType = allMarkerEvents.filter(event => event.name === metricName);
         // There should be 2 events for each marker and all of them should correspond to the main frame
-        assert.strictEqual(markerEventsOfThisType.length, 2);
+        assert.lengthOf(markerEventsOfThisType, 2);
         assert.isTrue(markerEventsOfThisType.every(
             marker => Trace.Handlers.ModelHandlers.PageLoadMetrics.getFrameIdForPageLoadEvent(marker) === mainFrameId));
       }
@@ -279,7 +279,7 @@ describeWithEnvironment('PageLoadMetricsHandler', function() {
       const {PageLoadMetrics} = parsedTrace;
       const pageLoadMarkers = PageLoadMetrics.allMarkerEvents;
       const largestContentfulPaints = pageLoadMarkers.filter(Trace.Types.Events.isLargestContentfulPaintCandidate);
-      assert.strictEqual(largestContentfulPaints.length, 1);
+      assert.lengthOf(largestContentfulPaints, 1);
       assert.strictEqual(largestContentfulPaints[0].args.data?.candidateIndex, 2);
     });
   });

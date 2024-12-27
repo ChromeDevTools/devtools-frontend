@@ -421,7 +421,7 @@ describeWithEnvironment('Trace helpers', function() {
         '@ 40825.971 for   11.802: InputLatency::MouseMove',
         '@ 41818.833 for 2005.601: third measure',
       ]);
-      assert.strictEqual(synthEvents.length, 237);
+      assert.lengthOf(synthEvents, 237);
     });
     describe('createSortedSyntheticEvents()', () => {
       it('correctly creates synthetic events when instant animation events are present', async function() {
@@ -465,7 +465,7 @@ describeWithEnvironment('Trace helpers', function() {
           }
           assert.isTrue(instantEvents?.every(event => event.id2?.local && id.includes(event.id2?.local)));
 
-          assert.strictEqual(instantEvents.length, 2);
+          assert.lengthOf(instantEvents, 2);
 
           // Check that the non-composited data matches the expected.
           const nonCompositedEvents = instantEvents.filter(event => event.args.data.compositeFailed);

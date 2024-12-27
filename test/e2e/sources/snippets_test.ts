@@ -34,6 +34,6 @@ describe('Snippets', function() {
     await openSoftContextMenuAndClickOnItem('[aria-label="file@name, file"]', 'Remove');
 
     treeItems = await $$('.navigator-file-tree-item');
-    assert.strictEqual(treeItems.length, 0);
+    assert.lengthOf(treeItems, 0);
   });
 });

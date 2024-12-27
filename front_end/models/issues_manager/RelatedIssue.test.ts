@@ -15,7 +15,7 @@ describe('issuesAssociatedWith', () => {
   it('should return no issues if no issues exist', () => {
     const request = SDK.NetworkRequest.NetworkRequest.create(
         requestId1, Platform.DevToolsPath.EmptyUrlString, Platform.DevToolsPath.EmptyUrlString, null, null, null);
-    assert.strictEqual(IssuesManager.RelatedIssue.issuesAssociatedWith([], request).length, 0);
+    assert.lengthOf(IssuesManager.RelatedIssue.issuesAssociatedWith([], request), 0);
   });
 
   it('should return no issues if issues dont affect any resources', () => {
@@ -23,7 +23,7 @@ describe('issuesAssociatedWith', () => {
     const request = SDK.NetworkRequest.NetworkRequest.create(
         requestId1, Platform.DevToolsPath.EmptyUrlString, Platform.DevToolsPath.EmptyUrlString, null, null, null);
 
-    assert.strictEqual(IssuesManager.RelatedIssue.issuesAssociatedWith([issue], request).length, 0);
+    assert.lengthOf(IssuesManager.RelatedIssue.issuesAssociatedWith([issue], request), 0);
   });
 
   it('should correctly filter issues associated with a given request id', () => {

@@ -34,7 +34,7 @@ describe('tool_highlight', () => {
       // matter.
       const element = createElementDescription(elementInfo, colorFormat);
       const colorRows = element.getElementsByClassName('element-info-value-color');
-      assert.deepEqual(colorRows.length, 2);
+      assert.lengthOf(colorRows, 2);
       assert.deepEqual(colorRows.item(0)?.textContent, 'lab(100 0 0)');
       assert.deepEqual(colorRows.item(1)?.textContent, 'lab(10 0 0)');
     }
@@ -80,7 +80,7 @@ describe('tool_highlight', () => {
       // matter.
       const element = createElementDescription(elementInfo, colorFormat);
       const colorRows = element.getElementsByClassName('element-info-value-color');
-      assert.deepEqual(colorRows.length, 1);
+      assert.lengthOf(colorRows, 1);
       assert.deepEqual(colorRows.item(0)?.textContent, 'lab(10 0 0)');
     }
   });
@@ -98,7 +98,7 @@ describe('tool_highlight', () => {
       // matter.
       const element = createElementDescription(elementInfo, colorFormat);
       const colorRows = element.getElementsByClassName('element-info-value-color');
-      assert.deepEqual(colorRows.length, 1);
+      assert.lengthOf(colorRows, 1);
       assert.deepEqual(colorRows.item(0)?.textContent, 'lab(100 0 0)');
     }
   });

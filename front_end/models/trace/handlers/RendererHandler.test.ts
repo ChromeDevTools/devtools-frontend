@@ -838,7 +838,7 @@ describeWithEnvironment('RendererHandler', function() {
 
       const data = await handleEvents(traceEvents);
 
-      assert.strictEqual(data.allTraceEntries.length, 7);
+      assert.lengthOf(data.allTraceEntries, 7);
       assert.strictEqual(data.processes.size, 1);
       const [process] = data.processes.values();
       assert.strictEqual(process.threads.size, 1);
@@ -849,7 +849,7 @@ describeWithEnvironment('RendererHandler', function() {
         return;
       }
       const allNodes = getAllNodes(thread.tree?.roots);
-      assert.strictEqual(allNodes.length, 5);
+      assert.lengthOf(allNodes, 5);
       if (!thread.tree) {
         return;
       }
@@ -877,7 +877,7 @@ describeWithEnvironment('RendererHandler', function() {
 
       const data = await handleEvents(traceEvents);
 
-      assert.strictEqual(data.allTraceEntries.length, 6);
+      assert.lengthOf(data.allTraceEntries, 6);
       assert.strictEqual(data.processes.size, 1);
       const [process] = data.processes.values();
       assert.strictEqual(process.threads.size, 1);
@@ -888,7 +888,7 @@ describeWithEnvironment('RendererHandler', function() {
         return;
       }
       const allNodes = getAllNodes(thread.tree?.roots);
-      assert.strictEqual(allNodes.length, 4);
+      assert.lengthOf(allNodes, 4);
       if (!thread.tree) {
         return;
       }

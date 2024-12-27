@@ -311,7 +311,7 @@ describeWithMockConnection('SharedStorageModel', () => {
 
     const originSet = new Set([TEST_ORIGIN_A, TEST_ORIGIN_B, TEST_ORIGIN_C]);
     manager.updateSecurityOrigins(originSet);
-    assert.strictEqual(3, manager.securityOrigins().length);
+    assert.lengthOf(manager.securityOrigins(), 3);
 
     const addedPromise = listener.waitForStoragesAdded(3);
 

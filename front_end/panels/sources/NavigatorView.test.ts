@@ -82,13 +82,13 @@ describeWithMockConnection('NavigatorView', () => {
 
     const navigatorView = Sources.SourcesNavigator.NetworkNavigatorView.instance({forceNew: true});
     const children = navigatorView.scriptsTree.rootElement().children();
-    assert.strictEqual(children.length, 1, 'The NavigatorView root node should have 1 child before node removal');
+    assert.lengthOf(children, 1, 'The NavigatorView root node should have 1 child before node removal');
     assert.strictEqual(children[0].title, 'top');
 
     // Remove leaf node and assert that node removal propagates up to the root node.
     project.removeUISourceCode(url);
-    assert.strictEqual(
-        navigatorView.scriptsTree.rootElement().children().length, 0,
+    assert.lengthOf(
+        navigatorView.scriptsTree.rootElement().children(), 0,
         'The NavigarorView root node should not have any children after node removal');
   });
 

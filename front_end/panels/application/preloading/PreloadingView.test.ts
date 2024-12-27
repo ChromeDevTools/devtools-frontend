@@ -173,7 +173,7 @@ class NavigationEmulator {
     for (const prefetchAttempt of json['prefetch'] || []) {
       // For simplicity
       assert.strictEqual(prefetchAttempt['source'], 'list');
-      assert.strictEqual(prefetchAttempt['urls'].length, 1);
+      assert.lengthOf(prefetchAttempt['urls'], 1);
 
       const url = 'https://example.com' + prefetchAttempt['urls'][0];
 
@@ -194,9 +194,9 @@ class NavigationEmulator {
     }
 
     // For simplicity
-    assert.strictEqual(json['prerender'].length, 1);
+    assert.lengthOf(json['prerender'], 1);
     assert.strictEqual(json['prerender'][0]['source'], 'list');
-    assert.strictEqual(json['prerender'][0]['urls'].length, 1);
+    assert.lengthOf(json['prerender'][0]['urls'], 1);
 
     const prerenderUrl = 'https://example.com' + json['prerender'][0]['urls'][0];
 

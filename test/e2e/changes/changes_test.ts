@@ -14,13 +14,13 @@ describe('The Changes Panel', () => {
     await openChangesPanelAndNavigateTo(TEST_PAGE);
 
     let changes = await getChangesList();
-    assert.strictEqual(changes.length, 0, 'There should be no changes by default');
+    assert.lengthOf(changes, 0, 'There should be no changes by default');
 
     await editCSSProperty('html, body', 'background', 'red');
     await waitForNewChanges(changes);
 
     changes = await getChangesList();
-    assert.strictEqual(changes.length, 1, 'There should now be 1 change in the list');
+    assert.lengthOf(changes, 1, 'There should now be 1 change in the list');
     assert.strictEqual(changes[0], `${TEST_PAGE}.html`);
   });
 });

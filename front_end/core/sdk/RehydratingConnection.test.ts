@@ -136,7 +136,7 @@ describe('RehydratingSession', () => {
       method: 'Debugger.enable',
       sessionId,
     });
-    assert.strictEqual(mockRehydratingConnection.messageQueue.length, 3);
+    assert.lengthOf(mockRehydratingConnection.messageQueue, 3);
     const scriptParsedMessages = mockRehydratingConnection.messageQueue.slice(0, 2);
     const resultMessage = mockRehydratingConnection.messageQueue.slice(2);
     for (const scriptParsedMessage of scriptParsedMessages) {
@@ -155,7 +155,7 @@ describe('RehydratingSession', () => {
       method: 'Runtime.enable',
       sessionId,
     });
-    assert.strictEqual(mockRehydratingConnection.messageQueue.length, 3);
+    assert.lengthOf(mockRehydratingConnection.messageQueue, 3);
     const executionContextCreatedMessages = mockRehydratingConnection.messageQueue.slice(0, 2);
     const resultMessage = mockRehydratingConnection.messageQueue.slice(2);
     for (const executionContextCreatedMessage of executionContextCreatedMessages) {
@@ -179,7 +179,7 @@ describe('RehydratingSession', () => {
         scriptId: mockScript1.scriptId,
       },
     });
-    assert.strictEqual(mockRehydratingConnection.messageQueue.length, 1);
+    assert.lengthOf(mockRehydratingConnection.messageQueue, 1);
     const scriptSourceTextMessage = mockRehydratingConnection.messageQueue[0];
     assert.isNotNull(scriptSourceTextMessage);
     assert.strictEqual(scriptSourceTextMessage.id, messageId);

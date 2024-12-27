@@ -43,6 +43,6 @@ describeWithEnvironment('DataGrid', () => {
 
     assert.exists(widget);
     // There is a single test row
-    assert.strictEqual(widget.dataGrid.rootNode().children.length, 1);
+    assert.lengthOf(widget.dataGrid.rootNode().children, 1);
   });
 });

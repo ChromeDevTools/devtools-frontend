@@ -159,7 +159,7 @@ describeWithLocale('ResourceTimingView', () => {
     const shadowElement = routerEvaluationDetailsElement.firstElementChild.shadowRoot;
     assert.isNotNull(shadowElement, 'shadow element does not exist');
     const content = getCleanTextContentFromElements(shadowElement, '.network-fetch-details-treeitem');
-    assert.strictEqual(content.length, 2, 'does not match the tree item');
+    assert.lengthOf(content, 2, 'does not match the tree item');
 
     // Check the content of the view. Since the value is set from matched to actual,
     // the order should be the same.

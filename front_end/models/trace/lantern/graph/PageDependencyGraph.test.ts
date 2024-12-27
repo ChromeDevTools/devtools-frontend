@@ -156,22 +156,22 @@ describe('PageDependencyGraph', () => {
         {name: 'LaterEvent'},
       ]);
 
-      assert.strictEqual(traceEvents.length, 7);
+      assert.lengthOf(traceEvents, 7);
       const nodes = PageDependencyGraph.getCPUNodes(traceEvents);
-      assert.strictEqual(nodes.length, 2);
+      assert.lengthOf(nodes, 2);
 
       const node1 = nodes[0];
       assert.strictEqual(node1.id, '1.0');
       assert.strictEqual(node1.type, 'cpu');
       assert.strictEqual(node1.event, traceEvents[0]);
-      assert.strictEqual(node1.childEvents.length, 2);
+      assert.lengthOf(node1.childEvents, 2);
       assert.strictEqual(node1.childEvents[1].name, 'OtherEvent');
 
       const node2 = nodes[1];
       assert.strictEqual(node2.id, '1.250000');
       assert.strictEqual(node2.type, 'cpu');
       assert.strictEqual(node2.event, traceEvents[5]);
-      assert.strictEqual(node2.childEvents.length, 1);
+      assert.lengthOf(node2.childEvents, 1);
       assert.strictEqual(node2.childEvents[0].name, 'LaterEvent');
     });
 
@@ -185,15 +185,15 @@ describe('PageDependencyGraph', () => {
         {name: 'OverlappingEvent'},
       ]);
 
-      assert.strictEqual(traceEvents.length, 5);
+      assert.lengthOf(traceEvents, 5);
       const nodes = PageDependencyGraph.getCPUNodes(traceEvents);
-      assert.strictEqual(nodes.length, 2);
+      assert.lengthOf(nodes, 2);
 
       const node1 = nodes[0];
       assert.strictEqual(node1.id, '1.0');
       assert.strictEqual(node1.type, 'cpu');
       assert.strictEqual(node1.event, traceEvents[0]);
-      assert.strictEqual(node1.childEvents.length, 2);
+      assert.lengthOf(node1.childEvents, 2);
       assert.strictEqual(node1.childEvents[0].name, 'MyCustomEvent');
       assert.strictEqual(node1.childEvents[1].name, 'OtherEvent');
 
@@ -201,7 +201,7 @@ describe('PageDependencyGraph', () => {
       assert.strictEqual(node2.id, '1.400000');
       assert.strictEqual(node2.type, 'cpu');
       assert.strictEqual(node2.event, traceEvents[3]);
-      assert.strictEqual(node2.childEvents.length, 1);
+      assert.lengthOf(node2.childEvents, 1);
       assert.strictEqual(node2.childEvents[0].name, 'OverlappingEvent');
     });
   });
@@ -220,7 +220,7 @@ describe('PageDependencyGraph', () => {
       const nodes = [];
       graph.traverse(node => nodes.push(node));
 
-      assert.strictEqual(nodes.length, 4);
+      assert.lengthOf(nodes, 4);
       assert.deepEqual(nodes.map(node => node.id), [1, 2, 3, 4]);
       assert.deepEqual(nodes[0].getDependencies(), []);
       assert.deepEqual(nodes[1].getDependencies(), [nodes[0]]);
@@ -252,7 +252,7 @@ describe('PageDependencyGraph', () => {
       const getIds = nodes => nodes.map(node => node.id);
       const getDependencyIds = node => getIds(node.getDependencies());
 
-      assert.strictEqual(nodes.length, 6);
+      assert.lengthOf(nodes, 6);
       assert.deepEqual(getIds(nodes), [1, 2, 3, 4, '1.200000', '1.700000']);
       assert.deepEqual(getDependencyIds(nodes[0]), []);
       assert.deepEqual(getDependencyIds(nodes[1]), [1]);
@@ -275,7 +275,7 @@ describe('PageDependencyGraph', () => {
       const nodes = [];
       graph.traverse(node => nodes.push(node));
 
-      assert.strictEqual(nodes.length, 4);
+      assert.lengthOf(nodes, 4);
       assert.deepEqual(nodes.map(node => node.id), [1, 2, 3, 4]);
       assert.deepEqual(nodes[0].getDependencies(), []);
       assert.deepEqual(nodes[1].getDependencies(), [nodes[0]]);
@@ -316,7 +316,7 @@ describe('PageDependencyGraph', () => {
 
       const getDependencyIds = node => node.getDependencies().map(node => node.id);
 
-      assert.strictEqual(nodes.length, 7);
+      assert.lengthOf(nodes, 7);
       assert.deepEqual(getDependencyIds(nodes[0]), []);
       assert.deepEqual(getDependencyIds(nodes[1]), [1, '1.200000']);
       assert.deepEqual(getDependencyIds(nodes[2]), [1]);
@@ -344,7 +344,7 @@ describe('PageDependencyGraph', () => {
 
       const getDependencyIds = node => node.getDependencies().map(node => node.id);
 
-      assert.strictEqual(nodes.length, 2);
+      assert.lengthOf(nodes, 2);
       assert.deepEqual(getDependencyIds(nodes[0]), []);
       assert.deepEqual(getDependencyIds(nodes[1]), [1]);
     });
@@ -378,7 +378,7 @@ describe('PageDependencyGraph', () => {
 
       const getDependencyIds = node => node.getDependencies().map(node => node.id);
 
-      assert.strictEqual(nodes.length, 6);
+      assert.lengthOf(nodes, 6);
 
       assert.deepEqual(getDependencyIds(nodes[0]), []);
       assert.deepEqual(getDependencyIds(nodes[1]), [0]);
@@ -424,7 +424,7 @@ describe('PageDependencyGraph', () => {
 
       const getDependencyIds = node => node.getDependencies().map(node => node.id);
 
-      assert.strictEqual(nodes.length, 6);
+      assert.lengthOf(nodes, 6);
 
       assert.deepEqual(getDependencyIds(nodes[0]), []);
       assert.deepEqual(getDependencyIds(nodes[1]), [0]);
@@ -500,7 +500,7 @@ describe('PageDependencyGraph', () => {
       const nodes = [];
       graph.traverse(node => nodes.push(node));
 
-      assert.strictEqual(nodes.length, 3);
+      assert.lengthOf(nodes, 3);
       assert.strictEqual(nodes[0].id, 1);
       assert.strictEqual(nodes[0].isMainDocument(), false);
       assert.strictEqual(nodes[1].isMainDocument(), true);
@@ -531,7 +531,7 @@ describe('PageDependencyGraph', () => {
       const nodes = [];
       graph.traverse(node => nodes.push(node));
 
-      assert.strictEqual(nodes.length, 4);
+      assert.lengthOf(nodes, 4);
       assert.deepEqual(nodes.map(node => node.id), [1, 2, 3, 4]);
       assert.deepEqual(nodes[0].getDependencies(), []);
       assert.deepEqual(nodes[1].getDependencies(), [nodes[0]]);
@@ -559,7 +559,7 @@ describe('PageDependencyGraph', () => {
       const nodes = [];
       graph.traverse(node => nodes.push(node));
 
-      assert.strictEqual(nodes.length, 4);
+      assert.lengthOf(nodes, 4);
       assert.deepEqual(nodes.map(node => node.id), [1, 2, 3, 4]);
       assert.deepEqual(nodes[0].getDependencies(), []);
       assert.deepEqual(nodes[1].getDependencies(), [nodes[0]]);
@@ -588,7 +588,7 @@ describe('PageDependencyGraph', () => {
       const nodes = [];
       graph.traverse(node => nodes.push(node));
 
-      assert.strictEqual(nodes.length, 4);
+      assert.lengthOf(nodes, 4);
       assert.deepEqual(nodes.map(node => node.id), [1, 2, 3, 4]);
       assert.deepEqual(nodes[0].getDependencies(), []);
       assert.deepEqual(nodes[1].getDependencies(), [nodes[0]]);
@@ -613,7 +613,7 @@ describe('PageDependencyGraph', () => {
       graph.traverse(node => nodes.push(node));
       nodes.sort((a, b) => a.id - b.id);
 
-      assert.strictEqual(nodes.length, 3);
+      assert.lengthOf(nodes, 3);
       assert.deepEqual(nodes.map(node => node.id), [1, 2, 3]);
       assert.deepEqual(nodes[0].getDependencies(), []);
       // We don't know which of the initiators to trust in a cycle, so for now we
@@ -643,7 +643,7 @@ describe('PageDependencyGraph', () => {
       graph.traverse(node => nodes.push(node));
       nodes.sort((a, b) => a.id - b.id);
 
-      assert.strictEqual(nodes.length, 3);
+      assert.lengthOf(nodes, 3);
       assert.deepEqual(nodes.map(node => node.id), [1, 2, 3]);
       assert.deepEqual(nodes[0].getDependencies(), []);
       assert.deepEqual(nodes[1].getDependencies(), [nodes[2]]);
@@ -665,7 +665,7 @@ describe('PageDependencyGraph', () => {
       const nodes = [];
       graph.traverse(node => nodes.push(node));
 
-      assert.strictEqual(nodes.length, 1);
+      assert.lengthOf(nodes, 1);
       assert.deepEqual(nodes.map(node => node.id), [2]);
       assert.deepEqual(nodes[0].getDependencies(), []);
       assert.deepEqual(nodes[0].getDependents(), []);

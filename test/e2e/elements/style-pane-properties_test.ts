@@ -151,7 +151,7 @@ describe('The Styles pane', () => {
     const propertiesSection = await getStyleRule(PROPERTIES_TO_INSPECT_SELECTOR);
     const propertyValue = await waitFor(FIRST_PROPERTY_VALUE_SELECTOR, propertiesSection);
     const link = await $$('.link-swatch-link', propertyValue);
-    assert.strictEqual(link.length, 1, 'The expected var link was not created');
+    assert.lengthOf(link, 1, 'The expected var link was not created');
   });
 
   it('renders computed CSS variables in @keyframes rules', async () => {
@@ -461,7 +461,7 @@ describe('The Styles pane', () => {
     // 12. The h1's inherited selection pseudo
     // And there is no 13th block for the ::first-letter style, since only
     // highlight pseudos are inherited.
-    assert.strictEqual(h1Rules.length, 12, 'The h1 should have 12 style rule blocks');
+    assert.lengthOf(h1Rules, 12, 'The h1 should have 12 style rule blocks');
     assert.deepEqual(
         h1Rules[2], {
           selectorText: 'body',

@@ -41,7 +41,7 @@ describe('TextPrompt', () => {
       component.setPrefix('Run');
 
       const textPromptPrefixs = component.shadowRoot!.querySelectorAll('.prefix');
-      assert.strictEqual(textPromptPrefixs.length, 1);
+      assert.lengthOf(textPromptPrefixs, 1);
       assert.strictEqual(textPromptPrefixs[0].textContent?.trim(), 'Run');
     });
 
@@ -52,7 +52,7 @@ describe('TextPrompt', () => {
       component.setSuggestion('Command');
 
       const textPromptSuggestions = component.shadowRoot!.querySelectorAll('.suggestion');
-      assert.strictEqual(textPromptSuggestions.length, 1);
+      assert.lengthOf(textPromptSuggestions, 1);
       assert.strictEqual((textPromptSuggestions[0] as HTMLInputElement).value.trim(), 'Command');
     });
 
@@ -63,7 +63,7 @@ describe('TextPrompt', () => {
       component.setText('text');
 
       const textPromptInputs = component.shadowRoot!.querySelectorAll('.input');
-      assert.strictEqual(textPromptInputs.length, 1);
+      assert.lengthOf(textPromptInputs, 1);
       assert.strictEqual((textPromptInputs[0] as HTMLInputElement).value.trim(), 'text');
     });
 

@@ -84,16 +84,16 @@ describeWithEnvironment('CompatibilityTracksAppender', function() {
         await initTrackAppender(this, 'lcp-images-rasterizer.json.gz');
         const rasterTracks = tracksAppender.threadAppenders().filter(
             threadAppender => threadAppender.threadType === Trace.Handlers.Threads.ThreadType.RASTERIZER);
-        assert.strictEqual(rasterTracks.length, 2);
+        assert.lengthOf(rasterTracks, 2);
 
         const raster1Events = tracksAppender.eventsInTrack(rasterTracks[0]);
-        assert.strictEqual(raster1Events.length, 6);
+        assert.lengthOf(raster1Events, 6);
         assert.isTrue(Trace.Helpers.TreeHelpers.canBuildTreesFromEvents(raster1Events));
         const raster1TreeEvents = tracksAppender.eventsForTreeView(rasterTracks[0]);
         assert.deepEqual(raster1TreeEvents, raster1Events);
 
         const raster2Events = tracksAppender.eventsInTrack(rasterTracks[1]);
-        assert.strictEqual(raster2Events.length, 1);
+        assert.lengthOf(raster2Events, 1);
         assert.isTrue(Trace.Helpers.TreeHelpers.canBuildTreesFromEvents(raster2Events));
         const raster2TreeEvents = tracksAppender.eventsForTreeView(rasterTracks[1]);
         assert.deepEqual(raster2TreeEvents, raster2Events);

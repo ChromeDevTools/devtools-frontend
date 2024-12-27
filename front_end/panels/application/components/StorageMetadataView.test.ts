@@ -194,7 +194,7 @@ describeWithLocale('SharedStorageMetadataView', () => {
 
     const buttons = component.shadowRoot!.querySelectorAll('devtools-button');
 
-    assert.strictEqual(buttons.length, 1);
+    assert.lengthOf(buttons, 1);
 
     const [deleteButton] = buttons;
     assert.instanceOf(deleteButton, HTMLElement);

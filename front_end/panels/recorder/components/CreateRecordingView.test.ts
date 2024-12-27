@@ -106,7 +106,7 @@ describeWithEnvironment('CreateRecordingView', () => {
     let checkboxes = view.shadowRoot?.querySelectorAll(
                          '.selector-type input[type=checkbox]',
                          ) as NodeListOf<HTMLInputElement>;
-    assert.strictEqual(checkboxes.length, 5);
+    assert.lengthOf(checkboxes, 5);
     const button = view.shadowRoot?.querySelector(
                        'devtools-control-button',
                        ) as Components.ControlButton.ControlButton;
@@ -131,7 +131,7 @@ describeWithEnvironment('CreateRecordingView', () => {
     checkboxes = view.shadowRoot?.querySelectorAll(
                      '.selector-type input[type=checkbox]',
                      ) as NodeListOf<HTMLInputElement>;
-    assert.strictEqual(checkboxes.length, 5);
+    assert.lengthOf(checkboxes, 5);
     assert.isFalse(checkboxes[0].checked);
     assert.isTrue(checkboxes[1].checked);
     assert.isTrue(checkboxes[2].checked);

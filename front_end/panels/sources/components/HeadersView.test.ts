@@ -243,7 +243,7 @@ describe('HeadersView', () => {
     assert.deepEqual(getSingleRowContent(editor.shadowRoot, 1), 'server:DevTools Unit Test Server');
 
     const editables = editor.shadowRoot.querySelectorAll('.editable');
-    assert.strictEqual(editables.length, 8);
+    assert.lengthOf(editables, 8);
     const headerValue = editables[2] as HTMLElement;
     headerValue.focus();
     headerValue.innerText = 'discard_me';
@@ -303,7 +303,7 @@ describe('HeadersView', () => {
     const editor = await renderEditor();
     assert.isNotNull(editor.shadowRoot);
     const editables = editor.shadowRoot.querySelectorAll('.editable');
-    assert.strictEqual(editables.length, 8);
+    assert.lengthOf(editables, 8);
 
     const lastHeaderName = editables[6] as HTMLSpanElement;
     const lastHeaderValue = editables[7] as HTMLSpanElement;
@@ -328,7 +328,7 @@ describe('HeadersView', () => {
     const editor = await renderEditor();
     assert.isNotNull(editor.shadowRoot);
     const editables = editor.shadowRoot.querySelectorAll('.editable');
-    assert.strictEqual(editables.length, 8);
+    assert.lengthOf(editables, 8);
 
     const applyTo = editables[5] as HTMLSpanElement;
     assert.strictEqual(applyTo.innerHTML, '*.jpg');
@@ -355,7 +355,7 @@ describe('HeadersView', () => {
     ]);
 
     const editables = editor.shadowRoot.querySelectorAll('.editable');
-    assert.strictEqual(editables.length, 8);
+    assert.lengthOf(editables, 8);
 
     const headerName = editables[1] as HTMLSpanElement;
     assert.strictEqual(headerName.innerHTML, 'server');
@@ -548,7 +548,7 @@ describe('HeadersView', () => {
     const editor = await renderEditor();
     assert.isNotNull(editor.shadowRoot);
     const editables = editor.shadowRoot.querySelectorAll('.editable');
-    assert.strictEqual(editables.length, 8);
+    assert.lengthOf(editables, 8);
     assert.deepEqual(getSingleRowContent(editor.shadowRoot, 2), 'access-control-allow-origin:*');
 
     const headerValue = editables[4] as HTMLSpanElement;

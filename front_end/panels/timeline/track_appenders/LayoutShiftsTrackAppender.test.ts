@@ -44,7 +44,7 @@ describeWithEnvironment('LayoutShiftsTrackAppender', function() {
   it('marks all levels used by the track with the TrackAppender type', async function() {
     const {entryTypeByLevel} = await renderTrackAppender(this, 'cls-single-frame.json.gz');
     // Only one row of layout shifts.
-    assert.strictEqual(entryTypeByLevel.length, 1);
+    assert.lengthOf(entryTypeByLevel, 1);
     assert.deepEqual(entryTypeByLevel, [
       Timeline.TimelineFlameChartDataProvider.EntryType.TRACK_APPENDER,
     ]);
@@ -58,7 +58,7 @@ describeWithEnvironment('LayoutShiftsTrackAppender', function() {
 
   it('creates a flamechart group', async function() {
     const {flameChartData} = await renderTrackAppender(this, 'cls-single-frame.json.gz');
-    assert.strictEqual(flameChartData.groups.length, 1);
+    assert.lengthOf(flameChartData.groups, 1);
     assert.strictEqual(flameChartData.groups[0].name, 'Layout shifts');
   });
 

@@ -31,17 +31,17 @@ describe('TextUtils', () => {
     describe('splitStringByRegexes', () => {
       it('returns the correct result for a single regex', () => {
         let result = TextUtils.TextUtils.Utils.splitStringByRegexes('', [/a/]);
-        assert.strictEqual(result.length, 0, 'length was wrong');
+        assert.lengthOf(result, 0, 'length was wrong');
 
         result = TextUtils.TextUtils.Utils.splitStringByRegexes('a', [/a/]);
-        assert.strictEqual(result.length, 1, 'length was wrong');
+        assert.lengthOf(result, 1, 'length was wrong');
         assert.strictEqual(result[0].value, 'a', 'value was wrong');
         assert.strictEqual(result[0].position, 0, 'position was wrong');
         assert.strictEqual(result[0].regexIndex, 0, 'regex index was wrong');
         assert.deepEqual(result[0].captureGroups, [], 'capture groups was not empty');
 
         result = TextUtils.TextUtils.Utils.splitStringByRegexes('ba b', [/a/]);
-        assert.strictEqual(result.length, 3, 'length was wrong');
+        assert.lengthOf(result, 3, 'length was wrong');
         assert.strictEqual(result[0].value, 'b', 'value was wrong');
         assert.strictEqual(result[0].position, 0, 'position was wrong');
         assert.strictEqual(result[0].regexIndex, -1, 'regex index was wrong');
@@ -57,17 +57,17 @@ describe('TextUtils', () => {
       });
       it('returns the correct result for a multiple regexs', () => {
         let result = TextUtils.TextUtils.Utils.splitStringByRegexes('', [/a/, /b/]);
-        assert.strictEqual(result.length, 0, 'length was wrong');
+        assert.lengthOf(result, 0, 'length was wrong');
 
         result = TextUtils.TextUtils.Utils.splitStringByRegexes('a', [/a/, /b/]);
-        assert.strictEqual(result.length, 1, 'length was wrong');
+        assert.lengthOf(result, 1, 'length was wrong');
         assert.strictEqual(result[0].value, 'a', 'value was wrong');
         assert.strictEqual(result[0].position, 0, 'position was wrong');
         assert.strictEqual(result[0].regexIndex, 0, 'regex index was wrong');
         assert.deepEqual(result[0].captureGroups, [], 'capture groups was not empty');
 
         result = TextUtils.TextUtils.Utils.splitStringByRegexes('ba b', [/a/, /b/]);
-        assert.strictEqual(result.length, 4, 'length was wrong');
+        assert.lengthOf(result, 4, 'length was wrong');
         assert.strictEqual(result[0].value, 'b', 'value was wrong');
         assert.strictEqual(result[0].position, 0, 'position was wrong');
         assert.strictEqual(result[0].regexIndex, 1, 'regex index was wrong');
@@ -87,10 +87,10 @@ describe('TextUtils', () => {
       });
       it('returns the correct result for global regexs', () => {
         let result = TextUtils.TextUtils.Utils.splitStringByRegexes('', [/a/g, /b/g]);
-        assert.strictEqual(result.length, 0, 'length was wrong');
+        assert.lengthOf(result, 0, 'length was wrong');
 
         result = TextUtils.TextUtils.Utils.splitStringByRegexes('a', [/a/g, /b/g]);
-        assert.strictEqual(result.length, 1, 'length was wrong');
+        assert.lengthOf(result, 1, 'length was wrong');
         assert.strictEqual(result[0].value, 'a', 'value was wrong');
         assert.strictEqual(result[0].position, 0, 'position was wrong');
         assert.strictEqual(result[0].regexIndex, 0, 'regex index was wrong');

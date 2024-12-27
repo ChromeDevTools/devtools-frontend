@@ -74,7 +74,7 @@ describe('Snapshot', function() {
     });
 
     const {auditResults, erroredAudits, failedAudits} = getAuditsBreakdown(lhr);
-    assert.strictEqual(auditResults.length, 88);
+    assert.lengthOf(auditResults, 88);
     assert.deepEqual(erroredAudits, []);
     assert.deepEqual(failedAudits.map(audit => audit.id), [
       'document-title',
@@ -85,7 +85,7 @@ describe('Snapshot', function() {
     ]);
 
     // These a11y violations are not present on initial page load.
-    assert.strictEqual(lhr.audits['label'].details.items.length, 3);
+    assert.lengthOf(lhr.audits['label'].details.items, 3);
 
     // No trace was collected in snapshot mode.
     const viewTrace = await $textContent('View Trace', reportEl);

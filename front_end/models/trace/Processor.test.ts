@@ -278,7 +278,7 @@ describeWithEnvironment('TraceProcessor', function() {
       }
 
       const insights = Array.from(processor.insights.values());
-      assert.strictEqual(insights.length, 2);
+      assert.lengthOf(insights, 2);
       assert(insights[1].model.RenderBlocking instanceof Error, 'RenderBlocking did not throw an error');
       assert.strictEqual(insights[1].model.RenderBlocking.message, 'forced error');
     });
@@ -326,8 +326,8 @@ describeWithEnvironment('TraceProcessor', function() {
         throw new Error('RenderBlocking threw an error');
       }
 
-      assert.strictEqual(insights[0].model.RenderBlocking.renderBlockingRequests.length, 0);
-      assert.strictEqual(insights[1].model.RenderBlocking.renderBlockingRequests.length, 2);
+      assert.lengthOf(insights[0].model.RenderBlocking.renderBlockingRequests, 0);
+      assert.lengthOf(insights[1].model.RenderBlocking.renderBlockingRequests, 2);
     });
 
     it('returns insights for multiple navigations', async function() {
@@ -360,10 +360,10 @@ describeWithEnvironment('TraceProcessor', function() {
         throw new Error('RenderBlocking threw an error');
       }
 
-      assert.strictEqual(insights[0].model.RenderBlocking.renderBlockingRequests.length, 0);
-      assert.strictEqual(insights[1].model.RenderBlocking.renderBlockingRequests.length, 0);
-      assert.strictEqual(insights[2].model.RenderBlocking.renderBlockingRequests.length, 0);
-      assert.strictEqual(insights[3].model.RenderBlocking.renderBlockingRequests.length, 1);
+      assert.lengthOf(insights[0].model.RenderBlocking.renderBlockingRequests, 0);
+      assert.lengthOf(insights[1].model.RenderBlocking.renderBlockingRequests, 0);
+      assert.lengthOf(insights[2].model.RenderBlocking.renderBlockingRequests, 0);
+      assert.lengthOf(insights[3].model.RenderBlocking.renderBlockingRequests, 1);
     });
 
     it('sorts insights by estimated savings and field data', async function() {

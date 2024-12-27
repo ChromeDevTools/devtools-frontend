@@ -47,7 +47,7 @@ describeWithLocale('ServiceWorkerRouterView', () => {
     assert.isTrue(component.shadowRoot!.hasChildNodes());
 
     const rules = Array.from(component.shadowRoot!.querySelectorAll('.router-rule'));
-    assert.strictEqual(rules.length, 2);
+    assert.lengthOf(rules, 2);
 
     rules.map((rule, idx) => {
       const condition = rule.querySelector('.condition');

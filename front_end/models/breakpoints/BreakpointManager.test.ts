@@ -546,7 +546,7 @@ describeWithMockConnection('BreakpointManager', () => {
     await breakpointManager.debuggerWorkspaceBinding.updateLocations(script);
 
     // Verify that the location of the breakpoint was updated.
-    assert.strictEqual(breakpointManager.breakpointLocationsForUISourceCode(uiSourceCodeTs).length, 1);
+    assert.lengthOf(breakpointManager.breakpointLocationsForUISourceCode(uiSourceCodeTs), 1);
     assert.strictEqual(breakpointManager.breakpointLocationsForUISourceCode(uiSourceCodeTs)[0].breakpoint, breakpoint);
     assert.strictEqual(
         breakpointManager.breakpointLocationsForUISourceCode(uiSourceCodeTs)[0].uiLocation.lineNumber,
@@ -555,7 +555,7 @@ describeWithMockConnection('BreakpointManager', () => {
     // Remove the target and verify that the UI source codes were removed from the breakpoint.
     breakpointManager.targetManager.removeTarget(target);
     assert.strictEqual(breakpoint.getUiSourceCodes().size, 0);
-    assert.strictEqual(breakpointManager.breakpointLocationsForUISourceCode(uiSourceCodeTs).length, 0);
+    assert.lengthOf(breakpointManager.breakpointLocationsForUISourceCode(uiSourceCodeTs), 0);
 
     Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().removeSourceMapping(mapping);
     await breakpoint.remove(false);
@@ -596,7 +596,7 @@ describeWithMockConnection('BreakpointManager', () => {
 
     // Check that the breakpoint was set at the correct location?
     const locations = breakpointManager.breakpointLocationsForUISourceCode(uiSourceCode);
-    assert.strictEqual(1, locations.length);
+    assert.lengthOf(locations, 1);
     assert.strictEqual(1, locations[0].uiLocation.lineNumber);
     assert.strictEqual(5, locations[0].uiLocation.columnNumber);
   });
@@ -659,7 +659,7 @@ describeWithMockConnection('BreakpointManager', () => {
 
     // Verify the breakpoint was restored at the oriignal unbound location (before the backend binds it).
     const unboundLocations = breakpointManager.breakpointLocationsForUISourceCode(reloadedUiSourceCode);
-    assert.strictEqual(1, unboundLocations.length);
+    assert.lengthOf(unboundLocations, 1);
     assert.strictEqual(1, unboundLocations[0].uiLocation.lineNumber);
     assert.strictEqual(2, unboundLocations[0].uiLocation.columnNumber);
 
@@ -678,7 +678,7 @@ describeWithMockConnection('BreakpointManager', () => {
 
     // Verify the restored position.
     const boundLocations = breakpointManager.breakpointLocationsForUISourceCode(reloadedUiSourceCode);
-    assert.strictEqual(1, boundLocations.length);
+    assert.lengthOf(boundLocations, 1);
     assert.strictEqual(1, boundLocations[0].uiLocation.lineNumber);
     assert.strictEqual(5, boundLocations[0].uiLocation.columnNumber);
   });
@@ -924,7 +924,7 @@ describeWithMockConnection('BreakpointManager', () => {
       // Verify that the network uiSourceCode has the breakpoint that we originally set
       // on the file system uiSourceCode.
       const reloadedBoundLocations = breakpointManager.breakpointLocationsForUISourceCode(uiSourceCode);
-      assert.strictEqual(1, reloadedBoundLocations.length);
+      assert.lengthOf(reloadedBoundLocations, 1);
       assert.strictEqual(resolvedBreakpointLine, reloadedBoundLocations[0].uiLocation.lineNumber);
       assert.strictEqual(0, reloadedBoundLocations[0].uiLocation.columnNumber);
 
@@ -966,7 +966,7 @@ describeWithMockConnection('BreakpointManager', () => {
 
       // Verify the restored position.
       const boundLocations = breakpointManager.breakpointLocationsForUISourceCode(uiSourceCode);
-      assert.strictEqual(1, boundLocations.length);
+      assert.lengthOf(boundLocations, 1);
       assert.strictEqual(resolvedBreakpointLine, boundLocations[0].uiLocation.lineNumber);
       assert.strictEqual(0, boundLocations[0].uiLocation.columnNumber);
 
@@ -1017,7 +1017,7 @@ describeWithMockConnection('BreakpointManager', () => {
 
       // Verify the restored position.
       const reloadedBoundLocations = breakpointManager.breakpointLocationsForUISourceCode(reloadedUiSourceCode);
-      assert.strictEqual(1, reloadedBoundLocations.length);
+      assert.lengthOf(reloadedBoundLocations, 1);
       assert.strictEqual(resolvedBreakpointLine, reloadedBoundLocations[0].uiLocation.lineNumber);
       assert.strictEqual(0, reloadedBoundLocations[0].uiLocation.columnNumber);
     });
@@ -1056,7 +1056,7 @@ describeWithMockConnection('BreakpointManager', () => {
 
       // Verify the position.
       const boundLocations = breakpointManager.breakpointLocationsForUISourceCode(uiSourceCode);
-      assert.strictEqual(1, boundLocations.length);
+      assert.lengthOf(boundLocations, 1);
       assert.strictEqual(BREAKPOINT_SCRIPT_LINE, boundLocations[0].uiLocation.lineNumber);
       assert.strictEqual(0, boundLocations[0].uiLocation.columnNumber);
 
@@ -1109,7 +1109,7 @@ describeWithMockConnection('BreakpointManager', () => {
 
       // Verify the restored position.
       const reloadedBoundLocations = breakpointManager.breakpointLocationsForUISourceCode(reloadedUiSourceCode);
-      assert.strictEqual(1, reloadedBoundLocations.length);
+      assert.lengthOf(reloadedBoundLocations, 1);
       assert.deepEqual(reloadedBoundLocations[0].uiLocation.uiSourceCode, reloadedUiSourceCode);
       assert.strictEqual(BREAKPOINT_SCRIPT_LINE, reloadedBoundLocations[0].uiLocation.lineNumber);
       assert.strictEqual(0, reloadedBoundLocations[0].uiLocation.columnNumber);
@@ -1165,7 +1165,7 @@ describeWithMockConnection('BreakpointManager', () => {
 
       // Verify the position.
       const boundLocations = breakpointManager.breakpointLocationsForUISourceCode(uiSourceCode);
-      assert.strictEqual(1, boundLocations.length);
+      assert.lengthOf(boundLocations, 1);
       assert.strictEqual(INLINE_BREAKPOINT_RAW_LINE, boundLocations[0].uiLocation.lineNumber);
       assert.strictEqual(0, boundLocations[0].uiLocation.columnNumber);
 
@@ -1219,7 +1219,7 @@ describeWithMockConnection('BreakpointManager', () => {
 
       // Verify the restored position.
       const reloadedBoundLocations = breakpointManager.breakpointLocationsForUISourceCode(reloadedUiSourceCode);
-      assert.strictEqual(1, reloadedBoundLocations.length);
+      assert.lengthOf(reloadedBoundLocations, 1);
       assert.deepEqual(reloadedBoundLocations[0].uiLocation.uiSourceCode, reloadedUiSourceCode);
       assert.strictEqual(INLINE_BREAKPOINT_RAW_LINE, reloadedBoundLocations[0].uiLocation.lineNumber);
       assert.strictEqual(0, reloadedBoundLocations[0].uiLocation.columnNumber);
@@ -1261,7 +1261,7 @@ describeWithMockConnection('BreakpointManager', () => {
 
       // Verify the restored position.
       const boundLocations = breakpointManager.breakpointLocationsForUISourceCode(uiSourceCode);
-      assert.strictEqual(1, boundLocations.length);
+      assert.lengthOf(boundLocations, 1);
       assert.strictEqual(0, boundLocations[0].uiLocation.lineNumber);
       assert.strictEqual(9, boundLocations[0].uiLocation.columnNumber);
 
@@ -1290,7 +1290,7 @@ describeWithMockConnection('BreakpointManager', () => {
       assert.exists(uiSourceCode);
 
       const unboundLocation = breakpointManager.breakpointLocationsForUISourceCode(reloadedUiSourceCode);
-      assert.strictEqual(1, unboundLocation.length);
+      assert.lengthOf(unboundLocation, 1);
       assert.strictEqual(0, unboundLocation[0].uiLocation.lineNumber);
       assert.strictEqual(0, unboundLocation[0].uiLocation.columnNumber);
 
@@ -1316,7 +1316,7 @@ describeWithMockConnection('BreakpointManager', () => {
 
       // Verify the restored position.
       const reloadedBoundLocations = breakpointManager.breakpointLocationsForUISourceCode(reloadedUiSourceCode);
-      assert.strictEqual(1, reloadedBoundLocations.length);
+      assert.lengthOf(reloadedBoundLocations, 1);
       assert.strictEqual(0, reloadedBoundLocations[0].uiLocation.lineNumber);
       assert.strictEqual(9, reloadedBoundLocations[0].uiLocation.columnNumber);
     });
@@ -1402,7 +1402,7 @@ describeWithMockConnection('BreakpointManager', () => {
 
       // Verify the bound position.
       const boundLocations = breakpointManager.breakpointLocationsForUISourceCode(uiSourceCode);
-      assert.strictEqual(1, boundLocations.length);
+      assert.lengthOf(boundLocations, 1);
       assert.strictEqual(0, boundLocations[0].uiLocation.lineNumber);
       assert.strictEqual(0, boundLocations[0].uiLocation.columnNumber);
 
@@ -1452,7 +1452,7 @@ describeWithMockConnection('BreakpointManager', () => {
 
       // Verify the restored position.
       const reloadedBoundLocations = breakpointManager.breakpointLocationsForUISourceCode(reloadedUiSourceCode);
-      assert.strictEqual(1, reloadedBoundLocations.length);
+      assert.lengthOf(reloadedBoundLocations, 1);
       assert.strictEqual(0, reloadedBoundLocations[0].uiLocation.lineNumber);
       assert.strictEqual(0, reloadedBoundLocations[0].uiLocation.columnNumber);
     });
@@ -1582,7 +1582,7 @@ describeWithMockConnection('BreakpointManager', () => {
     // After this, the breakpoint manager should not refer to the file system source code anymore, but
     // the file system breakpoint location should be in the storage.
     assert.isEmpty(breakpointManager.breakpointLocationsForUISourceCode(fileSystemUiSourceCode));
-    assert.strictEqual(breakpointManager.storage.breakpointItems(fileSystemUiSourceCode.url()).length, 1);
+    assert.lengthOf(breakpointManager.storage.breakpointItems(fileSystemUiSourceCode.url()), 1);
 
     Root.Runtime.experiments.disableForTest(Root.Runtime.ExperimentName.INSTRUMENTATION_BREAKPOINTS);
   });
@@ -1781,10 +1781,10 @@ describeWithMockConnection('BreakpointManager', () => {
       assert.deepEqual(Array.from(breakpoint.getUiSourceCodes()), [mainUiSourceCode, workerUiSourceCode]);
 
       const mainBoundLocations = breakpointManager.breakpointLocationsForUISourceCode(mainUiSourceCode);
-      assert.strictEqual(1, mainBoundLocations.length);
+      assert.lengthOf(mainBoundLocations, 1);
 
       const workerBoundLocations = breakpointManager.breakpointLocationsForUISourceCode(workerUiSourceCode);
-      assert.strictEqual(1, workerBoundLocations.length);
+      assert.lengthOf(workerBoundLocations, 1);
     });
 
     it('if the target whose uiSourceCode was used for breakpoint setting is handled first', async () => {
@@ -1819,10 +1819,10 @@ describeWithMockConnection('BreakpointManager', () => {
       assert.deepEqual(Array.from(breakpoint.getUiSourceCodes()), [mainUiSourceCode, workerUiSourceCode]);
 
       const mainBoundLocations = breakpointManager.breakpointLocationsForUISourceCode(mainUiSourceCode);
-      assert.strictEqual(1, mainBoundLocations.length);
+      assert.lengthOf(mainBoundLocations, 1);
 
       const workerBoundLocations = breakpointManager.breakpointLocationsForUISourceCode(workerUiSourceCode);
-      assert.strictEqual(1, workerBoundLocations.length);
+      assert.lengthOf(workerBoundLocations, 1);
     });
   });
 

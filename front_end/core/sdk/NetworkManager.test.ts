@@ -37,7 +37,7 @@ describeWithMockConnection('MultitargetNetworkManager', () => {
           {requestId: 'mockId', request: {url: 'example.com'}} as Protocol.Network.RequestWillBeSentEvent);
 
       // 3) Check that the resulting NetworkRequest has the Trust Token Event data associated with it.
-      assert.strictEqual(startedRequests.length, 1);
+      assert.lengthOf(startedRequests, 1);
       assert.strictEqual(startedRequests[0].trustTokenOperationDoneEvent(), mockEvent);
     });
   });

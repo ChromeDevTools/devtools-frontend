@@ -56,7 +56,7 @@ describeWithEnvironment('ViewRegistration', () => {
     const filteredCommands = allCommands.filter(
         command =>
             command.title === commandPrompt && command.isPanelOrDrawer === QuickOpen.CommandMenu.PanelOrDrawer.PANEL);
-    assert.strictEqual(filteredCommands.length, 1, 'Command for showing a preregistered view was not added correctly');
+    assert.lengthOf(filteredCommands, 1, 'Command for showing a preregistered view was not added correctly');
   });
 
   it('deletes a registered view using its id', () => {

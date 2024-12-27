@@ -40,7 +40,7 @@ describe('The Computed pane', function() {
     await waitForElementsComputedSection();
 
     const h1Properties = await getAllPropertiesFromComputedPane();
-    assert.strictEqual(h1Properties.length, 11, 'There should be 11 computed properties on the H1 element');
+    assert.lengthOf(h1Properties, 11, 'There should be 11 computed properties on the H1 element');
 
     const colorProperty = h1Properties.find(property => property && property.name === 'color');
     assert.exists(colorProperty, 'H1 element should have a color computed property');
@@ -56,7 +56,7 @@ describe('The Computed pane', function() {
     await waitForElementsComputedSection();
 
     const h2Properties = await getAllPropertiesFromComputedPane();
-    assert.strictEqual(h2Properties.length, 12, 'There should be 12 computed properties on the H2 element');
+    assert.lengthOf(h2Properties, 12, 'There should be 12 computed properties on the H2 element');
 
     const backgroundProperty = h2Properties.find(property => property && property.name === 'background-color');
     assert.exists(backgroundProperty, 'H2 element should have a background-color computed property');

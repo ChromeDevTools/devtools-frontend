@@ -25,7 +25,7 @@ describe('Console', () => {
       console.addMessage('Bar', Common.Console.MessageLevel.ERROR, true);
       console.addMessage('Donkey', Common.Console.MessageLevel.INFO, true);
       const messages = console.messages();
-      assert.strictEqual(messages.length, 4);
+      assert.lengthOf(messages, 4);
     });
 
     it('dispatches events to listeners', done => {

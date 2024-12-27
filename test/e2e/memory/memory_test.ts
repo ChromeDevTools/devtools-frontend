@@ -77,7 +77,7 @@ describe('The Memory Panel', function() {
     await takeHeapSnapshot();
     await waitForNonEmptyHeapSnapshotData();
     const heapSnapShots = await $$('.heap-snapshot-sidebar-tree-item');
-    assert.strictEqual(heapSnapShots.length, 2);
+    assert.lengthOf(heapSnapShots, 2);
   });
 
   it('Shows a DOM node and its JS wrapper as a single node', async () => {

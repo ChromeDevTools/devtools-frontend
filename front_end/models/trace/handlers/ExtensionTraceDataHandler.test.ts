@@ -241,7 +241,7 @@ describe('ExtensionTraceDataHandler', function() {
         },
       ];
       const extensionHandlerOutput = await createTraceExtensionDataFromTestInput(extensionData);
-      assert.strictEqual(extensionHandlerOutput.extensionMarkers.length, 1);
+      assert.lengthOf(extensionHandlerOutput.extensionMarkers, 1);
     });
     it('ignores a timing if its detail does not contain a devtools object', async function() {
       const extensionData = [
@@ -252,7 +252,7 @@ describe('ExtensionTraceDataHandler', function() {
         },
       ] as ExtensionTestData[];
       const extensionHandlerOutput = await createTraceExtensionDataFromTestInput(extensionData);
-      assert.strictEqual(extensionHandlerOutput.extensionMarkers.length, 0);
+      assert.lengthOf(extensionHandlerOutput.extensionMarkers, 0);
     });
     it('ignores a timing if its detail contains a devtools object w/o valid extension data', async function() {
       const extensionData = [
@@ -289,7 +289,7 @@ describe('ExtensionTraceDataHandler', function() {
         },
       ] as ExtensionTestData[];
       const extensionHandlerOutput = await createTraceExtensionDataFromTestInput(extensionData);
-      assert.strictEqual(extensionHandlerOutput.extensionMarkers.length, 0);
+      assert.lengthOf(extensionHandlerOutput.extensionMarkers, 0);
     });
     it('ignores a timing if its detail contains a devtools with a track group but no track name', async function() {
       const extensionData = [
@@ -306,7 +306,7 @@ describe('ExtensionTraceDataHandler', function() {
         },
       ] as ExtensionTestData[];
       const extensionHandlerOutput = await createTraceExtensionDataFromTestInput(extensionData);
-      assert.strictEqual(extensionHandlerOutput.extensionMarkers.length, 0);
+      assert.lengthOf(extensionHandlerOutput.extensionMarkers, 0);
     });
   });
 
@@ -365,7 +365,7 @@ describe('ExtensionTraceDataHandler', function() {
                                                                                      ts: 100 + i,
                                                                                      dur: 100,
                                                                                    })));
-      assert.strictEqual(extensionHandlerOutput.extensionTrackData.length, 4);
+      assert.lengthOf(extensionHandlerOutput.extensionTrackData, 4);
 
       const firstTrackData = extensionHandlerOutput.extensionTrackData[0];
       assert.strictEqual(firstTrackData.name, 'Group 1');

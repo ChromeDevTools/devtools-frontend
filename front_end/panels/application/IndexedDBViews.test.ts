@@ -167,7 +167,7 @@ describeWithLocale.skip('[crbug.com/1473557]: IDBDatabaseView', () => {
     await coordinator.done({waitForWork: true});
 
     const buttons = component.shadowRoot.querySelectorAll('devtools-button');
-    assert.strictEqual(buttons.length, 2);
+    assert.lengthOf(buttons, 2);
     assert.instanceOf(buttons[0], HTMLElement);
     assert.strictEqual(buttons[0].textContent?.trim(), 'Delete database');
     const showDialog = sinon.stub(UI.UIUtils.ConfirmDialog, 'show').resolves(true);

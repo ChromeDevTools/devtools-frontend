@@ -88,7 +88,7 @@ describeWithMockConnection('DefaultScriptMapping', () => {
       assert.exists(uiSourceCode);
 
       const rawLocations = defaultScriptMapping.uiLocationToRawLocations(uiSourceCode, 0, 1);
-      assert.strictEqual(rawLocations.length, 1);
+      assert.lengthOf(rawLocations, 1);
       assert.strictEqual(rawLocations[0].lineNumber, 3);
       assert.strictEqual(rawLocations[0].columnNumber, 9);
     });
@@ -100,7 +100,7 @@ describeWithMockConnection('DefaultScriptMapping', () => {
       assert.exists(uiSourceCode);
 
       const rawLocations = defaultScriptMapping.uiLocationToRawLocations(uiSourceCode, 1, 2);
-      assert.strictEqual(rawLocations.length, 1);
+      assert.lengthOf(rawLocations, 1);
       assert.strictEqual(rawLocations[0].lineNumber, 4);
       assert.strictEqual(rawLocations[0].columnNumber, 2);
     });
@@ -112,7 +112,7 @@ describeWithMockConnection('DefaultScriptMapping', () => {
       assert.exists(uiSourceCode);
 
       const rawLocations = defaultScriptMapping.uiLocationToRawLocations(uiSourceCode, 4, 2);
-      assert.strictEqual(rawLocations.length, 1);
+      assert.lengthOf(rawLocations, 1);
       assert.strictEqual(rawLocations[0].lineNumber, 4);
       assert.strictEqual(rawLocations[0].columnNumber, 2);
     });

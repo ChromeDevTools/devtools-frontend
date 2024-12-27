@@ -266,19 +266,19 @@ describeWithMockConnection('LayoutShift root causes', () => {
            });
 
            // Test the nodes from the LI events are assinged as the potential root causes to layout shifts correctly.
-           assert.strictEqual(shiftCausesNodeIds[0].length, 1);
+           assert.lengthOf(shiftCausesNodeIds[0], 1);
            assert.strictEqual(shiftCausesNodeIds[0][0], resizeEventsNodeIds[0]);
 
-           assert.strictEqual(shiftCausesNodeIds[1].length, 1);
+           assert.lengthOf(shiftCausesNodeIds[1], 1);
            assert.strictEqual(shiftCausesNodeIds[1][0], resizeEventsNodeIds[0]);
 
-           assert.strictEqual(shiftCausesNodeIds[2].length, 1);
+           assert.lengthOf(shiftCausesNodeIds[2], 1);
            assert.strictEqual(shiftCausesNodeIds[2][0], resizeEventsNodeIds[1]);
 
-           assert.strictEqual(shiftCausesNodeIds[3].length, 1);
+           assert.lengthOf(shiftCausesNodeIds[3], 1);
            assert.strictEqual(shiftCausesNodeIds[3][0], resizeEventsNodeIds[1]);
 
-           assert.strictEqual(shiftCausesNodeIds[4].length, 1);
+           assert.lengthOf(shiftCausesNodeIds[4], 1);
            assert.strictEqual(shiftCausesNodeIds[4][0], resizeEventsNodeIds[2]);
          });
 
@@ -436,10 +436,10 @@ describeWithMockConnection('LayoutShift root causes', () => {
            });
 
            // Test the nodes from the LI events are assinged as the potential root causes to layout shifts correctly.
-           assert.strictEqual(shiftCausesNodeIds[0].length, 1);
+           assert.lengthOf(shiftCausesNodeIds[0], 1);
            assert.strictEqual(shiftCausesNodeIds[0][0], iframesNodeIds[0]);
 
-           assert.strictEqual(shiftCausesNodeIds[4].length, 1);
+           assert.lengthOf(shiftCausesNodeIds[4], 1);
            assert.strictEqual(shiftCausesNodeIds[4][0], iframesNodeIds[1]);
          });
 
@@ -528,10 +528,10 @@ describeWithMockConnection('LayoutShift root causes', () => {
         });
 
         // Test no font request is marked as potential layout shift root causes
-        assert.strictEqual(shiftCausesNodeIds[0].length, 0);
-        assert.strictEqual(shiftCausesNodeIds[1].length, 0);
-        assert.strictEqual(shiftCausesNodeIds[2].length, 0);
-        assert.strictEqual(shiftCausesNodeIds[3].length, 0);
+        assert.lengthOf(shiftCausesNodeIds[0], 0);
+        assert.lengthOf(shiftCausesNodeIds[1], 0);
+        assert.lengthOf(shiftCausesNodeIds[2], 0);
+        assert.lengthOf(shiftCausesNodeIds[3], 0);
       });
       it('ignores requests for fonts that lie outside the fixed time window from ending at the "font change" layout invalidation event',
          async () => {
@@ -554,10 +554,10 @@ describeWithMockConnection('LayoutShift root causes', () => {
            });
 
            // Test no font request is marked as potential layout shift root causes
-           assert.strictEqual(shiftCausesNodeIds[0].length, 0);
-           assert.strictEqual(shiftCausesNodeIds[1].length, 0);
-           assert.strictEqual(shiftCausesNodeIds[2].length, 0);
-           assert.strictEqual(shiftCausesNodeIds[3].length, 0);
+           assert.lengthOf(shiftCausesNodeIds[0], 0);
+           assert.lengthOf(shiftCausesNodeIds[1], 0);
+           assert.lengthOf(shiftCausesNodeIds[2], 0);
+           assert.lengthOf(shiftCausesNodeIds[3], 0);
          });
     });
 

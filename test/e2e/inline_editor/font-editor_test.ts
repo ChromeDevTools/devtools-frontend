@@ -40,8 +40,8 @@ describe('The font editor', function() {
   it('icon is displayed for sections containing font properties', async () => {
     const fontEditorButtons = await getFontEditorButtons();
     const hiddenFontEditorButtons = await getHiddenFontEditorButtons();
-    assert.deepEqual(fontEditorButtons.length, 5);
-    assert.deepEqual(hiddenFontEditorButtons.length, 2);
+    assert.lengthOf(fontEditorButtons, 5);
+    assert.lengthOf(hiddenFontEditorButtons, 2);
   });
 
   it('opens when button is clicked', async () => {

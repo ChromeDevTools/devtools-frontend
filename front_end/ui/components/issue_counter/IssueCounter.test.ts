@@ -62,7 +62,7 @@ describeWithLocale('IssueCounter', () => {
       });
 
       const icons = extractIconGroups(shadowRoot);
-      assert.strictEqual(icons.length, 2);
+      assert.lengthOf(icons, 2);
       assert.deepEqual(icons.map(c => c.label), ['2', '1']);
       const iconNames = icons.map(c => 'iconName' in c.iconData ? c.iconData.iconName : undefined);
       assert.deepEqual(iconNames, ['issue-cross-filled', 'issue-exclamation-filled']);
@@ -77,7 +77,7 @@ describeWithLocale('IssueCounter', () => {
 
       {
         const icons = extractIconGroups(shadowRoot);
-        assert.strictEqual(icons.length, 2);
+        assert.lengthOf(icons, 2);
         assert.deepEqual(icons.map(c => c.label), ['2', '1']);
         const iconNames = icons.map(c => 'iconName' in c.iconData ? c.iconData.iconName : undefined);
         assert.deepEqual(iconNames, ['issue-cross-filled', 'issue-exclamation-filled']);
@@ -87,7 +87,7 @@ describeWithLocale('IssueCounter', () => {
 
       {
         const icons = extractIconGroups(shadowRoot);
-        assert.strictEqual(icons.length, 3);
+        assert.lengthOf(icons, 3);
         assert.deepEqual(icons.map(c => c.label), ['3', '2', '1']);
         const iconNames = icons.map(c => 'iconName' in c.iconData ? c.iconData.iconName : undefined);
         assert.deepEqual(iconNames, ['issue-cross-filled', 'issue-exclamation-filled', 'issue-text-filled']);
@@ -103,7 +103,7 @@ describeWithLocale('IssueCounter', () => {
 
       {
         const icons = extractIconGroups(shadowRoot);
-        assert.strictEqual(icons.length, 2);
+        assert.lengthOf(icons, 2);
         assert.deepEqual(icons.map(c => c.label), ['2', '1']);
         const iconNames = icons.map(c => 'iconName' in c.iconData ? c.iconData.iconName : undefined);
         assert.deepEqual(iconNames, ['issue-cross-filled', 'issue-exclamation-filled']);
@@ -113,7 +113,7 @@ describeWithLocale('IssueCounter', () => {
 
       {
         const icons = extractIconGroups(shadowRoot);
-        assert.strictEqual(icons.length, 1);
+        assert.lengthOf(icons, 1);
         assert.deepEqual(icons.map(c => c.label), ['2']);
         const iconNames = icons.map(c => 'iconName' in c.iconData ? c.iconData.iconName : undefined);
         assert.deepEqual(iconNames, ['issue-cross-filled']);
@@ -146,7 +146,7 @@ describeWithLocale('IssueCounter', () => {
       });
 
       const icons = extractIconGroups(shadowRoot);
-      assert.strictEqual(icons.length, 3);
+      assert.lengthOf(icons, 3);
       assert.deepEqual(icons.map(c => c.label), ['2', '1', '0']);
       const iconNames = icons.map(c => 'iconName' in c.iconData ? c.iconData.iconName : undefined);
       assert.deepEqual(iconNames, ['issue-cross-filled', 'issue-exclamation-filled', 'issue-text-filled']);
@@ -162,7 +162,7 @@ describeWithLocale('IssueCounter', () => {
 
       {
         const icons = extractIconGroups(shadowRoot);
-        assert.strictEqual(icons.length, 3);
+        assert.lengthOf(icons, 3);
         assert.deepEqual(icons.map(c => c.label), ['2', '1', '0']);
         const iconNames = icons.map(c => 'iconName' in c.iconData ? c.iconData.iconName : undefined);
         assert.deepEqual(iconNames, ['issue-cross-filled', 'issue-exclamation-filled', 'issue-text-filled']);
@@ -172,7 +172,7 @@ describeWithLocale('IssueCounter', () => {
 
       {
         const icons = extractIconGroups(shadowRoot);
-        assert.strictEqual(icons.length, 3);
+        assert.lengthOf(icons, 3);
         assert.deepEqual(icons.map(c => c.label), ['3', '2', '1']);
         const iconNames = icons.map(c => 'iconName' in c.iconData ? c.iconData.iconName : undefined);
         assert.deepEqual(iconNames, ['issue-cross-filled', 'issue-exclamation-filled', 'issue-text-filled']);
@@ -190,7 +190,7 @@ describeWithLocale('IssueCounter', () => {
       });
 
       const icons = extractIconGroups(shadowRoot);
-      assert.strictEqual(icons.length, 1);
+      assert.lengthOf(icons, 1);
       assert.deepEqual(icons.map(c => c.label), [null]);
       const iconNames = icons.map(c => 'iconName' in c.iconData ? c.iconData.iconName : undefined);
       assert.deepEqual(iconNames, ['issue-cross-filled']);
@@ -210,7 +210,7 @@ describeWithLocale('IssueCounter', () => {
       });
 
       const icons = extractIconGroups(shadowRoot);
-      assert.strictEqual(icons.length, 1);
+      assert.lengthOf(icons, 1);
       assert.deepEqual(icons.map(c => c.label), [null]);
       const iconNames = icons.map(c => 'iconName' in c.iconData ? c.iconData.iconName : undefined);
       assert.deepEqual(iconNames, ['issue-text-filled']);

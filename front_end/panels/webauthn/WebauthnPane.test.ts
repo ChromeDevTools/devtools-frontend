@@ -131,7 +131,7 @@ describeWithMockConnection('WebAuthn pane', () => {
         assert.fail('Expected dataGrid to be truthy');
         return;
       }
-      assert.strictEqual(dataGrid.rootNode().children.length, 1);
+      assert.lengthOf(dataGrid.rootNode().children, 1);
       let emptyNode = dataGrid.rootNode().children[0];
       assert.isOk(emptyNode);
       assert.deepEqual(emptyNode.data, {});
@@ -151,7 +151,7 @@ describeWithMockConnection('WebAuthn pane', () => {
       });
 
       // Verify the credential appeared and the empty row was removed.
-      assert.strictEqual(dataGrid.rootNode().children.length, 1);
+      assert.lengthOf(dataGrid.rootNode().children, 1);
       const credentialNode = dataGrid.rootNode().children[0];
       assert.isOk(credentialNode);
       assert.strictEqual(credentialNode.data, credential);
@@ -159,7 +159,7 @@ describeWithMockConnection('WebAuthn pane', () => {
       // Remove the credential.
       const removeCredential = sinon.stub(model, 'removeCredential').resolves();
       dataGrid.element.querySelectorAll('devtools-button')[1].click();
-      assert.strictEqual(dataGrid.rootNode().children.length, 1);
+      assert.lengthOf(dataGrid.rootNode().children, 1);
       emptyNode = dataGrid.rootNode().children[0];
       assert.isOk(emptyNode);
       assert.deepEqual(emptyNode.data, {});
@@ -202,7 +202,7 @@ describeWithMockConnection('WebAuthn pane', () => {
         assert.fail('Expected dataGrid to be truthy');
         return;
       }
-      assert.strictEqual(dataGrid.rootNode().children.length, 1);
+      assert.lengthOf(dataGrid.rootNode().children, 1);
       const credentialNode = dataGrid.rootNode().children[0];
       assert.isOk(credentialNode);
       assert.strictEqual(credentialNode.data, credential);
@@ -222,7 +222,7 @@ describeWithMockConnection('WebAuthn pane', () => {
       });
 
       // Verify the credential was updated.
-      assert.strictEqual(dataGrid.rootNode().children.length, 1);
+      assert.lengthOf(dataGrid.rootNode().children, 1);
       assert.strictEqual(credentialNode.data, updatedCredential1);
 
       // The credential can also be updated through the CREDENTIAL_UPDATED
@@ -241,7 +241,7 @@ describeWithMockConnection('WebAuthn pane', () => {
       });
 
       // Verify the credential was updated.
-      assert.strictEqual(dataGrid.rootNode().children.length, 1);
+      assert.lengthOf(dataGrid.rootNode().children, 1);
       assert.strictEqual(credentialNode.data, updatedCredential2);
 
       // Updating a different credential should not affect the existing one.
@@ -259,7 +259,7 @@ describeWithMockConnection('WebAuthn pane', () => {
       });
 
       // Verify the credential was unchanged.
-      assert.strictEqual(dataGrid.rootNode().children.length, 1);
+      assert.lengthOf(dataGrid.rootNode().children, 1);
       assert.strictEqual(credentialNode.data, updatedCredential2);
     });
 
@@ -295,7 +295,7 @@ describeWithMockConnection('WebAuthn pane', () => {
         assert.fail('Expected dataGrid to be truthy');
         return;
       }
-      assert.strictEqual(dataGrid.rootNode().children.length, 1);
+      assert.lengthOf(dataGrid.rootNode().children, 1);
       const credentialNode = dataGrid.rootNode().children[0];
       assert.isOk(credentialNode);
       assert.strictEqual(credentialNode.data, credential);
@@ -305,14 +305,14 @@ describeWithMockConnection('WebAuthn pane', () => {
         authenticatorId,
         credentialId: 'another credential',
       });
-      assert.strictEqual(dataGrid.rootNode().children.length, 1);
+      assert.lengthOf(dataGrid.rootNode().children, 1);
 
       // Delete the credential. It should be removed from the list.
       model.dispatchEventToListeners(SDK.WebAuthnModel.Events.CREDENTIAL_DELETED, {
         authenticatorId,
         credentialId: credential.credentialId,
       });
-      assert.strictEqual(dataGrid.rootNode().children.length, 0);
+      assert.lengthOf(dataGrid.rootNode().children, 0);
     });
 
     it('disables "internal" if an internal authenticator exists', async () => {

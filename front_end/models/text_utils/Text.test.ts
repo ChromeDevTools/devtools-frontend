@@ -68,7 +68,7 @@ describe('Text', () => {
     const textRange = new TextUtils.TextRange.TextRange(1, 0, 2, 6);
     const sourceRange = text.toSourceRange(textRange);
     assert.strictEqual(sourceRange.offset, 1, 'offset was not set correctly');
-    assert.strictEqual(sourceRange.length, 13, 'length was not set correctly');
+    assert.lengthOf(sourceRange, 13, 'length was not set correctly');
   });
 
   it('should return a source range with an offset and length of NaN if the startLine is out of range', () => {

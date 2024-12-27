@@ -126,7 +126,7 @@ describeWithEnvironment('CLSCulprits', function() {
         const shift1 = Array.from(shifts)[0][0];
         const shiftIframes = shifts.get(shift1)?.iframeIds;
         assert.exists(shiftIframes);
-        assert.strictEqual(shiftIframes.length, 1);
+        assert.lengthOf(shiftIframes, 1);
 
         const iframe = shiftIframes[0];
 
@@ -163,7 +163,7 @@ describeWithEnvironment('CLSCulprits', function() {
 
         const shiftFonts = shift2[1].fontRequests;
         assert.exists(shiftFonts);
-        assert.strictEqual(shiftFonts.length, 1);
+        assert.lengthOf(shiftFonts, 1);
 
         const fontRequest = shiftFonts[0];
         const fontRequestEndTime = fontRequest.ts + fontRequest.dur;
@@ -189,7 +189,7 @@ describeWithEnvironment('CLSCulprits', function() {
         assert.strictEqual(shifts.size, 2);
 
         const unsizedImages = data.LayoutShifts.layoutImageUnsizedEvents;
-        assert.strictEqual(unsizedImages.length, 2);
+        assert.lengthOf(unsizedImages, 2);
 
         const layoutShiftEvents = Array.from(shifts.entries());
         const shift1 = layoutShiftEvents.at(0);
@@ -212,7 +212,7 @@ describeWithEnvironment('CLSCulprits', function() {
 
       assert.exists(clusters);
       assert.exists(shifts);
-      assert.strictEqual(clusters.length, 2);
+      assert.lengthOf(clusters, 2);
       for (const cluster of clusters) {
         // Check that the cluster events exist in shifts map.
         for (const shiftEvent of cluster.events) {
@@ -228,7 +228,7 @@ describeWithEnvironment('CLSCulprits', function() {
 
       assert.exists(clusters);
       assert.exists(shifts);
-      assert.strictEqual(clusters.length, 3);
+      assert.lengthOf(clusters, 3);
       for (const cluster of clusters) {
         // Check that the cluster events exist in shifts map.
         for (const shiftEvent of cluster.events) {

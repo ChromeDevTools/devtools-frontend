@@ -100,7 +100,7 @@ describeWithEnvironment('MarkdownView', () => {
       const container =
           renderTemplateResult(renderer.renderToken(getFakeToken({type: 'text', text: 'Simple text token'})));
 
-      assert.deepEqual(container.childTextNodes().length, 1);
+      assert.lengthOf(container.childTextNodes(), 1);
       assert.deepEqual(container.childTextNodes()[0].textContent, 'Simple text token');
     });
 
@@ -298,11 +298,11 @@ ${paragraphText}
       assert.isNotNull(component.shadowRoot);
 
       const paragraphs = Array.from(component.shadowRoot.querySelectorAll('p'));
-      assert.strictEqual(paragraphs.length, 1);
+      assert.lengthOf(paragraphs, 1);
       assert.strictEqual(paragraphs[0].innerText, paragraphText);
 
       const listItems = Array.from(component.shadowRoot.querySelectorAll('li'));
-      assert.strictEqual(listItems.length, 2);
+      assert.lengthOf(listItems, 2);
       assert.deepEqual(listItems.map(item => item.textContent), listItemTexts);
     });
 

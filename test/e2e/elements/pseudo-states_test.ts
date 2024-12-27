@@ -207,17 +207,17 @@ describe('The Elements tab', () => {
       const unforcedSelector = `#${id}:${start}`;
       const forcedSelector = `#${id}:${dual}`;
       assert.deepEqual(await target.$$(forcedSelector), []);
-      assert.strictEqual((await target.$$(unforcedSelector)).length, 1);
+      assert.lengthOf(await target.$$(unforcedSelector), 1);
 
       await forcePseudoState(':' + dual, true);
 
       assert.deepEqual(await target.$$(unforcedSelector), []);
-      assert.strictEqual((await target.$$(forcedSelector)).length, 1);
+      assert.lengthOf(await target.$$(forcedSelector), 1);
 
       await removePseudoState(':' + dual);
 
       assert.deepEqual(await target.$$(forcedSelector), []);
-      assert.strictEqual((await target.$$(unforcedSelector)).length, 1);
+      assert.lengthOf(await target.$$(unforcedSelector), 1);
     });
   }
 
@@ -253,20 +253,20 @@ describe('The Elements tab', () => {
           const unforcedSelector = `#${id}:${start}`;
           const forcedSelector = `#${id}:${dual}`;
           assert.deepEqual(await target.$$(forcedSelector), []);
-          assert.strictEqual((await target.$$(unforcedSelector)).length, 1);
+          assert.lengthOf(await target.$$(unforcedSelector), 1);
 
           await forcePseudoState(':' + dual, true);
           await waitFor(`input[type="checkbox"][title=":${dual}"]:checked`);
 
           assert.deepEqual(await target.$$(unforcedSelector), []);
-          assert.strictEqual((await target.$$(forcedSelector)).length, 1);
+          assert.lengthOf(await target.$$(forcedSelector), 1);
 
           await forcePseudoState(':' + start, true);
           await waitFor(`input[type="checkbox"][title=":${start}"]:checked`);
           await waitFor(`input[type="checkbox"][title=":${dual}"]:not(:checked)`);
 
           assert.deepEqual(await target.$$(forcedSelector), []);
-          assert.strictEqual((await target.$$(unforcedSelector)).length, 1);
+          assert.lengthOf(await target.$$(unforcedSelector), 1);
         });
   }
 });

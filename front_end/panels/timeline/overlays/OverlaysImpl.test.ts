@@ -516,7 +516,7 @@ describeWithEnvironment('Overlays', () => {
       labelBox.dispatchEvent(new KeyboardEvent('keydown', {key: 'Enter', cancelable: true, bubbles: true}));
 
       // Ensure that the entry overlay has been removed because it was saved empty
-      assert.strictEqual(overlays.overlaysOfType('TIME_RANGE').length, 0);
+      assert.lengthOf(overlays.overlaysOfType('TIME_RANGE'), 0);
     });
 
     it('Inputting `Enter` into time range label field when the label is not empty does not remove the overlay',
@@ -556,7 +556,7 @@ describeWithEnvironment('Overlays', () => {
          labelBox.dispatchEvent(new KeyboardEvent('keydown', {key: 'Enter', cancelable: true, bubbles: true}));
 
          // Ensure that the entry overlay has not been because it was has a non-empty label
-         assert.strictEqual(overlays.overlaysOfType('TIME_RANGE').length, 1);
+         assert.lengthOf(overlays.overlaysOfType('TIME_RANGE'), 1);
        });
 
     it('Can create multiple Time Range Overlays for Time Range annotations', async function() {
@@ -578,7 +578,7 @@ describeWithEnvironment('Overlays', () => {
       });
       await overlays.update();
 
-      assert.strictEqual(overlays.overlaysOfType('TIME_RANGE').length, 2);
+      assert.lengthOf(overlays.overlaysOfType('TIME_RANGE'), 2);
     });
 
     it('Removes empty label if it is empty when navigated away from (removed focused from)', async function() {
@@ -612,14 +612,14 @@ describeWithEnvironment('Overlays', () => {
       inputField.dispatchEvent(new FocusEvent('dblclick', {bubbles: true}));
 
       // Ensure that the entry has 1 overlay
-      assert.strictEqual(overlays.overlaysForEntry(event).length, 1);
+      assert.lengthOf(overlays.overlaysForEntry(event), 1);
 
       // Change the content to not editable by changing the element blur like when clicking outside of it.
       // The label is empty since no initial value was passed into it and no characters were entered.
       inputField.dispatchEvent(new FocusEvent('blur', {bubbles: true}));
 
       // Ensure that the entry overlay has been removed because it was saved empty
-      assert.strictEqual(overlays.overlaysForEntry(event).length, 0);
+      assert.lengthOf(overlays.overlaysForEntry(event), 0);
     });
 
     it('Update label overlay when the label changes', async function() {

@@ -329,7 +329,7 @@ describe('The Network Tab', function() {
       assert.isTrue(await checkOpacityCheckmark(thirdPartyFilter, '1'));
 
       names = await getAllRequestNames();
-      assert.deepEqual(1, names.length);
+      assert.lengthOf(names, 1);
       assert.deepEqual(names, ['external_image.svg'], 'The right request names should appear in the list');
     });
 
@@ -338,7 +338,7 @@ describe('The Network Tab', function() {
       assert.isTrue(await checkOpacityCheckmark(thirdPartyFilter, '0'));
 
       names = await getAllRequestNames();
-      assert.deepEqual(3, names.length);
+      assert.lengthOf(names, 3);
       assert.deepEqual(
           names, ['third-party-resources.html', 'image.svg', 'external_image.svg'],
           'The right request names should appear in the list');

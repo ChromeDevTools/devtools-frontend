@@ -19,8 +19,8 @@ describeWithEnvironment('SelectorStatsInsights', function() {
     const topElapsedMs = insight.topElapsedMs;
     const topMatchAttempts = insight.topMatchAttempts;
 
-    assert.strictEqual(topElapsedMs.length, 3);
-    assert.strictEqual(topMatchAttempts.length, 3);
+    assert.lengthOf(topElapsedMs, 3);
+    assert.lengthOf(topMatchAttempts, 3);
 
     assert.strictEqual(topElapsedMs[0].selector, ':root');
     assert.strictEqual(topElapsedMs[0]['elapsed (us)'], 14);
@@ -50,8 +50,8 @@ describeWithEnvironment('SelectorStatsInsights', function() {
     const topElapsedMs = insight.topElapsedMs;
     const topMatchAttempts = insight.topMatchAttempts;
 
-    assert.strictEqual(topElapsedMs.length, 3);
-    assert.strictEqual(topMatchAttempts.length, 3);
+    assert.lengthOf(topElapsedMs, 3);
+    assert.lengthOf(topMatchAttempts, 3);
 
     assert.strictEqual(topElapsedMs[0].selector, 'h1');
     assert.strictEqual(topElapsedMs[0]['elapsed (us)'], 2);

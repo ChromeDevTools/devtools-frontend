@@ -162,7 +162,7 @@ describe('The row\'s icon bucket', function() {
     ]);
 
     const icons = await getIconComponents('cm-messageIcon-issue');
-    assert.strictEqual(icons.length, 1);
+    assert.lengthOf(icons, 1);
   });
 
   it('should reveal Issues tab when the icon is clicked', async () => {
@@ -174,7 +174,7 @@ describe('The row\'s icon bucket', function() {
     await click(HIDE_NAVIGATOR_SELECTOR);
 
     const bucketIssueIconComponents = await getIconComponents('cm-messageIcon-issue');
-    assert.strictEqual(bucketIssueIconComponents.length, 1);
+    assert.lengthOf(bucketIssueIconComponents, 1);
     const issueIconComponent = bucketIssueIconComponents[0];
     await clickElement(issueIconComponent);
 
@@ -205,7 +205,7 @@ describe('The row\'s icon bucket', function() {
 
     const {issueIcon, issueTitle} = await waitForFunction(async () => {
       const bucketIssueIconComponents = await getIconComponents('cm-messageIcon-issue');
-      assert.strictEqual(bucketIssueIconComponents.length, 1);
+      assert.lengthOf(bucketIssueIconComponents, 1);
       const issueIconComponent = bucketIssueIconComponents[0];
       await issueIconComponent.hover();
       const vbox = await waitForWithTries('div.vbox.flex-auto.no-pointer-events', undefined, {tries: 3});

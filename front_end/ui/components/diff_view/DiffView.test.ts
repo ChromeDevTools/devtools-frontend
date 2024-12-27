@@ -39,7 +39,7 @@ describeWithLocale('DiffView', () => {
   it('renders the proper content', async () => {
     const output = await simpleDiff();
     const lines = Array.from(output.querySelectorAll('.diff-line-content'));
-    assert.strictEqual(lines.length, 6);
+    assert.lengthOf(lines, 6);
     assert.strictEqual(lines.filter(l => !l.classList.contains('diff-line-addition')).map(text).join('\n'), original);
     assert.strictEqual(lines.filter(l => !l.classList.contains('diff-line-deletion')).map(text).join('\n'), updated);
   });

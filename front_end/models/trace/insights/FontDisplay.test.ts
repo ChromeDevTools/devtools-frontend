@@ -12,7 +12,7 @@ describeWithEnvironment('FontDisplay', function() {
     const insight =
         getInsightOrError('FontDisplay', insights, getFirstOrError(data.Meta.navigationsByNavigationId.values()));
 
-    assert.strictEqual(insight.fonts.length, 0);
+    assert.lengthOf(insight.fonts, 0);
   });
 
   it('finds requests for remote fonts', async () => {

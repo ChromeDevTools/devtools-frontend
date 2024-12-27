@@ -72,10 +72,10 @@ describe('getLinesAndItemsQuads', () => {
         ],
         true, false);
 
-    assert.strictEqual(lineQuads.length, 3, '3 line quads got created');
-    assert.strictEqual(lineQuads[0].items.length, 3, '3 flex items on the first line got created');
-    assert.strictEqual(lineQuads[1].items.length, 2, '2 flex items on the second line got created');
-    assert.strictEqual(lineQuads[2].items.length, 2, '2 flex items on the third line got created');
+    assert.lengthOf(lineQuads, 3, '3 line quads got created');
+    assert.lengthOf(lineQuads[0].items, 3, '3 flex items on the first line got created');
+    assert.lengthOf(lineQuads[1].items, 2, '2 flex items on the second line got created');
+    assert.lengthOf(lineQuads[2].items, 2, '2 flex items on the third line got created');
   });
 
   it('creates a line quad as big as the container when there is only one line', () => {
@@ -194,7 +194,7 @@ describe('getGapQuads', () => {
           extendedItems: [],
         }]);
 
-    assert.strictEqual(crossGaps.length, 0, 'There cannot be cross gap if there is only one line');
+    assert.lengthOf(crossGaps, 0, 'There cannot be cross gap if there is only one line');
   });
 
   it('does not return any main or cross gap if there actually isn\'t any gaps', () => {
@@ -232,9 +232,9 @@ describe('getGapQuads', () => {
           },
         ]);
 
-    assert.strictEqual(crossGaps.length, 0, 'No cross gap quads created when there is no cross gap');
-    assert.strictEqual(mainGaps[0].length, 0, 'No main gap quads created when there is no main gap on the first line');
-    assert.strictEqual(mainGaps[1].length, 0, 'No main gap quads created when there is no main gap on the second line');
+    assert.lengthOf(crossGaps, 0, 'No cross gap quads created when there is no cross gap');
+    assert.lengthOf(mainGaps[0], 0, 'No main gap quads created when there is no main gap on the first line');
+    assert.lengthOf(mainGaps[1], 0, 'No main gap quads created when there is no main gap on the second line');
   });
 
   it('returns 1 less gap than the number of lines and the number of items', () => {
@@ -283,10 +283,10 @@ describe('getGapQuads', () => {
           },
         ]);
 
-    assert.strictEqual(crossGaps.length, 2, 'There are 2 cross gaps for 3 lines');
-    assert.strictEqual(mainGaps[0].length, 2, 'There are 2 main gaps on the first line, which has 3 items');
-    assert.strictEqual(mainGaps[1].length, 1, 'There is 1 main gap on the second line, which has 2 items');
-    assert.strictEqual(mainGaps[2].length, 1, 'There is 1 main gap on the third line, which has 2 items');
+    assert.lengthOf(crossGaps, 2, 'There are 2 cross gaps for 3 lines');
+    assert.lengthOf(mainGaps[0], 2, 'There are 2 main gaps on the first line, which has 3 items');
+    assert.lengthOf(mainGaps[1], 1, 'There is 1 main gap on the second line, which has 2 items');
+    assert.lengthOf(mainGaps[2], 1, 'There is 1 main gap on the third line, which has 2 items');
   });
 });
 

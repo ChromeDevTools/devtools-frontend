@@ -44,12 +44,12 @@ describeWithEnvironment('ServerTimingsTrackAppender', function() {
 
   describe('appendTrackAtLevel', function() {
     it('creates a flamechart group for the Server timings track', function() {
-      assert.strictEqual(flameChartData.groups.length, 1);
+      assert.lengthOf(flameChartData.groups, 1);
       assert.strictEqual(flameChartData.groups[0].name, 'Server Timings — https://node-server-tan.vercel.app');
     });
 
     it('Adds a description to server timings tracks', function() {
-      assert.strictEqual(flameChartData.groups.length, 1);
+      assert.lengthOf(flameChartData.groups, 1);
       assert.strictEqual(
           flameChartData.groups[0].description,
           'This track contains timings taken from Server-Timing network response headers. Their respective start times are only estimated and may not be accurate.');

@@ -94,7 +94,7 @@ describeWithMockConnection('Inline variable view scope helpers', () => {
         await Sources.DebuggerPlugin.computeScopeMappings(callFrame, l => toOffsetWithSourceMap(sourceMap, l));
 
     const text = new TextUtils.Text.Text(originalSource);
-    assert.strictEqual(scopeMappings.length, 1);
+    assert.lengthOf(scopeMappings, 1);
     assert.strictEqual(
         scopeMappings[0].scopeStart,
         text.offsetFromPosition(expectedOffsets[0].startLine, expectedOffsets[0].startColumn));
@@ -144,7 +144,7 @@ describeWithMockConnection('Inline variable view scope helpers', () => {
         await Sources.DebuggerPlugin.computeScopeMappings(callFrame, l => toOffsetWithSourceMap(sourceMap, l));
 
     const text = new TextUtils.Text.Text(originalSource);
-    assert.strictEqual(scopeMappings.length, 2);
+    assert.lengthOf(scopeMappings, 2);
     assert.strictEqual(
         scopeMappings[0].scopeStart,
         text.offsetFromPosition(expectedOffsets[0].startLine, expectedOffsets[0].startColumn));
@@ -174,7 +174,7 @@ describeWithMockConnection('Inline variable view scope helpers', () => {
 
     const scopeMappings = await Sources.DebuggerPlugin.computeScopeMappings(callFrame, l => toOffset(source, l));
 
-    assert.strictEqual(scopeMappings.length, 1);
+    assert.lengthOf(scopeMappings, 1);
     assert.strictEqual(scopeMappings[0].scopeStart, expectedOffsets[0].startColumn);
     assert.strictEqual(scopeMappings[0].scopeEnd, expectedOffsets[0].endColumn);
     assert.strictEqual(scopeMappings[0].variableMap.get('a')?.value, 1);
@@ -194,7 +194,7 @@ describeWithMockConnection('Inline variable view scope helpers', () => {
 
     const scopeMappings = await Sources.DebuggerPlugin.computeScopeMappings(callFrame, l => toOffset(source, l));
 
-    assert.strictEqual(scopeMappings.length, 2);
+    assert.lengthOf(scopeMappings, 2);
     assert.strictEqual(scopeMappings[0].scopeStart, expectedOffsets[0].startColumn);
     assert.strictEqual(scopeMappings[0].scopeEnd, expectedOffsets[0].endColumn);
     assert.strictEqual(scopeMappings[0].variableMap.size, 0);
@@ -217,7 +217,7 @@ describeWithMockConnection('Inline variable view scope helpers', () => {
 
     const scopeMappings = await Sources.DebuggerPlugin.computeScopeMappings(callFrame, l => toOffset(source, l));
 
-    assert.strictEqual(scopeMappings.length, 2);
+    assert.lengthOf(scopeMappings, 2);
     assert.strictEqual(scopeMappings[0].scopeStart, expectedOffsets[0].startColumn);
     assert.strictEqual(scopeMappings[0].scopeEnd, expectedOffsets[0].endColumn);
     assert.strictEqual(scopeMappings[0].variableMap.size, 1);

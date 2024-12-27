@@ -428,7 +428,7 @@ describeWithEnvironment('JSONEditor', () => {
          const shadowRoot = jsonEditor.renderRoot;
          const displayedParameters = shadowRoot.querySelectorAll('.parameter');
          // Two parameters (test and test2) should be displayed because in the metadata, Test.test5 accepts two parameters
-         assert.deepEqual(displayedParameters.length, 2);
+         assert.lengthOf(displayedParameters, 2);
        });
     it('does not output parameters if the input is invalid json', async () => {
       const cdpCommand = '"command": "Test.test", "parameters":';
@@ -1153,8 +1153,8 @@ describeWithEnvironment('JSONEditor', () => {
     const inputs = jsonEditor.renderRoot.querySelectorAll('devtools-suggestion-input');
     const addButtons = jsonEditor.renderRoot.querySelectorAll('devtools-button[title="Add a parameter"]');
 
-    assert.deepEqual(inputs.length, 1);
-    assert.deepEqual(addButtons.length, 0);
+    assert.lengthOf(inputs, 1);
+    assert.lengthOf(addButtons, 0);
   });
 
   it('checks that the selection of a target works', async () => {
@@ -1254,7 +1254,7 @@ describeWithEnvironment('JSONEditor', () => {
     const parameters = shadowRoot.querySelectorAll('.parameter');
     // This expected value is equal to 6 because there are 5 different parameters inside typesByName + 1
     // for the name of the parameter (traceConfig)
-    assert.deepEqual(parameters.length, 6);
+    assert.lengthOf(parameters, 6);
   });
 
   it('should return the parameters in a format understandable by the ProtocolMonitor when sending a command with object parameter that has no typeRef found in map',

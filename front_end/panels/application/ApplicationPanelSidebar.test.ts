@@ -280,7 +280,7 @@ describeWithMockConnection('ApplicationPanelSidebar', () => {
     Application.ResourcesPanel.ResourcesPanel.instance({forceNew: true});
     const sidebar = await Application.ResourcesPanel.ResourcesPanel.showAndGetSidebar();
     const components = expectedCall.split('.');
-    assert.strictEqual(components.length, 2);
+    assert.lengthOf(components, 2);
     // @ts-ignore
     const object = sidebar[components[0]];
     assert.exists(object);

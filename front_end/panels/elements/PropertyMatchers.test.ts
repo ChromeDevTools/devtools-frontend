@@ -526,7 +526,7 @@ describe('Matchers for SDK.CSSPropertyParser.BottomUpTreeMatching', () => {
             'position-try', 'flip-block, --top, --bottom', new Elements.PropertyMatchers.PositionTryMatcher());
         assert.exists(match, text);
         assert.strictEqual(match.text, 'flip-block, --top, --bottom');
-        assert.strictEqual(match.preamble.length, 0);
+        assert.lengthOf(match.preamble, 0);
       } {
         const {ast, match, text} = matchSingleValue(
             'position-try', '/* comment */ most-height --top, --bottom',
@@ -543,7 +543,7 @@ describe('Matchers for SDK.CSSPropertyParser.BottomUpTreeMatching', () => {
             new Elements.PropertyMatchers.PositionTryMatcher());
         assert.exists(match, text);
         assert.strictEqual(match.text, '/* comment */ flip-block, --top, /* comment */ --bottom');
-        assert.strictEqual(match.preamble.length, 0);
+        assert.lengthOf(match.preamble, 0);
       } {
         const {match} = matchSingleValue('position-try', 'revert', new Elements.PropertyMatchers.PositionTryMatcher());
         assert.isNull(match);

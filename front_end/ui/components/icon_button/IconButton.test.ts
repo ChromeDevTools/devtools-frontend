@@ -44,7 +44,7 @@ describe('IconButton', () => {
     const {shadowRoot} = renderIconButton({clickHandler: () => {}, groups: [defaultIcon]});
 
     const icons = extractIconGroups(shadowRoot);
-    assert.strictEqual(icons.length, 1);
+    assert.lengthOf(icons, 1);
     assert.deepEqual(icons.map(c => c.label), ['1']);
     const iconNames = icons.map(c => 'iconName' in c.iconData ? c.iconData.iconName : undefined);
     assert.deepEqual(iconNames, ['cross-circle']);
@@ -64,7 +64,7 @@ describe('IconButton', () => {
     });
 
     const icons = extractIconGroups(shadowRoot);
-    assert.strictEqual(icons.length, 2);
+    assert.lengthOf(icons, 2);
     assert.deepEqual(icons.map(c => c.label), ['1', '12']);
     const iconNames = icons.map(c => 'iconName' in c.iconData ? c.iconData.iconName : undefined);
     assert.deepEqual(iconNames, ['cross-circle', 'warning']);
@@ -75,7 +75,7 @@ describe('IconButton', () => {
       const {shadowRoot} = renderIconButton({clickHandler: () => {}, groups: [defaultIcon], compact: true});
 
       const icons = extractIconGroups(shadowRoot);
-      assert.strictEqual(icons.length, 1);
+      assert.lengthOf(icons, 1);
       assert.deepEqual(icons.map(c => c.label), [null]);
       const iconNames = icons.map(c => 'iconName' in c.iconData ? c.iconData.iconName : undefined);
       assert.deepEqual(iconNames, ['cross-circle']);
@@ -96,7 +96,7 @@ describe('IconButton', () => {
       });
 
       const icons = extractIconGroups(shadowRoot);
-      assert.strictEqual(icons.length, 1);
+      assert.lengthOf(icons, 1);
       assert.deepEqual(icons.map(c => c.label), [null]);
       const iconNames = icons.map(c => 'iconName' in c.iconData ? c.iconData.iconName : undefined);
       assert.deepEqual(iconNames, ['cross-circle']);
@@ -117,7 +117,7 @@ describe('IconButton', () => {
     });
 
     const icons = extractIconGroups(shadowRoot);
-    assert.strictEqual(icons.length, 1);
+    assert.lengthOf(icons, 1);
     assert.deepEqual(icons.map(c => c.label), ['1']);
     const iconNames = icons.map(c => 'iconName' in c.iconData ? c.iconData.iconName : undefined);
     assert.deepEqual(iconNames, ['cross-circle']);
@@ -138,7 +138,7 @@ describe('IconButton', () => {
     });
 
     const icons = extractIconGroups(shadowRoot);
-    assert.strictEqual(icons.length, 1);
+    assert.lengthOf(icons, 1);
     const icon = icons[0];
     assert.strictEqual(icon.iconData.height, '2ex');
     assert.strictEqual(icon.iconData.width, '3ex');
@@ -159,7 +159,7 @@ describe('IconButton', () => {
       });
 
       const iconsBefore = extractIconGroups(shadowRoot);
-      assert.strictEqual(iconsBefore.length, 2);
+      assert.lengthOf(iconsBefore, 2);
       assert.deepEqual(iconsBefore.map(c => c.label), ['1', '31']);
       const iconNamesBefore = iconsBefore.map(c => 'iconName' in c.iconData ? c.iconData.iconName : undefined);
       assert.deepEqual(iconNamesBefore, ['cross-circle', 'warning']);
@@ -168,7 +168,7 @@ describe('IconButton', () => {
       component.data = {...data, groups: data.groups.map((group, index) => ({...group, text: `${index}`}))};
 
       const iconsAfter = extractIconGroups(shadowRoot);
-      assert.strictEqual(iconsAfter.length, 2);
+      assert.lengthOf(iconsAfter, 2);
       assert.deepEqual(iconsAfter.map(c => c.label), ['0', '1']);
       const iconNamesAfter = iconsAfter.map(c => 'iconName' in c.iconData ? c.iconData.iconName : undefined);
       assert.deepEqual(iconNamesAfter, ['cross-circle', 'warning']);

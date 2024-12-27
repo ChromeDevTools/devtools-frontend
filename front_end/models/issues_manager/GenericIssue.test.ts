@@ -42,7 +42,7 @@ describeWithLocale('GenericIssue', () => {
     const issue = createProtocolIssueWithDetails(issueDetails);
 
     const genericIssues = IssuesManager.GenericIssue.GenericIssue.fromInspectorIssue(mockModel, issue);
-    assert.strictEqual(genericIssues.length, 1);
+    assert.lengthOf(genericIssues, 1);
     const genericIssue = genericIssues[0];
 
     assert.strictEqual(genericIssue.getCategory(), IssuesManager.Issue.IssueCategory.GENERIC);
@@ -69,7 +69,7 @@ describeWithLocale('GenericIssue', () => {
     const issue = createProtocolIssueWithDetails(issueDetails);
 
     const genericIssues = IssuesManager.GenericIssue.GenericIssue.fromInspectorIssue(mockModel, issue);
-    assert.strictEqual(genericIssues.length, 1);
+    assert.lengthOf(genericIssues, 1);
     const genericIssue = genericIssues[0];
 
     assert.strictEqual(genericIssue.getCategory(), IssuesManager.Issue.IssueCategory.GENERIC);

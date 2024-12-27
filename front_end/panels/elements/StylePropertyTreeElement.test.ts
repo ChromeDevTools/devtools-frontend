@@ -989,7 +989,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
 
       const swatches = stylePropertyTreeElement.valueElement?.querySelectorAll('css-shadow-swatch');
       assert.exists(swatches);
-      assert.strictEqual(swatches.length, 2);
+      assert.lengthOf(swatches, 2);
       assert.strictEqual(swatches[0].textContent, 'inset 10px 11px blue');
       assert.strictEqual(swatches[1].textContent, '6px 5px red');
     });
@@ -1000,7 +1000,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       stylePropertyTreeElement.updateTitle();
       const swatches = stylePropertyTreeElement.valueElement?.querySelectorAll('css-shadow-swatch');
       assert.exists(swatches);
-      assert.strictEqual(swatches.length, 1);
+      assert.lengthOf(swatches, 1);
       assert.strictEqual(swatches[0].textContent, '6px 5px red');
     });
 
@@ -1021,7 +1021,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       stylePropertyTreeElement.updateTitle();
       const swatches = stylePropertyTreeElement.valueElement?.querySelectorAll('css-shadow-swatch');
       assert.exists(swatches);
-      assert.strictEqual(swatches.length, 2);
+      assert.lengthOf(swatches, 2);
       assert.strictEqual(swatches[0].textContent, 'var(--offset) red');
       assert.strictEqual(swatches[1].textContent, 'var(--shadow)');
     });
@@ -1034,7 +1034,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       stylePropertyTreeElement.updateTitle();
       const swatches = stylePropertyTreeElement.valueElement?.querySelectorAll('css-shadow-swatch');
       assert.exists(swatches);
-      assert.strictEqual(swatches.length, 2);
+      assert.lengthOf(swatches, 2);
 
       const showPopoverStub = sinon.stub(stylePropertyTreeElement.parentPane().swatchPopoverHelper(), 'show');
 
@@ -1071,7 +1071,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       stylePropertyTreeElement.updateTitle();
       const swatches = stylePropertyTreeElement.valueElement?.querySelectorAll('css-shadow-swatch');
       assert.exists(swatches);
-      assert.strictEqual(swatches.length, 1);
+      assert.lengthOf(swatches, 1);
       const showPopoverStub = sinon.stub(stylePropertyTreeElement.parentPane().swatchPopoverHelper(), 'show');
       swatches[0].iconElement().click();
       assert.isTrue(showPopoverStub.calledOnce);
@@ -1090,7 +1090,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
       stylePropertyTreeElement.updateTitle();
       const swatches = stylePropertyTreeElement.valueElement?.querySelectorAll('css-shadow-swatch');
       assert.exists(swatches);
-      assert.strictEqual(swatches.length, 1);
+      assert.lengthOf(swatches, 1);
       const showPopoverStub = sinon.stub(stylePropertyTreeElement.parentPane().swatchPopoverHelper(), 'show');
       swatches[0].iconElement().click();
       assert.isTrue(showPopoverStub.calledOnce);

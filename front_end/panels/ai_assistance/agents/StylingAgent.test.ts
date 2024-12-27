@@ -666,7 +666,7 @@ c`;
         promise.resolve(true);
         await Array.fromAsync(agent.run('test', {selected: new AiAssistance.NodeContext(element)}));
 
-        assert.strictEqual(execJs.getCalls().length, 2);
+        assert.lengthOf(execJs.getCalls(), 2);
         sinon.assert.match(execJs.getCall(1).args[1], sinon.match({throwOnSideEffect: false}));
       });
 
@@ -708,7 +708,7 @@ c`;
         const actionStep = responses.find(response => response.type === AiAssistance.ResponseType.ACTION)!;
 
         assert.strictEqual(actionStep.output, 'Error: User denied code execution with side effects.');
-        assert.strictEqual(execJs.getCalls().length, 1);
+        assert.lengthOf(execJs.getCalls(), 1);
       });
 
       it('returns error when side effect is aborted', async () => {
@@ -1446,7 +1446,7 @@ ANSWER: this is the answer`,
         const responses = await Array.fromAsync(agent.run('test', {selected: new AiAssistance.NodeContext(element)}));
         const actionStep = responses.find(response => response.type === AiAssistance.ResponseType.ACTION)!;
         assert.strictEqual(actionStep.output, 'Error: JavaScript execution is currently disabled.');
-        assert.strictEqual(execJs.getCalls().length, 0);
+        assert.lengthOf(execJs.getCalls(), 0);
       });
     });
 
@@ -1469,7 +1469,7 @@ ANSWER: this is the answer`,
         const actionStep = responses.find(response => response.type === AiAssistance.ResponseType.ACTION)!;
         assert.strictEqual(
             actionStep.output, 'Error: JavaScript execution that modifies the page is currently disabled.');
-        assert.strictEqual(execJs.getCalls().length, 1);
+        assert.lengthOf(execJs.getCalls(), 1);
       });
     });
   });

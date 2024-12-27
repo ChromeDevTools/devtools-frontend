@@ -164,7 +164,7 @@ describeWithMockConnection('ResourceTreeModel', () => {
     const frame = resourceTreeModel.frameAttached('frame_id' as Protocol.Page.FrameId, null);
     childTargetManager.targetInfoChanged({targetInfo: {...targetInfo, subtype: undefined}});
 
-    assert.strictEqual(primaryPageChangedEvents.length, 1);
+    assert.lengthOf(primaryPageChangedEvents, 1);
     assert.strictEqual(primaryPageChangedEvents[0].frame, frame);
     assert.strictEqual(primaryPageChangedEvents[0].type, SDK.ResourceTreeModel.PrimaryPageChangeType.ACTIVATION);
   });
@@ -185,15 +185,15 @@ describeWithMockConnection('ResourceTreeModel', () => {
         });
 
     navigate(getMainFrame(mainFrameTarget));
-    assert.strictEqual(primaryPageChangedEvents.length, 1);
+    assert.lengthOf(primaryPageChangedEvents, 1);
     assert.strictEqual(primaryPageChangedEvents[0].frame.id, 'main');
     assert.strictEqual(primaryPageChangedEvents[0].type, SDK.ResourceTreeModel.PrimaryPageChangeType.NAVIGATION);
 
     navigate(getMainFrame(subframeTarget), {parentId: MAIN_FRAME_ID, id: 'child' as Protocol.Page.FrameId});
-    assert.strictEqual(primaryPageChangedEvents.length, 1);
+    assert.lengthOf(primaryPageChangedEvents, 1);
 
     navigate(getMainFrame(prerenderTarget));
-    assert.strictEqual(primaryPageChangedEvents.length, 1);
+    assert.lengthOf(primaryPageChangedEvents, 1);
   });
 
   it('rebuilds the resource tree upon bfcache-navigation', async () => {

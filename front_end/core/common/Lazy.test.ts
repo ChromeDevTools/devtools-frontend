@@ -4,27 +4,25 @@
 
 import * as Common from './common.js';
 
-const lazy = Common.Lazy.lazy;
-
 describe('lazy', () => {
+  const {lazy} = Common.Lazy;
+
   it('evaluates callback once', () => {
-    const initializeArrayOnce = lazy(() => []);
-    const arrayOne = initializeArrayOnce();
-    const arrayTwo = initializeArrayOnce();
+    const once = lazy(() => []);
+    const arrayOne = once();
+    const arrayTwo = once();
 
     assert.strictEqual(arrayOne, arrayTwo);
-    assert.notStrictEqual([], arrayOne);
   });
+
   it('handles callback exceptions', () => {
-    let callCount = 0;
-    const exceptionCallback = lazy(() => {
-      callCount++;
-      throw Error();
-    });
-    assert.throws(exceptionCallback, Error);
+    const fake = sinon.fake.throws('foo');
+    const once = lazy(fake);
+
+    assert.throws(once, Error);
     // Subsequent calls of the function should throw an exception without
     // re-evaluation
-    assert.throws(exceptionCallback, Error);
-    assert.strictEqual(callCount, 1);
+    assert.throws(once, Error);
+    assert.strictEqual(fake.callCount, 1);
   });
 });

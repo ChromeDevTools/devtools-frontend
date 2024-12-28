@@ -292,7 +292,7 @@ module.exports = {
       'mocha/no-nested-tests': 'error',
 
       'rulesdir/check-test-definitions' : 'error',
-      'rulesdir/compare-arrays-with-assert-deepequal' : 'error',
+      'rulesdir/no-assert-strict-equal-for-arrays-and-objects' : 'error',
       'rulesdir/no-assert-deep-strict-equal' : 'error',
       'rulesdir/no-assert-equal' : 'error',
       'rulesdir/no-assert-equal-boolean-null-undefined' : 'error',

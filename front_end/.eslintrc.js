@@ -37,6 +37,7 @@ module.exports = {
         'rulesdir/enforce-custom-event-names': 'error',
         'rulesdir/set-data-type-reference': 'error',
         'rulesdir/no-bound-component-methods': 'error',
+        'rulesdir/no-customized-builtin-elements': 'error',
         'rulesdir/no-self-closing-custom-element-tagnames': 'error',
         'rulesdir/no-style-tags-in-lit-html': 'error',
         'rulesdir/no-a-tags-in-lit-html': 'error',

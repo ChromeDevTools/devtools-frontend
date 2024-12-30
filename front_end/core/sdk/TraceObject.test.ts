@@ -24,7 +24,7 @@ describe('TraceObject', () => {
       const traceEvents = [event];
       const traceObj = new SDK.TraceObject.TraceObject(traceEvents);
       assert.deepEqual(traceObj.traceEvents, traceEvents);
-      assert.isTrue(traceObj instanceof SDK.TraceObject.TraceObject);
+      assert.instanceOf(traceObj, SDK.TraceObject.TraceObject);
     });
   });
 });

@@ -14,8 +14,7 @@ interface ExpectedTextRange {
 function assertIsTextRangeAndEqualsRange(
     range: TextUtils.TextRange.TextRange, expectedRange: ExpectedTextRange, description: string) {
   const prefix = description.length ? `${description}, but ` : '';
-  assert.isTrue(
-      range instanceof TextUtils.TextRange.TextRange, `${prefix}range is not a TextUtils.TextRange.TextRange`);
+  assert.instanceOf(range, TextUtils.TextRange.TextRange, `${prefix}range is not a TextUtils.TextRange.TextRange`);
   assert.strictEqual(range.startLine, expectedRange.startLine, `${prefix}range's startLine differs from expectation`);
   assert.strictEqual(
       range.startColumn, expectedRange.startColumn, `${prefix}range's startColumn differs from expectation`);
@@ -26,8 +25,7 @@ function assertIsTextRangeAndEqualsRange(
 function assertIsUnitTextRange(
     range: TextUtils.TextRange.TextRange, line: number, column: number, description: string) {
   const prefix = description.length ? `${description}, but ` : '';
-  assert.isTrue(
-      range instanceof TextUtils.TextRange.TextRange, `${prefix}range is not a TextUtils.TextRange.TextRange`);
+  assert.instanceOf(range, TextUtils.TextRange.TextRange, `${prefix}range is not a TextUtils.TextRange.TextRange`);
   assert.strictEqual(range.startLine, range.endLine, `${prefix}the range is not a unit range: start/end lines differ`);
   assert.strictEqual(
       range.startColumn, range.endColumn, `${prefix}the range is not a unit range: start/end columns differ`);

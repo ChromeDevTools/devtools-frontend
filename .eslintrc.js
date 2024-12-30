@@ -297,6 +297,7 @@ module.exports = {
       'rulesdir/no-assert-equal' : 'error',
       'rulesdir/no-assert-equal-boolean-null-undefined' : 'error',
       'rulesdir/no-screenshot-test-outside-perf-panel' : 'error',
+      'rulesdir/prefer-assert-instance-of' : 'error',
       'rulesdir/prefer-assert-is-ok' : 'error',
       'rulesdir/prefer-assert-length-of' : 'error',
       'rulesdir/trace-engine-test-timeouts' : 'error',

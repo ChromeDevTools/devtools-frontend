@@ -205,8 +205,8 @@ describeWithEnvironment('panels/utils', () => {
       const iconElement = PanelUtils.PanelUtils.getIconForNetworkRequest(request);
       const imagePreview = iconElement.querySelector('.image-network-icon-preview') as HTMLImageElement;
 
-      assert.isTrue(iconElement instanceof HTMLDivElement);
-      assert.isTrue(imagePreview instanceof HTMLImageElement);
+      assert.instanceOf(iconElement, HTMLDivElement);
+      assert.instanceOf(imagePreview, HTMLImageElement);
     });
 
     it('mime win: show document icon for fetch-html', async () => {

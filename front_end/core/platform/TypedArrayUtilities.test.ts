@@ -39,8 +39,8 @@ describe('TypedArrayUtilities', () => {
       assert.strictEqual(array.getValue(500_000), 99);
       assert.strictEqual(array.getValue(5_000_000), 999);
       assert.strictEqual(array.getValue(12_345_677), 9999);
-      assert.isFalse(array instanceof Array);
-      assert.isFalse(array instanceof Uint32Array);
+      assert.notInstanceOf(array, Array);
+      assert.notInstanceOf(array, Uint32Array);
     });
   });
 

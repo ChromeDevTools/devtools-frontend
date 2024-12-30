@@ -275,8 +275,8 @@ describeWithEnvironment('NetworkLogView', () => {
     const iconElement = el.querySelector('.icon.image') as HTMLElement;
     const imagePreview = el.querySelector('.image-network-icon-preview') as HTMLImageElement;
 
-    assert.isTrue(iconElement instanceof HTMLDivElement);
-    assert.isTrue(imagePreview instanceof HTMLImageElement);
+    assert.instanceOf(iconElement, HTMLDivElement);
+    assert.instanceOf(imagePreview, HTMLImageElement);
   });
 
   it('mime win: show document icon for fetch-html', async () => {

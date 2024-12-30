@@ -70,19 +70,19 @@ describeWithEnvironment('SourcesView', () => {
 
     sourcesView.viewForFile(uiSourceCode);
 
-    assert.isTrue(sourcesView.getSourceView(uiSourceCode) instanceof Sources.UISourceCodeFrame.UISourceCodeFrame);
+    assert.instanceOf(sourcesView.getSourceView(uiSourceCode), Sources.UISourceCodeFrame.UISourceCodeFrame);
 
     // Rename, but contentType stays the same
     await uiSourceCode.rename('newName.html' as Platform.DevToolsPath.RawPathString);
-    assert.isTrue(sourcesView.getSourceView(uiSourceCode) instanceof Sources.UISourceCodeFrame.UISourceCodeFrame);
+    assert.instanceOf(sourcesView.getSourceView(uiSourceCode), Sources.UISourceCodeFrame.UISourceCodeFrame);
 
     // Rename which changes contentType
     await uiSourceCode.rename('image.jpg' as Platform.DevToolsPath.RawPathString);
-    assert.isTrue(sourcesView.getSourceView(uiSourceCode) instanceof SourceFrame.ImageView.ImageView);
+    assert.instanceOf(sourcesView.getSourceView(uiSourceCode), SourceFrame.ImageView.ImageView);
 
     // Rename which changes contentType
     await uiSourceCode.rename('font.woff' as Platform.DevToolsPath.RawPathString);
-    assert.isTrue(sourcesView.getSourceView(uiSourceCode) instanceof SourceFrame.FontView.FontView);
+    assert.instanceOf(sourcesView.getSourceView(uiSourceCode), SourceFrame.FontView.FontView);
     workspace.removeProject(project);
     sourcesView.detach();
   });
@@ -95,7 +95,7 @@ describeWithEnvironment('SourcesView', () => {
         Common.ResourceType.resourceTypes.Document);
     sinon.stub(uiSourceCode, 'mimeType').returns('text/plain');
     sourcesView.viewForFile(uiSourceCode);
-    assert.isTrue(sourcesView.getSourceView(uiSourceCode) instanceof SourcesComponents.HeadersView.HeadersView);
+    assert.instanceOf(sourcesView.getSourceView(uiSourceCode), SourcesComponents.HeadersView.HeadersView);
   });
 
   describe('viewForFile', () => {

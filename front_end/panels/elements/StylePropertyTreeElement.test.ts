@@ -512,7 +512,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
         declaration: new SDK.CSSMatchedStyles.CSSValueSource(sinon.createStubInstance(SDK.CSSProperty.CSSProperty)),
       });
       const popoverContents = addElementPopoverHook.args[0][1].contents();
-      assert.isTrue(popoverContents instanceof ElementsComponents.CSSVariableValueView.CSSVariableValueView);
+      assert.instanceOf(popoverContents, ElementsComponents.CSSVariableValueView.CSSVariableValueView);
       const {details} = popoverContents as ElementsComponents.CSSVariableValueView.CSSVariableValueView;
       assert.exists(details);
 

@@ -137,10 +137,7 @@ export class Widget {
     if (useShadowDom && !this.shadowRoot) {
       this.element.classList.add('vbox');
       this.element.classList.add('flex-auto');
-      this.shadowRoot = createShadowRootWithCoreStyles(this.element, {
-        cssFile: undefined,
-        delegatesFocus,
-      });
+      this.shadowRoot = createShadowRootWithCoreStyles(this.element, {delegatesFocus});
       this.contentElement = document.createElement('div');
       this.shadowRoot.appendChild(this.contentElement);
     } else {

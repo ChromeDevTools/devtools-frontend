@@ -541,12 +541,10 @@ export class OverviewInfo {
     this.glassPane.setMarginBehavior(UI.GlassPane.MarginBehavior.ARROW);
     this.glassPane.setSizeBehavior(UI.GlassPane.SizeBehavior.MEASURE_CONTENT);
     this.visible = false;
-    this.element = UI.UIUtils
-                       .createShadowRootWithCoreStyles(this.glassPane.contentElement, {
-                         cssFile: [timelineOverviewInfoStyles],
-                         delegatesFocus: undefined,
-                       })
-                       .createChild('div', 'overview-info');
+    this.element =
+        UI.UIUtils
+            .createShadowRootWithCoreStyles(this.glassPane.contentElement, {cssFile: [timelineOverviewInfoStyles]})
+            .createChild('div', 'overview-info');
   }
 
   async setContent(contentPromise: Promise<DocumentFragment>): Promise<void> {

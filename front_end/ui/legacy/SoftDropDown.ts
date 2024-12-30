@@ -71,7 +71,6 @@ export class SoftDropDown<T> implements ListDelegate<T> {
     this.width = 315;
     createShadowRootWithCoreStyles(this.glassPane.contentElement, {
       cssFile: softDropDownStyles,
-      delegatesFocus: undefined,
     }).appendChild(this.list.element);
     ARIAUtils.markAsMenu(this.list.element);
     VisualLogging.setMappedParent(this.list.element, this.element);

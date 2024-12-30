@@ -71,8 +71,7 @@ export class DropTarget {
       return;
     }
     this.dragMaskElement = this.element.createChild('div', '');
-    const shadowRoot =
-        createShadowRootWithCoreStyles(this.dragMaskElement, {cssFile: dropTargetStyles, delegatesFocus: undefined});
+    const shadowRoot = createShadowRootWithCoreStyles(this.dragMaskElement, {cssFile: dropTargetStyles});
     shadowRoot.createChild('div', 'drop-target-message').textContent = this.messageText;
     this.dragMaskElement.addEventListener('drop', this.onDrop.bind(this), true);
     this.dragMaskElement.addEventListener('dragleave', this.onDragLeave.bind(this), true);

@@ -192,10 +192,8 @@ export class CustomPreviewComponent {
     this.customPreviewSection = new CustomPreviewSection(object);
     this.element = document.createElement('span');
     this.element.classList.add('source-code');
-    const shadowRoot = UI.UIUtils.createShadowRootWithCoreStyles(this.element, {
-      cssFile: [customPreviewComponentStyles],
-      delegatesFocus: undefined,
-    });
+    const shadowRoot =
+        UI.UIUtils.createShadowRootWithCoreStyles(this.element, {cssFile: [customPreviewComponentStyles]});
     this.element.addEventListener('contextmenu', this.contextMenuEventFired.bind(this), false);
     shadowRoot.appendChild(this.customPreviewSection.element());
   }

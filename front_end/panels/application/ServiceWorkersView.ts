@@ -900,7 +900,6 @@ export class Section {
            * inside so we are registering the files here. */
         serviceWorkerUpdateCycleViewStyles,
       ],
-      delegatesFocus: undefined,
     });
     const contentElement = document.createElement('div');
     shadowRoot.appendChild(contentElement);

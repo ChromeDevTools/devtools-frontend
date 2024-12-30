@@ -792,10 +792,8 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     }
 
     const popoverElement = document.createElement('div');
-    const root = UI.UIUtils.createShadowRootWithCoreStyles(popoverElement, {
-      cssFile: [timelineFlamechartPopoverStyles],
-      delegatesFocus: undefined,
-    });
+    const root =
+        UI.UIUtils.createShadowRootWithCoreStyles(popoverElement, {cssFile: [timelineFlamechartPopoverStyles]});
     const popoverContents = root.createChild('div', 'timeline-flamechart-popover');
     popoverContents.createChild('span', timeElementClassName).textContent = time;
     popoverContents.createChild('span', 'popoverinfo-title').textContent = title;
@@ -811,10 +809,7 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
 
   preparePopoverForCollapsedArrow(entryIndex: number): Element|null {
     const element = document.createElement('div');
-    const root = UI.UIUtils.createShadowRootWithCoreStyles(element, {
-      cssFile: [timelineFlamechartPopoverStyles],
-      delegatesFocus: undefined,
-    });
+    const root = UI.UIUtils.createShadowRootWithCoreStyles(element, {cssFile: [timelineFlamechartPopoverStyles]});
 
     const entry = this.entryData[entryIndex] as Trace.Types.Events.Event;
     const hiddenEntriesAmount =

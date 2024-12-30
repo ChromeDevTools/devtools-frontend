@@ -109,8 +109,7 @@ export const linkifyNodeReference = function(node: SDK.DOMModel.DOMNode|null, op
 
   const root = document.createElement('span');
   root.classList.add('monospace');
-  const shadowRoot =
-      UI.UIUtils.createShadowRootWithCoreStyles(root, {cssFile: [domLinkifierStyles], delegatesFocus: undefined});
+  const shadowRoot = UI.UIUtils.createShadowRootWithCoreStyles(root, {cssFile: [domLinkifierStyles]});
   const link = shadowRoot.createChild('button', 'node-link text-button link-style');
   link.classList.toggle('dynamic-link', options.isDynamicLink);
   link.setAttribute('jslog', `${VisualLogging.link('node').track({click: true, keydown: 'Enter'})}`);
@@ -137,8 +136,7 @@ export const linkifyDeferredNodeReference = function(
       preventKeyboardFocus: undefined,
     }): Node {
   const root = document.createElement('div');
-  const shadowRoot =
-      UI.UIUtils.createShadowRootWithCoreStyles(root, {cssFile: [domLinkifierStyles], delegatesFocus: undefined});
+  const shadowRoot = UI.UIUtils.createShadowRootWithCoreStyles(root, {cssFile: [domLinkifierStyles]});
   const link = shadowRoot.createChild('button', 'node-link text-button link-style');
   link.setAttribute('jslog', `${VisualLogging.link('node').track({click: true})}`);
   link.createChild('slot');

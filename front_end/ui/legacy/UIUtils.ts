@@ -1312,8 +1312,7 @@ export class CheckboxLabel extends HTMLElement {
     super();
     CheckboxLabel.lastId = CheckboxLabel.lastId + 1;
     const id = 'ui-checkbox-label' + CheckboxLabel.lastId;
-    this.shadowRootInternal =
-        createShadowRootWithCoreStyles(this, {cssFile: checkboxTextLabelStyles, delegatesFocus: undefined});
+    this.shadowRootInternal = createShadowRootWithCoreStyles(this, {cssFile: checkboxTextLabelStyles});
     this.checkboxElement = this.shadowRootInternal.createChild('input');
     this.checkboxElement.type = 'checkbox';
     this.checkboxElement.setAttribute('id', id);
@@ -1360,10 +1359,7 @@ export class DevToolsIconLabel extends HTMLElement {
 
   constructor() {
     super();
-    const root = createShadowRootWithCoreStyles(this, {
-      cssFile: undefined,
-      delegatesFocus: undefined,
-    });
+    const root = createShadowRootWithCoreStyles(this);
     this.#icon = new IconButton.Icon.Icon();
     this.#icon.style.setProperty('margin-right', '4px');
     this.#icon.style.setProperty('vertical-align', 'baseline');
@@ -1390,7 +1386,7 @@ export class DevToolsSmallBubble extends HTMLElement {
 
   constructor() {
     super();
-    const root = createShadowRootWithCoreStyles(this, {cssFile: smallBubbleStyles, delegatesFocus: undefined});
+    const root = createShadowRootWithCoreStyles(this, {cssFile: smallBubbleStyles});
     this.textElement = root.createChild('div');
     this.textElement.className = 'info';
     this.textElement.createChild('slot');
@@ -1408,7 +1404,7 @@ export class DevToolsCloseButton extends HTMLElement {
 
   constructor() {
     super();
-    const root = createShadowRootWithCoreStyles(this, {delegatesFocus: undefined});
+    const root = createShadowRootWithCoreStyles(this);
     this.#button = new Buttons.Button.Button();
     this.#button.data = {variant: Buttons.Button.Variant.ICON, iconName: 'cross'};
     this.#button.classList.add('close-button');
@@ -1630,8 +1626,7 @@ export class MessageDialog {
     const dialog = new Dialog(jslogContext);
     dialog.setSizeBehavior(SizeBehavior.MEASURE_CONTENT);
     dialog.setDimmed(true);
-    const shadowRoot = createShadowRootWithCoreStyles(
-        dialog.contentElement, {cssFile: confirmDialogStyles, delegatesFocus: undefined});
+    const shadowRoot = createShadowRootWithCoreStyles(dialog.contentElement, {cssFile: confirmDialogStyles});
     const content = shadowRoot.createChild('div', 'widget');
     await new Promise(resolve => {
       const okButton = createTextButton(
@@ -1655,8 +1650,7 @@ export class ConfirmDialog {
     dialog.setSizeBehavior(SizeBehavior.MEASURE_CONTENT);
     dialog.setDimmed(true);
     ARIAUtils.setLabel(dialog.contentElement, message);
-    const shadowRoot = createShadowRootWithCoreStyles(
-        dialog.contentElement, {cssFile: confirmDialogStyles, delegatesFocus: undefined});
+    const shadowRoot = createShadowRootWithCoreStyles(dialog.contentElement, {cssFile: confirmDialogStyles});
     const content = shadowRoot.createChild('div', 'widget');
     content.createChild('div', 'message').createChild('span').textContent = message;
     const buttonsBar = content.createChild('div', 'button');
@@ -1681,7 +1675,7 @@ export class ConfirmDialog {
 
 export function createInlineButton(toolbarButton: ToolbarButton): Element {
   const element = document.createElement('span');
-  const shadowRoot = createShadowRootWithCoreStyles(element, {cssFile: inlineButtonStyles, delegatesFocus: undefined});
+  const shadowRoot = createShadowRootWithCoreStyles(element, {cssFile: inlineButtonStyles});
   element.classList.add('inline-button');
   const toolbar = new Toolbar('');
   toolbar.appendToolbarItem(toolbarButton);
@@ -1893,6 +1887,15 @@ export function injectTextButtonStyles(root: Element|ShadowRoot): void {
   ThemeSupport.ThemeSupport.instance().appendStyle(root, textButtonStyles);
 }
 
+/**
+ * Creates a new shadow DOM tree with the core styles and an optional list of
+ * additional styles, and attaches it to the specified `element`.
+ *
+ * @param element the `Element` to attach the shadow DOM tree to.
+ * @param options optional additional style sheets and options for `Element#attachShadow()`.
+ * @returns the newly created `ShadowRoot`.
+ * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/attachShadow
+ */
 export function createShadowRootWithCoreStyles(
     element: Element, options: {cssFile?: CSSStyleSheet[]|{cssContent: string}, delegatesFocus?: boolean} = {
       delegatesFocus: undefined,

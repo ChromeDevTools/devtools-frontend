@@ -464,10 +464,8 @@ export class DropDown implements UI.ListControl.ListDelegate<number> {
     this.glassPane.setAnchorBehavior(UI.GlassPane.AnchorBehavior.PREFER_BOTTOM);
     this.glassPane.element.addEventListener('blur', () => this.close(null));
 
-    const shadowRoot = UI.UIUtils.createShadowRootWithCoreStyles(this.glassPane.contentElement, {
-      cssFile: [timelineHistoryManagerStyles],
-      delegatesFocus: undefined,
-    });
+    const shadowRoot = UI.UIUtils.createShadowRootWithCoreStyles(
+        this.glassPane.contentElement, {cssFile: [timelineHistoryManagerStyles]});
     const contentElement = shadowRoot.createChild('div', 'drop-down');
 
     const listModel = new UI.ListModel.ListModel<number>();

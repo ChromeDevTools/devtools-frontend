@@ -19,10 +19,7 @@ export class BezierSwatch extends HTMLElement {
 
   constructor() {
     super();
-    const root = UI.UIUtils.createShadowRootWithCoreStyles(this, {
-      cssFile: [bezierSwatchStyles],
-      delegatesFocus: undefined,
-    });
+    const root = UI.UIUtils.createShadowRootWithCoreStyles(this, {cssFile: [bezierSwatchStyles]});
     this.#icon = IconButton.Icon.create('bezier-curve-filled', 'bezier-swatch-icon');
     this.#icon.setAttribute('jslog', `${VisualLogging.showStyleEditor('bezier')}`);
     root.appendChild(this.#icon);

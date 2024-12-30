@@ -413,10 +413,7 @@ export class TimelineFlameChartNetworkDataProvider implements PerfUI.FlameChart.
     const event = this.#events[index];
     if (Trace.Types.Events.isSyntheticNetworkRequest(event)) {
       const element = document.createElement('div');
-      const root = UI.UIUtils.createShadowRootWithCoreStyles(element, {
-        cssFile: [timelineFlamechartPopoverStyles],
-        delegatesFocus: undefined,
-      });
+      const root = UI.UIUtils.createShadowRootWithCoreStyles(element, {cssFile: [timelineFlamechartPopoverStyles]});
 
       const contents = root.createChild('div', 'timeline-flamechart-popover');
       const infoElement = new TimelineComponents.NetworkRequestTooltip.NetworkRequestTooltip();

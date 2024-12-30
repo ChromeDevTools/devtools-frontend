@@ -131,7 +131,7 @@ export class TabbedPane extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.tabsElement = this.headerContentsElement.createChild('div', 'tabbed-pane-header-tabs');
     this.tabsElement.setAttribute('role', 'tablist');
     this.tabsElement.addEventListener('keydown', this.keyDown.bind(this), false);
-    this.contentElementInternal = this.contentElement.createChild('div', 'tabbed-pane-content') as HTMLDivElement;
+    this.contentElementInternal = this.contentElement.createChild('div', 'tabbed-pane-content');
     this.contentElementInternal.createChild('slot');
     this.tabs = [];
     this.tabsHistory = [];

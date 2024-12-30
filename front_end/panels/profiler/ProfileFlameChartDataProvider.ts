@@ -325,8 +325,7 @@ export class OverviewPane extends Common.ObjectWrapper.eventMixin<OverviewPaneEv
     this.overviewCalculator = new OverviewCalculator(dataProvider.formatValue);
     this.overviewGrid = new PerfUI.OverviewGrid.OverviewGrid('cpu-profile-flame-chart', this.overviewCalculator);
     this.overviewGrid.element.classList.add('fill');
-    this.overviewCanvas =
-        (this.overviewContainer.createChild('canvas', 'cpu-profile-flame-chart-overview-canvas') as HTMLCanvasElement);
+    this.overviewCanvas = this.overviewContainer.createChild('canvas', 'cpu-profile-flame-chart-overview-canvas');
     this.overviewContainer.appendChild(this.overviewGrid.element);
     this.dataProvider = dataProvider;
     this.overviewGrid.addEventListener(

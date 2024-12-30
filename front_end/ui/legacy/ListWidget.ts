@@ -389,7 +389,7 @@ export class Editor<T> {
     select.setAttribute('jslog', `${VisualLogging.dropDown().track({change: true}).context(name)}`);
     select.classList.add('chrome-select');
     for (let index = 0; index < options.length; ++index) {
-      const option = (select.createChild('option') as HTMLOptionElement);
+      const option = select.createChild('option');
       option.value = options[index];
       option.textContent = options[index];
       option.setAttribute(

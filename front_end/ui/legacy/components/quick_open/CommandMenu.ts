@@ -334,13 +334,13 @@ export class CommandMenuProvider extends Provider {
 
     const deprecationWarning = command.deprecationWarning;
     if (deprecationWarning) {
-      const deprecatedTagElement = (titleElement.parentElement?.createChild('span', 'deprecated-tag') as HTMLElement);
+      const deprecatedTagElement = titleElement.parentElement?.createChild('span', 'deprecated-tag');
       if (deprecatedTagElement) {
         deprecatedTagElement.textContent = i18nString(UIStrings.deprecated);
         deprecatedTagElement.title = deprecationWarning;
       }
     }
-    const tagElement = (titleElement.parentElement?.parentElement?.createChild('span', 'tag') as HTMLElement);
+    const tagElement = titleElement.parentElement?.parentElement?.createChild('span', 'tag');
     if (!tagElement) {
       return;
     }

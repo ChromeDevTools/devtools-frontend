@@ -212,7 +212,7 @@ export class ServiceWorkerUpdateCycleView {
   private constructUpdateDetails(tr: HTMLElement, range: ServiceWorkerUpdateRange): void {
     const startRow = this.tableElement.createChild('tr', 'service-worker-update-timing-bar-details');
     startRow.classList.add('service-worker-update-timing-bar-details-collapsed');
-    const startTimeItem = startRow.createChild('td') as HTMLTableCellElement;
+    const startTimeItem = startRow.createChild('td');
     startTimeItem.colSpan = 3;
     const startTime = (new Date(range.start)).toISOString();
     UI.UIUtils.createTextChild(startTimeItem.createChild('span'), i18nString(UIStrings.startTimeS, {PH1: startTime}));
@@ -220,7 +220,7 @@ export class ServiceWorkerUpdateCycleView {
 
     const endRow = this.tableElement.createChild('tr', 'service-worker-update-timing-bar-details');
     endRow.classList.add('service-worker-update-timing-bar-details-collapsed');
-    const endTimeItem = endRow.createChild('td') as HTMLTableCellElement;
+    const endTimeItem = endRow.createChild('td');
     endTimeItem.colSpan = 3;
     const endTime = (new Date(range.end)).toISOString();
     UI.UIUtils.createTextChild(endTimeItem.createChild('span'), i18nString(UIStrings.endTimeS, {PH1: endTime}));

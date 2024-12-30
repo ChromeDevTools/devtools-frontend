@@ -393,7 +393,7 @@ export class NamedBitSetFilterUI extends Common.ObjectWrapper.ObjectWrapper<Filt
   }
 
   private addBit(name: string, label: string, title?: string): void {
-    const typeFilterElement = (this.filtersElement.createChild('span', name) as HTMLElement);
+    const typeFilterElement = this.filtersElement.createChild('span', name);
     typeFilterElement.tabIndex = -1;
     this.typeFilterElementTypeNames.set(typeFilterElement, name);
     createTextChild(typeFilterElement, label);

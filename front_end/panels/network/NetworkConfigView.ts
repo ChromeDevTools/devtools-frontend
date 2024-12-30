@@ -111,7 +111,7 @@ export class NetworkConfigView extends UI.Widget.VBox {
     userAgentSelectElement.appendChild(UI.UIUtils.createOption(customOverride.title, customOverride.value, 'custom'));
 
     for (const userAgentDescriptor of userAgentGroups) {
-      const groupElement = (userAgentSelectElement.createChild('optgroup') as HTMLOptGroupElement);
+      const groupElement = userAgentSelectElement.createChild('optgroup');
       groupElement.label = userAgentDescriptor.title;
       for (const userAgentVersion of userAgentDescriptor.values) {
         const userAgentValue =
@@ -212,7 +212,7 @@ export class NetworkConfigView extends UI.Widget.VBox {
   private createNetworkThrottlingSection(): void {
     const title = i18nString(UIStrings.networkThrottling);
     const section = this.createSection(title, 'network-config-throttling');
-    const networkThrottlingSelect = (section.createChild('select', 'chrome-select') as HTMLSelectElement);
+    const networkThrottlingSelect = section.createChild('select', 'chrome-select');
     MobileThrottling.ThrottlingManager.throttlingManager().createNetworkThrottlingSelector(networkThrottlingSelect);
     UI.ARIAUtils.setLabel(networkThrottlingSelect, title);
   }

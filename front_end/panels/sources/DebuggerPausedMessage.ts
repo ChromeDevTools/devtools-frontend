@@ -125,7 +125,7 @@ export class DebuggerPausedMessage {
     this.elementInternal.setAttribute('jslog', `${VisualLogging.dialog('debugger-paused')}`);
     const root = UI.UIUtils.createShadowRootWithCoreStyles(
         this.elementInternal, {cssFile: [debuggerPausedMessageStyles], delegatesFocus: undefined});
-    this.contentElement = (root.createChild('div') as HTMLElement);
+    this.contentElement = root.createChild('div');
     UI.ARIAUtils.markAsPoliteLiveRegion(this.elementInternal, false);
   }
 

@@ -29,9 +29,9 @@ const warning = () => ('Deprecation Warning' as Platform.UIString.LocalizedStrin
 
 function setupElements() {
   const toplevel = document.createElement('div');
-  const container = toplevel.createChild('div') as HTMLDivElement;
-  const title = container.createChild('div') as HTMLDivElement;
-  const subtitle = container.createChild('div') as HTMLDivElement;
+  const container = toplevel.createChild('div');
+  const title = container.createChild('div');
+  const subtitle = container.createChild('div');
   return {toplevel, container, title, subtitle};
 }
 

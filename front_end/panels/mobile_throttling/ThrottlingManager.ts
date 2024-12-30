@@ -270,7 +270,7 @@ export class ThrottlingManager {
       optionEls = [];
       for (let i = 0; i < groups.length; ++i) {
         const group = groups[i];
-        const groupElement = selectElement.createChild('optgroup') as HTMLOptGroupElement;
+        const groupElement = selectElement.createChild('optgroup');
         groupElement.label = group.title;
         for (const conditions of group.items) {
           // The title is usually an i18nLazyString except for custom values that are stored in the local storage in the form of a string.

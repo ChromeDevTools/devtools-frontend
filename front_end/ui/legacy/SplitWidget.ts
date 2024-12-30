@@ -89,7 +89,7 @@ export class SplitWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typ
         this.contentElement.createChild('div', 'shadow-split-widget-contents shadow-split-widget-sidebar vbox');
     this.mainElement =
         this.contentElement.createChild('div', 'shadow-split-widget-contents shadow-split-widget-main vbox');
-    const mainSlot = this.mainElement.createChild('slot') as HTMLSlotElement;
+    const mainSlot = this.mainElement.createChild('slot');
     mainSlot.name = 'main';
     mainSlot.addEventListener('slotchange', (_: Event) => {
       const assignedNode = mainSlot.assignedNodes()[0];
@@ -98,7 +98,7 @@ export class SplitWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typ
         this.setMainWidget(widget);
       }
     });
-    const sidebarSlot = this.sidebarElementInternal.createChild('slot') as HTMLSlotElement;
+    const sidebarSlot = this.sidebarElementInternal.createChild('slot');
     sidebarSlot.name = 'sidebar';
     sidebarSlot.addEventListener('slotchange', (_: Event) => {
       const assignedNode = sidebarSlot.assignedNodes()[0];

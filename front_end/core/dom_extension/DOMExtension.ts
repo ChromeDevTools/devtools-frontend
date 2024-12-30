@@ -175,16 +175,17 @@ self.createDocumentFragment = function(): DocumentFragment {
   return document.createDocumentFragment();
 };
 
-Element.prototype.createChild = function(elementName: string, className?: string, customElementType?: string): Element {
-  const element = document.createElement(elementName, {is: customElementType});
+DocumentFragment.prototype.createChild = Element.prototype.createChild = function(
+    elementName: string,
+    className?: string,
+    ): Element {
+  const element = document.createElement(elementName);
   if (className) {
     element.className = className;
   }
   this.appendChild(element);
   return element;
 };
-
-DocumentFragment.prototype.createChild = Element.prototype.createChild;
 
 self.AnchorBox = class {
   constructor(x?: number, y?: number, width?: number, height?: number) {

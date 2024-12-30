@@ -470,7 +470,7 @@ export class TimelineOverviewBase extends UI.Widget.VBox implements TimelineOver
   constructor() {
     super();
     this.calculatorInternal = null;
-    this.canvas = (this.element.createChild('canvas', 'fill') as HTMLCanvasElement);
+    this.canvas = this.element.createChild('canvas', 'fill');
     this.contextInternal = this.canvas.getContext('2d');
   }
 

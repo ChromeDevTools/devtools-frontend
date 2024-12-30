@@ -184,7 +184,7 @@ export class WatchExpressionsSidebarPane extends UI.ThrottledWidget.ThrottledWid
     this.contentElement.removeChildren();
     this.treeOutline.removeChildren();
     this.watchExpressions = [];
-    this.emptyElement = (this.contentElement.createChild('div', 'gray-info-message') as HTMLElement);
+    this.emptyElement = this.contentElement.createChild('div', 'gray-info-message');
     this.emptyElement.textContent = i18nString(UIStrings.noWatchExpressions);
     this.emptyElement.tabIndex = -1;
     const watchExpressionStrings = this.watchExpressionsSetting.get();

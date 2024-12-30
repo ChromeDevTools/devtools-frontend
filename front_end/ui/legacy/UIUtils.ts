@@ -1138,7 +1138,7 @@ export function createSelect(name: string, options: string[]|Map<string, string[
   for (const option of options) {
     if (option instanceof Map) {
       for (const [key, value] of option) {
-        const optGroup = (select.createChild('optgroup') as HTMLOptGroupElement);
+        const optGroup = select.createChild('optgroup');
         optGroup.label = key;
         for (const child of value) {
           if (typeof child === 'string') {
@@ -1227,10 +1227,10 @@ export class CheckboxLabel extends HTMLElement {
     const id = 'ui-checkbox-label' + CheckboxLabel.lastId;
     this.shadowRootInternal =
         createShadowRootWithCoreStyles(this, {cssFile: checkboxTextLabelStyles, delegatesFocus: undefined});
-    this.checkboxElement = (this.shadowRootInternal.createChild('input') as HTMLInputElement);
+    this.checkboxElement = this.shadowRootInternal.createChild('input');
     this.checkboxElement.type = 'checkbox';
     this.checkboxElement.setAttribute('id', id);
-    this.textElement = this.shadowRootInternal.createChild('label', 'dt-checkbox-text') as HTMLElement;
+    this.textElement = this.shadowRootInternal.createChild('label', 'dt-checkbox-text');
     this.textElement.setAttribute('for', id);
     this.shadowRootInternal.createChild('slot');
   }
@@ -1305,8 +1305,8 @@ export class DevToolsRadioButton extends HTMLSpanElement {
 
   constructor() {
     super();
-    this.radioElement = (this.createChild('input', 'dt-radio-button') as HTMLInputElement);
-    this.labelElement = (this.createChild('label') as HTMLLabelElement);
+    this.radioElement = this.createChild('input', 'dt-radio-button');
+    this.labelElement = this.createChild('label');
 
     const id = 'dt-radio-button-id' + (++labelId);
     this.radioElement.id = id;

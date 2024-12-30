@@ -81,7 +81,7 @@ export class Toolbar {
 
   constructor(className: string, parentElement?: Element) {
     this.items = [];
-    this.element = (parentElement ? parentElement.createChild('div') : document.createElement('div')) as HTMLElement;
+    this.element = parentElement ? parentElement.createChild('div') : document.createElement('div');
     this.element.className = className;
     this.element.classList.add('toolbar');
     this.enabled = true;
@@ -1104,7 +1104,7 @@ export class ToolbarComboBox extends ToolbarItem<void> {
     const element = document.createElement('span');
     element.classList.add('toolbar-select-container');
     super(element);
-    this.selectElementInternal = (this.element.createChild('select', 'toolbar-item') as HTMLSelectElement);
+    this.selectElementInternal = this.element.createChild('select', 'toolbar-item');
     const dropdownArrowIcon = IconButton.Icon.create('triangle-down', 'toolbar-dropdown-arrow');
     this.element.appendChild(dropdownArrowIcon);
     if (changeHandler) {
@@ -1138,7 +1138,7 @@ export class ToolbarComboBox extends ToolbarItem<void> {
   }
 
   createOption(label: string, value?: string): HTMLOptionElement {
-    const option = (this.selectElementInternal.createChild('option') as HTMLOptionElement);
+    const option = this.selectElementInternal.createChild('option');
     option.text = label;
     if (typeof value !== 'undefined') {
       option.value = value;

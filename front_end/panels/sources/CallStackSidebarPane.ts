@@ -402,7 +402,7 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
     element.classList.add('ignore-listed-message');
     const label = element.createChild('label');
     label.classList.add('ignore-listed-message-label');
-    const checkbox = label.createChild('input') as HTMLInputElement;
+    const checkbox = label.createChild('input');
     checkbox.tabIndex = 0;
     checkbox.type = 'checkbox';
     checkbox.classList.add('ignore-listed-checkbox');

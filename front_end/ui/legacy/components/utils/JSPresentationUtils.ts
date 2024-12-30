@@ -213,7 +213,7 @@ function renderStackTraceTable(
   tableSection = container.createChild('tfoot');
   const showAllRow = tableSection.createChild('tr', 'show-all-link');
   showAllRow.createChild('td');
-  const cell = showAllRow.createChild('td') as HTMLTableCellElement;
+  const cell = showAllRow.createChild('td');
   cell.colSpan = 4;
   const showAllLink = cell.createChild('span', 'link');
   // Don't directly put the text of the link in the DOM, as it will likely be
@@ -228,7 +228,7 @@ function renderStackTraceTable(
   }, false);
   const showLessRow = tableSection.createChild('tr', 'show-less-link');
   showLessRow.createChild('td');
-  const showLesscell = showLessRow.createChild('td') as HTMLTableCellElement;
+  const showLesscell = showLessRow.createChild('td');
   showLesscell.colSpan = 4;
   const showLessLink = showLesscell.createChild('span', 'link');
   showLessLink.createChild('span', 'css-inserted-text')

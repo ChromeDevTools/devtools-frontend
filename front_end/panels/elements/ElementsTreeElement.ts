@@ -1629,7 +1629,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     }
 
     const hasText = (forceValue || value.length > 0);
-    const attrSpanElement = (parentElement.createChild('span', 'webkit-html-attribute') as HTMLElement);
+    const attrSpanElement = parentElement.createChild('span', 'webkit-html-attribute');
     attrSpanElement.setAttribute(
         'jslog', `${VisualLogging.value(name === 'style' ? 'style-attribute' : 'attribute').track({
           change: true,

@@ -444,7 +444,7 @@ export class ShortcutListItem {
     }
     const shortcutElement = this.element.createChild('div', 'keybinds-shortcut keybinds-list-text');
     if (this.isEditing) {
-      const shortcutInput = shortcutElement.createChild('input', 'harmony-input') as HTMLInputElement;
+      const shortcutInput = shortcutElement.createChild('input', 'harmony-input');
       shortcutInput.setAttribute('jslog', `${VisualLogging.textField().track({change: true})}`);
       shortcutInput.spellcheck = false;
       shortcutInput.maxLength = 0;

@@ -310,10 +310,8 @@ export class NetworkLogViewColumns {
     this.dataGridScroller.addEventListener('touchstart', this.onTouchStart.bind(this));
     this.dataGridScroller.addEventListener('touchmove', this.onTouchMove.bind(this));
     this.dataGridScroller.addEventListener('touchend', this.onTouchEnd.bind(this));
-    this.waterfallScroller =
-        (this.waterfallColumn.contentElement.createChild('div', 'network-waterfall-v-scroll') as HTMLDivElement);
-    this.waterfallScrollerContent =
-        (this.waterfallScroller.createChild('div', 'network-waterfall-v-scroll-content') as HTMLDivElement);
+    this.waterfallScroller = this.waterfallColumn.contentElement.createChild('div', 'network-waterfall-v-scroll');
+    this.waterfallScrollerContent = this.waterfallScroller.createChild('div', 'network-waterfall-v-scroll-content');
 
     this.dataGridInternal.addEventListener(DataGrid.DataGrid.Events.PADDING_CHANGED, () => {
       this.waterfallScrollerWidthIsStale = true;
@@ -413,8 +411,7 @@ export class NetworkLogViewColumns {
   }
 
   private createWaterfallHeader(): void {
-    this.waterfallHeaderElement =
-        (this.waterfallColumn.contentElement.createChild('div', 'network-waterfall-header') as HTMLElement);
+    this.waterfallHeaderElement = this.waterfallColumn.contentElement.createChild('div', 'network-waterfall-header');
     this.waterfallHeaderElement.setAttribute('jslog', `${VisualLogging.tableHeader('waterfall').track({click: true})}`);
     this.waterfallHeaderElement.addEventListener('click', waterfallHeaderClicked.bind(this));
     this.waterfallHeaderElement.addEventListener('contextmenu', event => {

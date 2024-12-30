@@ -320,7 +320,7 @@ export class OutlineQuickOpen extends QuickOpen.FilteredListWidget.Provider {
       return;
     }
 
-    const tagElement = (titleElement.parentElement?.parentElement?.createChild('span', 'tag') as HTMLElement);
+    const tagElement = titleElement.parentElement?.parentElement?.createChild('span', 'tag');
     if (!tagElement) {
       return;
     }

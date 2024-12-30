@@ -1327,7 +1327,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
       this.elementInternal.classList.add('console-from-api');
     }
     if (this.inSimilarGroup) {
-      this.similarGroupMarker = (this.consoleRowWrapper.createChild('div', 'nesting-level-marker') as HTMLElement);
+      this.similarGroupMarker = this.consoleRowWrapper.createChild('div', 'nesting-level-marker');
       this.similarGroupMarker.classList.toggle('group-closed', this.lastInSimilarGroup);
     }
 

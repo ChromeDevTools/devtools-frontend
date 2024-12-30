@@ -1450,7 +1450,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     this.toolbar = toolbar;
 
     const toolbarPaneContainer = container.createChild('div', 'styles-sidebar-toolbar-pane-container');
-    const toolbarPaneContent = (toolbarPaneContainer.createChild('div', 'styles-sidebar-toolbar-pane') as HTMLElement);
+    const toolbarPaneContent = toolbarPaneContainer.createChild('div', 'styles-sidebar-toolbar-pane');
 
     return toolbarPaneContent;
   }
@@ -1738,7 +1738,7 @@ export class SectionBlock {
       UI.UIUtils.createTextChild(separatorElement.createChild('div'), name);
       return new SectionBlock(separatorElement);
     }
-    const layerLink = separatorElement.createChild('button') as HTMLButtonElement;
+    const layerLink = separatorElement.createChild('button');
     layerLink.className = 'link';
     layerLink.title = i18nString(UIStrings.clickToRevealLayer);
     const name = layers.map(layer => SDK.CSSModel.CSSModel.readableLayerName(layer.text)).join('.');

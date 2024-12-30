@@ -440,19 +440,19 @@ export class RequestTimingView extends UI.Widget.VBox {
 
     const startTimeHeader = tableElement.createChild('thead', 'network-timing-start');
     const tableHeaderRow = startTimeHeader.createChild('tr');
-    const activityHeaderCell = (tableHeaderRow.createChild('th') as HTMLTableCellElement);
+    const activityHeaderCell = tableHeaderRow.createChild('th');
     activityHeaderCell.createChild('span', 'network-timing-hidden-header').textContent = i18nString(UIStrings.label);
     activityHeaderCell.scope = 'col';
-    const waterfallHeaderCell = (tableHeaderRow.createChild('th') as HTMLTableCellElement);
+    const waterfallHeaderCell = tableHeaderRow.createChild('th');
     waterfallHeaderCell.createChild('span', 'network-timing-hidden-header').textContent =
         i18nString(UIStrings.waterfall);
     waterfallHeaderCell.scope = 'col';
-    const durationHeaderCell = (tableHeaderRow.createChild('th') as HTMLTableCellElement);
+    const durationHeaderCell = tableHeaderRow.createChild('th');
     durationHeaderCell.createChild('span', 'network-timing-hidden-header').textContent = i18nString(UIStrings.duration);
     durationHeaderCell.scope = 'col';
 
-    const queuedCell = (startTimeHeader.createChild('tr').createChild('td') as HTMLTableCellElement);
-    const startedCell = (startTimeHeader.createChild('tr').createChild('td') as HTMLTableCellElement);
+    const queuedCell = startTimeHeader.createChild('tr').createChild('td');
+    const startedCell = startTimeHeader.createChild('tr').createChild('td');
     queuedCell.colSpan = startedCell.colSpan = 3;
     UI.UIUtils.createTextChild(
         queuedCell, i18nString(UIStrings.queuedAtS, {PH1: calculator.formatValue(request.issueTime(), 2)}));
@@ -524,13 +524,13 @@ export class RequestTimingView extends UI.Widget.VBox {
     }
 
     if (!request.finished && !request.preserved) {
-      const cell = (tableElement.createChild('tr').createChild('td', 'caution') as HTMLTableCellElement);
+      const cell = tableElement.createChild('tr').createChild('td', 'caution');
       cell.colSpan = 3;
       UI.UIUtils.createTextChild(cell, i18nString(UIStrings.cautionRequestIsNotFinishedYet));
     }
 
     const footer = tableElement.createChild('tr', 'network-timing-footer');
-    const note = (footer.createChild('td') as HTMLTableCellElement);
+    const note = footer.createChild('td');
     note.colSpan = 1;
     const explanationLink = UI.XLink.XLink.create(
         'https://developer.chrome.com/docs/devtools/network/reference/#timing-explanation',
@@ -543,8 +543,7 @@ export class RequestTimingView extends UI.Widget.VBox {
 
     const lastTimingRightEdge = right === undefined ? 100 : right;
 
-    const breakElement =
-        (tableElement.createChild('tr', 'network-timing-table-header').createChild('td') as HTMLTableCellElement);
+    const breakElement = tableElement.createChild('tr', 'network-timing-table-header').createChild('td');
     breakElement.colSpan = 3;
     breakElement.createChild('hr', 'break');
 
@@ -555,7 +554,7 @@ export class RequestTimingView extends UI.Widget.VBox {
 
     if (!serverTimings) {
       const informationRow = tableElement.createChild('tr');
-      const information = (informationRow.createChild('td') as HTMLTableCellElement);
+      const information = informationRow.createChild('td');
       information.colSpan = 3;
 
       const link = UI.XLink.XLink.create(

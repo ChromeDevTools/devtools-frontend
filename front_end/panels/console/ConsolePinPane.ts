@@ -371,8 +371,7 @@ export class ConsolePin {
     if (!previewText || previewText !== this.pinPreview.deepTextContent()) {
       this.pinPreview.removeChildren();
       if (result && SDK.RuntimeModel.RuntimeModel.isSideEffectFailure(result)) {
-        const sideEffectLabel =
-            (this.pinPreview.createChild('span', 'object-value-calculate-value-button') as HTMLElement);
+        const sideEffectLabel = this.pinPreview.createChild('span', 'object-value-calculate-value-button');
         sideEffectLabel.textContent = '(…)';
         UI.Tooltip.Tooltip.install(sideEffectLabel, i18nString(UIStrings.evaluateAllowingSideEffects));
       } else if (previewText) {

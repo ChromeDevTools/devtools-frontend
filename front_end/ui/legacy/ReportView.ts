@@ -215,11 +215,11 @@ export class Section extends VBox {
   }
 
   appendRow(): HTMLElement {
-    return this.fieldList.createChild('div', 'report-row') as HTMLElement;
+    return this.fieldList.createChild('div', 'report-row');
   }
 
   appendSelectableRow(): HTMLElement {
-    return this.fieldList.createChild('div', 'report-row report-row-selectable') as HTMLElement;
+    return this.fieldList.createChild('div', 'report-row report-row-selectable');
   }
 
   clearContent(): void {

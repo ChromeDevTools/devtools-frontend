@@ -1176,7 +1176,7 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
     if (this.prompt || !treeOutline || !treeOutline.editable || this.readOnly) {
       return;
     }
-    this.editableDiv = (this.rowContainer.createChild('span', 'editable-div') as HTMLElement);
+    this.editableDiv = this.rowContainer.createChild('span', 'editable-div');
 
     if (this.property.value) {
       let text: string|(string | undefined) = this.property.value.description;

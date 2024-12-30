@@ -2146,9 +2146,9 @@ export class TimelineUIUtils {
     const stylesContainer = document.createElement('div');
     const shadowRoot = stylesContainer.attachShadow({mode: 'open'});
     shadowRoot.adoptedStyleSheets = [imagePreviewStyles];
-    const container = shadowRoot.createChild('div') as HTMLDivElement;
+    const container = shadowRoot.createChild('div');
     container.classList.add('image-preview-container', 'vbox', 'link');
-    const img = (container.createChild('img') as HTMLImageElement);
+    const img = container.createChild('img');
     img.src = imageURL;
     img.alt = LegacyComponents.ImagePreview.ImagePreview.defaultAltTextForImageURL(imageURL);
     const paintProfilerButton = container.createChild('a');

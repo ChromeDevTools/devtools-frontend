@@ -183,7 +183,7 @@ export class XHRBreakpointsSidebarPane extends UI.Widget.VBox implements UI.Cont
   createElementForItem(item: string): Element {
     const listItemElement = document.createElement('div');
     UI.ARIAUtils.markAsListitem(listItemElement);
-    const element = listItemElement.createChild('div', 'breakpoint-entry') as HTMLElement;
+    const element = listItemElement.createChild('div', 'breakpoint-entry');
     containerToBreakpointEntry.set(listItemElement, element);
     const enabled = SDK.DOMDebuggerModel.DOMDebuggerManager.instance().xhrBreakpoints().get(item) || false;
     UI.ARIAUtils.markAsCheckbox(element);

@@ -189,7 +189,7 @@ export class DevicesSettingsTab extends UI.Widget.VBox implements
   renderItem(device: EmulationModel.EmulatedDevices.EmulatedDevice, editable: boolean): Element {
     const label = document.createElement('label');
     label.classList.add('devices-list-item');
-    const checkbox = (label.createChild('input', 'devices-list-checkbox') as HTMLInputElement);
+    const checkbox = label.createChild('input', 'devices-list-checkbox');
     checkbox.type = 'checkbox';
     checkbox.checked = device.show();
     checkbox.addEventListener('click', onItemClicked.bind(this), false);

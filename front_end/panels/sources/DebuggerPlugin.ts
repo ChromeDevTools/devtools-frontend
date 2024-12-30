@@ -2027,7 +2027,7 @@ class ValueDecoration extends CodeMirror.WidgetType {
       } else {
         UI.UIUtils.createTextChild(widget, ', ');
       }
-      const nameValuePair = (widget.createChild('span') as HTMLElement);
+      const nameValuePair = widget.createChild('span');
       UI.UIUtils.createTextChild(nameValuePair, name + ' = ');
       const propertyCount = value.preview ? value.preview.properties.length : 0;
       const entryCount = value.preview && value.preview.entries ? value.preview.entries.length : 0;

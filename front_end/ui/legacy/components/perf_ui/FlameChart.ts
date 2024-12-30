@@ -366,7 +366,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     this.dataProvider = dataProvider;
 
     this.viewportElement = this.chartViewport.viewportElement;
-    this.canvas = (this.viewportElement.createChild('canvas', 'fill') as HTMLCanvasElement);
+    this.canvas = this.viewportElement.createChild('canvas', 'fill');
     this.candyStripePattern = this.candyStripePatternGray = null;
 
     this.canvas.tabIndex = 0;

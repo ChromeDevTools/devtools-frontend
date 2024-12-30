@@ -411,7 +411,7 @@ export class TimelineHistoryManager {
     const dPR = window.devicePixelRatio;
     container.style.width = previewWidth + 'px';
     container.style.height = this.totalHeight + 'px';
-    const canvas = (container.createChild('canvas') as HTMLCanvasElement);
+    const canvas = container.createChild('canvas');
     canvas.width = dPR * previewWidth;
     canvas.height = dPR * this.totalHeight;
 

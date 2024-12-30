@@ -290,7 +290,7 @@ export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof
     this.dragX = 0;
     this.dragY = 0;
 
-    const toolsContainer: HTMLElement = this.contentElement.createChild('div', 'spectrum-tools') as HTMLElement;
+    const toolsContainer = this.contentElement.createChild('div', 'spectrum-tools');
     const toolbar = new UI.Toolbar.Toolbar('spectrum-eye-dropper', toolsContainer);
     const toggleEyeDropperShortcut =
         UI.ShortcutRegistry.ShortcutRegistry.instance().shortcutsForAction('elements.toggle-eye-dropper');
@@ -1626,7 +1626,7 @@ export class Swatch {
     const swatchElement = parentElement.createChild('span', 'swatch');
     swatchElement.setAttribute('jslog', `${VisualLogging.action('copy-color').track({click: true})}`);
     this.swatchInnerElement = swatchElement.createChild('span', 'swatch-inner');
-    this.swatchOverlayElement = swatchElement.createChild('span', 'swatch-overlay') as HTMLElement;
+    this.swatchOverlayElement = swatchElement.createChild('span', 'swatch-overlay');
     UI.ARIAUtils.markAsButton(this.swatchOverlayElement);
     UI.ARIAUtils.setPressed(this.swatchOverlayElement, false);
     this.swatchOverlayElement.tabIndex = 0;

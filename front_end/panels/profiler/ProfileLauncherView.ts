@@ -89,8 +89,7 @@ export class ProfileLauncherView extends Common.ObjectWrapper.eventMixin<EventTy
 
     this.panel = profilesPanel;
     this.element.classList.add('profile-launcher-view');
-    this.contentElementInternal =
-        this.element.createChild('div', 'profile-launcher-view-content vbox') as HTMLDivElement;
+    this.contentElementInternal = this.element.createChild('div', 'profile-launcher-view-content vbox');
 
     const profileTypeSelectorElement = this.contentElementInternal.createChild('div', 'vbox');
     this.selectedProfileTypeSetting = Common.Settings.Settings.instance().createSetting('selected-profile-type', 'CPU');

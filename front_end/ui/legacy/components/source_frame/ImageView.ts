@@ -122,7 +122,7 @@ export class ImageView extends UI.View.SimpleView {
     this.aspectRatioLabel = new UI.Toolbar.ToolbarText();
     this.mimeTypeLabel = new UI.Toolbar.ToolbarText(mimeType);
     this.container = this.element.createChild('div', 'image');
-    this.imagePreviewElement = (this.container.createChild('img', 'resource-image-view') as HTMLImageElement);
+    this.imagePreviewElement = this.container.createChild('img', 'resource-image-view');
     this.imagePreviewElement.addEventListener('contextmenu', this.contextMenu.bind(this), true);
   }
 

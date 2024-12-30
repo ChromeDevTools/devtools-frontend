@@ -213,13 +213,13 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
 
     this.dataTableColumnGroup = this.dataTable.createChild('colgroup');
 
-    this.dataTableHeadInternal = this.dataTable.createChild('thead') as HTMLTableSectionElement;
+    this.dataTableHeadInternal = this.dataTable.createChild('thead');
     this.headerRow = this.dataTableHeadInternal.createChild('tr');
 
     this.dataTableBody = this.dataTable.createChild('tbody');
-    this.topFillerRow = (this.dataTableBody.createChild('tr', 'data-grid-filler-row revealed') as HTMLElement);
+    this.topFillerRow = this.dataTableBody.createChild('tr', 'data-grid-filler-row revealed');
     UI.ARIAUtils.setHidden(this.topFillerRow, true);
-    this.bottomFillerRow = (this.dataTableBody.createChild('tr', 'data-grid-filler-row revealed') as HTMLElement);
+    this.bottomFillerRow = this.dataTableBody.createChild('tr', 'data-grid-filler-row revealed');
     UI.ARIAUtils.setHidden(this.bottomFillerRow, true);
 
     this.setVerticalPadding(0, 0, true);
@@ -478,12 +478,12 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     for (let i = 0; i < this.visibleColumnsArray.length; ++i) {
       const column = this.visibleColumnsArray[i];
       const columnId = column.id;
-      const dataColumn = (this.dataTableColumnGroup.createChild('col') as HTMLElement);
+      const dataColumn = this.dataTableColumnGroup.createChild('col');
       if (column.width) {
         dataColumn.style.width = column.width;
       }
       this.headerRow.appendChild(this.dataTableHeaders[columnId]);
-      const topFillerRowCell = (this.topFillerRow.createChild('th', 'top-filler-td') as HTMLTableCellElement);
+      const topFillerRowCell = this.topFillerRow.createChild('th', 'top-filler-td');
       topFillerRowCell.textContent = column.title || null;
       topFillerRowCell.scope = 'col';
       const bottomFillerRowChild = this.bottomFillerRow.createChild('td', 'bottom-filler-td');
@@ -493,7 +493,7 @@ export class DataGridImpl<T> extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     const headerCorner = this.headerRow.createChild('th', 'corner');
     UI.ARIAUtils.setHidden(headerCorner, true);
 
-    const topFillerRowCornerCell = (this.topFillerRow.createChild('th', 'corner') as HTMLTableCellElement);
+    const topFillerRowCornerCell = this.topFillerRow.createChild('th', 'corner');
     topFillerRowCornerCell.classList.add('top-filler-td');
     topFillerRowCornerCell.scope = 'col';
 

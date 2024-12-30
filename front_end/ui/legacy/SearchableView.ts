@@ -207,7 +207,7 @@ export class SearchableView extends VBox {
     iconAndInput.appendChild(this.searchInputElement);
 
     const replaceInputElements = searchInputElements.createChild('div', 'replace-element input-line');
-    this.replaceInputElement = replaceInputElements.createChild('input', 'search-replace') as HTMLInputElement;
+    this.replaceInputElement = replaceInputElements.createChild('input', 'search-replace');
     this.replaceInputElement.addEventListener('keydown', this.onReplaceKeyDown.bind(this), true);
     this.replaceInputElement.placeholder = i18nString(UIStrings.replace);
     this.replaceInputElement.setAttribute(

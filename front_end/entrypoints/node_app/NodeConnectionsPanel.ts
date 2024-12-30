@@ -47,7 +47,7 @@ export class NodeConnectionsPanel extends UI.Panel.Panel {
 
     const container = this.contentElement.createChild('div', 'node-panel-center');
 
-    const image = (container.createChild('img', 'node-panel-logo') as HTMLImageElement);
+    const image = container.createChild('img', 'node-panel-logo');
     image.src = 'https://nodejs.org/static/images/logos/nodejs-new-pantone-black.svg';
 
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(

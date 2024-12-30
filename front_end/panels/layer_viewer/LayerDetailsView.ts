@@ -328,16 +328,16 @@ export class LayerDetailsView extends Common.ObjectWrapper.eventMixin<EventTypes
   }
 
   private buildContent(): void {
-    this.tableElement = this.contentElement.createChild('table') as HTMLElement;
-    this.tbodyElement = this.tableElement.createChild('tbody') as HTMLElement;
+    this.tableElement = this.contentElement.createChild('table');
+    this.tbodyElement = this.tableElement.createChild('tbody');
     this.sizeCell = this.createRow(i18nString(UIStrings.size));
     this.compositingReasonsCell = this.createRow(i18nString(UIStrings.compositingReasons));
     this.memoryEstimateCell = this.createRow(i18nString(UIStrings.memoryEstimate));
     this.paintCountCell = this.createRow(i18nString(UIStrings.paintCount));
     this.scrollRectsCell = this.createRow(i18nString(UIStrings.slowScrollRegions));
     this.stickyPositionConstraintCell = this.createRow(i18nString(UIStrings.stickyPositionConstraint));
-    this.paintProfilerLink = this.contentElement.createChild(
-                                 'button', 'hidden devtools-link link-margin text-button link-style') as HTMLElement;
+    this.paintProfilerLink =
+        this.contentElement.createChild('button', 'hidden devtools-link link-margin text-button link-style');
     UI.ARIAUtils.markAsLink(this.paintProfilerLink);
     this.paintProfilerLink.textContent = i18nString(UIStrings.paintProfiler);
     this.paintProfilerLink.tabIndex = 0;

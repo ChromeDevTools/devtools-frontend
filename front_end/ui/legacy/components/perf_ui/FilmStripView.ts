@@ -77,7 +77,7 @@ export class FilmStripView extends Common.ObjectWrapper.eventMixin<EventTypes, t
     element.setAttribute('jslog', `${VisualLogging.preview('film-strip').track({click: true, dblclick: true})}`);
     element.setAttribute('aria-label', i18nString(UIStrings.screenshotForSSelectToView, {PH1: frameTime}));
     UI.ARIAUtils.markAsButton(element);
-    const imageElement = (element.createChild('div', 'thumbnail').createChild('img') as HTMLImageElement);
+    const imageElement = element.createChild('div', 'thumbnail').createChild('img');
     imageElement.alt = i18nString(UIStrings.screenshot);
     element.addEventListener('mousedown', this.onMouseEvent.bind(this, Events.FRAME_SELECTED, time), false);
     element.addEventListener('mouseenter', this.onMouseEvent.bind(this, Events.FRAME_ENTER, time), false);

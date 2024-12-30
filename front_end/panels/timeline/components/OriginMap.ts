@@ -247,7 +247,7 @@ export class OriginMap extends UI.Widget.WidgetElement<UI.Widget.Widget> impleme
 
     const editor = new UI.ListWidget.Editor<ListItem>();
     this.#editor = editor;
-    const content = editor.contentElement().createChild('div', 'origin-mapping-editor') as HTMLElement;
+    const content = editor.contentElement().createChild('div', 'origin-mapping-editor');
 
     const devInput = editor.createInput(
         DEV_ORIGIN_CONTROL, 'text', i18nString(UIStrings.developmentOrigin), this.#developmentValidator.bind(this));

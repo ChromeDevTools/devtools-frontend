@@ -98,7 +98,7 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       expandedChangedCallback: () => void, colorSelectedCallback: (arg0: Common.Color.Legacy) => void) {
     super();
     this.contrastInfo = contrastInfo;
-    this.elementInternal = contentElement.createChild('div', 'spectrum-contrast-details collapsed') as HTMLElement;
+    this.elementInternal = contentElement.createChild('div', 'spectrum-contrast-details collapsed');
 
     this.toggleMainColorPicker = toggleMainColorPickerCallback;
 
@@ -217,7 +217,7 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   }
 
   private createFixColorButton(parent: Element, suggestedColor: Common.Color.Color): HTMLElement {
-    const button = parent.createChild('button', 'contrast-fix-button') as HTMLElement;
+    const button = parent.createChild('button', 'contrast-fix-button');
     const formattedColor = suggestedColor.asString(this.contrastInfo.colorFormat());
     const suggestedColorString = formattedColor ? formattedColor + ' ' : '';
     const label = i18nString(UIStrings.useSuggestedColorStoFixLow, {PH1: suggestedColorString});
@@ -484,8 +484,8 @@ export class Swatch {
   constructor(parentElement: Element) {
     this.parentElement = parentElement;
     this.swatchElement = parentElement.createChild('span', 'swatch contrast swatch-inner-white');
-    this.swatchInnerElement = this.swatchElement.createChild('span', 'swatch-inner') as HTMLElement;
-    this.textPreview = this.swatchElement.createChild('div', 'text-preview') as HTMLElement;
+    this.swatchInnerElement = this.swatchElement.createChild('span', 'swatch-inner');
+    this.textPreview = this.swatchElement.createChild('div', 'text-preview');
     this.textPreview.textContent = 'Aa';
   }
 

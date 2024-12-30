@@ -1316,8 +1316,7 @@ export class SecurityMainView extends UI.Widget.VBox {
       return;
     }
 
-    const requestsAnchor =
-        element.createChild('button', 'security-mixed-content devtools-link text-button link-style') as HTMLElement;
+    const requestsAnchor = element.createChild('button', 'security-mixed-content devtools-link text-button link-style');
     UI.ARIAUtils.markAsLink(requestsAnchor);
     requestsAnchor.tabIndex = 0;
     requestsAnchor.textContent = i18nString(UIStrings.viewDRequestsInNetworkPanel, {n: filterRequestCount});

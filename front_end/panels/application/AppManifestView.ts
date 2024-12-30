@@ -1259,7 +1259,7 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
       await this.overlayModel?.toggleWindowControlsToolbar(wcoOsCheckbox.checkboxElement.checked);
     });
 
-    const osSelectElement = (wcoOsCheckbox.createChild('select', 'chrome-select') as HTMLSelectElement);
+    const osSelectElement = wcoOsCheckbox.createChild('select', 'chrome-select');
     osSelectElement.appendChild(UI.UIUtils.createOption('Windows', SDK.OverlayModel.EmulatedOSType.WINDOWS, 'windows'));
     osSelectElement.appendChild(UI.UIUtils.createOption('macOS', SDK.OverlayModel.EmulatedOSType.MAC, 'macos'));
     osSelectElement.appendChild(UI.UIUtils.createOption('Linux', SDK.OverlayModel.EmulatedOSType.LINUX, 'linux'));

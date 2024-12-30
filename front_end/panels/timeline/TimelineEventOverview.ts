@@ -162,7 +162,7 @@ export class TimelineEventOverviewCPUActivity extends TimelineEventOverview {
     // the PerformanceModel will be removed.
     super('cpu-activity', i18nString(UIStrings.cpu));
     this.#parsedTrace = parsedTrace;
-    this.backgroundCanvas = (this.element.createChild('canvas', 'fill background') as HTMLCanvasElement);
+    this.backgroundCanvas = this.element.createChild('canvas', 'fill background');
     this.#start = Trace.Helpers.Timing.traceWindowMilliSeconds(parsedTrace.Meta.traceBounds).min;
     this.#end = Trace.Helpers.Timing.traceWindowMilliSeconds(parsedTrace.Meta.traceBounds).max;
   }

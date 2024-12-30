@@ -68,7 +68,7 @@ export class AnimationUI {
         this.#keyframes.reverse();
       }
     }
-    this.#nameElement = (parentElement.createChild('div', 'animation-name') as HTMLElement);
+    this.#nameElement = parentElement.createChild('div', 'animation-name');
     this.#nameElement.textContent = this.#animationInternal.name();
 
     this.#svg = UI.UIUtils.createSVGChild(parentElement, 'svg', 'animation-ui');

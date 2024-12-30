@@ -149,13 +149,13 @@ export class BrickBreaker extends HTMLElement {
   #currentPalette: ColorPalette;
   constructor(private timelineFlameChart: FlameChart) {
     super();
-    this.#canvas = (this.createChild('canvas', 'fill') as HTMLCanvasElement);
+    this.#canvas = this.createChild('canvas', 'fill');
     this.#ctx = this.#canvas.getContext('2d') as CanvasRenderingContext2D;
     this.#helperCanvas = document.createElement('canvas');
     this.#helperCanvasCtx = this.#helperCanvas.getContext('2d') as CanvasRenderingContext2D;
     const randomPaletteIndex = Math.floor(Math.random() * colorPallettes.length);
     this.#currentPalette = colorPallettes[randomPaletteIndex];
-    this.#scorePanel = (this.createChild('div') as HTMLElement);
+    this.#scorePanel = this.createChild('div');
     this.#scorePanel.classList.add('scorePanel');
     this.#scorePanel.style.borderImage =
         'linear-gradient(' + this.#currentPalette.mediumDarker + ',' + this.#currentPalette.dark + ') 1';
@@ -163,7 +163,7 @@ export class BrickBreaker extends HTMLElement {
   }
 
   initButton(): void {
-    const button = (this.createChild('div') as HTMLElement);
+    const button = this.createChild('div');
     button.classList.add('game-close-button');
     button.innerHTML = '<b><span style=\'font-size: 1.2em; color: white\'>x</span></b>';
     button.style.background = this.#currentPalette.dark;

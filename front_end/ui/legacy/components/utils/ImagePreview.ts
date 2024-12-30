@@ -119,10 +119,10 @@ export class ImagePreview {
         const container = shadowRoot.createChild('table');
         container.className = 'image-preview-container';
 
-        const imageRow = (container.createChild('tr').createChild('td', 'image-container') as HTMLTableDataCellElement);
+        const imageRow = container.createChild('tr').createChild('td', 'image-container');
         imageRow.colSpan = 2;
 
-        const link = (imageRow.createChild('div', ` ${align}`) as HTMLLinkElement);
+        const link = imageRow.createChild('div', ` ${align}`);
         link.title = displayName;
         link.appendChild(imageElement);
 

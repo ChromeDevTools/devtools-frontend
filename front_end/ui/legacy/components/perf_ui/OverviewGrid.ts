@@ -202,11 +202,11 @@ export class Window extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
     this.parentElement.addEventListener('dblclick', this.resizeWindowMaximum.bind(this), true);
     ThemeSupport.ThemeSupport.instance().appendStyle(this.parentElement, overviewGridStyles);
 
-    this.leftResizeElement = parentElement.createChild('div', 'overview-grid-window-resizer') as HTMLElement;
+    this.leftResizeElement = parentElement.createChild('div', 'overview-grid-window-resizer');
     UI.UIUtils.installDragHandle(
         this.leftResizeElement, this.resizerElementStartDragging.bind(this), this.leftResizeElementDragging.bind(this),
         null, 'ew-resize');
-    this.rightResizeElement = (parentElement.createChild('div', 'overview-grid-window-resizer') as HTMLElement);
+    this.rightResizeElement = parentElement.createChild('div', 'overview-grid-window-resizer');
     UI.UIUtils.installDragHandle(
         this.rightResizeElement, this.resizerElementStartDragging.bind(this),
         this.rightResizeElementDragging.bind(this), null, 'ew-resize');
@@ -236,7 +236,7 @@ export class Window extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   }
 
   enableCreateBreadcrumbsButton(): HTMLElement {
-    this.curtainsRange = (this.createBreadcrumbButton.createChild('div') as HTMLElement);
+    this.curtainsRange = this.createBreadcrumbButton.createChild('div');
     this.breadcrumbZoomIcon = new IconButton.Icon.Icon();
     this.breadcrumbZoomIcon.data = {
       iconName: 'zoom-in',

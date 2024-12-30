@@ -119,9 +119,10 @@ export class Dialog extends Common.ObjectWrapper.eventMixin<EventTypes, typeof G
   }
 
   addCloseButton(): void {
-    const closeButton =
-        (this.contentElement.createChild('div', 'dialog-close-button', 'dt-close-button') as DevToolsCloseButton);
+    const closeButton = document.createElement('div', {is: 'dt-close-button'}) as DevToolsCloseButton;
+    closeButton.classList.add('dialog-close-button');
     closeButton.addEventListener('click', () => this.hide(), false);
+    this.contentElement.appendChild(closeButton);
   }
 
   setOutsideTabIndexBehavior(tabIndexBehavior: OutsideTabIndexBehavior): void {

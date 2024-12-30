@@ -111,7 +111,7 @@ export const linkifyNodeReference = function(node: SDK.DOMModel.DOMNode|null, op
   root.classList.add('monospace');
   const shadowRoot =
       UI.UIUtils.createShadowRootWithCoreStyles(root, {cssFile: [domLinkifierStyles], delegatesFocus: undefined});
-  const link = (shadowRoot.createChild('button', 'node-link text-button link-style') as HTMLButtonElement);
+  const link = shadowRoot.createChild('button', 'node-link text-button link-style');
   link.classList.toggle('dynamic-link', options.isDynamicLink);
   link.setAttribute('jslog', `${VisualLogging.link('node').track({click: true, keydown: 'Enter'})}`);
 
@@ -139,7 +139,7 @@ export const linkifyDeferredNodeReference = function(
   const root = document.createElement('div');
   const shadowRoot =
       UI.UIUtils.createShadowRootWithCoreStyles(root, {cssFile: [domLinkifierStyles], delegatesFocus: undefined});
-  const link = (shadowRoot.createChild('button', 'node-link text-button link-style') as HTMLDivElement);
+  const link = shadowRoot.createChild('button', 'node-link text-button link-style');
   link.setAttribute('jslog', `${VisualLogging.link('node').track({click: true})}`);
   link.createChild('slot');
   link.addEventListener('click', deferredNode.resolve.bind(deferredNode, onDeferredNodeResolved), false);

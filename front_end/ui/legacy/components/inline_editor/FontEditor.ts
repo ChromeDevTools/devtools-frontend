@@ -473,7 +473,7 @@ class FontPropertyInputs {
       resizeCallback: () => void, hasUnits?: boolean) {
     this.showSliderMode = true;
     const propertyField = field.createChild('div', 'shadow-editor-field shadow-editor-flex-field');
-    this.errorText = (field.createChild('div', 'error-text') as HTMLElement);
+    this.errorText = field.createChild('div', 'error-text');
     this.errorText.textContent = i18nString(UIStrings.PleaseEnterAValidValueForSText, {PH1: propertyName});
     this.errorText.hidden = true;
     UI.ARIAUtils.markAsAlert(this.errorText);
@@ -741,7 +741,7 @@ class FontPropertyInputs {
   }
 
   private createTypeToggle(field: Element, jslogContext: string): void {
-    const displaySwitcher = field.createChild('div', 'spectrum-switcher') as HTMLDivElement;
+    const displaySwitcher = field.createChild('div', 'spectrum-switcher');
     const icon = new IconButton.Icon.Icon();
     icon.data = {iconName: 'fold-more', color: 'var(--icon-default)', width: '16px', height: '16px'};
     displaySwitcher.appendChild(icon);

@@ -213,7 +213,7 @@ export class TimelinePaintImageView extends UI.Widget.Widget {
 
     this.contentElement.classList.add('fill', 'paint-profiler-image-view');
     this.imageContainer = this.contentElement.createChild('div', 'paint-profiler-image-container');
-    this.imageElement = (this.imageContainer.createChild('img') as HTMLImageElement);
+    this.imageElement = this.imageContainer.createChild('img');
     this.maskElement = this.imageContainer.createChild('div');
     this.imageElement.addEventListener('load', this.updateImagePosition.bind(this), false);
     this.transformController =

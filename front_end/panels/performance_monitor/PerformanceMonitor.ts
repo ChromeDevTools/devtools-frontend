@@ -93,7 +93,7 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox implements
     this.gridColor = ThemeSupport.ThemeSupport.instance().getComputedValue('--divider-line');
     this.controlPane = new ControlPane(this.contentElement);
     const chartContainer = this.contentElement.createChild('div', 'perfmon-chart-container');
-    this.canvas = chartContainer.createChild('canvas') as HTMLCanvasElement;
+    this.canvas = chartContainer.createChild('canvas');
     this.canvas.tabIndex = -1;
     UI.ARIAUtils.setLabel(this.canvas, i18nString(UIStrings.graphsDisplayingARealtimeViewOf));
     this.contentElement.createChild('div', 'perfmon-chart-suspend-overlay fill').createChild('div').textContent =
@@ -636,7 +636,7 @@ export class MetricIndicator {
   constructor(parent: Element, info: ChartInfo, active: boolean, onToggle: (arg0: boolean) => void) {
     this.color = info.color || info.metrics[0].color;
     this.info = info;
-    this.element = parent.createChild('div', 'perfmon-indicator') as HTMLElement;
+    this.element = parent.createChild('div', 'perfmon-indicator');
     const chartName = info.metrics[0].name;
     this.swatchElement = UI.UIUtils.CheckboxLabel.create(info.title, active, undefined, chartName);
     this.element.appendChild(this.swatchElement);
@@ -644,7 +644,7 @@ export class MetricIndicator {
       onToggle(this.swatchElement.checkboxElement.checked);
       this.element.classList.toggle('active');
     });
-    this.valueElement = this.element.createChild('div', 'perfmon-indicator-value') as HTMLElement;
+    this.valueElement = this.element.createChild('div', 'perfmon-indicator-value');
     this.valueElement.style.color = this.color;
     this.element.classList.toggle('active', active);
   }

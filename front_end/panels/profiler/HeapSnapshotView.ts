@@ -1960,7 +1960,7 @@ export class HeapAllocationStackView extends UI.Widget.Widget {
     const stackDiv = this.element.createChild('div', 'heap-allocation-stack');
     stackDiv.addEventListener('keydown', this.onStackViewKeydown.bind(this), false);
     for (const frame of frames) {
-      const frameDiv = (stackDiv.createChild('div', 'stack-frame') as HTMLElement);
+      const frameDiv = stackDiv.createChild('div', 'stack-frame');
       this.frameElements.push(frameDiv);
       frameDiv.tabIndex = -1;
       const name = frameDiv.createChild('div');

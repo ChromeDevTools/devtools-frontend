@@ -109,7 +109,7 @@ export class PaintProfilerView extends Common.ObjectWrapper.eventMixin<EventType
     this.contentElement.appendChild(this.pieChart);
 
     this.showImageCallback = showImageCallback;
-    this.canvas = this.canvasContainer.createChild('canvas', 'fill') as HTMLCanvasElement;
+    this.canvas = this.canvasContainer.createChild('canvas', 'fill');
     this.context = this.canvas.getContext('2d') as CanvasRenderingContext2D;
     this.selectionWindowInternal = new PerfUI.OverviewGrid.Window(this.canvasContainer);
     this.selectionWindowInternal.addEventListener(

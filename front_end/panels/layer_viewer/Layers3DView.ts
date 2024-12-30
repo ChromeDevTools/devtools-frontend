@@ -150,7 +150,7 @@ export class Layers3DView extends Common.ObjectWrapper.eventMixin<EventTypes, ty
     this.transformController.addEventListener(TransformControllerEvents.TRANSFORM_CHANGED, this.update, this);
 
     this.initToolbar();
-    this.canvasElement = this.contentElement.createChild('canvas') as HTMLCanvasElement;
+    this.canvasElement = this.contentElement.createChild('canvas');
     this.canvasElement.tabIndex = 0;
     this.canvasElement.addEventListener('dblclick', this.onDoubleClick.bind(this), false);
     this.canvasElement.addEventListener('mousedown', this.onMouseDown.bind(this), false);

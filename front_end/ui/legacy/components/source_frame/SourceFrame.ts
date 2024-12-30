@@ -1067,14 +1067,15 @@ export class SelfXssWarningDialog {
     const content = shadowRoot.createChild('div', 'widget');
 
     const result = await new Promise<boolean>(resolve => {
-      const closeButton =
-          content.createChild('div', 'dialog-close-button', 'dt-close-button') as UI.UIUtils.DevToolsCloseButton;
+      const closeButton = document.createElement('div', {is: 'dt-close-button'}) as UI.UIUtils.DevToolsCloseButton;
+      closeButton.classList.add('dialog-close-button');
       closeButton.setTabbable(true);
       self.onInvokeElement(closeButton, event => {
         dialog.hide();
         event.consume(true);
         resolve(false);
       });
+      content.appendChild(closeButton);
 
       content.createChild('div', 'title').textContent = i18nString(UIStrings.doYouTrustThisCode);
       content.createChild('div', 'message').textContent =

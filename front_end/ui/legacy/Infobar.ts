@@ -10,7 +10,7 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as ARIAUtils from './ARIAUtils.js';
 import infobarStyles from './infobar.css.legacy.js';
 import {Keys} from './KeyboardShortcut.js';
-import {createShadowRootWithCoreStyles, createTextButton} from './UIUtils.js';
+import {createShadowRootWithCoreStyles, createTextButton, type DevToolsCloseButton} from './UIUtils.js';
 import type {Widget} from './Widget.js';
 
 const UIStrings = {
@@ -47,7 +47,7 @@ export class Infobar {
   private readonly disableSetting: Common.Settings.Setting<any>|null;
   private readonly closeContainer: HTMLElement;
   private readonly toggleElement: Buttons.Button.Button;
-  private readonly closeButton: HTMLElement;
+  private readonly closeButton: DevToolsCloseButton;
   private closeCallback: (() => void)|null;
   #firstFocusableElement: HTMLElement|null = null;
   private parentView?: Widget;
@@ -123,15 +123,11 @@ export class Infobar {
         {className: 'hidden show-more', jslogContext: 'show-more', variant: Buttons.Button.Variant.TEXT});
     this.toggleElement.setAttribute('role', 'link');
     this.closeContainer.appendChild(this.toggleElement);
-    this.closeButton = document.createElement('div', {is: 'dt-close-button'});
-    this.closeButton.classList.add('close-button');
+    this.closeButton = this.closeContainer.createChild('dt-close-button', 'close-button');
     this.closeButton.hidden = !isCloseable;
-    // @ts-ignore This is a custom element defined in UIUitls.js that has a `setTabbable` that TS doesn't
-    //            know about.
     this.closeButton.setTabbable(true);
     ARIAUtils.setDescription(this.closeButton, i18nString(UIStrings.close));
     self.onInvokeElement(this.closeButton, this.dispose.bind(this));
-    this.closeContainer.appendChild(this.closeButton);
 
     if (type !== Type.ISSUE) {
       this.contentElement.tabIndex = 0;

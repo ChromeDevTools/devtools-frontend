@@ -679,11 +679,11 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
 
     await this.#clearActiveAuthenticator();
     const activeButtonContainer = headerElement.createChild('div', 'active-button-container');
-    const activeLabel =
-        UI.UIUtils.createRadioLabel(`active-authenticator-${authenticatorId}`, i18nString(UIStrings.active));
-    activeLabel.radioElement.addEventListener('change', this.#setActiveAuthenticator.bind(this, authenticatorId));
+    const {label: activeLabel, radio: activeRadio} = UI.UIUtils.createRadioButton(
+        'active-authenticator', i18nString(UIStrings.active), 'webauthn.active-authenticator');
+    activeRadio.addEventListener('change', this.#setActiveAuthenticator.bind(this, authenticatorId));
+    activeRadio.checked = true;
     activeButtonContainer.appendChild(activeLabel);
-    (activeLabel.radioElement as HTMLInputElement).checked = true;
     this.#activeAuthId = authenticatorId;  // Newly added authenticator is automatically set as active.
 
     const removeButton = headerElement.createChild('button', 'text-button');
@@ -823,7 +823,7 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
 
   #handleSaveNameButton(
       titleElement: Element, nameField: HTMLInputElement, editName: UI.Toolbar.ToolbarItem,
-      saveName: UI.Toolbar.ToolbarItem, activeLabel: UI.UIUtils.DevToolsRadioButton): void {
+      saveName: UI.Toolbar.ToolbarItem, activeLabel: HTMLLabelElement): void {
     const name = nameField.value;
     if (!name) {
       return;
@@ -835,9 +835,9 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
     this.#updateActiveLabelTitle(activeLabel, name);
   }
 
-  #updateActiveLabelTitle(activeLabel: UI.UIUtils.DevToolsRadioButton, authenticatorName: string): void {
+  #updateActiveLabelTitle(activeLabel: HTMLLabelElement, authenticatorName: string): void {
     UI.Tooltip.Tooltip.install(
-        activeLabel.radioElement, i18nString(UIStrings.setSAsTheActiveAuthenticator, {PH1: authenticatorName}));
+        activeLabel, i18nString(UIStrings.setSAsTheActiveAuthenticator, {PH1: authenticatorName}));
   }
 
   /**
@@ -919,7 +919,7 @@ export class WebauthnPaneImpl extends UI.Widget.VBox implements
   #updateActiveButtons(): void {
     const authenticators = this.#authenticatorsView.getElementsByClassName('authenticator-section');
     Array.from(authenticators).forEach((authenticator: Element) => {
-      const button = (authenticator.querySelector('input.dt-radio-button') as HTMLInputElement);
+      const button = (authenticator.querySelector('input[type="radio"]') as HTMLInputElement);
       if (!button) {
         return;
       }

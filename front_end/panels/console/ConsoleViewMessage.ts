@@ -1546,8 +1546,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     }
 
     if (!this.repeatCountElement) {
-      this.repeatCountElement =
-          (document.createElement('span', {is: 'dt-small-bubble'}) as UI.UIUtils.DevToolsSmallBubble);
+      this.repeatCountElement = document.createElement('dt-small-bubble');
       this.repeatCountElement.classList.add('console-message-repeat-count');
       switch (this.message.level) {
         case Protocol.Log.LogEntryLevel.Warning:

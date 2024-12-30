@@ -461,7 +461,7 @@ class FontPropertyInputs {
   private readonly boundUpdateCallback: (arg0: string, arg1: string) => void;
   private readonly boundResizeCallback: () => void;
   private readonly selectedNode: SDK.DOMModel.DOMNode|null;
-  private sliderInput: UI.UIUtils.DevToolsSlider;
+  private sliderInput: HTMLInputElement;
   private textBoxInput: HTMLInputElement;
   private unitInput: HTMLSelectElement;
   private selectorInput: HTMLSelectElement;
@@ -565,19 +565,19 @@ class FontPropertyInputs {
     return {min, max, step};
   }
 
-  private createSliderInput(field: Element, jslogContext: string): UI.UIUtils.DevToolsSlider {
+  private createSliderInput(field: Element, jslogContext: string): HTMLInputElement {
     const min = this.initialRange.min;
     const max = this.initialRange.max;
     const step = this.initialRange.step;
 
-    const slider = (UI.UIUtils.createSlider(min, max, -1) as UI.UIUtils.DevToolsSlider);
-    slider.sliderElement.step = step.toString();
-    slider.sliderElement.tabIndex = 0;
+    const slider = UI.UIUtils.createSlider(min, max, -1);
+    slider.step = step.toString();
+    slider.tabIndex = 0;
     if (this.propertyInfo.value) {
-      slider.value = parseFloat(this.propertyInfo.value);
+      slider.value = this.propertyInfo.value;
     } else {
       const newValue = (min + max) / 2;
-      slider.value = newValue;
+      slider.value = newValue.toString();
     }
     slider.addEventListener('input', event => {
       this.onSliderInput(event, /** apply= */ false);
@@ -597,8 +597,8 @@ class FontPropertyInputs {
       }
     });
     field.appendChild(slider);
-    UI.ARIAUtils.setLabel(slider.sliderElement, i18nString(UIStrings.sSliderInput, {PH1: this.propertyName}));
-    slider.sliderElement.setAttribute('jslog', `${VisualLogging.slider(jslogContext).track({change: true})}`);
+    UI.ARIAUtils.setLabel(slider, i18nString(UIStrings.sSliderInput, {PH1: this.propertyName}));
+    slider.setAttribute('jslog', `${VisualLogging.slider(jslogContext).track({change: true})}`);
     return slider;
   }
 
@@ -676,9 +676,8 @@ class FontPropertyInputs {
     if (event.currentTarget) {
       const value = (event.currentTarget as HTMLInputElement).value;
       this.textBoxInput.value = '';
-      const newValue =
-          (parseFloat(this.sliderInput.sliderElement.min) + parseFloat(this.sliderInput.sliderElement.max)) / 2;
-      this.sliderInput.value = newValue;
+      const newValue = (parseFloat(this.sliderInput.min) + parseFloat(this.sliderInput.max)) / 2;
+      this.sliderInput.value = newValue.toString();
       this.setInvalidTextBoxInput(false);
       this.boundUpdateCallback(this.propertyName, value);
     }
@@ -706,12 +705,12 @@ class FontPropertyInputs {
       const units = value === '' ? '' : this.unitInput.value;
       const valueString = value + units;
       if (this.staticParams.regex.test(valueString) || (value === '' && !target.validationMessage.length)) {
-        if (parseFloat(value) > parseFloat(this.sliderInput.sliderElement.max)) {
-          this.sliderInput.sliderElement.max = value;
-        } else if (parseFloat(value) < parseFloat(this.sliderInput.sliderElement.min)) {
-          this.sliderInput.sliderElement.min = value;
+        if (parseFloat(value) > parseFloat(this.sliderInput.max)) {
+          this.sliderInput.max = value;
+        } else if (parseFloat(value) < parseFloat(this.sliderInput.min)) {
+          this.sliderInput.min = value;
         }
-        this.sliderInput.value = parseFloat(value);
+        this.sliderInput.value = value;
         this.selectorInput.value = '';
         this.setInvalidTextBoxInput(false);
         this.boundUpdateCallback(this.propertyName, valueString);
@@ -794,13 +793,13 @@ class FontPropertyInputs {
       hasValue = true;
       newValue = parseFloat((parseFloat(this.textBoxInput.value) * multiplier).toFixed(roundingPrecision));
     }
-    this.sliderInput.sliderElement.min = Math.min(newValue, newMin).toString();
-    this.sliderInput.sliderElement.max = Math.max(newValue, newMax).toString();
-    this.sliderInput.sliderElement.step = newStep.toString();
+    this.sliderInput.min = Math.min(newValue, newMin).toString();
+    this.sliderInput.max = Math.max(newValue, newMax).toString();
+    this.sliderInput.step = newStep.toString();
     this.textBoxInput.step = newStep.toString();
     if (hasValue) {
       this.textBoxInput.value = newValue.toString();
     }
-    this.sliderInput.value = newValue;
+    this.sliderInput.value = newValue.toString();
   }
 }

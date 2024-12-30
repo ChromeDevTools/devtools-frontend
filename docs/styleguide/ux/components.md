@@ -74,30 +74,27 @@ space.
 
 ###### Primary button
 
-Usage within HTML environment:
+Usage with lit-html:
 
-```html
-<devtools-button
-      class="some-class"
-      .variant=${Buttons.Button.Variant.PRIMARY}
-                 .title=${i18nString(UIStrings.someString)}
-      .jslogContext=${'some-context')
-      @click=${handleClick()}
-      )></devtools-button>
+```js
+html`<devtools-button class="some-class"
+                      .variant=${Buttons.Button.Variant.PRIMARY}
+                      .title=${i18nString(UIStrings.someString)}
+                      .jslogContext=${'some-context')}
+                      @click=${onClick})></devtools-button>`
 ```
 
-Usage within Typescript environment (mostly when working with legacy code):
+Usage with the imperative API:
 
-```ts
-  const button = new Buttons.Button.Button();
-  button.data = {
-      variant: Buttons.Button.Variant.PRIMARY,
-      title: i18nString(UIStrings.someString),
-      jslogContext: 'some-context',
-    };
-  button.classList.add(‘some-class’);
-  button.addEventListener(‘click’, () => handleClick());
-
+```js
+const button = new Buttons.Button.Button();
+button.data = {
+    variant: Buttons.Button.Variant.PRIMARY,
+    title: i18nString(UIStrings.someString),
+    jslogContext: 'some-context',
+  };
+button.classList.add('some-class');
+button.addEventListener('click', event => onClick(event));
 ```
 
 #### Design guidelines
@@ -139,3 +136,82 @@ Usage within Typescript environment (mostly when working with legacy code):
   * [Buttons](https://www.figma.com/design/A5iQBBNAe5zPFpJvUzUgW8/CDT-design-kit?node-id=481-2167&m=dev)
   * [Icon
     buttons](https://www.figma.com/design/A5iQBBNAe5zPFpJvUzUgW8/CDT-design-kit?node-id=571-616&m=dev)
+
+## Radio Buttons
+
+![Radio Button component](images/radio-buttons-variations.png)
+
+### Usage
+
+#### Developer guidelines
+
+##### Dos and Don'ts
+
+###### Do
+
+  * Use [`<input type="radio">`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/radio)
+    nested within a [`<label>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/label)
+    for radio buttons, together with core styles.
+
+###### Don'ts
+
+  * Override the default colors.
+
+##### Developer examples
+
+###### Primary button
+
+Usage with lit-html:
+
+```js
+const jslog = VisualLogging.toggle().track({change: true}).context(jslogContext);
+html`<label><input type="radio" name=${name} jslog=${jslog}>${title}</label>`
+```
+
+Usage with the imperative API:
+
+```js
+const {label, radio} = UI.UItils.createRadioButton(name, title, jslogContext);
+radio.addEventListener('change', event => onChange(event))
+```
+
+## Sliders
+
+![Slider component](images/sliders-variations.png)
+
+### Usage
+
+#### Developer guidelines
+
+##### Dos and Don'ts
+
+###### Do
+
+  * Use [`<input type="range">`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/range)
+    for sliders, together with core styles.
+
+###### Don'ts
+
+  * Override the default colors.
+
+##### Developer examples
+
+###### Primary button
+
+Usage with lit-html:
+
+```js
+html`<input type="range"
+            min=${min}
+            max=${max}
+            tabindex=${tabIndex}
+            @change=${onChange}>`
+```
+
+Usage with the imperative API:
+
+```js
+const slider = UI.UItils.createSlider(min, max, tabIndex);
+slider.addEventListener('change', event => onChange(event))
+```
+

@@ -175,7 +175,7 @@ export class CSSShadowEditor extends Common.ObjectWrapper.eventMixin<EventTypes,
     slider.addEventListener('input', this.onSliderInput.bind(this), false);
     slider.setAttribute('jslog', `${VisualLogging.slider().track({click: true, drag: true}).context(jslogContext)}`);
     field.appendChild(slider);
-    return slider as HTMLInputElement;
+    return slider;
   }
 
   override wasShown(): void {

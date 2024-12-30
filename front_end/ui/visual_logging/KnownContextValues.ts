@@ -3693,6 +3693,7 @@ export const knownContextValues = new Set([
   'webauthn',
   'webauthn-authenticators',
   'webauthn-pane',
+  'webauthn.active-authenticator',
   'webauthn.add-authenticator',
   'webauthn.export-credential',
   'webauthn.remove-authenticator',

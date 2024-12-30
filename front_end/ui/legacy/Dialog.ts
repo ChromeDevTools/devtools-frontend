@@ -37,7 +37,6 @@ import {GlassPane, PointerEventsBehavior} from './GlassPane.js';
 import {InspectorView} from './InspectorView.js';
 import {KeyboardShortcut, Keys} from './KeyboardShortcut.js';
 import type {SplitWidget} from './SplitWidget.js';
-import type {DevToolsCloseButton} from './UIUtils.js';
 import {WidgetFocusRestorer} from './Widget.js';
 
 export class Dialog extends Common.ObjectWrapper.eventMixin<EventTypes, typeof GlassPane>(GlassPane) {
@@ -119,10 +118,8 @@ export class Dialog extends Common.ObjectWrapper.eventMixin<EventTypes, typeof G
   }
 
   addCloseButton(): void {
-    const closeButton = document.createElement('div', {is: 'dt-close-button'}) as DevToolsCloseButton;
-    closeButton.classList.add('dialog-close-button');
-    closeButton.addEventListener('click', () => this.hide(), false);
-    this.contentElement.appendChild(closeButton);
+    const closeButton = this.contentElement.createChild('dt-close-button', 'dialog-close-button');
+    closeButton.addEventListener('click', this.hide.bind(this), false);
   }
 
   setOutsideTabIndexBehavior(tabIndexBehavior: OutsideTabIndexBehavior): void {

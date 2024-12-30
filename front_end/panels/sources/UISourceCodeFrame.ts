@@ -786,12 +786,9 @@ function renderMessage(message: RowMessage, count: number): HTMLElement {
     icon.classList.add('text-editor-row-message-icon');
     icon.addEventListener('click', () => (message.clickHandler() || Math.min)());
   } else {
-    const repeatCountElement =
-        document.createElement('span', {is: 'dt-small-bubble'}) as UI.UIUtils.DevToolsSmallBubble;
+    const repeatCountElement = element.createChild('dt-small-bubble', 'text-editor-row-message-repeat-count');
     repeatCountElement.textContent = String(count);
-    repeatCountElement.classList.add('text-editor-row-message-repeat-count');
     repeatCountElement.style.flexShrink = '0';
-    element.appendChild(repeatCountElement);
     repeatCountElement.type = getBubbleTypePerLevel(message.level());
   }
   const linesContainer = element.createChild('div');

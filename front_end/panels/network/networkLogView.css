@@ -61,7 +61,7 @@
   border-bottom: 0;
 }
 
-.network-summary-bar span[is="dt-icon-label"] {
+.network-summary-bar dt-icon-label {
   margin-right: 6px;
 }
 

@@ -476,8 +476,10 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
    * Navigation radio buttons located in the shortcuts dialog.
    */
   #navigationRadioButtons = document.createElement('form');
-  #modernNavRadioButton = UI.UIUtils.createRadioLabel('flamechart-selected-navigation', 'Modern');
-  #classicNavRadioButton = UI.UIUtils.createRadioLabel('flamechart-selected-navigation', 'Classic');
+  #modernNavRadioButton =
+      UI.UIUtils.createRadioButton('flamechart-selected-navigation', 'Modern', 'timeline.select-modern-navigation');
+  #classicNavRadioButton =
+      UI.UIUtils.createRadioButton('flamechart-selected-navigation', 'Classic', 'timeline.select-classic-navigation');
 
   #onMainEntryHovered: (event: Common.EventTarget.EventTargetEvent<number>) => void;
 
@@ -1167,21 +1169,17 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.#navigationRadioButtons.classList.add('nav-radio-buttons');
     UI.ARIAUtils.markAsRadioGroup(this.#navigationRadioButtons);
     // Change EventListener is only triggered when the radio button is selected
-    this.#modernNavRadioButton.radioElement.addEventListener('change', () => {
+    this.#modernNavRadioButton.radio.addEventListener('change', () => {
       this.#shortcutsDialog.data = {shortcuts: this.#getShortcutsInfo(/* isNavClassic */ false)};
       Common.Settings.moduleSetting('flamechart-selected-navigation').set('modern');
     });
-    this.#classicNavRadioButton.radioElement.addEventListener('change', () => {
+    this.#classicNavRadioButton.radio.addEventListener('change', () => {
       this.#shortcutsDialog.data = {shortcuts: this.#getShortcutsInfo(/* isNavClassic */ true)};
       Common.Settings.moduleSetting('flamechart-selected-navigation').set('classic');
     });
 
-    this.#navigationRadioButtons.appendChild(this.#modernNavRadioButton);
-    this.#modernNavRadioButton.setAttribute(
-        'jslog', `${VisualLogging.action().track({click: true}).context('timeline.select-modern-navigation')}`);
-    this.#navigationRadioButtons.appendChild(this.#classicNavRadioButton);
-    this.#classicNavRadioButton.setAttribute(
-        'jslog', `${VisualLogging.action().track({click: true}).context('timeline.select-classic-navigation')}`);
+    this.#navigationRadioButtons.appendChild(this.#modernNavRadioButton.label);
+    this.#navigationRadioButtons.appendChild(this.#classicNavRadioButton.label);
 
     this.#userHadShortcutsDialogOpenedOnce.set(true);
     return this.#navigationRadioButtons;
@@ -1190,11 +1188,11 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
   #updateNavigationSettingSelection(): void {
     const currentNavSetting = Common.Settings.moduleSetting('flamechart-selected-navigation').get();
     if (currentNavSetting === 'classic') {
-      this.#classicNavRadioButton.radioElement.checked = true;
+      this.#classicNavRadioButton.radio.checked = true;
       Host.userMetrics.navigationSettingAtFirstTimelineLoad(
           Host.UserMetrics.TimelineNavigationSetting.SWITCHED_TO_CLASSIC);
     } else if (currentNavSetting === 'modern') {
-      this.#modernNavRadioButton.radioElement.checked = true;
+      this.#modernNavRadioButton.radio.checked = true;
       Host.userMetrics.navigationSettingAtFirstTimelineLoad(
           Host.UserMetrics.TimelineNavigationSetting.SWITCHED_TO_MODERN);
     }

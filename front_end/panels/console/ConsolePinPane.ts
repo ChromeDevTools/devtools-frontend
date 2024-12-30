@@ -182,7 +182,7 @@ export class ConsolePin {
   private deletePinIcon: UI.UIUtils.DevToolsCloseButton;
 
   constructor(expression: string, private readonly pinPane: ConsolePinPane, private readonly focusOut: () => void) {
-    this.deletePinIcon = document.createElement('div', {is: 'dt-close-button'}) as UI.UIUtils.DevToolsCloseButton;
+    this.deletePinIcon = document.createElement('dt-close-button');
     this.deletePinIcon.classList.add('close-button');
     this.deletePinIcon.setTabbable(true);
     if (expression.length) {

@@ -218,7 +218,7 @@ export class NetworkPanel extends UI.Panel.Panel implements
   networkLogView: NetworkLogView;
   private readonly fileSelectorElement: HTMLElement;
   private readonly detailsWidget: UI.Widget.VBox;
-  private readonly closeButtonElement: HTMLDivElement;
+  private readonly closeButtonElement: UI.UIUtils.DevToolsCloseButton;
   private preserveLogSetting: Common.Settings.Setting<boolean>;
   recordLogSetting: Common.Settings.Setting<boolean>;
   private readonly throttlingSelect: UI.Toolbar.ToolbarComboBox;
@@ -322,7 +322,7 @@ export class NetworkPanel extends UI.Panel.Panel implements
     this.detailsWidget.element.classList.add('network-details-view');
     this.splitWidget.setMainWidget(this.detailsWidget);
 
-    this.closeButtonElement = document.createElement('div', {is: 'dt-close-button'});
+    this.closeButtonElement = document.createElement('dt-close-button');
     this.closeButtonElement.addEventListener('click', async () => {
       const action = UI.ActionRegistry.ActionRegistry.instance().getAction('network.hide-request-details');
       await action.execute();

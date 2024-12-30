@@ -99,7 +99,7 @@ describeWithMockConnection('StylePropertyTreeElement', () => {
            assert.exists(childValueElement);
            assert.notExists(childValueElement.querySelector(swatchSelector));
          };
-         assertNullSwatchOnChildAt(0, '[is="bezier-swatch"]');
+         assertNullSwatchOnChildAt(0, 'devtools-bezier-swatch');
          assertNullSwatchOnChildAt(1, '[is="css-shadow-swatch"]');
          assertNullSwatchOnChildAt(2, '[is="css-shadow-swatch"]');
          assertNullSwatchOnChildAt(3, 'devtools-css-length');

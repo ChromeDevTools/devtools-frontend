@@ -33,7 +33,6 @@ import '../../core/dom_extension/dom_extension.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as LitHtml from '../../ui/lit-html/lit-html.js';
 import * as Helpers from '../components/helpers/helpers.js';
-import * as RenderCoordinator from '../components/render_coordinator/render_coordinator.js';
 
 import {Constraints, Size} from './Geometry.js';
 import * as ThemeSupport from './theme_support/theme_support.js';
@@ -114,6 +113,7 @@ function decrementWidgetCounter(parentElement: Element, childElement: Element): 
 // Widget's `#updateComplete` private property to indicate that there's no
 // pending update.
 const UPDATE_COMPLETE = Promise.resolve(true);
+const UPDATE_COMPLETE_RESOLVE = (_result: boolean): void => {};
 
 export class Widget {
   readonly element: HTMLElement;
@@ -134,6 +134,8 @@ export class Widget {
   private invalidationsRequested?: boolean;
   private externallyManaged?: boolean;
   #updateComplete = UPDATE_COMPLETE;
+  #updateCompleteResolve = UPDATE_COMPLETE_RESOLVE;
+  #updateRequestID = 0;
   constructor(useShadowDom?: boolean, delegatesFocus?: boolean, element?: HTMLElement) {
     this.element = element || document.createElement('div');
     this.shadowRoot = this.element.shadowRoot;
@@ -438,6 +440,15 @@ export class Widget {
       return;
     }
 
+    // Cancel any pending update.
+    if (this.#updateRequestID !== 0) {
+      cancelAnimationFrame(this.#updateRequestID);
+      this.#updateCompleteResolve(true);
+      this.#updateCompleteResolve = UPDATE_COMPLETE_RESOLVE;
+      this.#updateComplete = UPDATE_COMPLETE;
+      this.#updateRequestID = 0;
+    }
+
     // hideOnDetach means that we should never remove element from dom - content
     // has iframes and detaching it will hurt.
     //
@@ -665,7 +676,7 @@ export class Widget {
    * Override this method in derived classes to perform the actual view update.
    *
    * This is not meant to be called directly, but invoked (indirectly) through
-   * the `RenderCoordinator` and executed with the animation frame. Instead,
+   * the `requestAnimationFrame` and executed with the animation frame. Instead,
    * use the `update()` method to schedule an asynchronous update.
    *
    * @return can either return nothing or a promise; in that latter case, the
@@ -673,6 +684,21 @@ export class Widget {
    *         before proceeding.
    */
   protected doUpdate(): Promise<void>|void {
+  }
+
+  async #updateCallback(): Promise<boolean> {
+    // Mark this update cycle as complete by assigning
+    // the marker sentinel.
+    this.#updateComplete = UPDATE_COMPLETE;
+    this.#updateCompleteResolve = UPDATE_COMPLETE_RESOLVE;
+    this.#updateRequestID = 0;
+
+    // Run the actual update logic.
+    await this.doUpdate();
+
+    // Resolve the `updateComplete` with `true` if no
+    // new update was triggered during this cycle.
+    return this.#updateComplete === UPDATE_COMPLETE;
   }
 
   /**
@@ -683,19 +709,10 @@ export class Widget {
    */
   update(): void {
     if (this.#updateComplete === UPDATE_COMPLETE) {
-      this.#updateComplete =
-          RenderCoordinator.write('Widget.update', async(): Promise<boolean> => {
-            // Mark this update cycle as complete by assigning
-            // the marker sentinel.
-            this.#updateComplete = UPDATE_COMPLETE;
-
-            // Run the actual update logic.
-            await this.doUpdate();
-
-            // Resolve the `updateComplete` with `true` if no
-            // new update was triggered during this cycle.
-            return this.#updateComplete === UPDATE_COMPLETE;
-          });
+      this.#updateComplete = new Promise((resolve, reject) => {
+        this.#updateCompleteResolve = resolve;
+        this.#updateRequestID = requestAnimationFrame(() => this.#updateCallback().then(resolve, reject));
+      });
     }
   }
 
@@ -713,7 +730,6 @@ export class Widget {
    * ```js
    * // Set up the test widget, and wait for the initial update cycle to complete.
    * const widget = new SomeWidget(someData);
-   * widget.show(someParentWidgetElement);
    * widget.update();
    * await widget.updateComplete;
    *

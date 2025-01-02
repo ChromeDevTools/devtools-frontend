@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
+import * as RenderCoordinator from '../components/render_coordinator/render_coordinator.js';
 
 import * as UI from './legacy.js';
 
@@ -57,6 +58,42 @@ describe('Widget', () => {
     widget.show(div);
 
     assert.throws(() => div.removeChildren());
+  });
+
+  describe('detach', () => {
+    it('cancels pending updates', async () => {
+      const widget = new UpdateWidget();
+      const doUpdate = sinon.spy(widget, 'doUpdate');
+      widget.markAsRoot();
+      widget.show(renderElementIntoDOM(document.createElement('main')));
+      widget.update();
+
+      widget.detach();
+
+      assert.isTrue(await widget.updateComplete);
+      assert.strictEqual(doUpdate.callCount, 0, 'Expected no calls to `doUpdate`');
+    });
+  });
+
+  describe('doUpdate', () => {
+    it('can safely use the `RenderCoordinator` primitives', async () => {
+      const widget = new (class extends UpdateWidget {
+        override async doUpdate(): Promise<void> {
+          const clientHeight = await RenderCoordinator.read(() => this.contentElement.clientHeight);
+          const clientWidth = await RenderCoordinator.read(() => this.contentElement.clientWidth);
+          await RenderCoordinator.write(() => {
+            this.contentElement.style.width = `${clientWidth + 1}px`;
+            this.contentElement.style.height = `${clientHeight + 1}px`;
+          });
+        }
+      })();
+      widget.markAsRoot();
+      widget.show(renderElementIntoDOM(document.createElement('main')));
+
+      widget.update();
+
+      assert.isTrue(await widget.updateComplete);
+    });
   });
 
   describe('update', () => {

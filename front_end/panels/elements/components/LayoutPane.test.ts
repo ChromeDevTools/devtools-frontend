@@ -11,11 +11,9 @@ import {
 } from '../../../testing/DOMHelpers.js';
 import {createTarget} from '../../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../../testing/MockConnection.js';
-import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
+import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 
 import * as ElementsComponents from './components.js';
-
-const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 describeWithMockConnection('LayoutPane', () => {
   let target: SDK.Target.Target;
@@ -35,7 +33,7 @@ describeWithMockConnection('LayoutPane', () => {
     const component = new ElementsComponents.LayoutPane.LayoutPane();
     renderElementIntoDOM(component);
     component.wasShown();
-    await coordinator.done({waitForWork: true});
+    await RenderCoordinator.done({waitForWork: true});
     return component;
   }
 
@@ -187,13 +185,15 @@ describeWithMockConnection('LayoutPane', () => {
   const updatesUiOnEvent = <T extends keyof SDK.OverlayModel.EventTypes>(
       event: Platform.TypeScriptUtilities.NoUnion<T>, inScope: boolean) => async () => {
     SDK.TargetManager.TargetManager.instance().setScopeTarget(inScope ? target : null);
+    const render = sinon.spy(ElementsComponents.LayoutPane.LayoutPane.prototype, 'render');
     await renderComponent();
-    const render = sinon.spy(coordinator, 'write');
+    await RenderCoordinator.done();
+    render.resetHistory();
     overlayModel.dispatchEventToListeners(
         event,
         ...[{nodeId: 42, enabled: true}] as unknown as
             Common.EventTarget.EventPayloadToRestParameters<SDK.OverlayModel.EventTypes, T>);
-    await new Promise<void>(resolve => setTimeout(resolve, 0));
+    await RenderCoordinator.done();
     assert.strictEqual(render.called, inScope);
   };
 

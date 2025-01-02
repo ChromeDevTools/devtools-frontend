@@ -11,14 +11,12 @@ import {
   describeWithMockConnection,
 } from '../../testing/MockConnection.js';
 import {getCellElementFromNodeAndColumnId, selectNodeByKey} from '../../testing/StorageItemsViewHelpers.js';
-import * as Coordinator from '../../ui/components/render_coordinator/render_coordinator.js';
+import * as RenderCoordinator from '../../ui/components/render_coordinator/render_coordinator.js';
 import type * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 
 import * as Resources from './application.js';
 
 import View = Resources.ExtensionStorageItemsView;
-
-const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 class ExtensionStorageItemsListener {
   #dispatcher: Common.ObjectWrapper.ObjectWrapper<View.ExtensionStorageItemsDispatcher.EventTypes>;
@@ -105,7 +103,7 @@ describeWithMockConnection('ExtensionStorageItemsView', function() {
     assert.deepEqual(
         view.getEntriesForTesting(), Object.keys(EXAMPLE_DATA).map(key => ({key, value: EXAMPLE_DATA[key]})));
 
-    await coordinator.done();
+    await RenderCoordinator.done();
     view.detach();
   });
 
@@ -155,7 +153,7 @@ describeWithMockConnection('ExtensionStorageItemsView', function() {
       setStorageItems.reset();
     }
 
-    await coordinator.done();
+    await RenderCoordinator.done();
     view.detach();
   });
 });

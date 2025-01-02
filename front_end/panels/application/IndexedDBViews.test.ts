@@ -8,13 +8,11 @@ import {
   renderElementIntoDOM,
 } from '../../testing/DOMHelpers.js';
 import {describeWithLocale} from '../../testing/EnvironmentHelpers.js';
-import * as Coordinator from '../../ui/components/render_coordinator/render_coordinator.js';
+import * as RenderCoordinator from '../../ui/components/render_coordinator/render_coordinator.js';
 import * as ReportView from '../../ui/components/report_view/report_view.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Application from './application.js';
-
-const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 // Disabled due to flakiness
 describeWithLocale.skip('[crbug.com/1473557]: IDBDatabaseView', () => {
@@ -37,7 +35,7 @@ describeWithLocale.skip('[crbug.com/1473557]: IDBDatabaseView', () => {
     renderElementIntoDOM(component);
 
     assert.isNotNull(component.shadowRoot);
-    await coordinator.done();
+    await RenderCoordinator.done();
     const report = getElementWithinComponent(component, 'devtools-report', ReportView.ReportView.Report);
     assert.isNotNull(report.shadowRoot);
 
@@ -75,7 +73,7 @@ describeWithLocale.skip('[crbug.com/1473557]: IDBDatabaseView', () => {
     renderElementIntoDOM(component);
 
     assert.isNotNull(component.shadowRoot);
-    await coordinator.done();
+    await RenderCoordinator.done();
     const report = getElementWithinComponent(component, 'devtools-report', ReportView.ReportView.Report);
     assert.isNotNull(report.shadowRoot);
 
@@ -110,7 +108,7 @@ describeWithLocale.skip('[crbug.com/1473557]: IDBDatabaseView', () => {
     renderElementIntoDOM(component);
 
     assert.isNotNull(component.shadowRoot);
-    await coordinator.done();
+    await RenderCoordinator.done();
     const report = getElementWithinComponent(component, 'devtools-report', ReportView.ReportView.Report);
     assert.isNotNull(report.shadowRoot);
 
@@ -164,7 +162,7 @@ describeWithLocale.skip('[crbug.com/1473557]: IDBDatabaseView', () => {
     renderElementIntoDOM(component);
 
     assert.isNotNull(component.shadowRoot);
-    await coordinator.done({waitForWork: true});
+    await RenderCoordinator.done({waitForWork: true});
 
     const buttons = component.shadowRoot.querySelectorAll('devtools-button');
     assert.lengthOf(buttons, 2);

@@ -24,12 +24,10 @@ import {expectCalled} from '../../testing/ExpectStubCall.js';
 import {stubFileManager} from '../../testing/FileManagerHelpers.js';
 import {describeWithMockConnection, dispatchEvent} from '../../testing/MockConnection.js';
 import {activate} from '../../testing/ResourceTreeHelpers.js';
-import * as Coordinator from '../../ui/components/render_coordinator/render_coordinator.js';
+import * as RenderCoordinator from '../../ui/components/render_coordinator/render_coordinator.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Network from './network.js';
-
-const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 describeWithMockConnection('NetworkLogView', () => {
   let target: SDK.Target.Target;
@@ -263,7 +261,7 @@ describeWithMockConnection('NetworkLogView', () => {
       const blob = new Blob([JSON.stringify(har)], {type: 'text/plain'});
       const file = new File([blob], 'log.har');
       await networkLogView.onLoadFromFile(file);
-      await coordinator.done({waitForWork: true});
+      await RenderCoordinator.done({waitForWork: true});
 
       const rootNode = networkLogView.columns().dataGrid().rootNode();
       assert.deepEqual(
@@ -323,14 +321,14 @@ describeWithMockConnection('NetworkLogView', () => {
     networkLogView = createNetworkLogView();
     networkLogView.markAsRoot();
     networkLogView.show(document.body);
-    await coordinator.done();
+    await RenderCoordinator.done();
 
     const rootNode = networkLogView.columns().dataGrid().rootNode();
     assert.deepEqual(
         rootNode.children.map(n => (n as Network.NetworkDataGridNode.NetworkNode).request()), [request1, request2]);
 
     SDK.TargetManager.TargetManager.instance().setScopeTarget(anotherTarget);
-    await coordinator.done();
+    await RenderCoordinator.done();
     assert.deepEqual(
         rootNode.children.map(n => (n as Network.NetworkDataGridNode.NetworkNode).request()),
         preserveLog ? [request1, request2, request3] : [request3]);
@@ -351,14 +349,14 @@ describeWithMockConnection('NetworkLogView', () => {
     networkLogView = createNetworkLogView();
     networkLogView.markAsRoot();
     networkLogView.show(document.body);
-    await coordinator.done();
+    await RenderCoordinator.done();
 
     const rootNode = networkLogView.columns().dataGrid().rootNode();
     assert.deepEqual(
         rootNode.children.map(n => (n as Network.NetworkDataGridNode.NetworkNode).request()), [request1, request2]);
 
     activate(target);
-    await coordinator.done();
+    await RenderCoordinator.done();
     assert.deepEqual(
         rootNode.children.map(n => (n as Network.NetworkDataGridNode.NetworkNode).request()),
         [request1, request2, request3]);

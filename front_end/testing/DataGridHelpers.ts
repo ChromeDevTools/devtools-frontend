@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as DataGrid from '../ui/components/data_grid/data_grid.js';
-import * as Coordinator from '../ui/components/render_coordinator/render_coordinator.js';
+import * as RenderCoordinator from '../ui/components/render_coordinator/render_coordinator.js';
 
 import {
   assertElements,
@@ -12,7 +12,6 @@ import {
   getElementWithinComponent,
 } from './DOMHelpers.js';
 
-const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 export const getFocusableCell = (shadowRoot: ShadowRoot) => {
   // We only expect one here, but we qSA so we can assert on only one.
   // Can't use td as it may be a th if the user has focused a column header.
@@ -112,7 +111,7 @@ export const emulateUserKeyboardNavigation =
 export const emulateUserFocusingCellAt = async (shadowRoot: ShadowRoot, position: {column: number, row: number}) => {
   const cellToFocus = getCellByIndexes(shadowRoot, position);
   dispatchFocusEvent(cellToFocus);
-  await coordinator.done();
+  await RenderCoordinator.done();
   assertCurrentFocusedCellIs(shadowRoot, position);
 };
 

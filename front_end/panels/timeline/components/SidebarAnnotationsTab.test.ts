@@ -6,19 +6,17 @@ import * as Trace from '../../../models/trace/trace.js';
 import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
-import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
+import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 
 import * as TimelineComponents from './components.js';
 
 describeWithEnvironment('SidebarAnnotationsTab', () => {
   const {SidebarAnnotationsTab} = TimelineComponents.SidebarAnnotationsTab;
-  const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
-
   it('renders annotations tab in the sidebar', async () => {
     const component = new SidebarAnnotationsTab();
     renderElementIntoDOM(component);
 
-    await coordinator.done();
+    await RenderCoordinator.done();
 
     assert.isNotNull(component.shadowRoot);
     const annotationsWrapperElement = component.shadowRoot.querySelector<HTMLElement>('.annotations');
@@ -63,7 +61,7 @@ describeWithEnvironment('SidebarAnnotationsTab', () => {
 
     assert.isNotNull(component.shadowRoot);
 
-    await coordinator.done();
+    await RenderCoordinator.done();
 
     const annotationsWrapperElement = component.shadowRoot.querySelector<HTMLElement>('.annotations');
     assert.isNotNull(annotationsWrapperElement);
@@ -99,7 +97,7 @@ describeWithEnvironment('SidebarAnnotationsTab', () => {
     };
     component.annotations = [entryLabelAnnotation];
     assert.isNotNull(component.shadowRoot);
-    await coordinator.done();
+    await RenderCoordinator.done();
 
     const deleteButton = component.shadowRoot.querySelector<HTMLElement>('.delete-button');
     assert.isNotNull(deleteButton);
@@ -122,7 +120,7 @@ describeWithEnvironment('SidebarAnnotationsTab', () => {
     const component = new SidebarAnnotationsTab();
     renderElementIntoDOM(component);
     component.annotations = [annotation];
-    await coordinator.done();
+    await RenderCoordinator.done();
 
     assert.isNotNull(component.shadowRoot);
 
@@ -148,7 +146,7 @@ describeWithEnvironment('SidebarAnnotationsTab', () => {
     };
 
     component.annotations = [entryLabelAnnotation];
-    await coordinator.done();
+    await RenderCoordinator.done();
     assert.isNotNull(component.shadowRoot);
 
     const deleteButton = component.shadowRoot.querySelector<HTMLElement>('.delete-button');
@@ -181,7 +179,7 @@ describeWithEnvironment('SidebarAnnotationsTab', () => {
     component.annotations = [entryLabelAnnotation, entryLabelAnnotation2];
     assert.isNotNull(component.shadowRoot);
 
-    await coordinator.done();
+    await RenderCoordinator.done();
 
     const annotationsWrapperElement = component.shadowRoot.querySelector<HTMLElement>('.annotations');
     assert.isNotNull(annotationsWrapperElement);
@@ -210,7 +208,7 @@ describeWithEnvironment('SidebarAnnotationsTab', () => {
     };
 
     component.annotations = [entryLabelAnnotation, entryLabelAnnotation2, labelledTimeRangeAnnotation];
-    await coordinator.done();
+    await RenderCoordinator.done();
 
     annotationLabelElements = component.shadowRoot.querySelectorAll<HTMLElement>('.label');
 
@@ -243,7 +241,7 @@ describeWithEnvironment('SidebarAnnotationsTab', () => {
     component.annotations = [entryLabelAnnotation, entriesLink];
     assert.isNotNull(component.shadowRoot);
 
-    await coordinator.done();
+    await RenderCoordinator.done();
 
     const annotationsWrapperElement = component.shadowRoot.querySelector<HTMLElement>('.annotations');
     assert.isNotNull(annotationsWrapperElement);
@@ -276,7 +274,7 @@ describeWithEnvironment('SidebarAnnotationsTab', () => {
     component.annotations = [entryLabelAnnotation, entriesLink];
     assert.isNotNull(component.shadowRoot);
 
-    await coordinator.done();
+    await RenderCoordinator.done();
 
     const annotationsWrapperElement = component.shadowRoot.querySelector<HTMLElement>('.annotations');
     assert.isNotNull(annotationsWrapperElement);
@@ -285,5 +283,4 @@ describeWithEnvironment('SidebarAnnotationsTab', () => {
     const annotationIdentifierElements = component.shadowRoot.querySelectorAll<HTMLElement>('.annotation-identifier');
     assert.lengthOf(annotationIdentifierElements, 2);
   });
-
 });

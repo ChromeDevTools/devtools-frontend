@@ -11,7 +11,7 @@ import type * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import type * as Logs from '../../../models/logs/logs.js';
 import * as NetworkForward from '../../../panels/network/forward/forward.js';
-import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
+import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
@@ -36,8 +36,6 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('ui/components/request_link_icon/RequestLinkIcon.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-
-const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 export interface RequestLinkIconData {
   linkToPreflight?: boolean;
@@ -178,7 +176,7 @@ export class RequestLinkIcon extends HTMLElement {
   }
 
   async #render(): Promise<void> {
-    return coordinator.write(() => {
+    return RenderCoordinator.write(() => {
       // By default we render just the URL for the request link. If we also know
       // the concrete network request, or at least its request ID, we surround
       // the URL with a button, that opens the request in the Network panel.

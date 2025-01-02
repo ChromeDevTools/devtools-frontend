@@ -3835,7 +3835,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
     const barHeight = this.levelHeight(entryLevel);
     const style = (element as HTMLElement).style;
 
-    // TODO(paulirish): make these changes within a coordinator.write callback.
+    // TODO(paulirish): make these changes within a RenderCoordinator.write callback.
     // Currently these (plus the scrollOffset() right above) trigger layout thrashing.
     if (isDecoration) {
       style.top = barY + 'px';

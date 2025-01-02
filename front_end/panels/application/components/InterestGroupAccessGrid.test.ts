@@ -10,11 +10,9 @@ import {
 } from '../../../testing/DOMHelpers.js';
 import {describeWithLocale} from '../../../testing/EnvironmentHelpers.js';
 import * as DataGrid from '../../../ui/components/data_grid/data_grid.js';
-import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
+import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 
 import * as ApplicationComponents from './components.js';
-
-const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 async function renderInterestGroupAccessGrid(events: Protocol.Storage.InterestGroupAccessedEvent[]):
     Promise<ApplicationComponents.InterestGroupAccessGrid.InterestGroupAccessGrid> {
@@ -24,7 +22,7 @@ async function renderInterestGroupAccessGrid(events: Protocol.Storage.InterestGr
 
   // The data-grid's renderer is scheduled, so we need to wait until the coordinator
   // is done before we can test against it.
-  await coordinator.done();
+  await RenderCoordinator.done();
 
   return component;
 }

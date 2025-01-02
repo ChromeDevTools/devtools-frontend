@@ -8,14 +8,12 @@ import {
   describeWithEnvironment,
   setupActionRegistry,
 } from '../../testing/EnvironmentHelpers.js';
-import * as Coordinator from '../../ui/components/render_coordinator/render_coordinator.js';
+import * as RenderCoordinator from '../../ui/components/render_coordinator/render_coordinator.js';
 
 import * as Components from './components/components.js';
 import * as Models from './models/models.js';
 import {RecorderActions} from './recorder-actions/recorder-actions.js';
 import {RecorderController} from './recorder.js';
-
-const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 describeWithEnvironment('RecorderController', () => {
   setupActionRegistry();
@@ -39,7 +37,7 @@ describeWithEnvironment('RecorderController', () => {
     controller.setCurrentPageForTesting(RecorderController.Pages.RECORDING_PAGE);
     controller.setCurrentRecordingForTesting(recording);
     controller.connectedCallback();
-    await coordinator.done();
+    await RenderCoordinator.done();
     return controller;
   }
 
@@ -52,7 +50,7 @@ describeWithEnvironment('RecorderController', () => {
           RecorderController.Pages.CREATE_RECORDING_PAGE,
       );
       controller.connectedCallback();
-      await coordinator.done();
+      await RenderCoordinator.done();
 
       const createRecordingView = controller.shadowRoot?.querySelector(
           'devtools-create-recording-view',
@@ -76,7 +74,7 @@ describeWithEnvironment('RecorderController', () => {
       );
       assert.isOk(recordingView);
       recordingView?.dispatchEvent(event);
-      await coordinator.done();
+      await RenderCoordinator.done();
     }
 
     beforeEach(() => {

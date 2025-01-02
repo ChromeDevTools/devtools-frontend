@@ -5,12 +5,11 @@
 import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
-import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
+import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 
 import * as TimelineComponents from './components.js';
 
 describeWithEnvironment('InteractionBreakdown', () => {
-  const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
   const {InteractionBreakdown} = TimelineComponents.InteractionBreakdown;
 
   it('renders the breakdowns for an InteractionBreakdown', async function() {
@@ -23,7 +22,7 @@ describeWithEnvironment('InteractionBreakdown', () => {
     const breakdown = new InteractionBreakdown();
     breakdown.entry = longInteraction;
     renderElementIntoDOM(breakdown);
-    await coordinator.done();
+    await RenderCoordinator.done();
     assert.isNotNull(breakdown.shadowRoot);
 
     const inputDelay = breakdown.shadowRoot.querySelector('[data-entry="input-delay"] .value')?.textContent;

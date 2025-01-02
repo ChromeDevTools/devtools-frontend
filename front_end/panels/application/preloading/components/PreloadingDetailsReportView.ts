@@ -14,7 +14,7 @@ import * as Protocol from '../../../../generated/protocol.js';
 import * as Logs from '../../../../models/logs/logs.js';
 import * as Buttons from '../../../../ui/components/buttons/buttons.js';
 import * as LegacyWrapper from '../../../../ui/components/legacy_wrapper/legacy_wrapper.js';
-import * as Coordinator from '../../../../ui/components/render_coordinator/render_coordinator.js';
+import * as RenderCoordinator from '../../../../ui/components/render_coordinator/render_coordinator.js';
 import * as UI from '../../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../../ui/visual_logging/visual_logging.js';
@@ -127,8 +127,6 @@ class PreloadingUIUtils {
   }
 }
 
-const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
-
 export type PreloadingDetailsReportViewData = PreloadingDetailsReportViewDataInternal|null;
 interface PreloadingDetailsReportViewDataInternal {
   pipeline: SDK.PreloadingModel.PreloadPipeline;
@@ -151,7 +149,7 @@ export class PreloadingDetailsReportView extends LegacyWrapper.LegacyWrapper.Wra
   }
 
   async #render(): Promise<void> {
-    await coordinator.write('PreloadingDetailsReportView render', () => {
+    await RenderCoordinator.write('PreloadingDetailsReportView render', () => {
       if (this.#data === null) {
         // Disabled until https://crbug.com/1079231 is fixed.
         // clang-format off

@@ -6,17 +6,15 @@ import {
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
 import {describeWithLocale} from '../../../testing/EnvironmentHelpers.js';
-import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
+import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 
 import * as ApplicationComponents from './components.js';
-
-const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 async function renderServiceWorkerRouterView():
     Promise<ApplicationComponents.ServiceWorkerRouterView.ServiceWorkerRouterView> {
   const component = new ApplicationComponents.ServiceWorkerRouterView.ServiceWorkerRouterView();
   renderElementIntoDOM(component);
-  await coordinator.done();
+  await RenderCoordinator.done();
 
   return component;
 }

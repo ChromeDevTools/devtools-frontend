@@ -9,12 +9,10 @@ import {
   stripLitHtmlCommentNodes,
 } from '../../../testing/DOMHelpers.js';
 import {describeWithLocale} from '../../../testing/EnvironmentHelpers.js';
-import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
+import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import * as TreeOutline from '../../../ui/components/tree_outline/tree_outline.js';
 
 import * as ApplicationComponents from './components.js';
-
-const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 async function renderOriginTrialTreeView(
     data: ApplicationComponents.OriginTrialTreeView.OriginTrialTreeViewData,
@@ -26,7 +24,7 @@ async function renderOriginTrialTreeView(
   component.data = data;
   renderElementIntoDOM(component);
   assert.isNotNull(component.shadowRoot);
-  await coordinator.done();
+  await RenderCoordinator.done();
   return {
     component,
     shadowRoot: component.shadowRoot,

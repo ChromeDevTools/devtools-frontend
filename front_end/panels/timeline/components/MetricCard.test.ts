@@ -6,11 +6,9 @@ import * as Common from '../../../core/common/common.js';
 import * as CrUXManager from '../../../models/crux-manager/crux-manager.js';
 import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {describeWithMockConnection} from '../../../testing/MockConnection.js';
-import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
+import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 
 import * as Components from './components.js';
-
-const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 function getLocalMetricValue(view: Element): HTMLElement {
   return view.shadowRoot!.querySelector('#local-value .metric-value') as HTMLElement;
@@ -93,7 +91,7 @@ describeWithMockConnection('MetricCard', () => {
     };
 
     renderElementIntoDOM(view);
-    await coordinator.done();
+    await RenderCoordinator.done();
 
     const localValueEl = getLocalMetricValue(view);
     assert.strictEqual(localValueEl.className, 'metric-value good');
@@ -119,7 +117,7 @@ describeWithMockConnection('MetricCard', () => {
     };
 
     renderElementIntoDOM(view);
-    await coordinator.done();
+    await RenderCoordinator.done();
 
     const localValueEl = getLocalMetricValue(view);
     assert.strictEqual(localValueEl.className, 'metric-value needs-improvement');
@@ -145,7 +143,7 @@ describeWithMockConnection('MetricCard', () => {
     };
 
     renderElementIntoDOM(view);
-    await coordinator.done();
+    await RenderCoordinator.done();
 
     const localValueEl = getLocalMetricValue(view);
     assert.strictEqual(localValueEl.className, 'metric-value poor');
@@ -165,7 +163,7 @@ describeWithMockConnection('MetricCard', () => {
     const view = new Components.MetricCard.MetricCard();
 
     renderElementIntoDOM(view);
-    await coordinator.done();
+    await RenderCoordinator.done();
 
     const metricValueEl = getLocalMetricValue(view);
     assert.strictEqual(metricValueEl.className.trim(), 'metric-value waiting');
@@ -192,7 +190,7 @@ describeWithMockConnection('MetricCard', () => {
     };
 
     renderElementIntoDOM(view);
-    await coordinator.done();
+    await RenderCoordinator.done();
 
     const warnings = getWarnings(view);
     assert.deepEqual(warnings, [
@@ -211,7 +209,7 @@ describeWithMockConnection('MetricCard', () => {
       };
       renderElementIntoDOM(view);
 
-      await coordinator.done();
+      await RenderCoordinator.done();
 
       const phaseTable = getPhaseTable(view);
       assert.isNull(phaseTable);
@@ -232,7 +230,7 @@ describeWithMockConnection('MetricCard', () => {
       };
       renderElementIntoDOM(view);
 
-      await coordinator.done();
+      await RenderCoordinator.done();
 
       const phaseTable = getPhaseTable(view);
       assert.deepEqual(phaseTable, [
@@ -256,7 +254,7 @@ describeWithMockConnection('MetricCard', () => {
       };
       renderElementIntoDOM(view);
 
-      await coordinator.done();
+      await RenderCoordinator.done();
 
       const histogramLabels = getFieldHistogramLabels(view);
       assert.match(histogramLabels[0], /Good\s+\(≤2.50 s\)/);
@@ -280,7 +278,7 @@ describeWithMockConnection('MetricCard', () => {
       };
       renderElementIntoDOM(view);
 
-      await coordinator.done();
+      await RenderCoordinator.done();
 
       const histogramLabels = getFieldHistogramLabels(view);
       assert.match(histogramLabels[0], /Good\s+\(≤2.50 s\)/);
@@ -302,7 +300,7 @@ describeWithMockConnection('MetricCard', () => {
       };
       renderElementIntoDOM(view);
 
-      await coordinator.done();
+      await RenderCoordinator.done();
 
       const histogramLabels = getFieldHistogramLabels(view);
       assert.match(histogramLabels[0], /Good\s+\(≤2.50 s\)/);
@@ -328,7 +326,7 @@ describeWithMockConnection('MetricCard', () => {
       };
       renderElementIntoDOM(view);
 
-      await coordinator.done();
+      await RenderCoordinator.done();
 
       const compareText = getCompareText(view);
       assert.strictEqual(
@@ -345,7 +343,7 @@ describeWithMockConnection('MetricCard', () => {
       };
       renderElementIntoDOM(view);
 
-      await coordinator.done();
+      await RenderCoordinator.done();
 
       const compareText = getCompareText(view);
       assert.strictEqual(
@@ -363,7 +361,7 @@ describeWithMockConnection('MetricCard', () => {
       };
       renderElementIntoDOM(view);
 
-      await coordinator.done();
+      await RenderCoordinator.done();
 
       const compareText = getCompareText(view);
       assert.strictEqual(
@@ -381,7 +379,7 @@ describeWithMockConnection('MetricCard', () => {
       };
       renderElementIntoDOM(view);
 
-      await coordinator.done();
+      await RenderCoordinator.done();
 
       const compareText = getCompareText(view);
       assert.strictEqual(
@@ -396,7 +394,7 @@ describeWithMockConnection('MetricCard', () => {
       };
       renderElementIntoDOM(view);
 
-      await coordinator.done();
+      await RenderCoordinator.done();
 
       const compareText = getCompareText(view);
       assert.strictEqual(compareText!.innerText, 'Your local LCP value of 3.00 s needs improvement.');
@@ -409,7 +407,7 @@ describeWithMockConnection('MetricCard', () => {
       };
       renderElementIntoDOM(view);
 
-      await coordinator.done();
+      await RenderCoordinator.done();
 
       const compareText = getCompareText(view);
       assert.strictEqual(compareText!.innerText, 'Interact with the page to measure INP.');
@@ -427,7 +425,7 @@ describeWithMockConnection('MetricCard', () => {
       };
       renderElementIntoDOM(view);
 
-      await coordinator.done();
+      await RenderCoordinator.done();
 
       const compareText = getDetailedCompareText(view);
       assert.strictEqual(
@@ -446,7 +444,7 @@ describeWithMockConnection('MetricCard', () => {
       };
       renderElementIntoDOM(view);
 
-      await coordinator.done();
+      await RenderCoordinator.done();
 
       const compareText = getDetailedCompareText(view);
       assert.strictEqual(
@@ -463,7 +461,7 @@ describeWithMockConnection('MetricCard', () => {
       };
       renderElementIntoDOM(view);
 
-      await coordinator.done();
+      await RenderCoordinator.done();
 
       const compareText = getDetailedCompareText(view);
       assert.strictEqual(compareText!.textContent, 'Your local LCP value of 3.00 s needs improvement.');
@@ -476,7 +474,7 @@ describeWithMockConnection('MetricCard', () => {
       };
       renderElementIntoDOM(view);
 
-      await coordinator.done();
+      await RenderCoordinator.done();
 
       const compareText = getDetailedCompareText(view);
       assert.strictEqual(compareText!.textContent, 'Interact with the page to measure INP.');
@@ -492,7 +490,7 @@ describeWithMockConnection('MetricCard', () => {
       };
 
       renderElementIntoDOM(view);
-      await coordinator.done();
+      await RenderCoordinator.done();
 
       const recs = getEnvironmentRecs(view);
       assert.lengthOf(recs, 0);
@@ -508,7 +506,7 @@ describeWithMockConnection('MetricCard', () => {
       };
 
       renderElementIntoDOM(view);
-      await coordinator.done();
+      await RenderCoordinator.done();
 
       const recs = getEnvironmentRecs(view);
       assert.lengthOf(recs, 0);
@@ -524,7 +522,7 @@ describeWithMockConnection('MetricCard', () => {
       };
 
       renderElementIntoDOM(view);
-      await coordinator.done();
+      await RenderCoordinator.done();
 
       const recs = getEnvironmentRecs(view);
       assert.deepEqual(recs, [
@@ -544,7 +542,7 @@ describeWithMockConnection('MetricCard', () => {
       };
 
       renderElementIntoDOM(view);
-      await coordinator.done();
+      await RenderCoordinator.done();
 
       const recs = getEnvironmentRecs(view);
       assert.deepEqual(recs, [
@@ -563,7 +561,7 @@ describeWithMockConnection('MetricCard', () => {
       };
 
       renderElementIntoDOM(view);
-      await coordinator.done();
+      await RenderCoordinator.done();
 
       const recs = getEnvironmentRecs(view);
       assert.deepEqual(recs, [
@@ -583,7 +581,7 @@ describeWithMockConnection('MetricCard', () => {
       };
 
       renderElementIntoDOM(view);
-      await coordinator.done();
+      await RenderCoordinator.done();
 
       const recs = getEnvironmentRecs(view);
       assert.deepEqual(recs, [
@@ -602,7 +600,7 @@ describeWithMockConnection('MetricCard', () => {
       };
 
       renderElementIntoDOM(view);
-      await coordinator.done();
+      await RenderCoordinator.done();
 
       const recs = getEnvironmentRecs(view);
       assert.deepEqual(recs, [

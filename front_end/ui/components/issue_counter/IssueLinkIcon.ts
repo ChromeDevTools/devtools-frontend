@@ -9,7 +9,7 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import type * as Platform from '../../../core/platform/platform.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import * as IssuesManager from '../../../models/issues_manager/issues_manager.js';
-import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
+import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
@@ -49,8 +49,6 @@ export const extractShortPath = (path: string): string => {
   // if path ends with '/', 2nd regex returns everything between the last two '/'
   return (/[^/]+$/.exec(path) || /[^/]+\/$/.exec(path) || [''])[0];
 };
-
-const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 export class IssueLinkIcon extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
@@ -144,7 +142,7 @@ export class IssueLinkIcon extends HTMLElement {
   }
 
   #render(): Promise<void> {
-    return coordinator.write(() => {
+    return RenderCoordinator.write(() => {
       // clang-format off
       LitHtml.render(html`
       <button class=${LitHtml.Directives.classMap({link: Boolean(this.#issue)})}

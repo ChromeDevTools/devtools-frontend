@@ -4,7 +4,7 @@
 
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
-import * as Coordinator from '../components/render_coordinator/render_coordinator.js';
+import * as RenderCoordinator from '../components/render_coordinator/render_coordinator.js';
 
 import {processForDebugging, processStartLoggingForDebugging} from './Debugging.js';
 import {getDomState, visibleOverlap} from './DomState.js';
@@ -138,12 +138,11 @@ function flushPendingChangeEvents(): void {
   }
 }
 
-export async function scheduleProcessing(): Promise<void> {
+export function scheduleProcessing(): void {
   if (!processingThrottler) {
     return;
   }
-  void processingThrottler.schedule(
-      () => Coordinator.RenderCoordinator.RenderCoordinator.instance().read('processForLogging', process));
+  void processingThrottler.schedule(() => RenderCoordinator.read('processForLogging', process));
 }
 
 const viewportRects = new Map<Document, DOMRect>();

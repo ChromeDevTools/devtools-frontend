@@ -683,8 +683,8 @@ export class Widget {
    */
   update(): void {
     if (this.#updateComplete === UPDATE_COMPLETE) {
-      this.#updateComplete = RenderCoordinator.RenderCoordinator.RenderCoordinator.instance().write(
-          'Widget.update', async(): Promise<boolean> => {
+      this.#updateComplete =
+          RenderCoordinator.write('Widget.update', async(): Promise<boolean> => {
             // Mark this update cycle as complete by assigning
             // the marker sentinel.
             this.#updateComplete = UPDATE_COMPLETE;

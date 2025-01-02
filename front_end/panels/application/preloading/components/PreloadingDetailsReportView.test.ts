@@ -12,12 +12,10 @@ import {
   renderElementIntoDOM,
 } from '../../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../../testing/EnvironmentHelpers.js';
-import * as Coordinator from '../../../../ui/components/render_coordinator/render_coordinator.js';
+import * as RenderCoordinator from '../../../../ui/components/render_coordinator/render_coordinator.js';
 import * as ReportView from '../../../../ui/components/report_view/report_view.js';
 
 import * as PreloadingComponents from './components.js';
-
-const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 const zip2 = <T, S>(xs: T[], ys: S[]) => {
   assert.strictEqual(xs.length, ys.length);
@@ -31,7 +29,7 @@ const renderPreloadingDetailsReportView =
   component.data = data;
   renderElementIntoDOM(component);
   assert.isNotNull(component.shadowRoot);
-  await coordinator.done();
+  await RenderCoordinator.done();
 
   return component;
 };

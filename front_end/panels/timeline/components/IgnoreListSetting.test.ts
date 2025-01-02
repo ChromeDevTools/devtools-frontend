@@ -15,17 +15,15 @@ import {
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
-import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
+import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 
 import * as TimelineComponents from './components.js';
-
-const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 describeWithEnvironment('Ignore List Setting', () => {
   async function renderIgnoreListSetting(): Promise<HTMLElement> {
     const component = new TimelineComponents.IgnoreListSetting.IgnoreListSetting();
     renderElementIntoDOM(component);
-    await coordinator.done();
+    await RenderCoordinator.done();
     return component;
   }
 
@@ -187,7 +185,7 @@ describeWithEnvironment('Ignore List Setting', () => {
     dispatchFocusEvent(newRegexInput);
     newRegexInput.value = 'rule 2';
     dispatchInputEvent(newRegexInput);
-    await coordinator.done();
+    await RenderCoordinator.done();
 
     const validationResultElement = component.shadowRoot?.querySelector<HTMLDivElement>('.input-validation');
     assert.notExists(validationResultElement);
@@ -209,7 +207,7 @@ describeWithEnvironment('Ignore List Setting', () => {
     dispatchFocusEvent(newRegexInput);
     newRegexInput.value = 'rule 1';
     dispatchInputEvent(newRegexInput);
-    await coordinator.done();
+    await RenderCoordinator.done();
 
     const validationResultElement = getValidationResultElement(component);
     assert.isFalse(validationResultElement.hidden);
@@ -234,7 +232,7 @@ describeWithEnvironment('Ignore List Setting', () => {
     dispatchFocusEvent(newRegexInput);
     newRegexInput.value = 'rule 1';
     dispatchInputEvent(newRegexInput);
-    await coordinator.done();
+    await RenderCoordinator.done();
 
     const validationResultElement = getValidationResultElement(component);
     assert.isFalse(validationResultElement.hidden);

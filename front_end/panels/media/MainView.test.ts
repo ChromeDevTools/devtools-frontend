@@ -8,7 +8,7 @@ import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
-import * as Coordinator from '../../ui/components/render_coordinator/render_coordinator.js';
+import * as RenderCoordinator from '../../ui/components/render_coordinator/render_coordinator.js';
 
 import * as Media from './media.js';
 
@@ -39,7 +39,7 @@ describeWithMockConnection('MediaMainView', () => {
         event, ...[data] as unknown as Common.EventTarget.EventPayloadToRestParameters<Media.MediaModel.EventTypes, T>);
     await new Promise(resolve => setTimeout(resolve, 0));
     assert.strictEqual(expectedCall.called, inScope);
-    await Coordinator.RenderCoordinator.RenderCoordinator.instance().done();
+    await RenderCoordinator.done();
     mainView.detach();
   };
 

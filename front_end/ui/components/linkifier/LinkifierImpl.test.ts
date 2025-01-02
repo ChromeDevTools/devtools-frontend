@@ -3,18 +3,16 @@
 // found in the LICENSE file.
 
 import * as Platform from '../../../core/platform/platform.js';
-import {describeWithLocale} from '../../../testing/EnvironmentHelpers.js';
-import * as Coordinator from '../render_coordinator/render_coordinator.js';
-
-import * as Linkifier from './linkifier.js';
-
-const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
-
 import {
   dispatchClickEvent,
   getEventPromise,
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
+import {describeWithLocale} from '../../../testing/EnvironmentHelpers.js';
+import * as RenderCoordinator from '../render_coordinator/render_coordinator.js';
+
+import * as Linkifier from './linkifier.js';
+
 describeWithLocale('Linkifier', () => {
   it('renders a link when given a URL', async () => {
     const component = new Linkifier.Linkifier.Linkifier();
@@ -22,7 +20,7 @@ describeWithLocale('Linkifier', () => {
       url: 'https://example.com' as Platform.DevToolsPath.UrlString,
     };
     renderElementIntoDOM(component);
-    await coordinator.done();
+    await RenderCoordinator.done();
     assert.isNotNull(component.shadowRoot);
     const link = component.shadowRoot.querySelector('a');
     assert.instanceOf(link, HTMLAnchorElement);
@@ -44,7 +42,7 @@ describeWithLocale('Linkifier', () => {
       lineNumber: 1,
     };
     renderElementIntoDOM(component);
-    await coordinator.done();
+    await RenderCoordinator.done();
     assert.isNotNull(component.shadowRoot);
     const link = component.shadowRoot.querySelector('a');
     assert.instanceOf(link, HTMLAnchorElement);
@@ -65,7 +63,7 @@ describeWithLocale('Linkifier', () => {
       e.preventDefault();
     });
     renderElementIntoDOM(component);
-    await coordinator.done();
+    await RenderCoordinator.done();
     assert.isNotNull(component.shadowRoot);
     const link = component.shadowRoot.querySelector('a');
     assert.instanceOf(link, HTMLAnchorElement);

@@ -7,12 +7,10 @@ import {
   renderElementIntoDOM,
 } from '../../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../../testing/EnvironmentHelpers.js';
-import * as Coordinator from '../../../../ui/components/render_coordinator/render_coordinator.js';
+import * as RenderCoordinator from '../../../../ui/components/render_coordinator/render_coordinator.js';
 import type * as TextEditor from '../../../../ui/components/text_editor/text_editor.js';
 
 import * as PreloadingComponents from './components.js';
-
-const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 async function renderRuleSetDetailsView(
     data: PreloadingComponents.RuleSetDetailsView.RuleSetDetailsViewData,
@@ -22,7 +20,7 @@ async function renderRuleSetDetailsView(
   component.data = data;
   renderElementIntoDOM(component);
   assert.isNotNull(component.shadowRoot);
-  await coordinator.done();
+  await RenderCoordinator.done();
 
   return component;
 }

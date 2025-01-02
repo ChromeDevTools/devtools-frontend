@@ -8,18 +8,16 @@ import {
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
-import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
+import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 
 import * as NetworkComponents from './components.js';
-
-const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 async function renderRequestHeaderSection(request: SDK.NetworkRequest.NetworkRequest):
     Promise<NetworkComponents.RequestHeaderSection.RequestHeaderSection> {
   const component = new NetworkComponents.RequestHeaderSection.RequestHeaderSection();
   renderElementIntoDOM(component);
   component.data = {request};
-  await coordinator.done();
+  await RenderCoordinator.done();
   assert.instanceOf(component, HTMLElement);
   assert.isNotNull(component.shadowRoot);
   return component;

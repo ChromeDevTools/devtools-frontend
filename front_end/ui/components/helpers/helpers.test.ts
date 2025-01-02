@@ -3,13 +3,11 @@
 // found in the LICENSE file.
 
 import * as LitHtml from '../../lit-html/lit-html.js';
-import * as Coordinator from '../render_coordinator/render_coordinator.js';
+import * as RenderCoordinator from '../render_coordinator/render_coordinator.js';
 
 import * as ComponentHelpers from './helpers.js';
 
 const {html} = LitHtml;
-
-const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 const TestElement = class extends HTMLElement {
   renderCount = 0;
@@ -93,7 +91,7 @@ describe('ComponentHelpers', () => {
       void ComponentHelpers.ScheduledRender.scheduleRender(element, element.renderBound);
       void ComponentHelpers.ScheduledRender.scheduleRender(element, element.renderBound);
 
-      await coordinator.done();
+      await RenderCoordinator.done();
       assert.strictEqual(element.renderCount, 1);
     });
 
@@ -105,7 +103,7 @@ describe('ComponentHelpers', () => {
         await element.renderAsyncBound();
       });
 
-      await coordinator.done();
+      await RenderCoordinator.done();
       assert.strictEqual(element.renderAsyncCount, 2);
     });
 
@@ -117,7 +115,7 @@ describe('ComponentHelpers', () => {
         element.renderBound();
       });
 
-      await coordinator.done();
+      await RenderCoordinator.done();
       assert.strictEqual(element.renderCount, 2);
     });
   });

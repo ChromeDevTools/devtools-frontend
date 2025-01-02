@@ -12,7 +12,7 @@ import * as ChromeLink from '../../../../ui/components/chrome_link/chrome_link.j
 import * as Dialogs from '../../../../ui/components/dialogs/dialogs.js';
 import * as IconButton from '../../../../ui/components/icon_button/icon_button.js';
 import * as LegacyWrapper from '../../../../ui/components/legacy_wrapper/legacy_wrapper.js';
-import * as Coordinator from '../../../../ui/components/render_coordinator/render_coordinator.js';
+import * as RenderCoordinator from '../../../../ui/components/render_coordinator/render_coordinator.js';
 import * as UI from '../../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../../ui/visual_logging/visual_logging.js';
@@ -97,8 +97,6 @@ const str_ =
     i18n.i18n.registerUIStrings('panels/application/preloading/components/PreloadingDisabledInfobar.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
-
 export class PreloadingDisabledInfobar extends LegacyWrapper.LegacyWrapper.WrappableComponent<UI.Widget.VBox> {
 
   readonly #shadow = this.attachShadow({mode: 'open'});
@@ -121,7 +119,7 @@ export class PreloadingDisabledInfobar extends LegacyWrapper.LegacyWrapper.Wrapp
   }
 
   async #render(): Promise<void> {
-    await coordinator.write('PreloadingDisabledInfobar render', () => {
+    await RenderCoordinator.write('PreloadingDisabledInfobar render', () => {
       LitHtml.render(this.#renderInternal(), this.#shadow, {host: this});
     });
   }

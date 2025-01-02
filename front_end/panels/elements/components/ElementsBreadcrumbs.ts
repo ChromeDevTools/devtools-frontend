@@ -8,7 +8,7 @@ import '../../../ui/components/node_text/node_text.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as SDK from '../../../core/sdk/sdk.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
-import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
+import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
@@ -50,7 +50,6 @@ export interface ElementsBreadcrumbsData {
   selectedNode: DOMNode|null;
   crumbs: DOMNode[];
 }
-const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 export class ElementsBreadcrumbs extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
@@ -102,11 +101,11 @@ export class ElementsBreadcrumbs extends HTMLElement {
       return;
     }
 
-    const crumbWindowWidth = await coordinator.read<number>(() => {
+    const crumbWindowWidth = await RenderCoordinator.read<number>(() => {
       return crumbWindow.clientWidth;
     });
 
-    const scrollContainerWidth = await coordinator.read<number>(() => {
+    const scrollContainerWidth = await RenderCoordinator.read<number>(() => {
       return crumbScrollContainer.clientWidth;
     });
 
@@ -175,11 +174,11 @@ export class ElementsBreadcrumbs extends HTMLElement {
       return;
     }
 
-    const crumbWindowWidth = await coordinator.read<number>(() => {
+    const crumbWindowWidth = await RenderCoordinator.read<number>(() => {
       return crumbWindow.clientWidth;
     });
 
-    const scrollContainerWidth = await coordinator.read<number>(() => {
+    const scrollContainerWidth = await RenderCoordinator.read<number>(() => {
       return crumbScrollContainer.clientWidth;
     });
 
@@ -361,7 +360,7 @@ export class ElementsBreadcrumbs extends HTMLElement {
     const activeCrumb = this.#shadow.querySelector(`.crumb[data-node-id="${activeCrumbId}"]`);
 
     if (activeCrumb) {
-      await coordinator.scroll(() => {
+      await RenderCoordinator.scroll(() => {
         activeCrumb.scrollIntoView({
           // We only want to scroll smoothly when the user is clicking the
           // buttons manually. If we are automatically scrolling, we could be

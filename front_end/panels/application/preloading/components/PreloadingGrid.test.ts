@@ -9,11 +9,9 @@ import {assertGridContents, getCellByIndexes} from '../../../../testing/DataGrid
 import {renderElementIntoDOM} from '../../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../../testing/EnvironmentHelpers.js';
 import type * as DataGrid from '../../../../ui/components/data_grid/data_grid.js';
-import * as Coordinator from '../../../../ui/components/render_coordinator/render_coordinator.js';
+import * as RenderCoordinator from '../../../../ui/components/render_coordinator/render_coordinator.js';
 
 import * as PreloadingComponents from './components.js';
-
-const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 async function assertRenderResult(
     rowsInput: PreloadingComponents.PreloadingGrid.PreloadingGridData, headerExpected: string[],
@@ -21,7 +19,7 @@ async function assertRenderResult(
   const component = new PreloadingComponents.PreloadingGrid.PreloadingGrid();
   component.update(rowsInput);
   renderElementIntoDOM(component);
-  await coordinator.done();
+  await RenderCoordinator.done();
 
   return assertGridContents(
       component,

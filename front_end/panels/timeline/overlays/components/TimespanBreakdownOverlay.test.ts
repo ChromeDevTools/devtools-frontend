@@ -10,7 +10,6 @@ import {
 import * as RenderCoordinator from '../../../../ui/components/render_coordinator/render_coordinator.js';
 
 import * as Components from './components.js';
-const coordinator = RenderCoordinator.RenderCoordinator.RenderCoordinator.instance();
 
 describeWithEnvironment('TimespanBreakdownOverlay', () => {
   it('renders the sections with the labels and time', async () => {
@@ -29,7 +28,7 @@ describeWithEnvironment('TimespanBreakdownOverlay', () => {
       },
     ];
     component.sections = sections;
-    await coordinator.done();
+    await RenderCoordinator.done();
     assert.isOk(component.shadowRoot);
 
     const sectionElems =

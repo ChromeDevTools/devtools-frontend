@@ -4,4 +4,5 @@
 
 import * as RenderCoordinator from './RenderCoordinator.js';
 
+export const {cancelPending, done, hasPendingWork, read, scroll, takeRecords, write} = RenderCoordinator;
 export {RenderCoordinator};

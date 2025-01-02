@@ -18,8 +18,6 @@ import * as Timeline from '../timeline.js';
 import * as Components from './components/components.js';
 import * as Overlays from './overlays.js';
 
-const coordinator = RenderCoordinator.RenderCoordinator.RenderCoordinator.instance();
-
 const FAKE_OVERLAY_ENTRY_QUERIES: Overlays.Overlays.OverlayEntryQueries = {
   isEntryCollapsedByUser() {
     return false;
@@ -740,7 +738,7 @@ describeWithEnvironment('Overlays', () => {
         bounds: parsedTrace.Meta.traceBounds,
       });
       await overlays.update();
-      await coordinator.done();
+      await RenderCoordinator.done();
       const overlayDOM = container.querySelector<HTMLElement>('.overlay-type-TIME_RANGE');
       const component = overlayDOM?.querySelector('devtools-time-range-overlay');
       assert.isOk(component?.shadowRoot);

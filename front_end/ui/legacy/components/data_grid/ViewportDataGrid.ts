@@ -4,11 +4,9 @@
 
 import * as Common from '../../../../core/common/common.js';
 import * as Platform from '../../../../core/platform/platform.js';
-import * as Coordinator from '../../../components/render_coordinator/render_coordinator.js';
+import * as RenderCoordinator from '../../../components/render_coordinator/render_coordinator.js';
 
 import {type DataGridData, DataGridImpl, DataGridNode, type Parameters} from './DataGrid.js';
-
-const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 export class ViewportDataGrid<T> extends Common.ObjectWrapper.eventMixin<EventTypes, typeof DataGridImpl>(
     DataGridImpl)<ViewportDataGridNode<T>> {
@@ -90,7 +88,7 @@ export class ViewportDataGrid<T> extends Common.ObjectWrapper.eventMixin<EventTy
 
   scheduleUpdate(isFromUser?: boolean): void {
     this.updateIsFromUser = this.updateIsFromUser || Boolean(isFromUser);
-    void coordinator.write('ViewportDataGrid.render', this.update.bind(this));
+    void RenderCoordinator.write('ViewportDataGrid.render', this.update.bind(this));
   }
 
   // TODO(allada) This should be fixed to never be needed. It is needed right now for network because removing

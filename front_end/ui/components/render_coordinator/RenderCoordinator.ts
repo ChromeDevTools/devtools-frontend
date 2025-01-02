@@ -16,7 +16,7 @@
  * for the next available frame.
  */
 
-interface CoordinatorCallback<T> {
+export interface CoordinatorCallback<T> {
   (): T|PromiseLike<T>;
 }
 
@@ -41,7 +41,7 @@ class WorkItem<T> {
   }
 }
 
-interface CoordinatorLogEntry {
+export interface CoordinatorLogEntry {
   time: number;
   value: string;
 }
@@ -323,3 +323,13 @@ export class RenderCoordinator extends EventTarget {
     }
   }
 }
+
+const coordinator = RenderCoordinator.instance();
+
+export const cancelPending = coordinator.cancelPending.bind(coordinator);
+export const done = coordinator.done.bind(coordinator);
+export const hasPendingWork = coordinator.hasPendingWork.bind(coordinator);
+export const read = coordinator.read.bind(coordinator);
+export const scroll = coordinator.scroll.bind(coordinator);
+export const takeRecords = coordinator.takeRecords.bind(coordinator);
+export const write = coordinator.write.bind(coordinator);

@@ -14,11 +14,9 @@ import {
   setMockConnectionResponseHandler,
 } from '../../../testing/MockConnection.js';
 import * as DataGrid from '../../../ui/components/data_grid/data_grid.js';
-import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
+import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 
 import * as ApplicationComponents from './components.js';
-
-const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 async function renderBounceTrackingMitigationsView():
     Promise<ApplicationComponents.BounceTrackingMitigationsView.BounceTrackingMitigationsView> {
@@ -27,7 +25,7 @@ async function renderBounceTrackingMitigationsView():
 
   // The data-grid's renderer is scheduled, so we need to wait until the coordinator
   // is done before we can test against it.
-  await coordinator.done();
+  await RenderCoordinator.done();
 
   return component;
 }
@@ -48,7 +46,7 @@ describeWithMockConnection('BounceTrackingMitigationsView', () => {
     setMockConnectionResponseHandler('Storage.runBounceTrackingMitigations', () => ({deletedSites: []}));
 
     const component = await renderBounceTrackingMitigationsView();
-    await coordinator.done();
+    await RenderCoordinator.done();
 
     const nullGridElement = component.shadowRoot!.querySelector('devtools-data-grid-controller');
     assert.isNull(nullGridElement);
@@ -68,7 +66,7 @@ describeWithMockConnection('BounceTrackingMitigationsView', () => {
     setMockConnectionResponseHandler('SystemInfo.getFeatureState', () => ({featureEnabled: false}));
 
     const component = await renderBounceTrackingMitigationsView();
-    await coordinator.done();
+    await RenderCoordinator.done();
 
     const nullGridElement = component.shadowRoot!.querySelector('devtools-data-grid-controller');
     assert.isNull(nullGridElement);
@@ -93,14 +91,14 @@ describeWithMockConnection('BounceTrackingMitigationsView', () => {
     });
 
     const component = await renderBounceTrackingMitigationsView();
-    await coordinator.done();
+    await RenderCoordinator.done();
 
     const forceRunButton = component.shadowRoot!.querySelector('[aria-label="Force run"]');
     assert.instanceOf(forceRunButton, HTMLElement);
     dispatchClickEvent(forceRunButton);
     await runBounceTrackingMitigationsPromise;
 
-    await coordinator.done();
+    await RenderCoordinator.done();
 
     const nullGridElement = component.shadowRoot!.querySelector('devtools-data-grid-controller');
     assert.isNull(nullGridElement);
@@ -123,13 +121,13 @@ describeWithMockConnection('BounceTrackingMitigationsView', () => {
         'Storage.runBounceTrackingMitigations', () => ({deletedSites: ['tracker-1.example', 'tracker-2.example']}));
 
     const component = await renderBounceTrackingMitigationsView();
-    await coordinator.done();
+    await RenderCoordinator.done();
 
     const forceRunButton = component.shadowRoot!.querySelector('[aria-label="Force run"]');
     assert.instanceOf(forceRunButton, HTMLElement);
     dispatchClickEvent(forceRunButton);
 
-    await coordinator.done({waitForWork: true});
+    await RenderCoordinator.done({waitForWork: true});
 
     const dataGridShadowRoot = getInternalDataGridShadowRoot(component);
     const rowValues = getValuesOfAllBodyRows(dataGridShadowRoot);

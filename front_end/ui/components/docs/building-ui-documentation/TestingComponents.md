@@ -33,14 +33,13 @@ it('outputs the user name onto the screen', async () => {
 If your component is implemented using the scheduled renderer, you will need to wait for the render to be complete before continuing with the test. Otherwise you may try to query the DOM before the component has finished rendering.
 
 ```ts
-import * as Coordinator from '../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
-const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
+import * as RenderCoordinator from '../../../../../front_end/ui/components/render_coordinator/render_coordinator.js';
 
 it('outputs the user name onto the screen', async () => {
   const component = new DummyComponent();
   component.data = {name: 'Jack' /* whatever data the component needs */}
   renderElementIntoDOM(component);
-  await coordinator.done(); // Ensure the component is rendered onto the page.
+  await RenderCoordinator.done(); // Ensure the component is rendered onto the page.
 })
 ```
 
@@ -55,7 +54,7 @@ it('outputs the user name onto the screen', async () => {
   const component = new DummyComponent();
   component.data = {name: 'Jack' /* whatever data the component needs */}
   renderElementIntoDOM(component);
-  await coordinator.done();
+  await RenderCoordinator.done();
   assert.isNotNull(component.shadowRoot); // Check that the Shadow Root exists.
 })
 ```
@@ -67,7 +66,7 @@ it('outputs the user name onto the screen', async () => {
   const component = new DummyComponent();
   component.data = {name: 'Jack' /* whatever data the component needs */}
   renderElementIntoDOM(component);
-  await coordinator.done();
+  await RenderCoordinator.done();
   assert.isNotNull(component.shadowRoot);
   const name = component.shadowRoot.querySelector<HTMLElement>('span.name');
 })
@@ -85,7 +84,7 @@ it('outputs the user name onto the screen', async () => {
   const component = new DummyComponent();
   component.data = {name: 'Jack' /* whatever data the component needs */}
   renderElementIntoDOM(component);
-  await coordinator.done();
+  await RenderCoordinator.done();
   assert.isNotNull(component.shadowRoot);
   const name = component.shadowRoot.querySelector<HTMLElement>('span.name');
   assert.instanceOf(name, HTMLSpanElement);
@@ -101,7 +100,7 @@ it('outputs the user name onto the screen', async () => {
   const component = new DummyComponent();
   component.data = {name: 'Jack' /* whatever data the component needs */}
   renderElementIntoDOM(component);
-  await coordinator.done();
+  await RenderCoordinator.done();
   assert.isNotNull(component.shadowRoot);
   const name = component.shadowRoot.querySelector<HTMLElement>('span.name');
   assert.instanceOf(name, HTMLSpanElement);

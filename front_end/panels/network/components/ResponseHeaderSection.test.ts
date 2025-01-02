@@ -23,12 +23,10 @@ import {
   recordedMetricsContain,
   resetRecordedMetrics,
 } from '../../../testing/UserMetricsHelpers.js';
-import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
+import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import * as NetworkForward from '../forward/forward.js';
 
 import * as NetworkComponents from './components.js';
-
-const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 const enum HeaderAttribute {
   HEADER_NAME = 'HeaderName',
@@ -44,7 +42,7 @@ async function renderResponseHeaderSection(request: SDK.NetworkRequest.NetworkRe
     request,
     toReveal: {section: NetworkForward.UIRequestLocation.UIHeaderSection.RESPONSE, header: 'highlighted-header'},
   };
-  await coordinator.done();
+  await RenderCoordinator.done();
   assert.instanceOf(component, HTMLElement);
   assert.isNotNull(component.shadowRoot);
   return component;
@@ -68,7 +66,7 @@ async function editHeaderRow(
   editable.innerText = newValue;
   dispatchInputEvent(editable, {inputType: 'insertText', data: newValue, bubbles: true, composed: true});
   editable.blur();
-  await coordinator.done();
+  await RenderCoordinator.done();
 }
 
 async function removeHeaderRow(
@@ -80,7 +78,7 @@ async function removeHeaderRow(
   const button = row.shadowRoot.querySelector('.remove-header');
   assert.instanceOf(button, HTMLElement);
   button.click();
-  await coordinator.done();
+  await RenderCoordinator.done();
 }
 
 async function setupHeaderEditing(
@@ -385,7 +383,7 @@ describeWithEnvironment('ResponseHeaderSection', () => {
 
     Common.Settings.Settings.instance().moduleSetting('persistence-network-overrides-enabled').set(false);
     component.data = {request};
-    await coordinator.done();
+    await RenderCoordinator.done();
 
     checkHeaderSectionRow(rows[0], 'cache-control:', 'max-age=600', false, false, false);
     checkHeaderSectionRow(rows[1], 'server:', 'overridden server', true, false, false);
@@ -758,7 +756,7 @@ describeWithEnvironment('ResponseHeaderSection', () => {
     const addHeaderButton = component.shadowRoot.querySelector('.add-header-button');
     assert.instanceOf(addHeaderButton, HTMLElement);
     addHeaderButton.click();
-    await coordinator.done();
+    await RenderCoordinator.done();
 
     let expected = [{
       applyTo: 'index.html',
@@ -830,7 +828,7 @@ describeWithEnvironment('ResponseHeaderSection', () => {
     const addHeaderButton = component.shadowRoot.querySelector('.add-header-button');
     assert.instanceOf(addHeaderButton, HTMLElement);
     addHeaderButton.click();
-    await coordinator.done();
+    await RenderCoordinator.done();
 
     assert.strictEqual(spy.callCount, 1);
     await editHeaderRow(component, 1, HeaderAttribute.HEADER_NAME, 'valid');
@@ -848,7 +846,7 @@ describeWithEnvironment('ResponseHeaderSection', () => {
     const addHeaderButton = component.shadowRoot.querySelector('.add-header-button');
     assert.instanceOf(addHeaderButton, HTMLElement);
     addHeaderButton.click();
-    await coordinator.done();
+    await RenderCoordinator.done();
 
     const expected = [{
       applyTo: 'index.html',
@@ -889,7 +887,7 @@ describeWithEnvironment('ResponseHeaderSection', () => {
     const addHeaderButton = component.shadowRoot.querySelector('.add-header-button');
     assert.instanceOf(addHeaderButton, HTMLElement);
     addHeaderButton.click();
-    await coordinator.done();
+    await RenderCoordinator.done();
 
     let rows = component.shadowRoot.querySelectorAll('devtools-header-section-row');
     assert.lengthOf(rows, 2);
@@ -1117,7 +1115,7 @@ describeWithEnvironment('ResponseHeaderSection', () => {
     const addHeaderButton = component.shadowRoot.querySelector('.add-header-button');
     assert.instanceOf(addHeaderButton, HTMLElement);
     addHeaderButton.click();
-    await coordinator.done();
+    await RenderCoordinator.done();
 
     await editHeaderRow(component, 0, HeaderAttribute.HEADER_VALUE, 'unit test');
     await editHeaderRow(component, 1, HeaderAttribute.HEADER_NAME, 'foo');
@@ -1170,7 +1168,7 @@ describeWithEnvironment('ResponseHeaderSection', () => {
     const addHeaderButton = component.shadowRoot.querySelector('.add-header-button');
     assert.instanceOf(addHeaderButton, HTMLElement);
     addHeaderButton.click();
-    await coordinator.done();
+    await RenderCoordinator.done();
     assert.isFalse(isRowFocused(component, 0));
     assert.isTrue(isRowFocused(component, 1));
 
@@ -1204,14 +1202,14 @@ describeWithEnvironment('ResponseHeaderSection', () => {
     let addHeaderButton = component.shadowRoot.querySelector('.add-header-button');
     assert.instanceOf(addHeaderButton, HTMLElement);
     addHeaderButton.click();
-    await coordinator.done();
+    await RenderCoordinator.done();
 
     await editHeaderRow(component, 0, HeaderAttribute.HEADER_VALUE, 'unit test');
 
     sinon.stub(Workspace.Workspace.WorkspaceImpl.instance(), 'uiSourceCodeForURL').callsFake(() => null);
 
     component.data = {request};
-    await coordinator.done();
+    await RenderCoordinator.done();
 
     const rows = component.shadowRoot.querySelectorAll('devtools-header-section-row');
     assert.lengthOf(rows, 1);

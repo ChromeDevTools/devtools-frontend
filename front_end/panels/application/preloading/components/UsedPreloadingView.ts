@@ -14,7 +14,7 @@ import {assertNotNullOrUndefined} from '../../../../core/platform/platform.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import * as Protocol from '../../../../generated/protocol.js';
 import * as LegacyWrapper from '../../../../ui/components/legacy_wrapper/legacy_wrapper.js';
-import * as Coordinator from '../../../../ui/components/render_coordinator/render_coordinator.js';
+import * as RenderCoordinator from '../../../../ui/components/render_coordinator/render_coordinator.js';
 import * as UI from '../../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../../ui/visual_logging/visual_logging.js';
@@ -122,8 +122,6 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/application/preloading/components/UsedPreloadingView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
-
 export interface UsedPreloadingViewData {
   pageURL: Platform.DevToolsPath.UrlString;
   previousAttempts: SDK.PreloadingModel.PreloadingAttempt[];
@@ -160,7 +158,7 @@ export class UsedPreloadingView extends LegacyWrapper.LegacyWrapper.WrappableCom
   }
 
   async #render(): Promise<void> {
-    await coordinator.write('UsedPreloadingView render', () => {
+    await RenderCoordinator.write('UsedPreloadingView render', () => {
       LitHtml.render(this.#renderInternal(), this.#shadow, {host: this});
     });
   }

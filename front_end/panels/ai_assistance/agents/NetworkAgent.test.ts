@@ -12,7 +12,7 @@ import {
 } from '../../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../../testing/MockConnection.js';
 import {createNetworkPanelForMockConnection} from '../../../testing/NetworkHelpers.js';
-import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
+import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import type * as Network from '../../network/network.js';
 import {
   allowHeader,
@@ -22,8 +22,6 @@ import {
   RequestContext,
   ResponseType,
 } from '../ai_assistance.js';
-
-const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 describeWithMockConnection('NetworkAgent', () => {
   let networkPanel: Network.NetworkPanel.NetworkPanel;
@@ -42,7 +40,7 @@ describeWithMockConnection('NetworkAgent', () => {
   });
 
   afterEach(async () => {
-    await coordinator.done();
+    await RenderCoordinator.done();
     networkPanel.detach();
   });
 

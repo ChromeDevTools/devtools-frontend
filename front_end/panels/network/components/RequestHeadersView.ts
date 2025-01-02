@@ -17,7 +17,7 @@ import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import type * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as Input from '../../../ui/components/input/input.js';
 import * as LegacyWrapper from '../../../ui/components/legacy_wrapper/legacy_wrapper.js';
-import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
+import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
@@ -114,8 +114,6 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/network/components/RequestHeadersView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
-
 export class RequestHeadersView extends LegacyWrapper.LegacyWrapper.WrappableComponent {
   #request: Readonly<SDK.NetworkRequest.NetworkRequest>;
   readonly #shadow = this.attachShadow({mode: 'open'});
@@ -197,7 +195,7 @@ export class RequestHeadersView extends LegacyWrapper.LegacyWrapper.WrappableCom
       return;
     }
 
-    return coordinator.write(() => {
+    return RenderCoordinator.write(() => {
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
       render(html`

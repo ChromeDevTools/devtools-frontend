@@ -19,7 +19,7 @@ import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
 import * as LegacyWrapper from '../../../ui/components/legacy_wrapper/legacy_wrapper.js';
 import type * as Menus from '../../../ui/components/menus/menus.js';
-import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
+import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import type * as Settings from '../../../ui/components/settings/settings.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
@@ -35,8 +35,6 @@ import {CLS_THRESHOLDS, INP_THRESHOLDS, renderMetricValue} from './Utils.js';
 const {html, nothing} = LitHtml;
 
 type DeviceOption = CrUXManager.DeviceScope|'AUTO';
-
-const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 const DEVICE_OPTION_LIST: DeviceOption[] = ['AUTO', ...CrUXManager.DEVICE_SCOPE_LIST];
 
@@ -867,7 +865,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
       return;
     }
 
-    await coordinator.write(() => {
+    await RenderCoordinator.write(() => {
       interactionEl.scrollIntoView({
         block: 'center',
       });
@@ -983,7 +981,7 @@ export class LiveMetricsView extends LegacyWrapper.LegacyWrapper.WrappableCompon
       return;
     }
 
-    await coordinator.write(() => {
+    await RenderCoordinator.write(() => {
       layoutShiftEls[0].scrollIntoView({
         block: 'start',
       });

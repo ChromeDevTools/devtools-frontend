@@ -5,11 +5,9 @@
 import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
-import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
+import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 
 import * as Components from './components.js';
-const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
-
 describeWithEnvironment('SidebarInsightsTab', () => {
   it('renders a list of insights per navigation in the sidebar', async function() {
     const {parsedTrace, insights} = await TraceLoader.traceEngine(this, 'multiple-navigations.json.gz');
@@ -18,7 +16,7 @@ describeWithEnvironment('SidebarInsightsTab', () => {
     renderElementIntoDOM(component);
     component.parsedTrace = parsedTrace;
     component.insights = insights;
-    await coordinator.done();
+    await RenderCoordinator.done();
     assert.isOk(component.shadowRoot);
 
     const navigationURLs =

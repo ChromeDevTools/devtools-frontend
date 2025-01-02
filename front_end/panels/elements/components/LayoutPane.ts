@@ -11,7 +11,7 @@ import * as SDK from '../../../core/sdk/sdk.js';
 import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as Input from '../../../ui/components/input/input.js';
 import * as LegacyWrapper from '../../../ui/components/legacy_wrapper/legacy_wrapper.js';
-import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
+import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 // eslint-disable-next-line rulesdir/es-modules-import
 import inspectorCommonStyles from '../../../ui/legacy/inspectorCommon.css.js';
 import * as UI from '../../../ui/legacy/legacy.js';
@@ -164,7 +164,6 @@ export interface LayoutPaneData {
   flexContainerElements?: LayoutElement[];
 }
 
-const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 let layoutPaneWrapperInstance: LegacyWrapper.LegacyWrapper.LegacyWrapper<UI.Widget.Widget, LayoutPane>;
 
 export class LayoutPane extends LegacyWrapper.LegacyWrapper.WrappableComponent {
@@ -335,7 +334,7 @@ export class LayoutPane extends LegacyWrapper.LegacyWrapper.WrappableComponent {
   override async render(): Promise<void> {
     const gridElements = gridNodesToElements(await this.#fetchGridNodes());
     const flexContainerElements = flexContainerNodesToElements(await this.#fetchFlexContainerNodes());
-    await coordinator.write('LayoutPane render', () => {
+    await RenderCoordinator.write('LayoutPane render', () => {
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
       render(html`

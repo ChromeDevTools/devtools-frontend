@@ -15,14 +15,12 @@ import {
 } from '../../../testing/EnvironmentHelpers.js';
 import {expectCall} from '../../../testing/ExpectStubCall.js';
 import * as Menus from '../../../ui/components/menus/menus.js';
-import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
+import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import type * as TextEditor from '../../../ui/components/text_editor/text_editor.js';
 import * as Converters from '../converters/converters.js';
 import * as Models from '../models/models.js';
 
 import * as Components from './components.js';
-
-const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 describeWithEnvironment('RecordingView', () => {
   setupActionRegistry();
@@ -58,7 +56,7 @@ describeWithEnvironment('RecordingView', () => {
       extensionConverters: [],
       replayExtensions: [],
     };
-    await coordinator.done();
+    await RenderCoordinator.done();
     return view;
   }
 

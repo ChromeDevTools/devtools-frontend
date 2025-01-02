@@ -11,12 +11,10 @@ import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {createTarget, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import {getMainFrame, navigate} from '../../testing/ResourceTreeHelpers.js';
-import * as Coordinator from '../../ui/components/render_coordinator/render_coordinator.js';
+import * as RenderCoordinator from '../../ui/components/render_coordinator/render_coordinator.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Autofill from './autofill.js';
-
-const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 const addressFormFilledEvent = {
   addressUi: {
@@ -114,7 +112,7 @@ describeWithMockConnection('AutofillView', () => {
     const view = new Autofill.AutofillView.AutofillView();
     renderElementIntoDOM(view);
     await view.render();
-    await coordinator.done();
+    await RenderCoordinator.done();
     return view;
   };
 
@@ -140,12 +138,12 @@ describeWithMockConnection('AutofillView', () => {
     assert.strictEqual(placeholderText, expectedPlaceholder);
 
     autofillModel.addressFormFilled(addressFormFilledEvent);
-    await coordinator.done({waitForWork: true});
+    await RenderCoordinator.done({waitForWork: true});
     assertViewShowsEventData(view);
 
     navigate(getMainFrame(target));
 
-    await coordinator.done();
+    await RenderCoordinator.done();
     placeholderText = view.shadowRoot!.querySelector('.placeholder div')!.textContent!.trim();
     assert.strictEqual(placeholderText, expectedPlaceholder);
   });
@@ -156,7 +154,7 @@ describeWithMockConnection('AutofillView', () => {
     const view = await renderAutofillView();
     assert.isNotNull(view.shadowRoot);
     assertViewShowsEventData(view);
-    await coordinator.done();
+    await RenderCoordinator.done();
   });
 
   it('auto-open can be turned off/on', async () => {
@@ -183,7 +181,7 @@ describeWithMockConnection('AutofillView', () => {
 
     autofillModel.addressFormFilled(addressFormFilledEvent);
     assert.isTrue(showViewStub.calledOnceWithExactly('autofill-view'));
-    await coordinator.done();
+    await RenderCoordinator.done();
   });
 
   it('showing test addresses in autofill menu can be turned off/on', async () => {
@@ -206,7 +204,7 @@ describeWithMockConnection('AutofillView', () => {
     checkbox.dispatchEvent(event);
     assert.isTrue(setAddressSpy.calledOnce);
 
-    await coordinator.done();
+    await RenderCoordinator.done();
   });
 
   it('highlights corresponding grid row when hovering over address span', async () => {
@@ -228,14 +226,14 @@ describeWithMockConnection('AutofillView', () => {
     assert.strictEqual(styles.replace(/\s/g, ''), monospaceStyles);
 
     crocodileSpan.dispatchEvent(new MouseEvent('mouseenter'));
-    await coordinator.done({waitForWork: true});
+    await RenderCoordinator.done({waitForWork: true});
     assert.isTrue(crocodileSpan.classList.contains('highlighted'));
     styles = firstGridRow.getAttribute('style') || '';
     assert.strictEqual(
         styles.replace(/\s/g, ''), monospaceStyles + 'background-color:var(--sys-color-state-hover-on-subtle);');
 
     crocodileSpan.dispatchEvent(new MouseEvent('mouseleave'));
-    await coordinator.done({waitForWork: true});
+    await RenderCoordinator.done({waitForWork: true});
     assert.isFalse(crocodileSpan.classList.contains('highlighted'));
     styles = firstGridRow.getAttribute('style') || '';
     assert.strictEqual(styles.replace(/\s/g, ''), monospaceStyles);
@@ -271,7 +269,7 @@ describeWithMockConnection('AutofillView', () => {
     assert.isNotNull(grid.shadowRoot);
     const fourthGridRow = getBodyRowByAriaIndex(grid.shadowRoot, 4);
     fourthGridRow.dispatchEvent(new MouseEvent('mouseenter'));
-    await coordinator.done({waitForWork: true});
+    await RenderCoordinator.done({waitForWork: true});
     assert.isTrue(zipCodeSpan.classList.contains('highlighted'));
     assert.isTrue(overlaySpy.calledOnce);
     const deferredNode =
@@ -280,7 +278,7 @@ describeWithMockConnection('AutofillView', () => {
     assert.isTrue(hideOverlaySpy.notCalled);
 
     fourthGridRow.dispatchEvent(new MouseEvent('mouseleave'));
-    await coordinator.done({waitForWork: true});
+    await RenderCoordinator.done({waitForWork: true});
     assert.isFalse(zipCodeSpan.classList.contains('highlighted'));
     assert.isTrue(hideOverlaySpy.calledOnce);
     getFrameStub.restore();

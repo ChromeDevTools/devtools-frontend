@@ -7,11 +7,9 @@ import {
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
 import {describeWithLocale} from '../../../testing/EnvironmentHelpers.js';
-import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
+import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 
 import * as ElementsComponents from './components.js';
-
-const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 describeWithLocale('Elements tree expand button', () => {
   it('render and click handler trigger correctly', async () => {
@@ -24,7 +22,7 @@ describeWithLocale('Elements tree expand button', () => {
     };
 
     renderElementIntoDOM(component);
-    await coordinator.done();
+    await RenderCoordinator.done();
 
     const button = component.shadowRoot!.querySelector('.expand-button');
     assert.instanceOf(button, HTMLElement);
@@ -42,7 +40,7 @@ describeWithLocale('Elements tree expand button', () => {
     };
 
     renderElementIntoDOM(component);
-    await coordinator.done();
+    await RenderCoordinator.done();
 
     const button = component.shadowRoot!.querySelector('.expand-button');
     assert.instanceOf(button, HTMLElement);

@@ -7,8 +7,6 @@ import * as RenderCoordinator from '../render_coordinator/render_coordinator.js'
 
 import * as SplitView from './split_view.js';
 
-const coordinator = RenderCoordinator.RenderCoordinator.RenderCoordinator.instance();
-
 describe('SplitView', () => {
   it('should resize split view', async () => {
     const view = new SplitView.SplitView.SplitView();
@@ -64,7 +62,7 @@ describe('SplitView', () => {
     view.style.width = '600px';
     view.style.height = '800px';
 
-    await coordinator.done({waitForWork: true});
+    await RenderCoordinator.done({waitForWork: true});
 
     const rect = resizer.getBoundingClientRect();
     assert.strictEqual(rect.width, 600);
@@ -83,7 +81,7 @@ describe('SplitView', () => {
                         ) as HTMLDivElement;
     assert.isOk(resizer);
 
-    await coordinator.done({waitForWork: true});
+    await RenderCoordinator.done({waitForWork: true});
 
     const rect = resizer.getBoundingClientRect();
     assert.strictEqual(rect.width, 800);

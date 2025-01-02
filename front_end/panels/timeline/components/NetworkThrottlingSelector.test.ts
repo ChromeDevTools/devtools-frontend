@@ -7,13 +7,12 @@ import * as SDK from '../../../core/sdk/sdk.js';
 import {getCleanTextContentFromElements, renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import type * as Menus from '../../../ui/components/menus/menus.js';
-import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
+import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import * as MobileThrottling from '../../mobile_throttling/mobile_throttling.js';
 
 import * as Components from './components.js';
 
 describeWithEnvironment('NetworkThrottlingSelector', () => {
-  const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
   let networkManager: SDK.NetworkManager.MultitargetNetworkManager;
   let customNetworkSetting: Common.Settings.Setting<SDK.NetworkManager.Conditions[]>;
   let mockReveal: sinon.SinonStub;
@@ -33,7 +32,7 @@ describeWithEnvironment('NetworkThrottlingSelector', () => {
     const view = new Components.NetworkThrottlingSelector.NetworkThrottlingSelector();
     renderElementIntoDOM(view);
 
-    await coordinator.done();
+    await RenderCoordinator.done();
 
     const groups = view.shadowRoot!.querySelectorAll('devtools-menu-group') as NodeListOf<Menus.Menu.MenuGroup>;
 
@@ -68,14 +67,14 @@ describeWithEnvironment('NetworkThrottlingSelector', () => {
     const view = new Components.NetworkThrottlingSelector.NetworkThrottlingSelector();
     renderElementIntoDOM(view);
 
-    await coordinator.done();
+    await RenderCoordinator.done();
 
     const items = view.shadowRoot!.querySelectorAll('devtools-menu-item') as NodeListOf<Menus.Menu.MenuItem>;
     assert.isTrue(items[0].selected);
     assert.strictEqual(networkManager.networkConditions().i18nTitleKey, 'No throttling');
 
     items[1].click();
-    await coordinator.done();
+    await RenderCoordinator.done();
 
     assert.isTrue(items[1].selected);
     assert.isFalse(items[0].selected);
@@ -85,7 +84,7 @@ describeWithEnvironment('NetworkThrottlingSelector', () => {
   it('correctly updates when a custom preset is selected', async () => {
     const view = new Components.NetworkThrottlingSelector.NetworkThrottlingSelector();
     renderElementIntoDOM(view);
-    await coordinator.done();
+    await RenderCoordinator.done();
     customNetworkSetting.set([
       {
         title: 'Custom item one',
@@ -101,7 +100,7 @@ describeWithEnvironment('NetworkThrottlingSelector', () => {
 
       },
     ]);
-    await coordinator.done();
+    await RenderCoordinator.done();
 
     assert.isOk(view.shadowRoot);
     const items = view.shadowRoot.querySelectorAll('devtools-menu-item');
@@ -111,7 +110,7 @@ describeWithEnvironment('NetworkThrottlingSelector', () => {
         ['No throttling', 'Fast 4G', 'Slow 4G', '3G', 'Offline', 'Custom item one', 'Custom item two', 'Add…']);
 
     items[6].click();
-    await coordinator.done();
+    await RenderCoordinator.done();
     assert.deepEqual(Array.from(items).filter(i => i.selected), [items[6]]);
     assert.strictEqual(networkManager.networkConditions().title, 'Custom item two');
   });
@@ -122,7 +121,7 @@ describeWithEnvironment('NetworkThrottlingSelector', () => {
     networkManager.setNetworkConditions(MobileThrottling.ThrottlingPresets.ThrottlingPresets.networkPresets[1]);
 
     renderElementIntoDOM(view);
-    await coordinator.done();
+    await RenderCoordinator.done();
     // Ensure that the component picks up the new changes and has selected the right thorttling setting
     const items = view.shadowRoot!.querySelectorAll('devtools-menu-item');
     assert.isTrue(items[2].innerText.includes('Slow 4G'));
@@ -133,13 +132,13 @@ describeWithEnvironment('NetworkThrottlingSelector', () => {
     const view = new Components.NetworkThrottlingSelector.NetworkThrottlingSelector();
     renderElementIntoDOM(view);
 
-    await coordinator.done();
+    await RenderCoordinator.done();
 
     const items = view.shadowRoot!.querySelectorAll('devtools-menu-item') as NodeListOf<Menus.Menu.MenuItem>;
     assert.isTrue(items[0].selected);
 
     networkManager.setNetworkConditions(MobileThrottling.ThrottlingPresets.ThrottlingPresets.networkPresets[1]);
-    await coordinator.done();
+    await RenderCoordinator.done();
 
     assert.isTrue(items[2].selected);
     assert.isFalse(items[0].selected);
@@ -149,7 +148,7 @@ describeWithEnvironment('NetworkThrottlingSelector', () => {
     const view = new Components.NetworkThrottlingSelector.NetworkThrottlingSelector();
     renderElementIntoDOM(view);
 
-    await coordinator.done();
+    await RenderCoordinator.done();
 
     let items = view.shadowRoot!.querySelectorAll('devtools-menu-item') as NodeListOf<HTMLElement>;
     assert.lengthOf(items, 6);
@@ -160,7 +159,7 @@ describeWithEnvironment('NetworkThrottlingSelector', () => {
       upload: 0,
       latency: 0,
     }]);
-    await coordinator.done();
+    await RenderCoordinator.done();
 
     items = view.shadowRoot!.querySelectorAll('devtools-menu-item') as NodeListOf<HTMLElement>;
     assert.lengthOf(items, 7);
@@ -171,7 +170,7 @@ describeWithEnvironment('NetworkThrottlingSelector', () => {
     const view = new Components.NetworkThrottlingSelector.NetworkThrottlingSelector();
     renderElementIntoDOM(view);
 
-    await coordinator.done();
+    await RenderCoordinator.done();
 
     const items = view.shadowRoot!.querySelectorAll('devtools-menu-item') as NodeListOf<Menus.Menu.MenuItem>;
     const addItem = items[items.length - 1];
@@ -179,7 +178,7 @@ describeWithEnvironment('NetworkThrottlingSelector', () => {
 
     assert.isFalse(addItem.selected);
 
-    await coordinator.done();
+    await RenderCoordinator.done();
 
     assert(mockReveal.calledOnce);
     assert.isFalse(addItem.selected);

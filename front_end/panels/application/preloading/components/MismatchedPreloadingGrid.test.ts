@@ -15,11 +15,9 @@ import {
 } from '../../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../../testing/EnvironmentHelpers.js';
 import * as DataGrid from '../../../../ui/components/data_grid/data_grid.js';
-import * as Coordinator from '../../../../ui/components/render_coordinator/render_coordinator.js';
+import * as RenderCoordinator from '../../../../ui/components/render_coordinator/render_coordinator.js';
 
 import * as PreloadingComponents from './components.js';
-
-const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 const zip2 = <T, S>(xs: T[], ys: S[]): [T, S][] => {
   assert.strictEqual(xs.length, ys.length);
@@ -33,7 +31,7 @@ async function renderMismatchedPreloadingGrid(
   component.data = data;
   renderElementIntoDOM(component);
   assert.isNotNull(component.shadowRoot);
-  await coordinator.done();
+  await RenderCoordinator.done();
 
   return component;
 }

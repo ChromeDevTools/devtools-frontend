@@ -16,7 +16,7 @@ import * as Buttons from '../../../ui/components/buttons/buttons.js';
 import type * as ExpandableList from '../../../ui/components/expandable_list/expandable_list.js';
 import type * as IconButton from '../../../ui/components/icon_button/icon_button.js';
 import * as LegacyWrapper from '../../../ui/components/legacy_wrapper/legacy_wrapper.js';
-import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
+import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import type * as ReportView from '../../../ui/components/report_view/report_view.js';
 import type * as TreeOutline from '../../../ui/components/tree_outline/tree_outline.js';
 import * as Components from '../../../ui/legacy/components/utils/utils.js';
@@ -154,8 +154,6 @@ const enum ScreenStatusType {
   RESULT = 'Result',
 }
 
-const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
-
 export class BackForwardCacheView extends LegacyWrapper.LegacyWrapper.WrappableComponent {
   readonly #shadow = this.attachShadow({mode: 'open'});
   #screenStatus = ScreenStatusType.RESULT;
@@ -184,7 +182,7 @@ export class BackForwardCacheView extends LegacyWrapper.LegacyWrapper.WrappableC
   }
 
   override async render(): Promise<void> {
-    await coordinator.write('BackForwardCacheView render', () => {
+    await RenderCoordinator.write('BackForwardCacheView render', () => {
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
       LitHtml.render(html`

@@ -5,7 +5,7 @@
 import * as Trace from '../../../models/trace/trace.js';
 import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
-import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
+import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 
 import * as TimelineComponents from './components.js';
 
@@ -35,7 +35,6 @@ describeWithEnvironment('BreadcrumbsUI', () => {
   }
 
   it('renders one breadcrumb', async () => {
-    const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
     const component = new BreadcrumbsUI();
     renderElementIntoDOM(component);
 
@@ -52,7 +51,7 @@ describeWithEnvironment('BreadcrumbsUI', () => {
 
     component.data = {initialBreadcrumb: breadcrumb, activeBreadcrumb: breadcrumb};
 
-    await coordinator.done();
+    await RenderCoordinator.done();
 
     const breadcrumbsRanges = queryBreadcrumbs(component);
 
@@ -61,7 +60,6 @@ describeWithEnvironment('BreadcrumbsUI', () => {
   });
 
   it('renders all the breadcrumbs provided', async () => {
-    const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
     const component = new BreadcrumbsUI();
     renderElementIntoDOM(component);
 
@@ -89,7 +87,7 @@ describeWithEnvironment('BreadcrumbsUI', () => {
 
     component.data = {initialBreadcrumb: breadcrumb, activeBreadcrumb: breadcrumb2};
 
-    await coordinator.done();
+    await RenderCoordinator.done();
 
     const breadcrumbsRanges = queryBreadcrumbs(component);
 

@@ -4,7 +4,7 @@
 
 import * as Platform from '../../../core/platform/platform.js';
 import * as ComponentHelpers from '../../../ui/components/helpers/helpers.js';
-import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
+import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as Dialogs from '../dialogs/dialogs.js';
@@ -18,8 +18,6 @@ import selectMenuStyles from './selectMenu.css.js';
 import selectMenuButtonStyles from './selectMenuButton.css.js';
 
 const {html} = LitHtml;
-
-const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 export interface SelectMenuData {
   /**
@@ -248,7 +246,7 @@ export class SelectMenu extends HTMLElement {
     if (evt) {
       evt.stopImmediatePropagation();
     }
-    void coordinator.write(() => {
+    void RenderCoordinator.write(() => {
       this.removeAttribute('has-open-dialog');
     });
     this.#open = false;
@@ -300,7 +298,7 @@ export class SelectMenuButton extends HTMLElement {
   connectedCallback(): void {
     this.#shadow.adoptedStyleSheets = [selectMenuButtonStyles];
     this.style.setProperty('--deploy-menu-arrow', `url(${deployMenuArrow})`);
-    void coordinator.write(() => {
+    void RenderCoordinator.write(() => {
       switch (this.arrowDirection) {
         case Dialogs.Dialog.DialogVerticalPosition.AUTO:
         case Dialogs.Dialog.DialogVerticalPosition.TOP: {
@@ -352,7 +350,7 @@ export class SelectMenuButton extends HTMLElement {
   }
 
   set open(open: boolean) {
-    void coordinator.write(() => {
+    void RenderCoordinator.write(() => {
       this.#getShowButton()?.setAttribute('aria-expanded', String(open));
     });
   }

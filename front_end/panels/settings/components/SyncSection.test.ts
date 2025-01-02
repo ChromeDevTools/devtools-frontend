@@ -4,7 +4,7 @@
 
 import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {createFakeSetting, describeWithLocale} from '../../../testing/EnvironmentHelpers.js';
-import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
+import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import * as SettingComponents from '../../../ui/components/settings/settings.js';
 
 import * as PanelComponents from './components.js';
@@ -14,7 +14,7 @@ async function renderSyncSection(data: PanelComponents.SyncSection.SyncSectionDa
   const section = new PanelComponents.SyncSection.SyncSection();
   renderElementIntoDOM(section);
   section.data = data;
-  await Coordinator.RenderCoordinator.RenderCoordinator.instance().done();
+  await RenderCoordinator.done();
   assert.isNotNull(section.shadowRoot);
   return {section, shadowRoot: section.shadowRoot};
 }

@@ -3,13 +3,15 @@
 // found in the LICENSE file.
 
 import * as Host from '../../../core/host/host.js';
+import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as UI from '../../legacy/legacy.js';
 import * as LitHtml from '../../lit-html/lit-html.js';
 import * as VisualLogging from '../../visual_logging/visual_logging.js';
-import * as Coordinator from '../render_coordinator/render_coordinator.js';
+import * as RenderCoordinator from '../render_coordinator/render_coordinator.js';
 
 import dataGridStyles from './dataGrid.css.js';
+import {addColumnVisibilityCheckboxes, addSortableColumnItems} from './DataGridContextMenuUtils.js';
 import {
   BodyCellFocusedEvent,
   ColumnHeaderClickEvent,
@@ -17,26 +19,19 @@ import {
   RowMouseEnterEvent,
   RowMouseLeaveEvent,
 } from './DataGridEvents.js';
-
-const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
-
-import {addColumnVisibilityCheckboxes, addSortableColumnItems} from './DataGridContextMenuUtils.js';
-
 import {
   calculateColumnWidthPercentageFromWeighting,
   calculateFirstFocusableCell,
+  type CellPosition,
+  type Column,
   getCellTitleFromCellContent,
   getRowEntryForColumnId,
   handleArrowKeyNavigation,
   renderCellValue,
-  SortDirection,
-  type CellPosition,
-  type Column,
   type Row,
+  SortDirection,
   type SortState,
 } from './DataGridUtils.js';
-
-import * as i18n from '../../../core/i18n/i18n.js';
 
 const {html, Directives: {ifDefined, classMap, styleMap, repeat}} = LitHtml;
 const UIStrings = {
@@ -279,7 +274,7 @@ export class DataGrid extends HTMLElement {
       return;
     }
 
-    void coordinator.scroll(() => {
+    void RenderCoordinator.scroll(() => {
       const scrollHeight = wrapper.scrollHeight;
       wrapper.scrollTo(0, scrollHeight);
     });
@@ -671,7 +666,7 @@ export class DataGrid extends HTMLElement {
   }
 
   #alignScrollHandlers(): Promise<void> {
-    return coordinator.read(() => {
+    return RenderCoordinator.read(() => {
       const columnHeaders = this.#shadow.querySelectorAll<HTMLElement>('th:not(.hidden)');
       const handlers = this.#shadow.querySelectorAll<HTMLElement>('.cell-resize-handle');
       const table = this.#shadow.querySelector<HTMLTableElement>('table');
@@ -684,7 +679,7 @@ export class DataGrid extends HTMLElement {
         const columnLeftOffset = header.offsetLeft;
         if (handlers[index]) {
           const handlerWidth = handlers[index].clientWidth;
-          void coordinator.write(() => {
+          void RenderCoordinator.write(() => {
             /**
              * Render the resizer at the far right of the column; we subtract
              * its width so it sits on the inner edge of the column.
@@ -701,7 +696,7 @@ export class DataGrid extends HTMLElement {
    * Pads in each direction by PADDING_ROWS_COUNT so we render some rows that are off scren.
    */
   #calculateTopAndBottomRowIndexes(): Promise<{topVisibleRow: number, bottomVisibleRow: number}> {
-    return coordinator.read(() => {
+    return RenderCoordinator.read(() => {
       const wrapper = this.#shadow.querySelector('.wrapping-container');
 
       // On first render we don't have a wrapper, so we can't get at its
@@ -783,7 +778,7 @@ export class DataGrid extends HTMLElement {
       striped: this.#striped === true,
     };
 
-    await coordinator.write(() => {
+    await RenderCoordinator.write(() => {
       // Disabled until https://crbug.com/1079231 is fixed.
       // clang-format off
       LitHtml.render(html`

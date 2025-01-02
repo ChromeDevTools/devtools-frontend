@@ -5,11 +5,9 @@
 import type * as Platform from '../../../core/platform/platform.js';
 import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {describeWithLocale} from '../../../testing/EnvironmentHelpers.js';
-import * as Coordinator from '../render_coordinator/render_coordinator.js';
+import * as RenderCoordinator from '../render_coordinator/render_coordinator.js';
 
 import * as PanelFeedback from './panel_feedback.js';
-
-const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 describeWithLocale('Panel Feedback', () => {
   async function renderFeedbackComponent(): Promise<PanelFeedback.PanelFeedback.PanelFeedback> {
@@ -21,7 +19,7 @@ describeWithLocale('Panel Feedback', () => {
     };
 
     renderElementIntoDOM(component);
-    await coordinator.done();
+    await RenderCoordinator.done();
     return component;
   }
 

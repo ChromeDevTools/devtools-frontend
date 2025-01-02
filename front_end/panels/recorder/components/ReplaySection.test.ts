@@ -7,12 +7,10 @@ import {
   describeWithEnvironment,
   setupActionRegistry,
 } from '../../../testing/EnvironmentHelpers.js';
-import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
+import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import * as Models from '../models/models.js';
 
 import * as RecorderComponents from './components.js';
-
-const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 describeWithEnvironment('ReplaySection', () => {
   setupActionRegistry();
@@ -23,7 +21,7 @@ describeWithEnvironment('ReplaySection', () => {
     const component = new RecorderComponents.ReplaySection.ReplaySection();
     component.data = {settings, replayExtensions: []};
     renderElementIntoDOM(component);
-    await coordinator.done();
+    await RenderCoordinator.done();
 
     return component;
   }
@@ -47,7 +45,7 @@ describeWithEnvironment('ReplaySection', () => {
             Models.RecordingPlayer.PlayRecordingSpeed.SLOW,
             ),
     );
-    await coordinator.done();
+    await RenderCoordinator.done();
     assert.strictEqual(
         selectButton?.value,
         Models.RecordingPlayer.PlayRecordingSpeed.SLOW,

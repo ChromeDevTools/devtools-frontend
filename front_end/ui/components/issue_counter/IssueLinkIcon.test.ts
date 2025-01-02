@@ -10,11 +10,9 @@ import {
 } from '../../../testing/DOMHelpers.js';
 import {describeWithLocale} from '../../../testing/EnvironmentHelpers.js';
 import * as IconButton from '../icon_button/icon_button.js';
-import * as Coordinator from '../render_coordinator/render_coordinator.js';
+import * as RenderCoordinator from '../render_coordinator/render_coordinator.js';
 
 import * as IssueCounter from './issue_counter.js';
-
-const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 const renderIssueLinkIcon = async(data: IssueCounter.IssueLinkIcon.IssueLinkIconData): Promise<{
   component: IssueCounter.IssueLinkIcon.IssueLinkIcon,
@@ -24,7 +22,7 @@ const renderIssueLinkIcon = async(data: IssueCounter.IssueLinkIcon.IssueLinkIcon
   component.data = data;
   renderElementIntoDOM(component);
   assert.isNotNull(component.shadowRoot);
-  await coordinator.done();
+  await RenderCoordinator.done();
   return {component, shadowRoot: component.shadowRoot};
 };
 
@@ -150,7 +148,7 @@ describeWithLocale('IssueLinkIcon', () => {
       });
 
       resolver.resolve(mockIssue as unknown as IssuesManager.Issue.Issue);
-      await coordinator.done({waitForWork: true});
+      await RenderCoordinator.done({waitForWork: true});
 
       assert.isTrue(extractElements(shadowRoot).button.classList.contains('link'));
     });
@@ -169,7 +167,7 @@ describeWithLocale('IssueLinkIcon', () => {
       component.data = {
         issue: mockIssue2 as unknown as IssuesManager.Issue.Issue,
       };
-      await coordinator.done({waitForWork: true});
+      await RenderCoordinator.done({waitForWork: true});
 
       const {icon} = extractElements(shadowRoot);
       assert.strictEqual(icon.name, 'issue-exclamation-filled');

@@ -7,12 +7,11 @@ import * as MobileThrottling from '../../../panels/mobile_throttling/mobile_thro
 import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import type * as Menus from '../../../ui/components/menus/menus.js';
-import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
+import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 
 import * as Components from './components.js';
 
 describeWithEnvironment('CPUThrottlingSelector', () => {
-  const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
   let cpuThrottlingManager: SDK.CPUThrottlingManager.CPUThrottlingManager;
 
   beforeEach(() => {
@@ -24,7 +23,7 @@ describeWithEnvironment('CPUThrottlingSelector', () => {
     const view = new Components.CPUThrottlingSelector.CPUThrottlingSelector();
     renderElementIntoDOM(view);
 
-    await coordinator.done();
+    await RenderCoordinator.done();
 
     const menuItems = view.shadowRoot!.querySelectorAll('devtools-menu-item') as NodeListOf<Menus.Menu.MenuItem>;
 
@@ -51,7 +50,7 @@ describeWithEnvironment('CPUThrottlingSelector', () => {
     const view = new Components.CPUThrottlingSelector.CPUThrottlingSelector();
     renderElementIntoDOM(view);
 
-    await coordinator.done();
+    await RenderCoordinator.done();
 
     const menuItems = view.shadowRoot!.querySelectorAll('devtools-menu-item') as NodeListOf<Menus.Menu.MenuItem>;
 
@@ -59,7 +58,7 @@ describeWithEnvironment('CPUThrottlingSelector', () => {
     assert.strictEqual(cpuThrottlingManager.cpuThrottlingRate(), 1);
 
     menuItems[1].click();
-    await coordinator.done();
+    await RenderCoordinator.done();
 
     assert.isTrue(menuItems[1].selected);
     assert.strictEqual(cpuThrottlingManager.cpuThrottlingRate(), 4);
@@ -69,14 +68,14 @@ describeWithEnvironment('CPUThrottlingSelector', () => {
     const view = new Components.CPUThrottlingSelector.CPUThrottlingSelector();
     renderElementIntoDOM(view);
 
-    await coordinator.done();
+    await RenderCoordinator.done();
 
     const menuItems = view.shadowRoot!.querySelectorAll('devtools-menu-item') as NodeListOf<Menus.Menu.MenuItem>;
 
     assert.isTrue(menuItems[0].selected);
 
     cpuThrottlingManager.setCPUThrottlingRate(6);
-    await coordinator.done();
+    await RenderCoordinator.done();
 
     assert.isTrue(menuItems[2].selected);
   });
@@ -86,10 +85,9 @@ describeWithEnvironment('CPUThrottlingSelector', () => {
     cpuThrottlingManager.setCPUThrottlingRate(6);
 
     renderElementIntoDOM(view);
-    await coordinator.done();
+    await RenderCoordinator.done();
     // Ensure that the component picks up the new changes and has selected the right thorttling setting
     const menuItems = view.shadowRoot!.querySelectorAll('devtools-menu-item') as NodeListOf<Menus.Menu.MenuItem>;
     assert.isTrue(menuItems[2].selected);
   });
-
 });

@@ -4,13 +4,11 @@
 
 import * as Common from '../../../../core/common/common.js';
 import * as Platform from '../../../../core/platform/platform.js';
-import * as Coordinator from '../../../components/render_coordinator/render_coordinator.js';
+import * as RenderCoordinator from '../../../components/render_coordinator/render_coordinator.js';
 import * as UI from '../../legacy.js';
 
 import chartViewPortStyles from './chartViewport.css.legacy.js';
 import {MinimalTimeWindowMs} from './FlameChart.js';
-
-const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 export interface ChartViewportDelegate {
   windowChanged(startTime: number, endTime: number, animate: boolean): void;
@@ -468,7 +466,7 @@ export class ChartViewport extends UI.Widget.VBox {
       return;
     }
     this.isUpdateScheduled = true;
-    void coordinator.write(() => {
+    void RenderCoordinator.write(() => {
       this.isUpdateScheduled = false;
       this.update();
     });

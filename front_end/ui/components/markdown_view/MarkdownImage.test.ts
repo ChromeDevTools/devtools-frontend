@@ -7,11 +7,9 @@ import {
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
 import * as IconButton from '../icon_button/icon_button.js';
-import * as Coordinator from '../render_coordinator/render_coordinator.js';
+import * as RenderCoordinator from '../render_coordinator/render_coordinator.js';
 
 import * as MarkdownView from './markdown_view.js';
-
-const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 describe('MarkdownImage', () => {
   const imageSource = 'Images/lighthouse_logo.svg';
@@ -33,7 +31,7 @@ describe('MarkdownImage', () => {
     const component = new MarkdownView.MarkdownImage.MarkdownImage();
     component.data = {key: 'test-icon', title: 'Test icon'};
     renderElementIntoDOM(component);
-    await coordinator.done();
+    await RenderCoordinator.done();
     assert.isNotNull(component.shadowRoot);
     const iconComponent = getElementWithinComponent(component, 'devtools-icon', IconButton.Icon.Icon);
     assert.isNotNull(iconComponent);

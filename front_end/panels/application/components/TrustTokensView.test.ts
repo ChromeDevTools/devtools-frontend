@@ -15,11 +15,9 @@ import {
 import {createTarget} from '../../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../../testing/MockConnection.js';
 import * as DataGrid from '../../../ui/components/data_grid/data_grid.js';
-import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
+import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 
 import * as ApplicationComponents from './components.js';
-
-const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 async function renderTrustTokensView(): Promise<ApplicationComponents.TrustTokensView.TrustTokensView> {
   const component = new ApplicationComponents.TrustTokensView.TrustTokensView();
@@ -27,7 +25,7 @@ async function renderTrustTokensView(): Promise<ApplicationComponents.TrustToken
 
   // The data-grid's renderer is scheduled, so we need to wait until the coordinator
   // is done before we can test against it.
-  await coordinator.done({waitForWork: true});
+  await RenderCoordinator.done({waitForWork: true});
 
   return component;
 }

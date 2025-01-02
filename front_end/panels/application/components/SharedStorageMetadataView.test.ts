@@ -10,12 +10,10 @@ import {
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
 import {describeWithLocale} from '../../../testing/EnvironmentHelpers.js';
-import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
+import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import * as ReportView from '../../../ui/components/report_view/report_view.js';
 
 import * as ApplicationComponents from './components.js';
-
-const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 function makeView(origin: string, metadata: Protocol.Storage.SharedStorageMetadata, resetBudget?: () => Promise<void>) {
   return new ApplicationComponents.SharedStorageMetadataView.SharedStorageMetadataView(
@@ -37,7 +35,7 @@ describeWithLocale('SharedStorageMetadataView', () => {
     renderElementIntoDOM(component);
 
     assert.isNotNull(component.shadowRoot);
-    await coordinator.done();
+    await RenderCoordinator.done();
     const report = getElementWithinComponent(component, 'devtools-report', ReportView.ReportView.Report);
 
     const {textContent} = report.shadowRoot!.querySelector('.report-title')!;
@@ -54,7 +52,7 @@ describeWithLocale('SharedStorageMetadataView', () => {
     renderElementIntoDOM(component);
 
     assert.isNotNull(component.shadowRoot);
-    await coordinator.done({waitForWork: true});
+    await RenderCoordinator.done({waitForWork: true});
 
     const keys = getCleanTextContentFromElements(component.shadowRoot, 'devtools-report-key');
     assert.deepEqual(keys, [
@@ -80,7 +78,7 @@ describeWithLocale('SharedStorageMetadataView', () => {
     renderElementIntoDOM(component);
 
     assert.isNotNull(component.shadowRoot);
-    await coordinator.done({waitForWork: true});
+    await RenderCoordinator.done({waitForWork: true});
 
     const keys = getCleanTextContentFromElements(component.shadowRoot, 'devtools-report-key');
     assert.deepEqual(keys, [
@@ -113,7 +111,7 @@ describeWithLocale('SharedStorageMetadataView', () => {
         resetBudgetHandlerSpy);
     renderElementIntoDOM(component);
 
-    await coordinator.done({waitForWork: true});
+    await RenderCoordinator.done({waitForWork: true});
 
     const resetButtonComponent = component.shadowRoot!.querySelector('devtools-button');
     assert.instanceOf(resetButtonComponent, HTMLElement);

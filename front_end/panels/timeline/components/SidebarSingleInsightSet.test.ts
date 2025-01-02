@@ -7,15 +7,13 @@ import * as Trace from '../../../models/trace/trace.js';
 import {getCleanTextContentFromElements, renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
-import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
+import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 
 import * as Components from './components.js';
 import type * as InsightComponents from './insights/insights.js';
 
 type BaseInsightComponent =
     InsightComponents.BaseInsightComponent.BaseInsightComponent<Trace.Insights.Types.InsightModel<{}>>;
-
-const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 function getUserVisibleInsights(component: Components.SidebarSingleInsightSet.SidebarSingleInsightSet):
     BaseInsightComponent[] {
@@ -49,7 +47,7 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
       activeCategory: Trace.Insights.Types.InsightCategory.ALL,
       activeInsight: null,
     };
-    await coordinator.done();
+    await RenderCoordinator.done();
 
     const userVisibleTitles = getUserVisibleInsights(component).flatMap(component => {
       return getCleanTextContentFromElements(component.shadowRoot!, '.insight-title');
@@ -91,7 +89,7 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
       activeCategory: Trace.Insights.Types.InsightCategory.ALL,
       activeInsight: null,
     };
-    await coordinator.done();
+    await RenderCoordinator.done();
     const userVisibleTitles = getUserVisibleInsights(component).flatMap(component => {
       return getCleanTextContentFromElements(component.shadowRoot!, '.insight-title');
     });
@@ -137,7 +135,7 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
       activeCategory: Trace.Insights.Types.InsightCategory.ALL,
       activeInsight: null,
     };
-    await coordinator.done();
+    await RenderCoordinator.done();
     const userVisibleTitles = getUserVisibleInsights(component).flatMap(component => {
       return getCleanTextContentFromElements(component.shadowRoot!, '.insight-title');
     });
@@ -196,7 +194,7 @@ describeWithEnvironment('SidebarSingleInsightSet', () => {
         insightSetKey: navigationId,
       },
     };
-    await coordinator.done();
+    await RenderCoordinator.done();
 
     const expandedInsight = getUserVisibleInsights(component).find(insight => {
       return insight.selected;

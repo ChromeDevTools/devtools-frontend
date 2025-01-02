@@ -9,11 +9,10 @@ import {
 } from '../../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../../testing/EnvironmentHelpers.js';
 import {TraceLoader} from '../../../../testing/TraceLoader.js';
-import * as Coordinator from '../../../../ui/components/render_coordinator/render_coordinator.js';
+import * as RenderCoordinator from '../../../../ui/components/render_coordinator/render_coordinator.js';
 
 import * as Insights from './insights.js';
 
-const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 describeWithEnvironment('CLSCulprits component', () => {
   it('renders unsized image culprits', async function() {
     const traceData = await TraceLoader.traceEngine(this, 'unsized-images.json.gz');
@@ -27,7 +26,7 @@ describeWithEnvironment('CLSCulprits component', () => {
     component.selected = true;
 
     renderElementIntoDOM(component);
-    await coordinator.done();
+    await RenderCoordinator.done();
     assert.isOk(component.shadowRoot);
 
     const titleText = getCleanTextContentFromSingleElement(component.shadowRoot, '.insight-title');

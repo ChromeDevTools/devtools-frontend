@@ -12,12 +12,10 @@ import {
   setMockConnectionResponseHandler,
 } from '../../testing/MockConnection.js';
 import {createResource, getMainFrame} from '../../testing/ResourceTreeHelpers.js';
-import * as Coordinator from '../../ui/components/render_coordinator/render_coordinator.js';
+import * as RenderCoordinator from '../../ui/components/render_coordinator/render_coordinator.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Application from './application.js';
-
-const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 class SharedStorageTreeElementListener {
   #sidebar: Application.ApplicationPanelSidebar.ApplicationPanelSidebar;
@@ -299,7 +297,7 @@ describeWithMockConnection('ApplicationPanelSidebar', () => {
     SDK.TargetManager.TargetManager.instance().setScopeTarget(inScope ? target : null);
     const expectedCall = await getExpectedCall(expectedCallString);
     const model = target.model(modelClass);
-    await coordinator.done({waitForWork: true});
+    await RenderCoordinator.done({waitForWork: true});
     assert.exists(model);
     const data = [{...MOCK_EVENT_ITEM, model}] as Common.EventTarget.EventPayloadToRestParameters<Events, T>;
     model.dispatchEventToListeners(event as Platform.TypeScriptUtilities.NoUnion<T>, ...data);

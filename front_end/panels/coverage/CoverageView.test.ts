@@ -9,11 +9,9 @@ import * as Workspace from '../../models/workspace/workspace.js';
 import {createTarget, registerNoopActions} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import {activate, getMainFrame, navigate} from '../../testing/ResourceTreeHelpers.js';
-import * as Coordinator from '../../ui/components/render_coordinator/render_coordinator.js';
+import * as RenderCoordinator from '../../ui/components/render_coordinator/render_coordinator.js';
 
 import * as Coverage from './coverage.js';
-
-const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 const isShowingLandingPage = (view: Coverage.CoverageView.CoverageView) => {
   return Boolean(view.contentElement.querySelector('.landing-page'));
@@ -105,7 +103,7 @@ describeWithMockConnection('CoverageView', () => {
     assert.isTrue(startSpy.notCalled);
 
     await view.startRecording({reload: false, jsCoveragePerBlock: false});
-    await coordinator.done();
+    await RenderCoordinator.done();
     assert.isFalse(isShowingLandingPage(view));
     assert.isTrue(isShowingResults(view));
     assert.isFalse(isShowingPrerenderPage(view));
@@ -148,7 +146,7 @@ describeWithMockConnection('CoverageView', () => {
     assert.isTrue(startSpy.notCalled);
 
     await view.startRecording({reload: false, jsCoveragePerBlock: false});
-    await coordinator.done({waitForWork: true});
+    await RenderCoordinator.done({waitForWork: true});
     assert.isFalse(isShowingLandingPage(view));
     assert.isTrue(isShowingResults(view));
     assert.isFalse(isShowingPrerenderPage(view));
@@ -158,7 +156,7 @@ describeWithMockConnection('CoverageView', () => {
     // Create 2nd target for the prerendered frame.
     const {startSpy: startSpy2, stopSpy: stopSpy2, target: target2} = setupTargetAndModels();
     activate(target2);
-    await coordinator.done({waitForWork: true});
+    await RenderCoordinator.done({waitForWork: true});
     assert.isFalse(isShowingLandingPage(view));
     assert.isFalse(isShowingResults(view));
     assert.isTrue(isShowingPrerenderPage(view));

@@ -3,14 +3,12 @@
 // found in the LICENSE file.
 
 import * as Common from '../../../core/common/common.js';
-import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
+import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 
 import srgbOverlayStyles from './srgbOverlay.css.js';
 
 const {html} = LitHtml;
-
-const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 type SrgbOverlayProps = {
   // [0 - 1] corresponding to HSV hue
@@ -91,7 +89,7 @@ export class SrgbOverlay extends HTMLElement {
   }
 
   render({hue, width, height}: SrgbOverlayProps): Promise<void> {
-    return coordinator.write('Srgb Overlay render', () => {
+    return RenderCoordinator.write('Srgb Overlay render', () => {
       const points = this.#getLinePoints({hue, width, height});
       if (!points || points.length === 0) {
         return;

@@ -47,7 +47,7 @@ import * as TextUtils from '../../models/text_utils/text_utils.js';
 import * as NetworkForward from '../../panels/network/forward/forward.js';
 import * as Sources from '../../panels/sources/sources.js';
 import * as Adorners from '../../ui/components/adorners/adorners.js';
-import * as Coordinator from '../../ui/components/render_coordinator/render_coordinator.js';
+import * as RenderCoordinator from '../../ui/components/render_coordinator/render_coordinator.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
@@ -455,8 +455,6 @@ const enum FetchStyle {
   BROWSER = 0,
   NODE_JS = 1,
 }
-
-const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.VBox>(UI.Widget.VBox)
     implements SDK.TargetManager.SDKModelObserver<SDK.NetworkManager.NetworkManager>, NetworkLogViewInterface {
@@ -1322,7 +1320,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
     this.needsRefresh = true;
 
     if (this.isShowing()) {
-      void coordinator.write('NetworkLogView.render', this.refresh.bind(this));
+      void RenderCoordinator.write('NetworkLogView.render', this.refresh.bind(this));
     }
   }
 

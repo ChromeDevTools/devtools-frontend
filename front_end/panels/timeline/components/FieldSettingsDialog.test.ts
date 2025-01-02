@@ -5,12 +5,10 @@
 import * as CrUXManager from '../../../models/crux-manager/crux-manager.js';
 import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {describeWithMockConnection} from '../../../testing/MockConnection.js';
-import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
+import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 
 import * as Components from './components.js';
-
-const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 const OPEN_BUTTON_SELECTOR = 'devtools-button';
 const ENABLE_BUTTON_SELECTOR = 'devtools-button[data-field-data-enable]';
@@ -92,7 +90,7 @@ describeWithMockConnection('FieldSettingsDialog', () => {
 
   it('should enable field when enable button clicked', async () => {
     const view = createFieldSettingsDialog();
-    await coordinator.done();
+    await RenderCoordinator.done();
 
     assert.isFalse(cruxManager.getConfigSetting().get().enabled);
 
@@ -100,11 +98,11 @@ describeWithMockConnection('FieldSettingsDialog', () => {
     assert.strictEqual(openButton.innerText, 'Set up');
     openButton.click();
 
-    await coordinator.done();
+    await RenderCoordinator.done();
 
     view.shadowRoot!.querySelector<HTMLElement>(ENABLE_BUTTON_SELECTOR)!.click();
 
-    await coordinator.done();
+    await RenderCoordinator.done();
 
     assert.isFalse(view.shadowRoot!.querySelector('devtools-dialog')!.shadowRoot!.querySelector('dialog')!.open);
     assert.isTrue(cruxManager.getConfigSetting().get().enabled);
@@ -114,19 +112,19 @@ describeWithMockConnection('FieldSettingsDialog', () => {
     cruxManager.getConfigSetting().set({enabled: true, override: ''});
 
     const view = createFieldSettingsDialog();
-    await coordinator.done();
+    await RenderCoordinator.done();
 
     const openButton = view.shadowRoot!.querySelector(OPEN_BUTTON_SELECTOR) as HTMLElement;
     assert.strictEqual(openButton.innerText, 'Configure');
     openButton.click();
 
-    await coordinator.done();
+    await RenderCoordinator.done();
 
     const disableButton = view.shadowRoot!.querySelector(DISABLE_BUTTON_SELECTOR) as HTMLElement;
     assert.strictEqual(disableButton.innerText, 'Opt out');
     disableButton.click();
 
-    await coordinator.done();
+    await RenderCoordinator.done();
 
     assert.isFalse(view.shadowRoot!.querySelector('devtools-dialog')!.shadowRoot!.querySelector('dialog')!.open);
     assert.isFalse(cruxManager.getConfigSetting().get().enabled);
@@ -136,25 +134,25 @@ describeWithMockConnection('FieldSettingsDialog', () => {
     mockFieldData['url-ALL'] = mockResponse();
 
     const view = createFieldSettingsDialog();
-    await coordinator.done();
+    await RenderCoordinator.done();
 
     view.shadowRoot!.querySelector<HTMLElement>(OPEN_BUTTON_SELECTOR)!.click();
 
-    await coordinator.done();
+    await RenderCoordinator.done();
 
     view.shadowRoot!.querySelector<HTMLElement>(OVERRIDE_CHECKBOX_SELECTOR)!.click();
 
-    await coordinator.done();
+    await RenderCoordinator.done();
 
     const urlOverride = view.shadowRoot!.querySelector(OVERRIDE_TEXT_SELECTOR) as HTMLInputElement;
     urlOverride.value = 'https://example.com';
     urlOverride.dispatchEvent(new Event('change'));
 
-    await coordinator.done();
+    await RenderCoordinator.done();
 
     view.shadowRoot!.querySelector<HTMLElement>(ENABLE_BUTTON_SELECTOR)!.click();
 
-    await coordinator.done({waitForWork: true});
+    await RenderCoordinator.done({waitForWork: true});
 
     assert.isFalse(view.shadowRoot!.querySelector('devtools-dialog')!.shadowRoot!.querySelector('dialog')!.open);
     assert.isTrue(cruxManager.getConfigSetting().get().enabled);
@@ -166,25 +164,25 @@ describeWithMockConnection('FieldSettingsDialog', () => {
     mockFieldData['url-ALL'] = mockResponse();
 
     const view = createFieldSettingsDialog();
-    await coordinator.done();
+    await RenderCoordinator.done();
 
     view.shadowRoot!.querySelector<HTMLElement>(OPEN_BUTTON_SELECTOR)!.click();
 
-    await coordinator.done();
+    await RenderCoordinator.done();
 
     view.shadowRoot!.querySelector<HTMLElement>(OVERRIDE_CHECKBOX_SELECTOR)!.click();
 
-    await coordinator.done();
+    await RenderCoordinator.done();
 
     const urlOverride = view.shadowRoot!.querySelector(OVERRIDE_TEXT_SELECTOR) as HTMLInputElement;
     urlOverride.value = 'https://example.com';
     urlOverride.dispatchEvent(new Event('change'));
 
-    await coordinator.done();
+    await RenderCoordinator.done();
 
     view.shadowRoot!.querySelector<HTMLElement>(DISABLE_BUTTON_SELECTOR)!.click();
 
-    await coordinator.done({waitForWork: true});
+    await RenderCoordinator.done({waitForWork: true});
 
     assert.isFalse(view.shadowRoot!.querySelector('devtools-dialog')!.shadowRoot!.querySelector('dialog')!.open);
     assert.isFalse(cruxManager.getConfigSetting().get().enabled);
@@ -194,25 +192,25 @@ describeWithMockConnection('FieldSettingsDialog', () => {
 
   it('should show message for URL override with no data', async () => {
     const view = createFieldSettingsDialog();
-    await coordinator.done();
+    await RenderCoordinator.done();
 
     view.shadowRoot!.querySelector<HTMLElement>(OPEN_BUTTON_SELECTOR)!.click();
 
-    await coordinator.done();
+    await RenderCoordinator.done();
 
     view.shadowRoot!.querySelector<HTMLElement>(OVERRIDE_CHECKBOX_SELECTOR)!.click();
 
-    await coordinator.done();
+    await RenderCoordinator.done();
 
     const urlOverride = view.shadowRoot!.querySelector(OVERRIDE_TEXT_SELECTOR) as HTMLInputElement;
     urlOverride.value = 'https://example.com';
     urlOverride.dispatchEvent(new Event('change'));
 
-    await coordinator.done();
+    await RenderCoordinator.done();
 
     view.shadowRoot!.querySelector<HTMLElement>(ENABLE_BUTTON_SELECTOR)!.click();
 
-    await coordinator.done({waitForWork: true});
+    await RenderCoordinator.done({waitForWork: true});
 
     assert.strictEqual(
         view.shadowRoot!.querySelector('.warning')!.textContent,
@@ -225,25 +223,25 @@ describeWithMockConnection('FieldSettingsDialog', () => {
 
   it('should show message for malformed URL', async () => {
     const view = createFieldSettingsDialog();
-    await coordinator.done();
+    await RenderCoordinator.done();
 
     view.shadowRoot!.querySelector<HTMLElement>(OPEN_BUTTON_SELECTOR)!.click();
 
-    await coordinator.done();
+    await RenderCoordinator.done();
 
     view.shadowRoot!.querySelector<HTMLElement>(OVERRIDE_CHECKBOX_SELECTOR)!.click();
 
-    await coordinator.done();
+    await RenderCoordinator.done();
 
     const urlOverride = view.shadowRoot!.querySelector(OVERRIDE_TEXT_SELECTOR) as HTMLInputElement;
     urlOverride.value = '//example.com';
     urlOverride.dispatchEvent(new Event('change'));
 
-    await coordinator.done();
+    await RenderCoordinator.done();
 
     view.shadowRoot!.querySelector<HTMLElement>(ENABLE_BUTTON_SELECTOR)!.click();
 
-    await coordinator.done({waitForWork: true});
+    await RenderCoordinator.done({waitForWork: true});
 
     assert.strictEqual(
         view.shadowRoot!.querySelector('.warning')!.textContent, '"//example.com" is not a valid origin or URL.');
@@ -261,11 +259,11 @@ describeWithMockConnection('FieldSettingsDialog', () => {
     });
 
     const view = createFieldSettingsDialog();
-    await coordinator.done();
+    await RenderCoordinator.done();
 
     view.shadowRoot!.querySelector<HTMLElement>(OPEN_BUTTON_SELECTOR)!.click();
 
-    await coordinator.done();
+    await RenderCoordinator.done();
 
     const checked = view.shadowRoot!.querySelector<HTMLInputElement>(OVERRIDE_CHECKBOX_SELECTOR)!.checked;
     const urlOverride = view.shadowRoot!.querySelector<HTMLInputElement>(OVERRIDE_TEXT_SELECTOR)!.value;
@@ -282,11 +280,11 @@ describeWithMockConnection('FieldSettingsDialog', () => {
     });
 
     const view = createFieldSettingsDialog();
-    await coordinator.done();
+    await RenderCoordinator.done();
 
     view.shadowRoot!.querySelector<HTMLElement>(OPEN_BUTTON_SELECTOR)!.click();
 
-    await coordinator.done();
+    await RenderCoordinator.done();
 
     const checked = view.shadowRoot!.querySelector<HTMLInputElement>(OVERRIDE_CHECKBOX_SELECTOR)!.checked;
     const urlOverride = view.shadowRoot!.querySelector<HTMLInputElement>(OVERRIDE_TEXT_SELECTOR)!.value;

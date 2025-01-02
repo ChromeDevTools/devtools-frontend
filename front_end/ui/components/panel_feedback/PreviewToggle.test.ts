@@ -8,11 +8,9 @@ import {
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
 import {describeWithLocale} from '../../../testing/EnvironmentHelpers.js';
-import * as Coordinator from '../render_coordinator/render_coordinator.js';
+import * as RenderCoordinator from '../render_coordinator/render_coordinator.js';
 
 import * as PanelFeedback from './panel_feedback.js';
-
-const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 describeWithLocale('Preview toggle', () => {
   it('calls out correctly to enable experiment', async () => {
@@ -32,7 +30,7 @@ describeWithLocale('Preview toggle', () => {
     };
 
     renderElementIntoDOM(component);
-    await coordinator.done();
+    await RenderCoordinator.done();
 
     assert.isNotNull(component.shadowRoot);
     const input = component.shadowRoot.querySelector('input');
@@ -63,7 +61,7 @@ describeWithLocale('Preview toggle', () => {
     };
 
     renderElementIntoDOM(component);
-    await coordinator.done();
+    await RenderCoordinator.done();
 
     const input = component.shadowRoot!.querySelector('input');
     assert.instanceOf(input, HTMLElement);

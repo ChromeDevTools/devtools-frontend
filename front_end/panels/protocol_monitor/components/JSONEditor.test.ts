@@ -14,14 +14,12 @@ import {
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {expectCall} from '../../../testing/ExpectStubCall.js';
 import * as Menus from '../../../ui/components/menus/menus.js';
-import * as Coordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
+import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 import type * as SuggestionInput from '../../../ui/components/suggestion_input/suggestion_input.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as ProtocolMonitor from '../protocol_monitor.js';
 
 import * as ProtocolComponents from './components.js';
-
-const coordinator = Coordinator.RenderCoordinator.RenderCoordinator.instance();
 
 describeWithEnvironment('JSONEditor', () => {
   const renderJSONEditor = () => {
@@ -502,7 +500,7 @@ describeWithEnvironment('JSONEditor', () => {
       split.setMainWidget(dataGrid);
       split.setSidebarWidget(editorWidget);
       split.toggleSidebar();
-      await coordinator.done();
+      await RenderCoordinator.done();
 
       // The first input bar corresponds to the filter bar, so we query the second one which corresponds to the CDP one.
       const toolbarInput = dataGrid.element.shadowRoot?.querySelectorAll('.toolbar')[1].shadowRoot?.querySelector(
@@ -526,7 +524,7 @@ describeWithEnvironment('JSONEditor', () => {
       split.setSidebarWidget(editorWidget);
 
       split.toggleSidebar();
-      await coordinator.done();
+      await RenderCoordinator.done();
 
       // Should be index 1 because the targetId equals "value2" which corresponds to the index number 1
       assert.deepEqual(selector.selectedIndex(), 1);
@@ -545,7 +543,7 @@ describeWithEnvironment('JSONEditor', () => {
           split.setSidebarWidget(editorWidget);
           split.toggleSidebar();
 
-          await coordinator.done();
+          await RenderCoordinator.done();
 
           // The first input bar corresponds to the filter bar, so we query the second one which corresponds to the CDP one.
           const toolbarInput = dataGrid.element.shadowRoot?.querySelectorAll('.toolbar')[1].shadowRoot?.querySelector(

@@ -16,7 +16,6 @@ export interface FileSourceIconData {
 }
 
 export class FileSourceIcon extends HTMLElement {
-  static readonly litTagName = LitHtml.literal`devtools-file-source-icon`;
   readonly #shadow = this.attachShadow({mode: 'open'});
 
   #iconType: string;

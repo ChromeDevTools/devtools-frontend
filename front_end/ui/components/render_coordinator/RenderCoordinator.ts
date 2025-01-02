@@ -133,10 +133,10 @@ export class RenderCoordinator extends EventTarget {
       if (!callback) {
         throw new Error('Read called with label but no callback');
       }
-      return this.#enqueueHandler(ACTION.READ, labelOrCallback, callback) as Promise<T>;
+      return this.#enqueueHandler(ACTION.READ, labelOrCallback, callback);
     }
 
-    return this.#enqueueHandler(ACTION.READ, UNNAMED_READ, labelOrCallback) as Promise<T>;
+    return this.#enqueueHandler(ACTION.READ, UNNAMED_READ, labelOrCallback);
   }
 
   // Schedules a 'write' job which is being executed within an animation frame
@@ -150,14 +150,10 @@ export class RenderCoordinator extends EventTarget {
       if (!callback) {
         throw new Error('Write called with label but no callback');
       }
-      return this.#enqueueHandler(ACTION.WRITE, labelOrCallback, callback) as Promise<T>;
+      return this.#enqueueHandler(ACTION.WRITE, labelOrCallback, callback);
     }
 
-    return this.#enqueueHandler(ACTION.WRITE, UNNAMED_WRITE, labelOrCallback) as Promise<T>;
-  }
-
-  findPendingWrite(label: string): Promise<void>|undefined {
-    return this.#enqueueHandler(ACTION.WRITE, label);
+    return this.#enqueueHandler(ACTION.WRITE, UNNAMED_WRITE, labelOrCallback);
   }
 
   takeRecords(): CoordinatorLogEntry[] {
@@ -181,13 +177,13 @@ export class RenderCoordinator extends EventTarget {
       if (!callback) {
         throw new Error('Scroll called with label but no callback');
       }
-      return this.#enqueueHandler(ACTION.READ, labelOrCallback, callback) as Promise<T>;
+      return this.#enqueueHandler(ACTION.READ, labelOrCallback, callback);
     }
 
-    return this.#enqueueHandler(ACTION.READ, UNNAMED_SCROLL, labelOrCallback) as Promise<T>;
+    return this.#enqueueHandler(ACTION.READ, UNNAMED_SCROLL, labelOrCallback);
   }
 
-  #enqueueHandler<T>(action: ACTION, label: string, callback?: CoordinatorCallback<T>): Promise<T>|undefined {
+  #enqueueHandler<T>(action: ACTION, label: string, callback: CoordinatorCallback<T>): Promise<T> {
     const hasName = ![UNNAMED_READ, UNNAMED_WRITE, UNNAMED_SCROLL].includes(label);
     label = `${action === ACTION.READ ? '[Read]' : '[Write]'}: ${label}`;
 
@@ -206,20 +202,18 @@ export class RenderCoordinator extends EventTarget {
     }
 
     let workItem = hasName ? workItems.find(w => w.label === label) as WorkItem<T>| undefined : undefined;
-    if (callback) {
-      if (!workItem) {
-        workItem = new WorkItem<T>(label, callback);
-        workItems.push(workItem);
-      } else {
-        // We are always using the latest handler, so that we don't end up with a
-        // stale results. We are reusing the promise to avoid blocking the first invocation, when
-        // it is being "overridden" by another one.
-        workItem.handler = callback;
-      }
-
-      this.#scheduleWork();
+    if (!workItem) {
+      workItem = new WorkItem<T>(label, callback);
+      workItems.push(workItem);
+    } else {
+      // We are always using the latest handler, so that we don't end up with a
+      // stale results. We are reusing the promise to avoid blocking the first invocation, when
+      // it is being "overridden" by another one.
+      workItem.handler = callback;
     }
-    return workItem?.promise;
+
+    this.#scheduleWork();
+    return workItem.promise;
   }
 
   #scheduleWork(): void {

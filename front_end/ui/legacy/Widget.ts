@@ -110,7 +110,10 @@ function decrementWidgetCounter(parentElement: Element, childElement: Element): 
   }
 }
 
-let id = 0;
+// The resolved `updateComplete` promise, which is used as a marker for the
+// Widget's `#updateComplete` private property to indicate that there's no
+// pending update.
+const UPDATE_COMPLETE = Promise.resolve(true);
 
 export class Widget {
   readonly element: HTMLElement;
@@ -130,7 +133,7 @@ export class Widget {
   private constraintsInternal?: Constraints;
   private invalidationsRequested?: boolean;
   private externallyManaged?: boolean;
-  #id = `${this.constructor.name}_${id++}`;
+  #updateComplete = UPDATE_COMPLETE;
   constructor(useShadowDom?: boolean, delegatesFocus?: boolean, element?: HTMLElement) {
     this.element = element || document.createElement('div');
     this.shadowRoot = this.element.shadowRoot;
@@ -659,31 +662,71 @@ export class Widget {
   }
 
   /**
-   * Called by the RenderCoordinator to perform an update.
-   * This is not meant to be called directly. Instead, use update() to schedule an asynchronous update.
+   * Override this method in derived classes to perform the actual view update.
    *
-   * @returns A promise that resolves when the update is complete.
+   * This is not meant to be called directly, but invoked (indirectly) through
+   * the `RenderCoordinator` and executed with the animation frame. Instead,
+   * use the `update()` method to schedule an asynchronous update.
+   *
+   * @return can either return nothing or a promise; in that latter case, the
+   *         update logic will await the resolution of the returned promise
+   *         before proceeding.
    */
-  protected doUpdate(): Promise<void> {
-    return Promise.resolve();
+  protected doUpdate(): Promise<void>|void {
   }
 
   /**
-   * Schedules an asynchronous update. The update will be deduplicated and executed with the animation frame.
+   * Schedules an asynchronous update for this widget.
+   *
+   * The update will be deduplicated and executed with the next animation
+   * frame.
    */
   update(): void {
-    void RenderCoordinator.RenderCoordinator.RenderCoordinator.instance().write(this.#id, () => this.doUpdate());
+    if (this.#updateComplete === UPDATE_COMPLETE) {
+      this.#updateComplete = RenderCoordinator.RenderCoordinator.RenderCoordinator.instance().write(
+          'Widget.update', async(): Promise<boolean> => {
+            // Mark this update cycle as complete by assigning
+            // the marker sentinel.
+            this.#updateComplete = UPDATE_COMPLETE;
+
+            // Run the actual update logic.
+            await this.doUpdate();
+
+            // Resolve the `updateComplete` with `true` if no
+            // new update was triggered during this cycle.
+            return this.#updateComplete === UPDATE_COMPLETE;
+          });
+    }
   }
 
   /**
-   * Returns a promise that resolves when the pending update is complete.
-   * Returns a resolved promise if there is no pending update.
-`  *
-   * @returns A probleme that resolves when the pending update is complete.
+   * The `updateComplete` promise resolves when the widget has finished updating.
+   *
+   * Use `updateComplete` to wait for an update:
+   * ```js
+   * await widget.updateComplete;
+   * // do stuff
+   * ```
+   *
+   * This method is primarily useful for unit tests, to wait for widgets to build
+   * their DOM. For example:
+   * ```js
+   * // Set up the test widget, and wait for the initial update cycle to complete.
+   * const widget = new SomeWidget(someData);
+   * widget.show(someParentWidgetElement);
+   * widget.update();
+   * await widget.updateComplete;
+   *
+   * // Assert state of the widget.
+   * assert.isTrue(widget.someDataLoaded);
+   * ```
+   *
+   * @returns a promise that resolves to a `boolean` when the widget has finished
+   *          updating, the value is `true` if there are no more pending updates,
+   *          and `false` if the update cycle triggered another update.
    */
-  pendingUpdate(): Promise<void> {
-    return RenderCoordinator.RenderCoordinator.RenderCoordinator.instance().findPendingWrite(this.#id) ||
-        Promise.resolve();
+  get updateComplete(): Promise<boolean> {
+    return this.#updateComplete;
   }
 }
 

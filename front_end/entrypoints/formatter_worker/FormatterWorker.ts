@@ -54,7 +54,9 @@ export interface Chunk {
   isLastChunk: boolean;
 }
 
-export type ChunkCallback = (arg0: Chunk) => void;
+export interface ChunkCallback {
+  (arg0: Chunk): void;
+}
 
 export function createTokenizer(mimeType: string): (
     arg0: string, arg1: (arg0: string, arg1: string|null, arg2: number, arg3: number) => (Object | undefined | void)) =>

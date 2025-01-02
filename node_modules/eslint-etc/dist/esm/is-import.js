@@ -1,0 +1,12 @@
+export function isImport(scope, name, source) {
+    const variable = scope.variables.find((variable) => variable.name === name);
+    if (variable) {
+        return variable.defs.some((def) => def.type === "ImportBinding" &&
+            def.parent.type === "ImportDeclaration" &&
+            (typeof source === "string"
+                ? def.parent.source.value === source
+                : source.test(def.parent.source.value)));
+    }
+    return scope.upper ? isImport(scope.upper, name, source) : false;
+}
+//# sourceMappingURL=is-import.js.map

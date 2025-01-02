@@ -469,17 +469,17 @@ export interface QueryObjectRequestedEvent {
   executionContextId?: number;
 }
 
-export type EventTypes = {
-  [Events.BindingCalled]: Protocol.Runtime.BindingCalledEvent,
-  [Events.ExecutionContextCreated]: ExecutionContext,
-  [Events.ExecutionContextDestroyed]: ExecutionContext,
-  [Events.ExecutionContextChanged]: ExecutionContext,
-  [Events.ExecutionContextOrderChanged]: RuntimeModel,
-  [Events.ExceptionThrown]: ExceptionWithTimestamp,
-  [Events.ExceptionRevoked]: number,
-  [Events.ConsoleAPICalled]: ConsoleAPICall,
-  [Events.QueryObjectRequested]: QueryObjectRequestedEvent,
-};
+export interface EventTypes {
+  [Events.BindingCalled]: Protocol.Runtime.BindingCalledEvent;
+  [Events.ExecutionContextCreated]: ExecutionContext;
+  [Events.ExecutionContextDestroyed]: ExecutionContext;
+  [Events.ExecutionContextChanged]: ExecutionContext;
+  [Events.ExecutionContextOrderChanged]: RuntimeModel;
+  [Events.ExceptionThrown]: ExceptionWithTimestamp;
+  [Events.ExceptionRevoked]: number;
+  [Events.ConsoleAPICalled]: ConsoleAPICall;
+  [Events.QueryObjectRequested]: QueryObjectRequestedEvent;
+}
 
 class RuntimeDispatcher implements ProtocolProxyApi.RuntimeDispatcher {
   readonly #runtimeModel: RuntimeModel;

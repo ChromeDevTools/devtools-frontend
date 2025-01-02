@@ -635,9 +635,9 @@ export namespace TimelineTreeView {
     TREE_ROW_HOVERED = 'TreeRowHovered',
   }
 
-  export type EventTypes = {
-    [Events.TREE_ROW_HOVERED]: Trace.Extras.TraceTree.Node|null,
-  };
+  export interface EventTypes {
+    [Events.TREE_ROW_HOVERED]: Trace.Extras.TraceTree.Node|null;
+  }
 }
 
 export class GridNode extends DataGrid.SortableDataGrid.SortableDataGridNode<GridNode> {
@@ -1119,7 +1119,7 @@ export namespace TimelineStackView {
     SELECTION_CHANGED = 'SelectionChanged',
   }
 
-  export type EventTypes = {
-    [Events.SELECTION_CHANGED]: void,
-  };
+  export interface EventTypes {
+    [Events.SELECTION_CHANGED]: void;
+  }
 }

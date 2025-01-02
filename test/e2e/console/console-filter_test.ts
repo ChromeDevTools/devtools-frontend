@@ -18,7 +18,9 @@ import {
   waitForConsoleMessagesToBeNonEmpty,
 } from '../helpers/console-helpers.js';
 
-type MessageCheck = (msg: string) => boolean;
+interface MessageCheck {
+  (msg: string): boolean;
+}
 
 function createUrlFilter(url: string) {
   return `-url:${url}`;

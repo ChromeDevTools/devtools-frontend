@@ -12,10 +12,10 @@ export interface Static {
 }
 
 type TemplateValues = Static|unknown;
-type FlattenedTemplateValues = {
-  strings: TemplateStringsArray,
-  valueMap: boolean[],
-};
+interface FlattenedTemplateValues {
+  strings: TemplateStringsArray;
+  valueMap: boolean[];
+}
 
 export function flattenTemplate(strings: TemplateStringsArray, ...values: TemplateValues[]): FlattenedTemplateValues {
   const valueMap: boolean[] = [];

@@ -1,0 +1,56 @@
+"use strict";
+const eslint_etc_1 = require("eslint-etc");
+const utils_1 = require("../utils");
+const defaultOptions = [];
+const rule = (0, utils_1.ruleCreator)({
+    defaultOptions,
+    meta: {
+        docs: {
+            description: "Forbids calling `forEach`.",
+            recommended: false,
+        },
+        fixable: undefined,
+        hasSuggestions: false,
+        messages: {
+            forbidden: "Calling `forEach` is forbidden.",
+        },
+        schema: [
+            {
+                properties: {
+                    types: {
+                        items: {
+                            type: "string",
+                        },
+                        type: "array",
+                    },
+                },
+                type: "object",
+            },
+        ],
+        type: "problem",
+    },
+    name: "no-foreach",
+    create: (context, unused) => {
+        var _a;
+        const [config = {}] = context.options;
+        const types = (_a = config === null || config === void 0 ? void 0 : config.types) !== null && _a !== void 0 ? _a : ["Array", "Map", "NodeList", "Set"];
+        const typesRegExp = new RegExp(`^${types.join("|")}$`);
+        const { couldBeType } = (0, eslint_etc_1.getTypeServices)(context);
+        return {
+            "CallExpression[callee.property.name='forEach']": (callExpression) => {
+                const { callee } = callExpression;
+                if (!(0, eslint_etc_1.isMemberExpression)(callee)) {
+                    return;
+                }
+                if (!couldBeType(callee.object, typesRegExp)) {
+                    return;
+                }
+                context.report({
+                    messageId: "forbidden",
+                    node: callee.property,
+                });
+            },
+        };
+    },
+});
+module.exports = rule;

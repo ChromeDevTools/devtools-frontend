@@ -105,10 +105,10 @@ const clustersByNavigationId = new Map<Types.Events.NavigationId, Types.Events.S
 
 // Represents a point in time in which a  LS score change
 // was recorded.
-type ScoreRecord = {
-  ts: number,
-  score: number,
-};
+interface ScoreRecord {
+  ts: number;
+  score: number;
+}
 
 // The complete timeline of LS score changes in a trace.
 // Includes drops to 0 when session windows end.

@@ -128,7 +128,9 @@ class SuggestionInitEvent extends Event {
   }
 }
 
-type SuggestionFilter = (option: string, query: string) => boolean;
+interface SuggestionFilter {
+  (option: string, query: string): boolean;
+}
 
 const defaultSuggestionFilter = (option: string, query: string): boolean =>
     option.toLowerCase().startsWith(query.toLowerCase());
@@ -143,7 +145,7 @@ class SuggestionBox extends LitElement {
 
   @property(jsonPropertyOptions) declare options: Readonly<string[]>;
   @property() declare expression: string;
-  @property() declare suggestionFilter?: SuggestionFilter;
+  @property({attribute: false}) declare suggestionFilter?: SuggestionFilter;
 
   @state() private declare cursor: number;
 
@@ -251,7 +253,7 @@ export class SuggestionInput extends LitElement {
    */
   @property(jsonPropertyOptions) declare options: Readonly<string[]>;
   @property({type: Boolean}) declare autocomplete?: boolean;
-  @property() declare suggestionFilter?: SuggestionFilter;
+  @property({attribute: false}) declare suggestionFilter?: SuggestionFilter;
   @state() declare expression: string;
 
   /**

@@ -1,0 +1,4 @@
+export function getParent(node) {
+    return node.parent;
+}
+//# sourceMappingURL=get-parent.js.map

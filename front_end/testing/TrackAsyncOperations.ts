@@ -2,14 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-type AsyncActivity = {
-  pending: boolean,
-  cancelDelayed?: () => void,
-  id?: string,
-  runImmediate?: () => void,
-  stack?: string,
-  promise?: Promise<unknown>,
-};
+interface AsyncActivity {
+  pending: boolean;
+  cancelDelayed?: () => void;
+  id?: string;
+  runImmediate?: () => void;
+  stack?: string;
+  promise?: Promise<unknown>;
+}
 
 const asyncActivity: AsyncActivity[] = [];
 
@@ -247,11 +247,11 @@ function getStack(error: Error): string {
 
 // We can't use Sinon for stubbing as 1) we need to double wrap somtimes and 2)
 // we need to access original values.
-type Stub<TKey extends keyof typeof window> = {
-  name: TKey,
-  original: (typeof window)[TKey],
-  stubWith: (typeof window)[TKey],
-};
+interface Stub<TKey extends keyof typeof window> {
+  name: TKey;
+  original: (typeof window)[TKey];
+  stubWith: (typeof window)[TKey];
+}
 
 const stubs: Stub<keyof typeof window>[] = [];
 

@@ -67,6 +67,7 @@
     "esbuild": "0.24.0",
     "escodegen": "2.0.0",
     "eslint": "8.57.1",
+    "eslint-plugin-etc": "2.0.3",
     "eslint-plugin-import": "2.31.0",
     "eslint-plugin-jsdoc": "46.10.1",
     "eslint-plugin-lit-a11y": "2.1.0",

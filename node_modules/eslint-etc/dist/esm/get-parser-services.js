@@ -1,0 +1,4 @@
+import { ESLintUtils } from "@typescript-eslint/experimental-utils";
+const { getParserServices } = ESLintUtils;
+export { getParserServices };
+//# sourceMappingURL=get-parser-services.js.map

@@ -450,14 +450,14 @@ export type ParsedSize = {
   formatted: string,
 };
 
-type Screenshot = {
-  src: string,
-  type?: string,
-  sizes?: string,
-  label?: string,
-  form_factor?: string,  // eslint-disable-line @typescript-eslint/naming-convention
-  platform?: string,
-};
+interface Screenshot {
+  src: string;
+  type?: string;
+  sizes?: string;
+  label?: string;
+  form_factor?: string;  // eslint-disable-line @typescript-eslint/naming-convention
+  platform?: string;
+}
 
 export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.VBox>(UI.Widget.VBox)
     implements SDK.TargetManager.Observer {
@@ -1289,7 +1289,7 @@ export const enum Events {
   MANIFEST_RENDERED = 'ManifestRendered',
 }
 
-export type EventTypes = {
-  [Events.MANIFEST_DETECTED]: boolean,
-  [Events.MANIFEST_RENDERED]: void,
-};
+export interface EventTypes {
+  [Events.MANIFEST_DETECTED]: boolean;
+  [Events.MANIFEST_RENDERED]: void;
+}

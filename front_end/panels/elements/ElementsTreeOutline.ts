@@ -1625,10 +1625,10 @@ export namespace ElementsTreeOutline {
     /* eslint-enable @typescript-eslint/naming-convention */
   }
 
-  export type EventTypes = {
-    [Events.SelectedNodeChanged]: {node: SDK.DOMModel.DOMNode|null, focus: boolean},
-    [Events.ElementsTreeUpdated]: SDK.DOMModel.DOMNode[],
-  };
+  export interface EventTypes {
+    [Events.SelectedNodeChanged]: {node: SDK.DOMModel.DOMNode|null, focus: boolean};
+    [Events.ElementsTreeUpdated]: SDK.DOMModel.DOMNode[];
+  }
 }
 
 // clang-format off

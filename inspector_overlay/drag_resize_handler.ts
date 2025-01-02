@@ -25,10 +25,10 @@ const cursorByResizerType = new Map([
   [ResizerType.BIDIRECTION, 'nwse-resize'],
 ]);
 
-type OriginInfo = {
-  coord: number,
-  value: number,
-};
+interface OriginInfo {
+  coord: number;
+  value: number;
+}
 
 export class DragResizeHandler {
   private document: Document;

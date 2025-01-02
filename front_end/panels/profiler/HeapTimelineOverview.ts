@@ -263,9 +263,9 @@ export interface IdsRangeChangedEvent {
   size: number;
 }
 
-export type EventTypes = {
-  [Events.IDS_RANGE_CHANGED]: IdsRangeChangedEvent,
-};
+export interface EventTypes {
+  [Events.IDS_RANGE_CHANGED]: IdsRangeChangedEvent;
+}
 
 export class SmoothScale {
   lastUpdate: number;

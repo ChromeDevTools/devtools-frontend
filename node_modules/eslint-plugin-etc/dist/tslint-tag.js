@@ -1,0 +1,180 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.getTagsFromDeclaration = exports.getTags = exports.isDeclaration = void 0;
+const tsutils = require("tsutils");
+const ts = require("typescript");
+function isDeclaration(identifier) {
+    const parent = identifier.parent;
+    switch (parent.kind) {
+        case ts.SyntaxKind.ClassDeclaration:
+        case ts.SyntaxKind.ClassExpression:
+        case ts.SyntaxKind.InterfaceDeclaration:
+        case ts.SyntaxKind.TypeParameter:
+        case ts.SyntaxKind.FunctionExpression:
+        case ts.SyntaxKind.FunctionDeclaration:
+        case ts.SyntaxKind.LabeledStatement:
+        case ts.SyntaxKind.JsxAttribute:
+        case ts.SyntaxKind.MethodDeclaration:
+        case ts.SyntaxKind.MethodSignature:
+        case ts.SyntaxKind.PropertySignature:
+        case ts.SyntaxKind.TypeAliasDeclaration:
+        case ts.SyntaxKind.GetAccessor:
+        case ts.SyntaxKind.SetAccessor:
+        case ts.SyntaxKind.EnumDeclaration:
+        case ts.SyntaxKind.ModuleDeclaration:
+            return true;
+        case ts.SyntaxKind.VariableDeclaration:
+        case ts.SyntaxKind.Parameter:
+        case ts.SyntaxKind.PropertyDeclaration:
+        case ts.SyntaxKind.EnumMember:
+        case ts.SyntaxKind.ImportEqualsDeclaration:
+            return parent.name === identifier;
+        case ts.SyntaxKind.PropertyAssignment:
+            return (parent.name === identifier &&
+                !tsutils.isReassignmentTarget(identifier.parent.parent));
+        case ts.SyntaxKind.BindingElement:
+            return (parent.name === identifier &&
+                parent.propertyName !== undefined);
+        default:
+            return false;
+    }
+}
+exports.isDeclaration = isDeclaration;
+function getCallExpresion(node) {
+    let parent = node.parent;
+    if (tsutils.isPropertyAccessExpression(parent) && parent.name === node) {
+        node = parent;
+        parent = node.parent;
+    }
+    return tsutils.isTaggedTemplateExpression(parent) ||
+        ((tsutils.isCallExpression(parent) || tsutils.isNewExpression(parent)) &&
+            parent.expression === node)
+        ? parent
+        : undefined;
+}
+function getTags(tagName, node, tc) {
+    const callExpression = getCallExpresion(node);
+    if (callExpression !== undefined) {
+        const result = getSignatureTags(tagName, tc.getResolvedSignature(callExpression));
+        if (result.length > 0) {
+            return result;
+        }
+    }
+    let symbol;
+    const parent = node.parent;
+    if (parent.kind === ts.SyntaxKind.BindingElement) {
+        symbol = tc.getTypeAtLocation(parent.parent).getProperty(node.text);
+    }
+    else if ((tsutils.isPropertyAssignment(parent) && parent.name === node) ||
+        (tsutils.isShorthandPropertyAssignment(parent) &&
+            parent.name === node &&
+            tsutils.isReassignmentTarget(node))) {
+        symbol = tc.getPropertySymbolOfDestructuringAssignment(node);
+    }
+    else {
+        symbol = tc.getSymbolAtLocation(node);
+    }
+    if (symbol !== undefined &&
+        tsutils.isSymbolFlagSet(symbol, ts.SymbolFlags.Alias)) {
+        symbol = tc.getAliasedSymbol(symbol);
+    }
+    if (symbol === undefined ||
+        (callExpression !== undefined && isFunctionOrMethod(symbol.declarations))) {
+        return [];
+    }
+    return getSymbolTags(tagName, symbol);
+}
+exports.getTags = getTags;
+function findTags(tagName, tags) {
+    const result = [];
+    for (const tag of tags) {
+        if (tag.name === tagName) {
+            if (tag.text === undefined) {
+                result.push("");
+            }
+            else if (typeof tag.text === "string") {
+                result.push(tag.text);
+            }
+            else {
+                result.push(tag.text.reduce((text, part) => text.concat(part.text), ""));
+            }
+        }
+    }
+    return result;
+}
+function getSymbolTags(tagName, symbol) {
+    if (symbol.getJsDocTags !== undefined) {
+        return findTags(tagName, symbol.getJsDocTags());
+    }
+    return getTagsFromDeclarations(tagName, symbol.declarations);
+}
+function getSignatureTags(tagName, signature) {
+    if (signature === undefined) {
+        return [];
+    }
+    if (signature.getJsDocTags !== undefined) {
+        return findTags(tagName, signature.getJsDocTags());
+    }
+    return signature.declaration === undefined
+        ? []
+        : getTagsFromDeclaration(tagName, signature.declaration);
+}
+function getTagsFromDeclarations(tagName, declarations) {
+    if (declarations === undefined) {
+        return [];
+    }
+    let declaration;
+    for (declaration of declarations) {
+        if (tsutils.isBindingElement(declaration)) {
+            declaration = tsutils.getDeclarationOfBindingElement(declaration);
+        }
+        if (tsutils.isVariableDeclaration(declaration)) {
+            declaration = declaration.parent;
+        }
+        if (tsutils.isVariableDeclarationList(declaration)) {
+            declaration = declaration.parent;
+        }
+        const result = getTagsFromDeclaration(tagName, declaration);
+        if (result.length > 0) {
+            return result;
+        }
+    }
+    return [];
+}
+function getTagsFromDeclaration(tagName, declaration) {
+    const result = [];
+    for (const comment of tsutils.getJsDoc(declaration)) {
+        if (comment.tags === undefined) {
+            continue;
+        }
+        for (const tag of comment.tags) {
+            if (tag.tagName.text === tagName) {
+                if (tag.comment === undefined) {
+                    result.push("");
+                }
+                else if (typeof tag.comment === "string") {
+                    result.push(tag.comment);
+                }
+                else {
+                    result.push(tag.comment.reduce((text, node) => text.concat(node.getFullText()), ""));
+                }
+            }
+        }
+    }
+    return result;
+}
+exports.getTagsFromDeclaration = getTagsFromDeclaration;
+function isFunctionOrMethod(declarations) {
+    if (declarations === undefined || declarations.length === 0) {
+        return false;
+    }
+    switch (declarations[0].kind) {
+        case ts.SyntaxKind.MethodDeclaration:
+        case ts.SyntaxKind.FunctionDeclaration:
+        case ts.SyntaxKind.FunctionExpression:
+        case ts.SyntaxKind.MethodSignature:
+            return true;
+        default:
+            return false;
+    }
+}

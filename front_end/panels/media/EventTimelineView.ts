@@ -30,9 +30,9 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/media/EventTimelineView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-type State = {
-  [key: string]: string,
-};
+interface State {
+  [key: string]: string;
+}
 
 export class PlayerEventsTimeline extends TickingFlameChart {
   private normalizedTimestamp: number;

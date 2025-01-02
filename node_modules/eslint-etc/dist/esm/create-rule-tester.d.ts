@@ -1,0 +1,10 @@
+import { TSESLint as eslint } from "@typescript-eslint/experimental-utils";
+export declare function createRuleTester({ filename, parser, project, }?: {
+    filename?: string;
+    parser?: string;
+    project?: string;
+}): ({ comments, typeScript, types, }?: {
+    comments?: boolean | undefined;
+    typeScript?: boolean | undefined;
+    types?: boolean | undefined;
+}) => eslint.RuleTester;

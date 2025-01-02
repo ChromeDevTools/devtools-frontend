@@ -44,9 +44,9 @@ const renderElementIntoDOM = (element: HTMLElement, renderOptions: RenderOptions
   return element;
 };
 
-type Constructor<T> = {
-  new (...args: unknown[]): T,
-};
+interface Constructor<T> {
+  new(...args: unknown[]): T;
+}
 
 function assertElements<T extends Element>(
     nodeList: NodeListOf<Element>, elementClass: Constructor<T>): asserts nodeList is NodeListOf<T> {

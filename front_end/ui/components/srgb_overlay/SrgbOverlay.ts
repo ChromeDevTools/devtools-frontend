@@ -10,12 +10,12 @@ import srgbOverlayStyles from './srgbOverlay.css.js';
 
 const {html} = LitHtml;
 
-type SrgbOverlayProps = {
+interface SrgbOverlayProps {
   // [0 - 1] corresponding to HSV hue
-  hue: number,
-  width: number,
-  height: number,
-};
+  hue: number;
+  width: number;
+  height: number;
+}
 
 const SRGB_LABEL_HEIGHT = 10;
 const SRGB_LABEL_BOTTOM = 3;

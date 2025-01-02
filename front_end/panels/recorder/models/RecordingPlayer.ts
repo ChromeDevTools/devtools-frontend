@@ -320,11 +320,11 @@ export const enum Events {
   CONTINUE = 'Continue',
 }
 
-type EventTypes = {
-  [Events.ABORT]: void,
-  [Events.DONE]: void,
-  [Events.STEP]: {step: Step, resolve: () => void},
-  [Events.STOP]: void,
-  [Events.CONTINUE]: void,
-  [Events.ERROR]: Error,
-};
+interface EventTypes {
+  [Events.ABORT]: void;
+  [Events.DONE]: void;
+  [Events.STEP]: {step: Step, resolve: () => void};
+  [Events.STOP]: void;
+  [Events.CONTINUE]: void;
+  [Events.ERROR]: Error;
+}

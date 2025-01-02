@@ -93,6 +93,6 @@ export interface Bounds {
   width: number;
 }
 
-export type EventTypes = {
-  [Events.UPDATE]: Bounds,
-};
+export interface EventTypes {
+  [Events.UPDATE]: Bounds;
+}

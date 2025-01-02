@@ -101,10 +101,10 @@ const enum Events {
   FLAVOR_CHANGED = 'FlavorChanged',
 }
 
-export type EventTypes = {
+export interface EventTypes {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [Events.FLAVOR_CHANGED]: any,
-};
+  [Events.FLAVOR_CHANGED]: any;
+}
 
 const registeredListeners: ContextFlavorListenerRegistration[] = [];
 

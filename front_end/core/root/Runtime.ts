@@ -415,7 +415,9 @@ export type HostConfig = Platform.TypeScriptUtilities.RecursivePartial<{
  * When defining conditions make sure that objects used by the function have
  * been instantiated.
  */
-export type Condition = (config?: HostConfig) => boolean;
+export interface Condition {
+  (config?: HostConfig): boolean;
+}
 
 export const conditions = {
   canDock: () => Boolean(Runtime.queryParam('can_dock')),

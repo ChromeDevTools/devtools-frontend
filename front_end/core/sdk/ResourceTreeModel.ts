@@ -639,26 +639,26 @@ export enum Events {
   /* eslint-enable @typescript-eslint/naming-convention */
 }
 
-export type EventTypes = {
-  [Events.FrameAdded]: ResourceTreeFrame,
-  [Events.FrameNavigated]: ResourceTreeFrame,
-  [Events.FrameDetached]: {frame: ResourceTreeFrame, isSwap: boolean},
-  [Events.FrameResized]: void,
-  [Events.FrameWillNavigate]: ResourceTreeFrame,
-  [Events.PrimaryPageChanged]: {frame: ResourceTreeFrame, type: PrimaryPageChangeType},
-  [Events.ResourceAdded]: Resource,
-  [Events.WillLoadCachedResources]: void,
-  [Events.CachedResourcesLoaded]: ResourceTreeModel,
-  [Events.DOMContentLoaded]: number,
-  [Events.LifecycleEvent]: {frameId: Protocol.Page.FrameId, name: string},
-  [Events.Load]: {resourceTreeModel: ResourceTreeModel, loadTime: number},
-  [Events.PageReloadRequested]: ResourceTreeModel,
-  [Events.WillReloadPage]: void,
-  [Events.InterstitialShown]: void,
-  [Events.InterstitialHidden]: void,
-  [Events.BackForwardCacheDetailsUpdated]: ResourceTreeFrame,
-  [Events.JavaScriptDialogOpening]: Protocol.Page.JavascriptDialogOpeningEvent,
-};
+export interface EventTypes {
+  [Events.FrameAdded]: ResourceTreeFrame;
+  [Events.FrameNavigated]: ResourceTreeFrame;
+  [Events.FrameDetached]: {frame: ResourceTreeFrame, isSwap: boolean};
+  [Events.FrameResized]: void;
+  [Events.FrameWillNavigate]: ResourceTreeFrame;
+  [Events.PrimaryPageChanged]: {frame: ResourceTreeFrame, type: PrimaryPageChangeType};
+  [Events.ResourceAdded]: Resource;
+  [Events.WillLoadCachedResources]: void;
+  [Events.CachedResourcesLoaded]: ResourceTreeModel;
+  [Events.DOMContentLoaded]: number;
+  [Events.LifecycleEvent]: {frameId: Protocol.Page.FrameId, name: string};
+  [Events.Load]: {resourceTreeModel: ResourceTreeModel, loadTime: number};
+  [Events.PageReloadRequested]: ResourceTreeModel;
+  [Events.WillReloadPage]: void;
+  [Events.InterstitialShown]: void;
+  [Events.InterstitialHidden]: void;
+  [Events.BackForwardCacheDetailsUpdated]: ResourceTreeFrame;
+  [Events.JavaScriptDialogOpening]: Protocol.Page.JavascriptDialogOpeningEvent;
+}
 
 export class ResourceTreeFrame {
   #model: ResourceTreeModel;

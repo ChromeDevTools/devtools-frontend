@@ -82,15 +82,14 @@ export function isDWARFMemoryObject(obj: SDK.RemoteObject.RemoteObject): boolean
   return false;
 }
 
-type SerializableSettings = {
-  valueTypes: LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType[],
-  valueTypeModes:
-      [
-        LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType,
-        LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueTypeMode,
-      ][],
-  endianness: LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.Endianness,
-};
+interface SerializableSettings {
+  valueTypes: LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType[];
+  valueTypeModes: [
+    LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueType,
+    LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.ValueTypeMode,
+  ][];
+  endianness: LinearMemoryInspectorComponents.ValueInterpreterDisplayUtils.Endianness;
+}
 
 export class LinearMemoryInspectorController extends SDK.TargetManager.SDKModelObserver<SDK.RuntimeModel.RuntimeModel>
     implements Common.Revealer.Revealer<SDK.RemoteObject.LinearMemoryInspectable>,

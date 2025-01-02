@@ -1435,10 +1435,10 @@ export const enum Events {
   SIZE_CHANGED = 'SizeChanged',
 }
 
-export type EventTypes = {
-  [Events.COLOR_CHANGED]: string,
-  [Events.SIZE_CHANGED]: void,
-};
+export interface EventTypes {
+  [Events.COLOR_CHANGED]: string;
+  [Events.SIZE_CHANGED]: void;
+}
 
 const COLOR_CHIP_SIZE = 24;
 const ITEMS_PER_PALETTE_ROW = 8;

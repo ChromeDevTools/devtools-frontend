@@ -1,0 +1,164 @@
+"use strict";
+const eslint_etc_1 = require("eslint-etc");
+const utils_1 = require("../utils");
+const defaultOptions = [];
+const rule = (0, utils_1.ruleCreator)({
+    defaultOptions: defaultOptions,
+    meta: {
+        docs: {
+            description: "Forbids type aliases where interfaces can be used.",
+            recommended: false,
+        },
+        fixable: "code",
+        hasSuggestions: true,
+        messages: {
+            forbidden: "Type can be declared using an interface.",
+            suggest: "Use an interface instead of a type alias.",
+        },
+        schema: [
+            {
+                properties: {
+                    allowLocal: { type: "boolean" },
+                },
+                type: "object",
+            },
+        ],
+        type: "suggestion",
+    },
+    name: "prefer-interface",
+    create: (context, unused) => {
+        const [{ allowIntersection = true, allowLocal = false } = {}] = context.options;
+        function formatTypeParameters(typeParameters) {
+            return typeParameters
+                ? context.getSourceCode().getText(typeParameters)
+                : "";
+        }
+        function formatTypeReferences(typeReferences) {
+            return typeReferences
+                .map((typeReference) => {
+                if (!(0, eslint_etc_1.isIdentifier)(typeReference.typeName)) {
+                    throw new Error("Expected typeName to be an identifier.");
+                }
+                const parameters = formatTypeParameters(typeReference.typeParameters);
+                return `${typeReference.typeName.name}${parameters}`;
+            })
+                .join(", ");
+        }
+        return {
+            "TSTypeAliasDeclaration > TSFunctionType": (functionTypeNode) => {
+                const typeAliasNode = (0, eslint_etc_1.getParent)(functionTypeNode);
+                if (allowLocal &&
+                    !(0, eslint_etc_1.isExportNamedDeclaration)((0, eslint_etc_1.getParent)(typeAliasNode))) {
+                    return;
+                }
+                function fix(fixer) {
+                    const interfaceTypeParameters = formatTypeParameters(typeAliasNode.typeParameters);
+                    const functionTypeParameters = formatTypeParameters(functionTypeNode.typeParameters);
+                    const params = functionTypeNode.params
+                        .map((param) => context.getSourceCode().getText(param))
+                        .join(",");
+                    const returnType = functionTypeNode.returnType
+                        ? context
+                            .getSourceCode()
+                            .getText(functionTypeNode.returnType)
+                            .replace(/^\s*=>\s*/, "")
+                        : "void";
+                    return fixer.replaceText(typeAliasNode, `interface ${typeAliasNode.id.name}${interfaceTypeParameters} { ${functionTypeParameters}(${params}): ${returnType}; }`);
+                }
+                context.report({
+                    fix,
+                    messageId: "forbidden",
+                    node: typeAliasNode.id,
+                    suggest: [
+                        {
+                            fix,
+                            messageId: "suggest",
+                        },
+                    ],
+                });
+            },
+            "TSTypeAliasDeclaration > TSIntersectionType": (intersectionTypeNode) => {
+                if (allowIntersection) {
+                    return;
+                }
+                const { esTreeNodeToTSNodeMap } = (0, eslint_etc_1.getParserServices)(context);
+                const { typeChecker } = (0, eslint_etc_1.getTypeServices)(context);
+                const typeAliasNode = (0, eslint_etc_1.getParent)(intersectionTypeNode);
+                const literals = [];
+                const references = [];
+                for (const node of intersectionTypeNode.types) {
+                    if ((0, eslint_etc_1.isTSTypeLiteral)(node)) {
+                        literals.push(node);
+                    }
+                    else if ((0, eslint_etc_1.isTSTypeReference)(node)) {
+                        references.push(node);
+                    }
+                }
+                if (literals.length + references.length !==
+                    intersectionTypeNode.types.length) {
+                    return;
+                }
+                for (const reference of references) {
+                    const type = typeChecker.getTypeFromTypeNode(esTreeNodeToTSNodeMap.get(reference));
+                    if (type.isUnion()) {
+                        return;
+                    }
+                }
+                if (literals.length > 1) {
+                    return;
+                }
+                let fix;
+                if (literals.length === 1) {
+                    fix = function (fixer) {
+                        const parameters = formatTypeParameters(typeAliasNode.typeParameters);
+                        const bases = formatTypeReferences(references);
+                        const literal = context.getSourceCode().getText(literals[0]);
+                        return fixer.replaceText(typeAliasNode, `interface ${typeAliasNode.id.name}${parameters} extends ${bases} ${literal}`);
+                    };
+                }
+                else {
+                    fix = function (fixer) {
+                        const parameters = formatTypeParameters(typeAliasNode.typeParameters);
+                        const bases = formatTypeReferences(references);
+                        return fixer.replaceText(typeAliasNode, `interface ${typeAliasNode.id.name}${parameters} extends ${bases} {}`);
+                    };
+                }
+                context.report({
+                    fix,
+                    messageId: "forbidden",
+                    node: typeAliasNode.id,
+                    suggest: [
+                        {
+                            fix,
+                            messageId: "suggest",
+                        },
+                    ],
+                });
+            },
+            "TSTypeAliasDeclaration > TSTypeLiteral": (typeLiteralNode) => {
+                const typeAliasNode = (0, eslint_etc_1.getParent)(typeLiteralNode);
+                if (allowLocal &&
+                    !(0, eslint_etc_1.isExportNamedDeclaration)((0, eslint_etc_1.getParent)(typeAliasNode))) {
+                    return;
+                }
+                function fix(fixer) {
+                    const parameters = formatTypeParameters(typeAliasNode.typeParameters);
+                    const literal = context.getSourceCode().getText(typeLiteralNode);
+                    return fixer.replaceText(typeAliasNode, `interface ${typeAliasNode.id.name}${parameters} ${literal}`);
+                }
+                context.report({
+                    fix,
+                    messageId: "forbidden",
+                    node: typeAliasNode.id,
+                    suggest: [
+                        {
+                            fix,
+                            messageId: "suggest",
+                        },
+                    ],
+                });
+            },
+        };
+    },
+});
+module.exports = rule;

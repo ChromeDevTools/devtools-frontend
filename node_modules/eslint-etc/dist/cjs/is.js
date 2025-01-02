@@ -1,0 +1,104 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.isVariableDeclarator = exports.isTSTypeReference = exports.isTSTypeLiteral = exports.isThisExpression = exports.isRestElement = exports.isPrivateIdentifier = exports.isProperty = exports.isProgram = exports.isObjectPattern = exports.isObjectExpression = exports.isNewExpression = exports.isMemberExpression = exports.isLiteral = exports.isIdentifier = exports.isFunctionExpression = exports.isFunctionDeclaration = exports.isExpressionStatement = exports.isExportNamedDeclaration = exports.isCallExpression = exports.isBlockStatement = exports.isAssignmentExpression = exports.isArrowFunctionExpression = exports.isArrayPattern = exports.isArrayExpression = exports.hasTypeAnnotation = void 0;
+function hasTypeAnnotation(node) {
+    return node.hasOwnProperty("typeAnnotation");
+}
+exports.hasTypeAnnotation = hasTypeAnnotation;
+function isArrayExpression(node) {
+    return node.type === "ArrayExpression";
+}
+exports.isArrayExpression = isArrayExpression;
+function isArrayPattern(node) {
+    return node.type === "ArrayPattern";
+}
+exports.isArrayPattern = isArrayPattern;
+function isArrowFunctionExpression(node) {
+    return node.type === "ArrowFunctionExpression";
+}
+exports.isArrowFunctionExpression = isArrowFunctionExpression;
+function isAssignmentExpression(node) {
+    return node.type === "AssignmentExpression";
+}
+exports.isAssignmentExpression = isAssignmentExpression;
+function isBlockStatement(node) {
+    return node.type === "BlockStatement";
+}
+exports.isBlockStatement = isBlockStatement;
+function isCallExpression(node) {
+    return node.type === "CallExpression";
+}
+exports.isCallExpression = isCallExpression;
+function isExportNamedDeclaration(node) {
+    return node.type === "ExportNamedDeclaration";
+}
+exports.isExportNamedDeclaration = isExportNamedDeclaration;
+function isExpressionStatement(node) {
+    return node && node.type === "ExpressionStatement";
+}
+exports.isExpressionStatement = isExpressionStatement;
+function isFunctionDeclaration(node) {
+    return node.type === "FunctionDeclaration";
+}
+exports.isFunctionDeclaration = isFunctionDeclaration;
+function isFunctionExpression(node) {
+    return node.type === "FunctionExpression";
+}
+exports.isFunctionExpression = isFunctionExpression;
+function isIdentifier(node) {
+    return node.type === "Identifier";
+}
+exports.isIdentifier = isIdentifier;
+function isLiteral(node) {
+    return node.type === "Literal";
+}
+exports.isLiteral = isLiteral;
+function isMemberExpression(node) {
+    return node.type === "MemberExpression";
+}
+exports.isMemberExpression = isMemberExpression;
+function isNewExpression(node) {
+    return node.type === "NewExpression";
+}
+exports.isNewExpression = isNewExpression;
+function isObjectExpression(node) {
+    return node.type === "ObjectExpression";
+}
+exports.isObjectExpression = isObjectExpression;
+function isObjectPattern(node) {
+    return node.type === "ObjectPattern";
+}
+exports.isObjectPattern = isObjectPattern;
+function isProgram(node) {
+    return node.type === "Program";
+}
+exports.isProgram = isProgram;
+function isProperty(node) {
+    return node.type === "Property";
+}
+exports.isProperty = isProperty;
+function isPrivateIdentifier(node) {
+    return node.type === "PrivateIdentifier";
+}
+exports.isPrivateIdentifier = isPrivateIdentifier;
+function isRestElement(node) {
+    return node.type === "RestElement";
+}
+exports.isRestElement = isRestElement;
+function isThisExpression(node) {
+    return node.type === "ThisExpression";
+}
+exports.isThisExpression = isThisExpression;
+function isTSTypeLiteral(node) {
+    return node.type === "TSTypeLiteral";
+}
+exports.isTSTypeLiteral = isTSTypeLiteral;
+function isTSTypeReference(node) {
+    return node.type === "TSTypeReference";
+}
+exports.isTSTypeReference = isTSTypeReference;
+function isVariableDeclarator(node) {
+    return node.type === "VariableDeclarator";
+}
+exports.isVariableDeclarator = isVariableDeclarator;
+//# sourceMappingURL=is.js.map

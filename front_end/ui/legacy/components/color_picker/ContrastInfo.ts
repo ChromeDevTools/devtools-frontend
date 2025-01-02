@@ -129,9 +129,9 @@ export const enum Events {
   CONTRAST_INFO_UPDATED = 'ContrastInfoUpdated',
 }
 
-export type EventTypes = {
-  [Events.CONTRAST_INFO_UPDATED]: void,
-};
+export interface EventTypes {
+  [Events.CONTRAST_INFO_UPDATED]: void;
+}
 
 export interface ContrastInfoType {
   backgroundColors: string[]|null;

@@ -20,7 +20,9 @@ export const removeElement = <T>(array: T[], element: T, firstOnly?: boolean): b
   return true;
 };
 
-type NumberComparator = (a: number, b: number) => number;
+interface NumberComparator {
+  (a: number, b: number): number;
+}
 
 function swap(array: number[], i1: number, i2: number): void {
   const temp = array[i1];

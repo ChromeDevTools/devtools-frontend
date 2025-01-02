@@ -61,11 +61,11 @@ export function getStringifiedCellValues(cells: Cell[]): string {
       .toLowerCase();
 }
 
-export type Row = {
-  cells: Cell[],
-  hidden?: boolean,
-  styles?: CSSStylesObject,
-};
+export interface Row {
+  cells: Cell[];
+  hidden?: boolean;
+  styles?: CSSStylesObject;
+}
 
 export const enum SortDirection {
   ASC = 'ASC',

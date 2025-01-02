@@ -117,6 +117,6 @@ export interface ItemsReplacedEvent<T> {
   keepSelectedIndex?: boolean;
 }
 
-export type EventTypes<T> = {
-  [Events.ITEMS_REPLACED]: ItemsReplacedEvent<T>,
-};
+export interface EventTypes<T> {
+  [Events.ITEMS_REPLACED]: ItemsReplacedEvent<T>;
+}

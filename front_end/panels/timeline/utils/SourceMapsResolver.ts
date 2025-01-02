@@ -12,11 +12,11 @@ import * as Workspace from '../../../models/workspace/workspace.js';
 
 import type * as EntityMapper from './EntityMapper.js';
 
-type ResolvedCodeLocationData = {
-  name: string|null,
-  devtoolsLocation: Workspace.UISourceCode.UILocation|null,
-  script: SDK.Script.Script|null,
-};
+interface ResolvedCodeLocationData {
+  name: string|null;
+  devtoolsLocation: Workspace.UISourceCode.UILocation|null;
+  script: SDK.Script.Script|null;
+}
 export class SourceMappingsUpdated extends Event {
   static readonly eventName = 'sourcemappingsupdated';
 

@@ -1,0 +1,83 @@
+"use strict";
+const eslint_etc_1 = require("eslint-etc");
+const tslint_tag_1 = require("../tslint-tag");
+const utils_1 = require("../utils");
+const rule = (0, utils_1.ruleCreator)({
+    defaultOptions: [],
+    meta: {
+        docs: {
+            description: "Forbids internal APIs that are not prefixed with underscores.",
+            recommended: false,
+        },
+        fixable: undefined,
+        hasSuggestions: false,
+        messages: {
+            forbidden: "Internal APIs not prefixed with underscores are forbidden.",
+        },
+        schema: [],
+        type: "problem",
+    },
+    name: "underscore-internal",
+    create: (context) => {
+        const { esTreeNodeToTSNodeMap } = (0, eslint_etc_1.getParserServices)(context);
+        function checkDeclaration(identifier, tsNode) {
+            const tags = (0, tslint_tag_1.getTagsFromDeclaration)("internal", tsNode);
+            if (tags.length > 0) {
+                context.report({
+                    messageId: "forbidden",
+                    node: identifier,
+                });
+            }
+        }
+        return {
+            "ClassDeclaration[id.name=/^[^_]/]": (node) => {
+                if (node.id) {
+                    checkDeclaration(node.id, esTreeNodeToTSNodeMap.get(node));
+                }
+            },
+            "PropertyDefinition[key.name=/^[^_]/]": (node) => {
+                if ((0, eslint_etc_1.isIdentifier)(node.key)) {
+                    checkDeclaration(node.key, esTreeNodeToTSNodeMap.get(node));
+                }
+            },
+            "FunctionDeclaration[id.name=/^[^_]/]": (node) => {
+                if (node.id) {
+                    checkDeclaration(node.id, esTreeNodeToTSNodeMap.get(node));
+                }
+            },
+            "MethodDefinition[key.name=/^[^_]/]": (node) => {
+                if ((0, eslint_etc_1.isIdentifier)(node.key)) {
+                    checkDeclaration(node.key, esTreeNodeToTSNodeMap.get(node));
+                }
+            },
+            "TSEnumDeclaration[id.name=/^[^_]/]": (node) => {
+                checkDeclaration(node.id, esTreeNodeToTSNodeMap.get(node));
+            },
+            "TSEnumMember[id.name=/^[^_]/]": (node) => {
+                if ((0, eslint_etc_1.isIdentifier)(node.id)) {
+                    checkDeclaration(node.id, esTreeNodeToTSNodeMap.get(node));
+                }
+            },
+            "TSInterfaceDeclaration[id.name=/^[^_]/]": (node) => {
+                checkDeclaration(node.id, esTreeNodeToTSNodeMap.get(node));
+            },
+            "TSMethodSignature[key.name=/^[^_]/]": (node) => {
+                if ((0, eslint_etc_1.isIdentifier)(node.key)) {
+                    checkDeclaration(node.key, esTreeNodeToTSNodeMap.get(node));
+                }
+            },
+            "TSPropertySignature[key.name=/^[^_]/]": (node) => {
+                if ((0, eslint_etc_1.isIdentifier)(node.key)) {
+                    checkDeclaration(node.key, esTreeNodeToTSNodeMap.get(node));
+                }
+            },
+            "TSTypeAliasDeclaration[id.name=/^[^_]/]": (node) => {
+                checkDeclaration(node.id, esTreeNodeToTSNodeMap.get(node));
+            },
+            "VariableDeclarator[id.name=/^[^_]/]": (node) => {
+                checkDeclaration(node.id, esTreeNodeToTSNodeMap.get((0, eslint_etc_1.findParent)(node, "VariableDeclaration")));
+            },
+        };
+    },
+});
+module.exports = rule;

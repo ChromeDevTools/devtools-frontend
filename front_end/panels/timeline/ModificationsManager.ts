@@ -28,13 +28,13 @@ export class AnnotationModifiedEvent extends Event {
   }
 }
 
-type ModificationsManagerData = {
-  parsedTrace: Trace.Handlers.Types.ParsedTrace,
-  traceBounds: Trace.Types.Timing.TraceWindowMicroSeconds,
-  rawTraceEvents: readonly Trace.Types.Events.Event[],
-  syntheticEvents: Trace.Types.Events.SyntheticBased[],
-  modifications?: Trace.Types.File.Modifications,
-};
+interface ModificationsManagerData {
+  parsedTrace: Trace.Handlers.Types.ParsedTrace;
+  traceBounds: Trace.Types.Timing.TraceWindowMicroSeconds;
+  rawTraceEvents: readonly Trace.Types.Events.Event[];
+  syntheticEvents: Trace.Types.Events.SyntheticBased[];
+  modifications?: Trace.Types.File.Modifications;
+}
 
 export class ModificationsManager extends EventTarget {
   #entriesFilter: EntriesFilter;

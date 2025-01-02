@@ -121,6 +121,6 @@ export const enum Events {
   EXTENSIONS_UPDATED = 'extensionsUpdated',
 }
 
-export type EventTypes = {
-  [Events.EXTENSIONS_UPDATED]: Extension[],
-};
+export interface EventTypes {
+  [Events.EXTENSIONS_UPDATED]: Extension[];
+}

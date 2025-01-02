@@ -951,16 +951,16 @@ export interface ChangedNodeId {
   enabled: boolean;
 }
 
-export type EventTypes = {
-  [Events.INSPECT_MODE_WILL_BE_TOGGLED]: OverlayModel,
-  [Events.EXITED_INSPECT_MODE]: void,
-  [Events.HIGHLIGHT_NODE_REQUESTED]: DOMNode,
-  [Events.SCREENSHOT_REQUESTED]: Protocol.Page.Viewport,
-  [Events.PERSISTENT_GRID_OVERLAY_STATE_CHANGED]: ChangedNodeId,
-  [Events.PERSISTENT_FLEX_CONTAINER_OVERLAY_STATE_CHANGED]: ChangedNodeId,
-  [Events.PERSISTENT_SCROLL_SNAP_OVERLAY_STATE_CHANGED]: ChangedNodeId,
-  [Events.PERSISTENT_CONTAINER_QUERY_OVERLAY_STATE_CHANGED]: ChangedNodeId,
-};
+export interface EventTypes {
+  [Events.INSPECT_MODE_WILL_BE_TOGGLED]: OverlayModel;
+  [Events.EXITED_INSPECT_MODE]: void;
+  [Events.HIGHLIGHT_NODE_REQUESTED]: DOMNode;
+  [Events.SCREENSHOT_REQUESTED]: Protocol.Page.Viewport;
+  [Events.PERSISTENT_GRID_OVERLAY_STATE_CHANGED]: ChangedNodeId;
+  [Events.PERSISTENT_FLEX_CONTAINER_OVERLAY_STATE_CHANGED]: ChangedNodeId;
+  [Events.PERSISTENT_SCROLL_SNAP_OVERLAY_STATE_CHANGED]: ChangedNodeId;
+  [Events.PERSISTENT_CONTAINER_QUERY_OVERLAY_STATE_CHANGED]: ChangedNodeId;
+}
 
 export interface Highlighter {
   highlightInOverlay(data: HighlightData, config: Protocol.Overlay.HighlightConfig): void;

@@ -2,7 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-type ReleaseFunction = () => void;
+interface ReleaseFunction {
+  (): void;
+}
 
 /**
  * Use Mutex class to coordinate local concurrent operations.

@@ -123,10 +123,10 @@ export const enum Events {
   HARDWARE_CONCURRENCY_CHANGED = 'HardwareConcurrencyChanged',
 }
 
-export type EventTypes = {
-  [Events.RATE_CHANGED]: number,
-  [Events.HARDWARE_CONCURRENCY_CHANGED]: number,
-};
+export interface EventTypes {
+  [Events.RATE_CHANGED]: number;
+  [Events.HARDWARE_CONCURRENCY_CHANGED]: number;
+}
 
 export function throttlingManager(): CPUThrottlingManager {
   return CPUThrottlingManager.instance();

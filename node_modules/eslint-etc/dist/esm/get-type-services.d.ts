@@ -1,0 +1,23 @@
+import { TSESLint, TSESTree as es } from "@typescript-eslint/experimental-utils";
+import * as ts from "typescript";
+export declare function getTypeServices<TMessageIds extends string, TOptions extends unknown[]>(context: TSESLint.RuleContext<TMessageIds, Readonly<TOptions>>): {
+    couldBeBehaviorSubject: (node: es.Node) => boolean;
+    couldBeError: (node: es.Node) => boolean;
+    couldBeFunction: (node: es.Node) => boolean;
+    couldBeMonoTypeOperatorFunction: (node: es.Node) => boolean;
+    couldBeObservable: (node: es.Node) => boolean;
+    couldBeSubject: (node: es.Node) => boolean;
+    couldBeSubscription: (node: es.Node) => boolean;
+    couldBeType: (node: es.Node, name: string | RegExp, qualified?: {
+        name: RegExp;
+    } | undefined) => boolean;
+    couldReturnObservable: (node: es.Node) => boolean;
+    couldReturnType: (node: es.Node, name: string | RegExp, qualified?: {
+        name: RegExp;
+    } | undefined) => boolean;
+    getType: (node: es.Node) => ts.Type;
+    isAny: (node: es.Node) => boolean;
+    isReferenceType: (node: es.Node) => boolean;
+    isUnknown: (node: es.Node) => boolean;
+    typeChecker: ts.TypeChecker;
+};

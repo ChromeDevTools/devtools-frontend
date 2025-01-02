@@ -7,11 +7,11 @@ import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 
-export type Change = {
-  selector: string,
-  className: string,
-  styles: Record<string, string>,
-};
+export interface Change {
+  selector: string;
+  className: string;
+  styles: Record<string, string>;
+}
 
 export const AI_ASSISTANCE_CSS_CLASS_NAME = 'ai-style-change';
 

@@ -24,10 +24,10 @@ export const enum Variant {
   OUTLINED = 'outlined',
 }
 
-type SelectMenuGroup = {
-  name: string,
-  items: SelectButtonItem[],
-};
+interface SelectMenuGroup {
+  name: string;
+  items: SelectButtonItem[];
+}
 
 interface SelectButtonProps {
   /**

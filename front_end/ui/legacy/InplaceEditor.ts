@@ -187,10 +187,15 @@ export class InplaceEditor<T> {
   }
 }
 
-export type CommitHandler<T> =
-    (element: Element, newText: string, oldText: string|null, context: T, moveDirection: string) => void;
-export type CancelHandler<T> = (element: Element, context: T) => void;
-export type BlurHandler = (element: Element, event?: Event) => boolean;
+export interface CommitHandler<T> {
+  (element: Element, newText: string, oldText: string|null, context: T, moveDirection: string): void;
+}
+export interface CancelHandler<T> {
+  (element: Element, context: T): void;
+}
+export interface BlurHandler {
+  (element: Element, event?: Event): boolean;
+}
 
 export class Config<T> {
   commitHandler: CommitHandler<T>;
@@ -221,7 +226,9 @@ export class Config<T> {
   }
 }
 
-export type EventHandler = (event: Event) => string|undefined;
+export interface EventHandler {
+  (event: Event): string|undefined;
+}
 
 export interface Controller {
   cancel: () => void;

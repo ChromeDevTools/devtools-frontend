@@ -1602,13 +1602,13 @@ export const enum Events {
   PADDING_CHANGED = 'PaddingChanged',
 }
 
-export type EventTypes<T> = {
-  [Events.SELECTED_NODE]: DataGridNode<T>,
-  [Events.DESELECTED_NODE]: void,
-  [Events.OPENED_NODE]: DataGridNode<T>,
-  [Events.SORTING_CHANGED]: void,
-  [Events.PADDING_CHANGED]: void,
-};
+export interface EventTypes<T> {
+  [Events.SELECTED_NODE]: DataGridNode<T>;
+  [Events.DESELECTED_NODE]: void;
+  [Events.OPENED_NODE]: DataGridNode<T>;
+  [Events.SORTING_CHANGED]: void;
+  [Events.PADDING_CHANGED]: void;
+}
 
 export enum Order {
   /* eslint-disable @typescript-eslint/naming-convention -- Used by web_tests. */
@@ -1636,9 +1636,9 @@ export const enum ResizeMethod {
   LAST = 'last',
 }
 
-export type DataGridData = {
-  [key: string]: any,
-};
+export interface DataGridData {
+  [key: string]: any;
+}
 
 export class DataGridNode<T> {
   elementInternal: HTMLElement|null;

@@ -1,0 +1,28 @@
+import { TSESTree as es } from "@typescript-eslint/experimental-utils";
+export declare function hasTypeAnnotation<T extends es.Node>(node: T): node is T & {
+    typeAnnotation: es.TSTypeAnnotation;
+};
+export declare function isArrayExpression(node: es.Node): node is es.ArrayExpression;
+export declare function isArrayPattern(node: es.Node): node is es.ArrayPattern;
+export declare function isArrowFunctionExpression(node: es.Node): node is es.ArrowFunctionExpression;
+export declare function isAssignmentExpression(node: es.Node): node is es.AssignmentExpression;
+export declare function isBlockStatement(node: es.Node): node is es.BlockStatement;
+export declare function isCallExpression(node: es.Node): node is es.CallExpression;
+export declare function isExportNamedDeclaration(node: es.Node): node is es.ExportNamedDeclaration;
+export declare function isExpressionStatement(node: es.Node): node is es.ExpressionStatement;
+export declare function isFunctionDeclaration(node: es.Node): node is es.FunctionDeclaration;
+export declare function isFunctionExpression(node: es.Node): node is es.FunctionExpression;
+export declare function isIdentifier(node: es.Node): node is es.Identifier;
+export declare function isLiteral(node: es.Node): node is es.Literal;
+export declare function isMemberExpression(node: es.Node): node is es.MemberExpression;
+export declare function isNewExpression(node: es.Node): node is es.NewExpression;
+export declare function isObjectExpression(node: es.Node): node is es.ObjectExpression;
+export declare function isObjectPattern(node: es.Node): node is es.ObjectPattern;
+export declare function isProgram(node: es.Node): node is es.Program;
+export declare function isProperty(node: es.Node): node is es.Property;
+export declare function isPrivateIdentifier(node: es.Node): node is es.PrivateIdentifier;
+export declare function isRestElement(node: es.Node): node is es.RestElement;
+export declare function isThisExpression(node: es.Node): node is es.ThisExpression;
+export declare function isTSTypeLiteral(node: es.Node): node is es.TSTypeLiteral;
+export declare function isTSTypeReference(node: es.Node): node is es.TSTypeReference;
+export declare function isVariableDeclarator(node: es.Node): node is es.VariableDeclarator;

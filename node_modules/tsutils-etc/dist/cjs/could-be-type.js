@@ -1,0 +1,29 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.couldBeType = void 0;
+const could_implement_1 = require("./could-implement");
+const is_intersection_type_1 = require("./is-intersection-type");
+const is_reference_type_1 = require("./is-reference-type");
+const is_type_1 = require("./is-type");
+const is_union_type_1 = require("./is-union-type");
+function couldBeType(type, name, qualified) {
+    if ((0, is_reference_type_1.isReferenceType)(type)) {
+        type = type.target;
+    }
+    if ((0, is_type_1.isType)(type, name, qualified)) {
+        return true;
+    }
+    if ((0, is_intersection_type_1.isIntersectionType)(type) || (0, is_union_type_1.isUnionType)(type)) {
+        return type.types.some((t) => couldBeType(t, name, qualified));
+    }
+    const baseTypes = type.getBaseTypes();
+    if (baseTypes && baseTypes.some((t) => couldBeType(t, name, qualified))) {
+        return true;
+    }
+    if ((0, could_implement_1.couldImplement)(type, name, qualified)) {
+        return true;
+    }
+    return false;
+}
+exports.couldBeType = couldBeType;
+//# sourceMappingURL=could-be-type.js.map

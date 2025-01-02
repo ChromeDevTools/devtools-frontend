@@ -323,10 +323,10 @@ export const enum Events {
   WARNINGS_UPDATED = 'WarningsUpdated',
 }
 
-export type EventTypes = {
-  [Events.MODEL_UPDATED]: void,
-  [Events.WARNINGS_UPDATED]: Protocol.Preload.PreloadEnabledStateUpdatedEvent,
-};
+export interface EventTypes {
+  [Events.MODEL_UPDATED]: void;
+  [Events.WARNINGS_UPDATED]: Protocol.Preload.PreloadEnabledStateUpdatedEvent;
+}
 
 class PreloadDispatcher implements ProtocolProxyApi.PreloadDispatcher {
   private model: PreloadingModel;

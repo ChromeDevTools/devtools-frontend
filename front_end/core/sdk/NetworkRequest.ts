@@ -1806,16 +1806,16 @@ export enum Events {
   TRUST_TOKEN_RESULT_ADDED = 'TrustTokenResultAdded',
 }
 
-export type EventTypes = {
-  [Events.FINISHED_LOADING]: NetworkRequest,
-  [Events.TIMING_CHANGED]: NetworkRequest,
-  [Events.REMOTE_ADDRESS_CHANGED]: NetworkRequest,
-  [Events.REQUEST_HEADERS_CHANGED]: void,
-  [Events.RESPONSE_HEADERS_CHANGED]: void,
-  [Events.WEBSOCKET_FRAME_ADDED]: WebSocketFrame,
-  [Events.EVENT_SOURCE_MESSAGE_ADDED]: EventSourceMessage,
-  [Events.TRUST_TOKEN_RESULT_ADDED]: void,
-};
+export interface EventTypes {
+  [Events.FINISHED_LOADING]: NetworkRequest;
+  [Events.TIMING_CHANGED]: NetworkRequest;
+  [Events.REMOTE_ADDRESS_CHANGED]: NetworkRequest;
+  [Events.REQUEST_HEADERS_CHANGED]: void;
+  [Events.RESPONSE_HEADERS_CHANGED]: void;
+  [Events.WEBSOCKET_FRAME_ADDED]: WebSocketFrame;
+  [Events.EVENT_SOURCE_MESSAGE_ADDED]: EventSourceMessage;
+  [Events.TRUST_TOKEN_RESULT_ADDED]: void;
+}
 
 export const enum InitiatorType {
   OTHER = 'other',

@@ -835,12 +835,12 @@ export const enum ShadowPropertyType {
   COLOR = 'color',
 }
 
-type ShadowProperty = {
-  value: string|CodeMirror.SyntaxNode,
-  source: CodeMirror.SyntaxNode|null,
-  expansionContext: RenderingContext|null,
-  propertyType: ShadowPropertyType,
-};
+interface ShadowProperty {
+  value: string|CodeMirror.SyntaxNode;
+  source: CodeMirror.SyntaxNode|null;
+  expansionContext: RenderingContext|null;
+  propertyType: ShadowPropertyType;
+}
 
 type ShadowLengthProperty = ShadowProperty&{
   length: InlineEditor.CSSShadowEditor.CSSLength,

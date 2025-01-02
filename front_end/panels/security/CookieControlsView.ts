@@ -101,7 +101,9 @@ export interface ViewInput {
 }
 export interface ViewOutput {}
 
-export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
+export interface View {
+  (input: ViewInput, output: ViewOutput, target: HTMLElement): void;
+}
 
 export class CookieControlsView extends UI.Widget.VBox {
   #view: View;

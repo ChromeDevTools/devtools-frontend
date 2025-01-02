@@ -72,9 +72,9 @@ export class WidgetElement<WidgetT extends Widget> extends HTMLElement {
 
 customElements.define('devtools-widget', WidgetElement);
 
-type Constructor<T, Args extends unknown[]> = {
-  new (...args: Args): T,
-};
+interface Constructor<T, Args extends unknown[]> {
+  new(...args: Args): T;
+}
 
 export function widgetRef<T extends Widget, Args extends unknown[]>(
     type: Constructor<T, Args>, callback: (_: T) => void): ReturnType<typeof LitHtml.Directives.ref> {

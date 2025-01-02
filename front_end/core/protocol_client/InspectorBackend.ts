@@ -39,10 +39,10 @@ export const DevToolsStubErrorCode = -32015;
 const GenericErrorCode = -32000;
 const ConnectionClosedErrorCode = -32001;
 
-type MessageParams = {
+interface MessageParams {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [x: string]: any,
-};
+  [x: string]: any;
+}
 
 type ProtocolDomainName = ProtocolProxyApi.ProtocolDomainName;
 
@@ -52,15 +52,15 @@ export interface MessageError {
   data?: string|null;
 }
 
-export type Message = {
-  sessionId?: string,
-  url?: Platform.DevToolsPath.UrlString,
-  id?: number,
-  error?: MessageError|null,
-  result?: Object|null,
-  method?: QualifiedName,
-  params?: MessageParams|null,
-};
+export interface Message {
+  sessionId?: string;
+  url?: Platform.DevToolsPath.UrlString;
+  id?: number;
+  error?: MessageError|null;
+  result?: Object|null;
+  method?: QualifiedName;
+  params?: MessageParams|null;
+}
 
 interface EventMessage extends Message {
   method: QualifiedName;
@@ -91,7 +91,9 @@ interface CommandParameter {
   description: string;
 }
 
-type Callback = (error: MessageError|null, arg1: Object|null) => void;
+interface Callback {
+  (error: MessageError|null, arg1: Object|null): void;
+}
 
 interface CallbackWithDebugInfo {
   callback: Callback;
@@ -206,7 +208,9 @@ export class Connection {
   }
 }
 
-type SendRawMessageCallback = (...args: unknown[]) => void;
+interface SendRawMessageCallback {
+  (...args: unknown[]): void;
+}
 
 export const test = {
   /**

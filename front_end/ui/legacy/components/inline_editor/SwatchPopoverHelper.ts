@@ -153,6 +153,6 @@ export const enum Events {
   WILL_SHOW_POPOVER = 'WillShowPopover',
 }
 
-export type EventTypes = {
-  [Events.WILL_SHOW_POPOVER]: void,
-};
+export interface EventTypes {
+  [Events.WILL_SHOW_POPOVER]: void;
+}

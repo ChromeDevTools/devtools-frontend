@@ -222,18 +222,18 @@ export const enum ModelUpdateType {
 
 export type ModelUpdateEventData = ModelUpdateEventComplete|ModelUpdateEventProgress;
 
-export type ModelUpdateEventComplete = {
-  type: ModelUpdateType.COMPLETE,
-  data: 'done',
-};
-export type ModelUpdateEventProgress = {
-  type: ModelUpdateType.PROGRESS_UPDATE,
-  data: TraceParseEventProgressData,
-};
+export interface ModelUpdateEventComplete {
+  type: ModelUpdateType.COMPLETE;
+  data: 'done';
+}
+export interface ModelUpdateEventProgress {
+  type: ModelUpdateType.PROGRESS_UPDATE;
+  data: TraceParseEventProgressData;
+}
 
-export type TraceParseEventProgressData = {
-  percent: number,
-};
+export interface TraceParseEventProgressData {
+  percent: number;
+}
 
 export class ModelUpdateEvent extends Event {
   static readonly eventName = 'modelupdate';

@@ -6,7 +6,9 @@ import * as Common from '../../../core/common/common.js';
 
 type Awaitable<T> = Promise<T>|T;
 
-export type ReleaseFunction = () => Promise<void>;
+export interface ReleaseFunction {
+  (): Promise<void>;
+}
 
 /**
  * SharedObject is similar to a C++ shared pointer, i.e. a reference counted

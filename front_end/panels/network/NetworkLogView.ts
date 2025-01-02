@@ -2635,7 +2635,9 @@ export const overrideFilter = {
   headers: 'headers',
 };
 
-export type Filter = (request: SDK.NetworkRequest.NetworkRequest) => boolean;
+export interface Filter {
+  (request: SDK.NetworkRequest.NetworkRequest): boolean;
+}
 
 export class MoreFiltersDropDownUI extends
     Common.ObjectWrapper.ObjectWrapper<UI.FilterBar.FilterUIEventTypes> implements UI.FilterBar.FilterUI {

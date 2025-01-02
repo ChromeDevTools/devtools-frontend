@@ -184,4 +184,6 @@ export const RevealerDestination = {
   ANIMATIONS_PANEL: i18nLazyString(UIStrings.animationsPanel),
 };
 
-export type RevealerDestination = () => Platform.UIString.LocalizedString;
+export interface RevealerDestination {
+  (): Platform.UIString.LocalizedString;
+}

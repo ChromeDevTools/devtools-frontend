@@ -241,9 +241,9 @@ export const enum Events {
   PAINT_PROFILER_REQUESTED = 'PaintProfilerRequested',
 }
 
-export type EventTypes = {
-  [Events.PAINT_PROFILER_REQUESTED]: Selection,
-};
+export interface EventTypes {
+  [Events.PAINT_PROFILER_REQUESTED]: Selection;
+}
 
 export class LayerTreeElement extends UI.TreeOutline.TreeElement {
   // Watch out: This is different from treeOutline that

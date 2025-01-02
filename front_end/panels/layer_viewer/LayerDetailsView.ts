@@ -373,9 +373,9 @@ export const enum Events {
   PAINT_PROFILER_REQUESTED = 'PaintProfilerRequested',
 }
 
-export type EventTypes = {
-  [Events.PAINT_PROFILER_REQUESTED]: Selection,
-};
+export interface EventTypes {
+  [Events.PAINT_PROFILER_REQUESTED]: Selection;
+}
 
 export const slowScrollRectNames = new Map([
   [SDK.LayerTreeBase.Layer.ScrollRectType.NON_FAST_SCROLLABLE, i18nLazyString(UIStrings.nonFastScrollable)],

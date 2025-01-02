@@ -418,11 +418,11 @@ export enum HeapSnapshotSortableDataGridEvents {
   /* eslint-enable @typescript-eslint/naming-convention */
 }
 
-export type EventTypes = {
-  [HeapSnapshotSortableDataGridEvents.ContentShown]: HeapSnapshotSortableDataGrid,
-  [HeapSnapshotSortableDataGridEvents.SortingComplete]: void,
-  [HeapSnapshotSortableDataGridEvents.ExpandRetainersComplete]: void,
-};
+export interface EventTypes {
+  [HeapSnapshotSortableDataGridEvents.ContentShown]: HeapSnapshotSortableDataGrid;
+  [HeapSnapshotSortableDataGridEvents.SortingComplete]: void;
+  [HeapSnapshotSortableDataGridEvents.ExpandRetainersComplete]: void;
+}
 
 export class HeapSnapshotViewportDataGrid extends HeapSnapshotSortableDataGrid {
   topPaddingHeight: number;

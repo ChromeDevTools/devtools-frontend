@@ -261,10 +261,10 @@ declare global {
   }
 }
 
-export type DiffViewData = {
-  diff: Diff.Diff.DiffArray,
-  mimeType: string,
-};
+export interface DiffViewData {
+  diff: Diff.Diff.DiffArray;
+  mimeType: string;
+}
 
 export class DiffView extends HTMLElement {
 

@@ -6,9 +6,9 @@ import * as Common from '../../core/common/common.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 
-type AggregationKeyTag = {
-  aggregationKeyTag: undefined,
-};
+interface AggregationKeyTag {
+  aggregationKeyTag: undefined;
+}
 
 /**
  * An opaque type for the key which we use to aggregate issues. The key must be
@@ -359,7 +359,7 @@ export const enum Events {
   FULL_UPDATE_REQUIRED = 'FullUpdateRequired',
 }
 
-export type EventTypes = {
-  [Events.AGGREGATED_ISSUE_UPDATED]: AggregatedIssue,
-  [Events.FULL_UPDATE_REQUIRED]: void,
-};
+export interface EventTypes {
+  [Events.AGGREGATED_ISSUE_UPDATED]: AggregatedIssue;
+  [Events.FULL_UPDATE_REQUIRED]: void;
+}

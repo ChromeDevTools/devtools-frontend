@@ -91,9 +91,9 @@ export const enum Events {
   VIEW_CLOSED = 'ViewClosed',
 }
 
-export type EventTypes = {
-  [Events.VIEW_CLOSED]: string,
-};
+export interface EventTypes {
+  [Events.VIEW_CLOSED]: string;
+}
 
 export class LinearMemoryInspectorView extends UI.Widget.VBox {
   #memoryWrapper: LazyUint8Array;

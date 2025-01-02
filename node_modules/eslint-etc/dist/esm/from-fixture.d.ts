@@ -1,0 +1,8 @@
+import { TSESLint as eslint } from "@typescript-eslint/experimental-utils";
+export declare function fromFixture<TMessageIds extends string>(fixture: string, invalidTestCase?: {
+    output?: string;
+    suggestions?: readonly eslint.SuggestionOutput<TMessageIds>[] | null;
+}): eslint.InvalidTestCase<TMessageIds, never>;
+export declare function fromFixture<TMessageIds extends string, TOptions extends readonly unknown[]>(fixture: string, invalidTestCase: Omit<eslint.InvalidTestCase<TMessageIds, TOptions>, "code" | "errors"> & {
+    suggestions?: readonly eslint.SuggestionOutput<TMessageIds>[] | null;
+}): eslint.InvalidTestCase<TMessageIds, TOptions>;

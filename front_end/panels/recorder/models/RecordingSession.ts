@@ -33,30 +33,30 @@ import {evaluateInAllFrames, getTargetFrameContext} from './SDKUtils.js';
 
 const formatAsJSLiteral = Platform.StringUtilities.formatAsJSLiteral;
 
-type TargetInfoChangedEvent = {
-  type: 'targetInfoChanged',
-  event: Common.EventTarget.EventTargetEvent<Protocol.Target.TargetInfo>,
-  target: SDK.Target.Target,
-};
+interface TargetInfoChangedEvent {
+  type: 'targetInfoChanged';
+  event: Common.EventTarget.EventTargetEvent<Protocol.Target.TargetInfo>;
+  target: SDK.Target.Target;
+}
 
-type TargerCreatedRecorderEvent = {
-  type: 'targetCreated',
-  event: Common.EventTarget.EventTargetEvent<Protocol.Target.TargetInfo>,
-  target: SDK.Target.Target,
-};
+interface TargerCreatedRecorderEvent {
+  type: 'targetCreated';
+  event: Common.EventTarget.EventTargetEvent<Protocol.Target.TargetInfo>;
+  target: SDK.Target.Target;
+}
 
-type TargetClosedRecorderEvent = {
-  type: 'targetClosed',
-  event: Common.EventTarget.EventTargetEvent<Protocol.Target.TargetID>,
-  target: SDK.Target.Target,
-};
+interface TargetClosedRecorderEvent {
+  type: 'targetClosed';
+  event: Common.EventTarget.EventTargetEvent<Protocol.Target.TargetID>;
+  target: SDK.Target.Target;
+}
 
-type BindingCalledRecorderEvent = {
-  type: 'bindingCalled',
-  event: Common.EventTarget.EventTargetEvent<Protocol.Runtime.BindingCalledEvent>,
-  target: SDK.Target.Target,
-  frameId: Protocol.Page.FrameId,
-};
+interface BindingCalledRecorderEvent {
+  type: 'bindingCalled';
+  event: Common.EventTarget.EventTargetEvent<Protocol.Runtime.BindingCalledEvent>;
+  target: SDK.Target.Target;
+  frameId: Protocol.Page.FrameId;
+}
 
 type RecorderEvent =
     |TargetInfoChangedEvent|TargerCreatedRecorderEvent|TargetClosedRecorderEvent|BindingCalledRecorderEvent;
@@ -773,7 +773,7 @@ export const enum Events {
   RECORDING_STOPPED = 'recordingstopped',
 }
 
-type EventTypes = {
-  [Events.RECORDING_UPDATED]: UserFlow,
-  [Events.RECORDING_STOPPED]: UserFlow,
-};
+interface EventTypes {
+  [Events.RECORDING_UPDATED]: UserFlow;
+  [Events.RECORDING_STOPPED]: UserFlow;
+}

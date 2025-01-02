@@ -1,0 +1,26 @@
+import { TSESLint as eslint } from "@typescript-eslint/experimental-utils";
+import { resolve } from "path";
+export function createRuleTester({ filename = resolve("./tests/file.ts"), parser = resolve("./node_modules/@typescript-eslint/parser"), project = resolve("./tests/tsconfig.json"), } = {}) {
+    return function ruleTester({ comments = false, typeScript = true, types = true, } = {}) {
+        const parserOptions = {
+            comments,
+            ecmaFeatures: { jsx: true },
+            ecmaVersion: 2020,
+            project: typeScript && types ? project : undefined,
+            sourceType: "module",
+        };
+        const tester = new eslint.RuleTester({
+            parser: typeScript ? parser : undefined,
+            parserOptions,
+        });
+        const run = tester.run;
+        tester.run = (name, rule, { invalid = [], valid = [] }) => run.call(tester, name, rule, {
+            invalid: invalid.map((test) => ({ ...test, filename })),
+            valid: valid.map((test) => typeof test === "string"
+                ? { code: test, filename }
+                : { ...test, filename }),
+        });
+        return tester;
+    };
+}
+//# sourceMappingURL=create-rule-tester.js.map

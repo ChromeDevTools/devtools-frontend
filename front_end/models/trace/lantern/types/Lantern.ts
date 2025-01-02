@@ -25,8 +25,8 @@ export const NetworkRequestTypes = {
   Prefetch: 'Prefetch',
 } as const;
 
-export type TraceEvent = {
-  name: string,
+export interface TraceEvent {
+  name: string;
   args: {
     name?: string,
     data?: {
@@ -37,42 +37,42 @@ export type TraceEvent = {
       }[],
       url?: string,
     },
-  },
-  pid: number,
-  tid: number,
+  };
+  pid: number;
+  tid: number;
   /** Timestamp of the event in microseconds. */
-  ts: number,
-  dur: number,
-};
-export type Trace = {
-  traceEvents: TraceEvent[],
-};
+  ts: number;
+  dur: number;
+}
+export interface Trace {
+  traceEvents: TraceEvent[];
+}
 export type ResourcePriority = ('VeryLow'|'Low'|'Medium'|'High'|'VeryHigh');
 export type ResourceType = keyof typeof NetworkRequestTypes;
 type InitiatorType = ('parser'|'script'|'preload'|'SignedExchange'|'preflight'|'other');
 export type ResourceTiming = Protocol.Network.ResourceTiming;
-type CallStack = {
+interface CallStack {
   callFrames: Array<{
     scriptId: string,
     url: string,
     lineNumber: number,
     columnNumber: number,
     functionName: string,
-  }>,
-  parent?: CallStack,
-};
+  }>;
+  parent?: CallStack;
+}
 
-export type ParsedURL = {
+export interface ParsedURL {
   /**
    * Equivalent to a `new URL(url).protocol` BUT w/o the trailing colon (:)
    */
-  scheme: string,
+  scheme: string;
   /**
    * Equivalent to a `new URL(url).hostname`
    */
-  host: string,
-  securityOrigin: string,
-};
+  host: string;
+  securityOrigin: string;
+}
 
 // When Lantern NetworkRequests are constructed, the source-of-truth of the network record is given as `rawRequest`.
 // Internally Lantern doesn't care about the type of this field, so a default type is given to simplify internal code
@@ -82,61 +82,61 @@ export type ParsedURL = {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type AnyNetworkObject = any;
 
-export type NetworkRequest<T = AnyNetworkObject> = {
-  requestId: string,
-  connectionId: number,
-  connectionReused: boolean,
-  url: string,
-  protocol: string,
-  parsedURL: ParsedURL,
-  documentURL: string,
+export interface NetworkRequest<T = AnyNetworkObject> {
+  requestId: string;
+  connectionId: number;
+  connectionReused: boolean;
+  url: string;
+  protocol: string;
+  parsedURL: ParsedURL;
+  documentURL: string;
   /** When the renderer process initially discovers a network request, in milliseconds. */
-  rendererStartTime: number,
+  rendererStartTime: number;
   /**
    * When the network service is about to handle a request, ie. just before going to the
    * HTTP cache or going to the network for DNS/connection setup, in milliseconds.
    */
-  networkRequestTime: number,
+  networkRequestTime: number;
   /**
    * When the last byte of the response headers is received, in milliseconds.
    * Equal to networkRequestTime if no data is recieved over the
    * network (ex: cached requests or data urls).
    */
-  responseHeadersEndTime: number,
+  responseHeadersEndTime: number;
   /** When the last byte of the response body is received, in milliseconds. */
-  networkEndTime: number,
-  transferSize: number,
-  resourceSize: number,
-  fromDiskCache: boolean,
-  fromMemoryCache: boolean,
-  isLinkPreload: boolean,
-  finished: boolean,
-  failed: boolean,
-  statusCode: number,
+  networkEndTime: number;
+  transferSize: number;
+  resourceSize: number;
+  fromDiskCache: boolean;
+  fromMemoryCache: boolean;
+  isLinkPreload: boolean;
+  finished: boolean;
+  failed: boolean;
+  statusCode: number;
   /** The network request that redirected to this one */
-  redirectSource: NetworkRequest<T>|undefined,
+  redirectSource: NetworkRequest<T>|undefined;
   /** The network request that this one redirected to */
-  redirectDestination: NetworkRequest<T>|undefined,
+  redirectDestination: NetworkRequest<T>|undefined;
   // TODO: can't use Protocol.Network.Initiator because of type mismatch in Lighthouse initiator.
   initiator: {
     type: InitiatorType,
     url?: string,
     stack?: CallStack,
-  },
-  initiatorRequest: NetworkRequest<T>|undefined,
+  };
+  initiatorRequest: NetworkRequest<T>|undefined;
   /** The chain of network requests that redirected to this one */
-  redirects: NetworkRequest[]|undefined,
-  timing: Protocol.Network.ResourceTiming|undefined,
-  resourceType: ResourceType|undefined,
-  mimeType: string,
-  priority: ResourcePriority,
-  frameId: string|undefined,
-  fromWorker: boolean,
+  redirects: NetworkRequest[]|undefined;
+  timing: Protocol.Network.ResourceTiming|undefined;
+  resourceType: ResourceType|undefined;
+  mimeType: string;
+  priority: ResourcePriority;
+  frameId: string|undefined;
+  fromWorker: boolean;
   /**
    * Optional value for how long the server took to respond to this request.
    * When not provided, the server response time is derived from the timing object.
    */
-  serverResponseTime?: number,
+  serverResponseTime?: number;
   /**
    * Implementation-specific canoncial data structure that this Lantern NetworkRequest
    * was derived from.
@@ -144,8 +144,8 @@ export type NetworkRequest<T = AnyNetworkObject> = {
    * but can store the source-of-truth for their network model in this property.
    * This is then accessible as a read-only property on NetworkNode.
    */
-  rawRequest?: T,
-};
+  rawRequest?: T;
+}
 
 export namespace Simulation {
   export interface URL {

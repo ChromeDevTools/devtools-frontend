@@ -1,0 +1,62 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.fromFixture = void 0;
+function fromFixture(fixture, invalidTestCase = {}) {
+    const { suggestions, ...rest } = invalidTestCase;
+    return {
+        ...rest,
+        ...parseFixture(fixture, suggestions),
+    };
+}
+exports.fromFixture = fromFixture;
+function getSuggestions(suggestions, suggest, indices) {
+    if (!suggestions || !suggest) {
+        return {};
+    }
+    if (!indices) {
+        return { suggestions };
+    }
+    return {
+        suggestions: indices
+            .split(/\s+/)
+            .map((index) => suggestions[Number.parseInt(index, 10)]),
+    };
+}
+function parseFixture(fixture, suggestions) {
+    const errorRegExp = /^(?<indent>\s*)(?<error>~+)\s*\[(?<id>\w+)\s*(?<data>.*?)(?:\s*(?<suggest>suggest)\s*(?<indices>[\d\s]*))?\]\s*$/;
+    const lines = [];
+    const errors = [];
+    let suggestFound = false;
+    fixture.split("\n").forEach((line) => {
+        var _a;
+        const match = line.match(errorRegExp);
+        if (match === null || match === void 0 ? void 0 : match.groups) {
+            const column = match.groups.indent.length + 1;
+            const endColumn = column + match.groups.error.length;
+            const { length } = lines;
+            errors.push({
+                column,
+                data: JSON.parse(match.groups.data || "{}"),
+                endColumn,
+                endLine: length,
+                line: length,
+                messageId: match.groups.id,
+                ...getSuggestions(suggestions, Boolean(match.groups.suggest), (_a = match.groups.indices) === null || _a === void 0 ? void 0 : _a.trim()),
+            });
+            if (match.groups.suggest) {
+                suggestFound = true;
+            }
+        }
+        else {
+            lines.push(line);
+        }
+    });
+    if (suggestions && !suggestFound) {
+        throw new Error("Suggestions specified but no 'suggest' annotation found.");
+    }
+    return {
+        code: lines.join("\n"),
+        errors,
+    };
+}
+//# sourceMappingURL=from-fixture.js.map

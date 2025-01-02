@@ -266,9 +266,9 @@ export const enum Events {
   TRANSFORM_CHANGED = 'TransformChanged',
 }
 
-export type EventTypes = {
-  [Events.TRANSFORM_CHANGED]: void,
-};
+export interface EventTypes {
+  [Events.TRANSFORM_CHANGED]: void;
+}
 
 export const enum Modes {
   PAN = 'Pan',

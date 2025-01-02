@@ -1,0 +1,21 @@
+import { getParent } from "./get-parent";
+export function findParent(node, ...args) {
+    const [arg] = args;
+    const predicate = typeof arg === "function"
+        ? arg
+        : (type) => (args.indexOf(type) === -1 ? "continue" : "return");
+    let parent = getParent(node);
+    while (parent) {
+        switch (predicate(parent.type)) {
+            case "break":
+                return undefined;
+            case "return":
+                return parent;
+            default:
+                break;
+        }
+        parent = getParent(parent);
+    }
+    return undefined;
+}
+//# sourceMappingURL=find-parent.js.map

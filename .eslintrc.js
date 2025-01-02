@@ -16,6 +16,7 @@ module.exports = {
   parser: '@typescript-eslint/parser',
 
   plugins: [
+    'etc',
     '@typescript-eslint',
     'mocha',
     'rulesdir',
@@ -119,6 +120,9 @@ module.exports = {
         ignoreRestArgs: true
       }
     ],
+
+    // Forbids type aliases where interfaces can be used.
+    'etc/prefer-interface': 'error',
 
     // Closure does not properly typecheck default exports
     'import/no-default-export': 'error',

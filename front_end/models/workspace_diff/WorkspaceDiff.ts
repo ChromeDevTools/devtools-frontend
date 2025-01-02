@@ -185,9 +185,9 @@ export interface ModifiedStatusChangedEvent {
   isModified: boolean;
 }
 
-export type EventTypes = {
-  [Events.MODIFIED_STATUS_CHANGED]: ModifiedStatusChangedEvent,
-};
+export interface EventTypes {
+  [Events.MODIFIED_STATUS_CHANGED]: ModifiedStatusChangedEvent;
+}
 
 export class UISourceCodeDiff extends Common.ObjectWrapper.ObjectWrapper<UISourceCodeDiffEventTypes> {
   private uiSourceCode: Workspace.UISourceCode.UISourceCode;
@@ -302,9 +302,9 @@ export const enum UISourceCodeDiffEvents {
   DIFF_CHANGED = 'DiffChanged',
 }
 
-export type UISourceCodeDiffEventTypes = {
-  [UISourceCodeDiffEvents.DIFF_CHANGED]: void,
-};
+export interface UISourceCodeDiffEventTypes {
+  [UISourceCodeDiffEvents.DIFF_CHANGED]: void;
+}
 
 let workspaceDiffImplInstance: WorkspaceDiffImpl|null = null;
 

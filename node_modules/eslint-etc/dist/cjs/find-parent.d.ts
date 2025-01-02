@@ -1,0 +1,5 @@
+import { TSESTree as es } from "@typescript-eslint/experimental-utils";
+declare type Predicate = (type: string) => "break" | "continue" | "return";
+export declare function findParent(node: es.Node, ...types: string[]): es.Node | undefined;
+export declare function findParent(node: es.Node, predicate: Predicate): es.Node | undefined;
+export {};

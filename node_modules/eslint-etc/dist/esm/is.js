@@ -1,0 +1,76 @@
+export function hasTypeAnnotation(node) {
+    return node.hasOwnProperty("typeAnnotation");
+}
+export function isArrayExpression(node) {
+    return node.type === "ArrayExpression";
+}
+export function isArrayPattern(node) {
+    return node.type === "ArrayPattern";
+}
+export function isArrowFunctionExpression(node) {
+    return node.type === "ArrowFunctionExpression";
+}
+export function isAssignmentExpression(node) {
+    return node.type === "AssignmentExpression";
+}
+export function isBlockStatement(node) {
+    return node.type === "BlockStatement";
+}
+export function isCallExpression(node) {
+    return node.type === "CallExpression";
+}
+export function isExportNamedDeclaration(node) {
+    return node.type === "ExportNamedDeclaration";
+}
+export function isExpressionStatement(node) {
+    return node && node.type === "ExpressionStatement";
+}
+export function isFunctionDeclaration(node) {
+    return node.type === "FunctionDeclaration";
+}
+export function isFunctionExpression(node) {
+    return node.type === "FunctionExpression";
+}
+export function isIdentifier(node) {
+    return node.type === "Identifier";
+}
+export function isLiteral(node) {
+    return node.type === "Literal";
+}
+export function isMemberExpression(node) {
+    return node.type === "MemberExpression";
+}
+export function isNewExpression(node) {
+    return node.type === "NewExpression";
+}
+export function isObjectExpression(node) {
+    return node.type === "ObjectExpression";
+}
+export function isObjectPattern(node) {
+    return node.type === "ObjectPattern";
+}
+export function isProgram(node) {
+    return node.type === "Program";
+}
+export function isProperty(node) {
+    return node.type === "Property";
+}
+export function isPrivateIdentifier(node) {
+    return node.type === "PrivateIdentifier";
+}
+export function isRestElement(node) {
+    return node.type === "RestElement";
+}
+export function isThisExpression(node) {
+    return node.type === "ThisExpression";
+}
+export function isTSTypeLiteral(node) {
+    return node.type === "TSTypeLiteral";
+}
+export function isTSTypeReference(node) {
+    return node.type === "TSTypeReference";
+}
+export function isVariableDeclarator(node) {
+    return node.type === "VariableDeclarator";
+}
+//# sourceMappingURL=is.js.map

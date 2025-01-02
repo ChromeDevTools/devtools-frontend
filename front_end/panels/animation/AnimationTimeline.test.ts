@@ -55,14 +55,14 @@ const SDA_ANIMATION_PAYLOAD = {
   },
 };
 
-type AnimationDOMNodeStubs = {
-  verticalScrollRange: sinon.SinonStub,
-  horizontalScrollRange: sinon.SinonStub,
-  scrollLeft: sinon.SinonStub,
-  scrollTop: sinon.SinonStub,
-  addScrollEventListener: sinon.SinonStub,
-  removeScrollEventListener: sinon.SinonStub,
-};
+interface AnimationDOMNodeStubs {
+  verticalScrollRange: sinon.SinonStub;
+  horizontalScrollRange: sinon.SinonStub;
+  scrollLeft: sinon.SinonStub;
+  scrollTop: sinon.SinonStub;
+  addScrollEventListener: sinon.SinonStub;
+  removeScrollEventListener: sinon.SinonStub;
+}
 class ManualPromise {
   #waitPromise: Promise<void>;
   #resolveFn!: Function;

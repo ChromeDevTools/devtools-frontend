@@ -1,0 +1,25 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.findParent = void 0;
+const get_parent_1 = require("./get-parent");
+function findParent(node, ...args) {
+    const [arg] = args;
+    const predicate = typeof arg === "function"
+        ? arg
+        : (type) => (args.indexOf(type) === -1 ? "continue" : "return");
+    let parent = (0, get_parent_1.getParent)(node);
+    while (parent) {
+        switch (predicate(parent.type)) {
+            case "break":
+                return undefined;
+            case "return":
+                return parent;
+            default:
+                break;
+        }
+        parent = (0, get_parent_1.getParent)(parent);
+    }
+    return undefined;
+}
+exports.findParent = findParent;
+//# sourceMappingURL=find-parent.js.map

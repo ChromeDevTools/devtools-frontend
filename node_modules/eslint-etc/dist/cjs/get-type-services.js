@@ -1,0 +1,84 @@
+"use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.getTypeServices = void 0;
+const experimental_utils_1 = require("@typescript-eslint/experimental-utils");
+const tsutils = __importStar(require("tsutils-etc"));
+const ts = __importStar(require("typescript"));
+const is_1 = require("./is");
+function getTypeServices(context) {
+    const services = experimental_utils_1.ESLintUtils.getParserServices(context);
+    const { esTreeNodeToTSNodeMap, program } = services;
+    const typeChecker = program.getTypeChecker();
+    const couldBeType = (node, name, qualified) => {
+        const type = getType(node);
+        return tsutils.couldBeType(type, name, qualified ? { ...qualified, typeChecker } : undefined);
+    };
+    const couldReturnType = (node, name, qualified) => {
+        var _a;
+        let tsTypeNode;
+        const tsNode = esTreeNodeToTSNodeMap.get(node);
+        if (ts.isArrowFunction(tsNode) ||
+            ts.isFunctionDeclaration(tsNode) ||
+            ts.isMethodDeclaration(tsNode) ||
+            ts.isFunctionExpression(tsNode)) {
+            tsTypeNode = (_a = tsNode.type) !== null && _a !== void 0 ? _a : tsNode.body;
+        }
+        else if (ts.isCallSignatureDeclaration(tsNode) ||
+            ts.isMethodSignature(tsNode)) {
+            tsTypeNode = tsNode.type;
+        }
+        return Boolean(tsTypeNode &&
+            tsutils.couldBeType(typeChecker.getTypeAtLocation(tsTypeNode), name, qualified ? { ...qualified, typeChecker } : undefined));
+    };
+    const getType = (node) => {
+        const tsNode = esTreeNodeToTSNodeMap.get(node);
+        return tsNode && typeChecker.getTypeAtLocation(tsNode);
+    };
+    return {
+        couldBeBehaviorSubject: (node) => couldBeType(node, "BehaviorSubject"),
+        couldBeError: (node) => couldBeType(node, "Error"),
+        couldBeFunction: (node) => {
+            if ((0, is_1.isArrowFunctionExpression)(node) || (0, is_1.isFunctionDeclaration)(node)) {
+                return true;
+            }
+            return tsutils.couldBeFunction(getType(node));
+        },
+        couldBeMonoTypeOperatorFunction: (node) => couldBeType(node, "MonoTypeOperatorFunction"),
+        couldBeObservable: (node) => couldBeType(node, "Observable"),
+        couldBeSubject: (node) => couldBeType(node, "Subject"),
+        couldBeSubscription: (node) => couldBeType(node, "Subscription"),
+        couldBeType,
+        couldReturnObservable: (node) => couldReturnType(node, "Observable"),
+        couldReturnType,
+        getType,
+        isAny: (node) => tsutils.isAny(getType(node)),
+        isReferenceType: (node) => tsutils.isReferenceType(getType(node)),
+        isUnknown: (node) => tsutils.isUnknown(getType(node)),
+        typeChecker,
+    };
+}
+exports.getTypeServices = getTypeServices;
+//# sourceMappingURL=get-type-services.js.map

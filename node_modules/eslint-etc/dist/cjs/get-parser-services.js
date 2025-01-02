@@ -1,0 +1,7 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.getParserServices = void 0;
+const experimental_utils_1 = require("@typescript-eslint/experimental-utils");
+const { getParserServices } = experimental_utils_1.ESLintUtils;
+exports.getParserServices = getParserServices;
+//# sourceMappingURL=get-parser-services.js.map

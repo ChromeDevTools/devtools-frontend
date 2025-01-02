@@ -117,9 +117,9 @@ export class PaintProfilerLogItem {
 SDKModel.register(PaintProfilerModel, {capabilities: Capability.DOM, autostart: false});
 
 export type RawPaintProfilerLogItemParamValue = string|{[key: string]: RawPaintProfilerLogItemParamValue};
-export type RawPaintProfilerLogItemParams = {
-  [key: string]: RawPaintProfilerLogItemParamValue,
-};
+export interface RawPaintProfilerLogItemParams {
+  [key: string]: RawPaintProfilerLogItemParamValue;
+}
 
 export interface SnapshotWithRect {
   rect: Protocol.DOM.Rect;

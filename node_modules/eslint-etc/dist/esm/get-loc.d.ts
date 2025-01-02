@@ -1,0 +1,3 @@
+import { TSESTree as es } from "@typescript-eslint/experimental-utils";
+import * as ts from "typescript";
+export declare function getLoc(node: ts.Node): es.SourceLocation;

@@ -1,0 +1,8 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.getParent = void 0;
+function getParent(node) {
+    return node.parent;
+}
+exports.getParent = getParent;
+//# sourceMappingURL=get-parent.js.map

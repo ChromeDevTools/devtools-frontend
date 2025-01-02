@@ -2,15 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-type Response = {
-  requestId: number,
-  result: unknown,
-  error: Error|null,
-};
+interface Response {
+  requestId: number;
+  result: unknown;
+  error: Error|null;
+}
 
-type Event = {
-  event: string,
-};
+interface Event {
+  event: string;
+}
 
 type Message = MessageEvent<Response|Event>;
 

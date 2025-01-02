@@ -577,9 +577,9 @@ export const enum Events {
   TOOLBAR_ITEMS_CHANGED = 'ToolbarItemsChanged',
 }
 
-export type EventTypes = {
-  [Events.TOOLBAR_ITEMS_CHANGED]: void,
-};
+export interface EventTypes {
+  [Events.TOOLBAR_ITEMS_CHANGED]: void;
+}
 
 const pluginCompartment = new CodeMirror.Compartment();
 

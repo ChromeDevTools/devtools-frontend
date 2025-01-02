@@ -115,7 +115,7 @@ let id = 0;
 export class Widget {
   readonly element: HTMLElement;
   contentElement: HTMLElement;
-  private shadowRoot: ShadowRoot|undefined;
+  private shadowRoot: typeof Element.prototype.shadowRoot;
   protected visibleInternal: boolean;
   private isRoot: boolean;
   private isShowingInternal: boolean;
@@ -133,7 +133,7 @@ export class Widget {
   #id = `${this.constructor.name}_${id++}`;
   constructor(useShadowDom?: boolean, delegatesFocus?: boolean, element?: HTMLElement) {
     this.element = element || document.createElement('div');
-    this.shadowRoot = this.element.shadowRoot || undefined;
+    this.shadowRoot = this.element.shadowRoot;
     if (useShadowDom && !this.shadowRoot) {
       this.element.classList.add('vbox');
       this.element.classList.add('flex-auto');
@@ -515,20 +515,11 @@ export class Widget {
   }
 
   registerRequiredCSS(cssFile: {cssContent: string}): void {
-    if (this.shadowRoot) {
-      ThemeSupport.ThemeSupport.instance().appendStyle((this.shadowRoot as DocumentFragment), cssFile);
-    } else {
-      ThemeSupport.ThemeSupport.instance().appendStyle(this.element, cssFile);
-    }
+    ThemeSupport.ThemeSupport.instance().appendStyle(this.shadowRoot ?? this.element, cssFile);
   }
 
   registerCSSFiles(cssFiles: CSSStyleSheet[]): void {
-    let root: ShadowRoot|Document;
-    if (this.shadowRoot) {
-      root = this.shadowRoot;
-    } else {
-      root = Helpers.GetRootNode.getRootNode(this.contentElement);
-    }
+    const root = this.shadowRoot ?? Helpers.GetRootNode.getRootNode(this.contentElement);
     root.adoptedStyleSheets = root.adoptedStyleSheets.concat(cssFiles);
   }
 

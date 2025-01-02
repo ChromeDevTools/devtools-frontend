@@ -808,7 +808,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventType
     }
   }
 
-  setEditingStyle(editing: boolean, _treeElement?: StylePropertyTreeElement): void {
+  setEditingStyle(editing: boolean): void {
     if (this.isEditingStyle === editing) {
       return;
     }

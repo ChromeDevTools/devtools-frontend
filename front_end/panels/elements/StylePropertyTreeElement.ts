@@ -1186,6 +1186,7 @@ export class LengthRenderer implements MatchRenderer<LengthMatch> {
 
     const onDraggingFinished = (): void => {
       this.#treeElement.parentPane().setEditingStyle(false);
+      void this.#treeElement.applyStyleText(this.#treeElement.renderedPropertyText(), true);
     };
 
     cssLength.addEventListener('valuechanged', onValueChanged);
@@ -2189,7 +2190,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
 
     this.originalPropertyText = this.property.propertyText || '';
 
-    this.parentPaneInternal.setEditingStyle(true, this);
+    this.parentPaneInternal.setEditingStyle(true);
     selectedElement.parentElement?.scrollIntoViewIfNeeded(false);
 
     this.prompt = new CSSPropertyPrompt(this, context.isEditingName, Array.from(this.#gridNames ?? []));
@@ -2586,7 +2587,7 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
 
   private async innerApplyStyleText(
       styleText: string, majorChange: boolean, property?: SDK.CSSProperty.CSSProperty|null): Promise<void> {
-    // this.property might have been nulled at the end of the last innerApplyStyleText
+    // this.property might have been nulled at the end of the last innerApplyStyleText.
     if (!this.treeOutline || !this.property) {
       return;
     }

@@ -186,13 +186,12 @@ export class EntriesLinkOverlay extends HTMLElement {
     this.#entryFromConnector.setAttribute('visibility', drawFromEntryConnectorCircle ? 'visible' : 'hidden');
     this.#entryToConnector.setAttribute('visibility', drawToEntryConnectorCircle ? 'visible' : 'hidden');
 
-    // If the entry is visible, the entry arrow starts from the end on the X axis and middle of the Y axis.
-    // If not, draw it to the same y point without the entry height offset and the box around the entry.
-    // This way it will be attached to the track edge.
+    // If the entry is visible, the entry arrow starts from the middle of the right edge of the entry (end on the X axis and middle of the Y axis).
+    // If not, draw it to the y coordinate of the entry and the edge of the timeline so it is pointing in the direction of the entry.
+    const halfFromEntryHeight = this.#fromEntryDimentions.height / 2;
     if (this.#entryFromVisible) {
-      const halfEntryHeight = this.#fromEntryDimentions.height / 2;
       const endConnectionPointX = String(this.#coordinateFrom.x + this.#fromEntryDimentions.width);
-      const endConnectionPointY = String(this.#coordinateFrom.y + halfEntryHeight);
+      const endConnectionPointY = String(this.#coordinateFrom.y + halfFromEntryHeight);
 
       this.#connector.setAttribute('x1', endConnectionPointX);
       this.#connector.setAttribute('y1', endConnectionPointY);
@@ -202,11 +201,12 @@ export class EntriesLinkOverlay extends HTMLElement {
       this.#entryFromWrapper.style.visibility = 'visible';
     } else {
       this.#connector.setAttribute('x1', (this.#coordinateFrom.x + this.#fromEntryDimentions.width).toString());
-      this.#connector.setAttribute('y1', this.#coordinateFrom.y.toString());
+      this.#connector.setAttribute('y1', String(this.#coordinateFrom.y + halfFromEntryHeight));
       this.#entryFromWrapper.style.visibility = 'hidden';
     }
 
-    // If the arrow is pointing to the entry, point it to the middle of the entry.
+    // If the arrow is pointing to the entry and that entry is visible, point it to the middle of the entry.
+    // If the entry is not visible, point the arrow to the edge of the screen towards the entry.
     // Otherwise, the arrow is following the mouse so we assign it to the provided coordinates.
     if (this.#toEntryDimentions && this.#entryToVisible) {
       const connectionPointX = String(this.#coordinateTo.x);
@@ -222,7 +222,14 @@ export class EntriesLinkOverlay extends HTMLElement {
     } else {
       this.#entryToWrapper.style.visibility = 'hidden';
       this.#connector.setAttribute('x2', this.#coordinateTo.x.toString());
-      this.#connector.setAttribute('y2', this.#coordinateTo.y.toString());
+      // If `toEntryDimentions` exist, the arrow points to the entry and we need to take its height into account.
+      // Otherwise, it is following the mouse.
+      if (this.#toEntryDimentions) {
+        const halfToEntryHeight = this.#toEntryDimentions.height / 2;
+        this.#connector.setAttribute('y2', String(this.#coordinateTo.y + halfToEntryHeight));
+      } else {
+        this.#connector.setAttribute('y2', (this.#coordinateTo.y).toString());
+      }
     }
 
     this.#connector.setAttribute('stroke-width', '2');

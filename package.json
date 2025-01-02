@@ -41,6 +41,7 @@
     "test": "vpython3 third_party/node/node.py --output scripts/run_on_target.mjs gen/test/run.js"
   },
   "devDependencies": {
+    "globals": "15.12.0",
     "@rollup/plugin-node-resolve": "15.3.0",
     "@rollup/plugin-terser": "0.4.4",
     "@rollup/wasm-node": "4.24.3",

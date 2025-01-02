@@ -130,8 +130,7 @@ to execute only the lint checks for TypeScript or CSS files respectively. By def
 that can be automatically corrected; you can pass `--no-fix` to disable this behavior.
 
 The configuration for Stylelint can be found in [`.stylelintrc.json`](../.stylelintrc.json) in the root directory,
-whereas ESLint is configured via a toplevel [`.eslintrc.js`](../.eslintrc.js) and various more specific `.eslintrc.js`
-files that override settings for various subdirectories.
+whereas ESLint is configured via a toplevel flat config in [`eslint.config.mjs`](../eslint.config.mjs).
 
 The custom ESLint rules live in the [`scripts/eslint_rules` directory](../scripts/eslint_rules/) and are used
 to implement checks for DevTools specifics.

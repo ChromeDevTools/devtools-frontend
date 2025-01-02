@@ -285,13 +285,8 @@ def _CheckDevToolsLint(input_api, output_api):
                                'stylelint'),
         input_api.os_path.join(input_api.PresubmitLocalPath(), 'node_modules',
                                '@typescript-eslint'),
-        input_api.os_path.join(input_api.PresubmitLocalPath(), '.eslintrc.js'),
         input_api.os_path.join(input_api.PresubmitLocalPath(),
-                               '.eslintignore'),
-        input_api.os_path.join(front_end_directory, '.eslintrc.js'),
-        input_api.os_path.join(component_docs_directory, '.eslintrc.js'),
-        input_api.os_path.join(test_directory, '.eslintrc.js'),
-        input_api.os_path.join(scripts_directory, '.eslintrc.js'),
+                               'eslint.config.mjs'),
         input_api.os_path.join(scripts_directory, 'eslint_rules'),
         input_api.os_path.join(input_api.PresubmitLocalPath(),
                                '.stylelintrc.json'),
@@ -301,7 +296,7 @@ def _CheckDevToolsLint(input_api, output_api):
     ]
 
     lint_config_files = _getAffectedFiles(input_api, lint_related_files, [],
-                                          ['.js', '.py', '.eslintignore'])
+                                          ['.js', '.py'])
 
     should_bail_out, files_to_lint = _getFilesToLint(
         input_api, output_api, lint_config_files, default_linted_directories,
@@ -317,6 +312,7 @@ def _CheckDevToolsLint(input_api, output_api):
     results.extend(
         _checkWithNodeScript(input_api, output_api, lint_path, files_to_lint))
     return results
+
 
 def _CheckDevToolsNonJSFileLicenseHeaders(input_api, output_api):
     results = [

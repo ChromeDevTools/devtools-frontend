@@ -2,13 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// Use V8's code cache to speed up instantiation time.
-require('v8-compile-cache');
-
-const {ESLint} = require('eslint');
+const eslint = require('eslint');
 const stylelint = require('stylelint');
 const {extname, join} = require('path');
-const globby = require('globby');
+const {sync} = require('globby');
 const yargs = require('yargs/yargs');
 const {hideBin} = require('yargs/helpers');
 const {spawn} = require('child_process');
@@ -43,8 +40,9 @@ if (!flags.fix) {
 }
 
 async function runESLint(files) {
-  const cli = new ESLint({
-    ignorePath: join(__dirname, '..', '..', '.eslintignore'),
+  const EsLintFlat = await eslint.loadESLint({useFlatConfig: true});
+  const cli = new EsLintFlat({
+    cwd: join(__dirname, '..', '..'),
     fix: flags.fix,
   });
 
@@ -54,15 +52,18 @@ async function runESLint(files) {
   // This was originally reported in https://github.com/eslint/eslint/issues/9977
   // The suggested workaround is to use the CLIEngine to pre-emptively filter out these
   // problematic paths.
+
   files = await Promise.all(
-      files.map(async file => ((await cli.isPathIgnored(file)) ? null : file)),
+      files.map(async file => {
+        return (await cli.isPathIgnored(file)) ? null : file;
+      }),
   );
   files = files.filter(file => file !== null);
 
   const results = await cli.lintFiles(files);
 
   if (flags.fix) {
-    await ESLint.outputFixes(results);
+    await EsLintFlat.outputFixes(results);
   }
 
   const formatter = await cli.loadFormatter('stylish');
@@ -193,7 +194,7 @@ async function runLitAnalyzer(files) {
 async function run() {
   const scripts = [];
   const styles = [];
-  for (const path of globby.sync(flags.files, {
+  for (const path of sync(flags.files, {
          expandDirectories: {extensions: ['css', 'js', 'ts']},
        })) {
     if (extname(path) === '.css') {

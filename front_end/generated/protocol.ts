@@ -1285,6 +1285,23 @@ export namespace Audits {
     requestId?: Network.RequestId;
   }
 
+  export const enum SelectElementAccessibilityIssueReason {
+    DisallowedSelectChild = 'DisallowedSelectChild',
+    DisallowedOptGroupChild = 'DisallowedOptGroupChild',
+    NonPhrasingContentOptionChild = 'NonPhrasingContentOptionChild',
+    InteractiveContentOptionChild = 'InteractiveContentOptionChild',
+    InteractiveContentLegendChild = 'InteractiveContentLegendChild',
+  }
+
+  /**
+   * This isue warns about errors in the select element content model.
+   */
+  export interface SelectElementAccessibilityIssueDetails {
+    nodeId: DOM.BackendNodeId;
+    selectElementAccessibilityIssueReason: SelectElementAccessibilityIssueReason;
+    hasDisallowedAttributes: boolean;
+  }
+
   export const enum StyleSheetLoadingIssueReason {
     LateImportRule = 'LateImportRule',
     RequestFailed = 'RequestFailed',
@@ -1361,6 +1378,7 @@ export namespace Audits {
     FederatedAuthUserInfoRequestIssue = 'FederatedAuthUserInfoRequestIssue',
     PropertyRuleIssue = 'PropertyRuleIssue',
     SharedDictionaryIssue = 'SharedDictionaryIssue',
+    SelectElementAccessibilityIssue = 'SelectElementAccessibilityIssue',
   }
 
   /**
@@ -1390,6 +1408,7 @@ export namespace Audits {
     propertyRuleIssueDetails?: PropertyRuleIssueDetails;
     federatedAuthUserInfoRequestIssueDetails?: FederatedAuthUserInfoRequestIssueDetails;
     sharedDictionaryIssueDetails?: SharedDictionaryIssueDetails;
+    selectElementAccessibilityIssueDetails?: SelectElementAccessibilityIssueDetails;
   }
 
   /**
@@ -15812,6 +15831,14 @@ export namespace Target {
      * The initial URL the page will be navigated to. An empty string indicates about:blank.
      */
     url: string;
+    /**
+     * Frame left origin in DIP (headless chrome only).
+     */
+    left?: integer;
+    /**
+     * Frame top origin in DIP (headless chrome only).
+     */
+    top?: integer;
     /**
      * Frame width in DIP (headless chrome only).
      */

@@ -1886,6 +1886,36 @@
                     ]
                 },
                 {
+                    "id": "SelectElementAccessibilityIssueReason",
+                    "type": "string",
+                    "enum": [
+                        "DisallowedSelectChild",
+                        "DisallowedOptGroupChild",
+                        "NonPhrasingContentOptionChild",
+                        "InteractiveContentOptionChild",
+                        "InteractiveContentLegendChild"
+                    ]
+                },
+                {
+                    "id": "SelectElementAccessibilityIssueDetails",
+                    "description": "This isue warns about errors in the select element content model.",
+                    "type": "object",
+                    "properties": [
+                        {
+                            "name": "nodeId",
+                            "$ref": "DOM.BackendNodeId"
+                        },
+                        {
+                            "name": "selectElementAccessibilityIssueReason",
+                            "$ref": "SelectElementAccessibilityIssueReason"
+                        },
+                        {
+                            "name": "hasDisallowedAttributes",
+                            "type": "boolean"
+                        }
+                    ]
+                },
+                {
                     "id": "StyleSheetLoadingIssueReason",
                     "type": "string",
                     "enum": [
@@ -1974,7 +2004,8 @@
                         "StylesheetLoadingIssue",
                         "FederatedAuthUserInfoRequestIssue",
                         "PropertyRuleIssue",
-                        "SharedDictionaryIssue"
+                        "SharedDictionaryIssue",
+                        "SelectElementAccessibilityIssue"
                     ]
                 },
                 {
@@ -2087,6 +2118,11 @@
                             "name": "sharedDictionaryIssueDetails",
                             "optional": true,
                             "$ref": "SharedDictionaryIssueDetails"
+                        },
+                        {
+                            "name": "selectElementAccessibilityIssueDetails",
+                            "optional": true,
+                            "$ref": "SelectElementAccessibilityIssueDetails"
                         }
                     ]
                 },
@@ -23967,6 +24003,20 @@
                             "name": "url",
                             "description": "The initial URL the page will be navigated to. An empty string indicates about:blank.",
                             "type": "string"
+                        },
+                        {
+                            "name": "left",
+                            "description": "Frame left origin in DIP (headless chrome only).",
+                            "experimental": true,
+                            "optional": true,
+                            "type": "integer"
+                        },
+                        {
+                            "name": "top",
+                            "description": "Frame top origin in DIP (headless chrome only).",
+                            "experimental": true,
+                            "optional": true,
+                            "type": "integer"
                         },
                         {
                             "name": "width",

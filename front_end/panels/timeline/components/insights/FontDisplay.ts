@@ -27,7 +27,7 @@ const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/Fo
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class FontDisplay extends BaseInsightComponent<FontDisplayInsightModel> {
-  static override readonly litTagName = LitHtml.literal`devtools-performance-font-display`;
+  static override readonly litTagName = LitHtml.StaticHtml.literal`devtools-performance-font-display`;
   override internalName: string = 'font-display';
 
   #overlayForRequest = new Map<Trace.Types.Events.SyntheticNetworkRequest, Overlays.Overlays.TimelineOverlay>();

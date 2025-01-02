@@ -55,7 +55,7 @@ interface PhaseData {
 }
 
 export class LCPPhases extends BaseInsightComponent<LCPPhasesInsightModel> {
-  static override readonly litTagName = LitHtml.literal`devtools-performance-lcp-by-phases`;
+  static override readonly litTagName = LitHtml.StaticHtml.literal`devtools-performance-lcp-by-phases`;
   override internalName: string = 'lcp-by-phase';
   #overlay: Overlays.Overlays.TimespanBreakdown|null = null;
 

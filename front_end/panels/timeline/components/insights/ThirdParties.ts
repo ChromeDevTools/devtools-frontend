@@ -32,7 +32,7 @@ const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/Th
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class ThirdParties extends BaseInsightComponent<ThirdPartiesInsightModel> {
-  static override readonly litTagName = LitHtml.literal`devtools-performance-third-parties`;
+  static override readonly litTagName = LitHtml.StaticHtml.literal`devtools-performance-third-parties`;
   override internalName: string = 'third-parties';
 
   #overlaysForEntity = new Map<Trace.Extras.ThirdParties.Entity, Overlays.Overlays.TimelineOverlay[]>();

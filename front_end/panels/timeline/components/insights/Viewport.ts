@@ -14,7 +14,7 @@ import {BaseInsightComponent} from './BaseInsightComponent.js';
 const {html} = LitHtml;
 
 export class Viewport extends BaseInsightComponent<ViewportInsightModel> {
-  static override readonly litTagName = LitHtml.literal`devtools-performance-viewport`;
+  static override readonly litTagName = LitHtml.StaticHtml.literal`devtools-performance-viewport`;
   override internalName: string = 'viewport';
 
   override createOverlays(): Overlays.Overlays.TimelineOverlay[] {

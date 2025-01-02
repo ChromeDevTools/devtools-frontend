@@ -60,7 +60,7 @@ const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/CL
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class CLSCulprits extends BaseInsightComponent<CLSCulpritsInsightModel> {
-  static override readonly litTagName = LitHtml.literal`devtools-performance-cls-culprits`;
+  static override readonly litTagName = LitHtml.StaticHtml.literal`devtools-performance-cls-culprits`;
   override internalName: string = 'cls-culprits';
 
   override createOverlays(): Overlays.Overlays.TimelineOverlay[] {

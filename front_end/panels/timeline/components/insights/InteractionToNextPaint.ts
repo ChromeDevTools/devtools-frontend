@@ -48,7 +48,7 @@ const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/In
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class InteractionToNextPaint extends BaseInsightComponent<INPInsightModel> {
-  static override readonly litTagName = LitHtml.literal`devtools-performance-inp`;
+  static override readonly litTagName = LitHtml.StaticHtml.literal`devtools-performance-inp`;
   override internalName: string = 'inp';
 
   override createOverlays(): Overlays.Overlays.TimelineOverlay[] {

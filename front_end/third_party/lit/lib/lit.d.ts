@@ -1,4 +1,3 @@
-/// <reference types="trusted-types" />
 /**
  * @license
  * Copyright 2019 Google LLC
@@ -147,6 +146,11 @@ interface ReactiveController {
  * @license
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
+ */
+/**
+ * Use this module if you want to create your own base class extending
+ * {@link ReactiveElement}.
+ * @packageDocumentation
  */
 
 /**
@@ -728,8 +732,6 @@ declare abstract class ReactiveElement extends HTMLElement implements ReactiveCo
      * @param oldValue old value of requesting property
      * @param options property options to use instead of the previously
      *     configured options
-     * @param initial whether this call is for the initial value of the property.
-     *     Initial values do not reflect to an attribute.
      * @category updates
      */
     requestUpdate(name?: PropertyKey, oldValue?: unknown, options?: PropertyDeclaration): void;
@@ -925,6 +927,11 @@ declare abstract class Directive implements Disconnectable {
     update(_part: Part, props: Array<unknown>): unknown;
 }
 
+declare class TrustedHTML {
+    private constructor(); // To prevent instantiting with 'new'.
+    private brand: true; // To prevent structural typing.
+}
+
 /**
  * @license
  * Copyright 2017 Google LLC
@@ -1103,11 +1110,43 @@ type ValueSanitizer = (value: unknown) => unknown;
 /** TemplateResult types */
 declare const HTML_RESULT = 1;
 declare const SVG_RESULT = 2;
-type ResultType = typeof HTML_RESULT | typeof SVG_RESULT;
+declare const MATHML_RESULT = 3;
+type ResultType = typeof HTML_RESULT | typeof SVG_RESULT | typeof MATHML_RESULT;
 declare const ATTRIBUTE_PART = 1;
 declare const CHILD_PART = 2;
+declare const PROPERTY_PART = 3;
+declare const BOOLEAN_ATTRIBUTE_PART = 4;
+declare const EVENT_PART = 5;
 declare const ELEMENT_PART = 6;
 declare const COMMENT_PART = 7;
+/**
+ * The return type of the template tag functions, {@linkcode html} and
+ * {@linkcode svg} when it hasn't been compiled by @lit-labs/compiler.
+ *
+ * A `TemplateResult` object holds all the information about a template
+ * expression required to render it: the template strings, expression values,
+ * and type of template (html or svg).
+ *
+ * `TemplateResult` objects do not create any DOM on their own. To create or
+ * update DOM you need to render the `TemplateResult`. See
+ * [Rendering](https://lit.dev/docs/components/rendering) for more information.
+ *
+ */
+type UncompiledTemplateResult<T extends ResultType = ResultType> = {
+    ['_$litType$']: T;
+    strings: TemplateStringsArray;
+    values: unknown[];
+};
+/**
+ * This is a template result that may be either uncompiled or compiled.
+ *
+ * In the future, TemplateResult will be this type. If you want to explicitly
+ * note that a template result is potentially compiled, you can reference this
+ * type and it will continue to behave the same through the next major version
+ * of Lit. This can be useful for code that wants to prepare for the next
+ * major version of Lit.
+ */
+type MaybeCompiledTemplateResult<T extends ResultType = ResultType> = UncompiledTemplateResult<T> | CompiledTemplateResult;
 /**
  * The return type of the template tag functions, {@linkcode html} and
  * {@linkcode svg}.
@@ -1120,14 +1159,20 @@ declare const COMMENT_PART = 7;
  * update DOM you need to render the `TemplateResult`. See
  * [Rendering](https://lit.dev/docs/components/rendering) for more information.
  *
+ * In Lit 4, this type will be an alias of
+ * MaybeCompiledTemplateResult, so that code will get type errors if it assumes
+ * that Lit templates are not compiled. When deliberately working with only
+ * one, use either {@linkcode CompiledTemplateResult} or
+ * {@linkcode UncompiledTemplateResult} explicitly.
  */
-type TemplateResult<T extends ResultType = ResultType> = {
-    ['_$litType$']: T;
-    strings: TemplateStringsArray;
-    values: unknown[];
-};
+type TemplateResult<T extends ResultType = ResultType> = UncompiledTemplateResult<T>;
 type HTMLTemplateResult = TemplateResult<typeof HTML_RESULT>;
 type SVGTemplateResult = TemplateResult<typeof SVG_RESULT>;
+type MathMLTemplateResult = TemplateResult<typeof MATHML_RESULT>;
+/**
+ * A TemplateResult that has been compiled by @lit-labs/compiler, skipping the
+ * prepare step.
+ */
 interface CompiledTemplateResult {
     ['_$litType$']: CompiledTemplate;
     values: unknown[];
@@ -1151,8 +1196,8 @@ interface CompiledTemplate extends Omit<Template, 'el'> {
  */
 declare const html: (strings: TemplateStringsArray, ...values: unknown[]) => TemplateResult<1>;
 /**
- * Interprets a template literal as an SVG fragment that can efficiently
- * render to and update a container.
+ * Interprets a template literal as an SVG fragment that can efficiently render
+ * to and update a container.
  *
  * ```ts
  * const rect = svg`<rect width="10" height="10"></rect>`;
@@ -1171,9 +1216,35 @@ declare const html: (strings: TemplateStringsArray, ...values: unknown[]) => Tem
  *
  * In LitElement usage, it's invalid to return an SVG fragment from the
  * `render()` method, as the SVG fragment will be contained within the element's
- * shadow root and thus cannot be used within an `<svg>` HTML element.
+ * shadow root and thus not be properly contained within an `<svg>` HTML
+ * element.
  */
 declare const svg: (strings: TemplateStringsArray, ...values: unknown[]) => TemplateResult<2>;
+/**
+ * Interprets a template literal as MathML fragment that can efficiently render
+ * to and update a container.
+ *
+ * ```ts
+ * const num = mathml`<mn>1</mn>`;
+ *
+ * const eq = html`
+ *   <math>
+ *     ${num}
+ *   </math>`;
+ * ```
+ *
+ * The `mathml` *tag function* should only be used for MathML fragments, or
+ * elements that would be contained **inside** a `<math>` HTML element. A common
+ * error is placing a `<math>` *element* in a template tagged with the `mathml`
+ * tag function. The `<math>` element is an HTML element and should be used
+ * within a template tagged with the {@linkcode html} tag function.
+ *
+ * In LitElement usage, it's invalid to return an MathML fragment from the
+ * `render()` method, as the MathML fragment will be contained within the
+ * element's shadow root and thus not be properly contained within a `<math>`
+ * HTML element.
+ */
+declare const mathml: (strings: TemplateStringsArray, ...values: unknown[]) => TemplateResult<3>;
 /**
  * A sentinel value that signals that a value was handled by a directive and
  * should not be written to the DOM.
@@ -1243,7 +1314,7 @@ interface DirectiveParent {
 }
 declare class Template {
     parts: Array<TemplatePart>;
-    constructor({ strings, ['_$litType$']: type }: TemplateResult, options?: RenderOptions);
+    constructor({ strings, ['_$litType$']: type }: UncompiledTemplateResult, options?: RenderOptions);
     /** @nocollapse */
     static createElement(html: TrustedHTML, _options?: RenderOptions): HTMLTemplateElement;
 }
@@ -1361,7 +1432,7 @@ interface RootPart extends ChildPart {
 }
 
 declare class AttributePart implements Disconnectable {
-    readonly type: 1 | 3 | 4 | 5;
+    readonly type: typeof ATTRIBUTE_PART | typeof PROPERTY_PART | typeof BOOLEAN_ATTRIBUTE_PART | typeof EVENT_PART;
     readonly element: HTMLElement;
     readonly name: string;
     readonly options: RenderOptions | undefined;
@@ -1407,7 +1478,7 @@ declare class ElementPart implements Disconnectable {
  * external users.
  *
  * We currently do not make a mangled rollup build of the lit-ssr code. In order
- * to keep a number of (otherwise private) top-level exports  mangled in the
+ * to keep a number of (otherwise private) top-level exports mangled in the
  * client side code, we export a _$LH object containing those members (or
  * helper methods for accessing private fields of those members), and then
  * re-export them for use in lit-ssr. This keeps lit-ssr agnostic to whether the
@@ -1470,6 +1541,48 @@ declare const render: {
  * @license
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
+ */
+/**
+ * The main LitElement module, which defines the {@linkcode LitElement} base
+ * class and related APIs.
+ *
+ * LitElement components can define a template and a set of observed
+ * properties. Changing an observed property triggers a re-render of the
+ * element.
+ *
+ * Import {@linkcode LitElement} and {@linkcode html} from this module to
+ * create a component:
+ *
+ *  ```js
+ * import {LitElement, html} from 'lit-element';
+ *
+ * class MyElement extends LitElement {
+ *
+ *   // Declare observed properties
+ *   static get properties() {
+ *     return {
+ *       adjective: {}
+ *     }
+ *   }
+ *
+ *   constructor() {
+ *     this.adjective = 'awesome';
+ *   }
+ *
+ *   // Define the element's template
+ *   render() {
+ *     return html`<p>your ${adjective} template here</p>`;
+ *   }
+ * }
+ *
+ * customElements.define('my-element', MyElement);
+ * ```
+ *
+ * `LitElement` extends {@linkcode ReactiveElement} and adds lit-html
+ * templating. The `ReactiveElement` class is provided for users that want to
+ * build their own custom element base classes that don't use lit-html.
+ *
+ * @packageDocumentation
  */
 
 /**
@@ -1608,4 +1721,4 @@ declare const _$LE: {
  */
 declare const isServer = false;
 
-export { AttributePart, BooleanAttributePart, CSSResult, CSSResultArray, CSSResultGroup, CSSResultOrNative, ChildPart, CompiledTemplate, CompiledTemplateResult, ComplexAttributeConverter, DirectiveParent, Disconnectable, ElementPart, EventPart, HTMLTemplateResult, HasChanged, Initializer, LitElement, LitUnstable, Part, PropertyDeclaration, PropertyDeclarations, PropertyPart, PropertyValueMap, PropertyValues, ReactiveController, ReactiveControllerHost, ReactiveElement, ReactiveUnstable, RenderOptions, RootPart, SVGTemplateResult, SanitizerFactory, TemplateInstance, TemplateResult, Unstable, ValueSanitizer, WarningKind, _$LE, _$LH, adoptStyles, css, defaultConverter, getCompatibleStyle, html, isServer, noChange, notEqual, nothing, render, supportsAdoptingStyleSheets, svg, unsafeCSS };
+export { AttributePart, BooleanAttributePart, CSSResult, CSSResultArray, CSSResultGroup, CSSResultOrNative, ChildPart, CompiledTemplate, CompiledTemplateResult, ComplexAttributeConverter, DirectiveParent, Disconnectable, ElementPart, EventPart, HTMLTemplateResult, HasChanged, Initializer, LitElement, LitUnstable, MathMLTemplateResult, MaybeCompiledTemplateResult, Part, PropertyDeclaration, PropertyDeclarations, PropertyPart, PropertyValueMap, PropertyValues, ReactiveController, ReactiveControllerHost, ReactiveElement, ReactiveUnstable, RenderOptions, RootPart, SVGTemplateResult, SanitizerFactory, TemplateInstance, TemplateResult, UncompiledTemplateResult, Unstable, ValueSanitizer, WarningKind, _$LE, _$LH, adoptStyles, css, defaultConverter, getCompatibleStyle, html, isServer, mathml, noChange, notEqual, nothing, render, supportsAdoptingStyleSheets, svg, unsafeCSS };

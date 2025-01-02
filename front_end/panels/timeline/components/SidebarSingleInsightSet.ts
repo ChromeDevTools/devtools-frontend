@@ -14,7 +14,7 @@ import type {ActiveInsight} from './Sidebar.js';
 import styles from './sidebarSingleInsightSet.css.js';
 import {NumberWithUnit, type NumberWithUnitString} from './Utils.js';
 
-const {html} = LitHtml;
+const {html} = LitHtml.StaticHtml;
 
 const UIStrings = {
   /**

@@ -100,7 +100,7 @@ function getImageData(model: LCPDiscoveryInsightModel): LCPImageDiscoveryData|nu
 }
 
 export class LCPDiscovery extends BaseInsightComponent<LCPDiscoveryInsightModel> {
-  static override readonly litTagName = LitHtml.literal`devtools-performance-lcp-discovery`;
+  static override readonly litTagName = LitHtml.StaticHtml.literal`devtools-performance-lcp-discovery`;
   override internalName: string = 'lcp-discovery';
 
   #adviceIcon(didFail: boolean, label: string): LitHtml.TemplateResult {

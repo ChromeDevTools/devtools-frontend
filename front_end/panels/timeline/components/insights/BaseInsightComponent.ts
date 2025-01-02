@@ -53,7 +53,7 @@ export abstract class BaseInsightComponent<T extends InsightModel<{}>> extends H
   abstract internalName: string;
   // So we can use the TypeScript BaseInsight class without getting warnings
   // about litTagName. Every child should overrwrite this.
-  static readonly litTagName = LitHtml.literal``;
+  static readonly litTagName = LitHtml.StaticHtml.literal``;
 
   readonly #shadowRoot = this.attachShadow({mode: 'open'});
 

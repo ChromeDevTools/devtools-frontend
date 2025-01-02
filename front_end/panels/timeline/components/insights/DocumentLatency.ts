@@ -67,7 +67,7 @@ const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/Do
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class DocumentLatency extends BaseInsightComponent<DocumentLatencyInsightModel> {
-  static override readonly litTagName = LitHtml.literal`devtools-performance-document-latency`;
+  static override readonly litTagName = LitHtml.StaticHtml.literal`devtools-performance-document-latency`;
   override internalName: string = 'document-latency';
 
   #check(didPass: boolean, good: string, bad: string): LitHtml.TemplateResult {

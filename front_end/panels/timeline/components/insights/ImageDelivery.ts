@@ -39,7 +39,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const MAX_REQUESTS = 10;
 
 export class ImageDelivery extends BaseInsightComponent<ImageDeliveryInsightModel> {
-  static override readonly litTagName = LitHtml.literal`devtools-performance-image-delivery`;
+  static override readonly litTagName = LitHtml.StaticHtml.literal`devtools-performance-image-delivery`;
   override internalName: string = 'image-delivery';
 
   override createOverlays(): Overlays.Overlays.TimelineOverlay[] {

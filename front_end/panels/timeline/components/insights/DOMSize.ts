@@ -24,7 +24,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const {html} = LitHtml;
 
 export class DOMSize extends BaseInsightComponent<DOMSizeInsightModel> {
-  static override readonly litTagName = LitHtml.literal`devtools-performance-dom-size`;
+  static override readonly litTagName = LitHtml.StaticHtml.literal`devtools-performance-dom-size`;
   override internalName: string = 'dom-size';
 
   override createOverlays(): Overlays.Overlays.TimelineOverlay[] {

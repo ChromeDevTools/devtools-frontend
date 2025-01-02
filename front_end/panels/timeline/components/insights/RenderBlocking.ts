@@ -35,7 +35,7 @@ const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/insights/Re
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class RenderBlocking extends BaseInsightComponent<RenderBlockingInsightModel> {
-  static override readonly litTagName = LitHtml.literal`devtools-performance-render-blocking-requests`;
+  static override readonly litTagName = LitHtml.StaticHtml.literal`devtools-performance-render-blocking-requests`;
   override internalName: string = 'render-blocking-requests';
 
   override createOverlays(): Overlays.Overlays.TimelineOverlay[] {

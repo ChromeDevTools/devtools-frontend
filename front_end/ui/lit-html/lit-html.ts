@@ -4,23 +4,22 @@
 
 import type * as Lit from '../../third_party/lit/lit.js';
 
-import * as Static from './static.js';
-
 export {
-  render,
-  svg,
-  nothing,
-  noChange,
-  LitElement,
-  Directive,
-  type TemplateResult,
-  type PropertyValues,
-  Directives,
   Decorators,
+  Directive,
+  Directives,
+  html,
+  LitElement,
+  noChange,
+  nothing,
+  type PropertyValues,
+  render,
+  StaticHtml,
+  svg,
+  type TemplateResult,
 } from '../../third_party/lit/lit.js';
+export {
+  i18nTemplate,
+} from './i18n-template.js';
 
-const {html, literal, flattenTemplate, i18nTemplate} = Static;
-
-type LitTemplate = Lit.TemplateResult|typeof Lit.nothing;
-
-export {html, literal, flattenTemplate, type LitTemplate, i18nTemplate};
+export type LitTemplate = Lit.TemplateResult|typeof Lit.nothing;

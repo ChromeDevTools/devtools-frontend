@@ -22,6 +22,9 @@ devtools_pre_built("lit") {
     "lib/lit.d.ts",
     "lib/lit.js",
     "lib/lit.js.map",
+    "lib/static-html.d.ts",
+    "lib/static-html.js",
+    "lib/static-html.js.map",
     "lit-tsconfig.json",
   ]
 }

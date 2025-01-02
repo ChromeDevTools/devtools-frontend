@@ -7,8 +7,5 @@ import("../build/ninja/copy.gni")
 copy_to_gen("component_server") {
   sources = [ "server.js" ]
 
-  deps = [
-    "../../front_end/ui/legacy:copy_stylesheets_for_server",
-    "../test",
-  ]
+  deps = [ "../../front_end/ui/legacy:copy_stylesheets_for_server" ]
 }

@@ -12,7 +12,7 @@ part of the main Chrome window (docked view) or as a separate standalone window
 and it contains sub-panels which are themselves resizable.
 
 Docked DevTools, with top and bottom panel, top panel split vertically: <br>
-![Docked DevTools with multiple panels](./images/docked-devtools.png) <br>
+![Docked DevTools with multiple panels](./images/docked-devtools.webp) <br>
 
 Undocked DevTools, zoom factor 200%, with top and bottom panel, top panel
 split horizontally: <br>

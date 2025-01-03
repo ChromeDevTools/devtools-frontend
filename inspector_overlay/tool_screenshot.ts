@@ -4,12 +4,12 @@
 
 import {Overlay} from './common.js';
 
-export interface ScreenshotToolMessage {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-}
+export type ScreenshotToolMessage = {
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+};
 
 let anchor: {x: number, y: number}|null = null;
 let position: {x: number, y: number}|null = null;

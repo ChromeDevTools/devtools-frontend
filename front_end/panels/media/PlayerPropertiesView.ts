@@ -136,9 +136,9 @@ const str_ = i18n.i18n.registerUIStrings('panels/media/PlayerPropertiesView.ts',
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
 
-interface TabData {
-  [x: string]: string|object;
-}
+type TabData = {
+  [x: string]: string|object,
+};
 
 // Keep this enum in sync with panels/media/base/media_log_properties.h
 export const enum PlayerPropertyKeys {

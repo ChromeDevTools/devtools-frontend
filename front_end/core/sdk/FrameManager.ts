@@ -250,10 +250,10 @@ export const enum Events {
   OUTERMOST_FRAME_NAVIGATED = 'OutermostFrameNavigated',
 }
 
-export interface EventTypes {
-  [Events.FRAME_ADDED_TO_TARGET]: {frame: ResourceTreeFrame};
-  [Events.FRAME_NAVIGATED]: {frame: ResourceTreeFrame};
-  [Events.FRAME_REMOVED]: {frameId: Protocol.Page.FrameId};
-  [Events.RESOURCE_ADDED]: {resource: Resource};
-  [Events.OUTERMOST_FRAME_NAVIGATED]: {frame: ResourceTreeFrame};
-}
+export type EventTypes = {
+  [Events.FRAME_ADDED_TO_TARGET]: {frame: ResourceTreeFrame},
+  [Events.FRAME_NAVIGATED]: {frame: ResourceTreeFrame},
+  [Events.FRAME_REMOVED]: {frameId: Protocol.Page.FrameId},
+  [Events.RESOURCE_ADDED]: {resource: Resource},
+  [Events.OUTERMOST_FRAME_NAVIGATED]: {frame: ResourceTreeFrame},
+};

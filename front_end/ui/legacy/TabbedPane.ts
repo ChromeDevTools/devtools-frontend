@@ -1022,12 +1022,12 @@ export enum Events {
   /* eslint-enable @typescript-eslint/naming-convention */
 }
 
-export interface EventTypes {
-  [Events.TabInvoked]: EventData;
-  [Events.TabSelected]: EventData;
-  [Events.TabClosed]: EventData;
-  [Events.TabOrderChanged]: EventData;
-}
+export type EventTypes = {
+  [Events.TabInvoked]: EventData,
+  [Events.TabSelected]: EventData,
+  [Events.TabClosed]: EventData,
+  [Events.TabOrderChanged]: EventData,
+};
 
 export class TabbedPaneTab {
   closeable: boolean;

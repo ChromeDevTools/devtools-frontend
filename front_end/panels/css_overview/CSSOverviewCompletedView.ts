@@ -878,9 +878,9 @@ export const enum Events {
   TAB_CLOSED = 'TabClosed',
 }
 
-export interface EventTypes {
-  [Events.TAB_CLOSED]: number;
-}
+export type EventTypes = {
+  [Events.TAB_CLOSED]: number,
+};
 
 export class ElementDetailsView extends UI.Widget.Widget {
   readonly #controller: OverviewController;

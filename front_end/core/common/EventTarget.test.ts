@@ -16,13 +16,13 @@ const enum Events {
   UNION_EVENT = 'UnionEvent',
 }
 
-interface TestEvents {
-  [Events.VOID_EVENT]: void;
-  [Events.NUMBER_EVENT]: number;
-  [Events.KEY_VALUE_EVENT]: {key: string, value: number};
-  [Events.BOOLEAN_EVENT]: boolean;
-  [Events.UNION_EVENT]: string|null;
-}
+type TestEvents = {
+  [Events.VOID_EVENT]: void,
+  [Events.NUMBER_EVENT]: number,
+  [Events.KEY_VALUE_EVENT]: {key: string, value: number},
+  [Events.BOOLEAN_EVENT]: boolean,
+  [Events.UNION_EVENT]: string|null,
+};
 
 class TypedEventEmitter extends Common.ObjectWrapper.ObjectWrapper<TestEvents> {
   testValidArgumentTypes() {

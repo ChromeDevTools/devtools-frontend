@@ -84,9 +84,9 @@ export enum Events {
   /* eslint-enable @typescript-eslint/naming-convention */
 }
 
-export interface EventTypes {
-  [Events.VisibleSecurityStateChanged]: PageVisibleSecurityState;
-}
+export type EventTypes = {
+  [Events.VisibleSecurityStateChanged]: PageVisibleSecurityState,
+};
 
 export const SummaryMessages: {[x: string]: () => string} = {
   [Protocol.Security.SecurityState.Unknown]: i18nLazyString(UIStrings.theSecurityOfThisPageIsUnknown),

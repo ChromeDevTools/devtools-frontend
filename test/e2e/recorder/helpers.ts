@@ -121,11 +121,11 @@ export async function openRecorderPanel() {
   await waitFor('devtools-recording-view');
 }
 
-interface StartRecordingOptions {
-  networkCondition?: string;
-  untrustedEvents?: boolean;
-  selectorAttribute?: string;
-}
+type StartRecordingOptions = {
+  networkCondition?: string,
+  untrustedEvents?: boolean,
+  selectorAttribute?: string,
+};
 
 export async function startRecording(
     path: string,

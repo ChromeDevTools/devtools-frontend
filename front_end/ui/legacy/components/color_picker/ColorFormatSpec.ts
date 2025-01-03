@@ -21,14 +21,14 @@ import * as Platform from '../../../../core/platform/platform.js';
 // represents one of the inputs.
 type Label = 'RGBA'|'HSLA'|'HWBA'|'lchA'|'labA'|'xyzA';
 
-interface ColorFormatSpec {
+type ColorFormatSpec = {
   // Label to be shown under the inputs
-  label: Label;
+  label: Label,
   // Values of the inputs
-  toValues(color: Common.Color.Color): [string, string, string, string];
+  toValues(color: Common.Color.Color): [string, string, string, string],
   // How to generate the number from the input values
-  fromValues(values: [string, string, string, string]): Common.Color.Color|null;
-}
+  fromValues(values: [string, string, string, string]): Common.Color.Color|null,
+};
 
 // p0, p1, p2, alpha
 // r, g, b, alpha

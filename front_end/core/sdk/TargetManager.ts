@@ -429,12 +429,12 @@ export const enum Events {
   SUSPEND_STATE_CHANGED = 'SuspendStateChanged',
 }
 
-export interface EventTypes {
-  [Events.AVAILABLE_TARGETS_CHANGED]: Protocol.Target.TargetInfo[];
-  [Events.INSPECTED_URL_CHANGED]: Target;
-  [Events.NAME_CHANGED]: Target;
-  [Events.SUSPEND_STATE_CHANGED]: void;
-}
+export type EventTypes = {
+  [Events.AVAILABLE_TARGETS_CHANGED]: Protocol.Target.TargetInfo[],
+  [Events.INSPECTED_URL_CHANGED]: Target,
+  [Events.NAME_CHANGED]: Target,
+  [Events.SUSPEND_STATE_CHANGED]: void,
+};
 
 export class Observer {
   targetAdded(_target: Target): void {

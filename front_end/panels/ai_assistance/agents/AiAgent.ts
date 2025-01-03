@@ -156,11 +156,11 @@ export abstract class ConversationContext<T> {
   }
 }
 
-export interface FunctionDeclaration<Args, ReturnType> {
-  description: string;
-  parameters: Host.AidaClient.FunctionObjectParam;
-  handler: (args: Args) => Promise<ReturnType>;
-}
+export type FunctionDeclaration<Args, ReturnType> = {
+  description: string,
+  parameters: Host.AidaClient.FunctionObjectParam,
+  handler: (args: Args) => Promise<ReturnType>,
+};
 
 export abstract class AiAgent<T> {
   static validTemperature(temperature: number|undefined): number|undefined {

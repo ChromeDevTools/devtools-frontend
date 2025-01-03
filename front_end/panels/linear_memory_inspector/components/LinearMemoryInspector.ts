@@ -63,11 +63,11 @@ export interface LinearMemoryInspectorData {
   hideValueInspector?: boolean;
 }
 
-export interface Settings {
-  valueTypes: Set<ValueType>;
-  modes: Map<ValueType, ValueTypeMode>;
-  endianness: Endianness;
-}
+export type Settings = {
+  valueTypes: Set<ValueType>,
+  modes: Map<ValueType, ValueTypeMode>,
+  endianness: Endianness,
+};
 
 export class MemoryRequestEvent extends Event {
   static readonly eventName = 'memoryrequest';

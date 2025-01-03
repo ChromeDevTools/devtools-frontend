@@ -14,25 +14,20 @@ import {setMockResourceTree} from './ResourceTreeHelpers.js';
 export type ProtocolCommand = keyof ProtocolMapping.Commands;
 export type ProtocolCommandParams<C extends ProtocolCommand> = ProtocolMapping.Commands[C]['paramsType'];
 export type ProtocolResponse<C extends ProtocolCommand> = ProtocolMapping.Commands[C]['returnType'];
-export interface ProtocolCommandHandler<C extends ProtocolCommand> {
-  (...params: ProtocolCommandParams<C>): Omit<ProtocolResponse<C>, 'getError'>|{
-    getError(): string,
-  };
-}
-export interface MessageCallback {
-  (result: string|Object): void;
-}
-interface Message {
-  id: number;
-  method: ProtocolCommand;
-  params: unknown;
-  sessionId: string;
-}
+export type ProtocolCommandHandler<C extends ProtocolCommand> = (...params: ProtocolCommandParams<C>) =>
+    Omit<ProtocolResponse<C>, 'getError'>|{getError(): string};
+export type MessageCallback = (result: string|Object) => void;
+type Message = {
+  id: number,
+  method: ProtocolCommand,
+  params: unknown,
+  sessionId: string,
+};
 
-interface OutgoingMessageListenerEntry {
-  promise: Promise<void>;
-  resolve: Function;
-}
+type OutgoingMessageListenerEntry = {
+  promise: Promise<void>,
+  resolve: Function,
+};
 
 // Note that we can't set the Function to the correct handler on the basis
 // that we don't know which ProtocolCommand will be stored.

@@ -27,12 +27,12 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/sources/OutlineQuickOpen.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export interface OutlineItem {
-  title: string;
-  lineNumber: number;
-  columnNumber: number;
-  subtitle?: string;
-}
+export type OutlineItem = {
+  title: string,
+  lineNumber: number,
+  columnNumber: number,
+  subtitle?: string,
+};
 
 export function outline(state: CodeMirror.EditorState): OutlineItem[] {
   function toLineColumn(offset: number): {lineNumber: number, columnNumber: number} {

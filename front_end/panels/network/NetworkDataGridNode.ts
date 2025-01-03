@@ -314,10 +314,10 @@ export interface RequestActivatedEvent {
   tab?: NetworkForward.UIRequestLocation.UIRequestTabs;
 }
 
-export interface EventTypes {
-  [Events.RequestSelected]: SDK.NetworkRequest.NetworkRequest;
-  [Events.RequestActivated]: RequestActivatedEvent;
-}
+export type EventTypes = {
+  [Events.RequestSelected]: SDK.NetworkRequest.NetworkRequest,
+  [Events.RequestActivated]: RequestActivatedEvent,
+};
 
 export interface NetworkLogViewInterface extends Common.EventTarget.EventTarget<EventTypes> {
   onLoadFromFile(file: File): Promise<void>;

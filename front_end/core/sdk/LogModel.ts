@@ -49,8 +49,8 @@ export interface EntryAddedEvent {
   entry: Protocol.Log.LogEntry;
 }
 
-export interface EventTypes {
-  [Events.ENTRY_ADDED]: EntryAddedEvent;
-}
+export type EventTypes = {
+  [Events.ENTRY_ADDED]: EntryAddedEvent,
+};
 
 SDKModel.register(LogModel, {capabilities: Capability.LOG, autostart: true});

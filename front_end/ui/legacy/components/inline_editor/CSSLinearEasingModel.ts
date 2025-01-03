@@ -6,16 +6,16 @@ import * as CodeMirror from '../../../../third_party/codemirror.next/codemirror.
 
 const cssParser = CodeMirror.css.cssLanguage.parser;
 
-export interface Point {
-  input: number;
-  output: number;
-}
+export type Point = {
+  input: number,
+  output: number,
+};
 
-interface LinearStop {
-  number: number;
-  lengthA?: number;
-  lengthB?: number;
-}
+type LinearStop = {
+  number: number,
+  lengthA?: number,
+  lengthB?: number,
+};
 
 const numberFormatter = new Intl.NumberFormat('en', {
   maximumFractionDigits: 2,

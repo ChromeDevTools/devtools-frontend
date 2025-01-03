@@ -619,9 +619,9 @@ const enum Events {
   METRIC_CHANGED = 'MetricChanged',
 }
 
-interface EventTypes {
-  [Events.METRIC_CHANGED]: void;
-}
+type EventTypes = {
+  [Events.METRIC_CHANGED]: void,
+};
 
 let numberFormatter: Intl.NumberFormat;
 let percentFormatter: Intl.NumberFormat;

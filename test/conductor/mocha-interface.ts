@@ -11,9 +11,7 @@ import {makeInstrumentedTestFunction, platform, type Platform} from './mocha-int
 import {TestConfig} from './test_config.js';
 
 type SuiteFunction = ((this: Mocha.Suite) => void)|undefined;
-interface ExclusiveSuiteFunction {
-  (this: Mocha.Suite): void;
-}
+type ExclusiveSuiteFunction = (this: Mocha.Suite) => void;
 
 function devtoolsTestInterface(suite: Mocha.Suite) {
   const suites: [Mocha.Suite] = [suite];

@@ -6,9 +6,7 @@ export interface Runnable {
   run(): Promise<void>;
 }
 
-interface LateInitializationLoader {
-  (): Promise<Runnable>;
-}
+type LateInitializationLoader = () => Promise<Runnable>;
 export interface LateInitializableRunnableSetting {
   id: string;
   loadRunnable: LateInitializationLoader;

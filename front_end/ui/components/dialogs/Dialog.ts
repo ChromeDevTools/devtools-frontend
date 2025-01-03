@@ -719,9 +719,9 @@ export const enum DialogHorizontalAlignment {
   AUTO = 'auto',
 }
 
-interface AnchorBounds {
-  top: number;
-  bottom: number;
-  left: number;
-  right: number;
-}
+type AnchorBounds = {
+  top: number,
+  bottom: number,
+  left: number,
+  right: number,
+};

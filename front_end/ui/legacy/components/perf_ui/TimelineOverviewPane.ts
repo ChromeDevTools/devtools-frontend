@@ -444,12 +444,12 @@ export interface OverviewPaneMouseMoveEvent {
   timeInMicroSeconds: Trace.Types.Timing.MicroSeconds;
 }
 
-export interface EventTypes {
-  [Events.OVERVIEW_PANE_WINDOW_CHANGED]: OverviewPaneWindowChangedEvent;
-  [Events.OVERVIEW_PANE_BREADCRUMB_ADDED]: OverviewPaneBreadcrumbAddedEvent;
-  [Events.OVERVIEW_PANE_MOUSE_MOVE]: OverviewPaneMouseMoveEvent;
-  [Events.OVERVIEW_PANE_MOUSE_LEAVE]: void;
-}
+export type EventTypes = {
+  [Events.OVERVIEW_PANE_WINDOW_CHANGED]: OverviewPaneWindowChangedEvent,
+  [Events.OVERVIEW_PANE_BREADCRUMB_ADDED]: OverviewPaneBreadcrumbAddedEvent,
+  [Events.OVERVIEW_PANE_MOUSE_MOVE]: OverviewPaneMouseMoveEvent,
+  [Events.OVERVIEW_PANE_MOUSE_LEAVE]: void,
+};
 
 export interface TimelineOverview {
   show(parentElement: Element, insertBefore?: Element|null): void;

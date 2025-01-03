@@ -1,2 +1,0 @@
-import * as ts from "typescript";
-export declare function isUnknown(type: ts.Type): boolean;

@@ -235,7 +235,7 @@ export const enum Events {
   EXTENSION_STORAGE_REMOVED = 'ExtensionStorageRemoved',
 }
 
-export interface EventTypes {
-  [Events.EXTENSION_STORAGE_ADDED]: ExtensionStorage;
-  [Events.EXTENSION_STORAGE_REMOVED]: ExtensionStorage;
-}
+export type EventTypes = {
+  [Events.EXTENSION_STORAGE_ADDED]: ExtensionStorage,
+  [Events.EXTENSION_STORAGE_REMOVED]: ExtensionStorage,
+};

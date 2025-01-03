@@ -561,14 +561,14 @@ export interface WorkingCopyCommitedEvent {
   encoded: boolean|undefined;
 }
 
-export interface EventTypes {
-  [Events.WorkingCopyChanged]: UISourceCode;
-  [Events.WorkingCopyCommitted]: WorkingCopyCommitedEvent;
-  [Events.TitleChanged]: UISourceCode;
-  [Events.MessageAdded]: Message;
-  [Events.MessageRemoved]: Message;
-  [Events.DecorationChanged]: string;
-}
+export type EventTypes = {
+  [Events.WorkingCopyChanged]: UISourceCode,
+  [Events.WorkingCopyCommitted]: WorkingCopyCommitedEvent,
+  [Events.TitleChanged]: UISourceCode,
+  [Events.MessageAdded]: Message,
+  [Events.MessageRemoved]: Message,
+  [Events.DecorationChanged]: string,
+};
 
 export class UILocation {
   uiSourceCode: UISourceCode;

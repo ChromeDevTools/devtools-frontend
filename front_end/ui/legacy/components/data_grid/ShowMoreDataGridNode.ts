@@ -58,9 +58,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/data_grid/ShowMoreDataGridNode.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-interface ShowMoreDataGridNodeCallback {
-  (arg0: number, arg1: number): Promise<void>;
-}
+type ShowMoreDataGridNodeCallback = (arg0: number, arg1: number) => Promise<void>;
 export class ShowMoreDataGridNode extends DataGridNode<ShowMoreDataGridNode> {
   private readonly callback: ShowMoreDataGridNodeCallback;
   private startPosition: number;

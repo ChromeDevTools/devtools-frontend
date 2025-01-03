@@ -60,7 +60,7 @@ export enum Events {
   /* eslint-enable @typescript-eslint/naming-convention */
 }
 
-export interface EventTypes {
-  [Events.RecordingStateChanged]: {isRecording: boolean, serviceName: Protocol.BackgroundService.ServiceName};
-  [Events.BackgroundServiceEventReceived]: Protocol.BackgroundService.BackgroundServiceEvent;
-}
+export type EventTypes = {
+  [Events.RecordingStateChanged]: {isRecording: boolean, serviceName: Protocol.BackgroundService.ServiceName},
+  [Events.BackgroundServiceEventReceived]: Protocol.BackgroundService.BackgroundServiceEvent,
+};

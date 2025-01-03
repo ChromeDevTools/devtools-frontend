@@ -67,10 +67,10 @@ export interface FrameAttributionEvent {
   frame: SDK.ResourceTreeModel.ResourceTreeFrame;
 }
 
-export interface EventTypes {
-  [Events.FRAME_ATTRIBUTION_ADDED]: FrameAttributionEvent;
-  [Events.FRAME_ATTRIBUTION_REMOVED]: FrameAttributionEvent;
-}
+export type EventTypes = {
+  [Events.FRAME_ATTRIBUTION_ADDED]: FrameAttributionEvent,
+  [Events.FRAME_ATTRIBUTION_REMOVED]: FrameAttributionEvent,
+};
 
 export class NetworkProject {
   static resolveFrame(uiSourceCode: Workspace.UISourceCode.UISourceCode, frameId: Protocol.Page.FrameId):

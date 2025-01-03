@@ -392,18 +392,18 @@ export async function finalize(): Promise<void> {
   }
 }
 
-export interface MetaHandlerData {
-  traceIsGeneric: boolean;
-  traceBounds: Types.Timing.TraceWindowMicroSeconds;
-  browserProcessId: Types.Events.ProcessID;
-  processNames: Map<Types.Events.ProcessID, Types.Events.ProcessName>;
-  browserThreadId: Types.Events.ThreadID;
-  gpuProcessId: Types.Events.ProcessID;
-  navigationsByFrameId: Map<string, Types.Events.NavigationStart[]>;
-  navigationsByNavigationId: Map<string, Types.Events.NavigationStart>;
-  threadsInProcess: Map<Types.Events.ProcessID, Map<Types.Events.ThreadID, Types.Events.ThreadName>>;
-  mainFrameId: string;
-  mainFrameURL: string;
+export type MetaHandlerData = {
+  traceIsGeneric: boolean,
+  traceBounds: Types.Timing.TraceWindowMicroSeconds,
+  browserProcessId: Types.Events.ProcessID,
+  processNames: Map<Types.Events.ProcessID, Types.Events.ProcessName>,
+  browserThreadId: Types.Events.ThreadID,
+  gpuProcessId: Types.Events.ProcessID,
+  navigationsByFrameId: Map<string, Types.Events.NavigationStart[]>,
+  navigationsByNavigationId: Map<string, Types.Events.NavigationStart>,
+  threadsInProcess: Map<Types.Events.ProcessID, Map<Types.Events.ThreadID, Types.Events.ThreadName>>,
+  mainFrameId: string,
+  mainFrameURL: string,
   /**
    * A frame can have multiple renderer processes, at the same time,
    * a renderer process can have multiple URLs. This map tracks the
@@ -412,14 +412,14 @@ export interface MetaHandlerData {
    * URLs, each process in each frame has an array of windows, with an
    * entry for each URL it had.
    */
-  rendererProcessesByFrame: FrameProcessData;
-  topLevelRendererIds: Set<Types.Events.ProcessID>;
-  frameByProcessId: Map<Types.Events.ProcessID, Map<string, Types.Events.TraceFrame>>;
-  mainFrameNavigations: Types.Events.NavigationStart[];
-  gpuThreadId?: Types.Events.ThreadID;
-  viewportRect?: DOMRect;
-  devicePixelRatio?: number;
-}
+  rendererProcessesByFrame: FrameProcessData,
+  topLevelRendererIds: Set<Types.Events.ProcessID>,
+  frameByProcessId: Map<Types.Events.ProcessID, Map<string, Types.Events.TraceFrame>>,
+  mainFrameNavigations: Types.Events.NavigationStart[],
+  gpuThreadId?: Types.Events.ThreadID,
+  viewportRect?: DOMRect,
+  devicePixelRatio?: number,
+};
 
 // Each frame has a single render process at a given time but it can have
 // multiple render processes  during a trace, for example if a navigation

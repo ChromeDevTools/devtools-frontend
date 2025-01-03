@@ -1515,12 +1515,12 @@ export class NavigatorSourceTreeElement extends UI.TreeOutline.TreeElement {
   }
 }
 
-export interface NavigatorRecursiveTreeNodeProperties {
-  exclusivelySourceMapped: boolean|null;
-  exclusivelyIgnored: boolean|null;
-  exclusivelyThirdParty: boolean|null;
-  exclusivelyContentScripts: boolean|null;
-}
+export type NavigatorRecursiveTreeNodeProperties = {
+  exclusivelySourceMapped: boolean|null,
+  exclusivelyIgnored: boolean|null,
+  exclusivelyThirdParty: boolean|null,
+  exclusivelyContentScripts: boolean|null,
+};
 
 export class NavigatorTreeNode {
   id: string;

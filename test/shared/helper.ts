@@ -59,9 +59,7 @@ export const hover = async (selector: string, options?: {root?: puppeteer.JSHand
   return await performActionOnSelector(selector, {root: options?.root}, element => element.hover());
 };
 
-interface Action {
-  (element: puppeteer.ElementHandle): Promise<void>;
-}
+type Action = (element: puppeteer.ElementHandle) => Promise<void>;
 
 async function performActionOnSelector(
     selector: string, options: {root?: puppeteer.JSHandle}, action: Action): Promise<puppeteer.ElementHandle> {

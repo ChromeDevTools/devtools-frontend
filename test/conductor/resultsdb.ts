@@ -35,10 +35,10 @@ export function sanitizedTestId(rawTestId: string): SanitizedTestId {
   return rawTestId.replace(/[^\x20-\x7E]/g, '').substr(0, 512) as SanitizedTestId;
 }
 
-interface SinkData {
-  url: string|undefined;
-  authToken?: string;
-}
+type SinkData = {
+  url: string|undefined,
+  authToken?: string,
+};
 let resolvedSinkData: SinkData|undefined = undefined;
 
 function getSinkData(): SinkData {

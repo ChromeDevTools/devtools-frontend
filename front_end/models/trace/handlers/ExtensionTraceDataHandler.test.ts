@@ -5,12 +5,12 @@
 import * as Trace from '../trace.js';
 
 let idCounter = 0;
-export interface ExtensionTestData {
-  detail: {devtools?: Trace.Types.Extensions.ExtensionDataPayload};
-  name: string;
-  ts: number;
-  dur?: number;
-}
+export type ExtensionTestData = {
+  detail: {devtools?: Trace.Types.Extensions.ExtensionDataPayload},
+  name: string,
+  ts: number,
+  dur?: number,
+};
 function makeTimingEventWithExtensionData({name, ts: tsMicro, detail, dur: durMicro}: ExtensionTestData):
     Trace.Types.Events.Event[] {
   const isMark = durMicro === undefined;

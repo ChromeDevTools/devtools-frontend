@@ -192,9 +192,9 @@ export const enum FilterBarEvents {
   CHANGED = 'Changed',
 }
 
-export interface FilterBarEventTypes {
-  [FilterBarEvents.CHANGED]: void;
-}
+export type FilterBarEventTypes = {
+  [FilterBarEvents.CHANGED]: void,
+};
 
 export interface FilterUI extends Common.EventTarget.EventTarget<FilterUIEventTypes> {
   isActive(): boolean;
@@ -205,9 +205,9 @@ export const enum FilterUIEvents {
   FILTER_CHANGED = 'FilterChanged',
 }
 
-export interface FilterUIEventTypes {
-  [FilterUIEvents.FILTER_CHANGED]: void;
-}
+export type FilterUIEventTypes = {
+  [FilterUIEvents.FILTER_CHANGED]: void,
+};
 
 export class TextFilterUI extends Common.ObjectWrapper.ObjectWrapper<FilterUIEventTypes> implements FilterUI {
   private readonly filterElement: HTMLDivElement;

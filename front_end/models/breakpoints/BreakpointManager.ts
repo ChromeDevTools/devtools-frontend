@@ -500,10 +500,10 @@ export enum Events {
   /* eslint-enable @typescript-eslint/naming-convention */
 }
 
-export interface EventTypes {
-  [Events.BreakpointAdded]: BreakpointLocation;
-  [Events.BreakpointRemoved]: BreakpointLocation;
-}
+export type EventTypes = {
+  [Events.BreakpointAdded]: BreakpointLocation,
+  [Events.BreakpointRemoved]: BreakpointLocation,
+};
 
 export const enum DebuggerUpdateResult {
   OK = 'OK',

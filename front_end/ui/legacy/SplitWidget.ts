@@ -957,10 +957,10 @@ export const enum Events {
   SHOW_MODE_CHANGED = 'ShowModeChanged',
 }
 
-export interface EventTypes {
-  [Events.SIDEBAR_SIZE_CHANGED]: number;
-  [Events.SHOW_MODE_CHANGED]: string;
-}
+export type EventTypes = {
+  [Events.SIDEBAR_SIZE_CHANGED]: number,
+  [Events.SHOW_MODE_CHANGED]: string,
+};
 
 const MinPadding = 20;
 export interface SettingForOrientation {

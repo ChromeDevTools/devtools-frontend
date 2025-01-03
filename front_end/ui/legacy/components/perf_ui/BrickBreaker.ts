@@ -22,11 +22,11 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/perf_ui/BrickBreaker.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-interface Brick {
-  x: number;
-  y: number;
-  width: number;
-}
+type Brick = {
+  x: number,
+  y: number,
+  width: number,
+};
 
 const MAX_DELTA = 16;
 const MIN_DELTA = 10;

@@ -1608,17 +1608,17 @@ interface CompletionResult extends UI.SuggestBox.Suggestion {
   isCSSVariableColor?: boolean;
 }
 
-export interface EventTypes {
-  [Events.INITIAL_UPDATE_COMPLETED]: void;
-  [Events.STYLES_UPDATE_COMPLETED]: StylesUpdateCompletedEvent;
-}
+export type EventTypes = {
+  [Events.INITIAL_UPDATE_COMPLETED]: void,
+  [Events.STYLES_UPDATE_COMPLETED]: StylesUpdateCompletedEvent,
+};
 
-interface ChangeTracker {
-  uiSourceCode: Workspace.UISourceCode.UISourceCode;
-  changedLines: Set<number>;
-  diffChangeCallback: () => Promise<void>;
-  formattedCurrentMapping?: Formatter.ScriptFormatter.FormatterSourceMapping;
-}
+type ChangeTracker = {
+  uiSourceCode: Workspace.UISourceCode.UISourceCode,
+  changedLines: Set<number>,
+  diffChangeCallback: () => Promise<void>,
+  formattedCurrentMapping?: Formatter.ScriptFormatter.FormatterSourceMapping,
+};
 
 const MAX_LINK_LENGTH = 23;
 

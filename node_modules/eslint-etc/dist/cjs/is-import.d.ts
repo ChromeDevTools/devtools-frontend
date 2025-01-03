@@ -1,2 +1,0 @@
-import { TSESLint } from "@typescript-eslint/experimental-utils";
-export declare function isImport(scope: TSESLint.Scope.Scope, name: string, source: string | RegExp): boolean;

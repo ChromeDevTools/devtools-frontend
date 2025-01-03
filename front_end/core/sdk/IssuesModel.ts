@@ -60,8 +60,8 @@ export interface IssueAddedEvent {
   inspectorIssue: Protocol.Audits.InspectorIssue;
 }
 
-export interface EventTypes {
-  [Events.ISSUE_ADDED]: IssueAddedEvent;
-}
+export type EventTypes = {
+  [Events.ISSUE_ADDED]: IssueAddedEvent,
+};
 
 SDKModel.register(IssuesModel, {capabilities: Capability.AUDITS, autostart: true});

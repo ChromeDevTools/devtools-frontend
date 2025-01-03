@@ -355,12 +355,12 @@ export enum Events {
   /* eslint-enable @typescript-eslint/naming-convention */
 }
 
-export interface EventTypes {
-  [Events.FileSystemAdded]: PlatformFileSystem;
-  [Events.FileSystemRemoved]: PlatformFileSystem;
-  [Events.FileSystemFilesChanged]: FilesChangedData;
-  [Events.ExcludedFolderAdded]: Platform.DevToolsPath.EncodedPathString;
-  [Events.ExcludedFolderRemoved]: Platform.DevToolsPath.EncodedPathString;
-}
+export type EventTypes = {
+  [Events.FileSystemAdded]: PlatformFileSystem,
+  [Events.FileSystemRemoved]: PlatformFileSystem,
+  [Events.FileSystemFilesChanged]: FilesChangedData,
+  [Events.ExcludedFolderAdded]: Platform.DevToolsPath.EncodedPathString,
+  [Events.ExcludedFolderRemoved]: Platform.DevToolsPath.EncodedPathString,
+};
 
 let lastRequestId = 0;

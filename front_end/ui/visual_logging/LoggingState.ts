@@ -55,9 +55,7 @@ export function getLoggingState(loggable: Loggable): LoggingState|null {
   return state.get(loggable) || null;
 }
 
-interface ParentProvider {
-  (e: Element): Element|undefined;
-}
+type ParentProvider = (e: Element) => Element|undefined;
 const parentProviders = new Map<string, ParentProvider>();
 
 export function registerParentProvider(name: string, provider: ParentProvider): void {

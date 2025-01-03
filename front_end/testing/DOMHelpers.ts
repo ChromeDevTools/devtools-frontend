@@ -72,9 +72,9 @@ export const resetTestDOM = () => {
   document.body.appendChild(newContainer);
 };
 
-interface Constructor<T> {
-  new(...args: unknown[]): T;
-}
+type Constructor<T> = {
+  new (...args: unknown[]): T,
+};
 
 /**
  * Asserts that all emenents of `nodeList` are at least of type `T`.

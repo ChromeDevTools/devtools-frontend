@@ -383,19 +383,19 @@ export interface MessageGeneratedEvent {
   warning: boolean;
 }
 
-export interface EventTypes {
-  [Events.RequestStarted]: RequestStartedEvent;
-  [Events.RequestUpdated]: NetworkRequest;
-  [Events.RequestFinished]: NetworkRequest;
-  [Events.RequestUpdateDropped]: RequestUpdateDroppedEventData;
-  [Events.ResponseReceived]: ResponseReceivedEvent;
-  [Events.MessageGenerated]: MessageGeneratedEvent;
-  [Events.RequestRedirected]: NetworkRequest;
-  [Events.LoadingFinished]: NetworkRequest;
-  [Events.ReportingApiReportAdded]: Protocol.Network.ReportingApiReport;
-  [Events.ReportingApiReportUpdated]: Protocol.Network.ReportingApiReport;
-  [Events.ReportingApiEndpointsChangedForOrigin]: Protocol.Network.ReportingApiEndpointsChangedForOriginEvent;
-}
+export type EventTypes = {
+  [Events.RequestStarted]: RequestStartedEvent,
+  [Events.RequestUpdated]: NetworkRequest,
+  [Events.RequestFinished]: NetworkRequest,
+  [Events.RequestUpdateDropped]: RequestUpdateDroppedEventData,
+  [Events.ResponseReceived]: ResponseReceivedEvent,
+  [Events.MessageGenerated]: MessageGeneratedEvent,
+  [Events.RequestRedirected]: NetworkRequest,
+  [Events.LoadingFinished]: NetworkRequest,
+  [Events.ReportingApiReportAdded]: Protocol.Network.ReportingApiReport,
+  [Events.ReportingApiReportUpdated]: Protocol.Network.ReportingApiReport,
+  [Events.ReportingApiEndpointsChangedForOrigin]: Protocol.Network.ReportingApiEndpointsChangedForOriginEvent,
+};
 
 /**
  * Define some built-in DevTools throttling presets.
@@ -1683,15 +1683,15 @@ export namespace MultitargetNetworkManager {
     REQUEST_FULFILLED = 'RequestFulfilled',
   }
 
-  export interface EventTypes {
-    [Events.BLOCKED_PATTERNS_CHANGED]: void;
-    [Events.CONDITIONS_CHANGED]: void;
-    [Events.USER_AGENT_CHANGED]: void;
-    [Events.INTERCEPTORS_CHANGED]: void;
-    [Events.ACCEPTED_ENCODINGS_CHANGED]: void;
-    [Events.REQUEST_INTERCEPTED]: string;
-    [Events.REQUEST_FULFILLED]: Platform.DevToolsPath.UrlString;
-  }
+  export type EventTypes = {
+    [Events.BLOCKED_PATTERNS_CHANGED]: void,
+    [Events.CONDITIONS_CHANGED]: void,
+    [Events.USER_AGENT_CHANGED]: void,
+    [Events.INTERCEPTORS_CHANGED]: void,
+    [Events.ACCEPTED_ENCODINGS_CHANGED]: void,
+    [Events.REQUEST_INTERCEPTED]: string,
+    [Events.REQUEST_FULFILLED]: Platform.DevToolsPath.UrlString,
+  };
 }
 
 export class InterceptedRequest {
@@ -2034,9 +2034,7 @@ export interface InterceptionPattern {
   requestStage: Protocol.Fetch.RequestStage;
 }
 
-export interface RequestInterceptor {
-  (request: InterceptedRequest): Promise<void>;
-}
+export type RequestInterceptor = (request: InterceptedRequest) => Promise<void>;
 
 export interface RequestUpdateDroppedEventData {
   url: Platform.DevToolsPath.UrlString;

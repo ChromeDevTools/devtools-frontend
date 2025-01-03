@@ -856,14 +856,14 @@ export interface Async extends Event {
 }
 
 export type TraceRect = [number, number, number, number];
-export interface TraceImpactedNode {
+export type TraceImpactedNode = {
   // These keys come from the trace data, so we have to use underscores.
   /* eslint-disable @typescript-eslint/naming-convention */
-  new_rect: TraceRect;
-  node_id: Protocol.DOM.BackendNodeId;
-  old_rect: TraceRect;
+  new_rect: TraceRect,
+  node_id: Protocol.DOM.BackendNodeId,
+  old_rect: TraceRect,
   /* eslint-enable @typescript-eslint/naming-convention */
-}
+};
 
 type LayoutShiftData = ArgsData&{
   // These keys come from the trace data, so we have to use underscores.

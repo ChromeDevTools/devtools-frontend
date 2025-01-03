@@ -70,6 +70,6 @@ export interface ZoomChangedEvent {
   to: number;
 }
 
-export interface EventTypes {
-  [Events.ZOOM_CHANGED]: ZoomChangedEvent;
-}
+export type EventTypes = {
+  [Events.ZOOM_CHANGED]: ZoomChangedEvent,
+};

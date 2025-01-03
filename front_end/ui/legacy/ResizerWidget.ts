@@ -155,12 +155,12 @@ export interface ResizeUpdatePositionEvent {
   shiftKey: boolean;
 }
 
-export interface EventTypes {
-  [Events.RESIZE_START]: ResizeStartXYEvent|ResizeStartPositionEvent;
-  [Events.RESIZE_UPDATE_XY]: ResizeUpdateXYEvent;
-  [Events.RESIZE_UPDATE_POSITION]: ResizeUpdatePositionEvent;
-  [Events.RESIZE_END]: void;
-}
+export type EventTypes = {
+  [Events.RESIZE_START]: ResizeStartXYEvent|ResizeStartPositionEvent,
+  [Events.RESIZE_UPDATE_XY]: ResizeUpdateXYEvent,
+  [Events.RESIZE_UPDATE_POSITION]: ResizeUpdatePositionEvent,
+  [Events.RESIZE_END]: void,
+};
 
 export class SimpleResizerWidget extends ResizerWidget {
   private isVerticalInternal: boolean;

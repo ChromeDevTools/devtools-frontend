@@ -19,12 +19,9 @@ const REPORT_SCROLL_POSITION_BINDING_NAME = '__devtools_report_scroll_position__
 
 const getScrollListenerNameInPage = (id: number): string => `__devtools_scroll_listener_${id}__`;
 
-interface ScrollListener {
-  (param: {scrollLeft: number, scrollTop: number}): void;
-}
-interface BindingListener {
-  (ev: Common.EventTarget.EventTargetEvent<Protocol.Runtime.BindingCalledEvent, RuntimeModelEventTypes>): void;
-}
+type ScrollListener = (param: {scrollLeft: number, scrollTop: number}) => void;
+type BindingListener =
+    (ev: Common.EventTarget.EventTargetEvent<Protocol.Runtime.BindingCalledEvent, RuntimeModelEventTypes>) => void;
 
 async function resolveToObjectInWorld(domNode: DOMNode, worldName: string): Promise<RemoteObject|null> {
   const resourceTreeModel = domNode.domModel().target().model(ResourceTreeModel) as ResourceTreeModel;
@@ -481,11 +478,11 @@ export enum Events {
   /* eslint-enable @typescript-eslint/naming-convention */
 }
 
-export interface EventTypes {
-  [Events.AnimationGroupStarted]: AnimationGroup;
-  [Events.AnimationGroupUpdated]: AnimationGroup;
-  [Events.ModelReset]: void;
-}
+export type EventTypes = {
+  [Events.AnimationGroupStarted]: AnimationGroup,
+  [Events.AnimationGroupUpdated]: AnimationGroup,
+  [Events.ModelReset]: void,
+};
 
 export class AnimationImpl {
   readonly #animationModel: AnimationModel;

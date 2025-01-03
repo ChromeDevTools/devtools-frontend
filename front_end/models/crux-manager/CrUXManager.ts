@@ -404,6 +404,6 @@ export const enum Events {
   FIELD_DATA_CHANGED = 'field-data-changed',
 }
 
-interface EventTypes {
-  [Events.FIELD_DATA_CHANGED]: PageResult|undefined;
-}
+type EventTypes = {
+  [Events.FIELD_DATA_CHANGED]: PageResult|undefined,
+};

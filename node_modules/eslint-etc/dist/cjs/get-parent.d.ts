@@ -1,2 +1,0 @@
-import { TSESTree as es } from "@typescript-eslint/experimental-utils";
-export declare function getParent(node: es.Node): es.Node | undefined;

@@ -78,9 +78,9 @@ export const enum Events {
   MESSAGE_ADDED = 'messageAdded',
 }
 
-export interface EventTypes {
-  [Events.MESSAGE_ADDED]: Message;
-}
+export type EventTypes = {
+  [Events.MESSAGE_ADDED]: Message,
+};
 
 export const enum MessageLevel {
   INFO = 'info',

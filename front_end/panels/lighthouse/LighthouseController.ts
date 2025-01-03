@@ -659,9 +659,9 @@ export const Presets: Preset[] = [
   },
 ];
 
-export interface Flags {
-  [flag: string]: string|boolean;
-}
+export type Flags = {
+  [flag: string]: string|boolean,
+};
 
 export const RuntimeSettings: RuntimeSetting[] = [
   {
@@ -777,11 +777,11 @@ export interface AuditProgressChangedEvent {
   message: string;
 }
 
-export interface EventTypes {
-  [Events.PageAuditabilityChanged]: PageAuditabilityChangedEvent;
-  [Events.PageWarningsChanged]: PageWarningsChangedEvent;
-  [Events.AuditProgressChanged]: AuditProgressChangedEvent;
-}
+export type EventTypes = {
+  [Events.PageAuditabilityChanged]: PageAuditabilityChangedEvent,
+  [Events.PageWarningsChanged]: PageWarningsChangedEvent,
+  [Events.AuditProgressChanged]: AuditProgressChangedEvent,
+};
 
 export interface Preset {
   setting: Common.Settings.Setting<boolean>;

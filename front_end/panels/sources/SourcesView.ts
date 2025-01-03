@@ -631,10 +631,10 @@ export interface EditorClosedEvent {
   wasSelected: boolean;
 }
 
-export interface EventTypes {
-  [Events.EDITOR_CLOSED]: EditorClosedEvent;
-  [Events.EDITOR_SELECTED]: Workspace.UISourceCode.UISourceCode;
-}
+export type EventTypes = {
+  [Events.EDITOR_CLOSED]: EditorClosedEvent,
+  [Events.EDITOR_SELECTED]: Workspace.UISourceCode.UISourceCode,
+};
 
 export interface EditorAction {
   getOrCreateButton(sourcesView: SourcesView): UI.Toolbar.ToolbarButton;

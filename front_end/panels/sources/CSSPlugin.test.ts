@@ -44,9 +44,7 @@ describeWithMockConnection('CSSPlugin', () => {
     createTarget({parentTarget: tabTarget});
   });
 
-  interface CompletionProvider {
-    (cx: CodeMirror.CompletionContext): Promise<CodeMirror.CompletionResult|null>;
-  }
+  type CompletionProvider = (cx: CodeMirror.CompletionContext) => Promise<CodeMirror.CompletionResult|null>;
   type ExtensionOrFacetProvider = {value: {override: CompletionProvider[]}}|ExtensionOrFacetProvider[]|
                                   CodeMirror.Extension;
   function findAutocompletion(extensions: ExtensionOrFacetProvider): CompletionProvider|null {

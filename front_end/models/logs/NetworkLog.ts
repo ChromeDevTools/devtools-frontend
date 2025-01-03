@@ -615,12 +615,12 @@ export interface ResetEvent {
   clearIfPreserved: boolean;
 }
 
-export interface EventTypes {
-  [Events.Reset]: ResetEvent;
-  [Events.RequestAdded]: {request: SDK.NetworkRequest.NetworkRequest, preserveLog?: boolean};
-  [Events.RequestUpdated]: {request: SDK.NetworkRequest.NetworkRequest};
-  [Events.RequestRemoved]: {request: SDK.NetworkRequest.NetworkRequest};
-}
+export type EventTypes = {
+  [Events.Reset]: ResetEvent,
+  [Events.RequestAdded]: {request: SDK.NetworkRequest.NetworkRequest, preserveLog?: boolean},
+  [Events.RequestUpdated]: {request: SDK.NetworkRequest.NetworkRequest},
+  [Events.RequestRemoved]: {request: SDK.NetworkRequest.NetworkRequest},
+};
 
 export interface InitiatorData {
   info: InitiatorInfo|null;

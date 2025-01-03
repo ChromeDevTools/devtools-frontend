@@ -133,11 +133,11 @@ export const enum Events {
   FRAME_EXIT = 'FrameExit',
 }
 
-export interface EventTypes {
-  [Events.FRAME_SELECTED]: number;
-  [Events.FRAME_ENTER]: number;
-  [Events.FRAME_EXIT]: number;
-}
+export type EventTypes = {
+  [Events.FRAME_SELECTED]: number,
+  [Events.FRAME_ENTER]: number,
+  [Events.FRAME_EXIT]: number,
+};
 
 interface DialogParsedTrace {
   source: 'Trace';

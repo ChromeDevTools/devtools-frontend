@@ -927,17 +927,17 @@ export interface ComputedStyleUpdatedEvent {
   nodeId: Protocol.DOM.NodeId;
 }
 
-export interface EventTypes {
-  [Events.FontsUpdated]: void;
-  [Events.MediaQueryResultChanged]: void;
-  [Events.ModelWasEnabled]: void;
-  [Events.ModelDisposed]: CSSModel;
-  [Events.PseudoStateForced]: PseudoStateForcedEvent;
-  [Events.StyleSheetAdded]: CSSStyleSheetHeader;
-  [Events.StyleSheetChanged]: StyleSheetChangedEvent;
-  [Events.StyleSheetRemoved]: CSSStyleSheetHeader;
-  [Events.ComputedStyleUpdated]: ComputedStyleUpdatedEvent;
-}
+export type EventTypes = {
+  [Events.FontsUpdated]: void,
+  [Events.MediaQueryResultChanged]: void,
+  [Events.ModelWasEnabled]: void,
+  [Events.ModelDisposed]: CSSModel,
+  [Events.PseudoStateForced]: PseudoStateForcedEvent,
+  [Events.StyleSheetAdded]: CSSStyleSheetHeader,
+  [Events.StyleSheetChanged]: StyleSheetChangedEvent,
+  [Events.StyleSheetRemoved]: CSSStyleSheetHeader,
+  [Events.ComputedStyleUpdated]: ComputedStyleUpdatedEvent,
+};
 
 const PseudoStateMarker = 'pseudo-state-marker';
 
@@ -1076,9 +1076,9 @@ export const enum CSSPropertyTrackerEvents {
   TRACKED_CSS_PROPERTIES_UPDATED = 'TrackedCSSPropertiesUpdated',
 }
 
-export interface CSSPropertyTrackerEventTypes {
-  [CSSPropertyTrackerEvents.TRACKED_CSS_PROPERTIES_UPDATED]: (DOMNode|null)[];
-}
+export type CSSPropertyTrackerEventTypes = {
+  [CSSPropertyTrackerEvents.TRACKED_CSS_PROPERTIES_UPDATED]: (DOMNode|null)[],
+};
 
 SDKModel.register(CSSModel, {capabilities: Capability.DOM, autostart: true});
 export interface ContrastInfo {

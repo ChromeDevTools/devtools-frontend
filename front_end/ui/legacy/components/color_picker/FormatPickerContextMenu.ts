@@ -17,9 +17,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/color_picker/FormatPickerContextMenu.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-interface OnSelectFn {
-  (color: Common.Color.Color): void;
-}
+type OnSelectFn = (color: Common.Color.Color) => void;
 
 export class FormatPickerContextMenu {
   #color: Common.Color.Color;

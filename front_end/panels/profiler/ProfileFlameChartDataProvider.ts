@@ -456,6 +456,6 @@ export interface OverviewPaneWindowChangedEvent {
   windowTimeRight: number;
 }
 
-export interface OverviewPaneEventTypes {
-  [OverviewPaneEvents.WINDOW_CHANGED]: OverviewPaneWindowChangedEvent;
-}
+export type OverviewPaneEventTypes = {
+  [OverviewPaneEvents.WINDOW_CHANGED]: OverviewPaneWindowChangedEvent,
+};

@@ -30,9 +30,7 @@
 
 import * as CodeMirror from '../../third_party/codemirror.next/codemirror.next.js';
 
-interface Tokenizer {
-  (line: string, callback: (value: string, style: string|null) => void): Promise<void>;
-}
+type Tokenizer = (line: string, callback: (value: string, style: string|null) => void) => Promise<void>;
 
 export function createCssTokenizer(): Tokenizer {
   async function tokenize(line: string, callback: (value: string, style: string|null) => void): Promise<void> {

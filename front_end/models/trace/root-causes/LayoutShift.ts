@@ -10,11 +10,11 @@ import * as Types from '../types/types.js';
 
 import type {RootCauseProtocolInterface} from './RootCauses.js';
 
-export interface CSSDimensions {
-  width?: string;
-  height?: string;
-  aspectRatio?: string;
-}
+export type CSSDimensions = {
+  width?: string,
+  height?: string,
+  aspectRatio?: string,
+};
 
 export interface UnsizedMedia {
   node: Protocol.DOM.Node;

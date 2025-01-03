@@ -21,9 +21,9 @@ import {
   waitForDialogAnimationEnd,
 } from '../../../shared/screenshots.js';
 
-interface GetSelectMenuOptions {
-  placeholderSelector?: string;
-}
+type GetSelectMenuOptions = {
+  placeholderSelector?: string,
+};
 async function getFocusedItemValue() {
   const focusedItem = await waitFor('devtools-menu-item:focus');
   return await focusedItem.evaluate((item: Element) => (item as Menus.Menu.MenuItem).value);

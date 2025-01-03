@@ -149,10 +149,10 @@ export enum Events {
   /* eslint-enable @typescript-eslint/naming-convention */
 }
 
-export interface EventTypes {
-  [Events.LayerTreeChanged]: void;
-  [Events.LayerPainted]: AgentLayer;
-}
+export type EventTypes = {
+  [Events.LayerTreeChanged]: void,
+  [Events.LayerPainted]: AgentLayer,
+};
 
 export class AgentLayerTree extends SDK.LayerTreeBase.LayerTreeBase {
   private layerTreeModel: LayerTreeModel;

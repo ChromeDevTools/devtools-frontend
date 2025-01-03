@@ -119,12 +119,10 @@ const str_ = i18n.i18n.registerUIStrings('panels/ai_assistance/AiAssistancePanel
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const lockedString = i18n.i18n.lockedString;
 
-interface ViewOutput {
-  chatView?: ChatView;
-}
-interface View {
-  (input: ChatViewProps, output: ViewOutput, target: HTMLElement): void;
-}
+type ViewOutput = {
+  chatView?: ChatView,
+};
+type View = (input: ChatViewProps, output: ViewOutput, target: HTMLElement) => void;
 
 function selectedElementFilter(maybeNode: SDK.DOMModel.DOMNode|null): SDK.DOMModel.DOMNode|null {
   if (maybeNode) {

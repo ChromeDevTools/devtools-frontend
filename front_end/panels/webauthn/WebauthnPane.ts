@@ -154,10 +154,10 @@ const enum Events {
   REMOVE_CREDENTIAL = 'RemoveCredential',
 }
 
-interface EventTypes {
-  [Events.EXPORT_CREDENTIAL]: Protocol.WebAuthn.Credential;
-  [Events.REMOVE_CREDENTIAL]: Protocol.WebAuthn.Credential;
-}
+type EventTypes = {
+  [Events.EXPORT_CREDENTIAL]: Protocol.WebAuthn.Credential,
+  [Events.REMOVE_CREDENTIAL]: Protocol.WebAuthn.Credential,
+};
 
 class DataGridNode extends DataGrid.DataGrid.DataGridNode<DataGridNode> {
   constructor(private readonly credential: Protocol.WebAuthn.Credential) {

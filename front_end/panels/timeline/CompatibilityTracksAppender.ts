@@ -26,13 +26,13 @@ import {TimelinePanel} from './TimelinePanel.js';
 import {TimingsTrackAppender} from './TimingsTrackAppender.js';
 import * as TimelineUtils from './utils/utils.js';
 
-export interface PopoverInfo {
-  title: string;
-  formattedTime: string;
-  url: string|null;
-  warningElements: HTMLSpanElement[];
-  additionalElements: HTMLElement[];
-}
+export type PopoverInfo = {
+  title: string,
+  formattedTime: string,
+  url: string|null,
+  warningElements: HTMLSpanElement[],
+  additionalElements: HTMLElement[],
+};
 
 let showPostMessageEvents: boolean|undefined;
 function isShowPostMessageEventsEnabled(): boolean {

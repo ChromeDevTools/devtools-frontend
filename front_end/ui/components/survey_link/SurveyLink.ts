@@ -30,12 +30,8 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('ui/components/survey_link/SurveyLink.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export interface CanShowSurveyCallback {
-  (result: Host.InspectorFrontendHostAPI.CanShowSurveyResult): void;
-}
-export interface ShowSurveyCallback {
-  (result: Host.InspectorFrontendHostAPI.ShowSurveyResult): void;
-}
+export type CanShowSurveyCallback = (result: Host.InspectorFrontendHostAPI.CanShowSurveyResult) => void;
+export type ShowSurveyCallback = (result: Host.InspectorFrontendHostAPI.ShowSurveyResult) => void;
 
 export interface SurveyLinkData {
   trigger: string;

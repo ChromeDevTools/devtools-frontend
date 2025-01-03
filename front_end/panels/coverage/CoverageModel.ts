@@ -30,11 +30,11 @@ export enum Events {
   /* eslint-enable @typescript-eslint/naming-convention */
 }
 
-export interface EventTypes {
-  [Events.CoverageUpdated]: CoverageInfo[];
-  [Events.CoverageReset]: void;
-  [Events.SourceMapResolved]: void;
-}
+export type EventTypes = {
+  [Events.CoverageUpdated]: CoverageInfo[],
+  [Events.CoverageReset]: void,
+  [Events.SourceMapResolved]: void,
+};
 
 const COVERAGE_POLLING_PERIOD_MS: number = 200;
 const RESOLVE_SOURCEMAP_TIMEOUT = 500;
@@ -884,9 +884,9 @@ export namespace URLCoverageInfo {
     /* eslint-enable @typescript-eslint/naming-convention */
   }
 
-  export interface EventTypes {
-    [Events.SizesChanged]: void;
-  }
+  export type EventTypes = {
+    [Events.SizesChanged]: void,
+  };
 }
 
 export const mergeSegments = (segmentsA: CoverageSegment[], segmentsB: CoverageSegment[]): CoverageSegment[] => {

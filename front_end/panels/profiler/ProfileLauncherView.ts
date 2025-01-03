@@ -237,6 +237,6 @@ export const enum Events {
   PROFILE_TYPE_SELECTED = 'ProfileTypeSelected',
 }
 
-export interface EventTypes {
-  [Events.PROFILE_TYPE_SELECTED]: ProfileType;
-}
+export type EventTypes = {
+  [Events.PROFILE_TYPE_SELECTED]: ProfileType,
+};

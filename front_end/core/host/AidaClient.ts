@@ -495,6 +495,6 @@ export const enum Events {
   AIDA_AVAILABILITY_CHANGED = 'aidaAvailabilityChanged',
 }
 
-export interface EventTypes {
-  [Events.AIDA_AVAILABILITY_CHANGED]: void;
-}
+export type EventTypes = {
+  [Events.AIDA_AVAILABILITY_CHANGED]: void,
+};

@@ -29,14 +29,14 @@ const defaultWarningMessages: ServerTimingParsingWarningMessage = {
   },
 };
 
-export interface ServerTimingParsingWarningMessage {
-  deprecratedSyntax: () => string;
-  duplicateParameter: (parameter: string) => string;
-  noValueFoundForParameter: (parameter: string) => string;
-  unrecognizedParameter: (parameter: string) => string;
-  extraneousTrailingCharacters: () => string;
-  unableToParseValue: (parameter: string, value: string) => string;
-}
+export type ServerTimingParsingWarningMessage = {
+  deprecratedSyntax: () => string,
+  duplicateParameter: (parameter: string) => string,
+  noValueFoundForParameter: (parameter: string) => string,
+  unrecognizedParameter: (parameter: string) => string,
+  extraneousTrailingCharacters: () => string,
+  unableToParseValue: (parameter: string, value: string) => string,
+};
 
 export class ServerTiming {
   metric: string;

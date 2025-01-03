@@ -601,6 +601,6 @@ const enum Events {
   EXPRESSION_UPDATED = 'ExpressionUpdated',
 }
 
-interface EventTypes {
-  [Events.EXPRESSION_UPDATED]: WatchExpression;
-}
+type EventTypes = {
+  [Events.EXPRESSION_UPDATED]: WatchExpression,
+};

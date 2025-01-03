@@ -31,10 +31,10 @@ type BaseInsightComponent = BaseInsightComponent.BaseInsightComponent<Trace.Insi
  *           the current trace bounds to fit the bounds of the row's overlays.
  */
 
-export interface TableState {
-  selectedRowEl: HTMLElement|null;
-  selectionIsSticky: boolean;
-}
+export type TableState = {
+  selectedRowEl: HTMLElement|null,
+  selectionIsSticky: boolean,
+};
 
 export interface TableData {
   insight: BaseInsightComponent;
@@ -42,10 +42,10 @@ export interface TableData {
   rows: TableDataRow[];
 }
 
-export interface TableDataRow {
-  values: Array<string|LitHtml.LitTemplate>;
-  overlays?: Overlays.Overlays.TimelineOverlay[];
-}
+export type TableDataRow = {
+  values: Array<string|LitHtml.LitTemplate>,
+  overlays?: Overlays.Overlays.TimelineOverlay[],
+};
 
 export class Table extends HTMLElement {
 

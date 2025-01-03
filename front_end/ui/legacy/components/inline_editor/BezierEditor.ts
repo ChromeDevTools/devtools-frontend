@@ -231,9 +231,9 @@ export const enum Events {
   BEZIER_CHANGED = 'BezierChanged',
 }
 
-export interface EventTypes {
-  [Events.BEZIER_CHANGED]: string;
-}
+export type EventTypes = {
+  [Events.BEZIER_CHANGED]: string,
+};
 
 export const Presets = [
   [

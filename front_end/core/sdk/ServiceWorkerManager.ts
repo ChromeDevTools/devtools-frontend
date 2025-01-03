@@ -312,11 +312,11 @@ export interface RegistrationErrorAddedEvent {
   error: Protocol.ServiceWorker.ServiceWorkerErrorMessage;
 }
 
-export interface EventTypes {
-  [Events.REGISTRATION_UPDATED]: ServiceWorkerRegistration;
-  [Events.REGISTRATION_ERROR_ADDED]: RegistrationErrorAddedEvent;
-  [Events.REGISTRATION_DELETED]: ServiceWorkerRegistration;
-}
+export type EventTypes = {
+  [Events.REGISTRATION_UPDATED]: ServiceWorkerRegistration,
+  [Events.REGISTRATION_ERROR_ADDED]: RegistrationErrorAddedEvent,
+  [Events.REGISTRATION_DELETED]: ServiceWorkerRegistration,
+};
 
 class ServiceWorkerDispatcher implements ProtocolProxyApi.ServiceWorkerDispatcher {
   readonly #manager: ServiceWorkerManager;

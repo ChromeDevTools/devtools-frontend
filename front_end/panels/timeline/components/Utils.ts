@@ -158,10 +158,10 @@ export function renderMetricValue(
   return metricValueEl;
 }
 
-export interface NumberWithUnitString {
-  element: HTMLElement;
-  text: string;
-}
+export type NumberWithUnitString = {
+  element: HTMLElement,
+  text: string,
+};
 
 /**
  * These methods format numbers with units in a way that allows the unit portion to be styled specifically.

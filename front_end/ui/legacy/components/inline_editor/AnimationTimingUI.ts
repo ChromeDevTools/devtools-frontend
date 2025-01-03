@@ -12,11 +12,11 @@ import {CSSLinearEasingModel, type Point} from './CSSLinearEasingModel.js';
 
 const DOUBLE_CLICK_DELAY = 500;
 
-interface Params {
-  container: Element;
-  bezier: UI.Geometry.CubicBezier;
-  onBezierChange: (bezier: UI.Geometry.CubicBezier) => void;
-}
+type Params = {
+  container: Element,
+  bezier: UI.Geometry.CubicBezier,
+  onBezierChange: (bezier: UI.Geometry.CubicBezier) => void,
+};
 
 class BezierCurveUI {
   #curveUI: BezierUI;
@@ -94,16 +94,16 @@ class BezierCurveUI {
   }
 }
 
-interface LinearEasingPresentationParams {
-  width: number;
-  height: number;
-  marginTop: number;
-  pointRadius: number;
-}
-interface Position {
-  x: number;
-  y: number;
-}
+type LinearEasingPresentationParams = {
+  width: number,
+  height: number,
+  marginTop: number,
+  pointRadius: number,
+};
+type Position = {
+  x: number,
+  y: number,
+};
 class LinearEasingPresentation {
   params: LinearEasingPresentationParams;
   renderedPositions?: Position[];

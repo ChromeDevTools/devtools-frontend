@@ -525,9 +525,9 @@ export const enum ToolbarItemWithCompactLayoutEvents {
   COMPACT_LAYOUT_UPDATED = 'CompactLayoutUpdated',
 }
 
-interface ToolbarItemWithCompactLayoutEventTypes {
-  [ToolbarItemWithCompactLayoutEvents.COMPACT_LAYOUT_UPDATED]: boolean;
-}
+type ToolbarItemWithCompactLayoutEventTypes = {
+  [ToolbarItemWithCompactLayoutEvents.COMPACT_LAYOUT_UPDATED]: boolean,
+};
 
 export class ToolbarItemWithCompactLayout extends ToolbarItem<ToolbarItemWithCompactLayoutEventTypes> {
   constructor(element: Element) {
@@ -783,10 +783,10 @@ export namespace ToolbarButton {
     MOUSE_DOWN = 'MouseDown',
   }
 
-  export interface EventTypes {
-    [Events.CLICK]: Event;
-    [Events.MOUSE_DOWN]: MouseEvent;
-  }
+  export type EventTypes = {
+    [Events.CLICK]: Event,
+    [Events.MOUSE_DOWN]: MouseEvent,
+  };
 }
 
 export class ToolbarInput extends ToolbarItem<ToolbarInput.EventTypes> {

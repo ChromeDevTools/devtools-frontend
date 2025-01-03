@@ -210,9 +210,9 @@ export namespace HeapSnapshotWorkerProxy {
     WAIT = 'Wait',
   }
 
-  export interface EventTypes {
-    [Events.WAIT]: boolean;
-  }
+  export type EventTypes = {
+    [Events.WAIT]: boolean,
+  };
 }
 
 export class HeapSnapshotProxyObject {

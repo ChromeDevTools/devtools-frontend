@@ -238,6 +238,6 @@ export const enum Events {
   COOKIE_LIST_UPDATED = 'CookieListUpdated',
 }
 
-export interface EventTypes {
-  [Events.COOKIE_LIST_UPDATED]: void;
-}
+export type EventTypes = {
+  [Events.COOKIE_LIST_UPDATED]: void,
+};

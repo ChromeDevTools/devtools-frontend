@@ -26,10 +26,10 @@ import * as Types from '../types/types.js';
 // there are any corresponding flow phase events at all).
 const flowDataByGroupToken = new Map<string, number>();
 
-interface EventFlowData {
-  flows: Set<number>;
-  bindingParsed: boolean;
-}
+type EventFlowData = {
+  flows: Set<number>,
+  bindingParsed: boolean,
+};
 type FlowBindingTuple =
     Map<Types.Timing.MicroSeconds, Map<Types.Events.ProcessID, Map<Types.Events.ThreadID, Map<string, EventFlowData>>>>;
 

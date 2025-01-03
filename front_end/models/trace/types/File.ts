@@ -9,10 +9,10 @@ import type * as CrUXManager from '../../../models/crux-manager/crux-manager.js'
 import type {TraceWindowMicroSeconds} from './Timing.js';
 import type {Event, LegacyTimelineFrame, ProcessID, SampleIndex, ThreadID} from './TraceEvents.js';
 
-export interface TraceFile {
-  traceEvents: readonly Event[];
-  metadata: MetaData;
-}
+export type TraceFile = {
+  traceEvents: readonly Event[],
+  metadata: MetaData,
+};
 
 export interface Breadcrumb {
   window: TraceWindowMicroSeconds;
@@ -135,28 +135,28 @@ export type LegacyTimelineFrameKey = `${EventKeyType.LEGACY_TIMELINE_FRAME}-${nu
 export type SerializableKey = RawEventKey|ProfileCallKey|SyntheticEventKey|LegacyTimelineFrameKey;
 
 // Serializable keys values objects contain data that maps the keys to original Trace Events
-export interface RawEventKeyValues {
-  type: EventKeyType.RAW_EVENT;
-  rawIndex: number;
-}
+export type RawEventKeyValues = {
+  type: EventKeyType.RAW_EVENT,
+  rawIndex: number,
+};
 
-export interface SyntheticEventKeyValues {
-  type: EventKeyType.SYNTHETIC_EVENT;
-  rawIndex: number;
-}
+export type SyntheticEventKeyValues = {
+  type: EventKeyType.SYNTHETIC_EVENT,
+  rawIndex: number,
+};
 
-export interface ProfileCallKeyValues {
-  type: EventKeyType.PROFILE_CALL;
-  processID: ProcessID;
-  threadID: ThreadID;
-  sampleIndex: SampleIndex;
-  protocol: Protocol.integer;
-}
+export type ProfileCallKeyValues = {
+  type: EventKeyType.PROFILE_CALL,
+  processID: ProcessID,
+  threadID: ThreadID,
+  sampleIndex: SampleIndex,
+  protocol: Protocol.integer,
+};
 
-export interface LegacyTimelineFrameKeyValues {
-  type: EventKeyType.LEGACY_TIMELINE_FRAME;
-  rawIndex: number;
-}
+export type LegacyTimelineFrameKeyValues = {
+  type: EventKeyType.LEGACY_TIMELINE_FRAME,
+  rawIndex: number,
+};
 
 export type SerializableKeyValues =
     RawEventKeyValues|ProfileCallKeyValues|SyntheticEventKeyValues|LegacyTimelineFrameKeyValues;

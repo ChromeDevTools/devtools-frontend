@@ -73,9 +73,7 @@ export interface SelectMenuData {
    */
   jslogContext: string;
 }
-interface TitleCallback {
-  (): LitHtml.TemplateResult;
-}
+type TitleCallback = () => LitHtml.TemplateResult;
 
 const deployMenuArrow = new URL('../../../Images/triangle-down.svg', import.meta.url).toString();
 

@@ -1461,9 +1461,9 @@ export const enum Events {
   SidebarPaneAdded = 'SidebarPaneAdded',
 }
 
-export interface EventTypes {
-  [Events.SidebarPaneAdded]: ExtensionSidebarPane;
-}
+export type EventTypes = {
+  [Events.SidebarPaneAdded]: ExtensionSidebarPane,
+};
 
 class ExtensionServerPanelView extends UI.View.SimpleView {
   private readonly name: string;

@@ -185,17 +185,17 @@ const MAX_POSSIBLE_BREAKPOINT_LINE = 2500;
 const MAX_CODE_SIZE_FOR_VALUE_DECORATIONS = 10000;
 const MAX_PROPERTIES_IN_SCOPE_FOR_VALUE_DECORATIONS = 500;
 
-interface BreakpointDescription {
-  position: number;
-  breakpoint: Breakpoints.BreakpointManager.Breakpoint;
-}
+type BreakpointDescription = {
+  position: number,
+  breakpoint: Breakpoints.BreakpointManager.Breakpoint,
+};
 
-interface BreakpointEditRequest {
-  line: CodeMirror.Line;
-  breakpoint: Breakpoints.BreakpointManager.Breakpoint|null;
-  location: {lineNumber: number, columnNumber: number}|null;
-  isLogpoint?: boolean;
-}
+type BreakpointEditRequest = {
+  line: CodeMirror.Line,
+  breakpoint: Breakpoints.BreakpointManager.Breakpoint|null,
+  location: {lineNumber: number, columnNumber: number}|null,
+  isLogpoint?: boolean,
+};
 
 const debuggerPluginForUISourceCode = new Map<Workspace.UISourceCode.UISourceCode, DebuggerPlugin>();
 
@@ -1839,10 +1839,10 @@ async function computeNonBreakableLines(
 
 // Breakpoint markers
 
-interface BreakpointDecoration {
-  content: CodeMirror.DecorationSet;
-  gutter: CodeMirror.RangeSet<CodeMirror.GutterMarker>;
-}
+type BreakpointDecoration = {
+  content: CodeMirror.DecorationSet,
+  gutter: CodeMirror.RangeSet<CodeMirror.GutterMarker>,
+};
 
 const setBreakpointDeco = CodeMirror.StateEffect.define<BreakpointDecoration>();
 const muteBreakpoints = CodeMirror.StateEffect.define<null>();

@@ -421,9 +421,9 @@ export const enum Events {
   WINDOW_CHANGED = 'WindowChanged',
 }
 
-export interface EventTypes {
-  [Events.WINDOW_CHANGED]: void;
-}
+export type EventTypes = {
+  [Events.WINDOW_CHANGED]: void,
+};
 
 export class PaintProfilerCommandLogView extends UI.ThrottledWidget.ThrottledWidget {
   private readonly treeOutline: UI.TreeOutline.TreeOutlineInShadow;

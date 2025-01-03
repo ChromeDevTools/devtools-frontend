@@ -302,9 +302,9 @@ export const enum Events {
   BOUNDARIES_CHANGED = 'BoundariesChanged',
 }
 
-export interface EventTypes {
-  [Events.BOUNDARIES_CHANGED]: void;
-}
+export type EventTypes = {
+  [Events.BOUNDARIES_CHANGED]: void,
+};
 
 export class NetworkTransferTimeCalculator extends NetworkTimeCalculator {
   constructor() {

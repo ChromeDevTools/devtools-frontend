@@ -126,6 +126,6 @@ export interface AddressFormFilledEvent {
   autofillModel: SDK.AutofillModel.AutofillModel;
 }
 
-export interface EventTypes {
-  [Events.ADDRESS_FORM_FILLED]: AddressFormFilledEvent;
-}
+export type EventTypes = {
+  [Events.ADDRESS_FORM_FILLED]: AddressFormFilledEvent,
+};

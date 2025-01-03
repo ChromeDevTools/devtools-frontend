@@ -42,13 +42,13 @@ import {drawIsolatedElementHighlight, type IsolatedElementHighlight} from './hig
 
 import {drawScrollSnapHighlight, type ScrollSnapHighlight} from './highlight_scroll_snap.js';
 
-export interface PersistentToolMessage {
-  highlightType: string;
-  highlightIndex: number;
-  newWidth: string;
-  newHeight: string;
-  resizerType: ResizerType;
-}
+export type PersistentToolMessage = {
+  highlightType: string,
+  highlightIndex: number,
+  newWidth: string,
+  newHeight: string,
+  resizerType: ResizerType,
+};
 
 interface DraggableMetadata {
   type: ResizerType;

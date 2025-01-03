@@ -1314,10 +1314,10 @@ export const enum Events {
   FLAME_CHART_ITEM_HOVERED = 'FlameChartItemHovered',
 }
 
-export interface EventTypes {
-  [Events.DATA_CHANGED]: void;
-  [Events.FLAME_CHART_ITEM_HOVERED]: Trace.Types.Events.Event|null;
-}
+export type EventTypes = {
+  [Events.DATA_CHANGED]: void,
+  [Events.FLAME_CHART_ITEM_HOVERED]: Trace.Types.Events.Event|null,
+};
 
 // an entry is a trace event, they are classified into "entry types"
 // because some events are rendered differently. For example, screenshot

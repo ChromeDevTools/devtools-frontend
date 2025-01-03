@@ -15,12 +15,12 @@ export const enum Events {
   CREDENTIAL_UPDATED = 'CredentialUpdated',
 }
 
-export interface EventTypes {
-  [Events.CREDENTIAL_ADDED]: Protocol.WebAuthn.CredentialAddedEvent;
-  [Events.CREDENTIAL_ASSERTED]: Protocol.WebAuthn.CredentialAssertedEvent;
-  [Events.CREDENTIAL_DELETED]: Protocol.WebAuthn.CredentialDeletedEvent;
-  [Events.CREDENTIAL_UPDATED]: Protocol.WebAuthn.CredentialUpdatedEvent;
-}
+export type EventTypes = {
+  [Events.CREDENTIAL_ADDED]: Protocol.WebAuthn.CredentialAddedEvent,
+  [Events.CREDENTIAL_ASSERTED]: Protocol.WebAuthn.CredentialAssertedEvent,
+  [Events.CREDENTIAL_DELETED]: Protocol.WebAuthn.CredentialDeletedEvent,
+  [Events.CREDENTIAL_UPDATED]: Protocol.WebAuthn.CredentialUpdatedEvent,
+};
 
 export class WebAuthnModel extends SDKModel<EventTypes> {
   readonly #agent: ProtocolProxyApi.WebAuthnApi;

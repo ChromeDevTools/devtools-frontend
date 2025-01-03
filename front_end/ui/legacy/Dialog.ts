@@ -216,9 +216,9 @@ export const enum Events {
   HIDDEN = 'hidden',
 }
 
-export interface EventTypes {
-  [Events.HIDDEN]: void;
-}
+export type EventTypes = {
+  [Events.HIDDEN]: void,
+};
 
 export const enum OutsideTabIndexBehavior {
   DISABLE_ALL_OUTSIDE_TAB_INDEX = 'DisableAllTabIndex',

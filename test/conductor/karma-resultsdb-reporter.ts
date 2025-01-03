@@ -8,9 +8,7 @@ import * as ResultsDb from './resultsdb.js';
 const diff = require('diff');
 const chalk = require('chalk');
 
-interface DiffCallback {
-  (line: string): string;
-}
+type DiffCallback = (line: string) => string;
 function*
     formatDiff(
         diffBlocks: Array<{value: string, added: boolean, removed: boolean}>, onSame: DiffCallback,

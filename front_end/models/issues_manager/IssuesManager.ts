@@ -147,9 +147,9 @@ export interface IssuesManagerCreationOptions {
   hideIssueSetting?: Common.Settings.Setting<HideIssueMenuSetting>;
 }
 
-export interface HideIssueMenuSetting {
-  [x: string]: IssueStatus;
-}
+export type HideIssueMenuSetting = {
+  [x: string]: IssueStatus,
+};
 
 export const enum IssueStatus {
   HIDDEN = 'Hidden',
@@ -446,11 +446,11 @@ export interface IssueAddedEvent {
   issue: Issue;
 }
 
-export interface EventTypes {
-  [Events.ISSUES_COUNT_UPDATED]: void;
-  [Events.FULL_UPDATE_REQUIRED]: void;
-  [Events.ISSUE_ADDED]: IssueAddedEvent;
-}
+export type EventTypes = {
+  [Events.ISSUES_COUNT_UPDATED]: void,
+  [Events.FULL_UPDATE_REQUIRED]: void,
+  [Events.ISSUE_ADDED]: IssueAddedEvent,
+};
 
 // @ts-ignore
 globalThis.addIssueForTest = (issue: Protocol.Audits.InspectorIssue) => {

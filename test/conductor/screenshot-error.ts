@@ -7,11 +7,11 @@ import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
 
-interface ArtifactGroup {
+type ArtifactGroup = {
   [key: string]: {
     filePath: string,
-  };
-}
+  },
+};
 
 export class ScreenshotError extends Error {
   // The max length of the summary is 4000, but we need to leave some room for

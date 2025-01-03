@@ -272,13 +272,13 @@ export class RemoveBreakpointEvent extends Event {
 
 const COPY_ACTION_PREFIX = 'copy-step-as-';
 
-interface Action {
-  id: string;
-  label: string;
-  group: string;
-  groupTitle: string;
-  jslogContext?: string;
-}
+type Action = {
+  id: string,
+  label: string,
+  group: string,
+  groupTitle: string,
+  jslogContext?: string,
+};
 
 export interface ViewInput extends StepViewData {
   step?: Models.Schema.Step;

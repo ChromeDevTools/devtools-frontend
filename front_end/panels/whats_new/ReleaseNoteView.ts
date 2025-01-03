@@ -37,9 +37,7 @@ export interface ViewInput {
   openNewTab: (link: string) => void;
   getThumbnailPath: (type: VideoType) => Platform.DevToolsPath.UrlString;
 }
-export interface View {
-  (input: ViewInput, output: ViewOutput, target: HTMLElement): void;
-}
+export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
 export type ViewOutput = unknown;
 
 export async function getMarkdownContent(): Promise<Marked.Marked.Token[][]> {

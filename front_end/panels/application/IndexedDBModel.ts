@@ -485,13 +485,13 @@ export enum Events {
   /* eslint-enable @typescript-eslint/naming-convention */
 }
 
-export interface EventTypes {
-  [Events.DatabaseAdded]: {model: IndexedDBModel, databaseId: DatabaseId};
-  [Events.DatabaseRemoved]: {model: IndexedDBModel, databaseId: DatabaseId};
-  [Events.DatabaseLoaded]: {model: IndexedDBModel, database: Database, entriesUpdated: boolean};
-  [Events.DatabaseNamesRefreshed]: void;
-  [Events.IndexedDBContentUpdated]: {model: IndexedDBModel, databaseId: DatabaseId, objectStoreName: string};
-}
+export type EventTypes = {
+  [Events.DatabaseAdded]: {model: IndexedDBModel, databaseId: DatabaseId},
+  [Events.DatabaseRemoved]: {model: IndexedDBModel, databaseId: DatabaseId},
+  [Events.DatabaseLoaded]: {model: IndexedDBModel, database: Database, entriesUpdated: boolean},
+  [Events.DatabaseNamesRefreshed]: void,
+  [Events.IndexedDBContentUpdated]: {model: IndexedDBModel, databaseId: DatabaseId, objectStoreName: string},
+};
 
 export class Entry {
   key: SDK.RemoteObject.RemoteObject;

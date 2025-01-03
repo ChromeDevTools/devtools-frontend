@@ -196,9 +196,9 @@ export const enum Events {
   TREE_UPDATED = 'TreeUpdated',
 }
 
-export interface EventTypes {
-  [Events.TREE_UPDATED]: {root?: AccessibilityNode};
-}
+export type EventTypes = {
+  [Events.TREE_UPDATED]: {root?: AccessibilityNode},
+};
 
 export class AccessibilityModel extends SDKModel<EventTypes> implements ProtocolProxyApi.AccessibilityDispatcher {
   agent: ProtocolProxyApi.AccessibilityApi;

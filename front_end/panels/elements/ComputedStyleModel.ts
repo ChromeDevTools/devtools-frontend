@@ -196,10 +196,10 @@ export const enum Events {
 export type CSSModelChangedEvent = SDK.CSSStyleSheetHeader.CSSStyleSheetHeader|SDK.CSSModel.StyleSheetChangedEvent|
                                    SDK.CSSModel.PseudoStateForcedEvent|null|void;
 
-export interface EventTypes {
-  [Events.CSS_MODEL_CHANGED]: CSSModelChangedEvent;
-  [Events.COMPUTED_STYLE_CHANGED]: void;
-}
+export type EventTypes = {
+  [Events.CSS_MODEL_CHANGED]: CSSModelChangedEvent,
+  [Events.COMPUTED_STYLE_CHANGED]: void,
+};
 
 export class ComputedStyle {
   node: SDK.DOMModel.DOMNode;

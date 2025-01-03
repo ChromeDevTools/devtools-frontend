@@ -5,7 +5,6 @@ import importPlugin from 'eslint-plugin-import';
 import jsdocPlugin from 'eslint-plugin-jsdoc';
 import globals from 'globals';
 import tsParser from '@typescript-eslint/parser';
-import etcPlugin from 'eslint-plugin-etc';
 import { join } from 'path';
 
 rulesdirPlugin.RULES_DIR = join(
@@ -65,7 +64,6 @@ export default [
       rulesdir: rulesdirPlugin,
       import: importPlugin,
       jsdoc: jsdocPlugin,
-      etc: etcPlugin,
     },
 
     languageOptions: {
@@ -234,8 +232,6 @@ export default [
       'no-implicit-globals': 'off',
       'no-unused-private-class-members': 'error',
 
-      // Forbids type aliases where interfaces can be used.
-      'etc/prefer-interface': 'error',
       // Closure does not properly typecheck default exports
       'import/no-default-export': 'error',
       /**

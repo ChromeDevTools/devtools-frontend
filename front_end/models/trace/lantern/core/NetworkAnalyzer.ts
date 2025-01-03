@@ -70,11 +70,11 @@ interface RTTEstimateOptions {
   useHeadersEndEstimates?: boolean;
 }
 
-interface RequestInfo {
-  request: Lantern.NetworkRequest;
-  timing: Lantern.ResourceTiming;
-  connectionReused?: boolean;
-}
+type RequestInfo = {
+  request: Lantern.NetworkRequest,
+  timing: Lantern.ResourceTiming,
+  connectionReused?: boolean,
+};
 
 const INITIAL_CWD = 14 * 1024;
 

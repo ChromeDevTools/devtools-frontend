@@ -892,9 +892,9 @@ export const enum Events {
   UPDATED = 'Updated',
 }
 
-export interface EventTypes {
-  [Events.UPDATED]: void;
-}
+export type EventTypes = {
+  [Events.UPDATED]: void,
+};
 
 export enum Type {
   /* eslint-disable @typescript-eslint/naming-convention -- Used by web_tests. */

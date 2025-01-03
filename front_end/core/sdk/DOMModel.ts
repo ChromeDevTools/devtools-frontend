@@ -1684,20 +1684,20 @@ export enum Events {
   /* eslint-enable @typescript-eslint/naming-convention */
 }
 
-export interface EventTypes {
-  [Events.AttrModified]: {node: DOMNode, name: string};
-  [Events.AttrRemoved]: {node: DOMNode, name: string};
-  [Events.CharacterDataModified]: DOMNode;
-  [Events.DOMMutated]: DOMNode;
-  [Events.NodeInserted]: DOMNode;
-  [Events.NodeRemoved]: {node: DOMNode, parent: DOMNode};
-  [Events.DocumentUpdated]: DOMModel;
-  [Events.ChildNodeCountUpdated]: DOMNode;
-  [Events.DistributedNodesChanged]: DOMNode;
-  [Events.MarkersChanged]: DOMNode;
-  [Events.TopLayerElementsChanged]: void;
-  [Events.ScrollableFlagUpdated]: {node: DOMNode};
-}
+export type EventTypes = {
+  [Events.AttrModified]: {node: DOMNode, name: string},
+  [Events.AttrRemoved]: {node: DOMNode, name: string},
+  [Events.CharacterDataModified]: DOMNode,
+  [Events.DOMMutated]: DOMNode,
+  [Events.NodeInserted]: DOMNode,
+  [Events.NodeRemoved]: {node: DOMNode, parent: DOMNode},
+  [Events.DocumentUpdated]: DOMModel,
+  [Events.ChildNodeCountUpdated]: DOMNode,
+  [Events.DistributedNodesChanged]: DOMNode,
+  [Events.MarkersChanged]: DOMNode,
+  [Events.TopLayerElementsChanged]: void,
+  [Events.ScrollableFlagUpdated]: {node: DOMNode},
+};
 
 class DOMDispatcher implements ProtocolProxyApi.DOMDispatcher {
   readonly #domModel: DOMModel;

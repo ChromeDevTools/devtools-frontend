@@ -12,11 +12,11 @@ const {html} = LitHtml;
 /**
  * An EntryBreakdown, or section, that makes up a TimespanBreakdown.
  */
-export interface EntryBreakdown {
-  bounds: Trace.Types.Timing.TraceWindowMicroSeconds;
-  label: string|LitHtml.LitTemplate;
-  showDuration: boolean;
-}
+export type EntryBreakdown = {
+  bounds: Trace.Types.Timing.TraceWindowMicroSeconds,
+  label: string|LitHtml.LitTemplate,
+  showDuration: boolean,
+};
 
 export class TimespanBreakdownOverlay extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});

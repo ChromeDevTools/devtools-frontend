@@ -212,6 +212,6 @@ const enum Events {
   FILTER_CHANGED = 'FilterChanged',
 }
 
-interface EventTypes {
-  [Events.FILTER_CHANGED]: void;
-}
+type EventTypes = {
+  [Events.FILTER_CHANGED]: void,
+};

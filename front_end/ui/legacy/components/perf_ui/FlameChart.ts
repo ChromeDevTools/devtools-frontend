@@ -251,10 +251,9 @@ export interface PositionOverride {
   z?: number;
 }
 
-export interface DrawOverride {
-  (context: CanvasRenderingContext2D, x: number, y: number, width: number, height: number,
-   timeToPosition: (time: number) => number, transformColor: (color: string) => string): PositionOverride;
-}
+export type DrawOverride =
+    (context: CanvasRenderingContext2D, x: number, y: number, width: number, height: number,
+     timeToPosition: (time: number) => number, transformColor: (color: string) => string) => PositionOverride;
 
 export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.VBox>(UI.Widget.VBox)
     implements Calculator, ChartViewportDelegate {
@@ -4270,20 +4269,20 @@ export const enum Events {
   MOUSE_MOVE = 'MouseMove',
 }
 
-export interface EventTypes {
+export type EventTypes = {
   [Events.ENTRY_LABEL_ANNOTATION_ADDED]: {
     entryIndex: number,
     withLinkCreationButton: boolean,
-  };
+  },
   [Events.ENTRIES_LINK_ANNOTATION_CREATED]: {
     entryFromIndex: number,
-  };
-  [Events.TRACKS_REORDER_STATE_CHANGED]: boolean;
-  [Events.CANVAS_FOCUSED]: number|void;
-  [Events.ENTRY_INVOKED]: number;
-  [Events.ENTRY_SELECTED]: number;
-  [Events.ENTRY_HOVERED]: number;
-  [Events.CHART_PLAYABLE_STATE_CHANGED]: boolean;
+  },
+  [Events.TRACKS_REORDER_STATE_CHANGED]: boolean,
+  [Events.CANVAS_FOCUSED]: number|void,
+  [Events.ENTRY_INVOKED]: number,
+  [Events.ENTRY_SELECTED]: number,
+  [Events.ENTRY_HOVERED]: number,
+  [Events.CHART_PLAYABLE_STATE_CHANGED]: boolean,
   [Events.LATEST_DRAW_DIMENSIONS]: {
     chart: {
       widthPixels: number,
@@ -4292,12 +4291,12 @@ export interface EventTypes {
       allGroupsCollapsed: boolean,
     },
     traceWindow: Trace.Types.Timing.TraceWindowMicroSeconds,
-  };
+  },
   [Events.MOUSE_MOVE]: {
     mouseEvent: MouseEvent,
     timeInMicroSeconds: Trace.Types.Timing.MicroSeconds,
-  };
-}
+  },
+};
 
 export interface Group {
   name: Common.UIString.LocalizedString;

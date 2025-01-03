@@ -114,9 +114,9 @@ export const enum Events {
   SELECTED_UI_SOURCE_CODE_CHANGED = 'SelectedUISourceCodeChanged',
 }
 
-export interface EventTypes {
-  [Events.SELECTED_UI_SOURCE_CODE_CHANGED]: void;
-}
+export type EventTypes = {
+  [Events.SELECTED_UI_SOURCE_CODE_CHANGED]: void,
+};
 
 export class UISourceCodeTreeElement extends UI.TreeOutline.TreeElement {
   uiSourceCode: Workspace.UISourceCode.UISourceCode;

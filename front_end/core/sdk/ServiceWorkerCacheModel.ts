@@ -321,11 +321,11 @@ export interface CacheStorageContentUpdatedEvent {
   cacheName: string;
 }
 
-export interface EventTypes {
-  [Events.CACHE_ADDED]: CacheEvent;
-  [Events.CACHE_REMOVED]: CacheEvent;
-  [Events.CACHE_STORAGE_CONTENT_UPDATED]: CacheStorageContentUpdatedEvent;
-}
+export type EventTypes = {
+  [Events.CACHE_ADDED]: CacheEvent,
+  [Events.CACHE_REMOVED]: CacheEvent,
+  [Events.CACHE_STORAGE_CONTENT_UPDATED]: CacheStorageContentUpdatedEvent,
+};
 
 export class Cache {
   readonly #model: ServiceWorkerCacheModel;

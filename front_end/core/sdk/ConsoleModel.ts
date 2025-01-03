@@ -521,12 +521,12 @@ export interface CommandEvaluatedEvent {
   exceptionDetails?: Protocol.Runtime.ExceptionDetails|undefined;
 }
 
-export interface EventTypes {
-  [Events.ConsoleCleared]: void;
-  [Events.MessageAdded]: ConsoleMessage;
-  [Events.MessageUpdated]: ConsoleMessage;
-  [Events.CommandEvaluated]: CommandEvaluatedEvent;
-}
+export type EventTypes = {
+  [Events.ConsoleCleared]: void,
+  [Events.MessageAdded]: ConsoleMessage,
+  [Events.MessageUpdated]: ConsoleMessage,
+  [Events.CommandEvaluated]: CommandEvaluatedEvent,
+};
 
 export interface AffectedResources {
   requestId?: Protocol.Network.RequestId;

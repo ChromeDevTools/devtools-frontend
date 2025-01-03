@@ -1,3 +1,0 @@
-import { ESLintUtils } from "@typescript-eslint/experimental-utils";
-declare const getParserServices: typeof ESLintUtils.getParserServices;
-export { getParserServices };

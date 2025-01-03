@@ -42,11 +42,11 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 let ignoreListManagerInstance: IgnoreListManager|undefined;
 
-export interface IgnoreListGeneralRules {
-  isContentScript?: boolean;
-  isKnownThirdParty?: boolean;
-  isCurrentlyIgnoreListed?: boolean;
-}
+export type IgnoreListGeneralRules = {
+  isContentScript?: boolean,
+  isKnownThirdParty?: boolean,
+  isCurrentlyIgnoreListed?: boolean,
+};
 
 export class IgnoreListManager implements SDK.TargetManager.SDKModelObserver<SDK.DebuggerModel.DebuggerModel> {
   readonly #debuggerWorkspaceBinding: DebuggerWorkspaceBinding;

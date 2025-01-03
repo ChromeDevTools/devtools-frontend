@@ -199,9 +199,7 @@ export interface CookieReportNodeData {
   recommendation: HTMLElement;
 }
 
-export interface View {
-  (input: ViewInput, output: ViewOutput, target: HTMLElement): void;
-}
+export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
 
 const filterItems: UI.FilterBar.Item[] = [
   {

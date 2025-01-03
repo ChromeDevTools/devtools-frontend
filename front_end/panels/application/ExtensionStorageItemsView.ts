@@ -79,10 +79,10 @@ export namespace ExtensionStorageItemsDispatcher {
     ITEMS_REFRESHED = 'ItemsRefreshed',
   }
 
-  export interface EventTypes {
-    [Events.ITEM_EDITED]: void;
-    [Events.ITEMS_REFRESHED]: void;
-  }
+  export type EventTypes = {
+    [Events.ITEM_EDITED]: void,
+    [Events.ITEMS_REFRESHED]: void,
+  };
 }
 
 export class ExtensionStorageItemsView extends StorageItemsView {

@@ -269,8 +269,8 @@ export const enum Events {
   TARGET_INFO_CHANGED = 'TargetInfoChanged',
 }
 
-export interface EventTypes {
-  [Events.TARGET_CREATED]: Protocol.Target.TargetInfo;
-  [Events.TARGET_DESTROYED]: Protocol.Target.TargetID;
-  [Events.TARGET_INFO_CHANGED]: Protocol.Target.TargetInfo;
-}
+export type EventTypes = {
+  [Events.TARGET_CREATED]: Protocol.Target.TargetInfo,
+  [Events.TARGET_DESTROYED]: Protocol.Target.TargetID,
+  [Events.TARGET_INFO_CHANGED]: Protocol.Target.TargetInfo,
+};

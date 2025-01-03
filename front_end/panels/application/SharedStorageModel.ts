@@ -61,9 +61,9 @@ export namespace SharedStorageForOrigin {
     params: Protocol.Storage.SharedStorageAccessParams;
   }
 
-  export interface EventTypes {
-    [Events.SHARED_STORAGE_CHANGED]: SharedStorageChangedEvent;
-  }
+  export type EventTypes = {
+    [Events.SHARED_STORAGE_CHANGED]: SharedStorageChangedEvent,
+  };
 }
 
 export class SharedStorageModel extends SDK.SDKModel.SDKModel<EventTypes> implements
@@ -250,8 +250,8 @@ export const enum Events {
   SHARED_STORAGE_REMOVED = 'SharedStorageRemoved',
 }
 
-export interface EventTypes {
-  [Events.SHARED_STORAGE_ACCESS]: Protocol.Storage.SharedStorageAccessedEvent;
-  [Events.SHARED_STORAGE_ADDED]: SharedStorageForOrigin;
-  [Events.SHARED_STORAGE_REMOVED]: SharedStorageForOrigin;
-}
+export type EventTypes = {
+  [Events.SHARED_STORAGE_ACCESS]: Protocol.Storage.SharedStorageAccessedEvent,
+  [Events.SHARED_STORAGE_ADDED]: SharedStorageForOrigin,
+  [Events.SHARED_STORAGE_REMOVED]: SharedStorageForOrigin,
+};

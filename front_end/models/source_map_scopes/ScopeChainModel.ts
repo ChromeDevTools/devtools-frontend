@@ -68,9 +68,9 @@ export const enum Events {
   SCOPE_CHAIN_UPDATED = 'ScopeChainUpdated',
 }
 
-export interface EventTypes {
-  [Events.SCOPE_CHAIN_UPDATED]: ScopeChain;
-}
+export type EventTypes = {
+  [Events.SCOPE_CHAIN_UPDATED]: ScopeChain,
+};
 
 /**
  * A scope chain ready to be shown in the UI with debugging info applied.

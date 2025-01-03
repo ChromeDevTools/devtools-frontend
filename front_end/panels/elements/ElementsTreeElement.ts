@@ -221,19 +221,19 @@ const enum TagType {
   CLOSING = 'CLOSING_TAG',
 }
 
-interface OpeningTagContext {
-  tagType: TagType.OPENING;
-  readonly adornerContainer: HTMLElement;
-  adorners: Adorners.Adorner.Adorner[];
-  styleAdorners: Adorners.Adorner.Adorner[];
-  readonly adornersThrottler: Common.Throttler.Throttler;
-  canAddAttributes: boolean;
-  slot?: Adorners.Adorner.Adorner;
-}
+type OpeningTagContext = {
+    tagType: TagType.OPENING,
+    readonly adornerContainer: HTMLElement,
+    adorners: Adorners.Adorner.Adorner[],
+    styleAdorners: Adorners.Adorner.Adorner[],
+    readonly adornersThrottler: Common.Throttler.Throttler,
+    canAddAttributes: boolean,
+    slot?: Adorners.Adorner.Adorner,
+};
 
-interface ClosingTagContext {
-  tagType: TagType.CLOSING;
-}
+type ClosingTagContext = {
+  tagType: TagType.CLOSING,
+};
 
 export type TagTypeContext = OpeningTagContext|ClosingTagContext;
 

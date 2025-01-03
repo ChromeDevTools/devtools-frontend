@@ -690,10 +690,10 @@ export interface EditorSelectedEvent {
   userGesture: boolean|undefined;
 }
 
-export interface EventTypes {
-  [Events.EDITOR_SELECTED]: EditorSelectedEvent;
-  [Events.EDITOR_CLOSED]: Workspace.UISourceCode.UISourceCode;
-}
+export type EventTypes = {
+  [Events.EDITOR_SELECTED]: EditorSelectedEvent,
+  [Events.EDITOR_CLOSED]: Workspace.UISourceCode.UISourceCode,
+};
 
 const MAX_PREVIOUSLY_VIEWED_FILES_COUNT = 30;
 const MAX_SERIALIZABLE_URL_LENGTH = 4096;

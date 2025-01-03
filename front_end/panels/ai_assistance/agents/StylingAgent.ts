@@ -190,12 +190,9 @@ async function executeJsCode(
 const MAX_OBSERVATION_BYTE_LENGTH = 25_000;
 const OBSERVATION_TIMEOUT = 5_000;
 
-interface CreateExtensionScopeFunction {
-  (changes: ChangeManager): {
-    install(): Promise<void>,
-    uninstall(): Promise<void>,
-  };
-}
+type CreateExtensionScopeFunction = (changes: ChangeManager) => {
+  install(): Promise<void>, uninstall(): Promise<void>,
+};
 
 interface AgentOptions extends BaseAgentOptions {
   changeManager?: ChangeManager;

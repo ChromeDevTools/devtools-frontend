@@ -389,6 +389,12 @@
   .formatted-stack-frame:has(.ignore-list-link) {
     display: var(--display-ignored-formatted-stack-frame);
     opacity: 60%;
+
+    /* Subsequent builtin stack frames are also treated as ignored */
+    & + .formatted-builtin-stack-frame {
+      display: var(--display-ignored-formatted-stack-frame);
+      opacity: 60%;
+    }
   }
 }
 

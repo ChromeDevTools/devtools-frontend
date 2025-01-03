@@ -1367,15 +1367,18 @@ export interface ConsoleTimeEnd extends PairableAsyncEnd {
 
 export type ConsoleTime = ConsoleTimeBegin|ConsoleTimeEnd;
 
-export interface TimeStamp extends Event {
-  cat: 'devtools.timeline';
-  name: 'TimeStamp';
-  ph: Phase.INSTANT;
-  id: string;
+export interface ConsoleTimeStamp extends Event {
+  cat: 'disabled-by-default-v8.inspector';
+  name: Name.CONSOLE_TIME_STAMP;
+  ph: Phase.COMPLETE;
   args: Args&{
     data: ArgsData & {
-      frame: string,
-      message: string,
+      name: string | number,
+      start?: string|number,
+      end?: string|number,
+      trackName?: string|number,
+      trackGroup?: string|number,
+      color?: string|number,
     },
   };
 }
@@ -2234,8 +2237,8 @@ export function isConsoleTime(event: Event): event is ConsoleTime {
   return event.cat === 'blink.console' && isPhaseAsync(event.ph);
 }
 
-export function isTimeStamp(event: Event): event is TimeStamp {
-  return event.ph === Phase.INSTANT && event.name === 'TimeStamp';
+export function isConsoleTimeStamp(event: Event): event is ConsoleTimeStamp {
+  return event.ph === Phase.COMPLETE && event.name === Name.CONSOLE_TIME_STAMP;
 }
 
 export function isParseHTML(event: Event): event is ParseHTML {
@@ -2885,10 +2888,10 @@ export const enum Name {
   MARK_LCP_CANDIDATE = 'largestContentfulPaint::Candidate',
   MARK_LCP_INVALIDATE = 'largestContentfulPaint::Invalidate',
   NAVIGATION_START = 'navigationStart',
-  TIME_STAMP = 'TimeStamp',
   CONSOLE_TIME = 'ConsoleTime',
   USER_TIMING = 'UserTiming',
   INTERACTIVE_TIME = 'InteractiveTime',
+  CONSOLE_TIME_STAMP = 'V8Console::TimeStamp',
 
   /* Frames */
   BEGIN_FRAME = 'BeginFrame',

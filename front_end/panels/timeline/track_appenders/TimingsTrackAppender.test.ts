@@ -155,7 +155,7 @@ describeWithEnvironment('TimingTrackAppender', function() {
     it('returns the correct title for console timestamps', () => {
       const traceMarkers = parsedTrace.UserTimings.timestampEvents;
       for (const mark of traceMarkers) {
-        assert.strictEqual(timingsTrackAppender.titleForEvent(mark), `TimeStamp: ${mark.args.data.message}`);
+        assert.strictEqual(timingsTrackAppender.titleForEvent(mark), `TimeStamp: ${mark.args.data.name}`);
       }
     });
   });
@@ -212,7 +212,7 @@ describeWithEnvironment('TimingTrackAppender', function() {
 
       assert.deepInclude(popoverInfo, {
         title: 'TimeStamp: a timestamp',
-        formattedTime: '615.25\u00A0ms',
+        formattedTime: '615.88\u00A0ms',
       });
     });
 

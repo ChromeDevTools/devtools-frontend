@@ -693,8 +693,8 @@ export class TimelineUIUtils {
     if (Trace.Helpers.Trace.eventHasCategory(event, Trace.Types.Events.Categories.Console)) {
       return title;
     }
-    if (Trace.Types.Events.isTimeStamp(event)) {
-      return i18nString(UIStrings.sS, {PH1: title, PH2: event.args.data.message});
+    if (Trace.Types.Events.isConsoleTimeStamp(event)) {
+      return i18nString(UIStrings.sS, {PH1: title, PH2: event.args.data.name});
     }
     if (Trace.Types.Events.isAnimation(event) && event.args.data.name) {
       return i18nString(UIStrings.sS, {PH1: title, PH2: event.args.data.name});
@@ -789,7 +789,7 @@ export class TimelineUIUtils {
         }
         break;
       }
-      case Trace.Types.Events.Name.TIME_STAMP:
+      case Trace.Types.Events.Name.CONSOLE_TIME_STAMP:
         detailsText = unsafeEventData['message'];
         break;
 
@@ -2425,7 +2425,7 @@ export class TimelineUIUtils {
         color = 'var(--sys-color-green)';
         tall = true;
         break;
-      case Trace.Types.Events.Name.TIME_STAMP:
+      case Trace.Types.Events.Name.CONSOLE_TIME_STAMP:
         color = 'orange';
         break;
     }
@@ -2641,7 +2641,7 @@ export function timeStampForEventAdjustedForClosestNavigationIfPossible(
 export function isMarkerEvent(parsedTrace: Trace.Handlers.Types.ParsedTrace, event: Trace.Types.Events.Event): boolean {
   const {Name} = Trace.Types.Events;
 
-  if (event.name === Name.TIME_STAMP || event.name === Name.NAVIGATION_START) {
+  if (event.name === Name.CONSOLE_TIME_STAMP || event.name === Name.NAVIGATION_START) {
     return true;
   }
 

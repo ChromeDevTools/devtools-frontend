@@ -590,8 +590,8 @@ export function generateEventID(event: Types.Events.Event): string {
     return `f:${name}@${location}`;
   }
 
-  if (Types.Events.isTimeStamp(event)) {
-    return `${event.name}:${event.args.data.message}`;
+  if (Types.Events.isConsoleTimeStamp(event)) {
+    return `${event.name}:${event.args.data.name}`;
   }
 
   return event.name;

@@ -16,7 +16,7 @@ const performanceMarkEvents: Types.Events.PerformanceMark[] = [];
 
 const consoleTimings: (Types.Events.ConsoleTimeBegin|Types.Events.ConsoleTimeEnd)[] = [];
 
-const timestampEvents: Types.Events.TimeStamp[] = [];
+const timestampEvents: Types.Events.ConsoleTimeStamp[] = [];
 
 export interface UserTimingsData {
   /**
@@ -39,7 +39,7 @@ export interface UserTimingsData {
    * Events triggered with the console.timeStamp() API
    * https://developer.mozilla.org/en-US/docs/Web/API/console/timeStamp
    */
-  timestampEvents: readonly Types.Events.TimeStamp[];
+  timestampEvents: readonly Types.Events.ConsoleTimeStamp[];
 }
 
 export function reset(): void {
@@ -153,7 +153,7 @@ export function handleEvent(event: Types.Events.Event): void {
   if (Types.Events.isConsoleTime(event)) {
     consoleTimings.push(event);
   }
-  if (Types.Events.isTimeStamp(event)) {
+  if (Types.Events.isConsoleTimeStamp(event)) {
     timestampEvents.push(event);
   }
 }

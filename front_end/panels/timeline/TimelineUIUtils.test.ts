@@ -1500,7 +1500,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
   describe('isMarkerEvent', () => {
     it('is true for a timestamp event', async function() {
       const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev-initial-url.json.gz');
-      const timestamp = parsedTrace.Renderer.allTraceEntries.find(Trace.Types.Events.isTimeStamp);
+      const timestamp = parsedTrace.Renderer.allTraceEntries.find(Trace.Types.Events.isConsoleTimeStamp);
       assert.isOk(timestamp);
       assert.isTrue(Timeline.TimelineUIUtils.isMarkerEvent(parsedTrace, timestamp));
     });

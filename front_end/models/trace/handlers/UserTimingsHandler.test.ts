@@ -2,10 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as Trace from '../trace.js';
 
-describe('UserTimingsHandler', function() {
+describeWithEnvironment('UserTimingsHandler', function() {
   let timingsData: Trace.Handlers.ModelHandlers.UserTimings.UserTimingsData;
   describe('performance timings', function() {
     async function getTimingsDataFromEvents(events: readonly Trace.Types.Events.Event[]):
@@ -17,9 +18,12 @@ describe('UserTimingsHandler', function() {
       await Trace.Handlers.ModelHandlers.UserTimings.finalize();
       return Trace.Handlers.ModelHandlers.UserTimings.data();
     }
-    before(async function() {
+    beforeEach(async function() {
       const events = await TraceLoader.rawEvents(this, 'user-timings.json.gz');
       timingsData = await getTimingsDataFromEvents(events);
+    });
+    afterEach(function() {
+      Trace.Handlers.ModelHandlers.UserTimings.reset();
     });
     describe('performance.measure events parsing', function() {
       it('parses the start and end events and returns a list of blocks', async () => {
@@ -67,21 +71,14 @@ describe('UserTimingsHandler', function() {
       });
 
       it('calculates the duration correctly from the begin/end event timestamps', async function() {
-        const events = await TraceLoader.rawEvents(this, 'user-timings.json.gz');
-        Trace.Handlers.ModelHandlers.UserTimings.reset();
-        for (const event of events) {
-          Trace.Handlers.ModelHandlers.UserTimings.handleEvent(event);
-        }
-        await Trace.Handlers.ModelHandlers.UserTimings.finalize();
-        const data = Trace.Handlers.ModelHandlers.UserTimings.data();
-        for (const timing of data.performanceMeasures) {
+        for (const timing of timingsData.performanceMeasures) {
           // Ensure for each timing pair we've set the dur correctly.
           assert.strictEqual(timing.dur, timing.args.data.endEvent.ts - timing.args.data.beginEvent.ts);
         }
       });
       it('correctly extracts nested timings in the correct order', async function() {
-        const events = await TraceLoader.rawEvents(this, 'user-timings-complex.json.gz');
-        const complexTimingsData = await getTimingsDataFromEvents(events);
+        const {parsedTrace} = await TraceLoader.traceEngine(this, 'user-timings-complex.json.gz');
+        const complexTimingsData = parsedTrace.UserTimings;
         const userTimingEventNames = [];
         for (const event of complexTimingsData.performanceMeasures) {
           // This trace has multiple user timings events, in this instance we only care about the ones that include 'nested' in the name.
@@ -122,14 +119,9 @@ describe('UserTimingsHandler', function() {
     });
   });
   describe('console timings', function() {
-    before(async function() {
-      const events = await TraceLoader.rawEvents(this, 'timings-track.json.gz');
-      Trace.Handlers.ModelHandlers.UserTimings.reset();
-      for (const event of events) {
-        Trace.Handlers.ModelHandlers.UserTimings.handleEvent(event);
-      }
-      await Trace.Handlers.ModelHandlers.UserTimings.finalize();
-      timingsData = Trace.Handlers.ModelHandlers.UserTimings.data();
+    beforeEach(async function() {
+      const {parsedTrace} = await TraceLoader.traceEngine(this, 'timings-track.json.gz');
+      timingsData = parsedTrace.UserTimings;
     });
     describe('console.time events parsing', function() {
       it('parses the start and end events and returns a list of blocks', async () => {
@@ -180,11 +172,11 @@ describe('UserTimingsHandler', function() {
       });
     });
     describe('console.timestamp events parsing', function() {
-      it('parses performance mark events correctly', function() {
+      it('parses console.timestamp events correctly', async function() {
         assert.lengthOf(timingsData.timestampEvents, 3);
-        assert.strictEqual(timingsData.timestampEvents[0].args.data.message, 'a timestamp');
-        assert.strictEqual(timingsData.timestampEvents[1].args.data.message, 'another timestamp');
-        assert.strictEqual(timingsData.timestampEvents[2].args.data.message, 'yet another timestamp');
+        assert.strictEqual(timingsData.timestampEvents[0].args.data.name, 'a timestamp');
+        assert.strictEqual(timingsData.timestampEvents[1].args.data.name, 'another timestamp');
+        assert.strictEqual(timingsData.timestampEvents[2].args.data.name, 'yet another timestamp');
       });
     });
   });

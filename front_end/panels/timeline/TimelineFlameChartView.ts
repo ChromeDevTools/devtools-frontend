@@ -335,6 +335,10 @@ export class TimelineFlameChartView extends
     this.networkFlameChart.addEventListener(
         PerfUI.FlameChart.Events.ENTRIES_LINK_ANNOTATION_CREATED, this.#onNetworkEntriesLinkAnnotationCreated, this);
 
+    this.mainFlameChart.addEventListener(PerfUI.FlameChart.Events.TRACKS_REORDER_STATE_CHANGED, event => {
+      this.#overlays.toggleAllOverlaysDisplayed(!event.data);
+    });
+
     this.detailsView.addEventListener(TimelineTreeView.Events.TREE_ROW_HOVERED, node => {
       if (!Root.Runtime.experiments.isEnabled(Root.Runtime.ExperimentName.TIMELINE_DIM_UNRELATED_EVENTS)) {
         return;

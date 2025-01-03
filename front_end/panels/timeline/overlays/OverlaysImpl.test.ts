@@ -396,6 +396,26 @@ describeWithEnvironment('Overlays', () => {
       assert.isOk(overlayDOM);
     });
 
+    it('toggles overlays container display', async function() {
+      const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+      const {overlays, container} = setupChartWithDimensionsAndAnnotationOverlayListeners(parsedTrace);
+
+      overlays.toggleAllOverlaysDisplayed(true);
+      await overlays.update();
+
+      assert.strictEqual(container.style.display, 'block');
+
+      overlays.toggleAllOverlaysDisplayed(false);
+      await overlays.update();
+
+      assert.strictEqual(container.style.display, 'none');
+
+      overlays.toggleAllOverlaysDisplayed(true);
+      await overlays.update();
+
+      assert.strictEqual(container.style.display, 'block');
+    });
+
     it('only renders one TIMESTAMP_MARKER as it is a singleton', async function() {
       const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
       const {overlays, container} = setupChartWithDimensionsAndAnnotationOverlayListeners(parsedTrace);

@@ -2113,6 +2113,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
 
     this.viewportElement.appendChild(div);
     this.#inTrackConfigEditMode = true;
+    this.dispatchEventToListeners(Events.TRACKS_REORDER_STATE_CHANGED, true);
     this.updateLevelPositions();
     this.draw();
   }
@@ -2127,6 +2128,7 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, type
   #exitEditMode(): void {
     this.#removeEditModeButton();
     this.#inTrackConfigEditMode = false;
+    this.dispatchEventToListeners(Events.TRACKS_REORDER_STATE_CHANGED, false);
     this.updateLevelPositions();
     this.draw();
   }
@@ -4240,6 +4242,12 @@ export const enum Events {
   // Emmited when entries link annotation is added through a shotcut or a context menu.
   ENTRIES_LINK_ANNOTATION_CREATED = 'EntriesLinkAnnotationCreated',
   /**
+   * Emmited when the user enters or exits 'reorder tracks' view.
+   * If the event value is 'true', the 'reorder tracks' state was entered,
+   * if it's false, the reorder state was exited.
+   */
+  TRACKS_REORDER_STATE_CHANGED = 'TracksReorderStateChange',
+  /**
    * Emitted when an event is selected via keyboard navigation using the arrow
    * keys.
    *
@@ -4270,6 +4278,7 @@ export interface EventTypes {
   [Events.ENTRIES_LINK_ANNOTATION_CREATED]: {
     entryFromIndex: number,
   };
+  [Events.TRACKS_REORDER_STATE_CHANGED]: boolean;
   [Events.CANVAS_FOCUSED]: number|void;
   [Events.ENTRY_INVOKED]: number;
   [Events.ENTRY_SELECTED]: number;

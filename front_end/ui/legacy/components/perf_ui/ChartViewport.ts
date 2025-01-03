@@ -232,9 +232,10 @@ export class ChartViewport extends UI.Widget.VBox {
         this.handleZoomGesture(zoomDelta);
       }
     } else if (navigation === 'modern') {
+      const isCtrlOrCmd = UI.KeyboardShortcut.KeyboardShortcut.eventHasCtrlEquivalentKey(wheelEvent);
       if (wheelEvent.shiftKey) {  // Pan left/right
         this.handlePanGesture(wheelEvent.deltaY, /* animate */ true);
-      } else if (wheelEvent.ctrlKey || Math.abs(wheelEvent.deltaX) > Math.abs(wheelEvent.deltaY)) {  // Zoom
+      } else if (isCtrlOrCmd || Math.abs(wheelEvent.deltaX) > Math.abs(wheelEvent.deltaY)) {  // Zoom
         this.handleZoomGesture(zoomDelta);
       } else {  // Scroll
         this.vScrollElement.scrollTop += scrollDelta;

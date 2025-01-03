@@ -5,7 +5,7 @@ The line with the least number of leading whitespace, ignoring empty lines, dete
 
 @example
 ```
-import stripIndent = require('strip-indent');
+import stripIndent from 'strip-indent';
 
 const string = '\tunicorn\n\t\tcake';
 //	unicorn
@@ -16,6 +16,4 @@ stripIndent(string);
 //	cake
 ```
 */
-declare function stripIndent(string: string): string;
-
-export = stripIndent;
+export default function stripIndent(string: string): string;

@@ -1,17 +1,17 @@
 'use strict';
 
-const keywordSets = require('../reference/keywordSets');
+const { counterIncrementKeywords } = require('../reference/keywords');
 
 /**
  * Check value is a custom ident
  *
  * @param {string} value
  */
-module.exports = function (value) {
+module.exports = function isCounterIncrementCustomIdentValue(value) {
 	const valueLowerCase = value.toLowerCase();
 
 	if (
-		keywordSets.counterIncrementKeywords.has(valueLowerCase) ||
+		counterIncrementKeywords.has(valueLowerCase) ||
 		Number.isFinite(Number.parseInt(valueLowerCase, 10))
 	) {
 		return false;

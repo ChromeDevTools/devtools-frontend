@@ -1,7 +1,6 @@
 'use strict'
 
-const tap = require('tap')
-const test = tap.test
+const test = require('tape')
 const {
   stringArrayToHexStripped
 } = require('../lib/utils')
@@ -19,6 +18,6 @@ test('stringArrayToHexStripped', (t) => {
   t.plan(testCases.length)
 
   testCases.forEach(([input, expected]) => {
-    t.strictSame(stringArrayToHexStripped(input[0], input[1]), expected)
+    t.same(stringArrayToHexStripped(input[0], input[1]), expected)
   })
 })

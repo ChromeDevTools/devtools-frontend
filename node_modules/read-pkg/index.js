@@ -1,41 +1,26 @@
-'use strict';
-const {promisify} = require('util');
-const fs = require('fs');
-const path = require('path');
-const parseJson = require('parse-json');
+import fs, {promises as fsAsync} from 'fs';
+import path from 'path';
+import parseJson from 'parse-json';
+import normalizePackageData from 'normalize-package-data';
 
-const readFileAsync = promisify(fs.readFile);
+export async function readPackageAsync({cwd = process.cwd(), normalize = true} = {}) {
+	const filePath = path.resolve(cwd, 'package.json');
+	const json = parseJson(await fsAsync.readFile(filePath, 'utf8'));
 
-module.exports = async options => {
-	options = {
-		cwd: process.cwd(),
-		normalize: true,
-		...options
-	};
-
-	const filePath = path.resolve(options.cwd, 'package.json');
-	const json = parseJson(await readFileAsync(filePath, 'utf8'));
-
-	if (options.normalize) {
-		require('normalize-package-data')(json);
+	if (normalize) {
+		normalizePackageData(json);
 	}
 
 	return json;
-};
+}
 
-module.exports.sync = options => {
-	options = {
-		cwd: process.cwd(),
-		normalize: true,
-		...options
-	};
-
-	const filePath = path.resolve(options.cwd, 'package.json');
+export function readPackageSync({cwd = process.cwd(), normalize = true} = {}) {
+	const filePath = path.resolve(cwd, 'package.json');
 	const json = parseJson(fs.readFileSync(filePath, 'utf8'));
 
-	if (options.normalize) {
-		require('normalize-package-data')(json);
+	if (normalize) {
+		normalizePackageData(json);
 	}
 
 	return json;
-};
+}

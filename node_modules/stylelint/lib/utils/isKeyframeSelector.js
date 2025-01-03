@@ -1,6 +1,6 @@
 'use strict';
 
-const keywordSets = require('../reference/keywordSets');
+const { keyframeSelectorKeywords } = require('../reference/keywords');
 
 /**
  * Check whether a string is a keyframe selector.
@@ -8,8 +8,8 @@ const keywordSets = require('../reference/keywordSets');
  * @param {string} selector
  * @returns {boolean}
  */
-module.exports = function (selector) {
-	if (keywordSets.keyframeSelectorKeywords.has(selector)) {
+module.exports = function isKeyframeSelector(selector) {
+	if (keyframeSelectorKeywords.has(selector)) {
 		return true;
 	}
 

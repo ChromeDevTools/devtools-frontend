@@ -1,4 +1,4 @@
-# postcss-selector-parser [![Build Status](https://travis-ci.org/postcss/postcss-selector-parser.svg?branch=master)](https://travis-ci.org/postcss/postcss-selector-parser)
+# postcss-selector-parser [![test](https://github.com/postcss/postcss-selector-parser/actions/workflows/test.yml/badge.svg)](https://github.com/postcss/postcss-selector-parser/actions/workflows/test.yml)
 
 > Selector parser with built in methods for working with selector strings.
 

@@ -59,7 +59,7 @@ tbody tr.selected:focus-within {
   background-color: var(--sys-color-tonal-container);
 }
 
-.wrapping-container.striped tr:nth-child(odd):not(.selected):not(.padding-row):not(:hover) {
+.wrapping-container.striped tr:nth-child(odd):not(.selected, .padding-row, :hover) {
   background-color: var(--sys-color-surface1);
 }
 

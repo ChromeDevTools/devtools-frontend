@@ -172,10 +172,7 @@ a img {
 
 .fill {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0;
 }
 
 iframe.fill {
@@ -228,10 +225,7 @@ iframe.widget {
   position: absolute;
   width: 100%;
   height: 100%;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
+  inset: 0;
 }
 
 .hidden {
@@ -339,11 +333,11 @@ input::placeholder {
     border-color: var(--sys-color-error);
   }
 
-  &:not(.error-input):not(:invalid):focus {
+  &:not(.error-input, :invalid):focus {
     border-color: var(--sys-color-state-focus-ring);
   }
 
-  &:not(.error-input):not(:invalid):hover:not(:focus) {
+  &:not(.error-input, :invalid):hover:not(:focus) {
     background: var(--sys-color-state-hover-on-subtle);
   }
 }
@@ -574,10 +568,7 @@ dt-icon-label {
   text-align: center;
   padding: 20px;
   position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
+  inset: 0;
   font-size: 13px;
   overflow: auto;
   z-index: 500;
@@ -740,10 +731,7 @@ input.custom-search-input::-webkit-search-cancel-button:hover {
   display: flex;
   overflow: hidden;
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0;
   z-index: 0;
   background-color: var(--sys-color-cdt-base-container);
 }

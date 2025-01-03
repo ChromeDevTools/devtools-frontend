@@ -13,6 +13,7 @@
   overflow: hidden;
 }
 
+/* stylelint-disable-next-line selector-pseudo-class-no-unknown */
 :selection {
   background-color: var(--sys-color-tonal-container);
   color: var(--sys-color-on-tonal-container);
@@ -495,7 +496,7 @@ devtools-icon.copy-color-icon {
 }
 
 .palette-color-shades > .spectrum-palette-color:not(.empty-color):hover,
-.spectrum-palette > .spectrum-palette-color:not(.empty-color):not(.has-material-shades):hover {
+.spectrum-palette > .spectrum-palette-color:not(.empty-color, .has-material-shades):hover {
   transform: scale(1.15);
 }
 

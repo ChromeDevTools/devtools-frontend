@@ -115,7 +115,7 @@ ol.tree-outline:not(.hide-selection-when-blurred) li.selected:focus {
 .tree-outline li::before {
   user-select: none;
   mask-image: var(--image-file-triangle-right);
-  background-color: currentColor;
+  background-color: currentcolor;
   content: "\A0\A0";
   text-shadow: none;
   margin-right: -2px;

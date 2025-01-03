@@ -278,16 +278,13 @@ if (node.type === 'id') {
 }
 ```
 
-### `node.clone()`
+### `node.clone([opts])`
 
 Returns a copy of a node, detached from any parent containers that the
 original might have had.
 
 ```js
-const cloned = parser.id({value: 'search'});
-String(cloned);
-
-// => #search
+const cloned = node.clone();
 ```
 
 ### `node.isAtPosition(line, column)`
@@ -789,7 +786,7 @@ has a method `error(message, options)` that returns an
 error object. This method should always be used to raise
 errors relating to the syntax of selectors. The options
 to this method are passed to postcss's error constructor
-([documentation](http://api.postcss.org/Container.html#error)).
+([documentation](http://postcss.org/api/#container-error)).
 
 #### Async Error Example
 

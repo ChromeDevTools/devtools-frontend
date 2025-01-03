@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/unified-signatures */
 import {Options as LocatePathOptions} from 'locate-path';
 
 declare const stop: unique symbol;
@@ -11,6 +12,75 @@ declare namespace findUp {
 }
 
 declare const findUp: {
+	sync: {
+		/**
+		Synchronously check if a path exists.
+
+		@param path - Path to the file or directory.
+		@returns Whether the path exists.
+
+		@example
+		```
+		import findUp = require('find-up');
+
+		console.log(findUp.sync.exists('/Users/sindresorhus/unicorn.png'));
+		//=> true
+		```
+		*/
+		exists: (path: string) => boolean;
+
+		/**
+		Synchronously find a file or directory by walking up parent directories.
+
+		@param name - Name of the file or directory to find. Can be multiple.
+		@returns The first path found (by respecting the order of `name`s) or `undefined` if none could be found.
+		*/
+		(name: string | readonly string[], options?: findUp.Options): string | undefined;
+
+		/**
+		Synchronously find a file or directory by walking up parent directories.
+
+		@param matcher - Called for each directory in the search. Return a path or `findUp.stop` to stop the search.
+		@returns The first path found or `undefined` if none could be found.
+
+		@example
+		```
+		import path = require('path');
+		import findUp = require('find-up');
+
+		console.log(findUp.sync(directory => {
+			const hasUnicorns = findUp.sync.exists(path.join(directory, 'unicorn.png'));
+			return hasUnicorns && directory;
+		}, {type: 'directory'}));
+		//=> '/Users/sindresorhus'
+		```
+		*/
+		(matcher: (directory: string) => findUp.Match, options?: findUp.Options): string | undefined;
+	};
+
+	/**
+	Check if a path exists.
+
+	@param path - Path to a file or directory.
+	@returns Whether the path exists.
+
+	@example
+	```
+	import findUp = require('find-up');
+
+	(async () => {
+		console.log(await findUp.exists('/Users/sindresorhus/unicorn.png'));
+		//=> true
+	})();
+	```
+	*/
+	exists: (path: string) => Promise<boolean>;
+
+	/**
+	Return this in a `matcher` function to stop the search and force `findUp` to immediately return `undefined`.
+	*/
+	readonly stop: findUp.StopSymbol;
+
 	/**
 	Find a file or directory by walking up parent directories.
 
@@ -40,7 +110,7 @@ declare const findUp: {
 	})();
 	```
 	*/
-	(name: string | string[], options?: findUp.Options): Promise<string | undefined>;
+	(name: string | readonly string[], options?: findUp.Options): Promise<string | undefined>;
 
 	/**
 	Find a file or directory by walking up parent directories.
@@ -63,75 +133,6 @@ declare const findUp: {
 	```
 	*/
 	(matcher: (directory: string) => (findUp.Match | Promise<findUp.Match>), options?: findUp.Options): Promise<string | undefined>;
-
-	sync: {
-		/**
-		Synchronously find a file or directory by walking up parent directories.
-
-		@param name - Name of the file or directory to find. Can be multiple.
-		@returns The first path found (by respecting the order of `name`s) or `undefined` if none could be found.
-		*/
-		(name: string | string[], options?: findUp.Options): string | undefined;
-
-		/**
-		Synchronously find a file or directory by walking up parent directories.
-
-		@param matcher - Called for each directory in the search. Return a path or `findUp.stop` to stop the search.
-		@returns The first path found or `undefined` if none could be found.
-
-		@example
-		```
-		import path = require('path');
-		import findUp = require('find-up');
-
-		console.log(findUp.sync(directory => {
-			const hasUnicorns = findUp.sync.exists(path.join(directory, 'unicorn.png'));
-			return hasUnicorns && directory;
-		}, {type: 'directory'}));
-		//=> '/Users/sindresorhus'
-		```
-		*/
-		(matcher: (directory: string) => findUp.Match, options?: findUp.Options): string | undefined;
-
-		/**
-		Synchronously check if a path exists.
-
-		@param path - Path to the file or directory.
-		@returns Whether the path exists.
-
-		@example
-		```
-		import findUp = require('find-up');
-
-		console.log(findUp.sync.exists('/Users/sindresorhus/unicorn.png'));
-		//=> true
-		```
-		*/
-		exists(path: string): boolean;
-	}
-
-	/**
-	Check if a path exists.
-
-	@param path - Path to a file or directory.
-	@returns Whether the path exists.
-
-	@example
-	```
-	import findUp = require('find-up');
-
-	(async () => {
-		console.log(await findUp.exists('/Users/sindresorhus/unicorn.png'));
-		//=> true
-	})();
-	```
-	*/
-	exists(path: string): Promise<boolean>;
-
-	/**
-	Return this in a `matcher` function to stop the search and force `findUp` to immediately return `undefined`.
-	*/
-	readonly stop: findUp.StopSymbol;
 };
 
 export = findUp;

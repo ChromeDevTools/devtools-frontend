@@ -1,87 +1,77 @@
 import {Except} from 'type-fest';
-import readPkg = require('read-pkg');
+import {readPackageAsync, readPackageSync, Options as ReadPackageOptions, NormalizeOptions as ReadPackageNormalizeOptions, PackageJson, NormalizedPackageJson} from 'read-pkg';
 
-declare namespace readPkgUp {
-	type Options = {
-		/**
-		Directory to start looking for a package.json file.
+export type Options = {
+	/**
+	Directory to start looking for a package.json file.
 
-		@default process.cwd()
-		*/
-		cwd?: string;
-	} & Except<readPkg.Options, 'cwd'>;
+	@default process.cwd()
+	*/
+	cwd?: string;
+} & Except<ReadPackageOptions, 'cwd'>;
 
-	type NormalizeOptions = {
-		/**
-		Directory to start looking for a package.json file.
+export type NormalizeOptions = {
+	/**
+	Directory to start looking for a package.json file.
 
-		@default process.cwd()
-		*/
-		cwd?: string;
-	} & Except<readPkg.NormalizeOptions, 'cwd'>;
+	@default process.cwd()
+	*/
+	cwd?: string;
+} & Except<ReadPackageNormalizeOptions, 'cwd'>;
 
-	type PackageJson = readPkg.PackageJson;
-	type NormalizedPackageJson = readPkg.NormalizedPackageJson;
-
-	interface ReadResult {
-		packageJson: PackageJson;
-		path: string;
-	}
-
-	interface NormalizedReadResult {
-		packageJson: NormalizedPackageJson;
-		path: string;
-	}
+export interface ReadResult {
+	packageJson: PackageJson;
+	path: string;
 }
 
-declare const readPkgUp: {
-	/**
-	Read the closest `package.json` file.
+export interface NormalizedReadResult {
+	packageJson: NormalizedPackageJson;
+	path: string;
+}
 
-	@example
-	```
-	import readPkgUp = require('read-pkg-up');
-
-	(async () => {
-		console.log(await readPkgUp());
-		// {
-		// 	packageJson: {
-		// 		name: 'awesome-package',
-		// 		version: '1.0.0',
-		// 		…
-		// 	},
-		// 	path: '/Users/sindresorhus/dev/awesome-package/package.json'
-		// }
-	})();
-	```
-	*/
-	(options?: readPkgUp.NormalizeOptions): Promise<
-		readPkgUp.NormalizedReadResult | undefined
-	>;
-	(options: readPkgUp.Options): Promise<readPkgUp.ReadResult | undefined>;
-
-	/**
-	Synchronously read the closest `package.json` file.
-
-	@example
-	```
-	import readPkgUp = require('read-pkg-up');
-
-	console.log(readPkgUp.sync());
-	// {
-	// 	packageJson: {
-	// 		name: 'awesome-package',
-	// 		version: '1.0.0',
-	// 		…
-	// 	},
-	// 	path: '/Users/sindresorhus/dev/awesome-package/package.json'
-	// }
-	```
-	*/
-	sync(
-		options?: readPkgUp.NormalizeOptions
-	): readPkgUp.NormalizedReadResult | undefined;
-	sync(options: readPkgUp.Options): readPkgUp.ReadResult | undefined;
+export {
+	PackageJson,
+	NormalizedPackageJson
 };
 
-export = readPkgUp;
+/**
+Read the closest `package.json` file.
+
+@example
+```
+import {readPackageUpAsync} from 'read-pkg-up';
+
+console.log(await readPackageUpAsync());
+// {
+// 	packageJson: {
+// 		name: 'awesome-package',
+// 		version: '1.0.0',
+// 		…
+// 	},
+// 	path: '/Users/sindresorhus/dev/awesome-package/package.json'
+// }
+```
+*/
+export function readPackageUpAsync(options?: NormalizeOptions): Promise<NormalizedReadResult | undefined>;
+export function readPackageUpAsync(options: Options): Promise<ReadResult | undefined>;
+
+/**
+Synchronously read the closest `package.json` file.
+
+@example
+```
+import {readPackageUpSync} from 'read-pkg-up';
+
+console.log(readPackageUpSync());
+// {
+// 	packageJson: {
+// 		name: 'awesome-package',
+// 		version: '1.0.0',
+// 		…
+// 	},
+// 	path: '/Users/sindresorhus/dev/awesome-package/package.json'
+// }
+```
+*/
+export function readPackageUpSync(options?: NormalizeOptions): NormalizedReadResult | undefined;
+export function readPackageUpSync(options: Options): ReadResult | undefined;

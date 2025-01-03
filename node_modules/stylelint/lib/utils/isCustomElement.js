@@ -1,7 +1,6 @@
 'use strict';
 
-const htmlTags = require('html-tags');
-const keywordSets = require('../reference/keywordSets');
+const { htmlTypeSelectors } = require('../reference/selectors');
 const mathMLTags = require('mathml-tag-names');
 const svgTags = require('svg-tags');
 
@@ -11,7 +10,7 @@ const svgTags = require('svg-tags');
  * @param {string} selector
  * @returns {boolean}
  */
-module.exports = function (selector) {
+module.exports = function isCustomElement(selector) {
 	if (!/^[a-z]/.test(selector)) {
 		return false;
 	}
@@ -30,11 +29,7 @@ module.exports = function (selector) {
 		return false;
 	}
 
-	if (htmlTags.includes(selectorLowerCase)) {
-		return false;
-	}
-
-	if (keywordSets.nonStandardHtmlTags.has(selectorLowerCase)) {
+	if (htmlTypeSelectors.has(selectorLowerCase)) {
 		return false;
 	}
 

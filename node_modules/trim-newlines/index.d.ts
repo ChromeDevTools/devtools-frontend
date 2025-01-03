@@ -4,7 +4,7 @@ declare const trimNewlines: {
 
 	@example
 	```js
-	import trimNewlines = require('trim-newlines');
+	import trimNewlines from 'trim-newlines';
 
 	trimNewlines('\n🦄\r\n');
 	//=> '🦄'
@@ -17,7 +17,7 @@ declare const trimNewlines: {
 
 	@example
 	```js
-	import trimNewlines = require('trim-newlines');
+	import trimNewlines from 'trim-newlines';
 
 	trimNewlines.start('\n🦄\r\n');
 	//=> '🦄\r\n'
@@ -30,7 +30,7 @@ declare const trimNewlines: {
 
 	@example
 	```js
-	import trimNewlines = require('trim-newlines');
+	import trimNewlines from 'trim-newlines';
 
 	trimNewlines.end('\n🦄\r\n');
 	//=> '\n🦄'
@@ -39,4 +39,4 @@ declare const trimNewlines: {
 	end(string: string): string;
 };
 
-export = trimNewlines;
+export default trimNewlines;

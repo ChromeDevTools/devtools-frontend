@@ -152,6 +152,6 @@ that region separators remain visible against the dark panel background. */
 /* With the exception of the position labels, labels are displayed on top of
 the box-model region colors, so need to use the following color to remain
 visible. */
-.metrics .highlighted:not(.position) > *:not(.border):not(.padding):not(.content) {
+.metrics .highlighted:not(.position) > *:not(.border, .padding, .content) {
   color: var(--override-box-model-text-color);
 }

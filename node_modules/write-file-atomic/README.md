@@ -4,8 +4,14 @@ write-file-atomic
 This is an extension for node's `fs.writeFile` that makes its operation
 atomic and allows you set ownership (uid/gid of the file).
 
-### var writeFileAtomic = require('write-file-atomic')<br>writeFileAtomic(filename, data, [options], [callback])
+### `writeFileAtomic(filename, data, [options], [callback])`
 
+#### Description:
+
+Atomically and asynchronously writes data to a file, replacing the file if it already
+exists.  data can be a string or a buffer.
+
+#### Options:
 * filename **String**
 * data **String** | **Buffer**
 * options **Object** | **String**
@@ -18,8 +24,12 @@ atomic and allows you set ownership (uid/gid of the file).
   * tmpfileCreated **Function** called when the tmpfile is created
 * callback **Function**
 
-Atomically and asynchronously writes data to a file, replacing the file if it already
-exists.  data can be a string or a buffer.
+#### Usage:
+
+```js
+var writeFileAtomic = require('write-file-atomic')
+writeFileAtomic(filename, data, [options], [callback])
+```
 
 The file is initially named `filename + "." + murmurhex(__filename, process.pid, ++invocations)`.
 Note that `require('worker_threads').threadId` is used in addition to `process.pid` if running inside of a worker thread.
@@ -67,6 +77,15 @@ This function also supports async/await:
 })();
 ```
 
-### var writeFileAtomicSync = require('write-file-atomic').sync<br>writeFileAtomicSync(filename, data, [options])
+### `writeFileAtomicSync(filename, data, [options])`
+
+#### Description:
 
 The synchronous version of **writeFileAtomic**.
+
+#### Usage:
+```js
+var writeFileAtomicSync = require('write-file-atomic').sync
+writeFileAtomicSync(filename, data, [options])
+```
+

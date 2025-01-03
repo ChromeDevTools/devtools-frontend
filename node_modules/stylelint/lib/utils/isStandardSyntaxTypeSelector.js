@@ -1,6 +1,11 @@
 'use strict';
 
-const keywordSets = require('../reference/keywordSets');
+const {
+	aNPlusBNotationPseudoClasses,
+	aNPlusBOfSNotationPseudoClasses,
+	linguisticPseudoClasses,
+	shadowTreePseudoElements,
+} = require('../reference/selectors');
 
 /**
  * Check whether a type selector is standard
@@ -8,7 +13,7 @@ const keywordSets = require('../reference/keywordSets');
  * @param {import('postcss-selector-parser').Tag} node postcss-selector-parser node (of type tag)
  * @return {boolean} If `true`, the type selector is standard
  */
-module.exports = function (node) {
+module.exports = function isStandardSyntaxTypeSelector(node) {
 	// postcss-selector-parser includes the arguments to nth-child() functions
 	// as "tags", so we need to ignore them ourselves.
 	// The fake-tag's "parent" is actually a selector node, whose parent
@@ -26,10 +31,10 @@ module.exports = function (node) {
 
 		if (
 			parentType === 'pseudo' &&
-			(keywordSets.aNPlusBNotationPseudoClasses.has(normalisedParentName) ||
-				keywordSets.aNPlusBOfSNotationPseudoClasses.has(normalisedParentName) ||
-				keywordSets.linguisticPseudoClasses.has(normalisedParentName) ||
-				keywordSets.shadowTreePseudoElements.has(normalisedParentName))
+			(aNPlusBNotationPseudoClasses.has(normalisedParentName) ||
+				aNPlusBOfSNotationPseudoClasses.has(normalisedParentName) ||
+				linguisticPseudoClasses.has(normalisedParentName) ||
+				shadowTreePseudoElements.has(normalisedParentName))
 		) {
 			return false;
 		}

@@ -1,6 +1,7 @@
 'use strict';
 
-const keywordSets = require('../reference/keywordSets');
+const { fontSizeKeywords } = require('../reference/keywords');
+const { lengthUnits } = require('../reference/units');
 const valueParser = require('postcss-value-parser');
 
 /**
@@ -9,12 +10,12 @@ const valueParser = require('postcss-value-parser');
  * @param {string} word
  * @returns {boolean}
  */
-module.exports = function (word) {
+module.exports = function isValidFontSize(word) {
 	if (!word) {
 		return false;
 	}
 
-	if (keywordSets.fontSizeKeywords.has(word)) {
+	if (fontSizeKeywords.has(word)) {
 		return true;
 	}
 
@@ -30,7 +31,7 @@ module.exports = function (word) {
 		return true;
 	}
 
-	if (keywordSets.lengthUnits.has(unit.toLowerCase())) {
+	if (lengthUnits.has(unit.toLowerCase())) {
 		return true;
 	}
 

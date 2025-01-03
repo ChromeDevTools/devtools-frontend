@@ -1,3 +1,7 @@
+### 2.9.3
+
+- Fix types export for TypeScript 4.7 ❤️ [@pkishorez](https://github.com/pkishorez)
+
 ### 2.9.2
 
 - Fix: Add "package.json" to exports map

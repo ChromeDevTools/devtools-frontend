@@ -1,7 +1,6 @@
-'use strict';
-const minIndent = require('min-indent');
+import minIndent from 'min-indent';
 
-module.exports = string => {
+export default function stripIndent(string) {
 	const indent = minIndent(string);
 
 	if (indent === 0) {
@@ -11,4 +10,4 @@ module.exports = string => {
 	const regex = new RegExp(`^[ \\t]{${indent}}`, 'gm');
 
 	return string.replace(regex, '');
-};
+}

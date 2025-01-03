@@ -8,7 +8,7 @@ const hasInterpolation = require('../utils/hasInterpolation');
  * @param {string} selector
  * @returns {boolean}
  */
-module.exports = function (selector) {
+module.exports = function isStandardSyntaxSelector(selector) {
 	// SCSS or Less interpolation
 	if (hasInterpolation(selector)) {
 		return false;
@@ -46,6 +46,11 @@ module.exports = function (selector) {
 
 	// ERB template tags
 	if (selector.includes('<%') || selector.includes('%>')) {
+		return false;
+	}
+
+	//  SCSS and Less comments
+	if (selector.includes('//')) {
 		return false;
 	}
 

@@ -58,8 +58,7 @@ devtools-editable-content:focus ~ devtools-suggestion-box {
   box-shadow: var(--drop-shadow);
   min-height: 1em;
   min-width: 150px;
-  overflow-x: hidden;
-  overflow-y: auto;
+  overflow: hidden auto;
   position: relative;
   z-index: 100;
   max-height: 350px;

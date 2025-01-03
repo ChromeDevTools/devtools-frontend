@@ -1,14 +1,12 @@
-# find-up [![Build Status](https://travis-ci.org/sindresorhus/find-up.svg?branch=master)](https://travis-ci.org/sindresorhus/find-up)
+# find-up [![Build Status](https://travis-ci.com/sindresorhus/find-up.svg?branch=master)](https://travis-ci.com/github/sindresorhus/find-up)
 
 > Find a file or directory by walking up parent directories
-
 
 ## Install
 
 ```
 $ npm install find-up
 ```
-
 
 ## Usage
 
@@ -43,7 +41,6 @@ const findUp = require('find-up');
 	//=> '/Users/sindresorhus'
 })();
 ```
-
 
 ## API
 
@@ -85,22 +82,22 @@ Type: `object`
 
 ##### cwd
 
-Type: `string`<br>
+Type: `string`\
 Default: `process.cwd()`
 
 Directory to start from.
 
 ##### type
 
-Type: `string`<br>
-Default: `'file'`<br>
+Type: `string`\
+Default: `'file'`\
 Values: `'file'` `'directory'`
 
 The type of paths that can match.
 
 ##### allowSymlinks
 
-Type: `boolean`<br>
+Type: `boolean`\
 Default: `true`
 
 Allow symbolic links to match if they point to the chosen path type.
@@ -134,14 +131,12 @@ const findUp = require('find-up');
 })();
 ```
 
-
 ## Related
 
 - [find-up-cli](https://github.com/sindresorhus/find-up-cli) - CLI for this module
 - [pkg-up](https://github.com/sindresorhus/pkg-up) - Find the closest package.json file
 - [pkg-dir](https://github.com/sindresorhus/pkg-dir) - Find the root directory of an npm package
 - [resolve-from](https://github.com/sindresorhus/resolve-from) - Resolve the path of a module like `require.resolve()` but from a given path
-
 
 ---
 

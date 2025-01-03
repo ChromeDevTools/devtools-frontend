@@ -3,7 +3,7 @@ const fastUri = require('../')
 const ajv = new AJV({
   uriResolver: fastUri // comment this line to see it works with uri-js
 })
-const { test } = require('tap')
+const test = require('tape')
 
 test('ajv', t => {
   t.plan(1)

@@ -143,10 +143,7 @@
 .orientation-box {
   width: 62px;
   height: 122px;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
+  inset: 0;
   margin: auto;
   transform: rotate3d(1, 0, 0, 90deg);
 }

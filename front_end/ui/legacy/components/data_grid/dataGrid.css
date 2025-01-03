@@ -21,12 +21,8 @@
 
 .data-grid .data-container {
   position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  overflow-x: hidden;
-  overflow-y: overlay;
+  inset: 0;
+  overflow: hidden overlay;
   transform: translateZ(0);
   background-color: var(--sys-color-cdt-base-container);
 }
@@ -71,10 +67,7 @@
 
 .data-grid table.data {
   position: absolute;
-  left: 0;
-  top: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0;
   border-top: 0 none transparent;
   table-layout: fixed;
 }
@@ -96,8 +89,8 @@
   display: table-row;
 }
 
-.striped-data-grid .revealed.data-grid-data-grid-node:nth-child(odd):not(.dirty):not(.selected),
-.striped-data-grid-starts-with-odd .revealed.data-grid-data-grid-node:nth-child(even):not(.dirty):not(.selected) {
+.striped-data-grid .revealed.data-grid-data-grid-node:nth-child(odd):not(.dirty, .selected),
+.striped-data-grid-starts-with-odd .revealed.data-grid-data-grid-node:nth-child(even):not(.dirty, .selected) {
   background-color: var(--sys-color-surface1);
 }
 
@@ -245,7 +238,7 @@
   background-color: var(--sys-color-tonal-container);
 }
 
-.data-grid tbody tr.revealed:not(.data-grid-filler-row):not(.selected):hover {
+.data-grid tbody tr.revealed:not(.data-grid-filler-row, .selected):hover {
   background-color: var(--sys-color-state-hover-on-subtle);
 }
 
@@ -343,8 +336,8 @@
     background-color: HighlightText;
   }
 
-  .striped-data-grid .revealed.data-grid-data-grid-node:nth-child(odd):not(.dirty):not(.selected),
-  .striped-data-grid-starts-with-odd .revealed.data-grid-data-grid-node:nth-child(even):not(.dirty):not(.selected),
+  .striped-data-grid .revealed.data-grid-data-grid-node:nth-child(odd):not(.dirty, .selected),
+  .striped-data-grid-starts-with-odd .revealed.data-grid-data-grid-node:nth-child(even):not(.dirty, .selected),
   .request-cookies-view tr.revealed.data-grid-data-grid-node.flagged-cookie-attribute-row:not(.selected):nth-child(2n),
   .cookies-table tr.revealed.data-grid-data-grid-node.flagged-cookie-attribute-row:not(.selected):nth-child(odd) {
     background-color: canvas;
@@ -358,8 +351,8 @@
   .data-grid th.sortable:hover,
   .data-grid tbody tr.revealed:hover,
   .data-grid tbody tr.revealed.selected,
-  .striped-data-grid .revealed:hover.data-grid-data-grid-node:nth-child(odd):not(.dirty):not(.selected),
-  .striped-data-grid-starts-with-odd .revealed:hover.data-grid-data-grid-node:nth-child(even):not(.dirty):not(.selected),
+  .striped-data-grid .revealed:hover.data-grid-data-grid-node:nth-child(odd):not(.dirty, .selected),
+  .striped-data-grid-starts-with-odd .revealed:hover.data-grid-data-grid-node:nth-child(even):not(.dirty, .selected),
   .request-cookies-view tr.revealed:hover.data-grid-data-grid-node.flagged-cookie-attribute-row:not(.selected):nth-child(2n),
   .cookies-table tr.revealed:hover.data-grid-data-grid-node.flagged-cookie-attribute-row:not(.selected):nth-child(odd) {
     forced-color-adjust: none;

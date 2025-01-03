@@ -11,7 +11,6 @@
     "comment-empty-line-before": null,
     "declaration-no-important": true,
     "color-named": "never",
-    "max-empty-lines": 1,
     "selector-type-no-unknown": [
       true,
       {
@@ -21,7 +20,6 @@
         ]
       }
     ],
-    "max-line-length": null,
     "selector-class-pattern": null,
     "keyframes-name-pattern": null,
     "selector-no-vendor-prefix": null,

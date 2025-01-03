@@ -118,10 +118,7 @@
 
 .cpu-profile-flame-chart-overview-canvas {
   position: absolute;
-  top: 20px;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: 20px 0 0;
 }
 
 #cpu-profile-flame-chart-overview-grid .resources-dividers-label-bar {

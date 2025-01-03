@@ -1,45 +1,25 @@
-import { Config, CosmiconfigResult, Loaders, LoadersSync } from './types';
-declare type LoaderResult = Config | null;
-export declare type Loader = ((filepath: string, content: string) => Promise<LoaderResult>) | LoaderSync;
-export declare type LoaderSync = (filepath: string, content: string) => LoaderResult;
-export declare type Transform = ((CosmiconfigResult: CosmiconfigResult) => Promise<CosmiconfigResult>) | TransformSync;
-export declare type TransformSync = (CosmiconfigResult: CosmiconfigResult) => CosmiconfigResult;
-interface OptionsBase {
-    packageProp?: string | Array<string>;
-    searchPlaces?: Array<string>;
-    ignoreEmptySearchPlaces?: boolean;
-    stopDir?: string;
-    cache?: boolean;
-}
-export interface Options extends OptionsBase {
-    loaders?: Loaders;
-    transform?: Transform;
-}
-export interface OptionsSync extends OptionsBase {
-    loaders?: LoadersSync;
-    transform?: TransformSync;
-}
-declare function cosmiconfig(moduleName: string, options?: Options): {
-    readonly search: (searchFrom?: string) => Promise<CosmiconfigResult>;
-    readonly load: (filepath: string) => Promise<CosmiconfigResult>;
-    readonly clearLoadCache: () => void;
-    readonly clearSearchCache: () => void;
-    readonly clearCaches: () => void;
-};
-declare function cosmiconfigSync(moduleName: string, options?: OptionsSync): {
-    readonly search: (searchFrom?: string) => CosmiconfigResult;
-    readonly load: (filepath: string) => CosmiconfigResult;
-    readonly clearLoadCache: () => void;
-    readonly clearSearchCache: () => void;
-    readonly clearCaches: () => void;
-};
-declare const defaultLoaders: Readonly<{
-    readonly '.cjs': LoaderSync;
-    readonly '.js': LoaderSync;
-    readonly '.json': LoaderSync;
-    readonly '.yaml': LoaderSync;
-    readonly '.yml': LoaderSync;
-    readonly noExt: LoaderSync;
+export * from './types.js';
+import { Options, OptionsSync, PublicExplorer, PublicExplorerSync } from './types.js';
+export declare const metaSearchPlaces: string[];
+export declare const defaultLoaders: Readonly<{
+    readonly '.mjs': import("./types.js").Loader;
+    readonly '.cjs': import("./types.js").Loader;
+    readonly '.js': import("./types.js").Loader;
+    readonly '.ts': import("./types.js").Loader;
+    readonly '.json': import("./types.js").LoaderSync;
+    readonly '.yaml': import("./types.js").LoaderSync;
+    readonly '.yml': import("./types.js").LoaderSync;
+    readonly noExt: import("./types.js").LoaderSync;
 }>;
-export { cosmiconfig, cosmiconfigSync, defaultLoaders };
+export declare const defaultLoadersSync: Readonly<{
+    readonly '.cjs': import("./types.js").LoaderSync;
+    readonly '.js': import("./types.js").LoaderSync;
+    readonly '.ts': import("./types.js").LoaderSync;
+    readonly '.json': import("./types.js").LoaderSync;
+    readonly '.yaml': import("./types.js").LoaderSync;
+    readonly '.yml': import("./types.js").LoaderSync;
+    readonly noExt: import("./types.js").LoaderSync;
+}>;
+export declare function cosmiconfig(moduleName: string, options?: Readonly<Options>): PublicExplorer;
+export declare function cosmiconfigSync(moduleName: string, options?: Readonly<OptionsSync>): PublicExplorerSync;
 //# sourceMappingURL=index.d.ts.map

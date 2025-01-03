@@ -49,8 +49,8 @@
 }
 
 .layout-shift-viz-rect {
-  outline: 1px solid color-mix(in sRGB, var(--color-background-inverted) 20%, var(--app-color-rendering));
-  background-color: color-mix(in sRGB, var(--color-background-inverted-opacity-0) 50%, var(--app-color-rendering-children));
+  outline: 1px solid color-mix(in srgb, var(--color-background-inverted) 20%, var(--app-color-rendering));
+  background-color: color-mix(in srgb, var(--color-background-inverted-opacity-0) 50%, var(--app-color-rendering-children));
   position: absolute;
   z-index: 100;
 }

@@ -1,67 +1,59 @@
 import * as typeFest from 'type-fest';
-import normalize = require('normalize-package-data');
+import * as normalize from 'normalize-package-data';
 
-declare namespace readPkg {
-	interface Options {
-		/**
-		[Normalize](https://github.com/npm/normalize-package-data#what-normalization-currently-entails) the package data.
+export interface Options {
+	/**
+	Current working directory.
 
-		@default true
-		*/
-		readonly normalize?: boolean;
+	@default process.cwd()
+	*/
+	readonly cwd?: string;
 
-		/**
-		Current working directory.
+	/**
+	[Normalize](https://github.com/npm/normalize-package-data#what-normalization-currently-entails) the package data.
 
-		@default process.cwd()
-		*/
-		readonly cwd?: string;
-	}
-
-	interface NormalizeOptions extends Options {
-		readonly normalize?: true;
-	}
-
-	type NormalizedPackageJson = PackageJson & normalize.Package;
-	type PackageJson = typeFest.PackageJson;
+	@default true
+	*/
+	readonly normalize?: boolean;
 }
 
-declare const readPkg: {
-	/**
-	@returns The parsed JSON.
+export interface NormalizeOptions extends Options {
+	readonly normalize?: true;
+}
 
-	@example
-	```
-	import readPkg = require('read-pkg');
+export type NormalizedPackageJson = PackageJson & normalize.Package;
+export type PackageJson = typeFest.PackageJson;
 
-	(async () => {
-		console.log(await readPkg());
-		//=> {name: 'read-pkg', …}
+/**
+@returns The parsed JSON.
 
-		console.log(await readPkg({cwd: 'some-other-directory'});
-		//=> {name: 'unicorn', …}
-	})();
-	```
-	*/
-	(options?: readPkg.NormalizeOptions): Promise<readPkg.NormalizedPackageJson>;
-	(options: readPkg.Options): Promise<readPkg.PackageJson>;
+@example
+```
+import {readPackageAsync} from 'read-pkg';
 
-	/**
-	@returns The parsed JSON.
+console.log(await readPackageAsync());
+//=> {name: 'read-pkg', …}
 
-	@example
-	```
-	import readPkg = require('read-pkg');
+console.log(await readPackageAsync({cwd: 'some-other-directory'});
+//=> {name: 'unicorn', …}
+```
+*/
+export function readPackageAsync(options?: NormalizeOptions): Promise<NormalizedPackageJson>;
+export function readPackageAsync(options: Options): Promise<PackageJson>;
 
-	console.log(readPkg.sync());
-	//=> {name: 'read-pkg', …}
+/**
+@returns The parsed JSON.
 
-	console.log(readPkg.sync({cwd: 'some-other-directory'});
-	//=> {name: 'unicorn', …}
-	```
-	*/
-	sync(options?: readPkg.NormalizeOptions): readPkg.NormalizedPackageJson;
-	sync(options: readPkg.Options): readPkg.PackageJson;
-};
+@example
+```
+import {readPackageSync} from 'read-pkg';
 
-export = readPkg;
+console.log(readPackageSync());
+//=> {name: 'read-pkg', …}
+
+console.log(readPackageSync({cwd: 'some-other-directory'});
+//=> {name: 'unicorn', …}
+```
+*/
+export function readPackageSync(options?: NormalizeOptions): NormalizedPackageJson;
+export function readPackageSync(options: Options): PackageJson;

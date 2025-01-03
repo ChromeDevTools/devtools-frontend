@@ -246,7 +246,7 @@
   }
 }
 
-.console-message-wrapper:not(.console-error-level):not(.console-warning-level) {
+.console-message-wrapper:not(.console-error-level, .console-warning-level) {
   & .console-message::before,
   & .console-user-command::before {
     width: calc(100% - 25px);
@@ -263,7 +263,7 @@
   }
 }
 
-.console-message-wrapper.console-adjacent-user-command-result:not(.console-error-level):not(.console-warning-level) {
+.console-message-wrapper.console-adjacent-user-command-result:not(.console-error-level, .console-warning-level) {
   border-top-width: 0;
 }
 
@@ -271,16 +271,16 @@
   border-top-color: transparent;
 }
 
-.console-message-wrapper.console-adjacent-user-command-result:not(.console-error-level):not(.console-warning-level):focus {
+.console-message-wrapper.console-adjacent-user-command-result:not(.console-error-level, .console-warning-level):focus {
   border-top-width: 1px;
 }
 
-.console-message-wrapper.console-adjacent-user-command-result:not(.console-error-level):not(.console-warning-level):focus .console-message {
+.console-message-wrapper.console-adjacent-user-command-result:not(.console-error-level, .console-warning-level):focus .console-message {
   padding-top: 2px;
   min-height: 16px;
 }
 
-.console-message-wrapper.console-adjacent-user-command-result:not(.console-error-level):not(.console-warning-level):focus .command-result-icon {
+.console-message-wrapper.console-adjacent-user-command-result:not(.console-error-level, .console-warning-level):focus .command-result-icon {
   top: 3px;
 }
 

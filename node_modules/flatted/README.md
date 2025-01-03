@@ -6,6 +6,14 @@
 
 <sup>**Social Media Photo by [Matt Seymour](https://unsplash.com/@mattseymour) on [Unsplash](https://unsplash.com/)**</sup>
 
+A super light (0.5K) and fast circular JSON parser, directly from the creator of [CircularJSON](https://github.com/WebReflection/circular-json/#circularjson).
+
+Available also for **[PHP](./php/flatted.php)**.
+
+Available also for **[Python](./python/flatted.py)**.
+
+- - -
+
 ## Announcement 📣
 
 There is a standard approach to recursion and more data-types than what JSON allows, and it's part of the [Structured Clone polyfill](https://github.com/ungap/structured-clone/#readme).
@@ -17,10 +25,6 @@ The *@ungap/structured-clone* module is, in short, a drop in replacement for *fl
 However, if recursion, as well as more data-types, are what you are after, or interesting for your projects/use cases, consider switching to this new module whenever you can 👍
 
 - - -
-
-A super light (0.5K) and fast circular JSON parser, directly from the creator of [CircularJSON](https://github.com/WebReflection/circular-json/#circularjson).
-
-Now available also for **[PHP](./php/flatted.php)**.
 
 ```js
 npm i flatted

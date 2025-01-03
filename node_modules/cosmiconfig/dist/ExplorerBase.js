@@ -1,142 +1,82 @@
 "use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.ExplorerBase = void 0;
-exports.getExtensionDescription = getExtensionDescription;
-
-var _path = _interopRequireDefault(require("path"));
-
-var _loaders = require("./loaders");
-
-var _getPropertyByPath = require("./getPropertyByPath");
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.getExtensionDescription = exports.ExplorerBase = void 0;
+const path_1 = __importDefault(require("path"));
+const util_js_1 = require("./util.js");
+/**
+ * @internal
+ */
 class ExplorerBase {
-  constructor(options) {
-    if (options.cache === true) {
-      this.loadCache = new Map();
-      this.searchCache = new Map();
+    #loadingMetaConfig = false;
+    config;
+    loadCache;
+    searchCache;
+    constructor(options) {
+        this.config = options;
+        if (options.cache) {
+            this.loadCache = new Map();
+            this.searchCache = new Map();
+        }
+        this.#validateConfig();
     }
-
-    this.config = options;
-    this.validateConfig();
-  }
-
-  clearLoadCache() {
-    if (this.loadCache) {
-      this.loadCache.clear();
+    set loadingMetaConfig(value) {
+        this.#loadingMetaConfig = value;
     }
-  }
-
-  clearSearchCache() {
-    if (this.searchCache) {
-      this.searchCache.clear();
+    #validateConfig() {
+        const config = this.config;
+        for (const place of config.searchPlaces) {
+            const extension = path_1.default.extname(place);
+            const loader = this.config.loaders[extension || 'noExt'] ??
+                this.config.loaders['default'];
+            if (loader === undefined) {
+                throw new Error(`Missing loader for ${getExtensionDescription(place)}.`);
+            }
+            if (typeof loader !== 'function') {
+                throw new Error(`Loader for ${getExtensionDescription(place)} is not a function: Received ${typeof loader}.`);
+            }
+        }
     }
-  }
-
-  clearCaches() {
-    this.clearLoadCache();
-    this.clearSearchCache();
-  }
-
-  validateConfig() {
-    const config = this.config;
-    config.searchPlaces.forEach(place => {
-      const loaderKey = _path.default.extname(place) || 'noExt';
-      const loader = config.loaders[loaderKey];
-
-      if (!loader) {
-        throw new Error(`No loader specified for ${getExtensionDescription(place)}, so searchPlaces item "${place}" is invalid`);
-      }
-
-      if (typeof loader !== 'function') {
-        throw new Error(`loader for ${getExtensionDescription(place)} is not a function (type provided: "${typeof loader}"), so searchPlaces item "${place}" is invalid`);
-      }
-    });
-  }
-
-  shouldSearchStopWithResult(result) {
-    if (result === null) return false;
-    if (result.isEmpty && this.config.ignoreEmptySearchPlaces) return false;
-    return true;
-  }
-
-  nextDirectoryToSearch(currentDir, currentResult) {
-    if (this.shouldSearchStopWithResult(currentResult)) {
-      return null;
+    clearLoadCache() {
+        if (this.loadCache) {
+            this.loadCache.clear();
+        }
     }
-
-    const nextDir = nextDirUp(currentDir);
-
-    if (nextDir === currentDir || currentDir === this.config.stopDir) {
-      return null;
+    clearSearchCache() {
+        if (this.searchCache) {
+            this.searchCache.clear();
+        }
     }
-
-    return nextDir;
-  }
-
-  loadPackageProp(filepath, content) {
-    const parsedContent = _loaders.loaders.loadJson(filepath, content);
-
-    const packagePropValue = (0, _getPropertyByPath.getPropertyByPath)(parsedContent, this.config.packageProp);
-    return packagePropValue || null;
-  }
-
-  getLoaderEntryForFile(filepath) {
-    if (_path.default.basename(filepath) === 'package.json') {
-      const loader = this.loadPackageProp.bind(this);
-      return loader;
+    clearCaches() {
+        this.clearLoadCache();
+        this.clearSearchCache();
     }
-
-    const loaderKey = _path.default.extname(filepath) || 'noExt';
-    const loader = this.config.loaders[loaderKey];
-
-    if (!loader) {
-      throw new Error(`No loader specified for ${getExtensionDescription(filepath)}`);
+    toCosmiconfigResult(filepath, config) {
+        if (config === null) {
+            return null;
+        }
+        if (config === undefined) {
+            return { filepath, config: undefined, isEmpty: true };
+        }
+        if (this.config.applyPackagePropertyPathToConfiguration ||
+            this.#loadingMetaConfig) {
+            config = (0, util_js_1.getPropertyByPath)(config, this.config.packageProp);
+        }
+        if (config === undefined) {
+            return { filepath, config: undefined, isEmpty: true };
+        }
+        return { config, filepath };
     }
-
-    return loader;
-  }
-
-  loadedContentToCosmiconfigResult(filepath, loadedContent) {
-    if (loadedContent === null) {
-      return null;
-    }
-
-    if (loadedContent === undefined) {
-      return {
-        filepath,
-        config: undefined,
-        isEmpty: true
-      };
-    }
-
-    return {
-      config: loadedContent,
-      filepath
-    };
-  }
-
-  validateFilePath(filepath) {
-    if (!filepath) {
-      throw new Error('load must pass a non-empty string');
-    }
-  }
-
 }
-
 exports.ExplorerBase = ExplorerBase;
-
-function nextDirUp(dir) {
-  return _path.default.dirname(dir);
+/**
+ * @internal
+ */
+function getExtensionDescription(extension) {
+    /* istanbul ignore next -- @preserve */
+    return extension ? `extension "${extension}"` : 'files without extensions';
 }
-
-function getExtensionDescription(filepath) {
-  const ext = _path.default.extname(filepath);
-
-  return ext ? `extension "${ext}"` : 'files without extensions';
-}
+exports.getExtensionDescription = getExtensionDescription;
 //# sourceMappingURL=ExplorerBase.js.map

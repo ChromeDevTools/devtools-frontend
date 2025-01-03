@@ -2,7 +2,7 @@
 
 const { isString } = require('./validateTypes');
 
-/** @typedef {false | { match: string, pattern: string }} ReturnValue */
+/** @typedef {false | { match: string, pattern: string, substring: string }} ReturnValue */
 
 /**
  * Checks if a string contains a value. The comparison value can be a string or
@@ -11,9 +11,9 @@ const { isString } = require('./validateTypes');
  * Any strings starting and ending with `/` are ignored. Use the
  * matchesStringOrRegExp() util to match regexes.
  *
+ * @template {unknown} T
  * @param {string} input
- * @param {string | string[]} comparison
- *
+ * @param {T | T[]} comparison
  * @returns {ReturnValue}
  */
 module.exports = function containsString(input, comparison) {
@@ -33,10 +33,8 @@ module.exports = function containsString(input, comparison) {
 };
 
 /**
- *
  * @param {string} value
- * @param {string} comparison
- *
+ * @param {unknown} comparison
  * @returns {ReturnValue}
  */
 function testAgainstString(value, comparison) {
@@ -49,7 +47,7 @@ function testAgainstString(value, comparison) {
 	}
 
 	if (value.includes(comparison)) {
-		return { match: value, pattern: comparison };
+		return { match: value, pattern: comparison, substring: comparison };
 	}
 
 	return false;

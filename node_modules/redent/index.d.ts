@@ -1,8 +1,4 @@
-import {Options as IndentStringOptions} from 'indent-string';
-
-declare namespace redent {
-	type Options = IndentStringOptions;
-}
+import {Options} from 'indent-string';
 
 /**
 [Strip redundant indentation](https://github.com/sindresorhus/strip-indent) and [indent the string](https://github.com/sindresorhus/indent-string).
@@ -12,16 +8,16 @@ declare namespace redent {
 
 @example
 ```
-import redent = require('redent');
+import redent from 'redent';
 
 redent('\n  foo\n    bar\n', 1);
 //=> '\n foo\n   bar\n'
 ```
 */
-declare function redent(
+export default function redent(
 	string: string,
 	count?: number,
-	options?: redent.Options
+	options?: Options
 ): string;
 
-export = redent;
+export {Options};

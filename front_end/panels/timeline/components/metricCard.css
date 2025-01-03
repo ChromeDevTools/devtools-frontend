@@ -148,8 +148,7 @@ details.environment-recs[open] > summary::before {
   grid-template-columns: minmax(min-content, auto) minmax(20px, 50px) max-content;
   grid-auto-rows: 1fr;
   column-gap: 8px;
-  justify-items: flex-end;
-  align-items: center;
+  place-items: center flex-end;
 }
 
 .bucket-label {

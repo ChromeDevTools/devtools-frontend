@@ -1,8 +1,10 @@
 # flat-cache
 > A stupidly simple key/value storage using files to persist the data
 
-[![NPM Version](http://img.shields.io/npm/v/flat-cache.svg?style=flat)](https://npmjs.org/package/flat-cache)
-[![Build Status](https://api.travis-ci.org/royriojas/flat-cache.svg?branch=master)](https://travis-ci.org/royriojas/flat-cache)
+[![NPM Version](https://img.shields.io/npm/v/flat-cache.svg?style=flat)](https://npmjs.org/package/flat-cache)
+[![tests](https://github.com/jaredwray/flat-cache/actions/workflows/tests.yaml/badge.svg?branch=master)](https://github.com/jaredwray/flat-cache/actions/workflows/tests.yaml)
+[![codecov](https://codecov.io/github/jaredwray/flat-cache/branch/master/graph/badge.svg?token=KxR95XT3NF)](https://codecov.io/github/jaredwray/flat-cache)
+[![npm](https://img.shields.io/npm/dm/flat-cache)](https://npmjs.com/package/flat-cache)
 
 ## install
 

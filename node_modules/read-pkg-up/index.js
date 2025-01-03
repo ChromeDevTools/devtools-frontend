@@ -1,30 +1,27 @@
-'use strict';
-const path = require('path');
-const findUp = require('find-up');
-const readPkg = require('read-pkg');
+import path from 'path';
+import findUp from 'find-up';
+import {readPackageAsync, readPackageSync} from 'read-pkg';
 
-module.exports = async options => {
+export async function readPackageUpAsync(options) {
 	const filePath = await findUp('package.json', options);
-
 	if (!filePath) {
 		return;
 	}
 
 	return {
-		packageJson: await readPkg({...options, cwd: path.dirname(filePath)}),
+		packageJson: await readPackageAsync({...options, cwd: path.dirname(filePath)}),
 		path: filePath
 	};
-};
+}
 
-module.exports.sync = options => {
+export function readPackageUpSync(options) {
 	const filePath = findUp.sync('package.json', options);
-
 	if (!filePath) {
 		return;
 	}
 
 	return {
-		packageJson: readPkg.sync({...options, cwd: path.dirname(filePath)}),
+		packageJson: readPackageSync({...options, cwd: path.dirname(filePath)}),
 		path: filePath
 	};
-};
+}

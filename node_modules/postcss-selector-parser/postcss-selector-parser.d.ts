@@ -164,9 +164,9 @@ declare namespace parser {
         rawSpaceAfter: string;
         remove(): Node;
         replaceWith(...nodes: Node[]): Node;
-        next(): Node;
-        prev(): Node;
-        clone(opts: {[override: string]:any}): Node;
+        next(): Node | undefined;
+        prev(): Node | undefined;
+        clone(opts?: {[override: string]:any}): this;
         /**
          * Return whether this node includes the character at the position of the given line and column.
          * Returns undefined if the nodes lack sufficient source metadata to determine the position.
@@ -211,8 +211,8 @@ declare namespace parser {
         Child extends Node = Node
     > extends Base<Value> {
         nodes: Array<Child>;
-        append(selector: Selector): this;
-        prepend(selector: Selector): this;
+        append(selector: Child): this;
+        prepend(selector: Child): this;
         at(index: number): Child;
         /**
          * Return the most specific node at the line and column number given.
@@ -233,13 +233,13 @@ declare namespace parser {
         readonly last: Child;
         readonly length: number;
         removeChild(child: Child): this;
-        removeAll(): Container;
-        empty(): Container;
+        removeAll(): this;
+        empty(): this;
         insertAfter(oldNode: Child, newNode: Child): this;
         insertBefore(oldNode: Child, newNode: Child): this;
-        each(callback: (node: Child) => boolean | void): boolean | undefined;
+        each(callback: (node: Child, index: number) => boolean | void): boolean | undefined;
         walk(
-            callback: (node: Node) => boolean | void
+            callback: (node: Node, index: number) => boolean | void
         ): boolean | undefined;
         walkAttributes(
             callback: (node: Attribute) => boolean | void
@@ -500,18 +500,18 @@ declare namespace parser {
     }
     function pseudo(opts: ContainerOptions): Pseudo;
     /**
-     * Checks wether the node is the Psuedo subtype of node.
+     * Checks whether the node is the Pseudo subtype of node.
      */
     function isPseudo(node: any): node is Pseudo;
 
     /**
-     * Checks wether the node is, specifically, a pseudo element instead of
+     * Checks whether the node is, specifically, a pseudo element instead of
      * pseudo class.
      */
     function isPseudoElement(node: any): node is Pseudo;
 
     /**
-     * Checks wether the node is, specifically, a pseudo class instead of
+     * Checks whether the node is, specifically, a pseudo class instead of
      * pseudo element.
      */
     function isPseudoClass(node: any): node is Pseudo;
@@ -532,13 +532,13 @@ declare namespace parser {
     interface Identifier extends Base {
         type: "id";
     }
-    function id(opts: any): any;
+    function id(opts: any): Identifier;
     function isIdentifier(node: any): node is Identifier;
 
     interface Nesting extends Base {
         type: "nesting";
     }
-    function nesting(opts: any): any;
+    function nesting(opts?: any): Nesting;
     function isNesting(node: any): node is Nesting;
 
     interface String extends Base {
@@ -550,6 +550,6 @@ declare namespace parser {
     interface Universal extends Base {
         type: "universal";
     }
-    function universal(opts?: NamespaceOptions): any;
+    function universal(opts?: NamespaceOptions): Universal;
     function isUniversal(node: any): node is Universal;
 }

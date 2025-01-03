@@ -10,7 +10,11 @@ os:
 arch: amd64
 
 node_js:
-  - node
+  - 14
+  - 13
+  - 12
+  - 11
+  - 10
 
 script:
   - npm test

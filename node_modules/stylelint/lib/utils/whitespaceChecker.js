@@ -3,6 +3,7 @@
 const configurationError = require('./configurationError');
 const isSingleLineString = require('./isSingleLineString');
 const isWhitespace = require('./isWhitespace');
+const { assertFunction, isNullish } = require('./validateTypes');
 
 /**
  * @typedef {(message: string) => string} MessageFunction
@@ -215,20 +216,20 @@ module.exports = function whitespaceChecker(targetWhitespace, expectation, messa
 		const oneCharBefore = source[index - 1];
 		const twoCharsBefore = source[index - 2];
 
-		if (!isValue(oneCharBefore)) {
+		if (isNullish(oneCharBefore)) {
 			return;
 		}
 
 		if (
 			targetWhitespace === 'space' &&
 			oneCharBefore === ' ' &&
-			(activeArgs.onlyOneChar || !isWhitespace(twoCharsBefore))
+			(activeArgs.onlyOneChar || isNullish(twoCharsBefore) || !isWhitespace(twoCharsBefore))
 		) {
 			return;
 		}
 
 		assertFunction(messageFunc);
-		activeArgs.err(messageFunc(activeArgs.errTarget || source[index]));
+		activeArgs.err(messageFunc(activeArgs.errTarget || source.charAt(index)));
 	}
 
 	function expectBeforeAllowingIndentation(messageFunc = messages.expectedBefore) {
@@ -237,11 +238,7 @@ module.exports = function whitespaceChecker(targetWhitespace, expectation, messa
 		const index = _activeArgs2.index;
 		const err = _activeArgs2.err;
 
-		const expectedChar = (function () {
-			if (targetWhitespace === 'newline') {
-				return '\n';
-			}
-		})();
+		const expectedChar = targetWhitespace === 'newline' ? '\n' : undefined;
 		let i = index - 1;
 
 		while (source[i] !== expectedChar) {
@@ -251,7 +248,7 @@ module.exports = function whitespaceChecker(targetWhitespace, expectation, messa
 			}
 
 			assertFunction(messageFunc);
-			err(messageFunc(activeArgs.errTarget || source[index]));
+			err(messageFunc(activeArgs.errTarget || source.charAt(index)));
 
 			return;
 		}
@@ -264,9 +261,9 @@ module.exports = function whitespaceChecker(targetWhitespace, expectation, messa
 
 		const oneCharBefore = source[index - 1];
 
-		if (isValue(oneCharBefore) && isWhitespace(oneCharBefore)) {
+		if (!isNullish(oneCharBefore) && isWhitespace(oneCharBefore)) {
 			assertFunction(messageFunc);
-			activeArgs.err(messageFunc(activeArgs.errTarget || source[index]));
+			activeArgs.err(messageFunc(activeArgs.errTarget || source.charAt(index)));
 		}
 	}
 
@@ -284,8 +281,9 @@ module.exports = function whitespaceChecker(targetWhitespace, expectation, messa
 
 		const oneCharAfter = source[index + 1];
 		const twoCharsAfter = source[index + 2];
+		const threeCharsAfter = source[index + 3];
 
-		if (!isValue(oneCharAfter)) {
+		if (isNullish(oneCharAfter)) {
 			return;
 		}
 
@@ -294,13 +292,16 @@ module.exports = function whitespaceChecker(targetWhitespace, expectation, messa
 			if (
 				oneCharAfter === '\r' &&
 				twoCharsAfter === '\n' &&
-				(activeArgs.onlyOneChar || !isWhitespace(source[index + 3]))
+				(activeArgs.onlyOneChar || isNullish(threeCharsAfter) || !isWhitespace(threeCharsAfter))
 			) {
 				return;
 			}
 
 			// If index is followed by a Unix LF ...
-			if (oneCharAfter === '\n' && (activeArgs.onlyOneChar || !isWhitespace(twoCharsAfter))) {
+			if (
+				oneCharAfter === '\n' &&
+				(activeArgs.onlyOneChar || isNullish(twoCharsAfter) || !isWhitespace(twoCharsAfter))
+			) {
 				return;
 			}
 		}
@@ -308,13 +309,13 @@ module.exports = function whitespaceChecker(targetWhitespace, expectation, messa
 		if (
 			targetWhitespace === 'space' &&
 			oneCharAfter === ' ' &&
-			(activeArgs.onlyOneChar || !isWhitespace(twoCharsAfter))
+			(activeArgs.onlyOneChar || isNullish(twoCharsAfter) || !isWhitespace(twoCharsAfter))
 		) {
 			return;
 		}
 
 		assertFunction(messageFunc);
-		activeArgs.err(messageFunc(activeArgs.errTarget || source[index]));
+		activeArgs.err(messageFunc(activeArgs.errTarget || source.charAt(index)));
 	}
 
 	function rejectAfter(messageFunc = messages.rejectedAfter) {
@@ -324,9 +325,9 @@ module.exports = function whitespaceChecker(targetWhitespace, expectation, messa
 
 		const oneCharAfter = source[index + 1];
 
-		if (isValue(oneCharAfter) && isWhitespace(oneCharAfter)) {
+		if (!isNullish(oneCharAfter) && isWhitespace(oneCharAfter)) {
 			assertFunction(messageFunc);
-			activeArgs.err(messageFunc(activeArgs.errTarget || source[index]));
+			activeArgs.err(messageFunc(activeArgs.errTarget || source.charAt(index)));
 		}
 	}
 
@@ -337,20 +338,3 @@ module.exports = function whitespaceChecker(targetWhitespace, expectation, messa
 		afterOneOnly,
 	};
 };
-
-/**
- * @param {unknown} x
- */
-function isValue(x) {
-	return x !== undefined && x !== null;
-}
-
-/**
- * @param {unknown} x
- * @returns {asserts x is Function}
- */
-function assertFunction(x) {
-	if (typeof x !== 'function') {
-		throw new TypeError(`\`${x}\` must be a function`);
-	}
-}

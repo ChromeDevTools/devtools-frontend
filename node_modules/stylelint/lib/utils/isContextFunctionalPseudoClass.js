@@ -1,21 +1,24 @@
 'use strict';
 
-const keywordSets = require('../reference/keywordSets');
+const {
+	aNPlusBOfSNotationPseudoClasses,
+	logicalCombinationsPseudoClasses,
+} = require('../reference/selectors');
 
 /**
  * Check whether a node is a context-functional pseudo-class (i.e. either a logical combination
  * or a 'aNPlusBOfSNotationPseudoClasses' / tree-structural pseudo-class)
  *
- * @param {import('postcss-selector-parser').Pseudo} node postcss-selector-parser node (of type pseudo)
- * @return {boolean} If `true`, the node is a context-functional pseudo-class
+ * @param {import('postcss-selector-parser').Node} node - postcss-selector-parser node (of type pseudo)
+ * @return {node is import('postcss-selector-parser').Pseudo} If `true`, the node is a context-functional pseudo-class
  */
 module.exports = function isContextFunctionalPseudoClass(node) {
 	if (node.type === 'pseudo') {
 		const normalisedParentName = node.value.toLowerCase().replace(/:+/, '');
 
 		return (
-			keywordSets.logicalCombinationsPseudoClasses.has(normalisedParentName) ||
-			keywordSets.aNPlusBOfSNotationPseudoClasses.has(normalisedParentName)
+			logicalCombinationsPseudoClasses.has(normalisedParentName) ||
+			aNPlusBOfSNotationPseudoClasses.has(normalisedParentName)
 		);
 	}
 

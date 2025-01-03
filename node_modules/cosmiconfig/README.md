@@ -1,7 +1,6 @@
 # cosmiconfig
 
-[![Build Status](https://img.shields.io/travis/davidtheclark/cosmiconfig/main.svg?label=unix%20build)](https://travis-ci.org/davidtheclark/cosmiconfig) [![Build status](https://img.shields.io/appveyor/ci/davidtheclark/cosmiconfig/main.svg?label=windows%20build)](https://ci.appveyor.com/project/davidtheclark/cosmiconfig/branch/main)
-[![codecov](https://codecov.io/gh/davidtheclark/cosmiconfig/branch/main/graph/badge.svg)](https://codecov.io/gh/davidtheclark/cosmiconfig)
+[![codecov](https://codecov.io/gh/cosmiconfig/cosmiconfig/branch/main/graph/badge.svg)](https://codecov.io/gh/cosmiconfig/cosmiconfig)
 
 Cosmiconfig searches for and loads configuration for your program.
 
@@ -12,24 +11,24 @@ By default, Cosmiconfig will start where you tell it to start and search up the 
 
 - a `package.json` property
 - a JSON or YAML, extensionless "rc file"
-- an "rc file" with the extensions `.json`, `.yaml`, `.yml`, `.js`, or `.cjs`
+- an "rc file" with the extensions `.json`, `.yaml`, `.yml`, `.js`, `.ts`, `.mjs`, or `.cjs`
 - any of the above two inside a `.config` subdirectory
-- a `.config.js` or `.config.cjs` CommonJS module
+- a `.config.js`, `.config.ts`, `.config.mjs`, or `.config.cjs` file
 
 For example, if your module's name is "myapp", cosmiconfig will search up the directory tree for configuration in the following places:
 
 - a `myapp` property in `package.json`
 - a `.myapprc` file in JSON or YAML format
-- a `.myapprc.json`, `.myapprc.yaml`, `.myapprc.yml`, `.myapprc.js`, or `.myapprc.cjs` file
-- a `myapprc`, `myapprc.json`, `myapprc.yaml`, `myapprc.yml`, `myapprc.js` or `myapprc.cjs` file inside a `.config` subdirectory`
-- a `myapp.config.js` or `myapp.config.cjs` CommonJS module exporting an object
+- a `.myapprc.json`, `.myapprc.yaml`, `.myapprc.yml`, `.myapprc.js`, `.myapprc.ts`, `.myapprc.mjs`, or `.myapprc.cjs` file
+- a `myapprc`, `myapprc.json`, `myapprc.yaml`, `myapprc.yml`, `myapprc.js`, `myapprc.ts` or `myapprc.cjs` file inside a `.config` subdirectory
+- a `myapp.config.js`, `myapp.config.ts`, `myapp.config.mjs`, or `myapp.config.cjs` file
 
 Cosmiconfig continues to search up the directory tree, checking each of these places in each directory, until it finds some acceptable configuration (or hits the home directory).
 
 ## Table of contents
 
 - [Installation](#installation)
-- [Usage](#usage)
+- [Usage for tooling developers](#usage-for-tooling-developers)
 - [Result](#result)
 - [Asynchronous API](#asynchronous-api)
   - [cosmiconfig()](#cosmiconfig-1)
@@ -53,8 +52,10 @@ Cosmiconfig continues to search up the directory tree, checking each of these pl
   - [cache](#cache)
   - [transform](#transform)
   - [ignoreEmptySearchPlaces](#ignoreemptysearchplaces)
+- [Loading JS modules](#loading-js-modules)
 - [Caching](#caching)
 - [Differences from rc](#differences-from-rc)
+- [Usage for end users](#usage-for-end-users)
 - [Contributing & Development](#contributing--development)
 
 ## Installation
@@ -63,9 +64,12 @@ Cosmiconfig continues to search up the directory tree, checking each of these pl
 npm install cosmiconfig
 ```
 
-Tested in Node 10+.
+Tested in Node 14+.
 
-## Usage
+## Usage for tooling developers
+
+*If you are an end user (i.e. a user of a tool that uses cosmiconfig, like `prettier` or `stylelint`),
+you can skip down to [the end user section](#usage-for-end-users).*
 
 Create a Cosmiconfig explorer, then either `search` for or directly `load` a configuration file.
 
@@ -144,12 +148,13 @@ Here's how your default [`search()`] will work:
 - Starting from `process.cwd()` (or some other directory defined by the `searchFrom` argument to [`search()`]), look for configuration objects in the following places:
   1. A `goldengrahams` property in a `package.json` file.
   2. A `.goldengrahamsrc` file with JSON or YAML syntax.
-  3. A `.goldengrahamsrc.json`, `.goldengrahamsrc.yaml`, `.goldengrahamsrc.yml`, `.goldengrahamsrc.js`, or `.goldengrahamsrc.cjs` file.
-  4. A `goldengrahamsrc`, `goldengrahamsrc.json`, `goldengrahamsrc.yaml`, `goldengrahamsrc.yml`, `goldengrahamsrc.js`, or `goldengrahamsrc.cjs` file in the `.config` subdirectory.
-  5. A `goldengrahams.config.js` or `goldengrahams.config.cjs` CommonJS module exporting the object.
+  3. A `.goldengrahamsrc.json`, `.goldengrahamsrc.yaml`, `.goldengrahamsrc.yml`, `.goldengrahamsrc.js`, `.goldengrahamsrc.ts`, or `.goldengrahamsrc.cjs` file. (To learn more about how JS files are loaded, see ["Loading JS modules"].)
+  4. A `goldengrahamsrc`, `goldengrahamsrc.json`, `goldengrahamsrc.yaml`, `goldengrahamsrc.yml`, `goldengrahamsrc.js`, `goldengrahamsrc.ts`, or `goldengrahamsrc.cjs` file in the `.config` subdirectory.
+  5. A `goldengrahams.config.js`, `goldengrahams.config.ts`, `goldengrahams.config.mjs`, or `goldengrahams.config.cjs` file. (To learn more about how JS files are loaded, see ["Loading JS modules"].)
 - If none of those searches reveal a configuration object, move up one directory level and try again.
   So the search continues in `./`, `../`, `../../`, `../../../`, etc., checking the same places in each directory.
 - Continue searching until arriving at your home directory (or some other directory defined by the cosmiconfig option [`stopDir`]).
+- For JS files,
 - If at any point a parsable configuration is found, the [`search()`] Promise resolves with its [result] \(or, with [`explorerSync.search()`], the [result] is returned).
 - If no configuration object is found, the [`search()`] Promise resolves with `null` (or, with [`explorerSync.search()`], `null` is returned).
 - If a configuration object is found *but is malformed* (causing a parsing error), the [`search()`] Promise rejects with that error (so you should `.catch()` it). (Or, with [`explorerSync.search()`], the error is thrown.)
@@ -211,7 +216,7 @@ const explorerSync = cosmiconfigSync(moduleName[, cosmiconfigOptions])
 
 Creates a *synchronous* cosmiconfig instance ("explorerSync") configured according to the arguments, and initializes its caches.
 
-See [`cosmiconfig()`].
+See [`cosmiconfig()`](#cosmiconfig-1).
 
 ### explorerSync.search()
 
@@ -261,6 +266,8 @@ Each place is relative to the directory being searched, and the places are check
 
 **Default `searchPlaces`:**
 
+For the [asynchronous API](#asynchronous-api), these are the default `searchPlaces`:
+
 ```js
 [
   'package.json',
@@ -269,17 +276,24 @@ Each place is relative to the directory being searched, and the places are check
   `.${moduleName}rc.yaml`,
   `.${moduleName}rc.yml`,
   `.${moduleName}rc.js`,
+  `.${moduleName}rc.ts`,
+  `.${moduleName}rc.mjs`,
   `.${moduleName}rc.cjs`,
   `.config/${moduleName}rc`,
   `.config/${moduleName}rc.json`,
   `.config/${moduleName}rc.yaml`,
   `.config/${moduleName}rc.yml`,
   `.config/${moduleName}rc.js`,
+  `.config/${moduleName}rc.ts`,
   `.config/${moduleName}rc.cjs`,
   `${moduleName}.config.js`,
+  `${moduleName}.config.ts`,
+  `${moduleName}.config.mjs`,
   `${moduleName}.config.cjs`,
-]
+];
 ```
+
+For the [synchronous API](#synchronous-api), the only difference is that `.mjs` files are not included. See ["Loading JS modules"] for more information.
 
 Create your own array to search more, fewer, or altogether different places.
 
@@ -294,46 +308,26 @@ Examples, with a module named `porgy`:
 
 ```js
 // Disallow extensions on rc files:
-[
-  'package.json',
-  '.porgyrc',
-  'porgy.config.js'
-]
-
-// ESLint searches for configuration in these places:
-[
-  '.eslintrc.js',
-  '.eslintrc.yaml',
-  '.eslintrc.yml',
-  '.eslintrc.json',
-  '.eslintrc',
-  'package.json'
-]
-
-// Babel looks in fewer places:
-[
-  'package.json',
-  '.babelrc'
-]
-
-// Maybe you want to look for a wide variety of JS flavors:
-[
-  'porgy.config.js',
+['package.json', '.porgyrc', 'porgy.config.js'][
+  // Limit the options dramatically:
+  ('package.json', '.porgyrc')
+][
+  // Maybe you want to look for a wide variety of JS flavors:
+  ('porgy.config.js',
   'porgy.config.mjs',
   'porgy.config.ts',
-  'porgy.config.coffee'
-]
-// ^^ You will need to designate custom loaders to tell
-// Cosmiconfig how to handle these special JS flavors.
+  'porgy.config.coffee')
+][
+  // ^^ You will need to designate custom loaders to tell
+  // Cosmiconfig how to handle `.ts` and `.coffee` files.
 
-// Look within a .config/ subdirectory of every searched directory:
-[
-  'package.json',
+  // Look within a .config/ subdirectory of every searched directory:
+  ('package.json',
   '.porgyrc',
   '.config/.porgyrc',
   '.porgyrc.json',
-  '.config/.porgyrc.json'
-]
+  '.config/.porgyrc.json')
+];
 ```
 
 ### loaders
@@ -343,17 +337,30 @@ Default: See below.
 
 An object that maps extensions to the loader functions responsible for loading and parsing files with those extensions.
 
-Cosmiconfig exposes its default loaders on a named export `defaultLoaders`.
+Cosmiconfig exposes its default loaders on the named export `defaultLoaders` and `defaultLoadersSync`.
 
 **Default `loaders`:**
 
 ```js
-const { defaultLoaders } = require('cosmiconfig');
+const { defaultLoaders, defaultLoadersSync } = require('cosmiconfig');
 
-console.log(Object.entries(defaultLoaders))
+console.log(Object.entries(defaultLoaders));
 // [
+//   [ '.mjs', [Function: loadJs] ],
 //   [ '.cjs', [Function: loadJs] ],
 //   [ '.js', [Function: loadJs] ],
+//   [ '.ts', [Function: loadTs] ],
+//   [ '.json', [Function: loadJson] ],
+//   [ '.yaml', [Function: loadYaml] ],
+//   [ '.yml', [Function: loadYaml] ],
+//   [ 'noExt', [Function: loadYaml] ]
+// ]
+
+console.log(Object.entries(defaultLoadersSync));
+// [
+//   [ '.cjs', [Function: loadJsSync] ],
+//   [ '.js', [Function: loadJsSync] ],
+//   [ '.ts', [Function: loadTsSync] ],
 //   [ '.json', [Function: loadJson] ],
 //   [ '.yaml', [Function: loadYaml] ],
 //   [ '.yml', [Function: loadYaml] ],
@@ -375,7 +382,7 @@ To accomplish that, provide the following `loaders` value:
 
 ```js
 {
-  noExt: defaultLoaders['.json']
+  noExt: defaultLoaders['.json'];
 }
 ```
 
@@ -426,15 +433,11 @@ Examples:
 
 // Allow many flavors of JS, using custom loaders:
 {
-  '.mjs': esmLoader,
-  '.ts': typeScriptLoader,
   '.coffee': coffeeScriptLoader
 }
 
 // Allow many flavors of JS but rely on require hooks:
 {
-  '.mjs': defaultLoaders['.js'],
-  '.ts': defaultLoaders['.js'],
   '.coffee': defaultLoaders['.js']
 }
 ```
@@ -518,6 +521,18 @@ If you'd like to load empty configuration files, instead, set this option to `fa
 Why might you want to load empty configuration files?
 If you want to throw an error, or if an empty configuration file means something to your program.
 
+## Loading JS modules
+
+Your end users can provide JS configuration files as ECMAScript modules (ESM) under the following conditions:
+
+- You (the cosmiconfig user) use cosmiconfig's [asynchronous API](#asynchronous-api).
+- Your end user runs a version of Node that supports ESM ([>=12.17.0](https://nodejs.org/en/blog/release/v12.17.0/), or earlier with the `--experimental-modules` flag).
+- Your end user provides an `.mjs` configuration file, or a `.js` file whose nearest parent `package.json` file contains `"type": "module"`. (See [Node's method for determining a file's module system](https://nodejs.org/api/packages.html#packages_determining_module_system).)
+
+With cosmiconfig's [asynchronous API](#asynchronous-api), the default [`searchPlaces`] include `.js`, `.ts`, `.mjs`, and `.cjs` files. Cosmiconfig loads all these file types with the [dynamic `import` function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import#dynamic_imports).
+
+With the [synchronous API](#synchronous-api), JS configuration files are always treated as CommonJS, and `.mjs` files are ignored, because there is no synchronous API for the dynamic `import` function.
+
 ## Caching
 
 As of v2, cosmiconfig uses caching to reduce the need for repetitious reading of the filesystem or expensive transforms. Every new cosmiconfig instance (created with `cosmiconfig()`) has its own caches.
@@ -537,6 +552,93 @@ To avoid or work around caching, you can do the following:
 - Stops at the first configuration found, instead of finding all that can be found up the directory tree and merging them automatically.
 - Options.
 - Asynchronous by default (though can be run synchronously).
+
+## Usage for end users
+
+When configuring a tool, you can use multiple file formats and put these in multiple places.
+
+Usually, a tool would mention this in its own README file,
+but by default, these are the following places, where `{NAME}` represents the name of the tool:
+
+```
+package.json
+.{NAME}rc
+.{NAME}rc.json
+.{NAME}rc.yaml
+.{NAME}rc.yml
+.{NAME}rc.js
+.{NAME}rc.ts
+.{NAME}rc.cjs
+.config/{NAME}rc
+.config/{NAME}rc.json
+.config/{NAME}rc.yaml
+.config/{NAME}rc.yml
+.config/{NAME}rc.js
+.config/{NAME}rc.ts
+.config/{NAME}rc.cjs
+{NAME}.config.js
+{NAME}.config.ts
+{NAME}.config.cjs
+```
+
+The contents of these files are defined by the tool.
+For example, you can configure prettier to enforce semicolons at the end of the line
+using a file named `.config/prettierrc.yml`:
+
+```yaml
+semi: true
+```
+
+Additionally, you have the option to put a property named after the tool in your `package.json` file,
+with the contents of that property being the same as the file contents. To use the same example as above:
+
+```json
+{
+  "name": "your-project",
+  "dependencies": {},
+  "prettier": {
+    "semi": true
+  }
+}
+```
+
+This has the advantage that you can put the configuration of all tools
+(at least the ones that use cosmiconfig) in one file.
+
+You can also add a `cosmiconfig` key within your `package.json` file or create one of the following files
+to configure `cosmiconfig` itself:
+
+```
+.config.json
+.config.yaml
+.config.yml
+.config.js
+.config.ts
+.config.cjs
+```
+
+The following property is currently actively supported in these places:
+
+```yaml
+cosmiconfig:
+  # overrides where configuration files are being searched to enforce a custom naming convention and format
+  searchPlaces:
+    - .config/{name}.yml
+```
+
+> **Note:** technically, you can overwrite all options described in [cosmiconfigOptions](#cosmiconfigoptions) here,
+> but everything not listed above should be used at your own risk, as it has not been tested explicitly.
+
+You can also add more root properties outside the `cosmiconfig` property
+to configure your tools, entirely eliminating the need to look for additional configuration files:
+
+```yaml
+cosmiconfig:
+  searchPlaces: []
+
+prettier:
+  semi: true
+```
 
 ## Contributing & Development
 
@@ -579,3 +681,5 @@ And please do participate!
 [`explorer.search()`]: #explorersearch
 
 [`explorer.load()`]: #explorerload
+
+["Loading JS modules"]: #loading-js-modules

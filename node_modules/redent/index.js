@@ -1,5 +1,6 @@
-'use strict';
-const stripIndent = require('strip-indent');
-const indentString = require('indent-string');
+import stripIndent from 'strip-indent';
+import indentString from 'indent-string';
 
-module.exports = (string, count = 0, options) => indentString(stripIndent(string), count, options);
+export default function redent(string, count = 0, options = {}) {
+	return indentString(stripIndent(string), count, options);
+}

@@ -1,19 +1,17 @@
-declare namespace indentString {
-	interface Options {
-		/**
-		The string to use for the indent.
+export interface Options {
+	/**
+	The string to use for the indent.
 
-		@default ' '
-		*/
-		readonly indent?: string;
+	@default ' '
+	*/
+	readonly indent?: string;
 
-		/**
-		Also indent empty lines.
+	/**
+	Also indent empty lines.
 
-		@default false
-		*/
-		readonly includeEmptyLines?: boolean;
-	}
+	@default false
+	*/
+	readonly includeEmptyLines?: boolean;
 }
 
 /**
@@ -24,7 +22,7 @@ Indent each line in a string.
 
 @example
 ```
-import indentString = require('indent-string');
+import indentString from 'indent-string';
 
 indentString('Unicorns\nRainbows', 4);
 //=> '    Unicorns\n    Rainbows'
@@ -33,10 +31,8 @@ indentString('Unicorns\nRainbows', 4, {indent: '♥'});
 //=> '♥♥♥♥Unicorns\n♥♥♥♥Rainbows'
 ```
 */
-declare function indentString(
+export default function indentString(
 	string: string,
 	count?: number,
-	options?: indentString.Options
+	options?: Options
 ): string;
-
-export = indentString;

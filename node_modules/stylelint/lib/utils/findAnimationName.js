@@ -1,9 +1,9 @@
 'use strict';
 
-const getUnitFromValueNode = require('./getUnitFromValueNode');
+const getDimension = require('./getDimension');
 const isStandardSyntaxValue = require('./isStandardSyntaxValue');
 const isVariable = require('./isVariable');
-const keywordSets = require('../reference/keywordSets');
+const { animationShorthandKeywords, basicKeywords } = require('../reference/keywords');
 const postcssValueParser = require('postcss-value-parser');
 
 /** @typedef {import('postcss-value-parser').Node} Node */
@@ -20,16 +20,18 @@ module.exports = function findAnimationName(value) {
 	const animationNames = [];
 
 	const valueNodes = postcssValueParser(value);
+	const { nodes } = valueNodes;
 
 	// Handle `inherit`, `initial` and etc
-	if (
-		valueNodes.nodes.length === 1 &&
-		keywordSets.basicKeywords.has(valueNodes.nodes[0].value.toLowerCase())
-	) {
-		return [valueNodes.nodes[0]];
+	if (nodes.length === 1 && nodes[0] && basicKeywords.has(nodes[0].value.toLowerCase())) {
+		return [nodes[0]];
 	}
 
+	let shouldBeIgnored = false;
+
 	valueNodes.walk((valueNode) => {
+		if (shouldBeIgnored) return;
+
 		if (valueNode.type === 'function') {
 			return false;
 		}
@@ -42,6 +44,10 @@ module.exports = function findAnimationName(value) {
 
 		// Ignore non-standard syntax
 		if (!isStandardSyntaxValue(valueLowerCase)) {
+			// Cannot find animation name if shorthand has non-standard syntax value (#5532)
+			shouldBeIgnored = true;
+			animationNames.length = 0; // clears animationNames
+
 			return;
 		}
 
@@ -51,12 +57,12 @@ module.exports = function findAnimationName(value) {
 		}
 
 		// Ignore keywords for other animation parts
-		if (keywordSets.animationShorthandKeywords.has(valueLowerCase)) {
+		if (animationShorthandKeywords.has(valueLowerCase)) {
 			return;
 		}
 
 		// Ignore numbers with units
-		const unit = getUnitFromValueNode(valueNode);
+		const { unit } = getDimension(valueNode);
 
 		if (unit || unit === '') {
 			return;

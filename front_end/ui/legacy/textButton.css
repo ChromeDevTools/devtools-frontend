@@ -28,15 +28,15 @@
   background-color: var(--sys-color-state-hover-on-subtle);
 }
 
-.text-button:not(:disabled):not(.primary-button):focus-visible {
+.text-button:not(:disabled, .primary-button):focus-visible {
   outline: 2px solid var(--sys-color-state-focus-ring);
   color: var(--sys-color-on-primary);
   background-color: var(--sys-color-cdt-base-container);
 }
 
-.text-button:not(:disabled):not(.running):focus,
-.text-button:not(:disabled):not(.running):hover,
-.text-button:not(:disabled):not(.running):active {
+.text-button:not(:disabled, .running):focus,
+.text-button:not(:disabled, .running):hover,
+.text-button:not(:disabled, .running):active {
   color: var(--sys-color-primary);
 }
 
@@ -62,12 +62,12 @@
 }
 
 .text-button.primary-button:not(:disabled):active {
-  background-color: color-mix(in sRGB, var(--sys-color-primary), var(--sys-color-state-ripple-primary) 32%);
+  background-color: color-mix(in srgb, var(--sys-color-primary), var(--sys-color-state-ripple-primary) 32%);
   color: var(--sys-color-on-primary);
 }
 
 .text-button.primary-button:not(:disabled):hover {
-  background-color: color-mix(in sRGB, var(--sys-color-primary), var(--sys-color-state-hover-on-prominent) 6%);
+  background-color: color-mix(in srgb, var(--sys-color-primary), var(--sys-color-state-hover-on-prominent) 6%);
   color: var(--sys-color-on-primary);
 }
 

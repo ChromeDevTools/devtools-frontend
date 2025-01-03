@@ -53,8 +53,7 @@ devtools-text-prompt {
 
 .filtered-list-widget .vbox > div.container {
   flex: auto;
-  overflow-x: hidden;
-  overflow-y: auto;
+  overflow: hidden auto;
 }
 
 .filtered-list-widget-item-wrapper {

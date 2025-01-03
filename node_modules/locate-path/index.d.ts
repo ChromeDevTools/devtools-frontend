@@ -43,6 +43,17 @@ declare namespace locatePath {
 
 declare const locatePath: {
 	/**
+	Synchronously get the first path that exists on disk of multiple paths.
+
+	@param paths - Paths to check.
+	@returns The first path that exists or `undefined` if none exists.
+	*/
+	sync: (
+		paths: Iterable<string>,
+		options?: locatePath.Options
+	) => string | undefined;
+
+	/**
 	Get the first path that exists on disk of multiple paths.
 
 	@param paths - Paths to check.
@@ -65,19 +76,8 @@ declare const locatePath: {
 	```
 	*/
 	(paths: Iterable<string>, options?: locatePath.AsyncOptions): Promise<
-		string | undefined
+	string | undefined
 	>;
-
-	/**
-	Synchronously get the first path that exists on disk of multiple paths.
-
-	@param paths - Paths to check.
-	@returns The first path that exists or `undefined` if none exists.
-	*/
-	sync(
-		paths: Iterable<string>,
-		options?: locatePath.Options
-	): string | undefined;
 };
 
 export = locatePath;

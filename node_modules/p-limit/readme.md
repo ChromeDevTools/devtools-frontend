@@ -1,4 +1,4 @@
-# p-limit [![Build Status](https://travis-ci.org/sindresorhus/p-limit.svg?branch=master)](https://travis-ci.org/sindresorhus/p-limit)
+# p-limit
 
 > Run multiple promise-returning & async functions with limited concurrency
 

@@ -7,8 +7,8 @@ import {
 
 const AMPERSAND = 0x0026;       // U+0026 AMPERSAND (&)
 
-function consumeRaw(startToken) {
-    return this.Raw(startToken, this.consumeUntilSemicolonIncluded, true);
+function consumeRaw() {
+    return this.Raw(this.consumeUntilSemicolonIncluded, true);
 }
 
 export const name = 'DeclarationList';

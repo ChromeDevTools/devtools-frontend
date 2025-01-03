@@ -9,14 +9,14 @@ import {
 
 const AMPERSAND = 0x0026;       // U+0026 AMPERSAND (&)
 
-function consumeRaw(startToken) {
-    return this.Raw(startToken, null, true);
+function consumeRaw() {
+    return this.Raw(null, true);
 }
 function consumeRule() {
     return this.parseWithFallback(this.Rule, consumeRaw);
 }
-function consumeRawDeclaration(startToken) {
-    return this.Raw(startToken, this.consumeUntilSemicolonIncluded, true);
+function consumeRawDeclaration() {
+    return this.Raw(this.consumeUntilSemicolonIncluded, true);
 }
 function consumeDeclaration() {
     if (this.tokenType === Semicolon) {

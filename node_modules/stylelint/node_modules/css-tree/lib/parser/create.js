@@ -38,7 +38,7 @@ function createParseContext(name) {
 function fetchParseValues(dict) {
     const result = Object.create(null);
 
-    for (const name in dict) {
+    for (const name of Object.keys(dict)) {
         const item = dict[name];
         const fn = item.parse || item;
 
@@ -53,20 +53,21 @@ function fetchParseValues(dict) {
 function processConfig(config) {
     const parseConfig = {
         context: Object.create(null),
+        features: Object.assign(Object.create(null), config.features),
         scope: Object.assign(Object.create(null), config.scope),
         atrule: fetchParseValues(config.atrule),
         pseudo: fetchParseValues(config.pseudo),
         node: fetchParseValues(config.node)
     };
 
-    for (const name in config.parseContext) {
-        switch (typeof config.parseContext[name]) {
+    for (const [name, context] of Object.entries(config.parseContext)) {
+        switch (typeof context) {
             case 'function':
-                parseConfig.context[name] = config.parseContext[name];
+                parseConfig.context[name] = context;
                 break;
 
             case 'string':
-                parseConfig.context[name] = createParseContext(config.parseContext[name]);
+                parseConfig.context[name] = createParseContext(context);
                 break;
         }
     }
@@ -122,7 +123,7 @@ export function createParser(config) {
         },
 
         parseWithFallback(consumer, fallback) {
-            const startToken = this.tokenIndex;
+            const startIndex = this.tokenIndex;
 
             try {
                 return consumer.call(this);
@@ -131,7 +132,8 @@ export function createParser(config) {
                     throw e;
                 }
 
-                const fallbackNode = fallback.call(this, startToken);
+                this.skip(startIndex - this.tokenIndex);
+                const fallbackNode = fallback.call(this);
 
                 onParseErrorThrow = true;
                 onParseError(e, fallbackNode);
@@ -146,7 +148,7 @@ export function createParser(config) {
 
             do {
                 type = this.lookupType(offset++);
-                if (type !== WhiteSpace) {
+                if (type !== WhiteSpace && type !== Comment) {
                     return type;
                 }
             } while (type !== NULL);
@@ -284,7 +286,9 @@ export function createParser(config) {
                 source,
                 location.offset,
                 location.line,
-                location.column
+                location.column,
+                locationMap.startLine,
+                locationMap.startColumn
             );
         }
     });

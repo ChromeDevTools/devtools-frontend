@@ -7,8 +7,7 @@ export const structure = {
         'AttributeSelector',
         'PseudoClassSelector',
         'PseudoElementSelector',
-        'Combinator',
-        'WhiteSpace'
+        'Combinator'
     ]]
 };
 

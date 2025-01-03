@@ -13,6 +13,9 @@ export default {
         },
         mediaQueryList: 'MediaQueryList',
         mediaQuery: 'MediaQuery',
+        condition(options) {
+            return this.Condition(options.kind);
+        },
         rule: 'Rule',
         selectorList: 'SelectorList',
         selector: 'Selector',
@@ -22,6 +25,18 @@ export default {
         declarationList: 'DeclarationList',
         declaration: 'Declaration',
         value: 'Value'
+    },
+    features: {
+        supports: {
+            selector() {
+                return this.Selector();
+            }
+        },
+        container: {
+            style() {
+                return this.Declaration();
+            }
+        }
     },
     scope,
     atrule,

@@ -17,11 +17,11 @@ export const structure = {
     value: String
 };
 
-export function parse(startToken, consumeUntil, excludeWhiteSpace) {
-    const startOffset = this.getTokenStart(startToken);
+export function parse(consumeUntil, excludeWhiteSpace) {
+    const startOffset = this.getTokenStart(this.tokenIndex);
     let endOffset;
 
-    this.skipUntilBalanced(startToken, consumeUntil || this.consumeUntilBalanceEnd);
+    this.skipUntilBalanced(this.tokenIndex, consumeUntil || this.consumeUntilBalanceEnd);
 
     if (excludeWhiteSpace && this.tokenStart > startOffset) {
         endOffset = getOffsetExcludeWS.call(this);

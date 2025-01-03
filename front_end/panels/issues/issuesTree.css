@@ -90,7 +90,7 @@
 }
 
 p {
-  margin-block: 2px 2px;
+  margin-block: 2px;
 }
 
 /* Override selected tree item styles for issues to avoid changing width. */

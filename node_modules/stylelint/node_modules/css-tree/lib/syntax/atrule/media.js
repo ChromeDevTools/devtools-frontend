@@ -5,8 +5,8 @@ export default {
                 this.MediaQueryList()
             );
         },
-        block(isStyleBlock = false) {
-            return this.Block(isStyleBlock);
+        block(nested = false) {
+            return this.Block(nested);
         }
     }
 };

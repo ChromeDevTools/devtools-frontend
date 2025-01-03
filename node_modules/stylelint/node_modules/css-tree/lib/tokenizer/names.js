@@ -23,5 +23,6 @@ export default [
     '(-token',
     ')-token',
     '{-token',
-    '}-token'
+    '}-token',
+    'comment-token'
 ];

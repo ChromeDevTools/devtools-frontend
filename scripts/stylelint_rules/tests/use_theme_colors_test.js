@@ -6,9 +6,13 @@ const stylelint = require('stylelint');
 const path = require('path');
 const {assert} = require('chai');
 
-const config = {
-  plugins: [path.resolve(__dirname, '../lib/use_theme_colors.js')],
-  rules: {'plugin/use_theme_colors': [true]},
+const configBase = {
+  config: {
+    plugins: [path.resolve(__dirname, '../lib/use_theme_colors.mjs')],
+    rules: {'plugin/use_theme_colors': [true]},
+  },
+  // Remove once we use a ESM test runner
+  quietDeprecationWarnings: true,
 };
 
 async function lintAndGetWarnings(code) {
@@ -16,7 +20,7 @@ async function lintAndGetWarnings(code) {
     results: [{warnings}],
   } = await stylelint.lint({
     code,
-    config,
+    ...configBase,
   });
   return warnings;
 }
@@ -139,13 +143,13 @@ describe('use_theme_colors', () => {
 }`;
 
     process.env.THEME_COLORS_AUTOFIX = 1;
-    const {output} = await stylelint.lint({
+    const {code: outputCode} = await stylelint.lint({
       fix: true,
       code,
-      config,
+      ...configBase,
     });
     assert.strictEqual(
-        output,
+        outputCode,
         `p {
     background: #fff; /* stylelint-disable-line plugin/use_theme_colors */
     /* See: crbug.com/1152736 for color variable migration. */
@@ -167,13 +171,13 @@ describe('use_theme_colors', () => {
 }`;
 
     process.env.THEME_COLORS_AUTOFIX = 1;
-    const {output} = await stylelint.lint({
+    const {code: outputCode} = await stylelint.lint({
       fix: true,
       code,
-      config,
+      ...configBase,
     });
     assert.strictEqual(
-        output,
+        outputCode,
         `p {
     background: #fff; /* stylelint-disable-line plugin/use_theme_colors */
     /* See: crbug.com/1152736 for color variable migration. */
@@ -186,12 +190,12 @@ describe('use_theme_colors', () => {
   });
 
   it('does not autofix valid variable color usage', async () => {
-    const {output} = await stylelint.lint({
+    const {code: outputCode} = await stylelint.lint({
       fix: true,
       code: 'p { color: var(--color-primary-old); }',
-      config,
+      ...configBase,
     });
-    assert.strictEqual(output, 'p { color: var(--color-primary-old); }');
+    assert.strictEqual(outputCode, 'p { color: var(--color-primary-old); }');
   });
 
   it('errors when a variable is used that is not defined in themeColors', async () => {

@@ -14,6 +14,7 @@ export function walk(node, options, context) {
                 break;
 
             case 'Multiplier':
+            case 'Boolean':
                 walk(node.term);
                 break;
 

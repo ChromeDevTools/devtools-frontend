@@ -1,7 +1,7 @@
 import { LeftCurlyBracket } from '../../tokenizer/index.js';
 
-function consumeRaw(startToken) {
-    return this.Raw(startToken, this.consumeUntilLeftCurlyBracket, true);
+function consumeRaw() {
+    return this.Raw(this.consumeUntilLeftCurlyBracket, true);
 }
 
 function consumePrelude() {

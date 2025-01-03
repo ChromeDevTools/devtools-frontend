@@ -17,7 +17,7 @@ export default function() {
         const startIndex = this.tokenIndex;
         const value = this.parseCustomProperty
             ? this.Value(null)
-            : this.Raw(this.tokenIndex, this.consumeUntilExclamationMarkOrSemicolon, false);
+            : this.Raw(this.consumeUntilExclamationMarkOrSemicolon, false);
 
         if (value.type === 'Value' && value.children.isEmpty) {
             for (let offset = startIndex - this.tokenIndex; offset <= 0; offset++) {

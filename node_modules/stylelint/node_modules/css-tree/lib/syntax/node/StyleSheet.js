@@ -8,8 +8,8 @@ import {
 
 const EXCLAMATIONMARK = 0x0021; // U+0021 EXCLAMATION MARK (!)
 
-function consumeRaw(startToken) {
-    return this.Raw(startToken, null, false);
+function consumeRaw() {
+    return this.Raw(null, false);
 }
 
 export const name = 'StyleSheet';

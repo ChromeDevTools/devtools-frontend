@@ -32,8 +32,7 @@ function processChunk(chunk) {
 export function createGenerator(config) {
     const types = new Map();
 
-    for (let name in config.node) {
-        const item = config.node[name];
+    for (let [name, item] of Object.entries(config.node)) {
         const fn = item.generate || item;
 
         if (typeof fn === 'function') {

@@ -257,7 +257,7 @@ def _CheckDevToolsRunBuildTests(input_api, output_api):
 def _CheckDevToolsLint(input_api, output_api):
     results = [output_api.PresubmitNotifyResult('Lint Check:')]
     lint_path = input_api.os_path.join(input_api.PresubmitLocalPath(),
-                                       'scripts', 'test', 'run_lint_check.js')
+                                       'scripts', 'test', 'run_lint_check.mjs')
 
     front_end_directory = input_api.os_path.join(
         input_api.PresubmitLocalPath(), 'front_end')
@@ -292,7 +292,8 @@ def _CheckDevToolsLint(input_api, output_api):
                                '.stylelintrc.json'),
         input_api.os_path.join(input_api.PresubmitLocalPath(),
                                '.stylelintignore'),
-        input_api.os_path.join(scripts_directory, 'test', 'run_lint_check.js'),
+        input_api.os_path.join(scripts_directory, 'test',
+                               'run_lint_check.mjs'),
     ]
 
     lint_config_files = _getAffectedFiles(input_api, lint_related_files, [],

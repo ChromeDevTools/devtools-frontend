@@ -435,7 +435,7 @@ function internalMatch(tokens, state, syntaxes) {
                 }
 
                 openSyntax();
-                state = dictSyntax.match;
+                state = dictSyntax.matchRef || dictSyntax.match;
                 break;
             }
 

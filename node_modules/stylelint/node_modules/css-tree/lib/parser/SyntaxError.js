@@ -4,7 +4,7 @@ const MAX_LINE_LENGTH = 100;
 const OFFSET_CORRECTION = 60;
 const TAB_REPLACEMENT = '    ';
 
-function sourceFragment({ source, line, column }, extraLines) {
+function sourceFragment({ source, line, column, baseLine, baseColumn }, extraLines) {
     function processLines(start, end) {
         return lines
             .slice(start, end)
@@ -13,7 +13,9 @@ function sourceFragment({ source, line, column }, extraLines) {
             ).join('\n');
     }
 
-    const lines = source.split(/\r\n?|\n|\f/);
+    const prelines = '\n'.repeat(Math.max(baseLine - 1, 0));
+    const precolumns = ' '.repeat(Math.max(baseColumn - 1, 0));
+    const lines = (prelines + precolumns + source).split(/\r\n?|\n|\f/);
     const startLine = Math.max(1, line - extraLines) - 1;
     const endLine = Math.min(line + extraLines, lines.length + 1);
     const maxNumLength = Math.max(4, String(endLine).length) + 1;
@@ -41,22 +43,25 @@ function sourceFragment({ source, line, column }, extraLines) {
         processLines(startLine, line),
         new Array(column + maxNumLength + 2).join('-') + '^',
         processLines(line, endLine)
-    ].filter(Boolean).join('\n');
+    ].filter(Boolean)
+        .join('\n')
+        .replace(/^(\s+\d+\s+\|\n)+/, '')
+        .replace(/\n(\s+\d+\s+\|)+$/, '');
 }
 
-export function SyntaxError(message, source, offset, line, column) {
+export function SyntaxError(message, source, offset, line, column, baseLine = 1, baseColumn = 1) {
     const error = Object.assign(createCustomError('SyntaxError', message), {
         source,
         offset,
         line,
         column,
         sourceFragment(extraLines) {
-            return sourceFragment({ source, line, column }, isNaN(extraLines) ? 0 : extraLines);
+            return sourceFragment({ source, line, column, baseLine, baseColumn }, isNaN(extraLines) ? 0 : extraLines);
         },
         get formattedMessage() {
             return (
                 `Parse error: ${message}\n` +
-                sourceFragment({ source, line, column }, 2)
+                sourceFragment({ source, line, column, baseLine, baseColumn }, 2)
             );
         }
     });

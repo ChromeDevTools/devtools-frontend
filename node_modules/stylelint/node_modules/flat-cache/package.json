@@ -1,0 +1,61 @@
+{
+  "name": "flat-cache",
+  "version": "5.0.0",
+  "description": "A stupidly simple key/value storage using files to persist some data",
+  "repository": "jaredwray/flat-cache",
+  "license": "MIT",
+  "author": {
+    "name": "Jared Wray",
+    "url": "https://jaredwray.com"
+  },
+  "main": "src/cache.js",
+  "files": [
+    "src/cache.js",
+    "src/del.js",
+    "src/utils.js"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "precommit": [
+    "npm run test"
+  ],
+  "prepush": [
+    "npm run test"
+  ],
+  "scripts": {
+    "clean": "rimraf ./node_modules ./package-lock.json ./yarn.lock ./coverage",
+    "test:ci": "xo && c8 --reporter=lcov mocha -R spec test/specs",
+    "test": "xo --fix && c8 mocha -R spec test/specs"
+  },
+  "keywords": [
+    "json cache",
+    "simple cache",
+    "file cache",
+    "key par",
+    "key value",
+    "cache"
+  ],
+  "devDependencies": {
+    "c8": "^9.1.0",
+    "chai": "^4.3.10",
+    "glob-expand": "^0.2.1",
+    "mocha": "^10.4.0",
+    "rimraf": "^5.0.7",
+    "sinon": "^18.0.0",
+    "webpack": "^5.91.0",
+    "write": "^2.0.0",
+    "xo": "^0.58.0"
+  },
+  "dependencies": {
+    "flatted": "^3.3.1",
+    "keyv": "^4.5.4"
+  },
+  "xo": {
+    "rules": {
+      "unicorn/prefer-module": "off",
+      "n/prefer-global/process": "off",
+      "unicorn/prevent-abbreviations": "off"
+    }
+  }
+}

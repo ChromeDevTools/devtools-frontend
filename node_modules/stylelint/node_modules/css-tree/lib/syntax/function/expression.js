@@ -2,6 +2,6 @@
 // expression( <any-value> )
 export default function() {
     return this.createSingleNodeList(
-        this.Raw(this.tokenIndex, null, false)
+        this.Raw(null, false)
     );
 }

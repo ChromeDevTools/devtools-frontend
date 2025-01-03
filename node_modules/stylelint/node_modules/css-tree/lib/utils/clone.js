@@ -3,7 +3,7 @@ import { List } from './List.js';
 export function clone(node) {
     const result = {};
 
-    for (const key in node) {
+    for (const key of Object.keys(node)) {
         let value = node[key];
 
         if (value) {

@@ -1,48 +1,53 @@
-import { isDigit, Delim, Number as NumberToken } from '../../tokenizer/index.js';
+import {
+    Delim,
+    Number as NumberToken,
+    Function as FunctionToken
+} from '../../tokenizer/index.js';
 
 const SOLIDUS = 0x002F;  // U+002F SOLIDUS (/)
-const FULLSTOP = 0x002E; // U+002E FULL STOP (.)
 
-// Terms of <ratio> should be a positive numbers (not zero or negative)
-// (see https://drafts.csswg.org/mediaqueries-3/#values)
-// However, -o-min-device-pixel-ratio takes fractional values as a ratio's term
-// and this is using by various sites. Therefore we relax checking on parse
-// to test a term is unsigned number without an exponent part.
-// Additional checking may be applied on lexer validation.
-function consumeNumber() {
+// Media Queries Level 3 defines terms of <ratio> as a positive (not zero or negative)
+// integers (see https://drafts.csswg.org/mediaqueries-3/#values)
+// However, Media Queries Level 4 removes any definition of values
+// (see https://drafts.csswg.org/mediaqueries-4/#values) and refers to
+// CSS Values and Units for detail. In CSS Values and Units Level 4 a <ratio>
+// definition was added (see https://drafts.csswg.org/css-values-4/#ratios) which
+// defines ratio as "<number [0,∞]> [ / <number [0,∞]> ]?" and based on it
+// any constrains on terms were removed. Parser also doesn't test numbers
+// in any way to make possible for linting and fixing them by the tools using CSSTree.
+// An additional syntax examination may be applied by a lexer.
+function consumeTerm() {
     this.skipSC();
 
-    const value = this.consume(NumberToken);
+    switch (this.tokenType) {
+        case NumberToken:
+            return this.Number();
 
-    for (let i = 0; i < value.length; i++) {
-        const code = value.charCodeAt(i);
-        if (!isDigit(code) && code !== FULLSTOP) {
-            this.error('Unsigned number is expected', this.tokenStart - value.length + i);
-        }
+        case FunctionToken:
+            return this.Function(this.readSequence, this.scope.Value);
+
+        default:
+            this.error('Number of function is expected');
     }
-
-    if (Number(value) === 0) {
-        this.error('Zero number is not allowed', this.tokenStart - value.length);
-    }
-
-    return value;
 }
 
 export const name = 'Ratio';
 export const structure = {
-    left: String,
-    right: String
+    left: ['Number', 'Function'],
+    right: ['Number', 'Function', null]
 };
 
-// <positive-integer> S* '/' S* <positive-integer>
+// <number [0,∞]> [ / <number [0,∞]> ]?
 export function parse() {
     const start = this.tokenStart;
-    const left = consumeNumber.call(this);
-    let right;
+    const left = consumeTerm.call(this);
+    let right = null;
 
     this.skipSC();
-    this.eatDelim(SOLIDUS);
-    right = consumeNumber.call(this);
+    if (this.isDelim(SOLIDUS)) {
+        this.eatDelim(SOLIDUS);
+        right = consumeTerm.call(this);
+    }
 
     return {
         type: 'Ratio',
@@ -53,7 +58,11 @@ export function parse() {
 }
 
 export function generate(node) {
-    this.token(NumberToken, node.left);
+    this.node(node.left);
     this.token(Delim, '/');
-    this.token(NumberToken, node.right);
+    if (node.right) {
+        this.node(node.right);
+    } else {
+        this.node(NumberToken, 1);
+    }
 }

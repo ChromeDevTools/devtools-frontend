@@ -76,6 +76,10 @@ function internalGenerate(node, decorate, forceBraces, compact) {
                 decorate(generateMultiplier(node), node)
             );
 
+        case 'Boolean':
+            result = '<boolean-expr[' + internalGenerate(node.term, decorate, forceBraces, compact) + ']>';
+            break;
+
         case 'Type':
             result = '<' + node.name + (node.opts ? decorate(generateTypeOpts(node.opts), node.opts) : '') + '>';
             break;

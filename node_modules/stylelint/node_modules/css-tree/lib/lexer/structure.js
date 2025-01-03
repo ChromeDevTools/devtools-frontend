@@ -99,6 +99,27 @@ function createNodeStructureChecker(type, fields) {
     };
 }
 
+function genTypesList(fieldTypes, path) {
+    const docsTypes = [];
+
+    for (let i = 0; i < fieldTypes.length; i++) {
+        const fieldType = fieldTypes[i];
+        if (fieldType === String || fieldType === Boolean) {
+            docsTypes.push(fieldType.name.toLowerCase());
+        } else if (fieldType === null) {
+            docsTypes.push('null');
+        } else if (typeof fieldType === 'string') {
+            docsTypes.push(fieldType);
+        } else if (Array.isArray(fieldType)) {
+            docsTypes.push('List<' + (genTypesList(fieldType, path) || 'any') + '>'); // TODO: use type enum
+        } else {
+            throw new Error('Wrong value `' + fieldType + '` in `' + path + '` structure definition');
+        }
+    }
+
+    return docsTypes.join(' | ');
+}
+
 function processStructure(name, nodeType) {
     const structure = nodeType.structure;
     const fields = {
@@ -114,27 +135,11 @@ function processStructure(name, nodeType) {
             continue;
         }
 
-        const docsTypes = [];
         const fieldTypes = fields[key] = Array.isArray(structure[key])
             ? structure[key].slice()
             : [structure[key]];
 
-        for (let i = 0; i < fieldTypes.length; i++) {
-            const fieldType = fieldTypes[i];
-            if (fieldType === String || fieldType === Boolean) {
-                docsTypes.push(fieldType.name);
-            } else if (fieldType === null) {
-                docsTypes.push('null');
-            } else if (typeof fieldType === 'string') {
-                docsTypes.push('<' + fieldType + '>');
-            } else if (Array.isArray(fieldType)) {
-                docsTypes.push('List'); // TODO: use type enum
-            } else {
-                throw new Error('Wrong value `' + fieldType + '` in `' + name + '.' + key + '` structure definition');
-            }
-        }
-
-        docs[key] = docsTypes.join(' | ');
+        docs[key] = genTypesList(fieldTypes, name + '.' + key);
     }
 
     return {

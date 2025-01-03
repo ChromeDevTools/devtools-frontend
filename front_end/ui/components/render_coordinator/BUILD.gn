@@ -7,15 +7,10 @@ import("../../../../scripts/build/ninja/devtools_module.gni")
 import("../../../../scripts/build/typescript/typescript.gni")
 import("../visibility.gni")
 
-devtools_module("render_coordinator") {
-  sources = [ "RenderCoordinator.ts" ]
-  deps = [ "../../../core/platform:bundle" ]
-}
-
 devtools_entrypoint("bundle") {
   entrypoint = "render_coordinator.ts"
 
-  deps = [ ":render_coordinator" ]
+  deps = [ "../../../core/platform:bundle" ]
 
   visibility = default_components_visibility
 }

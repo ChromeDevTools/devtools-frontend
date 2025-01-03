@@ -8504,6 +8504,10 @@ export const NativeFunctions = [
     signatures: [["string","?weight"]]
   },
   {
+    name: "SpeechRecognitionContext",
+    signatures: [["phrases"]]
+  },
+  {
     name: "SpeechRecognitionErrorEvent",
     signatures: [["type","?eventInitDict"]]
   },

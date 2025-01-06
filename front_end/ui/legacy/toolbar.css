@@ -50,6 +50,14 @@
   white-space: pre;
   overflow: hidden;
   max-width: 100%;
+
+  /* Some toolbars have a different cursor on hover (for example, resizeable
+   * ones which can be clicked + dragged to move). But we want to make sure
+   * by default each toolbar item shows the default cursor, because you
+   * cannot click + drag on the item to resize the toolbar container, you
+   * have to click + drag only on empty space. See crbug.com/371838044 for
+   * an example. */
+  cursor: default;
 }
 
 devtools-adorner.fix-perf-icon {

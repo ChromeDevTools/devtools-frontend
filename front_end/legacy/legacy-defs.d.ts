@@ -63,7 +63,6 @@ declare namespace Adb {
 interface Element {
   boxInWindow(targetWindow?: Window): AnchorBox;
   createChild<K extends keyof HTMLElementTagNameMap>(tagName: K, className?: string): HTMLElementTagNameMap[K];
-  createChild(tagName: string, className?: string): Element;
   hasFocus(): boolean;
   positionAt(x: (number|undefined), y: (number|undefined), relativeTo?: Element): void;
   removeChildren(): void;
@@ -72,7 +71,6 @@ interface Element {
 
 interface DocumentFragment {
   createChild<K extends keyof HTMLElementTagNameMap>(tagName: K, className?: string): HTMLElementTagNameMap[K];
-  createChild(tagName: string, className?: string): Element;
 }
 
 interface Event {

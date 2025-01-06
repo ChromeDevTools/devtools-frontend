@@ -1275,7 +1275,10 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
 
     const localLink = UI.XLink.XLink.create(
         'https://developer.chrome.com/docs/devtools/performance/extension', i18nString(UIStrings.learnMore));
-    localLink.style.paddingLeft = '5px';
+    // Has to be done in JS because the element is inserted into the
+    // checkbox's shadow DOM so any styling into timelinePanel.css would
+    // not apply.
+    localLink.style.marginLeft = '5px';
     thirdPartyCheckbox.element.shadowRoot?.appendChild(localLink);
     thirdPartyToolbar.appendToolbarItem(thirdPartyCheckbox);
 

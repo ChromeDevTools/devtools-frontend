@@ -40,28 +40,28 @@ export function getReleaseNote(): ReleaseNote {
 }
 
 let releaseNote: ReleaseNote = {
-  version: 73,
-  header: 'What\'s new in DevTools 132',
+  version: 74,
+  header: 'What\'s new in DevTools 133',
   markdownLinks: [
     {
-      key: 'ai-assistance',
-      link: 'https://developer.chrome.com/blog/new-in-devtools-132/#ai-assistance',
+      key: 'persistent-chat-history',
+      link: 'https://developer.chrome.com/blog/new-in-devtools-133/#persistent-chat-history',
     },
     {
-      key: 'chat-history',
-      link: 'https://developer.chrome.com/blog/new-in-devtools-132/#chat-history',
+      key: 'perf-nav',
+      link: 'https://developer.chrome.com/blog/new-in-devtools-133/#perf-nav',
     },
     {
-      key: 'interaction-phases',
-      link: 'https://developer.chrome.com/blog/new-in-devtools-132/#interaction-phases',
+      key: 'perf-image-delivery',
+      link: 'https://developer.chrome.com/blog/new-in-devtools-133/#perf-image-delivery',
     },
   ],
   videoLinks: [
     {
-      description: 'Highlights from the Chrome 132 update',
-      link: 'https://developer.chrome.com/blog/new-in-devtools-132/' as Platform.DevToolsPath.UrlString,
+      description: 'Highlights of updates from Chrome 130-132',
+      link: 'https://www.youtube.com/watch?v=kzDUe-f4gac' as Platform.DevToolsPath.UrlString,
       type: VideoType.WHATS_NEW,
     },
   ],
-  link: 'https://developer.chrome.com/blog/new-in-devtools-132/',
+  link: 'https://developer.chrome.com/blog/new-in-devtools-133/',
 };

@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Common from '../../core/common/common.js';
+import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
@@ -451,8 +451,11 @@ export class CookieReportView extends UI.Widget.VBox {
         })}`;
       }
       case Protocol.Audits.InsightType.GracePeriod: {
+        const url = SDK.TargetManager.TargetManager.instance().primaryPageTarget()?.inspectedURL();
         const gracePeriodLink = UI.XLink.XLink.create(
             'https://developers.google.com/privacy-sandbox/cookies/dashboard?url=' +
+                // The order of the URLs matters - needs to be 1P + 3P.
+                (url ? Common.ParsedURL.ParsedURL.fromString(url)?.host + '+' : '') +
                 (domain.charAt(0) === '.' ? domain.substring(1) : domain),
             i18nString(UIStrings.reportedIssues), undefined, undefined, 'compatibility-lookup-link');
 

@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Trace from '../../../models/trace/trace.js';
+import {dispatchClickEvent} from '../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {
   makeInstantEvent,
@@ -394,6 +395,40 @@ describeWithEnvironment('Overlays', () => {
       // Ensure that the overlay was created.
       const overlayDOM = container.querySelector<HTMLElement>('.overlay-type-ENTRY_LABEL');
       assert.isOk(overlayDOM);
+    });
+
+    it('dispatches an event when the entry label overlay is clicked', async function() {
+      const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+      const {overlays, container, charts} = setupChartWithDimensionsAndAnnotationOverlayListeners(parsedTrace);
+      const event = charts.mainProvider.eventByIndex?.(50);
+      assert.isOk(event);
+
+      overlays.add({
+        type: 'ENTRY_LABEL',
+        entry: event,
+        label: 'entry label',
+      });
+      await overlays.update();
+
+      // Ensure that the overlay was created.
+      const overlayDOM = container.querySelector<HTMLElement>('.overlay-type-ENTRY_LABEL');
+      assert.isOk(overlayDOM);
+
+      const overlayClick = new Promise<Overlays.Overlays.EntryLabel>(resolve => {
+        overlays.addEventListener(Overlays.Overlays.EntryLabelMouseClick.eventName, e => {
+          const event = e as Overlays.Overlays.EntryLabelMouseClick;
+          resolve(event.overlay);
+        }, {once: true});
+      });
+
+      dispatchClickEvent(overlayDOM);
+      const overlayFromEvent = await overlayClick;
+      // Check that the event was dispatched on the right overlay.
+      assert.deepEqual(overlayFromEvent, {
+        type: 'ENTRY_LABEL',
+        entry: event,
+        label: 'entry label',
+      });
     });
 
     it('toggles overlays container display', async function() {

@@ -71,9 +71,8 @@ export const SORT_ORDER_PAGE_LOAD_MARKERS: Readonly<Record<string, number>> = {
 // on top of each other.
 const TIMESTAMP_THRESHOLD_MS = Trace.Types.Timing.MicroSeconds(10);
 
-export class TimelineFlameChartView extends
-    Common.ObjectWrapper.eventMixin<TimelineTreeView.EventTypes, typeof UI.Widget.VBox>(UI.Widget.VBox)
-        implements PerfUI.FlameChart.FlameChartDelegate, UI.SearchableView.Searchable {
+export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.VBox>(
+    UI.Widget.VBox) implements PerfUI.FlameChart.FlameChartDelegate, UI.SearchableView.Searchable {
   private readonly delegate: TimelineModeViewDelegate;
   /**
    * Tracks the indexes of matched entries when the user searches the panel.
@@ -256,6 +255,16 @@ export class TimelineFlameChartView extends
               null;
         },
       },
+    });
+
+    this.#overlays.addEventListener(Overlays.Overlays.EntryLabelMouseClick.eventName, event => {
+      const {overlay} = (event as Overlays.Overlays.EntryLabelMouseClick);
+      this.dispatchEventToListeners(
+          Events.ENTRY_LABEL_ANNOTATION_CLICKED,
+          {
+            entry: overlay.entry,
+          },
+      );
     });
 
     this.#overlays.addEventListener(Overlays.Overlays.AnnotationOverlayActionEvent.eventName, event => {
@@ -1680,3 +1689,12 @@ export function groupForLevel(groups: PerfUI.FlameChart.Group[], level: number):
   });
   return groupForLevel ?? null;
 }
+
+export const enum Events {
+  ENTRY_LABEL_ANNOTATION_CLICKED = 'EntryLabelAnnotationClicked',
+}
+export type EventTypes = {
+  [Events.ENTRY_LABEL_ANNOTATION_CLICKED]: {
+    entry: Trace.Types.Events.Event,
+  },
+};

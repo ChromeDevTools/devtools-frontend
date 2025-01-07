@@ -387,6 +387,13 @@ export class TimeRangeMouseOutEvent extends Event {
   }
 }
 
+export class EntryLabelMouseClick extends Event {
+  static readonly eventName = 'entrylabelmouseclick';
+  constructor(public overlay: EntryLabel) {
+    super(EntryLabelMouseClick.eventName, {composed: true, bubbles: true});
+  }
+}
+
 interface EntriesLinkVisibleEntries {
   entryFrom: Trace.Types.Events.Event;
   entryTo: Trace.Types.Events.Event|undefined;
@@ -1443,12 +1450,12 @@ export class Overlays extends EventTarget {
   }
 
   #createElementForNewOverlay(overlay: TimelineOverlay): HTMLElement {
-    const div = document.createElement('div');
-    div.classList.add('overlay-item', `overlay-type-${overlay.type}`);
+    const overlayElement = document.createElement('div');
+    overlayElement.classList.add('overlay-item', `overlay-type-${overlay.type}`);
 
     const jslogContext = jsLogContext(overlay);
     if (jslogContext) {
-      div.setAttribute('jslog', `${VisualLogging.item(jslogContext)}`);
+      overlayElement.setAttribute('jslog', `${VisualLogging.item(jslogContext)}`);
     }
 
     switch (overlay.type) {
@@ -1463,8 +1470,13 @@ export class Overlays extends EventTarget {
           overlay.label = newLabel;
           this.dispatchEvent(new AnnotationOverlayActionEvent(overlay, 'Update'));
         });
-        div.appendChild(component);
-        return div;
+        overlayElement.appendChild(component);
+        overlayElement.addEventListener('click', event => {
+          event.preventDefault();
+          event.stopPropagation();
+          this.dispatchEvent(new EntryLabelMouseClick(overlay));
+        });
+        return overlayElement;
       }
       case 'ENTRIES_LINK': {
         const entries = this.#calculateFromAndToForEntriesLink(overlay);
@@ -1472,7 +1484,7 @@ export class Overlays extends EventTarget {
           // For some reason, we don't have two entries we can draw between
           // (can happen if the user has collapsed an icicle in the flame
           // chart, or a track), so just draw an empty div.
-          return div;
+          return overlayElement;
         }
         const entryEndX = this.xPixelForEventEndOnChart(entries.entryFrom) ?? 0;
         const entryStartX = this.xPixelForEventEndOnChart(entries.entryFrom) ?? 0;
@@ -1487,12 +1499,12 @@ export class Overlays extends EventTarget {
           overlay.state = Trace.Types.File.EntriesLinkState.PENDING_TO_EVENT;
           this.dispatchEvent(new AnnotationOverlayActionEvent(overlay, 'Update'));
         });
-        div.appendChild(component);
-        return div;
+        overlayElement.appendChild(component);
+        return overlayElement;
       }
       case 'ENTRY_OUTLINE': {
-        div.classList.add(`outline-reason-${overlay.outlineReason}`);
-        return div;
+        overlayElement.classList.add(`outline-reason-${overlay.outlineReason}`);
+        return overlayElement;
       }
       case 'TIME_RANGE': {
         const component = new Components.TimeRangeOverlay.TimeRangeOverlay(overlay.label);
@@ -1512,26 +1524,26 @@ export class Overlays extends EventTarget {
         component.addEventListener('mouseout', () => {
           this.dispatchEvent(new TimeRangeMouseOutEvent());
         });
-        div.appendChild(component);
-        return div;
+        overlayElement.appendChild(component);
+        return overlayElement;
       }
       case 'TIMESPAN_BREAKDOWN': {
         const component = new Components.TimespanBreakdownOverlay.TimespanBreakdownOverlay();
         component.sections = overlay.sections;
         component.canvasRect = this.#charts.mainChart.canvasBoundingClientRect();
         component.isBelowEntry = overlay.renderLocation === 'BELOW_EVENT';
-        div.appendChild(component);
-        return div;
+        overlayElement.appendChild(component);
+        return overlayElement;
       }
       case 'TIMINGS_MARKER': {
         const {color} = EntryStyles.markerDetailsForEvent(overlay.entries[0]);
         const markersComponent = this.#createTimingsMarkerElement(overlay);
-        div.appendChild(markersComponent);
-        div.style.backgroundColor = color;
-        return div;
+        overlayElement.appendChild(markersComponent);
+        overlayElement.style.backgroundColor = color;
+        return overlayElement;
       }
       default: {
-        return div;
+        return overlayElement;
       }
     }
   }

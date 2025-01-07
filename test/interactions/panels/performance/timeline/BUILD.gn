@@ -7,6 +7,7 @@ import("../../../../../scripts/build/typescript/typescript.gni")
 node_ts_library("timeline") {
   sources = [
     "animations_track_test.ts",
+    "annotations_test.ts",
     "auction_worklets_tracks_test.ts",
     "flamechart_test.ts",
     "gpu_track_test.ts",

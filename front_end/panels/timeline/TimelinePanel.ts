@@ -68,7 +68,7 @@ import * as Overlays from './overlays/overlays.js';
 import {cpuprofileJsonGenerator, traceJsonGenerator} from './SaveFileFormatter.js';
 import {type Client, TimelineController} from './TimelineController.js';
 import type {TimelineFlameChartDataProvider} from './TimelineFlameChartDataProvider.js';
-import {TimelineFlameChartView} from './TimelineFlameChartView.js';
+import {Events as TimelineFlameChartViewEvents, TimelineFlameChartView} from './TimelineFlameChartView.js';
 import {TimelineHistoryManager} from './TimelineHistoryManager.js';
 import {TimelineLoader} from './TimelineLoader.js';
 import {TimelineMiniMap} from './TimelineMiniMap.js';
@@ -591,6 +591,11 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     this.#onMainEntryHovered = this.#onEntryHovered.bind(this, this.flameChart.getMainDataProvider());
     this.flameChart.getMainFlameChart().addEventListener(
         PerfUI.FlameChart.Events.ENTRY_HOVERED, this.#onMainEntryHovered);
+
+    this.flameChart.addEventListener(TimelineFlameChartViewEvents.ENTRY_LABEL_ANNOTATION_CLICKED, event => {
+      const selection = selectionFromEvent(event.data.entry);
+      this.select(selection);
+    });
 
     this.searchableViewInternal = new UI.SearchableView.SearchableView(this.flameChart, null);
     this.searchableViewInternal.setMinimumSize(0, 100);

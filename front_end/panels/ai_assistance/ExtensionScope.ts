@@ -156,31 +156,33 @@ export class ExtensionScope {
   }
 }
 
-const freestylerBinding = `globalThis.freestyler = (args) => {
-  let resolver;
-  let rejecter;
-  const p = new Promise((resolve, reject) => {
-    resolver = resolve;
-    rejecter = reject;
-  });
-  freestyler.callbacks.set(freestyler.id , {
-    args: JSON.stringify(args),
-    callbackId: freestyler.id,
-    resolver,
-    rejecter
-  });
-  ${FREESTYLER_BINDING_NAME}(String(freestyler.id));
-  freestyler.id++;
-  return p;
-}
-freestyler.id = 1;
-freestyler.callbacks = new Map();
-freestyler.getArgs = (callbackId) => {
-  return freestyler.callbacks.get(callbackId).args;
-}
-freestyler.respond = (callbackId) => {
-  freestyler.callbacks.get(callbackId).resolver();
-  freestyler.callbacks.delete(callbackId);
+const freestylerBinding = `if (!globalThis.freestyler) {
+  globalThis.freestyler = (args) => {
+    let resolver;
+    let rejecter;
+    const p = new Promise((resolve, reject) => {
+      resolver = resolve;
+      rejecter = reject;
+    });
+    freestyler.callbacks.set(freestyler.id , {
+      args: JSON.stringify(args),
+      callbackId: freestyler.id,
+      resolver,
+      rejecter
+    });
+    ${FREESTYLER_BINDING_NAME}(String(freestyler.id));
+    freestyler.id++;
+    return p;
+  }
+  freestyler.id = 1;
+  freestyler.callbacks = new Map();
+  freestyler.getArgs = (callbackId) => {
+    return freestyler.callbacks.get(callbackId).args;
+  }
+  freestyler.respond = (callbackId) => {
+    freestyler.callbacks.get(callbackId).resolver();
+    freestyler.callbacks.delete(callbackId);
+  }
 }`;
 
 const functions = `async function setElementStyles(el, styles) {

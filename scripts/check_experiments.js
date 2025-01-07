@@ -16,7 +16,7 @@ const espree = require(path.resolve(
     'index.js',
     ));
 const parseOptions = {
-  ecmaVersion: 11,
+  ecmaVersion: 'latest',
   sourceType: 'module',
   range: true,
 };
@@ -182,11 +182,7 @@ function isExperimentEnumDeclaration(node) {
  * Gets list of experiments registered in UserMetrics.ts
  */
 function getUserMetricExperimentList(userMetricsFile) {
-  const userMetricsAST = espree.parse(userMetricsFile, {
-    ecmaVersion: 11,
-    sourceType: 'module',
-    range: true,
-  });
+  const userMetricsAST = espree.parse(userMetricsFile, parseOptions);
   for (const node of userMetricsAST.body) {
     if (isExperimentEnumDeclaration(node)) {
       return node.declaration.members

@@ -44,6 +44,7 @@ describe('use_theme_colors', () => {
         rule: 'plugin/use_theme_colors',
         severity: 'error',
         text: EXPECTED_ERROR_MESSAGE,
+        url: undefined,
       },
     ]);
   });
@@ -60,6 +61,7 @@ describe('use_theme_colors', () => {
         rule: 'plugin/use_theme_colors',
         severity: 'error',
         text: EXPECTED_ERROR_MESSAGE,
+        url: undefined,
       },
     ]);
   });
@@ -78,6 +80,7 @@ describe('use_theme_colors', () => {
         rule: 'plugin/use_theme_colors',
         severity: 'error',
         text: EXPECTED_ERROR_MESSAGE,
+        url: undefined,
       },
     ]);
   });
@@ -96,6 +99,7 @@ describe('use_theme_colors', () => {
         rule: 'plugin/use_theme_colors',
         severity: 'error',
         text: EXPECTED_ERROR_MESSAGE,
+        url: undefined,
       },
     ]);
   });
@@ -112,6 +116,7 @@ describe('use_theme_colors', () => {
         rule: 'plugin/use_theme_colors',
         severity: 'error',
         text: EXPECTED_ERROR_MESSAGE,
+        url: undefined,
       },
     ]);
   });
@@ -130,6 +135,7 @@ describe('use_theme_colors', () => {
         rule: 'plugin/use_theme_colors',
         severity: 'error',
         text: EXPECTED_ERROR_MESSAGE,
+        url: undefined,
       },
     ]);
   });
@@ -212,6 +218,7 @@ describe('use_theme_colors', () => {
         rule: 'plugin/use_theme_colors',
         severity: 'error',
         text: EXPECTED_ERROR_MESSAGE,
+        url: undefined,
       },
     ]);
   });
@@ -230,6 +237,7 @@ describe('use_theme_colors', () => {
         rule: 'plugin/use_theme_colors',
         severity: 'error',
         text: EXPECTED_ERROR_MESSAGE,
+        url: undefined,
       },
     ]);
   });
@@ -286,6 +294,7 @@ describe('use_theme_colors', () => {
         rule: 'plugin/use_theme_colors',
         severity: 'error',
         text: 'All CSS color declarations should use a variable defined in ui/legacy/themeColors.css',
+        url: undefined,
       },
       {
         line: 2,
@@ -295,6 +304,7 @@ describe('use_theme_colors', () => {
         rule: 'plugin/use_theme_colors',
         severity: 'error',
         text: 'All CSS color declarations should use a variable defined in ui/legacy/themeColors.css',
+        url: undefined,
       },
     ]);
   });
@@ -333,6 +343,7 @@ describe('use_theme_colors', () => {
         rule: 'plugin/use_theme_colors',
         severity: 'error',
         text: 'All CSS color declarations should use a variable defined in ui/legacy/themeColors.css',
+        url: undefined,
       },
     ]);
   });
@@ -417,6 +428,7 @@ describe('use_theme_colors', () => {
         rule: 'plugin/use_theme_colors',
         severity: 'error',
         text: EXPECTED_ERROR_MESSAGE,
+        url: undefined,
       },
     ]);
   });

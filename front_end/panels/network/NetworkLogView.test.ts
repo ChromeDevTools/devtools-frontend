@@ -4,7 +4,7 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
-import type * as Platform from '../../core/platform/platform.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
@@ -28,6 +28,8 @@ import * as RenderCoordinator from '../../ui/components/render_coordinator/rende
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Network from './network.js';
+
+const {urlString} = Platform.DevToolsPath;
 
 describeWithMockConnection('NetworkLogView', () => {
   let target: SDK.Target.Target;
@@ -106,7 +108,7 @@ describeWithMockConnection('NetworkLogView', () => {
   }
 
   it('generates a valid curl command when some headers don\'t have values', async () => {
-    const request = createNetworkRequest('http://localhost' as Platform.DevToolsPath.UrlString, {
+    const request = createNetworkRequest(urlString`http://localhost`, {
       requestHeaders: [
         {name: 'header-with-value', value: 'some value'},
         {name: 'no-value-header', value: ''},
@@ -122,7 +124,7 @@ describeWithMockConnection('NetworkLogView', () => {
   // are only added on HTTP/2 and HTTP/3, have a preceeding colon like `:authority` but it still tests
   // the stripping function.
   it('generates a valid curl command while stripping internal headers', async () => {
-    const request = createNetworkRequest('http://localhost' as Platform.DevToolsPath.UrlString, {
+    const request = createNetworkRequest(urlString`http://localhost`, {
       requestHeaders: [
         {name: 'authority', value: 'www.example.com'},
       ],
@@ -133,7 +135,7 @@ describeWithMockConnection('NetworkLogView', () => {
   });
 
   it('generates a valid curl command when header values contain double quotes', async () => {
-    const request = createNetworkRequest('http://localhost' as Platform.DevToolsPath.UrlString, {
+    const request = createNetworkRequest(urlString`http://localhost`, {
       requestHeaders: [{name: 'cookie', value: 'eva="Sg4="'}],
     });
     assert.strictEqual(
@@ -147,7 +149,7 @@ describeWithMockConnection('NetworkLogView', () => {
   });
 
   it('generates a valid curl command when header values contain percentages', async () => {
-    const request = createNetworkRequest('http://localhost' as Platform.DevToolsPath.UrlString, {
+    const request = createNetworkRequest(urlString`http://localhost`, {
       requestHeaders: [{name: 'cookie', value: 'eva=%22Sg4%3D%22'}],
     });
     assert.strictEqual(
@@ -161,7 +163,7 @@ describeWithMockConnection('NetworkLogView', () => {
   });
 
   it('generates a valid curl command when header values contain newline and ampersand', async () => {
-    const request = createNetworkRequest('http://localhost' as Platform.DevToolsPath.UrlString, {
+    const request = createNetworkRequest(urlString`http://localhost`, {
       requestHeaders: [{name: 'cookie', value: 'query=evil\n\n & cmd /c calc.exe \n\n'}],
     });
     assert.strictEqual(
@@ -212,7 +214,7 @@ describeWithMockConnection('NetworkLogView', () => {
       SDK.TargetManager.TargetManager.instance().setScopeTarget(inScope ? target : null);
       const harWriterWrite = sinon.stub(HAR.Writer.Writer, 'write').resolves();
       const URL_HOST = 'example.com';
-      target.setInspectedURL(`http://${URL_HOST}/foo` as Platform.DevToolsPath.UrlString);
+      target.setInspectedURL(urlString`${`http://${URL_HOST}/foo`}`);
       const fileManager = stubFileManager();
 
       const FINISHED_REQUEST_1 = createNetworkRequest('http://example.com/', {finished: true});
@@ -238,8 +240,8 @@ describeWithMockConnection('NetworkLogView', () => {
     });
 
     it('can import and filter from HAR', async () => {
-      const URL_1 = 'http://example.com/' as Platform.DevToolsPath.UrlString;
-      const URL_2 = 'http://example.com/favicon.ico' as Platform.DevToolsPath.UrlString;
+      const URL_1 = urlString`http://example.com/`;
+      const URL_2 = urlString`http://example.com/favicon.ico`;
       function makeHarEntry(url: Platform.DevToolsPath.UrlString) {
         return {
           request: {method: 'GET', url, headersSize: -1, bodySize: 0},
@@ -273,7 +275,7 @@ describeWithMockConnection('NetworkLogView', () => {
     });
 
     it('shows summary toolbar with content', () => {
-      target.setInspectedURL('http://example.com/' as Platform.DevToolsPath.UrlString);
+      target.setInspectedURL(urlString`http://example.com/`);
       const request = createNetworkRequest('http://example.com/', {finished: true});
       request.endTime = 0.669414;
       request.setIssueTime(0.435136, 0.435136);
@@ -372,12 +374,11 @@ describeWithMockConnection('NetworkLogView', () => {
 
     assert.deepEqual(
         rootNode.children.map(n => (n as Network.NetworkDataGridNode.NetworkNode).request()?.url()),
-        ['chrome-extension://url1' as Platform.DevToolsPath.UrlString, 'url2' as Platform.DevToolsPath.UrlString]);
+        [urlString`chrome-extension://url1`, urlString`url2`]);
 
     clickCheckbox(hideExtCheckbox);
     assert.deepEqual(
-        rootNode.children.map(n => (n as Network.NetworkDataGridNode.NetworkNode).request()?.url()),
-        ['url2' as Platform.DevToolsPath.UrlString]);
+        rootNode.children.map(n => (n as Network.NetworkDataGridNode.NetworkNode).request()?.url()), [urlString`url2`]);
   });
 
   it('can hide Chrome extension requests from dropdown', async () => {
@@ -390,7 +391,7 @@ describeWithMockConnection('NetworkLogView', () => {
 
     assert.deepEqual(
         rootNode.children.map(n => (n as Network.NetworkDataGridNode.NetworkNode).request()?.url()),
-        ['chrome-extension://url1' as Platform.DevToolsPath.UrlString, 'url2' as Platform.DevToolsPath.UrlString]);
+        [urlString`chrome-extension://url1`, urlString`url2`]);
 
     const dropdown = await openMoreTypesDropdown(filterBar, networkLogView);
     if (!dropdown) {
@@ -404,8 +405,7 @@ describeWithMockConnection('NetworkLogView', () => {
     assert.isTrue(hideExtensionURL.hasAttribute('checked'));
 
     assert.deepEqual(
-        rootNode.children.map(n => (n as Network.NetworkDataGridNode.NetworkNode).request()?.url()),
-        ['url2' as Platform.DevToolsPath.UrlString]);
+        rootNode.children.map(n => (n as Network.NetworkDataGridNode.NetworkNode).request()?.url()), [urlString`url2`]);
 
     dropdown.discard();
   });
@@ -445,7 +445,7 @@ describeWithMockConnection('NetworkLogView', () => {
     const blockedCookiesCheckbox = getCheckbox(filterBar, 'Show only requests with blocked response cookies');
     clickCheckbox(blockedCookiesCheckbox);
     assert.deepEqual(rootNode.children.map(n => (n as Network.NetworkDataGridNode.NetworkNode).request()?.url()), [
-      'url1' as Platform.DevToolsPath.UrlString,
+      urlString`url1`,
     ]);
   });
 
@@ -465,7 +465,7 @@ describeWithMockConnection('NetworkLogView', () => {
 
     assert.deepEqual(
         rootNode.children.map(n => (n as Network.NetworkDataGridNode.NetworkNode).request()?.url()),
-        ['url1' as Platform.DevToolsPath.UrlString, 'url2' as Platform.DevToolsPath.UrlString]);
+        [urlString`url1`, urlString`url2`]);
 
     const dropdown = await openMoreTypesDropdown(filterBar, networkLogView);
     if (!dropdown) {
@@ -479,7 +479,7 @@ describeWithMockConnection('NetworkLogView', () => {
     assert.isTrue(blockedResponseCookies.hasAttribute('checked'));
 
     assert.deepEqual(rootNode.children.map(n => (n as Network.NetworkDataGridNode.NetworkNode).request()?.url()), [
-      'url1' as Platform.DevToolsPath.UrlString,
+      urlString`url1`,
     ]);
 
     dropdown.discard();
@@ -596,10 +596,10 @@ describeWithMockConnection('NetworkLogView', () => {
   });
 
   function createOverrideRequests() {
-    const urlNotOverridden = 'url-not-overridden' as Platform.DevToolsPath.UrlString;
-    const urlHeaderOverridden = 'url-header-overridden' as Platform.DevToolsPath.UrlString;
-    const urlContentOverridden = 'url-content-overridden' as Platform.DevToolsPath.UrlString;
-    const urlHeaderAndContentOverridden = 'url-header-und-content-overridden' as Platform.DevToolsPath.UrlString;
+    const urlNotOverridden = urlString`url-not-overridden`;
+    const urlHeaderOverridden = urlString`url-header-overridden`;
+    const urlContentOverridden = urlString`url-content-overridden`;
+    const urlHeaderAndContentOverridden = urlString`url-header-und-content-overridden`;
 
     createNetworkRequest(urlNotOverridden, {target});
     const r2 = createNetworkRequest(urlHeaderOverridden, {target});

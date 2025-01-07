@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as Host from '../../../core/host/host.js';
-import type * as Platform from '../../../core/platform/platform.js';
+import * as Platform from '../../../core/platform/platform.js';
 import * as Workspace from '../../../models/workspace/workspace.js';
 import {
   getContextMenuForElement,
@@ -28,6 +28,8 @@ import {
 import * as RenderCoordinator from '../../../ui/components/render_coordinator/render_coordinator.js';
 
 import * as SourcesComponents from './components.js';
+
+const {urlString} = Platform.DevToolsPath;
 
 describe('HeadersView', () => {
   const commitWorkingCopySpy = sinon.spy();
@@ -110,7 +112,7 @@ describe('HeadersView', () => {
       }
     ]`;
     const {uiSourceCode, project} = createFileSystemUISourceCode({
-      url: 'file:///path/to/overrides/example.html' as Platform.DevToolsPath.UrlString,
+      url: urlString`file:///path/to/overrides/example.html`,
       mimeType: 'text/html',
       content: headers,
     });

@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Platform from '../../core/platform/platform.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as Trace from '../../models/trace/trace.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {setupIgnoreListManagerEnvironment} from '../../testing/TraceHelpers.js';
@@ -10,6 +10,8 @@ import {TraceLoader} from '../../testing/TraceLoader.js';
 import * as PerfUi from '../../ui/legacy/components/perf_ui/perf_ui.js';
 
 import * as Timeline from './timeline.js';
+
+const {urlString} = Platform.DevToolsPath;
 
 describeWithEnvironment('TimelineFlameChartDataProvider', function() {
   describe('groupTreeEvents', function() {
@@ -166,8 +168,7 @@ describeWithEnvironment('TimelineFlameChartDataProvider', function() {
 
       const eventCountBeforeIgnoreList = dataProvider.timelineData().entryStartTimes.length;
 
-      const SCRIPT_TO_IGNORE =
-          'https://unpkg.com/react@18.2.0/umd/react.development.js' as Platform.DevToolsPath.UrlString;
+      const SCRIPT_TO_IGNORE = urlString`https://unpkg.com/react@18.2.0/umd/react.development.js`;
       // Clear the data provider cache and add the React script to the ignore list.
       dataProvider.reset();
       dataProvider.setModel(parsedTrace);

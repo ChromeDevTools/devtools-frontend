@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Platform from '../../../../core/platform/platform.js';
+import * as Platform from '../../../../core/platform/platform.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import * as Protocol from '../../../../generated/protocol.js';
 import {
@@ -19,6 +19,7 @@ import * as RenderCoordinator from '../../../../ui/components/render_coordinator
 
 import * as PreloadingComponents from './components.js';
 
+const {urlString} = Platform.DevToolsPath;
 const zip2 = <T, S>(xs: T[], ys: S[]): [T, S][] => {
   assert.strictEqual(xs.length, ys.length);
 
@@ -63,7 +64,7 @@ describeWithEnvironment('MismatchedPreloadingGrid', () => {
     }
 
     const data: PreloadingComponents.MismatchedPreloadingGrid.MismatchedPreloadingGridData = {
-      pageURL: 'https://example.com/prefetched.html' as Platform.DevToolsPath.UrlString,
+      pageURL: urlString`https://example.com/prefetched.html`,
       rows: [{
         url: 'https://example.com/prefetched.html',
         action: Protocol.Preload.SpeculationAction.Prefetch,
@@ -85,7 +86,7 @@ describeWithEnvironment('MismatchedPreloadingGrid', () => {
 
   it('renderes edit diff', async () => {
     const data: PreloadingComponents.MismatchedPreloadingGrid.MismatchedPreloadingGridData = {
-      pageURL: 'https://example.com/prefetched.html?q=1' as Platform.DevToolsPath.UrlString,
+      pageURL: urlString`https://example.com/prefetched.html?q=1`,
       rows: [{
         url: 'https://example.com/prefetched.html?q=2',
         action: Protocol.Preload.SpeculationAction.Prefetch,
@@ -113,7 +114,7 @@ describeWithEnvironment('MismatchedPreloadingGrid', () => {
 
   it('renderes add diff', async () => {
     const data: PreloadingComponents.MismatchedPreloadingGrid.MismatchedPreloadingGridData = {
-      pageURL: 'https://example.com/prefetched.html?q=1' as Platform.DevToolsPath.UrlString,
+      pageURL: urlString`https://example.com/prefetched.html?q=1`,
       rows: [{
         url: 'https://example.com/prefetched.html',
         action: Protocol.Preload.SpeculationAction.Prefetch,
@@ -140,7 +141,7 @@ describeWithEnvironment('MismatchedPreloadingGrid', () => {
 
   it('renderes delete diff', async () => {
     const data: PreloadingComponents.MismatchedPreloadingGrid.MismatchedPreloadingGridData = {
-      pageURL: 'https://example.com/prefetched.html' as Platform.DevToolsPath.UrlString,
+      pageURL: urlString`https://example.com/prefetched.html`,
       rows: [{
         url: 'https://example.com/prefetched.html?q=1',
         action: Protocol.Preload.SpeculationAction.Prefetch,
@@ -167,7 +168,7 @@ describeWithEnvironment('MismatchedPreloadingGrid', () => {
 
   it('renderes complex diff', async () => {
     const data: PreloadingComponents.MismatchedPreloadingGrid.MismatchedPreloadingGridData = {
-      pageURL: 'https://example.com/prefetched.html?q=1' as Platform.DevToolsPath.UrlString,
+      pageURL: urlString`https://example.com/prefetched.html?q=1`,
       rows: [{
         url: 'https://example.com/prerendered.html?x=1',
         action: Protocol.Preload.SpeculationAction.Prerender,

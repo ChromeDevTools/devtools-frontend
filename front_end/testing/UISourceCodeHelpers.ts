@@ -3,13 +3,15 @@
 // found in the LICENSE file.
 
 import * as Common from '../core/common/common.js';
-import type * as Platform from '../core/platform/platform.js';
+import * as Platform from '../core/platform/platform.js';
 import * as SDK from '../core/sdk/sdk.js';
 import type * as Protocol from '../generated/protocol.js';
 import * as Bindings from '../models/bindings/bindings.js';
 import * as Persistence from '../models/persistence/persistence.js';
 import * as TextUtils from '../models/text_utils/text_utils.js';
 import * as Workspace from '../models/workspace/workspace.js';
+
+const {urlString} = Platform.DevToolsPath;
 
 export function createContentProviderUISourceCodes(options: {
   items: {
@@ -122,7 +124,7 @@ export function createFileSystemUISourceCode(options: {
   const isolatedFileSystemManager = Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager.instance();
   const fileSystemWorkspaceBinding =
       new Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding(isolatedFileSystemManager, workspace);
-  const fileSystemPath = (options.fileSystemPath || '') as Platform.DevToolsPath.UrlString;
+  const fileSystemPath = urlString`${options.fileSystemPath || ''}`;
   const type = options.type || '';
   const content = options.content || '';
   const platformFileSystem =
@@ -139,7 +141,7 @@ export function createFileSystemUISourceCode(options: {
 
 export function setupMockedUISourceCode(url: string = 'https://example.com/') {
   const projectStub = sinon.createStubInstance(Bindings.ContentProviderBasedProject.ContentProviderBasedProject);
-  const urlStringTagExample = url as Platform.DevToolsPath.UrlString;
+  const urlStringTagExample = urlString`${url}`;
   const contentTypeStub = sinon.createStubInstance(Common.ResourceType.ResourceType);
 
   const uiSourceCode = new Workspace.UISourceCode.UISourceCode(projectStub, urlStringTagExample, contentTypeStub);

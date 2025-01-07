@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Platform from '../../../../core/platform/platform.js';
+import * as Platform from '../../../../core/platform/platform.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import * as Protocol from '../../../../generated/protocol.js';
 import {assertGridContents, getCellByIndexes} from '../../../../testing/DataGridHelpers.js';
@@ -12,6 +12,8 @@ import type * as DataGrid from '../../../../ui/components/data_grid/data_grid.js
 import * as RenderCoordinator from '../../../../ui/components/render_coordinator/render_coordinator.js';
 
 import * as PreloadingComponents from './components.js';
+
+const {urlString} = Platform.DevToolsPath;
 
 async function assertRenderResult(
     rowsInput: PreloadingComponents.PreloadingGrid.PreloadingGridData, headerExpected: string[],
@@ -39,7 +41,7 @@ describeWithEnvironment('PreloadingGrid', () => {
               key: {
                 loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
                 action: Protocol.Preload.SpeculationAction.Prefetch,
-                url: 'https://example.com/prefetched.html' as Platform.DevToolsPath.UrlString,
+                url: urlString`https://example.com/prefetched.html`,
               },
               pipelineId: 'pipelineId:1' as Protocol.Preload.PreloadPipelineId,
               status: SDK.PreloadingModel.PreloadingStatus.RUNNING,
@@ -65,7 +67,7 @@ describeWithEnvironment('PreloadingGrid', () => {
               },
             ],
           }],
-          pageURL: 'https://example.com/' as Platform.DevToolsPath.UrlString,
+          pageURL: urlString`https://example.com/`,
         },
         ['URL', 'Action', 'Rule set', 'Status'],
         [
@@ -84,7 +86,7 @@ describeWithEnvironment('PreloadingGrid', () => {
               key: {
                 loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
                 action: Protocol.Preload.SpeculationAction.Prefetch,
-                url: 'https://cross-origin.example.com/prefetched.html' as Platform.DevToolsPath.UrlString,
+                url: urlString`https://cross-origin.example.com/prefetched.html`,
               },
               pipelineId: 'pipelineId:1' as Protocol.Preload.PreloadPipelineId,
               status: SDK.PreloadingModel.PreloadingStatus.RUNNING,
@@ -110,7 +112,7 @@ describeWithEnvironment('PreloadingGrid', () => {
               },
             ],
           }],
-          pageURL: 'https://example.com/' as Platform.DevToolsPath.UrlString,
+          pageURL: urlString`https://example.com/`,
         },
         ['URL', 'Action', 'Rule set', 'Status'],
         [
@@ -129,7 +131,7 @@ describeWithEnvironment('PreloadingGrid', () => {
               key: {
                 loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
                 action: Protocol.Preload.SpeculationAction.Prefetch,
-                url: 'https://example.com/prefetched.html' as Platform.DevToolsPath.UrlString,
+                url: urlString`https://example.com/prefetched.html`,
               },
               pipelineId: 'pipelineId:1' as Protocol.Preload.PreloadPipelineId,
               status: SDK.PreloadingModel.PreloadingStatus.RUNNING,
@@ -156,7 +158,7 @@ describeWithEnvironment('PreloadingGrid', () => {
               },
             ],
           }],
-          pageURL: 'https://example.com/' as Platform.DevToolsPath.UrlString,
+          pageURL: urlString`https://example.com/`,
         },
         ['URL', 'Action', 'Rule set', 'Status'],
         [
@@ -176,7 +178,7 @@ describeWithEnvironment('PreloadingGrid', () => {
                 key: {
                   loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
                   action: Protocol.Preload.SpeculationAction.Prefetch,
-                  url: 'https://example.com/rule-set-missing.html' as Platform.DevToolsPath.UrlString,
+                  url: urlString`https://example.com/rule-set-missing.html`,
                 },
                 pipelineId: 'pipelineId:1' as Protocol.Preload.PreloadPipelineId,
                 status: SDK.PreloadingModel.PreloadingStatus.RUNNING,
@@ -194,7 +196,7 @@ describeWithEnvironment('PreloadingGrid', () => {
                 key: {
                   loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
                   action: Protocol.Preload.SpeculationAction.Prefetch,
-                  url: 'https://example.com/multiple-rule-sets.html' as Platform.DevToolsPath.UrlString,
+                  url: urlString`https://example.com/multiple-rule-sets.html`,
                 },
                 pipelineId: 'pipelineId:2' as Protocol.Preload.PreloadPipelineId,
                 status: SDK.PreloadingModel.PreloadingStatus.RUNNING,
@@ -236,7 +238,7 @@ describeWithEnvironment('PreloadingGrid', () => {
               ],
             },
           ],
-          pageURL: 'https://example.com/' as Platform.DevToolsPath.UrlString,
+          pageURL: urlString`https://example.com/`,
         },
         ['URL', 'Action', 'Rule set', 'Status'],
         [
@@ -256,7 +258,7 @@ describeWithEnvironment('PreloadingGrid', () => {
               key: {
                 loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
                 action: Protocol.Preload.SpeculationAction.Prerender,
-                url: 'https://example.com/prerendered.html' as Platform.DevToolsPath.UrlString,
+                url: urlString`https://example.com/prerendered.html`,
               },
               pipelineId: 'pipelineId:1' as Protocol.Preload.PreloadPipelineId,
               status: SDK.PreloadingModel.PreloadingStatus.FAILURE,
@@ -283,7 +285,7 @@ describeWithEnvironment('PreloadingGrid', () => {
               },
             ],
           }],
-          pageURL: 'https://example.com/' as Platform.DevToolsPath.UrlString,
+          pageURL: urlString`https://example.com/`,
         },
         ['URL', 'Action', 'Rule set', 'Status'],
         [
@@ -315,7 +317,7 @@ describeWithEnvironment('PreloadingGrid', () => {
                 key: {
                   loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
                   action: Protocol.Preload.SpeculationAction.Prefetch,
-                  url: 'https://example.com/prerendered.html' as Platform.DevToolsPath.UrlString,
+                  url: urlString`https://example.com/prerendered.html`,
                 },
                 pipelineId: 'pipelineId:1' as Protocol.Preload.PreloadPipelineId,
                 status: SDK.PreloadingModel.PreloadingStatus.SUCCESS,
@@ -329,7 +331,7 @@ describeWithEnvironment('PreloadingGrid', () => {
                 key: {
                   loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
                   action: Protocol.Preload.SpeculationAction.Prerender,
-                  url: 'https://example.com/prerendered.html' as Platform.DevToolsPath.UrlString,
+                  url: urlString`https://example.com/prerendered.html`,
                 },
                 pipelineId: 'pipelineId:1' as Protocol.Preload.PreloadPipelineId,
                 status: SDK.PreloadingModel.PreloadingStatus.FAILURE,
@@ -357,7 +359,7 @@ describeWithEnvironment('PreloadingGrid', () => {
               },
             ],
           }],
-          pageURL: 'https://example.com/' as Platform.DevToolsPath.UrlString,
+          pageURL: urlString`https://example.com/`,
         },
         ['URL', 'Action', 'Rule set', 'Status'],
         [
@@ -389,7 +391,7 @@ describeWithEnvironment('PreloadingGrid', () => {
                 key: {
                   loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
                   action: Protocol.Preload.SpeculationAction.Prefetch,
-                  url: 'https://example.com/prerendered.html' as Platform.DevToolsPath.UrlString,
+                  url: urlString`https://example.com/prerendered.html`,
                 },
                 pipelineId: 'pipelineId:1' as Protocol.Preload.PreloadPipelineId,
                 status: SDK.PreloadingModel.PreloadingStatus.FAILURE,
@@ -403,7 +405,7 @@ describeWithEnvironment('PreloadingGrid', () => {
                 key: {
                   loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
                   action: Protocol.Preload.SpeculationAction.Prerender,
-                  url: 'https://example.com/prerendered.html' as Platform.DevToolsPath.UrlString,
+                  url: urlString`https://example.com/prerendered.html`,
                 },
                 pipelineId: 'pipelineId:1' as Protocol.Preload.PreloadPipelineId,
                 status: SDK.PreloadingModel.PreloadingStatus.FAILURE,
@@ -431,7 +433,7 @@ describeWithEnvironment('PreloadingGrid', () => {
               },
             ],
           }],
-          pageURL: 'https://example.com/' as Platform.DevToolsPath.UrlString,
+          pageURL: urlString`https://example.com/`,
         },
         ['URL', 'Action', 'Rule set', 'Status'],
         [

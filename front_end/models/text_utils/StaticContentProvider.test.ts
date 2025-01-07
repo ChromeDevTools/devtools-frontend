@@ -3,13 +3,15 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
-import type * as Platform from '../../core/platform/platform.js';
+import * as Platform from '../../core/platform/platform.js';
 
 import * as TextUtils from './text_utils.js';
 
+const {urlString} = Platform.DevToolsPath;
+
 describe('StaticContentProvider', () => {
   const jsonResource = Common.ResourceType.ResourceType.fromMimeType('application/json');
-  const testUrl = 'www.testurl.com' as Platform.DevToolsPath.UrlString;
+  const testUrl = urlString`www.testurl.com`;
 
   it('can be created from a string source', () => {
     const provider =

@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
-import type * as Platform from '../../core/platform/platform.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Logs from '../../models/logs/logs.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
@@ -13,13 +13,14 @@ import type * as Search from '../search/search.js';
 
 import * as Network from './network.js';
 
+const {urlString} = Platform.DevToolsPath;
+
 describeWithLocale('NetworkSearchScope', () => {
   let scope: Network.NetworkSearchScope.NetworkSearchScope;
 
   beforeEach(() => {
     const fakeRequest1 = SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
-        'fakeId1', 'http://example.com/main.js' as Platform.DevToolsPath.UrlString,
-        'http://example.com/index.html' as Platform.DevToolsPath.UrlString, null);
+        'fakeId1', urlString`http://example.com/main.js`, urlString`http://example.com/index.html`, null);
     fakeRequest1.setRequestHeaders([{name: 'fooRequestHeader', value: 'value1'}]);
     fakeRequest1.responseHeaders = [{name: 'fooResponseHeader', value: 'foo value'}];
     fakeRequest1.setResourceType(Common.ResourceType.resourceTypes.Script);
@@ -29,8 +30,7 @@ describeWithLocale('NetworkSearchScope', () => {
             'This is the response body of request 1.\nAnd a second line.\n', false, fakeRequest1.mimeType));
 
     const fakeRequest2 = SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
-        'fakeId1', 'http://example.com/bundle.min.js' as Platform.DevToolsPath.UrlString,
-        'http://example.com/index.html' as Platform.DevToolsPath.UrlString, null);
+        'fakeId1', urlString`http://example.com/bundle.min.js`, urlString`http://example.com/index.html`, null);
     fakeRequest2.setRequestHeaders([{name: 'barRequestHeader', value: 'value2'}]);
     fakeRequest2.responseHeaders = [{name: 'barResponseHeader', value: 'bar value'}];
     fakeRequest2.setResourceType(Common.ResourceType.resourceTypes.Script);

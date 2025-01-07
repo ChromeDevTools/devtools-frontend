@@ -10,12 +10,14 @@ import {
   describeWithMockConnection,
   setMockConnectionResponseHandler,
 } from '../../testing/MockConnection.js';
-import type * as Platform from '../platform/platform.js';
+import * as Platform from '../platform/platform.js';
 
 import * as SDK from './sdk.js';
 
+const {urlString} = Platform.DevToolsPath;
+
 describeWithMockConnection('OverlayModel', () => {
-  const DOCUMENT_URL_FOR_TEST = 'https://example.com/' as Platform.DevToolsPath.UrlString;
+  const DOCUMENT_URL_FOR_TEST = urlString`https://example.com/`;
 
   let cssModel: SDK.CSSModel.CSSModel|null;
   let windowControls: SDK.OverlayModel.WindowControls|null;
@@ -88,8 +90,7 @@ describeWithMockConnection('OverlayModel', () => {
 
     // Add a style sheet and verify it gets added
     cssModel.styleSheetAdded(header);
-    const styleSheetIds =
-        cssModel.getStyleSheetIdsForURL(`${DOCUMENT_URL_FOR_TEST}styles.css` as Platform.DevToolsPath.UrlString);
+    const styleSheetIds = cssModel.getStyleSheetIdsForURL(urlString`${`${DOCUMENT_URL_FOR_TEST}styles.css`}`);
     assert.deepEqual(styleSheetIds, ['stylesheet']);
 
     // Verify style sheet gets initialized
@@ -114,8 +115,7 @@ describeWithMockConnection('OverlayModel', () => {
 
     // Add style sheet and verify it gets added
     cssModel.styleSheetAdded(header);
-    const styleSheetIds =
-        cssModel.getStyleSheetIdsForURL(`${DOCUMENT_URL_FOR_TEST}styles.css` as Platform.DevToolsPath.UrlString);
+    const styleSheetIds = cssModel.getStyleSheetIdsForURL(urlString`${`${DOCUMENT_URL_FOR_TEST}styles.css`}`);
     assert.deepEqual(styleSheetIds, ['stylesheet']);
 
     // Initialize style sheet & verify it gets initialized

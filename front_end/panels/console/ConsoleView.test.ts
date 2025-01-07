@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
-import type * as Platform from '../../core/platform/platform.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
@@ -16,6 +16,8 @@ import {stubFileManager} from '../../testing/FileManagerHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
 
 import * as Console from './console.js';
+
+const {urlString} = Platform.DevToolsPath;
 
 describeWithMockConnection('ConsoleView', () => {
   let consoleView: Console.ConsoleView.ConsoleView;
@@ -71,7 +73,7 @@ describeWithMockConnection('ConsoleView', () => {
     const TIMESTAMP = 42;
     const URL_HOST = 'example.com';
     sinon.stub(Date, 'now').returns(TIMESTAMP);
-    target.setInspectedURL(`http://${URL_HOST}/foo` as Platform.DevToolsPath.UrlString);
+    target.setInspectedURL(urlString`${`http://${URL_HOST}/foo`}`);
     const FILENAME = `${URL_HOST}-${TIMESTAMP}.log` as Platform.DevToolsPath.RawPathString;
     const fileManager = stubFileManager();
     const fileManagerCloseCall = expectCall(fileManager.close);

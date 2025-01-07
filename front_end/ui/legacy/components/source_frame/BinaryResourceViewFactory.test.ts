@@ -3,20 +3,22 @@
 // found in the LICENSE file.
 
 import * as Common from '../../../../core/common/common.js';
-import type * as Platform from '../../../../core/platform/platform.js';
+import * as Platform from '../../../../core/platform/platform.js';
 import * as TextUtils from '../../../../models/text_utils/text_utils.js';
 import {raf} from '../../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../../testing/EnvironmentHelpers.js';
 
 import * as SourceFrame from './source_frame.js';
 
+const {urlString} = Platform.DevToolsPath;
+
 describeWithEnvironment('BinaryResourceViewFactory', () => {
   it('interprets base64 content correctly', async () => {
     const base64content = new TextUtils.ContentData.ContentData(
         'c2VuZGluZyB0aGlzIHV0Zi04IHN0cmluZyBhcyBhIGJpbmFyeSBtZXNzYWdlLi4u', true, '');
     const factory = new SourceFrame.BinaryResourceViewFactory.BinaryResourceViewFactory(
-        TextUtils.StreamingContentData.StreamingContentData.from(base64content),
-        'http://example.com' as Platform.DevToolsPath.UrlString, Common.ResourceType.resourceTypes.WebSocket);
+        TextUtils.StreamingContentData.StreamingContentData.from(base64content), urlString`http://example.com`,
+        Common.ResourceType.resourceTypes.WebSocket);
 
     async function getResourceText(view: SourceFrame.ResourceSourceFrame.ResourceSourceFrame): Promise<string> {
       const contentData =
@@ -36,8 +38,8 @@ describeWithEnvironment('BinaryResourceViewFactory', () => {
     const base64content = new TextUtils.ContentData.ContentData(
         'c2VuZGluZyB0aGlzIHV0Zi04IHN0cmluZyBhcyBhIGJpbmFyeSBtZXNzYWdlLi4u', true, '');
     const factory = new SourceFrame.BinaryResourceViewFactory.BinaryResourceViewFactory(
-        TextUtils.StreamingContentData.StreamingContentData.from(base64content),
-        'http://example.com' as Platform.DevToolsPath.UrlString, Common.ResourceType.resourceTypes.WebSocket);
+        TextUtils.StreamingContentData.StreamingContentData.from(base64content), urlString`http://example.com`,
+        Common.ResourceType.resourceTypes.WebSocket);
 
     assert.strictEqual(factory.base64(), 'c2VuZGluZyB0aGlzIHV0Zi04IHN0cmluZyBhcyBhIGJpbmFyeSBtZXNzYWdlLi4u');
     assert.strictEqual(
@@ -51,8 +53,7 @@ describeWithEnvironment('BinaryResourceViewFactory', () => {
         'c2VuZGluZyB0aGlzIHV0Zi04IHN0cmluZyBhcyBhIGJpbmFyeSBtZXNzYWdlLi4u', true, '');
     const streamingContent = TextUtils.StreamingContentData.StreamingContentData.from(base64content);
     const factory = new SourceFrame.BinaryResourceViewFactory.BinaryResourceViewFactory(
-        streamingContent, 'http://example.com' as Platform.DevToolsPath.UrlString,
-        Common.ResourceType.resourceTypes.WebSocket);
+        streamingContent, urlString`http://example.com`, Common.ResourceType.resourceTypes.WebSocket);
 
     const utf8View = factory.createUtf8View();
     utf8View.markAsRoot();

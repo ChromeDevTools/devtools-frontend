@@ -4,7 +4,7 @@
 
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
-import type * as Platform from '../../core/platform/platform.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import {describeWithLocale} from '../../testing/EnvironmentHelpers.js';
 import {expectCall} from '../../testing/ExpectStubCall.js';
@@ -14,6 +14,8 @@ import * as TextUtils from '../text_utils/text_utils.js';
 import * as Workspace from '../workspace/workspace.js';
 
 import * as Persistence from './persistence.js';
+
+const {urlString} = Platform.DevToolsPath;
 
 describeWithLocale('ContextMenuProvider', () => {
   beforeEach(() => {
@@ -31,7 +33,7 @@ describeWithLocale('ContextMenuProvider', () => {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     const menuProvider = new Persistence.PersistenceActions.ContextMenuProvider();
     const contentProvider: TextUtils.ContentProvider.ContentProvider = {
-      contentURL: () => 'https://example.com/sample.webp' as Platform.DevToolsPath.UrlString,
+      contentURL: () => urlString`https://example.com/sample.webp`,
       contentType: () => Common.ResourceType.resourceTypes
                              .Document,  // Navigating a tab to an image will result in a document type for images.
       requestContent: () => Promise.resolve({isEncoded: true, content: 'AGFzbQEAAAA='}),
@@ -49,8 +51,7 @@ describeWithLocale('ContextMenuProvider', () => {
     contextMenu.invokeHandler(saveItem.id());
 
     assert.deepEqual(await expectCall(saveStub), [
-      'https://example.com/sample.webp' as Platform.DevToolsPath.UrlString, 'AGFzbQEAAAA=', true /* forceSaveAs */,
-      true, /* isBase64 */
+      urlString`https://example.com/sample.webp`, 'AGFzbQEAAAA=', true /* forceSaveAs */, true, /* isBase64 */
     ]);
   });
 
@@ -60,7 +61,7 @@ describeWithLocale('ContextMenuProvider', () => {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     const menuProvider = new Persistence.PersistenceActions.ContextMenuProvider();
     const uiSourceCode = sinon.createStubInstance(Workspace.UISourceCode.UISourceCode, {
-      contentURL: 'https://example.com/sample.wasm' as Platform.DevToolsPath.UrlString,
+      contentURL: urlString`https://example.com/sample.wasm`,
       contentType: Common.ResourceType.resourceTypes.Script,
     });
     const stubProject = sinon.createStubInstance(
@@ -81,8 +82,7 @@ describeWithLocale('ContextMenuProvider', () => {
     contextMenu.invokeHandler(saveItem.id());
 
     assert.deepEqual(await expectCall(saveStub), [
-      'https://example.com/sample.wasm' as Platform.DevToolsPath.UrlString, 'AQIDBA==', true /* forceSaveAs */,
-      true, /* isBase64 */
+      urlString`https://example.com/sample.wasm`, 'AQIDBA==', true /* forceSaveAs */, true, /* isBase64 */
     ]);
   });
 });

@@ -8,9 +8,11 @@ import {
 import {
   describeWithMockConnection,
 } from '../../testing/MockConnection.js';
-import type * as Platform from '../platform/platform.js';
+import * as Platform from '../platform/platform.js';
 
 import * as SDK from './sdk.js';
+
+const {urlString} = Platform.DevToolsPath;
 
 describeWithMockConnection('Target', () => {
   let tabTarget: SDK.Target.Target;
@@ -37,10 +39,10 @@ describeWithMockConnection('Target', () => {
   it('notifies about inspected URL change', () => {
     const inspectedURLChanged = sinon.spy(SDK.TargetManager.TargetManager.instance(), 'onInspectedURLChange');
 
-    subframeTarget.setInspectedURL('https://example.com/' as Platform.DevToolsPath.UrlString);
+    subframeTarget.setInspectedURL(urlString`https://example.com/`);
     assert.isTrue(inspectedURLChanged.calledOnce);
 
-    mainFrameTargetUnderTab.setInspectedURL('https://example.com/' as Platform.DevToolsPath.UrlString);
+    mainFrameTargetUnderTab.setInspectedURL(urlString`https://example.com/`);
     assert.isTrue(inspectedURLChanged.calledTwice);
   });
 

@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Platform from '../../../../core/platform/platform.js';
+import * as Platform from '../../../../core/platform/platform.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import * as Protocol from '../../../../generated/protocol.js';
 import {assertGridContents} from '../../../../testing/DataGridHelpers.js';
@@ -13,6 +13,8 @@ import {describeWithEnvironment} from '../../../../testing/EnvironmentHelpers.js
 import * as RenderCoordinator from '../../../../ui/components/render_coordinator/render_coordinator.js';
 
 import * as PreloadingComponents from './components.js';
+
+const {urlString} = Platform.DevToolsPath;
 
 async function renderPreloadingMismatchedHeadersGrid(data: SDK.PreloadingModel.PrerenderAttempt): Promise<HTMLElement> {
   const component = new PreloadingComponents.PreloadingMismatchedHeadersGrid.PreloadingMismatchedHeadersGrid();
@@ -31,7 +33,7 @@ async function testPreloadingMismatchedHeadersGrid(
     key: {
       loaderId: 'loaderId:1' as Protocol.Network.LoaderId,
       action: Protocol.Preload.SpeculationAction.Prerender,
-      url: 'https://example.com/prerendered.html' as Platform.DevToolsPath.UrlString,
+      url: urlString`https://example.com/prerendered.html`,
     },
     pipelineId: 'pipelineId:1' as Protocol.Preload.PreloadPipelineId,
     status: SDK.PreloadingModel.PreloadingStatus.FAILURE,

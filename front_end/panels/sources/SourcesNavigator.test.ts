@@ -6,7 +6,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
-import type * as Platform from '../../core/platform/platform.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
@@ -25,6 +25,8 @@ import {createContentProviderUISourceCodes} from '../../testing/UISourceCodeHelp
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Sources from './sources.js';
+
+const {urlString} = Platform.DevToolsPath;
 
 describeWithMockConnection('NetworkNavigatorView', () => {
   let workspace: Workspace.Workspace.WorkspaceImpl;
@@ -59,9 +61,9 @@ describeWithMockConnection('NetworkNavigatorView', () => {
       target = createTarget({parentTarget: tabTarget});
       ({project} = createContentProviderUISourceCodes({
          items: [
-           {url: 'http://example.com/' as Platform.DevToolsPath.UrlString, mimeType: 'text/html'},
-           {url: 'http://example.com/favicon.ico' as Platform.DevToolsPath.UrlString, mimeType: 'image/x-icon'},
-           {url: 'http://example.com/gtm.js' as Platform.DevToolsPath.UrlString, mimeType: 'application/javascript'},
+           {url: urlString`http://example.com/`, mimeType: 'text/html'},
+           {url: urlString`http://example.com/favicon.ico`, mimeType: 'image/x-icon'},
+           {url: urlString`http://example.com/gtm.js`, mimeType: 'application/javascript'},
          ],
          projectType: Workspace.Workspace.projectTypes.Network,
          target,
@@ -76,7 +78,7 @@ describeWithMockConnection('NetworkNavigatorView', () => {
       const {project} = createContentProviderUISourceCodes({
         items: [
           {
-            url: 'http://example.com/script.js' as Platform.DevToolsPath.UrlString,
+            url: urlString`http://example.com/script.js`,
             mimeType: 'application/javascript',
             resourceType: Common.ResourceType.resourceTypes.Script,
           },
@@ -100,12 +102,12 @@ describeWithMockConnection('NetworkNavigatorView', () => {
       const {project} = createContentProviderUISourceCodes({
         items: [
           {
-            url: 'http://example.com/list-xhr.json' as Platform.DevToolsPath.UrlString,
+            url: urlString`http://example.com/list-xhr.json`,
             mimeType: 'application/json',
             resourceType: Common.ResourceType.resourceTypes.XHR,
           },
           {
-            url: 'http://example.com/list-fetch.json' as Platform.DevToolsPath.UrlString,
+            url: urlString`http://example.com/list-fetch.json`,
             mimeType: 'application/json',
             resourceType: Common.ResourceType.resourceTypes.Fetch,
           },
@@ -130,14 +132,14 @@ describeWithMockConnection('NetworkNavigatorView', () => {
       assert.isFalse(rootElement.firstChild()?.expanded);
       assert.isTrue(rootElement.firstChild()?.selected);
 
-      target.setInspectedURL('http://example.com/' as Platform.DevToolsPath.UrlString);
+      target.setInspectedURL(urlString`http://example.com/`);
 
       assert.isTrue(navigatorView.scriptsTree.firstChild()?.expanded);
       assert.isTrue(navigatorView.scriptsTree.firstChild()?.firstChild()?.selected);
     });
 
     it('reveals main frame target when added', async () => {
-      target.setInspectedURL('http://example.com/' as Platform.DevToolsPath.UrlString);
+      target.setInspectedURL(urlString`http://example.com/`);
       const navigatorView = Sources.SourcesNavigator.NetworkNavigatorView.instance({forceNew: true});
 
       const rootElement = navigatorView.scriptsTree.rootElement();
@@ -152,9 +154,9 @@ describeWithMockConnection('NetworkNavigatorView', () => {
     const target = createTarget();
     const {project} = createContentProviderUISourceCodes({
       items: [
-        {url: 'http://example.com/' as Platform.DevToolsPath.UrlString, mimeType: 'text/html'},
-        {url: 'http://example.com/favicon.ico' as Platform.DevToolsPath.UrlString, mimeType: 'image/x-icon'},
-        {url: 'http://example.com/gtm.js' as Platform.DevToolsPath.UrlString, mimeType: 'application/javascript'},
+        {url: urlString`http://example.com/`, mimeType: 'text/html'},
+        {url: urlString`http://example.com/favicon.ico`, mimeType: 'image/x-icon'},
+        {url: urlString`http://example.com/gtm.js`, mimeType: 'application/javascript'},
       ],
       projectId: 'project',
       projectType: Workspace.Workspace.projectTypes.Network,
@@ -163,8 +165,8 @@ describeWithMockConnection('NetworkNavigatorView', () => {
     const anotherTarget = createTarget();
     const {project: anotherProject} = createContentProviderUISourceCodes({
       items: [
-        {url: 'http://example.org/' as Platform.DevToolsPath.UrlString, mimeType: 'text/html'},
-        {url: 'http://example.org/background.bmp' as Platform.DevToolsPath.UrlString, mimeType: 'image/x-icon'},
+        {url: urlString`http://example.org/`, mimeType: 'text/html'},
+        {url: urlString`http://example.org/background.bmp`, mimeType: 'image/x-icon'},
       ],
       projectId: 'anotherProject',
       projectType: Workspace.Workspace.projectTypes.Network,
@@ -200,15 +202,15 @@ describeWithMockConnection('NetworkNavigatorView', () => {
     it('selects just once when removing multiple sibling source codes', () => {
       const {project} = createContentProviderUISourceCodes({
         items: [
-          {url: 'http://example.com/a.js' as Platform.DevToolsPath.UrlString, mimeType: 'application/javascript'},
-          {url: 'http://example.com/b.js' as Platform.DevToolsPath.UrlString, mimeType: 'application/javascript'},
+          {url: urlString`http://example.com/a.js`, mimeType: 'application/javascript'},
+          {url: urlString`http://example.com/b.js`, mimeType: 'application/javascript'},
         ],
         projectType: Workspace.Workspace.projectTypes.Network,
         target,
       });
       const {project: otherProject} = createContentProviderUISourceCodes({
         items: [
-          {url: 'http://example.com/c.js' as Platform.DevToolsPath.UrlString, mimeType: 'application/javascript'},
+          {url: urlString`http://example.com/c.js`, mimeType: 'application/javascript'},
         ],
         projectType: Workspace.Workspace.projectTypes.Network,
         projectId: 'other',
@@ -244,9 +246,9 @@ describeWithMockConnection('NetworkNavigatorView', () => {
     it('selects parent after removing all children', () => {
       const {project} = createContentProviderUISourceCodes({
         items: [
-          {url: 'http://example.com/a.js' as Platform.DevToolsPath.UrlString, mimeType: 'application/javascript'},
-          {url: 'http://example.com/b.js' as Platform.DevToolsPath.UrlString, mimeType: 'application/javascript'},
-          {url: 'http://example.com/c.js' as Platform.DevToolsPath.UrlString, mimeType: 'application/javascript'},
+          {url: urlString`http://example.com/a.js`, mimeType: 'application/javascript'},
+          {url: urlString`http://example.com/b.js`, mimeType: 'application/javascript'},
+          {url: urlString`http://example.com/c.js`, mimeType: 'application/javascript'},
         ],
         projectType: Workspace.Workspace.projectTypes.Network,
         target,
@@ -286,15 +288,15 @@ describeWithMockConnection('NetworkNavigatorView', () => {
     it('selects sibling after removing folder children', async () => {
       const {project} = createContentProviderUISourceCodes({
         items: [
-          {url: 'http://example.com/d/a.js' as Platform.DevToolsPath.UrlString, mimeType: 'application/javascript'},
-          {url: 'http://example.com/d/b.js' as Platform.DevToolsPath.UrlString, mimeType: 'application/javascript'},
+          {url: urlString`http://example.com/d/a.js`, mimeType: 'application/javascript'},
+          {url: urlString`http://example.com/d/b.js`, mimeType: 'application/javascript'},
         ],
         projectType: Workspace.Workspace.projectTypes.Network,
         target,
       });
       const {project: otherProject} = createContentProviderUISourceCodes({
         items: [
-          {url: 'http://example.com/c.js' as Platform.DevToolsPath.UrlString, mimeType: 'application/javascript'},
+          {url: urlString`http://example.com/c.js`, mimeType: 'application/javascript'},
         ],
         projectType: Workspace.Workspace.projectTypes.Network,
         projectId: 'other',
@@ -341,15 +343,15 @@ describeWithMockConnection('NetworkNavigatorView', () => {
     it('selects sibling after removing individual folder children', async () => {
       const {project} = createContentProviderUISourceCodes({
         items: [
-          {url: 'http://example.com/d/a.js' as Platform.DevToolsPath.UrlString, mimeType: 'application/javascript'},
-          {url: 'http://example.com/e/b.js' as Platform.DevToolsPath.UrlString, mimeType: 'application/javascript'},
+          {url: urlString`http://example.com/d/a.js`, mimeType: 'application/javascript'},
+          {url: urlString`http://example.com/e/b.js`, mimeType: 'application/javascript'},
         ],
         projectType: Workspace.Workspace.projectTypes.Network,
         target,
       });
       const {project: otherProject} = createContentProviderUISourceCodes({
         items: [
-          {url: 'http://example.com/c.js' as Platform.DevToolsPath.UrlString, mimeType: 'application/javascript'},
+          {url: urlString`http://example.com/c.js`, mimeType: 'application/javascript'},
         ],
         projectType: Workspace.Workspace.projectTypes.Network,
         projectId: 'other',
@@ -479,19 +481,19 @@ describeWithMockConnection('NetworkNavigatorView', () => {
       const {project} = createContentProviderUISourceCodes({
         items: [
           {
-            url: 'http://example.com/ignored/a/a-hidden.js' as Platform.DevToolsPath.UrlString,
+            url: urlString`http://example.com/ignored/a/a-hidden.js`,
             mimeType: 'application/javascript',
           },
           {
-            url: 'http://example.com/ignored/b/b-hidden.js' as Platform.DevToolsPath.UrlString,
+            url: urlString`http://example.com/ignored/b/b-hidden.js`,
             mimeType: 'application/javascript',
           },
           {
-            url: 'http://example.com/mixed/a/a-hidden.js' as Platform.DevToolsPath.UrlString,
+            url: urlString`http://example.com/mixed/a/a-hidden.js`,
             mimeType: 'application/javascript',
           },
           {
-            url: 'http://example.com/mixed/b/b.js' as Platform.DevToolsPath.UrlString,
+            url: urlString`http://example.com/mixed/b/b.js`,
             mimeType: 'application/javascript',
           },
         ],
@@ -515,19 +517,19 @@ describeWithMockConnection('NetworkNavigatorView', () => {
       const {project} = createContentProviderUISourceCodes({
         items: [
           {
-            url: 'http://example.com/ignored/a/a-hidden.js' as Platform.DevToolsPath.UrlString,
+            url: urlString`http://example.com/ignored/a/a-hidden.js`,
             mimeType: 'application/javascript',
           },
           {
-            url: 'http://example.com/ignored/b/b-hidden.js' as Platform.DevToolsPath.UrlString,
+            url: urlString`http://example.com/ignored/b/b-hidden.js`,
             mimeType: 'application/javascript',
           },
           {
-            url: 'http://example.com/mixed/a/a-hidden.js' as Platform.DevToolsPath.UrlString,
+            url: urlString`http://example.com/mixed/a/a-hidden.js`,
             mimeType: 'application/javascript',
           },
           {
-            url: 'http://example.com/mixed/b/b.js' as Platform.DevToolsPath.UrlString,
+            url: urlString`http://example.com/mixed/b/b.js`,
             mimeType: 'application/javascript',
           },
         ],
@@ -562,15 +564,15 @@ describeWithMockConnection('NetworkNavigatorView', () => {
       const {project} = createContentProviderUISourceCodes({
         items: [
           {
-            url: 'http://example.com/ignored/a/a-hidden.js' as Platform.DevToolsPath.UrlString,
+            url: urlString`http://example.com/ignored/a/a-hidden.js`,
             mimeType: 'application/javascript',
           },
           {
-            url: 'http://example.com/ignored/b/b-hidden.js' as Platform.DevToolsPath.UrlString,
+            url: urlString`http://example.com/ignored/b/b-hidden.js`,
             mimeType: 'application/javascript',
           },
           {
-            url: 'http://example.com/mixed/a/a-hidden.js' as Platform.DevToolsPath.UrlString,
+            url: urlString`http://example.com/mixed/a/a-hidden.js`,
             mimeType: 'application/javascript',
           },
         ],
@@ -590,7 +592,7 @@ describeWithMockConnection('NetworkNavigatorView', () => {
       const {project: otherProject} = createContentProviderUISourceCodes({
         items: [
           {
-            url: 'http://example.com/mixed/b/b.js' as Platform.DevToolsPath.UrlString,
+            url: urlString`http://example.com/mixed/b/b.js`,
             mimeType: 'application/javascript',
           },
         ],

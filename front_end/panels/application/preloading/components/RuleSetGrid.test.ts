@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Platform from '../../../../core/platform/platform.js';
+import * as Platform from '../../../../core/platform/platform.js';
 import * as Protocol from '../../../../generated/protocol.js';
 import {assertGridContents} from '../../../../testing/DataGridHelpers.js';
 import {renderElementIntoDOM} from '../../../../testing/DOMHelpers.js';
@@ -11,6 +11,8 @@ import type * as DataGrid from '../../../../ui/components/data_grid/data_grid.js
 import * as RenderCoordinator from '../../../../ui/components/render_coordinator/render_coordinator.js';
 
 import * as PreloadingComponents from './components.js';
+
+const {urlString} = Platform.DevToolsPath;
 
 async function assertRenderResult(
     rowsInput: PreloadingComponents.RuleSetGrid.RuleSetGridData, headerExpected: string[],
@@ -48,7 +50,7 @@ describeWithEnvironment('RuleSetGrid', () => {
             },
             preloadsStatusSummary: '1 Not triggered, 2 Ready, 3 Failure',
           }],
-          pageURL: 'https://example.com/' as Platform.DevToolsPath.UrlString,
+          pageURL: urlString`https://example.com/`,
         },
         ['Rule set', 'Status'],
         [
@@ -78,7 +80,7 @@ describeWithEnvironment('RuleSetGrid', () => {
             },
             preloadsStatusSummary: '1 Not triggered, 2 Ready, 3 Failure',
           }],
-          pageURL: 'https://example.com/' as Platform.DevToolsPath.UrlString,
+          pageURL: urlString`https://example.com/`,
         },
         ['Rule set', 'Status'],
         [
@@ -123,7 +125,7 @@ describeWithEnvironment('RuleSetGrid', () => {
               preloadsStatusSummary: '',
             },
           ],
-          pageURL: 'https://example.com/' as Platform.DevToolsPath.UrlString,
+          pageURL: urlString`https://example.com/`,
         },
         ['Rule set', 'Status'],
         [

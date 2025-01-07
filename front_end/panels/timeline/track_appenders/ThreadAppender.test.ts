@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Platform from '../../../core/platform/platform.js';
+import * as Platform from '../../../core/platform/platform.js';
 import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as Bindings from '../../../models/bindings/bindings.js';
@@ -17,6 +17,8 @@ import {
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as PerfUI from '../../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as Timeline from '../timeline.js';
+
+const {urlString} = Platform.DevToolsPath;
 
 function initTrackAppender(
     flameChartData: PerfUI.FlameChart.FlameChartTimelineData,
@@ -399,8 +401,7 @@ describeWithEnvironment('ThreadAppender', function() {
       const initialTimelineData = await renderThreadAppendersFromTrace(this, 'react-hello-world.json.gz');
       const initialFlamechartData = initialTimelineData.flameChartData;
       const eventCountBeforeIgnoreList = initialFlamechartData.entryStartTimes.length;
-      const SCRIPT_TO_IGNORE =
-          'https://unpkg.com/react@18.2.0/umd/react.development.js' as Platform.DevToolsPath.UrlString;
+      const SCRIPT_TO_IGNORE = urlString`https://unpkg.com/react@18.2.0/umd/react.development.js`;
       // Clear the data provider cache and add the React script to the ignore list.
       ignoreListManager.ignoreListURL(SCRIPT_TO_IGNORE);
       const finalTimelineData = await renderThreadAppendersFromTrace(this, 'react-hello-world.json.gz');
@@ -420,7 +421,7 @@ describeWithEnvironment('ThreadAppender', function() {
     });
 
     it('appends a tree that contains ignore listed entries correctly', async function() {
-      const SCRIPT_TO_IGNORE = 'https://some-framework/bundled.js' as Platform.DevToolsPath.UrlString;
+      const SCRIPT_TO_IGNORE = urlString`https://some-framework/bundled.js`;
 
       // Create the following hierarchy with profile calls. Events marked
       // with \\\\ represent ignored listed events.

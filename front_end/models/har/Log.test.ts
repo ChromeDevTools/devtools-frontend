@@ -7,13 +7,15 @@ import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as HAR from '../har/har.js';
 
+const {urlString} = Platform.DevToolsPath;
+
 describe('HAR', () => {
   describe('Log', () => {
     describe('Entry', () => {
       describe('build', () => {
         const requestId = 'r0' as Protocol.Network.RequestId;
         const {build} = HAR.Log.Entry;
-        const url = 'p0.com' as Platform.DevToolsPath.UrlString;
+        const url = urlString`p0.com`;
 
         it('exports request cookies and authorization headers by default', async () => {
           const request = SDK.NetworkRequest.NetworkRequest.create(

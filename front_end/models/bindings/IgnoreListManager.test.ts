@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Platform from '../../core/platform/platform.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
@@ -12,6 +12,8 @@ import {createContentProviderUISourceCode} from '../../testing/UISourceCodeHelpe
 import * as Workspace from '../workspace/workspace.js';
 
 import * as Bindings from './bindings.js';
+
+const {urlString} = Platform.DevToolsPath;
 
 // Same as in IgnoreListManager.ts.
 const UIStrings = {
@@ -23,12 +25,12 @@ const UIStrings = {
   addAllAnonymousScriptsToIgnoreList: 'Add all anonymous scripts to ignore list',
 };
 
-const sourceMapThirdPartyFolderUrl = 'http://a.b.c/lib' as Platform.DevToolsPath.UrlString;
-const sourceMapThirdPartyUrl = 'http://a.b.c/lib/source1.ts' as Platform.DevToolsPath.UrlString;
-const sourceMapNodeModulesUrl = 'http://a.b.c/node_modules/library/source3.ts' as Platform.DevToolsPath.UrlString;
-const sourceMapFolderUrl = 'http://a.b.c/myapp' as Platform.DevToolsPath.UrlString;
-const sourceMapFile1Url = 'http://a.b.c/myapp/file1.ts' as Platform.DevToolsPath.UrlString;
-const sourceMapFile2Url = 'http://a.b.c/myapp/file2.ts' as Platform.DevToolsPath.UrlString;
+const sourceMapThirdPartyFolderUrl = urlString`http://a.b.c/lib`;
+const sourceMapThirdPartyUrl = urlString`http://a.b.c/lib/source1.ts`;
+const sourceMapNodeModulesUrl = urlString`http://a.b.c/node_modules/library/source3.ts`;
+const sourceMapFolderUrl = urlString`http://a.b.c/myapp`;
+const sourceMapFile1Url = urlString`http://a.b.c/myapp/file1.ts`;
+const sourceMapFile2Url = urlString`http://a.b.c/myapp/file2.ts`;
 
 const sourceMap = {
   version: 3,
@@ -78,13 +80,13 @@ describeWithMockConnection('IgnoreListManager', () => {
   //  </body>
   //  </html>
   //
-  const url = 'http://example.com/index.html' as Platform.DevToolsPath.UrlString;
-  const webpackUrl = 'webpack:///src/subfolder/foo.js' as Platform.DevToolsPath.UrlString;
-  const webpackFolderUrl = 'webpack:///src' as Platform.DevToolsPath.UrlString;
-  const webpackSubfolderUrl = 'webpack:///src/subfolder' as Platform.DevToolsPath.UrlString;
-  const contentScriptFolderUrl = 'chrome-extension://abc' as Platform.DevToolsPath.UrlString;
-  const contentScriptUrl = 'chrome-extension://abc/content.js' as Platform.DevToolsPath.UrlString;
-  const emptyUrl = '' as Platform.DevToolsPath.UrlString;
+  const url = urlString`http://example.com/index.html`;
+  const webpackUrl = urlString`webpack:///src/subfolder/foo.js`;
+  const webpackFolderUrl = urlString`webpack:///src`;
+  const webpackSubfolderUrl = urlString`webpack:///src/subfolder`;
+  const contentScriptFolderUrl = urlString`chrome-extension://abc`;
+  const contentScriptUrl = urlString`chrome-extension://abc/content.js`;
+  const emptyUrl = urlString``;
   const SCRIPTS = [
     {
       scriptId: '1' as Protocol.Runtime.ScriptId,
@@ -598,7 +600,7 @@ describeWithMockConnection('IgnoreListManager', () => {
   describe('isUserOrSourceMapIgnoreListedUISourceCode', () => {
     it('ignores UISourceCodes that are marked', () => {
       const {uiSourceCode} = createContentProviderUISourceCode({
-        url: 'debugger://foo' as Platform.DevToolsPath.UrlString,
+        url: urlString`debugger://foo`,
         projectType: Workspace.Workspace.projectTypes.Debugger,
         mimeType: 'text/javascript',
       });

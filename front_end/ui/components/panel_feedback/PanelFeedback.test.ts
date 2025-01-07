@@ -2,19 +2,21 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Platform from '../../../core/platform/platform.js';
+import * as Platform from '../../../core/platform/platform.js';
 import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {describeWithLocale} from '../../../testing/EnvironmentHelpers.js';
 import * as RenderCoordinator from '../render_coordinator/render_coordinator.js';
 
 import * as PanelFeedback from './panel_feedback.js';
 
+const {urlString} = Platform.DevToolsPath;
+
 describeWithLocale('Panel Feedback', () => {
   async function renderFeedbackComponent(): Promise<PanelFeedback.PanelFeedback.PanelFeedback> {
     const component = new PanelFeedback.PanelFeedback.PanelFeedback();
     component.data = {
-      feedbackUrl: 'https://feedbackurl.com' as Platform.DevToolsPath.UrlString,
-      quickStartUrl: 'https://quickstarturl.com' as Platform.DevToolsPath.UrlString,
+      feedbackUrl: urlString`https://feedbackurl.com`,
+      quickStartUrl: urlString`https://quickstarturl.com`,
       quickStartLinkText: 'quick start link text',
     };
 

@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
-import type * as Platform from '../../core/platform/platform.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as Workspace from '../../models/workspace/workspace.js';
@@ -14,6 +14,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Sources from './sources.js';
 
+const {urlString} = Platform.DevToolsPath;
 const {CSSPlugin} = Sources.CSSPlugin;
 
 describe('CSSPlugin', () => {
@@ -63,7 +64,7 @@ describeWithMockConnection('CSSPlugin', () => {
   }
 
   it('suggests CSS class names from the stylesheet', async () => {
-    const URL = 'http://example.com/styles.css' as Platform.DevToolsPath.UrlString;
+    const URL = urlString`http://example.com/styles.css`;
     const uiSourceCode = sinon.createStubInstance(Workspace.UISourceCode.UISourceCode);
     uiSourceCode.url.returns(URL);
     const plugin = new CSSPlugin(uiSourceCode);

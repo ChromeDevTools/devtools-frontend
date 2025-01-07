@@ -13,11 +13,13 @@ import * as RenderCoordinator from '../render_coordinator/render_coordinator.js'
 
 import * as Linkifier from './linkifier.js';
 
+const {urlString} = Platform.DevToolsPath;
+
 describeWithLocale('Linkifier', () => {
   it('renders a link when given a URL', async () => {
     const component = new Linkifier.Linkifier.Linkifier();
     component.data = {
-      url: 'https://example.com' as Platform.DevToolsPath.UrlString,
+      url: urlString`https://example.com`,
     };
     renderElementIntoDOM(component);
     await RenderCoordinator.done();
@@ -38,7 +40,7 @@ describeWithLocale('Linkifier', () => {
   it('appends the line number to the URL if given, and adds one to deal with 0 indexing', async () => {
     const component = new Linkifier.Linkifier.Linkifier();
     component.data = {
-      url: 'https://example.com' as Platform.DevToolsPath.UrlString,
+      url: urlString`https://example.com`,
       lineNumber: 1,
     };
     renderElementIntoDOM(component);
@@ -52,7 +54,7 @@ describeWithLocale('Linkifier', () => {
   it('emits an event when clicked', async () => {
     const component = new Linkifier.Linkifier.Linkifier();
     component.data = {
-      url: 'https://example.com' as Platform.DevToolsPath.UrlString,
+      url: urlString`https://example.com`,
       lineNumber: 1,
       columnNumber: 50,
     };
@@ -74,7 +76,7 @@ describeWithLocale('Linkifier', () => {
     });
     const clickEvent = await clickEventPromise;
     assert.deepEqual(clickEvent.data, {
-      url: 'https://example.com' as Platform.DevToolsPath.UrlString,
+      url: urlString`https://example.com`,
       lineNumber: 1,
       columnNumber: 50,
     });

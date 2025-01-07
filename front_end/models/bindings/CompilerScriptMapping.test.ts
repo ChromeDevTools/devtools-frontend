@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Platform from '../../core/platform/platform.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
@@ -13,6 +13,8 @@ import * as TextUtils from '../text_utils/text_utils.js';
 import * as Workspace from '../workspace/workspace.js';
 
 import * as Bindings from './bindings.js';
+
+const {urlString} = Platform.DevToolsPath;
 
 describeWithMockConnection('CompilerScriptMapping', () => {
   let backend: MockProtocolBackend;
@@ -31,7 +33,7 @@ describeWithMockConnection('CompilerScriptMapping', () => {
 
   const waitForUISourceCodeAdded =
       (url: string, target: SDK.Target.Target): Promise<Workspace.UISourceCode.UISourceCode> =>
-          debuggerWorkspaceBinding.waitForUISourceCodeAdded(url as Platform.DevToolsPath.UrlString, target);
+          debuggerWorkspaceBinding.waitForUISourceCodeAdded(urlString`${url}`, target);
   const waitForUISourceCodeRemoved = (uiSourceCode: Workspace.UISourceCode.UISourceCode): Promise<void> =>
       new Promise(resolve => {
         const {eventType, listener} =
@@ -315,11 +317,9 @@ describeWithMockConnection('CompilerScriptMapping', () => {
     script.debuggerModel.sourceMapManager().detachSourceMap(script);
 
     assert.isNull(
-        workspace.uiSourceCodeForURL(`${sourceRoot}/a.ts` as Platform.DevToolsPath.UrlString),
-        '`a.ts` should not be around anymore');
+        workspace.uiSourceCodeForURL(urlString`${`${sourceRoot}/a.ts`}`), '`a.ts` should not be around anymore');
     assert.isNull(
-        workspace.uiSourceCodeForURL(`${sourceRoot}/b.ts` as Platform.DevToolsPath.UrlString),
-        '`b.ts` should not be around anymore');
+        workspace.uiSourceCodeForURL(urlString`${`${sourceRoot}/b.ts`}`), '`b.ts` should not be around anymore');
   });
 
   it('correctly reports source-mapped lines', async () => {

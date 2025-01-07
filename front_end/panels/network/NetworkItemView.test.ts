@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Platform from '../../core/platform/platform.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
@@ -18,12 +18,13 @@ import type * as UI from '../../ui/legacy/legacy.js';
 import * as NetworkForward from './forward/forward.js';
 import * as Network from './network.js';
 
+const {urlString} = Platform.DevToolsPath;
+
 function renderNetworkItemView(request?: SDK.NetworkRequest.NetworkRequest): Network.NetworkItemView.NetworkItemView {
   if (!request) {
     request = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId' as Protocol.Network.RequestId,
-        'https://www.example.com/foo.html' as Platform.DevToolsPath.UrlString, '' as Platform.DevToolsPath.UrlString,
-        null, null, null);
+        'requestId' as Protocol.Network.RequestId, urlString`https://www.example.com/foo.html`, urlString``, null, null,
+        null);
   }
   const networkItemView =
       new Network.NetworkItemView.NetworkItemView(request, {} as Network.NetworkTimeCalculator.NetworkTimeCalculator);
@@ -71,8 +72,7 @@ describeWithEnvironment('NetworkItemView', () => {
 
   beforeEach(async () => {
     request = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId' as Protocol.Network.RequestId, 'https://www.example.com' as Platform.DevToolsPath.UrlString,
-        '' as Platform.DevToolsPath.UrlString, null, null, null);
+        'requestId' as Protocol.Network.RequestId, urlString`https://www.example.com`, urlString``, null, null, null);
     request.statusCode = 200;
   });
 

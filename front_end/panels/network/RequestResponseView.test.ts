@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Platform from '../../core/platform/platform.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as TextUtils from '../../models/text_utils/text_utils.js';
@@ -13,12 +13,13 @@ import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Network from './network.js';
 
+const {urlString} = Platform.DevToolsPath;
+
 describeWithEnvironment('RequestResponseView', () => {
   it('does show WASM disassembly for WASM module requests', async () => {
     const request = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId' as Protocol.Network.RequestId,
-        'http://devtools-frontend.test/module.wasm' as Platform.DevToolsPath.UrlString,
-        '' as Platform.DevToolsPath.UrlString, null, null, null);
+        'requestId' as Protocol.Network.RequestId, urlString`http://devtools-frontend.test/module.wasm`, urlString``,
+        null, null, null);
     request.setContentDataProvider(
         () => Promise.resolve(new TextUtils.ContentData.ContentData(
             'AGFzbQEAAAABBQFgAAF/AwIBAAcHAQNiYXIAAAoGAQQAQQILACQEbmFtZQAQD3Nob3ctd2FzbS0yLndhdAEGAQADYmFyAgMBAAA=',
@@ -44,9 +45,8 @@ describeWithEnvironment('RequestResponseView', () => {
 
   it('shows the BinaryResourceView for binary content', async () => {
     const request = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId' as Protocol.Network.RequestId,
-        'http://devtools-frontend.test/image.png' as Platform.DevToolsPath.UrlString,
-        '' as Platform.DevToolsPath.UrlString, null, null, null);
+        'requestId' as Protocol.Network.RequestId, urlString`http://devtools-frontend.test/image.png`, urlString``,
+        null, null, null);
     request.setContentDataProvider(
         () => Promise.resolve(new TextUtils.ContentData.ContentData(
             'AGFzbQEAAAABBQFgAAF/AwIBAAcHAQNiYXIAAAoGAQQAQQILACQEbmFtZQAQD3Nob3ctd2FzbS0yLndhdAEGAQADYmFyAgMBAAA=',

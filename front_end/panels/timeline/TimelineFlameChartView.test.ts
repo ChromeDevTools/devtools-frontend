@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import type * as Common from '../../core/common/common.js';
-import type * as Platform from '../../core/platform/platform.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Trace from '../../models/trace/trace.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
@@ -13,6 +13,8 @@ import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Timeline from './timeline.js';
+
+const {urlString} = Platform.DevToolsPath;
 
 class MockViewDelegate implements Timeline.TimelinePanel.TimelineModeViewDelegate {
   selection: Timeline.TimelineSelection.TimelineSelection|null = null;
@@ -730,8 +732,7 @@ describeWithEnvironment('TimelineFlameChartView', function() {
              return Trace.Types.Events.isProfileCall(entry) && Boolean(entry.callFrame.url);
            });
            Bindings.IgnoreListManager.IgnoreListManager.instance().ignoreListURL(
-               (entryWithIgnoredUrl as Trace.Types.Events.SyntheticProfileCall).callFrame.url as
-               Platform.DevToolsPath.UrlString);
+               urlString`${(entryWithIgnoredUrl as Trace.Types.Events.SyntheticProfileCall).callFrame.url}`);
 
            generateContextMenuForNode(entryWithIgnoredUrl);
 

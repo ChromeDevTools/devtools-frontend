@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../../core/common/common.js';
-import type * as Platform from '../../../core/platform/platform.js';
+import * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import * as Bindings from '../../../models/bindings/bindings.js';
@@ -31,6 +31,7 @@ import * as UI from '../../../ui/legacy/legacy.js';
 
 import * as SourcesComponents from './components.js';
 
+const {urlString} = Platform.DevToolsPath;
 const DETAILS_SELECTOR = 'details';
 const EXPANDED_GROUPS_SELECTOR = 'details[open]';
 const COLLAPSED_GROUPS_SELECTOR = 'details:not([open])';
@@ -107,7 +108,7 @@ function createLocationTestData(
     condition: Breakpoints.BreakpointManager.UserCondition = Breakpoints.BreakpointManager.EMPTY_BREAKPOINT_CONDITION,
     isLogpoint: boolean = false, hoverText?: string): LocationTestData {
   return {
-    url: url as Platform.DevToolsPath.UrlString,
+    url: urlString`${url}`,
     lineNumber,
     columnNumber,
     enabled,
@@ -191,7 +192,7 @@ async function renderSingleBreakpoint(
     groups: [
       {
         name: 'test1.js',
-        url: 'https://google.com/test1.js' as Platform.DevToolsPath.UrlString,
+        url: urlString`https://google.com/test1.js`,
         editable: true,
         expanded: true,
         breakpointItems: [
@@ -228,7 +229,7 @@ async function renderMultipleBreakpoints(): Promise<{
     groups: [
       {
         name: 'test1.js',
-        url: 'https://google.com/test1.js' as Platform.DevToolsPath.UrlString,
+        url: urlString`https://google.com/test1.js`,
         editable: true,
         expanded: true,
         breakpointItems: [
@@ -252,7 +253,7 @@ async function renderMultipleBreakpoints(): Promise<{
       },
       {
         name: 'test2.js',
-        url: 'https://google.com/test2.js' as Platform.DevToolsPath.UrlString,
+        url: urlString`https://google.com/test2.js`,
         editable: false,
         expanded: true,
         breakpointItems: [
@@ -268,7 +269,7 @@ async function renderMultipleBreakpoints(): Promise<{
       },
       {
         name: 'main.js',
-        url: 'https://test.com/main.js' as Platform.DevToolsPath.UrlString,
+        url: urlString`https://test.com/main.js`,
         editable: true,
         expanded: false,
         breakpointItems: [
@@ -773,8 +774,8 @@ describeWithMockConnection('BreakpointsSidebarController', () => {
   it.skip('[crbug.com/345456307] auto-expands if a user adds a new  breakpoint', async () => {
     const breakpointManager = Breakpoints.BreakpointManager.BreakpointManager.instance();
     const settings = Common.Settings.Settings.instance();
-    const {uiSourceCode, project} = createContentProviderUISourceCode(
-        {url: 'test.js' as Platform.DevToolsPath.UrlString, mimeType: 'text/javascript'});
+    const {uiSourceCode, project} =
+        createContentProviderUISourceCode({url: urlString`test.js`, mimeType: 'text/javascript'});
     const controller = SourcesComponents.BreakpointsView.BreakpointsSidebarController.instance(
         {forceNew: true, breakpointManager, settings});
 
@@ -808,8 +809,8 @@ describeWithMockConnection('BreakpointsSidebarController', () => {
   it('does not auto-expand if a breakpoint was not triggered by user action', async () => {
     const breakpointManager = Breakpoints.BreakpointManager.BreakpointManager.instance();
     const settings = Common.Settings.Settings.instance();
-    const {uiSourceCode, project} = createContentProviderUISourceCode(
-        {url: 'test.js' as Platform.DevToolsPath.UrlString, mimeType: 'text/javascript'});
+    const {uiSourceCode, project} =
+        createContentProviderUISourceCode({url: urlString`test.js`, mimeType: 'text/javascript'});
     const controller = SourcesComponents.BreakpointsView.BreakpointsSidebarController.instance(
         {forceNew: true, breakpointManager, settings});
 
@@ -853,8 +854,8 @@ describeWithMockConnection('BreakpointsSidebarController', () => {
     // the hit breakpoint is the one we are adding.
     const scriptId = '0' as Protocol.Runtime.ScriptId;
 
-    const {uiSourceCode, project} = createContentProviderUISourceCode(
-        {url: 'test.js' as Platform.DevToolsPath.UrlString, mimeType: 'text/javascript'});
+    const {uiSourceCode, project} =
+        createContentProviderUISourceCode({url: urlString`test.js`, mimeType: 'text/javascript'});
     const uiLocation = new Workspace.UISourceCode.UILocation(uiSourceCode, 0, 0);
 
     const debuggerModel = sinon.createStubInstance(SDK.DebuggerModel.DebuggerModel);
@@ -1015,7 +1016,7 @@ describeWithMockConnection('BreakpointsView', () => {
 
     const groupTemplate = {
       name: 'index.js',
-      url: '' as Platform.DevToolsPath.UrlString,
+      url: urlString``,
       editable: true,
       expanded: true,
       breakpointItems: [
@@ -1032,10 +1033,10 @@ describeWithMockConnection('BreakpointsView', () => {
 
     // Create two groups with the same file name, but different url.
     const group1 = {...groupTemplate};
-    group1.url = 'https://google.com/lib/index.js' as Platform.DevToolsPath.UrlString;
+    group1.url = urlString`https://google.com/lib/index.js`;
 
     const group2 = {...groupTemplate};
-    group2.url = 'https://google.com/src/index.js' as Platform.DevToolsPath.UrlString;
+    group2.url = urlString`https://google.com/src/index.js`;
 
     const data: SourcesComponents.BreakpointsView.BreakpointsViewData = {
       breakpointsActive: true,
@@ -1330,7 +1331,7 @@ describeWithMockConnection('BreakpointsView', () => {
       groups: [
         {
           name: 'test1.js',
-          url: 'https://google.com/test1.js' as Platform.DevToolsPath.UrlString,
+          url: urlString`https://google.com/test1.js`,
           editable: false,
           expanded: true,
           breakpointItems: [
@@ -1649,7 +1650,7 @@ describeWithMockConnection('BreakpointsView', () => {
         groups: [
           {
             name: 'test1.js',
-            url: 'https://google.com/test1.js' as Platform.DevToolsPath.UrlString,
+            url: urlString`https://google.com/test1.js`,
             editable: false,
             expanded: true,
             breakpointItems: [
@@ -1673,7 +1674,7 @@ describeWithMockConnection('BreakpointsView', () => {
           },
           {
             name: 'test2.js',
-            url: 'https://google.com/test2.js' as Platform.DevToolsPath.UrlString,
+            url: urlString`https://google.com/test2.js`,
             editable: false,
             expanded: false,
             breakpointItems: [

@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Platform from '../../../core/platform/platform.js';
+import * as Platform from '../../../core/platform/platform.js';
 import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {createTarget} from '../../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../../testing/MockConnection.js';
@@ -11,6 +11,7 @@ import * as RenderCoordinator from '../render_coordinator/render_coordinator.js'
 
 import * as ChromeLink from './chrome_link.js';
 
+const {urlString} = Platform.DevToolsPath;
 const {html} = LitHtml;
 
 describeWithMockConnection('ChromeLink', () => {
@@ -22,7 +23,7 @@ describeWithMockConnection('ChromeLink', () => {
     // clang-format off
     LitHtml.render(
       html`
-        <devtools-chrome-link .href=${'chrome://settings' as Platform.DevToolsPath.UrlString}>
+        <devtools-chrome-link .href=${urlString`chrome://settings`}>
           link text
         </devtools-chrome-link>
       `,
@@ -51,7 +52,7 @@ describe('ChromeLink', () => {
   it('throws an error when given a non-\'chrome://\' URL', async () => {
     const component = new ChromeLink.ChromeLink.ChromeLink();
     assert.throws(() => {
-      component.href = 'https://www.example.com' as Platform.DevToolsPath.UrlString;
+      component.href = urlString`https://www.example.com`;
     }, 'ChromeLink href needs to start with \'chrome://\'');
   });
 });

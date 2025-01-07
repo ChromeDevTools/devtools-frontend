@@ -22,6 +22,7 @@ import * as UI from '../../legacy.js';
 
 import * as Components from './utils.js';
 
+const {urlString} = Platform.DevToolsPath;
 const scriptId1 = '1' as Protocol.Runtime.ScriptId;
 const scriptId2 = '2' as Protocol.Runtime.ScriptId;
 const executionContextId = 1234 as Protocol.Runtime.ExecutionContextId;
@@ -56,7 +57,7 @@ describeWithMockConnection('Linkifier', () => {
 
   describe('Linkifier.linkifyURL', () => {
     it('prefers text over the URL if it is present', async () => {
-      const url = 'http://www.example.com' as Platform.DevToolsPath.UrlString;
+      const url = urlString`http://www.example.com`;
       const link = Components.Linkifier.Linkifier.linkifyURL(url, {
         text: 'foo',
         showColumnNumber: false,
@@ -66,7 +67,7 @@ describeWithMockConnection('Linkifier', () => {
     });
 
     it('falls back to the URL if given an empty text value', async () => {
-      const url = 'http://www.example.com' as Platform.DevToolsPath.UrlString;
+      const url = urlString`http://www.example.com`;
       const link = Components.Linkifier.Linkifier.linkifyURL(url, {
         text: '',
         showColumnNumber: false,
@@ -76,7 +77,7 @@ describeWithMockConnection('Linkifier', () => {
     });
 
     it('falls back to unknown if the URL and text are empty', async () => {
-      const url = '' as Platform.DevToolsPath.UrlString;
+      const url = urlString``;
       const link = Components.Linkifier.Linkifier.linkifyURL(url, {
         text: '',
         showColumnNumber: false,
@@ -175,8 +176,7 @@ describeWithMockConnection('Linkifier', () => {
     dispatchEvent(target, 'Debugger.scriptParsed', scriptParsedEvent1);
 
     // Ask for a link to a script that has not been registered yet, but has the same url.
-    const anchor =
-        linkifier.maybeLinkifyScriptLocation(target, scriptId2, url as Platform.DevToolsPath.UrlString, lineNumber);
+    const anchor = linkifier.maybeLinkifyScriptLocation(target, scriptId2, urlString`${url}`, lineNumber);
     assert.exists(anchor);
 
     // This link should not pick up the first script with the same url, since there's no
@@ -296,7 +296,7 @@ describeWithMockConnection('Linkifier', () => {
          const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
          const lineNumber = 1;
          const columnNumber = 0;
-         const url = 'https://www.google.com/script.js' as Platform.DevToolsPath.UrlString;
+         const url = urlString`https://www.google.com/script.js`;
 
          const script = await backend.addScript(target, {content: simpleScriptContent, url}, null);
          const uiSourceCode = debuggerWorkspaceBinding.uiSourceCodeForScript(script);
@@ -339,7 +339,7 @@ describeWithMockConnection('Linkifier', () => {
       linkifier.addEventListener(Components.Linkifier.Events.LIVE_LOCATION_UPDATED, eventCallback);
       const debuggerWorkspaceBinding = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
       const lineNumber = 1;
-      const url = 'https://www.google.com/script.js' as Platform.DevToolsPath.UrlString;
+      const url = urlString`https://www.google.com/script.js`;
       const sourceMapContent = JSON.stringify({
         version: 3,
         names: ['adder', 'param1', 'param2', 'result'],

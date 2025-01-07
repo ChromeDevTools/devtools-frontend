@@ -2,8 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Platform from '../../core/platform/platform.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as Extensions from '../extensions/extensions.js';
+
+const {urlString} = Platform.DevToolsPath;
 
 // The test expectations are from //extensions/common/url_pattern_unittest.cc but leave out tests for the unsupported
 // schemes and paths. Also left out are tests for whitespace and unicode urls since that doesn't go through the url
@@ -99,11 +101,11 @@ describe('HostUrlPattern', () => {
     assert.strictEqual('http', pattern.scheme);
     assert.strictEqual('*', pattern.host);
     assert.isFalse(pattern.matchesAllUrls());
-    assert.isTrue(pattern.matchesUrl('http://google.com' as Platform.DevToolsPath.UrlString));
-    assert.isTrue(pattern.matchesUrl('http://yahoo.com' as Platform.DevToolsPath.UrlString));
-    assert.isTrue(pattern.matchesUrl('http://google.com/foo' as Platform.DevToolsPath.UrlString));
-    assert.isFalse(pattern.matchesUrl('https://google.com' as Platform.DevToolsPath.UrlString));
-    assert.isTrue(pattern.matchesUrl('http://74.125.127.100/search' as Platform.DevToolsPath.UrlString));
+    assert.isTrue(pattern.matchesUrl(urlString`http://google.com`));
+    assert.isTrue(pattern.matchesUrl(urlString`http://yahoo.com`));
+    assert.isTrue(pattern.matchesUrl(urlString`http://google.com/foo`));
+    assert.isFalse(pattern.matchesUrl(urlString`https://google.com`));
+    assert.isTrue(pattern.matchesUrl(urlString`http://74.125.127.100/search`));
   });
 
   it('Matches all domains', () => {
@@ -112,10 +114,10 @@ describe('HostUrlPattern', () => {
     assert.strictEqual('https', pattern.scheme);
     assert.strictEqual('*', pattern.host);
     assert.isFalse(pattern.matchesAllUrls());
-    assert.isTrue(pattern.matchesUrl('https://www.google.com/foo' as Platform.DevToolsPath.UrlString));
-    assert.isTrue(pattern.matchesUrl('https://www.google.com/foobar' as Platform.DevToolsPath.UrlString));
-    assert.isFalse(pattern.matchesUrl('http://www.google.com/foo' as Platform.DevToolsPath.UrlString));
-    assert.isTrue(pattern.matchesUrl('https://www.google.com/' as Platform.DevToolsPath.UrlString));
+    assert.isTrue(pattern.matchesUrl(urlString`https://www.google.com/foo`));
+    assert.isTrue(pattern.matchesUrl(urlString`https://www.google.com/foobar`));
+    assert.isFalse(pattern.matchesUrl(urlString`http://www.google.com/foo`));
+    assert.isTrue(pattern.matchesUrl(urlString`https://www.google.com/`));
   });
 
   it('Matches subdomains', () => {
@@ -124,12 +126,12 @@ describe('HostUrlPattern', () => {
     assert.strictEqual('http', pattern.scheme);
     assert.strictEqual('*.google.com', pattern.host);
     assert.isFalse(pattern.matchesAllUrls());
-    assert.isTrue(pattern.matchesUrl('http://google.com/foobar' as Platform.DevToolsPath.UrlString));
-    assert.isTrue(pattern.matchesUrl('http://www.google.com/foobar' as Platform.DevToolsPath.UrlString));
-    assert.isTrue(pattern.matchesUrl('http://www.google.com/foo?bar' as Platform.DevToolsPath.UrlString));
-    assert.isFalse(pattern.matchesUrl('http://wwwgoogle.com/foobar' as Platform.DevToolsPath.UrlString));
-    assert.isTrue(pattern.matchesUrl('http://monkey.images.google.com/foooobar' as Platform.DevToolsPath.UrlString));
-    assert.isFalse(pattern.matchesUrl('http://yahoo.com/foobar' as Platform.DevToolsPath.UrlString));
+    assert.isTrue(pattern.matchesUrl(urlString`http://google.com/foobar`));
+    assert.isTrue(pattern.matchesUrl(urlString`http://www.google.com/foobar`));
+    assert.isTrue(pattern.matchesUrl(urlString`http://www.google.com/foo?bar`));
+    assert.isFalse(pattern.matchesUrl(urlString`http://wwwgoogle.com/foobar`));
+    assert.isTrue(pattern.matchesUrl(urlString`http://monkey.images.google.com/foooobar`));
+    assert.isFalse(pattern.matchesUrl(urlString`http://yahoo.com/foobar`));
   });
 
   it('Matches ip addresses', () => {
@@ -138,7 +140,7 @@ describe('HostUrlPattern', () => {
     assert.strictEqual('http', pattern.scheme);
     assert.strictEqual('127.0.0.1', pattern.host);
     assert.isFalse(pattern.matchesAllUrls());
-    assert.isTrue(pattern.matchesUrl('http://127.0.0.1' as Platform.DevToolsPath.UrlString));
+    assert.isTrue(pattern.matchesUrl(urlString`http://127.0.0.1`));
   });
 
   it('Matches subdomain matching with ip addresses', () => {
@@ -147,7 +149,7 @@ describe('HostUrlPattern', () => {
     assert.strictEqual('http', pattern.scheme);
     assert.strictEqual('*.0.0.0.1', pattern.host);
     assert.isFalse(pattern.matchesAllUrls());
-    assert.isFalse(pattern.matchesUrl('http://127.0.0.1' as Platform.DevToolsPath.UrlString));
+    assert.isFalse(pattern.matchesUrl(urlString`http://127.0.0.1`));
   });
 
   it('Matches chrome://', () => {
@@ -156,9 +158,9 @@ describe('HostUrlPattern', () => {
     assert.strictEqual('chrome', pattern.scheme);
     assert.strictEqual('favicon', pattern.host);
     assert.isFalse(pattern.matchesAllUrls());
-    assert.isTrue(pattern.matchesUrl('chrome://favicon/http://google.com' as Platform.DevToolsPath.UrlString));
-    assert.isTrue(pattern.matchesUrl('chrome://favicon/https://google.com' as Platform.DevToolsPath.UrlString));
-    assert.isFalse(pattern.matchesUrl('chrome://history' as Platform.DevToolsPath.UrlString));
+    assert.isTrue(pattern.matchesUrl(urlString`chrome://favicon/http://google.com`));
+    assert.isTrue(pattern.matchesUrl(urlString`chrome://favicon/https://google.com`));
+    assert.isFalse(pattern.matchesUrl(urlString`chrome://history`));
   });
 
   it('Matches *://', () => {
@@ -170,10 +172,10 @@ describe('HostUrlPattern', () => {
     assert.isFalse(pattern.matchesScheme('file'));
     assert.isFalse(pattern.matchesScheme('ftp'));
     assert.isFalse(pattern.matchesAllUrls());
-    assert.isTrue(pattern.matchesUrl('http://127.0.0.1' as Platform.DevToolsPath.UrlString));
-    assert.isFalse(pattern.matchesUrl('chrome://favicon/http://google.com' as Platform.DevToolsPath.UrlString));
-    assert.isFalse(pattern.matchesUrl('file:///foo/bar' as Platform.DevToolsPath.UrlString));
-    assert.isFalse(pattern.matchesUrl('file://localhost/foo/bar' as Platform.DevToolsPath.UrlString));
+    assert.isTrue(pattern.matchesUrl(urlString`http://127.0.0.1`));
+    assert.isFalse(pattern.matchesUrl(urlString`chrome://favicon/http://google.com`));
+    assert.isFalse(pattern.matchesUrl(urlString`file:///foo/bar`));
+    assert.isFalse(pattern.matchesUrl(urlString`file://localhost/foo/bar`));
   });
 
   it('Matches <all_urls>', () => {
@@ -185,10 +187,10 @@ describe('HostUrlPattern', () => {
     assert.isTrue(pattern.matchesScheme('file'));
     assert.isTrue(pattern.matchesScheme('chrome-extension'));
     assert.isTrue(pattern.matchesAllUrls());
-    assert.isTrue(pattern.matchesUrl('chrome://favicon/http://google.com' as Platform.DevToolsPath.UrlString));
-    assert.isTrue(pattern.matchesUrl('http://127.0.0.1' as Platform.DevToolsPath.UrlString));
-    assert.isTrue(pattern.matchesUrl('file:///foo/bar' as Platform.DevToolsPath.UrlString));
-    assert.isTrue(pattern.matchesUrl('file://localhost/foo/bar' as Platform.DevToolsPath.UrlString));
+    assert.isTrue(pattern.matchesUrl(urlString`chrome://favicon/http://google.com`));
+    assert.isTrue(pattern.matchesUrl(urlString`http://127.0.0.1`));
+    assert.isTrue(pattern.matchesUrl(urlString`file:///foo/bar`));
+    assert.isTrue(pattern.matchesUrl(urlString`file://localhost/foo/bar`));
   });
 
   it('Matches SCHEME_ALL matches all schemes.', () => {
@@ -203,21 +205,20 @@ describe('HostUrlPattern', () => {
     assert.isTrue(pattern.matchesScheme('about'));
     assert.isTrue(pattern.matchesScheme('chrome-extension'));
     assert.isTrue(pattern.matchesAllUrls());
-    assert.isTrue(pattern.matchesUrl('chrome://favicon/http://google.com' as Platform.DevToolsPath.UrlString));
-    assert.isTrue(pattern.matchesUrl('http://127.0.0.1' as Platform.DevToolsPath.UrlString));
-    assert.isTrue(pattern.matchesUrl('file:///foo/bar' as Platform.DevToolsPath.UrlString));
-    assert.isTrue(pattern.matchesUrl('file://localhost/foo/bar' as Platform.DevToolsPath.UrlString));
-    assert.isTrue(pattern.matchesUrl('chrome://newtab' as Platform.DevToolsPath.UrlString));
-    assert.isTrue(pattern.matchesUrl('about:blank' as Platform.DevToolsPath.UrlString));
-    assert.isTrue(pattern.matchesUrl('about:version' as Platform.DevToolsPath.UrlString));
-    assert.isTrue(
-        pattern.matchesUrl('data:text/html;charset=utf-8,<html>asdf</html>' as Platform.DevToolsPath.UrlString));
+    assert.isTrue(pattern.matchesUrl(urlString`chrome://favicon/http://google.com`));
+    assert.isTrue(pattern.matchesUrl(urlString`http://127.0.0.1`));
+    assert.isTrue(pattern.matchesUrl(urlString`file:///foo/bar`));
+    assert.isTrue(pattern.matchesUrl(urlString`file://localhost/foo/bar`));
+    assert.isTrue(pattern.matchesUrl(urlString`chrome://newtab`));
+    assert.isTrue(pattern.matchesUrl(urlString`about:blank`));
+    assert.isTrue(pattern.matchesUrl(urlString`about:version`));
+    assert.isTrue(pattern.matchesUrl(urlString`data:text/html;charset=utf-8,<html>asdf</html>`));
   });
 
   it('Doesn\'t Match Invalid', () => {
     const pattern = Extensions.HostUrlPattern.HostUrlPattern.parse('<all_urls>');
     assert.exists(pattern);
-    assert.isFalse(pattern.matchesUrl('http:' as Platform.DevToolsPath.UrlString));
+    assert.isFalse(pattern.matchesUrl(urlString`http:`));
   });
 
   it('Matches SCHEME_ALL and specific schemes.', () => {
@@ -228,7 +229,7 @@ describe('HostUrlPattern', () => {
     for (const {pattern, matches} of urlPatternTestCases) {
       const parsedPattern = Extensions.HostUrlPattern.HostUrlPattern.parse(pattern);
       assert.exists(parsedPattern);
-      assert.isTrue(parsedPattern.matchesUrl(matches as Platform.DevToolsPath.UrlString));
+      assert.isTrue(parsedPattern.matchesUrl(urlString`${matches}`));
     }
   });
 
@@ -239,9 +240,9 @@ describe('HostUrlPattern', () => {
     assert.strictEqual('www.example.com', pattern.host);
     assert.isFalse(pattern.matchesAllUrls());
     assert.strictEqual('80', pattern.port);
-    assert.isTrue(pattern.matchesUrl('http://www.example.com:80/foo' as Platform.DevToolsPath.UrlString));
-    assert.isTrue(pattern.matchesUrl('http://www.example.com/foo' as Platform.DevToolsPath.UrlString));
-    assert.isFalse(pattern.matchesUrl('http://www.example.com:8080/foo' as Platform.DevToolsPath.UrlString));
+    assert.isTrue(pattern.matchesUrl(urlString`http://www.example.com:80/foo`));
+    assert.isTrue(pattern.matchesUrl(urlString`http://www.example.com/foo`));
+    assert.isFalse(pattern.matchesUrl(urlString`http://www.example.com:8080/foo`));
   });
 
   it('Matches Explicit port wildcard', () => {
@@ -251,9 +252,9 @@ describe('HostUrlPattern', () => {
     assert.strictEqual('www.example.com', pattern.host);
     assert.isFalse(pattern.matchesAllUrls());
     assert.strictEqual('*', pattern.port);
-    assert.isTrue(pattern.matchesUrl('http://www.example.com:80/foo' as Platform.DevToolsPath.UrlString));
-    assert.isTrue(pattern.matchesUrl('http://www.example.com/foo' as Platform.DevToolsPath.UrlString));
-    assert.isTrue(pattern.matchesUrl('http://www.example.com:8080/foo' as Platform.DevToolsPath.UrlString));
+    assert.isTrue(pattern.matchesUrl(urlString`http://www.example.com:80/foo`));
+    assert.isTrue(pattern.matchesUrl(urlString`http://www.example.com/foo`));
+    assert.isTrue(pattern.matchesUrl(urlString`http://www.example.com:8080/foo`));
   });
 
   it('Matches chrome-extension://', () => {
@@ -262,22 +263,22 @@ describe('HostUrlPattern', () => {
     assert.strictEqual('chrome-extension', pattern.scheme);
     assert.strictEqual('ftw', pattern.host);
     assert.isFalse(pattern.matchesAllUrls());
-    assert.isTrue(pattern.matchesUrl('chrome-extension://ftw' as Platform.DevToolsPath.UrlString));
-    assert.isTrue(pattern.matchesUrl('chrome-extension://ftw/http://google.com' as Platform.DevToolsPath.UrlString));
-    assert.isTrue(pattern.matchesUrl('chrome-extension://ftw/https://google.com' as Platform.DevToolsPath.UrlString));
-    assert.isFalse(pattern.matchesUrl('chrome-extension://foobar' as Platform.DevToolsPath.UrlString));
+    assert.isTrue(pattern.matchesUrl(urlString`chrome-extension://ftw`));
+    assert.isTrue(pattern.matchesUrl(urlString`chrome-extension://ftw/http://google.com`));
+    assert.isTrue(pattern.matchesUrl(urlString`chrome-extension://ftw/https://google.com`));
+    assert.isFalse(pattern.matchesUrl(urlString`chrome-extension://foobar`));
   });
 
   it('Ignore Ports', () => {
     const pattern = Extensions.HostUrlPattern.HostUrlPattern.parse('http://www.example.com:8080/');
     assert.exists(pattern);
 
-    assert.isFalse(pattern.matchesUrl('http://www.example.com:1234/foo' as Platform.DevToolsPath.UrlString));
+    assert.isFalse(pattern.matchesUrl(urlString`http://www.example.com:1234/foo`));
   });
 
   it('Trailing Dot Domain', () => {
-    const normalDomain = 'http://example.com/' as Platform.DevToolsPath.UrlString;
-    const trailingDotDomain = 'http://example.com./' as Platform.DevToolsPath.UrlString;
+    const normalDomain = urlString`http://example.com/`;
+    const trailingDotDomain = urlString`http://example.com./`;
 
     const pattern = Extensions.HostUrlPattern.HostUrlPattern.parse('*://example.com/*');
     assert.exists(pattern);
@@ -293,16 +294,16 @@ describe('HostUrlPattern', () => {
   it('URLPattern properly canonicalizes uncanonicalized hosts', () => {
     const pattern = Extensions.HostUrlPattern.HostUrlPattern.parse('*://*.gOoGle.com/*');
     assert.exists(pattern);
-    assert.isTrue(pattern.matchesUrl('https://google.com' as Platform.DevToolsPath.UrlString));
-    assert.isTrue(pattern.matchesUrl('https://maps.google.com' as Platform.DevToolsPath.UrlString));
-    assert.isFalse(pattern.matchesUrl('https://example.com' as Platform.DevToolsPath.UrlString));
+    assert.isTrue(pattern.matchesUrl(urlString`https://google.com`));
+    assert.isTrue(pattern.matchesUrl(urlString`https://maps.google.com`));
+    assert.isFalse(pattern.matchesUrl(urlString`https://example.com`));
 
     const pattern2 = Extensions.HostUrlPattern.HostUrlPattern.parse('https://*.ɡoogle.com/*');
     assert.exists(pattern2);
     const canonicalizedHost = 'xn--oogle-qmc.com';
     assert.strictEqual(`*.${canonicalizedHost}`, pattern2.host);
-    assert.isFalse(pattern2.matchesUrl('https://google.com' as Platform.DevToolsPath.UrlString));
-    assert.isTrue(pattern2.matchesUrl(`https://${canonicalizedHost}/` as Platform.DevToolsPath.UrlString));
+    assert.isFalse(pattern2.matchesUrl(urlString`https://google.com`));
+    assert.isTrue(pattern2.matchesUrl(urlString`${`https://${canonicalizedHost}/`}`));
     assert.isTrue(pattern2.matchesHost('ɡoogle.com'));
 
     const pattern3 = Extensions.HostUrlPattern.HostUrlPattern.parse('https://\xef\xb7\x90zyx.com/*');

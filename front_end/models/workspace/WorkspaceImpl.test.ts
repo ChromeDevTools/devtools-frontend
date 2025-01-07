@@ -2,9 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Platform from '../../core/platform/platform.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as Bindings from '../bindings/bindings.js';
 import * as Workspace from '../workspace/workspace.js';
+
+const {urlString} = Platform.DevToolsPath;
 
 describe('WorkspaceImpl', () => {
   it('can remove the current instance', () => {
@@ -20,7 +22,7 @@ describe('WorkspaceImpl', () => {
     const sut = Workspace.Workspace.WorkspaceImpl.instance({forceNew: true});
     const projectStub = sinon.createStubInstance(Bindings.ContentProviderBasedProject.ContentProviderBasedProject);
     const exampleProjectID = 'exampleProjectID';
-    const exampleUrl = 'https://example.com/' as Platform.DevToolsPath.UrlString;
+    const exampleUrl = urlString`https://example.com/`;
     projectStub.id.returns(exampleProjectID);
     const uiSourceCodeStub = sinon.createStubInstance(Workspace.UISourceCode.UISourceCode);
     projectStub.uiSourceCodeForURL.withArgs(exampleUrl).returns(uiSourceCodeStub);
@@ -33,7 +35,7 @@ describe('WorkspaceImpl', () => {
 
   it('can return the UI source code from a URL', async () => {
     const sut = Workspace.Workspace.WorkspaceImpl.instance({forceNew: true});
-    const exampleUrl = 'https://example.com/' as Platform.DevToolsPath.UrlString;
+    const exampleUrl = urlString`https://example.com/`;
     const projectStub = sinon.createStubInstance(Bindings.ContentProviderBasedProject.ContentProviderBasedProject);
     sut.addProject(projectStub);
 
@@ -139,9 +141,8 @@ describe('WorkspaceImpl', () => {
 describe('ProjectStore', () => {
   it('allows renaming for file names with special characters when there is no parent URL', () => {
     const workspaceStub = sinon.createStubInstance(Workspace.Workspace.WorkspaceImpl);
-    const originalUrlExample = 'https://example.com/' as Platform.DevToolsPath.UrlString;
-    const nameWithSpecialChars =
-        'equals=question?percent%space dollar$semi;hash#amper&' as Platform.DevToolsPath.UrlString;
+    const originalUrlExample = urlString`https://example.com/`;
+    const nameWithSpecialChars = urlString`equals=question?percent%space dollar\$semi;hash#amper&`;
     const uiSourceCodeStub = sinon.createStubInstance(Workspace.UISourceCode.UISourceCode);
     uiSourceCodeStub.url.returns(originalUrlExample);
     const projectInstance = new Bindings.ContentProviderBasedProject.ContentProviderBasedProject(
@@ -157,15 +158,14 @@ describe('ProjectStore', () => {
 
     assert.isNull(projectInstance.uiSourceCodeForURL(originalUrlExample));
     assert.isNotNull(projectInstance.uiSourceCodeForURL(
-        'equals=question%3Fpercent%25space%20dollar$semi%3Bhash%23amper&' as Platform.DevToolsPath.UrlString));
+        urlString`equals=question%3Fpercent%25space%20dollar\$semi%3Bhash%23amper&`));
   });
 
   it('allows renaming for file names with special characters when there is a parent URL', () => {
     const workspaceStub = sinon.createStubInstance(Workspace.Workspace.WorkspaceImpl);
-    const originalUrlExample = 'https://example.com/' as Platform.DevToolsPath.UrlString;
-    const parentUrlExample = 'https://parent.example.com' as Platform.DevToolsPath.UrlString;
-    const nameWithSpecialChars =
-        'equals=question?percent%space dollar$semi;hash#amper&' as Platform.DevToolsPath.UrlString;
+    const originalUrlExample = urlString`https://example.com/`;
+    const parentUrlExample = urlString`https://parent.example.com`;
+    const nameWithSpecialChars = urlString`equals=question?percent%space dollar\$semi;hash#amper&`;
     const uiSourceCodeStub = sinon.createStubInstance(Workspace.UISourceCode.UISourceCode);
     uiSourceCodeStub.url.returns(originalUrlExample);
     uiSourceCodeStub.parentURL.returns(parentUrlExample);
@@ -182,7 +182,6 @@ describe('ProjectStore', () => {
 
     assert.isNull(projectInstance.uiSourceCodeForURL(originalUrlExample));
     assert.isNotNull(projectInstance.uiSourceCodeForURL(
-        'https://parent.example.com/equals=question%3Fpercent%25space%20dollar$semi%3Bhash%23amper&' as
-        Platform.DevToolsPath.UrlString));
+        urlString`https://parent.example.com/equals=question%3Fpercent%25space%20dollar\$semi%3Bhash%23amper&`));
   });
 });

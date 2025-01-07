@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../../core/common/common.js';
-import type * as Platform from '../../../core/platform/platform.js';
+import * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as Bindings from '../../../models/bindings/bindings.js';
 import * as Trace from '../../../models/trace/trace.js';
@@ -20,6 +20,8 @@ import { // eslint-disable-line rulesdir/es-modules-import
   loadCodeLocationResolvingScenario,
 } from './SourceMapsResolver.test.js';
 import * as Utils from './utils.js';
+
+const {urlString} = Platform.DevToolsPath;
 
 describeWithMockConnection('isIgnoreListedEntry', () => {
   it('uses url mappings to determine if an url is ignore listed', async () => {
@@ -44,8 +46,7 @@ describeWithMockConnection('isIgnoreListedEntry', () => {
       workerURLById: new Map(),
     };
 
-    Bindings.IgnoreListManager.IgnoreListManager.instance().ignoreListURL(
-        authoredScriptURL as Platform.DevToolsPath.UrlString);
+    Bindings.IgnoreListManager.IgnoreListManager.instance().ignoreListURL(urlString`${authoredScriptURL}`);
     const traceWithMappings = {
       Samples: makeMockSamplesHandlerData([profileCallWithMappings]),
       Workers: workersData,
@@ -154,8 +155,7 @@ describeWithMockConnection('isIgnoreListedEntry', () => {
       debuggerWorkspaceBinding,
     });
     ignoreRegex('youtube*');
-    const url = 'https://www.youtube.com/s/desktop/2ebf714b/jsbin/desktop_polymer.vflset/desktop_polymer.js' as
-        Platform.DevToolsPath.UrlString;
+    const url = urlString`https://www.youtube.com/s/desktop/2ebf714b/jsbin/desktop_polymer.vflset/desktop_polymer.js`;
     Bindings.IgnoreListManager.IgnoreListManager.instance().ignoreListURL(url);
 
     const entry = makeProfileCall(

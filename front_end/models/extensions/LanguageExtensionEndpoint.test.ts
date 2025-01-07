@@ -2,11 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Platform from '../../core/platform/platform.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 
 import * as Extensions from './extensions.js';
+
+const {urlString} = Platform.DevToolsPath;
 
 for (const allowFileAccess of [true, false]) {
   describe(`LanguageExtensionEndpoint ${allowFileAccess ? 'with' : 'without'} file access`, () => {
@@ -28,15 +30,15 @@ for (const allowFileAccess of [true, false]) {
       script.debugSymbols = {type: Protocol.Debugger.DebugSymbolsType.SourceMap};
       script.scriptLanguage.returns('lang');
 
-      script.contentURL.returns('file:///file' as Platform.DevToolsPath.UrlString);
+      script.contentURL.returns(urlString`file:///file`);
       assert.strictEqual(endpoint.handleScript(script), allowFileAccess);
-      script.contentURL.returns('http://example.com' as Platform.DevToolsPath.UrlString);
+      script.contentURL.returns(urlString`http://example.com`);
       assert.isTrue(endpoint.handleScript(script));
 
       script.hasSourceURL = true;
-      script.sourceURL = 'file:///file' as Platform.DevToolsPath.UrlString;
+      script.sourceURL = urlString`file:///file`;
       assert.strictEqual(endpoint.handleScript(script), allowFileAccess);
-      script.sourceURL = 'http://example.com' as Platform.DevToolsPath.UrlString;
+      script.sourceURL = urlString`http://example.com`;
       assert.isTrue(endpoint.handleScript(script));
 
       script.debugSymbols.externalURL = 'file:///file';

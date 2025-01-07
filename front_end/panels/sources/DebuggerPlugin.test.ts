@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Platform from '../../core/platform/platform.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
@@ -16,8 +16,10 @@ import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 
 import * as Sources from './sources.js';
 
+const {urlString} = Platform.DevToolsPath;
+
 describeWithMockConnection('Inline variable view scope helpers', () => {
-  const URL = 'file:///tmp/example.js' as Platform.DevToolsPath.UrlString;
+  const URL = urlString`file:///tmp/example.js`;
   let target: SDK.Target.Target;
   let backend: MockProtocolBackend;
 

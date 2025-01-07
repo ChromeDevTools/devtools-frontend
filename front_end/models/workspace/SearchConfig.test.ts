@@ -2,14 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Platform from '../../core/platform/platform.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as Workspace from '../workspace/workspace.js';
 
+const {urlString} = Platform.DevToolsPath;
 const {SearchConfig} = Workspace.SearchConfig;
 
 describe('SearchConfig', () => {
   describe('filePathMatchesFileQuery', () => {
-    const url = (t: TemplateStringsArray) => t[0] as Platform.DevToolsPath.UrlString;
+    const url = (t: TemplateStringsArray) => urlString`${t[0]}`;
 
     it('returns true if the user query doesn\'t contain any f: or files: part', () => {
       const config = new SearchConfig('foo', true, false);

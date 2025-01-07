@@ -2,22 +2,23 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Platform from '../../core/platform/platform.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 
 import * as DeveloperResourcesView from './DeveloperResourcesView.js';
 
+const {urlString} = Platform.DevToolsPath;
+
 describeWithEnvironment('DeveloperResourcesView', () => {
   it('allows selecting resources', async () => {
     const extensionId = 'extensionId';
-    const initiator =
-        {target: null, frameId: null, extensionId, initiatorUrl: extensionId as Platform.DevToolsPath.UrlString};
+    const initiator = {target: null, frameId: null, extensionId, initiatorUrl: urlString`${extensionId}`};
 
     const commonInfo = {success: true, initiator, size: 10};
-    const resource1 = {url: 'http://www.test.com/test.js' as Platform.DevToolsPath.UrlString, ...commonInfo};
-    const resource2 = {url: 'http://www.test.com/test2.js' as Platform.DevToolsPath.UrlString, ...commonInfo};
-    const resource3 = {url: 'http://www.test.com/test3.js' as Platform.DevToolsPath.UrlString, ...commonInfo};
+    const resource1 = {url: urlString`http://www.test.com/test.js`, ...commonInfo};
+    const resource2 = {url: urlString`http://www.test.com/test2.js`, ...commonInfo};
+    const resource3 = {url: urlString`http://www.test.com/test3.js`, ...commonInfo};
 
     const loader = SDK.PageResourceLoader.PageResourceLoader.instance();
     loader.resourceLoadedThroughExtension(resource1);

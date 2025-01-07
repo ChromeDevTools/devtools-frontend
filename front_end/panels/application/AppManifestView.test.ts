@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
-import type * as Platform from '../../core/platform/platform.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import {getCleanTextContentFromElements} from '../../testing/DOMHelpers.js';
@@ -12,6 +12,8 @@ import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Application from './application.js';
+
+const {urlString} = Platform.DevToolsPath;
 
 describeWithMockConnection('AppManifestView', () => {
   const FIXTURES_96X96_URL = `${new URL('./fixtures/96x96.png', import.meta.url)}`;
@@ -41,7 +43,7 @@ describeWithMockConnection('AppManifestView', () => {
     const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
     assert.exists(resourceTreeModel);
 
-    const URL = 'http://example.com' as Platform.DevToolsPath.UrlString;
+    const URL = urlString`http://example.com`;
     const fetchAppManifest = sinon.stub(resourceTreeModel, 'fetchAppManifest');
     fetchAppManifest.onCall(0).resolves({url: URL, data: null, errors: []});
     fetchAppManifest.onCall(1).resolves({url: URL, data: '{}', errors: []});
@@ -78,7 +80,7 @@ describeWithMockConnection('AppManifestView', () => {
     const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
     assert.exists(resourceTreeModel);
 
-    const URL = 'https://www.example.com' as Platform.DevToolsPath.UrlString;
+    const URL = urlString`https://www.example.com`;
     const fetchAppManifest = sinon.stub(resourceTreeModel, 'fetchAppManifest');
     fetchAppManifest.resolves({url: URL, data: '{"display_override": ["window-controls-overlay"]}', errors: []});
 
@@ -122,7 +124,7 @@ describeWithMockConnection('AppManifestView', () => {
     const resourceTreeModel = target.model(SDK.ResourceTreeModel.ResourceTreeModel);
     assert.exists(resourceTreeModel);
 
-    const URL = window.location.origin as Platform.DevToolsPath.UrlString;
+    const URL = urlString`${window.location.origin}`;
     const fetchAppManifest = sinon.stub(resourceTreeModel, 'fetchAppManifest');
     fetchAppManifest.resolves({url: URL, data: manifest, errors: []});
 

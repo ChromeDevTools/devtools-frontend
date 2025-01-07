@@ -4,7 +4,7 @@
 
 import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
-import type * as Platform from '../../../core/platform/platform.js';
+import * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as Protocol from '../../../generated/protocol.js';
 import * as Persistence from '../../../models/persistence/persistence.js';
@@ -35,6 +35,7 @@ import * as NetworkForward from '../forward/forward.js';
 
 import * as NetworkComponents from './components.js';
 
+const {urlString} = Platform.DevToolsPath;
 const defaultRequest = {
   statusCode: 200,
   statusText: 'OK',
@@ -150,8 +151,7 @@ describeWithMockConnection('RequestHeadersView', () => {
 
   it('status text of a request from cache memory corresponds to the status code', async () => {
     const request = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId' as Protocol.Network.RequestId, 'https://www.example.com' as Platform.DevToolsPath.UrlString,
-        '' as Platform.DevToolsPath.UrlString, null, null, null);
+        'requestId' as Protocol.Network.RequestId, urlString`https://www.example.com`, urlString``, null, null, null);
     request.statusCode = 200;
     request.setFromMemoryCache();
 
@@ -271,9 +271,8 @@ describeWithMockConnection('RequestHeadersView', () => {
 
   it('re-renders on request headers update', async () => {
     const request = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId' as Protocol.Network.RequestId,
-        'https://www.example.com/foo.html' as Platform.DevToolsPath.UrlString, '' as Platform.DevToolsPath.UrlString,
-        null, null, null);
+        'requestId' as Protocol.Network.RequestId, urlString`https://www.example.com/foo.html`, urlString``, null, null,
+        null);
     request.responseHeaders = [{name: 'originalName', value: 'originalValue'}];
 
     component = await renderHeadersComponent(request);
@@ -293,9 +292,8 @@ describeWithMockConnection('RequestHeadersView', () => {
 
   it('can highlight individual response headers', async () => {
     const request = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId' as Protocol.Network.RequestId,
-        'https://www.example.com/foo.html' as Platform.DevToolsPath.UrlString, '' as Platform.DevToolsPath.UrlString,
-        null, null, null);
+        'requestId' as Protocol.Network.RequestId, urlString`https://www.example.com/foo.html`, urlString``, null, null,
+        null);
     request.responseHeaders = [
       {name: 'foo', value: 'bar'},
       {name: 'highlightMe', value: 'some value'},
@@ -319,9 +317,8 @@ describeWithMockConnection('RequestHeadersView', () => {
 
   it('can highlight individual request headers', async () => {
     const request = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId' as Protocol.Network.RequestId,
-        'https://www.example.com/foo.html' as Platform.DevToolsPath.UrlString, '' as Platform.DevToolsPath.UrlString,
-        null, null, null);
+        'requestId' as Protocol.Network.RequestId, urlString`https://www.example.com/foo.html`, urlString``, null, null,
+        null);
     request.setRequestHeaders([
       {name: 'foo', value: 'bar'},
       {name: 'highlightMe', value: 'some value'},
@@ -345,7 +342,7 @@ describeWithMockConnection('RequestHeadersView', () => {
 
   it('renders a link to \'.headers\'', async () => {
     const {project} = createFileSystemUISourceCode({
-      url: 'file:///path/to/overrides/www.example.com/.headers' as Platform.DevToolsPath.UrlString,
+      url: urlString`file:///path/to/overrides/www.example.com/.headers`,
       mimeType: 'text/plain',
       fileSystemPath: 'file:///path/to/overrides',
     });
@@ -371,7 +368,7 @@ describeWithMockConnection('RequestHeadersView', () => {
 
   it('does not render a link to \'.headers\' if a matching \'.headers\' does not exist', async () => {
     const {project} = createFileSystemUISourceCode({
-      url: 'file:///path/to/overrides/www.mismatch.com/.headers' as Platform.DevToolsPath.UrlString,
+      url: urlString`file:///path/to/overrides/www.mismatch.com/.headers`,
       mimeType: 'text/plain',
       fileSystemPath: 'file:///path/to/overrides',
     });
@@ -393,13 +390,12 @@ describeWithMockConnection('RequestHeadersView', () => {
     Common.Settings.Settings.instance().moduleSetting('persistence-network-overrides-enabled').set(false);
 
     const request = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId' as Protocol.Network.RequestId, 'https://www.example.com/' as Platform.DevToolsPath.UrlString,
-        '' as Platform.DevToolsPath.UrlString, null, null, null);
+        'requestId' as Protocol.Network.RequestId, urlString`https://www.example.com/`, urlString``, null, null, null);
     request.responseHeaders = [
       {name: 'foo', value: 'bar'},
     ];
 
-    await createWorkspaceProject('file:///path/to/overrides' as Platform.DevToolsPath.UrlString, [
+    await createWorkspaceProject(urlString`file:///path/to/overrides`, [
       {
         name: '.headers',
         path: 'www.example.com/',
@@ -450,12 +446,11 @@ describeWithMockConnection('RequestHeadersView', () => {
 
   it('records metrics when a new \'.headers\' file is created', async () => {
     const request = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId' as Protocol.Network.RequestId, 'https://www.example.com/' as Platform.DevToolsPath.UrlString,
-        '' as Platform.DevToolsPath.UrlString, null, null, null);
+        'requestId' as Protocol.Network.RequestId, urlString`https://www.example.com/`, urlString``, null, null, null);
     request.responseHeaders = [
       {name: 'foo', value: 'bar'},
     ];
-    await createWorkspaceProject('file:///path/to/overrides' as Platform.DevToolsPath.UrlString, []);
+    await createWorkspaceProject(urlString`file:///path/to/overrides`, []);
 
     component = await renderHeadersComponent(request);
     assert.isNotNull(component.shadowRoot);

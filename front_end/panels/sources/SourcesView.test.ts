@@ -4,7 +4,7 @@
 
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
-import type * as Platform from '../../core/platform/platform.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../../models/bindings/bindings.js';
 import * as Breakpoints from '../../models/breakpoints/breakpoints.js';
@@ -24,6 +24,8 @@ import * as UI from '../../ui/legacy/legacy.js';
 
 import * as SourcesComponents from './components/components.js';
 import * as Sources from './sources.js';
+
+const {urlString} = Platform.DevToolsPath;
 
 describeWithEnvironment('SourcesView', () => {
   beforeEach(async () => {
@@ -49,7 +51,7 @@ describeWithEnvironment('SourcesView', () => {
     sourcesView.show(document.body);
     const workspace = Workspace.Workspace.WorkspaceImpl.instance();
     const {uiSourceCode, project} = createFileSystemUISourceCode({
-      url: 'file:///path/to/overrides/example.html' as Platform.DevToolsPath.UrlString,
+      url: urlString`file:///path/to/overrides/example.html`,
       mimeType: 'text/html',
     });
     project.canSetFileContent = () => true;
@@ -58,7 +60,7 @@ describeWithEnvironment('SourcesView', () => {
          callback: (
              arg0: boolean, arg1?: string, arg2?: Platform.DevToolsPath.UrlString,
              arg3?: Common.ResourceType.ResourceType) => void) => {
-          const newURL = ('file:///path/to/overrides/' + newName) as Platform.DevToolsPath.UrlString;
+          const newURL = urlString`${'file:///path/to/overrides/' + newName}`;
           let newContentType = Common.ResourceType.resourceTypes.Document;
           if (newName.endsWith('.jpg')) {
             newContentType = Common.ResourceType.resourceTypes.Image;
@@ -91,8 +93,7 @@ describeWithEnvironment('SourcesView', () => {
     const sourcesView = new Sources.SourcesView.SourcesView();
     const uiSourceCode = new Workspace.UISourceCode.UISourceCode(
         {} as Persistence.FileSystemWorkspaceBinding.FileSystem,
-        'file:///path/to/overrides/www.example.com/.headers' as Platform.DevToolsPath.UrlString,
-        Common.ResourceType.resourceTypes.Document);
+        urlString`file:///path/to/overrides/www.example.com/.headers`, Common.ResourceType.resourceTypes.Document);
     sinon.stub(uiSourceCode, 'mimeType').returns('text/plain');
     sourcesView.viewForFile(uiSourceCode);
     assert.instanceOf(sourcesView.getSourceView(uiSourceCode), SourcesComponents.HeadersView.HeadersView);
@@ -102,7 +103,7 @@ describeWithEnvironment('SourcesView', () => {
     it('records the correct media type in the DevTools.SourcesPanelFileOpened metric', async () => {
       const sourcesView = new Sources.SourcesView.SourcesView();
       const {uiSourceCode} = createFileSystemUISourceCode({
-        url: 'file:///path/to/project/example.ts' as Platform.DevToolsPath.UrlString,
+        url: urlString`file:///path/to/project/example.ts`,
         mimeType: 'text/typescript',
         content: 'export class Foo {}',
       });
@@ -158,8 +159,8 @@ describeWithMockConnection('SourcesView', () => {
 
     createContentProviderUISourceCodes({
       items: [
-        {url: 'http://example.com/a.js' as Platform.DevToolsPath.UrlString, mimeType: 'application/javascript'},
-        {url: 'http://example.com/b.js' as Platform.DevToolsPath.UrlString, mimeType: 'application/javascript'},
+        {url: urlString`http://example.com/a.js`, mimeType: 'application/javascript'},
+        {url: urlString`http://example.com/b.js`, mimeType: 'application/javascript'},
       ],
       projectId: 'projectId1',
       projectType: Workspace.Workspace.projectTypes.Network,
@@ -168,7 +169,7 @@ describeWithMockConnection('SourcesView', () => {
 
     createContentProviderUISourceCodes({
       items: [
-        {url: 'http://foo.com/script.js' as Platform.DevToolsPath.UrlString, mimeType: 'application/javascript'},
+        {url: urlString`http://foo.com/script.js`, mimeType: 'application/javascript'},
       ],
       projectId: 'projectId2',
       projectType: Workspace.Workspace.projectTypes.Network,
@@ -190,7 +191,7 @@ describeWithMockConnection('SourcesView', () => {
 
   it('doesn\'t remove non-network UISourceCodes when changing the scope target', () => {
     createFileSystemUISourceCode({
-      url: 'snippet:///foo.js' as Platform.DevToolsPath.UrlString,
+      url: urlString`snippet:///foo.js`,
       mimeType: 'application/javascript',
       type: 'snippets',
     });

@@ -3,9 +3,11 @@
 // found in the LICENSE file.
 
 import type {Chrome} from '../../extension-api/ExtensionAPI.js';
-import type * as Platform from '../core/platform/platform.js';
+import * as Platform from '../core/platform/platform.js';
 import type * as SDK from '../core/sdk/sdk.js';
 import type * as Bindings from '../models/bindings/bindings.js';
+
+const {urlString} = Platform.DevToolsPath;
 
 export class TestPlugin implements Bindings.DebuggerLanguagePlugins.DebuggerLanguagePlugin {
   constructor(name: string) {
@@ -23,7 +25,7 @@ export class TestPlugin implements Bindings.DebuggerLanguagePlugins.DebuggerLang
       target: null,
       frameId: null,
       extensionId,
-      initiatorUrl: extensionId as Platform.DevToolsPath.UrlString,
+      initiatorUrl: urlString`${extensionId}`,
     };
   }
 

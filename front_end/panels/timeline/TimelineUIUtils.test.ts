@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
-import type * as Platform from '../../core/platform/platform.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
@@ -36,6 +36,8 @@ import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 
 import * as Timeline from './timeline.js';
 import * as Utils from './utils/utils.js';
+
+const {urlString} = Platform.DevToolsPath;
 
 describeWithMockConnection('TimelineUIUtils', function() {
   let target: SDK.Target.Target;
@@ -108,7 +110,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
            },
          };
 
-         target.setInspectedURL('https://not-google.com' as Platform.DevToolsPath.UrlString);
+         target.setInspectedURL(urlString`https://not-google.com`);
          const node = await Timeline.TimelineUIUtils.TimelineUIUtils.buildDetailsNodeForTraceEvent(
              fakeFunctionCall, target, new Components.Linkifier.Linkifier(), false, parsedTrace);
          if (!node) {
@@ -140,7 +142,7 @@ describeWithMockConnection('TimelineUIUtils', function() {
              },
            },
          };
-         target.setInspectedURL('https://google.com' as Platform.DevToolsPath.UrlString);
+         target.setInspectedURL(urlString`https://google.com`);
          const node = await Timeline.TimelineUIUtils.TimelineUIUtils.buildDetailsNodeForTraceEvent(
              fakeFunctionCall, target, new Components.Linkifier.Linkifier(), false, parsedTrace);
          if (!node) {
@@ -165,9 +167,9 @@ describeWithMockConnection('TimelineUIUtils', function() {
         mappings: 'AAAA,SAASA,EAAWC,EAAMC,GACxBC,QAAQC,IAAIH,EAAMC',
       });
       setupPageResourceLoaderForSourceMap(sourceMapContent);
-      target.setInspectedURL('https://google.com' as Platform.DevToolsPath.UrlString);
-      const scriptUrl = 'https://google.com/script.js' as Platform.DevToolsPath.UrlString;
-      const sourceMapUrl = 'script.js.map' as Platform.DevToolsPath.UrlString;
+      target.setInspectedURL(urlString`https://google.com`);
+      const scriptUrl = urlString`https://google.com/script.js`;
+      const sourceMapUrl = urlString`script.js.map`;
       const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
       assert.isNotNull(debuggerModel);
       if (debuggerModel === null) {

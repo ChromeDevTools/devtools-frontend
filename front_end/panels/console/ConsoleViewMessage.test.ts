@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
-import type * as Platform from '../../core/platform/platform.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import {
@@ -20,6 +20,8 @@ import * as Console from './console.js';
 // The css files aren't exported by the bundle, so we need to import it directly.
 // eslint-disable-next-line rulesdir/es-modules-import
 import consoleViewStyles from './consoleView.css.js';
+
+const {urlString} = Platform.DevToolsPath;
 
 describe('ConsoleViewMessage', () => {
   describe('concatErrorDescriptionAndIssueSummary', () => {
@@ -286,7 +288,7 @@ describeWithMockConnection('ConsoleViewMessage', () => {
       });
       linkifier.maybeLinkifyConsoleCallFrame.callsFake((target, callFrame, options) => {
         const link = Components.Linkifier.Linkifier.linkifyURL(
-            callFrame.url as Platform.DevToolsPath.UrlString, {lineNumber: callFrame.lineNumber, ...options});
+            urlString`${callFrame.url}`, {lineNumber: callFrame.lineNumber, ...options});
         if (ignoreListFn(callFrame.url)) {
           link.classList.add(IGNORE_LIST_LINK);
         }

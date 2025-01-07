@@ -11,8 +11,10 @@ import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import {activate, getMainFrame, LOADER_ID, navigate} from '../../testing/ResourceTreeHelpers.js';
 import * as Logs from '../logs/logs.js';
 
+const {urlString} = Platform.DevToolsPath;
+
 function url(input: string): Platform.DevToolsPath.UrlString {
-  return input as unknown as Platform.DevToolsPath.UrlString;
+  return urlString`${input as unknown}`;
 }
 
 describe('NetworkLog', () => {

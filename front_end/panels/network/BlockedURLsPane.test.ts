@@ -2,13 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Platform from '../../core/platform/platform.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Logs from '../../models/logs/logs.js';
 import {createTarget, registerNoopActions} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
 
 import * as Network from './network.js';
+
+const {urlString} = Platform.DevToolsPath;
 
 describeWithMockConnection('BlockedURLsPane', () => {
   beforeEach(() => {
@@ -29,7 +31,7 @@ describeWithMockConnection('BlockedURLsPane', () => {
 
       const request = sinon.createStubInstance(SDK.NetworkRequest.NetworkRequest, {
         wasBlocked: true,
-        url: 'http://example.com' as Platform.DevToolsPath.UrlString,
+        url: urlString`http://example.com`,
       });
       networkManager.dispatchEventToListeners(SDK.NetworkManager.Events.RequestFinished, request);
 

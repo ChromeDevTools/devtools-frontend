@@ -11,6 +11,8 @@ import {describeWithLocale} from '../../testing/EnvironmentHelpers.js';
 
 import * as Network from './network.js';
 
+const {urlString} = Platform.DevToolsPath;
+
 async function contentData(): Promise<TextUtils.ContentData.ContentData> {
   const content = '<style> p { color: red; }</style><link rel="stylesheet" ref="http://devtools-frontend.test/style">';
   return new TextUtils.ContentData.ContentData(content, false, 'text/css');
@@ -28,9 +30,8 @@ function renderPreviewView(request: SDK.NetworkRequest.NetworkRequest): Network.
 describeWithLocale('RequestPreviewView', () => {
   it('prevents previewed html from making same-site requests', async () => {
     const request = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId' as Protocol.Network.RequestId,
-        'http://devtools-frontend.test/content' as Platform.DevToolsPath.UrlString,
-        '' as Platform.DevToolsPath.UrlString, null, null, null);
+        'requestId' as Protocol.Network.RequestId, urlString`http://devtools-frontend.test/content`, urlString``, null,
+        null, null);
     request.setContentDataProvider(contentData);
     request.mimeType = Platform.MimeType.MimeType.HTML;
     const component = renderPreviewView(request);
@@ -43,9 +44,8 @@ describeWithLocale('RequestPreviewView', () => {
 
   it('does add utf-8 charset to the data URL for the HTML preview for already decoded content', async () => {
     const request = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId' as Protocol.Network.RequestId,
-        'http://devtools-frontend.test/index.html' as Platform.DevToolsPath.UrlString,
-        '' as Platform.DevToolsPath.UrlString, null, null, null);
+        'requestId' as Protocol.Network.RequestId, urlString`http://devtools-frontend.test/index.html`, urlString``,
+        null, null, null);
     request.setContentDataProvider(
         () => Promise.resolve(new TextUtils.ContentData.ContentData(
             '<!DOCTYPE html>\n<p>Iñtërnâtiônàlizætiøn☃𝌆</p>', false, 'text/html', 'utf-16')));
@@ -65,9 +65,8 @@ describeWithLocale('RequestPreviewView', () => {
 
   it('does add the correct charset to the data URL for the HTML preview for base64 content', async () => {
     const request = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId' as Protocol.Network.RequestId,
-        'http://devtools-frontend.test/index.html' as Platform.DevToolsPath.UrlString,
-        '' as Platform.DevToolsPath.UrlString, null, null, null);
+        'requestId' as Protocol.Network.RequestId, urlString`http://devtools-frontend.test/index.html`, urlString``,
+        null, null, null);
     // UTF-16 + base64 encoded "<!DOCTYPE html>\n<p>Iñtërnâtiônàlizætiøn☃𝌆</p>".
     request.setContentDataProvider(
         () => Promise.resolve(new TextUtils.ContentData.ContentData(

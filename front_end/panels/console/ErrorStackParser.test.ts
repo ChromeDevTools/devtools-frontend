@@ -2,25 +2,26 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Platform from '../../core/platform/platform.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 
 import * as Console from './console.js';
 
+const {urlString} = Platform.DevToolsPath;
 const {parseSourcePositionsFromErrorStack} = Console.ErrorStackParser;
 
 describe('ErrorStackParser', () => {
   let runtimeModel;
   let parseErrorStack: (stack: string) => Console.ErrorStackParser.ParsedErrorFrame[] | null;
-  const fileTestingUrl = 'file:///testing.js' as Platform.DevToolsPath.UrlString;
+  const fileTestingUrl = urlString`file:///testing.js`;
 
   beforeEach(() => {
     // TODO(crbug/1280141): Remove complicated stubbing code once `parseSourcePositionsFromErrorStack`
     //                      no longer needs a RuntimeModel.
     runtimeModel = sinon.createStubInstance(SDK.RuntimeModel.RuntimeModel, {
       target: sinon.createStubInstance(SDK.Target.Target, {
-        inspectedURL: 'http://www.example.org' as Platform.DevToolsPath.UrlString,
+        inspectedURL: urlString`http://www.example.org`,
       }),
       debuggerModel: sinon.createStubInstance(SDK.DebuggerModel.DebuggerModel, {
         scriptsForSourceURL: [],
@@ -140,8 +141,7 @@ describe('ErrorStackParser', () => {
   });
 
   it('detects URLs with parens', () => {
-    const url =
-        'http://localhost:5173/src/routes/(v2-routes)/project/+layout.ts?ts=12345' as Platform.DevToolsPath.UrlString;
+    const url = urlString`http://localhost:5173/src/routes/(v2-routes)/project/+layout.ts?ts=12345`;
     const frames = parseErrorStack(`ZodError:
         at load (${url}:33:5)
         at ${url}:1:1`);
@@ -167,7 +167,7 @@ describe('ErrorStackParser', () => {
   });
 
   it('correctly handles eval frames', () => {
-    const url = 'http://www.chromium.org/foo.js' as Platform.DevToolsPath.UrlString;
+    const url = urlString`http://www.chromium.org/foo.js`;
     const frames = parseErrorStack(`Error: MyError
     at eval (eval at <anonymous> (${url}:42:1), <anonymous>:1:1)`);
 
@@ -188,7 +188,7 @@ describe('ErrorStackParser', () => {
         at foo (testing.js:10:3)`);
 
     assert.exists(frames);
-    assert.strictEqual(frames[1].link?.url, 'http://www.example.org/testing.js' as Platform.DevToolsPath.UrlString);
+    assert.strictEqual(frames[1].link?.url, urlString`http://www.example.org/testing.js`);
   });
 
   it('uses the inspected target URL to complete relative URLs in eval frames', () => {
@@ -199,7 +199,7 @@ describe('ErrorStackParser', () => {
     assert.exists(frames);
     assert.lengthOf(frames, 3);
     assert.deepEqual(frames[2].link, {
-      url: 'http://www.example.org/inspected-page.html' as Platform.DevToolsPath.UrlString,
+      url: urlString`http://www.example.org/inspected-page.html`,
       prefix: '    at eval (eval at testFunction (',
       suffix: '), <anonymous>:1:10)',
       lineNumber: 28,    // 0-based.
@@ -217,7 +217,7 @@ describe('ErrorStackParser', () => {
     assert.exists(frames);
     assert.lengthOf(frames, 4);
     assert.deepEqual(frames[1].link, {
-      url: 'http://www.example.org/(abc)/foo.js' as Platform.DevToolsPath.UrlString,
+      url: urlString`http://www.example.org/(abc)/foo.js`,
       prefix: '        at foo (',
       suffix: ')',
       lineNumber: 1,    // 0-based.
@@ -225,7 +225,7 @@ describe('ErrorStackParser', () => {
       enclosedInBraces: true,
     });
     assert.deepEqual(frames[2].link, {
-      url: 'http://www.example.org/(abc)/foo.js' as Platform.DevToolsPath.UrlString,
+      url: urlString`http://www.example.org/(abc)/foo.js`,
       prefix: '        at async bar (',
       suffix: ')',
       lineNumber: 0,    // 0-based.
@@ -233,7 +233,7 @@ describe('ErrorStackParser', () => {
       enclosedInBraces: true,
     });
     assert.deepEqual(frames[3].link, {
-      url: 'http://www.example.org/(abc)/foo.js' as Platform.DevToolsPath.UrlString,
+      url: urlString`http://www.example.org/(abc)/foo.js`,
       prefix: '        at ',
       suffix: '',
       lineNumber: 9,     // 0-based.
@@ -331,13 +331,13 @@ describe('ErrorStackParser', () => {
 
       assert.isUndefined(parsedFrames[0].link);
       assert.isUndefined(parsedFrames[0].isCallFrame);
-      assert.strictEqual(parsedFrames[1].link?.url, 'http://example.com/a.js' as Platform.DevToolsPath.UrlString);
+      assert.strictEqual(parsedFrames[1].link?.url, urlString`http://example.com/a.js`);
       assert.isTrue(parsedFrames[1].isCallFrame);
       assert.isUndefined(parsedFrames[2].link);
       assert.isTrue(parsedFrames[2].isCallFrame);
       assert.strictEqual(
           parsedFrames[2].line, '        at Array.forEach (<anonymous>)\n        at JSON.parse (<anonymous>)');
-      assert.strictEqual(parsedFrames[3].link?.url, 'http://example.com/b.js' as Platform.DevToolsPath.UrlString);
+      assert.strictEqual(parsedFrames[3].link?.url, urlString`http://example.com/b.js`);
       assert.isTrue(parsedFrames[3].isCallFrame);
     });
   });

@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as Host from '../../../core/host/host.js';
-import type * as Platform from '../../../core/platform/platform.js';
+import * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import * as Logs from '../../../models/logs/logs.js';
@@ -22,6 +22,8 @@ import {
   RequestContext,
   ResponseType,
 } from '../ai_assistance.js';
+
+const {urlString} = Platform.DevToolsPath;
 
 describeWithMockConnection('NetworkAgent', () => {
   let networkPanel: Network.NetworkPanel.NetworkPanel;
@@ -148,8 +150,7 @@ describeWithMockConnection('NetworkAgent', () => {
 
     beforeEach(() => {
       selectedNetworkRequest = SDK.NetworkRequest.NetworkRequest.create(
-          'requestId' as Protocol.Network.RequestId, 'https://www.example.com' as Platform.DevToolsPath.UrlString,
-          '' as Platform.DevToolsPath.UrlString, null, null, null);
+          'requestId' as Protocol.Network.RequestId, urlString`https://www.example.com`, urlString``, null, null, null);
       selectedNetworkRequest.statusCode = 200;
       selectedNetworkRequest.setRequestHeaders([{name: 'content-type', value: 'bar1'}]);
       selectedNetworkRequest.responseHeaders =
@@ -157,14 +158,14 @@ describeWithMockConnection('NetworkAgent', () => {
       selectedNetworkRequest.timing = timingInfo;
 
       const initiatorNetworkRequest = SDK.NetworkRequest.NetworkRequest.create(
-          'requestId' as Protocol.Network.RequestId, 'https://www.initiator.com' as Platform.DevToolsPath.UrlString,
-          '' as Platform.DevToolsPath.UrlString, null, null, null);
+          'requestId' as Protocol.Network.RequestId, urlString`https://www.initiator.com`, urlString``, null, null,
+          null);
       const initiatedNetworkRequest1 = SDK.NetworkRequest.NetworkRequest.create(
-          'requestId' as Protocol.Network.RequestId, 'https://www.example.com/1' as Platform.DevToolsPath.UrlString,
-          '' as Platform.DevToolsPath.UrlString, null, null, null);
+          'requestId' as Protocol.Network.RequestId, urlString`https://www.example.com/1`, urlString``, null, null,
+          null);
       const initiatedNetworkRequest2 = SDK.NetworkRequest.NetworkRequest.create(
-          'requestId' as Protocol.Network.RequestId, 'https://www.example.com/2' as Platform.DevToolsPath.UrlString,
-          '' as Platform.DevToolsPath.UrlString, null, null, null);
+          'requestId' as Protocol.Network.RequestId, urlString`https://www.example.com/2`, urlString``, null, null,
+          null);
 
       sinon.stub(Logs.NetworkLog.NetworkLog.instance(), 'initiatorGraphForRequest')
           .withArgs(selectedNetworkRequest)

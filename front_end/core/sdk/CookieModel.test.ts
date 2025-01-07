@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Platform from '../../core/platform/platform.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as Protocol from '../../generated/protocol.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {expectCalled} from '../../testing/ExpectStubCall.js';
@@ -15,8 +15,9 @@ import {addChildFrame, createResource, DOMAIN, getMainFrame, navigate} from '../
 
 import * as SDK from './sdk.js';
 
-const MAIN_FRAME_RESOURCE_DOMAIN = 'example.org' as Platform.DevToolsPath.UrlString;
-const CHILD_FRAME_RESOURCE_DOMAIN = 'example.net' as Platform.DevToolsPath.UrlString;
+const {urlString} = Platform.DevToolsPath;
+const MAIN_FRAME_RESOURCE_DOMAIN = urlString`example.org`;
+const CHILD_FRAME_RESOURCE_DOMAIN = urlString`example.net`;
 
 describeWithMockConnection('CookieModel', () => {
   const PROTOCOL_COOKIE = {
@@ -65,7 +66,7 @@ describeWithMockConnection('CookieModel', () => {
 
     const target = createTarget();
     const mainFrame = getMainFrame(target);
-    const resourceUrl = (domain: string) => `https://${domain}/resource` as Platform.DevToolsPath.UrlString;
+    const resourceUrl = (domain: string) => urlString`${`https://${domain}/resource`}`;
     createResource(mainFrame, resourceUrl(MAIN_FRAME_RESOURCE_DOMAIN), 'text/html', '');
     const childFrame = await addChildFrame(target);
     createResource(childFrame, resourceUrl(CHILD_FRAME_RESOURCE_DOMAIN), 'text/html', '');
@@ -113,7 +114,7 @@ describeWithMockConnection('CookieModel', () => {
 
     assert.isEmpty(await model.getCookiesForDomain(`https://${MAIN_FRAME_RESOURCE_DOMAIN}`));
 
-    const resourceUrl = (domain: string) => `https://${domain}/main_resource` as Platform.DevToolsPath.UrlString;
+    const resourceUrl = (domain: string) => urlString`${`https://${domain}/main_resource`}`;
     createResource(mainFrame, resourceUrl(MAIN_FRAME_RESOURCE_DOMAIN), 'text/html', '');
     dispatchLoadingFinished();
     await expectCalled(eventListener);
@@ -142,7 +143,7 @@ describeWithMockConnection('CookieModel', () => {
     const eventListener = sinon.stub();
     model.addEventListener(SDK.CookieModel.Events.COOKIE_LIST_UPDATED, eventListener);
 
-    createResource(mainFrame, `https://${DOMAIN}/main_resource` as Platform.DevToolsPath.UrlString, 'text/html', '');
+    createResource(mainFrame, urlString`${`https://${DOMAIN}/main_resource`}`, 'text/html', '');
     dispatchLoadingFinished();
 
     await expectCalled(eventListener);
@@ -165,7 +166,7 @@ describeWithMockConnection('CookieModel', () => {
     const mainFrame = getMainFrame(target);
     const model = target.model(SDK.CookieModel.CookieModel)!;
 
-    createResource(mainFrame, `https://${DOMAIN}/main_resource` as Platform.DevToolsPath.UrlString, 'text/html', '');
+    createResource(mainFrame, urlString`${`https://${DOMAIN}/main_resource`}`, 'text/html', '');
     dispatchLoadingFinished();
 
     let [readCookie] = await model.getCookiesForDomain(`https://${DOMAIN}`);

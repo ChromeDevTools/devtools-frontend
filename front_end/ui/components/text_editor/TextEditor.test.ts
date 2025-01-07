@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../../core/common/common.js';
-import type * as Platform from '../../../core/platform/platform.js';
+import * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import * as Bindings from '../../../models/bindings/bindings.js';
@@ -21,6 +21,8 @@ import * as CodeMirror from '../../../third_party/codemirror.next/codemirror.nex
 import * as UI from '../../legacy/legacy.js';
 
 import * as TextEditor from './text_editor.js';
+
+const {urlString} = Platform.DevToolsPath;
 
 function makeState(doc: string, extensions: CodeMirror.Extension = []) {
   return CodeMirror.EditorState.create({
@@ -230,8 +232,8 @@ describeWithMockConnection('TextEditor autocompletion', () => {
     const {pluginManager} = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance(
         {forceNew: true, targetManager, resourceMapping});
     const testScript = debuggerModel.parsedScriptSource(
-        '1' as Protocol.Runtime.ScriptId, 'script://1' as Platform.DevToolsPath.UrlString, 0, 0, 0, 0,
-        executionContext.id, '', undefined, false, undefined, false, false, 0, null, null, null, null, null, null);
+        '1' as Protocol.Runtime.ScriptId, urlString`script://1`, 0, 0, 0, 0, executionContext.id, '', undefined, false,
+        undefined, false, false, 0, null, null, null, null, null, null);
     const payload: Protocol.Debugger.CallFrame = {
       callFrameId: '0' as Protocol.Debugger.CallFrameId,
       functionName: 'test',

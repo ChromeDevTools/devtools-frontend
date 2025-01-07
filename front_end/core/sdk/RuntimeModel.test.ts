@@ -9,9 +9,11 @@ import {
 import {
   describeWithMockConnection,
 } from '../../testing/MockConnection.js';
-import type * as Platform from '../platform/platform.js';
+import * as Platform from '../platform/platform.js';
 
 import * as SDK from './sdk.js';
+
+const {urlString} = Platform.DevToolsPath;
 
 describeWithMockConnection('ExecutionContext', () => {
   function createExecutionContext(target: SDK.Target.Target, name?: string, isDefault?: boolean) {
@@ -19,7 +21,7 @@ describeWithMockConnection('ExecutionContext', () => {
     assert.exists(runtimeModel);
     return new SDK.RuntimeModel.ExecutionContext(
         runtimeModel, 42 as Protocol.Runtime.ExecutionContextId, 'uniqueId', name ?? 'name',
-        'http://www.example.com' as Platform.DevToolsPath.UrlString, Boolean(isDefault));
+        urlString`http://www.example.com`, Boolean(isDefault));
   }
 
   it('can be compared based on target type', () => {

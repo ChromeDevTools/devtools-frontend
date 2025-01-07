@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Platform from '../../../core/platform/platform.js';
+import * as Platform from '../../../core/platform/platform.js';
 import {
   getCleanTextContentFromElements,
   getElementWithinComponent,
@@ -11,6 +11,8 @@ import {
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 
 import * as ApplicationComponents from './components.js';
+
+const {urlString} = Platform.DevToolsPath;
 
 async function renderProtocolHandlersComponent(
     manifestLink: Platform.DevToolsPath.UrlString,
@@ -36,7 +38,7 @@ describeWithEnvironment('ProtocolHandlersView', () => {
         'invalid-protocol': 'this is an invalid protocol entry for testing purposes',
       },
     ];
-    const manifestURL = 'https://www.example.com/index.html/manifest-protocol.json' as Platform.DevToolsPath.UrlString;
+    const manifestURL = urlString`https://www.example.com/index.html/manifest-protocol.json`;
     const component = await renderProtocolHandlersComponent(
         manifestURL, protocols as ApplicationComponents.ProtocolHandlersView.ProtocolHandler[]);
 
@@ -57,7 +59,7 @@ describeWithEnvironment('ProtocolHandlersView', () => {
 
   it('renders protocols not detected status message', async () => {
     const protocols: ApplicationComponents.ProtocolHandlersView.ProtocolHandler[] = [];
-    const manifestURL = 'https://www.example.com/index.html/manifest-protocol.json' as Platform.DevToolsPath.UrlString;
+    const manifestURL = urlString`https://www.example.com/index.html/manifest-protocol.json`;
     const component = await renderProtocolHandlersComponent(
         manifestURL, protocols as ApplicationComponents.ProtocolHandlersView.ProtocolHandler[]);
 

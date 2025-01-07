@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type * as Platform from '../../core/platform/platform.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import {getCleanTextContentFromElements, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
@@ -11,12 +11,14 @@ import {describeWithLocale} from '../../testing/EnvironmentHelpers.js';
 import * as Network from './NetworkTimeCalculator.js';
 import * as RequestTimingView from './RequestTimingView.js';
 
+const {urlString} = Platform.DevToolsPath;
+
 function createNetworkRequest(
     matchedSource: Protocol.Network.ServiceWorkerRouterSource,
     actualSource: Protocol.Network.ServiceWorkerRouterSource): SDK.NetworkRequest.NetworkRequest {
   const request = SDK.NetworkRequest.NetworkRequest.create(
-      'requestId' as Protocol.Network.RequestId, 'http://devtools-frontend.test' as Platform.DevToolsPath.UrlString,
-      '' as Platform.DevToolsPath.UrlString, null, null, null);
+      'requestId' as Protocol.Network.RequestId, urlString`http://devtools-frontend.test`, urlString``, null, null,
+      null);
 
   request.mimeType = 'application/wasm';
   request.finished = true;

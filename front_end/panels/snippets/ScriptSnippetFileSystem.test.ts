@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
-import type * as Platform from '../../core/platform/platform.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Persistence from '../../models/persistence/persistence.js';
 import * as Workspace from '../../models/workspace/workspace.js';
@@ -14,12 +14,14 @@ import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Snippets from './snippets.js';
 
+const {urlString} = Platform.DevToolsPath;
+
 describeWithMockConnection('ScriptSnippetFileSystem', () => {
   it('evaluates snippets with user gesture', async () => {
     UI.Context.Context.instance().setFlavor(
         SDK.RuntimeModel.ExecutionContext, new MockExecutionContext(createTarget()));
     const uiSourceCode = new Workspace.UISourceCode.UISourceCode(
-        {} as Persistence.FileSystemWorkspaceBinding.FileSystem, 'snippet://test.js' as Platform.DevToolsPath.UrlString,
+        {} as Persistence.FileSystemWorkspaceBinding.FileSystem, urlString`snippet://test.js`,
         Common.ResourceType.resourceTypes.Script);
     await Snippets.ScriptSnippetFileSystem.evaluateScriptSnippet(uiSourceCode);
     UI.Context.Context.instance().setFlavor(SDK.RuntimeModel.ExecutionContext, null);

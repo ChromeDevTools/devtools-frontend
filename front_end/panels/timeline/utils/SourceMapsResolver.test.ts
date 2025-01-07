@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import type {Chrome} from '../../../../extension-api/ExtensionAPI.js';
-import type * as Platform from '../../../core/platform/platform.js';
+import * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import * as Bindings from '../../../models/bindings/bindings.js';
@@ -26,6 +26,7 @@ import {TraceLoader} from '../../../testing/TraceLoader.js';
 
 import * as Utils from './utils.js';
 
+const {urlString} = Platform.DevToolsPath;
 const MINIFIED_FUNCTION_NAME = 'minified';
 const AUTHORED_FUNCTION_NAME = 'someFunction';
 
@@ -88,10 +89,10 @@ export async function loadCodeLocationResolvingScenario(): Promise<{
 
   // Load mock data in devtools
   const [, , script, , contentScript] = await Promise.all([
-    debuggerWorkspaceBinding.waitForUISourceCodeAdded(authoredScriptURL as Platform.DevToolsPath.UrlString, target),
-    debuggerWorkspaceBinding.waitForUISourceCodeAdded(ignoreListedScriptURL as Platform.DevToolsPath.UrlString, target),
+    debuggerWorkspaceBinding.waitForUISourceCodeAdded(urlString`${authoredScriptURL}`, target),
+    debuggerWorkspaceBinding.waitForUISourceCodeAdded(urlString`${ignoreListedScriptURL}`, target),
     backend.addScript(target, scriptInfo, sourceMapInfo),
-    debuggerWorkspaceBinding.waitForUISourceCodeAdded(contentScriptInfo.url as Platform.DevToolsPath.UrlString, target),
+    debuggerWorkspaceBinding.waitForUISourceCodeAdded(urlString`${contentScriptInfo.url}`, target),
     backend.addScript(target, contentScriptInfo, null),
   ]);
 

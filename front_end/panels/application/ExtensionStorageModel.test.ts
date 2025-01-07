@@ -3,13 +3,15 @@
 // found in the LICENSE file.
 
 import type * as Common from '../../core/common/common.js';
-import type * as Platform from '../../core/platform/platform.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
 
 import * as Resources from './application.js';
+
+const {urlString} = Platform.DevToolsPath;
 
 class ExtensionStorageListener {
   #model: Resources.ExtensionStorageModel.ExtensionStorageModel;
@@ -76,7 +78,7 @@ describeWithMockConnection('ExtensionStorageModel', () => {
     return {
       id: id as Protocol.Runtime.ExecutionContextId,
       uniqueId: '',
-      origin: origin as Platform.DevToolsPath.UrlString,
+      origin: urlString`${origin}`,
       name: 'Test Extension',
     };
   };

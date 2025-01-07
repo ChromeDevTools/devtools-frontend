@@ -4,9 +4,11 @@
 
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
-import type * as Platform from '../platform/platform.js';
+import * as Platform from '../platform/platform.js';
 
 import * as SDK from './sdk.js';
+
+const {urlString} = Platform.DevToolsPath;
 
 describeWithMockConnection('StorageKeyManager', () => {
   let manager: SDK.StorageKeyManager.StorageKeyManager;
@@ -53,7 +55,7 @@ describeWithMockConnection('StorageKeyManager', () => {
 describe('parseStorageKey', () => {
   it('parses first-party key', () => {
     const storageKey = SDK.StorageKeyManager.parseStorageKey('https://example.com/');
-    assert.deepEqual(storageKey.origin, 'https://example.com' as Platform.DevToolsPath.UrlString);
+    assert.deepEqual(storageKey.origin, urlString`https://example.com`);
     assert.deepEqual([...storageKey.components], []);
   });
 

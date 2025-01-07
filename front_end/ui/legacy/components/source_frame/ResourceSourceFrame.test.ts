@@ -3,12 +3,14 @@
 // found in the LICENSE file.
 
 import * as Common from '../../../../core/common/common.js';
-import type * as Platform from '../../../../core/platform/platform.js';
+import * as Platform from '../../../../core/platform/platform.js';
 import * as TextUtils from '../../../../models/text_utils/text_utils.js';
 import {describeWithEnvironment} from '../../../../testing/EnvironmentHelpers.js';
 import type * as CodeMirror from '../../../../third_party/codemirror.next/codemirror.next.js';
 
 import * as SourceFrame from './source_frame.js';
+
+const {urlString} = Platform.DevToolsPath;
 
 class MockStreamingContentProvider implements TextUtils.ContentProvider.StreamingContentProvider {
   readonly #contentURL: Platform.DevToolsPath.UrlString;
@@ -56,7 +58,7 @@ class MockStreamingContentProvider implements TextUtils.ContentProvider.Streamin
 describeWithEnvironment('ResourceSourceFrame', () => {
   it('updates the editor when a StreamingContentProvider changes', async () => {
     const contentProvider = new MockStreamingContentProvider(
-        'https://example.com/sse' as Platform.DevToolsPath.UrlString, Common.ResourceType.resourceTypes.Fetch,
+        urlString`https://example.com/sse`, Common.ResourceType.resourceTypes.Fetch,
         new TextUtils.ContentData.ContentData('', true, 'text/event-stream'));
 
     const resourceSourceFrame =

@@ -3,18 +3,19 @@
 // found in the LICENSE file.
 
 import * as Common from '../../core/common/common.js';
-import type * as Platform from '../../core/platform/platform.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 
 import * as Network from './network.js';
 
+const {urlString} = Platform.DevToolsPath;
+
 describeWithEnvironment('NetworkLogView', () => {
   it('adds marker to requests with overridden headers', async () => {
     const request = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId' as Protocol.Network.RequestId, 'https://www.example.com' as Platform.DevToolsPath.UrlString,
-        '' as Platform.DevToolsPath.UrlString, null, null, null);
+        'requestId' as Protocol.Network.RequestId, urlString`https://www.example.com`, urlString``, null, null, null);
     request.statusCode = 200;
 
     request.setWasIntercepted(true);
@@ -33,8 +34,7 @@ describeWithEnvironment('NetworkLogView', () => {
 
   it('adds marker to requests with overridden content', async () => {
     const request = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId' as Protocol.Network.RequestId, 'https://www.example.com' as Platform.DevToolsPath.UrlString,
-        '' as Platform.DevToolsPath.UrlString, null, null, null);
+        'requestId' as Protocol.Network.RequestId, urlString`https://www.example.com`, urlString``, null, null, null);
     request.statusCode = 200;
 
     request.setWasIntercepted(true);
@@ -52,8 +52,7 @@ describeWithEnvironment('NetworkLogView', () => {
 
   it('adds marker to requests with overridden headers and content', async () => {
     const request = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId' as Protocol.Network.RequestId, 'https://www.example.com' as Platform.DevToolsPath.UrlString,
-        '' as Platform.DevToolsPath.UrlString, null, null, null);
+        'requestId' as Protocol.Network.RequestId, urlString`https://www.example.com`, urlString``, null, null, null);
     request.statusCode = 200;
 
     request.setWasIntercepted(true);
@@ -73,8 +72,7 @@ describeWithEnvironment('NetworkLogView', () => {
 
   it('does not add marker to unoverridden request', async () => {
     const request = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId' as Protocol.Network.RequestId, 'https://www.example.com' as Platform.DevToolsPath.UrlString,
-        '' as Platform.DevToolsPath.UrlString, null, null, null);
+        'requestId' as Protocol.Network.RequestId, urlString`https://www.example.com`, urlString``, null, null, null);
     request.statusCode = 200;
 
     const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(
@@ -87,8 +85,7 @@ describeWithEnvironment('NetworkLogView', () => {
 
   it('does not add a marker to requests which are intercepted but not overridden', async () => {
     const request = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId' as Protocol.Network.RequestId, 'https://www.example.com' as Platform.DevToolsPath.UrlString,
-        '' as Platform.DevToolsPath.UrlString, null, null, null);
+        'requestId' as Protocol.Network.RequestId, urlString`https://www.example.com`, urlString``, null, null, null);
     request.statusCode = 200;
 
     request.setWasIntercepted(true);
@@ -103,8 +100,7 @@ describeWithEnvironment('NetworkLogView', () => {
 
   it('adds an error red icon to the left of the failed requests', async () => {
     const request = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId' as Protocol.Network.RequestId, 'https://www.example.com' as Platform.DevToolsPath.UrlString,
-        '' as Platform.DevToolsPath.UrlString, null, null, null);
+        'requestId' as Protocol.Network.RequestId, urlString`https://www.example.com`, urlString``, null, null, null);
     request.statusCode = 404;
 
     const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(
@@ -126,8 +122,7 @@ describeWithEnvironment('NetworkLogView', () => {
 
   it('show document icon', async () => {
     const request = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId' as Protocol.Network.RequestId, 'https://www.example.com/' as Platform.DevToolsPath.UrlString,
-        '' as Platform.DevToolsPath.UrlString, null, null, null);
+        'requestId' as Protocol.Network.RequestId, urlString`https://www.example.com/`, urlString``, null, null, null);
     request.setResourceType(Common.ResourceType.resourceTypes.Document);
     request.mimeType = 'text/html';
 
@@ -152,9 +147,8 @@ describeWithEnvironment('NetworkLogView', () => {
 
   it('show media icon', async () => {
     const request = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId' as Protocol.Network.RequestId,
-        'https://www.example.com/test.mp3' as Platform.DevToolsPath.UrlString, '' as Platform.DevToolsPath.UrlString,
-        null, null, null);
+        'requestId' as Protocol.Network.RequestId, urlString`https://www.example.com/test.mp3`, urlString``, null, null,
+        null);
     request.setResourceType(Common.ResourceType.resourceTypes.Media);
     request.mimeType = 'audio/mpeg';
 
@@ -174,9 +168,8 @@ describeWithEnvironment('NetworkLogView', () => {
 
   it('show wasm icon', async () => {
     const request = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId' as Protocol.Network.RequestId,
-        'https://www.example.com/test.wasm' as Platform.DevToolsPath.UrlString, '' as Platform.DevToolsPath.UrlString,
-        null, null, null);
+        'requestId' as Protocol.Network.RequestId, urlString`https://www.example.com/test.wasm`, urlString``, null,
+        null, null);
     request.setResourceType(Common.ResourceType.resourceTypes.Wasm);
     request.mimeType = 'application/wasm';
 
@@ -196,8 +189,8 @@ describeWithEnvironment('NetworkLogView', () => {
 
   it('show websocket icon', async () => {
     const request = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId' as Protocol.Network.RequestId, 'https://www.example.com/ws' as Platform.DevToolsPath.UrlString,
-        '' as Platform.DevToolsPath.UrlString, null, null, null);
+        'requestId' as Protocol.Network.RequestId, urlString`https://www.example.com/ws`, urlString``, null, null,
+        null);
     request.setResourceType(Common.ResourceType.resourceTypes.WebSocket);
     request.mimeType = '';
 
@@ -217,9 +210,8 @@ describeWithEnvironment('NetworkLogView', () => {
 
   it('shows fetch icon', async () => {
     const request = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId' as Protocol.Network.RequestId,
-        'https://www.example.com/test.json?keepalive=false' as Platform.DevToolsPath.UrlString,
-        '' as Platform.DevToolsPath.UrlString, null, null, null);
+        'requestId' as Protocol.Network.RequestId, urlString`https://www.example.com/test.json?keepalive=false`,
+        urlString``, null, null, null);
     request.setResourceType(Common.ResourceType.resourceTypes.Fetch);
     request.mimeType = '';
 
@@ -239,9 +231,8 @@ describeWithEnvironment('NetworkLogView', () => {
 
   it('shows xhr icon', async () => {
     const request = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId' as Protocol.Network.RequestId,
-        'https://www.example.com/test.json?keepalive=false' as Platform.DevToolsPath.UrlString,
-        '' as Platform.DevToolsPath.UrlString, null, null, null);
+        'requestId' as Protocol.Network.RequestId, urlString`https://www.example.com/test.json?keepalive=false`,
+        urlString``, null, null, null);
     request.setResourceType(Common.ResourceType.resourceTypes.XHR);
     request.mimeType = 'application/octet-stream';
 
@@ -261,9 +252,8 @@ describeWithEnvironment('NetworkLogView', () => {
 
   it('mime win: show image preview icon for xhr-image', async () => {
     const request = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId' as Protocol.Network.RequestId,
-        'https://www.example.com/test.svg' as Platform.DevToolsPath.UrlString, '' as Platform.DevToolsPath.UrlString,
-        null, null, null);
+        'requestId' as Protocol.Network.RequestId, urlString`https://www.example.com/test.svg`, urlString``, null, null,
+        null);
     request.setResourceType(Common.ResourceType.resourceTypes.XHR);
     request.mimeType = 'image/svg+xml';
 
@@ -281,8 +271,8 @@ describeWithEnvironment('NetworkLogView', () => {
 
   it('mime win: show document icon for fetch-html', async () => {
     const request = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId' as Protocol.Network.RequestId, 'https://www.example.com/page' as Platform.DevToolsPath.UrlString,
-        '' as Platform.DevToolsPath.UrlString, null, null, null);
+        'requestId' as Protocol.Network.RequestId, urlString`https://www.example.com/page`, urlString``, null, null,
+        null);
     request.setResourceType(Common.ResourceType.resourceTypes.Fetch);
     request.mimeType = 'text/html';
 
@@ -302,9 +292,8 @@ describeWithEnvironment('NetworkLogView', () => {
 
   it('mime win: show generic icon for preflight-text', async () => {
     const request = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId' as Protocol.Network.RequestId,
-        'https://www.example.com/api/test' as Platform.DevToolsPath.UrlString, '' as Platform.DevToolsPath.UrlString,
-        null, null, null);
+        'requestId' as Protocol.Network.RequestId, urlString`https://www.example.com/api/test`, urlString``, null, null,
+        null);
     request.setResourceType(Common.ResourceType.resourceTypes.Preflight);
     request.mimeType = 'text/plain';
 
@@ -324,8 +313,8 @@ describeWithEnvironment('NetworkLogView', () => {
 
   it('mime win: show script icon for other-javascript)', async () => {
     const request = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId' as Protocol.Network.RequestId, 'https://www.example.com/ping' as Platform.DevToolsPath.UrlString,
-        '' as Platform.DevToolsPath.UrlString, null, null, null);
+        'requestId' as Protocol.Network.RequestId, urlString`https://www.example.com/ping`, urlString``, null, null,
+        null);
     request.setResourceType(Common.ResourceType.resourceTypes.Other);
     request.mimeType = 'application/javascript';
 
@@ -345,9 +334,8 @@ describeWithEnvironment('NetworkLogView', () => {
 
   it('mime win: shows json icon for fetch-json', async () => {
     const request = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId' as Protocol.Network.RequestId,
-        'https://www.example.com/api/list' as Platform.DevToolsPath.UrlString, '' as Platform.DevToolsPath.UrlString,
-        null, null, null);
+        'requestId' as Protocol.Network.RequestId, urlString`https://www.example.com/api/list`, urlString``, null, null,
+        null);
     request.setResourceType(Common.ResourceType.resourceTypes.Fetch);
     request.mimeType = 'application/json';
 
@@ -367,8 +355,7 @@ describeWithEnvironment('NetworkLogView', () => {
 
   it('shows the corresponding status text of a status code', async () => {
     const request = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId' as Protocol.Network.RequestId, 'https://www.example.com' as Platform.DevToolsPath.UrlString,
-        '' as Platform.DevToolsPath.UrlString, null, null, null);
+        'requestId' as Protocol.Network.RequestId, urlString`https://www.example.com`, urlString``, null, null, null);
     request.statusCode = 305;
 
     const networkRequestNode = new Network.NetworkDataGridNode.NetworkRequestNode(
@@ -382,8 +369,7 @@ describeWithEnvironment('NetworkLogView', () => {
 
   it('populate has-overrides: headers', async () => {
     const request = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId' as Protocol.Network.RequestId, 'https://www.example.com' as Platform.DevToolsPath.UrlString,
-        '' as Platform.DevToolsPath.UrlString, null, null, null);
+        'requestId' as Protocol.Network.RequestId, urlString`https://www.example.com`, urlString``, null, null, null);
     request.statusCode = 200;
 
     request.setWasIntercepted(true);
@@ -400,8 +386,7 @@ describeWithEnvironment('NetworkLogView', () => {
 
   it('populate has-overrides: content', async () => {
     const request = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId' as Protocol.Network.RequestId, 'https://www.example.com' as Platform.DevToolsPath.UrlString,
-        '' as Platform.DevToolsPath.UrlString, null, null, null);
+        'requestId' as Protocol.Network.RequestId, urlString`https://www.example.com`, urlString``, null, null, null);
     request.statusCode = 200;
 
     request.setWasIntercepted(true);
@@ -417,8 +402,7 @@ describeWithEnvironment('NetworkLogView', () => {
 
   it('populate has-overrides: content, headers', async () => {
     const request = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId' as Protocol.Network.RequestId, 'https://www.example.com' as Platform.DevToolsPath.UrlString,
-        '' as Platform.DevToolsPath.UrlString, null, null, null);
+        'requestId' as Protocol.Network.RequestId, urlString`https://www.example.com`, urlString``, null, null, null);
     request.statusCode = 200;
 
     request.setWasIntercepted(true);
@@ -436,8 +420,7 @@ describeWithEnvironment('NetworkLogView', () => {
 
   it('populate has-overrides: null', async () => {
     const request = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId' as Protocol.Network.RequestId, 'https://www.example.com' as Platform.DevToolsPath.UrlString,
-        '' as Platform.DevToolsPath.UrlString, null, null, null);
+        'requestId' as Protocol.Network.RequestId, urlString`https://www.example.com`, urlString``, null, null, null);
     request.statusCode = 200;
 
     request.setWasIntercepted(false);
@@ -452,8 +435,7 @@ describeWithEnvironment('NetworkLogView', () => {
 
   it('only counts non-blocked response cookies', async () => {
     const request = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId' as Protocol.Network.RequestId, 'https://www.example.com' as Platform.DevToolsPath.UrlString,
-        '' as Platform.DevToolsPath.UrlString, null, null, null);
+        'requestId' as Protocol.Network.RequestId, urlString`https://www.example.com`, urlString``, null, null, null);
     request.addExtraResponseInfo({
       responseHeaders:
           [{name: 'Set-Cookie', value: 'good=123; Path=/; Secure; SameSite=None\nbad=456; Path=/; SameSite=None'}],
@@ -478,8 +460,7 @@ describeWithEnvironment('NetworkLogView', () => {
 
   it('shows transferred size when the matched ServiceWorker router source is network', async () => {
     const request = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId' as Protocol.Network.RequestId, 'https://www.example.com' as Platform.DevToolsPath.UrlString,
-        '' as Platform.DevToolsPath.UrlString, null, null, null);
+        'requestId' as Protocol.Network.RequestId, urlString`https://www.example.com`, urlString``, null, null, null);
     request.resourceSize = 4;
     request.setTransferSize(2);
     request.statusCode = 200;
@@ -500,8 +481,7 @@ describeWithEnvironment('NetworkLogView', () => {
 
   it('styles a prefetch network request error as a warning', async () => {
     const request = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId' as Protocol.Network.RequestId, 'https://www.example.com' as Platform.DevToolsPath.UrlString,
-        '' as Platform.DevToolsPath.UrlString, null, null, null);
+        'requestId' as Protocol.Network.RequestId, urlString`https://www.example.com`, urlString``, null, null, null);
     request.failed = true;
     request.statusCode = 404;
     request.setResourceType(Common.ResourceType.resourceTypes.Prefetch);

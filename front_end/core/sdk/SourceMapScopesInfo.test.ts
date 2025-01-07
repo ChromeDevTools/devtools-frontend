@@ -6,10 +6,11 @@ import * as Protocol from '../../generated/protocol.js';
 import {createTarget} from '../../testing/EnvironmentHelpers.js';
 import {describeWithMockConnection} from '../../testing/MockConnection.js';
 import {GeneratedRangeBuilder, OriginalScopeBuilder} from '../../testing/SourceMapEncoder.js';
-import type * as Platform from '../platform/platform.js';
+import * as Platform from '../platform/platform.js';
 
 import * as SDK from './sdk.js';
 
+const {urlString} = Platform.DevToolsPath;
 const {SourceMapScopesInfo} = SDK.SourceMapScopesInfo;
 
 describe('SourceMapScopesInfo', () => {
@@ -398,7 +399,7 @@ describe('SourceMapScopesInfo', () => {
           sourceIndex: mappedPausedPosition.sourceIndex,
           sourceLineNumber: mappedPausedPosition.line,
           sourceColumnNumber: mappedPausedPosition.column,
-          sourceURL: '' as Platform.DevToolsPath.UrlString,
+          sourceURL: urlString``,
           name: undefined,
         });
       } else {

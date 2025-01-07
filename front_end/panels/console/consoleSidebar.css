@@ -4,6 +4,10 @@
  * found in the LICENSE file.
  */
 
+:host {
+  overflow: auto;
+}
+
 .count {
   flex: none;
   margin: 0 var(--sys-size-3);

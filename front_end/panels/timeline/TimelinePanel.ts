@@ -314,21 +314,21 @@ const UIStrings = {
    */
   backToLiveMetrics: 'Go back to the live metrics page',
   /**
+   * @description Description of the Timeline up/down scroll action that appears in the Performance panel shortcuts dialog.
+   */
+  timelineScrollUpDown: 'Move up/down',
+  /**
+   * @description Description of the Timeline left/right panning action that appears in the Performance panel shortcuts dialog.
+   */
+  timelinePanLeftRight: 'Move left/right',
+  /**
    * @description Description of the Timeline in/out zoom action that appears in the Performance panel shortcuts dialog.
    */
-  timelineZoomInOut: 'Timeline zoom in/out',
+  timelineZoomInOut: 'Zoom in/out',
   /**
    * @description Description of the Timeline fast in/out zoom action that appears in the Performance panel shortcuts dialog.
    */
-  timelineFastZoomInOut: 'Timeline fast zoom in/out',
-  /**
-   * @description Description of the Timeline up/down scroll action that appears in the Performance panel shortcuts dialog.
-   */
-  timelineScrollUpDown: 'Timeline up/down',
-  /**
-   * @description Description of the Timeline right/left panning action that appears in the Performance panel shortcuts dialog.
-   */
-  timelinePanLeftRight: 'Timeline right/left',
+  timelineFastZoomInOut: 'Fast zoom in/out',
   /**
    * @description Title for the Dim 3rd Parties checkbox.
    */
@@ -1207,23 +1207,23 @@ export class TimelinePanel extends UI.Panel.Panel implements Client, TimelineMod
     if (isNavClassic) {
       return [
         {title: i18nString(UIStrings.timelineScrollUpDown), bindings: [['Shift', 'Scroll'], ['Shift', '↑/↓']]},
+        {title: i18nString(UIStrings.timelinePanLeftRight), bindings: [['Shift', '←/→'], ['A/D']]},
         {title: i18nString(UIStrings.timelineZoomInOut), bindings: [['Scroll'], ['W/S'], ['+/-']]},
         {title: i18nString(UIStrings.timelineFastZoomInOut), bindings: [['Shift', 'W/S'], ['Shift', '+/-']]},
-        {title: i18nString(UIStrings.timelinePanLeftRight), bindings: [['Shift', '←/→'], ['A/D']]},
       ];
     }
 
     return [
       {title: i18nString(UIStrings.timelineScrollUpDown), bindings: [['Scroll'], ['Shift', '↑/↓']]},
       {
+        title: i18nString(UIStrings.timelinePanLeftRight),
+        bindings: [['Shift', 'Scroll'], ['Shift', '←/→'], ['A/D']],
+      },
+      {
         title: i18nString(UIStrings.timelineZoomInOut),
         bindings: [[Host.Platform.isMac() ? '⌘' : 'Ctrl', 'Scroll'], ['W/S'], ['+/-']],
       },
       {title: i18nString(UIStrings.timelineFastZoomInOut), bindings: [['Shift', 'W/S'], ['Shift', '+/-']]},
-      {
-        title: i18nString(UIStrings.timelinePanLeftRight),
-        bindings: [['Shift', 'Scroll'], ['Shift', '←/→'], ['A/D']],
-      },
     ];
   }
 

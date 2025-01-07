@@ -27,8 +27,16 @@ export async function navigateToLighthouseTab(path?: string): Promise<ElementHan
     lighthouseTabButton = await waitForElementWithTextContent('Lighthouse');
   }
 
-  await lighthouseTabButton.click();
-  await waitFor('.view-container > .lighthouse');
+  // TODO(b/388183157): Investigate why a single click doesn't open the tab properly sometimes
+  const interval = setInterval(() => {
+    void lighthouseTabButton.click();
+  }, 500);
+
+  try {
+    await waitFor('.view-container > .lighthouse');
+  } finally {
+    clearInterval(interval);
+  }
 
   const {target, frontend} = getBrowserAndPages();
   if (path) {

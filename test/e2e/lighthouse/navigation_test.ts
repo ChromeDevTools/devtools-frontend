@@ -66,8 +66,8 @@ describe('Navigation', function() {
       console.error(consoleLog.join('\n'));
     }
   });
-  // Flaky
-  it.skip('[crbug.com/388183157] successfully returns a Lighthouse report', async () => {
+
+  it('successfully returns a Lighthouse report', async () => {
     await navigateToLighthouseTab('lighthouse/hello.html');
     await registerServiceWorker();
 

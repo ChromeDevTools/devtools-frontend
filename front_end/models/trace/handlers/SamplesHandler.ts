@@ -216,10 +216,10 @@ export interface SamplesHandlerData {
   entryToNode: typeof entryToNode;
 }
 
-export type ProfileData = {
-  profileId: Types.Events.ProfileID,
-  rawProfile: CPUProfile.CPUProfileDataModel.ExtendedProfile,
-  parsedProfile: CPUProfile.CPUProfileDataModel.CPUProfileDataModel,
+export interface ProfileData {
+  profileId: Types.Events.ProfileID;
+  rawProfile: CPUProfile.CPUProfileDataModel.ExtendedProfile;
+  parsedProfile: CPUProfile.CPUProfileDataModel.CPUProfileDataModel;
   /**
    * Contains the calls built from the CPU profile samples.
    * Note: This doesn't contain real trace events coming from the
@@ -230,21 +230,21 @@ export type ProfileData = {
    * If you need the profile calls from a CPU profile obtained from a
    * web trace, use the data exported by the RendererHandler instead.
    */
-  profileCalls: Types.Events.SyntheticProfileCall[],
+  profileCalls: Types.Events.SyntheticProfileCall[];
   /**
    * Contains the call tree built from the CPU profile samples.
    * Similar to the profileCalls field, this tree does not contain nor
    * take into account trace events, as such it only makes sense to use
    * them in pure CPU profiles.
    */
-  profileTree?: Helpers.TreeHelpers.TraceEntryTree,
-};
+  profileTree?: Helpers.TreeHelpers.TraceEntryTree;
+}
 
-type PreprocessedData = {
-  rawProfile: CPUProfile.CPUProfileDataModel.ExtendedProfile,
-  profileId: Types.Events.ProfileID,
-  threadId?: Types.Events.ThreadID,
-};
+interface PreprocessedData {
+  rawProfile: CPUProfile.CPUProfileDataModel.ExtendedProfile;
+  profileId: Types.Events.ProfileID;
+  threadId?: Types.Events.ThreadID;
+}
 
 /**
  * Returns the name of a function for a given synthetic profile call.

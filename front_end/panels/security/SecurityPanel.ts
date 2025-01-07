@@ -532,16 +532,16 @@ export function createHighlightedUrl(url: Platform.DevToolsPath.UrlString, secur
 }
 
 const {render, html} = LitHtml;
-export type ViewInput = {
-  panel: SecurityPanel,
-};
-export type ViewOutput = {
-  setVisibleView: (view: UI.Widget.VBox) => void,
-  splitWidget: UI.SplitWidget.SplitWidget,
-  mainView: SecurityMainView,
-  visibleView: UI.Widget.VBox|null,
-  sidebar: SecurityPanelSidebar,
-};
+export interface ViewInput {
+  panel: SecurityPanel;
+}
+export interface ViewOutput {
+  setVisibleView: (view: UI.Widget.VBox) => void;
+  splitWidget: UI.SplitWidget.SplitWidget;
+  mainView: SecurityMainView;
+  visibleView: UI.Widget.VBox|null;
+  sidebar: SecurityPanelSidebar;
+}
 
 export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
 

@@ -136,10 +136,10 @@ export const enum Events {
   EDITOR_SCROLL = 'EditorScroll',
 }
 
-export type EventTypes = {
-  [Events.EDITOR_UPDATE]: CodeMirror.ViewUpdate,
-  [Events.EDITOR_SCROLL]: void,
-};
+export interface EventTypes {
+  [Events.EDITOR_UPDATE]: CodeMirror.ViewUpdate;
+  [Events.EDITOR_SCROLL]: void;
+}
 
 type FormatFn = (lineNo: number, state: CodeMirror.EditorState) => string;
 export const LINE_NUMBER_FORMATTER = CodeMirror.Facet.define<FormatFn, FormatFn>({

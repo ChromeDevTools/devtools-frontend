@@ -843,9 +843,9 @@ export namespace LinkDecorator {
     LINK_ICON_CHANGED = 'LinkIconChanged',
   }
 
-  export type EventTypes = {
-    [Events.LINK_ICON_CHANGED]: Workspace.UISourceCode.UISourceCode,
-  };
+  export interface EventTypes {
+    [Events.LINK_ICON_CHANGED]: Workspace.UISourceCode.UISourceCode;
+  }
 }
 
 export class LinkContextMenuProvider implements UI.ContextMenu.Provider<Node> {
@@ -1064,6 +1064,6 @@ export const enum Events {
   LIVE_LOCATION_UPDATED = 'liveLocationUpdated',
 }
 
-export type EventTypes = {
-  [Events.LIVE_LOCATION_UPDATED]: Bindings.LiveLocation.LiveLocation,
-};
+export interface EventTypes {
+  [Events.LIVE_LOCATION_UPDATED]: Bindings.LiveLocation.LiveLocation;
+}

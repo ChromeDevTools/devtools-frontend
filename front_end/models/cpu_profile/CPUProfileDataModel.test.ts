@@ -17,7 +17,14 @@ function makeCallFrame(functionName: string): Protocol.Runtime.CallFrame {
 }
 
 function getFrameTreeAsString(cpuProfileDataModel: CPUProfile.CPUProfileDataModel.CPUProfileDataModel): string {
-  type Entry = {ts: number, dur: number, name: string, selfTime: number, id: number, depth: number};
+  interface Entry {
+    ts: number;
+    dur: number;
+    name: string;
+    selfTime: number;
+    id: number;
+    depth: number;
+  }
   const trackingStack: Entry[] = [];
   const resultStack: Entry[] = [];
   let result = '\n';

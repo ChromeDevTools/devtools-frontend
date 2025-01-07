@@ -104,12 +104,12 @@ export namespace DOMStorage {
     value: string;
   }
 
-  export type EventTypes = {
-    [Events.DOM_STORAGE_ITEMS_CLEARED]: void,
-    [Events.DOM_STORAGE_ITEM_REMOVED]: DOMStorageItemRemovedEvent,
-    [Events.DOM_STORAGE_ITEM_ADDED]: DOMStorageItemAddedEvent,
-    [Events.DOM_STORAGE_ITEM_UPDATED]: DOMStorageItemUpdatedEvent,
-  };
+  export interface EventTypes {
+    [Events.DOM_STORAGE_ITEMS_CLEARED]: void;
+    [Events.DOM_STORAGE_ITEM_REMOVED]: DOMStorageItemRemovedEvent;
+    [Events.DOM_STORAGE_ITEM_ADDED]: DOMStorageItemAddedEvent;
+    [Events.DOM_STORAGE_ITEM_UPDATED]: DOMStorageItemUpdatedEvent;
+  }
 }
 
 export class DOMStorageModel extends SDK.SDKModel.SDKModel<EventTypes> {
@@ -263,10 +263,10 @@ export const enum Events {
   DOM_STORAGE_REMOVED = 'DOMStorageRemoved',
 }
 
-export type EventTypes = {
-  [Events.DOM_STORAGE_ADDED]: DOMStorage,
-  [Events.DOM_STORAGE_REMOVED]: DOMStorage,
-};
+export interface EventTypes {
+  [Events.DOM_STORAGE_ADDED]: DOMStorage;
+  [Events.DOM_STORAGE_REMOVED]: DOMStorage;
+}
 
 export class DOMStorageDispatcher implements ProtocolProxyApi.DOMStorageDispatcher {
   private readonly model: DOMStorageModel;

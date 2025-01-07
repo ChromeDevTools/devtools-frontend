@@ -523,11 +523,12 @@ export function isEqualOrAbbreviation(abbreviated: string, full: string): boolea
 }
 
 // Helpers for navigating the file tree.
-export type NestedFileSelector = {
-  rootSelector: string,
-  domainSelector: string,
-  folderSelector?: string, fileSelector: string,
-};
+export interface NestedFileSelector {
+  rootSelector: string;
+  domainSelector: string;
+  folderSelector?: string;
+  fileSelector: string;
+}
 
 export function createSelectorsForWorkerFile(
     workerName: string, folderName: string, fileName: string, workerIndex = 1): NestedFileSelector {
@@ -741,14 +742,14 @@ export async function enableLocalOverrides() {
   await waitFor(CLEAR_CONFIGURATION_SELECTOR);
 }
 
-export type LabelMapping = {
-  label: string,
-  moduleOffset: number,
-  bytecode: number,
-  sourceLine: number,
-  labelLine: number,
-  labelColumn: number,
-};
+export interface LabelMapping {
+  label: string;
+  moduleOffset: number;
+  bytecode: number;
+  sourceLine: number;
+  labelLine: number;
+  labelColumn: number;
+}
 
 export class WasmLocationLabels {
   readonly #mappings: Map<string, LabelMapping[]>;

@@ -175,7 +175,7 @@ export interface ItemSelectedEvent {
   key: string|undefined;
 }
 
-export type EventTypes = {
-  [SidebarEvents.ITEM_SELECTED]: ItemSelectedEvent,
-  [SidebarEvents.RESET]: void,
-};
+export interface EventTypes {
+  [SidebarEvents.ITEM_SELECTED]: ItemSelectedEvent;
+  [SidebarEvents.RESET]: void;
+}

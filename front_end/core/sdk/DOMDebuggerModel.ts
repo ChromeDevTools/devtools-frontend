@@ -271,11 +271,11 @@ export const enum Events {
   DOM_BREAKPOINTS_REMOVED = 'DOMBreakpointsRemoved',
 }
 
-export type EventTypes = {
-  [Events.DOM_BREAKPOINT_ADDED]: DOMBreakpoint,
-  [Events.DOM_BREAKPOINT_TOGGLED]: DOMBreakpoint,
-  [Events.DOM_BREAKPOINTS_REMOVED]: DOMBreakpoint[],
-};
+export interface EventTypes {
+  [Events.DOM_BREAKPOINT_ADDED]: DOMBreakpoint;
+  [Events.DOM_BREAKPOINT_TOGGLED]: DOMBreakpoint;
+  [Events.DOM_BREAKPOINTS_REMOVED]: DOMBreakpoint[];
+}
 
 const Marker = 'breakpoint-marker';
 

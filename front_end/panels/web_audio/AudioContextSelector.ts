@@ -152,6 +152,6 @@ export const enum Events {
   CONTEXT_SELECTED = 'ContextSelected',
 }
 
-export type EventTypes = {
-  [Events.CONTEXT_SELECTED]: Protocol.WebAudio.BaseAudioContext|null,
-};
+export interface EventTypes {
+  [Events.CONTEXT_SELECTED]: Protocol.WebAudio.BaseAudioContext|null;
+}

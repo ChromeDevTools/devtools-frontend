@@ -11,11 +11,11 @@ import * as Types from '../types/types.js';
 import {SyntheticEventsManager} from './SyntheticEvents.js';
 import {eventTimingsMicroSeconds} from './Timing.js';
 
-type MatchingPairableAsyncEvents = {
-  begin: Types.Events.PairableAsyncBegin|null,
-  end: Types.Events.PairableAsyncEnd|null,
-  instant?: Types.Events.PairableAsyncInstant[],
-};
+interface MatchingPairableAsyncEvents {
+  begin: Types.Events.PairableAsyncBegin|null;
+  end: Types.Events.PairableAsyncEnd|null;
+  instant?: Types.Events.PairableAsyncInstant[];
+}
 
 /**
  * Extracts the raw stack trace in known trace events. Most likely than
@@ -109,10 +109,10 @@ export function addEventToProcessThread<T extends Types.Events.Event>(
   eventsInProcessThread.set(event.pid, eventsInThread);
 }
 
-export type TimeSpan = {
-  ts: Types.Timing.MicroSeconds,
-  dur?: Types.Timing.MicroSeconds,
-};
+export interface TimeSpan {
+  ts: Types.Timing.MicroSeconds;
+  dur?: Types.Timing.MicroSeconds;
+}
 export function eventTimeComparator(a: TimeSpan, b: TimeSpan): -1|0|1 {
   const aBeginTime = a.ts;
   const bBeginTime = b.ts;

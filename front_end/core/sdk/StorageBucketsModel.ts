@@ -213,8 +213,8 @@ export interface BucketEvent {
   bucketInfo: Protocol.Storage.StorageBucketInfo;
 }
 
-export type EventTypes = {
-  [Events.BUCKET_ADDED]: BucketEvent,
-  [Events.BUCKET_REMOVED]: BucketEvent,
-  [Events.BUCKET_CHANGED]: BucketEvent,
-};
+export interface EventTypes {
+  [Events.BUCKET_ADDED]: BucketEvent;
+  [Events.BUCKET_REMOVED]: BucketEvent;
+  [Events.BUCKET_CHANGED]: BucketEvent;
+}

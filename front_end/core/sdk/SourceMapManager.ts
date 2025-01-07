@@ -184,14 +184,14 @@ async function loadSourceMap(
   }
 }
 
-type ClientData = {
-  relativeSourceURL: Platform.DevToolsPath.UrlString,
+interface ClientData {
+  relativeSourceURL: Platform.DevToolsPath.UrlString;
   // Stores the raw sourceMappingURL as provided by V8. These are not guaranteed to
   // be valid URLs and will be checked and resolved once `attachSourceMap` is called.
-  relativeSourceMapURL: string,
-  sourceMap: SourceMap|undefined,
-  sourceMapPromise: Promise<SourceMap|undefined>,
-};
+  relativeSourceMapURL: string;
+  sourceMap: SourceMap|undefined;
+  sourceMapPromise: Promise<SourceMap|undefined>;
+}
 
 export enum Events {
   /* eslint-disable @typescript-eslint/naming-convention -- Used by web_tests. */
@@ -202,9 +202,9 @@ export enum Events {
   /* eslint-enable @typescript-eslint/naming-convention */
 }
 
-export type EventTypes<T extends FrameAssociated> = {
-  [Events.SourceMapWillAttach]: {client: T},
-  [Events.SourceMapFailedToAttach]: {client: T},
-  [Events.SourceMapAttached]: {client: T, sourceMap: SourceMap},
-  [Events.SourceMapDetached]: {client: T, sourceMap: SourceMap},
-};
+export interface EventTypes<T extends FrameAssociated> {
+  [Events.SourceMapWillAttach]: {client: T};
+  [Events.SourceMapFailedToAttach]: {client: T};
+  [Events.SourceMapAttached]: {client: T, sourceMap: SourceMap};
+  [Events.SourceMapDetached]: {client: T, sourceMap: SourceMap};
+}

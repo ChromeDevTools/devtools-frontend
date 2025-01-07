@@ -153,11 +153,11 @@ export namespace DetachedElementsProfileType {
     DETACHED_ELEMENTS_OBTAINED = 'DetachedElementsObtained',
   }
 
-  export type EventTypes = {
-    [Events.RECORDING_STOPPED]: void,
-    [Events.STATS_UPDATE]: Protocol.HeapProfiler.SamplingHeapProfile|null,
-    [Events.DETACHED_ELEMENTS_OBTAINED]: Protocol.DOM.DetachedElementInfo[]|null,
-  };
+  export interface EventTypes {
+    [Events.RECORDING_STOPPED]: void;
+    [Events.STATS_UPDATE]: Protocol.HeapProfiler.SamplingHeapProfile|null;
+    [Events.DETACHED_ELEMENTS_OBTAINED]: Protocol.DOM.DetachedElementInfo[]|null;
+  }
 }
 
 export class DetachedElementsProfileHeader extends WritableProfileHeader {

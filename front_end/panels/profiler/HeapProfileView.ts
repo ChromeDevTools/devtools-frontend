@@ -431,10 +431,10 @@ export namespace SamplingHeapProfileType {
     STATS_UPDATE = 'StatsUpdate',
   }
 
-  export type EventTypes = {
-    [Events.RECORDING_STOPPED]: void,
-    [Events.STATS_UPDATE]: Protocol.HeapProfiler.SamplingHeapProfile|null,
-  };
+  export interface EventTypes {
+    [Events.RECORDING_STOPPED]: void;
+    [Events.STATS_UPDATE]: Protocol.HeapProfiler.SamplingHeapProfile|null;
+  }
 }
 
 export class SamplingHeapProfileHeader extends WritableProfileHeader {

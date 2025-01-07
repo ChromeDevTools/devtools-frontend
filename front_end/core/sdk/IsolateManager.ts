@@ -141,9 +141,9 @@ export const enum Events {
   MEMORY_CHANGED = 'MemoryChanged',
 }
 
-export type EventTypes = {
-  [Events.MEMORY_CHANGED]: Isolate,
-};
+export interface EventTypes {
+  [Events.MEMORY_CHANGED]: Isolate;
+}
 
 export const MemoryTrendWindowMs = 120e3;
 const PollIntervalMs = 2e3;

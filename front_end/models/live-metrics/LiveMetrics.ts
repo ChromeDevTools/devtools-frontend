@@ -626,6 +626,6 @@ export interface StatusEvent {
   layoutShifts: LayoutShift[];
 }
 
-type EventTypes = {
-  [Events.STATUS]: StatusEvent,
-};
+interface EventTypes {
+  [Events.STATUS]: StatusEvent;
+}

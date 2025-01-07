@@ -175,6 +175,6 @@ export interface AddressFormFilledEvent {
   event: Protocol.Autofill.AddressFormFilledEvent;
 }
 
-export type EventTypes = {
-  [Events.ADDRESS_FORM_FILLED]: AddressFormFilledEvent,
-};
+export interface EventTypes {
+  [Events.ADDRESS_FORM_FILLED]: AddressFormFilledEvent;
+}

@@ -1028,22 +1028,22 @@ export enum Events {
   /* eslint-enable @typescript-eslint/naming-convention */
 }
 
-export type EventTypes = {
-  [Events.DebuggerWasEnabled]: DebuggerModel,
-  [Events.DebuggerWasDisabled]: DebuggerModel,
-  [Events.DebuggerPaused]: DebuggerModel,
-  [Events.DebuggerResumed]: DebuggerModel,
-  [Events.ParsedScriptSource]: Script,
-  [Events.DiscardedAnonymousScriptSource]: Script,
-  [Events.GlobalObjectCleared]: DebuggerModel,
-  [Events.CallFrameSelected]: DebuggerModel,
-  [Events.DebuggerIsReadyToPause]: DebuggerModel,
-  [Events.DebugInfoAttached]: Script,
+export interface EventTypes {
+  [Events.DebuggerWasEnabled]: DebuggerModel;
+  [Events.DebuggerWasDisabled]: DebuggerModel;
+  [Events.DebuggerPaused]: DebuggerModel;
+  [Events.DebuggerResumed]: DebuggerModel;
+  [Events.ParsedScriptSource]: Script;
+  [Events.DiscardedAnonymousScriptSource]: Script;
+  [Events.GlobalObjectCleared]: DebuggerModel;
+  [Events.CallFrameSelected]: DebuggerModel;
+  [Events.DebuggerIsReadyToPause]: DebuggerModel;
+  [Events.DebugInfoAttached]: Script;
   [Events.ScriptSourceWasEdited]: {
     script: Script,
     status: Protocol.Debugger.SetScriptSourceResponseStatus,
-  },
-};
+  };
+}
 
 class DebuggerDispatcher implements ProtocolProxyApi.DebuggerDispatcher {
   #debuggerModel: DebuggerModel;

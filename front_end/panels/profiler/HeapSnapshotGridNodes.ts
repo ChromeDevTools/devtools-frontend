@@ -536,9 +536,9 @@ export namespace HeapSnapshotGridNode {
     /* eslint-enable @typescript-eslint/naming-convention */
   }
 
-  export type EventTypes = {
-    [Events.PopulateComplete]: void,
-  };
+  export interface EventTypes {
+    [Events.PopulateComplete]: void;
+  }
 }
 
 export abstract class HeapSnapshotGenericObjectNode extends HeapSnapshotGridNode {

@@ -31,12 +31,12 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/animation/AnimationUI.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-type CachedElement = {
-  group: HTMLElement|null,
-  animationLine: HTMLElement|null,
-  keyframePoints: {[x: number]: HTMLElement},
-  keyframeRender: {[x: number]: HTMLElement},
-};
+interface CachedElement {
+  group: HTMLElement|null;
+  animationLine: HTMLElement|null;
+  keyframePoints: {[x: number]: HTMLElement};
+  keyframeRender: {[x: number]: HTMLElement};
+}
 
 export class AnimationUI {
   #animationInternal: SDK.AnimationModel.AnimationImpl;

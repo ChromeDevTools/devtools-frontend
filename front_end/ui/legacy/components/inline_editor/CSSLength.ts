@@ -52,9 +52,9 @@ export enum CSSLengthUnit {
 export const CSS_LENGTH_REGEX =
     new RegExp(`(?<value>[+-]?\\d*\\.?\\d+([Ee][+-]?\\d+)?)(?<unit>${Object.values(CSSLengthUnit).join('|')})`);
 
-type CSSLengthData = {
-  lengthText: string,
-};
+interface CSSLengthData {
+  lengthText: string;
+}
 
 export class CSSLength extends HTMLElement {
 

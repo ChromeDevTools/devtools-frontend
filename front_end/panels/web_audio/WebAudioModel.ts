@@ -139,20 +139,20 @@ export const enum Events {
   NODE_PARAM_DISCONNECTED = 'NodeParamDisconnected',
 }
 
-export type EventTypes = {
-  [Events.CONTEXT_CREATED]: Protocol.WebAudio.BaseAudioContext,
-  [Events.CONTEXT_DESTROYED]: Protocol.WebAudio.GraphObjectId,
-  [Events.CONTEXT_CHANGED]: Protocol.WebAudio.BaseAudioContext,
-  [Events.MODEL_RESET]: void,
-  [Events.MODEL_SUSPEND]: void,
-  [Events.AUDIO_LISTENER_CREATED]: Protocol.WebAudio.AudioListener,
-  [Events.AUDIO_LISTENER_WILL_BE_DESTROYED]: Protocol.WebAudio.AudioListenerWillBeDestroyedEvent,
-  [Events.AUDIO_NODE_CREATED]: Protocol.WebAudio.AudioNode,
-  [Events.AUDIO_NODE_WILL_BE_DESTROYED]: Protocol.WebAudio.AudioNodeWillBeDestroyedEvent,
-  [Events.AUDIO_PARAM_CREATED]: Protocol.WebAudio.AudioParam,
-  [Events.AUDIO_PARAM_WILL_BE_DESTROYED]: Protocol.WebAudio.AudioParamWillBeDestroyedEvent,
-  [Events.NODES_CONNECTED]: Protocol.WebAudio.NodesConnectedEvent,
-  [Events.NODES_DISCONNECTED]: Protocol.WebAudio.NodesDisconnectedEvent,
-  [Events.NODE_PARAM_CONNECTED]: Protocol.WebAudio.NodeParamConnectedEvent,
-  [Events.NODE_PARAM_DISCONNECTED]: Protocol.WebAudio.NodeParamDisconnectedEvent,
-};
+export interface EventTypes {
+  [Events.CONTEXT_CREATED]: Protocol.WebAudio.BaseAudioContext;
+  [Events.CONTEXT_DESTROYED]: Protocol.WebAudio.GraphObjectId;
+  [Events.CONTEXT_CHANGED]: Protocol.WebAudio.BaseAudioContext;
+  [Events.MODEL_RESET]: void;
+  [Events.MODEL_SUSPEND]: void;
+  [Events.AUDIO_LISTENER_CREATED]: Protocol.WebAudio.AudioListener;
+  [Events.AUDIO_LISTENER_WILL_BE_DESTROYED]: Protocol.WebAudio.AudioListenerWillBeDestroyedEvent;
+  [Events.AUDIO_NODE_CREATED]: Protocol.WebAudio.AudioNode;
+  [Events.AUDIO_NODE_WILL_BE_DESTROYED]: Protocol.WebAudio.AudioNodeWillBeDestroyedEvent;
+  [Events.AUDIO_PARAM_CREATED]: Protocol.WebAudio.AudioParam;
+  [Events.AUDIO_PARAM_WILL_BE_DESTROYED]: Protocol.WebAudio.AudioParamWillBeDestroyedEvent;
+  [Events.NODES_CONNECTED]: Protocol.WebAudio.NodesConnectedEvent;
+  [Events.NODES_DISCONNECTED]: Protocol.WebAudio.NodesDisconnectedEvent;
+  [Events.NODE_PARAM_CONNECTED]: Protocol.WebAudio.NodeParamConnectedEvent;
+  [Events.NODE_PARAM_DISCONNECTED]: Protocol.WebAudio.NodeParamDisconnectedEvent;
+}

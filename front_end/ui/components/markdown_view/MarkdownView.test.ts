@@ -11,14 +11,14 @@ import * as MarkdownView from './markdown_view.js';
 
 const {html} = LitHtml;
 
-type TestToken = {
-  type: string,
-  tokens?: Marked.Marked.Token[],
-  text?: string,
-  href?: string,
-  items?: Object[],
-  depth?: number,
-};
+interface TestToken {
+  type: string;
+  tokens?: Marked.Marked.Token[];
+  text?: string;
+  href?: string;
+  items?: Object[];
+  depth?: number;
+}
 
 function getFakeToken(token: TestToken): Marked.Marked.Token {
   return token as unknown as Marked.Marked.Token;

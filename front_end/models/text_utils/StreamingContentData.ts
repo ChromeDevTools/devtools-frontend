@@ -103,6 +103,6 @@ export const enum Events {
   CHUNK_ADDED = 'ChunkAdded',
 }
 
-export type EventTypes = {
-  [Events.CHUNK_ADDED]: {content: StreamingContentData, chunk: string},
-};
+export interface EventTypes {
+  [Events.CHUNK_ADDED]: {content: StreamingContentData, chunk: string};
+}

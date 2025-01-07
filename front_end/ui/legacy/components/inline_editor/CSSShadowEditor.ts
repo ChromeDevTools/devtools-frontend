@@ -491,6 +491,6 @@ export const enum Events {
   SHADOW_CHANGED = 'ShadowChanged',
 }
 
-export type EventTypes = {
-  [Events.SHADOW_CHANGED]: CSSShadowModel,
-};
+export interface EventTypes {
+  [Events.SHADOW_CHANGED]: CSSShadowModel;
+}

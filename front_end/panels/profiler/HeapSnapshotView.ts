@@ -1409,9 +1409,9 @@ export const enum HeapSnapshotProfileTypeEvents {
   SNAPSHOT_RECEIVED = 'SnapshotReceived',
 }
 
-export type HeapSnapshotProfileTypeEventTypes = {
-  [HeapSnapshotProfileTypeEvents.SNAPSHOT_RECEIVED]: ProfileHeader,
-};
+export interface HeapSnapshotProfileTypeEventTypes {
+  [HeapSnapshotProfileTypeEvents.SNAPSHOT_RECEIVED]: ProfileHeader;
+}
 
 export class TrackingHeapSnapshotProfileType extends
     Common.ObjectWrapper.eventMixin<TrackingHeapSnapshotProfileTypeEventTypes, typeof HeapSnapshotProfileType>(
@@ -1617,11 +1617,11 @@ export const enum TrackingHeapSnapshotProfileTypeEvents {
   TRACKING_STOPPED = 'TrackingStopped',
 }
 
-export type TrackingHeapSnapshotProfileTypeEventTypes = {
-  [TrackingHeapSnapshotProfileTypeEvents.HEAP_STATS_UPDATE]: Samples,
-  [TrackingHeapSnapshotProfileTypeEvents.TRACKING_STARTED]: void,
-  [TrackingHeapSnapshotProfileTypeEvents.TRACKING_STOPPED]: void,
-};
+export interface TrackingHeapSnapshotProfileTypeEventTypes {
+  [TrackingHeapSnapshotProfileTypeEvents.HEAP_STATS_UPDATE]: Samples;
+  [TrackingHeapSnapshotProfileTypeEvents.TRACKING_STARTED]: void;
+  [TrackingHeapSnapshotProfileTypeEvents.TRACKING_STOPPED]: void;
+}
 
 export class HeapProfileHeader extends ProfileHeader {
   readonly heapProfilerModelInternal: SDK.HeapProfilerModel.HeapProfilerModel|null;

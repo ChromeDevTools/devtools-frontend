@@ -808,6 +808,6 @@ export const enum Events {
   TEXT_CHANGED = 'TextChanged',
 }
 
-export type EventTypes = {
-  [Events.TEXT_CHANGED]: void,
-};
+export interface EventTypes {
+  [Events.TEXT_CHANGED]: void;
+}

@@ -472,9 +472,9 @@ export const enum Events {
   BACKGROUND_COLOR_PICKER_WILL_BE_TOGGLED = 'BackgroundColorPickerWillBeToggled',
 }
 
-export type EventTypes = {
-  [Events.BACKGROUND_COLOR_PICKER_WILL_BE_TOGGLED]: boolean,
-};
+export interface EventTypes {
+  [Events.BACKGROUND_COLOR_PICKER_WILL_BE_TOGGLED]: boolean;
+}
 
 export class Swatch {
   private readonly parentElement: Element;

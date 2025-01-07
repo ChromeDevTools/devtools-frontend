@@ -65,11 +65,11 @@ export const enum Events {
   RESET = 'Reset',
 }
 
-export type EventTypes = {
-  [Events.REQUEST_OVERVIEW_START]: void,
-  [Events.REQUEST_NODE_HIGHLIGHT]: number,
-  [Events.POPULATE_NODES]: {payload: PopulateNodesEvent},
-  [Events.REQUEST_OVERVIEW_CANCEL]: void,
-  [Events.OVERVIEW_COMPLETED]: void,
-  [Events.RESET]: void,
-};
+export interface EventTypes {
+  [Events.REQUEST_OVERVIEW_START]: void;
+  [Events.REQUEST_NODE_HIGHLIGHT]: number;
+  [Events.POPULATE_NODES]: {payload: PopulateNodesEvent};
+  [Events.REQUEST_OVERVIEW_CANCEL]: void;
+  [Events.OVERVIEW_COMPLETED]: void;
+  [Events.RESET]: void;
+}

@@ -5,9 +5,9 @@
 import {getBrowserAndPages} from '../../conductor/puppeteer-state.js';
 
 // Corresponds to the type in front_end/ui/visual_logging/Debugging.ts
-type TestImpressionLogEntry = {
-  impressions: string[],
-};
+interface TestImpressionLogEntry {
+  impressions: string[];
+}
 type TestLogEntry = TestImpressionLogEntry|{
   interaction: string,
 };

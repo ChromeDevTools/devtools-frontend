@@ -1693,8 +1693,8 @@ export function groupForLevel(groups: PerfUI.FlameChart.Group[], level: number):
 export const enum Events {
   ENTRY_LABEL_ANNOTATION_CLICKED = 'EntryLabelAnnotationClicked',
 }
-export type EventTypes = {
+export interface EventTypes {
   [Events.ENTRY_LABEL_ANNOTATION_CLICKED]: {
     entry: Trace.Types.Events.Event,
-  },
-};
+  };
+}

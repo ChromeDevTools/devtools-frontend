@@ -411,6 +411,6 @@ export const enum Events {
   UPDATE = 'Update',
 }
 
-export type EventTypes = {
-  [Events.UPDATE]: void,
-};
+export interface EventTypes {
+  [Events.UPDATE]: void;
+}

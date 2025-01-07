@@ -165,10 +165,10 @@ export const enum Events {
   CONSOLE_PROFILE_FINISHED = 'ConsoleProfileFinished',
 }
 
-export type EventTypes = {
-  [Events.CONSOLE_PROFILE_STARTED]: EventData,
-  [Events.CONSOLE_PROFILE_FINISHED]: ProfileFinishedData,
-};
+export interface EventTypes {
+  [Events.CONSOLE_PROFILE_STARTED]: EventData;
+  [Events.CONSOLE_PROFILE_FINISHED]: ProfileFinishedData;
+}
 
 SDKModel.register(CPUProfilerModel, {capabilities: Capability.JS, autostart: true});
 

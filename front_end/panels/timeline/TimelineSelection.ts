@@ -7,13 +7,13 @@ import * as Trace from '../../models/trace/trace.js';
 
 // We could add a `type` field here to distinguish them, but it is not needed
 // as we use the existence of "event" or "bounds" to do that.
-export type EventSelection = {
-  event: Trace.Types.Events.Event,
-};
+export interface EventSelection {
+  event: Trace.Types.Events.Event;
+}
 
-export type TimeRangeSelection = {
-  bounds: Trace.Types.Timing.TraceWindowMicroSeconds,
-};
+export interface TimeRangeSelection {
+  bounds: Trace.Types.Timing.TraceWindowMicroSeconds;
+}
 
 export type TimelineSelection = EventSelection|TimeRangeSelection;
 

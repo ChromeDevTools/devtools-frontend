@@ -201,6 +201,6 @@ export const enum Events {
   SHOULD_REDRAW = 'ShouldRedraw',
 }
 
-export type EventTypes = {
-  [Events.SHOULD_REDRAW]: GraphView,
-};
+export interface EventTypes {
+  [Events.SHOULD_REDRAW]: GraphView;
+}

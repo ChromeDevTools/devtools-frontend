@@ -87,11 +87,11 @@ export interface MainStorageKeyChangedEvent {
   mainStorageKey: string;
 }
 
-export type EventTypes = {
-  [Events.STORAGE_KEY_ADDED]: string,
-  [Events.STORAGE_KEY_REMOVED]: string,
-  [Events.MAIN_STORAGE_KEY_CHANGED]: MainStorageKeyChangedEvent,
-};
+export interface EventTypes {
+  [Events.STORAGE_KEY_ADDED]: string;
+  [Events.STORAGE_KEY_REMOVED]: string;
+  [Events.MAIN_STORAGE_KEY_CHANGED]: MainStorageKeyChangedEvent;
+}
 
 // TODO(jarhar): this is the one of the two usages of Capability.None. Do something about it!
 SDKModel.register(StorageKeyManager, {capabilities: Capability.NONE, autostart: false});

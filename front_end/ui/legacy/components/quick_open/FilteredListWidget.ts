@@ -590,9 +590,9 @@ export const enum Events {
   HIDDEN = 'hidden',
 }
 
-export type EventTypes = {
-  [Events.HIDDEN]: void,
-};
+export interface EventTypes {
+  [Events.HIDDEN]: void;
+}
 
 export class Provider {
   private refreshCallback!: () => void;

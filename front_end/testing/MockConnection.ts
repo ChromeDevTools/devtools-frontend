@@ -17,17 +17,17 @@ export type ProtocolResponse<C extends ProtocolCommand> = ProtocolMapping.Comman
 export type ProtocolCommandHandler<C extends ProtocolCommand> = (...params: ProtocolCommandParams<C>) =>
     Omit<ProtocolResponse<C>, 'getError'>|{getError(): string};
 export type MessageCallback = (result: string|Object) => void;
-type Message = {
-  id: number,
-  method: ProtocolCommand,
-  params: unknown,
-  sessionId: string,
-};
+interface Message {
+  id: number;
+  method: ProtocolCommand;
+  params: unknown;
+  sessionId: string;
+}
 
-type OutgoingMessageListenerEntry = {
-  promise: Promise<void>,
-  resolve: Function,
-};
+interface OutgoingMessageListenerEntry {
+  promise: Promise<void>;
+  resolve: Function;
+}
 
 // Note that we can't set the Function to the correct handler on the basis
 // that we don't know which ProtocolCommand will be stored.

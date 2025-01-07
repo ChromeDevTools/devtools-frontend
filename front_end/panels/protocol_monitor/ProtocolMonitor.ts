@@ -775,10 +775,10 @@ export const enum Events {
   COMMAND_CHANGE = 'CommandChange',
 }
 
-export type EventTypes = {
-  [Events.COMMAND_SENT]: Components.JSONEditor.Command,
-  [Events.COMMAND_CHANGE]: Components.JSONEditor.Command,
-};
+export interface EventTypes {
+  [Events.COMMAND_SENT]: Components.JSONEditor.Command;
+  [Events.COMMAND_CHANGE]: Components.JSONEditor.Command;
+}
 
 export class EditorWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.VBox>(UI.Widget.VBox) {
   readonly jsonEditor: Components.JSONEditor.JSONEditor;

@@ -104,6 +104,6 @@ export const enum Events {
   INTEREST_GROUP_ACCESS = 'InterestGroupAccess',
 }
 
-export type EventTypes = {
-  [Events.INTEREST_GROUP_ACCESS]: Protocol.Storage.InterestGroupAccessedEvent,
-};
+export interface EventTypes {
+  [Events.INTEREST_GROUP_ACCESS]: Protocol.Storage.InterestGroupAccessedEvent;
+}

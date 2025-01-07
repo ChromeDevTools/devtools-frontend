@@ -453,6 +453,8 @@ export default [
         },
       ],
 
+      '@typescript-eslint/consistent-type-definitions': ['error', 'interface'],
+
       'rulesdir/no-underscored-properties': 'error',
       'rulesdir/prefer-readonly-keyword': 'error',
       'rulesdir/inline-type-imports': 'error',

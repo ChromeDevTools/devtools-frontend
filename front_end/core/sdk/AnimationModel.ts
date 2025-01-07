@@ -478,11 +478,11 @@ export enum Events {
   /* eslint-enable @typescript-eslint/naming-convention */
 }
 
-export type EventTypes = {
-  [Events.AnimationGroupStarted]: AnimationGroup,
-  [Events.AnimationGroupUpdated]: AnimationGroup,
-  [Events.ModelReset]: void,
-};
+export interface EventTypes {
+  [Events.AnimationGroupStarted]: AnimationGroup;
+  [Events.AnimationGroupUpdated]: AnimationGroup;
+  [Events.ModelReset]: void;
+}
 
 export class AnimationImpl {
   readonly #animationModel: AnimationModel;

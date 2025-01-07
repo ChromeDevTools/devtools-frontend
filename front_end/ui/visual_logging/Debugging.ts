@@ -167,21 +167,21 @@ function deleteUndefinedFields<T>(entry: T): void {
   }
 }
 
-export type EventAttributes = {
-  context?: string,
-  width?: number,
-  height?: number,
-  mouseButton?: number,
-  doubleClick?: boolean,
-};
+export interface EventAttributes {
+  context?: string;
+  width?: number;
+  height?: number;
+  mouseButton?: number;
+  doubleClick?: boolean;
+}
 
-type VisualElementAttributes = {
-  ve: string,
-  veid: number,
-  context?: string,
-  width?: number,
-  height?: number,
-};
+interface VisualElementAttributes {
+  ve: string;
+  veid: number;
+  context?: string;
+  width?: number;
+  height?: number;
+}
 
 type IntuitiveLogEntry = {
   event?: EventType|'Impression'|'SessionStart',

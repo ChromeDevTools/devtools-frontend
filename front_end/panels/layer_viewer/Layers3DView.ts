@@ -921,10 +921,10 @@ export const enum Events {
   SCALE_CHANGED = 'ScaleChanged',
 }
 
-export type EventTypes = {
-  [Events.PAINT_PROFILER_REQUESTED]: Selection,
-  [Events.SCALE_CHANGED]: number,
-};
+export interface EventTypes {
+  [Events.PAINT_PROFILER_REQUESTED]: Selection;
+  [Events.SCALE_CHANGED]: number;
+}
 
 export const enum ChromeTexture {
   LEFT = 0,

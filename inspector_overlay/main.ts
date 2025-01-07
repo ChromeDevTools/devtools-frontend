@@ -78,11 +78,11 @@ const overlays: Overlays = {
 let currentOverlay: Overlays[keyof Overlays];
 let platformName: PlatformName;
 
-type MessageLookup = {
-  setOverlay: keyof Overlays,
-  setPlatform: PlatformName,
-  drawingFinished: '',
-};
+interface MessageLookup {
+  setOverlay: keyof Overlays;
+  setPlatform: PlatformName;
+  drawingFinished: '';
+}
 
 const dispatch = <K extends keyof MessageLookup>(message: [a: K, b: MessageLookup[K]]) => {
   const functionName = message[0];

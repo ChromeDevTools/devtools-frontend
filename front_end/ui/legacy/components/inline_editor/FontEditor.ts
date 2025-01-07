@@ -443,10 +443,10 @@ export interface FontChangedEvent {
   value: string;
 }
 
-export type EventTypes = {
-  [Events.FONT_CHANGED]: FontChangedEvent,
-  [Events.FONT_EDITOR_RESIZED]: void,
-};
+export interface EventTypes {
+  [Events.FONT_CHANGED]: FontChangedEvent;
+  [Events.FONT_EDITOR_RESIZED]: void;
+}
 
 class FontPropertyInputs {
   private showSliderMode: boolean;

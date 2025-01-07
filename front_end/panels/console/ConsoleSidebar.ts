@@ -144,9 +144,9 @@ export const enum Events {
   FILTER_SELECTED = 'FilterSelected',
 }
 
-export type EventTypes = {
-  [Events.FILTER_SELECTED]: void,
-};
+export interface EventTypes {
+  [Events.FILTER_SELECTED]: void;
+}
 
 class ConsoleSidebarTreeElement extends UI.TreeOutline.TreeElement {
   protected filterInternal: ConsoleFilter;

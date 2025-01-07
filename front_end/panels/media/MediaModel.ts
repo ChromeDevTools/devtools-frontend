@@ -20,13 +20,13 @@ export const enum Events {
   PLAYERS_CREATED = 'PlayersCreated',
 }
 
-export type EventTypes = {
-  [Events.PLAYER_PROPERTIES_CHANGED]: Protocol.Media.PlayerPropertiesChangedEvent,
-  [Events.PLAYER_EVENTS_ADDED]: Protocol.Media.PlayerEventsAddedEvent,
-  [Events.PLAYER_MESSAGES_LOGGED]: Protocol.Media.PlayerMessagesLoggedEvent,
-  [Events.PLAYER_ERRORS_RAISED]: Protocol.Media.PlayerErrorsRaisedEvent,
-  [Events.PLAYERS_CREATED]: Protocol.Media.PlayerId[],
-};
+export interface EventTypes {
+  [Events.PLAYER_PROPERTIES_CHANGED]: Protocol.Media.PlayerPropertiesChangedEvent;
+  [Events.PLAYER_EVENTS_ADDED]: Protocol.Media.PlayerEventsAddedEvent;
+  [Events.PLAYER_MESSAGES_LOGGED]: Protocol.Media.PlayerMessagesLoggedEvent;
+  [Events.PLAYER_ERRORS_RAISED]: Protocol.Media.PlayerErrorsRaisedEvent;
+  [Events.PLAYERS_CREATED]: Protocol.Media.PlayerId[];
+}
 
 export class MediaModel extends SDK.SDKModel.SDKModel<EventTypes> implements ProtocolProxyApi.MediaDispatcher {
   private enabled: boolean;

@@ -385,10 +385,10 @@ export enum Events {
   /* eslint-enable @typescript-eslint/naming-convention */
 }
 
-export type EventTypes = {
-  [Events.BindingCreated]: PersistenceBinding,
-  [Events.BindingRemoved]: PersistenceBinding,
-};
+export interface EventTypes {
+  [Events.BindingCreated]: PersistenceBinding;
+  [Events.BindingRemoved]: PersistenceBinding;
+}
 
 export class PersistenceBinding {
   network: Workspace.UISourceCode.UISourceCode;

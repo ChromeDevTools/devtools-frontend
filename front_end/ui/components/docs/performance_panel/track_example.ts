@@ -41,11 +41,11 @@ const p = document.createElement('p');
 // Expand the track by default for test.
 await renderContent(expanded === 'false' ? false : true);
 
-type FlameChartData = {
-  flameChart: PerfUI.FlameChart.FlameChart,
+interface FlameChartData {
+  flameChart: PerfUI.FlameChart.FlameChart;
   dataProvider: Timeline.TimelineFlameChartDataProvider.TimelineFlameChartDataProvider|
-              Timeline.TimelineFlameChartNetworkDataProvider.TimelineFlameChartNetworkDataProvider,
-};
+      Timeline.TimelineFlameChartNetworkDataProvider.TimelineFlameChartNetworkDataProvider;
+}
 
 async function renderContent(expanded: boolean) {
   if (darkMode) {

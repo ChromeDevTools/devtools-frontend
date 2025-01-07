@@ -376,11 +376,11 @@ function hideFromLayout(element: HTMLElement): void {
   element.style.overflow = 'hidden';
 }
 
-type AlertState = {
-  one: HTMLDivElement,
-  two: HTMLDivElement,
-  alertToggle: boolean,
-};
+interface AlertState {
+  one: HTMLDivElement;
+  two: HTMLDivElement;
+  alertToggle: boolean;
+}
 const alertElements = new WeakMap<HTMLElement, AlertState>();
 
 function createAlertElement(container: HTMLElement): HTMLDivElement {

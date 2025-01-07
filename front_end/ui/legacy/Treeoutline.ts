@@ -64,13 +64,13 @@ export enum Events {
   /* eslint-enable @typescript-eslint/naming-convention */
 }
 
-export type EventTypes = {
-  [Events.ElementAttached]: TreeElement,
-  [Events.ElementsDetached]: void,
-  [Events.ElementExpanded]: TreeElement,
-  [Events.ElementCollapsed]: TreeElement,
-  [Events.ElementSelected]: TreeElement,
-};
+export interface EventTypes {
+  [Events.ElementAttached]: TreeElement;
+  [Events.ElementsDetached]: void;
+  [Events.ElementExpanded]: TreeElement;
+  [Events.ElementCollapsed]: TreeElement;
+  [Events.ElementSelected]: TreeElement;
+}
 
 export class TreeOutline extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
   readonly rootElementInternal: TreeElement;

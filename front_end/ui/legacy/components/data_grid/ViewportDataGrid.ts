@@ -252,9 +252,9 @@ export const enum Events {
   VIEWPORT_CALCULATED = 'ViewportCalculated',
 }
 
-export type EventTypes = {
-  [Events.VIEWPORT_CALCULATED]: void,
-};
+export interface EventTypes {
+  [Events.VIEWPORT_CALCULATED]: void;
+}
 
 export class ViewportDataGridNode<T> extends DataGridNode<ViewportDataGridNode<T>> {
   private stale: boolean;

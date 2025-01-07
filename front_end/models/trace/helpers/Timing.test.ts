@@ -64,18 +64,6 @@ describeWithEnvironment('Timing helpers', () => {
     });
   });
 
-  it('eventTimingsSeconds returns the right numbers', async () => {
-    const event = {
-      ts: 100_000,  // 100k microseconds = 100ms = 0.1second
-      dur: 50_000,  // 50k microseconds = 50ms = 0.05second
-    } as unknown as Trace.Types.Events.Event;
-    assert.deepEqual(Trace.Helpers.Timing.eventTimingsSeconds(event), {
-      startTime: Trace.Types.Timing.Seconds(0.1),
-      endTime: Trace.Types.Timing.Seconds(0.15),
-      duration: Trace.Types.Timing.Seconds(0.05),
-    });
-  });
-
   describe('timeStampForEventAdjustedByClosestNavigation', () => {
     it('can use the navigation ID to adjust the time correctly', async function() {
       const {parsedTrace} = await TraceLoader.traceEngine(this, 'web-dev.json.gz');

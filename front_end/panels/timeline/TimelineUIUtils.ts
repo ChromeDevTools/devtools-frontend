@@ -2066,9 +2066,9 @@ export class TimelineUIUtils {
       },
       parsedTrace: Trace.Handlers.Types.ParsedTrace, event: Trace.Types.Events.Event): boolean {
     const events = parsedTrace.Renderer?.allTraceEntries || [];
-    const {startTime, endTime} = Trace.Helpers.Timing.eventTimingsMilliSeconds(event);
+    const {startTime, endTime} = Trace.Helpers.Timing.eventTimingsMicroSeconds(event);
     function eventComparator(startTime: number, e: Trace.Types.Events.Event): number {
-      const {startTime: eventStartTime} = Trace.Helpers.Timing.eventTimingsMilliSeconds(e);
+      const {startTime: eventStartTime} = Trace.Helpers.Timing.eventTimingsMicroSeconds(e);
       return startTime - eventStartTime;
     }
 
@@ -2081,7 +2081,7 @@ export class TimelineUIUtils {
     if (endTime) {
       for (let i = index; i < events.length; i++) {
         const nextEvent = events[i];
-        const {startTime: nextEventStartTime} = Trace.Helpers.Timing.eventTimingsMilliSeconds(nextEvent);
+        const {startTime: nextEventStartTime} = Trace.Helpers.Timing.eventTimingsMicroSeconds(nextEvent);
         if (nextEventStartTime >= endTime) {
           break;
         }
@@ -2105,7 +2105,10 @@ export class TimelineUIUtils {
         for (const categoryName in total) {
           aggregatedTotal += total[categoryName];
         }
-        total['idle'] = Math.max(0, endTime - startTime - aggregatedTotal);
+
+        const deltaInMillis =
+            Trace.Helpers.Timing.microSecondsToMilliseconds((endTime - startTime) as Trace.Types.Timing.MicroSeconds);
+        total['idle'] = Math.max(0, deltaInMillis - aggregatedTotal);
       }
       return false;
     }

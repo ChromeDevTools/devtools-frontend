@@ -79,25 +79,16 @@ export interface EventTimingsData<
 
 export function eventTimingsMicroSeconds(event: Types.Events.Event): EventTimingsData<Types.Timing.MicroSeconds> {
   return {
-    startTime: event.ts,
-    endTime: Types.Timing.MicroSeconds(event.ts + (event.dur ?? Types.Timing.MicroSeconds(0))),
-    duration: Types.Timing.MicroSeconds(event.dur || 0),
+    startTime: event.ts as Types.Timing.MicroSeconds,
+    endTime: (event.ts + (event.dur ?? 0)) as Types.Timing.MicroSeconds,
+    duration: (event.dur || 0) as Types.Timing.MicroSeconds,
   };
 }
 export function eventTimingsMilliSeconds(event: Types.Events.Event): EventTimingsData<Types.Timing.MilliSeconds> {
-  const microTimes = eventTimingsMicroSeconds(event);
   return {
-    startTime: microSecondsToMilliseconds(microTimes.startTime),
-    endTime: microSecondsToMilliseconds(microTimes.endTime),
-    duration: microSecondsToMilliseconds(microTimes.duration),
-  };
-}
-export function eventTimingsSeconds(event: Types.Events.Event): EventTimingsData<Types.Timing.Seconds> {
-  const microTimes = eventTimingsMicroSeconds(event);
-  return {
-    startTime: microSecondsToSeconds(microTimes.startTime),
-    endTime: microSecondsToSeconds(microTimes.endTime),
-    duration: microSecondsToSeconds(microTimes.duration),
+    startTime: (event.ts / 1000) as Types.Timing.MilliSeconds,
+    endTime: (event.ts + (event.dur ?? 0)) / 1000 as Types.Timing.MilliSeconds,
+    duration: (event.dur || 0) / 1000 as Types.Timing.MilliSeconds,
   };
 }
 

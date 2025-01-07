@@ -400,9 +400,9 @@ declare global {
   }
 
   interface HTMLElementEventMap {
-    'memoryrequest': MemoryRequestEvent;
-    'addresschanged': AddressChangedEvent;
-    'settingschanged': SettingsChangedEvent;
-    'deletememoryhighlight': DeleteMemoryHighlightEvent;
+    memoryrequest: MemoryRequestEvent;
+    addresschanged: AddressChangedEvent;
+    settingschanged: SettingsChangedEvent;
+    deletememoryhighlight: DeleteMemoryHighlightEvent;
   }
 }

@@ -17,7 +17,7 @@ module.exports = {
     schema: []  // no options
   },
   create: function(context) {
-    const sourceCode = context.getSourceCode();
+    const sourceCode = context.sourceCode ?? context.getSourceCode();
 
     function checkImportAndReportError(comment) {
       const trimmed = comment.value.trim();

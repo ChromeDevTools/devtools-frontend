@@ -159,7 +159,7 @@ const MAX_CHILD_ELEMENTS_THRESHOLD = 300;
  * bottomCornerTaller: |  L   |_____
  *                     |______|__E__|
  */
-// eslint-disable-next-line @typescript-eslint/naming-convention
+
 export const LabelTypes = {
   topCorner: 'top-corner',
   aboveElement: 'above-element',

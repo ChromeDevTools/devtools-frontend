@@ -5,7 +5,10 @@
 
 const rule = require('../lib/check-test-definitions.js');
 const ruleTester = new (require('eslint').RuleTester)({
-  parserOptions: {ecmaVersion: 9, sourceType: 'module'},
+  languageOptions: {
+    ecmaVersion: 'latest',
+    sourceType: 'module',
+  },
 });
 
 ruleTester.run('check-test-definitions', rule, {
@@ -151,7 +154,10 @@ ruleTester.run('check-test-definitions', rule, {
       });
       `,
       filename: 'test/e2e/folder/file.ts',
-      errors: [{message: rule.meta.messages.missingBugId}, {message: rule.meta.messages.comment}],
+      errors: [
+        {message: rule.meta.messages.missingBugId},
+        {message: rule.meta.messages.comment},
+      ],
     },
     {
       code: `import {describe, it} from '../../shared/mocha-extensions.js';
@@ -161,7 +167,10 @@ ruleTester.run('check-test-definitions', rule, {
       });
       `,
       filename: 'test/e2e/folder/file.ts',
-      errors: [{message: rule.meta.messages.missingBugId}, {message: rule.meta.messages.comment}],
+      errors: [
+        {message: rule.meta.messages.missingBugId},
+        {message: rule.meta.messages.comment},
+      ],
     },
-  ]
+  ],
 });

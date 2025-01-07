@@ -4,7 +4,7 @@
 
 import * as ComponentHelpers from '../../../../../front_end/ui/components/helpers/helpers.js';
 import * as RecorderComponents from '../../../../panels/recorder/components/components.js';
-import * as FrontendHelpers from '../../../../testing/EnvironmentHelpers.js';  // eslint-disable-line rulesdir/es-modules-import
+import * as FrontendHelpers from '../../../../testing/EnvironmentHelpers.js';
 
 await ComponentHelpers.ComponentServerSetup.setup();
 await FrontendHelpers.initializeGlobalVars();

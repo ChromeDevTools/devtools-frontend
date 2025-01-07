@@ -8,12 +8,13 @@ function isUIStringsIdentifier(node) {
   return node.type === 'Identifier' && node.name === 'UIStrings';
 }
 
-function isModuleScope(context) {
-  return context.getScope().type === 'module';
+function isModuleScope(context, node) {
+  const sourceCode = context.sourceCode ?? context.getSourceCode();
+  return ((sourceCode.getScope ? sourceCode.getScope(node) : context.getScope()).type === 'module');
 }
 
 function isUIStringsVariableDeclarator(context, variableDeclarator) {
-  if (!isModuleScope(context)) {
+  if (!isModuleScope(context, variableDeclarator)) {
     return false;
   }
 
@@ -26,3 +27,4 @@ function isUIStringsVariableDeclarator(context, variableDeclarator) {
 
 exports.isUIStringsIdentifier = isUIStringsIdentifier;
 exports.isUIStringsVariableDeclarator = isUIStringsVariableDeclarator;
+exports.isModuleScope = isModuleScope;

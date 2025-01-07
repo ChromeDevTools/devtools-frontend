@@ -20,6 +20,8 @@ module.exports = {
     meta: {
         type: "problem",
 
+        defaultOptions: [{ checkLoops: "allExceptWhileTrue" }],
+
         docs: {
             description: "Disallow constant expressions in conditions",
             recommended: true,
@@ -31,8 +33,7 @@ module.exports = {
                 type: "object",
                 properties: {
                     checkLoops: {
-                        type: "boolean",
-                        default: true
+                        enum: ["all", "allExceptWhileTrue", "none", true, false]
                     }
                 },
                 additionalProperties: false
@@ -45,10 +46,15 @@ module.exports = {
     },
 
     create(context) {
-        const options = context.options[0] || {},
-            checkLoops = options.checkLoops !== false,
-            loopSetStack = [];
+        const loopSetStack = [];
         const sourceCode = context.sourceCode;
+        let [{ checkLoops }] = context.options;
+
+        if (checkLoops === true) {
+            checkLoops = "all";
+        } else if (checkLoops === false) {
+            checkLoops = "none";
+        }
 
         let loopsInCurrentScope = new Set();
 
@@ -120,7 +126,7 @@ module.exports = {
          * @private
          */
         function checkLoop(node) {
-            if (checkLoops) {
+            if (checkLoops === "all" || checkLoops === "allExceptWhileTrue") {
                 trackConstantConditionLoop(node);
             }
         }
@@ -132,7 +138,13 @@ module.exports = {
         return {
             ConditionalExpression: reportIfConstant,
             IfStatement: reportIfConstant,
-            WhileStatement: checkLoop,
+            WhileStatement(node) {
+                if (node.test.type === "Literal" && node.test.value === true && checkLoops === "allExceptWhileTrue") {
+                    return;
+                }
+
+                checkLoop(node);
+            },
             "WhileStatement:exit": checkConstantConditionLoopInSet,
             DoWhileStatement: checkLoop,
             "DoWhileStatement:exit": checkConstantConditionLoopInSet,

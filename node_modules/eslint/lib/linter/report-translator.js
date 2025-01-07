@@ -9,9 +9,9 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-const assert = require("assert");
-const ruleFixer = require("./rule-fixer");
-const interpolate = require("./interpolate");
+const assert = require("../shared/assert");
+const { RuleFixer } = require("./rule-fixer");
+const { interpolate } = require("./interpolate");
 
 //------------------------------------------------------------------------------
 // Typedefs
@@ -91,13 +91,10 @@ function assertValidNodeInfo(descriptor) {
  * from the `node` of the original descriptor, or infers the `start` from the `loc` of the original descriptor.
  */
 function normalizeReportLoc(descriptor) {
-    if (descriptor.loc) {
-        if (descriptor.loc.start) {
-            return descriptor.loc;
-        }
-        return { start: descriptor.loc, end: null };
+    if (descriptor.loc.start) {
+        return descriptor.loc;
     }
-    return descriptor.node.loc;
+    return { start: descriptor.loc, end: null };
 }
 
 /**
@@ -160,7 +157,7 @@ function mergeFixes(fixes, sourceCode) {
 
     const originalText = sourceCode.text;
     const start = fixes[0].range[0];
-    const end = fixes[fixes.length - 1].range[1];
+    const end = fixes.at(-1).range[1];
     let text = "";
     let lastPos = Number.MIN_SAFE_INTEGER;
 
@@ -189,6 +186,8 @@ function normalizeFixes(descriptor, sourceCode) {
     if (typeof descriptor.fix !== "function") {
         return null;
     }
+
+    const ruleFixer = new RuleFixer({ sourceCode });
 
     // @type {null | Fix | Fix[] | IterableIterator<Fix>}
     const fix = descriptor.fix(ruleFixer);
@@ -240,15 +239,22 @@ function mapSuggestions(descriptor, sourceCode, messages) {
  * @param {{start: SourceLocation, end: (SourceLocation|null)}} options.loc Start and end location
  * @param {{text: string, range: (number[]|null)}} options.fix The fix object
  * @param {Array<{text: string, range: (number[]|null)}>} options.suggestions The array of suggestions objects
+ * @param {Language} [options.language] The language to use to adjust line and column offsets.
  * @returns {LintMessage} Information about the report
  */
 function createProblem(options) {
+    const { language } = options;
+
+    // calculate offsets based on the language in use
+    const columnOffset = language.columnStart === 1 ? 0 : 1;
+    const lineOffset = language.lineStart === 1 ? 0 : 1;
+
     const problem = {
         ruleId: options.ruleId,
         severity: options.severity,
         message: options.message,
-        line: options.loc.start.line,
-        column: options.loc.start.column + 1,
+        line: options.loc.start.line + lineOffset,
+        column: options.loc.start.column + columnOffset,
         nodeType: options.node && options.node.type || null
     };
 
@@ -261,8 +267,8 @@ function createProblem(options) {
     }
 
     if (options.loc.end) {
-        problem.endLine = options.loc.end.line;
-        problem.endColumn = options.loc.end.column + 1;
+        problem.endLine = options.loc.end.line + lineOffset;
+        problem.endColumn = options.loc.end.column + columnOffset;
     }
 
     if (options.fix) {
@@ -313,8 +319,7 @@ function validateSuggestions(suggest, messages) {
 /**
  * Returns a function that converts the arguments of a `context.report` call from a rule into a reported
  * problem for the Node.js API.
- * @param {{ruleId: string, severity: number, sourceCode: SourceCode, messageIds: Object, disableFixes: boolean}} metadata Metadata for the reported problem
- * @param {SourceCode} sourceCode The `SourceCode` instance for the text being linted
+ * @param {{ruleId: string, severity: number, sourceCode: SourceCode, messageIds: Object, disableFixes: boolean, language:Language}} metadata Metadata for the reported problem
  * @returns {function(...args): LintMessage} Function that returns information about the report
  */
 
@@ -329,6 +334,7 @@ module.exports = function createReportTranslator(metadata) {
     return (...args) => {
         const descriptor = normalizeMultiArgReportCall(...args);
         const messages = metadata.messageIds;
+        const { sourceCode } = metadata;
 
         assertValidNodeInfo(descriptor);
 
@@ -343,7 +349,7 @@ module.exports = function createReportTranslator(metadata) {
             if (descriptor.message) {
                 throw new TypeError("context.report() called with a message and a messageId. Please only pass one.");
             }
-            if (!messages || !Object.prototype.hasOwnProperty.call(messages, id)) {
+            if (!messages || !Object.hasOwn(messages, id)) {
                 throw new TypeError(`context.report() called with a messageId of '${id}' which is not present in the 'messages' config: ${JSON.stringify(messages, null, 2)}`);
             }
             computedMessage = messages[id];
@@ -361,9 +367,10 @@ module.exports = function createReportTranslator(metadata) {
             node: descriptor.node,
             message: interpolate(computedMessage, descriptor.data),
             messageId: descriptor.messageId,
-            loc: normalizeReportLoc(descriptor),
-            fix: metadata.disableFixes ? null : normalizeFixes(descriptor, metadata.sourceCode),
-            suggestions: metadata.disableFixes ? [] : mapSuggestions(descriptor, metadata.sourceCode, messages)
+            loc: descriptor.loc ? normalizeReportLoc(descriptor) : sourceCode.getLoc(descriptor.node),
+            fix: metadata.disableFixes ? null : normalizeFixes(descriptor, sourceCode),
+            suggestions: metadata.disableFixes ? [] : mapSuggestions(descriptor, sourceCode, messages),
+            language: metadata.language
         });
     };
 };

@@ -314,7 +314,7 @@ export class ResourceWebSocketFrameView extends UI.Widget.VBox {
     if (text) {
       try {
         this.filterRegex = new RegExp(text, 'i');
-      } catch (e: unknown) {
+      } catch {
         this.filterRegex = new RegExp(Platform.StringUtilities.escapeForRegExp(text), 'i');
       }
     } else {

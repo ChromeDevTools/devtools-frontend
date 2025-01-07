@@ -292,7 +292,7 @@ export class ResponseHeaderSection extends ResponseHeaderSectionBase {
       for (const header of this.#headerEditors) {
         header.valueEditable = this.#isEditingAllowed;
       }
-    } catch (error) {
+    } catch {
       console.error(
           'Failed to parse', this.#uiSourceCode?.url() || 'source code file', 'for locally overriding headers.');
       this.#resetEditorState();

@@ -299,7 +299,7 @@ export const createSearchRegex = function(
   if (isRegex) {
     try {
       regexObject = new RegExp(query, regexFlags);
-    } catch (e) {
+    } catch {
       // Silent catch.
     }
   }

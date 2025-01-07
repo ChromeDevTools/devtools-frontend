@@ -225,7 +225,7 @@ function canBeRemoteFilePath(url: string): boolean {
   try {
     const urlObject = new URL(url);
     return urlObject.protocol === 'file:' && urlObject.host !== '';
-  } catch (exception) {
+  } catch {
     return false;
   }
 }

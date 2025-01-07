@@ -1710,7 +1710,7 @@ export interface RasterTask extends Complete {
       layerId: number,
       sourceFrameNumber: number,
       tileId: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
+
         id_ref: string,
       },
       tileResolution: string,
@@ -1754,7 +1754,7 @@ export function isInvalidationTracking(event: Event): event is InvalidationTrack
 export interface DrawLazyPixelRef extends Instant {
   name: Name.DRAW_LAZY_PIXEL_REF;
   args?: Args&{
-    // eslint-disable-next-line @typescript-eslint/naming-convention
+
     LazyPixelRef: number,
   };
 }
@@ -1765,7 +1765,7 @@ export function isDrawLazyPixelRef(event: Event): event is DrawLazyPixelRef {
 export interface DecodeLazyPixelRef extends Instant {
   name: Name.DECODE_LAZY_PIXEL_REF;
   args?: Args&{
-    // eslint-disable-next-line @typescript-eslint/naming-convention
+
     LazyPixelRef: number,
   };
 }
@@ -1785,15 +1785,15 @@ export function isDecodeImage(event: Event): event is DecodeImage {
 
 export interface SelectorTiming {
   'elapsed (us)': number;
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  'fast_reject_count': number;
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  'match_attempts': number;
-  'selector': string;
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  'style_sheet_id': string;
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  'match_count': number;
+
+  fast_reject_count: number;
+
+  match_attempts: number;
+  selector: string;
+
+  style_sheet_id: string;
+
+  match_count: number;
 }
 
 export enum SelectorTimingsKey {
@@ -1807,14 +1807,13 @@ export enum SelectorTimingsKey {
 }
 
 export interface SelectorStats {
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   selector_timings: SelectorTiming[];
 }
 
 export interface SelectorStats extends Complete {
   name: Name.SELECTOR_STATS;
   args: Args&{
-    // eslint-disable-next-line @typescript-eslint/naming-convention
+
     selector_stats?: SelectorStats,
   };
 }
@@ -1896,7 +1895,7 @@ class ProfileIdTag {
   readonly #profileIdTag: (symbol|undefined);
 }
 export type ProfileID = string&ProfileIdTag;
-// eslint-disable-next-line @typescript-eslint/naming-convention
+
 export function ProfileID(value: string): ProfileID {
   return value as ProfileID;
 }
@@ -1905,7 +1904,7 @@ class CallFrameIdTag {
   readonly #callFrameIdTag: (symbol|undefined);
 }
 export type CallFrameID = number&CallFrameIdTag;
-// eslint-disable-next-line @typescript-eslint/naming-convention
+
 export function CallFrameID(value: number): CallFrameID {
   return value as CallFrameID;
 }
@@ -1914,7 +1913,7 @@ class SampleIndexTag {
   readonly #sampleIndexTag: (symbol|undefined);
 }
 export type SampleIndex = number&SampleIndexTag;
-// eslint-disable-next-line @typescript-eslint/naming-convention
+
 export function SampleIndex(value: number): SampleIndex {
   return value as SampleIndex;
 }
@@ -1923,7 +1922,7 @@ class ProcessIdTag {
   readonly #processIdTag: (symbol|undefined);
 }
 export type ProcessID = number&ProcessIdTag;
-// eslint-disable-next-line @typescript-eslint/naming-convention
+
 export function ProcessID(value: number): ProcessID {
   return value as ProcessID;
 }
@@ -1932,7 +1931,7 @@ class ThreadIdTag {
   readonly #threadIdTag: (symbol|undefined);
 }
 export type ThreadID = number&ThreadIdTag;
-// eslint-disable-next-line @typescript-eslint/naming-convention
+
 export function ThreadID(value: number): ThreadID {
   return value as ThreadID;
 }
@@ -1941,7 +1940,7 @@ class WorkerIdTag {
   readonly #workerIdTag: (symbol|undefined);
 }
 export type WorkerId = string&WorkerIdTag;
-// eslint-disable-next-line @typescript-eslint/naming-convention
+
 export function WorkerId(value: string): WorkerId {
   return value as WorkerId;
 }
@@ -2344,7 +2343,7 @@ export interface DisplayItemListSnapshot extends Event {
     snapshot: {
       skp64: string,
       params?: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
+
         layer_rect: [number, number, number, number],
       },
     },

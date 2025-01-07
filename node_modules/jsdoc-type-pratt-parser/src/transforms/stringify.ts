@@ -163,7 +163,9 @@ export function stringifyRules (): TransformRules<string> {
 
     JsdocTypeIndexSignature: (result, transform) => `[${result.key}: ${transform(result.right)}]`,
 
-    JsdocTypeMappedType: (result, transform) => `[${result.key} in ${transform(result.right)}]`
+    JsdocTypeMappedType: (result, transform) => `[${result.key} in ${transform(result.right)}]`,
+
+    JsdocTypeAsserts: (result, transform) => `asserts ${transform(result.left)} is ${transform(result.right)}`
   }
 }
 

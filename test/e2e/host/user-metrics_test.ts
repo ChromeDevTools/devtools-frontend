@@ -55,7 +55,6 @@ interface PerformanceHistogramEvent {
 }
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface Window {
     /* eslint-disable @typescript-eslint/naming-convention */
     Host: {

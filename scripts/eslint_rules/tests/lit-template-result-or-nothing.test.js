@@ -4,9 +4,13 @@
 'use strict';
 
 const rule = require('../lib/lit-template-result-or-nothing.js');
+const tsParser = require('@typescript-eslint/parser');
 const ruleTester = new (require('eslint').RuleTester)({
-  parserOptions: {ecmaVersion: 9, sourceType: 'module'},
-  parser: require.resolve('@typescript-eslint/parser'),
+  languageOptions: {
+    ecmaVersion: 'latest',
+    sourceType: 'module',
+    parser: tsParser,
+  },
 });
 
 ruleTester.run('lit-template-result-or-nothing', rule, {
@@ -142,5 +146,5 @@ ruleTester.run('lit-template-result-or-nothing', rule, {
         someThing: LitHtml.LitTemplate;
       }`,
     },
-  ]
+  ],
 });

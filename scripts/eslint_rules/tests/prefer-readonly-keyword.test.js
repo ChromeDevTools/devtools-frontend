@@ -4,9 +4,13 @@
 'use strict';
 
 const rule = require('../lib/prefer-readonly-keyword.js');
+const tsParser = require('@typescript-eslint/parser');
 const ruleTester = new (require('eslint').RuleTester)({
-  parserOptions: {ecmaVersion: 9, sourceType: 'module'},
-  parser: require.resolve('@typescript-eslint/parser'),
+  languageOptions: {
+    ecmaVersion: 'latest',
+    sourceType: 'module',
+    parser: tsParser,
+  },
 });
 
 ruleTester.run('prefer-readonly-keyword', rule, {
@@ -34,7 +38,7 @@ ruleTester.run('prefer-readonly-keyword', rule, {
         {
           messageId: 'useReadonlyKeyword',
         },
-      ]
+      ],
     },
     {
       code: 'function x(foo: ReadonlyArray<string>) {}',
@@ -44,7 +48,7 @@ ruleTester.run('prefer-readonly-keyword', rule, {
         {
           messageId: 'useReadonlyKeyword',
         },
-      ]
+      ],
     },
     {
       code: 'function x(foo: readonly string[]): ReadonlyArray<string> {}',
@@ -54,7 +58,7 @@ ruleTester.run('prefer-readonly-keyword', rule, {
         {
           messageId: 'useReadonlyKeyword',
         },
-      ]
+      ],
     },
     {
       code: 'const x: ReadonlyArray<string> = []',
@@ -64,7 +68,7 @@ ruleTester.run('prefer-readonly-keyword', rule, {
         {
           messageId: 'useReadonlyKeyword',
         },
-      ]
+      ],
     },
-  ]
+  ],
 });

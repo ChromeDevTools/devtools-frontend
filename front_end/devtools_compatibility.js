@@ -1,7 +1,7 @@
 // Copyright 2014 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable indent */
+
 (function(window) {
 
 // DevToolsAPI ----------------------------------------------------------------
@@ -1534,7 +1534,7 @@ function installBackwardsCompatibility() {
     Element.prototype.createShadowRoot = function() {
       try {
         return this.attachShadow({mode: 'open'});
-      } catch (e) {
+      } catch {
         // some elements we use to add shadow roots can no
         // longer have shadow roots.
         const fakeShadowHost = document.createElement('span');
@@ -1685,7 +1685,7 @@ function getRemoteMajorVersion() {
     }
     const majorVersion = parseInt(remoteVersion.split('.')[0], 10);
     return majorVersion;
-  } catch (e) {
+  } catch {
     return null;
   }
 }

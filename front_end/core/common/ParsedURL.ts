@@ -67,7 +67,7 @@ export function normalizePath(path: string): string {
 export function schemeIs(url: Platform.DevToolsPath.UrlString, scheme: string): boolean {
   try {
     return (new URL(url)).protocol === scheme;
-  } catch (e) {
+  } catch {
     return false;
   }
 }

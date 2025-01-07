@@ -5,7 +5,10 @@
 
 const rule = require('../lib/no-assert-strict-equal-for-arrays-and-objects.js');
 const ruleTester = new (require('eslint').RuleTester)({
-  parserOptions: {ecmaVersion: 9, sourceType: 'module'},
+  languageOptions: {
+    ecmaVersion: 'latest',
+    sourceType: 'module',
+  },
 });
 
 ruleTester.run('no-assert-strict-equal-for-arrays-and-objects', rule, {
@@ -85,5 +88,5 @@ ruleTester.run('no-assert-strict-equal-for-arrays-and-objects', rule, {
         },
       ],
     },
-  ]
+  ],
 });

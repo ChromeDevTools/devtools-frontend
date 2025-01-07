@@ -4,9 +4,13 @@
 'use strict';
 
 const rule = require('../lib/no-self-closing-custom-element-tagnames.js');
+const tsParser = require('@typescript-eslint/parser');
 const ruleTester = new (require('eslint').RuleTester)({
-  parserOptions: {ecmaVersion: 9, sourceType: 'module'},
-  parser: require.resolve('@typescript-eslint/parser'),
+  languageOptions: {
+    ecmaVersion: 'latest',
+    sourceType: 'module',
+    parser: tsParser,
+  },
 });
 
 const EXPECTED_ERROR_MESSAGE = 'Custom elements should not be self closing.';
@@ -43,22 +47,22 @@ ruleTester.run('no-self-closing-custom-element-tagnames', rule, {
     {
       code: 'LitHtml.html`<${DataGrid.litTagName} />`',
       filename: 'front_end/components/test.ts',
-      errors: [{message: EXPECTED_ERROR_MESSAGE}]
+      errors: [{message: EXPECTED_ERROR_MESSAGE}],
     },
     {
       code: 'LitHtml.html`<p><${DataGrid.litTagName} /></p>`',
       filename: 'front_end/components/test.ts',
-      errors: [{message: EXPECTED_ERROR_MESSAGE}]
+      errors: [{message: EXPECTED_ERROR_MESSAGE}],
     },
     {
       code: 'LitHtml.html`<${DataGrid1.litTagName}><${DataGrid2.litTagName} /></${DataGrid1.litTagName}>`',
       filename: 'front_end/components/test.ts',
-      errors: [{message: EXPECTED_ERROR_MESSAGE}]
+      errors: [{message: EXPECTED_ERROR_MESSAGE}],
     },
     {
       code: 'LitHtml.html`<${DataGrid.litTagName} .data=${{test: "Hello World"}}/>`',
       filename: 'front_end/components/test.ts',
-      errors: [{message: EXPECTED_ERROR_MESSAGE}]
+      errors: [{message: EXPECTED_ERROR_MESSAGE}],
     },
-  ]
+  ],
 });

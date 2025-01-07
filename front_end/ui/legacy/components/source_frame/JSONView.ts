@@ -106,7 +106,7 @@ export class JSONView extends UI.Widget.VBox implements UI.SearchableView.Search
         return Promise.resolve(null);
       }
       returnObj.data = json;
-    } catch (e) {
+    } catch {
       returnObj = null;
     }
 

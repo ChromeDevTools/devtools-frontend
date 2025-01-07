@@ -5,7 +5,10 @@
 
 const rule = require('../lib/prefer-assert-length-of.js');
 const ruleTester = new (require('eslint').RuleTester)({
-  parserOptions: {ecmaVersion: 9, sourceType: 'module'},
+  languageOptions: {
+    ecmaVersion: 'latest',
+    sourceType: 'module',
+  },
 });
 
 ruleTester.run('prefer-assert-length-of', rule, {

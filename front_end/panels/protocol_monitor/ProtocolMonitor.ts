@@ -803,7 +803,7 @@ export function parseCommandInput(input: string): {command: string, parameters: 
   let json = null;
   try {
     json = JSON.parse(input);
-  } catch (err) {
+  } catch {
   }
 
   const command = json ? json.command || json.method || json.cmd || '' : input;

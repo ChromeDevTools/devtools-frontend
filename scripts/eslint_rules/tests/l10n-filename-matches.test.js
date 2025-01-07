@@ -7,9 +7,13 @@
 const path = require('path');
 
 const rule = require('../lib/l10n-filename-matches.js');
+const tsParser = require('@typescript-eslint/parser');
 const ruleTester = new (require('eslint').RuleTester)({
-  parserOptions: {ecmaVersion: 9, sourceType: 'module'},
-  parser: require.resolve('@typescript-eslint/parser'),
+  languageOptions: {
+    ecmaVersion: 'latest',
+    sourceType: 'module',
+    parser: tsParser,
+  },
 });
 
 ruleTester.run('l10n-filename-matches', rule, {
@@ -17,48 +21,125 @@ ruleTester.run('l10n-filename-matches', rule, {
     {
       code: 'const str_ = i18n.i18n.registerUIStrings(\'components/test.ts\', UIStrings);',
       filename: 'front_end/components/test.ts',
-      options: [{rootFrontendDirectory: path.join(__dirname, '..', '..', '..', 'front_end')}]
+      options: [
+        {
+          rootFrontendDirectory: path.join(
+              __dirname,
+              '..',
+              '..',
+              '..',
+              'front_end',
+              ),
+        },
+      ],
     },
     {
       code: 'const str_ = i18n.i18n.registerUIStrings(\'components/ModuleUIStrings.js\', UIStrings);',
       filename: 'front_end/components/test.ts',
-      options: [{rootFrontendDirectory: path.join(__dirname, '..', '..', '..', 'front_end')}]
+      options: [
+        {
+          rootFrontendDirectory: path.join(
+              __dirname,
+              '..',
+              '..',
+              '..',
+              'front_end',
+              ),
+        },
+      ],
     },
     {
       code: 'const str_ = i18n.i18n.registerUIStrings(\'components/ModuleUIStrings.ts\', UIStrings);',
       filename: 'front_end/components/test.ts',
-      options: [{rootFrontendDirectory: path.join(__dirname, '..', '..', '..', 'front_end')}]
+      options: [
+        {
+          rootFrontendDirectory: path.join(
+              __dirname,
+              '..',
+              '..',
+              '..',
+              'front_end',
+              ),
+        },
+      ],
     },
     {
       code: 'const str_ = i18n.i18n.registerUIStrings(\'ModuleUIStrings.ts\', UIStrings);',
       filename: 'front_end/components/test.ts',
-      options: [{rootFrontendDirectory: path.join(__dirname, '..', '..', '..', 'front_end', 'components')}]
+      options: [
+        {
+          rootFrontendDirectory: path.join(
+              __dirname,
+              '..',
+              '..',
+              '..',
+              'front_end',
+              'components',
+              ),
+        },
+      ],
     },
     {
       code: 'const str_ = i18n.i18n.registerUIStrings(\'test.ts\', UIStrings);',
       filename: 'front_end/components/test.ts',
-      options: [{rootFrontendDirectory: path.join(__dirname, '..', '..', '..', 'front_end', 'components')}]
+      options: [
+        {
+          rootFrontendDirectory: path.join(
+              __dirname,
+              '..',
+              '..',
+              '..',
+              'front_end',
+              'components',
+              ),
+        },
+      ],
     },
   ],
   invalid: [
     {
       code: 'const str_ = i18n.i18n.registerUIStrings(\'components/foo.ts\', UIStrings);',
       filename: 'front_end/components/test.ts',
-      options: [{rootFrontendDirectory: path.join(__dirname, '..', '..', '..', 'front_end')}],
-      errors: [{
-        message:
-            'First argument to \'registerUIStrings\' call must be \'components/test.ts\' or the ModuleUIStrings.(js|ts)'
-      }],
+      options: [
+        {
+          rootFrontendDirectory: path.join(
+              __dirname,
+              '..',
+              '..',
+              '..',
+              'front_end',
+              ),
+        },
+      ],
+      errors: [
+        {
+          message:
+              'First argument to \'registerUIStrings\' call must be \'components/test.ts\' or the ModuleUIStrings.(js|ts)',
+        },
+      ],
       output: 'const str_ = i18n.i18n.registerUIStrings(\'components/test.ts\', UIStrings);',
     },
     {
       code: 'const str_ = i18n.i18n.registerUIStrings(\'components/test.ts\', UIStrings);',
       filename: 'front_end/components/test.ts',
       errors: [
-        {message: 'First argument to \'registerUIStrings\' call must be \'test.ts\' or the ModuleUIStrings.(js|ts)'}
+        {
+          message: 'First argument to \'registerUIStrings\' call must be \'test.ts\' or the ModuleUIStrings.(js|ts)',
+        },
       ],
       output: 'const str_ = i18n.i18n.registerUIStrings(\'test.ts\', UIStrings);',
-      options: [{rootFrontendDirectory: path.join(__dirname, '..', '..', '..', 'front_end', 'components')}]
+      options: [
+        {
+          rootFrontendDirectory: path.join(
+              __dirname,
+              '..',
+              '..',
+              '..',
+              'front_end',
+              'components',
+              ),
+        },
+      ],
     },
-  ]
+  ],
 });

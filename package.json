@@ -45,6 +45,7 @@
     "@rollup/plugin-node-resolve": "15.3.0",
     "@rollup/plugin-terser": "0.4.4",
     "@rollup/wasm-node": "4.24.3",
+    "@stylistic/eslint-plugin": "2.12.1",
     "@types/chai": "4.3.15",
     "@types/codemirror": "5.60.7",
     "@types/emscripten": "1.39.4",
@@ -58,8 +59,8 @@
     "@types/sinon": "17.0.3",
     "@types/webidl2": "23.13.6",
     "@types/wicg-task-scheduling": "2024.1.0",
-    "@typescript-eslint/eslint-plugin": "7.18.0",
-    "@typescript-eslint/parser": "7.18.0",
+    "@typescript-eslint/eslint-plugin": "8.18.2",
+    "@typescript-eslint/parser": "8.18.2",
     "@web/rollup-plugin-import-meta-assets": "2.2.1",
     "chai": "4.3.4",
     "chokidar": "3.5.2",
@@ -67,10 +68,9 @@
     "cssnano-preset-lite": "2.1.3",
     "esbuild": "0.24.0",
     "escodegen": "2.0.0",
-    "eslint": "8.57.1",
+    "eslint": "9.17.0",
     "eslint-plugin-import": "2.31.0",
-    "eslint-plugin-jsdoc": "46.10.1",
-    "eslint-plugin-lit-a11y": "2.1.0",
+    "eslint-plugin-jsdoc": "50.6.1",
     "eslint-plugin-mocha": "10.5.0",
     "eslint-plugin-rulesdir": "0.2.2",
     "glob": "7.1.7",
@@ -104,6 +104,7 @@
     "yargs": "17.3.1"
   },
   "overrides": {
+    "@typescript-eslint/utils": "8.19.0",
     "ws": "$ws"
   }
 }

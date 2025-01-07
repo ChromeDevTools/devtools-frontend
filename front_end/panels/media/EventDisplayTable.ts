@@ -143,7 +143,7 @@ export class PlayerEventsView extends UI.Widget.VBox {
       if (isAtBottom) {
         scroll.scrollTop = scroll.scrollHeight;
       }
-    } catch (e) {
+    } catch {
       // If this is a legacy message event, ignore it for now until they
       // are handled.
     }

@@ -621,7 +621,7 @@ export class ChatView extends HTMLElement {
         // to rendering the text as plain text instead of markdown.
         this.#markdownRenderer.renderToken(token);
       }
-    } catch (err) {
+    } catch {
       // The tokens were not parsed correctly or
       // one of the tokens are not supported, so we
       // continue to render this as text.

@@ -12,7 +12,6 @@ import {
   waitFor,
   waitForFunction,
 } from '../../shared/helper.js';
-
 import {
   ensureResourceSectionIsExpanded,
   expandIssue,
@@ -38,11 +37,11 @@ describe('IssueView cache', () => {
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({geeting: 'hello'}),
           });
-        } catch (e) {
+        } catch {
         }
         try {
           await fetch(url, {credentials: 'include'});
-        } catch (e) {
+        } catch {
         }
       });
     }

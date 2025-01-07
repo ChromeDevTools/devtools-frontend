@@ -63,7 +63,7 @@ export class XMLView extends UI.Widget.Widget implements UI.SearchableView.Searc
         case 'text/xml':
           parsedXML = (new DOMParser()).parseFromString(text, mimeType);
       }
-    } catch (e) {
+    } catch {
       return null;
     }
     if (!parsedXML || parsedXML.body) {

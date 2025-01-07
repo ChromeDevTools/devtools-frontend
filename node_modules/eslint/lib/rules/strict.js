@@ -68,6 +68,8 @@ module.exports = {
     meta: {
         type: "suggestion",
 
+        defaultOptions: ["safe"],
+
         docs: {
             description: "Require or disallow strict mode directives",
             recommended: false,
@@ -96,11 +98,10 @@ module.exports = {
     },
 
     create(context) {
-
         const ecmaFeatures = context.parserOptions.ecmaFeatures || {},
             scopes = [],
             classScopes = [];
-        let mode = context.options[0] || "safe";
+        let [mode] = context.options;
 
         if (ecmaFeatures.impliedStrict) {
             mode = "implied";
@@ -173,7 +174,7 @@ module.exports = {
         function enterFunctionInFunctionMode(node, useStrictDirectives) {
             const isInClass = classScopes.length > 0,
                 isParentGlobal = scopes.length === 0 && classScopes.length === 0,
-                isParentStrict = scopes.length > 0 && scopes[scopes.length - 1],
+                isParentStrict = scopes.length > 0 && scopes.at(-1),
                 isStrict = useStrictDirectives.length > 0;
 
             if (isStrict) {

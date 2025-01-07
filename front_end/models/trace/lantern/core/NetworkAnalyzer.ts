@@ -37,7 +37,7 @@ class UrlUtils {
       urlb.hash = '';
 
       return urla.href === urlb.href;
-    } catch (e) {
+    } catch {
       return false;
     }
   }
@@ -408,7 +408,6 @@ class NetworkAnalyzer {
     for (const [origin, originRequests] of groupedByOrigin.entries()) {
       const originEstimates: number[] = [];
 
-      // eslint-disable-next-line no-inner-declarations
       function collectEstimates(estimator: (e: RequestInfo) => number[] | number | undefined, multiplier = 1): void {
         for (const request of originRequests) {
           const timing = request.timing;

@@ -56,7 +56,6 @@ const prepareElementsTab = async () => {
   await expandSelectedNodeRecursively();
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const deletePropertyByBackspace = async (selector: string, root?: puppeteer.ElementHandle<Element>) => {
   const {frontend} = getBrowserAndPages();
   await click(selector, {root});

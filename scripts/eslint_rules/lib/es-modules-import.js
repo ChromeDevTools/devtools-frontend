@@ -130,7 +130,8 @@ module.exports = {
     schema: []  // no options
   },
   create: function(context) {
-    const importingFileName = path.resolve(context.getFilename());
+    const filename = context.filename ?? context.getFilename();
+    const importingFileName = path.resolve(filename);
 
     return {
       ExportNamedDeclaration(node) {

@@ -10,7 +10,6 @@
 //------------------------------------------------------------------------------
 
 const astUtils = require("./utils/ast-utils");
-const globals = require("globals");
 
 //------------------------------------------------------------------------------
 // Rule Definition
@@ -20,6 +19,8 @@ const globals = require("globals");
 module.exports = {
     meta: {
         type: "suggestion",
+
+        defaultOptions: [{ exceptions: [] }],
 
         docs: {
             description: "Disallow extending native types",
@@ -49,12 +50,10 @@ module.exports = {
     },
 
     create(context) {
-
-        const config = context.options[0] || {};
         const sourceCode = context.sourceCode;
-        const exceptions = new Set(config.exceptions || []);
+        const exceptions = new Set(context.options[0].exceptions);
         const modifiedBuiltins = new Set(
-            Object.keys(globals.builtin)
+            Object.keys(astUtils.ECMASCRIPT_GLOBALS)
                 .filter(builtin => builtin[0].toUpperCase() === builtin[0])
                 .filter(builtin => !exceptions.has(builtin))
         );

@@ -497,7 +497,7 @@ export class IDBDataView extends UI.View.SimpleView {
     let result;
     try {
       result = JSON.parse(keyString);
-    } catch (e) {
+    } catch {
       result = keyString;
     }
     return result;

@@ -948,7 +948,7 @@ export class LocalJSONObject extends RemoteObject {
     let wasThrown = false;
     try {
       result = functionDeclaration.apply(target, rawArgs);
-    } catch (e) {
+    } catch {
       wasThrown = true;
     }
 
@@ -966,7 +966,7 @@ export class LocalJSONObject extends RemoteObject {
     let result;
     try {
       result = functionDeclaration.apply(target, rawArgs);
-    } catch (e) {
+    } catch {
       result = null;
     }
 

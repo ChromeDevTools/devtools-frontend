@@ -30,11 +30,13 @@ module.exports = {
     schema: []  // no options
   },
   create: function(context) {
+    const filename = context.filename ?? context.getFilename();
+    const sourceCode = context.sourceCode ?? context.getSourceCode();
     const declaredUIStringsKeys = new Map();
     const usedUIStringsKeys = new Set();
 
     function removeProperty(fixer, property) {
-      const source = context.getSourceCode();
+      const source = sourceCode;
 
       // For simplicity, we remove whole lines. This assumes that the UIStrings has
       // some standard formatting. Otherwise we would have to fiddle a lot
@@ -56,7 +58,7 @@ module.exports = {
 
     return {
       VariableDeclarator(variableDeclarator) {
-        if (MODULE_UI_STRINGS_FILENAME_REGEX.test(context.getFilename())) {
+        if (MODULE_UI_STRINGS_FILENAME_REGEX.test(filename)) {
           return;
         }
 

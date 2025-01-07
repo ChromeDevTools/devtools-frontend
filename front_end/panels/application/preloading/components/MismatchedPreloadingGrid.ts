@@ -157,8 +157,7 @@ export class MismatchedPreloadingGrid extends LegacyWrapper.LegacyWrapper.Wrappa
 
   #buildReportRows(): DataGrid.DataGridUtils.Row[] {
     function urlRenderer(url: string, pageURL: string): LitHtml.TemplateResult {
-      function span(
-          additionalProps: {'color'?: string, 'text-decoration'?: string}, s: string): LitHtml.TemplateResult {
+      function span(additionalProps: {color?: string, 'text-decoration'?: string}, s: string): LitHtml.TemplateResult {
         // Don't insert spaces to prevent spaces for inline blocks.
         // clang-format off
         return html`<span style=${LitHtml.Directives.styleMap(additionalProps)}>${s}</span>`;

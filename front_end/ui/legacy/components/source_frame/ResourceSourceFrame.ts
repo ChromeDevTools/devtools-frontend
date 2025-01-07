@@ -56,12 +56,12 @@ export class ResourceSourceFrame extends SourceFrameImpl {
   constructor(
       resource: TextUtils.ContentProvider.ContentProvider, givenContentType: string, options?: SourceFrameOptions) {
     const isStreamingProvider = TextUtils.ContentProvider.isStreamingContentProvider(resource);
-    /* eslint-disable @typescript-eslint/explicit-function-return-type */
+
     const lazyContent = isStreamingProvider ?
         () => resource.requestStreamingContent().then(TextUtils.StreamingContentData.asContentDataOrError) :
         () => resource.requestContentData();
     super(lazyContent, options);
-    /* eslint-enable @typescript-eslint/explicit-function-return-type */
+
     this.#givenContentType = givenContentType;
     this.resourceInternal = resource;
     if (isStreamingProvider) {

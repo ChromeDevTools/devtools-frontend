@@ -4,7 +4,10 @@
 
 const rule = require('../lib/canvas-context-tracking.js');
 const ruleTester = new (require('eslint').RuleTester)({
-  parserOptions: {ecmaVersion: 9, sourceType: 'module'},
+  languageOptions: {
+    ecmaVersion: 'latest',
+    sourceType: 'module',
+  },
 });
 
 ruleTester.run('canvas-context-tracking-test', rule, {
@@ -60,7 +63,7 @@ ruleTester.run('canvas-context-tracking-test', rule, {
   context.restore();
 }`,
       filename: 'perf_ui/flamechart.js',
-    }
+    },
   ],
 
   invalid: [
@@ -81,7 +84,10 @@ ruleTester.run('canvas-context-tracking-test', rule, {
   context.save();
 }`,
       filename: 'perf_ui/flamechart.js',
-      errors: [{messageId: 'uselessRestore'}, {messageId: 'saveNotRestored'}],
+      errors: [
+        {messageId: 'uselessRestore'},
+        {messageId: 'saveNotRestored'},
+      ],
     },
     {
       code: `function renderCanvas() {
@@ -118,5 +124,5 @@ ruleTester.run('canvas-context-tracking-test', rule, {
       filename: 'perf_ui/flamechart.js',
       errors: [{messageId: 'saveNotRestored'}],
     },
-  ]
+  ],
 });

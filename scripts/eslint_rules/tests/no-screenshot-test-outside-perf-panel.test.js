@@ -5,7 +5,10 @@
 
 const rule = require('../lib/no-screenshot-test-outside-perf-panel.js');
 const ruleTester = new (require('eslint').RuleTester)({
-  parserOptions: {ecmaVersion: 9, sourceType: 'module'},
+  languageOptions: {
+    ecmaVersion: 'latest',
+    sourceType: 'module',
+  },
 });
 
 const EXPECTED_ERROR_MESSAGE =
@@ -101,5 +104,5 @@ ruleTester.run('no-screenshot-test-outside-perf-panel', rule, {
       filename: 'test/unittests/front_end/panels/performance/timeline_test.ts',
       errors: [{message: EXPECTED_ERROR_MESSAGE}],
     },
-  ]
+  ],
 });

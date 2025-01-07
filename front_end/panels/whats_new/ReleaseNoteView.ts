@@ -117,7 +117,7 @@ export class ReleaseNoteView extends UI.Widget.VBox {
     try {
       const response = await fetch(url.toString());
       return response.text();
-    } catch (error) {
+    } catch {
       throw new Error(`Markdown file ${
           url.toString()} not found. Make sure it is correctly listed in the relevant BUILD.gn files.`);
     }

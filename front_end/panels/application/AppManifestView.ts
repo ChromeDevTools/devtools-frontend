@@ -1091,7 +1091,7 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes,
     try {
       await result;
       return {wrapper, image};
-    } catch (e) {
+    } catch {
     }
     return null;
   }

@@ -1157,7 +1157,7 @@ self.injectedExtensionAPI = function(
   function canAccessResource(resource: APIImpl.ResourceData): boolean {
     try {
       return extensionInfo.allowFileAccess || getProtocol(resource.url) !== 'file:';
-    } catch (e) {
+    } catch {
       return false;
     }
   }

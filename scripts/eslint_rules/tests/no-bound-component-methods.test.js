@@ -4,9 +4,13 @@
 'use strict';
 
 const rule = require('../lib/no-bound-component-methods.js');
+const tsParser = require('@typescript-eslint/parser');
 const ruleTester = new (require('eslint').RuleTester)({
-  parserOptions: {ecmaVersion: 9, sourceType: 'module'},
-  parser: require.resolve('@typescript-eslint/parser'),
+  languageOptions: {
+    ecmaVersion: 'latest',
+    sourceType: 'module',
+    parser: tsParser,
+  },
 });
 
 ruleTester.run('no-bound-component-methods', rule, {
@@ -67,7 +71,12 @@ ruleTester.run('no-bound-component-methods', rule, {
   readonly #boundClick = this.onClick.bind(this);
 }`,
       filename: 'front_end/components/test.ts',
-      errors: [{messageId: 'nonRenderBindFound', data: {componentName: 'FeedbackButton', methodName: 'onClick'}}]
+      errors: [
+        {
+          messageId: 'nonRenderBindFound',
+          data: {componentName: 'FeedbackButton', methodName: 'onClick'},
+        },
+      ],
     },
     {
       code: `export class FeedbackButton extends HTMLElement {
@@ -75,7 +84,12 @@ ruleTester.run('no-bound-component-methods', rule, {
   private readonly boundClick = this.onClick.bind(this);
 }`,
       filename: 'front_end/components/test.ts',
-      errors: [{messageId: 'nonRenderBindFound', data: {componentName: 'FeedbackButton', methodName: 'onClick'}}]
+      errors: [
+        {
+          messageId: 'nonRenderBindFound',
+          data: {componentName: 'FeedbackButton', methodName: 'onClick'},
+        },
+      ],
     },
     {
       code: `export class FeedbackButton extends HTMLElement {
@@ -88,7 +102,12 @@ ruleTester.run('no-bound-component-methods', rule, {
   }
 }`,
       filename: 'front_end/components/test.ts',
-      errors: [{messageId: 'nonRenderBindFound', data: {componentName: 'FeedbackButton', methodName: 'onFocus'}}]
+      errors: [
+        {
+          messageId: 'nonRenderBindFound',
+          data: {componentName: 'FeedbackButton', methodName: 'onFocus'},
+        },
+      ],
     },
-  ]
+  ],
 });

@@ -350,7 +350,7 @@ export class LinearMemoryInspectorController extends SDK.TargetManager.SDKModelO
         name: expression ? LinearMemoryInspectorController.extractObjectName(obj, expression) : expression,
         type: LinearMemoryInspectorController.extractObjectTypeDescription(obj),
       };
-    } catch (err) {
+    } catch {
       highlightInfo = undefined;
     }
     return highlightInfo;

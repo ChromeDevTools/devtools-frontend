@@ -4,9 +4,13 @@
 'use strict';
 
 const rule = require('../lib/no-new-lit-element-components.js');
+const tsParser = require('@typescript-eslint/parser');
 const ruleTester = new (require('eslint').RuleTester)({
-  parserOptions: {ecmaVersion: 9, sourceType: 'module'},
-  parser: require.resolve('@typescript-eslint/parser'),
+  languageOptions: {
+    ecmaVersion: 'latest',
+    sourceType: 'module',
+    parser: tsParser,
+  },
 });
 
 const EXPECTED_ERROR_MESSAGE = 'New LitElement components are banned.';
@@ -28,5 +32,5 @@ ruleTester.run('no-new-lit-element-components', rule, {
       filename: 'front_end/components/test.ts',
       errors: [{message: EXPECTED_ERROR_MESSAGE}],
     },
-  ]
+  ],
 });

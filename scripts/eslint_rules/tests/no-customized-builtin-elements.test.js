@@ -5,7 +5,10 @@
 
 const rule = require('../lib/no-customized-builtin-elements.js');
 const ruleTester = new (require('eslint').RuleTester)({
-  parserOptions: {ecmaVersion: 9, sourceType: 'module'},
+  languageOptions: {
+    ecmaVersion: 'latest',
+    sourceType: 'module',
+  },
 });
 
 ruleTester.run('no-customized-builtin-elements', rule, {

@@ -114,7 +114,7 @@ export class WorkspaceSettingsTab extends UI.Widget.VBox {
       let regex;
       try {
         regex = new RegExp(value);
-      } catch (e) {
+      } catch {
       }
       const valid = Boolean(regex);
       return {valid, errorMessage: undefined};

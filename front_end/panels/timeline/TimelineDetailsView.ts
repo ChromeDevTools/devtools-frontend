@@ -77,7 +77,7 @@ export class TimelineDetailsView extends
   private lazySelectorStatsView: TimelineSelectorStatsView|null;
   #parsedTrace: Trace.Handlers.Types.ParsedTrace|null = null;
   #traceInsightsSets: Trace.Insights.Types.TraceInsightSets|null = null;
-  /* eslint-disable-next-line no-unused-private-class-members */
+
   #eventToRelatedInsightsMap: TimelineComponents.RelatedInsightChips.EventToRelatedInsightsMap|null = null;
   #filmStrip: Trace.Extras.FilmStrip.Data|null = null;
   #networkRequestDetails: TimelineComponents.NetworkRequestDetails.NetworkRequestDetails;

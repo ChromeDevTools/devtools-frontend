@@ -487,5 +487,5 @@ export const enum EnumeratedHistogram {
   SwatchActivated = 'DevTools.SwatchActivated',
   AnimationPlaybackRateChanged = 'DevTools.AnimationPlaybackRateChanged',
   AnimationPointDragged = 'DevTools.AnimationPointDragged',
-  /* eslint-disable @typescript-eslint/naming-convention -- Shadows a legacy enum */
+
 }

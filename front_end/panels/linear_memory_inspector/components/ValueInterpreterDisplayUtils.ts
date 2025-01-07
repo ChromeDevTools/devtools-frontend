@@ -13,7 +13,8 @@ const UIStrings = {
    */
   notApplicable: 'N/A',
 };
-const str_ = i18n.i18n.registerUIStrings('panels/linear_memory_inspector/components/ValueInterpreterDisplayUtils.ts', UIStrings);
+const str_ =
+    i18n.i18n.registerUIStrings('panels/linear_memory_inspector/components/ValueInterpreterDisplayUtils.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export const VALUE_INTEPRETER_MAX_NUM_BYTES = 8;
@@ -109,7 +110,7 @@ export function getPointerAddress(type: ValueType, buffer: ArrayBuffer, endianne
     const isLittleEndian = endianness === Endianness.LITTLE;
     return type === ValueType.POINTER32 ? dataView.getUint32(0, isLittleEndian) :
                                           dataView.getBigUint64(0, isLittleEndian);
-  } catch (e) {
+  } catch {
     return NaN;
   }
 }
@@ -164,7 +165,7 @@ export function format(formatData: FormatData): string {
       default:
         return Platform.assertNever(formatData.type, `Unknown value type: ${formatData.type}`);
     }
-  } catch (e) {
+  } catch {
     return i18nString(UIStrings.notApplicable);
   }
 }

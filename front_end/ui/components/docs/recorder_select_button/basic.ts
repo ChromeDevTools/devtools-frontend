@@ -7,7 +7,7 @@ import * as LitHtml from '../../../../../front_end/ui/lit-html/lit-html.js';
 import * as RecorderComponents from '../../../../panels/recorder/components/components.js';
 import * as FrontendHelpers from '../../../../testing/EnvironmentHelpers.js';
 
-const {html} = LitHtml;  // eslint-disable-line rulesdir/es-modules-import
+const {html} = LitHtml;
 
 await ComponentHelpers.ComponentServerSetup.setup();
 await FrontendHelpers.initializeGlobalVars();
@@ -58,7 +58,7 @@ function litRender(template: LitHtml.TemplateResult): void {
   div.style.margin = '10px';
   div.style.flexDirection = 'row-reverse';
   container?.appendChild(div);
-  LitHtml.render(template, div);  // eslint-disable-line
+  LitHtml.render(template, div);
 }
 
 litRender(html`

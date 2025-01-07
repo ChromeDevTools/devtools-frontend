@@ -32,16 +32,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
+import * as Protocol from '../../generated/protocol.js';
 import * as Common from '../common/common.js';
 import * as i18n from '../i18n/i18n.js';
 import type * as Platform from '../platform/platform.js';
-import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
-import * as Protocol from '../../generated/protocol.js';
 
-import {Events as RuntimeModelEvents, RuntimeModel, type ExecutionContext} from './RuntimeModel.js';
-
-import {Capability, Type, type Target} from './Target.js';
+import {Events as RuntimeModelEvents, type ExecutionContext, RuntimeModel} from './RuntimeModel.js';
 import {SDKModel} from './SDKModel.js';
+import {Capability, type Target, Type} from './Target.js';
 import {TargetManager} from './TargetManager.js';
 
 const UIStrings = {
@@ -495,7 +494,7 @@ export class ServiceWorkerVersion {
         routerRules.push(new ServiceWorkerRouterRule(JSON.stringify(condition), JSON.stringify(source), id));
       }
       return routerRules;
-    } catch (e) {
+    } catch {
       console.error('Parse error: Invalid `routerRules` in ServiceWorkerVersion');
       return null;
     }

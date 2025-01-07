@@ -55,11 +55,11 @@ export interface INPChangeEvent extends MetricChangeEvent {
 // TODO: Translate these keys before they are logged to console
 /* eslint-disable  @typescript-eslint/naming-convention */
 export interface LoAFScript {
-  'Duration': number;
+  Duration: number;
   'Invoker Type': string|null;
-  'Invoker': string|null;
-  'Function': string|null;
-  'Source': string|null;
+  Invoker: string|null;
+  Function: string|null;
+  Source: string|null;
   'Char position': number|null;
 }
 /* eslint-enable  @typescript-eslint/naming-convention */

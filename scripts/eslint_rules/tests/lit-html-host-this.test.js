@@ -4,9 +4,13 @@
 'use strict';
 
 const rule = require('../lib/lit-html-host-this.js');
+const tsParser = require('@typescript-eslint/parser');
 const ruleTester = new (require('eslint').RuleTester)({
-  parserOptions: {ecmaVersion: 9, sourceType: 'module'},
-  parser: require.resolve('@typescript-eslint/parser'),
+  languageOptions: {
+    ecmaVersion: 'latest',
+    sourceType: 'module',
+    parser: tsParser,
+  },
 });
 
 ruleTester.run('lit-html-host-this', rule, {
@@ -25,7 +29,7 @@ ruleTester.run('lit-html-host-this', rule, {
       code: 'LitHtml.render(someHtml, this.shadow)',
       filename: 'front_end/components/datagrid.ts',
       errors: [{messageId: 'missingHostOption'}],
-      output: 'LitHtml.render(someHtml, this.shadow, {host: this})'
+      output: 'LitHtml.render(someHtml, this.shadow, {host: this})',
     },
     {
       code: 'LitHtml.render(someHtml, this.shadow, { renderBefore: foo })',
@@ -42,7 +46,7 @@ ruleTester.run('lit-html-host-this', rule, {
     {
       code: 'LitHtml.render(someHtml, this.shadow, { host: notThis })',
       filename: 'front_end/components/datagrid.ts',
-      errors: [{messageId: 'invalidHostOption'}]
+      errors: [{messageId: 'invalidHostOption'}],
     },
-  ]
+  ],
 });

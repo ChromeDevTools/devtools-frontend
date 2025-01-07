@@ -4,9 +4,13 @@
 'use strict';
 
 const rule = require('../lib/lit-html-no-attribute-quotes.js');
+const tsParser = require('@typescript-eslint/parser');
 const ruleTester = new (require('eslint').RuleTester)({
-  parserOptions: {ecmaVersion: 9, sourceType: 'module'},
-  parser: require.resolve('@typescript-eslint/parser'),
+  languageOptions: {
+    ecmaVersion: 'latest',
+    sourceType: 'module',
+    parser: tsParser,
+  },
 });
 
 ruleTester.run('lit-html-no-attribute-quotes', rule, {
@@ -32,7 +36,9 @@ ruleTester.run('lit-html-no-attribute-quotes', rule, {
     {
       code: 'LitHtml.html`<p class="${foo}">foo</p>`',
       filename: 'front_end/components/datagrid.ts',
-      errors: [{messageId: 'attributeQuotesNotRequired', column: 26, line: 1}],
+      errors: [
+        {messageId: 'attributeQuotesNotRequired', column: 26, line: 1},
+      ],
       output: 'LitHtml.html`<p class=${foo}>foo</p>`',
     },
     {
@@ -41,5 +47,5 @@ ruleTester.run('lit-html-no-attribute-quotes', rule, {
       errors: [{messageId: 'attributeQuotesNotRequired'}],
       output: 'html`<p class=${foo}>foo</p>`',
     },
-  ]
+  ],
 });

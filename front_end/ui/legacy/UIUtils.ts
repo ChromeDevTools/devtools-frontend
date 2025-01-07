@@ -234,7 +234,7 @@ class DragHandler {
       if (targetDocument.defaultView && targetDocument.defaultView.top) {
         this.dragEventsTargetDocumentTop = targetDocument.defaultView.top.document;
       }
-    } catch (e) {
+    } catch {
       this.dragEventsTargetDocumentTop = this.dragEventsTargetDocument;
     }
 

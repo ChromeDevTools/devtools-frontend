@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as CodeHighlighter from '../../../ui/components/code_highlighter/code_highlighter.js';
-// eslint-disable-next-line rulesdir/es-modules-import
+
 import codeHighlighterStyles from '../../../ui/components/code_highlighter/codeHighlighter.css.js';
 import * as LitHtml from '../../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';

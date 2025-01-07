@@ -4,7 +4,10 @@
 
 const rule = require('../lib/no-only-eslint-tests.js');
 const ruleTester = new (require('eslint').RuleTester)({
-  parserOptions: {ecmaVersion: 9, sourceType: 'module'},
+  languageOptions: {
+    ecmaVersion: 'latest',
+    sourceType: 'module',
+  },
 });
 
 ruleTester.run('no-only-eslint-tests', rule, {
@@ -102,7 +105,10 @@ ruleTester.run('no-only-eslint-tests', rule, {
         }]
       })`,
       filename: 'scripts/eslint_rules/tests/foo.test.js',
-      errors: [{messageId: 'noOnlyInESLintTest'}, {messageId: 'noOnlyInESLintTest'}],
+      errors: [
+        {messageId: 'noOnlyInESLintTest'},
+        {messageId: 'noOnlyInESLintTest'},
+      ],
       output: `ruleTester.run('my_eslint_rule', rule, {
         valid: [{
           code: 'foo',
@@ -133,7 +139,10 @@ ruleTester.run('no-only-eslint-tests', rule, {
         }]
       })`,
       filename: 'scripts/eslint_rules/tests/foo.test.js',
-      errors: [{messageId: 'noOnlyInESLintTest'}, {messageId: 'noOnlyInESLintTest'}],
+      errors: [
+        {messageId: 'noOnlyInESLintTest'},
+        {messageId: 'noOnlyInESLintTest'},
+      ],
       output: `ruleTester.run('my_eslint_rule', rule, {
         valid: [{
           code: 'foo',
@@ -149,5 +158,5 @@ ruleTester.run('no-only-eslint-tests', rule, {
         }]
       })`,
     },
-  ]
+  ],
 });

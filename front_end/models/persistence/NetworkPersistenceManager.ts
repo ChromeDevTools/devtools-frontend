@@ -554,7 +554,7 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
       if (!headerOverrides.every(isHeaderOverride)) {
         throw 'Type mismatch after parsing';
       }
-    } catch (e) {
+    } catch {
       console.error('Failed to parse', uiSourceCode.url(), 'for locally overriding headers.');
       return [];
     }

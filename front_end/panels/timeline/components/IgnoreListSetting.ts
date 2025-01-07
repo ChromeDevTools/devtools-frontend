@@ -353,7 +353,7 @@ export function patternValidator(existingRegexes: Common.Settings.RegExpSettingI
   let regex;
   try {
     regex = new RegExp(pattern);
-  } catch (e) {
+  } catch {
   }
   if (!regex) {
     return {valid: false, message: i18nString(UIStrings.patternMustBeAValidRegular)};

@@ -167,6 +167,7 @@ const rules: Rule[] = [
   makeKeyWordRule('import'),
   makeKeyWordRule('is'),
   makeKeyWordRule('in'),
+  makeKeyWordRule('asserts'),
   numberRule,
   identifierRule,
   stringValueRule

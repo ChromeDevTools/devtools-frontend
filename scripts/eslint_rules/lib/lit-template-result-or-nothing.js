@@ -8,20 +8,21 @@ module.exports = {
     type: 'problem',
 
     docs: {
-      description: 'Enforce use of LitHtml.LitTemplate type rather than union with LitHtml.nothing',
+      description:
+        'Enforce use of LitHtml.LitTemplate type rather than union with LitHtml.nothing',
       category: 'Possible Errors',
     },
     fixable: 'code',
     messages: {
       useLitTemplateOverEmptyObject:
-          'Prefer LitHtml.LitTemplate type over a union with {}',
+        'Prefer LitHtml.LitTemplate type over a union with {}',
       useLitTemplateOverTypeOfNothing:
-          'Prefer LitHtml.LitTemplate type over a union with LitHtml.nothing',
+        'Prefer LitHtml.LitTemplate type over a union with LitHtml.nothing',
     },
-    schema: []  // no options
+    schema: [], // no options
   },
-  create: function(context) {
-    const sourceCode = context.getSourceCode();
+  create: function (context) {
+    const sourceCode = context.sourceCode ?? context.getSourceCode();
     const UNION_TYPE_FOR_LIT_TEMPLATE = 'LitHtml.LitTemplate';
 
     function checkUnionReturnTypeForLit(node) {
@@ -38,7 +39,10 @@ module.exports = {
 
       for (const typeNode of node.types) {
         // This matches a type reference of X.y. Now we see if X === 'LitHtml' and y === 'TemplateResult'
-        if (typeNode.type === 'TSTypeReference' && typeNode.typeName.type === 'TSQualifiedName') {
+        if (
+          typeNode.type === 'TSTypeReference' &&
+          typeNode.typeName.type === 'TSQualifiedName'
+        ) {
           const leftText = typeNode.typeName.left.name;
           const rightText = typeNode.typeName.right.name;
           if (leftText === 'LitHtml' && rightText === 'TemplateResult') {
@@ -49,7 +53,10 @@ module.exports = {
           // The TSTypeLiteral type matches against the literal `{}` type.
           literalEmptyObjectNode = typeNode;
           continue;
-        } else if (typeNode.type === 'TSTypeQuery' && typeNode.exprName.type === 'TSQualifiedName') {
+        } else if (
+          typeNode.type === 'TSTypeQuery' &&
+          typeNode.exprName.type === 'TSQualifiedName'
+        ) {
           // matches `typeof X.y`
           const leftText = typeNode.exprName.left.name;
           const rightText = typeNode.exprName.right.name;
@@ -79,17 +86,25 @@ module.exports = {
       // LitHtml.LitTemplate|number
       // So we capture all the non-lit related types in the union, and get
       // their text content, so we can keep them around when we run the fixer.
-      const nonLitRelatedTypesToKeep = Array.from(nonLitRelatedNodesInUnion, node => {
-        return sourceCode.getText(node);
-      });
-      const newText = [UNION_TYPE_FOR_LIT_TEMPLATE, ...nonLitRelatedTypesToKeep].join('|');
+      const nonLitRelatedTypesToKeep = Array.from(
+        nonLitRelatedNodesInUnion,
+        node => {
+          return sourceCode.getText(node);
+        },
+      );
+      const newText = [
+        UNION_TYPE_FOR_LIT_TEMPLATE,
+        ...nonLitRelatedTypesToKeep,
+      ].join('|');
 
       context.report({
         node,
-        messageId: litNothingNode ? 'useLitTemplateOverTypeOfNothing' : 'useLitTemplateOverEmptyObject',
+        messageId: litNothingNode
+          ? 'useLitTemplateOverTypeOfNothing'
+          : 'useLitTemplateOverEmptyObject',
         fix(fixer) {
           return fixer.replaceText(node, newText);
-        }
+        },
       });
     }
 
@@ -111,7 +126,7 @@ module.exports = {
         }
         // Represents the generic type passed to the promise: if our code is
         // Promise<X>, this node represents the X.
-        const promiseGenericNode = annotation.typeParameters.params[0];
+        const promiseGenericNode = annotation.typeArguments.params[0];
         if (promiseGenericNode && promiseGenericNode.type === 'TSUnionType') {
           checkUnionReturnTypeForLit(promiseGenericNode);
         }
@@ -146,5 +161,5 @@ module.exports = {
         checkTSTypeAnnotationForPotentialIssue(node.typeAnnotation);
       },
     };
-  }
+  },
 };

@@ -56,7 +56,7 @@ export class LanguageExtensionEndpoint implements Bindings.DebuggerLanguagePlugi
   canAccessURL(url: string): boolean {
     try {
       return this.allowFileAccess || new URL(url).protocol !== 'file:';
-    } catch (e) {
+    } catch {
       return false;
     }
   }
@@ -67,7 +67,7 @@ export class LanguageExtensionEndpoint implements Bindings.DebuggerLanguagePlugi
           (script.debugSymbols?.externalURL && !this.canAccessURL(script.debugSymbols.externalURL))) {
         return false;
       }
-    } catch (e) {
+    } catch {
       return false;
     }
     const language = script.scriptLanguage();

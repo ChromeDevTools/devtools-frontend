@@ -5,7 +5,7 @@
 [npm-url]:https://npmjs.org/package/cross-spawn
 [downloads-image]:https://img.shields.io/npm/dm/cross-spawn.svg
 [npm-image]:https://img.shields.io/npm/v/cross-spawn.svg
-[ci-url]:https://github.com/moxystudio/cross-spawn/actions/workflows/ci.yaml
+[ci-url]:https://github.com/moxystudio/node-cross-spawn/actions/workflows/ci.yaml
 [ci-image]:https://github.com/moxystudio/node-cross-spawn/actions/workflows/ci.yaml/badge.svg
 [appveyor-url]:https://ci.appveyor.com/project/satazor/node-cross-spawn
 [appveyor-image]:https://img.shields.io/appveyor/ci/satazor/node-cross-spawn/master.svg

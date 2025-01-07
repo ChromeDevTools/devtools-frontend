@@ -21,7 +21,7 @@ export const objectSquaredPropertyParslet = composeParslet({
       result = {
         type: 'JsdocTypeIndexSignature',
         key,
-        right: parentParser.parseType(Precedence.ARRAY_BRACKETS)
+        right: parentParser.parseType(Precedence.INDEX_BRACKETS)
       }
 
       parser.acceptLexerState(parentParser)

@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable no-unused-private-class-members, @typescript-eslint/naming-convention */
+/* eslint-disable @typescript-eslint/naming-convention */
 
 export type MicroSeconds = number&{_tag: 'MicroSeconds'};
 export function MicroSeconds(value: number): MicroSeconds {

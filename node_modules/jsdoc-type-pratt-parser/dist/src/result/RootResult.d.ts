@@ -2,7 +2,7 @@ import { type JsdocObjectFieldResult, type KeyValueResult, type ObjectFieldResul
 /**
  * A parse result that corresponds to a valid type expression.
  */
-export type RootResult = NameResult | UnionResult | GenericResult | StringValueResult | NullResult | UndefinedResult | AnyResult | UnknownResult | FunctionResult | ObjectResult | NamePathResult | SymbolResult | TypeOfResult | KeyOfResult | ImportResult | TupleResult | SpecialNamePath | OptionalResult<RootResult> | NullableResult<RootResult> | NotNullableResult<RootResult> | VariadicResult<RootResult> | ParenthesisResult | IntersectionResult | NumberResult | PredicateResult;
+export type RootResult = NameResult | UnionResult | GenericResult | StringValueResult | NullResult | UndefinedResult | AnyResult | UnknownResult | FunctionResult | ObjectResult | NamePathResult | SymbolResult | TypeOfResult | KeyOfResult | ImportResult | TupleResult | SpecialNamePath | OptionalResult<RootResult> | NullableResult<RootResult> | NotNullableResult<RootResult> | VariadicResult<RootResult> | ParenthesisResult | IntersectionResult | NumberResult | PredicateResult | AssertsResult;
 export type QuoteStyle = 'single' | 'double';
 /**
  * `element` is optional.
@@ -222,6 +222,14 @@ export interface NumberResult {
  */
 export interface PredicateResult {
     type: 'JsdocTypePredicate';
+    left: NameResult;
+    right: RootResult;
+}
+/**
+ * An asserts result. Is used like this: `@return {asserts foo is Bar}`
+ */
+export interface AssertsResult {
+    type: 'JsdocTypeAsserts';
     left: NameResult;
     right: RootResult;
 }

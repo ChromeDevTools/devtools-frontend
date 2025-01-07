@@ -57,7 +57,7 @@ describe('SettingRegistration', () => {
       assert.strictEqual(
           preRegisteredSetting.category(), settingCategory, 'Setting category is not returned correctly');
       assert.isNotTrue(preRegisteredSetting.get(), 'Setting value is not returned correctly');
-    } catch (error) {
+    } catch {
       assert.fail('Failed to find setting registration');
     }
   });

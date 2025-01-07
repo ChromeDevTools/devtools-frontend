@@ -13,18 +13,19 @@ const destPath = path.join(process.cwd(), dest);
 // is because the file in that location might be a hardlinked file, and
 // overwriting it doesn't change the fact that it's hardlinked.
 const srcContents = fs.readFileSync(srcPath);
+let fileDiffer = true;
 if (fileExists(destPath)) {
   // Check contents, return early if match
   const destContents = fs.readFileSync(destPath);
-  if (srcContents.equals(destContents)) {
-    return;
-  }
+  fileDiffer = srcContents.compare(destContents) !== 0;
 }
 
 // Force a write to the target filesystem, since by default the ninja
 // toolchain will create a hardlink, which in turn reflects changes in
 // gen and resources/inspector back to //front_end.
-writeIfChanged(destPath, srcContents);
+if (fileDiffer) {
+  writeIfChanged(destPath, srcContents);
+}
 
 /**
  * Case sensitive implementation of a file look up.

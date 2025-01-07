@@ -30,7 +30,6 @@ import {WindowControlsOverlay} from './tool_window_controls.js';
 // @ts-ignore Importing CSS is handled in Rollup.
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface Window {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     InspectorOverlayHost: {send(data: PausedToolMessage|PersistentToolMessage|ScreenshotToolMessage|string): void};
@@ -80,8 +79,8 @@ let currentOverlay: Overlays[keyof Overlays];
 let platformName: PlatformName;
 
 type MessageLookup = {
-  'setOverlay': keyof Overlays,
-  'setPlatform': PlatformName,
+  setOverlay: keyof Overlays,
+  setPlatform: PlatformName,
   drawingFinished: '',
 };
 

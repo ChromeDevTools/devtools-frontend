@@ -49,21 +49,21 @@ import {SourceMapScopesInfo} from './SourceMapScopesInfo.js';
  */
 export type SourceMapV3Object = {
   /* eslint-disable @typescript-eslint/naming-convention */
-  'version': number,
-  'sources': string[],
-  'mappings': string,
+  version: number,
+  sources: string[],
+  mappings: string,
 
-  'file'?: string,
-  'sourceRoot'?: string,
-  'sourcesContent'?: (string|null)[],
+  file?: string,
+  sourceRoot?: string,
+  sourcesContent?: (string|null)[],
 
-  'names'?: string[],
-  'ignoreList'?: number[],
-  'originalScopes'?: string[],
-  'generatedRanges'?: string,
-  'x_google_linecount'?: number,
-  'x_google_ignoreList'?: number[],
-  'x_com_bloomberg_sourcesFunctionMappings'?: string[],
+  names?: string[],
+  ignoreList?: number[],
+  originalScopes?: string[],
+  generatedRanges?: string,
+  x_google_linecount?: number,
+  x_google_ignoreList?: number[],
+  x_com_bloomberg_sourcesFunctionMappings?: string[],
   /* eslint-enable @typescript-eslint/naming-convention */
 };
 
@@ -79,14 +79,14 @@ export type SourceMapV3Object = {
  */
 export type SourceMapV3 = SourceMapV3Object|{
   // clang-format off
-  'version': number,
-  'file'?: string,
-  'sections': ({
-    'offset': {line: number, column: number},
-    'map': SourceMapV3Object,
+  version: number,
+  file?: string,
+  sections: ({
+    offset: {line: number, column: number},
+    map: SourceMapV3Object,
   } | {
-    'offset': {line: number, column: number},
-    'url': string,
+    offset: {line: number, column: number},
+    url: string,
   })[],
   // clang-format on
 };
@@ -191,7 +191,6 @@ export class SourceMap {
   #mappingsInternal: SourceMapEntry[]|null;
   readonly #sourceInfos: Map<Platform.DevToolsPath.UrlString, SourceInfo>;
 
-  /* eslint-disable-next-line no-unused-private-class-members */
   #scopesInfo: SourceMapScopesInfo|null = null;
 
   /**

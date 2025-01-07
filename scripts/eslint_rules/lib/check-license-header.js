@@ -136,7 +136,9 @@ module.exports = {
     schema: []  // no options
   },
   create: function(context) {
-    const fileName = context.getFilename();
+    const sourceCode = context.sourceCode ?? context.getSourceCode();
+    const filename = context.filename ?? context.getFilename();
+    const fileName = filename;
     // Fix windows paths for exemptions
     const relativePath = path.relative(FRONT_END_FOLDER, fileName).replace(/\\/g, '/');
 
@@ -151,7 +153,7 @@ module.exports = {
           return;
         }
 
-        const comments = context.getSourceCode().getCommentsBefore(node.body[0]);
+        const comments = sourceCode.getCommentsBefore(node.body[0]);
 
         if (!comments || comments.length === 0 || comments.length === 1 && comments[0].type === 'Shebang') {
           context.report({

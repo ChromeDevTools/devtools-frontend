@@ -27,8 +27,9 @@ module.exports = {
     }]
   },
   create : function(context) {
+    const filename = context.filename ?? context.getFilename();
     const bannedPaths = context.options[0].bannedImportPaths || [];
-    const fileNameOfFileBeingChecked = path.resolve(context.getFilename());
+    const fileNameOfFileBeingChecked = path.resolve(filename);
 
     return {
       'ImportDeclaration'(node) {

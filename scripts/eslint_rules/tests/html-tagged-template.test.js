@@ -5,11 +5,14 @@
 
 const rule = require('../lib/html-tagged-template.js');
 const ruleTester = new (require('eslint').RuleTester)({
-  parserOptions: {ecmaVersion: 9, sourceType: 'module'},
+  languageOptions: {
+    ecmaVersion: 'latest',
+    sourceType: 'module',
+  },
 });
 
 const error = {
-  message: 'Use unqualified html tagged template for compatibility with lit-analyzer'
+  message: 'Use unqualified html tagged template for compatibility with lit-analyzer',
 };
 
 ruleTester.run('html-tagged-template', rule, {
@@ -92,5 +95,5 @@ const {html} = LitHtml;
             this.shadow, {host: this});
       }`,
     },
-  ]
+  ],
 });

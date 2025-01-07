@@ -30,7 +30,6 @@ import {TestConfig} from './test_config.js';
 
 // Workaround for mismatching versions of puppeteer types and puppeteer library.
 declare module 'puppeteer-core' {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface ConsoleMessage {
     stackTrace(): ConsoleMessageLocation[];
   }

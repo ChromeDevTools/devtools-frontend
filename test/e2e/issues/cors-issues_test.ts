@@ -78,7 +78,7 @@ describe('CORS issues', () => {
                             .toString()
                             .replace('localhost', 'devtools.oopif.test');
             await fetch(url, {credentials: 'include'});
-          } catch (e) {
+          } catch {
           }
         });
         await navigateToIssuesTab();
@@ -119,14 +119,14 @@ describe('CORS issues', () => {
                         .toString()
                         .replace('localhost', 'devtools.oopif.test');
         await fetch(url, options);
-      } catch (e) {
+      } catch {
       }
       try {
         const url2 = new URL('./issues/redirect.rawresponse', document.location.toString())
                          .toString()
                          .replace('localhost', 'devtools.oopif.test');
         await fetch(url2, options);
-      } catch (e) {
+      } catch {
       }
     });
     await navigateToIssuesTab();
@@ -175,11 +175,11 @@ describe('CORS issues', () => {
                       .replace('localhost', 'devtools.oopif.test');
       try {
         await fetch(url, options);
-      } catch (e) {
+      } catch {
       }
       try {
         await fetch(url);
-      } catch (e) {
+      } catch {
       }
     });
     await navigateToIssuesTab();
@@ -231,11 +231,11 @@ describe('CORS issues', () => {
               headers: {'Content-Type': 'application/json'},
               body: JSON.stringify({geeting: 'hello'}),
             });
-          } catch (e) {
+          } catch {
           }
           try {
             await fetch(url, {credentials: 'include'});
-          } catch (e) {
+          } catch {
           }
         });
         await navigateToIssuesTab();
@@ -282,7 +282,7 @@ describe('CORS issues', () => {
           headers: {'Content-Type': 'application/json'},
           body: JSON.stringify({geeting: 'hello'}),
         });
-      } catch (e) {
+      } catch {
       }
     });
     await navigateToIssuesTab();
@@ -323,7 +323,7 @@ describe('CORS issues', () => {
             await fetch(url, {
               headers: {'X-Foo': 'bar'},
             });
-          } catch (e) {
+          } catch {
           }
         });
         await navigateToIssuesTab();
@@ -362,7 +362,7 @@ describe('CORS issues', () => {
                             .toString()
                             .replace('localhost', 'devtools.oopif.test');
             await fetch(url);
-          } catch (e) {
+          } catch {
           }
         });
         await navigateToIssuesTab();
@@ -396,7 +396,7 @@ describe('CORS issues', () => {
             const url =
                 new URL('/', document.location.toString()).toString().replace('localhost', 'devtools.oopif.test');
             await fetch(url, {mode: 'same-origin'});
-          } catch (e) {
+          } catch {
           }
         });
         await navigateToIssuesTab();
@@ -435,7 +435,7 @@ describe('CORS issues', () => {
                             .toString()
                             .replace('https://localhost', 'webdav://devtools.oopif.test');
             await fetch(url);
-          } catch (e) {
+          } catch {
           }
         });
         await navigateToIssuesTab();
@@ -475,7 +475,7 @@ describe('CORS issues', () => {
                             .toString()
                             .replace('https://localhost', 'webdav://devtools.oopif.test');
             await fetch(url, {mode: 'no-cors', redirect: 'manual'});
-          } catch (e) {
+          } catch {
           }
         });
         await navigateToIssuesTab();

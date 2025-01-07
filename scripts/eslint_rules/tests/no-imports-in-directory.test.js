@@ -5,9 +5,13 @@
 const rule = require('../lib/no-imports-in-directory.js');
 const path = require('path');
 
+const tsParser = require('@typescript-eslint/parser');
 const ruleTester = new (require('eslint').RuleTester)({
-  parserOptions: {ecmaVersion: 9, sourceType: 'module'},
-  parser: require.resolve('@typescript-eslint/parser'),
+  languageOptions: {
+    ecmaVersion: 'latest',
+    sourceType: 'module',
+    parser: tsParser,
+  },
 });
 
 ruleTester.run('no-imports-in-directory', rule, {
@@ -15,9 +19,22 @@ ruleTester.run('no-imports-in-directory', rule, {
     {
       code: 'import * as SDK from \'../../../core/sdk/sdk.js\';',
       filename: 'front_end/models/trace/handlers/TestHandler.ts',
-      options: [{
-        bannedImportPaths: [path.join(__dirname, '..', '..', '..', 'front_end', 'core', 'not-sdk', 'sdk.js')],
-      }],
+      options: [
+        {
+          bannedImportPaths: [
+            path.join(
+                __dirname,
+                '..',
+                '..',
+                '..',
+                'front_end',
+                'core',
+                'not-sdk',
+                'sdk.js',
+                ),
+          ],
+        },
+      ],
       errors: [{messageId: 'invalidImport'}],
     },
   ],
@@ -25,35 +42,86 @@ ruleTester.run('no-imports-in-directory', rule, {
     {
       code: 'import * as SDK from \'../../../core/sdk/sdk.js\';',
       filename: 'front_end/models/trace/handlers/TestHandler.ts',
-      options: [{
-        bannedImportPaths: [path.join(__dirname, '..', '..', '..', 'front_end', 'core', 'sdk', 'sdk.js')],
-      }],
+      options: [
+        {
+          bannedImportPaths: [
+            path.join(
+                __dirname,
+                '..',
+                '..',
+                '..',
+                'front_end',
+                'core',
+                'sdk',
+                'sdk.js',
+                ),
+          ],
+        },
+      ],
       errors: [{messageId: 'invalidImport'}],
     },
     {
       code: 'import type * as SDK from \'../../../core/sdk/sdk.js\';',
       filename: 'front_end/models/trace/handlers/TestHandler.ts',
-      options: [{
-        bannedImportPaths: [path.join(__dirname, '..', '..', '..', 'front_end', 'core', 'sdk', 'sdk.js')],
-      }],
+      options: [
+        {
+          bannedImportPaths: [
+            path.join(
+                __dirname,
+                '..',
+                '..',
+                '..',
+                'front_end',
+                'core',
+                'sdk',
+                'sdk.js',
+                ),
+          ],
+        },
+      ],
       errors: [{messageId: 'invalidImport'}],
     },
     {
       code: 'import \'../../../core/sdk/sdk.js\';',
       filename: 'front_end/models/trace/handlers/TestHandler.ts',
-      options: [{
-        bannedImportPaths: [path.join(__dirname, '..', '..', '..', 'front_end', 'core', 'sdk', 'sdk.js')],
-      }],
+      options: [
+        {
+          bannedImportPaths: [
+            path.join(
+                __dirname,
+                '..',
+                '..',
+                '..',
+                'front_end',
+                'core',
+                'sdk',
+                'sdk.js',
+                ),
+          ],
+        },
+      ],
       errors: [{messageId: 'invalidImport'}],
     },
     {
       code: 'import {Foo} from \'../../../core/sdk/sdk.js\';',
       filename: 'front_end/models/trace/handlers/TestHandler.ts',
-      options: [{
-        bannedImportPaths: [path.join(__dirname, '..', '..', '..', 'front_end', 'core', 'sdk', 'sdk.js')],
-      }],
+      options: [
+        {
+          bannedImportPaths: [
+            path.join(
+                __dirname,
+                '..',
+                '..',
+                '..',
+                'front_end',
+                'core',
+                'sdk',
+                'sdk.js',
+                ),
+          ],
+        },
+      ],
       errors: [{messageId: 'invalidImport'}],
-    }
+    },
   ],
-
 });

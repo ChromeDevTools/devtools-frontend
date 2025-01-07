@@ -46,7 +46,7 @@ function atob(str) {
 function isFile(path) {
   try {
     return fs.statSync(path).isFile();
-  } catch (error) {
+  } catch {
     return false;
   }
 }
@@ -54,7 +54,7 @@ function isFile(path) {
 function isDir(path) {
   try {
     return fs.statSync(path).isDirectory();
-  } catch (error) {
+  } catch {
     return false;
   }
 }
@@ -64,7 +64,9 @@ function copy(src, dest) {
     const targetFilePath = path.resolve(dest, path.basename(src));
     fs.writeFileSync(targetFilePath, fs.readFileSync(src));
   } catch (error) {
-    throw new Error(`Received an error: [${error}] while trying to copy: ${src} -> ${dest}`);
+    throw new Error(
+        `Received an error: [${error}] while trying to copy: ${src} -> ${dest}`,
+    );
   }
 }
 
@@ -85,13 +87,18 @@ function copyRecursive(src, dest) {
         if (isDir(childPath)) {
           copyRecursive(childPath, targetDirPath);
         } else {
-          const targetFilePath = path.resolve(targetDirPath, path.basename(childPath));
+          const targetFilePath = path.resolve(
+              targetDirPath,
+              path.basename(childPath),
+          );
           fs.writeFileSync(targetFilePath, fs.readFileSync(childPath));
         }
       }
     }
   } catch (error) {
-    throw new Error(`Received an error: [${error}] while trying to copy: ${src} -> ${dest}`);
+    throw new Error(
+        `Received an error: [${error}] while trying to copy: ${src} -> ${dest}`,
+    );
   }
 }
 
@@ -114,7 +121,9 @@ function removeRecursive(filePath) {
       fs.rmdirSync(filePath);
     }
   } catch (error) {
-    throw new Error(`Received an error: [${error}] while trying to remove: ${filePath}`);
+    throw new Error(
+        `Received an error: [${error}] while trying to remove: ${filePath}`,
+    );
   }
 }
 

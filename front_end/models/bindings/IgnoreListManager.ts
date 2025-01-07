@@ -449,7 +449,7 @@ export class IgnoreListManager implements SDK.TargetManager.SDKModelObserver<SDK
           item.disabled = true;
           item.disabledForUrl = url;
         }
-      } catch (e) {
+      } catch {
       }
     }
     this.getSkipStackFramesPatternSetting().setAsArray(regexPatterns);

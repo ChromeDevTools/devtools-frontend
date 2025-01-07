@@ -17,7 +17,6 @@ import {
 } from './SourceMapScopes.js';
 
 export class SourceMapScopesInfo {
-  /* eslint-disable-next-line no-unused-private-class-members */
   readonly #sourceMap: SourceMap;
   readonly #originalScopes: OriginalScope[];
   readonly #generatedRanges: GeneratedRange[];

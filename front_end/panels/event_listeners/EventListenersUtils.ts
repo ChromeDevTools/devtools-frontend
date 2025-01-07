@@ -293,7 +293,7 @@ export async function frameworkEventListeners(object: SDK.RemoteObject.RemoteObj
           const len = obj.length;
           return typeof len === 'number' && (len >>> 0 === len && (len > 0 || 1 / len > 0));
         }
-      } catch (e) {
+      } catch {
       }
       return false;
     }
@@ -362,7 +362,7 @@ export async function frameworkEventListeners(object: SDK.RemoteObject.RemoteObj
     function toString(obj: any): string {
       try {
         return String(obj);
-      } catch (e) {
+      } catch {
         return '<error>';
       }
     }
@@ -445,7 +445,8 @@ export async function frameworkEventListeners(object: SDK.RemoteObject.RemoteObj
         return;
       }
       const jQueryFunction = jQuery as (arg0: Node) => {
-        off: Function,
+        off:
+          Function,
       };
       jQueryFunction(node).off(type, selector, handler);
     }

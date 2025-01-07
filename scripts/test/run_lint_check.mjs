@@ -61,6 +61,18 @@ async function runESLint(files) {
 
   const results = await cli.lintFiles(files);
 
+  const usedDeprecatedRules = results.flatMap(
+    (result) => result.usedDeprecatedRules,
+  );
+  if (usedDeprecatedRules.length) {
+    console.log('Used deprecated rules:');
+    for (const { ruleId, replaceBy } of usedDeprecatedRules) {
+      console.log(
+        ` Rule ${ruleId} can be replaced with ${replaceBy ?? 'none'}`,
+      );
+    }
+  }
+
   if (flags.fix) {
     await EsLintFlat.outputFixes(results);
   }

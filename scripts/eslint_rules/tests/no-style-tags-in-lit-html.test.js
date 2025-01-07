@@ -4,9 +4,13 @@
 'use strict';
 
 const rule = require('../lib/no-style-tags-in-lit-html.js');
+const tsParser = require('@typescript-eslint/parser');
 const ruleTester = new (require('eslint').RuleTester)({
-  parserOptions: {ecmaVersion: 9, sourceType: 'module'},
-  parser: require.resolve('@typescript-eslint/parser'),
+  languageOptions: {
+    ecmaVersion: 'latest',
+    sourceType: 'module',
+    parser: tsParser,
+  },
 });
 
 const EXPECTED_ERROR_MESSAGE =
@@ -34,28 +38,28 @@ ruleTester.run('no-style-tags-in-lit-html', rule, {
       code:
           'LitHtml.html`<${DataGrid1.litTagName}><${DataGrid2.litTagName}></${DataGrid2.litTagName}></${DataGrid1.litTagName}>`',
       filename: 'front_end/components/test.ts',
-    }
+    },
   ],
   invalid: [
     {
       code: 'LitHtml.html`<style />`',
       filename: 'front_end/components/test.ts',
-      errors: [{message: EXPECTED_ERROR_MESSAGE}]
+      errors: [{message: EXPECTED_ERROR_MESSAGE}],
     },
     {
       code: 'LitHtml.html`<style></style>`',
       filename: 'front_end/components/test.ts',
-      errors: [{message: EXPECTED_ERROR_MESSAGE}]
+      errors: [{message: EXPECTED_ERROR_MESSAGE}],
     },
     {
       code: 'LitHtml.html`</style>`',
       filename: 'front_end/components/test.ts',
-      errors: [{message: EXPECTED_ERROR_MESSAGE}]
+      errors: [{message: EXPECTED_ERROR_MESSAGE}],
     },
     {
       code: 'LitHtml.html`<style >`',
       filename: 'front_end/components/test.ts',
-      errors: [{message: EXPECTED_ERROR_MESSAGE}]
+      errors: [{message: EXPECTED_ERROR_MESSAGE}],
     },
-  ]
+  ],
 });

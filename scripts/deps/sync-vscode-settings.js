@@ -13,7 +13,7 @@ const VSCODE_SETTINGS_TO_MERGE = [
 
 // If the user has opted out of updates, return and do nothing.
 if (Boolean(process.env['SKIP_VSCODE_SETTINGS_SYNC'])) {
-  return;
+  process.exit(0);
 }
 
 for (const {settingsFile, mergeField, byField} of VSCODE_SETTINGS_TO_MERGE) {

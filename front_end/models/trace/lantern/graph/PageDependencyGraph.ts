@@ -505,7 +505,7 @@ class PageDependencyGraph {
                                                           serverResponseTime: r.serverResponseTime,
                                                         }))
                                                    .filter(r => !r.fromWorker);
-    // eslint-disable-next-line no-unused-vars
+
     const debug = requests;
     // Set breakpoint here.
     // Copy `debug` and compare with https://www.diffchecker.com/text-compare/

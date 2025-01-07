@@ -27,12 +27,13 @@ module.exports = {
     schema: []  // no options
   },
   create: function(context) {
+    const filename = context.filename ?? context.getFilename();
     return {
       ImportDeclaration(node) {
         const importPath = path.normalize(node.source.value);
 
         if (importPath.endsWith('.css.js') || importPath.endsWith('.css.legacy.js')) {
-          const importingFileName = path.resolve(context.getFilename());
+          const importingFileName = path.resolve(filename);
           const exportingFileName = path.resolve(path.dirname(importingFileName), importPath);
           const importedCSS = exportingFileName.replace(/(\.legacy)?\.js$/, '');
 

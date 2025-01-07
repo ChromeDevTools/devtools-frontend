@@ -189,7 +189,14 @@ function getUserMetricExperimentList(userMetricsFile) {
   });
   for (const node of userMetricsAST.body) {
     if (isExperimentEnumDeclaration(node)) {
-      return node.declaration.members.filter(member => member.id.type === 'Literal').map(member => member.id.value);
+      return node.declaration.members
+          .filter(
+              member => member.id.name !== 'MAX_VALUE',
+              )
+          .filter(
+              member => member.id.type === 'Literal' || member.id.type === 'Identifier',
+              )
+          .map(member => member.id.value ?? member.id.name);
     }
   }
   return null;

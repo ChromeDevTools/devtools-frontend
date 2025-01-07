@@ -69,7 +69,7 @@ describe('IssueResolver', () => {
       assert.isFalse(issuesManager.hasEventListeners(IssuesManager.IssuesManager.Events.ISSUE_ADDED));
       try {
         await issue;
-      } catch (e) {
+      } catch {
         return;
       }
       assert.fail('Expected `await issue` to throw.');

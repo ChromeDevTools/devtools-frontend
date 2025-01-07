@@ -314,7 +314,7 @@ export class FrameworkIgnoreListSettingsTab extends UI.Widget.VBox implements
       let regex;
       try {
         regex = new RegExp(pattern);
-      } catch (e) {
+      } catch {
       }
       if (!regex) {
         return {valid: false, errorMessage: i18nString(UIStrings.patternMustBeAValidRegular)};

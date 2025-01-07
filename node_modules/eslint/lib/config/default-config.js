@@ -15,10 +15,14 @@ const Rules = require("../rules");
 // Helpers
 //-----------------------------------------------------------------------------
 
-exports.defaultConfig = [
+exports.defaultConfig = Object.freeze([
     {
         plugins: {
             "@": {
+
+                languages: {
+                    js: require("../languages/js")
+                },
 
                 /*
                  * Because we try to delay loading rules until absolutely
@@ -37,11 +41,9 @@ exports.defaultConfig = [
                 })
             }
         },
-        languageOptions: {
-            sourceType: "module",
-            ecmaVersion: "latest",
-            parser: require("espree"),
-            parserOptions: {}
+        language: "@/js",
+        linterOptions: {
+            reportUnusedDisableDirectives: 1
         }
     },
 
@@ -64,4 +66,4 @@ exports.defaultConfig = [
             ecmaVersion: "latest"
         }
     }
-];
+]);

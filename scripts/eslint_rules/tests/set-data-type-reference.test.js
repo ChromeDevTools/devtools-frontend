@@ -4,9 +4,13 @@
 'use strict';
 
 const rule = require('../lib/set-data-type-reference.js');
+const tsParser = require('@typescript-eslint/parser');
 const ruleTester = new (require('eslint').RuleTester)({
-  parserOptions: {ecmaVersion: 9, sourceType: 'module'},
-  parser: require.resolve('@typescript-eslint/parser'),
+  languageOptions: {
+    ecmaVersion: 'latest',
+    sourceType: 'module',
+    parser: tsParser,
+  },
 });
 
 ruleTester.run('set-data-type-reference', rule, {
@@ -32,22 +36,33 @@ ruleTester.run('set-data-type-reference', rule, {
         set data(data) {}
       }`,
       filename: 'front_end/common/foo.ts',
-      errors: [{message: 'The type of a parameter in a data setter must be explicitly defined.'}]
+      errors: [
+        {
+          message: 'The type of a parameter in a data setter must be explicitly defined.',
+        },
+      ],
     },
     {
       code: `class Foo extends HTMLElement {
         set data() {}
       }`,
       filename: 'front_end/common/foo.ts',
-      errors: [{message: 'A data setter must take a parameter that is explicitly typed.'}]
+      errors: [
+        {
+          message: 'A data setter must take a parameter that is explicitly typed.',
+        },
+      ],
     },
     {
       code: `class Foo extends HTMLElement {
         set data(data: {some: 'literal'}) {}
       }`,
       filename: 'front_end/common/foo.ts',
-      errors:
-          [{message: 'A data setter parameter\'s type must be a type reference, not a literal type defined inline.'}]
+      errors: [
+        {
+          message: 'A data setter parameter\'s type must be a type reference, not a literal type defined inline.',
+        },
+      ],
     },
-  ]
+  ],
 });

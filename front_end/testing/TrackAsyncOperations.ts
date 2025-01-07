@@ -66,7 +66,7 @@ export async function checkForPendingActivity() {
         break;
       }
       --retries;
-    } catch (e) {
+    } catch {
       stillPending = asyncActivity.filter(a => a.pending);
       const newTotalCount = asyncActivity.length;
       // Something is still pending. It might get resolved by force completion

@@ -145,7 +145,7 @@ class NavigationEmulator {
     let json;
     try {
       json = JSON.parse(specrules);
-    } catch (_) {
+    } catch {
       dispatchEvent(this.primaryTarget, 'Preload.ruleSetUpdated', {
         ruleSet: {
           id: `ruleSetId:0.${this.seq}`,

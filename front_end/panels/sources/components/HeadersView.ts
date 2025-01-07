@@ -89,7 +89,7 @@ export class HeadersView extends UI.View.SimpleView {
       if (!headerOverrides.every(Persistence.NetworkPersistenceManager.isHeaderOverride)) {
         throw 'Type mismatch after parsing';
       }
-    } catch (e) {
+    } catch {
       console.error('Failed to parse', this.#uiSourceCode.url(), 'for locally overriding headers.');
       parsingError = true;
     }

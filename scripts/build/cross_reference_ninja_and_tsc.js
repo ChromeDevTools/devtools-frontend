@@ -64,13 +64,15 @@ async function buildTargetInfo(buildDir, gnTarget) {
         prev.push(...outputs);
         return prev;
       }, []);
-    } catch (e) {
+    } catch {
       return [];
     }
   };
 
   // Grab the outputs of the build target itself.
-  const output = await exec(`gn desc out/${buildDir} ${gnTarget} outputs --format=json`);
+  const output = await exec(
+      `gn desc out/${buildDir} ${gnTarget} outputs --format=json`,
+  );
   if (output.startsWith('ERROR')) {
     console.error('GN error:');
     console.error(output);
@@ -86,17 +88,19 @@ async function buildTargetInfo(buildDir, gnTarget) {
       return [];
     }
 
-    const depOutputList = await exec(`gn desc out/${buildDir} ${line} outputs --format=json`);
+    const depOutputList = await exec(
+        `gn desc out/${buildDir} ${line} outputs --format=json`,
+    );
     return flattenOutput(depOutputList);
   });
 
   const fileList = await Promise.all(depsOutputFileList);
-  return [gnTargetOutputFileList, fileList]
-      .flat(Infinity)
-      // Only include those in gen.
-      .filter(file => file.startsWith(`//out/${buildDir}/gen/`))
-      // Strip the build dir out.
-      .map(file => file.replace(`//out/${buildDir}/gen/`, ''));
+  return ([gnTargetOutputFileList, fileList]
+              .flat(Infinity)
+              // Only include those in gen.
+              .filter(file => file.startsWith(`//out/${buildDir}/gen/`))
+              // Strip the build dir out.
+              .map(file => file.replace(`//out/${buildDir}/gen/`, '')));
 }
 
 (async function init() {
@@ -123,13 +127,17 @@ async function buildTargetInfo(buildDir, gnTarget) {
     // Ask TypeScript to enumerate the files it knows about.
     const types = path.join(cwd, 'front_end/global_typings');
     const tscPath = path.join(cwd, 'node_modules', '.bin', 'tsc');
-    const tscOut = await exec(`${tscPath} ${entryPoint} --types ${types}/global_defs.d.ts --types ${
-        types}/intl_display_names.d.ts --noEmit --listFiles --allowJs --target esnext`);
+    const tscOut = await exec(
+        `${tscPath} ${entryPoint} --types ${types}/global_defs.d.ts --types ${
+            types}/intl_display_names.d.ts --noEmit --listFiles --allowJs --target esnext`,
+    );
 
     // Filter the list and remap to those that are explicitly in the front_end, excluding the entrypoint itself.
     const frontEndFiles =
         tscOut.split('\n')
-            .filter(line => line.includes('front_end') && line !== entryPoint && !line.includes('global_typings'))
+            .filter(
+                line => line.includes('front_end') && line !== entryPoint && !line.includes('global_typings'),
+                )
             // Ensure we look for the original file, not the .d.ts.
             .map(line => line.replace(/\.d\.ts$/, ''))
             // Ensure that any file that ends in .ts is replaced as the equivalent outputted .js file.
@@ -153,9 +161,12 @@ async function buildTargetInfo(buildDir, gnTarget) {
     if (missingFiles.length) {
       console.error('TypeScript indicates it expects the following files:');
       console.error(missingFiles.map(file => ` - ${file}`).join('\n'));
-      console.error(`There ${
-          missingFiles.length === 1 ? 'is 1 file' :
-                                      `are ${missingFiles.length} files`} not listed in the BUILD.gn as dependencies`);
+      console.error(
+          `There ${
+              missingFiles.length === 1 ?
+                  'is 1 file' :
+                  `are ${missingFiles.length} files`} not listed in the BUILD.gn as dependencies`,
+      );
       console.error('Have you added all dependencies to the BUILD.gn?');
       process.exit(1);
     } else {

@@ -4,9 +4,13 @@
 'use strict';
 
 const rule = require('../lib/enforce-custom-event-names.js');
+const tsParser = require('@typescript-eslint/parser');
 const ruleTester = new (require('eslint').RuleTester)({
-  parserOptions: {ecmaVersion: 9, sourceType: 'module'},
-  parser: require.resolve('@typescript-eslint/parser'),
+  languageOptions: {
+    ecmaVersion: 'latest',
+    sourceType: 'module',
+    parser: tsParser,
+  },
 });
 
 ruleTester.run('enforce-custom-event-names', rule, {
@@ -71,7 +75,7 @@ export class ConstructedEvent extends Event {
         }
       }`,
       filename: 'front_end/common/Importing.js',
-      errors: [{messageId: 'invalidEventName'}]
+      errors: [{messageId: 'invalidEventName'}],
     },
     {
       code: `export class NodeSelectedEvent extends Event {
@@ -80,7 +84,7 @@ export class ConstructedEvent extends Event {
         }
       }`,
       filename: 'front_end/common/Importing.js',
-      errors: [{messageId: 'invalidEventName'}]
+      errors: [{messageId: 'invalidEventName'}],
     },
     {
       code: `export class NodeSelectedEvent extends Event {
@@ -90,7 +94,7 @@ export class ConstructedEvent extends Event {
         }
       }`,
       filename: 'front_end/common/Importing.js',
-      errors: [{messageId: 'invalidEventNameReference'}]
+      errors: [{messageId: 'invalidEventNameReference'}],
     },
     {
       code: `export class NodeSelectedEvent extends Event {
@@ -100,7 +104,7 @@ export class ConstructedEvent extends Event {
         }
       }`,
       filename: 'front_end/common/Importing.js',
-      errors: [{messageId: 'invalidEventNameReference'}]
+      errors: [{messageId: 'invalidEventNameReference'}],
     },
     {
       code: `export class NodeSelectedEvent extends Event {
@@ -110,7 +114,7 @@ export class ConstructedEvent extends Event {
         }
       }`,
       filename: 'front_end/common/Importing.js',
-      errors: [{messageId: 'invalidEventNameReference'}]
+      errors: [{messageId: 'invalidEventNameReference'}],
     },
     {
       code: `export class NodeSelectedEvent extends Event {
@@ -120,8 +124,8 @@ export class ConstructedEvent extends Event {
         }
       }`,
       filename: 'front_end/common/Importing.js',
-      errors: [{messageId: 'invalidEventName'}]
+      errors: [{messageId: 'invalidEventName'}],
     },
     // TODO: valid static, but the actual string is invalid
-  ]
+  ],
 });

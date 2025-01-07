@@ -94,7 +94,7 @@ function createLanternRequest(
   let url;
   try {
     url = new URL(request.args.data.url);
-  } catch (e) {
+  } catch {
     return;
   }
 

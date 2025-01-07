@@ -302,7 +302,7 @@ export class Script implements TextUtils.ContentProvider.ContentProvider, FrameA
     }
     try {
       return this.isWasm() ? await this.loadWasmContent() : await this.loadTextContent();
-    } catch (err) {
+    } catch {
       // TODO(bmeurer): Propagate errors as exceptions / rejections.
       return {error: i18nString(UIStrings.unableToFetchScriptSource)};
     }

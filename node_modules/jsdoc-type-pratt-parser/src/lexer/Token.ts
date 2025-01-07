@@ -37,6 +37,7 @@ export type TokenType =
   | 'import'
   | 'is'
   | 'in'
+  | 'asserts'
   | 'Identifier'
   | 'StringValue'
   | 'Number'

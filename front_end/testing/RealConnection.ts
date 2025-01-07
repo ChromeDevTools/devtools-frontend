@@ -75,7 +75,7 @@ const realConnectionSuites: {title: string, fn: ((this: Mocha.Suite) => void), o
 export function describeWithRealConnection(title: string, fn: (this: Mocha.Suite) => void) {
   realConnectionSuites.push({title, fn, only: false});
 }
-// eslint-disable-next-line mocha/no-exclusive-tests
+
 describeWithRealConnection.only = function(title: string, fn: (this: Mocha.Suite) => void) {
   realConnectionSuites.push({title, fn, only: true});
 };

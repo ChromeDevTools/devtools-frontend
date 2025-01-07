@@ -4,9 +4,13 @@
 'use strict';
 
 const rule = require('../lib/inject-checkbox-styles.js');
+const tsParser = require('@typescript-eslint/parser');
 const ruleTester = new (require('eslint').RuleTester)({
-  parserOptions: {ecmaVersion: 9, sourceType: 'module'},
-  parser: require.resolve('@typescript-eslint/parser'),
+  languageOptions: {
+    ecmaVersion: 'latest',
+    sourceType: 'module',
+    parser: tsParser,
+  },
 });
 
 ruleTester.run('inject-checkbox-styles', rule, {
@@ -109,7 +113,10 @@ export class SettingCheckbox extends HTMLElement {
         }
       }`,
       filename: 'front_end/components/datagrid.ts',
-      errors: [{messageId: 'missingCheckboxStylesImport'}, {messageId: 'missingCheckboxStylesImport'}],
+      errors: [
+        {messageId: 'missingCheckboxStylesImport'},
+        {messageId: 'missingCheckboxStylesImport'},
+      ],
     },
 
     // Importing not the right styles.
@@ -163,5 +170,5 @@ export class SettingCheckbox extends HTMLElement {
       filename: 'front_end/ui/components/datagrid/datagrid.ts',
       errors: [{messageId: 'missingCheckboxStylesAdoption'}],
     },
-  ]
+  ],
 });

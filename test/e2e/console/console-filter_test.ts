@@ -207,7 +207,7 @@ describe('The Console Tab', () => {
 
   it('can apply empty filter', async () => {
     const filter = '';
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
     const expectedMessageFilter: MessageCheck = _ => true;
     await testMessageFilter(filter, expectedMessageFilter);
   });

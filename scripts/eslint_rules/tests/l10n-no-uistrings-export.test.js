@@ -5,9 +5,13 @@
 'use strict';
 
 const rule = require('../lib/l10n-no-uistrings-export.js');
+const tsParser = require('@typescript-eslint/parser');
 const ruleTester = new (require('eslint').RuleTester)({
-  parserOptions: {ecmaVersion: 9, sourceType: 'module'},
-  parser: require.resolve('@typescript-eslint/parser'),
+  languageOptions: {
+    ecmaVersion: 'latest',
+    sourceType: 'module',
+    parser: tsParser,
+  },
 });
 
 ruleTester.run('l10n-no-uistrings-export', rule, {
@@ -29,13 +33,21 @@ ruleTester.run('l10n-no-uistrings-export', rule, {
     {
       code: 'export const UIStrings = {};',
       filename: 'front_end/module/test.ts',
-      errors: [{message: 'Exporting the UIStrings object is only allowed in ModuleUIStrings.(js|ts)'}],
+      errors: [
+        {
+          message: 'Exporting the UIStrings object is only allowed in ModuleUIStrings.(js|ts)',
+        },
+      ],
       output: ' const UIStrings = {};',
     },
     {
       code: 'const UIStrings = {}; export { UIStrings };',
       filename: 'front_end/module/test.ts',
-      errors: [{message: 'Exporting the UIStrings object is only allowed in ModuleUIStrings.(js|ts)'}]
+      errors: [
+        {
+          message: 'Exporting the UIStrings object is only allowed in ModuleUIStrings.(js|ts)',
+        },
+      ],
     },
-  ]
+  ],
 });

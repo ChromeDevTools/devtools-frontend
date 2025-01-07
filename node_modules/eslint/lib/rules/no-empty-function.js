@@ -40,7 +40,7 @@ const ALLOW_OPTIONS = Object.freeze([
  */
 function getKind(node) {
     const parent = node.parent;
-    let kind = "";
+    let kind;
 
     if (node.type === "ArrowFunctionExpression") {
         return "arrowFunctions";
@@ -73,7 +73,7 @@ function getKind(node) {
     }
 
     // Detects prefix.
-    let prefix = "";
+    let prefix;
 
     if (node.generator) {
         prefix = "generator";
@@ -93,6 +93,8 @@ function getKind(node) {
 module.exports = {
     meta: {
         type: "suggestion",
+
+        defaultOptions: [{ allow: [] }],
 
         docs: {
             description: "Disallow empty functions",
@@ -120,9 +122,7 @@ module.exports = {
     },
 
     create(context) {
-        const options = context.options[0] || {};
-        const allowed = options.allow || [];
-
+        const [{ allow }] = context.options;
         const sourceCode = context.sourceCode;
 
         /**
@@ -144,7 +144,7 @@ module.exports = {
                 filter: astUtils.isCommentToken
             });
 
-            if (!allowed.includes(kind) &&
+            if (!allow.includes(kind) &&
                 node.body.type === "BlockStatement" &&
                 node.body.body.length === 0 &&
                 innerComments.length === 0

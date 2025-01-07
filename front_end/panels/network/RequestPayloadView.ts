@@ -183,7 +183,7 @@ export class RequestPayloadView extends UI.Widget.VBox {
       if (value.indexOf('%') >= 0) {
         try {
           value = decodeURIComponent(value);
-        } catch (e) {
+        } catch {
           errorDecoding = true;
         }
       }
@@ -232,7 +232,7 @@ export class RequestPayloadView extends UI.Widget.VBox {
       try {
         const json = JSON.parse(formData);
         this.refreshRequestJSONPayload(json, formData);
-      } catch (e) {
+      } catch {
         this.populateTreeElementWithSourceText(this.requestPayloadCategory, formData);
       }
     }

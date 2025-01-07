@@ -1,3 +1,4 @@
+import { assertsParslet } from '../parslets/assertsParslet'
 import { baseGrammar } from './baseGrammar'
 import { type Grammar } from './Grammar'
 import { pathGrammar } from './pathGrammar'
@@ -65,6 +66,7 @@ export const typescriptGrammar: Grammar = [
     allowEnclosingBrackets: false,
     allowPostfix: false
   }),
+  assertsParslet,
   createNameParslet({
     allowedAdditionalTokens: ['event', 'external', 'in']
   }),

@@ -70,7 +70,7 @@ describe('RequestResolver', () => {
       assert.isFalse(networkLog.hasEventListeners(Logs.NetworkLog.Events.RequestAdded));
       try {
         await request;
-      } catch (e) {
+      } catch {
         return;
       }
       assert.fail('Expected `await request` to throw.');

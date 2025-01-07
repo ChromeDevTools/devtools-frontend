@@ -1,0 +1,440 @@
+'use strict';
+
+var utils$1 = require('../utils.js');
+var utils = require('@typescript-eslint/utils');
+var astUtils = require('@typescript-eslint/utils/ast-utils');
+require('eslint-visitor-keys');
+require('espree');
+require('estraverse');
+
+const CJS_EXPORT = /^(?:module\s*\.\s*)?exports(?:\s*\.|\s*\[|$)/u;
+const CJS_IMPORT = /^require\(/u;
+const LT = `[${Array.from(
+  /* @__PURE__ */ new Set(["\r\n", "\r", "\n", "\u2028", "\u2029"])
+).join("")}]`;
+const PADDING_LINE_SEQUENCE = new RegExp(
+  String.raw`^(\s*?${LT})\s*${LT}(\s*;?)$`,
+  "u"
+);
+function newKeywordTester(type, keyword) {
+  return {
+    test(node, sourceCode) {
+      const isSameKeyword = sourceCode.getFirstToken(node)?.value === keyword;
+      const isSameType = Array.isArray(type) ? type.includes(node.type) : type === node.type;
+      return isSameKeyword && isSameType;
+    }
+  };
+}
+function newSinglelineKeywordTester(keyword) {
+  return {
+    test(node, sourceCode) {
+      return node.loc.start.line === node.loc.end.line && sourceCode.getFirstToken(node).value === keyword;
+    }
+  };
+}
+function newMultilineKeywordTester(keyword) {
+  return {
+    test(node, sourceCode) {
+      return node.loc.start.line !== node.loc.end.line && sourceCode.getFirstToken(node).value === keyword;
+    }
+  };
+}
+function newNodeTypeTester(type) {
+  return {
+    test: (node) => node.type === type
+  };
+}
+function skipChainExpression(node) {
+  return node && node.type === utils.AST_NODE_TYPES.ChainExpression ? node.expression : node;
+}
+function isIIFEStatement(node) {
+  if (node.type === utils.AST_NODE_TYPES.ExpressionStatement) {
+    let expression = skipChainExpression(node.expression);
+    if (expression.type === utils.AST_NODE_TYPES.UnaryExpression)
+      expression = skipChainExpression(expression.argument);
+    if (expression.type === utils.AST_NODE_TYPES.CallExpression) {
+      let node2 = expression.callee;
+      while (node2.type === utils.AST_NODE_TYPES.SequenceExpression)
+        node2 = node2.expressions[node2.expressions.length - 1];
+      return astUtils.isFunction(node2);
+    }
+  }
+  return false;
+}
+function isCJSRequire(node) {
+  if (node.type === utils.AST_NODE_TYPES.VariableDeclaration) {
+    const declaration = node.declarations[0];
+    if (declaration?.init) {
+      let call = declaration?.init;
+      while (call.type === utils.AST_NODE_TYPES.MemberExpression)
+        call = call.object;
+      if (call.type === utils.AST_NODE_TYPES.CallExpression && call.callee.type === utils.AST_NODE_TYPES.Identifier) {
+        return call.callee.name === "require";
+      }
+    }
+  }
+  return false;
+}
+function isBlockLikeStatement(node, sourceCode) {
+  if (node.type === utils.AST_NODE_TYPES.DoWhileStatement && node.body.type === utils.AST_NODE_TYPES.BlockStatement) {
+    return true;
+  }
+  if (isIIFEStatement(node))
+    return true;
+  const lastToken = sourceCode.getLastToken(node, astUtils.isNotSemicolonToken);
+  const belongingNode = lastToken && astUtils.isClosingBraceToken(lastToken) ? sourceCode.getNodeByRangeIndex(lastToken.range[0]) : null;
+  return !!belongingNode && (belongingNode.type === utils.AST_NODE_TYPES.BlockStatement || belongingNode.type === utils.AST_NODE_TYPES.SwitchStatement);
+}
+function isDirective(node, sourceCode) {
+  return node.type === utils.AST_NODE_TYPES.ExpressionStatement && (node.parent?.type === utils.AST_NODE_TYPES.Program || node.parent?.type === utils.AST_NODE_TYPES.BlockStatement && astUtils.isFunction(node.parent.parent)) && node.expression.type === utils.AST_NODE_TYPES.Literal && typeof node.expression.value === "string" && !astUtils.isParenthesized(node.expression, sourceCode);
+}
+function isDirectivePrologue(node, sourceCode) {
+  if (isDirective(node, sourceCode) && node.parent && "body" in node.parent && Array.isArray(node.parent.body)) {
+    for (const sibling of node.parent.body) {
+      if (sibling === node)
+        break;
+      if (!isDirective(sibling, sourceCode))
+        return false;
+    }
+    return true;
+  }
+  return false;
+}
+function isCJSExport(node) {
+  if (node.type === utils.AST_NODE_TYPES.ExpressionStatement) {
+    const expression = node.expression;
+    if (expression.type === utils.AST_NODE_TYPES.AssignmentExpression) {
+      let left = expression.left;
+      if (left.type === utils.AST_NODE_TYPES.MemberExpression) {
+        while (left.object.type === utils.AST_NODE_TYPES.MemberExpression)
+          left = left.object;
+        return left.object.type === utils.AST_NODE_TYPES.Identifier && (left.object.name === "exports" || left.object.name === "module" && left.property.type === utils.AST_NODE_TYPES.Identifier && left.property.name === "exports");
+      }
+    }
+  }
+  return false;
+}
+function isExpression(node, sourceCode) {
+  return node.type === utils.AST_NODE_TYPES.ExpressionStatement && !isDirectivePrologue(node, sourceCode);
+}
+function getActualLastToken(node, sourceCode) {
+  const semiToken = sourceCode.getLastToken(node);
+  const prevToken = sourceCode.getTokenBefore(semiToken);
+  const nextToken = sourceCode.getTokenAfter(semiToken);
+  const isSemicolonLessStyle = prevToken && nextToken && prevToken.range[0] >= node.range[0] && astUtils.isSemicolonToken(semiToken) && semiToken.loc.start.line !== prevToken.loc.end.line && semiToken.loc.end.line === nextToken.loc.start.line;
+  return isSemicolonLessStyle ? prevToken : semiToken;
+}
+function replacerToRemovePaddingLines(_, trailingSpaces, indentSpaces) {
+  return trailingSpaces + indentSpaces;
+}
+function verifyForAny() {
+}
+function verifyForNever(context, _, nextNode, paddingLines) {
+  if (paddingLines.length === 0)
+    return;
+  context.report({
+    node: nextNode,
+    messageId: "unexpectedBlankLine",
+    fix(fixer) {
+      if (paddingLines.length >= 2)
+        return null;
+      const prevToken = paddingLines[0][0];
+      const nextToken = paddingLines[0][1];
+      const start = prevToken.range[1];
+      const end = nextToken.range[0];
+      const text = context.getSourceCode().text.slice(start, end).replace(PADDING_LINE_SEQUENCE, replacerToRemovePaddingLines);
+      return fixer.replaceTextRange([start, end], text);
+    }
+  });
+}
+function verifyForAlways(context, prevNode, nextNode, paddingLines) {
+  if (paddingLines.length > 0)
+    return;
+  context.report({
+    node: nextNode,
+    messageId: "expectedBlankLine",
+    fix(fixer) {
+      const sourceCode = context.sourceCode;
+      let prevToken = getActualLastToken(prevNode, sourceCode);
+      const nextToken = sourceCode.getFirstTokenBetween(prevToken, nextNode, {
+        includeComments: true,
+        /**
+         * Skip the trailing comments of the previous node.
+         * This inserts a blank line after the last trailing comment.
+         *
+         * For example:
+         *
+         *     foo(); // trailing comment.
+         *     // comment.
+         *     bar();
+         *
+         * Get fixed to:
+         *
+         *     foo(); // trailing comment.
+         *
+         *     // comment.
+         *     bar();
+         * @param token The token to check.
+         * @returns `true` if the token is not a trailing comment.
+         * @private
+         */
+        filter(token) {
+          if (astUtils.isTokenOnSameLine(prevToken, token)) {
+            prevToken = token;
+            return false;
+          }
+          return true;
+        }
+      }) || nextNode;
+      const insertText = astUtils.isTokenOnSameLine(prevToken, nextToken) ? "\n\n" : "\n";
+      return fixer.insertTextAfter(prevToken, insertText);
+    }
+  });
+}
+const PaddingTypes = {
+  any: { verify: verifyForAny },
+  never: { verify: verifyForNever },
+  always: { verify: verifyForAlways }
+};
+const StatementTypes = {
+  "*": { test: () => true },
+  "block-like": { test: isBlockLikeStatement },
+  "exports": { test: isCJSExport },
+  "require": { test: isCJSRequire },
+  "directive": { test: isDirectivePrologue },
+  "expression": { test: isExpression },
+  "iife": { test: isIIFEStatement },
+  "multiline-block-like": {
+    test: (node, sourceCode) => node.loc.start.line !== node.loc.end.line && isBlockLikeStatement(node, sourceCode)
+  },
+  "multiline-expression": {
+    test: (node, sourceCode) => node.loc.start.line !== node.loc.end.line && node.type === utils.AST_NODE_TYPES.ExpressionStatement && !isDirectivePrologue(node, sourceCode)
+  },
+  "multiline-const": newMultilineKeywordTester("const"),
+  "multiline-export": newMultilineKeywordTester("export"),
+  "multiline-let": newMultilineKeywordTester("let"),
+  "multiline-var": newMultilineKeywordTester("var"),
+  "singleline-const": newSinglelineKeywordTester("const"),
+  "singleline-export": newSinglelineKeywordTester("export"),
+  "singleline-let": newSinglelineKeywordTester("let"),
+  "singleline-var": newSinglelineKeywordTester("var"),
+  "block": newNodeTypeTester(utils.AST_NODE_TYPES.BlockStatement),
+  "empty": newNodeTypeTester(utils.AST_NODE_TYPES.EmptyStatement),
+  "function": newNodeTypeTester(utils.AST_NODE_TYPES.FunctionDeclaration),
+  "ts-method": newNodeTypeTester(utils.AST_NODE_TYPES.TSMethodSignature),
+  "break": newKeywordTester(utils.AST_NODE_TYPES.BreakStatement, "break"),
+  "case": newKeywordTester(utils.AST_NODE_TYPES.SwitchCase, "case"),
+  "class": newKeywordTester(utils.AST_NODE_TYPES.ClassDeclaration, "class"),
+  "const": newKeywordTester(utils.AST_NODE_TYPES.VariableDeclaration, "const"),
+  "continue": newKeywordTester(utils.AST_NODE_TYPES.ContinueStatement, "continue"),
+  "debugger": newKeywordTester(utils.AST_NODE_TYPES.DebuggerStatement, "debugger"),
+  "default": newKeywordTester(
+    [utils.AST_NODE_TYPES.SwitchCase, utils.AST_NODE_TYPES.ExportDefaultDeclaration],
+    "default"
+  ),
+  "do": newKeywordTester(utils.AST_NODE_TYPES.DoWhileStatement, "do"),
+  "export": newKeywordTester(
+    [
+      utils.AST_NODE_TYPES.ExportAllDeclaration,
+      utils.AST_NODE_TYPES.ExportDefaultDeclaration,
+      utils.AST_NODE_TYPES.ExportNamedDeclaration
+    ],
+    "export"
+  ),
+  "for": newKeywordTester(
+    [
+      utils.AST_NODE_TYPES.ForStatement,
+      utils.AST_NODE_TYPES.ForInStatement,
+      utils.AST_NODE_TYPES.ForOfStatement
+    ],
+    "for"
+  ),
+  "if": newKeywordTester(utils.AST_NODE_TYPES.IfStatement, "if"),
+  "import": newKeywordTester(utils.AST_NODE_TYPES.ImportDeclaration, "import"),
+  "let": newKeywordTester(utils.AST_NODE_TYPES.VariableDeclaration, "let"),
+  "return": newKeywordTester(utils.AST_NODE_TYPES.ReturnStatement, "return"),
+  "switch": newKeywordTester(utils.AST_NODE_TYPES.SwitchStatement, "switch"),
+  "throw": newKeywordTester(utils.AST_NODE_TYPES.ThrowStatement, "throw"),
+  "try": newKeywordTester(utils.AST_NODE_TYPES.TryStatement, "try"),
+  "var": newKeywordTester(utils.AST_NODE_TYPES.VariableDeclaration, "var"),
+  "while": newKeywordTester(
+    [utils.AST_NODE_TYPES.WhileStatement, utils.AST_NODE_TYPES.DoWhileStatement],
+    "while"
+  ),
+  "with": newKeywordTester(utils.AST_NODE_TYPES.WithStatement, "with"),
+  "cjs-export": {
+    test: (node, sourceCode) => node.type === "ExpressionStatement" && node.expression.type === "AssignmentExpression" && CJS_EXPORT.test(sourceCode.getText(node.expression.left))
+  },
+  "cjs-import": {
+    test: (node, sourceCode) => node.type === "VariableDeclaration" && node.declarations.length > 0 && Boolean(node.declarations[0].init) && CJS_IMPORT.test(sourceCode.getText(node.declarations[0].init))
+  },
+  // Additional Typescript constructs
+  "enum": newKeywordTester(
+    utils.AST_NODE_TYPES.TSEnumDeclaration,
+    "enum"
+  ),
+  "interface": newKeywordTester(
+    utils.AST_NODE_TYPES.TSInterfaceDeclaration,
+    "interface"
+  ),
+  "type": newKeywordTester(
+    utils.AST_NODE_TYPES.TSTypeAliasDeclaration,
+    "type"
+  ),
+  "function-overload": {
+    test: (node) => node.type === "TSDeclareFunction"
+  }
+};
+var paddingLineBetweenStatements = utils$1.createRule({
+  name: "padding-line-between-statements",
+  package: "ts",
+  meta: {
+    type: "layout",
+    docs: {
+      description: "Require or disallow padding lines between statements"
+    },
+    fixable: "whitespace",
+    hasSuggestions: false,
+    // This is intentionally an array schema as you can pass 0..n config objects
+    schema: {
+      $defs: {
+        paddingType: {
+          type: "string",
+          enum: Object.keys(PaddingTypes)
+        },
+        statementType: {
+          anyOf: [
+            {
+              type: "string",
+              enum: Object.keys(StatementTypes)
+            },
+            {
+              type: "array",
+              items: {
+                type: "string",
+                enum: Object.keys(StatementTypes)
+              },
+              minItems: 1,
+              uniqueItems: true,
+              additionalItems: false
+            }
+          ]
+        }
+      },
+      type: "array",
+      additionalItems: false,
+      items: {
+        type: "object",
+        properties: {
+          blankLine: { $ref: "#/$defs/paddingType" },
+          prev: { $ref: "#/$defs/statementType" },
+          next: { $ref: "#/$defs/statementType" }
+        },
+        additionalProperties: false,
+        required: ["blankLine", "prev", "next"]
+      }
+    },
+    messages: {
+      unexpectedBlankLine: "Unexpected blank line before this statement.",
+      expectedBlankLine: "Expected blank line before this statement."
+    }
+  },
+  defaultOptions: [],
+  create(context) {
+    const sourceCode = context.sourceCode;
+    const configureList = context.options || [];
+    let scopeInfo = null;
+    function enterScope() {
+      scopeInfo = {
+        upper: scopeInfo,
+        prevNode: null
+      };
+    }
+    function exitScope() {
+      if (scopeInfo)
+        scopeInfo = scopeInfo.upper;
+    }
+    function match(node, type) {
+      let innerStatementNode = node;
+      while (innerStatementNode.type === utils.AST_NODE_TYPES.LabeledStatement)
+        innerStatementNode = innerStatementNode.body;
+      if (Array.isArray(type))
+        return type.some(match.bind(null, innerStatementNode));
+      return StatementTypes[type].test(innerStatementNode, sourceCode);
+    }
+    function getPaddingType(prevNode, nextNode) {
+      for (let i = configureList.length - 1; i >= 0; --i) {
+        const configure = configureList[i];
+        if (match(prevNode, configure.prev) && match(nextNode, configure.next)) {
+          return PaddingTypes[configure.blankLine];
+        }
+      }
+      return PaddingTypes.any;
+    }
+    function getPaddingLineSequences(prevNode, nextNode) {
+      const pairs = [];
+      let prevToken = getActualLastToken(prevNode, sourceCode);
+      if (nextNode.loc.start.line - prevToken.loc.end.line >= 2) {
+        do {
+          const token = sourceCode.getTokenAfter(prevToken, {
+            includeComments: true
+          });
+          if (token.loc.start.line - prevToken.loc.end.line >= 2)
+            pairs.push([prevToken, token]);
+          prevToken = token;
+        } while (prevToken.range[0] < nextNode.range[0]);
+      }
+      return pairs;
+    }
+    function verify(node) {
+      if (!node.parent || ![
+        utils.AST_NODE_TYPES.BlockStatement,
+        utils.AST_NODE_TYPES.Program,
+        utils.AST_NODE_TYPES.StaticBlock,
+        utils.AST_NODE_TYPES.SwitchCase,
+        utils.AST_NODE_TYPES.SwitchStatement,
+        utils.AST_NODE_TYPES.TSInterfaceBody,
+        utils.AST_NODE_TYPES.TSModuleBlock,
+        utils.AST_NODE_TYPES.TSTypeLiteral
+      ].includes(node.parent.type)) {
+        return;
+      }
+      const prevNode = scopeInfo.prevNode;
+      if (prevNode) {
+        const type = getPaddingType(prevNode, node);
+        const paddingLines = getPaddingLineSequences(prevNode, node);
+        type.verify(context, prevNode, node, paddingLines);
+      }
+      scopeInfo.prevNode = node;
+    }
+    function verifyThenEnterScope(node) {
+      verify(node);
+      enterScope();
+    }
+    return {
+      "Program": enterScope,
+      "BlockStatement": enterScope,
+      "SwitchStatement": enterScope,
+      "StaticBlock": enterScope,
+      "TSInterfaceBody": enterScope,
+      "TSModuleBlock": enterScope,
+      "TSTypeLiteral": enterScope,
+      "Program:exit": exitScope,
+      "BlockStatement:exit": exitScope,
+      "SwitchStatement:exit": exitScope,
+      "StaticBlock:exit": exitScope,
+      "TSInterfaceBody:exit": exitScope,
+      "TSModuleBlock:exit": exitScope,
+      "TSTypeLiteral:exit": exitScope,
+      ":statement": verify,
+      "SwitchCase": verifyThenEnterScope,
+      "TSDeclareFunction": verifyThenEnterScope,
+      "TSMethodSignature": verifyThenEnterScope,
+      "SwitchCase:exit": exitScope,
+      "TSDeclareFunction:exit": exitScope,
+      "TSMethodSignature:exit": exitScope
+    };
+  }
+});
+
+module.exports = paddingLineBetweenStatements;

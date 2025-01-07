@@ -286,7 +286,7 @@ async function checkFileExists(filePath) {
         fs.constants.R_OK,
     );
     return !errorsAccessingFile;
-  } catch (e) {
+  } catch {
     return false;
   }
 }

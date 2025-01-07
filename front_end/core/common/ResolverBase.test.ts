@@ -96,7 +96,7 @@ describe('ResolverBase', () => {
       resolver.assertIsNotListening();
       try {
         await obj;
-      } catch (e) {
+      } catch {
         return;
       }
       assert.fail('Expected `await obj` to throw.');

@@ -22,7 +22,8 @@ module.exports = {
     schema : []
   },
   create : function(context) {
-    const fileName = path.resolve(context.getFilename());
+    const filename = context.filename ?? context.getFilename();
+    const fileName = path.resolve(filename);
     function reportPathIfInvalid(node) {
       if (!fileName.includes(PERFOMANCE_PANEL_INTERACTION_TESTS_PATH) && !fileName.includes(UI_COMPONENTS_PATH)) {
         context.report({

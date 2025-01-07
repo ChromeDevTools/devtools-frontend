@@ -4,9 +4,13 @@
 'use strict';
 
 const rule = require('../lib/prefer-private-class-members.js');
+const tsParser = require('@typescript-eslint/parser');
 const ruleTester = new (require('eslint').RuleTester)({
-  parser: require.resolve('@typescript-eslint/parser'),
-  parserOptions: {ecmaVersion: 9, sourceType: 'module'},
+  languageOptions: {
+    ecmaVersion: 'latest',
+    sourceType: 'module',
+    parser: tsParser,
+  },
 });
 
 ruleTester.run('prefer-private-class-members', rule, {
@@ -58,5 +62,5 @@ ruleTester.run('prefer-private-class-members', rule, {
       filename: 'test/e2e/folder/file.ts',
       errors: [{messageId: 'do_not_use_private'}],
     },
-  ]
+  ],
 });

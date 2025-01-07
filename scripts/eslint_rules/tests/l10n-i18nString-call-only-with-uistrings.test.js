@@ -5,13 +5,19 @@
 'use strict';
 
 const rule = require('../lib/l10n-i18nString-call-only-with-uistrings.js');
+const tsParser = require('@typescript-eslint/parser');
 const ruleTester = new (require('eslint').RuleTester)({
-  parserOptions: {ecmaVersion: 9, sourceType: 'module'},
-  parser: require.resolve('@typescript-eslint/parser'),
+  languageOptions: {
+    ecmaVersion: 'latest',
+    sourceType: 'module',
+    parser: tsParser,
+  },
 });
 
 const expectedErrors = [
-  {message: 'Calling i18nString/i18nLazyString without using a UIStrings object is illegal.'},
+  {
+    message: 'Calling i18nString/i18nLazyString without using a UIStrings object is illegal.',
+  },
 ];
 
 ruleTester.run('l10n-i18nString-call-only-with-uistrings', rule, {
@@ -36,5 +42,5 @@ ruleTester.run('l10n-i18nString-call-only-with-uistrings', rule, {
       code: 'i18nString(someFoo());',
       errors: expectedErrors,
     },
-  ]
+  ],
 });

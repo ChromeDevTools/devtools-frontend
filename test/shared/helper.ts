@@ -14,7 +14,6 @@ import {getBrowserAndPages, getTestServerPort} from '../conductor/puppeteer-stat
 export {platform} from '../conductor/mocha-interface-helpers.js';
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface Window {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     __pendingEvents: Map<string, Event[]>;
@@ -86,7 +85,7 @@ async function performActionOnSelector(
     try {
       await action(element);
       return element;
-    } catch (err) {
+    } catch {
       // A bit of delay to not retry too often.
       await new Promise(resolve => setTimeout(resolve, 50));
     }

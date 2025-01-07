@@ -444,7 +444,6 @@ export async function setEventListenerBreakpoint(groupName: string, eventName: s
 }
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface Window {
     /* eslint-disable @typescript-eslint/naming-convention */
     __sourceFileEvents: Map<number, {files: string[], handler: (e: Event) => void}>;

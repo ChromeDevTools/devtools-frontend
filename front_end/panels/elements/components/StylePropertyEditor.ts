@@ -32,8 +32,8 @@ const {render, html, Directives} = LitHtml;
 
 declare global {
   interface HTMLElementEventMap {
-    'propertyselected': PropertySelectedEvent;
-    'propertydeselected': PropertyDeselectedEvent;
+    propertyselected: PropertySelectedEvent;
+    propertydeselected: PropertyDeselectedEvent;
   }
 }
 

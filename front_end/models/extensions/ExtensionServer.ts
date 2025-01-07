@@ -129,7 +129,7 @@ class RegisteredExtension {
       let parsedURL;
       try {
         parsedURL = new URL(inspectedURL);
-      } catch (exception) {
+      } catch {
         return false;
       }
       return parsedURL.protocol !== 'file:';
@@ -1406,7 +1406,7 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     // TODO(caseq): make sure tests supply valid URLs or we specifically handle invalid ones.
     try {
       parsedURL = new URL(url);
-    } catch (exception) {
+    } catch {
       return false;
     }
 

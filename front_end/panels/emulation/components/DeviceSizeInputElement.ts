@@ -130,6 +130,6 @@ declare global {
     'device-mode-emulation-size-input': SizeInputElement;
   }
   interface HTMLElementEventMap {
-    'sizechanged': SizeChangedEvent;
+    sizechanged: SizeChangedEvent;
   }
 }

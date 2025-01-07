@@ -5,9 +5,13 @@
 'use strict';
 
 const rule = require('../lib/l10n-no-locked-or-placeholder-only-phrase.js');
+const tsParser = require('@typescript-eslint/parser');
 const ruleTester = new (require('eslint').RuleTester)({
-  parserOptions: {ecmaVersion: 9, sourceType: 'module'},
-  parser: require.resolve('@typescript-eslint/parser'),
+  languageOptions: {
+    ecmaVersion: 'latest',
+    sourceType: 'module',
+    parser: tsParser,
+  },
 });
 
 ruleTester.run('l10n-no-locked-or-placeholder-only-phrase', rule, {
@@ -31,11 +35,19 @@ ruleTester.run('l10n-no-locked-or-placeholder-only-phrase', rule, {
   invalid: [
     {
       code: 'const UIStrings = { foo: \'`whole phrase is locked`\'};',
-      errors: [{message: 'Locking whole phrases is not allowed. Use i18n.i18n.lockedString instead.'}],
+      errors: [
+        {
+          message: 'Locking whole phrases is not allowed. Use i18n.i18n.lockedString instead.',
+        },
+      ],
     },
     {
       code: 'const UIStrings = { foo: \'{PH}\'};',
-      errors: [{message: 'Single placeholder-only phrases are not allowed. Use i18n.i18n.lockedString instead.'}],
+      errors: [
+        {
+          message: 'Single placeholder-only phrases are not allowed. Use i18n.i18n.lockedString instead.',
+        },
+      ],
     },
   ],
 });

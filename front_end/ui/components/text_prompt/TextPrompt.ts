@@ -142,6 +142,6 @@ declare global {
   }
 
   interface HTMLElementEventMap {
-    'promptinputchanged': PromptInputEvent;
+    promptinputchanged: PromptInputEvent;
   }
 }

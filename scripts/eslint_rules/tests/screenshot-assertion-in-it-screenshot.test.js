@@ -5,9 +5,13 @@
 'use strict';
 
 const rule = require('../lib/screenshot-assertion-in-it-screenshot.js');
+const tsParser = require('@typescript-eslint/parser');
 const ruleTester = new (require('eslint').RuleTester)({
-  parserOptions: {ecmaVersion: 9, sourceType: 'module'},
-  parser: require.resolve('@typescript-eslint/parser'),
+  languageOptions: {
+    ecmaVersion: 'latest',
+    sourceType: 'module',
+    parser: tsParser,
+  },
 });
 
 ruleTester.run('screenshot-assertion-in-it-screenshot', rule, {
@@ -79,5 +83,5 @@ ruleTester.run('screenshot-assertion-in-it-screenshot', rule, {
         await assertElementScreenshotUnchanged(element, 'foo.png');
       })`,
     },
-  ]
+  ],
 });

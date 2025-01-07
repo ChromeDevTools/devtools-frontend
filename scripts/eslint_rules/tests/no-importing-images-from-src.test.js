@@ -4,9 +4,13 @@
 'use strict';
 
 const rule = require('../lib/no-importing-images-from-src.js');
+const tsParser = require('@typescript-eslint/parser');
 const ruleTester = new (require('eslint').RuleTester)({
-  parser: require.resolve('@typescript-eslint/parser'),
-  parserOptions: {ecmaVersion: 9, sourceType: 'module'},
+  languageOptions: {
+    ecmaVersion: 'latest',
+    sourceType: 'module',
+    parser: tsParser,
+  },
 });
 
 ruleTester.run('no-importing-images-from-src', rule, {
@@ -22,9 +26,11 @@ ruleTester.run('no-importing-images-from-src', rule, {
       code: 'const someIcon = new URL(\'../../../Images/src/test_icon.svg\', import.meta.url).toString()',
       filename: 'front_end/ui/components/component/file.ts',
       output: 'const someIcon = new URL(\'../../../Images/test_icon.svg\', import.meta.url).toString()',
-      errors: [{
-        messageId: 'imageImportUsingSrc',
-      }],
+      errors: [
+        {
+          messageId: 'imageImportUsingSrc',
+        },
+      ],
     },
     {
       code:
@@ -32,9 +38,11 @@ ruleTester.run('no-importing-images-from-src', rule, {
       filename: 'front_end/ui/components/component/file.ts',
       output:
           'const someIcon = new URL(\'../../../devtools-frontend/front_end/Images/test_icon.svg\', import.meta.url).toString()',
-      errors: [{
-        messageId: 'imageImportUsingSrc',
-      }],
+      errors: [
+        {
+          messageId: 'imageImportUsingSrc',
+        },
+      ],
     },
   ],
 });

@@ -5,15 +5,32 @@
 
 const path = require('path');
 const rule = require('../lib/enforce-default-import-name.js');
+const tsParser = require('@typescript-eslint/parser');
 const ruleTester = new (require('eslint').RuleTester)({
-  parser: require.resolve('@typescript-eslint/parser'),
+  languageOptions: {
+    ecmaVersion: 'latest',
+    sourceType: 'module',
+    parser: tsParser,
+  },
 });
 
 const TEST_OPTIONS = [
-  {modulePath: path.join(__dirname, '..', '..', '..', 'front_end', 'models', 'trace', 'trace.js'), importName: 'Trace'}
+  {
+    modulePath: path.join(
+        __dirname,
+        '..',
+        '..',
+        '..',
+        'front_end',
+        'models',
+        'trace',
+        'trace.js',
+        ),
+    importName: 'Trace',
+  },
 ];
 
-ruleTester.run('es-modules-import', rule, {
+ruleTester.run('enforce-default-import-name', rule, {
   valid: [
     {
       code: 'import * as Trace from "../models/trace/trace.js"',
@@ -31,7 +48,11 @@ ruleTester.run('es-modules-import', rule, {
       code: 'import * as TraceEngine from "../models/trace/trace.js"',
       filename: 'front_end/common/Importing.js',
       options: TEST_OPTIONS,
-      errors: [{message: 'When importing ../models/trace/trace.js, the name used must be Trace'}],
+      errors: [
+        {
+          message: 'When importing ../models/trace/trace.js, the name used must be Trace',
+        },
+      ],
     },
-  ]
+  ],
 });

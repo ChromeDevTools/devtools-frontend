@@ -200,7 +200,7 @@ export function assignOrigin(
           try {
             new URL(processInfo.frame.url);
             process.url = processInfo.frame.url;
-          } catch (e) {
+          } catch {
             process.url = null;
           }
         }

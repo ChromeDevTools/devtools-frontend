@@ -404,7 +404,6 @@ export async function initializeGlobalLocaleVars() {
   try {
     await i18n.i18n.fetchAndRegisterLocaleData('en-US');
   } catch (error) {
-    // eslint-disable-next-line no-console
     console.warn('EnvironmentHelper: Loading en-US locale failed', error.message);
   }
 }

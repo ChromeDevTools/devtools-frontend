@@ -45,6 +45,7 @@ module.exports = {
     schema: []  // no options
   },
   create: function(context) {
+    const sourceCode = context.sourceCode ?? context.getSourceCode();
     return {
       MemberExpression(node) {
         if ((node.object.name === 'it' || node.object.name === 'describe' || node.object.name === 'itScreenshot') &&
@@ -65,7 +66,7 @@ module.exports = {
             });
           }
 
-          const attachedComments = context.getCommentsBefore(node.parent);
+          const attachedComments = sourceCode.getCommentsBefore(node.parent);
 
           if (attachedComments.length === 0) {
             context.report({node, messageId: 'comment'});

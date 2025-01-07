@@ -18,7 +18,10 @@ const REL_TS_LIB_PATH = '/node_modules/typescript/lib/';
 const typescriptSources =
     fs.readdirSync(process.argv[3] + REL_TS_LIB_PATH).map(name => process.argv[3] + REL_TS_LIB_PATH + name);
 
-const program = ts.createProgram({rootNames: typescriptSources, options: {noResolve: true, types: []}});
+const program = ts.createProgram({
+  rootNames: typescriptSources,
+  options: {noResolve: true, types: []},
+});
 
 for (const file of program.getSourceFiles()) {
   ts.forEachChild(file, node => {
@@ -38,8 +41,10 @@ for (const file of program.getSourceFiles()) {
 // Assume the DevTools front-end repository is at
 // `devtools/devtools-frontend`, where `devtools` is on the same level
 // as `chromium`. This matches `scripts/npm_test.js`.
-const files =
-    glob.sync(`${chromiumSource}/third_party/blink/renderer/+(core|modules)/**/*.idl`, {cwd: process.env.PWD});
+const files = glob.sync(
+    `${chromiumSource}/third_party/blink/renderer/+(core|modules)/**/*.idl`,
+    {cwd: process.env.PWD},
+);
 
 for (const file of files) {
   if (file.includes('testing')) {
@@ -56,13 +61,14 @@ for (const file of files) {
 
   try {
     WebIDL2.parse(newLines.join('\n')).forEach(walkRoot);
-  } catch (e) {
+  } catch {
     // console.error(file);
   }
 
   // Source for Console spec: https://console.spec.whatwg.org/#idl-index
   WebIDL2
-      .parse(`
+      .parse(
+          `
 [Exposed=(Window,Worker,Worklet)]
 namespace console { // but see namespace object requirements below
   // Logging
@@ -92,6 +98,8 @@ namespace console { // but see namespace object requirements below
   undefined timeLog(optional DOMString label = "default", any... data);
   undefined timeEnd(optional DOMString label = "default");
 };
-`).forEach(walkRoot);
+`,
+          )
+      .forEach(walkRoot);
 }
 postProcess();

@@ -35,7 +35,8 @@ module.exports = {
     }
   },
   create: function(context) {
-    const importingFileName = path.resolve(context.getFilename());
+    const filename = context.filename ?? context.getFilename();
+    const importingFileName = path.resolve(filename);
     const importingDir = path.dirname(importingFileName);
 
     return {

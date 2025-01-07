@@ -69,7 +69,6 @@ export abstract class BaseInsightComponent<T extends InsightModel<{}>> extends H
     insightSetKey: null,
   };
 
-  // eslint-disable-next-line rulesdir/no-bound-component-methods
   readonly #boundRender = this.#render.bind(this);
   readonly sharedTableState: TableState = {
     selectedRowEl: null,

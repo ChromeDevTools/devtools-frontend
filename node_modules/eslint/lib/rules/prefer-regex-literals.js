@@ -34,7 +34,7 @@ function isStringLiteral(node) {
  * @returns {boolean} True if the node is a regex literal.
  */
 function isRegexLiteral(node) {
-    return node.type === "Literal" && Object.prototype.hasOwnProperty.call(node, "regex");
+    return node.type === "Literal" && Object.hasOwn(node, "regex");
 }
 
 const validPrecedingTokens = new Set([
@@ -112,6 +112,10 @@ module.exports = {
     meta: {
         type: "suggestion",
 
+        defaultOptions: [{
+            disallowRedundantWrapping: false
+        }],
+
         docs: {
             description: "Disallow use of the `RegExp` constructor in favor of regular expression literals",
             recommended: false,
@@ -125,8 +129,7 @@ module.exports = {
                 type: "object",
                 properties: {
                     disallowRedundantWrapping: {
-                        type: "boolean",
-                        default: false
+                        type: "boolean"
                     }
                 },
                 additionalProperties: false
@@ -144,7 +147,7 @@ module.exports = {
     },
 
     create(context) {
-        const [{ disallowRedundantWrapping = false } = {}] = context.options;
+        const [{ disallowRedundantWrapping }] = context.options;
         const sourceCode = context.sourceCode;
 
         /**

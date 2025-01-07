@@ -1097,7 +1097,7 @@ export class SourcesPanel extends UI.Panel.Panel implements
       }
       try {
         return JSON.stringify(this, null, indent);
-      } catch (error) {
+      } catch {
         return String(this);
       }
     }

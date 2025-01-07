@@ -5,7 +5,10 @@
 
 const rule = require('../lib/no-assert-equal.js');
 const ruleTester = new (require('eslint').RuleTester)({
-  parserOptions: {ecmaVersion: 9, sourceType: 'module'},
+  languageOptions: {
+    ecmaVersion: 'latest',
+    sourceType: 'module',
+  },
 });
 
 ruleTester.run('no-assert-equal', rule, {

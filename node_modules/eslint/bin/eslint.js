@@ -9,6 +9,11 @@
 
 "use strict";
 
+const mod = require("node:module");
+
+// to use V8's code cache to speed up instantiation time
+mod.enableCompileCache?.();
+
 // must do this initialization *before* other requires in order to work
 if (process.argv.includes("--debug")) {
     require("debug").enable("eslint:*,-eslint:code-path,eslintrc:*");
@@ -64,7 +69,7 @@ function readStdin() {
 function getErrorMessage(error) {
 
     // Lazy loading because this is used only if an error happened.
-    const util = require("util");
+    const util = require("node:util");
 
     // Foolproof -- third-party module might throw non-object.
     if (typeof error !== "object" || error === null) {
@@ -140,16 +145,17 @@ ${getErrorMessage(error)}`;
     if (process.argv.includes("--init")) {
 
         // `eslint --init` has been moved to `@eslint/create-config`
-        console.warn("You can also run this command directly using 'npm init @eslint/config'.");
+        console.warn("You can also run this command directly using 'npm init @eslint/config@latest'.");
 
         const spawn = require("cross-spawn");
 
-        spawn.sync("npm", ["init", "@eslint/config"], { encoding: "utf8", stdio: "inherit" });
+        spawn.sync("npm", ["init", "@eslint/config@latest"], { encoding: "utf8", stdio: "inherit" });
         return;
     }
 
     // Otherwise, call the CLI.
-    const exitCode = await require("../lib/cli").execute(
+    const cli = require("../lib/cli");
+    const exitCode = await cli.execute(
         process.argv,
         process.argv.includes("--stdin") ? await readStdin() : null,
         true

@@ -192,6 +192,12 @@ export function identityTransformRules (): TransformRules<NonRootResult> {
       type: 'JsdocTypeMappedType',
       key: result.key,
       right: transform(result.right) as RootResult
+    }),
+
+    JsdocTypeAsserts: (result, transform) => ({
+      type: 'JsdocTypeAsserts',
+      left: transform(result.left) as NameResult,
+      right: transform(result.right) as RootResult
     })
   }
 }

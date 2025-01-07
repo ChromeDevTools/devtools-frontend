@@ -70,6 +70,7 @@ const es2015 = {
     Int16Array: false,
     Int32Array: false,
     Int8Array: false,
+    Intl: false,
     Map: false,
     Promise: false,
     Proxy: false,
@@ -132,6 +133,10 @@ const es2024 = {
     ...es2023
 };
 
+const es2025 = {
+    ...es2024
+};
+
 
 //-----------------------------------------------------------------------------
 // Exports
@@ -150,5 +155,6 @@ module.exports = {
     es2021,
     es2022,
     es2023,
-    es2024
+    es2024,
+    es2025
 };

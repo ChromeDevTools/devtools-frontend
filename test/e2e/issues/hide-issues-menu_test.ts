@@ -83,7 +83,7 @@ describe('Hide issues menu', () => {
                         .toString()
                         .replace('localhost', 'devtools.oopif.test');
         await fetch(url, {credentials: 'include'});
-      } catch (e) {
+      } catch {
       }
     });
     await navigateToIssuesTab();

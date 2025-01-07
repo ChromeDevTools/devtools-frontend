@@ -30,6 +30,7 @@ module.exports = {
     schema: []  // no options
   },
   create: function(context) {
+    const filename = context.filename ?? context.getFilename();
     let foundInputStylesImport = false;
     let inputStylesImportedName = null;
     let adoptedStyleSheetsCallNode = null;
@@ -56,7 +57,7 @@ module.exports = {
 
         // Get the absolute path of the current file's directory, so we can
         // compare it to COMMON_INPUT_STYLES and see if the file does import the common styles.
-        const absoluteDirectory = path.dirname(path.resolve(context.getFilename()));
+        const absoluteDirectory = path.dirname(path.resolve(filename));
         const fullImportPath = path.resolve(absoluteDirectory, node.source.value);
         foundInputStylesImport = fullImportPath === COMMON_INPUT_STYLES;
         if (foundInputStylesImport) {

@@ -18,9 +18,9 @@ module.exports = {
     schema: []  // no options
   },
   create: function(context) {
+    const filename = context.filename ?? context.getFilename();
     return {
       ClassDeclaration(node) {
-        const filename = context.getFilename();
         // Use `extends LitElement` as a signal.
         if (node.superClass?.name !== 'LitElement') {
           return;

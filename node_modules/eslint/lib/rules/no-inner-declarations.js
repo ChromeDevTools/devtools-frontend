@@ -47,15 +47,26 @@ module.exports = {
     meta: {
         type: "problem",
 
+        defaultOptions: ["functions", { blockScopedFunctions: "allow" }],
+
         docs: {
             description: "Disallow variable or `function` declarations in nested blocks",
-            recommended: true,
+            recommended: false,
             url: "https://eslint.org/docs/latest/rules/no-inner-declarations"
         },
 
         schema: [
             {
                 enum: ["functions", "both"]
+            },
+            {
+                type: "object",
+                properties: {
+                    blockScopedFunctions: {
+                        enum: ["allow", "disallow"]
+                    }
+                },
+                additionalProperties: false
             }
         ],
 
@@ -65,6 +76,11 @@ module.exports = {
     },
 
     create(context) {
+        const both = context.options[0] === "both";
+        const { blockScopedFunctions } = context.options[1];
+
+        const sourceCode = context.sourceCode;
+        const ecmaVersion = context.languageOptions.ecmaVersion;
 
         /**
          * Ensure that a given node is at a program or function body's root.
@@ -94,12 +110,19 @@ module.exports = {
             });
         }
 
-
         return {
 
-            FunctionDeclaration: check,
+            FunctionDeclaration(node) {
+                const isInStrictCode = sourceCode.getScope(node).upper.isStrict;
+
+                if (blockScopedFunctions === "allow" && ecmaVersion >= 2015 && isInStrictCode) {
+                    return;
+                }
+
+                check(node);
+            },
             VariableDeclaration(node) {
-                if (context.options[0] === "both" && node.kind === "var") {
+                if (both && node.kind === "var") {
                     check(node);
                 }
             }

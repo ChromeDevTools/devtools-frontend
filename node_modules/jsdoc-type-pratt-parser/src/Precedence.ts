@@ -4,6 +4,7 @@ export enum Precedence {
   PARAMETER_LIST,
   OBJECT,
   KEY_VALUE,
+  INDEX_BRACKETS,
   UNION,
   INTERSECTION,
   PREFIX,

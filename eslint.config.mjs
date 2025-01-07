@@ -5,6 +5,7 @@ import importPlugin from 'eslint-plugin-import';
 import jsdocPlugin from 'eslint-plugin-jsdoc';
 import globals from 'globals';
 import tsParser from '@typescript-eslint/parser';
+import stylisticPlugin from '@stylistic/eslint-plugin';
 import { join } from 'path';
 
 rulesdirPlugin.RULES_DIR = join(
@@ -58,8 +59,10 @@ export default [
     ],
   },
   {
+    name: 'JavaScript files',
     plugins: {
       '@typescript-eslint': typescriptPlugin,
+      '@stylistic': stylisticPlugin,
       mocha: mochaPlugin,
       rulesdir: rulesdirPlugin,
       import: importPlugin,
@@ -67,18 +70,16 @@ export default [
     },
 
     languageOptions: {
+      ecmaVersion: 'latest',
+      sourceType: 'module',
       globals: {
         ...globals.browser,
       },
-
-      parser: tsParser,
-      ecmaVersion: 'latest',
-      sourceType: 'module',
     },
 
     rules: {
       // syntax preferences
-      quotes: [
+      '@stylistic/quotes': [
         'error',
         'single',
         {
@@ -87,12 +88,12 @@ export default [
         },
       ],
 
-      semi: 'error',
-      'no-extra-semi': 'error',
-      'comma-style': ['error', 'last'],
-      'wrap-iife': ['error', 'inside'],
+      '@stylistic/semi': 'error',
+      '@stylistic/no-extra-semi': 'error',
+      '@stylistic/comma-style': ['error', 'last'],
+      '@stylistic/wrap-iife': ['error', 'inside'],
 
-      'spaced-comment': [
+      '@stylistic/spaced-comment': [
         'error',
         'always',
         {
@@ -111,10 +112,10 @@ export default [
       ],
 
       curly: 'error',
-      'new-parens': 'error',
-      'func-call-spacing': 'error',
-      'arrow-parens': ['error', 'as-needed'],
-      'eol-last': 'error',
+      '@stylistic/new-parens': 'error',
+      '@stylistic/func-call-spacing': 'error',
+      '@stylistic/arrow-parens': ['error', 'as-needed'],
+      '@stylistic/eol-last': 'error',
       'object-shorthand': ['error', 'properties'],
       'no-useless-rename': 'error',
 
@@ -154,7 +155,7 @@ export default [
       'no-implied-eval': 'error',
       'no-labels': 'error',
       'no-multi-str': 'error',
-      'no-new-object': 'error',
+      'no-object-constructor': 'error',
       'no-octal-escape': 'error',
       'no-self-compare': 'error',
       'no-shadow-restricted-names': 'error',
@@ -179,23 +180,23 @@ export default [
 
       // es2015 features
       'require-yield': 'error',
-      'template-curly-spacing': ['error', 'never'],
+      '@stylistic/template-curly-spacing': ['error', 'never'],
 
       // file whitespace
-      'no-multiple-empty-lines': [
+      '@stylistic/no-multiple-empty-lines': [
         'error',
         {
           max: 1,
         },
       ],
-      'no-mixed-spaces-and-tabs': 'error',
-      'no-trailing-spaces': 'error',
-      'linebreak-style': ['error', 'unix'],
+      '@stylistic/no-mixed-spaces-and-tabs': 'error',
+      '@stylistic/no-trailing-spaces': 'error',
+      '@stylistic/linebreak-style': ['error', 'unix'],
 
       /**
        * Disabled, aspirational rules
        */
-      indent: [
+      '@stylistic/indent': [
         'off',
         2,
         {
@@ -208,7 +209,7 @@ export default [
       ],
 
       // brace-style is disabled, as eslint cannot enforce 1tbs as default, but allman for functions
-      'brace-style': [
+      '@stylistic/brace-style': [
         'off',
         'allman',
         {
@@ -217,7 +218,7 @@ export default [
       ],
 
       // key-spacing is disabled, as some objects use value-aligned spacing, some not.
-      'key-spacing': [
+      '@stylistic/key-spacing': [
         'off',
         {
           beforeColon: false,
@@ -226,7 +227,7 @@ export default [
         },
       ],
 
-      'quote-props': ['error', 'as-needed'],
+      '@stylistic/quote-props': ['error', 'as-needed'],
 
       // no-implicit-globals will prevent accidental globals
       'no-implicit-globals': 'off',
@@ -263,6 +264,7 @@ export default [
       ecmaVersion: 'latest',
       sourceType: 'module',
 
+      parser: tsParser,
       parserOptions: {
         allowAutomaticSingleRunInference: true,
         project: join(
@@ -302,9 +304,6 @@ export default [
         },
       ],
 
-      'comma-dangle': 'off',
-      '@typescript-eslint/comma-dangle': ['error', 'always-multiline'],
-
       // run just the TypeScript unused-vars rule, else we get duplicate errors
       'no-unused-vars': 'off',
       '@typescript-eslint/no-unused-vars': [
@@ -314,11 +313,7 @@ export default [
         },
       ],
 
-      // run just the TypeScript semi rule, else we get duplicate errors
-      semi: 'off',
-      '@typescript-eslint/semi': 'error',
-
-      '@typescript-eslint/member-delimiter-style': [
+      '@stylistic/member-delimiter-style': [
         'error',
         {
           multiline: {
@@ -366,9 +361,6 @@ export default [
         },
       ],
 
-      // func-call-spacing doesn't work well with .ts
-      'func-call-spacing': 'off',
-      '@typescript-eslint/func-call-spacing': 'error',
       /**
        * Enforce that enum members are explicitly defined:
        * const enum Foo { A = 'a' } rather than const enum Foo { A }
@@ -481,7 +473,6 @@ export default [
       ],
     },
   },
-
   {
     name: 'Scripts files',
     files: ['scripts/**/*'],
@@ -489,7 +480,6 @@ export default [
       'no-console': 'off',
     },
   },
-
   {
     name: 'Front-end files',
     files: ['front_end/**/*'],
@@ -508,7 +498,6 @@ export default [
       'rulesdir/l10n-no-unused-message': 'error',
     },
   },
-
   {
     name: 'Front-end TypeScript files',
     files: ['front_end/**/*.ts'],
@@ -542,7 +531,6 @@ export default [
       'rulesdir/jslog-context-list': 'error',
     },
   },
-
   {
     name: 'Front-end meta files',
     files: ['front_end/**/*-meta.ts'],
@@ -557,7 +545,6 @@ export default [
       ],
     },
   },
-
   {
     name: 'TypeScript test files',
     files: [
@@ -630,7 +617,6 @@ export default [
       ],
     },
   },
-
   {
     files: [
       'front_end/panels/**/components/*.ts',
@@ -642,7 +628,6 @@ export default [
       'rulesdir/prefer-private-class-members': 'error',
     },
   },
-
   {
     files: [
       'front_end/panels/recorder/**/*.ts',
@@ -654,14 +639,12 @@ export default [
       'rulesdir/prefer-private-class-members': 'off',
     },
   },
-
   {
     files: ['front_end/generated/SupportedCSSProperties.js'],
     rules: {
       'rulesdir/jslog-context-list': 'error',
     },
   },
-
   {
     name: 'EsLint rules test',
     files: ['scripts/eslint_rules/test/**/*.js'],
@@ -669,7 +652,6 @@ export default [
       'rulesdir/no-only-eslint-tests': 'error',
     },
   },
-
   {
     name: 'Legacy test runner',
     files: ['front_end/legacy_test_runner/**/*'],
@@ -712,6 +694,7 @@ export default [
     },
   },
   {
+    name: 'Performance panel file',
     files: ['front_end/ui/legacy/components/perf_ui/**/*.ts'],
     rules: {
       // Enable tracking of canvas save() and

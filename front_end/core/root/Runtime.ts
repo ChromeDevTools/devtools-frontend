@@ -68,7 +68,7 @@ export class Runtime {
           {
             [x: string]: boolean,
           });
-    } catch (e) {
+    } catch {
       console.error('Failed to parse localStorage[\'experiments\']');
       return {};
     }

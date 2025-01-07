@@ -150,7 +150,7 @@ export class EventSourceMessagesView extends UI.Widget.VBox {
     if (text) {
       try {
         this.filterRegex = new RegExp(text, 'i');
-      } catch (e) {
+      } catch {
         // this regex will never match any input
         this.filterRegex = new RegExp('(?!)', 'i');
       }

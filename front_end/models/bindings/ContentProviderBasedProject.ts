@@ -96,7 +96,7 @@ export class ContentProviderBasedProject extends Workspace.Workspace.ProjectStor
     let parentPath = uiSourceCode.parentURL().replace(/^(?:https?|file)\:\/\//, '');
     try {
       parentPath = decodeURI(parentPath);
-    } catch (e) {
+    } catch {
     }
     return parentPath + '/' + uiSourceCode.displayName(true);
   }

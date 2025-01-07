@@ -17,10 +17,14 @@ const { upperCaseFirst } = require("../shared/string-utils");
 // Rule Definition
 //------------------------------------------------------------------------------
 
+const THRESHOLD_DEFAULT = 20;
+
 /** @type {import('../shared/types').Rule} */
 module.exports = {
     meta: {
         type: "suggestion",
+
+        defaultOptions: [THRESHOLD_DEFAULT],
 
         docs: {
             description: "Enforce a maximum cyclomatic complexity allowed in a program",
@@ -45,6 +49,9 @@ module.exports = {
                             max: {
                                 type: "integer",
                                 minimum: 0
+                            },
+                            variant: {
+                                enum: ["classic", "modified"]
                             }
                         },
                         additionalProperties: false
@@ -60,16 +67,22 @@ module.exports = {
 
     create(context) {
         const option = context.options[0];
-        let THRESHOLD = 20;
+        let threshold = THRESHOLD_DEFAULT;
+        let VARIANT = "classic";
 
-        if (
-            typeof option === "object" &&
-            (Object.prototype.hasOwnProperty.call(option, "maximum") || Object.prototype.hasOwnProperty.call(option, "max"))
-        ) {
-            THRESHOLD = option.maximum || option.max;
+        if (typeof option === "object") {
+            if (Object.hasOwn(option, "maximum") || Object.hasOwn(option, "max")) {
+                threshold = option.maximum || option.max;
+            }
+
+            if (Object.hasOwn(option, "variant")) {
+                VARIANT = option.variant;
+            }
         } else if (typeof option === "number") {
-            THRESHOLD = option;
+            threshold = option;
         }
+
+        const IS_MODIFIED_COMPLEXITY = VARIANT === "modified";
 
         //--------------------------------------------------------------------------
         // Helpers
@@ -109,13 +122,27 @@ module.exports = {
             IfStatement: increaseComplexity,
             WhileStatement: increaseComplexity,
             DoWhileStatement: increaseComplexity,
+            AssignmentPattern: increaseComplexity,
 
             // Avoid `default`
-            "SwitchCase[test]": increaseComplexity,
+            "SwitchCase[test]": () => IS_MODIFIED_COMPLEXITY || increaseComplexity(),
+            SwitchStatement: () => IS_MODIFIED_COMPLEXITY && increaseComplexity(),
 
             // Logical assignment operators have short-circuiting behavior
             AssignmentExpression(node) {
                 if (astUtils.isLogicalAssignmentOperator(node.operator)) {
+                    increaseComplexity();
+                }
+            },
+
+            MemberExpression(node) {
+                if (node.optional === true) {
+                    increaseComplexity();
+                }
+            },
+
+            CallExpression(node) {
+                if (node.optional === true) {
                     increaseComplexity();
                 }
             },
@@ -137,7 +164,7 @@ module.exports = {
                     return;
                 }
 
-                if (complexity > THRESHOLD) {
+                if (complexity > threshold) {
                     let name;
 
                     if (codePath.origin === "class-field-initializer") {
@@ -154,7 +181,7 @@ module.exports = {
                         data: {
                             name: upperCaseFirst(name),
                             complexity,
-                            max: THRESHOLD
+                            max: threshold
                         }
                     });
                 }

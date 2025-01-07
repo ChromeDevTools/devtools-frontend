@@ -6,9 +6,7 @@
 
 const path = require('path');
 
-function isModuleScope(context) {
-  return context.getScope().type === 'module';
-}
+const {isModuleScope} = require('./l10n-helper.js');
 
 // True iff the callExpression is `i18n.i18n.registerUIStrings`.
 function isRegisterUIStringsCall(callExpression) {
@@ -30,30 +28,40 @@ module.exports = {
   meta: {
     type: 'problem',
     docs: {
-      description: 'i18n.i18n.registerUIStrings must receive the current file\'s path as the first argument',
+      description:
+        'i18n.i18n.registerUIStrings must receive the current file\'s path as the first argument',
       category: 'Possible Errors',
     },
     fixable: 'code',
-    schema: [{
-      type: 'object',
-      properties: {
-        rootFrontendDirectory: {
-          type: 'string',
+    schema: [
+      {
+        type: 'object',
+        properties: {
+          rootFrontendDirectory: {
+            type: 'string',
+          },
         },
+        additionalProperties: false,
       },
-      additionalProperties: false,
-    }]
+    ],
   },
-  create: function(context) {
+  create: function (context) {
+    const filename = context.filename ?? context.getFilename();
     return {
       CallExpression(callExpression) {
-        if (!isModuleScope(context) || !isRegisterUIStringsCall(callExpression)) {
+        if (
+          !isModuleScope(context, callExpression) ||
+          !isRegisterUIStringsCall(callExpression)
+        ) {
           return;
         }
 
         // Do nothing if there are no arguments or the first argument is not a string literal we
         // can check.
-        if (callExpression.arguments.length === 0 || callExpression.arguments[0].type !== 'Literal') {
+        if (
+          callExpression.arguments.length === 0 ||
+          callExpression.arguments[0].type !== 'Literal'
+        ) {
           return;
         }
 
@@ -64,8 +72,11 @@ module.exports = {
         if (!frontEndDirectory) {
           throw new Error('rootFrontendDirectory must be provided.');
         }
-        const currentSourceFile = path.resolve(context.getFilename());
-        const currentFileRelativeToFrontEnd = path.relative(frontEndDirectory, currentSourceFile);
+        const currentSourceFile = path.resolve(filename);
+        const currentFileRelativeToFrontEnd = path.relative(
+          frontEndDirectory,
+          currentSourceFile,
+        );
 
         const currentModuleDirectory = path.dirname(currentSourceFile);
         const allowedPathArguments = [
@@ -75,19 +86,24 @@ module.exports = {
         ];
 
         const previousFileLocationArgument = callExpression.arguments[0];
-        const actualPath = path.join(frontEndDirectory, previousFileLocationArgument.value);
+        const actualPath = path.join(
+          frontEndDirectory,
+          previousFileLocationArgument.value,
+        );
         if (!allowedPathArguments.includes(actualPath)) {
           const newFileName = currentFileRelativeToFrontEnd.replace(/\\/g, '/');
           context.report({
             node: callExpression,
-            message:
-                `First argument to 'registerUIStrings' call must be '${newFileName}' or the ModuleUIStrings.(js|ts)`,
+            message: `First argument to 'registerUIStrings' call must be '${newFileName}' or the ModuleUIStrings.(js|ts)`,
             fix(fixer) {
-              return fixer.replaceText(previousFileLocationArgument, `'${newFileName}'`);
-            }
+              return fixer.replaceText(
+                previousFileLocationArgument,
+                `'${newFileName}'`,
+              );
+            },
           });
         }
-      }
+      },
     };
-  }
+  },
 };

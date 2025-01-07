@@ -5,7 +5,10 @@
 
 const rule = require('../lib/trace-engine-test-timeouts.js');
 const ruleTester = new (require('eslint').RuleTester)({
-  parserOptions: {ecmaVersion: 9, sourceType: 'module'},
+  languageOptions: {
+    ecmaVersion: 'latest',
+    sourceType: 'module',
+  },
 });
 
 ruleTester.run('trace-engine-test-timeouts', rule, {
@@ -57,6 +60,5 @@ ruleTester.run('trace-engine-test-timeouts', rule, {
     })`,
       errors: [{messageId: 'needsFunction'}],
     },
-
-  ]
+  ],
 });

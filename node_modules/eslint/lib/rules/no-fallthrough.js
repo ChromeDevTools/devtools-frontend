@@ -48,9 +48,9 @@ function isFallThroughComment(comment, fallthroughCommentPattern) {
  * @param {ASTNode} subsequentCase The case after caseWhichFallsThrough.
  * @param {RuleContext} context A rule context which stores comments.
  * @param {RegExp} fallthroughCommentPattern A pattern to match comment to.
- * @returns {boolean} `true` if the case has a valid fallthrough comment.
+ * @returns {null | object} the comment if the case has a valid fallthrough comment, otherwise null
  */
-function hasFallthroughComment(caseWhichFallsThrough, subsequentCase, context, fallthroughCommentPattern) {
+function getFallthroughComment(caseWhichFallsThrough, subsequentCase, context, fallthroughCommentPattern) {
     const sourceCode = context.sourceCode;
 
     if (caseWhichFallsThrough.consequent.length === 1 && caseWhichFallsThrough.consequent[0].type === "BlockStatement") {
@@ -58,13 +58,17 @@ function hasFallthroughComment(caseWhichFallsThrough, subsequentCase, context, f
         const commentInBlock = sourceCode.getCommentsBefore(trailingCloseBrace).pop();
 
         if (commentInBlock && isFallThroughComment(commentInBlock.value, fallthroughCommentPattern)) {
-            return true;
+            return commentInBlock;
         }
     }
 
     const comment = sourceCode.getCommentsBefore(subsequentCase).pop();
 
-    return Boolean(comment && isFallThroughComment(comment.value, fallthroughCommentPattern));
+    if (comment && isFallThroughComment(comment.value, fallthroughCommentPattern)) {
+        return comment;
+    }
+
+    return null;
 }
 
 /**
@@ -86,6 +90,11 @@ module.exports = {
     meta: {
         type: "problem",
 
+        defaultOptions: [{
+            allowEmptyCase: false,
+            reportUnusedFallthroughComment: false
+        }],
+
         docs: {
             description: "Disallow fallthrough of `case` statements",
             recommended: true,
@@ -97,42 +106,40 @@ module.exports = {
                 type: "object",
                 properties: {
                     commentPattern: {
-                        type: "string",
-                        default: ""
+                        type: "string"
                     },
                     allowEmptyCase: {
-                        type: "boolean",
-                        default: false
+                        type: "boolean"
+                    },
+                    reportUnusedFallthroughComment: {
+                        type: "boolean"
                     }
                 },
                 additionalProperties: false
             }
         ],
         messages: {
+            unusedFallthroughComment: "Found a comment that would permit fallthrough, but case cannot fall through.",
             case: "Expected a 'break' statement before 'case'.",
             default: "Expected a 'break' statement before 'default'."
         }
     },
 
     create(context) {
-        const options = context.options[0] || {};
         const codePathSegments = [];
         let currentCodePathSegments = new Set();
         const sourceCode = context.sourceCode;
-        const allowEmptyCase = options.allowEmptyCase || false;
+        const [{ allowEmptyCase, commentPattern, reportUnusedFallthroughComment }] = context.options;
+        const fallthroughCommentPattern = commentPattern
+            ? new RegExp(commentPattern, "u")
+            : DEFAULT_FALLTHROUGH_COMMENT;
 
         /*
          * We need to use leading comments of the next SwitchCase node because
          * trailing comments is wrong if semicolons are omitted.
          */
-        let fallthroughCase = null;
-        let fallthroughCommentPattern = null;
+        let previousCase = null;
 
-        if (options.commentPattern) {
-            fallthroughCommentPattern = new RegExp(options.commentPattern, "u");
-        } else {
-            fallthroughCommentPattern = DEFAULT_FALLTHROUGH_COMMENT;
-        }
         return {
 
             onCodePathStart() {
@@ -168,13 +175,23 @@ module.exports = {
                  * And reports the previous fallthrough node if that does not exist.
                  */
 
-                if (fallthroughCase && (!hasFallthroughComment(fallthroughCase, node, context, fallthroughCommentPattern))) {
-                    context.report({
-                        messageId: node.test ? "case" : "default",
-                        node
-                    });
+                if (previousCase && previousCase.node.parent === node.parent) {
+                    const previousCaseFallthroughComment = getFallthroughComment(previousCase.node, node, context, fallthroughCommentPattern);
+
+                    if (previousCase.isFallthrough && !(previousCaseFallthroughComment)) {
+                        context.report({
+                            messageId: node.test ? "case" : "default",
+                            node
+                        });
+                    } else if (reportUnusedFallthroughComment && !previousCase.isSwitchExitReachable && previousCaseFallthroughComment) {
+                        context.report({
+                            messageId: "unusedFallthroughComment",
+                            node: previousCaseFallthroughComment
+                        });
+                    }
+
                 }
-                fallthroughCase = null;
+                previousCase = null;
             },
 
             "SwitchCase:exit"(node) {
@@ -185,11 +202,16 @@ module.exports = {
                  * `break`, `return`, or `throw` are unreachable.
                  * And allows empty cases and the last case.
                  */
-                if (isAnySegmentReachable(currentCodePathSegments) &&
-                    (node.consequent.length > 0 || (!allowEmptyCase && hasBlankLinesBetween(node, nextToken))) &&
-                    node.parent.cases[node.parent.cases.length - 1] !== node) {
-                    fallthroughCase = node;
-                }
+                const isSwitchExitReachable = isAnySegmentReachable(currentCodePathSegments);
+                const isFallthrough = isSwitchExitReachable && (node.consequent.length > 0 || (!allowEmptyCase && hasBlankLinesBetween(node, nextToken))) &&
+                    node.parent.cases.at(-1) !== node;
+
+                previousCase = {
+                    node,
+                    isSwitchExitReachable,
+                    isFallthrough
+                };
+
             }
         };
     }

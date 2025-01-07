@@ -732,7 +732,7 @@ export class SearchConfig {
         regex = new RegExp(query.substring(1, query.length - 1), modifiers);
         fromQuery = true;
       }
-    } catch (e) {
+    } catch {
       // Silent catch.
     }
 

@@ -20,6 +20,7 @@ module.exports = {
   },
 
   create: function (context) {
+    const sourceCode = context.sourceCode ?? context.getSourceCode();
     return {
       TSTypeAliasDeclaration(node) {
         const typeAnnotation = node.typeAnnotation;
@@ -36,7 +37,6 @@ module.exports = {
                 message: 'Optional property \'{{name}}\' should be defined after required properties.',
                 data: {name: misplacedOptionalProp.key.name},
                 fix(fixer) {
-                  const sourceCode = context.getSourceCode();
                   const optionalPropertyText = sourceCode.getText(misplacedOptionalProp);
                   const requiredPropertyText = sourceCode.getText(requiredProp);
 

@@ -71,35 +71,37 @@ export class ReleaseNoteView extends UI.Widget.VBox {
     // clang-format off
     render(html`
       <div class="whatsnew" jslog=${VisualLogging.section().context('release-notes')}>
-        <div class="header">
-          ${releaseNote.header}
-        </div>
-        <div>
-          <devtools-button
-                .variant=${Buttons.Button.Variant.PRIMARY}
-                .jslogContext=${'learn-more'}
-                @click=${() => input.openNewTab(releaseNote.link)}
-            >${i18nString(UIStrings.seeFeatures)}</devtools-button>
-        </div>
+        <div class="whatsnew-content">
+          <div class="header">
+            ${releaseNote.header}
+          </div>
+          <div>
+            <devtools-button
+                  .variant=${Buttons.Button.Variant.PRIMARY}
+                  .jslogContext=${'learn-more'}
+                  @click=${() => input.openNewTab(releaseNote.link)}
+              >${i18nString(UIStrings.seeFeatures)}</devtools-button>
+          </div>
 
-        <div class="feature-container">
-          <div class="video-container">
-            ${releaseNote.videoLinks.map((value: {description: string, link: Platform.DevToolsPath.UrlString, type?: VideoType}) => {
-              return html`
-                <x-link
-                href=${value.link}
-                jslog=${VisualLogging.link().track({click: true}).context('learn-more')}>
-                  <div class="video">
-                    <img class="thumbnail" src=${input.getThumbnailPath(value.type ?? VideoType.WHATS_NEW)}>
-                    <div class="thumbnail-description"><span>${value.description}</span></div>
-                  </div>
-              </x-link>
-              `;
+          <div class="feature-container">
+            <div class="video-container">
+              ${releaseNote.videoLinks.map((value: {description: string, link: Platform.DevToolsPath.UrlString, type?: VideoType}) => {
+                return html`
+                  <x-link
+                  href=${value.link}
+                  jslog=${VisualLogging.link().track({click: true}).context('learn-more')}>
+                    <div class="video">
+                      <img class="thumbnail" src=${input.getThumbnailPath(value.type ?? VideoType.WHATS_NEW)}>
+                      <div class="thumbnail-description"><span>${value.description}</span></div>
+                    </div>
+                </x-link>
+                `;
+              })}
+            </div>
+            ${markdownContent.map((markdown: Marked.Marked.Token[]) => {
+              return html`<div class="feature"><devtools-markdown-view slot="content" .data=${{tokens: markdown} as MarkdownView.MarkdownView.MarkdownViewData}></devtools-markdown-view></div>`;
             })}
           </div>
-          ${markdownContent.map((markdown: Marked.Marked.Token[]) => {
-            return html`<div class="feature"><devtools-markdown-view slot="content" .data=${{tokens: markdown} as MarkdownView.MarkdownView.MarkdownViewData}></devtools-markdown-view></div>`;
-          })}
         </div>
       </div>
     `, target, {host: this});

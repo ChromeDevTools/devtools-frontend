@@ -5,9 +5,16 @@
  */
 
 .whatsnew {
-  padding: var(--sys-size-9) 0 0;
   background: var(--sys-color-header-container);
   flex-grow: 1;
+  flex-shrink: 0;
+  display: flex;
+  justify-content: center;
+}
+
+.whatsnew-content {
+  max-width: var(--sys-size-35);
+  padding: var(--sys-size-9) 0 0;
   display: flex;
   flex-direction: column;
   gap: var(--sys-size-9);
@@ -46,7 +53,6 @@
   background-color: var(--sys-color-surface3);
   padding: 0 var(--sys-size-8) var(--sys-size-8);
   border-radius: var(--sys-shape-corner-medium);
-  flex-shrink: 0;
   margin: 0 var(--sys-size-9) var(--sys-size-9);
 }
 
@@ -60,8 +66,7 @@
     display: flex;
     flex-direction: row;
     gap: var(--sys-size-5);
-    flex-shrink: 0;
-    padding: var(--sys-size-9) 0 var(--video-bottom-padding) var(--sys-size-9);
+    padding: var(--sys-size-9) var(--sys-size-9) var(--video-bottom-padding);
 
     /* This extra margin makes sure that we have some space between
        the scrollable container for videos and the cards below it. */

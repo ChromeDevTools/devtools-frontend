@@ -120,13 +120,20 @@ export class LayoutShiftDetails extends HTMLElement {
     `;
   }
 
-  #renderShiftedElements(elementsShifted: Trace.Types.Events.TraceImpactedNode[]|undefined): LitHtml.LitTemplate {
+  #renderShiftedElements(
+      shift: Trace.Types.Events.SyntheticLayoutShift,
+      elementsShifted: Trace.Types.Events.TraceImpactedNode[]|undefined): LitHtml.LitTemplate {
     // clang-format off
     return html`
       ${elementsShifted?.map(el => {
         if (el.node_id !== undefined) {
           return html`
-            <devtools-performance-node-link .data=${{backendNodeId: el.node_id}}>
+            <devtools-performance-node-link
+              .data=${{
+                backendNodeId: el.node_id,
+                frame: shift.args.frame,
+                // TODO(crbug.com/371620361): if ever rendered for non-fresh traces, this needs to set a fallback text value.
+              } as Insights.NodeLink.NodeLinkData}>
             </devtools-performance-node-link>`;
         }
           return LitHtml.nothing;
@@ -188,12 +195,15 @@ export class LayoutShiftDetails extends HTMLElement {
     // clang-format on
   }
 
-  #renderUnsizedImage(node: Protocol.DOM.BackendNodeId): LitHtml.TemplateResult|null {
+  #renderUnsizedImage(frame: string, backendNodeId: Protocol.DOM.BackendNodeId): LitHtml.TemplateResult|null {
     // clang-format off
     const el = html`
       <devtools-performance-node-link
         .data=${{
-          backendNodeId: node,
+          backendNodeId,
+          frame,
+          // TODO(crbug.com/371620361): if ever rendered for non-fresh traces, this needs to set a fallback text value. This requires
+          // `rootCauses.unsizedImages` to have more than just the backend node id.
         } as Insights.NodeLink.NodeLinkData}>
       </devtools-performance-node-link>`;
     return html`
@@ -201,13 +211,14 @@ export class LayoutShiftDetails extends HTMLElement {
     // clang-format on
   }
 
-  #renderRootCauseValues(rootCauses: Trace.Insights.Models.CLSCulprits.LayoutShiftRootCausesData|
-                         undefined): LitHtml.TemplateResult|null {
+  #renderRootCauseValues(
+      frame: string,
+      rootCauses: Trace.Insights.Models.CLSCulprits.LayoutShiftRootCausesData|undefined): LitHtml.TemplateResult|null {
     return html`
       ${rootCauses?.fontRequests.map(fontReq => this.#renderFontRequest(fontReq))}
       ${rootCauses?.iframeIds.map(iframe => this.#renderIframe(iframe))}
       ${rootCauses?.nonCompositedAnimations.map(failure => this.#renderAnimation(failure))}
-      ${rootCauses?.unsizedImages.map(image => this.#renderUnsizedImage(image))}
+      ${rootCauses?.unsizedImages.map(backendNodeId => this.#renderUnsizedImage(frame, backendNodeId))}
     `;
   }
 
@@ -237,6 +248,8 @@ export class LayoutShiftDetails extends HTMLElement {
         (rootCauses.fontRequests.length || rootCauses.iframeIds.length || rootCauses.nonCompositedAnimations.length ||
          rootCauses.unsizedImages.length));
 
+    // TODO(crbug.com/371620361): Needs to show something for non-fresh recordings.
+
     // clang-format off
     return html`
       <tr class="shift-row" data-ts=${shift.ts}>
@@ -245,12 +258,12 @@ export class LayoutShiftDetails extends HTMLElement {
         ${this.#isFreshRecording ? html`
           <td>
             <div class="elements-shifted">
-              ${this.#renderShiftedElements(elementsShifted)}
+              ${this.#renderShiftedElements(shift, elementsShifted)}
             </div>
           </td>` : LitHtml.nothing}
         ${hasCulprits && this.#isFreshRecording ? html`
           <td class="culprits">
-            ${this.#renderRootCauseValues(rootCauses)}
+            ${this.#renderRootCauseValues(shift.args.frame, rootCauses)}
           </td>` : LitHtml.nothing}
       </tr>`;
     // clang-format on

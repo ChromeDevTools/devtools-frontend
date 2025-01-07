@@ -226,7 +226,8 @@ export class ChartViewport extends UI.Widget.VBox {
     if (navigation === 'classic') {
       if (wheelEvent.shiftKey) {  // Scroll
         this.vScrollElement.scrollTop += scrollDelta;
-      } else if (Math.abs(wheelEvent.deltaX) > Math.abs(wheelEvent.deltaY)) {  // Pan left/right
+      } else if (
+          Math.abs(wheelEvent.deltaX) > Math.abs(wheelEvent.deltaY)) {  // Pan left/right on trackpad horizontal scroll
         this.handlePanGesture(wheelEvent.deltaX, /* animate */ true);
       } else {  // Zoom
         this.handleZoomGesture(zoomDelta);
@@ -235,7 +236,10 @@ export class ChartViewport extends UI.Widget.VBox {
       const isCtrlOrCmd = UI.KeyboardShortcut.KeyboardShortcut.eventHasCtrlEquivalentKey(wheelEvent);
       if (wheelEvent.shiftKey) {  // Pan left/right
         this.handlePanGesture(wheelEvent.deltaY, /* animate */ true);
-      } else if (isCtrlOrCmd || Math.abs(wheelEvent.deltaX) > Math.abs(wheelEvent.deltaY)) {  // Zoom
+      } else if (
+          Math.abs(wheelEvent.deltaX) > Math.abs(wheelEvent.deltaY)) {  // Pan left/right on trackpad horizontal scroll
+        this.handlePanGesture(wheelEvent.deltaX, /* animate */ true);
+      } else if (isCtrlOrCmd) {  // Zoom
         this.handleZoomGesture(zoomDelta);
       } else {  // Scroll
         this.vScrollElement.scrollTop += scrollDelta;

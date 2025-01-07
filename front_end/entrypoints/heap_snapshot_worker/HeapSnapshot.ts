@@ -735,7 +735,7 @@ const MIN_OBJECT_COUNT_PER_INTERFACE = 2;
 export abstract class HeapSnapshot {
   nodes: Platform.TypedArrayUtilities.BigUint32Array;
   containmentEdges: Platform.TypedArrayUtilities.BigUint32Array;
-  readonly #metaNode: HeapSnapshotMetainfo;
+  readonly #metaNode: HeapSnapshotMetaInfo;
   readonly #rawSamples: number[];
   #samples: HeapSnapshotModel.HeapSnapshotModel.Samples|null;
   strings: string[];
@@ -2724,34 +2724,29 @@ export abstract class HeapSnapshot {
   }
 }
 
-class HeapSnapshotMetainfo {
-  location_fields: string[] = [];              // eslint-disable-line @typescript-eslint/naming-convention
-  node_fields: string[] = [];                  // eslint-disable-line @typescript-eslint/naming-convention
-  node_types: string[][] = [];                 // eslint-disable-line @typescript-eslint/naming-convention
-  edge_fields: string[] = [];                  // eslint-disable-line @typescript-eslint/naming-convention
-  edge_types: string[][] = [];                 // eslint-disable-line @typescript-eslint/naming-convention
-  trace_function_info_fields: string[] = [];   // eslint-disable-line @typescript-eslint/naming-convention
-  trace_node_fields: string[] = [];            // eslint-disable-line @typescript-eslint/naming-convention
-  sample_fields: string[] = [];                // eslint-disable-line @typescript-eslint/naming-convention
-  type_strings: {[key: string]: string} = {};  // eslint-disable-line @typescript-eslint/naming-convention
+interface HeapSnapshotMetaInfo {
+  /* eslint-disable @typescript-eslint/naming-convention */
+  location_fields: string[];
+  node_fields: string[];
+  node_types: string[][];
+  edge_fields: string[];
+  edge_types: string[][];
+  trace_function_info_fields: string[];
+  trace_node_fields: string[];
+  sample_fields: string[];
+  type_strings: {[key: string]: string};
+  /* eslint-enable @typescript-eslint/naming-convention */
 }
 
-export class HeapSnapshotHeader {
+export interface HeapSnapshotHeader {
+  /* eslint-disable @typescript-eslint/naming-convention */
   title: string;
-  meta: HeapSnapshotMetainfo;
-  node_count: number;            // eslint-disable-line @typescript-eslint/naming-convention
-  edge_count: number;            // eslint-disable-line @typescript-eslint/naming-convention
-  trace_function_count: number;  // eslint-disable-line @typescript-eslint/naming-convention
-  root_index: number;            // eslint-disable-line @typescript-eslint/naming-convention
-  constructor() {
-    // New format.
-    this.title = '';
-    this.meta = new HeapSnapshotMetainfo();
-    this.node_count = 0;
-    this.edge_count = 0;
-    this.trace_function_count = 0;
-    this.root_index = 0;
-  }
+  meta: HeapSnapshotMetaInfo;
+  node_count: number;
+  edge_count: number;
+  trace_function_count: number;
+  root_index: number;
+  /* eslint-enable @typescript-eslint/naming-convention */
 }
 
 export abstract class HeapSnapshotItemProvider {

@@ -4199,8 +4199,6 @@ export interface FlameChartDataProvider {
   // The following three functions are used for the flame chart entry customization.
   modifyTree?(action: FilterAction, entryIndex: number): void;
 
-  getAIEventNodeTreeFromEntryIndex?(entryIndex: number): Trace.Helpers.TreeHelpers.AINode|null;
-
   entryHasAnnotations?(entryIndex: number): boolean;
 
   deleteAnnotationsForEntry?(entryIndex: number): void;

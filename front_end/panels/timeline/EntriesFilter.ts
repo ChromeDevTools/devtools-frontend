@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as Platform from '../../core/platform/platform.js';
-import * as Root from '../../core/root/root.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 
@@ -75,20 +74,6 @@ export class EntriesFilter {
       [PerfUI.FlameChart.FilterAction.UNDO_ALL_ACTIONS]: this.#invisibleEntries.length > 0,
     };
     return possibleActions;
-  }
-
-  /**
-   * Returns the trace entry tree for the specified event, simplified for input to AI Assistance.
-   * The tree is rooted at the top-level task that contains the event, with the node for specified event marked as selected.
-   */
-  getAIEventNodeTree(entry: Trace.Types.Events.Event): Trace.Helpers.TreeHelpers.AINode|null {
-    const node = this.#entryToNode.get(entry);
-    if (!node) {
-      return null;
-    }
-
-    return Trace.Helpers.TreeHelpers.AINode.fromEntryNode(
-        node, Root.Runtime.experiments.isEnabled('timeline-show-all-events') ? () => true : entryIsVisibleInTimeline);
   }
 
   /**

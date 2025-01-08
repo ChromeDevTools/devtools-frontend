@@ -123,8 +123,8 @@ describeWithMockConnection('CookieReportView', () => {
     await view.updateComplete;
 
     assert.lengthOf(view.gridData, 3);
-    assert.strictEqual(view.gridData[0].data.status, 'Allowed By Exception');
-    assert.strictEqual(view.gridData[1].data.status, 'Allowed By Exception');
+    assert.strictEqual(view.gridData[0].data.status, 'Allowed by exception');
+    assert.strictEqual(view.gridData[1].data.status, 'Allowed by exception');
     assert.strictEqual(view.gridData[2].data.status, 'Allowed');
   });
 

@@ -62,7 +62,7 @@ const UIStrings = {
   /**
    *@description Status string in the cookie report for a third-party cookie that is allowed due to a grace period or heuristic exception. Otherwise, this would have been blocked. This is also used as filter chip text to allow the user to filter the table based on cookie status
    */
-  allowedByException: 'Allowed By Exception',
+  allowedByException: 'Allowed by exception',
   /**
    *@description Status string in the cookie report for a third-party cookie that was blocked. This is also used as filter chip text to allow the user to filter the table based on cookie status
    */
@@ -87,7 +87,7 @@ const UIStrings = {
    *@description String in Cookie Report table. This is used when a cookie's domain has an entry in the third-party cookie migration readiness list GitHub.
    *@example {guidance} PH1
    */
-  gitHubResource: 'Review {PH1} from third-party site.',
+  gitHubResource: 'Review {PH1} from third-party site',
   /**
    *@description Label for a link to an entry in the third-party cookie migration readiness list GitHub.
    */
@@ -104,7 +104,7 @@ const UIStrings = {
   /**
    *@description String in Cookie Report table. This is used when a cookie has a heuristics exception.
    */
-  heuristics: 'Action needed later. Heuristics based exception is active',
+  heuristics: 'Action needed later. Heuristics based exception is active.',
   /**
    *@description String in Cookie Report table. This is used when a cookie's domain does not have an entry in the third-party cookie migration readiness list Github nor a grace period nor heuristics exception.
    */
@@ -208,27 +208,6 @@ export interface CookieReportNodeData {
 
 export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
 
-const filterItems: UI.FilterBar.Item[] = [
-  {
-    name: UIStrings.blocked,
-    label: () => i18nString(UIStrings.blocked),
-    title: UIStrings.blocked,
-    jslogContext: UIStrings.blocked,
-  },
-  {
-    name: UIStrings.allowed,
-    label: () => i18nString(UIStrings.allowed),
-    title: UIStrings.allowed,
-    jslogContext: UIStrings.allowed,
-  },
-  {
-    name: UIStrings.allowedByException,
-    label: () => i18nString(UIStrings.allowedByException),
-    title: UIStrings.allowedByException,
-    jslogContext: UIStrings.allowedByException,
-  },
-];
-
 export class CookieReportView extends UI.Widget.VBox {
   #issuesManager?: IssuesManager.IssuesManager.IssuesManager;
   namedBitSetFilterUI?: UI.FilterBar.NamedBitSetFilterUI;
@@ -252,6 +231,33 @@ export class CookieReportView extends UI.Widget.VBox {
       striped: true,
       rowContextMenuCallback: input.populateContextMenu.bind(input),
     };
+
+    const filterItems: UI.FilterBar.Item[] = [];
+
+    if (input.gridData.some(n => n.data['status'] === i18nString(UIStrings.blocked))) {
+      filterItems.push({
+        name: UIStrings.blocked,
+        label: () => i18nString(UIStrings.blocked),
+        title: UIStrings.blocked,
+        jslogContext: UIStrings.blocked,
+      });
+    }
+    if (input.gridData.some(n => n.data['status'] === i18nString(UIStrings.allowed))) {
+      filterItems.push({
+        name: UIStrings.allowed,
+        label: () => i18nString(UIStrings.allowed),
+        title: UIStrings.allowed,
+        jslogContext: UIStrings.allowed,
+      });
+    }
+    if (input.gridData.some(n => n.data['status'] === i18nString(UIStrings.allowedByException))) {
+      filterItems.push({
+        name: UIStrings.allowedByException,
+        label: () => i18nString(UIStrings.allowedByException),
+        title: UIStrings.allowedByException,
+        jslogContext: UIStrings.allowedByException,
+      });
+    }
 
     // clang-format off
     render(html `
@@ -335,6 +341,7 @@ export class CookieReportView extends UI.Widget.VBox {
 
   #onPrimaryPageChanged(): void {
     this.#cookieRows.clear();
+    this.namedBitSetFilterUI = undefined;
     this.update();
   }
 

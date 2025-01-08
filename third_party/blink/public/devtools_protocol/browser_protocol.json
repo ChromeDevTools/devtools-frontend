@@ -4838,6 +4838,29 @@
                     ]
                 },
                 {
+                    "name": "getLonghandProperties",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "shorthandName",
+                            "type": "string"
+                        },
+                        {
+                            "name": "value",
+                            "type": "string"
+                        }
+                    ],
+                    "returns": [
+                        {
+                            "name": "longhandProperties",
+                            "type": "array",
+                            "items": {
+                                "$ref": "CSSProperty"
+                            }
+                        }
+                    ]
+                },
+                {
                     "name": "getInlineStylesForNode",
                     "description": "Returns the styles defined inline (explicitly in the \"style\" attribute and implicitly, using DOM\nattributes) for a DOM node identified by `nodeId`.",
                     "parameters": [
@@ -15309,6 +15332,28 @@
                             "$ref": "LoadNetworkResourcePageResult"
                         }
                     ]
+                },
+                {
+                    "name": "setCookieControls",
+                    "description": "Sets Controls for third-party cookie access\nPage reload is required before the new cookie bahavior will be observed",
+                    "experimental": true,
+                    "parameters": [
+                        {
+                            "name": "enableThirdPartyCookieRestriction",
+                            "description": "Whether 3pc restriction is enabled.",
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "disableThirdPartyCookieMetadata",
+                            "description": "Whether 3pc grace period exception should be enabled; false by default.",
+                            "type": "boolean"
+                        },
+                        {
+                            "name": "disableThirdPartyCookieHeuristics",
+                            "description": "Whether 3pc heuristics exceptions should be enabled; false by default.",
+                            "type": "boolean"
+                        }
+                    ]
                 }
             ],
             "events": [
@@ -16030,7 +16075,8 @@
                                 "BadResponse",
                                 "InternalError",
                                 "UnknownError",
-                                "FulfilledLocally"
+                                "FulfilledLocally",
+                                "SiteIssuerLimit"
                             ]
                         },
                         {

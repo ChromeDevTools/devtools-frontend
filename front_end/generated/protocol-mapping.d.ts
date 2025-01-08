@@ -1267,6 +1267,10 @@ export namespace ProtocolMapping {
       paramsType: [Protocol.CSS.ResolveValuesRequest];
       returnType: Protocol.CSS.ResolveValuesResponse;
     };
+    'CSS.getLonghandProperties': {
+      paramsType: [Protocol.CSS.GetLonghandPropertiesRequest];
+      returnType: Protocol.CSS.GetLonghandPropertiesResponse;
+    };
     /**
      * Returns the styles defined inline (explicitly in the "style" attribute and implicitly, using DOM
      * attributes) for a DOM node identified by `nodeId`.
@@ -3032,6 +3036,14 @@ export namespace ProtocolMapping {
     'Network.loadNetworkResource': {
       paramsType: [Protocol.Network.LoadNetworkResourceRequest];
       returnType: Protocol.Network.LoadNetworkResourceResponse;
+    };
+    /**
+     * Sets Controls for third-party cookie access
+     * Page reload is required before the new cookie bahavior will be observed
+     */
+    'Network.setCookieControls': {
+      paramsType: [Protocol.Network.SetCookieControlsRequest];
+      returnType: void;
     };
     /**
      * Disables domain notifications.

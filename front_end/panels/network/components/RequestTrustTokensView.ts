@@ -93,6 +93,10 @@ const UIStrings = {
    *@description Text for an error status in the Network panel
    */
   theOperationFailedForAnUnknown: 'The operation failed for an unknown reason.',
+  /**
+   *@description Text for an error status in the Network panel
+   */
+  perSiteLimit: 'Per-site issuer limit reached.',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/network/components/RequestTrustTokensView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -269,6 +273,8 @@ function getDetailedTextForStatusCode(status: Protocol.Network.TrustTokenOperati
     case Protocol.Network.TrustTokenOperationDoneEventStatus.Unauthorized:
     case Protocol.Network.TrustTokenOperationDoneEventStatus.UnknownError:
       return i18nString(UIStrings.theOperationFailedForAnUnknown);
+    case Protocol.Network.TrustTokenOperationDoneEventStatus.SiteIssuerLimit:
+      return i18nString(UIStrings.perSiteLimit);
   }
 }
 

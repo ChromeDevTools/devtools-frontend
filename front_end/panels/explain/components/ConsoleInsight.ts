@@ -652,22 +652,38 @@ export class ConsoleInsight extends HTMLElement {
     if (this.#state.type !== State.INSIGHT || !this.#state.metadata.factualityMetadata?.facts.length) {
       return LitHtml.nothing;
     }
+    const directCitationUrls = this.#state.directCitationUrls;
+    const relatedUrls = this.#state.metadata.factualityMetadata.facts
+                            .filter(fact => fact.sourceUri && !directCitationUrls.includes(fact.sourceUri))
+                            .map(fact => fact.sourceUri as string);
+    const trainingDataUrls =
+        this.#state.metadata.attributionMetadata?.citations
+            .filter(
+                citation => citation.sourceType === Host.AidaClient.CitationSourceType.TRAINING_DATA &&
+                    (citation.uri || citation.repository))
+            .map(citation => citation.uri || `https://www.github.com/${citation.repository}`) ||
+        [];
+    const dedupedTrainingDataUrls =
+        [...new Set(trainingDataUrls.filter(url => !relatedUrls.includes(url) && !directCitationUrls.includes(url)))];
+    relatedUrls.push(...dedupedTrainingDataUrls);
+
+    if (relatedUrls.length === 0) {
+      return LitHtml.nothing;
+    }
     // clang-format off
     return html`
       <ul>
-          ${this.#state.metadata?.factualityMetadata?.facts.map(fact => {
-            return fact.sourceUri ? html`
+        ${relatedUrls.map(relatedUrl => html`
           <li>
             <x-link
-              href=${fact.sourceUri}
+              href=${relatedUrl}
               class="link"
               jslog=${VisualLogging.link('references.console-insights').track({click: true})}
             >
-                  ${fact.sourceUri}
+              ${relatedUrl}
             </x-link>
           </li>
-            ` : LitHtml.nothing;
-          })}
+        `)}
       </ul>
     `;
     // clang-format on

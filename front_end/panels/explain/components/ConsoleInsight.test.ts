@@ -333,4 +333,133 @@ describeWithEnvironment('ConsoleInsight', () => {
     assert.strictEqual(relatedContent[0].textContent?.trim(), 'https://www.firstSource.test/someInfo');
     assert.strictEqual(relatedContent[0].getAttribute('href'), 'https://www.firstSource.test/someInfo');
   });
+
+  it('displays training data citations', async () => {
+    function getAidaClientWithMetadata() {
+      return {
+        async *
+            fetch() {
+              yield {
+                explanation: 'This is not a real answer, it is just a test.',
+                metadata: {
+                  rpcGlobalId: 0,
+                  attributionMetadata: {
+                    attributionAction: Host.AidaClient.RecitationAction.CITE,
+                    citations: [
+                      {
+                        startIndex: 5,
+                        endIndex: 9,
+                        uri: 'https://www.training.test/',
+                        sourceType: Host.AidaClient.CitationSourceType.TRAINING_DATA,
+                      },
+                      {
+                        startIndex: 15,
+                        endIndex: 22,
+                        repository: 'chromedevtools/devtools-frontend',
+                        sourceType: Host.AidaClient.CitationSourceType.TRAINING_DATA,
+                      },
+                    ],
+                  },
+                  factualityMetadata: {
+                    facts: [
+                      {sourceUri: 'https://www.firstSource.test/someInfo'},
+                    ],
+                  },
+                },
+                completed: true,
+              };
+            },
+        registerClientEvent: sinon.spy(),
+      };
+    }
+
+    component = new Explain.ConsoleInsight(
+        getTestPromptBuilder(), getAidaClientWithMetadata(), Host.AidaClient.AidaAccessPreconditions.AVAILABLE);
+    renderElementIntoDOM(component);
+    await drainMicroTasks();
+
+    const details = component.shadowRoot!.querySelector('details');
+    assert.strictEqual(details!.querySelector('summary')!.textContent?.trim(), 'Sources and related content');
+    const xLinks = details!.querySelectorAll('x-link');
+    assert.lengthOf(xLinks, 3);
+    assert.strictEqual(xLinks[0].textContent?.trim(), 'https://www.firstSource.test/someInfo');
+    assert.strictEqual(xLinks[0].getAttribute('href'), 'https://www.firstSource.test/someInfo');
+    assert.strictEqual(xLinks[1].textContent?.trim(), 'https://www.training.test/');
+    assert.strictEqual(xLinks[1].getAttribute('href'), 'https://www.training.test/');
+    assert.strictEqual(xLinks[2].textContent?.trim(), 'https://www.github.com/chromedevtools/devtools-frontend');
+    assert.strictEqual(xLinks[2].getAttribute('href'), 'https://www.github.com/chromedevtools/devtools-frontend');
+  });
+
+  it('deduplicates citation URLs', async () => {
+    function getAidaClientWithMetadata() {
+      return {
+        async *
+            fetch() {
+              yield {
+                explanation: 'This is not a real answer, it is just a test.',
+                metadata: {
+                  rpcGlobalId: 0,
+                  attributionMetadata: {
+                    attributionAction: Host.AidaClient.RecitationAction.CITE,
+                    citations: [
+                      {
+                        startIndex: 5,
+                        endIndex: 9,
+                        uri: 'https://www.training-and-factuality.test/',
+                        sourceType: Host.AidaClient.CitationSourceType.TRAINING_DATA,
+                      },
+                      {
+                        startIndex: 10,
+                        endIndex: 12,
+                        uri: 'https://www.all-three.test/',
+                        sourceType: Host.AidaClient.CitationSourceType.TRAINING_DATA,
+                      },
+                      {
+                        startIndex: 20,
+                        endIndex: 25,
+                        uri: 'https://www.world-fact-and-factuality.test/',
+                        sourceType: Host.AidaClient.CitationSourceType.WORLD_FACTS,
+                      },
+                      {
+                        startIndex: 26,
+                        endIndex: 30,
+                        uri: 'https://www.all-three.test/',
+                        sourceType: Host.AidaClient.CitationSourceType.WORLD_FACTS,
+                      },
+                    ],
+                  },
+                  factualityMetadata: {
+                    facts: [
+                      {sourceUri: 'https://www.training-and-factuality.test/'},
+                      {sourceUri: 'https://www.world-fact-and-factuality.test/'},
+                      {sourceUri: 'https://www.factuality.test/'},
+                      {sourceUri: 'https://www.all-three.test/'},
+                    ],
+                  },
+                },
+                completed: true,
+              };
+            },
+        registerClientEvent: sinon.spy(),
+      };
+    }
+
+    component = new Explain.ConsoleInsight(
+        getTestPromptBuilder(), getAidaClientWithMetadata(), Host.AidaClient.AidaAccessPreconditions.AVAILABLE);
+    renderElementIntoDOM(component);
+    await drainMicroTasks();
+
+    const details = component.shadowRoot!.querySelector('details');
+    assert.strictEqual(details!.querySelector('summary')!.textContent?.trim(), 'Sources and related content');
+    const xLinks = details!.querySelectorAll('x-link');
+    assert.lengthOf(xLinks, 4);
+    assert.strictEqual(xLinks[0].textContent?.trim(), 'https://www.world-fact-and-factuality.test/');
+    assert.strictEqual(xLinks[0].getAttribute('href'), 'https://www.world-fact-and-factuality.test/');
+    assert.strictEqual(xLinks[1].textContent?.trim(), 'https://www.all-three.test/');
+    assert.strictEqual(xLinks[1].getAttribute('href'), 'https://www.all-three.test/');
+    assert.strictEqual(xLinks[2].textContent?.trim(), 'https://www.training-and-factuality.test/');
+    assert.strictEqual(xLinks[2].getAttribute('href'), 'https://www.training-and-factuality.test/');
+    assert.strictEqual(xLinks[3].textContent?.trim(), 'https://www.factuality.test/');
+    assert.strictEqual(xLinks[3].getAttribute('href'), 'https://www.factuality.test/');
+  });
 });

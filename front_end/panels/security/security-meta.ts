@@ -22,7 +22,7 @@ const UIStrings = {
    */
   showSecurity: 'Show Security',
   /**
-   *@description Command to open the security and privacy panel. This is used when the kDevToolPrivacyUI feature flag is enabled
+   *@description Command to open the security and privacy panel. This is used when the kDevToolsPrivacyUI feature flag is enabled
    */
   showSecurityAndPrivacy: 'Show Security and Privacy',
 };

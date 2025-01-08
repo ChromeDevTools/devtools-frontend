@@ -1294,7 +1294,7 @@ export namespace Audits {
   }
 
   /**
-   * This isue warns about errors in the select element content model.
+   * This issue warns about errors in the select element content model.
    */
   export interface SelectElementAccessibilityIssueDetails {
     nodeId: DOM.BackendNodeId;
@@ -14504,7 +14504,6 @@ export namespace Storage {
    * Enum of possible storage types.
    */
   export const enum StorageType {
-    Appcache = 'appcache',
     Cookies = 'cookies',
     File_systems = 'file_systems',
     Indexeddb = 'indexeddb',

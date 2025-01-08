@@ -1898,7 +1898,7 @@
                 },
                 {
                     "id": "SelectElementAccessibilityIssueDetails",
-                    "description": "This isue warns about errors in the select element content model.",
+                    "description": "This issue warns about errors in the select element content model.",
                     "type": "object",
                     "properties": [
                         {
@@ -21762,7 +21762,6 @@
                     "description": "Enum of possible storage types.",
                     "type": "string",
                     "enum": [
-                        "appcache",
                         "cookies",
                         "file_systems",
                         "indexeddb",

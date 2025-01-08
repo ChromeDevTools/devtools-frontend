@@ -2780,6 +2780,13 @@ export const generatedProperties = [
   "name": "masonry-fill"
  },
  {
+  "longhands": [
+   "masonry-direction",
+   "masonry-fill"
+  ],
+  "name": "masonry-flow"
+ },
+ {
   "keywords": [
    "normal"
   ],

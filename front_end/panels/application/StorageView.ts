@@ -173,7 +173,6 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
     this.contentElement.classList.add('clear-storage-container');
     this.contentElement.setAttribute('jslog', `${VisualLogging.pane('clear-storage')}`);
     this.pieColors = new Map([
-      [Protocol.Storage.StorageType.Appcache, 'rgb(110, 161, 226)'],        // blue
       [Protocol.Storage.StorageType.Cache_storage, 'rgb(229, 113, 113)'],   // red
       [Protocol.Storage.StorageType.Cookies, 'rgb(239, 196, 87)'],          // yellow
       [Protocol.Storage.StorageType.Indexeddb, 'rgb(155, 127, 230)'],       // purple
@@ -563,8 +562,6 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
         return i18nString(UIStrings.fileSystem);
       case Protocol.Storage.StorageType.Websql:
         return i18nString(UIStrings.webSql);
-      case Protocol.Storage.StorageType.Appcache:
-        return i18nString(UIStrings.application);
       case Protocol.Storage.StorageType.Indexeddb:
         return i18nString(UIStrings.indexDB);
       case Protocol.Storage.StorageType.Cache_storage:
@@ -583,7 +580,6 @@ export class StorageView extends UI.ThrottledWidget.ThrottledWidget {
 }
 
 export const AllStorageTypes = [
-  Protocol.Storage.StorageType.Appcache,
   Protocol.Storage.StorageType.Cache_storage,
   Protocol.Storage.StorageType.Cookies,
   Protocol.Storage.StorageType.Indexeddb,

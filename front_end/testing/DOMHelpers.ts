@@ -250,9 +250,10 @@ export function stripLitHtmlCommentNodes(text: string) {
    * LitHtml comments take the form of:
    * <!--?lit$1234?--> or:
    * <!--?-->
-   * And this regex matches both.
+   * <!---->
+   * And this regex matches all of them.
    */
-  return text.replaceAll(/<!--\?(lit\$[0-9]+\$)?-->/g, '');
+  return text.replaceAll(/<!--(\?)?(lit\$[0-9]+\$)?-->/g, '');
 }
 
 /**

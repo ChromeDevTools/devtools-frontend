@@ -1646,7 +1646,6 @@ export class DataGridNode<T> {
   private selectedInternal: boolean;
   private dirty: boolean;
   private inactive: boolean;
-  key!: string;
   private depthInternal!: number|undefined;
   revealedInternal!: boolean|undefined;
   protected attachedInternal: boolean;

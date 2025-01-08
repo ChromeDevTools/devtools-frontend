@@ -9,10 +9,9 @@ export function expectCall<TArgs extends any[] = any[], TReturnValue = any>(
   return new Promise<TArgs>(resolve => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     stub.callsFake(function(this: any, ...args: TArgs) {
-      if (stub.callCount < (options.callCount ?? 1)) {
-        return undefined as TReturnValue;
+      if (stub.callCount >= (options.callCount ?? 1)) {
+        resolve(args);
       }
-      resolve(args);
       return (options.fakeFn ? options.fakeFn.apply(this, args) : undefined) as TReturnValue;
     });
   });

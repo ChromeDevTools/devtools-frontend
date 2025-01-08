@@ -95,6 +95,7 @@ export class ChildTargetManager extends SDKModel<EventTypes> implements Protocol
     this.#targetInfosInternal.set(targetInfo.targetId, targetInfo);
     const target = this.#childTargetsById.get(targetInfo.targetId);
     if (target) {
+      void target.setHasCrashed(false);
       if (target.targetInfo()?.subtype === 'prerender' && !targetInfo.subtype) {
         const resourceTreeModel = target.model(ResourceTreeModel);
         target.updateTargetInfo(targetInfo);
@@ -117,13 +118,10 @@ export class ChildTargetManager extends SDKModel<EventTypes> implements Protocol
   }
 
   targetCrashed({targetId}: Protocol.Target.TargetCrashedEvent): void {
-    this.#targetInfosInternal.delete(targetId);
     const target = this.#childTargetsById.get(targetId);
     if (target) {
-      target.dispose('targetCrashed event from CDP');
+      target.setHasCrashed(true);
     }
-    this.fireAvailableTargetsChanged();
-    this.dispatchEventToListeners(Events.TARGET_DESTROYED, targetId);
   }
 
   private fireAvailableTargetsChanged(): void {
@@ -173,8 +171,7 @@ export class ChildTargetManager extends SDKModel<EventTypes> implements Protocol
       type = Type.FRAME;
     } else if (targetInfo.type === 'background_page' || targetInfo.type === 'app' || targetInfo.type === 'popup_page') {
       type = Type.FRAME;
-    }
-    else if (targetInfo.type === 'page') {
+    } else if (targetInfo.type === 'page') {
       type = Type.FRAME;
     } else if (targetInfo.type === 'worker') {
       type = Type.Worker;

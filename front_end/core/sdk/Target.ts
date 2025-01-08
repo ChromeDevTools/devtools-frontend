@@ -21,6 +21,18 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
   #idInternal: Protocol.Target.TargetID|'main';
   #modelByConstructor: Map<new(arg1: Target) => SDKModel, SDKModel>;
   #isSuspended: boolean;
+  /**
+   * Generally when a target crashes we don't need to know, with one exception.
+   * If a target crashes during the recording of a performance trace, after the
+   * trace when we try to resume() it, it will fail because it has crashed. This
+   * causes the performance panel to freeze (see crbug.com/333989070). So we
+   * mark the target as crashed so we can exit without trying to resume it. In
+   * `ChildTargetManager` we will mark a target as "un-crashed" when we get the
+   * `targetInfoChanged` event. This helps ensure we can deal with cases where
+   * the page crashes, but a reload fixes it and the targets get restored (see
+   * crbug.com/387258086).
+   */
+  #hasCrashed: boolean = false;
   #targetInfoInternal: Protocol.Target.TargetInfo|undefined;
   #creatingModels?: boolean;
 
@@ -214,11 +226,35 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
     }
   }
 
+  hasCrashed(): boolean {
+    return this.#hasCrashed;
+  }
+
+  setHasCrashed(isCrashed: boolean): void {
+    const wasCrashed = this.#hasCrashed;
+
+    this.#hasCrashed = isCrashed;
+    // If the target has now been restored, check to see if it needs resuming.
+    // This ensures that if a target crashes whilst suspended, it is resumed
+    // when it is recovered.
+    // If the target is not suspended, resume() is a no-op, so it's safe to call.
+    if (wasCrashed && !isCrashed) {
+      void this.resume();
+    }
+  }
+
   async suspend(reason?: string): Promise<void> {
     if (this.#isSuspended) {
       return;
     }
     this.#isSuspended = true;
+
+    // If the target has crashed, we will not attempt to suspend all the
+    // models, but we still mark it as suspended so we correctly track the
+    // state.
+    if (this.#hasCrashed) {
+      return;
+    }
 
     await Promise.all(Array.from(this.models().values(), m => m.preSuspendModel(reason)));
     await Promise.all(Array.from(this.models().values(), m => m.suspendModel(reason)));
@@ -229,6 +265,10 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
       return;
     }
     this.#isSuspended = false;
+
+    if (this.#hasCrashed) {
+      return;
+    }
 
     await Promise.all(Array.from(this.models().values(), m => m.resumeModel()));
     await Promise.all(Array.from(this.models().values(), m => m.postResumeModel()));

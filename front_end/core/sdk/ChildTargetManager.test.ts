@@ -222,7 +222,7 @@ describeWithMockConnection('ChildTargetManager', () => {
     assert.isTrue(attachCallback.secondCall.firstArg.waitingForDebugger);
   });
 
-  it('disposes of the target if it crashes', async () => {
+  it('marks the target as crashed when it crashes', async () => {
     const parentTarget = createTarget();
     const childTargetManager = new SDK.ChildTargetManager.ChildTargetManager(parentTarget);
     await childTargetManager.attachedToTarget({
@@ -233,11 +233,27 @@ describeWithMockConnection('ChildTargetManager', () => {
     const target = childTargetManager.childTargets().at(0);
     assert.isDefined(target);
     assert.strictEqual(target.id(), 'child-target-id');
-    const disposeSpy = sinon.spy(target, 'dispose');
     childTargetManager.targetCrashed(
         {targetId: target.id() as Protocol.Target.TargetID, status: 'crashed', errorCode: 1});
 
-    // Ensure that the target has been disposed after it crashed.
-    assert.isTrue(disposeSpy.calledOnce);
+    assert.isTrue(target.hasCrashed());
+  });
+
+  it('"un-crashes" a target when the target info message is received', async () => {
+    const parentTarget = createTarget();
+    const childTargetManager = new SDK.ChildTargetManager.ChildTargetManager(parentTarget);
+    await childTargetManager.attachedToTarget({
+      sessionId: createSessionId(),
+      targetInfo: createTargetInfo('child-target-id'),
+      waitingForDebugger: false,
+    });
+    const target = childTargetManager.childTargets().at(0);
+    assert.isDefined(target);
+    assert.strictEqual(target.id(), 'child-target-id');
+    childTargetManager.targetCrashed(
+        {targetId: target.id() as Protocol.Target.TargetID, status: 'crashed', errorCode: 1});
+    assert.isTrue(target.hasCrashed());
+    childTargetManager.targetInfoChanged({targetInfo: createTargetInfo(target.id())});
+    assert.isFalse(target.hasCrashed());
   });
 });

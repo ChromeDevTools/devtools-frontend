@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-const chokidar = require('chokidar');
 const path = require('path');
 const childProcess = require('child_process');
 const fs = require('fs');
@@ -36,6 +35,7 @@ const GENERATE_CSS_JS_FILES_PATH = path.join('scripts', 'build', 'generate_css_j
 
 const connections = {};
 let lastConnectionId = 0;
+let tId = -1;
 
 // Extract the target if it's provided.
 const target = extractArgument('--target') || 'Default';
@@ -131,25 +131,21 @@ const notifyWebSocketConections = message => {
 };
 
 const changedFiles = new Set();
-let buildScheduled = false;
 
 const onFileChange = async fileName => {
   changedFiles.add(fileName);
-  // Debounce to handle them in batch
-  if (!buildScheduled) {
-    buildScheduled = true;
-    setTimeout(() => {
-      buildScheduled = false;
-      buildFiles();
-    }, 100);
-  }
+  // Debounce to handle them in batch.
+  // At 250ms, we're optimizing for individual file changes.
+  // On branch changes, its possible a ninja rebuild may start before the checkout is complete, but it will likely quickly error out. Either way, another rebuild will be attempted immediately after.
+  clearTimeout(tId);
+  tId = setTimeout(buildFiles, 250);
 };
 
 const buildFiles = async () => {
   // If we need a ninja rebuild, do that and quit
-  const nonJSOrCSSFileName = Array.from(changedFiles).find(f => !f.endsWith('.css') && !f.endsWith('.ts'));
-  if (nonJSOrCSSFileName) {
-    console.log(`${currentTimeString()} - ${relativeFileName(nonJSOrCSSFileName)} changed, running ninja`);
+  const nonTSOrCSSFileNames = Array.from(changedFiles).filter(f => !f.endsWith('.css') && !f.endsWith('.ts'));
+  if (nonTSOrCSSFileNames.length) {
+    console.log(`${currentTimeString()} - ${nonTSOrCSSFileNames.map(relativeFileName)} changed, running ninja`);
     changedFiles.clear();
     childProcess.spawnSync('autoninja', ['-C', `out/${target}`], {cwd, env, stdio: 'inherit'});
     return;
@@ -209,6 +205,6 @@ childProcess.spawnSync('autoninja', ['-C', `out/${target}`], {cwd, env, stdio: '
 
 // Watch the front_end and test folder and build on any change.
 console.log(`Watching for changes in ${frontEndDir} and ${testsDir}`);
-chokidar.watch(frontEndDir, {usePolling: false, useFsEvents: true}).on('change', onFileChange);
-chokidar.watch(testsDir, {usePolling: false, useFsEvents: true}).on('change', onFileChange);
+fs.watch(frontEndDir, {recursive: true}).on('change', (_, fileName) => onFileChange(path.join(frontEndDir, fileName)));
+fs.watch(testsDir, {recursive: true}).on('change', (_, fileName) => onFileChange(path.join(testsDir, fileName)));
 startWebSocketServerForCssChanges();

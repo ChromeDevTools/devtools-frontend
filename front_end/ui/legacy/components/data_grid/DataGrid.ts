@@ -2473,6 +2473,7 @@ export class DataGridWidget<T> extends UI.Widget.VBox {
 export type DataGridWidgetOptions<T> = Parameters&{
   markAsRoot?: boolean,
   striped?: boolean, nodes: DataGridNode<T>[],
+  rowContextMenuCallback?: ((arg0: UI.ContextMenu.ContextMenu, arg1: DataGridNode<T>) => void),
 };
 
 export class DataGridWidgetElement<T> extends UI.Widget.WidgetElement<DataGridWidget<T>> {
@@ -2525,6 +2526,8 @@ export class DataGridWidgetElement<T> extends UI.Widget.WidgetElement<DataGridWi
       if (this.#options.striped) {
         this.widget.dataGrid.setStriped(true);
       }
+
+      this.widget.dataGrid.setRowContextMenuCallback(this.#options.rowContextMenuCallback ?? null);
     }
   }
 

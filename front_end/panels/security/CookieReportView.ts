@@ -11,6 +11,7 @@ import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as LitHtml from '../../ui/lit-html/lit-html.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
+import * as NetworkForward from '../network/forward/forward.js';
 
 import cookieReportViewStyles from './cookieReportView.css.js';
 
@@ -176,6 +177,10 @@ const UIStrings = {
    *@description String representing the Other cookie type. Used to format 'other' category from the Third Party Web dataset.
    */
   otherCookieTypeString: 'Other',
+  /**
+   *@description String that shows up in the context menu when right clicking one of the entries in the cookie report.
+   */
+  showRequestsWithThisCookie: 'Show requests with this cookie',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/security/CookieReportView.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -184,6 +189,8 @@ export interface ViewInput {
   gridData: DataGrid.DataGrid.DataGridNode<CookieReportNodeData>[];
   onFilterChanged: () => void;
   onSortingChanged: () => void;
+  populateContextMenu:
+      (arg0: UI.ContextMenu.ContextMenu, arg1: DataGrid.DataGrid.DataGridNode<CookieReportNodeData>) => void;
 }
 export interface ViewOutput {
   namedBitSetFilterUI?: UI.FilterBar.NamedBitSetFilterUI;
@@ -243,6 +250,7 @@ export class CookieReportView extends UI.Widget.VBox {
         {id: 'recommendation', title: i18nString(UIStrings.recommendation), weight: 1, sortable: true},
       ],
       striped: true,
+      rowContextMenuCallback: input.populateContextMenu.bind(input),
     };
 
     // clang-format off
@@ -390,6 +398,28 @@ export class CookieReportView extends UI.Widget.VBox {
                   recommendation: CookieReportView.getRecommendation(row.domain, row.insight),
                 } as CookieReportNodeData,
                 ));
+  }
+
+  populateContextMenu(
+      contextMenu: UI.ContextMenu.ContextMenu, gridNode: DataGrid.DataGrid.DataGridNode<CookieReportNodeData>): void {
+    const cookie = gridNode as DataGrid.DataGrid.DataGridNode<CookieReportNodeData>;
+    if (!cookie) {
+      return;
+    }
+
+    contextMenu.revealSection().appendItem(i18nString(UIStrings.showRequestsWithThisCookie), () => {
+      const requestFilter = NetworkForward.UIFilter.UIRequestFilter.filters([
+        {
+          filterType: NetworkForward.UIFilter.FilterType.CookieDomain,
+          filterValue: cookie.data['domain'],
+        },
+        {
+          filterType: NetworkForward.UIFilter.FilterType.CookieName,
+          filterValue: cookie.data['name'],
+        },
+      ]);
+      void Common.Revealer.reveal(requestFilter);
+    }, {jslogContext: 'show-requests-with-this-cookie'});
   }
 
   override wasShown(): void {

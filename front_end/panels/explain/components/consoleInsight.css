@@ -334,16 +334,29 @@ h2:focus-visible {
 }
 
 .sources-list {
-  padding-left: 15px;
-  margin-bottom: 10px;
+  padding-left: var(--sys-size-6);
+  margin-bottom: var(--sys-size-6);
   list-style: none;
   counter-reset: sources;
+  display: grid;
+  grid-template-columns: var(--sys-size-9) auto;
+  list-style-position: inside;
 }
 
 .sources-list li {
-  counter-increment: sources;
+  display: contents;
 }
 
-.sources-list li::marker {
+.sources-list li::before {
+  counter-increment: sources;
   content: "[" counter(sources) "]";
+  display: table-cell;
+}
+
+.references-list {
+  padding-left: var(--sys-size-8);
+}
+
+.references-list li {
+  padding-left: var(--sys-size-3);
 }

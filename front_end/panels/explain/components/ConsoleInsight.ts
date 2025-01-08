@@ -672,7 +672,7 @@ export class ConsoleInsight extends HTMLElement {
     }
     // clang-format off
     return html`
-      <ul>
+      <ul class="references-list">
         ${relatedUrls.map(relatedUrl => html`
           <li>
             <x-link

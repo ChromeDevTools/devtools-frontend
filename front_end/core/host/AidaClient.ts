@@ -194,10 +194,20 @@ export enum RecitationAction {
   EXEMPT_FOUND_IN_PROMPT = 'EXEMPT_FOUND_IN_PROMPT',
 }
 
+export enum CitationSourceType {
+  CITATION_SOURCE_TYPE_UNSPECIFIED = 'CITATION_SOURCE_TYPE_UNSPECIFIED',
+  TRAINING_DATA = 'TRAINING_DATA',
+  WORLD_FACTS = 'WORLD_FACTS',
+  LOCAL_FACTS = 'LOCAL_FACTS',
+  INDIRECT = 'INDERECT',
+}
+
 export interface Citation {
-  startIndex: number;
-  endIndex: number;
-  url: string;
+  startIndex?: number;
+  endIndex?: number;
+  uri?: string;
+  sourceType?: CitationSourceType;
+  repository?: string;
 }
 
 export interface AttributionMetadata {

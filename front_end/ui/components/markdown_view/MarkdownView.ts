@@ -7,6 +7,7 @@ import './MarkdownImage.js';
 import './MarkdownLink.js';
 
 import type * as Marked from '../../../third_party/marked/marked.js';
+import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as UI from '../../legacy/legacy.js';
 import * as LitHtml from '../../lit-html/lit-html.js';
 
@@ -294,7 +295,7 @@ export class MarkdownInsightRenderer extends MarkdownLitRenderer {
     return '';
   }
 
-  override templateForToken(token: Marked.Marked.MarkedToken): LitHtml.TemplateResult|null {
+  override templateForToken(token: Marked.Marked.Token): LitHtml.TemplateResult|null {
     switch (token.type) {
       case 'heading':
         return html`<strong>${this.renderText(token)}</strong>`;
@@ -309,9 +310,17 @@ export class MarkdownInsightRenderer extends MarkdownLitRenderer {
       case 'code':
         return html`<devtools-code-block
           .code=${this.unescape(token.text)}
-          .codeLang=${this.detectCodeLanguage(token)}
+          .codeLang=${this.detectCodeLanguage(token as Marked.Marked.Tokens.Code)}
           .displayNotice=${true}>
         </devtools-code-block>`;
+      case 'citation':
+        return html`<sup>
+          <x-link href=${token.linkTarget} class="devtools-link" jslog=${VisualLogging.link('inline-citation').track({
+          click: true,
+        })}>
+            [${token.linkText}]
+          </x-link>
+        </sup>`;
     }
     return super.templateForToken(token as Marked.Marked.MarkedToken);
   }

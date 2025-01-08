@@ -332,3 +332,18 @@ h2:focus-visible {
 .close-button {
   align-self: flex-start;
 }
+
+.sources-list {
+  padding-left: 15px;
+  margin-bottom: 10px;
+  list-style: none;
+  counter-reset: sources;
+}
+
+.sources-list li {
+  counter-increment: sources;
+}
+
+.sources-list li::marker {
+  content: "[" counter(sources) "]";
+}

@@ -194,6 +194,7 @@ type StateData = {
   sources: Source[],
   isPageReloadRecommended: boolean,
   completed: boolean,
+  directCitationUrls: string[],
 }&Host.AidaClient.AidaResponse|{
   type: State.ERROR,
   error: string,
@@ -209,6 +210,27 @@ type StateData = {
   type: State.SYNC_IS_PAUSED,
 }|{
   type: State.OFFLINE,
+};
+
+const markedExtension = {
+  name: 'citation',
+  level: 'inline',
+  start(src: string) {
+    return src.match(/<cite/)?.index;
+  },
+  tokenizer(src: string) {
+    const match = src.match(/^<cite href="(\S+)">(\S+)<\/cite>/);
+    if (match) {
+      return {
+        type: 'citation',
+        raw: match[0],
+        linkTarget: match[1],
+        linkText: match[2],
+      };
+    }
+    return false;
+  },
+  renderer: () => '',
 };
 
 export class ConsoleInsight extends HTMLElement {
@@ -232,6 +254,7 @@ export class ConsoleInsight extends HTMLElement {
   #consoleInsightsEnabledSetting: Common.Settings.Setting<boolean>|undefined;
   #aidaAvailability: Host.AidaClient.AidaAccessPreconditions;
   #boundOnAidaAvailabilityChange: () => Promise<void>;
+  #marked: Marked.Marked.Marked;
 
   constructor(
       promptBuilder: PublicPromptBuilder, aidaClient: PublicAidaClient,
@@ -241,6 +264,7 @@ export class ConsoleInsight extends HTMLElement {
     this.#aidaClient = aidaClient;
     this.#aidaAvailability = aidaAvailability;
     this.#consoleInsightsEnabledSetting = this.#getConsoleInsightsEnabledSetting();
+    this.#marked = new Marked.Marked.Marked({extensions: [markedExtension]});
 
     this.#state = this.#getStateFromAidaAvailability();
     this.#boundOnAidaAvailabilityChange = this.#onAidaAvailabilityChange.bind(this);
@@ -461,10 +485,42 @@ export class ConsoleInsight extends HTMLElement {
     await this.#generateInsight();
   }
 
+  #insertCitations(explanation: string, metadata: Host.AidaClient.AidaResponseMetadata):
+      {explanationWithCitations: string, directCitationUrls: string[]} {
+    const directCitationUrls: string[] = [];
+    if (!this.#isSearchRagResponse(metadata) || !metadata.attributionMetadata) {
+      return {explanationWithCitations: explanation, directCitationUrls};
+    }
+
+    const {attributionMetadata} = metadata;
+    const sortedCitations =
+        attributionMetadata.citations
+            .filter(citation => citation.sourceType === Host.AidaClient.CitationSourceType.WORLD_FACTS)
+            .sort((a, b) => (b.endIndex || 0) - (a.endIndex || 0));
+    let explanationWithCitations = explanation;
+    for (const [index, citation] of sortedCitations.entries()) {
+      // Matches optional punctuation mark followed by whitespace.
+      // Ensures citation is placed at the end of a word.
+      const myRegex = /[.,:;!?]*\s/g;
+      myRegex.lastIndex = citation.endIndex || 0;
+      const result = myRegex.exec(explanationWithCitations);
+      if (result && citation.uri) {
+        explanationWithCitations = explanationWithCitations.slice(0, result.index) +
+            `<cite href="${citation.uri}">${sortedCitations.length - index}</cite>` +
+            explanationWithCitations.slice(result.index);
+        directCitationUrls.push(citation.uri);
+      }
+    }
+
+    directCitationUrls.reverse();
+    return {explanationWithCitations, directCitationUrls};
+  }
+
   async #generateInsight(): Promise<void> {
     try {
       for await (const {sources, isPageReloadRecommended, explanation, metadata, completed} of this.#getInsight()) {
-        const tokens = this.#validateMarkdown(explanation);
+        const {explanationWithCitations, directCitationUrls} = this.#insertCitations(explanation, metadata);
+        const tokens = this.#validateMarkdown(explanationWithCitations);
         const valid = tokens !== false;
         this.#transitionTo({
           type: State.INSIGHT,
@@ -475,6 +531,7 @@ export class ConsoleInsight extends HTMLElement {
           metadata,
           isPageReloadRecommended,
           completed,
+          directCitationUrls,
         });
       }
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightGenerated);
@@ -492,7 +549,7 @@ export class ConsoleInsight extends HTMLElement {
    */
   #validateMarkdown(text: string): Marked.Marked.TokensList|false {
     try {
-      const tokens = Marked.Marked.lexer(text);
+      const tokens = this.#marked.lexer(text);
       for (const token of tokens) {
         this.#renderer.renderToken(token);
       }
@@ -567,32 +624,57 @@ export class ConsoleInsight extends HTMLElement {
     // clang-format on
   }
 
+  #maybeRenderSources(): LitHtml.LitTemplate {
+    if (this.#state.type !== State.INSIGHT || !this.#state.directCitationUrls.length) {
+      return LitHtml.nothing;
+    }
+
+    // clang-format off
+    return html`
+      <ol class="sources-list">
+        ${this.#state.directCitationUrls.map(url => html`
+          <li>
+            <x-link
+              href=${url}
+              class="link"
+              jslog=${VisualLogging.link('references.console-insights').track({click: true})}
+            >
+              ${url}
+            </x-link>
+          </li>
+        `)}
+      </ol>
+    `;
+    // clang-format on
+  }
+
   #maybeRenderRelatedContent(): LitHtml.LitTemplate {
     if (this.#state.type !== State.INSIGHT || !this.#state.metadata.factualityMetadata?.facts.length) {
       return LitHtml.nothing;
     }
     // clang-format off
     return html`
-      <details jslog=${VisualLogging.expand('references').track({click: true})}>
-        <summary>${i18nString(UIStrings.references)}</summary>
-        <ul>
+      <ul>
           ${this.#state.metadata?.factualityMetadata?.facts.map(fact => {
             return fact.sourceUri ? html`
-              <li>
-                <x-link
-                  href=${fact.sourceUri}
-                  class="link"
-                  jslog=${VisualLogging.link('references.console-insights').track({click: true})}
-                >
+          <li>
+            <x-link
+              href=${fact.sourceUri}
+              class="link"
+              jslog=${VisualLogging.link('references.console-insights').track({click: true})}
+            >
                   ${fact.sourceUri}
-                </x-link>
-              </li>
+            </x-link>
+          </li>
             ` : LitHtml.nothing;
           })}
-        </ul>
-      </details>
+      </ul>
     `;
     // clang-format on
+  }
+
+  #isSearchRagResponse(metadata: Host.AidaClient.AidaResponseMetadata): boolean {
+    return Boolean(metadata.factualityMetadata?.facts.length);
   }
 
   #renderMain(): LitHtml.TemplateResult {
@@ -619,7 +701,13 @@ export class ConsoleInsight extends HTMLElement {
               .data=${{tokens: this.#state.tokens, renderer: this.#renderer, animationEnabled: true} as MarkdownView.MarkdownView.MarkdownViewData}>
             </devtools-markdown-view>`: this.#state.explanation
           }
-          ${this.#maybeRenderRelatedContent()}
+          ${this.#isSearchRagResponse(this.#state.metadata) ? html`
+            <details jslog=${VisualLogging.expand('references').track({click: true})}>
+              <summary>${i18nString(UIStrings.references)}</summary>
+              ${this.#maybeRenderSources()}
+              ${this.#maybeRenderRelatedContent()}
+            </details>
+          ` : LitHtml.nothing}
           <details jslog=${VisualLogging.expand('sources').track({click: true})}>
             <summary>${i18nString(UIStrings.inputData)}</summary>
             <devtools-console-insight-sources-list .sources=${this.#state.sources} .isPageReloadRecommended=${this.#state.isPageReloadRecommended}>

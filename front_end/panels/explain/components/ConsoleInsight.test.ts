@@ -271,4 +271,66 @@ describeWithEnvironment('ConsoleInsight', () => {
     assert.strictEqual(xLinks[1].textContent?.trim(), 'https://www.anotherSource.test/page');
     assert.strictEqual(xLinks[1].getAttribute('href'), 'https://www.anotherSource.test/page');
   });
+
+  it('displays direct citations', async () => {
+    function getAidaClientWithMetadata() {
+      return {
+        async *
+            fetch() {
+              yield {
+                explanation: 'This is not a real answer, it is just a test.',
+                metadata: {
+                  rpcGlobalId: 0,
+                  attributionMetadata: {
+                    attributionAction: Host.AidaClient.RecitationAction.CITE,
+                    citations: [
+                      {
+                        startIndex: 0,
+                        endIndex: 10,
+                        uri: 'https://www.wiki.test/directSource',
+                        sourceType: Host.AidaClient.CitationSourceType.WORLD_FACTS,
+                      },
+                      {
+                        startIndex: 20,
+                        endIndex: 25,
+                        uri: 'https://www.world-fact.test/',
+                        sourceType: Host.AidaClient.CitationSourceType.WORLD_FACTS,
+                      },
+                    ],
+                  },
+                  factualityMetadata: {
+                    facts: [
+                      {sourceUri: 'https://www.firstSource.test/someInfo'},
+                    ],
+                  },
+                },
+                completed: true,
+              };
+            },
+        registerClientEvent: sinon.spy(),
+      };
+    }
+
+    component = new Explain.ConsoleInsight(
+        getTestPromptBuilder(), getAidaClientWithMetadata(), Host.AidaClient.AidaAccessPreconditions.AVAILABLE);
+    renderElementIntoDOM(component);
+    await drainMicroTasks();
+
+    const markdownView = component.shadowRoot!.querySelector('devtools-markdown-view');
+    assert.strictEqual(
+        getCleanTextContentFromElements(markdownView!.shadowRoot!, '.message')[0],
+        'This is not [1] a real answer [2] , it is just a test.');
+    const details = component.shadowRoot!.querySelector('details');
+    assert.strictEqual(details!.querySelector('summary')!.textContent?.trim(), 'Sources and related content');
+    const directCitations = details!.querySelectorAll('ol x-link');
+    assert.lengthOf(directCitations, 2);
+    assert.strictEqual(directCitations[0].textContent?.trim(), 'https://www.wiki.test/directSource');
+    assert.strictEqual(directCitations[0].getAttribute('href'), 'https://www.wiki.test/directSource');
+    assert.strictEqual(directCitations[1].textContent?.trim(), 'https://www.world-fact.test/');
+    assert.strictEqual(directCitations[1].getAttribute('href'), 'https://www.world-fact.test/');
+    const relatedContent = details!.querySelectorAll('ul x-link');
+    assert.lengthOf(relatedContent, 1);
+    assert.strictEqual(relatedContent[0].textContent?.trim(), 'https://www.firstSource.test/someInfo');
+    assert.strictEqual(relatedContent[0].getAttribute('href'), 'https://www.firstSource.test/someInfo');
+  });
 });

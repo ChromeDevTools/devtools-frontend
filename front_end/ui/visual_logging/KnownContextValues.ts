@@ -1682,6 +1682,7 @@ export const knownContextValues = new Set([
   'initiator-address-space',
   'initiator-tree',
   'inline',
+  'inline-citation',
   'inline-size',
   'inline-variable-values',
   'inline-variable-values-false',

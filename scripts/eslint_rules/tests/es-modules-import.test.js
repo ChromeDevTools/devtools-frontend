@@ -330,5 +330,14 @@ ruleTester.run('es-modules-import', rule, {
         },
       ],
     },
+    {
+      // Note the double slash between the visual_logging
+      // This does not break compilation but does break at runtime.
+      code: 'import x from \'../ui/visual_logging//visual_logging.js\';',
+      filename: 'front_end/panels/foo/FooPanel.ts',
+      errors: [{messageId: 'doubleSlashInImportPath'}],
+      output: 'import x from \'../ui/visual_logging/visual_logging.js\';',
+    }
   ],
+
 });

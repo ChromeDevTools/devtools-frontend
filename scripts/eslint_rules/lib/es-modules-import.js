@@ -121,6 +121,9 @@ function checkStarImport(context, node, importPath, importPathForErrorMessage, i
 module.exports = {
   meta: {
     type: 'problem',
+    messages: {
+      doubleSlashInImportPath: 'Double slash in import path',
+    },
 
     docs: {
       description: 'check ES import usage',
@@ -147,6 +150,19 @@ module.exports = {
         checkImportExtension(importPath, importPathForErrorMessage, context, node);
       },
       ImportDeclaration(node) {
+        if(node.source.value.includes('//')) {
+          context.report({
+            node,
+            messageId: 'doubleSlashInImportPath',
+            fix(fixer) {
+              const fixedValue = node.source.value.replaceAll('//', '/');
+              // Replace the original import string with the fixed one. We need
+              // the extra quotes around the value to ensure we produce valid
+              // JS - else it would end up as `import X from ../some/path.js`
+              return fixer.replaceText(node.source, `'${fixedValue}'`);
+            }
+          });
+        }
         const importPath = path.normalize(node.source.value);
         const importPathForErrorMessage = node.source.value.replace(/\\/g, '/');
 

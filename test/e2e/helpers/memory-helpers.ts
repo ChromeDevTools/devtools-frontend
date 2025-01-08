@@ -313,8 +313,18 @@ export async function expandFocusedRow() {
   await waitFor('.selected.data-grid-data-grid-node.expanded');
 }
 
-function parseNumberWithSpaces(number: string): number {
-  return parseInt(number.replaceAll('\xa0', ''), 10);
+function parseByteString(str: string): number {
+  const number = parseFloat(str);
+  if (str.endsWith('kB')) {
+    return number * 1000;
+  }
+  if (str.endsWith('MB')) {
+    return number * 1000 * 1000;
+  }
+  if (str.endsWith('GB')) {
+    return number * 1000 * 1000 * 1000;
+  }
+  return number;
 }
 
 async function getSizesFromRow(row: puppeteer.ElementHandle<Element>) {
@@ -323,8 +333,8 @@ async function getSizesFromRow(row: puppeteer.ElementHandle<Element>) {
   function readNumber(e: Element): string {
     return e.textContent as string;
   }
-  const shallowSize = parseNumberWithSpaces(await numericData[0].evaluate(readNumber));
-  const retainedSize = parseNumberWithSpaces(await numericData[2].evaluate(readNumber));
+  const shallowSize = parseByteString(await numericData[0].evaluate(readNumber));
+  const retainedSize = parseByteString(await numericData[2].evaluate(readNumber));
   assert.isTrue(retainedSize >= shallowSize);
   return {shallowSize, retainedSize};
 }
@@ -368,13 +378,13 @@ export async function getAddedCountFromComparisonRowWithName(text: string) {
 export async function getAddedCountFromComparisonRow(row: puppeteer.ElementHandle<Element>) {
   const addedCountCell = await waitFor('.addedCount-column', row);
   const countText = await addedCountCell.evaluate(e => e.textContent ?? '');
-  return parseNumberWithSpaces(countText);
+  return parseByteString(countText);
 }
 
 export async function getRemovedCountFromComparisonRow(row: puppeteer.ElementHandle<Element>) {
   const addedCountCell = await waitFor('.removedCount-column', row);
   const countText = await addedCountCell.evaluate(e => e.textContent ?? '');
-  return parseNumberWithSpaces(countText);
+  return parseByteString(countText);
 }
 
 export async function clickOnContextMenuForRetainer(retainerName: string, menuItem: string) {

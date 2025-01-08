@@ -26,7 +26,7 @@ import {
 const preamble = `You are responsible for changing the source code on behalf of the user.
 The user query defines what changes are to be made.
 You have a number of functions to get information about source files in the project.
-Use those functions to fullful the user query.
+Use those functions to fulfill the user query.
 
 ## Step-by-step instructions
 
@@ -149,7 +149,7 @@ export class PatchAgent extends AiAgent<Workspace.Workspace.Project> {
         properties: {
           filepath: {
             type: Host.AidaClient.ParametersTypes.STRING,
-            description: 'A file path that idenfities the file to get the content for',
+            description: 'A file path that identifies the file to get the content for',
             nullable: false,
           },
         },
@@ -194,7 +194,7 @@ export class PatchAgent extends AiAgent<Workspace.Workspace.Project> {
         properties: {
           filepath: {
             type: Host.AidaClient.ParametersTypes.STRING,
-            description: 'A file path that idenfities the file',
+            description: 'A file path that identifies the file',
             nullable: false,
           },
           content: {
@@ -219,7 +219,7 @@ export class PatchAgent extends AiAgent<Workspace.Workspace.Project> {
           };
         }
         const content = params.content;
-        // TODO: we unespace some characters to restore the original
+        // TODO: we unescape some characters to restore the original
         // content but this should be fixed upstream.
         uiSourceCode.setContent(
             content.replaceAll('\\n', '\n').replaceAll('\\"', '"').replaceAll('\\\'', '\''),
@@ -277,14 +277,14 @@ export class PatchAgent extends AiAgent<Workspace.Workspace.Project> {
     return [...this.#history];
   }
 
-  override async * run(initalQuery: string, options: {
+  override async * run(initialQuery: string, options: {
     signal?: AbortSignal, selected: ConversationContext<Workspace.Workspace.Project>|null,
   }): AsyncGenerator<ResponseData, void, void> {
     await options.selected?.refresh();
 
     this.#project = options.selected ?? undefined;
 
-    let query: Host.AidaClient.Part = {text: initalQuery};
+    let query: Host.AidaClient.Part = {text: initialQuery};
 
     // Request is built here to capture history up to this point.
     let request = this.buildRequest(query);

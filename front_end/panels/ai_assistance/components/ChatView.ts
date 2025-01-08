@@ -561,7 +561,7 @@ export class ChatView extends HTMLElement {
     }
 
     if (ev.key === 'Enter' && !ev.shiftKey) {
-      // Do not go to a new line whenver Shift + Enter is pressed.
+      // Do not go to a new line whenever Shift + Enter is pressed.
       ev.preventDefault();
       // Only submit the text when there isn't a request already in flight.
       if (!this.#props.isLoading) {

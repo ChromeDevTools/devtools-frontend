@@ -149,7 +149,7 @@ export abstract class ConversationContext<T> {
 
   /**
    * This method is called at the start of `AiAgent.run`.
-   * It will be overriden in subclasses to fetch data related to the context item.
+   * It will be overridden in subclasses to fetch data related to the context item.
    */
   async refresh(): Promise<void> {
     return;
